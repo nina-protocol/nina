@@ -1,0 +1,21 @@
+[provider]
+cluster = "mainnet"
+wallet = "~/.config/solana/djnina.json"
+
+[programs.mainnet]
+nina = "ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4"
+
+[programs.devnet]
+nina = "ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4"
+
+[programs.localnet]
+nina = "ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4"
+
+[registry]
+url = "https://anchor.projectserum.com"
+
+[scripts]
+test = "ts-mocha -t 1000000 -p tsconfig.json"
+vault-init = "node ./scripts/vaultInit.js"
+vault-get = "node ./scripts/vaultGet.js"
+nina-upgrade = "anchor upgrade --program-id ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4 ./target/deploy/nina.so"

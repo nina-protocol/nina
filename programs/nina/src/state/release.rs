@@ -1,0 +1,190 @@
+use anchor_lang::prelude::*;
+use anchor_spl::token::{self, Transfer};
+
+use crate::errors::*;
+
+#[account(zero_copy)]
+#[derive(Default)]
+pub struct Release {
+    pub payer: Pubkey,
+    pub authority: Pubkey,
+    pub authority_token_account: Pubkey,
+    pub release_signer: Pubkey,
+    pub release_mint: Pubkey,
+    pub release_datetime: i64,
+    pub royalty_token_account: Pubkey,
+    pub payment_mint: Pubkey,
+    pub total_supply: u64,
+    pub remaining_supply: u64,
+    pub price: u64,
+    pub resale_percentage: u64,
+    pub total_collected: u64,
+    pub sale_counter: u64,
+    pub exchange_sale_counter: u64,
+    pub sale_total: u64,
+    pub exchange_sale_total: u64,
+    pub bumps: ReleaseBumps,
+    pub head: u64,
+    pub tail: u64,
+    pub royalty_recipients: [RoyaltyRecipient; 10],
+}
+
+impl Release {
+    pub fn release_revenue_share_collect_handler<'info> (
+        release_loader: &Loader<'info, Release>,
+        release_signer: AccountInfo<'info>,
+        royalty_token_account: AccountInfo<'info>,
+        authority: Pubkey,
+        authority_token_account: AccountInfo<'info>,
+        token_program: AccountInfo<'info>,
+    ) -> ProgramResult {
+        let mut release = release_loader.load_mut()?;
+
+        let seeds = &[
+            release_loader.to_account_info().key.as_ref(),
+            &[release.bumps.signer],
+        ];
+        let signer = &[&seeds[..]];
+
+        let mut royalty_recipient = match release.find_royalty_recipient(authority) {
+            Some(royalty_recipient) => royalty_recipient,
+            None => return Err(ErrorCode::InvalidRoyaltyRecipientAuthority.into())
+        };
+
+        // Transfer Royalties from the royalty account to the user collecting
+        let cpi_accounts = Transfer {
+            from: royalty_token_account,
+            to: authority_token_account,
+            authority: release_signer,
+        };
+        let cpi_ctx = CpiContext::new_with_signer(token_program, cpi_accounts, signer);
+        token::transfer(cpi_ctx, royalty_recipient.owed as u64)?;
+
+        // Update Royalty Recipient's Counters
+        royalty_recipient.collected += royalty_recipient.owed;
+        royalty_recipient.owed = 0;
+
+        Ok(())
+    }
+
+    pub fn update_royalty_recipients_owed(&mut self, amount: u64) {
+        for royalty_recipient in self.royalty_recipients.iter_mut() {
+            if royalty_recipient.percent_share > 0 {
+                royalty_recipient.owed += (amount * royalty_recipient.percent_share) / 1000000;
+            }
+        }
+    }
+
+    pub fn find_royalty_recipient(&mut self, pubkey: Pubkey) -> Option<&mut RoyaltyRecipient> {
+        for royalty_recipient in self.royalty_recipients.iter_mut() {
+            if royalty_recipient.recipient_authority == pubkey {
+                return Some(royalty_recipient);
+            };
+        }
+        return None
+    }
+
+    pub fn royalty_equals_1000000(&mut self) -> bool {
+        let mut royalty_counter = 0;
+        for royalty_recipient in self.royalty_recipients.iter_mut() {
+            royalty_counter += royalty_recipient.percent_share;
+        }
+
+        if royalty_counter == 1000000 {
+            return true
+        } else {
+            return false
+        };
+
+    }
+
+    pub fn append_royalty_recipient(
+        &mut self,
+        royalty_recipient: RoyaltyRecipient
+    ) -> ProgramResult{
+        self.royalty_recipients[Release::index_of(self.head)] = royalty_recipient;
+        if Release::index_of(self.head + 1) == Release::index_of(self.tail) {
+            self.tail += 1;
+        }
+        self.head += 1;
+
+        // Don't allow more than 10 revenue shares
+        if self.head <= 10 {
+            Ok(())
+        } else {
+            return Err(ErrorCode::MaximumAmountOfRevenueShares.into())
+
+        }
+    }
+
+    pub fn index_of(counter: u64) -> usize {
+        std::convert::TryInto::try_into(counter % 10).unwrap()
+    }
+
+    pub fn is_exchange_valid(
+        release: Release,
+        initializer_sending_mint:Pubkey,
+        initializer_expected_mint: Pubkey,
+        is_selling: bool,
+    ) -> ProgramResult {
+
+        if is_selling && initializer_expected_mint != release.payment_mint {
+            return Err(ErrorCode::WrongMintForExchange.into());
+        }
+
+        if !is_selling && initializer_sending_mint != release.payment_mint {
+            return Err(ErrorCode::WrongMintForExchange.into());
+        }
+
+        Ok(())
+    } 
+}
+
+#[zero_copy]
+#[derive(Default)]
+pub struct RoyaltyRecipient {
+    pub recipient_authority: Pubkey,
+    pub recipient_token_account: Pubkey,
+    pub percent_share: u64,
+    pub owed: u64,
+    pub collected: u64,
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Default, Copy)]
+pub struct ReleaseBumps {
+    pub release: u8,
+    pub signer: u8,
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Default, Copy)]
+pub struct ReleaseConfig {
+    pub amount_total_supply: u64,
+    pub amount_to_artist_token_account: u64,
+    pub amount_to_vault_token_account: u64,
+    pub resale_percentage: u64,
+    pub price: u64,
+    pub release_datetime: i64,
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize)]
+pub enum AuthorityType {
+    /// Authority to mint new tokens
+    MintTokens,
+    /// Authority to freeze any account associated with the Mint
+    FreezeAccount,
+    /// Owner of a given token account
+    AccountOwner,
+    /// Authority to close a token account
+    CloseAccount,
+}
+
+impl From<AuthorityType> for spl_token::instruction::AuthorityType {
+    fn from(authority_ty: AuthorityType) -> spl_token::instruction::AuthorityType {
+        match authority_ty {
+            AuthorityType::MintTokens => spl_token::instruction::AuthorityType::MintTokens,
+            AuthorityType::FreezeAccount => spl_token::instruction::AuthorityType::FreezeAccount,
+            AuthorityType::AccountOwner => spl_token::instruction::AuthorityType::AccountOwner,
+            AuthorityType::CloseAccount => spl_token::instruction::AuthorityType::CloseAccount,
+        }
+    }
+}

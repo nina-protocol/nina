@@ -1,0 +1,15 @@
+{
+  "name": "nina-workspace",
+  "version": "1.0.0",
+  "main": "index.js",
+  "private": true,
+  "workspaces": [
+    "nina-common",
+    "soft-lp"
+  ],
+  "scripts": {
+    "nina-common": "yarn workspace nina-common",
+    "soft-lp": "yarn workspace soft-lp",
+    "soft-lp:build": "yarn nina-common build && yarn soft-lp build"
+  }
+}

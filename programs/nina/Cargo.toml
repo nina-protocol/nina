@@ -1,0 +1,22 @@
+[package]
+name = "nina"
+version = "0.1.0"
+description = "Nina - A self-publishing protocol"
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "nina"
+
+[features]
+no-entrypoint = []
+no-idl = []
+cpi = ["no-entrypoint"]
+default = []
+
+[dependencies]
+anchor-lang = "0.16.1"
+anchor-spl = "0.16.1"
+spl-token = { version = "3.1.1", features = ["no-entrypoint"] }
+solana-program = "1.7.11"
+thiserror = "1.0"
