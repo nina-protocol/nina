@@ -142,7 +142,7 @@ const SlpPurchase = (props) => {
                   featuredWallets={4}
                 >
                   <WalletMultiButton className={classes.walletButtonWrapper}>
-                    Select Wallet
+                    Connect Wallet
                   </WalletMultiButton>
                 </WalletDialogProvider>
               </Box>
