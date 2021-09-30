@@ -65,7 +65,7 @@ const NavBar = (props) => {
             <WalletMultiButton className={classes.walletButtonWrapper}>
               {wallet?.connected
                 ? `${wallet.wallet.name} ${walletDisplay}`
-                : 'Select Wallet'}
+                : 'Connect Wallet'}
             </WalletMultiButton>
           </WalletDialogProvider>
           <span
