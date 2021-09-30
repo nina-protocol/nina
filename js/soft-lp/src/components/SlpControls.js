@@ -12,7 +12,6 @@ const NinaClient = ninaCommon.utils.NinaClient
 const SlpControls = (props) => {
   const { activeIndex, setActiveIndex, releasePubkey, location } = props
   let history = useHistory()
-
   const classes = useStyles()
   const { releaseState } = useContext(ReleaseContext)
   const {

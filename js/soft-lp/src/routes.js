@@ -10,7 +10,7 @@ import React from 'react'
 import NavBar from './components/NavBar'
 import Footer from './components/Footer'
 
-const RELEASE_DATE = new Date("2021-09-30T20:00:00Z")
+const RELEASE_DATE = new Date('2021-09-30T20:00:00Z')
 
 function Routes() {
   const classes = useStyles()
