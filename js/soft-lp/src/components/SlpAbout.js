@@ -322,6 +322,9 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(6, 4, 3),
     overflowY: 'auto',
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(6, 2, 3),
+    },
   },
   disclaimer: {
     fontStyle: 'italic',
@@ -342,7 +345,8 @@ const useStyles = makeStyles((theme) => ({
     padding: '0 20px',
     textAlign: 'left',
     [theme.breakpoints.down('sm')]: {
-      width: '90vw',
+      width: '100%',
+      padding: '0'
     },
   },
   title: {
