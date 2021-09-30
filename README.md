@@ -10,4 +10,22 @@ nina: a self-publishing protocol for musicians - on solana
 
 # Getting Started
 
-*coming soon*
+## Solana Program
+Nina's Solana program is written in [Anchor](https://github.com/project-serum/anchor/) - first follow their [guide](https://project-serum.github.io/anchor/getting-started/introduction.html)
+
+Once Anchor environment is configured you can run tests for the on-chain programs from the root directory:
+`anchor test ./tests`
+
+## Frontend
+Nina's frontend packages can be found in the `/js` folder.  `/js/nina-common` contains the core components for interaction with the Nina Solana Program.  It will enentually contain shared UI components amongst the various Nina frontend projects (first will be the Nina UI, Embeddable packages, etc)
+
+The Soft LP project can be run from the `/js` folder with the following commands:
+
+```
+yarn nina-common install
+yarn nina-common build
+yarn soft-lp install
+yarn soft-lp start
+```
+
+`yarn nina-common watch` can be run if you want live changes to be compiled during development
