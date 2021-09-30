@@ -10,8 +10,7 @@ import React from 'react'
 import NavBar from './components/NavBar'
 import Footer from './components/Footer'
 
-const RELEASE_DATE = Date.now() - 5000 // new Date(1633032000000).toLocaleString()
-// const RELEASE_DATE = new Date(1633032000000).toLocaleString()
+const RELEASE_DATE = new Date(1633032000000).toLocaleString()
 
 function Routes() {
   const classes = useStyles()
@@ -28,7 +27,12 @@ function Routes() {
           className={classes.mainContainer}
         >
           <div className={classes.bodyContainer}>
-            <NavBar activeIndex={activeIndex} setActiveIndex={setActiveIndex} />
+            {releaseIsLive && (
+              <NavBar
+                activeIndex={activeIndex}
+                setActiveIndex={setActiveIndex}
+              />
+            )}
             <Switch>
               {releaseIsLive && (
                 <Route
@@ -54,7 +58,7 @@ function Routes() {
                 }
               ></Route>
             </Switch>
-            <Footer />
+            {releaseIsLive && <Footer />}
           </div>
         </Container>
       </BrowserRouter>
