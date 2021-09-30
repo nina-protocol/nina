@@ -3,6 +3,9 @@ import { makeStyles } from '@material-ui/core/styles'
 import Box from '@material-ui/core/Box'
 import { Typography } from '@material-ui/core'
 import Divider from '@material-ui/core/Divider'
+import ninaCommon from 'nina-common'
+
+const {NinaClient} = ninaCommon.utils
 
 const SlpAboutModal = () => {
   const classes = useStyles()
@@ -25,6 +28,38 @@ const SlpAboutModal = () => {
             >
               {' '}
               source code here.
+            </a>
+          </Typography>
+          <Typography
+            variant="body1"
+            gutterBottom
+            className={classes.disclaimer}
+          >
+            Nina Program Id: 
+            <a
+              className={classes.repo}
+              href={`https://solscan.io/account/${NinaClient.ids().programs.nina}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {' '}
+              {NinaClient.ids().programs.nina}
+            </a>
+          </Typography>
+          <Typography
+            variant="body1"
+            gutterBottom
+            className={classes.disclaimer}
+          >
+            SOFT mint: 
+            <a
+              className={classes.repo}
+              href={`https://solscan.io/account/softt2KpcvJJsFL8zGKeaCpjtkGzkT8sewExYuw3WkN`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {' '}
+              softt2KpcvJJsFL8zGKeaCpjtkGzkT8sewExYuw3WkN
             </a>
           </Typography>
 

@@ -37,7 +37,7 @@ const SlpRedeem = (props) => {
               className={classes.noCoinCopy}
               gutterBottom
             >
-              You have {amountHeld} SOFT{amountHeld > 1 ? 's' : ''}
+              You have {amountHeld} SOFT
             </Typography>
           </Box>
         )}
@@ -57,34 +57,32 @@ const SlpRedeem = (props) => {
 
       <Box className={classes.info}>
         <Typography variant="h4" className={classes.infoHeader}>
-          {`Nina's redemption program provides users with the ability to use their tokenized releases to distribute physical goods.`}
+          {`Nina's redemption program lets artists use their tokenized releases to distribute physical goods.`}
         </Typography>
         <Typography className={classes.infoSubheader}>
-          If a user owns an release that has an associated{' '}
-          <strong>Redeemable</strong>, <strong>Redemption Functionality</strong>{' '}
-          is enabled which goes as follows:
+          <strong>In this case The Soft LP physical slipmat.</strong>  The steps to redeem are:
         </Typography>
 
         <Box>
           <ol className={classes.redeemableSteps}>
             <li>
               <Typography className={classes.step}>
-                {`While connected to a wallet that contains a redeemable asset, the user will see and engage a 'redeem' button`}
+                {`If you are connected with a wallet that contains at least 1 SOFT, tap the redeem button over there.`}
               </Typography>
             </li>
             <li>
               <Typography className={classes.step}>
-                {`The user enters and confirms their shipping information. The info is stored on-chain and only decryptable by the publisher of the release.`}
+                {`Enter and confirm your shipping information. This info is encrypted and stored on-chain - only the creator can decrypt it.`}
               </Typography>
             </li>
             <li>
               <Typography className={classes.step}>
-                {`Once the shipping info is stored, the original publisher will be notified of the redemption. The publisher ships the physical good, then enters the tracking info to the redeemable program.`}
+                {`Once the shipping info is stored, the original publisher will be notified of the redemption. The publisher ships the physical good, then enters the tracking info which is only able to be read by the redeemer and the shipper.`}
               </Typography>
             </li>
             <li>
               <Typography className={classes.step}>
-                {`The tracking info will now be available to the redeemer so they can see where their package is. Again, this is only readble by the two parties involved.`}
+                {`Wait for your package to arrive, then enjoy!`}
               </Typography>
             </li>
           </ol>
