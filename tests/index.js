@@ -3331,6 +3331,57 @@ it('Fails when redeeming more redeemables than available', async () => {
       }
     );
   });
+
+  it('Updates a redeemable', async () => {
+    [publisherEncryptionPublicKey, publisherKeys] = await encrypt.exportPublicKey();
+    const encryptionPublicKeyBuffer = new Buffer.from(publisherEncryptionPublicKey)
+    // const description = "1x LP album"
+    // redeemedMint = anchor.web3.Keypair.generate();
+
+    const [redeemable, redeemableBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [Buffer.from(anchor.utils.bytes.utf8.encode("nina-redeemable")), release.toBuffer(), redeemedMint.publicKey.toBuffer()],
+      nina.programId
+    );    
+    console.log(redeemable.description)
+    console.log(redeemable.redeemedMax)
+    const redeeemableAccount = await nina.account.redeemable.fetch(redeemable)
+    console.log('redeemed: ', redeeemableAccount)
+    const config = {
+      encryptionPublicKey: encryptionPublicKeyBuffer,
+      description: encrypt.decode(redeeemableAccount.description),
+      redeemedMax: redeeemableAccount.redeemedMax,
+    };
+
+    await nina.rpc.redeemableUpdateConfig(
+      config,{
+        accounts: {
+          authority: provider.wallet.publicKey,
+          release,
+          redeemable,
+          redeemableSigner: redeeemableAccount.redeemableSigner,
+          redeemableMint: releaseMint.publicKey,
+          redeemedMint: redeemedMint.publicKey,
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+          systemProgram: anchor.web3.SystemProgram.programId,
+        },
+      }
+    )
+
+    const redeemableAfter = await nina.account.redeemable.fetch(redeemable);
+    let encryptionPublicKeyBefore = Buffer.from(redeeemableAccount.encryptionPublicKey);
+    encryptionPublicKeyBefore = encryptionPublicKeyBefore.buffer.slice(
+      encryptionPublicKeyBefore.byteOffset,
+      encryptionPublicKeyBefore.byteOffset + encryptionPublicKeyBefore.byteLength
+    );
+
+    let encryptionPublicKeyAfter = Buffer.from(redeemableAfter.encryptionPublicKey);
+    encryptionPublicKeyAfter = encryptionPublicKeyAfter.buffer.slice(
+      encryptionPublicKeyAfter.byteOffset,
+      encryptionPublicKeyAfter.byteOffset + encryptionPublicKeyAfter.byteLength
+    );
+    assert.ok(encryptionPublicKeyBefore !== encryptionPublicKeyAfter)
+    assert.deepEqual(encryptionPublicKeyAfter, publisherEncryptionPublicKey)
+  });
 });
 
 describe('Vault', async () => {
