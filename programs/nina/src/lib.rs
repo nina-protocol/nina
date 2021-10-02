@@ -56,6 +56,13 @@ pub mod nina {
         instructions::redeemable_init::handler(ctx, config, bumps)
     }
 
+    pub fn redeemable_update_config(
+        ctx: Context<RedeemableUpdateConfig>,
+        config: RedeemableConfig,
+    ) -> ProgramResult {
+        instructions::redeemable_update_config::handler(ctx, config)
+    }
+
     pub fn redeemable_redeem(
         ctx: Context<RedeemableRedeem>,
         encryption_public_key: Vec<u8>,

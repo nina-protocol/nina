@@ -5,6 +5,7 @@ pub mod release_revenue_share_transfer;
 pub mod release_airdrop;
 
 pub mod redeemable_init;
+pub mod redeemable_update_config;
 pub mod redeemable_redeem;
 pub mod redeemable_shipping_update;
 
@@ -23,6 +24,7 @@ pub use release_revenue_share_transfer::*;
 pub use release_airdrop::*;
 
 pub use redeemable_init::*;
+pub use redeemable_update_config::*;
 pub use redeemable_redeem::*;
 pub use redeemable_shipping_update::*;
 
