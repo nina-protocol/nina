@@ -60,7 +60,8 @@ const SlpRedeem = (props) => {
           {`Nina's redemption program lets artists use their tokenized releases to distribute physical goods.`}
         </Typography>
         <Typography className={classes.infoSubheader}>
-          <strong>In this case The Soft LP physical slipmat.</strong>  The steps to redeem are:
+          <strong>In this case The Soft LP physical slipmat.</strong> The steps
+          to redeem are:
         </Typography>
 
         <Box>

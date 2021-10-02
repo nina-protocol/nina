@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import Fade from '@material-ui/core/Fade'
 import Box from '@material-ui/core/Box'
+import { useWallet } from '@solana/wallet-adapter-react'
 import ninaCommon from 'nina-common'
 
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
@@ -11,7 +12,8 @@ const NinaClient = ninaCommon.utils.NinaClient
 
 const SlpControls = (props) => {
   const { activeIndex, setActiveIndex, releasePubkey, location } = props
-  let history = useHistory()
+  const history = useHistory()
+  const wallet = useWallet()
   const classes = useStyles()
   const { releaseState } = useContext(ReleaseContext)
   const {
@@ -21,9 +23,11 @@ const SlpControls = (props) => {
   } = useContext(ExchangeContext)
   const [release, setRelease] = useState(undefined)
   const [marketPrice, setMarketPrice] = useState(undefined)
+  const [userIsPublisher, setUserIsPublisher] = useState(false)
   const ref0 = useRef(null)
   const ref1 = useRef(null)
   const ref2 = useRef(null)
+  const ref3 = useRef(null)
 
   useEffect(() => {
     getExchangesForRelease(releasePubkey)
@@ -44,6 +48,13 @@ const SlpControls = (props) => {
     release,
     filterExchangesForReleaseMarketPrice,
   ])
+
+  useEffect(() => {
+    setUserIsPublisher(
+      wallet?.publicKey?.toBase58() ===
+        releaseState.tokenData[releasePubkey]?.authority.toBase58()
+    )
+  }, [wallet?.connected, releasePubkey, releaseState.tokenData[releasePubkey]])
 
   const handleClick = (e, i) => {
     if (location.pathname === '/about') {
@@ -99,6 +110,21 @@ const SlpControls = (props) => {
               Redeem
             </Button>
           </Box>
+          {wallet?.connected && userIsPublisher && (
+            <Box className={classes.ctaWrapper}>
+              <Button
+                id="3"
+                ref={ref3}
+                onClick={(e) => handleClick(e, 3)}
+                disableripple="true"
+                className={` ${classes.cta} ${classes.cta}--3 ${
+                  activeIndex === 3 ? `${classes.cta}--active` : null
+                }`}
+              >
+                Settings
+              </Button>
+            </Box>
+          )}
         </Box>
       </Fade>
     </>

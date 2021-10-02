@@ -904,7 +904,6 @@ const releaseContextHelper = ({
       { release: releasePubkey },
       connection
     )
-
     const parsedRedeemables = {}
     for await (let redeemable of redeemableAccounts) {
       try {
@@ -929,14 +928,24 @@ const releaseContextHelper = ({
   }
 
   const getRedemptionRecordsForRelease = async (releasePubkey) => {
+    const release = releaseState.tokenData[releasePubkey]
+    if (!release) {
+      return
+    }
+
     const nina = await NinaClient.connect(provider)
+    const filter = {
+      release: releasePubkey,
+    }
+
+    if (wallet?.publicKey.toBase58() !== release.authority.toBase58()) {
+      filter.redeemer = wallet?.publicKey.toBase58()
+    }
+
     let redemptionRecords = await getProgramAccounts(
       nina.program,
       'RedemptionRecord',
-      {
-        release: releasePubkey,
-        redeemer: wallet?.publicKey?.toBase58(),
-      },
+      filter,
       connection
     )
 

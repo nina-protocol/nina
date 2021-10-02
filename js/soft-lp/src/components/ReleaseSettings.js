@@ -274,8 +274,7 @@ const ReleaseSettings = (props) => {
         <Box>
           <Royalty releasePubkey={releasePubkey} release={release} />
         </Box>
-
-        {!redeemables && (
+        {redeemables?.length === 0 && (
           <Box mt={1}>
             <RedeemableInitialize
               releasePubkey={releasePubkey}
@@ -285,7 +284,6 @@ const ReleaseSettings = (props) => {
             />
           </Box>
         )}
-
         {redeemables?.redeemedCount > 0 && (
           <Box mt={1}>
             <RedeemableUpdate
