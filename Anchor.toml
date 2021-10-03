@@ -1,6 +1,6 @@
 [provider]
-cluster = "mainnet"
-wallet = "~/.config/solana/djnina.json"
+cluster = "localnet"
+wallet = "~/.config/solana/id.json"
 
 [programs.mainnet]
 nina = "ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4"
