@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     [theme.breakpoints.down('sm')]: {
-      backgroundColor: `${theme.vars.white}`
+      backgroundColor: `${theme.vars.white}`,
     },
   },
   info: {

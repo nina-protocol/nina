@@ -8,7 +8,8 @@ import Box from '@material-ui/core/Box'
 import ninaCommon from 'nina-common'
 
 const { ReleaseContext } = ninaCommon.contexts
-const { RedeemableUpdateShippingForm, UserRedemptionsList } = ninaCommon.components
+const { RedeemableUpdateShippingForm, UserRedemptionsList } =
+  ninaCommon.components
 
 const SlpUserRedemptions = (props) => {
   const classes = useStyles()

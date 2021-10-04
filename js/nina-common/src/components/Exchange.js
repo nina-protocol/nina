@@ -4,7 +4,6 @@ import { Typography, Box } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import RefreshIcon from '@material-ui/icons/Refresh'
 import { useWallet } from '@solana/wallet-adapter-react'
-import ninaCommon from 'nina-common'
 import BuySell from './BuySell'
 import ExchangeHistoryModal from './ExchangeHistoryModal'
 import ExchangeList from './ExchangeList'
@@ -13,7 +12,7 @@ import {
   ConnectionContext,
   ExchangeContext,
   ReleaseContext,
-  NinaContext
+  NinaContext,
 } from '../contexts'
 import NinaClient from '../utils/client'
 
