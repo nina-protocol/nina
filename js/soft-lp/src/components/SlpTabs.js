@@ -5,10 +5,9 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useWallet } from '@solana/wallet-adapter-react'
 import ninaCommon from 'nina-common'
 import SlpPurchase from './SlpPurchase'
-import ReleaseSettings from './ReleaseSettings'
-import Exchange from './Exchange'
 import SlpRedeem from './SlpRedeem'
 
+const { Exchange, ReleaseSettings } = ninaCommon.components
 const { ExchangeContext, NinaContext, ReleaseContext } = ninaCommon.contexts
 
 const SlpTabs = (props) => {

@@ -4,10 +4,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import { TextField, Typography, Box } from '@material-ui/core'
 import Slider from '@material-ui/core/Slider'
-import ninaCommon from 'nina-common'
-
-const { ReleaseContext, NameContext } = ninaCommon.contexts
-const NinaClient = ninaCommon.utils.NinaClient
+import { NameContext, ReleaseContext } from '../contexts'
+import NinaClient from '../utils/client'
 
 const RoyaltyRecipientForm = (props) => {
   const { release, userShare, setUserDisplayShare, releasePubkey, toggleForm } =

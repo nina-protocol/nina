@@ -5,10 +5,8 @@ import Button from '@material-ui/core/Button'
 import Box from '@material-ui/core/Box'
 import { makeStyles } from '@material-ui/core/styles'
 import { useWallet } from '@solana/wallet-adapter-react'
-import ninaCommon from 'nina-common'
-
-const { NinaContext } = ninaCommon.contexts
-const NinaClient = ninaCommon.utils.NinaClient
+import { NinaContext } from '../contexts'
+import NinaClient from '../utils/client'
 
 const ExchangeList = (props) => {
   let { list, onExchangeButtonAction, release, metadata } = props

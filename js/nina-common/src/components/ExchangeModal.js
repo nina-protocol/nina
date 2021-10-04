@@ -6,9 +6,7 @@ import Fade from '@material-ui/core/Fade'
 import Modal from '@material-ui/core/Modal'
 import Backdrop from '@material-ui/core/Backdrop'
 import 'react-tabs/style/react-tabs.css'
-import ninaCommon from 'nina-common'
-
-const { NinaClient } = ninaCommon.utils
+import NinaClient from '../utils/client'
 
 const ExchangeModal = (props) => {
   const { toggleOverlay, showOverlay, amount, onSubmit, release, isAccept } =

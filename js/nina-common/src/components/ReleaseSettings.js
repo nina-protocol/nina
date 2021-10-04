@@ -9,10 +9,8 @@ import Image from 'material-ui-image'
 import RedeemableInitialize from './RedeemableInitialize.js'
 import RedeemableUpdate from './RedeemableUpdate.js'
 import Royalty from './Royalty.js'
-import ninaCommon from 'nina-common'
-
-const { ReleaseContext } = ninaCommon.contexts
-const NinaClient = ninaCommon.utils.NinaClient
+import NinaClient from '../utils/client'
+import { ReleaseContext } from '../contexts'
 
 const ReleaseSettings = (props) => {
   const {

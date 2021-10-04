@@ -5,9 +5,7 @@ import Backdrop from '@material-ui/core/Backdrop'
 import Fade from '@material-ui/core/Fade'
 import Box from '@material-ui/core/Box'
 import { Typography } from '@material-ui/core'
-import ninaCommon from 'nina-common'
-
-const NinaClient = ninaCommon.utils.NinaClient
+import NinaClient from '../utils/client'
 
 export default function ExchangeHistoryModal(props) {
   const { release, exchangeHistory } = props

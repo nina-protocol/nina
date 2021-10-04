@@ -4,9 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import { Button, TextField } from '@material-ui/core'
 import Box from '@material-ui/core/Box'
-import ninaCommon from 'nina-common'
-
-const NinaClient = ninaCommon.utils.NinaClient
+import NinaClient from '../utils/client'
 
 export const RedeemableUpdateShippingForm = (props) => {
   const { values, touched, errors, onChange, selectedRecord } = props

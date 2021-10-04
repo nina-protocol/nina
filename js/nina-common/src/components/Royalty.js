@@ -11,10 +11,8 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import { useWallet } from '@solana/wallet-adapter-react'
 import RoyaltyRecipientForm from './RoyaltyRecipientForm'
-import ninaCommon from 'nina-common'
-
-const { NameContext, ReleaseContext } = ninaCommon.contexts
-const NinaClient = ninaCommon.utils.NinaClient
+import { NameContext, ReleaseContext } from '../contexts'
+import NinaClient from '../utils/client'
 
 export default function Royalty(props) {
   const { release, releasePubkey } = props

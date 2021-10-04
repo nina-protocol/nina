@@ -3,9 +3,7 @@ import { withFormik, Form, Field } from 'formik'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import { Button, TextField } from '@material-ui/core'
-import ninaCommon from 'nina-common'
-
-const NinaClient = ninaCommon.utils.NinaClient
+import NinaClient from '../utils/client'
 
 export const RedeemableInitializeForm = (props) => {
   const classes = useStyles()

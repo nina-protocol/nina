@@ -3,9 +3,7 @@ import { withFormik, Form, Field } from 'formik'
 import { CountryDropdown, RegionDropdown } from 'react-country-region-selector'
 import { makeStyles } from '@material-ui/core/styles'
 import { TextField } from '@material-ui/core'
-import ninaCommon from 'nina-common'
-
-const NinaClient = ninaCommon.utils.NinaClient
+import NinaClient from '../utils/client'
 
 export const RedeemableClaimForm = (props) => {
   const {

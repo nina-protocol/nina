@@ -9,10 +9,13 @@ import BuySell from './BuySell'
 import ExchangeHistoryModal from './ExchangeHistoryModal'
 import ExchangeList from './ExchangeList'
 import ExchangeModal from './ExchangeModal'
-
-const { ConnectionContext, ExchangeContext, ReleaseContext, NinaContext } =
-  ninaCommon.contexts
-const { NinaClient } = ninaCommon.utils
+import {
+  ConnectionContext,
+  ExchangeContext,
+  ReleaseContext,
+  NinaContext
+} from '../contexts'
+import NinaClient from '../utils/client'
 
 const Exchange = (props) => {
   const { releasePubkey, metadata } = props

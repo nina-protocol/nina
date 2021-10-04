@@ -6,9 +6,7 @@ import Input from '@material-ui/core/Input'
 import Box from '@material-ui/core/Box'
 import { makeStyles } from '@material-ui/core/styles'
 import { useWallet } from '@solana/wallet-adapter-react'
-import ninaCommon from 'nina-common'
-
-const { ExchangeContext } = ninaCommon.contexts
+import { ExchangeContext } from '../contexts'
 
 const BuySellForm = (props) => {
   const { onSubmit, isBuy, release, amount, setAmount } = props

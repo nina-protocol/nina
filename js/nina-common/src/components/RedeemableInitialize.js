@@ -6,9 +6,7 @@ import Backdrop from '@material-ui/core/Backdrop'
 import Fade from '@material-ui/core/Fade'
 import Button from '@material-ui/core/Button'
 import RedeemableInitializeForm from './RedeemableInitializeForm'
-import ninaCommon from 'nina-common'
-
-const { ReleaseContext } = ninaCommon.contexts
+import {ReleaseContext} from '../contexts'
 
 const RedeemableInitialize = (props) => {
   const { releasePubkey, amount } = props

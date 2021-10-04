@@ -6,10 +6,9 @@ import Fade from '@material-ui/core/Fade'
 import Button from '@material-ui/core/Button'
 import Box from '@material-ui/core/Box'
 import ninaCommon from 'nina-common'
-import RedeemableUpdateShippingForm from './RedeemableUpdateShippingForm.js'
-import UserRedemptionsList from './UserRedemptionsList.js'
 
 const { ReleaseContext } = ninaCommon.contexts
+const { RedeemableUpdateShippingForm, UserRedemptionsList } = ninaCommon.components
 
 const SlpUserRedemptions = (props) => {
   const classes = useStyles()

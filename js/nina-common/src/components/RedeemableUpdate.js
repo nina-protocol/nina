@@ -5,11 +5,9 @@ import Backdrop from '@material-ui/core/Backdrop'
 import Fade from '@material-ui/core/Fade'
 import Button from '@material-ui/core/Button'
 import Box from '@material-ui/core/Box'
-import ninaCommon from 'nina-common'
+import { ReleaseContext } from '../contexts'
 import RedeemableUpdateShippingForm from './RedeemableUpdateShippingForm.js'
 import RedeemableUpdateShippingList from './RedeemableUpdateShippingList.js'
-
-const { ReleaseContext } = ninaCommon.contexts
 
 const RedeemableUpdate = (props) => {
   const classes = useStyles()

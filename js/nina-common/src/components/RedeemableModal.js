@@ -8,9 +8,7 @@ import Fade from '@material-ui/core/Fade'
 import Button from '@material-ui/core/Button'
 import { Typography } from '@material-ui/core'
 import RedeemableStepper from './RedeemableStepper'
-import ninaCommon from 'nina-common'
-
-const { ReleaseContext } = ninaCommon.contexts
+import {ReleaseContext} from '../contexts'
 
 const RedeemableModal = (props) => {
   const { releasePubkey, amountHeld } = props
