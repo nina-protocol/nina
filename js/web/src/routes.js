@@ -1,14 +1,16 @@
-import { useState } from 'react'
+import React from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Container from '@material-ui/core/Container'
-import Home from './components/Home'
-import React from 'react'
+import ReleaseCreate from './components/ReleaseCreate'
+import ReleaseList from './components/ReleaseList'
+import Release from './components/Release'
+import AudioPlayer from './components/AudioPlayer'
+import NavBar from './components/NavBar'
 
 function Routes() {
   const classes = useStyles()
-  const [activeIndex, setActiveIndex] = useState(0)
 
   return (
     <>
@@ -20,13 +22,14 @@ function Routes() {
           className={classes.mainContainer}
         >
           <div className={classes.bodyContainer}>
+            <NavBar />
             <Switch>
-              <Route
-                path="/"
-                component={Home}
-              />
+              <Route exact path="/upload" component={ReleaseCreate} />
+              <Route exact path="/release/:releasePubkey" component={Release} />
+              <Route path="/" component={ReleaseList}></Route>
             </Switch>
           </div>
+          <AudioPlayer />
         </Container>
       </BrowserRouter>
     </>

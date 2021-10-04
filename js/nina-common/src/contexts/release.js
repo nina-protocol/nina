@@ -171,7 +171,7 @@ const releaseContextHelper = ({
     pressingFee,
     artistTokens = 0,
     royaltyAmount,
-    isUsdc = false,
+    isUsdc = true,
   }) => {
     setPressingState({
       ...pressingState,

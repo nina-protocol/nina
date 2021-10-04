@@ -23,13 +23,13 @@ export const NINA_CLIENT_IDS = {
   },
   devnet: {
     programs: {
-      nina: '9zFGa79Ea78bMaaUdGuQrT9LafKgN1SmYredYB4UMY3H',
+      nina: 'ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4',
       metaplex: 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
     },
     accounts: {
-      vault: 'FV2iHxAd9q3EZW1gG6hZFhpUsmH2fCsbUhgPq1wdkN7t',
-      vaultUsdc: '5bSveuSqCAJAmdvppq3ED2jZjNNjgGG5XbL2B2bGrEfn',
-      vaultWrappedSol: '6yE817WLExjBc12oNe5feT31StUceYzXSqbrRYZeWN1',
+      vault: '53ueyguZx5bHjgHQdU1EcoLkcupAt97wVbcYeAi6iAYy',
+      vaultUsdc: 'A6G4Dhr6G5kUUo7KH2yZUowmLZbjH2t1PafrbqCfH6C3',
+      vaultWrappedSol: '5NnBrUiqHsx1QnGVSo73AprxgVtRjcfmGrgwJ6q1ADzs',
     },
     mints: {
       usdc: 'J8Kvy9Kjot83DEgnnbK55BYbAK9pZuyYt4NBGkEJ9W1K',
