@@ -3335,17 +3335,12 @@ it('Fails when redeeming more redeemables than available', async () => {
   it('Updates a redeemable', async () => {
     [publisherEncryptionPublicKey, publisherKeys] = await encrypt.exportPublicKey();
     const encryptionPublicKeyBuffer = new Buffer.from(publisherEncryptionPublicKey)
-    // const description = "1x LP album"
-    // redeemedMint = anchor.web3.Keypair.generate();
 
     const [redeemable, redeemableBump] = await anchor.web3.PublicKey.findProgramAddress(
       [Buffer.from(anchor.utils.bytes.utf8.encode("nina-redeemable")), release.toBuffer(), redeemedMint.publicKey.toBuffer()],
       nina.programId
     );    
-    console.log(redeemable.description)
-    console.log(redeemable.redeemedMax)
     const redeeemableAccount = await nina.account.redeemable.fetch(redeemable)
-    console.log('redeemed: ', redeeemableAccount)
     const config = {
       encryptionPublicKey: encryptionPublicKeyBuffer,
       description: encrypt.decode(redeeemableAccount.description),
