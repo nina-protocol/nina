@@ -1,11 +1,11 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{self, TokenAccount, Mint, Token};
+use anchor_spl::token::{self, TokenAccount, Mint, Token, Burn};
 
 use crate::state::*;
-use crate::utils::{nina_publishing_account};
+use crate::utils::{nina_publishing_credit_mint};
 
 #[derive(Accounts)]
-pub struct ReleaseInitializeProtected<'info> {
+pub struct ReleaseInitializeWithCredit<'info> {
     #[account(
         init,
         seeds = [b"nina-release".as_ref(), release_mint.key().as_ref()],
@@ -13,17 +13,15 @@ pub struct ReleaseInitializeProtected<'info> {
         payer = payer,
     )]
     pub release: Loader<'info, Release>,
-	#[account(
+    #[account(
         seeds = [release.key().as_ref()],
         bump,
     )]
     pub release_signer: UncheckedAccount<'info>,
     pub release_mint: Account<'info, Mint>,
-    #[account(
-        mut,
-        address = nina_publishing_account::ID
-    )]
+    #[account(mut)]
     pub payer: Signer<'info>,
+    #[account(mut)]
     pub authority: Signer<'info>,
     #[account(
         constraint = authority_token_account.owner == authority.key(),
@@ -35,6 +33,18 @@ pub struct ReleaseInitializeProtected<'info> {
         constraint = authority_release_token_account.mint == release_mint.key(),
     )]
     pub authority_release_token_account: Box<Account<'info, TokenAccount>>,
+    #[account(
+        mut,
+        constraint = authority_publishing_credit_token_account.owner == authority.key(),
+        constraint = authority_publishing_credit_token_account.mint == publishing_credit_mint.key(),
+    )]
+    pub authority_publishing_credit_token_account: Box<Account<'info, TokenAccount>>,
+    #[account(mut)]
+    #[cfg_attr(
+        not(feature = "test"),
+        account(address = nina_publishing_credit_mint::ID),
+    )]
+    pub publishing_credit_mint: Account<'info, Mint>,
     pub payment_mint: Account<'info, Mint>,
     #[account(
         constraint = royalty_token_account.mint == payment_mint.key(),
@@ -59,10 +69,22 @@ pub struct ReleaseInitializeProtected<'info> {
 }
 
 pub fn handler(
-    ctx: Context<ReleaseInitializeProtected>,
+    ctx: Context<ReleaseInitializeWithCredit>,
     config: ReleaseConfig,
     bumps: ReleaseBumps,
 ) -> ProgramResult {
+
+    // Redeemer burn redeemable token
+    let cpi_program = ctx.accounts.token_program.to_account_info().clone();
+    let cpi_accounts = Burn {
+        mint: ctx.accounts.publishing_credit_mint.to_account_info(),
+        to: ctx.accounts.authority_publishing_credit_token_account.to_account_info(),
+        authority: ctx.accounts.authority.to_account_info().clone(),
+    };
+    
+    let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
+    token::burn(cpi_ctx, 1)?;
+
     Release::release_init_handler(
         &ctx.accounts.release,
         ctx.accounts.release_signer.to_account_info().clone(),

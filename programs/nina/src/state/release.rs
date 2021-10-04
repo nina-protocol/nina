@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{self, Transfer, MintTo, SetAuthority, Token};
+use anchor_spl::token::{self, Transfer, MintTo, SetAuthority};
 
 use crate::errors::*;
 
@@ -78,7 +78,6 @@ impl Release {
         authority_release_token_account: AccountInfo<'info>,
         royalty_token_account: AccountInfo<'info>,
         vault_token_account: AccountInfo<'info>,
-        vault: AccountInfo<'info>,
         token_program: AccountInfo<'info>,
         config: ReleaseConfig,
         bumps: ReleaseBumps,

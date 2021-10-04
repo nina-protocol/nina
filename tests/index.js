@@ -29,6 +29,7 @@ let vault;
 // Mints
 let usdcMint;
 let wrappedSolMint = new anchor.web3.PublicKey('So11111111111111111111111111111111111111112');
+let npcMint;
 let releaseMint;
 let releaseMint2;
 let releaseMint3;
@@ -56,6 +57,8 @@ let wrappedSolTokenAccount;
 let user1WrappedSolTokenAccount;
 let purchaserReleaseTokenAccount2;
 let wrongReleaseTokenAccount;
+let publishingCreditTokenAccount;
+let publishingCreditTokenAccount2;
 
 // Misc
 let releasePrice = 10000000;
@@ -67,7 +70,8 @@ describe('Init', async () => {
     user1 = await newAccount(provider);
     user2 = await newAccount(provider);
     usdcMint = await createMint(provider, provider.wallet.publicKey, 6);
-    
+    npcMint = await createMint(provider, provider.wallet.publicKey, 0);
+
     const [_usdcTokenAccount, usdcTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
       provider,
       provider.wallet.publicKey,
@@ -85,6 +89,15 @@ describe('Init', async () => {
       wrappedSolMint,
     );
     wrappedSolTokenAccount = _wrappedSolTokenAccount;
+
+    let [_publishingCreditTokenAccount, publishingCreditTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+      provider,
+      provider.wallet.publicKey,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      npcMint,
+    );
+    publishingCreditTokenAccount = _publishingCreditTokenAccount;
 
     const [_user1UsdcTokenAccount, user1UsdcTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
       provider,
@@ -105,7 +118,13 @@ describe('Init', async () => {
     user1WrappedSolTokenAccount = _user1WrappedSolTokenAccount;
 
     const tx = new anchor.web3.Transaction();
-    tx.add(usdcTokenAccountIx, user1UsdcTokenAccountIx, wrappedSolTokenAccountIx,user1WrappedSolTokenAccountIx);
+    tx.add(
+      usdcTokenAccountIx,
+      user1UsdcTokenAccountIx,
+      wrappedSolTokenAccountIx,
+      user1WrappedSolTokenAccountIx,
+      publishingCreditTokenAccountIx
+    );
     await provider.send(tx, []);
 
     await mintToAccount(
@@ -123,7 +142,6 @@ describe('Init', async () => {
       new anchor.BN(100000000),
       provider.wallet.publicKey,
     );
-
   });
 
   it('Creates Vault and adds authority', async () => {
@@ -373,6 +391,255 @@ describe('Release', async () => {
     );
 
     assert.ok(vaultTokenAccountAfter.amount.toNumber() === 13)
+  });
+
+  it('Fails to Initialize Release For Sale in USDC with Publishing Credit if no publshing credits', async () => {
+
+    const paymentMint = usdcMint;
+    releaseMint = anchor.web3.Keypair.generate();
+    const releaseMintIx = await createMintInstructions(
+      provider,
+      provider.wallet.publicKey,
+      releaseMint.publicKey,
+      0,
+    );
+
+    const [_release, releaseBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-release")),
+        releaseMint.publicKey.toBuffer(),
+      ],
+      nina.programId,
+    );
+    release = _release;
+
+    const [_releaseSigner, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [release.toBuffer()],
+      nina.programId,
+    );
+    releaseSigner = _releaseSigner;
+
+    let [_authorityReleaseTokenAccount, authorityReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+      provider,
+      provider.wallet.publicKey,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      releaseMint.publicKey,
+      false,
+      true,
+    );
+    authorityReleaseTokenAccount = _authorityReleaseTokenAccount;
+
+    let [_royaltyTokenAccount, royaltyTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+      provider,
+      releaseSigner,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      paymentMint,
+    );
+    royaltyTokenAccount = _royaltyTokenAccount;
+
+    let [vaultTokenAccount, vaultTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+      provider,
+      vaultSigner,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      releaseMint.publicKey,
+      false,
+      true,
+    );
+
+    const config = {
+      amountTotalSupply: new anchor.BN(1000),
+      amountToArtistTokenAccount: new anchor.BN(20),
+      amountToVaultTokenAccount: new anchor.BN(13),
+      resalePercentage: new anchor.BN(200000),
+      price: new anchor.BN(releasePrice),
+      releaseDatetime: new anchor.BN((Date.now() / 1000) - 5),
+    };
+
+    const bumps = {
+      release: releaseBump,
+      signer: releaseSignerBump,
+    }
+
+    await assert.rejects(
+      async () => {
+        await nina.rpc.releaseInitWithCredit(
+          config,
+          bumps, {
+            accounts: {
+              release,
+              releaseSigner,
+              releaseMint: releaseMint.publicKey,
+              payer: provider.wallet.publicKey,
+              authority: provider.wallet.publicKey,
+              authorityTokenAccount: usdcTokenAccount,
+              authorityReleaseTokenAccount,
+              authorityPublishingCreditTokenAccount: publishingCreditTokenAccount,
+              publishingCreditMint: npcMint,
+              paymentMint,
+              vaultTokenAccount,
+              vault: vault,
+              royaltyTokenAccount,
+              systemProgram: anchor.web3.SystemProgram.programId,
+              tokenProgram: TOKEN_PROGRAM_ID,
+              rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+            },
+            signers: [releaseMint],
+            instructions: [
+              ...releaseMintIx,
+              authorityReleaseTokenAccountIx,
+              royaltyTokenAccountIx,
+              vaultTokenAccountIx,
+            ],
+          }
+        );
+      },
+      (err) => {
+        assert.ok(err.toString().includes('0x1'))
+        return true;
+      }
+    );
+  });
+
+  it('Initialize Release For Sale in USDC with Publishing Credit', async () => {
+
+    await mintToAccount(
+      provider,
+      npcMint,
+      publishingCreditTokenAccount,
+      new anchor.BN(5),
+      provider.wallet.publicKey,
+    );
+
+    const paymentMint = usdcMint;
+    releaseMint = anchor.web3.Keypair.generate();
+    const releaseMintIx = await createMintInstructions(
+      provider,
+      provider.wallet.publicKey,
+      releaseMint.publicKey,
+      0,
+    );
+
+    const [_release, releaseBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-release")),
+        releaseMint.publicKey.toBuffer(),
+      ],
+      nina.programId,
+    );
+    release = _release;
+
+    const [_releaseSigner, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [release.toBuffer()],
+      nina.programId,
+    );
+    releaseSigner = _releaseSigner;
+
+    let [_authorityReleaseTokenAccount, authorityReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+      provider,
+      provider.wallet.publicKey,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      releaseMint.publicKey,
+      false,
+      true,
+    );
+    authorityReleaseTokenAccount = _authorityReleaseTokenAccount;
+
+    let [_royaltyTokenAccount, royaltyTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+      provider,
+      releaseSigner,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      paymentMint,
+    );
+    royaltyTokenAccount = _royaltyTokenAccount;
+
+    let [vaultTokenAccount, vaultTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+      provider,
+      vaultSigner,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      releaseMint.publicKey,
+      false,
+      true,
+    );
+
+    const authorityPublishingCreditTokenAccountBefore = await getTokenAccount(
+      provider,
+      publishingCreditTokenAccount,
+    );
+
+    const config = {
+      amountTotalSupply: new anchor.BN(1000),
+      amountToArtistTokenAccount: new anchor.BN(20),
+      amountToVaultTokenAccount: new anchor.BN(13),
+      resalePercentage: new anchor.BN(200000),
+      price: new anchor.BN(releasePrice),
+      releaseDatetime: new anchor.BN((Date.now() / 1000) - 5),
+    };
+
+    const bumps = {
+      release: releaseBump,
+      signer: releaseSignerBump,
+    }
+
+    await nina.rpc.releaseInitWithCredit(
+      config,
+      bumps, {
+        accounts: {
+          release,
+          releaseSigner,
+          releaseMint: releaseMint.publicKey,
+          payer: provider.wallet.publicKey,
+          authority: provider.wallet.publicKey,
+          authorityTokenAccount: usdcTokenAccount,
+          authorityReleaseTokenAccount,
+          authorityPublishingCreditTokenAccount: publishingCreditTokenAccount,
+          publishingCreditMint: npcMint,
+          paymentMint,
+          vaultTokenAccount,
+          vault: vault,
+          royaltyTokenAccount,
+          systemProgram: anchor.web3.SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        },
+        signers: [releaseMint],
+        instructions: [
+          ...releaseMintIx,
+          authorityReleaseTokenAccountIx,
+          royaltyTokenAccountIx,
+          vaultTokenAccountIx,
+        ],
+      }
+    );
+
+    const releaseAfter = await nina.account.release.fetch(release);
+    assert.ok(releaseAfter.remainingSupply.toNumber() === 967);
+    assert.equal(bnToDecimal(releaseAfter.resalePercentage.toNumber()), .2)
+    assert.equal(bnToDecimal(releaseAfter.royaltyRecipients[0].percentShare.toNumber()), 1)
+
+    const authorityReleaseTokenAccountAfter = await getTokenAccount(
+      provider,
+      authorityReleaseTokenAccount,
+    );
+    assert.ok(authorityReleaseTokenAccountAfter.amount.toNumber() === 20)
+
+    const vaultTokenAccountAfter = await getTokenAccount(
+      provider,
+      vaultTokenAccount,
+    );
+    assert.ok(vaultTokenAccountAfter.amount.toNumber() === 13)
+
+    const authorityPublishingCreditTokenAccountAfter = await getTokenAccount(
+      provider,
+      publishingCreditTokenAccount,
+    );
+    assert.equal(authorityPublishingCreditTokenAccountBefore.amount.toNumber() - 1, authorityPublishingCreditTokenAccountAfter.amount.toNumber())
+
   });
 
   it('Initialize Release For Sale in wSOL', async () => {
@@ -3335,17 +3602,12 @@ it('Fails when redeeming more redeemables than available', async () => {
   it('Updates a redeemable', async () => {
     [publisherEncryptionPublicKey, publisherKeys] = await encrypt.exportPublicKey();
     const encryptionPublicKeyBuffer = new Buffer.from(publisherEncryptionPublicKey)
-    // const description = "1x LP album"
-    // redeemedMint = anchor.web3.Keypair.generate();
 
     const [redeemable, redeemableBump] = await anchor.web3.PublicKey.findProgramAddress(
       [Buffer.from(anchor.utils.bytes.utf8.encode("nina-redeemable")), release.toBuffer(), redeemedMint.publicKey.toBuffer()],
       nina.programId
     );    
-    console.log(redeemable.description)
-    console.log(redeemable.redeemedMax)
     const redeeemableAccount = await nina.account.redeemable.fetch(redeemable)
-    console.log('redeemed: ', redeeemableAccount)
     const config = {
       encryptionPublicKey: encryptionPublicKeyBuffer,
       description: encrypt.decode(redeeemableAccount.description),

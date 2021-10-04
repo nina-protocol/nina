@@ -19,6 +19,7 @@ export const NINA_CLIENT_IDS = {
     mints: {
       usdc: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
       wsol: 'So11111111111111111111111111111111111111112',
+      publishingCredit: 'NpCbciSYfzrSk9aQ2gkr17TX2fjkm6XGRYhkZ811QDE',
     },
   },
   devnet: {
@@ -34,6 +35,7 @@ export const NINA_CLIENT_IDS = {
     mints: {
       usdc: 'J8Kvy9Kjot83DEgnnbK55BYbAK9pZuyYt4NBGkEJ9W1K',
       wsol: 'So11111111111111111111111111111111111111112',
+      publishingCredit: 'NpCbciSYfzrSk9aQ2gkr17TX2fjkm6XGRYhkZ811QDE',
     },
   },
 }
