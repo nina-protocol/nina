@@ -5,11 +5,13 @@
   "private": true,
   "workspaces": [
     "nina-common",
-    "soft-lp"
+    "soft-lp",
+    "web"
   ],
   "scripts": {
     "nina-common": "yarn workspace nina-common",
     "soft-lp": "yarn workspace soft-lp",
-    "soft-lp:build": "yarn nina-common build && yarn soft-lp build"
+    "soft-lp:build": "yarn nina-common build && yarn soft-lp build",
+    "web": "yarn workspace web"
   }
 }
