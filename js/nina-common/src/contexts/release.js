@@ -1308,7 +1308,7 @@ const releaseContextHelper = ({
 
   const releaseFetchMetadata = async (releasePubkey) => {
     const arweaveTxidResult = await fetch(
-      `${NinaClient.endpoints.api}/api/file/findArweaveTxid?tokenId=${releasePubkey}`
+      `${NinaClient.endpoints.pressingPlant}/api/file/findArweaveTxid?tokenId=${releasePubkey}`
     )
     const arweaveTxidJson = await arweaveTxidResult.json()
 
