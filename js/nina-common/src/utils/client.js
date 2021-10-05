@@ -47,8 +47,8 @@ const NINA_PRESSING_FEE = 0.0125
 
 const ENDPOINT_ARWEAVE = 'https://arweave.net'
 // const ENDPOINT_ARWEAVE = 'https://h6chwwrsde.medianet.work';
-const ENDPOINT_PRESSING_PLANT = 'http://localhost:3001'
-// const ENDPOINT_PRESSING_PLANT = 'https://54.211.234.33:443';
+// const ENDPOINT_PRESSING_PLANT = 'http://localhost:3001'
+const ENDPOINT_PRESSING_PLANT = 'https://54.211.234.33:443';
 const ENDPOINT_API = 'http://localhost:3001'
 // const ENDPOINT_API = 'https://54.211.234.33:443';
 
