@@ -170,7 +170,7 @@ const releaseContextHelper = ({
     amount,
     pressingFee,
     artistTokens = 0,
-    royaltyAmount,
+    resalePercentage,
     isUsdc = true,
   }) => {
     setPressingState({
@@ -279,7 +279,7 @@ const releaseContextHelper = ({
         name: ``,
         symbol: ``,
         uri: ``,
-        sellerFeeBasisPoints: royaltyAmount / 100,
+        sellerFeeBasisPoints: resalePercentage * 100,
       }
 
       const metadataIx = await createMetadataIx(
@@ -310,7 +310,7 @@ const releaseContextHelper = ({
         amountTotalSupply: new anchor.BN(amount),
         amountToArtistTokenAccount: new anchor.BN(artistTokens),
         amountToVaultTokenAccount: new anchor.BN(pressingFee),
-        resalePercentage: new anchor.BN(royaltyAmount * 10000),
+        resalePercentage: new anchor.BN(resalePercentage * 10000),
         price: new anchor.BN(NinaClient.uiToNative(retailPrice, paymentMint)),
         releaseDatetime: new anchor.BN(Date.now() / 1000),
       }

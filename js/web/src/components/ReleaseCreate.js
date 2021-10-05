@@ -96,7 +96,7 @@ const ReleaseCreate = () => {
         amount: tokenForm.amount,
         pressingFee,
         artistTokens: tokenForm.artistTokens,
-        royaltyAmount: tokenForm.resalePercentage,
+        resalePercentage: tokenForm.resalePercentage,
         catalogNumber: tokenForm.catalogNumber,
         artist: mediaForm.artist,
         title: mediaForm.title,
@@ -152,47 +152,46 @@ const ReleaseCreate = () => {
       {wallet?.connected ? (
         <>
           <div style={theme.helpers.grid} className={classes.createFlowGrid}>
-            {true && (
-              <>
-                <div className={classes.createFormContainer}>
-                  <MediaUploadForm
-                    onChange={handleMediaFormChange}
-                    catalogNumber={formValues.tokenForm.catalogNumber}
-                    track={track}
-                    artwork={artwork}
-                    releasePubkey={releasePubkey}
-                  />
-                  <ReleaseCreateForm
-                    onChange={handleTokenFormChange}
-                    values={formValues.tokenForm}
-                  />
-                  <MediaDropzones
-                    setTrack={setTrack}
-                    setArtwork={setArtwork}
-                    values={formValues}
-                    releasePubkey={releasePubkey}
-                    track={track}
-                  />
-                  {pressingFee > 0 && (
-                    <Typography variant="body2">
-                      <strong>Pressing Fee:</strong> {pressingFee} (
-                      {formValues.tokenForm.catalogNumber})
-                    </Typography>
-                  )}
-                </div>
-                <div className={classes.createReleaseContainer}>
-                  <ReleaseCard
-                    artwork={artwork}
-                    metadata={{
-                      ...formValues.mediaForm,
-                      ...formValues.tokenForm,
-                    }}
-                    preview={true}
-                    formValues={formValues}
-                  />
-                </div>
-              </>
-            )}
+            <>
+              <div className={classes.createFormContainer}>
+                <MediaUploadForm
+                  onChange={handleMediaFormChange}
+                  catalogNumber={formValues.tokenForm.catalogNumber}
+                  track={track}
+                  artwork={artwork}
+                  releasePubkey={releasePubkey}
+                  resalePercentage={formValues.tokenForm.resalePercentage}
+                />
+                <ReleaseCreateForm
+                  onChange={handleTokenFormChange}
+                  values={formValues.tokenForm}
+                />
+                <MediaDropzones
+                  setTrack={setTrack}
+                  setArtwork={setArtwork}
+                  values={formValues}
+                  releasePubkey={releasePubkey}
+                  track={track}
+                />
+                {pressingFee > 0 && (
+                  <Typography variant="body2">
+                    <strong>Pressing Fee:</strong> {pressingFee} (
+                    {formValues.tokenForm.catalogNumber})
+                  </Typography>
+                )}
+              </div>
+              <div className={classes.createReleaseContainer}>
+                <ReleaseCard
+                  artwork={artwork}
+                  metadata={{
+                    ...formValues.mediaForm,
+                    ...formValues.tokenForm,
+                  }}
+                  preview={true}
+                  formValues={formValues}
+                />
+              </div>
+            </>
             {!release && (
               <div className={classes.createCta}>
                 <Button

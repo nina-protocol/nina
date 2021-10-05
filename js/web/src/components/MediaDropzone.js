@@ -26,7 +26,7 @@ function MediaDropzone({
       body.append('description', metadata.description)
       body.append('duration', metadata.duration)
       body.append('catalogNumber', metadata.catalogNumber)
-      body.append('sellerFeeBasisPoints', metadata.royaltyAmount)
+      body.append('sellerFeeBasisPoints', metadata.resalePercentage)
     }
     return {
       url: `${NinaClient.endpoints.pressingPlant}/api/file`,

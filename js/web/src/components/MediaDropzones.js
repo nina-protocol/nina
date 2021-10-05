@@ -18,6 +18,7 @@ function MediaDropzones({
       description: values.mediaForm?.description,
       catalogNumber: values.tokenForm?.catalogNumber,
       duration: track ? track.meta?.duration : 0,
+      resalePercentage: values.tokenForm.resalePercentage * 100
     })
   }, [values, track])
 
