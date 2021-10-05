@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useContext, useMemo, useEffect } from 'react'
 import ninaCommon from 'nina-common'
 import { withFormik } from 'formik'
 import { NavLink } from 'react-router-dom'
@@ -10,17 +10,28 @@ import {
 } from '@solana/wallet-adapter-material-ui'
 import ninaLogo from '../assets/nina-logo-black.png'
 
-const { NinaContext } = ninaCommon.contexts
+const { NinaContext, NameContext } = ninaCommon.contexts
 
 const NavBar = () => {
   const classes = useStyles()
   const { usdcBalance } = useContext(NinaContext)
+  const {
+    lookupUserTwitterHandle,
+    userTwitterHandle,
+  } = useContext(NameContext)
   const wallet = useWallet()
 
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),
     [wallet?.publicKey]
   )
+
+  useEffect(() => {
+    if (wallet?.connected) {
+      lookupUserTwitterHandle()
+    }
+  }, [wallet])
+
 
   const walletDisplay = useMemo(() => {
     if (!wallet || !base58) return null
@@ -69,6 +80,9 @@ const NavBar = () => {
                 : 'Connect Wallet'}
             </WalletMultiButton>
           </WalletDialogProvider>
+          {userTwitterHandle && 
+            <a href={`https://twitter.com/${userTwitterHandle}`} target="_blank" rel="noreferrer">(@{userTwitterHandle})</a>
+          }
         </div>
       </div>
     </nav>
