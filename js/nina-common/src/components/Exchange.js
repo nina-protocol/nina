@@ -240,14 +240,13 @@ const Exchange = (props) => {
 const useStyles = makeStyles((theme) => ({
   exchangeWrapper: {
     margin: 'auto',
-    height: '570px',
     overflow: 'hidden',
-    width: '750px',
     display: 'grid',
     gridTemplateColumns: '1fr',
     gridTemplateRows: '154px 304px 75px',
     alignItems: 'center',
     marginTop: `${theme.spacing(6)}px`,
+    overflowX: 'scroll',
     [theme.breakpoints.down('sm')]: {
       width: '98%',
       gridTemplateColumns: '50% 50%',
