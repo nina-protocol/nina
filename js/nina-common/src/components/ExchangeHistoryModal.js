@@ -35,7 +35,7 @@ export default function ExchangeHistoryModal(props) {
         <Fade in={open}>
           <div className={classes.paper}>
             <Typography className={classes.header}>
-              Secondary <span>Market History</span>
+              SECONDARY <span>MARKET HISTORY</span>
             </Typography>
             <table className={classes.historyTable}>
               <thead>
@@ -61,7 +61,7 @@ export default function ExchangeHistoryModal(props) {
                         <td>
                           <a
                             className="link"
-                            href={`https://explorer.solana.com/address/${entry.seller.toBase58()}?cluster=devnet`}
+                            href={`https://solscan.io/account/${entry.seller.toBase58()}`}
                             target="_blank"
                             rel="noreferrer"
                           >
@@ -72,7 +72,7 @@ export default function ExchangeHistoryModal(props) {
                         <td>
                           <a
                             className="link"
-                            href={`https://explorer.solana.com/address/${entry.buyer.toBase58()}?cluster=devnet`}
+                            href={`https://solscan.io/account/${entry.buyer.toBase58()}`}
                             target="_blank"
                             rel="noreferrer"
                           >

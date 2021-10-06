@@ -111,7 +111,7 @@ const Exchange = (props) => {
     )
     if (exchangeCompletedByInput) {
       if (isBuy) {
-        showPendingTransaction()
+        showPendingTransaction('Accepting an offer...')
         result = await exchangeAccept(exchangeCompletedByInput, releasePubkey)
       } else {
         setExchangeAwaitingConfirm(exchangeCompletedByInput)
@@ -119,7 +119,7 @@ const Exchange = (props) => {
     } else if (!isBuy) {
       setExchangeAwaitingConfirm(data)
     } else {
-      showPendingTransaction()
+      showPendingTransaction('Making an offer...')
       result = await exchangeInit(data)
     }
 
@@ -129,6 +129,7 @@ const Exchange = (props) => {
   }
 
   const showPendingTransaction = (msg) => {
+    console.log('msg: ', msg)
     enqueueSnackbar(msg, {
       variant: 'info',
     })
