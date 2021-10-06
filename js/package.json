@@ -13,6 +13,6 @@
     "soft-lp": "yarn workspace soft-lp",
     "soft-lp:build": "yarn nina-common build && yarn soft-lp build",
     "web": "yarn workspace web",
-    "web:build": "yarn web nina-common build && yarn web build"
+    "web:build": "yarn nina-common build && yarn web build"
   }
 }
