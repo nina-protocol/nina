@@ -135,6 +135,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     marginRight: '24px',
+    fontSize: '10px'
   },
   walletDialogProvider: {
     '& .MuiButton-root': {

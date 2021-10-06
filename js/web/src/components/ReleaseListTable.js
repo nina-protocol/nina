@@ -26,7 +26,6 @@ const EnhancedTableHead = (props) => {
       renderCell: (params) => {
         return (
           <img
-            className={'releaseList__image'}
             src={`${ARWEAVE_GATEWAY_ENDPOINT}/${params.value.txId}`}
             alt="cover"
           />
@@ -138,7 +137,7 @@ const ReleaseListTable = (props) => {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <TableContainer className="releases__table-container">
+        <TableContainer>
           <Table
             className={classes.table}
             aria-labelledby="tableTitle"
@@ -161,7 +160,6 @@ const ReleaseListTable = (props) => {
                         ? null
                         : handleClick(event, row.id)
                     }
-                    className="releaseList__row"
                     tabIndex={-1}
                     key={row.id}
                   >
@@ -215,9 +213,6 @@ const useStyles = makeStyles((theme) => ({
   },
   table: {
     minWidth: 750,
-  },
-  th: {
-    border: '2px  solid red;',
   },
   releaseImage: {
     width: '80px'
