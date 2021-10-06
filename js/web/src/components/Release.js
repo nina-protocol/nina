@@ -62,7 +62,6 @@ const useStyles = makeStyles(() => ({
     width: '80vw',
     margin: 'auto',
     height: '75vh',
-    paddingTop: '2rem',
     gridTemplateColumns: 'repeat(2, 1fr)',
   },
   releaseControls: {

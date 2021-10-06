@@ -38,7 +38,7 @@ const SlpTabs = (props) => {
       wallet?.publicKey?.toBase58() ===
         releaseState.tokenData[releasePubkey]?.authority.toBase58()
     )
-  }, [wallet?.connected, releasePubkey])
+  }, [wallet?.connected])
 
   useEffect(() => {
     setRedeemable(redeemableState[releasePubkey])
@@ -48,7 +48,7 @@ const SlpTabs = (props) => {
     if (wallet?.connected) {
       getRedemptionRecordsForRelease(releasePubkey)
     }
-  }, [redeemableState[releasePubkey]])
+  }, [redeemableState[releasePubkey], wallet?.connected])
 
   useEffect(() => {
     if (
@@ -57,7 +57,10 @@ const SlpTabs = (props) => {
     ) {
       setRedemptionRecords(releaseState.redemptionRecords[releasePubkey])
     }
-  }, [releaseState.redemptionRecords[releasePubkey]])
+  }, [
+    releaseState.redemptionRecords[releasePubkey],
+    redeemableState[releasePubkey],
+  ])
 
   useEffect(() => {
     if (wallet.connected && redemptionRecords) {

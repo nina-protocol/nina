@@ -15,7 +15,7 @@ const { NinaClient } = ninaCommon.utils
 
 const ARWEAVE_GATEWAY_ENDPOINT = NinaClient.endpoints.arweave
 
-function EnhancedTableHead(props) {
+const EnhancedTableHead = (props) => {
   const { order, orderBy, tableType } = props
   let headCells = [
     {
@@ -26,7 +26,6 @@ function EnhancedTableHead(props) {
       renderCell: (params) => {
         return (
           <img
-            className={'releaseList__image'}
             src={`${ARWEAVE_GATEWAY_ENDPOINT}/${params.value.txId}`}
             alt="cover"
           />
@@ -67,34 +66,7 @@ function EnhancedTableHead(props) {
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-  },
-  paper: {
-    width: '100%',
-    marginBottom: theme.spacing(2),
-  },
-  table: {
-    minWidth: 750,
-  },
-  th: {
-    border: '2px  solid red;',
-  },
-  visuallyHidden: {
-    border: 0,
-    clip: 'rect(0 0 0 0)',
-    height: 1,
-    margin: -1,
-    overflow: 'hidden',
-    padding: 0,
-    position: 'absolute',
-    top: 20,
-    width: 1,
-  },
-}))
-
-export default function ReleaseListTable(props) {
+const ReleaseListTable = (props) => {
   const { releases, tableType } = props
   const history = useHistory()
   const classes = useStyles()
@@ -165,7 +137,7 @@ export default function ReleaseListTable(props) {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <TableContainer className="releases__table-container">
+        <TableContainer>
           <Table
             className={classes.table}
             aria-labelledby="tableTitle"
@@ -188,7 +160,6 @@ export default function ReleaseListTable(props) {
                         ? null
                         : handleClick(event, row.id)
                     }
-                    className="releaseList__row"
                     tabIndex={-1}
                     key={row.id}
                   >
@@ -205,7 +176,7 @@ export default function ReleaseListTable(props) {
                             >
                               <img
                                 src={row.art.txId}
-                                className="releaseList__image"
+                                className={classes.releaseImage}
                                 alt={'cover'}
                                 key={cellName}
                               />
@@ -231,3 +202,21 @@ export default function ReleaseListTable(props) {
     </div>
   )
 }
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: '100%',
+  },
+  paper: {
+    width: '100%',
+    marginBottom: theme.spacing(2),
+  },
+  table: {
+    minWidth: 750,
+  },
+  releaseImage: {
+    width: '80px'
+  },
+}))
+
+export default ReleaseListTable;
