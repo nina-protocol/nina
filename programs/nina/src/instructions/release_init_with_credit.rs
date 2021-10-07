@@ -101,5 +101,10 @@ pub fn handler(
         bumps,
     )?;
 
+    emit!(ReleaseCreated {
+        public_key: *ctx.accounts.release.to_account_info().key,
+        mint: *ctx.accounts.release_mint.to_account_info().key
+    });
+
     Ok(())
 }
