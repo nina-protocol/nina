@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { NinaContext } from '../contexts'
 import NinaClient from '../utils/client'
+import {createLogicalAnd} from 'typescript'
 
 const ExchangeList = (props) => {
   let { list, onExchangeButtonAction, release, metadata } = props
@@ -32,7 +33,7 @@ const ExchangeList = (props) => {
               onExchangeButtonAction={onExchangeButtonAction}
               release={release}
               solPrice={solPrice}
-              symbol={metadata.symbol}
+              symbol={metadata?.symbol}
             />
           ))}
         </ul>

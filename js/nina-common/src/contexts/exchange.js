@@ -738,6 +738,8 @@ const exchangeContextHelper = ({
       updatedExchangeState[exchange.publicKey.toBase58()] = exchangeItem
     })
 
+    console.log('updatedExchangeState :>> ', updatedExchangeState);
+
     setExchangeState({
       ...updatedExchangeState,
     })
