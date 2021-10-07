@@ -22,6 +22,15 @@ pub mod nina {
         instructions::release_init_protected::handler(ctx, config, bumps)
     }
 
+    pub fn release_init_with_credit(
+        ctx: Context<ReleaseInitializeWithCredit>,
+        config: ReleaseConfig,
+        bumps: ReleaseBumps,
+    ) -> ProgramResult {
+        instructions::release_init_with_credit::handler(ctx, config, bumps)
+    }
+
+
     pub fn release_purchase(
         ctx: Context<ReleasePurchase>,
         amount: u64,

@@ -92,6 +92,105 @@ const idl = {
       ]
     },
     {
+      "name": "releaseInitWithCredit",
+      "accounts": [
+        {
+          "name": "release",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "releaseSigner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "releaseMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "authorityTokenAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authorityReleaseTokenAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authorityPublishingCreditTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "publishingCreditMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "paymentMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "royaltyTokenAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vaultTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "config",
+          "type": {
+            "defined": "ReleaseConfig"
+          }
+        },
+        {
+          "name": "bumps",
+          "type": {
+            "defined": "ReleaseBumps"
+          }
+        }
+      ]
+    },
+    {
       "name": "releasePurchase",
       "accounts": [
         {
@@ -1527,10 +1626,7 @@ const idl = {
       "name": "VaultWithdrawAmountMustBeGreaterThanZero",
       "msg": "Withdraw amount must be greater than 0"
     }
-  ],
-  "metadata": {
-    "address": "ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4"
-  }
+  ]
 }
 
 export default idl

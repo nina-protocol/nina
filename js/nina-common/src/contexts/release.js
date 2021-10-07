@@ -170,8 +170,8 @@ const releaseContextHelper = ({
     amount,
     pressingFee,
     artistTokens = 0,
-    royaltyAmount,
-    isUsdc = false,
+    resalePercentage,
+    isUsdc = true,
   }) => {
     setPressingState({
       ...pressingState,
@@ -189,7 +189,10 @@ const releaseContextHelper = ({
       const paymentMint = new anchor.web3.PublicKey(
         isUsdc ? NinaClient.ids().mints.usdc : NinaClient.ids().mints.wsol
       )
-
+      const publishingCreditMint = new anchor.web3.PublicKey(
+        NinaClient.ids().mints.publishingCredit
+      )
+      console.log('publishingCreditMint: ', publishingCreditMint.toBase58())
       const [release, releaseBump] =
         await anchor.web3.PublicKey.findProgramAddress(
           [
@@ -260,11 +263,23 @@ const releaseContextHelper = ({
           true
         )
 
+      const [
+        authorityPublishingCreditTokenAccount,
+        authorityPublishingCreditTokenAccountIx,
+      ] = await findOrCreateAssociatedTokenAccount(
+        provider.connection,
+        provider.wallet.publicKey,
+        provider.wallet.publicKey,
+        anchor.web3.SystemProgram.programId,
+        anchor.web3.SYSVAR_RENT_PUBKEY,
+        publishingCreditMint
+      )
+
       const data = {
         name: ``,
         symbol: ``,
         uri: ``,
-        sellerFeeBasisPoints: royaltyAmount / 100,
+        sellerFeeBasisPoints: resalePercentage * 100,
       }
 
       const metadataIx = await createMetadataIx(
@@ -287,11 +302,15 @@ const releaseContextHelper = ({
         instructions.push(authorityTokenAccountIx)
       }
 
+      if (authorityPublishingCreditTokenAccountIx) {
+        instructions.push(authorityPublishingCreditTokenAccountIx)
+      }
+
       const config = {
         amountTotalSupply: new anchor.BN(amount),
         amountToArtistTokenAccount: new anchor.BN(artistTokens),
         amountToVaultTokenAccount: new anchor.BN(pressingFee),
-        resalePercentage: new anchor.BN(royaltyAmount * 10000),
+        resalePercentage: new anchor.BN(resalePercentage * 10000),
         price: new anchor.BN(NinaClient.uiToNative(retailPrice, paymentMint)),
         releaseDatetime: new anchor.BN(Date.now() / 1000),
       }
@@ -301,7 +320,7 @@ const releaseContextHelper = ({
         signer: releaseSignerBump,
       }
 
-      const txid = await nina.program.rpc.releaseInitProtected(config, bumps, {
+      const txid = await nina.program.rpc.releaseInitWithCredit(config, bumps, {
         accounts: {
           release,
           releaseSigner,
@@ -310,6 +329,8 @@ const releaseContextHelper = ({
           authority: provider.wallet.publicKey,
           authorityTokenAccount: authorityTokenAccount,
           authorityReleaseTokenAccount,
+          authorityPublishingCreditTokenAccount,
+          publishingCreditMint,
           paymentMint,
           vaultTokenAccount,
           vault: new anchor.web3.PublicKey(NinaClient.ids().accounts.vault),
@@ -1296,7 +1317,7 @@ const releaseContextHelper = ({
 
   const releaseFetchMetadata = async (releasePubkey) => {
     const arweaveTxidResult = await fetch(
-      `${NinaClient.endpoints.api}/api/file/findArweaveTxid?tokenId=${releasePubkey}`
+      `${NinaClient.endpoints.pressingPlant}/api/file/findArweaveTxid?tokenId=${releasePubkey}`
     )
     const arweaveTxidJson = await arweaveTxidResult.json()
 

@@ -3,8 +3,10 @@ import { makeStyles } from '@material-ui/core/styles'
 import Box from '@material-ui/core/Box'
 import { Typography } from '@material-ui/core'
 import { useWallet } from '@solana/wallet-adapter-react'
-import RedeemableModal from './RedeemableModal'
+import ninaCommon from 'nina-common'
 import SlpUserRedemptions from './SlpUserRedemptions'
+
+const { RedeemableModal } = ninaCommon.components
 
 const SlpRedeem = (props) => {
   const { releasePubkey, amountHeld, userRedemptionRecords, redeemables } =
