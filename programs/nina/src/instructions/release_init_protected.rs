@@ -165,5 +165,10 @@ pub fn handler(
     let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer);
     token::mint_to(cpi_ctx, config.amount_to_vault_token_account)?;
 
+    emit!(ReleaseCreated {
+        public_key: *ctx.accounts.release.to_account_info().key,
+        mint: *ctx.accounts.release_mint.to_account_info().key
+    });
+
     Ok(())
 }

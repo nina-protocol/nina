@@ -188,3 +188,19 @@ impl From<AuthorityType> for spl_token::instruction::AuthorityType {
         }
     }
 }
+
+#[event]
+pub struct ReleaseCreated {
+    #[index]
+    pub public_key: Pubkey,
+    pub mint: Pubkey,
+}
+
+#[event]
+pub struct ReleaseSold {
+    pub public_key: Pubkey,
+    #[index]
+    pub date: i64,
+}
+
+
