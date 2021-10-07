@@ -1520,6 +1520,38 @@ const idl = {
       }
     }
   ],
+  "events": [
+    {
+      "name": "ReleaseCreated",
+      "fields": [
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": true
+        },
+        {
+          "name": "mint",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "ReleaseSold",
+      "fields": [
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "date",
+          "type": "i64",
+          "index": true
+        }
+      ]
+    }
+  ],
   "errors": [
     {
       "code": 300,
