@@ -1525,12 +1525,37 @@ const idl = {
       "name": "ReleaseCreated",
       "fields": [
         {
-          "name": "publicKey",
+          "name": "authority",
           "type": "publicKey",
-          "index": true
+          "index": false
+        },
+        {
+          "name": "date",
+          "type": "i64",
+          "index": false
         },
         {
           "name": "mint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": true
+        }
+      ]
+    },
+    {
+      "name": "RoyaltyRecipientAdded",
+      "fields": [
+        {
+          "name": "authority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "publicKey",
           "type": "publicKey",
           "index": false
         }

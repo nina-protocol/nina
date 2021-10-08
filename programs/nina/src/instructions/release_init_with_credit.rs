@@ -103,7 +103,9 @@ pub fn handler(
 
     emit!(ReleaseCreated {
         public_key: *ctx.accounts.release.to_account_info().key,
-        mint: *ctx.accounts.release_mint.to_account_info().key
+        mint: *ctx.accounts.release_mint.to_account_info().key,
+        authority: *ctx.accounts.authority.to_account_info().key,
+        date: config.release_datetime,
     });
 
     Ok(())

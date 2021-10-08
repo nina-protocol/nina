@@ -309,9 +309,17 @@ impl From<AuthorityType> for spl_token::instruction::AuthorityType {
 
 #[event]
 pub struct ReleaseCreated {
+    pub authority: Pubkey,
+    pub date: i64,
+    pub mint: Pubkey,
     #[index]
     pub public_key: Pubkey,
-    pub mint: Pubkey,
+}
+
+#[event]
+pub struct RoyaltyRecipientAdded {
+    pub authority: Pubkey,
+    pub public_key: Pubkey,
 }
 
 #[event]
