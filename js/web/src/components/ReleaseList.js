@@ -10,15 +10,24 @@ import UserView from './UserView'
 const { NameContext, ReleaseContext } = ninaCommon.contexts
 
 const ReleaseList = () => {
-  const { searchResults, resetSearchResults } = useContext(ReleaseContext)
+  const { searchResults, resetSearchResults, getReleasesRecent, releasesRecentState, filterReleasesRecent } = useContext(ReleaseContext)
   const classes = useStyles()
   const wallet = useWallet()
   const { getReleasesForTwitterHandle } = useContext(NameContext)
   const [search, setSearch] = useState(searchResults.handle)
+  const [releasesRecent, setReleasesRecent] = useState({})
+
+  useEffect(() => {
+    getReleasesRecent()
+  }, [])
 
   useEffect(() => {
     setSearch(searchResults.handle)
   }, [searchResults])
+
+  useEffect(() => {
+    setReleasesRecent(filterReleasesRecent())
+  }, [releasesRecentState])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -31,7 +40,7 @@ const ReleaseList = () => {
       resetSearchResults()
     }
   }
-
+  console.log('rr: ', releasesRecent)
   return (
     <Box className={classes.root}>
       <div>
@@ -66,14 +75,10 @@ const ReleaseList = () => {
       {!wallet?.connected && !searchResults.searched && (
         <>
           <h1>Welcome to Nina</h1>
-          <h2>
-            Connect your wallet to listen to your collection or publish a new
-            release
-          </h2>
-          <h2>
-            Or search for your favorite artists Twitter handle to see if they on
-            Nina
-          </h2>
+            <ReleaseListTable
+              releases={releasesRecent.published || []}
+              key="releases"
+            />
         </>
       )}
       {wallet?.connected && !searchResults.searched && <UserView />}
@@ -83,10 +88,12 @@ const ReleaseList = () => {
 
 const useStyles = makeStyles(() => ({
   root: {
+    height: '80%',
     width: '80%',
     display: 'flex',
     flexDirection: 'column',
     position: 'absolute',
+    'overflow-y': 'scroll',
     top: 40,
   },
 }))

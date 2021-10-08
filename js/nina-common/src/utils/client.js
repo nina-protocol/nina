@@ -45,12 +45,9 @@ const SOL_DECIMAL_AMOUNT = 9
 
 const NINA_PRESSING_FEE = 0.0125
 
-const ENDPOINT_ARWEAVE = 'https://arweave.net'
-// const ENDPOINT_ARWEAVE = 'https://h6chwwrsde.medianet.work';
-// const ENDPOINT_PRESSING_PLANT = 'http://localhost:3001'
+const ENDPOINT_ARWEAVE = 'https://arweave.net' //'https://h6chwwrsde.medianet.work'
 const ENDPOINT_PRESSING_PLANT = 'https://pressingplant.nina.market:443';
-const ENDPOINT_API = 'http://localhost:3001'
-// const ENDPOINT_API = 'https://54.211.234.33:443';
+const ENDPOINT_API = 'http://ec2-18-116-201-190.us-east-2.compute.amazonaws.com:3001'
 
 const arweave = Arweave.init()
 const CoinGeckoClient = new CoinGecko()

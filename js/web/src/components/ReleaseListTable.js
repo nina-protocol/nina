@@ -133,7 +133,7 @@ const ReleaseListTable = (props) => {
     return rowData
   })
   rows.sort((a, b) => (a.artist < b.artist ? -1 : 1))
-
+  console.log(rows, releases)
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>

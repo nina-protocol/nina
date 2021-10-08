@@ -44,6 +44,10 @@ const ReleaseContextProvider = ({ children }) => {
     releaseMintMap: {},
     redemptionRecords: {},
   })
+  const [releasesRecentState, setReleasesRecentState] = useState({
+    published: [],
+    purchase: [],
+  })
 
   useEffect(() => {
     getReleasesInCollection()
@@ -64,6 +68,7 @@ const ReleaseContextProvider = ({ children }) => {
   const resetPressingState = () => {
     setPressingState(defaultPressingState)
   }
+
   const {
     releaseCreate,
     releaseUpdateMetadata,
@@ -74,9 +79,11 @@ const ReleaseContextProvider = ({ children }) => {
     getRelease,
     getReleasesInCollection,
     getReleasesPublishedByUser,
+    getReleasesRecent,
     getReleaseRoyaltiesByUser,
     filterReleasesUserCollection,
     filterReleasesPublishedByUser,
+    filterReleasesRecent,
     filterRoyaltiesByUser,
     calculateStatsByUser,
     redeemableInitialize,
@@ -102,6 +109,8 @@ const ReleaseContextProvider = ({ children }) => {
     redeemableState,
     setRedeemableState,
     removeReleaseFromCollection,
+    releasesRecentState,
+    setReleasesRecentState
   })
 
   return (
@@ -119,6 +128,7 @@ const ReleaseContextProvider = ({ children }) => {
         addRoyaltyRecipient,
         getRelease,
         getReleasesPublishedByUser,
+        getReleasesRecent,
         getReleaseRoyaltiesByUser,
         filterReleasesUserCollection,
         filterReleasesPublishedByUser,
@@ -133,6 +143,8 @@ const ReleaseContextProvider = ({ children }) => {
         redeemableUpdateShipping,
         redeemableState,
         getRedeemablesForRelease,
+        releasesRecentState,
+        filterReleasesRecent,
       }}
     >
       {children}
@@ -158,6 +170,8 @@ const releaseContextHelper = ({
   redeemableState,
   setRedeemableState,
   removeReleaseFromCollection,
+  releasesRecentState,
+  setReleasesRecentState
 }) => {
   const provider = new anchor.Provider(
     connection,
@@ -1042,6 +1056,31 @@ const releaseContextHelper = ({
     }
   }
 
+  const getReleasesRecent = async () => {
+    const nina = await NinaClient.connect(provider)
+    const result = await fetch(`${NinaClient.endpoints.api}/releases/recent`)
+    const { published, purchase } = await result.json()
+    let releaseIdsToLookup = [...published, ...purchase]
+    releaseIdsToLookup = releaseIdsToLookup.filter(id => !Object.keys(releaseState.tokenData).includes(id))    
+    
+    const layout = nina.program.coder.accounts.accountLayouts.get('Release')
+    let releaseAccounts = await anchor.utils.rpc.getMultipleAccounts(
+      connection,
+      releaseIdsToLookup.map((id) => new anchor.web3.PublicKey(id))
+    )
+    releaseAccounts = releaseAccounts.map(release => {
+      let dataParsed = layout.decode(release.account.data.slice(8))
+      dataParsed.publicKey = release.publicKey
+      return dataParsed
+    })
+    await saveReleasesToState(releaseAccounts)
+
+    setReleasesRecentState({
+      published,
+      purchase
+    })
+  }
+
   /*
 
   STATE FILTERS
@@ -1063,6 +1102,31 @@ const releaseContextHelper = ({
       }
     })
     return releases
+  }
+
+  const filterReleasesRecent = () => {
+    const releasesPublished = []
+    releasesRecentState.published.forEach((releasePubkey) => {
+      const tokenData = releaseState.tokenData[releasePubkey]
+      const metadata = releaseState.metadata[releasePubkey]
+      if (metadata) {
+        releasesPublished.push({ tokenData, metadata, releasePubkey })
+      }
+    })
+
+    const releasesPurchased = []
+    releasesRecentState.purchase.forEach((releasePubkey) => {
+      const tokenData = releaseState.tokenData[releasePubkey]
+      const metadata = releaseState.metadata[releasePubkey]
+      if (metadata) {
+        releasesPurchased.push({ tokenData, metadata, releasePubkey })
+      }
+    })
+
+    return {
+      published: releasesPublished,
+      purchase: releasesPurchased,
+    }
   }
 
   const filterReleasesPublishedByUser = (userPubkey = undefined) => {
@@ -1399,9 +1463,11 @@ const releaseContextHelper = ({
     getRelease,
     getReleasesInCollection,
     getReleasesPublishedByUser,
+    getReleasesRecent,
     getReleaseRoyaltiesByUser,
     filterReleasesUserCollection,
     filterReleasesPublishedByUser,
+    filterReleasesRecent,
     filterRoyaltiesByUser,
     calculateStatsByUser,
     redeemableInitialize,
