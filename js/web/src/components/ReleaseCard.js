@@ -27,6 +27,8 @@ const ReleaseCard = (props) => {
   const [amountPendingSales, setAmountPendingSales] = useState(0)
   const [track, setTrack] = useState(null)
 
+  console.log('metadata :>> ', metadata);
+
   useEffect(() => {
     if (!preview) {
       getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)

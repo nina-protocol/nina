@@ -34,6 +34,57 @@ function ReleaseCreateForm({
   return (
     <div>
       <Form>
+        <Field name="artist">
+          {(props) => (
+            <>
+              <TextField
+                className={classes.formField}
+                variant="outlined"
+                label={NinaClient.formatPlaceholder(props.field.name)}
+                size="small"
+                {...props.field}
+              />
+            </>
+          )}
+        </Field>
+        {errors.artist && touched.artist ? (
+          <div className={classes.formError}>{errors.artist}</div>
+        ) : null}
+
+        <Field name="title">
+          {(props) => (
+            <>
+              <TextField
+                className={classes.formField}
+                variant="outlined"
+                label={NinaClient.formatPlaceholder(props.field.name)}
+                size="small"
+                {...props.field}
+              />
+            </>
+          )}
+        </Field>
+        {errors.title && touched.title ? (
+          <div className={classes.formError}>{errors.title}</div>
+        ) : null}
+
+        <Field name="description">
+          {(props) => (
+            <>
+              <TextField
+                className={classes.formField}
+                variant="outlined"
+                label={NinaClient.formatPlaceholder(props.field.name)}
+                size="small"
+                {...props.field}
+              />
+            </>
+          )}
+        </Field>
+        {errors.description && touched.description ? (
+          <div className={classes.formError}>{errors.description}</div>
+        ) : null}
+
         <Field name="catalogNumber">
           {({ field }) => (
             <>
@@ -186,6 +237,9 @@ export default withFormik({
   enableReinitialize: true,
   mapPropsToValues: () => {
     return {
+      artist: '',
+      title:'',
+      description:'',
       catalogNumber: '',
       amount: '',
       retailPrice: '0.00',

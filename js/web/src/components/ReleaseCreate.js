@@ -7,7 +7,7 @@ import { Typography } from '@material-ui/core'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { useWallet } from '@solana/wallet-adapter-react'
 import ReleaseCreateForm from './ReleaseCreateForm'
-import MediaUploadForm from './MediaUploadForm'
+// import MediaUploadForm from './MediaUploadForm'
 import MediaDropzones from './MediaDropzones'
 import ReleaseCard from './ReleaseCard'
 
@@ -30,8 +30,7 @@ const ReleaseCreate = () => {
   const [buttonText, setButtonText] = useState('Publish')
   const [pending, setPending] = useState(false)
   const [formValues, setFormValues] = useState({
-    tokenForm: {},
-    mediaForm: {},
+    releaseForm: {},
   })
 
   useEffect(() => {
@@ -57,8 +56,8 @@ const ReleaseCreate = () => {
   }, [releaseState.tokenData[releasePubkey]])
 
   useEffect(() => {
-    async function calculateFee(artwork, track, tokenForm) {
-      const { amount, retailPrice } = tokenForm
+    async function calculateFee(artwork, track, releaseForm) {
+      const { amount, retailPrice } = releaseForm
 
       const ninaVaultFee = NinaClient.pressingFeeCalculator(
         amount,
@@ -68,38 +67,38 @@ const ReleaseCreate = () => {
       setPressingFee(ninaVaultFee)
     }
 
-    if (artwork && track && formValues.tokenForm) {
-      calculateFee(artwork, track, formValues.tokenForm)
+    if (artwork && track && formValues.releaseForm) {
+      calculateFee(artwork, track, formValues.releaseForm)
     }
   }, [track, artwork, formValues])
 
-  function handleTokenFormChange(values) {
+  function handleFormChange(values) {
     setFormValues({
       ...formValues,
-      tokenForm: values,
+      releaseForm: values,
     })
   }
 
-  function handleMediaFormChange(values) {
-    setFormValues({
-      ...formValues,
-      mediaForm: values,
-    })
-  }
+  // function handleMediaFormChange(values) {
+  //   setFormValues({
+  //     ...formValues,
+  //     mediaForm: values,
+  //   })
+  // }
 
   const handleSubmit = async () => {
     if (track && artwork) {
       setPending(true)
-      const { mediaForm, tokenForm } = formValues
+      const { releaseForm } = formValues
       const data = {
-        retailPrice: tokenForm.retailPrice,
-        amount: tokenForm.amount,
+        // artist: releaseForm.artist,
+        // title: releaseForm.title,
+        retailPrice: releaseForm.retailPrice,
+        amount: releaseForm.amount,
         pressingFee,
-        artistTokens: tokenForm.artistTokens,
-        resalePercentage: tokenForm.resalePercentage,
-        catalogNumber: tokenForm.catalogNumber,
-        artist: mediaForm.artist,
-        title: mediaForm.title,
+        artistTokens: releaseForm.artistTokens,
+        resalePercentage: releaseForm.resalePercentage,
+        catalogNumber: releaseForm.catalogNumber,
       }
       const success = await releaseCreate(data, pressingFee)
       if (success) {
@@ -136,7 +135,7 @@ const ReleaseCreate = () => {
         <ReleaseSettings
           releasePubkey={releasePubkey}
           inCreateFlow={true}
-          tempMetadata={formValues}
+          tempMetadata={formValues.releaseForm}
           artwork={artwork}
         />
       </div>
@@ -154,17 +153,17 @@ const ReleaseCreate = () => {
           <div style={theme.helpers.grid} className={classes.createFlowGrid}>
             <>
               <div className={classes.createFormContainer}>
-                <MediaUploadForm
+                {/* <MediaUploadForm
                   onChange={handleMediaFormChange}
                   catalogNumber={formValues.tokenForm.catalogNumber}
                   track={track}
                   artwork={artwork}
                   releasePubkey={releasePubkey}
                   resalePercentage={formValues.tokenForm.resalePercentage}
-                />
+                /> */}
                 <ReleaseCreateForm
-                  onChange={handleTokenFormChange}
-                  values={formValues.tokenForm}
+                  onChange={handleFormChange}
+                  values={formValues.releaseForm}
                 />
                 <MediaDropzones
                   setTrack={setTrack}
@@ -176,7 +175,7 @@ const ReleaseCreate = () => {
                 {pressingFee > 0 && (
                   <Typography variant="body2">
                     <strong>Pressing Fee:</strong> {pressingFee} (
-                    {formValues.tokenForm.catalogNumber})
+                    {formValues.releaseForm.catalogNumber})
                   </Typography>
                 )}
               </div>
@@ -184,8 +183,7 @@ const ReleaseCreate = () => {
                 <ReleaseCard
                   artwork={artwork}
                   metadata={{
-                    ...formValues.mediaForm,
-                    ...formValues.tokenForm,
+                    ...formValues.releaseForm,
                   }}
                   preview={true}
                   formValues={formValues}
