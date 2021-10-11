@@ -7,13 +7,24 @@ import { Typography } from '@material-ui/core'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import { useWallet } from '@solana/wallet-adapter-react'
 import ReleaseCreateForm from './ReleaseCreateForm'
-// import MediaUploadForm from './MediaUploadForm'
 import MediaDropzones from './MediaDropzones'
 import ReleaseCard from './ReleaseCard'
+import * as Yup from "yup";
 
 const { ReleaseSettings } = ninaCommon.components
 const { ReleaseContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
+
+
+const ReleaseCreateSchema = Yup.object().shape({
+  artist: Yup.string().required('Artist Name is Required'),
+  title: Yup.string().required('Title is Required'),
+  description: Yup.string().required('Description is Required'),
+  catalogNumber: Yup.string().required('Catalog Number is Required'),
+  amount: Yup.number().required('Edition Amount is Required'),
+  retailPrice: Yup.number().required('Sale Price is Required'),
+  resalePercentage: Yup.number().required('Resale Percent Amount is Required'),
+});
 
 const ReleaseCreate = () => {
   const classes = useStyles()
@@ -29,6 +40,7 @@ const ReleaseCreate = () => {
   const [release, setRelease] = useState(undefined)
   const [buttonText, setButtonText] = useState('Publish')
   const [pending, setPending] = useState(false)
+  const [formIsValid, setFormIsValid] = useState(false)
   const [formValues, setFormValues] = useState({
     releaseForm: {},
   })
@@ -72,27 +84,20 @@ const ReleaseCreate = () => {
     }
   }, [track, artwork, formValues])
 
-  function handleFormChange(values) {
+  async function handleFormChange(values) {
     setFormValues({
       ...formValues,
       releaseForm: values,
     })
+    const valid = await ReleaseCreateSchema.isValid(formValues.releaseForm, {abortEarly: true})
+    setFormIsValid(valid)
   }
-
-  // function handleMediaFormChange(values) {
-  //   setFormValues({
-  //     ...formValues,
-  //     mediaForm: values,
-  //   })
-  // }
 
   const handleSubmit = async () => {
     if (track && artwork) {
       setPending(true)
       const { releaseForm } = formValues
       const data = {
-        // artist: releaseForm.artist,
-        // title: releaseForm.title,
         retailPrice: releaseForm.retailPrice,
         amount: releaseForm.amount,
         pressingFee,
@@ -153,17 +158,10 @@ const ReleaseCreate = () => {
           <div style={theme.helpers.grid} className={classes.createFlowGrid}>
             <>
               <div className={classes.createFormContainer}>
-                {/* <MediaUploadForm
-                  onChange={handleMediaFormChange}
-                  catalogNumber={formValues.tokenForm.catalogNumber}
-                  track={track}
-                  artwork={artwork}
-                  releasePubkey={releasePubkey}
-                  resalePercentage={formValues.tokenForm.resalePercentage}
-                /> */}
                 <ReleaseCreateForm
                   onChange={handleFormChange}
                   values={formValues.releaseForm}
+                  ReleaseCreateSchema={ReleaseCreateSchema}
                 />
                 <MediaDropzones
                   setTrack={setTrack}
@@ -196,7 +194,7 @@ const ReleaseCreate = () => {
                   variant="contained"
                   color="primary"
                   onClick={handleSubmit}
-                  disabled={pending || !pressingFee}
+                  disabled={pending || !pressingFee || !formIsValid}
                 >
                   {pending && <CircularProgress />}
                   {!pending && buttonText}

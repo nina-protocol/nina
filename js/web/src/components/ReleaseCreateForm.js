@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import ninaCommon from 'nina-common'
-import { withFormik, Form, Field } from 'formik'
+import { withFormik, Form, Field} from 'formik'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import { TextField } from '@material-ui/core'
@@ -36,7 +36,7 @@ function ReleaseCreateForm({
       <Form>
         <Field name="artist">
           {(props) => (
-            <>
+            <Box className={classes.fieldInputWrapper}>
               <TextField
                 className={classes.formField}
                 variant="outlined"
@@ -44,16 +44,16 @@ function ReleaseCreateForm({
                 size="small"
                 {...props.field}
               />
-            </>
+              {errors.artist && touched.artist ? (
+                <Typography className={classes.formError}>{errors.artist}</Typography>
+              ) : null}
+            </Box>
           )}
         </Field>
-        {errors.artist && touched.artist ? (
-          <div className={classes.formError}>{errors.artist}</div>
-        ) : null}
 
         <Field name="title">
           {(props) => (
-            <>
+            <Box className={classes.fieldInputWrapper}>
               <TextField
                 className={classes.formField}
                 variant="outlined"
@@ -61,16 +61,16 @@ function ReleaseCreateForm({
                 size="small"
                 {...props.field}
               />
-            </>
+              {errors.title && touched.title ? (
+                <Typography className={classes.formError}>{errors.title}</Typography>
+              ) : null}
+            </Box>
           )}
         </Field>
-        {errors.title && touched.title ? (
-          <div className={classes.formError}>{errors.title}</div>
-        ) : null}
-
+   
         <Field name="description">
           {(props) => (
-            <>
+            <Box className={classes.fieldInputWrapper}>
               <TextField
                 className={classes.formField}
                 variant="outlined"
@@ -78,16 +78,16 @@ function ReleaseCreateForm({
                 size="small"
                 {...props.field}
               />
-            </>
+              {errors.description && touched.description ? (
+                <div className={classes.formError}>{errors.description}</div>
+              ) : null}
+            </Box>
           )}
         </Field>
-        {errors.description && touched.description ? (
-          <div className={classes.formError}>{errors.description}</div>
-        ) : null}
 
         <Field name="catalogNumber">
           {({ field }) => (
-            <>
+            <Box className={classes.fieldInputWrapper}>
               <TextField
                 className={`${classes.formField}`}
                 variant="outlined"
@@ -103,20 +103,21 @@ function ReleaseCreateForm({
                 }}
                 {...field}
               />
-            </>
+              {errors.catalogNumber && touched.catalogNumber ? (
+                <div className={classes.formError}>{errors.catalogNumber}</div>
+              ) : null}
+            </Box>
           )}
         </Field>
-        {errors.catalogNumber && touched.catalogNumber ? (
-          <div className={classes.formError}>{errors.catalogNumber}</div>
-        ) : null}
+
         <Field name="amount">
-          {({ value }) => (
-            <>
+          {(props) => (
+            <Box className={classes.fieldInputWrapper}>
               <CurrencyTextField
                 className={classes.formField}
                 label={NinaClient.formatPlaceholder('Amount')}
                 variant="outlined"
-                value={value}
+                value={props.value}
                 currencySymbol=""
                 outputFormat="string"
                 size="small"
@@ -124,15 +125,16 @@ function ReleaseCreateForm({
                 decimalPlaces="0"
                 onChange={(event, value) => setFieldValue('amount', value)}
               />
-            </>
+              {errors.amount && touched.amount ? (
+                <div className={classes.formError}>{errors.amount}</div>
+              ) : null}
+            </Box>
           )}
         </Field>
-        {errors.amount && touched.amount ? (
-          <div className={classes.formError}>{errors.amount}</div>
-        ) : null}
+
         <Field name="retailPrice">
           {({ value }) => (
-            <>
+            <Box className={classes.fieldInputWrapper}>
               <CurrencyTextField
                 className={classes.formField}
                 label={NinaClient.formatPlaceholder('RetailPrice')}
@@ -145,12 +147,14 @@ function ReleaseCreateForm({
                 decimalPlaces="2"
                 onChange={(event, value) => setFieldValue('retailPrice', value)}
               />
-            </>
+              {errors.retailPrice && touched.retailPrice ? (
+                <div className={classes.formError}>{errors.retailPrice}</div>
+              ) : null}
+
+            </Box>
           )}
         </Field>
-        {errors.retailPrice && touched.retailPrice ? (
-          <div className={classes.formError}>{errors.retailPrice}</div>
-        ) : null}
+
         <Box className={`${classes.formField}`} width="100%">
           <Typography
             id="discrete-slider-custom"
@@ -169,7 +173,6 @@ function ReleaseCreateForm({
               min={0}
               max={100}
               name="resalePercentage"
-              // marks={marks}
               onChange={(event, value) => {
                 setFieldValue('resalePercentage', value)
               }}
@@ -190,7 +193,7 @@ function ReleaseCreateForm({
   )
 }
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   createFormContainer: {
     gridColumn: '2/6',
     width: '100%',
@@ -205,11 +208,15 @@ const useStyles = makeStyles(() => ({
     gridColumn: '1/13',
     paddingTop: '1rem',
   },
+  fieldInputWrapper: {
+    position: 'relative'
+  },
   formField: {
     margin: '0.5rem 1rem 0.5rem 0',
     width: '100%',
     textTransform: 'capitalize',
     fontSize: '10px',
+    position: 'relative',
     '& :placeholder': {
       textTransform: 'capitalize',
       lineHeight: 'normal',
@@ -219,6 +226,14 @@ const useStyles = makeStyles(() => ({
       textAlign: 'left',
       height: '1rem',
     },
+  },
+  formError: {
+    position : 'absolute',
+    top: '50%',
+    right: theme.spacing(1),
+    transform: 'translateY(-50%)',
+    color: theme.vars.red,
+    opacity: '.75'
   },
   resalePercentageWrapper: {
     display: 'flex',
@@ -235,14 +250,17 @@ const useStyles = makeStyles(() => ({
 
 export default withFormik({
   enableReinitialize: true,
+  validationSchema: (props) => {
+    return props.ReleaseCreateSchema
+  },
   mapPropsToValues: () => {
     return {
       artist: '',
       title:'',
       description:'',
       catalogNumber: '',
-      amount: '',
-      retailPrice: '0.00',
+      amount: undefined,
+      retailPrice: undefined,
       resalePercentage: 20,
     }
   },
