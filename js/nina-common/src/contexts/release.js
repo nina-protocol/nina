@@ -38,6 +38,7 @@ const ReleaseContextProvider = ({ children }) => {
   const [pressingState, setPressingState] = useState(defaultPressingState)
   const [redeemableState, setRedeemableState] = useState({})
   const [searchResults, setSearchResults] = useState(searchResultsInitialState)
+  const [npcAmountHeld, setNpcAmountHeld] = useState(0)
   const [releaseState, setReleaseState] = useState({
     metadata: {},
     tokenData: {},
@@ -84,6 +85,7 @@ const ReleaseContextProvider = ({ children }) => {
     redeemableUpdateShipping,
     getRedemptionRecordsForRelease,
     getRedeemablesForRelease,
+    getNpcAmountHeld
   } = releaseContextHelper({
     releaseState,
     setReleaseState,
@@ -102,7 +104,10 @@ const ReleaseContextProvider = ({ children }) => {
     redeemableState,
     setRedeemableState,
     removeReleaseFromCollection,
+    npcAmountHeld,
+    setNpcAmountHeld
   })
+
 
   return (
     <ReleaseContext.Provider
@@ -133,6 +138,8 @@ const ReleaseContextProvider = ({ children }) => {
         redeemableUpdateShipping,
         redeemableState,
         getRedeemablesForRelease,
+        getNpcAmountHeld,
+        npcAmountHeld
       }}
     >
       {children}
@@ -158,6 +165,7 @@ const releaseContextHelper = ({
   redeemableState,
   setRedeemableState,
   removeReleaseFromCollection,
+  setNpcAmountHeld
 }) => {
   const provider = new anchor.Provider(
     connection,
@@ -1042,6 +1050,24 @@ const releaseContextHelper = ({
     }
   }
 
+  const getNpcAmountHeld = async () => {
+    const publishingCreditMint = new anchor.web3.PublicKey(
+      NinaClient.ids().mints.publishingCredit
+    )
+
+    if (wallet?.connected) {
+      let npcAccount = await connection.getParsedTokenAccountsByOwner(
+        wallet?.publicKey,
+        {mint: publishingCreditMint}
+      )
+      if (npcAccount.value[0]) {
+        setNpcAmountHeld(npcAccount.value[0].account.data.parsed.info.tokenAmount.uiAmount)
+      }
+    }
+    return 
+  }
+
+
   /*
 
   STATE FILTERS
@@ -1409,6 +1435,7 @@ const releaseContextHelper = ({
     redeemableUpdateShipping,
     getRedemptionRecordsForRelease,
     getRedeemablesForRelease,
+    getNpcAmountHeld
   }
 }
 

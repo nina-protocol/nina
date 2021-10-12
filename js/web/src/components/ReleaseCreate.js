@@ -31,8 +31,9 @@ const ReleaseCreate = () => {
   const theme = useTheme()
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const { releaseCreate, pressingState, resetPressingState, releaseState } =
+  const {releaseCreate, pressingState, resetPressingState, releaseState, getNpcAmountHeld, npcAmountHeld } =
     useContext(ReleaseContext)
+
   const [track, setTrack] = useState(undefined)
   const [artwork, setArtwork] = useState()
   const [releasePubkey, setReleasePubkey] = useState(undefined)
@@ -50,6 +51,13 @@ const ReleaseCreate = () => {
       resetPressingState()
     }
   }, [])
+
+  useEffect(async () => {
+    getNpcAmountHeld()
+  }, [wallet?.connected])
+
+
+
 
   useEffect(() => {
     if (pressingState.releasePubkey) {
@@ -150,10 +158,16 @@ const ReleaseCreate = () => {
   return (
     <div className={classes.createWrapper}>
       <Typography variant="h6" gutterBottom>
-        Upload
+        Upload 
       </Typography>
 
-      {wallet?.connected ? (
+      {!wallet.connected && (
+        <Typography variant="body" gutterBottom>
+          Please connect your wallet to start publishing!
+        </Typography>
+      )}
+
+      {wallet?.connected && npcAmountHeld > 0 && (
         <>
           <div style={theme.helpers.grid} className={classes.createFlowGrid}>
             <>
@@ -203,9 +217,11 @@ const ReleaseCreate = () => {
             )}
           </div>
         </>
-      ) : (
+      ) }
+
+      {wallet?.connected && npcAmountHeld < 1 && (
         <Typography variant="body" gutterBottom>
-          Please connect your wallet to start publishing!
+          Fill out this form to apply for a publishing grant
         </Typography>
       )}
     </div>
