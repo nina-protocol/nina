@@ -19,13 +19,11 @@ const UserView = () => {
     getReleasesPublishedByUser,
     filterReleasesPublishedByUser,
     filterReleasesUserCollection,
-    filterRoyaltiesByUser,
     collectRoyaltyForRelease,
   } = useContext(ReleaseContext)
   const [index, setIndex] = useState(0)
   const [userPublishedReleases, setUserPublishedReleases] = useState()
   const [userCollectionReleases, setUserCollectionReleases] = useState()
-  const [userRoyaltyReleases, setUserRoyaltyReleases] = useState()
 
   useEffect(() => {
     if (index === 1) {
@@ -36,7 +34,6 @@ const UserView = () => {
   useEffect(() => {
     if (wallet?.connected) {
       setUserPublishedReleases(filterReleasesPublishedByUser())
-      setUserRoyaltyReleases(filterRoyaltiesByUser())
       setUserCollectionReleases(filterReleasesUserCollection())
     }
   }, [releaseState, collection])
@@ -80,6 +77,7 @@ const UserView = () => {
             <ReleaseListTable
               releases={userPublishedReleases}
               tableType="userPublished"
+              collectRoyaltyForRelease={collectRoyaltyForRelease}
               key="releases"
             />
           )}
@@ -89,21 +87,7 @@ const UserView = () => {
             </>
           )}
         </div>
-        <div className={classes.slide}>
-          {userRoyaltyReleases?.length > 0 && (
-            <ReleaseListTable
-              releases={userRoyaltyReleases}
-              tableType="userRoyalty"
-              collectRoyaltyForRelease={collectRoyaltyForRelease}
-              key="royalties"
-            />
-          )}
-          {userRoyaltyReleases?.length === 0 && (
-            <>
-              <h1>{`You don't have royalties.`}</h1>
-            </>
-          )}
-        </div>
+ 
       </SwipeableViews>
     </Box>
   )
