@@ -5,7 +5,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import { Box, Typography } from '@material-ui/core'
 import ReleaseListTable from './ReleaseListTable'
-// import UserView from './UserView'
 
 const { NameContext, ReleaseContext, NinaContext } = ninaCommon.contexts
 
@@ -13,9 +12,7 @@ const ReleaseList = () => {
   const { 
     searchResults, 
     resetSearchResults,
-    getReleasesPublishedByUser,
-    filterReleasesPublishedByUser,
-    collectRoyaltyForRelease,
+    filterReleasesUserCollection,
     releaseState
    } = useContext(ReleaseContext)
   const classes = useStyles()
@@ -23,17 +20,11 @@ const ReleaseList = () => {
   const {collection} = useContext(NinaContext)
   const { getReleasesForTwitterHandle } = useContext(NameContext)
   const [search, setSearch] = useState(searchResults.handle)
-  const [userPublishedReleases, setUserPublishedReleases] = useState()
-
-   useEffect(() => {
-    if (wallet?.connected && !userPublishedReleases) {
-      getReleasesPublishedByUser()
-    }
-   }, [wallet?.connected])
+  const [userCollectionReleases, setUserCollectionReleases] = useState()
 
   useEffect(() => {
     if (wallet?.connected) {
-      setUserPublishedReleases(filterReleasesPublishedByUser())
+      setUserCollectionReleases(filterReleasesUserCollection())
     }
   }, [releaseState, collection])
 
@@ -97,18 +88,17 @@ const ReleaseList = () => {
           </h2>
         </>
       )}
-      {wallet?.connected && !searchResults.searched && userPublishedReleases?.length > 0 &&
+      {wallet?.connected && !searchResults.searched && userCollectionReleases?.length > 0 &&
         <ReleaseListTable
-          releases={userPublishedReleases}
-          tableType="userPublished"
-          collectRoyaltyForRelease={collectRoyaltyForRelease}
+          releases={userCollectionReleases}
+          tableType="userCollection"
           key="releases"
         />
       }
-      {wallet?.connected && !searchResults.searched && userPublishedReleases?.length === 0 &&
-        <>
-          <Typography>{`You haven't published any music yet.`}</Typography>
-        </>
+      {wallet?.connected && !searchResults.searched && userCollectionReleases?.length === 0 &&
+        <Typography>
+          <h1>Your collection is empty!</h1>
+        </Typography>
       }
     </Box>
   )
