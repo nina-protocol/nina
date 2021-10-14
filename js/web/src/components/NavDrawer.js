@@ -1,4 +1,7 @@
-import React, {useState} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
+import ninaCommon from 'nina-common'
+import {useWallet} from '@solana/wallet-adapter-react'
+
 import {makeStyles} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import Button from '@material-ui/core/Button';
@@ -9,20 +12,46 @@ import ListItemText from '@material-ui/core/ListItemText';
 import MenuIcon from '@material-ui/icons/Menu';
 import {NavLink} from 'react-router-dom'
 
+const {NinaContext, ReleaseContext} = ninaCommon.contexts
 
-export default function TemporaryDrawer() {
+
+const NavDrawer = () => {
   const classes = useStyles();
+  const {collection} = useContext(NinaContext)
+  const wallet = useWallet()
+
+  const {
+    releaseState,
+    getReleasesPublishedByUser,
+    filterReleasesPublishedByUser,
+    filterReleasesUserCollection,
+  } = useContext(ReleaseContext)
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [userPublishedReleasesCount, setUserPublishedReleasesCount] = useState()
+  const [userCollectionReleasesCount, setUserCollectionReleasesCount] = useState()
+
 
   const toggleDrawer = (open) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
     }
-
     setDrawerOpen(open)
   };
 
-  const links = ['home' , 'market', 'collection', 'queue', 'releases', 'upload', 'about nina', 'faq']
+  useEffect(() => {
+    if (wallet?.connected) {
+      getReleasesPublishedByUser()
+    }
+  }, [wallet?.connected])
+
+  useEffect(() => {
+    if (wallet?.connected) {
+      setUserPublishedReleasesCount(filterReleasesPublishedByUser().length)
+      setUserCollectionReleasesCount(filterReleasesUserCollection().length)
+    }
+  }, [releaseState, collection])
+
+  const links = ['home', 'queue', 'collection', 'releases', 'upload', 'about nina', 'faq']
 
   const list = () => (
     <div
@@ -33,7 +62,53 @@ export default function TemporaryDrawer() {
     >
       <List>
       {links.map(link => {
+        switch (link) {
+        case 'collection':
+          return (
+            <NavLink
+              className={`${classes.drawerLink}`}
+              to={`/${link}`}
+              activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
+              key={link}
+            >
+              <ListItem button key={link}>
+                <ListItemText primary={`your ${link}  ${userCollectionReleasesCount ? `(${userCollectionReleasesCount})` : ''}`} />
+              </ListItem>
+            </NavLink>
+
+          )
+        case 'releases':
+          return (
+            <NavLink
+              className={`${classes.drawerLink}`}
+              to={`/${link}`}
+              activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
+              key={link}
+            >
+              <ListItem button key={link}>
+                <ListItemText primary={`your ${link}  ${userPublishedReleasesCount ? `(${userPublishedReleasesCount})` : ''}`} />
+              </ListItem>
+            </NavLink>
+
+          )
+        default:
+            <NavLink
+              className={`${classes.drawerLink}`}
+              to={`/${link}`}
+              activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
+              key={link}
+            >
+              <ListItem button key={link}>
+                <ListItemText primary={'link'} />
+              </ListItem>
+            </NavLink>
+      }
+
+
         return (
+
+
+
             <NavLink
               className={`${classes.drawerLink}`}
               to={`/${link}`}
@@ -86,3 +161,5 @@ const useStyles = makeStyles((theme) => ({
     color: theme.vars.white
   }
 }));
+
+export default NavDrawer;
