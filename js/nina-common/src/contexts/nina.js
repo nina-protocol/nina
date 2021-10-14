@@ -241,7 +241,6 @@ const ninaContextHelper = ({
 
   const getAmountHeld = async (releaseMint) => {
     if (wallet?.connected) {
-      console.log(releaseMint);
       let tokenAccounts = await connection.getParsedTokenAccountsByOwner(
         wallet?.publicKey,
         { programId: NinaClient.TOKEN_PROGRAM_ID }
@@ -249,7 +248,6 @@ const ninaContextHelper = ({
       tokenAccounts.value.forEach((value) => {
         const account = value.account.data.parsed.info
         if (account.mint === releaseMint) {
-          console.log('account.tokenAmount.uiAmount :>> ', account.tokenAmount.uiAmount);
           return account.tokenAmount.uiAmount
         }
       })
