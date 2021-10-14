@@ -9,15 +9,15 @@ import ReleaseListTable from './ReleaseListTable'
 const { NameContext, ReleaseContext, NinaContext } = ninaCommon.contexts
 
 const ReleaseList = () => {
-  const { 
-    searchResults, 
+  const {
+    searchResults,
     resetSearchResults,
     filterReleasesUserCollection,
-    releaseState
-   } = useContext(ReleaseContext)
+    releaseState,
+  } = useContext(ReleaseContext)
   const classes = useStyles()
   const wallet = useWallet()
-  const {collection} = useContext(NinaContext)
+  const { collection } = useContext(NinaContext)
   const { getReleasesForTwitterHandle } = useContext(NameContext)
   const [search, setSearch] = useState(searchResults.handle)
   const [userCollectionReleases, setUserCollectionReleases] = useState()
@@ -88,18 +88,22 @@ const ReleaseList = () => {
           </h2>
         </>
       )}
-      {wallet?.connected && !searchResults.searched && userCollectionReleases?.length > 0 &&
-        <ReleaseListTable
-          releases={userCollectionReleases}
-          tableType="userCollection"
-          key="releases"
-        />
-      }
-      {wallet?.connected && !searchResults.searched && userCollectionReleases?.length === 0 &&
-        <Typography>
-          <h1>Your collection is empty!</h1>
-        </Typography>
-      }
+      {wallet?.connected &&
+        !searchResults.searched &&
+        userCollectionReleases?.length > 0 && (
+          <ReleaseListTable
+            releases={userCollectionReleases}
+            tableType="userCollection"
+            key="releases"
+          />
+        )}
+      {wallet?.connected &&
+        !searchResults.searched &&
+        userCollectionReleases?.length === 0 && (
+          <Typography>
+            <h1>Your collection is empty!</h1>
+          </Typography>
+        )}
     </Box>
   )
 }

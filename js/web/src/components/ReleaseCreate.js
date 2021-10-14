@@ -9,12 +9,11 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import ReleaseCreateForm from './ReleaseCreateForm'
 import MediaDropzones from './MediaDropzones'
 import ReleaseCard from './ReleaseCard'
-import * as Yup from "yup";
+import * as Yup from 'yup'
 
 const { ReleaseSettings } = ninaCommon.components
 const { ReleaseContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
-
 
 const ReleaseCreateSchema = Yup.object().shape({
   artist: Yup.string().required('Artist Name is Required'),
@@ -24,15 +23,21 @@ const ReleaseCreateSchema = Yup.object().shape({
   amount: Yup.number().required('Edition Amount is Required'),
   retailPrice: Yup.number().required('Sale Price is Required'),
   resalePercentage: Yup.number().required('Resale Percent Amount is Required'),
-});
+})
 
 const ReleaseCreate = () => {
   const classes = useStyles()
   const theme = useTheme()
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const {releaseCreate, pressingState, resetPressingState, releaseState, getNpcAmountHeld, npcAmountHeld } =
-    useContext(ReleaseContext)
+  const {
+    releaseCreate,
+    pressingState,
+    resetPressingState,
+    releaseState,
+    getNpcAmountHeld,
+    npcAmountHeld,
+  } = useContext(ReleaseContext)
 
   const [track, setTrack] = useState(undefined)
   const [artwork, setArtwork] = useState()
@@ -55,9 +60,6 @@ const ReleaseCreate = () => {
   useEffect(async () => {
     getNpcAmountHeld()
   }, [wallet?.connected])
-
-
-
 
   useEffect(() => {
     if (pressingState.releasePubkey) {
@@ -97,7 +99,9 @@ const ReleaseCreate = () => {
       ...formValues,
       releaseForm: values,
     })
-    const valid = await ReleaseCreateSchema.isValid(formValues.releaseForm, {abortEarly: true})
+    const valid = await ReleaseCreateSchema.isValid(formValues.releaseForm, {
+      abortEarly: true,
+    })
     setFormIsValid(valid)
   }
 
@@ -158,7 +162,7 @@ const ReleaseCreate = () => {
   return (
     <div className={classes.createWrapper}>
       <Typography variant="h6" gutterBottom>
-        Upload 
+        Upload
       </Typography>
 
       {!wallet.connected && (
@@ -217,7 +221,7 @@ const ReleaseCreate = () => {
             )}
           </div>
         </>
-      ) }
+      )}
 
       {wallet?.connected && npcAmountHeld < 1 && (
         <Typography variant="body" gutterBottom>

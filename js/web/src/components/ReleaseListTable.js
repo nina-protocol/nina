@@ -40,9 +40,9 @@ const EnhancedTableHead = (props) => {
     headCells.push({ id: 'price', numeric: true, label: 'Price' })
     headCells.push({ id: 'available', numeric: false, label: 'Available' })
     headCells.push({ id: 'revenue', numeric: false, label: 'Revenue' })
-    headCells.push({id: 'share', numeric: false, label: 'Share'})
-    headCells.push({id: 'collected', numeric: false, label: 'Collected'})
-    headCells.push({id: 'collect', numeric: false, label: 'Collect'})
+    headCells.push({ id: 'share', numeric: false, label: 'Share' })
+    headCells.push({ id: 'collected', numeric: false, label: 'Collected' })
+    headCells.push({ id: 'collect', numeric: false, label: 'Collect' })
   }
 
   if (tableType === 'userRoyalty') {
@@ -52,7 +52,7 @@ const EnhancedTableHead = (props) => {
   }
 
   return (
-    <TableHead >
+    <TableHead>
       <TableRow>
         {headCells.map((headCell) => (
           <TableCell
@@ -130,7 +130,6 @@ const ReleaseListTable = (props) => {
         tokenData.paymentMint
       )}`
       rowData['collect'] = collectButton
-
     }
 
     return rowData
@@ -219,8 +218,8 @@ const useStyles = makeStyles((theme) => ({
   },
   releaseImage: {
     width: '40px',
-    cursor: 'pointer'
+    cursor: 'pointer',
   },
 }))
 
-export default ReleaseListTable;
+export default ReleaseListTable

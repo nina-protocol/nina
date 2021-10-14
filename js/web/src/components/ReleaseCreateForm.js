@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import ninaCommon from 'nina-common'
-import { withFormik, Form, Field} from 'formik'
+import { withFormik, Form, Field } from 'formik'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import { TextField } from '@material-ui/core'
@@ -45,7 +45,9 @@ function ReleaseCreateForm({
                 {...props.field}
               />
               {errors.artist && touched.artist ? (
-                <Typography className={classes.formError}>{errors.artist}</Typography>
+                <Typography className={classes.formError}>
+                  {errors.artist}
+                </Typography>
               ) : null}
             </Box>
           )}
@@ -62,12 +64,14 @@ function ReleaseCreateForm({
                 {...props.field}
               />
               {errors.title && touched.title ? (
-                <Typography className={classes.formError}>{errors.title}</Typography>
+                <Typography className={classes.formError}>
+                  {errors.title}
+                </Typography>
               ) : null}
             </Box>
           )}
         </Field>
-   
+
         <Field name="description">
           {(props) => (
             <Box className={classes.fieldInputWrapper}>
@@ -150,7 +154,6 @@ function ReleaseCreateForm({
               {errors.retailPrice && touched.retailPrice ? (
                 <div className={classes.formError}>{errors.retailPrice}</div>
               ) : null}
-
             </Box>
           )}
         </Field>
@@ -209,7 +212,7 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: '1rem',
   },
   fieldInputWrapper: {
-    position: 'relative'
+    position: 'relative',
   },
   formField: {
     margin: '0.5rem 1rem 0.5rem 0',
@@ -228,12 +231,12 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   formError: {
-    position : 'absolute',
+    position: 'absolute',
     top: '50%',
     right: theme.spacing(1),
     transform: 'translateY(-50%)',
     color: theme.vars.red,
-    opacity: '.75'
+    opacity: '.75',
   },
   resalePercentageWrapper: {
     display: 'flex',
@@ -256,8 +259,8 @@ export default withFormik({
   mapPropsToValues: () => {
     return {
       artist: '',
-      title:'',
-      description:'',
+      title: '',
+      description: '',
       catalogNumber: '',
       amount: undefined,
       retailPrice: undefined,

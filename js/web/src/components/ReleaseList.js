@@ -10,26 +10,26 @@ import ReleaseListTable from './ReleaseListTable'
 const { NameContext, ReleaseContext, NinaContext } = ninaCommon.contexts
 
 const ReleaseList = () => {
-  const { 
-    searchResults, 
+  const {
+    searchResults,
     resetSearchResults,
     getReleasesPublishedByUser,
     filterReleasesPublishedByUser,
     collectRoyaltyForRelease,
-    releaseState
-   } = useContext(ReleaseContext)
+    releaseState,
+  } = useContext(ReleaseContext)
   const classes = useStyles()
   const wallet = useWallet()
-  const {collection} = useContext(NinaContext)
+  const { collection } = useContext(NinaContext)
   const { getReleasesForTwitterHandle } = useContext(NameContext)
   const [search, setSearch] = useState(searchResults.handle)
   const [userPublishedReleases, setUserPublishedReleases] = useState()
 
-   useEffect(() => {
+  useEffect(() => {
     if (wallet?.connected && !userPublishedReleases) {
       getReleasesPublishedByUser()
     }
-   }, [wallet?.connected])
+  }, [wallet?.connected])
 
   useEffect(() => {
     if (wallet?.connected) {
@@ -97,19 +97,23 @@ const ReleaseList = () => {
           </h2>
         </>
       )}
-      {wallet?.connected && !searchResults.searched && userPublishedReleases?.length > 0 &&
-        <ReleaseListTable
-          releases={userPublishedReleases}
-          tableType="userPublished"
-          collectRoyaltyForRelease={collectRoyaltyForRelease}
-          key="releases"
-        />
-      }
-      {wallet?.connected && !searchResults.searched && userPublishedReleases?.length === 0 &&
-        <>
-          <Typography>{`You haven't published any music yet.`}</Typography>
-        </>
-      }
+      {wallet?.connected &&
+        !searchResults.searched &&
+        userPublishedReleases?.length > 0 && (
+          <ReleaseListTable
+            releases={userPublishedReleases}
+            tableType="userPublished"
+            collectRoyaltyForRelease={collectRoyaltyForRelease}
+            key="releases"
+          />
+        )}
+      {wallet?.connected &&
+        !searchResults.searched &&
+        userPublishedReleases?.length === 0 && (
+          <>
+            <Typography>{`You haven't published any music yet.`}</Typography>
+          </>
+        )}
     </Box>
   )
 }

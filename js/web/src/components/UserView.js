@@ -87,7 +87,6 @@ const UserView = () => {
             </>
           )}
         </div>
- 
       </SwipeableViews>
     </Box>
   )
