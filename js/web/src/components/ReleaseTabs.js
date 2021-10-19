@@ -128,6 +128,7 @@ const ReleaseTabs = (props) => {
             <Exchange
               releasePubkey={releasePubkey}
               exchanges={exchangeState.exchanges}
+              metadata={metadata}
             />
           </TabPanel>
           <TabPanel style={{ height: '93%' }}>

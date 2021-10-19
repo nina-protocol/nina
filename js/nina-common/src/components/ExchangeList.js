@@ -120,7 +120,7 @@ const ExchangeList = (props) => {
               onExchangeButtonAction={onExchangeButtonAction}
               release={release}
               solPrice={solPrice}
-              symbol={metadata.symbol}
+              symbol={metadata?.symbol}
             />
           ))}
         </ul>
