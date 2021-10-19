@@ -201,6 +201,6 @@ export default class NinaClient {
       .match(/([A-Z0-9]?[^A-Z0-9]*)/g)
       .slice(0, -1)
       .join(' ')
-      .toUpperCase()
+      .toUpperCase();
   }
 }

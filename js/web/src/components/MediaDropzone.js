@@ -1,8 +1,47 @@
 import React from 'react'
+// import { styled } from '@mui/material/styles';
 import ninaCommon from 'nina-common'
 import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
-import { makeStyles } from '@material-ui/core/styles'
+
+const PREFIX = 'MediaDropzone';
+
+const classes = {
+  dropZone: `${PREFIX}-dropZone`,
+  dropZoneInputLabel: `${PREFIX}-dropZoneInputLabel`,
+  dropZonePreviewWrapper: `${PREFIX}-dropZonePreviewWrapper`
+};
+
+// const StyledDropzone
+//  = styled(Dropzone
+// )((
+//   {
+//     theme
+//   }
+// ) => ({
+//   [`& .${classes.dropZone}`]: {
+//     border: `1px solid ${theme.palette.purple}`,
+//     borderRadius: `${theme.palette.borderRadius}`,
+//     display: 'flex',
+//     width: '100%',
+//     marginBottom: '1rem',
+//     cursor: 'pointer',
+//   },
+
+//   [`& .${classes.dropZoneInputLabel}`]: {
+//     margin: 'auto',
+//     fontSize: '1rem',
+//     color: `${theme.palette.purple}`,
+//   },
+
+//   [`& .${classes.dropZonePreviewWrapper}`]: {
+//     width: '90%',
+//     margin: 'auto',
+//     display: 'flex',
+//     justifyContent: 'space-between',
+//     alignItems: 'center',
+//   }
+// }));
 
 const { NinaClient } = ninaCommon.utils
 
@@ -13,7 +52,7 @@ function MediaDropzone({
   setArtwork,
   setTrack,
 }) {
-  const classes = useStyles()
+
 
   const getUploadParams = ({ file }) => {
     const body = new FormData()
@@ -83,28 +122,5 @@ function MediaDropzone({
     />
   )
 }
-
-const useStyles = makeStyles((theme) => ({
-  dropZone: {
-    border: `1px solid ${theme.vars.purple}`,
-    borderRadius: `${theme.vars.borderRadius}`,
-    display: 'flex',
-    width: '100%',
-    marginBottom: '1rem',
-    cursor: 'pointer',
-  },
-  dropZoneInputLabel: {
-    margin: 'auto',
-    fontSize: '1rem',
-    color: `${theme.vars.purple}`,
-  },
-  dropZonePreviewWrapper: {
-    width: '90%',
-    margin: 'auto',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-}))
 
 export default MediaDropzone

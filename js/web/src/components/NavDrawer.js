@@ -1,21 +1,55 @@
 import React, { useState, useContext, useEffect } from 'react'
+import { styled } from '@mui/material/styles';
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
 
-import { makeStyles } from '@material-ui/core/styles'
-import Drawer from '@material-ui/core/Drawer'
-import Button from '@material-ui/core/Button'
-import Box from '@material-ui/core/Box'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import MenuIcon from '@material-ui/icons/Menu'
+import Drawer from '@mui/material/Drawer'
+import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
+import MenuIcon from '@mui/icons-material/Menu'
 import { NavLink } from 'react-router-dom'
+
+const PREFIX = 'NavDrawer';
+
+const classes = {
+  toggle: `${PREFIX}-toggle`,
+  list: `${PREFIX}-list`,
+  drawerLink: `${PREFIX}-drawerLink`
+};
+
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.toggle}`]: {
+    position: 'absolute',
+    top: theme.spacing(6),
+    left: theme.spacing(2),
+    minWidth: 'unset',
+    paddingLeft: '0',
+    zIndex: '1000',
+  },
+
+  [`&.${classes.list}`]: {
+    width: 250,
+    height: '100%',
+    backgroundColor: theme.palette.black,
+    color: theme.palette.white,
+  },
+
+  [`& .${classes.drawerLink}`]: {
+    color: theme.palette.white,
+  }
+}));
 
 const { NinaContext, ReleaseContext } = ninaCommon.contexts
 
 const NavDrawer = () => {
-  const classes = useStyles()
+
   const { collection } = useContext(NinaContext)
   const wallet = useWallet()
 
@@ -64,7 +98,7 @@ const NavDrawer = () => {
   ]
 
   const list = () => (
-    <div
+    <Root
       className={classes.list}
       role="presentation"
       onClick={toggleDrawer(false)}
@@ -138,7 +172,7 @@ const NavDrawer = () => {
           )
         })}
       </List>
-    </div>
+    </Root>
   )
 
   return (
@@ -161,25 +195,5 @@ const NavDrawer = () => {
     </div>
   )
 }
-
-const useStyles = makeStyles((theme) => ({
-  toggle: {
-    position: 'absolute',
-    top: theme.spacing(6),
-    left: theme.spacing(2),
-    minWidth: 'unset',
-    paddingLeft: '0',
-    zIndex: '1000',
-  },
-  list: {
-    width: 250,
-    height: '100%',
-    backgroundColor: theme.vars.black,
-    color: theme.vars.white,
-  },
-  drawerLink: {
-    color: theme.vars.white,
-  },
-}))
 
 export default NavDrawer

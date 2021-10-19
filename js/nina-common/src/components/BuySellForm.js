@@ -1,16 +1,95 @@
 import React, { useEffect, useState, useContext } from 'react'
+import { styled } from '@mui/material/styles';
 import { withFormik } from 'formik'
-import Button from '@material-ui/core/Button'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import Input from '@material-ui/core/Input'
-import Box from '@material-ui/core/Box'
-import { makeStyles } from '@material-ui/core/styles'
+import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
+import Input from '@mui/material/Input'
+import Box from '@mui/material/Box'
+
 import { useWallet } from '@solana/wallet-adapter-react'
 import { ExchangeContext } from '../contexts'
 
+const PREFIX = 'BuySellForm';
+
+const classes = {
+  buySellForm: `${PREFIX}-buySellForm`,
+  exchangeCtaWrapper: `${PREFIX}-exchangeCtaWrapper`,
+  cta: `${PREFIX}-cta`
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.buySellForm}`]: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    margin: 'auto',
+    marginTop: theme.spacing(1),
+    borderBottom: `1px solid ${theme.palette.greyLight}`,
+    backgroundColor: `${theme.palette.white}`,
+    '&__inputLabel': {
+      fontSize: '2rem',
+      width: '73%',
+      border: `1px dashed ${theme.palette.blue}`,
+      '& input': {
+        textAlign: 'center !important',
+        padding: '0',
+        height: '41px',
+        '&[type=number]': {
+          '-moz-appearance': 'textfield',
+        },
+        '&::-webkit-outer-spin-button': {
+          '-webkit-appearance': 'none',
+          margin: 0,
+        },
+        '&::-webkit-inner-spin-button': {
+          '-webkit-appearance': 'none',
+          margin: 0,
+        },
+        '&::placeholder': {
+          fontSize: '10px',
+          verticalAlign: 'middle',
+          position: 'absolute',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+        },
+      },
+    },
+    '&:hover': {
+      color: `${theme.palette.blue}`,
+    },
+  },
+
+  [`& .${classes.exchangeCtaWrapper}`]: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
+  [`& .${classes.cta}`]: {
+    width: '25%',
+    background: `${theme.palette.white}`,
+    fontSize: '16px',
+    fontWeight: '400',
+    boxShadow: 'none',
+    '&:hover': {
+      backgroundColor: `${theme.palette.white}`,
+      boxShadow: 'none',
+    },
+    '&.Mui-disabled': {
+      background: `${theme.palette.white}`,
+    },
+  }
+}));
+
 const BuySellForm = (props) => {
   const { onSubmit, isBuy, release, amount, setAmount } = props
-  const classes = useStyles()
+
   const wallet = useWallet()
   const { exchangeInitPending } = useContext(ExchangeContext)
   const [pending, setPending] = useState(false)
@@ -48,7 +127,7 @@ const BuySellForm = (props) => {
   }
 
   return (
-    <>
+    (<Root>
       <form
         onSubmit={handleSubmit}
         className={classes.buySellForm}
@@ -84,72 +163,9 @@ const BuySellForm = (props) => {
           </Button>
         </Box>
       </form>
-    </>
-  )
+    </Root>)
+  );
 }
-
-const useStyles = makeStyles((theme) => ({
-  buySellForm: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    margin: 'auto',
-    marginTop: `${theme.spacing(1)}px`,
-    borderBottom: `1px solid ${theme.vars.greyLight}`,
-    backgroundColor: `${theme.vars.white}`,
-    '&__inputLabel': {
-      fontSize: '2rem',
-      width: '73%',
-      border: `1px dashed ${theme.vars.blue}`,
-      '& input': {
-        textAlign: 'center !important',
-        padding: '0',
-        height: '41px',
-        '&[type=number]': {
-          '-moz-appearance': 'textfield',
-        },
-        '&::-webkit-outer-spin-button': {
-          '-webkit-appearance': 'none',
-          margin: 0,
-        },
-        '&::-webkit-inner-spin-button': {
-          '-webkit-appearance': 'none',
-          margin: 0,
-        },
-        '&::placeholder': {
-          fontSize: '10px',
-          verticalAlign: 'middle',
-          position: 'absolute',
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-        },
-      },
-    },
-    '&:hover': {
-      color: `${theme.vars.blue}`,
-    },
-  },
-  exchangeCtaWrapper: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  cta: {
-    width: '25%',
-    background: `${theme.vars.white}`,
-    fontSize: '16px',
-    fontWeight: '400',
-    boxShadow: 'none',
-    '&:hover': {
-      backgroundColor: `${theme.vars.white}`,
-      boxShadow: 'none',
-    },
-    '&.Mui-disabled': {
-      background: `${theme.vars.white}`,
-    },
-  },
-}))
 
 export default withFormik({
   enableReinitialize: true,

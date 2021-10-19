@@ -1,15 +1,40 @@
 import React, { useState, useContext, useEffect } from 'react'
+import { styled } from '@mui/material/styles';
 import ninaCommon from 'nina-common'
-import Button from '@material-ui/core/Button'
-import { makeStyles, useTheme } from '@material-ui/core/styles'
+import Button from '@mui/material/Button'
+import { useTheme } from '@mui/material/styles';
+
 import ReleaseCard from './ReleaseCard'
 import ReleaseTabs from './ReleaseTabs'
+
+const PREFIX = 'Release';
+
+const classes = {
+  release: `${PREFIX}-release`,
+  releaseControls: `${PREFIX}-releaseControls`
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')(() => ({
+  [`& .${classes.release}`]: {
+    width: '80vw',
+    margin: 'auto',
+    height: '75vh',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+  },
+
+  [`& .${classes.releaseControls}`]: {
+    margin: 'auto',
+    height: '100%',
+    width: '80%',
+  }
+}));
 
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
 
 const Release = ({ match }) => {
   const releasePubkey = match.params.releasePubkey
-  const classes = useStyles()
+
   const theme = useTheme()
   const { releaseState, getRelease, getRedeemablesForRelease } =
     useContext(ReleaseContext)
@@ -42,7 +67,7 @@ const Release = ({ match }) => {
   }
 
   return (
-    <>
+    (<Root>
       <div style={theme.helpers.grid} className={`${classes.release}`}>
         <ReleaseCard
           metadata={metadata}
@@ -53,22 +78,8 @@ const Release = ({ match }) => {
           <ReleaseTabs releasePubkey={releasePubkey} />
         </div>
       </div>
-    </>
-  )
+    </Root>)
+  );
 }
-
-const useStyles = makeStyles(() => ({
-  release: {
-    width: '80vw',
-    margin: 'auto',
-    height: '75vh',
-    gridTemplateColumns: 'repeat(2, 1fr)',
-  },
-  releaseControls: {
-    margin: 'auto',
-    height: '100%',
-    width: '80%',
-  },
-}))
 
 export default Release

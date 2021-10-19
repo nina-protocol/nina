@@ -1,10 +1,27 @@
 import React from 'react'
+import { styled } from '@mui/material/styles';
 import { SnackbarProvider } from 'notistack'
-import { withStyles } from '@material-ui/core/styles'
-import { ThemeProvider } from '@material-ui/styles'
+import { ThemeProvider } from '@mui/styles';
+import {StyledEngineProvider} from '@mui/styled-engine';
 import { NinaTheme } from './NinaTheme'
 import Router from './routes'
 import ninaCommon from 'nina-common'
+
+const PREFIX = 'App';
+
+const classes = {
+  containerRoot: `${PREFIX}-containerRoot`,
+  success: `${PREFIX}-success`,
+  error: `${PREFIX}-error`,
+  info: `${PREFIX}-info`
+};
+
+const StyledStyledEngineProvider = styled(StyledEngineProvider)({
+  [`& .${classes.containerRoot}`]: { paddingTop: '75px' },
+  [`& .${classes.success}`]: { backgroundColor: 'rgba(45, 129, 255, 1)' },
+  [`& .${classes.error}`]: { backgroundColor: 'red' },
+  [`& .${classes.info}`]: { backgroundColor: 'rgba(45, 129, 255, 1)' },
+});
 
 const {
   ConnectionContextProvider,
@@ -17,49 +34,44 @@ const {
 
 const { extendBorsh } = ninaCommon.utils.metaplex.borsh
 
-const styles = {
-  containerRoot: { paddingTop: '75px' },
-  success: { backgroundColor: 'rgba(45, 129, 255, 1)' },
-  error: { backgroundColor: 'red' },
-  info: { backgroundColor: 'rgba(45, 129, 255, 1)' },
-}
-
-function App({ classes }) {
+function App() {
   extendBorsh()
 
   return (
-    <ThemeProvider theme={NinaTheme}>
-      <SnackbarProvider
-        maxSnack={3}
-        classes={{
-          containerRoot: classes.containerRoot,
-          variantSuccess: classes.success,
-          variantError: classes.error,
-          variantInfo: classes.info,
-        }}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-      >
-        <ConnectionContextProvider>
-          <NinaContextProvider
-            releasePubkey={process.env.REACT_APP_RELEASE_PUBKEY}
-          >
-            <ReleaseContextProvider>
-              <NameContextProvider>
-                <AudioPlayerContextProvider>
-                  <ExchangeContextProvider>
-                    <Router />
-                  </ExchangeContextProvider>
-                </AudioPlayerContextProvider>
-              </NameContextProvider>
-            </ReleaseContextProvider>
-          </NinaContextProvider>
-        </ConnectionContextProvider>
-      </SnackbarProvider>
-    </ThemeProvider>
-  )
+    <StyledStyledEngineProvider injectFirst>
+      <ThemeProvider theme={NinaTheme}>
+        <SnackbarProvider
+          maxSnack={3}
+          classes={{
+            containerRoot: classes.containerRoot,
+            variantSuccess: classes.success,
+            variantError: classes.error,
+            variantInfo: classes.info,
+          }}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
+          }}
+        >
+          <ConnectionContextProvider>
+            <NinaContextProvider
+              releasePubkey={process.env.REACT_APP_RELEASE_PUBKEY}
+            >
+              <ReleaseContextProvider>
+                <NameContextProvider>
+                  <AudioPlayerContextProvider>
+                    <ExchangeContextProvider>
+                      <Router />
+                    </ExchangeContextProvider>
+                  </AudioPlayerContextProvider>
+                </NameContextProvider>
+              </ReleaseContextProvider>
+            </NinaContextProvider>
+          </ConnectionContextProvider>
+        </SnackbarProvider>
+      </ThemeProvider>
+    </StyledStyledEngineProvider>
+  );
 }
 
-export default withStyles(styles)(App)
+export default (App)

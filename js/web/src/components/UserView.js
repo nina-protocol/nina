@@ -1,17 +1,51 @@
 import React, { useState, useContext, useEffect } from 'react'
+import { styled } from '@mui/material/styles';
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { makeStyles } from '@material-ui/core/styles'
-import { Box } from '@material-ui/core'
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
+
+import { Box } from '@mui/material'
+import Tabs from '@mui/material/Tabs'
+import Tab from '@mui/material/Tab'
 import SwipeableViews from 'react-swipeable-views'
 import ReleaseListTable from './ReleaseListTable'
+
+const PREFIX = 'UserView';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  tabs: `${PREFIX}-tabs`,
+  slideContainer: `${PREFIX}-slideContainer`,
+  slide: `${PREFIX}-slide`
+};
+
+const StyledBox = styled(Box)(() => ({
+  [`& .${classes.root}`]: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+
+  [`& .${classes.tabs}`]: {
+    background: '#fff',
+    display: 'flex',
+    justifyContent: 'center',
+  },
+
+  [`& .${classes.slideContainer}`]: {
+    height: '100',
+  },
+
+  [`& .${classes.slide}`]: {
+    padding: '0px',
+    minHeight: 100,
+    color: '#000',
+  }
+}));
 
 const { NinaContext, ReleaseContext } = ninaCommon.contexts
 
 const UserView = () => {
-  const classes = useStyles()
+
   const wallet = useWallet()
   const { collection } = useContext(NinaContext)
   const {
@@ -47,7 +81,7 @@ const UserView = () => {
   }
 
   return (
-    <Box classes={classes.root}>
+    <StyledBox classes={classes.root}>
       <Tabs value={index} onChange={handleChange} className={classes.tabs}>
         <Tab label="Collection" />
         <Tab label="Releases" />
@@ -88,29 +122,8 @@ const UserView = () => {
           )}
         </div>
       </SwipeableViews>
-    </Box>
-  )
+    </StyledBox>
+  );
 }
-
-const useStyles = makeStyles(() => ({
-  root: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  tabs: {
-    background: '#fff',
-    display: 'flex',
-    justifyContent: 'center',
-  },
-  slideContainer: {
-    height: '100',
-  },
-  slide: {
-    padding: '0px',
-    minHeight: 100,
-    color: '#000',
-  },
-}))
 
 export default UserView

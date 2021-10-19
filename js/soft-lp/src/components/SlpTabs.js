@@ -1,18 +1,49 @@
 import { useState, useEffect, useContext } from 'react'
+import { styled } from '@mui/material/styles';
 import { Tabs, TabPanel, TabList, Tab } from 'react-tabs'
 import 'react-tabs/style/react-tabs.css'
-import { makeStyles } from '@material-ui/core/styles'
+
 import { useWallet } from '@solana/wallet-adapter-react'
 import ninaCommon from 'nina-common'
 import SlpPurchase from './SlpPurchase'
 import SlpRedeem from './SlpRedeem'
+
+const PREFIX = 'SlpTabs';
+
+const classes = {
+  releaseTabsWrapper: `${PREFIX}-releaseTabsWrapper`,
+  releaseTabsContainer: `${PREFIX}-releaseTabsContainer`,
+  releaseTabsList: `${PREFIX}-releaseTabsList`
+};
+
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`&.${classes.releaseTabsWrapper}`]: {
+    borderRadius: `${theme.palette.borderRadius}`,
+    height: '100%',
+  },
+
+  [`& .${classes.releaseTabsContainer}`]: {
+    height: '100%',
+    [theme.breakpoints.down('md')]: {
+      padding: '0rem',
+    },
+  },
+
+  [`& .${classes.releaseTabsList}`]: {
+    display: 'none',
+  }
+}));
 
 const { Exchange, ReleaseSettings } = ninaCommon.components
 const { ExchangeContext, NinaContext, ReleaseContext } = ninaCommon.contexts
 
 const SlpTabs = (props) => {
   const { releasePubkey, activeIndex } = props
-  const classes = useStyles()
+
   const wallet = useWallet()
   const {
     releaseState,
@@ -79,7 +110,7 @@ const SlpTabs = (props) => {
   }, [collection[releasePubkey]])
 
   return (
-    <div className={classes.releaseTabsWrapper}>
+    <Root className={classes.releaseTabsWrapper}>
       <div className={classes.releaseTabsContainer}>
         <Tabs
           releasePubkey={releasePubkey}
@@ -131,24 +162,8 @@ const SlpTabs = (props) => {
           )}
         </Tabs>
       </div>
-    </div>
-  )
+    </Root>
+  );
 }
-
-const useStyles = makeStyles((theme) => ({
-  releaseTabsWrapper: {
-    borderRadius: `${theme.vars.borderRadius}`,
-    height: '100%',
-  },
-  releaseTabsContainer: {
-    height: '100%',
-    [theme.breakpoints.down('sm')]: {
-      padding: '0rem',
-    },
-  },
-  releaseTabsList: {
-    display: 'none',
-  },
-}))
 
 export default SlpTabs

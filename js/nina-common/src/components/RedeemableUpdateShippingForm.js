@@ -1,14 +1,80 @@
 import React, { useEffect } from 'react'
+import { styled } from '@mui/material/styles';
 import { withFormik, Form, Field } from 'formik'
-import { makeStyles } from '@material-ui/core/styles'
-import Typography from '@material-ui/core/Typography'
-import { Button, TextField } from '@material-ui/core'
-import Box from '@material-ui/core/Box'
+
+import Typography from '@mui/material/Typography'
+import { Button, TextField } from '@mui/material'
+import Box from '@mui/material/Box'
 import NinaClient from '../utils/client'
+
+const PREFIX = 'RedeemableUpdateShippingForm';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  header: `${PREFIX}-header`,
+  shippingInfo: `${PREFIX}-shippingInfo`,
+  redemptionInfo: `${PREFIX}-redemptionInfo`,
+  redeemableForm: `${PREFIX}-redeemableForm`,
+  formField: `${PREFIX}-formField`,
+  formError: `${PREFIX}-formError`
+};
+
+const StyledBox = styled(Box)((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.root}`]: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    backgroundColor: `${theme.palette.transparent}`,
+  },
+
+  [`& .${classes.header}`]: {
+    textTransform: 'uppercase',
+    fontWeight: '700',
+    fontSize: '14px',
+  },
+
+  [`& .${classes.shippingInfo}`]: {
+    textAlign: 'left',
+    '& p': {
+      fontSize: '26px',
+    },
+  },
+
+  [`& .${classes.redemptionInfo}`]: {
+    '& p': {
+      fontSize: '14px',
+    },
+  },
+
+  [`& .${classes.redeemableForm}`]: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflowY: 'auto',
+  },
+
+  [`& .${classes.formField}`]: {
+    margin: '0.75rem 1rem',
+    width: '100%',
+    textTransform: 'capitalize',
+    '& :placeholder': {
+      textTransform: 'capitalize',
+    },
+  },
+
+  [`& .${classes.formError}`]: {
+    color: `${theme.palette.red}`,
+  }
+}));
 
 export const RedeemableUpdateShippingForm = (props) => {
   const { values, touched, errors, onChange, selectedRecord } = props
-  const classes = useStyles()
+
 
   useEffect(() => {
     if (onChange) {
@@ -19,7 +85,7 @@ export const RedeemableUpdateShippingForm = (props) => {
   const formatAddress = (address) => {
     const splitAddress = address.split(',')
     const formatted = (
-      <Box className={classes.address}>
+      <StyledBox className={classes.address}>
         <Typography variant="body2">{splitAddress[0]}</Typography>
         <Typography>
           {splitAddress[1]}, {splitAddress[2]}
@@ -28,7 +94,7 @@ export const RedeemableUpdateShippingForm = (props) => {
           {splitAddress[3]}, {splitAddress[4]}, {splitAddress[5]}
         </Typography>
         <Typography>{splitAddress[6]}</Typography>
-      </Box>
+      </StyledBox>
     )
     return formatted
   }
@@ -129,49 +195,6 @@ export const RedeemableUpdateShippingForm = (props) => {
     </Box>
   )
 }
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    backgroundColor: `${theme.vars.transparent}`,
-  },
-  header: {
-    textTransform: 'uppercase',
-    fontWeight: '700',
-    fontSize: '14px',
-  },
-  shippingInfo: {
-    textAlign: 'left',
-    '& p': {
-      fontSize: '26px',
-    },
-  },
-  redemptionInfo: {
-    '& p': {
-      fontSize: '14px',
-    },
-  },
-  redeemableForm: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflowY: 'auto',
-  },
-  formField: {
-    margin: '0.75rem 1rem',
-    width: '100%',
-    textTransform: 'capitalize',
-    '& :placeholder': {
-      textTransform: 'capitalize',
-    },
-  },
-  formError: {
-    color: `${theme.vars.red}`,
-  },
-}))
 
 export default withFormik({
   enableReinitialize: true,

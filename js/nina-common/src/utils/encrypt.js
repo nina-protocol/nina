@@ -42,7 +42,7 @@ export const decryptData = async (data, publicKey, iv) => {
   )
   return new TextDecoder()
     .decode(new Uint8Array(decrypted))
-    .replaceAll(/\u0000/g, '')
+    .replaceAll(/\u0000/g, '');
 }
 
 export const exportPublicKey = async () => {
@@ -59,7 +59,7 @@ export const exportPublicKey = async () => {
 export const decodeNonEncryptedByteArray = (byteArray) => {
   return new TextDecoder()
     .decode(new Uint8Array(byteArray))
-    .replaceAll(/\u0000/g, '')
+    .replaceAll(/\u0000/g, '');
 }
 
 const importKey = async (publicKey) => {

@@ -1,27 +1,92 @@
 import React from 'react'
+import { styled } from '@mui/material/styles';
 import Countdown from 'react-countdown'
-import Box from '@material-ui/core/Box'
-import { makeStyles } from '@material-ui/core/styles'
-import { Typography } from '@material-ui/core'
+import Box from '@mui/material/Box'
+
+import { Typography } from '@mui/material'
 import softLpLogo from '../assets/soft-lp-logo.png'
+
+const PREFIX = 'CountdownLanding';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  logo: `${PREFIX}-logo`,
+  clockWrapper: `${PREFIX}-clockWrapper`,
+  container: `${PREFIX}-container`,
+  clock: `${PREFIX}-clock`,
+  cta: `${PREFIX}-cta`
+};
+
+const StyledBox = styled(Box)((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.root}`]: {
+    width: '100%',
+    height: '100%',
+    zIndex: '1000',
+    backgroundColor: 'white',
+  },
+
+  [`& .${classes.logo}`]: {
+    height: '27px',
+    zIndex: '10',
+  },
+
+  [`& .${classes.clockWrapper}`]: {
+    height: '100%',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  [`& .${classes.container}`]: {
+    position: 'relative',
+    height: '200px',
+    width: '600px',
+    display: 'flex',
+  },
+
+  [`& .${classes.clock}`]: {
+    fontSize: '20px',
+    color: theme.palette.blue,
+    textShadow: '0 0 4px #FFFFFF',
+    display: 'flex',
+    paddingTop: '10px',
+    '& span': {
+      textAlign: 'left',
+      paddingLeft: '10px',
+    },
+  },
+
+  [`& .${classes.cta}`]: {
+    color: `${theme.palette.white} !important`,
+    background: `${theme.palette.blue} !important`,
+    fontSize: '40px',
+    padding: `${theme.spacing(2, 2)} !important`,
+  }
+}));
 
 const CountdownLanding = (props) => {
   const { setReleaseIsLive, releaseDate } = props
-  const classes = useStyles()
+
 
   const countDownRenderer = (props) => {
     const { days, hours, minutes, seconds } = props
 
     return (
-      <Box>
+      <StyledBox>
         <Typography className={classes.clock}>
           <span>{days}d</span>
           <span>{hours}hr</span>
           <span>{minutes}m</span>
           <span>{seconds}s</span>
         </Typography>
-      </Box>
-    )
+      </StyledBox>
+    );
   }
 
   return (
@@ -37,49 +102,5 @@ const CountdownLanding = (props) => {
     </Box>
   )
 }
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    height: '100%',
-    zIndex: '1000',
-    backgroundColor: 'white',
-  },
-  logo: {
-    height: '27px',
-    zIndex: '10',
-  },
-  clockWrapper: {
-    height: '100%',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  container: {
-    position: 'relative',
-    height: '200px',
-    width: '600px',
-    display: 'flex',
-  },
-  clock: {
-    fontSize: '20px',
-    color: theme.vars.blue,
-    textShadow: '0 0 4px #FFFFFF',
-    display: 'flex',
-    paddingTop: '10px',
-    '& span': {
-      textAlign: 'left',
-      paddingLeft: '10px',
-    },
-  },
-  cta: {
-    color: `${theme.vars.white} !important`,
-    background: `${theme.vars.blue} !important`,
-    fontSize: '40px',
-    padding: `${theme.spacing(2, 2)} !important`,
-  },
-}))
 
 export default CountdownLanding

@@ -1,8 +1,9 @@
 import { useState } from 'react'
+import { styled } from '@mui/material/styles';
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import Container from '@material-ui/core/Container'
+
+import CssBaseline from '@mui/material/CssBaseline'
+import Container from '@mui/material/Container'
 import Slp from './components/Slp'
 import CountdownLanding from './components/CountdownLanding'
 import SlpAbout from './components/SlpAbout'
@@ -10,15 +11,41 @@ import React from 'react'
 import NavBar from './components/NavBar'
 import Footer from './components/Footer'
 
+const PREFIX = 'Routes';
+
+const classes = {
+  mainContainer: `${PREFIX}-mainContainer`,
+  bodyContainer: `${PREFIX}-bodyContainer`
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')(() => ({
+  [`& .${classes.mainContainer}`]: {
+    height: '100vh',
+    width: '100vw',
+    overflow: 'hidden',
+  },
+
+  [`& .${classes.bodyContainer}`]: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+    textAlign: 'center',
+    height: '100%',
+  }
+}));
+
 const RELEASE_DATE = new Date('2021-09-30T20:00:00Z')
 
 function Routes() {
-  const classes = useStyles()
+
   const [releaseIsLive, setReleaseIsLive] = useState(Date.now() >= RELEASE_DATE)
   const [activeIndex, setActiveIndex] = useState(0)
 
   return (
-    <>
+    (<Root>
       <CssBaseline />
       <BrowserRouter>
         <Container
@@ -62,24 +89,8 @@ function Routes() {
           </div>
         </Container>
       </BrowserRouter>
-    </>
-  )
+    </Root>)
+  );
 }
-const useStyles = makeStyles(() => ({
-  mainContainer: {
-    height: '100vh',
-    width: '100vw',
-    overflow: 'hidden',
-  },
-  bodyContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-    textAlign: 'center',
-    height: '100%',
-  },
-}))
 
 export default Routes

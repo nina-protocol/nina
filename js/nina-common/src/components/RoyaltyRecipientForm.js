@@ -1,18 +1,85 @@
 import React, { useContext } from 'react'
+import { styled } from '@mui/material/styles';
 import { Formik, Field, Form } from 'formik'
-import { makeStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
-import { TextField, Typography, Box } from '@material-ui/core'
-import Slider from '@material-ui/core/Slider'
+
+import Button from '@mui/material/Button'
+import { TextField, Typography, Box } from '@mui/material'
+import Slider from '@mui/material/Slider'
 import { NameContext, ReleaseContext } from '../contexts'
 import NinaClient from '../utils/client'
+
+const PREFIX = 'RoyaltyRecipientForm';
+
+const classes = {
+  redeemableForm: `${PREFIX}-redeemableForm`,
+  formField: `${PREFIX}-formField`,
+  formSelect: `${PREFIX}-formSelect`,
+  formInputGroup: `${PREFIX}-formInputGroup`,
+  royaltyPercentageWrapper: `${PREFIX}-royaltyPercentageWrapper`,
+  formError: `${PREFIX}-formError`
+};
+
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.redeemableForm}`]: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '0 1rem',
+    overflowY: 'auto',
+  },
+
+  [`& .${classes.formField}`]: {
+    margin: '0.75rem 0em',
+    width: '100%',
+    textTransform: 'capitalize',
+    '& :placeholder': {
+      textTransform: 'capitalize',
+    },
+  },
+
+  [`& .${classes.formSelect}`]: {
+    padding: '18.5px 14px',
+    boxSizing: 'border-box',
+    borderColor: 'rgba(0, 0, 0, 0.23)',
+    color: 'rgba(0, 0, 0, 0.5)',
+    '& $option': {
+      color: 'red',
+    },
+  },
+
+  [`& .${classes.formInputGroup}`]: {
+    display: 'flex',
+    width: '100%',
+    '& > :first-child': {
+      marginLeft: '0',
+    },
+    '& > :last-child': {
+      marginRight: '0',
+    },
+  },
+
+  [`& .${classes.royaltyPercentageWrapper}`]: {
+    display: 'flex',
+    justifyContent: 'space-inbetween',
+    alignItems: 'center',
+  },
+
+  [`& .${classes.formError}`]: {
+    color: `${theme.palette.red}`,
+  }
+}));
 
 const RoyaltyRecipientForm = (props) => {
   const { release, userShare, setUserDisplayShare, releasePubkey, toggleForm } =
     props
   const { addRoyaltyRecipient } = useContext(ReleaseContext)
   const { addRoyaltyRecipientByTwitterHandle } = useContext(NameContext)
-  const classes = useStyles()
+
 
   const handleDisplayPercent = (value) => {
     const sending = parseInt(value)
@@ -35,7 +102,7 @@ const RoyaltyRecipientForm = (props) => {
   ]
 
   return (
-    <div>
+    <Root>
       <Formik
         initialValues={{
           recipientAddress: '',
@@ -119,54 +186,8 @@ const RoyaltyRecipientForm = (props) => {
           </Box>
         )}
       </Formik>
-    </div>
-  )
+    </Root>
+  );
 }
-
-const useStyles = makeStyles((theme) => ({
-  redeemableForm: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '0 1rem',
-    overflowY: 'auto',
-  },
-  formField: {
-    margin: '0.75rem 0em',
-    width: '100%',
-    textTransform: 'capitalize',
-    '& :placeholder': {
-      textTransform: 'capitalize',
-    },
-  },
-  formSelect: {
-    padding: '18.5px 14px',
-    boxSizing: 'border-box',
-    borderColor: 'rgba(0, 0, 0, 0.23)',
-    color: 'rgba(0, 0, 0, 0.5)',
-    '& $option': {
-      color: 'red',
-    },
-  },
-  formInputGroup: {
-    display: 'flex',
-    width: '100%',
-    '& > :first-child': {
-      marginLeft: '0',
-    },
-    '& > :last-child': {
-      marginRight: '0',
-    },
-  },
-  royaltyPercentageWrapper: {
-    display: 'flex',
-    justifyContent: 'space-inbetween',
-    alignItems: 'center',
-  },
-  formError: {
-    color: `${theme.vars.red}`,
-  },
-}))
 
 export default RoyaltyRecipientForm

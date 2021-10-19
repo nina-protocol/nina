@@ -1,10 +1,26 @@
 import React, { useEffect, useState, useContext } from 'react'
+import { styled } from '@mui/material/styles';
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { makeStyles } from '@material-ui/core/styles'
-import TextField from '@material-ui/core/TextField'
-import { Box, Typography } from '@material-ui/core'
+import TextField from '@mui/material/TextField'
+import { Box, Typography } from '@mui/material'
 import ReleaseListTable from './ReleaseListTable'
+
+const PREFIX = 'ReleaseList';
+
+const classes = {
+  root: `${PREFIX}-root`
+};
+
+const StyledBox = styled(Box)(() => ({
+  [`&.${classes.root}`]: {
+    width: '80%',
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'absolute',
+    top: 40,
+  }
+}));
 
 const { NameContext, ReleaseContext, NinaContext } = ninaCommon.contexts
 
@@ -15,7 +31,7 @@ const ReleaseList = () => {
     filterReleasesUserCollection,
     releaseState,
   } = useContext(ReleaseContext)
-  const classes = useStyles()
+
   const wallet = useWallet()
   const { collection } = useContext(NinaContext)
   const { getReleasesForTwitterHandle } = useContext(NameContext)
@@ -45,7 +61,7 @@ const ReleaseList = () => {
   }
 
   return (
-    <Box className={classes.root}>
+    <StyledBox className={classes.root}>
       <div>
         <form onSubmit={handleSubmit}>
           <TextField
@@ -104,18 +120,8 @@ const ReleaseList = () => {
             <h1>Your collection is empty!</h1>
           </Typography>
         )}
-    </Box>
-  )
+    </StyledBox>
+  );
 }
-
-const useStyles = makeStyles(() => ({
-  root: {
-    width: '80%',
-    display: 'flex',
-    flexDirection: 'column',
-    position: 'absolute',
-    top: 40,
-  },
-}))
 
 export default ReleaseList

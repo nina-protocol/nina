@@ -1,5 +1,4 @@
-import { createTheme } from '@material-ui/core/styles'
-import createBreakpoints from '@material-ui/core/styles/createBreakpoints'
+import { createTheme, adaptV4Theme, createBreakpoints } from '@mui/material/styles';
 
 const colors = {
   purple: '#9999cc',
@@ -19,7 +18,7 @@ const colors = {
 
 const breakpoints = createBreakpoints({})
 
-export const SlpTheme = createTheme({
+export const SlpTheme = createTheme(adaptV4Theme({
   palette: {
     secondary: {
       main: '#9999cc',
@@ -203,4 +202,4 @@ export const SlpTheme = createTheme({
       },
     },
   },
-})
+}))

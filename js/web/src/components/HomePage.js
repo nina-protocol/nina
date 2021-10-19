@@ -1,21 +1,31 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Box from '@material-ui/core/Box'
-import Typography from '@material-ui/core/Typography'
+import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+
+const PREFIX = 'HomePage';
+
+const classes = {
+  root: `${PREFIX}-root`
+};
+
+const StyledBox = styled(Box)((
+  {
+    theme
+  }
+) => ({
+  [`&.${classes.root}`]: {
+    color: theme.palette.black,
+  }
+}));
 
 const HomePage = () => {
-  const classes = useStyles()
-  return (
-    <Box className={classes.root}>
-      <Typography>Im the Homepage</Typography>
-    </Box>
-  )
-}
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    color: theme.vars.black,
-  },
-}))
+  return (
+    <StyledBox className={classes.root}>
+      <Typography>Im the Homepage</Typography>
+    </StyledBox>
+  );
+}
 
 export default HomePage

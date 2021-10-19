@@ -1,13 +1,45 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Stepper from '@material-ui/core/Stepper'
-import Step from '@material-ui/core/Step'
-import StepLabel from '@material-ui/core/StepLabel'
-import StepContent from '@material-ui/core/StepContent'
-import Button from '@material-ui/core/Button'
-import Typography from '@material-ui/core/Typography'
-import Box from '@material-ui/core/Box'
+import { styled } from '@mui/material/styles';
+
+import Stepper from '@mui/material/Stepper'
+import Step from '@mui/material/Step'   
+import StepLabel from '@mui/material/StepLabel'
+import StepContent from '@mui/material/StepContent'
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
 import RedeemableClaimForm from './RedeemableClaimForm'
+
+const PREFIX = 'RedeemableStepper';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  confirmHeader: `${PREFIX}-confirmHeader`,
+  shippingInfo: `${PREFIX}-shippingInfo`
+};
+
+const Root = styled('div')(() => ({
+  [`& .${classes.root}`]: {
+    width: '300px',
+    margin: 'auto',
+    textAlign: 'center',
+  },
+
+  [`& .${classes.confirmHeader}`]: {
+    textTransform: 'uppercase',
+    fontWeight: '700',
+    fontSize: '12px',
+    paddingBottom: '20px',
+  },
+
+  [`& .${classes.shippingInfo}`]: {
+    textAlign: 'left',
+    '& p': {
+      fontSize: '26px',
+      lineHeight: '29.9px',
+    },
+  }
+}));
 
 const ConfirmShipping = (props) => {
   const { redeemerShippingValues } = props
@@ -37,24 +69,26 @@ const ConfirmShipping = (props) => {
 }
 
 const listStyles = makeStyles(() => ({
-  root: {
+  [`& .${classes.root}`]: {
     width: '300px',
     margin: 'auto',
     textAlign: 'center',
   },
-  confirmHeader: {
+
+  [`& .${classes.confirmHeader}`]: {
     textTransform: 'uppercase',
     fontWeight: '700',
     fontSize: '12px',
     paddingBottom: '20px',
   },
-  shippingInfo: {
+
+  [`& .${classes.shippingInfo}`]: {
     textAlign: 'left',
     '& p': {
       fontSize: '26px',
       lineHeight: '29.9px',
     },
-  },
+  }
 }))
 
 function getSteps() {
@@ -73,7 +107,7 @@ function getStepContent(step, props) {
 }
 
 export default function RedeemableStepper(props) {
-  const classes = useStyles()
+
   const { submitRedeemableForm, formIsValid } = props
   const [activeStep, setActiveStep] = React.useState(0)
   const steps = getSteps()
@@ -87,7 +121,7 @@ export default function RedeemableStepper(props) {
   }
 
   return (
-    <div
+    <Root
       className={`${classes.root} ${
         activeStep === 1 ? `${classes.small}` : ''
       } `}
@@ -148,85 +182,6 @@ export default function RedeemableStepper(props) {
           </Step>
         ))}
       </Stepper>
-    </div>
-  )
+    </Root>
+  );
 }
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    marginTop: '0px',
-
-    '& .MuiStepLabel-vertical': {
-      display: 'none',
-    },
-    '& .MuiStepConnector-vertical': {
-      display: 'none',
-    },
-    '& .MuiStepConnector-line': {
-      display: 'none',
-      border: 'none',
-    },
-    '& .MuiStepContent-root': {
-      border: 'none',
-      marginLeft: '0',
-      paddingLeft: '0',
-    },
-  },
-  small: {
-    width: '400px',
-    height: '361px',
-  },
-  stepper: {
-    ...theme.helpers.gradient,
-    padding: '60px',
-    '&--small': {
-      padding: `${theme.spacing(2, 6)}`,
-    },
-  },
-  actionsContainer: {
-    padding: `${theme.spacing(2, 1)}`,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    margin: 'auto',
-    '&--small': {
-      maxWidth: '300px',
-    },
-  },
-  button: {
-    width: '221px',
-    color: `${theme.vars.blue}`,
-    backgroundColor: `${theme.vars.white}`,
-    fontSize: '14px',
-    margin: `${theme.spacing(2, 0, 0)}`,
-    '&--disabled': {
-      color: `${theme.vars.white} !important`,
-      borderRadius: '0px !important',
-      backgroundColor: `${theme.vars.transparent}`,
-      width: '100%',
-      border: `2px dashed ${theme.vars.white} !important`,
-    },
-    '&:hover': {
-      color: `${theme.vars.white}`,
-      backgroundColor: `${theme.vars.blue}`,
-    },
-  },
-  redeemButton: {
-    margin: 'auto',
-    color: `${theme.vars.blue} !important`,
-    fontSize: '14px',
-    fontWeight: '700',
-    width: '100%',
-    '&:hover': {
-      color: `${theme.vars.white}`,
-      backgroundColor: `${theme.vars.blue}`,
-    },
-  },
-  backButton: {
-    color: `${theme.vars.white}`,
-    textDecoration: 'underline',
-    cursor: 'pointer',
-    padding: `${theme.spacing(2, 0)}`,
-  },
-}))

@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react'
+import { styled } from '@mui/material/styles';
 import { useSnackbar } from 'notistack'
-import { Typography, Box } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
-import RefreshIcon from '@material-ui/icons/Refresh'
+import { Typography, Box } from '@mui/material'
+
+import RefreshIcon from '@mui/icons-material/Refresh'
 import { useWallet } from '@solana/wallet-adapter-react'
 import BuySell from './BuySell'
 import ExchangeHistoryModal from './ExchangeHistoryModal'
@@ -16,9 +17,108 @@ import {
 } from '../contexts'
 import NinaClient from '../utils/client'
 
+const PREFIX = 'Exchange';
+
+const classes = {
+  exchangeWrapper: `${PREFIX}-exchangeWrapper`,
+  exchange: `${PREFIX}-exchange`,
+  buySellContainer: `${PREFIX}-buySellContainer`,
+  exchangeListContainer: `${PREFIX}-exchangeListContainer`,
+  listWrapper: `${PREFIX}-listWrapper`,
+  scrollCopyContainer: `${PREFIX}-scrollCopyContainer`,
+  scrollCopy: `${PREFIX}-scrollCopy`,
+  updateMessage: `${PREFIX}-updateMessage`
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.exchangeWrapper}`]: {
+    margin: 'auto',
+    overflow: 'hidden',
+    display: 'grid',
+    gridTemplateColumns: '1fr',
+    gridTemplateRows: '154px 304px 75px',
+    alignItems: 'center',
+    marginTop: theme.spacing(6),
+    overflowX: 'scroll',
+    [theme.breakpoints.down('md')]: {
+      width: '98%',
+      gridTemplateColumns: '50% 50%',
+      gridTemplateRows: '1fr 50vh',
+      alignItems: 'flex-start',
+      height: 'auto',
+      marginTop: '0px',
+    },
+  },
+
+  [`& .${classes.exchange}`]: {
+    height: '100%',
+    width: '100%',
+    [theme.breakpoints.down('md')]: {
+      gridColumn: '1/3',
+    },
+  },
+
+  [`& .${classes.buySellContainer}`]: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    [theme.breakpoints.down('md')]: {
+      gridColumn: '1/3',
+    },
+  },
+
+  [`& .${classes.exchangeListContainer}`]: {
+    display: 'flex',
+    height: '100%',
+    justifyContent: 'space-between',
+  },
+
+  [`& .${classes.listWrapper}`]: {
+    width: '100%',
+    maxWidth: '310px',
+    [theme.breakpoints.down('md')]: {
+      padding: '0.5rem',
+    },
+  },
+
+  [`& .${classes.scrollCopyContainer}`]: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+
+  [`& .${classes.scrollCopy}`]: {
+    width: '310px',
+    textAlign: 'left',
+    fontSize: '10px',
+  },
+
+  [`& .${classes.updateMessage}`]: {
+    fontSize: '10px',
+    position: 'absolute',
+    bottom: '18px',
+    lineHeight: '11.5px',
+    left: '50%',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    '& span': {
+      color: `${theme.palette.blue}`,
+      paddingLeft: '4px',
+    },
+    '& svg': {
+      fontSize: '12px',
+      paddingLeft: '4px',
+    },
+  }
+}));
+
 const Exchange = (props) => {
   const { releasePubkey, metadata } = props
-  const classes = useStyles()
+
   const wallet = useWallet()
   const { enqueueSnackbar } = useSnackbar()
   const { releaseState, getRelease } = useContext(ReleaseContext)
@@ -153,7 +253,7 @@ const Exchange = (props) => {
   }
 
   return (
-    <>
+    (<Root>
       <ExchangeHistoryModal
         exchangeHistory={exchangeHistory}
         release={release}
@@ -233,82 +333,8 @@ const Exchange = (props) => {
           />
         )}
       </div>
-    </>
-  )
+    </Root>)
+  );
 }
-
-const useStyles = makeStyles((theme) => ({
-  exchangeWrapper: {
-    margin: 'auto',
-    overflow: 'hidden',
-    display: 'grid',
-    gridTemplateColumns: '1fr',
-    gridTemplateRows: '154px 304px 75px',
-    alignItems: 'center',
-    marginTop: `${theme.spacing(6)}px`,
-    overflowX: 'scroll',
-    [theme.breakpoints.down('sm')]: {
-      width: '98%',
-      gridTemplateColumns: '50% 50%',
-      gridTemplateRows: '1fr 50vh',
-      alignItems: 'flex-start',
-      height: 'auto',
-      marginTop: '0px',
-    },
-  },
-  exchange: {
-    height: '100%',
-    width: '100%',
-    [theme.breakpoints.down('sm')]: {
-      gridColumn: '1/3',
-    },
-  },
-  buySellContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    [theme.breakpoints.down('sm')]: {
-      gridColumn: '1/3',
-    },
-  },
-  exchangeListContainer: {
-    display: 'flex',
-    height: '100%',
-    justifyContent: 'space-between',
-  },
-  listWrapper: {
-    width: '100%',
-    maxWidth: '310px',
-    [theme.breakpoints.down('sm')]: {
-      padding: '0.5rem',
-    },
-  },
-  scrollCopyContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-  scrollCopy: {
-    width: '310px',
-    textAlign: 'left',
-    fontSize: '10px',
-  },
-  updateMessage: {
-    fontSize: '10px',
-    position: 'absolute',
-    bottom: '18px',
-    lineHeight: '11.5px',
-    left: '50%',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    '& span': {
-      color: `${theme.vars.blue}`,
-      paddingLeft: '4px',
-    },
-    '& svg': {
-      fontSize: '12px',
-      paddingLeft: '4px',
-    },
-  },
-}))
 
 export default Exchange

@@ -1,16 +1,65 @@
 import React, { useEffect } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemText from '@material-ui/core/ListItemText'
-import Divider from '@material-ui/core/Divider'
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@material-ui/icons/CheckBox'
-import Typography from '@material-ui/core/Typography'
+import { styled } from '@mui/material/styles';
+
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import Divider from '@mui/material/Divider'
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
+import CheckBoxIcon from '@mui/icons-material/CheckBox'
+import Typography from '@mui/material/Typography'
+
+const PREFIX = 'UserRedemptionsList';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  list: `${PREFIX}-list`,
+  listItem: `${PREFIX}-listItem`,
+  listItemText: `${PREFIX}-listItemText`,
+  icon: `${PREFIX}-icon`
+};
+
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`&.${classes.root}`]: {
+    width: '100%',
+    maxWidth: '100%',
+    overflow: 'hidden',
+    backgroundColor: theme.palette.transparent,
+  },
+
+  [`& .${classes.list}`]: {
+    maxHeight: '50vh',
+    overflowY: 'scroll',
+  },
+
+  [`& .${classes.listItem}`]: {
+    paddingLeft: '0.5rem',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+  },
+
+  [`& .${classes.listItemText}`]: {
+    '& span': {
+      whiteSpace: 'nowrap',
+      maxWidth: '100%',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+    },
+  },
+
+  [`& .${classes.icon}`]: {
+    minWidth: '12px',
+    color: `${theme.palette.purple}`,
+  }
+}));
 
 export default function RedeemableUpdateShippingList(props) {
-  const classes = useStyles()
+
   const {
     userRedemptionRecords,
     handleSelectRecord,
@@ -29,7 +78,7 @@ export default function RedeemableUpdateShippingList(props) {
   }
 
   return (
-    <div className={classes.root}>
+    <Root className={classes.root}>
       <Typography variant="h6">My Redemptions:</Typography>
       <List className={classes.list} aria-label="redemption-records">
         {userRedemptionRecords.map((record, i) => {
@@ -62,36 +111,6 @@ export default function RedeemableUpdateShippingList(props) {
         })}
       </List>
       <Divider />
-    </div>
-  )
+    </Root>
+  );
 }
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    maxWidth: '100%',
-    overflow: 'hidden',
-    backgroundColor: theme.vars.transparent,
-  },
-  list: {
-    maxHeight: '50vh',
-    overflowY: 'scroll',
-  },
-  listItem: {
-    paddingLeft: '0.5rem',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-  },
-  listItemText: {
-    '& span': {
-      whiteSpace: 'nowrap',
-      maxWidth: '100%',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-    },
-  },
-  icon: {
-    minWidth: '12px',
-    color: `${theme.vars.purple}`,
-  },
-}))

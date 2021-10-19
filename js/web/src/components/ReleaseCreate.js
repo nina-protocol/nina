@@ -1,15 +1,56 @@
 import React, { useState, useContext, useEffect } from 'react'
+import { styled } from '@mui/material/styles';
 import ninaCommon from 'nina-common'
 import { useSnackbar } from 'notistack'
-import Button from '@material-ui/core/Button'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import { Typography } from '@material-ui/core'
-import { makeStyles, useTheme } from '@material-ui/core/styles'
+import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
+import { Typography } from '@mui/material'
+import { useTheme } from '@mui/material/styles';
+
 import { useWallet } from '@solana/wallet-adapter-react'
 import ReleaseCreateForm from './ReleaseCreateForm'
 import MediaDropzones from './MediaDropzones'
 import ReleaseCard from './ReleaseCard'
 import * as Yup from 'yup'
+
+const PREFIX = 'ReleaseCreate';
+
+const classes = {
+  createWrapper: `${PREFIX}-createWrapper`,
+  createFlowGrid: `${PREFIX}-createFlowGrid`,
+  createFormContainer: `${PREFIX}-createFormContainer`,
+  createReleaseContainer: `${PREFIX}-createReleaseContainer`,
+  createCta: `${PREFIX}-createCta`
+};
+
+const Root = styled('div')(() => ({
+  [`&.${classes.createWrapper}`]: {
+    width: '100%',
+    position: 'absolute',
+    top: 40,
+  },
+
+  [`& .${classes.createFlowGrid}`]: {
+    gridTemplateColumns: 'repeat(11, 1fr)',
+  },
+
+  [`& .${classes.createFormContainer}`]: {
+    gridColumn: '2/6',
+    width: '100%',
+  },
+
+  [`& .${classes.createReleaseContainer}`]: {
+    gridColumn: '7/12',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+
+  [`& .${classes.createCta}`]: {
+    gridColumn: '1/13',
+    paddingTop: '0.5rem',
+  }
+}));
 
 const { ReleaseSettings } = ninaCommon.components
 const { ReleaseContext } = ninaCommon.contexts
@@ -26,7 +67,7 @@ const ReleaseCreateSchema = Yup.object().shape({
 })
 
 const ReleaseCreate = () => {
-  const classes = useStyles()
+
   const theme = useTheme()
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
@@ -145,7 +186,7 @@ const ReleaseCreate = () => {
     track.meta.status === 'done'
   ) {
     return (
-      <div className={classes.createWrapper}>
+      <Root className={classes.createWrapper}>
         <Typography variant="h6" gutterBottom>
           Release Overview
         </Typography>
@@ -155,8 +196,8 @@ const ReleaseCreate = () => {
           tempMetadata={formValues.releaseForm}
           artwork={artwork}
         />
-      </div>
-    )
+      </Root>
+    );
   }
 
   return (
@@ -231,30 +272,5 @@ const ReleaseCreate = () => {
     </div>
   )
 }
-
-const useStyles = makeStyles(() => ({
-  createWrapper: {
-    width: '100%',
-    position: 'absolute',
-    top: 40,
-  },
-  createFlowGrid: {
-    gridTemplateColumns: 'repeat(11, 1fr)',
-  },
-  createFormContainer: {
-    gridColumn: '2/6',
-    width: '100%',
-  },
-  createReleaseContainer: {
-    gridColumn: '7/12',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  createCta: {
-    gridColumn: '1/13',
-    paddingTop: '0.5rem',
-  },
-}))
 
 export default ReleaseCreate

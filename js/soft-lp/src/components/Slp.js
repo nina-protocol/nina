@@ -1,44 +1,58 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { styled } from '@mui/material/styles';
+
 import SlpTabs from './SlpTabs'
 
-const releasePubkey = process.env.REACT_APP_RELEASE_PUBKEY
+const PREFIX = 'Slp';
 
-const Slp = (props) => {
-  const classes = useStyles()
-  const { activeIndex } = props
+const classes = {
+  release: `${PREFIX}-release`,
+  releaseControls: `${PREFIX}-releaseControls`
+};
 
-  return (
-    <>
-      <div className={`${classes.release}`}>
-        <div className={classes.releaseControls}>
-          <SlpTabs releasePubkey={releasePubkey} activeIndex={activeIndex} />
-        </div>
-      </div>
-    </>
-  )
-}
-
-const useStyles = makeStyles((theme) => ({
-  release: {
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.release}`]: {
     width: '808px',
     margin: 'auto',
     display: 'flex',
     zIndex: '9',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       width: '98vw',
-      marginBottom: `${theme.spacing(6)}px`,
+      marginBottom: theme.spacing(6),
       marginTop: '0',
       maxHeight: '100vh',
       position: 'absolute',
       top: '60px',
     },
   },
-  releaseControls: {
+
+  [`& .${classes.releaseControls}`]: {
     margin: 'auto',
     height: '100%',
     width: '100%',
-  },
-}))
+  }
+}));
+
+const releasePubkey = process.env.REACT_APP_RELEASE_PUBKEY
+
+const Slp = (props) => {
+
+  const { activeIndex } = props
+
+  return (
+    (<Root>
+      <div className={`${classes.release}`}>
+        <div className={classes.releaseControls}>
+          <SlpTabs releasePubkey={releasePubkey} activeIndex={activeIndex} />
+        </div>
+      </div>
+    </Root>)
+  );
+}
 
 export default Slp

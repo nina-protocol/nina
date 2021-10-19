@@ -1,12 +1,41 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Typography from '@material-ui/core/Typography'
-import Card from '@material-ui/core/Card'
-import CardContent from '@material-ui/core/CardContent'
-import Box from '@material-ui/core/Box'
+import { styled } from '@mui/material/styles';
+
+import Typography from '@mui/material/Typography'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Box from '@mui/material/Box'
 import RedeemableInitialize from './RedeemableInitialize.js'
 import Royalty from './Royalty.js'
 import { ReleaseContext } from '../contexts/release'
+
+const PREFIX = 'ReleaseInfo';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  releaseInfoDescription: `${PREFIX}-releaseInfoDescription`
+};
+
+const StyledBox = styled(Box)((
+  {
+    theme
+  }
+) => ({
+  [`&.${classes.root}`]: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
+
+  [`& .${classes.releaseInfoDescription}`]: {
+    border: `${theme.palette.borderWidth} solid ${theme.palette.purpleLight}`,
+    maxHeight: '40vh',
+    overflow: 'scroll',
+    padding: '1rem',
+    boxShadow: '1px 4px 12px 3px rgba(150, 152, 204,0.43)',
+  }
+}));
 
 const ReleaseInfo = (props) => {
   const {
@@ -16,7 +45,7 @@ const ReleaseInfo = (props) => {
     userIsPublisher,
     redeemables,
   } = props
-  const classes = useStyles()
+
   const { releaseState } = useContext(ReleaseContext)
   const [release, setRelease] = useState(releaseState.tokenData[releasePubkey])
 
@@ -44,7 +73,7 @@ const ReleaseInfo = (props) => {
   })
 
   return (
-    <Box className={classes.root}>
+    <StyledBox className={classes.root}>
       <Box mt={6}>
         <Typography variant="body2" component="p" gutterBottom>
           <strong>Running Time:</strong> {`${minutes}:${seconds}`}
@@ -111,24 +140,8 @@ const ReleaseInfo = (props) => {
 
         <Royalty releasePubkey={releasePubkey} release={release} />
       </Box>
-    </Box>
-  )
+    </StyledBox>
+  );
 }
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-  },
-  releaseInfoDescription: {
-    border: `${theme.vars.borderWidth} solid ${theme.vars.purpleLight}`,
-    maxHeight: '40vh',
-    overflow: 'scroll',
-    padding: '1rem',
-    boxShadow: '1px 4px 12px 3px rgba(150, 152, 204,0.43)',
-  },
-}))
 
 export default ReleaseInfo

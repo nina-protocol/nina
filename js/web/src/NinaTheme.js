@@ -1,5 +1,4 @@
-import { createTheme } from '@material-ui/core/styles'
-import createBreakpoints from '@material-ui/core/styles/createBreakpoints'
+import { createTheme, adaptV4Theme } from '@mui/material/styles';
 
 const colors = {
   purple: '#9999cc',
@@ -17,9 +16,8 @@ const colors = {
   pink: '#FF54A6',
 }
 
-const breakpoints = createBreakpoints({})
 
-export const NinaTheme = createTheme({
+export const NinaTheme = createTheme(adaptV4Theme({
   palette: {
     secondary: {
       main: '#9999cc',
@@ -30,6 +28,23 @@ export const NinaTheme = createTheme({
     text: {
       primary: colors.black,
     },
+    transparent: {
+      main: colors.transparent
+    },
+    blue: {
+      main: colors.blue
+    },
+    black: {
+      main: colors.black
+    },
+    white: {
+      main: colors.white
+    }
+  },
+  gradient: {
+    // background: colors.blue,
+    background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(143,175,223,1) 0%, rgb(35,99,196) 100%)`,
+    color: colors.white,
   },
   props: {
     MuiButtonBase: {
@@ -139,10 +154,7 @@ export const NinaTheme = createTheme({
         },
         body: {
           overflow: 'hidden',
-          [breakpoints.down('sm')]: {
-            overflow: 'auto',
           },
-        },
         a: {
           color: colors.black,
           textDecoration: 'none',
@@ -203,4 +215,4 @@ export const NinaTheme = createTheme({
       },
     },
   },
-})
+}))

@@ -1,16 +1,104 @@
 import { useEffect, useState, useContext } from 'react'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import Typography from '@material-ui/core/Typography'
-import Button from '@material-ui/core/Button'
-import Box from '@material-ui/core/Box'
-import { makeStyles } from '@material-ui/core/styles'
+import { styled } from '@mui/material/styles';
+import CircularProgress from '@mui/material/CircularProgress'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
+
 import { useWallet } from '@solana/wallet-adapter-react'
 import { NinaContext } from '../contexts'
 import NinaClient from '../utils/client'
 
+const PREFIX = 'ExchangeList';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  exchangeList: `${PREFIX}-exchangeList`,
+  exchangeListItem: `${PREFIX}-exchangeListItem`,
+  exchangeListItemPrice: `${PREFIX}-exchangeListItemPrice`,
+  exchangeListButton: `${PREFIX}-exchangeListButton`,
+  noOffers: `${PREFIX}-noOffers`
+};
+
+const StyledButton = styled(Button)((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.root}`]: {
+    maxHeight: '304px',
+    height: '100%',
+  },
+
+  [`& .${classes.exchangeList}`]: {
+    listStyle: 'none',
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '0.2rem 0rem',
+    height: '100%',
+    overflow: 'scroll',
+    overflowX: 'hidden',
+    overflowY: 'auto',
+  },
+
+  [`& .${classes.exchangeListItem}`]: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: `${theme.spacing(0.5, 0)}`,
+    borderRadius: '8px',
+  },
+
+  [`& .${classes.exchangeListItemPrice}`]: {
+    fontWeight: '700',
+    fontSize: '12px',
+    color: `${theme.palette.blue}`,
+    '&--currentUser': {
+      color: `${theme.palette.grey}`,
+    },
+    '&--usd': {
+      color: `${theme.palette.greyLight}`,
+    },
+    '&--symbol': {
+      color: `${theme.palette.black}`,
+      [theme.breakpoints.down('md')]: {
+        display: 'none',
+      },
+    },
+  },
+
+  [`& .${classes.exchangeListButton}`]: {
+    backgroundColor: `${theme.palette.white}`,
+    fontSize: `10px`,
+    color: `${theme.palette.black}`,
+    borderColor: `${theme.palette.black}`,
+    padding: `${theme.spacing(0.5, 1)} !important`,
+    width: '41px',
+    '&:hover': {
+      backgroundColor: `${theme.palette.white} !important`,
+    },
+    '&--Cancel': {
+      borderColor: `${theme.palette.grey}`,
+      color: `${theme.palette.grey}`,
+      backgroundColor: `${theme.palette.white}`,
+      '&:hover': {
+        borderColor: `${theme.palette.grey}`,
+        color: `${theme.palette.grey}`,
+      },
+    },
+  },
+
+  [`& .${classes.noOffers}`]: {
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
+}));
+
 const ExchangeList = (props) => {
   let { list, onExchangeButtonAction, release, metadata } = props
-  const classes = useStyles()
+
   const { solPrice } = useContext(NinaContext)
 
   if (!list) {
@@ -56,7 +144,7 @@ const ExchangeListItem = (props) => {
     symbol,
     amount,
   } = props
-  const classes = useStyles()
+
 
   const displayPrice = isSelling
     ? NinaClient.nativeToUiString(
@@ -115,7 +203,7 @@ const ExchangeListItem = (props) => {
 
 const ExchangeListButton = (props) => {
   const { onExchangeButtonAction, pending, isSelling, isCurrentUser } = props
-  const classes = useStyles()
+
 
   const wallet = useWallet()
   const [buttonText, setButtonText] = useState('Pending')
@@ -138,7 +226,7 @@ const ExchangeListButton = (props) => {
 
   if (wallet?.connected && !pending) {
     return (
-      <Button
+      <StyledButton
         variant="outlined"
         className={`
           ${classes.exchangeListButton} 
@@ -148,8 +236,8 @@ const ExchangeListButton = (props) => {
         onClick={() => onExchangeButtonAction(props)}
       >
         {buttonText}
-      </Button>
-    )
+      </StyledButton>
+    );
   } else {
     return (
       <Button
@@ -163,72 +251,5 @@ const ExchangeListButton = (props) => {
     )
   }
 }
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    maxHeight: '304px',
-    height: '100%',
-  },
-  exchangeList: {
-    listStyle: 'none',
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '0.2rem 0rem',
-    height: '100%',
-    overflow: 'scroll',
-    overflowX: 'hidden',
-    overflowY: 'auto',
-  },
-  exchangeListItem: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: `${theme.spacing(0.5, 0)}`,
-    borderRadius: '8px',
-  },
-  exchangeListItemPrice: {
-    fontWeight: '700',
-    fontSize: '12px',
-    color: `${theme.vars.blue}`,
-    '&--currentUser': {
-      color: `${theme.vars.grey}`,
-    },
-    '&--usd': {
-      color: `${theme.vars.greyLight}`,
-    },
-    '&--symbol': {
-      color: `${theme.vars.black}`,
-      [theme.breakpoints.down('sm')]: {
-        display: 'none',
-      },
-    },
-  },
-  exchangeListButton: {
-    backgroundColor: `${theme.vars.white}`,
-    fontSize: `10px`,
-    color: `${theme.vars.black}`,
-    borderColor: `${theme.vars.black}`,
-    padding: `${theme.spacing(0.5, 1)} !important`,
-    width: '41px',
-    '&:hover': {
-      backgroundColor: `${theme.vars.white} !important`,
-    },
-    '&--Cancel': {
-      borderColor: `${theme.vars.grey}`,
-      color: `${theme.vars.grey}`,
-      backgroundColor: `${theme.vars.white}`,
-      '&:hover': {
-        borderColor: `${theme.vars.grey}`,
-        color: `${theme.vars.grey}`,
-      },
-    },
-  },
-  noOffers: {
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-}))
 
 export default ExchangeList

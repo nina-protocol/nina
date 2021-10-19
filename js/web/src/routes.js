@@ -1,8 +1,8 @@
 import React from 'react'
+import { styled } from '@mui/material/styles';
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import Container from '@material-ui/core/Container'
+import CssBaseline from '@mui/material/CssBaseline'
+import Container from '@mui/material/Container'
 import ReleaseCreate from './components/ReleaseCreate'
 import ReleaseList from './components/ReleaseList'
 import UserCollection from './components/UserCollection'
@@ -12,11 +12,37 @@ import NavBar from './components/NavBar'
 import NavDrawer from './components/NavDrawer'
 import HomePage from './components/HomePage'
 
+const PREFIX = 'Routes';
+
+const classes = {
+  mainContainer: `${PREFIX}-mainContainer`,
+  bodyContainer: `${PREFIX}-bodyContainer`
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')(() => ({
+  [`& .${classes.mainContainer}`]: {
+    height: '100vh',
+    width: '100vw',
+    overflow: 'hidden',
+  },
+
+  [`& .${classes.bodyContainer}`]: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+    textAlign: 'center',
+    height: '100%',
+  }
+}));
+
 function Routes() {
-  const classes = useStyles()
+
 
   return (
-    <>
+    (<Root>
       <CssBaseline />
       <BrowserRouter>
         <Container
@@ -38,24 +64,8 @@ function Routes() {
           <AudioPlayer />
         </Container>
       </BrowserRouter>
-    </>
-  )
+    </Root>)
+  );
 }
-const useStyles = makeStyles(() => ({
-  mainContainer: {
-    height: '100vh',
-    width: '100vw',
-    overflow: 'hidden',
-  },
-  bodyContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-    textAlign: 'center',
-    height: '100%',
-  },
-}))
 
 export default Routes

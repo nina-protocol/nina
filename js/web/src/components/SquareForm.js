@@ -1,11 +1,33 @@
 import React, { useState, useRef, useEffect, useContext } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
-import Typography from '@material-ui/core/Typography'
-import CircularProgress from '@material-ui/core/CircularProgress'
+import { styled } from '@mui/material/styles';
+
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
+import CircularProgress from '@mui/material/CircularProgress'
 import { useSnackbar } from 'notistack'
 import { useWallet } from '@solana/wallet-adapter-react'
 import ninaCommon from 'nina-common'
+
+const PREFIX = 'SquareForm';
+
+const classes = {
+  squareForm: `${PREFIX}-squareForm`,
+  squarePaymentForm: `${PREFIX}-squarePaymentForm`,
+  squarePaymentButton: `${PREFIX}-squarePaymentButton`
+};
+
+const Root = styled('div')(() => ({
+  [`&.${classes.squareForm}`]: {},
+
+  [`& .${classes.squarePaymentForm}`]: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+
+  [`& .${classes.squarePaymentButton}`]: {
+    margin: 'auto',
+  }
+}));
 
 const { NinaContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
@@ -22,7 +44,7 @@ const SquareForm = (props) => {
     release,
     updateStateAfterSquarePurchase,
   } = props
-  const classes = useStyles()
+
   const wallet = useWallet()
   const { enqueueSnackbar } = useSnackbar()
   const { getSolPrice, solPrice } = useContext(NinaContext)
@@ -182,7 +204,7 @@ const SquareForm = (props) => {
   }
 
   return (
-    <div className={classes.squareForm}>
+    <Root className={classes.squareForm}>
       <form id="payment-form" className={classes.squarePaymentForm}>
         <div id="card-container"></div>
         <Button
@@ -222,19 +244,8 @@ const SquareForm = (props) => {
           Total: {NinaClient.nativeToUiString(totalCost, release.paymentMint)}
         </Typography>
       </div>
-    </div>
-  )
+    </Root>
+  );
 }
-
-const useStyles = makeStyles(() => ({
-  squareForm: {},
-  squarePaymentForm: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  squarePaymentButton: {
-    margin: 'auto',
-  },
-}))
 
 export default SquareForm

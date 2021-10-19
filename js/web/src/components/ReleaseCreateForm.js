@@ -1,12 +1,92 @@
 import React, { useEffect } from 'react'
+import { styled } from '@mui/material/styles';
 import ninaCommon from 'nina-common'
 import { withFormik, Form, Field } from 'formik'
-import { makeStyles } from '@material-ui/core/styles'
-import Typography from '@material-ui/core/Typography'
-import { TextField } from '@material-ui/core'
-import Slider from '@material-ui/core/Slider'
-import Box from '@material-ui/core/Box'
+
+import Typography from '@mui/material/Typography'
+import { TextField } from '@mui/material'
+import Slider from '@mui/material/Slider'
+import Box from '@mui/material/Box'
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
+
+const PREFIX = 'ReleaseCreateForm';
+
+const classes = {
+  createFormContainer: `${PREFIX}-createFormContainer`,
+  createReleaseContainer: `${PREFIX}-createReleaseContainer`,
+  createCta: `${PREFIX}-createCta`,
+  fieldInputWrapper: `${PREFIX}-fieldInputWrapper`,
+  formField: `${PREFIX}-formField`,
+  formError: `${PREFIX}-formError`,
+  resalePercentageWrapper: `${PREFIX}-resalePercentageWrapper`,
+  formSlider: `${PREFIX}-formSlider`
+};
+
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.createFormContainer}`]: {
+    gridColumn: '2/6',
+    width: '100%',
+  },
+
+  [`& .${classes.createReleaseContainer}`]: {
+    gridColumn: '7/11',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+
+  [`& .${classes.createCta}`]: {
+    gridColumn: '1/13',
+    paddingTop: '1rem',
+  },
+
+  [`& .${classes.fieldInputWrapper}`]: {
+    position: 'relative',
+  },
+
+  [`& .${classes.formField}`]: {
+    margin: '0.5rem 1rem 0.5rem 0',
+    width: '100%',
+    textTransform: 'capitalize',
+    fontSize: '10px',
+    position: 'relative',
+    '& :placeholder': {
+      textTransform: 'capitalize',
+      lineHeight: 'normal',
+      border: '2px solid red',
+    },
+    '& input': {
+      textAlign: 'left',
+      height: '1rem',
+    },
+  },
+
+  [`& .${classes.formError}`]: {
+    position: 'absolute',
+    top: '50%',
+    right: theme.spacing(1),
+    transform: 'translateY(-50%)',
+    color: theme.palette.red,
+    opacity: '.75',
+  },
+
+  [`& .${classes.resalePercentageWrapper}`]: {
+    display: 'flex',
+    justifyContent: 'space-inbetween',
+    alignItems: 'center',
+  },
+
+  [`& .${classes.formSlider}`]: {
+    '& MuiSlider-markLabel': {
+      border: '2px solid red',
+      marginLeft: '0',
+    },
+  }
+}));
 
 const { NinaClient } = ninaCommon.utils
 
@@ -19,7 +99,7 @@ function ReleaseCreateForm({
   touched,
   setFieldValue,
 }) {
-  const classes = useStyles()
+
 
   useEffect(() => {
     if (onChange) {
@@ -32,7 +112,7 @@ function ReleaseCreateForm({
   }
 
   return (
-    <div>
+    <Root>
       <Form>
         <Field name="artist">
           {(props) => (
@@ -192,64 +272,9 @@ function ReleaseCreateForm({
           </Box>
         </Box>
       </Form>
-    </div>
-  )
+    </Root>
+  );
 }
-
-const useStyles = makeStyles((theme) => ({
-  createFormContainer: {
-    gridColumn: '2/6',
-    width: '100%',
-  },
-  createReleaseContainer: {
-    gridColumn: '7/11',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  createCta: {
-    gridColumn: '1/13',
-    paddingTop: '1rem',
-  },
-  fieldInputWrapper: {
-    position: 'relative',
-  },
-  formField: {
-    margin: '0.5rem 1rem 0.5rem 0',
-    width: '100%',
-    textTransform: 'capitalize',
-    fontSize: '10px',
-    position: 'relative',
-    '& :placeholder': {
-      textTransform: 'capitalize',
-      lineHeight: 'normal',
-      border: '2px solid red',
-    },
-    '& input': {
-      textAlign: 'left',
-      height: '1rem',
-    },
-  },
-  formError: {
-    position: 'absolute',
-    top: '50%',
-    right: theme.spacing(1),
-    transform: 'translateY(-50%)',
-    color: theme.vars.red,
-    opacity: '.75',
-  },
-  resalePercentageWrapper: {
-    display: 'flex',
-    justifyContent: 'space-inbetween',
-    alignItems: 'center',
-  },
-  formSlider: {
-    '& MuiSlider-markLabel': {
-      border: '2px solid red',
-      marginLeft: '0',
-    },
-  },
-}))
 
 export default withFormik({
   enableReinitialize: true,

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Tweet } from 'react-twitter-widgets'
-import Button from '@material-ui/core/Button'
+import Button from '@mui/material/Button'
 
 const { NameContext } = ninaCommon.utils
 

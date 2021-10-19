@@ -1,18 +1,57 @@
 import React, { useState, useEffect, useContext, useRef } from 'react'
+import { styled } from '@mui/material/styles';
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import 'react-tabs/style/react-tabs.css'
-import { makeStyles } from '@material-ui/core/styles'
-import SettingsIcon from '@material-ui/icons/Settings'
+
+import SettingsIcon from '@mui/icons-material/Settings'
 import ReleasePurchase from './ReleasePurchase'
+
+const PREFIX = 'ReleaseTabs';
+
+const classes = {
+  releaseTabsWrapper: `${PREFIX}-releaseTabsWrapper`,
+  releaseTabsContainer: `${PREFIX}-releaseTabsContainer`,
+  releaseTabsList: `${PREFIX}-releaseTabsList`,
+  releaseTabs: `${PREFIX}-releaseTabs`
+};
+
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`&.${classes.releaseTabsWrapper}`]: {
+    border: `${theme.palette.borderWidth} solid ${theme.palette.purpleLight}`,
+    borderRadius: `${theme.palette.borderRadius}`,
+    height: '100%',
+  },
+
+  [`& .${classes.releaseTabsContainer}`]: {
+    padding: '0 1rem',
+    height: '94%',
+  },
+
+  [`& .${classes.releaseTabsList}`]: {
+    display: 'flex',
+    width: '100%',
+    borderBottom: `1px solid ${theme.palette.purple}`,
+    justifyContent: 'flex-start',
+    paddingLeft: '0',
+  },
+
+  [`& .${classes.releaseTabs}`]: {
+    height: '100%',
+  }
+}));
 
 const { Exchange, ReleaseInfo, ReleaseSettings } = ninaCommon.components
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
 
 const ReleaseTabs = (props) => {
   const { releasePubkey } = props
-  const classes = useStyles()
+
   const wallet = useWallet()
   const { releaseState, getRedemptionRecordsForRelease, redeemableState } =
     useContext(ReleaseContext)
@@ -64,7 +103,7 @@ const ReleaseTabs = (props) => {
   }, [wallet?.connected])
 
   return (
-    <div className={classes.releaseTabsWrapper}>
+    <Root className={classes.releaseTabsWrapper}>
       <div className={classes.releaseTabsContainer}>
         <Tabs
           releasePubkey={releasePubkey}
@@ -116,30 +155,8 @@ const ReleaseTabs = (props) => {
           )}
         </Tabs>
       </div>
-    </div>
-  )
+    </Root>
+  );
 }
-
-const useStyles = makeStyles((theme) => ({
-  releaseTabsWrapper: {
-    border: `${theme.vars.borderWidth} solid ${theme.vars.purpleLight}`,
-    borderRadius: `${theme.vars.borderRadius}`,
-    height: '100%',
-  },
-  releaseTabsContainer: {
-    padding: '0 1rem',
-    height: '94%',
-  },
-  releaseTabsList: {
-    display: 'flex',
-    width: '100%',
-    borderBottom: `1px solid ${theme.vars.purple}`,
-    justifyContent: 'flex-start',
-    paddingLeft: '0',
-  },
-  releaseTabs: {
-    height: '100%',
-  },
-}))
 
 export default ReleaseTabs
