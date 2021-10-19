@@ -14,5 +14,11 @@
     "soft-lp:build": "yarn nina-common build && yarn soft-lp build",
     "web": "yarn workspace web",
     "web:build": "yarn nina-common build && yarn web build"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.5.0",
+    "@emotion/styled": "^11.3.0",
+    "@mui/material": "^5.0.4",
+    "@mui/styles": "^5.0.1"
   }
 }
