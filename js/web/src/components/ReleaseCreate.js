@@ -12,7 +12,7 @@ import ReleaseCard from './ReleaseCard'
 import * as Yup from 'yup'
 
 const { ReleaseSettings } = ninaCommon.components
-const { ReleaseContext } = ninaCommon.contexts
+const { ReleaseContext, NinaContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
 const ReleaseCreateSchema = Yup.object().shape({
@@ -30,14 +30,9 @@ const ReleaseCreate = () => {
   const theme = useTheme()
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const {
-    releaseCreate,
-    pressingState,
-    resetPressingState,
-    releaseState,
-    getNpcAmountHeld,
-    npcAmountHeld,
-  } = useContext(ReleaseContext)
+  const { releaseCreate, pressingState, resetPressingState, releaseState } =
+    useContext(ReleaseContext)
+  const { getNpcAmountHeld, npcAmountHeld } = useContext(NinaContext)
 
   const [track, setTrack] = useState(undefined)
   const [artwork, setArtwork] = useState()
@@ -78,7 +73,7 @@ const ReleaseCreate = () => {
   }, [releaseState.tokenData[releasePubkey]])
 
   useEffect(() => {
-    async function calculateFee(artwork, track, releaseForm) {
+    const calculateFee = async (artwork, track, releaseForm) => {
       const { amount, retailPrice } = releaseForm
 
       const ninaVaultFee = NinaClient.pressingFeeCalculator(
@@ -94,7 +89,7 @@ const ReleaseCreate = () => {
     }
   }, [track, artwork, formValues])
 
-  async function handleFormChange(values) {
+  const handleFormChange = async (values) => {
     setFormValues({
       ...formValues,
       releaseForm: values,

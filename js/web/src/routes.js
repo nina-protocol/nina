@@ -10,7 +10,6 @@ import Release from './components/Release'
 import AudioPlayer from './components/AudioPlayer'
 import NavBar from './components/NavBar'
 import NavDrawer from './components/NavDrawer'
-import HomePage from './components/HomePage'
 
 function Routes() {
   const classes = useStyles()
@@ -32,7 +31,6 @@ function Routes() {
               <Route path="/releases" component={ReleaseList}></Route>
               <Route path="/collection" component={UserCollection}></Route>
               <Route exact path="/release/:releasePubkey" component={Release} />
-              <Route path="/" component={HomePage}></Route>
             </Switch>
           </div>
           <AudioPlayer />

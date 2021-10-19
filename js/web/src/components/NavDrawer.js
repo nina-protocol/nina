@@ -30,16 +30,6 @@ const NavDrawer = () => {
   const [userCollectionReleasesCount, setUserCollectionReleasesCount] =
     useState()
 
-  const toggleDrawer = (open) => (event) => {
-    if (
-      event.type === 'keydown' &&
-      (event.key === 'Tab' || event.key === 'Shift')
-    ) {
-      return
-    }
-    setDrawerOpen(open)
-  }
-
   useEffect(() => {
     if (wallet?.connected) {
       getReleasesPublishedByUser()
@@ -52,6 +42,16 @@ const NavDrawer = () => {
       setUserCollectionReleasesCount(filterReleasesUserCollection().length)
     }
   }, [releaseState, collection])
+
+  const toggleDrawer = (open) => (event) => {
+    if (
+      event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift')
+    ) {
+      return
+    }
+    setDrawerOpen(open)
+  }
 
   const links = [
     'home',

@@ -15,6 +15,7 @@ const NinaContextProvider = ({ children, releasePubkey }) => {
   const [collection, setCollection] = useState({})
   const [usdcBalance, setUsdcBalance] = useState(0)
   const [solPrice, setSolPrice] = useState(0)
+  const [npcAmountHeld, setNpcAmountHeld] = useState(0)
 
   useEffect(() => {
     if (wallet?.wallet && wallet.publicKey) {
@@ -42,6 +43,7 @@ const NinaContextProvider = ({ children, releasePubkey }) => {
     getAmountHeld,
     getSolPrice,
     getUsdcBalance,
+    getNpcAmountHeld
   } = ninaContextHelper({
     wallet,
     connection,
@@ -49,6 +51,8 @@ const NinaContextProvider = ({ children, releasePubkey }) => {
     setCollection,
     setSolPrice,
     setUsdcBalance,
+    npcAmountHeld,
+    setNpcAmountHeld
   })
 
   return (
@@ -65,6 +69,8 @@ const NinaContextProvider = ({ children, releasePubkey }) => {
         solPrice,
         getUsdcBalance,
         usdcBalance,
+        getNpcAmountHeld,
+        npcAmountHeld
       }}
     >
       {children}
@@ -80,6 +86,8 @@ const ninaContextHelper = ({
   setCollection,
   setSolPrice,
   setUsdcBalance,
+  npcAmountHeld,
+  setNpcAmountHeld
 }) => {
   // Collection
 
@@ -292,6 +300,23 @@ const ninaContextHelper = ({
     }
   }
 
+  const getNpcAmountHeld = async () => {
+    const publishingCreditMint = new anchor.web3.PublicKey(
+      NinaClient.ids().mints.publishingCredit
+    )
+
+    if (wallet?.connected) {
+      let npcAccount = await connection.getParsedTokenAccountsByOwner(
+        wallet?.publicKey,
+        {mint: publishingCreditMint}
+      )
+      if (npcAccount.value[0]) {
+        setNpcAmountHeld(npcAccount.value[0].account.data.parsed.info.tokenAmount.uiAmount)
+      }
+    }
+    return
+  }
+
   return {
     createCollection,
     createCollectionForSingleRelease,
@@ -301,5 +326,6 @@ const ninaContextHelper = ({
     getAmountHeld,
     getSolPrice,
     getUsdcBalance,
+    getNpcAmountHeld
   }
 }
