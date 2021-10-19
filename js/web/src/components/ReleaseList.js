@@ -40,7 +40,7 @@ const ReleaseList = () => {
       resetSearchResults()
     }
   }
-  console.log('rr: ', releasesRecent)
+
   return (
     <Box className={classes.root}>
       <div>

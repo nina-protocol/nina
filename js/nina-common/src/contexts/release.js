@@ -894,41 +894,23 @@ const releaseContextHelper = ({
     }
   }
 
+  const getReleases = async (path) => {
+    if (!connection) {
+      return
+    }
+
+    const nina = await NinaClient.connect(provider)
+    const response = await fetch(`${NinaClient.endpoints.api}/releases${path}}`)
+    let releaseIds = await response.json()
+    await fetchAndSaveReleasesToState(releaseIds)
+  }
+
   const getReleasesInCollection = async () => {
-    const fetchedReleases = []
-    for (let releasePubkey of Object.keys(collection)) {
-      const releaseAccount = await fetchRelease(releasePubkey)
-      fetchedReleases.push(releaseAccount)
-    }
-    if (fetchedReleases.length > 0) {
-      saveReleasesToState(fetchedReleases)
-    }
+    await fetchAndSaveReleasesToState(Object.keys(collection))
   }
 
   const getReleasesPublishedByUser = async (user = null, handle) => {
-    const nina = await NinaClient.connect(provider)
-
-    if (!user) {
-      if (!wallet?.publicKey) {
-        return
-      }
-
-      user = wallet?.publicKey.toBase58()
-    }
-
-    let releaseAccounts = await getProgramAccounts(
-      nina.program,
-      'Release',
-      { authority: user },
-      connection
-    )
-    if (releaseAccounts.error) {
-      throw releaseAccounts.error
-    } else {
-      if (releaseAccounts.length > 0) {
-        saveReleasesToState(releaseAccounts, handle)
-      }
-    }
+    await getReleases(`/published/${wallet?.publicKey.toBase58()}`)
   }
 
   const getRedeemablesForRelease = async (releasePubkey) => {
@@ -1038,42 +1020,15 @@ const releaseContextHelper = ({
   }
 
   const getReleaseRoyaltiesByUser = async () => {
-    if (!connection) {
-      return
-    }
-    const nina = await NinaClient.connect(provider)
-    let releaseAccounts = await getProgramAccounts(
-      nina,
-      'RoyaltyRecipient',
-      { recipient_authority: wallet?.publicKey.toBase58() },
-      connection
-    )
-
-    if (releaseAccounts.error) {
-      throw releaseAccounts.error
-    } else {
-      saveReleasesToState(releaseAccounts)
-    }
+    await getReleases(`/royalties/${wallet?.publicKey.toBase58()}`)
   }
 
   const getReleasesRecent = async () => {
     const nina = await NinaClient.connect(provider)
     const result = await fetch(`${NinaClient.endpoints.api}/releases/recent`)
     const { published, purchase } = await result.json()
-    let releaseIdsToLookup = [...published, ...purchase]
-    releaseIdsToLookup = releaseIdsToLookup.filter(id => !Object.keys(releaseState.tokenData).includes(id))    
-    
-    const layout = nina.program.coder.accounts.accountLayouts.get('Release')
-    let releaseAccounts = await anchor.utils.rpc.getMultipleAccounts(
-      connection,
-      releaseIdsToLookup.map((id) => new anchor.web3.PublicKey(id))
-    )
-    releaseAccounts = releaseAccounts.map(release => {
-      let dataParsed = layout.decode(release.account.data.slice(8))
-      dataParsed.publicKey = release.publicKey
-      return dataParsed
-    })
-    await saveReleasesToState(releaseAccounts)
+    let releaseIds = [...published, ...purchase]
+    await fetchAndSaveReleasesToState(releaseIds)
 
     setReleasesRecentState({
       published,
@@ -1279,6 +1234,25 @@ const releaseContextHelper = ({
   UTILS
 
   */
+
+  const fetchAndSaveReleasesToState = async (releaseIds) => {
+    if (releaseIds.length > 0) {
+      releaseIds = releaseIds.filter(id => !Object.keys(releaseState.tokenData).includes(id))    
+      console.log(releaseIds)
+      let releaseAccounts = await anchor.utils.rpc.getMultipleAccounts(
+        connection,
+        releaseIds
+      )
+      const layout = nina.program.coder.accounts.accountLayouts.get('Release')
+      releaseAccounts = releaseAccounts.map(release => {
+        let dataParsed = layout.decode(release.account.data.slice(8))
+        dataParsed.publicKey = release.publicKey
+        return dataParsed
+      })
+
+      await saveReleasesToState(releaseAccounts)
+    }
+  }
 
   const saveReleaseMetadataToState = async (releasePubkey, releaseMetadata) => {
     let updatedState = { ...releaseState }
