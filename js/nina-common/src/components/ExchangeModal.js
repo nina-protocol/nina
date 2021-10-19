@@ -65,7 +65,7 @@ const StyledModal = styled(Modal)((
     display: 'flex',
     flexDirection: 'column',
     textAlign: 'center',
-    ...theme.helpers.gradient,
+    ...theme.gradient,
   },
 
   [`& .${classes.receivingAmount}`]: {

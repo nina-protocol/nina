@@ -38,7 +38,7 @@ const Root = styled('div')((
     overflowY: 'auto',
     position: 'relative',
     borderRadius: '0px',
-    ...theme.helpers.gradient,
+    ...theme.gradient,
   },
 
   [`& .${classes.redeemCta}`]: {

@@ -1,4 +1,4 @@
-import { createTheme, adaptV4Theme, createBreakpoints } from '@mui/material/styles';
+import { createTheme, adaptV4Theme } from '@mui/material/styles';
 
 const colors = {
   purple: '#9999cc',
@@ -16,7 +16,6 @@ const colors = {
   pink: '#FF54A6',
 }
 
-const breakpoints = createBreakpoints({})
 
 export const SlpTheme = createTheme(adaptV4Theme({
   palette: {
@@ -63,6 +62,11 @@ export const SlpTheme = createTheme(adaptV4Theme({
     grey: colors.grey,
     borderWidth: '1.5px',
     borderRadius: '16px',
+  },
+  gradient: {
+    // background: colors.blue,
+    background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(143,175,223,1) 0%, rgb(35,99,196) 100%)`,
+    color: colors.white,
   },
   transitions: {
     easing: {
@@ -138,9 +142,6 @@ export const SlpTheme = createTheme(adaptV4Theme({
         },
         body: {
           overflow: 'hidden',
-          [breakpoints.down('sm')]: {
-            overflow: 'auto',
-          },
         },
         a: {
           color: colors.black,

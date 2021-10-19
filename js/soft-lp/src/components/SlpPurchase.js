@@ -191,7 +191,7 @@ const Root = styled('div')((
     '& .MuiPaper-root': {
       width: '400px',
       height: '315px',
-      ...theme.helpers.gradient,
+      ...theme.gradient,
       '& .MuiDialogTitle-root': {
         color: `${theme.palette.white}`,
         textAlign: 'center',

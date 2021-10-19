@@ -42,7 +42,6 @@ export const NinaTheme = createTheme(adaptV4Theme({
     }
   },
   gradient: {
-    // background: colors.blue,
     background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(143,175,223,1) 0%, rgb(35,99,196) 100%)`,
     color: colors.white,
   },

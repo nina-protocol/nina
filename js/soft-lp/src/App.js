@@ -1,8 +1,8 @@
 import React from 'react'
 import { styled } from '@mui/material/styles';
 import { SnackbarProvider } from 'notistack'
-import withStyles from '@mui/styles/withStyles';
-import { ThemeProvider, StyledEngineProvider } from '@mui/styles';
+import {ThemeProvider} from '@mui/styles';
+import {StyledEngineProvider} from '@mui/styled-engine';
 import { SlpTheme } from './SlpTheme'
 import Router from './routes'
 import ninaCommon from 'nina-common'
@@ -34,7 +34,7 @@ const {
 
 const { extendBorsh } = ninaCommon.utils.metaplex.borsh
 
-function App({ }) {
+function App() {
   extendBorsh()
 
   return (

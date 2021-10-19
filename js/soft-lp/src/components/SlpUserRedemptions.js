@@ -36,7 +36,7 @@ const StyledBox = styled(Box)((
     display: 'grid',
     gridTemplateColumns: '20% 80%',
     gridGap: '1rem',
-    ...theme.helpers.gradient,
+    ...theme.gradient,
   },
 
   [`& .${classes.myRedemptionsCta}`]: {
