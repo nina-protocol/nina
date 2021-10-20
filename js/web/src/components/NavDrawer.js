@@ -18,7 +18,6 @@ const NavDrawer = () => {
   const classes = useStyles()
   const { collection } = useContext(NinaContext)
   const wallet = useWallet()
-
   const {
     releaseState,
     getReleasesPublishedByUser,

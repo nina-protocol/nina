@@ -33,7 +33,6 @@ const ReleaseCreate = () => {
   const { releaseCreate, pressingState, resetPressingState, releaseState } =
     useContext(ReleaseContext)
   const { getNpcAmountHeld, npcAmountHeld } = useContext(NinaContext)
-
   const [track, setTrack] = useState(undefined)
   const [artwork, setArtwork] = useState()
   const [releasePubkey, setReleasePubkey] = useState(undefined)
