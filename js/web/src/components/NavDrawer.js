@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
-
 import { makeStyles } from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
 import Button from '@material-ui/core/Button'
@@ -13,6 +12,16 @@ import MenuIcon from '@material-ui/icons/Menu'
 import { NavLink } from 'react-router-dom'
 
 const { NinaContext, ReleaseContext } = ninaCommon.contexts
+
+const links = [
+  'home',
+  'queue',
+  'collection',
+  'releases',
+  'upload',
+  'about nina',
+  'faq',
+]
 
 const NavDrawer = () => {
   const classes = useStyles()
@@ -51,16 +60,6 @@ const NavDrawer = () => {
     }
     setDrawerOpen(open)
   }
-
-  const links = [
-    'home',
-    'queue',
-    'collection',
-    'releases',
-    'upload',
-    'about nina',
-    'faq',
-  ]
 
   const list = () => (
     <div
@@ -111,7 +110,7 @@ const NavDrawer = () => {
                 </NavLink>
               )
             default:
-              ;<NavLink
+              <NavLink
                 className={`${classes.drawerLink}`}
                 to={`/${link}`}
                 activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
