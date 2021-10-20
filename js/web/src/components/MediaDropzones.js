@@ -13,12 +13,12 @@ function MediaDropzones({
 
   useEffect(() => {
     setMetadata({
-      artist: values.mediaForm?.artist,
-      title: values.mediaForm?.title,
-      description: values.mediaForm?.description,
-      catalogNumber: values.tokenForm?.catalogNumber,
+      artist: values.releaseForm?.artist,
+      title: values.releaseForm?.title,
+      description: values.releaseForm?.description,
+      catalogNumber: values.releaseForm?.catalogNumber,
       duration: track ? track.meta?.duration : 0,
-      resalePercentage: values.tokenForm.resalePercentage * 100
+      resalePercentage: values.releaseForm.resalePercentage * 100,
     })
   }, [values, track])
 

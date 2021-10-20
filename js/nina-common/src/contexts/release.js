@@ -1,11 +1,8 @@
 import { createContext, useState, useEffect, useContext } from 'react'
-
 import * as anchor from '@project-serum/anchor'
-
 import { useWallet } from '@solana/wallet-adapter-react'
 import { ConnectionContext } from './connection'
 import { NinaContext } from './nina'
-
 import {
   createMintInstructions,
   findOrCreateAssociatedTokenAccount,
@@ -64,6 +61,7 @@ const ReleaseContextProvider = ({ children }) => {
   const resetPressingState = () => {
     setPressingState(defaultPressingState)
   }
+
   const {
     releaseCreate,
     releaseUpdateMetadata,
@@ -158,6 +156,7 @@ const releaseContextHelper = ({
   redeemableState,
   setRedeemableState,
   removeReleaseFromCollection,
+  setNpcAmountHeld
 }) => {
   const provider = new anchor.Provider(
     connection,
@@ -359,7 +358,6 @@ const releaseContextHelper = ({
 
   const releaseUpdateMetadata = async (releasePubkey) => {
     const nina = await NinaClient.connect(provider)
-
     const arweaveMetadata = await releaseFetchMetadata(releasePubkey)
 
     if (arweaveMetadata) {
