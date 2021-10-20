@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 
 import Stepper from '@mui/material/Stepper'
 import Step from '@mui/material/Step'   
-import StepLabel from '@mui/material/StepLabel'
+import StepLabel from '@mui/material/StepLabel'   
 import StepContent from '@mui/material/StepContent'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
@@ -68,7 +68,7 @@ const ConfirmShipping = (props) => {
   )
 }
 
-const listStyles = makeStyles(() => ({
+const listStyles = style('div')((theme) => ({
   [`& .${classes.root}`]: {
     width: '300px',
     margin: 'auto',

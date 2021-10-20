@@ -9,7 +9,6 @@ import UserCollection from './components/UserCollection'
 import Release from './components/Release'
 import AudioPlayer from './components/AudioPlayer'
 import NavBar from './components/NavBar'
-import NavDrawer from './components/NavDrawer'
 import HomePage from './components/HomePage'
 
 const PREFIX = 'Routes';
@@ -52,7 +51,6 @@ function Routes() {
         >
           <div className={classes.bodyContainer}>
             <NavBar />
-            <NavDrawer />
             <Switch>
               <Route exact path="/upload" component={ReleaseCreate} />
               <Route path="/releases" component={ReleaseList}></Route>

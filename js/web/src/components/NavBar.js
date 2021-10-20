@@ -1,6 +1,7 @@
 import React, { useContext, useMemo } from 'react'
 import { styled } from '@mui/material/styles';
 import ninaCommon from 'nina-common'
+import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
 import { NavLink } from 'react-router-dom'
 import { useWallet } from '@solana/wallet-adapter-react'
@@ -184,29 +185,16 @@ const NavBar = () => {
   return (
     <Root className={classes.nav}>
       <div className={classes.nav__left}>
-        <NavLink
-          className={`${classes.nav}__link`}
-          to="/"
-          activeClassName={`${classes.nav}__link ${classes.nav}__link--active  `}
-        >
-          <img src={ninaLogo} className={classes.nav__logo} alt="nina" />
-        </NavLink>
-        <NavLink
-          className={`${classes.nav}__link`}
-          to="/upload"
-          activeClassName={`${classes.nav}__link ${classes.nav}__link--active  `}
-        >
-          upload
-        </NavLink>
-        <NavLink
-          className={`${classes.nav}__link`}
-          exact
-          to="/"
-          activeClassName={`${classes.nav}__link ${classes.nav}__link--active  `}
-        >
-          dashboard
-        </NavLink>
+        <NavDrawer />
       </div>
+
+      <NavLink
+        className={`${classes.nav}__link`}
+        to="/"
+        activeClassName={`${classes.nav}__link ${classes.nav}__link--active  `}
+      >
+        <img src={ninaLogo} className={classes.nav__logo} alt="nina" />
+      </NavLink>
 
       <div className={classes.nav__right}>
         <span className={classes.nav__balance}>

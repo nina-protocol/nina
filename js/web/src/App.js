@@ -1,7 +1,7 @@
 import React from 'react'
 import { styled } from '@mui/material/styles';
 import { SnackbarProvider } from 'notistack'
-import { ThemeProvider } from '@mui/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import {StyledEngineProvider} from '@mui/styled-engine';
 import { NinaTheme } from './NinaTheme'
 import Router from './routes'
@@ -36,6 +36,7 @@ const { extendBorsh } = ninaCommon.utils.metaplex.borsh
 
 function App() {
   extendBorsh()
+
 
   return (
     <StyledStyledEngineProvider injectFirst>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { styled } from '@mui/material/styles';
+import {withTheme} from '@mui/styles'
 import ninaCommon from 'nina-common'
 import SmoothImage from 'react-smooth-image'
 import Button from '@mui/material/Button'
@@ -30,9 +31,8 @@ const Root = styled('div')((
   [`& .${classes.releaseCard}`]: {
     width: '100%',
     height: '100%',
-    // border: `${theme.palette.borderWidth} solid ${theme.palette.purple}`,
-    borderRadius: `${theme.palette.borderRadius}`,
-    border: '2px solid red',
+    border: `${theme.borderWidth} solid ${theme.palette.purple}`,
+    borderRadius: `${theme.borderRadius}`,
     '&__content': {
       width: '70%',
       margin: 'auto',
@@ -67,7 +67,8 @@ const { NinaContext, AudioPlayerContext, ExchangeContext, ReleaseContext } =
 const { RedeemableModal } = ninaCommon.components
 
 const ReleaseCard = (props) => {
-  const { artwork, metadata, preview, releasePubkey } = props
+  const { artwork, metadata, preview, releasePubkey, theme } = props
+  console.log('theme :>> ', theme);
 
   const wallet = useWallet()
   const { getAmountHeld, collection } = useContext(NinaContext)
@@ -110,7 +111,7 @@ const ReleaseCard = (props) => {
   }, [exchangeState])
 
   return (
-    <Root className={classes.releaseCardWrapper}>
+    <Root theme={theme} className={classes.releaseCardWrapper}>
       <div className={`${classes.releaseCard}`}>
         <div className={`${classes.releaseCard}__content`}>
           <div className={`${classes.releaseCard}__image`}>
@@ -204,4 +205,4 @@ const ReleaseCard = (props) => {
   );
 }
 
-export default ReleaseCard
+export default withTheme(ReleaseCard)

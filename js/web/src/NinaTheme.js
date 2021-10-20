@@ -1,4 +1,4 @@
-import { createTheme, adaptV4Theme } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
 
 const colors = {
   purple: '#9999cc',
@@ -17,7 +17,7 @@ const colors = {
 }
 
 
-export const NinaTheme = createTheme(adaptV4Theme({
+export const NinaTheme = createTheme(({
   palette: {
     secondary: {
       main: '#9999cc',
@@ -36,6 +36,9 @@ export const NinaTheme = createTheme(adaptV4Theme({
     },
     black: {
       main: colors.black
+    },
+    purple: {
+      main: colors.purple
     },
     white: {
       main: colors.white
@@ -62,23 +65,25 @@ export const NinaTheme = createTheme(adaptV4Theme({
       fontFamily: ['BlockBE-Heavy'].join(','),
     },
   },
-  vars: {
-    purple: colors.purple,
-    purpleLight: colors.purpleLight,
-    pink: colors.pink,
-    red: colors.red,
-    orange: colors.orange,
-    green: colors.green,
-    white: colors.white,
-    black: colors.black,
-    blue: colors.blue,
-    blueTrans: colors.blueTrans,
-    transparent: colors.transparent,
-    greyLight: colors.greyLight,
-    grey: colors.grey,
-    borderWidth: '1.5px',
-    borderRadius: '16px',
+  custom: {
+    vars: {
+      // purple: colors.purple,
+      // purpleLight: colors.purpleLight,
+      // pink: colors.pink,
+      // red: colors.red,
+      // orange: colors.orange,
+      // green: colors.green,
+      // white: colors.white,
+      // black: colors.black,
+      // blue: colors.blue,
+      // blueTrans: colors.blueTrans,
+      // transparent: colors.transparent,
+      // greyLight: colors.greyLight,
+      // grey: colors.grey,
+    },
   },
+  borderWidth: '1.5px',
+  borderRadius: '16px',
   transitions: {
     easing: {
       easeOut: 'cubic-bezier(0, 1.5, .8, 1)',
@@ -110,36 +115,34 @@ export const NinaTheme = createTheme(adaptV4Theme({
     input: {
       width: '60%',
     },
-    gradient: {
-      // background: colors.blue,
-      background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(143,175,223,1) 0%, rgb(35,99,196) 100%)`,
-      color: colors.white,
-    },
   },
-  overrides: {
+  components: {
     MuiButton: {
-      root: {
-        padding: '10px',
-        fontSize: '10px',
-        '&.MuiButton-outlined': {
-          borderRadius: '50px',
+      styleOverrides:{
+        root: {
+          border: 'p2px solid red',
           padding: '10px',
-          '&:hover': {
-            borderColor: `${colors.blue}`,
+          fontSize: '100px',
+          '&.MuiButton-outlined': {
+            borderRadius: '50px',
+            padding: '10px',
+            '&:hover': {
+              borderColor: `${colors.blue}`,
+            },
           },
-        },
-        '&.MuiButton-contained': {
-          borderRadius: '50px',
-          padding: '10px',
-          backgroundColor: `${colors.white}`,
-          color: `${colors.black}`,
-          boxShadow: 'none',
-          '&:hover': {
+          '&.MuiButton-contained': {
+            borderRadius: '50px',
+            padding: '10px',
             backgroundColor: `${colors.white}`,
+            color: `${colors.black}`,
             boxShadow: 'none',
+            '&:hover': {
+              backgroundColor: `${colors.white}`,
+              boxShadow: 'none',
+            },
           },
         },
-      },
+      }
     },
     MuiTypography: {
       root: {
