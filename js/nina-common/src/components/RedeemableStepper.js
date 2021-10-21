@@ -68,7 +68,7 @@ const ConfirmShipping = (props) => {
   )
 }
 
-const listStyles = style('div')((theme) => ({
+const listStyles = styled('div')((theme) => ({
   [`& .${classes.root}`]: {
     width: '300px',
     margin: 'auto',

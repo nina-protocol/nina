@@ -10,87 +10,11 @@ import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded'
 import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
 import VolumeUpIcon from '@mui/icons-material/VolumeUp'
 import VolumeOffIcon from '@mui/icons-material/VolumeOff'
-import { useTheme } from '@mui/material/styles'
 import PlaylistDrawer from './PlaylistDrawer'
-
-const PREFIX = 'AudioPlayer'
-
-const classes = {
-  player: `${PREFIX}-player`,
-}
-
-const Root = styled('div')(({ theme }) => ({
-  [`& .${classes.player}`]: {
-    position: 'fixed',
-    bottom: '0',
-    width: '100%',
-    maxWidth: '100vw',
-    alignItems: 'center',
-    gridTemplateColumns: '10% 20% 45% 1fr',
-    boxShadow: `0px -1px 9px 5px rgba(0,0,0,0.08)`,
-    background: `${theme.palette.white}`,
-    '&__info': {
-      width: '100%',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    '&__copy': {
-      textAlign: 'left',
-      width: '80%',
-      paddingLeft: '1rem',
-      '&-line': {
-        margin: '0',
-        whiteSpace: 'nowrap',
-        textOverflow: 'ellipsis',
-        overflow: 'hidden',
-        '&--connect': {
-          whiteSpace: 'pre-line',
-          textAlign: 'center',
-        },
-      },
-    },
-    '&__progress-container': {
-      width: '100%',
-      display: 'flex',
-      alignItems: 'center',
-    },
-    '&__controls': {
-      display: 'flex',
-      justifyContent: 'space-around',
-      width: '90%',
-      padding: '0.5rem 0.5rem 0.5rem 0',
-      fontSize: '3rem',
-      alignItems: 'center',
-    },
-    '&__button': {
-      fontSize: '2rem',
-      padding: '0.5rem 0',
-      color: `${theme.palette.purple}`,
-      cursor: 'pointer',
-      '&--next': {
-        paddingRight: '1rem',
-      },
-      '&--volume-mute': {
-        paddingLeft: '16px',
-      },
-    },
-    '&__time': {
-      width: '4rem',
-      '&--elapsed': {
-        paddingRight: '1rem',
-      },
-      '&--duration': {
-        paddingLeft: '1rem',
-      },
-    },
-  },
-}))
 
 const { AudioPlayerContext } = ninaCommon.contexts
 
 const AudioPlayer = () => {
-  const theme = useTheme()
   const { txid, updateTxid, playlist } = useContext(AudioPlayerContext)
   const wallet = useWallet()
   let playerRef = useRef()
@@ -269,7 +193,7 @@ const AudioPlayer = () => {
     : `Connect you wallet to listen to your collection`
 
   return (
-    <Root style={theme.helpers.grid} className={`${classes.player}`}>
+    <Root  className={`${classes.player}`}>
       <audio id="audio" style={{ width: '100%' }}>
         <source src={txid} type="audio/mp3" />
       </audio>
@@ -367,5 +291,81 @@ const AudioPlayer = () => {
     </Root>
   )
 }
+
+const PREFIX = 'AudioPlayer'
+
+const classes = {
+  player: `${PREFIX}-player`,
+}
+
+const Root = styled('div')(({theme}) => ({
+  position: 'fixed',
+  bottom: '0',
+  width: '100%',
+  maxWidth: '100vw',
+  alignItems: 'center',
+  gridTemplateColumns: '10% 20% 45% 1fr',
+  boxShadow: `0px -1px 9px 5px rgba(0,0,0,0.08)`,
+  background: `${theme.palette.white}`,
+  ...theme.helpers.grid,
+  [`& .${classes.player}`]: {
+    '&__info': {
+      width: '100%',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    '&__copy': {
+      textAlign: 'left',
+      width: '80%',
+      paddingLeft: '1rem',
+      '&-line': {
+        margin: '0',
+        whiteSpace: 'nowrap',
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        '&--connect': {
+          whiteSpace: 'pre-line',
+          textAlign: 'center',
+        },
+      },
+    },
+    '&__progress-container': {
+      width: '100%',
+      display: 'flex',
+      alignItems: 'center',
+    },
+    '&__controls': {
+      display: 'flex',
+      justifyContent: 'space-around',
+      width: '90%',
+      padding: '0.5rem 0.5rem 0.5rem 0',
+      fontSize: '3rem',
+      alignItems: 'center',
+    },
+    '&__button': {
+      fontSize: '2rem',
+      padding: '0.5rem 0',
+      color: `${theme.palette.purple}`,
+      cursor: 'pointer',
+      '&--next': {
+        paddingRight: '1rem',
+      },
+      '&--volume-mute': {
+        paddingLeft: '16px',
+      },
+    },
+    '&__time': {
+      width: '4rem',
+      '&--elapsed': {
+        paddingRight: '1rem',
+      },
+      '&--duration': {
+        paddingLeft: '1rem',
+      },
+    },
+  },
+}))
+
 
 export default AudioPlayer

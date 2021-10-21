@@ -28,8 +28,8 @@ function Routes() {
               <Route path="/collection" component={UserCollection}></Route>
               <Route exact path="/release/:releasePubkey" component={Release} />
             </Switch>
-          </div>
           <AudioPlayer />
+          </div>
         </Container>
       </BrowserRouter>
     </Root>
