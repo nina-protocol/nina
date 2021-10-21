@@ -2,7 +2,6 @@ import React, { useState, useContext, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
-
 import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
@@ -13,6 +12,16 @@ import MenuIcon from '@mui/icons-material/Menu'
 import { NavLink } from 'react-router-dom'
 
 const { NinaContext, ReleaseContext } = ninaCommon.contexts
+
+const links = [
+  'home',
+  'queue',
+  'collection',
+  'releases',
+  'upload',
+  'about nina',
+  'faq',
+]
 
 const NavDrawer = () => {
   const { collection } = useContext(NinaContext)
@@ -28,16 +37,6 @@ const NavDrawer = () => {
   const [userCollectionReleasesCount, setUserCollectionReleasesCount] =
     useState()
 
-  const toggleDrawer = (open) => (event) => {
-    if (
-      event.type === 'keydown' &&
-      (event.key === 'Tab' || event.key === 'Shift')
-    ) {
-      return
-    }
-    setDrawerOpen(open)
-  }
-
   useEffect(() => {
     if (wallet?.connected) {
       getReleasesPublishedByUser()
@@ -51,15 +50,15 @@ const NavDrawer = () => {
     }
   }, [releaseState, collection])
 
-  const links = [
-    'home',
-    'queue',
-    'collection',
-    'releases',
-    'upload',
-    'about nina',
-    'faq',
-  ]
+  const toggleDrawer = (open) => (event) => {
+    if (
+      event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift')
+    ) {
+      return
+    }
+    setDrawerOpen(open)
+  }
 
   const list = () => (
     <Root
@@ -110,7 +109,7 @@ const NavDrawer = () => {
                 </NavLink>
               )
             default:
-              ;<NavLink
+              <NavLink
                 className={`${classes.drawerLink}`}
                 to={`/${link}`}
                 activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}

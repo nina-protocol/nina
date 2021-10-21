@@ -9,7 +9,7 @@ import UserCollection from './components/UserCollection'
 import Release from './components/Release'
 import AudioPlayer from './components/AudioPlayer'
 import NavBar from './components/NavBar'
-import HomePage from './components/HomePage'
+import NavDrawer from './components/NavDrawer'
 
 const PREFIX = 'Routes'
 
@@ -54,7 +54,6 @@ function Routes() {
               <Route path="/releases" component={ReleaseList}></Route>
               <Route path="/collection" component={UserCollection}></Route>
               <Route exact path="/release/:releasePubkey" component={Release} />
-              <Route path="/" component={HomePage}></Route>
             </Switch>
           </div>
           <AudioPlayer />
