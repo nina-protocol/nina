@@ -9,33 +9,6 @@ import UserCollection from './components/UserCollection'
 import Release from './components/Release'
 import AudioPlayer from './components/AudioPlayer'
 import NavBar from './components/NavBar'
-import NavDrawer from './components/NavDrawer'
-
-const PREFIX = 'Routes'
-
-const classes = {
-  mainContainer: `${PREFIX}-mainContainer`,
-  bodyContainer: `${PREFIX}-bodyContainer`,
-}
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled('div')(() => ({
-  [`& .${classes.mainContainer}`]: {
-    height: '100vh',
-    width: '100vw',
-    overflow: 'hidden',
-  },
-
-  [`& .${classes.bodyContainer}`]: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-    textAlign: 'center',
-    height: '100%',
-  },
-}))
 
 function Routes() {
   return (
@@ -62,5 +35,30 @@ function Routes() {
     </Root>
   )
 }
+
+const PREFIX = 'Routes'
+
+const classes = {
+  mainContainer: `${PREFIX}-mainContainer`,
+  bodyContainer: `${PREFIX}-bodyContainer`,
+}
+
+const Root = styled('div')(() => ({
+  [`& .${classes.mainContainer}`]: {
+    height: '100vh',
+    width: '100vw',
+    overflow: 'hidden',
+  },
+
+  [`& .${classes.bodyContainer}`]: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+    textAlign: 'center',
+    height: '100%',
+  },
+}))
 
 export default Routes

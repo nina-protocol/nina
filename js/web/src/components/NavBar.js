@@ -39,8 +39,8 @@ const NavBar = () => {
 
   return (
     <Root className={classes.nav}>
-      <div className={classes.nav__left}>
         <NavDrawer />
+      <div className={classes.nav__left}>
       </div>
 
       <NavLink
@@ -98,11 +98,12 @@ const Root = styled('nav')(({ theme }) => ({
     display: 'flex',
     justifyContent: 'space-between',
     zIndex: '12',
-    padding: '10px',
+    padding: theme.spacing(1),
     marginBottom: '0.5rem',
     paddingRight: '0',
     position: 'absolute',
     top: '0',
+    left: '0'
   },
 
   [`& .${classes.nav__left}`]: {
@@ -142,7 +143,7 @@ const StyledWalletDialogProvider = styled(WalletDialogProvider)(
     },
     '& .MuiPaper-root': {
       width: '400px',
-      height: '315px',
+      height: 'auto',
       ...theme.helpers.gradient,
       '& .MuiDialogTitle-root': {
         color: `${theme.palette.white}`,

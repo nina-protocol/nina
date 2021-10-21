@@ -77,7 +77,7 @@ export const NinaTheme = createTheme({
       sharp: 'linear',
     },
   },
-  spacing: 10,
+  spacing: 15,
   shadows: ['none'],
   helpers: {
     grid: {
@@ -112,10 +112,10 @@ export const NinaTheme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          border: '2px solid red',
           padding: '10px',
           fontSize: '100px',
           boxShadow: 'none',
+          minWidth: 'unset !important',
           '&.MuiButton-outlined': {
             borderRadius: '50px',
             padding: '10px',

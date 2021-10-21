@@ -8,8 +8,10 @@ import Box from '@mui/material/Box'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
-import MenuIcon from '@mui/icons-material/Menu'
 import { NavLink } from 'react-router-dom'
+import {Icon} from "@material-ui/core";
+import hamburger from "../assets/hamburger.svg";
+
 
 const { NinaContext, ReleaseContext } = ninaCommon.contexts
 
@@ -61,13 +63,12 @@ const NavDrawer = () => {
   }
 
   const list = () => (
-    <Root
-      className={classes.list}
+    <Box
       role="presentation"
       onClick={toggleDrawer(false)}
       onKeyDown={toggleDrawer(false)}
     >
-      <List>
+      <StyledList disablePadding >
         {links.map((link) => {
           switch (link) {
             case 'collection':
@@ -134,25 +135,27 @@ const NavDrawer = () => {
             </NavLink>
           )
         })}
-      </List>
-    </Root>
+      </StyledList>
+    </Box>
   )
 
   return (
     <div>
       {
         <Box key={'left'}>
-          <Button onClick={toggleDrawer(true)} className={classes.toggle}>
-            <MenuIcon />
-          </Button>
-          <Drawer
+          <StyledMenuButton onClick={toggleDrawer(true)} >
+            <Icon>
+              <img src={hamburger} height={25} width={25} />
+            </Icon>
+          </StyledMenuButton>
+          <StyledDrawer
             anchor={'left'}
             open={drawerOpen}
             onClose={toggleDrawer(false)}
             BackdropProps={{ invisible: true }}
           >
             {list()}
-          </Drawer>
+          </StyledDrawer>
         </Box>
       }
     </div>
@@ -167,25 +170,27 @@ const classes = {
   drawerLink: `${PREFIX}-drawerLink`,
 }
 
-const Root = styled('div')(({ theme }) => ({
-  [`& .${classes.toggle}`]: {
-    position: 'absolute',
-    top: theme.spacing(6),
-    left: theme.spacing(2),
-    minWidth: 'unset',
-    paddingLeft: '0',
-    zIndex: '1000',
-  },
+const StyledDrawer = styled(Drawer)(() => ({
+  '& .MuiPaper-root': {
+    width: 400
+  }
 
-  [`&.${classes.list}`]: {
-    width: 250,
-    height: '100%',
-    color: theme.palette.black,
-  },
+}))
+const StyledList = styled(List)(({theme}) => ({
+  padding: `${theme.spacing(6, 4, 0, 4)} !important`,
+  '& .MuiListItem-root': {
+    padding: '5px 0'
+  }
+}))
 
-  [`& .${classes.drawerLink}`]: {
-    color: theme.palette.black,
+const StyledMenuButton = styled(Button)(({theme}) => ({
+  padding: '0px !important',
+  '&:hover': {
+    backgroundColor: `${theme.palette.transparent} !important`
   },
+  '& .MuiSvgIcon-root': {
+    color: theme.palette.black,
+  }
 }))
 
 export default NavDrawer
