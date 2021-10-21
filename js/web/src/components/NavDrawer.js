@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
 
@@ -12,46 +12,11 @@ import ListItemText from '@mui/material/ListItemText'
 import MenuIcon from '@mui/icons-material/Menu'
 import { NavLink } from 'react-router-dom'
 
-const PREFIX = 'NavDrawer';
-
-const classes = {
-  toggle: `${PREFIX}-toggle`,
-  list: `${PREFIX}-list`,
-  drawerLink: `${PREFIX}-drawerLink`
-};
-
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
-  [`& .${classes.toggle}`]: {
-    position: 'absolute',
-    top: theme.spacing(6),
-    left: theme.spacing(2),
-    minWidth: 'unset',
-    paddingLeft: '0',
-    zIndex: '1000',
-  },
-
-  [`&.${classes.list}`]: {
-    width: 250,
-    height: '100%',  
-    color: theme.palette.black,
-  },
-
-  [`& .${classes.drawerLink}`]: {
-    color: theme.palette.white,
-  }
-}));
-
 const { NinaContext, ReleaseContext } = ninaCommon.contexts
 
 const NavDrawer = () => {
-
   const { collection } = useContext(NinaContext)
   const wallet = useWallet()
-
   const {
     releaseState,
     getReleasesPublishedByUser,
@@ -194,5 +159,34 @@ const NavDrawer = () => {
     </div>
   )
 }
+
+const PREFIX = 'NavDrawer'
+
+const classes = {
+  toggle: `${PREFIX}-toggle`,
+  list: `${PREFIX}-list`,
+  drawerLink: `${PREFIX}-drawerLink`,
+}
+
+const Root = styled('div')(({ theme }) => ({
+  [`& .${classes.toggle}`]: {
+    position: 'absolute',
+    top: theme.spacing(6),
+    left: theme.spacing(2),
+    minWidth: 'unset',
+    paddingLeft: '0',
+    zIndex: '1000',
+  },
+
+  [`&.${classes.list}`]: {
+    width: 250,
+    height: '100%',
+    color: theme.palette.black,
+  },
+
+  [`& .${classes.drawerLink}`]: {
+    color: theme.palette.black,
+  },
+}))
 
 export default NavDrawer

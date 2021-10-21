@@ -1,18 +1,18 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import Button from '@mui/material/Button'
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles'
 
 import ReleaseCard from './ReleaseCard'
 import ReleaseTabs from './ReleaseTabs'
 
-const PREFIX = 'Release';
+const PREFIX = 'Release'
 
 const classes = {
   release: `${PREFIX}-release`,
-  releaseControls: `${PREFIX}-releaseControls`
-};
+  releaseControls: `${PREFIX}-releaseControls`,
+}
 
 // TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
 const Root = styled('div')(() => ({
@@ -27,8 +27,8 @@ const Root = styled('div')(() => ({
     margin: 'auto',
     height: '100%',
     width: '80%',
-  }
-}));
+  },
+}))
 
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
 
@@ -67,7 +67,7 @@ const Release = ({ match }) => {
   }
 
   return (
-    (<Root>
+    <Root>
       <div style={theme.helpers.grid} className={`${classes.release}`}>
         <ReleaseCard
           metadata={metadata}
@@ -78,8 +78,8 @@ const Release = ({ match }) => {
           <ReleaseTabs releasePubkey={releasePubkey} />
         </div>
       </div>
-    </Root>)
-  );
+    </Root>
+  )
 }
 
 export default Release

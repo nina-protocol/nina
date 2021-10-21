@@ -1,11 +1,11 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useSnackbar } from 'notistack'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import { Typography } from '@mui/material'
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles'
 
 import { useWallet } from '@solana/wallet-adapter-react'
 import ReleaseCreateForm from './ReleaseCreateForm'
@@ -13,15 +13,15 @@ import MediaDropzones from './MediaDropzones'
 import ReleaseCard from './ReleaseCard'
 import * as Yup from 'yup'
 
-const PREFIX = 'ReleaseCreate';
+const PREFIX = 'ReleaseCreate'
 
 const classes = {
   createWrapper: `${PREFIX}-createWrapper`,
   createFlowGrid: `${PREFIX}-createFlowGrid`,
   createFormContainer: `${PREFIX}-createFormContainer`,
   createReleaseContainer: `${PREFIX}-createReleaseContainer`,
-  createCta: `${PREFIX}-createCta`
-};
+  createCta: `${PREFIX}-createCta`,
+}
 
 const Root = styled('div')(() => ({
   [`&.${classes.createWrapper}`]: {
@@ -49,8 +49,8 @@ const Root = styled('div')(() => ({
   [`& .${classes.createCta}`]: {
     gridColumn: '1/13',
     paddingTop: '0.5rem',
-  }
-}));
+  },
+}))
 
 const { ReleaseSettings } = ninaCommon.components
 const { ReleaseContext } = ninaCommon.contexts
@@ -67,7 +67,6 @@ const ReleaseCreateSchema = Yup.object().shape({
 })
 
 const ReleaseCreate = () => {
-
   const theme = useTheme()
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
@@ -197,7 +196,7 @@ const ReleaseCreate = () => {
           artwork={artwork}
         />
       </Root>
-    );
+    )
   }
 
   return (

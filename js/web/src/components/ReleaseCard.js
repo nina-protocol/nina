@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { styled } from '@mui/material/styles';
-import {withTheme} from '@mui/styles'
+import { styled } from '@mui/material/styles'
+import { withTheme } from '@mui/styles'
 import ninaCommon from 'nina-common'
 import SmoothImage from 'react-smooth-image'
 import Button from '@mui/material/Button'
@@ -11,18 +11,14 @@ import { Typography } from '@mui/material'
 import { useWallet } from '@solana/wallet-adapter-react'
 import ninaRecord from '../assets/nina-record.png'
 
-const PREFIX = 'ReleaseCard';
+const PREFIX = 'ReleaseCard'
 
 const classes = {
   releaseCardWrapper: `${PREFIX}-releaseCardWrapper`,
-  releaseCard: `${PREFIX}-releaseCard`
-};
+  releaseCard: `${PREFIX}-releaseCard`,
+}
 
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
+const Root = styled('div')(({ theme }) => ({
   [`&.${classes.releaseCardWrapper}`]: {
     height: '100%',
     width: '80%',
@@ -59,8 +55,8 @@ const Root = styled('div')((
       margin: 'auto 0',
       padding: '0',
     },
-  }
-}));
+  },
+}))
 
 const { NinaContext, AudioPlayerContext, ExchangeContext, ReleaseContext } =
   ninaCommon.contexts
@@ -68,8 +64,6 @@ const { RedeemableModal } = ninaCommon.components
 
 const ReleaseCard = (props) => {
   const { artwork, metadata, preview, releasePubkey, theme } = props
-  console.log('theme :>> ', theme);
-
   const wallet = useWallet()
   const { getAmountHeld, collection } = useContext(NinaContext)
   const { updateTxid } = useContext(AudioPlayerContext)
@@ -202,7 +196,7 @@ const ReleaseCard = (props) => {
         </div>
       </div>
     </Root>
-  );
+  )
 }
 
 export default withTheme(ReleaseCard)

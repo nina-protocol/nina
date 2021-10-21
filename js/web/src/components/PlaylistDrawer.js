@@ -1,9 +1,9 @@
 /* eslint @typescript-eslint/no-unused-vars: 0 */
 import React, { useState, useEffect, useContext } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import clsx from 'clsx'
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles'
 import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
 import List from '@mui/material/List'
@@ -16,12 +16,12 @@ import QueueMusicIcon from '@mui/icons-material/QueueMusic'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
-const PREFIX = 'PlaylistDrawer';
+const PREFIX = 'PlaylistDrawer'
 
 const classes = {
   list: `${PREFIX}-list`,
-  fullList: `${PREFIX}-fullList`
-};
+  fullList: `${PREFIX}-fullList`,
+}
 
 const Root = styled('div')({
   [`&.${classes.list}`]: {
@@ -30,7 +30,7 @@ const Root = styled('div')({
   [`&.${classes.fullList}`]: {
     width: 'auto',
   },
-});
+})
 
 const { AudioPlayerContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils

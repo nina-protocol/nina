@@ -1,27 +1,27 @@
 import React from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import { SnackbarProvider } from 'notistack'
-import { ThemeProvider } from '@mui/material/styles';
-import {StyledEngineProvider} from '@mui/styled-engine';
+import { ThemeProvider } from '@mui/material/styles'
+import { StyledEngineProvider } from '@mui/styled-engine'
 import { NinaTheme } from './NinaTheme'
 import Router from './routes'
 import ninaCommon from 'nina-common'
 
-const PREFIX = 'App';
+const PREFIX = 'App'
 
 const classes = {
   containerRoot: `${PREFIX}-containerRoot`,
   success: `${PREFIX}-success`,
   error: `${PREFIX}-error`,
-  info: `${PREFIX}-info`
-};
+  info: `${PREFIX}-info`,
+}
 
 const StyledStyledEngineProvider = styled(StyledEngineProvider)({
   [`& .${classes.containerRoot}`]: { paddingTop: '75px' },
   [`& .${classes.success}`]: { backgroundColor: 'rgba(45, 129, 255, 1)' },
   [`& .${classes.error}`]: { backgroundColor: 'red' },
   [`& .${classes.info}`]: { backgroundColor: 'rgba(45, 129, 255, 1)' },
-});
+})
 
 const {
   ConnectionContextProvider,
@@ -36,7 +36,6 @@ const { extendBorsh } = ninaCommon.utils.metaplex.borsh
 
 function App() {
   extendBorsh()
-
 
   return (
     <StyledStyledEngineProvider injectFirst>
@@ -72,7 +71,7 @@ function App() {
         </SnackbarProvider>
       </ThemeProvider>
     </StyledStyledEngineProvider>
-  );
+  )
 }
 
-export default (App)
+export default App

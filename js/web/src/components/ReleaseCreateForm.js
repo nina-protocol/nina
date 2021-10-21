@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { withFormik, Form, Field } from 'formik'
 
@@ -9,7 +9,7 @@ import Slider from '@mui/material/Slider'
 import Box from '@mui/material/Box'
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
-const PREFIX = 'ReleaseCreateForm';
+const PREFIX = 'ReleaseCreateForm'
 
 const classes = {
   createFormContainer: `${PREFIX}-createFormContainer`,
@@ -19,14 +19,10 @@ const classes = {
   formField: `${PREFIX}-formField`,
   formError: `${PREFIX}-formError`,
   resalePercentageWrapper: `${PREFIX}-resalePercentageWrapper`,
-  formSlider: `${PREFIX}-formSlider`
-};
+  formSlider: `${PREFIX}-formSlider`,
+}
 
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
+const Root = styled('div')(({ theme }) => ({
   [`& .${classes.createFormContainer}`]: {
     gridColumn: '2/6',
     width: '100%',
@@ -85,8 +81,8 @@ const Root = styled('div')((
       border: '2px solid red',
       marginLeft: '0',
     },
-  }
-}));
+  },
+}))
 
 const { NinaClient } = ninaCommon.utils
 
@@ -99,8 +95,6 @@ function ReleaseCreateForm({
   touched,
   setFieldValue,
 }) {
-
-
   useEffect(() => {
     if (onChange) {
       onChange(values)
@@ -273,7 +267,7 @@ function ReleaseCreateForm({
         </Box>
       </Form>
     </Root>
-  );
+  )
 }
 
 export default withFormik({

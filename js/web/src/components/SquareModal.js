@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 
 import Modal from '@mui/material/Modal'
@@ -9,18 +9,14 @@ import Button from '@mui/material/Button'
 import { CircularProgress } from '@mui/material'
 import SquareForm from './SquareForm'
 
-const PREFIX = 'SquareModal';
+const PREFIX = 'SquareModal'
 
 const classes = {
   modal: `${PREFIX}-modal`,
-  paper: `${PREFIX}-paper`
-};
+  paper: `${PREFIX}-paper`,
+}
 
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
+const Root = styled('div')(({ theme }) => ({
   [`& .${classes.modal}`]: {
     display: 'flex',
     alignItems: 'center',
@@ -32,8 +28,8 @@ const Root = styled('div')((
     border: '2px solid #000',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
-  }
-}));
+  },
+}))
 
 const { NinaContext, ReleaseContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
@@ -43,7 +39,6 @@ export default function SquareModal({
   releasePubkey,
   release,
 }) {
-
   const { getRelease } = useContext(ReleaseContext)
   const { addReleaseToCollection, getUsdcBalance } = useContext(NinaContext)
   const [open, setOpen] = useState(false)
@@ -120,5 +115,5 @@ export default function SquareModal({
         </Fade>
       </Modal>
     </Root>
-  );
+  )
 }

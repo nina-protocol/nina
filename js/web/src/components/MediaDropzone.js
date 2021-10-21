@@ -4,13 +4,13 @@ import ninaCommon from 'nina-common'
 import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
 
-const PREFIX = 'MediaDropzone';
+const PREFIX = 'MediaDropzone'
 
 const classes = {
   dropZone: `${PREFIX}-dropZone`,
   dropZoneInputLabel: `${PREFIX}-dropZoneInputLabel`,
-  dropZonePreviewWrapper: `${PREFIX}-dropZonePreviewWrapper`
-};
+  dropZonePreviewWrapper: `${PREFIX}-dropZonePreviewWrapper`,
+}
 
 // const StyledDropzone
 //  = styled(Dropzone
@@ -52,8 +52,6 @@ function MediaDropzone({
   setArtwork,
   setTrack,
 }) {
-
-
   const getUploadParams = ({ file }) => {
     const body = new FormData()
     body.append('file', file)

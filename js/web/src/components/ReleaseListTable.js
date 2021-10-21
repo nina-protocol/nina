@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useHistory } from 'react-router-dom'
 
@@ -12,20 +12,16 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
 
-const PREFIX = 'ReleaseListTable';
+const PREFIX = 'ReleaseListTable'
 
 const classes = {
   root: `${PREFIX}-root`,
   paper: `${PREFIX}-paper`,
   table: `${PREFIX}-table`,
-  releaseImage: `${PREFIX}-releaseImage`
-};
+  releaseImage: `${PREFIX}-releaseImage`,
+}
 
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
+const Root = styled('div')(({ theme }) => ({
   [`&.${classes.root}`]: {
     width: '100%',
   },
@@ -42,8 +38,8 @@ const Root = styled('div')((
   [`& .${classes.releaseImage}`]: {
     width: '40px',
     cursor: 'pointer',
-  }
-}));
+  },
+}))
 
 const { NinaClient } = ninaCommon.utils
 
@@ -236,7 +232,7 @@ const ReleaseListTable = (props) => {
         </TableContainer>
       </Paper>
     </Root>
-  );
+  )
 }
 
 export default ReleaseListTable

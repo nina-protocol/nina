@@ -1,5 +1,5 @@
 import React from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import CssBaseline from '@mui/material/CssBaseline'
 import Container from '@mui/material/Container'
@@ -11,12 +11,12 @@ import AudioPlayer from './components/AudioPlayer'
 import NavBar from './components/NavBar'
 import HomePage from './components/HomePage'
 
-const PREFIX = 'Routes';
+const PREFIX = 'Routes'
 
 const classes = {
   mainContainer: `${PREFIX}-mainContainer`,
-  bodyContainer: `${PREFIX}-bodyContainer`
-};
+  bodyContainer: `${PREFIX}-bodyContainer`,
+}
 
 // TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
 const Root = styled('div')(() => ({
@@ -34,14 +34,12 @@ const Root = styled('div')(() => ({
     position: 'relative',
     textAlign: 'center',
     height: '100%',
-  }
-}));
+  },
+}))
 
 function Routes() {
-
-
   return (
-    (<Root>
+    <Root>
       <CssBaseline />
       <BrowserRouter>
         <Container
@@ -62,8 +60,8 @@ function Routes() {
           <AudioPlayer />
         </Container>
       </BrowserRouter>
-    </Root>)
-  );
+    </Root>
+  )
 }
 
 export default Routes

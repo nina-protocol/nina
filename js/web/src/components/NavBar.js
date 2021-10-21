@@ -1,5 +1,5 @@
 import React, { useContext, useMemo } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
@@ -14,7 +14,6 @@ import ninaLogo from '../assets/nina-logo-black.png'
 const { NinaContext } = ninaCommon.contexts
 
 const NavBar = () => {
-
   const { usdcBalance } = useContext(NinaContext)
   // const {
   //   lookupUserTwitterHandle,
@@ -57,14 +56,15 @@ const NavBar = () => {
         </span>
         <div className={classes.nav__button}>
           <StyledWalletDialogProvider featuredWallets={4}>
-              <StyledWalletButton >
-                {wallet?.connected
-                  ? `${wallet.wallet.name} ${walletDisplay}`
-                  : 'Connect Wallet'}
-              </StyledWalletButton>
+            <StyledWalletButton>
+              {wallet?.connected
+                ? `${wallet.wallet.name} ${walletDisplay}`
+                : 'Connect Wallet'}
+            </StyledWalletButton>
             <ConnectionDot
-              className={`${classes.connectionDot} ${wallet?.connected ? 'connected' : ''
-                }`}
+              className={`${classes.connectionDot} ${
+                wallet?.connected ? 'connected' : ''
+              }`}
             ></ConnectionDot>
             {/* {userTwitterHandle && 
               <a href={`https://twitter.com/${userTwitterHandle}`} target="_blank" rel="noreferrer">(@{userTwitterHandle})</a>
@@ -73,10 +73,10 @@ const NavBar = () => {
         </div>
       </div>
     </Root>
-  );
+  )
 }
 
-const PREFIX = 'NavBar';
+const PREFIX = 'NavBar'
 
 const classes = {
   nav: `${PREFIX}-nav`,
@@ -87,14 +87,10 @@ const classes = {
   nav__button: `${PREFIX}-nav__button`,
   walletDialogProvider: `${PREFIX}-walletDialogProvider`,
   walletButtonWrapper: `${PREFIX}-walletButtonWrapper`,
-  connectionDot: `${PREFIX}-connectionDot`
-};
+  connectionDot: `${PREFIX}-connectionDot`,
+}
 
-const Root = styled('nav')((
-  {
-    theme
-  }
-) => ({
+const Root = styled('nav')(({ theme }) => ({
   [`&.${classes.nav}`]: {
     background: `${theme.palette.transparent}`,
     height: '30px',
@@ -134,55 +130,57 @@ const Root = styled('nav')((
     marginRight: '24px',
     fontSize: '10px',
   },
-}));
+}))
 
-const StyledWalletDialogProvider = styled(WalletDialogProvider)(({theme}) => ({
-  '& .MuiButton-root': {
-    backgroundColor: `${theme.palette.white}`,
-  },
-  '& .MuiButton-startIcon': {
-    display: 'none',
-  },
-  '& .MuiPaper-root': {
-    width: '400px',
-    height: '315px',
-    ...theme.helpers.gradient,
-    '& .MuiDialogTitle-root': {
-      color: `${theme.palette.white}`,
-      textAlign: 'center',
-      padding: `${theme.spacing(6, 0, 0)}`,
-      textTransform: 'uppercase',
-      '& h2': {
-        fontSize: '16px !important',
-        fontWeight: '700',
-      },
-      '& .MuiButtonBase-root': {
-        display: 'none',
-      },
+const StyledWalletDialogProvider = styled(WalletDialogProvider)(
+  ({ theme }) => ({
+    '& .MuiButton-root': {
+      backgroundColor: `${theme.palette.white}`,
     },
-    '& .MuiListItem-gutters': {
-      padding: `${theme.spacing(0.5, 0)}`,
-      '& .MuiButton-root': {
-        width: '241px',
-        margin: 'auto',
-        backgroundColor: `${theme.palette.white}`,
-        borderRadius: '50px',
-        color: `${theme.palette.blue}`,
-        fontSize: '14px',
-        fontWeight: '700',
-        '&:hover': {
-          backgroundColor: `${theme.palette.blue}`,
-          color: `${theme.palette.white}`,
+    '& .MuiButton-startIcon': {
+      display: 'none',
+    },
+    '& .MuiPaper-root': {
+      width: '400px',
+      height: '315px',
+      ...theme.helpers.gradient,
+      '& .MuiDialogTitle-root': {
+        color: `${theme.palette.white}`,
+        textAlign: 'center',
+        padding: `${theme.spacing(6, 0, 0)}`,
+        textTransform: 'uppercase',
+        '& h2': {
+          fontSize: '16px !important',
+          fontWeight: '700',
         },
-        '& .MuiButton-endIcon': {
+        '& .MuiButtonBase-root': {
           display: 'none',
         },
       },
+      '& .MuiListItem-gutters': {
+        padding: `${theme.spacing(0.5, 0)}`,
+        '& .MuiButton-root': {
+          width: '241px',
+          margin: 'auto',
+          backgroundColor: `${theme.palette.white}`,
+          borderRadius: '50px',
+          color: `${theme.palette.blue}`,
+          fontSize: '14px',
+          fontWeight: '700',
+          '&:hover': {
+            backgroundColor: `${theme.palette.blue}`,
+            color: `${theme.palette.white}`,
+          },
+          '& .MuiButton-endIcon': {
+            display: 'none',
+          },
+        },
+      },
     },
-  },
-}))
+  })
+)
 
-const StyledWalletButton = styled(WalletMultiButton)(({theme}) => ({
+const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
   textTransform: 'capitalize',
   paddingRight: '20px',
   paddingLeft: '20px',
@@ -199,8 +197,7 @@ const StyledWalletButton = styled(WalletMultiButton)(({theme}) => ({
   },
 }))
 
-
-const ConnectionDot = styled('span')(({theme}) => ({
+const ConnectionDot = styled('span')(({ theme }) => ({
   height: '8px',
   width: '8px',
   backgroundColor: `${theme.palette.blue}`,

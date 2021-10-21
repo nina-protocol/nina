@@ -1,21 +1,21 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles'
 
 import { useSnackbar } from 'notistack'
 import SquareModal from './SquareModal'
 
-const PREFIX = 'ReleasePurchase';
+const PREFIX = 'ReleasePurchase'
 
 const classes = {
   releasePurchase: `${PREFIX}-releasePurchase`,
-  releasePurchaseCtaWrapper: `${PREFIX}-releasePurchaseCtaWrapper`
-};
+  releasePurchaseCtaWrapper: `${PREFIX}-releasePurchaseCtaWrapper`,
+}
 
 const Root = styled('div')(() => ({
   [`& .${classes.releasePurchase}`]: {
@@ -29,8 +29,8 @@ const Root = styled('div')(() => ({
     width: '100%',
     display: 'flex',
     justifyContent: 'space-evenly',
-  }
-}));
+  },
+}))
 
 const { ReleaseContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
@@ -75,7 +75,7 @@ const ReleasePurchase = (props) => {
       <Root>
         <CircularProgress color="inherit" />
       </Root>
-    );
+    )
   }
 
   const buttonText =

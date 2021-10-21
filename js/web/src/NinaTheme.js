@@ -1,4 +1,4 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles'
 
 const colors = {
   purple: '#9999cc',
@@ -16,8 +16,7 @@ const colors = {
   pink: '#FF54A6',
 }
 
-
-export const NinaTheme = createTheme(({
+export const NinaTheme = createTheme({
   palette: {
     secondary: {
       main: '#9999cc',
@@ -32,7 +31,7 @@ export const NinaTheme = createTheme(({
     blue: colors.blue,
     black: colors.black,
     purple: colors.purple,
-    white: colors.white
+    white: colors.white,
   },
   gradient: {
     background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(143,175,223,1) 0%, rgb(35,99,196) 100%)`,
@@ -79,7 +78,7 @@ export const NinaTheme = createTheme(({
     },
   },
   spacing: 10,
-  shadows: ["none"],
+  shadows: ['none'],
   helpers: {
     grid: {
       display: 'grid',
@@ -111,7 +110,7 @@ export const NinaTheme = createTheme(({
   },
   components: {
     MuiButton: {
-      styleOverrides:{
+      styleOverrides: {
         root: {
           border: '2px solid red',
           padding: '10px',
@@ -136,7 +135,7 @@ export const NinaTheme = createTheme(({
             },
           },
         },
-      }
+      },
     },
     MuiTypography: {
       root: {
@@ -150,7 +149,7 @@ export const NinaTheme = createTheme(({
         },
         body: {
           overflow: 'hidden',
-          },
+        },
         a: {
           color: colors.black,
           textDecoration: 'none',
@@ -211,4 +210,4 @@ export const NinaTheme = createTheme(({
       },
     },
   },
-}))
+})

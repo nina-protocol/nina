@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useContext } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
@@ -8,13 +8,13 @@ import { useSnackbar } from 'notistack'
 import { useWallet } from '@solana/wallet-adapter-react'
 import ninaCommon from 'nina-common'
 
-const PREFIX = 'SquareForm';
+const PREFIX = 'SquareForm'
 
 const classes = {
   squareForm: `${PREFIX}-squareForm`,
   squarePaymentForm: `${PREFIX}-squarePaymentForm`,
-  squarePaymentButton: `${PREFIX}-squarePaymentButton`
-};
+  squarePaymentButton: `${PREFIX}-squarePaymentButton`,
+}
 
 const Root = styled('div')(() => ({
   [`&.${classes.squareForm}`]: {},
@@ -26,8 +26,8 @@ const Root = styled('div')(() => ({
 
   [`& .${classes.squarePaymentButton}`]: {
     margin: 'auto',
-  }
-}));
+  },
+}))
 
 const { NinaContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
@@ -245,7 +245,7 @@ const SquareForm = (props) => {
         </Typography>
       </div>
     </Root>
-  );
+  )
 }
 
 export default SquareForm

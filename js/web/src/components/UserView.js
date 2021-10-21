@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
 
@@ -9,14 +9,14 @@ import Tab from '@mui/material/Tab'
 import SwipeableViews from 'react-swipeable-views'
 import ReleaseListTable from './ReleaseListTable'
 
-const PREFIX = 'UserView';
+const PREFIX = 'UserView'
 
 const classes = {
   root: `${PREFIX}-root`,
   tabs: `${PREFIX}-tabs`,
   slideContainer: `${PREFIX}-slideContainer`,
-  slide: `${PREFIX}-slide`
-};
+  slide: `${PREFIX}-slide`,
+}
 
 const StyledBox = styled(Box)(() => ({
   [`& .${classes.root}`]: {
@@ -39,13 +39,12 @@ const StyledBox = styled(Box)(() => ({
     padding: '0px',
     minHeight: 100,
     color: '#000',
-  }
-}));
+  },
+}))
 
 const { NinaContext, ReleaseContext } = ninaCommon.contexts
 
 const UserView = () => {
-
   const wallet = useWallet()
   const { collection } = useContext(NinaContext)
   const {
@@ -123,7 +122,7 @@ const UserView = () => {
         </div>
       </SwipeableViews>
     </StyledBox>
-  );
+  )
 }
 
 export default UserView

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Link } from 'react-router-dom'
@@ -10,20 +10,16 @@ import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded'
 import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
 import VolumeUpIcon from '@mui/icons-material/VolumeUp'
 import VolumeOffIcon from '@mui/icons-material/VolumeOff'
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles'
 import PlaylistDrawer from './PlaylistDrawer'
 
-const PREFIX = 'AudioPlayer';
+const PREFIX = 'AudioPlayer'
 
 const classes = {
-  player: `${PREFIX}-player`
-};
+  player: `${PREFIX}-player`,
+}
 
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
+const Root = styled('div')(({ theme }) => ({
   [`& .${classes.player}`]: {
     position: 'fixed',
     bottom: '0',
@@ -88,13 +84,12 @@ const Root = styled('div')((
         paddingLeft: '1rem',
       },
     },
-  }
-}));
+  },
+}))
 
 const { AudioPlayerContext } = ninaCommon.contexts
 
 const AudioPlayer = () => {
-
   const theme = useTheme()
   const { txid, updateTxid, playlist } = useContext(AudioPlayerContext)
   const wallet = useWallet()
@@ -370,7 +365,7 @@ const AudioPlayer = () => {
         )}
       </div>
     </Root>
-  );
+  )
 }
 
 export default AudioPlayer

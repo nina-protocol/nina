@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
@@ -8,20 +8,16 @@ import 'react-tabs/style/react-tabs.css'
 import SettingsIcon from '@mui/icons-material/Settings'
 import ReleasePurchase from './ReleasePurchase'
 
-const PREFIX = 'ReleaseTabs';
+const PREFIX = 'ReleaseTabs'
 
 const classes = {
   releaseTabsWrapper: `${PREFIX}-releaseTabsWrapper`,
   releaseTabsContainer: `${PREFIX}-releaseTabsContainer`,
   releaseTabsList: `${PREFIX}-releaseTabsList`,
-  releaseTabs: `${PREFIX}-releaseTabs`
-};
+  releaseTabs: `${PREFIX}-releaseTabs`,
+}
 
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
+const Root = styled('div')(({ theme }) => ({
   [`&.${classes.releaseTabsWrapper}`]: {
     border: `${theme.palette.borderWidth} solid ${theme.palette.purpleLight}`,
     borderRadius: `${theme.palette.borderRadius}`,
@@ -43,8 +39,8 @@ const Root = styled('div')((
 
   [`& .${classes.releaseTabs}`]: {
     height: '100%',
-  }
-}));
+  },
+}))
 
 const { Exchange, ReleaseInfo, ReleaseSettings } = ninaCommon.components
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
@@ -157,7 +153,7 @@ const ReleaseTabs = (props) => {
         </Tabs>
       </div>
     </Root>
-  );
+  )
 }
 
 export default ReleaseTabs
