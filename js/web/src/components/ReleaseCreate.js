@@ -13,45 +13,6 @@ import MediaDropzones from './MediaDropzones'
 import ReleaseCard from './ReleaseCard'
 import * as Yup from 'yup'
 
-const PREFIX = 'ReleaseCreate'
-
-const classes = {
-  createWrapper: `${PREFIX}-createWrapper`,
-  createFlowGrid: `${PREFIX}-createFlowGrid`,
-  createFormContainer: `${PREFIX}-createFormContainer`,
-  createReleaseContainer: `${PREFIX}-createReleaseContainer`,
-  createCta: `${PREFIX}-createCta`,
-}
-
-const Root = styled('div')(() => ({
-  [`&.${classes.createWrapper}`]: {
-    width: '100%',
-    position: 'absolute',
-    top: 40,
-  },
-
-  [`& .${classes.createFlowGrid}`]: {
-    gridTemplateColumns: 'repeat(11, 1fr)',
-  },
-
-  [`& .${classes.createFormContainer}`]: {
-    gridColumn: '2/6',
-    width: '100%',
-  },
-
-  [`& .${classes.createReleaseContainer}`]: {
-    gridColumn: '7/12',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-
-  [`& .${classes.createCta}`]: {
-    gridColumn: '1/13',
-    paddingTop: '0.5rem',
-  },
-}))
-
 const { ReleaseSettings } = ninaCommon.components
 const { ReleaseContext, NinaContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
@@ -179,7 +140,7 @@ const ReleaseCreate = () => {
     track.meta.status === 'done'
   ) {
     return (
-      <Root className={classes.createWrapper}>
+      <Root >
         <Typography variant="h6" gutterBottom>
           Release Overview
         </Typography>
@@ -194,11 +155,7 @@ const ReleaseCreate = () => {
   }
 
   return (
-    <div className={classes.createWrapper}>
-      <Typography variant="h6" gutterBottom>
-        Upload
-      </Typography>
-
+    <Root>
       {!wallet.connected && (
         <Typography variant="body" gutterBottom>
           Please connect your wallet to start publishing!
@@ -262,8 +219,43 @@ const ReleaseCreate = () => {
           Fill out this form to apply for a publishing grant
         </Typography>
       )}
-    </div>
+    </Root>
   )
 }
+
+const PREFIX = 'ReleaseCreate'
+
+const classes = {
+  createFlowGrid: `${PREFIX}-createFlowGrid`,
+  createFormContainer: `${PREFIX}-createFormContainer`,
+  createReleaseContainer: `${PREFIX}-createReleaseContainer`,
+  createCta: `${PREFIX}-createCta`,
+}
+
+const Root = styled('div')(() => ({
+  width: '100%',
+  position: 'absolute',
+  [`& .${classes.createFlowGrid}`]: {
+    gridTemplateColumns: 'repeat(11, 1fr)',
+    gridAutoRows: 'auto !important',
+  },
+
+  [`& .${classes.createFormContainer}`]: {
+    gridColumn: '2/6',
+    width: '100%',
+  },
+
+  [`& .${classes.createReleaseContainer}`]: {
+    gridColumn: '7/12',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+
+  [`& .${classes.createCta}`]: {
+    gridColumn: '1/13',
+    paddingTop: '0.5rem',
+  },
+}))
 
 export default ReleaseCreate

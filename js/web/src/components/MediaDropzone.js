@@ -1,5 +1,4 @@
 import React from 'react'
-// import { styled } from '@mui/material/styles';
 import ninaCommon from 'nina-common'
 import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
@@ -12,46 +11,14 @@ const classes = {
   dropZonePreviewWrapper: `${PREFIX}-dropZonePreviewWrapper`,
 }
 
-// const StyledDropzone
-//  = styled(Dropzone
-// )((
-//   {
-//     theme
-//   }
-// ) => ({
-//   [`& .${classes.dropZone}`]: {
-//     border: `1px solid ${theme.palette.purple}`,
-//     borderRadius: `${theme.palette.borderRadius}`,
-//     display: 'flex',
-//     width: '100%',
-//     marginBottom: '1rem',
-//     cursor: 'pointer',
-//   },
-
-//   [`& .${classes.dropZoneInputLabel}`]: {
-//     margin: 'auto',
-//     fontSize: '1rem',
-//     color: `${theme.palette.purple}`,
-//   },
-
-//   [`& .${classes.dropZonePreviewWrapper}`]: {
-//     width: '90%',
-//     margin: 'auto',
-//     display: 'flex',
-//     justifyContent: 'space-between',
-//     alignItems: 'center',
-//   }
-// }));
-
 const { NinaClient } = ninaCommon.utils
-
-function MediaDropzone({
+const MediaDropzone = ({
   type,
   releasePubkey,
   metadata,
   setArtwork,
   setTrack,
-}) {
+}) => {
   const getUploadParams = ({ file }) => {
     const body = new FormData()
     body.append('file', file)
@@ -115,7 +82,27 @@ function MediaDropzone({
           : 'Drag or browse to add artwork'
       }
       styles={{
-        dropzone: { minHeight: 60, maxHeight: 60, margin: '0.5rem 0' },
+        dropzone: { 
+          minHeight: 60, 
+          maxHeight: 60, 
+          margin: '0.5rem 0', 
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+          marginBottom: '1rem',
+          cursor: 'pointer',
+        },
+        preview: { 
+          width: '90%',
+          margin: 'auto',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        },
+        inputLabel: {
+          cursor: 'pointer'
+        }
       }}
     />
   )
