@@ -39,8 +39,8 @@ const NavBar = () => {
 
   return (
     <Root className={classes.nav}>
-        <NavDrawer />
       <div className={classes.nav__left}>
+        <NavDrawer />
       </div>
 
       <NavLink

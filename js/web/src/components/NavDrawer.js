@@ -179,7 +179,13 @@ const StyledDrawer = styled(Drawer)(() => ({
 const StyledList = styled(List)(({theme}) => ({
   padding: `${theme.spacing(6, 4, 0, 4)} !important`,
   '& .MuiListItem-root': {
-    padding: '5px 0'
+    padding: '5px 0',
+    '&:hover': {
+      backgroundColor: theme.palette.transparent
+    },
+    '& .MuiListItemText-root':{
+      margin: 0
+    }
   }
 }))
 
