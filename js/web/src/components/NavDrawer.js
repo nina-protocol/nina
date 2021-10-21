@@ -36,9 +36,8 @@ const Root = styled('div')((
 
   [`&.${classes.list}`]: {
     width: 250,
-    height: '100%',
-    backgroundColor: theme.palette.black,
-    color: theme.palette.white,
+    height: '100%',  
+    color: theme.palette.black,
   },
 
   [`& .${classes.drawerLink}`]: {

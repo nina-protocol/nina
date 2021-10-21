@@ -28,21 +28,11 @@ export const NinaTheme = createTheme(({
     text: {
       primary: colors.black,
     },
-    transparent: {
-      main: colors.transparent
-    },
-    blue: {
-      main: colors.blue
-    },
-    black: {
-      main: colors.black
-    },
-    purple: {
-      main: colors.purple
-    },
-    white: {
-      main: colors.white
-    }
+    transparent: colors.transparent,
+    blue: colors.blue,
+    black: colors.black,
+    purple: colors.purple,
+    white: colors.white
   },
   gradient: {
     background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(143,175,223,1) 0%, rgb(35,99,196) 100%)`,
@@ -65,25 +55,23 @@ export const NinaTheme = createTheme(({
       fontFamily: ['BlockBE-Heavy'].join(','),
     },
   },
-  custom: {
-    vars: {
-      // purple: colors.purple,
-      // purpleLight: colors.purpleLight,
-      // pink: colors.pink,
-      // red: colors.red,
-      // orange: colors.orange,
-      // green: colors.green,
-      // white: colors.white,
-      // black: colors.black,
-      // blue: colors.blue,
-      // blueTrans: colors.blueTrans,
-      // transparent: colors.transparent,
-      // greyLight: colors.greyLight,
-      // grey: colors.grey,
-    },
+  vars: {
+    purple: colors.purple,
+    purpleLight: colors.purpleLight,
+    pink: colors.pink,
+    red: colors.red,
+    orange: colors.orange,
+    green: colors.green,
+    white: colors.white,
+    black: colors.black,
+    blue: colors.blue,
+    blueTrans: colors.blueTrans,
+    transparent: colors.transparent,
+    greyLight: colors.greyLight,
+    grey: colors.grey,
+    borderWidth: '1.5px',
+    borderRadius: '16px',
   },
-  borderWidth: '1.5px',
-  borderRadius: '16px',
   transitions: {
     easing: {
       easeOut: 'cubic-bezier(0, 1.5, .8, 1)',
@@ -91,6 +79,7 @@ export const NinaTheme = createTheme(({
     },
   },
   spacing: 10,
+  shadows: ["none"],
   helpers: {
     grid: {
       display: 'grid',
@@ -115,14 +104,19 @@ export const NinaTheme = createTheme(({
     input: {
       width: '60%',
     },
+    gradient: {
+      background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(143,175,223,1) 0%, rgb(35,99,196) 100%)`,
+      color: colors.white,
+    },
   },
   components: {
     MuiButton: {
       styleOverrides:{
         root: {
-          border: 'p2px solid red',
+          border: '2px solid red',
           padding: '10px',
           fontSize: '100px',
+          boxShadow: 'none',
           '&.MuiButton-outlined': {
             borderRadius: '50px',
             padding: '10px',
@@ -150,7 +144,7 @@ export const NinaTheme = createTheme(({
       },
     },
     MuiCssBaseline: {
-      '@global': {
+      styleOverrides: {
         '*, *::before, *::after': {
           boxSizing: 'content-box',
         },
