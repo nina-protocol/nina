@@ -6,6 +6,7 @@ import clsx from 'clsx'
 import { useTheme } from '@mui/material/styles'
 import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
+import Box from '@mui/material/Box';
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
@@ -16,26 +17,10 @@ import QueueMusicIcon from '@mui/icons-material/QueueMusic'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
-const PREFIX = 'PlaylistDrawer'
-
-const classes = {
-  list: `${PREFIX}-list`,
-  fullList: `${PREFIX}-fullList`,
-}
-
-const Root = styled('div')({
-  [`&.${classes.list}`]: {
-    width: 300,
-  },
-  [`&.${classes.fullList}`]: {
-    width: 'auto',
-  },
-})
-
 const { AudioPlayerContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
-export default function PlaylistDrawer(props) {
+const PlaylistDrawer = (props) => {
   const { isPlaying, togglePlay } = props
 
   const theme = useTheme()
@@ -118,9 +103,7 @@ export default function PlaylistDrawer(props) {
 
   const list = (anchor) => (
     <Root
-      className={clsx(classes.list, {
-        [classes.fullList]: anchor === 'top' || anchor === 'bottom',
-      })}
+      className={classes.list}
       role="presentation"
     >
       {playlist?.length === 0 && (
@@ -136,7 +119,7 @@ export default function PlaylistDrawer(props) {
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="droppable">
             {(provided) => (
-              <>
+              <Box ref={provided.innerRef}>
                 <List>
                   {playlist.map((entry, i) => {
                     const text = `${entry.artist}: ${entry.title}`
@@ -183,7 +166,7 @@ export default function PlaylistDrawer(props) {
                     )
                   })}
                 </List>
-              </>
+              </Box>
             )}
           </Droppable>
         </DragDropContext>
@@ -193,9 +176,8 @@ export default function PlaylistDrawer(props) {
 
   return (
     <div className="playlist__wrapper">
-      {['left'].map((anchor) => (
-        <React.Fragment key={anchor}>
-          <Button variant="outlined" onClick={toggleDrawer(anchor, true)}>
+        <React.Fragment key={'left'}>
+          <Button variant="outlined" onClick={toggleDrawer('left', true)}>
             <QueueMusicIcon
               className="player__playlist-toggle"
               style={{ fill: `${theme.palette.purple}` }}
@@ -203,14 +185,29 @@ export default function PlaylistDrawer(props) {
             {playlist?.length > 0 ? `(${playlist.length})` : null}
           </Button>
           <Drawer
-            anchor={anchor}
-            open={state[anchor]}
-            onClose={toggleDrawer(anchor, false)}
+            anchor={'left'}
+            open={state['left']}
+            onClose={toggleDrawer('left', false)}
           >
-            {list(anchor)}
+            {list('left')}
           </Drawer>
         </React.Fragment>
-      ))}
     </div>
   )
 }
+
+const PREFIX = 'PlaylistDrawer'
+
+const classes = {
+  list: `${PREFIX}-list`,
+  fullList: `${PREFIX}-fullList`,
+}
+
+const Root = styled('div')({
+  [`&.${classes.list}`]: {
+    width: 300,
+  },
+})
+
+export default PlaylistDrawer
+
