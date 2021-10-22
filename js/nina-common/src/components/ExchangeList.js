@@ -9,96 +9,8 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { NinaContext } from '../contexts'
 import NinaClient from '../utils/client'
 
-const PREFIX = 'ExchangeList';
-
-const classes = {
-  root: `${PREFIX}-root`,
-  exchangeList: `${PREFIX}-exchangeList`,
-  exchangeListItem: `${PREFIX}-exchangeListItem`,
-  exchangeListItemPrice: `${PREFIX}-exchangeListItemPrice`,
-  exchangeListButton: `${PREFIX}-exchangeListButton`,
-  noOffers: `${PREFIX}-noOffers`
-};
-
-const StyledButton = styled(Button)((
-  {
-    theme
-  }
-) => ({
-  [`& .${classes.root}`]: {
-    maxHeight: '304px',
-    height: '100%',
-  },
-
-  [`& .${classes.exchangeList}`]: {
-    listStyle: 'none',
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '0.2rem 0rem',
-    height: '100%',
-    overflow: 'scroll',
-    overflowX: 'hidden',
-    overflowY: 'auto',
-  },
-
-  [`& .${classes.exchangeListItem}`]: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: `${theme.spacing(0.5, 0)}`,
-    borderRadius: '8px',
-  },
-
-  [`& .${classes.exchangeListItemPrice}`]: {
-    fontWeight: '700',
-    fontSize: '12px',
-    color: `${theme.palette.blue}`,
-    '&--currentUser': {
-      color: `${theme.palette.grey}`,
-    },
-    '&--usd': {
-      color: `${theme.palette.greyLight}`,
-    },
-    '&--symbol': {
-      color: `${theme.palette.black}`,
-      [theme.breakpoints.down('md')]: {
-        display: 'none',
-      },
-    },
-  },
-
-  [`& .${classes.exchangeListButton}`]: {
-    backgroundColor: `${theme.palette.white}`,
-    fontSize: `10px`,
-    color: `${theme.palette.black}`,
-    borderColor: `${theme.palette.black}`,
-    padding: `${theme.spacing(0.5, 1)} !important`,
-    width: '41px',
-    '&:hover': {
-      backgroundColor: `${theme.palette.white} !important`,
-    },
-    '&--Cancel': {
-      borderColor: `${theme.palette.grey}`,
-      color: `${theme.palette.grey}`,
-      backgroundColor: `${theme.palette.white}`,
-      '&:hover': {
-        borderColor: `${theme.palette.grey}`,
-        color: `${theme.palette.grey}`,
-      },
-    },
-  },
-
-  [`& .${classes.noOffers}`]: {
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
-}));
-
 const ExchangeList = (props) => {
   let { list, onExchangeButtonAction, release, metadata } = props
-
   const { solPrice } = useContext(NinaContext)
 
   if (!list) {
@@ -110,7 +22,7 @@ const ExchangeList = (props) => {
   }
 
   return (
-    <Box className={classes.root}>
+    <Root className={classes.root}>
       {list?.length > 0 && (
         <ul className={classes.exchangeList}>
           {list.map((item, i) => (
@@ -130,7 +42,7 @@ const ExchangeList = (props) => {
           No offers
         </Typography>
       )}
-    </Box>
+    </Root>
   )
 }
 
@@ -226,7 +138,7 @@ const ExchangeListButton = (props) => {
 
   if (wallet?.connected && !pending) {
     return (
-      <StyledButton
+      <Button
         variant="outlined"
         className={`
           ${classes.exchangeListButton} 
@@ -236,7 +148,7 @@ const ExchangeListButton = (props) => {
         onClick={() => onExchangeButtonAction(props)}
       >
         {buttonText}
-      </StyledButton>
+      </Button>
     );
   } else {
     return (
@@ -251,5 +163,90 @@ const ExchangeListButton = (props) => {
     )
   }
 }
+
+const PREFIX = 'ExchangeList';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  exchangeList: `${PREFIX}-exchangeList`,
+  exchangeListItem: `${PREFIX}-exchangeListItem`,
+  exchangeListItemPrice: `${PREFIX}-exchangeListItemPrice`,
+  exchangeListButton: `${PREFIX}-exchangeListButton`,
+  noOffers: `${PREFIX}-noOffers`
+};
+
+const Root = styled(Box)((
+  {
+    theme
+  }
+) => ({
+  maxHeight: '304px',
+  height: '100%',
+  [`& .${classes.exchangeList}`]: {
+    listStyle: 'none',
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '0.2rem 0rem',
+    height: '100%',
+    overflow: 'scroll',
+    overflowX: 'hidden',
+    overflowY: 'auto',
+  },
+
+  [`& .${classes.exchangeListItem}`]: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: `${theme.spacing(0.5, 0)}`,
+    borderRadius: '8px',
+  },
+
+  [`& .${classes.exchangeListItemPrice}`]: {
+    fontWeight: '700',
+    fontSize: '12px',
+    color: `${theme.palette.blue}`,
+    '&--currentUser': {
+      color: `${theme.palette.grey}`,
+    },
+    '&--usd': {
+      color: `${theme.palette.greyLight}`,
+    },
+    '&--symbol': {
+      color: `${theme.palette.black}`,
+      [theme.breakpoints.down('md')]: {
+        display: 'none',
+      },
+    },
+  },
+
+  [`& .${classes.exchangeListButton}`]: {
+    backgroundColor: `${theme.palette.white}`,
+    fontSize: `10px`,
+    color: `${theme.palette.black}`,
+    borderColor: `${theme.palette.black}`,
+    padding: `${theme.spacing(0.5, 1)} !important`,
+    width: '41px',
+    '&:hover': {
+      backgroundColor: `${theme.palette.white} !important`,
+    },
+    '&--Cancel': {
+      borderColor: `${theme.palette.grey}`,
+      color: `${theme.palette.grey}`,
+      backgroundColor: `${theme.palette.white}`,
+      '&:hover': {
+        borderColor: `${theme.palette.grey}`,
+        color: `${theme.palette.grey}`,
+      },
+    },
+  },
+
+  [`& .${classes.noOffers}`]: {
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
+}));
+
 
 export default ExchangeList
