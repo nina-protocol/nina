@@ -1077,8 +1077,24 @@ const releaseContextHelper = ({
       const tokenData = releaseState.tokenData[releasePubkey]
       const metadata = releaseState.metadata[releasePubkey]
 
+      const releaseData = {}
       if (tokenData.authority.toBase58() === userPubkey && metadata) {
-        releases.push({ tokenData, metadata, releasePubkey })
+        releaseData.tokenData = tokenData
+        releaseData.metadata = metadata
+        releaseData.releasePubkey = releasePubkey   
+      }
+
+      tokenData.royaltyRecipients.forEach((recipient) => {
+        if (
+          recipient.recipientAuthority.toBase58() === userPubkey &&
+          metadata
+        ) {
+          releaseData.recipient = recipient
+        }
+      })
+
+      if (Object.keys(releaseData).length > 0) {
+        releases.push(releaseData)
       }
     })
     return releases

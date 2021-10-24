@@ -55,20 +55,7 @@ export const NinaTheme = createTheme({
     },
   },
   vars: {
-    purple: colors.purple,
-    purpleLight: colors.purpleLight,
-    pink: colors.pink,
-    red: colors.red,
-    orange: colors.orange,
-    green: colors.green,
-    white: colors.white,
-    black: colors.black,
-    blue: colors.blue,
-    blueTrans: colors.blueTrans,
-    transparent: colors.transparent,
-    greyLight: colors.greyLight,
-    grey: colors.grey,
-    borderWidth: '1.5px',
+     borderWidth: '1.5px',
     borderRadius: '16px',
   },
   transitions: {
@@ -78,7 +65,7 @@ export const NinaTheme = createTheme({
     },
   },
   spacing: 15,
-  shadows: ['none'],
+  // shadows: ['none'],
   helpers: {
     grid: {
       display: 'grid',

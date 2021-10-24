@@ -10,7 +10,7 @@ import { useTheme } from '@mui/material/styles'
 import { useWallet } from '@solana/wallet-adapter-react'
 import ReleaseCreateForm from './ReleaseCreateForm'
 import MediaDropzones from './MediaDropzones'
-import ReleaseCard from './ReleaseCard'
+// import ReleaseCard from './ReleaseCard'
 import * as Yup from 'yup'
 
 const { ReleaseSettings } = ninaCommon.components
@@ -166,18 +166,29 @@ const ReleaseCreate = () => {
         <>
           <div style={theme.helpers.grid} className={classes.createFlowGrid}>
             <>
-              <div className={classes.createFormContainer}>
-                <ReleaseCreateForm
-                  onChange={handleFormChange}
-                  values={formValues.releaseForm}
-                  ReleaseCreateSchema={ReleaseCreateSchema}
-                />
+              <div className={classes.createReleasePreview}>
+                {/* <ReleaseCard
+                  artwork={artwork}
+                  metadata={{
+                    ...formValues.releaseForm,
+                  }}
+                  preview={true}
+                  formValues={formValues}
+                /> */}
+
                 <MediaDropzones
                   setTrack={setTrack}
                   setArtwork={setArtwork}
                   values={formValues}
                   releasePubkey={releasePubkey}
                   track={track}
+                />
+              </div>
+              <div className={classes.createFormContainer}>
+                <ReleaseCreateForm
+                  onChange={handleFormChange}
+                  values={formValues.releaseForm}
+                  ReleaseCreateSchema={ReleaseCreateSchema}
                 />
                 {pressingFee > 0 && (
                   <Typography variant="body2">
@@ -186,16 +197,7 @@ const ReleaseCreate = () => {
                   </Typography>
                 )}
               </div>
-              <div className={classes.createReleaseContainer}>
-                <ReleaseCard
-                  artwork={artwork}
-                  metadata={{
-                    ...formValues.releaseForm,
-                  }}
-                  preview={true}
-                  formValues={formValues}
-                />
-              </div>
+        
             </>
             {!release && (
               <div className={classes.createCta}>
@@ -228,7 +230,7 @@ const PREFIX = 'ReleaseCreate'
 const classes = {
   createFlowGrid: `${PREFIX}-createFlowGrid`,
   createFormContainer: `${PREFIX}-createFormContainer`,
-  createReleaseContainer: `${PREFIX}-createReleaseContainer`,
+  createReleasePreview: `${PREFIX}-createReleasePreview`,
   createCta: `${PREFIX}-createCta`,
 }
 
@@ -236,24 +238,23 @@ const Root = styled('div')(() => ({
   width: '100%',
   position: 'absolute',
   [`& .${classes.createFlowGrid}`]: {
-    gridTemplateColumns: 'repeat(11, 1fr)',
+    gridTemplateColumns: '50% 50%',
     gridAutoRows: 'auto !important',
+    padding: '0 20%',
   },
 
   [`& .${classes.createFormContainer}`]: {
-    gridColumn: '2/6',
     width: '100%',
   },
 
-  [`& .${classes.createReleaseContainer}`]: {
-    gridColumn: '7/12',
+  [`& .${classes.createReleasePreview}`]: {
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
   },
 
   [`& .${classes.createCta}`]: {
-    gridColumn: '1/13',
+    gridColumn: '1/3',
     paddingTop: '0.5rem',
   },
 }))

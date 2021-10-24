@@ -1,62 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { styled } from '@mui/material/styles'
-import { withTheme } from '@mui/styles'
 import ninaCommon from 'nina-common'
 import SmoothImage from 'react-smooth-image'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
-
 import Box from '@mui/material/Box'
 import { Typography } from '@mui/material'
 import { useWallet } from '@solana/wallet-adapter-react'
 import ninaRecord from '../assets/nina-record.png'
-
-const PREFIX = 'ReleaseCard'
-
-const classes = {
-  releaseCardWrapper: `${PREFIX}-releaseCardWrapper`,
-  releaseCard: `${PREFIX}-releaseCard`,
-}
-
-const Root = styled('div')(({ theme }) => ({
-  [`&.${classes.releaseCardWrapper}`]: {
-    height: '100%',
-    width: '80%',
-  },
-
-  [`& .${classes.releaseCard}`]: {
-    width: '100%',
-    height: '100%',
-    border: `${theme.borderWidth} solid ${theme.palette.purple}`,
-    borderRadius: `${theme.borderRadius}`,
-    '&__content': {
-      width: '70%',
-      margin: 'auto',
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
-    },
-    '&__image': {
-      width: '100%',
-      maxWidth: '38vh',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      margin: '2rem auto',
-    },
-    '&__player': {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-    },
-    '&__info': {
-      display: 'flex',
-      flexDirection: 'column',
-      margin: 'auto 0',
-      padding: '0',
-    },
-  },
-}))
 
 const { NinaContext, AudioPlayerContext, ExchangeContext, ReleaseContext } =
   ninaCommon.contexts
@@ -199,4 +150,51 @@ const ReleaseCard = (props) => {
   )
 }
 
-export default withTheme(ReleaseCard)
+const PREFIX = 'ReleaseCard'
+
+const classes = {
+  releaseCardWrapper: `${PREFIX}-releaseCardWrapper`,
+  releaseCard: `${PREFIX}-releaseCard`,
+}
+
+const Root = styled('div')(({theme}) => ({
+  [`&.${classes.releaseCardWrapper}`]: {
+    height: '100%',
+    width: '80%',
+  },
+
+  [`& .${classes.releaseCard}`]: {
+    width: '100%',
+    height: '100%',
+    border: `${theme.vars.borderWidth} solid ${theme.palette.purple}`,
+    borderRadius: `${theme.vars.borderRadius}`,
+    '&__content': {
+      width: '70%',
+      margin: 'auto',
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+    },
+    '&__image': {
+      width: '100%',
+      maxWidth: '38vh',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      margin: '2rem auto',
+    },
+    '&__player': {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+    },
+    '&__info': {
+      display: 'flex',
+      flexDirection: 'column',
+      margin: 'auto 0',
+      padding: '0',
+    },
+  },
+}))
+
+export default (ReleaseCard)

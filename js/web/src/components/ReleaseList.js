@@ -6,6 +6,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import TextField from '@mui/material/TextField'
 import { Box, Typography } from '@mui/material'
 import ReleaseListTable from './ReleaseListTable'
+
 const PREFIX = 'ReleaseList'
 
 const classes = {
@@ -21,8 +22,6 @@ const StyledBox = styled(Box)(() => ({
     top: 40,
   },
 }))
-
-// import UserView from './UserView'
 
 const { NameContext, ReleaseContext, NinaContext } = ninaCommon.contexts
 

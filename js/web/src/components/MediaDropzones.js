@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react'
+import {styled} from '@mui/material/styles'
 import MediaDropzone from './MediaDropzone.js'
+import Box from '@mui/material/Box'
+
+const StyledDropZones = styled(Box)(() => ({
+  border: '2px solid blue',
+  height: '100%'
+}))
 
 function MediaDropzones({
   values,
@@ -23,8 +30,15 @@ function MediaDropzones({
   }, [values, track])
 
   return (
-    <div>
-      <label htmlFor="artwork"></label>
+    <StyledDropZones>
+      {/* <label htmlFor="track"></label> */}
+      <MediaDropzone
+        type="track"
+        releasePubkey={releasePubkey}
+        track={track}
+        setTrack={setTrack}
+      />
+      {/* <label htmlFor="artwork"></label> */}
       <MediaDropzone
         type="artwork"
         artwork={artwork}
@@ -33,14 +47,7 @@ function MediaDropzones({
         metadata={metadata}
       />
 
-      <label htmlFor="track"></label>
-      <MediaDropzone
-        type="track"
-        releasePubkey={releasePubkey}
-        track={track}
-        setTrack={setTrack}
-      />
-    </div>
+    </StyledDropZones>
   )
 }
 

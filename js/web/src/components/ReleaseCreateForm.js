@@ -12,9 +12,6 @@ import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 const PREFIX = 'ReleaseCreateForm'
 
 const classes = {
-  createFormContainer: `${PREFIX}-createFormContainer`,
-  createReleaseContainer: `${PREFIX}-createReleaseContainer`,
-  createCta: `${PREFIX}-createCta`,
   fieldInputWrapper: `${PREFIX}-fieldInputWrapper`,
   formField: `${PREFIX}-formField`,
   formError: `${PREFIX}-formError`,
@@ -23,23 +20,6 @@ const classes = {
 }
 
 const Root = styled('div')(({ theme }) => ({
-  [`& .${classes.createFormContainer}`]: {
-    gridColumn: '2/6',
-    width: '100%',
-  },
-
-  [`& .${classes.createReleaseContainer}`]: {
-    gridColumn: '7/11',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-
-  [`& .${classes.createCta}`]: {
-    gridColumn: '1/13',
-    paddingTop: '1rem',
-  },
-
   [`& .${classes.fieldInputWrapper}`]: {
     position: 'relative',
   },
@@ -113,7 +93,7 @@ function ReleaseCreateForm({
             <Box className={classes.fieldInputWrapper}>
               <TextField
                 className={classes.formField}
-                variant="outlined"
+                variant="standard"
                 label={NinaClient.formatPlaceholder(props.field.name)}
                 size="small"
                 {...props.field}
@@ -132,7 +112,7 @@ function ReleaseCreateForm({
             <Box className={classes.fieldInputWrapper}>
               <TextField
                 className={classes.formField}
-                variant="outlined"
+                variant="standard"
                 label={NinaClient.formatPlaceholder(props.field.name)}
                 size="small"
                 {...props.field}
@@ -151,7 +131,7 @@ function ReleaseCreateForm({
             <Box className={classes.fieldInputWrapper}>
               <TextField
                 className={classes.formField}
-                variant="outlined"
+                variant="standard"
                 label={NinaClient.formatPlaceholder(props.field.name)}
                 size="small"
                 {...props.field}
@@ -168,7 +148,7 @@ function ReleaseCreateForm({
             <Box className={classes.fieldInputWrapper}>
               <TextField
                 className={`${classes.formField}`}
-                variant="outlined"
+                variant="standard"
                 label={NinaClient.formatPlaceholder(field.name)}
                 size="small"
                 InputProps={{
@@ -194,7 +174,7 @@ function ReleaseCreateForm({
               <CurrencyTextField
                 className={classes.formField}
                 label={NinaClient.formatPlaceholder('Amount')}
-                variant="outlined"
+                variant="standard"
                 value={props.value}
                 currencySymbol=""
                 outputFormat="string"
@@ -216,7 +196,7 @@ function ReleaseCreateForm({
               <CurrencyTextField
                 className={classes.formField}
                 label={NinaClient.formatPlaceholder('RetailPrice')}
-                variant="outlined"
+                variant="standard"
                 value={value}
                 currencySymbol="$"
                 outputFormat="string"

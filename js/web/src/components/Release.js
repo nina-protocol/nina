@@ -7,29 +7,6 @@ import { useTheme } from '@mui/material/styles'
 import ReleaseCard from './ReleaseCard'
 import ReleaseTabs from './ReleaseTabs'
 
-const PREFIX = 'Release'
-
-const classes = {
-  release: `${PREFIX}-release`,
-  releaseControls: `${PREFIX}-releaseControls`,
-}
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled('div')(() => ({
-  [`& .${classes.release}`]: {
-    width: '80vw',
-    margin: 'auto',
-    height: '75vh',
-    gridTemplateColumns: 'repeat(2, 1fr)',
-  },
-
-  [`& .${classes.releaseControls}`]: {
-    margin: 'auto',
-    height: '100%',
-    width: '80%',
-  },
-}))
-
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
 
 const Release = ({ match }) => {
@@ -81,5 +58,27 @@ const Release = ({ match }) => {
     </Root>
   )
 }
+
+const PREFIX = 'Release'
+
+const classes = {
+  release: `${PREFIX}-release`,
+  releaseControls: `${PREFIX}-releaseControls`,
+}
+
+const Root = styled('div')(() => ({
+  [`& .${classes.release}`]: {
+    width: '80vw',
+    margin: 'auto',
+    height: '75vh',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+  },
+
+  [`& .${classes.releaseControls}`]: {
+    margin: 'auto',
+    height: '100%',
+    width: '80%',
+  },
+}))
 
 export default Release

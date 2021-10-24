@@ -88,7 +88,7 @@ const EnhancedTableHead = (props) => {
           <TableCell
             key={headCell.id}
             align={'center'}
-            padding={headCell.disablePadding ? 'none' : 'default'}
+            padding={'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
             {headCell.label}
@@ -117,7 +117,7 @@ const ReleaseListTable = (props) => {
 
     const linkData = {
       releasePubkey,
-      txId: metadata.image,
+      txId: metadata?.image,
     }
 
     const rowData = {
@@ -204,6 +204,7 @@ const ReleaseListTable = (props) => {
                               align="center"
                               component="th"
                               scope="row"
+                              key={cellName}
                               onClick={(event) => handleClick(event, row.id)}
                             >
                               <img
