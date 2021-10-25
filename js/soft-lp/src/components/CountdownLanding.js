@@ -1,12 +1,44 @@
 import React from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import Countdown from 'react-countdown'
 import Box from '@mui/material/Box'
 
 import { Typography } from '@mui/material'
 import softLpLogo from '../assets/soft-lp-logo.png'
 
-const PREFIX = 'CountdownLanding';
+const CountdownLanding = (props) => {
+  const { setReleaseIsLive, releaseDate } = props
+
+  const countDownRenderer = (props) => {
+    const { days, hours, minutes, seconds } = props
+
+    return (
+      <StyledBox>
+        <Typography className={classes.clock}>
+          <span>{days}d</span>
+          <span>{hours}hr</span>
+          <span>{minutes}m</span>
+          <span>{seconds}s</span>
+        </Typography>
+      </StyledBox>
+    )
+  }
+
+  return (
+    <Box className={classes.root}>
+      <Box className={classes.clockWrapper}>
+        <img className={classes.logo} src={softLpLogo} />
+        <Countdown
+          date={releaseDate}
+          renderer={countDownRenderer}
+          onComplete={() => setReleaseIsLive(true)}
+        />
+      </Box>
+    </Box>
+  )
+}
+
+const PREFIX = 'CountdownLanding'
 
 const classes = {
   root: `${PREFIX}-root`,
@@ -14,14 +46,10 @@ const classes = {
   clockWrapper: `${PREFIX}-clockWrapper`,
   container: `${PREFIX}-container`,
   clock: `${PREFIX}-clock`,
-  cta: `${PREFIX}-cta`
-};
+  cta: `${PREFIX}-cta`,
+}
 
-const StyledBox = styled(Box)((
-  {
-    theme
-  }
-) => ({
+const StyledBox = styled(Box)(({ theme }) => ({
   [`& .${classes.root}`]: {
     width: '100%',
     height: '100%',
@@ -67,40 +95,7 @@ const StyledBox = styled(Box)((
     background: `${theme.palette.blue} !important`,
     fontSize: '40px',
     padding: `${theme.spacing(2, 2)} !important`,
-  }
-}));
-
-const CountdownLanding = (props) => {
-  const { setReleaseIsLive, releaseDate } = props
-
-
-  const countDownRenderer = (props) => {
-    const { days, hours, minutes, seconds } = props
-
-    return (
-      <StyledBox>
-        <Typography className={classes.clock}>
-          <span>{days}d</span>
-          <span>{hours}hr</span>
-          <span>{minutes}m</span>
-          <span>{seconds}s</span>
-        </Typography>
-      </StyledBox>
-    );
-  }
-
-  return (
-    <Box className={classes.root}>
-      <Box className={classes.clockWrapper}>
-        <img className={classes.logo} src={softLpLogo} />
-        <Countdown
-          date={releaseDate}
-          renderer={countDownRenderer}
-          onComplete={() => setReleaseIsLive(true)}
-        />
-      </Box>
-    </Box>
-  )
-}
+  },
+}))
 
 export default CountdownLanding

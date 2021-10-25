@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 
 import CssBaseline from '@mui/material/CssBaseline'
@@ -11,12 +11,12 @@ import React from 'react'
 import NavBar from './components/NavBar'
 import Footer from './components/Footer'
 
-const PREFIX = 'Routes';
+const PREFIX = 'Routes'
 
 const classes = {
   mainContainer: `${PREFIX}-mainContainer`,
-  bodyContainer: `${PREFIX}-bodyContainer`
-};
+  bodyContainer: `${PREFIX}-bodyContainer`,
+}
 
 // TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
 const Root = styled('div')(() => ({
@@ -34,18 +34,17 @@ const Root = styled('div')(() => ({
     position: 'relative',
     textAlign: 'center',
     height: '100%',
-  }
-}));
+  },
+}))
 
 const RELEASE_DATE = new Date('2021-09-30T20:00:00Z')
 
 function Routes() {
-
   const [releaseIsLive, setReleaseIsLive] = useState(Date.now() >= RELEASE_DATE)
   const [activeIndex, setActiveIndex] = useState(0)
 
   return (
-    (<Root>
+    <Root>
       <CssBaseline />
       <BrowserRouter>
         <Container
@@ -89,8 +88,8 @@ function Routes() {
           </div>
         </Container>
       </BrowserRouter>
-    </Root>)
-  );
+    </Root>
+  )
 }
 
 export default Routes

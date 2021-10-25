@@ -1,97 +1,14 @@
 import React from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 
 import Box from '@mui/material/Box'
 import { Typography } from '@mui/material'
 import Divider from '@mui/material/Divider'
 import ninaCommon from 'nina-common'
 
-const PREFIX = 'SlpAboutModal';
-
-const classes = {
-  root: `${PREFIX}-root`,
-  paper: `${PREFIX}-paper`,
-  disclaimer: `${PREFIX}-disclaimer`,
-  repo: `${PREFIX}-repo`,
-  divider: `${PREFIX}-divider`,
-  article: `${PREFIX}-article`,
-  title: `${PREFIX}-title`,
-  paragraph: `${PREFIX}-paragraph`
-};
-
-const StyledBox = styled(Box)((
-  {
-    theme
-  }
-) => ({
-  [`&.${classes.root}`]: {
-    display: 'flex',
-    justifyContent: 'center',
-    position: 'absolute',
-    top: '0',
-    width: '100%',
-    height: '100%',
-  },
-
-  [`& .${classes.paper}`]: {
-    padding: theme.spacing(6, 4, 3),
-    overflowY: 'auto',
-    [theme.breakpoints.down('md')]: {
-      padding: theme.spacing(6, 2, 3),
-    },
-  },
-
-  [`& .${classes.disclaimer}`]: {
-    fontStyle: 'italic',
-    fontSize: '12px',
-  },
-
-  [`& .${classes.repo}`]: {
-    color: theme.palette.blue,
-    '&:hover': {
-      color: theme.palette.black,
-    },
-  },
-
-  [`& .${classes.divider}`]: {
-    backgroundColor: theme.palette.blue,
-    margin: '10px 0 10px',
-  },
-
-  [`& .${classes.article}`]: {
-    width: '600px',
-    padding: '0 20px',
-    textAlign: 'left',
-    [theme.breakpoints.down('md')]: {
-      width: '100%',
-      padding: '0',
-    },
-  },
-
-  [`& .${classes.title}`]: {
-    paddingTop: '10px',
-  },
-
-  [`& .${classes.paragraph}`]: {
-    display: 'flex',
-    flexDirection: 'column',
-    '& span': {
-      padding: '10px 0',
-    },
-    '& a': {
-      color: `${theme.palette.black}`,
-      '&:hover': {
-        color: `${theme.palette.blue}`,
-      },
-    },
-  }
-}));
-
 const { NinaClient } = ninaCommon.utils
 
 const SlpAboutModal = () => {
-
-
   return (
     <StyledBox className={classes.root}>
       <div className={classes.paper}>
@@ -391,7 +308,84 @@ const SlpAboutModal = () => {
         </Box>
       </div>
     </StyledBox>
-  );
+  )
 }
+
+const PREFIX = 'SlpAboutModal'
+
+const classes = {
+  root: `${PREFIX}-root`,
+  paper: `${PREFIX}-paper`,
+  disclaimer: `${PREFIX}-disclaimer`,
+  repo: `${PREFIX}-repo`,
+  divider: `${PREFIX}-divider`,
+  article: `${PREFIX}-article`,
+  title: `${PREFIX}-title`,
+  paragraph: `${PREFIX}-paragraph`,
+}
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  [`&.${classes.root}`]: {
+    display: 'flex',
+    justifyContent: 'center',
+    position: 'absolute',
+    top: '0',
+    width: '100%',
+    height: '100%',
+  },
+
+  [`& .${classes.paper}`]: {
+    padding: theme.spacing(6, 4, 3),
+    overflowY: 'auto',
+    [theme.breakpoints.down('md')]: {
+      padding: theme.spacing(6, 2, 3),
+    },
+  },
+
+  [`& .${classes.disclaimer}`]: {
+    fontStyle: 'italic',
+    fontSize: '12px',
+  },
+
+  [`& .${classes.repo}`]: {
+    color: theme.palette.blue,
+    '&:hover': {
+      color: theme.palette.black,
+    },
+  },
+
+  [`& .${classes.divider}`]: {
+    backgroundColor: theme.palette.blue,
+    margin: '10px 0 10px',
+  },
+
+  [`& .${classes.article}`]: {
+    width: '600px',
+    padding: '0 20px',
+    textAlign: 'left',
+    [theme.breakpoints.down('md')]: {
+      width: '100%',
+      padding: '0',
+    },
+  },
+
+  [`& .${classes.title}`]: {
+    paddingTop: '10px',
+  },
+
+  [`& .${classes.paragraph}`]: {
+    display: 'flex',
+    flexDirection: 'column',
+    '& span': {
+      padding: '10px 0',
+    },
+    '& a': {
+      color: `${theme.palette.black}`,
+      '&:hover': {
+        color: `${theme.palette.blue}`,
+      },
+    },
+  },
+}))
 
 export default SlpAboutModal

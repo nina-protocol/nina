@@ -134,5 +134,4 @@ const StyledBox = styled(Box)(() => ({
   },
 }))
 
-
 export default ReleaseList

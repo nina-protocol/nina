@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useMemo } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import { Link } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
 
@@ -12,7 +12,74 @@ import softLpLogo from '../assets/soft-lp-logo.png'
 import ninaCommon from 'nina-common'
 import SlpControls from './SlpControls'
 
-const PREFIX = 'NavBar';
+const { NinaContext } = ninaCommon.contexts
+const releasePubkey = process.env.REACT_APP_RELEASE_PUBKEY
+
+const NavBar = (props) => {
+  const { location, setActiveIndex, activeIndex } = props
+  const { collection } = useContext(NinaContext)
+  const wallet = useWallet()
+  const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
+
+  const base58 = useMemo(
+    () => wallet?.publicKey?.toBase58(),
+    [wallet?.publicKey]
+  )
+
+  const walletDisplay = useMemo(() => {
+    if (!wallet || !base58) return null
+    return base58.slice(0, 4) + '..' + base58.slice(-4)
+  }, [wallet, base58])
+
+  useEffect(() => {
+    setAmountHeld(collection[releasePubkey] || 0)
+  }, [collection[releasePubkey]])
+
+  return (
+    <Root className={classes.nav}>
+      <SlpControls
+        releasePubkey={releasePubkey}
+        activeIndex={activeIndex}
+        setActiveIndex={setActiveIndex}
+      />
+      {location.pathname === '/about' && (
+        <Link to="/">
+          <img className={classes.logo} src={softLpLogo} />
+        </Link>
+      )}
+      {location.pathname === '/' && (
+        <Link to="/" onClick={() => setActiveIndex(0)}>
+          <img className={classes.logo} src={softLpLogo} />
+        </Link>
+      )}
+
+      <div className={classes.nav__right}>
+        <span className={classes.nav__balance}>
+          {wallet?.connected && `${amountHeld} SOFT`}
+        </span>
+        <div className={classes.nav__button}>
+          <WalletDialogProvider
+            className={classes.walletDialogProvider}
+            featuredWallets={4}
+          >
+            <WalletMultiButton className={classes.walletButtonWrapper}>
+              {wallet?.connected
+                ? `${wallet.wallet.name} ${walletDisplay}`
+                : 'Connect Wallet'}
+            </WalletMultiButton>
+          </WalletDialogProvider>
+          <span
+            className={`${classes.connectionDot} ${
+              wallet?.connected ? 'connected' : ''
+            }`}
+          ></span>
+        </div>
+      </div>
+    </Root>
+  )
+}
+
+const PREFIX = 'NavBar'
 
 const classes = {
   nav: `${PREFIX}-nav`,
@@ -24,14 +91,10 @@ const classes = {
   nav__button: `${PREFIX}-nav__button`,
   walletDialogProvider: `${PREFIX}-walletDialogProvider`,
   walletButtonWrapper: `${PREFIX}-walletButtonWrapper`,
-  connectionDot: `${PREFIX}-connectionDot`
-};
+  connectionDot: `${PREFIX}-connectionDot`,
+}
 
-const Root = styled('nav')((
-  {
-    theme
-  }
-) => ({
+const Root = styled('nav')(({ theme }) => ({
   [`&.${classes.nav}`]: {
     background: `${theme.palette.transparent}`,
     height: '30px',
@@ -163,75 +226,7 @@ const Root = styled('nav')((
     '&.connected': {
       opacity: '100%',
     },
-  }
-}));
-
-const { NinaContext } = ninaCommon.contexts
-const releasePubkey = process.env.REACT_APP_RELEASE_PUBKEY
-
-const NavBar = (props) => {
-
-  const { location, setActiveIndex, activeIndex } = props
-  const { collection } = useContext(NinaContext)
-  const wallet = useWallet()
-  const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
-
-  const base58 = useMemo(
-    () => wallet?.publicKey?.toBase58(),
-    [wallet?.publicKey]
-  )
-
-  const walletDisplay = useMemo(() => {
-    if (!wallet || !base58) return null
-    return base58.slice(0, 4) + '..' + base58.slice(-4)
-  }, [wallet, base58])
-
-  useEffect(() => {
-    setAmountHeld(collection[releasePubkey] || 0)
-  }, [collection[releasePubkey]])
-
-  return (
-    <Root className={classes.nav}>
-      <SlpControls
-        releasePubkey={releasePubkey}
-        activeIndex={activeIndex}
-        setActiveIndex={setActiveIndex}
-      />
-      {location.pathname === '/about' && (
-        <Link to="/">
-          <img className={classes.logo} src={softLpLogo} />
-        </Link>
-      )}
-      {location.pathname === '/' && (
-        <Link to="/" onClick={() => setActiveIndex(0)}>
-          <img className={classes.logo} src={softLpLogo} />
-        </Link>
-      )}
-
-      <div className={classes.nav__right}>
-        <span className={classes.nav__balance}>
-          {wallet?.connected && `${amountHeld} SOFT`}
-        </span>
-        <div className={classes.nav__button}>
-          <WalletDialogProvider
-            className={classes.walletDialogProvider}
-            featuredWallets={4}
-          >
-            <WalletMultiButton className={classes.walletButtonWrapper}>
-              {wallet?.connected
-                ? `${wallet.wallet.name} ${walletDisplay}`
-                : 'Connect Wallet'}
-            </WalletMultiButton>
-          </WalletDialogProvider>
-          <span
-            className={`${classes.connectionDot} ${
-              wallet?.connected ? 'connected' : ''
-            }`}
-          ></span>
-        </div>
-      </div>
-    </Root>
-  );
-}
+  },
+}))
 
 export default withRouter(NavBar)

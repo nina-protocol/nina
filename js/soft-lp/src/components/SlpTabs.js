@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import { Tabs, TabPanel, TabList, Tab } from 'react-tabs'
 import 'react-tabs/style/react-tabs.css'
 
@@ -7,36 +7,6 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import ninaCommon from 'nina-common'
 import SlpPurchase from './SlpPurchase'
 import SlpRedeem from './SlpRedeem'
-
-const PREFIX = 'SlpTabs';
-
-const classes = {
-  releaseTabsWrapper: `${PREFIX}-releaseTabsWrapper`,
-  releaseTabsContainer: `${PREFIX}-releaseTabsContainer`,
-  releaseTabsList: `${PREFIX}-releaseTabsList`
-};
-
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
-  [`&.${classes.releaseTabsWrapper}`]: {
-    borderRadius: `${theme.palette.borderRadius}`,
-    height: '100%',
-  },
-
-  [`& .${classes.releaseTabsContainer}`]: {
-    height: '100%',
-    [theme.breakpoints.down('md')]: {
-      padding: '0rem',
-    },
-  },
-
-  [`& .${classes.releaseTabsList}`]: {
-    display: 'none',
-  }
-}));
 
 const { Exchange, ReleaseSettings } = ninaCommon.components
 const { ExchangeContext, NinaContext, ReleaseContext } = ninaCommon.contexts
@@ -163,7 +133,33 @@ const SlpTabs = (props) => {
         </Tabs>
       </div>
     </Root>
-  );
+  )
 }
+
+const PREFIX = 'SlpTabs'
+
+const classes = {
+  releaseTabsWrapper: `${PREFIX}-releaseTabsWrapper`,
+  releaseTabsContainer: `${PREFIX}-releaseTabsContainer`,
+  releaseTabsList: `${PREFIX}-releaseTabsList`,
+}
+
+const Root = styled('div')(({ theme }) => ({
+  [`&.${classes.releaseTabsWrapper}`]: {
+    borderRadius: `${theme.palette.borderRadius}`,
+    height: '100%',
+  },
+
+  [`& .${classes.releaseTabsContainer}`]: {
+    height: '100%',
+    [theme.breakpoints.down('md')]: {
+      padding: '0rem',
+    },
+  },
+
+  [`& .${classes.releaseTabsList}`]: {
+    display: 'none',
+  },
+}))
 
 export default SlpTabs

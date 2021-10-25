@@ -207,7 +207,6 @@ const ReleaseListTable = (props) => {
   )
 }
 
-
 const PREFIX = 'ReleaseListTable'
 
 const classes = {
@@ -217,7 +216,7 @@ const classes = {
   releaseImage: `${PREFIX}-releaseImage`,
 }
 
-const Root = styled('div')(({theme}) => ({
+const Root = styled('div')(({ theme }) => ({
   [`&.${classes.root}`]: {
     width: '100%',
   },

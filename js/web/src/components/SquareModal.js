@@ -12,11 +12,7 @@ import SquareForm from './SquareForm'
 const { NinaContext, ReleaseContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
-const SquareModal = ({
-  buttonDisabled,
-  releasePubkey,
-  release,
-}) => {
+const SquareModal = ({ buttonDisabled, releasePubkey, release }) => {
   const { getRelease } = useContext(ReleaseContext)
   const { addReleaseToCollection, getUsdcBalance } = useContext(NinaContext)
   const [open, setOpen] = useState(false)
@@ -103,7 +99,7 @@ const classes = {
   paper: `${PREFIX}-paper`,
 }
 
-const Root = styled('div')(({theme}) => ({
+const Root = styled('div')(({ theme }) => ({
   [`& .${classes.modal}`]: {
     display: 'flex',
     alignItems: 'center',
@@ -118,4 +114,4 @@ const Root = styled('div')(({theme}) => ({
   },
 }))
 
-export default SquareModal;
+export default SquareModal

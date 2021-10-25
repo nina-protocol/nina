@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import Slider from 'react-slick'
 import 'react-tabs/style/react-tabs.css'
 import { Box } from '@mui/material'
@@ -9,7 +9,81 @@ import NINA1 from '../assets/NINA-1-tu.png'
 import NINA2 from '../assets/NINA-2-tu.png'
 import NINA3 from '../assets/NINA-3-tu.png'
 
-const PREFIX = 'SlpSlider';
+const SlpSlider = () => {
+  const sliderRef = useRef(null)
+  const desktopSliderRef = useRef(null)
+
+  const handleScroll = (e) => {
+    const top = desktopSliderRef.current.scrollTop
+    desktopSliderRef.current.scrollTo({ top: top + e.deltaY })
+  }
+
+  useEffect(() => {
+    const watchScroll = () => {
+      window.addEventListener('mousewheel', handleScroll)
+    }
+
+    watchScroll()
+    return () => {
+      window.removeEventListener('mousewheel', handleScroll)
+    }
+  })
+
+  const next = () => {
+    sliderRef.current.slickNext()
+  }
+
+  const settings = {
+    dots: true,
+    arrows: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    touchMove: true,
+    customPaging: () => <span className={classes.slpDot}></span>,
+  }
+
+  return (
+    <Root>
+      <div className={classes.slpSliderContainer}>
+        <Slider {...settings} ref={sliderRef}>
+          <Fade in={true} timeout={750}>
+            <Box className={classes.slpSlide} onClick={next}>
+              <img src={NINA1} className={classes.slpSlideImage} />
+            </Box>
+          </Fade>
+          <Fade in={true} timeout={750}>
+            <Box className={classes.slpSlide} onClick={next}>
+              <img src={NINA2} className={classes.slpSlideImage} />
+            </Box>
+          </Fade>
+          <Fade in={true} timeout={750}>
+            <Box className={classes.slpSlide} onClick={next}>
+              <img src={NINA3} className={classes.slpSlideImage} />
+            </Box>
+          </Fade>
+        </Slider>
+      </div>
+      <Box className={classes.desktopSlider} ref={desktopSliderRef}>
+        <Box className={classes.desktopSliderScroll}>
+          <Box className={classes.imageWrapper}>
+            <img src={NINA2} />
+          </Box>
+          <Box className={classes.imageWrapper}>
+            <img src={NINA1} />
+          </Box>
+          <Box className={classes.imageWrapper}>
+            <img src={NINA3} />
+          </Box>
+          <Box className={classes.bump}></Box>
+        </Box>
+      </Box>
+    </Root>
+  )
+}
+
+const PREFIX = 'SlpSlider'
 
 const classes = {
   slpSliderContainer: `${PREFIX}-slpSliderContainer`,
@@ -19,15 +93,11 @@ const classes = {
   desktopSlider: `${PREFIX}-desktopSlider`,
   desktopSliderScroll: `${PREFIX}-desktopSliderScroll`,
   imageWrapper: `${PREFIX}-imageWrapper`,
-  bump: `${PREFIX}-bump`
-};
+  bump: `${PREFIX}-bump`,
+}
 
 // TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
+const Root = styled('div')(({ theme }) => ({
   [`& .${classes.slpSliderContainer}`]: {
     width: '100%',
     margin: 'auto',
@@ -89,82 +159,7 @@ const Root = styled('div')((
 
   [`& .${classes.bump}`]: {
     height: '12vh',
-  }
-}));
-
-const SlpSlider = () => {
-
-  const sliderRef = useRef(null)
-  const desktopSliderRef = useRef(null)
-
-  const handleScroll = (e) => {
-    const top = desktopSliderRef.current.scrollTop
-    desktopSliderRef.current.scrollTo({ top: top + e.deltaY })
-  }
-
-  useEffect(() => {
-    const watchScroll = () => {
-      window.addEventListener('mousewheel', handleScroll)
-    }
-
-    watchScroll()
-    return () => {
-      window.removeEventListener('mousewheel', handleScroll)
-    }
-  })
-
-  const next = () => {
-    sliderRef.current.slickNext()
-  }
-
-  const settings = {
-    dots: true,
-    arrows: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    touchMove: true,
-    customPaging: () => <span className={classes.slpDot}></span>,
-  }
-
-  return (
-    (<Root>
-      <div className={classes.slpSliderContainer}>
-        <Slider {...settings} ref={sliderRef}>
-          <Fade in={true} timeout={750}>
-            <Box className={classes.slpSlide} onClick={next}>
-              <img src={NINA1} className={classes.slpSlideImage} />
-            </Box>
-          </Fade>
-          <Fade in={true} timeout={750}>
-            <Box className={classes.slpSlide} onClick={next}>
-              <img src={NINA2} className={classes.slpSlideImage} />
-            </Box>
-          </Fade>
-          <Fade in={true} timeout={750}>
-            <Box className={classes.slpSlide} onClick={next}>
-              <img src={NINA3} className={classes.slpSlideImage} />
-            </Box>
-          </Fade>
-        </Slider>
-      </div>
-      <Box className={classes.desktopSlider} ref={desktopSliderRef}>
-        <Box className={classes.desktopSliderScroll}>
-          <Box className={classes.imageWrapper}>
-            <img src={NINA2} />
-          </Box>
-          <Box className={classes.imageWrapper}>
-            <img src={NINA1} />
-          </Box>
-          <Box className={classes.imageWrapper}>
-            <img src={NINA3} />
-          </Box>
-          <Box className={classes.bump}></Box>
-        </Box>
-      </Box>
-    </Root>)
-  );
-}
+  },
+}))
 
 export default SlpSlider

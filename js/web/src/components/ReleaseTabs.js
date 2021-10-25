@@ -131,7 +131,7 @@ const classes = {
   releaseTabs: `${PREFIX}-releaseTabs`,
 }
 
-const Root = styled('div')(({theme}) => ({
+const Root = styled('div')(({ theme }) => ({
   [`&.${classes.releaseTabsWrapper}`]: {
     border: `${theme.palette.borderWidth} solid ${theme.palette.purpleLight}`,
     borderRadius: `${theme.palette.borderRadius}`,
