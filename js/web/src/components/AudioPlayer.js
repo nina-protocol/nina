@@ -193,7 +193,7 @@ const AudioPlayer = () => {
     : `Connect you wallet to listen to your collection`
 
   return (
-    <Root  className={`${classes.player}`}>
+    <Root className={`${classes.player}`}>
       <audio id="audio" style={{ width: '100%' }}>
         <source src={txid} type="audio/mp3" />
       </audio>
@@ -298,7 +298,7 @@ const classes = {
   player: `${PREFIX}-player`,
 }
 
-const Root = styled('div')(({theme}) => ({
+const Root = styled('div')(({ theme }) => ({
   position: 'fixed',
   bottom: '0',
   width: '100%',
@@ -366,6 +366,5 @@ const Root = styled('div')(({theme}) => ({
     },
   },
 }))
-
 
 export default AudioPlayer

@@ -9,36 +9,14 @@ import Button from '@mui/material/Button'
 import { CircularProgress } from '@mui/material'
 import SquareForm from './SquareForm'
 
-const PREFIX = 'SquareModal'
-
-const classes = {
-  modal: `${PREFIX}-modal`,
-  paper: `${PREFIX}-paper`,
-}
-
-const Root = styled('div')(({ theme }) => ({
-  [`& .${classes.modal}`]: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  [`& .${classes.paper}`]: {
-    backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
-  },
-}))
-
 const { NinaContext, ReleaseContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
-export default function SquareModal({
+const SquareModal = ({
   buttonDisabled,
   releasePubkey,
   release,
-}) {
+}) => {
   const { getRelease } = useContext(ReleaseContext)
   const { addReleaseToCollection, getUsdcBalance } = useContext(NinaContext)
   const [open, setOpen] = useState(false)
@@ -117,3 +95,27 @@ export default function SquareModal({
     </Root>
   )
 }
+
+const PREFIX = 'SquareModal'
+
+const classes = {
+  modal: `${PREFIX}-modal`,
+  paper: `${PREFIX}-paper`,
+}
+
+const Root = styled('div')(({theme}) => ({
+  [`& .${classes.modal}`]: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  [`& .${classes.paper}`]: {
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+}))
+
+export default SquareModal;

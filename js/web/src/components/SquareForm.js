@@ -8,27 +8,6 @@ import { useSnackbar } from 'notistack'
 import { useWallet } from '@solana/wallet-adapter-react'
 import ninaCommon from 'nina-common'
 
-const PREFIX = 'SquareForm'
-
-const classes = {
-  squareForm: `${PREFIX}-squareForm`,
-  squarePaymentForm: `${PREFIX}-squarePaymentForm`,
-  squarePaymentButton: `${PREFIX}-squarePaymentButton`,
-}
-
-const Root = styled('div')(() => ({
-  [`&.${classes.squareForm}`]: {},
-
-  [`& .${classes.squarePaymentForm}`]: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-
-  [`& .${classes.squarePaymentButton}`]: {
-    margin: 'auto',
-  },
-}))
-
 const { NinaContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 const { NINA_API_ENDPOINT } = NinaClient.endpoints.api
@@ -247,5 +226,26 @@ const SquareForm = (props) => {
     </Root>
   )
 }
+
+const PREFIX = 'SquareForm'
+
+const classes = {
+  squareForm: `${PREFIX}-squareForm`,
+  squarePaymentForm: `${PREFIX}-squarePaymentForm`,
+  squarePaymentButton: `${PREFIX}-squarePaymentButton`,
+}
+
+const Root = styled('div')(() => ({
+  [`&.${classes.squareForm}`]: {},
+
+  [`& .${classes.squarePaymentForm}`]: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+
+  [`& .${classes.squarePaymentButton}`]: {
+    margin: 'auto',
+  },
+}))
 
 export default SquareForm

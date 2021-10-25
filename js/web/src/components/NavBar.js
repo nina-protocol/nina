@@ -103,7 +103,7 @@ const Root = styled('nav')(({ theme }) => ({
     paddingRight: '0',
     position: 'absolute',
     top: '0',
-    left: '0'
+    left: '0',
   },
 
   [`& .${classes.nav__left}`]: {

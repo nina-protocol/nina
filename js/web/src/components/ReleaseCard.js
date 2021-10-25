@@ -157,7 +157,7 @@ const classes = {
   releaseCard: `${PREFIX}-releaseCard`,
 }
 
-const Root = styled('div')(({theme}) => ({
+const Root = styled('div')(({ theme }) => ({
   [`&.${classes.releaseCardWrapper}`]: {
     height: '100%',
     width: '80%',
@@ -197,4 +197,4 @@ const Root = styled('div')(({theme}) => ({
   },
 }))
 
-export default (ReleaseCard)
+export default ReleaseCard

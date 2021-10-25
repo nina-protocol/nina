@@ -9,9 +9,8 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import { NavLink } from 'react-router-dom'
-import {Icon} from "@material-ui/core";
-import hamburger from "../assets/hamburger.svg";
-
+import { Icon } from '@material-ui/core'
+import hamburger from '../assets/hamburger.svg'
 
 const { NinaContext, ReleaseContext } = ninaCommon.contexts
 
@@ -68,7 +67,7 @@ const NavDrawer = () => {
       onClick={toggleDrawer(false)}
       onKeyDown={toggleDrawer(false)}
     >
-      <StyledList disablePadding >
+      <StyledList disablePadding>
         {links.map((link) => {
           switch (link) {
             case 'collection':
@@ -110,7 +109,7 @@ const NavDrawer = () => {
                 </NavLink>
               )
             default:
-              <NavLink
+              ;<NavLink
                 className={`${classes.drawerLink}`}
                 to={`/${link}`}
                 activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
@@ -143,7 +142,7 @@ const NavDrawer = () => {
     <div>
       {
         <Box key={'left'}>
-          <StyledMenuButton onClick={toggleDrawer(true)} >
+          <StyledMenuButton onClick={toggleDrawer(true)}>
             <Icon>
               <img src={hamburger} height={25} width={25} />
             </Icon>
@@ -172,31 +171,30 @@ const classes = {
 
 const StyledDrawer = styled(Drawer)(() => ({
   '& .MuiPaper-root': {
-    width: 400
-  }
-
+    width: 400,
+  },
 }))
-const StyledList = styled(List)(({theme}) => ({
+const StyledList = styled(List)(({ theme }) => ({
   padding: `${theme.spacing(6, 4, 0, 4)} !important`,
   '& .MuiListItem-root': {
     padding: '5px 0',
     '&:hover': {
-      backgroundColor: theme.palette.transparent
+      backgroundColor: theme.palette.transparent,
     },
-    '& .MuiListItemText-root':{
-      margin: 0
-    }
-  }
+    '& .MuiListItemText-root': {
+      margin: 0,
+    },
+  },
 }))
 
-const StyledMenuButton = styled(Button)(({theme}) => ({
+const StyledMenuButton = styled(Button)(({ theme }) => ({
   padding: '0px !important',
   '&:hover': {
-    backgroundColor: `${theme.palette.transparent} !important`
+    backgroundColor: `${theme.palette.transparent} !important`,
   },
   '& .MuiSvgIcon-root': {
     color: theme.palette.black,
-  }
+  },
 }))
 
 export default NavDrawer

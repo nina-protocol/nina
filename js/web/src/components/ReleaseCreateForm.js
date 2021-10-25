@@ -9,61 +9,6 @@ import Slider from '@mui/material/Slider'
 import Box from '@mui/material/Box'
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
-const PREFIX = 'ReleaseCreateForm'
-
-const classes = {
-  fieldInputWrapper: `${PREFIX}-fieldInputWrapper`,
-  formField: `${PREFIX}-formField`,
-  formError: `${PREFIX}-formError`,
-  resalePercentageWrapper: `${PREFIX}-resalePercentageWrapper`,
-  formSlider: `${PREFIX}-formSlider`,
-}
-
-const Root = styled('div')(({ theme }) => ({
-  [`& .${classes.fieldInputWrapper}`]: {
-    position: 'relative',
-  },
-
-  [`& .${classes.formField}`]: {
-    margin: '0.5rem 1rem 0.5rem 0',
-    width: '100%',
-    textTransform: 'capitalize',
-    fontSize: '10px',
-    position: 'relative',
-    '& :placeholder': {
-      textTransform: 'capitalize',
-      lineHeight: 'normal',
-      border: '2px solid red',
-    },
-    '& input': {
-      textAlign: 'left',
-      height: '1rem',
-    },
-  },
-
-  [`& .${classes.formError}`]: {
-    position: 'absolute',
-    top: '50%',
-    right: theme.spacing(1),
-    transform: 'translateY(-50%)',
-    color: theme.palette.red,
-    opacity: '.75',
-  },
-
-  [`& .${classes.resalePercentageWrapper}`]: {
-    display: 'flex',
-    justifyContent: 'space-inbetween',
-    alignItems: 'center',
-  },
-
-  [`& .${classes.formSlider}`]: {
-    '& MuiSlider-markLabel': {
-      border: '2px solid red',
-      marginLeft: '0',
-    },
-  },
-}))
-
 const { NinaClient } = ninaCommon.utils
 
 function ReleaseCreateForm({
@@ -249,6 +194,60 @@ function ReleaseCreateForm({
     </Root>
   )
 }
+const PREFIX = 'ReleaseCreateForm'
+
+const classes = {
+  fieldInputWrapper: `${PREFIX}-fieldInputWrapper`,
+  formField: `${PREFIX}-formField`,
+  formError: `${PREFIX}-formError`,
+  resalePercentageWrapper: `${PREFIX}-resalePercentageWrapper`,
+  formSlider: `${PREFIX}-formSlider`,
+}
+
+const Root = styled('div')(({ theme }) => ({
+  [`& .${classes.fieldInputWrapper}`]: {
+    position: 'relative',
+  },
+
+  [`& .${classes.formField}`]: {
+    margin: '0.5rem 1rem 0.5rem 0',
+    width: '100%',
+    textTransform: 'capitalize',
+    fontSize: '10px',
+    position: 'relative',
+    '& :placeholder': {
+      textTransform: 'capitalize',
+      lineHeight: 'normal',
+      border: '2px solid red',
+    },
+    '& input': {
+      textAlign: 'left',
+      height: '1rem',
+    },
+  },
+
+  [`& .${classes.formError}`]: {
+    position: 'absolute',
+    top: '50%',
+    right: theme.spacing(1),
+    transform: 'translateY(-50%)',
+    color: theme.palette.red,
+    opacity: '.75',
+  },
+
+  [`& .${classes.resalePercentageWrapper}`]: {
+    display: 'flex',
+    justifyContent: 'space-inbetween',
+    alignItems: 'center',
+  },
+
+  [`& .${classes.formSlider}`]: {
+    '& MuiSlider-markLabel': {
+      border: '2px solid red',
+      marginLeft: '0',
+    },
+  },
+}))
 
 export default withFormik({
   enableReinitialize: true,

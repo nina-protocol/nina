@@ -10,28 +10,6 @@ import { useTheme } from '@mui/material/styles'
 import { useSnackbar } from 'notistack'
 import SquareModal from './SquareModal'
 
-const PREFIX = 'ReleasePurchase'
-
-const classes = {
-  releasePurchase: `${PREFIX}-releasePurchase`,
-  releasePurchaseCtaWrapper: `${PREFIX}-releasePurchaseCtaWrapper`,
-}
-
-const Root = styled('div')(() => ({
-  [`& .${classes.releasePurchase}`]: {
-    height: '100%',
-    '&__form': {
-      height: '90%',
-    },
-  },
-
-  [`& .${classes.releasePurchaseCtaWrapper}`]: {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'space-evenly',
-  },
-}))
-
 const { ReleaseContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
@@ -125,5 +103,27 @@ const ReleasePurchase = (props) => {
     </div>
   )
 }
+
+const PREFIX = 'ReleasePurchase'
+
+const classes = {
+  releasePurchase: `${PREFIX}-releasePurchase`,
+  releasePurchaseCtaWrapper: `${PREFIX}-releasePurchaseCtaWrapper`,
+}
+
+const Root = styled('div')(() => ({
+  [`& .${classes.releasePurchase}`]: {
+    height: '100%',
+    '&__form': {
+      height: '90%',
+    },
+  },
+
+  [`& .${classes.releasePurchaseCtaWrapper}`]: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'space-evenly',
+  },
+}))
 
 export default ReleasePurchase

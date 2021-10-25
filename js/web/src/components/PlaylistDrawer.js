@@ -6,7 +6,7 @@ import clsx from 'clsx'
 import { useTheme } from '@mui/material/styles'
 import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
-import Box from '@mui/material/Box';
+import Box from '@mui/material/Box'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
@@ -102,10 +102,7 @@ const PlaylistDrawer = (props) => {
   }
 
   const list = (anchor) => (
-    <Root
-      className={classes.list}
-      role="presentation"
-    >
+    <Root className={classes.list} role="presentation">
       {playlist?.length === 0 && (
         <div style={{ padding: '16px' }}>
           <p>
@@ -176,22 +173,22 @@ const PlaylistDrawer = (props) => {
 
   return (
     <div className="playlist__wrapper">
-        <React.Fragment key={'left'}>
-          <Button variant="outlined" onClick={toggleDrawer('left', true)}>
-            <QueueMusicIcon
-              className="player__playlist-toggle"
-              style={{ fill: `${theme.palette.purple}` }}
-            />{' '}
-            {playlist?.length > 0 ? `(${playlist.length})` : null}
-          </Button>
-          <Drawer
-            anchor={'left'}
-            open={state['left']}
-            onClose={toggleDrawer('left', false)}
-          >
-            {list('left')}
-          </Drawer>
-        </React.Fragment>
+      <React.Fragment key={'left'}>
+        <Button variant="outlined" onClick={toggleDrawer('left', true)}>
+          <QueueMusicIcon
+            className="player__playlist-toggle"
+            style={{ fill: `${theme.palette.purple}` }}
+          />{' '}
+          {playlist?.length > 0 ? `(${playlist.length})` : null}
+        </Button>
+        <Drawer
+          anchor={'left'}
+          open={state['left']}
+          onClose={toggleDrawer('left', false)}
+        >
+          {list('left')}
+        </Drawer>
+      </React.Fragment>
     </div>
   )
 }
@@ -210,4 +207,3 @@ const Root = styled('div')({
 })
 
 export default PlaylistDrawer
-

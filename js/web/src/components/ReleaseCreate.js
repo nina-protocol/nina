@@ -10,7 +10,6 @@ import { useTheme } from '@mui/material/styles'
 import { useWallet } from '@solana/wallet-adapter-react'
 import ReleaseCreateForm from './ReleaseCreateForm'
 import MediaDropzones from './MediaDropzones'
-// import ReleaseCard from './ReleaseCard'
 import * as Yup from 'yup'
 
 const { ReleaseSettings } = ninaCommon.components
@@ -140,7 +139,7 @@ const ReleaseCreate = () => {
     track.meta.status === 'done'
   ) {
     return (
-      <Root >
+      <Root>
         <Typography variant="h6" gutterBottom>
           Release Overview
         </Typography>
@@ -167,15 +166,6 @@ const ReleaseCreate = () => {
           <div style={theme.helpers.grid} className={classes.createFlowGrid}>
             <>
               <div className={classes.createReleasePreview}>
-                {/* <ReleaseCard
-                  artwork={artwork}
-                  metadata={{
-                    ...formValues.releaseForm,
-                  }}
-                  preview={true}
-                  formValues={formValues}
-                /> */}
-
                 <MediaDropzones
                   setTrack={setTrack}
                   setArtwork={setArtwork}
@@ -197,7 +187,6 @@ const ReleaseCreate = () => {
                   </Typography>
                 )}
               </div>
-        
             </>
             {!release && (
               <div className={classes.createCta}>

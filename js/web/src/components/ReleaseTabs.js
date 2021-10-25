@@ -8,40 +8,6 @@ import 'react-tabs/style/react-tabs.css'
 import SettingsIcon from '@mui/icons-material/Settings'
 import ReleasePurchase from './ReleasePurchase'
 
-const PREFIX = 'ReleaseTabs'
-
-const classes = {
-  releaseTabsWrapper: `${PREFIX}-releaseTabsWrapper`,
-  releaseTabsContainer: `${PREFIX}-releaseTabsContainer`,
-  releaseTabsList: `${PREFIX}-releaseTabsList`,
-  releaseTabs: `${PREFIX}-releaseTabs`,
-}
-
-const Root = styled('div')(({ theme }) => ({
-  [`&.${classes.releaseTabsWrapper}`]: {
-    border: `${theme.palette.borderWidth} solid ${theme.palette.purpleLight}`,
-    borderRadius: `${theme.palette.borderRadius}`,
-    height: '100%',
-  },
-
-  [`& .${classes.releaseTabsContainer}`]: {
-    padding: '0 1rem',
-    height: '94%',
-  },
-
-  [`& .${classes.releaseTabsList}`]: {
-    display: 'flex',
-    width: '100%',
-    borderBottom: `1px solid ${theme.palette.purple}`,
-    justifyContent: 'flex-start',
-    paddingLeft: '0',
-  },
-
-  [`& .${classes.releaseTabs}`]: {
-    height: '100%',
-  },
-}))
-
 const { Exchange, ReleaseInfo, ReleaseSettings } = ninaCommon.components
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
 
@@ -155,5 +121,39 @@ const ReleaseTabs = (props) => {
     </Root>
   )
 }
+
+const PREFIX = 'ReleaseTabs'
+
+const classes = {
+  releaseTabsWrapper: `${PREFIX}-releaseTabsWrapper`,
+  releaseTabsContainer: `${PREFIX}-releaseTabsContainer`,
+  releaseTabsList: `${PREFIX}-releaseTabsList`,
+  releaseTabs: `${PREFIX}-releaseTabs`,
+}
+
+const Root = styled('div')(({theme}) => ({
+  [`&.${classes.releaseTabsWrapper}`]: {
+    border: `${theme.palette.borderWidth} solid ${theme.palette.purpleLight}`,
+    borderRadius: `${theme.palette.borderRadius}`,
+    height: '100%',
+  },
+
+  [`& .${classes.releaseTabsContainer}`]: {
+    padding: '0 1rem',
+    height: '94%',
+  },
+
+  [`& .${classes.releaseTabsList}`]: {
+    display: 'flex',
+    width: '100%',
+    borderBottom: `1px solid ${theme.palette.purple}`,
+    justifyContent: 'flex-start',
+    paddingLeft: '0',
+  },
+
+  [`& .${classes.releaseTabs}`]: {
+    height: '100%',
+  },
+}))
 
 export default ReleaseTabs

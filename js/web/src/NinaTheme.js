@@ -55,7 +55,7 @@ export const NinaTheme = createTheme({
     },
   },
   vars: {
-     borderWidth: '1.5px',
+    borderWidth: '1.5px',
     borderRadius: '16px',
   },
   transitions: {

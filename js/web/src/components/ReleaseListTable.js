@@ -12,35 +12,6 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
 
-const PREFIX = 'ReleaseListTable'
-
-const classes = {
-  root: `${PREFIX}-root`,
-  paper: `${PREFIX}-paper`,
-  table: `${PREFIX}-table`,
-  releaseImage: `${PREFIX}-releaseImage`,
-}
-
-const Root = styled('div')(({ theme }) => ({
-  [`&.${classes.root}`]: {
-    width: '100%',
-  },
-
-  [`& .${classes.paper}`]: {
-    width: '100%',
-    marginBottom: theme.spacing(2),
-  },
-
-  [`& .${classes.table}`]: {
-    minWidth: 750,
-  },
-
-  [`& .${classes.releaseImage}`]: {
-    width: '40px',
-    cursor: 'pointer',
-  },
-}))
-
 const { NinaClient } = ninaCommon.utils
 
 const ARWEAVE_GATEWAY_ENDPOINT = NinaClient.endpoints.arweave
@@ -235,5 +206,35 @@ const ReleaseListTable = (props) => {
     </Root>
   )
 }
+
+
+const PREFIX = 'ReleaseListTable'
+
+const classes = {
+  root: `${PREFIX}-root`,
+  paper: `${PREFIX}-paper`,
+  table: `${PREFIX}-table`,
+  releaseImage: `${PREFIX}-releaseImage`,
+}
+
+const Root = styled('div')(({theme}) => ({
+  [`&.${classes.root}`]: {
+    width: '100%',
+  },
+
+  [`& .${classes.paper}`]: {
+    width: '100%',
+    marginBottom: theme.spacing(2),
+  },
+
+  [`& .${classes.table}`]: {
+    minWidth: 750,
+  },
+
+  [`& .${classes.releaseImage}`]: {
+    width: '40px',
+    cursor: 'pointer',
+  },
+}))
 
 export default ReleaseListTable
