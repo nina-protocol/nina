@@ -9,34 +9,6 @@ import RedeemableInitialize from './RedeemableInitialize.js'
 import Royalty from './Royalty.js'
 import { ReleaseContext } from '../contexts/release'
 
-const PREFIX = 'ReleaseInfo';
-
-const classes = {
-  root: `${PREFIX}-root`,
-  releaseInfoDescription: `${PREFIX}-releaseInfoDescription`
-};
-
-const StyledBox = styled(Box)((
-  {
-    theme
-  }
-) => ({
-  [`&.${classes.root}`]: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-  },
-
-  [`& .${classes.releaseInfoDescription}`]: {
-    border: `${theme.palette.borderWidth} solid ${theme.palette.purpleLight}`,
-    maxHeight: '40vh',
-    overflow: 'scroll',
-    padding: '1rem',
-    boxShadow: '1px 4px 12px 3px rgba(150, 152, 204,0.43)',
-  }
-}));
-
 const ReleaseInfo = (props) => {
   const {
     releasePubkey,
@@ -144,4 +116,32 @@ const ReleaseInfo = (props) => {
   );
 }
 
-export default ReleaseInfo
+const PREFIX = 'ReleaseInfo';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  releaseInfoDescription: `${PREFIX}-releaseInfoDescription`
+};
+
+const StyledBox = styled(Box)((
+  {
+    theme
+  }
+) => ({
+  [`&.${classes.root}`]: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
+
+  [`& .${classes.releaseInfoDescription}`]: {
+    border: `${theme.palette.borderWidth} solid ${theme.palette.purpleLight}`,
+    maxHeight: '40vh',
+    overflow: 'scroll',
+    padding: '1rem',
+    boxShadow: '1px 4px 12px 3px rgba(150, 152, 204,0.43)',
+  }
+}));
+
+export default ReleaseInfo;

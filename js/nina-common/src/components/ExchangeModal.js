@@ -9,76 +9,6 @@ import Backdrop from '@mui/material/Backdrop'
 import 'react-tabs/style/react-tabs.css'
 import NinaClient from '../utils/client'
 
-const PREFIX = 'ExchangeModal';
-
-const classes = {
-  root: `${PREFIX}-root`,
-  confirm: `${PREFIX}-confirm`,
-  modal: `${PREFIX}-modal`,
-  paper: `${PREFIX}-paper`,
-  receivingAmount: `${PREFIX}-receivingAmount`,
-  cancel: `${PREFIX}-cancel`
-};
-
-const StyledModal = styled(Modal)((
-  {
-    theme
-  }
-) => ({
-  [`& .${classes.root}`]: {
-    width: '100%',
-    height: '100%',
-    margin: 'auto',
-    position: 'absolute',
-    zIndex: '10',
-    backgroundColor: `${theme.palette.white}`,
-    display: 'flex',
-    flexDirection: 'column',
-    borderRadius: '30px',
-    textAlign: 'center',
-  },
-
-  [`& .${classes.confirm}`]: {
-    '&.Mui-disabled': {
-      color: `white !important`,
-    },
-    width: '400px',
-    margin: `${theme.spacing(1, 'auto')}`,
-    color: `${theme.palette.blue} !important`,
-    fontSize: '14px',
-    fontWeight: '700',
-  },
-
-  [`&.${classes.modal}`]: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  [`& .${classes.paper}`]: {
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(6, 6),
-    width: '400px',
-    maxHeight: '80vh',
-    overflowY: 'auto',
-    color: `${theme.palette.white}`,
-    display: 'flex',
-    flexDirection: 'column',
-    textAlign: 'center',
-    ...theme.gradient,
-  },
-
-  [`& .${classes.receivingAmount}`]: {
-    fontWeight: 'bold',
-  },
-
-  [`& .${classes.cancel}`]: {
-    color: `${theme.palette.white}`,
-    textDecoration: 'underline',
-    cursor: 'pointer',
-  }
-}));
-
 const ExchangeModal = (props) => {
   const { toggleOverlay, showOverlay, amount, onSubmit, release, isAccept } =
     props
@@ -157,5 +87,75 @@ const ExchangeModal = (props) => {
     </StyledModal>
   );
 }
+
+const PREFIX = 'ExchangeModal';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  confirm: `${PREFIX}-confirm`,
+  modal: `${PREFIX}-modal`,
+  paper: `${PREFIX}-paper`,
+  receivingAmount: `${PREFIX}-receivingAmount`,
+  cancel: `${PREFIX}-cancel`
+};
+
+const StyledModal = styled(Modal)((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.root}`]: {
+    width: '100%',
+    height: '100%',
+    margin: 'auto',
+    position: 'absolute',
+    zIndex: '10',
+    backgroundColor: `${theme.palette.white}`,
+    display: 'flex',
+    flexDirection: 'column',
+    borderRadius: '30px',
+    textAlign: 'center',
+  },
+
+  [`& .${classes.confirm}`]: {
+    '&.Mui-disabled': {
+      color: `white !important`,
+    },
+    width: '400px',
+    margin: `${theme.spacing(1, 'auto')}`,
+    color: `${theme.palette.blue} !important`,
+    fontSize: '14px',
+    fontWeight: '700',
+  },
+
+  [`&.${classes.modal}`]: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  [`& .${classes.paper}`]: {
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(6, 6),
+    width: '400px',
+    maxHeight: '80vh',
+    overflowY: 'auto',
+    color: `${theme.palette.white}`,
+    display: 'flex',
+    flexDirection: 'column',
+    textAlign: 'center',
+    ...theme.gradient,
+  },
+
+  [`& .${classes.receivingAmount}`]: {
+    fontWeight: 'bold',
+  },
+
+  [`& .${classes.cancel}`]: {
+    color: `${theme.palette.white}`,
+    textDecoration: 'underline',
+    cursor: 'pointer',
+  }
+}));
 
 export default ExchangeModal

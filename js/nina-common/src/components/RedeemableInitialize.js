@@ -9,35 +9,6 @@ import Button from '@mui/material/Button'
 import RedeemableInitializeForm from './RedeemableInitializeForm'
 import { ReleaseContext } from '../contexts'
 
-const PREFIX = 'RedeemableInitialize';
-
-const classes = {
-  modal: `${PREFIX}-modal`,
-  paper: `${PREFIX}-paper`
-};
-
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
-  [`& .${classes.modal}`]: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  [`& .${classes.paper}`]: {
-    backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
-    width: '75%',
-    maxHeight: '80vh',
-    overflowY: 'auto',
-  }
-}));
-
 const RedeemableInitialize = (props) => {
   const { releasePubkey, amount } = props
 
@@ -109,5 +80,34 @@ const RedeemableInitialize = (props) => {
     </Root>
   );
 }
+
+const PREFIX = 'RedeemableInitialize';
+
+const classes = {
+  modal: `${PREFIX}-modal`,
+  paper: `${PREFIX}-paper`
+};
+
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.modal}`]: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  [`& .${classes.paper}`]: {
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    width: '75%',
+    maxHeight: '80vh',
+    overflowY: 'auto',
+  }
+}));
 
 export default RedeemableInitialize

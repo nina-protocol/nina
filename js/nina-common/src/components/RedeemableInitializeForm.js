@@ -6,42 +6,6 @@ import Typography from '@mui/material/Typography'
 import { Button, TextField } from '@mui/material'
 import NinaClient from '../utils/client'
 
-const PREFIX = 'RedeemableInitializeForm';
-
-const classes = {
-  redeemableForm: `${PREFIX}-redeemableForm`,
-  formField: `${PREFIX}-formField`,
-  formError: `${PREFIX}-formError`
-};
-
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
-  [`& .${classes.redeemableForm}`]: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '0 1rem',
-    overflowY: 'auto',
-  },
-
-  [`& .${classes.formField}`]: {
-    margin: '0.75rem 1rem',
-    width: '100%',
-    textTransform: 'capitalize',
-    '& :placeholder': {
-      textTransform: 'capitalize',
-    },
-  },
-
-  [`& .${classes.formError}`]: {
-    color: `${theme.palette.red}`,
-  }
-}));
-
 export const RedeemableInitializeForm = (props) => {
 
   const { values, touched, errors, onChange } = props
@@ -120,6 +84,43 @@ export const RedeemableInitializeForm = (props) => {
     </Root>
   );
 }
+
+const PREFIX = 'RedeemableInitializeForm';
+
+const classes = {
+  redeemableForm: `${PREFIX}-redeemableForm`,
+  formField: `${PREFIX}-formField`,
+  formError: `${PREFIX}-formError`
+};
+
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.redeemableForm}`]: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '0 1rem',
+    overflowY: 'auto',
+  },
+
+  [`& .${classes.formField}`]: {
+    margin: '0.75rem 1rem',
+    width: '100%',
+    textTransform: 'capitalize',
+    '& :placeholder': {
+      textTransform: 'capitalize',
+    },
+  },
+
+  [`& .${classes.formError}`]: {
+    color: `${theme.palette.red}`,
+  }
+}));
+
 
 export default withFormik({
   mapPropsToValues: (props) => {

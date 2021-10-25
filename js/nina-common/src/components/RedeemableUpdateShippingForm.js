@@ -7,71 +7,6 @@ import { Button, TextField } from '@mui/material'
 import Box from '@mui/material/Box'
 import NinaClient from '../utils/client'
 
-const PREFIX = 'RedeemableUpdateShippingForm';
-
-const classes = {
-  root: `${PREFIX}-root`,
-  header: `${PREFIX}-header`,
-  shippingInfo: `${PREFIX}-shippingInfo`,
-  redemptionInfo: `${PREFIX}-redemptionInfo`,
-  redeemableForm: `${PREFIX}-redeemableForm`,
-  formField: `${PREFIX}-formField`,
-  formError: `${PREFIX}-formError`
-};
-
-const StyledBox = styled(Box)((
-  {
-    theme
-  }
-) => ({
-  [`& .${classes.root}`]: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    backgroundColor: `${theme.palette.transparent}`,
-  },
-
-  [`& .${classes.header}`]: {
-    textTransform: 'uppercase',
-    fontWeight: '700',
-    fontSize: '14px',
-  },
-
-  [`& .${classes.shippingInfo}`]: {
-    textAlign: 'left',
-    '& p': {
-      fontSize: '26px',
-    },
-  },
-
-  [`& .${classes.redemptionInfo}`]: {
-    '& p': {
-      fontSize: '14px',
-    },
-  },
-
-  [`& .${classes.redeemableForm}`]: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflowY: 'auto',
-  },
-
-  [`& .${classes.formField}`]: {
-    margin: '0.75rem 1rem',
-    width: '100%',
-    textTransform: 'capitalize',
-    '& :placeholder': {
-      textTransform: 'capitalize',
-    },
-  },
-
-  [`& .${classes.formError}`]: {
-    color: `${theme.palette.red}`,
-  }
-}));
-
 export const RedeemableUpdateShippingForm = (props) => {
   const { values, touched, errors, onChange, selectedRecord } = props
 
@@ -195,6 +130,72 @@ export const RedeemableUpdateShippingForm = (props) => {
     </Box>
   )
 }
+
+const PREFIX = 'RedeemableUpdateShippingForm';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  header: `${PREFIX}-header`,
+  shippingInfo: `${PREFIX}-shippingInfo`,
+  redemptionInfo: `${PREFIX}-redemptionInfo`,
+  redeemableForm: `${PREFIX}-redeemableForm`,
+  formField: `${PREFIX}-formField`,
+  formError: `${PREFIX}-formError`
+};
+
+const StyledBox = styled(Box)((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.root}`]: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    backgroundColor: `${theme.palette.transparent}`,
+  },
+
+  [`& .${classes.header}`]: {
+    textTransform: 'uppercase',
+    fontWeight: '700',
+    fontSize: '14px',
+  },
+
+  [`& .${classes.shippingInfo}`]: {
+    textAlign: 'left',
+    '& p': {
+      fontSize: '26px',
+    },
+  },
+
+  [`& .${classes.redemptionInfo}`]: {
+    '& p': {
+      fontSize: '14px',
+    },
+  },
+
+  [`& .${classes.redeemableForm}`]: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflowY: 'auto',
+  },
+
+  [`& .${classes.formField}`]: {
+    margin: '0.75rem 1rem',
+    width: '100%',
+    textTransform: 'capitalize',
+    '& :placeholder': {
+      textTransform: 'capitalize',
+    },
+  },
+
+  [`& .${classes.formError}`]: {
+    color: `${theme.palette.red}`,
+  }
+}));
+
 
 export default withFormik({
   enableReinitialize: true,

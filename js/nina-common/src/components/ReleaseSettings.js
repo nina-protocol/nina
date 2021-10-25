@@ -13,116 +13,6 @@ import Royalty from './Royalty.js'
 import NinaClient from '../utils/client'
 import { ReleaseContext } from '../contexts'
 
-const PREFIX = 'ReleaseSettings';
-
-const classes = {
-  root: `${PREFIX}-root`,
-  releaseSettingsWrapper: `${PREFIX}-releaseSettingsWrapper`,
-  tabSettingsWrapper: `${PREFIX}-tabSettingsWrapper`,
-  leftContainer: `${PREFIX}-leftContainer`,
-  releaseImageWrapper: `${PREFIX}-releaseImageWrapper`,
-  releaseImage: `${PREFIX}-releaseImage`,
-  tabInfoWrapper: `${PREFIX}-tabInfoWrapper`,
-  card: `${PREFIX}-card`,
-  tabCard: `${PREFIX}-tabCard`,
-  mediaLink: `${PREFIX}-mediaLink`,
-  media: `${PREFIX}-media`,
-  releaseInfo: `${PREFIX}-releaseInfo`,
-  stat: `${PREFIX}-stat`,
-  ctaWrapper: `${PREFIX}-ctaWrapper`
-};
-
-const StyledBox = styled(Box)((
-  {
-    theme
-  }
-) => ({
-  [`&.${classes.root}`]: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-  },
-
-  [`& .${classes.releaseSettingsWrapper}`]: {
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    display: 'grid',
-    gridTemplateColumns: '50% 50%',
-    maxHeight: '50vh',
-    width: '90%',
-    margin: 'auto',
-    marginTop: '0',
-  },
-
-  [`& .${classes.tabSettingsWrapper}`]: {},
-
-  [`& .${classes.leftContainer}`]: {
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    marginLeft: '16%',
-  },
-
-  [`& .${classes.releaseImageWrapper}`]: {
-    width: '50%',
-    margin: 'auto',
-  },
-
-  [`& .${classes.releaseImage}`]: {
-    width: '50%',
-  },
-
-  [`& .${classes.tabInfoWrapper}`]: {
-    width: '100%',
-  },
-
-  [`& .${classes.card}`]: {
-    borderColor: `${theme.palette.purple}`,
-    textAlign: 'left',
-    width: '50%',
-    height: '100%',
-    margin: 'auto',
-    marginLeft: '10%',
-  },
-
-  [`& .${classes.tabCard}`]: {
-    width: '100%',
-  },
-
-  [`& .${classes.mediaLink}`]: {
-    width: '33%',
-    display: 'flex',
-    margin: 'auto',
-    '& a': {
-      width: '100%',
-    },
-  },
-
-  [`& .${classes.media}`]: {
-    height: '250px',
-    width: '100%',
-    backgroundSize: 'contain',
-  },
-
-  [`& .${classes.releaseInfo}`]: {
-    // maxWidth: '300px',
-    padding: '1rem 0.5rem 0 0',
-  },
-
-  [`& .${classes.stat}`]: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginBottom: '0.3rem',
-  },
-
-  [`& .${classes.ctaWrapper}`]: {
-    width: '30%',
-    margin: 'auto',
-    marginTop: '0',
-  }
-}));
-
 const ReleaseSettings = (props) => {
   const {
     releasePubkey,
@@ -407,4 +297,114 @@ const ReleaseSettings = (props) => {
   );
 }
 
-export default ReleaseSettings
+const PREFIX = 'ReleaseSettings';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  releaseSettingsWrapper: `${PREFIX}-releaseSettingsWrapper`,
+  tabSettingsWrapper: `${PREFIX}-tabSettingsWrapper`,
+  leftContainer: `${PREFIX}-leftContainer`,
+  releaseImageWrapper: `${PREFIX}-releaseImageWrapper`,
+  releaseImage: `${PREFIX}-releaseImage`,
+  tabInfoWrapper: `${PREFIX}-tabInfoWrapper`,
+  card: `${PREFIX}-card`,
+  tabCard: `${PREFIX}-tabCard`,
+  mediaLink: `${PREFIX}-mediaLink`,
+  media: `${PREFIX}-media`,
+  releaseInfo: `${PREFIX}-releaseInfo`,
+  stat: `${PREFIX}-stat`,
+  ctaWrapper: `${PREFIX}-ctaWrapper`
+};
+
+const StyledBox = styled(Box)((
+  {
+    theme
+  }
+) => ({
+  [`&.${classes.root}`]: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
+
+  [`& .${classes.releaseSettingsWrapper}`]: {
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    display: 'grid',
+    gridTemplateColumns: '50% 50%',
+    maxHeight: '50vh',
+    width: '90%',
+    margin: 'auto',
+    marginTop: '0',
+  },
+
+  [`& .${classes.tabSettingsWrapper}`]: {},
+
+  [`& .${classes.leftContainer}`]: {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    marginLeft: '16%',
+  },
+
+  [`& .${classes.releaseImageWrapper}`]: {
+    width: '50%',
+    margin: 'auto',
+  },
+
+  [`& .${classes.releaseImage}`]: {
+    width: '50%',
+  },
+
+  [`& .${classes.tabInfoWrapper}`]: {
+    width: '100%',
+  },
+
+  [`& .${classes.card}`]: {
+    borderColor: `${theme.palette.purple}`,
+    textAlign: 'left',
+    width: '50%',
+    height: '100%',
+    margin: 'auto',
+    marginLeft: '10%',
+  },
+
+  [`& .${classes.tabCard}`]: {
+    width: '100%',
+  },
+
+  [`& .${classes.mediaLink}`]: {
+    width: '33%',
+    display: 'flex',
+    margin: 'auto',
+    '& a': {
+      width: '100%',
+    },
+  },
+
+  [`& .${classes.media}`]: {
+    height: '250px',
+    width: '100%',
+    backgroundSize: 'contain',
+  },
+
+  [`& .${classes.releaseInfo}`]: {
+    // maxWidth: '300px',
+    padding: '1rem 0.5rem 0 0',
+  },
+
+  [`& .${classes.stat}`]: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginBottom: '0.3rem',
+  },
+
+  [`& .${classes.ctaWrapper}`]: {
+    width: '30%',
+    margin: 'auto',
+    marginTop: '0',
+  }
+}));
+
+export default ReleaseSettings;

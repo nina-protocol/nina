@@ -11,53 +11,6 @@ import { Typography } from '@mui/material'
 import RedeemableStepper from './RedeemableStepper'
 import { ReleaseContext } from '../contexts'
 
-const PREFIX = 'RedeemableModal';
-
-const classes = {
-  modal: `${PREFIX}-modal`,
-  paper: `${PREFIX}-paper`,
-  redeemCta: `${PREFIX}-redeemCta`,
-  noCoinWarning: `${PREFIX}-noCoinWarning`
-};
-
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
-  [`& .${classes.modal}`]: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  [`& .${classes.paper}`]: {
-    boxShadow: theme.shadows[5],
-    // width: '75%',
-    maxHeight: '80vh',
-    overflowY: 'auto',
-    position: 'relative',
-    borderRadius: '0px',
-    ...theme.gradient,
-  },
-
-  [`& .${classes.redeemCta}`]: {
-    fontSize: '14px',
-    marginTop: theme.spacing(1),
-    padding: `${theme.spacing(1, 0)}`,
-    width: '100%',
-    color: `${theme.palette.blue}`,
-  },
-
-  [`& .${classes.noCoinWarning}`]: {
-    color: `${theme.palette.red}`,
-    position: 'absolute',
-    fontStyle: 'italic',
-    right: '5rem',
-    bottom: '1rem',
-  }
-}));
-
 const RedeemableModal = (props) => {
   const { releasePubkey, amountHeld } = props
 
@@ -149,5 +102,53 @@ const validationSchema = Yup.object().shape({
   country: Yup.string().required('Country Required'),
   postalCode: Yup.string().required('Postal Code Required'),
 })
+
+const PREFIX = 'RedeemableModal';
+
+const classes = {
+  modal: `${PREFIX}-modal`,
+  paper: `${PREFIX}-paper`,
+  redeemCta: `${PREFIX}-redeemCta`,
+  noCoinWarning: `${PREFIX}-noCoinWarning`
+};
+
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.modal}`]: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'blue'
+  },
+
+  [`& .${classes.paper}`]: {
+    boxShadow: theme.shadows[5],
+    // width: '75%',
+    maxHeight: '80vh',
+    overflowY: 'auto',
+    position: 'relative',
+    borderRadius: '0px',
+    ...theme.gradient,
+  },
+
+  [`& .${classes.redeemCta}`]: {
+    fontSize: '14px',
+    marginTop: theme.spacing(1),
+    padding: `${theme.spacing(1, 0)}`,
+    width: '100%',
+    color: `${theme.palette.blue}`,
+  },
+
+  [`& .${classes.noCoinWarning}`]: {
+    color: `${theme.palette.red}`,
+    position: 'absolute',
+    fontStyle: 'italic',
+    right: '5rem',
+    bottom: '1rem',
+  }
+}));
 
 export default RedeemableModal

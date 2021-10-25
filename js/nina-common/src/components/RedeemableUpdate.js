@@ -10,38 +10,6 @@ import { ReleaseContext } from '../contexts'
 import RedeemableUpdateShippingForm from './RedeemableUpdateShippingForm.js'
 import RedeemableUpdateShippingList from './RedeemableUpdateShippingList.js'
 
-const PREFIX = 'RedeemableUpdate';
-
-const classes = {
-  modal: `${PREFIX}-modal`,
-  paper: `${PREFIX}-paper`
-};
-
-const StyledBox = styled(Box)((
-  {
-    theme
-  }
-) => ({
-  [`& .${classes.modal}`]: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  [`& .${classes.paper}`]: {
-    backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
-    width: '75%',
-    maxHeight: '80vh',
-    overflowY: 'auto',
-    display: 'grid',
-    gridTemplateColumns: '20% 80%',
-    gridGap: '1rem',
-  }
-}));
-
 const RedeemableUpdate = (props) => {
 
   const { releasePubkey, redeemables, redemptionRecords } = props
@@ -128,5 +96,37 @@ const RedeemableUpdate = (props) => {
     </StyledBox>
   );
 }
+
+const PREFIX = 'RedeemableUpdate';
+
+const classes = {
+  modal: `${PREFIX}-modal`,
+  paper: `${PREFIX}-paper`
+};
+
+const StyledBox = styled(Box)((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.modal}`]: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  [`& .${classes.paper}`]: {
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    width: '75%',
+    maxHeight: '80vh',
+    overflowY: 'auto',
+    display: 'grid',
+    gridTemplateColumns: '20% 80%',
+    gridGap: '1rem',
+  }
+}));
 
 export default RedeemableUpdate

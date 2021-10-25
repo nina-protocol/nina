@@ -10,55 +10,7 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import Typography from '@mui/material/Typography'
 
-const PREFIX = 'RedeemableUpdateShippingList';
-
-const classes = {
-  root: `${PREFIX}-root`,
-  list: `${PREFIX}-list`,
-  listItem: `${PREFIX}-listItem`,
-  listItemText: `${PREFIX}-listItemText`,
-  icon: `${PREFIX}-icon`
-};
-
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
-  [`&.${classes.root}`]: {
-    width: '100%',
-    maxWidth: '100%',
-    overflow: 'hidden',
-    backgroundColor: theme.palette.background.paper,
-  },
-
-  [`& .${classes.list}`]: {
-    maxHeight: '50vh',
-    overflowY: 'scroll',
-  },
-
-  [`& .${classes.listItem}`]: {
-    paddingLeft: '0.5rem',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-  },
-
-  [`& .${classes.listItemText}`]: {
-    '& span': {
-      whiteSpace: 'nowrap',
-      maxWidth: '100%',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-    },
-  },
-
-  [`& .${classes.icon}`]: {
-    minWidth: '12px',
-    color: `${theme.palette.purple}`,
-  }
-}));
-
-export default function UserRedemptionsList(props) {
+const RedeemableUpdateShippingList = (props) => {
   const {
     redemptionRecords,
     handleSelectRecord,
@@ -114,3 +66,53 @@ export default function UserRedemptionsList(props) {
     </Root>
   );
 }
+
+const PREFIX = 'RedeemableUpdateShippingList';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  list: `${PREFIX}-list`,
+  listItem: `${PREFIX}-listItem`,
+  listItemText: `${PREFIX}-listItemText`,
+  icon: `${PREFIX}-icon`
+};
+
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`&.${classes.root}`]: {
+    width: '100%',
+    maxWidth: '100%',
+    overflow: 'hidden',
+    backgroundColor: theme.palette.background.paper,
+  },
+
+  [`& .${classes.list}`]: {
+    maxHeight: '50vh',
+    overflowY: 'scroll',
+  },
+
+  [`& .${classes.listItem}`]: {
+    paddingLeft: '0.5rem',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+  },
+
+  [`& .${classes.listItemText}`]: {
+    '& span': {
+      whiteSpace: 'nowrap',
+      maxWidth: '100%',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+    },
+  },
+
+  [`& .${classes.icon}`]: {
+    minWidth: '12px',
+    color: `${theme.palette.purple}`,
+  }
+}));
+
+export default RedeemableUpdateShippingList;

@@ -9,84 +9,6 @@ import Box from '@mui/material/Box'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { ExchangeContext } from '../contexts'
 
-const PREFIX = 'BuySellForm';
-
-const classes = {
-  buySellForm: `${PREFIX}-buySellForm`,
-  exchangeCtaWrapper: `${PREFIX}-exchangeCtaWrapper`,
-  cta: `${PREFIX}-cta`
-};
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
-  [`& .${classes.buySellForm}`]: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    margin: 'auto',
-    marginTop: theme.spacing(1),
-    borderBottom: `1px solid ${theme.palette.greyLight}`,
-    backgroundColor: `${theme.palette.white}`,
-    '&__inputLabel': {
-      fontSize: '2rem',
-      width: '73%',
-      border: `1px dashed ${theme.palette.blue}`,
-      '& input': {
-        textAlign: 'center !important',
-        padding: '0',
-        height: '41px',
-        '&[type=number]': {
-          '-moz-appearance': 'textfield',
-        },
-        '&::-webkit-outer-spin-button': {
-          '-webkit-appearance': 'none',
-          margin: 0,
-        },
-        '&::-webkit-inner-spin-button': {
-          '-webkit-appearance': 'none',
-          margin: 0,
-        },
-        '&::placeholder': {
-          fontSize: '10px',
-          verticalAlign: 'middle',
-          position: 'absolute',
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-        },
-      },
-    },
-    '&:hover': {
-      color: `${theme.palette.blue}`,
-    },
-  },
-
-  [`& .${classes.exchangeCtaWrapper}`]: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-
-  [`& .${classes.cta}`]: {
-    width: '25%',
-    background: `${theme.palette.white}`,
-    fontSize: '16px',
-    fontWeight: '400',
-    boxShadow: 'none',
-    '&:hover': {
-      backgroundColor: `${theme.palette.white}`,
-      boxShadow: 'none',
-    },
-    '&.Mui-disabled': {
-      background: `${theme.palette.white}`,
-    },
-  }
-}));
-
 const BuySellForm = (props) => {
   const { onSubmit, isBuy, release, amount, setAmount } = props
 
@@ -166,6 +88,83 @@ const BuySellForm = (props) => {
     </Root>)
   );
 }
+
+const PREFIX = 'BuySellForm';
+
+const classes = {
+  buySellForm: `${PREFIX}-buySellForm`,
+  exchangeCtaWrapper: `${PREFIX}-exchangeCtaWrapper`,
+  cta: `${PREFIX}-cta`
+};
+
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.buySellForm}`]: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    margin: 'auto',
+    marginTop: theme.spacing(1),
+    borderBottom: `1px solid ${theme.palette.greyLight}`,
+    backgroundColor: `${theme.palette.white}`,
+    '&__inputLabel': {
+      fontSize: '2rem',
+      width: '73%',
+      border: `1px dashed ${theme.palette.blue}`,
+      '& input': {
+        textAlign: 'center !important',
+        padding: '0',
+        height: '41px',
+        '&[type=number]': {
+          '-moz-appearance': 'textfield',
+        },
+        '&::-webkit-outer-spin-button': {
+          '-webkit-appearance': 'none',
+          margin: 0,
+        },
+        '&::-webkit-inner-spin-button': {
+          '-webkit-appearance': 'none',
+          margin: 0,
+        },
+        '&::placeholder': {
+          fontSize: '10px',
+          verticalAlign: 'middle',
+          position: 'absolute',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+        },
+      },
+    },
+    '&:hover': {
+      color: `${theme.palette.blue}`,
+    },
+  },
+
+  [`& .${classes.exchangeCtaWrapper}`]: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
+  [`& .${classes.cta}`]: {
+    width: '25%',
+    background: `${theme.palette.white}`,
+    fontSize: '16px',
+    fontWeight: '400',
+    boxShadow: 'none',
+    '&:hover': {
+      backgroundColor: `${theme.palette.white}`,
+      boxShadow: 'none',
+    },
+    '&.Mui-disabled': {
+      background: `${theme.palette.white}`,
+    },
+  }
+}));
 
 export default withFormik({
   enableReinitialize: true,

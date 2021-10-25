@@ -3,7 +3,6 @@ import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import Button from '@mui/material/Button'
 import { useTheme } from '@mui/material/styles'
-
 import ReleaseCard from './ReleaseCard'
 import ReleaseTabs from './ReleaseTabs'
 

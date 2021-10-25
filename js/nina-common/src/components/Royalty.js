@@ -15,44 +15,7 @@ import RoyaltyRecipientForm from './RoyaltyRecipientForm'
 import { NameContext, ReleaseContext } from '../contexts'
 import NinaClient from '../utils/client'
 
-const PREFIX = 'Royalty';
-
-const classes = {
-  modal: `${PREFIX}-modal`,
-  paper: `${PREFIX}-paper`,
-  recipientData: `${PREFIX}-recipientData`
-};
-
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
-  [`& .${classes.modal}`]: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  [`& .${classes.paper}`]: {
-    backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
-    width: '40vw',
-    maxHeight: '90vh',
-    overflowY: 'auto',
-  },
-
-  [`& .${classes.recipientData}`]: {
-    color: `${theme.palette.greyLight}`,
-    '& a': {
-      color: `${theme.palette.purple}`,
-    },
-  }
-}));
-
-export default function Royalty(props) {
+const Royalty = (props) => {
   const { release, releasePubkey } = props
 
   const wallet = useWallet()
@@ -249,3 +212,42 @@ export default function Royalty(props) {
     </Root>
   );
 }
+
+const PREFIX = 'Royalty';
+
+const classes = {
+  modal: `${PREFIX}-modal`,
+  paper: `${PREFIX}-paper`,
+  recipientData: `${PREFIX}-recipientData`
+};
+
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.modal}`]: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  [`& .${classes.paper}`]: {
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    width: '40vw',
+    maxHeight: '90vh',
+    overflowY: 'auto',
+  },
+
+  [`& .${classes.recipientData}`]: {
+    color: `${theme.palette.greyLight}`,
+    '& a': {
+      color: `${theme.palette.purple}`,
+    },
+  }
+}));
+
+export default Royalty;

@@ -10,37 +10,6 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import RedeemableClaimForm from './RedeemableClaimForm'
 
-const PREFIX = 'RedeemableStepper';
-
-const classes = {
-  root: `${PREFIX}-root`,
-  confirmHeader: `${PREFIX}-confirmHeader`,
-  shippingInfo: `${PREFIX}-shippingInfo`
-};
-
-const Root = styled('div')(() => ({
-  [`& .${classes.root}`]: {
-    width: '300px',
-    margin: 'auto',
-    textAlign: 'center',
-  },
-
-  [`& .${classes.confirmHeader}`]: {
-    textTransform: 'uppercase',
-    fontWeight: '700',
-    fontSize: '12px',
-    paddingBottom: '20px',
-  },
-
-  [`& .${classes.shippingInfo}`]: {
-    textAlign: 'left',
-    '& p': {
-      fontSize: '26px',
-      lineHeight: '29.9px',
-    },
-  }
-}));
-
 const ConfirmShipping = (props) => {
   const { redeemerShippingValues } = props
   const classes = listStyles()
@@ -106,7 +75,7 @@ function getStepContent(step, props) {
   }
 }
 
-export default function RedeemableStepper(props) {
+const RedeemableStepper = (props) => {
 
   const { submitRedeemableForm, formIsValid } = props
   const [activeStep, setActiveStep] = React.useState(0)
@@ -185,3 +154,36 @@ export default function RedeemableStepper(props) {
     </Root>
   );
 }
+
+const PREFIX = 'RedeemableStepper';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  confirmHeader: `${PREFIX}-confirmHeader`,
+  shippingInfo: `${PREFIX}-shippingInfo`
+};
+
+const Root = styled('div')(() => ({
+  [`& .${classes.root}`]: {
+    width: '300px',
+    margin: 'auto',
+    textAlign: 'center',
+  },
+
+  [`& .${classes.confirmHeader}`]: {
+    textTransform: 'uppercase',
+    fontWeight: '700',
+    fontSize: '12px',
+    paddingBottom: '20px',
+  },
+
+  [`& .${classes.shippingInfo}`]: {
+    textAlign: 'left',
+    '& p': {
+      fontSize: '26px',
+      lineHeight: '29.9px',
+    },
+  }
+}));
+
+export default RedeemableStepper;

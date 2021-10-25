@@ -9,56 +9,9 @@ import Divider from '@mui/material/Divider'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import Typography from '@mui/material/Typography'
+import UserRedemptionsList from './RedeemableUpdateShippingList';
 
-const PREFIX = 'UserRedemptionsList';
-
-const classes = {
-  root: `${PREFIX}-root`,
-  list: `${PREFIX}-list`,
-  listItem: `${PREFIX}-listItem`,
-  listItemText: `${PREFIX}-listItemText`,
-  icon: `${PREFIX}-icon`
-};
-
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
-  [`&.${classes.root}`]: {
-    width: '100%',
-    maxWidth: '100%',
-    overflow: 'hidden',
-    backgroundColor: theme.palette.transparent,
-  },
-
-  [`& .${classes.list}`]: {
-    maxHeight: '50vh',
-    overflowY: 'scroll',
-  },
-
-  [`& .${classes.listItem}`]: {
-    paddingLeft: '0.5rem',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-  },
-
-  [`& .${classes.listItemText}`]: {
-    '& span': {
-      whiteSpace: 'nowrap',
-      maxWidth: '100%',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-    },
-  },
-
-  [`& .${classes.icon}`]: {
-    minWidth: '12px',
-    color: `${theme.palette.purple}`,
-  }
-}));
-
-export default function RedeemableUpdateShippingList(props) {
+const UserRedemptionsList = (props) => {
 
   const {
     userRedemptionRecords,
@@ -114,3 +67,53 @@ export default function RedeemableUpdateShippingList(props) {
     </Root>
   );
 }
+
+const PREFIX = 'UserRedemptionsList';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  list: `${PREFIX}-list`,
+  listItem: `${PREFIX}-listItem`,
+  listItemText: `${PREFIX}-listItemText`,
+  icon: `${PREFIX}-icon`
+};
+
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`&.${classes.root}`]: {
+    width: '100%',
+    maxWidth: '100%',
+    overflow: 'hidden',
+    backgroundColor: theme.palette.transparent,
+  },
+
+  [`& .${classes.list}`]: {
+    maxHeight: '50vh',
+    overflowY: 'scroll',
+  },
+
+  [`& .${classes.listItem}`]: {
+    paddingLeft: '0.5rem',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+  },
+
+  [`& .${classes.listItemText}`]: {
+    '& span': {
+      whiteSpace: 'nowrap',
+      maxWidth: '100%',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+    },
+  },
+
+  [`& .${classes.icon}`]: {
+    minWidth: '12px',
+    color: `${theme.palette.purple}`,
+  }
+}));
+
+export default UserRedemptionsList;
