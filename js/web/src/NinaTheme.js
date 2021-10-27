@@ -65,7 +65,6 @@ export const NinaTheme = createTheme({
     },
   },
   spacing: 15,
-  // shadows: ['none'],
   helpers: {
     grid: {
       display: 'grid',
