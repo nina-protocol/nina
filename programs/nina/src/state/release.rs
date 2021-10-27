@@ -181,6 +181,13 @@ impl Release {
         let signer = &[&seeds[..]];
         let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer);
         token::mint_to(cpi_ctx, config.amount_to_vault_token_account)?;
+        
+        emit!(ReleaseCreated {
+            public_key: *release_loader.to_account_info().key,
+            mint: *release_mint.to_account_info().key,
+            authority: *authority.to_account_info().key,
+            date: config.release_datetime,
+        });
 
         Ok(())
     }

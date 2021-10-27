@@ -78,6 +78,7 @@ const ReleaseListTable = (props) => {
   }
 
   let rows = releases.map((release) => {
+    console.log('release row: ', release)
     const metadata = release.metadata
     const tokenData = release.tokenData
     const releasePubkey = release.releasePubkey

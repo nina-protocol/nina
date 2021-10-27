@@ -24,6 +24,10 @@ import {
 import { createMetadataIx, updateMetadataIx } from '../utils/metaplex/metadata'
 import NinaClient from '../utils/client'
 
+const lookupTypes = {
+  PUBLISHED_BY: 'published_by',
+  REVENUE_SHARE: 'revenue_share'
+}
 export const ReleaseContext = createContext()
 const ReleaseContextProvider = ({ children }) => {
   const wallet = useWallet()
@@ -46,7 +50,7 @@ const ReleaseContextProvider = ({ children }) => {
   })
   const [releasesRecentState, setReleasesRecentState] = useState({
     published: [],
-    purchase: [],
+    purchased: [],
   })
 
   useEffect(() => {
@@ -894,14 +898,21 @@ const releaseContextHelper = ({
     }
   }
 
-  const getReleases = async (path) => {
+  const getReleasesHandler = async (type) => {
     if (!connection) {
       return
     }
 
-    const nina = await NinaClient.connect(provider)
-    const response = await fetch(`${NinaClient.endpoints.api}/releases${path}}`)
-    let releaseIds = await response.json()
+    let path = NinaClient.endpoints.api
+    switch (type) {
+      case lookupTypes.PUBLISHED_BY:
+        path += `/published/${wallet?.publicKey.toBase58()}`
+      case lookupTypes.REVENUE_SHARE:
+        path += `/royalties/${wallet?.publicKey.toBase58()}`
+    }
+
+    const response = await fetch(path)
+    const releaseIds = await response.json()
     await fetchAndSaveReleasesToState(releaseIds)
   }
 
@@ -910,7 +921,7 @@ const releaseContextHelper = ({
   }
 
   const getReleasesPublishedByUser = async (user = null, handle) => {
-    await getReleases(`/published/${wallet?.publicKey.toBase58()}`)
+    await getReleasesHandler(lookupTypes.PUBLISHED_BY)
   }
 
   const getRedeemablesForRelease = async (releasePubkey) => {
@@ -1020,19 +1031,19 @@ const releaseContextHelper = ({
   }
 
   const getReleaseRoyaltiesByUser = async () => {
-    await getReleases(`/royalties/${wallet?.publicKey.toBase58()}`)
+    await getReleasesHandler(lookupTypes.REVENUE_SHARE)
   }
 
   const getReleasesRecent = async () => {
     const nina = await NinaClient.connect(provider)
     const result = await fetch(`${NinaClient.endpoints.api}/releases/recent`)
-    const { published, purchase } = await result.json()
-    let releaseIds = [...published, ...purchase]
+    const { published, purchased } = await result.json()
+    const releaseIds = [...published, ...purchase]
     await fetchAndSaveReleasesToState(releaseIds)
 
     setReleasesRecentState({
       published,
-      purchase
+      purchased
     })
   }
 

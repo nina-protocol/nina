@@ -24,7 +24,7 @@ pub struct ReleaseInitializeProtected<'info> {
         address = nina_publishing_account::ID
     )]
     pub payer: Signer<'info>,
-    pub authority: Signer<'info>,
+    pub authority: UncheckedAccount<'info>,
     #[account(
         constraint = authority_token_account.owner == authority.key(),
         constraint = authority_token_account.mint == payment_mint.key(),
@@ -78,13 +78,6 @@ pub fn handler(
         config,
         bumps,
     )?;
-
-    emit!(ReleaseCreated {
-        public_key: *ctx.accounts.release.to_account_info().key,
-        mint: *ctx.accounts.release_mint.to_account_info().key,
-        authority: *ctx.accounts.authority.to_account_info().key,
-        date: config.release_datetime,
-    });
 
     Ok(())
 }
