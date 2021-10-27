@@ -129,7 +129,6 @@ const Exchange = (props) => {
   }
 
   const showPendingTransaction = (msg) => {
-    console.log('msg: ', msg)
     enqueueSnackbar(msg, {
       variant: 'info',
     })

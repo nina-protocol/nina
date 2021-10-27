@@ -1522,6 +1522,71 @@ const idl = {
   ],
   "events": [
     {
+      "name": "ExchangeAdded",
+      "fields": [
+        {
+          "name": "releaseMint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "release",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "initializer",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "expectedAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "initializerAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": true
+        }
+      ]
+    },
+    {
+      "name": "ExchangeCompleted",
+      "fields": [
+        {
+          "name": "taker",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "datetime",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "ExchangeCancelled",
+      "fields": [
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
       "name": "RedeemableCreated",
       "fields": [
         {

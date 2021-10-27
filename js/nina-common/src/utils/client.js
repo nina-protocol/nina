@@ -91,9 +91,9 @@ export default class NinaClient {
 
   static nativeToUiString(amount, mint, decimalOverride = false) {
     const isUsdc = NinaClient.isUsdc(mint)
-    return `${isUsdc ? '$' : ''}${NinaClient.nativeToUi(amount, mint).toFixed(
+    return `${NinaClient.nativeToUi(amount, mint).toFixed(
       isUsdc || decimalOverride ? 2 : 4
-    )}${isUsdc ? '' : ' SOL'}`
+    )}${isUsdc ? ' USDC' : ' SOL'}`
   }
 
   static uiToNative(amount, mint) {

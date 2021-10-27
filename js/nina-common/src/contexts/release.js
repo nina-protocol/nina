@@ -210,7 +210,6 @@ const releaseContextHelper = ({
       const publishingCreditMint = new anchor.web3.PublicKey(
         NinaClient.ids().mints.publishingCredit
       )
-      console.log('publishingCreditMint: ', publishingCreditMint.toBase58())
       const [release, releaseBump] =
         await anchor.web3.PublicKey.findProgramAddress(
           [
@@ -495,8 +494,8 @@ const releaseContextHelper = ({
         [releasePubkey]: false,
       })
       getUsdcBalance()
-      getRelease(releasePubkey)
-      addReleaseToCollection(releasePubkey)
+      await getRelease(releasePubkey)
+      await addReleaseToCollection(releasePubkey)
       return {
         success: true,
         msg: 'Release purchased!',
@@ -881,7 +880,6 @@ const releaseContextHelper = ({
       releasePubkey
     )
     releaseAccount.publicKey = releasePubkey
-
     if (releaseAccount.error) {
       throw releaseAccount.error
     } else {
@@ -894,7 +892,7 @@ const releaseContextHelper = ({
     if (releaseAccount.error) {
       throw releaseAccount.error
     } else {
-      saveReleasesToState([releaseAccount])
+      await saveReleasesToState([releaseAccount])
     }
   }
 
@@ -1299,7 +1297,6 @@ const releaseContextHelper = ({
     for await (let release of releases) {
       const releasePubkey = release.publicKey.toBase58()
       release = release.account ? release.account : release
-
       if (handle) {
         let searchResult = {
           releasePubkey,
@@ -1348,9 +1345,9 @@ const releaseContextHelper = ({
       })
       search.releases = finalSearchReleases
 
-      setSearchResults(search)
+      await setSearchResults(search)
     }
-    setReleaseState(updatedState)
+    await setReleaseState(updatedState)
   }
 
   const saveRedemptionRecordsToState = async (

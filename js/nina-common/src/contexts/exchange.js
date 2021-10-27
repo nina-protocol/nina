@@ -484,27 +484,39 @@ const exchangeContextHelper = ({
   }
 
   const getExchangesForRelease = async (releasePubkey) => {
-    const nina = await NinaClient.connect(provider)
-    const exchangeAccounts = await getProgramAccounts(
-      nina.program,
-      'Exchange',
-      { release: releasePubkey },
-      connection
-    )
-    const exchangeAccountIds = exchangeAccounts.map((e) =>
-      e.publicKey.toBase58()
-    )
-    const releaseExchangeIds = filterExchangesForRelease(releasePubkey).map(
-      (e) => e.publicKey.toBase58()
-    )
-    const idsToRemove = releaseExchangeIds.filter(
-      (id) => !exchangeAccountIds.includes(id)
-    )
-    if (exchangeAccounts.error) {
-      throw exchangeAccounts.error
-    } else {
-      saveExchangesToState(exchangeAccounts, idsToRemove)
-    }
+    const response = await fetch(NinaClient.endpoints.api + `/releases/${releasePubkey}/exchanges`)
+    const exchangeIds = await response.json()
+    if (exchangeIds.length > 0) {
+      const nina = await NinaClient.connect(provider)
+      const exchangeAccounts = await anchor.utils.rpc.getMultipleAccounts(
+        connection,
+        exchangeIds.map(id => new anchor.web3.PublicKey(id))
+      )
+
+      const existingExchanges = []
+      const layout = nina.program.coder.accounts.accountLayouts.get('Exchange')
+      exchangeAccounts.forEach(exchange => {
+        if (exchange) {
+          let dataParsed = layout.decode(exchange.account.data.slice(8))
+          dataParsed.publicKey = exchange.publicKey
+          existingExchanges.push(dataParsed)
+        }
+      })
+
+      const existingExchangeIds = existingExchanges.map(exchange => exchange.publicKey.toBase58())
+      const releaseExchangeIds = filterExchangesForRelease(releasePubkey).map(
+        (e) => e.publicKey.toBase58()
+      )
+      const idsToRemove = releaseExchangeIds.filter(
+        (id) => !exchangeIds.includes(id)
+      )
+
+      if (exchangeAccounts.error) {
+        throw exchangeAccounts.error
+      } else {
+        saveExchangesToState(existingExchanges, idsToRemove)
+      }
+    }    
   }
 
   const getExchangeHistoryForRelease = async (releasePubkey) => {

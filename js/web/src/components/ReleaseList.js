@@ -10,7 +10,13 @@ import UserView from './UserView'
 const { NameContext, ReleaseContext } = ninaCommon.contexts
 
 const ReleaseList = () => {
-  const { searchResults, resetSearchResults, getReleasesRecent, releasesRecentState, filterReleasesRecent } = useContext(ReleaseContext)
+  const {
+    searchResults,
+    resetSearchResults,
+    getReleasesRecent,
+    releasesRecentState,
+    filterReleasesRecent,
+  } = useContext(ReleaseContext)
   const classes = useStyles()
   const wallet = useWallet()
   const { getReleasesForTwitterHandle } = useContext(NameContext)
@@ -75,10 +81,10 @@ const ReleaseList = () => {
       {!wallet?.connected && !searchResults.searched && (
         <>
           <h1>Welcome to Nina</h1>
-            <ReleaseListTable
-              releases={releasesRecent.published || []}
-              key="releases"
-            />
+          <ReleaseListTable
+            releases={releasesRecent.published || []}
+            key="releases"
+          />
         </>
       )}
       {wallet?.connected && !searchResults.searched && <UserView />}

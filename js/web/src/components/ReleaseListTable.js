@@ -78,7 +78,6 @@ const ReleaseListTable = (props) => {
   }
 
   let rows = releases.map((release) => {
-    console.log('release row: ', release)
     const metadata = release.metadata
     const tokenData = release.tokenData
     const releasePubkey = release.releasePubkey
@@ -216,8 +215,8 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 750,
   },
   releaseImage: {
-    width: '80px'
+    width: '80px',
   },
 }))
 
-export default ReleaseListTable;
+export default ReleaseListTable
