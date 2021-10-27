@@ -4,7 +4,6 @@ import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import 'react-tabs/style/react-tabs.css'
-
 import SettingsIcon from '@mui/icons-material/Settings'
 import ReleasePurchase from './ReleasePurchase'
 

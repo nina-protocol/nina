@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
 import { Link } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
-
 import { useWallet } from '@solana/wallet-adapter-react'
 import {
   WalletDialogProvider,

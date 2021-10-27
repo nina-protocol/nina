@@ -6,7 +6,6 @@ import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import { Typography } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-
 import { useWallet } from '@solana/wallet-adapter-react'
 import ReleaseCreateForm from './ReleaseCreateForm'
 import MediaDropzones from './MediaDropzones'

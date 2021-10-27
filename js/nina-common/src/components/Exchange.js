@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles';
 import { useSnackbar } from 'notistack'
 import { Typography, Box } from '@mui/material'
-
 import RefreshIcon from '@mui/icons-material/Refresh'
 import { useWallet } from '@solana/wallet-adapter-react'
 import BuySell from './BuySell'

@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import { styled } from '@mui/material/styles';
 import { Formik, Field, Form } from 'formik'
-
 import Button from '@mui/material/Button'
 import { TextField, Typography, Box } from '@mui/material'
 import Slider from '@mui/material/Slider'

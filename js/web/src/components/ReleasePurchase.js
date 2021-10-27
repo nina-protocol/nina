@@ -6,7 +6,6 @@ import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
-
 import { useSnackbar } from 'notistack'
 import SquareModal from './SquareModal'
 

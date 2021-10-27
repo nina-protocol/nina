@@ -1,6 +1,5 @@
 import React from 'react'
 import ninaCommon from 'nina-common'
-// import {styled} from '@mui/material/styles'
 import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
 import { Typography } from '@mui/material'
@@ -14,18 +13,6 @@ const classes = {
   dropZoneInputLabel: `${PREFIX}-dropZoneInputLabel`,
   dropZonePreviewWrapper: `${PREFIX}-dropZonePreviewWrapper`,
 }
-
-// const Root = styled(Dropzone)(() => ({
-//   [`& .${classes.dropZone}`]: {
-//     border: '2px solid red !important'
-//   },
-//   [`& .${classes.dropZoneInputLabel}`]: {
-//     border: '2px solid blue !important',
-//     width: '100%',
-//     textAlign: 'left'
-//   },
-// }))
-
 const { NinaClient } = ninaCommon.utils
 const MediaDropzone = ({
   type,

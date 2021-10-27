@@ -2,7 +2,6 @@ import React from 'react'
 import { styled } from '@mui/material/styles'
 import Countdown from 'react-countdown'
 import Box from '@mui/material/Box'
-
 import { Typography } from '@mui/material'
 import softLpLogo from '../assets/soft-lp-logo.png'
 

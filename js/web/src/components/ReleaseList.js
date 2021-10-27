@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
-
 import TextField from '@mui/material/TextField'
 import { Box, Typography } from '@mui/material'
 import ReleaseListTable from './ReleaseListTable'

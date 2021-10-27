@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { withFormik, Form, Field } from 'formik'
-
 import Typography from '@mui/material/Typography'
 import { TextField } from '@mui/material'
 import Slider from '@mui/material/Slider'

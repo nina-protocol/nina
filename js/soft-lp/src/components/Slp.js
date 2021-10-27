@@ -1,6 +1,5 @@
 import React from 'react'
 import { styled } from '@mui/material/styles'
-
 import SlpTabs from './SlpTabs'
 
 const releasePubkey = process.env.REACT_APP_RELEASE_PUBKEY

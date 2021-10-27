@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { styled } from '@mui/material/styles'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
-
 import CssBaseline from '@mui/material/CssBaseline'
 import Container from '@mui/material/Container'
 import Slp from './components/Slp'

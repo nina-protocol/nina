@@ -2,7 +2,6 @@ import { useState, useEffect, useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import { Tabs, TabPanel, TabList, Tab } from 'react-tabs'
 import 'react-tabs/style/react-tabs.css'
-
 import { useWallet } from '@solana/wallet-adapter-react'
 import ninaCommon from 'nina-common'
 import SlpPurchase from './SlpPurchase'

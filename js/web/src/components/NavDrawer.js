@@ -109,7 +109,7 @@ const NavDrawer = () => {
                 </NavLink>
               )
             default:
-              ;<NavLink
+              <NavLink
                 className={`${classes.drawerLink}`}
                 to={`/${link}`}
                 activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
@@ -174,6 +174,7 @@ const StyledDrawer = styled(Drawer)(() => ({
     width: 400,
   },
 }))
+
 const StyledList = styled(List)(({ theme }) => ({
   padding: `${theme.spacing(6, 4, 0, 4)} !important`,
   '& .MuiListItem-root': {

@@ -4,7 +4,6 @@ import Slider from 'react-slick'
 import 'react-tabs/style/react-tabs.css'
 import { Box } from '@mui/material'
 import Fade from '@mui/material/Fade'
-
 import NINA1 from '../assets/NINA-1-tu.png'
 import NINA2 from '../assets/NINA-2-tu.png'
 import NINA3 from '../assets/NINA-3-tu.png'
