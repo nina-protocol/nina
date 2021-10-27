@@ -1,27 +1,11 @@
 import React from 'react'
-import { styled } from '@mui/material/styles'
+import {withStyles} from '@mui/styles';
 import { SnackbarProvider } from 'notistack'
 import { ThemeProvider } from '@mui/styles'
 import { StyledEngineProvider } from '@mui/styled-engine'
 import { SlpTheme } from './SlpTheme'
 import Router from './routes'
 import ninaCommon from 'nina-common'
-
-const PREFIX = 'App'
-
-const classes = {
-  containerRoot: `${PREFIX}-containerRoot`,
-  success: `${PREFIX}-success`,
-  error: `${PREFIX}-error`,
-  info: `${PREFIX}-info`,
-}
-
-const StyledStyledEngineProvider = styled(StyledEngineProvider)({
-  [`& .${classes.containerRoot}`]: { paddingTop: '75px' },
-  [`& .${classes.success}`]: { backgroundColor: 'rgba(45, 129, 255, 1)' },
-  [`& .${classes.error}`]: { backgroundColor: 'red' },
-  [`& .${classes.info}`]: { backgroundColor: 'rgba(45, 129, 255, 1)' },
-})
 
 const {
   ConnectionContextProvider,
@@ -34,11 +18,11 @@ const {
 
 const { extendBorsh } = ninaCommon.utils.metaplex.borsh
 
-function App() {
+function App({classes}) {
   extendBorsh()
 
   return (
-    <StyledStyledEngineProvider injectFirst>
+    <StyledEngineProvider injectFirst>
       <ThemeProvider theme={SlpTheme}>
         <SnackbarProvider
           maxSnack={3}
@@ -70,8 +54,15 @@ function App() {
           </ConnectionContextProvider>
         </SnackbarProvider>
       </ThemeProvider>
-    </StyledStyledEngineProvider>
+    </StyledEngineProvider>
   )
 }
 
-export default App
+const styles = {
+  containerRoot: {paddingTop: '75px'},
+  success: {backgroundColor: 'rgba(45, 129, 255, 1)'},
+  error: {backgroundColor: 'red'},
+  info: {backgroundColor: 'rgba(45, 129, 255, 1)'},
+}
+
+export default withStyles(styles)(App)
