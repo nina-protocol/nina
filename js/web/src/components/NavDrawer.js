@@ -109,7 +109,7 @@ const NavDrawer = () => {
                 </NavLink>
               )
             default:
-              <NavLink
+              ;<NavLink
                 className={`${classes.drawerLink}`}
                 to={`/${link}`}
                 activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
