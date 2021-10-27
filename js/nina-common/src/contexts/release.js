@@ -906,9 +906,11 @@ const releaseContextHelper = ({
     let path = NinaClient.endpoints.api
     switch (type) {
       case lookupTypes.PUBLISHED_BY:
-        path += `/published/${wallet?.publicKey.toBase58()}`
+        path += `/releases/published/${wallet?.publicKey.toBase58()}`
+        break
       case lookupTypes.REVENUE_SHARE:
-        path += `/royalties/${wallet?.publicKey.toBase58()}`
+        path += `/releases/royalties/${wallet?.publicKey.toBase58()}`
+        break
     }
 
     const response = await fetch(path)
@@ -1038,7 +1040,7 @@ const releaseContextHelper = ({
     const nina = await NinaClient.connect(provider)
     const result = await fetch(`${NinaClient.endpoints.api}/releases/recent`)
     const { published, purchased } = await result.json()
-    const releaseIds = [...published, ...purchase]
+    const releaseIds = [...published, ...purchased]
     await fetchAndSaveReleasesToState(releaseIds)
 
     setReleasesRecentState({
@@ -1081,7 +1083,7 @@ const releaseContextHelper = ({
     })
 
     const releasesPurchased = []
-    releasesRecentState.purchase.forEach((releasePubkey) => {
+    releasesRecentState.purchased.forEach((releasePubkey) => {
       const tokenData = releaseState.tokenData[releasePubkey]
       const metadata = releaseState.metadata[releasePubkey]
       if (metadata) {
@@ -1091,7 +1093,7 @@ const releaseContextHelper = ({
 
     return {
       published: releasesPublished,
-      purchase: releasesPurchased,
+      purchased: releasesPurchased,
     }
   }
 
@@ -1247,21 +1249,26 @@ const releaseContextHelper = ({
   */
 
   const fetchAndSaveReleasesToState = async (releaseIds) => {
-    if (releaseIds.length > 0) {
+    if (releaseIds.length > 0) {      
       releaseIds = releaseIds.filter(id => !Object.keys(releaseState.tokenData).includes(id))    
-      console.log(releaseIds)
-      let releaseAccounts = await anchor.utils.rpc.getMultipleAccounts(
-        connection,
-        releaseIds
-      )
-      const layout = nina.program.coder.accounts.accountLayouts.get('Release')
-      releaseAccounts = releaseAccounts.map(release => {
-        let dataParsed = layout.decode(release.account.data.slice(8))
-        dataParsed.publicKey = release.publicKey
-        return dataParsed
-      })
-
-      await saveReleasesToState(releaseAccounts)
+      releaseIds = releaseIds.filter((id, pos) => releaseIds.indexOf(id) == pos)
+      releaseIds = releaseIds.map(id => new anchor.web3.PublicKey(id))      
+      try {
+        const nina = await NinaClient.connect(provider)
+        let releaseAccounts = await anchor.utils.rpc.getMultipleAccounts(
+          connection,
+          releaseIds
+        )
+        const layout = nina.program.coder.accounts.accountLayouts.get('Release')
+        releaseAccounts = releaseAccounts.map(release => {
+          let dataParsed = layout.decode(release.account.data.slice(8))
+          dataParsed.publicKey = release.publicKey
+          return dataParsed
+        })
+        await saveReleasesToState(releaseAccounts)
+      } catch (error) {
+        console.warn(error)
+      }
     }
   }
 
