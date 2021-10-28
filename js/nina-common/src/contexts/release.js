@@ -26,7 +26,7 @@ import NinaClient from '../utils/client'
 
 const lookupTypes = {
   PUBLISHED_BY: 'published_by',
-  REVENUE_SHARE: 'revenue_share'
+  REVENUE_SHARE: 'revenue_share',
 }
 export const ReleaseContext = createContext()
 const ReleaseContextProvider = ({ children }) => {
@@ -114,7 +114,7 @@ const ReleaseContextProvider = ({ children }) => {
     setRedeemableState,
     removeReleaseFromCollection,
     releasesRecentState,
-    setReleasesRecentState
+    setReleasesRecentState,
   })
 
   return (
@@ -175,7 +175,7 @@ const releaseContextHelper = ({
   setRedeemableState,
   removeReleaseFromCollection,
   releasesRecentState,
-  setReleasesRecentState
+  setReleasesRecentState,
 }) => {
   const provider = new anchor.Provider(
     connection,
@@ -933,11 +933,12 @@ const releaseContextHelper = ({
       const nina = await NinaClient.connect(provider)
       let redeemableAccounts = await anchor.utils.rpc.getMultipleAccounts(
         connection,
-        redeemableIds.map(id => new anchor.web3.PublicKey(id))
+        redeemableIds.map((id) => new anchor.web3.PublicKey(id))
       )
 
-      const layout = nina.program.coder.accounts.accountLayouts.get('Redeemable')
-      redeemableAccounts = redeemableAccounts.map(redeemable => {
+      const layout =
+        nina.program.coder.accounts.accountLayouts.get('Redeemable')
+      redeemableAccounts = redeemableAccounts.map((redeemable) => {
         let dataParsed = layout.decode(redeemable.account.data.slice(8))
         dataParsed.publicKey = redeemable.publicKey
         dataParsed.description = decodeNonEncryptedByteArray(
@@ -968,14 +969,19 @@ const releaseContextHelper = ({
     if (wallet?.publicKey.toBase58() !== release.authority.toBase58()) {
       authority = wallet?.publicKey.toBase58()
     }
-    const response = await fetch(`/releases/${releasePubkey}/redemptionRecords${authority ? `/${wallet.publicKey.toBase58()}` :''}`)
+    const response = await fetch(
+      `/releases/${releasePubkey}/redemptionRecords${
+        authority ? `/${wallet.publicKey.toBase58()}` : ''
+      }`
+    )
     const redemptionRecordIds = await response.json()
     let redemptionRecords = await anchor.utils.rpc.getMultipleAccounts(
       connection,
-      redemptionRecordIds.map(id => new anchor.web3.PublicKey(id))
+      redemptionRecordIds.map((id) => new anchor.web3.PublicKey(id))
     )
 
-    const layout = nina.program.coder.accounts.accountLayouts.get('RedemptionRecord')
+    const layout =
+      nina.program.coder.accounts.accountLayouts.get('RedemptionRecord')
     for await (redemptionRecord of redemptionRecords) {
       let dataParsed = layout.decode(redemptionRecord.account.data.slice(8))
       const redeemable = await nina.program.account.redeemable.fetch(
@@ -1037,7 +1043,7 @@ const releaseContextHelper = ({
 
     setReleasesRecentState({
       published,
-      purchased
+      purchased,
     })
   }
 
@@ -1241,10 +1247,12 @@ const releaseContextHelper = ({
   */
 
   const fetchAndSaveReleasesToState = async (releaseIds) => {
-    if (releaseIds.length > 0) {      
-      releaseIds = releaseIds.filter(id => !Object.keys(releaseState.tokenData).includes(id))    
+    if (releaseIds.length > 0) {
+      releaseIds = releaseIds.filter(
+        (id) => !Object.keys(releaseState.tokenData).includes(id)
+      )
       releaseIds = releaseIds.filter((id, pos) => releaseIds.indexOf(id) == pos)
-      releaseIds = releaseIds.map(id => new anchor.web3.PublicKey(id))      
+      releaseIds = releaseIds.map((id) => new anchor.web3.PublicKey(id))
       try {
         const nina = await NinaClient.connect(provider)
         let releaseAccounts = await anchor.utils.rpc.getMultipleAccounts(
@@ -1252,7 +1260,7 @@ const releaseContextHelper = ({
           releaseIds
         )
         const layout = nina.program.coder.accounts.accountLayouts.get('Release')
-        releaseAccounts = releaseAccounts.map(release => {
+        releaseAccounts = releaseAccounts.map((release) => {
           let dataParsed = layout.decode(release.account.data.slice(8))
           dataParsed.publicKey = release.publicKey
           return dataParsed

@@ -113,7 +113,7 @@ const Exchange = (props) => {
       if (exchangeCompletedByInput.isCurrentUser) {
         result = {
           msg: 'New offer invalid - would complete own existing offer',
-          success: false
+          success: false,
         }
       } else {
         if (isBuy) {

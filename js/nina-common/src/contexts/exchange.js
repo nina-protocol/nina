@@ -15,7 +15,7 @@ import NinaClient from '../utils/client'
 
 const lookupTypes = {
   RELEASE: 'release',
-  USER: 'user'
+  USER: 'user',
 }
 
 export const ExchangeContext = createContext()
@@ -458,7 +458,7 @@ const exchangeContextHelper = ({
 
   */
 
-  const getExchangesHandler = async (type, releasePubkey=null) => {
+  const getExchangesHandler = async (type, releasePubkey = null) => {
     if (!connection) {
       return
     }
@@ -478,12 +478,12 @@ const exchangeContextHelper = ({
       const nina = await NinaClient.connect(provider)
       const exchangeAccounts = await anchor.utils.rpc.getMultipleAccounts(
         connection,
-        exchangeIds.map(id => new anchor.web3.PublicKey(id))
+        exchangeIds.map((id) => new anchor.web3.PublicKey(id))
       )
 
       const existingExchanges = []
       const layout = nina.program.coder.accounts.accountLayouts.get('Exchange')
-      exchangeAccounts.forEach(exchange => {
+      exchangeAccounts.forEach((exchange) => {
         if (exchange) {
           let dataParsed = layout.decode(exchange.account.data.slice(8))
           dataParsed.publicKey = exchange.publicKey
@@ -491,7 +491,9 @@ const exchangeContextHelper = ({
         }
       })
 
-      const existingExchangeIds = existingExchanges.map(exchange => exchange.publicKey.toBase58())
+      const existingExchangeIds = existingExchanges.map((exchange) =>
+        exchange.publicKey.toBase58()
+      )
       const releaseExchangeIds = filterExchangesForRelease(releasePubkey).map(
         (e) => e.publicKey.toBase58()
       )
@@ -504,7 +506,7 @@ const exchangeContextHelper = ({
       } else {
         saveExchangesToState(existingExchanges, idsToRemove)
       }
-    }    
+    }
   }
 
   const getExchangesForUser = async () => {

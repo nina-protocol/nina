@@ -80,7 +80,7 @@ const ExchangeListItem = (props) => {
           {displayPrice}
         </span>
       </Typography>
-      {NinaClient.isSol(release.paymentMint) &&
+      {NinaClient.isSol(release.paymentMint) && (
         <Typography
           className={`${classes.exchangeListItemPrice} ${classes.exchangeListItemPrice}--usd`}
         >
@@ -92,7 +92,7 @@ const ExchangeListItem = (props) => {
           ).toFixed(2)}{' '}
           USD
         </Typography>
-      }
+      )}
       <Typography
         className={`${classes.exchangeListItemPrice} ${classes.exchangeListItemPrice}--symbol`}
       >
