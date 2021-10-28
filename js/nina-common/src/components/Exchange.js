@@ -110,11 +110,18 @@ const Exchange = (props) => {
       releasePubkey
     )
     if (exchangeCompletedByInput) {
-      if (isBuy) {
-        showPendingTransaction('Accepting an offer...')
-        result = await exchangeAccept(exchangeCompletedByInput, releasePubkey)
+      if (exchangeCompletedByInput.isCurrentUser) {
+        result = {
+          msg: 'New offer invalid - would complete own existing offer',
+          success: false
+        }
       } else {
-        setExchangeAwaitingConfirm(exchangeCompletedByInput)
+        if (isBuy) {
+          showPendingTransaction('Accepting an offer...')
+          result = await exchangeAccept(exchangeCompletedByInput, releasePubkey)
+        } else {
+          setExchangeAwaitingConfirm(exchangeCompletedByInput)
+        }
       }
     } else if (!isBuy) {
       setExchangeAwaitingConfirm(data)

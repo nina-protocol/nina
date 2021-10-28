@@ -13,8 +13,12 @@ import {
 import { ninaErrorHandler } from '../utils/errors'
 import NinaClient from '../utils/client'
 
-export const ExchangeContext = createContext()
+const lookupTypes = {
+  RELEASE: 'release',
+  USER: 'user'
+}
 
+export const ExchangeContext = createContext()
 const ExchangeContextProvider = ({ children }) => {
   const wallet = useWallet()
   const { connection } = useContext(ConnectionContext)
@@ -454,37 +458,21 @@ const exchangeContextHelper = ({
 
   */
 
-  const getExchangesForUser = async () => {
-    if (!wallet?.connected) {
+  const getExchangesHandler = async (type, releasePubkey=null) => {
+    if (!connection) {
       return
     }
-    const nina = await NinaClient.connect(provider)
-    const exchangeAccounts = await getProgramAccounts(
-      nina.program,
-      'Exchange',
-      { initializer: wallet?.publicKey.toBase58() },
-      connection
-    )
 
-    const exchangeAccountIds = exchangeAccounts.map((e) =>
-      e.publicKey.toBase58()
-    )
-    const userExchangeIds = filterExchangesForUser().map((e) =>
-      e.publicKey.toBase58()
-    )
-    const idsToRemove = userExchangeIds.filter(
-      (id) => !exchangeAccountIds.includes(id)
-    )
-
-    if (exchangeAccounts.error) {
-      throw exchangeAccounts.error
-    } else {
-      saveExchangesToState(exchangeAccounts, idsToRemove)
+    let path = NinaClient.endpoints.api
+    switch (type) {
+      case lookupTypes.USER:
+        path += `/userAccounts/${wallet.publicKey.toBase58()}/exchanges`
+        break
+      case lookupTypes.RELEASE:
+        path += `/releases/${releasePubkey}/exchanges`
+        break
     }
-  }
-
-  const getExchangesForRelease = async (releasePubkey) => {
-    const response = await fetch(NinaClient.endpoints.api + `/releases/${releasePubkey}/exchanges`)
+    const response = await fetch(path)
     const exchangeIds = await response.json()
     if (exchangeIds.length > 0) {
       const nina = await NinaClient.connect(provider)
@@ -517,6 +505,17 @@ const exchangeContextHelper = ({
         saveExchangesToState(existingExchanges, idsToRemove)
       }
     }    
+  }
+
+  const getExchangesForUser = async () => {
+    if (!wallet?.connected) {
+      return
+    }
+    getExchangesHandler(lookupTypes.USER)
+  }
+
+  const getExchangesForRelease = async (releasePubkey) => {
+    getExchangesHandler(lookupTypes.RELEASE, releasePubkey)
   }
 
   const getExchangeHistoryForRelease = async (releasePubkey) => {
