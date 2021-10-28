@@ -925,109 +925,103 @@ const releaseContextHelper = ({
   }
 
   const getRedeemablesForRelease = async (releasePubkey) => {
-    const nina = await NinaClient.connect(provider)
-    let redeemableAccounts = await getProgramAccounts(
-      nina.program,
-      'Redeemable',
-      { release: releasePubkey },
-      connection
-    )
+    const response = await fetch(`/releases/${releasePubkey}/redeemables`)
+    const redeemableIds = await response.json()
     const parsedRedeemables = {}
-    for await (let redeemable of redeemableAccounts) {
-      try {
-        let releasePubkey = redeemable.release.toBase58()
-        redeemable.description = decodeNonEncryptedByteArray(
-          redeemable?.description
-        )
-        parsedRedeemables[releasePubkey] = redeemable
-      } catch (error) {
-        console.warn('Redeemable Error: ', error)
-      }
-    }
 
-    if (redeemableAccounts.error) {
-      throw redeemableAccounts.error
-    } else {
+    try {
+      const nina = await NinaClient.connect(provider)
+      let redeemableAccounts = await anchor.utils.rpc.getMultipleAccounts(
+        connection,
+        redeemableIds.map(id => new anchor.web3.PublicKey(id))
+      )
+
+      const layout = nina.program.coder.accounts.accountLayouts.get('Redeemable')
+      redeemableAccounts = redeemableAccounts.map(redeemable => {
+        let dataParsed = layout.decode(redeemable.account.data.slice(8))
+        dataParsed.publicKey = redeemable.publicKey
+        dataParsed.description = decodeNonEncryptedByteArray(
+          dataParsed?.description
+        )
+        parsedRedeemables[releasePubkey] = dataParsed
+      })
+
       setRedeemableState({
         ...redeemableState,
         ...parsedRedeemables,
       })
+    } catch (error) {
+      console.warn(error)
     }
   }
 
   const getRedemptionRecordsForRelease = async (releasePubkey) => {
-    const release = releaseState.tokenData[releasePubkey]
+    const nina = await NinaClient.connect(provider)
+    const release = await nina.program.account.release.fetch(releasePubkey)
+    const parsedRedemptionRecords = []
+
     if (!release) {
       return
     }
 
-    const nina = await NinaClient.connect(provider)
-    const filter = {
-      release: releasePubkey,
-    }
-
+    let authority
     if (wallet?.publicKey.toBase58() !== release.authority.toBase58()) {
-      filter.redeemer = wallet?.publicKey.toBase58()
+      authority = wallet?.publicKey.toBase58()
     }
-
-    let redemptionRecords = await getProgramAccounts(
-      nina.program,
-      'RedemptionRecord',
-      filter,
-      connection
+    const response = await fetch(`/releases/${releasePubkey}/redemptionRecords${authority ? `/${wallet.publicKey.toBase58()}` :''}`)
+    const redemptionRecordIds = await response.json()
+    let redemptionRecords = await anchor.utils.rpc.getMultipleAccounts(
+      connection,
+      redemptionRecordIds.map(id => new anchor.web3.PublicKey(id))
     )
 
-    if (redemptionRecords.error) {
-      throw redemptionRecords.error
-    } else {
-      const parsedRedemptionRecords = []
-      for (let redemptionRecord of redemptionRecords) {
-        try {
-          const redeemable = await nina.program.account.redeemable.fetch(
-            redemptionRecord.redeemable
-          )
-          const otherPartyEncryptionKey =
-            wallet?.publicKey.toBase58() === redeemable.authority.toBase58()
-              ? redemptionRecord.encryptionPublicKey
-              : redeemable.encryptionPublicKey
-          if (!redemptionRecord.address.every((item) => item === 0)) {
-            redemptionRecord.address = await decryptData(
-              redemptionRecord.address,
-              otherPartyEncryptionKey,
-              redemptionRecord.iv
-            )
-          }
-          if (!redemptionRecord.shipper.every((item) => item === 0)) {
-            redemptionRecord.shipper = await decryptData(
-              redemptionRecord.shipper,
-              otherPartyEncryptionKey,
-              redemptionRecord.iv
-            )
-          } else {
-            redemptionRecord.shipper = undefined
-          }
-          if (!redemptionRecord.trackingNumber.every((item) => item === 0)) {
-            redemptionRecord.trackingNumber = await decryptData(
-              redemptionRecord.trackingNumber,
-              otherPartyEncryptionKey,
-              redemptionRecord.iv
-            )
-          } else {
-            redemptionRecord.trackingNumber = undefined
-          }
-          if (redeemable.authority.toBase58() === wallet.publicKey.toBase58()) {
-            redemptionRecord.userIsPublisher = true
-          } else {
-            redemptionRecord.userIsPublisher = false
-          }
+    const layout = nina.program.coder.accounts.accountLayouts.get('RedemptionRecord')
+    for await (redemptionRecord of redemptionRecords) {
+      let dataParsed = layout.decode(redemptionRecord.account.data.slice(8))
+      const redeemable = await nina.program.account.redeemable.fetch(
+        dataParsed.redeemable
+      )
 
-          parsedRedemptionRecords.push(redemptionRecord)
-        } catch (error) {
-          console.warn('error: ', error)
-        }
+      dataParsed.publicKey = redemptionRecord.publicKey
+      const otherPartyEncryptionKey =
+        wallet?.publicKey.toBase58() === redeemable.authority.toBase58()
+          ? dataParsed.encryptionPublicKey
+          : redeemable.encryptionPublicKey
+      if (!dataParsed.address.every((item) => item === 0)) {
+        redemptionRecord.address = await decryptData(
+          dataParsed.address,
+          otherPartyEncryptionKey,
+          redemptionRecord.iv
+        )
       }
-      saveRedemptionRecordsToState(parsedRedemptionRecords, releasePubkey)
+      if (!dataParsed.shipper.every((item) => item === 0)) {
+        dataParsed.shipper = await decryptData(
+          dataParsed.shipper,
+          otherPartyEncryptionKey,
+          redemptionRecord.iv
+        )
+      } else {
+        dataParsed.shipper = undefined
+      }
+      if (!dataParsed.trackingNumber.every((item) => item === 0)) {
+        dataParsed.trackingNumber = await decryptData(
+          dataParsed.trackingNumber,
+          otherPartyEncryptionKey,
+          redemptionRecord.iv
+        )
+      } else {
+        dataParsed.trackingNumber = undefined
+      }
+      if (redeemable.authority.toBase58() === wallet.publicKey.toBase58()) {
+        dataParsed.userIsPublisher = true
+      } else {
+        dataParsed.userIsPublisher = false
+      }
+
+      parsedRedemptionRecords.push(dataParsed)
     }
+
+    saveRedemptionRecordsToState(parsedRedemptionRecords, releasePubkey)
   }
 
   const getReleaseRoyaltiesByUser = async () => {

@@ -51,3 +51,12 @@ pub struct RedeemableCreated {
     pub public_key: Pubkey,
 }
 
+#[event]
+pub struct RedeemableRedeemed {
+    pub authority: Pubkey,
+    pub release: Pubkey,
+    #[index]
+    pub public_key: Pubkey,
+}
+
+

@@ -1617,6 +1617,26 @@ const idl = {
       ]
     },
     {
+      "name": "RedeemableRedeemed",
+      "fields": [
+        {
+          "name": "authority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "release",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": true
+        }
+      ]
+    },
+    {
       "name": "ReleaseCreated",
       "fields": [
         {
