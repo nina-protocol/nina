@@ -1,5 +1,5 @@
 import React from 'react'
-import {withStyles} from '@mui/styles';
+import { withStyles } from '@mui/styles'
 import { SnackbarProvider } from 'notistack'
 import { ThemeProvider } from '@mui/material/styles'
 import { StyledEngineProvider } from '@mui/styled-engine'
@@ -18,7 +18,7 @@ const {
 
 const { extendBorsh } = ninaCommon.utils.metaplex.borsh
 
-function App({classes}) {
+function App({ classes }) {
   extendBorsh()
 
   return (
@@ -59,10 +59,10 @@ function App({classes}) {
 }
 
 const styles = {
-  containerRoot: {paddingTop: '75px'},
-  success: {backgroundColor: 'rgba(45, 129, 255, 1)'},
-  error: {backgroundColor: 'red'},
-  info: {backgroundColor: 'rgba(45, 129, 255, 1)'},
+  containerRoot: { paddingTop: '75px' },
+  success: { backgroundColor: 'rgba(45, 129, 255, 1)' },
+  error: { backgroundColor: 'red' },
+  info: { backgroundColor: 'rgba(45, 129, 255, 1)' },
 }
 
 export default withStyles(styles)(App)

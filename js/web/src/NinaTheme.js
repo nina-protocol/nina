@@ -123,6 +123,17 @@ export const NinaTheme = createTheme({
         },
       },
     },
+    // MuiBox: {
+    //   variants: [
+    //     {
+    //       props: {variant: 'nina'},
+    //       style: {
+    //         border: '2px solid red',
+    //         backgroundColor: 'blue !important'
+    //       }
+    //     }
+    //   ]
+    // },
     MuiTypography: {
       root: {
         letterSpacing: '0.02em',
