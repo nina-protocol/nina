@@ -1,22 +1,22 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import { Box } from '@material-ui/core'
-import Modal from '@material-ui/core/Modal'
-import Backdrop from '@material-ui/core/Backdrop'
-import Fade from '@material-ui/core/Fade'
-import Button from '@material-ui/core/Button'
-import Typography from '@material-ui/core/Typography'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
+import { styled } from '@mui/material/styles'
+import { Box } from '@mui/material'
+import Modal from '@mui/material/Modal'
+import Backdrop from '@mui/material/Backdrop'
+import Fade from '@mui/material/Fade'
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
 import { useWallet } from '@solana/wallet-adapter-react'
 import RoyaltyRecipientForm from './RoyaltyRecipientForm'
 import { NameContext, ReleaseContext } from '../contexts'
 import NinaClient from '../utils/client'
 
-export default function Royalty(props) {
+const Royalty = (props) => {
   const { release, releasePubkey } = props
-  const classes = useStyles()
+
   const wallet = useWallet()
   const [open, setOpen] = useState(false)
   const [formShown, setFormShown] = useState(false)
@@ -97,7 +97,7 @@ export default function Royalty(props) {
   }
 
   return (
-    <div>
+    <Root>
       <Box mt={1}>
         <Button
           variant="contained"
@@ -208,17 +208,26 @@ export default function Royalty(props) {
           </div>
         </Fade>
       </Modal>
-    </div>
+    </Root>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  modal: {
+const PREFIX = 'Royalty'
+
+const classes = {
+  modal: `${PREFIX}-modal`,
+  paper: `${PREFIX}-paper`,
+  recipientData: `${PREFIX}-recipientData`,
+}
+
+const Root = styled('div')(({ theme }) => ({
+  [`& .${classes.modal}`]: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  paper: {
+
+  [`& .${classes.paper}`]: {
     backgroundColor: theme.palette.background.paper,
     border: '2px solid #000',
     boxShadow: theme.shadows[5],
@@ -227,10 +236,13 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: '90vh',
     overflowY: 'auto',
   },
-  recipientData: {
-    color: `${theme.vars.greyLight}`,
+
+  [`& .${classes.recipientData}`]: {
+    color: `${theme.palette.greyLight}`,
     '& a': {
-      color: `${theme.vars.purple}`,
+      color: `${theme.palette.purple}`,
     },
   },
 }))
+
+export default Royalty

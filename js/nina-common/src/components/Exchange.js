@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
+import { styled } from '@mui/material/styles'
 import { useSnackbar } from 'notistack'
-import { Typography, Box } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
-import RefreshIcon from '@material-ui/icons/Refresh'
+import { Typography, Box } from '@mui/material'
+import RefreshIcon from '@mui/icons-material/Refresh'
 import { useWallet } from '@solana/wallet-adapter-react'
 import BuySell from './BuySell'
 import ExchangeHistoryModal from './ExchangeHistoryModal'
@@ -18,7 +18,7 @@ import NinaClient from '../utils/client'
 
 const Exchange = (props) => {
   const { releasePubkey, metadata } = props
-  const classes = useStyles()
+
   const wallet = useWallet()
   const { enqueueSnackbar } = useSnackbar()
   const { releaseState, getRelease } = useContext(ReleaseContext)
@@ -159,7 +159,7 @@ const Exchange = (props) => {
   }
 
   return (
-    <>
+    <Root>
       <ExchangeHistoryModal
         exchangeHistory={exchangeHistory}
         release={release}
@@ -239,21 +239,34 @@ const Exchange = (props) => {
           />
         )}
       </div>
-    </>
+    </Root>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  exchangeWrapper: {
+const PREFIX = 'Exchange'
+
+const classes = {
+  exchangeWrapper: `${PREFIX}-exchangeWrapper`,
+  exchange: `${PREFIX}-exchange`,
+  buySellContainer: `${PREFIX}-buySellContainer`,
+  exchangeListContainer: `${PREFIX}-exchangeListContainer`,
+  listWrapper: `${PREFIX}-listWrapper`,
+  scrollCopyContainer: `${PREFIX}-scrollCopyContainer`,
+  scrollCopy: `${PREFIX}-scrollCopy`,
+  updateMessage: `${PREFIX}-updateMessage`,
+}
+
+const Root = styled('div')(({ theme }) => ({
+  [`& .${classes.exchangeWrapper}`]: {
     margin: 'auto',
     overflow: 'hidden',
     display: 'grid',
     gridTemplateColumns: '1fr',
     gridTemplateRows: '154px 304px 75px',
     alignItems: 'center',
-    marginTop: `${theme.spacing(6)}px`,
+    marginTop: theme.spacing(6),
     overflowX: 'scroll',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       width: '98%',
       gridTemplateColumns: '50% 50%',
       gridTemplateRows: '1fr 50vh',
@@ -262,42 +275,49 @@ const useStyles = makeStyles((theme) => ({
       marginTop: '0px',
     },
   },
-  exchange: {
+
+  [`& .${classes.exchange}`]: {
     height: '100%',
     width: '100%',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       gridColumn: '1/3',
     },
   },
-  buySellContainer: {
+
+  [`& .${classes.buySellContainer}`]: {
     display: 'flex',
     justifyContent: 'space-between',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       gridColumn: '1/3',
     },
   },
-  exchangeListContainer: {
+
+  [`& .${classes.exchangeListContainer}`]: {
     display: 'flex',
     height: '100%',
     justifyContent: 'space-between',
   },
-  listWrapper: {
+
+  [`& .${classes.listWrapper}`]: {
     width: '100%',
     maxWidth: '310px',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       padding: '0.5rem',
     },
   },
-  scrollCopyContainer: {
+
+  [`& .${classes.scrollCopyContainer}`]: {
     display: 'flex',
     justifyContent: 'space-between',
   },
-  scrollCopy: {
+
+  [`& .${classes.scrollCopy}`]: {
     width: '310px',
     textAlign: 'left',
     fontSize: '10px',
   },
-  updateMessage: {
+
+  [`& .${classes.updateMessage}`]: {
     fontSize: '10px',
     position: 'absolute',
     bottom: '18px',
@@ -307,7 +327,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     '& span': {
-      color: `${theme.vars.blue}`,
+      color: `${theme.palette.blue}`,
       paddingLeft: '4px',
     },
     '& svg': {

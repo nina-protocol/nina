@@ -1,15 +1,16 @@
 import React, { useState, useContext, useEffect } from 'react'
+import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { makeStyles } from '@material-ui/core/styles'
-import Drawer from '@material-ui/core/Drawer'
-import Button from '@material-ui/core/Button'
-import Box from '@material-ui/core/Box'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import MenuIcon from '@material-ui/icons/Menu'
+import Drawer from '@mui/material/Drawer'
+import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
 import { NavLink } from 'react-router-dom'
+import { Icon } from '@material-ui/core'
+import hamburger from '../assets/hamburger.svg'
 
 const { NinaContext, ReleaseContext } = ninaCommon.contexts
 
@@ -24,7 +25,6 @@ const links = [
 ]
 
 const NavDrawer = () => {
-  const classes = useStyles()
   const { collection } = useContext(NinaContext)
   const wallet = useWallet()
   const {
@@ -62,13 +62,12 @@ const NavDrawer = () => {
   }
 
   const list = () => (
-    <div
-      className={classes.list}
+    <Box
       role="presentation"
       onClick={toggleDrawer(false)}
       onKeyDown={toggleDrawer(false)}
     >
-      <List>
+      <StyledList disablePadding>
         {links.map((link) => {
           switch (link) {
             case 'collection':
@@ -110,7 +109,7 @@ const NavDrawer = () => {
                 </NavLink>
               )
             default:
-              <NavLink
+              ;<NavLink
                 className={`${classes.drawerLink}`}
                 to={`/${link}`}
                 activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
@@ -135,48 +134,67 @@ const NavDrawer = () => {
             </NavLink>
           )
         })}
-      </List>
-    </div>
+      </StyledList>
+    </Box>
   )
 
   return (
     <div>
       {
         <Box key={'left'}>
-          <Button onClick={toggleDrawer(true)} className={classes.toggle}>
-            <MenuIcon />
-          </Button>
-          <Drawer
+          <StyledMenuButton onClick={toggleDrawer(true)}>
+            <Icon>
+              <img src={hamburger} height={25} width={25} />
+            </Icon>
+          </StyledMenuButton>
+          <StyledDrawer
             anchor={'left'}
             open={drawerOpen}
             onClose={toggleDrawer(false)}
             BackdropProps={{ invisible: true }}
           >
             {list()}
-          </Drawer>
+          </StyledDrawer>
         </Box>
       }
     </div>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  toggle: {
-    position: 'absolute',
-    top: theme.spacing(6),
-    left: theme.spacing(2),
-    minWidth: 'unset',
-    paddingLeft: '0',
-    zIndex: '1000',
+const PREFIX = 'NavDrawer'
+
+const classes = {
+  toggle: `${PREFIX}-toggle`,
+  list: `${PREFIX}-list`,
+  drawerLink: `${PREFIX}-drawerLink`,
+}
+
+const StyledDrawer = styled(Drawer)(() => ({
+  '& .MuiPaper-root': {
+    width: 400,
   },
-  list: {
-    width: 250,
-    height: '100%',
-    backgroundColor: theme.vars.black,
-    color: theme.vars.white,
+}))
+
+const StyledList = styled(List)(({ theme }) => ({
+  padding: `${theme.spacing(6, 4, 0, 4)} !important`,
+  '& .MuiListItem-root': {
+    padding: '5px 0',
+    '&:hover': {
+      backgroundColor: theme.palette.transparent,
+    },
+    '& .MuiListItemText-root': {
+      margin: 0,
+    },
   },
-  drawerLink: {
-    color: theme.vars.white,
+}))
+
+const StyledMenuButton = styled(Button)(({ theme }) => ({
+  padding: '0px !important',
+  '&:hover': {
+    backgroundColor: `${theme.palette.transparent} !important`,
+  },
+  '& .MuiSvgIcon-root': {
+    color: theme.palette.black,
   },
 }))
 

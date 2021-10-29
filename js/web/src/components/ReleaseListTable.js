@@ -1,18 +1,17 @@
 import React, { useState } from 'react'
+import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useHistory } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableContainer from '@material-ui/core/TableContainer'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
-import Paper from '@material-ui/core/Paper'
-import Button from '@material-ui/core/Button'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Paper from '@mui/material/Paper'
+import Button from '@mui/material/Button'
 
 const { NinaClient } = ninaCommon.utils
-
 const ARWEAVE_GATEWAY_ENDPOINT = NinaClient.endpoints.arweave
 
 const EnhancedTableHead = (props) => {
@@ -58,7 +57,7 @@ const EnhancedTableHead = (props) => {
           <TableCell
             key={headCell.id}
             align={'center'}
-            padding={headCell.disablePadding ? 'none' : 'default'}
+            padding={'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
             {headCell.label}
@@ -72,7 +71,7 @@ const EnhancedTableHead = (props) => {
 const ReleaseListTable = (props) => {
   const { releases, tableType } = props
   const history = useHistory()
-  const classes = useStyles()
+
   const [order] = useState('asc')
   // const [orderBy] = useState('calories')
 
@@ -87,7 +86,7 @@ const ReleaseListTable = (props) => {
 
     const linkData = {
       releasePubkey,
-      txId: metadata.image,
+      txId: metadata?.image,
     }
 
     const rowData = {
@@ -137,7 +136,7 @@ const ReleaseListTable = (props) => {
   rows.sort((a, b) => (a.artist < b.artist ? -1 : 1))
 
   return (
-    <div className={classes.root}>
+    <Root className={classes.root}>
       <Paper className={classes.paper}>
         <TableContainer>
           <Table
@@ -174,6 +173,7 @@ const ReleaseListTable = (props) => {
                               align="center"
                               component="th"
                               scope="row"
+                              key={cellName}
                               onClick={(event) => handleClick(event, row.id)}
                             >
                               <img
@@ -201,22 +201,34 @@ const ReleaseListTable = (props) => {
           </Table>
         </TableContainer>
       </Paper>
-    </div>
+    </Root>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  root: {
+const PREFIX = 'ReleaseListTable'
+
+const classes = {
+  root: `${PREFIX}-root`,
+  paper: `${PREFIX}-paper`,
+  table: `${PREFIX}-table`,
+  releaseImage: `${PREFIX}-releaseImage`,
+}
+
+const Root = styled('div')(({ theme }) => ({
+  [`&.${classes.root}`]: {
     width: '100%',
   },
-  paper: {
+
+  [`& .${classes.paper}`]: {
     width: '100%',
     marginBottom: theme.spacing(2),
   },
-  table: {
+
+  [`& .${classes.table}`]: {
     minWidth: 750,
   },
-  releaseImage: {
+
+  [`& .${classes.releaseImage}`]: {
     width: '40px',
     cursor: 'pointer',
   },

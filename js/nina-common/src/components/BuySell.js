@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
-import Box from '@material-ui/core/Box'
-import { makeStyles } from '@material-ui/core/styles'
-import { Typography } from '@material-ui/core'
+import { styled } from '@mui/material/styles'
+import Box from '@mui/material/Box'
+import { Typography } from '@mui/material'
 import BuySellForm from './BuySellForm'
 
 const BuySell = (props) => {
   const { inCollection, release, isBuy, onSubmit } = props
-  const classes = useStyles()
+
   const [amount, setAmount] = useState(undefined)
 
   return (
-    <Box className={classes.buySell}>
+    <StyledBox className={classes.buySell}>
       <Typography className={classes.buySellHeading}>
         {isBuy ? 'Make Buy Offer' : 'List for sale'}
       </Typography>
@@ -27,34 +27,44 @@ const BuySell = (props) => {
         isBuy={isBuy}
         release={release}
       />
-    </Box>
+    </StyledBox>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  buySell: {
+const PREFIX = 'BuySell'
+
+const classes = {
+  buySell: `${PREFIX}-buySell`,
+  buySellHeading: `${PREFIX}-buySellHeading`,
+  buySellCopy: `${PREFIX}-buySellCopy`,
+}
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  [`&.${classes.buySell}`]: {
     width: '100%',
     maxWidth: '310px',
     display: 'flex',
     flexDirection: 'column',
     position: 'relative',
     alignItems: 'flex-start',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       padding: '0 10px',
     },
   },
-  buySellHeading: {
+
+  [`& .${classes.buySellHeading}`]: {
     fontSize: '26px',
     fontWeight: '700',
     textTransform: 'uppercase',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       fontSize: '14px',
     },
   },
-  buySellCopy: {
+
+  [`& .${classes.buySellCopy}`]: {
     textAlign: 'left',
     fontSize: '10px',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       display: 'none',
     },
   },

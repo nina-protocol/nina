@@ -1,22 +1,20 @@
 import React, { useState, useEffect, useContext, useRef } from 'react'
+import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Link } from 'react-router-dom'
-import Slider from '@material-ui/core/Slider'
-import SkipNextRoundedIcon from '@material-ui/icons/SkipNextRounded'
-import SkipPreviousRoundedIcon from '@material-ui/icons/SkipPreviousRounded'
-import PlayArrowRoundedIcon from '@material-ui/icons/PlayArrowRounded'
-import PauseRoundedIcon from '@material-ui/icons/PauseRounded'
-import VolumeUpIcon from '@material-ui/icons/VolumeUp'
-import VolumeOffIcon from '@material-ui/icons/VolumeOff'
-import { makeStyles, useTheme } from '@material-ui/core/styles'
+import Slider from '@mui/material/Slider'
+import SkipNextRoundedIcon from '@mui/icons-material/SkipNextRounded'
+import SkipPreviousRoundedIcon from '@mui/icons-material/SkipPreviousRounded'
+import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded'
+import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
+import VolumeUpIcon from '@mui/icons-material/VolumeUp'
+import VolumeOffIcon from '@mui/icons-material/VolumeOff'
 import PlaylistDrawer from './PlaylistDrawer'
 
 const { AudioPlayerContext } = ninaCommon.contexts
 
 const AudioPlayer = () => {
-  const classes = useStyles()
-  const theme = useTheme()
   const { txid, updateTxid, playlist } = useContext(AudioPlayerContext)
   const wallet = useWallet()
   let playerRef = useRef()
@@ -195,7 +193,7 @@ const AudioPlayer = () => {
     : `Connect you wallet to listen to your collection`
 
   return (
-    <div style={theme.helpers.grid} className={`${classes.player}`}>
+    <Root className={`${classes.player}`}>
       <audio id="audio" style={{ width: '100%' }}>
         <source src={txid} type="audio/mp3" />
       </audio>
@@ -290,20 +288,27 @@ const AudioPlayer = () => {
           />
         )}
       </div>
-    </div>
+    </Root>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  player: {
-    position: 'fixed',
-    bottom: '0',
-    width: '100%',
-    maxWidth: '100vw',
-    alignItems: 'center',
-    gridTemplateColumns: '10% 20% 45% 1fr',
-    boxShadow: `0px -1px 9px 5px rgba(0,0,0,0.08)`,
-    background: `${theme.vars.white}`,
+const PREFIX = 'AudioPlayer'
+
+const classes = {
+  player: `${PREFIX}-player`,
+}
+
+const Root = styled('div')(({ theme }) => ({
+  position: 'fixed',
+  bottom: '0',
+  width: '100%',
+  maxWidth: '100vw',
+  alignItems: 'center',
+  gridTemplateColumns: '10% 20% 45% 1fr',
+  boxShadow: `0px -1px 9px 5px rgba(0,0,0,0.08)`,
+  background: `${theme.palette.white}`,
+  ...theme.helpers.grid,
+  [`& .${classes.player}`]: {
     '&__info': {
       width: '100%',
       display: 'flex',
@@ -341,7 +346,7 @@ const useStyles = makeStyles((theme) => ({
     '&__button': {
       fontSize: '2rem',
       padding: '0.5rem 0',
-      color: `${theme.vars.purple}`,
+      color: `${theme.palette.purple}`,
       cursor: 'pointer',
       '&--next': {
         paddingRight: '1rem',

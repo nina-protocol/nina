@@ -1,18 +1,18 @@
 import React, { useState, useContext } from 'react'
+import { styled } from '@mui/material/styles'
 import * as Yup from 'yup'
 import { useSnackbar } from 'notistack'
-import { makeStyles } from '@material-ui/core/styles'
-import Modal from '@material-ui/core/Modal'
-import Backdrop from '@material-ui/core/Backdrop'
-import Fade from '@material-ui/core/Fade'
-import Button from '@material-ui/core/Button'
-import { Typography } from '@material-ui/core'
+import Modal from '@mui/material/Modal'
+import Backdrop from '@mui/material/Backdrop'
+import Fade from '@mui/material/Fade'
+import Button from '@mui/material/Button'
+import { Typography } from '@mui/material'
 import RedeemableStepper from './RedeemableStepper'
 import { ReleaseContext } from '../contexts'
 
 const RedeemableModal = (props) => {
   const { releasePubkey, amountHeld } = props
-  const classes = useStyles()
+
   const { enqueueSnackbar } = useSnackbar()
   const { redeemableRedeem, redeemableState } = useContext(ReleaseContext)
   const [open, setOpen] = useState(false)
@@ -43,7 +43,7 @@ const RedeemableModal = (props) => {
   }
 
   return (
-    <div>
+    <Root>
       <Button
         variant="outlined"
         color="primary"
@@ -89,7 +89,7 @@ const RedeemableModal = (props) => {
           </div>
         </Fade>
       </Modal>
-    </div>
+    </Root>
   )
 }
 
@@ -102,30 +102,43 @@ const validationSchema = Yup.object().shape({
   postalCode: Yup.string().required('Postal Code Required'),
 })
 
-const useStyles = makeStyles((theme) => ({
-  modal: {
+const PREFIX = 'RedeemableModal'
+
+const classes = {
+  modal: `${PREFIX}-modal`,
+  paper: `${PREFIX}-paper`,
+  redeemCta: `${PREFIX}-redeemCta`,
+  noCoinWarning: `${PREFIX}-noCoinWarning`,
+}
+
+const Root = styled('div')(({ theme }) => ({
+  [`& .${classes.modal}`]: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'blue',
   },
-  paper: {
+
+  [`& .${classes.paper}`]: {
     boxShadow: theme.shadows[5],
     // width: '75%',
     maxHeight: '80vh',
     overflowY: 'auto',
     position: 'relative',
     borderRadius: '0px',
-    ...theme.helpers.gradient,
+    ...theme.gradient,
   },
-  redeemCta: {
+
+  [`& .${classes.redeemCta}`]: {
     fontSize: '14px',
-    marginTop: `${theme.spacing(1)}px`,
+    marginTop: theme.spacing(1),
     padding: `${theme.spacing(1, 0)}`,
     width: '100%',
-    color: `${theme.vars.blue}`,
+    color: `${theme.palette.blue}`,
   },
-  noCoinWarning: {
-    color: `${theme.vars.red}`,
+
+  [`& .${classes.noCoinWarning}`]: {
+    color: `${theme.palette.red}`,
     position: 'absolute',
     fontStyle: 'italic',
     right: '5rem',

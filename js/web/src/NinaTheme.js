@@ -1,5 +1,4 @@
-import { createTheme } from '@material-ui/core/styles'
-import createBreakpoints from '@material-ui/core/styles/createBreakpoints'
+import { createTheme } from '@mui/material/styles'
 
 const colors = {
   purple: '#9999cc',
@@ -17,8 +16,6 @@ const colors = {
   pink: '#FF54A6',
 }
 
-const breakpoints = createBreakpoints({})
-
 export const NinaTheme = createTheme({
   palette: {
     secondary: {
@@ -30,6 +27,15 @@ export const NinaTheme = createTheme({
     text: {
       primary: colors.black,
     },
+    transparent: colors.transparent,
+    blue: colors.blue,
+    black: colors.black,
+    purple: colors.purple,
+    white: colors.white,
+  },
+  gradient: {
+    background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(143,175,223,1) 0%, rgb(35,99,196) 100%)`,
+    color: colors.white,
   },
   props: {
     MuiButtonBase: {
@@ -49,19 +55,6 @@ export const NinaTheme = createTheme({
     },
   },
   vars: {
-    purple: colors.purple,
-    purpleLight: colors.purpleLight,
-    pink: colors.pink,
-    red: colors.red,
-    orange: colors.orange,
-    green: colors.green,
-    white: colors.white,
-    black: colors.black,
-    blue: colors.blue,
-    blueTrans: colors.blueTrans,
-    transparent: colors.transparent,
-    greyLight: colors.greyLight,
-    grey: colors.grey,
     borderWidth: '1.5px',
     borderRadius: '16px',
   },
@@ -71,7 +64,7 @@ export const NinaTheme = createTheme({
       sharp: 'linear',
     },
   },
-  spacing: 10,
+  spacing: 15,
   helpers: {
     grid: {
       display: 'grid',
@@ -97,32 +90,35 @@ export const NinaTheme = createTheme({
       width: '60%',
     },
     gradient: {
-      // background: colors.blue,
       background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(143,175,223,1) 0%, rgb(35,99,196) 100%)`,
       color: colors.white,
     },
   },
-  overrides: {
+  components: {
     MuiButton: {
-      root: {
-        padding: '10px',
-        fontSize: '10px',
-        '&.MuiButton-outlined': {
-          borderRadius: '50px',
+      styleOverrides: {
+        root: {
           padding: '10px',
-          '&:hover': {
-            borderColor: `${colors.blue}`,
-          },
-        },
-        '&.MuiButton-contained': {
-          borderRadius: '50px',
-          padding: '10px',
-          backgroundColor: `${colors.white}`,
-          color: `${colors.black}`,
+          fontSize: '100px',
           boxShadow: 'none',
-          '&:hover': {
+          minWidth: 'unset !important',
+          '&.MuiButton-outlined': {
+            borderRadius: '50px',
+            padding: '10px',
+            '&:hover': {
+              borderColor: `${colors.blue}`,
+            },
+          },
+          '&.MuiButton-contained': {
+            borderRadius: '50px',
+            padding: '10px',
             backgroundColor: `${colors.white}`,
+            color: `${colors.black}`,
             boxShadow: 'none',
+            '&:hover': {
+              backgroundColor: `${colors.white}`,
+              boxShadow: 'none',
+            },
           },
         },
       },
@@ -133,15 +129,12 @@ export const NinaTheme = createTheme({
       },
     },
     MuiCssBaseline: {
-      '@global': {
+      styleOverrides: {
         '*, *::before, *::after': {
           boxSizing: 'content-box',
         },
         body: {
           overflow: 'hidden',
-          [breakpoints.down('sm')]: {
-            overflow: 'auto',
-          },
         },
         a: {
           color: colors.black,

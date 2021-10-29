@@ -173,13 +173,13 @@ const useStyles = makeStyles((theme) => ({
   formField: {
     margin: `${theme.spacing(0, 1, 1)}`,
     width: '100%',
-    backgroundColor: `${theme.vars.white}`,
+    backgroundColor: `${theme.palette.white}`,
     textTransform: 'capitalize',
     '& input': {
       '&::placeholder': {
         textTransform: 'uppercase',
         fontSize: `10px`,
-        color: `${theme.vars.grey}`,
+        color: `${theme.palette.grey}`,
         opacity: '1',
       },
     },

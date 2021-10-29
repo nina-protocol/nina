@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react'
+import { styled } from '@mui/material/styles'
 import { withFormik, Form, Field } from 'formik'
-import { makeStyles } from '@material-ui/core/styles'
-import Typography from '@material-ui/core/Typography'
-import { Button, TextField } from '@material-ui/core'
+import Typography from '@mui/material/Typography'
+import { Button, TextField } from '@mui/material'
 import NinaClient from '../utils/client'
 
 export const RedeemableInitializeForm = (props) => {
-  const classes = useStyles()
   const { values, touched, errors, onChange } = props
 
   useEffect(() => {
@@ -16,7 +15,7 @@ export const RedeemableInitializeForm = (props) => {
   }, [values])
 
   return (
-    <div>
+    <Root>
       <Typography variant="h6" gutterBottom>
         Create Redeemable
       </Typography>
@@ -80,12 +79,20 @@ export const RedeemableInitializeForm = (props) => {
           </Button>
         </Form>
       </>
-    </div>
+    </Root>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  redeemableForm: {
+const PREFIX = 'RedeemableInitializeForm'
+
+const classes = {
+  redeemableForm: `${PREFIX}-redeemableForm`,
+  formField: `${PREFIX}-formField`,
+  formError: `${PREFIX}-formError`,
+}
+
+const Root = styled('div')(({ theme }) => ({
+  [`& .${classes.redeemableForm}`]: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -93,7 +100,8 @@ const useStyles = makeStyles((theme) => ({
     padding: '0 1rem',
     overflowY: 'auto',
   },
-  formField: {
+
+  [`& .${classes.formField}`]: {
     margin: '0.75rem 1rem',
     width: '100%',
     textTransform: 'capitalize',
@@ -101,8 +109,9 @@ const useStyles = makeStyles((theme) => ({
       textTransform: 'capitalize',
     },
   },
-  formError: {
-    color: `${theme.vars.red}`,
+
+  [`& .${classes.formError}`]: {
+    color: `${theme.palette.red}`,
   },
 }))
 

@@ -1,14 +1,14 @@
 import React, { useState, useContext, useEffect } from 'react'
+import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useSnackbar } from 'notistack'
-import Button from '@material-ui/core/Button'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import { Typography } from '@material-ui/core'
-import { makeStyles, useTheme } from '@material-ui/core/styles'
+import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
+import { Typography } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 import { useWallet } from '@solana/wallet-adapter-react'
 import ReleaseCreateForm from './ReleaseCreateForm'
 import MediaDropzones from './MediaDropzones'
-import ReleaseCard from './ReleaseCard'
 import * as Yup from 'yup'
 
 const { ReleaseSettings } = ninaCommon.components
@@ -26,7 +26,6 @@ const ReleaseCreateSchema = Yup.object().shape({
 })
 
 const ReleaseCreate = () => {
-  const classes = useStyles()
   const theme = useTheme()
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
@@ -139,7 +138,7 @@ const ReleaseCreate = () => {
     track.meta.status === 'done'
   ) {
     return (
-      <div className={classes.createWrapper}>
+      <Root>
         <Typography variant="h6" gutterBottom>
           Release Overview
         </Typography>
@@ -149,16 +148,12 @@ const ReleaseCreate = () => {
           tempMetadata={formValues.releaseForm}
           artwork={artwork}
         />
-      </div>
+      </Root>
     )
   }
 
   return (
-    <div className={classes.createWrapper}>
-      <Typography variant="h6" gutterBottom>
-        Upload
-      </Typography>
-
+    <Root>
       {!wallet.connected && (
         <Typography variant="body" gutterBottom>
           Please connect your wallet to start publishing!
@@ -169,12 +164,7 @@ const ReleaseCreate = () => {
         <>
           <div style={theme.helpers.grid} className={classes.createFlowGrid}>
             <>
-              <div className={classes.createFormContainer}>
-                <ReleaseCreateForm
-                  onChange={handleFormChange}
-                  values={formValues.releaseForm}
-                  ReleaseCreateSchema={ReleaseCreateSchema}
-                />
+              <div className={classes.createReleasePreview}>
                 <MediaDropzones
                   setTrack={setTrack}
                   setArtwork={setArtwork}
@@ -182,22 +172,19 @@ const ReleaseCreate = () => {
                   releasePubkey={releasePubkey}
                   track={track}
                 />
+              </div>
+              <div className={classes.createFormContainer}>
+                <ReleaseCreateForm
+                  onChange={handleFormChange}
+                  values={formValues.releaseForm}
+                  ReleaseCreateSchema={ReleaseCreateSchema}
+                />
                 {pressingFee > 0 && (
                   <Typography variant="body2">
                     <strong>Pressing Fee:</strong> {pressingFee} (
                     {formValues.releaseForm.catalogNumber})
                   </Typography>
                 )}
-              </div>
-              <div className={classes.createReleaseContainer}>
-                <ReleaseCard
-                  artwork={artwork}
-                  metadata={{
-                    ...formValues.releaseForm,
-                  }}
-                  preview={true}
-                  formValues={formValues}
-                />
               </div>
             </>
             {!release && (
@@ -222,31 +209,40 @@ const ReleaseCreate = () => {
           Fill out this form to apply for a publishing grant
         </Typography>
       )}
-    </div>
+    </Root>
   )
 }
 
-const useStyles = makeStyles(() => ({
-  createWrapper: {
+const PREFIX = 'ReleaseCreate'
+
+const classes = {
+  createFlowGrid: `${PREFIX}-createFlowGrid`,
+  createFormContainer: `${PREFIX}-createFormContainer`,
+  createReleasePreview: `${PREFIX}-createReleasePreview`,
+  createCta: `${PREFIX}-createCta`,
+}
+
+const Root = styled('div')(() => ({
+  width: '100%',
+  position: 'absolute',
+  [`& .${classes.createFlowGrid}`]: {
+    gridTemplateColumns: '50% 50%',
+    gridAutoRows: 'auto !important',
+    padding: '0 20%',
+  },
+
+  [`& .${classes.createFormContainer}`]: {
     width: '100%',
-    position: 'absolute',
-    top: 40,
   },
-  createFlowGrid: {
-    gridTemplateColumns: 'repeat(11, 1fr)',
-  },
-  createFormContainer: {
-    gridColumn: '2/6',
-    width: '100%',
-  },
-  createReleaseContainer: {
-    gridColumn: '7/12',
+
+  [`& .${classes.createReleasePreview}`]: {
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
   },
-  createCta: {
-    gridColumn: '1/13',
+
+  [`& .${classes.createCta}`]: {
+    gridColumn: '1/3',
     paddingTop: '0.5rem',
   },
 }))

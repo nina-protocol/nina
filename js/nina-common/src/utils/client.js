@@ -2,7 +2,6 @@ import * as anchor from '@project-serum/anchor'
 import { TokenInstructions } from '@project-serum/serum'
 import Arweave from 'arweave'
 import CoinGecko from 'coingecko-api'
-
 import idl from './idl'
 
 export const NINA_CLIENT_IDS = {

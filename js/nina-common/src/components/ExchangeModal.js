@@ -1,17 +1,17 @@
 import { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import { Typography, Box } from '@material-ui/core'
-import Button from '@material-ui/core/Button'
-import Fade from '@material-ui/core/Fade'
-import Modal from '@material-ui/core/Modal'
-import Backdrop from '@material-ui/core/Backdrop'
+import { styled } from '@mui/material/styles'
+import { Typography, Box } from '@mui/material'
+import Button from '@mui/material/Button'
+import Fade from '@mui/material/Fade'
+import Modal from '@mui/material/Modal'
+import Backdrop from '@mui/material/Backdrop'
 import 'react-tabs/style/react-tabs.css'
 import NinaClient from '../utils/client'
 
 const ExchangeModal = (props) => {
   const { toggleOverlay, showOverlay, amount, onSubmit, release, isAccept } =
     props
-  const classes = useStyles()
+
   const [pendingConfirm, setPendingConfirm] = useState(false)
 
   const nativeAmount = isAccept
@@ -28,7 +28,9 @@ const ExchangeModal = (props) => {
   }
 
   return (
-    <Modal
+    <StyledModal // `disableBackdropClick` is removed by codemod.
+      // You can find more details about this breaking change in [the migration guide](https://mui.com/guides/migration-v4/#modal)
+
       aria-labelledby="transition-modal-title"
       aria-describedby="transition-modal-description"
       className={classes.modal}
@@ -40,7 +42,6 @@ const ExchangeModal = (props) => {
       }}
       closeAfterTransition
       BackdropComponent={Backdrop}
-      disableBackdropClick={true}
       BackdropProps={{
         timeout: 500,
       }}
@@ -83,55 +84,71 @@ const ExchangeModal = (props) => {
           </Typography>
         </Box>
       </Fade>
-    </Modal>
+    </StyledModal>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  root: {
+const PREFIX = 'ExchangeModal'
+
+const classes = {
+  root: `${PREFIX}-root`,
+  confirm: `${PREFIX}-confirm`,
+  modal: `${PREFIX}-modal`,
+  paper: `${PREFIX}-paper`,
+  receivingAmount: `${PREFIX}-receivingAmount`,
+  cancel: `${PREFIX}-cancel`,
+}
+
+const StyledModal = styled(Modal)(({ theme }) => ({
+  [`& .${classes.root}`]: {
     width: '100%',
     height: '100%',
     margin: 'auto',
     position: 'absolute',
     zIndex: '10',
-    backgroundColor: `${theme.vars.white}`,
+    backgroundColor: `${theme.palette.white}`,
     display: 'flex',
     flexDirection: 'column',
     borderRadius: '30px',
     textAlign: 'center',
   },
-  confirm: {
+
+  [`& .${classes.confirm}`]: {
     '&.Mui-disabled': {
       color: `white !important`,
     },
     width: '400px',
     margin: `${theme.spacing(1, 'auto')}`,
-    color: `${theme.vars.blue} !important`,
+    color: `${theme.palette.blue} !important`,
     fontSize: '14px',
     fontWeight: '700',
   },
-  modal: {
+
+  [`&.${classes.modal}`]: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  paper: {
+
+  [`& .${classes.paper}`]: {
     boxShadow: theme.shadows[5],
     padding: theme.spacing(6, 6),
     width: '400px',
     maxHeight: '80vh',
     overflowY: 'auto',
-    color: `${theme.vars.white}`,
+    color: `${theme.palette.white}`,
     display: 'flex',
     flexDirection: 'column',
     textAlign: 'center',
-    ...theme.helpers.gradient,
+    ...theme.gradient,
   },
-  receivingAmount: {
+
+  [`& .${classes.receivingAmount}`]: {
     fontWeight: 'bold',
   },
-  cancel: {
-    color: `${theme.vars.white}`,
+
+  [`& .${classes.cancel}`]: {
+    color: `${theme.palette.white}`,
     textDecoration: 'underline',
     cursor: 'pointer',
   },

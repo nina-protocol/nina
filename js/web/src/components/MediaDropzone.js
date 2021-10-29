@@ -2,19 +2,25 @@ import React from 'react'
 import ninaCommon from 'nina-common'
 import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
-import { makeStyles } from '@material-ui/core/styles'
+import { Typography } from '@mui/material'
+import { Icon } from '@material-ui/core'
+import plus from '../assets/plus.svg'
 
+const PREFIX = 'MediaDropzone'
+
+const classes = {
+  dropZone: `${PREFIX}-dropZone`,
+  dropZoneInputLabel: `${PREFIX}-dropZoneInputLabel`,
+  dropZonePreviewWrapper: `${PREFIX}-dropZonePreviewWrapper`,
+}
 const { NinaClient } = ninaCommon.utils
-
-function MediaDropzone({
+const MediaDropzone = ({
   type,
   releasePubkey,
   metadata,
   setArtwork,
   setTrack,
-}) {
-  const classes = useStyles()
-
+}) => {
   const getUploadParams = ({ file }) => {
     const body = new FormData()
     body.append('file', file)
@@ -58,6 +64,32 @@ function MediaDropzone({
     }
   }
 
+  const inputLayout = (type) => {
+    //NOTE: we should reject non-square files for artwork
+    const plusIcon = (
+      <Icon>
+        <img src={plus} height={15} width={15} />
+      </Icon>
+    )
+    if (type === 'track') {
+      return (
+        <>
+          {plusIcon}
+          <Typography variant="h5">Upload Track</Typography>
+          <Typography>File Formats: MP3</Typography>
+        </>
+      )
+    } else {
+      return (
+        <>
+          {plusIcon}
+          <Typography variant="h5">Upload Artwork</Typography>
+          <Typography>File Formats: JPG, PNG</Typography>
+        </>
+      )
+    }
+  }
+
   return (
     <Dropzone
       getUploadParams={getUploadParams}
@@ -72,39 +104,35 @@ function MediaDropzone({
         inputLabel: classes.dropZoneInputLabel,
         preview: classes.dropZonePreviewWrapper,
       }}
-      inputContent={
-        type === 'track'
-          ? 'Drag or browse to add track'
-          : 'Drag or browse to add artwork'
-      }
+      inputContent={inputLayout(type)}
       styles={{
-        dropzone: { minHeight: 60, maxHeight: 60, margin: '0.5rem 0' },
+        dropzone: {
+          minHeight: 60,
+          display: 'flex',
+          justifyContent: 'center',
+          width: '100%',
+          cursor: 'pointer',
+          marginBottom: type === 'track' ? '15px' : '',
+          border: '1px solid black',
+        },
+        preview: {
+          margin: 'auto',
+          alignItems: 'center',
+        },
+        previewImage: {
+          width: '100%',
+          maxHeight: '100%',
+          maxWidth: 'unset',
+        },
+        inputLabel: {
+          cursor: 'pointer',
+          border: '2px solid red',
+          width: '100%',
+          textAlign: 'left',
+        },
       }}
     />
   )
 }
-
-const useStyles = makeStyles((theme) => ({
-  dropZone: {
-    border: `1px solid ${theme.vars.purple}`,
-    borderRadius: `${theme.vars.borderRadius}`,
-    display: 'flex',
-    width: '100%',
-    marginBottom: '1rem',
-    cursor: 'pointer',
-  },
-  dropZoneInputLabel: {
-    margin: 'auto',
-    fontSize: '1rem',
-    color: `${theme.vars.purple}`,
-  },
-  dropZonePreviewWrapper: {
-    width: '90%',
-    margin: 'auto',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-}))
 
 export default MediaDropzone

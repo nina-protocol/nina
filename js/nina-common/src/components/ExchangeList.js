@@ -1,17 +1,15 @@
 import { useEffect, useState, useContext } from 'react'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import Typography from '@material-ui/core/Typography'
-import Button from '@material-ui/core/Button'
-import Box from '@material-ui/core/Box'
-import { makeStyles } from '@material-ui/core/styles'
+import { styled } from '@mui/material/styles'
+import CircularProgress from '@mui/material/CircularProgress'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { NinaContext } from '../contexts'
 import NinaClient from '../utils/client'
 
 const ExchangeList = (props) => {
   let { list, onExchangeButtonAction, release, metadata } = props
-
-  const classes = useStyles()
   const { solPrice } = useContext(NinaContext)
 
   if (!list) {
@@ -23,7 +21,7 @@ const ExchangeList = (props) => {
   }
 
   return (
-    <Box className={classes.root}>
+    <Root className={classes.root}>
       {list?.length > 0 && (
         <ul className={classes.exchangeList}>
           {list.map((item, i) => (
@@ -33,7 +31,7 @@ const ExchangeList = (props) => {
               onExchangeButtonAction={onExchangeButtonAction}
               release={release}
               solPrice={solPrice}
-              symbol={metadata.symbol}
+              symbol={metadata?.symbol}
             />
           ))}
         </ul>
@@ -43,7 +41,7 @@ const ExchangeList = (props) => {
           No offers
         </Typography>
       )}
-    </Box>
+    </Root>
   )
 }
 
@@ -57,7 +55,6 @@ const ExchangeListItem = (props) => {
     symbol,
     amount,
   } = props
-  const classes = useStyles()
 
   const displayPrice = isSelling
     ? NinaClient.nativeToUiString(
@@ -117,7 +114,6 @@ const ExchangeListItem = (props) => {
 
 const ExchangeListButton = (props) => {
   const { onExchangeButtonAction, pending, isSelling, isCurrentUser } = props
-  const classes = useStyles()
 
   const wallet = useWallet()
   const [buttonText, setButtonText] = useState('Pending')
@@ -166,12 +162,21 @@ const ExchangeListButton = (props) => {
   }
 }
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    maxHeight: '304px',
-    height: '100%',
-  },
-  exchangeList: {
+const PREFIX = 'ExchangeList'
+
+const classes = {
+  root: `${PREFIX}-root`,
+  exchangeList: `${PREFIX}-exchangeList`,
+  exchangeListItem: `${PREFIX}-exchangeListItem`,
+  exchangeListItemPrice: `${PREFIX}-exchangeListItemPrice`,
+  exchangeListButton: `${PREFIX}-exchangeListButton`,
+  noOffers: `${PREFIX}-noOffers`,
+}
+
+const Root = styled(Box)(({ theme }) => ({
+  maxHeight: '304px',
+  height: '100%',
+  [`& .${classes.exchangeList}`]: {
     listStyle: 'none',
     display: 'flex',
     flexDirection: 'column',
@@ -181,51 +186,55 @@ const useStyles = makeStyles((theme) => ({
     overflowX: 'hidden',
     overflowY: 'auto',
   },
-  exchangeListItem: {
+
+  [`& .${classes.exchangeListItem}`]: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: `${theme.spacing(0.5, 0)}`,
     borderRadius: '8px',
   },
-  exchangeListItemPrice: {
+
+  [`& .${classes.exchangeListItemPrice}`]: {
     fontWeight: '700',
     fontSize: '12px',
-    color: `${theme.vars.blue}`,
+    color: `${theme.palette.blue}`,
     '&--currentUser': {
-      color: `${theme.vars.grey}`,
+      color: `${theme.palette.grey}`,
     },
     '&--usd': {
-      color: `${theme.vars.greyLight}`,
+      color: `${theme.palette.greyLight}`,
     },
     '&--symbol': {
-      color: `${theme.vars.black}`,
-      [theme.breakpoints.down('sm')]: {
+      color: `${theme.palette.black}`,
+      [theme.breakpoints.down('md')]: {
         display: 'none',
       },
     },
   },
-  exchangeListButton: {
-    backgroundColor: `${theme.vars.white}`,
+
+  [`& .${classes.exchangeListButton}`]: {
+    backgroundColor: `${theme.palette.white}`,
     fontSize: `10px`,
-    color: `${theme.vars.black}`,
-    borderColor: `${theme.vars.black}`,
+    color: `${theme.palette.black}`,
+    borderColor: `${theme.palette.black}`,
     padding: `${theme.spacing(0.5, 1)} !important`,
     width: '41px',
     '&:hover': {
-      backgroundColor: `${theme.vars.white} !important`,
+      backgroundColor: `${theme.palette.white} !important`,
     },
     '&--Cancel': {
-      borderColor: `${theme.vars.grey}`,
-      color: `${theme.vars.grey}`,
-      backgroundColor: `${theme.vars.white}`,
+      borderColor: `${theme.palette.grey}`,
+      color: `${theme.palette.grey}`,
+      backgroundColor: `${theme.palette.white}`,
       '&:hover': {
-        borderColor: `${theme.vars.grey}`,
-        color: `${theme.vars.grey}`,
+        borderColor: `${theme.palette.grey}`,
+        color: `${theme.palette.grey}`,
       },
     },
   },
-  noOffers: {
+
+  [`& .${classes.noOffers}`]: {
     height: '100%',
     display: 'flex',
     alignItems: 'center',

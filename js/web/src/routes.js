@@ -1,21 +1,18 @@
 import React from 'react'
+import { styled } from '@mui/material/styles'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import Container from '@material-ui/core/Container'
+import CssBaseline from '@mui/material/CssBaseline'
+import Container from '@mui/material/Container'
 import ReleaseCreate from './components/ReleaseCreate'
 import ReleaseList from './components/ReleaseList'
 import UserCollection from './components/UserCollection'
 import Release from './components/Release'
 import AudioPlayer from './components/AudioPlayer'
 import NavBar from './components/NavBar'
-import NavDrawer from './components/NavDrawer'
 
 function Routes() {
-  const classes = useStyles()
-
   return (
-    <>
+    <Root>
       <CssBaseline />
       <BrowserRouter>
         <Container
@@ -25,27 +22,35 @@ function Routes() {
         >
           <div className={classes.bodyContainer}>
             <NavBar />
-            <NavDrawer />
             <Switch>
               <Route exact path="/upload" component={ReleaseCreate} />
               <Route path="/releases" component={ReleaseList}></Route>
               <Route path="/collection" component={UserCollection}></Route>
               <Route exact path="/release/:releasePubkey" component={Release} />
             </Switch>
+            <AudioPlayer />
           </div>
-          <AudioPlayer />
         </Container>
       </BrowserRouter>
-    </>
+    </Root>
   )
 }
-const useStyles = makeStyles(() => ({
-  mainContainer: {
+
+const PREFIX = 'Routes'
+
+const classes = {
+  mainContainer: `${PREFIX}-mainContainer`,
+  bodyContainer: `${PREFIX}-bodyContainer`,
+}
+
+const Root = styled('div')(() => ({
+  [`& .${classes.mainContainer}`]: {
     height: '100vh',
     width: '100vw',
     overflow: 'hidden',
   },
-  bodyContainer: {
+
+  [`& .${classes.bodyContainer}`]: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',

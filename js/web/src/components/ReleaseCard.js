@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react'
+import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import SmoothImage from 'react-smooth-image'
-import Button from '@material-ui/core/Button'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import { makeStyles } from '@material-ui/core/styles'
-import Box from '@material-ui/core/Box'
-import { Typography } from '@material-ui/core'
+import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
+import Box from '@mui/material/Box'
+import { Typography } from '@mui/material'
 import { useWallet } from '@solana/wallet-adapter-react'
 import ninaRecord from '../assets/nina-record.png'
 
@@ -14,8 +14,7 @@ const { NinaContext, AudioPlayerContext, ExchangeContext, ReleaseContext } =
 const { RedeemableModal } = ninaCommon.components
 
 const ReleaseCard = (props) => {
-  const { artwork, metadata, preview, releasePubkey } = props
-  const classes = useStyles()
+  const { artwork, metadata, preview, releasePubkey, theme } = props
   const wallet = useWallet()
   const { getAmountHeld, collection } = useContext(NinaContext)
   const { updateTxid } = useContext(AudioPlayerContext)
@@ -57,7 +56,7 @@ const ReleaseCard = (props) => {
   }, [exchangeState])
 
   return (
-    <div className={classes.releaseCardWrapper}>
+    <Root theme={theme} className={classes.releaseCardWrapper}>
       <div className={`${classes.releaseCard}`}>
         <div className={`${classes.releaseCard}__content`}>
           <div className={`${classes.releaseCard}__image`}>
@@ -147,19 +146,27 @@ const ReleaseCard = (props) => {
           )}
         </div>
       </div>
-    </div>
+    </Root>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  releaseCardWrapper: {
+const PREFIX = 'ReleaseCard'
+
+const classes = {
+  releaseCardWrapper: `${PREFIX}-releaseCardWrapper`,
+  releaseCard: `${PREFIX}-releaseCard`,
+}
+
+const Root = styled('div')(({ theme }) => ({
+  [`&.${classes.releaseCardWrapper}`]: {
     height: '100%',
     width: '80%',
   },
-  releaseCard: {
+
+  [`& .${classes.releaseCard}`]: {
     width: '100%',
     height: '100%',
-    border: `${theme.vars.borderWidth} solid ${theme.vars.purple}`,
+    border: `${theme.vars.borderWidth} solid ${theme.palette.purple}`,
     borderRadius: `${theme.vars.borderRadius}`,
     '&__content': {
       width: '70%',

@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react'
+import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
-import Button from '@material-ui/core/Button'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import Box from '@material-ui/core/Box'
-import { makeStyles, useTheme } from '@material-ui/core/styles'
+import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
+import Box from '@mui/material/Box'
+import { useTheme } from '@mui/material/styles'
 import { useSnackbar } from 'notistack'
 import SquareModal from './SquareModal'
 
@@ -13,7 +14,6 @@ const { NinaClient } = ninaCommon.utils
 
 const ReleasePurchase = (props) => {
   const { releasePubkey } = props
-  const classes = useStyles()
   const theme = useTheme()
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
@@ -48,9 +48,9 @@ const ReleasePurchase = (props) => {
 
   if (!release) {
     return (
-      <div>
+      <Root>
         <CircularProgress color="inherit" />
-      </div>
+      </Root>
     )
   }
 
@@ -102,14 +102,22 @@ const ReleasePurchase = (props) => {
   )
 }
 
-const useStyles = makeStyles(() => ({
-  releasePurchase: {
+const PREFIX = 'ReleasePurchase'
+
+const classes = {
+  releasePurchase: `${PREFIX}-releasePurchase`,
+  releasePurchaseCtaWrapper: `${PREFIX}-releasePurchaseCtaWrapper`,
+}
+
+const Root = styled('div')(() => ({
+  [`& .${classes.releasePurchase}`]: {
     height: '100%',
     '&__form': {
       height: '90%',
     },
   },
-  releasePurchaseCtaWrapper: {
+
+  [`& .${classes.releasePurchaseCtaWrapper}`]: {
     width: '100%',
     display: 'flex',
     justifyContent: 'space-evenly',

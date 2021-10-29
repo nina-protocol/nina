@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react'
+import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { withFormik, Form, Field } from 'formik'
-import { makeStyles } from '@material-ui/core/styles'
-import Typography from '@material-ui/core/Typography'
-import { TextField } from '@material-ui/core'
-import Slider from '@material-ui/core/Slider'
-import Box from '@material-ui/core/Box'
+import Typography from '@mui/material/Typography'
+import { TextField } from '@mui/material'
+import Slider from '@mui/material/Slider'
+import Box from '@mui/material/Box'
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
 const { NinaClient } = ninaCommon.utils
 
-function ReleaseCreateForm({
+const ReleaseCreateForm = ({
   field,
   form,
   values,
@@ -18,9 +18,7 @@ function ReleaseCreateForm({
   errors,
   touched,
   setFieldValue,
-}) {
-  const classes = useStyles()
-
+}) => {
   useEffect(() => {
     if (onChange) {
       onChange(values)
@@ -32,14 +30,14 @@ function ReleaseCreateForm({
   }
 
   return (
-    <div>
+    <Root>
       <Form>
         <Field name="artist">
           {(props) => (
             <Box className={classes.fieldInputWrapper}>
               <TextField
                 className={classes.formField}
-                variant="outlined"
+                variant="standard"
                 label={NinaClient.formatPlaceholder(props.field.name)}
                 size="small"
                 {...props.field}
@@ -58,7 +56,7 @@ function ReleaseCreateForm({
             <Box className={classes.fieldInputWrapper}>
               <TextField
                 className={classes.formField}
-                variant="outlined"
+                variant="standard"
                 label={NinaClient.formatPlaceholder(props.field.name)}
                 size="small"
                 {...props.field}
@@ -77,7 +75,7 @@ function ReleaseCreateForm({
             <Box className={classes.fieldInputWrapper}>
               <TextField
                 className={classes.formField}
-                variant="outlined"
+                variant="standard"
                 label={NinaClient.formatPlaceholder(props.field.name)}
                 size="small"
                 {...props.field}
@@ -94,7 +92,7 @@ function ReleaseCreateForm({
             <Box className={classes.fieldInputWrapper}>
               <TextField
                 className={`${classes.formField}`}
-                variant="outlined"
+                variant="standard"
                 label={NinaClient.formatPlaceholder(field.name)}
                 size="small"
                 InputProps={{
@@ -120,7 +118,7 @@ function ReleaseCreateForm({
               <CurrencyTextField
                 className={classes.formField}
                 label={NinaClient.formatPlaceholder('Amount')}
-                variant="outlined"
+                variant="standard"
                 value={props.value}
                 currencySymbol=""
                 outputFormat="string"
@@ -142,7 +140,7 @@ function ReleaseCreateForm({
               <CurrencyTextField
                 className={classes.formField}
                 label={NinaClient.formatPlaceholder('RetailPrice')}
-                variant="outlined"
+                variant="standard"
                 value={value}
                 currencySymbol="$"
                 outputFormat="string"
@@ -192,29 +190,25 @@ function ReleaseCreateForm({
           </Box>
         </Box>
       </Form>
-    </div>
+    </Root>
   )
 }
+const PREFIX = 'ReleaseCreateForm'
 
-const useStyles = makeStyles((theme) => ({
-  createFormContainer: {
-    gridColumn: '2/6',
-    width: '100%',
-  },
-  createReleaseContainer: {
-    gridColumn: '7/11',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  createCta: {
-    gridColumn: '1/13',
-    paddingTop: '1rem',
-  },
-  fieldInputWrapper: {
+const classes = {
+  fieldInputWrapper: `${PREFIX}-fieldInputWrapper`,
+  formField: `${PREFIX}-formField`,
+  formError: `${PREFIX}-formError`,
+  resalePercentageWrapper: `${PREFIX}-resalePercentageWrapper`,
+  formSlider: `${PREFIX}-formSlider`,
+}
+
+const Root = styled('div')(({ theme }) => ({
+  [`& .${classes.fieldInputWrapper}`]: {
     position: 'relative',
   },
-  formField: {
+
+  [`& .${classes.formField}`]: {
     margin: '0.5rem 1rem 0.5rem 0',
     width: '100%',
     textTransform: 'capitalize',
@@ -230,20 +224,23 @@ const useStyles = makeStyles((theme) => ({
       height: '1rem',
     },
   },
-  formError: {
+
+  [`& .${classes.formError}`]: {
     position: 'absolute',
     top: '50%',
     right: theme.spacing(1),
     transform: 'translateY(-50%)',
-    color: theme.vars.red,
+    color: theme.palette.red,
     opacity: '.75',
   },
-  resalePercentageWrapper: {
+
+  [`& .${classes.resalePercentageWrapper}`]: {
     display: 'flex',
     justifyContent: 'space-inbetween',
     alignItems: 'center',
   },
-  formSlider: {
+
+  [`& .${classes.formSlider}`]: {
     '& MuiSlider-markLabel': {
       border: '2px solid red',
       marginLeft: '0',

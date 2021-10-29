@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Modal from '@material-ui/core/Modal'
-import Backdrop from '@material-ui/core/Backdrop'
-import Fade from '@material-ui/core/Fade'
-import Button from '@material-ui/core/Button'
-import Box from '@material-ui/core/Box'
+import { styled } from '@mui/material/styles'
+import Modal from '@mui/material/Modal'
+import Backdrop from '@mui/material/Backdrop'
+import Fade from '@mui/material/Fade'
+import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
 import { ReleaseContext } from '../contexts'
 import RedeemableUpdateShippingForm from './RedeemableUpdateShippingForm.js'
 import RedeemableUpdateShippingList from './RedeemableUpdateShippingList.js'
 
 const RedeemableUpdate = (props) => {
-  const classes = useStyles()
   const { releasePubkey, redeemables, redemptionRecords } = props
   const [open, setOpen] = React.useState(false)
   const [redeemableTrackingValues, setRedeemableTrackingValues] = useState({})
@@ -51,7 +50,7 @@ const RedeemableUpdate = (props) => {
   }
 
   return (
-    <Box>
+    <StyledBox>
       <Button
         variant="contained"
         color="primary"
@@ -92,17 +91,25 @@ const RedeemableUpdate = (props) => {
           </div>
         </Fade>
       </Modal>
-    </Box>
+    </StyledBox>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  modal: {
+const PREFIX = 'RedeemableUpdate'
+
+const classes = {
+  modal: `${PREFIX}-modal`,
+  paper: `${PREFIX}-paper`,
+}
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  [`& .${classes.modal}`]: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  paper: {
+
+  [`& .${classes.paper}`]: {
     backgroundColor: theme.palette.background.paper,
     border: '2px solid #000',
     boxShadow: theme.shadows[5],

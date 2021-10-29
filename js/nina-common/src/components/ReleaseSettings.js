@@ -1,9 +1,9 @@
 import { useState, useEffect, useContext } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import { Card, Box, Button } from '@material-ui/core'
-import CardContent from '@material-ui/core/CardContent'
-import Typography from '@material-ui/core/Typography'
-import CircularProgress from '@material-ui/core/CircularProgress'
+import { styled } from '@mui/material/styles'
+import { Card, Box, Button } from '@mui/material'
+import CardContent from '@mui/material/CardContent'
+import Typography from '@mui/material/Typography'
+import CircularProgress from '@mui/material/CircularProgress'
 import { Link } from 'react-router-dom'
 import Image from 'material-ui-image'
 import RedeemableInitialize from './RedeemableInitialize.js'
@@ -37,7 +37,6 @@ const ReleaseSettings = (props) => {
   const [displayValues, setDisplayValues] = useState({})
 
   let timer = undefined
-  const classes = useStyles()
 
   useEffect(() => {
     if (!metadata) {
@@ -105,7 +104,7 @@ const ReleaseSettings = (props) => {
   }
 
   return (
-    <Box className={classes.root} mt={3}>
+    <StyledBox className={classes.root} mt={3}>
       <Box
         className={
           inCreateFlow
@@ -292,18 +291,38 @@ const ReleaseSettings = (props) => {
           </Box>
         )}
       </Box>
-    </Box>
+    </StyledBox>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  root: {
+const PREFIX = 'ReleaseSettings'
+
+const classes = {
+  root: `${PREFIX}-root`,
+  releaseSettingsWrapper: `${PREFIX}-releaseSettingsWrapper`,
+  tabSettingsWrapper: `${PREFIX}-tabSettingsWrapper`,
+  leftContainer: `${PREFIX}-leftContainer`,
+  releaseImageWrapper: `${PREFIX}-releaseImageWrapper`,
+  releaseImage: `${PREFIX}-releaseImage`,
+  tabInfoWrapper: `${PREFIX}-tabInfoWrapper`,
+  card: `${PREFIX}-card`,
+  tabCard: `${PREFIX}-tabCard`,
+  mediaLink: `${PREFIX}-mediaLink`,
+  media: `${PREFIX}-media`,
+  releaseInfo: `${PREFIX}-releaseInfo`,
+  stat: `${PREFIX}-stat`,
+  ctaWrapper: `${PREFIX}-ctaWrapper`,
+}
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  [`&.${classes.root}`]: {
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
   },
-  releaseSettingsWrapper: {
+
+  [`& .${classes.releaseSettingsWrapper}`]: {
     justifyContent: 'space-between',
     alignItems: 'center',
     display: 'grid',
@@ -313,35 +332,43 @@ const useStyles = makeStyles((theme) => ({
     margin: 'auto',
     marginTop: '0',
   },
-  tabSettingsWrapper: {},
-  leftContainer: {
+
+  [`& .${classes.tabSettingsWrapper}`]: {},
+
+  [`& .${classes.leftContainer}`]: {
     width: '100%',
     height: '100%',
     display: 'flex',
     marginLeft: '16%',
   },
-  releaseImageWrapper: {
+
+  [`& .${classes.releaseImageWrapper}`]: {
     width: '50%',
     margin: 'auto',
   },
-  releaseImage: {
+
+  [`& .${classes.releaseImage}`]: {
     width: '50%',
   },
-  tabInfoWrapper: {
+
+  [`& .${classes.tabInfoWrapper}`]: {
     width: '100%',
   },
-  card: {
-    borderColor: `${theme.vars.purple}`,
+
+  [`& .${classes.card}`]: {
+    borderColor: `${theme.palette.purple}`,
     textAlign: 'left',
     width: '50%',
     height: '100%',
     margin: 'auto',
     marginLeft: '10%',
   },
-  tabCard: {
+
+  [`& .${classes.tabCard}`]: {
     width: '100%',
   },
-  mediaLink: {
+
+  [`& .${classes.mediaLink}`]: {
     width: '33%',
     display: 'flex',
     margin: 'auto',
@@ -349,21 +376,25 @@ const useStyles = makeStyles((theme) => ({
       width: '100%',
     },
   },
-  media: {
+
+  [`& .${classes.media}`]: {
     height: '250px',
     width: '100%',
     backgroundSize: 'contain',
   },
-  releaseInfo: {
+
+  [`& .${classes.releaseInfo}`]: {
     // maxWidth: '300px',
     padding: '1rem 0.5rem 0 0',
   },
-  stat: {
+
+  [`& .${classes.stat}`]: {
     display: 'flex',
     justifyContent: 'space-between',
     marginBottom: '0.3rem',
   },
-  ctaWrapper: {
+
+  [`& .${classes.ctaWrapper}`]: {
     width: '30%',
     margin: 'auto',
     marginTop: '0',

@@ -1,19 +1,19 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Modal from '@material-ui/core/Modal'
-import Backdrop from '@material-ui/core/Backdrop'
-import Fade from '@material-ui/core/Fade'
-import Box from '@material-ui/core/Box'
-import { Typography } from '@material-ui/core'
+import { styled } from '@mui/material/styles'
+import Modal from '@mui/material/Modal'
+import Backdrop from '@mui/material/Backdrop'
+import Fade from '@mui/material/Fade'
+import Box from '@mui/material/Box'
+import { Typography } from '@mui/material'
 import NinaClient from '../utils/client'
 
-export default function ExchangeHistoryModal(props) {
+const ExchangeHistoryModal = (props) => {
   const { release, exchangeHistory } = props
-  const classes = useStyles()
+
   const [open, setOpen] = useState(false)
 
   return (
-    <Box>
+    <StyledBox>
       <Typography
         className={classes.exchangeHistoryCta}
         onClick={() => setOpen(true)}
@@ -88,12 +88,23 @@ export default function ExchangeHistoryModal(props) {
           </div>
         </Fade>
       </Modal>
-    </Box>
+    </StyledBox>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  exchangeHistoryCta: {
+const PREFIX = 'ExchangeHistoryModal'
+
+const classes = {
+  exchangeHistoryCta: `${PREFIX}-exchangeHistoryCta`,
+  modal: `${PREFIX}-modal`,
+  paper: `${PREFIX}-paper`,
+  header: `${PREFIX}-header`,
+  historyTable: `${PREFIX}-historyTable`,
+  historyTableBody: `${PREFIX}-historyTableBody`,
+}
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  [`& .${classes.exchangeHistoryCta}`]: {
     position: 'absolute',
     bottom: '18px',
     left: '45%',
@@ -102,21 +113,24 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '10px',
     lineHeight: '11.5px',
     '& span': {
-      color: `${theme.vars.blue}`,
+      color: `${theme.palette.blue}`,
     },
   },
-  modal: {
+
+  [`& .${classes.modal}`]: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  paper: {
+
+  [`& .${classes.paper}`]: {
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
     padding: theme.spacing(6, 4),
-    ...theme.helpers.gradient,
+    ...theme.gradient,
   },
-  header: {
+
+  [`& .${classes.header}`]: {
     fontSize: '26px',
     textAlign: 'center',
     display: 'flex',
@@ -124,7 +138,8 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: '700',
     lineHeight: '29.9px',
   },
-  historyTable: {
+
+  [`& .${classes.historyTable}`]: {
     padding: `${theme.spacing(1, 1)}`,
     display: 'block',
     maxHeight: '50vh',
@@ -133,14 +148,17 @@ const useStyles = makeStyles((theme) => ({
       textTransform: 'uppercase',
     },
   },
-  historyTableBody: {
+
+  [`& .${classes.historyTableBody}`]: {
     '& td': {
       '& ': {
         padding: `${theme.spacing(0, 2)}`,
       },
       '& a': {
-        color: `${theme.vars.white}`,
+        color: `${theme.palette.white}`,
       },
     },
   },
 }))
+
+export default ExchangeHistoryModal
