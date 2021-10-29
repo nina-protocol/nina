@@ -24,7 +24,7 @@ pub struct ReleaseInitializeProtected<'info> {
         address = nina_publishing_account::ID
     )]
     pub payer: Signer<'info>,
-    pub authority: Signer<'info>,
+    pub authority: UncheckedAccount<'info>,
     #[account(
         constraint = authority_token_account.owner == authority.key(),
         constraint = authority_token_account.mint == payment_mint.key(),

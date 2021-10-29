@@ -128,5 +128,10 @@ pub fn handler(
         )?;
     }
 
+    emit!(ReleaseSold {
+        public_key: *ctx.accounts.release.to_account_info().key,
+        date: ctx.accounts.clock.unix_timestamp
+    });
+
     Ok(())
 }

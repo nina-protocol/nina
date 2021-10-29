@@ -107,6 +107,11 @@ pub fn handler(
 
     // Make sure royalty shares of all recipients does not exceed 1000000
     if release.royalty_equals_1000000() {
+
+        emit!(RoyaltyRecipientAdded {
+            authority: *ctx.accounts.new_royalty_recipient.to_account_info().key,
+            public_key: *ctx.accounts.release.to_account_info().key,
+        });
         Ok(())
     } else {
         return Err(ErrorCode::RoyaltyExceeds100Percent.into())

@@ -12,6 +12,9 @@ const ReleaseList = () => {
   const {
     searchResults,
     resetSearchResults,
+    getReleasesRecent,
+    releasesRecentState,
+    filterReleasesRecent,
     getReleasesPublishedByUser,
     filterReleasesPublishedByUser,
     collectRoyaltyForRelease,
@@ -22,6 +25,11 @@ const ReleaseList = () => {
   const { collection } = useContext(NinaContext)
   const { getReleasesForTwitterHandle } = useContext(NameContext)
   const [search, setSearch] = useState(searchResults.handle)
+  const [releasesRecent, setReleasesRecent] = useState({})
+
+  useEffect(() => {
+    getReleasesRecent()
+  }, [])
   const [userPublishedReleases, setUserPublishedReleases] = useState()
 
   useEffect(() => {
@@ -39,6 +47,10 @@ const ReleaseList = () => {
   useEffect(() => {
     setSearch(searchResults.handle)
   }, [searchResults])
+
+  useEffect(() => {
+    setReleasesRecent(filterReleasesRecent())
+  }, [releasesRecentState])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -86,14 +98,10 @@ const ReleaseList = () => {
       {!wallet?.connected && !searchResults.searched && (
         <>
           <h1>Welcome to Nina</h1>
-          <h2>
-            Connect your wallet to listen to your collection or publish a new
-            release
-          </h2>
-          <h2>
-            Or search for your favorite artists Twitter handle to see if they on
-            Nina
-          </h2>
+          <ReleaseListTable
+            releases={releasesRecent.published || []}
+            key="releases"
+          />
         </>
       )}
       {wallet?.connected &&
@@ -129,6 +137,7 @@ const StyledBox = styled(Box)(() => ({
     display: 'flex',
     flexDirection: 'column',
     position: 'absolute',
+    'overflow-y': 'scroll',
     top: 40,
   },
 }))

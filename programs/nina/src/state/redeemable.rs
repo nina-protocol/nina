@@ -40,3 +40,23 @@ pub struct RedeemableConfig {
     pub description: String,
     pub redeemed_max: u64,
 }
+
+#[event]
+pub struct RedeemableCreated {
+    pub authority: Pubkey,
+    pub mint: Pubkey,
+    pub redeemed_mint: Pubkey,
+    pub release: Pubkey,
+    #[index]
+    pub public_key: Pubkey,
+}
+
+#[event]
+pub struct RedeemableRedeemed {
+    pub authority: Pubkey,
+    pub release: Pubkey,
+    #[index]
+    pub public_key: Pubkey,
+}
+
+

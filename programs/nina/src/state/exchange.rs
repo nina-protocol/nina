@@ -93,3 +93,25 @@ pub struct ExchangeAcceptParams {
     pub datetime: u64,
 }
 
+#[event]
+pub struct ExchangeAdded {
+    pub release_mint: Pubkey,
+    pub release: Pubkey,
+    pub initializer: Pubkey,
+    pub expected_amount: u64,
+    pub initializer_amount: u64,
+    #[index]
+    pub public_key: Pubkey,
+}
+
+#[event]
+pub struct ExchangeCompleted {
+    pub taker: Pubkey,
+    pub public_key: Pubkey,
+    pub datetime: u64,
+}
+
+#[event]
+pub struct ExchangeCancelled {
+    pub public_key: Pubkey,
+}

@@ -45,12 +45,9 @@ const SOL_DECIMAL_AMOUNT = 9
 
 const NINA_PRESSING_FEE = 0.0125
 
-const ENDPOINT_ARWEAVE = 'https://arweave.net'
-// const ENDPOINT_ARWEAVE = 'https://h6chwwrsde.medianet.work';
-// const ENDPOINT_PRESSING_PLANT = 'http://localhost:3001'
-const ENDPOINT_PRESSING_PLANT = 'https://pressingplant.nina.market:443';
-const ENDPOINT_API = 'http://localhost:3001'
-// const ENDPOINT_API = 'https://54.211.234.33:443';
+const ENDPOINT_ARWEAVE = 'https://arweave.net' //'https://h6chwwrsde.medianet.work'
+const ENDPOINT_PRESSING_PLANT = 'https://pressingplant.nina.market:443'
+const ENDPOINT_API = 'https://api.nina.market:443'
 
 const arweave = Arweave.init()
 const CoinGeckoClient = new CoinGecko()
@@ -94,9 +91,9 @@ export default class NinaClient {
 
   static nativeToUiString(amount, mint, decimalOverride = false) {
     const isUsdc = NinaClient.isUsdc(mint)
-    return `${isUsdc ? '$' : ''}${NinaClient.nativeToUi(amount, mint).toFixed(
+    return `${NinaClient.nativeToUi(amount, mint).toFixed(
       isUsdc || decimalOverride ? 2 : 4
-    )}${isUsdc ? '' : ' SOL'}`
+    )}${isUsdc ? ' USDC' : ' SOL'}`
   }
 
   static uiToNative(amount, mint) {
