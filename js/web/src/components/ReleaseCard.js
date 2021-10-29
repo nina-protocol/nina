@@ -8,19 +8,20 @@ import Box from '@mui/material/Box'
 import { Typography } from '@mui/material'
 import { useWallet } from '@solana/wallet-adapter-react'
 import ninaRecord from '../assets/nina-record.png'
+import {Fade} from '@mui/material';
+import playCircle from '../assets/playCircle.png'
 
 const { NinaContext, AudioPlayerContext, ExchangeContext, ReleaseContext } =
   ninaCommon.contexts
-const { RedeemableModal } = ninaCommon.components
 
 const ReleaseCard = (props) => {
-  const { artwork, metadata, preview, releasePubkey, theme } = props
+  const { artwork, metadata, preview, releasePubkey } = props
   const wallet = useWallet()
   const { getAmountHeld, collection } = useContext(NinaContext)
   const { updateTxid } = useContext(AudioPlayerContext)
   const { exchangeState, filterExchangesForReleaseBuySell } =
     useContext(ExchangeContext)
-  const { releaseState, redeemableState } = useContext(ReleaseContext)
+  const { releaseState } = useContext(ReleaseContext)
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
   const [amountPendingBuys, setAmountPendingBuys] = useState(0)
   const [amountPendingSales, setAmountPendingSales] = useState(0)
@@ -56,145 +57,106 @@ const ReleaseCard = (props) => {
   }, [exchangeState])
 
   return (
-    <Root theme={theme} className={classes.releaseCardWrapper}>
-      <div className={`${classes.releaseCard}`}>
-        <div className={`${classes.releaseCard}__content`}>
-          <div className={`${classes.releaseCard}__image`}>
-            {preview ? (
+    <StyledReleaseCard>
+      <StyledReleaseInfo>
+        {track && (
+          <Fade in={true}>
+            <Button
+              onClick={() => {
+                updateTxid(track.properties.files[0].uri, releasePubkey)
+              }}
+              sx={{height: '22px', width: '28px'}}
+            >
+              <img src={playCircle}/>
+            </Button>
+          </Fade>
+        )}
+
+        {metadata && (
+          <Fade in={true}>
+            <Typography variant="h6" color="white" align="left">
+              {metadata?.properties?.artist || metadata?.artist}, <i>{metadata?.properties?.title || metadata?.title}</i>
+            </Typography>         
+          </Fade>
+        )}
+
+        {wallet?.connected && !preview && (
+          <StyledUserAmount>
+            <Typography variant="body1">
+              {metadata && (
+                <p>
+                  You have: {amountHeld || 0} {metadata.symbol}
+                </p>
+              )}
+              {amountPendingSales > 0 ? (
+                <p>
+                  {amountPendingSales} pending sale
+                  {amountPendingSales > 1 ? 's' : ''}{' '}
+                </p>
+              ) : null}
+              {amountPendingBuys > 0 ? (
+                <p>
+                  {amountPendingBuys} pending buy
+                  {amountPendingBuys > 1 ? 's' : ''}{' '}
+                </p>
+              ) : null}
+            </Typography>
+          </StyledUserAmount>
+        )}
+      </StyledReleaseInfo>
+
+      <Box>
+        {preview ? (
+          <SmoothImage
+            src={
+              artwork?.meta.status === undefined
+                ? ninaRecord
+                : artwork.meta.previewUrl
+            }
+            alt={metadata.artist}
+          />
+        ) : (
+          <>
+            {metadata ? (
               <SmoothImage
-                src={
-                  artwork?.meta.status === undefined
-                    ? ninaRecord
-                    : artwork.meta.previewUrl
-                }
-                className={`${classes.releaseCard}__image`}
-                alt={metadata.artist}
+                src={metadata.image}
+                alt={metadata.name}
               />
             ) : (
-              <>
-                {metadata ? (
-                  <SmoothImage
-                    src={metadata.image}
-                    className={`${classes.releaseCard}__image`}
-                    alt={metadata.name}
-                  />
-                ) : (
-                  <div className="loader--purple">
-                    <CircularProgress color="inherit" />
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-          <div className={`${classes.releaseCard}__player`}>
-            {track && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => {
-                  updateTxid(track.properties.files[0].uri, releasePubkey)
-                }}
-              >
-                Play
-              </Button>
-            )}
-          </div>
-
-          <div className={`${classes.releaseCard}__info`}>
-            <>
-              <div>
-                <Typography variant="h6">
-                  {metadata?.properties?.artist || metadata?.artist || 'Artist'}
-                </Typography>
-                <p>
-                  {metadata?.properties?.title || metadata?.title || 'Title'}
-                </p>
+              <div className="loader--purple">
+                <CircularProgress color="inherit" />
               </div>
-            </>
-          </div>
-          {wallet?.connected && !preview && (
-            <>
-              <div>
-                {metadata && (
-                  <p>
-                    You have: {amountHeld || 0} {metadata.symbol}
-                  </p>
-                )}
-                {amountPendingSales > 0 ? (
-                  <p>
-                    {amountPendingSales} pending sale
-                    {amountPendingSales > 1 ? 's' : ''}{' '}
-                  </p>
-                ) : null}
-                {amountPendingBuys > 0 ? (
-                  <p>
-                    {amountPendingBuys} pending buy
-                    {amountPendingBuys > 1 ? 's' : ''}{' '}
-                  </p>
-                ) : null}
-              </div>
-
-              {amountHeld > 0 && redeemableState[releasePubkey] && (
-                <Box mb={1}>
-                  <RedeemableModal
-                    releasePubkey={releasePubkey}
-                    metadata={metadata}
-                  />
-                </Box>
-              )}
-            </>
-          )}
-        </div>
-      </div>
-    </Root>
+            )}
+          </>
+        )}
+      </Box>
+    </StyledReleaseCard>
   )
 }
 
-const PREFIX = 'ReleaseCard'
-
-const classes = {
-  releaseCardWrapper: `${PREFIX}-releaseCardWrapper`,
-  releaseCard: `${PREFIX}-releaseCard`,
-}
-
-const Root = styled('div')(({ theme }) => ({
-  [`&.${classes.releaseCardWrapper}`]: {
-    height: '100%',
-    width: '80%',
-  },
-
-  [`& .${classes.releaseCard}`]: {
-    width: '100%',
-    height: '100%',
-    border: `${theme.vars.borderWidth} solid ${theme.palette.purple}`,
-    borderRadius: `${theme.vars.borderRadius}`,
-    '&__content': {
-      width: '70%',
-      margin: 'auto',
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
-    },
-    '&__image': {
-      width: '100%',
-      maxWidth: '38vh',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      margin: '2rem auto',
-    },
-    '&__player': {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-    },
-    '&__info': {
-      display: 'flex',
-      flexDirection: 'column',
-      margin: 'auto 0',
-      padding: '0',
-    },
-  },
+const StyledReleaseCard = styled(Box)(() => ({
+  width: '100%',
+  margin: 'auto'
 }))
+
+const StyledReleaseInfo = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.blue,
+  color: theme.palette.blue,
+  height: theme.spacing(5.6),
+  position: 'relative',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  padding: theme.spacing(1)
+}))
+
+const StyledUserAmount = styled(Box)(({ theme }) => ({
+  color: theme.palette.white,
+  position: 'absolute',
+  top: '0',
+  right: theme.spacing(1)
+}))
+
+
 
 export default ReleaseCard

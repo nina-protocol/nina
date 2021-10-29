@@ -5,22 +5,22 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
-import { useTheme } from '@mui/material/styles'
 import { useSnackbar } from 'notistack'
-import SquareModal from './SquareModal'
+import {Typography} from '@material-ui/core'
 
 const { ReleaseContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
 const ReleasePurchase = (props) => {
-  const { releasePubkey } = props
-  const theme = useTheme()
+  const { releasePubkey, metadata } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const { releasePurchase, releasePurchasePending, releaseState, getRelease } =
     useContext(ReleaseContext)
   const [pending, setPending] = useState(undefined)
   const [release, setRelease] = useState(undefined)
+
+  console.log('metadata :>> ', metadata);
 
   useEffect(() => {
     getRelease(releasePubkey)
@@ -48,15 +48,15 @@ const ReleasePurchase = (props) => {
 
   if (!release) {
     return (
-      <Root>
+      <>
         <CircularProgress color="inherit" />
-      </Root>
+      </>
     )
   }
 
   const buttonText =
     release.remainingSupply > 0
-      ? `Buy ${NinaClient.nativeToUiString(
+      ? `Buy $${NinaClient.nativeToUiString(
           release.price.toNumber(),
           release.paymentMint
         )}`
@@ -66,62 +66,48 @@ const ReleasePurchase = (props) => {
     wallet?.connected && release.remainingSupply > 0 ? false : true
 
   return (
-    <div className={classes.releasePurchase}>
-      <form
-        className={`${classes.releasePurchase}__form`}
-        style={theme.helpers.flexColumn}
-        onSubmit={handleSubmit}
-      >
-        <p>
-          {release.remainingSupply.toNumber()} /{' '}
-          {release.totalSupply.toNumber()} available
-        </p>
-        <Box mt={3} className={classes.releasePurchaseCtaWrapper}>
+    <Box>
+      <AmountRemaining align="left">
+        Remaining <span>{release.remainingSupply.toNumber()} </span> /{' '}
+        {release.totalSupply.toNumber()} 
+      </AmountRemaining>
+      <Typography align="left">
+        {metadata.description}
+      </Typography>
+      <Box mt={3}>
+        <form
+          onSubmit={handleSubmit}
+        >
           <Button
-            variant="contained"
-            color="primary"
+            variant="outlined"
             type="submit"
             disabled={buttonDisabled}
+            fullWidth
           >
             {pending ? (
-              <CircularProgress className="default__loader" color="inherit" />
+              <CircularProgress size="15px"  color="inherit" />
             ) : (
               buttonText
             )}
           </Button>
-          {NinaClient.isUsdc(release.paymentMint) && (
-            <SquareModal
-              buttonDisabled={buttonDisabled}
-              releasePubkey={releasePubkey}
-              release={release}
-            />
-          )}
-        </Box>
-      </form>
-    </div>
+        </form>
+      </Box>
+
+      <Button
+        variant="outlined"
+        fullWidth
+      >
+        Go To Market
+      </Button>
+    </Box>
   )
 }
 
-const PREFIX = 'ReleasePurchase'
-
-const classes = {
-  releasePurchase: `${PREFIX}-releasePurchase`,
-  releasePurchaseCtaWrapper: `${PREFIX}-releasePurchaseCtaWrapper`,
-}
-
-const Root = styled('div')(() => ({
-  [`& .${classes.releasePurchase}`]: {
-    height: '100%',
-    '&__form': {
-      height: '90%',
-    },
-  },
-
-  [`& .${classes.releasePurchaseCtaWrapper}`]: {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'space-evenly',
-  },
+const AmountRemaining = styled(Typography)(({theme}) => ({
+  paddingBottom: '10px',
+  '& span': {
+   color: theme.palette.blue
+ }
 }))
 
 export default ReleasePurchase

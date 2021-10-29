@@ -11,7 +11,7 @@ const colors = {
   grey: 'rgba(0, 0, 0, 0.3)',
   transparent: '#ffffff00',
   black: '#000000',
-  blue: 'rgba(45, 129, 255, 1)',
+  blue: '#2D81FF',
   blueTrans: 'rgba(45, 129, 255, 0.19)',
   pink: '#FF54A6',
 }
@@ -103,10 +103,14 @@ export const NinaTheme = createTheme({
           boxShadow: 'none',
           minWidth: 'unset !important',
           '&.MuiButton-outlined': {
-            borderRadius: '50px',
-            padding: '10px',
+            borderRadius: '0px',
+            padding: '20px',
+            borderColor: colors.black,
+            color: colors.black,
+            marginTop: '15px',
             '&:hover': {
-              borderColor: `${colors.blue}`,
+              borderColor: colors.black,
+              color: colors.black,
             },
           },
           '&.MuiButton-contained': {

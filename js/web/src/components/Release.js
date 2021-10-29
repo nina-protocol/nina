@@ -5,7 +5,7 @@ import Button from '@mui/material/Button'
 import Box from '@mui/material/Box';
 import NinaBox from './NinaBox';
 import ReleaseCard from './ReleaseCard'
-import ReleaseTabs from './ReleaseTabs'
+import ReleasePurchase from './ReleasePurchase'
 
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
 
@@ -43,23 +43,23 @@ const Release = ({ match }) => {
   }
 
   return (
-      <StyledNinaBox >
+      <NinaBox >
         <ReleaseCard
           metadata={metadata}
           preview={false}
           releasePubkey={releasePubkey}
         />
-        <StyleReleaseControls>
-          <ReleaseTabs releasePubkey={releasePubkey} />
-        </StyleReleaseControls>
-      </StyledNinaBox>
+        <ReleaseCtaWrapper>
+          <ReleasePurchase releasePubkey={releasePubkey} metadata={metadata} />
+        </ReleaseCtaWrapper>
+      </NinaBox>
   )
 }
 
-const StyleReleaseControls = styled(Box)(() => ({
+const ReleaseCtaWrapper= styled(Box)(() => ({
   margin: 'auto',
-  height: '100%',
-  width: '80%',
+  width: 'calc(100% - 50px)',
+  paddingLeft: '50px'
 }))
 
 export default Release
