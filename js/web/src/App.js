@@ -1,18 +1,11 @@
 import React from 'react'
-import { withStyles } from '@mui/styles'
+import {withStyles} from '@mui/styles';
 import { SnackbarProvider } from 'notistack'
 import { ThemeProvider } from '@mui/material/styles'
 import { StyledEngineProvider } from '@mui/styled-engine'
 import { NinaTheme } from './NinaTheme'
 import Router from './routes'
 import ninaCommon from 'nina-common'
-
-const styles = {
-  containerRoot: { paddingTop: '75px' },
-  success: { backgroundColor: 'rgba(45, 129, 255, 1)' },
-  error: { backgroundColor: 'red' },
-  info: { backgroundColor: 'rgba(45, 129, 255, 1)' },
-}
 
 const {
   ConnectionContextProvider,
@@ -25,7 +18,7 @@ const {
 
 const { extendBorsh } = ninaCommon.utils.metaplex.borsh
 
-function App({ classes }) {
+function App({classes}) {
   extendBorsh()
 
   return (
@@ -63,6 +56,13 @@ function App({ classes }) {
       </ThemeProvider>
     </StyledEngineProvider>
   )
+}
+
+const styles = {
+  containerRoot: {paddingTop: '75px'},
+  success: {backgroundColor: 'rgba(45, 129, 255, 1)'},
+  error: {backgroundColor: 'red'},
+  info: {backgroundColor: 'rgba(45, 129, 255, 1)'},
 }
 
 export default withStyles(styles)(App)
