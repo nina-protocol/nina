@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -112,21 +112,17 @@ const ReleaseInfo = (props) => {
         <Royalty releasePubkey={releasePubkey} release={release} />
       </Box>
     </StyledBox>
-  );
+  )
 }
 
-const PREFIX = 'ReleaseInfo';
+const PREFIX = 'ReleaseInfo'
 
 const classes = {
   root: `${PREFIX}-root`,
-  releaseInfoDescription: `${PREFIX}-releaseInfoDescription`
-};
+  releaseInfoDescription: `${PREFIX}-releaseInfoDescription`,
+}
 
-const StyledBox = styled(Box)((
-  {
-    theme
-  }
-) => ({
+const StyledBox = styled(Box)(({ theme }) => ({
   [`&.${classes.root}`]: {
     height: '100%',
     display: 'flex',
@@ -140,7 +136,7 @@ const StyledBox = styled(Box)((
     overflow: 'scroll',
     padding: '1rem',
     boxShadow: '1px 4px 12px 3px rgba(150, 152, 204,0.43)',
-  }
-}));
+  },
+}))
 
-export default ReleaseInfo;
+export default ReleaseInfo

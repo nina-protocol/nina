@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import * as Yup from 'yup'
 import { useSnackbar } from 'notistack'
 import Modal from '@mui/material/Modal'
@@ -90,7 +90,7 @@ const RedeemableModal = (props) => {
         </Fade>
       </Modal>
     </Root>
-  );
+  )
 }
 
 const validationSchema = Yup.object().shape({
@@ -102,25 +102,21 @@ const validationSchema = Yup.object().shape({
   postalCode: Yup.string().required('Postal Code Required'),
 })
 
-const PREFIX = 'RedeemableModal';
+const PREFIX = 'RedeemableModal'
 
 const classes = {
   modal: `${PREFIX}-modal`,
   paper: `${PREFIX}-paper`,
   redeemCta: `${PREFIX}-redeemCta`,
-  noCoinWarning: `${PREFIX}-noCoinWarning`
-};
+  noCoinWarning: `${PREFIX}-noCoinWarning`,
+}
 
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
+const Root = styled('div')(({ theme }) => ({
   [`& .${classes.modal}`]: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'blue'
+    backgroundColor: 'blue',
   },
 
   [`& .${classes.paper}`]: {
@@ -147,7 +143,7 @@ const Root = styled('div')((
     fontStyle: 'italic',
     right: '5rem',
     bottom: '1rem',
-  }
-}));
+  },
+}))
 
 export default RedeemableModal

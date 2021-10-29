@@ -14,7 +14,6 @@ const { NinaClient } = ninaCommon.utils
 
 const ReleasePurchase = (props) => {
   const { releasePubkey } = props
-
   const theme = useTheme()
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()

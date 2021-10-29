@@ -1,8 +1,8 @@
 import React from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import Stepper from '@mui/material/Stepper'
-import Step from '@mui/material/Step'   
-import StepLabel from '@mui/material/StepLabel'   
+import Step from '@mui/material/Step'
+import StepLabel from '@mui/material/StepLabel'
 import StepContent from '@mui/material/StepContent'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
@@ -36,7 +36,7 @@ const ConfirmShipping = (props) => {
   )
 }
 
-const listStyles = styled('div')((theme) => ({
+const listStyles = styled('div')(() => ({
   [`& .${classes.root}`]: {
     width: '300px',
     margin: 'auto',
@@ -56,7 +56,7 @@ const listStyles = styled('div')((theme) => ({
       fontSize: '26px',
       lineHeight: '29.9px',
     },
-  }
+  },
 }))
 
 function getSteps() {
@@ -75,7 +75,6 @@ function getStepContent(step, props) {
 }
 
 const RedeemableStepper = (props) => {
-
   const { submitRedeemableForm, formIsValid } = props
   const [activeStep, setActiveStep] = React.useState(0)
   const steps = getSteps()
@@ -151,16 +150,16 @@ const RedeemableStepper = (props) => {
         ))}
       </Stepper>
     </Root>
-  );
+  )
 }
 
-const PREFIX = 'RedeemableStepper';
+const PREFIX = 'RedeemableStepper'
 
 const classes = {
   root: `${PREFIX}-root`,
   confirmHeader: `${PREFIX}-confirmHeader`,
-  shippingInfo: `${PREFIX}-shippingInfo`
-};
+  shippingInfo: `${PREFIX}-shippingInfo`,
+}
 
 const Root = styled('div')(() => ({
   [`& .${classes.root}`]: {
@@ -182,7 +181,7 @@ const Root = styled('div')(() => ({
       fontSize: '26px',
       lineHeight: '29.9px',
     },
-  }
-}));
+  },
+}))
 
-export default RedeemableStepper;
+export default RedeemableStepper

@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import CircularProgress from '@mui/material/CircularProgress'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
@@ -55,7 +55,6 @@ const ExchangeListItem = (props) => {
     symbol,
     amount,
   } = props
-
 
   const displayPrice = isSelling
     ? NinaClient.nativeToUiString(
@@ -116,7 +115,6 @@ const ExchangeListItem = (props) => {
 const ExchangeListButton = (props) => {
   const { onExchangeButtonAction, pending, isSelling, isCurrentUser } = props
 
-
   const wallet = useWallet()
   const [buttonText, setButtonText] = useState('Pending')
 
@@ -149,7 +147,7 @@ const ExchangeListButton = (props) => {
       >
         {buttonText}
       </Button>
-    );
+    )
   } else {
     return (
       <Button
@@ -164,7 +162,7 @@ const ExchangeListButton = (props) => {
   }
 }
 
-const PREFIX = 'ExchangeList';
+const PREFIX = 'ExchangeList'
 
 const classes = {
   root: `${PREFIX}-root`,
@@ -172,14 +170,10 @@ const classes = {
   exchangeListItem: `${PREFIX}-exchangeListItem`,
   exchangeListItemPrice: `${PREFIX}-exchangeListItemPrice`,
   exchangeListButton: `${PREFIX}-exchangeListButton`,
-  noOffers: `${PREFIX}-noOffers`
-};
+  noOffers: `${PREFIX}-noOffers`,
+}
 
-const Root = styled(Box)((
-  {
-    theme
-  }
-) => ({
+const Root = styled(Box)(({ theme }) => ({
   maxHeight: '304px',
   height: '100%',
   [`& .${classes.exchangeList}`]: {
@@ -245,8 +239,7 @@ const Root = styled(Box)((
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-  }
-}));
-
+  },
+}))
 
 export default ExchangeList

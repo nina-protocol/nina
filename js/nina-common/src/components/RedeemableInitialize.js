@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import { useSnackbar } from 'notistack'
 import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
@@ -77,21 +77,17 @@ const RedeemableInitialize = (props) => {
         </Fade>
       </Modal>
     </Root>
-  );
+  )
 }
 
-const PREFIX = 'RedeemableInitialize';
+const PREFIX = 'RedeemableInitialize'
 
 const classes = {
   modal: `${PREFIX}-modal`,
-  paper: `${PREFIX}-paper`
-};
+  paper: `${PREFIX}-paper`,
+}
 
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
+const Root = styled('div')(({ theme }) => ({
   [`& .${classes.modal}`]: {
     display: 'flex',
     alignItems: 'center',
@@ -106,7 +102,7 @@ const Root = styled('div')((
     width: '75%',
     maxHeight: '80vh',
     overflowY: 'auto',
-  }
-}));
+  },
+}))
 
 export default RedeemableInitialize

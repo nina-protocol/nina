@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
@@ -10,7 +10,6 @@ import RedeemableUpdateShippingForm from './RedeemableUpdateShippingForm.js'
 import RedeemableUpdateShippingList from './RedeemableUpdateShippingList.js'
 
 const RedeemableUpdate = (props) => {
-
   const { releasePubkey, redeemables, redemptionRecords } = props
   const [open, setOpen] = React.useState(false)
   const [redeemableTrackingValues, setRedeemableTrackingValues] = useState({})
@@ -93,21 +92,17 @@ const RedeemableUpdate = (props) => {
         </Fade>
       </Modal>
     </StyledBox>
-  );
+  )
 }
 
-const PREFIX = 'RedeemableUpdate';
+const PREFIX = 'RedeemableUpdate'
 
 const classes = {
   modal: `${PREFIX}-modal`,
-  paper: `${PREFIX}-paper`
-};
+  paper: `${PREFIX}-paper`,
+}
 
-const StyledBox = styled(Box)((
-  {
-    theme
-  }
-) => ({
+const StyledBox = styled(Box)(({ theme }) => ({
   [`& .${classes.modal}`]: {
     display: 'flex',
     alignItems: 'center',
@@ -125,7 +120,7 @@ const StyledBox = styled(Box)((
     display: 'grid',
     gridTemplateColumns: '20% 80%',
     gridGap: '1rem',
-  }
-}));
+  },
+}))
 
 export default RedeemableUpdate

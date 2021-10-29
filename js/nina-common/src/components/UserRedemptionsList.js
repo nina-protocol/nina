@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
@@ -8,7 +8,6 @@ import Divider from '@mui/material/Divider'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import Typography from '@mui/material/Typography'
-import UserRedemptionsList from './RedeemableUpdateShippingList';
 
 const UserRedemptionsList = (props) => {
   const {
@@ -63,24 +62,20 @@ const UserRedemptionsList = (props) => {
       </List>
       <Divider />
     </Root>
-  );
+  )
 }
 
-const PREFIX = 'UserRedemptionsList';
+const PREFIX = 'UserRedemptionsList'
 
 const classes = {
   root: `${PREFIX}-root`,
   list: `${PREFIX}-list`,
   listItem: `${PREFIX}-listItem`,
   listItemText: `${PREFIX}-listItemText`,
-  icon: `${PREFIX}-icon`
-};
+  icon: `${PREFIX}-icon`,
+}
 
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
+const Root = styled('div')(({ theme }) => ({
   [`&.${classes.root}`]: {
     width: '100%',
     maxWidth: '100%',
@@ -111,7 +106,7 @@ const Root = styled('div')((
   [`& .${classes.icon}`]: {
     minWidth: '12px',
     color: `${theme.palette.purple}`,
-  }
-}));
+  },
+}))
 
-export default UserRedemptionsList;
+export default UserRedemptionsList

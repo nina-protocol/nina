@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import { Typography } from '@mui/material'
 import BuySellForm from './BuySellForm'
@@ -28,22 +28,18 @@ const BuySell = (props) => {
         release={release}
       />
     </StyledBox>
-  );
+  )
 }
 
-const PREFIX = 'BuySell';
+const PREFIX = 'BuySell'
 
 const classes = {
   buySell: `${PREFIX}-buySell`,
   buySellHeading: `${PREFIX}-buySellHeading`,
-  buySellCopy: `${PREFIX}-buySellCopy`
-};
+  buySellCopy: `${PREFIX}-buySellCopy`,
+}
 
-const StyledBox = styled(Box)((
-  {
-    theme
-  }
-) => ({
+const StyledBox = styled(Box)(({ theme }) => ({
   [`&.${classes.buySell}`]: {
     width: '100%',
     maxWidth: '310px',
@@ -71,8 +67,7 @@ const StyledBox = styled(Box)((
     [theme.breakpoints.down('md')]: {
       display: 'none',
     },
-  }
-}));
-
+  },
+}))
 
 export default BuySell

@@ -56,25 +56,10 @@ const Release = ({ match }) => {
   )
 }
 
-// const StyledBox = styled(Paper)(({theme}) => ({
-//   width: '80vw',
-//   margin: 'auto',
-//   height: '75vh',
-//   gridTemplateColumns: 'repeat(2, 1fr)',
-//   backgroundColor: theme.palette.white,
-//   border: '2px solid blue'
-// }))
-
 const StyleReleaseControls = styled(Box)(() => ({
   margin: 'auto',
   height: '100%',
   width: '80%',
 }))
-
-const StyledNinaBox = styled(NinaBox)(() => ({
-  border: '10px solid red !important'
-}))
-
-
 
 export default Release

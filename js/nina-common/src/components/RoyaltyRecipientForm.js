@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import { Formik, Field, Form } from 'formik'
 import Button from '@mui/material/Button'
 import { TextField, Typography, Box } from '@mui/material'
@@ -12,7 +12,6 @@ const RoyaltyRecipientForm = (props) => {
     props
   const { addRoyaltyRecipient } = useContext(ReleaseContext)
   const { addRoyaltyRecipientByTwitterHandle } = useContext(NameContext)
-
 
   const handleDisplayPercent = (value) => {
     const sending = parseInt(value)
@@ -120,10 +119,10 @@ const RoyaltyRecipientForm = (props) => {
         )}
       </Formik>
     </Root>
-  );
+  )
 }
 
-const PREFIX = 'RoyaltyRecipientForm';
+const PREFIX = 'RoyaltyRecipientForm'
 
 const classes = {
   redeemableForm: `${PREFIX}-redeemableForm`,
@@ -131,14 +130,10 @@ const classes = {
   formSelect: `${PREFIX}-formSelect`,
   formInputGroup: `${PREFIX}-formInputGroup`,
   royaltyPercentageWrapper: `${PREFIX}-royaltyPercentageWrapper`,
-  formError: `${PREFIX}-formError`
-};
+  formError: `${PREFIX}-formError`,
+}
 
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
+const Root = styled('div')(({ theme }) => ({
   [`& .${classes.redeemableForm}`]: {
     display: 'flex',
     flexDirection: 'column',
@@ -186,7 +181,7 @@ const Root = styled('div')((
 
   [`& .${classes.formError}`]: {
     color: `${theme.palette.red}`,
-  }
-}));
+  },
+}))
 
-export default RoyaltyRecipientForm;
+export default RoyaltyRecipientForm
