@@ -496,6 +496,8 @@ const releaseContextHelper = ({
         msg: 'Release purchased!',
       }
     } catch (error) {
+      getUsdcBalance()
+      getRelease(releasePubkey)
       setReleasePurchasePending({
         ...releasePurchasePending,
         [releasePubkey]: false,
@@ -556,6 +558,8 @@ const releaseContextHelper = ({
         )}`,
       }
     } catch (error) {
+      getUsdcBalance()
+      getRelease(releasePubkey)
       return ninaErrorHandler(error)
     }
   }
@@ -631,6 +635,8 @@ const releaseContextHelper = ({
         msg: `Revenue share transferred`,
       }
     } catch (error) {
+      getRelease(releasePubkey)
+      getUsdcBalance()
       return ninaErrorHandler(error)
     }
   }
@@ -711,6 +717,8 @@ const releaseContextHelper = ({
         msg: 'Redeemable Created!',
       }
     } catch (error) {
+      getRelease(releasePubkey)
+      getRedeemablesForRelease(releasePubkey)
       return ninaErrorHandler(error)
     }
   }
@@ -805,6 +813,9 @@ const releaseContextHelper = ({
         msg: 'Redemption successful!',
       }
     } catch (error) {
+      getRelease(releasePubkey)
+      getRedeemablesForRelease(releasePubkey)
+      getRedemptionRecordsForRelease(releasePubkey)
       return ninaErrorHandler(error)
     }
   }
@@ -857,6 +868,9 @@ const releaseContextHelper = ({
         msg: 'Shipping info updated!',
       }
     } catch (error) {
+      getRelease(releasePubkey)
+      getRedeemablesForRelease(releasePubkey)
+      getRedemptionRecordsForRelease(releasePubkey)
       return ninaErrorHandler(error)
     }
   }
