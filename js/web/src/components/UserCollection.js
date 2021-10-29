@@ -5,7 +5,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import { Box, Typography } from '@material-ui/core'
 import ReleaseListTable from './ReleaseListTable'
-// import UserView from './UserView'
 
 const { NameContext, ReleaseContext, NinaContext } = ninaCommon.contexts
 
@@ -13,12 +12,7 @@ const ReleaseList = () => {
   const {
     searchResults,
     resetSearchResults,
-    getReleasesRecent,
-    releasesRecentState,
-    filterReleasesRecent,
-    getReleasesPublishedByUser,
-    filterReleasesPublishedByUser,
-    collectRoyaltyForRelease,
+    filterReleasesUserCollection,
     releaseState,
   } = useContext(ReleaseContext)
   const classes = useStyles()
@@ -26,32 +20,17 @@ const ReleaseList = () => {
   const { collection } = useContext(NinaContext)
   const { getReleasesForTwitterHandle } = useContext(NameContext)
   const [search, setSearch] = useState(searchResults.handle)
-  const [releasesRecent, setReleasesRecent] = useState({})
-
-  useEffect(() => {
-    getReleasesRecent()
-  }, [])
-  const [userPublishedReleases, setUserPublishedReleases] = useState()
-
-  useEffect(() => {
-    if (wallet?.connected && !userPublishedReleases) {
-      getReleasesPublishedByUser()
-    }
-  }, [wallet?.connected])
+  const [userCollectionReleases, setUserCollectionReleases] = useState()
 
   useEffect(() => {
     if (wallet?.connected) {
-      setUserPublishedReleases(filterReleasesPublishedByUser())
+      setUserCollectionReleases(filterReleasesUserCollection())
     }
   }, [releaseState, collection])
 
   useEffect(() => {
     setSearch(searchResults.handle)
   }, [searchResults])
-
-  useEffect(() => {
-    setReleasesRecent(filterReleasesRecent())
-  }, [releasesRecentState])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -99,28 +78,31 @@ const ReleaseList = () => {
       {!wallet?.connected && !searchResults.searched && (
         <>
           <h1>Welcome to Nina</h1>
-          <ReleaseListTable
-            releases={releasesRecent.published || []}
-            key="releases"
-          />
+          <h2>
+            Connect your wallet to listen to your collection or publish a new
+            release
+          </h2>
+          <h2>
+            Or search for your favorite artists Twitter handle to see if they on
+            Nina
+          </h2>
         </>
       )}
       {wallet?.connected &&
         !searchResults.searched &&
-        userPublishedReleases?.length > 0 && (
+        userCollectionReleases?.length > 0 && (
           <ReleaseListTable
-            releases={userPublishedReleases}
-            tableType="userPublished"
-            collectRoyaltyForRelease={collectRoyaltyForRelease}
+            releases={userCollectionReleases}
+            tableType="userCollection"
             key="releases"
           />
         )}
       {wallet?.connected &&
         !searchResults.searched &&
-        userPublishedReleases?.length === 0 && (
-          <>
-            <Typography>{`You haven't published any music yet.`}</Typography>
-          </>
+        userCollectionReleases?.length === 0 && (
+          <Typography>
+            <h1>Your collection is empty!</h1>
+          </Typography>
         )}
     </Box>
   )
@@ -128,12 +110,10 @@ const ReleaseList = () => {
 
 const useStyles = makeStyles(() => ({
   root: {
-    height: '80%',
     width: '80%',
     display: 'flex',
     flexDirection: 'column',
     position: 'absolute',
-    'overflow-y': 'scroll',
     top: 40,
   },
 }))

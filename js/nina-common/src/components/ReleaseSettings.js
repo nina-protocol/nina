@@ -90,10 +90,10 @@ const ReleaseSettings = (props) => {
       })
     } else {
       setDisplayValues({
-        artist: tempMetadata?.mediaForm.artist,
-        title: tempMetadata?.mediaForm.title,
-        description: tempMetadata?.mediaForm.description,
-        catalogNumber: tempMetadata?.tokenForm.catalogNumber,
+        artist: tempMetadata?.artist,
+        title: tempMetadata?.title,
+        description: tempMetadata?.description,
+        catalogNumber: tempMetadata?.catalogNumber,
       })
     }
   }, [tempMetadata, metadata])

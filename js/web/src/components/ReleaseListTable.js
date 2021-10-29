@@ -40,6 +40,9 @@ const EnhancedTableHead = (props) => {
     headCells.push({ id: 'price', numeric: true, label: 'Price' })
     headCells.push({ id: 'available', numeric: false, label: 'Available' })
     headCells.push({ id: 'revenue', numeric: false, label: 'Revenue' })
+    headCells.push({ id: 'share', numeric: false, label: 'Share' })
+    headCells.push({ id: 'collected', numeric: false, label: 'Collected' })
+    headCells.push({ id: 'collect', numeric: false, label: 'Collect' })
   }
 
   if (tableType === 'userRoyalty') {
@@ -49,7 +52,7 @@ const EnhancedTableHead = (props) => {
   }
 
   return (
-    <TableHead className="releases__table-head">
+    <TableHead>
       <TableRow>
         {headCells.map((headCell) => (
           <TableCell
@@ -71,7 +74,7 @@ const ReleaseListTable = (props) => {
   const history = useHistory()
   const classes = useStyles()
   const [order] = useState('asc')
-  const [orderBy] = useState('calories')
+  // const [orderBy] = useState('calories')
 
   const handleClick = (event, releasePubkey) => {
     history.push(`/release/` + releasePubkey)
@@ -94,20 +97,6 @@ const ReleaseListTable = (props) => {
       title: metadata.properties.title,
     }
     if (tableType === 'userPublished') {
-      rowData['price'] = `${NinaClient.nativeToUiString(
-        tokenData.price.toNumber(),
-        tokenData.paymentMint
-      )}`
-      rowData[
-        'available'
-      ] = `${tokenData.remainingSupply.toNumber()} / ${tokenData.totalSupply.toNumber()}`
-      rowData['revenue'] = `${NinaClient.nativeToUiString(
-        tokenData.totalCollected.toNumber(),
-        tokenData.paymentMint
-      )}`
-    }
-
-    if (tableType === 'userRoyalty') {
       const recipient = release.recipient
       const collectRoyaltyForRelease = props.collectRoyaltyForRelease
       const collectButton = (
@@ -123,6 +112,18 @@ const ReleaseListTable = (props) => {
           )}
         </Button>
       )
+
+      rowData['price'] = `${NinaClient.nativeToUiString(
+        tokenData.price.toNumber(),
+        tokenData.paymentMint
+      )}`
+      rowData[
+        'available'
+      ] = `${tokenData.remainingSupply.toNumber()} / ${tokenData.totalSupply.toNumber()}`
+      rowData['revenue'] = `${NinaClient.nativeToUiString(
+        tokenData.totalCollected.toNumber(),
+        tokenData.paymentMint
+      )}`
       rowData['share'] = `${recipient.percentShare.toNumber() / 10000}%`
       rowData['collected'] = `${NinaClient.nativeToUiString(
         recipient.collected.toNumber(),
@@ -130,6 +131,7 @@ const ReleaseListTable = (props) => {
       )}`
       rowData['collect'] = collectButton
     }
+
     return rowData
   })
   rows.sort((a, b) => (a.artist < b.artist ? -1 : 1))
@@ -146,7 +148,7 @@ const ReleaseListTable = (props) => {
             <EnhancedTableHead
               className={classes}
               order={order}
-              orderBy={orderBy}
+              // orderBy={orderBy}
               tableType={tableType}
               rowCount={rows.length}
             />
@@ -156,7 +158,7 @@ const ReleaseListTable = (props) => {
                   <TableRow
                     hover
                     onClick={(event) =>
-                      tableType === 'userRoyalty'
+                      tableType === 'userPublished'
                         ? null
                         : handleClick(event, row.id)
                     }
@@ -215,7 +217,8 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 750,
   },
   releaseImage: {
-    width: '80px',
+    width: '40px',
+    cursor: 'pointer',
   },
 }))
 
