@@ -12,7 +12,6 @@ import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
 
 const { NinaClient } = ninaCommon.utils
-
 const ARWEAVE_GATEWAY_ENDPOINT = NinaClient.endpoints.arweave
 
 const EnhancedTableHead = (props) => {

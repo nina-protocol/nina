@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
-
 import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'

@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import { Card, Box, Button } from '@mui/material'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
@@ -37,7 +37,6 @@ const ReleaseSettings = (props) => {
   const [displayValues, setDisplayValues] = useState({})
 
   let timer = undefined
-
 
   useEffect(() => {
     if (!metadata) {
@@ -293,10 +292,10 @@ const ReleaseSettings = (props) => {
         )}
       </Box>
     </StyledBox>
-  );
+  )
 }
 
-const PREFIX = 'ReleaseSettings';
+const PREFIX = 'ReleaseSettings'
 
 const classes = {
   root: `${PREFIX}-root`,
@@ -312,14 +311,10 @@ const classes = {
   media: `${PREFIX}-media`,
   releaseInfo: `${PREFIX}-releaseInfo`,
   stat: `${PREFIX}-stat`,
-  ctaWrapper: `${PREFIX}-ctaWrapper`
-};
+  ctaWrapper: `${PREFIX}-ctaWrapper`,
+}
 
-const StyledBox = styled(Box)((
-  {
-    theme
-  }
-) => ({
+const StyledBox = styled(Box)(({ theme }) => ({
   [`&.${classes.root}`]: {
     height: '100%',
     display: 'flex',
@@ -403,7 +398,7 @@ const StyledBox = styled(Box)((
     width: '30%',
     margin: 'auto',
     marginTop: '0',
-  }
-}));
+  },
+}))
 
-export default ReleaseSettings;
+export default ReleaseSettings

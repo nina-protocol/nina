@@ -1,23 +1,17 @@
 import React, { createContext, useContext, useState } from 'react'
-
 import {
   createVerifiedTwitterRegistry,
   getHandleAndRegistryKey,
   getTwitterRegistry,
 } from '@bonfida/spl-name-service'
-
 import { Connection, Transaction } from '@solana/web3.js'
-
 import { useWallet } from '@solana/wallet-adapter-react'
-
 import NinaClient from '../utils/client'
 import { postTwitterRegistrarRequest } from '../utils/web3'
-
 import { ConnectionContext } from './connection'
 import { ReleaseContext } from './release'
 
 export const NameContext = createContext()
-
 const NameContextProvider = ({ children }) => {
   const { connection } = useContext(ConnectionContext)
 

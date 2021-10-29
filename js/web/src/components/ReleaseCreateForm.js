@@ -10,7 +10,7 @@ import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
 const { NinaClient } = ninaCommon.utils
 
-function ReleaseCreateForm({
+const ReleaseCreateForm = ({
   field,
   form,
   values,
@@ -18,7 +18,7 @@ function ReleaseCreateForm({
   errors,
   touched,
   setFieldValue,
-}) {
+}) => {
   useEffect(() => {
     if (onChange) {
       onChange(values)

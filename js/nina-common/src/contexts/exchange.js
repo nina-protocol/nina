@@ -225,15 +225,13 @@ const exchangeContextHelper = ({
         )
       }
 
-      getUsdcBalance()
-      getRelease(releasePubkey)
-      getExchangesForRelease(releasePubkey)
-
+      getUpdates(releasePubkey)
       return {
         success: true,
         msg: 'Offer accepted!',
       }
     } catch (error) {
+      getUpdates(releasePubkey)
       return ninaErrorHandler(error)
     }
   }
@@ -364,26 +362,19 @@ const exchangeContextHelper = ({
         [releasePubkey]: false,
       })
 
-      // addExchangeToStateTemp({
-      //   releasePubkey,
-      //   isSelling,
-      //   amount,
-      //   exchangeId: exchange.publicKey,
-      // })
-
       if (isSelling) {
         removeReleaseFromCollection(releasePubkey, releaseMint.toBase58())
       }
 
-      getUsdcBalance()
-      getRelease(releasePubkey)
-      getExchangesForRelease(releasePubkey)
+      getUpdates(releasePubkey)
 
       return {
         success: true,
         msg: 'Offer created!',
       }
     } catch (error) {
+      getUpdates(releasePubkey)
+
       setExchangeInitPending({
         ...exchangeInitPending,
         [releasePubkey]: false,
@@ -439,15 +430,13 @@ const exchangeContextHelper = ({
         addReleaseToCollection(exchange.release.publicKey.toBase58())
       }
 
-      getUsdcBalance()
-      getRelease(exchange.release.publicKey.toBase58())
-      getExchangesForRelease(exchange.release.publicKey.toBase58())
-
+      getUpdates(exchange.release.publicKey.toBase58())
       return {
         success: true,
         msg: 'Offer cancelled!',
       }
     } catch (error) {
+      getUpdates(exchange.release.publicKey.toBase58())
       return ninaErrorHandler(error)
     }
   }
@@ -491,11 +480,8 @@ const exchangeContextHelper = ({
         }
       })
 
-      const existingExchangeIds = existingExchanges.map((exchange) =>
-        exchange.publicKey.toBase58()
-      )
       const releaseExchangeIds = filterExchangesForRelease(releasePubkey).map(
-        (e) => e.publicKey.toBase58()
+        (exchange) => exchange.publicKey.toBase58()
       )
       const idsToRemove = releaseExchangeIds.filter(
         (id) => !exchangeIds.includes(id)
@@ -505,6 +491,13 @@ const exchangeContextHelper = ({
         throw exchangeAccounts.error
       } else {
         saveExchangesToState(existingExchanges, idsToRemove)
+      }
+    } else {
+      if (releasePubkey) {
+        const releaseExchangeIds = filterExchangesForRelease(releasePubkey).map(
+          (e) => e.publicKey.toBase58()
+        )
+        saveExchangesToState([], releaseExchangeIds)
       }
     }
   }
@@ -625,7 +618,7 @@ const exchangeContextHelper = ({
     const exchanges = []
     Object.keys(exchangeState).forEach((exchangePubkey) => {
       const exchange = exchangeState[exchangePubkey]
-      if (exchange.release.toBase58() === releasePubkey) {
+      if (exchange?.release?.toBase58() === releasePubkey) {
         exchanges.push(exchange)
       }
     })
@@ -765,6 +758,12 @@ const exchangeContextHelper = ({
     setExchangeHistoryState({
       ...updatedExchangeHistoryState,
     })
+  }
+
+  const getUpdates = (releasePubkey) => {
+    getUsdcBalance()
+    getRelease(releasePubkey)
+    getExchangesForRelease(releasePubkey)
   }
 
   return {

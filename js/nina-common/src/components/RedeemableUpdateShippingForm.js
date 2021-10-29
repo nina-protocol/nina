@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import { withFormik, Form, Field } from 'formik'
 import Typography from '@mui/material/Typography'
 import { Button, TextField } from '@mui/material'
@@ -8,7 +8,6 @@ import NinaClient from '../utils/client'
 
 export const RedeemableUpdateShippingForm = (props) => {
   const { values, touched, errors, onChange, selectedRecord } = props
-
 
   useEffect(() => {
     if (onChange) {
@@ -130,7 +129,7 @@ export const RedeemableUpdateShippingForm = (props) => {
   )
 }
 
-const PREFIX = 'RedeemableUpdateShippingForm';
+const PREFIX = 'RedeemableUpdateShippingForm'
 
 const classes = {
   root: `${PREFIX}-root`,
@@ -139,14 +138,10 @@ const classes = {
   redemptionInfo: `${PREFIX}-redemptionInfo`,
   redeemableForm: `${PREFIX}-redeemableForm`,
   formField: `${PREFIX}-formField`,
-  formError: `${PREFIX}-formError`
-};
+  formError: `${PREFIX}-formError`,
+}
 
-const StyledBox = styled(Box)((
-  {
-    theme
-  }
-) => ({
+const StyledBox = styled(Box)(({ theme }) => ({
   [`& .${classes.root}`]: {
     display: 'flex',
     flexDirection: 'column',
@@ -192,9 +187,8 @@ const StyledBox = styled(Box)((
 
   [`& .${classes.formError}`]: {
     color: `${theme.palette.red}`,
-  }
-}));
-
+  },
+}))
 
 export default withFormik({
   enableReinitialize: true,

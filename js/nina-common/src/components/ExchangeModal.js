@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import { Typography, Box } from '@mui/material'
 import Button from '@mui/material/Button'
 import Fade from '@mui/material/Fade'
@@ -28,8 +28,8 @@ const ExchangeModal = (props) => {
   }
 
   return (
-    <StyledModal// `disableBackdropClick` is removed by codemod.
-// You can find more details about this breaking change in [the migration guide](https://mui.com/guides/migration-v4/#modal)
+    <StyledModal // `disableBackdropClick` is removed by codemod.
+      // You can find more details about this breaking change in [the migration guide](https://mui.com/guides/migration-v4/#modal)
 
       aria-labelledby="transition-modal-title"
       aria-describedby="transition-modal-description"
@@ -44,7 +44,8 @@ const ExchangeModal = (props) => {
       BackdropComponent={Backdrop}
       BackdropProps={{
         timeout: 500,
-      }}>
+      }}
+    >
       <Fade in={showOverlay}>
         <Box className={classes.paper}>
           <Typography variant="overline">
@@ -84,10 +85,10 @@ const ExchangeModal = (props) => {
         </Box>
       </Fade>
     </StyledModal>
-  );
+  )
 }
 
-const PREFIX = 'ExchangeModal';
+const PREFIX = 'ExchangeModal'
 
 const classes = {
   root: `${PREFIX}-root`,
@@ -95,14 +96,10 @@ const classes = {
   modal: `${PREFIX}-modal`,
   paper: `${PREFIX}-paper`,
   receivingAmount: `${PREFIX}-receivingAmount`,
-  cancel: `${PREFIX}-cancel`
-};
+  cancel: `${PREFIX}-cancel`,
+}
 
-const StyledModal = styled(Modal)((
-  {
-    theme
-  }
-) => ({
+const StyledModal = styled(Modal)(({ theme }) => ({
   [`& .${classes.root}`]: {
     width: '100%',
     height: '100%',
@@ -154,7 +151,7 @@ const StyledModal = styled(Modal)((
     color: `${theme.palette.white}`,
     textDecoration: 'underline',
     cursor: 'pointer',
-  }
-}));
+  },
+}))
 
 export default ExchangeModal

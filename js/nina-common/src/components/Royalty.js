@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import { Box } from '@mui/material'
 import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
@@ -209,22 +209,18 @@ const Royalty = (props) => {
         </Fade>
       </Modal>
     </Root>
-  );
+  )
 }
 
-const PREFIX = 'Royalty';
+const PREFIX = 'Royalty'
 
 const classes = {
   modal: `${PREFIX}-modal`,
   paper: `${PREFIX}-paper`,
-  recipientData: `${PREFIX}-recipientData`
-};
+  recipientData: `${PREFIX}-recipientData`,
+}
 
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
+const Root = styled('div')(({ theme }) => ({
   [`& .${classes.modal}`]: {
     display: 'flex',
     alignItems: 'center',
@@ -246,7 +242,7 @@ const Root = styled('div')((
     '& a': {
       color: `${theme.palette.purple}`,
     },
-  }
-}));
+  },
+}))
 
-export default Royalty;
+export default Royalty

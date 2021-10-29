@@ -12,7 +12,6 @@ const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
 
 const ReleaseTabs = (props) => {
   const { releasePubkey } = props
-
   const wallet = useWallet()
   const { releaseState, getRedemptionRecordsForRelease, redeemableState } =
     useContext(ReleaseContext)

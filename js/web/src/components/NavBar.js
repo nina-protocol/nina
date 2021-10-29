@@ -15,23 +15,11 @@ const { NinaContext } = ninaCommon.contexts
 
 const NavBar = () => {
   const { usdcBalance } = useContext(NinaContext)
-  // const {
-  //   lookupUserTwitterHandle,
-  //   userTwitterHandle,
-  // } = useContext(NameContext)
   const wallet = useWallet()
-
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),
     [wallet?.publicKey]
   )
-
-  // useEffect(() => {
-  //   if (wallet?.connected) {
-  //     lookupUserTwitterHandle()
-  //   }
-  // }, [wallet])
-
   const walletDisplay = useMemo(() => {
     if (!wallet || !base58) return null
     return base58.slice(0, 4) + '..' + base58.slice(-4)

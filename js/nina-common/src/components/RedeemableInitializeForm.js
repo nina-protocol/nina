@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import { withFormik, Form, Field } from 'formik'
 import Typography from '@mui/material/Typography'
 import { Button, TextField } from '@mui/material'
 import NinaClient from '../utils/client'
 
 export const RedeemableInitializeForm = (props) => {
-
   const { values, touched, errors, onChange } = props
 
   useEffect(() => {
@@ -81,22 +80,18 @@ export const RedeemableInitializeForm = (props) => {
         </Form>
       </>
     </Root>
-  );
+  )
 }
 
-const PREFIX = 'RedeemableInitializeForm';
+const PREFIX = 'RedeemableInitializeForm'
 
 const classes = {
   redeemableForm: `${PREFIX}-redeemableForm`,
   formField: `${PREFIX}-formField`,
-  formError: `${PREFIX}-formError`
-};
+  formError: `${PREFIX}-formError`,
+}
 
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
+const Root = styled('div')(({ theme }) => ({
   [`& .${classes.redeemableForm}`]: {
     display: 'flex',
     flexDirection: 'column',
@@ -117,9 +112,8 @@ const Root = styled('div')((
 
   [`& .${classes.formError}`]: {
     color: `${theme.palette.red}`,
-  }
-}));
-
+  },
+}))
 
 export default withFormik({
   mapPropsToValues: (props) => {

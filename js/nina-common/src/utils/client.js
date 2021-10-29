@@ -2,7 +2,6 @@ import * as anchor from '@project-serum/anchor'
 import { TokenInstructions } from '@project-serum/serum'
 import Arweave from 'arweave'
 import CoinGecko from 'coingecko-api'
-
 import idl from './idl'
 
 export const NINA_CLIENT_IDS = {
@@ -198,6 +197,6 @@ export default class NinaClient {
       .match(/([A-Z0-9]?[^A-Z0-9]*)/g)
       .slice(0, -1)
       .join(' ')
-      .toUpperCase();
+      .toUpperCase()
   }
 }

@@ -3,14 +3,14 @@ import { styled } from '@mui/material/styles'
 import MediaDropzone from './MediaDropzone.js'
 import Box from '@mui/material/Box'
 
-function MediaDropzones({
+const MediaDropzones = ({
   values,
   releasePubkey,
   artwork,
   setArtwork,
   track,
   setTrack,
-}) {
+}) => {
   const [metadata, setMetadata] = useState({})
 
   useEffect(() => {

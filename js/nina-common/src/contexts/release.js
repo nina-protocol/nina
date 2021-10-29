@@ -6,7 +6,6 @@ import { NinaContext } from './nina'
 import {
   createMintInstructions,
   findOrCreateAssociatedTokenAccount,
-  getProgramAccounts,
   wrapSol,
   getMetadataAccounts,
   getMetadata,
@@ -173,7 +172,6 @@ const releaseContextHelper = ({
   removeReleaseFromCollection,
   releasesRecentState,
   setReleasesRecentState,
-  setNpcAmountHeld
 }) => {
   const provider = new anchor.Provider(
     connection,
@@ -917,7 +915,7 @@ const releaseContextHelper = ({
     await fetchAndSaveReleasesToState(Object.keys(collection))
   }
 
-  const getReleasesPublishedByUser = async (user = null, handle) => {
+  const getReleasesPublishedByUser = async () => {
     await getReleasesHandler(lookupTypes.PUBLISHED_BY)
   }
 
@@ -935,7 +933,7 @@ const releaseContextHelper = ({
 
       const layout =
         nina.program.coder.accounts.accountLayouts.get('Redeemable')
-      redeemableAccounts = redeemableAccounts.map((redeemable) => {
+      redeemableAccounts.forEach((redeemable) => {
         let dataParsed = layout.decode(redeemable.account.data.slice(8))
         dataParsed.publicKey = redeemable.publicKey
         dataParsed.description = decodeNonEncryptedByteArray(
@@ -979,7 +977,7 @@ const releaseContextHelper = ({
 
     const layout =
       nina.program.coder.accounts.accountLayouts.get('RedemptionRecord')
-    for await (redemptionRecord of redemptionRecords) {
+    for await (let redemptionRecord of redemptionRecords) {
       let dataParsed = layout.decode(redemptionRecord.account.data.slice(8))
       const redeemable = await nina.program.account.redeemable.fetch(
         dataParsed.redeemable
@@ -991,17 +989,17 @@ const releaseContextHelper = ({
           ? dataParsed.encryptionPublicKey
           : redeemable.encryptionPublicKey
       if (!dataParsed.address.every((item) => item === 0)) {
-        redemptionRecord.address = await decryptData(
+        dataParsed.address = await decryptData(
           dataParsed.address,
           otherPartyEncryptionKey,
-          redemptionRecord.iv
+          dataParsed.iv
         )
       }
       if (!dataParsed.shipper.every((item) => item === 0)) {
         dataParsed.shipper = await decryptData(
           dataParsed.shipper,
           otherPartyEncryptionKey,
-          redemptionRecord.iv
+          dataParsed.iv
         )
       } else {
         dataParsed.shipper = undefined
@@ -1010,7 +1008,7 @@ const releaseContextHelper = ({
         dataParsed.trackingNumber = await decryptData(
           dataParsed.trackingNumber,
           otherPartyEncryptionKey,
-          redemptionRecord.iv
+          dataParsed.iv
         )
       } else {
         dataParsed.trackingNumber = undefined
@@ -1032,7 +1030,6 @@ const releaseContextHelper = ({
   }
 
   const getReleasesRecent = async () => {
-    const nina = await NinaClient.connect(provider)
     const result = await fetch(`${NinaClient.endpoints.api}/releases/recent`)
     const { published, purchased } = await result.json()
     const releaseIds = [...published, ...purchased]
@@ -1110,7 +1107,7 @@ const releaseContextHelper = ({
       if (tokenData.authority.toBase58() === userPubkey && metadata) {
         releaseData.tokenData = tokenData
         releaseData.metadata = metadata
-        releaseData.releasePubkey = releasePubkey   
+        releaseData.releasePubkey = releasePubkey
       }
 
       tokenData.royaltyRecipients.forEach((recipient) => {

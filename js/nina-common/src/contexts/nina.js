@@ -43,7 +43,7 @@ const NinaContextProvider = ({ children, releasePubkey }) => {
     getAmountHeld,
     getSolPrice,
     getUsdcBalance,
-    getNpcAmountHeld
+    getNpcAmountHeld,
   } = ninaContextHelper({
     wallet,
     connection,
@@ -52,7 +52,7 @@ const NinaContextProvider = ({ children, releasePubkey }) => {
     setSolPrice,
     setUsdcBalance,
     npcAmountHeld,
-    setNpcAmountHeld
+    setNpcAmountHeld,
   })
 
   return (
@@ -70,7 +70,7 @@ const NinaContextProvider = ({ children, releasePubkey }) => {
         getUsdcBalance,
         usdcBalance,
         getNpcAmountHeld,
-        npcAmountHeld
+        npcAmountHeld,
       }}
     >
       {children}
@@ -86,8 +86,7 @@ const ninaContextHelper = ({
   setCollection,
   setSolPrice,
   setUsdcBalance,
-  npcAmountHeld,
-  setNpcAmountHeld
+  setNpcAmountHeld,
 }) => {
   // Collection
 
@@ -308,10 +307,12 @@ const ninaContextHelper = ({
     if (wallet?.connected) {
       let npcAccount = await connection.getParsedTokenAccountsByOwner(
         wallet?.publicKey,
-        {mint: publishingCreditMint}
+        { mint: publishingCreditMint }
       )
       if (npcAccount.value[0]) {
-        setNpcAmountHeld(npcAccount.value[0].account.data.parsed.info.tokenAmount.uiAmount)
+        setNpcAmountHeld(
+          npcAccount.value[0].account.data.parsed.info.tokenAmount.uiAmount
+        )
       }
     }
     return
@@ -326,6 +327,6 @@ const ninaContextHelper = ({
     getAmountHeld,
     getSolPrice,
     getUsdcBalance,
-    getNpcAmountHeld
+    getNpcAmountHeld,
   }
 }

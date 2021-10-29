@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import Box from '@mui/material/Box'
 import { Typography } from '@mui/material'
 import NinaClient from '../utils/client'
-import {Exchange} from '.';
 
 const ExchangeHistoryModal = (props) => {
   const { release, exchangeHistory } = props
@@ -90,10 +89,10 @@ const ExchangeHistoryModal = (props) => {
         </Fade>
       </Modal>
     </StyledBox>
-  );
+  )
 }
 
-const PREFIX = 'ExchangeHistoryModal';
+const PREFIX = 'ExchangeHistoryModal'
 
 const classes = {
   exchangeHistoryCta: `${PREFIX}-exchangeHistoryCta`,
@@ -101,14 +100,10 @@ const classes = {
   paper: `${PREFIX}-paper`,
   header: `${PREFIX}-header`,
   historyTable: `${PREFIX}-historyTable`,
-  historyTableBody: `${PREFIX}-historyTableBody`
-};
+  historyTableBody: `${PREFIX}-historyTableBody`,
+}
 
-const StyledBox = styled(Box)((
-  {
-    theme
-  }
-) => ({
+const StyledBox = styled(Box)(({ theme }) => ({
   [`& .${classes.exchangeHistoryCta}`]: {
     position: 'absolute',
     bottom: '18px',
@@ -163,8 +158,7 @@ const StyledBox = styled(Box)((
         color: `${theme.palette.white}`,
       },
     },
-  }
-}));
+  },
+}))
 
-export default ExchangeHistoryModal;
-
+export default ExchangeHistoryModal

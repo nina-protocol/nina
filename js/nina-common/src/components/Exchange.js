@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import { useSnackbar } from 'notistack'
 import { Typography, Box } from '@mui/material'
 import RefreshIcon from '@mui/icons-material/Refresh'
@@ -159,7 +159,7 @@ const Exchange = (props) => {
   }
 
   return (
-    (<Root>
+    <Root>
       <ExchangeHistoryModal
         exchangeHistory={exchangeHistory}
         release={release}
@@ -239,11 +239,11 @@ const Exchange = (props) => {
           />
         )}
       </div>
-    </Root>)
-  );
+    </Root>
+  )
 }
 
-const PREFIX = 'Exchange';
+const PREFIX = 'Exchange'
 
 const classes = {
   exchangeWrapper: `${PREFIX}-exchangeWrapper`,
@@ -253,14 +253,10 @@ const classes = {
   listWrapper: `${PREFIX}-listWrapper`,
   scrollCopyContainer: `${PREFIX}-scrollCopyContainer`,
   scrollCopy: `${PREFIX}-scrollCopy`,
-  updateMessage: `${PREFIX}-updateMessage`
-};
+  updateMessage: `${PREFIX}-updateMessage`,
+}
 
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
+const Root = styled('div')(({ theme }) => ({
   [`& .${classes.exchangeWrapper}`]: {
     margin: 'auto',
     overflow: 'hidden',
@@ -338,7 +334,7 @@ const Root = styled('div')((
       fontSize: '12px',
       paddingLeft: '4px',
     },
-  }
-}));
+  },
+}))
 
 export default Exchange

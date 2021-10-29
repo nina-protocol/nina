@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import { withFormik } from 'formik'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -48,7 +48,7 @@ const BuySellForm = (props) => {
   }
 
   return (
-    (<Root>
+    <Root>
       <form
         onSubmit={handleSubmit}
         className={classes.buySellForm}
@@ -84,23 +84,19 @@ const BuySellForm = (props) => {
           </Button>
         </Box>
       </form>
-    </Root>)
-  );
+    </Root>
+  )
 }
 
-const PREFIX = 'BuySellForm';
+const PREFIX = 'BuySellForm'
 
 const classes = {
   buySellForm: `${PREFIX}-buySellForm`,
   exchangeCtaWrapper: `${PREFIX}-exchangeCtaWrapper`,
-  cta: `${PREFIX}-cta`
-};
+  cta: `${PREFIX}-cta`,
+}
 
-const Root = styled('div')((
-  {
-    theme
-  }
-) => ({
+const Root = styled('div')(({ theme }) => ({
   [`& .${classes.buySellForm}`]: {
     display: 'flex',
     flexDirection: 'column',
@@ -162,8 +158,8 @@ const Root = styled('div')((
     '&.Mui-disabled': {
       background: `${theme.palette.white}`,
     },
-  }
-}));
+  },
+}))
 
 export default withFormik({
   enableReinitialize: true,

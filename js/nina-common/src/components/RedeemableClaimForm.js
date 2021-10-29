@@ -6,7 +6,7 @@ import { TextField } from '@material-ui/core'
 import NinaClient from '../utils/client'
 
 export const RedeemableClaimForm = (props) => {
-  const { 
+  const {
     values,
     errors,
     handleChange,

@@ -10,7 +10,6 @@ const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
 
 const Release = ({ match }) => {
   const releasePubkey = match.params.releasePubkey
-
   const theme = useTheme()
   const { releaseState, getRelease, getRedeemablesForRelease } =
     useContext(ReleaseContext)
