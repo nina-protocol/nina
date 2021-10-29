@@ -13,8 +13,12 @@ import {
 import { ninaErrorHandler } from '../utils/errors'
 import NinaClient from '../utils/client'
 
-export const ExchangeContext = createContext()
+const lookupTypes = {
+  RELEASE: 'release',
+  USER: 'user',
+}
 
+export const ExchangeContext = createContext()
 const ExchangeContextProvider = ({ children }) => {
   const wallet = useWallet()
   const { connection } = useContext(ConnectionContext)
@@ -454,57 +458,66 @@ const exchangeContextHelper = ({
 
   */
 
+  const getExchangesHandler = async (type, releasePubkey = null) => {
+    if (!connection) {
+      return
+    }
+
+    let path = NinaClient.endpoints.api
+    switch (type) {
+      case lookupTypes.USER:
+        path += `/userAccounts/${wallet.publicKey.toBase58()}/exchanges`
+        break
+      case lookupTypes.RELEASE:
+        path += `/releases/${releasePubkey}/exchanges`
+        break
+    }
+    const response = await fetch(path)
+    const exchangeIds = await response.json()
+    if (exchangeIds.length > 0) {
+      const nina = await NinaClient.connect(provider)
+      const exchangeAccounts = await anchor.utils.rpc.getMultipleAccounts(
+        connection,
+        exchangeIds.map((id) => new anchor.web3.PublicKey(id))
+      )
+
+      const existingExchanges = []
+      const layout = nina.program.coder.accounts.accountLayouts.get('Exchange')
+      exchangeAccounts.forEach((exchange) => {
+        if (exchange) {
+          let dataParsed = layout.decode(exchange.account.data.slice(8))
+          dataParsed.publicKey = exchange.publicKey
+          existingExchanges.push(dataParsed)
+        }
+      })
+
+      const existingExchangeIds = existingExchanges.map((exchange) =>
+        exchange.publicKey.toBase58()
+      )
+      const releaseExchangeIds = filterExchangesForRelease(releasePubkey).map(
+        (e) => e.publicKey.toBase58()
+      )
+      const idsToRemove = releaseExchangeIds.filter(
+        (id) => !exchangeIds.includes(id)
+      )
+
+      if (exchangeAccounts.error) {
+        throw exchangeAccounts.error
+      } else {
+        saveExchangesToState(existingExchanges, idsToRemove)
+      }
+    }
+  }
+
   const getExchangesForUser = async () => {
     if (!wallet?.connected) {
       return
     }
-    const nina = await NinaClient.connect(provider)
-    const exchangeAccounts = await getProgramAccounts(
-      nina.program,
-      'Exchange',
-      { initializer: wallet?.publicKey.toBase58() },
-      connection
-    )
-
-    const exchangeAccountIds = exchangeAccounts.map((e) =>
-      e.publicKey.toBase58()
-    )
-    const userExchangeIds = filterExchangesForUser().map((e) =>
-      e.publicKey.toBase58()
-    )
-    const idsToRemove = userExchangeIds.filter(
-      (id) => !exchangeAccountIds.includes(id)
-    )
-
-    if (exchangeAccounts.error) {
-      throw exchangeAccounts.error
-    } else {
-      saveExchangesToState(exchangeAccounts, idsToRemove)
-    }
+    getExchangesHandler(lookupTypes.USER)
   }
 
   const getExchangesForRelease = async (releasePubkey) => {
-    const nina = await NinaClient.connect(provider)
-    const exchangeAccounts = await getProgramAccounts(
-      nina.program,
-      'Exchange',
-      { release: releasePubkey },
-      connection
-    )
-    const exchangeAccountIds = exchangeAccounts.map((e) =>
-      e.publicKey.toBase58()
-    )
-    const releaseExchangeIds = filterExchangesForRelease(releasePubkey).map(
-      (e) => e.publicKey.toBase58()
-    )
-    const idsToRemove = releaseExchangeIds.filter(
-      (id) => !exchangeAccountIds.includes(id)
-    )
-    if (exchangeAccounts.error) {
-      throw exchangeAccounts.error
-    } else {
-      saveExchangesToState(exchangeAccounts, idsToRemove)
-    }
+    getExchangesHandler(lookupTypes.RELEASE, releasePubkey)
   }
 
   const getExchangeHistoryForRelease = async (releasePubkey) => {

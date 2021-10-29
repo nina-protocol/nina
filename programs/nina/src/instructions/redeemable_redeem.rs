@@ -114,5 +114,11 @@ pub fn handler(
 
     redeemable.redeemed_count +=1;
 
+    emit!(RedeemableRedeemed {
+        authority: *ctx.accounts.redeemer.to_account_info().key,
+        public_key: *ctx.accounts.redemption_record.to_account_info().key,
+        release: *ctx.accounts.release.to_account_info().key,
+    });
+
     Ok(())
 }

@@ -22,7 +22,7 @@ pub struct ReleaseInitializeWithCredit<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
     #[account(mut)]
-    pub authority: Signer<'info>,
+    pub authority: UncheckedAccount<'info>,
     #[account(
         constraint = authority_token_account.owner == authority.key(),
         constraint = authority_token_account.mint == payment_mint.key(),

@@ -181,6 +181,13 @@ impl Release {
         let signer = &[&seeds[..]];
         let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer);
         token::mint_to(cpi_ctx, config.amount_to_vault_token_account)?;
+        
+        emit!(ReleaseCreated {
+            public_key: *release_loader.to_account_info().key,
+            mint: *release_mint.to_account_info().key,
+            authority: *authority.to_account_info().key,
+            date: config.release_datetime,
+        });
 
         Ok(())
     }
@@ -306,3 +313,27 @@ impl From<AuthorityType> for spl_token::instruction::AuthorityType {
         }
     }
 }
+
+#[event]
+pub struct ReleaseCreated {
+    pub authority: Pubkey,
+    pub date: i64,
+    pub mint: Pubkey,
+    #[index]
+    pub public_key: Pubkey,
+}
+
+#[event]
+pub struct RoyaltyRecipientAdded {
+    pub authority: Pubkey,
+    pub public_key: Pubkey,
+}
+
+#[event]
+pub struct ReleaseSold {
+    pub public_key: Pubkey,
+    #[index]
+    pub date: i64,
+}
+
+

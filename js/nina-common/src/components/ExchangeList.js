@@ -10,6 +10,7 @@ import NinaClient from '../utils/client'
 
 const ExchangeList = (props) => {
   let { list, onExchangeButtonAction, release, metadata } = props
+
   const classes = useStyles()
   const { solPrice } = useContext(NinaContext)
 
@@ -79,18 +80,19 @@ const ExchangeListItem = (props) => {
           {displayPrice}
         </span>
       </Typography>
-
-      <Typography
-        className={`${classes.exchangeListItemPrice} ${classes.exchangeListItemPrice}--usd`}
-      >
-        {(
-          NinaClient.nativeToUi(
-            isSelling ? expectedAmount?.toNumber() : amount,
-            release.paymentMint
-          ) * solPrice
-        ).toFixed(2)}{' '}
-        USD
-      </Typography>
+      {NinaClient.isSol(release.paymentMint) && (
+        <Typography
+          className={`${classes.exchangeListItemPrice} ${classes.exchangeListItemPrice}--usd`}
+        >
+          {(
+            NinaClient.nativeToUi(
+              isSelling ? expectedAmount?.toNumber() : amount,
+              release.paymentMint
+            ) * solPrice
+          ).toFixed(2)}{' '}
+          USD
+        </Typography>
+      )}
       <Typography
         className={`${classes.exchangeListItemPrice} ${classes.exchangeListItemPrice}--symbol`}
       >

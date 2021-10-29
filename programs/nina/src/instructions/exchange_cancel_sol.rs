@@ -46,5 +46,9 @@ pub fn handler(
         ctx.accounts.token_program.to_account_info(),
     )?;
 
+    emit!(ExchangeCancelled {
+        public_key: *ctx.accounts.exchange.to_account_info().key,
+    });
+
     Ok(())
 }

@@ -28,7 +28,7 @@ const idl = {
         {
           "name": "authority",
           "isMut": false,
-          "isSigner": true
+          "isSigner": false
         },
         {
           "name": "authorityTokenAccount",
@@ -117,7 +117,7 @@ const idl = {
         {
           "name": "authority",
           "isMut": true,
-          "isSigner": true
+          "isSigner": false
         },
         {
           "name": "authorityTokenAccount",
@@ -1520,6 +1520,178 @@ const idl = {
       }
     }
   ],
+  "events": [
+    {
+      "name": "ExchangeAdded",
+      "fields": [
+        {
+          "name": "releaseMint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "release",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "initializer",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "expectedAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "initializerAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": true
+        }
+      ]
+    },
+    {
+      "name": "ExchangeCompleted",
+      "fields": [
+        {
+          "name": "taker",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "datetime",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "ExchangeCancelled",
+      "fields": [
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "RedeemableCreated",
+      "fields": [
+        {
+          "name": "authority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "mint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "redeemedMint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "release",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": true
+        }
+      ]
+    },
+    {
+      "name": "RedeemableRedeemed",
+      "fields": [
+        {
+          "name": "authority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "release",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": true
+        }
+      ]
+    },
+    {
+      "name": "ReleaseCreated",
+      "fields": [
+        {
+          "name": "authority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "date",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "mint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": true
+        }
+      ]
+    },
+    {
+      "name": "RoyaltyRecipientAdded",
+      "fields": [
+        {
+          "name": "authority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "ReleaseSold",
+      "fields": [
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "date",
+          "type": "i64",
+          "index": true
+        }
+      ]
+    }
+  ],
   "errors": [
     {
       "code": 300,
@@ -1626,7 +1798,10 @@ const idl = {
       "name": "VaultWithdrawAmountMustBeGreaterThanZero",
       "msg": "Withdraw amount must be greater than 0"
     }
-  ]
+  ],
+  "metadata": {
+    "address": "ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4"
+  }
 }
 
 export default idl

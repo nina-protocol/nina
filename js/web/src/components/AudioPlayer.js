@@ -108,7 +108,7 @@ const AudioPlayer = () => {
   }
 
   const changeTrack = async (txid) => {
-    playerRef.current.load(txid)
+    playerRef.current.src = txid
     playerRef.current.play()
     startTimer()
   }
