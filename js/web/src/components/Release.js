@@ -6,18 +6,20 @@ import Box from '@mui/material/Box';
 import NinaBox from './NinaBox';
 import ReleaseCard from './ReleaseCard'
 import ReleasePurchase from './ReleasePurchase'
+import SwipeableViews from 'react-swipeable-views';
 
+const {Exchange} = ninaCommon.components
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
 
 const Release = ({ match }) => {
   const releasePubkey = match.params.releasePubkey
-
   const { releaseState, getRelease, getRedeemablesForRelease } =
     useContext(ReleaseContext)
-  const { getExchangeHistoryForRelease } = useContext(ExchangeContext)
+  const { getExchangeHistoryForRelease, exchangeState} = useContext(ExchangeContext)
   const [metadata, setMetadata] = useState(
     releaseState?.metadata[releasePubkey] || null
   )
+  const [index, setIndex] = useState()
 
   useEffect(() => {
     if (!metadata) {
@@ -33,6 +35,15 @@ const Release = ({ match }) => {
     }
   }, [releaseState?.metadata[releasePubkey]])
 
+  // const handleChange = (value) => {
+  //   setIndex(value)
+  // };
+
+  const handleChangeIndex = (value) => {
+    console.log('value :>> ', value);
+    setIndex(value)
+  };
+
   if (metadata && Object.keys(metadata).length === 0) {
     return (
       <div>
@@ -43,16 +54,27 @@ const Release = ({ match }) => {
   }
 
   return (
-      <NinaBox >
-        <ReleaseCard
-          metadata={metadata}
-          preview={false}
-          releasePubkey={releasePubkey}
-        />
-        <ReleaseCtaWrapper>
-          <ReleasePurchase releasePubkey={releasePubkey} metadata={metadata} />
-        </ReleaseCtaWrapper>
-      </NinaBox>
+      <SwipeableViews index={index} onChangeIndex={handleChangeIndex}>
+        <NinaBox columns={2}>
+          <ReleaseCard
+            metadata={metadata}
+            preview={false}
+            releasePubkey={releasePubkey}
+          />
+
+          <ReleaseCtaWrapper>
+            <ReleasePurchase releasePubkey={releasePubkey} metadata={metadata} setIndex={setIndex} />
+          </ReleaseCtaWrapper>
+        </NinaBox>
+
+        <NinaBox columns={1}>
+          <Exchange
+            releasePubkey={releasePubkey}
+            exchanges={exchangeState.exchanges}
+            metadata={metadata}
+          />
+        </NinaBox>
+    </SwipeableViews>
   )
 }
 

@@ -160,10 +160,10 @@ const Exchange = (props) => {
 
   return (
     <Root>
-      <ExchangeHistoryModal
+      {/* <ExchangeHistoryModal
         exchangeHistory={exchangeHistory}
         release={release}
-      />
+      /> */}
       <div className={classes.exchangeWrapper}>
         <Box className={classes.buySellContainer}>
           <BuySell
@@ -258,30 +258,18 @@ const classes = {
 
 const Root = styled('div')(({ theme }) => ({
   [`& .${classes.exchangeWrapper}`]: {
-    margin: 'auto',
     overflow: 'hidden',
     display: 'grid',
     gridTemplateColumns: '1fr',
     gridTemplateRows: '154px 304px 75px',
     alignItems: 'center',
-    marginTop: theme.spacing(6),
     overflowX: 'scroll',
-    [theme.breakpoints.down('md')]: {
-      width: '98%',
-      gridTemplateColumns: '50% 50%',
-      gridTemplateRows: '1fr 50vh',
-      alignItems: 'flex-start',
-      height: 'auto',
-      marginTop: '0px',
-    },
+    border: '2px solid red',
   },
 
   [`& .${classes.exchange}`]: {
     height: '100%',
     width: '100%',
-    [theme.breakpoints.down('md')]: {
-      gridColumn: '1/3',
-    },
   },
 
   [`& .${classes.buySellContainer}`]: {
@@ -336,5 +324,6 @@ const Root = styled('div')(({ theme }) => ({
     },
   },
 }))
+
 
 export default Exchange

@@ -12,7 +12,7 @@ const { ReleaseContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
 const ReleasePurchase = (props) => {
-  const { releasePubkey, metadata } = props
+  const { releasePubkey, metadata, setIndex } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const { releasePurchase, releasePurchasePending, releaseState, getRelease } =
@@ -96,6 +96,7 @@ const ReleasePurchase = (props) => {
       <Button
         variant="outlined"
         fullWidth
+        onClick={() => setIndex(1)}
       >
         Go To Market
       </Button>
