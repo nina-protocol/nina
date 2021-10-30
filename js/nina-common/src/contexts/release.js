@@ -1427,11 +1427,13 @@ const releaseContextHelper = ({
 
     const metadata = await getMetadata(releaseMint, connection)
     if (metadata?.account?.data.uri && metadata.account.data.uri != '') {
-      const arweaveJsonResult = await fetch(metadata.account.data.uri)
-      if (arweaveJsonResult.status === 200) {
-        const metadataJson = await arweaveJsonResult.json()
-        return { [releasePubkey]: metadataJson }
-      }
+      const metadataResult = await fetch(`${NinaClient.endpoints.api}/metadata/bulk`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: [releasePubkey]})
+      })
+      const metadataJson = await metadataResult.json()
+      return metadataJson
     }
     return undefined
   }
@@ -1450,22 +1452,14 @@ const releaseContextHelper = ({
         mints.push(query)
       }
     })
+    const metadataResult = await fetch(`${NinaClient.endpoints.api}/metadata/bulk`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids: Object.values(metadataQueries)})
+    })
+    const metadataJson = await metadataResult.json()
 
-    const metadataAccounts = await getMetadataAccounts(mints, connection)
-
-    for await (let mint of Object.keys(metadataAccounts)) {
-      const metadata = metadataAccounts[mint]
-      const releasePubkey = metadataQueries[mint]
-      if (metadata?.account?.data.uri && metadata.account.data.uri != '') {
-        const arweaveJsonResult = await fetch(metadata.account.data.uri)
-        if (arweaveJsonResult.status === 200) {
-          const metadataJson = await arweaveJsonResult.json()
-          metadataAccountsParsed[releasePubkey] = metadataJson
-        }
-      }
-    }
-
-    return metadataAccountsParsed
+    return metadataJson
   }
 
   return {
