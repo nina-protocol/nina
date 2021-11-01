@@ -10,7 +10,7 @@ const BuySell = (props) => {
   const [amount, setAmount] = useState(undefined)
 
   return (
-    <StyledBox className={classes.buySell}>
+    <StyledBuySell className={classes.buySell}>
       <Typography className={classes.buySellHeading}>
         {isBuy ? 'Make Buy Offer' : 'List for sale'}
       </Typography>
@@ -27,7 +27,7 @@ const BuySell = (props) => {
         isBuy={isBuy}
         release={release}
       />
-    </StyledBox>
+    </StyledBuySell>
   )
 }
 
@@ -39,26 +39,17 @@ const classes = {
   buySellCopy: `${PREFIX}-buySellCopy`,
 }
 
-const StyledBox = styled(Box)(({ theme }) => ({
-  [`&.${classes.buySell}`]: {
-    width: '100%',
-    maxWidth: '310px',
-    display: 'flex',
-    flexDirection: 'column',
-    position: 'relative',
-    alignItems: 'flex-start',
-    [theme.breakpoints.down('md')]: {
-      padding: '0 10px',
-    },
-  },
-
+const StyledBuySell = styled(Box)(({ theme }) => ({
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  position: 'relative',
+  alignItems: 'flex-start',
+  borderBottom: `1px solid ${theme.palette.grey.primary}`,
   [`& .${classes.buySellHeading}`]: {
     fontSize: '26px',
     fontWeight: '700',
     textTransform: 'uppercase',
-    [theme.breakpoints.down('md')]: {
-      fontSize: '14px',
-    },
   },
 
   [`& .${classes.buySellCopy}`]: {

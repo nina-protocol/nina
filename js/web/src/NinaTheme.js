@@ -7,8 +7,8 @@ const colors = {
   orange: 'rgba(244, 73, 73, 0.94)',
   green: '#32b36c',
   white: '#ffffff',
-  greyLight: 'rgba(0, 0, 0, 0.2)',
-  grey: 'rgba(0, 0, 0, 0.3)',
+  // greyLight: 'rgba(0, 0, 0, 0.2)',
+  grey: 'rgba(0, 0, 0, 0.2)',
   transparent: '#ffffff00',
   black: '#000000',
   blue: '#2D81FF',
@@ -32,6 +32,10 @@ export const NinaTheme = createTheme({
     black: colors.black,
     purple: colors.purple,
     white: colors.white,
+    grey: {
+      primary: colors.grey,
+    },
+    greyLight: colors.gray
   },
   gradient: {
     background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(143,175,223,1) 0%, rgb(35,99,196) 100%)`,
@@ -56,7 +60,7 @@ export const NinaTheme = createTheme({
   },
   vars: {
     borderWidth: '1.5px',
-    borderRadius: '16px',
+    borderRadius: '30px',
   },
   transitions: {
     easing: {
@@ -114,8 +118,8 @@ export const NinaTheme = createTheme({
             },
           },
           '&.MuiButton-contained': {
-            borderRadius: '50px',
             padding: '10px',
+            borderRadius: '0px',
             backgroundColor: `${colors.white}`,
             color: `${colors.black}`,
             boxShadow: 'none',
@@ -127,17 +131,6 @@ export const NinaTheme = createTheme({
         },
       },
     },
-    // MuiBox: {
-    //   variants: [
-    //     {
-    //       props: {variant: 'nina'},
-    //       style: {
-    //         border: '2px solid red',
-    //         backgroundColor: 'blue !important'
-    //       }
-    //     }
-    //   ]
-    // },
     MuiTypography: {
       root: {
         letterSpacing: '0.02em',

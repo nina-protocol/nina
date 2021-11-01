@@ -7,6 +7,7 @@ import NinaBox from './NinaBox';
 import ReleaseCard from './ReleaseCard'
 import ReleasePurchase from './ReleasePurchase'
 import SwipeableViews from 'react-swipeable-views';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 const {Exchange} = ninaCommon.components
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
@@ -54,6 +55,10 @@ const Release = ({ match }) => {
   }
 
   return (
+    <>
+      {index === 1 && 
+        <StyledArrowBackIosIcon fontSize='large' onClick={() => setIndex(0)} />
+      }
       <SwipeableViews index={index} onChangeIndex={handleChangeIndex}>
         <NinaBox columns={2}>
           <ReleaseCard
@@ -74,7 +79,8 @@ const Release = ({ match }) => {
             metadata={metadata}
           />
         </NinaBox>
-    </SwipeableViews>
+      </SwipeableViews>
+    </>
   )
 }
 
@@ -82,6 +88,12 @@ const ReleaseCtaWrapper= styled(Box)(() => ({
   margin: 'auto',
   width: 'calc(100% - 50px)',
   paddingLeft: '50px'
+}))
+
+const StyledArrowBackIosIcon = styled(ArrowBackIosIcon)(({theme}) => ({
+  position: 'absolute',
+  left: theme.spacing(1),
+  top: theme.spacing(6)
 }))
 
 export default Release

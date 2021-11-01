@@ -48,18 +48,17 @@ const BuySellForm = (props) => {
   }
 
   return (
-    <Root>
-      <form
+      <StyledForm
         onSubmit={handleSubmit}
         className={classes.buySellForm}
         autoComplete="off"
       >
-        <Box mb={2} className={classes.exchangeCtaWrapper}>
+        <InputWrapper >
           <Input
             id="buy-sell__input"
             type="input"
             name="amount"
-            className={`${classes.buySellForm}__inputLabel`}
+            className={`${classes.buySellFormInputLabel}`}
             onChange={(e) => handleChange(e)}
             disableUnderline={true}
             placeholder="Enter price in SOL"
@@ -67,7 +66,6 @@ const BuySellForm = (props) => {
           />
           <Button
             variant="contained"
-            className={`${classes.cta}`}
             type="submit"
             disabled={!wallet?.connected}
             disableRipple={true}
@@ -82,83 +80,63 @@ const BuySellForm = (props) => {
             {isBuy && !buyPending && 'Submit'}
             {!isBuy && !sellPending && 'Submit'}
           </Button>
-        </Box>
-      </form>
-    </Root>
+        </InputWrapper>
+      </StyledForm>
   )
 }
 
 const PREFIX = 'BuySellForm'
 
 const classes = {
-  buySellForm: `${PREFIX}-buySellForm`,
-  exchangeCtaWrapper: `${PREFIX}-exchangeCtaWrapper`,
-  cta: `${PREFIX}-cta`,
+  buySellFormInputLabel: `${PREFIX}-buySellFormInputLabel`,
 }
 
-const Root = styled('div')(({ theme }) => ({
-  [`& .${classes.buySellForm}`]: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    margin: 'auto',
-    marginTop: theme.spacing(1),
-    borderBottom: `1px solid ${theme.palette.greyLight}`,
-    backgroundColor: `${theme.palette.white}`,
-    '&__inputLabel': {
-      fontSize: '2rem',
-      width: '73%',
-      border: `1px dashed ${theme.palette.blue}`,
-      '& input': {
-        textAlign: 'center !important',
-        padding: '0',
-        height: '41px',
-        '&[type=number]': {
-          '-moz-appearance': 'textfield',
-        },
-        '&::-webkit-outer-spin-button': {
-          '-webkit-appearance': 'none',
-          margin: 0,
-        },
-        '&::-webkit-inner-spin-button': {
-          '-webkit-appearance': 'none',
-          margin: 0,
-        },
-        '&::placeholder': {
-          fontSize: '10px',
-          verticalAlign: 'middle',
-          position: 'absolute',
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-        },
+const StyledForm = styled('form')(({theme}) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  margin: '0',
+  width: '100%',
+  marginTop: theme.spacing(1),
+  borderBottom: `1px solid ${theme.palette.greyLight}`,
+  backgroundColor: `${theme.palette.white}`,
+
+  [`& .${classes.buySellFormInputLabel}`]: {
+    fontSize: '2rem',
+    width: '73%',
+    border: `1px solid ${theme.palette.grey.primary}`,
+    '& input': {
+      textAlign: 'center !important',
+      padding: '0',
+      height: '41px',
+      '&[type=number]': {
+        '-moz-appearance': 'textfield',
+      },
+      '&::-webkit-outer-spin-button': {
+        '-webkit-appearance': 'none',
+        margin: 0,
+      },
+      '&::-webkit-inner-spin-button': {
+        '-webkit-appearance': 'none',
+        margin: 0,
+      },
+      '&::placeholder': {
+        fontSize: '10px',
+        verticalAlign: 'middle',
+        position: 'absolute',
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%)',
       },
     },
-    '&:hover': {
-      color: `${theme.palette.blue}`,
-    },
   },
-
-  [`& .${classes.exchangeCtaWrapper}`]: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-
-  [`& .${classes.cta}`]: {
-    width: '25%',
-    background: `${theme.palette.white}`,
-    fontSize: '16px',
-    fontWeight: '400',
-    boxShadow: 'none',
-    '&:hover': {
-      backgroundColor: `${theme.palette.white}`,
-      boxShadow: 'none',
-    },
-    '&.Mui-disabled': {
-      background: `${theme.palette.white}`,
-    },
-  },
+ }))
+ 
+const InputWrapper = styled(Box)(() => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: '20px',
 }))
 
 export default withFormik({

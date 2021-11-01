@@ -159,13 +159,9 @@ const Exchange = (props) => {
   }
 
   return (
-    <Root>
-      {/* <ExchangeHistoryModal
-        exchangeHistory={exchangeHistory}
-        release={release}
-      /> */}
-      <div className={classes.exchangeWrapper}>
-        <Box className={classes.buySellContainer}>
+    <>
+      <ExchangeWrapper>
+        <StyledExchange>
           <BuySell
             {...props}
             release={release}
@@ -174,6 +170,16 @@ const Exchange = (props) => {
               onExchangeInitSubmit(exchange, isBuy, amount)
             }
           />
+          <ExchangeList
+            list={exchangesBuy}
+            onExchangeButtonAction={handleExchangeAction}
+            release={release}
+            isBuy={true}
+            metadata={metadata}
+            />
+        </StyledExchange>
+
+        <StyledExchange>
           <BuySell
             {...props}
             release={release}
@@ -182,31 +188,18 @@ const Exchange = (props) => {
               onExchangeInitSubmit(exchange, isBuy, amount)
             }
           />
-        </Box>
-        <div className={classes.exchange}>
-          <Box className={classes.exchangeListContainer}>
-            <Box className={classes.listWrapper}>
-              <ExchangeList
-                list={exchangesBuy}
-                onExchangeButtonAction={handleExchangeAction}
-                release={release}
-                isBuy={true}
-                metadata={metadata}
-              />
-            </Box>
+          <ExchangeList
+            list={exchangesSell}
+            onExchangeButtonAction={handleExchangeAction}
+            release={release}
+            isBuy={false}
+            metadata={metadata}
+            />
+        </StyledExchange>
+    
+   
 
-            <Box className={classes.listWrapper}>
-              <ExchangeList
-                list={exchangesSell}
-                onExchangeButtonAction={handleExchangeAction}
-                release={release}
-                isBuy={false}
-                metadata={metadata}
-              />
-            </Box>
-          </Box>
-        </div>
-        <Box className={classes.scrollCopyContainer}>
+        {/* <Box className={classes.scrollCopyContainer}>
           <Typography className={classes.scrollCopy}>
             {exchangesBuy?.length > 7
               ? `Scroll to view ${exchangesBuy.length - 7} offers...`
@@ -217,12 +210,12 @@ const Exchange = (props) => {
               ? `Scroll to view ${exchangesSell.length - 7} listings...`
               : ''}
           </Typography>
-        </Box>
-        <Typography className={classes.updateMessage} onClick={refreshExchange}>
+        </Box> */}
+        {/* <Typography className={classes.updateMessage} onClick={refreshExchange}>
           Last Updated:{' '}
           <span>{new Date(updateTime).toLocaleTimeString()} </span>
           <RefreshIcon fontSize="small" />
-        </Typography>
+        </Typography> */}
 
         {exchangeAwaitingConfirm && (
           <ExchangeModal
@@ -238,61 +231,32 @@ const Exchange = (props) => {
             isAccept={true}
           />
         )}
-      </div>
-    </Root>
+      </ExchangeWrapper>
+      <ExchangeHistoryModal
+        exchangeHistory={exchangeHistory}
+        release={release}
+      />
+    </>
   )
 }
 
 const PREFIX = 'Exchange'
 
 const classes = {
-  exchangeWrapper: `${PREFIX}-exchangeWrapper`,
-  exchange: `${PREFIX}-exchange`,
   buySellContainer: `${PREFIX}-buySellContainer`,
-  exchangeListContainer: `${PREFIX}-exchangeListContainer`,
-  listWrapper: `${PREFIX}-listWrapper`,
   scrollCopyContainer: `${PREFIX}-scrollCopyContainer`,
   scrollCopy: `${PREFIX}-scrollCopy`,
   updateMessage: `${PREFIX}-updateMessage`,
 }
-
-const Root = styled('div')(({ theme }) => ({
-  [`& .${classes.exchangeWrapper}`]: {
-    overflow: 'hidden',
-    display: 'grid',
-    gridTemplateColumns: '1fr',
-    gridTemplateRows: '154px 304px 75px',
-    alignItems: 'center',
-    overflowX: 'scroll',
-    border: '2px solid red',
-  },
-
-  [`& .${classes.exchange}`]: {
-    height: '100%',
-    width: '100%',
-  },
-
-  [`& .${classes.buySellContainer}`]: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    [theme.breakpoints.down('md')]: {
-      gridColumn: '1/3',
-    },
-  },
-
-  [`& .${classes.exchangeListContainer}`]: {
-    display: 'flex',
-    height: '100%',
-    justifyContent: 'space-between',
-  },
-
-  [`& .${classes.listWrapper}`]: {
-    width: '100%',
-    maxWidth: '310px',
-    [theme.breakpoints.down('md')]: {
-      padding: '0.5rem',
-    },
-  },
+const ExchangeWrapper = styled(Box)(({theme}) => ({
+  overflow: 'hidden',
+  display: 'grid',
+  gridTemplateRows: '418px 20px',
+  gridTemplateColumns: 'repeat(2, 310px)',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  overflowX: 'scroll',
+  width: '100%',
 
   [`& .${classes.scrollCopyContainer}`]: {
     display: 'flex',
@@ -324,6 +288,14 @@ const Root = styled('div')(({ theme }) => ({
     },
   },
 }))
+
+const StyledExchange = styled(Box)(({theme}) => ({
+  width: '100%',
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column'
+}))
+
 
 
 export default Exchange

@@ -4,7 +4,7 @@ import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import Box from '@mui/material/Box'
-import { Typography } from '@mui/material'
+import { Typography, Paper } from '@mui/material'
 import NinaClient from '../utils/client'
 
 const ExchangeHistoryModal = (props) => {
@@ -14,13 +14,12 @@ const ExchangeHistoryModal = (props) => {
 
   return (
     <StyledBox>
-      <Typography
-        className={classes.exchangeHistoryCta}
+      <Cta
         onClick={() => setOpen(true)}
       >
         Market History <span>({exchangeHistory?.length || 0})</span>
-      </Typography>
-      <Modal
+      </Cta>
+      <StyledModal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         className={classes.modal}
@@ -32,12 +31,11 @@ const ExchangeHistoryModal = (props) => {
           timeout: 500,
         }}
       >
-        <Fade in={open}>
-          <div className={classes.paper}>
-            <Typography className={classes.header}>
+          <StyledPaper>
+            <Header >
               SECONDARY <span>MARKET HISTORY</span>
-            </Typography>
-            <table className={classes.historyTable}>
+            </Header>
+            <HistoryTable>
               <thead>
                 <tr>
                   <th>Date</th>
@@ -46,7 +44,7 @@ const ExchangeHistoryModal = (props) => {
                   <th>Buyer</th>
                 </tr>
               </thead>
-              <tbody className={classes.historyTableBody}>
+              <TableBody>
                 {exchangeHistory &&
                   exchangeHistory.map((entry, i) => {
                     return (
@@ -83,11 +81,10 @@ const ExchangeHistoryModal = (props) => {
                       </tr>
                     )
                   })}
-              </tbody>
-            </table>
-          </div>
-        </Fade>
-      </Modal>
+              </TableBody>
+            </HistoryTable>
+          </StyledPaper>
+      </StyledModal>
     </StyledBox>
   )
 }
@@ -104,59 +101,59 @@ const classes = {
 }
 
 const StyledBox = styled(Box)(({ theme }) => ({
-  [`& .${classes.exchangeHistoryCta}`]: {
-    position: 'absolute',
-    bottom: '18px',
-    left: '45%',
-    transform: 'translate(-50%, 0)',
-    cursor: 'pointer',
-    fontSize: '10px',
-    lineHeight: '11.5px',
-    '& span': {
-      color: `${theme.palette.blue}`,
-    },
-  },
+  width: '400px',
+  position: 'absolute',
+  bottom: '5px'
+}))
 
-  [`& .${classes.modal}`]: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+const Cta = styled(Typography)(({theme}) => ({
+  cursor: 'pointer',
+  fontSize: '10px !important',
+  '& span': {
+    color: `${theme.palette.blue}`,
   },
+}))
 
-  [`& .${classes.paper}`]: {
+const StyledModal = styled(Modal)(({theme}) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}))
+
+const StyledPaper = styled(Paper)(({theme}) => ({
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
     padding: theme.spacing(6, 4),
     ...theme.gradient,
-  },
+    zIndex: '10'
+}))
 
-  [`& .${classes.header}`]: {
-    fontSize: '26px',
-    textAlign: 'center',
-    display: 'flex',
-    flexDirection: 'column',
-    fontWeight: '700',
-    lineHeight: '29.9px',
-  },
+const Header = styled(Typography)(({theme}) => ({
+  fontSize: '26px',
+  textAlign: 'center',
+  display: 'flex',
+  flexDirection: 'column',
+  fontWeight: '700',
+  lineHeight: '29.9px',
+}))
 
-  [`& .${classes.historyTable}`]: {
-    padding: `${theme.spacing(1, 1)}`,
-    display: 'block',
-    maxHeight: '50vh',
-    overflow: 'scroll',
-    '& th': {
-      textTransform: 'uppercase',
+const HistoryTable = styled('table')(({theme}) => ({
+  padding: `${theme.spacing(1, 1)}`,
+  display: 'block',
+  maxHeight: '50vh',
+  overflow: 'scroll',
+  '& th': {
+    textTransform: 'uppercase',
+  },
+}))
+
+const TableBody = styled('tbody')(({theme}) => ({
+  '& td': {
+    '& ': {
+      padding: `${theme.spacing(0, 2)}`,
     },
-  },
-
-  [`& .${classes.historyTableBody}`]: {
-    '& td': {
-      '& ': {
-        padding: `${theme.spacing(0, 2)}`,
-      },
-      '& a': {
-        color: `${theme.palette.white}`,
-      },
+    '& a': {
+      color: `${theme.palette.white}`,
     },
   },
 }))

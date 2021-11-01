@@ -97,6 +97,9 @@ const ReleasePurchase = (props) => {
         variant="outlined"
         fullWidth
         onClick={() => setIndex(1)}
+        sx={{
+          marginTop: 15
+        }}
       >
         Go To Market
       </Button>
