@@ -148,7 +148,7 @@ const ReleasePurchase = (props) => {
         fullWidth
         onClick={() => setIndex(1)}
         sx={{
-          marginTop: 15
+          marginTop: `15px !important`
         }}
       >
         Go To Market

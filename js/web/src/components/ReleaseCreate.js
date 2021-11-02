@@ -7,6 +7,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import {Typography, Box} from '@mui/material'
 import {useWallet} from '@solana/wallet-adapter-react'
 import ReleaseCreateForm from './ReleaseCreateForm'
+import ReleaseCard from './ReleaseCard'
 import NinaBox from './NinaBox'
 import MediaDropzones from './MediaDropzones'
 import * as Yup from 'yup'
@@ -137,10 +138,14 @@ const ReleaseCreate = () => {
     track.meta.status === 'done'
   ) {
     return (
-      <NinaBox>
-        <Typography variant="h6" gutterBottom>
-          Release Overview
-        </Typography>
+      <NinaBox columns={'repeat(2, 1fr)'} justifyItems={'end'}>
+        <ReleaseCard
+          metadata={formValues.releaseForm}
+          preview={true}
+          releasePubkey={releasePubkey}
+          track={track}
+          artwork={artwork}
+          />
         <ReleaseSettings
           releasePubkey={releasePubkey}
           inCreateFlow={true}
@@ -189,10 +194,11 @@ const ReleaseCreate = () => {
               <CreateCta >
                 <Button
                   fullWidth
-                  variant="contained"
+                  variant="outlined"
                   color="primary"
                   onClick={handleSubmit}
                   disabled={pending || !pressingFee || !formIsValid}
+                  sx={{height: '54px'}}
                 >
                   {pending && <CircularProgress />}
                   {!pending && buttonText}

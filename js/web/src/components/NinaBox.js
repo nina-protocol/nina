@@ -1,17 +1,18 @@
 import Box from '@material-ui/core/Box'
 import {styled} from '@mui/material/styles'
 
-const NinaBox = ({children, columns}) => (
-  <StyledBox columns={columns}>
+const NinaBox = ({children, columns, justifyItems}) => (
+  <StyledBox columns={columns} justifyItems={justifyItems}>
     {children}
   </StyledBox>
 )
 
 const StyledBox = styled(Box, {
-  shouldForwardProp: (prop) => prop !== "columns"
-})(({theme, columns}) => ({
+  shouldForwardProp: (prop) => prop,
+})(({theme, columns, justifyItems}) => ({
   ...theme.helpers.grid,
-  minWidth: '765px',
+  justifyItems: justifyItems ? justifyItems : 'center',
+  width: '765px',
   height: '547px',
   margin: 'auto',
   gridTemplateColumns: columns ? columns : 'repeat(2, 1fr)',

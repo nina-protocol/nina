@@ -106,7 +106,6 @@ export const NinaTheme = createTheme({
             padding: '20px',
             borderColor: colors.black,
             color: colors.black,
-            marginTop: '15px',
             '&:hover': {
               borderColor: colors.black,
               color: colors.black,
@@ -127,9 +126,14 @@ export const NinaTheme = createTheme({
       },
     },
     MuiTypography: {
-      root: {
-        letterSpacing: '0.02em',
-      },
+      styleOverrides: {
+        root: {
+          letterSpacing: '0.02em',
+        },
+        gutterBottom: {
+          marginBottom: '15px !important'
+        }
+      }
     },
     MuiCssBaseline: {
       styleOverrides: {
