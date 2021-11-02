@@ -1,29 +1,21 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { styled } from '@mui/material/styles'
+import React, {useContext} from 'react'
+import {styled} from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import SmoothImage from 'react-smooth-image'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
-import { Typography } from '@mui/material'
+import {Typography} from '@mui/material'
 import ninaRecord from '../assets/nina-record.png'
 import {Fade} from '@mui/material';
-import playCircle from '../assets/playCircle.png'
+import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined';
 
-const {AudioPlayerContext, ReleaseContext } =
+const {AudioPlayerContext} =
   ninaCommon.contexts
 
 const ReleaseCard = (props) => {
-  const { artwork, metadata, preview, releasePubkey } = props
-  const { updateTxid } = useContext(AudioPlayerContext)
-  const { releaseState } = useContext(ReleaseContext)
-  const [track, setTrack] = useState(null)
-
-  useEffect(() => {
-    setTrack(releaseState.metadata[releasePubkey])
-  }, [releaseState.metadata[releasePubkey]])
-
-
+  const {artwork, metadata, preview, releasePubkey, track} = props
+  const {updateTxid} = useContext(AudioPlayerContext)
   return (
     <StyledReleaseCard>
       <StyledReleaseInfo>
@@ -35,7 +27,7 @@ const ReleaseCard = (props) => {
               }}
               sx={{height: '22px', width: '28px'}}
             >
-              <img src={playCircle}/>
+              <PlayCircleOutlineOutlinedIcon sx={{color: 'white'}} />
             </Button>
           </Fade>
         )}
@@ -44,10 +36,9 @@ const ReleaseCard = (props) => {
           <Fade in={true}>
             <Typography variant="h6" color="white" align="left">
               {metadata?.properties?.artist || metadata?.artist}, <i>{metadata?.properties?.title || metadata?.title}</i>
-            </Typography>         
+            </Typography>
           </Fade>
         )}
-
       </StyledReleaseInfo>
 
       <Box>
@@ -84,7 +75,7 @@ const StyledReleaseCard = styled(Box)(() => ({
   margin: 'auto'
 }))
 
-const StyledReleaseInfo = styled(Box)(({ theme }) => ({
+const StyledReleaseInfo = styled(Box)(({theme}) => ({
   backgroundColor: theme.palette.blue,
   color: theme.palette.blue,
   height: theme.spacing(5.6),
@@ -95,11 +86,5 @@ const StyledReleaseInfo = styled(Box)(({ theme }) => ({
   padding: theme.spacing(1)
 }))
 
-// const StyledUserAmount = styled(Box)(({ theme }) => ({
-//   color: theme.palette.white,
-//   position: 'absolute',
-//   top: '0',
-//   right: theme.spacing(1)
-// }))
 
-export default ReleaseCard
+export default ReleaseCard;

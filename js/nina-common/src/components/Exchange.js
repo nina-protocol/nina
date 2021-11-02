@@ -1,7 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import { useSnackbar } from 'notistack'
-import { Typography, Box } from '@mui/material'
+import { Typography, Box, Fade, Button } from '@mui/material'
+import SmoothImage from 'react-smooth-image'
+import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined';
 import RefreshIcon from '@mui/icons-material/Refresh'
 import { useWallet } from '@solana/wallet-adapter-react'
 import BuySell from './BuySell'
@@ -13,11 +15,12 @@ import {
   ExchangeContext,
   ReleaseContext,
   NinaContext,
+  AudioPlayerContext
 } from '../contexts'
 import NinaClient from '../utils/client'
 
 const Exchange = (props) => {
-  const { releasePubkey, metadata } = props
+  const { releasePubkey, metadata, track } = props
 
   const wallet = useWallet()
   const { enqueueSnackbar } = useSnackbar()
@@ -36,6 +39,8 @@ const Exchange = (props) => {
   } = useContext(ExchangeContext)
   const { connection } = useContext(ConnectionContext)
   const { getSolPrice } = useContext(NinaContext)
+  const {updateTxid} = useContext(AudioPlayerContext)
+
   const [exchangeAwaitingConfirm, setExchangeAwaitingConfirm] =
     useState(undefined)
   const [exchangesBuy, setExchangesBuy] = useState(undefined)
@@ -161,6 +166,44 @@ const Exchange = (props) => {
   return (
     <>
       <ExchangeWrapper>
+        <StyledReleaseInfo>
+          <ReleaseImage>
+            {metadata ? (
+              <img
+                src={metadata.image}
+                alt={metadata.name}
+              />
+            ) : (
+              <div className="loader--purple">
+                <CircularProgress color="inherit" />
+              </div>
+            )}
+          </ReleaseImage>
+
+          <InfoCopy>
+            {track && (
+              <Fade in={true}>
+                <Button
+                  onClick={() => {
+                    updateTxid(track.properties.files[0].uri, releasePubkey)
+                  }}
+                  sx={{height: '22px', width: '28px'}}
+                >
+                  <PlayCircleOutlineOutlinedIcon sx={{color: 'white'}}  />
+                </Button>
+              </Fade>
+            )}
+
+            {metadata && (
+              <Fade in={true}>
+                <Typography variant="h6" color="white" align="left">
+                  {metadata?.properties?.artist || metadata?.artist}, <i>{metadata?.properties?.title || metadata?.title}</i>
+                </Typography>
+              </Fade>
+            )}
+          </InfoCopy>
+        </StyledReleaseInfo>
+        
         <StyledExchange>
           <BuySell
             {...props}
@@ -251,9 +294,10 @@ const classes = {
 const ExchangeWrapper = styled(Box)(({theme}) => ({
   overflow: 'hidden',
   display: 'grid',
-  gridTemplateRows: '418px 20px',
+  gridTemplateRows: '100px 418px 20px',
   gridTemplateColumns: 'repeat(2, 310px)',
   alignItems: 'center',
+  gridRowGap: theme.spacing(1),
   justifyContent: 'space-between',
   overflowX: 'scroll',
   width: '100%',
@@ -287,6 +331,32 @@ const ExchangeWrapper = styled(Box)(({theme}) => ({
       paddingLeft: '4px',
     },
   },
+}))
+
+
+const StyledReleaseInfo = styled(Box)(({theme}) => ({
+  backgroundColor: theme.palette.blue,
+  color: theme.palette.blue,
+  height: '84px',
+  position: 'relative',
+  display: 'flex',
+  padding: theme.spacing(1),
+  gridColumn: '1/3',
+}))
+
+const InfoCopy = styled(Box)(({theme}) => ({
+  paddingLeft: theme.spacing(1),
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between'
+}))
+
+const ReleaseImage = styled(Box)(({theme}) => ({
+  height: '100%',
+  width: '82px',
+  '& img': {
+    width: '100%'
+  }
 }))
 
 const StyledExchange = styled(Box)(({theme}) => ({

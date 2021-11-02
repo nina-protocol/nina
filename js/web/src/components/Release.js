@@ -17,10 +17,12 @@ const Release = ({ match }) => {
   const { releaseState, getRelease, getRedeemablesForRelease } =
     useContext(ReleaseContext)
   const { getExchangeHistoryForRelease, exchangeState} = useContext(ExchangeContext)
+  const [track, setTrack] = useState(null)
+  const [index, setIndex] = useState()
+
   const [metadata, setMetadata] = useState(
     releaseState?.metadata[releasePubkey] || null
   )
-  const [index, setIndex] = useState()
 
   useEffect(() => {
     if (!metadata) {
@@ -36,9 +38,10 @@ const Release = ({ match }) => {
     }
   }, [releaseState?.metadata[releasePubkey]])
 
-  // const handleChange = (value) => {
-  //   setIndex(value)
-  // };
+  useEffect(() => {
+    setTrack(releaseState.metadata[releasePubkey])
+  }, [releaseState.metadata[releasePubkey]])
+
 
   const handleChangeIndex = (value) => {
     console.log('value :>> ', value);
@@ -65,6 +68,7 @@ const Release = ({ match }) => {
             metadata={metadata}
             preview={false}
             releasePubkey={releasePubkey}
+            track={track}
           />
 
           <ReleaseCtaWrapper>
@@ -77,6 +81,7 @@ const Release = ({ match }) => {
             releasePubkey={releasePubkey}
             exchanges={exchangeState.exchanges}
             metadata={metadata}
+            track={track}
           />
         </NinaBox>
       </SwipeableViews>
