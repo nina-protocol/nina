@@ -147,7 +147,7 @@ const HistoryTable = styled('table')(({theme}) => ({
   },
 }))
 
-const TableBody = styled('tbody')(() => ({
+const TableBody = styled('tbody')(({theme}) => ({
   '& td': {
     '& ': {
       padding: `${theme.spacing(0, 2)}`,

@@ -111,9 +111,11 @@ const MediaDropzone = ({
           display: 'flex',
           justifyContent: 'center',
           width: '100%',
+          height: type === 'track' ? '' : '350px',
           cursor: 'pointer',
           marginBottom: type === 'track' ? '15px' : '',
-          border: '1px solid black',
+          boxShadow: 'inset 0px 0px 30px 0px #0000001A',
+          backgroundColor: '#EAEAEA'
         },
         preview: {
           margin: 'auto',
@@ -126,13 +128,15 @@ const MediaDropzone = ({
         },
         inputLabel: {
           cursor: 'pointer',
-          border: '2px solid red',
           width: '100%',
           textAlign: 'left',
+          padding: '15px'
         },
       }}
     />
   )
 }
+
+
 
 export default MediaDropzone

@@ -46,7 +46,6 @@ const MediaDropzones = ({
 }
 
 const StyledDropZones = styled(Box)(() => ({
-  border: '2px solid blue',
   height: '100%',
 }))
 

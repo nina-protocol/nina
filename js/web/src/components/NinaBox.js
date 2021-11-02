@@ -11,10 +11,10 @@ const StyledBox = styled(Box, {
   shouldForwardProp: (prop) => prop !== "columns"
 })(({theme, columns}) => ({
   ...theme.helpers.grid,
-  width: '765px',
+  minWidth: '765px',
   height: '547px',
   margin: 'auto',
-  gridTemplateColumns: columns ? `repeat(${columns}, 1fr)` : 'repeat(2, 1fr)',
+  gridTemplateColumns: columns ? columns : 'repeat(2, 1fr)',
   backgroundColor: theme.palette.white,
   gridColumnGap: '0px',
   border: '2px solid blue',

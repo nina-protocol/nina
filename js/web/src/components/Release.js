@@ -63,7 +63,7 @@ const Release = ({ match }) => {
         <StyledArrowBackIosIcon fontSize='large' onClick={() => setIndex(0)} />
       }
       <SwipeableViews index={index} onChangeIndex={handleChangeIndex}>
-        <NinaBox columns={2}>
+        <NinaBox columns={'repeat(2, 1fr)'}>
           <ReleaseCard
             metadata={metadata}
             preview={false}
@@ -76,7 +76,7 @@ const Release = ({ match }) => {
           </ReleaseCtaWrapper>
         </NinaBox>
 
-        <NinaBox columns={1}>
+        <NinaBox columns={'repeat(1, 1fr)'}>
           <Exchange
             releasePubkey={releasePubkey}
             exchanges={exchangeState.exchanges}

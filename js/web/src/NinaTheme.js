@@ -85,18 +85,13 @@ export const NinaTheme = createTheme({
       justifyContent: 'center',
       alignItems: 'center',
     },
-    inputLabelPair: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      margin: '0.2rem 0',
-    },
-    input: {
-      width: '60%',
-    },
     gradient: {
       background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(143,175,223,1) 0%, rgb(35,99,196) 100%)`,
       color: colors.white,
     },
+    inputShadow: {
+      boxShadow: '0px 0px 30px 0px #0000001A'
+    }
   },
   components: {
     MuiButton: {
