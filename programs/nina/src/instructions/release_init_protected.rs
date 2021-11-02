@@ -19,9 +19,10 @@ pub struct ReleaseInitializeProtected<'info> {
     )]
     pub release_signer: UncheckedAccount<'info>,
     pub release_mint: Account<'info, Mint>,
-    #[account(
-        mut,
-        address = nina_publishing_account::ID
+    #[account(mut)]
+    #[cfg_attr(
+        not(feature = "test"),
+        account(address = address = nina_publishing_account::ID),
     )]
     pub payer: Signer<'info>,
     pub authority: UncheckedAccount<'info>,
