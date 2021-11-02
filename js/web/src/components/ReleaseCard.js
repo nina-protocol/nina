@@ -6,55 +6,23 @@ import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import { Typography } from '@mui/material'
-import { useWallet } from '@solana/wallet-adapter-react'
 import ninaRecord from '../assets/nina-record.png'
 import {Fade} from '@mui/material';
 import playCircle from '../assets/playCircle.png'
 
-const { NinaContext, AudioPlayerContext, ExchangeContext, ReleaseContext } =
+const {AudioPlayerContext, ReleaseContext } =
   ninaCommon.contexts
 
 const ReleaseCard = (props) => {
   const { artwork, metadata, preview, releasePubkey } = props
-  const wallet = useWallet()
-  const { getAmountHeld, collection } = useContext(NinaContext)
   const { updateTxid } = useContext(AudioPlayerContext)
-  const { exchangeState, filterExchangesForReleaseBuySell } =
-    useContext(ExchangeContext)
   const { releaseState } = useContext(ReleaseContext)
-  const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
-  const [amountPendingBuys, setAmountPendingBuys] = useState(0)
-  const [amountPendingSales, setAmountPendingSales] = useState(0)
   const [track, setTrack] = useState(null)
-
-  useEffect(() => {
-    if (!preview) {
-      getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
-    }
-  }, [])
-
-  useEffect(() => {
-    setAmountHeld(collection[releasePubkey])
-  }, [collection[releasePubkey]])
-
-  useEffect(() => {
-    if (!preview) {
-      getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
-    }
-  }, [releasePubkey])
 
   useEffect(() => {
     setTrack(releaseState.metadata[releasePubkey])
   }, [releaseState.metadata[releasePubkey]])
 
-  useEffect(() => {
-    setAmountPendingBuys(
-      filterExchangesForReleaseBuySell(releasePubkey, true, true).length
-    )
-    setAmountPendingSales(
-      filterExchangesForReleaseBuySell(releasePubkey, false, true).length
-    )
-  }, [exchangeState])
 
   return (
     <StyledReleaseCard>
@@ -80,29 +48,6 @@ const ReleaseCard = (props) => {
           </Fade>
         )}
 
-        {wallet?.connected && !preview && (
-          <StyledUserAmount>
-            <Typography variant="body1">
-              {metadata && (
-                <p>
-                  You have: {amountHeld || 0} {metadata.symbol}
-                </p>
-              )}
-              {amountPendingSales > 0 ? (
-                <p>
-                  {amountPendingSales} pending sale
-                  {amountPendingSales > 1 ? 's' : ''}{' '}
-                </p>
-              ) : null}
-              {amountPendingBuys > 0 ? (
-                <p>
-                  {amountPendingBuys} pending buy
-                  {amountPendingBuys > 1 ? 's' : ''}{' '}
-                </p>
-              ) : null}
-            </Typography>
-          </StyledUserAmount>
-        )}
       </StyledReleaseInfo>
 
       <Box>
@@ -150,13 +95,11 @@ const StyledReleaseInfo = styled(Box)(({ theme }) => ({
   padding: theme.spacing(1)
 }))
 
-const StyledUserAmount = styled(Box)(({ theme }) => ({
-  color: theme.palette.white,
-  position: 'absolute',
-  top: '0',
-  right: theme.spacing(1)
-}))
-
-
+// const StyledUserAmount = styled(Box)(({ theme }) => ({
+//   color: theme.palette.white,
+//   position: 'absolute',
+//   top: '0',
+//   right: theme.spacing(1)
+// }))
 
 export default ReleaseCard

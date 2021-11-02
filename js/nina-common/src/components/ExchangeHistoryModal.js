@@ -100,7 +100,7 @@ const classes = {
   historyTableBody: `${PREFIX}-historyTableBody`,
 }
 
-const StyledBox = styled(Box)(({ theme }) => ({
+const StyledBox = styled(Box)(() => ({
   width: '400px',
   position: 'absolute',
   bottom: '5px'
@@ -114,7 +114,7 @@ const Cta = styled(Typography)(({theme}) => ({
   },
 }))
 
-const StyledModal = styled(Modal)(({theme}) => ({
+const StyledModal = styled(Modal)(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -128,7 +128,7 @@ const StyledPaper = styled(Paper)(({theme}) => ({
     zIndex: '10'
 }))
 
-const Header = styled(Typography)(({theme}) => ({
+const Header = styled(Typography)(() => ({
   fontSize: '26px',
   textAlign: 'center',
   display: 'flex',
@@ -147,7 +147,7 @@ const HistoryTable = styled('table')(({theme}) => ({
   },
 }))
 
-const TableBody = styled('tbody')(({theme}) => ({
+const TableBody = styled('tbody')(() => ({
   '& td': {
     '& ': {
       padding: `${theme.spacing(0, 2)}`,

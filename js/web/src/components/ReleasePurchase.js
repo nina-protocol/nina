@@ -8,7 +8,7 @@ import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
 import {Typography} from '@material-ui/core'
 
-const { ReleaseContext } = ninaCommon.contexts
+const { ReleaseContext, NinaContext, ExchangeContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
 const ReleasePurchase = (props) => {
@@ -17,10 +17,14 @@ const ReleasePurchase = (props) => {
   const wallet = useWallet()
   const { releasePurchase, releasePurchasePending, releaseState, getRelease } =
     useContext(ReleaseContext)
+  const { getAmountHeld, collection } = useContext(NinaContext)
+  const {exchangeState, filterExchangesForReleaseBuySell} =
+    useContext(ExchangeContext)
   const [pending, setPending] = useState(undefined)
   const [release, setRelease] = useState(undefined)
-
-  console.log('metadata :>> ', metadata);
+  const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
+  const [amountPendingBuys, setAmountPendingBuys] = useState(0)
+  const [amountPendingSales, setAmountPendingSales] = useState(0)
 
   useEffect(() => {
     getRelease(releasePubkey)
@@ -35,6 +39,28 @@ const ReleasePurchase = (props) => {
   useEffect(() => {
     setPending(releasePurchasePending[releasePubkey])
   }, [releasePurchasePending[releasePubkey]])
+
+  useEffect(() => {
+    getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
+  }, [])
+
+  useEffect(() => {
+    setAmountHeld(collection[releasePubkey])
+  }, [collection[releasePubkey]])
+
+  useEffect(() => {
+    getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
+  }, [releasePubkey])
+
+  useEffect(() => {
+    setAmountPendingBuys(
+      filterExchangesForReleaseBuySell(releasePubkey, true, true).length
+    )
+    setAmountPendingSales(
+      filterExchangesForReleaseBuySell(releasePubkey, false, true).length
+    )
+  }, [exchangeState])
+
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -71,6 +97,30 @@ const ReleasePurchase = (props) => {
         Remaining <span>{release.remainingSupply.toNumber()} </span> /{' '}
         {release.totalSupply.toNumber()} 
       </AmountRemaining>
+
+      {wallet?.connected && (
+        <StyledUserAmount>
+          <Typography variant="body1" align="left">
+            {metadata && (
+              <p>
+                You have: {amountHeld || 0} {metadata.symbol}
+              </p>
+            )}
+            {amountPendingSales > 0 ? (
+              <p>
+                {amountPendingSales} pending sale
+                {amountPendingSales > 1 ? 's' : ''}{' '}
+              </p>
+            ) : null}
+            {amountPendingBuys > 0 ? (
+              <p>
+                {amountPendingBuys} pending buy
+                {amountPendingBuys > 1 ? 's' : ''}{' '}
+              </p>
+            ) : null}
+          </Typography>
+        </StyledUserAmount>
+      )}
       <Typography align="left">
         {metadata.description}
       </Typography>
@@ -108,10 +158,14 @@ const ReleasePurchase = (props) => {
 }
 
 const AmountRemaining = styled(Typography)(({theme}) => ({
-  paddingBottom: '10px',
+  // paddingBottom: '10px',
   '& span': {
    color: theme.palette.blue
  }
+}))
+
+const StyledUserAmount = styled(Box)(({theme}) => ({
+  color: theme.palette.black,
 }))
 
 export default ReleasePurchase
