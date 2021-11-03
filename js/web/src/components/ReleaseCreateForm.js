@@ -34,17 +34,19 @@ const ReleaseCreateForm = ({
         <Field name="artist">
           {(props) => (
             <Box className={classes.fieldInputWrapper}>
+              {console.log(touched)}
               <TextField
                 className={classes.formField}
                 variant="standard"
                 label={NinaClient.formatPlaceholder(props.field.name)}
                 size="small"
+                InputLabelProps={ touched.artist ? {shrink: true} : ''}
                 {...props.field}
               />
               {errors.artist && touched.artist ? (
-                <Typography className={classes.formError}>
+                <FormError>
                   {errors.artist}
-                </Typography>
+                </FormError>
               ) : null}
             </Box>
           )}
@@ -58,12 +60,13 @@ const ReleaseCreateForm = ({
                 variant="standard"
                 label={NinaClient.formatPlaceholder(props.field.name)}
                 size="small"
+                InputLabelProps={touched.title? {shrink: true} : ''}
                 {...props.field}
               />
               {errors.title && touched.title ? (
-                <Typography className={classes.formError}>
+                <FormError>
                   {errors.title}
-                </Typography>
+                </FormError>
               ) : null}
             </Box>
           )}
@@ -77,10 +80,13 @@ const ReleaseCreateForm = ({
                 variant="standard"
                 label={NinaClient.formatPlaceholder(props.field.name)}
                 size="small"
+                InputLabelProps={touched.description ? {shrink: true} : ''}
                 {...props.field}
               />
               {errors.description && touched.description ? (
-                <div className={classes.formError}>{errors.description}</div>
+                <FormError>
+                  {errors.description}
+                </FormError>
               ) : null}
             </Box>
           )}
@@ -94,6 +100,7 @@ const ReleaseCreateForm = ({
                 variant="standard"
                 label={NinaClient.formatPlaceholder(field.name)}
                 size="small"
+                InputLabelProps={touched.catalogNumber ? {shrink: true} : ''}
                 InputProps={{
                   onChange: (event) => {
                     let sanitized = event.target.value
@@ -105,7 +112,9 @@ const ReleaseCreateForm = ({
                 {...field}
               />
               {errors.catalogNumber && touched.catalogNumber ? (
-                <div className={classes.formError}>{errors.catalogNumber}</div>
+                <FormError>
+                  {errors.catalogNumber}
+                </FormError>
               ) : null}
             </Box>
           )}
@@ -119,11 +128,14 @@ const ReleaseCreateForm = ({
                 variant="standard"
                 label={NinaClient.formatPlaceholder(field.name)}
                 size="small"
+                InputLabelProps={touched.amount ? {shrink: true} : ''}
                 type="number"
                 {...field}
               />
               {errors.retailPrice&& touched.amount ? (
-                <div className={classes.formError}>{errors.amount}</div>
+                <FormError>
+                  {errors.amount}
+                </FormError>
               ) : null}
             </Box>
           )}
@@ -137,11 +149,14 @@ const ReleaseCreateForm = ({
                 variant="standard"
                 label={NinaClient.formatPlaceholder(field.name)}
                 size="small"
+                InputLabelProps={touched.retailPrice ? {shrink: true} : ''}
                 type="number"
                 {...field}
               />
               {errors.retailPrice && touched.retailPrice ? (
-                <div className={classes.formError}>{errors.retailPrice}</div>
+                <FormError>
+                  {errors.retailPrice}
+                </FormError>
               ) : null}
             </Box>
           )}
@@ -156,12 +171,12 @@ const ReleaseCreateForm = ({
           >
             RESALE PERCENTAGE: {values.resalePercentage}%
           </Typography>
-          <Box className={classes.resalePercentageWrapper}>
+          <Box>
             <Slider
               defaultValue={20}
               getAriaValueText={valuetext}
               aria-labelledby="percent"
-              className={`${classes.formField} ${classes.formSlider}`}
+              className={classes.formField}
               step={1}
               min={0}
               max={100}
@@ -183,18 +198,14 @@ const PREFIX = 'ReleaseCreateForm'
 const classes = {
   fieldInputWrapper: `${PREFIX}-fieldInputWrapper`,
   formField: `${PREFIX}-formField`,
-  formError: `${PREFIX}-formError`,
-  resalePercentageWrapper: `${PREFIX}-resalePercentageWrapper`,
-  formSlider: `${PREFIX}-formSlider`,
 }
 
-const Root = styled('div')(({ theme }) => ({
+const Root = styled('div')(() => ({
   margin: 'auto',
   width: '100%',
   [`& .${classes.fieldInputWrapper}`]: {
     position: 'relative',
   },
-
   [`& .${classes.formField}`]: {
     marginBottom: '8px',
     width: '100%',
@@ -209,22 +220,17 @@ const Root = styled('div')(({ theme }) => ({
     },
   },
 
-  [`& .${classes.formError}`]: {
-    position: 'absolute',
-    top: '50%',
-    right: theme.spacing(1),
-    transform: 'translateY(-50%)',
-    color: theme.palette.red,
-    opacity: '.75',
-  },
-
-  [`& .${classes.resalePercentageWrapper}`]: {
-    display: 'flex',
-    justifyContent: 'space-inbetween',
-    alignItems: 'center',
-  },
-
 }))
+
+const FormError = styled(Typography)(({theme}) => ({
+  position: 'absolute',
+  top: '50%',
+  left: 0,
+  transform: 'translateY(-50%)',
+  color: theme.palette.red,
+  opacity: '.75',
+}))
+
 
 export default withFormik({
   enableReinitialize: true,

@@ -32,6 +32,7 @@ export const NinaTheme = createTheme({
     black: colors.black,
     purple: colors.purple,
     white: colors.white,
+    red: colors.red,
     grey: {
       primary: colors.grey,
     },
@@ -138,7 +139,6 @@ export const NinaTheme = createTheme({
     MuiTextField: {
       styleOverrides: {
         root: {
-          border: '2px solid red',
           '& .MuiInput-underline:before': {
             borderBottom: `1px solid ${colors.black}`
           },
