@@ -224,7 +224,8 @@ const ConnectMessage = styled(Typography)(() => ({
 const CreateFormWrapper = styled(Box)(() => ({
   width: '300px',
   height: '100%',
-  margin: 'auto'
+  margin: 'auto',
+  display: 'flex'
 }))
 
 const CreateCta = styled(Box)(() => ({

@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography'
 import { TextField } from '@mui/material'
 import Slider from '@mui/material/Slider'
 import Box from '@mui/material/Box'
-import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
 const { NinaClient } = ninaCommon.utils
 
@@ -113,21 +112,17 @@ const ReleaseCreateForm = ({
         </Field>
 
         <Field name="amount">
-          {(props) => (
+          {({ field }) => (
             <Box className={classes.fieldInputWrapper}>
-              <CurrencyTextField
-                className={classes.formField}
-                label={NinaClient.formatPlaceholder('Amount')}
+              <TextField
+                className={`${classes.formField}`}
                 variant="standard"
-                value={props.value}
-                currencySymbol=""
-                outputFormat="string"
+                label={NinaClient.formatPlaceholder(field.name)}
                 size="small"
-                minimumValue="0"
-                decimalPlaces="0"
-                onChange={(event, value) => setFieldValue('amount', value)}
+                type="number"
+                {...field}
               />
-              {errors.amount && touched.amount ? (
+              {errors.retailPrice&& touched.amount ? (
                 <div className={classes.formError}>{errors.amount}</div>
               ) : null}
             </Box>
@@ -135,19 +130,15 @@ const ReleaseCreateForm = ({
         </Field>
 
         <Field name="retailPrice">
-          {({ value }) => (
+          {({ field }) => (
             <Box className={classes.fieldInputWrapper}>
-              <CurrencyTextField
-                className={classes.formField}
-                label={NinaClient.formatPlaceholder('RetailPrice')}
+              <TextField
+                className={`${classes.formField}`}
                 variant="standard"
-                value={value}
-                currencySymbol="$"
-                outputFormat="string"
+                label={NinaClient.formatPlaceholder(field.name)}
                 size="small"
-                minimumValue="0"
-                decimalPlaces="2"
-                onChange={(event, value) => setFieldValue('retailPrice', value)}
+                type="number"
+                {...field}
               />
               {errors.retailPrice && touched.retailPrice ? (
                 <div className={classes.formError}>{errors.retailPrice}</div>
@@ -156,13 +147,14 @@ const ReleaseCreateForm = ({
           )}
         </Field>
 
+
         <Box className={`${classes.formField}`} width="100%">
           <Typography
             id="discrete-slider-custom"
             align="left"
-            style={{ color: 'rgba(0, 0, 0, 0.54)' }}
+            style={{ color: 'rgba(0, 0, 0, 0.54)', fontSize: '12px', marginTop: '8px' }}
           >
-            Resale Percentage:
+            RESALE PERCENTAGE: {values.resalePercentage}%
           </Typography>
           <Box className={classes.resalePercentageWrapper}>
             <Slider
@@ -180,13 +172,6 @@ const ReleaseCreateForm = ({
               {...field}
               {...form}
             />
-            <Typography
-              id="discrete-slider-custom"
-              align="left"
-              style={{ color: 'rgba(0, 0, 0, 0.54)' }}
-            >
-              {values.resalePercentage}%
-            </Typography>
           </Box>
         </Box>
       </Form>
@@ -204,24 +189,23 @@ const classes = {
 }
 
 const Root = styled('div')(({ theme }) => ({
+  margin: 'auto',
+  width: '100%',
   [`& .${classes.fieldInputWrapper}`]: {
     position: 'relative',
   },
 
   [`& .${classes.formField}`]: {
-    margin: '0.5rem 1rem 0.5rem 0',
+    marginBottom: '8px',
     width: '100%',
     textTransform: 'capitalize',
     fontSize: '10px',
     position: 'relative',
     '& :placeholder': {
       textTransform: 'capitalize',
-      lineHeight: 'normal',
-      border: '2px solid red',
     },
     '& input': {
       textAlign: 'left',
-      height: '1rem',
     },
   },
 
@@ -240,12 +224,6 @@ const Root = styled('div')(({ theme }) => ({
     alignItems: 'center',
   },
 
-  [`& .${classes.formSlider}`]: {
-    '& MuiSlider-markLabel': {
-      border: '2px solid red',
-      marginLeft: '0',
-    },
-  },
 }))
 
 export default withFormik({

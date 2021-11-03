@@ -135,6 +135,57 @@ export const NinaTheme = createTheme({
         }
       }
     },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          border: '2px solid red',
+          '& .MuiInput-underline:before': {
+            borderBottom: `1px solid ${colors.black}`
+          },
+          '& .MuiInput-underline:after': {
+            borderBottom: `1px solid ${colors.black}`
+          },
+          '& .MuiFormControl-root': {
+            height: '35px',
+          },
+          '& .MuiFormLabel-root.Mui-focused': {
+            color: 'rgba(0, 0, 0, 0.54)'
+          },
+          '& .MuiInputLabel-formControl': {
+            transform: 'translate(0, 15px) scale(1)',
+            fontSize: '12px'
+          },
+          '& .MuiInputLabel-shrink': {
+            transform: 'translate(0, 1.5px) scale(.75)',
+          },
+          '& input[type=number]::-webkit-inner-spin-button': {
+            '-webkit-appearance': 'none',
+            'margin': '0'
+          }
+          
+        },
+      }
+    },
+    MuiSlider: {
+      styleOverrides: {
+        root: {
+          '& .MuiSlider-thumb': {
+            color: colors.black,
+            width: '14px',
+            height: '11px'
+          },
+          '& .MuiSlider-track': {
+            color: colors.black,
+            height: '1px',
+            border: 'none'
+          },
+          '& .MuiSlider-rail': {
+            color: colors.black,
+            height: '1px'
+          },
+        }
+      }
+    },
     MuiCssBaseline: {
       styleOverrides: {
         '*, *::before, *::after': {
@@ -179,17 +230,6 @@ export const NinaTheme = createTheme({
             display: 'none',
           },
         },
-      },
-    },
-    MuiSlider: {
-      thumb: {
-        color: `${colors.purple}`,
-      },
-      track: {
-        color: `${colors.purple}`,
-      },
-      rail: {
-        color: `${colors.purpleLight}`,
       },
     },
     MuiTabs: {
