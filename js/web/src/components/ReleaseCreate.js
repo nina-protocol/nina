@@ -37,7 +37,7 @@ const ReleaseCreate = () => {
   const [releasePubkey, setReleasePubkey] = useState(undefined)
   const [pressingFee, setPressingFee] = useState(undefined)
   const [release, setRelease] = useState(undefined)
-  const [buttonText, setButtonText] = useState('Publish')
+  const [buttonText, setButtonText] = useState('1/2 Confirm Relase Info')
   const [pending, setPending] = useState(false)
   const [formIsValid, setFormIsValid] = useState(false)
   const [formValues, setFormValues] = useState({
@@ -180,14 +180,11 @@ const ReleaseCreate = () => {
             <ReleaseCreateForm
               onChange={handleFormChange}
               values={formValues.releaseForm}
-              ReleaseCreateSchema={ReleaseCreateSchema} />
+              ReleaseCreateSchema={ReleaseCreateSchema}
+              pressingFee={pressingFee}
+              />
 
-            {pressingFee > 0 && (
-              <Typography variant="body2">
-                <strong>Pressing Fee:</strong> {pressingFee} (
-                {formValues.releaseForm.catalogNumber})
-              </Typography>
-            )}
+  
           </CreateFormWrapper>
 
             {!release && (
@@ -209,7 +206,7 @@ const ReleaseCreate = () => {
       )}
 
       {wallet?.connected && npcAmountHeld < 1 && (
-        <Typography variant="body" gutterBottom>
+        <Typography variant="body" gutterBottom sx={{gridColumn: '1/3'}}>
           Fill out this form to apply for a publishing grant
         </Typography>
       )}
@@ -225,7 +222,8 @@ const CreateFormWrapper = styled(Box)(() => ({
   width: '300px',
   height: '100%',
   margin: 'auto',
-  display: 'flex'
+  display: 'flex',
+  flexDirection: 'column'
 }))
 
 const CreateCta = styled(Box)(() => ({

@@ -11,7 +11,7 @@ import RedeemableUpdate from './RedeemableUpdate.js'
 import Royalty from './Royalty.js'
 import NinaClient from '../utils/client'
 import { ReleaseContext } from '../contexts'
-import {display} from '@mui/system'
+import ReactAnimatedEllipsis from 'react-animated-ellipsis';
 
 const ReleaseSettings = (props) => {
   const {
@@ -138,7 +138,7 @@ const ReleaseSettings = (props) => {
           <Typography variant="body1" color="grey.primary">
             {metadataUpdated
               ? 'Your release is ready to be published!'
-              : 'Your release is currently being uploaded...'}
+                : `Your release is currently being uploaded ${< ReactAnimatedEllipsis />}` }
           </Typography>
             {metadataUpdated && (
             <h3>{`Click 'Publish' to make your release live for sale and listening.`}</h3>
@@ -158,11 +158,12 @@ const ReleaseSettings = (props) => {
               </Link>
             ) : (
               <Button
-                variant="contained"
+                variant="outlined"
                 color="primary"
                 onClick={(e) => handleUpdateMetadataButton(e)}
                 disabled={!metadataUpdated}
                 fullWidth
+                sx={{marginTop: '15px'}}
               >
                 Publish Release
               </Button>

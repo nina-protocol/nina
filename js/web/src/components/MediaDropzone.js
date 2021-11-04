@@ -126,8 +126,9 @@ const MediaDropzone = ({
     style={{
       position: 'absolute',
       top: '15px',
-      left: '15px',
-      color: 'white'}} />
+      left: '10px',
+      color: 'white'
+    }} />
   )
 
 

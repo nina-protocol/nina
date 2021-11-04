@@ -3208,6 +3208,11 @@ alphanum-sort@^1.0.0:
   resolved "https://registry.yarnpkg.com/alphanum-sort/-/alphanum-sort-1.0.2.tgz#97a1119649b211ad33691d9f9f486a8ec9fbe0a3"
   integrity sha1-l6ERlkmyEa0zaR2fn0hqjsn74KM=
 
+animated-ellipsis@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/animated-ellipsis/-/animated-ellipsis-0.2.0.tgz#a3d790dc62e65b5de39ca8de9b7bbe5ca4c86dc8"
+  integrity sha512-hnFWhbJDsKSk3nWQKwPnxaCHM5Lgg0bpB51/Mgt63JgXUMjD4qsef7SypuSS+cdNP1PV67l67lognX23KrpHIQ==
+
 ansi-colors@^3.0.0:
   version "3.2.4"
   resolved "https://registry.yarnpkg.com/ansi-colors/-/ansi-colors-3.2.4.tgz#e3a3da4bfbae6c86a9c285625de124a234026fbf"
@@ -10600,6 +10605,15 @@ raw-body@2.4.0:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
+react-animated-ellipsis@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-animated-ellipsis/-/react-animated-ellipsis-1.0.0.tgz#3c81c290366dba96e887f37744532b0d65906c95"
+  integrity sha512-lrv1VzTMg+IP40ugyokG9b8xzK2S0S1HH+262/kzSrlY5teAKMYJBdKqVwOuhgi9qeULcQ5LRyYrl+uWAUlLWQ==
+  dependencies:
+    animated-ellipsis "0.2.0"
+    prop-types "^15.7.2"
+    react "^16.13.1"
+
 react-app-polyfill@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/react-app-polyfill/-/react-app-polyfill-2.0.0.tgz#a0bea50f078b8a082970a9d853dc34b6dcc6a3cf"
@@ -10920,6 +10934,15 @@ react-transition-group@^4.4.0, react-transition-group@^4.4.2:
     "@babel/runtime" "^7.5.5"
     dom-helpers "^5.0.1"
     loose-envify "^1.4.0"
+    prop-types "^15.6.2"
+
+react@^16.13.1:
+  version "16.14.0"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.14.0.tgz#94d776ddd0aaa37da3eda8fc5b6b18a4c9a3114d"
+  integrity sha512-0X2CImDkJGApiAlcf0ODKIneSwBPhqJawOa5wCtKbu7ZECrmS26NvtSILynQ66cgkT/RJ4LidJOc3bUESwmU8g==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
     prop-types "^15.6.2"
 
 react@^17.0.2:

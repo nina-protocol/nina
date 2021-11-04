@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { styled } from '@mui/material/styles'
-import { Box } from '@mui/material'
+import { Box, Paper } from '@mui/material'
 import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
@@ -98,9 +98,8 @@ const Royalty = (props) => {
 
   return (
     <Root>
-      <Box mt={1}>
         <Button
-          variant="contained"
+          variant="outlined"
           color="primary"
           type="button"
           onClick={() => setOpen(true)}
@@ -108,11 +107,9 @@ const Royalty = (props) => {
         >
           Royalty Info
         </Button>
-      </Box>
-      <Modal
+      <StyledModal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
-        className={classes.modal}
         open={open}
         onClose={() => setOpen(false)}
         closeAfterTransition
@@ -122,8 +119,8 @@ const Royalty = (props) => {
         }}
       >
         <Fade in={open}>
-          <div className={classes.paper}>
-            <h2 id="transition-modal-title">Royalty Recipients:</h2>
+          <StyledPaper>
+            <Typography align="center" variant="h4" id="transition-modal-title">Royalty Information:</Typography>
             <List>
               {release?.royaltyRecipients &&
                 release.royaltyRecipients.map((recipient, i) => {
@@ -205,9 +202,9 @@ const Royalty = (props) => {
             release?.authority.toBase58() === wallet?.publicKey.toBase58()
               ? userIsRecipientUI()
               : null}
-          </div>
+          </StyledPaper>
         </Fade>
-      </Modal>
+      </StyledModal>
     </Root>
   )
 }
@@ -215,27 +212,14 @@ const Royalty = (props) => {
 const PREFIX = 'Royalty'
 
 const classes = {
-  modal: `${PREFIX}-modal`,
-  paper: `${PREFIX}-paper`,
   recipientData: `${PREFIX}-recipientData`,
 }
 
 const Root = styled('div')(({ theme }) => ({
-  [`& .${classes.modal}`]: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  [`& .${classes.paper}`]: {
-    backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
-    width: '40vw',
-    maxHeight: '90vh',
-    overflowY: 'auto',
-  },
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '100%',
 
   [`& .${classes.recipientData}`]: {
     color: `${theme.palette.greyLight}`,
@@ -244,5 +228,22 @@ const Root = styled('div')(({ theme }) => ({
     },
   },
 }))
+
+const StyledModal = styled(Modal)(() => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}))
+
+const StyledPaper= styled(Paper)(({theme}) => ({
+  backgroundColor: theme.palette.background.paper,
+  border: '2px solid #000',
+  boxShadow: theme.shadows[5],
+  padding: theme.spacing(2, 4, 3),
+  width: '40vw',
+  maxHeight: '90vh',
+  overflowY: 'auto',
+}))
+
 
 export default Royalty
