@@ -157,7 +157,7 @@ const ReleaseCreate = () => {
   }
 
   return (
-    <NinaBox columns={'350px 400px'}>
+    <NinaBox columns='350px 400px' gridColumnGap="10px">
       {!wallet.connected && (
         <ConnectMessage variant="body" gutterBottom>
           Please connect your wallet to start publishing!
@@ -183,8 +183,6 @@ const ReleaseCreate = () => {
               ReleaseCreateSchema={ReleaseCreateSchema}
               pressingFee={pressingFee}
               />
-
-  
           </CreateFormWrapper>
 
             {!release && (
@@ -218,12 +216,13 @@ const ConnectMessage = styled(Typography)(() => ({
   gridColumn: '1/3'
 }))
 
-const CreateFormWrapper = styled(Box)(() => ({
-  width: '300px',
-  height: '100%',
+const CreateFormWrapper = styled(Box)(({theme}) => ({
+  width: '100%',
+  height: '476px',
   margin: 'auto',
   display: 'flex',
-  flexDirection: 'column'
+  flexDirection: 'column',
+  border: `1px solid ${theme.palette.grey.primary}`
 }))
 
 const CreateCta = styled(Box)(() => ({

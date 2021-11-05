@@ -138,7 +138,7 @@ const ReleaseSettings = (props) => {
           <Typography variant="body1" color="grey.primary">
             {metadataUpdated
               ? 'Your release is ready to be published!'
-                : `Your release is currently being uploaded ${< ReactAnimatedEllipsis />}` }
+                : `Your release is currently being uploaded...` }
           </Typography>
             {metadataUpdated && (
             <h3>{`Click 'Publish' to make your release live for sale and listening.`}</h3>

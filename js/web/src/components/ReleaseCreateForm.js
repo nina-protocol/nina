@@ -209,7 +209,8 @@ const classes = {
 
 const Root = styled('div')(() => ({
   margin: 'auto',
-  width: '100%',
+  width: '300px',
+  // padding: '50px',
   [`& .${classes.fieldInputWrapper}`]: {
     position: 'relative',
   },

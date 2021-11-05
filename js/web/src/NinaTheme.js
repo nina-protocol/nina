@@ -7,7 +7,7 @@ const colors = {
   orange: 'rgba(244, 73, 73, 0.94)',
   green: '#32b36c',
   white: '#ffffff',
-  // greyLight: 'rgba(0, 0, 0, 0.2)',
+  greyLight: '#E3E3E3',
   grey: 'rgba(0, 0, 0, 0.2)',
   transparent: '#ffffff00',
   black: '#000000',
@@ -36,7 +36,7 @@ export const NinaTheme = createTheme({
     grey: {
       primary: colors.grey,
     },
-    greyLight: colors.gray
+    greyLight: colors.greyLight
   },
   gradient: {
     background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(143,175,223,1) 0%, rgb(35,99,196) 100%)`,
@@ -133,7 +133,11 @@ export const NinaTheme = createTheme({
         },
         gutterBottom: {
           marginBottom: '15px !important'
+        },
+        subtitle1: {
+          fontSize: '10px !important'
         }
+        
       }
     },
     MuiTextField: {
