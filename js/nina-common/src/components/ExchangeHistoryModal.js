@@ -13,9 +13,10 @@ const ExchangeHistoryModal = (props) => {
   const [open, setOpen] = useState(false)
 
   return (
-    <StyledBox>
+    <Box>
       <Cta
         onClick={() => setOpen(true)}
+        variant="subtitle1"
       >
         Market History <span>({exchangeHistory?.length || 0})</span>
       </Cta>
@@ -85,7 +86,7 @@ const ExchangeHistoryModal = (props) => {
             </HistoryTable>
           </StyledPaper>
       </StyledModal>
-    </StyledBox>
+    </Box>
   )
 }
 
@@ -100,15 +101,8 @@ const classes = {
   historyTableBody: `${PREFIX}-historyTableBody`,
 }
 
-const StyledBox = styled(Box)(() => ({
-  width: '400px',
-  position: 'absolute',
-  bottom: '5px'
-}))
-
 const Cta = styled(Typography)(({theme}) => ({
   cursor: 'pointer',
-  fontSize: '10px !important',
   '& span': {
     color: `${theme.palette.blue}`,
   },

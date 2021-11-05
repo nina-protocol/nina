@@ -10,7 +10,7 @@ import SkipPreviousRoundedIcon from '@mui/icons-material/SkipPreviousRounded'
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded'
 import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
 // import SvgIcon from '@mui/material/SvgIcon';
-import shareArrow from '../assets/shareArrow.svg'
+import shareArrow from '../assets/shareArrow.png'
 // import VolumeUpIcon from '@mui/icons-material/VolumeUp'
 // import VolumeOffIcon from '@mui/icons-material/VolumeOff'
 import {Typography} from '@mui/material';
@@ -196,9 +196,7 @@ const AudioPlayer = () => {
   //   ? `You don't own any songs`
   //   : `Connect you wallet to listen to your collection`
 
-
-  console.log('shareArrow :>> ', shareArrow);
-    const iconStyle = {
+   const iconStyle = {
       width: '40px',
       height: '40px',
       cursor: 'pointer'
@@ -264,14 +262,10 @@ const AudioPlayer = () => {
             </Typography>
           </Link>
 
-          <Link to={`/release/${info.releasePubkey}`}>
-            <Typography variant="subtitle1">
-                Share
-            </Typography>
+          {/* Change the arrow to svg */}
+          <Link to={`/release/${info.releasePubkey}`} style={{display: 'flex'}}>
+            <img src={shareArrow}></img>
           </Link>
-
-
-         
         </>
       }
   
@@ -299,7 +293,6 @@ const AudioPlayer = () => {
           max={1.0}
         />
       </VolumeContainer> */}
-
     </StyledAudioPlayer>
   )
 }

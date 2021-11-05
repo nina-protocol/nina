@@ -22,7 +22,7 @@ const ExchangeList = (props) => {
   }
 
   return (
-    <Root className={classes.root}>
+    <Root>
       {list?.length > 0 && (
         <ul className={classes.exchangeList}>
           {list.map((item, i) => (
@@ -55,9 +55,13 @@ const classes = {
 }
 
 const Root = styled(Box)(({ theme }) => ({
-  maxHeight: '304px',
+  maxHeight: '256px',
   height: '100%',
+  display: 'flex',
+  justifyContent: '100%',
+  alignContent: '100%',
   [`& .${classes.exchangeList}`]: {
+    width: '100%',
     listStyle: 'none',
     display: 'flex',
     flexDirection: 'column',
@@ -66,6 +70,9 @@ const Root = styled(Box)(({ theme }) => ({
     overflow: 'scroll',
     overflowX: 'hidden',
     overflowY: 'auto',
+  },
+  [`& .${classes.noOffers}`]: {
+    margin: 'auto'
   },
 
 }))

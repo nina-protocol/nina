@@ -240,25 +240,31 @@ const Exchange = (props) => {
             />
         </StyledExchange>
     
-   
+        <ExchangeCopy >
+          <Typography variant="subtitle1" align="left" >
+            {exchangesBuy?.length > 6
+              ? `Scroll to view ${exchangesBuy.length - 6} offers...`
+              : ''}
+          </Typography>
 
-        {/* <Box className={classes.scrollCopyContainer}>
-          <Typography className={classes.scrollCopy}>
-            {exchangesBuy?.length > 7
-              ? `Scroll to view ${exchangesBuy.length - 7} offers...`
+          <HistoryCtaWrapper sx={{display:'flex'}}>
+            <ExchangeHistoryModal
+              exchangeHistory={exchangeHistory}
+              release={release}
+            />
+            <Typography variant="subtitle1" onClick={refreshExchange}>
+              Last Updated: <span>{new Date(updateTime).toLocaleTimeString()} </span>
+              <RefreshIcon fontSize="10px" sx={{fontSize: '10px'}} />
+            </Typography>
+          </HistoryCtaWrapper>
+
+          <Typography variant="subtitle1" align="right">
+            {exchangesSell?.length > 6
+              ? `Scroll to view ${exchangesSell.length - 6} listings...`
               : ''}
           </Typography>
-          <Typography className={classes.scrollCopy}>
-            {exchangesSell?.length > 7
-              ? `Scroll to view ${exchangesSell.length - 7} listings...`
-              : ''}
-          </Typography>
-        </Box> */}
-        {/* <Typography className={classes.updateMessage} onClick={refreshExchange}>
-          Last Updated:{' '}
-          <span>{new Date(updateTime).toLocaleTimeString()} </span>
-          <RefreshIcon fontSize="small" />
-        </Typography> */}
+        </ExchangeCopy>
+
 
         {exchangeAwaitingConfirm && (
           <ExchangeModal
@@ -275,10 +281,7 @@ const Exchange = (props) => {
           />
         )}
       </ExchangeWrapper>
-      <ExchangeHistoryModal
-        exchangeHistory={exchangeHistory}
-        release={release}
-      />
+ 
     </>
   )
 }
@@ -301,17 +304,6 @@ const ExchangeWrapper = styled(Box)(({theme}) => ({
   justifyContent: 'space-between',
   overflowX: 'scroll',
   width: '100%',
-
-  [`& .${classes.scrollCopyContainer}`]: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-
-  [`& .${classes.scrollCopy}`]: {
-    width: '310px',
-    textAlign: 'left',
-    fontSize: '10px',
-  },
 
   [`& .${classes.updateMessage}`]: {
     fontSize: '10px',
@@ -365,6 +357,25 @@ const StyledExchange = styled(Box)(({theme}) => ({
   display: 'flex',
   flexDirection: 'column'
 }))
+
+const ExchangeCopy = styled(Box)(({theme}) => ({
+  display: 'grid',
+  gridTemplateColumns: 'repeat(3, 1fr)',
+  gridColumn: '1/3',
+}))
+
+const HistoryCtaWrapper = styled(Box)(({theme}) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-around',
+  '& .MuiSvgIcon-root':{
+    height: '10px',
+    width: '10px'
+  }
+}))
+
+
+
 
 
 

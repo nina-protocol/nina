@@ -13,7 +13,7 @@ const StyledBox = styled(Box, {
   ...theme.helpers.grid,
   justifyItems: justifyItems ? justifyItems : 'center',
   width: '765px',
-  height: '547px',
+  minHeight: '547px',
   margin: 'auto',
   gridTemplateColumns: columns ? columns : 'repeat(2, 1fr)',
   backgroundColor: theme.palette.white,
