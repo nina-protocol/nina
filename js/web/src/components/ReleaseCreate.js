@@ -1,20 +1,20 @@
-import React, {useState, useContext, useEffect} from 'react'
-import {styled} from '@mui/material/styles'
+import React, { useState, useContext, useEffect } from 'react'
+import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
-import {useSnackbar} from 'notistack'
+import { useSnackbar } from 'notistack'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
-import {Typography, Box} from '@mui/material'
-import {useWallet} from '@solana/wallet-adapter-react'
+import { Typography, Box } from '@mui/material'
+import { useWallet } from '@solana/wallet-adapter-react'
 import ReleaseCreateForm from './ReleaseCreateForm'
 import ReleaseCard from './ReleaseCard'
 import NinaBox from './NinaBox'
 import MediaDropzones from './MediaDropzones'
 import * as Yup from 'yup'
 
-const {ReleaseSettings} = ninaCommon.components
-const {ReleaseContext, NinaContext} = ninaCommon.contexts
-const {NinaClient} = ninaCommon.utils
+const { ReleaseSettings } = ninaCommon.components
+const { ReleaseContext, NinaContext } = ninaCommon.contexts
+const { NinaClient } = ninaCommon.utils
 
 const ReleaseCreateSchema = Yup.object().shape({
   artist: Yup.string().required('Artist Name is Required'),
@@ -27,11 +27,11 @@ const ReleaseCreateSchema = Yup.object().shape({
 })
 
 const ReleaseCreate = () => {
-  const {enqueueSnackbar} = useSnackbar()
+  const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const {releaseCreate, pressingState, resetPressingState, releaseState} =
+  const { releaseCreate, pressingState, resetPressingState, releaseState } =
     useContext(ReleaseContext)
-  const {getNpcAmountHeld, npcAmountHeld} = useContext(NinaContext)
+  const { getNpcAmountHeld, npcAmountHeld } = useContext(NinaContext)
   const [track, setTrack] = useState(undefined)
   const [artwork, setArtwork] = useState()
   const [releasePubkey, setReleasePubkey] = useState(undefined)
@@ -72,7 +72,7 @@ const ReleaseCreate = () => {
 
   useEffect(() => {
     const calculateFee = async (artwork, track, releaseForm) => {
-      const {amount, retailPrice} = releaseForm
+      const { amount, retailPrice } = releaseForm
 
       const ninaVaultFee = NinaClient.pressingFeeCalculator(
         amount,
@@ -101,7 +101,7 @@ const ReleaseCreate = () => {
   const handleSubmit = async () => {
     if (track && artwork) {
       setPending(true)
-      const {releaseForm} = formValues
+      const { releaseForm } = formValues
       const data = {
         retailPrice: releaseForm.retailPrice,
         amount: releaseForm.amount,
@@ -128,7 +128,7 @@ const ReleaseCreate = () => {
           variant: 'failure',
         })
         setPending(false)
-      }  
+      }
     }
   }
 
@@ -145,7 +145,7 @@ const ReleaseCreate = () => {
           releasePubkey={releasePubkey}
           track={track}
           artwork={artwork}
-          />
+        />
         <ReleaseSettings
           releasePubkey={releasePubkey}
           inCreateFlow={true}
@@ -157,7 +157,7 @@ const ReleaseCreate = () => {
   }
 
   return (
-    <NinaBox columns='350px 400px' gridColumnGap="10px">
+    <NinaBox columns="350px 400px" gridColumnGap="10px">
       {!wallet.connected && (
         <ConnectMessage variant="body" gutterBottom>
           Please connect your wallet to start publishing!
@@ -166,7 +166,7 @@ const ReleaseCreate = () => {
 
       {wallet?.connected && npcAmountHeld > 0 && (
         <>
-          <Box sx={{width: '100%'}}>
+          <Box sx={{ width: '100%' }}>
             <MediaDropzones
               setTrack={setTrack}
               setArtwork={setArtwork}
@@ -182,29 +182,29 @@ const ReleaseCreate = () => {
               values={formValues.releaseForm}
               ReleaseCreateSchema={ReleaseCreateSchema}
               pressingFee={pressingFee}
-              />
+            />
           </CreateFormWrapper>
 
-            {!release && (
-              <CreateCta >
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleSubmit}
-                  disabled={pending || !pressingFee || !formIsValid}
-                  sx={{height: '54px'}}
-                >
-                  {pending && <CircularProgress />}
-                  {!pending && buttonText}
-                </Button>
-              </CreateCta>
-            )}
+          {!release && (
+            <CreateCta>
+              <Button
+                fullWidth
+                variant="outlined"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={pending || !pressingFee || !formIsValid}
+                sx={{ height: '54px' }}
+              >
+                {pending && <CircularProgress />}
+                {!pending && buttonText}
+              </Button>
+            </CreateCta>
+          )}
         </>
       )}
 
       {wallet?.connected && npcAmountHeld < 1 && (
-        <Typography variant="body" gutterBottom sx={{gridColumn: '1/3'}}>
+        <Typography variant="body" gutterBottom sx={{ gridColumn: '1/3' }}>
           Fill out this form to apply for a publishing grant
         </Typography>
       )}
@@ -213,23 +213,21 @@ const ReleaseCreate = () => {
 }
 
 const ConnectMessage = styled(Typography)(() => ({
-  gridColumn: '1/3'
+  gridColumn: '1/3',
 }))
 
-const CreateFormWrapper = styled(Box)(({theme}) => ({
+const CreateFormWrapper = styled(Box)(({ theme }) => ({
   width: '100%',
   height: '476px',
   margin: 'auto',
   display: 'flex',
   flexDirection: 'column',
-  border: `1px solid ${theme.palette.grey.primary}`
+  border: `1px solid ${theme.palette.grey.primary}`,
 }))
 
 const CreateCta = styled(Box)(() => ({
   gridColumn: '1/3',
-  width: '100%'
+  width: '100%',
 }))
-
-
 
 export default ReleaseCreate

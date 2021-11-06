@@ -36,7 +36,7 @@ export const NinaTheme = createTheme({
     grey: {
       primary: colors.grey,
     },
-    greyLight: colors.greyLight
+    greyLight: colors.greyLight,
   },
   gradient: {
     background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(143,175,223,1) 0%, rgb(35,99,196) 100%)`,
@@ -91,8 +91,8 @@ export const NinaTheme = createTheme({
       color: colors.white,
     },
     inputShadow: {
-      boxShadow: '0px 0px 30px 0px #0000001A'
-    }
+      boxShadow: '0px 0px 30px 0px #0000001A',
+    },
   },
   components: {
     MuiButton: {
@@ -132,43 +132,41 @@ export const NinaTheme = createTheme({
           letterSpacing: '0.02em',
         },
         gutterBottom: {
-          marginBottom: '15px !important'
+          marginBottom: '15px !important',
         },
         subtitle1: {
-          fontSize: '10px !important'
-        }
-        
-      }
+          fontSize: '10px !important',
+        },
+      },
     },
     MuiTextField: {
       styleOverrides: {
         root: {
           '& .MuiInput-underline:before': {
-            borderBottom: `1px solid ${colors.black}`
+            borderBottom: `1px solid ${colors.black}`,
           },
           '& .MuiInput-underline:after': {
-            borderBottom: `1px solid ${colors.black}`
+            borderBottom: `1px solid ${colors.black}`,
           },
           '& .MuiFormControl-root': {
             height: '35px',
           },
           '& .MuiFormLabel-root.Mui-focused': {
-            color: 'rgba(0, 0, 0, 0.54)'
+            color: 'rgba(0, 0, 0, 0.54)',
           },
           '& .MuiInputLabel-formControl': {
             transform: 'translate(0, 15px) scale(1)',
-            fontSize: '12px'
+            fontSize: '12px',
           },
           '& .MuiInputLabel-shrink': {
             transform: 'translate(0, 1.5px) scale(.75)',
           },
           '& input[type=number]::-webkit-inner-spin-button': {
             '-webkit-appearance': 'none',
-            'margin': '0'
-          }
-          
+            margin: '0',
+          },
         },
-      }
+      },
     },
     MuiSlider: {
       styleOverrides: {
@@ -176,19 +174,19 @@ export const NinaTheme = createTheme({
           '& .MuiSlider-thumb': {
             color: colors.black,
             width: '14px',
-            height: '11px'
+            height: '11px',
           },
           '& .MuiSlider-track': {
             color: colors.black,
             height: '1px',
-            border: 'none'
+            border: 'none',
           },
           '& .MuiSlider-rail': {
             color: colors.black,
-            height: '1px'
+            height: '1px',
           },
-        }
-      }
+        },
+      },
     },
     MuiCssBaseline: {
       styleOverrides: {

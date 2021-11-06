@@ -6,7 +6,7 @@ import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
-import {Typography} from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 
 const { ReleaseContext, NinaContext, ExchangeContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
@@ -18,7 +18,7 @@ const ReleasePurchase = (props) => {
   const { releasePurchase, releasePurchasePending, releaseState, getRelease } =
     useContext(ReleaseContext)
   const { getAmountHeld, collection } = useContext(NinaContext)
-  const {exchangeState, filterExchangesForReleaseBuySell} =
+  const { exchangeState, filterExchangesForReleaseBuySell } =
     useContext(ExchangeContext)
   const [pending, setPending] = useState(undefined)
   const [release, setRelease] = useState(undefined)
@@ -61,7 +61,6 @@ const ReleasePurchase = (props) => {
     )
   }, [exchangeState])
 
-
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!release.pending) {
@@ -95,7 +94,7 @@ const ReleasePurchase = (props) => {
     <Box>
       <AmountRemaining align="left">
         Remaining <span>{release.remainingSupply.toNumber()} </span> /{' '}
-        {release.totalSupply.toNumber()} 
+        {release.totalSupply.toNumber()}
       </AmountRemaining>
 
       {wallet?.connected && (
@@ -121,13 +120,9 @@ const ReleasePurchase = (props) => {
           </Typography>
         </StyledUserAmount>
       )}
-      <Typography align="left">
-        {metadata.description}
-      </Typography>
+      <Typography align="left">{metadata.description}</Typography>
       <Box mt={3}>
-        <form
-          onSubmit={handleSubmit}
-        >
+        <form onSubmit={handleSubmit}>
           <Button
             variant="outlined"
             type="submit"
@@ -135,7 +130,7 @@ const ReleasePurchase = (props) => {
             fullWidth
           >
             {pending ? (
-              <CircularProgress size="15px"  color="inherit" />
+              <CircularProgress size="15px" color="inherit" />
             ) : (
               buttonText
             )}
@@ -148,7 +143,7 @@ const ReleasePurchase = (props) => {
         fullWidth
         onClick={() => setIndex(1)}
         sx={{
-          marginTop: `15px !important`
+          marginTop: `15px !important`,
         }}
       >
         Go To Market
@@ -157,14 +152,14 @@ const ReleasePurchase = (props) => {
   )
 }
 
-const AmountRemaining = styled(Typography)(({theme}) => ({
+const AmountRemaining = styled(Typography)(({ theme }) => ({
   // paddingBottom: '10px',
   '& span': {
-   color: theme.palette.blue
- }
+    color: theme.palette.blue,
+  },
 }))
 
-const StyledUserAmount = styled(Box)(({theme}) => ({
+const StyledUserAmount = styled(Box)(({ theme }) => ({
   color: theme.palette.black,
 }))
 

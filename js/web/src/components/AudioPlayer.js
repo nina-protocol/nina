@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Link } from 'react-router-dom'
-import Box from '@mui/material/Box';
+import Box from '@mui/material/Box'
 import Slider from '@mui/material/Slider'
 import SkipNextRoundedIcon from '@mui/icons-material/SkipNextRounded'
 import SkipPreviousRoundedIcon from '@mui/icons-material/SkipPreviousRounded'
@@ -13,7 +13,7 @@ import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
 import shareArrow from '../assets/shareArrow.png'
 // import VolumeUpIcon from '@mui/icons-material/VolumeUp'
 // import VolumeOffIcon from '@mui/icons-material/VolumeOff'
-import {Typography} from '@mui/material';
+import { Typography } from '@mui/material'
 // import PlaylistDrawer from './PlaylistDrawer'
 
 const { AudioPlayerContext } = ninaCommon.contexts
@@ -196,11 +196,11 @@ const AudioPlayer = () => {
   //   ? `You don't own any songs`
   //   : `Connect you wallet to listen to your collection`
 
-   const iconStyle = {
-      width: '40px',
-      height: '40px',
-      cursor: 'pointer'
-    }
+  const iconStyle = {
+    width: '40px',
+    height: '40px',
+    cursor: 'pointer',
+  }
 
   return (
     <StyledAudioPlayer>
@@ -212,63 +212,63 @@ const AudioPlayer = () => {
 
       {info && (
         <AlbumArt to={`/release/${info.releasePubkey}`}>
-          <img src={info.cover} style={{height: '60px', width: '60px'}} />
+          <img src={info.cover} style={{ height: '60px', width: '60px' }} />
         </AlbumArt>
-    )}
+      )}
 
       <Controls>
         <SkipPreviousRoundedIcon
           onClick={() => playPreviousTrack()}
           sx={iconStyle}
-
         />
         {isPlaying ? (
-          <PauseRoundedIcon
-            onClick={() => togglePlay()}
-            sx={iconStyle}
-          />
+          <PauseRoundedIcon onClick={() => togglePlay()} sx={iconStyle} />
         ) : (
-          <PlayArrowRoundedIcon
-            onClick={() => togglePlay()}
-              sx={iconStyle}
-          />
+          <PlayArrowRoundedIcon onClick={() => togglePlay()} sx={iconStyle} />
         )}
-        <SkipNextRoundedIcon
-          onClick={() => playNextTrack()}
-          sx={iconStyle}
-        />
+        <SkipNextRoundedIcon onClick={() => playNextTrack()} sx={iconStyle} />
       </Controls>
 
-      <ProgressContainer >
-        {info && 
-            <Typography align="left" variant="subtitle1" >{info.artist}, <i>{info.title}</i></Typography>
-        }
+      <ProgressContainer>
+        {info && (
+          <Typography align="left" variant="subtitle1">
+            {info.artist}, <i>{info.title}</i>
+          </Typography>
+        )}
         <Slider
           value={txid ? trackProgress : 0}
           onChange={(e, newValue) => seek(newValue)}
           aria-labelledby="continuous-slider"
           min={0}
           max={duration}
-          />
+        />
       </ProgressContainer>
 
-      <Typography sx={{padding: '0 30px'}} variant="subtitle1">{trackProgress.toString().toHHMMSS() || '00:00'}</Typography>
+      <Typography sx={{ padding: '0 30px' }} variant="subtitle1">
+        {trackProgress.toString().toHHMMSS() || '00:00'}
+      </Typography>
 
-      {info && 
+      {info && (
         <>
-          <Link to={`/release/${info.releasePubkey}`} style={{margin: '0 30px'}}>
-            <Typography variant="subtitle1"  sx={{padding: '0 30px'}}>
-                View Info
+          <Link
+            to={`/release/${info.releasePubkey}`}
+            style={{ marginRight: '30px' }}
+          >
+            <Typography variant="subtitle1" sx={{ padding: '0' }}>
+              View Info
             </Typography>
           </Link>
 
           {/* Change the arrow to svg */}
-          <Link to={`/release/${info.releasePubkey}`} style={{display: 'flex'}}>
+          <Link
+            to={`/release/${info.releasePubkey}`}
+            style={{ display: 'flex' }}
+          >
             <img src={shareArrow}></img>
           </Link>
         </>
-      }
-  
+      )}
+
       {/* <VolumeContainer>
         {muted && (
           <VolumeOffIcon
@@ -297,7 +297,7 @@ const AudioPlayer = () => {
   )
 }
 
-const StyledAudioPlayer = styled(Box)(({theme}) => ({
+const StyledAudioPlayer = styled(Box)(({ theme }) => ({
   position: 'fixed',
   bottom: '0',
   width: '100%',
@@ -311,16 +311,16 @@ const StyledAudioPlayer = styled(Box)(({theme}) => ({
 
 const AlbumArt = styled(Link)(() => ({
   width: '60px',
-  height: '60px'
+  height: '60px',
 }))
 
-const Controls = styled(Box)(({theme}) => ({
+const Controls = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  padding: theme.spacing(0,2),
+  padding: theme.spacing(0, 2),
 }))
 
-const ProgressContainer = styled(Box)(({theme}) => ({
+const ProgressContainer = styled(Box)(({ theme }) => ({
   width: '250px',
   height: '28px',
   display: 'flex',
@@ -333,25 +333,23 @@ const ProgressContainer = styled(Box)(({theme}) => ({
     '& .MuiSlider-thumb': {
       color: theme.palette.blue,
       width: '14px',
-      height: '11px'
+      height: '11px',
     },
     '& .MuiSlider-track': {
       color: theme.palette.greyLight,
       height: '7px',
-      border: 'none'
+      border: 'none',
     },
     '& .MuiSlider-rail': {
       color: theme.palette.greyLight,
-      height: '7px'
+      height: '7px',
     },
-  }
+  },
 }))
 
 // const VolumeContainer = styled(Box)(() => ({
 //   border: '2px solid blue',
 //   width: '100px'
 // }))
-
-
 
 export default AudioPlayer

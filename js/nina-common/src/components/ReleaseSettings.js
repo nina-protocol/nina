@@ -1,37 +1,26 @@
 import { useState, useEffect, useContext } from 'react'
 import { styled } from '@mui/material/styles'
-import { Card, Box, Button } from '@mui/material'
-import CardContent from '@mui/material/CardContent'
+import { Box, Button } from '@mui/material'
 import Typography from '@mui/material/Typography'
-import CircularProgress from '@mui/material/CircularProgress'
 import { Link } from 'react-router-dom'
-import Image from 'material-ui-image'
-import RedeemableInitialize from './RedeemableInitialize.js'
-import RedeemableUpdate from './RedeemableUpdate.js'
+
 import Royalty from './Royalty.js'
 import NinaClient from '../utils/client'
 import { ReleaseContext } from '../contexts'
-import ReactAnimatedEllipsis from 'react-animated-ellipsis';
 
 const ReleaseSettings = (props) => {
   const {
     releasePubkey,
-    inCreateFlow,
     tempMetadata,
-    artwork,
-    redemptionRecords,
-    preview
   } = props
 
   const {
     releaseState,
-    redeemableState,
     releaseUpdateMetadata,
     releaseFetchMetadata,
   } = useContext(ReleaseContext)
 
   const [release, setRelease] = useState(releaseState.tokenData[releasePubkey])
-  const [redeemables, setRedeemables] = useState()
   const [metadata, setMetadata] = useState(releaseState.metadata[releasePubkey])
   const [metadataUpdated, setMetadataUpdated] = useState(
     releaseState.metadata[releasePubkey]
@@ -64,12 +53,6 @@ const ReleaseSettings = (props) => {
       timer = null
     }
   }
-
-  useEffect(() => {
-    if (redeemableState[releasePubkey]) {
-      setRedeemables(redeemableState[releasePubkey])
-    }
-  }, [redeemableState[releasePubkey]])
 
   useEffect(() => {
     setMetadata(releaseState.metadata[releasePubkey])
@@ -174,7 +157,7 @@ const ReleaseSettings = (props) => {
   )
 }
 
-const StyledBox = styled(Box)(({ theme }) => ({
+const StyledBox = styled(Box)(() => ({
   height: '100%',
   display: 'flex',
   flexDirection: 'column',

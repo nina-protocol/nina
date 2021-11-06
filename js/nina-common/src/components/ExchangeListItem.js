@@ -1,11 +1,9 @@
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles'
-import CircularProgress from '@mui/material/CircularProgress'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { NinaContext } from '../contexts'
 import NinaClient from '../utils/client'
 
 const ExchangeListItem = (props) => {

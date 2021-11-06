@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import { useSnackbar } from 'notistack'
 import { Typography, Box, Fade, Button } from '@mui/material'
-import SmoothImage from 'react-smooth-image'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined';
 import RefreshIcon from '@mui/icons-material/Refresh'
 import { useWallet } from '@solana/wallet-adapter-react'
@@ -168,15 +167,11 @@ const Exchange = (props) => {
       <ExchangeWrapper>
         <StyledReleaseInfo>
           <ReleaseImage>
-            {metadata ? (
+            {metadata && (
               <img
                 src={metadata.image}
                 alt={metadata.name}
               />
-            ) : (
-              <div className="loader--purple">
-                <CircularProgress color="inherit" />
-              </div>
             )}
           </ReleaseImage>
 
@@ -263,13 +258,13 @@ const Exchange = (props) => {
               ? `Scroll to view ${exchangesSell.length - 6} listings...`
               : ''}
           </Typography>
-        </ExchangeCopy>
 
+        </ExchangeCopy>
 
         {exchangeAwaitingConfirm && (
           <ExchangeModal
             toggleOverlay={() => setExchangeAwaitingConfirm(undefined)}
-            showOverlay={exchangeAwaitingConfirm}
+            showOverlay={exchangeAwaitingConfirm !== undefined}
             release={release}
             onSubmit={() => handleExchangeAction(exchangeAwaitingConfirm)}
             amount={
@@ -343,7 +338,7 @@ const InfoCopy = styled(Box)(({theme}) => ({
   justifyContent: 'space-between'
 }))
 
-const ReleaseImage = styled(Box)(({theme}) => ({
+const ReleaseImage = styled(Box)(() => ({
   height: '100%',
   width: '82px',
   '& img': {
@@ -351,20 +346,20 @@ const ReleaseImage = styled(Box)(({theme}) => ({
   }
 }))
 
-const StyledExchange = styled(Box)(({theme}) => ({
+const StyledExchange = styled(Box)(() => ({
   width: '100%',
   height: '100%',
   display: 'flex',
   flexDirection: 'column'
 }))
 
-const ExchangeCopy = styled(Box)(({theme}) => ({
+const ExchangeCopy = styled(Box)(() => ({
   display: 'grid',
   gridTemplateColumns: 'repeat(3, 1fr)',
   gridColumn: '1/3',
 }))
 
-const HistoryCtaWrapper = styled(Box)(({theme}) => ({
+const HistoryCtaWrapper = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-around',

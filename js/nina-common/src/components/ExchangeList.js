@@ -1,12 +1,9 @@
-import { useEffect, useState, useContext } from 'react'
+import { useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import CircularProgress from '@mui/material/CircularProgress'
 import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { NinaContext } from '../contexts'
-import NinaClient from '../utils/client'
 import ExchangeListItem from './ExchangeListItem'
 
 const ExchangeList = (props) => {
@@ -49,12 +46,11 @@ const ExchangeList = (props) => {
 const PREFIX = 'ExchangeList'
 
 const classes = {
-  root: `${PREFIX}-root`,
   exchangeList: `${PREFIX}-exchangeList`,
   noOffers: `${PREFIX}-noOffers`,
 }
 
-const Root = styled(Box)(({ theme }) => ({
+const Root = styled(Box)(() => ({
   maxHeight: '256px',
   height: '100%',
   display: 'flex',

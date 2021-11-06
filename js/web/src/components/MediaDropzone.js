@@ -3,9 +3,9 @@ import ninaCommon from 'nina-common'
 import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
 import { Typography, Box } from '@mui/material'
-import {styled} from '@mui/material/styles'
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
+import { styled } from '@mui/material/styles'
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined'
+import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined'
 
 const { NinaClient } = ninaCommon.utils
 const MediaDropzone = ({
@@ -60,7 +60,7 @@ const MediaDropzone = ({
 
   const inputLayout = (type) => {
     //NOTE: we should reject non-square files for artwork
- 
+
     if (type === 'track') {
       return (
         <>
@@ -80,27 +80,30 @@ const MediaDropzone = ({
     }
   }
 
-  const Preview = ({meta, fileWithMeta: {remove},}) => {
-    console.log('meta :>> ', meta);
+  const Preview = ({ meta, fileWithMeta: { remove } }) => {
     if (meta.type.includes('image')) {
       return (
         <Box style={previewBoxStyles}>
           {cancelIcon(remove)}
-          <img src={meta.previewUrl} style={{width: '100%'}}/>
+          <img src={meta.previewUrl} style={{ width: '100%' }} />
         </Box>
       )
     } else {
-      var minutes = Math.floor(meta.duration / 60);
+      var minutes = Math.floor(meta.duration / 60)
       var seconds = Math.ceil(meta.duration - minutes * 60)
 
       return (
-        <Box style={{...previewBoxStyles, ...audioPreviewStyles}}>
+        <Box style={{ ...previewBoxStyles, ...audioPreviewStyles }}>
           {cancelIcon(remove)}
-          <Box sx={{padding: '35px 15px'}}>
-            <Typography align="left" variant="h5" >{meta.name}</Typography>
-            <Typography align="left" variant="body1">{minutes}:{seconds}</Typography>
+          <Box sx={{ padding: '35px 15px' }}>
+            <Typography align="left" variant="h5">
+              {meta.name}
+            </Typography>
+            <Typography align="left" variant="body1">
+              {minutes}:{seconds}
+            </Typography>
           </Box>
-       </Box>
+        </Box>
       )
     }
   }
@@ -110,27 +113,28 @@ const MediaDropzone = ({
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
-    color: 'white'
+    color: 'white',
   }
 
   const audioPreviewStyles = {
-    backgroundColor: '#2D81FF'
+    backgroundColor: '#2D81FF',
   }
 
   const StyledPreview = styled(Preview)(() => ({
-    border: '2px solid red !important'
+    border: '2px solid red !important',
   }))
 
   const cancelIcon = (remove) => (
-    <ClearOutlinedIcon onClick={remove} 
-    style={{
-      position: 'absolute',
-      top: '15px',
-      left: '10px',
-      color: 'white'
-    }} />
+    <ClearOutlinedIcon
+      onClick={remove}
+      style={{
+        position: 'absolute',
+        top: '15px',
+        left: '10px',
+        color: 'white',
+      }}
+    />
   )
-
 
   return (
     <StyledDropzone
@@ -145,7 +149,7 @@ const MediaDropzone = ({
         dropzone: classes.dropZone,
         inputLabel: classes.dropZoneInputLabel,
         preview: classes.dropZonePreviewWrapper,
-        previewStatusContainer: classes.dropZonePreviewStatusContainer
+        previewStatusContainer: classes.dropZonePreviewStatusContainer,
       }}
       inputContent={inputLayout(type)}
       PreviewComponent={StyledPreview}
@@ -159,7 +163,7 @@ const MediaDropzone = ({
           cursor: 'pointer',
           marginBottom: type === 'track' ? '15px' : '',
           boxShadow: 'inset 0px 0px 30px 0px #0000001A',
-          backgroundColor: '#EAEAEA'
+          backgroundColor: '#EAEAEA',
         },
         preview: {
           margin: 'auto',
@@ -174,13 +178,12 @@ const MediaDropzone = ({
           cursor: 'pointer',
           width: '100%',
           textAlign: 'left',
-          padding: '15px'
+          padding: '15px',
         },
       }}
     />
   )
 }
-
 
 const PREFIX = 'MediaDropzone'
 
@@ -192,8 +195,7 @@ const classes = {
 }
 
 const StyledDropzone = styled(Dropzone)(() => ({
-  border: '2px solid red !important'
+  border: '2px solid red !important',
 }))
-
 
 export default MediaDropzone
