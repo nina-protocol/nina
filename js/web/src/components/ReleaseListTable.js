@@ -59,6 +59,7 @@ const EnhancedTableHead = (props) => {
             align={'center'}
             padding={'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
+            sx={{fontWeight: 'bold'}}
           >
             {headCell.label}
           </TableCell>
@@ -71,9 +72,7 @@ const EnhancedTableHead = (props) => {
 const ReleaseListTable = (props) => {
   const { releases, tableType } = props
   const history = useHistory()
-
   const [order] = useState('asc')
-  // const [orderBy] = useState('calories')
 
   const handleClick = (event, releasePubkey) => {
     history.push(`/release/` + releasePubkey)
@@ -104,6 +103,7 @@ const ReleaseListTable = (props) => {
           color="primary"
           disabled={recipient.owed.toNumber() === 0}
           onClick={() => collectRoyaltyForRelease(recipient, releasePubkey)}
+          sx={{padding: '0px !important'}}
         >
           {NinaClient.nativeToUiString(
             recipient.owed.toNumber(),
@@ -136,8 +136,8 @@ const ReleaseListTable = (props) => {
   rows.sort((a, b) => (a.artist < b.artist ? -1 : 1))
 
   return (
-    <Root className={classes.root}>
-      <Paper className={classes.paper}>
+    <Root>
+      <Paper>
         <TableContainer>
           <Table
             className={classes.table}
@@ -147,7 +147,6 @@ const ReleaseListTable = (props) => {
             <EnhancedTableHead
               className={classes}
               order={order}
-              // orderBy={orderBy}
               tableType={tableType}
               rowCount={rows.length}
             />
@@ -215,21 +214,17 @@ const classes = {
 }
 
 const Root = styled('div')(({ theme }) => ({
-  [`&.${classes.root}`]: {
-    width: '100%',
-  },
-
-  [`& .${classes.paper}`]: {
-    width: '100%',
-    marginBottom: theme.spacing(2),
-  },
-
+  width: '100%',
   [`& .${classes.table}`]: {
     minWidth: 750,
+    '& .MuiTableCell-root': {
+      lineHeight: '13.8px',
+      padding: theme.spacing(1)
+    }
   },
 
   [`& .${classes.releaseImage}`]: {
-    width: '40px',
+    width: '20px',
     cursor: 'pointer',
   },
 }))

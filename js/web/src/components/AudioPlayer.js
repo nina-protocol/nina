@@ -14,7 +14,7 @@ import shareArrow from '../assets/shareArrow.png'
 // import VolumeUpIcon from '@mui/icons-material/VolumeUp'
 // import VolumeOffIcon from '@mui/icons-material/VolumeOff'
 import { Typography } from '@mui/material'
-// import PlaylistDrawer from './PlaylistDrawer'
+import PlaylistDrawer from './PlaylistDrawer'
 
 const { AudioPlayerContext } = ninaCommon.contexts
 
@@ -208,7 +208,7 @@ const AudioPlayer = () => {
         <source src={txid} type="audio/mp3" />
       </audio>
 
-      {/* <PlaylistDrawer isPlaying={isPlaying} togglePlay={togglePlay} /> */}
+      <PlaylistDrawer isPlaying={isPlaying} togglePlay={togglePlay} />
 
       {info && (
         <AlbumArt to={`/release/${info.releasePubkey}`}>

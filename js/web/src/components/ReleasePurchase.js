@@ -101,21 +101,21 @@ const ReleasePurchase = (props) => {
         <StyledUserAmount>
           <Typography variant="body1" align="left">
             {metadata && (
-              <p>
+              <>
                 You have: {amountHeld || 0} {metadata.symbol}
-              </p>
+              </>
             )}
             {amountPendingSales > 0 ? (
-              <p>
+              <>
                 {amountPendingSales} pending sale
                 {amountPendingSales > 1 ? 's' : ''}{' '}
-              </p>
+              </>
             ) : null}
             {amountPendingBuys > 0 ? (
-              <p>
+              <>
                 {amountPendingBuys} pending buy
                 {amountPendingBuys > 1 ? 's' : ''}{' '}
-              </p>
+              </>
             ) : null}
           </Typography>
         </StyledUserAmount>
@@ -153,7 +153,6 @@ const ReleasePurchase = (props) => {
 }
 
 const AmountRemaining = styled(Typography)(({ theme }) => ({
-  // paddingBottom: '10px',
   '& span': {
     color: theme.palette.blue,
   },

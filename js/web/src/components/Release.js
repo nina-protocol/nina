@@ -14,7 +14,7 @@ const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
 
 const Release = ({ match }) => {
   const releasePubkey = match.params.releasePubkey
-  const { releaseState, getRelease, getRedeemablesForRelease } =
+  const { releaseState, getRelease} =
     useContext(ReleaseContext)
   const { getExchangeHistoryForRelease, exchangeState } =
     useContext(ExchangeContext)
@@ -29,7 +29,6 @@ const Release = ({ match }) => {
     if (!metadata) {
       getRelease(releasePubkey)
     }
-    getRedeemablesForRelease(releasePubkey)
     getExchangeHistoryForRelease(releasePubkey)
   }, [])
 
