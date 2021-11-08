@@ -139,15 +139,17 @@ const Root = styled(Box)(({ theme }) => ({
   marginBottom: '10px',
   [`& .${classes.exchangeListItemPrice}`]: {
     fontWeight: '700',
-    fontSize: '12px',
     color: `${theme.palette.blue}`,
+    ...theme.helpers.baseFont,
     '&--currentUser': {
+      fontWeight: '400',
       color: `${theme.palette.grey.primary}`,
     },
     '&--usd': {
       color: `${theme.palette.greyLight}`,
     },
     '&--symbol': {
+      fontWeight: '400',
       color: `${theme.palette.black}`,
     },
   },

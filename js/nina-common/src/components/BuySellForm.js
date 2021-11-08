@@ -97,7 +97,7 @@ const StyledForm = styled('form')(({theme}) => ({
   justifyContent: 'center',
   margin: '0',
   width: '100%',
-  marginTop: theme.spacing(1),
+  marginTop: '10px',
   borderBottom: `1px solid ${theme.palette.greyLight}`,
   backgroundColor: `${theme.palette.white}`,
 
