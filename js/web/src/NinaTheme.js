@@ -139,7 +139,8 @@ export const NinaTheme = createTheme({
           marginBottom: '15px !important',
         },
         h1: {
-          fontSize: '36px !important',
+          fontSize: '36px !important',  
+          fontWeight: '400'
         },
         h2: {
           fontSize: '25px !important',
