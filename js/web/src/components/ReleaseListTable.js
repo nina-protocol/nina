@@ -35,6 +35,11 @@ const EnhancedTableHead = (props) => {
     { id: 'title', numeric: false, disablePadding: false, label: 'Title' },
   ]
 
+
+  if (tableType === 'userCollection') {
+    headCells.push({id: 'duration', numeric: false, label: 'Duration'})
+  }
+
   if (tableType === 'userPublished') {
     headCells.push({ id: 'price', numeric: true, label: 'Price' })
     headCells.push({ id: 'available', numeric: false, label: 'Available' })
@@ -94,6 +99,12 @@ const ReleaseListTable = (props) => {
       artist: metadata.properties.artist,
       title: metadata.properties.title,
     }
+
+    // if (tableType === 'userCollection') {
+    //   console.log('metadata :>> ', metadata);
+    //   const duration = metadata.properties.files[0].duration
+    // }
+
     if (tableType === 'userPublished') {
       const recipient = release.recipient
       const collectRoyaltyForRelease = props.collectRoyaltyForRelease

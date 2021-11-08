@@ -17,6 +17,8 @@ import { Typography } from '@mui/material'
 import PlaylistDrawer from './PlaylistDrawer'
 
 const { AudioPlayerContext } = ninaCommon.contexts
+const {NinaClient} = ninaCommon.utils
+
 
 const AudioPlayer = () => {
   const { txid, updateTxid, playlist } = useContext(AudioPlayerContext)
@@ -30,21 +32,6 @@ const AudioPlayer = () => {
   const [duration, setDuration] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
   const [info, setInfo] = useState(null)
-
-  String.prototype.toHHMMSS = function () {
-    var sec_num = parseInt(this, 10)
-    var hours = Math.floor(sec_num / 3600)
-    var minutes = Math.floor((sec_num - hours * 3600) / 60)
-    var seconds = sec_num - hours * 3600 - minutes * 60
-
-    if (minutes < 10) {
-      minutes = '0' + minutes
-    }
-    if (seconds < 10) {
-      seconds = '0' + seconds
-    }
-    return minutes + ':' + seconds
-  }
 
   useEffect(() => {
     playerRef.current = document.querySelector('#audio')
@@ -208,8 +195,6 @@ const AudioPlayer = () => {
         <source src={txid} type="audio/mp3" />
       </audio>
 
-      <PlaylistDrawer isPlaying={isPlaying} togglePlay={togglePlay} />
-
       {info && (
         <AlbumArt to={`/release/${info.releasePubkey}`}>
           <img src={info.cover} style={{ height: '60px', width: '60px' }} />
@@ -245,7 +230,7 @@ const AudioPlayer = () => {
       </ProgressContainer>
 
       <Typography sx={{ padding: '0 30px' }} variant="subtitle1">
-        {trackProgress.toString().toHHMMSS() || '00:00'}
+        {NinaClient.formatDuration(trackProgress)|| '00:00'}
       </Typography>
 
       {info && (
@@ -293,6 +278,9 @@ const AudioPlayer = () => {
           max={1.0}
         />
       </VolumeContainer> */}
+
+      <PlaylistDrawer isPlaying={isPlaying} togglePlay={togglePlay} />
+
     </StyledAudioPlayer>
   )
 }
