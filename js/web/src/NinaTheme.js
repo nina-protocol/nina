@@ -146,6 +146,10 @@ export const NinaTheme = createTheme({
           fontWeight: '400 !important'
         },
         h3: {
+          fontSize: '20px !important',
+          lineHeight: '23px !important'
+        },
+        h4: {
           fontSize: '18px !important',
           lineHeight: '20.7px !important'
         },

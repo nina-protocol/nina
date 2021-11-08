@@ -92,7 +92,7 @@ const ReleasePurchase = (props) => {
 
   return (
     <Box>
-      <AmountRemaining align="left">
+      <AmountRemaining variant="body2" align="left">
         Remaining <span>{release.remainingSupply.toNumber()} </span> /{' '}
         {release.totalSupply.toNumber()}
       </AmountRemaining>
@@ -120,7 +120,8 @@ const ReleasePurchase = (props) => {
           </Typography>
         </StyledUserAmount>
       )}
-      <Typography align="left">{metadata.description}</Typography>
+      <Typography variant="h3" align="left">{metadata.description}</Typography>
+
       <Box mt={3}>
         <form onSubmit={handleSubmit}>
           <Button
@@ -129,11 +130,13 @@ const ReleasePurchase = (props) => {
             disabled={buttonDisabled}
             fullWidth
           >
-            {pending ? (
-              <CircularProgress size="15px" color="inherit" />
-            ) : (
-              buttonText
-            )}
+            <Typography variant="body2">
+              {pending ? (
+                <CircularProgress size="15px" color="inherit" />
+              ) : (
+                buttonText
+              )}
+            </Typography>
           </Button>
         </form>
       </Box>
@@ -146,7 +149,9 @@ const ReleasePurchase = (props) => {
           marginTop: `15px !important`,
         }}
       >
-        Go To Market
+        <Typography variant="body2">
+          Go To Market
+        </Typography>
       </Button>
     </Box>
   )
@@ -160,6 +165,9 @@ const AmountRemaining = styled(Typography)(({ theme }) => ({
 
 const StyledUserAmount = styled(Box)(({ theme }) => ({
   color: theme.palette.black,
+  ...theme.helpers.baseFont
 }))
+
+
 
 export default ReleasePurchase

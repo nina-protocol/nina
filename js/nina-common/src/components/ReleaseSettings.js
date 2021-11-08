@@ -92,7 +92,7 @@ const ReleaseSettings = (props) => {
   return (
     <StyledBox>
       <ReleaseInfoWrapper>
-        <Typography variant="h3" gutterBottom>
+        <Typography variant="h4" gutterBottom>
           Confirm Release Info
         </Typography>
 
