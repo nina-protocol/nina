@@ -140,7 +140,7 @@ export const NinaTheme = createTheme({
         },
         h1: {
           fontSize: '36px !important',  
-          fontWeight: '400'
+          fontWeight: '400 !important'
         },
         h2: {
           fontSize: '25px !important',
@@ -156,7 +156,7 @@ export const NinaTheme = createTheme({
         },
         body1: {
           fontSize: '14px !important',
-          lineHeight: '16.1px !important'
+          lineHeight: '16.1px !important',
         },
         body2: {
           fontSize: '12px !important',

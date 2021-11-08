@@ -1,8 +1,27 @@
-import React from 'react'
+import React, {useContext, useState, useEffect} from 'react'
 import { styled } from '@mui/material/styles'
 import {Typography, Box} from '@mui/material'
+import ninaCommon from 'nina-common'
+import RecentlyPublished from './RecentlyPublished'
+
+const {ReleaseContext} = ninaCommon.contexts
 
 const HomePage = () => {
+  const {
+    getReleasesRecent,
+    releasesRecentState,
+    filterReleasesRecent,
+  } = useContext(ReleaseContext)
+  const [releasesRecent, setReleasesRecent] = useState({})
+
+  useEffect(() => {
+    getReleasesRecent()
+  }, [])
+
+  useEffect(() => {
+    setReleasesRecent(filterReleasesRecent())
+  }, [releasesRecentState])
+
 
   return (
     <HomePageContainer>
@@ -10,13 +29,14 @@ const HomePage = () => {
         Nina is a new infrastructure to buy, sell and stream music online. We put control in the artist’s hands and link them directly with their fans. Learn more.
       </Typography>
 
-      <Box>
-        <Typography>
-          new releases
+      <Box sx={{paddingBottom: '140px'}}>
+        <Typography variant="body1" align="left" className={classes.sectionHeader}>
+          New Releases
         </Typography>
+        <RecentlyPublished releases={releasesRecent.published}/>
       </Box>
 
-      <Typography variant="body1" align="left" sx={{paddingBottom: '15px'}}>
+      <Typography variant="body1" align="left" className={classes.sectionHeader}>
         How it works
       </Typography>
       <Typography variant="h1" align="left" sx={{paddingBottom: '140px'}}>
@@ -30,7 +50,7 @@ const HomePage = () => {
         </Typography>
       </Box>
 
-      <Typography variant="body1" align="left" sx={{paddingBottom: '15px'}}>
+      <Typography variant="body1" align="left" className={classes.sectionHeader}>
         Radical Transparency
       </Typography>
       <Typography variant="h1" align="left" sx={{paddingBottom: '140px'}}>
@@ -42,11 +62,23 @@ const HomePage = () => {
   )
 }
 
-const HomePageContainer = styled(Box)(() => ({
+const PREFIX = 'homePage'
+
+const classes = {
+  sectionHeader: `${PREFIX}-sectionHeader`
+}
+
+const HomePageContainer = styled(Box)(({theme}) => ({
   border: '2px solid red',
   width: '1010px',
   paddingTop: '240px',
-  overflowY: 'scroll'
+  overflowY: 'scroll',
+
+  [`& .${classes.sectionHeader}`]: {
+    fontWeight: '700 ',
+    paddingBottom: `${theme.spacing(1)}`
+  }
+
 }))
 
 export default HomePage;
