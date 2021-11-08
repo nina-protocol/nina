@@ -93,6 +93,10 @@ export const NinaTheme = createTheme({
     inputShadow: {
       boxShadow: '0px 0px 30px 0px #0000001A',
     },
+    baseFont: {
+      fontSize: '12px !important',
+      lineHeight: '13.8px !important'
+    }
   },
   components: {
     MuiButton: {
@@ -133,6 +137,25 @@ export const NinaTheme = createTheme({
         },
         gutterBottom: {
           marginBottom: '15px !important',
+        },
+        h1: {
+          fontSize: '36px !important',
+        },
+        h2: {
+          fontSize: '25px !important',
+          fontWeight: '400 !important'
+        },
+        h3: {
+          fontSize: '18px !important',
+          lineHeight: '20.7px !important'
+        },
+        body1: {
+          fontSize: '14px !important',
+          lineHeight: '16.1px !important'
+        },
+        body2: {
+          fontSize: '12px !important',
+          lineHeight: '13.8px !important'
         },
         subtitle1: {
           fontSize: '10px !important',

@@ -197,17 +197,17 @@ const classes = {
   formField: `${PREFIX}-formField`,
 }
 
-const Root = styled('div')(() => ({
+const Root = styled('div')(({theme}) => ({
   margin: 'auto',
   width: '300px',
   [`& .${classes.fieldInputWrapper}`]: {
     position: 'relative',
   },
   [`& .${classes.formField}`]: {
+    ...theme.helpers.baseFont, 
     marginBottom: '8px',
     width: '100%',
     textTransform: 'capitalize',
-    fontSize: '10px',
     position: 'relative',
     '& :placeholder': {
       textTransform: 'capitalize',

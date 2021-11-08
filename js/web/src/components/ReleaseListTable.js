@@ -100,10 +100,10 @@ const ReleaseListTable = (props) => {
       title: metadata.properties.title,
     }
 
-    // if (tableType === 'userCollection') {
-    //   console.log('metadata :>> ', metadata);
-    //   const duration = metadata.properties.files[0].duration
-    // }
+    if (tableType === 'userCollection') {
+      const duration = NinaClient.formatDuration(metadata.properties.files[0].duration)
+      rowData['duration'] = duration
+    }
 
     if (tableType === 'userPublished') {
       const recipient = release.recipient
@@ -230,6 +230,7 @@ const Root = styled('div')(({ theme }) => ({
     minWidth: 750,
     '& .MuiTableCell-root': {
       lineHeight: '13.8px',
+      fontSize: '12px',
       padding: theme.spacing(1)
     }
   },

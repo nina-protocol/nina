@@ -92,26 +92,31 @@ const ReleaseSettings = (props) => {
   return (
     <StyledBox>
       <ReleaseInfoWrapper>
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="h3" gutterBottom>
           Confirm Release Info
         </Typography>
 
        <ReleaseInfo>
-        <Typography variant="body2" component="p">
-          Edition Size <strong> {release?.totalSupply.toNumber()} {displayValues.catalogNumber} </strong>
-        </Typography>
+        <ReleaseStat variant="body1" component="p">
+          <span>Edition Size</span> 
+          <strong> {release?.totalSupply.toNumber()} {displayValues.catalogNumber} </strong>
+        </ReleaseStat>
 
-        <Typography variant="body2" component="p">
-          Cost <strong>{NinaClient.nativeToUiString(
-            release.price.toNumber(),
-            release.paymentMint
-          )} </strong>
-        </Typography>
+        <ReleaseStat variant="body1" component="p">
+        <span>Cost</span>
+         <strong>{NinaClient.nativeToUiString(
+          release.price.toNumber(),
+          release.paymentMint
+        )} </strong>
+        </ReleaseStat>
 
-        <Typography variant="body2" component="p">
-            Resale <strong> {release?.resalePercentage.toNumber() / 10000}%</strong>
-        </Typography>
-        <Typography variant="body2" component="p">
+        <ReleaseStat variant="body1" component="p">
+          <span>Resale</span>
+           <strong> {release?.resalePercentage.toNumber() / 10000}%</strong>
+        </ReleaseStat>
+
+        
+        <Typography variant="body1" component="p" sx={{marginTop: '10px !important'}}>
             {displayValues.description}
         </Typography>
        </ReleaseInfo>
@@ -171,9 +176,19 @@ const ReleaseInfoWrapper = styled(Box)(() => ({
   textAlign: 'left'
 }))
 
-const ReleaseInfo= styled(Box)(({theme}) => ({
+const ReleaseInfo = styled(Box)(({theme}) => ({
   border: `1px solid ${theme.palette.grey.primary}`,
   padding: '20px',
   marginBottom: theme.spacing(1)
+}))
+
+const ReleaseStat = styled(Typography)(({theme}) => ({
+  display: 'flex',
+  '& span': {
+    width: '75px'
+  }
+  '& strong': {
+    paddingLeft: '15px'
+  }
 }))
 export default ReleaseSettings

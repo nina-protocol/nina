@@ -65,16 +65,16 @@ const MediaDropzone = ({
       return (
         <>
           <AddOutlinedIcon />
-          <Typography variant="h5">Upload Track</Typography>
-          <Typography>File Formats: MP3</Typography>
+          <Typography variant="h2">Upload Track</Typography>
+          <Typography variant="subtitle1">File Formats: MP3</Typography>
         </>
       )
     } else {
       return (
         <>
           <AddOutlinedIcon />
-          <Typography variant="h5">Upload Artwork</Typography>
-          <Typography>File Formats: JPG, PNG</Typography>
+          <Typography variant="h2">Upload Artwork</Typography>
+          <Typography variant="subtitle1">File Formats: JPG, PNG</Typography>
         </>
       )
     }
@@ -99,7 +99,7 @@ const MediaDropzone = ({
             <Typography align="left" variant="h5">
               {meta.name}
             </Typography>
-            <Typography align="left" variant="body1">
+            <Typography align="left" variant="subtitle1">
               {minutes}:{seconds}
             </Typography>
           </Box>
@@ -137,7 +137,7 @@ const MediaDropzone = ({
   )
 
   return (
-    <StyledDropzone
+    <Dropzone
       getUploadParams={getUploadParams}
       onChangeStatus={handleChangeStatus}
       accept={type === 'track' ? 'audio/*' : 'image/*'}
@@ -193,9 +193,5 @@ const classes = {
   dropZonePreviewWrapper: `${PREFIX}-dropZonePreviewWrapper`,
   dropZonePreviewStatusContainer: `${PREFIX}-dropZonePreviewStatusContainer`,
 }
-
-const StyledDropzone = styled(Dropzone)(() => ({
-  border: '2px solid red !important',
-}))
 
 export default MediaDropzone

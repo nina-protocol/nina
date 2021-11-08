@@ -225,9 +225,12 @@ const CreateFormWrapper = styled(Box)(({ theme }) => ({
   border: `1px solid ${theme.palette.grey.primary}`,
 }))
 
-const CreateCta = styled(Box)(() => ({
+const CreateCta = styled(Box)(({theme}) => ({
   gridColumn: '1/3',
   width: '100%',
+  '& .MuiButton-root': {
+    ...theme.helpers.baseFont
+  }
 }))
 
 export default ReleaseCreate
