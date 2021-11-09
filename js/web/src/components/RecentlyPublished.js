@@ -42,10 +42,11 @@ const RecentlyPublished = (props) => {
           showDots={false}
           responsive={responsive}
           infinite={true}
-          autoPlay={true}
+          // autoPlay={true}
           autoPlaySpeed={2000}
           keyBoardControl={true}
           // customTransition="all .5"
+          // centerMode={true}
           transitionDuration={500}
           slidesToSlide={1}
           containerClass="carousel-container"
@@ -90,6 +91,7 @@ const RecentlyPublishedContainer = styled(Box)(() => ({
 const ReleaseSlide = styled(Box)(() => ({
   width: '250px',
   textAlign: 'left',
+  // margin: 'auto',
   '& img': {
     width: '100%',
   },
