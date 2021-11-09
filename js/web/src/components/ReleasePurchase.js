@@ -120,7 +120,9 @@ const ReleasePurchase = (props) => {
           </Typography>
         </StyledUserAmount>
       )}
-      <Typography variant="h3" align="left">{metadata.description}</Typography>
+      <Typography variant="h3" align="left">
+        {metadata.description}
+      </Typography>
 
       <Box mt={3}>
         <form onSubmit={handleSubmit}>
@@ -149,9 +151,7 @@ const ReleasePurchase = (props) => {
           marginTop: `15px !important`,
         }}
       >
-        <Typography variant="body2">
-          Go To Market
-        </Typography>
+        <Typography variant="body2">Go To Market</Typography>
       </Button>
     </Box>
   )
@@ -165,9 +165,7 @@ const AmountRemaining = styled(Typography)(({ theme }) => ({
 
 const StyledUserAmount = styled(Box)(({ theme }) => ({
   color: theme.palette.black,
-  ...theme.helpers.baseFont
+  ...theme.helpers.baseFont,
 }))
-
-
 
 export default ReleasePurchase

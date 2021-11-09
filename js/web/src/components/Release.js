@@ -14,8 +14,7 @@ const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
 
 const Release = ({ match }) => {
   const releasePubkey = match.params.releasePubkey
-  const { releaseState, getRelease} =
-    useContext(ReleaseContext)
+  const { releaseState, getRelease } = useContext(ReleaseContext)
   const { getExchangeHistoryForRelease, exchangeState } =
     useContext(ExchangeContext)
   const [track, setTrack] = useState(null)

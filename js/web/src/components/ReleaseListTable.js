@@ -35,9 +35,8 @@ const EnhancedTableHead = (props) => {
     { id: 'title', numeric: false, disablePadding: false, label: 'Title' },
   ]
 
-
   if (tableType === 'userCollection') {
-    headCells.push({id: 'duration', numeric: false, label: 'Duration'})
+    headCells.push({ id: 'duration', numeric: false, label: 'Duration' })
   }
 
   if (tableType === 'userPublished') {
@@ -64,7 +63,7 @@ const EnhancedTableHead = (props) => {
             align={'center'}
             padding={'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
-            sx={{fontWeight: 'bold'}}
+            sx={{ fontWeight: 'bold' }}
           >
             {headCell.label}
           </TableCell>
@@ -101,7 +100,9 @@ const ReleaseListTable = (props) => {
     }
 
     if (tableType === 'userCollection') {
-      const duration = NinaClient.formatDuration(metadata.properties.files[0].duration)
+      const duration = NinaClient.formatDuration(
+        metadata.properties.files[0].duration
+      )
       rowData['duration'] = duration
     }
 
@@ -114,7 +115,7 @@ const ReleaseListTable = (props) => {
           color="primary"
           disabled={recipient.owed.toNumber() === 0}
           onClick={() => collectRoyaltyForRelease(recipient, releasePubkey)}
-          sx={{padding: '0px !important'}}
+          sx={{ padding: '0px !important' }}
         >
           {NinaClient.nativeToUiString(
             recipient.owed.toNumber(),
@@ -231,8 +232,8 @@ const Root = styled('div')(({ theme }) => ({
     '& .MuiTableCell-root': {
       lineHeight: '13.8px',
       fontSize: '12px',
-      padding: theme.spacing(1)
-    }
+      padding: theme.spacing(1),
+    },
   },
 
   [`& .${classes.releaseImage}`]: {

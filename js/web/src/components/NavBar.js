@@ -31,8 +31,7 @@ const NavBar = () => {
         <NavDrawer />
       </div>
 
-      <Logo
-        to="/">
+      <Logo to="/">
         <img src={ninaLogo} className={classes.nav__logo} alt="nina" />
       </Logo>
 
@@ -202,7 +201,7 @@ const Logo = styled(NavLink)(() => ({
   left: '50%',
   top: '0',
   transform: 'translateX(-50%)',
-  height: '60px'
+  height: '60px',
 }))
 
 export default withFormik({

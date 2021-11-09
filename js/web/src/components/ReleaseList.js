@@ -65,7 +65,7 @@ const ReleaseList = () => {
   // }
 
   return (
-    <StyledBox >
+    <StyledBox>
       {/* <div>
         <form onSubmit={handleSubmit}>
           <TextField

@@ -182,11 +182,11 @@ const ReleaseInfo = styled(Box)(({theme}) => ({
   marginBottom: theme.spacing(1)
 }))
 
-const ReleaseStat = styled(Typography)(({theme}) => ({
+const ReleaseStat = styled(Typography)(() => ({
   display: 'flex',
   '& span': {
     width: '75px'
-  }
+  },
   '& strong': {
     paddingLeft: '15px'
   }

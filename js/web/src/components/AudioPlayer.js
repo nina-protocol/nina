@@ -17,8 +17,7 @@ import { Typography } from '@mui/material'
 import PlaylistDrawer from './PlaylistDrawer'
 
 const { AudioPlayerContext } = ninaCommon.contexts
-const {NinaClient} = ninaCommon.utils
-
+const { NinaClient } = ninaCommon.utils
 
 const AudioPlayer = () => {
   const { txid, updateTxid, playlist } = useContext(AudioPlayerContext)
@@ -230,7 +229,7 @@ const AudioPlayer = () => {
       </ProgressContainer>
 
       <Typography sx={{ padding: '0 30px' }} variant="subtitle1">
-        {NinaClient.formatDuration(trackProgress)|| '00:00'}
+        {NinaClient.formatDuration(trackProgress) || '00:00'}
       </Typography>
 
       {info && (
@@ -280,7 +279,6 @@ const AudioPlayer = () => {
       </VolumeContainer> */}
 
       <PlaylistDrawer isPlaying={isPlaying} togglePlay={togglePlay} />
-
     </StyledAudioPlayer>
   )
 }
