@@ -3,10 +3,15 @@ import { styled } from '@mui/material/styles'
 import { Box } from '@mui/material'
 import Carousel from 'react-multi-carousel'
 import 'react-multi-carousel/lib/styles.css'
-import { Typography } from '@material-ui/core'
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+
 import { Link } from 'react-router-dom'
 import SmoothImage from 'react-smooth-image'
 import CircularProgress from '@mui/material/CircularProgress'
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+
 
 const RecentlyPublished = (props) => {
   const { releases } = props
@@ -26,6 +31,36 @@ const RecentlyPublished = (props) => {
     },
   }
 
+  const buttonStyle = {
+    position: 'absolute',
+    color: 'black',
+    backgroundColor: 'red !important',
+    '&:hover': {
+      backgroundColor: 'black !important'
+    },
+    '& ::before': {
+      display: 'none'
+    }
+  }
+
+  const CustomRightArrow = ({onClick}) => {
+    return(
+        <Button disableRipple style={{right: '-10px', ...buttonStyle}}>
+          <KeyboardArrowRightIcon fontSize="large" onClick={() => onClick()} />
+        </Button>
+       )
+
+  };
+  const CustomLeftArrow = ({onClick}) => {
+
+    
+    return(
+        <Button disableRipple style={{left: '-10px', ...buttonStyle}}>
+          <KeyboardArrowLeftIcon fontSize="large" onClick={() => onClick()} />
+        </Button>
+       )
+  };
+
   if (releases === undefined || releases.length === 0) {
     return (
       <RecentlyPublishedContainer
@@ -40,9 +75,11 @@ const RecentlyPublished = (props) => {
       {releases?.length > 0 && (
         <Carousel
           showDots={false}
+          showArrows={false}
+          draggable={true}
           responsive={responsive}
           infinite={true}
-          // autoPlay={true}
+          autoPlay={true}
           autoPlaySpeed={2000}
           keyBoardControl={true}
           // customTransition="all .5"
@@ -51,6 +88,8 @@ const RecentlyPublished = (props) => {
           slidesToSlide={1}
           containerClass="carousel-container"
           removeArrowOnDeviceType={['tablet', 'mobile']}
+          customRightArrow={<CustomRightArrow />}
+          customLeftArrow={<CustomLeftArrow />}
         >
           {releases.map((release, i) => {
             const imageUrl = release.metadata.image
@@ -91,9 +130,10 @@ const RecentlyPublishedContainer = styled(Box)(() => ({
 const ReleaseSlide = styled(Box)(() => ({
   width: '250px',
   textAlign: 'left',
-  // margin: 'auto',
-  '& img': {
-    width: '100%',
+  paddingLeft: '1px',
+  '& a': {
+    width: '250px',
+
   },
 }))
 

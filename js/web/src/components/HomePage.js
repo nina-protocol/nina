@@ -110,8 +110,8 @@ const classes = {
 }
 
 const HomePageContainer = styled(Box)(({ theme }) => ({
-  width: '1110px',
-  padding: '0 50px',
+  width: '1010px',
+  // padding: '0 50px',
   margin: 'auto',
   overflowY: 'scroll',
   overflowX: 'visible',

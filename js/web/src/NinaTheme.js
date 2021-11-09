@@ -106,6 +106,9 @@ export const NinaTheme = createTheme({
           fontSize: '100px',
           boxShadow: 'none',
           minWidth: 'unset !important',
+          '&:hover': {
+            backgroundColor: 'red'
+          },
           '&.MuiButton-outlined': {
             borderRadius: '0px',
             padding: '20px',
