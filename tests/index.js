@@ -1,10 +1,7 @@
 const anchor = require('@project-serum/anchor');
 const { Token, TOKEN_PROGRAM_ID } = require("@solana/spl-token");
-
 const assert = require("assert");
-
 const encrypt = require('./utils/encrypt');
-
 const {
   sleep,
   getTokenAccount,
@@ -17,6 +14,7 @@ const {
   newAccount,
   wrapSol,
 } = require("./utils");
+const {createMetadata} = require("../deps/metaplex/js/packages/common/dist/lib/actions/metadata");
 
 let nina = anchor.workspace.Nina;
 let provider = anchor.Provider.env();
@@ -344,6 +342,12 @@ describe('Release', async () => {
       release: releaseBump,
       signer: releaseSignerBump,
     }
+    const instructions = [
+      ...releaseMintIx,
+      authorityReleaseTokenAccountIx,
+      royaltyTokenAccountIx,
+      vaultTokenAccountIx,
+    ]
 
     await nina.rpc.releaseInitProtected(
       config,
@@ -365,12 +369,7 @@ describe('Release', async () => {
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         },
         signers: [releaseMint],
-        instructions: [
-          ...releaseMintIx,
-          authorityReleaseTokenAccountIx,
-          royaltyTokenAccountIx,
-          vaultTokenAccountIx,
-        ],
+        instructions,
       }
     );
 
@@ -393,6 +392,50 @@ describe('Release', async () => {
     assert.ok(vaultTokenAccountAfter.amount.toNumber() === 13)
   });
 
+  it('Updates Metadata', async () => {
+    const metadataProgram = new anchor.web3.PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s')
+    const [metadata, metadataBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [Buffer.from('metadata'), metadataProgram.toBuffer(), releaseMint.publicKey.toBuffer()],
+      metadataProgram,
+    );
+
+    const data = {
+      name: `Nina with the Nina`,
+      symbol: `NINA`,
+      uri: `https://arweave.net`,
+      sellerFeeBasisPoints: 2000,
+    }
+    console.log(
+      data, {
+        accounts: {
+          payer: provider.wallet.publicKey,
+          release,
+          releaseSigner,
+          metadata,
+          releaseMint: releaseMint.publicKey,
+          tokenMetadataProgram: metadataProgram,
+          systemProgram: anchor.web3.SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        }
+      })
+    await nina.rpc.releaseUpdateMetadata(
+      data, {
+        accounts: {
+          payer: provider.wallet.publicKey,
+          release,
+          releaseSigner,
+          metadata,
+          releaseMint: releaseMint.publicKey,
+          tokenMetadataProgram: metadataProgram,
+          systemProgram: anchor.web3.SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        }
+      }
+    )
+  });
+  
   it('Fails to Initialize Release For Sale in USDC with Publishing Credit if no publshing credits', async () => {
 
     const paymentMint = usdcMint;

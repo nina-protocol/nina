@@ -496,6 +496,8 @@ const releaseContextHelper = ({
         msg: 'Release purchased!',
       }
     } catch (error) {
+      getUsdcBalance()
+      getRelease(releasePubkey)
       setReleasePurchasePending({
         ...releasePurchasePending,
         [releasePubkey]: false,
@@ -556,6 +558,8 @@ const releaseContextHelper = ({
         )}`,
       }
     } catch (error) {
+      getUsdcBalance()
+      getRelease(releasePubkey)
       return ninaErrorHandler(error)
     }
   }
@@ -631,6 +635,8 @@ const releaseContextHelper = ({
         msg: `Revenue share transferred`,
       }
     } catch (error) {
+      getRelease(releasePubkey)
+      getUsdcBalance()
       return ninaErrorHandler(error)
     }
   }
@@ -711,6 +717,8 @@ const releaseContextHelper = ({
         msg: 'Redeemable Created!',
       }
     } catch (error) {
+      getRelease(releasePubkey)
+      getRedeemablesForRelease(releasePubkey)
       return ninaErrorHandler(error)
     }
   }
@@ -805,6 +813,9 @@ const releaseContextHelper = ({
         msg: 'Redemption successful!',
       }
     } catch (error) {
+      getRelease(releasePubkey)
+      getRedeemablesForRelease(releasePubkey)
+      getRedemptionRecordsForRelease(releasePubkey)
       return ninaErrorHandler(error)
     }
   }
@@ -857,6 +868,9 @@ const releaseContextHelper = ({
         msg: 'Shipping info updated!',
       }
     } catch (error) {
+      getRelease(releasePubkey)
+      getRedeemablesForRelease(releasePubkey)
+      getRedemptionRecordsForRelease(releasePubkey)
       return ninaErrorHandler(error)
     }
   }
@@ -1413,11 +1427,13 @@ const releaseContextHelper = ({
 
     const metadata = await getMetadata(releaseMint, connection)
     if (metadata?.account?.data.uri && metadata.account.data.uri != '') {
-      const arweaveJsonResult = await fetch(metadata.account.data.uri)
-      if (arweaveJsonResult.status === 200) {
-        const metadataJson = await arweaveJsonResult.json()
-        return { [releasePubkey]: metadataJson }
-      }
+      const metadataResult = await fetch(`${NinaClient.endpoints.api}/metadata/bulk`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: [releasePubkey]})
+      })
+      const metadataJson = await metadataResult.json()
+      return metadataJson
     }
     return undefined
   }
@@ -1436,22 +1452,14 @@ const releaseContextHelper = ({
         mints.push(query)
       }
     })
+    const metadataResult = await fetch(`${NinaClient.endpoints.api}/metadata/bulk`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids: Object.values(metadataQueries)})
+    })
+    const metadataJson = await metadataResult.json()
 
-    const metadataAccounts = await getMetadataAccounts(mints, connection)
-
-    for await (let mint of Object.keys(metadataAccounts)) {
-      const metadata = metadataAccounts[mint]
-      const releasePubkey = metadataQueries[mint]
-      if (metadata?.account?.data.uri && metadata.account.data.uri != '') {
-        const arweaveJsonResult = await fetch(metadata.account.data.uri)
-        if (arweaveJsonResult.status === 200) {
-          const metadataJson = await arweaveJsonResult.json()
-          metadataAccountsParsed[releasePubkey] = metadataJson
-        }
-      }
-    }
-
-    return metadataAccountsParsed
+    return metadataJson
   }
 
   return {

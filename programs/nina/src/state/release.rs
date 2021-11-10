@@ -291,6 +291,14 @@ pub struct ReleaseConfig {
     pub release_datetime: i64,
 }
 
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Default)]
+pub struct ReleaseMetadataData {
+    pub name: String,
+    pub symbol: String,
+    pub uri: String,
+    pub seller_fee_basis_points: u16,
+}
+
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub enum AuthorityType {
     /// Authority to mint new tokens
@@ -334,6 +342,12 @@ pub struct ReleaseSold {
     pub public_key: Pubkey,
     #[index]
     pub date: i64,
+}
+
+#[event]
+pub struct ReleaseMetadataUpdated {
+    pub public_key: Pubkey,
+    pub metadata_public_key: Pubkey,
 }
 
 
