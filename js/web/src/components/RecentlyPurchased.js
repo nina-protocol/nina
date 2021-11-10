@@ -19,7 +19,15 @@ const RecentlyPurchased = (props) => {
   }
 
   const featuredRelease = releases[0]
+
+  const releaseDate = new Date(featuredRelease.tokenData.releaseDatetime.toNumber() * 1000)
+  const dateNow = new Date()
+  const differenceTime = dateNow.getTime() - releaseDate.getTime()
+  const dayDifference = Math.round(differenceTime / (1000 * 3600 * 24))
+
+  const sales = (featuredRelease.tokenData.totalSupply.toNumber() - featuredRelease.tokenData.remainingSupply.toNumber()) + featuredRelease.tokenData.exchangeSaleCounter.toNumber()
   const imageUrl = featuredRelease.metadata.image
+
   const artistInfo = (
     <Typography variant="body2" align="left">
       {featuredRelease.metadata.properties.artist},{' '}
@@ -46,7 +54,7 @@ const RecentlyPurchased = (props) => {
           <SmoothImage src={imageUrl} imageStyles={{ minWidth: '400px' }} />
         </Link>
         <Copy sx={{paddingLeft: 2}}>
-          <Typography align="left" variant="h3" color="blue">X Releases were sold in the last Y days</Typography>
+          <Typography align="left" variant="h3" color="blue">{sales} Releases were sold in the last {dayDifference} days</Typography>
           {availability}
           {artistInfo}
         </Copy>
