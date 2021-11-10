@@ -17,6 +17,7 @@ import QueueMusicIcon from '@mui/icons-material/QueueMusic'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import {Typography} from '@material-ui/core'
+import QueList from './QueList'
 
 const { AudioPlayerContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
@@ -32,8 +33,8 @@ const QueDrawer = (props) => {
 
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const [playlistState, setPlaylistState] = useState(undefined)
-  const [skipForReorder, setSkipForReorder] = useState(false)
+  // const [playlistState, setPlaylistState] = useState(undefined)
+  // const [skipForReorder, setSkipForReorder] = useState(false)
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -45,135 +46,10 @@ const QueDrawer = (props) => {
     setDrawerOpen( open )
   }
 
-  useEffect(() => {
-    if (!skipForReorder) {
-      setPlaylistState(playlist)
-    } else {
-      setSkipForReorder(false)
-    }
-  }, [playlist])
-
-  useEffect(() => {
-    const playlistEntry = playlist.find((entry) => entry.txid === txid)
-
-    if (playlistEntry) {
-      setSelectedIndex(playlist?.indexOf(playlistEntry) || 0)
-    }
-  }, [txid, playlist])
-
-  const handleListItemClick = (event, index, txid) => {
-    setSelectedIndex(index)
-    updateTxid(txid)
-  }
-
-  const getItemStyle = (isDragging, draggableStyle) => ({
-    // styles we need to apply on draggables
-    ...draggableStyle,
-
-    ...(isDragging && {
-      background: 'rgb(235,235,235)',
-    }),
-  })
-
-  const onDragEnd = (result) => {
-    // dropped outside the list
-    if (!result.destination) {
-      return
-    }
-    // change local playlist state
-    const newPlaylist = [...playlistState]
-    NinaClient.arrayMove(
-      newPlaylist,
-      result.source.index,
-      result.destination.index
-    )
-
-    const playlistEntry = playlistState.find((entry) => entry.txid === txid)
-
-    if (playlistEntry) {
-      setSelectedIndex(playlist?.indexOf(playlistEntry) || 0)
-    }
-    setPlaylistState(newPlaylist)
-
-    // change context playlist state - skip updating local state
-    setSkipForReorder(true)
-    reorderPlaylist(result)
-  }
-
-  const list = (anchor) => (
-    <Que role="presentation">
-      {playlist?.length === 0 && (
-        <div style={{ padding: '16px' }}>
-          <Typography align="center">
-            {wallet?.connected
-              ? `You don't have any songs`
-              : `Connect your wallet to load your collection`}
-          </Typography>
-        </div>
-      )}
-      {playlist?.length > 0 && (
-        <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable droppableId="droppable">
-            {(provided) => (
-              <Box ref={provided.innerRef}>
-                <List>
-                  {playlist.map((entry, i) => {
-                    const text = `${entry.artist}: ${entry.title}`
-                    return (
-                      <Draggable
-                        key={entry.txid}
-                        draggableId={entry.txid}
-                        index={i}
-                      >
-                        {(provided, snapshot) => (
-                          <ListItem
-                            button
-                            key={entry.txid}
-                            onClick={(event) =>
-                              handleListItemClick(event, i, entry.txid)
-                            }
-                            ContainerComponent="li"
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            {...provided.placeholder}
-                            style={getItemStyle(
-                              snapshot.isDragging,
-                              provided.draggableProps.style
-                            )}
-                          >
-                            {entry.txid === txid && (
-                              <ListItemIcon>
-                                {isPlaying && selectedIndex === i ? (
-                                  <PauseRoundedIcon
-                                    onClick={() => togglePlay()}
-                                  />
-                                ) : (
-                                  <PlayArrowRoundedIcon
-                                    onClick={() => togglePlay()}
-                                  />
-                                )}
-                              </ListItemIcon>
-                            )}
-                            <ListItemText primary={text} />
-                          </ListItem>
-                        )}
-                      </Draggable>
-                    )
-                  })}
-                </List>
-              </Box>
-            )}
-          </Droppable>
-        </DragDropContext>
-      )}
-    </Que>
-  )
-
   return (
     <ToggleWrapper>
       <React.Fragment key={'left'}>
-        <Button variant="outlined" onClick={toggleDrawer(true)}>
+        <Button variant="outlined" onClick={toggleDrawer(!drawerOpen)}>
           <QueueMusicIcon
             style={{ fill: `${theme.palette.purple}` }}
           />{' '}
@@ -194,7 +70,8 @@ const QueDrawer = (props) => {
           PaperProps={quePaperStyle}
           ModalProps={queModalStyle}
         >
-          {list('bottom')}
+          {/* {list('bottom')} */}
+          <QueList isPlaying={isPlaying} togglePlay={togglePlay} />
         </Drawer>
       </React.Fragment>
     </ToggleWrapper>
