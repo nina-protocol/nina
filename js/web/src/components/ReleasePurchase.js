@@ -6,7 +6,7 @@ import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
-import { Typography } from '@material-ui/core'
+import {Typography} from '@mui/material'
 
 const { ReleaseContext, NinaContext, ExchangeContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
@@ -124,7 +124,7 @@ const ReleasePurchase = (props) => {
         {metadata.description}
       </Typography>
 
-      <Box mt={3}>
+      <Box mt={1}>
         <form onSubmit={handleSubmit}>
           <Button
             variant="outlined"
@@ -158,6 +158,7 @@ const ReleasePurchase = (props) => {
 }
 
 const AmountRemaining = styled(Typography)(({ theme }) => ({
+  paddingBottom: '10px',
   '& span': {
     color: theme.palette.blue,
   },
@@ -166,6 +167,7 @@ const AmountRemaining = styled(Typography)(({ theme }) => ({
 const StyledUserAmount = styled(Box)(({ theme }) => ({
   color: theme.palette.black,
   ...theme.helpers.baseFont,
+  paddingBottom: '10px'
 }))
 
 export default ReleasePurchase
