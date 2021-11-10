@@ -43,8 +43,39 @@ const QueDrawer = (props) => {
     ) {
       return
     }
+    console.log('open :>> ', open);
     setDrawerOpen( open )
   }
+
+  // useEffect(() => {
+  //   if (!skipForReorder) {
+  //     setPlaylistState(playlist)
+  //   } else {
+  //     setSkipForReorder(false)
+  //   }
+  // }, [playlist])
+
+  useEffect(() => {
+    const playlistEntry = playlist.find((entry) => entry.txid === txid)
+
+    if (playlistEntry) {
+      setSelectedIndex(playlist?.indexOf(playlistEntry) || 0)
+    }
+  }, [txid, playlist])
+
+  const handleListItemClick = (event, index, txid) => {
+    setSelectedIndex(index)
+    updateTxid(txid)
+  }
+
+  const getItemStyle = (isDragging, draggableStyle) => ({
+    // styles we need to apply on draggables
+    ...draggableStyle,
+
+    ...(isDragging && {
+      background: 'rgb(235,235,235)',
+    }),
+  })
 
   return (
     <ToggleWrapper>
@@ -70,8 +101,7 @@ const QueDrawer = (props) => {
           PaperProps={quePaperStyle}
           ModalProps={queModalStyle}
         >
-          {/* {list('bottom')} */}
-          <QueList isPlaying={isPlaying} togglePlay={togglePlay} />
+          <QueList isPlaying={isPlaying} togglePlay={togglePlay} setDrawerOpen={setDrawerOpen} />
         </Drawer>
       </React.Fragment>
     </ToggleWrapper>

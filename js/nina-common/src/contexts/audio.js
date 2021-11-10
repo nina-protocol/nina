@@ -84,6 +84,7 @@ const audioPlayerContextHelper = ({
   }
 
   const removeTrackFromPlaylist = async (releasePubkey) => {
+    console.log('remove!');
     const remain = await shouldRemainInCollectionAfterSale(
       releasePubkey,
       releaseState.releaseMintMap[releasePubkey]

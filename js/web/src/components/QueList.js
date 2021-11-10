@@ -1,10 +1,16 @@
 import React, {useEffect, useState, useContext} from "react"
 import {TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Paper} from '@material-ui/core'
 import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd"
+import {styled} from '@mui/material/styles'
+import Box from '@mui/material/Box'
 import ninaCommon from 'nina-common'
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded'
 import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
-import {Link} from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
+// import { Link } from 'react-router-dom'
+import {Typography} from '@mui/material'
+import {useWallet} from '@solana/wallet-adapter-react'
+import CloseIcon from '@mui/icons-material/Close';
 
 const {AudioPlayerContext} = ninaCommon.contexts
 const {NinaClient} = ninaCommon.utils
@@ -20,17 +26,16 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 
 
 const QueList = (props) => {
-  const {isPlaying, togglePlay} = props
-
-  const {txid, updateTxid, playlist, reorderPlaylist} =
+  const {isPlaying, togglePlay, setDrawerOpen} = props;
+  const wallet = useWallet()
+  const history = useHistory()
+  const {txid, updateTxid, playlist, reorderPlaylist, removeTrackFromPlaylist} =
     useContext(AudioPlayerContext)
   const [selectedIndex, setSelectedIndex] = useState(0)
-
   const [playlistState, setPlaylistState] = useState(undefined)
   const [skipForReorder, setSkipForReorder] = useState(false)
 
   useEffect(() => {
-    console.log('playlist :>> ', playlist);
     const playlistEntry = playlist.find((entry) => entry.txid === txid)
 
     if (playlistEntry) {
@@ -49,6 +54,11 @@ const QueList = (props) => {
   const handleListItemClick = (event, index, txid) => {
     setSelectedIndex(index)
     updateTxid(txid)
+  }
+
+  const clickToRelease = (e, releasePubkey) => {
+    setDrawerOpen(false)
+    history.push(`/release/` + releasePubkey)
   }
 
   const onDragEnd = (result) => {
@@ -76,53 +86,65 @@ const QueList = (props) => {
     reorderPlaylist(result)
   }
 
+
+
   return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Play</TableCell>
-            <TableCell>Play</TableCell>
-            <TableCell>Artist</TableCell>
-            <TableCell>Title</TableCell>
-            <TableCell>More Info</TableCell>
-            <TableCell>Remove</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody component={DroppableComponent(onDragEnd)}>
-          {playlist.map((entry, i) => (
-            <TableRow component={DraggableComponent(entry.txid, i)} key={entry.id}  >
-              <TableCell scope="row">{i + 1}</TableCell>
-              <TableCell onClick={(event) =>
-                handleListItemClick(event, i, entry.txid)
-              }>
-                {isPlaying && selectedIndex === i ? (
-                  <PauseRoundedIcon
-                    onClick={() => togglePlay()}
-                  />
-                ) : (
-                  <PlayArrowRoundedIcon
-                    onClick={() => togglePlay()}
-                  />
-                )}
-              </TableCell>
-              <TableCell>{entry.artist}</TableCell>
-              <TableCell>{entry.title}</TableCell>
-              <TableCell>
-                <Link to={`/release/${entry.releasePubkey}`}>
-                  More Info
-                </Link>
-              </TableCell>
-              <TableCell>
-                <Link to={`/release/${entry.releasePubkey}`}>
-                  x
-                </Link>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <StyledQueList>
+      {playlist?.length === 0 && (
+        <div style={{ padding: '16px' }}>
+          <Typography align="center">
+            {wallet?.connected
+              ? `You don't have any songs`
+              : `Connect your wallet to load your collection`}
+          </Typography>
+        </div>
+      )}
+
+      {playlist?.length > 0 && (
+        <TableContainer component={Paper} elevation={0}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell>Play</TableCell>
+                <TableCell>Artist</TableCell>
+                <TableCell>Title</TableCell>
+                <TableCell>More Info</TableCell>
+                <TableCell>Remove</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody component={DroppableComponent(onDragEnd)}>
+              {playlist.map((entry, i) => (
+                <TableRow component={DraggableComponent(entry.txid, i)} key={entry.txid}  >
+                  <TableCell scope="row">{i + 1}</TableCell>
+                  <TableCell onClick={(event) =>
+                    handleListItemClick(event, i, entry.txid)
+                  }>
+                    {isPlaying && selectedIndex === i ? (
+                      <PauseRoundedIcon
+                        onClick={() => togglePlay()}
+                      />
+                    ) : (
+                      <PlayArrowRoundedIcon
+                        onClick={() => togglePlay()}
+                      />
+                    )}
+                  </TableCell>
+                  <TableCell>{entry.artist}</TableCell>
+                  <TableCell>{entry.title}</TableCell>
+                  <TableCell onClick={(e) => {clickToRelease(e, entry.releasePubkey)}}>
+                      More Info
+                  </TableCell>
+                  <TableCell>
+                    <CloseIcon onClick={(e) => removeTrackFromPlaylist(e, entry.releasePubkey)} />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+    </StyledQueList>
   )
 }
 
@@ -162,6 +184,16 @@ const DroppableComponent = (
       </DragDropContext>
     )
   }
+
+const StyledQueList = styled(Box)(({theme}) => ({
+  width: '700px',
+  margin: 'auto',
+  '& .MuiTableCell-head': {
+    ...theme.helpers.baseFont,
+    fontWeight: '700'
+  }
+}))
+
 
 
   export default QueList;
