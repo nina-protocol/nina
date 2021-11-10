@@ -26,7 +26,7 @@ const HomePage = () => {
 
   return (
     <ScrollablePageWrapper>
-      <HomePageContainer>
+      <HomePageContainer overflowX="visible">
         <Typography variant="h1" align="left" sx={{ padding: '0 165px 140px' }}>
           Nina is a new infrastructure to buy, sell and stream music online. We
           put control in the artist’s hands and link them directly with their
@@ -109,12 +109,13 @@ const classes = {
   sectionHeader: `${PREFIX}-sectionHeader`,
 }
 
-const HomePageContainer = styled(Box)(({ theme }) => ({
+const HomePageContainer = styled('div')(({ theme }) => ({
   width: '1010px',
   // padding: '0 50px',
   margin: 'auto',
   overflowY: 'scroll',
   overflowX: 'visible',
+  border: '2px solid red',
   [`& .${classes.sectionHeader}`]: {
     fontWeight: '700 ',
     paddingBottom: `${theme.spacing(1)}`,

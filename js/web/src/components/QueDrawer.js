@@ -16,12 +16,13 @@ import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
 import QueueMusicIcon from '@mui/icons-material/QueueMusic'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import {Typography} from '@material-ui/core'
 
 const { AudioPlayerContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
-const PlaylistDrawer = (props) => {
-  const { isPlaying, togglePlay } = props
+const QueDrawer = (props) => {
+  const { isPlaying, togglePlay, nextInfo } = props
 
   const theme = useTheme()
 
@@ -30,20 +31,18 @@ const PlaylistDrawer = (props) => {
   const wallet = useWallet()
 
   const [selectedIndex, setSelectedIndex] = useState(0)
-  const [state, setState] = useState({
-    left: false,
-  })
+  const [drawerOpen, setDrawerOpen] = useState(false)
   const [playlistState, setPlaylistState] = useState(undefined)
   const [skipForReorder, setSkipForReorder] = useState(false)
 
-  const toggleDrawer = (anchor, open) => (event) => {
+  const toggleDrawer = (open) => (event) => {
     if (
       event.type === 'keydown' &&
       (event.key === 'Tab' || event.key === 'Shift')
     ) {
       return
     }
-    setState({ ...state, [anchor]: open })
+    setDrawerOpen( open )
   }
 
   useEffect(() => {
@@ -102,14 +101,14 @@ const PlaylistDrawer = (props) => {
   }
 
   const list = (anchor) => (
-    <Root className={classes.list} role="presentation">
+    <Que role="presentation">
       {playlist?.length === 0 && (
         <div style={{ padding: '16px' }}>
-          <p>
+          <Typography align="center">
             {wallet?.connected
               ? `You don't have any songs`
               : `Connect your wallet to load your collection`}
-          </p>
+          </Typography>
         </div>
       )}
       {playlist?.length > 0 && (
@@ -168,28 +167,37 @@ const PlaylistDrawer = (props) => {
           </Droppable>
         </DragDropContext>
       )}
-    </Root>
+    </Que>
   )
 
   return (
-    <div className="playlist__wrapper">
+    <ToggleWrapper>
       <React.Fragment key={'left'}>
-        <Button variant="outlined" onClick={toggleDrawer('left', true)}>
+        <Button variant="outlined" onClick={toggleDrawer(true)}>
           <QueueMusicIcon
-            className="player__playlist-toggle"
             style={{ fill: `${theme.palette.purple}` }}
           />{' '}
-          {playlist?.length > 0 ? `(${playlist.length})` : null}
+
+          {!drawerOpen && 
+           ( nextInfo ? `Up next: ${nextInfo.artist}` : 'open que')
+          }
+
+          {drawerOpen && 
+            ('Close')
+          }
+
         </Button>
         <Drawer
-          anchor={'left'}
-          open={state['left']}
-          onClose={toggleDrawer('left', false)}
+          anchor={'bottom'}
+          open={drawerOpen}
+          onClose={toggleDrawer(false)}
+          PaperProps={quePaperStyle}
+          ModalProps={queModalStyle}
         >
-          {list('left')}
+          {list('bottom')}
         </Drawer>
       </React.Fragment>
-    </div>
+    </ToggleWrapper>
   )
 }
 
@@ -200,10 +208,27 @@ const classes = {
   fullList: `${PREFIX}-fullList`,
 }
 
-const Root = styled('div')({
-  [`&.${classes.list}`]: {
-    width: 300,
-  },
+const quePaperStyle = {
+  sx: {
+    border: '2px solid blue',
+    height: '90%'
+  }
+}
+
+const queModalStyle = {
+  sx: {
+    zIndex: '99'
+  }
+}
+
+const Que = styled('div')({
+  border: '2px solid red',
+  // height: '90%'
 })
 
-export default PlaylistDrawer
+const ToggleWrapper = styled(Box)(() => ({
+  position: 'absolute',
+  right: '0',
+}))
+
+export default QueDrawer
