@@ -3,6 +3,8 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { ConnectionContext } from './connection'
 import { NinaContext } from './nina'
 import { ReleaseContext } from './release'
+import {useSnackbar} from 'notistack';
+
 
 import NinaClient from '../utils/client'
 
@@ -11,6 +13,8 @@ const AudioPlayerContextProvider = ({ children }) => {
   const wallet = useWallet()
   const { collection, shouldRemainInCollectionAfterSale } =
     useContext(NinaContext)
+  const {enqueueSnackbar} = useSnackbar();
+
   const { releaseState } = useContext(ReleaseContext)
   const { connection } = useContext(ConnectionContext)
   const [txid, setTxid] = useState(null)
@@ -30,7 +34,8 @@ const AudioPlayerContextProvider = ({ children }) => {
     reorderPlaylist,
     removeTrackFromPlaylist,
     createPlaylistFromTracks,
-    addTrackToPlaylist,
+    addTrackToQue,
+    removeTrackFromQue
   } = audioPlayerContextHelper({
     releaseState,
     wallet,
@@ -39,10 +44,11 @@ const AudioPlayerContextProvider = ({ children }) => {
     playlist,
     setPlaylist,
     shouldRemainInCollectionAfterSale,
+    enqueueSnackbar
   })
 
   const updateTxid = (newTxid, releasePubkey) => {
-    addTrackToPlaylist(releasePubkey)
+    addTrackToQue(releasePubkey)
     if (newTxid === txid) {
       setTxid(newTxid + '?ext=mp3')
     } else {
@@ -58,6 +64,8 @@ const AudioPlayerContextProvider = ({ children }) => {
         playlist,
         reorderPlaylist,
         removeTrackFromPlaylist,
+        addTrackToQue,
+        removeTrackFromQue
       }}
     >
       {children}
@@ -75,6 +83,7 @@ const audioPlayerContextHelper = ({
   setPlaylist,
   collection,
   shouldRemainInCollectionAfterSale,
+  enqueueSnackbar
 }) => {
   const reorderPlaylist = ({ source, destination }) => {
     const updatedPlaylist = [...playlist]
@@ -95,12 +104,23 @@ const audioPlayerContextHelper = ({
       )
 
       const updatedTracks = { ...tracks }
+      console.log('tracks :>> ', updatedTracks);
       delete updatedTracks[releasePubkey]
-
+      console.log('updatedPlaylist :>> ', updatedPlaylist);
       setPlaylist(updatedPlaylist)
-      setTracks(updatedTracks)
+      // setTracks(updatedTracks)
     }
   }
+  
+  const removeTrackFromQue = async (releasePubkey) => {
+    console.log('remove from que!');
+
+    const updatedPlaylist = playlist.filter(
+      (playlistItem) => playlistItem.releasePubkey !== releasePubkey
+    )
+    setPlaylist(updatedPlaylist)
+  }
+  
 
   /*
 
@@ -119,10 +139,13 @@ const audioPlayerContextHelper = ({
     setPlaylist([...playlist, ...playlistEntries])
   }
 
-  const addTrackToPlaylist = (releasePubkey) => {
+  const addTrackToQue = (releasePubkey) => {
     const playlistEntry = createPlaylistEntry(releasePubkey)
     if (playlistEntry) {
       setPlaylist([...playlist, playlistEntry])
+      enqueueSnackbar(`${playlistEntry.artist} - ${playlistEntry.title} added to que`, {
+        variant: 'info',
+      })
     }
   }
 
@@ -149,6 +172,7 @@ const audioPlayerContextHelper = ({
     reorderPlaylist,
     removeTrackFromPlaylist,
     createPlaylistFromTracks,
-    addTrackToPlaylist,
+    addTrackToQue,
+    removeTrackFromQue
   }
 }

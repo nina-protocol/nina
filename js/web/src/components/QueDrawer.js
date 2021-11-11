@@ -33,8 +33,7 @@ const QueDrawer = (props) => {
 
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [drawerOpen, setDrawerOpen] = useState(false)
-  // const [playlistState, setPlaylistState] = useState(undefined)
-  // const [skipForReorder, setSkipForReorder] = useState(false)
+
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -43,17 +42,8 @@ const QueDrawer = (props) => {
     ) {
       return
     }
-    console.log('open :>> ', open);
     setDrawerOpen( open )
   }
-
-  // useEffect(() => {
-  //   if (!skipForReorder) {
-  //     setPlaylistState(playlist)
-  //   } else {
-  //     setSkipForReorder(false)
-  //   }
-  // }, [playlist])
 
   useEffect(() => {
     const playlistEntry = playlist.find((entry) => entry.txid === txid)
@@ -86,7 +76,7 @@ const QueDrawer = (props) => {
           />{' '}
 
           {!drawerOpen && 
-           ( nextInfo ? `Up next: ${nextInfo.artist}` : 'open que')
+            (nextInfo ? `Up next: ${nextInfo.artist} - ${nextInfo.title}` : 'open que')
           }
 
           {drawerOpen && 
@@ -117,7 +107,6 @@ const classes = {
 
 const quePaperStyle = {
   sx: {
-    border: '2px solid blue',
     height: '90%'
   }
 }
@@ -128,10 +117,6 @@ const queModalStyle = {
   }
 }
 
-const Que = styled('div')({
-  border: '2px solid red',
-  // height: '90%'
-})
 
 const ToggleWrapper = styled(Box)(() => ({
   position: 'absolute',

@@ -29,12 +29,12 @@ const QueList = (props) => {
   const {isPlaying, togglePlay, setDrawerOpen} = props;
   const wallet = useWallet()
   const history = useHistory()
-  const {txid, updateTxid, playlist, reorderPlaylist, removeTrackFromPlaylist} =
+  const {txid, updateTxid, playlist, reorderPlaylist, removeTrackFromQue} =
     useContext(AudioPlayerContext)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [playlistState, setPlaylistState] = useState(undefined)
   const [skipForReorder, setSkipForReorder] = useState(false)
-
+  
   useEffect(() => {
     const playlistEntry = playlist.find((entry) => entry.txid === txid)
 
@@ -56,7 +56,7 @@ const QueList = (props) => {
     updateTxid(txid)
   }
 
-  const clickToRelease = (e, releasePubkey) => {
+  const goToRelease = (e, releasePubkey) => {
     setDrawerOpen(false)
     history.push(`/release/` + releasePubkey)
   }
@@ -132,11 +132,11 @@ const QueList = (props) => {
                   </TableCell>
                   <TableCell>{entry.artist}</TableCell>
                   <TableCell>{entry.title}</TableCell>
-                  <TableCell onClick={(e) => {clickToRelease(e, entry.releasePubkey)}}>
+                  <TableCell onClick={(e) => {goToRelease(e, entry.releasePubkey)}}>
                       More Info
                   </TableCell>
                   <TableCell>
-                    <CloseIcon onClick={(e) => removeTrackFromPlaylist(e, entry.releasePubkey)} />
+                    <CloseIcon onClick={() => removeTrackFromQue(entry.releasePubkey)} />
                   </TableCell>
                 </TableRow>
               ))}
@@ -191,6 +191,9 @@ const StyledQueList = styled(Box)(({theme}) => ({
   '& .MuiTableCell-head': {
     ...theme.helpers.baseFont,
     fontWeight: '700'
+  },
+  '& .MuiTableCell-root': {
+    textAlign: 'center'
   }
 }))
 
