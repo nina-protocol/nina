@@ -4,12 +4,12 @@ import 'react-multi-carousel/lib/styles.css'
 import { Typography, Box } from '@mui/material'
 import { Link } from 'react-router-dom'
 import SmoothImage from 'react-smooth-image'
-import CircularProgress from '@mui/material/CircularProgress'
 import Carousel from 'react-multi-carousel'
 import 'react-multi-carousel/lib/styles.css'
 import Button from '@mui/material/Button';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import Dots from './Dots'
 
 
 const RecentlyPurchased = (props) => {
@@ -19,7 +19,7 @@ const RecentlyPurchased = (props) => {
       <RecentlyPurchasedContainer
         sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
-        <CircularProgress color="black" />
+        <Dots size="80px" />
       </RecentlyPurchasedContainer>
     )
   }

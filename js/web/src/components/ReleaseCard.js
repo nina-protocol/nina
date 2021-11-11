@@ -3,7 +3,6 @@ import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import SmoothImage from 'react-smooth-image'
 import Button from '@mui/material/Button'
-import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import { Typography } from '@mui/material'
 import ninaRecord from '../assets/nina-record.png'
@@ -53,12 +52,8 @@ const ReleaseCard = (props) => {
           />
         ) : (
           <>
-            {metadata ? (
+            {metadata && (
               <SmoothImage src={metadata.image} alt={metadata.name} />
-            ) : (
-              <div className="loader--purple">
-                <CircularProgress color="inherit" />
-              </div>
             )}
           </>
         )}

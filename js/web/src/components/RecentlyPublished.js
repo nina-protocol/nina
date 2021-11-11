@@ -8,9 +8,10 @@ import Typography from '@mui/material/Typography'
 
 import { Link } from 'react-router-dom'
 import SmoothImage from 'react-smooth-image'
-import CircularProgress from '@mui/material/CircularProgress'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
+import Dots from './Dots'
+
 
 const RecentlyPublished = (props) => {
   const { releases } = props
@@ -62,7 +63,7 @@ const RecentlyPublished = (props) => {
       <RecentlyPublishedContainer
         sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
-        <CircularProgress color="black" />
+        <Dots size='80px' />
       </RecentlyPublishedContainer>
     )
   }
@@ -78,8 +79,6 @@ const RecentlyPublished = (props) => {
           autoPlay={true}
           autoPlaySpeed={2000}
           keyBoardControl={true}
-          // customTransition="all .5"
-          // centerMode={true}
           transitionDuration={500}
           slidesToSlide={1}
           containerClass="carousel-container"

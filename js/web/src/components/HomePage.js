@@ -8,7 +8,6 @@ import RecentlyPurchased from './RecentlyPurchased'
 import uploadPreview from '../assets/uploadPreview.png'
 import { Link } from 'react-router-dom'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
-import Dots from './Dots'
 
 const { ReleaseContext } = ninaCommon.contexts
 
@@ -27,7 +26,6 @@ const HomePage = () => {
 
   return (
     <ScrollablePageWrapper>
-      <Dots size="80px"/>
       <HomePageContainer overflowX="visible">
         <Typography variant="h1" align="left" sx={{ padding: '0 165px 140px' }}>
           Nina is a new infrastructure to buy, sell and stream music online. We
