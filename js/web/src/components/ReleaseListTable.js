@@ -85,7 +85,7 @@ const ReleaseListTable = (props) => {
   const [order] = useState('asc')
   const { addTrackToQue } = useContext(AudioPlayerContext)
   const handleClick = (event, releasePubkey) => {
-    history.push(`/release/` + releasePubkey)
+    history.push(`/releases/` + releasePubkey)
   }
 
   let rows = releases.map((release) => {

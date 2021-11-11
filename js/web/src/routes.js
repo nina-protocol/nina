@@ -27,8 +27,8 @@ function Routes() {
               <Route exact path="/upload" component={ReleaseCreate} />
               <Route path="/releases" component={ReleaseList}></Route>
               <Route path="/collection" component={UserCollection}></Route>
-              <Route exact path="/release/:releasePubkey" component={Release} />
               <Route exact path="/" component={HomePage} />
+              <Route exact path="/releases/:releasePubkey" component={Release} />
             </Switch>
             <AudioPlayer />
           </div>

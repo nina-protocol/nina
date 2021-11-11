@@ -10,7 +10,7 @@ import {
   WalletMultiButton,
 } from '@solana/wallet-adapter-material-ui'
 import ninaLogo from '../assets/nina-logo-black.png'
-
+import Breadcrumbs from './Breadcrumbs'
 const { NinaContext } = ninaCommon.contexts
 
 const NavBar = () => {
@@ -29,6 +29,7 @@ const NavBar = () => {
     <Root className={classes.nav}>
       <div className={classes.nav__left}>
         <NavDrawer />
+        <Breadcrumbs />
       </div>
 
       <Logo to="/">
