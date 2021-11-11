@@ -390,6 +390,64 @@ const idl = {
       "args": []
     },
     {
+      "name": "releaseUpdateMetadata",
+      "accounts": [
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "release",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "releaseSigner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "metadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "releaseMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMetadataProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "metadataData",
+          "type": {
+            "defined": "ReleaseMetadataData"
+          }
+        }
+      ]
+    },
+    {
       "name": "redeemableInit",
       "accounts": [
         {
@@ -1476,6 +1534,30 @@ const idl = {
       }
     },
     {
+      "name": "ReleaseMetadataData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "name": "uri",
+            "type": "string"
+          },
+          {
+            "name": "sellerFeeBasisPoints",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
       "name": "VaultBumps",
       "type": {
         "kind": "struct",
@@ -1688,6 +1770,21 @@ const idl = {
           "name": "date",
           "type": "i64",
           "index": true
+        }
+      ]
+    },
+    {
+      "name": "ReleaseMetadataUpdated",
+      "fields": [
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "metadataPublicKey",
+          "type": "publicKey",
+          "index": false
         }
       ]
     }

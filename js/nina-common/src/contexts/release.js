@@ -71,7 +71,6 @@ const ReleaseContextProvider = ({ children }) => {
 
   const {
     releaseCreate,
-    releaseUpdateMetadata,
     releaseFetchMetadata,
     releasePurchase,
     collectRoyaltyForRelease,
@@ -119,7 +118,6 @@ const ReleaseContextProvider = ({ children }) => {
         pressingState,
         resetPressingState,
         releaseCreate,
-        releaseUpdateMetadata,
         releaseFetchMetadata,
         releasePurchase,
         releasePurchasePending,
@@ -288,24 +286,8 @@ const releaseContextHelper = ({
         publishingCreditMint
       )
 
-      const data = {
-        name: ``,
-        symbol: ``,
-        uri: ``,
-        sellerFeeBasisPoints: resalePercentage * 100,
-      }
-
-      const metadataIx = await createMetadataIx(
-        data,
-        provider.wallet.publicKey.toBase58(),
-        releaseMint.publicKey.toBase58(),
-        provider.wallet.publicKey.toBase58(),
-        provider.wallet.publicKey.toBase58()
-      )
-
       let instructions = [
         ...releaseMintIx,
-        metadataIx,
         vaultTokenAccountIx,
         royaltyTokenAccountIx,
         authorityReleaseTokenAccountIx,
@@ -367,41 +349,6 @@ const releaseContextHelper = ({
       return true
     } catch (error) {
       return ninaErrorHandler(error)
-    }
-  }
-
-  const releaseUpdateMetadata = async (releasePubkey) => {
-    const nina = await NinaClient.connect(provider)
-    const arweaveMetadata = await releaseFetchMetadata(releasePubkey)
-
-    if (arweaveMetadata) {
-      let release = releaseState.tokenData[releasePubkey]
-      if (!release) {
-        release = await nina.program.account.release.fetch(
-          new anchor.web3.PublicKey(releasePubkey)
-        )
-      }
-
-      const metadata = await getMetadata(release.releaseMint, connection)
-      const ix = await updateMetadataIx(
-        arweaveMetadata.json,
-        arweaveMetadata.uri,
-        undefined,
-        true,
-        metadata.account.mint,
-        wallet.publicKey.toBase58(),
-        metadata.pubkey
-      )
-
-      const tx = new anchor.web3.Transaction()
-      tx.add(ix)
-      await provider.send(tx, [])
-
-      let releaseMetadata = await getReleaseMetadata(
-        releasePubkey,
-        release.releaseMint.toBase58()
-      )
-      saveReleaseMetadataToState(releasePubkey, releaseMetadata)
     }
   }
 
@@ -1044,15 +991,19 @@ const releaseContextHelper = ({
   }
 
   const getReleasesRecent = async () => {
-    const result = await fetch(`${NinaClient.endpoints.api}/releases/recent`)
-    const { published, purchased } = await result.json()
-    const releaseIds = [...published, ...purchased]
-    await fetchAndSaveReleasesToState(releaseIds)
+    try {
+      const result = await fetch(`${NinaClient.endpoints.api}/releases/recent`)
+      const { published, purchased } = await result.json()
+      const releaseIds = [...published, ...purchased]
+      await fetchAndSaveReleasesToState(releaseIds)
 
-    setReleasesRecentState({
-      published,
-      purchased,
-    })
+      setReleasesRecentState({
+        published,
+        purchased,
+      })
+    } catch (error) {
+
+    }
   }
 
   /*
@@ -1395,21 +1346,25 @@ const releaseContextHelper = ({
   }
 
   const releaseFetchMetadata = async (releasePubkey) => {
-    const arweaveTxidResult = await fetch(
-      `${NinaClient.endpoints.pressingPlant}/api/file/findArweaveTxid?tokenId=${releasePubkey}`
-    )
-    const arweaveTxidJson = await arweaveTxidResult.json()
+    try {
+      const arweaveTxidResult = await fetch(
+        `${NinaClient.endpoints.pressingPlant}/api/file/findArweaveTxid?tokenId=${releasePubkey}`
+      )
+      const arweaveTxidJson = await arweaveTxidResult.json()
 
-    if (arweaveTxidJson.txid) {
-      const arweaveMetadataUri = `${NinaClient.endpoints.arweave}/${arweaveTxidJson.txid}`
-      const arweaveJsonResult = await fetch(arweaveMetadataUri)
-      const arweaveJson = await arweaveJsonResult.json()
-      return {
-        json: arweaveJson,
-        uri: arweaveMetadataUri,
+      if (arweaveTxidJson.txid) {
+        const arweaveMetadataUri = `${NinaClient.endpoints.arweave}/${arweaveTxidJson.txid}`
+        const arweaveJsonResult = await fetch(arweaveMetadataUri)
+        const arweaveJson = await arweaveJsonResult.json()
+        return {
+          json: arweaveJson,
+          uri: arweaveMetadataUri,
+        }
       }
+      return null
+    } catch (error) {
+      console.warn(error)
     }
-    return null
   }
 
   const getReleaseMetadata = async (
@@ -1465,7 +1420,6 @@ const releaseContextHelper = ({
   return {
     addRoyaltyRecipient,
     releaseCreate,
-    releaseUpdateMetadata,
     releaseFetchMetadata,
     releasePurchase,
     collectRoyaltyForRelease,
