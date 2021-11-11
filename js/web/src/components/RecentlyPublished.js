@@ -10,8 +10,7 @@ import { Link } from 'react-router-dom'
 import SmoothImage from 'react-smooth-image'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
-const { Dots} = ninaCommon.components
-
+const { Dots } = ninaCommon.components
 
 const RecentlyPublished = (props) => {
   const { releases } = props
@@ -63,7 +62,7 @@ const RecentlyPublished = (props) => {
       <RecentlyPublishedContainer
         sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
-        <Dots size='80px' />
+        <Dots size="80px" />
       </RecentlyPublishedContainer>
     )
   }

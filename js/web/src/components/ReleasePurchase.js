@@ -63,7 +63,7 @@ const ReleasePurchase = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    let result;
+    let result
 
     if (!release.pending) {
       enqueueSnackbar('Making transaction...', {
@@ -144,12 +144,7 @@ const ReleasePurchase = (props) => {
             fullWidth
           >
             <Typography variant="body2">
-              {pending ? (
-                <Dots msg="awaiting wallet approval" />
-
-              ) : (
-                buttonText
-              )}
+              {pending ? <Dots msg="awaiting wallet approval" /> : buttonText}
             </Typography>
           </Button>
         </form>

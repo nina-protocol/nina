@@ -93,7 +93,6 @@ const audioPlayerContextHelper = ({
   }
 
   const removeTrackFromPlaylist = async (releasePubkey) => {
-    console.log('remove!');
     const remain = await shouldRemainInCollectionAfterSale(
       releasePubkey,
       releaseState.releaseMintMap[releasePubkey]
@@ -104,17 +103,12 @@ const audioPlayerContextHelper = ({
       )
 
       const updatedTracks = { ...tracks }
-      console.log('tracks :>> ', updatedTracks);
       delete updatedTracks[releasePubkey]
-      console.log('updatedPlaylist :>> ', updatedPlaylist);
       setPlaylist(updatedPlaylist)
-      // setTracks(updatedTracks)
     }
   }
   
   const removeTrackFromQue = async (releasePubkey) => {
-    console.log('remove from que!');
-
     const updatedPlaylist = playlist.filter(
       (playlistItem) => playlistItem.releasePubkey !== releasePubkey
     )

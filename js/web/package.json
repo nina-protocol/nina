@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "nina-common": "0.1.0",
-    "react-animated-dots": "^1.1.0",
     "react-dropzone-uploader": "^2.11.0",
     "react-multi-carousel": "^2.6.5",
     "react-smooth-image": "^1.1.0",

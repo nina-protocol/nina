@@ -59,12 +59,8 @@ const Release = ({ match }) => {
       {index === 1 && (
         <StyledArrowBackIosIcon fontSize="large" onClick={() => setIndex(0)} />
       )}
-      {!metadata && (
-        <Dots size="80px" />
-      )
-
-      }
-      {metadata && 
+      {!metadata && <Dots size="80px" />}
+      {metadata && (
         <SwipeableViews index={index} onChangeIndex={handleChangeIndex}>
           <NinaBox columns={'repeat(2, 1fr)'}>
             <ReleaseCard
@@ -92,7 +88,7 @@ const Release = ({ match }) => {
             />
           </NinaBox>
         </SwipeableViews>
-      }
+      )}
     </>
   )
 }
