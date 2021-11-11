@@ -1,6 +1,7 @@
 import React, {useContext} from 'react'
 import withBreadcrumbs from 'react-router-breadcrumbs-hoc'
 import { NavLink } from 'react-router-dom'
+import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 
 const { ReleaseContext } = ninaCommon.contexts
@@ -11,7 +12,9 @@ const ReleaseBreadcrumb = ({ match }) => {
   console.log(release)
   if (release) {
     return (
-      <span>{release.properties.artist} - {release.properties.title}</span>
+      <>
+        <span>{release.properties.artist},</span> <Title>{release.properties.title}</Title>
+      </>
     )
   }
   return null
@@ -43,5 +46,9 @@ const Breadcrumbs = ({ breadcrumbs }) => (
     ))}
   </div>
 )
+
+const Title = styled('span')(() => ({
+  fontStyle: 'italic',
+}))
 
 export default withBreadcrumbs(routes)(Breadcrumbs);
