@@ -5,12 +5,12 @@ import Carousel from 'react-multi-carousel'
 import 'react-multi-carousel/lib/styles.css'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-
+import ninaCommon from 'nina-common'
 import { Link } from 'react-router-dom'
 import SmoothImage from 'react-smooth-image'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
-import Dots from './Dots'
+const { Dots} = ninaCommon.components
 
 
 const RecentlyPublished = (props) => {

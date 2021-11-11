@@ -3,7 +3,6 @@ import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useSnackbar } from 'notistack'
 import Button from '@mui/material/Button'
-import CircularProgress from '@mui/material/CircularProgress'
 import { Typography, Box } from '@mui/material'
 import { useWallet } from '@solana/wallet-adapter-react'
 import ReleaseCreateForm from './ReleaseCreateForm'
@@ -12,7 +11,7 @@ import NinaBox from './NinaBox'
 import MediaDropzones from './MediaDropzones'
 import * as Yup from 'yup'
 
-const { ReleaseSettings } = ninaCommon.components
+const { ReleaseSettings, Dots } = ninaCommon.components
 const { ReleaseContext, NinaContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
@@ -195,7 +194,7 @@ const ReleaseCreate = () => {
                 disabled={pending || !pressingFee || !formIsValid}
                 sx={{ height: '54px' }}
               >
-                {pending && <CircularProgress />}
+                {pending && <Dots />}
                 {!pending && buttonText}
               </Button>
             </CreateCta>

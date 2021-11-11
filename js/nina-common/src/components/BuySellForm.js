@@ -7,6 +7,9 @@ import Input from '@mui/material/Input'
 import Box from '@mui/material/Box'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { ExchangeContext } from '../contexts'
+import Dots from './Dots'
+
+
 
 const BuySellForm = (props) => {
   const { onSubmit, isBuy, release, amount, setAmount } = props
@@ -69,13 +72,14 @@ const BuySellForm = (props) => {
             type="submit"
             disabled={!wallet?.connected}
             disableRipple={true}
+            sx={{width: "20%"}}
           >
             {isBuy && buyPending && (
-              <CircularProgress size={30} color="inherit" />
+              <Dots/>
             )}
 
             {!isBuy && sellPending && (
-              <CircularProgress size={30} color="inherit" />
+              <Dots />
             )}
             {isBuy && !buyPending && 'Submit'}
             {!isBuy && !sellPending && 'Submit'}

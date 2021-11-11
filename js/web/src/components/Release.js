@@ -5,12 +5,11 @@ import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import NinaBox from './NinaBox'
 import ReleaseCard from './ReleaseCard'
-import Dots from './Dots'
 import ReleasePurchase from './ReleasePurchase'
 import SwipeableViews from 'react-swipeable-views'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 
-const { Exchange } = ninaCommon.components
+const { Exchange, Dots } = ninaCommon.components
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
 
 const Release = ({ match }) => {

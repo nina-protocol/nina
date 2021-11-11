@@ -1,4 +1,5 @@
 import React from 'react'
+import ninaCommon from 'nina-common'
 import { styled } from '@mui/material/styles'
 import 'react-multi-carousel/lib/styles.css'
 import { Typography, Box } from '@mui/material'
@@ -9,7 +10,7 @@ import 'react-multi-carousel/lib/styles.css'
 import Button from '@mui/material/Button';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import Dots from './Dots'
+const {Dots} = ninaCommon.components
 
 
 const RecentlyPurchased = (props) => {

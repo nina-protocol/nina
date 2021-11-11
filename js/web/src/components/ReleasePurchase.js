@@ -3,11 +3,11 @@ import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Button from '@mui/material/Button'
-import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
 import { Typography } from '@mui/material'
 
+const { Dots } = ninaCommon.components
 const { ReleaseContext, NinaContext, ExchangeContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
@@ -61,20 +61,31 @@ const ReleasePurchase = (props) => {
     )
   }, [exchangeState])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    let result;
+
     if (!release.pending) {
       enqueueSnackbar('Making transaction...', {
         variant: 'info',
       })
-      releasePurchase(releasePubkey)
+      result = await releasePurchase(releasePubkey)
+      if (result) {
+        showCompletedTransaction(result)
+      }
     }
+  }
+
+  const showCompletedTransaction = (result) => {
+    enqueueSnackbar(result.msg, {
+      variant: result.success ? 'success' : 'warn',
+    })
   }
 
   if (!release) {
     return (
       <>
-        <CircularProgress color="inherit" />
+        <Dots color="inherit" />
       </>
     )
   }
@@ -134,7 +145,8 @@ const ReleasePurchase = (props) => {
           >
             <Typography variant="body2">
               {pending ? (
-                <CircularProgress size="15px" color="inherit" />
+                <Dots msg="awaiting wallet approval" />
+
               ) : (
                 buttonText
               )}

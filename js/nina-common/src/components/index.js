@@ -1,5 +1,6 @@
 import BuySell from './BuySell'
 import BuySellForm from './BuySellForm'
+import Dots from './Dots'
 import Exchange from './Exchange'
 import ExchangeHistoryModal from './ExchangeHistoryModal'
 import ExchangeList from './ExchangeList'
@@ -21,6 +22,7 @@ import UserRedemptionsList from './UserRedemptionsList'
 export {
   BuySell,
   BuySellForm,
+  Dots,
   Exchange,
   ExchangeHistoryModal,
   ExchangeList,
