@@ -2,24 +2,24 @@ import React, { useEffect, useState, useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
-import TextField from '@mui/material/TextField'
+// import TextField from '@mui/material/TextField'
 import { Box, Typography } from '@mui/material'
 import ReleaseListTable from './ReleaseListTable'
 
-const { NameContext, ReleaseContext, NinaContext } = ninaCommon.contexts
+const { ReleaseContext, NinaContext } = ninaCommon.contexts
 
 const ReleaseList = () => {
   const {
     searchResults,
-    resetSearchResults,
+    // resetSearchResults,
     filterReleasesUserCollection,
     releaseState,
   } = useContext(ReleaseContext)
 
   const wallet = useWallet()
   const { collection } = useContext(NinaContext)
-  const { getReleasesForTwitterHandle } = useContext(NameContext)
-  const [search, setSearch] = useState(searchResults.handle)
+  // const { getReleasesForTwitterHandle } = useContext(NameContext)
+  // const [search, setSearch] = useState(searchResults.handle)
   const [userCollectionReleases, setUserCollectionReleases] = useState()
 
   useEffect(() => {
@@ -28,25 +28,25 @@ const ReleaseList = () => {
     }
   }, [releaseState, collection])
 
-  useEffect(() => {
-    setSearch(searchResults.handle)
-  }, [searchResults])
+  // useEffect(() => {
+  //   setSearch(searchResults.handle)
+  // }, [searchResults])
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    getReleasesForTwitterHandle(search)
-  }
+  // const handleSubmit = (e) => {
+  //   e.preventDefault()
+  //   getReleasesForTwitterHandle(search)
+  // }
 
-  const checkIfEmpty = (e) => {
-    e.preventDefault()
-    if (e.target.value === '') {
-      resetSearchResults()
-    }
-  }
+  // const checkIfEmpty = (e) => {
+  //   e.preventDefault()
+  //   if (e.target.value === '') {
+  //     resetSearchResults()
+  //   }
+  // }
 
   return (
     <StyledBox className={classes.root}>
-      <div>
+      {/* <div>
         <form onSubmit={handleSubmit}>
           <TextField
             label="Search"
@@ -74,7 +74,7 @@ const ReleaseList = () => {
             @{searchResults.handle}
           </a>
         </h1>
-      )}
+      )} */}
       {!wallet?.connected && !searchResults.searched && (
         <>
           <h1>Welcome to Nina</h1>
@@ -115,13 +115,9 @@ const classes = {
 }
 
 const StyledBox = styled(Box)(() => ({
-  [`&.${classes.root}`]: {
-    width: '80%',
-    display: 'flex',
-    flexDirection: 'column',
-    position: 'absolute',
-    top: 40,
-  },
+  display: 'flex',
+  flexDirection: 'column',
+  overflowY: 'scroll',
 }))
 
 export default ReleaseList

@@ -31,12 +31,9 @@ const NavBar = () => {
         <NavDrawer />
       </div>
 
-      <NavLink
-        to="/"
-        activeClassName={`${classes.nav}__link ${classes.nav}__link--active  `}
-      >
+      <Logo to="/">
         <img src={ninaLogo} className={classes.nav__logo} alt="nina" />
-      </NavLink>
+      </Logo>
 
       <div className={classes.nav__right}>
         <span className={classes.nav__balance}>
@@ -110,7 +107,7 @@ const Root = styled('nav')(({ theme }) => ({
   },
 
   [`& .${classes.nav__logo}`]: {
-    height: '150%',
+    height: '100%',
   },
 
   [`& .${classes.nav__button}`]: {
@@ -197,6 +194,14 @@ const ConnectionDot = styled('span')(({ theme }) => ({
   '&.connected': {
     opacity: '100%',
   },
+}))
+
+const Logo = styled(NavLink)(() => ({
+  position: 'absolute',
+  left: '50%',
+  top: '0',
+  transform: 'translateX(-50%)',
+  height: '60px',
 }))
 
 export default withFormik({

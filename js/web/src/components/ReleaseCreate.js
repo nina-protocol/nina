@@ -4,10 +4,11 @@ import ninaCommon from 'nina-common'
 import { useSnackbar } from 'notistack'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
-import { Typography } from '@mui/material'
-import { useTheme } from '@mui/material/styles'
+import { Typography, Box } from '@mui/material'
 import { useWallet } from '@solana/wallet-adapter-react'
 import ReleaseCreateForm from './ReleaseCreateForm'
+import ReleaseCard from './ReleaseCard'
+import NinaBox from './NinaBox'
 import MediaDropzones from './MediaDropzones'
 import * as Yup from 'yup'
 
@@ -26,7 +27,6 @@ const ReleaseCreateSchema = Yup.object().shape({
 })
 
 const ReleaseCreate = () => {
-  const theme = useTheme()
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const { releaseCreate, pressingState, resetPressingState, releaseState } =
@@ -37,7 +37,7 @@ const ReleaseCreate = () => {
   const [releasePubkey, setReleasePubkey] = useState(undefined)
   const [pressingFee, setPressingFee] = useState(undefined)
   const [release, setRelease] = useState(undefined)
-  const [buttonText, setButtonText] = useState('Publish')
+  const [buttonText, setButtonText] = useState('1/2 Confirm Relase Info')
   const [pending, setPending] = useState(false)
   const [formIsValid, setFormIsValid] = useState(false)
   const [formValues, setFormValues] = useState({
@@ -138,112 +138,98 @@ const ReleaseCreate = () => {
     track.meta.status === 'done'
   ) {
     return (
-      <Root>
-        <Typography variant="h6" gutterBottom>
-          Release Overview
-        </Typography>
+      <NinaBox columns={'repeat(2, 1fr)'} justifyItems={'end'}>
+        <ReleaseCard
+          metadata={formValues.releaseForm}
+          preview={true}
+          releasePubkey={releasePubkey}
+          track={track}
+          artwork={artwork}
+        />
         <ReleaseSettings
           releasePubkey={releasePubkey}
           inCreateFlow={true}
           tempMetadata={formValues.releaseForm}
           artwork={artwork}
         />
-      </Root>
+      </NinaBox>
     )
   }
 
   return (
-    <Root>
+    <NinaBox columns="350px 400px" gridColumnGap="10px">
       {!wallet.connected && (
-        <Typography variant="body" gutterBottom>
+        <ConnectMessage variant="body" gutterBottom>
           Please connect your wallet to start publishing!
-        </Typography>
+        </ConnectMessage>
       )}
 
       {wallet?.connected && npcAmountHeld > 0 && (
         <>
-          <div style={theme.helpers.grid} className={classes.createFlowGrid}>
-            <>
-              <div className={classes.createReleasePreview}>
-                <MediaDropzones
-                  setTrack={setTrack}
-                  setArtwork={setArtwork}
-                  values={formValues}
-                  releasePubkey={releasePubkey}
-                  track={track}
-                />
-              </div>
-              <div className={classes.createFormContainer}>
-                <ReleaseCreateForm
-                  onChange={handleFormChange}
-                  values={formValues.releaseForm}
-                  ReleaseCreateSchema={ReleaseCreateSchema}
-                />
-                {pressingFee > 0 && (
-                  <Typography variant="body2">
-                    <strong>Pressing Fee:</strong> {pressingFee} (
-                    {formValues.releaseForm.catalogNumber})
-                  </Typography>
-                )}
-              </div>
-            </>
-            {!release && (
-              <div className={classes.createCta}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleSubmit}
-                  disabled={pending || !pressingFee || !formIsValid}
-                >
-                  {pending && <CircularProgress />}
-                  {!pending && buttonText}
-                </Button>
-              </div>
-            )}
-          </div>
+          <Box sx={{ width: '100%' }}>
+            <MediaDropzones
+              setTrack={setTrack}
+              setArtwork={setArtwork}
+              values={formValues}
+              releasePubkey={releasePubkey}
+              track={track}
+            />
+          </Box>
+
+          <CreateFormWrapper>
+            <ReleaseCreateForm
+              onChange={handleFormChange}
+              values={formValues.releaseForm}
+              ReleaseCreateSchema={ReleaseCreateSchema}
+              pressingFee={pressingFee}
+            />
+          </CreateFormWrapper>
+
+          {!release && (
+            <CreateCta>
+              <Button
+                fullWidth
+                variant="outlined"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={pending || !pressingFee || !formIsValid}
+                sx={{ height: '54px' }}
+              >
+                {pending && <CircularProgress />}
+                {!pending && buttonText}
+              </Button>
+            </CreateCta>
+          )}
         </>
       )}
 
       {wallet?.connected && npcAmountHeld < 1 && (
-        <Typography variant="body" gutterBottom>
+        <Typography variant="body" gutterBottom sx={{ gridColumn: '1/3' }}>
           Fill out this form to apply for a publishing grant
         </Typography>
       )}
-    </Root>
+    </NinaBox>
   )
 }
 
-const PREFIX = 'ReleaseCreate'
+const ConnectMessage = styled(Typography)(() => ({
+  gridColumn: '1/3',
+}))
 
-const classes = {
-  createFlowGrid: `${PREFIX}-createFlowGrid`,
-  createFormContainer: `${PREFIX}-createFormContainer`,
-  createReleasePreview: `${PREFIX}-createReleasePreview`,
-  createCta: `${PREFIX}-createCta`,
-}
-
-const Root = styled('div')(() => ({
+const CreateFormWrapper = styled(Box)(({ theme }) => ({
   width: '100%',
-  position: 'absolute',
-  [`& .${classes.createFlowGrid}`]: {
-    gridTemplateColumns: '50% 50%',
-    gridAutoRows: 'auto !important',
-    padding: '0 20%',
-  },
+  height: '476px',
+  margin: 'auto',
+  display: 'flex',
+  flexDirection: 'column',
+  border: `1px solid ${theme.palette.grey.primary}`,
+}))
 
-  [`& .${classes.createFormContainer}`]: {
-    width: '100%',
-  },
-
-  [`& .${classes.createReleasePreview}`]: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-
-  [`& .${classes.createCta}`]: {
-    gridColumn: '1/3',
-    paddingTop: '0.5rem',
+const CreateCta = styled(Box)(({ theme }) => ({
+  gridColumn: '1/3',
+  width: '100%',
+  '& .MuiButton-root': {
+    ...theme.helpers.baseFont,
   },
 }))
 

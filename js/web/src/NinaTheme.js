@@ -7,11 +7,11 @@ const colors = {
   orange: 'rgba(244, 73, 73, 0.94)',
   green: '#32b36c',
   white: '#ffffff',
-  greyLight: 'rgba(0, 0, 0, 0.2)',
-  grey: 'rgba(0, 0, 0, 0.3)',
+  greyLight: '#E3E3E3',
+  grey: 'rgba(0, 0, 0, 0.2)',
   transparent: '#ffffff00',
   black: '#000000',
-  blue: 'rgba(45, 129, 255, 1)',
+  blue: '#2D81FF',
   blueTrans: 'rgba(45, 129, 255, 0.19)',
   pink: '#FF54A6',
 }
@@ -32,6 +32,11 @@ export const NinaTheme = createTheme({
     black: colors.black,
     purple: colors.purple,
     white: colors.white,
+    red: colors.red,
+    grey: {
+      primary: colors.grey,
+    },
+    greyLight: colors.greyLight,
   },
   gradient: {
     background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(143,175,223,1) 0%, rgb(35,99,196) 100%)`,
@@ -56,7 +61,7 @@ export const NinaTheme = createTheme({
   },
   vars: {
     borderWidth: '1.5px',
-    borderRadius: '16px',
+    borderRadius: '30px',
   },
   transitions: {
     easing: {
@@ -81,17 +86,16 @@ export const NinaTheme = createTheme({
       justifyContent: 'center',
       alignItems: 'center',
     },
-    inputLabelPair: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      margin: '0.2rem 0',
-    },
-    input: {
-      width: '60%',
-    },
     gradient: {
       background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(143,175,223,1) 0%, rgb(35,99,196) 100%)`,
       color: colors.white,
+    },
+    inputShadow: {
+      boxShadow: '0px 0px 30px 0px #0000001A',
+    },
+    baseFont: {
+      fontSize: '12px !important',
+      lineHeight: '13.8px !important',
     },
   },
   components: {
@@ -102,16 +106,22 @@ export const NinaTheme = createTheme({
           fontSize: '100px',
           boxShadow: 'none',
           minWidth: 'unset !important',
+          '&:hover': {
+            backgroundColor: 'red'
+          },
           '&.MuiButton-outlined': {
-            borderRadius: '50px',
-            padding: '10px',
+            borderRadius: '0px',
+            padding: '20px',
+            borderColor: colors.black,
+            color: colors.black,
             '&:hover': {
-              borderColor: `${colors.blue}`,
+              borderColor: colors.black,
+              color: colors.black,
             },
           },
           '&.MuiButton-contained': {
-            borderRadius: '50px',
             padding: '10px',
+            borderRadius: '0px',
             backgroundColor: `${colors.white}`,
             color: `${colors.black}`,
             boxShadow: 'none',
@@ -124,8 +134,89 @@ export const NinaTheme = createTheme({
       },
     },
     MuiTypography: {
-      root: {
-        letterSpacing: '0.02em',
+      styleOverrides: {
+        root: {
+          letterSpacing: '0.02em',
+        },
+        gutterBottom: {
+          marginBottom: '15px !important',
+        },
+        h1: {
+          fontSize: '36px !important',
+          fontWeight: '400 !important',
+        },
+        h2: {
+          fontSize: '25px !important',
+          fontWeight: '400 !important',
+        },
+        h3: {
+          fontSize: '20px !important',
+          lineHeight: '23px !important',
+        },
+        h4: {
+          fontSize: '18px !important',
+          lineHeight: '20.7px !important',
+        },
+        body1: {
+          fontSize: '14px !important',
+          lineHeight: '16.1px !important',
+        },
+        body2: {
+          fontSize: '12px !important',
+          lineHeight: '13.8px !important',
+        },
+        subtitle1: {
+          fontSize: '10px !important',
+        },
+      },
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiInput-underline:before': {
+            borderBottom: `1px solid ${colors.black}`,
+          },
+          '& .MuiInput-underline:after': {
+            borderBottom: `1px solid ${colors.black}`,
+          },
+          '& .MuiFormControl-root': {
+            height: '35px',
+          },
+          '& .MuiFormLabel-root.Mui-focused': {
+            color: 'rgba(0, 0, 0, 0.54)',
+          },
+          '& .MuiInputLabel-formControl': {
+            transform: 'translate(0, 15px) scale(1)',
+            fontSize: '12px',
+          },
+          '& .MuiInputLabel-shrink': {
+            transform: 'translate(0, 1.5px) scale(.75)',
+          },
+          '& input[type=number]::-webkit-inner-spin-button': {
+            '-webkit-appearance': 'none',
+            margin: '0',
+          },
+        },
+      },
+    },
+    MuiSlider: {
+      styleOverrides: {
+        root: {
+          '& .MuiSlider-thumb': {
+            color: colors.black,
+            width: '14px',
+            height: '11px',
+          },
+          '& .MuiSlider-track': {
+            color: colors.black,
+            height: '1px',
+            border: 'none',
+          },
+          '& .MuiSlider-rail': {
+            color: colors.black,
+            height: '1px',
+          },
+        },
       },
     },
     MuiCssBaseline: {
@@ -172,17 +263,6 @@ export const NinaTheme = createTheme({
             display: 'none',
           },
         },
-      },
-    },
-    MuiSlider: {
-      thumb: {
-        color: `${colors.purple}`,
-      },
-      track: {
-        color: `${colors.purple}`,
-      },
-      rail: {
-        color: `${colors.purpleLight}`,
       },
     },
     MuiTabs: {

@@ -109,30 +109,19 @@ const NavDrawer = () => {
                 </NavLink>
               )
             default:
-              ;<NavLink
-                className={`${classes.drawerLink}`}
-                to={`/${link}`}
-                activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
-                key={link}
-              >
-                <ListItem button key={link}>
-                  <ListItemText primary={'link'} />
-                </ListItem>
-              </NavLink>
+              return (
+                <NavLink
+                  className={`${classes.drawerLink}`}
+                  to={`${link === 'home' ? '/' : `/${link}`}`}
+                  activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
+                  key={link}
+                >
+                  <ListItem button key={link}>
+                    <ListItemText primary={link} />
+                  </ListItem>
+                </NavLink>
+              )
           }
-
-          return (
-            <NavLink
-              className={`${classes.drawerLink}`}
-              to={`/${link}`}
-              activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
-              key={link}
-            >
-              <ListItem button key={link}>
-                <ListItemText primary={link} />
-              </ListItem>
-            </NavLink>
-          )
         })}
       </StyledList>
     </Box>

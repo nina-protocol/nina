@@ -2,18 +2,24 @@ import React, { useState, useContext, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import Button from '@mui/material/Button'
-import { useTheme } from '@mui/material/styles'
+import Box from '@mui/material/Box'
+import NinaBox from './NinaBox'
 import ReleaseCard from './ReleaseCard'
-import ReleaseTabs from './ReleaseTabs'
+import ReleasePurchase from './ReleasePurchase'
+import SwipeableViews from 'react-swipeable-views'
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 
+const { Exchange } = ninaCommon.components
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
 
 const Release = ({ match }) => {
   const releasePubkey = match.params.releasePubkey
-  const theme = useTheme()
-  const { releaseState, getRelease, getRedeemablesForRelease } =
-    useContext(ReleaseContext)
-  const { getExchangeHistoryForRelease } = useContext(ExchangeContext)
+  const { releaseState, getRelease } = useContext(ReleaseContext)
+  const { getExchangeHistoryForRelease, exchangeState } =
+    useContext(ExchangeContext)
+  const [track, setTrack] = useState(null)
+  const [index, setIndex] = useState()
+
   const [metadata, setMetadata] = useState(
     releaseState?.metadata[releasePubkey] || null
   )
@@ -22,7 +28,6 @@ const Release = ({ match }) => {
     if (!metadata) {
       getRelease(releasePubkey)
     }
-    getRedeemablesForRelease(releasePubkey)
     getExchangeHistoryForRelease(releasePubkey)
   }, [])
 
@@ -32,9 +37,17 @@ const Release = ({ match }) => {
     }
   }, [releaseState?.metadata[releasePubkey]])
 
+  useEffect(() => {
+    setTrack(releaseState.metadata[releasePubkey])
+  }, [releaseState.metadata[releasePubkey]])
+
+  const handleChangeIndex = (value) => {
+    setIndex(value)
+  }
+
   if (metadata && Object.keys(metadata).length === 0) {
     return (
-      <div className={`${classes.release}__pendingContainer`}>
+      <div>
         <h1>{`We're still preparing this release for sale, check back soon!`}</h1>
         <Button onClick={() => getRelease(releasePubkey)}>Refresh</Button>
       </div>
@@ -42,41 +55,52 @@ const Release = ({ match }) => {
   }
 
   return (
-    <Root>
-      <div style={theme.helpers.grid} className={`${classes.release}`}>
-        <ReleaseCard
-          metadata={metadata}
-          preview={false}
-          releasePubkey={releasePubkey}
-        />
-        <div className={classes.releaseControls}>
-          <ReleaseTabs releasePubkey={releasePubkey} />
-        </div>
-      </div>
-    </Root>
+    <>
+      {index === 1 && (
+        <StyledArrowBackIosIcon fontSize="large" onClick={() => setIndex(0)} />
+      )}
+      <SwipeableViews index={index} onChangeIndex={handleChangeIndex}>
+        <NinaBox columns={'repeat(2, 1fr)'}>
+          <ReleaseCard
+            metadata={metadata}
+            preview={false}
+            releasePubkey={releasePubkey}
+            track={track}
+          />
+
+          <ReleaseCtaWrapper>
+            <ReleasePurchase
+              releasePubkey={releasePubkey}
+              metadata={metadata}
+              setIndex={setIndex}
+            />
+          </ReleaseCtaWrapper>
+        </NinaBox>
+
+        <NinaBox columns={'repeat(1, 1fr)'}>
+          <Exchange
+            releasePubkey={releasePubkey}
+            exchanges={exchangeState.exchanges}
+            metadata={metadata}
+            track={track}
+          />
+        </NinaBox>
+      </SwipeableViews>
+    </>
   )
 }
 
-const PREFIX = 'Release'
+const ReleaseCtaWrapper = styled(Box)(() => ({
+  margin: 'auto',
+  width: 'calc(100% - 50px)',
+  paddingLeft: '50px',
+}))
 
-const classes = {
-  release: `${PREFIX}-release`,
-  releaseControls: `${PREFIX}-releaseControls`,
-}
-
-const Root = styled('div')(() => ({
-  [`& .${classes.release}`]: {
-    width: '80vw',
-    margin: 'auto',
-    height: '75vh',
-    gridTemplateColumns: 'repeat(2, 1fr)',
-  },
-
-  [`& .${classes.releaseControls}`]: {
-    margin: 'auto',
-    height: '100%',
-    width: '80%',
-  },
+const StyledArrowBackIosIcon = styled(ArrowBackIosIcon)(({ theme }) => ({
+  position: 'absolute',
+  left: theme.spacing(1),
+  top: theme.spacing(6),
+  cursor: 'pointer',
 }))
 
 export default Release

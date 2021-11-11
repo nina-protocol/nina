@@ -8,6 +8,7 @@ import ReleaseList from './components/ReleaseList'
 import UserCollection from './components/UserCollection'
 import Release from './components/Release'
 import AudioPlayer from './components/AudioPlayer'
+import HomePage from './components/HomePage'
 import NavBar from './components/NavBar'
 
 function Routes() {
@@ -27,6 +28,7 @@ function Routes() {
               <Route path="/releases" component={ReleaseList}></Route>
               <Route path="/collection" component={UserCollection}></Route>
               <Route exact path="/release/:releasePubkey" component={Release} />
+              <Route exact path="/" component={HomePage} />
             </Switch>
             <AudioPlayer />
           </div>

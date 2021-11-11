@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import { useSnackbar } from 'notistack'
-import { Typography, Box } from '@mui/material'
+import { Typography, Box, Fade, Button } from '@mui/material'
+import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined';
 import RefreshIcon from '@mui/icons-material/Refresh'
 import { useWallet } from '@solana/wallet-adapter-react'
 import BuySell from './BuySell'
@@ -13,11 +14,12 @@ import {
   ExchangeContext,
   ReleaseContext,
   NinaContext,
+  AudioPlayerContext
 } from '../contexts'
 import NinaClient from '../utils/client'
 
 const Exchange = (props) => {
-  const { releasePubkey, metadata } = props
+  const { releasePubkey, metadata, track } = props
 
   const wallet = useWallet()
   const { enqueueSnackbar } = useSnackbar()
@@ -36,6 +38,8 @@ const Exchange = (props) => {
   } = useContext(ExchangeContext)
   const { connection } = useContext(ConnectionContext)
   const { getSolPrice } = useContext(NinaContext)
+  const {updateTxid} = useContext(AudioPlayerContext)
+
   const [exchangeAwaitingConfirm, setExchangeAwaitingConfirm] =
     useState(undefined)
   const [exchangesBuy, setExchangesBuy] = useState(undefined)
@@ -159,13 +163,43 @@ const Exchange = (props) => {
   }
 
   return (
-    <Root>
-      <ExchangeHistoryModal
-        exchangeHistory={exchangeHistory}
-        release={release}
-      />
-      <div className={classes.exchangeWrapper}>
-        <Box className={classes.buySellContainer}>
+    <>
+      <ExchangeWrapper>
+        <StyledReleaseInfo>
+          <ReleaseImage>
+            {metadata && (
+              <img
+                src={metadata.image}
+                alt={metadata.name}
+              />
+            )}
+          </ReleaseImage>
+
+          <InfoCopy>
+            {track && (
+              <Fade in={true}>
+                <Button
+                  onClick={() => {
+                    updateTxid(track.properties.files[0].uri, releasePubkey)
+                  }}
+                  sx={{height: '22px', width: '28px'}}
+                >
+                  <PlayCircleOutlineOutlinedIcon sx={{color: 'white'}}  />
+                </Button>
+              </Fade>
+            )}
+
+            {metadata && (
+              <Fade in={true}>
+                <Typography variant="h6" color="white" align="left">
+                  {metadata?.properties?.artist || metadata?.artist}, <i>{metadata?.properties?.title || metadata?.title}</i>
+                </Typography>
+              </Fade>
+            )}
+          </InfoCopy>
+        </StyledReleaseInfo>
+        
+        <StyledExchange>
           <BuySell
             {...props}
             release={release}
@@ -174,6 +208,16 @@ const Exchange = (props) => {
               onExchangeInitSubmit(exchange, isBuy, amount)
             }
           />
+          <ExchangeList
+            list={exchangesBuy}
+            onExchangeButtonAction={handleExchangeAction}
+            release={release}
+            isBuy={true}
+            metadata={metadata}
+            />
+        </StyledExchange>
+
+        <StyledExchange>
           <BuySell
             {...props}
             release={release}
@@ -182,52 +226,45 @@ const Exchange = (props) => {
               onExchangeInitSubmit(exchange, isBuy, amount)
             }
           />
-        </Box>
-        <div className={classes.exchange}>
-          <Box className={classes.exchangeListContainer}>
-            <Box className={classes.listWrapper}>
-              <ExchangeList
-                list={exchangesBuy}
-                onExchangeButtonAction={handleExchangeAction}
-                release={release}
-                isBuy={true}
-                metadata={metadata}
-              />
-            </Box>
+          <ExchangeList
+            list={exchangesSell}
+            onExchangeButtonAction={handleExchangeAction}
+            release={release}
+            isBuy={false}
+            metadata={metadata}
+            />
+        </StyledExchange>
+    
+        <ExchangeCopy >
+          <Typography variant="subtitle1" align="left" >
+            {exchangesBuy?.length > 6
+              ? `Scroll to view ${exchangesBuy.length - 6} offers...`
+              : ''}
+          </Typography>
 
-            <Box className={classes.listWrapper}>
-              <ExchangeList
-                list={exchangesSell}
-                onExchangeButtonAction={handleExchangeAction}
-                release={release}
-                isBuy={false}
-                metadata={metadata}
-              />
-            </Box>
-          </Box>
-        </div>
-        <Box className={classes.scrollCopyContainer}>
-          <Typography className={classes.scrollCopy}>
-            {exchangesBuy?.length > 7
-              ? `Scroll to view ${exchangesBuy.length - 7} offers...`
+          <HistoryCtaWrapper sx={{display:'flex'}}>
+            <ExchangeHistoryModal
+              exchangeHistory={exchangeHistory}
+              release={release}
+            />
+            <Typography variant="subtitle1" onClick={refreshExchange}>
+              Last Updated: <span>{new Date(updateTime).toLocaleTimeString()} </span>
+              <RefreshIcon fontSize="10px" sx={{fontSize: '10px'}} />
+            </Typography>
+          </HistoryCtaWrapper>
+
+          <Typography variant="subtitle1" align="right">
+            {exchangesSell?.length > 6
+              ? `Scroll to view ${exchangesSell.length - 6} listings...`
               : ''}
           </Typography>
-          <Typography className={classes.scrollCopy}>
-            {exchangesSell?.length > 7
-              ? `Scroll to view ${exchangesSell.length - 7} listings...`
-              : ''}
-          </Typography>
-        </Box>
-        <Typography className={classes.updateMessage} onClick={refreshExchange}>
-          Last Updated:{' '}
-          <span>{new Date(updateTime).toLocaleTimeString()} </span>
-          <RefreshIcon fontSize="small" />
-        </Typography>
+
+        </ExchangeCopy>
 
         {exchangeAwaitingConfirm && (
           <ExchangeModal
             toggleOverlay={() => setExchangeAwaitingConfirm(undefined)}
-            showOverlay={exchangeAwaitingConfirm}
+            showOverlay={exchangeAwaitingConfirm !== undefined}
             release={release}
             onSubmit={() => handleExchangeAction(exchangeAwaitingConfirm)}
             amount={
@@ -238,84 +275,30 @@ const Exchange = (props) => {
             isAccept={true}
           />
         )}
-      </div>
-    </Root>
+      </ExchangeWrapper>
+ 
+    </>
   )
 }
 
 const PREFIX = 'Exchange'
 
 const classes = {
-  exchangeWrapper: `${PREFIX}-exchangeWrapper`,
-  exchange: `${PREFIX}-exchange`,
   buySellContainer: `${PREFIX}-buySellContainer`,
-  exchangeListContainer: `${PREFIX}-exchangeListContainer`,
-  listWrapper: `${PREFIX}-listWrapper`,
   scrollCopyContainer: `${PREFIX}-scrollCopyContainer`,
   scrollCopy: `${PREFIX}-scrollCopy`,
   updateMessage: `${PREFIX}-updateMessage`,
 }
-
-const Root = styled('div')(({ theme }) => ({
-  [`& .${classes.exchangeWrapper}`]: {
-    margin: 'auto',
-    overflow: 'hidden',
-    display: 'grid',
-    gridTemplateColumns: '1fr',
-    gridTemplateRows: '154px 304px 75px',
-    alignItems: 'center',
-    marginTop: theme.spacing(6),
-    overflowX: 'scroll',
-    [theme.breakpoints.down('md')]: {
-      width: '98%',
-      gridTemplateColumns: '50% 50%',
-      gridTemplateRows: '1fr 50vh',
-      alignItems: 'flex-start',
-      height: 'auto',
-      marginTop: '0px',
-    },
-  },
-
-  [`& .${classes.exchange}`]: {
-    height: '100%',
-    width: '100%',
-    [theme.breakpoints.down('md')]: {
-      gridColumn: '1/3',
-    },
-  },
-
-  [`& .${classes.buySellContainer}`]: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    [theme.breakpoints.down('md')]: {
-      gridColumn: '1/3',
-    },
-  },
-
-  [`& .${classes.exchangeListContainer}`]: {
-    display: 'flex',
-    height: '100%',
-    justifyContent: 'space-between',
-  },
-
-  [`& .${classes.listWrapper}`]: {
-    width: '100%',
-    maxWidth: '310px',
-    [theme.breakpoints.down('md')]: {
-      padding: '0.5rem',
-    },
-  },
-
-  [`& .${classes.scrollCopyContainer}`]: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-
-  [`& .${classes.scrollCopy}`]: {
-    width: '310px',
-    textAlign: 'left',
-    fontSize: '10px',
-  },
+const ExchangeWrapper = styled(Box)(({theme}) => ({
+  overflow: 'hidden',
+  display: 'grid',
+  gridTemplateRows: '100px 418px 20px',
+  gridTemplateColumns: 'repeat(2, 310px)',
+  alignItems: 'center',
+  gridRowGap: theme.spacing(1),
+  justifyContent: 'space-between',
+  overflowX: 'scroll',
+  width: '100%',
 
   [`& .${classes.updateMessage}`]: {
     fontSize: '10px',
@@ -336,5 +319,59 @@ const Root = styled('div')(({ theme }) => ({
     },
   },
 }))
+
+
+const StyledReleaseInfo = styled(Box)(({theme}) => ({
+  backgroundColor: theme.palette.blue,
+  color: theme.palette.blue,
+  height: '84px',
+  position: 'relative',
+  display: 'flex',
+  padding: theme.spacing(1),
+  gridColumn: '1/3',
+}))
+
+const InfoCopy = styled(Box)(({theme}) => ({
+  paddingLeft: theme.spacing(1),
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between'
+}))
+
+const ReleaseImage = styled(Box)(() => ({
+  height: '100%',
+  width: '82px',
+  '& img': {
+    width: '100%'
+  }
+}))
+
+const StyledExchange = styled(Box)(() => ({
+  width: '100%',
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column'
+}))
+
+const ExchangeCopy = styled(Box)(() => ({
+  display: 'grid',
+  gridTemplateColumns: 'repeat(3, 1fr)',
+  gridColumn: '1/3',
+}))
+
+const HistoryCtaWrapper = styled(Box)(() => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-around',
+  '& .MuiSvgIcon-root':{
+    height: '10px',
+    width: '10px'
+  }
+}))
+
+
+
+
+
 
 export default Exchange

@@ -30,7 +30,6 @@ const ExchangeModal = (props) => {
   return (
     <StyledModal // `disableBackdropClick` is removed by codemod.
       // You can find more details about this breaking change in [the migration guide](https://mui.com/guides/migration-v4/#modal)
-
       aria-labelledby="transition-modal-title"
       aria-describedby="transition-modal-description"
       className={classes.modal}
@@ -104,7 +103,6 @@ const StyledModal = styled(Modal)(({ theme }) => ({
     width: '100%',
     height: '100%',
     margin: 'auto',
-    position: 'absolute',
     zIndex: '10',
     backgroundColor: `${theme.palette.white}`,
     display: 'flex',
