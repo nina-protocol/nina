@@ -7,15 +7,26 @@ const { ReleaseContext } = ninaCommon.contexts
 
 const ReleaseBreadcrumb = ({ match }) => {
   const {releaseState} = useContext(ReleaseContext)
-  return (
-    <span>{releaseState.metadata[match.params.releasePublicKey]}</span>
-  )
+  const release = releaseState.metadata[match.params.releasePubkey]
+  console.log(release)
+  if (release) {
+    return (
+      <span>{release.properties.artist} - {release.properties.title}</span>
+    )
+  }
+  return null
 };
 
 const routes = [
   { path: '/', breadcrumb: 'Home' },
   { path: '/releases', breadcrumb: 'Releases' },
-  { path: '/releases/:releasePublicKey', breadcrumb: ReleaseBreadcrumb },
+  { path: '/releases/:releasePubkey', breadcrumb: ReleaseBreadcrumb },
+  { path: '/releases/:releasePubkey/market', breadcrumb: 'Market' },
+  { path: '/collection', breadcrumb: 'Collection' },
+  { path: '/collection/:releasePubkey', breadcrumb: ReleaseBreadcrumb },
+  { path: '/collection/:releasePubkey/market', breadcrumb: 'Market' },
+  { path: '/upload', breadcrumb: 'Upload' },
+  { path: '/releases/:releasePubkey', breadcrumb: ReleaseBreadcrumb },
 ];
 
 const Breadcrumbs = ({ breadcrumbs }) => (
@@ -25,7 +36,9 @@ const Breadcrumbs = ({ breadcrumbs }) => (
       breadcrumb
     }) => (
       <span key={match.url}>
+        <>/  </>
         <NavLink to={match.url}>{breadcrumb}</NavLink>
+        <>  </>
       </span>
     ))}
   </div>

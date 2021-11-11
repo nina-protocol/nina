@@ -167,7 +167,7 @@ const ReleaseListTable = (props) => {
       rowData['collect'] = collectButton
     }
     rowData['moreInfo'] = (
-      <Link to={`/release/${releasePubkey}`}>More Info</Link>
+      <Link to={`/${tableType === 'userCollection' ? 'collection' : 'releases'}/${releasePubkey}`}>More Info</Link>
     )
 
     return rowData

@@ -54,7 +54,7 @@ const RecentlyPurchased = (props) => {
         </Typography>
         <Wrapper>
           <Link
-            to={'/release/' + featuredRelease.releasePubkey}
+            to={'/releases/' + featuredRelease.releasePubkey}
             style={{ width: '400px' }}
           >
             <SmoothImage src={imageUrl} imageStyles={{ minWidth: '400px' }} />
