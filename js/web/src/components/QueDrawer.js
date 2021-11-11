@@ -16,7 +16,7 @@ import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
 import QueueMusicIcon from '@mui/icons-material/QueueMusic'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
-import {Typography} from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import QueList from './QueList'
 
 const { AudioPlayerContext } = ninaCommon.contexts
@@ -34,7 +34,6 @@ const QueDrawer = (props) => {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [drawerOpen, setDrawerOpen] = useState(false)
 
-
   const toggleDrawer = (open) => (event) => {
     if (
       event.type === 'keydown' &&
@@ -42,7 +41,7 @@ const QueDrawer = (props) => {
     ) {
       return
     }
-    setDrawerOpen( open )
+    setDrawerOpen(open)
   }
 
   useEffect(() => {
@@ -71,18 +70,12 @@ const QueDrawer = (props) => {
     <ToggleWrapper>
       <React.Fragment key={'left'}>
         <Button variant="outlined" onClick={toggleDrawer(!drawerOpen)}>
-          <QueueMusicIcon
-            style={{ fill: `${theme.palette.purple}` }}
-          />{' '}
-
-          {!drawerOpen && 
-            (nextInfo ? `Up next: ${nextInfo.artist} - ${nextInfo.title}` : 'open que')
-          }
-
-          {drawerOpen && 
-            ('Close')
-          }
-
+          <QueueMusicIcon style={{ fill: `${theme.palette.purple}` }} />{' '}
+          {!drawerOpen &&
+            (nextInfo
+              ? `Up next: ${nextInfo.artist} - ${nextInfo.title}`
+              : 'open que')}
+          {drawerOpen && 'Close'}
         </Button>
         <Drawer
           anchor={'bottom'}
@@ -91,7 +84,11 @@ const QueDrawer = (props) => {
           PaperProps={quePaperStyle}
           ModalProps={queModalStyle}
         >
-          <QueList isPlaying={isPlaying} togglePlay={togglePlay} setDrawerOpen={setDrawerOpen} />
+          <QueList
+            isPlaying={isPlaying}
+            togglePlay={togglePlay}
+            setDrawerOpen={setDrawerOpen}
+          />
         </Drawer>
       </React.Fragment>
     </ToggleWrapper>
@@ -107,16 +104,15 @@ const classes = {
 
 const quePaperStyle = {
   sx: {
-    height: '90%'
-  }
+    height: '90%',
+  },
 }
 
 const queModalStyle = {
   sx: {
-    zIndex: '99'
-  }
+    zIndex: '99',
+  },
 }
-
 
 const ToggleWrapper = styled(Box)(() => ({
   position: 'absolute',

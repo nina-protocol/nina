@@ -6,7 +6,7 @@ import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
-import {Typography} from '@mui/material'
+import { Typography } from '@mui/material'
 
 const { ReleaseContext, NinaContext, ExchangeContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
@@ -167,7 +167,7 @@ const AmountRemaining = styled(Typography)(({ theme }) => ({
 const StyledUserAmount = styled(Box)(({ theme }) => ({
   color: theme.palette.black,
   ...theme.helpers.baseFont,
-  paddingBottom: '10px'
+  paddingBottom: '10px',
 }))
 
 export default ReleasePurchase

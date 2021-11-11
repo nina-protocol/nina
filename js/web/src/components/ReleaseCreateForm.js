@@ -95,7 +95,7 @@ const ReleaseCreateForm = ({
                 label={NinaClient.formatPlaceholder(field.name)}
                 size="small"
                 InputLabelProps={touched.catalogNumber ? { shrink: true } : ''}
-                inputProps={{maxLength: 10}}
+                inputProps={{ maxLength: 10 }}
                 InputProps={{
                   maxLength: 10,
                   onChange: (event) => {
@@ -170,7 +170,7 @@ const ReleaseCreateForm = ({
               getAriaValueText={valuetext}
               aria-labelledby="percent"
               className={classes.formField}
-              step={.1}
+              step={0.1}
               min={0}
               max={100}
               name="resalePercentage"

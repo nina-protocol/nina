@@ -10,9 +10,9 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
-const {AudioPlayerContext} = ninaCommon.contexts
+const { AudioPlayerContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 const ARWEAVE_GATEWAY_ENDPOINT = NinaClient.endpoints.arweave
 
@@ -34,7 +34,7 @@ const EnhancedTableHead = (props) => {
         )
       },
     },
-    {id: 'addToQue', numeric: false, label: 'Add to que'},
+    { id: 'addToQue', numeric: false, label: 'Add to que' },
     { id: 'artist', numeric: false, disablePadding: false, label: 'Artist' },
     { id: 'title', numeric: false, disablePadding: false, label: 'Title' },
   ]
@@ -58,7 +58,7 @@ const EnhancedTableHead = (props) => {
     headCells.push({ id: 'collect', numeric: false, label: 'Collect' })
   }
 
-  headCells.push({ id: 'moreInfo', numeric: false, label: 'View Release'})
+  headCells.push({ id: 'moreInfo', numeric: false, label: 'View Release' })
 
   return (
     <TableHead>
@@ -80,14 +80,13 @@ const EnhancedTableHead = (props) => {
 }
 
 const ReleaseListTable = (props) => {
-  const { releases, tableType } = props
+  const { releases, tableType, collectRoyaltyForRelease } = props
   const history = useHistory()
   const [order] = useState('asc')
-  const {addTrackToQue} = useContext(AudioPlayerContext)
+  const { addTrackToQue } = useContext(AudioPlayerContext)
   const handleClick = (event, releasePubkey) => {
     history.push(`/release/` + releasePubkey)
   }
-  
 
   let rows = releases.map((release) => {
     const metadata = release.metadata
@@ -102,14 +101,28 @@ const ReleaseListTable = (props) => {
     const rowData = {
       id: releasePubkey,
       art: linkData,
-      addToQue: (<Button onClick={() => {addTrackToQue(releasePubkey)}}>+</Button>),
+      addToQue: (
+        <Button
+          onClick={() => {
+            addTrackToQue(releasePubkey)
+          }}
+        >
+          +
+        </Button>
+      ),
       artist: metadata.properties.artist,
       title: metadata.properties.title,
     }
 
-
-    rowData['addToQue'] = <Button onClick={() => {addTrackToQue(releasePubkey)}}>+</Button>
-
+    rowData['addToQue'] = (
+      <Button
+        onClick={() => {
+          addTrackToQue(releasePubkey)
+        }}
+      >
+        +
+      </Button>
+    )
 
     if (tableType === 'userCollection') {
       const duration = NinaClient.formatDuration(
@@ -120,7 +133,6 @@ const ReleaseListTable = (props) => {
 
     if (tableType === 'userPublished') {
       const recipient = release.recipient
-      const collectRoyaltyForRelease = props.collectRoyaltyForRelease
       const collectButton = (
         <Button
           variant="contained"
@@ -154,8 +166,9 @@ const ReleaseListTable = (props) => {
       )}`
       rowData['collect'] = collectButton
     }
-    rowData['moreInfo'] = <Link to={`/release/${releasePubkey}`}>More Info</Link>
-
+    rowData['moreInfo'] = (
+      <Link to={`/release/${releasePubkey}`}>More Info</Link>
+    )
 
     return rowData
   })
@@ -179,11 +192,7 @@ const ReleaseListTable = (props) => {
             <TableBody>
               {rows.map((row) => {
                 return (
-                  <TableRow
-                    hover
-                    tabIndex={-1}
-                    key={row.id}
-                  >
+                  <TableRow hover tabIndex={-1} key={row.id}>
                     {Object.keys(row).map((cellName) => {
                       const cellData = row[cellName]
                       if (cellName !== 'id') {
