@@ -95,7 +95,9 @@ const ReleaseCreateForm = ({
                 label={NinaClient.formatPlaceholder(field.name)}
                 size="small"
                 InputLabelProps={touched.catalogNumber ? { shrink: true } : ''}
+                inputProps={{maxLength: 10}}
                 InputProps={{
+                  maxLength: 10,
                   onChange: (event) => {
                     let sanitized = event.target.value
                       .replace(/\s/g, '')
@@ -164,11 +166,11 @@ const ReleaseCreateForm = ({
           </Typography>
           <Box>
             <Slider
-              defaultValue={20}
+              defaultValue={6}
               getAriaValueText={valuetext}
               aria-labelledby="percent"
               className={classes.formField}
-              step={1}
+              step={.1}
               min={0}
               max={100}
               name="resalePercentage"
