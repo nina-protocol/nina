@@ -9,15 +9,9 @@ import NinaClient from '../utils/client'
 import { ReleaseContext } from '../contexts'
 
 const ReleaseSettings = (props) => {
-  const {
-    releasePubkey,
-    tempMetadata,
-  } = props
+  const { releasePubkey, tempMetadata } = props
 
-  const {
-    releaseState,
-    releaseFetchMetadata,
-  } = useContext(ReleaseContext)
+  const { releaseState, releaseFetchMetadata } = useContext(ReleaseContext)
 
   const [release, setRelease] = useState(releaseState.tokenData[releasePubkey])
   const [metadata, setMetadata] = useState(releaseState.metadata[releasePubkey])
@@ -88,47 +82,60 @@ const ReleaseSettings = (props) => {
           Confirm Release Info
         </Typography>
 
-       <ReleaseInfo>
-        <ReleaseStat variant="body1" component="p">
-          <span>Edition Size</span> 
-          <strong> {release?.totalSupply.toNumber()} {displayValues.catalogNumber} </strong>
-        </ReleaseStat>
+        <ReleaseInfo>
+          <ReleaseStat variant="body1" component="p">
+            <span>Edition Size</span>
+            <strong>
+              {' '}
+              {release?.totalSupply.toNumber()} {displayValues.catalogNumber}{' '}
+            </strong>
+          </ReleaseStat>
 
-        <ReleaseStat variant="body1" component="p">
-        <span>Cost</span>
-         <strong>{NinaClient.nativeToUiString(
-          release.price.toNumber(),
-          release.paymentMint
-        )} </strong>
-        </ReleaseStat>
+          <ReleaseStat variant="body1" component="p">
+            <span>Cost</span>
+            <strong>
+              {NinaClient.nativeToUiString(
+                release.price.toNumber(),
+                release.paymentMint
+              )}{' '}
+            </strong>
+          </ReleaseStat>
 
-        <ReleaseStat variant="body1" component="p">
-          <span>Resale</span>
-           <strong> {release?.resalePercentage.toNumber() / 10000}%</strong>
-        </ReleaseStat>
+          <ReleaseStat variant="body1" component="p">
+            <span>Resale</span>
+            <strong> {release?.resalePercentage.toNumber() / 10000}%</strong>
+          </ReleaseStat>
 
-        
-        <Typography variant="body1" component="p" sx={{marginTop: '10px !important'}}>
+          <Typography
+            variant="body1"
+            component="p"
+            sx={{ marginTop: '10px !important' }}
+          >
             {displayValues.description}
-        </Typography>
-       </ReleaseInfo>
-   
-      {!metadata && (
-        <>
-          <Typography variant="body1" color="grey.primary">
-            {metadataUpdated
-              ? 'Your release is now live!'
-                : `Your release is currently being uploaded...` }
           </Typography>
-        </>
-      )}
+        </ReleaseInfo>
+
+        {!metadata && (
+          <>
+            <Typography variant="body1" color="grey.primary">
+              {metadataUpdated
+                ? 'Your release is now live!'
+                : `Your release is currently being uploaded...`}
+            </Typography>
+          </>
+        )}
         <Box mt={1}>
           <Royalty releasePubkey={releasePubkey} release={release} />
           <Link
             to={`/releases/${releasePubkey}`}
             style={{ textDecoration: 'none' }}
           >
-            <Button variant="contained" color="primary" fullWidth disabled={!metadata}>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              disabled={!metadata}
+            >
               View Release
             </Button>
           </Link>
@@ -149,22 +156,22 @@ const StyledBox = styled(Box)(() => ({
 const ReleaseInfoWrapper = styled(Box)(() => ({
   width: '100%',
   margin: 'auto',
-  textAlign: 'left'
+  textAlign: 'left',
 }))
 
-const ReleaseInfo = styled(Box)(({theme}) => ({
+const ReleaseInfo = styled(Box)(({ theme }) => ({
   border: `1px solid ${theme.palette.grey.primary}`,
   padding: '20px',
-  marginBottom: theme.spacing(1)
+  marginBottom: theme.spacing(1),
 }))
 
 const ReleaseStat = styled(Typography)(() => ({
   display: 'flex',
   '& span': {
-    width: '75px'
+    width: '75px',
   },
   '& strong': {
-    paddingLeft: '15px'
-  }
+    paddingLeft: '15px',
+  },
 }))
 export default ReleaseSettings

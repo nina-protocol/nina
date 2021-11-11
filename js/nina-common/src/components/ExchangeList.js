@@ -68,9 +68,8 @@ const Root = styled(Box)(() => ({
     overflowY: 'auto',
   },
   [`& .${classes.noOffers}`]: {
-    margin: 'auto'
+    margin: 'auto',
   },
-
 }))
 
 export default ExchangeList
