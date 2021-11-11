@@ -2,7 +2,7 @@ anchor_version = "0.18.0"
 
 [provider]
 cluster = "localnet"
-wallet = "~/.config/solana/djnina.json"
+wallet = "~/.config/solana/nina.json"
 
 [programs.mainnet]
 nina = "ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4"

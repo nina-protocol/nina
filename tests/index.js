@@ -412,15 +412,13 @@ describe('Release', async () => {
           payer: provider.wallet.publicKey,
           release,
           releaseSigner,
+          metadata,
           releaseMint: releaseMint.publicKey,
           tokenMetadataProgram: metadataProgram,
           systemProgram: anchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         },
-        remainingAccounts: [
-          {pubkey : metadata, isWritable: true, isSigner: false}
-        ]
       }
     )
   });
