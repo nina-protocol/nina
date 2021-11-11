@@ -1,9 +1,9 @@
-import {
+const {
   SystemProgram,
   SYSVAR_RENT_PUBKEY,
   TransactionInstruction,
   PublicKey,
-} from '@solana/web3.js'
+} = require('@solana/web3.js'
 import { deserializeUnchecked, serialize } from 'borsh'
 const METAPLEX_PROGRAM_PUBLIC_KEY = new PublicKey(
   'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'

@@ -9,7 +9,6 @@ const { ReleaseContext } = ninaCommon.contexts
 const ReleaseBreadcrumb = ({ match }) => {
   const {releaseState} = useContext(ReleaseContext)
   const release = releaseState.metadata[match.params.releasePubkey]
-  console.log(release)
   if (release) {
     return (
       <>
@@ -33,22 +32,28 @@ const routes = [
 ];
 
 const Breadcrumbs = ({ breadcrumbs }) => (
-  <div>
+  <BreadcrumbsContainer>
     {breadcrumbs.map(({
       match,
       breadcrumb
     }) => (
       <span key={match.url}>
-        <>/  </>
+        <BreadcrumbSeperator>{`/`}</BreadcrumbSeperator>
         <NavLink to={match.url}>{breadcrumb}</NavLink>
-        <>  </>
       </span>
     ))}
-  </div>
+  </BreadcrumbsContainer>
 )
 
+const BreadcrumbsContainer = styled('span')(() => ({
+  paddingLeft: '30px'
+}))
 const Title = styled('span')(() => ({
   fontStyle: 'italic',
+}))
+
+const BreadcrumbSeperator = styled('span')(() => ({
+  padding: '0 10px',
 }))
 
 export default withBreadcrumbs(routes)(Breadcrumbs);
