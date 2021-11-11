@@ -1,5 +1,6 @@
 import React, { useContext, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
+import Typography from '@mui/material/Typography'
 import ninaCommon from 'nina-common'
 import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
@@ -32,7 +33,7 @@ const NavBar = () => {
       </div>
 
       <Logo to="/">
-        <span>NINA</span>
+        <Typography variant="h3">NINA</Typography>
       </Logo>
 
       <div className={classes.nav__right}>
@@ -205,35 +206,11 @@ const Logo = styled(NavLink)(() => ({
   position: 'absolute',
   width: '76px',
   height: '43px',
-  left: 'calc(50% - 76px/2)',
+  left: '50%',
+  transform: 'translateX(-50%)',
   top: '0px',
-  '& span' : {
-    position: 'static',
-    width: '46px',
-    height: '13px',
-    left: '15px',
-    top: '15px',
-
-    fontFamily: 'Helvetica',
-    fontStyle: 'normal',
+  '& .MuiTypography-h3' : {
     fontWeight: 'bold',
-    fontSize: '18px',
-    lineHeight: '21px',
-    display: 'flex',
-    alignItems: 'center',
-    textAlign: 'center',
-    letterSpacing: '0.02em',
-    textTransform: 'uppercase',
-
-    color: '#000000',
-
-
-    /* Inside Auto Layout */
-
-    flex: 'none',
-    order: 0,
-    flexG: 0,
-    margin: '10px 0px'
   }
 }))
 
