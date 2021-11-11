@@ -9,7 +9,6 @@ import {
   WalletDialogProvider,
   WalletMultiButton,
 } from '@solana/wallet-adapter-material-ui'
-import ninaLogo from '../assets/nina-logo-black.png'
 import Breadcrumbs from './Breadcrumbs'
 const { NinaContext } = ninaCommon.contexts
 
@@ -33,7 +32,7 @@ const NavBar = () => {
       </div>
 
       <Logo to="/">
-        <img src={ninaLogo} className={classes.nav__logo} alt="nina" />
+        <span>NINA</span>
       </Logo>
 
       <div className={classes.nav__right}>
@@ -198,11 +197,44 @@ const ConnectionDot = styled('span')(({ theme }) => ({
 }))
 
 const Logo = styled(NavLink)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  padding: '7px 15px',
   position: 'absolute',
-  left: '50%',
-  top: '0',
-  transform: 'translateX(-50%)',
-  height: '60px',
+  width: '76px',
+  height: '43px',
+  left: 'calc(50% - 76px/2)',
+  top: '0px',
+  '& span' : {
+    position: 'static',
+    width: '46px',
+    height: '13px',
+    left: '15px',
+    top: '15px',
+
+    fontFamily: 'Helvetica',
+    fontStyle: 'normal',
+    fontWeight: 'bold',
+    fontSize: '18px',
+    lineHeight: '21px',
+    display: 'flex',
+    alignItems: 'center',
+    textAlign: 'center',
+    letterSpacing: '0.02em',
+    textTransform: 'uppercase',
+
+    color: '#000000',
+
+
+    /* Inside Auto Layout */
+
+    flex: 'none',
+    order: 0,
+    flexG: 0,
+    margin: '10px 0px'
+  }
 }))
 
 export default withFormik({
