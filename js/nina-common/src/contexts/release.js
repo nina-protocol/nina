@@ -1247,17 +1247,6 @@ const releaseContextHelper = ({
     }
   }
 
-  const saveReleaseMetadataToState = async (releasePubkey, releaseMetadata) => {
-    let updatedState = { ...releaseState }
-    if (releaseMetadata) {
-      updatedState.metadata = {
-        ...updatedState.metadata,
-        ...releaseMetadata,
-      }
-    }
-    setReleaseState(updatedState)
-  }
-
   const saveReleasesToState = async (releases, handle = undefined) => {
     let updatedState = { ...releaseState }
     let search = undefined
@@ -1356,6 +1345,16 @@ const releaseContextHelper = ({
         const arweaveMetadataUri = `${NinaClient.endpoints.arweave}/${arweaveTxidJson.txid}`
         const arweaveJsonResult = await fetch(arweaveMetadataUri)
         const arweaveJson = await arweaveJsonResult.json()
+        
+        if (arweaveJson) {
+          let updatedState = { ...releaseState }
+          updatedState.metadata = {
+            ...updatedState.metadata,
+            [releasePubkey]: arweaveJson,
+          }
+          setReleaseState(updatedState)
+        }
+
         return {
           json: arweaveJson,
           uri: arweaveMetadataUri,
