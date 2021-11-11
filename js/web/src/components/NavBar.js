@@ -209,9 +209,9 @@ const Logo = styled(NavLink)(() => ({
   left: '50%',
   transform: 'translateX(-50%)',
   top: '0px',
-  '& .MuiTypography-h3' : {
+  '& .MuiTypography-h3': {
     fontWeight: 'bold',
-  }
+  },
 }))
 
 export default withFormik({

@@ -17,7 +17,7 @@ const Release = ({ match }) => {
   const { getExchangeHistoryForRelease, exchangeState } =
     useContext(ExchangeContext)
   const [track, setTrack] = useState(null)
-  const index = useMemo(() => match.path.includes('market') ? 1 : 0)
+  const index = useMemo(() => (match.path.includes('market') ? 1 : 0))
 
   const [metadata, setMetadata] = useState(
     releaseState?.metadata[releasePubkey] || null

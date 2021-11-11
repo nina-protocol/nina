@@ -49,14 +49,9 @@ const AudioPlayer = () => {
       if (index === undefined) {
         setInfo(playlistRef.current[playlistRef.current.length - 1])
         setNextInfo(playlistRef.current[playlistRef.current.length])
-        console.log(
-          'playlistRef.current[playlistRef.current.length - 1] :>> ',
-          playlistRef.current[playlistRef.current.length - 1]
-        )
       } else {
         setInfo(playlistRef.current[index])
         setNextInfo(playlistRef.current[index + 1])
-        console.log('playlistRef.current :>> ', playlistRef.current)
       }
     }
   }, [txid])

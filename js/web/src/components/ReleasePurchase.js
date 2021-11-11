@@ -154,7 +154,7 @@ const ReleasePurchase = (props) => {
           history.push(`/releases/${releasePubkey}/market`)
         }}
       >
-          <Typography variant="body2">Go To Market</Typography>
+        <Typography variant="body2">Go To Market</Typography>
       </Button>
     </Box>
   )
