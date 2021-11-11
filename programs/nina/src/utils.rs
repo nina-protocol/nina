@@ -17,3 +17,8 @@ pub mod metaplex_program_public_key {
     use solana_program::declare_id;
     declare_id!("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s");
 }
+
+pub mod pressing_plant_account {
+    use solana_program::declare_id;
+    declare_id!("BZx8SmoadJtLJD7CHpSBLftPUCbwFeDEoGFEL8xveBHU");
+}

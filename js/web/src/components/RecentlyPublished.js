@@ -3,15 +3,14 @@ import { styled } from '@mui/material/styles'
 import { Box } from '@mui/material'
 import Carousel from 'react-multi-carousel'
 import 'react-multi-carousel/lib/styles.css'
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
 
 import { Link } from 'react-router-dom'
 import SmoothImage from 'react-smooth-image'
 import CircularProgress from '@mui/material/CircularProgress'
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 
 const RecentlyPublished = (props) => {
   const { releases } = props
@@ -36,30 +35,27 @@ const RecentlyPublished = (props) => {
     color: 'black',
     backgroundColor: 'red !important',
     '&:hover': {
-      backgroundColor: 'black !important'
+      backgroundColor: 'black !important',
     },
     '& ::before': {
-      display: 'none'
-    }
+      display: 'none',
+    },
   }
 
-  const CustomRightArrow = ({onClick}) => {
-    return(
-        <Button disableRipple style={{right: '-10px', ...buttonStyle}}>
-          <KeyboardArrowRightIcon fontSize="large" onClick={() => onClick()} />
-        </Button>
-       )
-
-  };
-  const CustomLeftArrow = ({onClick}) => {
-
-    
-    return(
-        <Button disableRipple style={{left: '-10px', ...buttonStyle}}>
-          <KeyboardArrowLeftIcon fontSize="large" onClick={() => onClick()} />
-        </Button>
-       )
-  };
+  const CustomRightArrow = ({ onClick }) => {
+    return (
+      <Button disableRipple style={{ right: '-10px', ...buttonStyle }}>
+        <KeyboardArrowRightIcon fontSize="large" onClick={() => onClick()} />
+      </Button>
+    )
+  }
+  const CustomLeftArrow = ({ onClick }) => {
+    return (
+      <Button disableRipple style={{ left: '-10px', ...buttonStyle }}>
+        <KeyboardArrowLeftIcon fontSize="large" onClick={() => onClick()} />
+      </Button>
+    )
+  }
 
   if (releases === undefined || releases.length === 0) {
     return (
@@ -133,7 +129,6 @@ const ReleaseSlide = styled(Box)(() => ({
   paddingLeft: '1px',
   '& a': {
     width: '250px',
-
   },
 }))
 

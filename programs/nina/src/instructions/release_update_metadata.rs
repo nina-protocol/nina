@@ -11,11 +11,15 @@ use metaplex_token_metadata::{
 };
 
 use crate::state::*;
-use crate::utils::{metaplex_program_public_key};
+use crate::utils::{metaplex_program_public_key, pressing_plant_account};
 
 #[derive(Accounts)]
 pub struct ReleaseUpdateMetadata<'info> {
     #[account(mut)]
+    #[cfg_attr(
+        not(feature = "test"),
+        account(address = pressing_plant_account::ID),
+    )]
     pub payer: Signer<'info>,
     #[account(
         has_one = release_signer,
@@ -54,7 +58,7 @@ pub fn handler(
 
     let creators: Vec<Creator> =
         vec![Creator {
-            address: *ctx.accounts.release.to_account_info().key,
+            address: *ctx.accounts.release_signer.to_account_info().key,
             verified: true,
             share: 100,
         }];
@@ -82,7 +86,7 @@ pub fn handler(
             metadata_data.name,
             metadata_data.symbol,
             metadata_data.uri,
-            None,
+            Some(creators),
             metadata_data.seller_fee_basis_points,
             true,
             false,

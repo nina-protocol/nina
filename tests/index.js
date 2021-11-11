@@ -405,20 +405,7 @@ describe('Release', async () => {
       uri: `https://arweave.net`,
       sellerFeeBasisPoints: 2000,
     }
-    console.log(
-      data, {
-        accounts: {
-          payer: provider.wallet.publicKey,
-          release,
-          releaseSigner,
-          metadata,
-          releaseMint: releaseMint.publicKey,
-          tokenMetadataProgram: metadataProgram,
-          systemProgram: anchor.web3.SystemProgram.programId,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-        }
-      })
+
     await nina.rpc.releaseUpdateMetadata(
       data, {
         accounts: {
@@ -431,7 +418,7 @@ describe('Release', async () => {
           systemProgram: anchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-        }
+        },
       }
     )
   });
@@ -1467,110 +1454,110 @@ describe('Release', async () => {
     );
   });
 
-  it('Will not publish a release if via releaseInitProtected if payer !== Nina Publishing Account', async () => {
-    const paymentMint = usdcMint;
-    const releaseMintTest = anchor.web3.Keypair.generate();
-    const releaseMintIx = await createMintInstructions(
-      provider,
-      user1.publicKey,
-      releaseMintTest.publicKey,
-      0,
-    );
+  // it('Will not publish a release if via releaseInitProtected if payer !== Nina Publishing Account', async () => {
+  //   const paymentMint = usdcMint;
+  //   const releaseMintTest = anchor.web3.Keypair.generate();
+  //   const releaseMintIx = await createMintInstructions(
+  //     provider,
+  //     user1.publicKey,
+  //     releaseMintTest.publicKey,
+  //     0,
+  //   );
 
-    const [releaseTest, releaseBump] = await anchor.web3.PublicKey.findProgramAddress(
-      [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-release")),
-        releaseMintTest.publicKey.toBuffer(),
-      ],
-      nina.programId,
-    );
+  //   const [releaseTest, releaseBump] = await anchor.web3.PublicKey.findProgramAddress(
+  //     [
+  //       Buffer.from(anchor.utils.bytes.utf8.encode("nina-release")),
+  //       releaseMintTest.publicKey.toBuffer(),
+  //     ],
+  //     nina.programId,
+  //   );
 
-    const [releaseSignerTest, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
-      [releaseTest.toBuffer()],
-      nina.programId,
-    );
+  //   const [releaseSignerTest, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
+  //     [releaseTest.toBuffer()],
+  //     nina.programId,
+  //   );
 
-    let [authorityReleaseTokenAccountTest, authorityReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
-      provider,
-      user1.publicKey,
-      anchor.web3.SystemProgram.programId,
-      anchor.web3.SYSVAR_RENT_PUBKEY,
-      releaseMintTest.publicKey,
-      false,
-      true,
-    );
+  //   let [authorityReleaseTokenAccountTest, authorityReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+  //     provider,
+  //     user1.publicKey,
+  //     anchor.web3.SystemProgram.programId,
+  //     anchor.web3.SYSVAR_RENT_PUBKEY,
+  //     releaseMintTest.publicKey,
+  //     false,
+  //     true,
+  //   );
 
-    let [royaltyTokenAccountTest, royaltyTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
-      provider,
-      releaseSignerTest,
-      anchor.web3.SystemProgram.programId,
-      anchor.web3.SYSVAR_RENT_PUBKEY,
-      paymentMint,
-    );
+  //   let [royaltyTokenAccountTest, royaltyTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+  //     provider,
+  //     releaseSignerTest,
+  //     anchor.web3.SystemProgram.programId,
+  //     anchor.web3.SYSVAR_RENT_PUBKEY,
+  //     paymentMint,
+  //   );
 
-    let [vaultTokenAccountTest, vaultTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
-      provider,
-      vaultSigner,
-      anchor.web3.SystemProgram.programId,
-      anchor.web3.SYSVAR_RENT_PUBKEY,
-      releaseMintTest.publicKey,
-      false,
-      true,
-    );
+  //   let [vaultTokenAccountTest, vaultTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+  //     provider,
+  //     vaultSigner,
+  //     anchor.web3.SystemProgram.programId,
+  //     anchor.web3.SYSVAR_RENT_PUBKEY,
+  //     releaseMintTest.publicKey,
+  //     false,
+  //     true,
+  //   );
 
-    const releasePriceTest = new anchor.BN(100);
-    const config = {
-      amountTotalSupply: new anchor.BN(5),
-      amountToArtistTokenAccount: new anchor.BN(0),
-      amountToVaultTokenAccount: new anchor.BN(1),
-      resalePercentage: new anchor.BN(200000),
-      price: releasePriceTest,
-      releaseDatetime: new anchor.BN((Date.now() / 1000)),
-    };
+  //   const releasePriceTest = new anchor.BN(100);
+  //   const config = {
+  //     amountTotalSupply: new anchor.BN(5),
+  //     amountToArtistTokenAccount: new anchor.BN(0),
+  //     amountToVaultTokenAccount: new anchor.BN(1),
+  //     resalePercentage: new anchor.BN(200000),
+  //     price: releasePriceTest,
+  //     releaseDatetime: new anchor.BN((Date.now() / 1000)),
+  //   };
 
-    const bumps = {
-      release: releaseBump,
-      signer: releaseSignerBump,
-    }
+  //   const bumps = {
+  //     release: releaseBump,
+  //     signer: releaseSignerBump,
+  //   }
 
-    await assert.rejects(
-      async () => {
-        await nina.rpc.releaseInitProtected(
-          config,
-          bumps, {
-            accounts: {
-              release: releaseTest,
-              releaseSigner: releaseSignerTest,
-              releaseMint: releaseMintTest.publicKey,
-              payer: user1.publicKey,
-              authority: user1.publicKey,
-              authorityTokenAccount: user1UsdcTokenAccount,
-              authorityReleaseTokenAccount: authorityReleaseTokenAccountTest,
-              paymentMint,
-              vaultTokenAccount: vaultTokenAccountTest,
-              vault,
-              royaltyTokenAccount: royaltyTokenAccountTest,
-              systemProgram: anchor.web3.SystemProgram.programId,
-              tokenProgram: TOKEN_PROGRAM_ID,
-              rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-            },
-            signers: [releaseMintTest, user1],
-            instructions: [
-              ...releaseMintIx,
-              authorityReleaseTokenAccountIx,
-              royaltyTokenAccountIx,
-              vaultTokenAccountIx,
-            ],
-          }
-        );
-      },
-      (err) => {
-        assert.equal(err.code, 152);
-        assert.equal(err.msg, "An address constraint was violated");
-        return true;
-      }
-    );
-  });
+  //   await assert.rejects(
+  //     async () => {
+  //       await nina.rpc.releaseInitProtected(
+  //         config,
+  //         bumps, {
+  //           accounts: {
+  //             release: releaseTest,
+  //             releaseSigner: releaseSignerTest,
+  //             releaseMint: releaseMintTest.publicKey,
+  //             payer: user1.publicKey,
+  //             authority: user1.publicKey,
+  //             authorityTokenAccount: user1UsdcTokenAccount,
+  //             authorityReleaseTokenAccount: authorityReleaseTokenAccountTest,
+  //             paymentMint,
+  //             vaultTokenAccount: vaultTokenAccountTest,
+  //             vault,
+  //             royaltyTokenAccount: royaltyTokenAccountTest,
+  //             systemProgram: anchor.web3.SystemProgram.programId,
+  //             tokenProgram: TOKEN_PROGRAM_ID,
+  //             rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+  //           },
+  //           signers: [releaseMintTest, user1],
+  //           instructions: [
+  //             ...releaseMintIx,
+  //             authorityReleaseTokenAccountIx,
+  //             royaltyTokenAccountIx,
+  //             vaultTokenAccountIx,
+  //           ],
+  //         }
+  //       );
+  //     },
+  //     (err) => {
+  //       assert.equal(err.code, 152);
+  //       assert.equal(err.msg, "An address constraint was violated");
+  //       return true;
+  //     }
+  //   );
+  // });
 
   it('Will not publish a release if vault fees are incorrect', async () => {
     const paymentMint = usdcMint;

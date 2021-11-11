@@ -1,40 +1,47 @@
-import React, {useEffect, useState, useContext} from "react"
-import {TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Paper} from '@material-ui/core'
-import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd"
-import {styled} from '@mui/material/styles'
+import React, { useEffect, useState, useContext } from 'react'
+import {
+  TableContainer,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Paper,
+} from '@material-ui/core'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import ninaCommon from 'nina-common'
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded'
 import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
 import { useHistory } from 'react-router-dom'
 // import { Link } from 'react-router-dom'
-import {Typography} from '@mui/material'
-import {useWallet} from '@solana/wallet-adapter-react'
-import CloseIcon from '@mui/icons-material/Close';
+import { Typography } from '@mui/material'
+import { useWallet } from '@solana/wallet-adapter-react'
+import CloseIcon from '@mui/icons-material/Close'
 
-const {AudioPlayerContext} = ninaCommon.contexts
-const {NinaClient} = ninaCommon.utils
+const { AudioPlayerContext } = ninaCommon.contexts
+const { NinaClient } = ninaCommon.utils
 
 const getItemStyle = (isDragging, draggableStyle) => ({
   // styles we need to apply on draggables
   ...draggableStyle,
 
   ...(isDragging && {
-    background: "rgb(235,235,235)"
-  })
+    background: 'rgb(235,235,235)',
+  }),
 })
 
-
 const QueList = (props) => {
-  const {isPlaying, togglePlay, setDrawerOpen} = props;
+  const { isPlaying, togglePlay, setDrawerOpen } = props
   const wallet = useWallet()
   const history = useHistory()
-  const {txid, updateTxid, playlist, reorderPlaylist, removeTrackFromQue} =
+  const { txid, updateTxid, playlist, reorderPlaylist, removeTrackFromQueue } =
     useContext(AudioPlayerContext)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [playlistState, setPlaylistState] = useState(undefined)
   const [skipForReorder, setSkipForReorder] = useState(false)
-  
+
   useEffect(() => {
     const playlistEntry = playlist.find((entry) => entry.txid === txid)
 
@@ -86,8 +93,6 @@ const QueList = (props) => {
     reorderPlaylist(result)
   }
 
-
-
   return (
     <StyledQueList>
       {playlist?.length === 0 && (
@@ -115,28 +120,35 @@ const QueList = (props) => {
             </TableHead>
             <TableBody component={DroppableComponent(onDragEnd)}>
               {playlist.map((entry, i) => (
-                <TableRow component={DraggableComponent(entry.txid, i)} key={entry.txid}  >
+                <TableRow
+                  component={DraggableComponent(entry.txid, i)}
+                  key={entry.txid}
+                >
                   <TableCell scope="row">{i + 1}</TableCell>
-                  <TableCell onClick={(event) =>
-                    handleListItemClick(event, i, entry.txid)
-                  }>
+                  <TableCell
+                    onClick={(event) =>
+                      handleListItemClick(event, i, entry.txid)
+                    }
+                  >
                     {isPlaying && selectedIndex === i ? (
-                      <PauseRoundedIcon
-                        onClick={() => togglePlay()}
-                      />
+                      <PauseRoundedIcon onClick={() => togglePlay()} />
                     ) : (
-                      <PlayArrowRoundedIcon
-                        onClick={() => togglePlay()}
-                      />
+                      <PlayArrowRoundedIcon onClick={() => togglePlay()} />
                     )}
                   </TableCell>
                   <TableCell>{entry.artist}</TableCell>
                   <TableCell>{entry.title}</TableCell>
-                  <TableCell onClick={(e) => {goToRelease(e, entry.releasePubkey)}}>
-                      More Info
+                  <TableCell
+                    onClick={(e) => {
+                      goToRelease(e, entry.releasePubkey)
+                    }}
+                  >
+                    More Info
                   </TableCell>
                   <TableCell>
-                    <CloseIcon onClick={() => removeTrackFromQue(entry.releasePubkey)} />
+                    <CloseIcon
+                      onClick={() => removeTrackFromQueue(entry.releasePubkey)}
+                    />
                   </TableCell>
                 </TableRow>
               ))}
@@ -149,6 +161,7 @@ const QueList = (props) => {
 }
 
 const DraggableComponent = (id, index) => (props) => {
+  const { children } = props
   return (
     <Draggable draggableId={id} index={index}>
       {(provided, snapshot) => (
@@ -156,26 +169,33 @@ const DraggableComponent = (id, index) => (props) => {
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
-
+          style={getItemStyle(
+            snapshot.isDragging,
+            provided.draggableProps.style
+          )}
           {...props}
         >
-          {props.children}
+          {children}
         </TableRow>
       )}
     </Draggable>
   )
 }
 
-const DroppableComponent = (
-  onDragEnd: (result, provided) => void) => (props) => {
+const DroppableComponent =
+  (onDragEnd: (result, provided) => void) => (props) => {
+    const { children } = props
     return (
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId={'1'} direction="vertical">
           {(provided) => {
             return (
-              <TableBody ref={provided.innerRef} {...provided.droppableProps} {...props}>
-                {props.children}
+              <TableBody
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                {...props}
+              >
+                {children}
                 {provided.placeholder}
               </TableBody>
             )
@@ -185,18 +205,16 @@ const DroppableComponent = (
     )
   }
 
-const StyledQueList = styled(Box)(({theme}) => ({
+const StyledQueList = styled(Box)(({ theme }) => ({
   width: '700px',
   margin: 'auto',
   '& .MuiTableCell-head': {
     ...theme.helpers.baseFont,
-    fontWeight: '700'
+    fontWeight: '700',
   },
   '& .MuiTableCell-root': {
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 }))
 
-
-
-  export default QueList;
+export default QueList

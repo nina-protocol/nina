@@ -16,7 +16,6 @@ const ReleaseSettings = (props) => {
 
   const {
     releaseState,
-    releaseUpdateMetadata,
     releaseFetchMetadata,
   } = useContext(ReleaseContext)
 
@@ -82,13 +81,6 @@ const ReleaseSettings = (props) => {
     }
   }, [tempMetadata, metadata])
 
-  const handleUpdateMetadataButton = (e) => {
-    e.preventDefault()
-    releaseUpdateMetadata(releasePubkey)
-    // window.open(`https://twitter.com/intent/tweet?text=${`I just released ${metadata?.artist || tempMetadata.artist} - "${metadata?.title || tempMetadata.title}"`}&url=nina.market/release/${releasePubkey}`, null, 'status=no,location=no,toolbar=no,menubar=no,height=500,width=500')
-  }
-
-
   return (
     <StyledBox>
       <ReleaseInfoWrapper>
@@ -125,38 +117,22 @@ const ReleaseSettings = (props) => {
         <>
           <Typography variant="body1" color="grey.primary">
             {metadataUpdated
-              ? 'Your release is ready to be published!'
+              ? 'Your release is now live!'
                 : `Your release is currently being uploaded...` }
           </Typography>
-            {metadataUpdated && (
-            <h3>{`Click 'Publish' to make your release live for sale and listening.`}</h3>
-          )}
         </>
       )}
-          <Box mt={1}>
-            <Royalty releasePubkey={releasePubkey} release={release} />
-            {metadata ? (
-              <Link
-                to={`/release/${releasePubkey}`}
-                style={{ textDecoration: 'none' }}
-              >
-                <Button variant="contained" color="primary" fullWidth>
-                  View Release
-                </Button>
-              </Link>
-            ) : (
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={(e) => handleUpdateMetadataButton(e)}
-                disabled={!metadataUpdated}
-                fullWidth
-                sx={{marginTop: '15px'}}
-              >
-                Publish Release
-              </Button>
-            )}
-          </Box>
+        <Box mt={1}>
+          <Royalty releasePubkey={releasePubkey} release={release} />
+          <Link
+            to={`/release/${releasePubkey}`}
+            style={{ textDecoration: 'none' }}
+          >
+            <Button variant="contained" color="primary" fullWidth disabled={!metadata}>
+              View Release
+            </Button>
+          </Link>
+        </Box>
       </ReleaseInfoWrapper>
     </StyledBox>
   )

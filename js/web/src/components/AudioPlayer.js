@@ -49,12 +49,14 @@ const AudioPlayer = () => {
       if (index === undefined) {
         setInfo(playlistRef.current[playlistRef.current.length - 1])
         setNextInfo(playlistRef.current[playlistRef.current.length])
-        console.log('playlistRef.current[playlistRef.current.length - 1] :>> ', playlistRef.current[playlistRef.current.length - 1]);
+        console.log(
+          'playlistRef.current[playlistRef.current.length - 1] :>> ',
+          playlistRef.current[playlistRef.current.length - 1]
+        )
       } else {
         setInfo(playlistRef.current[index])
         setNextInfo(playlistRef.current[index + 1])
-        console.log('playlistRef.current :>> ', playlistRef.current);
-        
+        console.log('playlistRef.current :>> ', playlistRef.current)
       }
     }
   }, [txid])
@@ -285,7 +287,11 @@ const AudioPlayer = () => {
         />
       </VolumeContainer> */}
 
-      <QueDrawer isPlaying={isPlaying} togglePlay={togglePlay} nextInfo={nextInfo}/>
+      <QueDrawer
+        isPlaying={isPlaying}
+        togglePlay={togglePlay}
+        nextInfo={nextInfo}
+      />
     </StyledAudioPlayer>
   )
 }
@@ -300,7 +306,7 @@ const StyledAudioPlayer = styled(Box)(({ theme }) => ({
   boxShadow: `0px -1px 9px 5px rgba(0,0,0,0.08)`,
   background: `${theme.palette.white}`,
   display: 'flex',
-  zIndex: '100'
+  zIndex: '100',
 }))
 
 const AlbumArt = styled(Link)(() => ({
