@@ -113,7 +113,6 @@ const audioPlayerContextHelper = ({
       const updatedTracks = { ...tracks }
       delete updatedTracks[releasePubkey]
       setPlaylist(updatedPlaylist)
-      // setTracks(updatedTracks)
     }
   }
 

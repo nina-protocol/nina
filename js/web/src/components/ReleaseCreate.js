@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useSnackbar } from 'notistack'
 import Button from '@mui/material/Button'
-import CircularProgress from '@mui/material/CircularProgress'
+import LinearProgress from '@mui/material/LinearProgress';
 import { Typography, Box } from '@mui/material'
 import { useWallet } from '@solana/wallet-adapter-react'
 import ReleaseCreateForm from './ReleaseCreateForm'
@@ -12,7 +12,7 @@ import NinaBox from './NinaBox'
 import MediaDropzones from './MediaDropzones'
 import * as Yup from 'yup'
 
-const { ReleaseSettings } = ninaCommon.components
+const { ReleaseSettings, Dots } = ninaCommon.components
 const { ReleaseContext, NinaContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
@@ -37,12 +37,14 @@ const ReleaseCreate = () => {
   const [releasePubkey, setReleasePubkey] = useState(undefined)
   const [pressingFee, setPressingFee] = useState(undefined)
   const [release, setRelease] = useState(undefined)
-  const [buttonText, setButtonText] = useState('1/2 Confirm Relase Info')
+  const [buttonText, setButtonText] = useState('Publish Release')
   const [pending, setPending] = useState(false)
   const [formIsValid, setFormIsValid] = useState(false)
   const [formValues, setFormValues] = useState({
     releaseForm: {},
   })
+  const [imageProgress, setImageProgress] = useState()
+  const [audioProgress, setAudioProgress] = useState()
 
   useEffect(() => {
     return () => {
@@ -132,6 +134,14 @@ const ReleaseCreate = () => {
     }
   }
 
+  const handleProgress = (progress, isImage) => {
+    if (isImage) {
+      setImageProgress(progress)
+    } else {
+      setAudioProgress(progress)
+    }
+  }
+
   if (
     release &&
     artwork.meta.status === 'done' &&
@@ -173,6 +183,7 @@ const ReleaseCreate = () => {
               values={formValues}
               releasePubkey={releasePubkey}
               track={track}
+              handleProgress={handleProgress}
             />
           </Box>
 
@@ -185,21 +196,21 @@ const ReleaseCreate = () => {
             />
           </CreateFormWrapper>
 
-          {!release && (
-            <CreateCta>
-              <Button
-                fullWidth
-                variant="outlined"
-                color="primary"
-                onClick={handleSubmit}
-                disabled={pending || !pressingFee || !formIsValid}
-                sx={{ height: '54px' }}
-              >
-                {pending && <CircularProgress />}
-                {!pending && buttonText}
-              </Button>
-            </CreateCta>
-          )}
+          <CreateCta>
+            <Button
+              fullWidth
+              variant="outlined"
+              color="primary"
+              onClick={handleSubmit}
+              disabled={pending || !pressingFee || !formIsValid || artwork?.meta.status === 'uploading' || track?.meta.status === 'uploading'}
+              sx={{ height: '54px' }}
+            >
+
+              {pending && <Dots msg={`Uploading ${audioProgress > 0 ? 'Track' : 'Image'} - Please don't close this window`} />}
+              {!pending && buttonText}
+            </Button>
+            {pending && <LinearProgress variant="determinate" value={audioProgress || imageProgress} />}
+          </CreateCta>
         </>
       )}
 
