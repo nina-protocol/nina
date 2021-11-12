@@ -102,7 +102,7 @@ const RecentlyPublished = (props) => {
 
             return (
               <ReleaseSlide key={i}>
-                <Link to={'/release/' + release.releasePubkey}>
+                <Link to={'/releases/' + release.releasePubkey}>
                   <SmoothImage src={imageUrl} />
                 </Link>
                 {artistInfo}

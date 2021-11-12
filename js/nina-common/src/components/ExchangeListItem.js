@@ -178,7 +178,6 @@ const Root = styled(Box)(({ theme }) => ({
       },
     },
   },
-
 }))
 
-export default ExchangeListItem;
+export default ExchangeListItem

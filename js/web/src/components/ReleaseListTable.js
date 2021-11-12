@@ -85,7 +85,7 @@ const ReleaseListTable = (props) => {
   const [order] = useState('asc')
   const { addTrackToQue } = useContext(AudioPlayerContext)
   const handleClick = (event, releasePubkey) => {
-    history.push(`/release/` + releasePubkey)
+    history.push(`/releases/` + releasePubkey)
   }
 
   let rows = releases.map((release) => {
@@ -167,7 +167,13 @@ const ReleaseListTable = (props) => {
       rowData['collect'] = collectButton
     }
     rowData['moreInfo'] = (
-      <Link to={`/release/${releasePubkey}`}>More Info</Link>
+      <Link
+        to={`/${
+          tableType === 'userCollection' ? 'collection' : 'releases'
+        }/${releasePubkey}`}
+      >
+        More Info
+      </Link>
     )
 
     return rowData

@@ -214,5 +214,9 @@ export default class NinaClient {
     }
     return minutes + ':' + seconds
   }
+<<<<<<< HEAD
 }  
 
+=======
+}
+>>>>>>> 45da9b605f983e1898f31b84c1a4788ba8f4c789

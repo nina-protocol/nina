@@ -98,15 +98,15 @@ const Royalty = (props) => {
 
   return (
     <Root>
-        <Button
-          variant="outlined"
-          color="primary"
-          type="button"
-          onClick={() => setOpen(true)}
-          fullWidth
-        >
-          Royalty Info
-        </Button>
+      <Button
+        variant="outlined"
+        color="primary"
+        type="button"
+        onClick={() => setOpen(true)}
+        fullWidth
+      >
+        Royalty Info
+      </Button>
       <StyledModal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -120,7 +120,9 @@ const Royalty = (props) => {
       >
         <Fade in={open}>
           <StyledPaper>
-            <Typography align="center" variant="h4" id="transition-modal-title">Royalty Information:</Typography>
+            <Typography align="center" variant="h4" id="transition-modal-title">
+              Royalty Information:
+            </Typography>
             <List>
               {release?.royaltyRecipients &&
                 release.royaltyRecipients.map((recipient, i) => {
@@ -235,7 +237,7 @@ const StyledModal = styled(Modal)(() => ({
   justifyContent: 'center',
 }))
 
-const StyledPaper= styled(Paper)(({theme}) => ({
+const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   border: '2px solid #000',
   boxShadow: theme.shadows[5],
@@ -244,6 +246,5 @@ const StyledPaper= styled(Paper)(({theme}) => ({
   maxHeight: '90vh',
   overflowY: 'auto',
 }))
-
 
 export default Royalty

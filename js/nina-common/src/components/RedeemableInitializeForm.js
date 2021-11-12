@@ -22,15 +22,15 @@ export const RedeemableInitializeForm = (props) => {
       <>
         <Form className={`${classes.redeemableForm}`}>
           <Field name="releasePubkey">
-            {(props) => (
+            {({ field }) => (
               <>
                 <TextField
                   className={classes.formField}
                   variant="outlined"
-                  placeholder={NinaClient.formatPlaceholder(props.field.name)}
-                  label={NinaClient.formatPlaceholder(props.field.name)}
+                  placeholder={NinaClient.formatPlaceholder(field.name)}
+                  label={NinaClient.formatPlaceholder(field.name)}
                   disabled={true}
-                  {...props.field}
+                  {...field}
                 />
               </>
             )}
@@ -40,14 +40,14 @@ export const RedeemableInitializeForm = (props) => {
           ) : null}
 
           <Field name="description">
-            {(props) => (
+            {({ field }) => (
               <>
                 <TextField
                   className={classes.formField}
                   variant="outlined"
-                  placeholder={NinaClient.formatPlaceholder(props.field.name)}
-                  label={NinaClient.formatPlaceholder(props.field.name)}
-                  {...props.field}
+                  placeholder={NinaClient.formatPlaceholder(field.name)}
+                  label={NinaClient.formatPlaceholder(field.name)}
+                  {...field}
                 />
               </>
             )}
@@ -57,15 +57,15 @@ export const RedeemableInitializeForm = (props) => {
           ) : null}
 
           <Field name="amount">
-            {(props) => (
+            {({ field }) => (
               <>
                 <TextField
                   className={classes.formField}
                   variant="outlined"
                   type="number"
-                  placeholder={NinaClient.formatPlaceholder(props.field.name)}
-                  label={NinaClient.formatPlaceholder(props.field.name)}
-                  {...props.field}
+                  placeholder={NinaClient.formatPlaceholder(field.name)}
+                  label={NinaClient.formatPlaceholder(field.name)}
+                  {...field}
                 />
               </>
             )}

@@ -50,41 +50,41 @@ const BuySellForm = (props) => {
   }
 
   return (
-      <StyledForm
-        onSubmit={handleSubmit}
-        className={classes.buySellForm}
-        autoComplete="off"
-      >
-        <InputWrapper >
-          <Input
-            id="buy-sell__input"
-            type="input"
-            name="amount"
-            className={`${classes.buySellFormInputLabel}`}
-            onChange={(e) => handleChange(e)}
-            disableUnderline={true}
-            placeholder="Enter price in SOL"
-            value={amount !== undefined ? amount : ''}
-          />
-          <Button
-            variant="contained"
-            type="submit"
-            disabled={!wallet?.connected}
-            disableRipple={true}
-            sx={{width: "20%"}}
-          >
-            {isBuy && buyPending && (
-              <Dots/>
-            )}
+    <StyledForm
+      onSubmit={handleSubmit}
+      className={classes.buySellForm}
+      autoComplete="off"
+    >
+      <InputWrapper >
+        <Input
+          id="buy-sell__input"
+          type="input"
+          name="amount"
+          className={`${classes.buySellFormInputLabel}`}
+          onChange={(e) => handleChange(e)}
+          disableUnderline={true}
+          placeholder="Enter price in SOL"
+          value={amount !== undefined ? amount : ''}
+        />
+        <Button
+          variant="contained"
+          type="submit"
+          disabled={!wallet?.connected}
+          disableRipple={true}
+          sx={{width: "20%"}}
+        >
+          {isBuy && buyPending && (
+            <Dots/>
+          )}
 
-            {!isBuy && sellPending && (
-              <Dots />
-            )}
-            {isBuy && !buyPending && 'Submit'}
-            {!isBuy && !sellPending && 'Submit'}
-          </Button>
-        </InputWrapper>
-      </StyledForm>
+          {!isBuy && sellPending && (
+            <Dots />
+          )}
+          {isBuy && !buyPending && 'Submit'}
+          {!isBuy && !sellPending && 'Submit'}
+        </Button>
+      </InputWrapper>
+    </StyledForm>
   )
 }
 
@@ -94,7 +94,7 @@ const classes = {
   buySellFormInputLabel: `${PREFIX}-buySellFormInputLabel`,
 }
 
-const StyledForm = styled('form')(({theme}) => ({
+const StyledForm = styled('form')(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
@@ -133,8 +133,8 @@ const StyledForm = styled('form')(({theme}) => ({
       },
     },
   },
- }))
- 
+}))
+
 const InputWrapper = styled(Box)(() => ({
   display: 'flex',
   justifyContent: 'space-between',
