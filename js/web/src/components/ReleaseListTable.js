@@ -85,13 +85,20 @@ const ReleaseListTable = (props) => {
   const [order] = useState('asc')
 
   const handleClick = (e, releasePubkey) => {
-    history.push(tableType === 'userCollection' ? `/collection/${releasePubkey}` : `/releases/${releasePubkey}`)
+    history.push(
+      tableType === 'userCollection'
+        ? `/collection/${releasePubkey}`
+        : `/releases/${releasePubkey}`
+    )
   }
 
   const handlePlay = (e, releasePubkey) => {
     e.stopPropagation()
     e.preventDefault()
-    updateTxid(releaseState.metadata[releasePubkey].properties.files[0].uri, releasePubkey)
+    updateTxid(
+      releaseState.metadata[releasePubkey].properties.files[0].uri,
+      releasePubkey
+    )
   }
 
   const handleCollect = (e, recipient, releasePubkey) => {
@@ -145,22 +152,19 @@ const ReleaseListTable = (props) => {
         tokenData.price.toNumber(),
         tokenData.paymentMint
       )}`
-      rowData[
-        'edition'
-      ] = tokenData.totalSupply.toNumber()
-      rowData[
-        'sold'
-      ] = tokenData.saleCounter.toNumber()
+      rowData['edition'] = tokenData.totalSupply.toNumber()
+      rowData['sold'] = tokenData.saleCounter.toNumber()
       rowData['share'] = `${recipient.percentShare.toNumber() / 10000}%`
       rowData['collected'] = `${NinaClient.nativeToUiString(
         recipient.collected.toNumber(),
         tokenData.paymentMint
       )}`
       rowData['collect'] = collectButton
-      rowData[
-        'date'
-      ] = `${new Date(tokenData.releaseDatetime.toNumber() * 1000).toISOString().split('T')[0]}`
-
+      rowData['date'] = `${
+        new Date(tokenData.releaseDatetime.toNumber() * 1000)
+          .toISOString()
+          .split('T')[0]
+      }`
     }
     return rowData
   })
@@ -189,7 +193,8 @@ const ReleaseListTable = (props) => {
                     hover
                     tabIndex={-1}
                     key={row.id}
-                    onClick={(e) => handleClick(e, row.id)}>
+                    onClick={(e) => handleClick(e, row.id)}
+                  >
                     {Object.keys(row).map((cellName) => {
                       const cellData = row[cellName]
                       if (cellName !== 'id') {
@@ -213,7 +218,9 @@ const ReleaseListTable = (props) => {
                         } else if (cellName === 'title') {
                           return (
                             <TableCell align="center" key={cellName}>
-                              <span style={{textDecoration: 'underline'}}>{cellData}</span>
+                              <span style={{ textDecoration: 'underline' }}>
+                                {cellData}
+                              </span>
                             </TableCell>
                           )
                         } else {

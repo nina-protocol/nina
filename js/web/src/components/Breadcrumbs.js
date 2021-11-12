@@ -29,7 +29,8 @@ const YourCollectionBreadcrumb = () => {
   } = useContext(ReleaseContext)
   const wallet = useWallet()
 
-  const [userCollectionReleasesCount, setUserCollectionReleasesCount] = useState()
+  const [userCollectionReleasesCount, setUserCollectionReleasesCount] =
+    useState()
   useEffect(() => {
     if (wallet?.connected) {
       getReleasesPublishedByUser()

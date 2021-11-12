@@ -15,9 +15,6 @@ const ReleaseSettings = (props) => {
 
   const [release, setRelease] = useState(releaseState.tokenData[releasePubkey])
   const [metadata, setMetadata] = useState(releaseState.metadata[releasePubkey])
-  const [metadataUpdated, setMetadataUpdated] = useState(
-    releaseState.metadata[releasePubkey]
-  )
   const [displayValues, setDisplayValues] = useState({})
 
   let timer = undefined
@@ -41,7 +38,6 @@ const ReleaseSettings = (props) => {
     const metadataTxid = await releaseFetchMetadata(releasePubkey)
 
     if (metadataTxid) {
-      setMetadataUpdated(true)
       clearInterval(timer)
       timer = null
     }
@@ -75,7 +71,7 @@ const ReleaseSettings = (props) => {
     }
   }, [tempMetadata, metadata])
 
-return (
+  return (
     <StyledBox>
       <ReleaseInfoWrapper>
         <Typography variant="h4" gutterBottom>
@@ -84,35 +80,51 @@ return (
 
         <ReleaseInfo>
           <ReleaseStat variant="body1" component="p">
-            <span>Edition Size</span> 
-            <strong> {release?.totalSupply.toNumber()} {displayValues.catalogNumber} </strong>
+            <span>Edition Size</span>
+            <strong>
+              {' '}
+              {release?.totalSupply.toNumber()} {displayValues.catalogNumber}{' '}
+            </strong>
           </ReleaseStat>
 
           <ReleaseStat variant="body1" component="p">
             <span>Cost</span>
-             <strong>{NinaClient.nativeToUiString(
-              release.price.toNumber(),
-              release.paymentMint
-            )} </strong>
+            <strong>
+              {NinaClient.nativeToUiString(
+                release.price.toNumber(),
+                release.paymentMint
+              )}{' '}
+            </strong>
           </ReleaseStat>
 
           <ReleaseStat variant="body1" component="p">
             <span>Resale</span>
-             <strong> {release?.resalePercentage.toNumber() / 10000}%</strong>
+            <strong> {release?.resalePercentage.toNumber() / 10000}%</strong>
           </ReleaseStat>
-          <Typography variant="body1" component="p" sx={{marginTop: '10px !important'}}>
-              {displayValues.description}
+          <Typography
+            variant="body1"
+            component="p"
+            sx={{ marginTop: '10px !important' }}
+          >
+            {displayValues.description}
           </Typography>
         </ReleaseInfo>
-   
+
         <Box mt={1}>
           <Royalty releasePubkey={releasePubkey} release={release} />
           <Link
             to={`/release/${releasePubkey}`}
             style={{ textDecoration: 'none' }}
           >
-            <Button variant="contained" color="primary" fullWidth disabled={!metadata}>
-              {metadata ? 'View Release' : 'Your release is currently being finalized...'}
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              disabled={!metadata}
+            >
+              {metadata
+                ? 'View Release'
+                : 'Your release is currently being finalized...'}
             </Button>
           </Link>
         </Box>

@@ -185,20 +185,11 @@ const AudioPlayer = () => {
       )}
 
       <Controls>
-        <SkipPreviousIcon
-          onClick={() => playPreviousTrack()}
-          sx={iconStyle}
-        />
+        <SkipPreviousIcon onClick={() => playPreviousTrack()} sx={iconStyle} />
         {isPlaying ? (
-          <PauseIcon
-            onClick={() => setIsPlaying(false)}
-            sx={iconStyle}
-          />
+          <PauseIcon onClick={() => setIsPlaying(false)} sx={iconStyle} />
         ) : (
-          <PlayArrowIcon
-            onClick={() => setIsPlaying(true)}
-            sx={iconStyle}
-          />
+          <PlayArrowIcon onClick={() => setIsPlaying(true)} sx={iconStyle} />
         )}
         <SkipNextIcon onClick={() => playNextTrack()} sx={iconStyle} />
       </Controls>
@@ -270,8 +261,8 @@ const Controls = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   padding: theme.spacing(0, 2),
   '& MuiSvgIcon-root': {
-    width: '2em'
-  }
+    width: '2em',
+  },
 }))
 
 const ProgressContainer = styled(Box)(({ theme }) => ({
@@ -300,10 +291,5 @@ const ProgressContainer = styled(Box)(({ theme }) => ({
     },
   },
 }))
-
-// const VolumeContainer = styled(Box)(() => ({
-//   border: '2px solid blue',
-//   width: '100px'
-// }))
 
 export default AudioPlayer

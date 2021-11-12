@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useSnackbar } from 'notistack'
 import Button from '@mui/material/Button'
-import LinearProgress from '@mui/material/LinearProgress';
+import LinearProgress from '@mui/material/LinearProgress'
 import { Typography, Box } from '@mui/material'
 import { useWallet } from '@solana/wallet-adapter-react'
 import ReleaseCreateForm from './ReleaseCreateForm'
@@ -202,14 +202,30 @@ const ReleaseCreate = () => {
               variant="outlined"
               color="primary"
               onClick={handleSubmit}
-              disabled={pending || !pressingFee || !formIsValid || artwork?.meta.status === 'uploading' || track?.meta.status === 'uploading'}
+              disabled={
+                pending ||
+                !pressingFee ||
+                !formIsValid ||
+                artwork?.meta.status === 'uploading' ||
+                track?.meta.status === 'uploading'
+              }
               sx={{ height: '54px' }}
             >
-
-              {pending && <Dots msg={`Uploading ${audioProgress > 0 ? 'Track' : 'Image'} - Please don't close this window`} />}
+              {pending && (
+                <Dots
+                  msg={`Uploading ${
+                    audioProgress > 0 ? 'Track' : 'Image'
+                  } - Please don't close this window`}
+                />
+              )}
               {!pending && buttonText}
             </Button>
-            {pending && <LinearProgress variant="determinate" value={audioProgress || imageProgress} />}
+            {pending && (
+              <LinearProgress
+                variant="determinate"
+                value={audioProgress || imageProgress}
+              />
+            )}
           </CreateCta>
         </>
       )}

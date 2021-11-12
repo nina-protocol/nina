@@ -39,21 +39,19 @@ const ReleaseList = () => {
 
   return (
     <StyledBox>
-      {wallet?.connected &&
-        userPublishedReleases?.length > 0 && (
-          <ReleaseListTable
-            releases={userPublishedReleases}
-            tableType="userPublished"
-            collectRoyaltyForRelease={collectRoyaltyForRelease}
-            key="releases"
-          />
-        )}
-      {wallet?.connected &&
-        userPublishedReleases?.length === 0 && (
-          <>
-            <Typography>{`You haven't published any music yet.`}</Typography>
-          </>
-        )}
+      {wallet?.connected && userPublishedReleases?.length > 0 && (
+        <ReleaseListTable
+          releases={userPublishedReleases}
+          tableType="userPublished"
+          collectRoyaltyForRelease={collectRoyaltyForRelease}
+          key="releases"
+        />
+      )}
+      {wallet?.connected && userPublishedReleases?.length === 0 && (
+        <>
+          <Typography>{`You haven't published any music yet.`}</Typography>
+        </>
+      )}
     </StyledBox>
   )
 }
@@ -62,7 +60,7 @@ const StyledBox = styled(Box)(() => ({
   display: 'flex',
   flexDirection: 'column',
   overflowY: 'scroll',
-  padding: '280px 0 80px 0'
+  padding: '280px 0 80px 0',
 }))
 
 export default ReleaseList

@@ -8,10 +8,8 @@ import ReleaseListTable from './ReleaseListTable'
 const { ReleaseContext, NinaContext } = ninaCommon.contexts
 
 const ReleaseList = () => {
-  const {
-    filterReleasesUserCollection,
-    releaseState,
-  } = useContext(ReleaseContext)
+  const { filterReleasesUserCollection, releaseState } =
+    useContext(ReleaseContext)
 
   const wallet = useWallet()
   const { collection } = useContext(NinaContext)
@@ -25,20 +23,18 @@ const ReleaseList = () => {
 
   return (
     <StyledBox className={classes.root}>
-      {wallet?.connected &&
-        userCollectionReleases?.length > 0 && (
-          <ReleaseListTable
-            releases={userCollectionReleases}
-            tableType="userCollection"
-            key="releases"
-          />
-        )}
-      {wallet?.connected &&
-        userCollectionReleases?.length === 0 && (
-          <Typography>
-            <h1>Your collection is empty!</h1>
-          </Typography>
-        )}
+      {wallet?.connected && userCollectionReleases?.length > 0 && (
+        <ReleaseListTable
+          releases={userCollectionReleases}
+          tableType="userCollection"
+          key="releases"
+        />
+      )}
+      {wallet?.connected && userCollectionReleases?.length === 0 && (
+        <Typography>
+          <h1>Your collection is empty!</h1>
+        </Typography>
+      )}
     </StyledBox>
   )
 }
@@ -53,7 +49,7 @@ const StyledBox = styled(Box)(() => ({
   display: 'flex',
   flexDirection: 'column',
   overflowY: 'scroll',
-  padding: '280px 0 80px 0'
+  padding: '280px 0 80px 0',
 }))
 
 export default ReleaseList
