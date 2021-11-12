@@ -32,7 +32,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   }),
 })
 
-const QueList = (props) => {
+const QueueList = (props) => {
   const { setDrawerOpen } = props
   const wallet = useWallet()
   const history = useHistory()
@@ -41,7 +41,6 @@ const QueList = (props) => {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [playlistState, setPlaylistState] = useState(undefined)
   const [skipForReorder, setSkipForReorder] = useState(false)
-  const [playing, setPlaying] = useState(isPlaying)
 
   useEffect(() => {
     console.log('1st use effect', txid, playlist)
@@ -51,11 +50,6 @@ const QueList = (props) => {
       setSelectedIndex(playlist?.indexOf(playlistEntry) || 0)
     }
   }, [txid, playlist])
-
-  useEffect(() => {
-    console.log('isPlaying')
-    setPlaying(isPlaying)
-  }, [isPlaying])
 
   useEffect(() => {
     console.log('playlist change')
@@ -106,7 +100,7 @@ const QueList = (props) => {
 
   console.log('rerendering: ')
   return (
-    <StyledQueList>
+    <StyledQueueList>
       {playlist?.length === 0 && (
         <div style={{ padding: '16px' }}>
           <Typography align="center">
@@ -142,10 +136,10 @@ const QueList = (props) => {
                       handleListItemClick(event, i, entry.txid)
                     }
                   >
-                    {playing && selectedIndex === i ? (
+                    {isPlaying && selectedIndex === i ? (
                       <PauseRoundedIcon onClick={() => setIsPlaying(false)} />
                     ) : (
-                      <PlayArrowRoundedIcon onClick={() => setIsPlaying(true)} />
+                      <PlayArrowRoundedIcon onClick={() => updateTxid(entry.txid, entry.releasePubkey)} />
                     )}
                   </TableCell>
                   <TableCell>{entry.artist}</TableCell>
@@ -168,7 +162,7 @@ const QueList = (props) => {
           </Table>
         </TableContainer>
       )}
-    </StyledQueList>
+    </StyledQueueList>
   )
 }
 
@@ -220,7 +214,7 @@ const DroppableComponent =
     )
   }
 
-const StyledQueList = styled(Box)(({ theme }) => ({
+const StyledQueueList = styled(Box)(({ theme }) => ({
   width: '700px',
   margin: 'auto',
   overflowY: 'scroll',
@@ -233,4 +227,4 @@ const StyledQueList = styled(Box)(({ theme }) => ({
   },
 }))
 
-export default QueList
+export default QueueList

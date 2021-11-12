@@ -17,12 +17,12 @@ import QueueMusicIcon from '@mui/icons-material/QueueMusic'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { Typography } from '@material-ui/core'
-import QueList from './QueList'
+import QueueList from './QueueList'
 
 const { AudioPlayerContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
-const QueDrawer = (props) => {
+const QueueDrawer = (props) => {
   const theme = useTheme()
   const { txid, updateTxid, playlist, reorderPlaylist, currentIndex } =
     useContext(AudioPlayerContext)
@@ -82,7 +82,7 @@ const QueDrawer = (props) => {
           {!drawerOpen &&
             (nextInfo
               ? `Up next: ${nextInfo.artist} - ${nextInfo.title}`
-              : 'open que')}
+              : 'open queue')}
           {drawerOpen && 'Close'}
         </Button>
         <Drawer
@@ -92,7 +92,7 @@ const QueDrawer = (props) => {
           PaperProps={quePaperStyle}
           ModalProps={queModalStyle}
         >
-          <QueList
+          <QueueList
             setDrawerOpen={setDrawerOpen}
           />
         </Drawer>
@@ -125,4 +125,4 @@ const ToggleWrapper = styled(Box)(() => ({
   right: '0',
 }))
 
-export default React.memo(QueDrawer)
+export default React.memo(QueueDrawer)

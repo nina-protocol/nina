@@ -14,7 +14,7 @@ import shareArrow from '../assets/shareArrow.png'
 // import VolumeUpIcon from '@mui/icons-material/VolumeUp'
 // import VolumeOffIcon from '@mui/icons-material/VolumeOff'
 import { Typography } from '@mui/material'
-import QueDrawer from './QueDrawer'
+import QueueDrawer from './QueueDrawer'
 
 const { AudioPlayerContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
@@ -41,7 +41,12 @@ const AudioPlayer = () => {
   }, [])
 
   useEffect(() => {
-    if (!isPlaying) {
+    if (
+      (playerRef.current &&
+            txid &&
+            playerRef.current.duration > 0 &&
+            !playerRef.current.paused) || !isPlaying
+    ) {
       clearInterval(intervalRef.current)
       playerRef.current.pause()
       setIsPlaying(false)
@@ -56,6 +61,23 @@ const AudioPlayer = () => {
   }, [isPlaying])
 
   useEffect(() => {
+    if (playlistRef.current.length > 0) {
+      changeTrack(txid)
+      let index = currentIndex()
+      if (index === undefined) {
+        setInfo(playlistRef.current[playlistRef.current.length - 1])
+        console.log(
+          'playlistRef.current[playlistRef.current.length - 1] :>> ',
+          playlistRef.current[playlistRef.current.length - 1]
+        )
+      } else {
+        setInfo(playlistRef.current[index])
+        console.log('playlistRef.current :>> ', playlistRef.current)
+      }
+    }
+  }, [txid])
+
+  useEffect(() => {
     const shouldSetInfoOnInitialPlaylistLoad = playlistRef.current.length === 0
     playlistRef.current = playlist
 
@@ -63,13 +85,6 @@ const AudioPlayer = () => {
       setInfo(playlistRef.current[0])
       if (!wallet?.connected && playlistRef.current[0]) {
         changeTrack(playlistRef.current[0].txid)
-        let index = currentIndex()
-        if (index === undefined) {
-          setInfo(playlistRef.current[playlistRef.current.length - 1])
-        } else {
-          console.log('else: ', playlistRef.current[index])
-          setInfo(playlistRef.current[index])
-        }
       }
     } else if (
       playlist.filter((playlistItem) => playlistItem.txid === info.txid)
@@ -77,22 +92,13 @@ const AudioPlayer = () => {
     ) {
       setIsPlaying(false)
       if (playlistRef.current[0]) {
-        // setInfo(playlistRef.current[0])
+        setInfo(playlistRef.current[0])
       } else {
-        // setInfo(null)
+        setInfo(null)
         setDuration(0)
       }
       setTrackProgress(0)
       clearInterval(intervalRef.current)
-    } else if (playlistRef.current.length > 0) {
-      changeTrack(txid)
-      let index = currentIndex()
-      if (index === undefined) {
-        setInfo(playlistRef.current[playlistRef.current.length - 1])
-      } else {
-        console.log('else: ', playlistRef.current[index])
-        setInfo(playlistRef.current[index])
-      }
     }
   }, [playlist])
 
@@ -263,7 +269,7 @@ const AudioPlayer = () => {
         />
       </VolumeContainer> */}
 
-      <QueDrawer />
+      <QueueDrawer />
     </StyledAudioPlayer>
   )
 }
