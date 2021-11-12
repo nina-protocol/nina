@@ -5,22 +5,23 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { Link } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import Slider from '@mui/material/Slider'
-import SkipNextRoundedIcon from '@mui/icons-material/SkipNextRounded'
-import SkipPreviousRoundedIcon from '@mui/icons-material/SkipPreviousRounded'
-import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded'
-import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
+import SkipNextIcon from '@mui/icons-material/SkipNext'
+import SkipPreviousIcon from '@mui/icons-material/SkipPrevious'
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import PauseIcon from '@mui/icons-material/Pause'
 // import SvgIcon from '@mui/material/SvgIcon';
 import shareArrow from '../assets/shareArrow.png'
 // import VolumeUpIcon from '@mui/icons-material/VolumeUp'
 // import VolumeOffIcon from '@mui/icons-material/VolumeOff'
 import { Typography } from '@mui/material'
-import QueDrawer from './QueDrawer'
+import QueueDrawer from './QueueDrawer'
 
 const { AudioPlayerContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
 const AudioPlayer = () => {
-  const { txid, updateTxid, playlist } = useContext(AudioPlayerContext)
+  const { txid, updateTxid, playlist, isPlaying, setIsPlaying, currentIndex } =
+    useContext(AudioPlayerContext)
   const wallet = useWallet()
   let playerRef = useRef()
   const intervalRef = useRef()
@@ -29,9 +30,7 @@ const AudioPlayer = () => {
   // const [muted, setMuted] = useState(false)
   const [trackProgress, setTrackProgress] = useState(0)
   const [duration, setDuration] = useState(0)
-  const [isPlaying, setIsPlaying] = useState(false)
   const [info, setInfo] = useState(null)
-  const [nextInfo, setNextInfo] = useState(null)
 
   useEffect(() => {
     playerRef.current = document.querySelector('#audio')
@@ -43,15 +42,25 @@ const AudioPlayer = () => {
   }, [])
 
   useEffect(() => {
+    if (!isPlaying) {
+      clearInterval(intervalRef.current)
+      playerRef.current.pause()
+    } else {
+      if (!txid) {
+        updateTxid(playlistRef.current[0].txid)
+      } else {
+        startTimer()
+        playerRef.current.play()
+      }
+    }
+  }, [isPlaying])
+
+  useEffect(() => {
+    let index = currentIndex()
     if (playlistRef.current.length > 0) {
       changeTrack(txid)
-      let index = currentIndex()
-      if (index === undefined) {
-        setInfo(playlistRef.current[playlistRef.current.length - 1])
-        setNextInfo(playlistRef.current[playlistRef.current.length])
-      } else {
+      if (index) {
         setInfo(playlistRef.current[index])
-        setNextInfo(playlistRef.current[index + 1])
       }
     }
   }, [txid])
@@ -72,13 +81,17 @@ const AudioPlayer = () => {
       setIsPlaying(false)
       if (playlistRef.current[0]) {
         setInfo(playlistRef.current[0])
-        setNextInfo(playlistRef.current[1])
       } else {
         setInfo(null)
         setDuration(0)
       }
       setTrackProgress(0)
       clearInterval(intervalRef.current)
+    } else {
+      let index = currentIndex()
+      setInfo(playlistRef.current[index])
+      setDuration(0)
+      setTrackProgress(0)
     }
   }, [playlist])
 
@@ -96,46 +109,13 @@ const AudioPlayer = () => {
         setTrackProgress(0)
         playNextTrack()
       }
-    }, [1000])
+    }, [300])
   }
 
   const changeTrack = async (txid) => {
     playerRef.current.src = txid
     playerRef.current.play()
     startTimer()
-  }
-
-  const togglePlay = () => {
-    if (
-      playerRef.current &&
-      txid &&
-      playerRef.current.duration > 0 &&
-      !playerRef.current.paused
-    ) {
-      clearInterval(intervalRef.current)
-      playerRef.current.pause()
-      setIsPlaying(false)
-    } else {
-      if (!txid) {
-        updateTxid(playlistRef.current[0].txid)
-        setIsPlaying(true)
-      } else {
-        setIsPlaying(true)
-        startTimer()
-        playerRef.current.play()
-      }
-    }
-  }
-
-  const currentIndex = () => {
-    let index = undefined
-    playlistRef.current.forEach((item, i) => {
-      if (item.txid === txid) {
-        index = i
-        return
-      }
-    })
-    return index
   }
 
   const playNextTrack = () => {
@@ -187,8 +167,8 @@ const AudioPlayer = () => {
   //   : `Connect you wallet to listen to your collection`
 
   const iconStyle = {
-    width: '40px',
-    height: '40px',
+    width: '60px',
+    height: '60px',
     cursor: 'pointer',
   }
 
@@ -200,26 +180,32 @@ const AudioPlayer = () => {
 
       {info && (
         <AlbumArt to={`/releases/${info.releasePubkey}`}>
-          <img src={info.cover} style={{ height: '60px', width: '60px' }} />
+          <img src={info.cover} style={{ height: '76px', width: '76px' }} />
         </AlbumArt>
       )}
 
       <Controls>
-        <SkipPreviousRoundedIcon
+        <SkipPreviousIcon
           onClick={() => playPreviousTrack()}
           sx={iconStyle}
         />
         {isPlaying ? (
-          <PauseRoundedIcon onClick={() => togglePlay()} sx={iconStyle} />
+          <PauseIcon
+            onClick={() => setIsPlaying(false)}
+            sx={iconStyle}
+          />
         ) : (
-          <PlayArrowRoundedIcon onClick={() => togglePlay()} sx={iconStyle} />
+          <PlayArrowIcon
+            onClick={() => setIsPlaying(true)}
+            sx={iconStyle}
+          />
         )}
-        <SkipNextRoundedIcon onClick={() => playNextTrack()} sx={iconStyle} />
+        <SkipNextIcon onClick={() => playNextTrack()} sx={iconStyle} />
       </Controls>
 
       <ProgressContainer>
         {info && (
-          <Typography align="left" variant="subtitle1">
+          <Typography align="left" variant="body1">
             {info.artist}, <i>{info.title}</i>
           </Typography>
         )}
@@ -232,7 +218,7 @@ const AudioPlayer = () => {
         />
       </ProgressContainer>
 
-      <Typography sx={{ padding: '0 30px' }} variant="subtitle1">
+      <Typography sx={{ padding: '0 30px' }} variant="body1">
         {NinaClient.formatDuration(trackProgress) || '00:00'}
       </Typography>
 
@@ -242,7 +228,7 @@ const AudioPlayer = () => {
             to={`/releases/${info.releasePubkey}`}
             style={{ marginRight: '30px' }}
           >
-            <Typography variant="subtitle1" sx={{ padding: '0' }}>
+            <Typography variant="body1" sx={{ padding: '0' }}>
               View Info
             </Typography>
           </Link>
@@ -256,37 +242,7 @@ const AudioPlayer = () => {
           </Link>
         </>
       )}
-
-      {/* <VolumeContainer>
-        {muted && (
-          <VolumeOffIcon
-            className={`${classes.player}__button  ${classes.player}__button--volume-mute`}
-            onClick={() => mute(false)}
-          />
-        )}
-        {!muted && (
-          <VolumeUpIcon
-            className={`${classes.player}__button ${classes.player}__button--volume-mute`}
-            onClick={() => mute(true)}
-          />
-        )}
-
-        <Slider
-          className="player__volume"
-          value={muted ? 0 : volume}
-          onChange={(e, newValue) => volumeChange(newValue)}
-          aria-labelledby="continuous-slider"
-          min={0}
-          step={0.01}
-          max={1.0}
-        />
-      </VolumeContainer> */}
-
-      <QueDrawer
-        isPlaying={isPlaying}
-        togglePlay={togglePlay}
-        nextInfo={nextInfo}
-      />
+      <QueueDrawer />
     </StyledAudioPlayer>
   )
 }
@@ -295,7 +251,7 @@ const StyledAudioPlayer = styled(Box)(({ theme }) => ({
   position: 'fixed',
   bottom: '0',
   width: '100%',
-  height: '60px',
+  height: '76px',
   maxWidth: '100vw',
   alignItems: 'center',
   boxShadow: `0px -1px 9px 5px rgba(0,0,0,0.08)`,
@@ -305,19 +261,22 @@ const StyledAudioPlayer = styled(Box)(({ theme }) => ({
 }))
 
 const AlbumArt = styled(Link)(() => ({
-  width: '60px',
-  height: '60px',
+  width: '76px',
+  height: '76px',
 }))
 
 const Controls = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   padding: theme.spacing(0, 2),
+  '& MuiSvgIcon-root': {
+    width: '2em'
+  }
 }))
 
 const ProgressContainer = styled(Box)(({ theme }) => ({
   width: '250px',
-  height: '28px',
+  height: '48px',
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-around',

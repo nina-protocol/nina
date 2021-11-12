@@ -18,6 +18,7 @@ const AudioPlayerContextProvider = ({ children }) => {
   const { connection } = useContext(ConnectionContext)
   const [txid, setTxid] = useState(null)
   const [playlist, setPlaylist] = useState([])
+  const [isPlaying, setIsPlaying] = useState(false)
 
   useEffect(() => {
     if (
@@ -33,8 +34,8 @@ const AudioPlayerContextProvider = ({ children }) => {
     reorderPlaylist,
     removeTrackFromPlaylist,
     createPlaylistFromTracks,
-    addTrackToQue,
-    removeTrackFromQue,
+    addTrackToQueue,
+    removeTrackFromQueue,
   } = audioPlayerContextHelper({
     releaseState,
     wallet,
@@ -47,12 +48,21 @@ const AudioPlayerContextProvider = ({ children }) => {
   })
 
   const updateTxid = (newTxid, releasePubkey) => {
-    addTrackToQue(releasePubkey)
-    if (newTxid === txid) {
-      setTxid(newTxid + '?ext=mp3')
-    } else {
+    if (newTxid !== playlist[currentIndex()]) {
+      addTrackToQueue(releasePubkey)
       setTxid(newTxid)
     }
+  }
+
+  const currentIndex = () => {
+    let index = undefined
+    playlist.forEach((item, i) => {
+      if (item.txid === txid) {
+        index = i
+        return
+      }
+    })
+    return index
   }
 
   return (
@@ -63,8 +73,11 @@ const AudioPlayerContextProvider = ({ children }) => {
         playlist,
         reorderPlaylist,
         removeTrackFromPlaylist,
-        addTrackToQue,
-        removeTrackFromQue,
+        addTrackToQueue,
+        removeTrackFromQueue,
+        isPlaying,
+        setIsPlaying,
+        currentIndex,
       }}
     >
       {children}
@@ -83,10 +96,7 @@ const audioPlayerContextHelper = ({
   shouldRemainInCollectionAfterSale,
   enqueueSnackbar,
 }) => {
-  const reorderPlaylist = ({ source, destination }) => {
-    const updatedPlaylist = [...playlist]
-    NinaClient.arrayMove(updatedPlaylist, source.index, destination.index)
-
+  const reorderPlaylist = (updatedPlaylist) => {
     setPlaylist([...updatedPlaylist])
   }
 
@@ -107,7 +117,7 @@ const audioPlayerContextHelper = ({
     }
   }
 
-  const removeTrackFromQue = async (releasePubkey) => {
+  const removeTrackFromQueue = async (releasePubkey) => {
     const updatedPlaylist = playlist.filter(
       (playlistItem) => playlistItem.releasePubkey !== releasePubkey
     )
@@ -131,12 +141,12 @@ const audioPlayerContextHelper = ({
     setPlaylist([...playlist, ...playlistEntries])
   }
 
-  const addTrackToQue = (releasePubkey) => {
+  const addTrackToQueue = (releasePubkey) => {
     const playlistEntry = createPlaylistEntry(releasePubkey)
     if (playlistEntry) {
       setPlaylist([...playlist, playlistEntry])
       enqueueSnackbar(
-        `${playlistEntry.artist} - ${playlistEntry.title} added to que`,
+        `${playlistEntry.artist} - ${playlistEntry.title} added to queue`,
         {
           variant: 'info',
         }
@@ -167,7 +177,7 @@ const audioPlayerContextHelper = ({
     reorderPlaylist,
     removeTrackFromPlaylist,
     createPlaylistFromTracks,
-    addTrackToQue,
-    removeTrackFromQue,
+    addTrackToQueue,
+    removeTrackFromQueue,
   }
 }
