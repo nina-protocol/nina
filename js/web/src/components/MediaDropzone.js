@@ -14,6 +14,7 @@ const MediaDropzone = ({
   metadata,
   setArtwork,
   setTrack,
+  handleProgress,
 }) => {
   const getUploadParams = ({ file }) => {
     const body = new FormData()
@@ -66,7 +67,7 @@ const MediaDropzone = ({
         <>
           <AddOutlinedIcon />
           <Typography variant="h2">Upload Track</Typography>
-          <Typography variant="subtitle1">File Formats: MP3</Typography>
+          <Typography variant="subtitle1">File Formats: MP3, WAV</Typography>
         </>
       )
     } else {
@@ -81,6 +82,7 @@ const MediaDropzone = ({
   }
 
   const Preview = ({ meta, fileWithMeta: { remove } }) => {
+    handleProgress(meta.percent, meta.type.includes('image'))
     if (meta.type.includes('image')) {
       return (
         <Box style={previewBoxStyles}>

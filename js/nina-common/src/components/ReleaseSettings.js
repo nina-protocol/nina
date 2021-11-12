@@ -118,7 +118,7 @@ const ReleaseSettings = (props) => {
           <Typography variant="body1" color="grey.primary">
             {metadataUpdated
               ? 'Your release is now live!'
-                : `Your release is currently being uploaded...` }
+                : `Your release is currently being finalized...` }
           </Typography>
         </>
       )}
