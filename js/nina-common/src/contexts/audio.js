@@ -19,6 +19,7 @@ const AudioPlayerContextProvider = ({ children }) => {
   const { connection } = useContext(ConnectionContext)
   const [txid, setTxid] = useState(null)
   const [playlist, setPlaylist] = useState([])
+  const [isPlaying, setIsPlaying] = useState(false)
 
   useEffect(() => {
     if (
@@ -56,6 +57,17 @@ const AudioPlayerContextProvider = ({ children }) => {
     }
   }
 
+  const currentIndex = () => {
+    let index = undefined
+    playlist.forEach((item, i) => {
+      if (item.txid === txid) {
+        index = i
+        return
+      }
+    })
+    return index
+  }
+
   return (
     <AudioPlayerContext.Provider
       value={{
@@ -66,6 +78,9 @@ const AudioPlayerContextProvider = ({ children }) => {
         removeTrackFromPlaylist,
         addTrackToQue,
         removeTrackFromQue
+        isPlaying,
+        setIsPlaying,
+        currentIndex
       }}
     >
       {children}
@@ -85,10 +100,7 @@ const audioPlayerContextHelper = ({
   shouldRemainInCollectionAfterSale,
   enqueueSnackbar
 }) => {
-  const reorderPlaylist = ({ source, destination }) => {
-    const updatedPlaylist = [...playlist]
-    NinaClient.arrayMove(updatedPlaylist, source.index, destination.index)
-
+  const reorderPlaylist = (updatedPlaylist) => {
     setPlaylist([...updatedPlaylist])
   }
 

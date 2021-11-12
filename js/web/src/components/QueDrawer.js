@@ -23,16 +23,24 @@ const { AudioPlayerContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
 const QueDrawer = (props) => {
-  const { isPlaying, togglePlay, nextInfo } = props
-
   const theme = useTheme()
-
-  const { txid, updateTxid, playlist, reorderPlaylist } =
+  const { txid, updateTxid, playlist, reorderPlaylist, currentIndex } =
     useContext(AudioPlayerContext)
   const wallet = useWallet()
-
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [nextInfo, setNextInfo] = useState()
+
+  useEffect(() => {
+    if (playlist.length > 0) {
+      let index = currentIndex()
+      if (index === undefined) {
+        setNextInfo(playlist[playlist.length])
+      } else {
+        setNextInfo(playlist[index + 1])
+      }
+    }
+  }, [txid])
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -85,8 +93,6 @@ const QueDrawer = (props) => {
           ModalProps={queModalStyle}
         >
           <QueList
-            isPlaying={isPlaying}
-            togglePlay={togglePlay}
             setDrawerOpen={setDrawerOpen}
           />
         </Drawer>
@@ -119,4 +125,4 @@ const ToggleWrapper = styled(Box)(() => ({
   right: '0',
 }))
 
-export default QueDrawer
+export default React.memo(QueDrawer)

@@ -33,16 +33,18 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 })
 
 const QueList = (props) => {
-  const { isPlaying, togglePlay, setDrawerOpen } = props
+  const { setDrawerOpen } = props
   const wallet = useWallet()
   const history = useHistory()
-  const { txid, updateTxid, playlist, reorderPlaylist, removeTrackFromQueue } =
+  const { txid, updateTxid, playlist, reorderPlaylist, removeTrackFromQueue, isPlaying, setIsPlaying } =
     useContext(AudioPlayerContext)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [playlistState, setPlaylistState] = useState(undefined)
   const [skipForReorder, setSkipForReorder] = useState(false)
+  const [playing, setPlaying] = useState(isPlaying)
 
   useEffect(() => {
+    console.log('1st use effect', txid, playlist)
     const playlistEntry = playlist.find((entry) => entry.txid === txid)
 
     if (playlistEntry) {
@@ -51,6 +53,12 @@ const QueList = (props) => {
   }, [txid, playlist])
 
   useEffect(() => {
+    console.log('isPlaying')
+    setPlaying(isPlaying)
+  }, [isPlaying])
+
+  useEffect(() => {
+    console.log('playlist change')
     if (!skipForReorder) {
       setPlaylistState(playlist)
     } else {
@@ -59,6 +67,7 @@ const QueList = (props) => {
   }, [playlist])
 
   const handleListItemClick = (event, index, txid) => {
+    console.log('handleListItemClick')
     setSelectedIndex(index)
     updateTxid(txid)
   }
@@ -75,24 +84,27 @@ const QueList = (props) => {
     }
     // change local playlist state
     const newPlaylist = [...playlistState]
+    console.log('playlist before: ', playlistState)
     NinaClient.arrayMove(
       newPlaylist,
       result.source.index,
       result.destination.index
     )
-
+    console.log('playlist after: ', newPlaylist)
+    console.log('result: ', result)
     const playlistEntry = playlistState.find((entry) => entry.txid === txid)
 
     if (playlistEntry) {
       setSelectedIndex(playlist?.indexOf(playlistEntry) || 0)
     }
-    setPlaylistState(newPlaylist)
+    // setPlaylistState(newPlaylist)
 
     // change context playlist state - skip updating local state
-    setSkipForReorder(true)
-    reorderPlaylist(result)
+    // setSkipForReorder(true)
+    reorderPlaylist(newPlaylist)
   }
 
+  console.log('rerendering: ')
   return (
     <StyledQueList>
       {playlist?.length === 0 && (
@@ -106,7 +118,7 @@ const QueList = (props) => {
       )}
 
       {playlist?.length > 0 && (
-        <TableContainer component={Paper} elevation={0}>
+        <TableContainer style={{overflowX: 'none'}} component={Paper} elevation={0}>          
           <Table>
             <TableHead>
               <TableRow>
@@ -118,7 +130,7 @@ const QueList = (props) => {
                 <TableCell>Remove</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody component={DroppableComponent(onDragEnd)}>
+            <TableBody component={DroppableComponent(onDragEnd)} style={{overflowX: 'none'}} >
               {playlist.map((entry, i) => (
                 <TableRow
                   component={DraggableComponent(entry.txid, i)}
@@ -130,10 +142,10 @@ const QueList = (props) => {
                       handleListItemClick(event, i, entry.txid)
                     }
                   >
-                    {isPlaying && selectedIndex === i ? (
-                      <PauseRoundedIcon onClick={() => togglePlay()} />
+                    {playing && selectedIndex === i ? (
+                      <PauseRoundedIcon onClick={() => setIsPlaying(false)} />
                     ) : (
-                      <PlayArrowRoundedIcon onClick={() => togglePlay()} />
+                      <PlayArrowRoundedIcon onClick={() => setIsPlaying(true)} />
                     )}
                   </TableCell>
                   <TableCell>{entry.artist}</TableCell>
@@ -162,8 +174,9 @@ const QueList = (props) => {
 
 const DraggableComponent = (id, index) => (props) => {
   const { children } = props
+  console.log('draggable children:', children)
   return (
-    <Draggable draggableId={id} index={index}>
+    <Draggable key={id} draggableId={id} index={index}>
       {(provided, snapshot) => (
         <TableRow
           ref={provided.innerRef}
@@ -185,9 +198,11 @@ const DraggableComponent = (id, index) => (props) => {
 const DroppableComponent =
   (onDragEnd: (result, provided) => void) => (props) => {
     const { children } = props
+    console.log('droppable children: ', children)
+    console.log('onDragEnd: ', onDragEnd)
     return (
       <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId={'1'} direction="vertical">
+        <Droppable droppableId="droppable" direction="vertical">
           {(provided) => {
             return (
               <TableBody
@@ -208,6 +223,7 @@ const DroppableComponent =
 const StyledQueList = styled(Box)(({ theme }) => ({
   width: '700px',
   margin: 'auto',
+  overflowY: 'scroll',
   '& .MuiTableCell-head': {
     ...theme.helpers.baseFont,
     fontWeight: '700',

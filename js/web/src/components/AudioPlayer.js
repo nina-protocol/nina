@@ -20,7 +20,7 @@ const { AudioPlayerContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
 const AudioPlayer = () => {
-  const { txid, updateTxid, playlist } = useContext(AudioPlayerContext)
+  const { txid, updateTxid, playlist, isPlaying, setIsPlaying, currentIndex } = useContext(AudioPlayerContext)
   const wallet = useWallet()
   let playerRef = useRef()
   const intervalRef = useRef()
@@ -29,9 +29,7 @@ const AudioPlayer = () => {
   // const [muted, setMuted] = useState(false)
   const [trackProgress, setTrackProgress] = useState(0)
   const [duration, setDuration] = useState(0)
-  const [isPlaying, setIsPlaying] = useState(false)
   const [info, setInfo] = useState(null)
-  const [nextInfo, setNextInfo] = useState(null)
 
   useEffect(() => {
     playerRef.current = document.querySelector('#audio')
@@ -43,19 +41,32 @@ const AudioPlayer = () => {
   }, [])
 
   useEffect(() => {
+    if (!isPlaying) {
+      clearInterval(intervalRef.current)
+      playerRef.current.pause()
+      setIsPlaying(false)
+    } else {
+      if (!txid) {
+        updateTxid(playlistRef.current[0].txid)
+      } else {
+        startTimer()
+        playerRef.current.play()
+      }
+    }
+  }, [isPlaying])
+
+  useEffect(() => {
     if (playlistRef.current.length > 0) {
       changeTrack(txid)
       let index = currentIndex()
       if (index === undefined) {
         setInfo(playlistRef.current[playlistRef.current.length - 1])
-        setNextInfo(playlistRef.current[playlistRef.current.length])
         console.log(
           'playlistRef.current[playlistRef.current.length - 1] :>> ',
           playlistRef.current[playlistRef.current.length - 1]
         )
       } else {
         setInfo(playlistRef.current[index])
-        setNextInfo(playlistRef.current[index + 1])
         console.log('playlistRef.current :>> ', playlistRef.current)
       }
     }
@@ -77,7 +88,6 @@ const AudioPlayer = () => {
       setIsPlaying(false)
       if (playlistRef.current[0]) {
         setInfo(playlistRef.current[0])
-        setNextInfo(playlistRef.current[1])
       } else {
         setInfo(null)
         setDuration(0)
@@ -108,39 +118,6 @@ const AudioPlayer = () => {
     playerRef.current.src = txid
     playerRef.current.play()
     startTimer()
-  }
-
-  const togglePlay = () => {
-    if (
-      playerRef.current &&
-      txid &&
-      playerRef.current.duration > 0 &&
-      !playerRef.current.paused
-    ) {
-      clearInterval(intervalRef.current)
-      playerRef.current.pause()
-      setIsPlaying(false)
-    } else {
-      if (!txid) {
-        updateTxid(playlistRef.current[0].txid)
-        setIsPlaying(true)
-      } else {
-        setIsPlaying(true)
-        startTimer()
-        playerRef.current.play()
-      }
-    }
-  }
-
-  const currentIndex = () => {
-    let index = undefined
-    playlistRef.current.forEach((item, i) => {
-      if (item.txid === txid) {
-        index = i
-        return
-      }
-    })
-    return index
   }
 
   const playNextTrack = () => {
@@ -215,9 +192,9 @@ const AudioPlayer = () => {
           sx={iconStyle}
         />
         {isPlaying ? (
-          <PauseRoundedIcon onClick={() => togglePlay()} sx={iconStyle} />
+          <PauseRoundedIcon onClick={() => setIsPlaying(false)} sx={iconStyle} />
         ) : (
-          <PlayArrowRoundedIcon onClick={() => togglePlay()} sx={iconStyle} />
+          <PlayArrowRoundedIcon onClick={() => setIsPlaying(true)} sx={iconStyle} />
         )}
         <SkipNextRoundedIcon onClick={() => playNextTrack()} sx={iconStyle} />
       </Controls>
@@ -287,11 +264,7 @@ const AudioPlayer = () => {
         />
       </VolumeContainer> */}
 
-      <QueDrawer
-        isPlaying={isPlaying}
-        togglePlay={togglePlay}
-        nextInfo={nextInfo}
-      />
+      <QueDrawer />
     </StyledAudioPlayer>
   )
 }
