@@ -75,7 +75,7 @@ const ReleaseSettings = (props) => {
     }
   }, [tempMetadata, metadata])
 
-  return (
+return (
     <StyledBox>
       <ReleaseInfoWrapper>
         <Typography variant="h4" gutterBottom>
@@ -84,59 +84,35 @@ const ReleaseSettings = (props) => {
 
         <ReleaseInfo>
           <ReleaseStat variant="body1" component="p">
-            <span>Edition Size</span>
-            <strong>
-              {' '}
-              {release?.totalSupply.toNumber()} {displayValues.catalogNumber}{' '}
-            </strong>
+            <span>Edition Size</span> 
+            <strong> {release?.totalSupply.toNumber()} {displayValues.catalogNumber} </strong>
           </ReleaseStat>
 
           <ReleaseStat variant="body1" component="p">
             <span>Cost</span>
-            <strong>
-              {NinaClient.nativeToUiString(
-                release.price.toNumber(),
-                release.paymentMint
-              )}{' '}
-            </strong>
+             <strong>{NinaClient.nativeToUiString(
+              release.price.toNumber(),
+              release.paymentMint
+            )} </strong>
           </ReleaseStat>
 
           <ReleaseStat variant="body1" component="p">
             <span>Resale</span>
-            <strong> {release?.resalePercentage.toNumber() / 10000}%</strong>
+             <strong> {release?.resalePercentage.toNumber() / 10000}%</strong>
           </ReleaseStat>
-
-          <Typography
-            variant="body1"
-            component="p"
-            sx={{ marginTop: '10px !important' }}
-          >
-            {displayValues.description}
-        </Typography>
-       </ReleaseInfo>
-   
-      {!metadata && (
-        <>
-        <ReleaseInfo>
-          <Typography variant="body1" color="grey.primary">
-            {metadataUpdated
-              ? 'Your release is now live!'
-                : `Your release is currently being finalized...` }
+          <Typography variant="body1" component="p" sx={{marginTop: '10px !important'}}>
+              {displayValues.description}
           </Typography>
         </ReleaseInfo>
+   
         <Box mt={1}>
           <Royalty releasePubkey={releasePubkey} release={release} />
           <Link
-            to={`/releases/${releasePubkey}`}
+            to={`/release/${releasePubkey}`}
             style={{ textDecoration: 'none' }}
           >
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              disabled={!metadata}
-            >
-              View Release
+            <Button variant="contained" color="primary" fullWidth disabled={!metadata}>
+              {metadata ? 'View Release' : 'Your release is currently being finalized...'}
             </Button>
           </Link>
         </Box>
