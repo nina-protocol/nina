@@ -1,5 +1,6 @@
 import React, { useContext, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
+import Typography from '@mui/material/Typography'
 import ninaCommon from 'nina-common'
 import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
@@ -9,8 +10,7 @@ import {
   WalletDialogProvider,
   WalletMultiButton,
 } from '@solana/wallet-adapter-material-ui'
-import ninaLogo from '../assets/nina-logo-black.png'
-
+import Breadcrumbs from './Breadcrumbs'
 const { NinaContext } = ninaCommon.contexts
 
 const NavBar = () => {
@@ -29,10 +29,11 @@ const NavBar = () => {
     <Root className={classes.nav}>
       <div className={classes.nav__left}>
         <NavDrawer />
+        <Breadcrumbs />
       </div>
 
       <Logo to="/">
-        <img src={ninaLogo} className={classes.nav__logo} alt="nina" />
+        <Typography variant="h3">NINA</Typography>
       </Logo>
 
       <div className={classes.nav__right}>
@@ -197,11 +198,20 @@ const ConnectionDot = styled('span')(({ theme }) => ({
 }))
 
 const Logo = styled(NavLink)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  padding: '7px 15px',
   position: 'absolute',
+  width: '76px',
+  height: '43px',
   left: '50%',
-  top: '0',
   transform: 'translateX(-50%)',
-  height: '60px',
+  top: '0px',
+  '& .MuiTypography-h3': {
+    fontWeight: 'bold',
+  },
 }))
 
 export default withFormik({

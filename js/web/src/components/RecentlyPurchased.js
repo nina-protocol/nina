@@ -7,10 +7,9 @@ import SmoothImage from 'react-smooth-image'
 import CircularProgress from '@mui/material/CircularProgress'
 import Carousel from 'react-multi-carousel'
 import 'react-multi-carousel/lib/styles.css'
-import Button from '@mui/material/Button';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-
+import Button from '@mui/material/Button'
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 
 const RecentlyPurchased = (props) => {
   const { releases } = props
@@ -26,15 +25,15 @@ const RecentlyPurchased = (props) => {
 
   const responsive = {
     desktop: {
-      breakpoint: {max: 3000, min: 1024},
+      breakpoint: { max: 3000, min: 1024 },
       items: 1,
     },
     tablet: {
-      breakpoint: {max: 1024, min: 464},
+      breakpoint: { max: 1024, min: 464 },
       items: 1,
     },
     mobile: {
-      breakpoint: {max: 464, min: 0},
+      breakpoint: { max: 464, min: 0 },
       items: 1,
       slidesToSlide: 1, // optional, default to 1.
     },
@@ -45,97 +44,107 @@ const RecentlyPurchased = (props) => {
     color: 'black',
     backgroundColor: 'red !important',
     '&:hover': {
-      backgroundColor: 'black !important'
+      backgroundColor: 'black !important',
     },
     '& ::before': {
-      display: 'none'
-    }
+      display: 'none',
+    },
   }
 
-  const CustomRightArrow = ({onClick}) => {
+  const CustomRightArrow = ({ onClick }) => {
     return (
-      <Button disableRipple style={{right: '-10px', ...buttonStyle}}>
+      <Button disableRipple style={{ right: '-10px', ...buttonStyle }}>
         <KeyboardArrowRightIcon fontSize="large" onClick={() => onClick()} />
       </Button>
     )
-
-  };
-  const CustomLeftArrow = ({onClick}) => {
+  }
+  const CustomLeftArrow = ({ onClick }) => {
     return (
-      <Button disableRipple style={{display: 'none', ...buttonStyle}}>
+      <Button disableRipple style={{ display: 'none', ...buttonStyle }}>
         <KeyboardArrowLeftIcon fontSize="large" onClick={() => onClick()} />
       </Button>
     )
-  };
+  }
 
   return (
     <>
-    <RecentlyPurchasedContainer>
-      <Typography align="left" className={classes.sectionHeader}>Market Movers</Typography>
-      <Box>
-        {releases?.length > 0 && 
-        <Carousel
-          showDots={false}
-          showArrows={false}
-          draggable={true}
-          responsive={responsive}
-          infinite={true}
-          autoPlay={true}
-          autoPlaySpeed={2000}
-          keyBoardControl={true}
-          transitionDuration={500}
-          slidesToSlide={1}
-          containerClass="carousel-container"
-          removeArrowOnDeviceType={['tablet', 'mobile']}
-          customRightArrow={<CustomRightArrow />}
-          customLeftArrow={<CustomLeftArrow />}
+      <RecentlyPurchasedContainer>
+        <Typography align="left" className={classes.sectionHeader}>
+          Market Movers
+        </Typography>
+        <Box>
+          {releases?.length > 0 && (
+            <Carousel
+              showDots={false}
+              showArrows={false}
+              draggable={true}
+              responsive={responsive}
+              infinite={true}
+              autoPlay={true}
+              autoPlaySpeed={2000}
+              keyBoardControl={true}
+              transitionDuration={500}
+              slidesToSlide={1}
+              containerClass="carousel-container"
+              removeArrowOnDeviceType={['tablet', 'mobile']}
+              customRightArrow={<CustomRightArrow />}
+              customLeftArrow={<CustomLeftArrow />}
+            >
+              {releases.map((release, i) => {
+                const releaseDate = new Date(
+                  release.tokenData.releaseDatetime.toNumber() * 1000
+                )
+                const dateNow = new Date()
+                const differenceTime = dateNow.getTime() - releaseDate.getTime()
+                const dayDifference = Math.round(
+                  differenceTime / (1000 * 3600 * 24)
+                )
 
-        >
-          {releases.map((release, i) => {
+                const sales =
+                  release.tokenData.totalSupply.toNumber() -
+                  release.tokenData.remainingSupply.toNumber() +
+                  release.tokenData.exchangeSaleCounter.toNumber()
+                const imageUrl = release.metadata.image
 
-            const releaseDate = new Date(release.tokenData.releaseDatetime.toNumber() * 1000)
-            const dateNow = new Date()
-            const differenceTime = dateNow.getTime() - releaseDate.getTime()
-            const dayDifference = Math.round(differenceTime / (1000 * 3600 * 24))
+                const artistInfo = (
+                  <Typography variant="body2" align="left">
+                    {release.metadata.properties.artist},{' '}
+                    {release.metadata.properties.title}
+                  </Typography>
+                )
+                const availability = (
+                  <Typography variant="body2" align="left">
+                    {release.tokenData.remainingSupply.toNumber()} /{' '}
+                    {release.tokenData.totalSupply.toNumber()}
+                  </Typography>
+                )
 
-            const sales = (release.tokenData.totalSupply.toNumber() - release.tokenData.remainingSupply.toNumber()) + release.tokenData.exchangeSaleCounter.toNumber()
-            const imageUrl = release.metadata.image
-
-            const artistInfo = (
-              <Typography variant="body2" align="left">
-                {release.metadata.properties.artist},{' '}
-                {release.metadata.properties.title}
-              </Typography>
-            )
-            const availability = (
-              <Typography variant="body2" align="left">
-                {release.tokenData.remainingSupply.toNumber()} /{' '}
-                {release.tokenData.totalSupply.toNumber()}
-              </Typography>
-            )
-
-
-            return(
-              <Slide key={i}>
-                <Link
-                  to={'/release/' + release.releasePubkey}
-                  style={{ width: '400px' }}
-                >
-                  <SmoothImage src={imageUrl} imageStyles={{ minWidth: '400px' }} />
-                </Link>
-                <Copy sx={{paddingLeft: 2}}>
-                  <Typography align="left" variant="h3" color="blue">{sales} Releases were sold in the last {dayDifference} days</Typography>
-                  {availability}
-                  {artistInfo}
-                </Copy>
-              </Slide>
-            )
-
-          })}
-        </Carousel>
-        }
-      </Box>
-    </RecentlyPurchasedContainer>
+                return (
+                  <Slide key={i}>
+                    <Link
+                      to={'/release/' + release.releasePubkey}
+                      style={{ width: '400px' }}
+                    >
+                      <SmoothImage
+                        src={imageUrl}
+                        imageStyles={{ minWidth: '400px' }}
+                      />
+                    </Link>
+                    <Copy sx={{ paddingLeft: 2 }}>
+                      <Typography align="left" variant="h3" color="blue">
+                        {sales} Releases were sold in the last {dayDifference}{' '}
+                        days
+                      </Typography>
+                      {availability}
+                      {artistInfo}
+                    </Copy>
+                  </Slide>
+                )
+              })}
+            </Carousel>
+          )}
+        </Box>
+      </RecentlyPurchasedContainer>
     </>
   )
 }

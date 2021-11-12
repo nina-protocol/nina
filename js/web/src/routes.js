@@ -25,9 +25,27 @@ function Routes() {
             <NavBar />
             <Switch>
               <Route exact path="/upload" component={ReleaseCreate} />
+              <Route
+                exact
+                path="/releases/:releasePubkey/market"
+                component={Release}
+              />
+              <Route
+                exact
+                path="/releases/:releasePubkey"
+                component={Release}
+              />
               <Route path="/releases" component={ReleaseList}></Route>
+              <Route
+                exact
+                path="/collection/:releasePubkey/market"
+                component={Release}
+              />
+              <Route
+                path="/collection/:releasePubkey"
+                component={Release}
+              ></Route>
               <Route path="/collection" component={UserCollection}></Route>
-              <Route exact path="/release/:releasePubkey" component={Release} />
               <Route exact path="/" component={HomePage} />
             </Switch>
             <AudioPlayer />

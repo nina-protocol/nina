@@ -65,7 +65,7 @@ const QueList = (props) => {
 
   const goToRelease = (e, releasePubkey) => {
     setDrawerOpen(false)
-    history.push(`/release/` + releasePubkey)
+    history.push(`/releases/` + releasePubkey)
   }
 
   const onDragEnd = (result) => {

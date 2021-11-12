@@ -86,14 +86,14 @@ export const RedeemableUpdateShippingForm = (props) => {
         {!selectedRecord.shipper && selectedRecord.userIsPublisher && (
           <Form className={`${classes.redeemableForm}`}>
             <Field name="shipper">
-              {(props) => (
+              {({ field }) => (
                 <>
                   <TextField
                     className={classes.formField}
                     variant="outlined"
-                    placeholder={NinaClient.formatPlaceholder(props.field.name)}
-                    label={NinaClient.formatPlaceholder(props.field.name)}
-                    {...props.field}
+                    placeholder={NinaClient.formatPlaceholder(field.name)}
+                    label={NinaClient.formatPlaceholder(field.name)}
+                    {...field}
                   />
                 </>
               )}
@@ -103,14 +103,14 @@ export const RedeemableUpdateShippingForm = (props) => {
             ) : null}
 
             <Field name="trackingNumber">
-              {(props) => (
+              {({ field }) => (
                 <>
                   <TextField
                     className={classes.formField}
                     variant="outlined"
-                    placeholder={NinaClient.formatPlaceholder(props.field.name)}
-                    label={NinaClient.formatPlaceholder(props.field.name)}
-                    {...props.field}
+                    placeholder={NinaClient.formatPlaceholder(field.name)}
+                    label={NinaClient.formatPlaceholder(field.name)}
+                    {...field}
                   />
                 </>
               )}

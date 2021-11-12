@@ -13,10 +13,7 @@ const ExchangeHistoryModal = (props) => {
 
   return (
     <Box>
-      <Cta
-        onClick={() => setOpen(true)}
-        variant="subtitle1"
-      >
+      <Cta onClick={() => setOpen(true)} variant="subtitle1">
         Market History <span>({exchangeHistory?.length || 0})</span>
       </Cta>
       <StyledModal
@@ -31,59 +28,59 @@ const ExchangeHistoryModal = (props) => {
           timeout: 500,
         }}
       >
-          <StyledPaper>
-            <Header >
-              SECONDARY <span>MARKET HISTORY</span>
-            </Header>
-            <HistoryTable>
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Price</th>
-                  <th>Seller</th>
-                  <th>Buyer</th>
-                </tr>
-              </thead>
-              <TableBody>
-                {exchangeHistory &&
-                  exchangeHistory.map((entry, i) => {
-                    return (
-                      <tr key={i}>
-                        <td>{entry.dateFormatted}</td>
-                        <td>
-                          {NinaClient.nativeToUiString(
-                            entry.price.toNumber(),
-                            release.paymentMint
-                          )}
-                        </td>
-                        <td>
-                          <a
-                            className="link"
-                            href={`https://solscan.io/account/${entry.seller.toBase58()}`}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            ...
-                            {entry.seller.toBase58().slice(-6)}
-                          </a>
-                        </td>
-                        <td>
-                          <a
-                            className="link"
-                            href={`https://solscan.io/account/${entry.buyer.toBase58()}`}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            ...
-                            {entry.buyer.toBase58().slice(-6)}
-                          </a>
-                        </td>
-                      </tr>
-                    )
-                  })}
-              </TableBody>
-            </HistoryTable>
-          </StyledPaper>
+        <StyledPaper>
+          <Header>
+            SECONDARY <span>MARKET HISTORY</span>
+          </Header>
+          <HistoryTable>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Price</th>
+                <th>Seller</th>
+                <th>Buyer</th>
+              </tr>
+            </thead>
+            <TableBody>
+              {exchangeHistory &&
+                exchangeHistory.map((entry, i) => {
+                  return (
+                    <tr key={i}>
+                      <td>{entry.dateFormatted}</td>
+                      <td>
+                        {NinaClient.nativeToUiString(
+                          entry.price.toNumber(),
+                          release.paymentMint
+                        )}
+                      </td>
+                      <td>
+                        <a
+                          className="link"
+                          href={`https://solscan.io/account/${entry.seller.toBase58()}`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          ...
+                          {entry.seller.toBase58().slice(-6)}
+                        </a>
+                      </td>
+                      <td>
+                        <a
+                          className="link"
+                          href={`https://solscan.io/account/${entry.buyer.toBase58()}`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          ...
+                          {entry.buyer.toBase58().slice(-6)}
+                        </a>
+                      </td>
+                    </tr>
+                  )
+                })}
+            </TableBody>
+          </HistoryTable>
+        </StyledPaper>
       </StyledModal>
     </Box>
   )
@@ -100,7 +97,7 @@ const classes = {
   historyTableBody: `${PREFIX}-historyTableBody`,
 }
 
-const Cta = styled(Typography)(({theme}) => ({
+const Cta = styled(Typography)(({ theme }) => ({
   cursor: 'pointer',
   '& span': {
     color: `${theme.palette.blue}`,
@@ -113,12 +110,12 @@ const StyledModal = styled(Modal)(() => ({
   justifyContent: 'center',
 }))
 
-const StyledPaper = styled(Paper)(({theme}) => ({
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(6, 4),
-    ...theme.gradient,
-    zIndex: '10'
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  boxShadow: theme.shadows[5],
+  padding: theme.spacing(6, 4),
+  ...theme.gradient,
+  zIndex: '10',
 }))
 
 const Header = styled(Typography)(() => ({
@@ -130,7 +127,7 @@ const Header = styled(Typography)(() => ({
   lineHeight: '29.9px',
 }))
 
-const HistoryTable = styled('table')(({theme}) => ({
+const HistoryTable = styled('table')(({ theme }) => ({
   padding: `${theme.spacing(1, 1)}`,
   display: 'block',
   maxHeight: '50vh',
@@ -140,7 +137,7 @@ const HistoryTable = styled('table')(({theme}) => ({
   },
 }))
 
-const TableBody = styled('tbody')(({theme}) => ({
+const TableBody = styled('tbody')(({ theme }) => ({
   '& td': {
     '& ': {
       padding: `${theme.spacing(0, 2)}`,

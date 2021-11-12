@@ -49,14 +49,9 @@ const AudioPlayer = () => {
       if (index === undefined) {
         setInfo(playlistRef.current[playlistRef.current.length - 1])
         setNextInfo(playlistRef.current[playlistRef.current.length])
-        console.log(
-          'playlistRef.current[playlistRef.current.length - 1] :>> ',
-          playlistRef.current[playlistRef.current.length - 1]
-        )
       } else {
         setInfo(playlistRef.current[index])
         setNextInfo(playlistRef.current[index + 1])
-        console.log('playlistRef.current :>> ', playlistRef.current)
       }
     }
   }, [txid])
@@ -204,7 +199,7 @@ const AudioPlayer = () => {
       </audio>
 
       {info && (
-        <AlbumArt to={`/release/${info.releasePubkey}`}>
+        <AlbumArt to={`/releases/${info.releasePubkey}`}>
           <img src={info.cover} style={{ height: '60px', width: '60px' }} />
         </AlbumArt>
       )}
@@ -244,7 +239,7 @@ const AudioPlayer = () => {
       {info && (
         <>
           <Link
-            to={`/release/${info.releasePubkey}`}
+            to={`/releases/${info.releasePubkey}`}
             style={{ marginRight: '30px' }}
           >
             <Typography variant="subtitle1" sx={{ padding: '0' }}>
@@ -254,7 +249,7 @@ const AudioPlayer = () => {
 
           {/* Change the arrow to svg */}
           <Link
-            to={`/release/${info.releasePubkey}`}
+            to={`/releases/${info.releasePubkey}`}
             style={{ display: 'flex' }}
           >
             <img src={shareArrow}></img>
