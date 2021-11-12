@@ -297,9 +297,4 @@ const ProgressContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
-// const VolumeContainer = styled(Box)(() => ({
-//   border: '2px solid blue',
-//   width: '100px'
-// }))
-
 export default AudioPlayer

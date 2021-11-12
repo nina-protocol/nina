@@ -5,8 +5,6 @@ import { NinaContext } from './nina'
 import { ReleaseContext } from './release'
 import { useSnackbar } from 'notistack'
 
-import NinaClient from '../utils/client'
-
 export const AudioPlayerContext = createContext()
 const AudioPlayerContextProvider = ({ children }) => {
   const wallet = useWallet()

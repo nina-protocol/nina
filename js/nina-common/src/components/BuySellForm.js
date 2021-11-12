@@ -8,8 +8,6 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { ExchangeContext } from '../contexts'
 import Dots from './Dots'
 
-
-
 const BuySellForm = (props) => {
   const { onSubmit, isBuy, release, amount, setAmount } = props
 
@@ -71,6 +69,7 @@ const BuySellForm = (props) => {
           type="submit"
           disabled={!wallet?.connected}
           disableRipple={true}
+<<<<<<< HEAD
           sx={{width: "20%"}}
         >
           {isBuy && buyPending && (
@@ -80,6 +79,13 @@ const BuySellForm = (props) => {
           {!isBuy && sellPending && (
             <Dots />
           )}
+=======
+          sx={{ width: '20%' }}
+        >
+          {isBuy && buyPending && <Dots />}
+
+          {!isBuy && sellPending && <Dots />}
+>>>>>>> d9a0ac3929423165849216bcebc25129172fa117
           {isBuy && !buyPending && 'Submit'}
           {!isBuy && !sellPending && 'Submit'}
         </Button>
