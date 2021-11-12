@@ -85,6 +85,7 @@ const AudioPlayer = () => {
       playlist.filter((playlistItem) => playlistItem.txid === info.txid)
         .length === 0
     ) {
+      console.log(1)
       setIsPlaying(false)
       if (playlistRef.current[0]) {
         setInfo(playlistRef.current[0])
@@ -94,7 +95,13 @@ const AudioPlayer = () => {
       }
       setTrackProgress(0)
       clearInterval(intervalRef.current)
+    } else {
+      let index = currentIndex()
+      setInfo(playlistRef.current[index])
+      setDuration(0)
+      setTrackProgress(0)
     }
+    console.log(4)
   }, [playlist])
 
   const startTimer = () => {

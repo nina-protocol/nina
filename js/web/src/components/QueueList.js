@@ -43,7 +43,6 @@ const QueueList = (props) => {
   const [skipForReorder, setSkipForReorder] = useState(false)
 
   useEffect(() => {
-    console.log('1st use effect', txid, playlist)
     const playlistEntry = playlist.find((entry) => entry.txid === txid)
 
     if (playlistEntry) {
@@ -52,7 +51,6 @@ const QueueList = (props) => {
   }, [txid, playlist])
 
   useEffect(() => {
-    console.log('playlist change')
     if (!skipForReorder) {
       setPlaylistState(playlist)
     } else {
@@ -61,7 +59,6 @@ const QueueList = (props) => {
   }, [playlist])
 
   const handleListItemClick = (event, index, txid) => {
-    console.log('handleListItemClick')
     setSelectedIndex(index)
     updateTxid(txid)
   }
@@ -78,14 +75,11 @@ const QueueList = (props) => {
     }
     // change local playlist state
     const newPlaylist = [...playlistState]
-    console.log('playlist before: ', playlistState)
     NinaClient.arrayMove(
       newPlaylist,
       result.source.index,
       result.destination.index
     )
-    console.log('playlist after: ', newPlaylist)
-    console.log('result: ', result)
     const playlistEntry = playlistState.find((entry) => entry.txid === txid)
 
     if (playlistEntry) {
@@ -98,7 +92,6 @@ const QueueList = (props) => {
     reorderPlaylist(newPlaylist)
   }
 
-  console.log('rerendering: ')
   return (
     <StyledQueueList>
       {playlist?.length === 0 && (
@@ -168,7 +161,6 @@ const QueueList = (props) => {
 
 const DraggableComponent = (id, index) => (props) => {
   const { children } = props
-  console.log('draggable children:', children)
   return (
     <Draggable key={id} draggableId={id} index={index}>
       {(provided, snapshot) => (
@@ -192,8 +184,6 @@ const DraggableComponent = (id, index) => (props) => {
 const DroppableComponent =
   (onDragEnd: (result, provided) => void) => (props) => {
     const { children } = props
-    console.log('droppable children: ', children)
-    console.log('onDragEnd: ', onDragEnd)
     return (
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable" direction="vertical">
