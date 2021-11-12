@@ -41,12 +41,7 @@ const AudioPlayer = () => {
   }, [])
 
   useEffect(() => {
-    if (
-      (playerRef.current &&
-            txid &&
-            playerRef.current.duration > 0 &&
-            !playerRef.current.paused) || !isPlaying
-    ) {
+    if (!isPlaying) {
       clearInterval(intervalRef.current)
       playerRef.current.pause()
       setIsPlaying(false)
