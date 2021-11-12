@@ -8,15 +8,72 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
+import TableSortLabel from '@mui/material/TableSortLabel'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
+import { visuallyHidden } from '@mui/utils';
+import Box from '@mui/material/Box';
 
 const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 const ARWEAVE_GATEWAY_ENDPOINT = NinaClient.endpoints.arweave
 
+const descendingComparator = (a, b, orderBy) => {
+  switch (orderBy){
+    case 'artist':
+    case 'title':
+      a = a[orderBy].toLowerCase()
+      b = b[orderBy].toLowerCase()
+      break
+    case 'edition':
+    case 'sold':
+    case 'date':
+
+      if (b[orderBy] < a[orderBy]) {
+        return -1;
+      }
+      if (b[orderBy] > a[orderBy]) {
+        return 1;
+      }
+      break
+
+    case 'collect':
+      a = a[orderBy].props.children.replace(/[^\d.-]/g, '')
+      b = b[orderBy].props.children.replace(/[^\d.-]/g, '')
+      break
+
+    case 'price':
+    case 'collected':
+    case 'share':
+    default:
+      a = parseFloat(a[orderBy].replace(/[^\d.-]/g, ''))
+      b = parseFloat(b[orderBy].replace(/[^\d.-]/g, ''))
+      break
+  }
+
+  if (b < a) {
+    return -1;
+  }
+  if (b > a) {
+    return 1;
+  }
+  return 0
+
+}
+
+const getComparator = (order, orderBy) => {
+  return order === 'desc'
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
 const EnhancedTableHead = (props) => {
-  const { order, orderBy, tableType } = props
+  const { order, orderBy, tableType, onRequestSort } =
+    props;
+
+  const createSortHandler = (property) => (event) => {
+    onRequestSort(event, property);
+  };
 
   let headCells = [
     {
@@ -38,22 +95,22 @@ const EnhancedTableHead = (props) => {
   ]
 
   if (tableType === 'userCollection') {
-    headCells.push({ id: 'duration', numeric: false, label: 'Duration' })
+    headCells.push({ id: 'duration', numeric: true, label: 'Duration' })
   }
 
   if (tableType === 'userPublished') {
     headCells.push({ id: 'price', numeric: true, label: 'Price' })
-    headCells.push({ id: 'edition', numeric: false, label: 'Edition' })
-    headCells.push({ id: 'sold', numeric: false, label: 'Sold' })
+    headCells.push({ id: 'edition', numeric: true, label: 'Edition' })
+    headCells.push({ id: 'sold', numeric: true, label: 'Sold' })
     headCells.push({ id: 'share', numeric: false, label: 'Share' })
-    headCells.push({ id: 'earnings', numeric: false, label: 'Earnings' })
+    headCells.push({ id: 'collected', numeric: true, label: 'Earnings' })
     headCells.push({ id: 'collect', numeric: false, label: 'Collect' })
     headCells.push({ id: 'date', numeric: false, label: 'Release Date' })
   }
 
   if (tableType === 'userRoyalty') {
     headCells.push({ id: 'share', numeric: false, label: 'Share' })
-    headCells.push({ id: 'earnings', numeric: false, label: 'Earnings' })
+    headCells.push({ id: 'collected', numeric: false, label: 'Earnings' })
     headCells.push({ id: 'collect', numeric: false, label: 'Collect' })
   }
 
@@ -68,7 +125,19 @@ const EnhancedTableHead = (props) => {
             sortDirection={orderBy === headCell.id ? order : false}
             sx={{ fontWeight: 'bold', borderBottom: 'none' }}
           >
-            {headCell.label}
+            <TableSortLabel
+              active={orderBy === headCell.id}
+              direction={orderBy === headCell.id ? order : 'asc'}
+              onClick={createSortHandler(headCell.id)}
+              disabled={headCell.id === 'art'}
+            >
+              {headCell.label}
+              {orderBy === headCell.id ? (
+                <Box component="span" sx={visuallyHidden}>
+                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                </Box>
+              ) : null}
+            </TableSortLabel>
           </TableCell>
         ))}
       </TableRow>
@@ -82,7 +151,14 @@ const ReleaseListTable = (props) => {
   const { releaseState } = useContext(ReleaseContext)
 
   const history = useHistory()
-  const [order] = useState('asc')
+  const [order, setOrder] = useState('asc')
+  const [orderBy, setOrderBy] = useState('artist')
+
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
 
   const handleClick = (e, releasePubkey) => {
     history.push(
@@ -183,11 +259,13 @@ const ReleaseListTable = (props) => {
             <EnhancedTableHead
               className={classes}
               order={order}
-              tableType={tableType}
+              tableType={tableType}              
+              orderBy={orderBy}
+              onRequestSort={handleRequestSort}
               rowCount={rows.length}
             />
             <TableBody>
-              {rows.map((row) => {
+              {rows.slice().sort(getComparator(order, orderBy)).map((row) => {
                 return (
                   <TableRow
                     hover
