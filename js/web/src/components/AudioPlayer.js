@@ -205,9 +205,9 @@ const AudioPlayer = () => {
 
       <ProgressContainer>
         {info && (
-          <Typography align="left" variant="body1">
+          <ArtistInfo align="left" variant="body1">
             {info.artist}, <i>{info.title}</i>
-          </Typography>
+          </ArtistInfo>
         )}
         <Slider
           value={txid ? trackProgress : 0}
@@ -263,6 +263,11 @@ const StyledAudioPlayer = styled(Box)(({ theme }) => ({
 const AlbumArt = styled(Link)(() => ({
   width: '76px',
   height: '76px',
+}))
+const ArtistInfo = styled(Typography)(() => ({
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis'
 }))
 
 const Controls = styled(Box)(({ theme }) => ({
