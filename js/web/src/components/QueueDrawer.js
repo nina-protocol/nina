@@ -116,9 +116,15 @@ const queModalStyle = {
   },
 }
 
-const ToggleWrapper = styled(Box)(() => ({
+const ToggleWrapper = styled(Box)(({theme}) => ({
   position: 'absolute',
   right: '0',
+  '& button': {
+    paddingRight: theme.spacing(2),
+    '&:hover': {
+      backgroundColor: `${theme.palette.transparent} !important`,
+    },
+  }
 }))
 
 export default React.memo(QueueDrawer)

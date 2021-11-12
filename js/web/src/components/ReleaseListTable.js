@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useHistory } from 'react-router-dom'
@@ -11,6 +11,7 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
 
+const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 const ARWEAVE_GATEWAY_ENDPOINT = NinaClient.endpoints.arweave
 
@@ -77,10 +78,26 @@ const EnhancedTableHead = (props) => {
 
 const ReleaseListTable = (props) => {
   const { releases, tableType, collectRoyaltyForRelease } = props
+  const { updateTxid } = useContext(AudioPlayerContext)
+  const { releaseState } = useContext(ReleaseContext)
+
   const history = useHistory()
   const [order] = useState('asc')
-  const handleClick = (event, releasePubkey) => {
-    history.push(`/releases/` + releasePubkey)
+
+  const handleClick = (e, releasePubkey) => {
+    history.push(tableType === 'userCollection' ? `/collection/${releasePubkey}` : `/releases/${releasePubkey}`)
+  }
+
+  const handlePlay = (e, releasePubkey) => {
+    e.stopPropagation()
+    e.preventDefault()
+    updateTxid(releaseState.metadata[releasePubkey].properties.files[0].uri, releasePubkey)
+  }
+
+  const handleCollect = (e, recipient, releasePubkey) => {
+    e.stopPropagation()
+    e.preventDefault()
+    collectRoyaltyForRelease(recipient, releasePubkey)
   }
 
   let rows = releases.map((release) => {
@@ -114,7 +131,7 @@ const ReleaseListTable = (props) => {
           variant="contained"
           color="primary"
           disabled={recipient.owed.toNumber() === 0}
-          onClick={() => collectRoyaltyForRelease(recipient, releasePubkey)}
+          onClick={(e) => handleCollect(e, recipient, releasePubkey)}
           sx={{ padding: '0px !important' }}
         >
           {NinaClient.nativeToUiString(
@@ -157,6 +174,7 @@ const ReleaseListTable = (props) => {
             className={classes.table}
             aria-labelledby="tableTitle"
             aria-label="enhanced table"
+            sx={{ borderTop: 'none' }}
           >
             <EnhancedTableHead
               className={classes}
@@ -167,7 +185,11 @@ const ReleaseListTable = (props) => {
             <TableBody>
               {rows.map((row) => {
                 return (
-                  <TableRow hover tabIndex={-1} key={row.id}>
+                  <TableRow
+                    hover
+                    tabIndex={-1}
+                    key={row.id}
+                    onClick={(e) => handleClick(e, row.id)}>
                     {Object.keys(row).map((cellName) => {
                       const cellData = row[cellName]
                       if (cellName !== 'id') {
@@ -178,7 +200,7 @@ const ReleaseListTable = (props) => {
                               component="th"
                               scope="row"
                               key={cellName}
-                              onClick={(event) => handleClick(event, row.id)}
+                              onClick={(e) => handlePlay(e, row.id)}
                             >
                               <img
                                 src={row.art.txId}

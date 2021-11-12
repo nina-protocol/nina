@@ -9,8 +9,7 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import { NavLink } from 'react-router-dom'
-import { Icon } from '@material-ui/core'
-import hamburger from '../assets/hamburger.svg'
+import Menu from '@mui/icons-material/Menu';
 
 const { NinaContext, ReleaseContext } = ninaCommon.contexts
 
@@ -132,9 +131,7 @@ const NavDrawer = () => {
       {
         <Box key={'left'}>
           <StyledMenuButton onClick={toggleDrawer(true)}>
-            <Icon>
-              <img src={hamburger} height={25} width={25} />
-            </Icon>
+              <Menu />
           </StyledMenuButton>
           <StyledDrawer
             anchor={'left'}
@@ -179,6 +176,7 @@ const StyledList = styled(List)(({ theme }) => ({
 
 const StyledMenuButton = styled(Button)(({ theme }) => ({
   padding: '0px !important',
+  width: '2em',
   '&:hover': {
     backgroundColor: `${theme.palette.transparent} !important`,
   },
