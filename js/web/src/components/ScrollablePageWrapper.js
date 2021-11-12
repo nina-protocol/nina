@@ -7,8 +7,8 @@ const ScrollablePageWrapper = ({ children }) => {
 }
 
 const ScrollablePage = styled(Box)(() => ({
-  width: '100%',
-  paddingTop: '240px',
+  width: '100vw',
+  padding: '240px 0',
   overflowY: 'scroll',
   overflowX: 'hidden',
 }))

@@ -167,87 +167,84 @@ const ReleaseListTable = (props) => {
   rows.sort((a, b) => (a.artist < b.artist ? -1 : 1))
 
   return (
-    <Root>
-      <Paper>
-        <TableContainer>
-          <Table
-            className={classes.table}
-            aria-labelledby="tableTitle"
-            aria-label="enhanced table"
-            sx={{ borderTop: 'none' }}
-          >
-            <EnhancedTableHead
-              className={classes}
-              order={order}
-              tableType={tableType}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {rows.map((row) => {
-                return (
-                  <TableRow
-                    hover
-                    tabIndex={-1}
-                    key={row.id}
-                    onClick={(e) => handleClick(e, row.id)}>
-                    {Object.keys(row).map((cellName) => {
-                      const cellData = row[cellName]
-                      if (cellName !== 'id') {
-                        if (cellName === 'art') {
-                          return (
-                            <TableCell
-                              align="center"
-                              component="th"
-                              scope="row"
-                              key={cellName}
-                              onClick={(e) => handlePlay(e, row.id)}
-                            >
-                              <img
-                                src={row.art.txId}
-                                className={classes.releaseImage}
-                                alt={'cover'}
+        <StyledPaper elevation={0}>
+          <TableContainer>
+            <Table
+              className={classes.table}
+              aria-labelledby="tableTitle"
+              aria-label="enhanced table"
+              sx={{ borderTop: 'none' }}
+            >
+              <EnhancedTableHead
+                className={classes}
+                order={order}
+                tableType={tableType}
+                rowCount={rows.length}
+              />
+              <TableBody>
+                {rows.map((row) => {
+                  return (
+                    <TableRow
+                      hover
+                      tabIndex={-1}
+                      key={row.id}
+                      onClick={(e) => handleClick(e, row.id)}>
+                      {Object.keys(row).map((cellName) => {
+                        const cellData = row[cellName]
+                        if (cellName !== 'id') {
+                          if (cellName === 'art') {
+                            return (
+                              <TableCell
+                                align="center"
+                                component="th"
+                                scope="row"
                                 key={cellName}
-                              />
-                            </TableCell>
-                          )
-                        } else if (cellName === 'title') {
-                          return (
-                            <TableCell align="center" key={cellName}>
-                              <span style={{textDecoration: 'underline'}}>{cellData}</span>
-                            </TableCell>
-                          )
-                        } else {
-                          return (
-                            <TableCell align="center" key={cellName}>
-                              {cellData}
-                            </TableCell>
-                          )
+                                onClick={(e) => handlePlay(e, row.id)}
+                              >
+                                <img
+                                  src={row.art.txId}
+                                  className={classes.releaseImage}
+                                  alt={'cover'}
+                                  key={cellName}
+                                />
+                              </TableCell>
+                            )
+                          } else if (cellName === 'title') {
+                            return (
+                              <TableCell align="center" key={cellName}>
+                                <span style={{textDecoration: 'underline'}}>{cellData}</span>
+                              </TableCell>
+                            )
+                          } else {
+                            return (
+                              <TableCell align="center" key={cellName}>
+                                {cellData}
+                              </TableCell>
+                            )
+                          }
                         }
-                      }
-                      return null
-                    })}
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
-    </Root>
+                        return null
+                      })}
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </StyledPaper>
   )
 }
 
 const PREFIX = 'ReleaseListTable'
 
 const classes = {
-  root: `${PREFIX}-root`,
-  paper: `${PREFIX}-paper`,
   table: `${PREFIX}-table`,
   releaseImage: `${PREFIX}-releaseImage`,
 }
 
-const Root = styled('div')(({ theme }) => ({
-  width: '100%',
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  width: '823px',
+  margin: 'auto',
   [`& .${classes.table}`]: {
     minWidth: 750,
     '& .MuiTableCell-root': {

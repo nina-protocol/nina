@@ -22,7 +22,7 @@ const StyledBox = styled(Box, {
   gridTemplateColumns: columns ? columns : 'repeat(2, 1fr)',
   backgroundColor: theme.palette.white,
   gridColumnGap: gridColumnGap ? gridColumnGap : '0px',
-  // border: '2px solid blue',
   gridAutoRows: 'auto',
 }))
+
 export default NinaBox

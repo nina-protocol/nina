@@ -7,6 +7,7 @@ import NinaBox from './NinaBox'
 import ReleaseCard from './ReleaseCard'
 import ReleasePurchase from './ReleasePurchase'
 import SwipeableViews from 'react-swipeable-views'
+const {Dots} = ninaCommon.components
 
 const { Exchange } = ninaCommon.components
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
@@ -51,6 +52,11 @@ const Release = ({ match }) => {
 
   return (
     <>
+    {!metadata && (
+        <Dots size="80px"/>
+      )
+    }
+    {metadata && (
       <SwipeableViews index={index}>
         <NinaBox columns={'repeat(2, 1fr)'}>
           <ReleaseCard
@@ -76,6 +82,7 @@ const Release = ({ match }) => {
           />
         </NinaBox>
       </SwipeableViews>
+    )}
     </>
   )
 }

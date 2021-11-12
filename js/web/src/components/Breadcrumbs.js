@@ -94,6 +94,7 @@ const Breadcrumbs = ({ breadcrumbs }) => (
 
 const BreadcrumbsContainer = styled('span')(() => ({
   paddingLeft: '30px',
+  fontSize: '10px'
 }))
 const Title = styled('span')(() => ({
   fontStyle: 'italic',
