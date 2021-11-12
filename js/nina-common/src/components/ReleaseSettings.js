@@ -117,6 +117,7 @@ const ReleaseSettings = (props) => {
    
       {!metadata && (
         <>
+        <ReleaseInfo>
           <Typography variant="body1" color="grey.primary">
             {metadataUpdated
               ? 'Your release is now live!'
