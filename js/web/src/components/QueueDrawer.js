@@ -13,7 +13,6 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded'
 import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
-import QueueMusicIcon from '@mui/icons-material/QueueMusic'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { Typography } from '@material-ui/core'
@@ -77,8 +76,7 @@ const QueueDrawer = (props) => {
   return (
     <ToggleWrapper>
       <React.Fragment key={'left'}>
-        <Button variant="outlined" onClick={toggleDrawer(!drawerOpen)}>
-          <QueueMusicIcon style={{ fill: `${theme.palette.purple}` }} />{' '}
+        <Button onClick={toggleDrawer(!drawerOpen)}>
           {!drawerOpen &&
             (nextInfo
               ? `Up next: ${nextInfo.artist} - ${nextInfo.title}`

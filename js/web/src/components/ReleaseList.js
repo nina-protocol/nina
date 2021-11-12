@@ -10,11 +10,7 @@ const { ReleaseContext, NinaContext } = ninaCommon.contexts
 
 const ReleaseList = () => {
   const {
-    searchResults,
-    // resetSearchResults,
     getReleasesRecent,
-    releasesRecentState,
-    filterReleasesRecent,
     getReleasesPublishedByUser,
     filterReleasesPublishedByUser,
     collectRoyaltyForRelease,
@@ -23,9 +19,6 @@ const ReleaseList = () => {
 
   const wallet = useWallet()
   const { collection } = useContext(NinaContext)
-  // const { getReleasesForTwitterHandle } = useContext(NameContext)
-  const [search, setSearch] = useState(searchResults.handle)
-  const [releasesRecent, setReleasesRecent] = useState({})
 
   useEffect(() => {
     getReleasesRecent()
@@ -44,68 +37,9 @@ const ReleaseList = () => {
     }
   }, [releaseState, collection])
 
-  useEffect(() => {
-    setSearch(searchResults.handle)
-  }, [searchResults])
-
-  useEffect(() => {
-    setReleasesRecent(filterReleasesRecent())
-  }, [releasesRecentState])
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault()
-  //   getReleasesForTwitterHandle(search)
-  // }
-
-  // const checkIfEmpty = (e) => {
-  //   e.preventDefault()
-  //   if (e.target.value === '') {
-  //     resetSearchResults()
-  //   }
-  // }
-
   return (
     <StyledBox>
-      {/* <div>
-        <form onSubmit={handleSubmit}>
-          <TextField
-            label="Search"
-            margin="normal"
-            variant="outlined"
-            value={search}
-            fullWidth={true}
-            onInput={(e) => setSearch(e.target.value)}
-            onChange={(e) => checkIfEmpty(e)}
-            InputProps={{ type: 'search' }}
-          />
-        </form>
-      </div> */}
-      {searchResults.searched && searchResults.releases.length > 0 && (
-        <ReleaseListTable releases={searchResults.releases} key="search" />
-      )}
-      {searchResults.searched && searchResults.releases.length === 0 && (
-        <p>
-          No results found for{' '}
-          <a
-            href={`https://www.twitter.com/${search}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            @{searchResults.handle}
-          </a>
-        </p>
-      )}
-      {!wallet?.connected && !searchResults.searched && (
-        <>
-          <p>Welcome to Nina</p>
-          <ReleaseListTable
-            releases={releasesRecent.published || []}
-            key="releases"
-          />
-        </>
-      )}
       {wallet?.connected &&
-        !searchResults.searched &&
         userPublishedReleases?.length > 0 && (
           <ReleaseListTable
             releases={userPublishedReleases}
@@ -115,7 +49,6 @@ const ReleaseList = () => {
           />
         )}
       {wallet?.connected &&
-        !searchResults.searched &&
         userPublishedReleases?.length === 0 && (
           <>
             <Typography>{`You haven't published any music yet.`}</Typography>
@@ -129,6 +62,7 @@ const StyledBox = styled(Box)(() => ({
   display: 'flex',
   flexDirection: 'column',
   overflowY: 'scroll',
+  padding: '280px 0 80px 0'
 }))
 
 export default ReleaseList

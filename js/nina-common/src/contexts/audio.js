@@ -34,8 +34,8 @@ const AudioPlayerContextProvider = ({ children }) => {
     reorderPlaylist,
     removeTrackFromPlaylist,
     createPlaylistFromTracks,
-    addTrackToQue,
-    removeTrackFromQue,
+    addTrackToQueue,
+    removeTrackFromQueue,
   } = audioPlayerContextHelper({
     releaseState,
     wallet,
@@ -49,7 +49,7 @@ const AudioPlayerContextProvider = ({ children }) => {
 
   const updateTxid = (newTxid, releasePubkey) => {
     if (newTxid !== playlist[currentIndex()]) {
-      addTrackToQue(releasePubkey)
+      addTrackToQueue(releasePubkey)
       setTxid(newTxid)
     }
   }
@@ -73,8 +73,8 @@ const AudioPlayerContextProvider = ({ children }) => {
         playlist,
         reorderPlaylist,
         removeTrackFromPlaylist,
-        addTrackToQue,
-        removeTrackFromQue,
+        addTrackToQueue,
+        removeTrackFromQueue,
         isPlaying,
         setIsPlaying,
         currentIndex,
@@ -117,7 +117,7 @@ const audioPlayerContextHelper = ({
     }
   }
 
-  const removeTrackFromQue = async (releasePubkey) => {
+  const removeTrackFromQueue = async (releasePubkey) => {
     const updatedPlaylist = playlist.filter(
       (playlistItem) => playlistItem.releasePubkey !== releasePubkey
     )
@@ -141,12 +141,12 @@ const audioPlayerContextHelper = ({
     setPlaylist([...playlist, ...playlistEntries])
   }
 
-  const addTrackToQue = (releasePubkey) => {
+  const addTrackToQueue = (releasePubkey) => {
     const playlistEntry = createPlaylistEntry(releasePubkey)
     if (playlistEntry) {
       setPlaylist([...playlist, playlistEntry])
       enqueueSnackbar(
-        `${playlistEntry.artist} - ${playlistEntry.title} added to que`,
+        `${playlistEntry.artist} - ${playlistEntry.title} added to queue`,
         {
           variant: 'info',
         }
@@ -177,7 +177,7 @@ const audioPlayerContextHelper = ({
     reorderPlaylist,
     removeTrackFromPlaylist,
     createPlaylistFromTracks,
-    addTrackToQue,
-    removeTrackFromQue,
+    addTrackToQueue,
+    removeTrackFromQueue,
   }
 }

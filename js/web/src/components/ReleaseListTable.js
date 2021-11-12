@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useHistory } from 'react-router-dom'
@@ -10,9 +10,7 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
-import { Link } from 'react-router-dom'
 
-const { AudioPlayerContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 const ARWEAVE_GATEWAY_ENDPOINT = NinaClient.endpoints.arweave
 
@@ -34,7 +32,6 @@ const EnhancedTableHead = (props) => {
         )
       },
     },
-    { id: 'addToQue', numeric: false, label: 'Add to que' },
     { id: 'artist', numeric: false, disablePadding: false, label: 'Artist' },
     { id: 'title', numeric: false, disablePadding: false, label: 'Title' },
   ]
@@ -45,20 +42,19 @@ const EnhancedTableHead = (props) => {
 
   if (tableType === 'userPublished') {
     headCells.push({ id: 'price', numeric: true, label: 'Price' })
-    headCells.push({ id: 'available', numeric: false, label: 'Available' })
-    headCells.push({ id: 'revenue', numeric: false, label: 'Revenue' })
+    headCells.push({ id: 'edition', numeric: false, label: 'Edition' })
+    headCells.push({ id: 'sold', numeric: false, label: 'Sold' })
     headCells.push({ id: 'share', numeric: false, label: 'Share' })
-    headCells.push({ id: 'collected', numeric: false, label: 'Collected' })
+    headCells.push({ id: 'earnings', numeric: false, label: 'Earnings' })
     headCells.push({ id: 'collect', numeric: false, label: 'Collect' })
+    headCells.push({ id: 'date', numeric: false, label: 'Release Date' })
   }
 
   if (tableType === 'userRoyalty') {
     headCells.push({ id: 'share', numeric: false, label: 'Share' })
-    headCells.push({ id: 'collected', numeric: false, label: 'Collected' })
+    headCells.push({ id: 'earnings', numeric: false, label: 'Earnings' })
     headCells.push({ id: 'collect', numeric: false, label: 'Collect' })
   }
-
-  headCells.push({ id: 'moreInfo', numeric: false, label: 'View Release' })
 
   return (
     <TableHead>
@@ -69,7 +65,7 @@ const EnhancedTableHead = (props) => {
             align={'center'}
             padding={'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
-            sx={{ fontWeight: 'bold' }}
+            sx={{ fontWeight: 'bold', borderBottom: 'none' }}
           >
             {headCell.label}
           </TableCell>
@@ -83,7 +79,6 @@ const ReleaseListTable = (props) => {
   const { releases, tableType, collectRoyaltyForRelease } = props
   const history = useHistory()
   const [order] = useState('asc')
-  const { addTrackToQue } = useContext(AudioPlayerContext)
   const handleClick = (event, releasePubkey) => {
     history.push(`/releases/` + releasePubkey)
   }
@@ -101,28 +96,9 @@ const ReleaseListTable = (props) => {
     const rowData = {
       id: releasePubkey,
       art: linkData,
-      addToQue: (
-        <Button
-          onClick={() => {
-            addTrackToQue(releasePubkey)
-          }}
-        >
-          +
-        </Button>
-      ),
       artist: metadata.properties.artist,
       title: metadata.properties.title,
     }
-
-    rowData['addToQue'] = (
-      <Button
-        onClick={() => {
-          addTrackToQue(releasePubkey)
-        }}
-      >
-        +
-      </Button>
-    )
 
     if (tableType === 'userCollection') {
       const duration = NinaClient.formatDuration(
@@ -153,29 +129,22 @@ const ReleaseListTable = (props) => {
         tokenData.paymentMint
       )}`
       rowData[
-        'available'
-      ] = `${tokenData.remainingSupply.toNumber()} / ${tokenData.totalSupply.toNumber()}`
-      rowData['revenue'] = `${NinaClient.nativeToUiString(
-        tokenData.totalCollected.toNumber(),
-        tokenData.paymentMint
-      )}`
+        'edition'
+      ] = tokenData.totalSupply.toNumber()
+      rowData[
+        'sold'
+      ] = tokenData.saleCounter.toNumber()
       rowData['share'] = `${recipient.percentShare.toNumber() / 10000}%`
       rowData['collected'] = `${NinaClient.nativeToUiString(
         recipient.collected.toNumber(),
         tokenData.paymentMint
       )}`
       rowData['collect'] = collectButton
-    }
-    rowData['moreInfo'] = (
-      <Link
-        to={`/${
-          tableType === 'userCollection' ? 'collection' : 'releases'
-        }/${releasePubkey}`}
-      >
-        More Info
-      </Link>
-    )
+      rowData[
+        'date'
+      ] = `${new Date(tokenData.releaseDatetime.toNumber() * 1000).toISOString().split('T')[0]}`
 
+    }
     return rowData
   })
   rows.sort((a, b) => (a.artist < b.artist ? -1 : 1))
@@ -219,6 +188,12 @@ const ReleaseListTable = (props) => {
                               />
                             </TableCell>
                           )
+                        } else if (cellName === 'title') {
+                          return (
+                            <TableCell align="center" key={cellName}>
+                              <span style={{textDecoration: 'underline'}}>{cellData}</span>
+                            </TableCell>
+                          )
                         } else {
                           return (
                             <TableCell align="center" key={cellName}>
@@ -255,13 +230,13 @@ const Root = styled('div')(({ theme }) => ({
     minWidth: 750,
     '& .MuiTableCell-root': {
       lineHeight: '13.8px',
-      fontSize: '12px',
+      fontSize: '15px',
       padding: theme.spacing(1),
     },
   },
 
   [`& .${classes.releaseImage}`]: {
-    width: '20px',
+    width: '67px',
     cursor: 'pointer',
   },
 }))
