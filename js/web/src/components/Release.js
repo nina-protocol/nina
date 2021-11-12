@@ -59,7 +59,6 @@ const Release = ({ match }) => {
             releasePubkey={releasePubkey}
             track={track}
           />
-
           <ReleaseCtaWrapper>
             <ReleasePurchase
               releasePubkey={releasePubkey}

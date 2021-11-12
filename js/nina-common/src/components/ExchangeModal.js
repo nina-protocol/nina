@@ -99,17 +99,14 @@ const classes = {
 }
 
 const StyledModal = styled(Modal)(({ theme }) => ({
-  [`& .${classes.root}`]: {
-    width: '100%',
-    height: '100%',
-    margin: 'auto',
-    zIndex: '10',
-    backgroundColor: `${theme.palette.white}`,
-    display: 'flex',
-    flexDirection: 'column',
-    borderRadius: '30px',
-    textAlign: 'center',
-  },
+  width: '100%',
+  height: '100%',
+  margin: 'auto',
+  backgroundColor: `${theme.palette.white}`,
+  display: 'flex',
+  flexDirection: 'column',
+  borderRadius: '30px',
+  textAlign: 'center',
 
   [`& .${classes.confirm}`]: {
     '&.Mui-disabled': {

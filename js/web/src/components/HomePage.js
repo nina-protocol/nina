@@ -8,7 +8,6 @@ import RecentlyPurchased from './RecentlyPurchased'
 import uploadPreview from '../assets/uploadPreview.png'
 import { Link } from 'react-router-dom'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
-
 const { ReleaseContext } = ninaCommon.contexts
 
 const HomePage = () => {

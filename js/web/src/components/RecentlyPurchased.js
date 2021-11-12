@@ -1,15 +1,16 @@
 import React from 'react'
+import ninaCommon from 'nina-common'
 import { styled } from '@mui/material/styles'
 import 'react-multi-carousel/lib/styles.css'
 import { Typography, Box } from '@mui/material'
 import { Link } from 'react-router-dom'
 import SmoothImage from 'react-smooth-image'
-import CircularProgress from '@mui/material/CircularProgress'
 import Carousel from 'react-multi-carousel'
 import 'react-multi-carousel/lib/styles.css'
 import Button from '@mui/material/Button'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
+const { Dots } = ninaCommon.components
 
 const RecentlyPurchased = (props) => {
   const { releases } = props
@@ -18,7 +19,7 @@ const RecentlyPurchased = (props) => {
       <RecentlyPurchasedContainer
         sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
-        <CircularProgress color="black" />
+        <Dots size="80px" />
       </RecentlyPurchasedContainer>
     )
   }
@@ -99,6 +100,12 @@ const RecentlyPurchased = (props) => {
                 const dayDifference = Math.round(
                   differenceTime / (1000 * 3600 * 24)
                 )
+                let dayCopy = `in the last ${dayDifference} days`
+                if (dayDifference === 0) {
+                  dayCopy = 'today'
+                } else if (dayDifference === 1) {
+                  dayCopy = 'in the last day'
+                }
 
                 const sales =
                   release.tokenData.totalSupply.toNumber() -
@@ -132,8 +139,7 @@ const RecentlyPurchased = (props) => {
                     </Link>
                     <Copy sx={{ paddingLeft: 2 }}>
                       <Typography align="left" variant="h3" color="blue">
-                        {sales} Releases were sold in the last {dayDifference}{' '}
-                        days
+                        {`${sales} copies were sold ${dayCopy}`}
                       </Typography>
                       {availability}
                       {artistInfo}

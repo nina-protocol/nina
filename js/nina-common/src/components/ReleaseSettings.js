@@ -15,9 +15,6 @@ const ReleaseSettings = (props) => {
 
   const [release, setRelease] = useState(releaseState.tokenData[releasePubkey])
   const [metadata, setMetadata] = useState(releaseState.metadata[releasePubkey])
-  const [metadataUpdated, setMetadataUpdated] = useState(
-    releaseState.metadata[releasePubkey]
-  )
   const [displayValues, setDisplayValues] = useState({})
 
   let timer = undefined
@@ -41,7 +38,6 @@ const ReleaseSettings = (props) => {
     const metadataTxid = await releaseFetchMetadata(releasePubkey)
 
     if (metadataTxid) {
-      setMetadataUpdated(true)
       clearInterval(timer)
       timer = null
     }
@@ -105,7 +101,6 @@ const ReleaseSettings = (props) => {
             <span>Resale</span>
             <strong> {release?.resalePercentage.toNumber() / 10000}%</strong>
           </ReleaseStat>
-
           <Typography
             variant="body1"
             component="p"
@@ -115,19 +110,10 @@ const ReleaseSettings = (props) => {
           </Typography>
         </ReleaseInfo>
 
-        {!metadata && (
-          <>
-            <Typography variant="body1" color="grey.primary">
-              {metadataUpdated
-                ? 'Your release is now live!'
-                : `Your release is currently being uploaded...`}
-            </Typography>
-          </>
-        )}
         <Box mt={1}>
           <Royalty releasePubkey={releasePubkey} release={release} />
           <Link
-            to={`/releases/${releasePubkey}`}
+            to={`/release/${releasePubkey}`}
             style={{ textDecoration: 'none' }}
           >
             <Button
@@ -136,7 +122,9 @@ const ReleaseSettings = (props) => {
               fullWidth
               disabled={!metadata}
             >
-              View Release
+              {metadata
+                ? 'View Release'
+                : 'Your release is currently being finalized...'}
             </Button>
           </Link>
         </Box>

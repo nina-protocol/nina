@@ -1,8 +1,9 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import withBreadcrumbs from 'react-router-breadcrumbs-hoc'
 import { NavLink } from 'react-router-dom'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
+import { useWallet } from '@solana/wallet-adapter-react'
 
 const { ReleaseContext } = ninaCommon.contexts
 
@@ -20,12 +21,61 @@ const ReleaseBreadcrumb = ({ match }) => {
   return null
 }
 
+const YourCollectionBreadcrumb = () => {
+  const {
+    releaseState,
+    getReleasesPublishedByUser,
+    filterReleasesUserCollection,
+  } = useContext(ReleaseContext)
+  const wallet = useWallet()
+
+  const [userCollectionReleasesCount, setUserCollectionReleasesCount] =
+    useState()
+  useEffect(() => {
+    if (wallet?.connected) {
+      getReleasesPublishedByUser()
+    }
+  }, [wallet?.connected])
+
+  useEffect(() => {
+    if (wallet?.connected) {
+      setUserCollectionReleasesCount(filterReleasesUserCollection().length || 0)
+    }
+  }, [releaseState])
+
+  return <span>Your Collection ({userCollectionReleasesCount})</span>
+}
+
+const YourReleasesBreadcrumb = () => {
+  const {
+    releaseState,
+    getReleasesPublishedByUser,
+    filterReleasesPublishedByUser,
+  } = useContext(ReleaseContext)
+  const wallet = useWallet()
+
+  const [userPublishedReleasesCount, setUserPublishedReleasesCount] = useState()
+  useEffect(() => {
+    if (wallet?.connected) {
+      getReleasesPublishedByUser()
+    }
+  }, [wallet?.connected])
+
+  useEffect(() => {
+    if (wallet?.connected) {
+      setUserPublishedReleasesCount(filterReleasesPublishedByUser().length || 0)
+    }
+  }, [releaseState])
+
+  return <span>Your Releases ({userPublishedReleasesCount})</span>
+}
+
 const routes = [
   { path: '/', breadcrumb: 'Home' },
-  { path: '/releases', breadcrumb: 'Releases' },
+  { path: '/releases', breadcrumb: YourReleasesBreadcrumb },
   { path: '/releases/:releasePubkey', breadcrumb: ReleaseBreadcrumb },
   { path: '/releases/:releasePubkey/market', breadcrumb: 'Market' },
-  { path: '/collection', breadcrumb: 'Collection' },
+  { path: '/collection', breadcrumb: YourCollectionBreadcrumb },
   { path: '/collection/:releasePubkey', breadcrumb: ReleaseBreadcrumb },
   { path: '/collection/:releasePubkey/market', breadcrumb: 'Market' },
   { path: '/upload', breadcrumb: 'Upload' },
