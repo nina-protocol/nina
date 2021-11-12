@@ -56,23 +56,6 @@ const AudioPlayer = () => {
   }, [isPlaying])
 
   useEffect(() => {
-    if (playlistRef.current.length > 0) {
-      changeTrack(txid)
-      let index = currentIndex()
-      if (index === undefined) {
-        setInfo(playlistRef.current[playlistRef.current.length - 1])
-        console.log(
-          'playlistRef.current[playlistRef.current.length - 1] :>> ',
-          playlistRef.current[playlistRef.current.length - 1]
-        )
-      } else {
-        setInfo(playlistRef.current[index])
-        console.log('playlistRef.current :>> ', playlistRef.current)
-      }
-    }
-  }, [txid])
-
-  useEffect(() => {
     const shouldSetInfoOnInitialPlaylistLoad = playlistRef.current.length === 0
     playlistRef.current = playlist
 
@@ -80,6 +63,13 @@ const AudioPlayer = () => {
       setInfo(playlistRef.current[0])
       if (!wallet?.connected && playlistRef.current[0]) {
         changeTrack(playlistRef.current[0].txid)
+        let index = currentIndex()
+        if (index === undefined) {
+          setInfo(playlistRef.current[playlistRef.current.length - 1])
+        } else {
+          console.log('else: ', playlistRef.current[index])
+          setInfo(playlistRef.current[index])
+        }
       }
     } else if (
       playlist.filter((playlistItem) => playlistItem.txid === info.txid)
@@ -87,13 +77,22 @@ const AudioPlayer = () => {
     ) {
       setIsPlaying(false)
       if (playlistRef.current[0]) {
-        setInfo(playlistRef.current[0])
+        // setInfo(playlistRef.current[0])
       } else {
-        setInfo(null)
+        // setInfo(null)
         setDuration(0)
       }
       setTrackProgress(0)
       clearInterval(intervalRef.current)
+    } else if (playlistRef.current.length > 0) {
+      changeTrack(txid)
+      let index = currentIndex()
+      if (index === undefined) {
+        setInfo(playlistRef.current[playlistRef.current.length - 1])
+      } else {
+        console.log('else: ', playlistRef.current[index])
+        setInfo(playlistRef.current[index])
+      }
     }
   }, [playlist])
 
