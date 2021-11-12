@@ -66,7 +66,7 @@ const EnhancedTableHead = (props) => {
             align={'center'}
             padding={'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
-            sx={{ fontWeight: 'bold', borderBottom: 'none' }}
+            sx={{ fontWeight: '700 !important', borderBottom: 'none' }}
           >
             {headCell.label}
           </TableCell>
@@ -243,14 +243,21 @@ const classes = {
 }
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
-  width: '823px',
+  width: '920px',
   margin: 'auto',
   [`& .${classes.table}`]: {
     minWidth: 750,
     '& .MuiTableCell-root': {
-      lineHeight: '13.8px',
-      fontSize: '15px',
+      ...theme.helpers.baseFont,
       padding: theme.spacing(1),
+      textAlign: 'left',
+      whiteSpace: 'nowrap',
+      '& span': {
+        textOverflow: 'ellipsis',
+        maxWidth: '120px',
+        overflow: 'hidden',
+        display: 'table-cell'
+      }
     },
   },
 

@@ -228,6 +228,7 @@ const StyledQueueList = styled(Box)(({ theme }) => ({
   width: '700px',
   margin: 'auto',
   overflowY: 'scroll',
+  paddingTop: '140px',
   '& .MuiTableCell-head': {
     ...theme.helpers.baseFont,
     fontWeight: '700',

@@ -111,7 +111,7 @@ return (
             to={`/release/${releasePubkey}`}
             style={{ textDecoration: 'none' }}
           >
-            <Button variant="contained" color="primary" fullWidth disabled={!metadata}>
+            <Button variant="outlined" color="primary" fullWidth disabled={!metadata} sx={{marginTop: '10px !important'}}>
               {metadata ? 'View Release' : 'Your release is currently being finalized...'}
             </Button>
           </Link>
