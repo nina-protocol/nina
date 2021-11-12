@@ -39,7 +39,6 @@ const ReleaseList = () => {
   }, [releaseState, collection])
 
   return (
-<<<<<<< HEAD
     <ScrollablePageWrapper>
       <Box>
         {wallet?.connected && userPublishedReleases?.length > 0 && (
@@ -60,31 +59,4 @@ const ReleaseList = () => {
   )
 }
 
-=======
-    <StyledBox>
-      {wallet?.connected && userPublishedReleases?.length > 0 && (
-        <ReleaseListTable
-          releases={userPublishedReleases}
-          tableType="userPublished"
-          collectRoyaltyForRelease={collectRoyaltyForRelease}
-          key="releases"
-        />
-      )}
-      {wallet?.connected && userPublishedReleases?.length === 0 && (
-        <>
-          <Typography>{`You haven't published any music yet.`}</Typography>
-        </>
-      )}
-    </StyledBox>
-  )
-}
-
-const StyledBox = styled(Box)(() => ({
-  display: 'flex',
-  flexDirection: 'column',
-  overflowY: 'scroll',
-  padding: '280px 0 80px 0',
-}))
-
->>>>>>> d9a0ac3929423165849216bcebc25129172fa117
 export default ReleaseList
