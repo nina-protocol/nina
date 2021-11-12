@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
-import {Typography} from '@mui/material'
+import { Typography } from '@mui/material'
 
 const { ReleaseContext } = ninaCommon.contexts
 
@@ -30,7 +30,8 @@ const YourCollectionBreadcrumb = () => {
   } = useContext(ReleaseContext)
   const wallet = useWallet()
 
-  const [userCollectionReleasesCount, setUserCollectionReleasesCount] = useState()
+  const [userCollectionReleasesCount, setUserCollectionReleasesCount] =
+    useState()
   useEffect(() => {
     if (wallet?.connected) {
       getReleasesPublishedByUser()
@@ -43,7 +44,11 @@ const YourCollectionBreadcrumb = () => {
     }
   }, [releaseState])
 
-  return <Typography variant="subtitle1">Your Collection ({userCollectionReleasesCount})</Typography>
+  return (
+    <Typography variant="subtitle1">
+      Your Collection ({userCollectionReleasesCount})
+    </Typography>
+  )
 }
 
 const YourReleasesBreadcrumb = () => {
@@ -67,7 +72,11 @@ const YourReleasesBreadcrumb = () => {
     }
   }, [releaseState])
 
-  return <Typography variant="subtitle1">Your Releases ({userPublishedReleasesCount})</Typography>
+  return (
+    <Typography variant="subtitle1">
+      Your Releases ({userPublishedReleasesCount})
+    </Typography>
+  )
 }
 
 const routes = [
@@ -98,8 +107,8 @@ const BreadcrumbsContainer = styled('span')(() => ({
   fontSize: '10px',
   display: 'flex',
   '& .breadcrumb': {
-    display: 'flex'
-  }
+    display: 'flex',
+  },
 }))
 const Title = styled('span')(() => ({
   fontStyle: 'italic',
@@ -115,7 +124,7 @@ const StyledReleaseBreadcrumb = styled(Typography)(() => ({
   border: '1p solid red',
   whiteSpace: 'nowrap',
   textOverflow: 'ellipsis',
-  overflow: 'hidden'
+  overflow: 'hidden',
 }))
 
 export default withBreadcrumbs(routes)(Breadcrumbs)

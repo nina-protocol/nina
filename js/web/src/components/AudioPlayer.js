@@ -185,20 +185,11 @@ const AudioPlayer = () => {
       )}
 
       <Controls>
-        <SkipPreviousIcon
-          onClick={() => playPreviousTrack()}
-          sx={iconStyle}
-        />
+        <SkipPreviousIcon onClick={() => playPreviousTrack()} sx={iconStyle} />
         {isPlaying ? (
-          <PauseIcon
-            onClick={() => setIsPlaying(false)}
-            sx={iconStyle}
-          />
+          <PauseIcon onClick={() => setIsPlaying(false)} sx={iconStyle} />
         ) : (
-          <PlayArrowIcon
-            onClick={() => setIsPlaying(true)}
-            sx={iconStyle}
-          />
+          <PlayArrowIcon onClick={() => setIsPlaying(true)} sx={iconStyle} />
         )}
         <SkipNextIcon onClick={() => playNextTrack()} sx={iconStyle} />
       </Controls>
@@ -267,7 +258,7 @@ const AlbumArt = styled(Link)(() => ({
 const ArtistInfo = styled(Typography)(() => ({
   whiteSpace: 'nowrap',
   overflow: 'hidden',
-  textOverflow: 'ellipsis'
+  textOverflow: 'ellipsis',
 }))
 
 const Controls = styled(Box)(({ theme }) => ({
@@ -275,8 +266,8 @@ const Controls = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   padding: theme.spacing(0, 2),
   '& MuiSvgIcon-root': {
-    width: '2em'
-  }
+    width: '2em',
+  },
 }))
 
 const ProgressContainer = styled(Box)(({ theme }) => ({

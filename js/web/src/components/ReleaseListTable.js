@@ -85,13 +85,20 @@ const ReleaseListTable = (props) => {
   const [order] = useState('asc')
 
   const handleClick = (e, releasePubkey) => {
-    history.push(tableType === 'userCollection' ? `/collection/${releasePubkey}` : `/releases/${releasePubkey}`)
+    history.push(
+      tableType === 'userCollection'
+        ? `/collection/${releasePubkey}`
+        : `/releases/${releasePubkey}`
+    )
   }
 
   const handlePlay = (e, releasePubkey) => {
     e.stopPropagation()
     e.preventDefault()
-    updateTxid(releaseState.metadata[releasePubkey].properties.files[0].uri, releasePubkey)
+    updateTxid(
+      releaseState.metadata[releasePubkey].properties.files[0].uri,
+      releasePubkey
+    )
   }
 
   const handleCollect = (e, recipient, releasePubkey) => {
@@ -145,93 +152,93 @@ const ReleaseListTable = (props) => {
         tokenData.price.toNumber(),
         tokenData.paymentMint
       )}`
-      rowData[
-        'edition'
-      ] = tokenData.totalSupply.toNumber()
-      rowData[
-        'sold'
-      ] = tokenData.saleCounter.toNumber()
+      rowData['edition'] = tokenData.totalSupply.toNumber()
+      rowData['sold'] = tokenData.saleCounter.toNumber()
       rowData['share'] = `${recipient.percentShare.toNumber() / 10000}%`
       rowData['collected'] = `${NinaClient.nativeToUiString(
         recipient.collected.toNumber(),
         tokenData.paymentMint
       )}`
       rowData['collect'] = collectButton
-      rowData[
-        'date'
-      ] = `${new Date(tokenData.releaseDatetime.toNumber() * 1000).toISOString().split('T')[0]}`
-
+      rowData['date'] = `${
+        new Date(tokenData.releaseDatetime.toNumber() * 1000)
+          .toISOString()
+          .split('T')[0]
+      }`
     }
     return rowData
   })
   rows.sort((a, b) => (a.artist < b.artist ? -1 : 1))
 
   return (
-        <StyledPaper elevation={0}>
-          <TableContainer>
-            <Table
-              className={classes.table}
-              aria-labelledby="tableTitle"
-              aria-label="enhanced table"
-              sx={{ borderTop: 'none' }}
-            >
-              <EnhancedTableHead
-                className={classes}
-                order={order}
-                tableType={tableType}
-                rowCount={rows.length}
-              />
-              <TableBody>
-                {rows.map((row) => {
-                  return (
-                    <TableRow
-                      hover
-                      tabIndex={-1}
-                      key={row.id}
-                      onClick={(e) => handleClick(e, row.id)}>
-                      {Object.keys(row).map((cellName) => {
-                        const cellData = row[cellName]
-                        if (cellName !== 'id') {
-                          if (cellName === 'art') {
-                            return (
-                              <TableCell
-                                align="center"
-                                component="th"
-                                scope="row"
-                                key={cellName}
-                                onClick={(e) => handlePlay(e, row.id)}
-                              >
-                                <img
-                                  src={row.art.txId}
-                                  className={classes.releaseImage}
-                                  alt={'cover'}
-                                  key={cellName}
-                                />
-                              </TableCell>
-                            )
-                          } else if (cellName === 'title') {
-                            return (
-                              <TableCell align="center" key={cellName}>
-                                <span style={{textDecoration: 'underline'}}>{cellData}</span>
-                              </TableCell>
-                            )
-                          } else {
-                            return (
-                              <TableCell align="center" key={cellName}>
-                                {cellData}
-                              </TableCell>
-                            )
-                          }
-                        }
-                        return null
-                      })}
-                    </TableRow>
-                  )
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </StyledPaper>
+    <StyledPaper elevation={0}>
+      <TableContainer>
+        <Table
+          className={classes.table}
+          aria-labelledby="tableTitle"
+          aria-label="enhanced table"
+          sx={{ borderTop: 'none' }}
+        >
+          <EnhancedTableHead
+            className={classes}
+            order={order}
+            tableType={tableType}
+            rowCount={rows.length}
+          />
+          <TableBody>
+            {rows.map((row) => {
+              return (
+                <TableRow
+                  hover
+                  tabIndex={-1}
+                  key={row.id}
+                  onClick={(e) => handleClick(e, row.id)}
+                >
+                  {Object.keys(row).map((cellName) => {
+                    const cellData = row[cellName]
+                    if (cellName !== 'id') {
+                      if (cellName === 'art') {
+                        return (
+                          <TableCell
+                            align="center"
+                            component="th"
+                            scope="row"
+                            key={cellName}
+                            onClick={(e) => handlePlay(e, row.id)}
+                          >
+                            <img
+                              src={row.art.txId}
+                              className={classes.releaseImage}
+                              alt={'cover'}
+                              key={cellName}
+                            />
+                          </TableCell>
+                        )
+                      } else if (cellName === 'title') {
+                        return (
+                          <TableCell align="center" key={cellName}>
+                            <span style={{ textDecoration: 'underline' }}>
+                              {cellData}
+                            </span>
+                          </TableCell>
+                        )
+                      } else {
+                        return (
+                          <TableCell align="center" key={cellName}>
+                            {cellData}
+                          </TableCell>
+                        )
+                      }
+                    }
+                    return null
+                  })}
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </StyledPaper>
   )
 }
 
@@ -256,8 +263,8 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
         textOverflow: 'ellipsis',
         maxWidth: '120px',
         overflow: 'hidden',
-        display: 'table-cell'
-      }
+        display: 'table-cell',
+      },
     },
   },
 

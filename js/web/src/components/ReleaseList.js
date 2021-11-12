@@ -7,7 +7,6 @@ import { Box, Typography } from '@mui/material'
 import ReleaseListTable from './ReleaseListTable'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 
-
 const { ReleaseContext, NinaContext } = ninaCommon.contexts
 
 const ReleaseList = () => {
@@ -42,21 +41,19 @@ const ReleaseList = () => {
   return (
     <ScrollablePageWrapper>
       <Box>
-        {wallet?.connected &&
-          userPublishedReleases?.length > 0 && (
-            <ReleaseListTable
-              releases={userPublishedReleases}
-              tableType="userPublished"
-              collectRoyaltyForRelease={collectRoyaltyForRelease}
-              key="releases"
-            />
-          )}
-        {wallet?.connected &&
-          userPublishedReleases?.length === 0 && (
-            <>
-              <Typography>{`You haven't published any music yet.`}</Typography>
-            </>
-          )}
+        {wallet?.connected && userPublishedReleases?.length > 0 && (
+          <ReleaseListTable
+            releases={userPublishedReleases}
+            tableType="userPublished"
+            collectRoyaltyForRelease={collectRoyaltyForRelease}
+            key="releases"
+          />
+        )}
+        {wallet?.connected && userPublishedReleases?.length === 0 && (
+          <>
+            <Typography>{`You haven't published any music yet.`}</Typography>
+          </>
+        )}
       </Box>
     </ScrollablePageWrapper>
   )
