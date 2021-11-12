@@ -13,26 +13,33 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded'
 import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
-import QueueMusicIcon from '@mui/icons-material/QueueMusic'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { Typography } from '@material-ui/core'
-import QueList from './QueList'
+import QueueList from './QueueList'
 
 const { AudioPlayerContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
-const QueDrawer = (props) => {
-  const { isPlaying, togglePlay, nextInfo } = props
-
+const QueueDrawer = (props) => {
   const theme = useTheme()
-
-  const { txid, updateTxid, playlist, reorderPlaylist } =
+  const { txid, updateTxid, playlist, reorderPlaylist, currentIndex } =
     useContext(AudioPlayerContext)
   const wallet = useWallet()
-
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [nextInfo, setNextInfo] = useState()
+
+  useEffect(() => {
+    if (playlist.length > 0) {
+      let index = currentIndex()
+      if (index === undefined) {
+        setNextInfo(playlist[playlist.length])
+      } else {
+        setNextInfo(playlist[index + 1])
+      }
+    }
+  }, [txid])
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -69,12 +76,11 @@ const QueDrawer = (props) => {
   return (
     <ToggleWrapper>
       <React.Fragment key={'left'}>
-        <Button variant="outlined" onClick={toggleDrawer(!drawerOpen)}>
-          <QueueMusicIcon style={{ fill: `${theme.palette.purple}` }} />{' '}
+        <Button onClick={toggleDrawer(!drawerOpen)}>
           {!drawerOpen &&
             (nextInfo
               ? `Up next: ${nextInfo.artist} - ${nextInfo.title}`
-              : 'open que')}
+              : 'open queue')}
           {drawerOpen && 'Close'}
         </Button>
         <Drawer
@@ -84,11 +90,7 @@ const QueDrawer = (props) => {
           PaperProps={quePaperStyle}
           ModalProps={queModalStyle}
         >
-          <QueList
-            isPlaying={isPlaying}
-            togglePlay={togglePlay}
-            setDrawerOpen={setDrawerOpen}
-          />
+          <QueueList setDrawerOpen={setDrawerOpen} />
         </Drawer>
       </React.Fragment>
     </ToggleWrapper>
@@ -114,9 +116,15 @@ const queModalStyle = {
   },
 }
 
-const ToggleWrapper = styled(Box)(() => ({
+const ToggleWrapper = styled(Box)(({theme}) => ({
   position: 'absolute',
   right: '0',
+  '& button': {
+    paddingRight: theme.spacing(2),
+    '&:hover': {
+      backgroundColor: `${theme.palette.transparent} !important`,
+    },
+  }
 }))
 
-export default QueDrawer
+export default React.memo(QueueDrawer)

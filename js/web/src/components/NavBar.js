@@ -38,7 +38,7 @@ const NavBar = () => {
 
       <div className={classes.nav__right}>
         <span className={classes.nav__balance}>
-          {wallet?.connected ? `balance: $${usdcBalance}` : null}
+          {wallet?.connected ? `Balance: $${usdcBalance}` : null}
         </span>
         <div className={classes.nav__button}>
           <StyledWalletDialogProvider featuredWallets={4}>
@@ -104,7 +104,7 @@ const Root = styled('nav')(({ theme }) => ({
   [`& .${classes.nav__balance}`]: {
     margin: 'auto',
     color: `${theme.palette.blue}`,
-    fontSize: '10px',
+    fontSize: '14px',
   },
 
   [`& .${classes.nav__logo}`]: {

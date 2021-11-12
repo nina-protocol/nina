@@ -32,12 +32,19 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   }),
 })
 
-const QueList = (props) => {
-  const { isPlaying, togglePlay, setDrawerOpen } = props
+const QueueList = (props) => {
+  const { setDrawerOpen } = props
   const wallet = useWallet()
   const history = useHistory()
-  const { txid, updateTxid, playlist, reorderPlaylist, removeTrackFromQueue } =
-    useContext(AudioPlayerContext)
+  const {
+    txid,
+    updateTxid,
+    playlist,
+    reorderPlaylist,
+    removeTrackFromQueue,
+    isPlaying,
+    setIsPlaying,
+  } = useContext(AudioPlayerContext)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [playlistState, setPlaylistState] = useState(undefined)
   const [skipForReorder, setSkipForReorder] = useState(false)
@@ -80,21 +87,20 @@ const QueList = (props) => {
       result.source.index,
       result.destination.index
     )
-
     const playlistEntry = playlistState.find((entry) => entry.txid === txid)
 
     if (playlistEntry) {
       setSelectedIndex(playlist?.indexOf(playlistEntry) || 0)
     }
-    setPlaylistState(newPlaylist)
+    // setPlaylistState(newPlaylist)
 
     // change context playlist state - skip updating local state
-    setSkipForReorder(true)
-    reorderPlaylist(result)
+    // setSkipForReorder(true)
+    reorderPlaylist(newPlaylist)
   }
 
   return (
-    <StyledQueList>
+    <StyledQueueList>
       {playlist?.length === 0 && (
         <div style={{ padding: '16px' }}>
           <Typography align="center">
@@ -106,7 +112,11 @@ const QueList = (props) => {
       )}
 
       {playlist?.length > 0 && (
-        <TableContainer component={Paper} elevation={0}>
+        <TableContainer
+          style={{ overflowX: 'none' }}
+          component={Paper}
+          elevation={0}
+        >
           <Table>
             <TableHead>
               <TableRow>
@@ -118,7 +128,10 @@ const QueList = (props) => {
                 <TableCell>Remove</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody component={DroppableComponent(onDragEnd)}>
+            <TableBody
+              component={DroppableComponent(onDragEnd)}
+              style={{ overflowX: 'none' }}
+            >
               {playlist.map((entry, i) => (
                 <TableRow
                   component={DraggableComponent(entry.txid, i)}
@@ -131,9 +144,15 @@ const QueList = (props) => {
                     }
                   >
                     {isPlaying && selectedIndex === i ? (
-                      <PauseRoundedIcon onClick={() => togglePlay()} />
+                      <PauseRoundedIcon onClick={() => setIsPlaying(false)} />
                     ) : (
-                      <PlayArrowRoundedIcon onClick={() => togglePlay()} />
+                      <PlayArrowRoundedIcon
+                        onClick={() =>
+                          selectedIndex === i
+                            ? setIsPlaying(true)
+                            : updateTxid(entry.txid, entry.releasePubkey)
+                        }
+                      />
                     )}
                   </TableCell>
                   <TableCell>{entry.artist}</TableCell>
@@ -156,14 +175,14 @@ const QueList = (props) => {
           </Table>
         </TableContainer>
       )}
-    </StyledQueList>
+    </StyledQueueList>
   )
 }
 
 const DraggableComponent = (id, index) => (props) => {
   const { children } = props
   return (
-    <Draggable draggableId={id} index={index}>
+    <Draggable key={id} draggableId={id} index={index}>
       {(provided, snapshot) => (
         <TableRow
           ref={provided.innerRef}
@@ -187,7 +206,7 @@ const DroppableComponent =
     const { children } = props
     return (
       <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId={'1'} direction="vertical">
+        <Droppable droppableId="droppable" direction="vertical">
           {(provided) => {
             return (
               <TableBody
@@ -205,9 +224,10 @@ const DroppableComponent =
     )
   }
 
-const StyledQueList = styled(Box)(({ theme }) => ({
+const StyledQueueList = styled(Box)(({ theme }) => ({
   width: '700px',
   margin: 'auto',
+  overflowY: 'scroll',
   '& .MuiTableCell-head': {
     ...theme.helpers.baseFont,
     fontWeight: '700',
@@ -217,4 +237,4 @@ const StyledQueList = styled(Box)(({ theme }) => ({
   },
 }))
 
-export default QueList
+export default QueueList
