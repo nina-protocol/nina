@@ -54,23 +54,21 @@ const RoyaltyRecipientForm = (props) => {
           toggleForm()
         }}
       >
-        {(props) => (
+        {({ values, setFieldValue, field, form }) => (
           <Box mt={3} className="royalty__form-wrapper">
             <Typography variant="h6">
-              Transferring {props.values.percentShare}% to:
+              Transferring {values.percentShare}% to:
             </Typography>
             <Form className="royalty__form">
               <Field name="recipientAddress">
-                {(props) => (
+                {({ field }) => (
                   <>
                     <TextField
                       className={classes.formField}
                       variant="outlined"
-                      placeholder={NinaClient.formatPlaceholder(
-                        props.field.name
-                      )}
-                      label={NinaClient.formatPlaceholder(props.field.name)}
-                      {...props.field}
+                      placeholder={NinaClient.formatPlaceholder(field.name)}
+                      label={NinaClient.formatPlaceholder(field.name)}
+                      {...field}
                     />
                   </>
                 )}
@@ -97,10 +95,10 @@ const RoyaltyRecipientForm = (props) => {
                   marks={marks}
                   onChange={(event, value) => {
                     handleDisplayPercent(value)
-                    props.setFieldValue('percentShare', value)
+                    setFieldValue('percentShare', value)
                   }}
-                  {...props.field}
-                  {...props.form}
+                  {...field}
+                  {...form}
                 />
               </Box>
 

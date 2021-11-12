@@ -7,8 +7,6 @@ import {
   createMintInstructions,
   findOrCreateAssociatedTokenAccount,
   wrapSol,
-  getMetadataAccounts,
-  getMetadata,
 } from '../utils/web3'
 import { ninaErrorHandler } from '../utils/errors'
 import {
@@ -17,7 +15,6 @@ import {
   decodeNonEncryptedByteArray,
   decryptData,
 } from '../utils/encrypt'
-import { createMetadataIx, updateMetadataIx } from '../utils/metaplex/metadata'
 import NinaClient from '../utils/client'
 
 const lookupTypes = {
@@ -815,6 +812,12 @@ const releaseContextHelper = ({
         msg: 'Shipping info updated!',
       }
     } catch (error) {
+      const nina = await NinaClient.connect(provider)
+      const redeemable = new anchor.web3.PublicKey(redeemablePubkey)
+      const redeemableAccount = await nina.program.account.redeemable.fetch(
+        redeemable
+      )
+      const releasePubkey = redeemableAccount.release.toBase58()
       getRelease(releasePubkey)
       getRedeemablesForRelease(releasePubkey)
       getRedemptionRecordsForRelease(releasePubkey)
@@ -1002,7 +1005,7 @@ const releaseContextHelper = ({
         purchased,
       })
     } catch (error) {
-
+      console.warn(error)
     }
   }
 
@@ -1345,7 +1348,7 @@ const releaseContextHelper = ({
         const arweaveMetadataUri = `${NinaClient.endpoints.arweave}/${arweaveTxidJson.txid}`
         const arweaveJsonResult = await fetch(arweaveMetadataUri)
         const arweaveJson = await arweaveJsonResult.json()
-        
+
         if (arweaveJson) {
           let updatedState = { ...releaseState }
           updatedState.metadata = {
@@ -1366,32 +1369,6 @@ const releaseContextHelper = ({
     }
   }
 
-  const getReleaseMetadata = async (
-    releasePubkey,
-    releaseMint,
-    isSearch = undefined
-  ) => {
-    if (isSearch && releaseState.metadata[releasePubkey]) {
-      return { [releasePubkey]: releaseState.metadata[releasePubkey] }
-    }
-
-    if (releaseState.metadata[releasePubkey]) {
-      return
-    }
-
-    const metadata = await getMetadata(releaseMint, connection)
-    if (metadata?.account?.data.uri && metadata.account.data.uri != '') {
-      const metadataResult = await fetch(`${NinaClient.endpoints.api}/metadata/bulk`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ids: [releasePubkey]})
-      })
-      const metadataJson = await metadataResult.json()
-      return metadataJson
-    }
-    return undefined
-  }
-
   const getReleaseMetadataAccounts = async (metadataQueries) => {
     const metadataAccountsParsed = {}
     const mints = []
@@ -1406,11 +1383,14 @@ const releaseContextHelper = ({
         mints.push(query)
       }
     })
-    const metadataResult = await fetch(`${NinaClient.endpoints.api}/metadata/bulk`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ids: Object.values(metadataQueries)})
-    })
+    const metadataResult = await fetch(
+      `${NinaClient.endpoints.api}/metadata/bulk`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: Object.values(metadataQueries) }),
+      }
+    )
     const metadataJson = await metadataResult.json()
 
     return metadataJson

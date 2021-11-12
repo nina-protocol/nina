@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
+import { useHistory } from 'react-router-dom'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
@@ -12,9 +13,10 @@ const { ReleaseContext, NinaContext, ExchangeContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
 const ReleasePurchase = (props) => {
-  const { releasePubkey, metadata, setIndex } = props
+  const { releasePubkey, metadata } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
+  const history = useHistory()
   const { releasePurchase, releasePurchasePending, releaseState, getRelease } =
     useContext(ReleaseContext)
   const { getAmountHeld, collection } = useContext(NinaContext)
@@ -142,13 +144,14 @@ const ReleasePurchase = (props) => {
           </Button>
         </form>
       </Box>
-
       <Button
         variant="outlined"
         fullWidth
-        onClick={() => setIndex(1)}
         sx={{
           marginTop: `15px !important`,
+        }}
+        onClick={() => {
+          history.push(`/releases/${releasePubkey}/market`)
         }}
       >
         <Typography variant="body2">Go To Market</Typography>

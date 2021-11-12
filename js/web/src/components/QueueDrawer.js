@@ -92,9 +92,7 @@ const QueueDrawer = (props) => {
           PaperProps={quePaperStyle}
           ModalProps={queModalStyle}
         >
-          <QueueList
-            setDrawerOpen={setDrawerOpen}
-          />
+          <QueueList setDrawerOpen={setDrawerOpen} />
         </Drawer>
       </React.Fragment>
     </ToggleWrapper>

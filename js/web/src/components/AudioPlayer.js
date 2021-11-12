@@ -20,7 +20,8 @@ const { AudioPlayerContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
 const AudioPlayer = () => {
-  const { txid, updateTxid, playlist, isPlaying, setIsPlaying, currentIndex } = useContext(AudioPlayerContext)
+  const { txid, updateTxid, playlist, isPlaying, setIsPlaying, currentIndex } =
+    useContext(AudioPlayerContext)
   const wallet = useWallet()
   let playerRef = useRef()
   const intervalRef = useRef()
@@ -49,7 +50,6 @@ const AudioPlayer = () => {
         updateTxid(playlistRef.current[0].txid)
       } else {
         startTimer()
-        console.log('fell')
         playerRef.current.play()
       }
     }
@@ -57,12 +57,10 @@ const AudioPlayer = () => {
 
   useEffect(() => {
     let index = currentIndex()
-    console.log('txid', txid, currentIndex())
     if (playlistRef.current.length > 0) {
       changeTrack(txid)
       if (index) {
         setInfo(playlistRef.current[index])
-        console.log('playlistRef.current :>> ', playlistRef.current)
       }
     }
   }, [txid])
@@ -181,7 +179,7 @@ const AudioPlayer = () => {
       </audio>
 
       {info && (
-        <AlbumArt to={`/release/${info.releasePubkey}`}>
+        <AlbumArt to={`/releases/${info.releasePubkey}`}>
           <img src={info.cover} style={{ height: '60px', width: '60px' }} />
         </AlbumArt>
       )}
@@ -192,9 +190,15 @@ const AudioPlayer = () => {
           sx={iconStyle}
         />
         {isPlaying ? (
-          <PauseRoundedIcon onClick={() => setIsPlaying(false)} sx={iconStyle} />
+          <PauseRoundedIcon
+            onClick={() => setIsPlaying(false)}
+            sx={iconStyle}
+          />
         ) : (
-          <PlayArrowRoundedIcon onClick={() => setIsPlaying(true)} sx={iconStyle} />
+          <PlayArrowRoundedIcon
+            onClick={() => setIsPlaying(true)}
+            sx={iconStyle}
+          />
         )}
         <SkipNextRoundedIcon onClick={() => playNextTrack()} sx={iconStyle} />
       </Controls>
@@ -221,7 +225,7 @@ const AudioPlayer = () => {
       {info && (
         <>
           <Link
-            to={`/release/${info.releasePubkey}`}
+            to={`/releases/${info.releasePubkey}`}
             style={{ marginRight: '30px' }}
           >
             <Typography variant="subtitle1" sx={{ padding: '0' }}>
@@ -231,7 +235,7 @@ const AudioPlayer = () => {
 
           {/* Change the arrow to svg */}
           <Link
-            to={`/release/${info.releasePubkey}`}
+            to={`/releases/${info.releasePubkey}`}
             style={{ display: 'flex' }}
           >
             <img src={shareArrow}></img>

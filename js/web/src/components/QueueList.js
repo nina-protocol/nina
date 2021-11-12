@@ -36,8 +36,15 @@ const QueueList = (props) => {
   const { setDrawerOpen } = props
   const wallet = useWallet()
   const history = useHistory()
-  const { txid, updateTxid, playlist, reorderPlaylist, removeTrackFromQueue, isPlaying, setIsPlaying } =
-    useContext(AudioPlayerContext)
+  const {
+    txid,
+    updateTxid,
+    playlist,
+    reorderPlaylist,
+    removeTrackFromQueue,
+    isPlaying,
+    setIsPlaying,
+  } = useContext(AudioPlayerContext)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [playlistState, setPlaylistState] = useState(undefined)
   const [skipForReorder, setSkipForReorder] = useState(false)
@@ -65,7 +72,7 @@ const QueueList = (props) => {
 
   const goToRelease = (e, releasePubkey) => {
     setDrawerOpen(false)
-    history.push(`/release/` + releasePubkey)
+    history.push(`/releases/` + releasePubkey)
   }
 
   const onDragEnd = (result) => {
@@ -105,7 +112,11 @@ const QueueList = (props) => {
       )}
 
       {playlist?.length > 0 && (
-        <TableContainer style={{overflowX: 'none'}} component={Paper} elevation={0}>          
+        <TableContainer
+          style={{ overflowX: 'none' }}
+          component={Paper}
+          elevation={0}
+        >
           <Table>
             <TableHead>
               <TableRow>
@@ -117,7 +128,10 @@ const QueueList = (props) => {
                 <TableCell>Remove</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody component={DroppableComponent(onDragEnd)} style={{overflowX: 'none'}} >
+            <TableBody
+              component={DroppableComponent(onDragEnd)}
+              style={{ overflowX: 'none' }}
+            >
               {playlist.map((entry, i) => (
                 <TableRow
                   component={DraggableComponent(entry.txid, i)}
@@ -132,7 +146,13 @@ const QueueList = (props) => {
                     {isPlaying && selectedIndex === i ? (
                       <PauseRoundedIcon onClick={() => setIsPlaying(false)} />
                     ) : (
-                      <PlayArrowRoundedIcon onClick={() => selectedIndex === i ? setIsPlaying(true) : updateTxid(entry.txid, entry.releasePubkey)} />
+                      <PlayArrowRoundedIcon
+                        onClick={() =>
+                          selectedIndex === i
+                            ? setIsPlaying(true)
+                            : updateTxid(entry.txid, entry.releasePubkey)
+                        }
+                      />
                     )}
                   </TableCell>
                   <TableCell>{entry.artist}</TableCell>

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import Button from '@mui/material/Button'
@@ -7,7 +7,6 @@ import NinaBox from './NinaBox'
 import ReleaseCard from './ReleaseCard'
 import ReleasePurchase from './ReleasePurchase'
 import SwipeableViews from 'react-swipeable-views'
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 
 const { Exchange } = ninaCommon.components
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
@@ -18,7 +17,7 @@ const Release = ({ match }) => {
   const { getExchangeHistoryForRelease, exchangeState } =
     useContext(ExchangeContext)
   const [track, setTrack] = useState(null)
-  const [index, setIndex] = useState()
+  const index = useMemo(() => (match.path.includes('market') ? 1 : 0))
 
   const [metadata, setMetadata] = useState(
     releaseState?.metadata[releasePubkey] || null
@@ -41,10 +40,6 @@ const Release = ({ match }) => {
     setTrack(releaseState.metadata[releasePubkey])
   }, [releaseState.metadata[releasePubkey]])
 
-  const handleChangeIndex = (value) => {
-    setIndex(value)
-  }
-
   if (metadata && Object.keys(metadata).length === 0) {
     return (
       <div>
@@ -56,10 +51,7 @@ const Release = ({ match }) => {
 
   return (
     <>
-      {index === 1 && (
-        <StyledArrowBackIosIcon fontSize="large" onClick={() => setIndex(0)} />
-      )}
-      <SwipeableViews index={index} onChangeIndex={handleChangeIndex}>
+      <SwipeableViews index={index}>
         <NinaBox columns={'repeat(2, 1fr)'}>
           <ReleaseCard
             metadata={metadata}
@@ -72,7 +64,6 @@ const Release = ({ match }) => {
             <ReleasePurchase
               releasePubkey={releasePubkey}
               metadata={metadata}
-              setIndex={setIndex}
             />
           </ReleaseCtaWrapper>
         </NinaBox>
@@ -94,13 +85,6 @@ const ReleaseCtaWrapper = styled(Box)(() => ({
   margin: 'auto',
   width: 'calc(100% - 50px)',
   paddingLeft: '50px',
-}))
-
-const StyledArrowBackIosIcon = styled(ArrowBackIosIcon)(({ theme }) => ({
-  position: 'absolute',
-  left: theme.spacing(1),
-  top: theme.spacing(6),
-  cursor: 'pointer',
 }))
 
 export default Release
