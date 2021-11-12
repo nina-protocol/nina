@@ -44,28 +44,23 @@ const AudioPlayer = () => {
     if (!isPlaying) {
       clearInterval(intervalRef.current)
       playerRef.current.pause()
-      setIsPlaying(false)
     } else {
       if (!txid) {
         updateTxid(playlistRef.current[0].txid)
       } else {
         startTimer()
+        console.log('fell')
         playerRef.current.play()
       }
     }
   }, [isPlaying])
 
   useEffect(() => {
+    let index = currentIndex()
+    console.log('txid', txid, currentIndex())
     if (playlistRef.current.length > 0) {
       changeTrack(txid)
-      let index = currentIndex()
-      if (index === undefined) {
-        setInfo(playlistRef.current[playlistRef.current.length - 1])
-        console.log(
-          'playlistRef.current[playlistRef.current.length - 1] :>> ',
-          playlistRef.current[playlistRef.current.length - 1]
-        )
-      } else {
+      if (index) {
         setInfo(playlistRef.current[index])
         console.log('playlistRef.current :>> ', playlistRef.current)
       }
@@ -85,7 +80,6 @@ const AudioPlayer = () => {
       playlist.filter((playlistItem) => playlistItem.txid === info.txid)
         .length === 0
     ) {
-      console.log(1)
       setIsPlaying(false)
       if (playlistRef.current[0]) {
         setInfo(playlistRef.current[0])
@@ -101,7 +95,6 @@ const AudioPlayer = () => {
       setDuration(0)
       setTrackProgress(0)
     }
-    console.log(4)
   }, [playlist])
 
   const startTimer = () => {
@@ -118,7 +111,7 @@ const AudioPlayer = () => {
         setTrackProgress(0)
         playNextTrack()
       }
-    }, [1000])
+    }, [300])
   }
 
   const changeTrack = async (txid) => {

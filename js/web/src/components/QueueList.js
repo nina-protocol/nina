@@ -132,7 +132,7 @@ const QueueList = (props) => {
                     {isPlaying && selectedIndex === i ? (
                       <PauseRoundedIcon onClick={() => setIsPlaying(false)} />
                     ) : (
-                      <PlayArrowRoundedIcon onClick={() => updateTxid(entry.txid, entry.releasePubkey)} />
+                      <PlayArrowRoundedIcon onClick={() => selectedIndex === i ? setIsPlaying(true) : updateTxid(entry.txid, entry.releasePubkey)} />
                     )}
                   </TableCell>
                   <TableCell>{entry.artist}</TableCell>

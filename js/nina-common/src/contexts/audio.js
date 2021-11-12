@@ -49,10 +49,8 @@ const AudioPlayerContextProvider = ({ children }) => {
   })
 
   const updateTxid = (newTxid, releasePubkey) => {
-    addTrackToQue(releasePubkey)
-    if (newTxid === txid) {
-      setTxid(newTxid + '?ext=mp3')
-    } else {
+    if (newTxid !== playlist[currentIndex()]) {
+      addTrackToQue(releasePubkey)
       setTxid(newTxid)
     }
   }
