@@ -13,9 +13,9 @@ const ReleaseBreadcrumb = ({ match }) => {
   const release = releaseState.metadata[match.params.releasePubkey]
   if (release) {
     return (
-      <StyledReleaseBreadcrumb variant="subtitle1">
-        <span>{release.properties.artist},</span>{' '}
-        <Title>{release.properties.title}</Title>
+      <StyledReleaseBreadcrumb >
+        <Typography display="inline" variant="subtitle1">{release.properties.artist},</Typography>{' '}
+        <Typography display="inline" variant="subtitle1" sx={{fontStyle: 'italic'}}>{release.properties.title}</Typography>
       </StyledReleaseBreadcrumb>
     )
   }
@@ -95,7 +95,7 @@ const Breadcrumbs = ({ breadcrumbs }) => (
   <BreadcrumbsContainer>
     {breadcrumbs.map(({ match, breadcrumb }) => (
       <span key={match.url} className="breadcrumb">
-        <BreadcrumbSeperator>{`/`}</BreadcrumbSeperator>
+        <Typography variant="subtitle1" sx={{padding: '0 10px'}}>{`/`}</Typography>
         <NavLink to={match.url}>{breadcrumb}</NavLink>
       </span>
     ))}
@@ -111,18 +111,10 @@ const BreadcrumbsContainer = styled('span')(() => ({
     display: 'flex',
   },
 }))
-const Title = styled('span')(() => ({
-  fontStyle: 'italic',
-}))
-
-const BreadcrumbSeperator = styled('span')(() => ({
-  padding: '0 10px',
-}))
 
 const StyledReleaseBreadcrumb = styled(Typography)(() => ({
   display: 'block',
   maxWidth: '200px',
-  border: '1p solid red',
   whiteSpace: 'nowrap',
   textOverflow: 'ellipsis',
 }))
