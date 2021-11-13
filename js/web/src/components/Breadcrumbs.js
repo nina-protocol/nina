@@ -104,6 +104,7 @@ const Breadcrumbs = ({ breadcrumbs }) => (
 
 const BreadcrumbsContainer = styled('span')(() => ({
   paddingLeft: '30px',
+  paddingRight: '30px',
   fontSize: '10px',
   display: 'flex',
   '& .breadcrumb': {
@@ -124,7 +125,6 @@ const StyledReleaseBreadcrumb = styled(Typography)(() => ({
   border: '1p solid red',
   whiteSpace: 'nowrap',
   textOverflow: 'ellipsis',
-  overflow: 'hidden',
 }))
 
 export default withBreadcrumbs(routes)(Breadcrumbs)

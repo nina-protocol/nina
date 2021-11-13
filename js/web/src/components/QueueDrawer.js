@@ -76,11 +76,11 @@ const QueueDrawer = (props) => {
   return (
     <ToggleWrapper>
       <React.Fragment key={'left'}>
-        <Button onClick={toggleDrawer(!drawerOpen)}>
+        <Button onClick={toggleDrawer(!drawerOpen)} sx={{textTransform: 'none !important'}}>
           {!drawerOpen &&
             (nextInfo
-              ? `Up next: ${nextInfo.artist} - ${nextInfo.title}`
-              : 'open queue')}
+              ? <><span variant="subtitle1">Next: {nextInfo.artist + ', '}</span><Title> {nextInfo.title}</Title></>
+              : 'Open queue')}
           {drawerOpen && 'Close'}
         </Button>
         <Drawer
@@ -116,11 +116,17 @@ const queModalStyle = {
   },
 }
 
+const Title = styled('span')(() => ({
+  fontStyle: 'italic',
+}))
+
 const ToggleWrapper = styled(Box)(({ theme }) => ({
   position: 'absolute',
   right: '0',
   '& button': {
+    color: '#000000 !important',
     paddingRight: theme.spacing(2),
+    fontSize: '10px',
     '&:hover': {
       backgroundColor: `${theme.palette.transparent} !important`,
     },
