@@ -116,7 +116,6 @@ const AudioPlayer = () => {
 
   const changeTrack = async (txid) => {
     playerRef.current.src = txid
-    console.log('tttttt')
     if (shouldPlay) {
       playerRef.current.play()
       startTimer()
@@ -124,7 +123,6 @@ const AudioPlayer = () => {
   }
 
   const playNextTrack = () => {
-    console.log(playlistRef.current)
     let index = currentIndex() || 0
     setTrackProgress(0)
     if (index >= 0) {

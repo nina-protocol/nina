@@ -56,7 +56,7 @@ const Release = ({ match }) => {
   if (!wallet?.connected && match.path.includes('releases')) {
     history.push(`/${releasePubkey}`)
   }
-  console.log('index: ', index, match)
+
   return (
     <>
       {!metadata && <Dots size="80px" />}
