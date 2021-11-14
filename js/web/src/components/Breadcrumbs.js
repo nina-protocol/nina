@@ -46,7 +46,7 @@ const YourCollectionBreadcrumb = () => {
 
   return (
     <Typography variant="subtitle1">
-      Your Collection ({userCollectionReleasesCount})
+      Your Collection ({userCollectionReleasesCount || 0})
     </Typography>
   )
 }
@@ -80,7 +80,7 @@ const YourReleasesBreadcrumb = () => {
 }
 
 const routes = [
-  { path: '/', breadcrumb: 'Home' },
+  { path: '/', breadcrumb: () => <Typography variant="subtitle1">Home</Typography> },
   { path: '/releases', breadcrumb: YourReleasesBreadcrumb },
   { path: '/releases/:releasePubkey', breadcrumb: ReleaseBreadcrumb },
   { path: '/releases/:releasePubkey/market', breadcrumb: 'Market' },
