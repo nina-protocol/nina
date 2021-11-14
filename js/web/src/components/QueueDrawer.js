@@ -15,7 +15,7 @@ import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded'
 import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
-import { Typography } from '@material-ui/core'
+import Typography from '@mui/material/Typography';
 import QueueList from './QueueList'
 
 const { AudioPlayerContext } = ninaCommon.contexts
@@ -77,11 +77,13 @@ const QueueDrawer = (props) => {
     <ToggleWrapper>
       <React.Fragment key={'left'}>
         <Button onClick={toggleDrawer(!drawerOpen)} sx={{textTransform: 'none !important'}}>
-          {!drawerOpen &&
-            (nextInfo
-              ? <><span variant="subtitle1">Next: {nextInfo.artist + ', '}</span><Title> {nextInfo.title}</Title></>
-              : 'Open queue')}
-          {drawerOpen && 'Close'}
+          <Typography variant="subtitle1">
+            {!drawerOpen &&
+              (nextInfo
+                ? <>Next: {nextInfo.artist + ', '}<Title> {nextInfo.title}</Title></>
+                : 'Open queue')}
+            {drawerOpen && 'Close'}
+          </Typography>
         </Button>
         <Drawer
           anchor={'bottom'}
@@ -95,13 +97,6 @@ const QueueDrawer = (props) => {
       </React.Fragment>
     </ToggleWrapper>
   )
-}
-
-const PREFIX = 'PlaylistDrawer'
-
-const classes = {
-  list: `${PREFIX}-list`,
-  fullList: `${PREFIX}-fullList`,
 }
 
 const quePaperStyle = {
@@ -126,10 +121,16 @@ const ToggleWrapper = styled(Box)(({ theme }) => ({
   '& button': {
     color: '#000000 !important',
     paddingRight: theme.spacing(2),
-    fontSize: '10px',
+
     '&:hover': {
       backgroundColor: `${theme.palette.transparent} !important`,
     },
+    '& h6' : {
+      maxWidth: '300px',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap'
+    }
   },
 }))
 

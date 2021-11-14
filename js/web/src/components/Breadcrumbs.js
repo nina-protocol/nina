@@ -116,6 +116,7 @@ const StyledReleaseBreadcrumb = styled(Typography)(() => ({
   maxWidth: '200px',
   whiteSpace: 'nowrap',
   textOverflow: 'ellipsis',
+  overflow: 'hidden',
 }))
 
 export default withBreadcrumbs(routes)(Breadcrumbs)

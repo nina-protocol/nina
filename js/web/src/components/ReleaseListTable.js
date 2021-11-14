@@ -1,7 +1,7 @@
-import React, { useState, useContext } from 'react'
-import { styled } from '@mui/material/styles'
+import React, {useState, useContext} from 'react'
+import {styled} from '@mui/material/styles'
 import ninaCommon from 'nina-common'
-import { useHistory } from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -11,15 +11,15 @@ import TableRow from '@mui/material/TableRow'
 import TableSortLabel from '@mui/material/TableSortLabel'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
-import { visuallyHidden } from '@mui/utils';
+import {visuallyHidden} from '@mui/utils';
 import Box from '@mui/material/Box';
 
-const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts
-const { NinaClient } = ninaCommon.utils
+const {AudioPlayerContext, ReleaseContext} = ninaCommon.contexts
+const {NinaClient} = ninaCommon.utils
 const ARWEAVE_GATEWAY_ENDPOINT = NinaClient.endpoints.arweave
 
 const descendingComparator = (a, b, orderBy) => {
-  switch (orderBy){
+  switch (orderBy) {
     case 'artist':
     case 'title':
       a = a[orderBy].toLowerCase()
@@ -68,7 +68,7 @@ const getComparator = (order, orderBy) => {
 }
 
 const EnhancedTableHead = (props) => {
-  const { order, orderBy, tableType, onRequestSort } =
+  const {order, orderBy, tableType, onRequestSort} =
     props;
 
   const createSortHandler = (property) => (event) => {
@@ -90,28 +90,28 @@ const EnhancedTableHead = (props) => {
         )
       },
     },
-    { id: 'artist', numeric: false, disablePadding: false, label: 'Artist' },
-    { id: 'title', numeric: false, disablePadding: false, label: 'Title' },
+    {id: 'artist', numeric: false, disablePadding: false, label: 'Artist'},
+    {id: 'title', numeric: false, disablePadding: false, label: 'Title'},
   ]
 
   if (tableType === 'userCollection') {
-    headCells.push({ id: 'duration', numeric: true, label: 'Duration' })
+    headCells.push({id: 'duration', numeric: true, label: 'Duration'})
   }
 
   if (tableType === 'userPublished') {
-    // headCells.push({ id: 'price', numeric: true, label: 'Price' })
-    headCells.push({ id: 'edition', numeric: false, label: 'Edition' })
-    headCells.push({ id: 'sold', numeric: false, label: 'Sold' })
-    headCells.push({ id: 'share', numeric: false, label: 'Share' })
-    headCells.push({ id: 'collected', numeric: true, label: 'Earnings' })
-    headCells.push({ id: 'collect', numeric: false, label: 'Collect' })
-    headCells.push({ id: 'date', numeric: false, label: 'Release Date' })
+    headCells.push({id: 'price', numeric: true, label: 'Price'})
+    headCells.push({id: 'edition', numeric: true, label: 'Edition'})
+    headCells.push({id: 'sold', numeric: true, label: 'Sold'})
+    headCells.push({id: 'share', numeric: false, label: 'Share'})
+    headCells.push({id: 'collected', numeric: true, label: 'Earnings'})
+    headCells.push({id: 'collect', numeric: false, label: 'Collect'})
+    headCells.push({id: 'date', numeric: false, label: 'Release Date'})
   }
 
   if (tableType === 'userRoyalty') {
-    headCells.push({ id: 'share', numeric: false, label: 'Share' })
-    headCells.push({ id: 'collected', numeric: false, label: 'Earnings' })
-    headCells.push({ id: 'collect', numeric: false, label: 'Collect' })
+    headCells.push({id: 'share', numeric: false, label: 'Share'})
+    headCells.push({id: 'collected', numeric: false, label: 'Earnings'})
+    headCells.push({id: 'collect', numeric: false, label: 'Collect'})
   }
 
   return (
@@ -123,7 +123,7 @@ const EnhancedTableHead = (props) => {
             align={'center'}
             padding={'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
-            sx={{ fontWeight: '700 !important', borderBottom: 'none' }}
+            sx={{fontWeight: 'bold', borderBottom: 'none'}}
           >
             <TableSortLabel
               active={orderBy === headCell.id}
@@ -146,9 +146,9 @@ const EnhancedTableHead = (props) => {
 }
 
 const ReleaseListTable = (props) => {
-  const { releases, tableType, collectRoyaltyForRelease } = props
-  const { updateTxid } = useContext(AudioPlayerContext)
-  const { releaseState } = useContext(ReleaseContext)
+  const {releases, tableType, collectRoyaltyForRelease} = props
+  const {updateTxid} = useContext(AudioPlayerContext)
+  const {releaseState} = useContext(ReleaseContext)
 
   const history = useHistory()
   const [order, setOrder] = useState('asc')
@@ -215,7 +215,7 @@ const ReleaseListTable = (props) => {
           color="primary"
           disabled={recipient.owed.toNumber() === 0}
           onClick={(e) => handleCollect(e, recipient, releasePubkey)}
-          sx={{ padding: '0px !important' }}
+          sx={{padding: '0px !important'}}
         >
           {NinaClient.nativeToUiString(
             recipient.owed.toNumber(),
@@ -224,10 +224,10 @@ const ReleaseListTable = (props) => {
         </Button>
       )
 
-      // rowData['price'] = `${NinaClient.nativeToUiString(
-      //   tokenData.price.toNumber(),
-      //   tokenData.paymentMint
-      // )}`
+      rowData['price'] = `${NinaClient.nativeToUiString(
+        tokenData.price.toNumber(),
+        tokenData.paymentMint
+      )}`
       rowData['edition'] = tokenData.totalSupply.toNumber()
       rowData['sold'] = tokenData.saleCounter.toNumber()
       rowData['share'] = `${recipient.percentShare.toNumber() / 10000}%`
@@ -236,32 +236,31 @@ const ReleaseListTable = (props) => {
         tokenData.paymentMint
       )}`
       rowData['collect'] = collectButton
-      rowData['date'] = `${
-        new Date(tokenData.releaseDatetime.toNumber() * 1000)
+      rowData['date'] = `${new Date(tokenData.releaseDatetime.toNumber() * 1000)
           .toISOString()
           .split('T')[0]
-      }`
+        }`
     }
     return rowData
   })
   rows.sort((a, b) => (a.artist < b.artist ? -1 : 1))
 
   return (
-    <StyledPaper elevation={0}>
+    <StyledPaper elevation={0} tableType={tableType}>
       <TableContainer>
         <Table
           className={classes.table}
           aria-labelledby="tableTitle"
           aria-label="enhanced table"
-          sx={{ borderTop: 'none' }}
+          sx={{borderTop: 'none'}}
         >
           <EnhancedTableHead
             className={classes}
             order={order}
             tableType={tableType}
-            rowCount={rows.length}
-            onRequestSort={handleRequestSort}
             orderBy={orderBy}
+            onRequestSort={handleRequestSort}
+            rowCount={rows.length}
           />
           <TableBody>
             {rows.slice().sort(getComparator(order, orderBy)).map((row) => {
@@ -295,7 +294,7 @@ const ReleaseListTable = (props) => {
                       } else if (cellName === 'title') {
                         return (
                           <TableCell align="center" key={cellName}>
-                            <span style={{ textDecoration: 'underline' }}>
+                            <span style={{textDecoration: 'underline'}}>
                               {cellData}
                             </span>
                           </TableCell>
@@ -327,8 +326,8 @@ const classes = {
   releaseImage: `${PREFIX}-releaseImage`,
 }
 
-const StyledPaper = styled(Paper)(({ theme }) => ({
-  width: '920px',
+const StyledPaper = styled(Paper)(({theme, tableType}) => ({
+  width: tableType === 'userPublished' ? '1120px' : '920px',
   margin: 'auto',
   [`& .${classes.table}`]: {
     minWidth: 750,
@@ -351,5 +350,6 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
     cursor: 'pointer',
   },
 }))
+
 
 export default ReleaseListTable

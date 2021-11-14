@@ -116,7 +116,6 @@ const HomePageContainer = styled('div')(({ theme }) => ({
   width: '1010px',
   margin: 'auto',
   overflowX: 'visible',
-  border: '2px solid red',
   [`& .${classes.sectionHeader}`]: {
     fontWeight: '700 ',
     paddingBottom: `${theme.spacing(1)}`,
