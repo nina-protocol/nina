@@ -265,9 +265,10 @@ const Controls = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   padding: theme.spacing(0, 2),
-  '& MuiSvgIcon-root': {
-    width: '2em',
-  },
+  '& svg': {
+    height: '24px',
+    width: '24px'
+  }
 }))
 
 const ProgressContainer = styled(Box)(({ theme }) => ({
