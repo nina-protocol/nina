@@ -59,9 +59,7 @@ const AudioPlayer = () => {
     let index = currentIndex()
     if (playlistRef.current.length > 0) {
       changeTrack(txid)
-      if (index) {
-        setInfo(playlistRef.current[index])
-      }
+      setInfo(playlistRef.current[index])
     }
   }, [txid])
 
