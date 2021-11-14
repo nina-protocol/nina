@@ -34,7 +34,7 @@ const QueueDrawer = (props) => {
     if (playlist.length > 0) {
       let index = currentIndex()
       if (index === undefined) {
-        setNextInfo(playlist[playlist.length])
+        setNextInfo(playlist[1])
       } else {
         setNextInfo(playlist[index + 1])
       }

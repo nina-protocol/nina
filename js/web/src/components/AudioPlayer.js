@@ -113,12 +113,15 @@ const AudioPlayer = () => {
 
   const changeTrack = async (txid) => {
     playerRef.current.src = txid
-    playerRef.current.play()
-    startTimer()
+
+    if (isPlaying || !playerRef.current.paused) {
+      playerRef.current.play()
+      startTimer()
+    }
   }
 
   const playNextTrack = () => {
-    let index = currentIndex()
+    let index = currentIndex() || 0
     setTrackProgress(0)
     if (index >= 0) {
       const next = playlistRef.current[index + 1]
@@ -184,7 +187,7 @@ const AudioPlayer = () => {
       )}
 
       <Controls>
-        <IconButton disabled={currentIndex() === 0} disableFocusRipple={true} disableRipple={true}>
+        <IconButton disabled={!currentIndex()} disableFocusRipple={true} disableRipple={true}>
           <SkipPreviousIcon onClick={() => playPreviousTrack()} sx={iconStyle} />
         </IconButton>
         {isPlaying ? (
