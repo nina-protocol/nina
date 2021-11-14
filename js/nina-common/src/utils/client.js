@@ -88,11 +88,16 @@ export default class NinaClient {
     return amount / Math.pow(10, NinaClient.decimalsForMint(mint))
   }
 
-  static nativeToUiString(amount, mint, decimalOverride = false) {
+  static nativeToUiString(amount, mint, decimalOverride = false, showCurrency = true) {
     const isUsdc = NinaClient.isUsdc(mint)
-    return `${NinaClient.nativeToUi(amount, mint).toFixed(
+    let amountString = NinaClient.nativeToUi(amount, mint).toFixed(
       isUsdc || decimalOverride ? 2 : 4
-    )}${isUsdc ? ' USDC' : ' SOL'}`
+    )
+
+    if (showCurrency) {
+      amountString = `${amountString} ${isUsdc ? 'USDC' : 'SOL'}`
+    }
+    return amountString
   }
 
   static uiToNative(amount, mint) {

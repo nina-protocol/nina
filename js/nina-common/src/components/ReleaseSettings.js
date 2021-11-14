@@ -9,7 +9,7 @@ import NinaClient from '../utils/client'
 import { ReleaseContext } from '../contexts'
 
 const ReleaseSettings = (props) => {
-  const { releasePubkey, tempMetadata } = props
+  const { releasePubkey, tempMetadata, inCreateFlow } = props
 
   const { releaseState, releaseFetchMetadata } = useContext(ReleaseContext)
 
@@ -74,35 +74,64 @@ const ReleaseSettings = (props) => {
 return (
     <StyledBox>
       <ReleaseInfoWrapper>
-        <Typography variant="h4" gutterBottom>
-          Confirm Release Info
-        </Typography>
-
-        <ReleaseInfo>
-          <ReleaseStat variant="body1" component="p">
-            <span>Edition Size</span> 
-            <strong> {release?.totalSupply.toNumber()} {displayValues.catalogNumber} </strong>
-          </ReleaseStat>
-
-          <ReleaseStat variant="body1" component="p">
-            <span>Cost</span>
-             <strong>{NinaClient.nativeToUiString(
-              release.price.toNumber(),
-              release.paymentMint
-            )} </strong>
-          </ReleaseStat>
-
-          <ReleaseStat variant="body1" component="p">
-            <span>Resale</span>
-             <strong> {release?.resalePercentage.toNumber() / 10000}%</strong>
-          </ReleaseStat>
-          <Typography
-            variant="body1"
-            component="p"
-            sx={{ marginTop: '10px !important' }}
-          >
-            {displayValues.description}
+        {inCreateFlow &&
+          <Typography variant="h4" gutterBottom>
+            Confirm Release Info
           </Typography>
+        }
+        <ReleaseInfo className={inCreateFlow ? "inCreateFlow" : ""}>
+          <ReleaseStat variant="body1" component="p">
+            <ReleaseStatLeft variant="subtitle1">Catalog No.</ReleaseStatLeft> 
+            <ReleaseStatRight variant="subtitle1"> {displayValues.catalogNumber} </ReleaseStatRighte>
+          </ReleaseStat>
+
+          <ReleaseStat variant="body1" component="p">
+            <ReleaseStatLeft variant="subtitle1">Amount</ReleaseStatLeft> 
+            <ReleaseStatRight variant="subtitle1">{release?.totalSupply.toNumber()}</ReleaseStatRight>
+          </ReleaseStat>
+
+          <ReleaseStat variant="body1" component="p">
+            <ReleaseStatLeft variant="subtitle1">Cost USD</ReleaseStatLeft>
+            <ReleaseStatRight variant="subtitle1">{NinaClient.nativeToUiString(
+              release.price.toNumber(),
+              release.paymentMint,
+              false,
+              false
+            )}</ReleaseStatRight>
+          </ReleaseStat>
+
+          <ReleaseStat variant="body1" component="p">
+            <ReleaseStatLeft variant="subtitle1">Resale %</ReleaseStatLeft>
+            <ReleaseStatRight variant="subtitle1"> {release?.resalePercentage.toNumber() / 10000}%</ReleaseStatRight>
+          </ReleaseStat>
+          {!inCreateFlow &&
+            <>
+            <ReleaseStat variant="body1" component="p">
+              <ReleaseStatLeft variant="subtitle1">Primary Sales</ReleaseStatLeft>
+               <ReleaseStatRight variant="subtitle1">{release.saleCounter.toNumber()}</ReleaseStatRight>
+            </ReleaseStat>
+            <ReleaseStat variant="body1" component="p">
+              <ReleaseStatLeft variant="subtitle1">Secondary Sales</ReleaseStatLeft>
+               <ReleaseStatRight variant="subtitle1">{release.exchangeSaleCounter.toNumber()}</ReleaseStatRight>
+            </ReleaseStat>
+            <ReleaseStat variant="body1" component="p">
+              <ReleaseStatLeft variant="subtitle1">Total Earnings</ReleaseStatLeft>
+               <ReleaseStatRight variant="subtitle1">{NinaClient.nativeToUiString(
+                release.totalCollected.toNumber(),
+                release.paymentMint,
+              )}</ReleaseStatRight>
+            </ReleaseStat>
+            </>
+          }
+          {inCreateFlow &&
+            <Typography
+              variant="body1"
+              component="p"
+              sx={{ marginTop: '10px !important' }}
+            >
+              {displayValues.description}
+            </Typography>
+          }
         </ReleaseInfo>
 
         <Box mt={1}>
@@ -111,6 +140,7 @@ return (
             to={`/release/${releasePubkey}`}
             style={{ textDecoration: 'none' }}
           >
+          {inCreateFlow &&
             <Button
               variant="contained"
               color="primary"
@@ -121,6 +151,7 @@ return (
                 ? 'View Release'
                 : 'Your release is currently being finalized...'}
             </Button>
+          }
           </Link>
         </Box>
       </ReleaseInfoWrapper>
@@ -143,10 +174,22 @@ const ReleaseInfoWrapper = styled(Box)(() => ({
 }))
 
 const ReleaseInfo = styled(Box)(({ theme }) => ({
-  border: `1px solid ${theme.palette.grey.primary}`,
-  padding: '20px',
   marginBottom: theme.spacing(1),
+  paddingTop: '20px'
+  '& .inCreateFlow': {
+    border: `1px solid ${theme.palette.grey.primary}`,
+    padding: '20px',
+  }
 }))
+
+const ReleaseStatRight = styled(Typography)(({ theme }) => ({
+  fontWeight: 'bold',
+}))
+
+const ReleaseStatLeft = styled(Typography)(({ theme }) => ({
+  width: '140px',
+}))
+
 
 const ReleaseStat = styled(Typography)(() => ({
   display: 'flex',

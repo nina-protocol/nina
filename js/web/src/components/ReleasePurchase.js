@@ -8,7 +8,7 @@ import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
 import { Typography } from '@mui/material'
 
-const { Dots } = ninaCommon.components
+const { Dots, ReleaseSettings } = ninaCommon.components
 const { ReleaseContext, NinaContext, ExchangeContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
@@ -136,7 +136,12 @@ const ReleasePurchase = (props) => {
       <Typography variant="h3" align="left">
         {metadata.description}
       </Typography>
-
+      {wallet?.connected && wallet.publicKey.toBase58() === release.authority.toBase58() &&
+        <ReleaseSettings
+          releasePubkey={releasePubkey}
+          inCreateFlow={false}
+        />
+      }
       <Box mt={1}>
         <form onSubmit={handleSubmit}>
           <Button
