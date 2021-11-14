@@ -130,6 +130,7 @@ const EnhancedTableHead = (props) => {
               direction={orderBy === headCell.id ? order : 'asc'}
               onClick={createSortHandler(headCell.id)}
               disabled={headCell.id === 'art'}
+              sx={{'& svg': {fontSize: '14px '}}}
             >
               {headCell.label}
               {orderBy === headCell.id ? (
