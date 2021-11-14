@@ -37,15 +37,15 @@ const NavBar = () => {
       </Logo>
 
       <div className={classes.nav__right}>
-        <span className={classes.nav__balance}>
+        <Typography variant="subtitle1" className={classes.nav__balance}>
           {wallet?.connected ? `Balance: $${usdcBalance}` : null}
-        </span>
+        </Typography>
         <div className={classes.nav__button}>
           <StyledWalletDialogProvider featuredWallets={4}>
             <StyledWalletButton>
-              <Typography variant="subtitle1">
+              <Typography variant="subtitle1" sx={{textTransform: 'none'}}>
                 {wallet?.connected
-                  ? `${wallet.wallet.name} ${walletDisplay}`
+                  ? `${wallet.wallet.name} – ${walletDisplay}`
                   : 'Connect Wallet'}
               </Typography>
             </StyledWalletButton>
@@ -96,28 +96,28 @@ const Root = styled('nav')(({ theme }) => ({
 
   [`& .${classes.nav__left}`]: {
     display: 'flex',
+    alignItems: 'center',
   },
 
   [`& .${classes.nav__right}`]: {
     display: 'flex',
-    justifyContent: 'center',
+    height: '100%'
   },
 
   [`& .${classes.nav__balance}`]: {
     margin: 'auto',
     color: `${theme.palette.blue}`,
-    fontSize: '10px',
   },
 
   [`& .${classes.nav__logo}`]: {
     height: '100%',
+    alignItems: 'center'
   },
 
   [`& .${classes.nav__button}`]: {
     display: 'flex',
     alignItems: 'center',
     marginRight: '24px',
-    fontSize: '10px',
   },
 }))
 
@@ -186,16 +186,14 @@ const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
   },
 }))
 
-const ConnectionDot = styled('span')(({ theme }) => ({
-  height: '8px',
-  width: '8px',
-  backgroundColor: `${theme.palette.blue}`,
+const ConnectionDot = styled('span')(() => ({
+  height: '11px',
+  width: '14px',
+  backgroundColor: '#FF2828',
   borderRadius: '50%',
   display: 'inline-block',
-  opacity: '19%',
-  marginLeft: '10px',
   '&.connected': {
-    opacity: '100%',
+    backgroundColor: '#66F523',
   },
 }))
 
@@ -205,7 +203,7 @@ const Logo = styled(NavLink)(() => ({
   justifyContent: 'center',
   alignItems: 'center',
   position: 'absolute',
-  top: '15px',
+  top: '24px',
   width: '76px',
   height: '13px',
   left: '50%',
