@@ -39,7 +39,7 @@ const QueueDrawer = (props) => {
         setNextInfo(playlist[index + 1])
       }
     }
-  }, [txid])
+  }, [txid, playlist])
 
   const toggleDrawer = (open) => (event) => {
     if (
