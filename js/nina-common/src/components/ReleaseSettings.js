@@ -82,7 +82,7 @@ return (
         <ReleaseInfo className={inCreateFlow ? "inCreateFlow" : ""}>
           <ReleaseStat variant="body1" component="p">
             <ReleaseStatLeft variant="subtitle1">Catalog No.</ReleaseStatLeft> 
-            <ReleaseStatRight variant="subtitle1"> {displayValues.catalogNumber} </ReleaseStatRighte>
+            <ReleaseStatRight variant="subtitle1"> {displayValues.catalogNumber} </ReleaseStatRight>
           </ReleaseStat>
 
           <ReleaseStat variant="body1" component="p">
@@ -175,7 +175,7 @@ const ReleaseInfoWrapper = styled(Box)(() => ({
 
 const ReleaseInfo = styled(Box)(({ theme }) => ({
   marginBottom: theme.spacing(1),
-  paddingTop: '20px'
+  paddingTop: '20px',
   '& .inCreateFlow': {
     border: `1px solid ${theme.palette.grey.primary}`,
     padding: '20px',

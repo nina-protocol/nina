@@ -101,11 +101,11 @@ const Royalty = (props) => {
       <Button
         variant="outlined"
         color="primary"
-        type="button"
+        type="submit"
         onClick={() => setOpen(true)}
         fullWidth
       >
-        Royalty Info
+        <Typography variant="body2">Royalty Info</Typography>
       </Button>
       <StyledModal
         aria-labelledby="transition-modal-title"
@@ -229,6 +229,9 @@ const Root = styled('div')(({ theme }) => ({
       color: `${theme.palette.purple}`,
     },
   },
+  '& button': {
+    height: '55px'
+  }
 }))
 
 const StyledModal = styled(Modal)(() => ({
