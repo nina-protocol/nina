@@ -112,8 +112,9 @@ const BreadcrumbsContainer = styled(Box)(({theme}) => ({
   },
 }))
 
-const StyledReleaseBreadcrumb = styled(Typography)(() => ({
+const StyledReleaseBreadcrumb = styled('div')(() => ({
   display: 'block',
+  paddingRight: '15px',
   maxWidth: '200px',
   whiteSpace: 'nowrap',
   textOverflow: 'ellipsis',
