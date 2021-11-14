@@ -158,7 +158,7 @@ const ReleasePurchase = (props) => {
           marginTop: `15px !important`,
         }}
         onClick={() => {
-          history.push(`/releases/${releasePubkey}/market`)
+          history.push(`/${wallet?.connected ? 'releases/' : ''}${releasePubkey}/market`)
         }}
       >
         <Typography variant="body2">Go To Market</Typography>
