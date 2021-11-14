@@ -89,6 +89,7 @@ const routes = [
   { path: '/collection/:releasePubkey/market', breadcrumb: 'Market' },
   { path: '/upload', breadcrumb: 'Upload' },
   { path: '/releases/:releasePubkey', breadcrumb: ReleaseBreadcrumb },
+  { path: '/:releasePubkey', breadcrumb: ReleaseBreadcrumb },
 ]
 
 const Breadcrumbs = ({ breadcrumbs }) => (
