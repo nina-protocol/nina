@@ -99,9 +99,9 @@ const EnhancedTableHead = (props) => {
   }
 
   if (tableType === 'userPublished') {
-    headCells.push({ id: 'price', numeric: true, label: 'Price' })
-    headCells.push({ id: 'edition', numeric: true, label: 'Edition' })
-    headCells.push({ id: 'sold', numeric: true, label: 'Sold' })
+    // headCells.push({ id: 'price', numeric: true, label: 'Price' })
+    headCells.push({ id: 'edition', numeric: false, label: 'Edition' })
+    headCells.push({ id: 'sold', numeric: false, label: 'Sold' })
     headCells.push({ id: 'share', numeric: false, label: 'Share' })
     headCells.push({ id: 'collected', numeric: true, label: 'Earnings' })
     headCells.push({ id: 'collect', numeric: false, label: 'Collect' })
@@ -224,10 +224,10 @@ const ReleaseListTable = (props) => {
         </Button>
       )
 
-      rowData['price'] = `${NinaClient.nativeToUiString(
-        tokenData.price.toNumber(),
-        tokenData.paymentMint
-      )}`
+      // rowData['price'] = `${NinaClient.nativeToUiString(
+      //   tokenData.price.toNumber(),
+      //   tokenData.paymentMint
+      // )}`
       rowData['edition'] = tokenData.totalSupply.toNumber()
       rowData['sold'] = tokenData.saleCounter.toNumber()
       rowData['share'] = `${recipient.percentShare.toNumber() / 10000}%`
@@ -347,7 +347,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   },
 
   [`& .${classes.releaseImage}`]: {
-    width: '67px',
+    width: '40px',
     cursor: 'pointer',
   },
 }))

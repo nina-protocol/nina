@@ -33,7 +33,7 @@ const NavBar = () => {
       </div>
 
       <Logo to="/">
-        <Typography variant="h3">NINA</Typography>
+        <Typography variant="h4">NINA</Typography>
       </Logo>
 
       <div className={classes.nav__right}>
@@ -43,9 +43,11 @@ const NavBar = () => {
         <div className={classes.nav__button}>
           <StyledWalletDialogProvider featuredWallets={4}>
             <StyledWalletButton>
-              {wallet?.connected
-                ? `${wallet.wallet.name} ${walletDisplay}`
-                : 'Connect Wallet'}
+              <Typography variant="subtitle1">
+                {wallet?.connected
+                  ? `${wallet.wallet.name} ${walletDisplay}`
+                  : 'Connect Wallet'}
+              </Typography>
             </StyledWalletButton>
             <ConnectionDot
               className={`${classes.connectionDot} ${
@@ -104,7 +106,7 @@ const Root = styled('nav')(({ theme }) => ({
   [`& .${classes.nav__balance}`]: {
     margin: 'auto',
     color: `${theme.palette.blue}`,
-    fontSize: '14px',
+    fontSize: '10px',
   },
 
   [`& .${classes.nav__logo}`]: {
@@ -152,7 +154,7 @@ const StyledWalletDialogProvider = styled(WalletDialogProvider)(
           backgroundColor: `${theme.palette.white}`,
           borderRadius: '50px',
           color: `${theme.palette.blue}`,
-          fontSize: '14px',
+          fontSize: '10px',
           fontWeight: '700',
           '&:hover': {
             backgroundColor: `${theme.palette.blue}`,
@@ -202,14 +204,13 @@ const Logo = styled(NavLink)(() => ({
   flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
-  padding: '7px 15px',
   position: 'absolute',
+  top: '15px',
   width: '76px',
-  height: '43px',
+  height: '13px',
   left: '50%',
   transform: 'translateX(-50%)',
-  top: '0px',
-  '& .MuiTypography-h3': {
+  '& .MuiTypography-h4': {
     fontWeight: 'bold',
   },
 }))
