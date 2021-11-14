@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { Typography } from '@mui/material'
+import { Typography, Box } from '@mui/material'
 
 const { ReleaseContext } = ninaCommon.contexts
 
@@ -102,9 +102,8 @@ const Breadcrumbs = ({ breadcrumbs }) => (
   </BreadcrumbsContainer>
 )
 
-const BreadcrumbsContainer = styled('span')(() => ({
-  paddingLeft: '30px',
-  paddingRight: '30px',
+const BreadcrumbsContainer = styled(Box)(({theme}) => ({
+  padding: theme.spacing(0, 2),
   fontSize: '10px',
   display: 'flex',
   '& .breadcrumb': {
