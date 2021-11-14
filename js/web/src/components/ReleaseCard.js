@@ -21,7 +21,7 @@ const ReleaseCard = (props) => {
           <Fade in={true}>
             <Button
               onClick={() => {
-                updateTxid(track.properties.files[0].uri, releasePubkey)
+                updateTxid(track.properties.files[0].uri, releasePubkey, true)
               }}
               sx={{ height: '22px', width: '28px' }}
             >

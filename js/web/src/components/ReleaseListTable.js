@@ -174,7 +174,8 @@ const ReleaseListTable = (props) => {
     e.preventDefault()
     updateTxid(
       releaseState.metadata[releasePubkey].properties.files[0].uri,
-      releasePubkey
+      releasePubkey,
+      true
     )
   }
 

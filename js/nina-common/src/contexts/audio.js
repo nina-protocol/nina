@@ -45,10 +45,11 @@ const AudioPlayerContextProvider = ({ children }) => {
     enqueueSnackbar,
   })
 
-  const updateTxid = (newTxid, releasePubkey) => {
+  const updateTxid = async (newTxid, releasePubkey, shouldPlay=false) => {
     if (newTxid !== playlist[currentIndex()]) {
       addTrackToQueue(releasePubkey)
-      setTxid(newTxid)
+      await setTxid(newTxid)
+      await setIsPlaying(shouldPlay)
     }
   }
 

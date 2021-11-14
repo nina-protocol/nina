@@ -32,6 +32,7 @@ const AudioPlayer = () => {
   const [trackProgress, setTrackProgress] = useState(0)
   const [duration, setDuration] = useState(0)
   const [info, setInfo] = useState(null)
+  const [shouldPlay, setShouldPlay] = useState()
 
   useEffect(() => {
     playerRef.current = document.querySelector('#audio')
@@ -46,9 +47,11 @@ const AudioPlayer = () => {
     if (!isPlaying) {
       clearInterval(intervalRef.current)
       playerRef.current.pause()
+      setShouldPlay(false)
     } else {
+      setShouldPlay(true)
       if (!txid) {
-        updateTxid(playlistRef.current[0].txid)
+        updateTxid(playlistRef.current[0].txid, playerRef.current[0].releasePubkey, true)
       } else {
         startTimer()
         playerRef.current.play()
@@ -113,20 +116,21 @@ const AudioPlayer = () => {
 
   const changeTrack = async (txid) => {
     playerRef.current.src = txid
-
-    if (isPlaying || !playerRef.current.paused) {
+    console.log('tttttt')
+    if (shouldPlay) {
       playerRef.current.play()
       startTimer()
     }
   }
 
   const playNextTrack = () => {
+    console.log(playlistRef.current)
     let index = currentIndex() || 0
     setTrackProgress(0)
     if (index >= 0) {
       const next = playlistRef.current[index + 1]
       if (next) {
-        updateTxid(next.txid)
+        updateTxid(next.txid, next.releasePubkey, isPlaying)
       }
     }
   }
@@ -138,7 +142,7 @@ const AudioPlayer = () => {
     if (index) {
       const prev = playlistRef.current[index - 1]
       if (prev) {
-        updateTxid(prev.txid)
+        updateTxid(prev.txid, prev.releasePubkey, isPlaying)
       }
     }
   }
@@ -190,12 +194,14 @@ const AudioPlayer = () => {
         <IconButton disabled={!currentIndex()} disableFocusRipple={true} disableRipple={true}>
           <SkipPreviousIcon onClick={() => playPreviousTrack()} sx={iconStyle} />
         </IconButton>
-        {isPlaying ? (
-          <PauseIcon onClick={() => setIsPlaying(false)} sx={iconStyle} />
-        ) : (
-          <PlayArrowIcon onClick={() => setIsPlaying(true)} sx={iconStyle} />
-        )}
-        <IconButton disabled={currentIndex() + 1 === playlistRef.current.length} disableFocusRipple={true} disableRipple={true}>
+        <IconButton disabled={playlistRef.current.length === 0} disableFocusRipple={true} disableRipple={true}>
+          {isPlaying ? (
+            <PauseIcon onClick={() => setIsPlaying(false)} sx={iconStyle} />
+          ) : (
+            <PlayArrowIcon onClick={() => setIsPlaying(true)} sx={iconStyle} />
+          )}
+        </IconButton>
+        <IconButton disabled={currentIndex() + 1 === playlistRef.current.length || playlistRef.current.length === 1} disableFocusRipple={true} disableRipple={true}>
           <SkipNextIcon onClick={() => playNextTrack()} sx={iconStyle} />
         </IconButton>
       </Controls>

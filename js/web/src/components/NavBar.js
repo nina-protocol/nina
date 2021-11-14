@@ -186,14 +186,14 @@ const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
   },
 }))
 
-const ConnectionDot = styled('span')(() => ({
+const ConnectionDot = styled('span')(({theme}) => ({
   height: '11px',
   width: '14px',
-  backgroundColor: '#FF2828',
+  backgroundColor: theme.palette.connectionDotDisonnectedColor,
   borderRadius: '50%',
   display: 'inline-block',
   '&.connected': {
-    backgroundColor: '#66F523',
+    backgroundColor: theme.palette.connectionDotConnectedColor,
   },
 }))
 
