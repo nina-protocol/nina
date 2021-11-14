@@ -133,6 +133,21 @@ export const NinaTheme = createTheme({
         },
       },
     },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          padding: '0px !important',
+          boxShadow: 'none',
+          minWidth: 'unset !important',
+          opacity: 100,
+          color: `${colors.black}`,
+          '&:hover': {
+            backgroundColor: `${colors.white} !important`,
+            boxShadow: 'none',
+          },
+        },
+      },
+    },
     MuiTypography: {
       styleOverrides: {
         root: {

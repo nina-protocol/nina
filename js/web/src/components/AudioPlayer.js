@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import Slider from '@mui/material/Slider'
 import SkipNextIcon from '@mui/icons-material/SkipNext'
+import IconButton from '@mui/material/IconButton';
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import PauseIcon from '@mui/icons-material/Pause'
@@ -13,7 +14,7 @@ import PauseIcon from '@mui/icons-material/Pause'
 import shareArrow from '../assets/shareArrow.png'
 // import VolumeUpIcon from '@mui/icons-material/VolumeUp'
 // import VolumeOffIcon from '@mui/icons-material/VolumeOff'
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 import QueueDrawer from './QueueDrawer'
 
 const { AudioPlayerContext } = ninaCommon.contexts
@@ -183,13 +184,17 @@ const AudioPlayer = () => {
       )}
 
       <Controls>
-        <SkipPreviousIcon onClick={() => playPreviousTrack()} sx={iconStyle} />
+        <IconButton disabled={currentIndex() === 0} disableFocusRipple={true} disableRipple={true}>
+          <SkipPreviousIcon onClick={() => playPreviousTrack()} sx={iconStyle} />
+        </IconButton>
         {isPlaying ? (
           <PauseIcon onClick={() => setIsPlaying(false)} sx={iconStyle} />
         ) : (
           <PlayArrowIcon onClick={() => setIsPlaying(true)} sx={iconStyle} />
         )}
-        <SkipNextIcon onClick={() => playNextTrack()} sx={iconStyle} />
+        <IconButton disabled={currentIndex() + 1 === playlistRef.current.length} disableFocusRipple={true} disableRipple={true}>
+          <SkipNextIcon onClick={() => playNextTrack()} sx={iconStyle} />
+        </IconButton>
       </Controls>
 
       <ProgressContainer>
