@@ -96,7 +96,8 @@ const ReleaseCtaWrapper = styled(Box)(({theme}) => ({
   width: 'calc(100% - 50px)',
   paddingLeft: '50px',
   [theme.breakpoints.down('md')]: {
-    paddingLeft: '0'
+    paddingLeft: '0',
+    width: '100%'
   },
 }))
 

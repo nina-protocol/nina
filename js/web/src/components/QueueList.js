@@ -229,12 +229,19 @@ const StyledQueueList = styled(Box)(({ theme }) => ({
   margin: 'auto',
   overflowY: 'scroll',
   paddingTop: '140px',
+  [theme.breakpoints.down('md')]: {
+    width: '80vw',
+    paddingTop: '0',
+  },
   '& .MuiTableCell-head': {
     ...theme.helpers.baseFont,
     fontWeight: '700',
   },
   '& .MuiTableCell-root': {
     textAlign: 'center',
+    [theme.breakpoints.down('md')]: {
+      padding: '16px 0'
+    },
   },
 }))
 
