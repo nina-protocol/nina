@@ -98,9 +98,9 @@ const AudioPlayer = () => {
   }, [playlist])
 
   const setIsPlayingHandler = () => {
-    setIsPlaying(true)
     try {
       playerRef.current.play()
+      setIsPlaying(true)
     } catch (error) {
       console.log('error :>> ', error);
     }
