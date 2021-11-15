@@ -3,7 +3,7 @@ import { createTheme } from '@mui/material/styles'
 const colors = {
   purple: '#9999cc',
   purpleLight: '#bcb2bf',
-  red: '#66F523',
+  red: '#FF2828',
   orange: 'rgba(244, 73, 73, 0.94)',
   green: '#66F523',
   white: '#ffffff',
