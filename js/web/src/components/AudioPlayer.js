@@ -178,7 +178,7 @@ const AudioPlayer = () => {
 
   return (
     <StyledAudioPlayer>
-      <audio id="audio" style={{ width: '100%' }}>
+      <audio id="audio" src={txid} style={{ width: '100%' }} onClick={() => {playerRef.current.play()}}>
         <source src={txid} type="audio/mp3" />
       </audio>
 
