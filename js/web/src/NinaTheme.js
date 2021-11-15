@@ -1,5 +1,7 @@
 import { createTheme } from '@mui/material/styles'
+import createBreakpoints from "@mui/system/createTheme/createBreakpoints"
 
+const breakpoints = createBreakpoints({})
 
 const colors = {
   purple: '#9999cc',
@@ -16,7 +18,6 @@ const colors = {
   blueTrans: 'rgba(45, 129, 255, 0.19)',
   pink: '#FF54A6',
 }
-
 
 export const NinaTheme = createTheme({
   palette: {
@@ -60,6 +61,39 @@ export const NinaTheme = createTheme({
     fontFamily: ['Helvetica', 'san-serif'].join(','),
     berthold: {
       fontFamily: ['BlockBE-Heavy'].join(','),
+    },
+    gutterBottom: {
+      marginBottom: '15px !important',
+    },
+    h1: {
+      fontSize: '36px !important',
+      fontWeight: '400 !important',
+      [breakpoints.down('md')]: {
+        fontSize: '24px !important',
+      },
+    },
+    h2: {
+      fontSize: '25px !important',
+      fontWeight: '400 !important',
+    },
+    h3: {
+      fontSize: '20px !important',
+      lineHeight: '23px !important',
+    },
+    h4: {
+      fontSize: '18px !important',
+      lineHeight: '20.7px !important',
+    },
+    body1: {
+      fontSize: '14px !important',
+      lineHeight: '16.1px !important',
+    },
+    body2: {
+      fontSize: '12px !important',
+      lineHeight: '13.8px !important',
+    },
+    subtitle1: {
+      fontSize: '10px !important',
     },
   },
   vars: {
@@ -156,36 +190,36 @@ export const NinaTheme = createTheme({
         root: {
           letterSpacing: '0.02em',
         },
-        gutterBottom: {
-          marginBottom: '15px !important',
-        },
-        h1: {
-          fontSize: '36px !important',
-          fontWeight: '400 !important',
-        },
-        h2: {
-          fontSize: '25px !important',
-          fontWeight: '400 !important',
-        },
-        h3: {
-          fontSize: '20px !important',
-          lineHeight: '23px !important',
-        },
-        h4: {
-          fontSize: '18px !important',
-          lineHeight: '20.7px !important',
-        },
-        body1: {
-          fontSize: '14px !important',
-          lineHeight: '16.1px !important',
-        },
-        body2: {
-          fontSize: '12px !important',
-          lineHeight: '13.8px !important',
-        },
-        subtitle1: {
-          fontSize: '10px !important',
-        },
+        // gutterBottom: {
+        //   marginBottom: '15px !important',
+        // },
+        // h1: {
+        //   fontSize: '36px !important',
+        //   fontWeight: '400 !important',
+        // },
+        // h2: {
+        //   fontSize: '25px !important',
+        //   fontWeight: '400 !important',
+        // },
+        // h3: {
+        //   fontSize: '20px !important',
+        //   lineHeight: '23px !important',
+        // },
+        // h4: {
+        //   fontSize: '18px !important',
+        //   lineHeight: '20.7px !important',
+        // },
+        // body1: {
+        //   fontSize: '14px !important',
+        //   lineHeight: '16.1px !important',
+        // },
+        // body2: {
+        //   fontSize: '12px !important',
+        //   lineHeight: '13.8px !important',
+        // },
+        // subtitle1: {
+        //   fontSize: '10px !important',
+        // },
       },
     },
     MuiTextField: {
@@ -295,3 +329,4 @@ export const NinaTheme = createTheme({
     },
   },
 })
+

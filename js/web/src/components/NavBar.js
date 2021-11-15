@@ -78,6 +78,7 @@ const classes = {
   connectionDot: `${PREFIX}-connectionDot`,
 }
 
+
 const Root = styled('nav')(({ theme }) => ({
   [`&.${classes.nav}`]: {
     background: `${theme.palette.transparent}`,
