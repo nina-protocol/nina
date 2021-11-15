@@ -51,7 +51,7 @@ const AudioPlayer = () => {
     } else {
       setShouldPlay(true)
       if (!txid) {
-        updateTxid(playlistRef.current[0].txid, playerRef.current[0].releasePubkey, true)
+        updateTxid(playlistRef.current[0].txid, playlistRef.current[0].releasePubkey, true)
       } else {
         startTimer()
         playerRef.current.play()
@@ -199,7 +199,7 @@ const AudioPlayer = () => {
             <PlayArrowIcon onClick={() => setIsPlaying(true)} sx={iconStyle} />
           )}
         </IconButton>
-        <IconButton disabled={currentIndex() + 1 === playlistRef.current.length || playlistRef.current.length === 1} disableFocusRipple={true} disableRipple={true}>
+        <IconButton disabled={currentIndex() + 1 === playlistRef.current.length || playlistRef.current.length <= 1} disableFocusRipple={true} disableRipple={true}>
           <SkipNextIcon onClick={() => playNextTrack()} sx={iconStyle} />
         </IconButton>
       </Controls>
