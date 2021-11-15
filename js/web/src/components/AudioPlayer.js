@@ -210,6 +210,7 @@ const AudioPlayer = () => {
             {info.artist}, <i>{info.title}</i>
           </ArtistInfo>
         )}
+        <Box sx={{display: 'flex', alignItems: 'center'}}>
         <Slider
           value={txid ? trackProgress : 0}
           onChange={(e, newValue) => seek(newValue)}
@@ -217,14 +218,19 @@ const AudioPlayer = () => {
           min={0}
           max={duration}
         />
+        
+        <Typography sx={{padding: '0 10px', display: {xs: 'block', md: 'none'}}} variant="subtitle1">
+          {NinaClient.formatDuration(trackProgress) || '00:00'}
+        </Typography>
+        </Box>
       </ProgressContainer>
 
-      <Typography sx={{ padding: '0 30px' }} variant="subtitle1">
+      <Typography sx={{ padding: '0 30px', display: {xs:'none', md: 'block'} }} variant="subtitle1">
         {NinaClient.formatDuration(trackProgress) || '00:00'}
       </Typography>
 
       {info && (
-        <>
+        <LinkWrapper>
           <Link
             to={`/releases/${info.releasePubkey}`}
             style={{ marginRight: '30px' }}
@@ -237,11 +243,10 @@ const AudioPlayer = () => {
           {/* Change the arrow to svg */}
           <Link
             to={`/releases/${info.releasePubkey}`}
-            style={{ display: 'flex' }}
           >
             <img src={shareArrow}></img>
           </Link>
-        </>
+        </LinkWrapper>
       )}
       <QueueDrawer />
     </StyledAudioPlayer>
@@ -265,10 +270,14 @@ const AlbumArt = styled(Link)(() => ({
   width: '60px',
   height: '60px',
 }))
-const ArtistInfo = styled(Typography)(() => ({
+
+const ArtistInfo = styled(Typography)(({theme}) => ({
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
+  [theme.breakpoints.down('md')]: {
+    whiteSpace: 'wrap'
+  },
 }))
 
 const Controls = styled(Box)(({ theme }) => ({
@@ -278,7 +287,10 @@ const Controls = styled(Box)(({ theme }) => ({
   '& svg': {
     height: '24px',
     width: '24px'
-  }
+  },
+  [theme.breakpoints.down('md')]: {
+    padding: '10px'
+  },
 }))
 
 const ProgressContainer = styled(Box)(({ theme }) => ({
@@ -288,6 +300,11 @@ const ProgressContainer = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   justifyContent: 'space-around',
   paddingRight: theme.spacing(2),
+  [theme.breakpoints.down('md')]: {
+    width: '100px',
+    padding: theme.spacing(0, 1),
+
+  },
   '& .MuiSlider-root': {
     height: '7px',
     padding: '0',
@@ -307,5 +324,13 @@ const ProgressContainer = styled(Box)(({ theme }) => ({
     },
   },
 }))
+
+const LinkWrapper = styled(Link)(({theme}) => ({
+  display: 'flex',
+  [theme.breakpoints.down('md')]: {
+    display: 'none'
+  },
+}))
+
 
 export default AudioPlayer

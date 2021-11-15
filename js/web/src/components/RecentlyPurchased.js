@@ -82,7 +82,7 @@ const RecentlyPurchased = (props) => {
               draggable={true}
               responsive={responsive}
               infinite={true}
-              autoPlay={false}
+              // autoPlay={true}
               autoPlaySpeed={4000}
               keyBoardControl={true}
               transitionDuration={500}
@@ -169,6 +169,10 @@ const RecentlyPurchasedContainer = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   '& a': {
     minWidth: '400px',
+    [theme.breakpoints.down('md')]: {
+      width: '100% !important',
+      minWidth: 'unset'
+    },
   },
   [theme.breakpoints.down('md')]: {
     marginLeft: '0'
@@ -184,7 +188,7 @@ const Slide = styled(Box)(({theme}) => ({
   display: 'flex',
   [theme.breakpoints.down('md')]: {
     flexDirection: 'column',
-    alignItems: 'center'
+    alignItems: 'flex-start'
   },
 }))
 
@@ -194,6 +198,10 @@ const Copy = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   justifyContent: 'center',
   textAlign: 'left',
+  [theme.breakpoints.down('md')]: {
+    paddingLeft: 0,
+    paddingTop: theme.spacing(1)
+  },
   '& *': {
     paddingBottom: '5px',
   },

@@ -117,7 +117,6 @@ const HomePageContainer = styled('div')(({ theme }) => ({
   margin: 'auto',
   overflowX: 'visible',
   [theme.breakpoints.down('md')]: {
-    border: '2px solid blue',
     width: '80vw'
   },
   [`& .${classes.sectionHeader}`]: {

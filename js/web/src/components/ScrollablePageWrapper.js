@@ -12,7 +12,6 @@ const ScrollablePage = styled(Box)(({theme}) => ({
   overflowY: 'scroll',
   overflowX: 'hidden',
   [theme.breakpoints.down('md')]: {
-    border: '2px solid red',
     width: '100vw',
     padding: '100px 30px',
   },

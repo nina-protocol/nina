@@ -25,8 +25,8 @@ const RecentlyPublished = (props) => {
     },
     mobile: {
       breakpoint: { max: 464, min: 0 },
-      items: 1,
-      slidesToSlide: 1, // optional, default to 1.
+      items: 2,
+      slidesToSlide: 2 
     },
   }
 
@@ -121,12 +121,15 @@ const RecentlyPublishedContainer = styled(Box)(() => ({
   minHeight: '250px',
 }))
 
-const ReleaseSlide = styled(Box)(() => ({
+const ReleaseSlide = styled(Box)(({theme}) => ({
   width: '250px',
   textAlign: 'left',
   paddingLeft: '1px',
   '& a': {
     width: '250px',
+  },
+  [theme.breakpoints.down('md')]: {
+    width: '34vw'
   },
 }))
 

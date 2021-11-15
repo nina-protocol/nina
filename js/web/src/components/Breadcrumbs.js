@@ -110,6 +110,9 @@ const BreadcrumbsContainer = styled(Box)(({theme}) => ({
   '& .breadcrumb': {
     display: 'flex',
   },
+  [theme.breakpoints.down('md')]: {
+    display: 'none'
+  },
 }))
 
 const StyledReleaseBreadcrumb = styled('div')(() => ({
