@@ -3,9 +3,9 @@ import { createTheme } from '@mui/material/styles'
 const colors = {
   purple: '#9999cc',
   purpleLight: '#bcb2bf',
-  red: '#E05132',
+  red: '#66F523',
   orange: 'rgba(244, 73, 73, 0.94)',
-  green: '#32b36c',
+  green: '#66F523',
   white: '#ffffff',
   greyLight: '#E3E3E3',
   grey: 'rgba(0, 0, 0, 0.2)',
@@ -14,8 +14,6 @@ const colors = {
   blue: '#2D81FF',
   blueTrans: 'rgba(45, 129, 255, 0.19)',
   pink: '#FF54A6',
-  connectionDotColorConnected: '#66F523',
-  connectionDotColorDisconnected: 'FF2828'
 }
 
 export const NinaTheme = createTheme({
@@ -35,12 +33,11 @@ export const NinaTheme = createTheme({
     purple: colors.purple,
     white: colors.white,
     red: colors.red,
+    green: colors.green,
     grey: {
       primary: colors.grey,
     },
     greyLight: colors.greyLight,
-    connectionDotColorConnected: colors.connectionDotColorConnected,
-    connectionDotColorDisconnected: colors.connectionDotColorDisconnected,
   },
   gradient: {
     background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(143,175,223,1) 0%, rgb(35,99,196) 100%)`,

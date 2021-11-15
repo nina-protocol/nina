@@ -189,11 +189,11 @@ const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
 const ConnectionDot = styled('span')(({theme}) => ({
   height: '11px',
   width: '14px',
-  backgroundColor: theme.palette.connectionDotDisonnectedColor,
+  backgroundColor: theme.palette.red,
   borderRadius: '50%',
   display: 'inline-block',
   '&.connected': {
-    backgroundColor: theme.palette.connectionDotConnectedColor,
+    backgroundColor: theme.palette.green,
   },
 }))
 
