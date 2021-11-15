@@ -88,10 +88,10 @@ const RecentlyPublished = (props) => {
           {releases.map((release, i) => {
             const imageUrl = release.metadata.image
             const artistInfo = (
-              <Typography variant="body2">
-                {release.metadata.properties.artist},{' '}
-                {release.metadata.properties.title}
-              </Typography>
+              <>
+                <Typography display="inline" variant="body2">{release.metadata.properties.artist},</Typography>{' '}
+                <Typography display="inline" variant="body2" sx={{fontStyle: 'italic'}}>{release.metadata.properties.title}</Typography>
+              </>
             )
             const availability = (
               <Typography variant="body2">

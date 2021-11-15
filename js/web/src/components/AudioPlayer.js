@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import Slider from '@mui/material/Slider'
 import SkipNextIcon from '@mui/icons-material/SkipNext'
+import IconButton from '@mui/material/IconButton';
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import PauseIcon from '@mui/icons-material/Pause'
@@ -13,7 +14,7 @@ import PauseIcon from '@mui/icons-material/Pause'
 import shareArrow from '../assets/shareArrow.png'
 // import VolumeUpIcon from '@mui/icons-material/VolumeUp'
 // import VolumeOffIcon from '@mui/icons-material/VolumeOff'
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 import QueueDrawer from './QueueDrawer'
 
 const { AudioPlayerContext } = ninaCommon.contexts
@@ -31,6 +32,7 @@ const AudioPlayer = () => {
   const [trackProgress, setTrackProgress] = useState(0)
   const [duration, setDuration] = useState(0)
   const [info, setInfo] = useState(null)
+  const [shouldPlay, setShouldPlay] = useState()
 
   useEffect(() => {
     playerRef.current = document.querySelector('#audio')
@@ -45,9 +47,11 @@ const AudioPlayer = () => {
     if (!isPlaying) {
       clearInterval(intervalRef.current)
       playerRef.current.pause()
+      setShouldPlay(false)
     } else {
+      setShouldPlay(true)
       if (!txid) {
-        updateTxid(playlistRef.current[0].txid)
+        updateTxid(playlistRef.current[0].txid, playlistRef.current[0].releasePubkey, true)
       } else {
         startTimer()
         playerRef.current.play()
@@ -59,9 +63,7 @@ const AudioPlayer = () => {
     let index = currentIndex()
     if (playlistRef.current.length > 0) {
       changeTrack(txid)
-      if (index) {
-        setInfo(playlistRef.current[index])
-      }
+      setInfo(playlistRef.current[index])
     }
   }, [txid])
 
@@ -114,17 +116,19 @@ const AudioPlayer = () => {
 
   const changeTrack = async (txid) => {
     playerRef.current.src = txid
-    playerRef.current.play()
-    startTimer()
+    if (shouldPlay) {
+      playerRef.current.play()
+      startTimer()
+    }
   }
 
   const playNextTrack = () => {
-    let index = currentIndex()
+    let index = currentIndex() || 0
     setTrackProgress(0)
     if (index >= 0) {
       const next = playlistRef.current[index + 1]
       if (next) {
-        updateTxid(next.txid)
+        updateTxid(next.txid, next.releasePubkey, isPlaying)
       }
     }
   }
@@ -136,7 +140,7 @@ const AudioPlayer = () => {
     if (index) {
       const prev = playlistRef.current[index - 1]
       if (prev) {
-        updateTxid(prev.txid)
+        updateTxid(prev.txid, prev.releasePubkey, isPlaying)
       }
     }
   }
@@ -185,13 +189,19 @@ const AudioPlayer = () => {
       )}
 
       <Controls>
-        <SkipPreviousIcon onClick={() => playPreviousTrack()} sx={iconStyle} />
-        {isPlaying ? (
-          <PauseIcon onClick={() => setIsPlaying(false)} sx={iconStyle} />
-        ) : (
-          <PlayArrowIcon onClick={() => setIsPlaying(true)} sx={iconStyle} />
-        )}
-        <SkipNextIcon onClick={() => playNextTrack()} sx={iconStyle} />
+        <IconButton disabled={!currentIndex()} disableFocusRipple={true} disableRipple={true}>
+          <SkipPreviousIcon onClick={() => playPreviousTrack()} sx={iconStyle} />
+        </IconButton>
+        <IconButton disabled={playlistRef.current.length === 0} disableFocusRipple={true} disableRipple={true}>
+          {isPlaying ? (
+            <PauseIcon onClick={() => setIsPlaying(false)} sx={iconStyle} />
+          ) : (
+            <PlayArrowIcon onClick={() => setIsPlaying(true)} sx={iconStyle} />
+          )}
+        </IconButton>
+        <IconButton disabled={currentIndex() + 1 === playlistRef.current.length || playlistRef.current.length <= 1} disableFocusRipple={true} disableRipple={true}>
+          <SkipNextIcon onClick={() => playNextTrack()} sx={iconStyle} />
+        </IconButton>
       </Controls>
 
       <ProgressContainer>

@@ -67,7 +67,7 @@ const QueueList = (props) => {
 
   const handleListItemClick = (event, index, txid) => {
     setSelectedIndex(index)
-    updateTxid(txid)
+    updateTxid(txid, playlist[index].releasePubkey, true)
   }
 
   const goToRelease = (e, releasePubkey) => {
@@ -150,7 +150,7 @@ const QueueList = (props) => {
                         onClick={() =>
                           selectedIndex === i
                             ? setIsPlaying(true)
-                            : updateTxid(entry.txid, entry.releasePubkey)
+                            : updateTxid(entry.txid, entry.releasePubkey, true)
                         }
                       />
                     )}

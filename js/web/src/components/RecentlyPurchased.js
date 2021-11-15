@@ -2,7 +2,8 @@ import React from 'react'
 import ninaCommon from 'nina-common'
 import { styled } from '@mui/material/styles'
 import 'react-multi-carousel/lib/styles.css'
-import { Typography, Box } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
 import { Link } from 'react-router-dom'
 import SmoothImage from 'react-smooth-image'
 import Carousel from 'react-multi-carousel'
@@ -82,7 +83,7 @@ const RecentlyPurchased = (props) => {
               responsive={responsive}
               infinite={true}
               autoPlay={true}
-              autoPlaySpeed={2000}
+              autoPlaySpeed={4000}
               keyBoardControl={true}
               transitionDuration={500}
               slidesToSlide={1}
@@ -114,13 +115,13 @@ const RecentlyPurchased = (props) => {
                 const imageUrl = release.metadata.image
 
                 const artistInfo = (
-                  <Typography variant="body2" align="left">
-                    {release.metadata.properties.artist},{' '}
-                    {release.metadata.properties.title}
-                  </Typography>
+                  <div display="inline">
+                    <Typography display="inline" variant="body2">{release.metadata.properties.artist},</Typography>{' '}
+                    <Typography display="inline" variant="body2" sx={{fontStyle: 'italic'}}>{release.metadata.properties.title}</Typography>
+                  </div>
                 )
                 const availability = (
-                  <Typography variant="body2" align="left">
+                  <Typography variant="body2">
                     {release.tokenData.remainingSupply.toNumber()} /{' '}
                     {release.tokenData.totalSupply.toNumber()}
                   </Typography>
@@ -138,11 +139,11 @@ const RecentlyPurchased = (props) => {
                       />
                     </Link>
                     <Copy sx={{ paddingLeft: 2 }}>
-                      <Typography align="left" variant="h3" color="blue">
+                      <Typography variant="h3" color="blue">
                         {`${sales} copies were sold ${dayCopy}`}
                       </Typography>
-                      {availability}
                       {artistInfo}
+                      {availability}
                     </Copy>
                   </Slide>
                 )
@@ -186,7 +187,7 @@ const Copy = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
-
+  textAlign: 'left',
   '& *': {
     paddingBottom: '5px',
   },
