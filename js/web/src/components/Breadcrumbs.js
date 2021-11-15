@@ -46,7 +46,7 @@ const YourCollectionBreadcrumb = () => {
 
   return (
     <Typography variant="subtitle1">
-      Your Collection ({userCollectionReleasesCount})
+      Your Collection ({userCollectionReleasesCount || 0})
     </Typography>
   )
 }
@@ -80,15 +80,16 @@ const YourReleasesBreadcrumb = () => {
 }
 
 const routes = [
-  { path: '/', breadcrumb: 'Home' },
+  { path: '/', breadcrumb: () => <Typography variant="subtitle1">Home</Typography> },
   { path: '/releases', breadcrumb: YourReleasesBreadcrumb },
   { path: '/releases/:releasePubkey', breadcrumb: ReleaseBreadcrumb },
-  { path: '/releases/:releasePubkey/market', breadcrumb: 'Market' },
+  { path: '/releases/:releasePubkey/market', breadcrumb:() => <Typography variant="subtitle1">Market</Typography> },
   { path: '/collection', breadcrumb: YourCollectionBreadcrumb },
   { path: '/collection/:releasePubkey', breadcrumb: ReleaseBreadcrumb },
-  { path: '/collection/:releasePubkey/market', breadcrumb: 'Market' },
-  { path: '/upload', breadcrumb: 'Upload' },
+  { path: '/collection/:releasePubkey/market', breadcrumb: () => <Typography variant="subtitle1">Home</Typography> },
+  { path: '/upload', breadcrumb: () => <Typography variant="subtitle1">Upload</Typography> },
   { path: '/releases/:releasePubkey', breadcrumb: ReleaseBreadcrumb },
+  { path: '/:releasePubkey', breadcrumb: ReleaseBreadcrumb },
 ]
 
 const Breadcrumbs = ({ breadcrumbs }) => (
@@ -111,8 +112,9 @@ const BreadcrumbsContainer = styled(Box)(({theme}) => ({
   },
 }))
 
-const StyledReleaseBreadcrumb = styled(Typography)(() => ({
+const StyledReleaseBreadcrumb = styled('div')(() => ({
   display: 'block',
+  paddingRight: '15px',
   maxWidth: '200px',
   whiteSpace: 'nowrap',
   textOverflow: 'ellipsis',

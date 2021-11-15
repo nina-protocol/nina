@@ -38,8 +38,8 @@ const descendingComparator = (a, b, orderBy) => {
       break
 
     case 'collect':
-      a = a[orderBy].props.children.replace(/[^\d.-]/g, '')
-      b = b[orderBy].props.children.replace(/[^\d.-]/g, '')
+      a = parseFloat(a[orderBy].props.children.replace(/[^\d.-]/g, ''))
+      b = parseFloat(b[orderBy].props.children.replace(/[^\d.-]/g, ''))
       break
 
     case 'price':
@@ -174,7 +174,8 @@ const ReleaseListTable = (props) => {
     e.preventDefault()
     updateTxid(
       releaseState.metadata[releasePubkey].properties.files[0].uri,
-      releasePubkey
+      releasePubkey,
+      true
     )
   }
 

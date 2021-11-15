@@ -1,19 +1,22 @@
 import React, { useState, useContext, useEffect, useMemo } from 'react'
-import { styled } from '@mui/material/styles'
+import SwipeableViews from 'react-swipeable-views'
+import { useHistory } from 'react-router-dom'
+import { useWallet } from '@solana/wallet-adapter-react'
 import ninaCommon from 'nina-common'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
+import { styled } from '@mui/material/styles'
 import NinaBox from './NinaBox'
 import ReleaseCard from './ReleaseCard'
 import ReleasePurchase from './ReleasePurchase'
-import SwipeableViews from 'react-swipeable-views'
-const { Dots } = ninaCommon.components
 
-const { Exchange } = ninaCommon.components
+const { Dots, Exchange } = ninaCommon.components
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
 
 const Release = ({ match }) => {
   const releasePubkey = match.params.releasePubkey
+  const wallet = useWallet()
+  const history = useHistory()
   const { releaseState, getRelease } = useContext(ReleaseContext)
   const { getExchangeHistoryForRelease, exchangeState } =
     useContext(ExchangeContext)
@@ -48,6 +51,10 @@ const Release = ({ match }) => {
         <Button onClick={() => getRelease(releasePubkey)}>Refresh</Button>
       </div>
     )
+  }
+
+  if (!wallet?.connected && match.path.includes('releases')) {
+    history.push(`/${releasePubkey}`)
   }
 
   return (

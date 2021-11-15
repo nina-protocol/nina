@@ -14,11 +14,17 @@ import hamburger from '../assets/hamburger.svg'
 
 const { NinaContext, ReleaseContext } = ninaCommon.contexts
 
-const links = [
+const linksConnected = [
   'home',
-  'queue',
   'collection',
   'releases',
+  'upload',
+  'about nina',
+  'faq',
+]
+
+const linksNotConnected = [
+  'home',
   'upload',
   'about nina',
   'faq',
@@ -37,10 +43,14 @@ const NavDrawer = () => {
   const [userPublishedReleasesCount, setUserPublishedReleasesCount] = useState()
   const [userCollectionReleasesCount, setUserCollectionReleasesCount] =
     useState()
+  const [links, setLinks] = useState(linksNotConnected)
 
   useEffect(() => {
     if (wallet?.connected) {
+      setLinks(linksConnected)
       getReleasesPublishedByUser()
+    } else {
+      setLinks(linksNotConnected)
     }
   }, [wallet?.connected])
 

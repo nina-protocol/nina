@@ -3,9 +3,9 @@ import { createTheme } from '@mui/material/styles'
 const colors = {
   purple: '#9999cc',
   purpleLight: '#bcb2bf',
-  red: '#E05132',
+  red: '#FF2828',
   orange: 'rgba(244, 73, 73, 0.94)',
-  green: '#32b36c',
+  green: '#66F523',
   white: '#ffffff',
   greyLight: '#E3E3E3',
   grey: 'rgba(0, 0, 0, 0.2)',
@@ -33,6 +33,7 @@ export const NinaTheme = createTheme({
     purple: colors.purple,
     white: colors.white,
     red: colors.red,
+    green: colors.green,
     grey: {
       primary: colors.grey,
     },
@@ -129,6 +130,21 @@ export const NinaTheme = createTheme({
               backgroundColor: `${colors.white}`,
               boxShadow: 'none',
             },
+          },
+        },
+      },
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          padding: '0px !important',
+          boxShadow: 'none',
+          minWidth: 'unset !important',
+          opacity: 100,
+          color: `${colors.black}`,
+          '&:hover': {
+            backgroundColor: `${colors.white} !important`,
+            boxShadow: 'none',
           },
         },
       },

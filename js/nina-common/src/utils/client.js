@@ -45,8 +45,8 @@ const SOL_DECIMAL_AMOUNT = 9
 const NINA_PRESSING_FEE = 0.0125
 
 const ENDPOINT_ARWEAVE = 'https://arweave.net' //'https://h6chwwrsde.medianet.work'
-const ENDPOINT_PRESSING_PLANT = 'https://pressingplant.nina.market:443'
-const ENDPOINT_API = 'https://api.nina.market:443'
+const ENDPOINT_PRESSING_PLANT = 'https://pressingplant-dev.nina.market:443'
+const ENDPOINT_API = 'https://api-dev.nina.market:443'
 
 const arweave = Arweave.init()
 const CoinGeckoClient = new CoinGecko()
@@ -88,11 +88,16 @@ export default class NinaClient {
     return amount / Math.pow(10, NinaClient.decimalsForMint(mint))
   }
 
-  static nativeToUiString(amount, mint, decimalOverride = false) {
+  static nativeToUiString(amount, mint, decimalOverride = false, showCurrency = true) {
     const isUsdc = NinaClient.isUsdc(mint)
-    return `${NinaClient.nativeToUi(amount, mint).toFixed(
+    let amountString = NinaClient.nativeToUi(amount, mint).toFixed(
       isUsdc || decimalOverride ? 2 : 4
-    )}${isUsdc ? ' USDC' : ' SOL'}`
+    )
+
+    if (showCurrency) {
+      amountString = `${amountString} ${isUsdc ? 'USDC' : 'SOL'}`
+    }
+    return amountString
   }
 
   static uiToNative(amount, mint) {
