@@ -4,6 +4,7 @@ import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Link } from 'react-router-dom'
 import Box from '@mui/material/Box'
+import Button from '@mui/material/Button';
 import Slider from '@mui/material/Slider'
 import SkipNextIcon from '@mui/icons-material/SkipNext'
 import IconButton from '@mui/material/IconButton';
@@ -97,6 +98,12 @@ const AudioPlayer = () => {
     }
   }, [playlist])
 
+  const enableAudio = () => {
+    console.log('playerRef.current :>> ', playerRef.current);
+    playerRef.current.play()
+    playerRef.current.pause()
+  }
+
   const startTimer = () => {
     // Clear any timers already running
     clearInterval(intervalRef.current)
@@ -178,7 +185,7 @@ const AudioPlayer = () => {
 
   return (
     <StyledAudioPlayer>
-      <audio id="audio" src={txid} style={{ width: '100%' }} onClick={() => {playerRef.current.play()}}>
+      <audio id="audio" style={{ width: '100%' }}>
         <source src={txid} type="audio/mp3" />
       </audio>
 
@@ -202,6 +209,10 @@ const AudioPlayer = () => {
         <IconButton disabled={currentIndex() + 1 === playlistRef.current.length || playlistRef.current.length <= 1} disableFocusRipple={true} disableRipple={true}>
           <SkipNextIcon onClick={() => playNextTrack()} sx={iconStyle} />
         </IconButton>
+
+        <Button onClick={enableAudio}>
+          enable audio
+        </Button>
       </Controls>
 
       <ProgressContainer>
@@ -222,6 +233,7 @@ const AudioPlayer = () => {
         <Typography sx={{padding: '0 10px', display: {xs: 'block', md: 'none'}}} variant="subtitle1">
           {NinaClient.formatDuration(trackProgress) || '00:00'}
         </Typography>
+
         </Box>
       </ProgressContainer>
 
