@@ -114,11 +114,8 @@ const classes = {
 
 const HomePageContainer = styled('div')(({ theme }) => ({
   width: '1010px',
-  // padding: '0 50px',
   margin: 'auto',
-  overflowY: 'scroll',
   overflowX: 'visible',
-  border: '2px solid red',
   [`& .${classes.sectionHeader}`]: {
     fontWeight: '700 ',
     paddingBottom: `${theme.spacing(1)}`,

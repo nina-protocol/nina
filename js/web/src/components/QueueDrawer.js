@@ -15,7 +15,7 @@ import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded'
 import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
-import { Typography } from '@material-ui/core'
+import Typography from '@mui/material/Typography';
 import QueueList from './QueueList'
 
 const { AudioPlayerContext } = ninaCommon.contexts
@@ -76,12 +76,14 @@ const QueueDrawer = (props) => {
   return (
     <ToggleWrapper>
       <React.Fragment key={'left'}>
-        <Button onClick={toggleDrawer(!drawerOpen)}>
-          {!drawerOpen &&
-            (nextInfo
-              ? `Up next: ${nextInfo.artist} - ${nextInfo.title}`
-              : 'open queue')}
-          {drawerOpen && 'Close'}
+        <Button onClick={toggleDrawer(!drawerOpen)} sx={{textTransform: 'none !important'}}>
+          <Typography variant="subtitle1">
+            {!drawerOpen &&
+              (nextInfo
+                ? <>Next: {nextInfo.artist + ', '}<Title> {nextInfo.title}</Title></>
+                : 'Open queue')}
+            {drawerOpen && 'Close'}
+          </Typography>
         </Button>
         <Drawer
           anchor={'bottom'}
@@ -97,13 +99,6 @@ const QueueDrawer = (props) => {
   )
 }
 
-const PREFIX = 'PlaylistDrawer'
-
-const classes = {
-  list: `${PREFIX}-list`,
-  fullList: `${PREFIX}-fullList`,
-}
-
 const quePaperStyle = {
   sx: {
     height: '90%',
@@ -116,14 +111,26 @@ const queModalStyle = {
   },
 }
 
+const Title = styled('span')(() => ({
+  fontStyle: 'italic',
+}))
+
 const ToggleWrapper = styled(Box)(({ theme }) => ({
   position: 'absolute',
   right: '0',
   '& button': {
+    color: '#000000 !important',
     paddingRight: theme.spacing(2),
+
     '&:hover': {
       backgroundColor: `${theme.palette.transparent} !important`,
     },
+    '& h6' : {
+      maxWidth: '300px',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap'
+    }
   },
 }))
 

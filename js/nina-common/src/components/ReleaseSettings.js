@@ -71,7 +71,7 @@ const ReleaseSettings = (props) => {
     }
   }, [tempMetadata, metadata])
 
-  return (
+return (
     <StyledBox>
       <ReleaseInfoWrapper>
         <Typography variant="h4" gutterBottom>
@@ -80,26 +80,21 @@ const ReleaseSettings = (props) => {
 
         <ReleaseInfo>
           <ReleaseStat variant="body1" component="p">
-            <span>Edition Size</span>
-            <strong>
-              {' '}
-              {release?.totalSupply.toNumber()} {displayValues.catalogNumber}{' '}
-            </strong>
+            <span>Edition Size</span> 
+            <strong> {release?.totalSupply.toNumber()} {displayValues.catalogNumber} </strong>
           </ReleaseStat>
 
           <ReleaseStat variant="body1" component="p">
             <span>Cost</span>
-            <strong>
-              {NinaClient.nativeToUiString(
-                release.price.toNumber(),
-                release.paymentMint
-              )}{' '}
-            </strong>
+             <strong>{NinaClient.nativeToUiString(
+              release.price.toNumber(),
+              release.paymentMint
+            )} </strong>
           </ReleaseStat>
 
           <ReleaseStat variant="body1" component="p">
             <span>Resale</span>
-            <strong> {release?.resalePercentage.toNumber() / 10000}%</strong>
+             <strong> {release?.resalePercentage.toNumber() / 10000}%</strong>
           </ReleaseStat>
           <Typography
             variant="body1"

@@ -35,14 +35,7 @@ const ExchangeModal = (props) => {
       className={classes.modal}
       open={showOverlay}
       onClose={(event, reason) => {
-        if (reason !== 'backdropClick') {
-          toggleOverlay()
-        }
-      }}
-      closeAfterTransition
-      BackdropComponent={Backdrop}
-      BackdropProps={{
-        timeout: 500,
+        toggleOverlay()
       }}
     >
       <Fade in={showOverlay}>
@@ -102,10 +95,8 @@ const StyledModal = styled(Modal)(({ theme }) => ({
   width: '100%',
   height: '100%',
   margin: 'auto',
-  backgroundColor: `${theme.palette.white}`,
   display: 'flex',
   flexDirection: 'column',
-  borderRadius: '30px',
   textAlign: 'center',
 
   [`& .${classes.confirm}`]: {

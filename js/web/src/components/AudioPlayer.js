@@ -180,7 +180,7 @@ const AudioPlayer = () => {
 
       {info && (
         <AlbumArt to={`/releases/${info.releasePubkey}`}>
-          <img src={info.cover} style={{ height: '76px', width: '76px' }} />
+          <img src={info.cover} style={{ height: '60px', width: '60px' }} />
         </AlbumArt>
       )}
 
@@ -196,9 +196,9 @@ const AudioPlayer = () => {
 
       <ProgressContainer>
         {info && (
-          <Typography align="left" variant="body1">
+          <ArtistInfo align="left" variant="subtitle1">
             {info.artist}, <i>{info.title}</i>
-          </Typography>
+          </ArtistInfo>
         )}
         <Slider
           value={txid ? trackProgress : 0}
@@ -209,7 +209,7 @@ const AudioPlayer = () => {
         />
       </ProgressContainer>
 
-      <Typography sx={{ padding: '0 30px' }} variant="body1">
+      <Typography sx={{ padding: '0 30px' }} variant="subtitle1">
         {NinaClient.formatDuration(trackProgress) || '00:00'}
       </Typography>
 
@@ -219,7 +219,7 @@ const AudioPlayer = () => {
             to={`/releases/${info.releasePubkey}`}
             style={{ marginRight: '30px' }}
           >
-            <Typography variant="body1" sx={{ padding: '0' }}>
+            <Typography variant="subtitle1" sx={{ padding: '0' }}>
               View Info
             </Typography>
           </Link>
@@ -242,7 +242,7 @@ const StyledAudioPlayer = styled(Box)(({ theme }) => ({
   position: 'fixed',
   bottom: '0',
   width: '100%',
-  height: '76px',
+  height: '60px',
   maxWidth: '100vw',
   alignItems: 'center',
   boxShadow: `0px -1px 9px 5px rgba(0,0,0,0.08)`,
@@ -252,17 +252,23 @@ const StyledAudioPlayer = styled(Box)(({ theme }) => ({
 }))
 
 const AlbumArt = styled(Link)(() => ({
-  width: '76px',
-  height: '76px',
+  width: '60px',
+  height: '60px',
+}))
+const ArtistInfo = styled(Typography)(() => ({
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
 }))
 
 const Controls = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   padding: theme.spacing(0, 2),
-  '& MuiSvgIcon-root': {
-    width: '2em',
-  },
+  '& svg': {
+    height: '24px',
+    width: '24px'
+  }
 }))
 
 const ProgressContainer = styled(Box)(({ theme }) => ({

@@ -179,7 +179,6 @@ const StyledList = styled(List)(({ theme }) => ({
 
 const StyledMenuButton = styled(Button)(({ theme }) => ({
   padding: '0px !important',
-  width: '2em',
   '&:hover': {
     backgroundColor: `${theme.palette.transparent} !important`,
   },

@@ -20,9 +20,9 @@ const StyledBox = styled(Box, {
   minHeight: '547px',
   margin: 'auto',
   gridTemplateColumns: columns ? columns : 'repeat(2, 1fr)',
-  backgroundColor: theme.palette.white,
   gridColumnGap: gridColumnGap ? gridColumnGap : '0px',
-  // border: '2px solid blue',
   gridAutoRows: 'auto',
+  backgroundColor: `${theme.palette.white} !important`
 }))
+
 export default NinaBox

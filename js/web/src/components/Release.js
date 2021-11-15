@@ -7,6 +7,7 @@ import NinaBox from './NinaBox'
 import ReleaseCard from './ReleaseCard'
 import ReleasePurchase from './ReleasePurchase'
 import SwipeableViews from 'react-swipeable-views'
+const { Dots } = ninaCommon.components
 
 const { Exchange } = ninaCommon.components
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
@@ -51,31 +52,34 @@ const Release = ({ match }) => {
 
   return (
     <>
-      <SwipeableViews index={index}>
-        <NinaBox columns={'repeat(2, 1fr)'}>
-          <ReleaseCard
-            metadata={metadata}
-            preview={false}
-            releasePubkey={releasePubkey}
-            track={track}
-          />
-          <ReleaseCtaWrapper>
-            <ReleasePurchase
-              releasePubkey={releasePubkey}
+      {!metadata && <Dots size="80px" />}
+      {metadata && (
+        <SwipeableViews index={index}>
+          <NinaBox columns={'repeat(2, 1fr)'} sx={{backgroundColor: "white"}}>
+            <ReleaseCard
               metadata={metadata}
+              preview={false}
+              releasePubkey={releasePubkey}
+              track={track}
             />
-          </ReleaseCtaWrapper>
-        </NinaBox>
+            <ReleaseCtaWrapper>
+              <ReleasePurchase
+                releasePubkey={releasePubkey}
+                metadata={metadata}
+              />
+            </ReleaseCtaWrapper>
+          </NinaBox>
 
-        <NinaBox columns={'repeat(1, 1fr)'}>
-          <Exchange
-            releasePubkey={releasePubkey}
-            exchanges={exchangeState.exchanges}
-            metadata={metadata}
-            track={track}
-          />
-        </NinaBox>
-      </SwipeableViews>
+          <NinaBox columns={'repeat(1, 1fr)'}>
+            <Exchange
+              releasePubkey={releasePubkey}
+              exchanges={exchangeState.exchanges}
+              metadata={metadata}
+              track={track}
+            />
+          </NinaBox>
+        </SwipeableViews>
+      )}
     </>
   )
 }
