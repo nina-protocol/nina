@@ -98,12 +98,8 @@ const AudioPlayer = () => {
   }, [playlist])
 
   const setIsPlayingHandler = () => {
-    try {
-      playerRef.current.play()
-      setIsPlaying(true)
-    } catch (error) {
-      console.log('error :>> ', error);
-    }
+    playerRef.current.play()
+    setIsPlaying(true)
   }
 
   const startTimer = () => {
