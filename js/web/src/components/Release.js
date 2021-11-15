@@ -62,7 +62,7 @@ const Release = ({ match }) => {
       {!metadata && <Dots size="80px" />}
       {metadata && (
         <SwipeableViews index={index}>
-          <NinaBox columns={'repeat(2, 1fr)'}>
+          <NinaBox columns={'repeat(2, 1fr)'} sx={{backgroundColor: "white"}}>
             <ReleaseCard
               metadata={metadata}
               preview={false}

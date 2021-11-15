@@ -11,6 +11,7 @@ import ReleaseCard from './ReleaseCard'
 import NinaBox from './NinaBox'
 import MediaDropzones from './MediaDropzones'
 import * as Yup from 'yup'
+import ScrollablePageWrapper from './ScrollablePageWrapper'
 
 const { ReleaseSettings, Dots } = ninaCommon.components
 const { ReleaseContext, NinaContext } = ninaCommon.contexts
@@ -167,7 +168,7 @@ const ReleaseCreate = () => {
   }
 
   return (
-    <NinaBox columns="350px 400px" gridColumnGap="10px">
+    <>
       {!wallet.connected && (
         <ConnectMessage variant="body" gutterBottom>
           Please connect your wallet to start publishing!
@@ -175,7 +176,7 @@ const ReleaseCreate = () => {
       )}
 
       {wallet?.connected && npcAmountHeld > 0 && (
-        <>
+          <NinaBox columns="350px 400px" gridColumnGap="10px">
           <Box sx={{ width: '100%' }}>
             <MediaDropzones
               setTrack={setTrack}
@@ -227,15 +228,17 @@ const ReleaseCreate = () => {
               />
             )}
           </CreateCta>
-        </>
+        </NinaBox>
       )}
 
       {wallet?.connected && npcAmountHeld < 1 && (
-        <Typography variant="body" gutterBottom sx={{ gridColumn: '1/3' }}>
-          Fill out this form to apply for a publishing grant
-        </Typography>
+        <ScrollablePageWrapper>
+          <NpcFormWrapper>
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdj13RKQcw9GXv3A5U4ebJhzJjjfxzxuCtB092X4mkHm5XX0w/viewform?embedded=true" width="640" height="1311" frameBorder="0" marginHeight="0" marginWidth="0">Loading…</iframe>
+          </NpcFormWrapper>
+        </ScrollablePageWrapper>
       )}
-    </NinaBox>
+    </>
   )
 }
 
@@ -259,5 +262,10 @@ const CreateCta = styled(Box)(({ theme }) => ({
     ...theme.helpers.baseFont,
   },
 }))
+
+const NpcFormWrapper = styled(Box)(() => ({
+  width: '100%',
+}))
+
 
 export default ReleaseCreate
