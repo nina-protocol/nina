@@ -82,7 +82,7 @@ const RecentlyPurchased = (props) => {
               draggable={true}
               responsive={responsive}
               infinite={true}
-              // autoPlay={true}
+              autoPlay={true}
               autoPlaySpeed={4000}
               keyBoardControl={true}
               transitionDuration={500}
