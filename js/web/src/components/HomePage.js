@@ -26,13 +26,13 @@ const HomePage = () => {
   return (
     <ScrollablePageWrapper>
       <HomePageContainer overflowX="visible">
-        <Typography variant="h1" align="left" sx={{ padding: '0 165px 140px' }}>
+        <Typography variant="h1" align="left" sx={{ padding:{ md: '0 165px 140px' , xs: '30px 0px'} }}>
           Nina is a new infrastructure to buy, sell and stream music online. We
           put control in the artist’s hands and link them directly with their
           fans. Learn more.
         </Typography>
 
-        <Box sx={{ padding: '0 80px 140px 80px' }}>
+        <Box sx={{ padding: { md: '0 80px 140px 80px', xs: '30px 0px'} }}>
           <Typography
             variant="body1"
             align="left"
@@ -79,7 +79,7 @@ const HomePage = () => {
           on.
         </Typography>
 
-        <Box sx={{ padding: '0 165px 140px ' }}>
+        <Box sx={{ padding: { md: '0 165px 140px ' , xs: '0px'}}}>
           <Typography
             variant="body1"
             align="left"
@@ -116,6 +116,10 @@ const HomePageContainer = styled('div')(({ theme }) => ({
   width: '1010px',
   margin: 'auto',
   overflowX: 'visible',
+  [theme.breakpoints.down('md')]: {
+    border: '2px solid blue',
+    width: '80vw'
+  },
   [`& .${classes.sectionHeader}`]: {
     fontWeight: '700 ',
     paddingBottom: `${theme.spacing(1)}`,

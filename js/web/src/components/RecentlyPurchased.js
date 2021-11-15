@@ -82,7 +82,7 @@ const RecentlyPurchased = (props) => {
               draggable={true}
               responsive={responsive}
               infinite={true}
-              autoPlay={true}
+              autoPlay={false}
               autoPlaySpeed={4000}
               keyBoardControl={true}
               transitionDuration={500}
@@ -170,6 +170,9 @@ const RecentlyPurchasedContainer = styled(Box)(({ theme }) => ({
   '& a': {
     minWidth: '400px',
   },
+  [theme.breakpoints.down('md')]: {
+    marginLeft: '0'
+  },
 
   [`& .${classes.sectionHeader}`]: {
     fontWeight: '700 ',
@@ -177,9 +180,12 @@ const RecentlyPurchasedContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
-const Slide = styled(Box)(() => ({
+const Slide = styled(Box)(({theme}) => ({
   display: 'flex',
-  // alignItems: 'center'
+  [theme.breakpoints.down('md')]: {
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
 }))
 
 const Copy = styled(Box)(({ theme }) => ({

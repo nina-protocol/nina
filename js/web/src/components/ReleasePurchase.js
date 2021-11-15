@@ -156,18 +156,15 @@ const ReleasePurchase = (props) => {
           </Button>
         </form>
       </Box>
-      <Button
+      <MarketButton
         variant="outlined"
         fullWidth
-        sx={{
-          marginTop: `15px !important`,
-        }}
         onClick={() => {
           history.push(`/${wallet?.connected ? 'releases/' : ''}${releasePubkey}/market`)
         }}
       >
         <Typography variant="body2">Go To Market</Typography>
-      </Button>
+      </MarketButton>
     </Box>
   )
 }
@@ -183,6 +180,13 @@ const StyledUserAmount = styled(Box)(({ theme }) => ({
   color: theme.palette.black,
   ...theme.helpers.baseFont,
   paddingBottom: '10px',
+}))
+
+const MarketButton = styled(Button)(({ theme }) => ({
+  marginTop:`${theme.spacing(1)} !important`,
+  [theme.breakpoints.down('md')]: {
+    display: 'none !important',
+  },
 }))
 
 export default ReleasePurchase

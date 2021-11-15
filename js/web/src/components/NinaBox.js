@@ -25,8 +25,11 @@ const StyledBox = styled(Box, {
   backgroundColor: `${theme.palette.white} !important`,
   [theme.breakpoints.down('md')]: {
     gridTemplateColumns: '1fr',
-    border: '2px solid red',
-    width: '80vw'
+    width: '80vw',
+    margin: '140px auto'
+  },
+  [theme.breakpoints.down('sm')]: {
+    margin: '100px auto'
   },
 }))
 

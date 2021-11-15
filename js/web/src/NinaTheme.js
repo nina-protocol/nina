@@ -1,5 +1,6 @@
 import { createTheme } from '@mui/material/styles'
 
+
 const colors = {
   purple: '#9999cc',
   purpleLight: '#bcb2bf',
@@ -15,6 +16,7 @@ const colors = {
   blueTrans: 'rgba(45, 129, 255, 0.19)',
   pink: '#FF54A6',
 }
+
 
 export const NinaTheme = createTheme({
   palette: {
