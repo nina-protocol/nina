@@ -11,13 +11,14 @@ import ReleaseCard from './ReleaseCard'
 import ReleasePurchase from './ReleasePurchase'
 
 const { Dots, Exchange } = ninaCommon.components
-const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
+const { AudioPlayerContext, ExchangeContext, ReleaseContext } = ninaCommon.contexts
 
 const Release = ({ match }) => {
   const releasePubkey = match.params.releasePubkey
   const wallet = useWallet()
   const history = useHistory()
   const { releaseState, getRelease } = useContext(ReleaseContext)
+  const { updateTxid } = useContext(AudioPlayerContext)
   const { getExchangeHistoryForRelease, exchangeState } =
     useContext(ExchangeContext)
   const [track, setTrack] = useState(null)
@@ -37,6 +38,7 @@ const Release = ({ match }) => {
   useEffect(() => {
     if (releaseState.metadata[releasePubkey]) {
       setMetadata(releaseState.metadata[releasePubkey])
+      updateTxid(releaseState.metadata[releasePubkey].txid, releasePubkey, false)
     }
   }, [releaseState?.metadata[releasePubkey]])
 
