@@ -109,6 +109,9 @@ const BreadcrumbsContainer = styled(Box)(({theme}) => ({
   display: 'flex',
   '& .breadcrumb': {
     display: 'flex',
+    '& h6': {
+      lineHeight: 1
+    }
   },
   [theme.breakpoints.down('md')]: {
     display: 'none'
@@ -117,11 +120,12 @@ const BreadcrumbsContainer = styled(Box)(({theme}) => ({
 
 const StyledReleaseBreadcrumb = styled('div')(() => ({
   display: 'block',
-  paddingRight: '15px',
+  paddingRight: '1px',
   maxWidth: '200px',
   whiteSpace: 'nowrap',
   textOverflow: 'ellipsis',
   overflow: 'hidden',
+  lineHeight: '1'
 }))
 
 export default withBreadcrumbs(routes)(Breadcrumbs)

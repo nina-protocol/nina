@@ -94,6 +94,9 @@ const Root = styled('nav')(({ theme }) => ({
     top: '0',
     left: '0',
   },
+  '& h6': {
+    lineHeight: '1',
+  },
 
   [`& .${classes.nav__left}`]: {
     display: 'flex',
@@ -177,6 +180,7 @@ const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
   backgroundColor: `${theme.palette.transparent} !important`,
   boxShadow: 'none !important',
   paddingTop: '0 !important',
+
   '& img': {
     display: 'none',
   },
