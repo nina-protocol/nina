@@ -142,8 +142,8 @@ const RecentlyPurchased = (props) => {
                       <Typography variant="h3" color="blue">
                         {`${sales} copies were sold ${dayCopy}`}
                       </Typography>
-                      {artistInfo}
                       {availability}
+                      {artistInfo}
                     </Copy>
                   </Slide>
                 )
@@ -164,9 +164,11 @@ const classes = {
 
 const RecentlyPurchasedContainer = styled(Box)(({ theme }) => ({
   minHeight: '400px',
-  marginLeft: '35%',
+  // marginLeft: '50%',
   flexShrink: '0',
   alignItems: 'center',
+  // width: '75%',
+  // margin: 'auto',
   '& a': {
     minWidth: '400px',
     [theme.breakpoints.down('md')]: {
@@ -198,6 +200,7 @@ const Copy = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   justifyContent: 'center',
   textAlign: 'left',
+  width: '32%',
   [theme.breakpoints.down('md')]: {
     paddingLeft: 0,
     paddingTop: theme.spacing(1)

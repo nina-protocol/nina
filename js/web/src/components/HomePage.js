@@ -5,8 +5,7 @@ import ninaCommon from 'nina-common'
 import RecentlyPublished from './RecentlyPublished'
 import RecentlyPurchased from './RecentlyPurchased'
 // import SmoothImage from 'react-smooth-image';
-import uploadPreview from '../assets/uploadPreview.png'
-import { Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 const { ReleaseContext } = ninaCommon.contexts
 
@@ -79,28 +78,6 @@ const HomePage = () => {
           on.
         </Typography>
 
-        <Box sx={{ padding: { md: '0 165px 140px ' , xs: '30px'}}}>
-          <Typography
-            variant="body1"
-            align="left"
-            className={classes.sectionHeader}
-          >
-            Upload a track in minutes
-          </Typography>
-          <Link to="/upload">
-            <img style={{ width: '100%' }} src={uploadPreview} />
-          </Link>
-
-          <Typography variant="h3" align="left" sx={{ paddingTop: {md:'140px', xs: '30px'} }}>
-            Instead of charging artists a fee to use Nina, we collect 1% of your
-            edition (if you publish an edition of 1,000 Nina will receive 10
-            copies). We keep these in the Nina Vault, a treasury of all the
-            content published on Nina. A 1% fee is also collected from fans at
-            the point of sale and sellers on the secondary market. Whereas it
-            can take months to be paid by current streaming services, with Nina
-            you receive your revenue as soon as a sale occurs.
-          </Typography>
-        </Box>
       </HomePageContainer>
     </ScrollablePageWrapper>
   )
@@ -129,6 +106,8 @@ const HomePageContainer = styled('div')(({ theme }) => ({
 const MarketMovers = styled(Box)(() => ({
   minHeight: '400px',
   overflowX: 'visible',
+  width: '60%',
+  margin: 'auto'
 }))
 
 export default HomePage

@@ -258,6 +258,12 @@ export const NinaTheme = createTheme({
             color: colors.black,
             width: '14px',
             height: '11px',
+            '&:hover': {
+              boxShadow: 'none'
+            },
+            '& .Mui-focusVisible': {
+              boxShadow: 'none'
+            },
           },
           '& .MuiSlider-track': {
             color: colors.black,
