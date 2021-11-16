@@ -46,17 +46,6 @@ export const NinaTheme = createTheme({
     background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(143,175,223,1) 0%, rgb(35,99,196) 100%)`,
     color: colors.white,
   },
-  props: {
-    MuiButtonBase: {
-      disableRipple: true, // No more ripple, on the whole application!
-    },
-    MuiListItem: {
-      disableRipple: true, // No more ripple, on the whole application!
-    },
-    MuiMenuItem: {
-      disableRipple: true, // No more ripple, on the whole application!
-    },
-  },
   typography: {
     fontFamily: ['Helvetica', 'san-serif'].join(','),
     berthold: {
@@ -137,6 +126,9 @@ export const NinaTheme = createTheme({
   },
   components: {
     MuiButton: {
+      defaultProps: {
+        disableRipple: 'true'
+      },
       styleOverrides: {
         root: {
           padding: '10px',
@@ -190,37 +182,12 @@ export const NinaTheme = createTheme({
         root: {
           letterSpacing: '0.02em',
         },
-        // gutterBottom: {
-        //   marginBottom: '15px !important',
-        // },
-        // h1: {
-        //   fontSize: '36px !important',
-        //   fontWeight: '400 !important',
-        // },
-        // h2: {
-        //   fontSize: '25px !important',
-        //   fontWeight: '400 !important',
-        // },
-        // h3: {
-        //   fontSize: '20px !important',
-        //   lineHeight: '23px !important',
-        // },
-        // h4: {
-        //   fontSize: '18px !important',
-        //   lineHeight: '20.7px !important',
-        // },
-        // body1: {
-        //   fontSize: '14px !important',
-        //   lineHeight: '16.1px !important',
-        // },
-        // body2: {
-        //   fontSize: '12px !important',
-        //   lineHeight: '13.8px !important',
-        // },
-        // subtitle1: {
-        //   fontSize: '10px !important',
-        // },
       },
+    },
+    MuiListItem: {
+      defaultProps: {
+        disableRipple: 'true'
+      }
     },
     MuiTextField: {
       styleOverrides: {

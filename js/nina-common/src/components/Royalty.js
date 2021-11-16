@@ -222,7 +222,7 @@ const Root = styled('div')(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center',
   width: '100%',
-
+  
   [`& .${classes.recipientData}`]: {
     color: `${theme.palette.greyLight}`,
     '& a': {
@@ -248,6 +248,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   width: '40vw',
   maxHeight: '90vh',
   overflowY: 'auto',
+  zIndex: '10'
 }))
 
 export default Royalty

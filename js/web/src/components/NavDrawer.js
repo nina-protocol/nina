@@ -88,7 +88,7 @@ const NavDrawer = () => {
                   activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
                   key={link}
                 >
-                  <ListItem button disableRipple key={link}>
+                  <ListItem button key={link}>
                     <ListItemText
                       primary={`your ${link}  ${
                         userCollectionReleasesCount
@@ -107,7 +107,7 @@ const NavDrawer = () => {
                   activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
                   key={link}
                 >
-                  <ListItem button disableRipple key={link}>
+                  <ListItem button  key={link}>
                     <ListItemText
                       primary={`your ${link}  ${
                         userPublishedReleasesCount
@@ -126,7 +126,7 @@ const NavDrawer = () => {
                   activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
                   key={link}
                 >
-                  <ListItem button disableRipple key={link}>
+                  <ListItem button key={link}>
                     <ListItemText primary={link} />
                   </ListItem>
                 </NavLink>

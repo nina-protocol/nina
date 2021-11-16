@@ -70,7 +70,7 @@ const StyledReleaseCard = styled(Box)(() => ({
 const StyledReleaseInfo = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.blue,
   color: theme.palette.white,
-  height: theme.spacing(5.6),
+  height: '52px',
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
