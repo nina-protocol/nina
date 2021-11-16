@@ -11,7 +11,7 @@ import SkipPreviousIcon from '@mui/icons-material/SkipPrevious'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import PauseIcon from '@mui/icons-material/Pause'
 // import SvgIcon from '@mui/material/SvgIcon';
-import shareArrow from '../assets/shareArrow.png'
+import shareArrow from '../assets/shareArrow.svg'
 // import VolumeUpIcon from '@mui/icons-material/VolumeUp'
 // import VolumeOffIcon from '@mui/icons-material/VolumeOff'
 import Typography from '@mui/material/Typography'
@@ -240,7 +240,6 @@ const AudioPlayer = () => {
             </Typography>
           </Link>
 
-          {/* Change the arrow to svg */}
           <Link
             to={`/releases/${info.releasePubkey}`}
           >
@@ -325,8 +324,14 @@ const ProgressContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
-const LinkWrapper = styled(Link)(({theme}) => ({
+const LinkWrapper = styled(Box)(({theme}) => ({
   display: 'flex',
+  height: '100%',
+  alignItems: 'center',
+  '& img': {
+    height: '17px',
+    width: '17px'
+  },
   [theme.breakpoints.down('md')]: {
     display: 'none'
   },
