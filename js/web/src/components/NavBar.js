@@ -97,7 +97,7 @@ const Root = styled('nav')(({ theme }) => ({
 
   [`& .${classes.nav__left}`]: {
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
 
   [`& .${classes.nav__right}`]: {
@@ -106,7 +106,7 @@ const Root = styled('nav')(({ theme }) => ({
   },
 
   [`& .${classes.nav__balance}`]: {
-    margin: 'auto',
+    margin: '0',
     color: `${theme.palette.blue}`,
   },
 
@@ -117,7 +117,7 @@ const Root = styled('nav')(({ theme }) => ({
 
   [`& .${classes.nav__button}`]: {
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginRight: '24px',
   },
 }))
@@ -176,6 +176,7 @@ const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
   paddingLeft: '20px',
   backgroundColor: `${theme.palette.transparent} !important`,
   boxShadow: 'none !important',
+  paddingTop: '0 !important',
   '& img': {
     display: 'none',
   },
@@ -204,7 +205,7 @@ const Logo = styled(NavLink)(() => ({
   justifyContent: 'center',
   alignItems: 'center',
   position: 'absolute',
-  top: '24px',
+  top: '15px',
   width: '76px',
   height: '13px',
   left: '50%',
