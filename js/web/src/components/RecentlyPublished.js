@@ -23,7 +23,7 @@ const RecentlyPublished = (props) => {
     mobile: {
       breakpoint: { max: 464, min: 0 },
       items: 2,
-      slidesToSlide: 2 
+      slidesToSlide: 2,
     },
   }
 
@@ -38,7 +38,6 @@ const RecentlyPublished = (props) => {
   //     display: 'none',
   //   },
   // }
-
 
   if (releases === undefined || releases.length === 0) {
     return (
@@ -70,7 +69,7 @@ const RecentlyPublished = (props) => {
           {releases.map((release, i) => {
             const imageUrl = release.metadata.image
             const availability = (
-              <Typography variant="body2" sx={{paddingTop: '10px'}}>
+              <Typography variant="body2" sx={{ paddingTop: '10px' }}>
                 {release.tokenData.remainingSupply.toNumber()} /{' '}
                 {release.tokenData.totalSupply.toNumber()}
               </Typography>
@@ -82,10 +81,14 @@ const RecentlyPublished = (props) => {
                   <SmoothImage src={imageUrl} />
                 </Link>
                 {availability}
-                <ReleaseCopy sx={{display: 'flex'}}>
-                  <Typography variant="body2">{release.metadata.properties.artist},</Typography>{' '}
-                  <Typography variant="body2" sx={{fontStyle: 'italic'}}>{release.metadata.properties.title}</Typography>
-                </ReleaseCopy>               
+                <ReleaseCopy sx={{ display: 'flex' }}>
+                  <Typography variant="body2">
+                    {release.metadata.properties.artist},
+                  </Typography>{' '}
+                  <Typography variant="body2" sx={{ fontStyle: 'italic' }}>
+                    {release.metadata.properties.title}
+                  </Typography>
+                </ReleaseCopy>
               </ReleaseSlide>
             )
           })}
@@ -95,7 +98,7 @@ const RecentlyPublished = (props) => {
   )
 }
 
-const RecentlyPublishedContainer = styled(Box)(({theme}) => ({
+const RecentlyPublishedContainer = styled(Box)(({ theme }) => ({
   width: '100%',
   minHeight: '250px',
   '& .carousel-container': {
@@ -105,7 +108,7 @@ const RecentlyPublishedContainer = styled(Box)(({theme}) => ({
       // border: '2px solid red',
       // display: 'flex',
       // justifyContent: 'center'
-    }
+    },
   },
   '& .react-multi-carousel-dot-list': {
     marginTop: '100px',
@@ -117,12 +120,12 @@ const RecentlyPublishedContainer = styled(Box)(({theme}) => ({
       marginRight: '20px',
     },
     '& .react-multi-carousel-dot--active button': {
-      backgroundColor: theme.palette.blue
-    }
-  }
+      backgroundColor: theme.palette.blue,
+    },
+  },
 }))
 
-const ReleaseSlide = styled(Box)(({theme}) => ({
+const ReleaseSlide = styled(Box)(({ theme }) => ({
   width: '250px',
   textAlign: 'left',
   paddingLeft: '1px',
@@ -130,7 +133,7 @@ const ReleaseSlide = styled(Box)(({theme}) => ({
     width: '100%',
   },
   [theme.breakpoints.down('md')]: {
-    width: '34vw'
+    width: '34vw',
   },
 }))
 
@@ -140,7 +143,7 @@ const ReleaseCopy = styled(Box)(() => ({
     textOverflow: 'ellipsis',
     overflow: 'hidden',
     maxWidth: '100%',
-    padding: '10px 0 0'
-  }
+    padding: '10px 0 0',
+  },
 }))
 export default RecentlyPublished

@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import Slider from '@mui/material/Slider'
 import SkipNextIcon from '@mui/icons-material/SkipNext'
-import IconButton from '@mui/material/IconButton';
+import IconButton from '@mui/material/IconButton'
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import PauseIcon from '@mui/icons-material/Pause'
@@ -51,7 +51,11 @@ const AudioPlayer = () => {
     } else {
       setShouldPlay(true)
       if (!txid) {
-        updateTxid(playlistRef.current[0].txid, playlistRef.current[0].releasePubkey, true)
+        updateTxid(
+          playlistRef.current[0].txid,
+          playlistRef.current[0].releasePubkey,
+          true
+        )
       } else {
         startTimer()
         playerRef.current.play()
@@ -189,17 +193,35 @@ const AudioPlayer = () => {
       )}
 
       <Controls>
-        <IconButton disabled={!currentIndex()} disableFocusRipple={true} disableRipple={true}>
-          <SkipPreviousIcon onClick={() => playPreviousTrack()} sx={iconStyle} />
+        <IconButton
+          disabled={!currentIndex()}
+          disableFocusRipple={true}
+          disableRipple={true}
+        >
+          <SkipPreviousIcon
+            onClick={() => playPreviousTrack()}
+            sx={iconStyle}
+          />
         </IconButton>
-        <IconButton disabled={playlistRef.current.length === 0} disableFocusRipple={true} disableRipple={true}>
+        <IconButton
+          disabled={playlistRef.current.length === 0}
+          disableFocusRipple={true}
+          disableRipple={true}
+        >
           {isPlaying ? (
             <PauseIcon onClick={() => setIsPlaying(false)} sx={iconStyle} />
           ) : (
             <PlayArrowIcon onClick={() => setIsPlaying(true)} sx={iconStyle} />
           )}
         </IconButton>
-        <IconButton disabled={currentIndex() + 1 === playlistRef.current.length || playlistRef.current.length <= 1} disableFocusRipple={true} disableRipple={true}>
+        <IconButton
+          disabled={
+            currentIndex() + 1 === playlistRef.current.length ||
+            playlistRef.current.length <= 1
+          }
+          disableFocusRipple={true}
+          disableRipple={true}
+        >
           <SkipNextIcon onClick={() => playNextTrack()} sx={iconStyle} />
         </IconButton>
       </Controls>
@@ -210,22 +232,28 @@ const AudioPlayer = () => {
             {info.artist}, <i>{info.title}</i>
           </ArtistInfo>
         )}
-        <Box sx={{display: 'flex', alignItems: 'center'}}>
-        <Slider
-          value={txid ? trackProgress : 0}
-          onChange={(e, newValue) => seek(newValue)}
-          aria-labelledby="continuous-slider"
-          min={0}
-          max={duration}
-        />
-        
-        <Typography sx={{padding: '0 10px', display: {xs: 'block', md: 'none'}}} variant="subtitle1">
-          {NinaClient.formatDuration(trackProgress) || '00:00'}
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Slider
+            value={txid ? trackProgress : 0}
+            onChange={(e, newValue) => seek(newValue)}
+            aria-labelledby="continuous-slider"
+            min={0}
+            max={duration}
+          />
+
+          <Typography
+            sx={{ padding: '0 10px', display: { xs: 'block', md: 'none' } }}
+            variant="subtitle1"
+          >
+            {NinaClient.formatDuration(trackProgress) || '00:00'}
+          </Typography>
         </Box>
       </ProgressContainer>
 
-      <Typography sx={{ padding: '0 30px', display: {xs:'none', md: 'block'} }} variant="subtitle1">
+      <Typography
+        sx={{ padding: '0 30px', display: { xs: 'none', md: 'block' } }}
+        variant="subtitle1"
+      >
         {NinaClient.formatDuration(trackProgress) || '00:00'}
       </Typography>
 
@@ -240,9 +268,7 @@ const AudioPlayer = () => {
             </Typography>
           </Link>
 
-          <Link
-            to={`/releases/${info.releasePubkey}`}
-          >
+          <Link to={`/releases/${info.releasePubkey}`}>
             <img src={shareArrow}></img>
           </Link>
         </LinkWrapper>
@@ -271,12 +297,12 @@ const AlbumArt = styled(Link)(() => ({
   height: '60px',
 }))
 
-const ArtistInfo = styled(Typography)(({theme}) => ({
+const ArtistInfo = styled(Typography)(({ theme }) => ({
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   [theme.breakpoints.down('md')]: {
-    whiteSpace: 'wrap'
+    whiteSpace: 'wrap',
   },
 }))
 
@@ -286,10 +312,10 @@ const Controls = styled(Box)(({ theme }) => ({
   padding: theme.spacing(0, 2),
   '& svg': {
     height: '24px',
-    width: '24px'
+    width: '24px',
   },
   [theme.breakpoints.down('md')]: {
-    padding: '10px'
+    padding: '10px',
   },
 }))
 
@@ -303,7 +329,6 @@ const ProgressContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     width: '100px',
     padding: theme.spacing(0, 1),
-
   },
   '& .MuiSlider-root': {
     height: '7px',
@@ -325,18 +350,17 @@ const ProgressContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
-const LinkWrapper = styled(Box)(({theme}) => ({
+const LinkWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   height: '100%',
   alignItems: 'center',
   '& img': {
     height: '17px',
-    width: '17px'
+    width: '17px',
   },
   [theme.breakpoints.down('md')]: {
-    display: 'none'
+    display: 'none',
   },
 }))
-
 
 export default AudioPlayer

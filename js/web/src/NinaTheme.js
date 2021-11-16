@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material/styles'
-import createBreakpoints from "@mui/system/createTheme/createBreakpoints"
+import createBreakpoints from '@mui/system/createTheme/createBreakpoints'
 
 const breakpoints = createBreakpoints({})
 
@@ -127,7 +127,7 @@ export const NinaTheme = createTheme({
   components: {
     MuiButton: {
       defaultProps: {
-        disableRipple: 'true'
+        disableRipple: 'true',
       },
       styleOverrides: {
         root: {
@@ -186,8 +186,8 @@ export const NinaTheme = createTheme({
     },
     MuiListItem: {
       defaultProps: {
-        disableRipple: 'true'
-      }
+        disableRipple: 'true',
+      },
     },
     MuiTextField: {
       styleOverrides: {
@@ -226,10 +226,10 @@ export const NinaTheme = createTheme({
             width: '14px',
             height: '11px',
             '&:hover': {
-              boxShadow: 'none'
+              boxShadow: 'none',
             },
             '& .Mui-focusVisible': {
-              boxShadow: 'none'
+              boxShadow: 'none',
             },
           },
           '& .MuiSlider-track': {
@@ -302,4 +302,3 @@ export const NinaTheme = createTheme({
     },
   },
 })
-

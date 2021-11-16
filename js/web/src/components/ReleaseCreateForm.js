@@ -41,11 +41,11 @@ const ReleaseCreateForm = ({
                 label={NinaClient.formatPlaceholder(props.field.name)}
                 size="small"
                 InputLabelProps={touched.artist ? { shrink: true } : ''}
-                placeholder={errors.artist && touched.artist ? 
-                  errors.artist : null}
+                placeholder={
+                  errors.artist && touched.artist ? errors.artist : null
+                }
                 {...props.field}
               />
-             
             </Box>
           )}
         </Field>
@@ -59,8 +59,9 @@ const ReleaseCreateForm = ({
                 label={NinaClient.formatPlaceholder(props.field.name)}
                 size="small"
                 InputLabelProps={touched.title ? { shrink: true } : ''}
-                placeholder={errors.title && touched.title ?
-                  errors.title : null}
+                placeholder={
+                  errors.title && touched.title ? errors.title : null
+                }
                 {...props.field}
               />
             </Box>
@@ -76,8 +77,11 @@ const ReleaseCreateForm = ({
                 label={NinaClient.formatPlaceholder(props.field.name)}
                 size="small"
                 InputLabelProps={touched.description ? { shrink: true } : ''}
-                placeholder={errors.description && touched.description ?
-                  errors.description : null}
+                placeholder={
+                  errors.description && touched.description
+                    ? errors.description
+                    : null
+                }
                 {...props.field}
               />
             </Box>
@@ -93,8 +97,11 @@ const ReleaseCreateForm = ({
                 label={NinaClient.formatPlaceholder(field.name)}
                 size="small"
                 InputLabelProps={touched.catalogNumber ? { shrink: true } : ''}
-                placeholder={errors.catalogNumber && touched.catalogNumber ?
-                  errors.catalogNumber : null}
+                placeholder={
+                  errors.catalogNumber && touched.catalogNumber
+                    ? errors.catalogNumber
+                    : null
+                }
                 InputProps={{
                   onChange: (event) => {
                     let sanitized = event.target.value
@@ -118,8 +125,9 @@ const ReleaseCreateForm = ({
                 label={NinaClient.formatPlaceholder(field.name)}
                 size="small"
                 InputLabelProps={touched.amount ? { shrink: true } : ''}
-                placeholder={errors.amount && touched.amount ?
-                  errors.amount : null}
+                placeholder={
+                  errors.amount && touched.amount ? errors.amount : null
+                }
                 type="number"
                 {...field}
               />
@@ -136,8 +144,11 @@ const ReleaseCreateForm = ({
                 label={NinaClient.formatPlaceholder(field.name)}
                 size="small"
                 InputLabelProps={touched.retailPrice ? { shrink: true } : ''}
-                placeholder={errors.retailPrice && touched.retailPrice ?
-                  errors.retailPrice : null}
+                placeholder={
+                  errors.retailPrice && touched.retailPrice
+                    ? errors.retailPrice
+                    : null
+                }
                 type="number"
                 {...field}
               />
@@ -207,12 +218,11 @@ const Root = styled('div')(({ theme }) => ({
     '& input': {
       textAlign: 'left',
       '&::placeholder': {
-        color: theme.palette.red
-      }
+        color: theme.palette.red,
+      },
     },
   },
 }))
-
 
 export default withFormik({
   enableReinitialize: true,

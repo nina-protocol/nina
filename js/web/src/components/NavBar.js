@@ -43,7 +43,7 @@ const NavBar = () => {
         <div className={classes.nav__button}>
           <StyledWalletDialogProvider featuredWallets={4}>
             <StyledWalletButton>
-              <Typography variant="subtitle1" sx={{textTransform: 'none'}}>
+              <Typography variant="subtitle1" sx={{ textTransform: 'none' }}>
                 {wallet?.connected
                   ? `${wallet.wallet.name} – ${walletDisplay}`
                   : 'Connect Wallet'}
@@ -78,7 +78,6 @@ const classes = {
   connectionDot: `${PREFIX}-connectionDot`,
 }
 
-
 const Root = styled('nav')(({ theme }) => ({
   [`&.${classes.nav}`]: {
     background: `${theme.palette.transparent}`,
@@ -105,7 +104,7 @@ const Root = styled('nav')(({ theme }) => ({
 
   [`& .${classes.nav__right}`]: {
     display: 'flex',
-    height: '100%'
+    height: '100%',
   },
 
   [`& .${classes.nav__balance}`]: {
@@ -115,7 +114,7 @@ const Root = styled('nav')(({ theme }) => ({
 
   [`& .${classes.nav__logo}`]: {
     height: '100%',
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
   [`& .${classes.nav__button}`]: {
@@ -192,7 +191,7 @@ const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
   },
 }))
 
-const ConnectionDot = styled('span')(({theme}) => ({
+const ConnectionDot = styled('span')(({ theme }) => ({
   height: '11px',
   width: '14px',
   backgroundColor: theme.palette.red,

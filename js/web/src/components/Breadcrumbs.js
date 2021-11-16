@@ -13,9 +13,17 @@ const ReleaseBreadcrumb = ({ match }) => {
   const release = releaseState.metadata[match.params.releasePubkey]
   if (release) {
     return (
-      <StyledReleaseBreadcrumb >
-        <Typography display="inline" variant="subtitle1">{release.properties.artist},</Typography>{' '}
-        <Typography display="inline" variant="subtitle1" sx={{fontStyle: 'italic'}}>{release.properties.title}</Typography>
+      <StyledReleaseBreadcrumb>
+        <Typography display="inline" variant="subtitle1">
+          {release.properties.artist},
+        </Typography>{' '}
+        <Typography
+          display="inline"
+          variant="subtitle1"
+          sx={{ fontStyle: 'italic' }}
+        >
+          {release.properties.title}
+        </Typography>
       </StyledReleaseBreadcrumb>
     )
   }
@@ -80,14 +88,26 @@ const YourReleasesBreadcrumb = () => {
 }
 
 const routes = [
-  { path: '/', breadcrumb: () => <Typography variant="subtitle1">Home</Typography> },
+  {
+    path: '/',
+    breadcrumb: () => <Typography variant="subtitle1">Home</Typography>,
+  },
   { path: '/releases', breadcrumb: YourReleasesBreadcrumb },
   { path: '/releases/:releasePubkey', breadcrumb: ReleaseBreadcrumb },
-  { path: '/releases/:releasePubkey/market', breadcrumb:() => <Typography variant="subtitle1">Market</Typography> },
+  {
+    path: '/releases/:releasePubkey/market',
+    breadcrumb: () => <Typography variant="subtitle1">Market</Typography>,
+  },
   { path: '/collection', breadcrumb: YourCollectionBreadcrumb },
   { path: '/collection/:releasePubkey', breadcrumb: ReleaseBreadcrumb },
-  { path: '/collection/:releasePubkey/market', breadcrumb: () => <Typography variant="subtitle1">Home</Typography> },
-  { path: '/upload', breadcrumb: () => <Typography variant="subtitle1">Upload</Typography> },
+  {
+    path: '/collection/:releasePubkey/market',
+    breadcrumb: () => <Typography variant="subtitle1">Home</Typography>,
+  },
+  {
+    path: '/upload',
+    breadcrumb: () => <Typography variant="subtitle1">Upload</Typography>,
+  },
   { path: '/releases/:releasePubkey', breadcrumb: ReleaseBreadcrumb },
   { path: '/:releasePubkey', breadcrumb: ReleaseBreadcrumb },
 ]
@@ -96,25 +116,28 @@ const Breadcrumbs = ({ breadcrumbs }) => (
   <BreadcrumbsContainer>
     {breadcrumbs.map(({ match, breadcrumb }) => (
       <span key={match.url} className="breadcrumb">
-        <Typography variant="subtitle1" sx={{padding: '0 10px'}}>{`/`}</Typography>
+        <Typography
+          variant="subtitle1"
+          sx={{ padding: '0 10px' }}
+        >{`/`}</Typography>
         <NavLink to={match.url}>{breadcrumb}</NavLink>
       </span>
     ))}
   </BreadcrumbsContainer>
 )
 
-const BreadcrumbsContainer = styled(Box)(({theme}) => ({
+const BreadcrumbsContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(0, 2),
   fontSize: '10px',
   display: 'flex',
   '& .breadcrumb': {
     display: 'flex',
     '& h6': {
-      lineHeight: 1
-    }
+      lineHeight: 1,
+    },
   },
   [theme.breakpoints.down('md')]: {
-    display: 'none'
+    display: 'none',
   },
 }))
 
@@ -125,7 +148,7 @@ const StyledReleaseBreadcrumb = styled('div')(() => ({
   whiteSpace: 'nowrap',
   textOverflow: 'ellipsis',
   overflow: 'hidden',
-  lineHeight: '1'
+  lineHeight: '1',
 }))
 
 export default withBreadcrumbs(routes)(Breadcrumbs)

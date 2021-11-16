@@ -6,7 +6,7 @@ const ScrollablePageWrapper = ({ children }) => {
   return <ScrollablePage>{children}</ScrollablePage>
 }
 
-const ScrollablePage = styled(Box)(({theme}) => ({
+const ScrollablePage = styled(Box)(({ theme }) => ({
   width: '100vw',
   padding: '210px 0',
   overflowY: 'scroll',

@@ -23,12 +23,7 @@ const linksConnected = [
   'faq',
 ]
 
-const linksNotConnected = [
-  'home',
-  'upload',
-  'about nina',
-  'faq',
-]
+const linksNotConnected = ['home', 'upload', 'about nina', 'faq']
 
 const NavDrawer = () => {
   const { collection } = useContext(NinaContext)
@@ -107,7 +102,7 @@ const NavDrawer = () => {
                   activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
                   key={link}
                 >
-                  <ListItem button  key={link}>
+                  <ListItem button key={link}>
                     <ListItemText
                       primary={`your ${link}  ${
                         userPublishedReleasesCount

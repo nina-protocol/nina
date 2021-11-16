@@ -116,8 +116,16 @@ const RecentlyPurchased = (props) => {
 
                 const artistInfo = (
                   <div display="inline">
-                    <Typography display="inline" variant="body2">{release.metadata.properties.artist},</Typography>{' '}
-                    <Typography display="inline" variant="body2" sx={{fontStyle: 'italic'}}>{release.metadata.properties.title}</Typography>
+                    <Typography display="inline" variant="body2">
+                      {release.metadata.properties.artist},
+                    </Typography>{' '}
+                    <Typography
+                      display="inline"
+                      variant="body2"
+                      sx={{ fontStyle: 'italic' }}
+                    >
+                      {release.metadata.properties.title}
+                    </Typography>
                   </div>
                 )
                 const availability = (
@@ -173,11 +181,11 @@ const RecentlyPurchasedContainer = styled(Box)(({ theme }) => ({
     minWidth: '400px',
     [theme.breakpoints.down('md')]: {
       width: '100% !important',
-      minWidth: 'unset'
+      minWidth: 'unset',
     },
   },
   [theme.breakpoints.down('md')]: {
-    marginLeft: '0'
+    marginLeft: '0',
   },
 
   [`& .${classes.sectionHeader}`]: {
@@ -186,11 +194,11 @@ const RecentlyPurchasedContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
-const Slide = styled(Box)(({theme}) => ({
+const Slide = styled(Box)(({ theme }) => ({
   display: 'flex',
   [theme.breakpoints.down('md')]: {
     flexDirection: 'column',
-    alignItems: 'flex-start'
+    alignItems: 'flex-start',
   },
 }))
 
@@ -203,7 +211,7 @@ const Copy = styled(Box)(({ theme }) => ({
   width: '32%',
   [theme.breakpoints.down('md')]: {
     paddingLeft: 0,
-    paddingTop: theme.spacing(1)
+    paddingTop: theme.spacing(1),
   },
   '& *': {
     paddingBottom: '5px',

@@ -240,7 +240,7 @@ const StyledQueueList = styled(Box)(({ theme }) => ({
   '& .MuiTableCell-root': {
     textAlign: 'center',
     [theme.breakpoints.down('md')]: {
-      padding: '16px 0'
+      padding: '16px 0',
     },
   },
 }))

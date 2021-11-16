@@ -46,14 +46,8 @@ function Routes() {
                 component={Release}
               ></Route>
               <Route path="/collection" component={UserCollection}></Route>
-              <Route
-                path="/:releasePubkey/market"
-                component={Release}
-              ></Route>
-              <Route
-                path="/:releasePubkey"
-                component={Release}
-              ></Route>
+              <Route path="/:releasePubkey/market" component={Release}></Route>
+              <Route path="/:releasePubkey" component={Release}></Route>
               <Route exact path="/" component={HomePage} />
             </Switch>
             <AudioPlayer />

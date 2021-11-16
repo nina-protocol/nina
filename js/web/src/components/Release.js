@@ -62,7 +62,7 @@ const Release = ({ match }) => {
       {!metadata && <Dots size="80px" />}
       {metadata && (
         <SwipeableViews index={index}>
-          <NinaBox columns={'repeat(2, 1fr)'} sx={{backgroundColor: "white"}}>
+          <NinaBox columns={'repeat(2, 1fr)'} sx={{ backgroundColor: 'white' }}>
             <ReleaseCard
               metadata={metadata}
               preview={false}
@@ -91,13 +91,13 @@ const Release = ({ match }) => {
   )
 }
 
-const ReleaseCtaWrapper = styled(Box)(({theme}) => ({
+const ReleaseCtaWrapper = styled(Box)(({ theme }) => ({
   margin: 'auto',
   width: 'calc(100% - 50px)',
   paddingLeft: '50px',
   [theme.breakpoints.down('md')]: {
     paddingLeft: '0',
-    width: '100%'
+    width: '100%',
   },
 }))
 

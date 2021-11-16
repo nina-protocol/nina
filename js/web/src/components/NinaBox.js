@@ -26,10 +26,10 @@ const StyledBox = styled(Box, {
   [theme.breakpoints.down('md')]: {
     gridTemplateColumns: '1fr',
     width: '80vw',
-    margin: '140px auto'
+    margin: '140px auto',
   },
   [theme.breakpoints.down('sm')]: {
-    margin: '100px auto'
+    margin: '100px auto',
   },
 }))
 
