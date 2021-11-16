@@ -142,14 +142,17 @@ return (
           >
           {inCreateFlow &&
             <Button
-              variant="contained"
+              variant="outlined"
               color="primary"
               fullWidth
               disabled={!metadata}
+              sx={{marginTop: '10px !important'}}
             >
-              {metadata
-                ? 'View Release'
-                : 'Your release is currently being finalized...'}
+              <Typography variant="body2">
+                {metadata
+                  ? 'View Release'
+                  : 'Your release is currently being finalized...'}
+                </Typography>
             </Button>
           }
           </Link>

@@ -122,6 +122,7 @@ const HomePageContainer = styled('div')(({ theme }) => ({
   [`& .${classes.sectionHeader}`]: {
     fontWeight: '700 ',
     paddingBottom: `${theme.spacing(1)}`,
+    textTransform: 'uppercase'
   },
 }))
 

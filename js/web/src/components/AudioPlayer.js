@@ -259,7 +259,8 @@ const StyledAudioPlayer = styled(Box)(({ theme }) => ({
   height: '60px',
   maxWidth: '100vw',
   alignItems: 'center',
-  boxShadow: `0px -1px 9px 5px rgba(0,0,0,0.08)`,
+  boxShadow: `0px -1px 5px 0px rgba(0,0,0,0.06)`,
+
   background: `${theme.palette.white}`,
   display: 'flex',
   zIndex: '100',

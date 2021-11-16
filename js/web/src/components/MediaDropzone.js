@@ -35,7 +35,13 @@ const MediaDropzone = ({
     }
   }
 
-  const handleChangeStatus = ({ file, meta, restart }, status) => {
+  const handleChangeStatus = ({ file, meta, restart, remove }, status) => {
+    if (meta.status === "error_validation") {
+      const height = meta.height
+      const width = meta.width
+      alert(`your image's dimensions are ${height} x ${width}... \nPlease upload a square image`)
+      remove()
+    }
     if (type === 'artwork') {
       if (status === 'removed') {
         setArtwork(undefined)
@@ -60,8 +66,6 @@ const MediaDropzone = ({
   }
 
   const inputLayout = (type) => {
-    //NOTE: we should reject non-square files for artwork
-
     if (type === 'track') {
       return (
         <>
@@ -79,6 +83,16 @@ const MediaDropzone = ({
         </>
       )
     }
+  }
+
+  const validateSquareImage = (fileWithMeta) => {
+    const height = fileWithMeta.meta.height
+    const width = fileWithMeta.meta.width
+  
+    if (height !== width) {
+      return true
+    }
+    return false
   }
 
   const Preview = ({ meta, fileWithMeta: { remove } }) => {
@@ -144,6 +158,7 @@ const MediaDropzone = ({
       onChangeStatus={handleChangeStatus}
       accept={type === 'track' ? 'audio/*' : 'image/*'}
       maxFiles={1}
+      validate={type === 'track' ? '' : (fileWithMeta) => validateSquareImage(fileWithMeta)}
       SubmitButtonComponent={null}
       autoUpload={false}
       canRestart={false}
