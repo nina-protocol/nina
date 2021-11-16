@@ -112,7 +112,7 @@ const MediaDropzone = ({
         <Box style={{ ...previewBoxStyles, ...audioPreviewStyles }}>
           {cancelIcon(remove)}
           <Box sx={{ padding: '35px 15px' }}>
-            <Typography align="left" variant="h5">
+            <Typography align="left" variant="h5" textOverflow='ellipsis' whiteSpace="nowrap" maxWidth="100%" overflow="hidden">
               {meta.name}
             </Typography>
             <Typography align="left" variant="subtitle1">
@@ -134,6 +134,10 @@ const MediaDropzone = ({
 
   const audioPreviewStyles = {
     backgroundColor: '#2D81FF',
+    '& h5': {
+      border: '2px solid red !important',
+      color: 'red !important'
+    }
   }
 
   const StyledPreview = styled(Preview)(() => ({
