@@ -197,12 +197,12 @@ const AudioPlayer = () => {
         <IconButton disabled={!currentIndex()} disableFocusRipple={true} disableRipple={true}>
           <SkipPreviousIcon onClick={() => playPreviousTrack()} sx={iconStyle} />
         </IconButton>
-        <IconButton disabled={playlistRef.current.length === 0} disableFocusRipple={true} disableRipple={true}>
+        <IconButton onClick={() => setIsPlayingHandler()} disabled={playlistRef.current.length === 0} disableFocusRipple={true} disableRipple={true}>
           {isPlaying ? (
             <PauseIcon onClick={() => setIsPlaying(false)} sx={iconStyle} />
           ) : (
             // <PlayArrowIcon onClick={() => setIsPlaying(true)} sx={iconStyle} />
-              <PlayArrowIcon onClick={() => setIsPlayingHandler()} sx={iconStyle} />
+              <PlayArrowIcon sx={iconStyle} />
           )}
         </IconButton>
         <IconButton disabled={currentIndex() + 1 === playlistRef.current.length || playlistRef.current.length <= 1} disableFocusRipple={true} disableRipple={true}>
