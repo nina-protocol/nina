@@ -31,6 +31,9 @@ const Release = ({ match }) => {
   useEffect(() => {
     if (!metadata) {
       getRelease(releasePubkey)
+    } else {
+      console.log('metadata: ', metadata)
+      updateTxid(releaseState.metadata[releasePubkey].properties.files[0].uri, releasePubkey, false)
     }
     getExchangeHistoryForRelease(releasePubkey)
   }, [])
@@ -38,7 +41,7 @@ const Release = ({ match }) => {
   useEffect(() => {
     if (releaseState.metadata[releasePubkey]) {
       setMetadata(releaseState.metadata[releasePubkey])
-      updateTxid(releaseState.metadata[releasePubkey].txid, releasePubkey, false)
+      updateTxid(releaseState.metadata[releasePubkey].properties.files[0].uri, releasePubkey, false)
     }
   }, [releaseState?.metadata[releasePubkey]])
 
