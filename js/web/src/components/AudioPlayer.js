@@ -115,7 +115,7 @@ const AudioPlayer = () => {
   }
 
   const changeTrack = async (txid) => {
-    playerRef.current.src = txid
+    playerRef.current.src = txid + "?ext=mp3"
     if (shouldPlay) {
       playerRef.current.play()
       startTimer()
