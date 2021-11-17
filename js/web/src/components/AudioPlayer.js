@@ -119,7 +119,7 @@ const AudioPlayer = () => {
   }
 
   const changeTrack = async (txid) => {
-    playerRef.current.src = txid
+    playerRef.current.src = txid + "?ext=mp3"
     if (shouldPlay) {
       playerRef.current.play()
       startTimer()
@@ -183,7 +183,7 @@ const AudioPlayer = () => {
   return (
     <StyledAudioPlayer>
       <audio id="audio" style={{ width: '100%' }}>
-        <source src={txid} type="audio/mp3" />
+        <source src={txid + "?ext=mp3"} type="audio/mp3" />
       </audio>
 
       {info && (
