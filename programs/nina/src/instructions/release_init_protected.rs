@@ -31,28 +31,12 @@ pub struct ReleaseInitializeProtected<'info> {
         constraint = authority_token_account.mint == payment_mint.key(),
     )]
     pub authority_token_account: Box<Account<'info, TokenAccount>>,
-    #[account(
-        constraint = authority_release_token_account.owner == authority.key(),
-        constraint = authority_release_token_account.mint == release_mint.key(),
-    )]
-    pub authority_release_token_account: Box<Account<'info, TokenAccount>>,
     pub payment_mint: Account<'info, Mint>,
     #[account(
         constraint = royalty_token_account.mint == payment_mint.key(),
         constraint = royalty_token_account.owner == *release_signer.key
     )]
     pub royalty_token_account: Box<Account<'info, TokenAccount>>,
-    #[account(
-        mut,
-        constraint = vault_token_account.owner == vault.vault_signer,
-        constraint = vault_token_account.mint == release_mint.key(),
-    )]
-    pub vault_token_account: Box<Account<'info, TokenAccount>>,
-    #[account(
-        seeds = [b"nina-vault".as_ref()],
-        bump,
-    )]
-    pub vault: Account<'info, Vault>,
     #[account(address = token::ID)]
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
@@ -72,9 +56,7 @@ pub fn handler(
         ctx.accounts.payer.to_account_info().clone(),
         ctx.accounts.authority.to_account_info().clone(),
         ctx.accounts.authority_token_account.to_account_info().clone(),
-        ctx.accounts.authority_release_token_account.to_account_info().clone(),
         ctx.accounts.royalty_token_account.to_account_info(),
-        ctx.accounts.vault_token_account.to_account_info().clone(),
         ctx.accounts.token_program.to_account_info().clone(),
         config,
         bumps,

@@ -17,7 +17,6 @@ const ReleaseCreateForm = ({
   errors,
   touched,
   setFieldValue,
-  pressingFee,
 }) => {
   useEffect(() => {
     if (onChange) {
@@ -183,12 +182,6 @@ const ReleaseCreateForm = ({
           </Box>
         </Box>
       </Form>
-
-      {pressingFee > 0 && (
-        <Typography variant="body2" align="left">
-          Pressing Fee: {pressingFee} ({values.catalogNumber})
-        </Typography>
-      )}
     </Root>
   )
 }

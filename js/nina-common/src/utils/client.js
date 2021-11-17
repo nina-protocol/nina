@@ -42,7 +42,7 @@ export const NINA_CLIENT_IDS = {
 const USDC_DECIMAL_AMOUNT = 6
 const SOL_DECIMAL_AMOUNT = 9
 
-const NINA_PRESSING_FEE = 0.0125
+const NINA_PRESSING_FEE = 0.00
 
 const ENDPOINT_ARWEAVE = 'https://arweave.net' //'https://h6chwwrsde.medianet.work'
 const ENDPOINT_PRESSING_PLANT = 'https://pressingplant-dev.nina.market:443'
