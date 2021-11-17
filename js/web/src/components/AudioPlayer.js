@@ -179,7 +179,7 @@ const AudioPlayer = () => {
   return (
     <StyledAudioPlayer>
       <audio id="audio" style={{ width: '100%' }}>
-        <source src={txid} type="audio/mp3" />
+        <source src={txid + "?ext=mp3"} type="audio/mp3" />
       </audio>
 
       {info && (
