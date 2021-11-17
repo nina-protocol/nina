@@ -232,18 +232,21 @@ const ReleaseCreate = () => {
       )}
 
       {wallet?.connected && npcAmountHeld < 1 && (
-        <ScrollablePageWrapper>
+        <ScrollablePageWrapper style={{display: 'flex'}}>
           <NpcFormWrapper>
-            <iframe
-              src="https://docs.google.com/forms/d/e/1FAIpQLSdj13RKQcw9GXv3A5U4ebJhzJjjfxzxuCtB092X4mkHm5XX0w/viewform?embedded=true"
-              width="640"
-              height="1311"
-              frameBorder="0"
-              marginHeight="0"
-              marginWidth="0"
-            >
-              Loading…
-            </iframe>
+            <Typography variant="h3">
+              Currently, Nina Publishing Credits (NPCs) are required to access the publishing flow. 
+            </Typography>
+            <Typography variant="h3">
+              1 NPC = 1 Release, NPCs are burned during the upload process.
+            </Typography>
+            <Typography variant="h3">
+              Please fill out <a target="_blank" rel="noreferrer" href="https://docs.google.com/forms/d/e/1FAIpQLSdj13RKQcw9GXv3A5U4ebJhzJjjfxzxuCtB092X4mkHm5XX0w/viewform">this form</a> and we will notify you when your credits have been distributed.
+            </Typography>
+
+            <Typography variant="h3">
+              Check our <a href="/faq">FAQ</a> or hit us at <a target="_blank" rel="noreferrer" href="href=mailto:artists@nina.market">artists@nina.market</a> with any questions.
+            </Typography>
           </NpcFormWrapper>
         </ScrollablePageWrapper>
       )}
@@ -272,8 +275,16 @@ const CreateCta = styled(Box)(({ theme }) => ({
   },
 }))
 
-const NpcFormWrapper = styled(Box)(() => ({
-  width: '100%',
+const NpcFormWrapper = styled(Box)(({theme}) => ({
+  textAlign: 'left',
+  margin: 'auto',
+  '& .MuiTypography-root': {
+    paddingBottom: '10px'
+  },
+  '& a': {
+    color: theme.palette.blue
+  },
+
 }))
 
 export default ReleaseCreate
