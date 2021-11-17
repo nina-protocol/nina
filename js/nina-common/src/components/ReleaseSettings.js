@@ -137,7 +137,7 @@ return (
         <Box mt={1}>
           <Royalty releasePubkey={releasePubkey} release={release} />
           <Link
-            to={`/releases/${releasePubkey}`}
+            to={releasePubkey}
             style={{ textDecoration: 'none' }}
           >
           {inCreateFlow &&

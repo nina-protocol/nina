@@ -73,6 +73,7 @@ const Release = ({ match }) => {
               <ReleasePurchase
                 releasePubkey={releasePubkey}
                 metadata={metadata}
+                match={match}
               />
             </ReleaseCtaWrapper>
           </NinaBox>
