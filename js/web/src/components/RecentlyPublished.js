@@ -26,19 +26,6 @@ const RecentlyPublished = (props) => {
       slidesToSlide: 2,
     },
   }
-
-  // const buttonStyle = {
-  //   position: 'absolute',
-  //   color: 'black',
-  //   backgroundColor: 'red !important',
-  //   '&:hover': {
-  //     backgroundColor: 'black !important',
-  //   },
-  //   '& ::before': {
-  //     display: 'none',
-  //   },
-  // }
-
   if (releases === undefined || releases.length === 0) {
     return (
       <RecentlyPublishedContainer
@@ -58,7 +45,7 @@ const RecentlyPublished = (props) => {
           swipeable={true}
           responsive={responsive}
           infinite={true}
-          // autoPlay={true}
+          autoPlay={true}
           autoPlaySpeed={2000}
           keyBoardControl={true}
           transitionDuration={1200}
@@ -102,13 +89,8 @@ const RecentlyPublishedContainer = styled(Box)(({ theme }) => ({
   width: '100%',
   minHeight: '250px',
   '& .carousel-container': {
-    // border: '2px solid blue',/
     paddingBottom: '35px',
-    '& li': {
-      // border: '2px solid red',
-      // display: 'flex',
-      // justifyContent: 'center'
-    },
+
   },
   '& .react-multi-carousel-dot-list': {
     marginTop: '100px',

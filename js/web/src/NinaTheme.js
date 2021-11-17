@@ -187,7 +187,15 @@ export const NinaTheme = createTheme({
     MuiTypography: {
       styleOverrides: {
         root: {
-          letterSpacing: '0.02em',
+          letterSpacing: '0.02em !important',
+        },
+      },
+    },
+    MuiPopover: {
+      styleOverrides: {
+        root: {
+          border: '2px solid red !important',
+          background:' green !important'
         },
       },
     },
@@ -267,11 +275,14 @@ export const NinaTheme = createTheme({
           },
         },
         '#wallet-menu': {
+          '&.MuiPopover-root': {
+            backgroundColor: `${colors.transparent}`,
+          },
           '& .MuiPopover-paper': {
             overflowX: ' visible',
           },
           '& .MuiPaper-root': {
-            backgroundColor: `${colors.white}`,
+            backgroundColor: `${colors.transparent}`,
             top: '40px !important',
             right: '24px !important',
             boxShadow: 'none',
