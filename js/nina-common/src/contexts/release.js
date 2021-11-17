@@ -177,7 +177,6 @@ const releaseContextHelper = ({
   const releaseCreate = async ({
     retailPrice,
     amount,
-    pressingFee,
     artistTokens = 0,
     resalePercentage,
     isUsdc = true,
@@ -189,10 +188,6 @@ const releaseContextHelper = ({
 
     try {
       const nina = await NinaClient.connect(provider)
-
-      const vault = await nina.program.account.vault.fetch(
-        NinaClient.ids().accounts.vault
-      )
 
       const releaseMint = anchor.web3.Keypair.generate()
       const paymentMint = new anchor.web3.PublicKey(
@@ -238,28 +233,6 @@ const releaseContextHelper = ({
           paymentMint
         )
 
-      const [authorityReleaseTokenAccount, authorityReleaseTokenAccountIx] =
-        await findOrCreateAssociatedTokenAccount(
-          provider.connection,
-          provider.wallet.publicKey,
-          provider.wallet.publicKey,
-          anchor.web3.SystemProgram.programId,
-          anchor.web3.SYSVAR_RENT_PUBKEY,
-          releaseMint.publicKey,
-          true
-        )
-
-      const [vaultTokenAccount, vaultTokenAccountIx] =
-        await findOrCreateAssociatedTokenAccount(
-          provider.connection,
-          provider.wallet.publicKey,
-          vault.vaultSigner,
-          anchor.web3.SystemProgram.programId,
-          anchor.web3.SYSVAR_RENT_PUBKEY,
-          releaseMint.publicKey,
-          true
-        )
-
       const [royaltyTokenAccount, royaltyTokenAccountIx] =
         await findOrCreateAssociatedTokenAccount(
           provider.connection,
@@ -285,9 +258,7 @@ const releaseContextHelper = ({
 
       let instructions = [
         ...releaseMintIx,
-        vaultTokenAccountIx,
         royaltyTokenAccountIx,
-        authorityReleaseTokenAccountIx,
       ]
 
       if (authorityTokenAccountIx) {
@@ -300,8 +271,8 @@ const releaseContextHelper = ({
 
       const config = {
         amountTotalSupply: new anchor.BN(amount),
-        amountToArtistTokenAccount: new anchor.BN(artistTokens),
-        amountToVaultTokenAccount: new anchor.BN(pressingFee),
+        amountToArtistTokenAccount: new anchor.BN(0),
+        amountToVaultTokenAccount: new anchor.BN(0),
         resalePercentage: new anchor.BN(resalePercentage * 10000),
         price: new anchor.BN(NinaClient.uiToNative(retailPrice, paymentMint)),
         releaseDatetime: new anchor.BN(Date.now() / 1000),
@@ -320,12 +291,9 @@ const releaseContextHelper = ({
           payer: provider.wallet.publicKey,
           authority: provider.wallet.publicKey,
           authorityTokenAccount: authorityTokenAccount,
-          authorityReleaseTokenAccount,
           authorityPublishingCreditTokenAccount,
           publishingCreditMint,
           paymentMint,
-          vaultTokenAccount,
-          vault: new anchor.web3.PublicKey(NinaClient.ids().accounts.vault),
           royaltyTokenAccount,
           systemProgram: anchor.web3.SystemProgram.programId,
           tokenProgram: NinaClient.TOKEN_PROGRAM_ID,

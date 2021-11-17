@@ -75,15 +75,13 @@ impl Release {
         payer: AccountInfo<'info>,
         authority: AccountInfo<'info>,
         authority_token_account: AccountInfo<'info>,
-        authority_release_token_account: AccountInfo<'info>,
         royalty_token_account: AccountInfo<'info>,
-        vault_token_account: AccountInfo<'info>,
         token_program: AccountInfo<'info>,
         config: ReleaseConfig,
         bumps: ReleaseBumps,
     ) -> ProgramResult {
         // Hard code fee that publishers pay in their release to the NinaVault
-        let vault_fee_percentage = 12500;
+        let vault_fee_percentage = 0;
 
         // Expand math to calculate vault fee avoiding floats
         let mut vault_fee = ((config.amount_total_supply * 1000000) * vault_fee_percentage) / 1000000;
@@ -147,40 +145,6 @@ impl Release {
         let cpi_program = token_program.to_account_info().clone();
         let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
         token::set_authority(cpi_ctx, AuthorityType::MintTokens.into(), Some(release.release_signer))?;
-
-        //MintTo Artist
-        if config.amount_to_artist_token_account > 0 {
-            let cpi_accounts = MintTo {
-                mint: release_mint.to_account_info(),
-                to: authority_release_token_account.to_account_info(),
-                authority: release_signer.to_account_info().clone(),
-            };
-            let cpi_program = token_program.to_account_info().clone();
-
-            let seeds = &[
-                release_loader.to_account_info().key.as_ref(),
-                &[release.bumps.signer],
-            ];
-            let signer = &[&seeds[..]];
-            let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer);
-            token::mint_to(cpi_ctx, config.amount_to_artist_token_account)?;
-        };
-
-        //MintTo Vault
-        let cpi_accounts = MintTo {
-            mint: release_mint.to_account_info(),
-            to: vault_token_account.to_account_info(),
-            authority: release_signer.to_account_info().clone(),
-        };
-        let cpi_program = token_program.to_account_info().clone();
-
-        let seeds = &[
-            release_loader.to_account_info().key.as_ref(),
-            &[release.bumps.signer],
-        ];
-        let signer = &[&seeds[..]];
-        let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer);
-        token::mint_to(cpi_ctx, config.amount_to_vault_token_account)?;
         
         emit!(ReleaseCreated {
             public_key: *release_loader.to_account_info().key,
