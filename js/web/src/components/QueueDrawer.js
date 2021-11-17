@@ -15,7 +15,7 @@ import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded'
 import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
-import Typography from '@mui/material/Typography';
+import Typography from '@mui/material/Typography'
 import QueueList from './QueueList'
 
 const { AudioPlayerContext } = ninaCommon.contexts
@@ -76,12 +76,20 @@ const QueueDrawer = (props) => {
   return (
     <ToggleWrapper>
       <React.Fragment key={'left'}>
-        <Button onClick={toggleDrawer(!drawerOpen)} sx={{textTransform: 'none !important'}}>
+        <Button
+          onClick={toggleDrawer(!drawerOpen)}
+          sx={{ textTransform: 'none !important' }}
+        >
           <Typography variant="subtitle1">
             {!drawerOpen &&
-              (nextInfo
-                ? <>Next: {nextInfo.artist + ', '}<Title> {nextInfo.title}</Title></>
-                : 'Open queue')}
+              (nextInfo ? (
+                <>
+                  Next: {nextInfo.artist + ', '}
+                  <Title> {nextInfo.title}</Title>
+                </>
+              ) : (
+                'Open queue'
+              ))}
             {drawerOpen && 'Close'}
           </Typography>
         </Button>
@@ -125,12 +133,12 @@ const ToggleWrapper = styled(Box)(({ theme }) => ({
     '&:hover': {
       backgroundColor: `${theme.palette.transparent} !important`,
     },
-    '& h6' : {
+    '& h6': {
       maxWidth: '300px',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap'
-    }
+      whiteSpace: 'nowrap',
+    },
   },
 }))
 

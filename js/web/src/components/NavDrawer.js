@@ -23,12 +23,7 @@ const linksConnected = [
   'faq',
 ]
 
-const linksNotConnected = [
-  'home',
-  'upload',
-  'about nina',
-  'faq',
-]
+const linksNotConnected = ['home', 'upload', 'about nina', 'faq']
 
 const NavDrawer = () => {
   const { collection } = useContext(NinaContext)

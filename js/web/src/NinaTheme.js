@@ -1,4 +1,7 @@
 import { createTheme } from '@mui/material/styles'
+import createBreakpoints from '@mui/system/createTheme/createBreakpoints'
+
+const breakpoints = createBreakpoints({})
 
 const colors = {
   purple: '#9999cc',
@@ -43,21 +46,43 @@ export const NinaTheme = createTheme({
     background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(143,175,223,1) 0%, rgb(35,99,196) 100%)`,
     color: colors.white,
   },
-  props: {
-    MuiButtonBase: {
-      disableRipple: true, // No more ripple, on the whole application!
-    },
-    MuiListItem: {
-      disableRipple: true, // No more ripple, on the whole application!
-    },
-    MuiMenuItem: {
-      disableRipple: true, // No more ripple, on the whole application!
-    },
-  },
   typography: {
     fontFamily: ['Helvetica', 'san-serif'].join(','),
     berthold: {
       fontFamily: ['BlockBE-Heavy'].join(','),
+    },
+    gutterBottom: {
+      marginBottom: '15px !important',
+    },
+    h1: {
+      fontSize: '36px !important',
+      fontWeight: '400 !important',
+      [breakpoints.down('md')]: {
+        fontSize: '24px !important',
+      },
+    },
+    h2: {
+      fontSize: '25px !important',
+      fontWeight: '400 !important',
+    },
+    h3: {
+      fontSize: '20px !important',
+      lineHeight: '23px !important',
+    },
+    h4: {
+      fontSize: '18px !important',
+      lineHeight: '20.7px !important',
+    },
+    body1: {
+      fontSize: '14px !important',
+      lineHeight: '16.1px !important',
+    },
+    body2: {
+      fontSize: '12px !important',
+      lineHeight: '13.8px !important',
+    },
+    subtitle1: {
+      fontSize: '10px !important',
     },
   },
   vars: {
@@ -101,6 +126,9 @@ export const NinaTheme = createTheme({
   },
   components: {
     MuiButton: {
+      defaultProps: {
+        disableRipple: 'true',
+      },
       styleOverrides: {
         root: {
           padding: '10px',
@@ -152,38 +180,21 @@ export const NinaTheme = createTheme({
     MuiTypography: {
       styleOverrides: {
         root: {
-          letterSpacing: '0.02em',
+          letterSpacing: '0.02em !important',
         },
-        gutterBottom: {
-          marginBottom: '15px !important',
+      },
+    },
+    MuiPopover: {
+      styleOverrides: {
+        root: {
+          border: '2px solid red !important',
+          background:' green !important'
         },
-        h1: {
-          fontSize: '36px !important',
-          fontWeight: '400 !important',
-        },
-        h2: {
-          fontSize: '25px !important',
-          fontWeight: '400 !important',
-        },
-        h3: {
-          fontSize: '20px !important',
-          lineHeight: '23px !important',
-        },
-        h4: {
-          fontSize: '18px !important',
-          lineHeight: '20.7px !important',
-        },
-        body1: {
-          fontSize: '14px !important',
-          lineHeight: '16.1px !important',
-        },
-        body2: {
-          fontSize: '12px !important',
-          lineHeight: '13.8px !important',
-        },
-        subtitle1: {
-          fontSize: '10px !important',
-        },
+      },
+    },
+    MuiListItem: {
+      defaultProps: {
+        disableRipple: 'true',
       },
     },
     MuiTextField: {
@@ -222,6 +233,12 @@ export const NinaTheme = createTheme({
             color: colors.black,
             width: '14px',
             height: '11px',
+            '&:hover': {
+              boxShadow: 'none',
+            },
+            '& .Mui-focusVisible': {
+              boxShadow: 'none',
+            },
           },
           '& .MuiSlider-track': {
             color: colors.black,
@@ -251,11 +268,14 @@ export const NinaTheme = createTheme({
           },
         },
         '#wallet-menu': {
+          '&.MuiPopover-root': {
+            backgroundColor: `${colors.transparent}`,
+          },
           '& .MuiPopover-paper': {
             overflowX: ' visible',
           },
           '& .MuiPaper-root': {
-            backgroundColor: `${colors.white}`,
+            backgroundColor: `${colors.transparent}`,
             top: '40px !important',
             right: '24px !important',
             boxShadow: 'none',

@@ -35,7 +35,15 @@ const MediaDropzone = ({
     }
   }
 
-  const handleChangeStatus = ({ file, meta, restart }, status) => {
+  const handleChangeStatus = ({ file, meta, restart, remove }, status) => {
+    if (meta.status === 'error_validation') {
+      const height = meta.height
+      const width = meta.width
+      alert(
+        `your image's dimensions are ${height} x ${width}... \nPlease upload a square image`
+      )
+      remove()
+    }
     if (type === 'artwork') {
       if (status === 'removed') {
         setArtwork(undefined)
@@ -60,8 +68,6 @@ const MediaDropzone = ({
   }
 
   const inputLayout = (type) => {
-    //NOTE: we should reject non-square files for artwork
-
     if (type === 'track') {
       return (
         <>
@@ -81,6 +87,16 @@ const MediaDropzone = ({
     }
   }
 
+  const validateSquareImage = (fileWithMeta) => {
+    const height = fileWithMeta.meta.height
+    const width = fileWithMeta.meta.width
+
+    if (height !== width) {
+      return true
+    }
+    return false
+  }
+
   const Preview = ({ meta, fileWithMeta: { remove } }) => {
     handleProgress(meta.percent, meta.type.includes('image'))
     if (meta.type.includes('image')) {
@@ -98,7 +114,14 @@ const MediaDropzone = ({
         <Box style={{ ...previewBoxStyles, ...audioPreviewStyles }}>
           {cancelIcon(remove)}
           <Box sx={{ padding: '35px 15px' }}>
-            <Typography align="left" variant="h5">
+            <Typography
+              align="left"
+              variant="h5"
+              textOverflow="ellipsis"
+              whiteSpace="nowrap"
+              maxWidth="100%"
+              overflow="hidden"
+            >
               {meta.name}
             </Typography>
             <Typography align="left" variant="subtitle1">
@@ -120,6 +143,10 @@ const MediaDropzone = ({
 
   const audioPreviewStyles = {
     backgroundColor: '#2D81FF',
+    '& h5': {
+      border: '2px solid red !important',
+      color: 'red !important',
+    },
   }
 
   const StyledPreview = styled(Preview)(() => ({
@@ -144,6 +171,11 @@ const MediaDropzone = ({
       onChangeStatus={handleChangeStatus}
       accept={type === 'track' ? 'audio/*' : 'image/*'}
       maxFiles={1}
+      validate={
+        type === 'track'
+          ? ''
+          : (fileWithMeta) => validateSquareImage(fileWithMeta)
+      }
       SubmitButtonComponent={null}
       autoUpload={false}
       canRestart={false}

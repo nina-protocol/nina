@@ -176,7 +176,7 @@ const ReleaseCreate = () => {
       )}
 
       {wallet?.connected && npcAmountHeld > 0 && (
-          <NinaBox columns="350px 400px" gridColumnGap="10px">
+        <NinaBox columns="350px 400px" gridColumnGap="10px">
           <Box sx={{ width: '100%' }}>
             <MediaDropzones
               setTrack={setTrack}
@@ -234,7 +234,16 @@ const ReleaseCreate = () => {
       {wallet?.connected && npcAmountHeld < 1 && (
         <ScrollablePageWrapper>
           <NpcFormWrapper>
-            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdj13RKQcw9GXv3A5U4ebJhzJjjfxzxuCtB092X4mkHm5XX0w/viewform?embedded=true" width="640" height="1311" frameBorder="0" marginHeight="0" marginWidth="0">Loading…</iframe>
+            <iframe
+              src="https://docs.google.com/forms/d/e/1FAIpQLSdj13RKQcw9GXv3A5U4ebJhzJjjfxzxuCtB092X4mkHm5XX0w/viewform?embedded=true"
+              width="640"
+              height="1311"
+              frameBorder="0"
+              marginHeight="0"
+              marginWidth="0"
+            >
+              Loading…
+            </iframe>
           </NpcFormWrapper>
         </ScrollablePageWrapper>
       )}
@@ -266,6 +275,5 @@ const CreateCta = styled(Box)(({ theme }) => ({
 const NpcFormWrapper = styled(Box)(() => ({
   width: '100%',
 }))
-
 
 export default ReleaseCreate

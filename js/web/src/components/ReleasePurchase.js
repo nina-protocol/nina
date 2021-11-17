@@ -136,12 +136,10 @@ const ReleasePurchase = (props) => {
       <Typography variant="h3" align="left">
         {metadata.description}
       </Typography>
-      {wallet?.connected && wallet.publicKey.toBase58() === release.authority.toBase58() &&
-        <ReleaseSettings
-          releasePubkey={releasePubkey}
-          inCreateFlow={false}
-        />
-      }
+      {wallet?.connected &&
+        wallet.publicKey.toBase58() === release.authority.toBase58() && (
+          <ReleaseSettings releasePubkey={releasePubkey} inCreateFlow={false} />
+        )}
       <Box mt={1}>
         <form onSubmit={handleSubmit}>
           <Button
@@ -156,18 +154,17 @@ const ReleasePurchase = (props) => {
           </Button>
         </form>
       </Box>
-      <Button
+      <MarketButton
         variant="outlined"
         fullWidth
-        sx={{
-          marginTop: `15px !important`,
-        }}
         onClick={() => {
-          history.push(`/${wallet?.connected ? 'releases/' : ''}${releasePubkey}/market`)
+          history.push(
+            `/${wallet?.connected ? 'releases/' : ''}${releasePubkey}/market`
+          )
         }}
       >
         <Typography variant="body2">Go To Market</Typography>
-      </Button>
+      </MarketButton>
     </Box>
   )
 }
@@ -183,6 +180,13 @@ const StyledUserAmount = styled(Box)(({ theme }) => ({
   color: theme.palette.black,
   ...theme.helpers.baseFont,
   paddingBottom: '10px',
+}))
+
+const MarketButton = styled(Button)(({ theme }) => ({
+  marginTop: `${theme.spacing(1)} !important`,
+  [theme.breakpoints.down('md')]: {
+    display: 'none !important',
+  },
 }))
 
 export default ReleasePurchase

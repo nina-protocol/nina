@@ -6,12 +6,12 @@ import { Link } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import Slider from '@mui/material/Slider'
 import SkipNextIcon from '@mui/icons-material/SkipNext'
-import IconButton from '@mui/material/IconButton';
+import IconButton from '@mui/material/IconButton'
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import PauseIcon from '@mui/icons-material/Pause'
 // import SvgIcon from '@mui/material/SvgIcon';
-import shareArrow from '../assets/shareArrow.png'
+import shareArrow from '../assets/shareArrow.svg'
 // import VolumeUpIcon from '@mui/icons-material/VolumeUp'
 // import VolumeOffIcon from '@mui/icons-material/VolumeOff'
 import Typography from '@mui/material/Typography'
@@ -51,7 +51,11 @@ const AudioPlayer = () => {
     } else {
       setShouldPlay(true)
       if (!txid) {
-        updateTxid(playlistRef.current[0].txid, playlistRef.current[0].releasePubkey, true)
+        updateTxid(
+          playlistRef.current[0].txid,
+          playlistRef.current[0].releasePubkey,
+          true
+        )
       } else {
         startTimer()
         playerRef.current.play()
@@ -189,17 +193,35 @@ const AudioPlayer = () => {
       )}
 
       <Controls>
-        <IconButton disabled={!currentIndex()} disableFocusRipple={true} disableRipple={true}>
-          <SkipPreviousIcon onClick={() => playPreviousTrack()} sx={iconStyle} />
+        <IconButton
+          disabled={!currentIndex()}
+          disableFocusRipple={true}
+          disableRipple={true}
+        >
+          <SkipPreviousIcon
+            onClick={() => playPreviousTrack()}
+            sx={iconStyle}
+          />
         </IconButton>
-        <IconButton disabled={playlistRef.current.length === 0} disableFocusRipple={true} disableRipple={true}>
+        <IconButton
+          disabled={playlistRef.current.length === 0}
+          disableFocusRipple={true}
+          disableRipple={true}
+        >
           {isPlaying ? (
             <PauseIcon onClick={() => setIsPlaying(false)} sx={iconStyle} />
           ) : (
             <PlayArrowIcon onClick={() => setIsPlaying(true)} sx={iconStyle} />
           )}
         </IconButton>
-        <IconButton disabled={currentIndex() + 1 === playlistRef.current.length || playlistRef.current.length <= 1} disableFocusRipple={true} disableRipple={true}>
+        <IconButton
+          disabled={
+            currentIndex() + 1 === playlistRef.current.length ||
+            playlistRef.current.length <= 1
+          }
+          disableFocusRipple={true}
+          disableRipple={true}
+        >
           <SkipNextIcon onClick={() => playNextTrack()} sx={iconStyle} />
         </IconButton>
       </Controls>
@@ -210,21 +232,33 @@ const AudioPlayer = () => {
             {info.artist}, <i>{info.title}</i>
           </ArtistInfo>
         )}
-        <Slider
-          value={txid ? trackProgress : 0}
-          onChange={(e, newValue) => seek(newValue)}
-          aria-labelledby="continuous-slider"
-          min={0}
-          max={duration}
-        />
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Slider
+            value={txid ? trackProgress : 0}
+            onChange={(e, newValue) => seek(newValue)}
+            aria-labelledby="continuous-slider"
+            min={0}
+            max={duration}
+          />
+
+          <Typography
+            sx={{ padding: '0 10px', display: { xs: 'block', md: 'none' } }}
+            variant="subtitle1"
+          >
+            {NinaClient.formatDuration(trackProgress) || '00:00'}
+          </Typography>
+        </Box>
       </ProgressContainer>
 
-      <Typography sx={{ padding: '0 30px' }} variant="subtitle1">
+      <Typography
+        sx={{ padding: '0 30px', display: { xs: 'none', md: 'block' } }}
+        variant="subtitle1"
+      >
         {NinaClient.formatDuration(trackProgress) || '00:00'}
       </Typography>
 
       {info && (
-        <>
+        <LinkWrapper>
           <Link
             to={`/releases/${info.releasePubkey}`}
             style={{ marginRight: '30px' }}
@@ -234,14 +268,10 @@ const AudioPlayer = () => {
             </Typography>
           </Link>
 
-          {/* Change the arrow to svg */}
-          <Link
-            to={`/releases/${info.releasePubkey}`}
-            style={{ display: 'flex' }}
-          >
+          <Link to={`/releases/${info.releasePubkey}`}>
             <img src={shareArrow}></img>
           </Link>
-        </>
+        </LinkWrapper>
       )}
       <QueueDrawer />
     </StyledAudioPlayer>
@@ -255,7 +285,8 @@ const StyledAudioPlayer = styled(Box)(({ theme }) => ({
   height: '60px',
   maxWidth: '100vw',
   alignItems: 'center',
-  boxShadow: `0px -1px 9px 5px rgba(0,0,0,0.08)`,
+  boxShadow: `0px -1px 5px 0px rgba(0,0,0,0.06)`,
+
   background: `${theme.palette.white}`,
   display: 'flex',
   zIndex: '100',
@@ -265,10 +296,14 @@ const AlbumArt = styled(Link)(() => ({
   width: '60px',
   height: '60px',
 }))
-const ArtistInfo = styled(Typography)(() => ({
+
+const ArtistInfo = styled(Typography)(({ theme }) => ({
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
+  [theme.breakpoints.down('md')]: {
+    whiteSpace: 'wrap',
+  },
 }))
 
 const Controls = styled(Box)(({ theme }) => ({
@@ -277,8 +312,11 @@ const Controls = styled(Box)(({ theme }) => ({
   padding: theme.spacing(0, 2),
   '& svg': {
     height: '24px',
-    width: '24px'
-  }
+    width: '24px',
+  },
+  [theme.breakpoints.down('md')]: {
+    padding: '10px',
+  },
 }))
 
 const ProgressContainer = styled(Box)(({ theme }) => ({
@@ -288,6 +326,10 @@ const ProgressContainer = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   justifyContent: 'space-around',
   paddingRight: theme.spacing(2),
+  [theme.breakpoints.down('md')]: {
+    width: '100px',
+    padding: theme.spacing(0, 1),
+  },
   '& .MuiSlider-root': {
     height: '7px',
     padding: '0',
@@ -305,6 +347,19 @@ const ProgressContainer = styled(Box)(({ theme }) => ({
       color: theme.palette.greyLight,
       height: '7px',
     },
+  },
+}))
+
+const LinkWrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  height: '100%',
+  alignItems: 'center',
+  '& img': {
+    height: '17px',
+    width: '17px',
+  },
+  [theme.breakpoints.down('md')]: {
+    display: 'none',
   },
 }))
 

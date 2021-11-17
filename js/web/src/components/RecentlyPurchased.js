@@ -116,8 +116,16 @@ const RecentlyPurchased = (props) => {
 
                 const artistInfo = (
                   <div display="inline">
-                    <Typography display="inline" variant="body2">{release.metadata.properties.artist},</Typography>{' '}
-                    <Typography display="inline" variant="body2" sx={{fontStyle: 'italic'}}>{release.metadata.properties.title}</Typography>
+                    <Typography display="inline" variant="body2">
+                      {release.metadata.properties.artist},
+                    </Typography>{' '}
+                    <Typography
+                      display="inline"
+                      variant="body2"
+                      sx={{ fontStyle: 'italic' }}
+                    >
+                      {release.metadata.properties.title}
+                    </Typography>
                   </div>
                 )
                 const availability = (
@@ -142,8 +150,8 @@ const RecentlyPurchased = (props) => {
                       <Typography variant="h3" color="blue">
                         {`${sales} copies were sold ${dayCopy}`}
                       </Typography>
-                      {artistInfo}
                       {availability}
+                      {artistInfo}
                     </Copy>
                   </Slide>
                 )
@@ -164,11 +172,20 @@ const classes = {
 
 const RecentlyPurchasedContainer = styled(Box)(({ theme }) => ({
   minHeight: '400px',
-  marginLeft: '35%',
+  // marginLeft: '50%',
   flexShrink: '0',
   alignItems: 'center',
+  // width: '75%',
+  // margin: 'auto',
   '& a': {
     minWidth: '400px',
+    [theme.breakpoints.down('md')]: {
+      width: '100% !important',
+      minWidth: 'unset',
+    },
+  },
+  [theme.breakpoints.down('md')]: {
+    marginLeft: '0',
   },
 
   [`& .${classes.sectionHeader}`]: {
@@ -177,9 +194,12 @@ const RecentlyPurchasedContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
-const Slide = styled(Box)(() => ({
+const Slide = styled(Box)(({ theme }) => ({
   display: 'flex',
-  // alignItems: 'center'
+  [theme.breakpoints.down('md')]: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  },
 }))
 
 const Copy = styled(Box)(({ theme }) => ({
@@ -188,6 +208,11 @@ const Copy = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   justifyContent: 'center',
   textAlign: 'left',
+  width: '32%',
+  [theme.breakpoints.down('md')]: {
+    paddingLeft: 0,
+    paddingTop: theme.spacing(1),
+  },
   '& *': {
     paddingBottom: '5px',
   },
