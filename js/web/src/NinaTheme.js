@@ -180,7 +180,7 @@ export const NinaTheme = createTheme({
     MuiTypography: {
       styleOverrides: {
         root: {
-          letterSpacing: '0.02em',
+          letterSpacing: '0.02em !important',
         },
       },
     },
