@@ -177,6 +177,13 @@ export const NinaTheme = createTheme({
         },
       },
     },
+    MuiPopover: {
+      styleOverrides: {
+        root: {
+          background: colors.transparent
+        }
+      }
+    },
     MuiTypography: {
       styleOverrides: {
         root: {

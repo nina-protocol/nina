@@ -94,7 +94,7 @@ const Root = styled('nav')(({ theme }) => ({
     left: '0',
   },
   '& h6': {
-    lineHeight: '1',
+    // lineHeight: '1',
   },
 
   [`& .${classes.nav__left}`]: {
