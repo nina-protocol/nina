@@ -165,12 +165,12 @@ const classes = {
 
 const StyledDrawer = styled(Drawer)(() => ({
   '& .MuiPaper-root': {
-    width: 400,
+    width: 436,
   },
 }))
 
 const StyledList = styled(List)(({ theme }) => ({
-  padding: `${theme.spacing(6, 4, 0, 4)} !important`,
+  padding: `${theme.spacing('100px', 4, 0, 4)} !important`,
   '& .MuiListItem-root': {
     padding: '5px 0',
     '&:hover': {
@@ -178,6 +178,10 @@ const StyledList = styled(List)(({ theme }) => ({
     },
     '& .MuiListItemText-root': {
       margin: 0,
+      '& span': {
+        fontSize: '18px !important',
+        lineHeight: '20.7px !important',
+      }
     },
   },
 }))

@@ -49,6 +49,7 @@ const RecentlyPublished = (props) => {
           autoPlay={true}
           autoPlaySpeed={2500}
           keyBoardControl={true}
+          transitionDuration={1000}
           customTransition="transform 1000ms ease-in-out"
           slidesToSlide={3}
           containerClass="carousel-container"
