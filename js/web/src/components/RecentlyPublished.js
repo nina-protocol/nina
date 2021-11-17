@@ -26,6 +26,7 @@ const RecentlyPublished = (props) => {
       slidesToSlide: 2,
     },
   }
+  
   if (releases === undefined || releases.length === 0) {
     return (
       <RecentlyPublishedContainer
@@ -46,9 +47,9 @@ const RecentlyPublished = (props) => {
           responsive={responsive}
           infinite={true}
           autoPlay={true}
-          autoPlaySpeed={2000}
+          autoPlaySpeed={2500}
           keyBoardControl={true}
-          transitionDuration={1200}
+          customTransition="transform 1000ms ease-in-out"
           slidesToSlide={3}
           containerClass="carousel-container"
           removeArrowOnDeviceType={['tablet', 'mobile', 'desktop']}

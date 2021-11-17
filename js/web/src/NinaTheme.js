@@ -191,14 +191,6 @@ export const NinaTheme = createTheme({
         },
       },
     },
-    MuiPopover: {
-      styleOverrides: {
-        root: {
-          border: '2px solid red !important',
-          background:' green !important'
-        },
-      },
-    },
     MuiListItem: {
       defaultProps: {
         disableRipple: 'true',
