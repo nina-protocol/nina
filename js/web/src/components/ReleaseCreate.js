@@ -15,7 +15,6 @@ import ScrollablePageWrapper from './ScrollablePageWrapper'
 
 const { ReleaseSettings, Dots } = ninaCommon.components
 const { ReleaseContext, NinaContext } = ninaCommon.contexts
-const { NinaClient } = ninaCommon.utils
 
 const ReleaseCreateSchema = Yup.object().shape({
   artist: Yup.string().required('Artist Name is Required'),
@@ -36,7 +35,6 @@ const ReleaseCreate = () => {
   const [track, setTrack] = useState(undefined)
   const [artwork, setArtwork] = useState()
   const [releasePubkey, setReleasePubkey] = useState(undefined)
-  const [pressingFee, setPressingFee] = useState(undefined)
   const [release, setRelease] = useState(undefined)
   const [buttonText, setButtonText] = useState('Publish Release')
   const [pending, setPending] = useState(false)
@@ -73,23 +71,6 @@ const ReleaseCreate = () => {
     }
   }, [releaseState.tokenData[releasePubkey]])
 
-  useEffect(() => {
-    const calculateFee = async (artwork, track, releaseForm) => {
-      const { amount, retailPrice } = releaseForm
-
-      const ninaVaultFee = NinaClient.pressingFeeCalculator(
-        amount,
-        0,
-        retailPrice
-      )
-      setPressingFee(ninaVaultFee)
-    }
-
-    if (artwork && track && formValues.releaseForm) {
-      calculateFee(artwork, track, formValues.releaseForm)
-    }
-  }, [track, artwork, formValues])
-
   const handleFormChange = async (values) => {
     setFormValues({
       ...formValues,
@@ -108,12 +89,11 @@ const ReleaseCreate = () => {
       const data = {
         retailPrice: releaseForm.retailPrice,
         amount: releaseForm.amount,
-        pressingFee,
         artistTokens: releaseForm.artistTokens,
         resalePercentage: releaseForm.resalePercentage,
         catalogNumber: releaseForm.catalogNumber,
       }
-      const success = await releaseCreate(data, pressingFee)
+      const success = await releaseCreate(data)
       if (success) {
         enqueueSnackbar('Uploading metadata...', {
           variant: 'info',
@@ -193,7 +173,6 @@ const ReleaseCreate = () => {
               onChange={handleFormChange}
               values={formValues.releaseForm}
               ReleaseCreateSchema={ReleaseCreateSchema}
-              pressingFee={pressingFee}
             />
           </CreateFormWrapper>
 
@@ -205,7 +184,6 @@ const ReleaseCreate = () => {
               onClick={handleSubmit}
               disabled={
                 pending ||
-                !pressingFee ||
                 !formIsValid ||
                 artwork?.meta.status === 'uploading' ||
                 track?.meta.status === 'uploading'

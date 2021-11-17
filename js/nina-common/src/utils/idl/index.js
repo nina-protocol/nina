@@ -36,27 +36,12 @@ const idl = {
           "isSigner": false
         },
         {
-          "name": "authorityReleaseTokenAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
           "name": "paymentMint",
           "isMut": false,
           "isSigner": false
         },
         {
           "name": "royaltyTokenAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "vaultTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "vault",
           "isMut": false,
           "isSigner": false
         },
@@ -125,11 +110,6 @@ const idl = {
           "isSigner": false
         },
         {
-          "name": "authorityReleaseTokenAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
           "name": "authorityPublishingCreditTokenAccount",
           "isMut": true,
           "isSigner": false
@@ -146,16 +126,6 @@ const idl = {
         },
         {
           "name": "royaltyTokenAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "vaultTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "vault",
           "isMut": false,
           "isSigner": false
         },
