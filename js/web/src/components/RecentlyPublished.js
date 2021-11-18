@@ -15,13 +15,13 @@ const RecentlyPublished = (props) => {
   const { releases } = props
 
   const arrowStyle = {
-    top: '-14% !important',
+    top: '-12% !important',
     position: 'absolute',
     cursor: 'pointer'
   }
 
   const CustomNextArrow = ({onClick}) => (
-    <NavigateNextIcon onClick={onClick} sx={{...arrowStyle, right: '30px'}} />
+    <NavigateNextIcon onClick={onClick} sx={{...arrowStyle, right: '25px'}} />
   )
   const CustomPrevArrow = ({onClick}) => (
     <NavigateBeforeIcon onClick={onClick} sx={{...arrowStyle, right: '70px'}} />
@@ -37,18 +37,17 @@ const RecentlyPublished = (props) => {
     )
   }
   return (
-    <Box sx={{minHeight: '250px'}}>
+    <Box sx={{minHeight: '250px', border: '2px solid red'}}>
       {releases?.length > 0 && (
         <Slider 
           dots="false"
           infinite="true"
-          speed={1000}
-          autoplay="true"
+          speed={1500}
+          // autoplay="true"
           autoplaySpeed={2500}
           slidesToShow={3}
           slidesToScroll={1}
           alignItems="left" 
-          useTransform
           nextArrow={<CustomNextArrow />}
           prevArrow={<CustomPrevArrow />}
           >
@@ -89,13 +88,13 @@ const RecentlyPublished = (props) => {
 
 const ReleaseSlideWrapper = styled(Box)(() => ({
   textAlign: "center",
-  display: 'flex'
+  display: 'flex',
+  justifyContent: 'center'
 }))
 
 const ReleaseSlide = styled(Box)(({ theme }) => ({
-  width: '250px',
   textAlign: 'left',
-  // paddingRight: '30px',
+  padding: '0 30px',
   margin: 'auto',
   '& a': {
     width: '100%',
