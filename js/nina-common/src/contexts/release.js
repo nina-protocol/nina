@@ -478,12 +478,10 @@ const releaseContextHelper = ({
 
   const addRoyaltyRecipient = async (release, updateData, releasePubkey) => {
     const nina = await NinaClient.connect(provider)
-
+    const releasePublicKey = new anchor.web3.PublicKey(releasePubkey)
     try {
       if (!release) {
-        release = await nina.program.account.release.fetch(
-          new anchor.web3.PublicKey(releasePubkey)
-        )
+        release = await nina.program.account.release.fetch(releasePublicKey)
       }
 
       const recipientPublicKey = new anchor.web3.PublicKey(
@@ -515,7 +513,7 @@ const releaseContextHelper = ({
         accounts: {
           authority: provider.wallet.publicKey,
           authorityTokenAccount,
-          release,
+          release: releasePublicKey,
           releaseSigner: release.releaseSigner,
           royaltyTokenAccount: release.royaltyTokenAccount,
           newRoyaltyRecipient: recipientPublicKey,
@@ -524,7 +522,7 @@ const releaseContextHelper = ({
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         },
       }
-
+      console.log('request: ', request)
       if (newRoyaltyRecipientTokenAccountIx) {
         request.instructions = [newRoyaltyRecipientTokenAccountIx]
       }

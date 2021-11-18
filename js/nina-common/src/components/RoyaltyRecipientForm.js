@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 import { styled } from '@mui/material/styles'
+import { useSnackbar } from 'notistack'
 import { Formik, Field, Form } from 'formik'
 import Button from '@mui/material/Button'
 import { TextField, Typography, Box } from '@mui/material'
@@ -10,6 +11,7 @@ import NinaClient from '../utils/client'
 const RoyaltyRecipientForm = (props) => {
   const { release, userShare, setUserDisplayShare, releasePubkey, toggleForm } =
     props
+  const { enqueueSnackbar } = useSnackbar()
   const { addRoyaltyRecipient } = useContext(ReleaseContext)
   const { addRoyaltyRecipientByTwitterHandle } = useContext(NameContext)
 
@@ -41,15 +43,22 @@ const RoyaltyRecipientForm = (props) => {
           percentShare: 20,
         }}
         onSubmit={async (values, { resetForm, initialValues }) => {
+          let result
+          enqueueSnackbar('Transferring Royalty...', {
+            variant: 'info',
+          })
           if (values.recipientAddress.length !== 44) {
-            await addRoyaltyRecipientByTwitterHandle(
+            result = await addRoyaltyRecipientByTwitterHandle(
               release,
               values,
               releasePubkey
             )
           } else {
-            await addRoyaltyRecipient(release, values, releasePubkey)
+            result = await addRoyaltyRecipient(release, values, releasePubkey)
           }
+          enqueueSnackbar(result.msg, {
+            variant: result.success ? 'success' : 'warn',
+          })
           resetForm(initialValues)
           toggleForm()
         }}
