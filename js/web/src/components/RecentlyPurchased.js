@@ -138,7 +138,7 @@ const RecentlyPurchased = (props) => {
                 return (
                   <Slide key={i}>
                     <Link
-                      to={'/releases/' + release.releasePubkey}
+                      to={release.releasePubkey}
                       style={{ width: '400px' }}
                     >
                       <SmoothImage

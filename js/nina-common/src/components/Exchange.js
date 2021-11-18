@@ -198,6 +198,7 @@ const Exchange = (props) => {
         <StyledExchange>
           <BuySell
             {...props}
+            symbol={metadata?.symbol}
             release={release}
             isBuy={true}
             onSubmit={(exchange, isBuy, amount) =>
@@ -216,6 +217,7 @@ const Exchange = (props) => {
         <StyledExchange>
           <BuySell
             {...props}
+            symbol={metadata?.symbol}
             release={release}
             isBuy={false}
             onSubmit={(exchange, isBuy, amount) =>
@@ -269,6 +271,7 @@ const Exchange = (props) => {
             }
             cancelTransaction={() => setExchangeAwaitingConfirm(undefined)}
             isAccept={true}
+            metadata={metadata}
           />
         )}
       </ExchangeWrapper>

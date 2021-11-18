@@ -6,6 +6,7 @@ import Input from '@mui/material/Input'
 import Box from '@mui/material/Box'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { ExchangeContext } from '../contexts'
+import { NinaClient } from '../utils'
 import Dots from './Dots'
 
 const BuySellForm = (props) => {
@@ -61,7 +62,7 @@ const BuySellForm = (props) => {
           className={`${classes.buySellFormInputLabel}`}
           onChange={(e) => handleChange(e)}
           disableUnderline={true}
-          placeholder="Enter price in SOL"
+          placeholder={`Enter price in ${NinaClient.isUsdc(release.paymentMint) ? 'USDC' : 'SOL'}`}
           value={amount !== undefined ? amount : ''}
         />
         <Button
