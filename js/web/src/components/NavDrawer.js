@@ -178,6 +178,7 @@ const StyledList = styled(List)(({ theme }) => ({
     '& .MuiListItemText-root': {
       margin: 0,
       '& span': {
+        textTransform: 'capitalize',
         fontSize: '18px !important',
         lineHeight: '20.7px !important',
       }

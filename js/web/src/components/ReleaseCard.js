@@ -8,26 +8,44 @@ import { Typography } from '@mui/material'
 import ninaRecord from '../assets/nina-record.png'
 import { Fade } from '@mui/material'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
+import ControlPointIcon from '@mui/icons-material/ControlPoint';
+import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined';
 
 const { AudioPlayerContext } = ninaCommon.contexts
 
 const ReleaseCard = (props) => {
   const { artwork, metadata, preview, releasePubkey, track } = props
-  const { updateTxid } = useContext(AudioPlayerContext)
+  const { updateTxid, addTrackToQueue, isPlaying, setIsPlaying} = useContext(AudioPlayerContext)
   return (
     <StyledReleaseCard>
       <StyledReleaseInfo>
         {track && (
-          <Fade in={true}>
+          <CtaWrapper sx={{display: 'flex'}}>
             <Button
               onClick={() => {
+                isPlaying ?  
+                setIsPlaying(false)
+                :
                 updateTxid(track.properties.files[0].uri, releasePubkey, true)
               }}
               sx={{ height: '22px', width: '28px' }}
             >
-              <PlayCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
+              {!isPlaying && 
+                <PlayCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
+              }
+              {isPlaying && 
+                <PauseCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
+              }
             </Button>
-          </Fade>
+            <Button
+              onClick={() => {
+                addTrackToQueue(releasePubkey)
+              }}
+              sx={{ height: '22px', width: '28px' }}
+            >
+              <ControlPointIcon sx={{color: 'white'}} />
+            </Button>
+          </CtaWrapper>
         )}
 
         {metadata && (
@@ -65,6 +83,13 @@ const ReleaseCard = (props) => {
 const StyledReleaseCard = styled(Box)(() => ({
   width: '100%',
   margin: 'auto',
+}))
+
+const CtaWrapper = styled(Box)(() => ({
+  '& .MuiButton-root': {
+    width: '21px',
+    marginRight: "10px"
+  },
 }))
 
 const StyledReleaseInfo = styled(Box)(({ theme }) => ({

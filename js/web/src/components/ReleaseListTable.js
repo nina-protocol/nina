@@ -212,7 +212,6 @@ const ReleaseListTable = (props) => {
         <StyledCollectButton
           disabled={!collectable}
           onClick={(e) => handleCollect(e, recipient, releasePubkey)}
-          // sx={{ padding: '0px !important' }}
           className={collectable ? 'collectable' : ''}
         >
           Collect

@@ -37,7 +37,7 @@ const RecentlyPublished = (props) => {
     )
   }
   return (
-    <Box sx={{minHeight: '250px', border: '2px solid red'}}>
+    <Box sx={{minHeight: '250px'}}>
       {releases?.length > 0 && (
         <Slider 
           dots="false"
