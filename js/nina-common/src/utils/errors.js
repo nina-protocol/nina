@@ -1,9 +1,10 @@
 export const ninaErrorHandler = (error, errorString) => {
   console.warn(error)
-
+  console.log('errrr: ', error.toString())
   let msg
   if (
     error.toString().includes('0x1') ||
+    error.toString().includes('The given account is not owned by the executing program') ||
     error.toString().includes(`Cannot read property 'pubkey' of undefined`)
   ) {
     msg = 'Transaction failed: Insufficient funds.'
