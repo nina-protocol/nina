@@ -39,7 +39,7 @@ const HomePage = () => {
           <Typography
             variant="body1"
             align="left"
-            sx={{paddingLeft: '30px'}}
+            sx={{paddingLeft:{md:'30px', xs: "0"}}}
             className={classes.sectionHeader}
           >
             New Releases

@@ -172,7 +172,6 @@ const ReleaseListTable = (props) => {
   const handleAddTrackToQueue = (e, releasePubkey) => {
     e.stopPropagation()
     e.preventDefault()
-    console.log('uquququq');
     addTrackToQueue(releasePubkey)
   }
 
