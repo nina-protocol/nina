@@ -80,14 +80,10 @@ const ReleaseList = () => {
           {sales > 0 && (
           <ReleaseStats>
             <Typography variant="h1" align="left">
-                Well Done! You have released <span>{userPublishedReleases.length}</span> tracks and sold
-                <span> {sales}</span> of <span>{editionTotal} </span> 
-                  for a total of <span>{NinaClient.nativeToUiString(revenue, USDC_MINT_ID)}</span>.             
-                  
-                  Your releases have sold <span>{exchanges}</span> times on the secondary market for a total of <span>{NinaClient.nativeToUiString(exchangeSales, USDC_MINT_ID)}</span>.
-            </Typography>
-            <Typography>
-              ^^ we need to dbl check this
+                You have released <span>{userPublishedReleases.length}</span> {userPublishedReleases.length === 1 ? 'track' : 'tracks'} and sold
+                <span> {sales}</span> of <span>{editionTotal} </span> available editions 
+                  for a total of <span>{NinaClient.nativeToUiString(revenue, USDC_MINT_ID)}</span>.                               
+                  {`  You've`} had <span>{exchanges}</span> { exchanges === 1 ? 'sale' : 'sales'} on the secondary market for a total of <span>{NinaClient.nativeToUiString(exchangeSales, USDC_MINT_ID)}</span>.
             </Typography>
           </ReleaseStats>
           )}
