@@ -522,7 +522,7 @@ const releaseContextHelper = ({
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         },
       }
-      console.log('request: ', request)
+
       if (newRoyaltyRecipientTokenAccountIx) {
         request.instructions = [newRoyaltyRecipientTokenAccountIx]
       }
@@ -838,6 +838,7 @@ const releaseContextHelper = ({
 
     const response = await fetch(path)
     const releaseIds = await response.json()
+
     await fetchAndSaveReleasesToState(releaseIds)
   }
 
@@ -846,6 +847,7 @@ const releaseContextHelper = ({
   }
 
   const getReleasesPublishedByUser = async () => {
+    await getReleasesHandler(lookupTypes.REVENUE_SHARE)
     await getReleasesHandler(lookupTypes.PUBLISHED_BY)
   }
 
@@ -1050,6 +1052,9 @@ const releaseContextHelper = ({
           metadata
         ) {
           releaseData.recipient = recipient
+          releaseData.tokenData = tokenData
+          releaseData.metadata = metadata
+          releaseData.releasePubkey = releasePubkey
         }
       })
 

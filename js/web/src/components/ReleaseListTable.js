@@ -36,7 +36,6 @@ const descendingComparator = (a, b, orderBy) => {
       break
 
     case 'collect':
-      console.log(a)
       a = parseFloat(a[orderBy].props.children[1]?.props?.children?.replace(/[^\d.-]/g, '')) || 0
       b = parseFloat(b[orderBy].props.children[1]?.props?.children?.replace(/[^\d.-]/g, '')) || 0
       break
