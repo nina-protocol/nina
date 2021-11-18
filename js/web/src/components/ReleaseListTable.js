@@ -97,12 +97,11 @@ const EnhancedTableHead = (props) => {
 
   if (tableType === 'userPublished') {
     headCells.push({ id: 'price', numeric: true, label: 'Price' })
-    headCells.push({ id: 'edition', numeric: true, label: 'Edition' })
     headCells.push({ id: 'sold', numeric: true, label: 'Sold' })
     headCells.push({ id: 'share', numeric: false, label: 'Share' })
+    headCells.push({ id: 'date', numeric: false, label: 'Release Date' })
     headCells.push({ id: 'collected', numeric: true, label: 'Earnings' })
     headCells.push({ id: 'collect', numeric: false, label: 'Collect' })
-    headCells.push({ id: 'date', numeric: false, label: 'Release Date' })
   }
 
   if (tableType === 'userRoyalty') {
@@ -227,19 +226,18 @@ const ReleaseListTable = (props) => {
         tokenData.price.toNumber(),
         tokenData.paymentMint
       )}`
-      rowData['edition'] = tokenData.totalSupply.toNumber()
-      rowData['sold'] = tokenData.saleCounter.toNumber()
+      rowData['sold'] = `${tokenData.saleCounter.toNumber()} / ${tokenData.totalSupply.toNumber()} `
       rowData['share'] = `${recipient.percentShare.toNumber() / 10000}%`
-      rowData['collected'] = `${NinaClient.nativeToUiString(
-        recipient.collected.toNumber(),
-        tokenData.paymentMint
-      )}`
-      rowData['collect'] = collectButton
       rowData['date'] = `${
         new Date(tokenData.releaseDatetime.toNumber() * 1000)
           .toISOString()
           .split('T')[0]
       }`
+      rowData['collected'] = `${NinaClient.nativeToUiString(
+        recipient.collected.toNumber(),
+        tokenData.paymentMint
+      )}`
+      rowData['collect'] = collectButton
     }
     return rowData
   })
@@ -304,7 +302,7 @@ const ReleaseListTable = (props) => {
                           )
                         } else {
                           return (
-                            <TableCell align="center" key={cellName}>
+                            <TableCell align="center" size="small" key={cellName}>
                               {cellData}
                             </TableCell>
                           )
@@ -330,7 +328,7 @@ const classes = {
 }
 
 const StyledPaper = styled(Paper)(({ theme, tableType }) => ({
-  width: tableType === 'userPublished' ? '1120px' : '920px',
+  width: tableType === 'userPublished' ? '870px' : '800px',
   margin: 'auto',
   [`& .${classes.table}`]: {
     minWidth: 750,

@@ -211,7 +211,7 @@ const ReleaseCreate = () => {
 
       {wallet?.connected && npcAmountHeld < 1 && (
         <ScrollablePageWrapper style={{display: 'flex'}}>
-          <NpcFormWrapper>
+          <NpcMessage>
             <Typography variant="h3">
               Currently, Nina Publishing Credits (NPCs) are required to access the publishing flow. 
             </Typography>
@@ -225,7 +225,7 @@ const ReleaseCreate = () => {
             <Typography variant="h3">
               Check our <a href="/faq">FAQ</a> or hit us at <a target="_blank" rel="noreferrer" href="href=mailto:artists@nina.market">artists@nina.market</a> with any questions.
             </Typography>
-          </NpcFormWrapper>
+          </NpcMessage>
         </ScrollablePageWrapper>
       )}
     </>
@@ -253,9 +253,10 @@ const CreateCta = styled(Box)(({ theme }) => ({
   },
 }))
 
-const NpcFormWrapper = styled(Box)(({theme}) => ({
+const NpcMessage = styled(Box)(({theme}) => ({
   textAlign: 'left',
   margin: 'auto',
+  width: '55%',
   '& .MuiTypography-root': {
     paddingBottom: '10px'
   },
