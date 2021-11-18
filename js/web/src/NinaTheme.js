@@ -184,6 +184,13 @@ export const NinaTheme = createTheme({
         }
       }
     },
+    MuiSvgIcon: {
+      styleOverrides: {
+        root: {
+          cursor: 'pointer'
+        }
+      }
+    },
     MuiTypography: {
       styleOverrides: {
         root: {

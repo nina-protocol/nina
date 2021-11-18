@@ -226,9 +226,9 @@ const DroppableComponent =
 
 const StyledQueueList = styled(Box)(({ theme }) => ({
   width: '700px',
-  margin: 'auto',
+  margin: ' 140px auto',
   overflowY: 'scroll',
-  paddingTop: '140px',
+  // paddingTop: '140px',
   [theme.breakpoints.down('md')]: {
     width: '80vw',
     paddingTop: '0',
