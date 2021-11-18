@@ -9,7 +9,7 @@ import 'react-tabs/style/react-tabs.css'
 import NinaClient from '../utils/client'
 
 const ExchangeModal = (props) => {
-  const { toggleOverlay, showOverlay, amount, onSubmit, release, isAccept } =
+  const { toggleOverlay, showOverlay, amount, onSubmit, release, isAccept, metadata } =
     props
 
   const [pendingConfirm, setPendingConfirm] = useState(false)
@@ -41,22 +41,22 @@ const ExchangeModal = (props) => {
       <Fade in={showOverlay}>
         <Box className={classes.paper}>
           <Typography variant="overline">
-            YOU ARE {isAccept ? 'SELLING' : 'CREATING A LISTING TO SELL'} 1 SOFT
-            FOR {NinaClient.nativeToUiString(nativeAmount, release.paymentMint)}
+            YOU ARE {isAccept ? 'SELLING' : 'CREATING A LISTING TO SELL'} 1 {`${metadata?.symbol} `}
+            FOR {` ${NinaClient.nativeToUiString(nativeAmount, release.paymentMint)}`}
             .
           </Typography>
           <Typography variant="subtitle" className={classes.receivingAmount}>
-            {isAccept ? '' : 'UPON SALE '}YOU WILL RECEIVE ◎
-            {NinaClient.nativeToUiString(sellerAmount, release.paymentMint)}.
+            {isAccept ? '' : 'UPON SALE '}YOU WILL RECEIVE
+            {` ${NinaClient.nativeToUiString(sellerAmount, release.paymentMint)}`}.
           </Typography>
           <Typography variant="overline">
-            THE ARTIST WILL RECEIVE A ROYALTY OF ◎
-            {NinaClient.nativeToUiString(artistFee, release.paymentMint)} [
+            THE ARTIST WILL RECEIVE A ROYALTY OF
+            {` ${NinaClient.nativeToUiString(artistFee, release.paymentMint)}`} [
             {release.resalePercentage.toNumber() / 10000}%]
           </Typography>
           <Typography variant="overline">
-            THE PROTOCOL WILL RECEIVE ◎
-            {NinaClient.nativeToUiString(vaultFee, release.paymentMint)} [
+            THE PROTOCOL WILL RECEIVE
+            {` ${NinaClient.nativeToUiString(vaultFee, release.paymentMint)}`} [
             {NinaClient.NINA_VAULT_FEE / 10000}%]
           </Typography>
           <Button
