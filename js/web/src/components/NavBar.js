@@ -1,6 +1,6 @@
 import React, { useContext, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
-import Typography from '@mui/material/Typography'
+import {Typography, Box} from '@mui/material'
 import ninaCommon from 'nina-common'
 import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
@@ -11,6 +11,7 @@ import {
   WalletMultiButton,
 } from '@solana/wallet-adapter-material-ui'
 import Breadcrumbs from './Breadcrumbs'
+import MobileWalletModal from './MobileWalletModal'
 const { NinaContext } = ninaCommon.contexts
 
 const NavBar = () => {
@@ -37,28 +38,32 @@ const NavBar = () => {
       </Logo>
 
       <div className={classes.nav__right}>
-        <Typography variant="subtitle1" className={classes.nav__balance}>
-          {wallet?.connected ? `Balance: $${usdcBalance}` : null}
-        </Typography>
-        <div className={classes.nav__button}>
-          <StyledWalletDialogProvider featuredWallets={4}>
-            <StyledWalletButton>
-              <Typography variant="subtitle1" sx={{ textTransform: 'none' }}>
-                {wallet?.connected
-                  ? `${wallet.wallet.name} – ${walletDisplay}`
-                  : 'Connect Wallet'}
-              </Typography>
-            </StyledWalletButton>
-            <ConnectionDot
-              className={`${classes.connectionDot} ${
-                wallet?.connected ? 'connected' : ''
-              }`}
-            ></ConnectionDot>
-            {/* {userTwitterHandle && 
-              <a href={`https://twitter.com/${userTwitterHandle}`} target="_blank" rel="noreferrer">(@{userTwitterHandle})</a>
-            } */}
-          </StyledWalletDialogProvider>
-        </div>
+        <DesktopWalletWrapper>
+          <Typography variant="subtitle1" className={classes.nav__balance}>
+            {wallet?.connected ? `Balance: $${usdcBalance}` : null}
+          </Typography>
+          <div className={classes.nav__button}>
+            <StyledWalletDialogProvider featuredWallets={4}>
+              <StyledWalletButton>
+                <Typography variant="subtitle1" sx={{ textTransform: 'none' }}>
+                  {wallet?.connected
+                    ? `${wallet.wallet.name} – ${walletDisplay}`
+                    : 'Connect Wallet'}
+                </Typography>
+              </StyledWalletButton>
+              <ConnectionDot
+                className={`${classes.connectionDot} ${
+                  wallet?.connected ? 'connected' : ''
+                }`}
+              ></ConnectionDot>
+              </StyledWalletDialogProvider>
+
+          </div>
+        </DesktopWalletWrapper>
+
+        <MobileWalletWrapper>
+          <MobileWalletModal />
+        </MobileWalletWrapper>
       </div>
     </Root>
   )
@@ -104,12 +109,18 @@ const Root = styled('nav')(({ theme }) => ({
 
   [`& .${classes.nav__right}`]: {
     display: 'flex',
-    height: '100%',
+    height: '100%', 
+    [theme.breakpoints.down('md')]: {
+      position: 'absolute',
+      right: 0,
+      top: '10px'
+    },
   },
 
   [`& .${classes.nav__balance}`]: {
     margin: '0',
     color: `${theme.palette.blue}`,
+
   },
 
   [`& .${classes.nav__logo}`]: {
@@ -121,6 +132,19 @@ const Root = styled('nav')(({ theme }) => ({
     display: 'flex',
     alignItems: 'flex-start',
     marginRight: '24px',
+  },
+}))
+
+const DesktopWalletWrapper = styled(Box)(({theme}) => ({
+  display: 'flex',
+  [theme.breakpoints.down('md')]: {
+    display: 'none'
+  },
+}))
+const MobileWalletWrapper = styled(Box)(({theme}) => ({
+  display: 'none',
+  [theme.breakpoints.down('md')]: {
+    display: 'flex'
   },
 }))
 
