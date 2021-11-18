@@ -47,11 +47,11 @@ const RecentlyPublished = (props) => {
           responsive={responsive}
           infinite={true}
           autoPlay={true}
-          autoPlaySpeed={2500}
+          // autoPlaySpeed={3000}
           keyBoardControl={true}
           transitionDuration={1000}
           customTransition="transform 1000ms ease-in-out"
-          slidesToSlide={3}
+          slidesToSlide={1}
           containerClass="carousel-container"
           removeArrowOnDeviceType={['tablet', 'mobile', 'desktop']}
         >

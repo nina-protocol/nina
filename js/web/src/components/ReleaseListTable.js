@@ -207,19 +207,24 @@ const ReleaseListTable = (props) => {
 
     if (tableType === 'userPublished') {
       const recipient = release.recipient
+      const collectable = recipient.owed.toNumber() > 0
       const collectButton = (
-        <Button
-          variant="contained"
-          color="primary"
-          disabled={recipient.owed.toNumber() === 0}
+        <StyledCollectButton
+          disabled={!collectable}
           onClick={(e) => handleCollect(e, recipient, releasePubkey)}
-          sx={{ padding: '0px !important' }}
+          // sx={{ padding: '0px !important' }}
+          className={collectable ? 'collectable' : ''}
         >
-          {NinaClient.nativeToUiString(
-            recipient.owed.toNumber(),
-            tokenData.paymentMint
-          )}
-        </Button>
+          Collect
+          {collectable && 
+            <span>
+              {NinaClient.nativeToUiString(
+                recipient.owed.toNumber(),
+                tokenData.paymentMint
+              )}
+            </span>
+          }
+        </StyledCollectButton>
       )
 
       rowData['price'] = `${NinaClient.nativeToUiString(
@@ -328,7 +333,7 @@ const classes = {
 }
 
 const StyledPaper = styled(Paper)(({ theme, tableType }) => ({
-  width: tableType === 'userPublished' ? '870px' : '800px',
+  width: tableType === 'userPublished' ? '1000px' : '800px',
   margin: 'auto',
   [`& .${classes.table}`]: {
     minWidth: 750,
@@ -350,6 +355,24 @@ const StyledPaper = styled(Paper)(({ theme, tableType }) => ({
     width: '40px',
     cursor: 'pointer',
   },
+}))
+
+const StyledCollectButton = styled(Button)(({theme}) => ({
+  color: `${theme.palette.blue} !important`,
+  display: 'flex',
+  flexDirection: 'column',
+  textAlign: 'left',
+  ...theme.helpers.baseFont,
+  '&.collectable': {
+    // paddingTop: '27px !important'
+  },
+  '&.Mui-disabled': {
+    color: `${theme.palette.grey.primary} !important`,
+  },
+  '& span': {
+    color: `${theme.palette.grey.primary}`,
+    fontSize: '10px'
+  }
 }))
 
 export default ReleaseListTable
