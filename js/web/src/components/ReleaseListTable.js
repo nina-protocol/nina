@@ -97,12 +97,11 @@ const EnhancedTableHead = (props) => {
 
   if (tableType === 'userPublished') {
     headCells.push({ id: 'price', numeric: true, label: 'Price' })
-    headCells.push({ id: 'edition', numeric: true, label: 'Edition' })
     headCells.push({ id: 'sold', numeric: true, label: 'Sold' })
     headCells.push({ id: 'share', numeric: false, label: 'Share' })
+    headCells.push({ id: 'date', numeric: false, label: 'Release Date' })
     headCells.push({ id: 'collected', numeric: true, label: 'Earnings' })
     headCells.push({ id: 'collect', numeric: false, label: 'Collect' })
-    headCells.push({ id: 'date', numeric: false, label: 'Release Date' })
   }
 
   if (tableType === 'userRoyalty') {
@@ -208,38 +207,42 @@ const ReleaseListTable = (props) => {
 
     if (tableType === 'userPublished') {
       const recipient = release.recipient
+      const collectable = recipient.owed.toNumber() > 0
       const collectButton = (
-        <Button
-          variant="contained"
-          color="primary"
-          disabled={recipient.owed.toNumber() === 0}
+        <StyledCollectButton
+          disabled={!collectable}
           onClick={(e) => handleCollect(e, recipient, releasePubkey)}
-          sx={{ padding: '0px !important' }}
+          // sx={{ padding: '0px !important' }}
+          className={collectable ? 'collectable' : ''}
         >
-          {NinaClient.nativeToUiString(
-            recipient.owed.toNumber(),
-            tokenData.paymentMint
-          )}
-        </Button>
+          Collect
+          {collectable && 
+            <span>
+              {NinaClient.nativeToUiString(
+                recipient.owed.toNumber(),
+                tokenData.paymentMint
+              )}
+            </span>
+          }
+        </StyledCollectButton>
       )
 
       rowData['price'] = `${NinaClient.nativeToUiString(
         tokenData.price.toNumber(),
         tokenData.paymentMint
       )}`
-      rowData['edition'] = tokenData.totalSupply.toNumber()
-      rowData['sold'] = tokenData.saleCounter.toNumber()
+      rowData['sold'] = `${tokenData.saleCounter.toNumber()} / ${tokenData.totalSupply.toNumber()} `
       rowData['share'] = `${recipient.percentShare.toNumber() / 10000}%`
-      rowData['collected'] = `${NinaClient.nativeToUiString(
-        recipient.collected.toNumber(),
-        tokenData.paymentMint
-      )}`
-      rowData['collect'] = collectButton
       rowData['date'] = `${
         new Date(tokenData.releaseDatetime.toNumber() * 1000)
           .toISOString()
           .split('T')[0]
       }`
+      rowData['collected'] = `${NinaClient.nativeToUiString(
+        recipient.collected.toNumber(),
+        tokenData.paymentMint
+      )}`
+      rowData['collect'] = collectButton
     }
     return rowData
   })
@@ -304,7 +307,7 @@ const ReleaseListTable = (props) => {
                           )
                         } else {
                           return (
-                            <TableCell align="center" key={cellName}>
+                            <TableCell align="center" size="small" key={cellName}>
                               {cellData}
                             </TableCell>
                           )
@@ -330,7 +333,7 @@ const classes = {
 }
 
 const StyledPaper = styled(Paper)(({ theme, tableType }) => ({
-  width: tableType === 'userPublished' ? '1120px' : '920px',
+  width: tableType === 'userPublished' ? '1000px' : '800px',
   margin: 'auto',
   [`& .${classes.table}`]: {
     minWidth: 750,
@@ -352,6 +355,24 @@ const StyledPaper = styled(Paper)(({ theme, tableType }) => ({
     width: '40px',
     cursor: 'pointer',
   },
+}))
+
+const StyledCollectButton = styled(Button)(({theme}) => ({
+  color: `${theme.palette.blue} !important`,
+  display: 'flex',
+  flexDirection: 'column',
+  textAlign: 'left',
+  ...theme.helpers.baseFont,
+  '&.collectable': {
+    // paddingTop: '27px !important'
+  },
+  '&.Mui-disabled': {
+    color: `${theme.palette.grey.primary} !important`,
+  },
+  '& span': {
+    color: `${theme.palette.grey.primary}`,
+    fontSize: '10px'
+  }
 }))
 
 export default ReleaseListTable

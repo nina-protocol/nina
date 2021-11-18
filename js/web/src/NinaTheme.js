@@ -136,7 +136,7 @@ export const NinaTheme = createTheme({
           boxShadow: 'none',
           minWidth: 'unset !important',
           '&:hover': {
-            backgroundColor: 'red',
+            backgroundColor: `${colors.transparent} !important`,
           },
           '&.MuiButton-outlined': {
             borderRadius: '0px',
@@ -177,18 +177,17 @@ export const NinaTheme = createTheme({
         },
       },
     },
+    MuiPopover: {
+      styleOverrides: {
+        root: {
+          background: colors.transparent
+        }
+      }
+    },
     MuiTypography: {
       styleOverrides: {
         root: {
           letterSpacing: '0.02em !important',
-        },
-      },
-    },
-    MuiPopover: {
-      styleOverrides: {
-        root: {
-          border: '2px solid red !important',
-          background:' green !important'
         },
       },
     },

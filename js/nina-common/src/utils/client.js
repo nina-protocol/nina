@@ -1,5 +1,5 @@
 import * as anchor from '@project-serum/anchor'
-import { TokenInstructions } from '@project-serum/serum'
+import {TokenInstructions} from '@project-serum/serum'
 import Arweave from 'arweave'
 import CoinGecko from 'coingecko-api'
 import idl from './idl'
@@ -73,6 +73,7 @@ export default class NinaClient {
   static WRAPPED_SOL_MINT_ID = new anchor.web3.PublicKey(
     'So11111111111111111111111111111111111111112'
   )
+
 
   static endpoints = {
     arweave: ENDPOINT_ARWEAVE,
