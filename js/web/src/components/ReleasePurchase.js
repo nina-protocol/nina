@@ -191,9 +191,6 @@ const StyledUserAmount = styled(Box)(({ theme }) => ({
 
 const MarketButton = styled(Button)(({ theme }) => ({
   marginTop: `${theme.spacing(1)} !important`,
-  [theme.breakpoints.down('md')]: {
-    display: 'none !important',
-  },
 }))
 
 export default ReleasePurchase

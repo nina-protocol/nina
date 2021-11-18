@@ -18,7 +18,6 @@ import ControlPointIcon from '@mui/icons-material/ControlPoint';
 
 const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
-// const ARWEAVE_GATEWAY_ENDPOINT = NinaClient.endpoints.arweave
 
 const descendingComparator = (a, b, orderBy) => {
   switch (orderBy) {

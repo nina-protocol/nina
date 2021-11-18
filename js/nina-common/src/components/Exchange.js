@@ -198,7 +198,6 @@ const Exchange = (props) => {
         <StyledExchange>
           <BuySell
             {...props}
-            symbol={metadata?.symbol}
             release={release}
             isBuy={true}
             onSubmit={(exchange, isBuy, amount) =>
@@ -217,7 +216,6 @@ const Exchange = (props) => {
         <StyledExchange>
           <BuySell
             {...props}
-            symbol={metadata?.symbol}
             release={release}
             isBuy={false}
             onSubmit={(exchange, isBuy, amount) =>
@@ -271,7 +269,6 @@ const Exchange = (props) => {
             }
             cancelTransaction={() => setExchangeAwaitingConfirm(undefined)}
             isAccept={true}
-            metadata={metadata}
           />
         )}
       </ExchangeWrapper>
@@ -297,7 +294,11 @@ const ExchangeWrapper = styled(Box)(({ theme }) => ({
   justifyContent: 'space-between',
   overflowX: 'scroll',
   width: '100%',
-
+  [theme.breakpoints.down('md')]: {
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '74vh'
+  },
   [`& .${classes.updateMessage}`]: {
     fontSize: '10px',
     position: 'absolute',
@@ -350,10 +351,15 @@ const StyledExchange = styled(Box)(() => ({
   flexDirection: 'column',
 }))
 
-const ExchangeCopy = styled(Box)(() => ({
+const ExchangeCopy = styled(Box)(({theme}) => ({
   display: 'grid',
   gridTemplateColumns: 'repeat(3, 1fr)',
   gridColumn: '1/3',
+  [theme.breakpoints.down('md')]: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%'
+  },
 }))
 
 const HistoryCtaWrapper = styled(Box)(() => ({

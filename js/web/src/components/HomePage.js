@@ -115,11 +115,14 @@ const HomePageContainer = styled('div')(({ theme }) => ({
   },
 }))
 
-const MarketMovers = styled(Box)(() => ({
+const MarketMovers = styled(Box)(({theme}) => ({
   minHeight: '400px',
   overflowX: 'visible',
   width: '60%',
   margin: 'auto',
+  [theme.breakpoints.down('md')]: {
+    width: '100%'
+  },
 }))
 
 export default HomePage

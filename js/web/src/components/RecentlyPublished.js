@@ -116,7 +116,7 @@ const RecentlyPublishedWrapper = styled(Box)(({theme}) => ({
     '&--right': {
       right: '25px',
       [theme.breakpoints.down('md')]: {
-        right: '0'
+        right: '9px'
       }
     },
     '&--left': {
@@ -153,7 +153,7 @@ const ReleaseSlide = styled(Box)(({ theme }) => ({
   },
 
   [theme.breakpoints.down('md')]: {
-    width: '36vw',
+    width: '135px',
     padding: '0',
     paddingLeft: '1px',
     margin: '0',
