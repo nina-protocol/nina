@@ -25,8 +25,7 @@ const descendingComparator = (a, b, orderBy) => {
       a = a[orderBy].toLowerCase()
       b = b[orderBy].toLowerCase()
       break
-    case 'edition':
-    case 'sold':
+
     case 'date':
       if (b[orderBy] < a[orderBy]) {
         return -1
@@ -37,15 +36,22 @@ const descendingComparator = (a, b, orderBy) => {
       break
 
     case 'collect':
-      a = parseFloat(a[orderBy].props.children.replace(/[^\d.-]/g, ''))
-      b = parseFloat(b[orderBy].props.children.replace(/[^\d.-]/g, ''))
+      console.log(a)
+      a = parseFloat(a[orderBy].props.children[1]?.props?.children?.replace(/[^\d.-]/g, '')) || 0
+      b = parseFloat(b[orderBy].props.children[1]?.props?.children?.replace(/[^\d.-]/g, '')) || 0
+      break
+
+    case 'sold':
+      a = parseFloat(a[orderBy].substring(0, a[orderBy].indexOf('/')))
+      b = parseFloat(b[orderBy].substring(0, b[orderBy].indexOf('/')))
+
       break
 
     case 'price':
     case 'collected':
     case 'share':
     default:
-      a = parseFloat(a[orderBy].replace(/[^\d.-]/g, ''))
+      a = parseFloat(a[orderBy].substring(/[^\d.-]/g, ''))
       b = parseFloat(b[orderBy].replace(/[^\d.-]/g, ''))
       break
   }
