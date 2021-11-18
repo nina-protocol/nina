@@ -187,7 +187,7 @@ const AudioPlayer = () => {
       </audio>
 
       {info && (
-        <AlbumArt to={`/releases/${info.releasePubkey}`}>
+        <AlbumArt to={`/${info.releasePubkey}`}>
           <img src={info.cover} style={{ height: '60px', width: '60px' }} />
         </AlbumArt>
       )}
@@ -260,7 +260,7 @@ const AudioPlayer = () => {
       {info && (
         <LinkWrapper>
           <Link
-            to={`/releases/${info.releasePubkey}`}
+            to={info.releasePubkey}
             style={{ marginRight: '30px' }}
           >
             <Typography variant="subtitle1" sx={{ padding: '0' }}>
@@ -268,7 +268,7 @@ const AudioPlayer = () => {
             </Typography>
           </Link>
 
-          <Link to={`/releases/${info.releasePubkey}`}>
+          <Link to={info.releasePubkey}>
             <img src={shareArrow}></img>
           </Link>
         </LinkWrapper>

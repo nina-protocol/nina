@@ -13,7 +13,7 @@ const { ReleaseContext, NinaContext, ExchangeContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
 const ReleasePurchase = (props) => {
-  const { releasePubkey, metadata } = props
+  const { releasePubkey, metadata, match } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const history = useHistory()
@@ -103,6 +103,13 @@ const ReleasePurchase = (props) => {
   const buttonDisabled =
     wallet?.connected && release.remainingSupply > 0 ? false : true
 
+  let pathString = ''
+  if (match.path.includes('releases')) {
+    pathString = '/releases'
+  } else if (match.path.includes('collection')) {
+    pathString = '/collection'
+  }
+
   return (
     <Box>
       <AmountRemaining variant="body2" align="left">
@@ -159,7 +166,7 @@ const ReleasePurchase = (props) => {
         fullWidth
         onClick={() => {
           history.push(
-            `/${wallet?.connected ? 'releases/' : ''}${releasePubkey}/market`
+            `${pathString}/${releasePubkey}/market`
           )
         }}
       >
