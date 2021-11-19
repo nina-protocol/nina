@@ -154,7 +154,7 @@ const RecentlyPurchased = (props) => {
                     </Link>
                     <Copy sx={{ paddingLeft: 2 }}>
                       <Typography variant="h3" color="blue">
-                        {`${sales} ${sales === 1 ? 'copy' : 'copies'} were sold ${dayCopy}`}
+                        {`${sales} ${sales === 1 ? 'copy was' : 'copies were'} sold ${dayCopy}`}
                       </Typography>
                       {availability}
                       {artistInfo}

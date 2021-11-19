@@ -83,12 +83,11 @@ const HomePage = () => {
           align="left"
           sx={{ paddingBottom: { md: '140px', xs: '30px' } }}
         >
-          On Nina artists keep 100% of their profits. When you sell your release
+          On Nina artists keep 100% of their sales. When you sell your release
           for $5, you receive $5 each time it is sold. Artists pay a one-time
           publishing fee to set up a release, which covers storage of audio
           files, artwork, metadata and ensures the permanent availability of
-          your release. This fee goes to Solana, the network that Nina is built
-          on.
+          your release. 
         </Typography>
       </HomePageContainer>
     </ScrollablePageWrapper>
