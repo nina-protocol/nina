@@ -228,6 +228,22 @@ const FaqPage = () => {
             . Nina is unaudited software and should be used at your own risk.
           </Typography>
         </FaqEntry>
+        <FaqEntry>
+          <Typography
+            variant="h2"
+            align="left"
+            className={classes.sectionHeader}
+          >
+            What about the effect of cryptocurrencies and Nina on the environment?
+          </Typography>
+          <Typography variant="h4" align="left">
+            Nina is built on Solana which is a proof-of-stake blockchain.  Proof-of-stake blockchains
+            run on standard servers and do not need to run resource + power intensive operations like
+            proof-of-work blockchains.  In fact, it has been <a href="https://twitter.com/aeyakovenko/status/1459235138726875139?s=20" rel="noreferrer" target="_blank">posited</a> that the cost of a transaction on
+            Solana uses less energy than a single Google search. 
+          </Typography>
+        </FaqEntry>
+
       </FaqPageContainer>
     </ScrollablePageWrapper>
   )
