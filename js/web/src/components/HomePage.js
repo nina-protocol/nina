@@ -30,10 +30,9 @@ const HomePage = () => {
           align="left"
           sx={{ padding: { md: '0 165px 140px', xs: '30px 0px' } }}
         >
-          Nina is a new infrastructure to buy, sell and stream music online. We
+          Nina is a new way to publish, stream, and purchase music. We
           put control in the artist’s hands and link them directly with their
-          fans. 
-          <Link to="/faq">Learn more.</Link>
+          fans. <Link to="/faq">Learn more</Link>.
         </Typography>
 
         <Box sx={{ padding: { md: '0 40px 140px 40px', xs: '30px 0px' } }}>
@@ -114,6 +113,9 @@ const HomePageContainer = styled('div')(({ theme }) => ({
     paddingBottom: `${theme.spacing(1)}`,
     textTransform: 'uppercase',
   },
+  '& a': {
+    color: theme.palette.blue
+  }
 }))
 
 const MarketMovers = styled(Box)(({theme}) => ({
