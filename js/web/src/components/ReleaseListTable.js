@@ -374,6 +374,11 @@ const classes = {
 const StyledPaper = styled(Paper)(({ theme, tableType }) => ({
   width: tableType === 'userPublished' ? '1000px' : '800px',
   margin: 'auto',
+  [theme.breakpoints.down('md')]: {
+    maxHeight: '80vh',
+    overflow: 'scroll', 
+    width: '100%'
+  },
   [`& .${classes.table}`]: {
     minWidth: 750,
     [theme.breakpoints.down('md')]: {
@@ -405,10 +410,7 @@ const StyledCollectButton = styled(Button)(({ theme }) => ({
   flexDirection: 'column',
   textAlign: 'left',
   ...theme.helpers.baseFont,
-  '&.collectable': {
-    // paddingTop: '27px !important'
-  },
-  '&.Mui-disabled': {
+   '&.Mui-disabled': {
     color: `${theme.palette.grey.primary} !important`,
   },
   '& span': {
