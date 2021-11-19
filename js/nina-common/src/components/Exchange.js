@@ -3,6 +3,7 @@ import { styled } from '@mui/material/styles'
 import { useSnackbar } from 'notistack'
 import { Typography, Box, Fade, Button } from '@mui/material'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
+import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import RefreshIcon from '@mui/icons-material/Refresh'
 import { useWallet } from '@solana/wallet-adapter-react'
 import BuySell from './BuySell'
@@ -38,7 +39,7 @@ const Exchange = (props) => {
   } = useContext(ExchangeContext)
   const { connection } = useContext(ConnectionContext)
   const { getSolPrice } = useContext(NinaContext)
-  const { updateTxid } = useContext(AudioPlayerContext)
+  const {updateTxid, addTrackToQueue, isPlaying, setIsPlaying} = useContext(AudioPlayerContext)
 
   const [exchangeAwaitingConfirm, setExchangeAwaitingConfirm] =
     useState(undefined)
@@ -172,16 +173,28 @@ const Exchange = (props) => {
 
           <InfoCopy>
             {track && (
-              <Fade in={true}>
+              <CtaWrapper sx={{display: 'flex'}}>
                 <Button
                   onClick={() => {
-                    updateTxid(track.properties.files[0].uri, releasePubkey)
+                    isPlaying ?
+                      setIsPlaying(false)
+                      :
+                      updateTxid(track.properties.files[0].uri, releasePubkey, true)
                   }}
-                  sx={{ height: '22px', width: '28px' }}
+                  sx={{height: '22px', width: '28px'}}
                 >
-                  <PlayCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
+                  <PlayCircleOutlineOutlinedIcon sx={{color: 'white'}} />
+
                 </Button>
-              </Fade>
+                <Button
+                  onClick={() => {
+                    addTrackToQueue(releasePubkey)
+                  }}
+                  sx={{height: '22px', width: '28px'}}
+                >
+                  <ControlPointIcon sx={{color: 'white'}} />
+                </Button>
+              </CtaWrapper>
             )}
 
             {metadata && (
@@ -243,7 +256,7 @@ const Exchange = (props) => {
               exchangeHistory={exchangeHistory}
               release={release}
             />
-            <Typography variant="subtitle1" onClick={refreshExchange}>
+            <Typography variant="subtitle1" onClick={refreshExchange} sx={{cursor: 'pointer'}}>
               Last Updated:{' '}
               <span>{new Date(updateTime).toLocaleTimeString()} </span>
               <RefreshIcon fontSize="10px" sx={{ fontSize: '10px' }} />
@@ -287,7 +300,7 @@ const classes = {
 const ExchangeWrapper = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
   display: 'grid',
-  gridTemplateRows: '100px 418px 20px',
+  gridTemplateRows: '1fr 418px 20px',
   gridTemplateColumns: 'repeat(2, 310px)',
   alignItems: 'center',
   gridRowGap: theme.spacing(1),
@@ -370,6 +383,13 @@ const HistoryCtaWrapper = styled(Box)(() => ({
   '& .MuiSvgIcon-root': {
     height: '10px',
     width: '10px',
+  },
+}))
+
+const CtaWrapper = styled(Box)(() => ({
+  '& .MuiButton-root': {
+    width: '21px',
+    marginRight: "10px"
   },
 }))
 
