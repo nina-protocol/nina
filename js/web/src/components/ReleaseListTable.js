@@ -377,6 +377,9 @@ const StyledPaper = styled(Paper)(({ theme, tableType }) => ({
   margin: 'auto',
   [`& .${classes.table}`]: {
     minWidth: 750,
+    [theme.breakpoints.down('md')]: {
+      width: '80vw',
+    },
     '& .MuiTableCell-root': {
       ...theme.helpers.baseFont,
       padding: theme.spacing(1),

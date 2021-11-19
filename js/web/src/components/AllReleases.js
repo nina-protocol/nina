@@ -46,6 +46,11 @@ const AllReleasesWrapper = styled(Box)(({ theme }) => ({
   '& a': {
     color: theme.palette.blue,
   },
+  [theme.breakpoints.down('md')]: {
+    // width: '100vw',
+    padding: '0px 30px',
+    overflowX: 'auto'
+  },
 }))
 
 export default Releases
