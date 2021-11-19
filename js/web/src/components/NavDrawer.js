@@ -28,7 +28,13 @@ const linksConnected = [
   'the soft lp',
 ]
 
-const linksNotConnected = ['home', 'all Releases', 'upload', 'faq', 'the soft lp']
+const linksNotConnected = [
+  'home',
+  'all Releases',
+  'upload',
+  'faq',
+  'the soft lp',
+]
 
 const NavDrawer = () => {
   const { collection } = useContext(NinaContext)

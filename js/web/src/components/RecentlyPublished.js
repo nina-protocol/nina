@@ -87,13 +87,9 @@ const RecentlyPublished = (props) => {
             const imageUrl = release.metadata.image
             const availability = (
               <Typography variant="body2" sx={{ paddingTop: '10px' }}>
-                {release.tokenData.remainingSupply.toNumber() > 0 ?
-                  (
-                    `${release.tokenData.remainingSupply.toNumber()} / ${release.tokenData.totalSupply.toNumber()}`
-                  ) : (
-                    'Sold Out'
-                  )
-                }
+                {release.tokenData.remainingSupply.toNumber() > 0
+                  ? `${release.tokenData.remainingSupply.toNumber()} / ${release.tokenData.totalSupply.toNumber()}`
+                  : 'Sold Out'}
               </Typography>
             )
 

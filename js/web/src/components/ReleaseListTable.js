@@ -100,11 +100,10 @@ const EnhancedTableHead = (props) => {
   }
 
   if (tableType === 'allReleases') {
-    headCells.push({id: 'price', numeric: true, label: 'Price'})
-    headCells.push({id: 'sold', numeric: true, label: 'Sold'})
-    headCells.push({id: 'date', numeric: false, label: 'Release Date'})
+    headCells.push({ id: 'price', numeric: true, label: 'Price' })
+    headCells.push({ id: 'sold', numeric: true, label: 'Sold' })
+    headCells.push({ id: 'date', numeric: false, label: 'Release Date' })
   }
-
 
   if (tableType === 'userPublished') {
     headCells.push({ id: 'price', numeric: true, label: 'Price' })
@@ -229,11 +228,12 @@ const ReleaseListTable = (props) => {
       )}`
       rowData[
         'sold'
-      ] = `${tokenData.saleCounter.toNumber()} / ${tokenData.totalSupply.toNumber()} ` 
-      rowData['date'] = `${new Date(tokenData.releaseDatetime.toNumber() * 1000)
+      ] = `${tokenData.saleCounter.toNumber()} / ${tokenData.totalSupply.toNumber()} `
+      rowData['date'] = `${
+        new Date(tokenData.releaseDatetime.toNumber() * 1000)
           .toISOString()
           .split('T')[0]
-        }`
+      }`
     }
 
     if (tableType === 'userPublished') {

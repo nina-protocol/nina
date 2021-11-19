@@ -8,12 +8,9 @@ import ScrollablePageWrapper from './ScrollablePageWrapper'
 
 const { ReleaseContext } = ninaCommon.contexts
 
-const Releases= () => {
-  const {
-    getReleasesRecent,
-    releasesRecentState,
-    filterReleasesRecent
-  } = useContext(ReleaseContext)
+const Releases = () => {
+  const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
+    useContext(ReleaseContext)
   const [releases, setReleases] = useState([])
 
   useEffect(() => {
@@ -49,7 +46,7 @@ const AllReleasesWrapper = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     // width: '100vw',
     padding: '0px 30px',
-    overflowX: 'auto'
+    overflowX: 'auto',
   },
 }))
 
