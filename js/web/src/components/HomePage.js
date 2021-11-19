@@ -114,13 +114,8 @@ const HomePageContainer = styled('div')(({ theme }) => ({
     textTransform: 'uppercase',
   },
   '& a': {
-<<<<<<< HEAD
     color: theme.palette.blue,
   },
-=======
-    color: theme.palette.blue
-  }
->>>>>>> 3064e9ca926cf702f2c798db526dfdf5d2d543d5
 }))
 
 const MarketMovers = styled(Box)(({ theme }) => ({
