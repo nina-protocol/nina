@@ -111,7 +111,7 @@ const ReleasePurchase = (props) => {
   }
 
   return (
-    <Box>
+    <Box >
       <AmountRemaining variant="body2" align="left">
         Remaining <span>{release.remainingSupply.toNumber()} </span> /{' '}
         {release.totalSupply.toNumber()}
@@ -119,25 +119,23 @@ const ReleasePurchase = (props) => {
 
       {wallet?.connected && (
         <StyledUserAmount>
-          <Typography variant="body1" align="left">
             {metadata && (
-              <>
+            <Typography variant="body1" align="left" gutterBottom >
                 You have: {amountHeld || 0} {metadata.symbol}
-              </>
+              </Typography>
             )}
             {amountPendingSales > 0 ? (
-              <>
+            <Typography variant="body1" align="left" gutterBottom >
                 {amountPendingSales} pending sale
                 {amountPendingSales > 1 ? 's' : ''}{' '}
-              </>
+            </Typography>
             ) : null}
             {amountPendingBuys > 0 ? (
-              <>
+            <Typography variant="body1" align="left" gutterBottom >
                 {amountPendingBuys} pending buy
                 {amountPendingBuys > 1 ? 's' : ''}{' '}
-              </>
+            </Typography>
             ) : null}
-          </Typography>
         </StyledUserAmount>
       )}
       <Typography variant="h3" align="left">
@@ -187,6 +185,8 @@ const StyledUserAmount = styled(Box)(({ theme }) => ({
   color: theme.palette.black,
   ...theme.helpers.baseFont,
   paddingBottom: '10px',
+  display: 'flex',
+  flexDirection: 'column',
 }))
 
 const MarketButton = styled(Button)(({ theme }) => ({
