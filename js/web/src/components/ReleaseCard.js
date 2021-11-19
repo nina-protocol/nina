@@ -9,7 +9,6 @@ import ninaRecord from '../assets/nina-record.png'
 import { Fade } from '@mui/material'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
-import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined';
 
 const { AudioPlayerContext } = ninaCommon.contexts
 
@@ -30,12 +29,8 @@ const ReleaseCard = (props) => {
               }}
               sx={{ height: '22px', width: '28px' }}
             >
-              {!isPlaying && 
                 <PlayCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
-              }
-              {isPlaying && 
-                <PauseCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
-              }
+        
             </Button>
             <Button
               onClick={() => {

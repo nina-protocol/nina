@@ -77,7 +77,7 @@ const NavDrawer = () => {
       onClick={toggleDrawer(false)}
       onKeyDown={toggleDrawer(false)}
     >
-      <CloseIcon onClick={toggleDrawer} sx={{padding: '30px 60px'}}/>
+      <CloseIcon fontSize="large" onClick={toggleDrawer} sx={{padding: '15px 15px' }}/>
       <StyledList disablePadding>
         {links.map((link) => {
           switch (link) {
@@ -224,6 +224,7 @@ const StyledList = styled(List)(({ theme }) => ({
 
 const StyledMenuButton = styled(Button)(({ theme }) => ({
   padding: '0px !important',
+  zIndex: '10',
   '&:hover': {
     backgroundColor: `${theme.palette.transparent} !important`,
   },
