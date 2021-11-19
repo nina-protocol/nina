@@ -323,6 +323,7 @@ const Controls = styled(Box)(({ theme }) => ({
   },
   [theme.breakpoints.down('md')]: {
     padding: '10px',
+    paddingRight: '0'
   },
 }))
 

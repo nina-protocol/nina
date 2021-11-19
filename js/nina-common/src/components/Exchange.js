@@ -240,7 +240,7 @@ const Exchange = (props) => {
         </StyledExchange>
 
         <ExchangeCopy>
-          <Typography variant="subtitle1" align="left">
+          <Typography className="viewMore" variant="subtitle1" align="left">
             {exchangesBuy?.length > 6
               ? `Scroll to view ${exchangesBuy.length - 6} offers...`
               : ''}
@@ -258,7 +258,7 @@ const Exchange = (props) => {
             </Typography>
           </HistoryCtaWrapper>
 
-          <Typography variant="subtitle1" align="right">
+          <Typography className="viewMore" variant="subtitle1" align="right">
             {exchangesSell?.length > 6
               ? `Scroll to view ${exchangesSell.length - 6} listings...`
               : ''}
@@ -367,7 +367,10 @@ const ExchangeCopy = styled(Box)(({theme}) => ({
   [theme.breakpoints.down('md')]: {
     display: 'flex',
     flexDirection: 'column',
-    width: '100%'
+    width: '100%',
+    '& .viewMore': {
+      display: 'none'
+    }
   },
 }))
 

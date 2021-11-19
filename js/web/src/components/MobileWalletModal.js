@@ -16,7 +16,9 @@ const MobileWalletModal = () => {
   return (
     <Box sx={{paddingRight: '15px'}}>
       <StyledButton onClick={handleOpen}>
-          Connect Wallet
+          <Typography variant="body1">
+            Connect Wallet
+          </Typography>
       </StyledButton>
       <Modal
         open={open}
@@ -28,7 +30,6 @@ const MobileWalletModal = () => {
           <Typography align="center" id="modal-modal-title" variant="h6" component="h2">
             Mobile Support Coming Soon
           </Typography>
-  
         </StyledBox>
       </Modal>
     </Box>
@@ -47,6 +48,7 @@ const StyledBox = styled(Box)(({theme}) => ({
   textAlign: 'cnter',
   ...theme.helpers.gradient
 }))
+
 const StyledButton = styled(Button)(({theme}) => ({
   ...theme.helpers.baseFont,
   color: `${theme.palette.black }!important`,
