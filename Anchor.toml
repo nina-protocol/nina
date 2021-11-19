@@ -1,7 +1,7 @@
 anchor_version = "0.18.0"
 
 [provider]
-cluster = "devnet"
+cluster = "mainnet"
 wallet = "~/.config/solana/nina.json"
 
 [programs.mainnet]
