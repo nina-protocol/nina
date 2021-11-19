@@ -126,7 +126,7 @@ const RecentlyPurchased = (props) => {
                 const artistInfo = (
                   <div display="inline">
                     <Typography display="inline" variant="body2">
-                      {release.metadata.properties.artist},
+                      {release.metadata.properties.artist},{' '}
                     </Typography>{' '}
                     <Typography
                       display="inline"
