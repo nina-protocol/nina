@@ -100,7 +100,7 @@ const HomePageContainer = styled('div')(({ theme }) => ({
   overflowX: 'visible',
   [theme.breakpoints.down('md')]: {
     width: '80vw',
-    marginBottom '100px'
+    marginBottom: '100px'
   },
   [`& .${classes.sectionHeader}`]: {
     fontWeight: '700 ',
