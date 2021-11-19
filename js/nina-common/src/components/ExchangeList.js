@@ -20,7 +20,9 @@ const ExchangeList = (props) => {
 
   return (
     <Root>
-      <MobileHeader variant="h3" align="left">{isBuy ? 'Buy Offers' : 'Sell Offers'}</MobileHeader>
+      <MobileHeader variant="h3" align="left">
+        {isBuy ? 'Buy Offers' : 'Sell Offers'}
+      </MobileHeader>
       {list?.length > 0 && (
         <ul className={classes.exchangeList}>
           {list.map((item, i) => (
@@ -51,14 +53,14 @@ const classes = {
   noOffers: `${PREFIX}-noOffers`,
 }
 
-const Root = styled(Box)(({theme}) => ({
+const Root = styled(Box)(({ theme }) => ({
   maxHeight: '256px',
   height: '100%',
   display: 'flex',
   justifyContent: '100%',
   alignContent: '100%',
   [theme.breakpoints.down('md')]: {
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   [`& .${classes.exchangeList}`]: {
     width: '100%',
@@ -76,11 +78,11 @@ const Root = styled(Box)(({theme}) => ({
   },
 }))
 
-const MobileHeader = styled(Typography)(({theme}) => ({
+const MobileHeader = styled(Typography)(({ theme }) => ({
   fontWeight: 700,
   display: 'none',
   [theme.breakpoints.down('md')]: {
-    display: 'block'
+    display: 'block',
   },
 }))
 

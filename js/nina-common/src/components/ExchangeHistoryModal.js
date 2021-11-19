@@ -30,7 +30,7 @@ const ExchangeHistoryModal = (props) => {
       >
         <StyledPaper>
           <Header>
-            SECONDARY 
+            SECONDARY
             <Typography fontWeight="700">MARKET HISTORY</Typography>
           </Header>
           <HistoryTable>
@@ -105,11 +105,10 @@ const Cta = styled(Typography)(({ theme }) => ({
   },
 }))
 
-const StyledModal = styled(Modal)(({theme}) => ({
+const StyledModal = styled(Modal)(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-
 }))
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
@@ -120,7 +119,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   zIndex: '10',
 }))
 
-const Header = styled(Typography)(({theme}) => ({
+const Header = styled(Typography)(({ theme }) => ({
   fontSize: '26px',
   textAlign: 'center',
   display: 'flex',
@@ -128,7 +127,6 @@ const Header = styled(Typography)(({theme}) => ({
   fontWeight: '700',
   lineHeight: '29.9px',
   color: theme.palette.white,
-
 }))
 
 const HistoryTable = styled('table')(({ theme }) => ({
@@ -138,7 +136,7 @@ const HistoryTable = styled('table')(({ theme }) => ({
   overflow: 'scroll',
   color: theme.palette.white,
   [theme.breakpoints.down('md')]: {
-    width: '80vw'
+    width: '80vw',
   },
   '& th': {
     textTransform: 'uppercase',

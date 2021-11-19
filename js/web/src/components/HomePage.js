@@ -30,16 +30,16 @@ const HomePage = () => {
           align="left"
           sx={{ padding: { md: '0 165px 140px', xs: '30px 0px' } }}
         >
-          Nina is a new way to publish, stream, and purchase music. We
-          put control in the artist’s hands and link them directly with their
-          fans. <Link to="/faq">Learn more</Link>.
+          Nina is a new way to publish, stream, and purchase music. We put
+          control in the artist’s hands and link them directly with their fans.{' '}
+          <Link to="/faq">Learn more</Link>.
         </Typography>
 
         <Box sx={{ padding: { md: '0 40px 140px 40px', xs: '30px 0px' } }}>
           <Typography
             variant="body1"
             align="left"
-            sx={{paddingLeft:{md:'30px', xs: "0"}}}
+            sx={{ paddingLeft: { md: '30px', xs: '0' } }}
             className={classes.sectionHeader}
           >
             New Releases
@@ -114,17 +114,17 @@ const HomePageContainer = styled('div')(({ theme }) => ({
     textTransform: 'uppercase',
   },
   '& a': {
-    color: theme.palette.blue
-  }
+    color: theme.palette.blue,
+  },
 }))
 
-const MarketMovers = styled(Box)(({theme}) => ({
+const MarketMovers = styled(Box)(({ theme }) => ({
   minHeight: '400px',
   overflowX: 'visible',
   width: '60%',
   margin: 'auto',
   [theme.breakpoints.down('md')]: {
-    width: '100%'
+    width: '100%',
   },
 }))
 

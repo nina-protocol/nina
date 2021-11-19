@@ -61,7 +61,10 @@ const Release = ({ match }) => {
       {metadata && (
         <ReleaseWrapper>
           {!match.path.includes('market') && (
-            <NinaBox columns={'repeat(2, 1fr)'} sx={{ backgroundColor: 'white' }}>
+            <NinaBox
+              columns={'repeat(2, 1fr)'}
+              sx={{ backgroundColor: 'white' }}
+            >
               <ReleaseCard
                 metadata={metadata}
                 preview={false}
@@ -86,7 +89,7 @@ const Release = ({ match }) => {
                 metadata={metadata}
                 track={track}
               />
-            </NinaBox>      
+            </NinaBox>
           )}
         </ReleaseWrapper>
       )}
@@ -98,8 +101,8 @@ const ReleaseWrapper = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     overflowX: 'scroll',
     '&::-webkit-scrollbar': {
-      display: 'none'
-    }
+      display: 'none',
+    },
   },
 }))
 const ReleaseCtaWrapper = styled(Box)(({ theme }) => ({
@@ -109,7 +112,7 @@ const ReleaseCtaWrapper = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     paddingLeft: '0',
     width: '100%',
-    marginBottom: '100px'
+    marginBottom: '100px',
   },
 }))
 

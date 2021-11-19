@@ -4,13 +4,19 @@ import { Typography, Box } from '@mui/material'
 import Button from '@mui/material/Button'
 import Fade from '@mui/material/Fade'
 import Modal from '@mui/material/Modal'
-import Backdrop from '@mui/material/Backdrop'
 import 'react-tabs/style/react-tabs.css'
 import NinaClient from '../utils/client'
 
 const ExchangeModal = (props) => {
-  const { toggleOverlay, showOverlay, amount, onSubmit, release, isAccept, metadata } =
-    props
+  const {
+    toggleOverlay,
+    showOverlay,
+    amount,
+    onSubmit,
+    release,
+    isAccept,
+    metadata,
+  } = props
 
   const [pendingConfirm, setPendingConfirm] = useState(false)
 
@@ -34,25 +40,37 @@ const ExchangeModal = (props) => {
       aria-describedby="transition-modal-description"
       className={classes.modal}
       open={showOverlay}
-      onClose={(event, reason) => {
+      onClose={() => {
         toggleOverlay()
       }}
     >
       <Fade in={showOverlay}>
         <Box className={classes.paper}>
           <Typography variant="overline">
-            YOU ARE {isAccept ? 'SELLING' : 'CREATING A LISTING TO SELL'} 1 {`${metadata?.symbol} `}
-            FOR {` ${NinaClient.nativeToUiString(nativeAmount, release.paymentMint)}`}
+            YOU ARE {isAccept ? 'SELLING' : 'CREATING A LISTING TO SELL'} 1{' '}
+            {`${metadata?.symbol} `}
+            FOR{' '}
+            {` ${NinaClient.nativeToUiString(
+              nativeAmount,
+              release.paymentMint
+            )}`}
             .
           </Typography>
           <Typography variant="subtitle" className={classes.receivingAmount}>
             {isAccept ? '' : 'UPON SALE '}YOU WILL RECEIVE
-            {` ${NinaClient.nativeToUiString(sellerAmount, release.paymentMint)}`}.
+            {` ${NinaClient.nativeToUiString(
+              sellerAmount,
+              release.paymentMint
+            )}`}
+            .
           </Typography>
           <Typography variant="overline">
             THE ARTIST WILL RECEIVE A ROYALTY OF
-            {` ${NinaClient.nativeToUiString(artistFee, release.paymentMint)}`} [
-            {release.resalePercentage.toNumber() / 10000}%]
+            {` ${NinaClient.nativeToUiString(
+              artistFee,
+              release.paymentMint
+            )}`}{' '}
+            [{release.resalePercentage.toNumber() / 10000}%]
           </Typography>
           <Typography variant="overline">
             THE PROTOCOL WILL RECEIVE

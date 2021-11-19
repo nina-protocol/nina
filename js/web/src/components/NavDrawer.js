@@ -4,29 +4,21 @@ import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
-import {Typography, Box} from '@mui/material'
+import { Typography, Box } from '@mui/material'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import { NavLink } from 'react-router-dom'
 import { Icon } from '@material-ui/core'
 import hamburger from '../assets/hamburger.svg'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faDiscord} from '@fortawesome/free-brands-svg-icons'
-import {faTwitter} from '@fortawesome/free-brands-svg-icons'
-import CloseIcon from '@mui/icons-material/Close';
-
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faDiscord } from '@fortawesome/free-brands-svg-icons'
+import { faTwitter } from '@fortawesome/free-brands-svg-icons'
+import CloseIcon from '@mui/icons-material/Close'
 
 const { NinaContext, ReleaseContext } = ninaCommon.contexts
 
-const linksConnected = [
-  'home',
-  'collection',
-  'releases',
-  'upload',
-  'faq',
-]
+const linksConnected = ['home', 'collection', 'releases', 'upload', 'faq']
 
 const linksNotConnected = ['home', 'upload', 'faq']
 
@@ -77,7 +69,11 @@ const NavDrawer = () => {
       onClick={toggleDrawer(false)}
       onKeyDown={toggleDrawer(false)}
     >
-      <CloseIcon fontSize="large" onClick={toggleDrawer} sx={{padding: '15px 15px' }}/>
+      <CloseIcon
+        fontSize="large"
+        onClick={toggleDrawer}
+        sx={{ padding: '15px 15px' }}
+      />
       <StyledList disablePadding>
         {links.map((link) => {
           switch (link) {
@@ -155,13 +151,13 @@ const NavDrawer = () => {
           >
             {list()}
 
-            <DrawerFooter >
+            <DrawerFooter>
               <Box>
                 <a
                   href="https://twitter.com/nina_market_"
                   target="_blank"
                   rel="noreferrer"
-                  style={{paddingRight: '15px'}}
+                  style={{ paddingRight: '15px' }}
                 >
                   <FontAwesomeIcon icon={faTwitter} />
                 </a>
@@ -174,12 +170,10 @@ const NavDrawer = () => {
                 </a>
               </Box>
 
-              <Typography variant="subtitle1" >
+              <Typography variant="subtitle1">
                 © 2021 Nina Protocol Corp
               </Typography>
             </DrawerFooter>
-
-
           </StyledDrawer>
         </Box>
       }
@@ -195,11 +189,11 @@ const classes = {
   drawerLink: `${PREFIX}-drawerLink`,
 }
 
-const StyledDrawer = styled(Drawer)(({theme}) => ({
+const StyledDrawer = styled(Drawer)(({ theme }) => ({
   '& .MuiPaper-root': {
     width: 436,
     [theme.breakpoints.down('md')]: {
-      width: '100vw'
+      width: '100vw',
     },
   },
 }))
@@ -217,7 +211,7 @@ const StyledList = styled(List)(({ theme }) => ({
         textTransform: 'capitalize',
         fontSize: '18px !important',
         lineHeight: '20.7px !important',
-      }
+      },
     },
   },
 }))
@@ -240,7 +234,7 @@ const DrawerFooter = styled(Box)(() => ({
   left: '60px',
   transform: 'translateY(-50%)',
   display: 'flex',
-  justifyContent: 'space-between'
+  justifyContent: 'space-between',
 }))
 
 export default NavDrawer

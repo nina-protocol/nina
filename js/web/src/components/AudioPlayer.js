@@ -44,15 +44,12 @@ const AudioPlayer = () => {
   }, [])
 
   useEffect(() => {
-    console.log('useEffect isPlaying')
     if (!isPlaying) {
-      console.log('!isPlaying')
       clearInterval(intervalRef.current)
       playerRef.current.pause()
       setShouldPlay(false)
     } else {
       setShouldPlay(true)
-      console.log('txid: ', txid, playerRef.current.src)
       if (!txid) {
         updateTxid(
           playlistRef.current[0].txid,
@@ -61,8 +58,8 @@ const AudioPlayer = () => {
         )
       } else {
         startTimer()
-        if (playerRef.current.src !== txid + "?ext=mp3") {
-          playerRef.current.src = txid + "?ext=mp3"
+        if (playerRef.current.src !== txid + '?ext=mp3') {
+          playerRef.current.src = txid + '?ext=mp3'
         }
         playerRef.current.play()
       }
@@ -125,8 +122,7 @@ const AudioPlayer = () => {
   }
 
   const changeTrack = async (txid) => {
-    playerRef.current.src = txid + "?ext=mp3"
-    console.log('changeTrack: ', txid, shouldPlay)
+    playerRef.current.src = txid + '?ext=mp3'
     if (shouldPlay) {
       playerRef.current.play()
       startTimer()
@@ -190,7 +186,7 @@ const AudioPlayer = () => {
   return (
     <StyledAudioPlayer>
       <audio id="audio" style={{ width: '100%' }}>
-        <source src={txid + "?ext=mp3"} type="audio/mp3" />
+        <source src={txid + '?ext=mp3'} type="audio/mp3" />
       </audio>
 
       {info && (
@@ -266,10 +262,7 @@ const AudioPlayer = () => {
 
       {info && (
         <LinkWrapper>
-          <Link
-            to={info.releasePubkey}
-            style={{ marginRight: '30px' }}
-          >
+          <Link to={info.releasePubkey} style={{ marginRight: '30px' }}>
             <Typography variant="subtitle1" sx={{ padding: '0' }}>
               View Info
             </Typography>

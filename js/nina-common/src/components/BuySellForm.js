@@ -54,7 +54,7 @@ const BuySellForm = (props) => {
       className={classes.buySellForm}
       autoComplete="off"
     >
-      <InputWrapper >
+      <InputWrapper>
         <Input
           id="buy-sell__input"
           type="input"
@@ -62,7 +62,9 @@ const BuySellForm = (props) => {
           className={`${classes.buySellFormInputLabel}`}
           onChange={(e) => handleChange(e)}
           disableUnderline={true}
-          placeholder={`Enter price in ${NinaClient.isUsdc(release.paymentMint) ? 'USDC' : 'SOL'}`}
+          placeholder={`Enter price in ${
+            NinaClient.isUsdc(release.paymentMint) ? 'USDC' : 'SOL'
+          }`}
           value={amount !== undefined ? amount : ''}
         />
         <Button
@@ -70,15 +72,11 @@ const BuySellForm = (props) => {
           type="submit"
           disabled={!wallet?.connected}
           disableRipple={true}
-          sx={{width: "20%"}}
+          sx={{ width: '20%' }}
         >
-          {isBuy && buyPending && (
-            <Dots/>
-          )}
+          {isBuy && buyPending && <Dots />}
 
-          {!isBuy && sellPending && (
-            <Dots />
-          )}
+          {!isBuy && sellPending && <Dots />}
           {isBuy && !buyPending && 'Submit'}
           {!isBuy && !sellPending && 'Submit'}
         </Button>
