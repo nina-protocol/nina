@@ -167,7 +167,7 @@ const ReleaseCopy = styled(Box)(() => ({
     textOverflow: 'ellipsis',
     overflow: 'hidden',
     maxWidth: '100%',
-    padding: '10px 0 0',
+    padding: '10px 0 4px',
   },
 }))
 export default RecentlyPublished

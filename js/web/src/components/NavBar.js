@@ -110,6 +110,9 @@ const Root = styled('nav')(({ theme }) => ({
   [`& .${classes.nav__right}`]: {
     display: 'flex',
     height: '100%', 
+    position: 'absolute',
+    right: 0,
+    top: '12px',
     [theme.breakpoints.down('md')]: {
       position: 'absolute',
       right: 0,
