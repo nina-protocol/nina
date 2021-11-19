@@ -126,7 +126,7 @@ const RecentlyPurchased = (props) => {
                 const artistInfo = (
                   <div display="inline">
                     <Typography display="inline" variant="body2">
-                      {release.metadata.properties.artist},{' '}
+                      {release.metadata.properties.artist},
                     </Typography>{' '}
                     <Typography
                       display="inline"
@@ -146,7 +146,7 @@ const RecentlyPurchased = (props) => {
 
                 return (
                   <Slide key={i}>
-                    <Link to={release.releasePubkey} style={{ width: '400px' }}>
+                    <Link to={'/' + release.releasePubkey} style={{ width: '400px' }}>
                       <SmoothImage
                         src={imageUrl}
                         imageStyles={{ minWidth: '400px' }}
@@ -154,7 +154,7 @@ const RecentlyPurchased = (props) => {
                     </Link>
                     <Copy sx={{ paddingLeft: 2 }}>
                       <Typography variant="h3" color="blue">
-                        {`${sales} copies were sold ${dayCopy}`}
+                        {`${sales} ${sales === 1 ? 'copy was' : 'copies were'} sold ${dayCopy}`}
                       </Typography>
                       {availability}
                       {artistInfo}
