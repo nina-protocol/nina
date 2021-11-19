@@ -312,6 +312,7 @@ pub struct ReleaseSold {
 pub struct ReleaseMetadataUpdated {
     pub public_key: Pubkey,
     pub metadata_public_key: Pubkey,
+    pub uri: String,
 }
 
 
