@@ -478,12 +478,10 @@ const releaseContextHelper = ({
 
   const addRoyaltyRecipient = async (release, updateData, releasePubkey) => {
     const nina = await NinaClient.connect(provider)
-
+    const releasePublicKey = new anchor.web3.PublicKey(releasePubkey)
     try {
       if (!release) {
-        release = await nina.program.account.release.fetch(
-          new anchor.web3.PublicKey(releasePubkey)
-        )
+        release = await nina.program.account.release.fetch(releasePublicKey)
       }
 
       const recipientPublicKey = new anchor.web3.PublicKey(
@@ -515,7 +513,7 @@ const releaseContextHelper = ({
         accounts: {
           authority: provider.wallet.publicKey,
           authorityTokenAccount,
-          release,
+          release: releasePublicKey,
           releaseSigner: release.releaseSigner,
           royaltyTokenAccount: release.royaltyTokenAccount,
           newRoyaltyRecipient: recipientPublicKey,
@@ -800,26 +798,34 @@ const releaseContextHelper = ({
   */
 
   const fetchRelease = async (releasePubkey) => {
-    const nina = await NinaClient.connect(provider)
-    releasePubkey = new anchor.web3.PublicKey(releasePubkey)
+    try {
+      const nina = await NinaClient.connect(provider)
+      releasePubkey = new anchor.web3.PublicKey(releasePubkey)
 
-    const releaseAccount = await nina.program.account.release.fetch(
-      releasePubkey
-    )
-    releaseAccount.publicKey = releasePubkey
-    if (releaseAccount.error) {
-      throw releaseAccount.error
-    } else {
-      return releaseAccount
+      const releaseAccount = await nina.program.account.release.fetch(
+        releasePubkey
+      )
+      releaseAccount.publicKey = releasePubkey
+      if (releaseAccount.error) {
+        throw releaseAccount.error
+      } else {
+        return releaseAccount
+      }
+    } catch (error) {
+      console.warn(error)
     }
   }
 
   const getRelease = async (releasePubkey) => {
-    const releaseAccount = await fetchRelease(releasePubkey)
-    if (releaseAccount.error) {
-      throw releaseAccount.error
-    } else {
-      await saveReleasesToState([releaseAccount])
+    try {
+      const releaseAccount = await fetchRelease(releasePubkey)
+      if (releaseAccount.error) {
+        throw releaseAccount.error
+      } else {
+        await saveReleasesToState([releaseAccount])
+      }
+    } catch (error) {
+      console.warn(error)
     }
   }
 
@@ -828,19 +834,24 @@ const releaseContextHelper = ({
       return
     }
 
-    let path = NinaClient.endpoints.api
-    switch (type) {
-      case lookupTypes.PUBLISHED_BY:
-        path += `/releases/published/${wallet?.publicKey.toBase58()}`
-        break
-      case lookupTypes.REVENUE_SHARE:
-        path += `/releases/royalties/${wallet?.publicKey.toBase58()}`
-        break
-    }
+    try {
+      let path = NinaClient.endpoints.api
+      switch (type) {
+        case lookupTypes.PUBLISHED_BY:
+          path += `/releases/published/${wallet?.publicKey.toBase58()}`
+          break
+        case lookupTypes.REVENUE_SHARE:
+          path += `/releases/royalties/${wallet?.publicKey.toBase58()}`
+          break
+      }
 
-    const response = await fetch(path)
-    const releaseIds = await response.json()
-    await fetchAndSaveReleasesToState(releaseIds)
+      const response = await fetch(path)
+      const releaseIds = await response.json()
+
+      await fetchAndSaveReleasesToState(releaseIds)
+    } catch (error) {
+      console.warn(error)
+    }
   }
 
   const getReleasesInCollection = async () => {
@@ -848,15 +859,16 @@ const releaseContextHelper = ({
   }
 
   const getReleasesPublishedByUser = async () => {
+    await getReleasesHandler(lookupTypes.REVENUE_SHARE)
     await getReleasesHandler(lookupTypes.PUBLISHED_BY)
   }
 
   const getRedeemablesForRelease = async (releasePubkey) => {
-    const response = await fetch(`/releases/${releasePubkey}/redeemables`)
-    const redeemableIds = await response.json()
-    const parsedRedeemables = {}
-
     try {
+      const response = await fetch(`/releases/${releasePubkey}/redeemables`)
+      const redeemableIds = await response.json()
+      const parsedRedeemables = {}
+
       const nina = await NinaClient.connect(provider)
       let redeemableAccounts = await anchor.utils.rpc.getMultipleAccounts(
         connection,
@@ -884,77 +896,81 @@ const releaseContextHelper = ({
   }
 
   const getRedemptionRecordsForRelease = async (releasePubkey) => {
-    const nina = await NinaClient.connect(provider)
-    const release = await nina.program.account.release.fetch(releasePubkey)
-    const parsedRedemptionRecords = []
+    try {
+      const nina = await NinaClient.connect(provider)
+      const release = await nina.program.account.release.fetch(releasePubkey)
+      const parsedRedemptionRecords = []
 
-    if (!release) {
-      return
-    }
+      if (!release) {
+        return
+      }
 
-    let authority
-    if (wallet?.publicKey.toBase58() !== release.authority.toBase58()) {
-      authority = wallet?.publicKey.toBase58()
-    }
-    const response = await fetch(
-      `/releases/${releasePubkey}/redemptionRecords${
-        authority ? `/${wallet.publicKey.toBase58()}` : ''
-      }`
-    )
-    const redemptionRecordIds = await response.json()
-    let redemptionRecords = await anchor.utils.rpc.getMultipleAccounts(
-      connection,
-      redemptionRecordIds.map((id) => new anchor.web3.PublicKey(id))
-    )
-
-    const layout =
-      nina.program.coder.accounts.accountLayouts.get('RedemptionRecord')
-    for await (let redemptionRecord of redemptionRecords) {
-      let dataParsed = layout.decode(redemptionRecord.account.data.slice(8))
-      const redeemable = await nina.program.account.redeemable.fetch(
-        dataParsed.redeemable
+      let authority
+      if (wallet?.publicKey.toBase58() !== release.authority.toBase58()) {
+        authority = wallet?.publicKey.toBase58()
+      }
+      const response = await fetch(
+        `/releases/${releasePubkey}/redemptionRecords${
+          authority ? `/${wallet.publicKey.toBase58()}` : ''
+        }`
+      )
+      const redemptionRecordIds = await response.json()
+      let redemptionRecords = await anchor.utils.rpc.getMultipleAccounts(
+        connection,
+        redemptionRecordIds.map((id) => new anchor.web3.PublicKey(id))
       )
 
-      dataParsed.publicKey = redemptionRecord.publicKey
-      const otherPartyEncryptionKey =
-        wallet?.publicKey.toBase58() === redeemable.authority.toBase58()
-          ? dataParsed.encryptionPublicKey
-          : redeemable.encryptionPublicKey
-      if (!dataParsed.address.every((item) => item === 0)) {
-        dataParsed.address = await decryptData(
-          dataParsed.address,
-          otherPartyEncryptionKey,
-          dataParsed.iv
+      const layout =
+        nina.program.coder.accounts.accountLayouts.get('RedemptionRecord')
+      for await (let redemptionRecord of redemptionRecords) {
+        let dataParsed = layout.decode(redemptionRecord.account.data.slice(8))
+        const redeemable = await nina.program.account.redeemable.fetch(
+          dataParsed.redeemable
         )
-      }
-      if (!dataParsed.shipper.every((item) => item === 0)) {
-        dataParsed.shipper = await decryptData(
-          dataParsed.shipper,
-          otherPartyEncryptionKey,
-          dataParsed.iv
-        )
-      } else {
-        dataParsed.shipper = undefined
-      }
-      if (!dataParsed.trackingNumber.every((item) => item === 0)) {
-        dataParsed.trackingNumber = await decryptData(
-          dataParsed.trackingNumber,
-          otherPartyEncryptionKey,
-          dataParsed.iv
-        )
-      } else {
-        dataParsed.trackingNumber = undefined
-      }
-      if (redeemable.authority.toBase58() === wallet.publicKey.toBase58()) {
-        dataParsed.userIsPublisher = true
-      } else {
-        dataParsed.userIsPublisher = false
+
+        dataParsed.publicKey = redemptionRecord.publicKey
+        const otherPartyEncryptionKey =
+          wallet?.publicKey.toBase58() === redeemable.authority.toBase58()
+            ? dataParsed.encryptionPublicKey
+            : redeemable.encryptionPublicKey
+        if (!dataParsed.address.every((item) => item === 0)) {
+          dataParsed.address = await decryptData(
+            dataParsed.address,
+            otherPartyEncryptionKey,
+            dataParsed.iv
+          )
+        }
+        if (!dataParsed.shipper.every((item) => item === 0)) {
+          dataParsed.shipper = await decryptData(
+            dataParsed.shipper,
+            otherPartyEncryptionKey,
+            dataParsed.iv
+          )
+        } else {
+          dataParsed.shipper = undefined
+        }
+        if (!dataParsed.trackingNumber.every((item) => item === 0)) {
+          dataParsed.trackingNumber = await decryptData(
+            dataParsed.trackingNumber,
+            otherPartyEncryptionKey,
+            dataParsed.iv
+          )
+        } else {
+          dataParsed.trackingNumber = undefined
+        }
+        if (redeemable.authority.toBase58() === wallet.publicKey.toBase58()) {
+          dataParsed.userIsPublisher = true
+        } else {
+          dataParsed.userIsPublisher = false
+        }
+
+        parsedRedemptionRecords.push(dataParsed)
       }
 
-      parsedRedemptionRecords.push(dataParsed)
+      saveRedemptionRecordsToState(parsedRedemptionRecords, releasePubkey)
+    } catch (error) {
+      console.warn(error)
     }
-
-    saveRedemptionRecordsToState(parsedRedemptionRecords, releasePubkey)
   }
 
   const getReleaseRoyaltiesByUser = async () => {
@@ -1052,6 +1068,9 @@ const releaseContextHelper = ({
           metadata
         ) {
           releaseData.recipient = recipient
+          releaseData.tokenData = tokenData
+          releaseData.metadata = metadata
+          releaseData.releasePubkey = releasePubkey
         }
       })
 
@@ -1219,72 +1238,76 @@ const releaseContextHelper = ({
   }
 
   const saveReleasesToState = async (releases, handle = undefined) => {
-    let updatedState = { ...releaseState }
-    let search = undefined
+    try {
+      let updatedState = { ...releaseState }
+      let search = undefined
 
-    if (handle) {
-      search = {
-        handle,
-        searched: true,
-        releases: [],
-      }
-    }
-
-    const metadataQueries = {}
-    for await (let release of releases) {
-      const releasePubkey = release.publicKey.toBase58()
-      release = release.account ? release.account : release
       if (handle) {
-        let searchResult = {
-          releasePubkey,
-          tokenData: release,
-        }
-        search.releases.push(searchResult)
-      }
-
-      updatedState = {
-        ...updatedState,
-        tokenData: {
-          ...updatedState.tokenData,
-          [releasePubkey]: release,
-        },
-        releaseMintMap: {
-          ...updatedState.releaseMintMap,
-          [releasePubkey]: release.releaseMint.toBase58(),
-        },
-      }
-      if (!releaseState.metadata[releasePubkey]) {
-        metadataQueries[release.releaseMint.toBase58()] = releasePubkey
-      }
-    }
-
-    if (Object.keys(metadataQueries).length > 0) {
-      let releaseMetadataAccounts = await getReleaseMetadataAccounts(
-        metadataQueries,
-        handle
-      )
-
-      if (releaseMetadataAccounts) {
-        updatedState.metadata = {
-          ...updatedState.metadata,
-          ...releaseMetadataAccounts,
+        search = {
+          handle,
+          searched: true,
+          releases: [],
         }
       }
-    }
 
-    if (handle) {
-      const finalSearchReleases = []
-      search.releases.forEach((release) => {
-        if (updatedState.metadata[release.releasePubkey]) {
-          release.metadata = updatedState.metadata[release.releasePubkey]
-          finalSearchReleases.push(release)
+      const metadataQueries = {}
+      for await (let release of releases) {
+        const releasePubkey = release.publicKey.toBase58()
+        release = release.account ? release.account : release
+        if (handle) {
+          let searchResult = {
+            releasePubkey,
+            tokenData: release,
+          }
+          search.releases.push(searchResult)
         }
-      })
-      search.releases = finalSearchReleases
 
-      await setSearchResults(search)
+        updatedState = {
+          ...updatedState,
+          tokenData: {
+            ...updatedState.tokenData,
+            [releasePubkey]: release,
+          },
+          releaseMintMap: {
+            ...updatedState.releaseMintMap,
+            [releasePubkey]: release.releaseMint.toBase58(),
+          },
+        }
+        if (!releaseState.metadata[releasePubkey]) {
+          metadataQueries[release.releaseMint.toBase58()] = releasePubkey
+        }
+      }
+
+      if (Object.keys(metadataQueries).length > 0) {
+        let releaseMetadataAccounts = await getReleaseMetadataAccounts(
+          metadataQueries,
+          handle
+        )
+
+        if (releaseMetadataAccounts) {
+          updatedState.metadata = {
+            ...updatedState.metadata,
+            ...releaseMetadataAccounts,
+          }
+        }
+      }
+
+      if (handle) {
+        const finalSearchReleases = []
+        search.releases.forEach((release) => {
+          if (updatedState.metadata[release.releasePubkey]) {
+            release.metadata = updatedState.metadata[release.releasePubkey]
+            finalSearchReleases.push(release)
+          }
+        })
+        search.releases = finalSearchReleases
+
+        await setSearchResults(search)
+      }
+      await setReleaseState(updatedState)
+    } catch (error) {
+      console.warn(error)
     }
-    await setReleaseState(updatedState)
   }
 
   const saveRedemptionRecordsToState = async (
@@ -1338,30 +1361,34 @@ const releaseContextHelper = ({
   }
 
   const getReleaseMetadataAccounts = async (metadataQueries) => {
-    const metadataAccountsParsed = {}
-    const mints = []
+    try {
+      const metadataAccountsParsed = {}
+      const mints = []
 
-    Object.keys(metadataQueries).map((query) => {
-      const releasePubkey = metadataQueries[query]
+      Object.keys(metadataQueries).map((query) => {
+        const releasePubkey = metadataQueries[query]
 
-      if (releaseState.metadata[releasePubkey]) {
-        metadataAccountsParsed[releasePubkey] =
-          releaseState.metadata[releasePubkey]
-      } else {
-        mints.push(query)
-      }
-    })
-    const metadataResult = await fetch(
-      `${NinaClient.endpoints.api}/metadata/bulk`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ids: Object.values(metadataQueries) }),
-      }
-    )
-    const metadataJson = await metadataResult.json()
+        if (releaseState.metadata[releasePubkey]) {
+          metadataAccountsParsed[releasePubkey] =
+            releaseState.metadata[releasePubkey]
+        } else {
+          mints.push(query)
+        }
+      })
+      const metadataResult = await fetch(
+        `${NinaClient.endpoints.api}/metadata/bulk`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ids: Object.values(metadataQueries) }),
+        }
+      )
+      const metadataJson = await metadataResult.json()
 
-    return metadataJson
+      return metadataJson
+    } catch (error) {
+      console.warn(error)
+    }
   }
 
   return {

@@ -101,6 +101,7 @@ const ReleaseCreateForm = ({
                     ? errors.catalogNumber
                     : null
                 }
+                inputProps={{maxLength: 10}}
                 InputProps={{
                   onChange: (event) => {
                     let sanitized = event.target.value

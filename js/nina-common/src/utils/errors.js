@@ -8,6 +8,8 @@ export const ninaErrorHandler = (error, errorString) => {
     error.toString().includes(`Cannot read property 'pubkey' of undefined`)
   ) {
     msg = 'Transaction failed: Insufficient funds.'
+  } else if (error.toString().includes('WalletSignTransactionError: unknown signer')) {
+    msg = 'Transaction failed: Active wallet is not wallet originally connected'
   } else if (error.toString().includes('Signature request denied')) {
     msg = 'Transaction cancelled.'
   } else if (error.toString().includes('Attempt to debit an account but found no record of a prior credit')) {

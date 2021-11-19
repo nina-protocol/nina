@@ -294,6 +294,7 @@ module.exports = {
   getTokenAccount,
   createMint,
   createMintInstructions,
+  createMintToAccountInstrs,
   createTokenAccount,
   mintToAccount,
   findOrCreateAssociatedTokenAccount,

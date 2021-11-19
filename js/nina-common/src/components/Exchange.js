@@ -175,12 +175,7 @@ const Exchange = (props) => {
             {track && (
               <CtaWrapper sx={{display: 'flex'}}>
                 <Button
-                  onClick={() => {
-                    isPlaying ?
-                      setIsPlaying(false)
-                      :
-                      updateTxid(track.properties.files[0].uri, releasePubkey, true)
-                  }}
+                  onClick={() => updateTxid(track.properties.files[0].uri, releasePubkey, true)}
                   sx={{height: '22px', width: '28px'}}
                 >
                   <PlayCircleOutlineOutlinedIcon sx={{color: 'white'}} />

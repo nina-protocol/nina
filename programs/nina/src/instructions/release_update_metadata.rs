@@ -85,7 +85,7 @@ pub fn handler(
             ctx.accounts.release_signer.key(),
             metadata_data.name,
             metadata_data.symbol,
-            metadata_data.uri,
+            metadata_data.uri.clone(),
             Some(creators),
             metadata_data.seller_fee_basis_points,
             true,
@@ -97,7 +97,8 @@ pub fn handler(
     
     emit!(ReleaseMetadataUpdated {
         public_key: ctx.accounts.release.key(),
-        metadata_public_key: *ctx.accounts.metadata.to_account_info().key
+        metadata_public_key: *ctx.accounts.metadata.to_account_info().key,
+        uri: metadata_data.uri
     });
 
     Ok(())

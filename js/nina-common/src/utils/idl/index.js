@@ -1755,6 +1755,11 @@ const idl = {
           "name": "metadataPublicKey",
           "type": "publicKey",
           "index": false
+        },
+        {
+          "name": "uri",
+          "type": "string",
+          "index": false
         }
       ]
     }
