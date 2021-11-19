@@ -1,5 +1,5 @@
 import * as anchor from '@project-serum/anchor'
-import { TokenInstructions } from '@project-serum/serum'
+import {TokenInstructions} from '@project-serum/serum'
 import Arweave from 'arweave'
 import CoinGecko from 'coingecko-api'
 import idl from './idl'
@@ -42,11 +42,11 @@ export const NINA_CLIENT_IDS = {
 const USDC_DECIMAL_AMOUNT = 6
 const SOL_DECIMAL_AMOUNT = 9
 
-const NINA_PRESSING_FEE = 0.0125
+const NINA_PRESSING_FEE = 0.00
 
 const ENDPOINT_ARWEAVE = 'https://arweave.net' //'https://h6chwwrsde.medianet.work'
-const ENDPOINT_PRESSING_PLANT = 'https://pressingplant.nina.market:443'
-const ENDPOINT_API = 'https://api.nina.market:443'
+const ENDPOINT_PRESSING_PLANT = process.env.REACT_APP_CLUSTER === 'mainnet' ? 'https://pressingplant.nina.market:443' : 'https://pressingplant-dev.nina.market:443'
+const ENDPOINT_API = process.env.REACT_APP_CLUSTER === 'mainnet' ? 'https://api.nina.market:443' :'https://api-dev.nina.market:443'
 
 const arweave = Arweave.init()
 const CoinGeckoClient = new CoinGecko()
@@ -74,6 +74,7 @@ export default class NinaClient {
     'So11111111111111111111111111111111111111112'
   )
 
+
   static endpoints = {
     arweave: ENDPOINT_ARWEAVE,
     pressingPlant: ENDPOINT_PRESSING_PLANT,
@@ -88,11 +89,16 @@ export default class NinaClient {
     return amount / Math.pow(10, NinaClient.decimalsForMint(mint))
   }
 
-  static nativeToUiString(amount, mint, decimalOverride = false) {
+  static nativeToUiString(amount, mint, decimalOverride = false, showCurrency = true) {
     const isUsdc = NinaClient.isUsdc(mint)
-    return `${NinaClient.nativeToUi(amount, mint).toFixed(
+    let amountString = NinaClient.nativeToUi(amount, mint).toFixed(
       isUsdc || decimalOverride ? 2 : 4
-    )}${isUsdc ? ' USDC' : ' SOL'}`
+    )
+
+    if (showCurrency) {
+      amountString = `${amountString} ${isUsdc ? 'USDC' : 'SOL'}`
+    }
+    return amountString
   }
 
   static uiToNative(amount, mint) {
@@ -198,5 +204,20 @@ export default class NinaClient {
       .slice(0, -1)
       .join(' ')
       .toUpperCase()
+  }
+
+  static formatDuration = (duration) => {
+    let sec_num = parseInt(duration, 10)
+    let hours = Math.floor(sec_num / 3600)
+    let minutes = Math.floor((sec_num - hours * 3600) / 60)
+    let seconds = sec_num - hours * 3600 - minutes * 60
+
+    if (minutes < 10) {
+      minutes = '0' + minutes
+    }
+    if (seconds < 10) {
+      seconds = '0' + seconds
+    }
+    return minutes + ':' + seconds
   }
 }

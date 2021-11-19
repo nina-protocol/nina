@@ -1,39 +1,20 @@
 import { useState, useEffect, useContext } from 'react'
 import { styled } from '@mui/material/styles'
-import { Card, Box, Button } from '@mui/material'
-import CardContent from '@mui/material/CardContent'
+import { Box, Button } from '@mui/material'
 import Typography from '@mui/material/Typography'
-import CircularProgress from '@mui/material/CircularProgress'
 import { Link } from 'react-router-dom'
-import Image from 'material-ui-image'
-import RedeemableInitialize from './RedeemableInitialize.js'
-import RedeemableUpdate from './RedeemableUpdate.js'
+
 import Royalty from './Royalty.js'
 import NinaClient from '../utils/client'
 import { ReleaseContext } from '../contexts'
 
 const ReleaseSettings = (props) => {
-  const {
-    releasePubkey,
-    inCreateFlow,
-    tempMetadata,
-    artwork,
-    redemptionRecords,
-  } = props
+  const { releasePubkey, tempMetadata, inCreateFlow } = props
 
-  const {
-    releaseState,
-    redeemableState,
-    releaseUpdateMetadata,
-    releaseFetchMetadata,
-  } = useContext(ReleaseContext)
+  const { releaseState, releaseFetchMetadata } = useContext(ReleaseContext)
 
   const [release, setRelease] = useState(releaseState.tokenData[releasePubkey])
-  const [redeemables, setRedeemables] = useState()
   const [metadata, setMetadata] = useState(releaseState.metadata[releasePubkey])
-  const [metadataUpdated, setMetadataUpdated] = useState(
-    releaseState.metadata[releasePubkey]
-  )
   const [displayValues, setDisplayValues] = useState({})
 
   let timer = undefined
@@ -57,17 +38,10 @@ const ReleaseSettings = (props) => {
     const metadataTxid = await releaseFetchMetadata(releasePubkey)
 
     if (metadataTxid) {
-      setMetadataUpdated(true)
       clearInterval(timer)
       timer = null
     }
   }
-
-  useEffect(() => {
-    if (redeemableState[releasePubkey]) {
-      setRedeemables(redeemableState[releasePubkey])
-    }
-  }, [redeemableState[releasePubkey]])
 
   useEffect(() => {
     setMetadata(releaseState.metadata[releasePubkey])
@@ -97,308 +71,136 @@ const ReleaseSettings = (props) => {
     }
   }, [tempMetadata, metadata])
 
-  const handleUpdateMetadataButton = (e) => {
-    e.preventDefault()
-    releaseUpdateMetadata(releasePubkey)
-    // window.open(`https://twitter.com/intent/tweet?text=${`I just released ${metadata?.artist || tempMetadata.artist} - "${metadata?.title || tempMetadata.title}"`}&url=nina.market/release/${releasePubkey}`, null, 'status=no,location=no,toolbar=no,menubar=no,height=500,width=500')
-  }
-
-  return (
-    <StyledBox className={classes.root} mt={3}>
-      <Box
-        className={
-          inCreateFlow
-            ? classes.releaseSettingsWrapper
-            : classes.tabSettingsWrapper
+return (
+    <StyledBox>
+      <ReleaseInfoWrapper>
+        {inCreateFlow &&
+          <Typography variant="h4" gutterBottom>
+            Confirm Release Info
+          </Typography>
         }
-      >
-        {inCreateFlow && (
-          <Box className={classes.leftContainer}>
-            <Box className={classes.releaseImageWrapper}>
-              <a href={`/release/${releasePubkey}`}>
-                {metadata ? (
-                  <Image src={metadata.image} />
-                ) : (
-                  <Image src={artwork.meta.previewUrl} />
-                )}
-              </a>
-            </Box>
-          </Box>
-        )}
+        <ReleaseInfo className={inCreateFlow ? "inCreateFlow" : ""}>
+          <ReleaseStat variant="body1" component="p">
+            <ReleaseStatLeft variant="subtitle1">Catalog No.</ReleaseStatLeft> 
+            <ReleaseStatRight variant="subtitle1"> {displayValues.catalogNumber} </ReleaseStatRight>
+          </ReleaseStat>
 
-        <Box className={inCreateFlow ? '' : classes.tabInfoWrapper}>
-          <Card
-            className={inCreateFlow ? classes.card : classes.tabCard}
-            variant="outlined"
-          >
-            <CardContent>
-              <>
-                <Typography
-                  className={classes.title}
-                  color="textSecondary"
-                  gutterBottom
-                >
-                  {displayValues.artist} - {displayValues.title}
-                </Typography>
-                <Typography variant="body2" component="p">
-                  <strong>Catalog Number:</strong> {displayValues.catalogNumber}
-                </Typography>
-              </>
+          <ReleaseStat variant="body1" component="p">
+            <ReleaseStatLeft variant="subtitle1">Amount</ReleaseStatLeft> 
+            <ReleaseStatRight variant="subtitle1">{release?.totalSupply.toNumber()}</ReleaseStatRight>
+          </ReleaseStat>
 
-              <Typography variant="body2" component="p">
-                <strong>Edition Size:</strong> {release?.totalSupply.toNumber()}
-              </Typography>
+          <ReleaseStat variant="body1" component="p">
+            <ReleaseStatLeft variant="subtitle1">Cost USD</ReleaseStatLeft>
+            <ReleaseStatRight variant="subtitle1">{NinaClient.nativeToUiString(
+              release.price.toNumber(),
+              release.paymentMint,
+              false,
+              false
+            )}</ReleaseStatRight>
+          </ReleaseStat>
 
-              <Box className={classes.releaseInfo}>
-                <Typography
-                  variant="body2"
-                  component="p"
-                  className={classes.stat}
-                >
-                  <strong>Price:</strong>{' '}
-                  {NinaClient.nativeToUiString(
-                    release.price.toNumber(),
-                    release.paymentMint
-                  )}
-                </Typography>
+          <ReleaseStat variant="body1" component="p">
+            <ReleaseStatLeft variant="subtitle1">Resale %</ReleaseStatLeft>
+            <ReleaseStatRight variant="subtitle1"> {release?.resalePercentage.toNumber() / 10000}%</ReleaseStatRight>
+          </ReleaseStat>
+          {!inCreateFlow &&
+            <>
+            <ReleaseStat variant="body1" component="p">
+              <ReleaseStatLeft variant="subtitle1">Primary Sales</ReleaseStatLeft>
+               <ReleaseStatRight variant="subtitle1">{release.saleCounter.toNumber()}</ReleaseStatRight>
+            </ReleaseStat>
+            <ReleaseStat variant="body1" component="p">
+              <ReleaseStatLeft variant="subtitle1">Secondary Sales</ReleaseStatLeft>
+               <ReleaseStatRight variant="subtitle1">{release.exchangeSaleCounter.toNumber()}</ReleaseStatRight>
+            </ReleaseStat>
+            <ReleaseStat variant="body1" component="p">
+              <ReleaseStatLeft variant="subtitle1">Total Earnings</ReleaseStatLeft>
+               <ReleaseStatRight variant="subtitle1">{NinaClient.nativeToUiString(
+                release.totalCollected.toNumber(),
+                release.paymentMint,
+              )}</ReleaseStatRight>
+            </ReleaseStat>
+            </>
+          }
+          {inCreateFlow &&
+            <Typography
+              variant="body1"
+              component="p"
+              sx={{ marginTop: '10px !important' }}
+            >
+              {displayValues.description}
+            </Typography>
+          }
+        </ReleaseInfo>
 
-                <Typography
-                  variant="body2"
-                  component="p"
-                  className={classes.stat}
-                >
-                  <strong>Secondary Sales Percent:</strong>{' '}
-                  {release?.resalePercentage.toNumber() / 10000}%
-                </Typography>
-                {!inCreateFlow && (
-                  <>
-                    <Typography
-                      variant="body2"
-                      component="p"
-                      className={classes.stat}
-                    >
-                      <strong>Primary Sales:</strong>{' '}
-                      {release.saleCounter.toNumber()} (
-                      {NinaClient.nativeToUiString(
-                        release.saleTotal.toNumber(),
-                        release.paymentMint
-                      )}
-                      )
-                    </Typography>
-
-                    <Typography
-                      variant="body2"
-                      component="p"
-                      className={classes.stat}
-                    >
-                      <strong>Secondary Sales:</strong>{' '}
-                      {release.exchangeSaleCounter.toNumber()} ($
-                      {NinaClient.nativeToUiString(
-                        release.exchangeSaleTotal.toNumber(),
-                        release.paymentMint
-                      )}
-                      )
-                    </Typography>
-
-                    <Typography
-                      variant="body2"
-                      component="p"
-                      className={classes.stat}
-                    >
-                      <strong>Total Sales:</strong>$
-                      {NinaClient.nativeToUiString(
-                        release.saleTotal.toNumber() +
-                          release.exchangeSaleTotal.toNumber(),
-                        release.paymentMint
-                      )}
-                    </Typography>
-                  </>
-                )}
-              </Box>
-              {!metadata && (
-                <>
-                  <h1>
-                    {metadataUpdated
-                      ? 'Your release is ready to be published!'
-                      : 'Your release is currently being uploaded...'}
-                  </h1>
-                  {!metadataUpdated && (
-                    <>
-                      <h3>
-                        When it is ready to be listed you can press the publish
-                        button below to make it live
-                      </h3>
-                      <CircularProgress
-                        className="default__loader"
-                        color="inherit"
-                      />
-                    </>
-                  )}
-                  {metadataUpdated && (
-                    <h3>{`Click 'Publish' to make your release live for sale and listening.`}</h3>
-                  )}
-                </>
-              )}
-              <Box mt={1}>
-                {metadata ? (
-                  <Link
-                    to={`/release/${releasePubkey}`}
-                    style={{ textDecoration: 'none' }}
-                  >
-                    <Button variant="contained" color="primary" fullWidth>
-                      View Release
-                    </Button>
-                  </Link>
-                ) : (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={(e) => handleUpdateMetadataButton(e)}
-                    disabled={!metadataUpdated}
-                    fullWidth
-                  >
-                    Publish Release
-                  </Button>
-                )}
-              </Box>
-            </CardContent>
-          </Card>
-        </Box>
-      </Box>
-
-      <Box mt={1} className={inCreateFlow ? classes.ctaWrapper : ''}>
-        <h2>Other Actions:</h2>
-        <Box>
+        <Box mt={1}>
           <Royalty releasePubkey={releasePubkey} release={release} />
+          <Link
+            to={`/${releasePubkey}`}
+            style={{ textDecoration: 'none' }}
+          >
+          {inCreateFlow &&
+            <Button
+              variant="outlined"
+              color="primary"
+              fullWidth
+              disabled={!metadata}
+              sx={{marginTop: '10px !important'}}
+            >
+              <Typography variant="body2">
+                {metadata
+                  ? 'View Release'
+                  : 'Your release is currently being finalized...'}
+                </Typography>
+            </Button>
+          }
+          </Link>
         </Box>
-        {redeemables?.length === 0 && (
-          <Box mt={1}>
-            <RedeemableInitialize
-              releasePubkey={releasePubkey}
-              amount={releaseState.tokenData[
-                releasePubkey
-              ]?.totalSupply.toNumber()}
-            />
-          </Box>
-        )}
-        {redeemables?.redeemedCount > 0 && (
-          <Box mt={1}>
-            <RedeemableUpdate
-              releasePubkey={releasePubkey}
-              redeemables={redeemables}
-              redemptionRecords={redemptionRecords}
-            />
-          </Box>
-        )}
-      </Box>
+      </ReleaseInfoWrapper>
     </StyledBox>
   )
 }
 
-const PREFIX = 'ReleaseSettings'
-
-const classes = {
-  root: `${PREFIX}-root`,
-  releaseSettingsWrapper: `${PREFIX}-releaseSettingsWrapper`,
-  tabSettingsWrapper: `${PREFIX}-tabSettingsWrapper`,
-  leftContainer: `${PREFIX}-leftContainer`,
-  releaseImageWrapper: `${PREFIX}-releaseImageWrapper`,
-  releaseImage: `${PREFIX}-releaseImage`,
-  tabInfoWrapper: `${PREFIX}-tabInfoWrapper`,
-  card: `${PREFIX}-card`,
-  tabCard: `${PREFIX}-tabCard`,
-  mediaLink: `${PREFIX}-mediaLink`,
-  media: `${PREFIX}-media`,
-  releaseInfo: `${PREFIX}-releaseInfo`,
-  stat: `${PREFIX}-stat`,
-  ctaWrapper: `${PREFIX}-ctaWrapper`,
-}
-
-const StyledBox = styled(Box)(({ theme }) => ({
-  [`&.${classes.root}`]: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-  },
-
-  [`& .${classes.releaseSettingsWrapper}`]: {
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    display: 'grid',
-    gridTemplateColumns: '50% 50%',
-    maxHeight: '50vh',
-    width: '90%',
-    margin: 'auto',
-    marginTop: '0',
-  },
-
-  [`& .${classes.tabSettingsWrapper}`]: {},
-
-  [`& .${classes.leftContainer}`]: {
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    marginLeft: '16%',
-  },
-
-  [`& .${classes.releaseImageWrapper}`]: {
-    width: '50%',
-    margin: 'auto',
-  },
-
-  [`& .${classes.releaseImage}`]: {
-    width: '50%',
-  },
-
-  [`& .${classes.tabInfoWrapper}`]: {
-    width: '100%',
-  },
-
-  [`& .${classes.card}`]: {
-    borderColor: `${theme.palette.purple}`,
-    textAlign: 'left',
-    width: '50%',
-    height: '100%',
-    margin: 'auto',
-    marginLeft: '10%',
-  },
-
-  [`& .${classes.tabCard}`]: {
-    width: '100%',
-  },
-
-  [`& .${classes.mediaLink}`]: {
-    width: '33%',
-    display: 'flex',
-    margin: 'auto',
-    '& a': {
-      width: '100%',
-    },
-  },
-
-  [`& .${classes.media}`]: {
-    height: '250px',
-    width: '100%',
-    backgroundSize: 'contain',
-  },
-
-  [`& .${classes.releaseInfo}`]: {
-    // maxWidth: '300px',
-    padding: '1rem 0.5rem 0 0',
-  },
-
-  [`& .${classes.stat}`]: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginBottom: '0.3rem',
-  },
-
-  [`& .${classes.ctaWrapper}`]: {
-    width: '30%',
-    margin: 'auto',
-    marginTop: '0',
-  },
+const StyledBox = styled(Box)(() => ({
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  width: '330px',
 }))
 
+const ReleaseInfoWrapper = styled(Box)(() => ({
+  width: '100%',
+  margin: 'auto',
+  textAlign: 'left',
+}))
+
+const ReleaseInfo = styled(Box)(({ theme }) => ({
+  marginBottom: theme.spacing(1),
+  paddingTop: '20px',
+  '& .inCreateFlow': {
+    border: `1px solid ${theme.palette.grey.primary}`,
+    padding: '20px',
+  }
+}))
+
+const ReleaseStatRight = styled(Typography)(({ theme }) => ({
+  fontWeight: 'bold',
+}))
+
+const ReleaseStatLeft = styled(Typography)(({ theme }) => ({
+  width: '140px',
+}))
+
+
+const ReleaseStat = styled(Typography)(() => ({
+  display: 'flex',
+  '& span': {
+    width: '75px',
+  },
+  '& strong': {
+    paddingLeft: '15px',
+  },
+}))
 export default ReleaseSettings

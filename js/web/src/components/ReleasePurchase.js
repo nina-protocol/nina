@@ -1,26 +1,32 @@
 import React, { useEffect, useState, useContext } from 'react'
+import { useHistory } from 'react-router-dom'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Button from '@mui/material/Button'
-import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
-import { useTheme } from '@mui/material/styles'
 import { useSnackbar } from 'notistack'
-import SquareModal from './SquareModal'
+import { Typography } from '@mui/material'
 
-const { ReleaseContext } = ninaCommon.contexts
+const { Dots, ReleaseSettings } = ninaCommon.components
+const { ReleaseContext, NinaContext, ExchangeContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
 const ReleasePurchase = (props) => {
-  const { releasePubkey } = props
-  const theme = useTheme()
+  const { releasePubkey, metadata, match } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
+  const history = useHistory()
   const { releasePurchase, releasePurchasePending, releaseState, getRelease } =
     useContext(ReleaseContext)
+  const { getAmountHeld, collection } = useContext(NinaContext)
+  const { exchangeState, filterExchangesForReleaseBuySell } =
+    useContext(ExchangeContext)
   const [pending, setPending] = useState(undefined)
   const [release, setRelease] = useState(undefined)
+  const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
+  const [amountPendingBuys, setAmountPendingBuys] = useState(0)
+  const [amountPendingSales, setAmountPendingSales] = useState(0)
 
   useEffect(() => {
     getRelease(releasePubkey)
@@ -36,27 +42,59 @@ const ReleasePurchase = (props) => {
     setPending(releasePurchasePending[releasePubkey])
   }, [releasePurchasePending[releasePubkey]])
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
+  }, [])
+
+  useEffect(() => {
+    setAmountHeld(collection[releasePubkey])
+  }, [collection[releasePubkey]])
+
+  useEffect(() => {
+    getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
+  }, [releasePubkey])
+
+  useEffect(() => {
+    setAmountPendingBuys(
+      filterExchangesForReleaseBuySell(releasePubkey, true, true).length
+    )
+    setAmountPendingSales(
+      filterExchangesForReleaseBuySell(releasePubkey, false, true).length
+    )
+  }, [exchangeState])
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    let result
+
     if (!release.pending) {
       enqueueSnackbar('Making transaction...', {
         variant: 'info',
       })
-      releasePurchase(releasePubkey)
+      result = await releasePurchase(releasePubkey)
+      if (result) {
+        showCompletedTransaction(result)
+      }
     }
+  }
+
+  const showCompletedTransaction = (result) => {
+    enqueueSnackbar(result.msg, {
+      variant: result.success ? 'success' : 'warn',
+    })
   }
 
   if (!release) {
     return (
-      <Root>
-        <CircularProgress color="inherit" />
-      </Root>
+      <>
+        <Dots color="inherit" />
+      </>
     )
   }
 
   const buttonText =
     release.remainingSupply > 0
-      ? `Buy ${NinaClient.nativeToUiString(
+      ? `Buy $${NinaClient.nativeToUiString(
           release.price.toNumber(),
           release.paymentMint
         )}`
@@ -65,63 +103,94 @@ const ReleasePurchase = (props) => {
   const buttonDisabled =
     wallet?.connected && release.remainingSupply > 0 ? false : true
 
+  let pathString = ''
+  if (match.path.includes('releases')) {
+    pathString = '/releases'
+  } else if (match.path.includes('collection')) {
+    pathString = '/collection'
+  }
+
   return (
-    <div className={classes.releasePurchase}>
-      <form
-        className={`${classes.releasePurchase}__form`}
-        style={theme.helpers.flexColumn}
-        onSubmit={handleSubmit}
-      >
-        <p>
-          {release.remainingSupply.toNumber()} /{' '}
-          {release.totalSupply.toNumber()} available
-        </p>
-        <Box mt={3} className={classes.releasePurchaseCtaWrapper}>
+    <Box >
+      <AmountRemaining variant="body2" align="left">
+        Remaining <span>{release.remainingSupply.toNumber()} </span> /{' '}
+        {release.totalSupply.toNumber()}
+      </AmountRemaining>
+
+      {wallet?.connected && (
+        <StyledUserAmount>
+            {metadata && (
+            <Typography variant="body1" align="left" gutterBottom >
+                You have: {amountHeld || 0} {metadata.symbol}
+              </Typography>
+            )}
+            {amountPendingSales > 0 ? (
+            <Typography variant="body1" align="left" gutterBottom >
+                {amountPendingSales} pending sale
+                {amountPendingSales > 1 ? 's' : ''}{' '}
+            </Typography>
+            ) : null}
+            {amountPendingBuys > 0 ? (
+            <Typography variant="body1" align="left" gutterBottom >
+                {amountPendingBuys} pending buy
+                {amountPendingBuys > 1 ? 's' : ''}{' '}
+            </Typography>
+            ) : null}
+        </StyledUserAmount>
+      )}
+      <Typography variant="h3" align="left">
+        {metadata.description}
+      </Typography>
+      {wallet?.connected &&
+        wallet.publicKey.toBase58() === release.authority.toBase58() && (
+          <ReleaseSettings releasePubkey={releasePubkey} inCreateFlow={false} />
+        )}
+      <Box mt={1}>
+        <form onSubmit={handleSubmit}>
           <Button
-            variant="contained"
-            color="primary"
+            variant="outlined"
             type="submit"
             disabled={buttonDisabled}
+            fullWidth
           >
-            {pending ? (
-              <CircularProgress className="default__loader" color="inherit" />
-            ) : (
-              buttonText
-            )}
+            <Typography variant="body2">
+              {pending ? <Dots msg="awaiting wallet approval" /> : buttonText}
+            </Typography>
           </Button>
-          {NinaClient.isUsdc(release.paymentMint) && (
-            <SquareModal
-              buttonDisabled={buttonDisabled}
-              releasePubkey={releasePubkey}
-              release={release}
-            />
-          )}
-        </Box>
-      </form>
-    </div>
+        </form>
+      </Box>
+      <MarketButton
+        variant="outlined"
+        fullWidth
+        onClick={() => {
+          history.push(
+            `${pathString}/${releasePubkey}/market`
+          )
+        }}
+      >
+        <Typography variant="body2">Go To Market</Typography>
+      </MarketButton>
+    </Box>
   )
 }
 
-const PREFIX = 'ReleasePurchase'
-
-const classes = {
-  releasePurchase: `${PREFIX}-releasePurchase`,
-  releasePurchaseCtaWrapper: `${PREFIX}-releasePurchaseCtaWrapper`,
-}
-
-const Root = styled('div')(() => ({
-  [`& .${classes.releasePurchase}`]: {
-    height: '100%',
-    '&__form': {
-      height: '90%',
-    },
+const AmountRemaining = styled(Typography)(({ theme }) => ({
+  paddingBottom: '10px',
+  '& span': {
+    color: theme.palette.blue,
   },
+}))
 
-  [`& .${classes.releasePurchaseCtaWrapper}`]: {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'space-evenly',
-  },
+const StyledUserAmount = styled(Box)(({ theme }) => ({
+  color: theme.palette.black,
+  ...theme.helpers.baseFont,
+  paddingBottom: '10px',
+  display: 'flex',
+  flexDirection: 'column',
+}))
+
+const MarketButton = styled(Button)(({ theme }) => ({
+  marginTop: `${theme.spacing(1)} !important`,
 }))
 
 export default ReleasePurchase

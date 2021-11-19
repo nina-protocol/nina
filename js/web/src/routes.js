@@ -8,6 +8,8 @@ import ReleaseList from './components/ReleaseList'
 import UserCollection from './components/UserCollection'
 import Release from './components/Release'
 import AudioPlayer from './components/AudioPlayer'
+import HomePage from './components/HomePage'
+import FaqPage from './components/FaqPage'
 import NavBar from './components/NavBar'
 
 function Routes() {
@@ -24,9 +26,32 @@ function Routes() {
             <NavBar />
             <Switch>
               <Route exact path="/upload" component={ReleaseCreate} />
-              <Route path="/releases" component={ReleaseList}></Route>
+              <Route path="/faq" component={FaqPage} />
               <Route path="/collection" component={UserCollection}></Route>
-              <Route exact path="/release/:releasePubkey" component={Release} />
+
+              <Route
+                exact
+                path="/releases/:releasePubkey/market"
+                component={Release}
+              />
+              <Route
+                exact
+                path="/releases/:releasePubkey"
+                component={Release}
+              />
+              <Route path="/releases" component={ReleaseList}></Route>
+              <Route
+                exact
+                path="/collection/:releasePubkey/market"
+                component={Release}
+              />
+              <Route
+                path="/collection/:releasePubkey"
+                component={Release}
+              ></Route>
+              <Route path="/:releasePubkey/market" component={Release}></Route>
+              <Route path="/:releasePubkey" component={Release}></Route>
+              <Route exact path="/" component={HomePage} />
             </Switch>
             <AudioPlayer />
           </div>

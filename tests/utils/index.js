@@ -226,7 +226,7 @@ const findOrCreateAssociatedTokenAccount = async(
   }
 }
 
-const newAccount = async (provider, lamports = 1e10, account=undefined) => {
+const newAccount = async (provider, lamports = 1e9, account=undefined) => {
   if (!account) {
     account = anchor.web3.Keypair.generate();
   }
@@ -294,6 +294,7 @@ module.exports = {
   getTokenAccount,
   createMint,
   createMintInstructions,
+  createMintToAccountInstrs,
   createTokenAccount,
   mintToAccount,
   findOrCreateAssociatedTokenAccount,

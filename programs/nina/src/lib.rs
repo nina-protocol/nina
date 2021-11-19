@@ -1,4 +1,5 @@
 use anchor_lang::prelude::*;
+use metaplex_token_metadata::state::{Data};
 
 declare_id!("ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4");
 
@@ -55,6 +56,13 @@ pub mod nina {
         ctx: Context<ReleaseAirdrop>,
     ) -> ProgramResult {
         instructions::release_airdrop::handler(ctx)
+    }
+
+    pub fn release_update_metadata(
+        ctx: Context<ReleaseUpdateMetadata>,
+        metadata_data: ReleaseMetadataData
+    ) -> ProgramResult {
+        instructions::release_update_metadata::handler(ctx, metadata_data)
     }
 
     pub fn redeemable_init(

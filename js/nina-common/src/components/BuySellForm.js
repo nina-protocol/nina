@@ -2,11 +2,12 @@ import React, { useEffect, useState, useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import { withFormik } from 'formik'
 import Button from '@mui/material/Button'
-import CircularProgress from '@mui/material/CircularProgress'
 import Input from '@mui/material/Input'
 import Box from '@mui/material/Box'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { ExchangeContext } from '../contexts'
+import { NinaClient } from '../utils'
+import Dots from './Dots'
 
 const BuySellForm = (props) => {
   const { onSubmit, isBuy, release, amount, setAmount } = props
@@ -48,117 +49,96 @@ const BuySellForm = (props) => {
   }
 
   return (
-    <Root>
-      <form
-        onSubmit={handleSubmit}
-        className={classes.buySellForm}
-        autoComplete="off"
-      >
-        <Box mb={2} className={classes.exchangeCtaWrapper}>
-          <Input
-            id="buy-sell__input"
-            type="input"
-            name="amount"
-            className={`${classes.buySellForm}__inputLabel`}
-            onChange={(e) => handleChange(e)}
-            disableUnderline={true}
-            placeholder="Enter price in SOL"
-            value={amount !== undefined ? amount : ''}
-          />
-          <Button
-            variant="contained"
-            className={`${classes.cta}`}
-            type="submit"
-            disabled={!wallet?.connected}
-            disableRipple={true}
-          >
-            {isBuy && buyPending && (
-              <CircularProgress size={30} color="inherit" />
-            )}
+    <StyledForm
+      onSubmit={handleSubmit}
+      className={classes.buySellForm}
+      autoComplete="off"
+    >
+      <InputWrapper >
+        <Input
+          id="buy-sell__input"
+          type="input"
+          name="amount"
+          className={`${classes.buySellFormInputLabel}`}
+          onChange={(e) => handleChange(e)}
+          disableUnderline={true}
+          placeholder={`Enter price in ${NinaClient.isUsdc(release.paymentMint) ? 'USDC' : 'SOL'}`}
+          value={amount !== undefined ? amount : ''}
+        />
+        <Button
+          variant="contained"
+          type="submit"
+          disabled={!wallet?.connected}
+          disableRipple={true}
+          sx={{width: "20%"}}
+        >
+          {isBuy && buyPending && (
+            <Dots/>
+          )}
 
-            {!isBuy && sellPending && (
-              <CircularProgress size={30} color="inherit" />
-            )}
-            {isBuy && !buyPending && 'Submit'}
-            {!isBuy && !sellPending && 'Submit'}
-          </Button>
-        </Box>
-      </form>
-    </Root>
+          {!isBuy && sellPending && (
+            <Dots />
+          )}
+          {isBuy && !buyPending && 'Submit'}
+          {!isBuy && !sellPending && 'Submit'}
+        </Button>
+      </InputWrapper>
+    </StyledForm>
   )
 }
 
 const PREFIX = 'BuySellForm'
 
 const classes = {
-  buySellForm: `${PREFIX}-buySellForm`,
-  exchangeCtaWrapper: `${PREFIX}-exchangeCtaWrapper`,
-  cta: `${PREFIX}-cta`,
+  buySellFormInputLabel: `${PREFIX}-buySellFormInputLabel`,
 }
 
-const Root = styled('div')(({ theme }) => ({
-  [`& .${classes.buySellForm}`]: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    margin: 'auto',
-    marginTop: theme.spacing(1),
-    borderBottom: `1px solid ${theme.palette.greyLight}`,
-    backgroundColor: `${theme.palette.white}`,
-    '&__inputLabel': {
-      fontSize: '2rem',
-      width: '73%',
-      border: `1px dashed ${theme.palette.blue}`,
-      '& input': {
-        textAlign: 'center !important',
-        padding: '0',
-        height: '41px',
-        '&[type=number]': {
-          '-moz-appearance': 'textfield',
-        },
-        '&::-webkit-outer-spin-button': {
-          '-webkit-appearance': 'none',
-          margin: 0,
-        },
-        '&::-webkit-inner-spin-button': {
-          '-webkit-appearance': 'none',
-          margin: 0,
-        },
-        '&::placeholder': {
-          fontSize: '10px',
-          verticalAlign: 'middle',
-          position: 'absolute',
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-        },
+const StyledForm = styled('form')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  margin: '0',
+  width: '100%',
+  marginTop: '10px',
+  borderBottom: `1px solid ${theme.palette.greyLight}`,
+  backgroundColor: `${theme.palette.white}`,
+
+  [`& .${classes.buySellFormInputLabel}`]: {
+    fontSize: '2rem',
+    width: '73%',
+    border: `1px solid ${theme.palette.grey.primary}`,
+    '& input': {
+      textAlign: 'center !important',
+      padding: '0',
+      height: '41px',
+      '&[type=number]': {
+        '-moz-appearance': 'textfield',
+      },
+      '&::-webkit-outer-spin-button': {
+        '-webkit-appearance': 'none',
+        margin: 0,
+      },
+      '&::-webkit-inner-spin-button': {
+        '-webkit-appearance': 'none',
+        margin: 0,
+      },
+      '&::placeholder': {
+        fontSize: '10px',
+        verticalAlign: 'middle',
+        position: 'absolute',
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%)',
       },
     },
-    '&:hover': {
-      color: `${theme.palette.blue}`,
-    },
   },
+}))
 
-  [`& .${classes.exchangeCtaWrapper}`]: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-
-  [`& .${classes.cta}`]: {
-    width: '25%',
-    background: `${theme.palette.white}`,
-    fontSize: '16px',
-    fontWeight: '400',
-    boxShadow: 'none',
-    '&:hover': {
-      backgroundColor: `${theme.palette.white}`,
-      boxShadow: 'none',
-    },
-    '&.Mui-disabled': {
-      background: `${theme.palette.white}`,
-    },
-  },
+const InputWrapper = styled(Box)(() => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: '20px',
 }))
 
 export default withFormik({

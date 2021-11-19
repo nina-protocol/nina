@@ -1,5 +1,6 @@
 import React, { useContext, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
+import {Typography, Box} from '@mui/material'
 import ninaCommon from 'nina-common'
 import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
@@ -9,8 +10,8 @@ import {
   WalletDialogProvider,
   WalletMultiButton,
 } from '@solana/wallet-adapter-material-ui'
-import ninaLogo from '../assets/nina-logo-black.png'
-
+import Breadcrumbs from './Breadcrumbs'
+import MobileWalletModal from './MobileWalletModal'
 const { NinaContext } = ninaCommon.contexts
 
 const NavBar = () => {
@@ -29,36 +30,40 @@ const NavBar = () => {
     <Root className={classes.nav}>
       <div className={classes.nav__left}>
         <NavDrawer />
+        <Breadcrumbs />
       </div>
 
-      <NavLink
-        to="/"
-        activeClassName={`${classes.nav}__link ${classes.nav}__link--active  `}
-      >
-        <img src={ninaLogo} className={classes.nav__logo} alt="nina" />
-      </NavLink>
+      <Logo to="/">
+        <Typography variant="h4">NINA</Typography>
+      </Logo>
 
       <div className={classes.nav__right}>
-        <span className={classes.nav__balance}>
-          {wallet?.connected ? `balance: $${usdcBalance}` : null}
-        </span>
-        <div className={classes.nav__button}>
-          <StyledWalletDialogProvider featuredWallets={4}>
-            <StyledWalletButton>
-              {wallet?.connected
-                ? `${wallet.wallet.name} ${walletDisplay}`
-                : 'Connect Wallet'}
-            </StyledWalletButton>
-            <ConnectionDot
-              className={`${classes.connectionDot} ${
-                wallet?.connected ? 'connected' : ''
-              }`}
-            ></ConnectionDot>
-            {/* {userTwitterHandle && 
-              <a href={`https://twitter.com/${userTwitterHandle}`} target="_blank" rel="noreferrer">(@{userTwitterHandle})</a>
-            } */}
-          </StyledWalletDialogProvider>
-        </div>
+        <DesktopWalletWrapper>
+          <Typography variant="subtitle1" className={classes.nav__balance}>
+            {wallet?.connected ? `Balance: $${usdcBalance}` : null}
+          </Typography>
+          <div className={classes.nav__button}>
+            <StyledWalletDialogProvider featuredWallets={4}>
+              <StyledWalletButton>
+                <Typography variant="subtitle1" sx={{ textTransform: 'none' }}>
+                  {wallet?.connected
+                    ? `${wallet.wallet.name} – ${walletDisplay}`
+                    : 'Connect Wallet'}
+                </Typography>
+              </StyledWalletButton>
+              <ConnectionDot
+                className={`${classes.connectionDot} ${
+                  wallet?.connected ? 'connected' : ''
+                }`}
+              ></ConnectionDot>
+              </StyledWalletDialogProvider>
+
+          </div>
+        </DesktopWalletWrapper>
+
+        <MobileWalletWrapper>
+          <MobileWalletModal />
+        </MobileWalletWrapper>
       </div>
     </Root>
   )
@@ -93,31 +98,53 @@ const Root = styled('nav')(({ theme }) => ({
     top: '0',
     left: '0',
   },
-
+ 
   [`& .${classes.nav__left}`]: {
     display: 'flex',
+    alignItems: 'flex-start',
   },
 
   [`& .${classes.nav__right}`]: {
     display: 'flex',
-    justifyContent: 'center',
+    height: '100%', 
+    position: 'absolute',
+    right: 0,
+    top: '12px',
+    [theme.breakpoints.down('md')]: {
+      position: 'absolute',
+      right: 0,
+      top: '10px'
+    },
   },
 
   [`& .${classes.nav__balance}`]: {
-    margin: 'auto',
+    margin: '0',
     color: `${theme.palette.blue}`,
-    fontSize: '10px',
+
   },
 
   [`& .${classes.nav__logo}`]: {
-    height: '150%',
+    height: '100%',
+    alignItems: 'center',
   },
 
   [`& .${classes.nav__button}`]: {
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginRight: '24px',
-    fontSize: '10px',
+  },
+}))
+
+const DesktopWalletWrapper = styled(Box)(({theme}) => ({
+  display: 'flex',
+  [theme.breakpoints.down('md')]: {
+    display: 'none'
+  },
+}))
+const MobileWalletWrapper = styled(Box)(({theme}) => ({
+  display: 'none',
+  [theme.breakpoints.down('md')]: {
+    display: 'flex'
   },
 }))
 
@@ -154,7 +181,7 @@ const StyledWalletDialogProvider = styled(WalletDialogProvider)(
           backgroundColor: `${theme.palette.white}`,
           borderRadius: '50px',
           color: `${theme.palette.blue}`,
-          fontSize: '14px',
+          fontSize: '10px',
           fontWeight: '700',
           '&:hover': {
             backgroundColor: `${theme.palette.blue}`,
@@ -175,6 +202,8 @@ const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
   paddingLeft: '20px',
   backgroundColor: `${theme.palette.transparent} !important`,
   boxShadow: 'none !important',
+  paddingTop: '0 !important',
+
   '& img': {
     display: 'none',
   },
@@ -187,15 +216,30 @@ const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
 }))
 
 const ConnectionDot = styled('span')(({ theme }) => ({
-  height: '8px',
-  width: '8px',
-  backgroundColor: `${theme.palette.blue}`,
+  height: '11px',
+  width: '14px',
+  backgroundColor: theme.palette.red,
   borderRadius: '50%',
   display: 'inline-block',
-  opacity: '19%',
-  marginLeft: '10px',
+  marginTop: '2px',
   '&.connected': {
-    opacity: '100%',
+    backgroundColor: theme.palette.green,
+  },
+}))
+
+const Logo = styled(NavLink)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  position: 'absolute',
+  top: '15px',
+  width: '76px',
+  height: '13px',
+  left: '50%',
+  transform: 'translateX(-50%)',
+  '& .MuiTypography-h4': {
+    fontWeight: 'bold',
   },
 }))
 

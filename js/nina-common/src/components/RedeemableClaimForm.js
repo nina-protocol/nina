@@ -39,61 +39,61 @@ export const RedeemableClaimForm = (props) => {
       <>
         <Form className={`${classes.redeemableForm}`}>
           <Field name="name" shrink={false}>
-            {(props) => (
+            {({ field }) => (
               <>
                 <TextField
                   className={classes.formField}
                   variant="outlined"
-                  placeholder={NinaClient.formatPlaceholder(props.field.name)}
+                  placeholder={NinaClient.formatPlaceholder(field.name)}
                   error={errors.name}
                   disabled={disabled}
                   InputLabelProps={{ shrink: false }}
                   shrink={false}
-                  {...props.field}
+                  {...field}
                 />
               </>
             )}
           </Field>
 
           <Field name="addressLine1">
-            {(props) => (
+            {({ field }) => (
               <>
                 <TextField
                   className={classes.formField}
                   variant="outlined"
-                  placeholder={NinaClient.formatPlaceholder(props.field.name)}
+                  placeholder={NinaClient.formatPlaceholder(field.name)}
                   error={errors.addressLine1}
                   disabled={disabled}
-                  {...props.field}
+                  {...field}
                 />
               </>
             )}
           </Field>
 
           <Field name="addressLine2">
-            {(props) => (
+            {({ field }) => (
               <>
                 <TextField
                   className={classes.formField}
                   variant="outlined"
-                  placeholder={NinaClient.formatPlaceholder(props.field.name)}
+                  placeholder={NinaClient.formatPlaceholder(field.name)}
                   disabled={disabled}
-                  {...props.field}
+                  {...field}
                 />
               </>
             )}
           </Field>
 
           <Field name="city">
-            {(props) => (
+            {({ field }) => (
               <>
                 <TextField
                   className={classes.formField}
                   variant="outlined"
-                  placeholder={NinaClient.formatPlaceholder(props.field.name)}
+                  placeholder={NinaClient.formatPlaceholder(field.name)}
                   error={errors.city}
                   disabled={disabled}
-                  {...props.field}
+                  {...field}
                 />
               </>
             )}
@@ -137,15 +137,15 @@ export const RedeemableClaimForm = (props) => {
             </Field>
 
             <Field name="postalCode">
-              {(props) => (
+              {({ field }) => (
                 <>
                   <TextField
                     className={classes.formField}
                     variant="outlined"
-                    placeholder={NinaClient.formatPlaceholder(props.field.name)}
+                    placeholder={NinaClient.formatPlaceholder(field.name)}
                     error={errors.postalCode}
                     disabled={disabled}
-                    {...props.field}
+                    {...field}
                   />
                 </>
               )}

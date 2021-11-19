@@ -3,17 +3,18 @@ import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useSnackbar } from 'notistack'
 import Button from '@mui/material/Button'
-import CircularProgress from '@mui/material/CircularProgress'
-import { Typography } from '@mui/material'
-import { useTheme } from '@mui/material/styles'
+import LinearProgress from '@mui/material/LinearProgress'
+import { Typography, Box } from '@mui/material'
 import { useWallet } from '@solana/wallet-adapter-react'
 import ReleaseCreateForm from './ReleaseCreateForm'
+import ReleaseCard from './ReleaseCard'
+import NinaBox from './NinaBox'
 import MediaDropzones from './MediaDropzones'
 import * as Yup from 'yup'
+import ScrollablePageWrapper from './ScrollablePageWrapper'
 
-const { ReleaseSettings } = ninaCommon.components
+const { ReleaseSettings, Dots } = ninaCommon.components
 const { ReleaseContext, NinaContext } = ninaCommon.contexts
-const { NinaClient } = ninaCommon.utils
 
 const ReleaseCreateSchema = Yup.object().shape({
   artist: Yup.string().required('Artist Name is Required'),
@@ -26,7 +27,6 @@ const ReleaseCreateSchema = Yup.object().shape({
 })
 
 const ReleaseCreate = () => {
-  const theme = useTheme()
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const { releaseCreate, pressingState, resetPressingState, releaseState } =
@@ -35,14 +35,15 @@ const ReleaseCreate = () => {
   const [track, setTrack] = useState(undefined)
   const [artwork, setArtwork] = useState()
   const [releasePubkey, setReleasePubkey] = useState(undefined)
-  const [pressingFee, setPressingFee] = useState(undefined)
   const [release, setRelease] = useState(undefined)
-  const [buttonText, setButtonText] = useState('Publish')
+  const [buttonText, setButtonText] = useState('Publish Release')
   const [pending, setPending] = useState(false)
   const [formIsValid, setFormIsValid] = useState(false)
   const [formValues, setFormValues] = useState({
     releaseForm: {},
   })
+  const [imageProgress, setImageProgress] = useState()
+  const [audioProgress, setAudioProgress] = useState()
 
   useEffect(() => {
     return () => {
@@ -70,23 +71,6 @@ const ReleaseCreate = () => {
     }
   }, [releaseState.tokenData[releasePubkey]])
 
-  useEffect(() => {
-    const calculateFee = async (artwork, track, releaseForm) => {
-      const { amount, retailPrice } = releaseForm
-
-      const ninaVaultFee = NinaClient.pressingFeeCalculator(
-        amount,
-        0,
-        retailPrice
-      )
-      setPressingFee(ninaVaultFee)
-    }
-
-    if (artwork && track && formValues.releaseForm) {
-      calculateFee(artwork, track, formValues.releaseForm)
-    }
-  }, [track, artwork, formValues])
-
   const handleFormChange = async (values) => {
     setFormValues({
       ...formValues,
@@ -105,12 +89,11 @@ const ReleaseCreate = () => {
       const data = {
         retailPrice: releaseForm.retailPrice,
         amount: releaseForm.amount,
-        pressingFee,
         artistTokens: releaseForm.artistTokens,
         resalePercentage: releaseForm.resalePercentage,
         catalogNumber: releaseForm.catalogNumber,
       }
-      const success = await releaseCreate(data, pressingFee)
+      const success = await releaseCreate(data)
       if (success) {
         enqueueSnackbar('Uploading metadata...', {
           variant: 'info',
@@ -132,119 +115,155 @@ const ReleaseCreate = () => {
     }
   }
 
+  const handleProgress = (progress, isImage) => {
+    if (isImage) {
+      setImageProgress(progress)
+    } else {
+      setAudioProgress(progress)
+    }
+  }
+
   if (
     release &&
     artwork.meta.status === 'done' &&
     track.meta.status === 'done'
   ) {
     return (
-      <Root>
-        <Typography variant="h6" gutterBottom>
-          Release Overview
-        </Typography>
+      <NinaBox columns={'repeat(2, 1fr)'} justifyItems={'end'}>
+        <ReleaseCard
+          metadata={formValues.releaseForm}
+          preview={true}
+          releasePubkey={releasePubkey}
+          track={track}
+          artwork={artwork}
+        />
         <ReleaseSettings
           releasePubkey={releasePubkey}
           inCreateFlow={true}
           tempMetadata={formValues.releaseForm}
           artwork={artwork}
         />
-      </Root>
+      </NinaBox>
     )
   }
 
   return (
-    <Root>
+    <>
       {!wallet.connected && (
-        <Typography variant="body" gutterBottom>
+        <ConnectMessage variant="body" gutterBottom>
           Please connect your wallet to start publishing!
-        </Typography>
+        </ConnectMessage>
       )}
 
       {wallet?.connected && npcAmountHeld > 0 && (
-        <>
-          <div style={theme.helpers.grid} className={classes.createFlowGrid}>
-            <>
-              <div className={classes.createReleasePreview}>
-                <MediaDropzones
-                  setTrack={setTrack}
-                  setArtwork={setArtwork}
-                  values={formValues}
-                  releasePubkey={releasePubkey}
-                  track={track}
+        <NinaBox columns="350px 400px" gridColumnGap="10px">
+          <Box sx={{ width: '100%' }}>
+            <MediaDropzones
+              setTrack={setTrack}
+              setArtwork={setArtwork}
+              values={formValues}
+              releasePubkey={releasePubkey}
+              track={track}
+              handleProgress={handleProgress}
+            />
+          </Box>
+
+          <CreateFormWrapper>
+            <ReleaseCreateForm
+              onChange={handleFormChange}
+              values={formValues.releaseForm}
+              ReleaseCreateSchema={ReleaseCreateSchema}
+            />
+          </CreateFormWrapper>
+
+          <CreateCta>
+            <Button
+              fullWidth
+              variant="outlined"
+              color="primary"
+              onClick={handleSubmit}
+              disabled={
+                pending ||
+                !formIsValid ||
+                artwork?.meta.status === 'uploading' ||
+                track?.meta.status === 'uploading'
+              }
+              sx={{ height: '54px' }}
+            >
+              {pending && (
+                <Dots
+                  msg={`Uploading ${
+                    audioProgress > 0 ? 'Track' : 'Image'
+                  } - Please don't close this window`}
                 />
-              </div>
-              <div className={classes.createFormContainer}>
-                <ReleaseCreateForm
-                  onChange={handleFormChange}
-                  values={formValues.releaseForm}
-                  ReleaseCreateSchema={ReleaseCreateSchema}
-                />
-                {pressingFee > 0 && (
-                  <Typography variant="body2">
-                    <strong>Pressing Fee:</strong> {pressingFee} (
-                    {formValues.releaseForm.catalogNumber})
-                  </Typography>
-                )}
-              </div>
-            </>
-            {!release && (
-              <div className={classes.createCta}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleSubmit}
-                  disabled={pending || !pressingFee || !formIsValid}
-                >
-                  {pending && <CircularProgress />}
-                  {!pending && buttonText}
-                </Button>
-              </div>
+              )}
+              {!pending && buttonText}
+            </Button>
+            {pending && (
+              <LinearProgress
+                variant="determinate"
+                value={audioProgress || imageProgress}
+              />
             )}
-          </div>
-        </>
+          </CreateCta>
+        </NinaBox>
       )}
 
       {wallet?.connected && npcAmountHeld < 1 && (
-        <Typography variant="body" gutterBottom>
-          Fill out this form to apply for a publishing grant
-        </Typography>
+        <ScrollablePageWrapper style={{display: 'flex'}}>
+          <NpcMessage>
+            <Typography variant="h3">
+              Currently, Nina Publishing Credits (NPCs) are required to access the publishing flow. 
+            </Typography>
+            <Typography variant="h3">
+              1 NPC = 1 Release, NPCs are burned during the upload process.
+            </Typography>
+            <Typography variant="h3">
+              Please fill out <a target="_blank" rel="noreferrer" href="https://docs.google.com/forms/d/e/1FAIpQLSdj13RKQcw9GXv3A5U4ebJhzJjjfxzxuCtB092X4mkHm5XX0w/viewform">this form</a> and we will notify you when your credits have been distributed.
+            </Typography>
+
+            <Typography variant="h3">
+              Check our <a href="/faq">FAQ</a> or hit us at <a target="_blank" rel="noreferrer" href="href=mailto:artists@nina.market">artists@nina.market</a> with any questions.
+            </Typography>
+          </NpcMessage>
+        </ScrollablePageWrapper>
       )}
-    </Root>
+    </>
   )
 }
 
-const PREFIX = 'ReleaseCreate'
+const ConnectMessage = styled(Typography)(() => ({
+  gridColumn: '1/3',
+}))
 
-const classes = {
-  createFlowGrid: `${PREFIX}-createFlowGrid`,
-  createFormContainer: `${PREFIX}-createFormContainer`,
-  createReleasePreview: `${PREFIX}-createReleasePreview`,
-  createCta: `${PREFIX}-createCta`,
-}
-
-const Root = styled('div')(() => ({
+const CreateFormWrapper = styled(Box)(({ theme }) => ({
   width: '100%',
-  position: 'absolute',
-  [`& .${classes.createFlowGrid}`]: {
-    gridTemplateColumns: '50% 50%',
-    gridAutoRows: 'auto !important',
-    padding: '0 20%',
+  height: '476px',
+  margin: 'auto',
+  display: 'flex',
+  flexDirection: 'column',
+  border: `1px solid ${theme.palette.grey.primary}`,
+}))
+
+const CreateCta = styled(Box)(({ theme }) => ({
+  gridColumn: '1/3',
+  width: '100%',
+  '& .MuiButton-root': {
+    ...theme.helpers.baseFont,
+  },
+}))
+
+const NpcMessage = styled(Box)(({theme}) => ({
+  textAlign: 'left',
+  margin: 'auto',
+  width: '55%',
+  '& .MuiTypography-root': {
+    paddingBottom: '10px'
+  },
+  '& a': {
+    color: theme.palette.blue
   },
 
-  [`& .${classes.createFormContainer}`]: {
-    width: '100%',
-  },
-
-  [`& .${classes.createReleasePreview}`]: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-
-  [`& .${classes.createCta}`]: {
-    gridColumn: '1/3',
-    paddingTop: '0.5rem',
-  },
 }))
 
 export default ReleaseCreate

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useHistory } from 'react-router-dom'
@@ -8,45 +8,103 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
+import TableSortLabel from '@mui/material/TableSortLabel'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
+import { visuallyHidden } from '@mui/utils'
+import Box from '@mui/material/Box'
+import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
+import ControlPointIcon from '@mui/icons-material/ControlPoint';
 
+const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
-const ARWEAVE_GATEWAY_ENDPOINT = NinaClient.endpoints.arweave
+
+const descendingComparator = (a, b, orderBy) => {
+  switch (orderBy) {
+    case 'artist':
+    case 'title':
+      a = a[orderBy].toLowerCase()
+      b = b[orderBy].toLowerCase()
+      break
+
+    case 'date':
+      if (b[orderBy] < a[orderBy]) {
+        return -1
+      }
+      if (b[orderBy] > a[orderBy]) {
+        return 1
+      }
+      break
+
+    case 'collect':
+      a = parseFloat(a[orderBy].props.children[1]?.props?.children?.replace(/[^\d.-]/g, '')) || 0
+      b = parseFloat(b[orderBy].props.children[1]?.props?.children?.replace(/[^\d.-]/g, '')) || 0
+      break
+
+    case 'sold':
+      a = parseFloat(a[orderBy].substring(0, a[orderBy].indexOf('/')))
+      b = parseFloat(b[orderBy].substring(0, b[orderBy].indexOf('/')))
+
+      break
+
+    case 'price':
+    case 'collected':
+    case 'share':
+    default:
+      a = parseFloat(a[orderBy].substring(/[^\d.-]/g, ''))
+      b = parseFloat(b[orderBy].replace(/[^\d.-]/g, ''))
+      break
+  }
+
+  if (b < a) {
+    return -1
+  }
+  if (b > a) {
+    return 1
+  }
+  return 0
+}
+
+const getComparator = (order, orderBy) => {
+  return order === 'desc'
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy)
+}
 
 const EnhancedTableHead = (props) => {
-  const { order, orderBy, tableType } = props
+  const { order, orderBy, tableType, onRequestSort } = props
+
+  const createSortHandler = (property) => (event) => {
+    onRequestSort(event, property)
+  }
+
   let headCells = [
     {
       id: 'art',
       numeric: false,
       disablePadding: true,
       label: '',
-      renderCell: (params) => {
-        return (
-          <img
-            src={`${ARWEAVE_GATEWAY_ENDPOINT}/${params.value.txId}`}
-            alt="cover"
-          />
-        )
-      },
     },
     { id: 'artist', numeric: false, disablePadding: false, label: 'Artist' },
     { id: 'title', numeric: false, disablePadding: false, label: 'Title' },
   ]
 
+  if (tableType === 'userCollection') {
+    headCells.push({ id: 'duration', numeric: true, label: 'Duration' })
+  }
+
   if (tableType === 'userPublished') {
     headCells.push({ id: 'price', numeric: true, label: 'Price' })
-    headCells.push({ id: 'available', numeric: false, label: 'Available' })
-    headCells.push({ id: 'revenue', numeric: false, label: 'Revenue' })
+    headCells.push({ id: 'sold', numeric: true, label: 'Sold' })
     headCells.push({ id: 'share', numeric: false, label: 'Share' })
-    headCells.push({ id: 'collected', numeric: false, label: 'Collected' })
+    headCells.push({ id: 'date', numeric: false, label: 'Release Date' })
+    headCells.push({ id: 'collected', numeric: true, label: 'Earnings' })
     headCells.push({ id: 'collect', numeric: false, label: 'Collect' })
   }
 
   if (tableType === 'userRoyalty') {
     headCells.push({ id: 'share', numeric: false, label: 'Share' })
-    headCells.push({ id: 'collected', numeric: false, label: 'Collected' })
+    headCells.push({ id: 'collected', numeric: false, label: 'Earnings' })
     headCells.push({ id: 'collect', numeric: false, label: 'Collect' })
   }
 
@@ -59,8 +117,22 @@ const EnhancedTableHead = (props) => {
             align={'center'}
             padding={'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
+            sx={{ fontWeight: 'bold', borderBottom: 'none' }}
           >
-            {headCell.label}
+            <TableSortLabel
+              active={orderBy === headCell.id}
+              direction={orderBy === headCell.id ? order : 'asc'}
+              onClick={createSortHandler(headCell.id)}
+              disabled={headCell.id === 'art'}
+              sx={{ '& svg': { fontSize: '14px ' } }}
+            >
+              {headCell.label}
+              {orderBy === headCell.id ? (
+                <Box component="span" sx={visuallyHidden}>
+                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                </Box>
+              ) : null}
+            </TableSortLabel>
           </TableCell>
         ))}
       </TableRow>
@@ -69,14 +141,48 @@ const EnhancedTableHead = (props) => {
 }
 
 const ReleaseListTable = (props) => {
-  const { releases, tableType } = props
+  const { releases, tableType, collectRoyaltyForRelease } = props
+  const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext)
+  const { releaseState } = useContext(ReleaseContext)
+
   const history = useHistory()
+  const [order, setOrder] = useState('asc')
+  const [orderBy, setOrderBy] = useState('artist')
 
-  const [order] = useState('asc')
-  // const [orderBy] = useState('calories')
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === 'asc'
+    setOrder(isAsc ? 'desc' : 'asc')
+    setOrderBy(property)
+  }
 
-  const handleClick = (event, releasePubkey) => {
-    history.push(`/release/` + releasePubkey)
+  const handleClick = (e, releasePubkey) => {
+    history.push(
+      tableType === 'userCollection'
+        ? `/collection/${releasePubkey}`
+        : `/releases/${releasePubkey}`
+    )
+  }
+
+  const handlePlay = (e, releasePubkey) => {
+    e.stopPropagation()
+    e.preventDefault()
+    updateTxid(
+      releaseState.metadata[releasePubkey].properties.files[0].uri,
+      releasePubkey,
+      true
+    )
+  }
+
+  const handleAddTrackToQueue = (e, releasePubkey) => {
+    e.stopPropagation()
+    e.preventDefault()
+    addTrackToQueue(releasePubkey)
+  }
+
+  const handleCollect = (e, recipient, releasePubkey) => {
+    e.stopPropagation()
+    e.preventDefault()
+    collectRoyaltyForRelease(recipient, releasePubkey)
   }
 
   let rows = releases.map((release) => {
@@ -95,74 +201,84 @@ const ReleaseListTable = (props) => {
       artist: metadata.properties.artist,
       title: metadata.properties.title,
     }
+
+    if (tableType === 'userCollection') {
+      const duration = NinaClient.formatDuration(
+        metadata.properties.files[0].duration
+      )
+      rowData['duration'] = duration
+    }
+
     if (tableType === 'userPublished') {
       const recipient = release.recipient
-      const collectRoyaltyForRelease = props.collectRoyaltyForRelease
+      const collectable = recipient.owed.toNumber() > 0
       const collectButton = (
-        <Button
-          variant="contained"
-          color="primary"
-          disabled={recipient.owed.toNumber() === 0}
-          onClick={() => collectRoyaltyForRelease(recipient, releasePubkey)}
+        <StyledCollectButton
+          disabled={!collectable}
+          onClick={(e) => handleCollect(e, recipient, releasePubkey)}
+          className={collectable ? 'collectable' : ''}
         >
-          {NinaClient.nativeToUiString(
-            recipient.owed.toNumber(),
-            tokenData.paymentMint
-          )}
-        </Button>
+          Collect
+          {collectable && 
+            <span>
+              {NinaClient.nativeToUiString(
+                recipient.owed.toNumber(),
+                tokenData.paymentMint
+              )}
+            </span>
+          }
+        </StyledCollectButton>
       )
 
       rowData['price'] = `${NinaClient.nativeToUiString(
         tokenData.price.toNumber(),
         tokenData.paymentMint
       )}`
-      rowData[
-        'available'
-      ] = `${tokenData.remainingSupply.toNumber()} / ${tokenData.totalSupply.toNumber()}`
-      rowData['revenue'] = `${NinaClient.nativeToUiString(
-        tokenData.totalCollected.toNumber(),
-        tokenData.paymentMint
-      )}`
+      rowData['sold'] = `${tokenData.saleCounter.toNumber()} / ${tokenData.totalSupply.toNumber()} `
       rowData['share'] = `${recipient.percentShare.toNumber() / 10000}%`
+      rowData['date'] = `${
+        new Date(tokenData.releaseDatetime.toNumber() * 1000)
+          .toISOString()
+          .split('T')[0]
+      }`
       rowData['collected'] = `${NinaClient.nativeToUiString(
         recipient.collected.toNumber(),
         tokenData.paymentMint
       )}`
       rowData['collect'] = collectButton
     }
-
     return rowData
   })
   rows.sort((a, b) => (a.artist < b.artist ? -1 : 1))
 
   return (
-    <Root className={classes.root}>
-      <Paper className={classes.paper}>
-        <TableContainer>
-          <Table
-            className={classes.table}
-            aria-labelledby="tableTitle"
-            aria-label="enhanced table"
-          >
-            <EnhancedTableHead
-              className={classes}
-              order={order}
-              // orderBy={orderBy}
-              tableType={tableType}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {rows.map((row) => {
+    <StyledPaper elevation={0} tableType={tableType}>
+      <TableContainer>
+        <Table
+          className={classes.table}
+          aria-labelledby="tableTitle"
+          aria-label="enhanced table"
+          sx={{ borderTop: 'none' }}
+        >
+          <EnhancedTableHead
+            className={classes}
+            order={order}
+            tableType={tableType}
+            orderBy={orderBy}
+            onRequestSort={handleRequestSort}
+            rowCount={rows.length}
+          />
+          <TableBody>
+            {rows
+              .slice()
+              .sort(getComparator(order, orderBy))
+              .map((row) => {
                 return (
                   <TableRow
                     hover
-                    onClick={(event) =>
-                      tableType === 'userPublished'
-                        ? null
-                        : handleClick(event, row.id)
-                    }
                     tabIndex={-1}
                     key={row.id}
+                    onClick={(e) => handleClick(e, row.id)}
                   >
                     {Object.keys(row).map((cellName) => {
                       const cellData = row[cellName]
@@ -174,19 +290,23 @@ const ReleaseListTable = (props) => {
                               component="th"
                               scope="row"
                               key={cellName}
-                              onClick={(event) => handleClick(event, row.id)}
+                              // onClick={(e) => handlePlay(e, row.id)}
                             >
-                              <img
-                                src={row.art.txId}
-                                className={classes.releaseImage}
-                                alt={'cover'}
-                                key={cellName}
-                              />
+                              <ControlPointIcon onClick={(e) => handleAddTrackToQueue(e, row.id)} sx={{color: 'black', marginRight: '15px'}} />
+                              <PlayCircleOutlineOutlinedIcon onClick={(e) => handlePlay(e, row.id)} sx={{color: 'black'}} />
+                            </TableCell>
+                          )
+                        } else if (cellName === 'title') {
+                          return (
+                            <TableCell align="center" key={cellName}>
+                              <span style={{ textDecoration: 'underline' }}>
+                                {cellData}
+                              </span>
                             </TableCell>
                           )
                         } else {
                           return (
-                            <TableCell align="center" key={cellName}>
+                            <TableCell align="center" size="small" key={cellName}>
                               {cellData}
                             </TableCell>
                           )
@@ -197,41 +317,61 @@ const ReleaseListTable = (props) => {
                   </TableRow>
                 )
               })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
-    </Root>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </StyledPaper>
   )
 }
 
 const PREFIX = 'ReleaseListTable'
 
 const classes = {
-  root: `${PREFIX}-root`,
-  paper: `${PREFIX}-paper`,
   table: `${PREFIX}-table`,
   releaseImage: `${PREFIX}-releaseImage`,
 }
 
-const Root = styled('div')(({ theme }) => ({
-  [`&.${classes.root}`]: {
-    width: '100%',
-  },
-
-  [`& .${classes.paper}`]: {
-    width: '100%',
-    marginBottom: theme.spacing(2),
-  },
-
+const StyledPaper = styled(Paper)(({ theme, tableType }) => ({
+  width: tableType === 'userPublished' ? '1000px' : '800px',
+  margin: 'auto',
   [`& .${classes.table}`]: {
     minWidth: 750,
+    '& .MuiTableCell-root': {
+      ...theme.helpers.baseFont,
+      padding: theme.spacing(1),
+      textAlign: 'left',
+      whiteSpace: 'nowrap',
+      '& span': {
+        textOverflow: 'ellipsis',
+        maxWidth: '120px',
+        overflow: 'hidden',
+        display: 'table-cell',
+      },
+    },
   },
 
   [`& .${classes.releaseImage}`]: {
     width: '40px',
     cursor: 'pointer',
   },
+}))
+
+const StyledCollectButton = styled(Button)(({theme}) => ({
+  color: `${theme.palette.blue} !important`,
+  display: 'flex',
+  flexDirection: 'column',
+  textAlign: 'left',
+  ...theme.helpers.baseFont,
+  '&.collectable': {
+    // paddingTop: '27px !important'
+  },
+  '&.Mui-disabled': {
+    color: `${theme.palette.grey.primary} !important`,
+  },
+  '& span': {
+    color: `${theme.palette.grey.primary}`,
+    fontSize: '10px'
+  }
 }))
 
 export default ReleaseListTable

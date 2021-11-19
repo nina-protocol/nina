@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 import { styled } from '@mui/material/styles'
+import { useSnackbar } from 'notistack'
 import { Formik, Field, Form } from 'formik'
 import Button from '@mui/material/Button'
 import { TextField, Typography, Box } from '@mui/material'
@@ -10,6 +11,7 @@ import NinaClient from '../utils/client'
 const RoyaltyRecipientForm = (props) => {
   const { release, userShare, setUserDisplayShare, releasePubkey, toggleForm } =
     props
+  const { enqueueSnackbar } = useSnackbar()
   const { addRoyaltyRecipient } = useContext(ReleaseContext)
   const { addRoyaltyRecipientByTwitterHandle } = useContext(NameContext)
 
@@ -41,36 +43,41 @@ const RoyaltyRecipientForm = (props) => {
           percentShare: 20,
         }}
         onSubmit={async (values, { resetForm, initialValues }) => {
+          let result
+          enqueueSnackbar('Transferring Royalty...', {
+            variant: 'info',
+          })
           if (values.recipientAddress.length !== 44) {
-            await addRoyaltyRecipientByTwitterHandle(
+            result = await addRoyaltyRecipientByTwitterHandle(
               release,
               values,
               releasePubkey
             )
           } else {
-            await addRoyaltyRecipient(release, values, releasePubkey)
+            result = await addRoyaltyRecipient(release, values, releasePubkey)
           }
+          enqueueSnackbar(result.msg, {
+            variant: result.success ? 'success' : 'warn',
+          })
           resetForm(initialValues)
           toggleForm()
         }}
       >
-        {(props) => (
+        {({ values, setFieldValue, field, form }) => (
           <Box mt={3} className="royalty__form-wrapper">
             <Typography variant="h6">
-              Transferring {props.values.percentShare}% to:
+              Transferring {values.percentShare}% to:
             </Typography>
             <Form className="royalty__form">
               <Field name="recipientAddress">
-                {(props) => (
+                {({ field }) => (
                   <>
                     <TextField
                       className={classes.formField}
                       variant="outlined"
-                      placeholder={NinaClient.formatPlaceholder(
-                        props.field.name
-                      )}
-                      label={NinaClient.formatPlaceholder(props.field.name)}
-                      {...props.field}
+                      placeholder={NinaClient.formatPlaceholder(field.name)}
+                      label={NinaClient.formatPlaceholder(field.name)}
+                      {...field}
                     />
                   </>
                 )}
@@ -97,10 +104,10 @@ const RoyaltyRecipientForm = (props) => {
                   marks={marks}
                   onChange={(event, value) => {
                     handleDisplayPercent(value)
-                    props.setFieldValue('percentShare', value)
+                    setFieldValue('percentShare', value)
                   }}
-                  {...props.field}
-                  {...props.form}
+                  {...field}
+                  {...form}
                 />
               </Box>
 

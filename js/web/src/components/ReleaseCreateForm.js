@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography'
 import { TextField } from '@mui/material'
 import Slider from '@mui/material/Slider'
 import Box from '@mui/material/Box'
-import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
 const { NinaClient } = ninaCommon.utils
 
@@ -40,13 +39,12 @@ const ReleaseCreateForm = ({
                 variant="standard"
                 label={NinaClient.formatPlaceholder(props.field.name)}
                 size="small"
+                InputLabelProps={touched.artist ? { shrink: true } : ''}
+                placeholder={
+                  errors.artist && touched.artist ? errors.artist : null
+                }
                 {...props.field}
               />
-              {errors.artist && touched.artist ? (
-                <Typography className={classes.formError}>
-                  {errors.artist}
-                </Typography>
-              ) : null}
             </Box>
           )}
         </Field>
@@ -59,13 +57,12 @@ const ReleaseCreateForm = ({
                 variant="standard"
                 label={NinaClient.formatPlaceholder(props.field.name)}
                 size="small"
+                InputLabelProps={touched.title ? { shrink: true } : ''}
+                placeholder={
+                  errors.title && touched.title ? errors.title : null
+                }
                 {...props.field}
               />
-              {errors.title && touched.title ? (
-                <Typography className={classes.formError}>
-                  {errors.title}
-                </Typography>
-              ) : null}
             </Box>
           )}
         </Field>
@@ -78,11 +75,14 @@ const ReleaseCreateForm = ({
                 variant="standard"
                 label={NinaClient.formatPlaceholder(props.field.name)}
                 size="small"
+                InputLabelProps={touched.description ? { shrink: true } : ''}
+                placeholder={
+                  errors.description && touched.description
+                    ? errors.description
+                    : null
+                }
                 {...props.field}
               />
-              {errors.description && touched.description ? (
-                <div className={classes.formError}>{errors.description}</div>
-              ) : null}
             </Box>
           )}
         </Field>
@@ -95,6 +95,13 @@ const ReleaseCreateForm = ({
                 variant="standard"
                 label={NinaClient.formatPlaceholder(field.name)}
                 size="small"
+                InputLabelProps={touched.catalogNumber ? { shrink: true } : ''}
+                placeholder={
+                  errors.catalogNumber && touched.catalogNumber
+                    ? errors.catalogNumber
+                    : null
+                }
+                inputProps={{maxLength: 10}}
                 InputProps={{
                   onChange: (event) => {
                     let sanitized = event.target.value
@@ -105,53 +112,46 @@ const ReleaseCreateForm = ({
                 }}
                 {...field}
               />
-              {errors.catalogNumber && touched.catalogNumber ? (
-                <div className={classes.formError}>{errors.catalogNumber}</div>
-              ) : null}
             </Box>
           )}
         </Field>
 
         <Field name="amount">
-          {(props) => (
+          {({ field }) => (
             <Box className={classes.fieldInputWrapper}>
-              <CurrencyTextField
-                className={classes.formField}
-                label={NinaClient.formatPlaceholder('Amount')}
+              <TextField
+                className={`${classes.formField}`}
                 variant="standard"
-                value={props.value}
-                currencySymbol=""
-                outputFormat="string"
+                label={NinaClient.formatPlaceholder(field.name)}
                 size="small"
-                minimumValue="0"
-                decimalPlaces="0"
-                onChange={(event, value) => setFieldValue('amount', value)}
+                InputLabelProps={touched.amount ? { shrink: true } : ''}
+                placeholder={
+                  errors.amount && touched.amount ? errors.amount : null
+                }
+                type="number"
+                {...field}
               />
-              {errors.amount && touched.amount ? (
-                <div className={classes.formError}>{errors.amount}</div>
-              ) : null}
             </Box>
           )}
         </Field>
 
         <Field name="retailPrice">
-          {({ value }) => (
+          {({ field }) => (
             <Box className={classes.fieldInputWrapper}>
-              <CurrencyTextField
-                className={classes.formField}
-                label={NinaClient.formatPlaceholder('RetailPrice')}
+              <TextField
+                className={`${classes.formField}`}
                 variant="standard"
-                value={value}
-                currencySymbol="$"
-                outputFormat="string"
+                label={NinaClient.formatPlaceholder(field.name)}
                 size="small"
-                minimumValue="0"
-                decimalPlaces="2"
-                onChange={(event, value) => setFieldValue('retailPrice', value)}
+                InputLabelProps={touched.retailPrice ? { shrink: true } : ''}
+                placeholder={
+                  errors.retailPrice && touched.retailPrice
+                    ? errors.retailPrice
+                    : null
+                }
+                type="number"
+                {...field}
               />
-              {errors.retailPrice && touched.retailPrice ? (
-                <div className={classes.formError}>{errors.retailPrice}</div>
-              ) : null}
             </Box>
           )}
         </Field>
@@ -160,16 +160,20 @@ const ReleaseCreateForm = ({
           <Typography
             id="discrete-slider-custom"
             align="left"
-            style={{ color: 'rgba(0, 0, 0, 0.54)' }}
+            style={{
+              color: 'rgba(0, 0, 0, 0.54)',
+              fontSize: '12px',
+              marginTop: '8px',
+            }}
           >
-            Resale Percentage:
+            RESALE PERCENTAGE: {values.resalePercentage}%
           </Typography>
-          <Box className={classes.resalePercentageWrapper}>
+          <Box>
             <Slider
               defaultValue={20}
               getAriaValueText={valuetext}
               aria-labelledby="percent"
-              className={`${classes.formField} ${classes.formSlider}`}
+              className={classes.formField}
               step={1}
               min={0}
               max={100}
@@ -180,13 +184,6 @@ const ReleaseCreateForm = ({
               {...field}
               {...form}
             />
-            <Typography
-              id="discrete-slider-custom"
-              align="left"
-              style={{ color: 'rgba(0, 0, 0, 0.54)' }}
-            >
-              {values.resalePercentage}%
-            </Typography>
           </Box>
         </Box>
       </Form>
@@ -198,52 +195,25 @@ const PREFIX = 'ReleaseCreateForm'
 const classes = {
   fieldInputWrapper: `${PREFIX}-fieldInputWrapper`,
   formField: `${PREFIX}-formField`,
-  formError: `${PREFIX}-formError`,
-  resalePercentageWrapper: `${PREFIX}-resalePercentageWrapper`,
-  formSlider: `${PREFIX}-formSlider`,
 }
 
 const Root = styled('div')(({ theme }) => ({
+  margin: 'auto',
+  width: '300px',
   [`& .${classes.fieldInputWrapper}`]: {
     position: 'relative',
   },
-
   [`& .${classes.formField}`]: {
-    margin: '0.5rem 1rem 0.5rem 0',
+    ...theme.helpers.baseFont,
+    marginBottom: '8px',
     width: '100%',
     textTransform: 'capitalize',
-    fontSize: '10px',
     position: 'relative',
-    '& :placeholder': {
-      textTransform: 'capitalize',
-      lineHeight: 'normal',
-      border: '2px solid red',
-    },
     '& input': {
       textAlign: 'left',
-      height: '1rem',
-    },
-  },
-
-  [`& .${classes.formError}`]: {
-    position: 'absolute',
-    top: '50%',
-    right: theme.spacing(1),
-    transform: 'translateY(-50%)',
-    color: theme.palette.red,
-    opacity: '.75',
-  },
-
-  [`& .${classes.resalePercentageWrapper}`]: {
-    display: 'flex',
-    justifyContent: 'space-inbetween',
-    alignItems: 'center',
-  },
-
-  [`& .${classes.formSlider}`]: {
-    '& MuiSlider-markLabel': {
-      border: '2px solid red',
-      marginLeft: '0',
+      '&::placeholder': {
+        color: theme.palette.red,
+      },
     },
   },
 }))
