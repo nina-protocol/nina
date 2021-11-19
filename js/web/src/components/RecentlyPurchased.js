@@ -37,7 +37,7 @@ const RecentlyPurchased = (props) => {
     mobile: {
       breakpoint: { max: 464, min: 0 },
       items: 1,
-      slidesToSlide: 2,
+      slidesToSlide: 1,
     },
   }
 
@@ -150,10 +150,7 @@ const RecentlyPurchased = (props) => {
                       to={'/' + release.releasePubkey}
                       style={{ width: '400px' }}
                     >
-                      <SmoothImage
-                        src={imageUrl}
-                        imageStyles={{ minWidth: '400px' }}
-                      />
+                      <SmoothImage src={imageUrl} />
                     </Link>
                     <Copy sx={{ paddingLeft: 2 }}>
                       <Typography variant="h3" color="blue">

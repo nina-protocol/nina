@@ -86,7 +86,7 @@ const EnhancedTableHead = (props) => {
 
   let headCells = [
     {
-      id: 'art',
+      id: 'ctas',
       numeric: false,
       disablePadding: true,
       label: '',
@@ -97,6 +97,12 @@ const EnhancedTableHead = (props) => {
 
   if (tableType === 'userCollection') {
     headCells.push({ id: 'duration', numeric: true, label: 'Duration' })
+  }
+
+  if (tableType === 'allReleases') {
+    headCells.push({ id: 'price', numeric: true, label: 'Price' })
+    headCells.push({ id: 'sold', numeric: true, label: 'Sold' })
+    headCells.push({ id: 'date', numeric: false, label: 'Release Date' })
   }
 
   if (tableType === 'userPublished') {
@@ -129,7 +135,7 @@ const EnhancedTableHead = (props) => {
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
               onClick={createSortHandler(headCell.id)}
-              disabled={headCell.id === 'art'}
+              disabled={headCell.id === 'ctas'}
               sx={{ '& svg': { fontSize: '14px ' } }}
             >
               {headCell.label}
@@ -164,7 +170,7 @@ const ReleaseListTable = (props) => {
   const handleClick = (e, releasePubkey) => {
     history.push(
       tableType === 'userCollection'
-        ? `/collection/${releasePubkey}`
+        ? `/${releasePubkey}`
         : `/releases/${releasePubkey}`
     )
   }
@@ -203,7 +209,7 @@ const ReleaseListTable = (props) => {
 
     const rowData = {
       id: releasePubkey,
-      art: linkData,
+      ctas: linkData,
       artist: metadata.properties.artist,
       title: metadata.properties.title,
     }
@@ -213,6 +219,21 @@ const ReleaseListTable = (props) => {
         metadata.properties.files[0].duration
       )
       rowData['duration'] = duration
+    }
+
+    if (tableType === 'allReleases') {
+      rowData['price'] = `${NinaClient.nativeToUiString(
+        tokenData.price.toNumber(),
+        tokenData.paymentMint
+      )}`
+      rowData[
+        'sold'
+      ] = `${tokenData.saleCounter.toNumber()} / ${tokenData.totalSupply.toNumber()} `
+      rowData['date'] = `${
+        new Date(tokenData.releaseDatetime.toNumber() * 1000)
+          .toISOString()
+          .split('T')[0]
+      }`
     }
 
     if (tableType === 'userPublished') {
@@ -291,14 +312,13 @@ const ReleaseListTable = (props) => {
                     {Object.keys(row).map((cellName) => {
                       const cellData = row[cellName]
                       if (cellName !== 'id') {
-                        if (cellName === 'art') {
+                        if (cellName === 'ctas') {
                           return (
                             <TableCell
                               align="center"
                               component="th"
                               scope="row"
                               key={cellName}
-                              // onClick={(e) => handlePlay(e, row.id)}
                             >
                               <ControlPointIcon
                                 onClick={(e) =>
@@ -356,6 +376,9 @@ const StyledPaper = styled(Paper)(({ theme, tableType }) => ({
   margin: 'auto',
   [`& .${classes.table}`]: {
     minWidth: 750,
+    [theme.breakpoints.down('md')]: {
+      width: '80vw',
+    },
     '& .MuiTableCell-root': {
       ...theme.helpers.baseFont,
       padding: theme.spacing(1),

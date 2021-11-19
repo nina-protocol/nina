@@ -11,10 +11,6 @@ const ScrollablePage = styled(Box)(({ theme }) => ({
   padding: '210px 0',
   overflowY: 'scroll',
   overflowX: 'hidden',
-  // display: 'flex',
-  // justifyContent: 'center',
-  // flexDirection: 'column',
-  // alignItems: 'center',
   [theme.breakpoints.down('md')]: {
     width: '100vw',
     padding: '100px 30px',

@@ -20,6 +20,7 @@ const { NinaContext, ReleaseContext } = ninaCommon.contexts
 
 const linksConnected = [
   'home',
+  'all Releases',
   'collection',
   'releases',
   'upload',
@@ -27,7 +28,13 @@ const linksConnected = [
   'the soft lp',
 ]
 
-const linksNotConnected = ['home', 'upload', 'faq', 'the soft lp']
+const linksNotConnected = [
+  'home',
+  'all Releases',
+  'upload',
+  'faq',
+  'the soft lp',
+]
 
 const NavDrawer = () => {
   const { collection } = useContext(NinaContext)
@@ -141,7 +148,7 @@ const NavDrawer = () => {
               return (
                 <NavLink
                   className={`${classes.drawerLink}`}
-                  to={`${link === 'home' ? '/' : `/${link}`}`}
+                  to={`${link === 'home' ? '/' : `/${link.replace(' ', '')}`}`}
                   activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
                   key={link}
                 >
