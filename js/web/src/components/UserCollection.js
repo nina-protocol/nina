@@ -25,7 +25,7 @@ const ReleaseList = () => {
   return (
     <>
       <Helmet>
-        <title>{`Nina: Your Collection(${userCollectionReleases.length || 0})`}</title>
+        <title>{`Nina: Your Collection(${userCollectionReleases?.length || 0})`}</title>
         <meta name="description" content={"Your collection on Nina."} />
       </Helmet>
       <ScrollablePageWrapper>

@@ -18,9 +18,9 @@ import CloseIcon from '@mui/icons-material/Close'
 
 const { NinaContext, ReleaseContext } = ninaCommon.contexts
 
-const linksConnected = ['home', 'collection', 'releases', 'upload', 'faq']
+const linksConnected = ['home', 'collection', 'releases', 'upload', 'faq', 'the soft lp']
 
-const linksNotConnected = ['home', 'upload', 'faq']
+const linksNotConnected = ['home', 'upload', 'faq', 'the soft lp']
 
 const NavDrawer = () => {
   const { collection } = useContext(NinaContext)
@@ -114,6 +114,21 @@ const NavDrawer = () => {
                     />
                   </ListItem>
                 </NavLink>
+              )
+            case 'the soft lp':
+              return (
+                <ListItem button key={link}>
+                  <ListItemText>
+                    <a
+                      href="https://softlp.nina.market"
+                      target="_blank"
+                      rel="noreferrer"
+                      className={`${classes.drawerLink}`}
+                    >
+                      The Soft LP
+                    </a>
+                  </ListItemText>
+                </ListItem>
               )
             default:
               return (
