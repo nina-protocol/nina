@@ -99,6 +99,13 @@ const EnhancedTableHead = (props) => {
     headCells.push({ id: 'duration', numeric: true, label: 'Duration' })
   }
 
+  if (tableType === 'allReleases') {
+    headCells.push({id: 'price', numeric: true, label: 'Price'})
+    headCells.push({id: 'sold', numeric: true, label: 'Sold'})
+    headCells.push({id: 'date', numeric: false, label: 'Release Date'})
+  }
+
+
   if (tableType === 'userPublished') {
     headCells.push({ id: 'price', numeric: true, label: 'Price' })
     headCells.push({ id: 'sold', numeric: true, label: 'Sold' })
@@ -213,6 +220,20 @@ const ReleaseListTable = (props) => {
         metadata.properties.files[0].duration
       )
       rowData['duration'] = duration
+    }
+
+    if (tableType === 'allReleases') {
+      rowData['price'] = `${NinaClient.nativeToUiString(
+        tokenData.price.toNumber(),
+        tokenData.paymentMint
+      )}`
+      rowData[
+        'sold'
+      ] = `${tokenData.saleCounter.toNumber()} / ${tokenData.totalSupply.toNumber()} ` 
+      rowData['date'] = `${new Date(tokenData.releaseDatetime.toNumber() * 1000)
+          .toISOString()
+          .split('T')[0]
+        }`
     }
 
     if (tableType === 'userPublished') {
