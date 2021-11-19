@@ -378,13 +378,10 @@ const ExchangeCopy = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     display: 'flex',
     flexDirection: 'column',
-    width: '100%',
-<<<<<<< HEAD
+    width: '100%', 
     '& .viewMore': {
       display: 'none'
     }
-=======
->>>>>>> e23a6d059aee3b2918d2562d10b48f00673c9f11
   },
 }))
 
