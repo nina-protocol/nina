@@ -11,11 +11,9 @@ const MobileWalletModal = () => {
   const handleClose = () => setOpen(false)
 
   return (
-    <Box sx={{paddingRight: '15px'}}>
+    <Box sx={{ paddingRight: '15px' }}>
       <StyledButton onClick={handleOpen}>
-          <Typography variant="body1">
-            Connect Wallet
-          </Typography>
+        <Typography variant="body1">Connect Wallet</Typography>
       </StyledButton>
       <Modal
         open={open}
@@ -51,7 +49,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
   ...theme.helpers.gradient,
 }))
 
-const StyledButton = styled(Button)(({theme}) => ({
+const StyledButton = styled(Button)(({ theme }) => ({
   ...theme.helpers.baseFont,
   color: `${theme.palette.black}!important`,
   textTransform: 'capitalize !important',

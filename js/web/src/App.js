@@ -26,7 +26,10 @@ function App({ classes }) {
     <>
       <Helmet>
         <title>{`Nina`}</title>
-        <meta name="description" content={"A new way to publish, stream, and purchase music."} />
+        <meta
+          name="description"
+          content={'A new way to publish, stream, and purchase music.'}
+        />
       </Helmet>
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={NinaTheme}>

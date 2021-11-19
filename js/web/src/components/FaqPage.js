@@ -78,7 +78,7 @@ const FaqPage = () => {
             align="left"
             sx={{ paddingBottom: { md: '10px', xs: '30px' } }}
           ></Typography>
-          
+
           <Typography
             variant="h4"
             align="left"
@@ -121,29 +121,19 @@ const FaqPage = () => {
             align="left"
             sx={{ paddingBottom: { md: '10px', xs: '30px' } }}
           >
-            Nina is built on <a
-              rel="noreferrer"
-              target="_blank"
-              href="https://solana.com/"
-            >
+            Nina is built on{' '}
+            <a rel="noreferrer" target="_blank" href="https://solana.com/">
               Solana
-            </a> and requires a Solana wallet to make purchaes. We recommend using {' '}
-            <a
-              rel="noreferrer"
-              target="_blank"
-              href="https://phantom.app/"
-            >
+            </a>{' '}
+            and requires a Solana wallet to make purchaes. We recommend using{' '}
+            <a rel="noreferrer" target="_blank" href="https://phantom.app/">
               Phantom Wallet
-            </a>. 
-
+            </a>
+            .
             {` Install the extension on Chrome or Brave browser then fund your wallet via Ftx or Moonpay 
             by clicking the 'deposit' button. You will need some Sol to cover transaction fees, all releases are priced in USDC. 
             Swapping from SOL to USDC (or vice versa) can be done directly in Phantom or at `}
-            <a
-              rel="noreferrer"
-              target="_blank"
-              href="https://jup.ag/"
-            >
+            <a rel="noreferrer" target="_blank" href="https://jup.ag/">
               Jupiter.
             </a>
           </Typography>
@@ -178,10 +168,9 @@ const FaqPage = () => {
             align="left"
             sx={{ paddingBottom: { md: '10px', xs: '30px' } }}
           >
-            No.  All tracks on Nina are freely and permanently streamable by anyone.
-
+            No. All tracks on Nina are freely and permanently streamable by
+            anyone.
           </Typography>
-
         </FaqEntry>
 
         <FaqEntry>
@@ -203,11 +192,10 @@ const FaqPage = () => {
             align="left"
             sx={{ paddingBottom: { md: '10px', xs: '30px' } }}
           >
-            Not yet but we are working on it!  In the meantime, you can listen to tracks on the Nina website on mobile.
-
+            Not yet but we are working on it! In the meantime, you can listen to
+            tracks on the Nina website on mobile.
           </Typography>
         </FaqEntry>
-
 
         <FaqEntry>
           <Typography
@@ -234,9 +222,10 @@ const FaqPage = () => {
               target="_blank"
               href="https://github.com/nina-market/nina"
             >
-             {' '} here
-            </a>.
-            Nina is unaudited software and should be used at your own risk.
+              {' '}
+              here
+            </a>
+            . Nina is unaudited software and should be used at your own risk.
           </Typography>
         </FaqEntry>
       </FaqPageContainer>
@@ -256,7 +245,7 @@ const FaqPageContainer = styled('div')(({ theme }) => ({
   overflowX: 'visible',
   [theme.breakpoints.down('md')]: {
     width: '80vw',
-    marginBottom: '100px'
+    marginBottom: '100px',
   },
   [`& .${classes.sectionHeader}`]: {
     fontWeight: '700 ',

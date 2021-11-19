@@ -101,7 +101,8 @@ const RecentlyPublished = (props) => {
                   {availability}
                   <ReleaseCopy sx={{ display: 'flex' }}>
                     <Typography variant="body2">
-                      {release.metadata.properties.artist}, <i>{release.metadata.properties.title}</i>
+                      {release.metadata.properties.artist},{' '}
+                      <i>{release.metadata.properties.title}</i>
                     </Typography>
                   </ReleaseCopy>
                 </ReleaseSlide>
