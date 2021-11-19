@@ -61,7 +61,7 @@ const Release = ({ match }) => {
     <>
       {!metadata && <Dots size="80px" />}
       {metadata && (
-        <SwipeableViews index={index}>
+        <SwipeableViews index={index} style={{overflowX: 'auto'}}>
           <NinaBox columns={'repeat(2, 1fr)'} sx={{ backgroundColor: 'white' }}>
             <ReleaseCard
               metadata={metadata}
@@ -96,7 +96,6 @@ const ReleaseCtaWrapper = styled(Box)(({ theme }) => ({
   margin: 'auto',
   width: 'calc(100% - 50px)',
   paddingLeft: '50px',
-  border: '2px solid red',
   [theme.breakpoints.down('md')]: {
     paddingLeft: '0',
     width: '100%',
