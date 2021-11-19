@@ -1,20 +1,18 @@
 import React from 'react'
 import { styled } from '@mui/material/styles'
 import { Box } from '@mui/material'
-import Slider from "react-slick";
+import Slider from 'react-slick'
 import 'react-multi-carousel/lib/styles.css'
 import Typography from '@mui/material/Typography'
 import ninaCommon from 'nina-common'
 import { Link } from 'react-router-dom'
 import SmoothImage from 'react-smooth-image'
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext'
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 const { Dots } = ninaCommon.components
 
 const RecentlyPublished = (props) => {
   const { releases } = props
-
-
 
   const responsiveSettings = [
     {
@@ -23,36 +21,47 @@ const RecentlyPublished = (props) => {
         slidesToShow: 3,
         slidesToScroll: 1,
         infinite: true,
-      }
+      },
     },
     {
       breakpoint: 600,
       settings: {
         slidesToShow: 2,
         slidesToScroll: 2,
-        initialSlide: 2
-      }
+        initialSlide: 2,
+      },
     },
     {
       breakpoint: 480,
       settings: {
         slidesToShow: 2,
-        slidesToScroll: 1
-      }
-    }
+        slidesToScroll: 1,
+      },
+    },
   ]
 
-  const CustomNextArrow = ({onClick}) => (
-    <NavigateNextIcon className='sliderArrow sliderArrow--right' onClick={onClick} />
+  const CustomNextArrow = ({ onClick }) => (
+    <NavigateNextIcon
+      className="sliderArrow sliderArrow--right"
+      onClick={onClick}
+    />
   )
-  const CustomPrevArrow = ({onClick}) => (
-    <NavigateBeforeIcon className='sliderArrow sliderArrow--left' onClick={onClick}  />
+  const CustomPrevArrow = ({ onClick }) => (
+    <NavigateBeforeIcon
+      className="sliderArrow sliderArrow--left"
+      onClick={onClick}
+    />
   )
-  
+
   if (releases === undefined || releases.length === 0) {
     return (
       <Box
-        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '250px' }}
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '250px',
+        }}
       >
         <Dots size="80px" />
       </Box>
@@ -61,19 +70,19 @@ const RecentlyPublished = (props) => {
   return (
     <RecentlyPublishedWrapper>
       {releases?.length > 0 && (
-        <Slider 
+        <Slider
           dots="false"
           infinite="true"
           speed={1500}
-          autoplay="true" 
+          autoplay="true"
           responsive={responsiveSettings}
           autoplaySpeed={2500}
           slidesToShow={3}
           slidesToScroll={1}
-          alignItems="left" 
+          alignItems="left"
           nextArrow={<CustomNextArrow />}
           prevArrow={<CustomPrevArrow />}
-          >
+        >
           {releases.map((release, i) => {
             const imageUrl = release.metadata.image
             const availability = (
@@ -108,7 +117,7 @@ const RecentlyPublished = (props) => {
   )
 }
 
-const RecentlyPublishedWrapper = styled(Box)(({theme}) => ({
+const RecentlyPublishedWrapper = styled(Box)(({ theme }) => ({
   '& .sliderArrow': {
     top: '-12% !important',
     position: 'absolute',
@@ -116,32 +125,30 @@ const RecentlyPublishedWrapper = styled(Box)(({theme}) => ({
     '&--right': {
       right: '25px',
       [theme.breakpoints.down('md')]: {
-        right: '9px'
-      }
+        right: '9px',
+      },
     },
     '&--left': {
       right: '70px',
       [theme.breakpoints.down('md')]: {
-        right: '50px'
-      }
-    }
+        right: '50px',
+      },
+    },
   },
   '& .MuiSvgIcon-root': {
     [theme.breakpoints.down('md')]: {
-      top: '-21% !important'
-    }
-  }
-
+      top: '-21% !important',
+    },
+  },
 }))
 
 const ReleaseSlideWrapper = styled(Box)(() => ({
-  textAlign: "center",
+  textAlign: 'center',
   display: 'flex',
   justifyContent: 'center',
   '& .MuiSvgIcon-root': {
-    border: '2px solid red !important'
-  }
-
+    border: '2px solid red !important',
+  },
 }))
 
 const ReleaseSlide = styled(Box)(({ theme }) => ({
@@ -157,7 +164,6 @@ const ReleaseSlide = styled(Box)(({ theme }) => ({
     padding: '0',
     paddingLeft: '1px',
     margin: '0',
-
   },
 }))
 

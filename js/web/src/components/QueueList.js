@@ -102,84 +102,89 @@ const QueueList = (props) => {
   return (
     <>
       {playlist?.length === 0 && (
-        <Box sx={{margin: 'auto'}}>
-            <div style={{ padding: '16px' }}>
-              <Typography align="center">
-                {wallet?.connected
-                  ? `You don't have any songs qued`
-                  : `Connect your wallet to load your collection`}
-              </Typography>
-            </div>
+        <Box sx={{ margin: 'auto' }}>
+          <div style={{ padding: '16px' }}>
+            <Typography align="center">
+              {wallet?.connected
+                ? `You don't have any songs qued`
+                : `Connect your wallet to load your collection`}
+            </Typography>
+          </div>
         </Box>
       )}
 
-    <StyledQueueList>
-
-      {playlist?.length > 0 && (
-        <TableContainer
-          style={{ overflowX: 'none' }}
-          component={Paper}
-          elevation={0}
-        >
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell>Play</TableCell>
-                <TableCell>Artist</TableCell>
-                <TableCell>Title</TableCell>
-                <TableCell>More Info</TableCell>
-                <TableCell>Remove</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody
-              component={DroppableComponent(onDragEnd)}
-              style={{ overflowX: 'none' }}
-            >
-              {playlist.map((entry, i) => (
-                <TableRow
-                  component={DraggableComponent(entry.txid, i)}
-                  key={entry.txid}
-                >
-                  <TableCell scope="row">{i + 1}</TableCell>
-                  <TableCell
-                    onClick={(event) =>
-                      handleListItemClick(event, i, entry.txid)
-                    }
+      <StyledQueueList>
+        {playlist?.length > 0 && (
+          <TableContainer
+            style={{ overflowX: 'none' }}
+            component={Paper}
+            elevation={0}
+          >
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell></TableCell>
+                  <TableCell>Play</TableCell>
+                  <TableCell>Artist</TableCell>
+                  <TableCell>Title</TableCell>
+                  <TableCell>More Info</TableCell>
+                  <TableCell>Remove</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody
+                component={DroppableComponent(onDragEnd)}
+                style={{ overflowX: 'none' }}
+              >
+                {playlist.map((entry, i) => (
+                  <TableRow
+                    component={DraggableComponent(entry.txid, i)}
+                    key={entry.txid}
                   >
-                    {isPlaying && selectedIndex === i ? (
-                      <PauseRoundedIcon onClick={() => setIsPlaying(false)} />
-                    ) : (
-                      <PlayArrowRoundedIcon
+                    <TableCell scope="row">{i + 1}</TableCell>
+                    <TableCell
+                      onClick={(event) =>
+                        handleListItemClick(event, i, entry.txid)
+                      }
+                    >
+                      {isPlaying && selectedIndex === i ? (
+                        <PauseRoundedIcon onClick={() => setIsPlaying(false)} />
+                      ) : (
+                        <PlayArrowRoundedIcon
+                          onClick={() =>
+                            selectedIndex === i
+                              ? setIsPlaying(true)
+                              : updateTxid(
+                                  entry.txid,
+                                  entry.releasePubkey,
+                                  true
+                                )
+                          }
+                        />
+                      )}
+                    </TableCell>
+                    <TableCell>{entry.artist}</TableCell>
+                    <TableCell>{entry.title}</TableCell>
+                    <TableCell
+                      onClick={(e) => {
+                        goToRelease(e, entry.releasePubkey)
+                      }}
+                    >
+                      More Info
+                    </TableCell>
+                    <TableCell>
+                      <CloseIcon
                         onClick={() =>
-                          selectedIndex === i
-                            ? setIsPlaying(true)
-                            : updateTxid(entry.txid, entry.releasePubkey, true)
+                          removeTrackFromQueue(entry.releasePubkey)
                         }
                       />
-                    )}
-                  </TableCell>
-                  <TableCell>{entry.artist}</TableCell>
-                  <TableCell>{entry.title}</TableCell>
-                  <TableCell
-                    onClick={(e) => {
-                      goToRelease(e, entry.releasePubkey)
-                    }}
-                  >
-                    More Info
-                  </TableCell>
-                  <TableCell>
-                    <CloseIcon
-                      onClick={() => removeTrackFromQueue(entry.releasePubkey)}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
-    </StyledQueueList>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+      </StyledQueueList>
     </>
   )
 }

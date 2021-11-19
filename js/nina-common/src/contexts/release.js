@@ -177,7 +177,6 @@ const releaseContextHelper = ({
   const releaseCreate = async ({
     retailPrice,
     amount,
-    artistTokens = 0,
     resalePercentage,
     isUsdc = true,
   }) => {
@@ -256,10 +255,7 @@ const releaseContextHelper = ({
         publishingCreditMint
       )
 
-      let instructions = [
-        ...releaseMintIx,
-        royaltyTokenAccountIx,
-      ]
+      let instructions = [...releaseMintIx, royaltyTokenAccountIx]
 
       if (authorityTokenAccountIx) {
         instructions.push(authorityTokenAccountIx)

@@ -5,7 +5,7 @@ import { Typography } from '@mui/material'
 import BuySellForm from './BuySellForm'
 
 const BuySell = (props) => {
-  const { inCollection, release, isBuy, onSubmit, symbol} = props
+  const { inCollection, release, isBuy, onSubmit, symbol } = props
 
   const [amount, setAmount] = useState(undefined)
 
@@ -45,7 +45,7 @@ const StyledBuySell = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   position: 'relative',
   alignItems: 'flex-start',
-   [theme.breakpoints.down('md')]: {
+  [theme.breakpoints.down('md')]: {
     display: 'none !important',
   },
   borderBottom: `1px solid ${theme.palette.grey.primary}`,

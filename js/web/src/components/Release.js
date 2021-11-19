@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
+import { Helmet } from 'react-helmet'
 import { useHistory } from 'react-router-dom'
 import { useWallet } from '@solana/wallet-adapter-react'
 import ninaCommon from 'nina-common'
@@ -57,11 +58,20 @@ const Release = ({ match }) => {
 
   return (
     <>
+      {metadata && 
+        <Helmet>
+          <title>{`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}</title>
+          <meta name="description" content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`} />
+        </Helmet>
+      }
       {!metadata && <Dots size="80px" />}
       {metadata && (
         <ReleaseWrapper>
           {!match.path.includes('market') && (
-            <NinaBox columns={'repeat(2, 1fr)'} sx={{ backgroundColor: 'white' }}>
+            <NinaBox
+              columns={'repeat(2, 1fr)'}
+              sx={{ backgroundColor: 'white' }}
+            >
               <ReleaseCard
                 metadata={metadata}
                 preview={false}
@@ -86,7 +96,7 @@ const Release = ({ match }) => {
                 metadata={metadata}
                 track={track}
               />
-            </NinaBox>      
+            </NinaBox>
           )}
         </ReleaseWrapper>
       )}
@@ -98,8 +108,8 @@ const ReleaseWrapper = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     overflowX: 'scroll',
     '&::-webkit-scrollbar': {
-      display: 'none'
-    }
+      display: 'none',
+    },
   },
 }))
 const ReleaseCtaWrapper = styled(Box)(({ theme }) => ({
@@ -109,7 +119,7 @@ const ReleaseCtaWrapper = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     paddingLeft: '0',
     width: '100%',
-    marginBottom: '100px'
+    marginBottom: '100px',
   },
 }))
 

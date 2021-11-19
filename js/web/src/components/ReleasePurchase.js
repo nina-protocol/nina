@@ -111,7 +111,7 @@ const ReleasePurchase = (props) => {
   }
 
   return (
-    <Box >
+    <Box>
       <AmountRemaining variant="body2" align="left">
         Remaining <span>{release.remainingSupply.toNumber()} </span> /{' '}
         {release.totalSupply.toNumber()}
@@ -119,23 +119,23 @@ const ReleasePurchase = (props) => {
 
       {wallet?.connected && (
         <StyledUserAmount>
-            {metadata && (
-            <Typography variant="body1" align="left" gutterBottom >
-                You have: {amountHeld || 0} {metadata.symbol}
-              </Typography>
-            )}
-            {amountPendingSales > 0 ? (
-            <Typography variant="body1" align="left" gutterBottom >
-                {amountPendingSales} pending sale
-                {amountPendingSales > 1 ? 's' : ''}{' '}
+          {metadata && (
+            <Typography variant="body1" align="left" gutterBottom>
+              You have: {amountHeld || 0} {metadata.symbol}
             </Typography>
-            ) : null}
-            {amountPendingBuys > 0 ? (
-            <Typography variant="body1" align="left" gutterBottom >
-                {amountPendingBuys} pending buy
-                {amountPendingBuys > 1 ? 's' : ''}{' '}
+          )}
+          {amountPendingSales > 0 ? (
+            <Typography variant="body1" align="left" gutterBottom>
+              {amountPendingSales} pending sale
+              {amountPendingSales > 1 ? 's' : ''}{' '}
             </Typography>
-            ) : null}
+          ) : null}
+          {amountPendingBuys > 0 ? (
+            <Typography variant="body1" align="left" gutterBottom>
+              {amountPendingBuys} pending buy
+              {amountPendingBuys > 1 ? 's' : ''}{' '}
+            </Typography>
+          ) : null}
         </StyledUserAmount>
       )}
       <Typography variant="h3" align="left">
@@ -163,9 +163,7 @@ const ReleasePurchase = (props) => {
         variant="outlined"
         fullWidth
         onClick={() => {
-          history.push(
-            `${pathString}/${releasePubkey}/market`
-          )
+          history.push(`${pathString}/${releasePubkey}/market`)
         }}
       >
         <Typography variant="body2">Go To Market</Typography>

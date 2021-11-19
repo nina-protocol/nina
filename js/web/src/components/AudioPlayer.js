@@ -4,6 +4,7 @@ import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Link } from 'react-router-dom'
 import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import Slider from '@mui/material/Slider'
 import SkipNextIcon from '@mui/icons-material/SkipNext'
 import IconButton from '@mui/material/IconButton'
@@ -44,15 +45,12 @@ const AudioPlayer = () => {
   }, [])
 
   useEffect(() => {
-    console.log('useEffect isPlaying')
     if (!isPlaying) {
-      console.log('!isPlaying')
       clearInterval(intervalRef.current)
       playerRef.current.pause()
       setShouldPlay(false)
     } else {
       setShouldPlay(true)
-      console.log('txid: ', txid, playerRef.current.src)
       if (!txid) {
         updateTxid(
           playlistRef.current[0].txid,
@@ -61,8 +59,8 @@ const AudioPlayer = () => {
         )
       } else {
         startTimer()
-        if (playerRef.current.src !== txid + "?ext=mp3") {
-          playerRef.current.src = txid + "?ext=mp3"
+        if (playerRef.current.src !== txid + '?ext=mp3') {
+          playerRef.current.src = txid + '?ext=mp3'
         }
         playerRef.current.play()
       }
@@ -125,8 +123,7 @@ const AudioPlayer = () => {
   }
 
   const changeTrack = async (txid) => {
-    playerRef.current.src = txid + "?ext=mp3"
-    console.log('changeTrack: ', txid, shouldPlay)
+    playerRef.current.src = txid + '?ext=mp3'
     if (shouldPlay) {
       playerRef.current.play()
       startTimer()
@@ -190,7 +187,7 @@ const AudioPlayer = () => {
   return (
     <StyledAudioPlayer>
       <audio id="audio" style={{ width: '100%' }}>
-        <source src={txid + "?ext=mp3"} type="audio/mp3" />
+        <source src={txid + '?ext=mp3'} type="audio/mp3" />
       </audio>
 
       {info && (
@@ -266,18 +263,19 @@ const AudioPlayer = () => {
 
       {info && (
         <LinkWrapper>
-          <Link
-            to={info.releasePubkey}
-            style={{ marginRight: '30px' }}
-          >
+          <Link to={info.releasePubkey} style={{ marginRight: '30px' }}>
             <Typography variant="subtitle1" sx={{ padding: '0' }}>
               View Info
             </Typography>
           </Link>
 
-          <Link to={info.releasePubkey}>
+          <Button
+            onClick={() => window.open(`https://twitter.com/intent/tweet?text=${`Checkout ${info.artist} - "${info.title}" on Nina`}&url=nina.market/${info.releasePubkey}`, null, 'status=no,location=no,toolbar=no,menubar=no,height=500,width=500')}
+            disableFocusRipple={true}
+            disableRipple={true}
+          >
             <img src={shareArrow}></img>
-          </Link>
+          </Button>
         </LinkWrapper>
       )}
       <QueueDrawer />

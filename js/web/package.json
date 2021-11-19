@@ -7,6 +7,7 @@
     "@fortawesome/react-fontawesome": "^0.1.16",
     "nina-common": "0.1.0",
     "react-dropzone-uploader": "^2.11.0",
+    "react-helmet": "^6.1.0",
     "react-multi-carousel": "^2.6.5",
     "react-router-breadcrumbs-hoc": "^4.1.0",
     "react-slick": "^0.28.1",

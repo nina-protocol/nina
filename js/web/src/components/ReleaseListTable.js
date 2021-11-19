@@ -14,7 +14,7 @@ import Button from '@mui/material/Button'
 import { visuallyHidden } from '@mui/utils'
 import Box from '@mui/material/Box'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
-import ControlPointIcon from '@mui/icons-material/ControlPoint';
+import ControlPointIcon from '@mui/icons-material/ControlPoint'
 
 const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
@@ -37,8 +37,14 @@ const descendingComparator = (a, b, orderBy) => {
       break
 
     case 'collect':
-      a = parseFloat(a[orderBy].props.children[1]?.props?.children?.replace(/[^\d.-]/g, '')) || 0
-      b = parseFloat(b[orderBy].props.children[1]?.props?.children?.replace(/[^\d.-]/g, '')) || 0
+      a =
+        parseFloat(
+          a[orderBy].props.children[1]?.props?.children?.replace(/[^\d.-]/g, '')
+        ) || 0
+      b =
+        parseFloat(
+          b[orderBy].props.children[1]?.props?.children?.replace(/[^\d.-]/g, '')
+        ) || 0
       break
 
     case 'sold':
@@ -219,14 +225,14 @@ const ReleaseListTable = (props) => {
           className={collectable ? 'collectable' : ''}
         >
           Collect
-          {collectable && 
+          {collectable && (
             <span>
               {NinaClient.nativeToUiString(
                 recipient.owed.toNumber(),
                 tokenData.paymentMint
               )}
             </span>
-          }
+          )}
         </StyledCollectButton>
       )
 
@@ -234,7 +240,9 @@ const ReleaseListTable = (props) => {
         tokenData.price.toNumber(),
         tokenData.paymentMint
       )}`
-      rowData['sold'] = `${tokenData.saleCounter.toNumber()} / ${tokenData.totalSupply.toNumber()} `
+      rowData[
+        'sold'
+      ] = `${tokenData.saleCounter.toNumber()} / ${tokenData.totalSupply.toNumber()} `
       rowData['share'] = `${recipient.percentShare.toNumber() / 10000}%`
       rowData['date'] = `${
         new Date(tokenData.releaseDatetime.toNumber() * 1000)
@@ -292,8 +300,16 @@ const ReleaseListTable = (props) => {
                               key={cellName}
                               // onClick={(e) => handlePlay(e, row.id)}
                             >
-                              <ControlPointIcon onClick={(e) => handleAddTrackToQueue(e, row.id)} sx={{color: 'black', marginRight: '15px'}} />
-                              <PlayCircleOutlineOutlinedIcon onClick={(e) => handlePlay(e, row.id)} sx={{color: 'black'}} />
+                              <ControlPointIcon
+                                onClick={(e) =>
+                                  handleAddTrackToQueue(e, row.id)
+                                }
+                                sx={{ color: 'black', marginRight: '15px' }}
+                              />
+                              <PlayCircleOutlineOutlinedIcon
+                                onClick={(e) => handlePlay(e, row.id)}
+                                sx={{ color: 'black' }}
+                              />
                             </TableCell>
                           )
                         } else if (cellName === 'title') {
@@ -306,7 +322,11 @@ const ReleaseListTable = (props) => {
                           )
                         } else {
                           return (
-                            <TableCell align="center" size="small" key={cellName}>
+                            <TableCell
+                              align="center"
+                              size="small"
+                              key={cellName}
+                            >
                               {cellData}
                             </TableCell>
                           )
@@ -356,7 +376,7 @@ const StyledPaper = styled(Paper)(({ theme, tableType }) => ({
   },
 }))
 
-const StyledCollectButton = styled(Button)(({theme}) => ({
+const StyledCollectButton = styled(Button)(({ theme }) => ({
   color: `${theme.palette.blue} !important`,
   display: 'flex',
   flexDirection: 'column',
@@ -370,8 +390,8 @@ const StyledCollectButton = styled(Button)(({theme}) => ({
   },
   '& span': {
     color: `${theme.palette.grey.primary}`,
-    fontSize: '10px'
-  }
+    fontSize: '10px',
+  },
 }))
 
 export default ReleaseListTable
