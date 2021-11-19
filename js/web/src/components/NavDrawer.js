@@ -162,7 +162,7 @@ const NavDrawer = () => {
                   <FontAwesomeIcon icon={faTwitter} />
                 </a>
                 <a
-                  href="https://discord.gg/EqaCvgRn"
+                  href="https://discord.gg/ePkqJqSBgj"
                   target="_blank"
                   rel="noreferrer"
                 >
