@@ -297,7 +297,8 @@ const ExchangeWrapper = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     display: 'flex',
     flexDirection: 'column',
-    minHeight: '74vh'
+    minHeight: '74vh',
+    marginBottom: '100px'
   },
   [`& .${classes.updateMessage}`]: {
     fontSize: '10px',
