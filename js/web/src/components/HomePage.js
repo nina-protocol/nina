@@ -36,14 +36,22 @@ const HomePage = () => {
         </Typography>
 
         <Box sx={{ padding: { md: '0 40px 140px 40px', xs: '30px 0px' } }}>
+         
+          <Box sx={{display: 'flex', paddingLeft: {md: '30px', xs: '0'}}} className={classes.sectionHeader}>
           <Typography
             variant="body1"
             align="left"
-            sx={{ paddingLeft: { md: '30px', xs: '0' } }}
-            className={classes.sectionHeader}
           >
             New Releases
           </Typography>
+
+          <AllReleasesLink to="/allReleases">
+              <Typography variant="body1" >
+              All Releases
+            </Typography>
+          </AllReleasesLink>
+
+         </Box>
           <RecentlyPublished releases={releasesRecent.published} />
         </Box>
 
@@ -103,9 +111,14 @@ const HomePageContainer = styled('div')(({ theme }) => ({
     marginBottom: '100px'
   },
   [`& .${classes.sectionHeader}`]: {
-    fontWeight: '700 ',
+    fontWeight: '700 !important',
     paddingBottom: `${theme.spacing(1)}`,
-    textTransform: 'uppercase',
+    textTransform: 'uppercase !important',
+    '& .MuiTypography-root':{
+      textTransform: 'uppercase !important',
+      fontWeight: '700 !important',
+
+    }
   },
   '& a, span': {
     color: theme.palette.blue,
@@ -119,6 +132,13 @@ const MarketMovers = styled(Box)(({ theme }) => ({
   margin: 'auto',
   [theme.breakpoints.down('md')]: {
     width: '100%',
+  },
+}))
+
+const AllReleasesLink = styled(Link)(({ theme }) => ({
+  marginLeft: '30px',
+  [theme.breakpoints.down('md')]: {
+    display: 'none'
   },
 }))
 

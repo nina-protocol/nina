@@ -96,6 +96,10 @@ const routes = [
     path: '/faq',
     breadcrumb: () => <Typography variant="subtitle1">Faq</Typography>,
   },
+  {
+    path: '/allReleases',
+    breadcrumb: () => <Typography variant="subtitle1">All Releases</Typography>,
+  },
   { path: '/releases', breadcrumb: YourReleasesBreadcrumb },
   { path: '/releases/:releasePubkey', breadcrumb: ReleaseBreadcrumb },
   {
