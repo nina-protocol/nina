@@ -16,8 +16,8 @@ const BuySell = (props) => {
       </Typography>
       <Typography variant="subtitle1" align="left">
         {isBuy
-          ? `Enter the price you’d be willing to pay for 1 ${symbol}. Your offer will be locked in until accepts it or you cancel it.`
-          : `Want to sell your ${symbol}? List yours for other users to purchase - if sold the funds will be sent directly to your wallet.`}
+          ? `Enter the price you’d be willing to pay for 1 ${symbol}. Your offer will be locked in until someone accepts it or you cancel it.`
+          : `Want to sell your ${symbol}? List yours for other users to purchase - if sold, the funds will be sent directly to your wallet.`}
       </Typography>
       <BuySellForm
         inCollection={inCollection}
