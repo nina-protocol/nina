@@ -58,12 +58,15 @@ const Release = ({ match }) => {
 
   return (
     <>
-      {metadata && 
+      {metadata && (
         <Helmet>
           <title>{`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}</title>
-          <meta name="description" content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`} />
+          <meta
+            name="description"
+            content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`}
+          />
         </Helmet>
-      }
+      )}
       {!metadata && <Dots size="80px" />}
       {metadata && (
         <ReleaseWrapper>

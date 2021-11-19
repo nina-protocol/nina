@@ -72,8 +72,10 @@ const ReleaseList = () => {
   return (
     <>
       <Helmet>
-        <title>{`Nina: Your Releases(${userPublishedReleases?.length || 0})`}</title>
-        <meta name="description" content={"Your releases on Nina."} />
+        <title>{`Nina: Your Releases(${
+          userPublishedReleases?.length || 0
+        })`}</title>
+        <meta name="description" content={'Your releases on Nina.'} />
       </Helmet>
       <ScrollablePageWrapper>
         <UserReleaseWrapper>
@@ -82,9 +84,10 @@ const ReleaseList = () => {
               {sales > 0 && (
                 <ReleaseStats>
                   <Typography variant="h1" align="left">
-                    You have released <span>{userPublishedReleases.length}</span>{' '}
-                    {userPublishedReleases.length === 1 ? 'track' : 'tracks'} and
-                    sold
+                    You have released{' '}
+                    <span>{userPublishedReleases.length}</span>{' '}
+                    {userPublishedReleases.length === 1 ? 'track' : 'tracks'}{' '}
+                    and sold
                     <span> {sales}</span> of <span>{editionTotal} </span>{' '}
                     available editions for a total of{' '}
                     <span>

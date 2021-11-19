@@ -18,7 +18,14 @@ import CloseIcon from '@mui/icons-material/Close'
 
 const { NinaContext, ReleaseContext } = ninaCommon.contexts
 
-const linksConnected = ['home', 'collection', 'releases', 'upload', 'faq', 'the soft lp']
+const linksConnected = [
+  'home',
+  'collection',
+  'releases',
+  'upload',
+  'faq',
+  'the soft lp',
+]
 
 const linksNotConnected = ['home', 'upload', 'faq', 'the soft lp']
 
@@ -177,7 +184,7 @@ const NavDrawer = () => {
                   <FontAwesomeIcon icon={faTwitter} />
                 </a>
                 <a
-                  href="https://discord.gg/EqaCvgRn"
+                  href="https://discord.gg/ePkqJqSBgj"
                   target="_blank"
                   rel="noreferrer"
                 >
