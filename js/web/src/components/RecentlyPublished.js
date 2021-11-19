@@ -14,17 +14,39 @@ const { Dots } = ninaCommon.components
 const RecentlyPublished = (props) => {
   const { releases } = props
 
-  const arrowStyle = {
-    top: '-12% !important',
-    position: 'absolute',
-    cursor: 'pointer'
-  }
+
+
+  const responsiveSettings = [
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        infinite: true,
+      }
+    },
+    {
+      breakpoint: 600,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 2,
+        initialSlide: 2
+      }
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 1
+      }
+    }
+  ]
 
   const CustomNextArrow = ({onClick}) => (
-    <NavigateNextIcon onClick={onClick} sx={{...arrowStyle, right: '25px'}} />
+    <NavigateNextIcon className='sliderArrow sliderArrow--right' onClick={onClick} />
   )
   const CustomPrevArrow = ({onClick}) => (
-    <NavigateBeforeIcon onClick={onClick} sx={{...arrowStyle, right: '70px'}} />
+    <NavigateBeforeIcon className='sliderArrow sliderArrow--left' onClick={onClick}  />
   )
   
   if (releases === undefined || releases.length === 0) {
@@ -37,13 +59,14 @@ const RecentlyPublished = (props) => {
     )
   }
   return (
-    <Box sx={{minHeight: '250px', border: '2px solid red'}}>
+    <RecentlyPublishedWrapper>
       {releases?.length > 0 && (
         <Slider 
           dots="false"
           infinite="true"
           speed={1500}
-          // autoplay="true"
+          autoplay="true" 
+          responsive={responsiveSettings}
           autoplaySpeed={2500}
           slidesToShow={3}
           slidesToScroll={1}
@@ -81,15 +104,44 @@ const RecentlyPublished = (props) => {
           })}
         </Slider>
       )}
-    </Box>
+    </RecentlyPublishedWrapper>
   )
 }
 
+const RecentlyPublishedWrapper = styled(Box)(({theme}) => ({
+  '& .sliderArrow': {
+    top: '-12% !important',
+    position: 'absolute',
+    cursor: 'pointer',
+    '&--right': {
+      right: '25px',
+      [theme.breakpoints.down('md')]: {
+        right: '9px'
+      }
+    },
+    '&--left': {
+      right: '70px',
+      [theme.breakpoints.down('md')]: {
+        right: '50px'
+      }
+    }
+  },
+  '& .MuiSvgIcon-root': {
+    [theme.breakpoints.down('md')]: {
+      top: '-21% !important'
+    }
+  }
+
+}))
 
 const ReleaseSlideWrapper = styled(Box)(() => ({
   textAlign: "center",
   display: 'flex',
-  justifyContent: 'center'
+  justifyContent: 'center',
+  '& .MuiSvgIcon-root': {
+    border: '2px solid red !important'
+  }
+
 }))
 
 const ReleaseSlide = styled(Box)(({ theme }) => ({
@@ -101,7 +153,11 @@ const ReleaseSlide = styled(Box)(({ theme }) => ({
   },
 
   [theme.breakpoints.down('md')]: {
-    width: '34vw',
+    width: '135px',
+    padding: '0',
+    paddingLeft: '1px',
+    margin: '0',
+
   },
 }))
 
@@ -111,7 +167,7 @@ const ReleaseCopy = styled(Box)(() => ({
     textOverflow: 'ellipsis',
     overflow: 'hidden',
     maxWidth: '100%',
-    padding: '10px 0 0',
+    padding: '10px 0 4px',
   },
 }))
 export default RecentlyPublished

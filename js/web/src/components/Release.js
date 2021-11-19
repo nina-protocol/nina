@@ -1,5 +1,4 @@
-import React, { useState, useContext, useEffect, useMemo } from 'react'
-import SwipeableViews from 'react-swipeable-views'
+import React, { useState, useContext, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useWallet } from '@solana/wallet-adapter-react'
 import ninaCommon from 'nina-common'
@@ -21,7 +20,6 @@ const Release = ({ match }) => {
   const { getExchangeHistoryForRelease, exchangeState } =
     useContext(ExchangeContext)
   const [track, setTrack] = useState(null)
-  const index = useMemo(() => (match.path.includes('market') ? 1 : 0))
 
   const [metadata, setMetadata] = useState(
     releaseState?.metadata[releasePubkey] || null
@@ -61,36 +59,49 @@ const Release = ({ match }) => {
     <>
       {!metadata && <Dots size="80px" />}
       {metadata && (
-        <SwipeableViews index={index}>
-          <NinaBox columns={'repeat(2, 1fr)'} sx={{ backgroundColor: 'white' }}>
-            <ReleaseCard
-              metadata={metadata}
-              preview={false}
-              releasePubkey={releasePubkey}
-              track={track}
-            />
-            <ReleaseCtaWrapper>
-              <ReleasePurchase
-                releasePubkey={releasePubkey}
+        <ReleaseWrapper>
+          {!match.path.includes('market') && (
+            <NinaBox columns={'repeat(2, 1fr)'} sx={{ backgroundColor: 'white' }}>
+              <ReleaseCard
                 metadata={metadata}
+                preview={false}
+                releasePubkey={releasePubkey}
+                track={track}
               />
-            </ReleaseCtaWrapper>
-          </NinaBox>
+              <ReleaseCtaWrapper>
+                <ReleasePurchase
+                  releasePubkey={releasePubkey}
+                  metadata={metadata}
+                  match={match}
+                />
+              </ReleaseCtaWrapper>
+            </NinaBox>
+          )}
 
-          <NinaBox columns={'repeat(1, 1fr)'}>
-            <Exchange
-              releasePubkey={releasePubkey}
-              exchanges={exchangeState.exchanges}
-              metadata={metadata}
-              track={track}
-            />
-          </NinaBox>
-        </SwipeableViews>
+          {match.path.includes('market') && (
+            <NinaBox columns={'repeat(1, 1fr)'}>
+              <Exchange
+                releasePubkey={releasePubkey}
+                exchanges={exchangeState.exchanges}
+                metadata={metadata}
+                track={track}
+              />
+            </NinaBox>      
+          )}
+        </ReleaseWrapper>
       )}
     </>
   )
 }
 
+const ReleaseWrapper = styled(Box)(({ theme }) => ({
+  [theme.breakpoints.down('md')]: {
+    overflowX: 'scroll',
+    '&::-webkit-scrollbar': {
+      display: 'none'
+    }
+  },
+}))
 const ReleaseCtaWrapper = styled(Box)(({ theme }) => ({
   margin: 'auto',
   width: 'calc(100% - 50px)',
@@ -98,6 +109,7 @@ const ReleaseCtaWrapper = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     paddingLeft: '0',
     width: '100%',
+    marginBottom: '100px'
   },
 }))
 

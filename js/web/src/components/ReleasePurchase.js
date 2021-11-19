@@ -13,7 +13,7 @@ const { ReleaseContext, NinaContext, ExchangeContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
 const ReleasePurchase = (props) => {
-  const { releasePubkey, metadata } = props
+  const { releasePubkey, metadata, match } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const history = useHistory()
@@ -103,8 +103,15 @@ const ReleasePurchase = (props) => {
   const buttonDisabled =
     wallet?.connected && release.remainingSupply > 0 ? false : true
 
+  let pathString = ''
+  if (match.path.includes('releases')) {
+    pathString = '/releases'
+  } else if (match.path.includes('collection')) {
+    pathString = '/collection'
+  }
+
   return (
-    <Box>
+    <Box >
       <AmountRemaining variant="body2" align="left">
         Remaining <span>{release.remainingSupply.toNumber()} </span> /{' '}
         {release.totalSupply.toNumber()}
@@ -112,25 +119,23 @@ const ReleasePurchase = (props) => {
 
       {wallet?.connected && (
         <StyledUserAmount>
-          <Typography variant="body1" align="left">
             {metadata && (
-              <>
+            <Typography variant="body1" align="left" gutterBottom >
                 You have: {amountHeld || 0} {metadata.symbol}
-              </>
+              </Typography>
             )}
             {amountPendingSales > 0 ? (
-              <>
+            <Typography variant="body1" align="left" gutterBottom >
                 {amountPendingSales} pending sale
                 {amountPendingSales > 1 ? 's' : ''}{' '}
-              </>
+            </Typography>
             ) : null}
             {amountPendingBuys > 0 ? (
-              <>
+            <Typography variant="body1" align="left" gutterBottom >
                 {amountPendingBuys} pending buy
                 {amountPendingBuys > 1 ? 's' : ''}{' '}
-              </>
+            </Typography>
             ) : null}
-          </Typography>
         </StyledUserAmount>
       )}
       <Typography variant="h3" align="left">
@@ -159,7 +164,7 @@ const ReleasePurchase = (props) => {
         fullWidth
         onClick={() => {
           history.push(
-            `/${wallet?.connected ? 'releases/' : ''}${releasePubkey}/market`
+            `${pathString}/${releasePubkey}/market`
           )
         }}
       >
@@ -180,13 +185,12 @@ const StyledUserAmount = styled(Box)(({ theme }) => ({
   color: theme.palette.black,
   ...theme.helpers.baseFont,
   paddingBottom: '10px',
+  display: 'flex',
+  flexDirection: 'column',
 }))
 
 const MarketButton = styled(Button)(({ theme }) => ({
   marginTop: `${theme.spacing(1)} !important`,
-  [theme.breakpoints.down('md')]: {
-    display: 'none !important',
-  },
 }))
 
 export default ReleasePurchase

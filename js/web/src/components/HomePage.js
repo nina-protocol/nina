@@ -39,7 +39,7 @@ const HomePage = () => {
           <Typography
             variant="body1"
             align="left"
-            sx={{paddingLeft: '30px'}}
+            sx={{paddingLeft:{md:'30px', xs: "0"}}}
             className={classes.sectionHeader}
           >
             New Releases
@@ -115,11 +115,14 @@ const HomePageContainer = styled('div')(({ theme }) => ({
   },
 }))
 
-const MarketMovers = styled(Box)(() => ({
+const MarketMovers = styled(Box)(({theme}) => ({
   minHeight: '400px',
   overflowX: 'visible',
   width: '60%',
   margin: 'auto',
+  [theme.breakpoints.down('md')]: {
+    width: '100%'
+  },
 }))
 
 export default HomePage
