@@ -98,10 +98,7 @@ const Root = styled('nav')(({ theme }) => ({
     top: '0',
     left: '0',
   },
-  '& h6': {
-    // lineHeight: '1',
-  },
-
+ 
   [`& .${classes.nav__left}`]: {
     display: 'flex',
     alignItems: 'flex-start',
@@ -224,6 +221,7 @@ const ConnectionDot = styled('span')(({ theme }) => ({
   backgroundColor: theme.palette.red,
   borderRadius: '50%',
   display: 'inline-block',
+  marginTop: '2px',
   '&.connected': {
     backgroundColor: theme.palette.green,
   },
