@@ -3,6 +3,7 @@ import { styled } from '@mui/material/styles'
 import { useSnackbar } from 'notistack'
 import { Typography, Box, Fade, Button } from '@mui/material'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
+import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import RefreshIcon from '@mui/icons-material/Refresh'
 import { useWallet } from '@solana/wallet-adapter-react'
 import BuySell from './BuySell'
@@ -38,7 +39,7 @@ const Exchange = (props) => {
   } = useContext(ExchangeContext)
   const { connection } = useContext(ConnectionContext)
   const { getSolPrice } = useContext(NinaContext)
-  const { updateTxid } = useContext(AudioPlayerContext)
+  const {updateTxid, addTrackToQueue, isPlaying, setIsPlaying} = useContext(AudioPlayerContext)
 
   const [exchangeAwaitingConfirm, setExchangeAwaitingConfirm] =
     useState(undefined)
@@ -172,16 +173,28 @@ const Exchange = (props) => {
 
           <InfoCopy>
             {track && (
-              <Fade in={true}>
+              <CtaWrapper sx={{display: 'flex'}}>
                 <Button
                   onClick={() => {
-                    updateTxid(track.properties.files[0].uri, releasePubkey)
+                    isPlaying ?
+                      setIsPlaying(false)
+                      :
+                      updateTxid(track.properties.files[0].uri, releasePubkey, true)
                   }}
-                  sx={{ height: '22px', width: '28px' }}
+                  sx={{height: '22px', width: '28px'}}
                 >
-                  <PlayCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
+                  <PlayCircleOutlineOutlinedIcon sx={{color: 'white'}} />
+
                 </Button>
-              </Fade>
+                <Button
+                  onClick={() => {
+                    addTrackToQueue(releasePubkey)
+                  }}
+                  sx={{height: '22px', width: '28px'}}
+                >
+                  <ControlPointIcon sx={{color: 'white'}} />
+                </Button>
+              </CtaWrapper>
             )}
 
             {metadata && (
@@ -198,7 +211,6 @@ const Exchange = (props) => {
         <StyledExchange>
           <BuySell
             {...props}
-            symbol={metadata?.symbol}
             release={release}
             isBuy={true}
             onSubmit={(exchange, isBuy, amount) =>
@@ -217,7 +229,6 @@ const Exchange = (props) => {
         <StyledExchange>
           <BuySell
             {...props}
-            symbol={metadata?.symbol}
             release={release}
             isBuy={false}
             onSubmit={(exchange, isBuy, amount) =>
@@ -245,7 +256,7 @@ const Exchange = (props) => {
               exchangeHistory={exchangeHistory}
               release={release}
             />
-            <Typography variant="subtitle1" onClick={refreshExchange}>
+            <Typography variant="subtitle1" onClick={refreshExchange} sx={{cursor: 'pointer'}}>
               Last Updated:{' '}
               <span>{new Date(updateTime).toLocaleTimeString()} </span>
               <RefreshIcon fontSize="10px" sx={{ fontSize: '10px' }} />
@@ -271,7 +282,6 @@ const Exchange = (props) => {
             }
             cancelTransaction={() => setExchangeAwaitingConfirm(undefined)}
             isAccept={true}
-            metadata={metadata}
           />
         )}
       </ExchangeWrapper>
@@ -290,14 +300,19 @@ const classes = {
 const ExchangeWrapper = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
   display: 'grid',
-  gridTemplateRows: '100px 418px 20px',
+  gridTemplateRows: '1fr 418px 20px',
   gridTemplateColumns: 'repeat(2, 310px)',
   alignItems: 'center',
   gridRowGap: theme.spacing(1),
   justifyContent: 'space-between',
   overflowX: 'scroll',
   width: '100%',
-
+  [theme.breakpoints.down('md')]: {
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '74vh',
+    marginBottom: '100px'
+  },
   [`& .${classes.updateMessage}`]: {
     fontSize: '10px',
     position: 'absolute',
@@ -350,10 +365,15 @@ const StyledExchange = styled(Box)(() => ({
   flexDirection: 'column',
 }))
 
-const ExchangeCopy = styled(Box)(() => ({
+const ExchangeCopy = styled(Box)(({theme}) => ({
   display: 'grid',
   gridTemplateColumns: 'repeat(3, 1fr)',
   gridColumn: '1/3',
+  [theme.breakpoints.down('md')]: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%'
+  },
 }))
 
 const HistoryCtaWrapper = styled(Box)(() => ({
@@ -363,6 +383,13 @@ const HistoryCtaWrapper = styled(Box)(() => ({
   '& .MuiSvgIcon-root': {
     height: '10px',
     width: '10px',
+  },
+}))
+
+const CtaWrapper = styled(Box)(() => ({
+  '& .MuiButton-root': {
+    width: '21px',
+    marginRight: "10px"
   },
 }))
 

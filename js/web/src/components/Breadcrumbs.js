@@ -92,6 +92,10 @@ const routes = [
     path: '/',
     breadcrumb: () => <Typography variant="subtitle1">Home</Typography>,
   },
+  {
+    path: '/faq',
+    breadcrumb: () => <Typography variant="subtitle1">Faq</Typography>,
+  },
   { path: '/releases', breadcrumb: YourReleasesBreadcrumb },
   { path: '/releases/:releasePubkey', breadcrumb: ReleaseBreadcrumb },
   {
@@ -130,10 +134,12 @@ const BreadcrumbsContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(0, 2),
   fontSize: '10px',
   display: 'flex',
+  position: 'absolute',
+  top: '12px',
   '& .breadcrumb': {
     display: 'flex',
-    '& h6': {
-      lineHeight: 1,
+    '& h6, a': {
+      // lineHeight: 1,
     },
   },
   [theme.breakpoints.down('md')]: {

@@ -3,12 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fortawesome/free-brands-svg-icons": "^5.15.4",
+    "@fortawesome/react-fontawesome": "^0.1.16",
     "nina-common": "0.1.0",
     "react-dropzone-uploader": "^2.11.0",
     "react-multi-carousel": "^2.6.5",
     "react-router-breadcrumbs-hoc": "^4.1.0",
+    "react-slick": "^0.28.1",
     "react-smooth-image": "^1.1.0",
-    "react-swipeable-views": "^0.14.0"
+    "react-swipeable-views": "^0.14.0",
+    "slick-carousel": "^1.8.1"
   },
   "scripts": {
     "start": "react-scripts start",

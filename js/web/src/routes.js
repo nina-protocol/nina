@@ -9,6 +9,7 @@ import UserCollection from './components/UserCollection'
 import Release from './components/Release'
 import AudioPlayer from './components/AudioPlayer'
 import HomePage from './components/HomePage'
+import FaqPage from './components/FaqPage'
 import NavBar from './components/NavBar'
 
 function Routes() {
@@ -25,6 +26,9 @@ function Routes() {
             <NavBar />
             <Switch>
               <Route exact path="/upload" component={ReleaseCreate} />
+              <Route path="/faq" component={FaqPage} />
+              <Route path="/collection" component={UserCollection}></Route>
+
               <Route
                 exact
                 path="/releases/:releasePubkey/market"
@@ -45,7 +49,6 @@ function Routes() {
                 path="/collection/:releasePubkey"
                 component={Release}
               ></Route>
-              <Route path="/collection" component={UserCollection}></Route>
               <Route path="/:releasePubkey/market" component={Release}></Route>
               <Route path="/:releasePubkey" component={Release}></Route>
               <Route exact path="/" component={HomePage} />

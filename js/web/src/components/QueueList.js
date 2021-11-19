@@ -100,16 +100,20 @@ const QueueList = (props) => {
   }
 
   return (
-    <StyledQueueList>
+    <>
       {playlist?.length === 0 && (
-        <div style={{ padding: '16px' }}>
-          <Typography align="center">
-            {wallet?.connected
-              ? `You don't have any songs`
-              : `Connect your wallet to load your collection`}
-          </Typography>
-        </div>
+        <Box sx={{margin: 'auto'}}>
+            <div style={{ padding: '16px' }}>
+              <Typography align="center">
+                {wallet?.connected
+                  ? `You don't have any songs qued`
+                  : `Connect your wallet to load your collection`}
+              </Typography>
+            </div>
+        </Box>
       )}
+
+    <StyledQueueList>
 
       {playlist?.length > 0 && (
         <TableContainer
@@ -176,6 +180,7 @@ const QueueList = (props) => {
         </TableContainer>
       )}
     </StyledQueueList>
+    </>
   )
 }
 
@@ -226,9 +231,9 @@ const DroppableComponent =
 
 const StyledQueueList = styled(Box)(({ theme }) => ({
   width: '700px',
-  margin: 'auto',
+  margin: ' 140px auto',
   overflowY: 'scroll',
-  paddingTop: '140px',
+  // paddingTop: '140px',
   [theme.breakpoints.down('md')]: {
     width: '80vw',
     paddingTop: '0',

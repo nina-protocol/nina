@@ -35,10 +35,11 @@ const HomePage = () => {
           fans. Learn more.
         </Typography>
 
-        <Box sx={{ padding: { md: '0 80px 140px 80px', xs: '30px 0px' } }}>
+        <Box sx={{ padding: { md: '0 40px 140px 40px', xs: '30px 0px' } }}>
           <Typography
             variant="body1"
             align="left"
+            sx={{paddingLeft:{md:'30px', xs: "0"}}}
             className={classes.sectionHeader}
           >
             New Releases
@@ -114,11 +115,14 @@ const HomePageContainer = styled('div')(({ theme }) => ({
   },
 }))
 
-const MarketMovers = styled(Box)(() => ({
+const MarketMovers = styled(Box)(({theme}) => ({
   minHeight: '400px',
   overflowX: 'visible',
   width: '60%',
   margin: 'auto',
+  [theme.breakpoints.down('md')]: {
+    width: '100%'
+  },
 }))
 
 export default HomePage
