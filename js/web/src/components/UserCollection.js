@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
+import { Helmet } from 'react-helmet'
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Typography } from '@mui/material'
@@ -22,18 +23,24 @@ const ReleaseList = () => {
   }, [releaseState, collection])
 
   return (
-    <ScrollablePageWrapper>
-      {wallet?.connected && userCollectionReleases?.length > 0 && (
-        <ReleaseListTable
-          releases={userCollectionReleases}
-          tableType="userCollection"
-          key="releases"
-        />
-      )}
-      {wallet?.connected && userCollectionReleases?.length === 0 && (
-        <Typography>Your collection is empty!</Typography>
-      )}
-    </ScrollablePageWrapper>
+    <>
+      <Helmet>
+        <title>{`Nina: Your Collection(${userCollectionReleases.length || 0})`}</title>
+        <meta name="description" content={"Your collection on Nina."} />
+      </Helmet>
+      <ScrollablePageWrapper>
+        {wallet?.connected && userCollectionReleases?.length > 0 && (
+          <ReleaseListTable
+            releases={userCollectionReleases}
+            tableType="userCollection"
+            key="releases"
+          />
+        )}
+        {wallet?.connected && userCollectionReleases?.length === 0 && (
+          <Typography>Your collection is empty!</Typography>
+        )}
+      </ScrollablePageWrapper>
+    </>
   )
 }
 

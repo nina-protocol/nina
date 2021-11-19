@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
+import { Helmet } from 'react-helmet'
 import { useHistory } from 'react-router-dom'
 import { useWallet } from '@solana/wallet-adapter-react'
 import ninaCommon from 'nina-common'
@@ -57,6 +58,12 @@ const Release = ({ match }) => {
 
   return (
     <>
+      {metadata && 
+        <Helmet>
+          <title>{`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}</title>
+          <meta name="description" content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`} />
+        </Helmet>
+      }
       {!metadata && <Dots size="80px" />}
       {metadata && (
         <ReleaseWrapper>
