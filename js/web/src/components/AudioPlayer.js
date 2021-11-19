@@ -239,6 +239,7 @@ const AudioPlayer = () => {
             aria-labelledby="continuous-slider"
             min={0}
             max={duration}
+            req
           />
 
           <Typography

@@ -89,7 +89,8 @@ const RecentlyPurchased = (props) => {
               autoPlay={true}
               autoPlaySpeed={4000}
               keyBoardControl={true}
-              transitionDuration={800}
+              transitionDuration={700}
+              customTransition="transform 700ms ease-in-out"
               slidesToSlide={1}
               containerClass="carousel-container"
               removeArrowOnDeviceType={['tablet', 'mobile']}
