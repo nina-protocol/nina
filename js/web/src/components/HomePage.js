@@ -88,7 +88,7 @@ const HomePage = () => {
         >
           On Nina artists keep <span>100% </span> of their sales and can access{' '}
           <span>100% </span> of their data. They will never be deplatformed or
-          seperated from their supporters. We make tools to bring equity back to
+          separated from their supporters. We make tools to bring equity back to
           music online.
         </Typography>
       </HomePageContainer>
