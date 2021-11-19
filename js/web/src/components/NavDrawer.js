@@ -4,13 +4,16 @@ import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
-import Box from '@mui/material/Box'
+import {Typography, Box} from '@mui/material'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import { NavLink } from 'react-router-dom'
 import { Icon } from '@material-ui/core'
 import hamburger from '../assets/hamburger.svg'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faDiscord} from '@fortawesome/free-brands-svg-icons'
+import {faTwitter} from '@fortawesome/free-brands-svg-icons'
 
 const { NinaContext, ReleaseContext } = ninaCommon.contexts
 
@@ -147,6 +150,32 @@ const NavDrawer = () => {
             BackdropProps={{ invisible: true }}
           >
             {list()}
+
+            <DrawerFooter >
+              <Box>
+                <a
+                  href="https://twitter.com/nina_market_"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{paddingRight: '15px'}}
+                >
+                  <FontAwesomeIcon icon={faTwitter} />
+                </a>
+                <a
+                  href="https://discord.gg/EqaCvgRn"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <FontAwesomeIcon icon={faDiscord} />
+                </a>
+              </Box>
+
+              <Typography variant="subtitle1" >
+                © 2021 Nina Protocol Corp
+              </Typography>
+            </DrawerFooter>
+
+
           </StyledDrawer>
         </Box>
       }
@@ -194,6 +223,16 @@ const StyledMenuButton = styled(Button)(({ theme }) => ({
   '& .MuiSvgIcon-root': {
     color: theme.palette.black,
   },
+}))
+
+const DrawerFooter = styled(Box)(() => ({
+  position: 'absolute',
+  bottom: '10px',
+  width: '75%',
+  left: '60px',
+  transform: 'translateY(-50%)',
+  display: 'flex',
+  justifyContent: 'space-between'
 }))
 
 export default NavDrawer
