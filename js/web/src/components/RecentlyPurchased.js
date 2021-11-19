@@ -90,7 +90,7 @@ const RecentlyPurchased = (props) => {
               draggable={true}
               responsive={responsive}
               infinite={true}
-              autoPlay={true}
+              // autoPlay={true}
               autoPlaySpeed={4000}
               keyBoardControl={true}
               transitionDuration={700}
@@ -152,7 +152,6 @@ const RecentlyPurchased = (props) => {
                     >
                       <SmoothImage
                         src={imageUrl}
-                        imageStyles={{ minWidth: '400px' }}
                       />
                     </Link>
                     <Copy sx={{ paddingLeft: 2 }}>
