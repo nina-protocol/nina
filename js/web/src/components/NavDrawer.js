@@ -14,6 +14,9 @@ import hamburger from '../assets/hamburger.svg'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faDiscord} from '@fortawesome/free-brands-svg-icons'
 import {faTwitter} from '@fortawesome/free-brands-svg-icons'
+import CloseIcon from '@mui/icons-material/Close';
+
+
 
 const { NinaContext, ReleaseContext } = ninaCommon.contexts
 
@@ -74,6 +77,7 @@ const NavDrawer = () => {
       onClick={toggleDrawer(false)}
       onKeyDown={toggleDrawer(false)}
     >
+      <CloseIcon onClick={toggleDrawer} sx={{padding: '30px 60px'}}/>
       <StyledList disablePadding>
         {links.map((link) => {
           switch (link) {
@@ -191,9 +195,12 @@ const classes = {
   drawerLink: `${PREFIX}-drawerLink`,
 }
 
-const StyledDrawer = styled(Drawer)(() => ({
+const StyledDrawer = styled(Drawer)(({theme}) => ({
   '& .MuiPaper-root': {
     width: 436,
+    [theme.breakpoints.down('md')]: {
+      width: '100vw'
+    },
   },
 }))
 
