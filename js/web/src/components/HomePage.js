@@ -5,7 +5,7 @@ import ninaCommon from 'nina-common'
 import RecentlyPublished from './RecentlyPublished'
 import RecentlyPurchased from './RecentlyPurchased'
 // import SmoothImage from 'react-smooth-image';
-// import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 const { ReleaseContext } = ninaCommon.contexts
 
@@ -32,7 +32,8 @@ const HomePage = () => {
         >
           Nina is a new infrastructure to buy, sell and stream music online. We
           put control in the artist’s hands and link them directly with their
-          fans. Learn more.
+          fans. 
+          <Link to="/faq">Learn more.</Link>
         </Typography>
 
         <Box sx={{ padding: { md: '0 40px 140px 40px', xs: '30px 0px' } }}>

@@ -39,9 +39,16 @@ const MediaDropzone = ({
     if (meta.status === 'error_validation') {
       const height = meta.height
       const width = meta.width
-      alert(
-        `your image's dimensions are ${height} x ${width}... \nPlease upload a square image`
-      )
+      const size = meta.size / 1000000
+      if (file.type.includes('audio')) {
+        alert(
+          `your track is ${size} mb.. \nPlease upload a smaller track `
+        )
+      } else {
+        alert(
+          `your image's dimensions are ${height} x ${width}... \nPlease upload a square image`
+        )
+      }
       remove()
     }
     if (type === 'artwork') {
@@ -92,6 +99,13 @@ const MediaDropzone = ({
     const width = fileWithMeta.meta.width
 
     if (height !== width) {
+      return true
+    }
+    return false
+  }
+  const validateFileSize = (fileWithMeta) => {
+    const size = fileWithMeta.file.size / 1000000
+    if (size > 80) {
       return true
     }
     return false
@@ -173,7 +187,7 @@ const MediaDropzone = ({
       maxFiles={1}
       validate={
         type === 'track'
-          ? ''
+          ? (fileWithMeta) => validateFileSize(fileWithMeta)
           : (fileWithMeta) => validateSquareImage(fileWithMeta)
       }
       SubmitButtonComponent={null}
