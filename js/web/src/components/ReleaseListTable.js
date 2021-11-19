@@ -86,7 +86,7 @@ const EnhancedTableHead = (props) => {
 
   let headCells = [
     {
-      id: 'art',
+      id: 'ctas',
       numeric: false,
       disablePadding: true,
       label: '',
@@ -136,7 +136,7 @@ const EnhancedTableHead = (props) => {
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
               onClick={createSortHandler(headCell.id)}
-              disabled={headCell.id === 'art'}
+              disabled={headCell.id === 'ctas'}
               sx={{ '& svg': { fontSize: '14px ' } }}
             >
               {headCell.label}
@@ -171,7 +171,7 @@ const ReleaseListTable = (props) => {
   const handleClick = (e, releasePubkey) => {
     history.push(
       tableType === 'userCollection'
-        ? `/collection/${releasePubkey}`
+        ? `/${releasePubkey}`
         : `/releases/${releasePubkey}`
     )
   }
@@ -210,7 +210,7 @@ const ReleaseListTable = (props) => {
 
     const rowData = {
       id: releasePubkey,
-      art: linkData,
+      ctas: linkData,
       artist: metadata.properties.artist,
       title: metadata.properties.title,
     }
@@ -312,14 +312,13 @@ const ReleaseListTable = (props) => {
                     {Object.keys(row).map((cellName) => {
                       const cellData = row[cellName]
                       if (cellName !== 'id') {
-                        if (cellName === 'art') {
+                        if (cellName === 'ctas') {
                           return (
                             <TableCell
                               align="center"
                               component="th"
                               scope="row"
                               key={cellName}
-                              // onClick={(e) => handlePlay(e, row.id)}
                             >
                               <ControlPointIcon
                                 onClick={(e) =>
