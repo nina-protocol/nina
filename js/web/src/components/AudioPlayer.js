@@ -4,6 +4,7 @@ import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Link } from 'react-router-dom'
 import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import Slider from '@mui/material/Slider'
 import SkipNextIcon from '@mui/icons-material/SkipNext'
 import IconButton from '@mui/material/IconButton'
@@ -268,9 +269,13 @@ const AudioPlayer = () => {
             </Typography>
           </Link>
 
-          <Link to={info.releasePubkey}>
+          <Button
+            onClick={() => window.open(`https://twitter.com/intent/tweet?text=${`Checkout ${info.artist} - "${info.title}" on Nina`}&url=nina.market/${info.releasePubkey}`, null, 'status=no,location=no,toolbar=no,menubar=no,height=500,width=500')}
+            disableFocusRipple={true}
+            disableRipple={true}
+          >
             <img src={shareArrow}></img>
-          </Link>
+          </Button>
         </LinkWrapper>
       )}
       <QueueDrawer />
