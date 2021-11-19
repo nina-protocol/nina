@@ -45,6 +45,9 @@ const StyledBuySell = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   position: 'relative',
   alignItems: 'flex-start',
+   [theme.breakpoints.down('md')]: {
+    display: 'none !important',
+  },
   borderBottom: `1px solid ${theme.palette.grey.primary}`,
   [`& .${classes.buySellHeading}`]: {
     fontWeight: '700 !important',

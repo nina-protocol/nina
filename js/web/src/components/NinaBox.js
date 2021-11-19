@@ -29,7 +29,7 @@ const StyledBox = styled(Box, {
     margin: '140px auto',
   },
   [theme.breakpoints.down('sm')]: {
-    margin: '100px auto',
+    margin: '80px auto',
   },
 }))
 

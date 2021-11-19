@@ -13,10 +13,11 @@ import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
 import { visuallyHidden } from '@mui/utils'
 import Box from '@mui/material/Box'
+import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
+import ControlPointIcon from '@mui/icons-material/ControlPoint';
 
 const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
-const ARWEAVE_GATEWAY_ENDPOINT = NinaClient.endpoints.arweave
 
 const descendingComparator = (a, b, orderBy) => {
   switch (orderBy) {
@@ -83,14 +84,6 @@ const EnhancedTableHead = (props) => {
       numeric: false,
       disablePadding: true,
       label: '',
-      renderCell: (params) => {
-        return (
-          <img
-            src={`${ARWEAVE_GATEWAY_ENDPOINT}/${params.value.txId}`}
-            alt="cover"
-          />
-        )
-      },
     },
     { id: 'artist', numeric: false, disablePadding: false, label: 'Artist' },
     { id: 'title', numeric: false, disablePadding: false, label: 'Title' },
@@ -149,7 +142,7 @@ const EnhancedTableHead = (props) => {
 
 const ReleaseListTable = (props) => {
   const { releases, tableType, collectRoyaltyForRelease } = props
-  const { updateTxid } = useContext(AudioPlayerContext)
+  const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext)
   const { releaseState } = useContext(ReleaseContext)
 
   const history = useHistory()
@@ -178,6 +171,12 @@ const ReleaseListTable = (props) => {
       releasePubkey,
       true
     )
+  }
+
+  const handleAddTrackToQueue = (e, releasePubkey) => {
+    e.stopPropagation()
+    e.preventDefault()
+    addTrackToQueue(releasePubkey)
   }
 
   const handleCollect = (e, recipient, releasePubkey) => {
@@ -217,7 +216,6 @@ const ReleaseListTable = (props) => {
         <StyledCollectButton
           disabled={!collectable}
           onClick={(e) => handleCollect(e, recipient, releasePubkey)}
-          // sx={{ padding: '0px !important' }}
           className={collectable ? 'collectable' : ''}
         >
           Collect
@@ -292,14 +290,10 @@ const ReleaseListTable = (props) => {
                               component="th"
                               scope="row"
                               key={cellName}
-                              onClick={(e) => handlePlay(e, row.id)}
+                              // onClick={(e) => handlePlay(e, row.id)}
                             >
-                              <img
-                                src={row.art.txId}
-                                className={classes.releaseImage}
-                                alt={'cover'}
-                                key={cellName}
-                              />
+                              <ControlPointIcon onClick={(e) => handleAddTrackToQueue(e, row.id)} sx={{color: 'black', marginRight: '15px'}} />
+                              <PlayCircleOutlineOutlinedIcon onClick={(e) => handlePlay(e, row.id)} sx={{color: 'black'}} />
                             </TableCell>
                           )
                         } else if (cellName === 'title') {

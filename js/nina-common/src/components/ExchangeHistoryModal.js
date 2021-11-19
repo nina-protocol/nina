@@ -12,7 +12,7 @@ const ExchangeHistoryModal = (props) => {
   const [open, setOpen] = useState(false)
 
   return (
-    <Box>
+    <Box color={'wj'}>
       <Cta onClick={() => setOpen(true)} variant="subtitle1">
         Market History <span>({exchangeHistory?.length || 0})</span>
       </Cta>
@@ -30,7 +30,8 @@ const ExchangeHistoryModal = (props) => {
       >
         <StyledPaper>
           <Header>
-            SECONDARY <span>MARKET HISTORY</span>
+            SECONDARY 
+            <Typography fontWeight="700">MARKET HISTORY</Typography>
           </Header>
           <HistoryTable>
             <thead>
@@ -104,10 +105,11 @@ const Cta = styled(Typography)(({ theme }) => ({
   },
 }))
 
-const StyledModal = styled(Modal)(() => ({
+const StyledModal = styled(Modal)(({theme}) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+
 }))
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
@@ -118,13 +120,15 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   zIndex: '10',
 }))
 
-const Header = styled(Typography)(() => ({
+const Header = styled(Typography)(({theme}) => ({
   fontSize: '26px',
   textAlign: 'center',
   display: 'flex',
   flexDirection: 'column',
   fontWeight: '700',
   lineHeight: '29.9px',
+  color: theme.palette.white,
+
 }))
 
 const HistoryTable = styled('table')(({ theme }) => ({
@@ -132,6 +136,10 @@ const HistoryTable = styled('table')(({ theme }) => ({
   display: 'block',
   maxHeight: '50vh',
   overflow: 'scroll',
+  color: theme.palette.white,
+  [theme.breakpoints.down('md')]: {
+    width: '80vw'
+  },
   '& th': {
     textTransform: 'uppercase',
   },

@@ -134,10 +134,12 @@ const BreadcrumbsContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(0, 2),
   fontSize: '10px',
   display: 'flex',
+  position: 'absolute',
+  top: '12px',
   '& .breadcrumb': {
     display: 'flex',
     '& h6, a': {
-      lineHeight: 1,
+      // lineHeight: 1,
     },
   },
   [theme.breakpoints.down('md')]: {

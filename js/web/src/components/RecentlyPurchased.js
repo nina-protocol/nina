@@ -37,7 +37,7 @@ const RecentlyPurchased = (props) => {
     mobile: {
       breakpoint: { max: 464, min: 0 },
       items: 1,
-      slidesToSlide: 1, // optional, default to 1.
+      slidesToSlide: 2,
     },
   }
 
@@ -55,14 +55,18 @@ const RecentlyPurchased = (props) => {
 
   const CustomRightArrow = ({ onClick }) => {
     return (
-      <Button disableRipple style={{ right: '-10px', ...buttonStyle }}>
-        <KeyboardArrowRightIcon fontSize="large" onClick={() => onClick()} />
+      <Button className="testclass" style={{ 
+        right: '10%', 
+        top: '75%',
+        fontSize: '50px',
+        ...buttonStyle }}>
+        <KeyboardArrowRightIcon fontSize="inherit" onClick={() => onClick()} />
       </Button>
     )
   }
   const CustomLeftArrow = ({ onClick }) => {
     return (
-      <Button disableRipple style={{ display: 'none', ...buttonStyle }}>
+      <Button  style={{ display: 'none', ...buttonStyle }}>
         <KeyboardArrowLeftIcon fontSize="large" onClick={() => onClick()} />
       </Button>
     )
@@ -85,7 +89,8 @@ const RecentlyPurchased = (props) => {
               autoPlay={true}
               autoPlaySpeed={4000}
               keyBoardControl={true}
-              transitionDuration={500}
+              transitionDuration={700}
+              customTransition="transform 700ms ease-in-out"
               slidesToSlide={1}
               containerClass="carousel-container"
               removeArrowOnDeviceType={['tablet', 'mobile']}
@@ -172,11 +177,8 @@ const classes = {
 
 const RecentlyPurchasedContainer = styled(Box)(({ theme }) => ({
   minHeight: '400px',
-  // marginLeft: '50%',
   flexShrink: '0',
   alignItems: 'center',
-  // width: '75%',
-  // margin: 'auto',
   '& a': {
     minWidth: '400px',
     [theme.breakpoints.down('md')]: {
@@ -187,7 +189,6 @@ const RecentlyPurchasedContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     marginLeft: '0',
   },
-
   [`& .${classes.sectionHeader}`]: {
     fontWeight: '700 ',
     paddingBottom: `${theme.spacing(1)}`,
@@ -212,10 +213,13 @@ const Copy = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     paddingLeft: 0,
     paddingTop: theme.spacing(1),
+    width: '100%',
   },
   '& *': {
     paddingBottom: '5px',
   },
 }))
+
+
 
 export default RecentlyPurchased
