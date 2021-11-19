@@ -8,24 +8,25 @@ import { Typography } from '@mui/material'
 import ninaRecord from '../assets/nina-record.png'
 import { Fade } from '@mui/material'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
-import ControlPointIcon from '@mui/icons-material/ControlPoint';
+import ControlPointIcon from '@mui/icons-material/ControlPoint'
 
 const { AudioPlayerContext } = ninaCommon.contexts
 
 const ReleaseCard = (props) => {
   const { artwork, metadata, preview, releasePubkey, track } = props
-  const { updateTxid, addTrackToQueue} = useContext(AudioPlayerContext)
+  const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext)
   return (
     <StyledReleaseCard>
       <StyledReleaseInfo>
         {track && (
-          <CtaWrapper sx={{display: 'flex'}}>
+          <CtaWrapper sx={{ display: 'flex' }}>
             <Button
-              onClick={() => updateTxid(track.properties.files[0].uri, releasePubkey, true)}
+              onClick={() =>
+                updateTxid(track.properties.files[0].uri, releasePubkey, true)
+              }
               sx={{ height: '22px', width: '28px' }}
             >
-                <PlayCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
-        
+              <PlayCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
             </Button>
             <Button
               onClick={() => {
@@ -33,7 +34,7 @@ const ReleaseCard = (props) => {
               }}
               sx={{ height: '22px', width: '28px' }}
             >
-              <ControlPointIcon sx={{color: 'white'}} />
+              <ControlPointIcon sx={{ color: 'white' }} />
             </Button>
           </CtaWrapper>
         )}
@@ -78,7 +79,7 @@ const StyledReleaseCard = styled(Box)(() => ({
 const CtaWrapper = styled(Box)(() => ({
   '& .MuiButton-root': {
     width: '21px',
-    marginRight: "10px"
+    marginRight: '10px',
   },
 }))
 

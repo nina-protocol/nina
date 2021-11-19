@@ -184,16 +184,16 @@ export const NinaTheme = createTheme({
     MuiPopover: {
       styleOverrides: {
         root: {
-          background: colors.transparent
-        }
-      }
+          background: colors.transparent,
+        },
+      },
     },
     MuiSvgIcon: {
       styleOverrides: {
         root: {
-          cursor: 'pointer'
-        }
-      }
+          cursor: 'pointer',
+        },
+      },
     },
     MuiTypography: {
       styleOverrides: {

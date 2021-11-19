@@ -55,18 +55,22 @@ const RecentlyPurchased = (props) => {
 
   const CustomRightArrow = ({ onClick }) => {
     return (
-      <Button className="testclass" style={{ 
-        right: '10%', 
-        top: '75%',
-        fontSize: '50px',
-        ...buttonStyle }}>
+      <Button
+        className="testclass"
+        style={{
+          right: '10%',
+          top: '75%',
+          fontSize: '50px',
+          ...buttonStyle,
+        }}
+      >
         <KeyboardArrowRightIcon fontSize="inherit" onClick={() => onClick()} />
       </Button>
     )
   }
   const CustomLeftArrow = ({ onClick }) => {
     return (
-      <Button  style={{ display: 'none', ...buttonStyle }}>
+      <Button style={{ display: 'none', ...buttonStyle }}>
         <KeyboardArrowLeftIcon fontSize="large" onClick={() => onClick()} />
       </Button>
     )
@@ -122,7 +126,7 @@ const RecentlyPurchased = (props) => {
                 const artistInfo = (
                   <div display="inline">
                     <Typography display="inline" variant="body2">
-                      {release.metadata.properties.artist},
+                      {release.metadata.properties.artist},{' '}
                     </Typography>{' '}
                     <Typography
                       display="inline"
@@ -142,10 +146,7 @@ const RecentlyPurchased = (props) => {
 
                 return (
                   <Slide key={i}>
-                    <Link
-                      to={release.releasePubkey}
-                      style={{ width: '400px' }}
-                    >
+                    <Link to={release.releasePubkey} style={{ width: '400px' }}>
                       <SmoothImage
                         src={imageUrl}
                         imageStyles={{ minWidth: '400px' }}
@@ -219,7 +220,5 @@ const Copy = styled(Box)(({ theme }) => ({
     paddingBottom: '5px',
   },
 }))
-
-
 
 export default RecentlyPurchased

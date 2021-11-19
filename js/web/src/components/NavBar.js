@@ -1,6 +1,6 @@
 import React, { useContext, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
-import {Typography, Box} from '@mui/material'
+import { Typography, Box } from '@mui/material'
 import ninaCommon from 'nina-common'
 import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
@@ -56,8 +56,7 @@ const NavBar = () => {
                   wallet?.connected ? 'connected' : ''
                 }`}
               ></ConnectionDot>
-              </StyledWalletDialogProvider>
-
+            </StyledWalletDialogProvider>
           </div>
         </DesktopWalletWrapper>
 
@@ -98,7 +97,7 @@ const Root = styled('nav')(({ theme }) => ({
     top: '0',
     left: '0',
   },
- 
+
   [`& .${classes.nav__left}`]: {
     display: 'flex',
     alignItems: 'flex-start',
@@ -106,21 +105,20 @@ const Root = styled('nav')(({ theme }) => ({
 
   [`& .${classes.nav__right}`]: {
     display: 'flex',
-    height: '100%', 
+    height: '100%',
     position: 'absolute',
     right: 0,
     top: '12px',
     [theme.breakpoints.down('md')]: {
       position: 'absolute',
       right: 0,
-      top: '10px'
+      top: '10px',
     },
   },
 
   [`& .${classes.nav__balance}`]: {
     margin: '0',
     color: `${theme.palette.blue}`,
-
   },
 
   [`& .${classes.nav__logo}`]: {
@@ -135,16 +133,16 @@ const Root = styled('nav')(({ theme }) => ({
   },
 }))
 
-const DesktopWalletWrapper = styled(Box)(({theme}) => ({
+const DesktopWalletWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   [theme.breakpoints.down('md')]: {
-    display: 'none'
+    display: 'none',
   },
 }))
-const MobileWalletWrapper = styled(Box)(({theme}) => ({
+const MobileWalletWrapper = styled(Box)(({ theme }) => ({
   display: 'none',
   [theme.breakpoints.down('md')]: {
-    display: 'flex'
+    display: 'flex',
   },
 }))
 

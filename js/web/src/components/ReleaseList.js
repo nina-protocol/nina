@@ -1,20 +1,19 @@
 import * as anchor from '@project-serum/anchor'
 import React, { useEffect, useState, useContext } from 'react'
+import { Helmet } from 'react-helmet'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Box, Typography } from '@mui/material'
 import ReleaseListTable from './ReleaseListTable'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
-const {NinaClient} = ninaCommon.utils
+const { NinaClient } = ninaCommon.utils
 const { ReleaseContext, NinaContext } = ninaCommon.contexts
 
-const usdcMint =  NinaClient.ids().mints.usdc
-const USDC_MINT_ID = new anchor.web3.PublicKey(
-  usdcMint
-)
+const usdcMint = NinaClient.ids().mints.usdc
+const USDC_MINT_ID = new anchor.web3.PublicKey(usdcMint)
 
 const ReleaseList = () => {
   const {
@@ -57,7 +56,6 @@ const ReleaseList = () => {
     let exchangeCount = 0
     let exchangeSalesCount = 0
     userPublishedReleases.forEach((release) => {
-
       salesCount += release.tokenData.saleCounter.toNumber()
       editionCount += release.tokenData.totalSupply.toNumber()
       revenueCount += release.tokenData.totalCollected.toNumber()
@@ -69,55 +67,75 @@ const ReleaseList = () => {
     setRevenue(revenueCount)
     setExchanges(exchangeCount)
     setExchangeSales(exchangeSalesCount)
-
   }, [userPublishedReleases])
 
   return (
-    <ScrollablePageWrapper>
-      <UserReleaseWrapper>
-        {wallet?.connected && userPublishedReleases?.length > 0 && (
-          <>
-          {sales > 0 && (
-          <ReleaseStats>
-            <Typography variant="h1" align="left">
-                You have released <span>{userPublishedReleases.length}</span> {userPublishedReleases.length === 1 ? 'track' : 'tracks'} and sold
-                <span> {sales}</span> of <span>{editionTotal} </span> available editions 
-                  for a total of <span>{NinaClient.nativeToUiString(revenue, USDC_MINT_ID)}</span>.                               
-                  {`  You've`} had <span>{exchanges}</span> { exchanges === 1 ? 'sale' : 'sales'} on the secondary market for a total of <span>{NinaClient.nativeToUiString(exchangeSales, USDC_MINT_ID)}</span>.
-            </Typography>
-          </ReleaseStats>
+    <>
+      <Helmet>
+        <title>{`Nina: Your Releases(${userPublishedReleases.length || 0})`}</title>
+        <meta name="description" content={"Your releases on Nina."} />
+      </Helmet>
+      <ScrollablePageWrapper>
+        <UserReleaseWrapper>
+          {wallet?.connected && userPublishedReleases?.length > 0 && (
+            <>
+              {sales > 0 && (
+                <ReleaseStats>
+                  <Typography variant="h1" align="left">
+                    You have released <span>{userPublishedReleases.length}</span>{' '}
+                    {userPublishedReleases.length === 1 ? 'track' : 'tracks'} and
+                    sold
+                    <span> {sales}</span> of <span>{editionTotal} </span>{' '}
+                    available editions for a total of{' '}
+                    <span>
+                      {NinaClient.nativeToUiString(revenue, USDC_MINT_ID)}
+                    </span>
+                    .{`  You've`} had <span>{exchanges}</span>{' '}
+                    {exchanges === 1 ? 'sale' : 'sales'} on the secondary market
+                    for a total of{' '}
+                    <span>
+                      {NinaClient.nativeToUiString(exchangeSales, USDC_MINT_ID)}
+                    </span>
+                    .
+                  </Typography>
+                </ReleaseStats>
+              )}
+              <ReleaseListTable
+                releases={userPublishedReleases}
+                tableType="userPublished"
+                collectRoyaltyForRelease={collectRoyaltyForRelease}
+                key="releases"
+              />
+            </>
           )}
-          <ReleaseListTable
-            releases={userPublishedReleases}
-            tableType="userPublished"
-            collectRoyaltyForRelease={collectRoyaltyForRelease}
-            key="releases"
-          />
-          </>
-        )}
-        {wallet?.connected && userPublishedReleases?.length === 0 && (
-          <>
-            <Typography sx={{paddingBottom: '10px'}}>{`You haven't published any music yet.`}</Typography>
-            <Link to="/upload"><Typography>Start Uploading</Typography></Link>
-          </>
-        )}
-      </UserReleaseWrapper>
-    </ScrollablePageWrapper>
+          {wallet?.connected && userPublishedReleases?.length === 0 && (
+            <>
+              <Typography
+                sx={{ paddingBottom: '10px' }}
+              >{`You haven't published any music yet.`}</Typography>
+              <Link to="/upload">
+                <Typography>Start Uploading</Typography>
+              </Link>
+            </>
+          )}
+        </UserReleaseWrapper>
+      </ScrollablePageWrapper>
+    </>
   )
 }
 
-const ReleaseStats = styled(Box)(({theme}) => ({
+const ReleaseStats = styled(Box)(({ theme }) => ({
   width: '680px',
   margin: 'auto',
   paddingBottom: '94px',
   '& span': {
-    color: theme.palette.blue
-  }
+    color: theme.palette.blue,
+  },
 }))
 
-const UserReleaseWrapper = styled(Box)(({theme}) => ({
+const UserReleaseWrapper = styled(Box)(({ theme }) => ({
   '& a': {
-    color: theme.palette.blue
+    color: theme.palette.blue,
   },
 }))
 

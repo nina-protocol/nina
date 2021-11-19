@@ -1,5 +1,5 @@
 import * as anchor from '@project-serum/anchor'
-import {TokenInstructions} from '@project-serum/serum'
+import { TokenInstructions } from '@project-serum/serum'
 import Arweave from 'arweave'
 import CoinGecko from 'coingecko-api'
 import idl from './idl'
@@ -42,11 +42,17 @@ export const NINA_CLIENT_IDS = {
 const USDC_DECIMAL_AMOUNT = 6
 const SOL_DECIMAL_AMOUNT = 9
 
-const NINA_PRESSING_FEE = 0.00
+const NINA_PRESSING_FEE = 0.0
 
 const ENDPOINT_ARWEAVE = 'https://arweave.net' //'https://h6chwwrsde.medianet.work'
-const ENDPOINT_PRESSING_PLANT = process.env.REACT_APP_CLUSTER === 'mainnet' ? 'https://pressingplant.nina.market:443' : 'https://pressingplant-dev.nina.market:443'
-const ENDPOINT_API = process.env.REACT_APP_CLUSTER === 'mainnet' ? 'https://api.nina.market:443' :'https://api-dev.nina.market:443'
+const ENDPOINT_PRESSING_PLANT =
+  process.env.REACT_APP_CLUSTER === 'mainnet'
+    ? 'https://pressingplant.nina.market:443'
+    : 'https://pressingplant-dev.nina.market:443'
+const ENDPOINT_API =
+  process.env.REACT_APP_CLUSTER === 'mainnet'
+    ? 'https://api.nina.market:443'
+    : 'https://api-dev.nina.market:443'
 
 const arweave = Arweave.init()
 const CoinGeckoClient = new CoinGecko()
@@ -74,7 +80,6 @@ export default class NinaClient {
     'So11111111111111111111111111111111111111112'
   )
 
-
   static endpoints = {
     arweave: ENDPOINT_ARWEAVE,
     pressingPlant: ENDPOINT_PRESSING_PLANT,
@@ -89,7 +94,12 @@ export default class NinaClient {
     return amount / Math.pow(10, NinaClient.decimalsForMint(mint))
   }
 
-  static nativeToUiString(amount, mint, decimalOverride = false, showCurrency = true) {
+  static nativeToUiString(
+    amount,
+    mint,
+    decimalOverride = false,
+    showCurrency = true
+  ) {
     const isUsdc = NinaClient.isUsdc(mint)
     let amountString = NinaClient.nativeToUi(amount, mint).toFixed(
       isUsdc || decimalOverride ? 2 : 4

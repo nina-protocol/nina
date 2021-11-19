@@ -222,7 +222,7 @@ const Root = styled('div')(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center',
   width: '100%',
-  
+
   [`& .${classes.recipientData}`]: {
     color: `${theme.palette.greyLight}`,
     '& a': {
@@ -230,8 +230,8 @@ const Root = styled('div')(({ theme }) => ({
     },
   },
   '& button': {
-    height: '55px'
-  }
+    height: '55px',
+  },
 }))
 
 const StyledModal = styled(Modal)(() => ({
@@ -248,7 +248,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   width: '40vw',
   maxHeight: '90vh',
   overflowY: 'auto',
-  zIndex: '10'
+  zIndex: '10',
 }))
 
 export default Royalty
