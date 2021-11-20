@@ -87,8 +87,9 @@ const RecentlyPublished = (props) => {
             const imageUrl = release.metadata.image
             const availability = (
               <Typography variant="body2" sx={{ paddingTop: '10px' }}>
-                {release.tokenData.remainingSupply.toNumber()} /{' '}
-                {release.tokenData.totalSupply.toNumber()}
+                {release.tokenData.remainingSupply.toNumber() > 0
+                  ? `${release.tokenData.remainingSupply.toNumber()} / ${release.tokenData.totalSupply.toNumber()}`
+                  : 'Sold Out'}
               </Typography>
             )
 
@@ -101,7 +102,8 @@ const RecentlyPublished = (props) => {
                   {availability}
                   <ReleaseCopy sx={{ display: 'flex' }}>
                     <Typography variant="body2">
-                      {release.metadata.properties.artist}, <i>{release.metadata.properties.title}</i>
+                      {release.metadata.properties.artist},{' '}
+                      <i>{release.metadata.properties.title}</i>
                     </Typography>
                   </ReleaseCopy>
                 </ReleaseSlide>

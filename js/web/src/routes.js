@@ -11,6 +11,7 @@ import AudioPlayer from './components/AudioPlayer'
 import HomePage from './components/HomePage'
 import FaqPage from './components/FaqPage'
 import NavBar from './components/NavBar'
+import AllReleases from './components/AllReleases'
 
 function Routes() {
   return (
@@ -40,6 +41,7 @@ function Routes() {
                 component={Release}
               />
               <Route path="/releases" component={ReleaseList}></Route>
+              <Route path="/allReleases" component={AllReleases}></Route>
               <Route
                 exact
                 path="/collection/:releasePubkey/market"
