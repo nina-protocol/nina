@@ -59,7 +59,7 @@ const FaqPage = () => {
             100% of initial sales.
           </Typography>
           <Typography variant="h4" align="left">
-            Releases can sold on the secondary market at a price of the owners
+            Releases can be sold on the secondary market at a price of the owners'
             choosing. The artist receives their chosen percent of secondary
             sales and the Nina protocol receives 1.5%, paid by the seller.
           </Typography>
