@@ -119,8 +119,7 @@ const RecentlyPurchased = (props) => {
 
                 const sales =
                   release.tokenData.totalSupply.toNumber() -
-                  release.tokenData.remainingSupply.toNumber() +
-                  release.tokenData.exchangeSaleCounter.toNumber()
+                  release.tokenData.remainingSupply.toNumber()
                 const imageUrl = release.metadata.image
 
                 const artistInfo = (
@@ -157,6 +156,9 @@ const RecentlyPurchased = (props) => {
                         {`${sales} ${
                           sales === 1 ? 'copy was' : 'copies were'
                         } sold ${dayCopy}`}
+                        {release.tokenData.exchangeSaleCounter.toNumber() > 0 &&
+                          ` + (${release.tokenData.exchangeSaleCounter.toNumber()} secondary market ${release.tokenData.exchangeSaleCounter.toNumber() === 1 ? 'sale' : 'sales'})`
+                        }
                       </Typography>
                       {availability}
                       {artistInfo}
