@@ -69,6 +69,8 @@ const ReleaseList = () => {
     setExchangeSales(exchangeSalesCount)
   }, [userPublishedReleases])
 
+  
+
   return (
     <>
       <Helmet>
