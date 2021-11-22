@@ -288,6 +288,7 @@ const Exchange = (props) => {
             }
             cancelTransaction={() => setExchangeAwaitingConfirm(undefined)}
             isAccept={true}
+            metadata={metadata}
           />
         )}
       </ExchangeWrapper>
