@@ -138,9 +138,9 @@ const ReleasePurchase = (props) => {
           ) : null}
         </StyledUserAmount>
       )}
-      <Typography variant="h3" align="left">
+      <StyledDescription variant="h3" align="left">
         {metadata.description}
-      </Typography>
+      </StyledDescription>
       {wallet?.connected &&
         wallet.publicKey.toBase58() === release.authority.toBase58() && (
           <ReleaseSettings releasePubkey={releasePubkey} inCreateFlow={false} />
@@ -185,6 +185,13 @@ const StyledUserAmount = styled(Box)(({ theme }) => ({
   paddingBottom: '10px',
   display: 'flex',
   flexDirection: 'column',
+}))
+
+const StyledDescription = styled(Typography)(({ theme }) => ({
+  [theme.breakpoints.up('md')]: {
+    maxHeight: '225px',
+    overflowY: 'scroll'
+  },
 }))
 
 const MarketButton = styled(Button)(({ theme }) => ({
