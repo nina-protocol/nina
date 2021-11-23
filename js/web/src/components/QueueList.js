@@ -106,7 +106,7 @@ const QueueList = (props) => {
           <div style={{ padding: '16px' }}>
             <Typography align="center">
               {wallet?.connected
-                ? `You don't have any songs qued`
+                ? `You don't have any songs queued`
                 : `Connect your wallet to load your collection`}
             </Typography>
           </div>
