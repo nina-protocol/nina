@@ -34,7 +34,7 @@ const FaqPage = () => {
             }
           </Typography>
           <Typography variant="h4" align="left">
-            After a one time fee, releases on Nina are permanent. The patronage
+            After a one time fee, releases on Nina are permanent. This fee handles Solana and {`Arweave's`} transaction and storage cost, respectively. Nina takes no additional fees to publish a release.  The patronage
             model created between artist and fan serves as a platform agnostic
             mechanism to provide exclusive experiences to supporters.
           </Typography>
@@ -55,7 +55,7 @@ const FaqPage = () => {
           >
             When uploading releases to Nina, an artist chooses the edition size,
             price, and resale percentage of the release. The release will be
-            publicly streamable and purchasble via USDC - the artist receives
+            publicly streamable and purchaseable via USDC - the artist receives
             100% of initial sales.
           </Typography>
           <Typography variant="h4" align="left">
