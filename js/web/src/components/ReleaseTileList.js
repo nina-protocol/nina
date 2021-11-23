@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
+import {useHistory} from 'react-router-dom'
 import { Typography, Box } from '@mui/material'
 import SmoothImage from 'react-smooth-image'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
@@ -13,6 +14,13 @@ const ReleaseTileList = (props) => {
   const { releases } = props
   const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext)
 
+  const history = useHistory()
+
+  const handleClick = (releasePubkey) => {
+    history.push(`/${releasePubkey}`)
+  }
+
+
   return (
     <Box>
       <TileGrid>
@@ -20,21 +28,25 @@ const ReleaseTileList = (props) => {
           return (
             <Tile key={i}>
               <HoverCard>
-                <CardCta>
+                <CardCta onClick={() => {
+                  handleClick(release.releasePubkey)
+                }}>
                   <Button
-                    onClick={() =>
+                    onClick={(e) =>{
+                      e.stopPropagation()
                       updateTxid(
                         release.metadata.properties.files[0].uri,
                         release.releasePubkey,
                         true
-                      )
+                      )}
                     }
                   >
                     <PlayCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
                   </Button>
 
                   <Button
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation()
                       addTrackToQueue(release.releasePubkey)
                     }}
                   >
@@ -99,6 +111,7 @@ const CardCta = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   '&:hover': {
     opacity: '1',
+    cursor: 'pointer'
   },
 }))
 
