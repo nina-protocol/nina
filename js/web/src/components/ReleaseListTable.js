@@ -383,6 +383,7 @@ const StyledPaper = styled(Paper)(({ theme, tableType }) => ({
     minWidth: 750,
     [theme.breakpoints.down('md')]: {
       width: '80vw',
+      marginBottom: '100px'
     },
     '& .MuiTableCell-root': {
       ...theme.helpers.baseFont,
@@ -395,6 +396,7 @@ const StyledPaper = styled(Paper)(({ theme, tableType }) => ({
         overflow: 'hidden',
         display: 'table-cell',
       },
+
     },
   },
 
