@@ -34,9 +34,12 @@ const FaqPage = () => {
             }
           </Typography>
           <Typography variant="h4" align="left">
-            After a one time fee, releases on Nina are permanent. This fee handles Solana and {`Arweave's`} transaction and storage cost, respectively. Nina takes no additional fees to publish a release.  The patronage
-            model created between artist and fan serves as a platform agnostic
-            mechanism to provide exclusive experiences to supporters.
+            After a one time fee, releases on Nina are permanent. This fee
+            handles Solana and {`Arweave's`} transaction and storage cost,
+            respectively. Nina takes no additional fees to publish a release.
+            The patronage model created between artist and fan serves as a
+            platform agnostic mechanism to provide exclusive experiences to
+            supporters.
           </Typography>
         </FaqEntry>
 
@@ -234,16 +237,25 @@ const FaqPage = () => {
             align="left"
             className={classes.sectionHeader}
           >
-            What about the effect of cryptocurrencies and Nina on the environment?
+            What about the effect of cryptocurrencies and Nina on the
+            environment?
           </Typography>
           <Typography variant="h4" align="left">
-            Nina is built on Solana which is a proof-of-stake blockchain.  Proof-of-stake blockchains
-            run on standard servers and do not need to run resource + power intensive operations like
-            proof-of-work blockchains.  In fact, it has been <a href="https://twitter.com/aeyakovenko/status/1459235138726875139?s=20" rel="noreferrer" target="_blank">posited</a> that the cost of a transaction on
-            Solana uses less energy than a single Google search. 
+            Nina is built on Solana which is a proof-of-stake blockchain.
+            Proof-of-stake blockchains run on standard servers and do not need
+            to run resource + power intensive operations like proof-of-work
+            blockchains. In fact, it has been{' '}
+            <a
+              href="https://twitter.com/aeyakovenko/status/1459235138726875139?s=20"
+              rel="noreferrer"
+              target="_blank"
+            >
+              posited
+            </a>{' '}
+            that the cost of a transaction on Solana uses less energy than a
+            single Google search.
           </Typography>
         </FaqEntry>
-
       </FaqPageContainer>
     </ScrollablePageWrapper>
   )

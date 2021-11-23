@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import React, { useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
 import { Typography, Box } from '@mui/material'
@@ -7,11 +7,11 @@ import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutline
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Button from '@mui/material/Button'
 
-const {AudioPlayerContext} = ninaCommon.contexts
+const { AudioPlayerContext } = ninaCommon.contexts
 
 const ReleaseTileList = (props) => {
-  const {releases} = props;
-  const {updateTxid, addTrackToQueue} = useContext(AudioPlayerContext)
+  const { releases } = props
+  const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext)
 
   return (
     <Box>
@@ -21,33 +21,43 @@ const ReleaseTileList = (props) => {
             <Tile key={i}>
               <HoverCard>
                 <CardCta>
-                    <Button
-                      onClick={() =>
-                        updateTxid(release.metadata.properties.files[0].uri,
-                          release.releasePubkey,
-                          true
-                          )
-                      }
-                    >
-                      <PlayCircleOutlineOutlinedIcon sx={{color: 'white'}} />
-                    </Button>
+                  <Button
+                    onClick={() =>
+                      updateTxid(
+                        release.metadata.properties.files[0].uri,
+                        release.releasePubkey,
+                        true
+                      )
+                    }
+                  >
+                    <PlayCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
+                  </Button>
 
-                    <Button
-                      onClick={() => {
-                        console.log('release.releasePubkeys :>> ', release.releasePubkey);
+                  <Button
+                    onClick={() => {
                       addTrackToQueue(release.releasePubkey)
-                      }}
-                    >
-                      <ControlPointIcon sx={{color: 'white'}} />
-                    </Button>
+                    }}
+                  >
+                    <ControlPointIcon sx={{ color: 'white' }} />
+                  </Button>
                 </CardCta>
-                <SmoothImage containerStyles={{position: 'absolute', left: '0', top: '0', zIndex: '1'}} src={release.metadata.image} />
-
+                <SmoothImage
+                  containerStyles={{
+                    position: 'absolute',
+                    left: '0',
+                    top: '0',
+                    zIndex: '1',
+                  }}
+                  src={release.metadata.image}
+                />
               </HoverCard>
-              <Box sx={{padding: '10px 0 0' }}> 
-                  <Typography gutterBottom> {release.tokenData.remainingSupply.toNumber() > 0
+              <Box sx={{ padding: '10px 0 0' }}>
+                <Typography gutterBottom>
+                  {' '}
+                  {release.tokenData.remainingSupply.toNumber() > 0
                     ? `${release.tokenData.remainingSupply.toNumber()} / ${release.tokenData.totalSupply.toNumber()}`
-                    : 'Sold Out'}</Typography>
+                    : 'Sold Out'}
+                </Typography>
                 <Typography>{release.metadata.name}</Typography>
               </Box>
             </Tile>
@@ -64,10 +74,10 @@ const TileGrid = styled(Box)(() => ({
   gridColumnGap: '30px',
   gridRowGap: '15px',
   maxWidth: '960px',
-  margin: 'auto'
+  margin: 'auto',
 }))
 
-const Tile= styled(Box)(() => ({
+const Tile = styled(Box)(() => ({
   textAlign: 'left',
 }))
 
@@ -77,7 +87,7 @@ const HoverCard = styled(Box)(() => ({
   minHeight: '300px',
 }))
 
-const CardCta = styled(Box)(({theme}) => ({
+const CardCta = styled(Box)(({ theme }) => ({
   position: 'absolute',
   width: '100%',
   height: '100%',
@@ -88,12 +98,8 @@ const CardCta = styled(Box)(({theme}) => ({
   justifyContent: 'center',
   alignItems: 'center',
   '&:hover': {
-    opacity: '1'
-  }
+    opacity: '1',
+  },
 }))
 
-
-
-
-
-export default ReleaseTileList;
+export default ReleaseTileList

@@ -190,7 +190,7 @@ const StyledUserAmount = styled(Box)(({ theme }) => ({
 const StyledDescription = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
     maxHeight: '225px',
-    overflowY: 'scroll'
+    overflowY: 'scroll',
   },
 }))
 
