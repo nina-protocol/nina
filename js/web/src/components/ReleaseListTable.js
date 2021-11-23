@@ -13,6 +13,7 @@ import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
 import { visuallyHidden } from '@mui/utils'
 import Box from '@mui/material/Box'
+import {Fade} from '@mui/material';
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 
@@ -282,6 +283,7 @@ const ReleaseListTable = (props) => {
 
   return (
     <StyledPaper elevation={0} tableType={tableType}>
+      <Fade in={rows.length > 0}> 
       <TableContainer>
         <Table
           className={classes.table}
@@ -360,6 +362,7 @@ const ReleaseListTable = (props) => {
           </TableBody>
         </Table>
       </TableContainer>
+      </Fade>
     </StyledPaper>
   )
 }

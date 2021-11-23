@@ -7,8 +7,6 @@ import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutline
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Button from '@mui/material/Button'
 
-
-// import ScrollablePageWrapper from './ScrollablePageWrapper'
 const {AudioPlayerContext} = ninaCommon.contexts
 
 const ReleaseTileList = (props) => {
@@ -17,10 +15,8 @@ const ReleaseTileList = (props) => {
 
   return (
     <Box>
-        <Typography>Tile</Typography>
       <TileGrid>
         {releases.map((release, i) => {
-          console.log('release :>> ', release);
           return (
             <Tile key={i}>
               <HoverCard>
@@ -63,7 +59,6 @@ const ReleaseTileList = (props) => {
 }
 
 const TileGrid = styled(Box)(() => ({
-  border: '2px solid red',
   display: 'grid',
   gridTemplateColumns: 'repeat(3, 1fr)',
   gridColumnGap: '30px',
@@ -74,16 +69,12 @@ const TileGrid = styled(Box)(() => ({
 
 const Tile= styled(Box)(() => ({
   textAlign: 'left',
-  '& img': {
-    // maxWidth: '300px'
-  }
 }))
 
 const HoverCard = styled(Box)(() => ({
   position: 'relative',
   width: '100%',
   minHeight: '300px',
-  border: '2px solid blue'
 }))
 
 const CardCta = styled(Box)(({theme}) => ({
