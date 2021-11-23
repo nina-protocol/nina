@@ -34,7 +34,7 @@ const FaqPage = () => {
             }
           </Typography>
           <Typography variant="h4" align="left">
-            After a one time fee, releases on Nina are permanent. The patronage
+            After a one time transaction fee to Solana and storage fee to Arweave, releases on Nina are permanent. Nina does not charge a fee itself to publish on the platform.  The patronage
             model created between artist and fan serves as a platform agnostic
             mechanism to provide exclusive experiences to supporters.
           </Typography>
