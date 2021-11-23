@@ -55,7 +55,7 @@ const FaqPage = () => {
           >
             When uploading releases to Nina, an artist chooses the edition size,
             price, and resale percentage of the release. The release will be
-            publicly streamable and purchasble via USDC - the artist receives
+            publicly streamable and purchaseable via USDC - the artist receives
             100% of initial sales.
           </Typography>
           <Typography variant="h4" align="left">
