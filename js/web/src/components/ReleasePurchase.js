@@ -118,7 +118,7 @@ const ReleasePurchase = (props) => {
       </AmountRemaining>
 
       <Typography variant="body2" align="left" paddingBottom="10px">
-        Artist Resale: {release.resalePercentage.toNumber() / 10000}% 
+        Artist Resale: {release.resalePercentage.toNumber() / 10000}%
       </Typography>
 
       {wallet?.connected && (

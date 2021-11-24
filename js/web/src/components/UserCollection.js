@@ -75,12 +75,11 @@ const CollectionHeader = styled(Box)(({ listView }) => ({
   marginBottom: '15px',
 }))
 
-const Wrapper = styled(Box)(({theme}) => ({
+const Wrapper = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     padding: '0px 30px',
     overflowX: 'auto',
   },
 }))
-
 
 export default ReleaseList

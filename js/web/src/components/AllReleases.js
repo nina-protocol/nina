@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import { Helmet } from 'react-helmet'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
-import {Typography, Box} from '@mui/material'
+import { Typography, Box } from '@mui/material'
 import ReleaseListTable from './ReleaseListTable'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 import ReleaseTileList from './ReleaseTileList'
@@ -35,7 +35,12 @@ const Releases = () => {
       </Helmet>
       <ScrollablePageWrapper>
         <AllReleasesWrapper>
-          <CollectionHeader onClick={handleViewChange} listView={listView} align="left" variant="body1" >
+          <CollectionHeader
+            onClick={handleViewChange}
+            listView={listView}
+            align="left"
+            variant="body1"
+          >
             {listView ? 'Cover View' : 'List View'}
           </CollectionHeader>
 
@@ -46,18 +51,15 @@ const Releases = () => {
               key="releases"
             />
           )}
-          
-          {!listView && (
-            <ReleaseTileList releases={releases} />
-          )}
 
+          {!listView && <ReleaseTileList releases={releases} />}
         </AllReleasesWrapper>
       </ScrollablePageWrapper>
     </>
   )
 }
 
-const CollectionHeader = styled(Typography)(({listView}) => ({
+const CollectionHeader = styled(Typography)(({ listView }) => ({
   maxWidth: listView ? '764px' : '960px',
   margin: 'auto',
   display: 'flex',
@@ -66,9 +68,8 @@ const CollectionHeader = styled(Typography)(({listView}) => ({
   marginBottom: '15px',
   fontWeight: '700',
   textTransform: 'uppercase',
-  cursor: 'pointer'
+  cursor: 'pointer',
 }))
-
 
 const AllReleasesWrapper = styled(Box)(({ theme }) => ({
   '& a': {
