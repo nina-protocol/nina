@@ -38,7 +38,7 @@ const ReleaseList = () => {
       </Helmet>
       <ScrollablePageWrapper>
         {wallet?.connected && userCollectionReleases?.length > 0 && (
-          <>
+          <Wrapper>
             <CollectionHeader listView={listView}>
               <Typography variant="body1" fontWeight="700">
                 Your Collection
@@ -56,7 +56,7 @@ const ReleaseList = () => {
               />
             )}
             {!listView && <ReleaseTileList releases={userCollectionReleases} />}
-          </>
+          </Wrapper>
         )}
         {wallet?.connected && userCollectionReleases?.length === 0 && (
           <Typography>Your collection is empty!</Typography>
@@ -74,5 +74,13 @@ const CollectionHeader = styled(Box)(({ listView }) => ({
   alignItems: 'flex-end',
   marginBottom: '15px',
 }))
+
+const Wrapper = styled(Box)(({theme}) => ({
+  [theme.breakpoints.down('md')]: {
+    padding: '0px 30px',
+    overflowX: 'auto',
+  },
+}))
+
 
 export default ReleaseList

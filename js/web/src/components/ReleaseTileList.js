@@ -26,7 +26,9 @@ const ReleaseTileList = (props) => {
         {releases.map((release, i) => {
           return (
             <Tile key={i}>
-              <HoverCard>
+              <HoverCard onClick={() => {
+                handleClick(release.releasePubkey)
+              }}             >
                 <CardCta
                   onClick={() => {
                     handleClick(release.releasePubkey)
@@ -54,7 +56,7 @@ const ReleaseTileList = (props) => {
                     <ControlPointIcon sx={{ color: 'white' }} />
                   </Button>
                 </CardCta>
-                <SmoothImage
+                <SmoothImage           
                   containerStyles={{
                     position: 'absolute',
                     left: '0',
@@ -81,23 +83,29 @@ const ReleaseTileList = (props) => {
   )
 }
 
-const TileGrid = styled(Box)(() => ({
+const TileGrid = styled(Box)(({theme}) => ({
   display: 'grid',
   gridTemplateColumns: 'repeat(3, 1fr)',
   gridColumnGap: '30px',
   gridRowGap: '15px',
   maxWidth: '960px',
   margin: 'auto',
+  [theme.breakpoints.down('md')]: {
+    gridTemplateColumns: 'repeat(2, 1fr)',
+  },  
 }))
 
 const Tile = styled(Box)(() => ({
   textAlign: 'left',
 }))
 
-const HoverCard = styled(Box)(() => ({
+const HoverCard = styled(Box)(({theme}) => ({
   position: 'relative',
   width: '100%',
   minHeight: '300px',
+  [theme.breakpoints.down('md')]: {
+    minHeight: '144px',
+  },
 }))
 
 const CardCta = styled(Box)(({ theme }) => ({
@@ -113,6 +121,10 @@ const CardCta = styled(Box)(({ theme }) => ({
   '&:hover': {
     opacity: '1',
     cursor: 'pointer',
+  },
+  [theme.breakpoints.down('md')]: {
+   display: 'none',
+   zIndex: '-1'
   },
 }))
 
