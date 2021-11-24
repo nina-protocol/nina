@@ -103,9 +103,6 @@ const ReleaseCreate = () => {
           variant: 'info',
         })
         await track.restart()
-        enqueueSnackbar('Release created!', {
-          variant: 'success',
-        })
       } else {
         enqueueSnackbar('Unable to create Release', {
           variant: 'failure',
