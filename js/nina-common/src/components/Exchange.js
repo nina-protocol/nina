@@ -199,7 +199,7 @@ const Exchange = (props) => {
 
             {metadata && (
               <Fade in={true}>
-                <Typography variant="h6" color="white" align="left">
+                <Typography variant="h4" color="white" align="left">
                   {metadata?.properties?.artist || metadata?.artist},{' '}
                   <i>{metadata?.properties?.title || metadata?.title}</i>
                 </Typography>
@@ -370,7 +370,8 @@ const ReleaseImage = styled(Box)(({theme}) => ({
   },
   [theme.breakpoints.down('md')]: {
     minWidth: '54px',
-    width: '30px'
+    width: '30px',
+    paddingLeft: '15px'
   }
 }))
 

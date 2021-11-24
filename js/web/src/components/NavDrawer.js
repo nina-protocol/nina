@@ -14,6 +14,7 @@ import hamburger from '../assets/hamburger.svg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDiscord } from '@fortawesome/free-brands-svg-icons'
 import { faTwitter } from '@fortawesome/free-brands-svg-icons'
+import { faInstagramSquare } from '@fortawesome/free-brands-svg-icons'
 import CloseIcon from '@mui/icons-material/Close'
 
 const { NinaContext, ReleaseContext } = ninaCommon.contexts
@@ -197,6 +198,13 @@ const NavDrawer = () => {
                 >
                   <FontAwesomeIcon icon={faDiscord} />
                 </a>
+                <a
+                  href="https://www.instagram.com/nina_market__/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <FontAwesomeIcon icon={faInstagramSquare} />
+                </a>
               </Box>
 
               <Typography variant="subtitle1">
@@ -264,6 +272,9 @@ const DrawerFooter = styled(Box)(() => ({
   transform: 'translateY(-50%)',
   display: 'flex',
   justifyContent: 'space-between',
+  '& a': {
+    paddingRight: '15px'
+  }
 }))
 
 export default NavDrawer
