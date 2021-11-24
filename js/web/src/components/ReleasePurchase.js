@@ -109,6 +109,7 @@ const ReleasePurchase = (props) => {
   } else if (match.path.includes('collection')) {
     pathString = '/collection'
   }
+  
 
   return (
     <Box>
