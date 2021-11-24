@@ -273,8 +273,8 @@ const DrawerFooter = styled(Box)(() => ({
   display: 'flex',
   justifyContent: 'space-between',
   '& a': {
-    paddingRight: '15px'
-  }
+    paddingRight: '15px',
+  },
 }))
 
 export default NavDrawer

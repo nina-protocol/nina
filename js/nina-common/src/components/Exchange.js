@@ -351,9 +351,9 @@ const StyledReleaseInfo = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     minHeight: '54px',
     height: 'unset',
-    width: '100%'
-  }
-))
+    width: '100%',
+  },
+}))
 
 const InfoCopy = styled(Box)(({ theme }) => ({
   padding: theme.spacing(0, 1),
@@ -362,7 +362,7 @@ const InfoCopy = styled(Box)(({ theme }) => ({
   justifyContent: 'space-between',
 }))
 
-const ReleaseImage = styled(Box)(({theme}) => ({
+const ReleaseImage = styled(Box)(({ theme }) => ({
   height: '100%',
   width: '82px',
   '& img': {
@@ -371,8 +371,8 @@ const ReleaseImage = styled(Box)(({theme}) => ({
   [theme.breakpoints.down('md')]: {
     minWidth: '54px',
     width: '30px',
-    paddingLeft: '15px'
-  }
+    paddingLeft: '15px',
+  },
 }))
 
 const StyledExchange = styled(Box)(() => ({
@@ -389,10 +389,10 @@ const ExchangeCopy = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     display: 'flex',
     flexDirection: 'column',
-    width: '100%', 
+    width: '100%',
     '& .viewMore': {
-      display: 'none'
-    }
+      display: 'none',
+    },
   },
 }))
 

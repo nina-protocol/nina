@@ -157,8 +157,12 @@ const RecentlyPurchased = (props) => {
                           sales === 1 ? 'copy was' : 'copies were'
                         } sold ${dayCopy}`}
                         {release.tokenData.exchangeSaleCounter.toNumber() > 0 &&
-                          ` + (${release.tokenData.exchangeSaleCounter.toNumber()} secondary market ${release.tokenData.exchangeSaleCounter.toNumber() === 1 ? 'sale' : 'sales'})`
-                        }
+                          ` + (${release.tokenData.exchangeSaleCounter.toNumber()} secondary market ${
+                            release.tokenData.exchangeSaleCounter.toNumber() ===
+                            1
+                              ? 'sale'
+                              : 'sales'
+                          })`}
                       </Typography>
                       {availability}
                       {artistInfo}

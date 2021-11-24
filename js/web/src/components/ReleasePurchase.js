@@ -109,7 +109,6 @@ const ReleasePurchase = (props) => {
   } else if (match.path.includes('collection')) {
     pathString = '/collection'
   }
-  
 
   return (
     <Box>
@@ -191,7 +190,7 @@ const StyledUserAmount = styled(Box)(({ theme }) => ({
 const StyledDescription = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
     maxHeight: '225px',
-    overflowY: 'scroll'
+    overflowY: 'scroll',
   },
 }))
 

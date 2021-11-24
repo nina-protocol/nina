@@ -376,14 +376,14 @@ const StyledPaper = styled(Paper)(({ theme, tableType }) => ({
   margin: 'auto',
   [theme.breakpoints.down('md')]: {
     maxHeight: '80vh',
-    overflow: 'scroll', 
-    width: '100%'
+    overflow: 'scroll',
+    width: '100%',
   },
   [`& .${classes.table}`]: {
     minWidth: 750,
     [theme.breakpoints.down('md')]: {
       width: '80vw',
-      marginBottom: '100px'
+      marginBottom: '100px',
     },
     '& .MuiTableCell-root': {
       ...theme.helpers.baseFont,
@@ -396,7 +396,6 @@ const StyledPaper = styled(Paper)(({ theme, tableType }) => ({
         overflow: 'hidden',
         display: 'table-cell',
       },
-
     },
   },
 
@@ -412,7 +411,7 @@ const StyledCollectButton = styled(Button)(({ theme }) => ({
   flexDirection: 'column',
   textAlign: 'left',
   ...theme.helpers.baseFont,
-   '&.Mui-disabled': {
+  '&.Mui-disabled': {
     color: `${theme.palette.grey.primary} !important`,
   },
   '& span': {
