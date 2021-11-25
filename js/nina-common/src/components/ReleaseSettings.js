@@ -99,8 +99,8 @@ const ReleaseSettings = (props) => {
             <ReleaseStatLeft variant="subtitle1">Cost USD</ReleaseStatLeft>
             <ReleaseStatRight variant="subtitle1">
               {NinaClient.nativeToUiString(
-                release.price.toNumber(),
-                release.paymentMint,
+                release?.price.toNumber(),
+                release?.paymentMint,
                 false,
                 false
               )}
@@ -121,7 +121,7 @@ const ReleaseSettings = (props) => {
                   Primary Sales
                 </ReleaseStatLeft>
                 <ReleaseStatRight variant="subtitle1">
-                  {release.saleCounter.toNumber()}
+                  {release?.saleCounter.toNumber()}
                 </ReleaseStatRight>
               </ReleaseStat>
               <ReleaseStat variant="body1" component="p">
@@ -129,7 +129,7 @@ const ReleaseSettings = (props) => {
                   Secondary Sales
                 </ReleaseStatLeft>
                 <ReleaseStatRight variant="subtitle1">
-                  {release.exchangeSaleCounter.toNumber()}
+                  {release?.exchangeSaleCounter.toNumber()}
                 </ReleaseStatRight>
               </ReleaseStat>
               <ReleaseStat variant="body1" component="p">
@@ -138,8 +138,8 @@ const ReleaseSettings = (props) => {
                 </ReleaseStatLeft>
                 <ReleaseStatRight variant="subtitle1">
                   {NinaClient.nativeToUiString(
-                    release.totalCollected.toNumber(),
-                    release.paymentMint
+                    release?.totalCollected.toNumber(),
+                    release?.paymentMint
                   )}
                 </ReleaseStatRight>
               </ReleaseStat>
