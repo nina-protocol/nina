@@ -23,8 +23,8 @@ const Releases = () => {
   return (
     <>
       <Helmet>
-        <title>{`All Releases)`}</title>
-        <meta name="description" content={'All Releases'} />
+        <title>{`Nina: All Releases`}</title>
+        <meta name="description" content={'Nina: All Releases'} />
       </Helmet>
       <ScrollablePageWrapper>
         <AllReleasesWrapper>
