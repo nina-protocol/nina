@@ -78,6 +78,10 @@ export const NinaTheme = createTheme({
     h4: {
       fontSize: '18px !important',
       lineHeight: '20.7px !important',
+      [breakpoints.down('md')]: {
+        lineHeight: '23px !important',
+        fontSize: '16px !important',
+      },
     },
     body1: {
       fontSize: '14px !important',

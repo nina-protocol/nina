@@ -199,7 +199,7 @@ const Exchange = (props) => {
 
             {metadata && (
               <Fade in={true}>
-                <Typography variant="h6" color="white" align="left">
+                <Typography variant="h4" color="white" align="left">
                   {metadata?.properties?.artist || metadata?.artist},{' '}
                   <i>{metadata?.properties?.title || metadata?.title}</i>
                 </Typography>
@@ -348,20 +348,30 @@ const StyledReleaseInfo = styled(Box)(({ theme }) => ({
   display: 'flex',
   padding: theme.spacing(1),
   gridColumn: '1/3',
+  [theme.breakpoints.down('md')]: {
+    minHeight: '54px',
+    height: 'unset',
+    width: '100%',
+  },
 }))
 
 const InfoCopy = styled(Box)(({ theme }) => ({
-  paddingLeft: theme.spacing(1),
+  padding: theme.spacing(0, 1),
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
 }))
 
-const ReleaseImage = styled(Box)(() => ({
+const ReleaseImage = styled(Box)(({ theme }) => ({
   height: '100%',
   width: '82px',
   '& img': {
     width: '100%',
+  },
+  [theme.breakpoints.down('md')]: {
+    minWidth: '54px',
+    width: '30px',
+    paddingLeft: '15px',
   },
 }))
 
@@ -379,10 +389,10 @@ const ExchangeCopy = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     display: 'flex',
     flexDirection: 'column',
-    width: '100%', 
+    width: '100%',
     '& .viewMore': {
-      display: 'none'
-    }
+      display: 'none',
+    },
   },
 }))
 

@@ -92,6 +92,11 @@ const StyledReleaseInfo = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   justifyContent: 'space-between',
   padding: theme.spacing(1),
+  [theme.breakpoints.down('md')]: {
+    minHeight: '52px',
+    height: 'unset',
+    paddingBottom: '15px',
+  },
 }))
 
 export default ReleaseCard
