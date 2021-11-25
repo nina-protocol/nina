@@ -13,6 +13,7 @@ import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
 import { visuallyHidden } from '@mui/utils'
 import Box from '@mui/material/Box'
+import { Fade } from '@mui/material'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 
@@ -282,84 +283,86 @@ const ReleaseListTable = (props) => {
 
   return (
     <StyledPaper elevation={0} tableType={tableType}>
-      <TableContainer>
-        <Table
-          className={classes.table}
-          aria-labelledby="tableTitle"
-          aria-label="enhanced table"
-          sx={{ borderTop: 'none' }}
-        >
-          <EnhancedTableHead
-            className={classes}
-            order={order}
-            tableType={tableType}
-            orderBy={orderBy}
-            onRequestSort={handleRequestSort}
-            rowCount={rows.length}
-          />
-          <TableBody>
-            {rows
-              .slice()
-              .sort(getComparator(order, orderBy))
-              .map((row) => {
-                return (
-                  <TableRow
-                    hover
-                    tabIndex={-1}
-                    key={row.id}
-                    onClick={(e) => handleClick(e, row.id)}
-                  >
-                    {Object.keys(row).map((cellName) => {
-                      const cellData = row[cellName]
-                      if (cellName !== 'id') {
-                        if (cellName === 'ctas') {
-                          return (
-                            <TableCell
-                              align="center"
-                              component="th"
-                              scope="row"
-                              key={cellName}
-                            >
-                              <ControlPointIcon
-                                onClick={(e) =>
-                                  handleAddTrackToQueue(e, row.id)
-                                }
-                                sx={{ color: 'black', marginRight: '15px' }}
-                              />
-                              <PlayCircleOutlineOutlinedIcon
-                                onClick={(e) => handlePlay(e, row.id)}
-                                sx={{ color: 'black' }}
-                              />
-                            </TableCell>
-                          )
-                        } else if (cellName === 'title') {
-                          return (
-                            <TableCell align="center" key={cellName}>
-                              <span style={{ textDecoration: 'underline' }}>
+      <Fade in={rows.length > 0}>
+        <TableContainer>
+          <Table
+            className={classes.table}
+            aria-labelledby="tableTitle"
+            aria-label="enhanced table"
+            sx={{ borderTop: 'none' }}
+          >
+            <EnhancedTableHead
+              className={classes}
+              order={order}
+              tableType={tableType}
+              orderBy={orderBy}
+              onRequestSort={handleRequestSort}
+              rowCount={rows.length}
+            />
+            <TableBody>
+              {rows
+                .slice()
+                .sort(getComparator(order, orderBy))
+                .map((row) => {
+                  return (
+                    <TableRow
+                      hover
+                      tabIndex={-1}
+                      key={row.id}
+                      onClick={(e) => handleClick(e, row.id)}
+                    >
+                      {Object.keys(row).map((cellName) => {
+                        const cellData = row[cellName]
+                        if (cellName !== 'id') {
+                          if (cellName === 'ctas') {
+                            return (
+                              <TableCell
+                                align="center"
+                                component="th"
+                                scope="row"
+                                key={cellName}
+                              >
+                                <ControlPointIcon
+                                  onClick={(e) =>
+                                    handleAddTrackToQueue(e, row.id)
+                                  }
+                                  sx={{ color: 'black', marginRight: '15px' }}
+                                />
+                                <PlayCircleOutlineOutlinedIcon
+                                  onClick={(e) => handlePlay(e, row.id)}
+                                  sx={{ color: 'black' }}
+                                />
+                              </TableCell>
+                            )
+                          } else if (cellName === 'title') {
+                            return (
+                              <TableCell align="center" key={cellName}>
+                                <span style={{ textDecoration: 'underline' }}>
+                                  {cellData}
+                                </span>
+                              </TableCell>
+                            )
+                          } else {
+                            return (
+                              <TableCell
+                                align="center"
+                                size="small"
+                                key={cellName}
+                              >
                                 {cellData}
-                              </span>
-                            </TableCell>
-                          )
-                        } else {
-                          return (
-                            <TableCell
-                              align="center"
-                              size="small"
-                              key={cellName}
-                            >
-                              {cellData}
-                            </TableCell>
-                          )
+                              </TableCell>
+                            )
+                          }
                         }
-                      }
-                      return null
-                    })}
-                  </TableRow>
-                )
-              })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                        return null
+                      })}
+                    </TableRow>
+                  )
+                })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Fade>
     </StyledPaper>
   )
 }
@@ -376,8 +379,8 @@ const StyledPaper = styled(Paper)(({ theme, tableType }) => ({
   margin: 'auto',
   [theme.breakpoints.down('md')]: {
     maxHeight: '80vh',
-    overflow: 'scroll', 
-    width: '100%'
+    overflow: 'scroll',
+    width: '100%',
   },
   [`& .${classes.table}`]: {
     minWidth: 750,
@@ -410,7 +413,7 @@ const StyledCollectButton = styled(Button)(({ theme }) => ({
   flexDirection: 'column',
   textAlign: 'left',
   ...theme.helpers.baseFont,
-   '&.Mui-disabled': {
+  '&.Mui-disabled': {
     color: `${theme.palette.grey.primary} !important`,
   },
   '& span': {
