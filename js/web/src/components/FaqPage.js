@@ -256,6 +256,27 @@ const FaqPage = () => {
             single Google search.
           </Typography>
         </FaqEntry>
+
+        <FaqEntry id="withdraw">
+          <Typography
+            variant="h2"
+            align="left"
+            className={classes.sectionHeader}
+          >
+            How do I withdraw my USDC?
+          </Typography>
+          <Typography variant="h4" align="left">
+            Crypto off-ramps are not the most straight forward thing in the world and we are working on making frictionless withdrawals.
+            The USDC used on Nina is SPL-wrapped USDC, native to the Solana blockchain. You CANNOT send SPL USDC to Coinbase, Gemini, or Binance. In order to withraw, you can swap your USDC to SOL or use an exchange like <a target="_blank" href="www.ftx.us">FTX</a> that allows for SPL to ERC20 (Ethereum) swapping of USDC. Please reach out in our          <a
+              href="https://discord.gg/ePkqJqSBgj"
+              target="_blank"
+              rel="noreferrer"
+            >
+              discord
+            </a> if you need assistance off-ramping.
+ 
+          </Typography>
+        </FaqEntry>
       </FaqPageContainer>
     </ScrollablePageWrapper>
   )

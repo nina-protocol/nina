@@ -83,7 +83,7 @@ const ReleaseList = () => {
             <>
               {sales > 0 && (
                 <ReleaseStats>
-                  <Typography variant="h1" align="left">
+                  <Typography variant="h1" align="left" gutterBottom>
                     You have released{' '}
                     <span>{userPublishedReleases.length}</span>{' '}
                     {userPublishedReleases.length === 1 ? 'track' : 'tracks'}{' '}
@@ -101,6 +101,11 @@ const ReleaseList = () => {
                     </span>
                     .
                   </Typography>
+
+                
+                  <Link to="/faq">
+                  How do I withdraw my USDC?
+                  </Link>
                 </ReleaseStats>
               )}
               <ReleaseListTable
@@ -137,6 +142,7 @@ const ReleaseStats = styled(Box)(({ theme }) => ({
 }))
 
 const UserReleaseWrapper = styled(Box)(({ theme }) => ({
+  textAlign: 'left',
   '& a': {
     color: theme.palette.blue,
   },
