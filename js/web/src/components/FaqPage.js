@@ -152,32 +152,40 @@ const FaqPage = () => {
             align="left"
             className={classes.sectionHeader}
           >
-            I’m new to crypto.  How do I buy something on Nina?
+            I’m new to crypto. How do I buy something on Nina?
           </Typography>
-          <Typography
-            variant="h4"
-            align="left"
-          >
-            First you’ll need to set up a wallet  (See above). In your Phantom wallet you can purchase SOL using a credit card by clicking on ‘Deposit’ and then ‘Buy with MoonPay’.  You can also buy SOL on an exchange like {' '}
+          <Typography variant="h4" align="left">
+            First you’ll need to set up a wallet (See above). In your Phantom
+            wallet you can purchase SOL using a credit card by clicking on
+            ‘Deposit’ and then ‘Buy with MoonPay’. You can also buy SOL on an
+            exchange like{' '}
             <a target="_blank" href="www.ftx.us" rel="noreferrer">
               FTX
-            </a>, {' '}
+            </a>
+            ,{' '}
             <a target="_blank" href="www.coinbase.com" rel="noreferrer">
               Coinbase
-            </a>, {' '}
+            </a>
+            ,{' '}
             <a target="_blank" href="https://blockfolio.com/" rel="noreferrer">
               Blockfolio
-            </a>, or {' '}
+            </a>
+            , or{' '}
             <a target="_blank" href="https://www.binance.us/" rel="noreferrer">
               Binance
-            </a>{' '} and send it to your Phantom wallet.
+            </a>{' '}
+            and send it to your Phantom wallet.
           </Typography>
           <br />
-          <Typography
-            variant="h4"
-            align="left"
-          >
-            Once you have some SOL you need to get some USDC.  All releases on Nina are denominated in USDC which is a cryptocurrency pegged to the US dollar, so that 1 USDC always equals $1.  You can swap some SOL for USDC by using the swap function in your Phantom wallet (the middle button).  Make sure to keep some SOL in your wallet so that you can pay the network fees when buying releases or swapping between USDC and SOL.          </Typography>
+          <Typography variant="h4" align="left">
+            Once you have some SOL you need to get some USDC. All releases on
+            Nina are denominated in USDC which is a cryptocurrency pegged to the
+            US dollar, so that 1 USDC always equals $1. You can swap some SOL
+            for USDC by using the swap function in your Phantom wallet (the
+            middle button). Make sure to keep some SOL in your wallet so that
+            you can pay the network fees when buying releases or swapping
+            between USDC and SOL.{' '}
+          </Typography>
         </FaqEntry>
         <FaqEntry>
           <Typography
