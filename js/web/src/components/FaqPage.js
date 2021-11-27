@@ -35,10 +35,12 @@ const FaqPage = () => {
           </Typography>
           <Typography variant="h4" align="left">
             After a one time fee, releases on Nina are permanent. This fee
-            handles Solana and {`Arweave's`} transaction and storage cost (~$2.50 + $0.01/MB). Nina takes no additional fees to publish a release. (Currently, all transaction costs for artists are subsidized by Nina)
-            The patronage model created between artist and fan serves as a
-            platform agnostic mechanism to provide exclusive experiences to
-            supporters.
+            handles Solana and {`Arweave's`} transaction and storage cost
+            (~$2.50 + $0.01/MB). Nina takes no additional fees to publish a
+            release. (Currently, all transaction costs for artists are
+            subsidized by Nina) The patronage model created between artist and
+            fan serves as a platform agnostic mechanism to provide exclusive
+            experiences to supporters.
           </Typography>
         </FaqEntry>
 
@@ -243,18 +245,20 @@ const FaqPage = () => {
             Nina is built on Solana which is a proof-of-stake blockchain.
             Proof-of-stake blockchains run on standard servers and do not need
             to run resource + power intensive operations like proof-of-work
-            blockchains. In fact, it has been posited that the cost of a transaction on Solana uses less energy than a
-            single Google search.
+            blockchains. In fact, it has been posited that the cost of a
+            transaction on Solana uses less energy than a single Google search.
           </Typography>
           <br />
           <Typography variant="h4" align="left">
-          Solana has recently published their 2021 <a
+            Solana has recently published their 2021{' '}
+            <a
               href="https://solana.com/news/solana-energy-usage-report-november-2021"
               rel="noreferrer"
               target="_blank"
             >
               energy use report
-            </a>.
+            </a>
+            .
           </Typography>
         </FaqEntry>
 
@@ -267,15 +271,31 @@ const FaqPage = () => {
             How do I withdraw my USDC?
           </Typography>
           <Typography variant="h4" align="left">
-            On Nina, all releases are priced in USDC.  The USDC used on Nina is SPL-wrapped USDC, native to the Solana blockchain.  It is important to make sure that your exchange accepts SPL-USDC.  <a target="_blank" href="www.ftx.us">FTX</a> and <a target="_blank" href="www.binance.us">Binance</a> both accept SPL-USDC (make sure to send to the SPL-USDC address given by your exchange - it should not start with {`"0x"`}).
+            On Nina, all releases are priced in USDC. The USDC used on Nina is
+            SPL-wrapped USDC, native to the Solana blockchain. It is important
+            to make sure that your exchange accepts SPL-USDC.{' '}
+            <a target="_blank" href="www.ftx.us">
+              FTX
+            </a>{' '}
+            and{' '}
+            <a target="_blank" href="www.binance.us">
+              Binance
+            </a>{' '}
+            both accept SPL-USDC (make sure to send to the SPL-USDC address
+            given by your exchange - it should not start with {`"0x"`}).
           </Typography>
           <br />
           <Typography variant="h4" align="left">
-            You cannot withdraw SPL-USDC to Coinbase, doing so will result in the loss of your funds.  In order to withdraw to Coinbase, first convert your USDC to SOL using the swap functionality in Phantom, and then send the SOL to Coinbase.
+            You cannot withdraw SPL-USDC to Coinbase, doing so will result in
+            the loss of your funds. In order to withdraw to Coinbase, first
+            convert your USDC to SOL using the swap functionality in Phantom,
+            and then send the SOL to Coinbase.
           </Typography>
           <br />
           <Typography variant="h4" align="left">
-            We understand that interacting with exchanges can be confusing at first and we are here to help.  Don’t hesitate to get in touch if you have any questions.
+            We understand that interacting with exchanges can be confusing at
+            first and we are here to help. Don’t hesitate to get in touch if you
+            have any questions.
           </Typography>
         </FaqEntry>
       </FaqPageContainer>

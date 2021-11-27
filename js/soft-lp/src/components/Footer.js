@@ -5,7 +5,6 @@ import { Typography } from '@mui/material'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDiscord } from '@fortawesome/free-brands-svg-icons'
 import { faTwitter } from '@fortawesome/free-brands-svg-icons'
-import CloseIcon from '@mui/icons-material/Close';
 
 const Footer = () => {
   return (

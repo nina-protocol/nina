@@ -102,10 +102,7 @@ const ReleaseList = () => {
                     .
                   </Typography>
 
-                
-                  <Link to="/faq">
-                  How do I withdraw my USDC?
-                  </Link>
+                  <Link to="/faq">How do I withdraw my USDC?</Link>
                 </ReleaseStats>
               )}
               <ReleaseListTable
