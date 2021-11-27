@@ -78,10 +78,11 @@ const ReleaseCreate = () => {
     })
   }
 
-  useEffect( async () => {
-    const valid = async () => await ReleaseCreateSchema.isValid(formValues.releaseForm, {
-      abortEarly: true,
-    })
+  useEffect(async () => {
+    const valid = async () =>
+      await ReleaseCreateSchema.isValid(formValues.releaseForm, {
+        abortEarly: true,
+      })
     setFormIsValid(await valid())
   }, [formValues])
 
