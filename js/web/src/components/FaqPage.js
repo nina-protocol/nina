@@ -35,11 +35,12 @@ const FaqPage = () => {
           </Typography>
           <Typography variant="h4" align="left">
             After a one time fee, releases on Nina are permanent. This fee
-            handles Solana and {`Arweave's`} transaction and storage cost,
-            respectively. Nina takes no additional fees to publish a release.
-            The patronage model created between artist and fan serves as a
-            platform agnostic mechanism to provide exclusive experiences to
-            supporters.
+            handles Solana and {`Arweave's`} transaction and storage cost
+            (~$2.50 + $0.01/MB). Nina takes no additional fees to publish a
+            release. (Currently, all transaction costs for artists are
+            subsidized by Nina) The patronage model created between artist and
+            fan serves as a platform agnostic mechanism to provide exclusive
+            experiences to supporters.
           </Typography>
         </FaqEntry>
 
@@ -133,12 +134,6 @@ const FaqPage = () => {
               Phantom Wallet
             </a>
             .
-            {` Install the extension on Chrome or Brave browser then fund your wallet via Ftx or Moonpay 
-            by clicking the 'deposit' button. You will need some Sol to cover transaction fees, all releases are priced in USDC. 
-            Swapping from SOL to USDC (or vice versa) can be done directly in Phantom or at `}
-            <a rel="noreferrer" target="_blank" href="https://jup.ag/">
-              Jupiter.
-            </a>
           </Typography>
           <Typography variant="h4" align="left">
             If you need any help, hop into our{' '}
@@ -151,7 +146,47 @@ const FaqPage = () => {
             </a>
           </Typography>
         </FaqEntry>
-
+        <FaqEntry>
+          <Typography
+            variant="h2"
+            align="left"
+            className={classes.sectionHeader}
+          >
+            I’m new to crypto. How do I buy something on Nina?
+          </Typography>
+          <Typography variant="h4" align="left">
+            First you’ll need to set up a wallet (See above). In your Phantom
+            wallet you can purchase SOL using a credit card by clicking on
+            ‘Deposit’ and then ‘Buy with MoonPay’. You can also buy SOL on an
+            exchange like{' '}
+            <a target="_blank" href="www.ftx.us" rel="noreferrer">
+              FTX
+            </a>
+            ,{' '}
+            <a target="_blank" href="www.coinbase.com" rel="noreferrer">
+              Coinbase
+            </a>
+            ,{' '}
+            <a target="_blank" href="https://blockfolio.com/" rel="noreferrer">
+              Blockfolio
+            </a>
+            , or{' '}
+            <a target="_blank" href="https://www.binance.us/" rel="noreferrer">
+              Binance
+            </a>{' '}
+            and send it to your Phantom wallet.
+          </Typography>
+          <br />
+          <Typography variant="h4" align="left">
+            Once you have some SOL you need to get some USDC. All releases on
+            Nina are denominated in USDC which is a cryptocurrency pegged to the
+            US dollar, so that 1 USDC always equals $1. You can swap some SOL
+            for USDC by using the swap function in your Phantom wallet (the
+            middle button). Make sure to keep some SOL in your wallet so that
+            you can pay the network fees when buying releases or swapping
+            between USDC and SOL.{' '}
+          </Typography>
+        </FaqEntry>
         <FaqEntry>
           <Typography
             variant="h2"
@@ -244,16 +279,57 @@ const FaqPage = () => {
             Nina is built on Solana which is a proof-of-stake blockchain.
             Proof-of-stake blockchains run on standard servers and do not need
             to run resource + power intensive operations like proof-of-work
-            blockchains. In fact, it has been{' '}
+            blockchains. In fact, it has been posited that the cost of a
+            transaction on Solana uses less energy than a single Google search.
+          </Typography>
+          <br />
+          <Typography variant="h4" align="left">
+            Solana has recently published their 2021{' '}
             <a
-              href="https://twitter.com/aeyakovenko/status/1459235138726875139?s=20"
+              href="https://solana.com/news/solana-energy-usage-report-november-2021"
               rel="noreferrer"
               target="_blank"
             >
-              posited
+              energy use report
+            </a>
+            .
+          </Typography>
+        </FaqEntry>
+
+        <FaqEntry>
+          <Typography
+            variant="h2"
+            align="left"
+            className={classes.sectionHeader}
+          >
+            How do I withdraw my USDC?
+          </Typography>
+          <Typography variant="h4" align="left">
+            On Nina, all releases are priced in USDC. The USDC used on Nina is
+            SPL-wrapped USDC, native to the Solana blockchain. It is important
+            to make sure that your exchange accepts SPL-USDC.{' '}
+            <a target="_blank" href="www.ftx.us">
+              FTX
             </a>{' '}
-            that the cost of a transaction on Solana uses less energy than a
-            single Google search.
+            and{' '}
+            <a target="_blank" href="www.binance.us">
+              Binance
+            </a>{' '}
+            both accept SPL-USDC (make sure to send to the SPL-USDC address
+            given by your exchange - it should not start with {`"0x"`}).
+          </Typography>
+          <br />
+          <Typography variant="h4" align="left">
+            You cannot withdraw SPL-USDC to Coinbase, doing so will result in
+            the loss of your funds. In order to withdraw to Coinbase, first
+            convert your USDC to SOL using the swap functionality in Phantom,
+            and then send the SOL to Coinbase.
+          </Typography>
+          <br />
+          <Typography variant="h4" align="left">
+            We understand that interacting with exchanges can be confusing at
+            first and we are here to help. Don’t hesitate to get in touch if you
+            have any questions.
           </Typography>
         </FaqEntry>
       </FaqPageContainer>
