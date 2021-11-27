@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - 16.4.1
+
+script:
+  - echo '***** build starting *****'
+  - echo '***** installing dependencies *****'
+  - cd js && yarn nina-common && yarn nina-common build && yarn web && yarn soft-lp
+  - echo '***** running lint / formatter checks *****'
+  - yarn nina-common lint && yarn nina-common format -c
+  - yarn web lint && yarn web format -c
+  - yarn soft-lp lint && yarn soft-lp format -c
