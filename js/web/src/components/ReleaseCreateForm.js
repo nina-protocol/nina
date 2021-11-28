@@ -170,7 +170,7 @@ const ReleaseCreateForm = ({
           </Typography>
           <Box>
             <Slider
-              defaultValue={20}
+              defaultValue={0}
               getAriaValueText={valuetext}
               aria-labelledby="percent"
               className={classes.formField}
@@ -231,7 +231,7 @@ export default withFormik({
       catalogNumber: '',
       amount: undefined,
       retailPrice: undefined,
-      resalePercentage: 20,
+      resalePercentage: 0,
     }
   },
 })(ReleaseCreateForm)

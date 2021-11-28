@@ -309,6 +309,10 @@ const releaseContextHelper = ({
       })
       return true
     } catch (error) {
+      setPressingState({
+        pending: false,
+        completed: false,
+      })
       return ninaErrorHandler(error)
     }
   }

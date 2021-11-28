@@ -76,11 +76,15 @@ const ReleaseCreate = () => {
       ...formValues,
       releaseForm: values,
     })
-    const valid = await ReleaseCreateSchema.isValid(formValues.releaseForm, {
-      abortEarly: true,
-    })
-    setFormIsValid(valid)
   }
+
+  useEffect(async () => {
+    const valid = async () =>
+      await ReleaseCreateSchema.isValid(formValues.releaseForm, {
+        abortEarly: true,
+      })
+    setFormIsValid(await valid())
+  }, [formValues])
 
   const handleSubmit = async () => {
     if (track && artwork) {
