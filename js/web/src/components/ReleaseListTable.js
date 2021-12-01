@@ -108,7 +108,7 @@ const EnhancedTableHead = (props) => {
 
   if (tableType === 'userPublished') {
     headCells.push({ id: 'price', numeric: true, label: 'Price' })
-    headCells.push({id: 'remaining', numeric: true, label: 'Remaining'})
+    headCells.push({ id: 'remaining', numeric: true, label: 'Remaining' })
     headCells.push({ id: 'share', numeric: false, label: 'Share' })
     headCells.push({ id: 'date', numeric: false, label: 'Release Date' })
     headCells.push({ id: 'collected', numeric: true, label: 'Earnings' })

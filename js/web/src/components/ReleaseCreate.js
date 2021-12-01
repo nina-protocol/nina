@@ -207,7 +207,11 @@ const ReleaseCreate = () => {
               />
             )}
 
-            <Typography align="left" variant="subtitle1" sx={{paddingTop: '5px'}}>
+            <Typography
+              align="left"
+              variant="subtitle1"
+              sx={{ paddingTop: '5px' }}
+            >
               Nina Publishing Credits: {npcAmountHeld}
             </Typography>
           </CreateCta>
@@ -250,7 +254,6 @@ const ReleaseCreate = () => {
           </NpcMessage>
         </ScrollablePageWrapper>
       )}
-
     </Box>
   )
 }
