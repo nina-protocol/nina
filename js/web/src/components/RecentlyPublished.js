@@ -88,7 +88,7 @@ const RecentlyPublished = (props) => {
             const availability = (
               <Typography variant="body2" sx={{ paddingTop: '10px' }}>
                 {release.tokenData.remainingSupply.toNumber() > 0
-                  ? `${release.tokenData.remainingSupply.toNumber()} / ${release.tokenData.totalSupply.toNumber()}`
+                  ? `${release.tokenData.remainingSupply.toNumber()} / ${release.tokenData.totalSupply.toNumber()} remaining`
                   : 'Sold Out'}
               </Typography>
             )
