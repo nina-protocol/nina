@@ -147,7 +147,7 @@ const ReleaseSettings = (props) => {
           )}
           {inCreateFlow && (
             <Typography
-              variant="body1"
+              variant="boroyaldy1"
               component="p"
               sx={{ marginTop: '10px !important' }}
             >
@@ -158,6 +158,22 @@ const ReleaseSettings = (props) => {
 
         <Box mt={1}>
           <Royalty releasePubkey={releasePubkey} release={release} />
+
+          <Button
+            variant="outlined"
+            fullWidth
+            sx={{ marginTop: '15px !important' }}
+            onClick={() =>
+              window.open(
+                `https://twitter.com/intent/tweet?text=${`${displayValues.artist} - "${displayValues.title}" on Nina%0A`}&url=nina.market/${releasePubkey}`,
+                null,
+                'status=no,location=no,toolbar=no,menubar=no,height=500,width=500'
+              )
+            }
+          >
+            <Typography variant="body2">Share to Twitter</Typography>
+          </Button>
+
           <Link to={`/${releasePubkey}`} style={{ textDecoration: 'none' }}>
             {inCreateFlow && (
               <Button

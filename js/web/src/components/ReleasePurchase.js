@@ -99,9 +99,9 @@ const ReleasePurchase = (props) => {
           release.paymentMint
         )}`
       : `Sold Out ($${NinaClient.nativeToUi(
-        release.price.toNumber(),
-        release.paymentMint
-      ).toFixed(2)})`
+          release.price.toNumber(),
+          release.paymentMint
+        ).toFixed(2)})`
 
   const buttonDisabled =
     wallet?.connected && release.remainingSupply > 0 ? false : true
@@ -116,7 +116,7 @@ const ReleasePurchase = (props) => {
   return (
     <Box>
       <AmountRemaining variant="body2" align="left">
-        Remaining <span>{release.remainingSupply.toNumber()} </span> /{' '}
+        Remaining: <span>{release.remainingSupply.toNumber()} </span> /{' '}
         {release.totalSupply.toNumber()}
       </AmountRemaining>
 
