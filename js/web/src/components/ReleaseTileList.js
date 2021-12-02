@@ -72,7 +72,7 @@ const ReleaseTileList = (props) => {
                 <Typography gutterBottom>
                   {' '}
                   {release.tokenData.remainingSupply.toNumber() > 0
-                    ? `${release.tokenData.remainingSupply.toNumber()} / ${release.tokenData.totalSupply.toNumber()}`
+                    ? `${release.tokenData.remainingSupply.toNumber()} / ${release.tokenData.totalSupply.toNumber()} remaining`
                     : 'Sold Out'}
                 </Typography>
                 <Typography>{release.metadata.name}</Typography>
