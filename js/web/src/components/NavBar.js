@@ -40,7 +40,7 @@ const NavBar = () => {
       <div className={classes.nav__right}>
         <DesktopWalletWrapper>
           <PublishLink to="/upload">
-            <Typography variant="subtitle1">Publish on Nina</Typography>
+            <Typography variant="subtitle1">Start Publishing</Typography>
           </PublishLink>
           <Typography variant="subtitle1" className={classes.nav__balance}>
             {wallet?.connected ? `Balance: $${usdcBalance}` : null}
