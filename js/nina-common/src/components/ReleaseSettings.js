@@ -147,7 +147,7 @@ const ReleaseSettings = (props) => {
           )}
           {inCreateFlow && (
             <Typography
-              variant="boroyaldy1"
+              variant="body1"
               component="p"
               sx={{ marginTop: '10px !important' }}
             >
