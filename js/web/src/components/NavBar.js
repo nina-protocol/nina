@@ -4,7 +4,7 @@ import { Typography, Box } from '@mui/material'
 import ninaCommon from 'nina-common'
 import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
-import { NavLink } from 'react-router-dom'
+import { NavLink, Link } from 'react-router-dom'
 import { useWallet } from '@solana/wallet-adapter-react'
 import {
   WalletDialogProvider,
@@ -39,6 +39,9 @@ const NavBar = () => {
 
       <div className={classes.nav__right}>
         <DesktopWalletWrapper>
+          <PublishLink to="/upload">
+            <Typography variant="subtitle1">Start Publishing</Typography>
+          </PublishLink>
           <Typography variant="subtitle1" className={classes.nav__balance}>
             {wallet?.connected ? `Balance: $${usdcBalance}` : null}
           </Typography>
@@ -105,6 +108,8 @@ const Root = styled('nav')(({ theme }) => ({
 
   [`& .${classes.nav__right}`]: {
     display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
     height: '100%',
     position: 'absolute',
     right: 0,
@@ -239,6 +244,10 @@ const Logo = styled(NavLink)(() => ({
   '& .MuiTypography-h4': {
     fontWeight: 'bold',
   },
+}))
+
+const PublishLink = styled(Link)(() => ({
+  width: '115px',
 }))
 
 export default withFormik({

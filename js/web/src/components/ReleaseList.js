@@ -114,14 +114,14 @@ const ReleaseList = () => {
             </>
           )}
           {wallet?.connected && userPublishedReleases?.length === 0 && (
-            <>
+            <Box sx={{ textAlign: 'center' }}>
               <Typography
                 sx={{ paddingBottom: '10px' }}
               >{`You haven't published any music yet.`}</Typography>
               <Link to="/upload">
                 <Typography>Start Uploading</Typography>
               </Link>
-            </>
+            </Box>
           )}
         </UserReleaseWrapper>
       </ScrollablePageWrapper>

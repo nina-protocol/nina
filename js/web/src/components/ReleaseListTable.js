@@ -48,7 +48,7 @@ const descendingComparator = (a, b, orderBy) => {
         ) || 0
       break
 
-    case 'sold':
+    case 'remaining':
       a = parseFloat(a[orderBy].substring(0, a[orderBy].indexOf('/')))
       b = parseFloat(b[orderBy].substring(0, b[orderBy].indexOf('/')))
 
@@ -58,7 +58,7 @@ const descendingComparator = (a, b, orderBy) => {
     case 'collected':
     case 'share':
     default:
-      a = parseFloat(a[orderBy].substring(/[^\d.-]/g, ''))
+      a = parseFloat(a[orderBy].replace(/[^\d.-]/g, ''))
       b = parseFloat(b[orderBy].replace(/[^\d.-]/g, ''))
       break
   }
@@ -102,13 +102,13 @@ const EnhancedTableHead = (props) => {
 
   if (tableType === 'allReleases') {
     headCells.push({ id: 'price', numeric: true, label: 'Price' })
-    headCells.push({ id: 'sold', numeric: true, label: 'Sold' })
+    headCells.push({ id: 'remaining', numeric: true, label: 'Remaining' })
     headCells.push({ id: 'date', numeric: false, label: 'Release Date' })
   }
 
   if (tableType === 'userPublished') {
     headCells.push({ id: 'price', numeric: true, label: 'Price' })
-    headCells.push({ id: 'sold', numeric: true, label: 'Sold' })
+    headCells.push({ id: 'remaining', numeric: true, label: 'Remaining' })
     headCells.push({ id: 'share', numeric: false, label: 'Share' })
     headCells.push({ id: 'date', numeric: false, label: 'Release Date' })
     headCells.push({ id: 'collected', numeric: true, label: 'Earnings' })
@@ -228,8 +228,8 @@ const ReleaseListTable = (props) => {
         tokenData.paymentMint
       )}`
       rowData[
-        'sold'
-      ] = `${tokenData.saleCounter.toNumber()} / ${tokenData.totalSupply.toNumber()} `
+        'remaining'
+      ] = `${tokenData.remainingSupply.toNumber()} / ${tokenData.totalSupply.toNumber()} `
       rowData['date'] = `${
         new Date(tokenData.releaseDatetime.toNumber() * 1000)
           .toISOString()
@@ -263,8 +263,8 @@ const ReleaseListTable = (props) => {
         tokenData.paymentMint
       )}`
       rowData[
-        'sold'
-      ] = `${tokenData.saleCounter.toNumber()} / ${tokenData.totalSupply.toNumber()} `
+        'remainind'
+      ] = `${tokenData.remainingSupply.toNumber()} / ${tokenData.totalSupply.toNumber()} `
       rowData['share'] = `${recipient.percentShare.toNumber() / 10000}%`
       rowData['date'] = `${
         new Date(tokenData.releaseDatetime.toNumber() * 1000)

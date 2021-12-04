@@ -149,7 +149,7 @@ const ReleaseCreate = () => {
   }
 
   return (
-    <>
+    <Box>
       {!wallet.connected && (
         <ConnectMessage variant="body" gutterBottom>
           Please connect your wallet to start publishing!
@@ -206,6 +206,14 @@ const ReleaseCreate = () => {
                 value={audioProgress || imageProgress}
               />
             )}
+
+            <Typography
+              align="left"
+              variant="subtitle1"
+              sx={{ paddingTop: '5px' }}
+            >
+              Nina Publishing Credits: {npcAmountHeld}
+            </Typography>
           </CreateCta>
         </NinaBox>
       )}
@@ -246,7 +254,7 @@ const ReleaseCreate = () => {
           </NpcMessage>
         </ScrollablePageWrapper>
       )}
-    </>
+    </Box>
   )
 }
 
