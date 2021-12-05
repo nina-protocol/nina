@@ -97,11 +97,11 @@ const TileGrid = styled(Box)(({ theme }) => ({
   },
 }))
 
-const Tile = styled(Box)(({theme}) => ({
+const Tile = styled(Box)(({ theme }) => ({
   textAlign: 'left',
   maxWidth: '100%',
   [theme.breakpoints.down('md')]: {
-    maxWidth: '37vw'
+    maxWidth: '37vw',
   },
 }))
 
@@ -137,8 +137,6 @@ const CardCta = styled(Box)(({ theme }) => ({
 const ReleaseName = styled(Typography)(() => ({
   overflow: 'hidden',
   textOverflow: 'ellipsis',
-  
 }))
-
 
 export default ReleaseTileList
