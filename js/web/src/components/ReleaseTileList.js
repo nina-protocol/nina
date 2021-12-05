@@ -75,7 +75,7 @@ const ReleaseTileList = (props) => {
                     ? `${release.tokenData.remainingSupply.toNumber()} / ${release.tokenData.totalSupply.toNumber()} remaining`
                     : 'Sold Out'}
                 </Typography>
-                <Typography>{release.metadata.name}</Typography>
+                <ReleaseName>{release.metadata.name}</ReleaseName>
               </Box>
             </Tile>
           )
@@ -97,8 +97,12 @@ const TileGrid = styled(Box)(({ theme }) => ({
   },
 }))
 
-const Tile = styled(Box)(() => ({
+const Tile = styled(Box)(({theme}) => ({
   textAlign: 'left',
+  maxWidth: '100%',
+  [theme.breakpoints.down('md')]: {
+    maxWidth: '37vw'
+  },
 }))
 
 const HoverCard = styled(Box)(({ theme }) => ({
@@ -129,5 +133,12 @@ const CardCta = styled(Box)(({ theme }) => ({
     zIndex: '-1',
   },
 }))
+
+const ReleaseName = styled(Typography)(() => ({
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  
+}))
+
 
 export default ReleaseTileList
