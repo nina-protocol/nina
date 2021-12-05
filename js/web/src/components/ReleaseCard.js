@@ -86,7 +86,7 @@ const CtaWrapper = styled(Box)(() => ({
 const StyledReleaseInfo = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.blue,
   color: theme.palette.white,
-  height: '52px',
+  minHeight: '52px',
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
