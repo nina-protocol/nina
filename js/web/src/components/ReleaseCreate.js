@@ -157,7 +157,17 @@ const ReleaseCreate = () => {
               the publishing flow.
             </Typography>
             <Typography variant="h3">
-              1 NPC = 1 Release, NPCs are burned during the upload process.
+              1 NPC allows the publishing of 1 Release.
+            </Typography>
+            <Typography variant="h3">
+              If you don’t have a Solana wallet, please set one up at        <a
+                target="_blank"
+                rel="noreferrer"
+                href="https://phantom.app"
+              >
+                phantom.app
+              </a>.
+
             </Typography>
             <Typography variant="h3">
               Please fill out{' '}
@@ -188,7 +198,7 @@ const ReleaseCreate = () => {
 
       {!wallet.connected && (
         <ConnectMessage variant="body" gutterBottom>
-          Please connect your wallet to start publishing!
+          Please connect your wallet to start publishing
         </ConnectMessage>
       )}
 
