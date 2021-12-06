@@ -291,6 +291,9 @@ const NpcMessage = styled(Box)(({ theme }) => ({
   margin: 'auto',
   width: '800px',
   padding: '0 0 50px',
+  [theme.breakpoints.down('md')]: {
+   width: '80vw'
+  },
   '& .MuiTypography-root': {
     paddingBottom: '10px',
   },
