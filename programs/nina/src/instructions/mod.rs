@@ -19,6 +19,8 @@ pub mod exchange_accept;
 pub mod vault_init;
 pub mod vault_withdraw;
 
+pub mod hub_init;
+
 pub use release_init_protected::*;
 pub use release_init_with_credit::*;
 pub use release_purchase::*;
@@ -39,3 +41,5 @@ pub use exchange_accept::*;
 
 pub use vault_init::*;
 pub use vault_withdraw::*;
+
+pub use hub_init::*;

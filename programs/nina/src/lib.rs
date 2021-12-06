@@ -31,7 +31,6 @@ pub mod nina {
         instructions::release_init_with_credit::handler(ctx, config, bumps)
     }
 
-
     pub fn release_purchase(
         ctx: Context<ReleasePurchase>,
         amount: u64,
@@ -138,5 +137,12 @@ pub mod nina {
         amount: u64,
     ) -> ProgramResult {
         instructions::vault_withdraw::handler(ctx, amount)
+    }
+
+    pub fn hub_init(
+        ctx: Context<HubInit>,
+        params: HubInitParams,
+    ) -> ProgramResult {
+        instructions::hub_init::handler(ctx, params)
     }
 }
