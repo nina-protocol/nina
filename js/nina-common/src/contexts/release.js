@@ -829,7 +829,7 @@ const releaseContextHelper = ({
     }
   }
 
-  const getReleasesHandler = async (type) => {
+  const getReleasesHandler = async (publicKey, type) => {
     if (!connection) {
       return
     }
@@ -838,10 +838,10 @@ const releaseContextHelper = ({
       let path = NinaClient.endpoints.api
       switch (type) {
         case lookupTypes.PUBLISHED_BY:
-          path += `/releases/published/${wallet?.publicKey.toBase58()}`
+          path += `/releases/published/${publicKey.toBase58()}`
           break
         case lookupTypes.REVENUE_SHARE:
-          path += `/releases/royalties/${wallet?.publicKey.toBase58()}`
+          path += `/releases/royalties/${publicKey.toBase58()}`
           break
       }
 
@@ -858,9 +858,9 @@ const releaseContextHelper = ({
     await fetchAndSaveReleasesToState(Object.keys(collection))
   }
 
-  const getReleasesPublishedByUser = async () => {
-    await getReleasesHandler(lookupTypes.REVENUE_SHARE)
-    await getReleasesHandler(lookupTypes.PUBLISHED_BY)
+  const getReleasesPublishedByUser = async (publicKey) => {
+    await getReleasesHandler(publicKey, lookupTypes.REVENUE_SHARE)
+    await getReleasesHandler(publicKey, lookupTypes.PUBLISHED_BY)
   }
 
   const getRedeemablesForRelease = async (releasePubkey) => {
@@ -1078,7 +1078,6 @@ const releaseContextHelper = ({
         releases.push(releaseData)
       }
     })
-    saveReleasesToState(releases)
     return releases
   }
 

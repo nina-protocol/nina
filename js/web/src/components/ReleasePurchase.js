@@ -28,8 +28,6 @@ const ReleasePurchase = (props) => {
   const [amountPendingBuys, setAmountPendingBuys] = useState(0)
   const [amountPendingSales, setAmountPendingSales] = useState(0)
 
-  console.log('metadata :>> ', metadata);
-
   useEffect(() => {
     getRelease(releasePubkey)
   }, [releasePubkey])
@@ -171,12 +169,16 @@ const ReleasePurchase = (props) => {
 
       {userPublishedReleases && userPublishedReleases.length > 1 && (
         <Button
-        variant="outlined"
-        fullWidth
-        sx={{marginTop: '15px !important'}}
+          variant="outlined"
+          fullWidth
+          sx={{ marginTop: '15px !important' }}
+          onClick={() => {
+            history.push(`/users/${release.authority.toBase58()}`)
+          }}
         >
           <Typography variant="body2">
-            See {userPublishedReleases.length} more releases from {metadata.properties.artist}
+            See {userPublishedReleases.length - 1} more releases from{' '}
+            {metadata.properties.artist}
           </Typography>
         </Button>
       )}

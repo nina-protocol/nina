@@ -39,7 +39,7 @@ const ReleaseList = () => {
 
   useEffect(() => {
     if (wallet?.connected && !userPublishedReleases) {
-      getReleasesPublishedByUser()
+      getReleasesPublishedByUser(wallet.publicKey)
     }
   }, [wallet?.connected])
 

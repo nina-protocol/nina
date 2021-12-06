@@ -42,7 +42,7 @@ const YourCollectionBreadcrumb = () => {
     useState()
   useEffect(() => {
     if (wallet?.connected) {
-      getReleasesPublishedByUser()
+      getReleasesPublishedByUser(wallet.publicKey)
     }
   }, [wallet?.connected])
 
@@ -70,7 +70,7 @@ const YourReleasesBreadcrumb = () => {
   const [userPublishedReleasesCount, setUserPublishedReleasesCount] = useState()
   useEffect(() => {
     if (wallet?.connected) {
-      getReleasesPublishedByUser()
+      getReleasesPublishedByUser(wallet.publicKey)
     }
   }, [wallet?.connected])
 

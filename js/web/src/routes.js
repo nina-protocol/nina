@@ -12,6 +12,7 @@ import HomePage from './components/HomePage'
 import FaqPage from './components/FaqPage'
 import NavBar from './components/NavBar'
 import AllReleases from './components/AllReleases'
+import UserPage from './components/UserPage'
 
 function Routes() {
   return (
@@ -51,10 +52,7 @@ function Routes() {
                 path="/collection/:releasePubkey"
                 component={Release}
               ></Route>
-              {/* <Route
-                path="/users/:pubKey"
-                component={ReleaseList}
-              ></Route> */}
+              <Route path="/users/:pubKey" component={UserPage}></Route>
               <Route path="/:releasePubkey/market" component={Release}></Route>
               <Route path="/:releasePubkey" component={Release}></Route>
               <Route exact path="/" component={HomePage} />
