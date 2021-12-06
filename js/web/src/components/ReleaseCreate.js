@@ -11,7 +11,6 @@ import ReleaseCard from './ReleaseCard'
 import NinaBox from './NinaBox'
 import MediaDropzones from './MediaDropzones'
 import * as Yup from 'yup'
-// import ScrollablePageWrapper from './ScrollablePageWrapper'
 
 const { ReleaseSettings, Dots } = ninaCommon.components
 const { ReleaseContext, NinaContext } = ninaCommon.contexts
