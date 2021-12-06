@@ -17,10 +17,11 @@ const Release = ({ match }) => {
   const releasePubkey = match.params.releasePubkey
   const wallet = useWallet()
   const history = useHistory()
-  const { releaseState, getRelease } = useContext(ReleaseContext)
+  const { releaseState, getRelease, filterReleasesPublishedByUser } = useContext(ReleaseContext)
   const { getExchangeHistoryForRelease, exchangeState } =
     useContext(ExchangeContext)
   const [track, setTrack] = useState(null)
+  const [userPublishedReleases, setUserPublishedReleases] = useState(null)
 
   const [metadata, setMetadata] = useState(
     releaseState?.metadata[releasePubkey] || null
@@ -40,8 +41,20 @@ const Release = ({ match }) => {
   }, [releaseState?.metadata[releasePubkey]])
 
   useEffect(() => {
+    
     setTrack(releaseState.metadata[releasePubkey])
   }, [releaseState.metadata[releasePubkey]])
+
+  useEffect(() => {
+    if (releaseState.tokenData[releasePubkey]) {
+      console.log('release :>> ', releaseState.tokenData[releasePubkey]);
+      const data = releaseState.tokenData[releasePubkey]
+      console.log('data.auth :>> ', data.authority.toBase58())
+      console.log('filterReleasesPublishedByUser(data.authority) :>> ', filterReleasesPublishedByUser(data.authority));
+      setUserPublishedReleases(filterReleasesPublishedByUser(data.authority.toBase58()))
+      console.log('userPublishedReleases :>> ', userPublishedReleases);
+    }
+  }, [releaseState.tokenData[releasePubkey]])
 
   if (metadata && Object.keys(metadata).length === 0) {
     return (
@@ -86,6 +99,7 @@ const Release = ({ match }) => {
                   releasePubkey={releasePubkey}
                   metadata={metadata}
                   match={match}
+                  userPublishedReleases={userPublishedReleases}
                 />
               </ReleaseCtaWrapper>
             </NinaBox>

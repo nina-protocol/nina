@@ -13,7 +13,7 @@ const { ReleaseContext, NinaContext, ExchangeContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
 const ReleasePurchase = (props) => {
-  const { releasePubkey, metadata, match } = props
+  const { releasePubkey, metadata, match, userPublishedReleases } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const history = useHistory()
@@ -27,6 +27,8 @@ const ReleasePurchase = (props) => {
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
   const [amountPendingBuys, setAmountPendingBuys] = useState(0)
   const [amountPendingSales, setAmountPendingSales] = useState(0)
+
+  console.log('metadata :>> ', metadata);
 
   useEffect(() => {
     getRelease(releasePubkey)
@@ -166,6 +168,18 @@ const ReleasePurchase = (props) => {
           </Button>
         </form>
       </Box>
+
+      {userPublishedReleases && userPublishedReleases.length > 1 && (
+        <Button
+        variant="outlined"
+        fullWidth
+        sx={{marginTop: '15px !important'}}
+        >
+          <Typography variant="body2">
+            See {userPublishedReleases.length} more releases from {metadata.properties.artist}
+          </Typography>
+        </Button>
+      )}
       <MarketButton
         variant="outlined"
         fullWidth

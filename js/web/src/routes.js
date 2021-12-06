@@ -51,6 +51,10 @@ function Routes() {
                 path="/collection/:releasePubkey"
                 component={Release}
               ></Route>
+              {/* <Route
+                path="/users/:pubKey"
+                component={ReleaseList}
+              ></Route> */}
               <Route path="/:releasePubkey/market" component={Release}></Route>
               <Route path="/:releasePubkey" component={Release}></Route>
               <Route exact path="/" component={HomePage} />

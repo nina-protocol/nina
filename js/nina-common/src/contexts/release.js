@@ -1042,9 +1042,9 @@ const releaseContextHelper = ({
   }
 
   const filterReleasesPublishedByUser = (userPubkey = undefined) => {
-    if (!wallet?.connected || (!userPubkey && !wallet?.publicKey)) {
-      return
-    }
+    // if (!wallet?.connected || (!userPubkey && !wallet?.publicKey)) {
+    //   return
+    // }
     // Return results for passed in user if another user isn't specified
     if (!userPubkey) {
       userPubkey = wallet?.publicKey.toBase58()
@@ -1078,6 +1078,7 @@ const releaseContextHelper = ({
         releases.push(releaseData)
       }
     })
+    saveReleasesToState(releases)
     return releases
   }
 
