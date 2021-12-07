@@ -20,13 +20,13 @@ const Release = ({ match }) => {
   const {
     releaseState,
     getRelease,
-    getReleasesPublishedByUser,
-    filterReleasesPublishedByUser,
+    getRelatedForRelease,
+    filterRelatedForRelease,
   } = useContext(ReleaseContext)
   const { getExchangeHistoryForRelease, exchangeState } =
     useContext(ExchangeContext)
   const [track, setTrack] = useState(null)
-  const [userPublishedReleases, setUserPublishedReleases] = useState(null)
+  const [relatedReleases, setRelatedReleases] = useState(null)
 
   const [metadata, setMetadata] = useState(
     releaseState?.metadata[releasePubkey] || null
@@ -51,18 +51,15 @@ const Release = ({ match }) => {
 
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
-      const data = releaseState.tokenData[releasePubkey]
-      if (!userPublishedReleases) {
-        getReleasesPublishedByUser(data.authority)
+      if (!relatedReleases) {
+        getRelatedForRelease(releasePubkey)
       }
     }
   }, [releaseState.tokenData[releasePubkey]])
 
   useEffect(() => {
-    setUserPublishedReleases(
-      filterReleasesPublishedByUser(data.authority.toBase58())
-    )
-  }, [releaseState, ])
+    setRelatedReleases(filterRelatedForRelease(releasePubkey))
+  }, [releaseState])
 
   if (metadata && Object.keys(metadata).length === 0) {
     return (
@@ -107,7 +104,7 @@ const Release = ({ match }) => {
                   releasePubkey={releasePubkey}
                   metadata={metadata}
                   match={match}
-                  userPublishedReleases={userPublishedReleases}
+                  relatedReleases={relatedReleases}
                 />
               </ReleaseCtaWrapper>
             </NinaBox>

@@ -13,7 +13,7 @@ const { ReleaseContext, NinaContext, ExchangeContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
 const ReleasePurchase = (props) => {
-  const { releasePubkey, metadata, match, userPublishedReleases } = props
+  const { releasePubkey, metadata, match, relatedReleases } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const history = useHistory()
@@ -166,24 +166,6 @@ const ReleasePurchase = (props) => {
           </Button>
         </form>
       </Box>
-
-      {userPublishedReleases && userPublishedReleases.length > 1 && (
-        <Button
-          variant="outlined"
-          fullWidth
-          sx={{ marginTop: '15px !important' }}
-          onClick={(e) => {
-            e.stopPropagation()
-            history.push(`/users/${release.authority.toBase58()}`)
-          }}
-        >
-          <Typography variant="body2">
-            See {userPublishedReleases.length - 1} more release
-            {userPublishedReleases.length - 1 > 1 ? 's' : ''} from{' '}
-            {metadata.properties.artist}
-          </Typography>
-        </Button>
-      )}
       <MarketButton
         variant="outlined"
         fullWidth
@@ -193,6 +175,22 @@ const ReleasePurchase = (props) => {
       >
         <Typography variant="body2">Go To Market</Typography>
       </MarketButton>
+      {relatedReleases && relatedReleases.length > 1 && (
+        <Button
+          variant="outlined"
+          fullWidth
+          sx={{ marginTop: '15px !important' }}
+          onClick={(e) => {
+            e.stopPropagation()
+            history.push(`/${releasePubkey}/related`)
+          }}
+        >
+          <Typography variant="body2">
+            See {relatedReleases.length - 1} more related release
+            {relatedReleases.length - 1 > 1 ? 's' : ''}
+          </Typography>
+        </Button>
+      )}
     </Box>
   )
 }

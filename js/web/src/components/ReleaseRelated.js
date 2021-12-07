@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { Helmet } from 'react-helmet'
-const { PublicKey } = require('@solana/web3.js')
 import ninaCommon from 'nina-common'
 import { styled } from '@mui/material/styles'
 import { Typography, Box } from '@mui/material'
@@ -10,39 +9,32 @@ import ScrollablePageWrapper from './ScrollablePageWrapper'
 
 const { ReleaseContext } = ninaCommon.contexts
 
-const UserPage = ({ match }) => {
-  const authorityPubkey = new PublicKey(match.params.pubKey)
-  const {
-    getReleasesPublishedByUser,
-    filterReleasesPublishedByUser,
-    releaseState,
-  } = useContext(ReleaseContext)
+const ReleaseRelated = ({ match }) => {
+  const releasePubkey = match.params.releasePubkey
+  const { getRelatedForRelease, filterRelatedForRelease, releaseState } =
+    useContext(ReleaseContext)
   const [listView, setListView] = useState(false)
 
-  const [userPublishedReleases, setUserPublishedReleases] = useState(null)
+  const [relatedReleases, setRelatedReleases] = useState(null)
   const [userHandles, setUserHandles] = useState(null)
 
   useEffect(() => {
-    if (authorityPubkey) {
-      getReleasesPublishedByUser(authorityPubkey)
-    }
+    getRelatedForRelease(releasePubkey)
   }, [])
 
   useEffect(() => {
-    setUserPublishedReleases(
-      filterReleasesPublishedByUser(authorityPubkey.toBase58())
-    )
-  }, [releaseState])
+    setRelatedReleases(filterRelatedForRelease(releasePubkey))
+  }, [releaseState.tokenData])
 
   useEffect(() => {
-    if (userPublishedReleases) {
-      const handles = userPublishedReleases.map((release) => {
+    if (relatedReleases) {
+      const handles = relatedReleases.map((release) => {
         return release.metadata.properties.artist
       })
       const filteredHandles = [...new Set(handles)]
       setUserHandles(filteredHandles.join(' / '))
     }
-  }, [userPublishedReleases])
+  }, [relatedReleases])
 
   const handleViewChange = () => {
     setListView(!listView)
@@ -56,7 +48,7 @@ const UserPage = ({ match }) => {
       </Helmet>
       <ScrollablePageWrapper>
         <Wrapper>
-          {userPublishedReleases?.length > 0 && (
+          {relatedReleases?.length > 0 && (
             <>
               <CollectionHeader listView={listView}>
                 <Typography
@@ -75,14 +67,12 @@ const UserPage = ({ match }) => {
 
               {listView && (
                 <ReleaseListTable
-                  releases={userPublishedReleases}
+                  releases={relatedReleases}
                   tableType="userCollection"
                   key="releases"
                 />
               )}
-              {!listView && (
-                <ReleaseTileList releases={userPublishedReleases} />
-              )}
+              {!listView && <ReleaseTileList releases={relatedReleases} />}
             </>
           )}
         </Wrapper>
@@ -107,4 +97,4 @@ const Wrapper = styled(Box)(({ theme }) => ({
   },
 }))
 
-export default UserPage
+export default ReleaseRelated

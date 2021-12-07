@@ -87,6 +87,8 @@ const ReleaseContextProvider = ({ children }) => {
     redeemableUpdateShipping,
     getRedemptionRecordsForRelease,
     getRedeemablesForRelease,
+    getRelatedForRelease,
+    filterRelatedForRelease,
   } = releaseContextHelper({
     releaseState,
     setReleaseState,
@@ -140,6 +142,8 @@ const ReleaseContextProvider = ({ children }) => {
         getRedeemablesForRelease,
         releasesRecentState,
         filterReleasesRecent,
+        getRelatedForRelease,
+        filterRelatedForRelease,
       }}
     >
       {children}
@@ -847,7 +851,6 @@ const releaseContextHelper = ({
 
       const response = await fetch(path)
       const releaseIds = await response.json()
-
       await fetchAndSaveReleasesToState(releaseIds)
     } catch (error) {
       console.warn(error)
@@ -861,6 +864,22 @@ const releaseContextHelper = ({
   const getReleasesPublishedByUser = async (publicKey) => {
     await getReleasesHandler(publicKey, lookupTypes.REVENUE_SHARE)
     await getReleasesHandler(publicKey, lookupTypes.PUBLISHED_BY)
+  }
+
+  const getRelatedForRelease = async (releasePubkey) => {
+    const release = releaseState.tokenData[releasePubkey]
+    if (release) {
+      for await (let recipient of release.royaltyRecipients) {
+        await getReleasesHandler(
+          recipient.recipientAuthority,
+          lookupTypes.REVENUE_SHARE
+        )
+        await getReleasesHandler(
+          recipient.recipientAuthority,
+          lookupTypes.PUBLISHED_BY
+        )
+      }
+    }
   }
 
   const getRedeemablesForRelease = async (releasePubkey) => {
@@ -1103,6 +1122,34 @@ const releaseContextHelper = ({
         }
       })
     })
+    return releases
+  }
+
+  const filterRelatedForRelease = (releasePubkey) => {
+    const releases = []
+    const releaseIds = new Set()
+    const release = releaseState.tokenData[releasePubkey]
+    if (release) {
+      release.royaltyRecipients.forEach((recipient) => {
+        Object.keys(releaseState.tokenData).forEach((releasePubkey) => {
+          const tokenData = releaseState.tokenData[releasePubkey]
+          const metadata = releaseState.metadata[releasePubkey]
+          tokenData.royaltyRecipients.forEach((recipient2) => {
+            if (
+              recipient.percentShare.toNumber() > 0 &&
+              recipient.recipientAuthority.toBase58() ===
+                recipient2.recipientAuthority.toBase58() &&
+              metadata
+            ) {
+              if (!releaseIds.has(releasePubkey)) {
+                releases.push({ tokenData, metadata, releasePubkey, recipient })
+                releaseIds.add(releasePubkey)
+              }
+            }
+          })
+        })
+      })
+    }
     return releases
   }
 
@@ -1412,6 +1459,8 @@ const releaseContextHelper = ({
     redeemableUpdateShipping,
     getRedemptionRecordsForRelease,
     getRedeemablesForRelease,
+    getRelatedForRelease,
+    filterRelatedForRelease,
   }
 }
 
