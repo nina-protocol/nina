@@ -55,7 +55,7 @@ const NavDrawer = () => {
   useEffect(() => {
     if (wallet?.connected) {
       setLinks(linksConnected)
-      getReleasesPublishedByUser()
+      getReleasesPublishedByUser(wallet.publicKey)
     } else {
       setLinks(linksNotConnected)
     }

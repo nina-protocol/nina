@@ -27,12 +27,14 @@ const ReleaseTileList = (props) => {
           return (
             <Tile key={i}>
               <HoverCard
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation()
                   handleClick(release.releasePubkey)
                 }}
               >
                 <CardCta
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation()
                     handleClick(release.releasePubkey)
                   }}
                 >

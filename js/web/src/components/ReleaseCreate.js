@@ -160,14 +160,11 @@ const ReleaseCreate = () => {
               1 NPC allows the publishing of 1 Release.
             </Typography>
             <Typography variant="h3">
-              If you don’t have a Solana wallet, please set one up at        <a
-                target="_blank"
-                rel="noreferrer"
-                href="https://phantom.app"
-              >
+              If you don’t have a Solana wallet, please set one up at{' '}
+              <a target="_blank" rel="noreferrer" href="https://phantom.app">
                 phantom.app
-              </a>.
-
+              </a>
+              .
             </Typography>
             <Typography variant="h3">
               Please fill out{' '}
@@ -294,6 +291,9 @@ const NpcMessage = styled(Box)(({ theme }) => ({
   margin: 'auto',
   width: '800px',
   padding: '0 0 50px',
+  [theme.breakpoints.down('md')]: {
+    width: '80vw',
+  },
   '& .MuiTypography-root': {
     paddingBottom: '10px',
   },

@@ -42,7 +42,7 @@ const YourCollectionBreadcrumb = () => {
     useState()
   useEffect(() => {
     if (wallet?.connected) {
-      getReleasesPublishedByUser()
+      getReleasesPublishedByUser(wallet.publicKey)
     }
   }, [wallet?.connected])
 
@@ -70,7 +70,7 @@ const YourReleasesBreadcrumb = () => {
   const [userPublishedReleasesCount, setUserPublishedReleasesCount] = useState()
   useEffect(() => {
     if (wallet?.connected) {
-      getReleasesPublishedByUser()
+      getReleasesPublishedByUser(wallet.publicKey)
     }
   }, [wallet?.connected])
 
@@ -117,6 +117,10 @@ const routes = [
     breadcrumb: () => <Typography variant="subtitle1">Upload</Typography>,
   },
   { path: '/releases/:releasePubkey', breadcrumb: ReleaseBreadcrumb },
+  {
+    path: '/:releasePubkey/related',
+    breadcrumb: () => <Typography variant="subtitle1">Related</Typography>,
+  },
   { path: '/:releasePubkey', breadcrumb: ReleaseBreadcrumb },
 ]
 
@@ -124,10 +128,9 @@ const Breadcrumbs = ({ breadcrumbs }) => (
   <BreadcrumbsContainer>
     {breadcrumbs.map(({ match, breadcrumb }) => (
       <span key={match.url} className="breadcrumb">
-        <Typography
-          variant="subtitle1"
-          sx={{ padding: '0 10px' }}
-        >{`/`}</Typography>
+        <Typography variant="subtitle1" sx={{ padding: '0 10px' }}>
+          {`/`}
+        </Typography>
         <NavLink to={match.url}>{breadcrumb}</NavLink>
       </span>
     ))}
