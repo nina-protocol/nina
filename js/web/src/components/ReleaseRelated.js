@@ -25,7 +25,7 @@ const ReleaseRelated = ({ match }) => {
   }, [])
 
   useEffect(() => {
-    if (releaseState.tokenData[releasePubkey]) {
+    if (releaseState.tokenData[releasePubkey] && relatedReleases <= 1) {
       getRelatedForRelease(releasePubkey)
     }
     setRelatedReleases(filterRelatedForRelease(releasePubkey))
