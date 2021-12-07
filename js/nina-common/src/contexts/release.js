@@ -870,14 +870,16 @@ const releaseContextHelper = ({
     const release = releaseState.tokenData[releasePubkey]
     if (release) {
       for await (let recipient of release.royaltyRecipients) {
-        await getReleasesHandler(
-          recipient.recipientAuthority,
-          lookupTypes.REVENUE_SHARE
-        )
-        await getReleasesHandler(
-          recipient.recipientAuthority,
-          lookupTypes.PUBLISHED_BY
-        )
+        if (recipient.percentShare.toNumber() > 0) {
+          await getReleasesHandler(
+            recipient.recipientAuthority,
+            lookupTypes.REVENUE_SHARE
+          )
+          await getReleasesHandler(
+            recipient.recipientAuthority,
+            lookupTypes.PUBLISHED_BY
+          )
+        }
       }
     }
   }
