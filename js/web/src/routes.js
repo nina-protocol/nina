@@ -31,6 +31,9 @@ function Routes() {
               <Route path="/faq" component={FaqPage} />
               <Route path="/collection" component={UserCollection}></Route>
 
+              <Route path="/users" component={AllReleases}></Route>
+              <Route path="/users/:pubKey" component={UserPage}></Route>
+
               <Route
                 exact
                 path="/releases/:releasePubkey/market"
@@ -52,7 +55,6 @@ function Routes() {
                 path="/collection/:releasePubkey"
                 component={Release}
               ></Route>
-              <Route path="/users/:pubKey" component={UserPage}></Route>
               <Route path="/:releasePubkey/market" component={Release}></Route>
               <Route path="/:releasePubkey" component={Release}></Route>
               <Route exact path="/" component={HomePage} />

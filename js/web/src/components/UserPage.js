@@ -3,35 +3,24 @@ import { Helmet } from 'react-helmet'
 const { PublicKey } = require('@solana/web3.js')
 import ninaCommon from 'nina-common'
 import { styled } from '@mui/material/styles'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { Typography, Box } from '@mui/material'
 import ReleaseListTable from './ReleaseListTable'
 import ReleaseTileList from './ReleaseTileList'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 
-const { ReleaseContext, NinaContext } = ninaCommon.contexts
+const { ReleaseContext } = ninaCommon.contexts
 
 const UserPage = ({ match }) => {
   const authorityPubkey = new PublicKey(match.params.pubKey)
   const {
-    filterReleasesUserCollection,
     getReleasesPublishedByUser,
     filterReleasesPublishedByUser,
     releaseState,
   } = useContext(ReleaseContext)
   const [listView, setListView] = useState(false)
 
-  const wallet = useWallet()
-  const { collection } = useContext(NinaContext)
-  const [userCollectionReleases, setUserCollectionReleases] = useState()
   const [userPublishedReleases, setUserPublishedReleases] = useState(null)
   const [userHandles, setUserHandles] = useState(null)
-
-  useEffect(() => {
-    if (wallet?.connected) {
-      setUserCollectionReleases(filterReleasesUserCollection())
-    }
-  }, [releaseState, collection])
 
   useEffect(() => {
     if (authorityPubkey) {
@@ -62,10 +51,8 @@ const UserPage = ({ match }) => {
   return (
     <>
       <Helmet>
-        <title>{`Nina: Your Collection(${
-          userCollectionReleases?.length || 0
-        })`}</title>
-        <meta name="description" content={'Your collection on Nina.'} />
+        <title>{`Releases by ${userHandles}`} </title>
+        <meta name="description" content={`Releases by ${userHandles}`} />
       </Helmet>
       <ScrollablePageWrapper>
         <Wrapper>

@@ -172,7 +172,8 @@ const ReleasePurchase = (props) => {
           variant="outlined"
           fullWidth
           sx={{ marginTop: '15px !important' }}
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation()
             history.push(`/users/${release.authority.toBase58()}`)
           }}
         >

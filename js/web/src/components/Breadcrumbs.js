@@ -32,11 +32,11 @@ const ReleaseBreadcrumb = ({ match }) => {
 
 const UsersBreadcrumb = ({ match }) => {
   const userPubkey = match.params.pubKey
-    return (
-        <Typography display="inline" variant="subtitle1">
-          Users / {userPubkey}
-        </Typography>
-    )
+  return (
+    <Typography display="inline" variant="subtitle1">
+      {userPubkey}
+    </Typography>
+  )
 }
 
 const YourCollectionBreadcrumb = () => {
@@ -126,6 +126,10 @@ const routes = [
     breadcrumb: () => <Typography variant="subtitle1">Upload</Typography>,
   },
   {
+    path: '/users',
+    breadcrumb: () => <Typography variant="subtitle1">Users</Typography>,
+  },
+  {
     path: '/users/:pubKey',
     breadcrumb: UsersBreadcrumb,
   },
@@ -137,10 +141,7 @@ const Breadcrumbs = ({ breadcrumbs }) => (
   <BreadcrumbsContainer>
     {breadcrumbs.map(({ match, breadcrumb }) => (
       <span key={match.url} className="breadcrumb">
-        <Typography
-          variant="subtitle1"
-          sx={{ padding: '0 10px' }}
-        >
+        <Typography variant="subtitle1" sx={{ padding: '0 10px' }}>
           {`/`}
         </Typography>
         <NavLink to={match.url}>{breadcrumb}</NavLink>
