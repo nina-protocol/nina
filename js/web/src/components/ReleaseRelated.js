@@ -11,7 +11,7 @@ const { ReleaseContext } = ninaCommon.contexts
 
 const ReleaseRelated = ({ match }) => {
   const releasePubkey = match.params.releasePubkey
-  const { getRelatedForRelease, filterRelatedForRelease, releaseState, getRelease } =
+  const { getRelatedForRelease, filterRelatedForRelease, releaseState, getReleasesRecent } =
     useContext(ReleaseContext)
   const [listView, setListView] = useState(false)
 
@@ -19,13 +19,14 @@ const ReleaseRelated = ({ match }) => {
   const [userHandles, setUserHandles] = useState(null)
 
   useEffect(() => {
+    if (!releaseState.tokenData[releasePubkey]) {
+      getReleasesRecent()
+    }
   }, [])
 
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
       getRelatedForRelease(releasePubkey)
-    } else {
-      getRelease(releasePubkey)
     }
     setRelatedReleases(filterRelatedForRelease(releasePubkey))
   }, [releaseState.tokenData])
