@@ -55,11 +55,14 @@ const Release = ({ match }) => {
       if (!userPublishedReleases) {
         getReleasesPublishedByUser(data.authority)
       }
-      setUserPublishedReleases(
-        filterReleasesPublishedByUser(data.authority.toBase58())
-      )
     }
   }, [releaseState.tokenData[releasePubkey]])
+
+  useEffect(() => {
+    setUserPublishedReleases(
+      filterReleasesPublishedByUser(data.authority.toBase58())
+    )
+  }, [releaseState, ])
 
   if (metadata && Object.keys(metadata).length === 0) {
     return (
