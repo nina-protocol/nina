@@ -31,6 +31,15 @@ pub mod nina {
         instructions::release_init_with_credit::handler(ctx, config, bumps)
     }
 
+    pub fn release_init_via_hub(
+        ctx: Context<ReleaseInitializeViaHub>,
+        config: ReleaseConfig,
+        bumps: ReleaseBumps,
+    ) -> ProgramResult {
+        instructions::release_init_via_hub::handler(ctx, config, bumps)
+    }
+
+
     pub fn release_purchase(
         ctx: Context<ReleasePurchase>,
         amount: u64,
@@ -145,4 +154,29 @@ pub mod nina {
     ) -> ProgramResult {
         instructions::hub_init::handler(ctx, params)
     }
+
+    pub fn pub_add_artist(
+        ctx: Context<HubAddArtist>,
+    ) -> ProgramResult {
+        instructions::hub_add_artist::handler(ctx)
+    }
+
+    pub fn pub_add_release(
+        ctx: Context<HubAddRelease>,
+    ) -> ProgramResult {
+        instructions::hub_add_release::handler(ctx)
+    }
+
+    pub fn hub_remove_artist(
+        ctx: Context<HubRemoveArtist>,
+    ) -> ProgramResult {
+        instructions::hub_remove_artist::handler(ctx)
+    }
+
+    pub fn hub_remove_release(
+        ctx: Context<HubRemoveRelease>,
+    ) -> ProgramResult {
+        instructions::hub_remove_release::handler(ctx)
+    }
+
 }

@@ -30,6 +30,78 @@ pub struct Release {
 }
 
 impl Release {
+    pub fn release_revenue_share_transfer_handler<'info> (
+        release_loader: &Loader<'info, Release>,
+        release_signer: AccountInfo<'info>,
+        royalty_token_account: AccountInfo<'info>,
+        new_royalty_recipient: Pubkey,
+        new_royalty_recipient_token_account: AccountInfo<'info>,
+        token_program: AccountInfo<'info>,
+        transfer_share: u64,
+    ) -> ProgramResult {
+        let mut release = release_loader.load_mut()?;
+
+        let seeds = &[
+            release_loader.to_account_info().key.as_ref(),
+            &[release.bumps.signer],
+        ];
+        let signer = &[&seeds[..]];
+
+        let mut royalty_recipient = match release.find_royalty_recipient(new_royalty_recipient) {
+            Some(royalty_recipient) => royalty_recipient,
+            None => return Err(ErrorCode::InvalidRoyaltyRecipientAuthority.into())
+        };
+
+        // Add New Royalty Recipient
+        if transfer_share > royalty_recipient.percent_share {
+            return Err(ErrorCode::RoyaltyTransferTooLarge.into())
+        };
+
+        // Take share from current user
+        royalty_recipient.percent_share -= transfer_share;
+
+        let existing_royalty_recipient = release.find_royalty_recipient(new_royalty_recipient);
+        // If new_royalty_recipient doesn't already have a share, add them as a new recipient
+        if existing_royalty_recipient.is_none() {
+            release.append_royalty_recipient({
+                RoyaltyRecipient {
+                    recipient_authority: new_royalty_recipient,
+                    recipient_token_account: new_royalty_recipient_token_account.key(),
+                    percent_share: transfer_share,
+                    owed: 0 as u64,
+                    collected: 0 as u64,
+                }
+            })?;
+        } else {
+            // new_royalty_recipient already has a share of the release, so collect royalties and append share
+            let existing_royalty_recipient_unwrapped = existing_royalty_recipient.unwrap();
+            if existing_royalty_recipient_unwrapped.owed > 0 {
+                // Transfer Royalties from the existing royalty account to the existing user receiving more royalty share
+                let cpi_accounts = Transfer {
+                    from: royalty_token_account,
+                    to: new_royalty_recipient_token_account,
+                    authority: release_signer,
+                };
+                let cpi_program = token_program;
+                let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer);
+                token::transfer(cpi_ctx, existing_royalty_recipient_unwrapped.owed as u64)?;
+            }
+            existing_royalty_recipient_unwrapped.percent_share += transfer_share;
+        }
+
+        // Make sure royalty shares of all recipients does not exceed 1000000
+        if release.royalty_equals_1000000() {
+
+            emit!(RoyaltyRecipientAdded {
+                authority: new_royalty_recipient,
+                public_key: release_loader.key(),
+            });
+            Ok(())
+        } else {
+            return Err(ErrorCode::RoyaltyExceeds100Percent.into())
+        }
+    }
+
     pub fn release_revenue_share_collect_handler<'info> (
         release_loader: &Loader<'info, Release>,
         release_signer: AccountInfo<'info>,

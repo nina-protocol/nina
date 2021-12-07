@@ -1,6 +1,5 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{self, Token};
-
+use anchor_spl::token::{TokenAccount, Mint};
 use crate::state::*;
 
 #[derive(Accounts)]
@@ -13,7 +12,7 @@ pub struct HubInit<'info> {
         seeds = [b"nina-hub".as_ref(), params.name.as_bytes()],
         bump,
         payer = curator,
-        space = 408
+        space = 412
     )]
     pub hub: Loader<'info, Hub>,
     #[account(
@@ -22,13 +21,12 @@ pub struct HubInit<'info> {
     )]
     pub hub_signer: UncheckedAccount<'info>,
     #[account(
-        seeds = [b"nina-hub-treasury".as_ref(), hub.key().as_ref()],
-        bump,
+        constraint = usdc_token_account.owner == curator.key(),
+        constraint = usdc_token_account.mint == usdc_mint.key(),
     )]
-    pub treasury: UncheckedAccount<'info>,
+    pub usdc_token_account: Account<'info, TokenAccount>,
+    pub usdc_mint: Box<Account<'info, Mint>>,
     pub system_program: Program<'info, System>,
-    #[account(address = token::ID)]
-    pub token_program: Program<'info, Token>,
     pub rent: Sysvar<'info, Rent>,
 }
 
@@ -39,9 +37,8 @@ pub fn handler (
     let mut hub = ctx.accounts.hub.load_init()?;
     hub.curator = *ctx.accounts.curator.to_account_info().key;
     hub.hub_signer = *ctx.accounts.hub_signer.to_account_info().key;
-    hub.treasury = *ctx.accounts.treasury.to_account_info().key;
-    hub.primary_fee = params.primary_fee;
-    hub.secondary_fee = params.secondary_fee;
+    hub.usdc_token_account = *ctx.accounts.usdc_token_account.to_account_info().key;
+    hub.fee = params.fee;
 
     let mut name_array = [0u8; 100];
     name_array[..params.name.len()].copy_from_slice(&params.name.as_bytes());
