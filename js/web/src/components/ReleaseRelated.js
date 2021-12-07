@@ -25,10 +25,12 @@ const ReleaseRelated = ({ match }) => {
   }, [])
 
   useEffect(() => {
-    if (releaseState.tokenData[releasePubkey]) {
-      getRelatedForRelease(releasePubkey)
+    if (!relatedReleases || (relatedReleases && relatedReleases?.length <= 1)) {
+      if (releaseState.tokenData[releasePubkey]) {
+        getRelatedForRelease(releasePubkey)
+      }
+      setRelatedReleases(filterRelatedForRelease(releasePubkey))
     }
-    setRelatedReleases(filterRelatedForRelease(releasePubkey))
   }, [releaseState.tokenData])
 
   useEffect(() => {
