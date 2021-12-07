@@ -178,7 +178,8 @@ const ReleasePurchase = (props) => {
           }}
         >
           <Typography variant="body2">
-            See {userPublishedReleases.length - 1} more releases from{' '}
+            See {userPublishedReleases.length - 1} more release
+            {userPublishedReleases.length - 1 > 1 ? 's' : ''} from{' '}
             {metadata.properties.artist}
           </Typography>
         </Button>
