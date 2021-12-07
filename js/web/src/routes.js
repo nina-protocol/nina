@@ -31,8 +31,8 @@ function Routes() {
               <Route path="/faq" component={FaqPage} />
               <Route path="/collection" component={UserCollection}></Route>
 
-              <Route path="/users" component={AllReleases}></Route>
               <Route path="/users/:pubKey" component={UserPage}></Route>
+              <Route path="/users" component={AllReleases}></Route>
 
               <Route
                 exact
