@@ -33,9 +33,7 @@ const Release = ({ match }) => {
   )
 
   useEffect(() => {
-    if (!metadata) {
-      getRelease(releasePubkey)
-    }
+    getRelease(releasePubkey)
     getExchangeHistoryForRelease(releasePubkey)
   }, [])
 
