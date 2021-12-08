@@ -11,7 +11,7 @@ const { ReleaseContext } = ninaCommon.contexts
 
 const ReleaseRelated = ({ match }) => {
   const releasePubkey = match.params.releasePubkey
-  const { getRelatedForRelease, filterRelatedForRelease, releaseState, getReleasesRecent } =
+  const { getRelatedForRelease, filterRelatedForRelease, releaseState } =
     useContext(ReleaseContext)
   const [listView, setListView] = useState(false)
 
@@ -19,18 +19,12 @@ const ReleaseRelated = ({ match }) => {
   const [userHandles, setUserHandles] = useState(null)
 
   useEffect(() => {
-    if (!releaseState.tokenData[releasePubkey]) {
-      getReleasesRecent()
-    }
+    getRelatedForRelease(releasePubkey)
   }, [])
 
   useEffect(() => {
-    if (!relatedReleases || (relatedReleases && relatedReleases?.length <= 1)) {
-      if (releaseState.tokenData[releasePubkey]) {
-        getRelatedForRelease(releasePubkey)
-      }
-      setRelatedReleases(filterRelatedForRelease(releasePubkey))
-    }
+    const related = filterRelatedForRelease(releasePubkey)
+    setRelatedReleases(related)
   }, [releaseState.tokenData])
 
   useEffect(() => {
@@ -50,7 +44,7 @@ const ReleaseRelated = ({ match }) => {
   return (
     <>
       <Helmet>
-        <title>{`Releases by ${userHandles}`} </title>
+        <title>{`Nina: Releases by ${userHandles}`} </title>
         <meta name="description" content={`Releases by ${userHandles}`} />
       </Helmet>
       <ScrollablePageWrapper>

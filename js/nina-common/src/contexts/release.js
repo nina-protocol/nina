@@ -833,27 +833,57 @@ const releaseContextHelper = ({
     }
   }
 
-  const getReleasesHandler = async (publicKey, type) => {
+  const getReleasesHandler = async (recipient, type) => {
     if (!connection) {
       return
     }
+    if (recipient.percentShare.toNumber() > 0) {
+      try {
+        let path = NinaClient.endpoints.api
+        switch (type) {
+          case lookupTypes.PUBLISHED_BY:
+            path += `/releases/published/${recipient.recipientAuthority.toBase58()}`
+            break
+          case lookupTypes.REVENUE_SHARE:
+            path += `/releases/royalties/${recipient.recipientAuthority.toBase58()}`
+            break
+        }
 
-    try {
-      let path = NinaClient.endpoints.api
-      switch (type) {
-        case lookupTypes.PUBLISHED_BY:
-          path += `/releases/published/${publicKey.toBase58()}`
-          break
-        case lookupTypes.REVENUE_SHARE:
-          path += `/releases/royalties/${publicKey.toBase58()}`
-          break
+        const response = await fetch(path)
+        const releaseIds = await response.json()
+        await fetchAndSaveReleasesToState(releaseIds)
+      } catch (error) {
+        console.warn(error)
       }
+    } else {
+      return
+    }
+  }
 
-      const response = await fetch(path)
-      const releaseIds = await response.json()
-      await fetchAndSaveReleasesToState(releaseIds)
-    } catch (error) {
-      console.warn(error)
+  const getReleaseIdsHandler = async (recipient, type) => {
+    if (!connection) {
+      return
+    }
+    if (recipient.percentShare.toNumber() > 0) {
+      try {
+        let path = NinaClient.endpoints.api
+        switch (type) {
+          case lookupTypes.PUBLISHED_BY:
+            path += `/releases/published/${recipient.recipientAuthority.toBase58()}`
+            break
+          case lookupTypes.REVENUE_SHARE:
+            path += `/releases/royalties/${recipient.recipientAuthority.toBase58()}`
+            break
+        }
+
+        const response = await fetch(path)
+        const releaseIds = await response.json()
+        return releaseIds
+      } catch (error) {
+        console.warn(error)
+      }
+    } else {
+      return
     }
   }
 
@@ -867,21 +897,29 @@ const releaseContextHelper = ({
   }
 
   const getRelatedForRelease = async (releasePubkey) => {
-    const release = releaseState.tokenData[releasePubkey]
-    if (release) {
-      for await (let recipient of release.royaltyRecipients) {
-        if (recipient.percentShare.toNumber() > 0) {
-          await getReleasesHandler(
-            recipient.recipientAuthority,
-            lookupTypes.REVENUE_SHARE
-          )
-          await getReleasesHandler(
-            recipient.recipientAuthority,
-            lookupTypes.PUBLISHED_BY
-          )
-        }
+    let release = releaseState.tokenData[releasePubkey]
+    if (!release) {
+      release = await fetchRelease(releasePubkey)
+    }
+    const releaseIds = []
+    for await (let recipient of release.royaltyRecipients) {
+      const royaltyIds = await getReleaseIdsHandler(
+        recipient,
+        lookupTypes.REVENUE_SHARE
+      )
+      if (royaltyIds) {
+        releaseIds.push(...royaltyIds)
+      }
+      const publishedIds = await getReleaseIdsHandler(
+        recipient,
+        lookupTypes.PUBLISHED_BY
+      )
+      if (publishedIds) {
+        releaseIds.push(...publishedIds)
       }
     }
+    const filteredReleaseIds = new Set(releaseIds)
+    await fetchAndSaveReleasesToState([...filteredReleaseIds])
   }
 
   const getRedeemablesForRelease = async (releasePubkey) => {
@@ -1279,7 +1317,7 @@ const releaseContextHelper = ({
           dataParsed.publicKey = release.publicKey
           return dataParsed
         })
-        await saveReleasesToState(releaseAccounts)
+        return await saveReleasesToState(releaseAccounts)
       } catch (error) {
         console.warn(error)
       }
