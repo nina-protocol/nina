@@ -61,6 +61,7 @@ const ReleaseRelated = ({ match }) => {
                 <Typography
                   variant="body1"
                   sx={{ fontWeight: '700 !important' }}
+                  align="left"
                 >
                   Releases by {userHandles}
                 </Typography>
