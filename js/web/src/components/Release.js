@@ -84,6 +84,14 @@ const Release = ({ match }) => {
             name="description"
             content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`}
           />
+          <meta
+            name="twitter:title"
+            content={`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}
+          />
+          <meta
+            name="twitter:description"
+            content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`}
+          />
         </Helmet>
       )}
       {!metadata && <Dots size="80px" />}
