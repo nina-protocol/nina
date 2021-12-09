@@ -22,7 +22,6 @@ const Release = ({ match }) => {
     getRelease,
     getRelatedForRelease,
     filterRelatedForRelease,
-    getReleasesRecent
   } = useContext(ReleaseContext)
   const { getExchangeHistoryForRelease, exchangeState } =
     useContext(ExchangeContext)
@@ -34,7 +33,7 @@ const Release = ({ match }) => {
   )
 
   useEffect(() => {
-    getRelease(releasePubkey)
+    getRelatedForRelease(releasePubkey)
     getExchangeHistoryForRelease(releasePubkey)
   }, [])
 
@@ -47,16 +46,6 @@ const Release = ({ match }) => {
   useEffect(() => {
     setTrack(releaseState.metadata[releasePubkey])
   }, [releaseState.metadata[releasePubkey]])
-
-  useEffect(() => {
-    if (releaseState.tokenData[releasePubkey]) {
-      if (!relatedReleases) {
-        getRelatedForRelease(releasePubkey)
-      }
-    } else {
-      getReleasesRecent()
-    }
-  }, [releaseState.tokenData[releasePubkey]])
 
   useEffect(() => {
     setRelatedReleases(filterRelatedForRelease(releasePubkey))
