@@ -116,7 +116,7 @@ const ReleasePurchase = (props) => {
   }
 
   const downloadAs = async (url, name) => {
-    setDownloadButtonString('Downloading...')
+    setDownloadButtonString('Downloading')
 
     const response = await axios.get(url, {
       method: 'GET',
@@ -225,11 +225,11 @@ const ReleasePurchase = (props) => {
               metadata.properties.files[0].uri,
               `${metadata.name
                 .replace(/[^a-z0-9]/gi, '_')
-                .toLowerCase()}_nina.mp3`
+                .toLowerCase()}___nina.mp3`
             )
           }}
         >
-          <Typography variant="body2">{downloadButtonString}</Typography>
+          <Typography variant="body2">{downloadButtonString === 'Download' ? 'Download' : <Dots msg={downloadButtonString} /> }</Typography>
         </Button>
       )}
     </Box>
