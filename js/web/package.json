@@ -5,6 +5,8 @@
   "dependencies": {
     "@fortawesome/free-brands-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.16",
+    "axios": "^0.24.0",
+    "axios-react": "^2.0.8",
     "nina-common": "0.1.0",
     "react-dropzone-uploader": "^2.11.0",
     "react-helmet": "^6.1.0",
