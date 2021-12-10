@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
+import axios from 'axios'
 import { useHistory } from 'react-router-dom'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
@@ -27,6 +28,7 @@ const ReleasePurchase = (props) => {
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
   const [amountPendingBuys, setAmountPendingBuys] = useState(0)
   const [amountPendingSales, setAmountPendingSales] = useState(0)
+  const [downloadButtonString, setDownloadButtonString] = useState('Download')
 
   useEffect(() => {
     getRelease(releasePubkey)
@@ -113,6 +115,27 @@ const ReleasePurchase = (props) => {
     pathString = '/collection'
   }
 
+  const downloadAs = async (url, name) => {
+    setDownloadButtonString('Downloading')
+
+    const response = await axios.get(url, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/octet-stream',
+      },
+      responseType: 'blob',
+    })
+    if (response?.data) {
+      const a = document.createElement('a')
+      const url = window.URL.createObjectURL(response.data)
+      a.href = url
+      a.download = name
+      a.click()
+    }
+    setDownloadButtonString('Download')
+  }
+
   return (
     <Box>
       <AmountRemaining variant="body2" align="left">
@@ -189,6 +212,24 @@ const ReleasePurchase = (props) => {
             See {relatedReleases.length - 1} more related release
             {relatedReleases.length - 1 > 1 ? 's' : ''}
           </Typography>
+        </Button>
+      )}
+      {amountHeld > 0 && (
+        <Button
+          variant="outlined"
+          fullWidth
+          sx={{ marginTop: '15px !important' }}
+          onClick={(e) => {
+            e.stopPropagation()
+            downloadAs(
+              metadata.properties.files[0].uri,
+              `${metadata.name
+                .replace(/[^a-z0-9]/gi, '_')
+                .toLowerCase()}___nina.mp3`
+            )
+          }}
+        >
+          <Typography variant="body2">{downloadButtonString === 'Download' ? 'Download' : <Dots msg={downloadButtonString} /> }</Typography>
         </Button>
       )}
     </Box>

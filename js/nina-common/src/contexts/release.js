@@ -833,30 +833,26 @@ const releaseContextHelper = ({
     }
   }
 
-  const getReleasesHandler = async (recipient, type) => {
+  const getReleasesHandler = async (publicKey, type) => {
     if (!connection) {
       return
     }
-    if (recipient.percentShare.toNumber() > 0) {
-      try {
-        let path = NinaClient.endpoints.api
-        switch (type) {
-          case lookupTypes.PUBLISHED_BY:
-            path += `/releases/published/${recipient.recipientAuthority.toBase58()}`
-            break
-          case lookupTypes.REVENUE_SHARE:
-            path += `/releases/royalties/${recipient.recipientAuthority.toBase58()}`
-            break
-        }
-
-        const response = await fetch(path)
-        const releaseIds = await response.json()
-        await fetchAndSaveReleasesToState(releaseIds)
-      } catch (error) {
-        console.warn(error)
+    try {
+      let path = NinaClient.endpoints.api
+      switch (type) {
+        case lookupTypes.PUBLISHED_BY:
+          path += `/releases/published/${publicKey.toBase58()}`
+          break
+        case lookupTypes.REVENUE_SHARE:
+          path += `/releases/royalties/${publicKey.toBase58()}`
+          break
       }
-    } else {
-      return
+
+      const response = await fetch(path)
+      const releaseIds = await response.json()
+      await fetchAndSaveReleasesToState(releaseIds)
+    } catch (error) {
+      console.warn(error)
     }
   }
 
@@ -864,7 +860,7 @@ const releaseContextHelper = ({
     if (!connection) {
       return
     }
-    if (recipient.percentShare.toNumber() > 0) {
+    if (recipient?.percentShare?.toNumber() > 0) {
       try {
         let path = NinaClient.endpoints.api
         switch (type) {
