@@ -4,7 +4,6 @@ import { Typography, Box } from '@mui/material'
 import Button from '@mui/material/Button'
 import Fade from '@mui/material/Fade'
 import Modal from '@mui/material/Modal'
-import 'react-tabs/style/react-tabs.css'
 import NinaClient from '../utils/client'
 
 const ExchangeModal = (props) => {

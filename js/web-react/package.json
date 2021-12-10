@@ -1,0 +1,45 @@
+{
+  "name": "web-react",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@fortawesome/free-brands-svg-icons": "^5.15.4",
+    "@fortawesome/react-fontawesome": "^0.1.16",
+    "nina-common": "0.1.0",
+    "react-dropzone-uploader": "^2.11.0",
+    "react-helmet": "^6.1.0",
+    "react-multi-carousel": "^2.6.5",
+    "react-router-breadcrumbs-hoc": "^4.1.0",
+    "react-slick": "^0.28.1",
+    "react-smooth-image": "^1.1.0",
+    "react-swipeable-views": "^0.14.0",
+    "slick-carousel": "^1.8.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint ./ --ignore-path ../../.gitignore",
+    "lint:fix": "npm run lint -- --fix",
+    "format": "prettier -w \"{,!(node_modules)/**/}*.js\""
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
