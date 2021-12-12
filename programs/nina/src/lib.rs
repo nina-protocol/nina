@@ -1,5 +1,4 @@
 use anchor_lang::prelude::*;
-use metaplex_token_metadata::state::{Data};
 
 declare_id!("ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4");
 

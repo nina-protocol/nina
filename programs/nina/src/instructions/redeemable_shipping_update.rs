@@ -8,12 +8,12 @@ pub struct RedeemableShippingUpdate<'info> {
     #[account(
         constraint = redeemable.load()?.authority == *authority.key
     )]
-    pub redeemable: Loader<'info, Redeemable>,
+    pub redeemable: AccountLoader<'info, Redeemable>,
     #[account(
         mut,
         constraint = redemption_record.load()?.redeemable == *redeemable.to_account_info().key
     )]
-    pub redemption_record: Loader<'info, RedemptionRecord>,
+    pub redemption_record: AccountLoader<'info, RedemptionRecord>,
 }
 
 pub fn handler(
