@@ -229,7 +229,13 @@ const ReleasePurchase = (props) => {
             )
           }}
         >
-          <Typography variant="body2">{downloadButtonString === 'Download' ? 'Download' : <Dots msg={downloadButtonString} /> }</Typography>
+          <Typography variant="body2">
+            {downloadButtonString === 'Download' ? (
+              'Download'
+            ) : (
+              <Dots msg={downloadButtonString} />
+            )}
+          </Typography>
         </Button>
       )}
     </Box>
