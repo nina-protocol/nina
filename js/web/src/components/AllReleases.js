@@ -10,18 +10,18 @@ import ReleaseTileList from './ReleaseTileList'
 const { ReleaseContext } = ninaCommon.contexts
 
 const Releases = () => {
-  const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
+  const { getReleasesAll, releaseState, filterReleasesAll } =
     useContext(ReleaseContext)
   const [releases, setReleases] = useState([])
   const [listView, setListView] = useState(false)
 
   useEffect(() => {
-    getReleasesRecent()
+    getReleasesAll()
   }, [])
 
   useEffect(() => {
-    setReleases(filterReleasesRecent().published)
-  }, [releasesRecentState])
+    setReleases(filterReleasesAll())
+  }, [releaseState])
 
   const handleViewChange = () => {
     setListView(!listView)
