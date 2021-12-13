@@ -34,6 +34,7 @@
     "eslint": "^7.27.0",
     "formik": "^2.2.6",
     "idb-keyval": "^5.0.6",
+    "lodash": "^4.17.21",
     "material-ui-image": "^3.3.2",
     "notistack": "^1.0.6",
     "react": "^17.0.2",

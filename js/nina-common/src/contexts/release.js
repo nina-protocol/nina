@@ -41,12 +41,12 @@ const ReleaseContextProvider = ({ children }) => {
     releaseMintMap: {},
     redemptionRecords: {},
   })
-
   const [releasesRecentState, setReleasesRecentState] = useState({
     published: [],
     purchased: [],
   })
   const [allReleases, setAllReleases] = useState([])
+  const [allReleasesCount, setAllReleasesCount] = useState(null)
 
   useEffect(() => {
     getReleasesInCollection()
@@ -115,6 +115,7 @@ const ReleaseContextProvider = ({ children }) => {
     setReleasesRecentState,
     allReleases,
     setAllReleases,
+    setAllReleasesCount,
   })
 
   return (
@@ -152,6 +153,8 @@ const ReleaseContextProvider = ({ children }) => {
         filterReleasesAll,
         getRelatedForRelease,
         filterRelatedForRelease,
+        allReleases,
+        allReleasesCount,
       }}
     >
       {children}
@@ -181,6 +184,7 @@ const releaseContextHelper = ({
   setReleasesRecentState,
   allReleases,
   setAllReleases,
+  setAllReleasesCount
 }) => {
   const provider = new anchor.Provider(
     connection,
@@ -1072,6 +1076,7 @@ const releaseContextHelper = ({
           all.push(id)
         }
       })
+      setAllReleasesCount(json.count)
       setAllReleases(all)
       await fetchAndSaveReleasesToState(json.releases)
     } catch (error) {

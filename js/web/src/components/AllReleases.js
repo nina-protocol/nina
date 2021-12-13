@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
+import debounce from 'lodash.debounce'
 import { Helmet } from 'react-helmet'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
@@ -8,20 +9,30 @@ import ScrollablePageWrapper from './ScrollablePageWrapper'
 import ReleaseTileList from './ReleaseTileList'
 
 const { ReleaseContext } = ninaCommon.contexts
+const { Dots } = ninaCommon.components
 
 const Releases = () => {
-  const { getReleasesAll, releaseState, filterReleasesAll } =
+  const { getReleasesAll, filterReleasesAll, allReleases, allReleasesCount } =
     useContext(ReleaseContext)
   const [releases, setReleases] = useState([])
   const [listView, setListView] = useState(false)
+  const [pendingFetch, setPendingFetch] = useState(false)
+  const [totalCount, setTotalCount] = useState(null)
 
   useEffect(() => {
-    getReleasesAll(releases.length)
+    getReleasesAll()
   }, [])
 
   useEffect(() => {
-    setReleases(filterReleasesAll())
-  }, [releaseState])
+    if (allReleases.length > 0) {
+      setReleases(filterReleasesAll())
+      setPendingFetch(false)
+    }
+  }, [allReleases])
+
+  useEffect(() => {
+    setTotalCount(allReleasesCount)
+  }, [allReleasesCount])
 
   const handleViewChange = () => {
     setListView(!listView)
@@ -30,8 +41,9 @@ const Releases = () => {
   const handleScroll = (e) => {
     const bottom =
       e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight
-    if (bottom) {
-      getReleasesAll(releases.length)
+    if (bottom && !pendingFetch && (totalCount !== allReleases.length)) {
+      setPendingFetch(true)
+      getReleasesAll()
     }
   }
 
@@ -41,7 +53,7 @@ const Releases = () => {
         <title>{`Nina: All Releases`}</title>
         <meta name="description" content={'Nina: All Releases'} />
       </Helmet>
-      <ScrollablePageWrapper onScroll={(e) => handleScroll(e)}>
+      <ScrollablePageWrapper onScroll={debounce((e) => handleScroll(e), 500)}>
         <AllReleasesWrapper>
           <CollectionHeader
             onClick={handleViewChange}
@@ -61,11 +73,20 @@ const Releases = () => {
           )}
 
           {!listView && <ReleaseTileList releases={releases} />}
+          {pendingFetch && 
+            <StyledDots>
+              <Dots size="80px" />
+            </StyledDots>
+          }
         </AllReleasesWrapper>
       </ScrollablePageWrapper>
     </>
   )
 }
+
+const StyledDots = styled(Box)(()=> ({
+  marginTop: '40px'
+}))
 
 const CollectionHeader = styled(Typography)(({ listView }) => ({
   maxWidth: listView ? '764px' : '960px',
