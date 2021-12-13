@@ -16,7 +16,7 @@ const Releases = () => {
   const [listView, setListView] = useState(false)
 
   useEffect(() => {
-    getReleasesAll()
+    getReleasesAll(releases.length)
   }, [])
 
   useEffect(() => {
@@ -27,13 +27,21 @@ const Releases = () => {
     setListView(!listView)
   }
 
+  const handleScroll = (e) => {
+    const bottom =
+      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight
+    if (bottom) {
+      getReleasesAll(releases.length)
+    }
+  }
+
   return (
     <>
       <Helmet>
         <title>{`Nina: All Releases`}</title>
         <meta name="description" content={'Nina: All Releases'} />
       </Helmet>
-      <ScrollablePageWrapper>
+      <ScrollablePageWrapper onScroll={(e) => handleScroll(e)}>
         <AllReleasesWrapper>
           <CollectionHeader
             onClick={handleViewChange}
