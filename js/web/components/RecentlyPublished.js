@@ -5,7 +5,8 @@ import Slider from 'react-slick'
 import Typography from '@mui/material/Typography'
 import ninaCommon from 'nina-common'
 import { Link } from 'react-router-dom'
-import SmoothImage from 'react-smooth-image'
+// import SmoothImage from 'react-smooth-image'
+import Image from 'next/image'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 const { Dots } = ninaCommon.components
@@ -96,7 +97,7 @@ const RecentlyPublished = (props) => {
               <ReleaseSlideWrapper key={i}>
                 <ReleaseSlide key={i}>
                   <Link to={'/' + release.releasePubkey}>
-                    <SmoothImage src={imageUrl} />
+                    <Image src={imageUrl} />
                   </Link>
                   {availability}
                   <ReleaseCopy sx={{ display: 'flex' }}>

@@ -5,7 +5,8 @@ import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import { Link } from 'react-router-dom'
-import SmoothImage from 'react-smooth-image'
+// import SmoothImage from 'react-smooth-image'
+import Image from 'next/image'
 import Carousel from 'react-multi-carousel'
 import 'react-multi-carousel/lib/styles.css'
 import Button from '@mui/material/Button'
@@ -149,7 +150,7 @@ const RecentlyPurchased = (props) => {
                       to={'/' + release.releasePubkey}
                       style={{ width: '400px' }}
                     >
-                      <SmoothImage src={imageUrl} />
+                      <Image src={imageUrl} />
                     </Link>
                     <Copy sx={{ paddingLeft: 2 }}>
                       <Typography variant="h3" color="blue">
