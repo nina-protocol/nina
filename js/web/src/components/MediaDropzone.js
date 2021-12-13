@@ -37,18 +37,7 @@ const MediaDropzone = ({
 
   const handleChangeStatus = ({ file, meta, restart, remove }, status) => {
     if (meta.status === 'error_validation') {
-      const height = meta.height
-      const width = meta.width
-      const size = meta.size / 1000000
-      if (file.type.includes('audio')) {
-        alert(
-          `your track is ${size} mb... \nPlease upload a smaller than 80 mb`
-        )
-      } else {
-        alert(
-          `your image's dimensions are ${height} x ${width}... \nPlease upload a square image`
-        )
-      }
+      alert(meta.validationErrorWarning)
       remove()
     }
     if (type === 'artwork') {
@@ -94,18 +83,27 @@ const MediaDropzone = ({
     }
   }
 
-  const validateSquareImage = (fileWithMeta) => {
+  const validateImage = (fileWithMeta) => {
     const height = fileWithMeta.meta.height
     const width = fileWithMeta.meta.width
+    const size = fileWithMeta.file.size / 1000000
 
     if (height !== width) {
+      fileWithMeta.meta.validationErrorWarning = `your image's dimensions are ${height} x ${width}... \nPlease upload a square image`
+      return true
+    }
+
+    if (size > 4) {
+      fileWithMeta.meta.validationErrorWarning = `your image's is ${size} mb... \nPlease upload an image smaller than 4 mb`
       return true
     }
     return false
   }
+
   const validateFileSize = (fileWithMeta) => {
     const size = fileWithMeta.file.size / 1000000
     if (size > 80) {
+      fileWithMeta.meta.validationErrorWarning = `your track is ${size} mb... \nPlease upload a smaller than 80 mb`
       return true
     }
     return false
@@ -188,7 +186,7 @@ const MediaDropzone = ({
       validate={
         type === 'track'
           ? (fileWithMeta) => validateFileSize(fileWithMeta)
-          : (fileWithMeta) => validateSquareImage(fileWithMeta)
+          : (fileWithMeta) => validateImage(fileWithMeta)
       }
       SubmitButtonComponent={null}
       autoUpload={false}
