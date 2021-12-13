@@ -76,10 +76,12 @@ const ReleaseContextProvider = ({ children }) => {
     getReleasesInCollection,
     getReleasesPublishedByUser,
     getReleasesRecent,
+    getReleasesAll,
     getReleaseRoyaltiesByUser,
     filterReleasesUserCollection,
     filterReleasesPublishedByUser,
     filterReleasesRecent,
+    filterReleasesAll,
     filterRoyaltiesByUser,
     calculateStatsByUser,
     redeemableInitialize,
@@ -126,6 +128,7 @@ const ReleaseContextProvider = ({ children }) => {
         getRelease,
         getReleasesPublishedByUser,
         getReleasesRecent,
+        getReleasesAll,
         getReleaseRoyaltiesByUser,
         filterReleasesUserCollection,
         filterReleasesPublishedByUser,
@@ -142,6 +145,7 @@ const ReleaseContextProvider = ({ children }) => {
         getRedeemablesForRelease,
         releasesRecentState,
         filterReleasesRecent,
+        filterReleasesAll,
         getRelatedForRelease,
         filterRelatedForRelease,
       }}
@@ -1034,7 +1038,9 @@ const releaseContextHelper = ({
 
   const getReleasesRecent = async () => {
     try {
-      const result = await fetch(`${NinaClient.endpoints.api}/releases/recent`)
+      const result = await fetch(
+        `${NinaClient.endpoints.api}/releases/recent20`
+      )
       const { published, purchased } = await result.json()
       const releaseIds = [...published, ...purchased]
       await fetchAndSaveReleasesToState(releaseIds)
@@ -1043,6 +1049,17 @@ const releaseContextHelper = ({
         published,
         purchased,
       })
+    } catch (error) {
+      console.warn(error)
+    }
+  }
+
+  const getReleasesAll = async () => {
+    try {
+      const result = await fetch(`${NinaClient.endpoints.api}/releases/recent`)
+      const { published, purchased } = await result.json()
+      const releaseIds = [...published, ...purchased]
+      await fetchAndSaveReleasesToState(releaseIds)
     } catch (error) {
       console.warn(error)
     }
@@ -1094,6 +1111,23 @@ const releaseContextHelper = ({
       published: releasesPublished,
       purchased: releasesPurchased,
     }
+  }
+
+  const filterReleasesAll = () => {
+    const allReleases = []
+    Object.keys(releaseState.tokenData).forEach((releasePubkey) => {
+      const tokenData = releaseState.tokenData[releasePubkey]
+      const metadata = releaseState.metadata[releasePubkey]
+      if (metadata) {
+        allReleases.push({ tokenData, metadata, releasePubkey })
+      }
+    })
+    allReleases.sort(
+      (a, b) =>
+        a.tokenData.releaseDatetime.toNumber() >
+        b.tokenData.releaseDatetime.toNumber()
+    )
+    return allReleases
   }
 
   const filterReleasesPublishedByUser = (userPubkey = undefined) => {
@@ -1484,10 +1518,12 @@ const releaseContextHelper = ({
     getReleasesInCollection,
     getReleasesPublishedByUser,
     getReleasesRecent,
+    getReleasesAll,
     getReleaseRoyaltiesByUser,
     filterReleasesUserCollection,
     filterReleasesPublishedByUser,
     filterReleasesRecent,
+    filterReleasesAll,
     filterRoyaltiesByUser,
     calculateStatsByUser,
     redeemableInitialize,

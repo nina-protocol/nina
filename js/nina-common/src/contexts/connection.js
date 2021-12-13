@@ -55,14 +55,18 @@ const ConnectionContextProvider = ({ children }) => {
   const healthCheck = async () => {
     const performance = await connection._rpcRequest(
       'getRecentPerformanceSamples',
-      [1]
+      [5]
     )
-    const sample = performance.result[0]
-    setHealthOk(sample.numTransactions / sample.samplePeriodSecs > 1000)
+    const reducer = (previousSample, currentSample) =>
+      previousSample.numTransactions / previousSample.samplePeriodSecs > 1000 &&
+      currentSample.numTransactions / currentSample.samplePeriodSecs > 1000
+    const status = performance.result.reduce(reducer)
+    setHealthOk(status)
   }
 
   useEffect(() => {
     if (!timer) {
+      healthCheck()
       timer = setInterval(() => healthCheck(), 60000)
     }
     return () => {
