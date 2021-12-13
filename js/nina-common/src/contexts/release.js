@@ -184,7 +184,7 @@ const releaseContextHelper = ({
   setReleasesRecentState,
   allReleases,
   setAllReleases,
-  setAllReleasesCount
+  setAllReleasesCount,
 }) => {
   const provider = new anchor.Provider(
     connection,

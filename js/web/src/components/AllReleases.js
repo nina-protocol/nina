@@ -41,7 +41,7 @@ const Releases = () => {
   const handleScroll = (e) => {
     const bottom =
       e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight
-    if (bottom && !pendingFetch && (totalCount !== allReleases.length)) {
+    if (bottom && !pendingFetch && totalCount !== allReleases.length) {
       setPendingFetch(true)
       getReleasesAll()
     }
@@ -73,19 +73,19 @@ const Releases = () => {
           )}
 
           {!listView && <ReleaseTileList releases={releases} />}
-          {pendingFetch && 
+          {pendingFetch && (
             <StyledDots>
               <Dots size="80px" />
             </StyledDots>
-          }
+          )}
         </AllReleasesWrapper>
       </ScrollablePageWrapper>
     </>
   )
 }
 
-const StyledDots = styled(Box)(()=> ({
-  marginTop: '40px'
+const StyledDots = styled(Box)(() => ({
+  marginTop: '40px',
 }))
 
 const CollectionHeader = styled(Typography)(({ listView }) => ({
