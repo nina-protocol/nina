@@ -1038,7 +1038,9 @@ const releaseContextHelper = ({
 
   const getReleasesRecent = async () => {
     try {
-      const result = await fetch(`${NinaClient.endpoints.api}/releases/recent20`)
+      const result = await fetch(
+        `${NinaClient.endpoints.api}/releases/recent20`
+      )
       const { published, purchased } = await result.json()
       const releaseIds = [...published, ...purchased]
       await fetchAndSaveReleasesToState(releaseIds)
@@ -1113,15 +1115,18 @@ const releaseContextHelper = ({
 
   const filterReleasesAll = () => {
     const allReleases = []
-    Object.keys(releaseState.tokenData).forEach(releasePubkey => {
+    Object.keys(releaseState.tokenData).forEach((releasePubkey) => {
       const tokenData = releaseState.tokenData[releasePubkey]
       const metadata = releaseState.metadata[releasePubkey]
       if (metadata) {
-        allReleases.push({tokenData, metadata, releasePubkey})        
+        allReleases.push({ tokenData, metadata, releasePubkey })
       }
     })
-    console.log('allReleases: ', allReleases)
-    allReleases.sort((a, b) => a.tokenData.releaseDatetime.toNumber() > b.tokenData.releaseDatetime.toNumber())
+    allReleases.sort(
+      (a, b) =>
+        a.tokenData.releaseDatetime.toNumber() >
+        b.tokenData.releaseDatetime.toNumber()
+    )
     return allReleases
   }
 
