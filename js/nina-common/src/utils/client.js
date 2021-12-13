@@ -51,7 +51,7 @@ const ENDPOINT_PRESSING_PLANT =
     : 'https://pressingplant-dev.nina.market:443'
 const ENDPOINT_API =
   process.env.REACT_APP_CLUSTER === 'mainnet'
-    ? 'https://api-dev.nina.market:443'
+    ? 'https://api.nina.market:443'
     : 'https://api-dev.nina.market:443'
 
 const arweave = Arweave.init()
