@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{self, Transfer, MintTo, SetAuthority};
+use anchor_spl::token::{self, Transfer, SetAuthority};
 
 use crate::errors::*;
 
@@ -103,7 +103,7 @@ impl Release {
     }
 
     pub fn release_revenue_share_collect_handler<'info> (
-        release_loader: &Loader<'info, Release>,
+        release_loader: &AccountLoader<'info, Release>,
         release_signer: AccountInfo<'info>,
         royalty_token_account: AccountInfo<'info>,
         authority: Pubkey,
@@ -140,7 +140,7 @@ impl Release {
     }
 
     pub fn release_init_handler<'info>(
-        release_loader: &Loader<'info, Release>,
+        release_loader: &AccountLoader<'info, Release>,
         release_signer: AccountInfo<'info>,
         release_mint: AccountInfo<'info>,
         payment_mint: AccountInfo<'info>,

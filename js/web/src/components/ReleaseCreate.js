@@ -11,10 +11,9 @@ import ReleaseCard from './ReleaseCard'
 import NinaBox from './NinaBox'
 import MediaDropzones from './MediaDropzones'
 import * as Yup from 'yup'
-import ScrollablePageWrapper from './ScrollablePageWrapper'
 
 const { ReleaseSettings, Dots } = ninaCommon.components
-const { ReleaseContext, NinaContext } = ninaCommon.contexts
+const { ReleaseContext, NinaContext, ConnectionContext } = ninaCommon.contexts
 
 const ReleaseCreateSchema = Yup.object().shape({
   artist: Yup.string().required('Artist Name is Required'),
@@ -32,6 +31,7 @@ const ReleaseCreate = () => {
   const { releaseCreate, pressingState, resetPressingState, releaseState } =
     useContext(ReleaseContext)
   const { getNpcAmountHeld, npcAmountHeld } = useContext(NinaContext)
+  const { healthOk } = useContext(ConnectionContext)
   const [track, setTrack] = useState(undefined)
   const [artwork, setArtwork] = useState()
   const [releasePubkey, setReleasePubkey] = useState(undefined)
@@ -150,9 +150,58 @@ const ReleaseCreate = () => {
 
   return (
     <Box>
+      {npcAmountHeld >= 1 && !healthOk && (
+        <NetworkDegradedMessage>
+          <Typography variant="h4">{`The Solana network status is currently degraded - there's a chance your upload will fail.`}</Typography>
+        </NetworkDegradedMessage>
+      )}
+      {npcAmountHeld < 1 && (
+        <Box style={{ display: 'flex' }}>
+          <NpcMessage>
+            <Typography variant="h3">
+              Currently, Nina Publishing Credits (NPCs) are required to access
+              the publishing flow.
+            </Typography>
+            <Typography variant="h3">
+              1 NPC allows the publishing of 1 Release.
+            </Typography>
+            <Typography variant="h3">
+              If you don’t have a Solana wallet, please set one up at{' '}
+              <a target="_blank" rel="noreferrer" href="https://phantom.app">
+                phantom.app
+              </a>
+              .
+            </Typography>
+            <Typography variant="h3">
+              Please fill out{' '}
+              <a
+                target="_blank"
+                rel="noreferrer"
+                href="https://docs.google.com/forms/d/e/1FAIpQLSdj13RKQcw9GXv3A5U4ebJhzJjjfxzxuCtB092X4mkHm5XX0w/viewform"
+              >
+                this form
+              </a>{' '}
+              and we will notify you when your credits have been distributed.
+            </Typography>
+
+            <Typography variant="h3">
+              Check our <a href="/faq">FAQ</a> or hit us at{' '}
+              <a
+                target="_blank"
+                rel="noreferrer"
+                href="href=mailto:artists@nina.market"
+              >
+                artists@nina.market
+              </a>{' '}
+              with any questions.
+            </Typography>
+          </NpcMessage>
+        </Box>
+      )}
+
       {!wallet.connected && (
         <ConnectMessage variant="body" gutterBottom>
-          Please connect your wallet to start publishing!
+          Please connect your wallet to start publishing
         </ConnectMessage>
       )}
 
@@ -176,7 +225,6 @@ const ReleaseCreate = () => {
               ReleaseCreateSchema={ReleaseCreateSchema}
             />
           </CreateFormWrapper>
-
           <CreateCta>
             <Button
               fullWidth
@@ -217,49 +265,13 @@ const ReleaseCreate = () => {
           </CreateCta>
         </NinaBox>
       )}
-
-      {wallet?.connected && npcAmountHeld < 1 && (
-        <ScrollablePageWrapper style={{ display: 'flex' }}>
-          <NpcMessage>
-            <Typography variant="h3">
-              Currently, Nina Publishing Credits (NPCs) are required to access
-              the publishing flow.
-            </Typography>
-            <Typography variant="h3">
-              1 NPC = 1 Release, NPCs are burned during the upload process.
-            </Typography>
-            <Typography variant="h3">
-              Please fill out{' '}
-              <a
-                target="_blank"
-                rel="noreferrer"
-                href="https://docs.google.com/forms/d/e/1FAIpQLSdj13RKQcw9GXv3A5U4ebJhzJjjfxzxuCtB092X4mkHm5XX0w/viewform"
-              >
-                this form
-              </a>{' '}
-              and we will notify you when your credits have been distributed.
-            </Typography>
-
-            <Typography variant="h3">
-              Check our <a href="/faq">FAQ</a> or hit us at{' '}
-              <a
-                target="_blank"
-                rel="noreferrer"
-                href="href=mailto:artists@nina.market"
-              >
-                artists@nina.market
-              </a>{' '}
-              with any questions.
-            </Typography>
-          </NpcMessage>
-        </ScrollablePageWrapper>
-      )}
     </Box>
   )
 }
 
 const ConnectMessage = styled(Typography)(() => ({
   gridColumn: '1/3',
+  paddingTop: '30px',
 }))
 
 const CreateFormWrapper = styled(Box)(({ theme }) => ({
@@ -279,10 +291,19 @@ const CreateCta = styled(Box)(({ theme }) => ({
   },
 }))
 
+const NetworkDegradedMessage = styled(Box)(({ theme }) => ({
+  color: theme.palette.red,
+  padding: '0 0 50px',
+}))
+
 const NpcMessage = styled(Box)(({ theme }) => ({
   textAlign: 'left',
   margin: 'auto',
-  width: '55%',
+  width: '800px',
+  padding: '0 0 50px',
+  [theme.breakpoints.down('md')]: {
+    width: '80vw',
+  },
   '& .MuiTypography-root': {
     paddingBottom: '10px',
   },

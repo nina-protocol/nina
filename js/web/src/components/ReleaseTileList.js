@@ -27,12 +27,14 @@ const ReleaseTileList = (props) => {
           return (
             <Tile key={i}>
               <HoverCard
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation()
                   handleClick(release.releasePubkey)
                 }}
               >
                 <CardCta
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation()
                     handleClick(release.releasePubkey)
                   }}
                 >
@@ -94,6 +96,7 @@ const TileGrid = styled(Box)(({ theme }) => ({
   margin: 'auto',
   [theme.breakpoints.down('md')]: {
     gridTemplateColumns: 'repeat(2, 1fr)',
+    paddingBottom: '120px',
   },
 }))
 

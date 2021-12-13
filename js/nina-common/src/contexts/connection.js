@@ -1,4 +1,4 @@
-import { createContext, useState, useMemo } from 'react'
+import { createContext, useState, useMemo, useEffect } from 'react'
 import { Connection } from '@solana/web3.js'
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
 import { WalletProvider } from '@solana/wallet-adapter-react'
@@ -34,7 +34,7 @@ const ConnectionContextProvider = ({ children }) => {
       ? WalletAdapterNetwork.MainnetBeta
       : WalletAdapterNetwork.Devnet
   const [endpoint] = useState(ENDPOINTS[process.env.REACT_APP_CLUSTER].endpoint)
-
+  const [healthOk, setHealthOk] = useState(true)
   const connection = useMemo(
     () => new Connection(endpoint, 'recent'),
     [endpoint]
@@ -50,11 +50,37 @@ const ConnectionContextProvider = ({ children }) => {
     []
   )
 
+  let timer = undefined
+
+  const healthCheck = async () => {
+    const performance = await connection._rpcRequest(
+      'getRecentPerformanceSamples',
+      [5]
+    )
+    const reducer = (previousSample, currentSample) =>
+      previousSample.numTransactions / previousSample.samplePeriodSecs > 1000 &&
+      currentSample.numTransactions / currentSample.samplePeriodSecs > 1000
+    const status = performance.result.reduce(reducer)
+    setHealthOk(status)
+  }
+
+  useEffect(() => {
+    if (!timer) {
+      healthCheck()
+      timer = setInterval(() => healthCheck(), 60000)
+    }
+    return () => {
+      clearInterval(timer)
+      timer = null
+    }
+  }, [healthCheck])
+
   return (
     <ConnectionContext.Provider
       value={{
         endpoint,
         connection,
+        healthOk,
       }}
     >
       <WalletProvider wallets={wallets} autoConnect>

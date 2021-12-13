@@ -76,10 +76,12 @@ const ReleaseContextProvider = ({ children }) => {
     getReleasesInCollection,
     getReleasesPublishedByUser,
     getReleasesRecent,
+    getReleasesAll,
     getReleaseRoyaltiesByUser,
     filterReleasesUserCollection,
     filterReleasesPublishedByUser,
     filterReleasesRecent,
+    filterReleasesAll,
     filterRoyaltiesByUser,
     calculateStatsByUser,
     redeemableInitialize,
@@ -87,6 +89,8 @@ const ReleaseContextProvider = ({ children }) => {
     redeemableUpdateShipping,
     getRedemptionRecordsForRelease,
     getRedeemablesForRelease,
+    getRelatedForRelease,
+    filterRelatedForRelease,
   } = releaseContextHelper({
     releaseState,
     setReleaseState,
@@ -124,6 +128,7 @@ const ReleaseContextProvider = ({ children }) => {
         getRelease,
         getReleasesPublishedByUser,
         getReleasesRecent,
+        getReleasesAll,
         getReleaseRoyaltiesByUser,
         filterReleasesUserCollection,
         filterReleasesPublishedByUser,
@@ -140,6 +145,9 @@ const ReleaseContextProvider = ({ children }) => {
         getRedeemablesForRelease,
         releasesRecentState,
         filterReleasesRecent,
+        filterReleasesAll,
+        getRelatedForRelease,
+        filterRelatedForRelease,
       }}
     >
       {children}
@@ -829,28 +837,53 @@ const releaseContextHelper = ({
     }
   }
 
-  const getReleasesHandler = async (type) => {
+  const getReleasesHandler = async (publicKey, type) => {
     if (!connection) {
       return
     }
-
     try {
       let path = NinaClient.endpoints.api
       switch (type) {
         case lookupTypes.PUBLISHED_BY:
-          path += `/releases/published/${wallet?.publicKey.toBase58()}`
+          path += `/releases/published/${publicKey.toBase58()}`
           break
         case lookupTypes.REVENUE_SHARE:
-          path += `/releases/royalties/${wallet?.publicKey.toBase58()}`
+          path += `/releases/royalties/${publicKey.toBase58()}`
           break
       }
 
       const response = await fetch(path)
       const releaseIds = await response.json()
-
       await fetchAndSaveReleasesToState(releaseIds)
     } catch (error) {
       console.warn(error)
+    }
+  }
+
+  const getReleaseIdsHandler = async (recipient, type) => {
+    if (!connection) {
+      return
+    }
+    if (recipient?.percentShare?.toNumber() > 0) {
+      try {
+        let path = NinaClient.endpoints.api
+        switch (type) {
+          case lookupTypes.PUBLISHED_BY:
+            path += `/releases/published/${recipient.recipientAuthority.toBase58()}`
+            break
+          case lookupTypes.REVENUE_SHARE:
+            path += `/releases/royalties/${recipient.recipientAuthority.toBase58()}`
+            break
+        }
+
+        const response = await fetch(path)
+        const releaseIds = await response.json()
+        return releaseIds
+      } catch (error) {
+        console.warn(error)
+      }
+    } else {
+      return
     }
   }
 
@@ -858,9 +891,35 @@ const releaseContextHelper = ({
     await fetchAndSaveReleasesToState(Object.keys(collection))
   }
 
-  const getReleasesPublishedByUser = async () => {
-    await getReleasesHandler(lookupTypes.REVENUE_SHARE)
-    await getReleasesHandler(lookupTypes.PUBLISHED_BY)
+  const getReleasesPublishedByUser = async (publicKey) => {
+    await getReleasesHandler(publicKey, lookupTypes.REVENUE_SHARE)
+    await getReleasesHandler(publicKey, lookupTypes.PUBLISHED_BY)
+  }
+
+  const getRelatedForRelease = async (releasePubkey) => {
+    let release = releaseState.tokenData[releasePubkey]
+    if (!release) {
+      release = await fetchRelease(releasePubkey)
+    }
+    const releaseIds = []
+    for await (let recipient of release.royaltyRecipients) {
+      const royaltyIds = await getReleaseIdsHandler(
+        recipient,
+        lookupTypes.REVENUE_SHARE
+      )
+      if (royaltyIds) {
+        releaseIds.push(...royaltyIds)
+      }
+      const publishedIds = await getReleaseIdsHandler(
+        recipient,
+        lookupTypes.PUBLISHED_BY
+      )
+      if (publishedIds) {
+        releaseIds.push(...publishedIds)
+      }
+    }
+    const filteredReleaseIds = new Set(releaseIds)
+    await fetchAndSaveReleasesToState([...filteredReleaseIds])
   }
 
   const getRedeemablesForRelease = async (releasePubkey) => {
@@ -979,7 +1038,9 @@ const releaseContextHelper = ({
 
   const getReleasesRecent = async () => {
     try {
-      const result = await fetch(`${NinaClient.endpoints.api}/releases/recent`)
+      const result = await fetch(
+        `${NinaClient.endpoints.api}/releases/recent20`
+      )
       const { published, purchased } = await result.json()
       const releaseIds = [...published, ...purchased]
       await fetchAndSaveReleasesToState(releaseIds)
@@ -988,6 +1049,17 @@ const releaseContextHelper = ({
         published,
         purchased,
       })
+    } catch (error) {
+      console.warn(error)
+    }
+  }
+
+  const getReleasesAll = async () => {
+    try {
+      const result = await fetch(`${NinaClient.endpoints.api}/releases/recent`)
+      const { published, purchased } = await result.json()
+      const releaseIds = [...published, ...purchased]
+      await fetchAndSaveReleasesToState(releaseIds)
     } catch (error) {
       console.warn(error)
     }
@@ -1041,10 +1113,27 @@ const releaseContextHelper = ({
     }
   }
 
+  const filterReleasesAll = () => {
+    const allReleases = []
+    Object.keys(releaseState.tokenData).forEach((releasePubkey) => {
+      const tokenData = releaseState.tokenData[releasePubkey]
+      const metadata = releaseState.metadata[releasePubkey]
+      if (metadata) {
+        allReleases.push({ tokenData, metadata, releasePubkey })
+      }
+    })
+    allReleases.sort(
+      (a, b) =>
+        a.tokenData.releaseDatetime.toNumber() >
+        b.tokenData.releaseDatetime.toNumber()
+    )
+    return allReleases
+  }
+
   const filterReleasesPublishedByUser = (userPubkey = undefined) => {
-    if (!wallet?.connected || (!userPubkey && !wallet?.publicKey)) {
-      return
-    }
+    // if (!wallet?.connected || (!userPubkey && !wallet?.publicKey)) {
+    //   return
+    // }
     // Return results for passed in user if another user isn't specified
     if (!userPubkey) {
       userPubkey = wallet?.publicKey.toBase58()
@@ -1103,6 +1192,34 @@ const releaseContextHelper = ({
         }
       })
     })
+    return releases
+  }
+
+  const filterRelatedForRelease = (releasePubkey) => {
+    const releases = []
+    const releaseIds = new Set()
+    const release = releaseState.tokenData[releasePubkey]
+    if (release) {
+      release.royaltyRecipients.forEach((recipient) => {
+        Object.keys(releaseState.tokenData).forEach((releasePubkey) => {
+          const tokenData = releaseState.tokenData[releasePubkey]
+          const metadata = releaseState.metadata[releasePubkey]
+          tokenData.royaltyRecipients.forEach((recipient2) => {
+            if (
+              recipient.percentShare.toNumber() > 0 &&
+              recipient.recipientAuthority.toBase58() ===
+                recipient2.recipientAuthority.toBase58() &&
+              metadata
+            ) {
+              if (!releaseIds.has(releasePubkey)) {
+                releases.push({ tokenData, metadata, releasePubkey, recipient })
+                releaseIds.add(releasePubkey)
+              }
+            }
+          })
+        })
+      })
+    }
     return releases
   }
 
@@ -1230,7 +1347,7 @@ const releaseContextHelper = ({
           dataParsed.publicKey = release.publicKey
           return dataParsed
         })
-        await saveReleasesToState(releaseAccounts)
+        return await saveReleasesToState(releaseAccounts)
       } catch (error) {
         console.warn(error)
       }
@@ -1401,10 +1518,12 @@ const releaseContextHelper = ({
     getReleasesInCollection,
     getReleasesPublishedByUser,
     getReleasesRecent,
+    getReleasesAll,
     getReleaseRoyaltiesByUser,
     filterReleasesUserCollection,
     filterReleasesPublishedByUser,
     filterReleasesRecent,
+    filterReleasesAll,
     filterRoyaltiesByUser,
     calculateStatsByUser,
     redeemableInitialize,
@@ -1412,6 +1531,8 @@ const releaseContextHelper = ({
     redeemableUpdateShipping,
     getRedemptionRecordsForRelease,
     getRedeemablesForRelease,
+    getRelatedForRelease,
+    filterRelatedForRelease,
   }
 }
 

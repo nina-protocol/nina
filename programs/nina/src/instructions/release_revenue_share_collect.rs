@@ -30,7 +30,7 @@ pub struct ReleaseRevenueShareCollect<'info> {
         seeds = [b"nina-release".as_ref(), release.load()?.release_mint.as_ref()],
         bump = release.load()?.bumps.release,
     )]
-    pub release: Loader<'info, Release>,
+    pub release: AccountLoader<'info, Release>,
     #[account(address = token::ID)]
     pub token_program: Program<'info, Token>,
 }

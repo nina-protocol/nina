@@ -854,7 +854,7 @@ describe('Release', async () => {
         })
       },
       (err) => {
-        assert.equal(err.code, 300);
+        assert.equal(err.code, 6000);
         assert.equal(err.msg, "Amount sent does not match price");
         return true;
       }
@@ -927,7 +927,7 @@ describe('Release', async () => {
         })
       },
       (err) => {
-        assert.equal(err.code, 143);
+        assert.equal(err.code, 2003);
         assert.equal(err.msg, "A raw constraint was violated");
         return true;
       }
@@ -1043,7 +1043,7 @@ describe('Release', async () => {
         }
       },
       (err) => {
-        assert.equal(err.code, 306);
+        assert.equal(err.code, 6006);
         assert.equal(err.msg, "Sold out");
         return true;
       }
@@ -1153,7 +1153,7 @@ describe('Release', async () => {
         );
       },
       (err) => {
-        assert.equal(err.code, 311);
+        assert.equal(err.code, 6011);
         assert.equal(err.msg, "Release is not live yet");
         return true;
       }
@@ -1335,7 +1335,7 @@ describe("Revenue Share", async () => {
         });      
     },
       (err) => {
-        assert.equal(err.code, 309);
+        assert.equal(err.code, 6009);
         assert.equal(err.msg, "Invalid royalty recipient authority");
         return true;
       }
@@ -1465,7 +1465,7 @@ describe("Revenue Share", async () => {
         })
       },
       (err) => {
-        assert.equal(err.code, 309);
+        assert.equal(err.code, 6009);
         assert.equal(err.msg, "Invalid royalty recipient authority");
         return true;
       }
@@ -1493,7 +1493,7 @@ describe("Revenue Share", async () => {
         })
       },
       (err) => {
-        assert.equal(err.code, 302);
+        assert.equal(err.code, 6002);
         assert.equal(err.msg, "Cannot transfer royalty share larger than current share");
         return true;
       }
@@ -1537,7 +1537,7 @@ describe("Revenue Share", async () => {
         }      
       },
       (err) => {
-        assert.equal(err.code, 303);
+        assert.equal(err.code, 6003);
         assert.equal(err.msg, "Cannot have more than 10 Revenue Share Holders");
         return true;
       }
@@ -1670,7 +1670,7 @@ describe("Exchange", async () => {
         );
       },
       (err) => {
-        assert.equal(err.code, 143);
+        assert.equal(err.code, 2003);
         assert.equal(err.msg, "A raw constraint was violated");
         return true;
       }
@@ -1884,7 +1884,7 @@ describe("Exchange", async () => {
         );
       },
       (err) => {
-        assert.equal(err.code, 305)
+        assert.equal(err.code, 6005)
         assert.equal(err.msg, "Royalty percentage provided is incorrect");
         return true;
       }
@@ -1931,7 +1931,7 @@ describe("Exchange", async () => {
         );
       },
       (err) => {
-        assert.equal(err.code, 317)
+        assert.equal(err.code, 6017)
         assert.equal(err.msg, "Initializer Amounts Do Not Match");
         return true;
       }
@@ -1978,7 +1978,7 @@ describe("Exchange", async () => {
         );
       },
       (err) => {
-        assert.equal(err.code, 314)
+        assert.equal(err.code, 6014)
         assert.equal(err.msg, "Exchange Expected Amounts Do Not Match");
         return true;
       }
@@ -2871,7 +2871,7 @@ describe("Exchange", async () => {
         )
       },
       (err) => {
-        assert.equal(err.code, 312);
+        assert.equal(err.code, 6012);
         assert.equal(err.msg, "Wrong mint provided for exchange");
         return true;
       }
@@ -2931,7 +2931,7 @@ describe("Exchange", async () => {
         )
       },
       (err) => {
-        assert.equal(err.code, 313);
+        assert.equal(err.code, 6013);
         assert.equal(err.msg, "Offer price must be greater than 0");
         return true;
       }
@@ -2991,7 +2991,7 @@ describe("Exchange", async () => {
         )
       },
       (err) => {
-        assert.equal(err.code, 313);
+        assert.equal(err.code, 6013);
         assert.equal(err.msg, "Offer price must be greater than 0");
         return true;
       }
@@ -3271,7 +3271,7 @@ it('Fails when redeeming more redeemables than available', async () => {
         }
       },
       (err) => {
-        assert.equal(err.code, 310);
+        assert.equal(err.code, 6010);
         assert.equal(err.msg, "No more redeemables available");
         return true;
       }
@@ -3396,7 +3396,7 @@ describe('Vault', async () => {
         );
       },
       (err) => {
-        assert.equal(err.code, 143);
+        assert.equal(err.code, 2003);
         assert.equal(err.msg, "A raw constraint was violated");
         return true;
       }
@@ -3428,7 +3428,7 @@ describe('Vault', async () => {
         );
       },
       (err) => {
-        assert.equal(err.code, 319);
+        assert.equal(err.code, 6019);
         assert.equal(err.msg, "Cant withdraw more than deposited");
         return true;
       }
@@ -3453,7 +3453,7 @@ describe('Vault', async () => {
         );
       },
       (err) => {
-        assert.equal(err.code, 320);
+        assert.equal(err.code, 6020);
         assert.equal(err.msg, "Withdraw amount must be greater than 0");
         return true;
       }
