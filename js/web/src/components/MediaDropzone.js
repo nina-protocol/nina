@@ -94,7 +94,7 @@ const MediaDropzone = ({
     }
 
     if (size > 4) {
-      fileWithMeta.meta.validationErrorWarning = `your image's is ${size} mb... \nPlease upload an image smaller than 4 mb`
+      fileWithMeta.meta.validationErrorWarning = `your image is ${size} mb... \nPlease upload an image smaller than 4 mb`
       return true
     }
     return false
