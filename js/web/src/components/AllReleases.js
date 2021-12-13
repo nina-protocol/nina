@@ -14,7 +14,6 @@ const { Dots } = ninaCommon.components
 const Releases = () => {
   const { getReleasesAll, filterReleasesAll, allReleases, allReleasesCount } =
     useContext(ReleaseContext)
-  const [releases, setReleases] = useState([])
   const [listView, setListView] = useState(false)
   const [pendingFetch, setPendingFetch] = useState(false)
   const [totalCount, setTotalCount] = useState(null)
@@ -25,7 +24,6 @@ const Releases = () => {
 
   useEffect(() => {
     if (allReleases.length > 0) {
-      setReleases(filterReleasesAll())
       setPendingFetch(false)
     }
   }, [allReleases])
@@ -66,13 +64,13 @@ const Releases = () => {
 
           {listView && (
             <ReleaseListTable
-              releases={releases}
+              releases={filterReleasesAll()}
               tableType="allReleases"
               key="releases"
             />
           )}
 
-          {!listView && <ReleaseTileList releases={releases} />}
+          {!listView && <ReleaseTileList releases={filterReleasesAll()} />}
           {pendingFetch && (
             <StyledDots>
               <Dots size="80px" />
