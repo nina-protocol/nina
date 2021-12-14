@@ -11,7 +11,7 @@ pub struct HubAddArtist<'info> {
         bump,
         constraint = hub.load()?.curator == curator.key(),
     )]
-    pub hub: Loader<'info, Hub>,
+    pub hub: AccountLoader<'info, Hub>,
     #[account(
         init,
         seeds = [b"nina-hub-artist".as_ref(), hub.key().as_ref(), artist.key().as_ref()],

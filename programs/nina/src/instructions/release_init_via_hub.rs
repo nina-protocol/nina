@@ -11,7 +11,7 @@ pub struct ReleaseInitializeViaHub<'info> {
         bump,
         payer = payer,
     )]
-    pub release: Loader<'info, Release>,
+    pub release: AccountLoader<'info, Release>,
     #[account(
         seeds = [release.key().as_ref()],
         bump,
@@ -23,7 +23,7 @@ pub struct ReleaseInitializeViaHub<'info> {
         constraint = hub_artist.artist == payer.key(),
     )]
     pub hub_artist: Box<Account<'info, HubArtist>>,
-    pub hub: Loader<'info, Hub>,
+    pub hub: AccountLoader<'info, Hub>,
     #[account(
         init,
         seeds = [b"nina-hub-release".as_ref(), hub.key().as_ref(), release.key().as_ref()],

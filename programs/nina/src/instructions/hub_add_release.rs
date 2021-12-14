@@ -11,7 +11,7 @@ pub struct HubAddRelease<'info> {
         bump,
         constraint = hub.load()?.curator == curator.key(),
     )]
-    pub hub: Loader<'info, Hub>,
+    pub hub: AccountLoader<'info, Hub>,
     #[account(
         init,
         seeds = [b"nina-hub-release".as_ref(), hub.key().as_ref(), release.key().as_ref()],
@@ -19,7 +19,7 @@ pub struct HubAddRelease<'info> {
         payer = curator,
     )]
     pub hub_release: Account<'info, HubRelease>,
-    pub release: Loader<'info, Release>,
+    pub release: AccountLoader<'info, Release>,
     pub system_program: Program<'info, System>,
     pub rent: Sysvar<'info, Rent>,
 }

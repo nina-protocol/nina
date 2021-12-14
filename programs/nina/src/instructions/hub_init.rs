@@ -14,7 +14,7 @@ pub struct HubInit<'info> {
         payer = curator,
         space = 412
     )]
-    pub hub: Loader<'info, Hub>,
+    pub hub: AccountLoader<'info, Hub>,
     #[account(
         seeds = [b"nina-hub-signer".as_ref(), hub.key().as_ref()],
         bump,

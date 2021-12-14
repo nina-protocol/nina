@@ -31,7 +31,7 @@ pub struct Release {
 
 impl Release {
     pub fn release_revenue_share_transfer_handler<'info> (
-        release_loader: &Loader<'info, Release>,
+        release_loader: &AccountLoader<'info, Release>,
         release_signer: AccountInfo<'info>,
         royalty_token_account: AccountInfo<'info>,
         new_royalty_recipient: Pubkey,
