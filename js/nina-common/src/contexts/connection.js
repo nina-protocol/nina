@@ -58,7 +58,7 @@ const ConnectionContextProvider = ({ children }) => {
       [5]
     )
     const reducer = (_, currentSample) =>
-      (currentSample.numTransactions / currentSample.samplePeriodSecs) > 1000
+      currentSample.numTransactions / currentSample.samplePeriodSecs > 1000
     const status = performance.result.reduce(reducer)
     setHealthOk(status)
   }
