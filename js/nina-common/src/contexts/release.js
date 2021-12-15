@@ -45,6 +45,8 @@ const ReleaseContextProvider = ({ children }) => {
     published: [],
     purchased: [],
   })
+  const [allReleases, setAllReleases] = useState([])
+  const [allReleasesCount, setAllReleasesCount] = useState(null)
 
   useEffect(() => {
     getReleasesInCollection()
@@ -111,6 +113,9 @@ const ReleaseContextProvider = ({ children }) => {
     removeReleaseFromCollection,
     releasesRecentState,
     setReleasesRecentState,
+    allReleases,
+    setAllReleases,
+    setAllReleasesCount,
   })
 
   return (
@@ -148,6 +153,8 @@ const ReleaseContextProvider = ({ children }) => {
         filterReleasesAll,
         getRelatedForRelease,
         filterRelatedForRelease,
+        allReleases,
+        allReleasesCount,
       }}
     >
       {children}
@@ -175,6 +182,9 @@ const releaseContextHelper = ({
   removeReleaseFromCollection,
   releasesRecentState,
   setReleasesRecentState,
+  allReleases,
+  setAllReleases,
+  setAllReleasesCount,
 }) => {
   const provider = new anchor.Provider(
     connection,
@@ -1056,10 +1066,19 @@ const releaseContextHelper = ({
 
   const getReleasesAll = async () => {
     try {
-      const result = await fetch(`${NinaClient.endpoints.api}/releases/recent`)
-      const { published, purchased } = await result.json()
-      const releaseIds = [...published, ...purchased]
-      await fetchAndSaveReleasesToState(releaseIds)
+      const all = [...allReleases]
+      const result = await fetch(
+        `${NinaClient.endpoints.api}/releases/?offset=${allReleases.length}`
+      )
+      const json = await result.json()
+      json.releases.forEach((id) => {
+        if (!allReleases.includes(id)) {
+          all.push(id)
+        }
+      })
+      setAllReleasesCount(json.count)
+      setAllReleases(all)
+      await fetchAndSaveReleasesToState(json.releases)
     } catch (error) {
       console.warn(error)
     }
@@ -1114,20 +1133,20 @@ const releaseContextHelper = ({
   }
 
   const filterReleasesAll = () => {
-    const allReleases = []
-    Object.keys(releaseState.tokenData).forEach((releasePubkey) => {
+    const allReleasesArray = []
+    allReleases.forEach((releasePubkey) => {
       const tokenData = releaseState.tokenData[releasePubkey]
       const metadata = releaseState.metadata[releasePubkey]
       if (metadata) {
-        allReleases.push({ tokenData, metadata, releasePubkey })
+        allReleasesArray.push({ tokenData, metadata, releasePubkey })
       }
     })
-    allReleases.sort(
+    allReleasesArray.sort(
       (a, b) =>
         a.tokenData.releaseDatetime.toNumber() >
         b.tokenData.releaseDatetime.toNumber()
     )
-    return allReleases
+    return allReleasesArray
   }
 
   const filterReleasesPublishedByUser = (userPubkey = undefined) => {
