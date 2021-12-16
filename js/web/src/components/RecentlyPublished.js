@@ -13,6 +13,17 @@ const { Dots } = ninaCommon.components
 
 const RecentlyPublished = (props) => {
   const { releases } = props
+  const artistCount = {}
+  const releasesStack = []
+
+  releases?.forEach((release) => {
+    if (!artistCount[release.metadata.properties.artist]) {
+      releasesStack.push(release)
+      artistCount[release.metadata.properties.artist] = 1
+    } else {
+      artistCount[release.metadata.properties.artist] += 1
+    }
+  })
 
   const responsiveSettings = [
     {
@@ -53,7 +64,7 @@ const RecentlyPublished = (props) => {
     />
   )
 
-  if (releases === undefined || releases.length === 0) {
+  if (releasesStack.length === 0) {
     return (
       <Box
         sx={{
@@ -69,7 +80,7 @@ const RecentlyPublished = (props) => {
   }
   return (
     <RecentlyPublishedWrapper>
-      {releases?.length > 0 && (
+      {releasesStack?.length > 0 && (
         <Slider
           dots="false"
           infinite="true"
@@ -83,8 +94,10 @@ const RecentlyPublished = (props) => {
           nextArrow={<CustomNextArrow />}
           prevArrow={<CustomPrevArrow />}
         >
-          {releases.map((release, i) => {
+          {releasesStack.map((release, i) => {
             const imageUrl = release.metadata.image
+            const isMultiple =
+              artistCount[release.metadata.properties.artist] > 1
             const availability = (
               <Typography variant="body2" sx={{ paddingTop: '10px' }}>
                 {release.tokenData.remainingSupply.toNumber() > 0
@@ -96,15 +109,28 @@ const RecentlyPublished = (props) => {
             return (
               <ReleaseSlideWrapper key={i}>
                 <ReleaseSlide key={i}>
-                  <Link to={'/' + release.releasePubkey}>
+                  <Link
+                    to={`/${release.releasePubkey}${
+                      isMultiple ? '/related' : ''
+                    }`}
+                  >
                     <SmoothImage src={imageUrl} />
                   </Link>
-                  {availability}
+                  {!isMultiple && availability}
                   <ReleaseCopy sx={{ display: 'flex' }}>
-                    <Typography variant="body2">
-                      {release.metadata.properties.artist},{' '}
-                      <i>{release.metadata.properties.title}</i>
-                    </Typography>
+                    {isMultiple && (
+                      <Typography variant="body2">
+                        {`${
+                          artistCount[release.metadata.properties.artist]
+                        } releases by ${release.metadata.properties.artist}`}
+                      </Typography>
+                    )}
+                    {!isMultiple && (
+                      <Typography variant="body2">
+                        {release.metadata.properties.artist},{' '}
+                        <i>{release.metadata.properties.title}</i>
+                      </Typography>
+                    )}
                   </ReleaseCopy>
                 </ReleaseSlide>
               </ReleaseSlideWrapper>
