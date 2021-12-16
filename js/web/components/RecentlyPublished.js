@@ -4,7 +4,7 @@ import { Box } from '@mui/material'
 import Slider from 'react-slick'
 import Typography from '@mui/material/Typography'
 import ninaCommon from 'nina-common'
-import { Link } from 'react-router-dom'
+import Link from 'next/link'
 // import SmoothImage from 'react-smooth-image'
 import Image from 'next/image'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
@@ -96,8 +96,8 @@ const RecentlyPublished = (props) => {
             return (
               <ReleaseSlideWrapper key={i}>
                 <ReleaseSlide key={i}>
-                  <Link to={'/' + release.releasePubkey}>
-                    <Image src={imageUrl} />
+                  <Link href={'/' + release.releasePubkey}>
+                    <Image src={imageUrl} layout="fill" />
                   </Link>
                   {availability}
                   <ReleaseCopy sx={{ display: 'flex' }}>

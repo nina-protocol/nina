@@ -48,7 +48,6 @@ const HomePage = () => {
               <Typography variant="body1">All Releases</Typography>
             </AllReleasesLink>
           </Box>
-          <RecentlyPublished releases={releasesRecent.published} />
         </Box>
 
         <Typography

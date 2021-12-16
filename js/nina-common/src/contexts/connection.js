@@ -14,7 +14,7 @@ const ConnectionContextProvider = ({ children, ENDPOINTS }) => {
   console.log('ENDPOINTS :>> ', ENDPOINTS);
   console.log('process.env.REACT_APP_CLUSTER :>> ', process.env.REACT_APP_CLUSTER);
 
-  console.log('ENDPOINTS[process.env.REACT_APP_CLUSTER].endpoint :>> ', ENDPOINTS[`${process.env.REACT_APP_CLUSTER}`].endpoint);
+  console.log('ENDPOINTS[process.env.REACT_APP_CLUSTER].endpoint :>> ', ENDPOINTS[process.env.REACT_APP_CLUSTER].endpoint);
   const network =
     process.env.REACT_APP_CLUSTER === 'mainnet'
       ? WalletAdapterNetwork.MainnetBeta

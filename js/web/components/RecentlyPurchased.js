@@ -4,7 +4,7 @@ import { styled } from '@mui/material/styles'
 // import 'react-multi-carousel/lib/styles.css'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-import { Link } from 'react-router-dom'
+import Link from 'next/link'
 // import SmoothImage from 'react-smooth-image'
 import Image from 'next/image'
 import Carousel from 'react-multi-carousel'
@@ -147,10 +147,10 @@ const RecentlyPurchased = (props) => {
                 return (
                   <Slide key={i}>
                     <Link
-                      to={'/' + release.releasePubkey}
+                      href={'/' + release.releasePubkey}
                       style={{ width: '400px' }}
                     >
-                      <Image src={imageUrl} />
+                      <Image src={imageUrl} layout="fill" />
                     </Link>
                     <Copy sx={{ paddingLeft: 2 }}>
                       <Typography variant="h3" color="blue">

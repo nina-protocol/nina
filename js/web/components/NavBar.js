@@ -4,7 +4,8 @@ import { Typography, Box } from '@mui/material'
 import ninaCommon from 'nina-common'
 import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
-import { NavLink, Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
+import Link from 'next/link'
 import { useWallet } from '@solana/wallet-adapter-react'
 import {
   WalletDialogProvider,
