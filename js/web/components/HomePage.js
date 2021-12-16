@@ -2,10 +2,10 @@ import React, { useContext, useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import { Typography, Box } from '@mui/material'
 import ninaCommon from 'nina-common'
-// import RecentlyPublished from './RecentlyPublished'
-// import RecentlyPurchased from './RecentlyPurchased'
+import RecentlyPublished from './RecentlyPublished'
+import RecentlyPurchased from './RecentlyPurchased'
 // import SmoothImage from 'react-smooth-image';
-import { Link } from 'react-router-dom'
+import Link from 'next/link'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 const { ReleaseContext } = ninaCommon.contexts
 
@@ -32,7 +32,7 @@ const HomePage = () => {
         >
           Nina is a new way to publish, stream, and purchase music. We put
           control in the artist’s hands and link them directly with their fans.{' '}
-          <Link to="/faq">Learn more</Link>.
+          <Link href="/faq">Learn more</Link>.
         </Typography>
 
         <Box sx={{ padding: { md: '0 40px 140px 40px', xs: '30px 0px' } }}>
@@ -44,7 +44,7 @@ const HomePage = () => {
               New Releases
             </Typography>
 
-            <AllReleasesLink to="/allReleases">
+            <AllReleasesLink href="/allReleases">
               <Typography variant="body1">All Releases</Typography>
             </AllReleasesLink>
           </Box>
