@@ -16,8 +16,7 @@ const RecentlyPublished = (props) => {
   const artistCount = {}
   const releasesStack = []
 
-  releases?.forEach(release => {
-    console.log('rrr: ', release)
+  releases?.forEach((release) => {
     if (!artistCount[release.metadata.properties.artist]) {
       releasesStack.push(release)
       artistCount[release.metadata.properties.artist] = 1
@@ -97,7 +96,8 @@ const RecentlyPublished = (props) => {
         >
           {releasesStack.map((release, i) => {
             const imageUrl = release.metadata.image
-            const isMultiple = artistCount[release.metadata.properties.artist] > 1
+            const isMultiple =
+              artistCount[release.metadata.properties.artist] > 1
             const availability = (
               <Typography variant="body2" sx={{ paddingTop: '10px' }}>
                 {release.tokenData.remainingSupply.toNumber() > 0
@@ -109,22 +109,28 @@ const RecentlyPublished = (props) => {
             return (
               <ReleaseSlideWrapper key={i}>
                 <ReleaseSlide key={i}>
-                  <Link to={`/${release.releasePubkey}${isMultiple ? '/related' : ''}`}>
+                  <Link
+                    to={`/${release.releasePubkey}${
+                      isMultiple ? '/related' : ''
+                    }`}
+                  >
                     <SmoothImage src={imageUrl} />
                   </Link>
                   {!isMultiple && availability}
                   <ReleaseCopy sx={{ display: 'flex' }}>
-                    {isMultiple &&
+                    {isMultiple && (
                       <Typography variant="body2">
-                        {`${artistCount[release.metadata.properties.artist]} releases by ${release.metadata.properties.artist}`}
+                        {`${
+                          artistCount[release.metadata.properties.artist]
+                        } releases by ${release.metadata.properties.artist}`}
                       </Typography>
-                    }
-                    {!isMultiple &&
+                    )}
+                    {!isMultiple && (
                       <Typography variant="body2">
                         {release.metadata.properties.artist},{' '}
                         <i>{release.metadata.properties.title}</i>
                       </Typography>
-                    }
+                    )}
                   </ReleaseCopy>
                 </ReleaseSlide>
               </ReleaseSlideWrapper>
