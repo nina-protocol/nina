@@ -2,6 +2,23 @@
   "name": "web",
   "version": "0.1.0",
   "private": true,
+<<<<<<< HEAD
+=======
+  "dependencies": {
+    "@fortawesome/free-brands-svg-icons": "^5.15.4",
+    "@fortawesome/react-fontawesome": "^0.1.16",
+    "axios": "^0.24.0",
+    "nina-common": "0.1.0",
+    "react-dropzone-uploader": "^2.11.0",
+    "react-helmet": "^6.1.0",
+    "react-multi-carousel": "^2.6.5",
+    "react-router-breadcrumbs-hoc": "^4.1.0",
+    "react-slick": "^0.28.1",
+    "react-smooth-image": "^1.1.0",
+    "react-swipeable-views": "^0.14.0",
+    "slick-carousel": "^1.8.1"
+  },
+>>>>>>> 3ef6b3d860e07c67a5b321c61cba049fb3b117ef
   "scripts": {
     "dev": "next",
     "build": "next build",

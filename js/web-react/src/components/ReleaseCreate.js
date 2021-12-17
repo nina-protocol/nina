@@ -13,7 +13,7 @@ import MediaDropzones from './MediaDropzones'
 import * as Yup from 'yup'
 
 const { ReleaseSettings, Dots } = ninaCommon.components
-const { ReleaseContext, NinaContext } = ninaCommon.contexts
+const { ReleaseContext, NinaContext, ConnectionContext } = ninaCommon.contexts
 
 const ReleaseCreateSchema = Yup.object().shape({
   artist: Yup.string().required('Artist Name is Required'),
@@ -31,6 +31,7 @@ const ReleaseCreate = () => {
   const { releaseCreate, pressingState, resetPressingState, releaseState } =
     useContext(ReleaseContext)
   const { getNpcAmountHeld, npcAmountHeld } = useContext(NinaContext)
+  const { healthOk } = useContext(ConnectionContext)
   const [track, setTrack] = useState(undefined)
   const [artwork, setArtwork] = useState()
   const [releasePubkey, setReleasePubkey] = useState(undefined)
@@ -149,6 +150,11 @@ const ReleaseCreate = () => {
 
   return (
     <Box>
+      {npcAmountHeld >= 1 && !healthOk && (
+        <NetworkDegradedMessage>
+          <Typography variant="h4">{`The Solana network status is currently degraded - there's a chance your upload will fail.`}</Typography>
+        </NetworkDegradedMessage>
+      )}
       {npcAmountHeld < 1 && (
         <Box style={{ display: 'flex' }}>
           <NpcMessage>
@@ -219,7 +225,6 @@ const ReleaseCreate = () => {
               ReleaseCreateSchema={ReleaseCreateSchema}
             />
           </CreateFormWrapper>
-
           <CreateCta>
             <Button
               fullWidth
@@ -284,6 +289,11 @@ const CreateCta = styled(Box)(({ theme }) => ({
   '& .MuiButton-root': {
     ...theme.helpers.baseFont,
   },
+}))
+
+const NetworkDegradedMessage = styled(Box)(({ theme }) => ({
+  color: theme.palette.red,
+  padding: '0 0 50px',
 }))
 
 const NpcMessage = styled(Box)(({ theme }) => ({
