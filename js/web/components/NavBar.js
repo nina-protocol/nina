@@ -4,14 +4,13 @@ import { Typography, Box } from '@mui/material'
 import ninaCommon from 'nina-common'
 import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
-import { NavLink } from 'react-router-dom'
 import Link from 'next/link'
 import { useWallet } from '@solana/wallet-adapter-react'
 import {
   WalletDialogProvider,
   WalletMultiButton,
 } from '@solana/wallet-adapter-material-ui'
-import Breadcrumbs from './Breadcrumbs'
+// import Breadcrumbs from './Breadcrumbs'
 import MobileWalletModal from './MobileWalletModal'
 const { NinaContext } = ninaCommon.contexts
 
@@ -31,16 +30,16 @@ const NavBar = () => {
     <Root className={classes.nav}>
       <div className={classes.nav__left}>
         <NavDrawer />
-        <Breadcrumbs />
+        {/* <Breadcrumbs /> */}
       </div>
 
-      <Logo to="/">
+      <Logo href="/">
         <Typography variant="h4">NINA</Typography>
       </Logo>
 
       <div className={classes.nav__right}>
         <DesktopWalletWrapper>
-          <PublishLink to="/upload">
+          <PublishLink href="/upload">
             <Typography variant="subtitle1">Start Publishing</Typography>
           </PublishLink>
           <Typography variant="subtitle1" className={classes.nav__balance}>
@@ -231,7 +230,7 @@ const ConnectionDot = styled('span')(({ theme }) => ({
   },
 }))
 
-const Logo = styled(NavLink)(() => ({
+const Logo = styled(Link)(() => ({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
@@ -242,6 +241,7 @@ const Logo = styled(NavLink)(() => ({
   height: '13px',
   left: '50%',
   transform: 'translateX(-50%)',
+  border: '2px solid red',
   '& .MuiTypography-h4': {
     fontWeight: 'bold',
   },

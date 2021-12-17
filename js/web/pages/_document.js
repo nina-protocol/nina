@@ -7,6 +7,8 @@ import { ServerStyleSheet } from 'styled-components'
 import { ServerStyleSheets } from '@material-ui/styles';
 import createEmotionServer from '@emotion/server/create-instance';
 import createEmotionCache from '../src/createEmotionCache';
+import {styled} from '@mui/material/styles'
+
 
 const sheets = new ServerStyleSheets();
 class MyDocument extends Document {
@@ -71,7 +73,7 @@ class MyDocument extends Document {
             gtag('config', 'G-VDD58V1D22');
           }}
         </Head>
-        <body>
+        <body style={{margin: '0px'}}>
           <Main />
           <NextScript />
         </body>
@@ -79,5 +81,4 @@ class MyDocument extends Document {
     );
   }
 }
-
 export default MyDocument;
