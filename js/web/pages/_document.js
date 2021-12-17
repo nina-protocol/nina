@@ -73,7 +73,7 @@ class MyDocument extends Document {
             gtag('config', 'G-VDD58V1D22');
           }}
         </Head>
-        <body style={{margin: '0px'}}>
+        <body style={{margin: '0px', position: 'relative'}}>
           <Main />
           <NextScript />
         </body>

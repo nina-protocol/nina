@@ -27,17 +27,20 @@ const NavBar = () => {
   }, [wallet, base58])
 
   return (
-    <Root className={classes.nav}>
-      <div className={classes.nav__left}>
+    <Root>
+      <NavLeft >
         <NavDrawer />
         {/* <Breadcrumbs /> */}
-      </div>
+      </NavLeft>
 
-      <Logo href="/">
-        <Typography variant="h4">NINA</Typography>
+    
+      <Logo>
+        <Link href="/">
+          <Typography variant="h4">NINA</Typography>
+        </Link>
       </Logo>
 
-      <div className={classes.nav__right}>
+      <NavRight>
         <DesktopWalletWrapper>
           <PublishLink href="/upload">
             <Typography variant="subtitle1">Start Publishing</Typography>
@@ -45,7 +48,7 @@ const NavBar = () => {
           <Typography variant="subtitle1" className={classes.nav__balance}>
             {wallet?.connected ? `Balance: $${usdcBalance}` : null}
           </Typography>
-          <div className={classes.nav__button}>
+          <NavCtas>
             <StyledWalletDialogProvider featuredWallets={4}>
               <StyledWalletButton>
                 <Typography variant="subtitle1" sx={{ textTransform: 'none' }}>
@@ -60,13 +63,13 @@ const NavBar = () => {
                 }`}
               ></ConnectionDot>
             </StyledWalletDialogProvider>
-          </div>
+          </NavCtas>
         </DesktopWalletWrapper>
 
         <MobileWalletWrapper>
           <MobileWalletModal />
         </MobileWalletWrapper>
-      </div>
+      </NavRight>
     </Root>
   )
 }
@@ -75,66 +78,62 @@ const PREFIX = 'NavBar'
 
 const classes = {
   nav: `${PREFIX}-nav`,
-  nav__left: `${PREFIX}-nav__left`,
-  nav__right: `${PREFIX}-nav__right`,
-  nav__balance: `${PREFIX}-nav__balance`,
-  nav__logo: `${PREFIX}-nav__logo`,
-  nav__button: `${PREFIX}-nav__button`,
   walletDialogProvider: `${PREFIX}-walletDialogProvider`,
   walletButtonWrapper: `${PREFIX}-walletButtonWrapper`,
   connectionDot: `${PREFIX}-connectionDot`,
 }
 
 const Root = styled('nav')(({ theme }) => ({
-  [`&.${classes.nav}`]: {
     background: `${theme.palette.transparent}`,
     height: '30px',
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'space-between',
+    width: '100vw',
     zIndex: '12',
-    padding: theme.spacing(1),
+    padding: theme.spacing(1, 0),
     marginBottom: '0.5rem',
-    paddingRight: '0',
     position: 'absolute',
     top: '0',
     left: '0',
-  },
+}))
 
-  [`& .${classes.nav__left}`]: {
-    display: 'flex',
-    alignItems: 'flex-start',
-  },
+const NavLeft = styled('div')(({theme}) => ({
+  display: 'flex',
+  alignItems: 'flex-start',
+  paddingLeft: theme.spacing(1)
+}))
 
-  [`& .${classes.nav__right}`]: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    height: '100%',
+
+const NavRight = styled('div')(({theme}) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  position: 'absolute',
+  right: theme.spacing(1),
+  top: '12px',
+  [theme.breakpoints.down('md')]: {
     position: 'absolute',
     right: 0,
-    top: '12px',
-    [theme.breakpoints.down('md')]: {
-      position: 'absolute',
-      right: 0,
-      top: '10px',
-    },
+    top: '10px',
   },
+}))
 
-  [`& .${classes.nav__balance}`]: {
-    margin: '0',
-    color: `${theme.palette.blue}`,
+
+const NavCtas = styled('div')(({theme}) => ({
+  display: 'flex',
+  alignItems: 'flex-start',
+}))
+
+const Logo = styled('div')(({theme}) => ({
+  position: 'absolute',
+  top: theme.spacing(1),
+  left: '50%',
+  transform: 'translateX(-50%)',
+  width: 'min-content',
+  cursor: 'pointer',
+  '&:hover':{
+    color: theme.palette.blue
   },
-
-  [`& .${classes.nav__logo}`]: {
-    height: '100%',
-    alignItems: 'center',
-  },
-
-  [`& .${classes.nav__button}`]: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    marginRight: '24px',
+  '& .MuiTypography-h4': {
+    fontWeight: 'bold',
   },
 }))
 
@@ -230,22 +229,7 @@ const ConnectionDot = styled('span')(({ theme }) => ({
   },
 }))
 
-const Logo = styled(Link)(() => ({
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  alignItems: 'center',
-  position: 'absolute',
-  top: '15px',
-  width: '76px',
-  height: '13px',
-  left: '50%',
-  transform: 'translateX(-50%)',
-  border: '2px solid red',
-  '& .MuiTypography-h4': {
-    fontWeight: 'bold',
-  },
-}))
+
 
 const PublishLink = styled(Link)(() => ({
   width: '115px',
