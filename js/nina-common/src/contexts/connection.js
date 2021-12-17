@@ -15,13 +15,8 @@ const ConnectionContextProvider = ({ children, ENDPOINTS }) => {
     process.env.REACT_APP_CLUSTER === 'mainnet'
       ? WalletAdapterNetwork.MainnetBeta
       : WalletAdapterNetwork.Devnet
-<<<<<<< HEAD
-  const [endpoint] = useState(ENDPOINTS[`${process.env.REACT_APP_CLUSTER}`].endpoint)
-
-=======
   const [endpoint] = useState(ENDPOINTS[process.env.REACT_APP_CLUSTER].endpoint)
   const [healthOk, setHealthOk] = useState(true)
->>>>>>> 3ef6b3d860e07c67a5b321c61cba049fb3b117ef
   const connection = useMemo(
     () => new Connection(endpoint, 'recent'),
     [endpoint]
