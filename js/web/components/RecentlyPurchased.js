@@ -150,7 +150,7 @@ const RecentlyPurchased = (props) => {
                       href={'/' + release.releasePubkey}
                       style={{ width: '400px' }}
                     >
-                      <Image src={imageUrl} layout="fill" />
+                      <Image src={imageUrl} width='400px' height='400px' />
                     </Link>
                     <Copy sx={{ paddingLeft: 2 }}>
                       <Typography variant="h3" color="blue">

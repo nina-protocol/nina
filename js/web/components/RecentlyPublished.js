@@ -52,7 +52,6 @@ const RecentlyPublished = (props) => {
       onClick={onClick}
     />
   )
-
   if (releases === undefined || releases.length === 0) {
     return (
       <Box
@@ -97,7 +96,7 @@ const RecentlyPublished = (props) => {
               <ReleaseSlideWrapper key={i}>
                 <ReleaseSlide key={i}>
                   <Link href={'/' + release.releasePubkey}>
-                    <Image src={imageUrl} layout="fill" />
+                    <Image src={imageUrl} width='250px' height='250px' />
                   </Link>
                   {availability}
                   <ReleaseCopy sx={{ display: 'flex' }}>

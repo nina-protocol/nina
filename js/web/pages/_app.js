@@ -1,11 +1,13 @@
 import React from 'react'
 import {Helmet} from 'react-helmet'
 import {withStyles} from '@mui/styles'
+import Head from 'next/head';
 import {SnackbarProvider} from 'notistack'
 import {ThemeProvider} from '@mui/material/styles'
-import {StyledEngineProvider} from '@mui/styled-engine'
 import {NinaTheme} from '../NinaTheme'
 import ninaCommon from 'nina-common'
+import { CacheProvider } from '@emotion/react';
+import createEmotionCache from '../src/createEmotionCache';
 
 const {
   ConnectionContextProvider,
@@ -16,6 +18,7 @@ const {
   NinaContextProvider,
 } = ninaCommon.contexts
 
+const clientSideEmotionCache = createEmotionCache();
 
 export const ENDPOINTS = {
   devnet: {
@@ -36,10 +39,17 @@ export const ENDPOINTS = {
 }
 
 
-function Application({Component, pageProps}) {
+function Application({Component, clientSideEmotionCache, pageProps}) {
+
+  React.useEffect(() => {
+      // Remove the server-side injected CSS.
+      const jssStyles = document.querySelector('#jss-server-side');
+      if (jssStyles) {
+          jssStyles.parentElement.removeChild(jssStyles);
+      }
+  }, []);
+
   return( 
-    <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={NinaTheme}>
         <SnackbarProvider
           maxSnack={3}
           classes={{
@@ -54,14 +64,20 @@ function Application({Component, pageProps}) {
           }}
         >
           <ConnectionContextProvider ENDPOINTS={ENDPOINTS}>
-            <NinaContextProvider
-              releasePubkey={process.env.REACT_APP_RELEASE_PUBKEY}
-            >
+            <NinaContextProvider>
               <ReleaseContextProvider>
                 <NameContextProvider>
                   <AudioPlayerContextProvider>
                     <ExchangeContextProvider>
-                      <Component {...pageProps} />
+                      <CacheProvider value={clientSideEmotionCache}>
+                        <Head>
+                          <title>My page</title>
+                          <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+                        </Head>
+                          <ThemeProvider theme={NinaTheme}>
+                            <Component {...pageProps} />
+                          </ThemeProvider>
+                      </CacheProvider>
                     </ExchangeContextProvider>
                   </AudioPlayerContextProvider>
                 </NameContextProvider>
@@ -69,8 +85,6 @@ function Application({Component, pageProps}) {
             </NinaContextProvider>
           </ConnectionContextProvider>
         </SnackbarProvider>
-      </ThemeProvider>
-    </StyledEngineProvider>
   )
 }
 
