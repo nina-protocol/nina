@@ -10,6 +10,7 @@
   "dependencies": {
     "@emotion/server": "^11.4.0",
     "@solana/wallet-adapter-react-ui": "^0.6.1",
+    "babel-plugin-inline-react-svg": "^2.0.1",
     "next": "^12.0.7",
     "next-transpile-modules": "^9.0.0",
     "react": "^17.0.2",

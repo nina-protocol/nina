@@ -8,9 +8,8 @@ import { Typography, Box } from '@mui/material'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
-import { NavLink } from 'react-router-dom'
+import Link from 'next/link'
 import { Icon } from '@material-ui/core'
-import hamburger from '../assets/hamburger.svg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDiscord } from '@fortawesome/free-brands-svg-icons'
 import { faTwitter } from '@fortawesome/free-brands-svg-icons'
@@ -94,9 +93,9 @@ const NavDrawer = () => {
           switch (link) {
             case 'collection':
               return (
-                <NavLink
+                <Link
                   className={`${classes.drawerLink}`}
-                  to={`/${link}`}
+                  href={`/${link}`}
                   activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
                   key={link}
                 >
@@ -109,13 +108,13 @@ const NavDrawer = () => {
                       }`}
                     />
                   </ListItem>
-                </NavLink>
+                </Link>
               )
             case 'releases':
               return (
-                <NavLink
+                <Link
                   className={`${classes.drawerLink}`}
-                  to={`/${link}`}
+                  href={`/${link}`}
                   activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
                   key={link}
                 >
@@ -128,7 +127,7 @@ const NavDrawer = () => {
                       }`}
                     />
                   </ListItem>
-                </NavLink>
+                </Link>
               )
             case 'the soft lp':
               return (
@@ -147,16 +146,16 @@ const NavDrawer = () => {
               )
             default:
               return (
-                <NavLink
+                <Link
                   className={`${classes.drawerLink}`}
-                  to={`${link === 'home' ? '/' : `/${link.replace(' ', '')}`}`}
+                  href={`${link === 'home' ? '/' : `/${link.replace(' ', '')}`}`}
                   activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
                   key={link}
                 >
                   <ListItem button key={link}>
                     <ListItemText primary={link} />
                   </ListItem>
-                </NavLink>
+                </Link>
               )
           }
         })}
@@ -170,7 +169,7 @@ const NavDrawer = () => {
         <Box key={'left'}>
           <StyledMenuButton onClick={toggleDrawer(true)}>
             <Icon>
-              <img src={hamburger} height={25} width={25} />
+              <img src={"/hamburger.svg"} height={25} width={25} />
             </Icon>
           </StyledMenuButton>
           <StyledDrawer

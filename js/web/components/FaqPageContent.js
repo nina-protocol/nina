@@ -4,7 +4,7 @@ import { Typography, Box } from '@mui/material'
 
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 
-const FaqPage = () => {
+const FaqPageContent = () => {
   return (
     <ScrollablePageWrapper>
       <FaqPageContainer overflowX="visible">
@@ -365,4 +365,4 @@ const FaqEntry = styled(Box)(({ theme }) => ({
   },
 }))
 
-export default FaqPage
+export default FaqPageContent;

@@ -8,6 +8,7 @@ import {NinaTheme} from '../NinaTheme'
 import ninaCommon from 'nina-common'
 import { CacheProvider } from '@emotion/react';
 import createEmotionCache from '../src/createEmotionCache';
+import Layout from '../components/Layout'
 
 const {
   ConnectionContextProvider,
@@ -75,7 +76,9 @@ function Application({Component, clientSideEmotionCache, pageProps}) {
                           <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
                         </Head>
                           <ThemeProvider theme={NinaTheme}>
-                            <Component {...pageProps} />
+                            <Layout>
+                              <Component {...pageProps} />
+                            </Layout>
                           </ThemeProvider>
                       </CacheProvider>
                     </ExchangeContextProvider>
