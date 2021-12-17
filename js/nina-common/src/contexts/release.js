@@ -837,7 +837,7 @@ const releaseContextHelper = ({
     if (!connection) {
       return
     }
-    if (recipient.percentShare.toNumber() > 0) {
+    if (recipient.percentShare?.toNumber() > 0) {
       try {
         let path = NinaClient.endpoints.api
         switch (type) {
