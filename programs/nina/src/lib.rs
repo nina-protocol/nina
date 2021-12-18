@@ -154,13 +154,13 @@ pub mod nina {
         instructions::hub_init::handler(ctx, params)
     }
 
-    pub fn pub_add_artist(
+    pub fn hub_add_artist(
         ctx: Context<HubAddArtist>,
     ) -> ProgramResult {
         instructions::hub_add_artist::handler(ctx)
     }
 
-    pub fn pub_add_release(
+    pub fn hub_add_release(
         ctx: Context<HubAddRelease>,
     ) -> ProgramResult {
         instructions::hub_add_release::handler(ctx)

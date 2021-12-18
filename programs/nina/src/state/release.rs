@@ -34,12 +34,20 @@ impl Release {
         release_loader: &AccountLoader<'info, Release>,
         release_signer: AccountInfo<'info>,
         royalty_token_account: AccountInfo<'info>,
+        authority: Pubkey,
         new_royalty_recipient: Pubkey,
         new_royalty_recipient_token_account: AccountInfo<'info>,
         token_program: AccountInfo<'info>,
         transfer_share: u64,
+        is_init: bool,
     ) -> ProgramResult {
-        let mut release = release_loader.load_mut()?;
+
+        let mut release;
+        if is_init {
+            release = release_loader.load_init()?;
+        } else {
+            release = release_loader.load_mut()?;
+        }
 
         let seeds = &[
             release_loader.to_account_info().key.as_ref(),
@@ -47,7 +55,7 @@ impl Release {
         ];
         let signer = &[&seeds[..]];
 
-        let mut royalty_recipient = match release.find_royalty_recipient(new_royalty_recipient) {
+        let mut royalty_recipient = match release.find_royalty_recipient(authority) {
             Some(royalty_recipient) => royalty_recipient,
             None => return Err(ErrorCode::InvalidRoyaltyRecipientAuthority.into())
         };
@@ -59,7 +67,6 @@ impl Release {
 
         // Take share from current user
         royalty_recipient.percent_share -= transfer_share;
-
         let existing_royalty_recipient = release.find_royalty_recipient(new_royalty_recipient);
         // If new_royalty_recipient doesn't already have a share, add them as a new recipient
         if existing_royalty_recipient.is_none() {
@@ -91,7 +98,6 @@ impl Release {
 
         // Make sure royalty shares of all recipients does not exceed 1000000
         if release.royalty_equals_1000000() {
-
             emit!(RoyaltyRecipientAdded {
                 authority: new_royalty_recipient,
                 public_key: release_loader.key(),

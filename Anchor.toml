@@ -1,7 +1,7 @@
 anchor_version = "0.19.0"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "~/.config/solana/nina.json"
 
 [programs.mainnet]
@@ -17,7 +17,7 @@ nina = "ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4"
 url = "https://anchor.projectserum.com"
 
 [scripts]
-test = "ts-mocha -t 1000000 -p tsconfig.json --provider.cluster localnet -b"
+test = "ts-mocha -t 1000000 -p ./tsconfig.json --provider.cluster localnet -b"
 test-with-build = "anchor run build && anchor test ./tests --skip-build --provider.cluster localnet"
 nina-upgrade = "anchor upgrade --program-id ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4 ./target/deploy/nina.so"
 build = "anchor run build-deps && anchor build"

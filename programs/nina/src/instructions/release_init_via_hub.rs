@@ -64,7 +64,6 @@ pub fn handler(
     config: ReleaseConfig,
     bumps: ReleaseBumps,
 ) -> ProgramResult {
-
     Release::release_init_handler(
         &ctx.accounts.release,
         ctx.accounts.release_signer.to_account_info().clone(),
@@ -80,15 +79,17 @@ pub fn handler(
     )?;
 
     let hub = ctx.accounts.hub.load()?;
-
+    &ctx.accounts.release.load();
     Release::release_revenue_share_transfer_handler (
         &ctx.accounts.release,
         ctx.accounts.release_signer.to_account_info().clone(),
         ctx.accounts.royalty_token_account.to_account_info(),
+        *ctx.accounts.authority.to_account_info().key,
         *ctx.accounts.hub_curator.to_account_info().key,
         ctx.accounts.hub_curator_usdc_token_account.to_account_info().clone(),
         ctx.accounts.token_program.to_account_info().clone(),
         hub.fee,
+        true,
     )?;
 
     let hub_release = &mut ctx.accounts.hub_release;

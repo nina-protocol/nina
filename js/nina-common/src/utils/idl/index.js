@@ -1,5 +1,5 @@
 const idl = {
-  "version": "0.0.0",
+  "version": "0.1.0",
   "name": "nina",
   "instructions": [
     {
@@ -117,6 +117,105 @@ const idl = {
         {
           "name": "publishingCreditMint",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "paymentMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "royaltyTokenAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "config",
+          "type": {
+            "defined": "ReleaseConfig"
+          }
+        },
+        {
+          "name": "bumps",
+          "type": {
+            "defined": "ReleaseBumps"
+          }
+        }
+      ]
+    },
+    {
+      "name": "releaseInitViaHub",
+      "accounts": [
+        {
+          "name": "release",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "releaseSigner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "hubArtist",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "hub",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "hubRelease",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "hubCurator",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "hubCuratorUsdcTokenAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "releaseMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authorityTokenAccount",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -998,6 +1097,193 @@ const idl = {
           "type": "u64"
         }
       ]
+    },
+    {
+      "name": "hubInit",
+      "accounts": [
+        {
+          "name": "curator",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "hub",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "hubSigner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "usdcTokenAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "hubArtist",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "usdcMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": "HubInitParams"
+          }
+        }
+      ]
+    },
+    {
+      "name": "hubAddArtist",
+      "accounts": [
+        {
+          "name": "curator",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "hub",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "hubArtist",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "artist",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "hubAddRelease",
+      "accounts": [
+        {
+          "name": "curator",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "hub",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "hubRelease",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "release",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "hubRemoveArtist",
+      "accounts": [
+        {
+          "name": "curator",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "hub",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "hubArtist",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "artist",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "hubRemoveRelease",
+      "accounts": [
+        {
+          "name": "curator",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "hub",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "hubRelease",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "release",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
@@ -1085,6 +1371,80 @@ const idl = {
           {
             "name": "price",
             "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Hub",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "curator",
+            "type": "publicKey"
+          },
+          {
+            "name": "hubSigner",
+            "type": "publicKey"
+          },
+          {
+            "name": "usdcTokenAccount",
+            "type": "publicKey"
+          },
+          {
+            "name": "fee",
+            "type": "u64"
+          },
+          {
+            "name": "name",
+            "type": {
+              "array": [
+                "u8",
+                100
+              ]
+            }
+          },
+          {
+            "name": "uri",
+            "type": {
+              "array": [
+                "u8",
+                200
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "HubRelease",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "hub",
+            "type": "publicKey"
+          },
+          {
+            "name": "release",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "HubArtist",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "hub",
+            "type": "publicKey"
+          },
+          {
+            "name": "artist",
+            "type": "publicKey"
           }
         ]
       }
@@ -1387,6 +1747,26 @@ const idl = {
           {
             "name": "datetime",
             "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "HubInitParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "fee",
+            "type": "u64"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "uri",
+            "type": "string"
           }
         ]
       }
@@ -1766,107 +2146,107 @@ const idl = {
   ],
   "errors": [
     {
-      "code": 300,
+      "code": 6000,
       "name": "WrongAmount",
       "msg": "Amount sent does not match price"
     },
     {
-      "code": 301,
+      "code": 6001,
       "name": "InvalidRoyaltyRecipient",
       "msg": "Provided Public Key Is Not A Royalty Recipient On This Royalty Account"
     },
     {
-      "code": 302,
+      "code": 6002,
       "name": "RoyaltyTransferTooLarge",
       "msg": "Cannot transfer royalty share larger than current share"
     },
     {
-      "code": 303,
+      "code": 6003,
       "name": "MaximumAmountOfRevenueShares",
       "msg": "Cannot have more than 10 Revenue Share Holders"
     },
     {
-      "code": 304,
+      "code": 6004,
       "name": "RoyaltyExceeds100Percent",
       "msg": "Royalty exceeds 100%"
     },
     {
-      "code": 305,
+      "code": 6005,
       "name": "RoyaltyPercentageIncorrect",
       "msg": "Royalty percentage provided is incorrect"
     },
     {
-      "code": 306,
+      "code": 6006,
       "name": "SoldOut",
       "msg": "Sold out"
     },
     {
-      "code": 307,
+      "code": 6007,
       "name": "InvalidAmountMintToArtist",
       "msg": "Invalid amount to mint to artist on publish"
     },
     {
-      "code": 308,
+      "code": 6008,
       "name": "InvalidVaultFee",
       "msg": "Invalid Vault Fee Supplied"
     },
     {
-      "code": 309,
+      "code": 6009,
       "name": "InvalidRoyaltyRecipientAuthority",
       "msg": "Invalid royalty recipient authority"
     },
     {
-      "code": 310,
+      "code": 6010,
       "name": "NoMoreRedeemablesAvailable",
       "msg": "No more redeemables available"
     },
     {
-      "code": 311,
+      "code": 6011,
       "name": "ReleaseNotLive",
       "msg": "Release is not live yet"
     },
     {
-      "code": 312,
+      "code": 6012,
       "name": "WrongMintForExchange",
       "msg": "Wrong mint provided for exchange"
     },
     {
-      "code": 313,
+      "code": 6013,
       "name": "PriceTooLow",
       "msg": "Offer price must be greater than 0"
     },
     {
-      "code": 314,
+      "code": 6014,
       "name": "ExpectedAmountMismatch",
       "msg": "Exchange Expected Amounts Do Not Match"
     },
     {
-      "code": 315,
+      "code": 6015,
       "name": "ExchangeAcceptTooLow",
       "msg": "Exchange Accept Price too Low"
     },
     {
-      "code": 316,
+      "code": 6016,
       "name": "ExchangeCancelAmountMismatch",
       "msg": "Exchange Cancel Amount Does Not Match"
     },
     {
-      "code": 317,
+      "code": 6017,
       "name": "InitializerAmountMismatch",
       "msg": "Initializer Amounts Do Not Match"
     },
     {
-      "code": 318,
+      "code": 6018,
       "name": "NotUsingTemporaryTokenAccount",
       "msg": "Not using a temporary token account for sending wrapped SOL"
     },
     {
-      "code": 319,
+      "code": 6019,
       "name": "VaultWithdrawAmountTooHigh",
       "msg": "Cant withdraw more than deposited"
     },
     {
-      "code": 320,
+      "code": 6020,
       "name": "VaultWithdrawAmountMustBeGreaterThanZero",
       "msg": "Withdraw amount must be greater than 0"
     }

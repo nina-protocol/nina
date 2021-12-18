@@ -25,6 +25,13 @@ pub struct HubInit<'info> {
         constraint = usdc_token_account.mint == usdc_mint.key(),
     )]
     pub usdc_token_account: Account<'info, TokenAccount>,
+    #[account(
+        init,
+        seeds = [b"nina-hub-artist".as_ref(), hub.key().as_ref(), curator.key().as_ref()],
+        bump,
+        payer = curator,
+    )]
+    pub hub_artist: Account<'info, HubArtist>,
     pub usdc_mint: Box<Account<'info, Mint>>,
     pub system_program: Program<'info, System>,
     pub rent: Sysvar<'info, Rent>,
@@ -47,6 +54,10 @@ pub fn handler (
     let mut uri_array = [0u8; 200];
     uri_array[..params.uri.len()].copy_from_slice(&params.uri.as_bytes());
     hub.uri = uri_array;
+
+    let hub_artist = &mut ctx.accounts.hub_artist;
+    hub_artist.hub = ctx.accounts.hub.key();
+    hub_artist.artist = ctx.accounts.curator.key();
 
     Ok(())
 }

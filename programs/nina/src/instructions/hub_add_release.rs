@@ -7,8 +7,6 @@ pub struct HubAddRelease<'info> {
     #[account(mut)]
     pub curator: Signer<'info>,
     #[account(
-        seeds = [b"nina-hub".as_ref(), &hub.load()?.name],
-        bump,
         constraint = hub.load()?.curator == curator.key(),
     )]
     pub hub: AccountLoader<'info, Hub>,

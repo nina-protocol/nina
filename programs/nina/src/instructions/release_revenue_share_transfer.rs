@@ -59,9 +59,11 @@ pub fn handler(
         ctx.accounts.release_signer.to_account_info().clone(),
         ctx.accounts.royalty_token_account.to_account_info(),
         *ctx.accounts.authority.to_account_info().key,
-        ctx.accounts.authority_token_account.to_account_info(),
+        *ctx.accounts.new_royalty_recipient.to_account_info().key,
+        ctx.accounts.new_royalty_recipient_token_account.to_account_info(),
         ctx.accounts.token_program.to_account_info().clone(),
         transfer_share,
+        false,
     )?;
 
     Ok(())
