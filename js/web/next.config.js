@@ -22,7 +22,7 @@ const withTM = require("next-transpile-modules")([
 ]); // pass the modules you would like to see transpiled
 
 module.exports = withTM({
-  webpack5: true,
+  webpack6: true,
   webpack: (config) => {
     config.resolve.fallback = {
       fs: false,
