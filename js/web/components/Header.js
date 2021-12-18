@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
 
 export default function Header() {
   return (
@@ -6,20 +6,20 @@ export default function Header() {
       <Link href="/">Home</Link>
       <Link href="/about">About</Link>
     </div>
-  )
+  );
 }
 
 const Link = ({ children, href }) => {
-  const router = useRouter()
+  const router = useRouter();
   return (
     <a
       href="#"
       onClick={(e) => {
-        e.preventDefault()
+        e.preventDefault();
         // typically you want to use `next/link` for this usecase
         // but this example shows how you can also access the router
         // and use it manually
-        router.push(href)
+        router.push(href);
       }}
     >
       {children}
@@ -29,5 +29,5 @@ const Link = ({ children, href }) => {
         }
       `}</style>
     </a>
-  )
-}
+  );
+};

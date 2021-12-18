@@ -1,9 +1,7 @@
-import AllReleases from '../components/AllReleases'
+import AllReleases from "../components/AllReleases";
 
 const ReleasePage = () => {
-  return (
-    <AllReleases/>
-  )
-}
+  return <AllReleases />;
+};
 
 export default ReleasePage;

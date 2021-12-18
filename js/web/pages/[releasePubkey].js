@@ -1,9 +1,7 @@
-import Release from '../components/Release'
+import Release from "../components/Release";
 
 const ReleasePage = () => {
-  return (
-    <Release/>
-  )
-}
+  return <Release />;
+};
 
 export default ReleasePage;

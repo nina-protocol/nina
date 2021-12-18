@@ -1,81 +1,82 @@
-import React, { useState, useContext, useEffect } from 'react'
-import { styled } from '@mui/material/styles'
-import ninaCommon from 'nina-common'
-import { useWallet } from '@solana/wallet-adapter-react'
-import Drawer from '@mui/material/Drawer'
-import Button from '@mui/material/Button'
-import { Typography, Box } from '@mui/material'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemText from '@mui/material/ListItemText'
-import Link from 'next/link'
-import { Icon } from '@material-ui/core'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDiscord } from '@fortawesome/free-brands-svg-icons'
-import { faTwitter } from '@fortawesome/free-brands-svg-icons'
-import { faInstagramSquare } from '@fortawesome/free-brands-svg-icons'
-import CloseIcon from '@mui/icons-material/Close'
+import React, { useState, useContext, useEffect } from "react";
+import { styled } from "@mui/material/styles";
+import ninaCommon from "nina-common";
+import { useWallet } from "@solana/wallet-adapter-react";
+import Drawer from "@mui/material/Drawer";
+import Button from "@mui/material/Button";
+import { Typography, Box } from "@mui/material";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Link from "next/link";
+import { Icon } from "@material-ui/core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
+import { faInstagramSquare } from "@fortawesome/free-brands-svg-icons";
+import CloseIcon from "@mui/icons-material/Close";
 
-const { NinaContext, ReleaseContext } = ninaCommon.contexts
+const { NinaContext, ReleaseContext } = ninaCommon.contexts;
 
 const linksConnected = [
-  'home',
-  'all Releases',
-  'collection',
-  'releases',
-  'upload',
-  'faq',
-  'the soft lp',
-]
+  "home",
+  "all Releases",
+  "collection",
+  "releases",
+  "upload",
+  "faq",
+  "the soft lp",
+];
 
 const linksNotConnected = [
-  'home',
-  'all Releases',
-  'upload',
-  'faq',
-  'the soft lp',
-]
+  "home",
+  "all Releases",
+  "upload",
+  "faq",
+  "the soft lp",
+];
 
 const NavDrawer = () => {
-  const { collection } = useContext(NinaContext)
-  const wallet = useWallet()
+  const { collection } = useContext(NinaContext);
+  const wallet = useWallet();
   const {
     releaseState,
     getReleasesPublishedByUser,
     filterReleasesPublishedByUser,
     filterReleasesUserCollection,
-  } = useContext(ReleaseContext)
-  const [drawerOpen, setDrawerOpen] = useState(false)
-  const [userPublishedReleasesCount, setUserPublishedReleasesCount] = useState()
+  } = useContext(ReleaseContext);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [userPublishedReleasesCount, setUserPublishedReleasesCount] =
+    useState();
   const [userCollectionReleasesCount, setUserCollectionReleasesCount] =
-    useState()
-  const [links, setLinks] = useState(linksNotConnected)
+    useState();
+  const [links, setLinks] = useState(linksNotConnected);
 
   useEffect(() => {
     if (wallet?.connected) {
-      setLinks(linksConnected)
-      getReleasesPublishedByUser(wallet.publicKey)
+      setLinks(linksConnected);
+      getReleasesPublishedByUser(wallet.publicKey);
     } else {
-      setLinks(linksNotConnected)
+      setLinks(linksNotConnected);
     }
-  }, [wallet?.connected])
+  }, [wallet?.connected]);
 
   useEffect(() => {
     if (wallet?.connected) {
-      setUserPublishedReleasesCount(filterReleasesPublishedByUser().length)
-      setUserCollectionReleasesCount(filterReleasesUserCollection().length)
+      setUserPublishedReleasesCount(filterReleasesPublishedByUser().length);
+      setUserCollectionReleasesCount(filterReleasesUserCollection().length);
     }
-  }, [releaseState, collection])
+  }, [releaseState, collection]);
 
   const toggleDrawer = (open) => (event) => {
     if (
-      event.type === 'keydown' &&
-      (event.key === 'Tab' || event.key === 'Shift')
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
     ) {
-      return
+      return;
     }
-    setDrawerOpen(open)
-  }
+    setDrawerOpen(open);
+  };
 
   const list = () => (
     <Box
@@ -86,12 +87,12 @@ const NavDrawer = () => {
       <CloseIcon
         fontSize="large"
         onClick={toggleDrawer}
-        sx={{ padding: '15px 15px' }}
+        sx={{ padding: "15px 15px" }}
       />
       <StyledList disablePadding>
         {links.map((link) => {
           switch (link) {
-            case 'collection':
+            case "collection":
               return (
                 <Link
                   className={`${classes.drawerLink}`}
@@ -104,13 +105,13 @@ const NavDrawer = () => {
                       primary={`your ${link}  ${
                         userCollectionReleasesCount
                           ? `(${userCollectionReleasesCount})`
-                          : ''
+                          : ""
                       }`}
                     />
                   </ListItem>
                 </Link>
-              )
-            case 'releases':
+              );
+            case "releases":
               return (
                 <Link
                   className={`${classes.drawerLink}`}
@@ -123,13 +124,13 @@ const NavDrawer = () => {
                       primary={`your ${link}  ${
                         userPublishedReleasesCount
                           ? `(${userPublishedReleasesCount})`
-                          : ''
+                          : ""
                       }`}
                     />
                   </ListItem>
                 </Link>
-              )
-            case 'the soft lp':
+              );
+            case "the soft lp":
               return (
                 <ListItem button key={link}>
                   <ListItemText>
@@ -143,12 +144,14 @@ const NavDrawer = () => {
                     </a>
                   </ListItemText>
                 </ListItem>
-              )
+              );
             default:
               return (
                 <Link
                   className={`${classes.drawerLink}`}
-                  href={`${link === 'home' ? '/' : `/${link.replace(' ', '')}`}`}
+                  href={`${
+                    link === "home" ? "/" : `/${link.replace(" ", "")}`
+                  }`}
                   activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
                   key={link}
                 >
@@ -156,24 +159,24 @@ const NavDrawer = () => {
                     <ListItemText primary={link} />
                   </ListItem>
                 </Link>
-              )
+              );
           }
         })}
       </StyledList>
     </Box>
-  )
+  );
 
   return (
     <div>
       {
-        <Box key={'left'}>
+        <Box key={"left"}>
           <StyledMenuButton onClick={toggleDrawer(true)}>
             <Icon>
               <img src={"/hamburger.svg"} height={25} width={25} />
             </Icon>
           </StyledMenuButton>
           <StyledDrawer
-            anchor={'left'}
+            anchor={"left"}
             open={drawerOpen}
             onClose={toggleDrawer(false)}
             BackdropProps={{ invisible: true }}
@@ -186,7 +189,7 @@ const NavDrawer = () => {
                   href="https://twitter.com/nina_market_"
                   target="_blank"
                   rel="noreferrer"
-                  style={{ paddingRight: '15px' }}
+                  style={{ paddingRight: "15px" }}
                 >
                   <FontAwesomeIcon icon={faTwitter} />
                 </a>
@@ -214,66 +217,66 @@ const NavDrawer = () => {
         </Box>
       }
     </div>
-  )
-}
+  );
+};
 
-const PREFIX = 'NavDrawer'
+const PREFIX = "NavDrawer";
 
 const classes = {
   toggle: `${PREFIX}-toggle`,
   list: `${PREFIX}-list`,
   drawerLink: `${PREFIX}-drawerLink`,
-}
+};
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
-  '& .MuiPaper-root': {
+  "& .MuiPaper-root": {
     width: 436,
-    [theme.breakpoints.down('md')]: {
-      width: '100vw',
+    [theme.breakpoints.down("md")]: {
+      width: "100vw",
     },
   },
-}))
+}));
 
 const StyledList = styled(List)(({ theme }) => ({
-  padding: `${theme.spacing('100px', 4, 0, 4)} !important`,
-  '& .MuiListItem-root': {
-    padding: '5px 0',
-    '&:hover': {
+  padding: `${theme.spacing("100px", 4, 0, 4)} !important`,
+  "& .MuiListItem-root": {
+    padding: "5px 0",
+    "&:hover": {
       backgroundColor: theme.palette.transparent,
     },
-    '& .MuiListItemText-root': {
+    "& .MuiListItemText-root": {
       margin: 0,
-      '& span': {
-        textTransform: 'capitalize',
-        fontSize: '18px !important',
-        lineHeight: '20.7px !important',
+      "& span": {
+        textTransform: "capitalize",
+        fontSize: "18px !important",
+        lineHeight: "20.7px !important",
       },
     },
   },
-}))
+}));
 
 const StyledMenuButton = styled(Button)(({ theme }) => ({
-  padding: '0px !important',
-  zIndex: '10',
-  '&:hover': {
+  padding: "0px !important",
+  zIndex: "10",
+  "&:hover": {
     backgroundColor: `${theme.palette.transparent} !important`,
   },
-  '& .MuiSvgIcon-root': {
+  "& .MuiSvgIcon-root": {
     color: theme.palette.black,
   },
-}))
+}));
 
 const DrawerFooter = styled(Box)(() => ({
-  position: 'absolute',
-  bottom: '10px',
-  width: '75%',
-  left: '60px',
-  transform: 'translateY(-50%)',
-  display: 'flex',
-  justifyContent: 'space-between',
-  '& a': {
-    paddingRight: '15px',
+  position: "absolute",
+  bottom: "10px",
+  width: "75%",
+  left: "60px",
+  transform: "translateY(-50%)",
+  display: "flex",
+  justifyContent: "space-between",
+  "& a": {
+    paddingRight: "15px",
   },
-}))
+}));
 
-export default NavDrawer
+export default NavDrawer;

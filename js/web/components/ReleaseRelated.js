@@ -1,45 +1,45 @@
-import React, { useEffect, useState, useContext } from 'react'
-import { Helmet } from 'react-helmet'
-import ninaCommon from 'nina-common'
-import { styled } from '@mui/material/styles'
-import { Typography, Box } from '@mui/material'
-import ReleaseListTable from './ReleaseListTable'
-import ReleaseTileList from './ReleaseTileList'
-import ScrollablePageWrapper from './ScrollablePageWrapper'
+import React, { useEffect, useState, useContext } from "react";
+import { Helmet } from "react-helmet";
+import ninaCommon from "nina-common";
+import { styled } from "@mui/material/styles";
+import { Typography, Box } from "@mui/material";
+import ReleaseListTable from "./ReleaseListTable";
+import ReleaseTileList from "./ReleaseTileList";
+import ScrollablePageWrapper from "./ScrollablePageWrapper";
 
-const { ReleaseContext } = ninaCommon.contexts
+const { ReleaseContext } = ninaCommon.contexts;
 
 const ReleaseRelated = ({ match }) => {
-  const releasePubkey = match.params.releasePubkey
+  const releasePubkey = match.params.releasePubkey;
   const { getRelatedForRelease, filterRelatedForRelease, releaseState } =
-    useContext(ReleaseContext)
-  const [listView, setListView] = useState(false)
+    useContext(ReleaseContext);
+  const [listView, setListView] = useState(false);
 
-  const [relatedReleases, setRelatedReleases] = useState(null)
-  const [userHandles, setUserHandles] = useState(null)
-
-  useEffect(() => {
-    getRelatedForRelease(releasePubkey)
-  }, [])
+  const [relatedReleases, setRelatedReleases] = useState(null);
+  const [userHandles, setUserHandles] = useState(null);
 
   useEffect(() => {
-    const related = filterRelatedForRelease(releasePubkey)
-    setRelatedReleases(related)
-  }, [releaseState.tokenData])
+    getRelatedForRelease(releasePubkey);
+  }, []);
+
+  useEffect(() => {
+    const related = filterRelatedForRelease(releasePubkey);
+    setRelatedReleases(related);
+  }, [releaseState.tokenData]);
 
   useEffect(() => {
     if (relatedReleases) {
       const handles = relatedReleases.map((release) => {
-        return release.metadata.properties.artist
-      })
-      const filteredHandles = [...new Set(handles)]
-      setUserHandles(filteredHandles.join(' / '))
+        return release.metadata.properties.artist;
+      });
+      const filteredHandles = [...new Set(handles)];
+      setUserHandles(filteredHandles.join(" / "));
     }
-  }, [relatedReleases])
+  }, [relatedReleases]);
 
   const handleViewChange = () => {
-    setListView(!listView)
-  }
+    setListView(!listView);
+  };
 
   return (
     <>
@@ -54,16 +54,16 @@ const ReleaseRelated = ({ match }) => {
               <CollectionHeader listView={listView}>
                 <Typography
                   variant="body1"
-                  sx={{ fontWeight: '700 !important' }}
+                  sx={{ fontWeight: "700 !important" }}
                   align="left"
                 >
                   Releases by {userHandles}
                 </Typography>
                 <Typography
                   onClick={handleViewChange}
-                  sx={{ cursor: 'pointer' }}
+                  sx={{ cursor: "pointer" }}
                 >
-                  {listView ? 'Cover View' : 'List View'}
+                  {listView ? "Cover View" : "List View"}
                 </Typography>
               </CollectionHeader>
 
@@ -80,23 +80,23 @@ const ReleaseRelated = ({ match }) => {
         </Wrapper>
       </ScrollablePageWrapper>
     </>
-  )
-}
+  );
+};
 
 const CollectionHeader = styled(Box)(({ listView }) => ({
-  maxWidth: listView ? '800px' : '960px',
-  margin: 'auto',
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'flex-end',
-  marginBottom: '15px',
-}))
+  maxWidth: listView ? "800px" : "960px",
+  margin: "auto",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "flex-end",
+  marginBottom: "15px",
+}));
 
 const Wrapper = styled(Box)(({ theme }) => ({
-  [theme.breakpoints.down('md')]: {
-    padding: '0px 30px',
-    overflowX: 'auto',
+  [theme.breakpoints.down("md")]: {
+    padding: "0px 30px",
+    overflowX: "auto",
   },
-}))
+}));
 
-export default ReleaseRelated
+export default ReleaseRelated;

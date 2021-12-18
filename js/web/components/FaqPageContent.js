@@ -1,8 +1,8 @@
-import React from 'react'
-import { styled } from '@mui/material/styles'
-import { Typography, Box } from '@mui/material'
+import React from "react";
+import { styled } from "@mui/material/styles";
+import { Typography, Box } from "@mui/material";
 
-import ScrollablePageWrapper from './ScrollablePageWrapper'
+import ScrollablePageWrapper from "./ScrollablePageWrapper";
 
 const FaqPageContent = () => {
   return (
@@ -11,7 +11,7 @@ const FaqPageContent = () => {
         <Typography
           variant="h1"
           align="left"
-          sx={{ padding: { md: '0 0 30px', xs: '30px 0px' } }}
+          sx={{ padding: { md: "0 0 30px", xs: "30px 0px" } }}
         >
           FAQ
         </Typography>
@@ -27,7 +27,7 @@ const FaqPageContent = () => {
           <Typography
             variant="h4"
             align="left"
-            sx={{ paddingBottom: { md: '10px', xs: '30px' } }}
+            sx={{ paddingBottom: { md: "10px", xs: "30px" } }}
           >
             {
               "Nina is a new infrastructure to buy, sell and stream music online. Nina is designed to solve inequity and opportunism in the music industry by providing a new model that doesn't syphon revenue from artists."
@@ -55,7 +55,7 @@ const FaqPageContent = () => {
           <Typography
             variant="h4"
             align="left"
-            sx={{ paddingBottom: { md: '10px', xs: '30px' } }}
+            sx={{ paddingBottom: { md: "10px", xs: "30px" } }}
           >
             When uploading releases to Nina, an artist chooses the edition size,
             price, and resale percentage of the release. The release will be
@@ -80,17 +80,17 @@ const FaqPageContent = () => {
           <Typography
             variant="h4"
             align="left"
-            sx={{ paddingBottom: { md: '10px', xs: '30px' } }}
+            sx={{ paddingBottom: { md: "10px", xs: "30px" } }}
           ></Typography>
 
           <Typography
             variant="h4"
             align="left"
-            sx={{ paddingBottom: { md: '10px', xs: '30px' } }}
+            sx={{ paddingBottom: { md: "10px", xs: "30px" } }}
           >
             In order to ensure the smoothest possible experience, we are rolling
             out Nina in pieces. Currently, Nina Publishing Credits are required
-            to access the upload page and can be requested{' '}
+            to access the upload page and can be requested{" "}
             <a
               rel="noreferrer"
               target="_blank"
@@ -117,26 +117,26 @@ const FaqPageContent = () => {
           <Typography
             variant="h4"
             align="left"
-            sx={{ paddingBottom: { md: '10px', xs: '30px' } }}
+            sx={{ paddingBottom: { md: "10px", xs: "30px" } }}
           ></Typography>
 
           <Typography
             variant="h4"
             align="left"
-            sx={{ paddingBottom: { md: '10px', xs: '30px' } }}
+            sx={{ paddingBottom: { md: "10px", xs: "30px" } }}
           >
-            Nina is built on{' '}
+            Nina is built on{" "}
             <a rel="noreferrer" target="_blank" href="https://solana.com/">
               Solana
-            </a>{' '}
-            and requires a Solana wallet to make purchaes. We recommend using{' '}
+            </a>{" "}
+            and requires a Solana wallet to make purchaes. We recommend using{" "}
             <a rel="noreferrer" target="_blank" href="https://phantom.app/">
               Phantom Wallet
             </a>
             .
           </Typography>
           <Typography variant="h4" align="left">
-            If you need any help, hop into our{' '}
+            If you need any help, hop into our{" "}
             <a
               rel="noreferrer"
               target="_blank"
@@ -158,22 +158,22 @@ const FaqPageContent = () => {
             First you’ll need to set up a wallet (See above). In your Phantom
             wallet you can purchase SOL using a credit card by clicking on
             ‘Deposit’ and then ‘Buy with MoonPay’. You can also buy SOL on an
-            exchange like{' '}
+            exchange like{" "}
             <a target="_blank" href="www.ftx.us" rel="noreferrer">
               FTX
             </a>
-            ,{' '}
+            ,{" "}
             <a target="_blank" href="www.coinbase.com" rel="noreferrer">
               Coinbase
             </a>
-            ,{' '}
+            ,{" "}
             <a target="_blank" href="https://blockfolio.com/" rel="noreferrer">
               Blockfolio
             </a>
-            , or{' '}
+            , or{" "}
             <a target="_blank" href="https://www.binance.us/" rel="noreferrer">
               Binance
-            </a>{' '}
+            </a>{" "}
             and send it to your Phantom wallet.
           </Typography>
           <br />
@@ -184,7 +184,7 @@ const FaqPageContent = () => {
             for USDC by using the swap function in your Phantom wallet (the
             middle button). Make sure to keep some SOL in your wallet so that
             you can pay the network fees when buying releases or swapping
-            between USDC and SOL.{' '}
+            between USDC and SOL.{" "}
           </Typography>
         </FaqEntry>
         <FaqEntry>
@@ -198,13 +198,13 @@ const FaqPageContent = () => {
           <Typography
             variant="h4"
             align="left"
-            sx={{ paddingBottom: { md: '10px', xs: '30px' } }}
+            sx={{ paddingBottom: { md: "10px", xs: "30px" } }}
           ></Typography>
 
           <Typography
             variant="h4"
             align="left"
-            sx={{ paddingBottom: { md: '10px', xs: '30px' } }}
+            sx={{ paddingBottom: { md: "10px", xs: "30px" } }}
           >
             No. All tracks on Nina are freely and permanently streamable by
             anyone.
@@ -222,13 +222,13 @@ const FaqPageContent = () => {
           <Typography
             variant="h4"
             align="left"
-            sx={{ paddingBottom: { md: '10px', xs: '30px' } }}
+            sx={{ paddingBottom: { md: "10px", xs: "30px" } }}
           ></Typography>
 
           <Typography
             variant="h4"
             align="left"
-            sx={{ paddingBottom: { md: '10px', xs: '30px' } }}
+            sx={{ paddingBottom: { md: "10px", xs: "30px" } }}
           >
             Not yet but we are working on it! In the meantime, you can listen to
             tracks on the Nina website on mobile.
@@ -246,13 +246,13 @@ const FaqPageContent = () => {
           <Typography
             variant="h4"
             align="left"
-            sx={{ paddingBottom: { md: '10px', xs: '30px' } }}
+            sx={{ paddingBottom: { md: "10px", xs: "30px" } }}
           ></Typography>
 
           <Typography
             variant="h4"
             align="left"
-            sx={{ paddingBottom: { md: '10px', xs: '30px' } }}
+            sx={{ paddingBottom: { md: "10px", xs: "30px" } }}
           >
             Yes! You can view the Nina code
             <a
@@ -260,7 +260,7 @@ const FaqPageContent = () => {
               target="_blank"
               href="https://github.com/nina-market/nina"
             >
-              {' '}
+              {" "}
               here
             </a>
             . Nina is unaudited software and should be used at your own risk.
@@ -284,7 +284,7 @@ const FaqPageContent = () => {
           </Typography>
           <br />
           <Typography variant="h4" align="left">
-            Solana has recently published their 2021{' '}
+            Solana has recently published their 2021{" "}
             <a
               href="https://solana.com/news/solana-energy-usage-report-november-2021"
               rel="noreferrer"
@@ -307,14 +307,14 @@ const FaqPageContent = () => {
           <Typography variant="h4" align="left">
             On Nina, all releases are priced in USDC. The USDC used on Nina is
             SPL-wrapped USDC, native to the Solana blockchain. It is important
-            to make sure that your exchange accepts SPL-USDC.{' '}
+            to make sure that your exchange accepts SPL-USDC.{" "}
             <a target="_blank" href="www.ftx.us">
               FTX
-            </a>{' '}
-            and{' '}
+            </a>{" "}
+            and{" "}
             <a target="_blank" href="www.binance.us">
               Binance
-            </a>{' '}
+            </a>{" "}
             both accept SPL-USDC (make sure to send to the SPL-USDC address
             given by your exchange - it should not start with {`"0x"`}).
           </Typography>
@@ -334,35 +334,35 @@ const FaqPageContent = () => {
         </FaqEntry>
       </FaqPageContainer>
     </ScrollablePageWrapper>
-  )
-}
+  );
+};
 
-const PREFIX = 'faqPage'
+const PREFIX = "faqPage";
 
 const classes = {
   sectionHeader: `${PREFIX}-sectionHeader`,
-}
+};
 
-const FaqPageContainer = styled('div')(({ theme }) => ({
-  width: '1010px',
-  margin: 'auto',
-  overflowX: 'visible',
-  [theme.breakpoints.down('md')]: {
-    width: '80vw',
-    marginBottom: '100px',
+const FaqPageContainer = styled("div")(({ theme }) => ({
+  width: "1010px",
+  margin: "auto",
+  overflowX: "visible",
+  [theme.breakpoints.down("md")]: {
+    width: "80vw",
+    marginBottom: "100px",
   },
   [`& .${classes.sectionHeader}`]: {
-    fontWeight: '700 ',
+    fontWeight: "700 ",
     paddingBottom: `${theme.spacing(1)}`,
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
   },
-}))
+}));
 
 const FaqEntry = styled(Box)(({ theme }) => ({
-  paddingBottom: '30px',
-  '& a': {
+  paddingBottom: "30px",
+  "& a": {
     color: theme.palette.blue,
   },
-}))
+}));
 
 export default FaqPageContent;
