@@ -10,9 +10,17 @@ import ReleaseCard from "./ReleaseCard";
 import ReleasePurchase from "./ReleasePurchase";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import dynamic from 'next/dynamic'
 
-const { Dots, Exchange } = ninaCommon.components;
+const { Dots } = ninaCommon.components;
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts;
+
+const {Exchange} = dynamic(
+  () => import(ninaCommon.components),
+  {ssr: false}
+)
+
+
 
 const Release = () => {
   const router = useRouter();
