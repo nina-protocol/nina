@@ -3,7 +3,6 @@ import { styled } from "@mui/material/styles";
 import ninaCommon from "nina-common";
 import { useHistory } from "react-router-dom";
 import { Typography, Box } from "@mui/material";
-import SmoothImage from "react-smooth-image";
 import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import Button from "@mui/material/Button";
@@ -60,7 +59,7 @@ const ReleaseTileList = (props) => {
                     <ControlPointIcon sx={{ color: "white" }} />
                   </Button>
                 </CardCta>
-                <SmoothImage
+                <img
                   containerStyles={{
                     position: "absolute",
                     left: "0",
