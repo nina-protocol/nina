@@ -1,8 +1,8 @@
-import Release from '../components/Release'
+import AllReleases from '../components/AllReleases'
 
 const ReleasePage = () => {
   return (
-    <Release/>
+    <AllReleases/>
   )
 }
 

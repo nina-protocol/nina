@@ -13,7 +13,7 @@ const Layout = ({children}) => {
         className={classes.mainContainer}
       >
         <NavBar />
-        <main>{children}</main>
+        <main className={classes.bodyContainer}>{children}</main>
 
       </Container>
     </Root>
@@ -21,7 +21,7 @@ const Layout = ({children}) => {
 }
 
 
-const PREFIX = 'Routes'
+const PREFIX = 'Layout'
 
 const classes = {
   mainContainer: `${PREFIX}-mainContainer`,
@@ -30,16 +30,19 @@ const classes = {
 
 const Root = styled('div')(() => ({
   [`& .${classes.mainContainer}`]: {
-    // height: '100vh',
+    minHeight: '100vh',
     // width: '100vw',
     width: '100vw',
     overflowX: 'hidden',
-  },
-
-  [`& .${classes.bodyContainer}`]: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
+  },
+
+  [`& .${classes.bodyContainer}`]: {
+    // display: 'flex',
+    // flexDirection: 'column',
+    // justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
     textAlign: 'center',

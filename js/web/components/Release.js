@@ -10,6 +10,7 @@ import NinaBox from './NinaBox'
 import ReleaseCard from './ReleaseCard'
 import ReleasePurchase from './ReleasePurchase'
 import {useRouter} from 'next/router'
+import Head from "next/head"
 
 
 const { Dots, Exchange } = ninaCommon.components
@@ -19,7 +20,6 @@ const Release = () => {
   const router = useRouter()
   const releasePubkey = router.query.releasePubkey;
 
-  console.log('releasePubkey :>> ', releasePubkey);
 
   const wallet = useWallet()
   const history = useHistory()
@@ -39,9 +39,12 @@ const Release = () => {
   )
 
   useEffect(() => {
-    getRelatedForRelease(releasePubkey)
-    getExchangeHistoryForRelease(releasePubkey)
-  }, [])
+    if (releasePubkey) {
+      getRelatedForRelease(releasePubkey)
+      getExchangeHistoryForRelease(releasePubkey)
+      
+    }
+  }, [releasePubkey])
 
   useEffect(() => {
     if (releaseState.metadata[releasePubkey]) {
@@ -69,17 +72,26 @@ const Release = () => {
   if (!wallet?.connected && router.pathname.includes('releases')) {
     history.push(`/${releasePubkey}`)
   }
+  console.log('metadata :>> ', metadata);
 
   return (
     <>
       {metadata && (
-        <Helmet>
+        <Head>
           <title>{`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}</title>
           <meta
             name="description"
             content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`}
           />
-        </Helmet>
+          <meta property="og:type" content="website" />
+          <meta property="og:title" content={`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`} />
+          <meta property="og:description" content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`} />
+          <meta property="twitter:card" content={"summary" }/>
+          <meta property="twitter:creator" content={metadata?.properties.artist} />
+          <meta property="twitter:title" content={`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`} />
+          <meta property="twitter:description" content={metadata.description} />
+          <meta name="twitter:image" content={metadata.image} />
+        </Head>
       )}
       {!metadata && <Dots size="80px" />}
       {metadata && (
@@ -122,18 +134,18 @@ const Release = () => {
   )
 }
 
-export const getServerSideProps = async () => {
-  console.log('"here" :>> ', "here");
-  // await getRelease(releasePubkey)
-  // await getRelatedForRelease(releasePubkey)
-  // await getExchangeHistoryForRelease(releasePubkey)
+// export const getServerSideProps = async () => {
+//   // await getRelease(releasePubkey)
+//   // await getRelatedForRelease(releasePubkey)
+//   // await getExchangeHistoryForRelease(releasePubkey)
 
-  return {
-    props: {data}
-  }
-}
+//   return {
+//     props: {data}
+//   }
+// }
 
 const ReleaseWrapper = styled(Box)(({ theme }) => ({
+  height: '100%',
   [theme.breakpoints.down('md')]: {
     overflowX: 'scroll',
     '&::-webkit-scrollbar': {
