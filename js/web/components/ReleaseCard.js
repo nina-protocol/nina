@@ -1,14 +1,13 @@
 import React, { useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
-import SmoothImage from 'react-smooth-image'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { Typography } from '@mui/material'
-import ninaRecord from '../assets/nina-record.png'
 import { Fade } from '@mui/material'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
+import Image from 'next/image'
 
 const { AudioPlayerContext } = ninaCommon.contexts
 
@@ -51,10 +50,10 @@ const ReleaseCard = (props) => {
 
       <Box>
         {preview ? (
-          <SmoothImage
+          <Image
             src={
               artwork?.meta.status === undefined
-                ? ninaRecord
+                ? ''
                 : artwork.meta.previewUrl
             }
             alt={metadata.artist}
@@ -62,7 +61,7 @@ const ReleaseCard = (props) => {
         ) : (
           <>
             {metadata && (
-              <SmoothImage src={metadata.image} alt={metadata.name} />
+              <Image height={350} width={350} layout="responsive" src={metadata.image} alt={metadata.name} />
             )}
           </>
         )}

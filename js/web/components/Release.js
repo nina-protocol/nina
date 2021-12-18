@@ -9,12 +9,18 @@ import { styled } from '@mui/material/styles'
 import NinaBox from './NinaBox'
 import ReleaseCard from './ReleaseCard'
 import ReleasePurchase from './ReleasePurchase'
+import {useRouter} from 'next/router'
+
 
 const { Dots, Exchange } = ninaCommon.components
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
 
-const Release = ({ match }) => {
-  const releasePubkey = match.params.releasePubkey
+const Release = () => {
+  const router = useRouter()
+  const releasePubkey = router.query.releasePubkey;
+
+  console.log('releasePubkey :>> ', releasePubkey);
+
   const wallet = useWallet()
   const history = useHistory()
   const {
@@ -60,7 +66,7 @@ const Release = ({ match }) => {
     )
   }
 
-  if (!wallet?.connected && match.path.includes('releases')) {
+  if (!wallet?.connected && router.pathname.includes('releases')) {
     history.push(`/${releasePubkey}`)
   }
 
@@ -78,7 +84,7 @@ const Release = ({ match }) => {
       {!metadata && <Dots size="80px" />}
       {metadata && (
         <ReleaseWrapper>
-          {!match.path.includes('market') && (
+          {!router.pathname.includes('market') && (
             <NinaBox
               columns={'repeat(2, 1fr)'}
               sx={{ backgroundColor: 'white' }}
@@ -93,14 +99,14 @@ const Release = ({ match }) => {
                 <ReleasePurchase
                   releasePubkey={releasePubkey}
                   metadata={metadata}
-                  match={match}
+                  router={router}
                   relatedReleases={relatedReleases}
                 />
               </ReleaseCtaWrapper>
             </NinaBox>
           )}
 
-          {match.path.includes('market') && (
+          {router.pathname.includes('market') && (
             <NinaBox columns={'repeat(1, 1fr)'}>
               <Exchange
                 releasePubkey={releasePubkey}
@@ -114,6 +120,17 @@ const Release = ({ match }) => {
       )}
     </>
   )
+}
+
+export const getServerSideProps = async () => {
+  console.log('"here" :>> ', "here");
+  // await getRelease(releasePubkey)
+  // await getRelatedForRelease(releasePubkey)
+  // await getExchangeHistoryForRelease(releasePubkey)
+
+  return {
+    props: {data}
+  }
 }
 
 const ReleaseWrapper = styled(Box)(({ theme }) => ({

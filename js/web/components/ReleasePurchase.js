@@ -13,7 +13,7 @@ const { ReleaseContext, NinaContext, ExchangeContext } = ninaCommon.contexts
 const { NinaClient } = ninaCommon.utils
 
 const ReleasePurchase = (props) => {
-  const { releasePubkey, metadata, match, relatedReleases } = props
+  const { releasePubkey, metadata, router, relatedReleases } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const history = useHistory()
@@ -107,9 +107,9 @@ const ReleasePurchase = (props) => {
     wallet?.connected && release.remainingSupply > 0 ? false : true
 
   let pathString = ''
-  if (match.path.includes('releases')) {
+  if (router.pathname.includes('releases')) {
     pathString = '/releases'
-  } else if (match.path.includes('collection')) {
+  } else if (router.pathname.includes('collection')) {
     pathString = '/collection'
   }
 

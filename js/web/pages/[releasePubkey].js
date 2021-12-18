@@ -1,7 +1,10 @@
-const Release = () => {
+import Release from '../components/Release'
+import {useRouter} from 'next/router'
+
+const ReleasePage = () => {
   return (
-    <h1>a release</h1>
+    <Release/>
   )
 }
 
-export default Release;
+export default ReleasePage;

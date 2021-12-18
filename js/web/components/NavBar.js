@@ -90,7 +90,7 @@ const Root = styled('nav')(({ theme }) => ({
     zIndex: '12',
     padding: theme.spacing(1, 0),
     marginBottom: '0.5rem',
-    position: 'absolute',
+    position: 'fixed',
     top: '0',
     left: '0',
 }))

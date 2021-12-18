@@ -1,18 +1,29 @@
 import React from 'react'
-import { styled } from '@mui/material/styles'
-import { Box } from '@mui/material'
+import {styled} from '@mui/material/styles'
+import {Box} from '@mui/material'
 import Slider from 'react-slick'
+import 'react-multi-carousel/lib/styles.css'
 import Typography from '@mui/material/Typography'
 import ninaCommon from 'nina-common'
 import Link from 'next/link'
-// import SmoothImage from 'react-smooth-image'
 import Image from 'next/image'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
-const { Dots } = ninaCommon.components
+const {Dots} = ninaCommon.components
 
 const RecentlyPublished = (props) => {
-  const { releases } = props
+  const {releases} = props
+  const artistCount = {}
+  const releasesStack = []
+
+  releases?.forEach((release) => {
+    if (!artistCount[release.metadata.properties.artist]) {
+      releasesStack.push(release)
+      artistCount[release.metadata.properties.artist] = 1
+    } else {
+      artistCount[release.metadata.properties.artist] += 1
+    }
+  })
 
   const responsiveSettings = [
     {
@@ -40,19 +51,20 @@ const RecentlyPublished = (props) => {
     },
   ]
 
-  const CustomNextArrow = ({ onClick }) => (
+  const CustomNextArrow = ({onClick}) => (
     <NavigateNextIcon
       className="sliderArrow sliderArrow--right"
       onClick={onClick}
     />
   )
-  const CustomPrevArrow = ({ onClick }) => (
+  const CustomPrevArrow = ({onClick}) => (
     <NavigateBeforeIcon
       className="sliderArrow sliderArrow--left"
       onClick={onClick}
     />
   )
-  if (releases === undefined || releases.length === 0) {
+
+  if (releasesStack.length === 0) {
     return (
       <Box
         sx={{
@@ -68,7 +80,7 @@ const RecentlyPublished = (props) => {
   }
   return (
     <RecentlyPublishedWrapper>
-      {releases?.length > 0 && (
+      {releasesStack?.length > 0 && (
         <Slider
           dots="false"
           infinite="true"
@@ -82,10 +94,12 @@ const RecentlyPublished = (props) => {
           nextArrow={<CustomNextArrow />}
           prevArrow={<CustomPrevArrow />}
         >
-          {releases.map((release, i) => {
+          {releasesStack.map((release, i) => {
             const imageUrl = release.metadata.image
+            const isMultiple =
+              artistCount[release.metadata.properties.artist] > 1
             const availability = (
-              <Typography variant="body2" sx={{ paddingTop: '10px' }}>
+              <Typography variant="body2" sx={{paddingTop: '10px'}}>
                 {release.tokenData.remainingSupply.toNumber() > 0
                   ? `${release.tokenData.remainingSupply.toNumber()} / ${release.tokenData.totalSupply.toNumber()} remaining`
                   : 'Sold Out'}
@@ -95,15 +109,26 @@ const RecentlyPublished = (props) => {
             return (
               <ReleaseSlideWrapper key={i}>
                 <ReleaseSlide key={i}>
-                  <Link href={'/' + release.releasePubkey}>
-                    <Image src={imageUrl} width='250px' height='250px' />
+                  <Link
+                    href={`/${release.releasePubkey}${isMultiple ? '/related' : ''
+                      }`}
+                  >
+                    <Image src={imageUrl}  height={100} width={100} layout="responsive"/>
                   </Link>
-                  {availability}
-                  <ReleaseCopy sx={{ display: 'flex' }}>
-                    <Typography variant="body2">
-                      {release.metadata.properties.artist},{' '}
-                      <i>{release.metadata.properties.title}</i>
-                    </Typography>
+                  {!isMultiple && availability}
+                  <ReleaseCopy sx={{display: 'flex'}}>
+                    {isMultiple && (
+                      <Typography variant="body2">
+                        {`${artistCount[release.metadata.properties.artist]
+                          } releases by ${release.metadata.properties.artist}`}
+                      </Typography>
+                    )}
+                    {!isMultiple && (
+                      <Typography variant="body2">
+                        {release.metadata.properties.artist},{' '}
+                        <i>{release.metadata.properties.title}</i>
+                      </Typography>
+                    )}
                   </ReleaseCopy>
                 </ReleaseSlide>
               </ReleaseSlideWrapper>
@@ -115,7 +140,7 @@ const RecentlyPublished = (props) => {
   )
 }
 
-const RecentlyPublishedWrapper = styled(Box)(({ theme }) => ({
+const RecentlyPublishedWrapper = styled(Box)(({theme}) => ({
   '& .sliderArrow': {
     top: '-12% !important',
     position: 'absolute',
@@ -149,7 +174,7 @@ const ReleaseSlideWrapper = styled(Box)(() => ({
   },
 }))
 
-const ReleaseSlide = styled(Box)(({ theme }) => ({
+const ReleaseSlide = styled(Box)(({theme}) => ({
   textAlign: 'left',
   padding: '0 30px',
   margin: 'auto',
