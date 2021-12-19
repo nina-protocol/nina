@@ -7,6 +7,7 @@ import Head from "next/head";
 const {NinaClient} = ninaCommon.utils
 
 const ReleasePage = ({metadata}) => {
+  console.log('metadta: ', metadata)
   return (
     <>
       <Head>
@@ -24,15 +25,20 @@ const ReleasePage = ({metadata}) => {
           name="og:description"
           content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`}
         />
-        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:card" content="player" />
+        <meta name="twitter:player" content={metadata.animation_url} />
+        <meta name ="twitter:secureurl:player_url" content={metadata.animation_url} />
+        <meta name="twitter:player:width" content="400" />
+        <meta name="twitter:player:height" content="400" />
         <meta name="twitter:site" content="@nina_market_" />
         <meta name="twitter:creator" content="@nina_market_" />
+        <meta name="twitter:image:type" content="image/jpg" />
         <meta
           name="twitter:title"
           content={`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}
         />
-        <meta name="twitter:description" content={metadata.description} />
-        <meta name="twitter:image" content="https://f4.bcbits.com/img/a0578492136_16.jpg" />
+        <meta name="twitter:description" content={metadata?.description} />
+        <meta name="twitter:image" content={metadata.image} />
       </Head>
       <Release metadata={metadata}/>;
     </>
@@ -50,7 +56,7 @@ export const getServerSideProps = async (context) => {
     } 
   )
   const metadataJson = await metadataResult.json()
-
+  console.log(metadataJson[releasePubkey])
   return {
     props: {
       metadata: metadataJson[releasePubkey]

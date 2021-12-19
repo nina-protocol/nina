@@ -11,7 +11,7 @@ import Layout from "../components/Layout";
 
 const ConnectionContextProvider = dynamic(() =>
   import('nina-common/dist/esm/contexts/connection'),
-  { ssr: false }
+  { ssr: true }
 );
 
 const {
@@ -50,9 +50,6 @@ function Application({ Component, clientSideEmotionCache, pageProps }) {
     }
   }, []);
 
-  if (!ConnectionContextProvider) {
-    return null
-  }
   return (  
     <SnackbarProvider
       maxSnack={3}

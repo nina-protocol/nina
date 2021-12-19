@@ -9,11 +9,13 @@ import NinaBox from "./NinaBox";
 import ReleaseCard from "./ReleaseCard";
 import ReleasePurchase from "./ReleasePurchase";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 const { Exchange } = ninaCommon.components;
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts;
 
-const Release = ({metadata}) => {
+const Release = (props) => {
+  console.log('Release Props: ', props)
   const router = useRouter();
   const releasePubkey = router.query.releasePubkey;
 
@@ -30,12 +32,22 @@ const Release = ({metadata}) => {
   const [track, setTrack] = useState(null);
   const [relatedReleases, setRelatedReleases] = useState(null);
 
+  const [metadata, setMetadata] = useState(
+    props.metadata || releaseState?.metadata[releasePubkey] || null
+  );
+
   useEffect(() => {
     if (releasePubkey) {
       getRelatedForRelease(releasePubkey);
       getExchangeHistoryForRelease(releasePubkey);
     }
   }, [releasePubkey]);
+
+  useEffect(() => {
+    if (releaseState.metadata[releasePubkey]) {
+      setMetadata(releaseState.metadata[releasePubkey]);
+    }
+  }, [metadata]);
 
   useEffect(() => {
     setTrack(releaseState.metadata[releasePubkey]);
@@ -57,44 +69,44 @@ const Release = ({metadata}) => {
   if (!wallet?.connected && router.pathname.includes("releases")) {
     history.push(`/${releasePubkey}`);
   }
-
+  if (!metadata) {
+    return null
+  }
   return (
-    <>
-      <ReleaseWrapper>
-        {!router.pathname.includes("market") && (
-          <NinaBox
-            columns={"repeat(2, 1fr)"}
-            sx={{ backgroundColor: "white" }}
-          >
-            <ReleaseCard
-              metadata={metadata}
-              preview={false}
+    <ReleaseWrapper>
+      {!router.pathname.includes("market") && (
+        <NinaBox
+          columns={"repeat(2, 1fr)"}
+          sx={{ backgroundColor: "white" }}
+        >
+          <ReleaseCard
+            metadata={metadata}
+            preview={false}
+            releasePubkey={releasePubkey}
+            track={track}
+          />
+          <ReleaseCtaWrapper>
+            <ReleasePurchase
               releasePubkey={releasePubkey}
-              track={track}
+              metadata={metadata}
+              router={router}
+              relatedReleases={relatedReleases}
             />
-            <ReleaseCtaWrapper>
-              <ReleasePurchase
-                releasePubkey={releasePubkey}
-                metadata={metadata}
-                router={router}
-                relatedReleases={relatedReleases}
-              />
-            </ReleaseCtaWrapper>
-          </NinaBox>
-        )}
+          </ReleaseCtaWrapper>
+        </NinaBox>
+      )}
 
-        {router.pathname.includes("market") && (
-          <NinaBox columns={"repeat(1, 1fr)"}>
-            <Exchange
-              releasePubkey={releasePubkey}
-              exchanges={exchangeState.exchanges}
-              metadata={metadata}
-              track={track}
-            />
-          </NinaBox>
-        )}
-      </ReleaseWrapper>
-    </>
+      {router.pathname.includes("market") && (
+        <NinaBox columns={"repeat(1, 1fr)"}>
+          <Exchange
+            releasePubkey={releasePubkey}
+            exchanges={exchangeState.exchanges}
+            metadata={metadata}
+            track={track}
+          />
+        </NinaBox>
+      )}
+    </ReleaseWrapper>
   );
 };
 
