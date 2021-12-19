@@ -1,8 +1,11 @@
 import Layout from "../../components/Layout";
 import ninaCommon from 'nina-common'
 const {NinaClient} = ninaCommon.utils
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import PauseIcon from "@mui/icons-material/Pause";
 
 const ReleaseEmbedPage = (props) => {  
+  console.log(props)
   const player = `
     <html>
       <head>
@@ -30,9 +33,7 @@ const ReleaseEmbedPage = (props) => {
       <body>
         <div class="container">
           <div class="vertical-center">
-            <button id="player-button">
-            Click
-            </button>
+            <input id="player-button" type="image" src="https://${props.host}/play.svg" width="80px height="80px/>
           </div>
           <img id="image" src=${props.metadata.image} height="100%" width="100%"/>
           <audio id="nina-player" style={{ width: "100%" }} autoplay>
@@ -47,6 +48,15 @@ const ReleaseEmbedPage = (props) => {
               let player = $('#nina-player')[0];
               player[player.paused ? 'play' : 'pause']();
             });
+            $('#nina-player').on("play", function() {
+              let playerButton = $('#player-button')[0];
+              playerButton.src = "https://${props.host}/pause.svg"
+            })
+            $('#nina-player').on("pause", function() {
+              let playerButton = $('#player-button')[0];
+              playerButton.src = "https://${props.host}/play.svg"
+            })
+
         });
       </script>
     </html>
@@ -73,6 +83,7 @@ export const getServerSideProps = async (context) => {
       metadata: metadataJson[releasePubkey],
       releasePubkey,
       isEmbed: true,
+      host: context.req.headers.host
     }
   }
 }
