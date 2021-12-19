@@ -145,6 +145,22 @@ const NavDrawer = () => {
                   </ListItemText>
                 </ListItem>
               );
+            case "all Releases":
+              return (
+                <Link
+                  className={`${classes.drawerLink}`}
+                  href={`/releases`}
+                  activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
+                  key={link}
+                >
+                  <ListItem button key={link}>
+                    <ListItemText
+                      primary="All Releases"
+                    />
+                  </ListItem>
+                </Link>
+              );
+
             default:
               return (
                 <Link
