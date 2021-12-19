@@ -3,7 +3,6 @@ import React from "react";
 import Document, { Html, Head, Main, NextScript } from "next/document";
 import { ServerStyleSheet } from "styled-components";
 import { ServerStyleSheets } from "@material-ui/styles";
-import Script from "next/script";
 // import createEmotionServer from '@emotion/server/create-instance';
 // import createEmotionCache from '../src/createEmotionCache';
 // import {styled} from '@mui/material/styles'
