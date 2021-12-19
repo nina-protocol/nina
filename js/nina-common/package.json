@@ -1,7 +1,7 @@
 {
   "name": "nina-common",
   "version": "0.1.0",
-  "main": "dist/cjs/index.js",
+  "main": "dist/esm/index.js",
   "module": "dist/esm/index.js",
   "private": true,
   "browser": {
@@ -54,7 +54,7 @@
   "scripts": {
     "start": "HTTPS=true && react-scripts start",
     "build": "rm -rf dist/ && yarn build:node",
-    "build:node": "tsc && tsc -p tsconfig.cjs.json",
+    "build:node": "tsc && tsc -p tsconfig.json",
     "watch": "tsc -w",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
