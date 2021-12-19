@@ -11,7 +11,7 @@ import ReleasePurchase from "./ReleasePurchase";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
-const { Dots, Exchange } = ninaCommon.components;
+const { Exchange } = ninaCommon.components;
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts;
 
 const Release = () => {
