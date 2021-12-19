@@ -5,7 +5,7 @@ import ninaCommon from "nina-common";
 import NavDrawer from "./NavDrawer";
 import { withFormik } from "formik";
 import Link from "next/link";
-import { useWallet } from "@solana/wallet-adapter-react";
+// import { useWallet } from "@solana/wallet-adapter-react";
 import {
   WalletDialogProvider,
   WalletMultiButton,
@@ -13,6 +13,14 @@ import {
 // import Breadcrumbs from './Breadcrumbs'
 import MobileWalletModal from "./MobileWalletModal";
 const { NinaContext } = ninaCommon.contexts;
+
+
+import dynamic from 'next/dynamic'
+const {useWallet} = dynamic(
+  () => import('@solana/wallet-adapter-react'),
+  { ssr: false }
+)
+
 
 const NavBar = () => {
   const { usdcBalance } = useContext(NinaContext);
