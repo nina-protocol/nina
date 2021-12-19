@@ -5,7 +5,7 @@ import { Typography, Box, Fade, Button } from '@mui/material'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import RefreshIcon from '@mui/icons-material/Refresh'
-// import { useWallet } from '@solana/wallet-adapter-react'
+import { useWallet } from '@solana/wallet-adapter-react'
 import BuySell from './BuySell'
 import ExchangeHistoryModal from './ExchangeHistoryModal'
 import ExchangeList from './ExchangeList'
@@ -19,12 +19,6 @@ import {
   AudioPlayerContext,
 } from '../contexts'
 import NinaClient from '../utils/client'
-
-import dynamic from 'next/dynamic'
-const {useWallet} = dynamic(
-  () => import('@solana/wallet-adapter-react'),
-  {ssr: false}
-)
 
 const Exchange = (props) => {
   const { releasePubkey, metadata, track } = props

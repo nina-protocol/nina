@@ -7,7 +7,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { Box, Typography } from "@mui/material";
 import ReleaseListTable from "./ReleaseListTable";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 const { NinaClient } = ninaCommon.utils;
 const { ReleaseContext, NinaContext } = ninaCommon.contexts;
@@ -102,7 +102,7 @@ const ReleaseList = () => {
                     .
                   </Typography>
 
-                  <Link to="/faq">How do I withdraw my USDC?</Link>
+                  <Link href="/faq">How do I withdraw my USDC?</Link>
                 </ReleaseStats>
               )}
               <ReleaseListTable
@@ -118,7 +118,7 @@ const ReleaseList = () => {
               <Typography
                 sx={{ paddingBottom: "10px" }}
               >{`You haven't published any music yet.`}</Typography>
-              <Link to="/upload">
+              <Link href="/upload">
                 <Typography>Start Uploading</Typography>
               </Link>
             </Box>
