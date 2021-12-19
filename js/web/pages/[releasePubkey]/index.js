@@ -1,7 +1,7 @@
 import * as anchor from '@project-serum/anchor'
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey } from "@solana/web3.js";
-import Release from "../components/Release";
+import Release from "../../components/Release";
 import ninaCommon from 'nina-common'
 import Head from "next/head";
 const {NinaClient} = ninaCommon.utils
