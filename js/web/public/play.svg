@@ -3,13 +3,17 @@
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 422 422" style="enable-background:new 0 0 422 422;" xml:space="preserve">
 <style type="text/css">
-	.st0{opacity:0.8;}
+	.st0{fill:#2D81FF;}
+	.st1{fill:none;stroke:#FFFFFF;stroke-width:2;stroke-miterlimit:10;}
 </style>
-<g class="st0">
-	<image style="overflow:visible;opacity:0.75;" width="422" height="422" xlink:href="14D3AF714DF4D1F.png" >
+<g>
+	
+		<image style="overflow:visible;opacity:0.75;" width="424" height="424" xlink:href="14D3AF714DF4D1D.png"  transform="matrix(1 0 0 1 -1 -1)">
 	</image>
 	<g>
-		<path d="M204,8C95.8,8,8,95.8,8,204s87.8,196,196,196s196-87.8,196-196S312.2,8,204,8z M285.6,208.8l-129.1,78.6
+		<path class="st0" d="M204,8C95.8,8,8,95.8,8,204s87.8,196,196,196s196-87.8,196-196S312.2,8,204,8z M285.6,208.8l-129.1,78.6
+			c-3.8,2.3-8.5-0.4-8.5-4.8V125.4c0-4.4,4.8-7.1,8.5-4.8l129.1,78.6C289.2,201.4,289.2,206.6,285.6,208.8L285.6,208.8z"/>
+		<path class="st1" d="M204,8C95.8,8,8,95.8,8,204s87.8,196,196,196s196-87.8,196-196S312.2,8,204,8z M285.6,208.8l-129.1,78.6
 			c-3.8,2.3-8.5-0.4-8.5-4.8V125.4c0-4.4,4.8-7.1,8.5-4.8l129.1,78.6C289.2,201.4,289.2,206.6,285.6,208.8L285.6,208.8z"/>
 	</g>
 </g>
