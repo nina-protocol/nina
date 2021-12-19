@@ -4,7 +4,7 @@ import Release from '../../components/Release'
 
 const {NinaClient} = ninaCommon.utils
 
-const Market = (props) => {  
+const ReleaseMarketPage = (props) => {  
   const { metadata } = props
   return (
     <>
@@ -49,4 +49,4 @@ export const getServerSideProps = async (context) => {
 }
 
 
-export default Market;
+export default ReleaseMarketPage;
