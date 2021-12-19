@@ -3,8 +3,14 @@ import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
-import { useWallet } from '@solana/wallet-adapter-react'
+// import { useWallet } from '@solana/wallet-adapter-react'
 import NinaClient from '../utils/client'
+
+import dynamic from 'next/dynamic'
+const {useWallet} = dynamic(
+  () => import('@solana/wallet-adapter-react'),
+  {ssr: false}
+)
 
 const ExchangeListItem = (props) => {
   const {
