@@ -78,25 +78,21 @@ const Release = () => {
             name="description"
             content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`}
           />
-          <meta property="og:type" content="website" />
+          <meta name="og:type" content="website" />
           <meta
-            property="og:title"
+            name="og:title"
             content={`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}
           />
           <meta
-            property="og:description"
+            name="og:description"
             content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`}
           />
-          <meta property="twitter:card" content={"summary"} />
+          <meta name="twitter:card" content={"player"} />
           <meta
-            property="twitter:creator"
-            content={metadata?.properties.artist}
-          />
-          <meta
-            property="twitter:title"
+            name="twitter:title"
             content={`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}
           />
-          <meta property="twitter:description" content={metadata.description} />
+          <meta name="twitter:description" content={metadata.description} />
           <meta name="twitter:image" content={metadata.image} />
         </Head>
       )}
