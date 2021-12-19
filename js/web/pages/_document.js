@@ -45,7 +45,6 @@ class MyDocument extends Document {
           <meta content="text/html; charset=UTF-8" name="Content-Type" />
           <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
           <meta name="theme-color" content="#000000" />
-          <title>Nina</title>
           <meta
             name="description"
             content="Nina: A new way to publish, stream, and purchase music."

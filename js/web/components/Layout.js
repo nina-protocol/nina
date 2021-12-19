@@ -2,18 +2,49 @@ import NavBar from "./NavBar";
 import Container from "@mui/material/Container";
 import { styled } from "@mui/material/styles";
 
-const Layout = ({ children }) => {
+const Layout = ({children, pageTitle, description, ...props}) => {
+  console.log('LAYOUT: ', children, pageTitle, description)
+  const metadata = children.metadata
   return (
-    <Root>
-      <Container
-        maxWidth={false}
-        disableGutters
-        className={classes.mainContainer}
-      >
-        <NavBar />
-        <main className={classes.bodyContainer}>{children}</main>
-      </Container>
-    </Root>
+    <>
+      {metadata &&
+        <Head>
+          <title>{`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}</title>
+          <meta
+            name="description"
+            content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`}
+          />
+          <meta name="og:type" content="website" />
+          <meta
+            name="og:title"
+            content={`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}
+          />
+          <meta
+            name="og:description"
+            content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`}
+          />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:site" content="@nina_market_" />
+          <meta name="twitter:creator" content="@nina_market_" />
+          <meta
+            name="twitter:title"
+            content={`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}
+          />
+          <meta name="twitter:description" content={metadata.description} />
+          <meta name="twitter:image" content="https://f4.bcbits.com/img/a0578492136_16.jpg" />
+        </Head>
+      }
+      <Root>
+        <Container
+          maxWidth={false}
+          disableGutters
+          className={classes.mainContainer}
+        >
+          <NavBar />
+          <main className={classes.bodyContainer}>{children}</main>
+        </Container>
+      </Root>
+    </>
   );
 };
 
