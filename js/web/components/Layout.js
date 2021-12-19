@@ -1,10 +1,12 @@
-import NavBar from "./NavBar";
 import Container from "@mui/material/Container";
 import { styled } from "@mui/material/styles";
+import Head from "next/head";
+
+import NavBar from "./NavBar";
 
 const Layout = ({children, pageTitle, description, ...props}) => {
-  console.log('LAYOUT: ', children, pageTitle, description)
-  const metadata = children.metadata
+  console.log('LAYOUT: ', children.props.metadata)
+  const metadata = children.props.metadata
   return (
     <>
       {metadata &&
