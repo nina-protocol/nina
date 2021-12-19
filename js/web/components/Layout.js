@@ -36,7 +36,7 @@ const classes = {
   bodyContainer: `${PREFIX}-bodyContainer`,
 };
 
-const Root = styled("div")(() => ({
+const Root = styled("div")(({theme}) => ({
   [`& .${classes.mainContainer}`]: {
     minHeight: "100vh",
     // width: '100vw',
@@ -45,6 +45,10 @@ const Root = styled("div")(() => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
+    [theme.breakpoints.down("md")]: {
+      overflowY: "scroll",
+      
+    },
   },
 
   [`& .${classes.bodyContainer}`]: {
