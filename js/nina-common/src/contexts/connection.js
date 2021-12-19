@@ -19,7 +19,7 @@ const ConnectionContextProvider = ({ children, ENDPOINTS }) => {
   const [healthOk, setHealthOk] = useState(true)
   const connection = useMemo(
     () => new Connection(endpoint, 'recent'),
-    [endpoint]
+    [endpoint, network]
   )
 
   const wallets = useMemo(

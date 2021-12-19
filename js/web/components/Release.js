@@ -20,8 +20,6 @@ const {Exchange} = dynamic(
   {ssr: false}
 )
 
-
-
 const Release = () => {
   const router = useRouter();
   const releasePubkey = router.query.releasePubkey;

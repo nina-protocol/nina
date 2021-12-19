@@ -1,5 +1,5 @@
 import React from "react";
-
+import dynamic from 'next/dynamic';
 import Head from "next/head";
 import { SnackbarProvider } from "notistack";
 import { ThemeProvider } from "@mui/material/styles";
@@ -9,18 +9,21 @@ import { CacheProvider } from "@emotion/react";
 // import createEmotionCache from '../src/createEmotionCache';
 import Layout from "../components/Layout";
 
+const ConnectionContextProvider = dynamic(() =>
+  import('nina-common/dist/esm/contexts/connection'),
+  { ssr: false }
+);
+
 const {
-  ConnectionContextProvider,
   ReleaseContextProvider,
   ExchangeContextProvider,
   AudioPlayerContextProvider,
   NameContextProvider,
   NinaContextProvider,
-} = ninaCommon.contexts;
-
+} = ninaCommon.contexts
 // const clientSideEmotionCache = createEmotionCache();
 
-export const ENDPOINTS = {
+const ENDPOINTS = {
   devnet: {
     name: "devnet",
     endpoint: "https://api.devnet.solana.com",
@@ -47,7 +50,10 @@ function Application({ Component, clientSideEmotionCache, pageProps }) {
     }
   }, []);
 
-  return (
+  if (!ConnectionContextProvider) {
+    return null
+  }
+  return (  
     <SnackbarProvider
       maxSnack={3}
       classes={
