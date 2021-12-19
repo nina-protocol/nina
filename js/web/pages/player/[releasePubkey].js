@@ -5,7 +5,6 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 
 const ReleaseEmbedPage = (props) => {  
-  console.log(props)
   const player = `
     <html>
       <head>
