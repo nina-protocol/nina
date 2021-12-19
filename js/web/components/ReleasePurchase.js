@@ -167,27 +167,27 @@ const ReleasePurchase = (props) => {
           </Button>
         </form>
       </Box>
-      <MarketButton
-        variant="outlined"
-        fullWidth
-      >
-        <Link href={`${pathString}/${releasePubkey}/market`}>
-          <Typography variant="body2">Go To Market</Typography>
-        </Link>
-      </MarketButton>
-      {relatedReleases && relatedReleases.length > 1 && (
-        <Button
+      <Link href={`${pathString}/${releasePubkey}/market`}>
+        <MarketButton
           variant="outlined"
           fullWidth
-          sx={{ marginTop: "15px !important" }}
         >
-          <Link href={`/${releasePubkey}/related`}>
+          <Typography variant="body2">Go To Market</Typography>
+        </MarketButton>
+      </Link>
+      {relatedReleases && relatedReleases.length > 1 && (
+        <Link href={`/${releasePubkey}/related`}>
+          <Button
+            variant="outlined"
+            fullWidth
+            sx={{ marginTop: "15px !important" }}
+          >
             <Typography variant="body2">
               See {relatedReleases.length - 1} more related release
               {relatedReleases.length - 1 > 1 ? "s" : ""}
             </Typography>
-          </Link>
-        </Button>
+          </Button>
+        </Link>
       )}
     </Box>
   );

@@ -115,7 +115,7 @@ const NavDrawer = () => {
               return (
                 <Link
                   className={`${classes.drawerLink}`}
-                  href={`/${link}`}
+                  href={`/releases/user`}
                   activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
                   key={link}
                 >
