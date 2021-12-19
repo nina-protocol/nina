@@ -68,71 +68,68 @@ const Release = () => {
   if (!wallet?.connected && router.pathname.includes("releases")) {
     history.push(`/${releasePubkey}`);
   }
-
+  if (!metadata) {
+    return null
+  }
   return (
     <>
-      {metadata && (
-        <Head>
-          <title>{`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}</title>
-          <meta
-            name="description"
-            content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`}
-          />
-          <meta name="og:type" content="website" />
-          <meta
-            name="og:title"
-            content={`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}
-          />
-          <meta
-            name="og:description"
-            content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`}
-          />
-          <meta name="twitter:card" content={"player"} />
-          <meta
-            name="twitter:title"
-            content={`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}
-          />
-          <meta name="twitter:description" content={metadata.description} />
-          <meta name="twitter:image" content={metadata.image} />
-        </Head>
-      )}
-      {!metadata && <Dots size="80px" />}
-      {metadata && (
-        <ReleaseWrapper>
-          {!router.pathname.includes("market") && (
-            <NinaBox
-              columns={"repeat(2, 1fr)"}
-              sx={{ backgroundColor: "white" }}
-            >
-              <ReleaseCard
-                metadata={metadata}
-                preview={false}
+      <Head>
+        <title>{`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}</title>
+        <meta
+          name="description"
+          content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`}
+        />
+        <meta name="og:type" content="website" />
+        <meta
+          name="og:title"
+          content={`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}
+        />
+        <meta
+          name="og:description"
+          content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`}
+        />
+        <meta name="twitter:card" content={"player"} />
+        <meta
+          name="twitter:title"
+          content={`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}
+        />
+        <meta name="twitter:description" content={metadata.description} />
+        <meta name="twitter:image" content={metadata.image} />
+      </Head>
+      <ReleaseWrapper>
+        {!router.pathname.includes("market") && (
+          <NinaBox
+            columns={"repeat(2, 1fr)"}
+            sx={{ backgroundColor: "white" }}
+          >
+            <ReleaseCard
+              metadata={metadata}
+              preview={false}
+              releasePubkey={releasePubkey}
+              track={track}
+            />
+            <ReleaseCtaWrapper>
+              <ReleasePurchase
                 releasePubkey={releasePubkey}
-                track={track}
+                metadata={metadata}
+                router={router}
+                relatedReleases={relatedReleases}
               />
-              <ReleaseCtaWrapper>
-                <ReleasePurchase
-                  releasePubkey={releasePubkey}
-                  metadata={metadata}
-                  router={router}
-                  relatedReleases={relatedReleases}
-                />
-              </ReleaseCtaWrapper>
-            </NinaBox>
-          )}
+            </ReleaseCtaWrapper>
+          </NinaBox>
+        )}
 
-          {router.pathname.includes("market") && (
-            <NinaBox columns={"repeat(1, 1fr)"}>
-              <Exchange
-                releasePubkey={releasePubkey}
-                exchanges={exchangeState.exchanges}
-                metadata={metadata}
-                track={track}
-              />
-            </NinaBox>
-          )}
-        </ReleaseWrapper>
-      )}
+        {router.pathname.includes("market") && (
+          <NinaBox columns={"repeat(1, 1fr)"}>
+            <Exchange
+              releasePubkey={releasePubkey}
+              exchanges={exchangeState.exchanges}
+              metadata={metadata}
+              track={track}
+            />
+          </NinaBox>
+        )}
+      </ReleaseWrapper>
     </>
   );
 };
