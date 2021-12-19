@@ -1,17 +1,9 @@
 import { createContext, useState, useContext, useEffect } from 'react'
-// import { useWallet } from '@solana/wallet-adapter-react'
+import { useWallet } from '@solana/wallet-adapter-react'
 import { ConnectionContext } from './connection'
 import { NinaContext } from './nina'
 import { ReleaseContext } from './release'
 import { useSnackbar } from 'notistack'
-
-import dynamic from 'next/dynamic'
-const {useWallet} = dynamic(
-  () => import('@solana/wallet-adapter-react'),
-  {ssr: false}
-)
-
-
 
 export const AudioPlayerContext = createContext()
 const AudioPlayerContextProvider = ({ children }) => {

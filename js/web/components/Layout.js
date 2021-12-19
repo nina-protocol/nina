@@ -1,19 +1,28 @@
-import NavBar from "./NavBar";
 import Container from "@mui/material/Container";
 import { styled } from "@mui/material/styles";
+import Head from "next/head";
 
-const Layout = ({ children }) => {
+import NavBar from "./NavBar";
+
+const Layout = ({children, pageTitle, description, ...props}) => {
+  const metadata = children.props.metadata
+
+  if (children.props.isEmbed) {
+     return <main className={classes.bodyContainer}>{children}</main>
+  }
   return (
-    <Root>
-      <Container
-        maxWidth={false}
-        disableGutters
-        className={classes.mainContainer}
-      >
-        <NavBar />
-        <main className={classes.bodyContainer}>{children}</main>
-      </Container>
-    </Root>
+    <>
+      <Root>
+        <Container
+          maxWidth={false}
+          disableGutters
+          className={classes.mainContainer}
+        > 
+          <NavBar />
+          <main className={classes.bodyContainer}>{children}</main>
+        </Container>
+      </Root>
+    </>
   );
 };
 
