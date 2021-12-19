@@ -41,6 +41,7 @@ class MyDocument extends Document {
   render() {
     return (
       <Html lang="en" dir="ltr">
+        <Head />
         <body style={{ margin: "0px", position: "relative" }}>
           <Main />
           <NextScript />
