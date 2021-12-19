@@ -4,10 +4,16 @@ import { withFormik } from 'formik'
 import Button from '@mui/material/Button'
 import Input from '@mui/material/Input'
 import Box from '@mui/material/Box'
-import { useWallet } from '@solana/wallet-adapter-react'
+// import { useWallet } from '@solana/wallet-adapter-react'
 import { ExchangeContext } from '../contexts'
 import { NinaClient } from '../utils'
 import Dots from './Dots'  
+
+import dynamic from 'next/dynamic'
+const {useWallet} = dynamic(
+  () => import('@solana/wallet-adapter-react'),
+  {ssr: false}
+)
 
 const BuySellForm = (props) => {
   const { onSubmit, isBuy, release, amount, setAmount } = props
