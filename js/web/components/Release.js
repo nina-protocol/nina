@@ -15,7 +15,6 @@ const { Exchange } = ninaCommon.components;
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts;
 
 const Release = (props) => {
-  console.log('Release Props: ', props)
   const router = useRouter();
   const releasePubkey = router.query.releasePubkey;
 
@@ -38,6 +37,7 @@ const Release = (props) => {
 
   useEffect(() => {
     if (releasePubkey) {
+      getRelease(releasePubkey)
       getRelatedForRelease(releasePubkey);
       getExchangeHistoryForRelease(releasePubkey);
     }
@@ -47,7 +47,7 @@ const Release = (props) => {
     if (releaseState.metadata[releasePubkey]) {
       setMetadata(releaseState.metadata[releasePubkey]);
     }
-  }, [metadata]);
+  }, [releaseState.metadata[releasePubkey]]);
 
   useEffect(() => {
     setTrack(releaseState.metadata[releasePubkey]);
