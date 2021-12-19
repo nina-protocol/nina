@@ -9,7 +9,6 @@ import NinaBox from "./NinaBox";
 import ReleaseCard from "./ReleaseCard";
 import ReleasePurchase from "./ReleasePurchase";
 import { useRouter } from "next/router";
-import Head from "next/head";
 
 const { Exchange } = ninaCommon.components;
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts;
@@ -61,31 +60,6 @@ const Release = ({metadata}) => {
 
   return (
     <>
-      <Head>
-        <title>{`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}</title>
-        <meta
-          name="description"
-          content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`}
-        />
-        <meta name="og:type" content="website" />
-        <meta
-          name="og:title"
-          content={`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}
-        />
-        <meta
-          name="og:description"
-          content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`}
-        />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@nina_market_" />
-        <meta name="twitter:creator" content="@nina_market_" />
-        <meta
-          name="twitter:title"
-          content={`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}
-        />
-        <meta name="twitter:description" content={metadata.description} />
-        <meta name="twitter:image" content="https://f4.bcbits.com/img/a0578492136_16.jpg" />
-      </Head>
       <ReleaseWrapper>
         {!router.pathname.includes("market") && (
           <NinaBox
