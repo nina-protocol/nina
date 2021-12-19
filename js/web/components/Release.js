@@ -58,9 +58,7 @@ const Release = ({metadata}) => {
   if (!wallet?.connected && router.pathname.includes("releases")) {
     history.push(`/${releasePubkey}`);
   }
-  if (!metadata) {
-    return null
-  }
+
   return (
     <>
       <Head>
@@ -78,7 +76,9 @@ const Release = ({metadata}) => {
           name="og:description"
           content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`}
         />
-        <meta name="twitter:card" content={"player"} />
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:site" content="@nina_market_">
+        <meta name="twitter:creator" content="@nina_market_">
         <meta
           name="twitter:title"
           content={`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}

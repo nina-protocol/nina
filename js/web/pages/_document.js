@@ -42,10 +42,10 @@ class MyDocument extends Document {
     return (
       <Html lang="en" dir="ltr">
         <Head>
-          <meta charSet="utf-8" />
+          <meta content="text/html; charset=UTF-8" name="Content-Type" />
           <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
           <meta name="theme-color" content="#000000" />
-
+          <title>Nina</title>
           <meta
             name="description"
             content="Nina: A new way to publish, stream, and purchase music."
@@ -85,7 +85,6 @@ class MyDocument extends Document {
           <link
             rel="stylesheet"
             type="text/css"
-            charset="UTF-8"
             href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
           />
           <link
