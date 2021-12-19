@@ -44,9 +44,11 @@ const HomePage = () => {
               New Releases
             </Typography>
 
-            <AllReleasesLink href="/allReleases">
-              <Typography variant="body1">All Releases</Typography>
-            </AllReleasesLink>
+            <Link href="/allReleases">
+              <a>
+                <AllReleasesLink variant="body1">All Releases</AllReleasesLink>
+              </a>
+            </Link>
           </Box>
           <RecentlyPublished releases={releasesRecent.published} />
         </Box>
@@ -134,7 +136,7 @@ const MarketMovers = styled(Box)(({ theme }) => ({
   },
 }));
 
-const AllReleasesLink = styled(Link)(({ theme }) => ({
+const AllReleasesLink = styled(Typography)(({ theme }) => ({
   marginLeft: "30px",
   [theme.breakpoints.down("md")]: {
     display: "none",

@@ -1,6 +1,8 @@
 import Container from "@mui/material/Container";
 import { styled } from "@mui/material/styles";
 import Head from "next/head";
+import CssBaseline from '@mui/material/CssBaseline'
+
 
 import NavBar from "./NavBar";
 
@@ -13,6 +15,7 @@ const Layout = ({children, pageTitle, description, ...props}) => {
   return (
     <>
       <Root>
+        <CssBaseline />
         <Container
           maxWidth={false}
           disableGutters
