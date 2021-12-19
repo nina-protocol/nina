@@ -34,14 +34,14 @@ const NavBar = () => {
       </NavLeft>
 
       <Logo>
-        <Link href="/">
+        <Link href="/" passHref>
           <Typography variant="h4">NINA</Typography>
         </Link>
       </Logo>
 
       <NavRight>
         <DesktopWalletWrapper>
-          <Link href="/upload">
+          <Link href="/upload" passHref>
             <PublishLink variant="subtitle1">Start Publishing</PublishLink>
           </Link>
           <NavBalance variant="subtitle1">

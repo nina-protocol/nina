@@ -6,6 +6,7 @@ import { Typography, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
+import Image from 'next/image'
 
 const { NinaClient } = ninaCommon.utils;
 const MediaDropzone = ({
@@ -117,7 +118,7 @@ const MediaDropzone = ({
       return (
         <Box style={previewBoxStyles}>
           {cancelIcon(remove)}
-          <img src={meta.previewUrl} style={{ width: "100%" }} />
+          <Image src={meta.previewUrl} style={{ width: "100%" }} />
         </Box>
       );
     } else {

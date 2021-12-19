@@ -86,6 +86,11 @@ class MyDocument extends Document {
             type="text/css"
             href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
           />
+          <script src="https://cdn.dashjs.org/v3.2.1/dash.all.min.js" />
+          <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-VDD58V1D22"
+          />
           {() => {
             window.dataLayer = window.dataLayer || [];
             const gtag = () => window.dataLayer.push(arguments);
@@ -93,11 +98,6 @@ class MyDocument extends Document {
             gtag("config", "G-VDD58V1D22");
           }}
         </Head>
-        <Script src="https://cdn.dashjs.org/v3.2.1/dash.all.min.js" />
-        <Script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-VDD58V1D22"
-        />
         <body style={{ margin: "0px", position: "relative" }}>
           <Main />
           <NextScript />

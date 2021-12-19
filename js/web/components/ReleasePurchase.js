@@ -165,13 +165,13 @@ const ReleasePurchase = (props) => {
           </Button>
         </form>
       </Box>
-      <Link href={`${pathString}/${releasePubkey}/market`}>
+      <Link href={`${pathString}/${releasePubkey}/market`} passHref>
         <MarketButton variant="outlined" fullWidth>
           <Typography variant="body2">Go To Market</Typography>
         </MarketButton>
       </Link>
       {relatedReleases && relatedReleases.length > 1 && (
-        <Link href={`/${releasePubkey}/related`}>
+        <Link href={`/${releasePubkey}/related`} passHref>
           <Button
             variant="outlined"
             fullWidth
