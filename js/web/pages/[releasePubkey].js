@@ -6,8 +6,8 @@ import ninaCommon from 'nina-common'
 import Head from "next/head";
 const {NinaClient} = ninaCommon.utils
 
-const ReleasePage = ({metadata}) => {
-  console.log('metadta: ', metadata)
+const ReleasePage = (props) => {
+  const {metadata, releasePubkey, host} = props
   return (
     <>
       <Head>
@@ -26,8 +26,8 @@ const ReleasePage = ({metadata}) => {
           content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`}
         />
         <meta name="twitter:card" content="player" />
-        <meta name="twitter:player" content={metadata.animation_url} />
-        <meta name ="twitter:secureurl:player_url" content={metadata.animation_url} />
+        <meta name="twitter:player" content={`https://${host}/player/${releasePubkey}`} />
+        <meta name="twitter:player:stream" content={metadata.animation_url} />
         <meta name="twitter:player:width" content="400" />
         <meta name="twitter:player:height" content="400" />
         <meta name="twitter:site" content="@nina_market_" />
@@ -56,10 +56,11 @@ export const getServerSideProps = async (context) => {
     } 
   )
   const metadataJson = await metadataResult.json()
-  console.log(metadataJson[releasePubkey])
   return {
     props: {
-      metadata: metadataJson[releasePubkey]
+      metadata: metadataJson[releasePubkey],
+      releasePubkey,
+      host: context.req.headers.host
     }
   }
 }

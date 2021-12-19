@@ -6,6 +6,10 @@ import NavBar from "./NavBar";
 
 const Layout = ({children, pageTitle, description, ...props}) => {
   const metadata = children.props.metadata
+
+  if (children.props.isEmbed) {
+     return <main className={classes.bodyContainer}>{children}</main>
+  }
   return (
     <>
       <Root>
@@ -13,7 +17,7 @@ const Layout = ({children, pageTitle, description, ...props}) => {
           maxWidth={false}
           disableGutters
           className={classes.mainContainer}
-        >
+        > 
           <NavBar />
           <main className={classes.bodyContainer}>{children}</main>
         </Container>
