@@ -42,7 +42,7 @@ class MyDocument extends Document {
     return (
       <Html lang="en" dir="ltr">
         <Head>
-          <meta charset="utf-8" />
+          <meta charSet="utf-8" />
           <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
           <meta name="theme-color" content="#000000" />
 
