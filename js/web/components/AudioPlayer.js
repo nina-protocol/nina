@@ -12,7 +12,6 @@ import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 // import SvgIcon from '@mui/material/SvgIcon';
-import shareArrow from "../assets/shareArrow.svg";
 // import VolumeUpIcon from '@mui/icons-material/VolumeUp'
 // import VolumeOffIcon from '@mui/icons-material/VolumeOff'
 import Typography from "@mui/material/Typography";
@@ -191,7 +190,7 @@ const AudioPlayer = () => {
       </audio>
 
       {info && (
-        <AlbumArt to={`/${info.releasePubkey}`}>
+        <AlbumArt href={`/${info.releasePubkey}`}>
           <img src={info.cover} style={{ height: "60px", width: "60px" }} />
         </AlbumArt>
       )}
@@ -263,7 +262,7 @@ const AudioPlayer = () => {
 
       {info && (
         <LinkWrapper>
-          <Link to={info.releasePubkey} style={{ marginRight: "30px" }}>
+          <Link href={info.releasePubkey} style={{ marginRight: "30px" }}>
             <Typography variant="subtitle1" sx={{ padding: "0" }}>
               View Info
             </Typography>
@@ -282,7 +281,7 @@ const AudioPlayer = () => {
             disableFocusRipple={true}
             disableRipple={true}
           >
-            <img src={shareArrow}></img>
+            <img src={'/shareArrow.svg'}></img>
           </Button>
         </LinkWrapper>
       )}

@@ -3,6 +3,7 @@ import { styled } from "@mui/material/styles";
 import Head from "next/head";
 
 import NavBar from "./NavBar";
+import AudioPlayer from "./AudioPlayer";
 
 const Layout = ({children, pageTitle, description, ...props}) => {
   const metadata = children.props.metadata
@@ -20,6 +21,7 @@ const Layout = ({children, pageTitle, description, ...props}) => {
         > 
           <NavBar />
           <main className={classes.bodyContainer}>{children}</main>
+          <AudioPlayer />
         </Container>
       </Root>
     </>
