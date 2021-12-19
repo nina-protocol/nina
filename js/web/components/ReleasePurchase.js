@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import { useSnackbar } from "notistack";
 import { Typography } from "@mui/material";
+import Link from 'next/link'
 
 const { Dots, ReleaseSettings } = ninaCommon.components;
 const { ReleaseContext, NinaContext, ExchangeContext } = ninaCommon.contexts;
@@ -166,30 +167,27 @@ const ReleasePurchase = (props) => {
           </Button>
         </form>
       </Box>
-      <MarketButton
-        variant="outlined"
-        fullWidth
-        onClick={() => {
-          history.push(`${pathString}/${releasePubkey}/market`);
-        }}
-      >
-        <Typography variant="body2">Go To Market</Typography>
-      </MarketButton>
-      {relatedReleases && relatedReleases.length > 1 && (
-        <Button
+      <Link href={`${pathString}/${releasePubkey}/market`}>
+        <MarketButton
           variant="outlined"
           fullWidth
-          sx={{ marginTop: "15px !important" }}
-          onClick={(e) => {
-            e.stopPropagation();
-            history.push(`/${releasePubkey}/related`);
-          }}
         >
-          <Typography variant="body2">
-            See {relatedReleases.length - 1} more related release
-            {relatedReleases.length - 1 > 1 ? "s" : ""}
-          </Typography>
-        </Button>
+          <Typography variant="body2">Go To Market</Typography>
+        </MarketButton>
+      </Link>
+      {relatedReleases && relatedReleases.length > 1 && (
+        <Link href={`/${releasePubkey}/related`}>
+          <Button
+            variant="outlined"
+            fullWidth
+            sx={{ marginTop: "15px !important" }}
+          >
+            <Typography variant="body2">
+              See {relatedReleases.length - 1} more related release
+              {relatedReleases.length - 1 > 1 ? "s" : ""}
+            </Typography>
+          </Button>
+        </Link>
       )}
     </Box>
   );

@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { styled } from "@mui/material/styles";
 import ninaCommon from "nina-common";
-import { useHistory } from "react-router-dom";
+import { useRouter } from "next/router";
 import { Typography, Box } from "@mui/material";
 import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
@@ -13,10 +13,10 @@ const ReleaseTileList = (props) => {
   const { releases } = props;
   const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext);
 
-  const history = useHistory();
+  const router = useRouter()
 
   const handleClick = (releasePubkey) => {
-    history.push(`/${releasePubkey}`);
+    router.push(`/${releasePubkey}`);
   };
 
   return (

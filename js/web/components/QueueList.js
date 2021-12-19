@@ -212,7 +212,7 @@ const DraggableComponent = (id, index) => (props) => {
 };
 
 const DroppableComponent =
-  (onDragEnd: (result, provided) => void) => (props) => {
+  (onDragEnd) => (props) => {
     const { children } = props;
     return (
       <DragDropContext onDragEnd={onDragEnd}>

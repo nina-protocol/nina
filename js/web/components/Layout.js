@@ -5,6 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 
 
 import NavBar from "./NavBar";
+import AudioPlayer from "./AudioPlayer";
 
 const Layout = ({children, pageTitle, description, ...props}) => {
   const metadata = children.props.metadata
@@ -23,6 +24,7 @@ const Layout = ({children, pageTitle, description, ...props}) => {
         > 
           <NavBar />
           <main className={classes.bodyContainer}>{children}</main>
+          <AudioPlayer />
         </Container>
       </Root>
     </>
@@ -47,18 +49,20 @@ const Root = styled("div")(({theme}) => ({
     justifyContent: "center",
     [theme.breakpoints.down("md")]: {
       overflowY: "scroll",
-      
     },
   },
 
   [`& .${classes.bodyContainer}`]: {
-    // display: 'flex',
-    // flexDirection: 'column',
-    // justifyContent: 'center',
+
     alignItems: "center",
     position: "relative",
     textAlign: "center",
     height: "100%",
+    [theme.breakpoints.down("md")]: {
+     display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    },
   },
 }));
 

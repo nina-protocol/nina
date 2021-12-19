@@ -9,8 +9,7 @@ import ScrollablePageWrapper from "./ScrollablePageWrapper";
 
 const { ReleaseContext } = ninaCommon.contexts;
 
-const ReleaseRelated = ({ match }) => {
-  const releasePubkey = match.params.releasePubkey;
+const ReleaseRelated = ({ releasePubkey }) => {
   const { getRelatedForRelease, filterRelatedForRelease, releaseState } =
     useContext(ReleaseContext);
   const [listView, setListView] = useState(false);

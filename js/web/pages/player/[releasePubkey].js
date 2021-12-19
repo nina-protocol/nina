@@ -2,7 +2,7 @@ import Layout from "../../components/Layout";
 import ninaCommon from 'nina-common'
 const {NinaClient} = ninaCommon.utils
 
-const ReleaseEmbed = (props) => {  
+const ReleaseEmbedPage = (props) => {  
   const player = `
     <html>
       <head>
@@ -78,4 +78,4 @@ export const getServerSideProps = async (context) => {
 }
 
 
-export default ReleaseEmbed;
+export default ReleaseEmbedPage;
