@@ -14,8 +14,7 @@ import Box from "@mui/material/Box";
 import ninaCommon from "nina-common";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
-import { useHistory } from "react-router-dom";
-// import { Link } from 'react-router-dom'
+import { useRouter } from "next/router";
 import { Typography } from "@mui/material";
 import { useWallet } from "@solana/wallet-adapter-react";
 import CloseIcon from "@mui/icons-material/Close";
@@ -35,7 +34,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 const QueueList = (props) => {
   const { setDrawerOpen } = props;
   const wallet = useWallet();
-  const history = useHistory();
+  const router = useRouter();
   const {
     txid,
     updateTxid,
@@ -72,7 +71,7 @@ const QueueList = (props) => {
 
   const goToRelease = (e, releasePubkey) => {
     setDrawerOpen(false);
-    history.push(`/${releasePubkey}`);
+    router.push(`/${releasePubkey}`);
   };
 
   const onDragEnd = (result) => {
