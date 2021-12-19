@@ -84,7 +84,7 @@ const Release = ({metadata}) => {
           content={`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}
         />
         <meta name="twitter:description" content={metadata.description} />
-        <meta name="twitter:image" content={metadata.image} />
+        <meta name="twitter:image" content="https://f4.bcbits.com/img/a0578492136_16.jpg" />
       </Head>
       <ReleaseWrapper>
         {!router.pathname.includes("market") && (
