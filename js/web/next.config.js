@@ -21,7 +21,7 @@ const withTM = require("next-transpile-modules")([
   "@solana/wallet-adapter-blocto",
   "@solana/wallet-adapter-bitkeep",
   "@solana/wallet-adapter-coinhub",
-  "@solana/wallet-adapter-tokenpocket"
+  "@solana/wallet-adapter-tokenpocket",
 ]); // pass the modules you would like to see transpiled
 
 module.exports = withTM({

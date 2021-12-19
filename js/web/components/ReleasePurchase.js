@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useHistory } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import ninaCommon from "nina-common";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -7,7 +6,7 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import { useSnackbar } from "notistack";
 import { Typography } from "@mui/material";
-import Link from 'next/link'
+import Link from "next/link";
 
 const { Dots, ReleaseSettings } = ninaCommon.components;
 const { ReleaseContext, NinaContext, ExchangeContext } = ninaCommon.contexts;
@@ -17,7 +16,6 @@ const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, router, relatedReleases } = props;
   const { enqueueSnackbar } = useSnackbar();
   const wallet = useWallet();
-  const history = useHistory();
   const { releasePurchase, releasePurchasePending, releaseState, getRelease } =
     useContext(ReleaseContext);
   const { getAmountHeld, collection } = useContext(NinaContext);
@@ -168,10 +166,7 @@ const ReleasePurchase = (props) => {
         </form>
       </Box>
       <Link href={`${pathString}/${releasePubkey}/market`}>
-        <MarketButton
-          variant="outlined"
-          fullWidth
-        >
+        <MarketButton variant="outlined" fullWidth>
           <Typography variant="body2">Go To Market</Typography>
         </MarketButton>
       </Link>

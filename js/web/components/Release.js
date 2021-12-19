@@ -141,18 +141,9 @@ const Release = () => {
   );
 };
 
-// export const getServerSideProps = async () => {
-//   // await getRelease(releasePubkey)
-//   // await getRelatedForRelease(releasePubkey)
-//   // await getExchangeHistoryForRelease(releasePubkey)
-
-//   return {
-//     props: {data}
-//   }
-// }
-
 const ReleaseWrapper = styled(Box)(({ theme }) => ({
   height: "100%",
+  display: "flex",
   [theme.breakpoints.down("md")]: {
     overflowX: "scroll",
     "&::-webkit-scrollbar": {

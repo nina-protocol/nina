@@ -154,9 +154,7 @@ const NavDrawer = () => {
                   key={link}
                 >
                   <ListItem button key={link}>
-                    <ListItemText
-                      primary="All Releases"
-                    />
+                    <ListItemText primary="All Releases" />
                   </ListItem>
                 </Link>
               );

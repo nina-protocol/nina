@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { styled } from "@mui/material/styles";
 import ninaCommon from "nina-common";
+import Image from "./Image";
 import { useRouter } from "next/router";
 import { Typography, Box } from "@mui/material";
 import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
@@ -13,7 +14,7 @@ const ReleaseTileList = (props) => {
   const { releases } = props;
   const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext);
 
-  const router = useRouter()
+  const router = useRouter();
 
   const handleClick = (releasePubkey) => {
     router.push(`/${releasePubkey}`);
@@ -59,7 +60,10 @@ const ReleaseTileList = (props) => {
                     <ControlPointIcon sx={{ color: "white" }} />
                   </Button>
                 </CardCta>
-                <img
+                <Image
+                  width={100}
+                  height={100}
+                  layout="responsive"
                   containerStyles={{
                     position: "absolute",
                     left: "0",

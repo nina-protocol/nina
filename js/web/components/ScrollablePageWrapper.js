@@ -15,7 +15,6 @@ const ScrollablePage = styled(Box)(({ theme }) => ({
     width: "100vw",
     padding: "100px 0px",
     overflowY: "scroll",
-
   },
 }));
 

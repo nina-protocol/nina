@@ -15,7 +15,7 @@ import Box from "@mui/material/Box";
 import { Fade } from "@mui/material";
 import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
 
 const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts;
 const { NinaClient } = ninaCommon.utils;
@@ -157,7 +157,7 @@ const ReleaseListTable = (props) => {
   const { releases, tableType, collectRoyaltyForRelease } = props;
   const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext);
   const { releaseState } = useContext(ReleaseContext);
-  const router = useRouter()
+  const router = useRouter();
 
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("artist");
@@ -169,7 +169,7 @@ const ReleaseListTable = (props) => {
   };
 
   const handleClick = (e, releasePubkey) => {
-    e.preventDefault()
+    e.preventDefault();
     router.push(
       tableType === "userPublished"
         ? `/releases/${releasePubkey}`
