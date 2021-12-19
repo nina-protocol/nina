@@ -41,5 +41,4 @@ module.exports = withTM({
   images: {
     domains: ["www.arweave.net"],
   },
-  experimental: { esmExternals: true }
 });
