@@ -5,7 +5,6 @@ import Head from "next/head";
 import NavBar from "./NavBar";
 
 const Layout = ({children, pageTitle, description, ...props}) => {
-  console.log('LAYOUT: ', children.props.metadata)
   const metadata = children.props.metadata
   return (
     <>
