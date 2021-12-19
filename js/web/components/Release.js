@@ -14,7 +14,7 @@ import Head from "next/head";
 const { Exchange } = ninaCommon.components;
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts;
 
-const Release = () => {
+const Release = ({metadata}) => {
   const router = useRouter();
   const releasePubkey = router.query.releasePubkey;
 
@@ -31,22 +31,12 @@ const Release = () => {
   const [track, setTrack] = useState(null);
   const [relatedReleases, setRelatedReleases] = useState(null);
 
-  const [metadata, setMetadata] = useState(
-    releaseState?.metadata[releasePubkey] || null
-  );
-
   useEffect(() => {
     if (releasePubkey) {
       getRelatedForRelease(releasePubkey);
       getExchangeHistoryForRelease(releasePubkey);
     }
   }, [releasePubkey]);
-
-  useEffect(() => {
-    if (releaseState.metadata[releasePubkey]) {
-      setMetadata(releaseState.metadata[releasePubkey]);
-    }
-  }, [releaseState?.metadata[releasePubkey]]);
 
   useEffect(() => {
     setTrack(releaseState.metadata[releasePubkey]);
@@ -133,16 +123,6 @@ const Release = () => {
     </>
   );
 };
-
-// export const getServerSideProps = async () => {
-//   // await getRelease(releasePubkey)
-//   // await getRelatedForRelease(releasePubkey)
-//   // await getExchangeHistoryForRelease(releasePubkey)
-
-//   return {
-//     props: {data}
-//   }
-// }
 
 const ReleaseWrapper = styled(Box)(({ theme }) => ({
   height: "100%",
