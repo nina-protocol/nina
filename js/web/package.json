@@ -20,7 +20,6 @@
     "react-router-breadcrumbs-hoc": "^4.1.0",
     "react-slick": "^0.28.1",
     "react-smooth-image": "^1.1.0",
-    "react-swipeable-views": "^0.14.0",
     "slick-carousel": "^1.8.1"
   },
   "scripts": {

@@ -6,7 +6,8 @@ import "react-multi-carousel/lib/styles.css";
 import Typography from "@mui/material/Typography";
 import ninaCommon from "nina-common";
 import Link from "next/link";
-import Image from "next/image";
+// import Image from "next/image";
+import Image from "./Image";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 const { Dots } = ninaCommon.components;
@@ -114,12 +115,14 @@ const RecentlyPublished = (props) => {
                       isMultiple ? "/related" : ""
                     }`}
                   >
-                    <Image
-                      src={imageUrl}
-                      height={100}
-                      width={100}
-                      layout="responsive"
-                    />
+                    <a>
+                      <Image
+                        src={imageUrl}
+                        height={100}
+                        width={100}
+                        layout="responsive"
+                      />
+                    </a>
                   </Link>
                   {!isMultiple && availability}
                   <ReleaseCopy sx={{ display: "flex" }}>

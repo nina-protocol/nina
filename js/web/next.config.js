@@ -26,7 +26,6 @@ const withTM = require("next-transpile-modules")([
 
 module.exports = withTM({
   webpack5: true,
-  distDir: './build',
   webpack: (config) => {
     config.resolve.fallback = {
       fs: false,
