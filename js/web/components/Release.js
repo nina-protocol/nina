@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import { useWallet } from "@solana/wallet-adapter-react";
 import ninaCommon from "nina-common";
 import Button from "@mui/material/Button";
@@ -19,7 +18,6 @@ const Release = (props) => {
   const releasePubkey = router.query.releasePubkey;
 
   const wallet = useWallet();
-  const history = useHistory();
   const {
     releaseState,
     getRelease,
@@ -67,7 +65,7 @@ const Release = (props) => {
   }
 
   if (!wallet?.connected && router.pathname.includes("releases")) {
-    history.push(`/${releasePubkey}`);
+    router.push(`/${releasePubkey}`);
   }
   if (!metadata) {
     return null
