@@ -1,24 +1,23 @@
 import Container from "@mui/material/Container";
 import { styled } from "@mui/material/styles";
-import Head from "next/head";
+import CssBaseline from "@mui/material/CssBaseline";
 
+import AudioPlayer from "./AudioPlayer"
 import NavBar from "./NavBar";
-import AudioPlayer from "./AudioPlayer";
 
-const Layout = ({children, pageTitle, description, ...props}) => {
-  const metadata = children.props.metadata
-
+const Layout = ({ children }) => {
   if (children.props.isEmbed) {
-     return <main className={classes.bodyContainer}>{children}</main>
+    return <main className={classes.bodyContainer}>{children}</main>;
   }
   return (
     <>
       <Root>
+        <CssBaseline />
         <Container
           maxWidth={false}
           disableGutters
           className={classes.mainContainer}
-        > 
+        >
           <NavBar />
           <main className={classes.bodyContainer}>{children}</main>
           <AudioPlayer />
@@ -38,7 +37,7 @@ const classes = {
 const Root = styled("div")(() => ({
   [`& .${classes.mainContainer}`]: {
     minHeight: "100vh",
-    // width: '100vw',
+    height: "100vh",
     width: "100vw",
     overflowX: "hidden",
     display: "flex",
@@ -47,9 +46,9 @@ const Root = styled("div")(() => ({
   },
 
   [`& .${classes.bodyContainer}`]: {
-    // display: 'flex',
-    // flexDirection: 'column',
-    // justifyContent: 'center',
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
     alignItems: "center",
     position: "relative",
     textAlign: "center",

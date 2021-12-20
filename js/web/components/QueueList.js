@@ -14,8 +14,7 @@ import Box from "@mui/material/Box";
 import ninaCommon from "nina-common";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
-import { useHistory } from "react-router-dom";
-// import { Link } from 'react-router-dom'
+import { useRouter } from "next/router";
 import { Typography } from "@mui/material";
 import { useWallet } from "@solana/wallet-adapter-react";
 import CloseIcon from "@mui/icons-material/Close";
@@ -35,7 +34,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 const QueueList = (props) => {
   const { setDrawerOpen } = props;
   const wallet = useWallet();
-  const history = useHistory();
+  const router = useRouter();
   const {
     txid,
     updateTxid,
@@ -72,7 +71,7 @@ const QueueList = (props) => {
 
   const goToRelease = (e, releasePubkey) => {
     setDrawerOpen(false);
-    history.push(`/${releasePubkey}`);
+    router.push(`/${releasePubkey}`);
   };
 
   const onDragEnd = (result) => {
@@ -211,28 +210,27 @@ const DraggableComponent = (id, index) => (props) => {
   );
 };
 
-const DroppableComponent =
-  (onDragEnd) => (props) => {
-    const { children } = props;
-    return (
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="droppable" direction="vertical">
-          {(provided) => {
-            return (
-              <TableBody
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-                {...props}
-              >
-                {children}
-                {provided.placeholder}
-              </TableBody>
-            );
-          }}
-        </Droppable>
-      </DragDropContext>
-    );
-  };
+const DroppableComponent = (onDragEnd) => (props) => {
+  const { children } = props;
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Droppable droppableId="droppable" direction="vertical">
+        {(provided) => {
+          return (
+            <TableBody
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              {...props}
+            >
+              {children}
+              {provided.placeholder}
+            </TableBody>
+          );
+        }}
+      </Droppable>
+    </DragDropContext>
+  );
+};
 
 const StyledQueueList = styled(Box)(({ theme }) => ({
   width: "700px",

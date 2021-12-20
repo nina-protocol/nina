@@ -1,13 +1,10 @@
-import * as anchor from '@project-serum/anchor'
-import { useAnchorWallet } from "@solana/wallet-adapter-react";
-import { Connection, PublicKey } from "@solana/web3.js";
 import Release from "../../components/Release";
-import ninaCommon from 'nina-common'
+import ninaCommon from "nina-common";
 import Head from "next/head";
-const {NinaClient} = ninaCommon.utils
+const { NinaClient } = ninaCommon.utils;
 
 const ReleasePage = (props) => {
-  const {metadata, releasePubkey, host} = props
+  const { metadata, releasePubkey, host } = props;
   return (
     <>
       <Head>
@@ -26,7 +23,10 @@ const ReleasePage = (props) => {
           content={`${metadata?.properties.artist} - "${metadata?.properties.title}": ${metadata?.description} \n Published on Nina.`}
         />
         <meta name="twitter:card" content="player" />
-        <meta name="twitter:player" content={`https://${host}/player/${releasePubkey}`} />
+        <meta
+          name="twitter:player"
+          content={`https://${host}/player/${releasePubkey}`}
+        />
         <meta name="twitter:player:stream" content={metadata.animation_url} />
         <meta name="twitter:player:width" content="400" />
         <meta name="twitter:player:height" content="400" />
@@ -40,29 +40,29 @@ const ReleasePage = (props) => {
         <meta name="twitter:description" content={metadata?.description} />
         <meta name="twitter:image" content={metadata.image} />
       </Head>
-      <Release metadata={metadata}/>;
+      <Release metadataSsr={metadata} />;
     </>
-  )
+  );
 };
 
 export const getServerSideProps = async (context) => {
-  const releasePubkey = context.params.releasePubkey
+  const releasePubkey = context.params.releasePubkey;
   const metadataResult = await fetch(
     `${NinaClient.endpoints.api}/metadata/bulk`,
     {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids: [releasePubkey] }),
-    } 
-  )
-  const metadataJson = await metadataResult.json()
+    }
+  );
+  const metadataJson = await metadataResult.json();
   return {
     props: {
       metadata: metadataJson[releasePubkey],
       releasePubkey,
-      host: context.req.headers.host
-    }
-  }
-}
+      host: context.req.headers.host,
+    },
+  };
+};
 
 export default ReleasePage;

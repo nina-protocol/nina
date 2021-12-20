@@ -1,10 +1,7 @@
-import Layout from "../../components/Layout";
-import ninaCommon from 'nina-common'
-const {NinaClient} = ninaCommon.utils
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import PauseIcon from "@mui/icons-material/Pause";
+import ninaCommon from "nina-common";
+const { NinaClient } = ninaCommon.utils;
 
-const ReleaseEmbedPage = (props) => {  
+const ReleaseEmbedPage = ({ host, metadata }) => {
   const player = `
     <html>
       <head>
@@ -32,11 +29,11 @@ const ReleaseEmbedPage = (props) => {
       <body>
         <div class="container">
           <div class="vertical-center">
-            <input id="player-button" type="image" src="https://${props.host}/play.svg" width="80px height="80px/>
+            <input id="player-button" type="image" src="https://${host}/play.svg" width="80px height="80px/>
           </div>
-          <img id="image" src=${props.metadata.image} height="100%" width="100%"/>
+          <img id="image" src=${metadata.image} height="100%" width="100%"/>
           <audio id="nina-player" style={{ width: "100%" }} autoplay>
-            <source src=${props.metadata.animation_url} type="audio/mp3" />
+            <source src=${metadata.animation_url} type="audio/mp3" />
           </audio>
         </div>
       </body>
@@ -49,34 +46,39 @@ const ReleaseEmbedPage = (props) => {
             });
             $('#nina-player').on("play", function() {
               let playerButton = $('#player-button')[0];
-              playerButton.src = "https://${props.host}/pause.svg"
+              playerButton.src = "https://${host}/pause.svg"
             })
             $('#nina-player').on("pause", function() {
               let playerButton = $('#player-button')[0];
-              playerButton.src = "https://${props.host}/play.svg"
+              playerButton.src = "https://${host}/play.svg"
             })
-
         });
       </script>
     </html>
-  `
-  var dataURI = 'data:text/html,' + encodeURIComponent(player);
+  `;
+  var dataURI = "data:text/html," + encodeURIComponent(player);
   return (
-    <iframe id="nina-player" width="100%" height="400px" style={{ border: "none" }} src={dataURI}/>
-  )
+    <iframe
+      id="nina-player"
+      width="100%"
+      height="400px"
+      style={{ border: "none" }}
+      src={dataURI}
+    />
+  );
 };
 
 export const getServerSideProps = async (context) => {
-  const releasePubkey = context.params.releasePubkey
+  const releasePubkey = context.params.releasePubkey;
   const metadataResult = await fetch(
     `${NinaClient.endpoints.api}/metadata/bulk`,
     {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids: [releasePubkey] }),
-    } 
-  )
-  const metadataJson = await metadataResult.json()
+    }
+  );
+  const metadataJson = await metadataResult.json();
   return {
     props: {
       metadata: metadataJson[releasePubkey],
@@ -86,6 +88,5 @@ export const getServerSideProps = async (context) => {
     }
   }
 }
-
 
 export default ReleaseEmbedPage;

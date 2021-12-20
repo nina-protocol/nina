@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import { useWallet } from "@solana/wallet-adapter-react";
 import ninaCommon from "nina-common";
 import Button from "@mui/material/Button";
@@ -11,16 +10,14 @@ import ReleasePurchase from "./ReleasePurchase";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
-const { Exchange } = ninaCommon.components;
+const { Dots, Exchange } = ninaCommon.components;
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts;
 
-const Release = (props) => {
-  console.log('Release Props: ', props)
+const Release = ({metadataSsr}) => {
   const router = useRouter();
   const releasePubkey = router.query.releasePubkey;
 
   const wallet = useWallet();
-  const history = useHistory();
   const {
     releaseState,
     getRelease,
@@ -33,11 +30,12 @@ const Release = (props) => {
   const [relatedReleases, setRelatedReleases] = useState(null);
 
   const [metadata, setMetadata] = useState(
-    props.metadata || releaseState?.metadata[releasePubkey] || null
+    metadataSsr || releaseState?.metadata[releasePubkey] || null
   );
 
   useEffect(() => {
     if (releasePubkey) {
+      getRelease(releasePubkey)
       getRelatedForRelease(releasePubkey);
       getExchangeHistoryForRelease(releasePubkey);
     }
@@ -47,7 +45,7 @@ const Release = (props) => {
     if (releaseState.metadata[releasePubkey]) {
       setMetadata(releaseState.metadata[releasePubkey]);
     }
-  }, [metadata]);
+  }, [releaseState?.metadata[releasePubkey]]);
 
   useEffect(() => {
     setTrack(releaseState.metadata[releasePubkey]);
@@ -67,51 +65,84 @@ const Release = (props) => {
   }
 
   if (!wallet?.connected && router.pathname.includes("releases")) {
-    history.push(`/${releasePubkey}`);
+    router.push(`/${releasePubkey}`);
   }
-  if (!metadata) {
-    return null
-  }
-  return (
-    <ReleaseWrapper>
-      {!router.pathname.includes("market") && (
-        <NinaBox
-          columns={"repeat(2, 1fr)"}
-          sx={{ backgroundColor: "white" }}
-        >
-          <ReleaseCard
-            metadata={metadata}
-            preview={false}
-            releasePubkey={releasePubkey}
-            track={track}
-          />
-          <ReleaseCtaWrapper>
-            <ReleasePurchase
-              releasePubkey={releasePubkey}
-              metadata={metadata}
-              router={router}
-              relatedReleases={relatedReleases}
-            />
-          </ReleaseCtaWrapper>
-        </NinaBox>
-      )}
 
-      {router.pathname.includes("market") && (
-        <NinaBox columns={"repeat(1, 1fr)"}>
-          <Exchange
-            releasePubkey={releasePubkey}
-            exchanges={exchangeState.exchanges}
-            metadata={metadata}
-            track={track}
+  return (
+    <>
+      {metadata && (
+        <Head>
+          <title>{`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}</title>
+          <meta
+            name="description"
+            content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`}
           />
-        </NinaBox>
+          <meta property="og:type" content="website" />
+          <meta
+            property="og:title"
+            content={`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}
+          />
+          <meta
+            property="og:description"
+            content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`}
+          />
+          <meta property="twitter:card" content={"summary"} />
+          <meta
+            property="twitter:creator"
+            content={metadata?.properties.artist}
+          />
+          <meta
+            property="twitter:title"
+            content={`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}
+          />
+          <meta property="twitter:description" content={metadata.description} />
+          <meta name="twitter:image" content={metadata.image} />
+        </Head>
       )}
-    </ReleaseWrapper>
+      {!metadata && <Dots size="80px" />}
+      {metadata && (
+        <ReleaseWrapper>
+          {!router.pathname.includes("market") && (
+            <NinaBox
+              columns={"repeat(2, 1fr)"}
+              sx={{ backgroundColor: "white" }}
+            >
+              <ReleaseCard
+                metadata={metadata}
+                preview={false}
+                releasePubkey={releasePubkey}
+                track={track}
+              />
+              <ReleaseCtaWrapper>
+                <ReleasePurchase
+                  releasePubkey={releasePubkey}
+                  metadata={metadata}
+                  router={router}
+                  relatedReleases={relatedReleases}
+                />
+              </ReleaseCtaWrapper>
+            </NinaBox>
+          )}
+
+          {router.pathname.includes("market") && (
+            <NinaBox columns={"repeat(1, 1fr)"}>
+              <Exchange
+                releasePubkey={releasePubkey}
+                exchanges={exchangeState.exchanges}
+                metadata={metadata}
+                track={track}
+              />
+            </NinaBox>
+          )}
+        </ReleaseWrapper>
+      )}
+    </>
   );
 };
 
 const ReleaseWrapper = styled(Box)(({ theme }) => ({
   height: "100%",
+  display: "flex",
   [theme.breakpoints.down("md")]: {
     overflowX: "scroll",
     "&::-webkit-scrollbar": {

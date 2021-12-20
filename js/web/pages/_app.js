@@ -1,6 +1,5 @@
 import React from "react";
-import dynamic from 'next/dynamic';
-import Head from "next/head";
+import dynamic from "next/dynamic";
 import { SnackbarProvider } from "notistack";
 import { ThemeProvider } from "@mui/material/styles";
 import { NinaTheme } from "../NinaTheme";
@@ -9,8 +8,8 @@ import { CacheProvider } from "@emotion/react";
 // import createEmotionCache from '../src/createEmotionCache';
 import Layout from "../components/Layout";
 
-const ConnectionContextProvider = dynamic(() =>
-  import('nina-common/dist/esm/contexts/connection'),
+const ConnectionContextProvider = dynamic(
+  () => import("nina-common/dist/esm/contexts/connection"),
   { ssr: true }
 );
 
@@ -20,7 +19,7 @@ const {
   AudioPlayerContextProvider,
   NameContextProvider,
   NinaContextProvider,
-} = ninaCommon.contexts
+} = ninaCommon.contexts;
 // const clientSideEmotionCache = createEmotionCache();
 
 const ENDPOINTS = {
@@ -50,7 +49,7 @@ function Application({ Component, clientSideEmotionCache, pageProps }) {
     }
   }, []);
 
-  return (  
+  return (
     <SnackbarProvider
       maxSnack={3}
       classes={

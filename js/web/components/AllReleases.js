@@ -1,39 +1,57 @@
-import React, { useEffect, useState, useContext } from "react";
-import { Helmet } from "react-helmet";
-import { styled } from "@mui/material/styles";
-import ninaCommon from "nina-common";
-import { Typography, Box } from "@mui/material";
-import ReleaseListTable from "./ReleaseListTable";
-import ScrollablePageWrapper from "./ScrollablePageWrapper";
-import ReleaseTileList from "./ReleaseTileList";
+import React, { useEffect, useState, useContext } from 'react'
+import debounce from 'lodash.debounce'
+import Head from 'next/head'
+import { styled } from '@mui/material/styles'
+import ninaCommon from 'nina-common'
+import { Typography, Box } from '@mui/material'
+import ReleaseListTable from './ReleaseListTable'
+import ScrollablePageWrapper from './ScrollablePageWrapper'
+import ReleaseTileList from './ReleaseTileList'
 
-const { ReleaseContext } = ninaCommon.contexts;
+const { ReleaseContext } = ninaCommon.contexts
+const { Dots } = ninaCommon.components
 
 const Releases = () => {
-  const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
-    useContext(ReleaseContext);
-  const [releases, setReleases] = useState([]);
-  const [listView, setListView] = useState(false);
+  const { getReleasesAll, filterReleasesAll, allReleases, allReleasesCount } =
+    useContext(ReleaseContext)
+  const [listView, setListView] = useState(false)
+  const [pendingFetch, setPendingFetch] = useState(false)
+  const [totalCount, setTotalCount] = useState(null)
 
   useEffect(() => {
-    getReleasesRecent();
-  }, []);
+    getReleasesAll()
+  }, [])
 
   useEffect(() => {
-    setReleases(filterReleasesRecent().published);
-  }, [releasesRecentState]);
+    if (allReleases.length > 0) {
+      setPendingFetch(false)
+    }
+  }, [allReleases])
+
+  useEffect(() => {
+    setTotalCount(allReleasesCount)
+  }, [allReleasesCount])
 
   const handleViewChange = () => {
-    setListView(!listView);
-  };
+    setListView(!listView)
+  }
+
+  const handleScroll = (e) => {
+    const bottom =
+      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight
+    if (bottom && !pendingFetch && totalCount !== allReleases.length) {
+      setPendingFetch(true)
+      getReleasesAll()
+    }
+  }
 
   return (
     <>
-      <Helmet>
+      <Head>
         <title>{`Nina: All Releases`}</title>
-        <meta name="description" content={"Nina: All Releases"} />
-      </Helmet>
-      <ScrollablePageWrapper>
+        <meta name="description" content={'Nina: All Releases'} />
+      </Head>
+      <ScrollablePageWrapper onScroll={debounce((e) => handleScroll(e), 500)}>
         <AllReleasesWrapper>
           <CollectionHeader
             onClick={handleViewChange}
@@ -41,44 +59,53 @@ const Releases = () => {
             align="left"
             variant="body1"
           >
-            {listView ? "Cover View" : "List View"}
+            {listView ? 'Cover View' : 'List View'}
           </CollectionHeader>
 
           {listView && (
             <ReleaseListTable
-              releases={releases}
+              releases={filterReleasesAll()}
               tableType="allReleases"
               key="releases"
             />
           )}
 
-          {!listView && <ReleaseTileList releases={releases} />}
+          {!listView && <ReleaseTileList releases={filterReleasesAll()} />}
+          {pendingFetch && (
+            <StyledDots>
+              <Dots size="80px" />
+            </StyledDots>
+          )}
         </AllReleasesWrapper>
       </ScrollablePageWrapper>
     </>
-  );
-};
+  )
+}
+
+const StyledDots = styled(Box)(() => ({
+  marginTop: '40px',
+}))
 
 const CollectionHeader = styled(Typography)(({ listView }) => ({
-  maxWidth: listView ? "764px" : "960px",
-  margin: "auto",
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "flex-end",
-  marginBottom: "15px",
-  fontWeight: "700",
-  textTransform: "uppercase",
-  cursor: "pointer",
-}));
+  maxWidth: listView ? '764px' : '960px',
+  margin: 'auto',
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'flex-end',
+  marginBottom: '15px',
+  fontWeight: '700',
+  textTransform: 'uppercase',
+  cursor: 'pointer',
+}))
 
 const AllReleasesWrapper = styled(Box)(({ theme }) => ({
-  "& a": {
+  '& a': {
     color: theme.palette.blue,
   },
-  [theme.breakpoints.down("md")]: {
-    padding: "0px 30px",
-    overflowX: "auto",
+  [theme.breakpoints.down('md')]: {
+    padding: '0px 30px',
+    overflowX: 'auto',
   },
-}));
+}))
 
-export default Releases;
+export default Releases
