@@ -264,9 +264,11 @@ const AudioPlayer = () => {
       {info && (
         <LinkWrapper>
           <Link href={info.releasePubkey} style={{ marginRight: "30px" }} passHref>
-            <Typography variant="subtitle1" sx={{ padding: "0" }}>
-              View Info
-            </Typography>
+            <a>
+              <Typography variant="subtitle1" sx={{ padding: "0" }}>
+                View Info
+              </Typography>
+            </a>
           </Link>
 
           <Button
