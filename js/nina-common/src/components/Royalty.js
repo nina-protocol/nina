@@ -9,16 +9,10 @@ import Typography from '@mui/material/Typography'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
-// import { useWallet } from '@solana/wallet-adapter-react'
+import { useWallet } from '@solana/wallet-adapter-react'
 import RoyaltyRecipientForm from './RoyaltyRecipientForm'
 import { NameContext, ReleaseContext } from '../contexts'
 import NinaClient from '../utils/client'
-
-import dynamic from 'next/dynamic'
-const {useWallet} = dynamic(
-  () => import('@solana/wallet-adapter-react'),
-  {ssr: false}
-)
 
 const Royalty = (props) => {
   const { release, releasePubkey } = props
