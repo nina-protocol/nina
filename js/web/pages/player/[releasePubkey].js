@@ -52,7 +52,6 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
               let playerButton = $('#player-button')[0];
               playerButton.src = "https://${host}/play.svg"
             })
-
         });
       </script>
     </html>
