@@ -8,19 +8,19 @@ const ReleasePage = (props) => {
   return (
     <>
       <Head>
-        <title>{`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}</title>
+        <title>{`Nina: ${metadata?.properties.artist} - "${metadata?.properties.title}"`}</title>
         <meta
           name="description"
-          content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`}
+          content={`${metadata?.properties.artist} - "${metadata?.properties.title}": ${metadata?.description} \n Published on Nina.`}
         />
         <meta name="og:type" content="website" />
         <meta
           name="og:title"
-          content={`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}
+          content={`${metadata?.properties.artist} - "${metadata?.properties.title}"" on Nina`}
         />
         <meta
           name="og:description"
-          content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`}
+          content={`${metadata?.properties.artist} - "${metadata?.properties.title}": ${metadata?.description} \n Published on Nina.`}
         />
         <meta name="twitter:card" content="player" />
         <meta
@@ -35,7 +35,7 @@ const ReleasePage = (props) => {
         <meta name="twitter:image:type" content="image/jpg" />
         <meta
           name="twitter:title"
-          content={`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}
+          content={`${metadata?.properties.artist} - ${metadata?.properties.title} on Nina`}
         />
         <meta name="twitter:description" content={metadata?.description} />
         <meta name="twitter:image" content={metadata.image} />

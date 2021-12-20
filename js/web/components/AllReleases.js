@@ -37,6 +37,7 @@ const Releases = () => {
   }
 
   const handleScroll = (e) => {
+    console.log('srolllll')
     const bottom =
       e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight
       console.log('at bottom')
@@ -53,7 +54,7 @@ const Releases = () => {
         <title>{`Nina: All Releases`}</title>
         <meta name="description" content={'Nina: All Releases'} />
       </Head>
-      <ScrollablePageWrapper onScroll={debounce((e) => handleScroll(e), 500)}>
+      <ScrollablePageWrapper onScroll={(e) => handleScroll(e)}>
         <AllReleasesWrapper>
           <CollectionHeader
             onClick={handleViewChange}

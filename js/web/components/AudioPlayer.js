@@ -192,7 +192,7 @@ const AudioPlayer = () => {
 
       {info && (
         <AlbumArt href={`/${info.releasePubkey}`}>
-          <Image src={info.cover} style={{ height: "60px", width: "60px" }} />
+          <Image src={info.cover} height="60px" width="60px" />
         </AlbumArt>
       )}
 
@@ -272,7 +272,7 @@ const AudioPlayer = () => {
           <Button
             onClick={() =>
               window.open(
-                `https://twitter.com/intent/tweet?text=${`Checkout ${info.artist} - "${info.title}" on Nina`}&url=nina.market/${
+                `https://twitter.com/intent/tweet?text=${`${info.artist} - "${info.title}" on Nina`}&url=nina.market/${
                   info.releasePubkey
                 }`,
                 null,
@@ -282,7 +282,7 @@ const AudioPlayer = () => {
             disableFocusRipple={true}
             disableRipple={true}
           >
-            <Image src={"/shareArrow.svg"}></Image>
+            <Image src={"/shareArrow.svg"} width="15px" height="15px" />
           </Button>
         </LinkWrapper>
       )}
