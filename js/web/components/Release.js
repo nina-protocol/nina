@@ -13,7 +13,7 @@ import Head from "next/head";
 const { Dots, Exchange } = ninaCommon.components;
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts;
 
-const Release = (props) => {
+const Release = ({metadataSsr}) => {
   const router = useRouter();
   const releasePubkey = router.query.releasePubkey;
 
@@ -30,7 +30,7 @@ const Release = (props) => {
   const [relatedReleases, setRelatedReleases] = useState(null);
 
   const [metadata, setMetadata] = useState(
-    props.metadata || releaseState?.metadata[releasePubkey] || null
+    metadataSsr || releaseState?.metadata[releasePubkey] || null
   );
 
   useEffect(() => {

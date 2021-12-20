@@ -1,8 +1,7 @@
 import ninaCommon from "nina-common";
 const { NinaClient } = ninaCommon.utils;
-import Layout from "../../components/Layout";
 
-const ReleaseEmbedPage = ({ metadata }) => {
+const ReleaseEmbedPage = ({ host, metadata }) => {
   const player = `
     <html>
       <head>
@@ -30,7 +29,7 @@ const ReleaseEmbedPage = ({ metadata }) => {
       <body>
         <div class="container">
           <div class="vertical-center">
-            <input id="player-button" type="image" src="https://${props.host}/play.svg" width="80px height="80px/>
+            <input id="player-button" type="image" src="https://${host}/play.svg" width="80px height="80px/>
           </div>
           <img id="image" src=${metadata.image} height="100%" width="100%"/>
           <audio id="nina-player" style={{ width: "100%" }} autoplay>
@@ -47,11 +46,11 @@ const ReleaseEmbedPage = ({ metadata }) => {
             });
             $('#nina-player').on("play", function() {
               let playerButton = $('#player-button')[0];
-              playerButton.src = "https://${props.host}/pause.svg"
+              playerButton.src = "https://${host}/pause.svg"
             })
             $('#nina-player').on("pause", function() {
               let playerButton = $('#player-button')[0];
-              playerButton.src = "https://${props.host}/play.svg"
+              playerButton.src = "https://${host}/play.svg"
             })
 
         });

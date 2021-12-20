@@ -37,12 +37,9 @@ const Releases = () => {
   }
 
   const handleScroll = (e) => {
-    console.log('srolllll')
     const bottom =
       e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight
-      console.log('at bottom')
     if (bottom && !pendingFetch && totalCount !== allReleases.length) {
-      console.log('at bottom')
       setPendingFetch(true)
       getReleasesAll()
     }
@@ -54,7 +51,7 @@ const Releases = () => {
         <title>{`Nina: All Releases`}</title>
         <meta name="description" content={'Nina: All Releases'} />
       </Head>
-      <ScrollablePageWrapper onScroll={(e) => handleScroll(e)}>
+      <ScrollablePageWrapper onScroll={debounce((e) => handleScroll(e), 500)}>
         <AllReleasesWrapper>
           <CollectionHeader
             onClick={handleViewChange}
