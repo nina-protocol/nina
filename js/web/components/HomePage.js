@@ -44,7 +44,7 @@ const HomePage = () => {
               New Releases
             </Typography>
 
-            <Link href="/allReleases">
+            <Link href="/releases">
               <a>
                 <AllReleasesLink variant="body1">All Releases</AllReleasesLink>
               </a>
