@@ -21,12 +21,12 @@ const withTM = require("next-transpile-modules")([
   "@solana/wallet-adapter-blocto",
   "@solana/wallet-adapter-bitkeep",
   "@solana/wallet-adapter-coinhub",
-  "@solana/wallet-adapter-tokenpocket"
+  "@solana/wallet-adapter-tokenpocket",
 ]); // pass the modules you would like to see transpiled
 
 module.exports = withTM({
-  webpack5: true,
   distDir: './build',
+  webpack5: true,
   webpack: (config) => {
     config.resolve.fallback = {
       fs: false,

@@ -11,6 +11,7 @@ import ReleaseCard from "./ReleaseCard";
 import NinaBox from "./NinaBox";
 import MediaDropzones from "./MediaDropzones";
 import * as Yup from "yup";
+import Link from 'next/link'
 
 const { ReleaseSettings, Dots } = ninaCommon.components;
 const { ReleaseContext, NinaContext } = ninaCommon.contexts;
@@ -161,32 +162,32 @@ const ReleaseCreate = () => {
             </Typography>
             <Typography variant="h3">
               If you don’t have a Solana wallet, please set one up at{" "}
-              <a target="_blank" rel="noreferrer" href="https://phantom.app">
+              <Link target="_blank" rel="noreferrer" href="https://phantom.app">
                 phantom.app
-              </a>
+              </Link>
               .
             </Typography>
             <Typography variant="h3">
               Please fill out{" "}
-              <a
+              <Link
                 target="_blank"
                 rel="noreferrer"
                 href="https://docs.google.com/forms/d/e/1FAIpQLSdj13RKQcw9GXv3A5U4ebJhzJjjfxzxuCtB092X4mkHm5XX0w/viewform"
               >
                 this form
-              </a>{" "}
+              </Link>{" "}
               and we will notify you when your credits have been distributed.
             </Typography>
 
             <Typography variant="h3">
-              Check our <a href="/faq">FAQ</a> or hit us at{" "}
-              <a
+              Check our <Link href="/faq">FAQ</Link> or hit us at{" "}
+              <Link
                 target="_blank"
                 rel="noreferrer"
                 href="href=mailto:artists@nina.market"
               >
                 artists@nina.market
-              </a>{" "}
+              </Link>{" "}
               with any questions.
             </Typography>
           </NpcMessage>

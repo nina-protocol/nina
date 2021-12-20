@@ -118,7 +118,7 @@ const ReleaseList = () => {
               <Typography
                 sx={{ paddingBottom: "10px" }}
               >{`You haven't published any music yet.`}</Typography>
-              <Link href="/upload">
+              <Link href="/upload" passHref>
                 <Typography>Start Uploading</Typography>
               </Link>
             </Box>

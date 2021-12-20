@@ -210,28 +210,27 @@ const DraggableComponent = (id, index) => (props) => {
   );
 };
 
-const DroppableComponent =
-  (onDragEnd) => (props) => {
-    const { children } = props;
-    return (
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="droppable" direction="vertical">
-          {(provided) => {
-            return (
-              <TableBody
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-                {...props}
-              >
-                {children}
-                {provided.placeholder}
-              </TableBody>
-            );
-          }}
-        </Droppable>
-      </DragDropContext>
-    );
-  };
+const DroppableComponent = (onDragEnd) => (props) => {
+  const { children } = props;
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Droppable droppableId="droppable" direction="vertical">
+        {(provided) => {
+          return (
+            <TableBody
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              {...props}
+            >
+              {children}
+              {provided.placeholder}
+            </TableBody>
+          );
+        }}
+      </Droppable>
+    </DragDropContext>
+  );
+};
 
 const StyledQueueList = styled(Box)(({ theme }) => ({
   width: "700px",

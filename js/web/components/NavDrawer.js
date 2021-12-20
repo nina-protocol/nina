@@ -15,6 +15,7 @@ import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { faInstagramSquare } from "@fortawesome/free-brands-svg-icons";
 import CloseIcon from "@mui/icons-material/Close";
+import Image from 'next/image'
 
 const { NinaContext, ReleaseContext } = ninaCommon.contexts;
 
@@ -99,6 +100,7 @@ const NavDrawer = () => {
                   href={`/${link}`}
                   activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
                   key={link}
+                  passHref
                 >
                   <ListItem button key={link}>
                     <ListItemText
@@ -118,6 +120,7 @@ const NavDrawer = () => {
                   href={`/releases/user`}
                   activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
                   key={link}
+                  passHref
                 >
                   <ListItem button key={link}>
                     <ListItemText
@@ -134,14 +137,15 @@ const NavDrawer = () => {
               return (
                 <ListItem button key={link}>
                   <ListItemText>
-                    <a
+                    <Link
                       href="https://softlp.nina.market"
                       target="_blank"
                       rel="noreferrer"
                       className={`${classes.drawerLink}`}
+                      passHref
                     >
                       The Soft LP
-                    </a>
+                    </Link>
                   </ListItemText>
                 </ListItem>
               );
@@ -152,11 +156,10 @@ const NavDrawer = () => {
                   href={`/releases`}
                   activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
                   key={link}
+                  passHref
                 >
                   <ListItem button key={link}>
-                    <ListItemText
-                      primary="All Releases"
-                    />
+                    <ListItemText primary="All Releases" />
                   </ListItem>
                 </Link>
               );
@@ -170,6 +173,7 @@ const NavDrawer = () => {
                   }`}
                   activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
                   key={link}
+                  passHref
                 >
                   <ListItem button key={link}>
                     <ListItemText primary={link} />
@@ -188,7 +192,7 @@ const NavDrawer = () => {
         <Box key={"left"}>
           <StyledMenuButton onClick={toggleDrawer(true)}>
             <Icon>
-              <img src={"/hamburger.svg"} height={25} width={25} />
+              <Image src={"/hamburger.svg"} height={25} width={25} />
             </Icon>
           </StyledMenuButton>
           <StyledDrawer

@@ -1,8 +1,7 @@
-import Layout from "../../components/Layout";
-import ninaCommon from 'nina-common'
-const {NinaClient} = ninaCommon.utils
+import ninaCommon from "nina-common";
+const { NinaClient } = ninaCommon.utils;
 
-const ReleaseEmbedPage = (props) => {  
+const ReleaseEmbedPage = ({ metadata }) => {
   const player = `
     <html>
       <head>
@@ -34,9 +33,9 @@ const ReleaseEmbedPage = (props) => {
             Click
             </button>
           </div>
-          <img id="image" src=${props.metadata.image} height="100%" width="100%"/>
+          <img id="image" src=${metadata.image} height="100%" width="100%"/>
           <audio id="nina-player" style={{ width: "100%" }} autoplay>
-            <source src=${props.metadata.animation_url} type="audio/mp3" />
+            <source src=${metadata.animation_url} type="audio/mp3" />
           </audio>
         </div>
       </body>
@@ -50,32 +49,37 @@ const ReleaseEmbedPage = (props) => {
         });
       </script>
     </html>
-  `
-  var dataURI = 'data:text/html,' + encodeURIComponent(player);
+  `;
+  var dataURI = "data:text/html," + encodeURIComponent(player);
   return (
-    <iframe id="nina-player" width="100%" height="400px" style={{ border: "none" }} src={dataURI}/>
-  )
+    <iframe
+      id="nina-player"
+      width="100%"
+      height="400px"
+      style={{ border: "none" }}
+      src={dataURI}
+    />
+  );
 };
 
 export const getServerSideProps = async (context) => {
-  const releasePubkey = context.params.releasePubkey
+  const releasePubkey = context.params.releasePubkey;
   const metadataResult = await fetch(
     `${NinaClient.endpoints.api}/metadata/bulk`,
     {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids: [releasePubkey] }),
-    } 
-  )
-  const metadataJson = await metadataResult.json()
+    }
+  );
+  const metadataJson = await metadataResult.json();
   return {
     props: {
       metadata: metadataJson[releasePubkey],
       releasePubkey,
       isEmbed: true,
-    }
-  }
-}
-
+    },
+  };
+};
 
 export default ReleaseEmbedPage;

@@ -6,7 +6,8 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Link from "next/link";
 // import SmoothImage from 'react-smooth-image'
-import Image from "next/image";
+// import Image from "next/image";
+import Image from "./Image";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import Button from "@mui/material/Button";
@@ -150,8 +151,11 @@ const RecentlyPurchased = (props) => {
                     <Link
                       href={"/" + release.releasePubkey}
                       style={{ width: "400px" }}
+                      passHref
                     >
-                      <Image src={imageUrl} width="400px" height="400px" />
+                      <a>
+                        <Image src={imageUrl} width="400px" height="400px" />
+                      </a>
                     </Link>
                     <Copy sx={{ paddingLeft: 2 }}>
                       <Typography variant="h3" color="blue">

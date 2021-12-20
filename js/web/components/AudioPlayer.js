@@ -16,6 +16,7 @@ import PauseIcon from "@mui/icons-material/Pause";
 // import VolumeOffIcon from '@mui/icons-material/VolumeOff'
 import Typography from "@mui/material/Typography";
 import QueueDrawer from "./QueueDrawer";
+import Image from "./Image";
 
 const { AudioPlayerContext } = ninaCommon.contexts;
 const { NinaClient } = ninaCommon.utils;
@@ -191,7 +192,7 @@ const AudioPlayer = () => {
 
       {info && (
         <AlbumArt href={`/${info.releasePubkey}`}>
-          <img src={info.cover} style={{ height: "60px", width: "60px" }} />
+          <Image src={info.cover} style={{ height: "60px", width: "60px" }} />
         </AlbumArt>
       )}
 
@@ -262,7 +263,7 @@ const AudioPlayer = () => {
 
       {info && (
         <LinkWrapper>
-          <Link href={info.releasePubkey} style={{ marginRight: "30px" }}>
+          <Link href={info.releasePubkey} style={{ marginRight: "30px" }} passHref>
             <Typography variant="subtitle1" sx={{ padding: "0" }}>
               View Info
             </Typography>
@@ -281,7 +282,7 @@ const AudioPlayer = () => {
             disableFocusRipple={true}
             disableRipple={true}
           >
-            <img src={'/shareArrow.svg'}></img>
+            <Image src={"/shareArrow.svg"}></Image>
           </Button>
         </LinkWrapper>
       )}

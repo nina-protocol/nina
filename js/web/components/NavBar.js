@@ -34,19 +34,19 @@ const NavBar = () => {
       </NavLeft>
 
       <Logo>
-        <Link href="/">
+        <Link href="/" passHref>
           <Typography variant="h4">NINA</Typography>
         </Link>
       </Logo>
 
       <NavRight>
         <DesktopWalletWrapper>
-          <PublishLink href="/upload">
-            <Typography variant="subtitle1">Start Publishing</Typography>
-          </PublishLink>
-          <Typography variant="subtitle1" className={classes.nav__balance}>
+          <Link href="/upload" passHref>
+            <PublishLink variant="subtitle1">Start Publishing</PublishLink>
+          </Link>
+          <NavBalance variant="subtitle1">
             {wallet?.connected ? `Balance: $${usdcBalance}` : null}
-          </Typography>
+          </NavBalance>
           <NavCtas>
             <StyledWalletDialogProvider featuredWallets={4}>
               <StyledWalletButton>
@@ -117,6 +117,10 @@ const NavRight = styled("div")(({ theme }) => ({
 const NavCtas = styled("div")(() => ({
   display: "flex",
   alignItems: "flex-start",
+}));
+
+const NavBalance = styled(Typography)(({ theme }) => ({
+  color: theme.palette.blue,
 }));
 
 const Logo = styled("div")(({ theme }) => ({
@@ -226,8 +230,8 @@ const ConnectionDot = styled("span")(({ theme }) => ({
   },
 }));
 
-const PublishLink = styled(Link)(() => ({
-  width: "115px",
+const PublishLink = styled(Typography)(() => ({
+  paddingRight: "15px",
 }));
 
 export default withFormik({
