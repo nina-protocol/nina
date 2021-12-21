@@ -113,12 +113,11 @@ const Breadcrumbs = () => {
           });
           break;
         case "/releases/user":
-          pathArray = linkPath.map((path, i) => {
-            return {
-              breadcrumb: <YourReleasesBreadcrumb />,
-              href: "/" + linkPath.slice(0, i + 1).join("/"),
-            };
-          });
+    
+          pathArray = [ {
+            breadcrumb: <YourReleasesBreadcrumb />,
+            href: "/" + linkPath.[0],
+          }]
           break;
         default:
           pathArray = linkPath.map((path, i) => {
