@@ -16,7 +16,7 @@ const ReleaseTileList = (props) => {
 
   const router = useRouter();
 
-  const handleClick = (releasePubkey, release) => {
+  const handleClick = (releasePubkey) => {
     router.push({
       pathname: `/${releasePubkey}`,
     });

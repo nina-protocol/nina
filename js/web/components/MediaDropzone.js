@@ -6,7 +6,7 @@ import { Typography, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
-import Image from 'next/image'
+import Image from "next/image";
 
 const { NinaClient } = ninaCommon.utils;
 const MediaDropzone = ({

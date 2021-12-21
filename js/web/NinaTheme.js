@@ -279,7 +279,7 @@ export const NinaTheme = createTheme({
         a: {
           color: colors.black,
           textDecoration: "none",
-          cursor: 'pointer !important',
+          cursor: "pointer !important",
           "&:hover": {
             color: colors.blue,
           },

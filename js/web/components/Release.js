@@ -13,7 +13,7 @@ import Head from "next/head";
 const { Dots, Exchange } = ninaCommon.components;
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts;
 
-const Release = ({metadataSsr}) => {
+const Release = ({ metadataSsr }) => {
   const router = useRouter();
   const releasePubkey = router.query.releasePubkey;
 
@@ -35,7 +35,7 @@ const Release = ({metadataSsr}) => {
 
   useEffect(() => {
     if (releasePubkey) {
-      getRelease(releasePubkey)
+      getRelease(releasePubkey);
       getRelatedForRelease(releasePubkey);
       getExchangeHistoryForRelease(releasePubkey);
     }
@@ -145,7 +145,7 @@ const ReleaseWrapper = styled(Box)(({ theme }) => ({
   display: "flex",
   [theme.breakpoints.down("md")]: {
     overflowX: "scroll",
-    paddingTop: '100px',
+    paddingTop: "100px",
     "&::-webkit-scrollbar": {
       display: "none",
     },

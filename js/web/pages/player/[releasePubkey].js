@@ -84,9 +84,9 @@ export const getServerSideProps = async (context) => {
       metadata: metadataJson[releasePubkey],
       releasePubkey,
       isEmbed: true,
-      host: context.req.headers.host
-    }
-  }
-}
+      host: context.req.headers.host,
+    },
+  };
+};
 
 export default ReleaseEmbedPage;
