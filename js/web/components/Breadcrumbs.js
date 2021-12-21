@@ -116,7 +116,7 @@ const Breadcrumbs = () => {
     
           pathArray = [ {
             breadcrumb: <YourReleasesBreadcrumb />,
-            href: "/" + linkPath.[0],
+            href: "/" + linkPath[0],
           }]
           break;
         default:
