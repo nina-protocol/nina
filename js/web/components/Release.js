@@ -10,7 +10,7 @@ import ReleasePurchase from "./ReleasePurchase";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
-const { Dots, Exchange } = ninaCommon.components;
+const { Exchange } = ninaCommon.components;
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts;
 
 const Release = ({ metadataSsr }) => {
@@ -99,7 +99,6 @@ const Release = ({ metadataSsr }) => {
           <meta name="twitter:image" content={metadata.image} />
         </Head>
       )}
-      {!metadata && <Dots size="80px" />}
       {metadata && (
         <ReleaseWrapper>
           {!router.pathname.includes("market") && (
