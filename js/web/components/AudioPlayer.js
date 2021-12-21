@@ -191,10 +191,12 @@ const AudioPlayer = () => {
       </audio>
 
       {info && (
-        <AlbumArt href={`/${info.releasePubkey}`}>
-          <Image src={info.cover} height="60px" width="60px" />
-        </AlbumArt>
-      )}
+        <Link href={`/${info.releasePubkey}`}>
+          <AlbumArt >
+            <Image src={info.cover} height="60px" width="60px" layout='responsive'/>
+          </AlbumArt>
+        </Link>
+        )}
 
       <Controls>
         <IconButton
@@ -311,7 +313,7 @@ const StyledAudioPlayer = styled(Box)(({ theme }) => ({
   zIndex: "100",
 }));
 
-const AlbumArt = styled(Link)(() => ({
+const AlbumArt = styled(Box)(() => ({
   width: "60px",
   height: "60px",
 }));
