@@ -114,6 +114,10 @@ const RecentlyPublished = (props) => {
                     href={`/${release.releasePubkey}${
                       isMultiple ? "/related" : ""
                     }`}
+                    query={
+                      artist: release.metadata.properties.artist,
+                      title: release.metadata.properties.title
+                    }
                   >
                     <a>
                       <Image

@@ -16,26 +16,33 @@ const ReleaseTileList = (props) => {
 
   const router = useRouter();
 
-  const handleClick = (releasePubkey) => {
-    router.push(`/${releasePubkey}`);
+  const handleClick = (releasePubkey, release) => {
+    router.push({
+      pathname: `/${releasePubkey}`,
+      query: {
+        artist: `${release.metadata.properties.artist}`,
+        title: `${release.metadata.properties.title}`
+      }
+    });
   };
 
   return (
     <Box>
       <TileGrid>
         {releases.map((release, i) => {
+          console.log('release :>> ', release);
           return (
             <Tile key={i}>
               <HoverCard
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleClick(release.releasePubkey);
+                  handleClick(release.releasePubkey, release);
                 }}
               >
                 <CardCta
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleClick(release.releasePubkey);
+                    handleClick(release.releasePubkey, release);
                   }}
                 >
                   <Button
