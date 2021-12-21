@@ -266,7 +266,7 @@ const AudioPlayer = () => {
       {info && (
         <LinkWrapper>
           <Link
-            href={info.releasePubkey}
+            href={`/${info.releasePubkey}`}
             style={{ marginRight: "30px" }}
             passHref
           >

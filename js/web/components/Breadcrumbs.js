@@ -92,7 +92,7 @@ const Breadcrumbs = () => {
               const metadata =
                 router.components[`${router.pathname}`].props.pageProps
                   .metadata;
-              const slug = `${metadata.properties.artist}, ${metadata?.properties.title}`;
+              const slug = `${metadata.properties.artist}, ${metadata.properties.title}`;
               return {
                 breadcrumb: slug,
                 href: "/" + linkPath.slice(0, i + 1).join("/"),
