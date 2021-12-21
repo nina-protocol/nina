@@ -313,7 +313,7 @@ const StyledAudioPlayer = styled(Box)(({ theme }) => ({
   zIndex: "100",
 }));
 
-const AlbumArt = styled(Box)(() => ({
+const AlbumArt = styled('a')(() => ({
   width: "60px",
   height: "60px",
 }));
