@@ -27,28 +27,31 @@ const Breadcrumbs = () => {
 
       console.log('router.pathname :>> ', router.pathname);
 
-      if (router.pathname === '/[releasePubkey]') {
-         pathArray = linkPath.map((path, i) => {
 
-           const metadata = router.components[`${router.pathname}`].props.pageProps.metadata
-           console.log('metadata :>> ', metadata);
-           const slug = `${metadata.properties.artist}, ${metadata?.properties.title}`
-          //  const slug = `test`
-          return {breadcrumb: slug, href: '/' + linkPath.slice(0, i + 1).join('/')};
-        });
-      } else if (router.pathname === '/[releasePubkey]/market') {
-        pathArray = linkPath.map((path, i) => {
-          if (i === 0 ) {
+      switch (router.pathname) {
+        case '/[releasePubkey]':
+          pathArray = linkPath.map((path, i) => {
             const metadata = router.components[`${router.pathname}`].props.pageProps.metadata
             const slug = `${metadata.properties.artist}, ${metadata?.properties.title}`
             return {breadcrumb: slug, href: '/' + linkPath.slice(0, i + 1).join('/')};
-          }
-          return {breadcrumb: path, href: '/' + linkPath.slice(0, i + 1).join('/')};
-        });
-      } else {
-        pathArray = linkPath.map((path, i) => {
-          return {breadcrumb: path, href: '/' + linkPath.slice(0, i + 1).join('/')};
-        });
+          });
+          break;
+        case '/[releasePubkey]/market':
+          pathArray = linkPath.map((path, i) => {
+            if (i === 0) {
+              const metadata = router.components[`${router.pathname}`].props.pageProps.metadata
+              const slug = `${metadata.properties.artist}, ${metadata?.properties.title}`
+              return {breadcrumb: slug, href: '/' + linkPath.slice(0, i + 1).join('/')};
+            }
+            return {breadcrumb: path, href: '/' + linkPath.slice(0, i + 1).join('/')};
+          });
+          break;
+      
+        default:
+          pathArray = linkPath.map((path, i) => {
+            return {breadcrumb: path, href: '/' + linkPath.slice(0, i + 1).join('/')};
+          });
+          break;
       }
 
       setBreadcrumbs(pathArray);
