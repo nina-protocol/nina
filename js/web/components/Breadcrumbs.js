@@ -62,6 +62,23 @@ const YourReleasesBreadcrumb = () => {
   return ` Your Releases (${userPublishedReleasesCount})`;
 };
 
+const releaseBreadcrumbFormatted = (metadata) => {
+  return (
+    <StyledReleaseBreadcrumb>
+      <Typography display="inline" variant="subtitle1">
+        {metadata.properties.artist},         
+      </Typography>{' '}
+      <Typography
+        display="inline"
+        variant="subtitle1"
+        sx={{ fontStyle: 'italic' }}
+      >
+        {metadata.properties.title}
+      </Typography>
+    </StyledReleaseBreadcrumb>
+  )
+}
+
 const Breadcrumbs = () => {
   const router = useRouter();
   const [breadcrumbs, setBreadcrumbs] = useState(null);
@@ -78,7 +95,7 @@ const Breadcrumbs = () => {
           pathArray = linkPath.map((path, i) => {
             const metadata =
               router.components[`${router.pathname}`].props.pageProps.metadata;
-            const slug = `${metadata.properties.artist}, ${metadata?.properties.title}`;
+            const slug = releaseBreadcrumbFormatted(metadata)
             return {
               breadcrumb: slug,
               href: "/" + linkPath.slice(0, i + 1).join("/"),
@@ -92,7 +109,7 @@ const Breadcrumbs = () => {
               const metadata =
                 router.components[`${router.pathname}`].props.pageProps
                   .metadata;
-              const slug = `${metadata.properties.artist}, ${metadata.properties.title}`;
+              const slug = releaseBreadcrumbFormatted(metadata)
               return {
                 breadcrumb: slug,
                 href: "/" + linkPath.slice(0, i + 1).join("/"),
@@ -188,14 +205,14 @@ const BreadcrumbsContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-// const StyledReleaseBreadcrumb = styled("div")(() => ({
-//   display: "block",
-//   paddingRight: "1px",
-//   maxWidth: "200px",
-//   whiteSpace: "nowrap",
-//   textOverflow: "ellipsis",
-//   overflow: "hidden",
-//   lineHeight: "1",
-// }));
+const StyledReleaseBreadcrumb = styled("div")(() => ({
+  display: "block",
+  paddingRight: "1px",
+  maxWidth: "200px",
+  whiteSpace: "nowrap",
+  textOverflow: "ellipsis",
+  overflow: "hidden",
+  lineHeight: "1",
+}));
 
 export default Breadcrumbs;
