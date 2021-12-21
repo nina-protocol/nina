@@ -5,6 +5,7 @@ import ninaCommon from "nina-common";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Typography, Box } from "@mui/material";
 import Router, {withRouter, useRouter} from "next/router";
+import Router, {withRouter, useRouter} from "next/router";
 
 
 const { ReleaseContext } = ninaCommon.contexts;
@@ -31,36 +32,36 @@ const { ReleaseContext } = ninaCommon.contexts;
 //   return null;
 // };
 
-// const YourCollectionBreadcrumb = () => {
-//   const {
-//     releaseState,
-//     getReleasesPublishedByUser,
-//     filterReleasesUserCollection,
-//   } = useContext(ReleaseContext);
-//   const wallet = useWallet();
+const YourCollectionBreadcrumb = () => {
+  const {
+    releaseState,
+    getReleasesPublishedByUser,
+    filterReleasesUserCollection,
+  } = useContext(ReleaseContext);
+  const wallet = useWallet();
 
-//   const [userCollectionReleasesCount, setUserCollectionReleasesCount] =
-//     useState();
-//   useEffect(() => {
-//     if (wallet?.connected) {
-//       getReleasesPublishedByUser(wallet.publicKey);
-//     }
-//   }, [wallet?.connected]);
+  const [userCollectionReleasesCount, setUserCollectionReleasesCount] =
+    useState();
+  useEffect(() => {
+    if (wallet?.connected) {
+      getReleasesPublishedByUser(wallet.publicKey);
+    }
+  }, [wallet?.connected]);
 
-//   useEffect(() => {
-//     if (wallet?.connected) {
-//       setUserCollectionReleasesCount(
-//         filterReleasesUserCollection().length || 0
-//       );
-//     }
-//   }, [releaseState]);
+  useEffect(() => {
+    if (wallet?.connected) {
+      setUserCollectionReleasesCount(
+        filterReleasesUserCollection().length || 0
+      );
+    }
+  }, [releaseState]);
 
-//   return (
-//     <Typography variant="subtitle1">
-//       Your Collection ({userCollectionReleasesCount || 0})
-//     </Typography>
-//   );
-// };
+  return (
+    <Typography variant="subtitle1">
+      Your Collection ({userCollectionReleasesCount || 0})
+    </Typography>
+  );
+};
 
 // const YourReleasesBreadcrumb = () => {
 //   const {

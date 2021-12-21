@@ -4,14 +4,35 @@ import Link from 'next/link';
 import {styled} from "@mui/material/styles";
 import {Typography, Box} from "@mui/material";
 
+const YourCollectionBreadcrumb = () => {
+  const {
+    releaseState,
+    getReleasesPublishedByUser,
+    filterReleasesUserCollection,
+  } = useContext(ReleaseContext);
+  const wallet = useWallet();
 
-const convertBreadcrumb = string => {
-  return string
-    .replace(/-/g, ' ')
-    .replace(/oe/g, 'ö')
-    .replace(/ae/g, 'ä')
-    .replace(/ue/g, 'ü')
-    .toUpperCase();
+  const [userCollectionReleasesCount, setUserCollectionReleasesCount] =
+    useState();
+  useEffect(() => {
+    if (wallet?.connected) {
+      getReleasesPublishedByUser(wallet.publicKey);
+    }
+  }, [wallet?.connected]);
+
+  useEffect(() => {
+    if (wallet?.connected) {
+      setUserCollectionReleasesCount(
+        filterReleasesUserCollection().length || 0
+      );
+    }
+  }, [releaseState]);
+
+  return (
+    <Typography variant="subtitle1">
+      Your Collection ({userCollectionReleasesCount || 0})
+    </Typography>
+  );
 };
 
 const Breadcrumbs = () => {
@@ -26,7 +47,6 @@ const Breadcrumbs = () => {
       let pathArray;
 
       console.log('router.pathname :>> ', router.pathname);
-
 
       switch (router.pathname) {
         case '/[releasePubkey]':
@@ -67,7 +87,7 @@ const Breadcrumbs = () => {
       <ol className="breadcrumbs__list">
         <li>
           <span>/</span>
-           <a href="/">HOME</a>
+           <a href="/">Home</a>
         </li>
         {breadcrumbs.map((breadcrumb, i) => {
           return (
@@ -75,7 +95,7 @@ const Breadcrumbs = () => {
               <span>/</span>
               <Link href={breadcrumb.href}>
                 <a>
-                  {convertBreadcrumb(breadcrumb.breadcrumb)} 
+                  {breadcrumb.breadcrumb} 
                 </a>
               </Link>
             </li>
@@ -97,7 +117,7 @@ const BreadcrumbsContainer = styled(Box)(({theme}) => ({
     margin: 0,
     paddingLeft: '20px',
     '& li': {
-      textTransform: 'capitalize',
+      textTransform: 'capitalize !important',
       display: 'flex',
       '& span': {
         padding: '0 10px'
