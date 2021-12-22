@@ -4,7 +4,7 @@ import Head from "next/head";
 const { NinaClient } = ninaCommon.utils;
 
 const ReleasePage = (props) => {
-  const { metadata, releasePubkey, host } = props;
+  const { metadata } = props;
   return (
     <>
       <Head>
