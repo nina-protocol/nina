@@ -3,7 +3,6 @@ import ninaCommon from "nina-common";
 import "react-dropzone-uploader/dist/styles.css";
 import Dropzone from "react-dropzone-uploader";
 import { Typography, Box } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import Image from "next/image";
@@ -56,7 +55,6 @@ const MediaDropzone = ({
       if (status === "removed") {
         setArtwork(undefined);
       } else {
-        console.log('hhh: ', file, meta, restart)
         setArtwork({
           file,
           meta,
@@ -114,7 +112,6 @@ const MediaDropzone = ({
   };
 
   const Preview = ({ meta, fileWithMeta }) => {
-    console.log('meta: ', fileWithMeta, meta)
     if (meta.type.includes("image") && meta.previewUrl) {
       handleProgress(meta.percent, meta.type.includes("image"));
       return (
@@ -123,7 +120,7 @@ const MediaDropzone = ({
           <Image src={meta.previewUrl} layout="fill" />
         </Box>
       );
-    } else if (meta.type.includes('audio')) {
+    } else if (meta.type.includes("audio")) {
       handleProgress(meta.percent, meta.type.includes("image"));
       var minutes = Math.floor(meta.duration / 60);
       var seconds = Math.ceil(meta.duration - minutes * 60);
@@ -149,7 +146,7 @@ const MediaDropzone = ({
         </Box>
       );
     } else {
-      return null
+      return null;
     }
   };
 

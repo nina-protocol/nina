@@ -66,18 +66,18 @@ const releaseBreadcrumbFormatted = (metadata) => {
   return (
     <StyledReleaseBreadcrumb>
       <Typography display="inline" variant="subtitle1">
-        {metadata.properties.artist},         
-      </Typography>{' '}
+        {metadata.properties.artist},
+      </Typography>{" "}
       <Typography
         display="inline"
         variant="subtitle1"
-        sx={{ fontStyle: 'italic' }}
+        sx={{ fontStyle: "italic" }}
       >
         {metadata.properties.title}
       </Typography>
     </StyledReleaseBreadcrumb>
-  )
-}
+  );
+};
 
 const Breadcrumbs = () => {
   const router = useRouter();
@@ -95,7 +95,7 @@ const Breadcrumbs = () => {
           pathArray = linkPath.map((path, i) => {
             const metadata =
               router.components[`${router.pathname}`].props.pageProps.metadata;
-            const slug = releaseBreadcrumbFormatted(metadata)
+            const slug = releaseBreadcrumbFormatted(metadata);
             return {
               breadcrumb: slug,
               href: "/" + linkPath.slice(0, i + 1).join("/"),
@@ -109,7 +109,7 @@ const Breadcrumbs = () => {
               const metadata =
                 router.components[`${router.pathname}`].props.pageProps
                   .metadata;
-              const slug = releaseBreadcrumbFormatted(metadata)
+              const slug = releaseBreadcrumbFormatted(metadata);
               return {
                 breadcrumb: slug,
                 href: "/" + linkPath.slice(0, i + 1).join("/"),
@@ -130,11 +130,12 @@ const Breadcrumbs = () => {
           });
           break;
         case "/releases/user":
-    
-          pathArray = [ {
-            breadcrumb: <YourReleasesBreadcrumb />,
-            href: "/" + linkPath[0],
-          }]
+          pathArray = [
+            {
+              breadcrumb: <YourReleasesBreadcrumb />,
+              href: "/" + linkPath[0],
+            },
+          ];
           break;
         default:
           pathArray = linkPath.map((path, i) => {

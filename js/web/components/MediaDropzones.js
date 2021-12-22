@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { styled } from "@mui/material/styles";
 import MediaDropzone from "./MediaDropzone.js";
+import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 
 const MediaDropzones = ({

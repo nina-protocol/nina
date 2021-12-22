@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import axios from 'axios'
+import axios from "axios";
 import { styled } from "@mui/material/styles";
 import ninaCommon from "nina-common";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -27,7 +27,7 @@ const ReleasePurchase = (props) => {
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey]);
   const [amountPendingBuys, setAmountPendingBuys] = useState(0);
   const [amountPendingSales, setAmountPendingSales] = useState(0);
-  const [downloadButtonString, setDownloadButtonString] = useState('Download')
+  const [downloadButtonString, setDownloadButtonString] = useState("Download");
 
   useEffect(() => {
     getRelease(releasePubkey);
@@ -115,25 +115,25 @@ const ReleasePurchase = (props) => {
   }
 
   const downloadAs = async (url, name) => {
-    setDownloadButtonString('Downloading')
+    setDownloadButtonString("Downloading");
 
     const response = await axios.get(url, {
-      method: 'GET',
-      mode: 'cors',
+      method: "GET",
+      mode: "cors",
       headers: {
-        'Content-Type': 'application/octet-stream',
+        "Content-Type": "application/octet-stream",
       },
-      responseType: 'blob',
-    })
+      responseType: "blob",
+    });
     if (response?.data) {
-      const a = document.createElement('a')
-      const url = window.URL.createObjectURL(response.data)
-      a.href = url
-      a.download = name
-      a.click()
+      const a = document.createElement("a");
+      const url = window.URL.createObjectURL(response.data);
+      a.href = url;
+      a.download = name;
+      a.click();
     }
-    setDownloadButtonString('Download')
-  }
+    setDownloadButtonString("Download");
+  };
 
   return (
     <Box>
@@ -211,20 +211,20 @@ const ReleasePurchase = (props) => {
         <Button
           variant="outlined"
           fullWidth
-          sx={{ marginTop: '15px !important' }}
+          sx={{ marginTop: "15px !important" }}
           onClick={(e) => {
-            e.stopPropagation()
+            e.stopPropagation();
             downloadAs(
               metadata.properties.files[0].uri,
               `${metadata.name
-                .replace(/[^a-z0-9]/gi, '_')
+                .replace(/[^a-z0-9]/gi, "_")
                 .toLowerCase()}___nina.mp3`
-            )
+            );
           }}
         >
           <Typography variant="body2">
-            {downloadButtonString === 'Download' ? (
-              'Download'
+            {downloadButtonString === "Download" ? (
+              "Download"
             ) : (
               <Dots msg={downloadButtonString} />
             )}

@@ -16,7 +16,7 @@ const {
   ConnectionContextProvider,
 } = ninaCommon.contexts;
 
-const { Dots } = ninaCommon.components
+const { Dots } = ninaCommon.components;
 
 const ENDPOINTS = {
   devnet: {
@@ -86,11 +86,11 @@ function Application({ Component, clientSideEmotionCache, pageProps }) {
                   <CacheProvider value={clientSideEmotionCache}>
                     <ThemeProvider theme={NinaTheme}>
                       <Layout>
-                      {loading ?(
-                        <Dots size="80px" />
-                      ) : (
-                        <Component {...pageProps} />
-                      )}
+                        {loading ? (
+                          <Dots size="80px" />
+                        ) : (
+                          <Component {...pageProps} />
+                        )}
                       </Layout>
                     </ThemeProvider>
                   </CacheProvider>
