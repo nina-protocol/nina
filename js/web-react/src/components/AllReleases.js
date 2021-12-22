@@ -7,6 +7,7 @@ import { Typography, Box } from '@mui/material'
 import ReleaseListTable from './ReleaseListTable'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 import ReleaseTileList from './ReleaseTileList'
+import { isMobile } from 'react-device-detect'
 
 const { ReleaseContext } = ninaCommon.contexts
 const { Dots } = ninaCommon.components
@@ -70,7 +71,7 @@ const Releases = () => {
             />
           )}
 
-          {!listView && <ReleaseTileList releases={filterReleasesAll()} />}
+          {!listView && <ReleaseTileList releases={isMobile ? filterReleasesAll().reverse() : filterReleasesAll()} />}
           {pendingFetch && (
             <StyledDots>
               <Dots size="80px" />
