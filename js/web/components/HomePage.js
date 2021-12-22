@@ -4,7 +4,6 @@ import { Typography, Box } from "@mui/material";
 import ninaCommon from "nina-common";
 import RecentlyPublished from "./RecentlyPublished";
 import RecentlyPurchased from "./RecentlyPurchased";
-// import SmoothImage from 'react-smooth-image';
 import Link from "next/link";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
 const { ReleaseContext } = ninaCommon.contexts;

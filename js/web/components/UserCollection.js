@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Helmet } from "react-helmet";
+import Head from "next/head";
 import ninaCommon from "nina-common";
 import { styled } from "@mui/material/styles";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -30,12 +30,12 @@ const ReleaseList = () => {
   };
   return (
     <>
-      <Helmet>
+      <Head>
         <title>{`Nina: Your Collection(${
           userCollectionReleases?.length || 0
         })`}</title>
         <meta name="description" content={"Your collection on Nina."} />
-      </Helmet>
+      </Head>
       <ScrollablePageWrapper>
         {wallet?.connected && userCollectionReleases?.length > 0 && (
           <Wrapper>
