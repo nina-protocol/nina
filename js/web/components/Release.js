@@ -70,38 +70,6 @@ const Release = ({ metadataSsr }) => {
   return (
     <>
       {metadata && (
-<<<<<<< HEAD
-        <Head>
-          <title>{`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}</title>
-          <meta
-            name="description"
-            content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`}
-          />
-          <meta property="og:type" content="website" />
-          <meta
-            property="og:title"
-            content={`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}
-          />
-          <meta
-            property="og:description"
-            content={`${metadata?.properties.artist} - ${metadata?.properties.title}: ${metadata?.description} \n Published on Nina.`}
-          />
-          <meta property="twitter:card" content={"summary"} />
-          <meta
-            property="twitter:creator"
-            content={metadata?.properties.artist}
-          />
-          <meta
-            property="twitter:title"
-            content={`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}
-          />
-          <meta property="twitter:description" content={metadata.description} />
-          <meta name="twitter:image" content={metadata.image} />
-        </Head>
-      )}
-      {metadata && (
-=======
->>>>>>> twitter-card
         <ReleaseWrapper>
           {!router.pathname.includes("market") && (
             <NinaBox
