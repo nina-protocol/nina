@@ -16,7 +16,7 @@ const ReleasePage = (props) => {
         <meta name="og:type" content="website" />
         <meta
           name="og:title"
-          content={`${metadata?.properties.artist} - "${metadata?.properties.title}"" on Nina`}
+          content={`${metadata?.properties.artist} - "${metadata?.properties.title}" on Nina`}
         />
         <meta
           name="og:description"
@@ -35,7 +35,7 @@ const ReleasePage = (props) => {
         <meta name="twitter:image:type" content="image/jpg" />
         <meta
           name="twitter:title"
-          content={`${metadata?.properties.artist} - ${metadata?.properties.title} on Nina`}
+          content={`${metadata?.properties.artist} - "${metadata?.properties.title}" on Nina`}
         />
         <meta name="twitter:description" content={metadata?.description} />
         <meta name="twitter:image" content={metadata.image} />

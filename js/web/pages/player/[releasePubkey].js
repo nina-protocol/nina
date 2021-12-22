@@ -12,7 +12,7 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
           }
 
           #container {
-            height: 400px;
+            height: 565px;
             width: 100%;
             position: relative;
             flex-direction: column;
@@ -33,6 +33,8 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
             height: 8px;
             z-index: 10;
             background-color: black;
+            position: absolute;
+            bottom: 0;
           }
 
           #seekbar {
@@ -135,7 +137,7 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
     <iframe
       id="nina-player"
       width="100%"
-      height="410px"
+      height="600px"
       style={{ border: "none" }}
       src={dataURI}
     />

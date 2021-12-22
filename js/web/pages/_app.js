@@ -38,6 +38,7 @@ const ENDPOINTS = {
 
 function Application({ Component, clientSideEmotionCache, pageProps }) {
   const [loading, setLoading] = useState(false);
+  console.log('PAGE Props: ', pageProps)
   React.useEffect(() => {
     const start = () => {
       setLoading(true);
