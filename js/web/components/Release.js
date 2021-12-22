@@ -8,7 +8,6 @@ import NinaBox from "./NinaBox";
 import ReleaseCard from "./ReleaseCard";
 import ReleasePurchase from "./ReleasePurchase";
 import { useRouter } from "next/router";
-import Head from "next/head";
 
 const { Exchange } = ninaCommon.components;
 const { ExchangeContext, ReleaseContext } = ninaCommon.contexts;
@@ -71,6 +70,7 @@ const Release = ({ metadataSsr }) => {
   return (
     <>
       {metadata && (
+<<<<<<< HEAD
         <Head>
           <title>{`Nina: ${metadata?.properties.artist} - ${metadata?.properties.title}`}</title>
           <meta
@@ -100,6 +100,8 @@ const Release = ({ metadataSsr }) => {
         </Head>
       )}
       {metadata && (
+=======
+>>>>>>> twitter-card
         <ReleaseWrapper>
           {!router.pathname.includes("market") && (
             <NinaBox
