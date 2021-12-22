@@ -7,31 +7,57 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
       <head>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <style>
-        body {
-          margin: 0px;
-        }
-          .container {
+          body {
+            margin: 0px;
+          }
+
+          #container {
             height: 400px;
             width: 100%;
             position: relative;
           }
           
-          .vertical-center {
+          #vertical-center {
             margin: 0;
             position: absolute;
             top: 50%;
             left: 50%;
             -ms-transform: translate(-50%, -50%);
             transform: translate(-50%, -50%);
+            display: none;
+          }
+          #seekbar-container {
+            top: 0;
+            left: 0;
+            position: relative;
+            width: 100%;
+            height: 10px;
+            background-color: transparent;
+            color: transparent;
+            z-index: 10;
+          }
+          #seekbar {
+            width: 1%;
+            height: 100%;
+            color: blue;
+            z-index: 100;
+            position: inherit;
+          }
+          #image {
+            z-index: -1;
+            position: absolute;
           }
         </style>
       </head>
       <body>
-        <div class="container">
-          <div class="vertical-center">
-            <input id="player-button" type="image" src="https://${host}/play.svg" width="80px height="80px/>
+        <div id="container">
+          <div id="seekbar-container">
+            <div id="seekbar"></div>
           </div>
-          <img id="image" src=${metadata.image} height="100%" width="100%"/>
+          <div id="vertical-center">
+            <input id="player-button" type="image" src="https://${host}/play.svg" width="80px height="80px />
+          </div>
+          <img id="image" src=${metadata.image} height="100%" width="100%" />
           <audio id="nina-player" style={{ width: "100%" }} autoplay>
             <source src=${metadata.animation_url} type="audio/mp3" />
           </audio>
@@ -40,10 +66,16 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
       <script>
         $(document).ready(function () {
             // Bind the DIV element to the .click() method.
-            $("#player-button").click(function () {
+            $("#container").click(function () {
               let player = $('#nina-player')[0];
               player[player.paused ? 'play' : 'pause']();
             });
+            $('#container').mouseenter(function() {
+              $('#vertical-center').eq(0).show();
+            })
+            $('#container').mouseleave(function() {
+              $('#vertical-center').eq(0).hide();
+            })
             $('#nina-player').on("play", function() {
               let playerButton = $('#player-button')[0];
               playerButton.src = "https://${host}/pause.svg"
@@ -52,6 +84,9 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
               let playerButton = $('#player-button')[0];
               playerButton.src = "https://${host}/play.svg"
             })
+            $('#nina-player').on('timeupdate', function() {
+              $('#seekbar')[0].style.width = ((this.currentTime / this.duration) * 100) + "%";
+            });
         });
       </script>
     </html>
