@@ -22,14 +22,7 @@ const ReleasePage = (props) => {
           name="og:description"
           content={`${metadata?.properties.artist} - "${metadata?.properties.title}": ${metadata?.description} \n Published on Nina.`}
         />
-        <meta name="twitter:card" content="player" />
-        <meta
-          name="twitter:player"
-          content={`https://${host}/player/${releasePubkey}`}
-        />
-        <meta name="twitter:player:stream" content={metadata.animation_url} />
-        <meta name="twitter:player:width" content="400" />
-        <meta name="twitter:player:height" content="400" />
+        <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@nina_market_" />
         <meta name="twitter:creator" content="@nina_market_" />
         <meta name="twitter:image:type" content="image/jpg" />
