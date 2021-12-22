@@ -15,7 +15,7 @@ import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { faInstagramSquare } from "@fortawesome/free-brands-svg-icons";
 import CloseIcon from "@mui/icons-material/Close";
-import Image from 'next/image'
+import Image from "next/image";
 
 const { NinaContext, ReleaseContext } = ninaCommon.contexts;
 

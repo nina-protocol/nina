@@ -1,17 +1,11 @@
-import React from "react";
-import dynamic from "next/dynamic";
+import React, { useState } from "react";
+import Router from "next/router";
 import { SnackbarProvider } from "notistack";
 import { ThemeProvider } from "@mui/material/styles";
-import { NinaTheme } from "../NinaTheme";
 import ninaCommon from "nina-common";
 import { CacheProvider } from "@emotion/react";
-// import createEmotionCache from '../src/createEmotionCache';
+import { NinaTheme } from "../NinaTheme";
 import Layout from "../components/Layout";
-
-const ConnectionContextProvider = dynamic(
-  () => import("nina-common/dist/esm/contexts/connection"),
-  { ssr: true }
-);
 
 const {
   ReleaseContextProvider,
@@ -19,8 +13,10 @@ const {
   AudioPlayerContextProvider,
   NameContextProvider,
   NinaContextProvider,
+  ConnectionContextProvider,
 } = ninaCommon.contexts;
-// const clientSideEmotionCache = createEmotionCache();
+
+const { Dots } = ninaCommon.components
 
 const ENDPOINTS = {
   devnet: {
@@ -41,12 +37,28 @@ const ENDPOINTS = {
 };
 
 function Application({ Component, clientSideEmotionCache, pageProps }) {
+  const [loading, setLoading] = useState(false);
   React.useEffect(() => {
-    // Remove the server-side injected CSS.
+    const start = () => {
+      setLoading(true);
+    };
+    const end = () => {
+      setLoading(false);
+    };
+    Router.events.on("routeChangeStart", start);
+    Router.events.on("routeChangeComplete", end);
+    Router.events.on("routeChangeError", end);
+
     const jssStyles = document.querySelector("#jss-server-side");
     if (jssStyles) {
       jssStyles.parentElement.removeChild(jssStyles);
     }
+
+    return () => {
+      Router.events.off("routeChangeStart", start);
+      Router.events.off("routeChangeComplete", end);
+      Router.events.off("routeChangeError", end);
+    };
   }, []);
 
   return (
@@ -74,7 +86,11 @@ function Application({ Component, clientSideEmotionCache, pageProps }) {
                   <CacheProvider value={clientSideEmotionCache}>
                     <ThemeProvider theme={NinaTheme}>
                       <Layout>
+                      {loading ?(
+                        <Dots size="80px" />
+                      ) : (
                         <Component {...pageProps} />
+                      )}
                       </Layout>
                     </ThemeProvider>
                   </CacheProvider>

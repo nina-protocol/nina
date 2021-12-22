@@ -1,34 +1,12 @@
-import React, { useContext, useState, useEffect } from "react";
-import withBreadcrumbs from "react-router-breadcrumbs-hoc";
-import { NavLink } from "react-router-dom";
+import React, { useEffect, useState, useContext } from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
 import { styled } from "@mui/material/styles";
+import { Typography, Box } from "@mui/material";
 import ninaCommon from "nina-common";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { Typography, Box } from "@mui/material";
 
 const { ReleaseContext } = ninaCommon.contexts;
-
-const ReleaseBreadcrumb = ({ match }) => {
-  const { releaseState } = useContext(ReleaseContext);
-  const release = releaseState.metadata[match.params.releasePubkey];
-  if (release) {
-    return (
-      <StyledReleaseBreadcrumb>
-        <Typography display="inline" variant="subtitle1">
-          {release.properties.artist},
-        </Typography>{" "}
-        <Typography
-          display="inline"
-          variant="subtitle1"
-          sx={{ fontStyle: "italic" }}
-        >
-          {release.properties.title}
-        </Typography>
-      </StyledReleaseBreadcrumb>
-    );
-  }
-  return null;
-};
 
 const YourCollectionBreadcrumb = () => {
   const {
@@ -54,11 +32,7 @@ const YourCollectionBreadcrumb = () => {
     }
   }, [releaseState]);
 
-  return (
-    <Typography variant="subtitle1">
-      Your Collection ({userCollectionReleasesCount || 0})
-    </Typography>
-  );
+  return `Your Collection (${userCollectionReleasesCount || 0})`;
 };
 
 const YourReleasesBreadcrumb = () => {
@@ -85,62 +59,128 @@ const YourReleasesBreadcrumb = () => {
     }
   }, [releaseState]);
 
-  return (
-    <Typography variant="subtitle1">
-      Your Releases ({userPublishedReleasesCount})
-    </Typography>
-  );
+  return ` Your Releases (${userPublishedReleasesCount})`;
 };
 
-const routes = [
-  {
-    path: "/",
-    breadcrumb: () => <Typography variant="subtitle1">Home</Typography>,
-  },
-  {
-    path: "/faq",
-    breadcrumb: () => <Typography variant="subtitle1">Faq</Typography>,
-  },
-  {
-    path: "/allReleases",
-    breadcrumb: () => <Typography variant="subtitle1">All Releases</Typography>,
-  },
-  { path: "/releases", breadcrumb: YourReleasesBreadcrumb },
-  { path: "/releases/:releasePubkey", breadcrumb: ReleaseBreadcrumb },
-  {
-    path: "/releases/:releasePubkey/market",
-    breadcrumb: () => <Typography variant="subtitle1">Market</Typography>,
-  },
-  { path: "/collection", breadcrumb: YourCollectionBreadcrumb },
-  { path: "/collection/:releasePubkey", breadcrumb: ReleaseBreadcrumb },
-  {
-    path: "/collection/:releasePubkey/market",
-    breadcrumb: () => <Typography variant="subtitle1">Home</Typography>,
-  },
-  {
-    path: "/upload",
-    breadcrumb: () => <Typography variant="subtitle1">Upload</Typography>,
-  },
-  { path: "/releases/:releasePubkey", breadcrumb: ReleaseBreadcrumb },
-  {
-    path: "/:releasePubkey/related",
-    breadcrumb: () => <Typography variant="subtitle1">Related</Typography>,
-  },
-  { path: "/:releasePubkey", breadcrumb: ReleaseBreadcrumb },
-];
+const releaseBreadcrumbFormatted = (metadata) => {
+  return (
+    <StyledReleaseBreadcrumb>
+      <Typography display="inline" variant="subtitle1">
+        {metadata.properties.artist},         
+      </Typography>{' '}
+      <Typography
+        display="inline"
+        variant="subtitle1"
+        sx={{ fontStyle: 'italic' }}
+      >
+        {metadata.properties.title}
+      </Typography>
+    </StyledReleaseBreadcrumb>
+  )
+}
 
-const Breadcrumbs = ({ breadcrumbs }) => (
-  <BreadcrumbsContainer>
-    {breadcrumbs.map(({ match, breadcrumb }) => (
-      <span key={match.url} className="breadcrumb">
-        <Typography variant="subtitle1" sx={{ padding: "0 10px" }}>
-          {`/`}
-        </Typography>
-        <NavLink to={match.url}>{breadcrumb}</NavLink>
-      </span>
-    ))}
-  </BreadcrumbsContainer>
-);
+const Breadcrumbs = () => {
+  const router = useRouter();
+  const [breadcrumbs, setBreadcrumbs] = useState(null);
+
+  useEffect(() => {
+    if (router) {
+      const linkPath = router.asPath.split("/");
+      linkPath.shift();
+
+      let pathArray;
+
+      switch (router.pathname) {
+        case "/[releasePubkey]":
+          pathArray = linkPath.map((path, i) => {
+            const metadata =
+              router.components[`${router.pathname}`].props.pageProps.metadata;
+            const slug = releaseBreadcrumbFormatted(metadata)
+            return {
+              breadcrumb: slug,
+              href: "/" + linkPath.slice(0, i + 1).join("/"),
+            };
+          });
+          break;
+        case "/[releasePubkey]/market":
+        case "/[releasePubkey]/related":
+          pathArray = linkPath.map((path, i) => {
+            if (i === 0) {
+              const metadata =
+                router.components[`${router.pathname}`].props.pageProps
+                  .metadata;
+              const slug = releaseBreadcrumbFormatted(metadata)
+              return {
+                breadcrumb: slug,
+                href: "/" + linkPath.slice(0, i + 1).join("/"),
+              };
+            }
+            return {
+              breadcrumb: path,
+              href: "/" + linkPath.slice(0, i + 1).join("/"),
+            };
+          });
+          break;
+        case "/collection":
+          pathArray = linkPath.map((path, i) => {
+            return {
+              breadcrumb: <YourCollectionBreadcrumb />,
+              href: "/" + linkPath.slice(0, i + 1).join("/"),
+            };
+          });
+          break;
+        case "/releases/user":
+    
+          pathArray = [ {
+            breadcrumb: <YourReleasesBreadcrumb />,
+            href: "/" + linkPath[0],
+          }]
+          break;
+        default:
+          pathArray = linkPath.map((path, i) => {
+            return {
+              breadcrumb: path,
+              href: "/" + linkPath.slice(0, i + 1).join("/"),
+            };
+          });
+          break;
+      }
+
+      setBreadcrumbs(pathArray);
+    }
+  }, [router]);
+
+  if (!breadcrumbs) {
+    return null;
+  }
+
+  return (
+    <BreadcrumbsContainer aria-label="breadcrumbs">
+      <ol className="breadcrumbs__list">
+        <li>
+          <span>/</span>
+          <Link href="/">
+            <a>Home</a>
+          </Link>
+        </li>
+        {breadcrumbs.map((breadcrumb) => {
+          return (
+            <li key={breadcrumb.href}>
+              <span>/</span>
+              <Link href={breadcrumb.href}>
+                <a>
+                  <Typography variant="subtitle1">
+                    {breadcrumb.breadcrumb}
+                  </Typography>
+                </a>
+              </Link>
+            </li>
+          );
+        })}
+      </ol>
+    </BreadcrumbsContainer>
+  );
+};
 
 const BreadcrumbsContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(0, 2),
@@ -148,8 +188,17 @@ const BreadcrumbsContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   position: "absolute",
   top: "12px",
-  "& .breadcrumb": {
+  "& .breadcrumbs__list": {
     display: "flex",
+    margin: 0,
+    paddingLeft: "20px",
+    "& li": {
+      textTransform: "capitalize !important",
+      display: "flex",
+      "& span": {
+        padding: "0 10px",
+      },
+    },
   },
   [theme.breakpoints.down("md")]: {
     display: "none",
@@ -166,4 +215,4 @@ const StyledReleaseBreadcrumb = styled("div")(() => ({
   lineHeight: "1",
 }));
 
-export default withBreadcrumbs(routes)(Breadcrumbs);
+export default Breadcrumbs;

@@ -10,7 +10,7 @@ import {
   WalletDialogProvider,
   WalletMultiButton,
 } from "@solana/wallet-adapter-material-ui";
-// import Breadcrumbs from './Breadcrumbs'
+import Breadcrumbs from "./Breadcrumbs";
 import MobileWalletModal from "./MobileWalletModal";
 const { NinaContext } = ninaCommon.contexts;
 
@@ -30,7 +30,7 @@ const NavBar = () => {
     <Root>
       <NavLeft>
         <NavDrawer />
-        {/* <Breadcrumbs /> */}
+        <Breadcrumbs />
       </NavLeft>
 
       <Logo>

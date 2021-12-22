@@ -11,7 +11,7 @@ import ReleaseCard from "./ReleaseCard";
 import NinaBox from "./NinaBox";
 import MediaDropzones from "./MediaDropzones";
 import * as Yup from "yup";
-import Link from 'next/link'
+import Link from "next/link";
 
 const { ReleaseSettings, Dots } = ninaCommon.components;
 const { ReleaseContext, NinaContext } = ninaCommon.contexts;

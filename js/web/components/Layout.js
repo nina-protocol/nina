@@ -2,7 +2,7 @@ import Container from "@mui/material/Container";
 import { styled } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
-import AudioPlayer from "./AudioPlayer"
+import AudioPlayer from "./AudioPlayer";
 import NavBar from "./NavBar";
 
 const Layout = ({ children }) => {
