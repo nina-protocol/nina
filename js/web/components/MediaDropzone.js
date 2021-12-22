@@ -56,6 +56,7 @@ const MediaDropzone = ({
       if (status === "removed") {
         setArtwork(undefined);
       } else {
+        console.log('hhh: ', file, meta, restart)
         setArtwork({
           file,
           meta,
@@ -112,22 +113,24 @@ const MediaDropzone = ({
     return false;
   };
 
-  const Preview = ({ meta, fileWithMeta: { remove } }) => {
-    handleProgress(meta.percent, meta.type.includes("image"));
-    if (meta.type.includes("image")) {
+  const Preview = ({ meta, fileWithMeta }) => {
+    console.log('meta: ', fileWithMeta, meta)
+    if (meta.type.includes("image") && meta.previewUrl) {
+      handleProgress(meta.percent, meta.type.includes("image"));
       return (
         <Box style={previewBoxStyles}>
-          {cancelIcon(remove)}
-          <Image src={meta.previewUrl} style={{ width: "100%" }} />
+          {cancelIcon(fileWithMeta.remove)}
+          <Image src={meta.previewUrl} layout="fill" />
         </Box>
       );
-    } else {
+    } else if (meta.type.includes('audio')) {
+      handleProgress(meta.percent, meta.type.includes("image"));
       var minutes = Math.floor(meta.duration / 60);
       var seconds = Math.ceil(meta.duration - minutes * 60);
 
       return (
         <Box style={{ ...previewBoxStyles, ...audioPreviewStyles }}>
-          {cancelIcon(remove)}
+          {cancelIcon(fileWithMeta.remove)}
           <Box sx={{ padding: "35px 15px" }}>
             <Typography
               align="left"
@@ -145,6 +148,8 @@ const MediaDropzone = ({
           </Box>
         </Box>
       );
+    } else {
+      return null
     }
   };
 
@@ -163,10 +168,6 @@ const MediaDropzone = ({
       color: "red !important",
     },
   };
-
-  const StyledPreview = styled(Preview)(() => ({
-    border: "2px solid red !important",
-  }));
 
   const cancelIcon = (remove) => (
     <ClearOutlinedIcon
@@ -201,7 +202,7 @@ const MediaDropzone = ({
         previewStatusContainer: classes.dropZonePreviewStatusContainer,
       }}
       inputContent={inputLayout(type)}
-      PreviewComponent={StyledPreview}
+      PreviewComponent={Preview}
       styles={{
         dropzone: {
           minHeight: 60,

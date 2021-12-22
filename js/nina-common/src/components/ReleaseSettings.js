@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import { Box, Button } from '@mui/material'
 import Typography from '@mui/material/Typography'
-import { Link } from 'react-router-dom'
+import Link from 'next/link'
 
 import Royalty from './Royalty.js'
 import NinaClient from '../utils/client'
@@ -174,7 +174,6 @@ const ReleaseSettings = (props) => {
             <Typography variant="body2">Share to Twitter</Typography>
           </Button>
 
-          <Link to={`/${releasePubkey}`} style={{ textDecoration: 'none' }}>
             {inCreateFlow && (
               <Button
                 variant="outlined"
@@ -183,14 +182,15 @@ const ReleaseSettings = (props) => {
                 disabled={!metadata}
                 sx={{ marginTop: '10px !important' }}
               >
-                <Typography variant="body2">
-                  {metadata
-                    ? 'View Release'
-                    : 'Your release is currently being finalized...'}
-                </Typography>
+                <Link href={`/${releasePubkey}`} style={{ textDecoration: 'none' }}>
+                  <Typography variant="body2">
+                    {metadata
+                      ? 'View Release'
+                      : 'Your release is currently being finalized...'}
+                  </Typography>
+                </Link>
               </Button>
             )}
-          </Link>
         </Box>
       </ReleaseInfoWrapper>
     </StyledBox>

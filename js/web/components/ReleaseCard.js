@@ -55,6 +55,9 @@ const ReleaseCard = (props) => {
               artwork?.meta.status === undefined ? "" : artwork.meta.previewUrl
             }
             alt={metadata.artist}
+            layout="responsive"
+            height={350}
+            width={350}
           />
         ) : (
           <>
