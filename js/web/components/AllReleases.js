@@ -7,6 +7,7 @@ import { Typography, Box } from "@mui/material";
 import ReleaseListTable from "./ReleaseListTable";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
 import ReleaseTileList from "./ReleaseTileList";
+import ReleaseSearch from "./ReleaseSearch";
 
 const { ReleaseContext } = ninaCommon.contexts;
 const { Dots } = ninaCommon.components;
@@ -17,6 +18,7 @@ const Releases = () => {
   const [listView, setListView] = useState(false);
   const [pendingFetch, setPendingFetch] = useState(false);
   const [totalCount, setTotalCount] = useState(null);
+  const [searchResults, setSearchResults] = useState(null);
 
   useEffect(() => {
     getReleasesAll();
@@ -53,6 +55,9 @@ const Releases = () => {
       </Head>
       <ScrollablePageWrapper onScroll={debounce((e) => handleScroll(e), 500)}>
         <AllReleasesWrapper>
+
+          <ReleaseSearch setSearchResults={setSearchResults} />
+
           <CollectionHeader
             onClick={handleViewChange}
             listView={listView}
@@ -99,6 +104,8 @@ const CollectionHeader = styled(Typography)(({ listView }) => ({
 }));
 
 const AllReleasesWrapper = styled(Box)(({ theme }) => ({
+  maxWidth: '960px',
+  margin: 'auto',
   "& a": {
     color: theme.palette.blue,
   },
