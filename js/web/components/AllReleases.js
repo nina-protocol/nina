@@ -69,13 +69,13 @@ const Releases = () => {
 
           {listView && (
             <ReleaseListTable
-              releases={filterReleasesAll()}
+              releases={searchResults ? searchResults : filterReleasesAll()}
               tableType="allReleases"
               key="releases"
             />
           )}
 
-          {!listView && <ReleaseTileList releases={filterReleasesAll()} />}
+          {!listView && <ReleaseTileList releases={searchResults ? searchResults : filterReleasesAll()} />}
           {pendingFetch && (
             <StyledDots>
               <Dots size="80px" />

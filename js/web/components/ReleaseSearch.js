@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useState, useRef} from "react";
 import {styled} from "@mui/material/styles";
 import {Typography, Box} from "@mui/material";
 import TextField from '@mui/material/TextField';
@@ -14,13 +14,15 @@ let path = NinaClient.endpoints.api
 const ReleaseSearch = (props) => {
   const {setSearchResults} = props
   const [query, setQuery] = useState(null);
+  const formRef = useRef();
+
 
   const handleChange = (event) => { 
     console.log('event.target.value :>> ', event.target.value);
     setQuery(event.target.value)
   };
 
-  const handleSearch = async (e, query) => {
+  const handleSubmit= async (e) => {
     e.preventDefault()
     console.log('query :>> ', encodeURIComponent(query));
     const encodedQuery = encodeURIComponent(query)
@@ -46,26 +48,33 @@ const ReleaseSearch = (props) => {
       setSearchResults(metadataJson)
     }
 
+    e.target.reset()
 
   }
 
   return (
     <SearchWrapper>
-      <form></form>
-      <TextField value={query} fullWidth label="Search by Artist" id="fullWidth" onChange={e => handleChange(e)} />
-      <Button
-        variant='outlined'
-        onClick={e => handleSearch(e, query)}
-        disabled={ query?.length === 0 ? true : false}
-      >
-        Search
-      </Button>
+      <Form onSubmit={handleSubmit} style={{width: '100%'}}>
+        <TextField value={query} fullWidth label="Search by Artist" id="fullWidth" onChange={e => handleChange(e)} />
+        <Button
+          variant='outlined'
+          type="submit"
+          disabled={ query?.length === 0 ? true : false}
+        >
+          Search
+        </Button>
+
+      </Form>
     </SearchWrapper>
   );
 }
 
 const SearchWrapper = styled(Box)(() => ({
   marginBottom: "15px",
+}));
+
+const Form = styled('form')(() => ({
+  width: '100%',
   display: 'flex'
 }));
 
