@@ -835,6 +835,7 @@ const releaseContextHelper = ({
   }
 
   const getRelease = async (releasePubkey) => {
+    console.log('GETTING RELEASE:', releasePubkey);
     try {
       const releaseAccount = await fetchRelease(releasePubkey)
       if (releaseAccount.error) {

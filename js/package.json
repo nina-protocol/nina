@@ -23,8 +23,12 @@
     "@mui/styled-engine": "npm:@mui/styled-engine-sc@latest",
     "@mui/styled-engine-sc": "^5.0.3",
     "@mui/styles": "^5.0.1",
+    "next": "^12.0.7",
     "react-animated-ellipsis": "^1.0.0",
     "styled-components": "^5.3.3"
+  },
+  "browser": {
+    "crypto": false
   },
   "resolutions": {
     "@mui/styled-engine": "npm:@mui/styled-engine-sc@latest"

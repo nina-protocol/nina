@@ -264,12 +264,12 @@ const ninaContextHelper = ({
 
   //Misc
   const getSolPrice = async () => {
-    const solPrice = await CoinGeckoClient.simple.price({
-      ids: ['solana'],
-      vs_currencies: 'usd',
-    })
+    // const solPrice = await CoinGeckoClient.simple.price({
+    //   ids: ['solana'],
+    //   vs_currencies: 'usd',
+    // })
 
-    setSolPrice(solPrice.data.solana.usd)
+    // setSolPrice(solPrice.data.solana.usd)
   }
 
   const getUsdcBalance = async () => {

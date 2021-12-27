@@ -9,26 +9,8 @@ import {
   getSolletExtensionWallet,
 } from '@solana/wallet-adapter-wallets'
 
-export const ENDPOINTS = {
-  devnet: {
-    name: 'devnet',
-    endpoint: 'https://api.devnet.solana.com',
-    custom: false,
-  },
-  testnet: {
-    name: 'testnet',
-    endpoint: 'https://api.testnet.solana.com',
-    custom: false,
-  },
-  mainnet: {
-    name: 'mainnet',
-    endpoint: 'https://nina.rpcpool.com',
-    custom: true,
-  },
-}
-
 export const ConnectionContext = createContext()
-const ConnectionContextProvider = ({ children }) => {
+const ConnectionContextProvider = ({ children, ENDPOINTS }) => {
   const network =
     process.env.REACT_APP_CLUSTER === 'mainnet'
       ? WalletAdapterNetwork.MainnetBeta
@@ -37,7 +19,7 @@ const ConnectionContextProvider = ({ children }) => {
   const [healthOk, setHealthOk] = useState(true)
   const connection = useMemo(
     () => new Connection(endpoint, 'recent'),
-    [endpoint]
+    [endpoint, network]
   )
 
   const wallets = useMemo(
