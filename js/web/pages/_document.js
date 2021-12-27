@@ -44,9 +44,9 @@ class MyDocument extends Document {
         <Head>
           <meta name="Content-Type" content="text/html; charset=UTF-8" />
           <meta name="theme-color" content="#000000" />
-          <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-          <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-          <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+          <link rel="icon" href="/images/favicon.ico" />
+          <link rel="apple-touch-icon" href="/images/logo192.png" />
+          <link rel="manifest" href="/manifest.json" />
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
@@ -59,19 +59,19 @@ class MyDocument extends Document {
           <link
             rel="apple-touch-icon"
             sizes="180x180"
-            href="/apple-touch-icon.png"
+            href="/images/apple-touch-icon.png"
           />
           <link
             rel="shortcut icon"
             type="image/png"
             sizes="32x32"
-            href="/public/favicon-32x32.png"
+            href="/images/favicon-32x32.png"
           />
           <link
             rel="shortcut icon"
             type="image/png"
             sizes="16x16"
-            href="/public/favicon-16x16.png"
+            href="/images/favicon-16x16.png"
           />
           <link rel="manifest" href="/site.webmanifest" />
 
