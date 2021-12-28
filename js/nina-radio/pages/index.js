@@ -22,7 +22,7 @@ export default function Home() {
   const [activeIndex, setActiveIndex] = useState()
   const [activeTrack, setActiveTrack] = useState()
   const [playing, setPlaying] = useState(false)
-  const [trackProgress, setTrackProgress] = useState(0)
+  const [trackProgress, setTrackProgress] = useState(0.0)
   const [hasPrevious, setHasPrevious] = useState(false)
   const [hasNext, setHasNext] = useState(false)
   const [related, setRelated] = useState([])
