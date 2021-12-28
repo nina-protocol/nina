@@ -19,13 +19,13 @@ export default function Home() {
   const [isRecent, setIsRecent] = useState(false)
   const [tracks, setTracks] = useState({})
   const [playlist, setPlaylist] = useState([])
-  // const [activeIndex, setActiveIndex] = useState()
-  const [activeTrack, setActiveTrack] = useState()
+  const [activeIndex, setActiveIndex] = useState()
+  const activeTrack = useRef()
   const [playing, setPlaying] = useState(false)
   const [trackProgress, setTrackProgress] = useState(0.0)
   const hasPrevious = useRef(false)
   const hasNext = useRef(false)
-  const activeIndex = useRef()
+  const activeIndexRef = useRef()
   const [related, setRelated] = useState([])
   const { getRelatedForRelease, filterRelatedForRelease, releaseState } = useContext(ReleaseContext)
 
@@ -42,36 +42,48 @@ export default function Home() {
       const releases = Object.keys(tracks)
       shuffle(releases)
       setPlaylist(releases)
-      // setActiveIndex(0)
-      activeIndex.current = 0
+      activeIndexRef.current = 0
+      setActiveIndex(0)
+      if (releases.length > 0) {
+        activeTrack.current = tracks[releases[0]]
+        if ("mediaSession" in navigator) {
+          console.log('in here: ', activeTrack.current)
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: activeTrack.current.properties.title,
+            artist: activeTrack.current.properties.artist,
+            artwork: [
+              { src: activeTrack.current.image, sizes: '512x512', type: 'image/jpeg' },
+            ]
+          });
+        }
+      }
     }
   }, [tracks])
 
   useEffect(() => {
-    const track = tracks[playlist[activeIndex.current]]
+    const track = tracks[playlist[activeIndexRef.current]]
     if (track) {
-      getRelatedReleases()
-      setActiveTrack(track)
-      hasNext.current = (activeIndex.current + 1) <= playlist.length
-      hasPrevious.current = activeIndex.current > 0
-      playerRef.current.src = track.animation_url
-      play()
-      if ("mediaSession" in navigator) {
+      if (track && "mediaSession" in navigator) {
+        console.log('in here: ', track)
         navigator.mediaSession.metadata = new MediaMetadata({
           title: track.properties.title,
           artist: track.properties.artist,
-          album: track.properties.title,
           artwork: [
             { src: track.image, sizes: '512x512', type: 'image/jpeg' },
           ]
         });
       }
-
+      getRelatedReleases()
+      activeTrack.current = track
+      hasNext.current = (activeIndexRef.current + 1) <= playlist.length
+      hasPrevious.current = activeIndexRef.current > 0
+      playerRef.current.src = track.animation_url
+      play()
     }
-  }, [activeIndex.current])
+  }, [activeIndex])
 
   useEffect(() => {
-    const release = playlist[activeIndex.current]
+    const release = playlist[activeIndexRef.current]
     const related = filterRelatedForRelease(release)
     setRelated(related.map(release => release.metadata))
   }, [releaseState])
@@ -99,7 +111,7 @@ export default function Home() {
 
   const getRelatedReleases = async () => {
     setRelated([])
-    const release = playlist[activeIndex.current]
+    const release = playlist[activeIndexRef.current]
     await getRelatedForRelease(release)
   }
 
@@ -108,10 +120,9 @@ export default function Home() {
     clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
 
-      if (playerRef.current.duration > 0 && !playerRef.current.paused) {
+      if (playerRef.current.currentTime > 0 && playerRef.current.currentTime < playerRef.current.duration && !playerRef.current.paused) {
         setTrackProgress(Math.ceil(playerRef.current.currentTime));
-      } else if (playerRef.current.currentTime > 0) {
-        setTrackProgress(0);
+      } else if (playerRef.current.currentTime >= playerRef.current.duration) {
         next();
       }
     }, [300]);
@@ -119,7 +130,7 @@ export default function Home() {
 
   const getTracks = async () => {
     setTracks({})
-    activeIndex.current = undefined
+    activeIndexRef.current = undefined
     let url = "https://api.nina.market/metadata"
 
     if (isRecent) {
@@ -137,7 +148,7 @@ export default function Home() {
 
   const shareOnTwitter = () => {
     window.open(
-      `https://twitter.com/intent/tweet?text=${`${activeTrack.properties.artist} - "${activeTrack.properties.title}" on Nina%0A`}&url=nina.market/${playlist[activeIndex]}`,
+      `https://twitter.com/intent/tweet?text=${`${activeTrack.current.properties.artist} - "${activeTrack.current.properties.title}" on Nina%0A`}&url=nina.market/${playlist[activeIndex]}`,
       null,
       'status=no,location=no,toolbar=no,menubar=no,height=500,width=500'
     )
@@ -153,7 +164,8 @@ export default function Home() {
   const previous = () => {
     if (hasPrevious.current) {
       setTrackProgress(0)
-      activeIndex.current = activeIndex.current - 1
+      setActiveIndex(activeIndexRef.current - 1)
+      activeIndexRef.current = activeIndexRef.current - 1
     }
   }
 
@@ -174,7 +186,8 @@ export default function Home() {
   const next = () => {
     if (hasNext.current) {
       setTrackProgress(0)
-      activeIndex.current = activeIndex.current + 1
+      setActiveIndex(activeIndexRef.current + 1)
+      activeIndexRef.current = activeIndexRef.current + 1
     }
   }
 
@@ -196,7 +209,7 @@ export default function Home() {
   return (
     <Box height="100vh" width="100vw" display="flex" flexDirection="column">
       <Head>
-        <title>Nina Radio{activeTrack ? ` - ${activeTrack.properties.artist} - "${activeTrack.properties.title}"` : ""}</title>
+        <title>Nina Radio{activeTrack.current ? ` - ${activeTrack.current.properties.artist} - "${activeTrack.current.properties.title}"` : ""}</title>
         <meta name="description" content="Radio player built on the Nina protocol" />
       </Head>
       <Box display ="flex" flex={1} sx={{ width: "100%", height: "100%"}}>
@@ -206,7 +219,7 @@ export default function Home() {
               <Typography variant="h4">NINA RADIO</Typography>
             </Logo>
 
-            {activeTrack &&
+            {activeTrack.current &&
               <>
                 <Controls>
                   <Button onClick={() => previous()} disabled={!hasPrevious.current}>Previous</Button>
@@ -216,18 +229,18 @@ export default function Home() {
                   <Button onClick={() => next()} disabled={!hasNext.current}>Next</Button>
                 </Controls>
                 <Typography display="inline">
-                  Now Playing: {activeTrack.properties.artist},
+                  Now Playing: {activeTrack.current.properties.artist},
                 </Typography>{" "}
                 <Typography
                   display="inline"
                   sx={{ fontStyle: "italic" }}
                 >
-                  {activeTrack.properties.title}
+                  {activeTrack.current.properties.title}
                 </Typography>
-                <Typography>{`${NinaClient.formatDuration(trackProgress)} / ${NinaClient.formatDuration(activeTrack.properties.files[0].duration)}`}</Typography>
+                <Typography>{`${NinaClient.formatDuration(trackProgress)} / ${NinaClient.formatDuration(activeTrack.current.properties.files[0].duration)}`}</Typography>
                 <Links>
                   <a
-                    href={activeTrack.external_url}
+                    href={activeTrack.current.external_url}
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -235,7 +248,7 @@ export default function Home() {
                   </a>
                   {related.length > 1 &&
                     <a
-                      href={activeTrack.external_url + "/related"}
+                      href={activeTrack.current.external_url + "/related"}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -248,17 +261,18 @@ export default function Home() {
             }
           </Grid>
           <Grid item xs={8}>
-            {activeTrack &&
+            {activeTrack.current &&
               <Artwork>
                 <Image
-                  src={activeTrack.image}
-                  alt={activeTrack.name}
+                  src={activeTrack.current.image}
+                  alt={activeTrack.current.name}
                   layout='fill'
                   objectFit='contain'
+                  priority={true}
                 />
               </Artwork>
             }
-            {!activeTrack &&
+            {!activeTrack.current &&
               <Dots size="80px" />
             }
           </Grid>
@@ -268,7 +282,7 @@ export default function Home() {
         <DynamicFooter playlist={playlist} isRecent={isRecent} />
       </Footer>
       <audio id="audio" style={{ width: "100%" }}>
-        <source src={activeTrack?.animation_url} type="audio/mp3" />
+        <source src={activeTrack.current?.animation_url} type="audio/mp3" />
       </audio>
     </Box>
   )
