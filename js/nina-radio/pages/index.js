@@ -16,6 +16,7 @@ const { NinaClient } = ninaCommon.utils
 export default function Home() {
   const playerRef = useRef()
   const intervalRef = useRef()
+  const [isRecent, setIsRecent] = useState(true)
   const [tracks, setTracks] = useState({})
   const [playlist, setPlaylist] = useState([])
   const [activeIndex, setActiveIndex] = useState()
@@ -28,7 +29,6 @@ export default function Home() {
   const { getRelatedForRelease, filterRelatedForRelease, releaseState } = useContext(ReleaseContext)
 
   useEffect(() => {
-    getTracks()
     playerRef.current = document.querySelector("#audio")
 
     return () => {
@@ -64,11 +64,16 @@ export default function Home() {
     setRelated(related.map(release => release.metadata))
   }, [releaseState])
 
+  useEffect(() => {
+    getTracks()
+  }, [isRecent])
+
   const getRelatedReleases = async () => {
     setRelated([])
     const release = playlist[activeIndex]
     await getRelatedForRelease(release)
   }
+
   const startTimer = () => {
     // Clear any timers already running
     clearInterval(intervalRef.current);
@@ -84,12 +89,29 @@ export default function Home() {
   };
 
   const getTracks = async () => {
-    const response = await axios.get("https://api.nina.market/metadata", {
+    setTracks({})
+    setActiveIndex()
+    let url = "https://api.nina.market/metadata"
+
+    if (isRecent) {
+      url += "?filter=recent"
+    }
+
+    const response = await axios.get(url, {
       method: "GET",
     });
+    
     if (response?.data) {
       setTracks(response.data)
     }
+  }
+
+  const shareOnTwitter = () => {
+    window.open(
+      `https://twitter.com/intent/tweet?text=${`${activeTrack.properties.artist} - "${activeTrack.properties.title}" on Nina%0A`}&url=nina.market/${playlist[activeIndex]}`,
+      null,
+      'status=no,location=no,toolbar=no,menubar=no,height=500,width=500'
+    )
   }
 
   const shuffle = (array) => {
@@ -126,6 +148,20 @@ export default function Home() {
       setActiveIndex(activeIndex + 1)
     }
   }
+
+  const DynamicFooter = ({playlist, isRecent}) => (
+    <Box>
+      <Typography>{`A randomized selection of ${playlist.length} releases published on Nina${isRecent ? " in the last 7 days" : ""}.`}</Typography><span>{"  "}</span>
+      <ClickableTypography onClick={() => setIsRecent(!isRecent)}>{`(Switch to ${isRecent ? "all releases" : "recent releases"})`}</ClickableTypography>
+      <a
+        href="https://nina.market"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <Typography>Powered by Nina.</Typography>
+      </a>
+    </Box>
+  )
 
   return (
     <Box height="100vh" width="100vw" display="flex" flexDirection="column">
@@ -177,19 +213,12 @@ export default function Home() {
                       <Typography>View {related.length - 1} related {related.length - 1 === 1 ? "release" : "releases"}</Typography>
                     </a>
                   }
+                  <ClickableTypography onClick={() => shareOnTwitter()}>Share</ClickableTypography>
                 </Links>
               </>
             }
             <Footer>
-              <Box>
-                <a
-                  href="https://nina.market"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <Typography>Powered by Nina.</Typography>
-                </a>
-              </Box>
+              <DynamicFooter playlist={playlist} isRecent={isRecent} />
             </Footer>
           </Grid>
           <Grid item xs={8}>
@@ -251,11 +280,11 @@ const Links = styled("div")(({ theme }) => ({
     ":hover": {
       color: theme.palette.blue,
     },
-  }
+  },
 }))
 
 
-const Artwork = styled("div")(({theme}) => ({
+const Artwork = styled("div")(({}) => ({
   width: "100%",
   height: "100%",
   position: "relative",
@@ -264,7 +293,7 @@ const Artwork = styled("div")(({theme}) => ({
   }
 }))
 
-const Footer = styled(Box)(({theme}) => ({
+const Footer = styled(Box)(({}) => ({
   position: "absolute",
   bottom: 0,
   display: "flex",
@@ -274,3 +303,9 @@ const Footer = styled(Box)(({theme}) => ({
   },
 }))
 
+const ClickableTypography = styled(Typography)(({theme}) => ({
+  ":hover": {
+    color: theme.palette.blue,
+  },
+  cursor: "pointer"
+}))
