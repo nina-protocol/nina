@@ -30,7 +30,7 @@ export default function Home() {
 
   useEffect(() => {
     playerRef.current = document.querySelector("#audio")
-
+    setupMediaSession()
     return () => {
       clearInterval(intervalRef.current)
     }
@@ -54,6 +54,18 @@ export default function Home() {
       setHasPrevious(activeIndex > 0)
       playerRef.current.src = track.animation_url
       play()
+      if ("mediaSession" in navigator) {
+        console.log('settings: ', track)
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: track.properties.title,
+          artist: track.properties.artist,
+          album: track.properties.title,
+          artwork: [
+            { src: track.image, sizes: '512x512', type: 'image/jpeg' },
+          ]
+        });
+      }
+
     }
   }, [activeIndex])
 
@@ -67,6 +79,23 @@ export default function Home() {
   useEffect(() => {
     getTracks()
   }, [isRecent])
+
+  const setupMediaSession = () => {
+    const actionHandlers = [
+      ['play',          () => play()],
+      ['pause',         () => play()],
+      ['previoustrack', () => previous()],
+      ['nexttrack',     () => next()],
+    ];
+
+    for (const [action, handler] of actionHandlers) {
+      try {
+        navigator.mediaSession.setActionHandler(action, handler);
+      } catch (error) {
+        console.log(`The media session action "${action}" is not supported yet.`);
+      }
+    }
+  }
 
   const getRelatedReleases = async () => {
     setRelated([])
@@ -134,7 +163,7 @@ export default function Home() {
       if (!playerRef.current.paused) {
         setPlaying(true)
         startTimer()
-      }
+      }      
     } else {
       playerRef.current.pause()
       setPlaying(false)
@@ -169,10 +198,6 @@ export default function Home() {
       <Head>
         <title>Nina Radio{activeTrack ? ` - ${activeTrack.properties.artist} - "${activeTrack.properties.title}"` : ""}</title>
         <meta name="description" content="Radio player built on the Nina protocol" />
-        {activeTrack &&
-          <meta name="og:image" content={activeTrack.image} />
-        }
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <Box display ="flex" flex={1} sx={{ width: "100%", height: "100%"}}>
         <Grid container spacing={2}>
