@@ -39,9 +39,7 @@ pub struct VaultInitialize<'info> {
     )]
     pub wrapped_sol_vault: Box<Account<'info, TokenAccount>>,
     pub usdc_mint: Account<'info, Mint>,
-    #[account(
-        address = wrapped_sol::ID,
-    )]
+    #[account(address = wrapped_sol::ID)]
     pub wrapped_sol_mint: Account<'info, Mint>,
     pub system_program: Program<'info, System>,
     #[account(address = token::ID)]

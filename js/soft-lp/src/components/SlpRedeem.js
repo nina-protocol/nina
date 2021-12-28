@@ -1,19 +1,21 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Box from '@material-ui/core/Box'
-import { Typography } from '@material-ui/core'
+import { styled } from '@mui/material/styles'
+import Box from '@mui/material/Box'
+import { Typography } from '@mui/material'
 import { useWallet } from '@solana/wallet-adapter-react'
-import RedeemableModal from './RedeemableModal'
+import ninaCommon from 'nina-common'
 import SlpUserRedemptions from './SlpUserRedemptions'
+
+const { RedeemableModal } = ninaCommon.components
 
 const SlpRedeem = (props) => {
   const { releasePubkey, amountHeld, userRedemptionRecords, redeemables } =
     props
-  const classes = useStyles()
+
   const wallet = useWallet()
 
   return (
-    <Box className={classes.root}>
+    <StyledBox className={classes.root}>
       <Box className={classes.ctaWrapper}>
         {amountHeld < 1 && (
           <Box className={classes.noCoinWrapper}>
@@ -89,32 +91,51 @@ const SlpRedeem = (props) => {
           </ol>
         </Box>
       </Box>
-    </Box>
+    </StyledBox>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  root: {
+const PREFIX = 'SlpRedeem'
+
+const classes = {
+  root: `${PREFIX}-root`,
+  noCoinWrapper: `${PREFIX}-noCoinWrapper`,
+  noCoinHeader: `${PREFIX}-noCoinHeader`,
+  paper: `${PREFIX}-paper`,
+  ctaWrapper: `${PREFIX}-ctaWrapper`,
+  info: `${PREFIX}-info`,
+  infoHeader: `${PREFIX}-infoHeader`,
+  infoSubheader: `${PREFIX}-infoSubheader`,
+  redeemableSteps: `${PREFIX}-redeemableSteps`,
+  step: `${PREFIX}-step`,
+  redeemCta: `${PREFIX}-redeemCta`,
+}
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  [`&.${classes.root}`]: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     height: '100%',
     width: '1000px',
     marginLeft: '-100px',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       flexDirection: 'column',
     },
   },
-  noCoinWrapper: {
+
+  [`& .${classes.noCoinWrapper}`]: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
   },
-  noCoinHeader: {
+
+  [`& .${classes.noCoinHeader}`]: {
     fontSize: '26px',
   },
-  paper: {
+
+  [`& .${classes.paper}`]: {
     backgroundColor: theme.palette.background.paper,
     border: '2px solid #000',
     boxShadow: theme.shadows[5],
@@ -122,47 +143,54 @@ const useStyles = makeStyles((theme) => ({
     width: '75%',
     overflowY: 'auto',
   },
-  ctaWrapper: {
+
+  [`& .${classes.ctaWrapper}`]: {
     width: '400px',
     paddingRight: '150px',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       width: '85%',
       paddingRight: '0',
     },
   },
-  info: {
+
+  [`& .${classes.info}`]: {
     width: '400px',
     textAlign: 'left',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       width: '85%',
       padding: `${theme.spacing(2, 1)}`,
     },
   },
-  infoHeader: {
+
+  [`& .${classes.infoHeader}`]: {
     fontSize: '26px',
     lineHeight: '29.9px',
-    marginBottom: `${theme.spacing(1)}px`,
-    [theme.breakpoints.down('sm')]: {
+    marginBottom: theme.spacing(1),
+    [theme.breakpoints.down('md')]: {
       fontSize: '18px',
     },
   },
-  infoSubheader: {
+
+  [`& .${classes.infoSubheader}`]: {
     fontSize: '11px',
-    marginBottom: `${theme.spacing(1)}px`,
+    marginBottom: theme.spacing(1),
   },
-  redeemableSteps: {
-    paddingLeft: `${theme.spacing(2)}px`,
+
+  [`& .${classes.redeemableSteps}`]: {
+    paddingLeft: theme.spacing(2),
     '& li': {
       fontSize: '10px',
     },
   },
-  step: {
+
+  [`& .${classes.step}`]: {
     fontSize: '11px;',
   },
-  redeemCta: {
+
+  [`& .${classes.redeemCta}`]: {
     color: 'black',
     '& --disabled': {
-      color: `${theme.vars.greyLight}`,
+      color: `${theme.palette.greyLight}`,
     },
   },
 }))

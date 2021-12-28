@@ -1,22 +1,22 @@
 import { createContext, useState, useContext, useEffect } from 'react'
-
 import { useWallet } from '@solana/wallet-adapter-react'
-
 import { ConnectionContext } from './connection'
 import { NinaContext } from './nina'
 import { ReleaseContext } from './release'
-
-import NinaClient from '../utils/client'
+import { useSnackbar } from 'notistack'
 
 export const AudioPlayerContext = createContext()
 const AudioPlayerContextProvider = ({ children }) => {
   const wallet = useWallet()
   const { collection, shouldRemainInCollectionAfterSale } =
     useContext(NinaContext)
+  const { enqueueSnackbar } = useSnackbar()
+
   const { releaseState } = useContext(ReleaseContext)
   const { connection } = useContext(ConnectionContext)
   const [txid, setTxid] = useState(null)
   const [playlist, setPlaylist] = useState([])
+  const [isPlaying, setIsPlaying] = useState(false)
 
   useEffect(() => {
     if (
@@ -32,7 +32,8 @@ const AudioPlayerContextProvider = ({ children }) => {
     reorderPlaylist,
     removeTrackFromPlaylist,
     createPlaylistFromTracks,
-    addTrackToPlaylist,
+    addTrackToQueue,
+    removeTrackFromQueue,
   } = audioPlayerContextHelper({
     releaseState,
     wallet,
@@ -41,15 +42,26 @@ const AudioPlayerContextProvider = ({ children }) => {
     playlist,
     setPlaylist,
     shouldRemainInCollectionAfterSale,
+    enqueueSnackbar,
   })
 
-  const updateTxid = (newTxid, releasePubkey) => {
-    addTrackToPlaylist(releasePubkey)
-    if (newTxid === txid) {
-      setTxid(newTxid + '?ext=mp3')
-    } else {
-      setTxid(newTxid)
+  const updateTxid = async (newTxid, releasePubkey, shouldPlay = false) => {
+    if (newTxid !== playlist[currentIndex()]) {
+      addTrackToQueue(releasePubkey)
+      await setTxid(newTxid)
+      await setIsPlaying(shouldPlay)
     }
+  }
+
+  const currentIndex = () => {
+    let index = undefined
+    playlist.forEach((item, i) => {
+      if (item.txid === txid) {
+        index = i
+        return
+      }
+    })
+    return index
   }
 
   return (
@@ -60,6 +72,11 @@ const AudioPlayerContextProvider = ({ children }) => {
         playlist,
         reorderPlaylist,
         removeTrackFromPlaylist,
+        addTrackToQueue,
+        removeTrackFromQueue,
+        isPlaying,
+        setIsPlaying,
+        currentIndex,
       }}
     >
       {children}
@@ -71,17 +88,14 @@ export default AudioPlayerContextProvider
 
 const audioPlayerContextHelper = ({
   tracks,
-  setTracks,
   releaseState,
   playlist,
   setPlaylist,
   collection,
   shouldRemainInCollectionAfterSale,
+  enqueueSnackbar,
 }) => {
-  const reorderPlaylist = ({ source, destination }) => {
-    const updatedPlaylist = [...playlist]
-    NinaClient.arrayMove(updatedPlaylist, source.index, destination.index)
-
+  const reorderPlaylist = (updatedPlaylist) => {
     setPlaylist([...updatedPlaylist])
   }
 
@@ -97,10 +111,15 @@ const audioPlayerContextHelper = ({
 
       const updatedTracks = { ...tracks }
       delete updatedTracks[releasePubkey]
-
       setPlaylist(updatedPlaylist)
-      setTracks(updatedTracks)
     }
+  }
+
+  const removeTrackFromQueue = async (releasePubkey) => {
+    const updatedPlaylist = playlist.filter(
+      (playlistItem) => playlistItem.releasePubkey !== releasePubkey
+    )
+    setPlaylist(updatedPlaylist)
   }
 
   /*
@@ -120,10 +139,16 @@ const audioPlayerContextHelper = ({
     setPlaylist([...playlist, ...playlistEntries])
   }
 
-  const addTrackToPlaylist = (releasePubkey) => {
+  const addTrackToQueue = (releasePubkey) => {
     const playlistEntry = createPlaylistEntry(releasePubkey)
     if (playlistEntry) {
       setPlaylist([...playlist, playlistEntry])
+      enqueueSnackbar(
+        `${playlistEntry.artist} - ${playlistEntry.title} added to queue`,
+        {
+          variant: 'info',
+        }
+      )
     }
   }
 
@@ -150,6 +175,7 @@ const audioPlayerContextHelper = ({
     reorderPlaylist,
     removeTrackFromPlaylist,
     createPlaylistFromTracks,
-    addTrackToPlaylist,
+    addTrackToQueue,
+    removeTrackFromQueue,
   }
 }

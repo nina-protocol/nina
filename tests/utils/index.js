@@ -3,13 +3,7 @@
 const anchor = require("@project-serum/anchor");
 const serumCmn = require("@project-serum/common");
 const TokenInstructions = require("@project-serum/serum").TokenInstructions;
-const { Token } = require("@solana/spl-token");
-
-// TODO: remove this constant once @project-serum/serum uses the same version
-//       of @solana/web3.js as anchor (or switch packages).
-const TOKEN_PROGRAM_ID = new anchor.web3.PublicKey(
-  TokenInstructions.TOKEN_PROGRAM_ID.toString()
-);
+const { Token, TOKEN_PROGRAM_ID } = require("@solana/spl-token");
 
 const WRAPPED_SOL_MINT_PUBLIC_KEY = new anchor.web3.PublicKey(
   'So11111111111111111111111111111111111111112'
@@ -232,7 +226,7 @@ const findOrCreateAssociatedTokenAccount = async(
   }
 }
 
-const newAccount = async (provider, lamports = 1e10, account=undefined) => {
+const newAccount = async (provider, lamports = 1e9, account=undefined) => {
   if (!account) {
     account = anchor.web3.Keypair.generate();
   }
@@ -300,6 +294,7 @@ module.exports = {
   getTokenAccount,
   createMint,
   createMintInstructions,
+  createMintToAccountInstrs,
   createTokenAccount,
   mintToAccount,
   findOrCreateAssociatedTokenAccount,

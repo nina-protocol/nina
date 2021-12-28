@@ -28,15 +28,10 @@ const idl = {
         {
           "name": "authority",
           "isMut": false,
-          "isSigner": true
-        },
-        {
-          "name": "authorityTokenAccount",
-          "isMut": false,
           "isSigner": false
         },
         {
-          "name": "authorityReleaseTokenAccount",
+          "name": "authorityTokenAccount",
           "isMut": false,
           "isSigner": false
         },
@@ -51,12 +46,86 @@ const idl = {
           "isSigner": false
         },
         {
-          "name": "vaultTokenAccount",
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "config",
+          "type": {
+            "defined": "ReleaseConfig"
+          }
+        },
+        {
+          "name": "bumps",
+          "type": {
+            "defined": "ReleaseBumps"
+          }
+        }
+      ]
+    },
+    {
+      "name": "releaseInitWithCredit",
+      "accounts": [
+        {
+          "name": "release",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "vault",
+          "name": "releaseSigner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "releaseMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authorityTokenAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authorityPublishingCreditTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "publishingCreditMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "paymentMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "royaltyTokenAccount",
           "isMut": false,
           "isSigner": false
         },
@@ -289,6 +358,64 @@ const idl = {
         }
       ],
       "args": []
+    },
+    {
+      "name": "releaseUpdateMetadata",
+      "accounts": [
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "release",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "releaseSigner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "metadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "releaseMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMetadataProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "metadataData",
+          "type": {
+            "defined": "ReleaseMetadataData"
+          }
+        }
+      ]
     },
     {
       "name": "redeemableInit",
@@ -1377,6 +1504,30 @@ const idl = {
       }
     },
     {
+      "name": "ReleaseMetadataData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "name": "uri",
+            "type": "string"
+          },
+          {
+            "name": "sellerFeeBasisPoints",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
       "name": "VaultBumps",
       "type": {
         "kind": "struct",
@@ -1419,6 +1570,198 @@ const idl = {
           }
         ]
       }
+    }
+  ],
+  "events": [
+    {
+      "name": "ExchangeAdded",
+      "fields": [
+        {
+          "name": "releaseMint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "release",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "initializer",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "expectedAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "initializerAmount",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": true
+        }
+      ]
+    },
+    {
+      "name": "ExchangeCompleted",
+      "fields": [
+        {
+          "name": "taker",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "datetime",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "ExchangeCancelled",
+      "fields": [
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "RedeemableCreated",
+      "fields": [
+        {
+          "name": "authority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "mint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "redeemedMint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "release",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": true
+        }
+      ]
+    },
+    {
+      "name": "RedeemableRedeemed",
+      "fields": [
+        {
+          "name": "authority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "release",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": true
+        }
+      ]
+    },
+    {
+      "name": "ReleaseCreated",
+      "fields": [
+        {
+          "name": "authority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "date",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "mint",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": true
+        }
+      ]
+    },
+    {
+      "name": "RoyaltyRecipientAdded",
+      "fields": [
+        {
+          "name": "authority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "ReleaseSold",
+      "fields": [
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "date",
+          "type": "i64",
+          "index": true
+        }
+      ]
+    },
+    {
+      "name": "ReleaseMetadataUpdated",
+      "fields": [
+        {
+          "name": "publicKey",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "metadataPublicKey",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "uri",
+          "type": "string",
+          "index": false
+        }
+      ]
     }
   ],
   "errors": [

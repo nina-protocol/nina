@@ -1,9 +1,10 @@
 import { useEffect, useState, useContext } from 'react'
-import Button from '@material-ui/core/Button'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import Box from '@material-ui/core/Box'
-import { Typography } from '@material-ui/core'
-import { makeStyles, useTheme } from '@material-ui/core/styles'
+import { styled } from '@mui/material/styles'
+import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
+import Box from '@mui/material/Box'
+import { Typography } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 import { useSnackbar } from 'notistack'
 import { useWallet } from '@solana/wallet-adapter-react'
 import {
@@ -17,7 +18,7 @@ const { NinaContext, ReleaseContext } = ninaCommon.contexts
 
 const SlpPurchase = (props) => {
   const { releasePubkey } = props
-  const classes = useStyles()
+
   const theme = useTheme()
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
@@ -83,7 +84,7 @@ const SlpPurchase = (props) => {
   }
 
   return (
-    <div className={classes.slpPurchase}>
+    <Root className={classes.slpPurchase}>
       <SlpSlider />
 
       <Box className={classes.purchaseControls}>
@@ -160,135 +161,175 @@ const SlpPurchase = (props) => {
           </Box>
         </form>
       </Box>
-    </div>
+    </Root>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  progessWrapper: {
+const PREFIX = 'SlpPurchase'
+
+const classes = {
+  progessWrapper: `${PREFIX}-progessWrapper`,
+  progress: `${PREFIX}-progress`,
+  slpPurchase: `${PREFIX}-slpPurchase`,
+  purchaseControls: `${PREFIX}-purchaseControls`,
+  slpTitle: `${PREFIX}-slpTitle`,
+  slpPrice: `${PREFIX}-slpPrice`,
+  usd: `${PREFIX}-usd`,
+  soft: `${PREFIX}-soft`,
+  slpDescription: `${PREFIX}-slpDescription`,
+  releasePurchaseCtaWrapper: `${PREFIX}-releasePurchaseCtaWrapper`,
+  cta: `${PREFIX}-cta`,
+  buyButton: `${PREFIX}-buyButton`,
+  mobileButton: `${PREFIX}-mobileButton`,
+  stats: `${PREFIX}-stats`,
+  stat: `${PREFIX}-stat`,
+  remainingSupply: `${PREFIX}-remainingSupply`,
+  walletProviderWrapper: `${PREFIX}-walletProviderWrapper`,
+  walletDialogProvider: `${PREFIX}-walletDialogProvider`,
+}
+
+const Root = styled('div')(({ theme }) => ({
+  [`& .${classes.progessWrapper}`]: {
     height: '100%',
     width: '100%',
     display: 'flex',
   },
-  progress: {
+
+  [`& .${classes.progress}`]: {
     margin: 'auto',
-    color: `${theme.vars.blue}`,
+    color: `${theme.palette.blue}`,
   },
-  slpPurchase: {
+
+  [`&.${classes.slpPurchase}`]: {
     width: '100%',
     height: '100%',
     display: 'grid',
     gridTemplateColumns: '50% 50%',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       display: 'flex',
       flexDirection: 'column',
     },
   },
-  purchaseControls: {
+
+  [`& .${classes.purchaseControls}`]: {
     margin: `${theme.spacing('auto', 0, 'auto', 8)}`,
     textAlign: 'left',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       margin: `${theme.spacing(6, 1)}`,
     },
   },
-  slpTitle: {
+
+  [`& .${classes.slpTitle}`]: {
     fontSize: '34px',
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: '1px',
     lineHeight: '39.1px',
-    marginBottom: `${theme.spacing(1)}px`,
-    [theme.breakpoints.down('sm')]: {
+    marginBottom: theme.spacing(1),
+    [theme.breakpoints.down('md')]: {
       fontSize: '15px',
     },
   },
-  slpPrice: {
-    marginBottom: `${theme.spacing(1)}px`,
+
+  [`& .${classes.slpPrice}`]: {
+    marginBottom: theme.spacing(1),
     '& span': {
-      paddingRight: `${theme.spacing(2)}px`,
+      paddingRight: theme.spacing(2),
       fontSize: '14px',
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       textAlign: 'center',
     },
   },
-  usd: {
-    color: `${theme.vars.greyLight}`,
+
+  [`& .${classes.usd}`]: {
+    color: `${theme.palette.greyLight}`,
   },
-  soft: {
+
+  [`& .${classes.soft}`]: {
     color: `black`,
   },
-  slpDescription: {
+
+  [`& .${classes.slpDescription}`]: {
     fontSize: '11px',
     lineHeight: '16px',
-    marginBottom: `${theme.spacing(1)}px`,
+    marginBottom: theme.spacing(1),
   },
-  releasePurchaseCtaWrapper: {
+
+  [`& .${classes.releasePurchaseCtaWrapper}`]: {
     width: '100%',
     display: 'flex',
     justifyContent: 'space-evenly',
   },
-  cta: {
+
+  [`& .${classes.cta}`]: {
     display: 'flex',
     justifyContent: 'space-evenly',
     alignItems: 'center',
     minWidth: '100%',
     position: 'relative',
   },
-  buyButton: {
+
+  [`& .${classes.buyButton}`]: {
     width: '100%',
     fontSize: '14px',
-    color: `${theme.vars.blue}`,
-    borderColor: `${theme.vars.blue}`,
+    color: `${theme.palette.blue}`,
+    borderColor: `${theme.palette.blue}`,
     '&:hover': {
-      color: `${theme.vars.white}`,
-      backgroundColor: `${theme.vars.blue}`,
+      color: `${theme.palette.white}`,
+      backgroundColor: `${theme.palette.blue}`,
     },
   },
-  mobileButton: {
+
+  [`& .${classes.mobileButton}`]: {
     width: '100%',
     fontSize: '14px',
-    color: `${theme.vars.blue}`,
-    borderColor: `${theme.vars.blue}`,
+    color: `${theme.palette.blue}`,
+    borderColor: `${theme.palette.blue}`,
     display: 'block',
     [theme.breakpoints.up('md')]: {
       display: 'none',
     },
   },
-  stats: {
+
+  [`& .${classes.stats}`]: {
     display: 'flex',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginBottom: `${theme.spacing(1)}px`,
+    marginBottom: theme.spacing(1),
   },
-  stat: {
+
+  [`& .${classes.stat}`]: {
     fontSize: '14px',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       fontSize: '1rem',
     },
   },
-  remainingSupply: {
-    color: `${theme.vars.blue}`,
+
+  [`& .${classes.remainingSupply}`]: {
+    color: `${theme.palette.blue}`,
   },
-  walletProviderWrapper: {
+
+  [`& .${classes.walletProviderWrapper}`]: {
     width: '100%',
     '& .MuiButton-root': {
-      color: `${theme.vars.white}`,
-      backgroundColor: `${theme.vars.blue}`,
+      color: `${theme.palette.white}`,
+      backgroundColor: `${theme.palette.blue}`,
       width: '100%',
       fontSize: '14px',
       '&:hover': {
-        color: `${theme.vars.white}`,
-        backgroundColor: `${theme.vars.blue}`,
+        color: `${theme.palette.white}`,
+        backgroundColor: `${theme.palette.blue}`,
       },
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       display: 'none',
     },
   },
-  walletDialogProvider: {
+
+  [`& .${classes.walletDialogProvider}`]: {
     '& .MuiButton-root': {
-      backgroundColor: `${theme.vars.white}`,
+      backgroundColor: `${theme.palette.white}`,
     },
     '& .MuiButton-startIcon': {
       display: 'none',
@@ -296,9 +337,9 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiPaper-root': {
       width: '400px',
       height: '315px',
-      ...theme.helpers.gradient,
+      ...theme.gradient,
       '& .MuiDialogTitle-root': {
-        color: `${theme.vars.white}`,
+        color: `${theme.palette.white}`,
         textAlign: 'center',
         padding: `${theme.spacing(6, 0, 0)}`,
         textTransform: 'uppercase',
@@ -315,14 +356,14 @@ const useStyles = makeStyles((theme) => ({
         '& .MuiButton-root': {
           width: '241px',
           margin: 'auto',
-          background: `${theme.vars.white}`,
+          background: `${theme.palette.white}`,
           borderRadius: '50px',
-          color: `${theme.vars.blue}`,
+          color: `${theme.palette.blue}`,
           fontSize: '14px',
           fontWeight: '700',
           '&:hover': {
-            backgroundColor: `${theme.vars.blue}`,
-            color: `${theme.vars.white}`,
+            backgroundColor: `${theme.palette.blue}`,
+            color: `${theme.palette.white}`,
           },
           '& .MuiButton-endIcon': {
             display: 'none',

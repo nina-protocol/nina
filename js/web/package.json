@@ -1,0 +1,47 @@
+{
+  "name": "web",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/server": "^11.4.0",
+    "@fortawesome/free-brands-svg-icons": "^5.15.4",
+    "@fortawesome/react-fontawesome": "^0.1.16",
+    "@solana/wallet-adapter-react-ui": "^0.6.1",
+    "@typescript-eslint/eslint-plugin": "^5.7.0",
+    "@typescript-eslint/parser": "^5.7.0",
+    "axios": "^0.24.0",
+    "babel-plugin-inline-react-svg": "^2.0.1",
+    "eslint": "^8.5.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-react": "^7.27.1",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "next": "^12.0.7",
+    "next-transpile-modules": "^9.0.0",
+    "nextjs-breadcrumbs": "^1.1.9",
+    "nina-common": "0.1.0",
+    "react": "^17.0.2",
+    "react-device-detect": "^2.1.2",
+    "react-dom": "^17.0.2",
+    "react-dropzone-uploader": "^2.11.0",
+    "react-helmet": "^6.1.0",
+    "react-multi-carousel": "^2.6.5",
+    "react-router-breadcrumbs-hoc": "^4.1.0",
+    "react-slick": "^0.28.1",
+    "react-smooth-image": "^1.1.0",
+    "slick-carousel": "^1.8.1"
+  },
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint ./ --ignore-path ../../.gitignore",
+    "lint:fix": "npm run lint -- --fix",
+    "format": "prettier -w \"{,!(node_modules)/**/}*.js\""
+  },
+  "browser": {
+    "crypto": false
+  },
+  "devDependencies": {
+    "@next/eslint-plugin-next": "^12.0.7"
+  }
+}

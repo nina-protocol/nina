@@ -1,4 +1,5 @@
 use anchor_lang::prelude::*;
+use metaplex_token_metadata::state::{Data};
 
 declare_id!("ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4");
 
@@ -21,6 +22,15 @@ pub mod nina {
     ) -> ProgramResult {
         instructions::release_init_protected::handler(ctx, config, bumps)
     }
+
+    pub fn release_init_with_credit(
+        ctx: Context<ReleaseInitializeWithCredit>,
+        config: ReleaseConfig,
+        bumps: ReleaseBumps,
+    ) -> ProgramResult {
+        instructions::release_init_with_credit::handler(ctx, config, bumps)
+    }
+
 
     pub fn release_purchase(
         ctx: Context<ReleasePurchase>,
@@ -46,6 +56,13 @@ pub mod nina {
         ctx: Context<ReleaseAirdrop>,
     ) -> ProgramResult {
         instructions::release_airdrop::handler(ctx)
+    }
+
+    pub fn release_update_metadata(
+        ctx: Context<ReleaseUpdateMetadata>,
+        metadata_data: ReleaseMetadataData
+    ) -> ProgramResult {
+        instructions::release_update_metadata::handler(ctx, metadata_data)
     }
 
     pub fn redeemable_init(

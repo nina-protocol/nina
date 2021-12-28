@@ -1,16 +1,14 @@
 import { Link } from 'react-router-dom'
-import Box from '@material-ui/core/Box'
-import { Typography } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+import { styled } from '@mui/material/styles'
+import Box from '@mui/material/Box'
+import { Typography } from '@mui/material'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDiscord } from '@fortawesome/free-brands-svg-icons'
 import { faTwitter } from '@fortawesome/free-brands-svg-icons'
 
 const Footer = () => {
-  const classes = useStyles()
-
   return (
-    <Box className={classes.root}>
+    <StyledBox className={classes.root}>
       <Box className={classes.info}>
         <Link to="/about">About</Link>
         <Typography className={classes.copyright}>
@@ -36,47 +34,60 @@ const Footer = () => {
           <FontAwesomeIcon icon={faDiscord} />
         </a>
       </Box>
-    </Box>
+    </StyledBox>
   )
 }
+const PREFIX = 'Footer'
 
-const useStyles = makeStyles((theme) => ({
-  root: {
+const classes = {
+  root: `${PREFIX}-root`,
+  info: `${PREFIX}-info`,
+  copyright: `${PREFIX}-copyright`,
+  socials: `${PREFIX}-socials`,
+  icon: `${PREFIX}-icon`,
+}
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  [`&.${classes.root}`]: {
     width: '100%',
     position: 'absolute',
     bottom: '0',
     display: 'flex',
     justifyContent: 'space-between',
-    [theme.breakpoints.down('sm')]: {
-      backgroundColor: `${theme.vars.white}`,
+    [theme.breakpoints.down('md')]: {
+      backgroundColor: `${theme.palette.white}`,
     },
   },
-  info: {
+
+  [`& .${classes.info}`]: {
     display: 'flex',
     padding: `${theme.spacing(1, 2)}`,
     fontSize: '10px',
     '& a': {
-      color: `${theme.vars.black}`,
+      color: `${theme.palette.black}`,
       textDecoration: 'none',
       '&:hover': {
-        color: `${theme.vars.blue}`,
+        color: `${theme.palette.blue}`,
       },
     },
   },
-  copyright: {
+
+  [`& .${classes.copyright}`]: {
     fontSize: '10px',
     paddingLeft: '20px',
   },
-  socials: {
+
+  [`& .${classes.socials}`]: {
     display: 'flex',
     alignItems: 'center',
     paddingRight: '10px',
   },
-  icon: {
-    color: `${theme.vars.black}`,
+
+  [`& .${classes.icon}`]: {
+    color: `${theme.palette.black}`,
     padding: `${theme.spacing(1, 1)}`,
     '&:hover': {
-      color: `${theme.vars.blue}`,
+      color: `${theme.palette.blue}`,
     },
   },
 }))

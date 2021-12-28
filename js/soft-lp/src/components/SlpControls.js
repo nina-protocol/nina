@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect, useRef } from 'react'
+import { styled } from '@mui/material/styles'
 import { withRouter, useHistory } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
-import Fade from '@material-ui/core/Fade'
-import Box from '@material-ui/core/Box'
+import Button from '@mui/material/Button'
+import Fade from '@mui/material/Fade'
+import Box from '@mui/material/Box'
 import { useWallet } from '@solana/wallet-adapter-react'
 import ninaCommon from 'nina-common'
 
@@ -14,7 +14,7 @@ const SlpControls = (props) => {
   const { activeIndex, setActiveIndex, releasePubkey, location } = props
   const history = useHistory()
   const wallet = useWallet()
-  const classes = useStyles()
+
   const { releaseState } = useContext(ReleaseContext)
   const {
     exchangeState,
@@ -65,7 +65,7 @@ const SlpControls = (props) => {
   }
 
   return (
-    <>
+    <Root>
       <Fade in={true} timeout={100}>
         <Box className={classes.root}>
           <Box className={classes.ctaWrapper}>
@@ -127,44 +127,57 @@ const SlpControls = (props) => {
           )}
         </Box>
       </Fade>
-    </>
+    </Root>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  root: {
+const PREFIX = 'SlpControls'
+
+const classes = {
+  root: `${PREFIX}-root`,
+  ctaWrapper: `${PREFIX}-ctaWrapper`,
+  cta: `${PREFIX}-cta`,
+  marketPrice: `${PREFIX}-marketPrice`,
+}
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')(({ theme }) => ({
+  [`& .${classes.root}`]: {
     display: 'flex',
     justifyContent: 'space-evenly',
     position: 'absolute',
     top: '0',
     left: '0',
-    paddingLeft: `${theme.spacing(1)}px`,
-    [theme.breakpoints.down('sm')]: {
+    paddingLeft: theme.spacing(1),
+    [theme.breakpoints.down('md')]: {
       display: 'none',
     },
   },
-  ctaWrapper: {
+
+  [`& .${classes.ctaWrapper}`]: {
     zIndex: 20,
   },
-  cta: {
+
+  [`& .${classes.cta}`]: {
     zIndex: 20,
     padding: `${theme.spacing(2, 1)}`,
     width: '100%',
     fontSize: '12px',
     lineHeight: '13.8px',
     '&--active': {
-      color: `${theme.vars.blue}`,
+      color: `${theme.palette.blue}`,
     },
     '&:hover': {
-      background: `${theme.vars.white}`,
-      color: `${theme.vars.blue}`,
+      background: `${theme.palette.white}`,
+      color: `${theme.palette.blue}`,
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       padding: '1rem',
     },
   },
-  marketPrice: {
-    color: `${theme.vars.blue}`,
+
+  [`& .${classes.marketPrice}`]: {
+    color: `${theme.palette.blue}`,
     paddingLeft: '5px',
   },
 }))

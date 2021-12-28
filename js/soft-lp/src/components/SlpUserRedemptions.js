@@ -1,18 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Modal from '@material-ui/core/Modal'
-import Backdrop from '@material-ui/core/Backdrop'
-import Fade from '@material-ui/core/Fade'
-import Button from '@material-ui/core/Button'
-import Box from '@material-ui/core/Box'
+import { styled } from '@mui/material/styles'
+import Modal from '@mui/material/Modal'
+import Backdrop from '@mui/material/Backdrop'
+import Fade from '@mui/material/Fade'
+import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
 import ninaCommon from 'nina-common'
-import RedeemableUpdateShippingForm from './RedeemableUpdateShippingForm.js'
-import UserRedemptionsList from './UserRedemptionsList.js'
 
 const { ReleaseContext } = ninaCommon.contexts
+const { RedeemableUpdateShippingForm, UserRedemptionsList } =
+  ninaCommon.components
 
 const SlpUserRedemptions = (props) => {
-  const classes = useStyles()
   const { releasePubkey, redeemables, userRedemptionRecords } = props
   const { redeemableUpdateShipping } = useContext(ReleaseContext)
   const [selectedRecord, setSelectedRecord] = useState(undefined)
@@ -53,7 +52,7 @@ const SlpUserRedemptions = (props) => {
   }
 
   return (
-    <Box mt={3}>
+    <StyledBox mt={3}>
       <Button
         variant="outlined"
         color="primary"
@@ -94,17 +93,26 @@ const SlpUserRedemptions = (props) => {
           </div>
         </Fade>
       </Modal>
-    </Box>
+    </StyledBox>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  modal: {
+const PREFIX = 'SlpUserRedemptions'
+
+const classes = {
+  modal: `${PREFIX}-modal`,
+  paper: `${PREFIX}-paper`,
+  myRedemptionsCta: `${PREFIX}-myRedemptionsCta`,
+}
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  [`& .${classes.modal}`]: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  paper: {
+
+  [`& .${classes.paper}`]: {
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
     width: '75%',
@@ -113,14 +121,15 @@ const useStyles = makeStyles((theme) => ({
     display: 'grid',
     gridTemplateColumns: '20% 80%',
     gridGap: '1rem',
-    ...theme.helpers.gradient,
+    ...theme.gradient,
   },
-  myRedemptionsCta: {
-    color: `${theme.vars.blue}`,
-    borderColor: `${theme.vars.blue}`,
+
+  [`& .${classes.myRedemptionsCta}`]: {
+    color: `${theme.palette.blue}`,
+    borderColor: `${theme.palette.blue}`,
     '&:hover': {
-      color: `${theme.vars.white}`,
-      backgroundColor: `${theme.vars.blue}`,
+      color: `${theme.palette.white}`,
+      backgroundColor: `${theme.palette.blue}`,
     },
   },
 }))

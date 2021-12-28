@@ -1,8 +1,10 @@
 pub mod release_init_protected;
+pub mod release_init_with_credit;
 pub mod release_purchase;
 pub mod release_revenue_share_collect;
 pub mod release_revenue_share_transfer;
 pub mod release_airdrop;
+pub mod release_update_metadata;
 
 pub mod redeemable_init;
 pub mod redeemable_update_config;
@@ -18,10 +20,12 @@ pub mod vault_init;
 pub mod vault_withdraw;
 
 pub use release_init_protected::*;
+pub use release_init_with_credit::*;
 pub use release_purchase::*;
 pub use release_revenue_share_collect::*;
 pub use release_revenue_share_transfer::*;
 pub use release_airdrop::*;
+pub use release_update_metadata::*;
 
 pub use redeemable_init::*;
 pub use redeemable_update_config::*;
