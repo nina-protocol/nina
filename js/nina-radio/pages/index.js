@@ -151,8 +151,9 @@ export default function Home() {
 
   const DynamicFooter = ({playlist, isRecent}) => (
     <Box>
-      <Typography>{`A randomized selection of ${playlist.length} releases published on Nina${isRecent ? " in the last 7 days" : ""}.`}</Typography><span>{"  "}</span>
-      <ClickableTypography onClick={() => setIsRecent(!isRecent)}>{`(Switch to ${isRecent ? "all releases" : "recent releases"})`}</ClickableTypography>
+      <Typography>{`Nina Radio is a randomized selection of releases published through the Nina Protocol.`}</Typography><span>{"  "}</span>
+      <Typography >{`You are currently listening to a selection of ${isRecent ? ` all ${playlist.length} releases` : ` ${playlist.length} releases published in the last 7 days`}.`}</Typography>
+      <ClickableTypography onClick={() => setIsRecent(!isRecent)}>{`Switch to ${isRecent ? "All" : "Recent"} releases instead?`}</ClickableTypography>
       <a
         href="https://nina.market"
         target="_blank"
