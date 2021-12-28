@@ -84,7 +84,7 @@ export default function Home() {
   };
 
   const getTracks = async () => {
-    const response = await axios.get("http://localhost:3001/metadata", {
+    const response = await axios.get("https://api.nina.market/metadata", {
       method: "GET",
     });
     if (response?.data) {
