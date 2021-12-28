@@ -19,12 +19,13 @@ export default function Home() {
   const [isRecent, setIsRecent] = useState(false)
   const [tracks, setTracks] = useState({})
   const [playlist, setPlaylist] = useState([])
-  const [activeIndex, setActiveIndex] = useState()
+  // const [activeIndex, setActiveIndex] = useState()
   const [activeTrack, setActiveTrack] = useState()
   const [playing, setPlaying] = useState(false)
   const [trackProgress, setTrackProgress] = useState(0.0)
-  const [hasPrevious, setHasPrevious] = useState(false)
-  const [hasNext, setHasNext] = useState(false)
+  const hasPrevious = useRef(false)
+  const hasNext = useRef(false)
+  const activeIndex = useRef()
   const [related, setRelated] = useState([])
   const { getRelatedForRelease, filterRelatedForRelease, releaseState } = useContext(ReleaseContext)
 
@@ -41,21 +42,21 @@ export default function Home() {
       const releases = Object.keys(tracks)
       shuffle(releases)
       setPlaylist(releases)
-      setActiveIndex(0)
+      // setActiveIndex(0)
+      activeIndex.current = 0
     }
   }, [tracks])
 
   useEffect(() => {
-    const track = tracks[playlist[activeIndex]]
+    const track = tracks[playlist[activeIndex.current]]
     if (track) {
       getRelatedReleases()
       setActiveTrack(track)
-      setHasNext((activeIndex + 1) <= playlist.length)
-      setHasPrevious(activeIndex > 0)
+      hasNext.current = (activeIndex.current + 1) <= playlist.length
+      hasPrevious.current = activeIndex.current > 0
       playerRef.current.src = track.animation_url
       play()
       if ("mediaSession" in navigator) {
-        console.log('settings: ', track)
         navigator.mediaSession.metadata = new MediaMetadata({
           title: track.properties.title,
           artist: track.properties.artist,
@@ -67,12 +68,11 @@ export default function Home() {
       }
 
     }
-  }, [activeIndex])
+  }, [activeIndex.current])
 
   useEffect(() => {
-    const release = playlist[activeIndex]
+    const release = playlist[activeIndex.current]
     const related = filterRelatedForRelease(release)
-    console.log(release, related)
     setRelated(related.map(release => release.metadata))
   }, [releaseState])
 
@@ -92,14 +92,14 @@ export default function Home() {
       try {
         navigator.mediaSession.setActionHandler(action, handler);
       } catch (error) {
-        console.log(`The media session action "${action}" is not supported yet.`);
+        console.warn(`The media session action "${action}" is not supported yet.`);
       }
     }
   }
 
   const getRelatedReleases = async () => {
     setRelated([])
-    const release = playlist[activeIndex]
+    const release = playlist[activeIndex.current]
     await getRelatedForRelease(release)
   }
 
@@ -119,7 +119,7 @@ export default function Home() {
 
   const getTracks = async () => {
     setTracks({})
-    setActiveIndex()
+    activeIndex.current = undefined
     let url = "https://api.nina.market/metadata"
 
     if (isRecent) {
@@ -151,9 +151,9 @@ export default function Home() {
   }
 
   const previous = () => {
-    if (hasPrevious) {
+    if (hasPrevious.current) {
       setTrackProgress(0)
-      setActiveIndex(activeIndex - 1)
+      activeIndex.current = activeIndex.current - 1
     }
   }
 
@@ -172,9 +172,9 @@ export default function Home() {
   }
 
   const next = () => {
-    if (hasNext) {
+    if (hasNext.current) {
       setTrackProgress(0)
-      setActiveIndex(activeIndex + 1)
+      activeIndex.current = activeIndex.current + 1
     }
   }
 
@@ -209,11 +209,11 @@ export default function Home() {
             {activeTrack &&
               <>
                 <Controls>
-                  <Button onClick={() => previous()} disabled={!hasPrevious}>Previous</Button>
+                  <Button onClick={() => previous()} disabled={!hasPrevious.current}>Previous</Button>
                   <span>{` | `}</span>
                   <Button onClick={() => play()}>{playing ? 'Pause' : 'Play'}</Button>
                   <span>{` | `}</span>
-                  <Button onClick={() => next()} disabled={!hasNext}>Next</Button>
+                  <Button onClick={() => next()} disabled={!hasNext.current}>Next</Button>
                 </Controls>
                 <Typography display="inline">
                   Now Playing: {activeTrack.properties.artist},
