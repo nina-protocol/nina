@@ -165,7 +165,7 @@ export default function Home() {
   )
 
   return (
-    <Box height="100vh" width="100vw" display="flex" flexDirection="column">
+    <RadioRoot>
       <Head>
         <title>Nina Radio{activeTrack ? ` - ${activeTrack.properties.artist} - "${activeTrack.properties.title}"` : ""}</title>
         <meta name="description" content="Radio player built on the Nina protocol" />
@@ -174,9 +174,8 @@ export default function Home() {
         }
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Box display ="flex" flex={1} sx={{ width: "100%", height: "100%"}}>
-        <Grid container spacing={2}>
-          <Grid item xs={4}>
+        <Grid container md={12} xs={12} sx={{height:{md: '100%', xs: 'unset'}}}>
+          <Grid md={4} xs={12} sx={{minHeight: {md: 'unset', xs: '34vh'}}}>
             <Logo>
               <Typography variant="h4">NINA RADIO</Typography>
             </Logo>
@@ -222,7 +221,7 @@ export default function Home() {
               </>
             }
           </Grid>
-          <Grid item xs={8}>
+          <Grid item md={8} xs={12} sx={{minHeight: {md: 'unset', xs: '50vh'}}}>
             {activeTrack &&
               <Artwork>
                 <Image
@@ -238,16 +237,24 @@ export default function Home() {
             }
           </Grid>
         </Grid>
-      </Box>
       <Footer>
         <DynamicFooter playlist={playlist} isRecent={isRecent} />
       </Footer>
       <audio id="audio" style={{ width: "100%" }}>
         <source src={activeTrack?.animation_url} type="audio/mp3" />
       </audio>
-    </Box>
+    </RadioRoot>
   )
 }
+
+const RadioRoot = styled(Box)(({theme}) => ({
+  height: '100%',
+  width: '100%',
+  "& .MuiTypography-h4": {
+    fontWeight: "bold",
+  },
+}));
+
 
 const Logo = styled("div")(({ theme }) => ({
   paddingTop: theme.spacing(1),

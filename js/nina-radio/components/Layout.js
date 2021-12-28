@@ -4,7 +4,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 
 const Layout = ({ children }) => {
   return (
-    <>
       <Root>
         <CssBaseline />
         <Container
@@ -15,7 +14,6 @@ const Layout = ({ children }) => {
           <main className={classes.bodyContainer}>{children}</main>
         </Container>
       </Root>
-    </>
   );
 };
 
@@ -43,9 +41,11 @@ const Root = styled("div")(({theme}) => ({
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
-    // textAlign: "center",
     height: "100%",
-    paddingLeft: theme.spacing(1)
+    paddingLeft: theme.spacing(1),
+    [theme.breakpoints.down("md")]: {
+      padding: theme.spacing(0, 1)
+    },
   },
 }));
 
