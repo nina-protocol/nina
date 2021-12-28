@@ -75,12 +75,16 @@ class MyDocument extends Document {
             async
             src="https://www.googletagmanager.com/gtag/js?id=G-VDD58V1D22"
           />
-          {() => {
-            window.dataLayer = window.dataLayer || [];
-            const gtag = () => window.dataLayer.push(arguments);
-            gtag("js", new Date());
-            gtag("config", "G-VDD58V1D22");
-          }}
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-VDD58V1D22', { page_path: window.location.pathname });
+              `,
+            }}
+          />
         </Head>
         <body style={{ margin: "0px", position: "relative" }}>
           <Main />
