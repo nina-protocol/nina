@@ -1,5 +1,13 @@
 import Homepage from "../components/HomePage";
+import Head from "next/head";
 
 export default function Home() {
-  return <Homepage />;
+  return(
+    <>
+      <Head>
+        <title>Nina</title>
+      </Head>
+      <Homepage />
+    </>
+  )
 }
