@@ -207,14 +207,13 @@ export default function Home() {
   )
 
   return (
-    <Box height="100vh" width="100vw" display="flex" flexDirection="column">
+    <RadioRoot>
       <Head>
         <title>Nina Radio{activeTrack.current ? ` - ${activeTrack.current.properties.artist} - "${activeTrack.current.properties.title}"` : ""}</title>
         <meta name="description" content="Radio player built on the Nina protocol" />
       </Head>
-      <Box display ="flex" flex={1} sx={{ width: "100%", height: "100%"}}>
-        <Grid container spacing={2}>
-          <Grid item xs={4}>
+        <Grid container md={12} xs={12} sx={{height:{md: '100%', xs: 'unset'}}}>
+          <Grid md={4} xs={12} sx={{minHeight: {md: 'unset', xs: '34vh'}}}>
             <Logo>
               <Typography variant="h4">NINA RADIO</Typography>
             </Logo>
@@ -260,33 +259,45 @@ export default function Home() {
               </>
             }
           </Grid>
-          <Grid item xs={8}>
-            {activeTrack.current &&
+          <Grid item md={8} xs={12} sx={{minHeight: {md: 'unset', xs: '50vh'}}}>
+            {activeTrack &&
               <Artwork>
                 <Image
-                  src={activeTrack.current.image}
-                  alt={activeTrack.current.name}
+                  src={activeTrack.image}
+                  alt={activeTrack.name}
+                  width="100%"
+                  height="100%"
                   layout='fill'
                   objectFit='contain'
                   priority={true}
                 />
               </Artwork>
             }
-            {!activeTrack.current &&
-              <Dots size="80px" />
+            {!activeTrack &&
+              <Box sx={{height: '100%', display: 'flex', justifyContent: 'center'}}>
+                <Dots size="80px" />
+              </Box>
             }
           </Grid>
         </Grid>
-      </Box>
       <Footer>
         <DynamicFooter playlist={playlist} isRecent={isRecent} />
       </Footer>
       <audio id="audio" style={{ width: "100%" }}>
         <source src={activeTrack.current?.animation_url} type="audio/mp3" />
       </audio>
-    </Box>
+    </RadioRoot>
   )
 }
+
+const RadioRoot = styled(Box)(({theme}) => ({
+  height: '100%',
+  width: '100%',
+  "& .MuiTypography-h4": {
+    fontWeight: "bold",
+  },
+}));
+
 
 const Logo = styled("div")(({ theme }) => ({
   paddingTop: theme.spacing(1),
@@ -327,20 +338,28 @@ const Links = styled("div")(({ theme }) => ({
 }))
 
 
-const Artwork = styled("div")(({}) => ({
+const Artwork = styled("div")(({theme}) => ({
   width: "100%",
   height: "100%",
   position: "relative",
   "& img": {
     objectPosition: "right",
+  [theme.breakpoints.down("md")]: {
+    objectPosition: "left",
+    },
   }
 }))
 
-const Footer = styled(Box)(({}) => ({
+const Footer = styled(Box)(({theme}) => ({
   position: "absolute",
   bottom: 0,
   display: "flex",
   justifyContent: "space-between",
+  [theme.breakpoints.down("md")]: {
+    paddingTop: theme.spacing(1),
+    paddingBottom: '120px',
+    position: 'unset'
+  },
   "& a": {
     paddingRight: "15px",
   },
