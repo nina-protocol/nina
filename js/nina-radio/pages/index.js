@@ -16,7 +16,7 @@ const { NinaClient } = ninaCommon.utils
 export default function Home() {
   const playerRef = useRef()
   const intervalRef = useRef()
-  const [isRecent, setIsRecent] = useState(true)
+  const [isRecent, setIsRecent] = useState(false)
   const [tracks, setTracks] = useState({})
   const [playlist, setPlaylist] = useState([])
   const [activeIndex, setActiveIndex] = useState()
