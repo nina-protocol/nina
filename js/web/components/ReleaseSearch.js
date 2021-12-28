@@ -1,70 +1,82 @@
-import {useState, useRef} from "react";
+import {useState, useRef, useEffect, useContext} from "react";
 import {styled} from "@mui/material/styles";
 import {Typography, Box} from "@mui/material";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
- import axios from "axios";
+import Autocomplete from '@mui/material/Autocomplete';
+
+import axios from "axios";
 
 
 import ninaCommon from 'nina-common'
 
+const {ReleaseContext} = ninaCommon.contexts;
 const {NinaClient} = ninaCommon.utils
 
 let path = NinaClient.endpoints.api
 const ReleaseSearch = (props) => {
   const {setSearchResults} = props
   const [query, setQuery] = useState(null);
-  const formRef = useRef();
+  const [artists, setArtists] = useState(null)
+  
+  const {
+    releaseState,
+    getReleasesBySearch,
+    filterSearchResults,
+  } = useContext(ReleaseContext);
 
+  useEffect(async () => {
+    if (!artists) {
+      const data =  await getArtists()
+      setArtists(data)
+    }
+  }, [])
+  const getArtists = async () => {
+    const response = await axios.get(path + '/releases/artists')
+    const data = response.data
+    return data.artists
+  }
 
   const handleChange = (event) => { 
-    console.log('event.target.value :>> ', event.target.value);
     setQuery(event.target.value)
+  };
+
+  const handleOptionSelect = (event, value) => { 
+    setQuery(value)
   };
 
   const handleSubmit= async (e) => {
     e.preventDefault()
-    console.log('query :>> ', encodeURIComponent(query));
-    const encodedQuery = encodeURIComponent(query)
-    path += `/releases/search?s=${encodedQuery}`
-
-    const response = await axios.get(path)
-    const data = response.data
-    if (data.releases) {
-      const ids = data.releases.map(release => release)
-
-      const metadataResult = await fetch(
-        `${NinaClient.endpoints.api}/metadata/bulk`,
-        {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({ids}),
-        }
-      );
-      const metadataJson = await metadataResult.json();
-
-      setQuery(null)
-      console.log('metadataJson :>> ', metadataJson);
-      setSearchResults(metadataJson)
-    }
+   const resultIds = await getReleasesBySearch(query)
+   const resultData = filterSearchResults(resultIds)
+   console.log('resultData :>> ', resultData);
 
     e.target.reset()
-
   }
 
   return (
     <SearchWrapper>
-      <Form onSubmit={handleSubmit} style={{width: '100%'}}>
-        <TextField value={query} fullWidth label="Search by Artist" id="fullWidth" onChange={e => handleChange(e)} />
+        {artists && (
+      <Form onSubmit={e => handleSubmit(e)} style={{width: '100%'}}>
+        <Autocomplete
+          disablePortal
+          id="combo-box-demo"
+          options={artists}
+          sx={{width: 300}}
+          onInputChange={(e, v)=> handleOptionSelect(e, v)}
+          fullWidth
+          renderInput={(params) =>  <TextField {...params} value={query} fullWidth label="Search by Artist" id="fullWidth" onChange={e => handleChange(e)} />}
+          />
         <Button
           variant='outlined'
           type="submit"
           disabled={ query?.length === 0 ? true : false}
-        >
+          >
           Search
         </Button>
 
       </Form>
+          )}
     </SearchWrapper>
   );
 }

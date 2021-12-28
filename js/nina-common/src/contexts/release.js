@@ -93,6 +93,8 @@ const ReleaseContextProvider = ({ children }) => {
     getRedeemablesForRelease,
     getRelatedForRelease,
     filterRelatedForRelease,
+    getReleasesBySearch,
+    filterSearchResults
   } = releaseContextHelper({
     releaseState,
     setReleaseState,
@@ -155,6 +157,8 @@ const ReleaseContextProvider = ({ children }) => {
         filterRelatedForRelease,
         allReleases,
         allReleasesCount,
+        getReleasesBySearch,
+        filterSearchResults
       }}
     >
       {children}
@@ -321,7 +325,7 @@ const releaseContextHelper = ({
       await getRelease(release)
 
       setPressingState({
-        ...pressingState,
+        ...pressingState
         pending: false,
         completed: true,
       })
@@ -1044,7 +1048,7 @@ const releaseContextHelper = ({
   }
 
   const getReleaseRoyaltiesByUser = async () => {
-    await getReleasesHandler(lookupTypes.REVENUE_SHARE)
+    await (lookupTypes.REVENUE_SHARE)
   }
 
   const getReleasesRecent = async () => {
@@ -1080,6 +1084,24 @@ const releaseContextHelper = ({
       setAllReleasesCount(json.count)
       setAllReleases(all)
       await fetchAndSaveReleasesToState(json.releases)
+    } catch (error) {
+      console.warn(error)
+    }
+  }
+
+  const getReleasesBySearch = async (query) => {
+    const encodedQuery = encodeURIComponent(query)
+    try {
+      const result = await fetch(
+        `${NinaClient.endpoints.api}/releases/search?s=${encodedQuery}`
+      )
+      const json = await result.json()
+      const ids =  json.releases.map((id) => {
+       return id
+      })
+      console.log('json.releases :>> ', json.releases);
+      await fetchAndSaveReleasesToState(json.releases)
+      return json.releases
     } catch (error) {
       console.warn(error)
     }
@@ -1148,6 +1170,27 @@ const releaseContextHelper = ({
         b.tokenData.releaseDatetime.toNumber()
     )
     return allReleasesArray
+  }
+
+  const filterSearchResults = (resultIds) => {
+    console.log('resultIds :>> ', resultIds);
+    const resultArray = []
+    resultIds.forEach((releasePubkey) => {
+      console.log('releasePubkey :>> ', releasePubkey);
+      const tokenData = releaseState.tokenData[releasePubkey]
+      const metadata = releaseState.metadata[releasePubkey]
+      if (metadata) {
+        console.log('pushing');
+        resultArray.push({ tokenData, metadata, releasePubkey })
+      }
+    })
+    // resultArray.sort(
+    //   (a, b) =>
+    //     a.tokenData.releaseDatetime.toNumber() >
+    //     b.tokenData.releaseDatetime.toNumber()
+    // )
+    console.log('resultArray :>> ', resultArray);
+    return resultArray
   }
 
   const filterReleasesPublishedByUser = (userPubkey = undefined) => {
@@ -1367,6 +1410,7 @@ const releaseContextHelper = ({
           dataParsed.publicKey = release.publicKey
           return dataParsed
         })
+        console.log('releaseAccounts :>> ', releaseAccounts);
         return await saveReleasesToState(releaseAccounts)
       } catch (error) {
         console.warn(error)
@@ -1553,6 +1597,8 @@ const releaseContextHelper = ({
     getRedeemablesForRelease,
     getRelatedForRelease,
     filterRelatedForRelease,
+    getReleasesBySearch,
+    filterSearchResults
   }
 }
 

@@ -31,8 +31,8 @@ const ReleasePage = (props) => {
           content={`${metadata?.properties.artist} - "${metadata?.properties.title}" on Nina`}
         />
         <meta name="twitter:description" content={metadata?.description} />
-        <meta name="twitter:image" content={metadata.image} />
-        <meta name="og:image" content={metadata.image} />
+        <meta name="twitter:image" content={metadata?.image} />
+        <meta name="og:image" content={metadata?.image} />
       </Head>
       <Release metadataSsr={metadata} />;
     </>
@@ -52,7 +52,7 @@ export const getServerSideProps = async (context) => {
   const metadataJson = await metadataResult.json();
   return {
     props: {
-      metadata: metadataJson[releasePubkey],
+      metadata: metadataJson[releasePubkey] || null,
       releasePubkey,
       host: context.req.headers.host,
     },
