@@ -273,7 +273,7 @@ export default function Home() {
                 />
               </Artwork>
             }
-            {!activeTrack &&
+            {!activeTrack?.current &&
               <Box sx={{height: '100%', display: 'flex', justifyContent: 'center'}}>
                 <Dots size="80px" />
               </Box>
