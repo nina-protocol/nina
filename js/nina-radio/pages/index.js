@@ -313,6 +313,7 @@ const Footer = styled(Box)(({theme}) => ({
   justifyContent: "space-between",
   [theme.breakpoints.down("md")]: {
     paddingTop: theme.spacing(1),
+    paddingBottom: '120px'
     position: 'unset'
   },
   "& a": {
