@@ -227,6 +227,8 @@ export default function Home() {
                 <Image
                   src={activeTrack.image}
                   alt={activeTrack.name}
+                  width="100%"
+                  height="100%"
                   layout='fill'
                   objectFit='contain'
                 />
@@ -297,12 +299,15 @@ const Links = styled("div")(({ theme }) => ({
 }))
 
 
-const Artwork = styled("div")(({}) => ({
+const Artwork = styled("div")(({theme}) => ({
   width: "100%",
   height: "100%",
   position: "relative",
   "& img": {
     objectPosition: "right",
+  [theme.breakpoints.down("md")]: {
+    objectPosition: "left",
+    },
   }
 }))
 
