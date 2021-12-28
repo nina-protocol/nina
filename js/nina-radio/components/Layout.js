@@ -44,7 +44,9 @@ const Root = styled("div")(({theme}) => ({
     height: "100%",
     paddingLeft: theme.spacing(1),
     [theme.breakpoints.down("md")]: {
-      padding: theme.spacing(0, 1)
+      padding: theme.spacing(0, 1),
+      height: 'unset',
+      minHeight: '100%',
     },
   },
 }));

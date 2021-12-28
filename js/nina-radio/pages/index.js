@@ -233,7 +233,9 @@ export default function Home() {
               </Artwork>
             }
             {!activeTrack &&
-              <Dots size="80px" />
+              <Box sx={{height: '100%', display: 'flex', justifyContent: 'center'}}>
+                <Dots size="80px" />
+              </Box>
             }
           </Grid>
         </Grid>
@@ -304,11 +306,15 @@ const Artwork = styled("div")(({}) => ({
   }
 }))
 
-const Footer = styled(Box)(({}) => ({
+const Footer = styled(Box)(({theme}) => ({
   position: "absolute",
   bottom: 0,
   display: "flex",
   justifyContent: "space-between",
+  [theme.breakpoints.down("md")]: {
+    paddingTop: theme.spacing(1),
+    position: 'unset'
+  },
   "& a": {
     paddingRight: "15px",
   },
