@@ -5,11 +5,14 @@
   "private": true,
   "workspaces": [
     "nina-common",
+    "nina-radio",
     "soft-lp",
     "web"
   ],
   "scripts": {
     "nina-common": "yarn workspace nina-common",
+    "nina-radio": "yarn workspace nina-radio",
+    "nina-radio:build": "yarn nina-common build && yarn nina-radio build",
     "soft-lp": "yarn workspace soft-lp",
     "soft-lp:build": "yarn nina-common build && yarn soft-lp build",
     "web": "yarn workspace web",
