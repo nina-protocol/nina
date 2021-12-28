@@ -260,11 +260,11 @@ export default function Home() {
             }
           </Grid>
           <Grid item md={8} xs={12} sx={{minHeight: {md: 'unset', xs: '50vh'}}}>
-            {activeTrack &&
+            {activeTrack?.current &&
               <Artwork>
                 <Image
-                  src={activeTrack.image}
-                  alt={activeTrack.name}
+                  src={activeTrack.current.image}
+                  alt={activeTrack.current.name}
                   width="100%"
                   height="100%"
                   layout='fill'
