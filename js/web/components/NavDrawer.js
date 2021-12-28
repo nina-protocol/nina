@@ -26,6 +26,7 @@ const linksConnected = [
   "releases",
   "upload",
   "faq",
+  "radio",
   "the soft lp",
 ];
 
@@ -34,6 +35,7 @@ const linksNotConnected = [
   "all Releases",
   "upload",
   "faq",
+  "radio",
   "the soft lp",
 ];
 
@@ -145,6 +147,22 @@ const NavDrawer = () => {
                       passHref
                     >
                       The Soft LP
+                    </Link>
+                  </ListItemText>
+                </ListItem>
+              );
+            case "radio":
+              return (
+                <ListItem button key={link}>
+                  <ListItemText>
+                    <Link
+                      href="https://radio.nina.market"
+                      target="_blank"
+                      rel="noreferrer"
+                      className={`${classes.drawerLink}`}
+                      passHref
+                    >
+                      Nina Radio
                     </Link>
                   </ListItemText>
                 </ListItem>
