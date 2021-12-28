@@ -166,8 +166,11 @@ export default function Home() {
   return (
     <Box height="100vh" width="100vw" display="flex" flexDirection="column">
       <Head>
-        <title>Nina Radio</title>
+        <title>Nina Radio{activeTrack ? ` - ${activeTrack.properties.artist} - "${activeTrack.properties.title}"` : ""}</title>
         <meta name="description" content="Radio player built on the Nina protocol" />
+        {activeTrack &&
+          <meta name="og:image" content={activeTrack.image} />
+        }
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Box display ="flex" flex={1} sx={{ width: "100%", height: "100%"}}>
@@ -217,9 +220,6 @@ export default function Home() {
                 </Links>
               </>
             }
-            <Footer>
-              <DynamicFooter playlist={playlist} isRecent={isRecent} />
-            </Footer>
           </Grid>
           <Grid item xs={8}>
             {activeTrack &&
@@ -238,6 +238,9 @@ export default function Home() {
           </Grid>
         </Grid>
       </Box>
+      <Footer>
+        <DynamicFooter playlist={playlist} isRecent={isRecent} />
+      </Footer>
       <audio id="audio" style={{ width: "100%" }}>
         <source src={activeTrack?.animation_url} type="audio/mp3" />
       </audio>
