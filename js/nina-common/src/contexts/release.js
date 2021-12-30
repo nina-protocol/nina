@@ -118,6 +118,8 @@ const ReleaseContextProvider = ({ children }) => {
     allReleases,
     setAllReleases,
     setAllReleasesCount,
+    searchResults,
+    setSearchResults
   })
 
   return (
@@ -158,7 +160,9 @@ const ReleaseContextProvider = ({ children }) => {
         allReleases,
         allReleasesCount,
         getReleasesBySearch,
-        filterSearchResults
+        filterSearchResults,
+        searchResults,
+        setSearchResults
       }}
     >
       {children}
@@ -179,7 +183,6 @@ const releaseContextHelper = ({
   connection,
   getUsdcBalance,
   encryptData,
-  setSearchResults,
   collection,
   redeemableState,
   setRedeemableState,
@@ -189,6 +192,8 @@ const releaseContextHelper = ({
   allReleases,
   setAllReleases,
   setAllReleasesCount,
+  searchResults,
+  setSearchResults
 }) => {
   const provider = new anchor.Provider(
     connection,
@@ -325,7 +330,7 @@ const releaseContextHelper = ({
       await getRelease(release)
 
       setPressingState({
-        ...pressingState
+        ...pressingState,
         pending: false,
         completed: true,
       })
@@ -1101,7 +1106,11 @@ const releaseContextHelper = ({
       })
       console.log('json.releases :>> ', json.releases);
       await fetchAndSaveReleasesToState(json.releases)
-      return json.releases
+      setSearchResults({
+        ...searchResults,
+        releaseIds: json.releases,
+        handle: query
+      })
     } catch (error) {
       console.warn(error)
     }
@@ -1172,23 +1181,33 @@ const releaseContextHelper = ({
     return allReleasesArray
   }
 
-  const filterSearchResults = (resultIds) => {
-    console.log('resultIds :>> ', resultIds);
+  const filterSearchResults = (releaseIds) => {
+    if (!releaseIds) {
+      return
+    }
+    console.log('releaseIds :>> ', releaseIds);
     const resultArray = []
-    resultIds.forEach((releasePubkey) => {
+    releaseIds.forEach((releasePubkey) => {
       console.log('releasePubkey :>> ', releasePubkey);
       const tokenData = releaseState.tokenData[releasePubkey]
       const metadata = releaseState.metadata[releasePubkey]
+      console.log('tokenData :>> ', tokenData);
+      console.log('metadata :>> ', metadata);
       if (metadata) {
         console.log('pushing');
         resultArray.push({ tokenData, metadata, releasePubkey })
       }
     })
-    // resultArray.sort(
-    //   (a, b) =>
-    //     a.tokenData.releaseDatetime.toNumber() >
-    //     b.tokenData.releaseDatetime.toNumber()
-    // )
+    resultArray.sort(
+      (a, b) =>
+        a.tokenData.releaseDatetime.toNumber() >
+        b.tokenData.releaseDatetime.toNumber()
+    )
+    setSearchResults({
+      ...searchResults,
+      releases: resultArray,
+      searched: true
+    })
     console.log('resultArray :>> ', resultArray);
     return resultArray
   }
@@ -1423,25 +1442,25 @@ const releaseContextHelper = ({
       let updatedState = { ...releaseState }
       let search = undefined
 
-      if (handle) {
-        search = {
-          handle,
-          searched: true,
-          releases: [],
-        }
-      }
+      // if (handle) {
+      //   search = {
+      //     handle,
+      //     searched: true,
+      //     releases: [],
+      //   }
+      // }
 
       const metadataQueries = {}
       for await (let release of releases) {
         const releasePubkey = release.publicKey.toBase58()
         release = release.account ? release.account : release
-        if (handle) {
-          let searchResult = {
-            releasePubkey,
-            tokenData: release,
-          }
-          search.releases.push(searchResult)
-        }
+        // if (handle) {
+        //   let searchResult = {
+        //     releasePubkey,
+        //     tokenData: release,
+        //   }
+        //   search.releases.push(searchResult)
+        // }
 
         updatedState = {
           ...updatedState,
@@ -1473,18 +1492,19 @@ const releaseContextHelper = ({
         }
       }
 
-      if (handle) {
-        const finalSearchReleases = []
-        search.releases.forEach((release) => {
-          if (updatedState.metadata[release.releasePubkey]) {
-            release.metadata = updatedState.metadata[release.releasePubkey]
-            finalSearchReleases.push(release)
-          }
-        })
-        search.releases = finalSearchReleases
+      // if (handle) {
+      //   const finalSearchReleases = []
+      //   search.releases.forEach((release) => {
+      //     if (updatedState.metadata[release.releasePubkey]) {
+      //       release.metadata = updatedState.metadata[release.releasePubkey]
+      //       finalSearchReleases.push(release)
+      //     }
+      //   })
+      //   search.releases = finalSearchReleases
 
-        await setSearchResults(search)
-      }
+      //   await setSearchResults(search)
+      // }
+      console.log('updatedState :>> ', updatedState);
       await setReleaseState(updatedState)
     } catch (error) {
       console.warn(error)
@@ -1609,6 +1629,7 @@ const defaultPressingState = {
 }
 
 const searchResultsInitialState = {
+  releaseIds: [],
   releases: [],
   searched: false,
   handle: '',

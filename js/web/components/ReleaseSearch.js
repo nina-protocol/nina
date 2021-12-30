@@ -15,7 +15,6 @@ const {NinaClient} = ninaCommon.utils
 
 let path = NinaClient.endpoints.api
 const ReleaseSearch = (props) => {
-  const {setSearchResults} = props
   const [query, setQuery] = useState(null);
   const [artists, setArtists] = useState(null)
   
@@ -23,6 +22,8 @@ const ReleaseSearch = (props) => {
     releaseState,
     getReleasesBySearch,
     filterSearchResults,
+    searchResults,
+    setSearchResults
   } = useContext(ReleaseContext);
 
   useEffect(async () => {
@@ -47,12 +48,18 @@ const ReleaseSearch = (props) => {
 
   const handleSubmit= async (e) => {
     e.preventDefault()
-   const resultIds = await getReleasesBySearch(query)
-   const resultData = filterSearchResults(resultIds)
-   console.log('resultData :>> ', resultData);
-
-    e.target.reset()
+   await getReleasesBySearch(query)
+    // e.target.reset()
   }
+
+  useEffect(() => {
+    if (searchResults.releaseIds.length > 0) {
+      console.log('inside');
+      console.log('searchResults  :>> ', searchResults );
+      const resultData = filterSearchResults(searchResults.releaseIds)
+      // console.log('resultData :>> ', resultData);
+    }
+  }, [releaseState, searchResults.releaseIds])
 
   return (
     <SearchWrapper>
