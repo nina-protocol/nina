@@ -12,6 +12,7 @@ import ninaCommon from 'nina-common'
 
 const {ReleaseContext} = ninaCommon.contexts;
 const {NinaClient} = ninaCommon.utils
+const {Dots} = ninaCommon.components;
 
 let path = NinaClient.endpoints.api
 const ReleaseSearch = (props) => {
@@ -54,9 +55,8 @@ const ReleaseSearch = (props) => {
 
   useEffect(() => {
     if (searchResults.releaseIds.length > 0) {
-      console.log('inside');
-      console.log('searchResults  :>> ', searchResults );
       const resultData = filterSearchResults(searchResults.releaseIds)
+      console.log('searchResults  :>> ', searchResults );
       // console.log('resultData :>> ', resultData);
     }
   }, [releaseState, searchResults.releaseIds])
@@ -64,26 +64,40 @@ const ReleaseSearch = (props) => {
   return (
     <SearchWrapper>
         {artists && (
-      <Form onSubmit={e => handleSubmit(e)} style={{width: '100%'}}>
-        <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          options={artists}
-          sx={{width: 300}}
-          onInputChange={(e, v)=> handleOptionSelect(e, v)}
-          fullWidth
-          renderInput={(params) =>  <TextField {...params} value={query} fullWidth label="Search by Artist" id="fullWidth" onChange={e => handleChange(e)} />}
-          />
-        <Button
-          variant='outlined'
-          type="submit"
-          disabled={ query?.length === 0 ? true : false}
-          >
-          Search
-        </Button>
+          <Form onSubmit={e => handleSubmit(e)} style={{width: '100%'}}>
+            <Autocomplete
+              disablePortal
+              id="combo-box-demo"
+              options={artists}
+              sx={{width: 300}}
+              onInputChange={(e, v)=> handleOptionSelect(e, v)}
+              fullWidth
+              renderInput={(params) =>  <TextField {...params} value={query} fullWidth label="Search by Artist" id="fullWidth" onChange={e => handleChange(e)} />}
+              />
+            <Button
+              variant='outlined'
+              type="submit"
+              disabled={ query?.length === 0 ? true : false}
+              >
+              Search
+            </Button>
 
-      </Form>
-          )}
+          </Form>
+        )}
+
+      {searchResults.pending && (
+        <Box>
+          <Dots msg={`searching for ${searchResults.query}`} />
+        </Box>
+      )}
+
+      {searchResults.searched && (
+        <Box>
+          <Typography>
+           {searchResults.releases.length} results for {searchResults.query}
+          </Typography>
+        </Box>
+      )}
     </SearchWrapper>
   );
 }

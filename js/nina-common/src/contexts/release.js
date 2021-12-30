@@ -1095,6 +1095,11 @@ const releaseContextHelper = ({
   }
 
   const getReleasesBySearch = async (query) => {
+    setSearchResults({
+      ...searchResults,
+      pending: true,
+      query: query
+    })
     const encodedQuery = encodeURIComponent(query)
     try {
       const result = await fetch(
@@ -1109,7 +1114,7 @@ const releaseContextHelper = ({
       setSearchResults({
         ...searchResults,
         releaseIds: json.releases,
-        handle: query
+        query
       })
     } catch (error) {
       console.warn(error)
@@ -1185,7 +1190,6 @@ const releaseContextHelper = ({
     if (!releaseIds) {
       return
     }
-    console.log('releaseIds :>> ', releaseIds);
     const resultArray = []
     releaseIds.forEach((releasePubkey) => {
       console.log('releasePubkey :>> ', releasePubkey);
@@ -1194,7 +1198,6 @@ const releaseContextHelper = ({
       console.log('tokenData :>> ', tokenData);
       console.log('metadata :>> ', metadata);
       if (metadata) {
-        console.log('pushing');
         resultArray.push({ tokenData, metadata, releasePubkey })
       }
     })
@@ -1203,12 +1206,13 @@ const releaseContextHelper = ({
         a.tokenData.releaseDatetime.toNumber() >
         b.tokenData.releaseDatetime.toNumber()
     )
+    console.log('searchResults.query :>> ', searchResults.query);
     setSearchResults({
       ...searchResults,
       releases: resultArray,
+      pending: false,
       searched: true
     })
-    console.log('resultArray :>> ', resultArray);
     return resultArray
   }
 
@@ -1632,5 +1636,6 @@ const searchResultsInitialState = {
   releaseIds: [],
   releases: [],
   searched: false,
-  handle: '',
+  pending: false,
+  query: '',
 }
