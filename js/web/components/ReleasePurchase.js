@@ -10,7 +10,8 @@ import { Typography } from "@mui/material";
 import Link from "next/link";
 
 const { Dots, ReleaseSettings } = ninaCommon.components;
-const { ReleaseContext, NinaContext, ExchangeContext, NameContext } = ninaCommon.contexts;
+const { ReleaseContext, NinaContext, ExchangeContext, NameContext } =
+  ninaCommon.contexts;
 const { NinaClient } = ninaCommon.utils;
 
 const ReleasePurchase = (props) => {
@@ -28,12 +29,9 @@ const ReleasePurchase = (props) => {
   const [amountPendingBuys, setAmountPendingBuys] = useState(0);
   const [amountPendingSales, setAmountPendingSales] = useState(0);
   const [downloadButtonString, setDownloadButtonString] = useState("Download");
-  const [userIsRecipient, setUserIsRecipient] = useState(false)
-  const [userRecipientData, setUserRecipientData] = useState(undefined)
-  const [userShare, setUserShare] = useState(undefined)
-  const [userDisplayShare, setUserDisplayShare] = useState(undefined)
-  const {twitterHandlePublicKeyMap, lookupUserTwitterHandle} =
-    useContext(NameContext)
+  const [userIsRecipient, setUserIsRecipient] = useState(false);
+  const { twitterHandlePublicKeyMap, lookupUserTwitterHandle } =
+    useContext(NameContext);
 
   useEffect(() => {
     getRelease(releasePubkey);
@@ -70,30 +68,26 @@ const ReleasePurchase = (props) => {
     );
   }, [exchangeState]);
 
-
   useEffect(() => {
     if (release?.royaltyRecipients) {
       release.royaltyRecipients.forEach((recipient) => {
-        const recipientPubkey = recipient.recipientAuthority.toBase58()
+        const recipientPubkey = recipient.recipientAuthority.toBase58();
         if (
           recipient.percentShare.toNumber() > 0 &&
           !twitterHandlePublicKeyMap[recipientPubkey]
         ) {
-          lookupUserTwitterHandle(recipient.recipientAuthority)
+          lookupUserTwitterHandle(recipient.recipientAuthority);
         }
         if (
           wallet?.connected &&
           recipient.recipientAuthority.toBase58() ===
-          wallet?.publicKey.toBase58()
+            wallet?.publicKey.toBase58()
         ) {
-          setUserIsRecipient(true)
-          setUserRecipientData(recipient)
-          setUserShare(recipient.percentShare.toNumber() / 10000)
-          setUserDisplayShare(recipient.percentShare.toNumber() / 10000)
+          setUserIsRecipient(true);
         }
-      })
+      });
     }
-  }, [release?.royaltyRecipients, wallet?.connected])
+  }, [release?.royaltyRecipients, wallet?.connected]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -201,10 +195,9 @@ const ReleasePurchase = (props) => {
       <StyledDescription variant="h3" align="left">
         {metadata.description}
       </StyledDescription>
-      {wallet?.connected &&
-        userIsRecipient && (
-          <ReleaseSettings releasePubkey={releasePubkey} inCreateFlow={false} />
-        )}
+      {wallet?.connected && userIsRecipient && (
+        <ReleaseSettings releasePubkey={releasePubkey} inCreateFlow={false} />
+      )}
       <Box mt={1}>
         <form onSubmit={handleSubmit}>
           <Button

@@ -42,16 +42,14 @@ const ReleaseSearch = () => {
     return data.artists;
   };
 
-  const handleChange = (event) => {
-    setQuery(event.target.value);
-  };
-
   const handleOptionSelect = (event, value, reason) => {
-    if (reason === "clear") {
-      resetSearchResults()
-      setQuery(null)
-    } else if (reason === "reset") {
-      getReleasesBySearch(value);
+    if (event) {
+      if (reason === "clear") {
+        resetSearchResults();
+        setQuery(null);
+      } else if (reason === "reset") {
+        getReleasesBySearch(value);
+      }
     }
   };
 
@@ -62,8 +60,8 @@ const ReleaseSearch = () => {
 
   const handleReset = () => {
     resetSearchResults();
-    setQuery(null)
-    formRef.current.value = ''
+    setQuery(null);
+    formRef.current.value = "";
   };
 
   useEffect(() => {
@@ -106,7 +104,7 @@ const ReleaseSearch = () => {
                   label="Search by Artist"
                   id="fullWidth"
                   variant="standard"
-                  onChange={(e) => handleChange(e)}
+                  // onChange={(e) => handleChange(e)}
                 />
               </InputWrapper>
             )}

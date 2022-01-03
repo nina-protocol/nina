@@ -62,7 +62,7 @@ const ReleaseTileList = (props) => {
                     <ControlPointIcon sx={{ color: "white" }} />
                   </Button>
                 </CardCta>
-                {release.metadata.image && 
+                {release.metadata.image && (
                   <Image
                     width={100}
                     height={100}
@@ -75,7 +75,7 @@ const ReleaseTileList = (props) => {
                     }}
                     src={release.metadata.image}
                   />
-                }
+                )}
               </HoverCard>
               <Box sx={{ padding: "10px 0 0" }}>
                 <Typography gutterBottom>
