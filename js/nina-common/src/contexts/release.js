@@ -56,14 +56,6 @@ const ReleaseContextProvider = ({ children }) => {
     setSearchResults(searchResultsInitialState)
   }
 
-  const emptySearchResults = (query) => {
-    setSearchResults({
-      releases: [],
-      searched: true,
-      handle: query,
-    })
-  }
-
   const resetPressingState = () => {
     setPressingState(defaultPressingState)
   }
@@ -147,7 +139,6 @@ const ReleaseContextProvider = ({ children }) => {
         redeemableRedeem,
         searchResults,
         resetSearchResults,
-        emptySearchResults,
         getRedemptionRecordsForRelease,
         redeemableUpdateShipping,
         redeemableState,
@@ -1095,11 +1086,15 @@ const releaseContextHelper = ({
   }
 
   const getReleasesBySearch = async (query) => {
+
     setSearchResults({
-      ...searchResults,
+      releaseIds: [],
+      releases: [],
+      searched: false,
       pending: true,
       query: query
     })
+
     const encodedQuery = encodeURIComponent(query)
     try {
       const result = await fetch(
@@ -1433,7 +1428,6 @@ const releaseContextHelper = ({
           dataParsed.publicKey = release.publicKey
           return dataParsed
         })
-        console.log('releaseAccounts :>> ', releaseAccounts);
         return await saveReleasesToState(releaseAccounts)
       } catch (error) {
         console.warn(error)
@@ -1444,27 +1438,12 @@ const releaseContextHelper = ({
   const saveReleasesToState = async (releases, handle = undefined) => {
     try {
       let updatedState = { ...releaseState }
-      let search = undefined
-
-      // if (handle) {
-      //   search = {
-      //     handle,
-      //     searched: true,
-      //     releases: [],
-      //   }
-      // }
+  
 
       const metadataQueries = {}
       for await (let release of releases) {
         const releasePubkey = release.publicKey.toBase58()
         release = release.account ? release.account : release
-        // if (handle) {
-        //   let searchResult = {
-        //     releasePubkey,
-        //     tokenData: release,
-        //   }
-        //   search.releases.push(searchResult)
-        // }
 
         updatedState = {
           ...updatedState,
@@ -1496,19 +1475,6 @@ const releaseContextHelper = ({
         }
       }
 
-      // if (handle) {
-      //   const finalSearchReleases = []
-      //   search.releases.forEach((release) => {
-      //     if (updatedState.metadata[release.releasePubkey]) {
-      //       release.metadata = updatedState.metadata[release.releasePubkey]
-      //       finalSearchReleases.push(release)
-      //     }
-      //   })
-      //   search.releases = finalSearchReleases
-
-      //   await setSearchResults(search)
-      // }
-      console.log('updatedState :>> ', updatedState);
       await setReleaseState(updatedState)
     } catch (error) {
       console.warn(error)

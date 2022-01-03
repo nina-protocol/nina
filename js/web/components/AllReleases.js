@@ -40,7 +40,7 @@ const Releases = () => {
   const handleScroll = (e) => {
     const bottom =
       e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
-    if (bottom && !pendingFetch && totalCount !== allReleases.length) {
+    if (bottom && !pendingFetch && totalCount !== allReleases.length && !searchResults.searched) {
       setPendingFetch(true);
       getReleasesAll();
     }

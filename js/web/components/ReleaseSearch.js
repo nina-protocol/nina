@@ -4,6 +4,7 @@ import {Typography, Box} from "@mui/material";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Autocomplete from '@mui/material/Autocomplete';
+import CloseIcon from '@mui/icons-material/Close';
 
 import axios from "axios";
 
@@ -18,13 +19,16 @@ let path = NinaClient.endpoints.api
 const ReleaseSearch = (props) => {
   const [query, setQuery] = useState(null);
   const [artists, setArtists] = useState(null)
-  
+  const formRef = useRef(null)
+  const inputRef = useRef(null)
+
   const {
     releaseState,
     getReleasesBySearch,
     filterSearchResults,
     searchResults,
-    setSearchResults
+    setSearchResults,
+    resetSearchResults
   } = useContext(ReleaseContext);
 
   useEffect(async () => {
@@ -47,16 +51,23 @@ const ReleaseSearch = (props) => {
     setQuery(value)
   };
 
-  const handleSubmit= async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
    await getReleasesBySearch(query)
     // e.target.reset()
   }
 
+  const handleReset = () => {
+    resetSearchResults()
+    console.log('reset');
+    debugger
+    inputRef.current.value = ''
+    console.log('query :>> ', query);
+  }
+
   useEffect(() => {
     if (searchResults.releaseIds.length > 0) {
       const resultData = filterSearchResults(searchResults.releaseIds)
-      console.log('searchResults  :>> ', searchResults );
       // console.log('resultData :>> ', resultData);
     }
   }, [releaseState, searchResults.releaseIds])
@@ -64,15 +75,16 @@ const ReleaseSearch = (props) => {
   return (
     <SearchWrapper>
         {artists && (
-          <Form onSubmit={e => handleSubmit(e)} style={{width: '100%'}}>
+        <Form ref={formRef} onSubmit={e => handleSubmit(e)} style={{width: '100%'}}>
             <Autocomplete
               disablePortal
               id="combo-box-demo"
               options={artists}
-              sx={{width: 300}}
+              // sx={{width: 300}}
               onInputChange={(e, v)=> handleOptionSelect(e, v)}
               fullWidth
-              renderInput={(params) =>  <TextField {...params} value={query} fullWidth label="Search by Artist" id="fullWidth" onChange={e => handleChange(e)} />}
+              ref={formRef}
+              renderInput={(params) =>  <TextField {...params} ref={inputRef} value={query} fullWidth label="Search by Artist" id="fullWidth" onChange={e => handleChange(e)} />}
               />
             <Button
               variant='outlined'
@@ -92,11 +104,13 @@ const ReleaseSearch = (props) => {
       )}
 
       {searchResults.searched && (
-        <Box>
-          <Typography>
-           {searchResults.releases.length} results for {searchResults.query}
+        <ResultCopy>
+          <Typography align="left">
+            {searchResults.releases.length} results for <span>{searchResults.query}</span>
           </Typography>
-        </Box>
+
+          <CloseIcon onClick={handleReset} />
+        </ResultCopy>
       )}
     </SearchWrapper>
   );
@@ -108,8 +122,18 @@ const SearchWrapper = styled(Box)(() => ({
 
 const Form = styled('form')(() => ({
   width: '100%',
-  display: 'flex'
+  display: 'flex',
 }));
+
+const ResultCopy = styled(Box)(({theme}) => ({
+  display: 'flex',
+  alignItems: 'center',
+ '& span': {
+   color: theme.palette.blue
+ }
+}));
+
+
 
 
 
