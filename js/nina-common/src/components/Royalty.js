@@ -201,7 +201,7 @@ const Royalty = (props) => {
                 })}
             </List>
             {wallet?.connected &&
-            release?.authority.toBase58() === wallet?.publicKey.toBase58()
+            userIsRecipient
               ? userIsRecipientUI()
               : null}
           </StyledPaper>

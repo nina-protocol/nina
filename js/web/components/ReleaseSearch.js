@@ -3,7 +3,7 @@ import { styled } from "@mui/material/styles";
 import { Typography, Box } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-// import CloseIcon from "@mui/icons-material/Close";
+import CloseIcon from "@mui/icons-material/Close";
 
 import axios from "axios";
 
@@ -60,11 +60,11 @@ const ReleaseSearch = () => {
     getReleasesBySearch(query);
   };
 
-  // const handleReset = () => {
-  //   resetSearchResults();
-  //   setQuery('')
-  //   formRef.current.value = ''
-  // };
+  const handleReset = () => {
+    resetSearchResults();
+    setQuery(null)
+    formRef.current.value = ''
+  };
 
   useEffect(() => {
     if (searchResults.releaseIds.length > 0) {
@@ -73,7 +73,7 @@ const ReleaseSearch = () => {
       if (related) {
         setSearchResults({
           ...searchResults,
-          releases: related.reverse(),
+          releases: related,
         });
       }
     }
@@ -94,14 +94,14 @@ const ReleaseSearch = () => {
             onInputChange={(e, v, r) => handleOptionSelect(e, v, r)}
             fullWidth
             ref={formRef}
-            // disableClearable={true}
+            value={query}
+            blurOnSelect
             renderInput={(params) => (
               <InputWrapper>
                 <TextField
                   className="input"
                   {...params}
                   ref={inputRef}
-                  // value={query}
                   fullWidth
                   label="Search by Artist"
                   id="fullWidth"
@@ -127,7 +127,7 @@ const ReleaseSearch = () => {
             <span>{searchResults.query}</span>
           </Typography>
 
-          {/* <CloseIcon onClick={handleReset} /> */}
+          <CloseIcon onClick={handleReset} />
         </ResultCopy>
       )}
     </SearchWrapper>

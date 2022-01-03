@@ -1602,5 +1602,5 @@ const searchResultsInitialState = {
   releases: [],
   searched: false,
   pending: false,
-  query: '',
+  query: null,
 }
