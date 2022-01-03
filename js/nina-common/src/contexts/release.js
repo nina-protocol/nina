@@ -1101,10 +1101,6 @@ const releaseContextHelper = ({
         `${NinaClient.endpoints.api}/releases/search?s=${encodedQuery}`
       )
       const json = await result.json()
-      const ids =  json.releases.map((id) => {
-       return id
-      })
-      console.log('json.releases :>> ', json.releases);
 
       if (json.releases[0]) {
         getRelatedForRelease(json.releases[0])
@@ -1115,6 +1111,7 @@ const releaseContextHelper = ({
         ...searchResults,
         releaseIds: json.releases,
         searched: true,
+        pending: false,
         query
       })
     } catch (error) {
@@ -1193,11 +1190,8 @@ const releaseContextHelper = ({
     }
     const resultArray = []
     releaseIds.forEach((releasePubkey) => {
-      console.log('releasePubkey :>> ', releasePubkey);
       const tokenData = releaseState.tokenData[releasePubkey]
       const metadata = releaseState.metadata[releasePubkey]
-      console.log('tokenData :>> ', tokenData);
-      console.log('metadata :>> ', metadata);
       if (metadata) {
         resultArray.push({ tokenData, metadata, releasePubkey })
       }
@@ -1207,7 +1201,6 @@ const releaseContextHelper = ({
         a.tokenData.releaseDatetime.toNumber() >
         b.tokenData.releaseDatetime.toNumber()
     )
-    console.log('searchResults.query :>> ', searchResults.query);
     setSearchResults({
       ...searchResults,
       releases: resultArray,

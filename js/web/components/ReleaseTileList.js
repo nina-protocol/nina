@@ -62,18 +62,20 @@ const ReleaseTileList = (props) => {
                     <ControlPointIcon sx={{ color: "white" }} />
                   </Button>
                 </CardCta>
-                <Image
-                  width={100}
-                  height={100}
-                  layout="responsive"
-                  containerStyles={{
-                    position: "absolute",
-                    left: "0",
-                    top: "0",
-                    zIndex: "1",
-                  }}
-                  src={release.metadata.image}
-                />
+                {release.metadata.image && 
+                  <Image
+                    width={100}
+                    height={100}
+                    layout="responsive"
+                    containerStyles={{
+                      position: "absolute",
+                      left: "0",
+                      top: "0",
+                      zIndex: "1",
+                    }}
+                    src={release.metadata.image}
+                  />
+                }
               </HoverCard>
               <Box sx={{ padding: "10px 0 0" }}>
                 <Typography gutterBottom>

@@ -3,7 +3,9 @@ import { styled } from "@mui/material/styles";
 import { Typography, Box } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import CloseIcon from "@mui/icons-material/Close";
+// import CloseIcon from "@mui/icons-material/Close";
+import debounce from "lodash.debounce";
+
 
 import axios from "axios";
 
@@ -46,19 +48,24 @@ const ReleaseSearch = () => {
     setQuery(event.target.value);
   };
 
-  const handleOptionSelect = (event, value) => {
-    setQuery(value);
-    getReleasesBySearch(value);
+  const handleOptionSelect = (event, value, reason) => {
+    if (reason === "clear") {
+      resetSearchResults()
+      setQuery(null)
+    } else if (reason === "reset") {
+      getReleasesBySearch(value);
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     getReleasesBySearch(query);
-    // e.target.reset()
   };
 
   const handleReset = () => {
     resetSearchResults();
+    setQuery('')
+    formRef.current.value = ''
   };
 
   useEffect(() => {
@@ -86,16 +93,17 @@ const ReleaseSearch = () => {
             disablePortal
             id="combo-box-demo"
             options={artists}
-            onInputChange={(e, v) => handleOptionSelect(e, v)}
+            onInputChange={(e, v, r) => handleOptionSelect(e, v, r)}
             fullWidth
             ref={formRef}
+            // disableClearable={true}
             renderInput={(params) => (
               <InputWrapper>
                 <TextField
                   className="input"
                   {...params}
                   ref={inputRef}
-                  value={query}
+                  // value={query}
                   fullWidth
                   label="Search by Artist"
                   id="fullWidth"
@@ -105,13 +113,6 @@ const ReleaseSearch = () => {
               </InputWrapper>
             )}
           />
-          {/* <Button
-              variant='outlined'
-              type="submit"
-              disabled={ query?.length === 0 ? true : false}
-              >
-              Search
-            </Button> */}
         </Form>
       )}
 
@@ -128,7 +129,7 @@ const ReleaseSearch = () => {
             <span>{searchResults.query}</span>
           </Typography>
 
-          <CloseIcon onClick={handleReset} />
+          {/* <CloseIcon onClick={handleReset} /> */}
         </ResultCopy>
       )}
     </SearchWrapper>
