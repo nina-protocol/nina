@@ -4,8 +4,6 @@ import { Typography, Box } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 // import CloseIcon from "@mui/icons-material/Close";
-import debounce from "lodash.debounce";
-
 
 import axios from "axios";
 
@@ -62,11 +60,11 @@ const ReleaseSearch = () => {
     getReleasesBySearch(query);
   };
 
-  const handleReset = () => {
-    resetSearchResults();
-    setQuery('')
-    formRef.current.value = ''
-  };
+  // const handleReset = () => {
+  //   resetSearchResults();
+  //   setQuery('')
+  //   formRef.current.value = ''
+  // };
 
   useEffect(() => {
     if (searchResults.releaseIds.length > 0) {
