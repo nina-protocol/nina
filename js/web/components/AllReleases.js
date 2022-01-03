@@ -13,8 +13,13 @@ const { ReleaseContext } = ninaCommon.contexts;
 const { Dots } = ninaCommon.components;
 
 const Releases = () => {
-  const { getReleasesAll, filterReleasesAll, allReleases, allReleasesCount, searchResults, setSearchResults } =
-    useContext(ReleaseContext);
+  const {
+    getReleasesAll,
+    filterReleasesAll,
+    allReleases,
+    allReleasesCount,
+    searchResults,
+  } = useContext(ReleaseContext);
   const [listView, setListView] = useState(false);
   const [pendingFetch, setPendingFetch] = useState(false);
   const [totalCount, setTotalCount] = useState(null);
@@ -40,13 +45,16 @@ const Releases = () => {
   const handleScroll = (e) => {
     const bottom =
       e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
-    if (bottom && !pendingFetch && totalCount !== allReleases.length && !searchResults.searched) {
+    if (
+      bottom &&
+      !pendingFetch &&
+      totalCount !== allReleases.length &&
+      !searchResults.searched
+    ) {
       setPendingFetch(true);
       getReleasesAll();
     }
   };
-
-  console.log('searchResults :>> ', searchResults);
 
   return (
     <>
@@ -56,7 +64,6 @@ const Releases = () => {
       </Head>
       <ScrollablePageWrapper onScroll={debounce((e) => handleScroll(e), 500)}>
         <AllReleasesWrapper>
-
           <ReleaseSearch />
 
           <CollectionHeader
@@ -70,13 +77,25 @@ const Releases = () => {
 
           {listView && (
             <ReleaseListTable
-              releases={searchResults.releases.length > 0 ? searchResults.releases : filterReleasesAll()}
+              releases={
+                searchResults.releases.length > 0
+                  ? searchResults.releases
+                  : filterReleasesAll()
+              }
               tableType="allReleases"
               key="releases"
             />
           )}
 
-          {!listView && <ReleaseTileList releases={searchResults.releases.length > 0 ? searchResults.releases : filterReleasesAll()} />}
+          {!listView && (
+            <ReleaseTileList
+              releases={
+                searchResults.releases.length > 0
+                  ? searchResults.releases
+                  : filterReleasesAll()
+              }
+            />
+          )}
           {pendingFetch && (
             <StyledDots>
               <Dots size="80px" />
@@ -105,8 +124,8 @@ const CollectionHeader = styled(Typography)(({ listView }) => ({
 }));
 
 const AllReleasesWrapper = styled(Box)(({ theme }) => ({
-  maxWidth: '960px',
-  margin: 'auto',
+  maxWidth: "960px",
+  margin: "auto",
   "& a": {
     color: theme.palette.blue,
   },

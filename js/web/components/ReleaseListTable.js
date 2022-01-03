@@ -170,7 +170,7 @@ const ReleaseListTable = (props) => {
 
   const handleClick = (e, releasePubkey) => {
     e.preventDefault();
-    router.push( `/${releasePubkey}`);
+    router.push(`/${releasePubkey}`);
   };
 
   const handlePlay = (e, releasePubkey) => {

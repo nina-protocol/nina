@@ -1,26 +1,24 @@
-import {useState, useRef, useEffect, useContext} from "react";
-import {styled} from "@mui/material/styles";
-import {Typography, Box} from "@mui/material";
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Autocomplete from '@mui/material/Autocomplete';
-import CloseIcon from '@mui/icons-material/Close';
+import { useState, useRef, useEffect, useContext } from "react";
+import { styled } from "@mui/material/styles";
+import { Typography, Box } from "@mui/material";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
+import CloseIcon from "@mui/icons-material/Close";
 
 import axios from "axios";
 
+import ninaCommon from "nina-common";
 
-import ninaCommon from 'nina-common'
+const { ReleaseContext } = ninaCommon.contexts;
+const { NinaClient } = ninaCommon.utils;
+const { Dots } = ninaCommon.components;
 
-const {ReleaseContext} = ninaCommon.contexts;
-const {NinaClient} = ninaCommon.utils
-const {Dots} = ninaCommon.components;
-
-let path = NinaClient.endpoints.api
-const ReleaseSearch = (props) => {
+let path = NinaClient.endpoints.api;
+const ReleaseSearch = () => {
   const [query, setQuery] = useState(null);
-  const [artists, setArtists] = useState(null)
-  const formRef = useRef(null)
-  const inputRef = useRef(null)
+  const [artists, setArtists] = useState(null);
+  const formRef = useRef(null);
+  const inputRef = useRef(null);
 
   const {
     releaseState,
@@ -30,77 +28,92 @@ const ReleaseSearch = (props) => {
     searchResults,
     setSearchResults,
     resetSearchResults,
-    getRelatedForRelease
   } = useContext(ReleaseContext);
 
   useEffect(async () => {
     if (!artists) {
-      const data =  await getArtists()
-      setArtists(data)
+      const data = await getArtists();
+      setArtists(data);
     }
-  }, [])
+  }, []);
   const getArtists = async () => {
-    const response = await axios.get(path + '/releases/artists')
-    const data = response.data
-    return data.artists
-  }
-
-  const handleChange = (event) => { 
-    setQuery(event.target.value)
+    const response = await axios.get(path + "/releases/artists");
+    const data = response.data;
+    return data.artists;
   };
 
-  const handleOptionSelect = (event, value) => { 
-    setQuery(value)
+  const handleChange = (event) => {
+    setQuery(event.target.value);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-   await getReleasesBySearch(query)
+  const handleOptionSelect = (event, value) => {
+    setQuery(value);
+    getReleasesBySearch(value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    getReleasesBySearch(query);
     // e.target.reset()
-  }
+  };
 
   const handleReset = () => {
-    resetSearchResults()
-  }
+    resetSearchResults();
+  };
 
   useEffect(() => {
     if (searchResults.releaseIds.length > 0) {
-      filterSearchResults(searchResults.releaseIds)
-      // console.log('resultData :>> ', resultData)
+      filterSearchResults(searchResults.releaseIds);
       const related = filterRelatedForRelease(searchResults.releaseIds[0]);
       if (related) {
         setSearchResults({
           ...searchResults,
-          releases: related
-        })
+          releases: related.reverse(),
+        });
       }
     }
-  }, [releaseState, searchResults.releaseIds])
+  }, [releaseState, searchResults.releaseIds]);
 
   return (
     <SearchWrapper>
-        {artists && (
-        <Form ref={formRef} onSubmit={e => handleSubmit(e)} style={{width: '100%'}}>
-            <Autocomplete
-              disablePortal
-              id="combo-box-demo"
-              options={artists}
-              // sx={{width: 300}}
-              onInputChange={(e, v)=> handleOptionSelect(e, v)}
-              fullWidth
-              ref={formRef}
-              renderInput={(params) =>  <TextField {...params} ref={inputRef} value={query} fullWidth label="Search by Artist" id="fullWidth" onChange={e => handleChange(e)} />}
-              />
-            <Button
+      {artists && (
+        <Form
+          ref={formRef}
+          onSubmit={(e) => handleSubmit(e)}
+          style={{ width: "100%" }}
+        >
+          <Autocomplete
+            disablePortal
+            id="combo-box-demo"
+            options={artists}
+            onInputChange={(e, v) => handleOptionSelect(e, v)}
+            fullWidth
+            ref={formRef}
+            renderInput={(params) => (
+              <InputWrapper>
+                <TextField
+                  className="input"
+                  {...params}
+                  ref={inputRef}
+                  value={query}
+                  fullWidth
+                  label="Search by Artist"
+                  id="fullWidth"
+                  variant="standard"
+                  onChange={(e) => handleChange(e)}
+                />
+              </InputWrapper>
+            )}
+          />
+          {/* <Button
               variant='outlined'
               type="submit"
               disabled={ query?.length === 0 ? true : false}
               >
               Search
-            </Button>
-
-          </Form>
-        )}
+            </Button> */}
+        </Form>
+      )}
 
       {searchResults.pending && (
         <Box>
@@ -111,7 +124,8 @@ const ReleaseSearch = (props) => {
       {searchResults.searched && (
         <ResultCopy>
           <Typography align="left">
-            {searchResults.releases.length} results for <span>{searchResults.query}</span>
+            {searchResults.releases.length} results for{" "}
+            <span>{searchResults.query}</span>
           </Typography>
 
           <CloseIcon onClick={handleReset} />
@@ -119,27 +133,40 @@ const ReleaseSearch = (props) => {
       )}
     </SearchWrapper>
   );
-}
+};
 
 const SearchWrapper = styled(Box)(() => ({
   marginBottom: "15px",
 }));
 
-const Form = styled('form')(() => ({
-  width: '100%',
-  display: 'flex',
+const Form = styled("form")(() => ({
+  width: "100%",
+  display: "flex",
 }));
 
-const ResultCopy = styled(Box)(({theme}) => ({
-  display: 'flex',
-  alignItems: 'center',
- '& span': {
-   color: theme.palette.blue
- }
+const ResultCopy = styled(Box)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  "& span": {
+    color: theme.palette.blue,
+  },
 }));
 
+const InputWrapper = styled(Box)(({ theme }) => ({
+  position: "relative",
+  [`& .input`]: {
+    ...theme.helpers.baseFont,
+    marginBottom: "8px",
+    width: "100%",
+    textTransform: "capitalize",
+    position: "relative",
+    "& input": {
+      textAlign: "left",
+      "&::placeholder": {
+        color: theme.palette.red,
+      },
+    },
+  },
+}));
 
-
-
-
-export default ReleaseSearch
+export default ReleaseSearch;
