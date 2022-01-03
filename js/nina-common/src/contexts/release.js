@@ -1105,10 +1105,16 @@ const releaseContextHelper = ({
        return id
       })
       console.log('json.releases :>> ', json.releases);
+
+      if (json.releases[0]) {
+        getRelatedForRelease(json.releases[0])
+      }
+      
       await fetchAndSaveReleasesToState(json.releases)
       setSearchResults({
         ...searchResults,
         releaseIds: json.releases,
+        searched: true,
         query
       })
     } catch (error) {

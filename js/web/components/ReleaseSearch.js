@@ -26,9 +26,11 @@ const ReleaseSearch = (props) => {
     releaseState,
     getReleasesBySearch,
     filterSearchResults,
+    filterRelatedForRelease,
     searchResults,
     setSearchResults,
-    resetSearchResults
+    resetSearchResults,
+    getRelatedForRelease
   } = useContext(ReleaseContext);
 
   useEffect(async () => {
@@ -59,16 +61,19 @@ const ReleaseSearch = (props) => {
 
   const handleReset = () => {
     resetSearchResults()
-    console.log('reset');
-    debugger
-    inputRef.current.value = ''
-    console.log('query :>> ', query);
   }
 
   useEffect(() => {
     if (searchResults.releaseIds.length > 0) {
-      const resultData = filterSearchResults(searchResults.releaseIds)
-      // console.log('resultData :>> ', resultData);
+      filterSearchResults(searchResults.releaseIds)
+      // console.log('resultData :>> ', resultData)
+      const related = filterRelatedForRelease(searchResults.releaseIds[0]);
+      if (related) {
+        setSearchResults({
+          ...searchResults,
+          releases: related
+        })
+      }
     }
   }, [releaseState, searchResults.releaseIds])
 

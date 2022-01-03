@@ -46,6 +46,8 @@ const Releases = () => {
     }
   };
 
+  console.log('searchResults :>> ', searchResults);
+
   return (
     <>
       <Head>
