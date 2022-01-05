@@ -31,6 +31,7 @@ const ReleasePage = (props) => {
           content={`${metadata?.properties.artist} - "${metadata?.properties.title}" on Nina`}
         />
         <meta name="twitter:description" content={metadata?.description} />
+
         <meta name="twitter:image" content={metadata?.image} />
         <meta name="og:image" content={metadata?.image} />
       </Head>

@@ -3,11 +3,7 @@ import React from "react";
 import Document, { Html, Head, Main, NextScript } from "next/document";
 import { ServerStyleSheet } from "styled-components";
 import { ServerStyleSheets } from "@material-ui/styles";
-// import createEmotionServer from '@emotion/server/create-instance';
-// import createEmotionCache from '../src/createEmotionCache';
-// import {styled} from '@mui/material/styles'
 
-// const sheets = new ServerStyleSheets();
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
     const styledComponentsSheet = new ServerStyleSheet();
@@ -75,17 +71,6 @@ class MyDocument extends Document {
           />
           <link rel="manifest" href="/site.webmanifest" />
 
-          <link
-            rel="stylesheet"
-            type="text/css"
-            href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
-          />
-          <link
-            rel="stylesheet"
-            type="text/css"
-            href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
-          />
-          <script src="https://cdn.dashjs.org/v3.2.1/dash.all.min.js" />
           <script
             async
             src="https://www.googletagmanager.com/gtag/js?id=G-VDD58V1D22"

@@ -65,7 +65,6 @@ const Releases = () => {
       <ScrollablePageWrapper onScroll={debounce((e) => handleScroll(e), 500)}>
         <AllReleasesWrapper>
           <ReleaseSearch />
-
           <CollectionHeader
             onClick={handleViewChange}
             listView={listView}
