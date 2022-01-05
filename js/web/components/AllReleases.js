@@ -129,13 +129,16 @@ const CollectionHeader = styled(Typography)(({ listView }) => ({
 const AllReleasesWrapper = styled(Box)(({ theme }) => ({
   maxWidth: "960px",
   height: "auto",
+  minHeight: '50vh',
   margin: "0 auto",
+  position: 'relative',
   "& a": {
     color: theme.palette.blue,
   },
   [theme.breakpoints.down("md")]: {
     padding: "0px 30px",
     overflowX: "auto",
+    minHeight: '80vh',
   },
 }));
 

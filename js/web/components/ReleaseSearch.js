@@ -41,7 +41,7 @@ const ReleaseSearch = () => {
     if (event) {
       if (reason === "clear") {
         resetSearchResults();
-        setQuery(null);
+        setQuery('');
       } else if (reason === "reset") {
         getReleasesBySearch(value);
       } else if (reason === "input") {
@@ -49,7 +49,6 @@ const ReleaseSearch = () => {
       }
     }
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     getReleasesBySearch(query);
@@ -57,7 +56,7 @@ const ReleaseSearch = () => {
 
   const handleReset = () => {
     resetSearchResults();
-    setQuery(null);
+    setQuery('');
     formRef.current.value = "";
   };
 
