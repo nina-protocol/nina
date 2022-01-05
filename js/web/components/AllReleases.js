@@ -114,8 +114,8 @@ const StyledDots = styled(Box)(() => ({
 const StyledReleaseSearch = styled(ReleaseSearch)(() => ({
   position: "sticky",
 }))
-const CollectionHeader = styled(Typography)(({ listView }) => ({
-  maxWidth: listView ? "764px" : "960px",
+const CollectionHeader = styled(Typography)(() => ({
+  maxWidth: '100%',
   margin: "0 auto",
   display: "flex",
   justifyContent: "space-between",

@@ -372,7 +372,7 @@ const classes = {
 };
 
 const StyledPaper = styled(Paper)(({ theme, tableType }) => ({
-  width: tableType === "userPublished" ? "1000px" : "800px",
+  width: tableType === "userPublished" ? "1000px" : "100%",
   margin: "auto",
   [theme.breakpoints.down("md")]: {
     maxHeight: "80vh",
