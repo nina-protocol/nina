@@ -17,7 +17,6 @@ const USDC_MINT_ID = new anchor.web3.PublicKey(usdcMint);
 
 const ReleaseList = () => {
   const {
-    getReleasesRecent,
     getReleasesPublishedByUser,
     filterReleasesPublishedByUser,
     collectRoyaltyForRelease,
