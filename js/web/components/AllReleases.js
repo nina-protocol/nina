@@ -4,6 +4,7 @@ import Head from "next/head";
 import { styled } from "@mui/material/styles";
 import ninaCommon from "nina-common";
 import { Typography, Box } from "@mui/material";
+import { isMobile } from 'react-device-detect';
 import ReleaseListTable from "./ReleaseListTable";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
 import ReleaseTileList from "./ReleaseTileList";
@@ -12,7 +13,7 @@ import ReleaseSearch from "./ReleaseSearch";
 const { ReleaseContext } = ninaCommon.contexts;
 const { Dots } = ninaCommon.components;
 
-const Releases = () => {
+const Releases = ({placeholderImg, placeholderCss}) => {
   const {
     getReleasesAll,
     filterReleasesAll,
@@ -64,7 +65,7 @@ const Releases = () => {
       </Head>
       <ScrollablePageWrapper onScroll={debounce((e) => handleScroll(e), 500)}>
         <AllReleasesWrapper>
-          <ReleaseSearch />
+          <StyledReleaseSearch />
           <CollectionHeader
             onClick={handleViewChange}
             listView={listView}
@@ -89,9 +90,9 @@ const Releases = () => {
           {!listView && (
             <ReleaseTileList
               releases={
-                searchResults.releases.length > 0
+                searchResults.pending || searchResults.searched
                   ? searchResults.releases
-                  : filterReleasesAll()
+                  : isMobile ? filterReleasesAll().reverse() : filterReleasesAll()
               }
             />
           )}
@@ -110,9 +111,12 @@ const StyledDots = styled(Box)(() => ({
   marginTop: "40px",
 }));
 
+const StyledReleaseSearch = styled(ReleaseSearch)(() => ({
+  position: "sticky",
+}))
 const CollectionHeader = styled(Typography)(({ listView }) => ({
   maxWidth: listView ? "764px" : "960px",
-  margin: "auto",
+  margin: "0 auto",
   display: "flex",
   justifyContent: "space-between",
   alignItems: "flex-end",
@@ -124,7 +128,8 @@ const CollectionHeader = styled(Typography)(({ listView }) => ({
 
 const AllReleasesWrapper = styled(Box)(({ theme }) => ({
   maxWidth: "960px",
-  margin: "auto",
+  height: "auto",
+  margin: "0 auto",
   "& a": {
     color: theme.palette.blue,
   },

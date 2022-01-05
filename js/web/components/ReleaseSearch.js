@@ -17,65 +17,55 @@ let path = NinaClient.endpoints.api;
 const ReleaseSearch = () => {
   const [query, setQuery] = useState(null);
   const [artists, setArtists] = useState(null);
+  const [resultCount, setResultCount] = useState(null);
   const formRef = useRef(null);
   const inputRef = useRef(null);
 
   const {
     releaseState,
     getReleasesBySearch,
-    filterSearchResults,
-    filterRelatedForRelease,
     searchResults,
-    setSearchResults,
+    filterSearchResults,
     resetSearchResults,
   } = useContext(ReleaseContext);
 
-  useEffect(async () => {
-    if (!artists) {
-      const data = await getArtists();
-      setArtists(data);
-    }
+  useEffect(() => {
+    getArtists();
   }, []);
+
   const getArtists = async () => {
     const response = await axios.get(path + "/releases/artists");
     const data = response.data;
-    return data.artists;
+    setArtists(data.artists);
   };
 
   const handleOptionSelect = (event, value, reason) => {
+    console.log(event, value, reason)
     if (event) {
       if (reason === "clear") {
         resetSearchResults();
         setQuery(null);
       } else if (reason === "reset") {
         getReleasesBySearch(value);
+      } else if (reason === "input") {
+        setQuery(value)
       }
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log('e', query, e)
     getReleasesBySearch(query);
   };
 
   const handleReset = () => {
     resetSearchResults();
     setQuery(null);
+    setResultCount(null);
+    setResultCount(null);
     formRef.current.value = "";
   };
-
-  useEffect(() => {
-    if (searchResults.releaseIds.length > 0) {
-      filterSearchResults(searchResults.releaseIds);
-      const related = filterRelatedForRelease(searchResults.releaseIds[0]);
-      if (related) {
-        setSearchResults({
-          ...searchResults,
-          releases: related,
-        });
-      }
-    }
-  }, [releaseState, searchResults.releaseIds]);
 
   return (
     <SearchWrapper>
@@ -94,6 +84,7 @@ const ReleaseSearch = () => {
             ref={formRef}
             value={query}
             blurOnSelect
+            freeSolo={true}
             renderInput={(params) => (
               <InputWrapper>
                 <TextField
@@ -121,7 +112,7 @@ const ReleaseSearch = () => {
       {searchResults.searched && (
         <ResultCopy>
           <Typography align="left">
-            {searchResults.releases.length} results for{" "}
+            {searchResults.releaseIds.length} results for{" "}
             <span>{searchResults.query}</span>
           </Typography>
 
