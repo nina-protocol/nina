@@ -114,8 +114,8 @@ const StyledDots = styled(Box)(() => ({
 const StyledReleaseSearch = styled(ReleaseSearch)(() => ({
   position: "sticky",
 }))
-const CollectionHeader = styled(Typography)(({ listView }) => ({
-  maxWidth: listView ? "764px" : "960px",
+const CollectionHeader = styled(Typography)(() => ({
+  maxWidth: '100%',
   margin: "0 auto",
   display: "flex",
   justifyContent: "space-between",
@@ -129,13 +129,16 @@ const CollectionHeader = styled(Typography)(({ listView }) => ({
 const AllReleasesWrapper = styled(Box)(({ theme }) => ({
   maxWidth: "960px",
   height: "auto",
+  minHeight: '50vh',
   margin: "0 auto",
+  position: 'relative',
   "& a": {
     color: theme.palette.blue,
   },
   [theme.breakpoints.down("md")]: {
     padding: "0px 30px",
     overflowX: "auto",
+    minHeight: '80vh',
   },
 }));
 

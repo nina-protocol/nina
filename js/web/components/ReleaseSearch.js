@@ -47,7 +47,6 @@ const ReleaseSearch = () => {
       }
     }
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     getReleasesBySearch(query);
