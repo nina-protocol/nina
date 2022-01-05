@@ -13,7 +13,7 @@ import ReleaseSearch from "./ReleaseSearch";
 const { ReleaseContext } = ninaCommon.contexts;
 const { Dots } = ninaCommon.components;
 
-const Releases = ({placeholderImg, placeholderCss}) => {
+const Releases = () => {
   const {
     getReleasesAll,
     filterReleasesAll,

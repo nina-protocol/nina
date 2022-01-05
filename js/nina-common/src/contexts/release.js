@@ -835,7 +835,6 @@ const releaseContextHelper = ({
   }
 
   const getRelease = async (releasePubkey) => {
-    console.log('GETTING RELEASE:', releasePubkey);
     try {
       const releaseAccount = await fetchRelease(releasePubkey)
       if (releaseAccount.error) {
@@ -1101,7 +1100,6 @@ const releaseContextHelper = ({
         `${NinaClient.endpoints.api}/releases/search?s=${encodedQuery}`
       )
       const json = await result.json()     
-      console.log('json: ', json) 
       await fetchAndSaveReleasesToState(json.releases, query)
     } catch (error) {
       console.warn(error)
@@ -1480,7 +1478,6 @@ const releaseContextHelper = ({
           }
         })
         search.releases = finalSearchReleases
-        console.log('search: ', search)
         await setSearchResults(search)
       }
       await setReleaseState(updatedState)

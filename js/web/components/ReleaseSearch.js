@@ -17,15 +17,12 @@ let path = NinaClient.endpoints.api;
 const ReleaseSearch = () => {
   const [query, setQuery] = useState(null);
   const [artists, setArtists] = useState(null);
-  const [resultCount, setResultCount] = useState(null);
   const formRef = useRef(null);
   const inputRef = useRef(null);
 
   const {
-    releaseState,
     getReleasesBySearch,
     searchResults,
-    filterSearchResults,
     resetSearchResults,
   } = useContext(ReleaseContext);
 
@@ -55,15 +52,12 @@ const ReleaseSearch = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('e', query, e)
     getReleasesBySearch(query);
   };
 
   const handleReset = () => {
     resetSearchResults();
     setQuery(null);
-    setResultCount(null);
-    setResultCount(null);
     formRef.current.value = "";
   };
 
