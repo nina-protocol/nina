@@ -170,11 +170,7 @@ const ReleaseListTable = (props) => {
 
   const handleClick = (e, releasePubkey) => {
     e.preventDefault();
-    router.push(
-      tableType === "userPublished"
-        ? `/releases/${releasePubkey}`
-        : `/${releasePubkey}`
-    );
+    router.push(`/${releasePubkey}`);
   };
 
   const handlePlay = (e, releasePubkey) => {
