@@ -16,9 +16,13 @@ const ReleaseList = () => {
   const [listView, setListView] = useState(false);
 
   const wallet = useWallet();
-  const { collection } = useContext(NinaContext);
+  const { collection, createCollection } = useContext(NinaContext);
   const [userCollectionReleases, setUserCollectionReleases] = useState();
 
+  useEffect(() => {
+    createCollection()
+  }, [])
+  
   useEffect(() => {
     if (wallet?.connected) {
       setUserCollectionReleases(filterReleasesUserCollection());
