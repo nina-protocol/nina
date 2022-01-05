@@ -15,10 +15,8 @@ const { Dots } = ninaCommon.components;
 
 let path = NinaClient.endpoints.api;
 const ReleaseSearch = () => {
-  const [query, setQuery] = useState(null);
+  const [query, setQuery] = useState("");
   const [artists, setArtists] = useState(null);
-  const formRef = useRef(null);
-  const inputRef = useRef(null);
 
   const {
     getReleasesBySearch,
@@ -37,13 +35,13 @@ const ReleaseSearch = () => {
   };
 
   const handleOptionSelect = (event, value, reason) => {
-    console.log(event, value, reason)
     if (event) {
       if (reason === "clear") {
         resetSearchResults();
-        setQuery(null);
+        setQuery("");
       } else if (reason === "reset") {
         getReleasesBySearch(value);
+        setQuery("");
       } else if (reason === "input") {
         setQuery(value)
       }
@@ -53,19 +51,18 @@ const ReleaseSearch = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     getReleasesBySearch(query);
+    setQuery("");
   };
 
   const handleReset = () => {
     resetSearchResults();
-    setQuery(null);
-    formRef.current.value = "";
+    setQuery("");
   };
 
   return (
     <SearchWrapper>
       {artists && (
         <Form
-          ref={formRef}
           onSubmit={(e) => handleSubmit(e)}
           style={{ width: "100%" }}
         >
@@ -75,16 +72,13 @@ const ReleaseSearch = () => {
             options={artists}
             onInputChange={(e, v, r) => handleOptionSelect(e, v, r)}
             fullWidth
-            ref={formRef}
-            value={query}
-            blurOnSelect
+            inputValue={query}
             freeSolo={true}
             renderInput={(params) => (
               <InputWrapper>
                 <TextField
                   className="input"
                   {...params}
-                  ref={inputRef}
                   fullWidth
                   label="Search by Artist"
                   id="fullWidth"
