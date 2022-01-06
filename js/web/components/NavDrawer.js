@@ -40,7 +40,7 @@ const linksNotConnected = [
 ];
 
 const NavDrawer = () => {
-  const { collection } = useContext(NinaContext);
+  const { collection, createCollection } = useContext(NinaContext);
   const wallet = useWallet();
   const {
     releaseState,
@@ -57,8 +57,16 @@ const NavDrawer = () => {
 
   useEffect(() => {
     if (wallet?.connected) {
+      createCollection();
+      getReleasesPublishedByUser(wallet.publicKey);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (wallet?.connected) {
       setLinks(linksConnected);
       getReleasesPublishedByUser(wallet.publicKey);
+      createCollection();
     } else {
       setLinks(linksNotConnected);
     }
@@ -248,7 +256,7 @@ const NavDrawer = () => {
               </Box>
 
               <Typography variant="subtitle1">
-                © 2021 Nina Protocol Corp
+                © 2022 Nina Protocol Corp
               </Typography>
             </DrawerFooter>
           </StyledDrawer>

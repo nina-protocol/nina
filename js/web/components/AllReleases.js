@@ -4,16 +4,23 @@ import Head from "next/head";
 import { styled } from "@mui/material/styles";
 import ninaCommon from "nina-common";
 import { Typography, Box } from "@mui/material";
+import { isMobile } from 'react-device-detect';
 import ReleaseListTable from "./ReleaseListTable";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
 import ReleaseTileList from "./ReleaseTileList";
+import ReleaseSearch from "./ReleaseSearch";
 
 const { ReleaseContext } = ninaCommon.contexts;
 const { Dots } = ninaCommon.components;
 
 const Releases = () => {
-  const { getReleasesAll, filterReleasesAll, allReleases, allReleasesCount } =
-    useContext(ReleaseContext);
+  const {
+    getReleasesAll,
+    filterReleasesAll,
+    allReleases,
+    allReleasesCount,
+    searchResults,
+  } = useContext(ReleaseContext);
   const [listView, setListView] = useState(false);
   const [pendingFetch, setPendingFetch] = useState(false);
   const [totalCount, setTotalCount] = useState(null);
@@ -39,7 +46,12 @@ const Releases = () => {
   const handleScroll = (e) => {
     const bottom =
       e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
-    if (bottom && !pendingFetch && totalCount !== allReleases.length) {
+    if (
+      bottom &&
+      !pendingFetch &&
+      totalCount !== allReleases.length &&
+      !searchResults.searched
+    ) {
       setPendingFetch(true);
       getReleasesAll();
     }
@@ -53,6 +65,7 @@ const Releases = () => {
       </Head>
       <ScrollablePageWrapper onScroll={debounce((e) => handleScroll(e), 500)}>
         <AllReleasesWrapper>
+          <StyledReleaseSearch />
           <CollectionHeader
             onClick={handleViewChange}
             listView={listView}
@@ -64,13 +77,25 @@ const Releases = () => {
 
           {listView && (
             <ReleaseListTable
-              releases={filterReleasesAll()}
+              releases={
+                searchResults.releases.length > 0
+                  ? searchResults.releases
+                  : filterReleasesAll()
+              }
               tableType="allReleases"
               key="releases"
             />
           )}
 
-          {!listView && <ReleaseTileList releases={filterReleasesAll()} />}
+          {!listView && (
+            <ReleaseTileList
+              releases={
+                searchResults.pending || searchResults.searched
+                  ? searchResults.releases
+                  : isMobile ? filterReleasesAll().reverse() : filterReleasesAll()
+              }
+            />
+          )}
           {pendingFetch && (
             <StyledDots>
               <Dots size="80px" />
@@ -86,9 +111,12 @@ const StyledDots = styled(Box)(() => ({
   marginTop: "40px",
 }));
 
-const CollectionHeader = styled(Typography)(({ listView }) => ({
-  maxWidth: listView ? "764px" : "960px",
-  margin: "auto",
+const StyledReleaseSearch = styled(ReleaseSearch)(() => ({
+  position: "sticky",
+}))
+const CollectionHeader = styled(Typography)(() => ({
+  maxWidth: '100%',
+  margin: "0 auto",
   display: "flex",
   justifyContent: "space-between",
   alignItems: "flex-end",
@@ -99,12 +127,18 @@ const CollectionHeader = styled(Typography)(({ listView }) => ({
 }));
 
 const AllReleasesWrapper = styled(Box)(({ theme }) => ({
+  maxWidth: "960px",
+  height: "auto",
+  minHeight: '50vh',
+  margin: "0 auto",
+  position: 'relative',
   "& a": {
     color: theme.palette.blue,
   },
   [theme.breakpoints.down("md")]: {
     padding: "0px 30px",
     overflowX: "auto",
+    minHeight: '80vh',
   },
 }));
 
