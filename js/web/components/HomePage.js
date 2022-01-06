@@ -29,9 +29,7 @@ const HomePage = () => {
           align="left"
           sx={{ padding: { md: "0 165px 140px", xs: "30px 0px" } }}
         >
-          Nina is a new way to publish, stream, and purchase music. We put
-          control in the artist’s hands and link them directly with their fans.{" "}
-          <Link href="/faq">Learn more</Link>.
+          Nina is a new way to <Link href="/upload">publish</Link>, <Link href="https://radio.nina.market">stream</Link>, and <Link href="/releases">purchase</Link> music. We build tools for artists + fans to create their context.{" "}
         </Typography>
 
         <Box sx={{ padding: { md: "0 40px 140px 40px", xs: "30px 0px" } }}>

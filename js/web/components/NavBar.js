@@ -48,11 +48,6 @@ const NavBar = () => {
 
       <NavRight>
         <DesktopWalletWrapper>
-          <Link href="/upload" passHref>
-            <a>
-              <PublishLink variant="subtitle1">Start Publishing</PublishLink>
-            </a>
-          </Link>
           <NavBalance variant="subtitle1">
             {wallet?.connected ? `Balance: $${usdcBalance}` : null}
           </NavBalance>
