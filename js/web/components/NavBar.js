@@ -246,10 +246,6 @@ const ConnectionDot = styled("span")(({ theme }) => ({
   },
 }));
 
-const PublishLink = styled(Typography)(() => ({
-  paddingRight: "15px",
-}));
-
 export default withFormik({
   enableReinitialize: true,
   mapPropsToValues: () => {
