@@ -40,11 +40,10 @@ const linksNotConnected = [
 ];
 
 const NavDrawer = () => {
-  const { collection, createCollection } = useContext(NinaContext);
+  const { collection } = useContext(NinaContext);
   const wallet = useWallet();
   const {
     releaseState,
-    getReleasesPublishedByUser,
     filterReleasesPublishedByUser,
     filterReleasesUserCollection,
   } = useContext(ReleaseContext);
@@ -57,16 +56,7 @@ const NavDrawer = () => {
 
   useEffect(() => {
     if (wallet?.connected) {
-      createCollection();
-      getReleasesPublishedByUser(wallet.publicKey);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (wallet?.connected) {
       setLinks(linksConnected);
-      getReleasesPublishedByUser(wallet.publicKey);
-      createCollection();
     } else {
       setLinks(linksNotConnected);
     }
@@ -114,11 +104,7 @@ const NavDrawer = () => {
                 >
                   <ListItem button key={link}>
                     <ListItemText
-                      primary={`your ${link}  ${
-                        userCollectionReleasesCount
-                          ? `(${userCollectionReleasesCount})`
-                          : ""
-                      }`}
+                      primary={`your ${link}`}
                     />
                   </ListItem>
                 </Link>
@@ -134,11 +120,7 @@ const NavDrawer = () => {
                 >
                   <ListItem button key={link}>
                     <ListItemText
-                      primary={`your ${link}  ${
-                        userPublishedReleasesCount
-                          ? `(${userPublishedReleasesCount})`
-                          : ""
-                      }`}
+                      primary={`your ${link}`}
                     />
                   </ListItem>
                 </Link>

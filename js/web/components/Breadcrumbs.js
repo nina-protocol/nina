@@ -32,18 +32,12 @@ const YourCollectionBreadcrumb = () => {
 const YourReleasesBreadcrumb = () => {
   const {
     releaseState,
-    getReleasesPublishedByUser,
     filterReleasesPublishedByUser,
   } = useContext(ReleaseContext);
   const wallet = useWallet();
 
   const [userPublishedReleasesCount, setUserPublishedReleasesCount] =
     useState(0);
-  useEffect(() => {
-    if (wallet?.connected) {
-      getReleasesPublishedByUser(wallet.publicKey);
-    }
-  }, [wallet?.connected]);
 
   useEffect(() => {
     if (wallet?.connected) {
