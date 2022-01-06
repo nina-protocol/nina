@@ -256,7 +256,7 @@ const NavDrawer = () => {
               </Box>
 
               <Typography variant="subtitle1">
-                © 2021 Nina Protocol Corp
+                © 2022 Nina Protocol Corp
               </Typography>
             </DrawerFooter>
           </StyledDrawer>
