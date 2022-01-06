@@ -371,7 +371,7 @@ const classes = {
   releaseImage: `${PREFIX}-releaseImage`,
 };
 
-const StyledPaper = styled(Paper)(({ theme, tableType }) => ({
+const StyledPaper = styled(Paper)(({ theme }) => ({
   width: "1000px",
   margin: "auto",
   [theme.breakpoints.down("md")]: {
