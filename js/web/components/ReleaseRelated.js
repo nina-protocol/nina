@@ -83,7 +83,7 @@ const ReleaseRelated = ({ releasePubkey }) => {
 };
 
 const CollectionHeader = styled(Box)(({ listView }) => ({
-  maxWidth: listView ? "800px" : "960px",
+  maxWidth:"960px",
   margin: "auto",
   display: "flex",
   justifyContent: "space-between",
