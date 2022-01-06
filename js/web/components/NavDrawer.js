@@ -40,13 +40,7 @@ const linksNotConnected = [
 ];
 
 const NavDrawer = () => {
-  const { collection } = useContext(NinaContext);
   const wallet = useWallet();
-  const {
-    releaseState,
-    filterReleasesPublishedByUser,
-    filterReleasesUserCollection,
-  } = useContext(ReleaseContext);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [links, setLinks] = useState(linksNotConnected);
 
