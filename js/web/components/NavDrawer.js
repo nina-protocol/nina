@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
 import { styled } from "@mui/material/styles";
-import ninaCommon from "nina-common";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
@@ -16,8 +15,6 @@ import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { faInstagramSquare } from "@fortawesome/free-brands-svg-icons";
 import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
-
-const { NinaContext, ReleaseContext } = ninaCommon.contexts;
 
 const linksConnected = [
   "home",
