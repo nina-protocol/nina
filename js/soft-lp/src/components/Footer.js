@@ -13,9 +13,14 @@ const Footer = () => {
     <Box className={classes.root}>
       <Box className={classes.info}>
         <Link to="/about">About</Link>
-        <Typography className={classes.copyright}>
-          © 2021 Nina Protocol Corp
-        </Typography>
+        <a href="https://nina.market"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <Typography className={classes.copyright}>
+            Powered by Nina.
+          </Typography>
+        </a>
       </Box>
 
       <Box className={classes.socials}>
