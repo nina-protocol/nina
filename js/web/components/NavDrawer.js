@@ -48,10 +48,6 @@ const NavDrawer = () => {
     filterReleasesUserCollection,
   } = useContext(ReleaseContext);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [userPublishedReleasesCount, setUserPublishedReleasesCount] =
-    useState();
-  const [userCollectionReleasesCount, setUserCollectionReleasesCount] =
-    useState();
   const [links, setLinks] = useState(linksNotConnected);
 
   useEffect(() => {
@@ -61,13 +57,6 @@ const NavDrawer = () => {
       setLinks(linksNotConnected);
     }
   }, [wallet?.connected]);
-
-  useEffect(() => {
-    if (wallet?.connected) {
-      setUserPublishedReleasesCount(filterReleasesPublishedByUser().length);
-      setUserCollectionReleasesCount(filterReleasesUserCollection().length);
-    }
-  }, [releaseState, collection]);
 
   const toggleDrawer = (open) => (event) => {
     if (
