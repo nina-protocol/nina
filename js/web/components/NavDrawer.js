@@ -1,6 +1,5 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
-import ninaCommon from "nina-common";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
@@ -16,8 +15,6 @@ import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { faInstagramSquare } from "@fortawesome/free-brands-svg-icons";
 import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
-
-const { NinaContext, ReleaseContext } = ninaCommon.contexts;
 
 const linksConnected = [
   "home",
@@ -40,44 +37,17 @@ const linksNotConnected = [
 ];
 
 const NavDrawer = () => {
-  const { collection, createCollection } = useContext(NinaContext);
   const wallet = useWallet();
-  const {
-    releaseState,
-    getReleasesPublishedByUser,
-    filterReleasesPublishedByUser,
-    filterReleasesUserCollection,
-  } = useContext(ReleaseContext);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [userPublishedReleasesCount, setUserPublishedReleasesCount] =
-    useState();
-  const [userCollectionReleasesCount, setUserCollectionReleasesCount] =
-    useState();
   const [links, setLinks] = useState(linksNotConnected);
 
   useEffect(() => {
     if (wallet?.connected) {
-      createCollection();
-      getReleasesPublishedByUser(wallet.publicKey);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (wallet?.connected) {
       setLinks(linksConnected);
-      getReleasesPublishedByUser(wallet.publicKey);
-      createCollection();
     } else {
       setLinks(linksNotConnected);
     }
   }, [wallet?.connected]);
-
-  useEffect(() => {
-    if (wallet?.connected) {
-      setUserPublishedReleasesCount(filterReleasesPublishedByUser().length);
-      setUserCollectionReleasesCount(filterReleasesUserCollection().length);
-    }
-  }, [releaseState, collection]);
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -114,11 +84,7 @@ const NavDrawer = () => {
                 >
                   <ListItem button key={link}>
                     <ListItemText
-                      primary={`your ${link}  ${
-                        userCollectionReleasesCount
-                          ? `(${userCollectionReleasesCount})`
-                          : ""
-                      }`}
+                      primary={`your ${link}`}
                     />
                   </ListItem>
                 </Link>
@@ -134,11 +100,7 @@ const NavDrawer = () => {
                 >
                   <ListItem button key={link}>
                     <ListItemText
-                      primary={`your ${link}  ${
-                        userPublishedReleasesCount
-                          ? `(${userPublishedReleasesCount})`
-                          : ""
-                      }`}
+                      primary={`your ${link}`}
                     />
                   </ListItem>
                 </Link>
