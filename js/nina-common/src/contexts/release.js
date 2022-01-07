@@ -911,25 +911,29 @@ const releaseContextHelper = ({
     if (!release) {
       release = await fetchRelease(releasePubkey)
     }
-    const releaseIds = []
-    for await (let recipient of release.royaltyRecipients) {
-      const royaltyIds = await getReleaseIdsHandler(
-        recipient,
-        lookupTypes.REVENUE_SHARE
-      )
-      if (royaltyIds) {
-        releaseIds.push(...royaltyIds)
+    try {
+      const releaseIds = []
+      for await (let recipient of release.royaltyRecipients) {
+        const royaltyIds = await getReleaseIdsHandler(
+          recipient,
+          lookupTypes.REVENUE_SHARE
+        )
+        if (royaltyIds) {
+          releaseIds.push(...royaltyIds)
+        }
+        const publishedIds = await getReleaseIdsHandler(
+          recipient,
+          lookupTypes.PUBLISHED_BY
+        )
+        if (publishedIds) {
+          releaseIds.push(...publishedIds)
+        }
       }
-      const publishedIds = await getReleaseIdsHandler(
-        recipient,
-        lookupTypes.PUBLISHED_BY
-      )
-      if (publishedIds) {
-        releaseIds.push(...publishedIds)
-      }
+      const filteredReleaseIds = new Set(releaseIds)
+      await fetchAndSaveReleasesToState([...filteredReleaseIds])
+    } catch (error) {
+      console.warn(error)
     }
-    const filteredReleaseIds = new Set(releaseIds)
-    await fetchAndSaveReleasesToState([...filteredReleaseIds])
   }
 
   const getRedeemablesForRelease = async (releasePubkey) => {
