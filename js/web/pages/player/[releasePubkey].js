@@ -34,7 +34,6 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
             left: 50%;
             -ms-transform: translate(-50%, -50%);
             transform: translate(-50%, -50%);
-            display: none;
           }
 
           #seekbar-container {
@@ -63,7 +62,6 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
             width: 100%;
             height: 100%;
             background-color: black;
-            display: none;
             opacity: 0.5;
           }
 
@@ -76,7 +74,6 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
             margin: 0 auto;
             width: 100%;
             text-align: center;
-            display: none;
           }
         </style>
       </head>
@@ -84,7 +81,7 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
         <div id="container">
           <div id="overlay"></div>
           <div id="title">
-            <a href=${metadata.external_url} target="_blank" rel="noreferrer"><h4>NINA</h4></a>
+            <a href=${metadata.external_url} target="_blank" rel="noreferrer"><h4>${metadata.name.toUpperCase()} - NINA</h4></a>
           </div>
           <div id="vertical-center">
             <input id="player-button" type="image" src="https://${host}/play.svg" width="40px height="40px />
@@ -93,7 +90,7 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
           <div id="seekbar-container">
             <div id="seekbar"></div>
           </div>
-          <audio id="nina-player" style={{ width: "100%" }} autoplay>
+          <audio id="nina-player" style={{ width: "100%" }}>
             <source src=${metadata.animation_url} type="audio/mp3" />
           </audio>
         </div>
@@ -115,9 +112,13 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
               $('#title').eq(0).show();
             })
             $('#container').mouseleave(function() {
-              $('#vertical-center').eq(0).hide();
-              $('#overlay').eq(0).hide();
-              $('#title').eq(0).hide();
+              let player = $('#nina-player')[0];
+
+              if (!player.paused) {
+                $('#vertical-center').eq(0).hide();
+                $('#overlay').eq(0).hide();
+                $('#title').eq(0).hide();
+              }
             })
             $('#nina-player').on("play", function() {
               let playerButton = $('#player-button')[0];
@@ -126,6 +127,9 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
             $('#nina-player').on("pause", function() {
               let playerButton = $('#player-button')[0];
               playerButton.src = "https://${host}/play.svg"
+              $('#vertical-center').eq(0).show();
+              $('#overlay').eq(0).show();
+              $('#title').eq(0).show();
             })
             $('#nina-player').on('timeupdate', function() {
               $('#seekbar')[0].style.width = ((this.currentTime / this.duration) * 100) + "%";
