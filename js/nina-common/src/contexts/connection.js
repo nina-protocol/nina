@@ -38,17 +38,19 @@ const ConnectionContextProvider = ({ children, ENDPOINTS }) => {
   const healthCheck = async () => {
     const timeSinceLastCheck = (Date.now() - healthTimestamp) / 1000
     if (timeSinceLastCheck > 30) {
-      setHealthTimestamp(Date.now())
-      const performance = await connection._rpcRequest(
-        'getRecentPerformanceSamples',
-        [5]
-      )
-      if (performance) {
+      try {
+        setHealthTimestamp(Date.now())
+        const performance = await connection._rpcRequest(
+          'getRecentPerformanceSamples',
+          [5]
+        )
         let status = false
         performance.result.forEach(sample => {
           status = (sample.numTransactions / sample.samplePeriodSecs) > 1000
         })
         setHealthOk(status)
+      } catch (error) {
+        console.warn(error)
       }
     }
   }
