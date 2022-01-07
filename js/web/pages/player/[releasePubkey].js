@@ -11,6 +11,15 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
             margin: 0px;
           }
 
+          a {
+            color: white;
+            text-decoration: none;
+          }
+
+          a:hover {
+            color: #2D81FF;
+          }
+
           #container {
             height: 565px;
             width: 100%;
@@ -75,7 +84,7 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
         <div id="container">
           <div id="overlay"></div>
           <div id="title">
-            <h4>NINA</h4>
+            <a href=${metadata.external_url} target="_blank" rel="noreferrer"><h4>NINA</h4></a>
           </div>
           <div id="vertical-center">
             <input id="player-button" type="image" src="https://${host}/play.svg" width="40px height="40px />
@@ -136,7 +145,7 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
   return (
     <iframe
       id="nina-player"
-      width="100%"
+      width="565px"
       height="565px"
       style={{ border: "none" }}
       src={dataURI}

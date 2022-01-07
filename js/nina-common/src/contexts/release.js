@@ -48,10 +48,6 @@ const ReleaseContextProvider = ({ children }) => {
   const [allReleases, setAllReleases] = useState([])
   const [allReleasesCount, setAllReleasesCount] = useState(null)
 
-  useEffect(() => {
-    getReleasesInCollection()
-  }, [collection])
-
   const resetSearchResults = () => {
     setSearchResults(searchResultsInitialState)
   }
@@ -131,6 +127,7 @@ const ReleaseContextProvider = ({ children }) => {
         getReleasesRecent,
         getReleasesAll,
         getReleaseRoyaltiesByUser,
+        getReleasesInCollection,
         filterReleasesUserCollection,
         filterReleasesPublishedByUser,
         filterRoyaltiesByUser,

@@ -11,7 +11,7 @@ import ScrollablePageWrapper from "./ScrollablePageWrapper";
 const { ReleaseContext, NinaContext } = ninaCommon.contexts;
 
 const ReleaseList = () => {
-  const { filterReleasesUserCollection, releaseState } =
+  const { getReleasesInCollection, filterReleasesUserCollection, releaseState } =
     useContext(ReleaseContext);
   const [listView, setListView] = useState(false);
 
@@ -25,9 +25,15 @@ const ReleaseList = () => {
   
   useEffect(() => {
     if (wallet?.connected) {
+      getReleasesInCollection()
+    }
+  }, [collection]);
+
+  useEffect(() => {
+    if (wallet?.connected) {
       setUserCollectionReleases(filterReleasesUserCollection());
     }
-  }, [releaseState, collection]);
+  }, [releaseState]);
 
   const handleViewChange = () => {
     setListView(!listView);
