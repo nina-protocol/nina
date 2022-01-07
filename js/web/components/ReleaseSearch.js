@@ -60,35 +60,33 @@ const ReleaseSearch = () => {
 
   return (
     <SearchWrapper>
-      {artists && (
-        <Form
-          onSubmit={(e) => handleSubmit(e)}
-          style={{ width: "100%" }}
-        >
-          <Autocomplete
-            disablePortal
-            id="combo-box-demo"
-            options={artists}
-            onInputChange={(e, v, r) => handleOptionSelect(e, v, r)}
-            fullWidth
-            inputValue={query}
-            freeSolo={true}
-            renderInput={(params) => (
-              <InputWrapper>
-                <TextField
-                  className="input"
-                  {...params}
-                  fullWidth
-                  label="Search by Artist"
-                  id="fullWidth"
-                  variant="standard"
-                  // onChange={(e) => handleChange(e)}
-                />
-              </InputWrapper>
-            )}
-          />
-        </Form>
-      )}
+      <Form
+        onSubmit={(e) => handleSubmit(e)}
+        style={{ width: "100%" }}
+      >
+        <Autocomplete
+          disablePortal
+          id="combo-box-demo"
+          options={artists || []}
+          onInputChange={(e, v, r) => handleOptionSelect(e, v, r)}
+          fullWidth
+          inputValue={query}
+          freeSolo={true}
+          renderInput={(params) => (
+            <InputWrapper>
+              <TextField
+                className="input"
+                {...params}
+                fullWidth
+                label="Search by Artist"
+                id="fullWidth"
+                variant="standard"
+                // onChange={(e) => handleChange(e)}
+              />
+            </InputWrapper>
+          )}
+        />
+      </Form>
 
       {searchResults.pending && (
         <Box>
