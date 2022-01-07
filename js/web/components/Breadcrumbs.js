@@ -54,14 +54,14 @@ const releaseBreadcrumbFormatted = (metadata) => {
   return (
     <StyledReleaseBreadcrumb>
       <Typography display="inline" variant="subtitle1">
-        {metadata.properties.artist},
+        {metadata?.properties.artist},
       </Typography>{" "}
       <Typography
         display="inline"
         variant="subtitle1"
         sx={{ fontStyle: "italic" }}
       >
-        {metadata.properties.title}
+        {metadata?.properties.title}
       </Typography>
     </StyledReleaseBreadcrumb>
   );

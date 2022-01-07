@@ -17,6 +17,7 @@ const ConnectionContextProvider = ({ children, ENDPOINTS }) => {
       : WalletAdapterNetwork.Devnet
   const [endpoint] = useState(ENDPOINTS[process.env.REACT_APP_CLUSTER].endpoint)
   const [healthOk, setHealthOk] = useState(true)
+  const [healthTimestamp, setHealthTimestamp] = useState(0)
   const connection = useMemo(
     () => new Connection(endpoint, 'recent'),
     [endpoint, network]
@@ -35,16 +36,23 @@ const ConnectionContextProvider = ({ children, ENDPOINTS }) => {
   let timer = undefined
 
   const healthCheck = async () => {
-    const performance = await connection._rpcRequest(
-      'getRecentPerformanceSamples',
-      [5]
-    )
-      
-    let status = false
-    performance.result.forEach(sample => {
-      status = (sample.numTransactions / sample.samplePeriodSecs) > 1000
-    })
-    setHealthOk(status)
+    const timeSinceLastCheck = (Date.now() - healthTimestamp) / 1000
+    if (timeSinceLastCheck > 30) {
+      try {
+        setHealthTimestamp(Date.now())
+        const performance = await connection._rpcRequest(
+          'getRecentPerformanceSamples',
+          [5]
+        )
+        let status = false
+        performance.result.forEach(sample => {
+          status = (sample.numTransactions / sample.samplePeriodSecs) > 1000
+        })
+        setHealthOk(status)
+      } catch (error) {
+        console.warn(error)
+      }
+    }
   }
 
   useEffect(() => {
