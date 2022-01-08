@@ -7,6 +7,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { Typography, Box } from "@mui/material";
 import { useWallet } from "@solana/wallet-adapter-react";
 import ReleaseCreateForm from "./ReleaseCreateForm";
+import ReleaseCreateConfirm from "./ReleaseCreateConfirm";
 import ReleaseCard from "./ReleaseCard";
 import NinaBox from "./NinaBox";
 import MediaDropzones from "./MediaDropzones";
@@ -42,6 +43,7 @@ const ReleaseCreate = () => {
   const [formValues, setFormValues] = useState({
     releaseForm: {},
   });
+  const [formValuesConfirmed, setFormValuesConfirmed] = useState(false);
   const [imageProgress, setImageProgress] = useState();
   const [audioProgress, setAudioProgress] = useState();
 
@@ -79,12 +81,15 @@ const ReleaseCreate = () => {
   };
 
   useEffect(async () => {
-    const valid = async () =>
-      await ReleaseCreateSchema.isValid(formValues.releaseForm, {
-        abortEarly: true,
-      });
-    setFormIsValid(await valid());
-  }, [formValues]);
+    if (track && artwork) {
+      setFormIsValid(await valid());
+    }
+  }, [formValues, track, artwork]);
+
+  const valid = async () =>
+    await ReleaseCreateSchema.isValid(formValues.releaseForm, {
+      abortEarly: true,
+    });
 
   const handleSubmit = async () => {
     if (track && artwork) {
@@ -222,28 +227,40 @@ const ReleaseCreate = () => {
           </CreateFormWrapper>
 
           <CreateCta>
-            <Button
-              fullWidth
-              variant="outlined"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={
-                pending ||
-                !formIsValid ||
-                artwork?.meta.status === "uploading" ||
-                track?.meta.status === "uploading"
-              }
-              sx={{ height: "54px" }}
-            >
-              {pending && (
-                <Dots
-                  msg={`Uploading ${
-                    audioProgress > 0 ? "Track" : "Image"
-                  } - Please don't close this window`}
-                />
-              )}
-              {!pending && buttonText}
-            </Button>
+            {formValuesConfirmed && (
+              <Button
+                fullWidth
+                variant="outlined"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={
+                  pending ||
+                  !formIsValid ||
+                  artwork?.meta.status === "uploading" ||
+                  track?.meta.status === "uploading"
+                }
+                sx={{ height: "54px" }}
+              >
+                {pending && (
+                  <Dots
+                    msg={`Uploading ${
+                      audioProgress > 0 ? "Track" : "Image"
+                    } - Please don't close this window`}
+                  />
+                )}
+                {!pending && buttonText}
+              </Button>
+            )}
+
+            {!formValuesConfirmed && (
+              <ReleaseCreateConfirm
+                formValues={formValues}
+                formIsValid={formIsValid}
+                handleSubmit={handleSubmit}
+                setFormValuesConfirmed={setFormValuesConfirmed}
+              />
+            )}
+
             {pending && (
               <LinearProgress
                 variant="determinate"
