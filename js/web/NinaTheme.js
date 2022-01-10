@@ -11,6 +11,7 @@ const colors = {
   green: "#66F523",
   white: "#ffffff",
   greyLight: "#E3E3E3",
+  greyDark: '#1a1a1a',
   grey: "rgba(0, 0, 0, 0.2)",
   transparent: "#ffffff00",
   overlay: "#574a4ac4",
@@ -66,6 +67,7 @@ export const NinaTheme = (mode) => {
           primary: colors.grey,
         },
         greyLight: colors.greyLight,
+        greyDark: colors.greyDark,
       },
       gradient: {
         background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(143,175,223,1) 0%, rgb(35,99,196) 100%)`,
