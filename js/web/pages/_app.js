@@ -4,8 +4,10 @@ import { SnackbarProvider } from "notistack";
 import { ThemeProvider } from "@mui/material/styles";
 import ninaCommon from "nina-common";
 import { CacheProvider } from "@emotion/react";
-import { NinaTheme } from "../NinaTheme";
+import { NinaTheme, getDesignTokens } from "../NinaTheme";
 import Layout from "../components/Layout";
+import {createTheme} from "@mui/material/styles";
+
 
 const {
   ReleaseContextProvider,
@@ -38,6 +40,11 @@ const ENDPOINTS = {
 
 function Application({ Component, clientSideEmotionCache, pageProps }) {
   const [loading, setLoading] = useState(false);
+  const [mode, setMode] = React.useState('light');
+
+  const theme = React.useMemo(() => createTheme(NinaTheme(mode), [mode]))
+
+
   React.useEffect(() => {
     const start = () => {
       setLoading(true);
@@ -84,7 +91,7 @@ function Application({ Component, clientSideEmotionCache, pageProps }) {
               <AudioPlayerContextProvider>
                 <ExchangeContextProvider>
                   <CacheProvider value={clientSideEmotionCache}>
-                    <ThemeProvider theme={NinaTheme}>
+                    <ThemeProvider theme={theme}>
                       <Layout>
                         {loading ? (
                           <Dots size="80px" />
