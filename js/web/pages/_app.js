@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Router from "next/router";
 import { SnackbarProvider } from "notistack";
 import { ThemeProvider } from "@mui/material/styles";
@@ -16,6 +16,8 @@ const {
   NameContextProvider,
   NinaContextProvider,
   ConnectionContextProvider,
+  ColorContextProvider,
+  ColorContext
 } = ninaCommon.contexts;
 
 const { Dots } = ninaCommon.components;
@@ -40,7 +42,7 @@ const ENDPOINTS = {
 
 function Application({ Component, clientSideEmotionCache, pageProps }) {
   const [loading, setLoading] = useState(false);
-  const [mode, setMode] = React.useState('light');
+  const [mode, setMode] = useState('light');
 
   const theme = React.useMemo(() => createTheme(NinaTheme(mode), [mode]))
 
@@ -90,17 +92,19 @@ function Application({ Component, clientSideEmotionCache, pageProps }) {
             <NameContextProvider>
               <AudioPlayerContextProvider>
                 <ExchangeContextProvider>
-                  <CacheProvider value={clientSideEmotionCache}>
-                    <ThemeProvider theme={theme}>
-                      <Layout>
-                        {loading ? (
-                          <Dots size="80px" />
-                        ) : (
-                          <Component {...pageProps} />
-                        )}
-                      </Layout>
-                    </ThemeProvider>
-                  </CacheProvider>
+                  <ColorContextProvider mode={mode} setMode={setMode} >
+                    <CacheProvider value={clientSideEmotionCache}>
+                      <ThemeProvider theme={theme}>
+                        <Layout>
+                          {loading ? (
+                            <Dots size="80px" />
+                            ) : (
+                              <Component {...pageProps} />
+                              )}
+                        </Layout>
+                      </ThemeProvider>
+                    </CacheProvider>
+                  </ColorContextProvider>
                 </ExchangeContextProvider>
               </AudioPlayerContextProvider>
             </NameContextProvider>

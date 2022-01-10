@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { styled } from "@mui/material/styles";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Drawer from "@mui/material/Drawer";
@@ -15,6 +15,16 @@ import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { faInstagramSquare } from "@fortawesome/free-brands-svg-icons";
 import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
+import ninaCommon from "nina-common";
+
+import IconButton from '@mui/material/IconButton';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+
+const {ColorContext} = ninaCommon.contexts;
+
+import {useTheme} from '@mui/material/styles';
+import {CloseRounded} from "@mui/icons-material";
 
 const linksConnected = [
   "home",
@@ -40,6 +50,8 @@ const NavDrawer = () => {
   const wallet = useWallet();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [links, setLinks] = useState(linksNotConnected);
+  const theme = useTheme();
+  const {colorModeToggle} = useContext(ColorContext)
 
   useEffect(() => {
     if (wallet?.connected) {
@@ -70,6 +82,12 @@ const NavDrawer = () => {
         onClick={toggleDrawer}
         sx={{ padding: "15px 15px" }}
       />
+
+      <IconButton sx={{ml: 1}} onClick={colorModeToggle.toggleColorMode} color="inherit">
+        {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+      </IconButton>
+
+      
       <StyledList disablePadding>
         {links.map((link) => {
           switch (link) {
