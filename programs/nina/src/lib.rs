@@ -58,11 +58,18 @@ pub mod nina {
         instructions::release_airdrop::handler(ctx)
     }
 
-    pub fn release_update_metadata(
-        ctx: Context<ReleaseUpdateMetadata>,
+    pub fn release_create_metadata(
+        ctx: Context<ReleaseCreateMetadata>,
         metadata_data: ReleaseMetadataData
     ) -> ProgramResult {
-        instructions::release_update_metadata::handler(ctx, metadata_data)
+        instructions::release_create_metadata::handler(ctx, metadata_data)
+    }
+
+    pub fn release_create_metadata_pressing_plant(
+        ctx: Context<ReleaseCreateMetadataPressingPlant>,
+        metadata_data: ReleaseMetadataData
+    ) -> ProgramResult {
+        instructions::release_create_metadata_pressing_plant::handler(ctx, metadata_data)
     }
 
     pub fn redeemable_init(

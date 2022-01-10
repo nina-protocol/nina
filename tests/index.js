@@ -353,7 +353,7 @@ describe('Release', async () => {
     assert.equal(bnToDecimal(releaseAfter.royaltyRecipients[0].percentShare.toNumber()), 1)
   });
 
-  it('Updates Metadata', async () => {
+  it('Creates Metadata', async () => {
     const metadataProgram = new anchor.web3.PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s')
     const [metadata, metadataBump] = await anchor.web3.PublicKey.findProgramAddress(
       [Buffer.from('metadata'), metadataProgram.toBuffer(), releaseMint.publicKey.toBuffer()],
@@ -367,7 +367,7 @@ describe('Release', async () => {
       sellerFeeBasisPoints: 2000,
     }
 
-    await nina.rpc.releaseUpdateMetadata(
+    await nina.rpc.releaseCreateMetadata(
       data, {
         accounts: {
           payer: provider.wallet.publicKey,
