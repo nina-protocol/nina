@@ -37,6 +37,7 @@ const Release = ({ metadataSsr }) => {
       getRelatedForRelease(releasePubkey);
       getExchangeHistoryForRelease(releasePubkey);
     }
+    console.log(releaseState)
   }, [releasePubkey]);
 
   useEffect(() => {

@@ -15,7 +15,7 @@ pub struct RedeemableInitialize<'info> {
         seeds = [b"nina-release".as_ref(), redeemable_mint.key().as_ref()],
         bump,
     )]
-    pub release: Loader<'info, Release>,
+    pub release: AccountLoader<'info, Release>,
     #[account(
         init,
         seeds = [b"nina-redeemable".as_ref(), release.key().as_ref(), redeemed_mint.key().as_ref()],
@@ -23,7 +23,7 @@ pub struct RedeemableInitialize<'info> {
         payer = authority,
         space = 586,
     )]
-    pub redeemable: Loader<'info, Redeemable>,
+    pub redeemable: AccountLoader<'info, Redeemable>,
     #[account(
         seeds = [b"nina-redeemable-signer".as_ref(), redeemable.key().as_ref()],
         bump,

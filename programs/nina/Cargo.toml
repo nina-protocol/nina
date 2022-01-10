@@ -16,9 +16,9 @@ default = ["test"]
 test = []
 
 [dependencies]
-anchor-lang = "0.18.0"
-anchor-spl = "0.18.0"
+anchor-lang = "0.20.1"
+anchor-spl = "0.20.1"
 spl-token = { version = "3.2.0", features = ["no-entrypoint"] }
-solana-program = "1.8.0"
+solana-program = "1.9.2"
 thiserror = "1.0"
 metaplex-token-metadata = { version="0.0.1", features = [ "no-entrypoint" ] }
