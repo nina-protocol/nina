@@ -107,7 +107,7 @@ const Root = styled('nav')(({ theme }) => ({
     position: 'absolute',
     top: '0',
     '&__link': {
-      color: `${theme.palette.black}`,
+      color: `${theme.palette.mode === "light" ? theme.palette.black : theme.palette.white}`,
       display: 'flex',
       alignItems: 'center',
       textDecoration: 'none',
@@ -206,6 +206,7 @@ const Root = styled('nav')(({ theme }) => ({
     textTransform: 'capitalize',
     paddingRight: '20px',
     paddingLeft: '20px',
+    color: 'red !important',
     '& img': {
       display: 'none',
     },

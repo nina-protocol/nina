@@ -21,34 +21,6 @@ const colors = {
   yellow: '#ffe100',
 };
 
-const getDesignTokens = (mode) => ({
-  palette: {
-    mode,
-    ...(mode === 'light'
-      ? {
-        // palette values for light mode
-        primary: amber,
-        divider: amber[200],
-        text: {
-          primary: grey[900],
-          secondary: grey[800],
-        },
-      }
-      : {
-        // palette values for dark mode
-        primary: deepOrange,
-        divider: deepOrange[700],
-        background: {
-          default: deepOrange[900],
-          paper: deepOrange[900],
-        },
-        text: {
-          primary: '#fff',
-          secondary: grey[500],
-        },
-      }),
-  },
-});
 
 
 export const NinaTheme = (mode) => {
@@ -57,7 +29,6 @@ export const NinaTheme = (mode) => {
     {
       palette: {
         mode,
-
         ...( mode === 'light' ? {
           secondary: {
             main: "#9999cc",
@@ -203,18 +174,18 @@ export const NinaTheme = (mode) => {
               "&.MuiButton-outlined": {
                 borderRadius: "0px",
                 padding: "20px",
-                borderColor: colors.black,
-                color: colors.black,
+                borderColor: mode === 'light' ? colors.black: colors.white,
+                color: mode === 'light' ? colors.black: colors.white,
                 "&:hover": {
-                  borderColor: colors.black,
-                  color: colors.black,
+                  borderColor: mode === 'light' ? colors.black: colors.white,
+                  color: mode === 'light' ? colors.black: colors.white,
                 },
               },
               "&.MuiButton-contained": {
                 padding: "10px",
                 borderRadius: "0px",
-                backgroundColor: `${colors.white}`,
-                color: `${colors.black}`,
+                backgroundColor: `${mode === 'light' ? colors.white: colors.black}`,
+                color: `${mode === 'light' ? colors.black : colors.white}`,
                 boxShadow: "none",
                 "&:hover": {
                   backgroundColor: `${colors.white}`,
@@ -231,7 +202,7 @@ export const NinaTheme = (mode) => {
               boxShadow: "none",
               minWidth: "unset !important",
               opacity: 100,
-              color: `${colors.black}`,
+              color: `${mode === 'light' ? colors.black : colors.white}`,
               "&:hover": {
                 backgroundColor: `${colors.white} !important`,
                 boxShadow: "none",
@@ -243,6 +214,13 @@ export const NinaTheme = (mode) => {
           styleOverrides: {
             root: {
               background: colors.transparent,
+            },
+          },
+        },
+        MuiPaper: {
+          styleOverrides: {
+            root: {
+              background: mode === "light" ? colors.white : colors.grey.primary,
             },
           },
         },
@@ -269,10 +247,10 @@ export const NinaTheme = (mode) => {
           styleOverrides: {
             root: {
               "& .MuiInput-underline:before": {
-                borderBottom: `1px solid ${colors.black}`,
+                borderBottom: `1px solid ${mode === 'light' ? colors.black : colors.white}`,
               },
               "& .MuiInput-underline:after": {
-                borderBottom: `1px solid ${colors.black}`,
+                borderBottom: `1px solid ${mode === 'light' ? colors.black : colors.white}`,
               },
               "& .MuiFormControl-root": {
                 height: "35px",
@@ -298,7 +276,7 @@ export const NinaTheme = (mode) => {
           styleOverrides: {
             root: {
               "& .MuiSlider-thumb": {
-                color: colors.black,
+                color: mode === 'light' ? colors.black : colors.white,
                 width: "14px",
                 height: "11px",
                 "&:hover": {
@@ -309,12 +287,12 @@ export const NinaTheme = (mode) => {
                 },
               },
               "& .MuiSlider-track": {
-                color: colors.black,
+                color: mode === 'light' ? colors.black : colors.white,
                 height: "1px",
                 border: "none",
               },
               "& .MuiSlider-rail": {
-                color: colors.black,
+                color: mode === 'light' ? colors.black : colors.white,
                 height: "1px",
               },
             },
@@ -329,7 +307,7 @@ export const NinaTheme = (mode) => {
               overflow: "hidden",
             },
             a: {
-              color: colors.black,
+              color: mode === 'light' ? colors.black : colors.white,
               textDecoration: "none",
               cursor: "pointer !important",
               "&:hover": {

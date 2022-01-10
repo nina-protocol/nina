@@ -22,7 +22,6 @@ const StyledBox = styled(Box, {
   gridTemplateColumns: columns ? columns : "repeat(2, 1fr)",
   gridColumnGap: gridColumnGap ? gridColumnGap : "0px",
   gridAutoRows: "auto",
-  backgroundColor: `${theme.palette.white} !important`,
   [theme.breakpoints.down("md")]: {
     gridTemplateColumns: "1fr",
     width: "80vw",

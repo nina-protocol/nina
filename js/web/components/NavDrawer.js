@@ -20,6 +20,7 @@ import ninaCommon from "nina-common";
 import IconButton from '@mui/material/IconButton';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
+import MenuIcon from '@mui/icons-material/Menu';
 
 const {ColorContext} = ninaCommon.contexts;
 
@@ -83,18 +84,17 @@ const NavDrawer = () => {
         sx={{ padding: "15px 15px" }}
       />
 
-      <IconButton sx={{ml: 1}} onClick={colorModeToggle.toggleColorMode} color="inherit">
+      <ModeToggleButton size="large" onClick={colorModeToggle.toggleColorMode} color="inherit">
         {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
-      </IconButton>
+      </ModeToggleButton>
 
-      
-      <StyledList disablePadding>
+    
+      <StyledList disablePadding >
         {links.map((link) => {
           switch (link) {
             case "collection":
               return (
                 <Link
-                  className={`${classes.drawerLink}`}
                   href={`/${link}`}
                   activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
                   key={link}
@@ -110,9 +110,7 @@ const NavDrawer = () => {
             case "releases":
               return (
                 <Link
-                  className={`${classes.drawerLink}`}
                   href={`/releases/user`}
-                  activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
                   key={link}
                   passHref
                 >
@@ -131,10 +129,11 @@ const NavDrawer = () => {
                       href="https://softlp.nina.market"
                       target="_blank"
                       rel="noreferrer"
-                      className={`${classes.drawerLink}`}
                       passHref
                     >
-                      The Soft LP
+                      <Typography variant="h4">
+                        The Soft LP
+                      </Typography>
                     </Link>
                   </ListItemText>
                 </ListItem>
@@ -147,10 +146,11 @@ const NavDrawer = () => {
                       href="https://radio.nina.market"
                       target="_blank"
                       rel="noreferrer"
-                      className={`${classes.drawerLink}`}
                       passHref
                     >
-                      Nina Radio
+                      <Typography variant="h4">
+                        Nina Radio
+                      </Typography>
                     </Link>
                   </ListItemText>
                 </ListItem>
@@ -158,9 +158,7 @@ const NavDrawer = () => {
             case "all Releases":
               return (
                 <Link
-                  className={`${classes.drawerLink}`}
                   href={`/releases`}
-                  activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
                   key={link}
                   passHref
                 >
@@ -173,11 +171,9 @@ const NavDrawer = () => {
             default:
               return (
                 <Link
-                  className={`${classes.drawerLink}`}
                   href={`${
                     link === "home" ? "/" : `/${link.replace(" ", "")}`
                   }`}
-                  activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
                   key={link}
                   passHref
                 >
@@ -195,7 +191,7 @@ const NavDrawer = () => {
   return (
     <div>
       {
-        <Box key={"left"}>
+        <Box key={"left"} >
           <StyledMenuButton onClick={toggleDrawer(true)}>
             <Icon>
               <Image src={"/hamburger.svg"} height={25} width={25} />
@@ -251,7 +247,6 @@ const PREFIX = "NavDrawer";
 const classes = {
   toggle: `${PREFIX}-toggle`,
   list: `${PREFIX}-list`,
-  drawerLink: `${PREFIX}-drawerLink`,
 };
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
@@ -281,14 +276,17 @@ const StyledList = styled(List)(({ theme }) => ({
   },
 }));
 
+const ModeToggleButton = styled(IconButton)(({theme}) => ({
+  position: 'absolute !important',
+  right: theme.spacing(1),
+  top: theme.spacing(1)
+}));
+
 const StyledMenuButton = styled(Button)(({ theme }) => ({
   padding: "0px !important",
   zIndex: "10",
   "&:hover": {
     backgroundColor: `${theme.palette.transparent} !important`,
-  },
-  "& .MuiSvgIcon-root": {
-    color: theme.palette.black,
   },
 }));
 

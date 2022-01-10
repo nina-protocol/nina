@@ -1,14 +1,8 @@
 import React, { createContext, useContext, useState, useMemo} from 'react'
-
 import NinaClient from '../utils/client'
-// import { postTwitterRegistrarRequest } from '../utils/web3'
-// import { ConnectionContext } from './connection'
-// import { ReleaseContext } from './release'
 
 export const ColorContext = createContext()
 const ColorContextProvider = ({ mode, setMode, children }) => {
-
-  console.log('mode :>> ', mode);
 
   const colorModeToggle = React.useMemo(
     () => ({
@@ -18,17 +12,6 @@ const ColorContextProvider = ({ mode, setMode, children }) => {
     }),
     [],
   );
-
-  // const theme = React.useMemo(
-  //   () =>
-  //     createTheme({
-  //       palette: {
-  //         colorMode,
-  //       },
-  //     }),
-  //   [mode],
-  // );
-
 
   return (
     <ColorContext.Provider

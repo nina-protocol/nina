@@ -7,6 +7,7 @@ import { CacheProvider } from "@emotion/react";
 import { NinaTheme, getDesignTokens } from "../NinaTheme";
 import Layout from "../components/Layout";
 import {createTheme} from "@mui/material/styles";
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 
 const {
@@ -42,7 +43,9 @@ const ENDPOINTS = {
 
 function Application({ Component, clientSideEmotionCache, pageProps }) {
   const [loading, setLoading] = useState(false);
-  const [mode, setMode] = useState('light');
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  console.log('prefersDarkMode :>> ', prefersDarkMode);
+  const [mode, setMode] = useState(!prefersDarkMode ? 'dark' : 'light');
 
   const theme = React.useMemo(() => createTheme(NinaTheme(mode), [mode]))
 
