@@ -127,7 +127,7 @@ const ToggleWrapper = styled(Box)(({ theme }) => ({
   position: "absolute",
   right: "0",
   "& button": {
-    color: "#000000 !important",
+    color: theme.palette.mode === 'light' ? theme.palette.black : theme.palette.white,
     paddingRight: theme.spacing(2),
 
     "&:hover": {
