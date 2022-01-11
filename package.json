@@ -1,6 +1,12 @@
 {
-  "dependencies": {
-    "@mui/material": "^5.0.4",
-    "@mui/styles": "^5.0.1"
-  }
+  "name": "nina",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nina-market/nina.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://nina.market"
 }
