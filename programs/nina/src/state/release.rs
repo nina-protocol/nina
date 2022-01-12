@@ -4,6 +4,7 @@ use anchor_spl::token::{self, Transfer, MintTo, SetAuthority};
 use crate::errors::*;
 
 #[account(zero_copy)]
+#[repr(packed)]
 #[derive(Default)]
 pub struct Release {
     pub payer: Pubkey,
@@ -31,7 +32,7 @@ pub struct Release {
 
 impl Release {
     pub fn release_revenue_share_collect_handler<'info> (
-        release_loader: &Loader<'info, Release>,
+        release_loader: &AccountLoader<'info, Release>,
         release_signer: AccountInfo<'info>,
         royalty_token_account: AccountInfo<'info>,
         authority: Pubkey,
@@ -68,7 +69,7 @@ impl Release {
     }
 
     pub fn release_init_handler<'info>(
-        release_loader: &Loader<'info, Release>,
+        release_loader: &AccountLoader<'info, Release>,
         release_signer: AccountInfo<'info>,
         release_mint: AccountInfo<'info>,
         payment_mint: AccountInfo<'info>,
@@ -117,22 +118,22 @@ impl Release {
         release.total_supply = config.amount_total_supply;
         release.remaining_supply = config.amount_total_supply - config.amount_to_artist_token_account - config.amount_to_vault_token_account;
         release.resale_percentage = config.resale_percentage;
-        release.release_datetime = config.release_datetime as i64;
+        release.release_datetime = config.release_datetime;
 
-        release.total_collected = 0 as u64;
-        release.sale_counter = 0 as u64;
-        release.sale_total = 0 as u64;
-        release.exchange_sale_counter = 0 as u64;
-        release.exchange_sale_total = 0 as u64;
+        release.total_collected = 0;
+        release.sale_counter = 0;
+        release.sale_total = 0;
+        release.exchange_sale_counter = 0;
+        release.exchange_sale_total = 0;
         release.bumps = bumps;
 
         release.append_royalty_recipient({
             RoyaltyRecipient {
                 recipient_authority: *authority.to_account_info().key,
                 recipient_token_account: *authority_token_account.to_account_info().key,
-                percent_share: 1000000 as u64,
-                owed: 0 as u64,
-                collected: 0 as u64,
+                percent_share: 1000000,
+                owed: 0,
+                collected: 0,
             }
         })?;
 

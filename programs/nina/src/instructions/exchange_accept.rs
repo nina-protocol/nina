@@ -78,7 +78,7 @@ pub struct ExchangeAccept<'info> {
         seeds = [b"nina-release".as_ref(), exchange.release_mint.as_ref()],
         bump,
     )]
-    pub release: Loader<'info, Release>,
+    pub release: AccountLoader<'info, Release>,
     #[account(address = token::ID)]
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,

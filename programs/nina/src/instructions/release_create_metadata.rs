@@ -14,11 +14,10 @@ use crate::state::*;
 use crate::utils::{metaplex_program_public_key, pressing_plant_account};
 
 #[derive(Accounts)]
-pub struct ReleaseUpdateMetadata<'info> {
-    #[account(mut)]
-    #[cfg_attr(
-        not(feature = "test"),
-        account(address = pressing_plant_account::ID),
+pub struct ReleaseCreateMetadata<'info> {
+    #[account(
+        mut,
+        constraint = payer.key() == release.load()?.authority
     )]
     pub payer: Signer<'info>,
     #[account(
@@ -46,7 +45,7 @@ pub struct ReleaseUpdateMetadata<'info> {
 }
 
 pub fn handler(
-    ctx: Context<ReleaseUpdateMetadata>,
+    ctx: Context<ReleaseCreateMetadata>,
     metadata_data: ReleaseMetadataData,
 ) -> ProgramResult {
     let release = ctx.accounts.release.load()?;

@@ -30,7 +30,7 @@ pub struct ReleaseRevenueShareTransfer<'info> {
         seeds = [b"nina-release".as_ref(), release.load()?.release_mint.as_ref()],
         bump = release.load()?.bumps.release,
     )]
-    pub release: Loader<'info, Release>,
+    pub release: AccountLoader<'info, Release>,
     pub new_royalty_recipient: UncheckedAccount<'info>,
     #[account(
         constraint = new_royalty_recipient_token_account.owner == *new_royalty_recipient.key,

@@ -11,12 +11,15 @@ import { ReleaseContext } from '../contexts'
 const ReleaseSettings = (props) => {
   const { releasePubkey, tempMetadata, inCreateFlow } = props
 
-  const { releaseState, releaseFetchMetadata } = useContext(ReleaseContext)
+  const { releaseState, releaseFetchStatus } = useContext(ReleaseContext)
 
   const [release, setRelease] = useState(releaseState.tokenData[releasePubkey])
   const [metadata, setMetadata] = useState(releaseState.metadata[releasePubkey])
   const [displayValues, setDisplayValues] = useState({})
-
+  const [uploadStatus, setUploadStatus] = useState({
+    status: "pending",
+    reason: "image",
+  })
   let timer = undefined
 
   useEffect(() => {
@@ -32,12 +35,13 @@ const ReleaseSettings = (props) => {
       clearInterval(timer)
       timer = null
     }
-  }, [releaseFetchMetadata])
+  }, [releaseFetchStatus])
 
   const hasMetadata = async (releasePubkey) => {
-    const metadataTxid = await releaseFetchMetadata(releasePubkey)
-
-    if (metadataTxid) {
+    const result = await releaseFetchStatus(releasePubkey)
+    console.log(result)
+    setUploadStatus(result)
+    if (result.status === "success") {
       clearInterval(timer)
       timer = null
     }
@@ -179,14 +183,20 @@ const ReleaseSettings = (props) => {
                 variant="outlined"
                 color="primary"
                 fullWidth
-                disabled={!metadata}
+                disabled={uploadStatus.status === "pending" || uploadStatus.status === "failed"}
                 sx={{ marginTop: '10px !important' }}
               >
                 <Link href={`/${releasePubkey}`} style={{ textDecoration: 'none' }}>
                   <Typography variant="body2">
-                    {metadata
-                      ? 'View Release'
-                      : 'Your release is currently being finalized...'}
+                    {uploadStatus.status === "pending" &&
+                      `Your release is currently being finalized - processing (${uploadStatus.reason})...`
+                    }
+                    {uploadStatus.status === "success" &&
+                      'View Release'
+                    }
+                    {uploadStatus.status === "failed" &&
+                      'Failed - send again'
+                    }
                   </Typography>
                 </Link>
               </Button>

@@ -22,7 +22,7 @@ pub struct ReleasePurchase<'info> {
         seeds = [b"nina-release".as_ref(), release_mint.key().as_ref()],
         bump,
     )]
-    pub release: Loader<'info, Release>,
+    pub release: AccountLoader<'info, Release>,
     #[account(
         seeds = [release.key().as_ref()],
         bump,

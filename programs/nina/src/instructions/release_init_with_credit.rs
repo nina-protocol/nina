@@ -12,7 +12,7 @@ pub struct ReleaseInitializeWithCredit<'info> {
         bump,
         payer = payer,
     )]
-    pub release: Loader<'info, Release>,
+    pub release: AccountLoader<'info, Release>,
     #[account(
         seeds = [release.key().as_ref()],
         bump,

@@ -6,6 +6,7 @@ import { Typography, Box } from "@mui/material";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import Image from "next/image";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 const { NinaClient } = ninaCommon.utils;
 const MediaDropzone = ({
@@ -16,11 +17,14 @@ const MediaDropzone = ({
   setTrack,
   handleProgress,
 }) => {
+  const wallet = useWallet();
+
   const getUploadParams = ({ file }) => {
     const body = new FormData();
     body.append("file", file);
     body.append("type", type);
     body.append("tokenId", releasePubkey);
+    body.append("authority", wallet?.publicKey.toBase58());
     if (metadata) {
       body.append("artist", metadata.artist);
       body.append("title", metadata.title);
@@ -28,6 +32,7 @@ const MediaDropzone = ({
       body.append("duration", metadata.duration);
       body.append("catalogNumber", metadata.catalogNumber);
       body.append("sellerFeeBasisPoints", metadata.resalePercentage);
+      body.append("trackCount", 1);
     }
     return {
       url: `${NinaClient.endpoints.pressingPlant}/api/file`,

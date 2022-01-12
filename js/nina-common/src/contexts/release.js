@@ -58,7 +58,7 @@ const ReleaseContextProvider = ({ children }) => {
 
   const {
     releaseCreate,
-    releaseFetchMetadata,
+    releaseFetchStatus,
     releasePurchase,
     collectRoyaltyForRelease,
     addRoyaltyRecipient,
@@ -116,7 +116,7 @@ const ReleaseContextProvider = ({ children }) => {
         pressingState,
         resetPressingState,
         releaseCreate,
-        releaseFetchMetadata,
+        releaseFetchStatus,
         releasePurchase,
         releasePurchasePending,
         releaseState,
@@ -1505,33 +1505,13 @@ const releaseContextHelper = ({
     setReleaseState(updatedState)
   }
 
-  const releaseFetchMetadata = async (releasePubkey) => {
+  const releaseFetchStatus = async (releasePubkey) => {
     try {
-      const arweaveTxidResult = await fetch(
-        `${NinaClient.endpoints.pressingPlant}/api/file/findArweaveTxid?tokenId=${releasePubkey}`
+      const result = await fetch(
+        `${NinaClient.endpoints.pressingPlant}/api/file/status?tokenId=${releasePubkey}`
       )
-      const arweaveTxidJson = await arweaveTxidResult.json()
 
-      if (arweaveTxidJson.txid) {
-        const arweaveMetadataUri = `${NinaClient.endpoints.arweave}/${arweaveTxidJson.txid}`
-        const arweaveJsonResult = await fetch(arweaveMetadataUri)
-        const arweaveJson = await arweaveJsonResult.json()
-
-        if (arweaveJson) {
-          let updatedState = { ...releaseState }
-          updatedState.metadata = {
-            ...updatedState.metadata,
-            [releasePubkey]: arweaveJson,
-          }
-          setReleaseState(updatedState)
-        }
-
-        return {
-          json: arweaveJson,
-          uri: arweaveMetadataUri,
-        }
-      }
-      return null
+      return await result.json()
     } catch (error) {
       console.warn(error)
     }
@@ -1571,7 +1551,7 @@ const releaseContextHelper = ({
   return {
     addRoyaltyRecipient,
     releaseCreate,
-    releaseFetchMetadata,
+    releaseFetchStatus,
     releasePurchase,
     collectRoyaltyForRelease,
     getRelease,
