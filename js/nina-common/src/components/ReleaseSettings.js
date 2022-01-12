@@ -2,7 +2,11 @@ import { useState, useEffect, useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import { Box, Button } from '@mui/material'
 import Typography from '@mui/material/Typography'
+<<<<<<< HEAD
 import Link from 'next/link'
+=======
+import { Link } from 'react-router-dom'
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
 
 import Royalty from './Royalty.js'
 import NinaClient from '../utils/client'
@@ -11,15 +15,23 @@ import { ReleaseContext } from '../contexts'
 const ReleaseSettings = (props) => {
   const { releasePubkey, tempMetadata, inCreateFlow } = props
 
+<<<<<<< HEAD
   const { releaseState, releaseFetchStatus } = useContext(ReleaseContext)
+=======
+  const { releaseState, releaseFetchMetadata } = useContext(ReleaseContext)
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
 
   const [release, setRelease] = useState(releaseState.tokenData[releasePubkey])
   const [metadata, setMetadata] = useState(releaseState.metadata[releasePubkey])
   const [displayValues, setDisplayValues] = useState({})
+<<<<<<< HEAD
   const [uploadStatus, setUploadStatus] = useState({
     status: "pending",
     reason: "image",
   })
+=======
+
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
   let timer = undefined
 
   useEffect(() => {
@@ -35,6 +47,7 @@ const ReleaseSettings = (props) => {
       clearInterval(timer)
       timer = null
     }
+<<<<<<< HEAD
   }, [releaseFetchStatus])
 
   const hasMetadata = async (releasePubkey) => {
@@ -42,6 +55,14 @@ const ReleaseSettings = (props) => {
     console.log(result)
     setUploadStatus(result)
     if (result.status === "success") {
+=======
+  }, [releaseFetchMetadata])
+
+  const hasMetadata = async (releasePubkey) => {
+    const metadataTxid = await releaseFetchMetadata(releasePubkey)
+
+    if (metadataTxid) {
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
       clearInterval(timer)
       timer = null
     }
@@ -178,11 +199,16 @@ const ReleaseSettings = (props) => {
             <Typography variant="body2">Share to Twitter</Typography>
           </Button>
 
+<<<<<<< HEAD
+=======
+          <Link to={`/${releasePubkey}`} style={{ textDecoration: 'none' }}>
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
             {inCreateFlow && (
               <Button
                 variant="outlined"
                 color="primary"
                 fullWidth
+<<<<<<< HEAD
                 disabled={uploadStatus.status === "pending" || uploadStatus.status === "failed"}
                 sx={{ marginTop: '10px !important' }}
               >
@@ -201,6 +227,19 @@ const ReleaseSettings = (props) => {
                 </Link>
               </Button>
             )}
+=======
+                disabled={!metadata}
+                sx={{ marginTop: '10px !important' }}
+              >
+                <Typography variant="body2">
+                  {metadata
+                    ? 'View Release'
+                    : 'Your release is currently being finalized...'}
+                </Typography>
+              </Button>
+            )}
+          </Link>
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
         </Box>
       </ReleaseInfoWrapper>
     </StyledBox>

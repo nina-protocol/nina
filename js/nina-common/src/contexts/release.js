@@ -45,8 +45,15 @@ const ReleaseContextProvider = ({ children }) => {
     published: [],
     purchased: [],
   })
+<<<<<<< HEAD
   const [allReleases, setAllReleases] = useState([])
   const [allReleasesCount, setAllReleasesCount] = useState(null)
+=======
+
+  useEffect(() => {
+    getReleasesInCollection()
+  }, [collection])
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
 
   const resetSearchResults = () => {
     setSearchResults(searchResultsInitialState)
@@ -58,7 +65,11 @@ const ReleaseContextProvider = ({ children }) => {
 
   const {
     releaseCreate,
+<<<<<<< HEAD
     releaseFetchStatus,
+=======
+    releaseFetchMetadata,
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
     releasePurchase,
     collectRoyaltyForRelease,
     addRoyaltyRecipient,
@@ -81,8 +92,11 @@ const ReleaseContextProvider = ({ children }) => {
     getRedeemablesForRelease,
     getRelatedForRelease,
     filterRelatedForRelease,
+<<<<<<< HEAD
     getReleasesBySearch,
     filterSearchResults
+=======
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
   } = releaseContextHelper({
     releaseState,
     setReleaseState,
@@ -103,11 +117,14 @@ const ReleaseContextProvider = ({ children }) => {
     removeReleaseFromCollection,
     releasesRecentState,
     setReleasesRecentState,
+<<<<<<< HEAD
     allReleases,
     setAllReleases,
     setAllReleasesCount,
     searchResults,
     setSearchResults
+=======
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
   })
 
   return (
@@ -116,7 +133,11 @@ const ReleaseContextProvider = ({ children }) => {
         pressingState,
         resetPressingState,
         releaseCreate,
+<<<<<<< HEAD
         releaseFetchStatus,
+=======
+        releaseFetchMetadata,
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
         releasePurchase,
         releasePurchasePending,
         releaseState,
@@ -145,12 +166,15 @@ const ReleaseContextProvider = ({ children }) => {
         filterReleasesAll,
         getRelatedForRelease,
         filterRelatedForRelease,
+<<<<<<< HEAD
         allReleases,
         allReleasesCount,
         getReleasesBySearch,
         filterSearchResults,
         searchResults,
         setSearchResults
+=======
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
       }}
     >
       {children}
@@ -177,11 +201,14 @@ const releaseContextHelper = ({
   removeReleaseFromCollection,
   releasesRecentState,
   setReleasesRecentState,
+<<<<<<< HEAD
   allReleases,
   setAllReleases,
   setAllReleasesCount,
   searchResults,
   setSearchResults
+=======
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
 }) => {
   const provider = new anchor.Provider(
     connection,
@@ -908,6 +935,7 @@ const releaseContextHelper = ({
     if (!release) {
       release = await fetchRelease(releasePubkey)
     }
+<<<<<<< HEAD
     try {
       const releaseIds = []
       for await (let recipient of release.royaltyRecipients) {
@@ -925,12 +953,31 @@ const releaseContextHelper = ({
         if (publishedIds) {
           releaseIds.push(...publishedIds)
         }
+=======
+    const releaseIds = []
+    for await (let recipient of release.royaltyRecipients) {
+      const royaltyIds = await getReleaseIdsHandler(
+        recipient,
+        lookupTypes.REVENUE_SHARE
+      )
+      if (royaltyIds) {
+        releaseIds.push(...royaltyIds)
+      }
+      const publishedIds = await getReleaseIdsHandler(
+        recipient,
+        lookupTypes.PUBLISHED_BY
+      )
+      if (publishedIds) {
+        releaseIds.push(...publishedIds)
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
       }
       const filteredReleaseIds = new Set(releaseIds)
       await fetchAndSaveReleasesToState([...filteredReleaseIds])
     } catch (error) {
       console.warn(error)
     }
+    const filteredReleaseIds = new Set(releaseIds)
+    await fetchAndSaveReleasesToState([...filteredReleaseIds])
   }
 
   const getRedeemablesForRelease = async (releasePubkey) => {
@@ -1067,6 +1114,7 @@ const releaseContextHelper = ({
 
   const getReleasesAll = async () => {
     try {
+<<<<<<< HEAD
       const all = [...allReleases]
       const result = await fetch(
         `${NinaClient.endpoints.api}/releases/?offset=${allReleases.length}`
@@ -1102,6 +1150,12 @@ const releaseContextHelper = ({
       )
       const json = await result.json()     
       await fetchAndSaveReleasesToState(json.releases, query)
+=======
+      const result = await fetch(`${NinaClient.endpoints.api}/releases/recent`)
+      const { published, purchased } = await result.json()
+      const releaseIds = [...published, ...purchased]
+      await fetchAndSaveReleasesToState(releaseIds)
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
     } catch (error) {
       console.warn(error)
     }
@@ -1152,6 +1206,7 @@ const releaseContextHelper = ({
     return {
       published: releasesPublished,
       purchased: releasesPurchased,
+<<<<<<< HEAD
     }
   }
 
@@ -1185,11 +1240,30 @@ const releaseContextHelper = ({
       }
     })
     resultArray.sort(
+=======
+    }
+  }
+
+  const filterReleasesAll = () => {
+    const allReleases = []
+    Object.keys(releaseState.tokenData).forEach((releasePubkey) => {
+      const tokenData = releaseState.tokenData[releasePubkey]
+      const metadata = releaseState.metadata[releasePubkey]
+      if (metadata) {
+        allReleases.push({ tokenData, metadata, releasePubkey })
+      }
+    })
+    allReleases.sort(
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
       (a, b) =>
         a.tokenData.releaseDatetime.toNumber() >
         b.tokenData.releaseDatetime.toNumber()
     )
+<<<<<<< HEAD
     return resultArray
+=======
+    return allReleases
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
   }
 
   const filterReleasesPublishedByUser = (userPubkey = undefined) => {
@@ -1390,8 +1464,16 @@ const releaseContextHelper = ({
 
   */
 
+<<<<<<< HEAD
   const fetchAndSaveReleasesToState = async (releaseIds, query=null) => {
     if (releaseIds.length > 0) {
+=======
+  const fetchAndSaveReleasesToState = async (releaseIds) => {
+    if (releaseIds.length > 0) {
+      releaseIds = releaseIds.filter(
+        (id) => !Object.keys(releaseState.tokenData).includes(id)
+      )
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
       releaseIds = releaseIds.filter((id, pos) => releaseIds.indexOf(id) == pos)
       releaseIds = releaseIds.map((id) => new anchor.web3.PublicKey(id))
       try {
@@ -1406,13 +1488,18 @@ const releaseContextHelper = ({
           dataParsed.publicKey = release.publicKey
           return dataParsed
         })
+<<<<<<< HEAD
         await saveReleasesToState(releaseAccounts, query)
+=======
+        return await saveReleasesToState(releaseAccounts)
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
       } catch (error) {
         console.warn(error)
       }
     }
   }
 
+<<<<<<< HEAD
   const saveReleasesToState = async (releases, query = undefined) => {
     try {
       let updatedState = { ...releaseState }
@@ -1440,6 +1527,33 @@ const releaseContextHelper = ({
           search.releases.push(searchResult)
         }
 
+=======
+  const saveReleasesToState = async (releases, handle = undefined) => {
+    try {
+      let updatedState = { ...releaseState }
+      let search = undefined
+
+      if (handle) {
+        search = {
+          handle,
+          searched: true,
+          releases: [],
+        }
+      }
+
+      const metadataQueries = {}
+      for await (let release of releases) {
+        const releasePubkey = release.publicKey.toBase58()
+        release = release.account ? release.account : release
+        if (handle) {
+          let searchResult = {
+            releasePubkey,
+            tokenData: release,
+          }
+          search.releases.push(searchResult)
+        }
+
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
         updatedState = {
           ...updatedState,
           tokenData: {
@@ -1459,7 +1573,11 @@ const releaseContextHelper = ({
       if (Object.keys(metadataQueries).length > 0) {
         let releaseMetadataAccounts = await getReleaseMetadataAccounts(
           metadataQueries,
+<<<<<<< HEAD
           query
+=======
+          handle
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
         )
 
         if (releaseMetadataAccounts) {
@@ -1469,6 +1587,7 @@ const releaseContextHelper = ({
           }
         }
       }
+<<<<<<< HEAD
 
       if (query) {
         const finalSearchReleases = []
@@ -1479,6 +1598,19 @@ const releaseContextHelper = ({
           }
         })
         search.releases = finalSearchReleases
+=======
+
+      if (handle) {
+        const finalSearchReleases = []
+        search.releases.forEach((release) => {
+          if (updatedState.metadata[release.releasePubkey]) {
+            release.metadata = updatedState.metadata[release.releasePubkey]
+            finalSearchReleases.push(release)
+          }
+        })
+        search.releases = finalSearchReleases
+
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
         await setSearchResults(search)
       }
       await setReleaseState(updatedState)
@@ -1505,6 +1637,7 @@ const releaseContextHelper = ({
     setReleaseState(updatedState)
   }
 
+<<<<<<< HEAD
   const releaseFetchStatus = async (releasePubkey) => {
     try {
       const result = await fetch(
@@ -1512,6 +1645,35 @@ const releaseContextHelper = ({
       )
 
       return await result.json()
+=======
+  const releaseFetchMetadata = async (releasePubkey) => {
+    try {
+      const arweaveTxidResult = await fetch(
+        `${NinaClient.endpoints.pressingPlant}/api/file/findArweaveTxid?tokenId=${releasePubkey}`
+      )
+      const arweaveTxidJson = await arweaveTxidResult.json()
+
+      if (arweaveTxidJson.txid) {
+        const arweaveMetadataUri = `${NinaClient.endpoints.arweave}/${arweaveTxidJson.txid}`
+        const arweaveJsonResult = await fetch(arweaveMetadataUri)
+        const arweaveJson = await arweaveJsonResult.json()
+
+        if (arweaveJson) {
+          let updatedState = { ...releaseState }
+          updatedState.metadata = {
+            ...updatedState.metadata,
+            [releasePubkey]: arweaveJson,
+          }
+          setReleaseState(updatedState)
+        }
+
+        return {
+          json: arweaveJson,
+          uri: arweaveMetadataUri,
+        }
+      }
+      return null
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
     } catch (error) {
       console.warn(error)
     }
@@ -1551,7 +1713,11 @@ const releaseContextHelper = ({
   return {
     addRoyaltyRecipient,
     releaseCreate,
+<<<<<<< HEAD
     releaseFetchStatus,
+=======
+    releaseFetchMetadata,
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
     releasePurchase,
     collectRoyaltyForRelease,
     getRelease,
@@ -1573,8 +1739,11 @@ const releaseContextHelper = ({
     getRedeemablesForRelease,
     getRelatedForRelease,
     filterRelatedForRelease,
+<<<<<<< HEAD
     getReleasesBySearch,
     filterSearchResults
+=======
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
   }
 }
 

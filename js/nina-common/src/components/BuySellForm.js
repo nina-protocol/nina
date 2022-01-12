@@ -7,8 +7,12 @@ import Box from '@mui/material/Box'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { ExchangeContext } from '../contexts'
 import { NinaClient } from '../utils'
+<<<<<<< HEAD
 import Dots from './Dots'  
 
+=======
+import Dots from './Dots'
+>>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
 
 const BuySellForm = (props) => {
   const { onSubmit, isBuy, release, amount, setAmount } = props
