@@ -182,10 +182,16 @@ export const NinaTheme = (mode) => {
                   borderColor: mode === 'light' ? colors.black: colors.white,
                   color: mode === 'light' ? colors.black: colors.white,
                 },
+                "&.Mui-disabled": {
+                  color: mode === 'light' ? '' : colors.white,
+                  borderColor: mode === 'light' ? '' : colors.white,
+                  opacity: mode === 'light' ? '' : '0.5',
+                },
               },
               "&.MuiButton-contained": {
                 padding: "10px",
                 borderRadius: "0px",
+                backgroundColor: colors.white,
                 backgroundColor: `${mode === 'light' ? colors.white: colors.black}`,
                 color: `${mode === 'light' ? colors.black : colors.white}`,
                 boxShadow: "none",
@@ -339,6 +345,7 @@ export const NinaTheme = (mode) => {
                 fontSize: "10px",
                 paddingTop: "0px",
                 paddingBottom: "0px",
+                color: mode === 'light' ? colors.black : colors.white,
                 "&:hover": {
                   backgroundColor: `${colors.white}`,
                   color: `${colors.blue}`,

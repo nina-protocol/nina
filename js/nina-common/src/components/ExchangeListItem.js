@@ -150,15 +150,15 @@ const Root = styled(Box)(({ theme }) => ({
     },
     '&--symbol': {
       fontWeight: '400',
-      color: `${theme.palette.black}`,
+      color: theme.palette.mode === "light" ? theme.palette.black : theme.palette.white,
     },
   },
 
   [`& .${classes.exchangeListButton}`]: {
-    backgroundColor: `${theme.palette.white}`,
+    backgroundColor: theme.palette.transparent,
     fontSize: `10px`,
-    color: `${theme.palette.black}`,
-    borderColor: `${theme.palette.black}`,
+    color: theme.palette.mode === "light" ? theme.palette.black : theme.palette.white,
+    borderColor: theme.palette.mode === "light" ? theme.palette.black : theme.palette.white,
     padding: `${theme.spacing(0.5, 1)} !important`,
     width: '100px',
     borderRadius: theme.vars.borderRadius,

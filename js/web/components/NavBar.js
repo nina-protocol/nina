@@ -219,12 +219,11 @@ const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
   backgroundColor: `${theme.palette.transparent} !important`,
   boxShadow: "none !important",
   paddingTop: "0 !important",
-
   "& img": {
     display: "none",
   },
   "& .MuiButton-label": {
-    color: theme.palette.black,
+    color: theme.palette.mode === 'light' ? theme.palette.black : theme.palette.white,
   },
   "& .MuiButton-label:hover": {
     color: theme.palette.blue,

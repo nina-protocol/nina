@@ -123,6 +123,7 @@ const StyledModal = styled(Modal)(({ theme }) => ({
     width: '400px',
     margin: `${theme.spacing(1, 'auto')}`,
     color: `${theme.palette.blue} !important`,
+    backgroundColor: theme.palette.white,
     fontSize: '14px',
     fontWeight: '700',
   },
