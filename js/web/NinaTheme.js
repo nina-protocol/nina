@@ -22,10 +22,7 @@ const colors = {
   yellow: '#ffe100',
 };
 
-
-
 export const NinaTheme = (mode) => {
-  console.log('mode :>> ', mode);
   return (
     {
       palette: {
@@ -228,7 +225,9 @@ export const NinaTheme = (mode) => {
         MuiPaper: {
           styleOverrides: {
             root: {
-              background: mode === "light" ? colors.white : colors.grey.primary,
+              backgroundColor: mode === "light" ? colors.white : `${colors.black} !important`,
+              backgroundColor: mode === "light" ? colors.white : `${colors.black} !important`,
+              color: mode === "light" ? colors.black : `${colors.white} !important`,
             },
           },
         },

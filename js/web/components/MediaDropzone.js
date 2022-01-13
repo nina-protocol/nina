@@ -6,6 +6,8 @@ import { Typography, Box } from "@mui/material";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import Image from "next/image";
+import {useTheme} from '@mui/material/styles'
+
 
 const { NinaClient } = ninaCommon.utils;
 const MediaDropzone = ({
@@ -16,6 +18,8 @@ const MediaDropzone = ({
   setTrack,
   handleProgress,
 }) => {
+  const theme = useTheme()
+
   const getUploadParams = ({ file }) => {
     const body = new FormData();
     body.append("file", file);
@@ -210,7 +214,7 @@ const MediaDropzone = ({
           cursor: "pointer",
           marginBottom: type === "track" ? "15px" : "",
           boxShadow: "inset 0px 0px 30px 0px #0000001A",
-          backgroundColor: "#EAEAEA",
+          backgroundColor: theme.palette.mode === 'light' ? "#EAEAEA" : theme.palette.blue,
         },
         preview: {
           margin: "auto",
