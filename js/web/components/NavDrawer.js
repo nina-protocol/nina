@@ -86,6 +86,13 @@ const NavDrawer = () => {
         size="large"
         onClick={colorModeToggle.toggleColorMode}
         color="inherit"
+        sx={(theme) => (
+          {'&:hover': {
+          color: theme.palette.blue,
+          backgroundColor: `${theme.palette.transparent} !important`
+        }}
+        )
+      }
       >
         {theme.palette.mode === "dark" ? (
           <Brightness7Icon />
