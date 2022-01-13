@@ -1,14 +1,13 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import Router from "next/router";
 import { SnackbarProvider } from "notistack";
 import { ThemeProvider } from "@mui/material/styles";
 import ninaCommon from "nina-common";
 import { CacheProvider } from "@emotion/react";
-import { NinaTheme, getDesignTokens } from "../NinaTheme";
+import { NinaTheme } from "../NinaTheme";
 import Layout from "../components/Layout";
-import {createTheme} from "@mui/material/styles";
-import useMediaQuery from '@mui/material/useMediaQuery';
-
+import { createTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const {
   ReleaseContextProvider,
@@ -18,7 +17,6 @@ const {
   NinaContextProvider,
   ConnectionContextProvider,
   ColorContextProvider,
-  ColorContext
 } = ninaCommon.contexts;
 
 const { Dots } = ninaCommon.components;
@@ -43,12 +41,10 @@ const ENDPOINTS = {
 
 function Application({ Component, clientSideEmotionCache, pageProps }) {
   const [loading, setLoading] = useState(false);
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  console.log('prefersDarkMode :>> ', prefersDarkMode);
-  const [mode, setMode] = useState(!prefersDarkMode ? 'dark' : 'light');
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+  const [mode, setMode] = useState(!prefersDarkMode ? "dark" : "light");
 
-  const theme = React.useMemo(() => createTheme(NinaTheme(mode), [mode]))
-
+  const theme = React.useMemo(() => createTheme(NinaTheme(mode), [mode]));
 
   React.useEffect(() => {
     const start = () => {
@@ -95,15 +91,15 @@ function Application({ Component, clientSideEmotionCache, pageProps }) {
             <NameContextProvider>
               <AudioPlayerContextProvider>
                 <ExchangeContextProvider>
-                  <ColorContextProvider mode={mode} setMode={setMode} >
+                  <ColorContextProvider mode={mode} setMode={setMode}>
                     <CacheProvider value={clientSideEmotionCache}>
                       <ThemeProvider theme={theme}>
                         <Layout>
                           {loading ? (
                             <Dots size="80px" />
-                            ) : (
-                              <Component {...pageProps} />
-                              )}
+                          ) : (
+                            <Component {...pageProps} />
+                          )}
                         </Layout>
                       </ThemeProvider>
                     </CacheProvider>

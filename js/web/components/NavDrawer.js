@@ -17,15 +17,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
 import ninaCommon from "nina-common";
 
-import IconButton from '@mui/material/IconButton';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
-import MenuIcon from '@mui/icons-material/Menu';
+import IconButton from "@mui/material/IconButton";
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
 
-const {ColorContext} = ninaCommon.contexts;
+const { ColorContext } = ninaCommon.contexts;
 
-import {useTheme} from '@mui/material/styles';
-import {CloseRounded} from "@mui/icons-material";
+import { useTheme } from "@mui/material/styles";
 
 const linksConnected = [
   "home",
@@ -52,7 +50,7 @@ const NavDrawer = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [links, setLinks] = useState(linksNotConnected);
   const theme = useTheme();
-  const {colorModeToggle} = useContext(ColorContext)
+  const { colorModeToggle } = useContext(ColorContext);
 
   useEffect(() => {
     if (wallet?.connected) {
@@ -84,12 +82,19 @@ const NavDrawer = () => {
         sx={{ padding: "15px 15px" }}
       />
 
-      <ModeToggleButton size="large" onClick={colorModeToggle.toggleColorMode} color="inherit">
-        {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+      <ModeToggleButton
+        size="large"
+        onClick={colorModeToggle.toggleColorMode}
+        color="inherit"
+      >
+        {theme.palette.mode === "dark" ? (
+          <Brightness7Icon />
+        ) : (
+          <Brightness4Icon />
+        )}
       </ModeToggleButton>
 
-    
-      <StyledList disablePadding >
+      <StyledList disablePadding>
         {links.map((link) => {
           switch (link) {
             case "collection":
@@ -101,23 +106,15 @@ const NavDrawer = () => {
                   passHref
                 >
                   <ListItem button key={link}>
-                    <ListItemText
-                      primary={`your ${link}`}
-                    />
+                    <ListItemText primary={`your ${link}`} />
                   </ListItem>
                 </Link>
               );
             case "releases":
               return (
-                <Link
-                  href={`/releases/user`}
-                  key={link}
-                  passHref
-                >
+                <Link href={`/releases/user`} key={link} passHref>
                   <ListItem button key={link}>
-                    <ListItemText
-                      primary={`your ${link}`}
-                    />
+                    <ListItemText primary={`your ${link}`} />
                   </ListItem>
                 </Link>
               );
@@ -131,9 +128,7 @@ const NavDrawer = () => {
                       rel="noreferrer"
                       passHref
                     >
-                      <Typography variant="h4">
-                        The Soft LP
-                      </Typography>
+                      <Typography variant="h4">The Soft LP</Typography>
                     </Link>
                   </ListItemText>
                 </ListItem>
@@ -148,20 +143,14 @@ const NavDrawer = () => {
                       rel="noreferrer"
                       passHref
                     >
-                      <Typography variant="h4">
-                        Nina Radio
-                      </Typography>
+                      <Typography variant="h4">Nina Radio</Typography>
                     </Link>
                   </ListItemText>
                 </ListItem>
               );
             case "all Releases":
               return (
-                <Link
-                  href={`/releases`}
-                  key={link}
-                  passHref
-                >
+                <Link href={`/releases`} key={link} passHref>
                   <ListItem button key={link}>
                     <ListItemText primary="All Releases" />
                   </ListItem>
@@ -191,10 +180,18 @@ const NavDrawer = () => {
   return (
     <div>
       {
-        <Box key={"left"} >
+        <Box key={"left"}>
           <StyledMenuButton onClick={toggleDrawer(true)}>
             <Icon>
-              <Image src={"/hamburger.svg"} height={25} width={25} />
+              <Image
+                src={
+                  theme.palette.mode === "light"
+                    ? "/hamburger.svg"
+                    : "/hamburger-white.png"
+                }
+                height={25}
+                width={25}
+              />
             </Icon>
           </StyledMenuButton>
           <StyledDrawer
@@ -276,10 +273,10 @@ const StyledList = styled(List)(({ theme }) => ({
   },
 }));
 
-const ModeToggleButton = styled(IconButton)(({theme}) => ({
-  position: 'absolute !important',
+const ModeToggleButton = styled(IconButton)(({ theme }) => ({
+  position: "absolute !important",
   right: theme.spacing(1),
-  top: theme.spacing(1)
+  top: theme.spacing(1),
 }));
 
 const StyledMenuButton = styled(Button)(({ theme }) => ({

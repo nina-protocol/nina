@@ -1,13 +1,11 @@
 import React, { useEffect, useState, useContext } from "react";
-import {
-  TableContainer,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Paper,
-} from "@material-ui/core";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -22,14 +20,16 @@ import CloseIcon from "@mui/icons-material/Close";
 const { AudioPlayerContext } = ninaCommon.contexts;
 const { NinaClient } = ninaCommon.utils;
 
-const getItemStyle = (isDragging, draggableStyle) => ({
-  // styles we need to apply on draggables
-  ...draggableStyle,
+const getItemStyle = (isDragging, draggableStyle) => {
+  return {
+    // styles we need to apply on draggables
+    ...draggableStyle,
 
-  ...(isDragging && {
-    background: "rgb(235,235,235)",
-  }),
-});
+    ...(isDragging && {
+      background: "rgb(235,235,235)",
+    }),
+  };
+};
 
 const QueueList = (props) => {
   const { setDrawerOpen } = props;

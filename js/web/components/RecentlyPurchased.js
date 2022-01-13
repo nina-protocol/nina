@@ -13,8 +13,7 @@ import "react-multi-carousel/lib/styles.css";
 import Button from "@mui/material/Button";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import {useTheme} from '@mui/material/styles';
-import {TheatersOutlined} from "@mui/icons-material";
+import { useTheme } from "@mui/material/styles";
 
 const { Dots } = ninaCommon.components;
 
@@ -50,7 +49,10 @@ const RecentlyPurchased = (props) => {
 
   const buttonStyle = {
     position: "absolute",
-    color: theme.palette.mode === "light" ? theme.palette.black : theme.palette.white,
+    color:
+      theme.palette.mode === "light"
+        ? theme.palette.black
+        : theme.palette.white,
     backgroundColor: "red !important",
     "&:hover": {
       backgroundColor: "black !important",

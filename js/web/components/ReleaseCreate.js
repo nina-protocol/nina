@@ -295,8 +295,8 @@ const CreateCta = styled(Box)(({ theme }) => ({
 
 const NetworkDegradedMessage = styled(Box)(({ theme }) => ({
   color: theme.palette.red,
-  padding: '0 0 50px',
-}))
+  padding: "0 0 50px",
+}));
 
 const NpcMessage = styled(Box)(({ theme }) => ({
   textAlign: "left",

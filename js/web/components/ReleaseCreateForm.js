@@ -160,15 +160,11 @@ const ReleaseCreateForm = ({
           <Typography
             id="discrete-slider-custom"
             align="left"
-            // sx={{
-            //   color: "rgba(0, 0, 0, 0.54)",
-            //   // opacity: '0.7',
-            //   fontSize: "12px",
-            //   marginTop: "8px",
-            // }}
             sx={(theme) => ({
-              color: theme.palette.mode === 'light' ? "rgba(0, 0, 0, 0.54)" : 'rgba(255,255,255,0.7)',
-              // opacity: '0.7',
+              color:
+                theme.palette.mode === "light"
+                  ? "rgba(0, 0, 0, 0.54)"
+                  : "rgba(255,255,255,0.7)",
               fontSize: "12px",
               marginTop: "8px",
             })}

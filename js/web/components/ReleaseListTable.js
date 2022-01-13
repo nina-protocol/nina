@@ -323,11 +323,22 @@ const ReleaseListTable = (props) => {
                                   onClick={(e) =>
                                     handleAddTrackToQueue(e, row.id)
                                   }
-                                  sx={{ color: "black", marginRight: "15px" }}
+                                  sx={(theme) => ({
+                                    color:
+                                      theme.palette.mode === "light"
+                                        ? theme.palette.black
+                                        : theme.palette.white,
+                                    marginRight: theme.spacing(1),
+                                  })}
                                 />
                                 <PlayCircleOutlineOutlinedIcon
                                   onClick={(e) => handlePlay(e, row.id)}
-                                  sx={{ color: "black" }}
+                                  sx={(theme) => ({
+                                    color:
+                                      theme.palette.mode === "light"
+                                        ? theme.palette.black
+                                        : theme.palette.white,
+                                  })}
                                 />
                               </TableCell>
                             );
