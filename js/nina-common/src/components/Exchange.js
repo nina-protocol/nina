@@ -10,10 +10,6 @@ import BuySell from './BuySell'
 import ExchangeHistoryModal from './ExchangeHistoryModal'
 import ExchangeList from './ExchangeList'
 import ExchangeModal from './ExchangeModal'
-<<<<<<< HEAD
-
-=======
->>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8
 import {
   ConnectionContext,
   ExchangeContext,

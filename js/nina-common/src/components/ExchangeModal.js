@@ -4,10 +4,6 @@ import { Typography, Box } from '@mui/material'
 import Button from '@mui/material/Button'
 import Fade from '@mui/material/Fade'
 import Modal from '@mui/material/Modal'
-<<<<<<< HEAD:js/nina-common/src/components/ExchangeModal.js
-=======
-import 'react-tabs/style/react-tabs.css'
->>>>>>> 50df02d28f74f80815ea62ba7066cc757242a5b8:js/soft-lp/src/components/ExchangeModal.js
 import NinaClient from '../utils/client'
 
 const ExchangeModal = (props) => {
