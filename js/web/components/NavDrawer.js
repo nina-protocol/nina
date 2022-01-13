@@ -271,6 +271,9 @@ const StyledList = styled(List)(({ theme }) => ({
     },
     "& .MuiListItemText-root": {
       margin: 0,
+      '&:hover': {
+        color: theme.palette.blue
+      },
       "& span": {
         textTransform: "capitalize",
         fontSize: "18px !important",

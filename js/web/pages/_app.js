@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Router from "next/router";
 import { SnackbarProvider } from "notistack";
 import { ThemeProvider } from "@mui/material/styles";
@@ -41,8 +41,16 @@ const ENDPOINTS = {
 
 function Application({ Component, clientSideEmotionCache, pageProps }) {
   const [loading, setLoading] = useState(false);
-  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-  const [mode, setMode] = useState(!prefersDarkMode ? "dark" : "light");
+  // const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+  const [mode, setMode] = useState('light');
+  // console.log('prefersDarkMode :>> ', prefersDarkMode);
+
+  useEffect(() => {
+    console.log( window.matchMedia('(prefers-color-scheme)').media);
+    if (window.matchMedia('(prefers-color-scheme)').media !== 'not all') {
+      console.log('🎉 Dark mode is supported');
+    }
+  },[])
 
   const theme = React.useMemo(() => createTheme(NinaTheme(mode), [mode]));
 

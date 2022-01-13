@@ -26,21 +26,3 @@ const ColorContextProvider = ({ mode, setMode, children }) => {
 }
 export default ColorContextProvider
 
-const colorContextHelper = ({
-
-}) => {
-  // Name Service
-
-  const findRegistrationTweet = async () => {
-    const result = await fetch(
-      `${
-        NinaClient.endpoints.api
-      }/api/twitter/verify?publicKey=${wallet.publicKey.toBase58()}`
-    )
-    return result.json()
-  }
-
-  return {
-    findRegistrationTweet,
-  }
-}
