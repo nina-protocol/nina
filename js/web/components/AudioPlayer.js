@@ -350,6 +350,12 @@ const Controls = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   padding: theme.spacing(0, 2),
+  "& .MuiIconButton-root": {
+
+    // '&:hover': {
+    //   backgroundColor: theme.palette.mode === 'light' ? theme.palette.white : theme.palette.greyDark
+    // }
+  },
   "& svg": {
     height: "24px",
     width: "24px",

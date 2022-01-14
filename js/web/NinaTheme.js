@@ -207,7 +207,7 @@ export const NinaTheme = (mode) => {
             opacity: 100,
             color: `${mode === "light" ? colors.black : colors.white}`,
             "&:hover": {
-              backgroundColor: `${colors.white} !important`,
+              backgroundColor: `${colors.transparent} !important`,
               boxShadow: "none",
             },
           },

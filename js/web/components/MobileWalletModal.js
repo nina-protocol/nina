@@ -51,7 +51,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
 
 const StyledButton = styled(Button)(({ theme }) => ({
   ...theme.helpers.baseFont,
-  color: `${theme.palette.black}!important`,
+  color: theme.palette.mode === 'light' ? `${theme.palette.black} !important` : `${theme.palette.white} !important`,
   textTransform: "capitalize !important",
   padding: "0 15px 0 !important",
 }));
