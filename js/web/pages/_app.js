@@ -7,7 +7,6 @@ import { CacheProvider } from "@emotion/react";
 import { NinaTheme } from "../NinaTheme";
 import Layout from "../components/Layout";
 import { createTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
 
 const {
   ReleaseContextProvider,
@@ -41,16 +40,16 @@ const ENDPOINTS = {
 
 function Application({ Component, clientSideEmotionCache, pageProps }) {
   const [loading, setLoading] = useState(false);
-  // const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-  const [mode, setMode] = useState('light');
-  // console.log('prefersDarkMode :>> ', prefersDarkMode);
+  const [mode, setMode] = useState("light");
 
   useEffect(() => {
-    console.log( window.matchMedia('(prefers-color-scheme)').media);
-    if (window.matchMedia('(prefers-color-scheme)').media !== 'not all') {
-      console.log('🎉 Dark mode is supported');
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+    if (prefersDark) {
+      setMode("dark");
     }
-  },[])
+  }, []);
 
   const theme = React.useMemo(() => createTheme(NinaTheme(mode), [mode]));
 

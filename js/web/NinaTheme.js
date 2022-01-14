@@ -347,10 +347,12 @@ export const NinaTheme = (mode) => {
               fontSize: "10px",
               paddingTop: "0px",
               paddingBottom: "0px",
+              boxShadow: "none",
               color: mode === "light" ? colors.black : colors.white,
               "&:hover": {
-                backgroundColor: `${colors.white}`,
+                backgroundColor: mode === "light" ? colors.white : colors.black,
                 color: `${colors.blue}`,
+                boxShadow: "none",
               },
             },
             "& .MuiListItemIcon-root": {

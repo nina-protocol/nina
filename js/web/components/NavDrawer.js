@@ -86,13 +86,12 @@ const NavDrawer = () => {
         size="large"
         onClick={colorModeToggle.toggleColorMode}
         color="inherit"
-        sx={(theme) => (
-          {'&:hover': {
-          color: theme.palette.blue,
-          backgroundColor: `${theme.palette.transparent} !important`
-        }}
-        )
-      }
+        sx={(theme) => ({
+          "&:hover": {
+            color: theme.palette.blue,
+            backgroundColor: `${theme.palette.transparent} !important`,
+          },
+        })}
       >
         {theme.palette.mode === "dark" ? (
           <Brightness7Icon />
@@ -271,8 +270,8 @@ const StyledList = styled(List)(({ theme }) => ({
     },
     "& .MuiListItemText-root": {
       margin: 0,
-      '&:hover': {
-        color: theme.palette.blue
+      "&:hover": {
+        color: theme.palette.blue,
       },
       "& span": {
         textTransform: "capitalize",
