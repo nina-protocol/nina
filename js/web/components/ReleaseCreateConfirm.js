@@ -60,7 +60,7 @@ const ReleaseCreateConfirm = (props) => {
             <Value sx={{ mt: 1 }}>
               Title: <span>{data.title}</span>
             </Value>
-            <Value sx={{ mt: 1 }}>
+            <Value className="description" sx={{ mt: 1 }}>
               Description: <span>{data.description}</span>
             </Value>
             <Value sx={{ mt: 1 }}>
@@ -94,6 +94,11 @@ const ReleaseCreateConfirm = (props) => {
             >
               Close and Edit
             </Button>
+
+            <Typography variant="subtitle1" mt={1} sx={{ color: "red" }}>
+              **Once published, your release information will be permanent and
+              unalterable.
+            </Typography>
           </Box>
         </Box>
       </Modal>
@@ -101,11 +106,21 @@ const ReleaseCreateConfirm = (props) => {
   );
 };
 
-const Value = styled(Typography)(() => ({
+const Value = styled(Typography)(({ theme }) => ({
   display: "flex",
   justifyContent: "space-between",
   "& span": {
     textAlign: "right",
+  },
+
+  "&.description": {
+    "& span": {
+      paddingLeft: theme.spacing(1),
+      textAlign: "left",
+      // border: '2px solid blue',
+      maxHeight: "150px",
+      overflowY: "scroll",
+    },
   },
 }));
 

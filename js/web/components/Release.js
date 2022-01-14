@@ -51,7 +51,6 @@ const Release = ({ metadataSsr }) => {
 
   useEffect(() => {
     setRelatedReleases(filterRelatedForRelease(releasePubkey));
-    console.log(filterRelatedForRelease(releasePubkey))
   }, [releaseState]);
 
   if (metadata && Object.keys(metadata).length === 0) {
