@@ -60,18 +60,18 @@ const hubContextHelper = ({
     try {
       const nina = await NinaClient.connect(provider)
 
-      const [hub, hubBump] = await anchor.web3.PublicKey.findProgramAddress([
+      const [hub] = await anchor.web3.PublicKey.findProgramAddress([
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub")), 
         Buffer.from(anchor.utils.bytes.utf8.encode(hubParams.name))],
         nina.programId
       );
 
-      const [hubSigner, hubSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
+      const [hubSigner] = await anchor.web3.PublicKey.findProgramAddress(
         [Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-signer")), hub.toBuffer()],
         nina.programId
       );
 
-      const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress([
+      const [hubArtist] = await anchor.web3.PublicKey.findProgramAddress([
           Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
           hub.toBuffer(),
           provider.wallet.publicKey.toBuffer(),
@@ -102,7 +102,7 @@ const hubContextHelper = ({
   const hubAddArtist = async (artistPubkey, hubPubkey) => {
     try {
       const nina = await NinaClient.connect(provider)
-      const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      const [hubArtist] = await anchor.web3.PublicKey.findProgramAddress(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
           hub.toBuffer(),
@@ -128,7 +128,7 @@ const hubContextHelper = ({
   const hubAddRelease = async (hubPubkey, releasePubkey) => {
     try {
       const nina = await NinaClient.connect(provider)
-      const [hubRelease, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      const [hubRelease] = await anchor.web3.PublicKey.findProgramAddress(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
           hubPubkey.toBuffer(),
@@ -155,7 +155,7 @@ const hubContextHelper = ({
   const hubRemoveArtist = async (artistPubkey) => {
     try {
       const nina = await NinaClient.connect(provider)
-      const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      const [hubArtist] = await anchor.web3.PublicKey.findProgramAddress(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
           hub.toBuffer(),
@@ -181,7 +181,7 @@ const hubContextHelper = ({
   const hubRemoveRelease = async (releasePubkey) => {
     try {
       const nina = await NinaClient.connect(provider)
-      const [hubRelease, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      const [hubRelease] = await anchor.web3.PublicKey.findProgramAddress(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
           hub.toBuffer(),
@@ -206,7 +206,7 @@ const hubContextHelper = ({
 
   const releaseInitViaHub = async (
     hubPubkey, 
-    artistPubkey
+    artistPubkey,
     retailPrice,
     amount,
     resalePercentage,
@@ -265,7 +265,7 @@ const hubContextHelper = ({
           true
         )
 
-      const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      const [hubArtist] = await anchor.web3.PublicKey.findProgramAddress(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
           hubPubkey.toBuffer(),
@@ -274,7 +274,7 @@ const hubContextHelper = ({
         nina.programId
       );
 
-      const [hubRelease, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      const [hubRelease] = await anchor.web3.PublicKey.findProgramAddress(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
           hubPubkey.toBuffer(),
