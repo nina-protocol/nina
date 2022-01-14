@@ -121,6 +121,7 @@ const RecentlyPublished = (props) => {
                         height={100}
                         width={100}
                         layout="responsive"
+                        priority={true}
                       />
                     </a>
                   </Link>

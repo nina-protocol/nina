@@ -1,7 +1,7 @@
 import { useState } from "react";
 import NextImage from "next/image";
 
-export default function Image({ src, height, width, layout }) {
+export default function Image({ src, height, width, layout, priority }) {
   const [ready, setReady] = useState(false);
 
   const handleLoad = (event) => {
@@ -22,6 +22,7 @@ export default function Image({ src, height, width, layout }) {
         src={src}
         height={height}
         width={width}
+        priority={priority}
         layout={layout}
         onLoad={handleLoad}
       />
