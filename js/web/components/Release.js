@@ -113,7 +113,7 @@ const ReleaseWrapper = styled(Box)(({ theme }) => ({
   display: "flex",
   [theme.breakpoints.down("md")]: {
     overflowX: "scroll",
-    padding: "160px 0 100px",
+    padding: "160px 0 120px",
     "&::-webkit-scrollbar": {
       display: "none",
     },
