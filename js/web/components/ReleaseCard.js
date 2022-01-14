@@ -9,11 +9,13 @@ import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutline
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import Image from "next/image";
 
-const { AudioPlayerContext } = ninaCommon.contexts;
+const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts;
 
 const ReleaseCard = (props) => {
   const { artwork, metadata, preview, releasePubkey, track } = props;
   const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext);
+  const { releaseState } = useContext(ReleaseContext);
+
   return (
     <StyledReleaseCard>
       <StyledReleaseInfo>
@@ -58,6 +60,7 @@ const ReleaseCard = (props) => {
             layout="responsive"
             height={350}
             width={350}
+            release={releaseState[releasePubkey]}
           />
         ) : (
           <>
@@ -68,6 +71,8 @@ const ReleaseCard = (props) => {
                 layout="responsive"
                 src={metadata.image}
                 alt={metadata.name}
+                release={releaseState[releasePubkey]}
+                priority={true}
               />
             )}
           </>

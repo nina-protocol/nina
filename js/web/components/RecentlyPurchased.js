@@ -154,7 +154,7 @@ const RecentlyPurchased = (props) => {
                       passHref
                     >
                       <a>
-                        <Image src={imageUrl} width="400px" height="400px" priority={true} />
+                        <Image src={imageUrl} width="400px" height="400px" priority={true} release={release} />
                       </a>
                     </Link>
                     <Copy sx={{ paddingLeft: 2 }}>
