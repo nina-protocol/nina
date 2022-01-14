@@ -1,6 +1,7 @@
 import { useState } from "react";
 import NextImage from "next/image";
 import { DateTime } from "luxon";
+import SmoothImage from "react-smooth-image";
 
 export default function Image({ src, height, width, layout, priority, release }) {
   const [ready, setReady] = useState(false);
@@ -22,7 +23,7 @@ export default function Image({ src, height, width, layout, priority, release })
 
     if (hours > 1) {
       ImageComponent = () => (
-        <img src={src}
+        <SmoothImage src={src}
           onLoad={e => handleLoad(e, true)}
           style={{width: '100%'}}
         />

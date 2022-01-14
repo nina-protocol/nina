@@ -12,18 +12,18 @@ import Image from "./Image";
 const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts;
 
 const ReleaseCard = (props) => {
-  const { artwork, metadata, preview, releasePubkey, track } = props;
+  const { artwork, metadata, preview, releasePubkey } = props;
   const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext);
   const { releaseState } = useContext(ReleaseContext);
-
+  console.log('mdd: ', metadata)
   return (
     <StyledReleaseCard>
       <StyledReleaseInfo>
-        {track && (
+        {metadata && (
           <CtaWrapper sx={{ display: "flex" }}>
             <Button
               onClick={() =>
-                updateTxid(track.properties.files[0].uri, releasePubkey, true)
+                updateTxid(metadata.properties.files[0].uri, releasePubkey, true)
               }
               sx={{ height: "22px", width: "28px" }}
             >
@@ -80,6 +80,7 @@ const ReleaseCard = (props) => {
 
 const StyledReleaseCard = styled(Box)(() => ({
   width: "100%",
+  minHeight: "100%",
   margin: "auto",
 }));
 

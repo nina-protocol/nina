@@ -25,7 +25,6 @@ const Release = ({ metadataSsr }) => {
   } = useContext(ReleaseContext);
   const { getExchangeHistoryForRelease, exchangeState } =
     useContext(ExchangeContext);
-  const [track, setTrack] = useState(null);
   const [relatedReleases, setRelatedReleases] = useState(null);
 
   const [metadata, setMetadata] = useState(
@@ -40,15 +39,11 @@ const Release = ({ metadataSsr }) => {
   }, [releasePubkey]);
 
   useEffect(() => {
-    if (releaseState.metadata[releasePubkey]) {
+    if (releaseState.metadata[releasePubkey] && !metadata) {
       console.log("md: ", releaseState.metadata[releasePubkey])
       setMetadata(releaseState.metadata[releasePubkey]);
     }
   }, [releaseState?.metadata[releasePubkey]]);
-
-  useEffect(() => {
-    setTrack(releaseState.metadata[releasePubkey]);
-  }, [releaseState.metadata[releasePubkey]]);
 
   useEffect(() => {
     setRelatedReleases(filterRelatedForRelease(releasePubkey));
@@ -81,7 +76,6 @@ const Release = ({ metadataSsr }) => {
                 metadata={metadata}
                 preview={false}
                 releasePubkey={releasePubkey}
-                track={track}
               />
               <ReleaseCtaWrapper>
                 <ReleasePurchase
@@ -100,7 +94,6 @@ const Release = ({ metadataSsr }) => {
                 releasePubkey={releasePubkey}
                 exchanges={exchangeState.exchanges}
                 metadata={metadata}
-                track={track}
               />
             </NinaBox>
           )}
