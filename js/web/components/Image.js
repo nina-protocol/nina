@@ -5,9 +5,9 @@ import { DateTime } from "luxon";
 export default function Image({ src, height, width, layout, priority, release }) {
   const [ready, setReady] = useState(false);
 
-  const handleLoad = (event) => {
+  const handleLoad = (event, byPass) => {
     event.persist();
-    if (event.target.srcset) {
+    if (event.target.srcset || byPass) {
       setReady(true);
     }
   };
@@ -19,7 +19,10 @@ export default function Image({ src, height, width, layout, priority, release })
 
     if (hours > 1) {
       ImageComponent = () => (
-        <img src={src} />
+        <img src={src}
+          onLoad={e => handleLoad(e, true)}
+          style={{width: '100%'}}
+        />
       )
     }
   }
@@ -30,7 +33,7 @@ export default function Image({ src, height, width, layout, priority, release })
       width={width}
       priority={priority}
       layout={layout}
-      onLoad={handleLoad}
+      onLoad={e => handleLoad(e, false)}
     />)
   }
   return (
@@ -39,6 +42,7 @@ export default function Image({ src, height, width, layout, priority, release })
         opacity: ready ? 1 : 0,
         transition: "opacity .3s ease-in-out",
       }}
+      className="imageWrapper"
     >
       <ImageComponent />
     </div>
