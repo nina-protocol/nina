@@ -18,6 +18,7 @@ const colors = {
   blue: "#2D81FF",
   blueTrans: "rgba(45, 129, 255, 0.19)",
   pink: "#FF54A6",
+  yellow: '#ffe100',
 };
 
 export const NinaTheme = createTheme({
@@ -39,6 +40,7 @@ export const NinaTheme = createTheme({
     white: colors.white,
     red: colors.red,
     green: colors.green,
+    yellow: colors.yellow,
     grey: {
       primary: colors.grey,
     },

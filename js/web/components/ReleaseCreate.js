@@ -15,7 +15,7 @@ import * as Yup from "yup";
 import Link from "next/link";
 
 const { ReleaseSettings, Dots } = ninaCommon.components;
-const { ReleaseContext, NinaContext } = ninaCommon.contexts;
+const { ConnectionContext, ReleaseContext, NinaContext } = ninaCommon.contexts;
 
 const ReleaseCreateSchema = Yup.object().shape({
   artist: Yup.string().required("Artist Name is Required"),
@@ -32,6 +32,7 @@ const ReleaseCreate = () => {
   const wallet = useWallet();
   const { releaseCreate, pressingState, resetPressingState, releaseState } =
     useContext(ReleaseContext);
+  const { healthOk } = useContext(ConnectionContext);
   const { getNpcAmountHeld, npcAmountHeld } = useContext(NinaContext);
   const [track, setTrack] = useState(undefined);
   const [artwork, setArtwork] = useState();
@@ -155,6 +156,11 @@ const ReleaseCreate = () => {
 
   return (
     <Box>
+      {npcAmountHeld >= 1 && !healthOk && (
+        <NetworkDegradedMessage>
+          <Typography variant="h4">{`The Solana network status is currently degraded - there's a chance your upload will fail.`}</Typography>
+        </NetworkDegradedMessage>
+      )}
       {npcAmountHeld < 1 && (
         <Box style={{ display: "flex" }}>
           <NpcMessage>
@@ -303,6 +309,11 @@ const CreateCta = styled(Box)(({ theme }) => ({
     ...theme.helpers.baseFont,
   },
 }));
+
+const NetworkDegradedMessage = styled(Box)(({ theme }) => ({
+  color: theme.palette.red,
+  padding: '0 0 50px',
+}))
 
 const NpcMessage = styled(Box)(({ theme }) => ({
   textAlign: "left",

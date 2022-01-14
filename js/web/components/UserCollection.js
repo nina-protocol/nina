@@ -11,19 +11,29 @@ import ScrollablePageWrapper from "./ScrollablePageWrapper";
 const { ReleaseContext, NinaContext } = ninaCommon.contexts;
 
 const ReleaseList = () => {
-  const { filterReleasesUserCollection, releaseState } =
+  const { getReleasesInCollection, filterReleasesUserCollection, releaseState } =
     useContext(ReleaseContext);
   const [listView, setListView] = useState(false);
 
   const wallet = useWallet();
-  const { collection } = useContext(NinaContext);
+  const { collection, createCollection } = useContext(NinaContext);
   const [userCollectionReleases, setUserCollectionReleases] = useState();
+
+  useEffect(() => {
+    createCollection()
+  }, [])
+  
+  useEffect(() => {
+    if (wallet?.connected) {
+      getReleasesInCollection()
+    }
+  }, [collection]);
 
   useEffect(() => {
     if (wallet?.connected) {
       setUserCollectionReleases(filterReleasesUserCollection());
     }
-  }, [releaseState, collection]);
+  }, [releaseState]);
 
   const handleViewChange = () => {
     setListView(!listView);
@@ -66,8 +76,8 @@ const ReleaseList = () => {
   );
 };
 
-const CollectionHeader = styled(Box)(({ listView }) => ({
-  maxWidth: listView ? "800px" : "960px",
+const CollectionHeader = styled(Box)(() => ({
+  maxWidth: '100%',
   margin: "auto",
   display: "flex",
   justifyContent: "space-between",
@@ -76,6 +86,8 @@ const CollectionHeader = styled(Box)(({ listView }) => ({
 }));
 
 const Wrapper = styled(Box)(({ theme }) => ({
+  maxWidth: '960px',
+  margin: 'auto',
   [theme.breakpoints.down("md")]: {
     padding: "0px 30px",
     overflowX: "auto",

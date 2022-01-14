@@ -17,7 +17,6 @@ const USDC_MINT_ID = new anchor.web3.PublicKey(usdcMint);
 
 const ReleaseList = () => {
   const {
-    getReleasesRecent,
     getReleasesPublishedByUser,
     filterReleasesPublishedByUser,
     collectRoyaltyForRelease,
@@ -34,11 +33,7 @@ const ReleaseList = () => {
   const [exchangeSales, setExchangeSales] = useState(0);
 
   useEffect(() => {
-    getReleasesRecent();
-  }, []);
-
-  useEffect(() => {
-    if (wallet?.connected && !userPublishedReleases) {
+    if (wallet?.connected) {
       getReleasesPublishedByUser(wallet.publicKey);
     }
   }, [wallet?.connected]);

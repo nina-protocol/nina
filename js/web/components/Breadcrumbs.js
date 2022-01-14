@@ -11,18 +11,12 @@ const { ReleaseContext } = ninaCommon.contexts;
 const YourCollectionBreadcrumb = () => {
   const {
     releaseState,
-    getReleasesPublishedByUser,
     filterReleasesUserCollection,
   } = useContext(ReleaseContext);
   const wallet = useWallet();
 
   const [userCollectionReleasesCount, setUserCollectionReleasesCount] =
     useState();
-  useEffect(() => {
-    if (wallet?.connected) {
-      getReleasesPublishedByUser(wallet.publicKey);
-    }
-  }, [wallet?.connected]);
 
   useEffect(() => {
     if (wallet?.connected) {
@@ -38,23 +32,17 @@ const YourCollectionBreadcrumb = () => {
 const YourReleasesBreadcrumb = () => {
   const {
     releaseState,
-    getReleasesPublishedByUser,
     filterReleasesPublishedByUser,
   } = useContext(ReleaseContext);
   const wallet = useWallet();
 
   const [userPublishedReleasesCount, setUserPublishedReleasesCount] =
-    useState();
-  useEffect(() => {
-    if (wallet?.connected) {
-      getReleasesPublishedByUser(wallet.publicKey);
-    }
-  }, [wallet?.connected]);
+    useState(0);
 
   useEffect(() => {
     if (wallet?.connected) {
       setUserPublishedReleasesCount(
-        filterReleasesPublishedByUser().length || 0
+        filterReleasesPublishedByUser()?.length || 0
       );
     }
   }, [releaseState]);
@@ -66,14 +54,14 @@ const releaseBreadcrumbFormatted = (metadata) => {
   return (
     <StyledReleaseBreadcrumb>
       <Typography display="inline" variant="subtitle1">
-        {metadata.properties.artist},
+        {metadata?.properties.artist},
       </Typography>{" "}
       <Typography
         display="inline"
         variant="subtitle1"
         sx={{ fontStyle: "italic" }}
       >
-        {metadata.properties.title}
+        {metadata?.properties.title}
       </Typography>
     </StyledReleaseBreadcrumb>
   );
