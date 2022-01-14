@@ -41,6 +41,7 @@ const Release = ({ metadataSsr }) => {
 
   useEffect(() => {
     if (releaseState.metadata[releasePubkey]) {
+      console.log("md: ", releaseState.metadata[releasePubkey])
       setMetadata(releaseState.metadata[releasePubkey]);
     }
   }, [releaseState?.metadata[releasePubkey]]);

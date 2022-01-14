@@ -13,8 +13,11 @@ export default function Image({ src, height, width, layout, priority, release })
   };
   let ImageComponent
   if (release) {
+    if (release.tokenData) {
+      release = release.tokenData
+    }
     const now = DateTime.now()
-    const releaseDatetime = DateTime.fromMillis(release.tokenData.releaseDatetime.toNumber() * 1000)
+    const releaseDatetime = DateTime.fromMillis(release.releaseDatetime.toNumber() * 1000)
     const hours = now.diff(releaseDatetime, 'hours').toObject().hours
 
     if (hours > 1) {

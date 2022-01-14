@@ -74,6 +74,7 @@ const ReleaseTileList = (props) => {
                       zIndex: "1",
                     }}
                     src={release.metadata.image}
+                    release={release}
                   />
                 )}
               </HoverCard>

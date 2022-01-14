@@ -192,10 +192,12 @@ const classes = {
 
 const RecentlyPurchasedContainer = styled(Box)(({ theme }) => ({
   minHeight: "400px",
+  maxHeight: "400px",
   flexShrink: "0",
   alignItems: "center",
   "& a": {
     minWidth: "400px",
+    maxWidth: "400px",
     [theme.breakpoints.down("md")]: {
       width: "100% !important",
       minWidth: "unset",

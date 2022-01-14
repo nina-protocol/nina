@@ -7,7 +7,7 @@ import { Typography } from "@mui/material";
 import { Fade } from "@mui/material";
 import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
-import Image from "next/image";
+import Image from "./Image";
 
 const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts;
 
@@ -63,19 +63,15 @@ const ReleaseCard = (props) => {
             release={releaseState[releasePubkey]}
           />
         ) : (
-          <>
-            {metadata && (
-              <Image
-                height={350}
-                width={350}
-                layout="responsive"
-                src={metadata.image}
-                alt={metadata.name}
-                release={releaseState[releasePubkey]}
-                priority={true}
-              />
-            )}
-          </>
+          <Image
+            height={350}
+            width={350}
+            layout="responsive"
+            src={metadata?.image}
+            alt={metadata?.name}
+            release={releaseState.tokenData[releasePubkey]}
+            priority={true}
+          />
         )}
       </Box>
     </StyledReleaseCard>
