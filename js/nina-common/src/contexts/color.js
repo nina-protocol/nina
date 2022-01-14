@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useMemo} from 'react'
-import NinaClient from '../utils/client'
 
 export const ColorContext = createContext()
 const ColorContextProvider = ({ mode, setMode, children }) => {
