@@ -18,8 +18,6 @@ import Image from "next/image";
 import ninaCommon from "nina-common";
 
 import IconButton from "@mui/material/IconButton";
-import Brightness4Icon from "@mui/icons-material/Brightness4";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
 
 const { ColorContext } = ninaCommon.contexts;
 
@@ -94,9 +92,9 @@ const NavDrawer = () => {
         })}
       >
         {theme.palette.mode === "dark" ? (
-          <Brightness7Icon />
+          <Typography>Light Mode</Typography>
         ) : (
-          <Brightness4Icon />
+          <Typography>Dark Mode</Typography>
         )}
       </ModeToggleButton>
 
