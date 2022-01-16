@@ -41,8 +41,8 @@ const ReleaseCard = (props) => {
         {metadata && (
           <Fade in={true}>
             <Typography variant="h4" color="white" align="left">
-              {metadata?.properties?.artist || metadata?.artist},{" "}
-              <i>{metadata?.properties?.title || metadata?.title}</i>
+              {metadata?.properties?.artist.substring(0, 100) || metadata?.artist.substring(0, 100)},{" "}
+              <i>{metadata?.properties?.title.substring(0, 100) || metadata?.title.substring(0, 100)}</i>
             </Typography>
           </Fade>
         )}
@@ -98,6 +98,7 @@ const StyledReleaseInfo = styled(Box)(({ theme }) => ({
   flexDirection: "column",
   justifyContent: "space-between",
   padding: theme.spacing(1),
+  overflow: "hidden",
   [theme.breakpoints.down("md")]: {
     minHeight: "52px",
     height: "unset",
