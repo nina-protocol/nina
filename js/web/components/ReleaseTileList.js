@@ -84,7 +84,7 @@ const ReleaseTileList = (props) => {
                     ? `${release.tokenData.remainingSupply.toNumber()} / ${release.tokenData.totalSupply.toNumber()} remaining`
                     : "Sold Out"}
                 </Typography>
-                <ReleaseName>{release.metadata.name}</ReleaseName>
+                <ReleaseName>{release.metadata.name.substring(0, 100)}</ReleaseName>
               </Box>
             </Tile>
           );
