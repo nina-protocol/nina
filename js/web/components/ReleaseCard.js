@@ -41,8 +41,13 @@ const ReleaseCard = (props) => {
         {metadata && (
           <Fade in={true}>
             <Typography variant="h4" color="white" align="left">
-              {metadata?.properties?.artist.substring(0, 100) || metadata?.artist.substring(0, 100)},{" "}
-              <i>{metadata?.properties?.title.substring(0, 100) || metadata?.title.substring(0, 100)}</i>
+              {metadata?.properties?.artist.substring(0, 100) ||
+                metadata?.artist.substring(0, 100)}
+              ,{" "}
+              <i>
+                {metadata?.properties?.title.substring(0, 100) ||
+                  metadata?.title.substring(0, 100)}
+              </i>
             </Typography>
           </Fade>
         )}

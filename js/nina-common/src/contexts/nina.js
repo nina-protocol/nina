@@ -1,12 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import * as anchor from '@project-serum/anchor'
-import CoinGecko from 'coingecko-api'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { ConnectionContext } from './connection'
 import { findOrCreateAssociatedTokenAccount } from '../utils/web3'
 import NinaClient from '../utils/client'
-
-const CoinGeckoClient = new CoinGecko()
 
 export const NinaContext = createContext()
 const NinaContextProvider = ({ children, releasePubkey }) => {
@@ -84,7 +81,6 @@ const ninaContextHelper = ({
   connection,
   collection,
   setCollection,
-  setSolPrice,
   setUsdcBalance,
   setNpcAmountHeld,
 }) => {
@@ -268,7 +264,6 @@ const ninaContextHelper = ({
     //   ids: ['solana'],
     //   vs_currencies: 'usd',
     // })
-
     // setSolPrice(solPrice.data.solana.usd)
   }
 

@@ -144,7 +144,10 @@ const audioPlayerContextHelper = ({
     if (playlistEntry) {
       setPlaylist([...playlist, playlistEntry])
       enqueueSnackbar(
-        `${playlistEntry.artist.substring(0, 100)} - ${playlistEntry.title.substring(0, 100)} added to queue`,
+        `${playlistEntry.artist.substring(
+          0,
+          100
+        )} - ${playlistEntry.title.substring(0, 100)} added to queue`,
         {
           variant: 'info',
         }

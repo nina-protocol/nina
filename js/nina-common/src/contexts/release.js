@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useContext } from 'react'
+import { createContext, useState, useContext } from 'react'
 import * as anchor from '@project-serum/anchor'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { ConnectionContext } from './connection'
@@ -82,7 +82,7 @@ const ReleaseContextProvider = ({ children }) => {
     getRelatedForRelease,
     filterRelatedForRelease,
     getReleasesBySearch,
-    filterSearchResults
+    filterSearchResults,
   } = releaseContextHelper({
     releaseState,
     setReleaseState,
@@ -106,8 +106,6 @@ const ReleaseContextProvider = ({ children }) => {
     allReleases,
     setAllReleases,
     setAllReleasesCount,
-    searchResults,
-    setSearchResults
   })
 
   return (
@@ -149,8 +147,7 @@ const ReleaseContextProvider = ({ children }) => {
         allReleasesCount,
         getReleasesBySearch,
         filterSearchResults,
-        searchResults,
-        setSearchResults
+        setSearchResults,
       }}
     >
       {children}
@@ -180,8 +177,7 @@ const releaseContextHelper = ({
   allReleases,
   setAllReleases,
   setAllReleasesCount,
-  searchResults,
-  setSearchResults
+  setSearchResults,
 }) => {
   const provider = new anchor.Provider(
     connection,
@@ -1086,13 +1082,12 @@ const releaseContextHelper = ({
   }
 
   const getReleasesBySearch = async (query) => {
-
     setSearchResults({
       releaseIds: [],
       releases: [],
       searched: false,
       pending: true,
-      query: query
+      query: query,
     })
 
     const encodedQuery = encodeURIComponent(query)
@@ -1100,7 +1095,7 @@ const releaseContextHelper = ({
       const result = await fetch(
         `${NinaClient.endpoints.api}/releases/search?s=${encodedQuery}`
       )
-      const json = await result.json()     
+      const json = await result.json()
       await fetchAndSaveReleasesToState(json.releases, query)
     } catch (error) {
       console.warn(error)
@@ -1390,7 +1385,7 @@ const releaseContextHelper = ({
 
   */
 
-  const fetchAndSaveReleasesToState = async (releaseIds, query=null) => {
+  const fetchAndSaveReleasesToState = async (releaseIds, query = null) => {
     if (releaseIds.length > 0) {
       releaseIds = releaseIds.filter((id, pos) => releaseIds.indexOf(id) == pos)
       releaseIds = releaseIds.map((id) => new anchor.web3.PublicKey(id))
@@ -1424,7 +1419,7 @@ const releaseContextHelper = ({
           searched: true,
           pending: false,
           releases: [],
-          releaseIds: releases.map(release => release.publicKey.toBase58())
+          releaseIds: releases.map((release) => release.publicKey.toBase58()),
         }
       }
 
@@ -1594,7 +1589,7 @@ const releaseContextHelper = ({
     getRelatedForRelease,
     filterRelatedForRelease,
     getReleasesBySearch,
-    filterSearchResults
+    filterSearchResults,
   }
 }
 

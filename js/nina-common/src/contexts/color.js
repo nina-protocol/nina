@@ -1,23 +1,25 @@
-import React, { createContext, useContext, useState, useMemo} from 'react'
+import React, { createContext } from 'react'
 
 export const ColorContext = createContext()
 const ColorContextProvider = ({ mode, setMode, children }) => {
-
   const colorModeToggle = React.useMemo(
     () => ({
       toggleColorMode: () => {
-        localStorage.setItem('colorMode', mode === 'light' ? 'dark' : 'light');
-        setMode(() => (mode === 'light' ? 'dark' : 'light'));
+        setMode((prevMode) => {
+          const newMode = prevMode === 'light' ? 'dark' : 'light'
+          localStorage.setItem('colorMode', newMode)
+          return newMode
+        })
       },
     }),
-    [],
-  );
+    []
+  )
 
   return (
     <ColorContext.Provider
       value={{
         mode,
-        colorModeToggle
+        colorModeToggle,
       }}
     >
       {children}
@@ -25,4 +27,3 @@ const ColorContextProvider = ({ mode, setMode, children }) => {
   )
 }
 export default ColorContextProvider
-

@@ -7,8 +7,7 @@ import Box from '@mui/material/Box'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { ExchangeContext } from '../contexts'
 import { NinaClient } from '../utils'
-import Dots from './Dots'  
-
+import Dots from './Dots'
 
 const BuySellForm = (props) => {
   const { onSubmit, isBuy, release, amount, setAmount } = props
@@ -106,7 +105,10 @@ const StyledForm = styled('form')(({ theme }) => ({
     fontSize: '2rem',
     width: '73%',
     border: `1px solid`,
-    borderColor: theme.palette.mode === 'light' ? theme.palette.grey.primary : theme.palette.white,
+    borderColor:
+      theme.palette.mode === 'light'
+        ? theme.palette.grey.primary
+        : theme.palette.white,
     '& input': {
       textAlign: 'center !important',
       padding: '0',
