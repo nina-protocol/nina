@@ -4,7 +4,7 @@ import Head from "next/head";
 import { styled } from "@mui/material/styles";
 import ninaCommon from "nina-common";
 import { Typography, Box } from "@mui/material";
-import { isMobile } from 'react-device-detect';
+import { isMobile } from "react-device-detect";
 import ReleaseListTable from "./ReleaseListTable";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
 import ReleaseTileList from "./ReleaseTileList";
@@ -92,7 +92,9 @@ const Releases = () => {
               releases={
                 searchResults.pending || searchResults.searched
                   ? searchResults.releases
-                  : isMobile ? filterReleasesAll().reverse() : filterReleasesAll()
+                  : isMobile
+                  ? filterReleasesAll().reverse()
+                  : filterReleasesAll()
               }
             />
           )}
@@ -113,9 +115,9 @@ const StyledDots = styled(Box)(() => ({
 
 const StyledReleaseSearch = styled(ReleaseSearch)(() => ({
   position: "sticky",
-}))
+}));
 const CollectionHeader = styled(Typography)(() => ({
-  maxWidth: '100%',
+  maxWidth: "100%",
   margin: "0 auto",
   display: "flex",
   justifyContent: "space-between",
@@ -129,16 +131,16 @@ const CollectionHeader = styled(Typography)(() => ({
 const AllReleasesWrapper = styled(Box)(({ theme }) => ({
   maxWidth: "960px",
   height: "auto",
-  minHeight: '50vh',
+  minHeight: "50vh",
   margin: "0 auto",
-  position: 'relative',
+  position: "relative",
   "& a": {
     color: theme.palette.blue,
   },
   [theme.breakpoints.down("md")]: {
     padding: "0px 30px",
     overflowX: "auto",
-    minHeight: '80vh',
+    minHeight: "80vh",
   },
 }));
 

@@ -11,8 +11,11 @@ import ScrollablePageWrapper from "./ScrollablePageWrapper";
 const { ReleaseContext, NinaContext } = ninaCommon.contexts;
 
 const ReleaseList = () => {
-  const { getReleasesInCollection, filterReleasesUserCollection, releaseState } =
-    useContext(ReleaseContext);
+  const {
+    getReleasesInCollection,
+    filterReleasesUserCollection,
+    releaseState,
+  } = useContext(ReleaseContext);
   const [listView, setListView] = useState(false);
 
   const wallet = useWallet();
@@ -20,12 +23,12 @@ const ReleaseList = () => {
   const [userCollectionReleases, setUserCollectionReleases] = useState();
 
   useEffect(() => {
-    createCollection()
-  }, [])
-  
+    createCollection();
+  }, []);
+
   useEffect(() => {
     if (wallet?.connected) {
-      getReleasesInCollection()
+      getReleasesInCollection();
     }
   }, [collection]);
 
@@ -77,7 +80,7 @@ const ReleaseList = () => {
 };
 
 const CollectionHeader = styled(Box)(() => ({
-  maxWidth: '100%',
+  maxWidth: "100%",
   margin: "auto",
   display: "flex",
   justifyContent: "space-between",
@@ -86,8 +89,8 @@ const CollectionHeader = styled(Box)(() => ({
 }));
 
 const Wrapper = styled(Box)(({ theme }) => ({
-  maxWidth: '960px',
-  margin: 'auto',
+  maxWidth: "960px",
+  margin: "auto",
   [theme.breakpoints.down("md")]: {
     padding: "0px 30px",
     overflowX: "auto",

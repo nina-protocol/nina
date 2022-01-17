@@ -267,7 +267,6 @@ const AmountRemaining = styled(Typography)(({ theme }) => ({
 }));
 
 const StyledUserAmount = styled(Box)(({ theme }) => ({
-  color: theme.palette.black,
   ...theme.helpers.baseFont,
   paddingBottom: "10px",
   display: "flex",

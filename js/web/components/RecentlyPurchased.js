@@ -13,10 +13,14 @@ import "react-multi-carousel/lib/styles.css";
 import Button from "@mui/material/Button";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import { useTheme } from "@mui/material/styles";
+
 const { Dots } = ninaCommon.components;
 
 const RecentlyPurchased = (props) => {
   const { releases } = props;
+  const theme = useTheme();
+
   if (releases === undefined || releases.length === 0) {
     return (
       <RecentlyPurchasedContainer
@@ -45,7 +49,10 @@ const RecentlyPurchased = (props) => {
 
   const buttonStyle = {
     position: "absolute",
-    color: "black",
+    color:
+      theme.palette.mode === "light"
+        ? theme.palette.black
+        : theme.palette.white,
     backgroundColor: "red !important",
     "&:hover": {
       backgroundColor: "black !important",
@@ -58,7 +65,6 @@ const RecentlyPurchased = (props) => {
   const CustomRightArrow = ({ onClick }) => {
     return (
       <Button
-        className="testclass"
         style={{
           right: "10%",
           top: "75%",

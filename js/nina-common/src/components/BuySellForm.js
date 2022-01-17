@@ -100,12 +100,13 @@ const StyledForm = styled('form')(({ theme }) => ({
   width: '100%',
   marginTop: '10px',
   borderBottom: `1px solid ${theme.palette.greyLight}`,
-  backgroundColor: `${theme.palette.white}`,
+  backgroundColor: `${theme.palette.transparent}`,
 
   [`& .${classes.buySellFormInputLabel}`]: {
     fontSize: '2rem',
     width: '73%',
-    border: `1px solid ${theme.palette.grey.primary}`,
+    border: `1px solid`,
+    borderColor: theme.palette.mode === 'light' ? theme.palette.grey.primary : theme.palette.white,
     '& input': {
       textAlign: 'center !important',
       padding: '0',

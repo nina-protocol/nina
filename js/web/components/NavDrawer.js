@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { styled } from "@mui/material/styles";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Drawer from "@mui/material/Drawer";
@@ -15,6 +15,13 @@ import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { faInstagramSquare } from "@fortawesome/free-brands-svg-icons";
 import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
+import ninaCommon from "nina-common";
+
+import IconButton from "@mui/material/IconButton";
+
+const { ColorContext } = ninaCommon.contexts;
+
+import { useTheme } from "@mui/material/styles";
 
 const linksConnected = [
   "home",
@@ -40,6 +47,8 @@ const NavDrawer = () => {
   const wallet = useWallet();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [links, setLinks] = useState(linksNotConnected);
+  const theme = useTheme();
+  const { colorModeToggle } = useContext(ColorContext);
 
   useEffect(() => {
     if (wallet?.connected) {
@@ -70,38 +79,46 @@ const NavDrawer = () => {
         onClick={toggleDrawer}
         sx={{ padding: "15px 15px" }}
       />
+
+      <ModeToggleButton
+        size="large"
+        onClick={colorModeToggle.toggleColorMode}
+        color="inherit"
+        sx={(theme) => ({
+          "&:hover": {
+            color: theme.palette.blue,
+            backgroundColor: `${theme.palette.transparent} !important`,
+          },
+        })}
+      >
+        {theme.palette.mode === "dark" ? (
+          <Typography>Light Mode</Typography>
+        ) : (
+          <Typography>Dark Mode</Typography>
+        )}
+      </ModeToggleButton>
+
       <StyledList disablePadding>
         {links.map((link) => {
           switch (link) {
             case "collection":
               return (
                 <Link
-                  className={`${classes.drawerLink}`}
                   href={`/${link}`}
                   activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
                   key={link}
                   passHref
                 >
                   <ListItem button key={link}>
-                    <ListItemText
-                      primary={`your ${link}`}
-                    />
+                    <ListItemText primary={`your ${link}`} />
                   </ListItem>
                 </Link>
               );
             case "releases":
               return (
-                <Link
-                  className={`${classes.drawerLink}`}
-                  href={`/releases/user`}
-                  activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
-                  key={link}
-                  passHref
-                >
+                <Link href={`/releases/user`} key={link} passHref>
                   <ListItem button key={link}>
-                    <ListItemText
-                      primary={`your ${link}`}
-                    />
+                    <ListItemText primary={`your ${link}`} />
                   </ListItem>
                 </Link>
               );
@@ -113,10 +130,9 @@ const NavDrawer = () => {
                       href="https://softlp.nina.market"
                       target="_blank"
                       rel="noreferrer"
-                      className={`${classes.drawerLink}`}
                       passHref
                     >
-                      The Soft LP
+                      <Typography variant="h4">The Soft LP</Typography>
                     </Link>
                   </ListItemText>
                 </ListItem>
@@ -129,23 +145,16 @@ const NavDrawer = () => {
                       href="https://radio.nina.market"
                       target="_blank"
                       rel="noreferrer"
-                      className={`${classes.drawerLink}`}
                       passHref
                     >
-                      Nina Radio
+                      <Typography variant="h4">Nina Radio</Typography>
                     </Link>
                   </ListItemText>
                 </ListItem>
               );
             case "all Releases":
               return (
-                <Link
-                  className={`${classes.drawerLink}`}
-                  href={`/releases`}
-                  activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
-                  key={link}
-                  passHref
-                >
+                <Link href={`/releases`} key={link} passHref>
                   <ListItem button key={link}>
                     <ListItemText primary="All Releases" />
                   </ListItem>
@@ -155,11 +164,9 @@ const NavDrawer = () => {
             default:
               return (
                 <Link
-                  className={`${classes.drawerLink}`}
                   href={`${
                     link === "home" ? "/" : `/${link.replace(" ", "")}`
                   }`}
-                  activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
                   key={link}
                   passHref
                 >
@@ -180,7 +187,15 @@ const NavDrawer = () => {
         <Box key={"left"}>
           <StyledMenuButton onClick={toggleDrawer(true)}>
             <Icon>
-              <Image src={"/hamburger.svg"} height={25} width={25} />
+              <Image
+                src={
+                  theme.palette.mode === "light"
+                    ? "/hamburger.svg"
+                    : "/hamburger-white.png"
+                }
+                height={25}
+                width={25}
+              />
             </Icon>
           </StyledMenuButton>
           <StyledDrawer
@@ -233,7 +248,6 @@ const PREFIX = "NavDrawer";
 const classes = {
   toggle: `${PREFIX}-toggle`,
   list: `${PREFIX}-list`,
-  drawerLink: `${PREFIX}-drawerLink`,
 };
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
@@ -254,6 +268,9 @@ const StyledList = styled(List)(({ theme }) => ({
     },
     "& .MuiListItemText-root": {
       margin: 0,
+      "&:hover": {
+        color: theme.palette.blue,
+      },
       "& span": {
         textTransform: "capitalize",
         fontSize: "18px !important",
@@ -263,14 +280,17 @@ const StyledList = styled(List)(({ theme }) => ({
   },
 }));
 
+const ModeToggleButton = styled(IconButton)(({ theme }) => ({
+  position: "absolute !important",
+  right: theme.spacing(1),
+  top: theme.spacing(1),
+}));
+
 const StyledMenuButton = styled(Button)(({ theme }) => ({
   padding: "0px !important",
   zIndex: "10",
   "&:hover": {
     backgroundColor: `${theme.palette.transparent} !important`,
-  },
-  "& .MuiSvgIcon-root": {
-    color: theme.palette.black,
   },
 }));
 

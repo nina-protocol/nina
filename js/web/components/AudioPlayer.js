@@ -17,6 +17,7 @@ import PauseIcon from "@mui/icons-material/Pause";
 import Typography from "@mui/material/Typography";
 import QueueDrawer from "./QueueDrawer";
 import Image from "./Image";
+import { useTheme } from "@mui/material/styles";
 
 const { AudioPlayerContext } = ninaCommon.contexts;
 const { NinaClient } = ninaCommon.utils;
@@ -34,6 +35,7 @@ const AudioPlayer = () => {
   const [duration, setDuration] = useState(0);
   const [info, setInfo] = useState(null);
   const [shouldPlay, setShouldPlay] = useState();
+  const theme = useTheme();
 
   useEffect(() => {
     playerRef.current = document.querySelector("#audio");
@@ -295,7 +297,15 @@ const AudioPlayer = () => {
             disableFocusRipple={true}
             disableRipple={true}
           >
-            <Image src={"/shareArrow.svg"} width="15px" height="15px" />
+            <Image
+              src={
+                theme.palette.mode === "light"
+                  ? "/shareArrow.svg"
+                  : "/shareArrow-white.png"
+              }
+              width="15px"
+              height="15px"
+            />
           </Button>
         </LinkWrapper>
       )}
@@ -313,7 +323,11 @@ const StyledAudioPlayer = styled(Box)(({ theme }) => ({
   alignItems: "center",
   boxShadow: `0px -1px 5px 0px rgba(0,0,0,0.06)`,
 
-  background: `${theme.palette.white}`,
+  background: `${
+    theme.palette.mode === "light"
+      ? theme.palette.white
+      : theme.palette.greyDark
+  }`,
   display: "flex",
   zIndex: "100",
 }));
@@ -336,6 +350,11 @@ const Controls = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   padding: theme.spacing(0, 2),
+  "& .MuiIconButton-root": {
+    // '&:hover': {
+    //   backgroundColor: theme.palette.mode === 'light' ? theme.palette.white : theme.palette.greyDark
+    // }
+  },
   "& svg": {
     height: "24px",
     width: "24px",
