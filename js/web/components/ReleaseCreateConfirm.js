@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -19,7 +19,7 @@ const style = {
 const ReleaseCreateConfirm = (props) => {
   const { formIsValid, formValues, handleSubmit, setFormValuesConfirmed } =
     props;
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -94,10 +94,8 @@ const ReleaseCreateConfirm = (props) => {
             >
               Close and Edit
             </Button>
-
             <Typography variant="subtitle1" mt={1} sx={{ color: "red" }}>
-              **Once published, your release information will be permanent and
-              unalterable.
+              ONCE PUBLISHED, YOUR RELEASE INFORMATION WILL BE PERMANENT AND YOU WILL NOT BE ABLE TO EDIT IT.
             </Typography>
           </Box>
         </Box>

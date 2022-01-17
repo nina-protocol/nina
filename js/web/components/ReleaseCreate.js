@@ -114,6 +114,7 @@ const ReleaseCreate = () => {
         });
         await track.restart();
       } else {
+        setFormValuesConfirmed(false)
         enqueueSnackbar("Unable to create Release", {
           variant: "failure",
         });
