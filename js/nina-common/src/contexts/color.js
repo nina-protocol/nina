@@ -6,7 +6,8 @@ const ColorContextProvider = ({ mode, setMode, children }) => {
   const colorModeToggle = React.useMemo(
     () => ({
       toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+        localStorage.setItem('colorMode', mode === 'light' ? 'dark' : 'light');
+        setMode(() => (mode === 'light' ? 'dark' : 'light'));
       },
     }),
     [],

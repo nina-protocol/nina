@@ -92,9 +92,9 @@ const NavDrawer = () => {
         })}
       >
         {theme.palette.mode === "dark" ? (
-          <Typography>Light Mode</Typography>
+          <Typography>Light</Typography>
         ) : (
-          <Typography>Dark Mode</Typography>
+          <Typography>Dark</Typography>
         )}
       </ModeToggleButton>
 

@@ -46,7 +46,10 @@ function Application({ Component, clientSideEmotionCache, pageProps }) {
     const prefersDark = window.matchMedia(
       "(prefers-color-scheme: dark)"
     ).matches;
-    if (prefersDark) {
+    const mode = localStorage.getItem('colorMode');
+    if (mode) {
+      setMode(mode)
+    } else if (prefersDark) {
       setMode("dark");
     }
   }, []);
