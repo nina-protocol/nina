@@ -28,7 +28,7 @@ const { ConnectionContext, NinaContext, HubContext, } = ninaCommon.contexts;
 const Hubs = () => {
   const { enqueueSnackbar } = useSnackbar();
   const wallet = useWallet();
-  const { hubInit, hubState } =
+  const { hubInit, hubState, getAllHubs } =
     useContext(HubContext);
   const { healthOk } = useContext(ConnectionContext);
 
@@ -38,6 +38,12 @@ const Hubs = () => {
   const [formValues, setFormValues] = useState({
     hubForm: {},
   });
+
+  useEffect(() => {
+    console.log("get!");
+      getAllHubs()
+    }, 
+  [])
 
   // useEffect(() => {
   //   if (pressingState.releasePubkey) {

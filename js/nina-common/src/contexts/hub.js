@@ -70,10 +70,8 @@ const hubContextHelper = ({
   const hubInit = async (hubParams) => {
     console.log('~Hub Init~');
     hubParams.fee = new anchor.BN(hubParams.fee)
-    console.log('hubParams :>> ', hubParams);
     try {
       const nina = await NinaClient.connect(provider)
-      console.log('nina :>> ', nina);
 
       const [hub, hubBump] = await anchor.web3.PublicKey.findProgramAddress([
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub")), 
@@ -94,7 +92,7 @@ const hubContextHelper = ({
         nina.program.programId
       );
 
-      let [curatorUsdcTokenAccount, curatorUsdcTokenAccountIx] =
+      let [curatorUsdcTokenAccount, _curatorUsdcTokenAccountIx] =
         await findOrCreateAssociatedTokenAccount(
           connection,
           provider.wallet.publicKey,
@@ -104,21 +102,7 @@ const hubContextHelper = ({
           USDC_MINT_ID
         )
 
-        console.log('USDC_MINT_ID :>> ', USDC_MINT_ID);
-
-      console.log( {
-        curator: provider.wallet.publicKey,
-        hub,
-        hubSigner,
-        hubArtist,
-        usdcMint: USDC_MINT_ID,
-        usdcTokenAccount: curatorUsdcTokenAccount,
-        systemProgram: anchor.web3.SystemProgram.programId,
-        tokenProgram: NinaClient.TOKEN_PROGRAM_ID,
-        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-      });
-
-      console.log('nina.program.rpc.hubInit :>> ', nina.program.rpc.hubInit);
+        //add IX for create
 
       const txid = await nina.program.rpc.hubInit(
         hubParams, {
@@ -132,10 +116,9 @@ const hubContextHelper = ({
             systemProgram: anchor.web3.SystemProgram.programId,
             tokenProgram: NinaClient.TOKEN_PROGRAM_ID,
             rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-          },
+          }
         }
       )
-      console.log('txid :>> ', txid);
 
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed');
 
@@ -144,7 +127,6 @@ const hubContextHelper = ({
         msg: 'Hub Created',
       }
       
-
     } catch (error) {
       return ninaErrorHandler(error)
     }
@@ -399,9 +381,10 @@ const hubContextHelper = ({
     try {
       const updatedState = {...hubState}
       const nina = await NinaClient.connect(provider)
-      const hubs = await nina.account.hub.fetch.all()
+      console.log('nina.account.hub.fetch. :>> ', nina.program.account.hub.fetch);
+      const hubs = await nina.program.account.hub.fetch.all()
 
-      hub.forEach(hub => {
+      hubs.forEach(hub => {
         const publicKey = hub.publicKey.toBase58()
         updatedState[publicKey] = {
           ...hub.account,
