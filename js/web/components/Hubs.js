@@ -32,8 +32,6 @@ const Hubs = () => {
     useContext(HubContext);
   const { healthOk } = useContext(ConnectionContext);
 
-  const [buttonText, setButtonText] = useState("Publish Release");
-  const [pending, setPending] = useState(false);
   const [formIsValid, setFormIsValid] = useState(false);
   const [formValues, setFormValues] = useState({
     hubForm: {},
@@ -47,6 +45,7 @@ const Hubs = () => {
 
   useEffect(() => {
     if (wallet?.connected) {
+      console.log('hubState :>> ', hubState);
       setUserCuratedHubs(filterHubsByCurator());
     }  }, [hubState])
 
@@ -150,7 +149,13 @@ const Hubs = () => {
           </Typography>
           {userCuratedHubs && (
             <ul>
-                {userCuratedHubs.map(hub => <li>{hub.account.name}</li>) }
+                {userCuratedHubs.map(hub => (
+                  <li>
+                    <Link href={`/hubs/${hub.publicKey}`}>
+                      {hub.account.name}
+                    </Link>
+                  </li>
+                ))}
             </ul>
 
           )}
