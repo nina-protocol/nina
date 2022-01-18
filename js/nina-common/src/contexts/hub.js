@@ -41,6 +41,7 @@ const HubContextProvider = ({ children }) => {
         releaseInitViaHub,
       }}
     >
+      {children}
     </HubContext.Provider>
   )
 }
@@ -206,7 +207,7 @@ const hubContextHelper = ({
 
   const releaseInitViaHub = async (
     hubPubkey, 
-    artistPubkey
+    artistPubkey,
     retailPrice,
     amount,
     resalePercentage,
@@ -274,7 +275,7 @@ const hubContextHelper = ({
         nina.programId
       );
 
-      const [hubRelease, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      const [hubRelease, hubReleaseBump] = await anchor.web3.PublicKey.findProgramAddress(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
           hubPubkey.toBuffer(),

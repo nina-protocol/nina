@@ -14,6 +14,7 @@ const {
   NameContextProvider,
   NinaContextProvider,
   ConnectionContextProvider,
+  HubContextProvider,
 } = ninaCommon.contexts;
 
 const { Dots } = ninaCommon.components;
@@ -81,21 +82,23 @@ function Application({ Component, clientSideEmotionCache, pageProps }) {
         <NinaContextProvider>
           <ReleaseContextProvider>
             <NameContextProvider>
-              <AudioPlayerContextProvider>
-                <ExchangeContextProvider>
-                  <CacheProvider value={clientSideEmotionCache}>
-                    <ThemeProvider theme={NinaTheme}>
-                      <Layout>
-                        {loading ? (
-                          <Dots size="80px" />
-                        ) : (
-                          <Component {...pageProps} />
-                        )}
-                      </Layout>
-                    </ThemeProvider>
-                  </CacheProvider>
-                </ExchangeContextProvider>
-              </AudioPlayerContextProvider>
+              <HubContextProvider>
+                <AudioPlayerContextProvider>
+                  <ExchangeContextProvider>
+                    <CacheProvider value={clientSideEmotionCache}>
+                      <ThemeProvider theme={NinaTheme}>
+                        <Layout>
+                          {loading ? (
+                            <Dots size="80px" />
+                          ) : (
+                            <Component {...pageProps} />
+                          )}
+                        </Layout>
+                      </ThemeProvider>
+                    </CacheProvider>
+                  </ExchangeContextProvider>
+                </AudioPlayerContextProvider>
+              </HubContextProvider>
             </NameContextProvider>
           </ReleaseContextProvider>
         </NinaContextProvider>
