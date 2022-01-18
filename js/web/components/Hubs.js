@@ -12,8 +12,8 @@ import AddIcon from '@mui/icons-material/Add';
 import HubCreateForm from "./HubCreateForm";
 
 
-const { ReleaseSettings, Dots } = ninaCommon.components;
-const { ConnectionContext, NinaContext, HubContext, } = ninaCommon.contexts;
+const {  Dots } = ninaCommon.components;
+const { ConnectionContext, NinaContext, HubContext } = ninaCommon.contexts;
 
 // const ReleaseCreateSchema = Yup.object().shape({
 //   artist: Yup.string().required("Artist Name is Required"),
@@ -28,7 +28,7 @@ const { ConnectionContext, NinaContext, HubContext, } = ninaCommon.contexts;
 const Hubs = () => {
   const { enqueueSnackbar } = useSnackbar();
   const wallet = useWallet();
-  const { hubInit, hubState, getAllHubs } =
+  const {hubInit, hubState, getAllHubs, filterHubsByCurator } =
     useContext(HubContext);
   const { healthOk } = useContext(ConnectionContext);
 
@@ -38,12 +38,18 @@ const Hubs = () => {
   const [formValues, setFormValues] = useState({
     hubForm: {},
   });
+  const [userCuratedHubs, setUserCuratedHubs] = useState()
 
   useEffect(() => {
-    console.log("get!");
       getAllHubs()
     }, 
   [])
+
+  useEffect(() => {
+    if (wallet?.connected) {
+      setUserCuratedHubs(filterHubsByCurator());
+    }  }, [hubState])
+
 
   // useEffect(() => {
   //   if (pressingState.releasePubkey) {
@@ -61,7 +67,6 @@ const Hubs = () => {
       ...formValues,
       hubForm: values,
     });
-    console.log('formValues :>> ', formValues.hubForm);
   };
 
   // useEffect(async () => {
@@ -80,7 +85,6 @@ const Hubs = () => {
         fee: hubForm.fee,
         uri: hubForm.uri,
       };
-      console.log('data :>> ', data);
       const success = await hubInit(data);
       if (success) {
         enqueueSnackbar("Hub Created", {
@@ -132,6 +136,29 @@ const Hubs = () => {
           </Button>
         </Box>
       )}
+
+      
+      <Box sx={{textAlign: 'left'}}>
+        <Typography mt={1}>
+          There are {Object.keys(hubState).length} hubs on Nina.
+        </Typography>
+
+        {userCuratedHubs && (
+          <>
+          <Typography>
+            Your Hubs: 
+          </Typography>
+          {userCuratedHubs && (
+            <ul>
+                {userCuratedHubs.map(hub => <li>{hub.account.name}</li>) }
+            </ul>
+
+          )}
+          </>
+
+        )}
+      </Box>
+      
     </Box>
   );
 };

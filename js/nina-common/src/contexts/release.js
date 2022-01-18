@@ -813,6 +813,7 @@ const releaseContextHelper = ({
   */
 
   const fetchRelease = async (releasePubkey) => {
+    console.log('releasePubkey :>> ', releasePubkey);
     try {
       const nina = await NinaClient.connect(provider)
       releasePubkey = new anchor.web3.PublicKey(releasePubkey)

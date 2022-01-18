@@ -8,6 +8,9 @@ import {
   createMintInstructions,
   findOrCreateAssociatedTokenAccount,
 } from '../utils/web3'
+import {
+  decodeNonEncryptedByteArray,
+} from '../utils/encrypt'
 
 export const HubContext = createContext()
 const HubContextProvider = ({ children }) => {
@@ -27,6 +30,7 @@ const HubContextProvider = ({ children }) => {
     hubRemoveArtist,
     hubRemoveRelease,
     releaseInitViaHub,
+    filterHubsByCurator
   } = hubContextHelper({
     connection,
     wallet,
@@ -47,6 +51,7 @@ const HubContextProvider = ({ children }) => {
         hubRemoveRelease,
         hubState,
         releaseInitViaHub,
+        filterHubsByCurator
       }}
     >
       {children}
@@ -78,6 +83,8 @@ const hubContextHelper = ({
         Buffer.from(anchor.utils.bytes.utf8.encode(hubParams.name))],
         nina.program.programId
       );
+
+      console.log('hub IN INIT :>> ', hub);
 
       const [hubSigner, hubSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
         [Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-signer")), hub.toBuffer()],
@@ -121,6 +128,8 @@ const hubContextHelper = ({
       )
 
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed');
+
+      await getHub(hub.toBase58())
 
       return {
         success: true,
@@ -367,11 +376,10 @@ const hubContextHelper = ({
 
   const getHub = async (hubPubkey) => {
     try {
-      const updatedState = {...hubState}
       const nina = await NinaClient.connect(provider)
-      const hub = await nina.account.hub.fetch(new anchor.web3.publicKey(hubPubkey))
-      updatedState[hubPubkey] = hub
-      setHubState(updatedState)
+      const hub = await nina.program.account.hub.fetch(new anchor.web3.PublicKey(hubPubkey))
+      const formattedHub = {publicKey: new anchor.web3.PublicKey(hubPubkey), account: hub}
+      saveHubsToState([formattedHub])
     } catch (error) {
       return ninaErrorHandler(error)
     }
@@ -379,22 +387,61 @@ const hubContextHelper = ({
 
   const getAllHubs = async () => {
     try {
-      const updatedState = {...hubState}
-      const nina = await NinaClient.connect(provider)
-      console.log('nina.account.hub.fetch. :>> ', nina.program.account.hub.fetch);
-      const hubs = await nina.program.account.hub.fetch.all()
-
-      hubs.forEach(hub => {
-        const publicKey = hub.publicKey.toBase58()
-        updatedState[publicKey] = {
-          ...hub.account,
-          publicKey
-        }
-      })
-      setHubState(updatedState)
+      const nina = await NinaClient.connect(provider)     
+      const hubs = await nina.program.account.hub.all()
+      await saveHubsToState(hubs)
     } catch (error) {
       return ninaErrorHandler(error)
     }
+  }
+
+
+  /*
+
+  STATE FILTERS
+
+  */
+
+  const saveHubsToState = async (hubs) => {
+    try {
+      let updatedState = {...hubState}
+
+      for await (let hub of hubs) {
+        const publicKey = hub.publicKey.toBase58()
+          updatedState[publicKey] = {
+            account: {
+              ...hub.account,
+              name: decodeNonEncryptedByteArray(hub.account.name),
+              uri: decodeNonEncryptedByteArray(hub.account.uri)
+            },
+            publicKey
+          }
+        }
+         setHubState(updatedState)
+      }
+
+     catch (error) {
+      console.warn(error)
+    }
+  }
+
+  const filterHubsByCurator = (userPubkey = undefined) => {
+    // if (!wallet?.connected || (!userPubkey && !wallet?.publicKey)) {
+    //   return
+    // }
+    // Return results for passed in user if another user isn't specified
+    if (!userPubkey) {
+      userPubkey = wallet?.publicKey.toBase58()
+    }
+    
+    const hubs = []
+    Object.keys(hubState).forEach((hubPubkey) => {
+      const hubData = hubState[hubPubkey]
+      if (hubData.account.curator.toBase58() === userPubkey) {
+        hubs.push(hubData)
+      }
+    })
+    return hubs
   }
 
   return {
@@ -406,6 +453,7 @@ const hubContextHelper = ({
     hubRemoveArtist,
     hubRemoveRelease,
     releaseInitViaHub,
+    filterHubsByCurator
   }
 }
 export default HubContextProvider
