@@ -4,12 +4,19 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { ConnectionContext } from './connection'
 import NinaClient from '../utils/client'
 import { ninaErrorHandler } from '../utils/errors'
+import {
+  createMintInstructions,
+  findOrCreateAssociatedTokenAccount,
+} from '../utils/web3'
 
 export const HubContext = createContext()
 const HubContextProvider = ({ children }) => {
   const wallet = useWallet()
   const { connection } = useContext(ConnectionContext)
   const [hubState, setHubState] = useState({})
+
+  const usdcMint = NinaClient.ids().mints.usdc
+  const USDC_MINT_ID = new anchor.web3.PublicKey(usdcMint)
 
   const {
     getAllHubs,
@@ -25,6 +32,7 @@ const HubContextProvider = ({ children }) => {
     wallet,
     hubState,
     setHubState,
+    USDC_MINT_ID
   })
 
   return (
@@ -50,6 +58,8 @@ const hubContextHelper = ({
   connection,
   wallet,
   hubState,
+  setHubState,
+  USDC_MINT_ID
 }) => {
   const provider = new anchor.Provider(
     connection,
@@ -58,18 +68,22 @@ const hubContextHelper = ({
   )
 
   const hubInit = async (hubParams) => {
+    console.log('~Hub Init~');
+    hubParams.fee = new anchor.BN(hubParams.fee)
+    console.log('hubParams :>> ', hubParams);
     try {
       const nina = await NinaClient.connect(provider)
+      console.log('nina :>> ', nina);
 
       const [hub, hubBump] = await anchor.web3.PublicKey.findProgramAddress([
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub")), 
         Buffer.from(anchor.utils.bytes.utf8.encode(hubParams.name))],
-        nina.programId
+        nina.program.programId
       );
 
       const [hubSigner, hubSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
         [Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-signer")), hub.toBuffer()],
-        nina.programId
+        nina.program.programId
       );
 
       const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress([
@@ -77,24 +91,60 @@ const hubContextHelper = ({
           hub.toBuffer(),
           provider.wallet.publicKey.toBuffer(),
         ],
-        nina.programId
+        nina.program.programId
       );
 
-      await nina.rpc.hubInit(
+      let [curatorUsdcTokenAccount, curatorUsdcTokenAccountIx] =
+        await findOrCreateAssociatedTokenAccount(
+          connection,
+          provider.wallet.publicKey,
+          provider.wallet.publicKey,
+          anchor.web3.SystemProgram.programId,
+          anchor.web3.SYSVAR_RENT_PUBKEY,
+          USDC_MINT_ID
+        )
+
+        console.log('USDC_MINT_ID :>> ', USDC_MINT_ID);
+
+      console.log( {
+        curator: provider.wallet.publicKey,
+        hub,
+        hubSigner,
+        hubArtist,
+        usdcMint: USDC_MINT_ID,
+        usdcTokenAccount: curatorUsdcTokenAccount,
+        systemProgram: anchor.web3.SystemProgram.programId,
+        tokenProgram: NinaClient.TOKEN_PROGRAM_ID,
+        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+      });
+
+      console.log('nina.program.rpc.hubInit :>> ', nina.program.rpc.hubInit);
+
+      const txid = await nina.program.rpc.hubInit(
         hubParams, {
           accounts: {
-            curator: provider.wallet.publicKey,
             hub,
+            curator: provider.wallet.publicKey,
             hubSigner,
             hubArtist,
-            usdcMint,
-            usdcTokenAccount,
+            usdcMint: USDC_MINT_ID,
+            usdcTokenAccount: curatorUsdcTokenAccount,
             systemProgram: anchor.web3.SystemProgram.programId,
-            tokenProgram: TOKEN_PROGRAM_ID,
+            tokenProgram: NinaClient.TOKEN_PROGRAM_ID,
             rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-          }
+          },
         }
       )
+      console.log('txid :>> ', txid);
+
+      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed');
+
+      return {
+        success: true,
+        msg: 'Hub Created',
+      }
+      
+
     } catch (error) {
       return ninaErrorHandler(error)
     }

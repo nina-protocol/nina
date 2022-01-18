@@ -1,7 +1,7 @@
-import ReleaseCreate from "../components/ReleaseCreate";
+import Hubs from "../components/Hubs";
 
 const HubsPage = () => {
-  return <ReleaseCreate />;
+  return <Hubs />;
 };
 
 export default HubsPage;
