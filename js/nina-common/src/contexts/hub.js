@@ -7,6 +7,7 @@ import { ninaErrorHandler } from '../utils/errors'
 import {
   createMintInstructions,
   findOrCreateAssociatedTokenAccount,
+  getProgramAccounts
 } from '../utils/web3'
 import {
   decodeNonEncryptedByteArray,
@@ -30,7 +31,8 @@ const HubContextProvider = ({ children }) => {
     hubRemoveArtist,
     hubRemoveRelease,
     releaseInitViaHub,
-    filterHubsByCurator
+    filterHubsByCurator, 
+    getHubArtists
   } = hubContextHelper({
     connection,
     wallet,
@@ -51,7 +53,8 @@ const HubContextProvider = ({ children }) => {
         hubRemoveRelease,
         hubState,
         releaseInitViaHub,
-        filterHubsByCurator
+        filterHubsByCurator,
+        getHubArtists
       }}
     >
       {children}
@@ -83,8 +86,6 @@ const hubContextHelper = ({
         Buffer.from(anchor.utils.bytes.utf8.encode(hubParams.name))],
         nina.program.programId
       );
-
-      console.log('hub IN INIT :>> ', hub);
 
       const [hubSigner, hubSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
         [Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-signer")), hub.toBuffer()],
@@ -142,17 +143,25 @@ const hubContextHelper = ({
   }
 
   const hubAddArtist = async (artistPubkey, hubPubkey) => {
+
+    artistPubkey = new anchor.web3.PublicKey(artistPubkey)
+    hubPubkey = new anchor.web3.PublicKey(hubPubkey)
+
     try {
       const nina = await NinaClient.connect(provider)
+
       const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
-          hub.toBuffer(),
+          hubPubkey.toBuffer(),
           artistPubkey.toBuffer(),
         ],
-        nina.programId
+        nina.program.programId
       );
-      await nina.rpc.hubAddArtist({
+
+      console.log('hubArtist :>> ', hubArtist);
+
+      const txid = await nina.program.rpc.hubAddArtist({
         accounts: {
           curator: provider.wallet.publicKey,
           hub: hubPubkey,
@@ -162,6 +171,17 @@ const hubContextHelper = ({
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         }
       })
+
+      console.log('txid :>> ', txid);
+
+      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed');
+
+      return {
+        success: true,
+        msg: 'Artist Added to hub',
+      }
+
+
     } catch (error) {
       return ninaErrorHandler(error)
     }
@@ -385,6 +405,28 @@ const hubContextHelper = ({
     }
   }
 
+  const getHubArtists = async (hubPubkey) => {
+    
+    // hubPubkey =  new anchor.web3.PublicKey(hubPubkey)
+    try {
+      const nina = await NinaClient.connect(provider)
+      // const hubArtists = await nina.program.account.hubArtist.all()
+      let hubArtists = await getProgramAccounts(
+        nina.program,
+        'HubArtist',
+        {hub: hubPubkey},
+        connection
+      )
+      console.log('hubArtists :>> ', hubArtists);
+      saveHubArtistsToState(hubPubkey, hubArtists)
+
+      // const formattedHub = {publicKey: new anchor.web3.PublicKey(hubPubkey), account: hub}
+      // saveHubsToState([formattedHub])
+    } catch (error) {
+      return ninaErrorHandler(error)
+    }
+  }
+
   const getAllHubs = async () => {
     try {
       const nina = await NinaClient.connect(provider)     
@@ -425,6 +467,37 @@ const hubContextHelper = ({
     }
   }
 
+  const saveHubArtistsToState = async (hubPubkey, hubArtists) => {
+    try {
+      let updatedState = {...hubState}
+
+      console.log('hub object :>> ', updatedState[hubPubkey]);
+      if (!updatedState[hubPubkey]?.hubArtists) {
+        updatedState[hubPubkey].hubArtists = {}
+      }
+
+      for await (let hubArtist of hubArtists) {
+        const hubAristPublicKey = hubArtist.publicKey.toBase58()
+          updatedState[hubPubkey] = {
+            ...updatedState[hubPubkey],
+            hubArtists: {
+              ...updatedState[hubPubkey].hubArtists,
+              [hubAristPublicKey]: {
+               artist: hubArtist.artist
+             }
+            }
+          }
+        }
+        
+        console.log('updatedState :>> ', updatedState);
+        setHubState(updatedState)
+      }
+
+     catch (error) {
+      console.warn(error)
+    }
+  }
+
   const filterHubsByCurator = (userPubkey = undefined) => {
     // if (!wallet?.connected || (!userPubkey && !wallet?.publicKey)) {
     //   return
@@ -453,7 +526,8 @@ const hubContextHelper = ({
     hubRemoveArtist,
     hubRemoveRelease,
     releaseInitViaHub,
-    filterHubsByCurator
+    filterHubsByCurator,
+    getHubArtists
   }
 }
 export default HubContextProvider

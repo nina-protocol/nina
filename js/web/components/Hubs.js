@@ -47,7 +47,10 @@ const Hubs = () => {
     if (wallet?.connected) {
       console.log('hubState :>> ', hubState);
       setUserCuratedHubs(filterHubsByCurator());
-    }  }, [hubState])
+    }  else {
+      setUserCuratedHubs()
+    }
+  }, [hubState, wallet?.connected])
 
 
   // useEffect(() => {
@@ -77,7 +80,6 @@ const Hubs = () => {
   // }, [formValues]);
 
   const handleSubmit = async () => {
-      setPending(true);
       const { hubForm } = formValues;
       const data = {
         name: hubForm.name,

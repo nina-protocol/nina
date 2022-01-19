@@ -1,15 +1,14 @@
 import React, {useState, useContext, useEffect} from "react";
 import {useWallet} from "@solana/wallet-adapter-react";
+import Typography from '@mui/material/Typography';
 import ninaCommon from "nina-common";
-import Button from "@mui/material/Button";
+
 import Box from "@mui/material/Box";
 import {styled} from "@mui/material/styles";
-import NinaBox from "./NinaBox";
-import ReleaseCard from "./ReleaseCard";
-import ReleasePurchase from "./ReleasePurchase";
+import HubAddArtist from "./HubAddArtist";
+
 import {useRouter} from "next/router";
 
-const {Dots} = ninaCommon.components;
 const {HubContext} = ninaCommon.contexts;
 
 const Hub = () => {
@@ -18,36 +17,76 @@ const Hub = () => {
   const wallet = useWallet();
   const {
     getHub,
-    hubState
+    hubState,
+    getHubArtists
   } = useContext(HubContext)
 
   const [hubData, setHubData] = useState(
     hubState[hubPubkey] || null
   )
+  const [userIsCurator, setUserIsCurator] = useState(false)
 
   useEffect(() => {
-
     if (!hubData) {
-      console.log('getting');
       getHub(hubPubkey)
     }
   }, [])
   
   useEffect(() => {
-    setHubData(hubState[hubPubkey])
-  }, [hubState])
+      setHubData(hubState[hubPubkey])
+      console.log('hubData :>> ', hubData);
+  }, [hubState[hubPubkey]])
+
+  useEffect(() => {
+    getHubArtists(hubPubkey)
+  },[hubPubkey])
+
+
+  useEffect(() => {
+    if (wallet.connected) {
+      if (wallet?.publicKey?.toBase58() === hubData?.account.curator.toBase58()) {
+        setUserIsCurator(true)
+      }
+    }
+  }, [hubData, wallet?.connected])
 
   return (
-    <>
+    <HubWrapper>
        {hubData &&
         <>
-          <h1>This name of this hub is {hubData.account.name}</h1> 
+          <h1> {hubData.account.name}</h1> 
+        {JSON.stringify(hubData, null, 2)}
         </>
        }
-    </>
+
+       {userIsCurator && (
+         <>
+          <Typography>
+            Welcome you your Hub
+          </Typography>
+
+          <Box width="40%">
+            <Typography>
+                add an artist to your hub
+            </Typography>
+
+              <HubAddArtist hubPubkey={hubPubkey} />
+
+         
+          </Box>
+         </>
+       )}
+
+
+    </HubWrapper>
   );
 };
 
+const HubWrapper = styled(Box)(() => ({
+  border: '2px solid red',
+  width: '80vw'
+}));
 
 
 export default Hub;
+ 
