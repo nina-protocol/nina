@@ -149,7 +149,6 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
       </script>
     </html>
   `;
-  var dataURI = "data:text/html," + encodeURIComponent(player);
   return <div dangerouslySetInnerHTML={{__html: player}}></div>
 };
 
