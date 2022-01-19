@@ -128,14 +128,14 @@ const RecentlyPurchased = (props) => {
                 const artistInfo = (
                   <div display="inline">
                     <Typography display="inline" variant="body2">
-                      {release.metadata.properties.artist},
+                      {release.metadata.properties.artist.substring(0, 100)},
                     </Typography>{" "}
                     <Typography
                       display="inline"
                       variant="body2"
                       sx={{ fontStyle: "italic" }}
                     >
-                      {release.metadata.properties.title}
+                      {release.metadata.properties.title.substring(0, 100)}
                     </Typography>
                   </div>
                 );
