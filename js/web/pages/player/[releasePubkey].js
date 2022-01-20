@@ -7,7 +7,11 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
       <head>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <style>
+          html {
+            overflow: auto;
+          }
           body {
+            height: 100%
             margin: 0px;
           }
 
@@ -21,8 +25,8 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
           }
 
           #container {
-            height: 565px;
-            width: 100%;
+            height:calc(100vh);
+            width:calc(100vw);
             position: relative;
             flex-direction: column;
           }
@@ -145,16 +149,7 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
       </script>
     </html>
   `;
-  var dataURI = "data:text/html," + encodeURIComponent(player);
-  return (
-    <iframe
-      id="nina-player"
-      width="565px"
-      height="565px"
-      style={{ border: "none" }}
-      src={dataURI}
-    />
-  );
+  return <div dangerouslySetInnerHTML={{__html: player}}></div>
 };
 
 export const getServerSideProps = async (context) => {
