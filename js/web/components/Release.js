@@ -62,43 +62,41 @@ const Release = ({ metadataSsr }) => {
   if (!wallet?.connected && router.pathname.includes("releases")) {
     router.push(`/${releasePubkey}`);
   }
-
+  console.log(relatedReleases)
   return (
     <>
-      {metadata && (
-        <ReleaseWrapper>
-          {!router.pathname.includes("market") && (
-            <NinaBox
-              columns={"repeat(2, 1fr)"}
-              sx={{ backgroundColor: "white" }}
-            >
-              <ReleaseCard
-                metadata={metadata}
-                preview={false}
+      <ReleaseWrapper>
+        {!router.pathname.includes("market") && (
+          <NinaBox
+            columns={"repeat(2, 1fr)"}
+            sx={{ backgroundColor: "white" }}
+          >
+            <ReleaseCard
+              metadata={metadata}
+              preview={false}
+              releasePubkey={releasePubkey}
+            />
+            <ReleaseCtaWrapper>
+              <ReleasePurchase
                 releasePubkey={releasePubkey}
+                metadata={metadata}
+                router={router}
+                relatedReleases={relatedReleases}
               />
-              <ReleaseCtaWrapper>
-                <ReleasePurchase
-                  releasePubkey={releasePubkey}
-                  metadata={metadata}
-                  router={router}
-                  relatedReleases={relatedReleases}
-                />
-              </ReleaseCtaWrapper>
-            </NinaBox>
-          )}
+            </ReleaseCtaWrapper>
+          </NinaBox>
+        )}
 
-          {router.pathname.includes("market") && (
-            <NinaBox columns={"repeat(1, 1fr)"}>
-              <Exchange
-                releasePubkey={releasePubkey}
-                exchanges={exchangeState.exchanges}
-                metadata={metadata}
-              />
-            </NinaBox>
-          )}
-        </ReleaseWrapper>
-      )}
+        {router.pathname.includes("market") && (
+          <NinaBox columns={"repeat(1, 1fr)"}>
+            <Exchange
+              releasePubkey={releasePubkey}
+              exchanges={exchangeState.exchanges}
+              metadata={metadata}
+            />
+          </NinaBox>
+        )}
+      </ReleaseWrapper>
     </>
   );
 };

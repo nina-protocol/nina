@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import { styled } from "@mui/material/styles";
 import ninaCommon from "nina-common";
 import Button from "@mui/material/Button";
@@ -15,7 +15,8 @@ const ReleaseCard = (props) => {
   const { artwork, metadata, preview, releasePubkey } = props;
   const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext);
   const { releaseState } = useContext(ReleaseContext);
-  console.log('mdd: ', metadata)
+  const image = useMemo(() => metadata?.image)
+
   return (
     <StyledReleaseCard>
       <StyledReleaseInfo>
@@ -67,7 +68,7 @@ const ReleaseCard = (props) => {
             height={350}
             width={350}
             layout="responsive"
-            src={metadata?.image}
+            src={image}
             alt={metadata?.name}
             release={releaseState.tokenData[releasePubkey]}
             priority={true}

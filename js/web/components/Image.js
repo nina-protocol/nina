@@ -1,8 +1,8 @@
-import { useState } from "react";
+import React, { useState, useMemo } from "react";
 import NextImage from "next/image";
 import { DateTime } from "luxon";
 
-export default function Image({ src, height, width, layout, priority, release }) {
+function Image({ src, height, width, layout, priority, release }) {
   const [ready, setReady] = useState(false);
 
   const handleLoad = (event, byPass) => {
@@ -20,13 +20,15 @@ export default function Image({ src, height, width, layout, priority, release })
     const releaseDatetime = DateTime.fromMillis(release.releaseDatetime.toNumber() * 1000)
     const hours = now.diff(releaseDatetime, 'hours').toObject().hours
 
-    if (hours < 1) {
-      ImageComponent = () => (
-        <img src={src}
-          onLoad={e => handleLoad(e, true)}
-          style={{width: '100%'}}
-        />
-      )
+    if (hours < 0.05) {
+      if (src) {
+        ImageComponent = () => (    
+          <img src={src}
+            onLoad={e => handleLoad(e, true)}
+            style={{width: '100%', height: '100%'}}
+          />
+        )
+      }
     }
   }
   if (!ImageComponent) {
@@ -38,6 +40,8 @@ export default function Image({ src, height, width, layout, priority, release })
       layout={layout}
       onLoad={e => handleLoad(e, false)}
     />)
+  } else {
+
   }
   return (
     <div
@@ -51,3 +55,10 @@ export default function Image({ src, height, width, layout, priority, release })
     </div>
   );
 }
+
+function srcComparision(prevImage, nextImage) {
+  return prevImage.src === nextImage.src && nextImage.release
+}
+
+const MemoizedImage = React.memo(Image, srcComparision);
+export default MemoizedImage;
