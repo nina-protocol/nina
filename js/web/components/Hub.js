@@ -34,12 +34,14 @@ const Hub = () => {
   
   useEffect(() => {
       setHubData(hubState[hubPubkey])
-      console.log('hubData :>> ', hubData);
   }, [hubState[hubPubkey]])
 
   useEffect(() => {
-    getHubArtists(hubPubkey)
-  },[hubPubkey])
+    if (!hubState[hubPubkey]?.hubArtists && hubPubkey) {
+      console.log('CALLING');
+      getHubArtists(hubPubkey)
+    }
+  },[hubState[hubPubkey]])
 
 
   useEffect(() => {
@@ -54,7 +56,7 @@ const Hub = () => {
     <HubWrapper>
        {hubData &&
         <>
-          <h1> {hubData.account.name}</h1> 
+          <h1>{hubData.account.name}</h1> 
         {JSON.stringify(hubData, null, 2)}
         </>
        }
@@ -70,9 +72,7 @@ const Hub = () => {
                 add an artist to your hub
             </Typography>
 
-              <HubAddArtist hubPubkey={hubPubkey} />
-
-         
+            <HubAddArtist hubPubkey={hubPubkey} />
           </Box>
          </>
        )}

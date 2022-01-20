@@ -172,8 +172,6 @@ const hubContextHelper = ({
         }
       })
 
-      console.log('txid :>> ', txid);
-
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed');
 
       return {
@@ -261,6 +259,7 @@ const hubContextHelper = ({
           systemProgram: anchor.web3.SystemProgram.programId,
         }
       })
+      
     } catch (error) {
       return ninaErrorHandler(error)
     }
@@ -406,21 +405,17 @@ const hubContextHelper = ({
   }
 
   const getHubArtists = async (hubPubkey) => {
-    
-    // hubPubkey =  new anchor.web3.PublicKey(hubPubkey)
     try {
       const nina = await NinaClient.connect(provider)
-      // const hubArtists = await nina.program.account.hubArtist.all()
       let hubArtists = await getProgramAccounts(
         nina.program,
         'HubArtist',
         {hub: hubPubkey},
         connection
       )
+
       console.log('hubArtists :>> ', hubArtists);
       saveHubArtistsToState(hubPubkey, hubArtists)
-
-      // const formattedHub = {publicKey: new anchor.web3.PublicKey(hubPubkey), account: hub}
       // saveHubsToState([formattedHub])
     } catch (error) {
       return ninaErrorHandler(error)
