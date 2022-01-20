@@ -20,7 +20,7 @@ export default function Image({ src, height, width, layout, priority, release })
     const releaseDatetime = DateTime.fromMillis(release.releaseDatetime.toNumber() * 1000)
     const hours = now.diff(releaseDatetime, 'hours').toObject().hours
 
-    if (hours > 1) {
+    if (hours < 1) {
       ImageComponent = () => (
         <img src={src}
           onLoad={e => handleLoad(e, true)}

@@ -6636,13 +6636,6 @@ react-slick@^0.28.1:
     lodash.debounce "^4.0.8"
     resize-observer-polyfill "^1.5.0"
 
-react-smooth-image@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/react-smooth-image/-/react-smooth-image-1.1.0.tgz#81d6c8087447a04724cf8922331f4ab0c98a82e9"
-  integrity sha512-eAbsUr554PbQq3Z/DG2t4tnlPf7cEEiSR2o1L3fuKloLey0uZRk8/Ta41xX3b07yW0T1PDW/+FWO6Ns/v1TJvQ==
-  dependencies:
-    prop-types "^15.6.2"
-
 react-swipeable-views-core@^0.13.7:
   version "0.13.7"
   resolved "https://registry.yarnpkg.com/react-swipeable-views-core/-/react-swipeable-views-core-0.13.7.tgz#c082b553f26e83fd20fc17f934200eb717023c8a"
