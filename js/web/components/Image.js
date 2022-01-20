@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import NextImage from "next/image";
 import { DateTime } from "luxon";
 
@@ -40,9 +40,8 @@ function Image({ src, height, width, layout, priority, release }) {
       layout={layout}
       onLoad={e => handleLoad(e, false)}
     />)
-  } else {
-
   }
+  
   return (
     <div
       style={{

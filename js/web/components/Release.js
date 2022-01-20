@@ -40,14 +40,12 @@ const Release = ({ metadataSsr }) => {
 
   useEffect(() => {
     if (releaseState.metadata[releasePubkey] && !metadata) {
-      console.log("md: ", releaseState.metadata[releasePubkey])
       setMetadata(releaseState.metadata[releasePubkey]);
     }
   }, [releaseState?.metadata[releasePubkey]]);
 
   useEffect(() => {
     setRelatedReleases(filterRelatedForRelease(releasePubkey));
-    console.log(filterRelatedForRelease(releasePubkey))
   }, [releaseState]);
 
   if (metadata && Object.keys(metadata).length === 0) {
@@ -62,7 +60,7 @@ const Release = ({ metadataSsr }) => {
   if (!wallet?.connected && router.pathname.includes("releases")) {
     router.push(`/${releasePubkey}`);
   }
-  console.log(relatedReleases)
+
   return (
     <>
       <ReleaseWrapper>
