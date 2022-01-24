@@ -146,7 +146,7 @@ const Logo = styled("div")(({ theme }) => ({
   },
 }));
 
-const DesktopWalletWrapper = styled(Box)(({ theme }) => ({
+const DesktopWalletWrapper = styled(Box)(() => ({
   display: "flex",
 }));
 
