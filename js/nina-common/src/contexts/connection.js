@@ -1,4 +1,4 @@
-import { createContext, useState, useMemo, useEffect } from 'react'
+import { createContext, useState, useMemo, useEffect, useCallback } from 'react'
 import { Connection } from '@solana/web3.js'
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
 import { WalletProvider } from '@solana/wallet-adapter-react'
@@ -33,9 +33,7 @@ const ConnectionContextProvider = ({ children, ENDPOINTS }) => {
     []
   )
 
-  let timer = undefined
-
-  const healthCheck = async () => {
+  const healthCheck = useCallback(async() => {
     const timeSinceLastCheck = (Date.now() - healthTimestamp) / 1000
     if (timeSinceLastCheck > 30) {
       try {
@@ -49,21 +47,15 @@ const ConnectionContextProvider = ({ children, ENDPOINTS }) => {
           status = (sample.numTransactions / sample.samplePeriodSecs) > 1000
         })
         setHealthOk(status)
+        console.log('OK');
       } catch (error) {
         console.warn(error)
       }
     }
-  }
+  }, [healthTimestamp, healthOk])
 
   useEffect(() => {
-    if (!timer) {
-      healthCheck()
-      timer = setInterval(() => healthCheck(), 60000)
-    }
-    return () => {
-      clearInterval(timer)
-      timer = null
-    }
+    healthCheck();
   }, [healthCheck])
 
   return (

@@ -626,7 +626,7 @@ const exchangeContextHelper = ({
   }
 
   const filterExchangesForReleaseMarketPrice = (releasePubkey) => {
-    let marketPrice = undefined
+    let marketPrice = null;
     Object.keys(exchangeState).forEach((exchangePubkey) => {
       const exchange = exchangeState[exchangePubkey]
       if (exchange.release.toBase58() === releasePubkey) {

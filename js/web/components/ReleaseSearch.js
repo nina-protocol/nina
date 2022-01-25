@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { styled } from "@mui/material/styles";
 import { Typography, Box } from "@mui/material";
 import TextField from "@mui/material/TextField";
@@ -26,13 +26,13 @@ const ReleaseSearch = () => {
 
   useEffect(() => {
     getArtists();
-  }, []);
+  }, [getArtists()]);
 
-  const getArtists = async () => {
+  const getArtists = useCallback(async () => {
     const response = await axios.get(path + "/releases/artists");
     const data = response.data;
     setArtists(data.artists);
-  };
+  }, [artists]);
 
   const handleOptionSelect = (event, value, reason) => {
     if (event) {
