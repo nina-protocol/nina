@@ -83,9 +83,7 @@ const NavDrawer = () => {
                   passHref
                 >
                   <ListItem button key={link}>
-                    <ListItemText
-                      primary={`your ${link}`}
-                    />
+                    <ListItemText primary={`your ${link}`} />
                   </ListItem>
                 </Link>
               );
@@ -99,9 +97,7 @@ const NavDrawer = () => {
                   passHref
                 >
                   <ListItem button key={link}>
-                    <ListItemText
-                      primary={`your ${link}`}
-                    />
+                    <ListItemText primary={`your ${link}`} />
                   </ListItem>
                 </Link>
               );

@@ -106,7 +106,7 @@ const ReleaseList = ({ userId }) => {
 };
 
 const CollectionHeader = styled(Box)(() => ({
-  maxWidth: '100%',
+  maxWidth: "100%",
   margin: "auto",
   display: "flex",
   justifyContent: "space-between",
@@ -115,8 +115,8 @@ const CollectionHeader = styled(Box)(() => ({
 }));
 
 const Wrapper = styled(Box)(({ theme }) => ({
-  maxWidth: '960px',
-  margin: 'auto',
+  maxWidth: "960px",
+  margin: "auto",
   [theme.breakpoints.down("md")]: {
     padding: "0px 30px",
     overflowX: "auto",

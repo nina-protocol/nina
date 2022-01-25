@@ -85,7 +85,9 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
         <div id="container">
           <div id="overlay"></div>
           <div id="title">
-            <a href=${metadata.external_url} target="_blank" rel="noreferrer"><h4>${metadata.name.toUpperCase()} - NINA</h4></a>
+            <a href=${
+              metadata.external_url
+            } target="_blank" rel="noreferrer"><h4>${metadata.name.toUpperCase()} - NINA</h4></a>
           </div>
           <div id="vertical-center">
             <input id="player-button" type="image" src="https://${host}/play.svg" width="40px height="40px />
