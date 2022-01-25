@@ -390,12 +390,10 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
       padding: theme.spacing(1),
       textAlign: "left",
       whiteSpace: "nowrap",
-      "& span": {
-        textOverflow: "ellipsis",
-        maxWidth: "120px",
-        overflow: "hidden",
-        display: "table-cell",
-      },
+      textOverflow: "ellipsis",
+      maxWidth: "120px",
+      overflow: "hidden",
+      display: "table-cell",
     },
   },
 
