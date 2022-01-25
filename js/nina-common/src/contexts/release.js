@@ -84,7 +84,8 @@ const ReleaseContextProvider = ({ children }) => {
     getRelatedForRelease,
     filterRelatedForRelease,
     getReleasesBySearch,
-    filterSearchResults
+    filterSearchResults,
+    getCollectorsForRelease
   } = releaseContextHelper({
     releaseState,
     setReleaseState,
@@ -154,7 +155,8 @@ const ReleaseContextProvider = ({ children }) => {
         filterSearchResults,
         searchResults,
         setSearchResults,
-        getUserCollection
+        getUserCollection,
+        getCollectorsForRelease
       }}
     >
       {children}
@@ -1158,6 +1160,19 @@ const releaseContextHelper = ({
     }
   }
 
+  const getCollectorsForRelease = async (releasePubkey) => {
+      const collectorsResult = await fetch(
+        `${NinaClient.endpoints.api}/releases/${releasePubkey}/collectors`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+      const metadataJson = await collectorsResult.json()
+
+      return metadataJson
+  }
+
   /*
 
   STATE FILTERS
@@ -1664,7 +1679,8 @@ const releaseContextHelper = ({
     getRelatedForRelease,
     filterRelatedForRelease,
     getReleasesBySearch,
-    filterSearchResults
+    filterSearchResults,
+    getCollectorsForRelease
   }
 }
 

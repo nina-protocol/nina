@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import { useSnackbar } from "notistack";
 import { Typography } from "@mui/material";
 import Link from "next/link";
-
+import CollectorModal from './CollectorModal'
 const { Dots, ReleaseSettings } = ninaCommon.components;
 const { ReleaseContext, NinaContext, ExchangeContext, NameContext } =
   ninaCommon.contexts;
@@ -21,7 +21,7 @@ const ReleasePurchase = (props) => {
   const { releasePurchase, releasePurchasePending, releaseState, getRelease } =
     useContext(ReleaseContext);
   const { getAmountHeld, collection } = useContext(NinaContext);
-  const { exchangeState, filterExchangesForReleaseBuySell } =
+  const { exchangeState, filterExchangesForReleaseBuySell, getExchangesForRelease } =
     useContext(ExchangeContext);
   const [pending, setPending] = useState(undefined);
   const [release, setRelease] = useState(undefined);
@@ -32,9 +32,12 @@ const ReleasePurchase = (props) => {
   const [userIsRecipient, setUserIsRecipient] = useState(false);
   const { twitterHandlePublicKeyMap, lookupUserTwitterHandle } =
     useContext(NameContext);
+  const [exchangeTotalBuys, setExchangeTotalBuys] = useState(0)
+  const [exchangeTotalSells, setExchangeTotalSells] = useState(0)
 
   useEffect(() => {
     getRelease(releasePubkey);
+    getExchangesForRelease(releasePubkey);
   }, [releasePubkey]);
 
   useEffect(() => {
@@ -66,6 +69,13 @@ const ReleasePurchase = (props) => {
     setAmountPendingSales(
       filterExchangesForReleaseBuySell(releasePubkey, false, true).length
     );
+    setExchangeTotalBuys(
+      filterExchangesForReleaseBuySell(releasePubkey, true, false).length
+    );
+    setExchangeTotalSells(
+      filterExchangesForReleaseBuySell(releasePubkey, false, false).length
+    );
+
   }, [exchangeState]);
 
   useEffect(() => {
@@ -159,7 +169,7 @@ const ReleasePurchase = (props) => {
     }
     setDownloadButtonString("Download");
   };
-
+  console.log('ABB:')
   return (
     <Box>
       <AmountRemaining variant="body2" align="left">
@@ -170,28 +180,32 @@ const ReleasePurchase = (props) => {
       <Typography variant="body2" align="left" paddingBottom="10px">
         Artist Resale: {release.resalePercentage.toNumber() / 10000}%
       </Typography>
-
+      <Link href={`${pathString}/${releasePubkey}/market`} passHref>
+        <Typography variant="body2" align="left" paddingBottom="10px">{`View Secondary Market (${exchangeTotalBuys + exchangeTotalSells})`}</Typography>
+      </Link>
+      <CollectorModal releasePubkey={releasePubkey} metadata={metadata} />
       {wallet?.connected && (
         <StyledUserAmount>
           {metadata && (
-            <Typography variant="body1" align="left" gutterBottom>
+            <Typography variant="body2" align="left" gutterBottom>
               You have: {amountHeld || 0} {metadata.symbol}
             </Typography>
           )}
           {amountPendingSales > 0 ? (
-            <Typography variant="body1" align="left" gutterBottom>
+            <Typography variant="body2" align="left" gutterBottom>
               {amountPendingSales} pending sale
               {amountPendingSales > 1 ? "s" : ""}{" "}
             </Typography>
           ) : null}
           {amountPendingBuys > 0 ? (
-            <Typography variant="body1" align="left" gutterBottom>
+            <Typography variant="body2" align="left" gutterBottom>
               {amountPendingBuys} pending buy
               {amountPendingBuys > 1 ? "s" : ""}{" "}
             </Typography>
           ) : null}
         </StyledUserAmount>
       )}
+
       <StyledDescription variant="h3" align="left">
         {metadata.description}
       </StyledDescription>
@@ -212,11 +226,6 @@ const ReleasePurchase = (props) => {
           </Button>
         </form>
       </Box>
-      <Link href={`${pathString}/${releasePubkey}/market`} passHref>
-        <MarketButton variant="outlined" fullWidth>
-          <Typography variant="body2">Go To Market</Typography>
-        </MarketButton>
-      </Link>
       {relatedReleases && relatedReleases.length > 1 && (
         <Link href={`/${releasePubkey}/related`} passHref>
           <Button
