@@ -17,8 +17,8 @@ const ReleaseList = ({ userId }) => {
 
   const wallet = useWallet();
   const { collection, createCollection } = useContext(NinaContext);
-  const [userCollectionReleases, setUserCollectionReleases] = useState();
-  const [userCollectionList, setUserCollectionList] = useState([]);
+  const [userCollectionReleases, setUserCollectionReleases] = useState(undefined);
+  const [userCollectionList, setUserCollectionList] = useState(undefined);
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -38,15 +38,20 @@ const ReleaseList = ({ userId }) => {
   useEffect(() => {
     if (userId && userCollectionList) {
       setUserCollectionReleases(filterReleasesList(userCollectionList));    
-    } else if (wallet?.connected) {
-      setUserCollectionReleases(filterReleasesUserCollection());
+    } else if (!userId && wallet?.connected) {
+      const hasCollection = Object.keys(collection).every(releasePubkey => {
+        return releaseState.metadata[releasePubkey]
+      })
+
+      if (hasCollection) {
+        setUserCollectionReleases(filterReleasesUserCollection());
+      }
     }
-    setLoading(false)
-  }, [releaseState]);
+  }, [releaseState, userCollectionList]);
 
   useEffect(() => {
-    setUserCollectionReleases(filterReleasesList(userCollectionList));    
-  }, [userCollectionList])
+    setLoading(false)
+  }, [userCollectionReleases])
   
   const getOtherUserCollectionHandler = async (userId) => {
     const collection = await getUserCollection(userId)
@@ -68,7 +73,7 @@ const ReleaseList = ({ userId }) => {
         <meta name="description" content={"Your collection on Nina."} />
       </Head>
       <ScrollablePageWrapper>
-        {wallet?.connected && userCollectionReleases?.length > 0 && (
+        {userCollectionReleases?.length > 0 && (
           <Wrapper>
             <CollectionHeader listView={listView}>
               <Typography variant="body1" fontWeight="700">
@@ -89,10 +94,10 @@ const ReleaseList = ({ userId }) => {
             {!listView && <ReleaseTileList releases={userCollectionReleases} />}
           </Wrapper>
         )}
-        {!loading && userCollectionReleases?.length === 0 && (
+        {!loading && userCollectionReleases && userCollectionReleases.length === 0 && (
           <Typography>Your collection is empty!</Typography>
         )}
-        {!loading && userCollectionList === undefined && (
+        {!loading && userId && !userCollectionReleases && userCollectionList && (
           <Typography>Invalid Address, check to make sure you have the right Account</Typography>
         )}
       </ScrollablePageWrapper>

@@ -135,8 +135,10 @@ const ninaContextHelper = ({
         releaseAccounts = releaseAccounts.filter((item) => item != null)
         releaseAccounts.map((releaseAccount) => {
           const releasePublicKey = releaseAccount.publicKey.toBase58()
-          updatedCollection[releasePublicKey] =
-            releaseAmountMap[releasePublicKey]
+          if (releasePublicKey !== "BpZ5zoBehKfKUL2eSFd3SNLXmXHi4vtuV4U6WxJB3qvt") {
+            updatedCollection[releasePublicKey] =
+              releaseAmountMap[releasePublicKey]
+          }
         })
 
         setCollection({
