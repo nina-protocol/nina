@@ -8,7 +8,6 @@ import ninaCommon from "nina-common";
 import Link from "next/link";
 
 const { ReleaseContext } = ninaCommon.contexts;
-const { NinaClient } = ninaCommon.utils;
 
 const CollectorModal = (props) => {
   const { releasePubkey, metadata } = props
@@ -43,13 +42,12 @@ const CollectorModal = (props) => {
       >
         <StyledPaper>
           <Header>
-            <Typography fontWeight="700">{metadata.properties.artist.substring(0, 100)} - "{metadata.properties.title.substring(0, 100)}" Collectors</Typography>
+            <Typography fontWeight="700">{`${metadata.properties.artist.substring(0, 100)} - \"${metadata.properties.title.substring(0, 100)}\" Collectors`}</Typography>
           </Header>
           <HistoryTable>
             <TableBody>
               {collectors &&
                 collectors.map((entry, i) => {
-                  console.log(entry)
                   return (
                     <tr key={i}>
                       <td>

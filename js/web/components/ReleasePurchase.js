@@ -169,7 +169,7 @@ const ReleasePurchase = (props) => {
     }
     setDownloadButtonString("Download");
   };
-  console.log('ABB:')
+
   return (
     <Box>
       <AmountRemaining variant="body2" align="left">
@@ -289,10 +289,6 @@ const StyledDescription = styled(Typography)(({ theme }) => ({
     maxHeight: "225px",
     overflowY: "scroll",
   },
-}));
-
-const MarketButton = styled(Button)(({ theme }) => ({
-  marginTop: `${theme.spacing(1)} !important`,
 }));
 
 export default ReleasePurchase;
