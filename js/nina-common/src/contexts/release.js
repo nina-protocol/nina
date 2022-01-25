@@ -68,11 +68,13 @@ const ReleaseContextProvider = ({ children }) => {
     getReleasesRecent,
     getReleasesAll,
     getReleaseRoyaltiesByUser,
+    getUserCollection,
     filterReleasesUserCollection,
     filterReleasesPublishedByUser,
     filterReleasesRecent,
     filterReleasesAll,
     filterRoyaltiesByUser,
+    filterReleasesList,
     calculateStatsByUser,
     redeemableInitialize,
     redeemableRedeem,
@@ -131,6 +133,7 @@ const ReleaseContextProvider = ({ children }) => {
         filterReleasesUserCollection,
         filterReleasesPublishedByUser,
         filterRoyaltiesByUser,
+        filterReleasesList,
         calculateStatsByUser,
         redeemableInitialize,
         redeemableRedeem,
@@ -150,7 +153,8 @@ const ReleaseContextProvider = ({ children }) => {
         getReleasesBySearch,
         filterSearchResults,
         searchResults,
-        setSearchResults
+        setSearchResults,
+        getUserCollection
       }}
     >
       {children}
@@ -1107,6 +1111,53 @@ const releaseContextHelper = ({
     }
   }
 
+  const getUserCollection = async (userId) => {
+    try {
+      const nina = await NinaClient.connect(provider)
+      const userCollection = []
+      let tokenAccounts = await connection.getParsedTokenAccountsByOwner(
+        new anchor.web3.PublicKey(userId),
+        { programId: NinaClient.TOKEN_PROGRAM_ID }
+      )
+      const walletTokenAccounts = tokenAccounts.value.map(
+        (value) => value.account.data.parsed.info
+      )
+
+      const releaseAmountMap = {}
+      for await (let account of walletTokenAccounts) {
+        const mint = new anchor.web3.PublicKey(account.mint)
+        const balance = account.tokenAmount.uiAmount
+
+        if (balance > 0 && balance % 1 === 0) {
+          const [release] = await anchor.web3.PublicKey.findProgramAddress(
+            [
+              Buffer.from(anchor.utils.bytes.utf8.encode('nina-release')),
+              mint.toBuffer(),
+            ],
+            nina.program.programId
+          )
+
+          releaseAmountMap[release.toBase58()] = account.tokenAmount.uiAmount
+        }
+      }
+
+      let releaseAccounts = await anchor.utils.rpc.getMultipleAccounts(
+        connection,
+        Object.keys(releaseAmountMap).map((r) => new anchor.web3.PublicKey(r))
+      )
+      releaseAccounts = releaseAccounts.filter((item) => item != null)
+      releaseAccounts.map((releaseAccount) => {
+        const releasePublicKey = releaseAccount.publicKey.toBase58()
+        userCollection.push(releasePublicKey)
+      })
+      await fetchAndSaveReleasesToState(userCollection)
+      return userCollection
+    } catch (e) {
+      console.warn('error: ', e)
+      return
+    }
+  }
+
   /*
 
   STATE FILTERS
@@ -1129,6 +1180,23 @@ const releaseContextHelper = ({
     })
     return releases
   }
+
+  const filterReleasesList = (releaseList) => {
+    if (!wallet?.connected) {
+      return
+    }
+
+    const releases = []
+    releaseList.forEach((releasePubkey) => {
+      const tokenData = releaseState.tokenData[releasePubkey]
+      const metadata = releaseState.metadata[releasePubkey]
+      if (metadata) {
+        releases.push({ tokenData, metadata, releasePubkey })
+      }
+    })
+    return releases
+  }
+
 
   const filterReleasesRecent = () => {
     const releasesPublished = []
@@ -1576,6 +1644,7 @@ const releaseContextHelper = ({
     collectRoyaltyForRelease,
     getRelease,
     getReleasesInCollection,
+    getUserCollection,
     getReleasesPublishedByUser,
     getReleasesRecent,
     getReleasesAll,
@@ -1584,6 +1653,7 @@ const releaseContextHelper = ({
     filterReleasesPublishedByUser,
     filterReleasesRecent,
     filterReleasesAll,
+    filterReleasesList,
     filterRoyaltiesByUser,
     calculateStatsByUser,
     redeemableInitialize,

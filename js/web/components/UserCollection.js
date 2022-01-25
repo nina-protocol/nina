@@ -10,38 +10,59 @@ import ScrollablePageWrapper from "./ScrollablePageWrapper";
 
 const { ReleaseContext, NinaContext } = ninaCommon.contexts;
 
-const ReleaseList = () => {
-  const { getReleasesInCollection, filterReleasesUserCollection, releaseState } =
+const ReleaseList = ({ userId }) => {
+  const { getReleasesInCollection, filterReleasesUserCollection, releaseState, getUserCollection, filterReleasesList } =
     useContext(ReleaseContext);
   const [listView, setListView] = useState(false);
 
   const wallet = useWallet();
   const { collection, createCollection } = useContext(NinaContext);
   const [userCollectionReleases, setUserCollectionReleases] = useState();
+  const [userCollectionList, setUserCollectionList] = useState([]);
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    createCollection()
+    if (userId) {
+      getOtherUserCollectionHandler(userId)
+    } else {
+      createCollection()
+    }
   }, [])
   
   useEffect(() => {
-    if (wallet?.connected) {
+    if (wallet?.connected && !userId) {
       getReleasesInCollection()
     }
   }, [collection]);
 
   useEffect(() => {
-    if (wallet?.connected) {
+    if (userId && userCollectionList) {
+      setUserCollectionReleases(filterReleasesList(userCollectionList));    
+    } else if (wallet?.connected) {
       setUserCollectionReleases(filterReleasesUserCollection());
     }
+    setLoading(false)
   }, [releaseState]);
+
+  useEffect(() => {
+    setUserCollectionReleases(filterReleasesList(userCollectionList));    
+  }, [userCollectionList])
+  
+  const getOtherUserCollectionHandler = async (userId) => {
+    const collection = await getUserCollection(userId)
+    setUserCollectionList(collection)
+  }
 
   const handleViewChange = () => {
     setListView(!listView);
   };
+
+  const nameString = userId ? `${userId}'s` : 'Your'
+
   return (
     <>
       <Head>
-        <title>{`Nina: Your Collection(${
+        <title>{`Nina: ${nameString} Collection(${
           userCollectionReleases?.length || 0
         })`}</title>
         <meta name="description" content={"Your collection on Nina."} />
@@ -51,7 +72,7 @@ const ReleaseList = () => {
           <Wrapper>
             <CollectionHeader listView={listView}>
               <Typography variant="body1" fontWeight="700">
-                Your Collection
+                {nameString} Collection
               </Typography>
               <Typography onClick={handleViewChange} sx={{ cursor: "pointer" }}>
                 {listView ? "Cover View" : "List View"}
@@ -68,8 +89,11 @@ const ReleaseList = () => {
             {!listView && <ReleaseTileList releases={userCollectionReleases} />}
           </Wrapper>
         )}
-        {wallet?.connected && userCollectionReleases?.length === 0 && (
+        {!loading && userCollectionReleases?.length === 0 && (
           <Typography>Your collection is empty!</Typography>
+        )}
+        {!loading && userCollectionList === undefined && (
+          <Typography>Invalid Address, check to make sure you have the right Account</Typography>
         )}
       </ScrollablePageWrapper>
     </>

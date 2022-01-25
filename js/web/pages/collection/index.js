@@ -1,4 +1,4 @@
-import UserCollection from "../components/UserCollection";
+import UserCollection from "../../components/UserCollection";
 
 const UserCollectionPage = () => {
   return <UserCollection />;
