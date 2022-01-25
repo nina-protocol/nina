@@ -63,7 +63,7 @@ const ReleaseList = ({ userId }) => {
     setListView(!listView);
   };
 
-  const nameString = userId ? `${userId.substring(0,4)}...${userId.substring(-1,4)}}'s` : 'Your'
+  const nameString = userId ? `${userId}'s` : 'Your'
 
   return (
     <>
