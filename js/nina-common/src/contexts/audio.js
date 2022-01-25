@@ -27,6 +27,14 @@ const AudioPlayerContextProvider = ({ children }) => {
       createPlaylistFromTracks()
     }
   }, [wallet?.connected, collection, releaseState.metadata])
+  
+  const updateTxid = async (newTxid, releasePubkey, shouldPlay = false) => {
+    if (newTxid !== playlist[currentIndex()]) {
+      addTrackToQueue(releasePubkey)
+      await setTxid(newTxid)
+      await setIsPlaying(shouldPlay)
+    }
+  }
 
   const {
     reorderPlaylist,
@@ -34,6 +42,7 @@ const AudioPlayerContextProvider = ({ children }) => {
     createPlaylistFromTracks,
     addTrackToQueue,
     removeTrackFromQueue,
+    resetQueueWithPlaylist
   } = audioPlayerContextHelper({
     releaseState,
     wallet,
@@ -43,15 +52,9 @@ const AudioPlayerContextProvider = ({ children }) => {
     setPlaylist,
     shouldRemainInCollectionAfterSale,
     enqueueSnackbar,
+    setTxid,
+    setIsPlaying
   })
-
-  const updateTxid = async (newTxid, releasePubkey, shouldPlay = false) => {
-    if (newTxid !== playlist[currentIndex()]) {
-      addTrackToQueue(releasePubkey)
-      await setTxid(newTxid)
-      await setIsPlaying(shouldPlay)
-    }
-  }
 
   const currentIndex = () => {
     let index = undefined
@@ -77,6 +80,7 @@ const AudioPlayerContextProvider = ({ children }) => {
         isPlaying,
         setIsPlaying,
         currentIndex,
+        resetQueueWithPlaylist
       }}
     >
       {children}
@@ -94,6 +98,8 @@ const audioPlayerContextHelper = ({
   collection,
   shouldRemainInCollectionAfterSale,
   enqueueSnackbar,
+  setTxid,
+  setIsPlaying
 }) => {
   const reorderPlaylist = (updatedPlaylist) => {
     setPlaylist([...updatedPlaylist])
@@ -152,19 +158,29 @@ const audioPlayerContextHelper = ({
     }
   }
 
+  const resetQueueWithPlaylist = async (releasePubkeys) => {
+    await setPlaylist([])
+    const newPlaylist = []
+    releasePubkeys.forEach(releasePubkey => {
+      const playlistEntry = createPlaylistEntry(releasePubkey)
+      newPlaylist.push(playlistEntry)
+    })
+    setPlaylist(newPlaylist)
+    await setTxid(newPlaylist[0].txid)
+    await setIsPlaying(true)
+  }
+
   const createPlaylistEntry = (releasePubkey) => {
     let playlistEntry = undefined
-    if (!playlist.some((item) => item.releasePubkey === releasePubkey)) {
-      const releaseMetadata = releaseState.metadata[releasePubkey]
-      if (releaseMetadata) {
-        playlistEntry = {
-          artist: releaseMetadata.properties.artist,
-          title: releaseMetadata.properties.title,
-          txid: releaseMetadata.properties.files[0].uri,
-          releasePubkey,
-          cover: releaseMetadata.image,
-          duration: releaseMetadata.properties.files[0].duration,
-        }
+    const releaseMetadata = releaseState.metadata[releasePubkey]
+    if (releaseMetadata) {
+      playlistEntry = {
+        artist: releaseMetadata.properties.artist,
+        title: releaseMetadata.properties.title,
+        txid: releaseMetadata.properties.files[0].uri,
+        releasePubkey,
+        cover: releaseMetadata.image,
+        duration: releaseMetadata.properties.files[0].duration,
       }
     }
 
@@ -177,5 +193,6 @@ const audioPlayerContextHelper = ({
     createPlaylistFromTracks,
     addTrackToQueue,
     removeTrackFromQueue,
+    resetQueueWithPlaylist,
   }
 }

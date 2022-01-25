@@ -8,9 +8,10 @@ import ReleaseListTable from "./ReleaseListTable";
 import ReleaseTileList from "./ReleaseTileList";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
 
-const { ReleaseContext, NinaContext } = ninaCommon.contexts;
+const { AudioPlayerContext, ReleaseContext, NinaContext } = ninaCommon.contexts;
 
 const ReleaseList = ({ userId }) => {
+  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext)
   const { getReleasesInCollection, filterReleasesUserCollection, releaseState, getUserCollection, filterReleasesList } =
     useContext(ReleaseContext);
   const [listView, setListView] = useState(false);
@@ -77,7 +78,7 @@ const ReleaseList = ({ userId }) => {
           <Wrapper>
             <CollectionHeader listView={listView}>
               <Typography variant="body1" fontWeight="700">
-                {nameString} Collection
+                {nameString} Collection <span onClick={() => resetQueueWithPlaylist(userCollectionReleases.map(release => release.releasePubkey)) }>(Play)</span>
               </Typography>
               <Typography onClick={handleViewChange} sx={{ cursor: "pointer" }}>
                 {listView ? "Cover View" : "List View"}
