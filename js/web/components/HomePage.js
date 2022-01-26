@@ -139,11 +139,4 @@ const HomePageContainer = styled("div")(({ theme }) => ({
   },
 }));
 
-const AllReleasesLink = styled(Typography)(({ theme }) => ({
-  marginLeft: "30px",
-  [theme.breakpoints.down("md")]: {
-    display: "none",
-  },
-}));
-
 export default HomePage;
