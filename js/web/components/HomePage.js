@@ -43,8 +43,8 @@ const HomePage = () => {
             className={classes.sectionHeader}
           >
             <Typography variant="body1" align="left">
+              Highlights
               <Button
-                style={{ paddingTop: "3px" }}
                 onClick={() =>
                   resetQueueWithPlaylist(
                     releasesRecent.highlights.map(
@@ -92,7 +92,6 @@ const HomePage = () => {
             <Typography variant="body1" align="left" className={classes.sectionHeader}>
               New Releases
               <Button
-                style={{ paddingTop: "3px" }}
                 onClick={() =>
                   resetQueueWithPlaylist(
                     releasesRecent.published.map(
