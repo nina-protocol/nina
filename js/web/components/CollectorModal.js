@@ -42,7 +42,7 @@ const CollectorModal = (props) => {
       >
         <StyledPaper>
           <Header>
-            <Typography fontWeight="700">{`${metadata.properties.artist.substring(0, 100)} - \"${metadata.properties.title.substring(0, 100)}\" Collectors`}</Typography>
+            <Typography fontWeight="700">{`${metadata.properties.artist.substring(0, 100)} - "${metadata.properties.title.substring(0, 100)}" Collectors`}</Typography>
           </Header>
           <HistoryTable>
             <TableBody>

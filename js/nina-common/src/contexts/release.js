@@ -1483,13 +1483,16 @@ const releaseContextHelper = ({
           connection,
           releaseIds
         )
+        const releases = []
         const layout = nina.program.coder.accounts.accountLayouts.get('Release')
-        releaseAccounts = releaseAccounts.map((release) => {
-          let dataParsed = layout.decode(release.account.data.slice(8))
-          dataParsed.publicKey = release.publicKey
-          return dataParsed
+        releaseAccounts.forEach((release) => {
+          if (release) {
+            let dataParsed = layout.decode(release.account.data.slice(8))
+            dataParsed.publicKey = release.publicKey
+            releases.push(dataParsed)
+          }
         })
-        await saveReleasesToState(releaseAccounts, query)
+        await saveReleasesToState(releases, query)
       } catch (error) {
         console.warn(error)
       }
