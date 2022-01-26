@@ -5,7 +5,6 @@ import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutline
 import Button from "@mui/material/Button";
 import ninaCommon from "nina-common";
 import RecentlyPublished from "./RecentlyPublished";
-import RecentlyPurchased from "./RecentlyPurchased";
 import Link from "next/link";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
 const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts;
@@ -15,14 +14,12 @@ const HomePage = () => {
     useContext(ReleaseContext);
   const { resetQueueWithPlaylist } = useContext(AudioPlayerContext)
   const [releasesRecent, setReleasesRecent] = useState({});
-  const [releasesHighlights, setReleasesHighlights] = useState({});
 
   useEffect(() => {
     getReleasesRecent();
   }, []);
 
   useEffect(() => {
-    console.log('releases: recent: ', filterReleasesRecent())
     setReleasesRecent(filterReleasesRecent());
   }, [releasesRecentState]);
 
@@ -137,16 +134,6 @@ const HomePageContainer = styled("div")(({ theme }) => ({
   },
   "& a, span": {
     color: theme.palette.blue,
-  },
-}));
-
-const MarketMovers = styled(Box)(({ theme }) => ({
-  minHeight: "400px",
-  overflowX: "visible",
-  width: "60%",
-  margin: "auto",
-  [theme.breakpoints.down("md")]: {
-    width: "100%",
   },
 }));
 
