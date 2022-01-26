@@ -26,17 +26,21 @@ const CollectorModal = (props) => {
     // Manually check if in user collection since script only updates collectors every hour
     // and websocket to update on each purchase can be inconsistent
     if (wallet?.publicKey) {
-      if (collection[releasePubkey] > 0) {
-        collectorsList.push(wallet.publicKey)
-      } else if (collectorsList.includes(wallet.publicKey)) {
-        collectorsList.remove(wallet.publicKey)
+      const walletPublicKey = wallet.publicKey.toBase58()
+      if (collection[releasePubkey] > 0 && !collectorsList.includes(walletPublicKey)) {
+        collectorsList.push(walletPublicKey)
+      } else if (collectorsList.includes(walletPublicKey) && collection[releasePubkey] <= 0) {
+        const index = collectorsList.indexOf(walletPublicKey)
+        if (index > -1) {
+          collectorsList.splice(index, 1)
+        }
       }
     }
     setCollectors(collectorsList)
   }
 
   return (
-    <Box color={'wj'}>
+    <Box>
       <Cta onClick={() => setOpen(true)} variant="body2" align="left" paddingBottom="10px">
         {`View Collectors ${collectors ? `(${collectors.length})` : ''}`}
       </Cta>
@@ -56,22 +60,33 @@ const CollectorModal = (props) => {
           <Header>
             <Typography fontWeight="700">{`${metadata.properties.artist.substring(0, 100)} - "${metadata.properties.title.substring(0, 100)}" Collectors`}</Typography>
           </Header>
-          <HistoryTable>
+          <CollectorTable>
             <TableBody>
               {collectors &&
                 collectors.map((entry, i) => {
+                  console.log(entry)
                   return (
                     <tr key={i}>
                       <td>
                         <Link href={`/collection/${entry}`} passHref>
-                          {`${entry} (View Collection)`}
+                          {`${entry.slice(0, 4) + ".." + entry.slice(-4)}`}
+                        </Link>
+                      </td>
+                      <td>
+                        <Link href={`/collection/${entry}`} passHref>
+                          View Collection
+                        </Link>
+                      </td>
+                      <td>
+                        <Link href={`/collection/${entry}`} passHref>
+                          View on Explorer
                         </Link>
                       </td>
                     </tr>
                   )
                 })}
             </TableBody>
-          </HistoryTable>
+          </CollectorTable>
         </StyledPaper>
       </StyledModal>
     </Box>
@@ -126,11 +141,11 @@ const Header = styled(Typography)(({ theme }) => ({
   color: theme.palette.white,
 }))
 
-const HistoryTable = styled('table')(({ theme }) => ({
+const CollectorTable = styled('table')(({ theme }) => ({
   padding: `${theme.spacing(1, 1)}`,
   display: 'block',
   maxHeight: '50vh',
-  overflow: 'scroll',
+  overflowY: 'scroll',
   color: theme.palette.white,
   [theme.breakpoints.down('md')]: {
     width: '80vw',

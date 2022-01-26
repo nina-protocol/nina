@@ -80,7 +80,7 @@ const ReleaseList = ({ userId }) => {
           <Wrapper>
             <CollectionHeader listView={listView}>
               <Typography variant="body1" fontWeight="700">
-                {nameString} Collection
+                {userId ? `${nameString.slice(0, 4) + ".." + nameString.slice(-4)}'s` : 'Your'} Collection
                 <span> 
                   <Button
                     onClick={() => resetQueueWithPlaylist(userCollectionReleases.map(release => release.releasePubkey))}
