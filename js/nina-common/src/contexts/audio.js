@@ -30,7 +30,9 @@ const AudioPlayerContextProvider = ({ children }) => {
   
   const updateTxid = async (newTxid, releasePubkey, shouldPlay = false) => {
     if (newTxid !== playlist[currentIndex()]) {
-      addTrackToQueue(releasePubkey)
+      if (!playlist.some((item) => item.releasePubkey === releasePubkey)) {
+        addTrackToQueue(releasePubkey)
+      }
       await setTxid(newTxid)
       await setIsPlaying(shouldPlay)
     }
@@ -165,6 +167,7 @@ const audioPlayerContextHelper = ({
       const playlistEntry = createPlaylistEntry(releasePubkey)
       newPlaylist.push(playlistEntry)
     })
+    console.log('NEW PLAYLIST: ', newPlaylist)
     setPlaylist(newPlaylist)
     await setTxid(newPlaylist[0].txid)
     await setIsPlaying(true)
