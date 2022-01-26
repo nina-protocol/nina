@@ -44,13 +44,12 @@ const HomePage = () => {
           >
             <Typography variant="body1" align="left">
               Highlights 
-              <span> 
                 <Button
+                  style={{ paddingTop: '3px'}}
                   onClick={() => resetQueueWithPlaylist(releasesRecent.highlights.map(release => release.releasePubkey))}
                 >
                   <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
                 </Button>
-              </span>
             </Typography>
           </Box>
           <RecentlyPublished releases={releasesRecent.highlights} />
@@ -84,13 +83,12 @@ const HomePage = () => {
           >
             <Typography variant="body1" align="left">
               New Releases
-              <span> 
                 <Button
+                  style={{paddingTop: '3px'}}
                   onClick={() => resetQueueWithPlaylist(releasesRecent.published.map(release => release.releasePubkey))}
                 >
                   <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
                 </Button>
-              </span>
             </Typography>
 
           </Box>
