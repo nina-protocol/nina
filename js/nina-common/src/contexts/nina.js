@@ -135,7 +135,8 @@ const ninaContextHelper = ({
         releaseAccounts = releaseAccounts.filter((item) => item != null)
         releaseAccounts.map((releaseAccount) => {
           const releasePublicKey = releaseAccount.publicKey.toBase58()
-          if (releasePublicKey !== "BpZ5zoBehKfKUL2eSFd3SNLXmXHi4vtuV4U6WxJB3qvt") {
+          // Don't include soft lp + cafe katja test releases
+          if (releasePublicKey !== "BpZ5zoBehKfKUL2eSFd3SNLXmXHi4vtuV4U6WxJB3qvt" && releasePublicKey !== "FNZbs4pdxKiaCNPVgMiPQrpzSJzyfGrocxejs8uBWnf") {
             updatedCollection[releasePublicKey] =
               releaseAmountMap[releasePublicKey]
           }

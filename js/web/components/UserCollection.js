@@ -38,6 +38,9 @@ const ReleaseList = ({ userId }) => {
   useEffect(() => {
     if (wallet?.connected && !userId) {
       getReleasesInCollection()
+    } else if (!wallet.connected && !userId) {
+      setUserCollectionList(undefined)
+      setUserCollectionReleases(undefined)
     }
   }, [collection]);
 
@@ -46,6 +49,7 @@ const ReleaseList = ({ userId }) => {
       setUserCollectionReleases(filterReleasesList(userCollectionList));    
     } else if (!userId && wallet?.connected) {
       const hasCollection = Object.keys(collection).every(releasePubkey => {
+        console.log('metadata: ', releaseState.metadata, collection)
         return releaseState.metadata[releasePubkey]
       })
 
