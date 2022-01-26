@@ -134,7 +134,7 @@ const HomePageContainer = styled("div")(({ theme }) => ({
       fontWeight: "700 !important",
     },
   },
-  "& a, span": {
+  "& a": {
     color: theme.palette.blue,
   },
 }));

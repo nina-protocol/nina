@@ -94,12 +94,18 @@ const Cta = styled(Typography)(({ theme }) => ({
   '& span': {
     color: `${theme.palette.blue}`,
   },
+  ':hover': {
+    opacity: 0.5
+  }
 }))
 
 const StyledModal = styled(Modal)(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  'a:hover': {
+    opacity: 0.5
+  }
 }))
 
 const StyledPaper = styled(Paper)(({ theme }) => ({

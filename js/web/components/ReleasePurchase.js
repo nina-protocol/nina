@@ -180,9 +180,9 @@ const ReleasePurchase = (props) => {
       <Typography variant="body2" align="left" paddingBottom="10px">
         Artist Resale: {release.resalePercentage.toNumber() / 10000}%
       </Typography>
-      <Link href={`${pathString}/${releasePubkey}/market`} passHref>
-        <Typography variant="body2" align="left" paddingBottom="10px">{`View Secondary Market (${exchangeTotalBuys + exchangeTotalSells})`}</Typography>
-      </Link>
+        <Typography variant="body2" align="left" paddingBottom="10px">      <StyledLink href={`${pathString}/${releasePubkey}/market`} passHref>
+{`View Secondary Market (${exchangeTotalBuys + exchangeTotalSells})`}</StyledLink>
+</Typography>
       <CollectorModal releasePubkey={releasePubkey} metadata={metadata} />
       {wallet?.connected && (
         <StyledUserAmount>
@@ -275,6 +275,12 @@ const AmountRemaining = styled(Typography)(({ theme }) => ({
   },
 }));
 
+const StyledLink = styled(Link)(() => ({
+  "&:hover": {
+    cursor: "pointer",
+    opacity: "0.5 !import"
+  }
+}))
 const StyledUserAmount = styled(Box)(({ theme }) => ({
   color: theme.palette.black,
   ...theme.helpers.baseFont,
