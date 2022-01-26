@@ -79,13 +79,15 @@ const HomePage = () => {
           >
             <Typography variant="body1" align="left">
               New Releases
+              <span> 
+                <Button
+                  onClick={() => resetQueueWithPlaylist(releasesRecent.published.map(release => release.releasePubkey))}
+                >
+                  <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
+                </Button>
+              </span>
             </Typography>
 
-            <Link href="/releases">
-              <a>
-                <AllReleasesLink variant="body1">All Releases</AllReleasesLink>
-              </a>
-            </Link>
           </Box>
           <RecentlyPublished releases={releasesRecent.published} />
         </Box>
