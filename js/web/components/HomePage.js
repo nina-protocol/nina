@@ -135,12 +135,12 @@ const HomePageContainer = styled("div")(({ theme }) => ({
     },
     "& .MuiButton-root": {
       position: 'absolute',
-      top: '-10px'
+      top: '-10px' 
     }
   },
   "& a": {
     color: theme.palette.blue,
   },
-}));
+})); 
 
 export default HomePage;
