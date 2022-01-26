@@ -4,22 +4,34 @@ import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Box from '@mui/material/Box'
 import { Typography, Paper } from '@mui/material'
+import { useWallet } from "@solana/wallet-adapter-react";
 import ninaCommon from "nina-common";
 import Link from "next/link";
 
-const { ReleaseContext } = ninaCommon.contexts;
+const { ReleaseContext, NinaContext } = ninaCommon.contexts;
 
 const CollectorModal = (props) => {
   const { releasePubkey, metadata } = props
+  const wallet = useWallet();
+  const { collection } = useContext(NinaContext)
   const { getCollectorsForRelease } = useContext(ReleaseContext)
   const [open, setOpen] = useState(false)
   const [collectors, setCollectors] = useState()
   useEffect(() => {
     handleGetCollectorsForRelease(releasePubkey)
-  }, [])
+  }, [collection])
   
   const handleGetCollectorsForRelease = async (releasePubkey) => {
     const collectorsList = await getCollectorsForRelease(releasePubkey)
+    // Manually check if in user collection since script only updates collectors every hour
+    // and websocket to update on each purchase can be inconsistent
+    if (wallet?.publicKey) {
+      if (collection[releasePubkey] > 0) {
+        collectorsList.push(wallet.publicKey)
+      } else if (collectorsList.includes(wallet.publicKey)) {
+        collectorsList.remove(wallet.publicKey)
+      }
+    }
     setCollectors(collectorsList)
   }
 
