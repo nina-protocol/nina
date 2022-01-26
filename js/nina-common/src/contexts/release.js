@@ -44,6 +44,7 @@ const ReleaseContextProvider = ({ children }) => {
   const [releasesRecentState, setReleasesRecentState] = useState({
     published: [],
     purchased: [],
+    highlights: []
   })
   const [allReleases, setAllReleases] = useState([])
   const [allReleasesCount, setAllReleasesCount] = useState(null)
@@ -1056,15 +1057,17 @@ const releaseContextHelper = ({
   const getReleasesRecent = async () => {
     try {
       const result = await fetch(
-        `${NinaClient.endpoints.api}/releases/recent20`
+        `${NinaClient.endpoints.api}/releases/recent`
       )
-      const { published, purchased } = await result.json()
-      const releaseIds = [...published, ...purchased]
+      const { published, purchased, highlights } = await result.json()
+      console.log(published, purchased, highlights)
+      const releaseIds = [...published, ...purchased, ...highlights]
       await fetchAndSaveReleasesToState(releaseIds)
 
       setReleasesRecentState({
         published,
         purchased,
+        highlights
       })
     } catch (error) {
       console.warn(error)
@@ -1232,9 +1235,20 @@ const releaseContextHelper = ({
       }
     })
 
+    const releasesHighlights = []
+    releasesRecentState.highlights.forEach((releasePubkey) => {
+      const tokenData = releaseState.tokenData[releasePubkey]
+      const metadata = releaseState.metadata[releasePubkey]
+      if (metadata) {
+        releasesHighlights.push({ tokenData, metadata, releasePubkey })
+      }
+    })
+
+
     return {
       published: releasesPublished,
       purchased: releasesPurchased,
+      highlights: releasesHighlights,
     }
   }
 

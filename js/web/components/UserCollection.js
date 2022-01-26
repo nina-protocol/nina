@@ -4,6 +4,8 @@ import ninaCommon from "nina-common";
 import { styled } from "@mui/material/styles";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Typography, Box } from "@mui/material";
+import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
+import Button from "@mui/material/Button";
 import ReleaseListTable from "./ReleaseListTable";
 import ReleaseTileList from "./ReleaseTileList";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
@@ -78,7 +80,14 @@ const ReleaseList = ({ userId }) => {
           <Wrapper>
             <CollectionHeader listView={listView}>
               <Typography variant="body1" fontWeight="700">
-                {nameString} Collection <span onClick={() => resetQueueWithPlaylist(userCollectionReleases.map(release => release.releasePubkey)) }>(Play)</span>
+                {nameString} Collection
+                <span> 
+                  <Button
+                    onClick={() => resetQueueWithPlaylist(userCollectionReleases.map(release => release.releasePubkey))}
+                  >
+                    <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
+                  </Button>
+                </span>
               </Typography>
               <Typography onClick={handleViewChange} sx={{ cursor: "pointer" }}>
                 {listView ? "Cover View" : "List View"}

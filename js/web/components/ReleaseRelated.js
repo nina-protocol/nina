@@ -3,6 +3,8 @@ import { Helmet } from "react-helmet";
 import ninaCommon from "nina-common";
 import { styled } from "@mui/material/styles";
 import { Typography, Box } from "@mui/material";
+import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
+import Button from "@mui/material/Button";
 import ReleaseListTable from "./ReleaseListTable";
 import ReleaseTileList from "./ReleaseTileList";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
@@ -57,7 +59,14 @@ const ReleaseRelated = ({ releasePubkey }) => {
                   sx={{ fontWeight: "700 !important" }}
                   align="left"
                 >
-                  Releases by {userHandles} <span onClick={() => resetQueueWithPlaylist(relatedReleases.map(release => release.releasePubkey)) }>(Play)</span>
+                  Releases by {userHandles}
+                  <span> 
+                    <Button
+                      onClick={() => resetQueueWithPlaylist(relatedReleases.map(release => release.releasePubkey))}
+                    >
+                      <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
+                    </Button>
+                  </span>
                 </Typography>
                 <Typography
                   onClick={handleViewChange}

@@ -1,23 +1,28 @@
 import React, { useContext, useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import { Typography, Box } from "@mui/material";
+import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
+import Button from "@mui/material/Button";
 import ninaCommon from "nina-common";
 import RecentlyPublished from "./RecentlyPublished";
 import RecentlyPurchased from "./RecentlyPurchased";
 import Link from "next/link";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
-const { ReleaseContext } = ninaCommon.contexts;
+const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts;
 
 const HomePage = () => {
   const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
     useContext(ReleaseContext);
+  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext)
   const [releasesRecent, setReleasesRecent] = useState({});
+  const [releasesHighlights, setReleasesHighlights] = useState({});
 
   useEffect(() => {
     getReleasesRecent();
   }, []);
 
   useEffect(() => {
+    console.log('releases: recent: ', filterReleasesRecent())
     setReleasesRecent(filterReleasesRecent());
   }, [releasesRecentState]);
 
@@ -41,16 +46,17 @@ const HomePage = () => {
             className={classes.sectionHeader}
           >
             <Typography variant="body1" align="left">
-              New Releases
+              Highlights 
+              <span> 
+                <Button
+                  onClick={() => resetQueueWithPlaylist(releasesRecent.highlights.map(release => release.releasePubkey))}
+                >
+                  <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
+                </Button>
+              </span>
             </Typography>
-
-            <Link href="/releases">
-              <a>
-                <AllReleasesLink variant="body1">All Releases</AllReleasesLink>
-              </a>
-            </Link>
           </Box>
-          <RecentlyPublished releases={releasesRecent.published} />
+          <RecentlyPublished releases={releasesRecent.highlights} />
         </Box>
 
         <Typography
@@ -72,9 +78,23 @@ const HomePage = () => {
           supporters.
         </Typography>
 
-        <MarketMovers sx={{ paddingBottom: { md: "140px", xs: "30px" } }}>
-          <RecentlyPurchased releases={releasesRecent.purchased} />
-        </MarketMovers>
+        <Box sx={{ padding: { md: "0 40px 140px 40px", xs: "30px 0px" } }}>
+          <Box
+            sx={{ display: "flex", paddingLeft: { md: "30px", xs: "0" } }}
+            className={classes.sectionHeader}
+          >
+            <Typography variant="body1" align="left">
+              New Releases
+            </Typography>
+
+            <Link href="/releases">
+              <a>
+                <AllReleasesLink variant="body1">All Releases</AllReleasesLink>
+              </a>
+            </Link>
+          </Box>
+          <RecentlyPublished releases={releasesRecent.published} />
+        </Box>
 
         <Typography
           variant="body1"
