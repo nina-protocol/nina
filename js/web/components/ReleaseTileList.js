@@ -78,12 +78,6 @@ const ReleaseTileList = (props) => {
                 )}
               </HoverCard>
               <Box sx={{ padding: "10px 0 0" }}>
-                <Typography gutterBottom>
-                  {" "}
-                  {release.tokenData.remainingSupply.toNumber() > 0
-                    ? `${release.tokenData.remainingSupply.toNumber()} / ${release.tokenData.totalSupply.toNumber()} remaining`
-                    : "Sold Out"}
-                </Typography>
                 <ReleaseName>{release.metadata.name.substring(0, 100)}</ReleaseName>
               </Box>
             </Tile>

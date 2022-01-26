@@ -99,14 +99,6 @@ const RecentlyPublished = (props) => {
             const imageUrl = release.metadata.image;
             const isMultiple =
               artistCount[release.metadata.properties.artist] > 1;
-            const availability = (
-              <Typography variant="body2" sx={{ paddingTop: "10px" }}>
-                {release.tokenData.remainingSupply.toNumber() > 0
-                  ? `${release.tokenData.remainingSupply.toNumber()} / ${release.tokenData.totalSupply.toNumber()} remaining`
-                  : "Sold Out"}
-              </Typography>
-            );
-
             return (
               <ReleaseSlideWrapper key={i}>
                 <ReleaseSlide key={i}>
@@ -124,7 +116,6 @@ const RecentlyPublished = (props) => {
                       />
                     </a>
                   </Link>
-                  {!isMultiple && availability}
                   <ReleaseCopy sx={{ display: "flex" }}>
                     {isMultiple && (
                       <Typography variant="body2">
