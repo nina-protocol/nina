@@ -7,11 +7,12 @@ import ReleaseListTable from "./ReleaseListTable";
 import ReleaseTileList from "./ReleaseTileList";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
 
-const { ReleaseContext } = ninaCommon.contexts;
+const { ReleaseContext, AudioPlayerContext } = ninaCommon.contexts;
 
 const ReleaseRelated = ({ releasePubkey }) => {
   const { getRelatedForRelease, filterRelatedForRelease, releaseState } =
     useContext(ReleaseContext);
+  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext)
   const [listView, setListView] = useState(false);
 
   const [relatedReleases, setRelatedReleases] = useState(null);
@@ -56,7 +57,7 @@ const ReleaseRelated = ({ releasePubkey }) => {
                   sx={{ fontWeight: "700 !important" }}
                   align="left"
                 >
-                  Releases by {userHandles}
+                  Releases by {userHandles} <span onClick={() => resetQueueWithPlaylist(relatedReleases.map(release => release.releasePubkey)) }>(Play)</span>
                 </Typography>
                 <Typography
                   onClick={handleViewChange}
