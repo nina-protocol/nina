@@ -1200,10 +1200,6 @@ const releaseContextHelper = ({
   }
 
   const filterReleasesList = (releaseList) => {
-    if (!wallet?.connected) {
-      return
-    }
-
     const releases = []
     releaseList.forEach((releasePubkey) => {
       const tokenData = releaseState.tokenData[releasePubkey]

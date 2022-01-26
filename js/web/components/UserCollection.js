@@ -110,6 +110,9 @@ const ReleaseList = ({ userId }) => {
         {!loading && userId && !userCollectionReleases && userCollectionList && (
           <Typography>Invalid Address, check to make sure you have the right Account</Typography>
         )}
+        {!loading && !userId && !wallet?.publicKey && (
+          <Typography>Connect your wallet to view you collection</Typography>
+        )}
       </ScrollablePageWrapper>
     </>
   );
