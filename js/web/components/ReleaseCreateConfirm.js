@@ -95,7 +95,8 @@ const ReleaseCreateConfirm = (props) => {
               Close and Edit
             </Button>
             <Typography variant="subtitle1" mt={1} sx={{ color: "red" }}>
-              ONCE PUBLISHED, YOUR RELEASE INFORMATION WILL BE PERMANENT AND YOU WILL NOT BE ABLE TO EDIT IT.
+              ONCE PUBLISHED, YOUR RELEASE INFORMATION WILL BE PERMANENT AND YOU
+              WILL NOT BE ABLE TO EDIT IT.
             </Typography>
           </Box>
         </Box>

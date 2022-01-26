@@ -5,9 +5,9 @@ import { styled } from "@mui/material/styles";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Typography, Box } from "@mui/material";
 import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
-import ShareIcon from '@mui/icons-material/Share';
+import ShareIcon from "@mui/icons-material/Share";
 import Button from "@mui/material/Button";
-import { useSnackbar } from 'notistack'
+import { useSnackbar } from "notistack";
 import ReleaseListTable from "./ReleaseListTable";
 import ReleaseTileList from "./ReleaseTileList";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
@@ -15,43 +15,48 @@ import ScrollablePageWrapper from "./ScrollablePageWrapper";
 const { AudioPlayerContext, ReleaseContext, NinaContext } = ninaCommon.contexts;
 
 const ReleaseList = ({ userId }) => {
-  const { enqueueSnackbar } = useSnackbar()
-  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext)
-  const { getReleasesInCollection, filterReleasesUserCollection, releaseState, getUserCollection, filterReleasesList } =
-    useContext(ReleaseContext);
+  const { enqueueSnackbar } = useSnackbar();
+  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext);
+  const {
+    getReleasesInCollection,
+    filterReleasesUserCollection,
+    releaseState,
+    getUserCollection,
+    filterReleasesList,
+  } = useContext(ReleaseContext);
   const [listView, setListView] = useState(false);
 
   const wallet = useWallet();
   const { collection, createCollection } = useContext(NinaContext);
-  const [userCollectionReleases, setUserCollectionReleases] = useState(undefined);
+  const [userCollectionReleases, setUserCollectionReleases] =
+    useState(undefined);
   const [userCollectionList, setUserCollectionList] = useState(undefined);
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (userId) {
-      getOtherUserCollectionHandler(userId)
+      getOtherUserCollectionHandler(userId);
     } else {
-      createCollection()
+      createCollection();
     }
-  }, [])
-  
+  }, []);
+
   useEffect(() => {
     if (wallet?.connected && !userId) {
-      getReleasesInCollection()
+      getReleasesInCollection();
     } else if (!wallet.connected && !userId) {
-      setUserCollectionList(undefined)
-      setUserCollectionReleases(undefined)
+      setUserCollectionList(undefined);
+      setUserCollectionReleases(undefined);
     }
   }, [collection]);
 
   useEffect(() => {
     if (userId && userCollectionList) {
-      setUserCollectionReleases(filterReleasesList(userCollectionList));    
+      setUserCollectionReleases(filterReleasesList(userCollectionList));
     } else if (!userId && wallet?.connected) {
-      const hasCollection = Object.keys(collection).every(releasePubkey => {
-        console.log('metadata: ', releaseState.metadata, collection)
-        return releaseState.metadata[releasePubkey]
-      })
+      const hasCollection = Object.keys(collection).every((releasePubkey) => {
+        return releaseState.metadata[releasePubkey];
+      });
 
       if (hasCollection) {
         setUserCollectionReleases(filterReleasesUserCollection());
@@ -60,19 +65,21 @@ const ReleaseList = ({ userId }) => {
   }, [releaseState, userCollectionList]);
 
   useEffect(() => {
-    setLoading(false)
-  }, [userCollectionReleases])
-  
+    setLoading(false);
+  }, [userCollectionReleases]);
+
   const getOtherUserCollectionHandler = async (userId) => {
-    const collection = await getUserCollection(userId)
-    setUserCollectionList(collection)
-  }
+    const collection = await getUserCollection(userId);
+    setUserCollectionList(collection);
+  };
 
   const handleViewChange = () => {
     setListView(!listView);
   };
 
-  const nameString = userId ? `${userId.slice(0, 4) + ".." + userId.slice(-4)}'s` : 'Your'
+  const nameString = userId
+    ? `${userId.slice(0, 4) + ".." + userId.slice(-4)}'s`
+    : "Your";
 
   return (
     <>
@@ -88,18 +95,40 @@ const ReleaseList = ({ userId }) => {
             <CollectionHeader listView={listView}>
               <Typography variant="body1" fontWeight="700">
                 {nameString} Collection
-                  <Button
-                    onClick={() => resetQueueWithPlaylist(userCollectionReleases.map(release => release.releasePubkey))}
-                  >
-                    <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
-                  </Button>
-                  <Button
-                    onClick={() => navigator.clipboard.writeText(`https://nina.market/collection/${userId || wallet.publicKey.toBase58()}`).then(() => enqueueSnackbar('Link to collection copied to clipboard', {variant: 'info'}))}
-                  >
-                    <ShareIcon sx={{ color: "black" }} />
-                  </Button>
+                <Button
+                  onClick={() =>
+                    resetQueueWithPlaylist(
+                      userCollectionReleases.map(
+                        (release) => release.releasePubkey
+                      )
+                    )
+                  }
+                >
+                  <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
+                </Button>
+                <Button
+                  onClick={() =>
+                    navigator.clipboard
+                      .writeText(
+                        `https://nina.market/collection/${
+                          userId || wallet.publicKey.toBase58()
+                        }`
+                      )
+                      .then(() =>
+                        enqueueSnackbar(
+                          "Link to collection copied to clipboard",
+                          { variant: "info" }
+                        )
+                      )
+                  }
+                >
+                  <ShareIcon sx={{ color: "black" }} />
+                </Button>
               </Typography>
-              <Typography onClick={handleViewChange} sx={{ cursor: "pointer", margin: 'auto 0' }}>
+              <Typography
+                onClick={handleViewChange}
+                sx={{ cursor: "pointer", margin: "auto 0" }}
+              >
                 {listView ? "Cover View" : "List View"}
               </Typography>
             </CollectionHeader>
@@ -114,12 +143,19 @@ const ReleaseList = ({ userId }) => {
             {!listView && <ReleaseTileList releases={userCollectionReleases} />}
           </Wrapper>
         )}
-        {!loading && userCollectionReleases && userCollectionReleases.length === 0 && (
-          <Typography>Your collection is empty!</Typography>
-        )}
-        {!loading && userId && !userCollectionReleases && userCollectionList && (
-          <Typography>Invalid Address, check to make sure you have the right Account</Typography>
-        )}
+        {!loading &&
+          userCollectionReleases &&
+          userCollectionReleases.length === 0 && (
+            <Typography>Your collection is empty!</Typography>
+          )}
+        {!loading &&
+          userId &&
+          !userCollectionReleases &&
+          userCollectionList && (
+            <Typography>
+              Invalid Address, check to make sure you have the right Account
+            </Typography>
+          )}
         {!loading && !userId && !wallet?.publicKey && (
           <Typography>Connect your wallet to view you collection</Typography>
         )}
@@ -128,18 +164,18 @@ const ReleaseList = ({ userId }) => {
   );
 };
 
-const CollectionHeader = styled(Box)(({theme}) => ({
+const CollectionHeader = styled(Box)(({ theme }) => ({
   maxWidth: "100%",
   margin: "auto",
   display: "flex",
   justifyContent: "space-between",
   alignItems: "flex-end",
   marginBottom: "15px",
-  '& .MuiButton-root:last-of-type': {
-  [theme.breakpoints.down("md")]: {
-    paddingRight: '4px'
+  "& .MuiButton-root:last-of-type": {
+    [theme.breakpoints.down("md")]: {
+      paddingRight: "4px",
+    },
   },
-  }
 }));
 
 const Wrapper = styled(Box)(({ theme }) => ({

@@ -284,9 +284,9 @@ const DrawerFooter = styled(Box)(() => ({
 }));
 
 const StyledListItemText = styled(ListItemText)(() => ({
-  '&:hover': {
-    opacity: 0.5
-  }
-}))
+  "&:hover": {
+    opacity: 0.5,
+  },
+}));
 
 export default NavDrawer;

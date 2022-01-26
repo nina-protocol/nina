@@ -27,7 +27,7 @@ const AudioPlayerContextProvider = ({ children }) => {
       createPlaylistFromTracks()
     }
   }, [wallet?.connected, collection, releaseState.metadata])
-  
+
   const updateTxid = async (newTxid, releasePubkey, shouldPlay = false) => {
     if (newTxid !== playlist[currentIndex()]) {
       if (!playlist.some((item) => item.releasePubkey === releasePubkey)) {
@@ -44,7 +44,7 @@ const AudioPlayerContextProvider = ({ children }) => {
     createPlaylistFromTracks,
     addTrackToQueue,
     removeTrackFromQueue,
-    resetQueueWithPlaylist
+    resetQueueWithPlaylist,
   } = audioPlayerContextHelper({
     releaseState,
     wallet,
@@ -55,7 +55,7 @@ const AudioPlayerContextProvider = ({ children }) => {
     shouldRemainInCollectionAfterSale,
     enqueueSnackbar,
     setTxid,
-    setIsPlaying
+    setIsPlaying,
   })
 
   const currentIndex = () => {
@@ -82,7 +82,7 @@ const AudioPlayerContextProvider = ({ children }) => {
         isPlaying,
         setIsPlaying,
         currentIndex,
-        resetQueueWithPlaylist
+        resetQueueWithPlaylist,
       }}
     >
       {children}
@@ -101,7 +101,7 @@ const audioPlayerContextHelper = ({
   shouldRemainInCollectionAfterSale,
   enqueueSnackbar,
   setTxid,
-  setIsPlaying
+  setIsPlaying,
 }) => {
   const reorderPlaylist = (updatedPlaylist) => {
     setPlaylist([...updatedPlaylist])
@@ -152,7 +152,10 @@ const audioPlayerContextHelper = ({
     if (playlistEntry) {
       setPlaylist([...playlist, playlistEntry])
       enqueueSnackbar(
-        `${playlistEntry.artist.substring(0, 100)} - ${playlistEntry.title.substring(0, 100)} added to queue`,
+        `${playlistEntry.artist.substring(
+          0,
+          100
+        )} - ${playlistEntry.title.substring(0, 100)} added to queue`,
         {
           variant: 'info',
         }
@@ -163,11 +166,10 @@ const audioPlayerContextHelper = ({
   const resetQueueWithPlaylist = async (releasePubkeys) => {
     await setPlaylist([])
     const newPlaylist = []
-    releasePubkeys.forEach(releasePubkey => {
+    releasePubkeys.forEach((releasePubkey) => {
       const playlistEntry = createPlaylistEntry(releasePubkey)
       newPlaylist.push(playlistEntry)
     })
-    console.log('NEW PLAYLIST: ', newPlaylist)
     setPlaylist(newPlaylist)
     await setTxid(newPlaylist[0].txid)
     await setIsPlaying(true)

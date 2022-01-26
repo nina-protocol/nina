@@ -22,7 +22,7 @@ const YourCollectionBreadcrumb = () => {
         filterReleasesUserCollection().length || 0
       );
     } else {
-      setUserCollectionReleasesCount(0)
+      setUserCollectionReleasesCount(0);
     }
   }, [releaseState, wallet]);
 

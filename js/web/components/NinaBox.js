@@ -26,8 +26,8 @@ const StyledBox = styled(Box, {
   [theme.breakpoints.down("md")]: {
     width: "80vw",
     margin: "140px auto",
-    display: 'flex',
-    flexDirection: 'column'
+    display: "flex",
+    flexDirection: "column",
   },
   [theme.breakpoints.down("sm")]: {
     margin: "0px auto",

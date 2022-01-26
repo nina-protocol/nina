@@ -149,7 +149,7 @@ export const NinaTheme = createTheme({
           minWidth: "unset !important",
           "&:hover": {
             backgroundColor: `${colors.transparent} !important`,
-            opacity: 0.5
+            opacity: 0.5,
           },
           "&.MuiButton-outlined": {
             borderRadius: "0px",

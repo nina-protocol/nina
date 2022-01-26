@@ -8,10 +8,9 @@ import Box from "@mui/material/Box";
 import { useSnackbar } from "notistack";
 import { Typography } from "@mui/material";
 import Link from "next/link";
-import CollectorModal from './CollectorModal'
+import CollectorModal from "./CollectorModal";
 const { Dots, ReleaseSettings } = ninaCommon.components;
-const { ReleaseContext, NinaContext, ExchangeContext } =
-  ninaCommon.contexts;
+const { ReleaseContext, NinaContext, ExchangeContext } = ninaCommon.contexts;
 const { NinaClient } = ninaCommon.utils;
 
 const ReleasePurchase = (props) => {
@@ -21,8 +20,11 @@ const ReleasePurchase = (props) => {
   const { releasePurchase, releasePurchasePending, releaseState, getRelease } =
     useContext(ReleaseContext);
   const { getAmountHeld, collection } = useContext(NinaContext);
-  const { exchangeState, filterExchangesForReleaseBuySell, getExchangesForRelease } =
-    useContext(ExchangeContext);
+  const {
+    exchangeState,
+    filterExchangesForReleaseBuySell,
+    getExchangesForRelease,
+  } = useContext(ExchangeContext);
   const [pending, setPending] = useState(undefined);
   const [release, setRelease] = useState(undefined);
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey]);
@@ -30,8 +32,8 @@ const ReleasePurchase = (props) => {
   const [amountPendingSales, setAmountPendingSales] = useState(0);
   const [downloadButtonString, setDownloadButtonString] = useState("Download");
   const [userIsRecipient, setUserIsRecipient] = useState(false);
-  const [exchangeTotalBuys, setExchangeTotalBuys] = useState(0)
-  const [exchangeTotalSells, setExchangeTotalSells] = useState(0)
+  const [exchangeTotalBuys, setExchangeTotalBuys] = useState(0);
+  const [exchangeTotalSells, setExchangeTotalSells] = useState(0);
 
   useEffect(() => {
     getRelease(releasePubkey);
@@ -73,7 +75,6 @@ const ReleasePurchase = (props) => {
     setExchangeTotalSells(
       filterExchangesForReleaseBuySell(releasePubkey, false, false).length
     );
-
   }, [exchangeState]);
 
   useEffect(() => {
@@ -171,9 +172,12 @@ const ReleasePurchase = (props) => {
       <Typography variant="body2" align="left" paddingBottom="10px">
         Artist Resale: {release.resalePercentage.toNumber() / 10000}%
       </Typography>
-        <Typography variant="body2" align="left" paddingBottom="10px">      <StyledLink href={`${pathString}/${releasePubkey}/market`} passHref>
-{`View Secondary Market (${exchangeTotalBuys + exchangeTotalSells})`}</StyledLink>
-</Typography>
+      <Typography variant="body2" align="left" paddingBottom="10px">
+        {" "}
+        <StyledLink href={`${pathString}/${releasePubkey}/market`} passHref>
+          {`View Secondary Market (${exchangeTotalBuys + exchangeTotalSells})`}
+        </StyledLink>
+      </Typography>
       <CollectorModal releasePubkey={releasePubkey} metadata={metadata} />
       {wallet?.connected && (
         <StyledUserAmount>
@@ -269,9 +273,9 @@ const AmountRemaining = styled(Typography)(({ theme }) => ({
 const StyledLink = styled(Link)(() => ({
   "&:hover": {
     cursor: "pointer",
-    opacity: "0.5 !import"
-  }
-}))
+    opacity: "0.5 !import",
+  },
+}));
 const StyledUserAmount = styled(Box)(({ theme }) => ({
   color: theme.palette.black,
   ...theme.helpers.baseFont,

@@ -14,7 +14,7 @@ const { ReleaseContext, AudioPlayerContext } = ninaCommon.contexts;
 const ReleaseRelated = ({ releasePubkey }) => {
   const { getRelatedForRelease, filterRelatedForRelease, releaseState } =
     useContext(ReleaseContext);
-  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext)
+  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext);
   const [listView, setListView] = useState(false);
 
   const [relatedReleases, setRelatedReleases] = useState(null);
@@ -60,9 +60,15 @@ const ReleaseRelated = ({ releasePubkey }) => {
                   align="left"
                 >
                   Releases by {userHandles}
-                  <span> 
+                  <span>
                     <Button
-                      onClick={() => resetQueueWithPlaylist(relatedReleases.map(release => release.releasePubkey))}
+                      onClick={() =>
+                        resetQueueWithPlaylist(
+                          relatedReleases.map(
+                            (release) => release.releasePubkey
+                          )
+                        )
+                      }
                     >
                       <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
                     </Button>

@@ -11,37 +11,42 @@ function Image({ src, height, width, layout, priority, release }) {
       setReady(true);
     }
   };
-  let ImageComponent
+  let ImageComponent;
   if (release) {
     if (release.tokenData) {
-      release = release.tokenData
+      release = release.tokenData;
     }
-    const now = DateTime.now()
-    const releaseDatetime = DateTime.fromMillis(release.releaseDatetime.toNumber() * 1000)
-    const hours = now.diff(releaseDatetime, 'hours').toObject().hours
+    const now = DateTime.now();
+    const releaseDatetime = DateTime.fromMillis(
+      release.releaseDatetime.toNumber() * 1000
+    );
+    const hours = now.diff(releaseDatetime, "hours").toObject().hours;
 
     if (hours < 0.05) {
       if (src) {
-        ImageComponent = () => (    
-          <img src={src}
-            onLoad={e => handleLoad(e, true)}
-            style={{width: '100%', height: '100%'}}
+        ImageComponent = () => (
+          <img
+            src={src}
+            onLoad={(e) => handleLoad(e, true)}
+            style={{ width: "100%", height: "100%" }}
           />
-        )
+        );
       }
     }
   }
   if (!ImageComponent) {
-    ImageComponent = () => (<NextImage
-      src={src}
-      height={height}
-      width={width}
-      priority={priority}
-      layout={layout}
-      onLoad={e => handleLoad(e, false)}
-    />)
+    ImageComponent = () => (
+      <NextImage
+        src={src}
+        height={height}
+        width={width}
+        priority={priority}
+        layout={layout}
+        onLoad={(e) => handleLoad(e, false)}
+      />
+    );
   }
-  
+
   return (
     <div
       style={{
@@ -56,7 +61,7 @@ function Image({ src, height, width, layout, priority, release }) {
 }
 
 function srcComparision(prevImage, nextImage) {
-  return prevImage.src === nextImage.src && nextImage.release
+  return prevImage.src === nextImage.src && nextImage.release;
 }
 
 const MemoizedImage = React.memo(Image, srcComparision);

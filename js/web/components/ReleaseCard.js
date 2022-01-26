@@ -15,7 +15,7 @@ const ReleaseCard = (props) => {
   const { artwork, metadata, preview, releasePubkey } = props;
   const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext);
   const { releaseState } = useContext(ReleaseContext);
-  const image = useMemo(() => metadata?.image)
+  const image = useMemo(() => metadata?.image);
 
   return (
     <StyledReleaseCard>
@@ -24,7 +24,11 @@ const ReleaseCard = (props) => {
           <CtaWrapper sx={{ display: "flex" }}>
             <Button
               onClick={() =>
-                updateTxid(metadata.properties.files[0].uri, releasePubkey, true)
+                updateTxid(
+                  metadata.properties.files[0].uri,
+                  releasePubkey,
+                  true
+                )
               }
               sx={{ height: "22px", width: "28px" }}
             >
@@ -44,8 +48,13 @@ const ReleaseCard = (props) => {
         {metadata && (
           <Fade in={true}>
             <Typography variant="h4" color="white" align="left">
-              {metadata?.properties?.artist.substring(0, 100) || metadata?.artist.substring(0, 100)},{" "}
-              <i>{metadata?.properties?.title.substring(0, 100) || metadata?.title.substring(0, 100)}</i>
+              {metadata?.properties?.artist.substring(0, 100) ||
+                metadata?.artist.substring(0, 100)}
+              ,{" "}
+              <i>
+                {metadata?.properties?.title.substring(0, 100) ||
+                  metadata?.title.substring(0, 100)}
+              </i>
             </Typography>
           </Fade>
         )}

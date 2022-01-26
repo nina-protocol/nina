@@ -65,10 +65,7 @@ const Release = ({ metadataSsr }) => {
     <>
       <ReleaseWrapper>
         {!router.pathname.includes("market") && (
-          <NinaBox
-            columns={"repeat(2, 1fr)"}
-            sx={{ backgroundColor: "white" }}
-          >
+          <NinaBox columns={"repeat(2, 1fr)"} sx={{ backgroundColor: "white" }}>
             <ReleaseCard
               metadata={metadata}
               preview={false}
@@ -103,7 +100,7 @@ const ReleaseWrapper = styled(Box)(({ theme }) => ({
   height: "100%",
   display: "flex",
   [theme.breakpoints.down("md")]: {
-    display: 'block',
+    display: "block",
     overflowX: "scroll",
     padding: "100px 0 160px",
     "&::-webkit-scrollbar": {

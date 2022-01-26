@@ -79,7 +79,9 @@ const ReleaseTileList = (props) => {
                 )}
               </HoverCard>
               <Box sx={{ padding: "10px 0 0" }}>
-                <ReleaseName>{release.metadata.name.substring(0, 100)}</ReleaseName>
+                <ReleaseName>
+                  {release.metadata.name.substring(0, 100)}
+                </ReleaseName>
               </Box>
             </Tile>
           );

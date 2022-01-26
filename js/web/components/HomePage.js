@@ -12,7 +12,7 @@ const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts;
 const HomePage = () => {
   const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
     useContext(ReleaseContext);
-  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext)
+  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext);
   const [releasesRecent, setReleasesRecent] = useState({});
 
   useEffect(() => {
@@ -43,12 +43,18 @@ const HomePage = () => {
             className={classes.sectionHeader}
           >
             <Typography variant="body1" align="left">
-              Highlights 
-                <Button
-                  onClick={() => resetQueueWithPlaylist(releasesRecent.highlights.map(release => release.releasePubkey))}
-                >
-                  <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
-                </Button>
+              <Button
+                style={{ paddingTop: "3px" }}
+                onClick={() =>
+                  resetQueueWithPlaylist(
+                    releasesRecent.highlights.map(
+                      (release) => release.releasePubkey
+                    )
+                  )
+                }
+              >
+                <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
+              </Button>
             </Typography>
           </Box>
           <RecentlyPublished releases={releasesRecent.highlights} />
@@ -66,7 +72,11 @@ const HomePage = () => {
           align="left"
           sx={{ paddingBottom: { md: "30px", xs: "30px" } }}
         >
-          Music on Nina can be publicly streamed by anyone, while also being released in the form of a digital edition as scarce or ubiquitous as the artist desires. You can use Nina to simply host your music, to sell digital editions, or to build out a patronage mechanism by providing unique content + experiences to paying supporters.
+          Music on Nina can be publicly streamed by anyone, while also being
+          released in the form of a digital edition as scarce or ubiquitous as
+          the artist desires. You can use Nina to simply host your music, to
+          sell digital editions, or to build out a patronage mechanism by
+          providing unique content + experiences to paying supporters.
         </Typography>
         <Typography
           variant="h1"
@@ -81,13 +91,19 @@ const HomePage = () => {
           >
             <Typography variant="body1" align="left" className={classes.sectionHeader}>
               New Releases
-                <Button
-                  onClick={() => resetQueueWithPlaylist(releasesRecent.published.map(release => release.releasePubkey))}
-                >
-                  <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
-                </Button>
+              <Button
+                style={{ paddingTop: "3px" }}
+                onClick={() =>
+                  resetQueueWithPlaylist(
+                    releasesRecent.published.map(
+                      (release) => release.releasePubkey
+                    )
+                  )
+                }
+              >
+                <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
+              </Button>
             </Typography>
-
           </Box>
           <RecentlyPublished releases={releasesRecent.published} />
         </Box>
@@ -103,7 +119,10 @@ const HomePage = () => {
           align="left"
           sx={{ paddingBottom: { md: "140px", xs: "30px" } }}
         >
-          Artists receive 100% of their sales. The only fee is a one-time payment (on average ~$4/release) that covers the storage and transaction costs to the Solana and Arweave networks that Nina is built on. Nina does not take a cut.
+          Artists receive 100% of their sales. The only fee is a one-time
+          payment (on average ~$4/release) that covers the storage and
+          transaction costs to the Solana and Arweave networks that Nina is
+          built on. Nina does not take a cut.
         </Typography>
       </HomePageContainer>
     </ScrollablePageWrapper>
