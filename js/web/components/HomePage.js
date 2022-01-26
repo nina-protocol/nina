@@ -66,12 +66,17 @@ const HomePage = () => {
         <Typography
           variant="h1"
           align="left"
-          sx={{ paddingBottom: { md: "140px", xs: "30px" } }}
+          sx={{ paddingBottom: { md: "30px", xs: "30px" } }}
         >
           Music on Nina can be publicly streamed by anyone, while also being released in the form of a digital edition as scarce or ubiquitous as the artist desires. You can use Nina to simply host your music, to sell digital editions, or to build out a patronage mechanism by providing unique content + experiences to paying supporters.
-          <br /><br />More questions? Read our <Link href="/faq">FAQ</Link>.
         </Typography>
-
+        <Typography
+          variant="h1"
+          align="left"
+          sx={{ paddingBottom: { md: "140px", xs: "30px" } }}
+        >
+          More questions? Read our <Link href="/faq">FAQ</Link>.
+        </Typography>
         <Box sx={{ padding: { md: "0 40px 140px 40px", xs: "30px 0px" } }}>
           <Box
             sx={{ display: "flex", paddingLeft: { md: "30px", xs: "0" } }}
