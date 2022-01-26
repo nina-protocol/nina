@@ -78,9 +78,9 @@ const CollectorModal = (props) => {
                         </Link>
                       </td>
                       <td>
-                        <Link href={`/collection/${entry}`} passHref>
+                        <a href={`https://solscan.io/account/${entry}`} target="_blank" rel="noreferrer" passHref>
                           View on Explorer
-                        </Link>
+                        </a>
                       </td>
                     </tr>
                   )

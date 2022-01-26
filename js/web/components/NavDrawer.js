@@ -105,7 +105,7 @@ const NavDrawer = () => {
               return (
                 <ListItem button key={link}>
                   <StyledListItemText>
-                    <Link
+                    <a
                       href="https://softlp.nina.market"
                       target="_blank"
                       rel="noreferrer"
@@ -113,7 +113,7 @@ const NavDrawer = () => {
                       passHref
                     >
                       The Soft LP
-                    </Link>
+                    </a>
                   </StyledListItemText>
                 </ListItem>
               );
@@ -121,7 +121,7 @@ const NavDrawer = () => {
               return (
                 <ListItem button key={link}>
                   <StyledListItemText>
-                    <Link
+                    <a
                       href="https://radio.nina.market"
                       target="_blank"
                       rel="noreferrer"
@@ -129,7 +129,7 @@ const NavDrawer = () => {
                       passHref
                     >
                       Nina Radio
-                    </Link>
+                    </a>
                   </StyledListItemText>
                 </ListItem>
               );
