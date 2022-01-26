@@ -45,7 +45,6 @@ const HomePage = () => {
             <Typography variant="body1" align="left">
               Highlights 
                 <Button
-                  style={{ paddingTop: '3px'}}
                   onClick={() => resetQueueWithPlaylist(releasesRecent.highlights.map(release => release.releasePubkey))}
                 >
                   <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
@@ -79,12 +78,10 @@ const HomePage = () => {
         <Box sx={{ padding: { md: "0 40px 140px 40px", xs: "30px 0px" } }}>
           <Box
             sx={{ display: "flex", paddingLeft: { md: "30px", xs: "0" } }}
-            className={classes.sectionHeader}
           >
-            <Typography variant="body1" align="left">
+            <Typography variant="body1" align="left" className={classes.sectionHeader}>
               New Releases
                 <Button
-                  style={{paddingTop: '3px'}}
                   onClick={() => resetQueueWithPlaylist(releasesRecent.published.map(release => release.releasePubkey))}
                 >
                   <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
@@ -94,7 +91,6 @@ const HomePage = () => {
           </Box>
           <RecentlyPublished releases={releasesRecent.published} />
         </Box>
-
         <Typography
           variant="body1"
           align="left"
@@ -132,10 +128,15 @@ const HomePageContainer = styled("div")(({ theme }) => ({
     fontWeight: "700 !important",
     paddingBottom: `${theme.spacing(1)}`,
     textTransform: "uppercase !important",
+    position: 'relative',
     "& .MuiTypography-root": {
       textTransform: "uppercase !important",
       fontWeight: "700 !important",
     },
+    "& .MuiButton-root": {
+      position: 'absolute',
+      top: '-10px'
+    }
   },
   "& a": {
     color: theme.palette.blue,
