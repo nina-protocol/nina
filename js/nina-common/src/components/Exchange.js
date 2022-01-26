@@ -21,7 +21,7 @@ import {
 import NinaClient from '../utils/client'
 
 const Exchange = (props) => {
-  const { releasePubkey, metadata, track } = props
+  const { releasePubkey, metadata } = props
 
   const wallet = useWallet()
   const { enqueueSnackbar } = useSnackbar()
@@ -173,12 +173,12 @@ const Exchange = (props) => {
           </ReleaseImage>
 
           <InfoCopy>
-            {track && (
+            {metadata && (
               <CtaWrapper sx={{ display: 'flex' }}>
                 <Button
                   onClick={() =>
                     updateTxid(
-                      track.properties.files[0].uri,
+                      metadata.properties.files[0].uri,
                       releasePubkey,
                       true
                     )

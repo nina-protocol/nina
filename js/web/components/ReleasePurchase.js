@@ -10,7 +10,7 @@ import { Typography } from "@mui/material";
 import Link from "next/link";
 import CollectorModal from './CollectorModal'
 const { Dots, ReleaseSettings } = ninaCommon.components;
-const { ReleaseContext, NinaContext, ExchangeContext, NameContext } =
+const { ReleaseContext, NinaContext, ExchangeContext } =
   ninaCommon.contexts;
 const { NinaClient } = ninaCommon.utils;
 
@@ -30,8 +30,6 @@ const ReleasePurchase = (props) => {
   const [amountPendingSales, setAmountPendingSales] = useState(0);
   const [downloadButtonString, setDownloadButtonString] = useState("Download");
   const [userIsRecipient, setUserIsRecipient] = useState(false);
-  const { twitterHandlePublicKeyMap, lookupUserTwitterHandle } =
-    useContext(NameContext);
   const [exchangeTotalBuys, setExchangeTotalBuys] = useState(0)
   const [exchangeTotalSells, setExchangeTotalSells] = useState(0)
 
@@ -81,13 +79,6 @@ const ReleasePurchase = (props) => {
   useEffect(() => {
     if (release?.royaltyRecipients) {
       release.royaltyRecipients.forEach((recipient) => {
-        const recipientPubkey = recipient.recipientAuthority.toBase58();
-        if (
-          recipient.percentShare.toNumber() > 0 &&
-          !twitterHandlePublicKeyMap[recipientPubkey]
-        ) {
-          lookupUserTwitterHandle(recipient.recipientAuthority);
-        }
         if (
           wallet?.connected &&
           recipient.recipientAuthority.toBase58() ===

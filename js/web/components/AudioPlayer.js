@@ -18,12 +18,13 @@ import Typography from "@mui/material/Typography";
 import QueueDrawer from "./QueueDrawer";
 import Image from "./Image";
 
-const { AudioPlayerContext } = ninaCommon.contexts;
+const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts;
 const { NinaClient } = ninaCommon.utils;
 
 const AudioPlayer = () => {
   const { txid, updateTxid, playlist, isPlaying, setIsPlaying, currentIndex } =
     useContext(AudioPlayerContext);
+  const { releaseState } = useContext(ReleaseContext);
   const wallet = useWallet();
   let playerRef = useRef();
   const intervalRef = useRef();
@@ -198,6 +199,7 @@ const AudioPlayer = () => {
               height="60px"
               width="60px"
               layout="responsive"
+              release={releaseState.tokenData[info.releasePubkey]}
             />
           </AlbumArt>
         </Link>
