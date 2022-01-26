@@ -5,7 +5,9 @@ import { styled } from "@mui/material/styles";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Typography, Box } from "@mui/material";
 import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
+import ShareIcon from '@mui/icons-material/Share';
 import Button from "@mui/material/Button";
+import { useSnackbar } from 'notistack'
 import ReleaseListTable from "./ReleaseListTable";
 import ReleaseTileList from "./ReleaseTileList";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
@@ -13,6 +15,7 @@ import ScrollablePageWrapper from "./ScrollablePageWrapper";
 const { AudioPlayerContext, ReleaseContext, NinaContext } = ninaCommon.contexts;
 
 const ReleaseList = ({ userId }) => {
+  const { enqueueSnackbar } = useSnackbar()
   const { resetQueueWithPlaylist } = useContext(AudioPlayerContext)
   const { getReleasesInCollection, filterReleasesUserCollection, releaseState, getUserCollection, filterReleasesList } =
     useContext(ReleaseContext);
@@ -65,7 +68,7 @@ const ReleaseList = ({ userId }) => {
     setListView(!listView);
   };
 
-  const nameString = userId ? `${userId}'s` : 'Your'
+  const nameString = userId ? `${userId.slice(0, 4) + ".." + userId.slice(-4)}'s` : 'Your'
 
   return (
     <>
@@ -80,12 +83,19 @@ const ReleaseList = ({ userId }) => {
           <Wrapper>
             <CollectionHeader listView={listView}>
               <Typography variant="body1" fontWeight="700">
-                {userId ? `${nameString.slice(0, 4) + ".." + nameString.slice(-4)}'s` : 'Your'} Collection
+                {nameString} Collection
                 <span> 
                   <Button
                     onClick={() => resetQueueWithPlaylist(userCollectionReleases.map(release => release.releasePubkey))}
                   >
                     <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
+                  </Button>
+                </span>
+                <span> 
+                  <Button
+                    onClick={() => navigator.clipboard.writeText(`https://nina.market/collection/${userId || wallet.publicKey.toBase58()}`).then(() => enqueueSnackbar('Link to collection copied to clipboard', {variant: 'info'}))}
+                  >
+                    <ShareIcon sx={{ color: "black" }} />
                   </Button>
                 </span>
               </Typography>
