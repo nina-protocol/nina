@@ -90,6 +90,7 @@ const Release = ({ metadataSsr }) => {
                   relatedReleases={relatedReleases}
                 />
               </ReleaseCtaWrapper>
+            
             </NinaBox>
           )}
 
@@ -113,8 +114,9 @@ const ReleaseWrapper = styled(Box)(({ theme }) => ({
   height: "100%",
   display: "flex",
   [theme.breakpoints.down("md")]: {
+    display: 'block',
     overflowX: "scroll",
-    padding: "120px 0",
+    padding: "100px 0",
     "&::-webkit-scrollbar": {
       display: "none",
     },
@@ -127,7 +129,6 @@ const ReleaseCtaWrapper = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down("md")]: {
     paddingLeft: "0",
     width: "100%",
-    marginBottom: "100px",
   },
 }));
 
