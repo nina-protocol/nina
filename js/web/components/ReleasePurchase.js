@@ -280,9 +280,6 @@ const StyledDescription = styled(Typography)(({ theme }) => ({
     maxHeight: "225px",
     overflowY: "scroll",
   },
-  [theme.breakpoints.down("sm")]: {
-    display: 'none'
-  },
 }));
 
 const MarketButton = styled(Button)(({ theme }) => ({
