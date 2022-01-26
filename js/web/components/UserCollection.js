@@ -84,22 +84,18 @@ const ReleaseList = ({ userId }) => {
             <CollectionHeader listView={listView}>
               <Typography variant="body1" fontWeight="700">
                 {nameString} Collection
-                <span> 
                   <Button
                     onClick={() => resetQueueWithPlaylist(userCollectionReleases.map(release => release.releasePubkey))}
                   >
                     <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
                   </Button>
-                </span>
-                <span> 
                   <Button
                     onClick={() => navigator.clipboard.writeText(`https://nina.market/collection/${userId || wallet.publicKey.toBase58()}`).then(() => enqueueSnackbar('Link to collection copied to clipboard', {variant: 'info'}))}
                   >
                     <ShareIcon sx={{ color: "black" }} />
                   </Button>
-                </span>
               </Typography>
-              <Typography onClick={handleViewChange} sx={{ cursor: "pointer" }}>
+              <Typography onClick={handleViewChange} sx={{ cursor: "pointer", margin: 'auto 0' }}>
                 {listView ? "Cover View" : "List View"}
               </Typography>
             </CollectionHeader>
@@ -128,13 +124,18 @@ const ReleaseList = ({ userId }) => {
   );
 };
 
-const CollectionHeader = styled(Box)(() => ({
+const CollectionHeader = styled(Box)(({theme}) => ({
   maxWidth: "100%",
   margin: "auto",
   display: "flex",
   justifyContent: "space-between",
   alignItems: "flex-end",
   marginBottom: "15px",
+  '& .MuiButton-root:last-of-type': {
+  [theme.breakpoints.down("md")]: {
+    paddingRight: '4px'
+  },
+  }
 }));
 
 const Wrapper = styled(Box)(({ theme }) => ({

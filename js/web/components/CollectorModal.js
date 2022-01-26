@@ -77,11 +77,11 @@ const CollectorModal = (props) => {
                           View Collection
                         </Link>
                       </td>
-                      <td>
+                      {/* <td>
                         <a href={`https://solscan.io/account/${entry}`} target="_blank" rel="noreferrer" passHref>
                           View on Explorer
                         </a>
-                      </td>
+                      </td> */}
                     </tr>
                   )
                 })}
@@ -162,6 +162,7 @@ const TableBody = styled('tbody')(({ theme }) => ({
     },
     '& a': {
       color: `${theme.palette.white}`,
+      whiteSpace: 'nowrap'
     },
   },
 }))
