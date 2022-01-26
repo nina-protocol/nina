@@ -71,11 +71,8 @@ const HomePage = () => {
           align="left"
           sx={{ paddingBottom: { md: "140px", xs: "30px" } }}
         >
-          When an artist publishes on Nina, their tracks are permanently hosted
-          for both streaming and purchasing. Anyone can listen. By purchasing a
-          release, fans support the artist directly - Nina does not take a cut.
-          Soon, we will provide artists with the tools to engage these
-          supporters.
+          Music on Nina can be publicly streamed by anyone, while also being released in the form of a digital edition as scarce or ubiquitous as the artist desires. You can use Nina to simply host your music, to sell digital editions, or to build out a patronage mechanism by providing unique content + experiences to paying supporters.
+          <br /><br />More questions? Read our <Link href="/faq">FAQ</Link>.
         </Typography>
 
         <Box sx={{ padding: { md: "0 40px 140px 40px", xs: "30px 0px" } }}>
@@ -101,17 +98,14 @@ const HomePage = () => {
           align="left"
           className={classes.sectionHeader}
         >
-          Radical Transparency
+          Our product is the Nina protocol, not your music.
         </Typography>
         <Typography
           variant="h1"
           align="left"
           sx={{ paddingBottom: { md: "140px", xs: "30px" } }}
         >
-          On Nina artists keep <span>100% </span> of their sales and can access{" "}
-          <span>100% </span> of their data. They will never be deplatformed or
-          separated from their supporters. We make tools to bring equity back to
-          music online.
+          Artists receive 100% of their sales. The only fee is a one-time payment (on average ~$4/release) that covers the storage and transaction costs to the Solana and Arweave networks that Nina is built on. Nina does not take a cut.
         </Typography>
       </HomePageContainer>
     </ScrollablePageWrapper>
