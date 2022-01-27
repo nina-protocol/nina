@@ -4,6 +4,7 @@ import { Typography, Box } from "@mui/material";
 import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
 import Button from "@mui/material/Button";
 import ninaCommon from "nina-common";
+import { useSnackbar } from "notistack";
 import RecentlyPublished from "./RecentlyPublished";
 import Link from "next/link";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
@@ -14,6 +15,7 @@ const HomePage = () => {
     useContext(ReleaseContext);
   const { resetQueueWithPlaylist } = useContext(AudioPlayerContext);
   const [releasesRecent, setReleasesRecent] = useState({});
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     getReleasesRecent();
@@ -38,10 +40,12 @@ const HomePage = () => {
         </Typography>
 
         <Box sx={{ padding: { md: "0 40px 140px 40px", xs: "30px 0px" } }}>
-          <Box
-            sx={{ display: "flex", paddingLeft: { md: "30px", xs: "0" } }}
-          >
-            <Typography variant="body1" align="left" className={classes.sectionHeader}>
+          <Box sx={{ display: "flex", paddingLeft: { md: "30px", xs: "0" } }}>
+            <Typography
+              variant="body1"
+              align="left"
+              className={classes.sectionHeader}
+            >
               Highlights
               <Button
                 onClick={() =>
@@ -49,7 +53,11 @@ const HomePage = () => {
                     releasesRecent.highlights.map(
                       (release) => release.releasePubkey
                     )
-                  )
+                  ).then(() => {
+                    enqueueSnackbar("Now Playing: Nina Highlights", {
+                      variant: "info",
+                    });
+                  })
                 }
               >
                 <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
@@ -85,10 +93,12 @@ const HomePage = () => {
           More questions? Read our <Link href="/faq">FAQ</Link>.
         </Typography>
         <Box sx={{ padding: { md: "0 40px 140px 40px", xs: "30px 0px" } }}>
-          <Box
-            sx={{ display: "flex", paddingLeft: { md: "30px", xs: "0" } }}
-          >
-            <Typography variant="body1" align="left" className={classes.sectionHeader}>
+          <Box sx={{ display: "flex", paddingLeft: { md: "30px", xs: "0" } }}>
+            <Typography
+              variant="body1"
+              align="left"
+              className={classes.sectionHeader}
+            >
               New Releases
               <Button
                 onClick={() =>
@@ -96,7 +106,11 @@ const HomePage = () => {
                     releasesRecent.published.map(
                       (release) => release.releasePubkey
                     )
-                  )
+                  ).then(() => {
+                    enqueueSnackbar("Now Playing: New Releases", {
+                      variant: "info",
+                    });
+                  })
                 }
               >
                 <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
@@ -145,19 +159,19 @@ const HomePageContainer = styled("div")(({ theme }) => ({
     fontWeight: "700 !important",
     paddingBottom: `${theme.spacing(1)}`,
     textTransform: "uppercase !important",
-    position: 'relative',
+    position: "relative",
     "& .MuiTypography-root": {
       textTransform: "uppercase !important",
       fontWeight: "700 !important",
     },
     "& .MuiButton-root": {
-      position: 'absolute',
-      top: '-10px' 
-    }
+      position: "absolute",
+      top: "-10px",
+    },
   },
   "& a": {
     color: theme.palette.blue,
   },
-})); 
+}));
 
 export default HomePage;

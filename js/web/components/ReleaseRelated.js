@@ -5,6 +5,7 @@ import { styled } from "@mui/material/styles";
 import { Typography, Box } from "@mui/material";
 import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
 import Button from "@mui/material/Button";
+import { useSnackbar } from "notistack";
 import ReleaseListTable from "./ReleaseListTable";
 import ReleaseTileList from "./ReleaseTileList";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
@@ -16,9 +17,9 @@ const ReleaseRelated = ({ releasePubkey }) => {
     useContext(ReleaseContext);
   const { resetQueueWithPlaylist } = useContext(AudioPlayerContext);
   const [listView, setListView] = useState(false);
-
   const [relatedReleases, setRelatedReleases] = useState(null);
   const [userHandles, setUserHandles] = useState(null);
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     getRelatedForRelease(releasePubkey);
@@ -67,7 +68,12 @@ const ReleaseRelated = ({ releasePubkey }) => {
                           relatedReleases.map(
                             (release) => release.releasePubkey
                           )
-                        )
+                        ).then(() => {
+                          enqueueSnackbar(
+                            `Now Playing: Releases by ${userHandles}`,
+                            { variant: "info" }
+                          );
+                        })
                       }
                     >
                       <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />

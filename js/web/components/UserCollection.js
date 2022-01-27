@@ -101,6 +101,10 @@ const ReleaseList = ({ userId }) => {
                       userCollectionReleases.map(
                         (release) => release.releasePubkey
                       )
+                    ).then(() =>
+                      enqueueSnackbar(`Now Playing: ${nameString} Collection`, {
+                        variant: "info",
+                      })
                     )
                   }
                 >
