@@ -95,7 +95,7 @@ const TileGrid = styled(Box)(({ theme }) => ({
   display: "grid",
   gridTemplateColumns: "repeat(3, 1fr)",
   gridColumnGap: "30px",
-  gridRowGap: "15px",
+  gridRowGap: "30px",
   maxWidth: "960px",
   margin: "auto",
   [theme.breakpoints.down("md")]: {
