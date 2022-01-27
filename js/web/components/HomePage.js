@@ -28,7 +28,7 @@ const HomePage = () => {
   return (
     <ScrollablePageWrapper>
       <HomePageContainer overflowX="visible">
-        <Typography
+        <BlueTypography
           variant="h1"
           align="left"
           sx={{ padding: { md: "0 165px 140px", xs: "30px 0px" } }}
@@ -37,7 +37,7 @@ const HomePage = () => {
           <Link href="https://radio.nina.market">stream</Link>, and{" "}
           <Link href="/releases">purchase</Link> music. We build tools for
           artists + fans to create their context.{" "}
-        </Typography>
+        </BlueTypography>
 
         <Box sx={{ padding: { md: "0 40px 140px 40px", xs: "30px 0px" } }}>
           <Box sx={{ display: "flex", paddingLeft: { md: "30px", xs: "0" } }}>
@@ -46,7 +46,7 @@ const HomePage = () => {
               align="left"
               className={classes.sectionHeader}
             >
-              Highlights
+              <Link href="/releases/highlights">Highlights</Link>
               <Button
                 onClick={() =>
                   resetQueueWithPlaylist(
@@ -85,13 +85,13 @@ const HomePage = () => {
           sell digital editions, or to build out a patronage mechanism by
           providing unique content + experiences to paying supporters.
         </Typography>
-        <Typography
+        <BlueTypography
           variant="h1"
           align="left"
           sx={{ paddingBottom: { md: "140px", xs: "30px" } }}
         >
           More questions? Read our <Link href="/faq">FAQ</Link>.
-        </Typography>
+        </BlueTypography>
         <Box sx={{ padding: { md: "0 40px 140px 40px", xs: "30px 0px" } }}>
           <Box sx={{ display: "flex", paddingLeft: { md: "30px", xs: "0" } }}>
             <Typography
@@ -99,7 +99,7 @@ const HomePage = () => {
               align="left"
               className={classes.sectionHeader}
             >
-              New Releases
+              <Link href="/releases/new">New Releases</Link>
               <Button
                 onClick={() =>
                   resetQueueWithPlaylist(
@@ -136,6 +136,13 @@ const HomePage = () => {
           transaction costs to the Solana and Arweave networks that Nina is
           built on. Nina does not take a cut.
         </Typography>
+        <BlueTypography
+          variant="h1"
+          align="center"
+          sx={{ paddingBottom: { md: "140px", xs: "30px" } }}
+        >
+          <Link href="/releases">Start exploring.</Link>
+        </BlueTypography>
       </HomePageContainer>
     </ScrollablePageWrapper>
   );
@@ -169,9 +176,10 @@ const HomePageContainer = styled("div")(({ theme }) => ({
       top: "-10px",
     },
   },
-  "& a": {
-    color: theme.palette.blue,
-  },
 }));
+
+const BlueTypography = styled(Typography)(({ theme }) => ({
+  "& a": {color: theme.palette.blue}
+}))
 
 export default HomePage;
