@@ -10,10 +10,11 @@ import ReleaseListTable from "./ReleaseListTable";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
 import ReleaseTileList from "./ReleaseTileList";
 
-const { ReleaseContext } = ninaCommon.contexts;
+const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts;
 
 const Releases = ({type}) => {
   const { getReleasesRecent, filterReleasesRecent, releasesRecentState } = useContext(ReleaseContext)
+  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext)
   const [listView, setListView] = useState(false);
   const [releases, setReleases] = useState([])
   const { enqueueSnackbar } = useSnackbar();
@@ -50,11 +51,11 @@ const Releases = ({type}) => {
               <Button
                 onClick={() =>
                   resetQueueWithPlaylist(
-                    userCollectionReleases.map(
+                    releases.map(
                       (release) => release.releasePubkey
                     )
                   ).then(() =>
-                    enqueueSnackbar(`Now Playing: ${titleString} Collection`, {
+                    enqueueSnackbar(`Now Playing: ${titleString}`, {
                       variant: "info",
                     })
                   )
