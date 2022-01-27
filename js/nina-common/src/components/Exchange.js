@@ -15,7 +15,6 @@ import {
   ConnectionContext,
   ExchangeContext,
   ReleaseContext,
-  NinaContext,
   AudioPlayerContext,
 } from '../contexts'
 import NinaClient from '../utils/client'
@@ -39,7 +38,6 @@ const Exchange = (props) => {
     filterExchangeHistoryForRelease,
   } = useContext(ExchangeContext)
   const { connection } = useContext(ConnectionContext)
-  const { getSolPrice } = useContext(NinaContext)
   const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext)
 
   const [exchangeAwaitingConfirm, setExchangeAwaitingConfirm] =
@@ -156,7 +154,6 @@ const Exchange = (props) => {
   const refreshExchange = () => {
     getExchangesForRelease(releasePubkey)
     getExchangeHistoryForRelease(releasePubkey)
-    getSolPrice()
     setUpdateTime(Date.now())
   }
 
