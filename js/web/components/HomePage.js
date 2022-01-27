@@ -40,9 +40,8 @@ const HomePage = () => {
         <Box sx={{ padding: { md: "0 40px 140px 40px", xs: "30px 0px" } }}>
           <Box
             sx={{ display: "flex", paddingLeft: { md: "30px", xs: "0" } }}
-            className={classes.sectionHeader}
           >
-            <Typography variant="body1" align="left">
+            <Typography variant="body1" align="left" className={classes.sectionHeader}>
               Highlights
               <Button
                 onClick={() =>
