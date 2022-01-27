@@ -83,7 +83,7 @@ const NavDrawer = () => {
                   passHref
                 >
                   <ListItem button key={link}>
-                    <ListItemText primary={`your ${link}`} />
+                    <StyledListItemText primary={`your ${link}`} />
                   </ListItem>
                 </Link>
               );
@@ -97,15 +97,15 @@ const NavDrawer = () => {
                   passHref
                 >
                   <ListItem button key={link}>
-                    <ListItemText primary={`your ${link}`} />
+                    <StyledListItemText primary={`your ${link}`} />
                   </ListItem>
                 </Link>
               );
             case "the soft lp":
               return (
                 <ListItem button key={link}>
-                  <ListItemText>
-                    <Link
+                  <StyledListItemText>
+                    <a
                       href="https://softlp.nina.market"
                       target="_blank"
                       rel="noreferrer"
@@ -113,15 +113,15 @@ const NavDrawer = () => {
                       passHref
                     >
                       The Soft LP
-                    </Link>
-                  </ListItemText>
+                    </a>
+                  </StyledListItemText>
                 </ListItem>
               );
             case "radio":
               return (
                 <ListItem button key={link}>
-                  <ListItemText>
-                    <Link
+                  <StyledListItemText>
+                    <a
                       href="https://radio.nina.market"
                       target="_blank"
                       rel="noreferrer"
@@ -129,8 +129,8 @@ const NavDrawer = () => {
                       passHref
                     >
                       Nina Radio
-                    </Link>
-                  </ListItemText>
+                    </a>
+                  </StyledListItemText>
                 </ListItem>
               );
             case "all Releases":
@@ -143,7 +143,7 @@ const NavDrawer = () => {
                   passHref
                 >
                   <ListItem button key={link}>
-                    <ListItemText primary="All Releases" />
+                    <StyledListItemText primary="All Releases" />
                   </ListItem>
                 </Link>
               );
@@ -160,7 +160,7 @@ const NavDrawer = () => {
                   passHref
                 >
                   <ListItem button key={link}>
-                    <ListItemText primary={link} />
+                    <StyledListItemText primary={link} />
                   </ListItem>
                 </Link>
               );
@@ -280,6 +280,12 @@ const DrawerFooter = styled(Box)(() => ({
   justifyContent: "space-between",
   "& a": {
     paddingRight: "15px",
+  },
+}));
+
+const StyledListItemText = styled(ListItemText)(() => ({
+  "&:hover": {
+    opacity: 0.5,
   },
 }));
 

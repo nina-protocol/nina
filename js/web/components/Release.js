@@ -25,7 +25,6 @@ const Release = ({ metadataSsr }) => {
   } = useContext(ReleaseContext);
   const { getExchangeHistoryForRelease, exchangeState } =
     useContext(ExchangeContext);
-  const [track, setTrack] = useState(null);
   const [relatedReleases, setRelatedReleases] = useState(null);
 
   const [metadata, setMetadata] = useState(
@@ -40,14 +39,10 @@ const Release = ({ metadataSsr }) => {
   }, [releasePubkey]);
 
   useEffect(() => {
-    if (releaseState.metadata[releasePubkey]) {
+    if (releaseState.metadata[releasePubkey] && !metadata) {
       setMetadata(releaseState.metadata[releasePubkey]);
     }
   }, [releaseState?.metadata[releasePubkey]]);
-
-  useEffect(() => {
-    setTrack(releaseState.metadata[releasePubkey]);
-  }, [releaseState.metadata[releasePubkey]]);
 
   useEffect(() => {
     setRelatedReleases(filterRelatedForRelease(releasePubkey));
@@ -68,43 +63,35 @@ const Release = ({ metadataSsr }) => {
 
   return (
     <>
-      {metadata && (
-        <ReleaseWrapper>
-          {!router.pathname.includes("market") && (
-            <NinaBox
-              columns={"repeat(2, 1fr)"}
-              sx={{ backgroundColor: "white" }}
-            >
-              <ReleaseCard
-                metadata={metadata}
-                preview={false}
+      <ReleaseWrapper>
+        {!router.pathname.includes("market") && (
+          <NinaBox columns={"repeat(2, 1fr)"} sx={{ backgroundColor: "white" }}>
+            <ReleaseCard
+              metadata={metadata}
+              preview={false}
+              releasePubkey={releasePubkey}
+            />
+            <ReleaseCtaWrapper>
+              <ReleasePurchase
                 releasePubkey={releasePubkey}
-                track={track}
+                metadata={metadata}
+                router={router}
+                relatedReleases={relatedReleases}
               />
-              <ReleaseCtaWrapper>
-                <ReleasePurchase
-                  releasePubkey={releasePubkey}
-                  metadata={metadata}
-                  router={router}
-                  relatedReleases={relatedReleases}
-                />
-              </ReleaseCtaWrapper>
-            
-            </NinaBox>
-          )}
+            </ReleaseCtaWrapper>
+          </NinaBox>
+        )}
 
-          {router.pathname.includes("market") && (
-            <NinaBox columns={"repeat(1, 1fr)"}>
-              <Exchange
-                releasePubkey={releasePubkey}
-                exchanges={exchangeState.exchanges}
-                metadata={metadata}
-                track={track}
-              />
-            </NinaBox>
-          )}
-        </ReleaseWrapper>
-      )}
+        {router.pathname.includes("market") && (
+          <NinaBox columns={"repeat(1, 1fr)"}>
+            <Exchange
+              releasePubkey={releasePubkey}
+              exchanges={exchangeState.exchanges}
+              metadata={metadata}
+            />
+          </NinaBox>
+        )}
+      </ReleaseWrapper>
     </>
   );
 };
@@ -113,7 +100,7 @@ const ReleaseWrapper = styled(Box)(({ theme }) => ({
   height: "100%",
   display: "flex",
   [theme.breakpoints.down("md")]: {
-    display: 'block',
+    display: "block",
     overflowX: "scroll",
     padding: "100px 0 160px",
     "&::-webkit-scrollbar": {

@@ -74,17 +74,14 @@ const ReleaseTileList = (props) => {
                       zIndex: "1",
                     }}
                     src={release.metadata.image}
+                    release={release}
                   />
                 )}
               </HoverCard>
               <Box sx={{ padding: "10px 0 0" }}>
-                <Typography gutterBottom>
-                  {" "}
-                  {release.tokenData.remainingSupply.toNumber() > 0
-                    ? `${release.tokenData.remainingSupply.toNumber()} / ${release.tokenData.totalSupply.toNumber()} remaining`
-                    : "Sold Out"}
-                </Typography>
-                <ReleaseName>{release.metadata.name.substring(0, 100)}</ReleaseName>
+                <ReleaseName>
+                  {release.metadata.name.substring(0, 100)}
+                </ReleaseName>
               </Box>
             </Tile>
           );
@@ -98,7 +95,7 @@ const TileGrid = styled(Box)(({ theme }) => ({
   display: "grid",
   gridTemplateColumns: "repeat(3, 1fr)",
   gridColumnGap: "30px",
-  gridRowGap: "15px",
+  gridRowGap: "30px",
   maxWidth: "960px",
   margin: "auto",
   [theme.breakpoints.down("md")]: {

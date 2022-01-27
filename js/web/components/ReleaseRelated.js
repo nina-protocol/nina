@@ -3,19 +3,23 @@ import { Helmet } from "react-helmet";
 import ninaCommon from "nina-common";
 import { styled } from "@mui/material/styles";
 import { Typography, Box } from "@mui/material";
+import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
+import Button from "@mui/material/Button";
+import { useSnackbar } from "notistack";
 import ReleaseListTable from "./ReleaseListTable";
 import ReleaseTileList from "./ReleaseTileList";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
 
-const { ReleaseContext } = ninaCommon.contexts;
+const { ReleaseContext, AudioPlayerContext } = ninaCommon.contexts;
 
 const ReleaseRelated = ({ releasePubkey }) => {
   const { getRelatedForRelease, filterRelatedForRelease, releaseState } =
     useContext(ReleaseContext);
+  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext);
   const [listView, setListView] = useState(false);
-
   const [relatedReleases, setRelatedReleases] = useState(null);
   const [userHandles, setUserHandles] = useState(null);
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     getRelatedForRelease(releasePubkey);
@@ -57,6 +61,24 @@ const ReleaseRelated = ({ releasePubkey }) => {
                   align="left"
                 >
                   Releases by {userHandles}
+                  <span>
+                    <Button
+                      onClick={() =>
+                        resetQueueWithPlaylist(
+                          relatedReleases.map(
+                            (release) => release.releasePubkey
+                          )
+                        ).then(() => {
+                          enqueueSnackbar(
+                            `Now Playing: Releases by ${userHandles}`,
+                            { variant: "info" }
+                          );
+                        })
+                      }
+                    >
+                      <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
+                    </Button>
+                  </span>
                 </Typography>
                 <Typography
                   onClick={handleViewChange}

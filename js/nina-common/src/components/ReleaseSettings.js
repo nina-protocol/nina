@@ -174,23 +174,26 @@ const ReleaseSettings = (props) => {
             <Typography variant="body2">Share to Twitter</Typography>
           </Button>
 
-            {inCreateFlow && (
-              <Button
-                variant="outlined"
-                color="primary"
-                fullWidth
-                disabled={!metadata}
-                sx={{ marginTop: '10px !important' }}
+          {inCreateFlow && (
+            <Button
+              variant="outlined"
+              color="primary"
+              fullWidth
+              disabled={!metadata}
+              sx={{ marginTop: '10px !important' }}
+            >
+              <Link
+                href={`/${releasePubkey}`}
+                style={{ textDecoration: 'none' }}
               >
-                <Link href={`/${releasePubkey}`} style={{ textDecoration: 'none' }}>
-                  <Typography variant="body2">
-                    {metadata
-                      ? 'View Release'
-                      : 'Your release is currently being finalized...'}
-                  </Typography>
-                </Link>
-              </Button>
-            )}
+                <Typography variant="body2">
+                  {metadata
+                    ? 'View Release'
+                    : 'Your release is currently being finalized...'}
+                </Typography>
+              </Link>
+            </Button>
+          )}
         </Box>
       </ReleaseInfoWrapper>
     </StyledBox>

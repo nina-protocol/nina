@@ -200,10 +200,7 @@ const Royalty = (props) => {
                   }
                 })}
             </List>
-            {wallet?.connected &&
-            userIsRecipient
-              ? userIsRecipientUI()
-              : null}
+            {wallet?.connected && userIsRecipient ? userIsRecipientUI() : null}
           </StyledPaper>
         </Fade>
       </StyledModal>

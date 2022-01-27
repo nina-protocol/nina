@@ -149,6 +149,7 @@ export const NinaTheme = createTheme({
           minWidth: "unset !important",
           "&:hover": {
             backgroundColor: `${colors.transparent} !important`,
+            opacity: 0.5,
           },
           "&.MuiButton-outlined": {
             borderRadius: "0px",
@@ -283,7 +284,7 @@ export const NinaTheme = createTheme({
           textDecoration: "none",
           cursor: "pointer !important",
           "&:hover": {
-            color: colors.blue,
+            opacity: 0.5,
           },
         },
         "#wallet-menu": {

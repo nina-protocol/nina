@@ -21,8 +21,10 @@ const YourCollectionBreadcrumb = () => {
       setUserCollectionReleasesCount(
         filterReleasesUserCollection().length || 0
       );
+    } else {
+      setUserCollectionReleasesCount(0);
     }
-  }, [releaseState]);
+  }, [releaseState, wallet]);
 
   return `Your Collection (${userCollectionReleasesCount || 0})`;
 };

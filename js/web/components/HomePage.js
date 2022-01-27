@@ -1,17 +1,21 @@
 import React, { useContext, useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import { Typography, Box } from "@mui/material";
+import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
+import Button from "@mui/material/Button";
 import ninaCommon from "nina-common";
+import { useSnackbar } from "notistack";
 import RecentlyPublished from "./RecentlyPublished";
-import RecentlyPurchased from "./RecentlyPurchased";
 import Link from "next/link";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
-const { ReleaseContext } = ninaCommon.contexts;
+const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts;
 
 const HomePage = () => {
   const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
     useContext(ReleaseContext);
+  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext);
   const [releasesRecent, setReleasesRecent] = useState({});
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     getReleasesRecent();
@@ -24,7 +28,7 @@ const HomePage = () => {
   return (
     <ScrollablePageWrapper>
       <HomePageContainer overflowX="visible">
-        <Typography
+        <BlueTypography
           variant="h1"
           align="left"
           sx={{ padding: { md: "0 165px 140px", xs: "30px 0px" } }}
@@ -33,24 +37,34 @@ const HomePage = () => {
           <Link href="https://radio.nina.market">stream</Link>, and{" "}
           <Link href="/releases">purchase</Link> music. We build tools for
           artists + fans to create their context.{" "}
-        </Typography>
+        </BlueTypography>
 
         <Box sx={{ padding: { md: "0 40px 140px 40px", xs: "30px 0px" } }}>
-          <Box
-            sx={{ display: "flex", paddingLeft: { md: "30px", xs: "0" } }}
-            className={classes.sectionHeader}
-          >
-            <Typography variant="body1" align="left">
-              New Releases
+          <Box sx={{ display: "flex", paddingLeft: { md: "30px", xs: "0" } }}>
+            <Typography
+              variant="body1"
+              align="left"
+              className={classes.sectionHeader}
+            >
+              <Link href="/releases/highlights">Highlights</Link>
+              <Button
+                onClick={() =>
+                  resetQueueWithPlaylist(
+                    releasesRecent.highlights.map(
+                      (release) => release.releasePubkey
+                    )
+                  ).then(() => {
+                    enqueueSnackbar("Now Playing: Nina Highlights", {
+                      variant: "info",
+                    });
+                  })
+                }
+              >
+                <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
+              </Button>
             </Typography>
-
-            <Link href="/releases">
-              <a>
-                <AllReleasesLink variant="body1">All Releases</AllReleasesLink>
-              </a>
-            </Link>
           </Box>
-          <RecentlyPublished releases={releasesRecent.published} />
+          <RecentlyPublished releases={releasesRecent.highlights} />
         </Box>
 
         <Typography
@@ -63,36 +77,72 @@ const HomePage = () => {
         <Typography
           variant="h1"
           align="left"
+          sx={{ paddingBottom: { md: "30px", xs: "30px" } }}
+        >
+          Music on Nina can be publicly streamed by anyone, while also being
+          released in the form of a digital edition as scarce or ubiquitous as
+          the artist desires. You can use Nina to simply host your music, to
+          sell digital editions, or to build out a patronage mechanism by
+          providing unique content + experiences to paying supporters.
+        </Typography>
+        <BlueTypography
+          variant="h1"
+          align="left"
           sx={{ paddingBottom: { md: "140px", xs: "30px" } }}
         >
-          When an artist publishes on Nina, their tracks are permanently hosted
-          for both streaming and purchasing. Anyone can listen. By purchasing a
-          release, fans support the artist directly - Nina does not take a cut.
-          Soon, we will provide artists with the tools to engage these
-          supporters.
-        </Typography>
-
-        <MarketMovers sx={{ paddingBottom: { md: "140px", xs: "30px" } }}>
-          <RecentlyPurchased releases={releasesRecent.purchased} />
-        </MarketMovers>
-
+          More questions? Read our <Link href="/faq">FAQ</Link>.
+        </BlueTypography>
+        <Box sx={{ padding: { md: "0 40px 140px 40px", xs: "30px 0px" } }}>
+          <Box sx={{ display: "flex", paddingLeft: { md: "30px", xs: "0" } }}>
+            <Typography
+              variant="body1"
+              align="left"
+              className={classes.sectionHeader}
+            >
+              <Link href="/releases/new">New Releases</Link>
+              <Button
+                onClick={() =>
+                  resetQueueWithPlaylist(
+                    releasesRecent.published.map(
+                      (release) => release.releasePubkey
+                    )
+                  ).then(() => {
+                    enqueueSnackbar("Now Playing: New Releases", {
+                      variant: "info",
+                    });
+                  })
+                }
+              >
+                <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
+              </Button>
+            </Typography>
+          </Box>
+          <RecentlyPublished releases={releasesRecent.published} />
+        </Box>
         <Typography
           variant="body1"
           align="left"
           className={classes.sectionHeader}
         >
-          Radical Transparency
+          Our product is the Nina protocol, not your music.
         </Typography>
         <Typography
           variant="h1"
           align="left"
           sx={{ paddingBottom: { md: "140px", xs: "30px" } }}
         >
-          On Nina artists keep <span>100% </span> of their sales and can access{" "}
-          <span>100% </span> of their data. They will never be deplatformed or
-          separated from their supporters. We make tools to bring equity back to
-          music online.
+          Artists receive 100% of their sales. The only fee is a one-time
+          payment (on average ~$4/release) that covers the storage and
+          transaction costs to the Solana and Arweave networks that Nina is
+          built on. Nina does not take a cut.
         </Typography>
+        <BlueTypography
+          variant="h1"
+          align="center"
+          sx={{ paddingBottom: { md: "140px", xs: "30px" } }}
+        >
+          <Link href="/releases">Start exploring.</Link>
+        </BlueTypography>
       </HomePageContainer>
     </ScrollablePageWrapper>
   );
@@ -116,31 +166,20 @@ const HomePageContainer = styled("div")(({ theme }) => ({
     fontWeight: "700 !important",
     paddingBottom: `${theme.spacing(1)}`,
     textTransform: "uppercase !important",
+    position: "relative",
     "& .MuiTypography-root": {
       textTransform: "uppercase !important",
       fontWeight: "700 !important",
     },
-  },
-  "& a, span": {
-    color: theme.palette.blue,
-  },
-}));
-
-const MarketMovers = styled(Box)(({ theme }) => ({
-  minHeight: "400px",
-  overflowX: "visible",
-  width: "60%",
-  margin: "auto",
-  [theme.breakpoints.down("md")]: {
-    width: "100%",
+    "& .MuiButton-root": {
+      position: "absolute",
+      top: "-10px",
+    },
   },
 }));
 
-const AllReleasesLink = styled(Typography)(({ theme }) => ({
-  marginLeft: "30px",
-  [theme.breakpoints.down("md")]: {
-    display: "none",
-  },
-}));
+const BlueTypography = styled(Typography)(({ theme }) => ({
+  "& a": {color: theme.palette.blue}
+}))
 
 export default HomePage;
