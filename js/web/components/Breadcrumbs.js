@@ -9,10 +9,8 @@ import { useWallet } from "@solana/wallet-adapter-react";
 const { ReleaseContext } = ninaCommon.contexts;
 
 const YourCollectionBreadcrumb = () => {
-  const {
-    releaseState,
-    filterReleasesUserCollection,
-  } = useContext(ReleaseContext);
+  const { releaseState, filterReleasesUserCollection } =
+    useContext(ReleaseContext);
   const wallet = useWallet();
 
   const [userCollectionReleasesCount, setUserCollectionReleasesCount] =
@@ -23,17 +21,17 @@ const YourCollectionBreadcrumb = () => {
       setUserCollectionReleasesCount(
         filterReleasesUserCollection().length || 0
       );
+    } else {
+      setUserCollectionReleasesCount(0);
     }
-  }, [releaseState]);
+  }, [releaseState, wallet]);
 
   return `Your Collection (${userCollectionReleasesCount || 0})`;
 };
 
 const YourReleasesBreadcrumb = () => {
-  const {
-    releaseState,
-    filterReleasesPublishedByUser,
-  } = useContext(ReleaseContext);
+  const { releaseState, filterReleasesPublishedByUser } =
+    useContext(ReleaseContext);
   const wallet = useWallet();
 
   const [userPublishedReleasesCount, setUserPublishedReleasesCount] =

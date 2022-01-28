@@ -18,11 +18,8 @@ const ReleaseSearch = () => {
   const [query, setQuery] = useState("");
   const [artists, setArtists] = useState(null);
 
-  const {
-    getReleasesBySearch,
-    searchResults,
-    resetSearchResults,
-  } = useContext(ReleaseContext);
+  const { getReleasesBySearch, searchResults, resetSearchResults } =
+    useContext(ReleaseContext);
 
   useEffect(() => {
     getArtists();
@@ -43,7 +40,7 @@ const ReleaseSearch = () => {
         getReleasesBySearch(value);
         setQuery("");
       } else if (reason === "input") {
-        setQuery(value)
+        setQuery(value);
       }
     }
   };
@@ -60,10 +57,7 @@ const ReleaseSearch = () => {
 
   return (
     <SearchWrapper>
-      <Form
-        onSubmit={(e) => handleSubmit(e)}
-        style={{ width: "100%" }}
-      >
+      <Form onSubmit={(e) => handleSubmit(e)} style={{ width: "100%" }}>
         <Autocomplete
           disablePortal
           id="combo-box-demo"

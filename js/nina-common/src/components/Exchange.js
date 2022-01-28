@@ -15,13 +15,12 @@ import {
   ConnectionContext,
   ExchangeContext,
   ReleaseContext,
-  NinaContext,
   AudioPlayerContext,
 } from '../contexts'
 import NinaClient from '../utils/client'
 
 const Exchange = (props) => {
-  const { releasePubkey, metadata, track } = props
+  const { releasePubkey, metadata } = props
 
   const wallet = useWallet()
   const { enqueueSnackbar } = useSnackbar()
@@ -39,7 +38,6 @@ const Exchange = (props) => {
     filterExchangeHistoryForRelease,
   } = useContext(ExchangeContext)
   const { connection } = useContext(ConnectionContext)
-  const { getSolPrice } = useContext(NinaContext)
   const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext)
 
   const [exchangeAwaitingConfirm, setExchangeAwaitingConfirm] =
@@ -156,7 +154,6 @@ const Exchange = (props) => {
   const refreshExchange = () => {
     getExchangesForRelease(releasePubkey)
     getExchangeHistoryForRelease(releasePubkey)
-    getSolPrice()
     setUpdateTime(Date.now())
   }
 
@@ -173,12 +170,12 @@ const Exchange = (props) => {
           </ReleaseImage>
 
           <InfoCopy>
-            {track && (
+            {metadata && (
               <CtaWrapper sx={{ display: 'flex' }}>
                 <Button
                   onClick={() =>
                     updateTxid(
-                      track.properties.files[0].uri,
+                      metadata.properties.files[0].uri,
                       releasePubkey,
                       true
                     )
