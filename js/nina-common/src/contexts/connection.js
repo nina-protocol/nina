@@ -8,6 +8,7 @@ import {
   getSolletWallet,
   getSolletExtensionWallet,
 } from '@solana/wallet-adapter-wallets'
+import { isMobile } from 'react-device-detect'
 
 export const ConnectionContext = createContext()
 const ConnectionContextProvider = ({ children, ENDPOINTS }) => {
@@ -23,15 +24,19 @@ const ConnectionContextProvider = ({ children, ENDPOINTS }) => {
     [endpoint, network]
   )
 
-  const wallets = useMemo(
-    () => [
-      getPhantomWallet({ network }),
+  const walletOptions = [
+    getPhantomWallet({ network }),
+    getSolflareWallet({ network }),
+  ]
+
+  if (!isMobile) {
+    walletOptions.push(
       getSolletWallet({ network }),
-      getSolletExtensionWallet({ network }),
-      getSolflareWallet({ network }),
-    ],
-    []
-  )
+      getSolletExtensionWallet({ network })
+    )
+  }
+
+  const wallets = useMemo(() => walletOptions, [])
 
   let timer = undefined
 
