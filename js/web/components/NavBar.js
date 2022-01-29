@@ -129,6 +129,9 @@ const NavCtas = styled("div")(() => ({
 
 const NavBalance = styled(Typography)(({ theme }) => ({
   color: theme.palette.blue,
+  [theme.breakpoints.down("md")]: {
+    display: "none",
+  },
 }));
 
 const Logo = styled("div")(({ theme }) => ({
@@ -229,6 +232,9 @@ const ConnectionDot = styled("span")(({ theme }) => ({
   },
   '&.connected-unhealthy': {
     backgroundColor: theme.palette.yellow,
+  },
+  [theme.breakpoints.down("md")]: {
+    marginRight: "15px",
   },
 }));
 
