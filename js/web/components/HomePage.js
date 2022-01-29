@@ -179,7 +179,7 @@ const HomePageContainer = styled("div")(({ theme }) => ({
 }));
 
 const BlueTypography = styled(Typography)(({ theme }) => ({
-  "& a": {color: theme.palette.blue}
-}))
+  "& a": { color: theme.palette.blue },
+}));
 
 export default HomePage;

@@ -12,7 +12,7 @@ import {
   WalletMultiButton,
 } from "@solana/wallet-adapter-material-ui";
 import Breadcrumbs from "./Breadcrumbs";
-const { NinaContext, ConnectionContext } = ninaCommon.contexts
+const { NinaContext, ConnectionContext } = ninaCommon.contexts;
 
 const NavBar = () => {
   const { usdcBalance } = useContext(NinaContext);
