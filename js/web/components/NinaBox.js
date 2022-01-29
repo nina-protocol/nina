@@ -24,12 +24,13 @@ const StyledBox = styled(Box, {
   gridAutoRows: "auto",
   backgroundColor: `${theme.palette.white} !important`,
   [theme.breakpoints.down("md")]: {
-    gridTemplateColumns: "1fr",
     width: "80vw",
     margin: "140px auto",
+    display: "flex",
+    flexDirection: "column",
   },
   [theme.breakpoints.down("sm")]: {
-    margin: "80px auto",
+    margin: "0px auto",
   },
 }));
 

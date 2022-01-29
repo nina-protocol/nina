@@ -16,6 +16,7 @@
     "eslint-plugin-react": "^7.27.1",
     "eslint-plugin-react-hooks": "^4.3.0",
     "lodash.union": "^4.6.0",
+    "luxon": "^2.3.0",
     "next": "^12.0.7",
     "next-transpile-modules": "^9.0.0",
     "nextjs-breadcrumbs": "^1.1.9",
@@ -27,7 +28,7 @@
     "react-multi-carousel": "^2.6.5",
     "react-router-breadcrumbs-hoc": "^4.1.0",
     "react-slick": "^0.28.1",
-    "react-smooth-image": "^1.1.0",
+    "sharp": "^0.29.3",
     "slick-carousel": "^1.8.1"
   },
   "scripts": {

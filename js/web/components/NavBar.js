@@ -1,7 +1,7 @@
 import React, { useContext, useMemo, useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import { Typography, Box } from "@mui/material";
-import Tooltip from '@mui/material/Tooltip'
+import Tooltip from "@mui/material/Tooltip";
 import ninaCommon from "nina-common";
 import NavDrawer from "./NavDrawer";
 import { withFormik } from "formik";
@@ -16,7 +16,7 @@ const { NinaContext, ConnectionContext } = ninaCommon.contexts
 
 const NavBar = () => {
   const { usdcBalance } = useContext(NinaContext);
-  const { healthOk } = useContext(ConnectionContext)
+  const { healthOk } = useContext(ConnectionContext);
   const wallet = useWallet();
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),
@@ -26,11 +26,11 @@ const NavBar = () => {
     if (!wallet || !base58) return null;
     return base58.slice(0, 4) + ".." + base58.slice(-4);
   }, [wallet, base58]);
-  const [connectedString, setConnectedString] = useState()
+  const [connectedString, setConnectedString] = useState();
 
   useEffect(() => {
-    setConnectedString(healthOk ? "connected-healthy" : "connected-unhealthy")
-  }, [healthOk])
+    setConnectedString(healthOk ? "connected-healthy" : "connected-unhealthy");
+  }, [healthOk]);
 
   return (
     <Root>
@@ -62,14 +62,14 @@ const NavBar = () => {
               <Tooltip
                 title={
                   healthOk
-                    ? 'Network Status: Good'
-                    : 'Network Status: Degraded - Transactions may fail.'
+                    ? "Network Status: Good"
+                    : "Network Status: Degraded - Transactions may fail."
                 }
                 placement="bottom-end"
               >
                 <ConnectionDot
                   className={`${classes.connectionDot} ${
-                    wallet?.connected ? connectedString : ''
+                    wallet?.connected ? connectedString : ""
                   }`}
                 ></ConnectionDot>
               </Tooltip>
@@ -227,10 +227,10 @@ const ConnectionDot = styled("span")(({ theme }) => ({
   borderRadius: "50%",
   display: "inline-block",
   marginTop: "2px",
-  '&.connected-healthy': {
+  "&.connected-healthy": {
     backgroundColor: theme.palette.green,
   },
-  '&.connected-unhealthy': {
+  "&.connected-unhealthy": {
     backgroundColor: theme.palette.yellow,
   },
   [theme.breakpoints.down("md")]: {

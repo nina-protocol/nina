@@ -18,7 +18,7 @@ const colors = {
   blue: "#2D81FF",
   blueTrans: "rgba(45, 129, 255, 0.19)",
   pink: "#FF54A6",
-  yellow: '#ffe100',
+  yellow: "#ffe100",
 };
 
 export const NinaTheme = createTheme({
@@ -149,6 +149,7 @@ export const NinaTheme = createTheme({
           minWidth: "unset !important",
           "&:hover": {
             backgroundColor: `${colors.transparent} !important`,
+            opacity: 0.5,
           },
           "&.MuiButton-outlined": {
             borderRadius: "0px",
@@ -283,7 +284,7 @@ export const NinaTheme = createTheme({
           textDecoration: "none",
           cursor: "pointer !important",
           "&:hover": {
-            color: colors.blue,
+            opacity: 0.5,
           },
         },
         "#wallet-menu": {

@@ -56,8 +56,8 @@ const ConnectionContextProvider = ({ children, ENDPOINTS }) => {
           [5]
         )
         let status = false
-        performance.result.forEach(sample => {
-          status = (sample.numTransactions / sample.samplePeriodSecs) > 1000
+        performance.result.forEach((sample) => {
+          status = sample.numTransactions / sample.samplePeriodSecs > 1000
         })
         setHealthOk(status)
       } catch (error) {
