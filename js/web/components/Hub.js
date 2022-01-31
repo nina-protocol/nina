@@ -4,6 +4,8 @@ import Typography from '@mui/material/Typography';
 import ninaCommon from "nina-common";
 
 import Box from "@mui/material/Box";
+import Link from 'next/link'
+
 import {styled} from "@mui/material/styles";
 import HubAddArtist from "./HubAddArtist";
 
@@ -57,7 +59,7 @@ const Hub = () => {
        {hubData &&
         <>
           <h1>{hubData.account.name}</h1> 
-        {JSON.stringify(hubData, null, 2)}
+        {/* {JSON.stringify(hubData, null, 2)} */}
         </>
        }
 
@@ -67,13 +69,20 @@ const Hub = () => {
             Welcome you your Hub
           </Typography>
 
+
+        <Box>
+          <Link href={`/hubs/${hubPubkey}/upload`}>
+            Upload a track through your Hub
+          </Link>
+        </Box>
+        {/* 
           <Box width="40%">
             <Typography>
                 add an artist to your hub
             </Typography>
 
             <HubAddArtist hubPubkey={hubPubkey} />
-          </Box>
+          </Box> */}
          </>
        )}
 

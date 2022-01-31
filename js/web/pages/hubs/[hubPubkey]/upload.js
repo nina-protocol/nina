@@ -1,4 +1,4 @@
-import Hub from "../../components/Hub";
+// import Hub from "../../components/Hub";
 import ninaCommon from "nina-common";
 import Head from "next/head";
 const { NinaClient } = ninaCommon.utils;
@@ -34,7 +34,7 @@ const HubPage = (props) => {
         <meta name="twitter:image" content={metadata?.image} />
         <meta name="og:image" content={metadata?.image} />
       </Head> */}
-      <Hub />
+      <h1>upload</h1>
     </>
   );
 };
