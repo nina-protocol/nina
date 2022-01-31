@@ -1,17 +1,17 @@
-import React, { useEffect, useState, useContext } from "react";
-import debounce from "lodash.debounce";
-import Head from "next/head";
-import { styled } from "@mui/material/styles";
-import ninaCommon from "nina-common";
-import { Typography, Box } from "@mui/material";
-import { isMobile } from 'react-device-detect';
-import ReleaseListTable from "./ReleaseListTable";
-import ScrollablePageWrapper from "./ScrollablePageWrapper";
-import ReleaseTileList from "./ReleaseTileList";
-import ReleaseSearch from "./ReleaseSearch";
+import React, { useEffect, useState, useContext } from 'react'
+import debounce from 'lodash.debounce'
+import Head from 'next/head'
+import { styled } from '@mui/material/styles'
+import ninaCommon from 'nina-common'
+import { Typography, Box } from '@mui/material'
+import { isMobile } from 'react-device-detect'
+import ReleaseListTable from './ReleaseListTable'
+import ScrollablePageWrapper from './ScrollablePageWrapper'
+import ReleaseTileList from './ReleaseTileList'
+import ReleaseSearch from './ReleaseSearch'
 
-const { ReleaseContext } = ninaCommon.contexts;
-const { Dots } = ninaCommon.components;
+const { ReleaseContext } = ninaCommon.contexts
+const { Dots } = ninaCommon.components
 
 const Releases = () => {
   const {
@@ -20,48 +20,48 @@ const Releases = () => {
     allReleases,
     allReleasesCount,
     searchResults,
-  } = useContext(ReleaseContext);
-  const [listView, setListView] = useState(false);
-  const [pendingFetch, setPendingFetch] = useState(false);
-  const [totalCount, setTotalCount] = useState(null);
+  } = useContext(ReleaseContext)
+  const [listView, setListView] = useState(false)
+  const [pendingFetch, setPendingFetch] = useState(false)
+  const [totalCount, setTotalCount] = useState(null)
 
   useEffect(() => {
-    getReleasesAll();
-  }, []);
+    getReleasesAll()
+  }, [])
 
   useEffect(() => {
     if (allReleases.length > 0) {
-      setPendingFetch(false);
+      setPendingFetch(false)
     }
-  }, [allReleases]);
+  }, [allReleases])
 
   useEffect(() => {
-    setTotalCount(allReleasesCount);
-  }, [allReleasesCount]);
+    setTotalCount(allReleasesCount)
+  }, [allReleasesCount])
 
   const handleViewChange = () => {
-    setListView(!listView);
-  };
+    setListView(!listView)
+  }
 
   const handleScroll = (e) => {
     const bottom =
-      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight
     if (
       bottom &&
       !pendingFetch &&
       totalCount !== allReleases.length &&
       !searchResults.searched
     ) {
-      setPendingFetch(true);
-      getReleasesAll();
+      setPendingFetch(true)
+      getReleasesAll()
     }
-  };
+  }
 
   return (
     <>
       <Head>
         <title>{`Nina: All Releases`}</title>
-        <meta name="description" content={"Nina: All Releases"} />
+        <meta name="description" content={'Nina: All Releases'} />
       </Head>
       <ScrollablePageWrapper onScroll={debounce((e) => handleScroll(e), 500)}>
         <AllReleasesWrapper>
@@ -72,7 +72,7 @@ const Releases = () => {
             align="left"
             variant="body1"
           >
-            {listView ? "Cover View" : "List View"}
+            {listView ? 'Cover View' : 'List View'}
           </CollectionHeader>
 
           {listView && (
@@ -92,7 +92,9 @@ const Releases = () => {
               releases={
                 searchResults.pending || searchResults.searched
                   ? searchResults.releases
-                  : isMobile ? filterReleasesAll().reverse() : filterReleasesAll()
+                  : isMobile
+                  ? filterReleasesAll().reverse()
+                  : filterReleasesAll()
               }
             />
           )}
@@ -104,42 +106,42 @@ const Releases = () => {
         </AllReleasesWrapper>
       </ScrollablePageWrapper>
     </>
-  );
-};
+  )
+}
 
 const StyledDots = styled(Box)(() => ({
-  marginTop: "40px",
-}));
+  marginTop: '40px',
+}))
 
 const StyledReleaseSearch = styled(ReleaseSearch)(() => ({
-  position: "sticky",
+  position: 'sticky',
 }))
 const CollectionHeader = styled(Typography)(() => ({
   maxWidth: '100%',
-  margin: "0 auto",
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "flex-end",
-  marginBottom: "15px",
-  fontWeight: "700",
-  textTransform: "uppercase",
-  cursor: "pointer",
-}));
+  margin: '0 auto',
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'flex-end',
+  marginBottom: '15px',
+  fontWeight: '700',
+  textTransform: 'uppercase',
+  cursor: 'pointer',
+}))
 
 const AllReleasesWrapper = styled(Box)(({ theme }) => ({
-  maxWidth: "960px",
-  height: "auto",
+  maxWidth: '960px',
+  height: 'auto',
   minHeight: '50vh',
-  margin: "0 auto",
+  margin: '0 auto',
   position: 'relative',
-  "& a": {
+  '& a': {
     color: theme.palette.blue,
   },
-  [theme.breakpoints.down("md")]: {
-    padding: "0px 30px",
-    overflowX: "auto",
+  [theme.breakpoints.down('md')]: {
+    padding: '0px 30px',
+    overflowX: 'auto',
     minHeight: '80vh',
   },
-}));
+}))
 
-export default Releases;
+export default Releases

@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-filename-extension */
-import React from "react";
-import Document, { Html, Head, Main, NextScript } from "next/document";
-import { ServerStyleSheet } from "styled-components";
-import { ServerStyleSheets } from "@material-ui/styles";
+import React from 'react'
+import Document, { Html, Head, Main, NextScript } from 'next/document'
+import { ServerStyleSheet } from 'styled-components'
+import { ServerStyleSheets } from '@material-ui/styles'
 // import createEmotionServer from '@emotion/server/create-instance';
 // import createEmotionCache from '../src/createEmotionCache';
 // import {styled} from '@mui/material/styles'
@@ -10,9 +10,9 @@ import { ServerStyleSheets } from "@material-ui/styles";
 // const sheets = new ServerStyleSheets();
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
-    const styledComponentsSheet = new ServerStyleSheet();
-    const materialSheets = new ServerStyleSheets();
-    const originalRenderPage = ctx.renderPage;
+    const styledComponentsSheet = new ServerStyleSheet()
+    const materialSheets = new ServerStyleSheets()
+    const originalRenderPage = ctx.renderPage
 
     try {
       ctx.renderPage = () =>
@@ -21,8 +21,8 @@ class MyDocument extends Document {
             styledComponentsSheet.collectStyles(
               materialSheets.collect(<App {...props} />)
             ),
-        });
-      const initialProps = await Document.getInitialProps(ctx);
+        })
+      const initialProps = await Document.getInitialProps(ctx)
       return {
         ...initialProps,
         styles: (
@@ -32,9 +32,9 @@ class MyDocument extends Document {
             {styledComponentsSheet.getStyleElement()}
           </React.Fragment>
         ),
-      };
+      }
     } finally {
-      styledComponentsSheet.seal();
+      styledComponentsSheet.seal()
     }
   }
 
@@ -101,12 +101,12 @@ class MyDocument extends Document {
             }}
           />
         </Head>
-        <body style={{ margin: "0px", position: "relative" }}>
+        <body style={{ margin: '0px', position: 'relative' }}>
           <Main />
           <NextScript />
         </body>
       </Html>
-    );
+    )
   }
 }
-export default MyDocument;
+export default MyDocument

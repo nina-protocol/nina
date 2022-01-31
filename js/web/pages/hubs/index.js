@@ -1,7 +1,7 @@
-import Hubs from "../../components/Hubs";
+import Hubs from '../../components/Hubs'
 
 const HubsPage = () => {
-  return <Hubs />;
-};
+  return <Hubs />
+}
 
-export default HubsPage;
+export default HubsPage

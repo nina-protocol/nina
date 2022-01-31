@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from 'react'
 import {
   TableContainer,
   Table,
@@ -7,34 +7,34 @@ import {
   TableHead,
   TableRow,
   Paper,
-} from "@material-ui/core";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { styled } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import ninaCommon from "nina-common";
-import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
-import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
-import { useRouter } from "next/router";
-import { Typography } from "@mui/material";
-import { useWallet } from "@solana/wallet-adapter-react";
-import CloseIcon from "@mui/icons-material/Close";
+} from '@material-ui/core'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import { styled } from '@mui/material/styles'
+import Box from '@mui/material/Box'
+import ninaCommon from 'nina-common'
+import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded'
+import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
+import { useRouter } from 'next/router'
+import { Typography } from '@mui/material'
+import { useWallet } from '@solana/wallet-adapter-react'
+import CloseIcon from '@mui/icons-material/Close'
 
-const { AudioPlayerContext } = ninaCommon.contexts;
-const { NinaClient } = ninaCommon.utils;
+const { AudioPlayerContext } = ninaCommon.contexts
+const { NinaClient } = ninaCommon.utils
 
 const getItemStyle = (isDragging, draggableStyle) => ({
   // styles we need to apply on draggables
   ...draggableStyle,
 
   ...(isDragging && {
-    background: "rgb(235,235,235)",
+    background: 'rgb(235,235,235)',
   }),
-});
+})
 
 const QueueList = (props) => {
-  const { setDrawerOpen } = props;
-  const wallet = useWallet();
-  const router = useRouter();
+  const { setDrawerOpen } = props
+  const wallet = useWallet()
+  const router = useRouter()
   const {
     txid,
     updateTxid,
@@ -43,66 +43,66 @@ const QueueList = (props) => {
     removeTrackFromQueue,
     isPlaying,
     setIsPlaying,
-  } = useContext(AudioPlayerContext);
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [playlistState, setPlaylistState] = useState(undefined);
-  const [skipForReorder, setSkipForReorder] = useState(false);
+  } = useContext(AudioPlayerContext)
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [playlistState, setPlaylistState] = useState(undefined)
+  const [skipForReorder, setSkipForReorder] = useState(false)
 
   useEffect(() => {
-    const playlistEntry = playlist.find((entry) => entry.txid === txid);
+    const playlistEntry = playlist.find((entry) => entry.txid === txid)
 
     if (playlistEntry) {
-      setSelectedIndex(playlist?.indexOf(playlistEntry) || 0);
+      setSelectedIndex(playlist?.indexOf(playlistEntry) || 0)
     }
-  }, [txid, playlist]);
+  }, [txid, playlist])
 
   useEffect(() => {
     if (!skipForReorder) {
-      setPlaylistState(playlist);
+      setPlaylistState(playlist)
     } else {
-      setSkipForReorder(false);
+      setSkipForReorder(false)
     }
-  }, [playlist]);
+  }, [playlist])
 
   const handleListItemClick = (event, index, txid) => {
-    setSelectedIndex(index);
-    updateTxid(txid, playlist[index].releasePubkey, true);
-  };
+    setSelectedIndex(index)
+    updateTxid(txid, playlist[index].releasePubkey, true)
+  }
 
   const goToRelease = (e, releasePubkey) => {
-    setDrawerOpen(false);
-    router.push(`/${releasePubkey}`);
-  };
+    setDrawerOpen(false)
+    router.push(`/${releasePubkey}`)
+  }
 
   const onDragEnd = (result) => {
     // dropped outside the list
     if (!result.destination) {
-      return;
+      return
     }
     // change local playlist state
-    const newPlaylist = [...playlistState];
+    const newPlaylist = [...playlistState]
     NinaClient.arrayMove(
       newPlaylist,
       result.source.index,
       result.destination.index
-    );
-    const playlistEntry = playlistState.find((entry) => entry.txid === txid);
+    )
+    const playlistEntry = playlistState.find((entry) => entry.txid === txid)
 
     if (playlistEntry) {
-      setSelectedIndex(playlist?.indexOf(playlistEntry) || 0);
+      setSelectedIndex(playlist?.indexOf(playlistEntry) || 0)
     }
     // setPlaylistState(newPlaylist)
 
     // change context playlist state - skip updating local state
     // setSkipForReorder(true)
-    reorderPlaylist(newPlaylist);
-  };
+    reorderPlaylist(newPlaylist)
+  }
 
   return (
     <>
       {playlist?.length === 0 && (
-        <Box sx={{ margin: "auto" }}>
-          <div style={{ padding: "16px" }}>
+        <Box sx={{ margin: 'auto' }}>
+          <div style={{ padding: '16px' }}>
             <Typography align="center">
               {wallet?.connected
                 ? `You don't have any songs queued`
@@ -115,7 +115,7 @@ const QueueList = (props) => {
       <StyledQueueList>
         {playlist?.length > 0 && (
           <TableContainer
-            style={{ overflowX: "none" }}
+            style={{ overflowX: 'none' }}
             component={Paper}
             elevation={0}
           >
@@ -132,7 +132,7 @@ const QueueList = (props) => {
               </TableHead>
               <TableBody
                 component={DroppableComponent(onDragEnd)}
-                style={{ overflowX: "none" }}
+                style={{ overflowX: 'none' }}
               >
                 {playlist.map((entry, i) => (
                   <TableRow
@@ -165,7 +165,7 @@ const QueueList = (props) => {
                     <TableCell>{entry.title}</TableCell>
                     <TableCell
                       onClick={(e) => {
-                        goToRelease(e, entry.releasePubkey);
+                        goToRelease(e, entry.releasePubkey)
                       }}
                     >
                       More Info
@@ -185,11 +185,11 @@ const QueueList = (props) => {
         )}
       </StyledQueueList>
     </>
-  );
-};
+  )
+}
 
 const DraggableComponent = (id, index) => (props) => {
-  const { children } = props;
+  const { children } = props
   return (
     <Draggable key={id} draggableId={id} index={index}>
       {(provided, snapshot) => (
@@ -207,11 +207,11 @@ const DraggableComponent = (id, index) => (props) => {
         </TableRow>
       )}
     </Draggable>
-  );
-};
+  )
+}
 
 const DroppableComponent = (onDragEnd) => (props) => {
-  const { children } = props;
+  const { children } = props
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId="droppable" direction="vertical">
@@ -225,32 +225,32 @@ const DroppableComponent = (onDragEnd) => (props) => {
               {children}
               {provided.placeholder}
             </TableBody>
-          );
+          )
         }}
       </Droppable>
     </DragDropContext>
-  );
-};
+  )
+}
 
 const StyledQueueList = styled(Box)(({ theme }) => ({
-  width: "700px",
-  margin: " 140px auto",
-  overflowY: "scroll",
+  width: '700px',
+  margin: ' 140px auto',
+  overflowY: 'scroll',
   // paddingTop: '140px',
-  [theme.breakpoints.down("md")]: {
-    width: "80vw",
-    paddingTop: "0",
+  [theme.breakpoints.down('md')]: {
+    width: '80vw',
+    paddingTop: '0',
   },
-  "& .MuiTableCell-head": {
+  '& .MuiTableCell-head': {
     ...theme.helpers.baseFont,
-    fontWeight: "700",
+    fontWeight: '700',
   },
-  "& .MuiTableCell-root": {
-    textAlign: "center",
-    [theme.breakpoints.down("md")]: {
-      padding: "16px 0",
+  '& .MuiTableCell-root': {
+    textAlign: 'center',
+    [theme.breakpoints.down('md')]: {
+      padding: '16px 0',
     },
   },
-}));
+}))
 
-export default QueueList;
+export default QueueList

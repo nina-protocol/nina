@@ -1,9 +1,6 @@
-import Hub from "../../../components/Hub";
-import ninaCommon from "nina-common";
-import Head from "next/head";
-const {NinaClient} = ninaCommon.utils;
+import Hub from '../../../components/Hub'
 
-const HubPage = (props) => {
+const HubPage = () => {
   return (
     <>
       {/* <Head>
@@ -36,8 +33,8 @@ const HubPage = (props) => {
       </Head> */}
       <Hub />
     </>
-  );
-};
+  )
+}
 
 // export const getServerSideProps = async (context) => {
 //   const releasePubkey = context.params.releasePubkey;
@@ -59,4 +56,4 @@ const HubPage = (props) => {
 //   };
 // };
 
-export default HubPage;
+export default HubPage

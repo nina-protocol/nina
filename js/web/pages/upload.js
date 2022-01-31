@@ -1,7 +1,7 @@
-import ReleaseCreate from "../components/ReleaseCreate";
+import ReleaseCreate from '../components/ReleaseCreate'
 
 const ReleaseCreatePage = () => {
-  return <ReleaseCreate />;
-};
+  return <ReleaseCreate />
+}
 
-export default ReleaseCreatePage;
+export default ReleaseCreatePage

@@ -1,11 +1,6 @@
-import ReleaseCreateViaHub from "../../../components/ReleaseCreateViaHub";
-import ninaCommon from "nina-common";
-import Head from "next/head";
-const { NinaClient } = ninaCommon.utils;
+import ReleaseCreateViaHub from '../../../components/ReleaseCreateViaHub'
 
-const HubReleaseCreatePage = (props) => {
-  return (
-    < ReleaseCreateViaHub />
-  );
-};
-export default HubReleaseCreatePage;
+const HubReleaseCreatePage = () => {
+  return <ReleaseCreateViaHub />
+}
+export default HubReleaseCreatePage

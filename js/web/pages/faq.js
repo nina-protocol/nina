@@ -1,6 +1,6 @@
-import FaqPageContent from "../components/FaqPageContent";
+import FaqPageContent from '../components/FaqPageContent'
 const Faq = () => {
-  return <FaqPageContent />;
-};
+  return <FaqPageContent />
+}
 
-export default Faq;
+export default Faq

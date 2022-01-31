@@ -1,7 +1,7 @@
-import UserCollection from "../components/UserCollection";
+import UserCollection from '../components/UserCollection'
 
 const UserCollectionPage = () => {
-  return <UserCollection />;
-};
+  return <UserCollection />
+}
 
-export default UserCollectionPage;
+export default UserCollectionPage

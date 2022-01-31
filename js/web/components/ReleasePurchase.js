@@ -1,121 +1,121 @@
-import React, { useEffect, useState, useContext } from "react";
-import axios from "axios";
-import { styled } from "@mui/material/styles";
-import ninaCommon from "nina-common";
-import { useWallet } from "@solana/wallet-adapter-react";
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import { useSnackbar } from "notistack";
-import { Typography } from "@mui/material";
-import Link from "next/link";
+import React, { useEffect, useState, useContext } from 'react'
+import axios from 'axios'
+import { styled } from '@mui/material/styles'
+import ninaCommon from 'nina-common'
+import { useWallet } from '@solana/wallet-adapter-react'
+import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
+import { useSnackbar } from 'notistack'
+import { Typography } from '@mui/material'
+import Link from 'next/link'
 
-const { Dots, ReleaseSettings } = ninaCommon.components;
+const { Dots, ReleaseSettings } = ninaCommon.components
 const { ReleaseContext, NinaContext, ExchangeContext, NameContext } =
-  ninaCommon.contexts;
-const { NinaClient } = ninaCommon.utils;
+  ninaCommon.contexts
+const { NinaClient } = ninaCommon.utils
 
 const ReleasePurchase = (props) => {
-  const { releasePubkey, metadata, router, relatedReleases } = props;
-  const { enqueueSnackbar } = useSnackbar();
-  const wallet = useWallet();
+  const { releasePubkey, metadata, router, relatedReleases } = props
+  const { enqueueSnackbar } = useSnackbar()
+  const wallet = useWallet()
   const { releasePurchase, releasePurchasePending, releaseState, getRelease } =
-    useContext(ReleaseContext);
-  const { getAmountHeld, collection } = useContext(NinaContext);
+    useContext(ReleaseContext)
+  const { getAmountHeld, collection } = useContext(NinaContext)
   const { exchangeState, filterExchangesForReleaseBuySell } =
-    useContext(ExchangeContext);
-  const [pending, setPending] = useState(undefined);
-  const [release, setRelease] = useState(undefined);
-  const [amountHeld, setAmountHeld] = useState(collection[releasePubkey]);
-  const [amountPendingBuys, setAmountPendingBuys] = useState(0);
-  const [amountPendingSales, setAmountPendingSales] = useState(0);
-  const [downloadButtonString, setDownloadButtonString] = useState("Download");
-  const [userIsRecipient, setUserIsRecipient] = useState(false);
+    useContext(ExchangeContext)
+  const [pending, setPending] = useState(undefined)
+  const [release, setRelease] = useState(undefined)
+  const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
+  const [amountPendingBuys, setAmountPendingBuys] = useState(0)
+  const [amountPendingSales, setAmountPendingSales] = useState(0)
+  const [downloadButtonString, setDownloadButtonString] = useState('Download')
+  const [userIsRecipient, setUserIsRecipient] = useState(false)
   const { twitterHandlePublicKeyMap, lookupUserTwitterHandle } =
-    useContext(NameContext);
+    useContext(NameContext)
 
   useEffect(() => {
-    getRelease(releasePubkey);
-  }, [releasePubkey]);
+    getRelease(releasePubkey)
+  }, [releasePubkey])
 
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
-      setRelease(releaseState.tokenData[releasePubkey]);
+      setRelease(releaseState.tokenData[releasePubkey])
     }
-  }, [releaseState.tokenData[releasePubkey]]);
+  }, [releaseState.tokenData[releasePubkey]])
 
   useEffect(() => {
-    setPending(releasePurchasePending[releasePubkey]);
-  }, [releasePurchasePending[releasePubkey]]);
+    setPending(releasePurchasePending[releasePubkey])
+  }, [releasePurchasePending[releasePubkey]])
 
   useEffect(() => {
-    getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey);
-  }, []);
+    getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
+  }, [])
 
   useEffect(() => {
-    setAmountHeld(collection[releasePubkey]);
-  }, [collection[releasePubkey]]);
+    setAmountHeld(collection[releasePubkey])
+  }, [collection[releasePubkey]])
 
   useEffect(() => {
-    getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey);
-  }, [releasePubkey]);
+    getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
+  }, [releasePubkey])
 
   useEffect(() => {
     setAmountPendingBuys(
       filterExchangesForReleaseBuySell(releasePubkey, true, true).length
-    );
+    )
     setAmountPendingSales(
       filterExchangesForReleaseBuySell(releasePubkey, false, true).length
-    );
-  }, [exchangeState]);
+    )
+  }, [exchangeState])
 
   useEffect(() => {
     if (release?.royaltyRecipients) {
       release.royaltyRecipients.forEach((recipient) => {
-        const recipientPubkey = recipient.recipientAuthority.toBase58();
+        const recipientPubkey = recipient.recipientAuthority.toBase58()
         if (
           recipient.percentShare.toNumber() > 0 &&
           !twitterHandlePublicKeyMap[recipientPubkey]
         ) {
-          lookupUserTwitterHandle(recipient.recipientAuthority);
+          lookupUserTwitterHandle(recipient.recipientAuthority)
         }
         if (
           wallet?.connected &&
           recipient.recipientAuthority.toBase58() ===
             wallet?.publicKey.toBase58()
         ) {
-          setUserIsRecipient(true);
+          setUserIsRecipient(true)
         }
-      });
+      })
     }
-  }, [release?.royaltyRecipients, wallet?.connected]);
+  }, [release?.royaltyRecipients, wallet?.connected])
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    let result;
+    e.preventDefault()
+    let result
 
     if (!release.pending) {
-      enqueueSnackbar("Making transaction...", {
-        variant: "info",
-      });
-      result = await releasePurchase(releasePubkey);
+      enqueueSnackbar('Making transaction...', {
+        variant: 'info',
+      })
+      result = await releasePurchase(releasePubkey)
       if (result) {
-        showCompletedTransaction(result);
+        showCompletedTransaction(result)
       }
     }
-  };
+  }
 
   const showCompletedTransaction = (result) => {
     enqueueSnackbar(result.msg, {
-      variant: result.success ? "success" : "warn",
-    });
-  };
+      variant: result.success ? 'success' : 'warn',
+    })
+  }
 
   if (!release) {
     return (
       <>
         <Dots color="inherit" />
       </>
-    );
+    )
   }
 
   const buttonText =
@@ -127,43 +127,43 @@ const ReleasePurchase = (props) => {
       : `Sold Out ($${NinaClient.nativeToUi(
           release.price.toNumber(),
           release.paymentMint
-        ).toFixed(2)})`;
+        ).toFixed(2)})`
 
   const buttonDisabled =
-    wallet?.connected && release.remainingSupply > 0 ? false : true;
+    wallet?.connected && release.remainingSupply > 0 ? false : true
 
-  let pathString = "";
-  if (router.pathname.includes("releases")) {
-    pathString = "/releases";
-  } else if (router.pathname.includes("collection")) {
-    pathString = "/collection";
+  let pathString = ''
+  if (router.pathname.includes('releases')) {
+    pathString = '/releases'
+  } else if (router.pathname.includes('collection')) {
+    pathString = '/collection'
   }
 
   const downloadAs = async (url, name) => {
-    setDownloadButtonString("Downloading");
+    setDownloadButtonString('Downloading')
 
     const response = await axios.get(url, {
-      method: "GET",
-      mode: "cors",
+      method: 'GET',
+      mode: 'cors',
       headers: {
-        "Content-Type": "application/octet-stream",
+        'Content-Type': 'application/octet-stream',
       },
-      responseType: "blob",
-    });
+      responseType: 'blob',
+    })
     if (response?.data) {
-      const a = document.createElement("a");
-      const url = window.URL.createObjectURL(response.data);
-      a.href = url;
-      a.download = name;
-      a.click();
+      const a = document.createElement('a')
+      const url = window.URL.createObjectURL(response.data)
+      a.href = url
+      a.download = name
+      a.click()
     }
-    setDownloadButtonString("Download");
-  };
+    setDownloadButtonString('Download')
+  }
 
   return (
     <Box>
       <AmountRemaining variant="body2" align="left">
-        Remaining: <span>{release.remainingSupply.toNumber()} </span> /{" "}
+        Remaining: <span>{release.remainingSupply.toNumber()} </span> /{' '}
         {release.totalSupply.toNumber()}
       </AmountRemaining>
 
@@ -181,13 +181,13 @@ const ReleasePurchase = (props) => {
           {amountPendingSales > 0 ? (
             <Typography variant="body1" align="left" gutterBottom>
               {amountPendingSales} pending sale
-              {amountPendingSales > 1 ? "s" : ""}{" "}
+              {amountPendingSales > 1 ? 's' : ''}{' '}
             </Typography>
           ) : null}
           {amountPendingBuys > 0 ? (
             <Typography variant="body1" align="left" gutterBottom>
               {amountPendingBuys} pending buy
-              {amountPendingBuys > 1 ? "s" : ""}{" "}
+              {amountPendingBuys > 1 ? 's' : ''}{' '}
             </Typography>
           ) : null}
         </StyledUserAmount>
@@ -222,11 +222,11 @@ const ReleasePurchase = (props) => {
           <Button
             variant="outlined"
             fullWidth
-            sx={{ marginTop: "15px !important" }}
+            sx={{ marginTop: '15px !important' }}
           >
             <Typography variant="body2">
               See {relatedReleases.length - 1} more related release
-              {relatedReleases.length - 1 > 1 ? "s" : ""}
+              {relatedReleases.length - 1 > 1 ? 's' : ''}
             </Typography>
           </Button>
         </Link>
@@ -235,20 +235,20 @@ const ReleasePurchase = (props) => {
         <Button
           variant="outlined"
           fullWidth
-          sx={{ marginTop: "15px !important" }}
+          sx={{ marginTop: '15px !important' }}
           onClick={(e) => {
-            e.stopPropagation();
+            e.stopPropagation()
             downloadAs(
               metadata.properties.files[0].uri,
               `${metadata.name
-                .replace(/[^a-z0-9]/gi, "_")
+                .replace(/[^a-z0-9]/gi, '_')
                 .toLowerCase()}___nina.mp3`
-            );
+            )
           }}
         >
           <Typography variant="body2">
-            {downloadButtonString === "Download" ? (
-              "Download"
+            {downloadButtonString === 'Download' ? (
+              'Download'
             ) : (
               <Dots msg={downloadButtonString} />
             )}
@@ -256,34 +256,34 @@ const ReleasePurchase = (props) => {
         </Button>
       )}
     </Box>
-  );
-};
+  )
+}
 
 const AmountRemaining = styled(Typography)(({ theme }) => ({
-  paddingBottom: "10px",
-  "& span": {
+  paddingBottom: '10px',
+  '& span': {
     color: theme.palette.blue,
   },
-}));
+}))
 
 const StyledUserAmount = styled(Box)(({ theme }) => ({
   color: theme.palette.black,
   ...theme.helpers.baseFont,
-  paddingBottom: "10px",
-  display: "flex",
-  flexDirection: "column",
-}));
+  paddingBottom: '10px',
+  display: 'flex',
+  flexDirection: 'column',
+}))
 
 const StyledDescription = styled(Typography)(({ theme }) => ({
-  overflowWrap: "anywhere",
-  [theme.breakpoints.up("md")]: {
-    maxHeight: "225px",
-    overflowY: "scroll",
+  overflowWrap: 'anywhere',
+  [theme.breakpoints.up('md')]: {
+    maxHeight: '225px',
+    overflowY: 'scroll',
   },
-}));
+}))
 
 const MarketButton = styled(Button)(({ theme }) => ({
   marginTop: `${theme.spacing(1)} !important`,
-}));
+}))
 
-export default ReleasePurchase;
+export default ReleasePurchase
