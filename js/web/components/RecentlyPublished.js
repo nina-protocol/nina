@@ -98,15 +98,7 @@ const RecentlyPublished = (props) => {
           {releasesStack.map((release, i) => {
             const imageUrl = release.metadata.image
             const isMultiple =
-              artistCount[release.metadata.properties.artist] > 1
-            const availability = (
-              <Typography variant="body2" sx={{ paddingTop: '10px' }}>
-                {release.tokenData.remainingSupply.toNumber() > 0
-                  ? `${release.tokenData.remainingSupply.toNumber()} / ${release.tokenData.totalSupply.toNumber()} remaining`
-                  : 'Sold Out'}
-              </Typography>
-            )
-
+              artistCount[release.metadata.properties.artist] > 1;
             return (
               <ReleaseSlideWrapper key={i}>
                 <ReleaseSlide key={i}>
@@ -121,11 +113,12 @@ const RecentlyPublished = (props) => {
                         height={100}
                         width={100}
                         layout="responsive"
+                        priority={true}
+                        release={release}
                       />
                     </a>
                   </Link>
-                  {!isMultiple && availability}
-                  <ReleaseCopy sx={{ display: 'flex' }}>
+                  <ReleaseCopy sx={{ display: "flex" }}>
                     {isMultiple && (
                       <Typography variant="body2">
                         {`${

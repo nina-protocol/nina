@@ -180,20 +180,17 @@ const ReleaseSettings = (props) => {
               variant="outlined"
               color="primary"
               fullWidth
-              disabled={uploadStatus.status === "pending" || uploadStatus.status === "failed"}
+              disabled={!metadata}
               sx={{ marginTop: '10px !important' }}
             >
-              <Link href={`/${releasePubkey}`} style={{ textDecoration: 'none' }}>
+              <Link
+                href={`/${releasePubkey}`}
+                style={{ textDecoration: 'none' }}
+              >
                 <Typography variant="body2">
-                  {uploadStatus.status === "pending" &&
-                    `Your release is currently being finalized - processing (${uploadStatus.reason})...`
-                  }
-                  {uploadStatus.status === "success" &&
-                    'View Release'
-                  }
-                  {uploadStatus.status === "failed" &&
-                    'Failed - send again'
-                  }
+                  {metadata
+                    ? 'View Release'
+                    : 'Your release is currently being finalized...'}
                 </Typography>
               </Link>
             </Button>

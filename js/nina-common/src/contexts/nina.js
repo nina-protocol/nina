@@ -1,12 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import * as anchor from '@project-serum/anchor'
-import CoinGecko from 'coingecko-api'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { ConnectionContext } from './connection'
 import { findOrCreateAssociatedTokenAccount } from '../utils/web3'
 import NinaClient from '../utils/client'
-
-const CoinGeckoClient = new CoinGecko()
 
 export const NinaContext = createContext()
 const NinaContextProvider = ({ children, releasePubkey }) => {
@@ -14,7 +11,6 @@ const NinaContextProvider = ({ children, releasePubkey }) => {
   const wallet = useWallet()
   const [collection, setCollection] = useState({})
   const [usdcBalance, setUsdcBalance] = useState(0)
-  const [solPrice, setSolPrice] = useState(0)
   const [npcAmountHeld, setNpcAmountHeld] = useState(0)
 
   useEffect(() => {
@@ -41,7 +37,6 @@ const NinaContextProvider = ({ children, releasePubkey }) => {
     removeReleaseFromCollection,
     shouldRemainInCollectionAfterSale,
     getAmountHeld,
-    getSolPrice,
     getUsdcBalance,
     getNpcAmountHeld,
   } = ninaContextHelper({
@@ -49,7 +44,6 @@ const NinaContextProvider = ({ children, releasePubkey }) => {
     connection,
     collection,
     setCollection,
-    setSolPrice,
     setUsdcBalance,
     npcAmountHeld,
     setNpcAmountHeld,
@@ -65,8 +59,6 @@ const NinaContextProvider = ({ children, releasePubkey }) => {
         removeReleaseFromCollection,
         shouldRemainInCollectionAfterSale,
         getAmountHeld,
-        getSolPrice,
-        solPrice,
         getUsdcBalance,
         usdcBalance,
         getNpcAmountHeld,
@@ -84,7 +76,6 @@ const ninaContextHelper = ({
   connection,
   collection,
   setCollection,
-  setSolPrice,
   setUsdcBalance,
   setNpcAmountHeld,
 }) => {
@@ -135,8 +126,15 @@ const ninaContextHelper = ({
         releaseAccounts = releaseAccounts.filter((item) => item != null)
         releaseAccounts.map((releaseAccount) => {
           const releasePublicKey = releaseAccount.publicKey.toBase58()
-          updatedCollection[releasePublicKey] =
-            releaseAmountMap[releasePublicKey]
+          // Don't include soft lp + cafe katja test releases
+          if (
+            releasePublicKey !==
+              'BpZ5zoBehKfKUL2eSFd3SNLXmXHi4vtuV4U6WxJB3qvt' &&
+            releasePublicKey !== 'FNZbs4pdxKiaCNPVgMiPQrpzSJzyfGrocxejs8uBWnf'
+          ) {
+            updatedCollection[releasePublicKey] =
+              releaseAmountMap[releasePublicKey]
+          }
         })
 
         setCollection({
@@ -262,16 +260,6 @@ const ninaContextHelper = ({
     return 0
   }
 
-  //Misc
-  const getSolPrice = async () => {
-    // const solPrice = await CoinGeckoClient.simple.price({
-    //   ids: ['solana'],
-    //   vs_currencies: 'usd',
-    // })
-
-    // setSolPrice(solPrice.data.solana.usd)
-  }
-
   const getUsdcBalance = async () => {
     if (wallet?.connected && wallet?.publicKey) {
       try {
@@ -325,7 +313,6 @@ const ninaContextHelper = ({
     removeReleaseFromCollection,
     shouldRemainInCollectionAfterSale,
     getAmountHeld,
-    getSolPrice,
     getUsdcBalance,
     getNpcAmountHeld,
   }

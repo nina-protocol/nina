@@ -4,22 +4,22 @@ import createBreakpoints from '@mui/system/createTheme/createBreakpoints'
 const breakpoints = createBreakpoints({})
 
 const colors = {
-  purple: '#9999cc',
-  purpleLight: '#bcb2bf',
-  red: '#FF2828',
-  orange: 'rgba(244, 73, 73, 0.94)',
-  green: '#66F523',
-  white: '#ffffff',
-  greyLight: '#E3E3E3',
-  grey: 'rgba(0, 0, 0, 0.2)',
-  transparent: '#ffffff00',
-  overlay: '#574a4ac4',
-  black: '#000000',
-  blue: '#2D81FF',
-  blueTrans: 'rgba(45, 129, 255, 0.19)',
-  pink: '#FF54A6',
-  yellow: '#ffe100',
-}
+  purple: "#9999cc",
+  purpleLight: "#bcb2bf",
+  red: "#FF2828",
+  orange: "rgba(244, 73, 73, 0.94)",
+  green: "#66F523",
+  white: "#ffffff",
+  greyLight: "#E3E3E3",
+  grey: "rgba(0, 0, 0, 0.2)",
+  transparent: "#ffffff00",
+  overlay: "#574a4ac4",
+  black: "#000000",
+  blue: "#2D81FF",
+  blueTrans: "rgba(45, 129, 255, 0.19)",
+  pink: "#FF54A6",
+  yellow: "#ffe100",
+};
 
 export const NinaTheme = createTheme({
   palette: {
@@ -149,6 +149,7 @@ export const NinaTheme = createTheme({
           minWidth: 'unset !important',
           '&:hover': {
             backgroundColor: `${colors.transparent} !important`,
+            opacity: 0.5,
           },
           '&.MuiButton-outlined': {
             borderRadius: '0px',
@@ -280,10 +281,10 @@ export const NinaTheme = createTheme({
         },
         a: {
           color: colors.black,
-          textDecoration: 'none',
-          cursor: 'pointer !important',
-          '&:hover': {
-            color: colors.blue,
+          textDecoration: "none",
+          cursor: "pointer !important",
+          "&:hover": {
+            opacity: 0.5,
           },
         },
         '#wallet-menu': {

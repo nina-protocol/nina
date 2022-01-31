@@ -127,14 +127,14 @@ const RecentlyPurchased = (props) => {
                 const artistInfo = (
                   <div display="inline">
                     <Typography display="inline" variant="body2">
-                      {release.metadata.properties.artist},
-                    </Typography>{' '}
+                      {release.metadata.properties.artist.substring(0, 100)},
+                    </Typography>{" "}
                     <Typography
                       display="inline"
                       variant="body2"
                       sx={{ fontStyle: 'italic' }}
                     >
-                      {release.metadata.properties.title}
+                      {release.metadata.properties.title.substring(0, 100)}
                     </Typography>
                   </div>
                 )
@@ -153,7 +153,13 @@ const RecentlyPurchased = (props) => {
                       passHref
                     >
                       <a>
-                        <Image src={imageUrl} width="400px" height="400px" />
+                        <Image
+                          src={imageUrl}
+                          width="400px"
+                          height="400px"
+                          priority={true}
+                          release={release}
+                        />
                       </a>
                     </Link>
                     <Copy sx={{ paddingLeft: 2 }}>
@@ -190,14 +196,16 @@ const classes = {
 }
 
 const RecentlyPurchasedContainer = styled(Box)(({ theme }) => ({
-  minHeight: '400px',
-  flexShrink: '0',
-  alignItems: 'center',
-  '& a': {
-    minWidth: '400px',
-    [theme.breakpoints.down('md')]: {
-      width: '100% !important',
-      minWidth: 'unset',
+  minHeight: "400px",
+  maxHeight: "400px",
+  flexShrink: "0",
+  alignItems: "center",
+  "& a": {
+    minWidth: "400px",
+    maxWidth: "400px",
+    [theme.breakpoints.down("md")]: {
+      width: "100% !important",
+      minWidth: "unset",
     },
   },
   [theme.breakpoints.down('md')]: {

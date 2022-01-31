@@ -23,13 +23,14 @@ const StyledBox = styled(Box, {
   gridColumnGap: gridColumnGap ? gridColumnGap : '0px',
   gridAutoRows: 'auto',
   backgroundColor: `${theme.palette.white} !important`,
-  [theme.breakpoints.down('md')]: {
-    gridTemplateColumns: '1fr',
-    width: '80vw',
-    margin: '140px auto',
+  [theme.breakpoints.down("md")]: {
+    width: "80vw",
+    margin: "140px auto",
+    display: "flex",
+    flexDirection: "column",
   },
-  [theme.breakpoints.down('sm')]: {
-    margin: '80px auto',
+  [theme.breakpoints.down("sm")]: {
+    margin: "0px auto",
   },
 }))
 
