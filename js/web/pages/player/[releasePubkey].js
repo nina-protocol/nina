@@ -150,24 +150,9 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
         });
       </script>
     </html>
-<<<<<<< HEAD
-  `
-  var dataURI = 'data:text/html,' + encodeURIComponent(player)
-  return (
-    <iframe
-      id="nina-player"
-      width="565px"
-      height="565px"
-      style={{ border: 'none' }}
-      src={dataURI}
-    />
-  )
-}
-=======
   `;
   return <div dangerouslySetInnerHTML={{ __html: player }}></div>;
 };
->>>>>>> d19478923d0633029315f1203cf6521f4d02e5ee
 
 export const getServerSideProps = async (context) => {
   const releasePubkey = context.params.releasePubkey
