@@ -266,24 +266,23 @@ const hubContextHelper = ({
   }
 
   const releaseInitViaHub = async (
-    hubPubkey, 
+    {hubPubkey, 
     artistPubkey,
     retailPrice,
     amount,
     resalePercentage,
-    isUsdc = true,
+    isUsdc = true,}
   ) => {
     try {
       const nina = await NinaClient.connect(provider)
-      const hubAccount = await nina.account.hub.fetch(hubPubkey)
+      hubPubkey = new anchor.web3.PublicKey(hubPubkey)
+      const hub = await nina.program.account.hub.fetch(new anchor.web3.PublicKey(hubPubkey))
 
       const releaseMint = anchor.web3.Keypair.generate()
       const paymentMint = new anchor.web3.PublicKey(
         isUsdc ? NinaClient.ids().mints.usdc : NinaClient.ids().mints.wsol
       )
-      const publishingCreditMint = new anchor.web3.PublicKey(
-        NinaClient.ids().mints.publishingCredit
-      )
+
       const [release, releaseBump] =
         await anchor.web3.PublicKey.findProgramAddress(
           [
@@ -332,7 +331,7 @@ const hubContextHelper = ({
           hubPubkey.toBuffer(),
           provider.wallet.publicKey.toBuffer(),
         ],
-        nina.programId
+        nina.program.programId
       );
 
       const [hubRelease, hubReleaseBump] = await anchor.web3.PublicKey.findProgramAddress(
@@ -341,7 +340,7 @@ const hubContextHelper = ({
           hubPubkey.toBuffer(),
           release.toBuffer(),
         ],
-        nina.programId
+        nina.program.programId
       );
       let instructions = [...releaseMintIx, royaltyTokenAccountIx]
 
@@ -363,31 +362,31 @@ const hubContextHelper = ({
         signer: releaseSignerBump,
       }
 
-      const txid = await nina.program.rpc.releaseInitWithCredit(config, bumps, {
-        accounts: {
-          release,
-          releaseSigner,
-          hub,
-          hubArtist,
-          hubRelease,
-          hubCurator: hubAccount.curator,
-          hubCuratorUsdcTokenAccount: hubAccount.usdcTokenAccount,
-          releaseMint: releaseMint.publicKey,
-          payer: provider.wallet.publicKey,
-          authority: provider.wallet.publicKey,
-          authorityTokenAccount: authorityTokenAccount,
-          authorityPublishingCreditTokenAccount,
-          publishingCreditMint,
-          paymentMint,
-          royaltyTokenAccount,
-          systemProgram: anchor.web3.SystemProgram.programId,
-          tokenProgram: NinaClient.TOKEN_PROGRAM_ID,
-          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-        },
-        signers: [releaseMint],
-        instructions,
-      })
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      const txid = await nina.program.rpc.releaseInitViaHub(config, bumps, {
+          accounts: {
+              release,
+              releaseSigner,
+              hub: hubPubkey,
+              hubArtist,
+              hubRelease,
+              hubCurator: hub.curator,
+              hubCuratorUsdcTokenAccount: hub.usdcTokenAccount,
+              releaseMint: releaseMint.publicKey,
+              payer: provider.wallet.publicKey,
+              authority: provider.wallet.publicKey,
+              authorityTokenAccount: authorityTokenAccount,
+              paymentMint,
+              royaltyTokenAccount,
+              systemProgram: anchor.web3.SystemProgram.programId,
+              tokenProgram: NinaClient.TOKEN_PROGRAM_ID,
+              rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+            },
+            signers: [releaseMint],
+            instructions,
+          })
+          await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+          console.log("Bottom!");
+          return true
     } catch (error) {
       return ninaErrorHandler(error)
     }
@@ -484,7 +483,6 @@ const hubContextHelper = ({
           }
         }
         
-        console.log('updatedState :>> ', updatedState);
         setHubState(updatedState)
       }
 

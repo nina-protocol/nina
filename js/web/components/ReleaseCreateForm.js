@@ -225,12 +225,12 @@ export default withFormik({
   },
   mapPropsToValues: () => {
     return {
-      artist: "",
-      title: "",
-      description: "",
-      catalogNumber: "",
-      amount: undefined,
-      retailPrice: undefined,
+      artist: "test name",
+      title: "test title  ",
+      description: "descriptioj",
+      catalogNumber: "CLG1",
+      amount: 10,
+      retailPrice: 5,
       resalePercentage: 0,
     };
   },

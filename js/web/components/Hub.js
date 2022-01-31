@@ -70,11 +70,12 @@ const Hub = () => {
           </Typography>
 
 
-        <Box>
-          <Link href={`/hubs/${hubPubkey}/upload`}>
-            Upload a track through your Hub
-          </Link>
-        </Box>
+          <Box>
+            <Link href={`/hubs/${hubPubkey}/upload`}>
+              Upload a track through your Hub
+            </Link>
+          </Box>
+
         {/* 
           <Box width="40%">
             <Typography>
