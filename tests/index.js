@@ -3741,6 +3741,8 @@ describe('Hub', async () => {
     assert.equal(releaseAfter.royaltyRecipients[1].recipientAuthority.toBase58(), hubAfter.curator.toBase58())
     assert.equal(hubReleaseAfter.hub.toBase58(), hub.toBase58())
     assert.equal(hubReleaseAfter.release.toBase58(), hubReleaseAccount.toBase58())
+    assert.equal(hubReleaseAfter.sales.toNumber(), 0)
+    assert.equal(hubReleaseAfter.publishedThroughHub, true)
   })
 
   it("Purchases a release with USDC via Hub", async () => {

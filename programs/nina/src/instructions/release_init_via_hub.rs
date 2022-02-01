@@ -94,6 +94,8 @@ pub fn handler(
     let hub_release = &mut ctx.accounts.hub_release;
     hub_release.hub = ctx.accounts.hub.key();
     hub_release.release = ctx.accounts.release.key();
-
+    hub_release.published_through_hub = true;
+    hub_release.sales = 0;
+    
     Ok(())
 }

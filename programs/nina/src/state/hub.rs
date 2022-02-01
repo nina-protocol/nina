@@ -17,6 +17,7 @@ pub struct HubRelease {
 	pub hub: Pubkey,
 	pub release: Pubkey,
 	pub sales: u64,
+	pub published_through_hub: bool,
 }
 
 #[account]
