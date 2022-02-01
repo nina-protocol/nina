@@ -4035,7 +4035,64 @@ describe('Hub', async () => {
     );
   })
 
-  it('should not remove artist from hub if not curator', async () => {
+  it('should not remove hub artist from hub who is unauthorized', async () => {
+    const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        hub.toBuffer(),
+        user1.publicKey.toBuffer(),
+      ],
+      nina.programId
+    );
+    await assert.rejects(
+      async () => {
+        await nina.rpc.hubRemoveArtist({
+          accounts: {
+            payer: user2.publicKey,
+            hub,
+            hubArtist,
+            artist: user1.publicKey,
+            systemProgram: anchor.web3.SystemProgram.programId,
+          },
+          signers: [user2]
+        })
+      }, (err) => {
+        console.log(err)
+        assert.equal(err.code, 6022);
+        return true;
+      }
+    );
+  })
+
+  it('should not remove hub artist account for hub curator', async () => {
+    const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        hub.toBuffer(),
+        provider.wallet.publicKey.toBuffer(),
+      ],
+      nina.programId
+    );
+    await assert.rejects(
+      async () => {
+        await nina.rpc.hubRemoveArtist({
+          accounts: {
+            payer: provider.wallet.publicKey,
+            hub,
+            hubArtist,
+            artist: provider.wallet.publicKey,
+            systemProgram: anchor.web3.SystemProgram.programId,
+          },
+        })
+      }, (err) => {
+        console.log(err)
+        assert.equal(err.code, 6023);
+        return true;
+      }
+    );
+  })
+
+  it('should remove artist from hub who is not curator', async () => {
     const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
@@ -4045,22 +4102,19 @@ describe('Hub', async () => {
       nina.programId
     );
 
+    await nina.rpc.hubRemoveArtist({
+      accounts: {
+        payer: user1.publicKey,
+        hub,
+        hubArtist,
+        artist: user1.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      },
+      signers: [user1]
+    })
     await assert.rejects(
       async () => {
-        await nina.rpc.hubRemoveArtist({
-          accounts: {
-            curator: user1.publicKey,
-            hub,
-            hubArtist,
-            artist: user1.publicKey,
-            systemProgram: anchor.web3.SystemProgram.programId,
-          },
-          signers: [user1]
-        })
-      },
-      (err) => {
-        assert.equal(err.code, 2003);
-        return true;
+        await nina.account.hubArtist.fetch(hubArtist)
       }
     )
   })
@@ -4079,13 +4133,13 @@ describe('Hub', async () => {
       async () => {
         await nina.rpc.hubRemoveRelease({
           accounts: {
-            curator: user1.publicKey,
+            curator: user2.publicKey,
             hub,
             hubRelease,
             release,
             systemProgram: anchor.web3.SystemProgram.programId,
           },
-          signers: [user1]
+          signers: [user2]
         })
       },
       (err) => {
@@ -4101,17 +4155,27 @@ describe('Hub', async () => {
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
         hub.toBuffer(),
-        user1.publicKey.toBuffer(),
+        user2.publicKey.toBuffer(),
       ],
       nina.programId
     );
-
-    await nina.rpc.hubRemoveArtist({
+    await nina.rpc.hubAddArtist(false, {
       accounts: {
         curator: provider.wallet.publicKey,
         hub,
         hubArtist,
-        artist: user1.publicKey,
+        artist: user2.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+      }
+    })
+
+    await nina.rpc.hubRemoveArtist({
+      accounts: {
+        payer: provider.wallet.publicKey,
+        hub,
+        hubArtist,
+        artist: user2.publicKey,
         systemProgram: anchor.web3.SystemProgram.programId,
       }
     })

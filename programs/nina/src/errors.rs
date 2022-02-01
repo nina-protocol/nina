@@ -44,6 +44,11 @@ pub enum ErrorCode {
     VaultWithdrawAmountTooHigh,
     #[msg("Withdraw amount must be greater than 0")]
     VaultWithdrawAmountMustBeGreaterThanZero,
-    #[msg("HubArtist Cannot Add Release To Hub")]
-    HubArtistCannotAddReleaseToHub
+    #[msg("HubArtist Cannot Add Release To Hub Unauthorized")]
+    HubArtistCannotAddReleaseToHubUnauthorized,
+    #[msg("HubArtist Cannot Be Removed From Hub Unauthorized")]
+    HubArtistCannotBeRemovedFromHubUnauthorized,
+    #[msg("HubArtist Cannot Remove Curator From Hub")]
+    HubArtistCannotRemoveCuratorFromHub,
+
 }

@@ -30,7 +30,7 @@ pub fn handler (
 ) -> ProgramResult {
     let hub_artist = &mut ctx.accounts.hub_artist;
     if !hub_artist.can_add_release {
-        return Err(ErrorCode::HubArtistCannotAddReleaseToHub.into())
+        return Err(ErrorCode::HubArtistCannotAddReleaseToHubUnauthorized.into())
     }
 
     let hub_release = &mut ctx.accounts.hub_release;
