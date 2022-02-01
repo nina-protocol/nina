@@ -935,8 +935,6 @@ const releaseContextHelper = ({
     } catch (error) {
       console.warn(error)
     }
-    const filteredReleaseIds = new Set(releaseIds)
-    await fetchAndSaveReleasesToState([...filteredReleaseIds])
   }
 
   const getRedeemablesForRelease = async (releasePubkey) => {
