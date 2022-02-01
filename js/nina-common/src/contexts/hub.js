@@ -447,7 +447,9 @@ const hubContextHelper = ({
     const hubs = []
     Object.keys(hubState).forEach((hubPubkey) => {
       const hubData = hubState[hubPubkey]
-      if (hubData.account.curator.toBase58() === userPubkey) {
+      hubData.publicKey = hubPubkey
+      console.log('hubData :>> ', hubData);
+      if (hubData.curator.toBase58() === userPubkey) {
         hubs.push(hubData)
       }
     })

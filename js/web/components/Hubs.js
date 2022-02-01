@@ -135,7 +135,7 @@ const Hubs = () => {
                 {userCuratedHubs.map((hub, i) => (
                   <li key={i}>
                     <Link href={`/hubs/${hub.publicKey}`}>
-                      {hub.account.name}
+                      {hub.name}
                     </Link>
                   </li>
                 ))}
