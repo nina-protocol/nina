@@ -15,7 +15,8 @@ pub struct Hub {
 #[derive(Default)]
 pub struct HubRelease {
 	pub hub: Pubkey,
-	pub release: Pubkey
+	pub release: Pubkey,
+	pub sales: u64,
 }
 
 #[account]

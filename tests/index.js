@@ -3631,9 +3631,14 @@ describe('Hub', async () => {
     );
   })
 
+  let hubReleaseAccount
+  let hubReleaseSigner
+  let hubRoyaltyTokenAccount
+  let hubRelease
+  let hubReleaseMint
   it('should create a release via hub', async () => {
     const paymentMint = usdcMint;
-    const hubReleaseMint = anchor.web3.Keypair.generate();
+    hubReleaseMint = anchor.web3.Keypair.generate();
     const releaseMintIx = await createMintInstructions(
       provider,
       user1.publicKey,
@@ -3641,26 +3646,30 @@ describe('Hub', async () => {
       0,
     );
 
-    const [hubReleaseAccount, releaseBump] = await anchor.web3.PublicKey.findProgramAddress(
+    const [_hubReleaseAccount, releaseBump] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-release")),
         hubReleaseMint.publicKey.toBuffer(),
       ],
       nina.programId,
     );
+    hubReleaseAccount = _hubReleaseAccount
 
-    const [hubReleaseSigner, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
+    const [_hubReleaseSigner, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
       [hubReleaseAccount.toBuffer()],
       nina.programId,
     );
+    hubReleaseSigner = _hubReleaseSigner
 
-    let [hubRoyaltyTokenAccount, royaltyTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+    let [_hubRoyaltyTokenAccount, royaltyTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
       provider,
       hubReleaseSigner,
       anchor.web3.SystemProgram.programId,
       anchor.web3.SYSVAR_RENT_PUBKEY,
       paymentMint,
     );
+    hubRoyaltyTokenAccount = _hubRoyaltyTokenAccount
+
     const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
@@ -3670,7 +3679,7 @@ describe('Hub', async () => {
       nina.programId
     );
 
-    const [hubRelease, bump] = await anchor.web3.PublicKey.findProgramAddress(
+    const [_hubRelease, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
         hub.toBuffer(),
@@ -3678,6 +3687,7 @@ describe('Hub', async () => {
       ],
       nina.programId
     );
+    hubRelease = _hubRelease
 
     const config = {
       amountTotalSupply: new anchor.BN(1000),
@@ -3732,6 +3742,72 @@ describe('Hub', async () => {
     assert.equal(hubReleaseAfter.hub.toBase58(), hub.toBase58())
     assert.equal(hubReleaseAfter.release.toBase58(), hubReleaseAccount.toBase58())
   })
+
+  it("Purchases a release with USDC via Hub", async () => {
+    const usdcTokenAccountBefore = await getTokenAccount(
+      provider,
+      user1UsdcTokenAccount,
+    );
+    const usdcTokenAccountBeforeBalanceTx = usdcTokenAccountBefore.amount.toNumber();
+
+    let [_purchaserReleaseTokenAccount, purchaserReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+      provider,
+      user1.publicKey,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      hubReleaseMint.publicKey,
+    );
+    purchaserReleaseTokenAccount = _purchaserReleaseTokenAccount;
+
+    const releaseBefore = await nina.account.release.fetch(hubReleaseAccount);
+
+    await nina.rpc.releasePurchaseViaHub(
+      new anchor.BN(releasePrice), {
+        accounts: {
+          release: hubReleaseAccount,
+          releaseSigner: hubReleaseSigner,
+          payer: user1.publicKey,
+          payerTokenAccount: user1UsdcTokenAccount,
+          purchaser: user1.publicKey,
+          purchaserReleaseTokenAccount,
+          royaltyTokenAccount: hubRoyaltyTokenAccount,
+          releaseMint: hubReleaseMint.publicKey,
+          hub,
+          hubRelease,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+        },
+        signers: [user1],
+        instructions: [purchaserReleaseTokenAccountIx],
+      }
+    );
+
+    const purchaserReleaseTokenAccountAfter = await getTokenAccount(
+      provider,
+      purchaserReleaseTokenAccount,
+    );
+    assert.ok(purchaserReleaseTokenAccountAfter.amount.toNumber() === 1)
+
+    const usdcTokenAccountAfter = await getTokenAccount(
+      provider,
+      user1UsdcTokenAccount,
+    );
+    assert.ok(usdcTokenAccountAfter.amount.toNumber() === usdcTokenAccountBeforeBalanceTx - releasePrice)
+
+    const releaseAfter = await nina.account.release.fetch(hubReleaseAccount);
+    assert.ok(releaseAfter.remainingSupply.toNumber() === releaseBefore.remainingSupply.toNumber() - 1);
+    assert.equal(releaseAfter.saleCounter.toNumber(), 1);
+    assert.equal(releaseAfter.totalCollected.toNumber(), releasePrice);
+
+    const hubReleaseAfter = await nina.account.hubRelease.fetch(hubRelease);
+    assert.equal(hubReleaseAfter.sales.toNumber(), 1);
+
+    const royaltyTokenAccountAfter = await getTokenAccount(
+      provider,
+      releaseAfter.royaltyTokenAccount,
+    );
+    assert.equal(royaltyTokenAccountAfter.amount.toNumber(), releasePrice);
+  });
 
   it('should not create a release via hub if artist hubArtist does not match', async () => {
     const paymentMint = usdcMint;

@@ -478,6 +478,15 @@ pub struct ReleaseSold {
 }
 
 #[event]
+pub struct ReleaseSoldViaHub {
+    pub public_key: Pubkey,
+    pub purchaser: Pubkey,
+    pub hub: Pubkey,
+    #[index]
+    pub date: i64,
+}
+
+#[event]
 pub struct ReleaseMetadataUpdated {
     pub public_key: Pubkey,
     pub metadata_public_key: Pubkey,

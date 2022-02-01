@@ -46,6 +46,13 @@ pub mod nina {
         instructions::release_purchase::handler(ctx, amount)
     }
 
+    pub fn release_purchase_via_hub(
+        ctx: Context<ReleasePurchaseViaHub>,
+        amount: u64,
+    ) -> ProgramResult {
+        instructions::release_purchase_via_hub::handler(ctx, amount)
+    }
+
     pub fn release_revenue_share_collect(
         ctx: Context<ReleaseRevenueShareCollect>,
     ) -> ProgramResult {
