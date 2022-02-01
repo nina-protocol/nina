@@ -1743,6 +1743,10 @@ const releaseContextHelper = ({
   }
 
   const releaseFetchStatus = async (releasePubkey) => {
+    if (typeof releasePubkey !== 'string') {
+      releasePubkey = releasePubkey.toBase58()
+    }
+    
     try {
       const result = await fetch(
         `${NinaClient.endpoints.pressingPlant}/api/file/status?tokenId=${releasePubkey}`

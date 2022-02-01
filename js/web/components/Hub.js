@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 import { styled } from '@mui/material/styles'
 
-// import HubAddArtist from "./HubAddArtist";
+import HubAddArtist from "./HubAddArtist";
 
 import { useRouter } from 'next/router'
 
@@ -18,9 +18,11 @@ const Hub = () => {
   const router = useRouter()
   const hubPubkey = router.query.hubPubkey
   const wallet = useWallet()
-  const { getHub, hubState, getHubArtists } = useContext(HubContext)
+  const { getHub, hubState, hubArtistsState, hubReleasesState, getHubArtists, getHubReleases } = useContext(HubContext)
 
-  const [hubData, setHubData] = useState(hubState[hubPubkey] || null)
+  const [hubData, setHubData] = useState(hubState[hubPubkey])
+  const [hubArtists, setHubArtists] = useState(hubArtistsState[hubPubkey])
+  const [hubReleases, setHubReleases] = useState(hubReleasesState[hubPubkey])
   const [userIsCurator, setUserIsCurator] = useState(false)
 
   useEffect(() => {
@@ -34,16 +36,30 @@ const Hub = () => {
   }, [hubState[hubPubkey]])
 
   useEffect(() => {
-    if (!hubState[hubPubkey]?.hubArtists && hubPubkey) {
-      console.log('CALLING')
+    console.log('hubArtistsState :>> ', hubArtistsState[hubPubkey]);
+    setHubArtists(hubArtistsState[hubPubkey])
+  }, [hubArtistsState[hubPubkey]])
+
+  useEffect(() => {
+    if (!hubArtistsState[hubPubkey] && hubPubkey) {
       getHubArtists(hubPubkey)
     }
-  }, [hubState[hubPubkey]])
+  }, [hubArtistsState[hubPubkey]])
+
+  useEffect(() => {
+    if (!hubReleasesState[hubPubkey] && hubPubkey) {
+      getHubReleases(hubPubkey)
+    }
+  }, [hubReleasesState[hubPubkey]])
+
+
+
+  console.log('hubState :>> ', hubState);
 
   useEffect(() => {
     if (wallet.connected) {
       if (
-        wallet?.publicKey?.toBase58() === hubData?.account.curator.toBase58()
+        wallet?.publicKey?.toBase58() === hubData?.curator.toBase58()
       ) {
         setUserIsCurator(true)
       }
@@ -54,8 +70,8 @@ const Hub = () => {
     <HubWrapper>
       {hubData && (
         <>
-          <h1>{hubData.account.name}</h1>
-          {/* {JSON.stringify(hubData, null, 2)} */}
+           <h1>{hubData.name}</h1>
+          {/* {JSON.stringify(hubData, null, 2)}  */}
         </>
       )}
 
@@ -69,16 +85,39 @@ const Hub = () => {
             </Link>
           </Box>
 
-          {/* 
+          
           <Box width="40%">
             <Typography>
                 add an artist to your hub
             </Typography>
 
             <HubAddArtist hubPubkey={hubPubkey} />
-          </Box> */}
+          </Box>
         </>
       )}
+
+      {hubArtists && Object.keys(hubArtists).length > 0 &&
+        <Box>
+            There are {Object.keys(hubArtists).length} artists associated with this hub:
+            <ul>
+            {Object.keys(hubArtists).map(artistPubkey => {
+              const hubArtist = hubArtists[artistPubkey]
+              return <li>{hubArtist.artist.toBase58()}</li>
+            }) }
+            </ul>
+        </Box>
+      }
+      {hubReleases && Object.keys(hubReleases).length > 0 &&
+        <Box>
+          There are {Object.keys(hubReleases).length} releases associated with this hub:
+          <ul>
+            {Object.keys(hubReleases).map(releasePubkey => {
+              const hubRelease = hubReleases[releasePubkey]
+              return <li>{hubRelease.release.toBase58()}</li>
+            })}
+          </ul>
+        </Box>
+      }
     </HubWrapper>
   )
 }

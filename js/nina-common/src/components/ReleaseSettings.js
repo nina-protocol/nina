@@ -37,7 +37,6 @@ const ReleaseSettings = (props) => {
 
   const hasMetadata = async (releasePubkey) => {
     const result = await releaseFetchStatus(releasePubkey)
-    console.log(result)
     setUploadStatus(result)
     if (result.status === "success") {
       clearInterval(timer)

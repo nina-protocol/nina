@@ -18,6 +18,8 @@ const HubContextProvider = ({ children }) => {
   const wallet = useWallet()
   const { connection } = useContext(ConnectionContext)
   const [hubState, setHubState] = useState({})
+  const [hubArtistsState, setHubArtistsState] = useState({})
+  const [hubReleasesState, setHubReleasesState] = useState({})
 
   const usdcMint = NinaClient.ids().mints.usdc
   const USDC_MINT_ID = new anchor.web3.PublicKey(usdcMint)
@@ -32,12 +34,17 @@ const HubContextProvider = ({ children }) => {
     hubRemoveRelease,
     releaseInitViaHub,
     filterHubsByCurator, 
-    getHubArtists
+    getHubArtists,
+    getHubReleases,
   } = hubContextHelper({
     connection,
     wallet,
     hubState,
     setHubState,
+    hubArtistsState,
+    setHubArtistsState,
+    hubReleasesState,
+    setHubReleasesState,
     USDC_MINT_ID
   })
 
@@ -52,9 +59,12 @@ const HubContextProvider = ({ children }) => {
         hubRemoveArtist,
         hubRemoveRelease,
         hubState,
+        hubArtistsState,
+        hubReleasesState,
         releaseInitViaHub,
         filterHubsByCurator,
-        getHubArtists
+        getHubArtists,
+        getHubReleases
       }}
     >
       {children}
@@ -67,6 +77,10 @@ const hubContextHelper = ({
   wallet,
   hubState,
   setHubState,
+  hubArtistsState,
+  setHubArtistsState,
+  hubReleasesState,
+  setHubReleasesState,
   USDC_MINT_ID
 }) => {
   const provider = new anchor.Provider(
@@ -158,8 +172,6 @@ const hubContextHelper = ({
         ],
         nina.program.programId
       );
-
-      console.log('hubArtist :>> ', hubArtist);
 
       const txid = await nina.program.rpc.hubAddArtist({
         accounts: {
@@ -265,133 +277,6 @@ const hubContextHelper = ({
     }
   }
 
-  // const releaseInitViaHub = async (
-  //   {hubPubkey, 
-  //   artistPubkey,
-  //   retailPrice,
-  //   amount,
-  //   resalePercentage,
-  //   isUsdc = true,}
-  // ) => {
-  //   try {
-  //     const nina = await NinaClient.connect(provider)
-  //     hubPubkey = new anchor.web3.PublicKey(hubPubkey)
-  //     const hub = await nina.program.account.hub.fetch(new anchor.web3.PublicKey(hubPubkey))
-
-  //     const releaseMint = anchor.web3.Keypair.generate()
-  //     const paymentMint = new anchor.web3.PublicKey(
-  //       isUsdc ? NinaClient.ids().mints.usdc : NinaClient.ids().mints.wsol
-  //     )
-
-  //     const [release, releaseBump] =
-  //       await anchor.web3.PublicKey.findProgramAddress(
-  //         [
-  //           Buffer.from(anchor.utils.bytes.utf8.encode('nina-release')),
-  //           releaseMint.publicKey.toBuffer(),
-  //         ],
-  //         nina.program.programId
-  //       )
-
-  //     const [releaseSigner, releaseSignerBump] =
-  //       await anchor.web3.PublicKey.findProgramAddress(
-  //         [release.toBuffer()],
-  //         nina.program.programId
-  //       )
-  //     const releaseMintIx = await createMintInstructions(
-  //       provider,
-  //       provider.wallet.publicKey,
-  //       releaseMint.publicKey,
-  //       0
-  //     )
-
-  //     const [authorityTokenAccount, authorityTokenAccountIx] =
-  //       await findOrCreateAssociatedTokenAccount(
-  //         provider.connection,
-  //         provider.wallet.publicKey,
-  //         provider.wallet.publicKey,
-  //         anchor.web3.SystemProgram.programId,
-  //         anchor.web3.SYSVAR_RENT_PUBKEY,
-  //         paymentMint
-  //       )
-
-  //     const [royaltyTokenAccount, royaltyTokenAccountIx] =
-  //       await findOrCreateAssociatedTokenAccount(
-  //         provider.connection,
-  //         provider.wallet.publicKey,
-  //         releaseSigner,
-  //         anchor.web3.SystemProgram.programId,
-  //         anchor.web3.SYSVAR_RENT_PUBKEY,
-  //         paymentMint,
-  //         true
-  //       )
-
-  //     const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
-  //       [
-  //         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
-  //         hubPubkey.toBuffer(),
-  //         provider.wallet.publicKey.toBuffer(),
-  //       ],
-  //       nina.program.programId
-  //     );
-
-  //     const [hubRelease, hubReleaseBump] = await anchor.web3.PublicKey.findProgramAddress(
-  //       [
-  //         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
-  //         hubPubkey.toBuffer(),
-  //         release.toBuffer(),
-  //       ],
-  //       nina.program.programId
-  //     );
-  //     let instructions = [...releaseMintIx, royaltyTokenAccountIx]
-
-  //     if (authorityTokenAccountIx) {
-  //       instructions.push(authorityTokenAccountIx)
-  //     }
-
-  //     const config = {
-  //       amountTotalSupply: new anchor.BN(amount),
-  //       amountToArtistTokenAccount: new anchor.BN(0),
-  //       amountToVaultTokenAccount: new anchor.BN(0),
-  //       resalePercentage: new anchor.BN(resalePercentage * 10000),
-  //       price: new anchor.BN(NinaClient.uiToNative(retailPrice, paymentMint)),
-  //       releaseDatetime: new anchor.BN(Date.now() / 1000),
-  //     }
-
-  //     const bumps = {
-  //       release: releaseBump,
-  //       signer: releaseSignerBump,
-  //     }
-
-  //     const txid = await nina.program.rpc.releaseInitViaHub(config, bumps, {
-  //         accounts: {
-  //             release,
-  //             releaseSigner,
-  //             hub: hubPubkey,
-  //             hubArtist,
-  //             hubRelease,
-  //             hubCurator: hub.curator,
-  //             hubCuratorUsdcTokenAccount: hub.usdcTokenAccount,
-  //             releaseMint: releaseMint.publicKey,
-  //             payer: provider.wallet.publicKey,
-  //             authority: provider.wallet.publicKey,
-  //             authorityTokenAccount: authorityTokenAccount,
-  //             paymentMint,
-  //             royaltyTokenAccount,
-  //             systemProgram: anchor.web3.SystemProgram.programId,
-  //             tokenProgram: NinaClient.TOKEN_PROGRAM_ID,
-  //             rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-  //           },
-  //           signers: [releaseMint],
-  //           instructions,
-  //         })
-  //         await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
-  //         console.log("Bottom!");
-  //         return true
-  //   } catch (error) {
-  //     return ninaErrorHandler(error)
-  //   }
-  // }
-
   const getHub = async (hubPubkey) => {
     try {
       const nina = await NinaClient.connect(provider)
@@ -413,9 +298,22 @@ const hubContextHelper = ({
         connection
       )
 
-      console.log('hubArtists :>> ', hubArtists);
       saveHubArtistsToState(hubPubkey, hubArtists)
-      // saveHubsToState([formattedHub])
+    } catch (error) {
+      return ninaErrorHandler(error)
+    }
+  }
+
+  const getHubReleases = async (hubPubkey) => {
+    try {
+      const nina = await NinaClient.connect(provider)
+      let hubReleases = await getProgramAccounts(
+        nina.program,
+        'HubRelease',
+        {hub: hubPubkey},
+        connection
+      )
+      saveHubReleasesToState(hubPubkey, hubReleases)
     } catch (error) {
       return ninaErrorHandler(error)
     }
@@ -441,16 +339,17 @@ const hubContextHelper = ({
   const saveHubsToState = async (hubs) => {
     try {
       let updatedState = {...hubState}
+      
 
       for await (let hub of hubs) {
         const publicKey = hub.publicKey.toBase58()
           updatedState[publicKey] = {
-            account: {
-              ...hub.account,
+              curator: hub.account.curator,
+              fee: hub.account.fee,
+              hubSigner: hub.account.hubSigner,
               name: decodeNonEncryptedByteArray(hub.account.name),
-              uri: decodeNonEncryptedByteArray(hub.account.uri)
-            },
-            publicKey
+              uri: decodeNonEncryptedByteArray(hub.account.uri),
+              usdcTokenAccount: hub.account.usdcTokenAccount,
           }
         }
          setHubState(updatedState)
@@ -463,33 +362,78 @@ const hubContextHelper = ({
 
   const saveHubArtistsToState = async (hubPubkey, hubArtists) => {
     try {
-      let updatedState = {...hubState}
-
-      console.log('hub object :>> ', updatedState[hubPubkey]);
-      if (!updatedState[hubPubkey]?.hubArtists) {
-        updatedState[hubPubkey].hubArtists = {}
-      }
+      let updatedState = {...hubArtistsState}
 
       for await (let hubArtist of hubArtists) {
         const hubAristPublicKey = hubArtist.publicKey.toBase58()
           updatedState[hubPubkey] = {
             ...updatedState[hubPubkey],
-            hubArtists: {
-              ...updatedState[hubPubkey].hubArtists,
-              [hubAristPublicKey]: {
-               artist: hubArtist.artist
-             }
-            }
+            [hubAristPublicKey]: {
+             artist: hubArtist.artist
+           }
           }
         }
-        
-        setHubState(updatedState)
+        console.log('updatedState artists :>> ', updatedState);
+        setHubArtistsState(updatedState)
       }
 
      catch (error) {
       console.warn(error)
     }
   }
+
+  const saveHubReleasesToState = async (hubPubkey, hubReleases) => {
+    try {
+      let updatedState = {...hubReleasesState}
+
+      for await (let hubRelease of hubReleases) {
+        const hubReleasePublicKey = hubRelease.publicKey.toBase58()
+          updatedState[hubPubkey] = {
+            ...updatedState[hubPubkey],
+            [hubReleasePublicKey]: {
+             release: hubRelease.release
+           }
+          }
+        }
+        console.log('updatedState Releases :>> ', updatedState);
+        setHubReleasesState(updatedState)
+      }
+
+     catch (error) {
+      console.warn(error)
+    }
+  }
+
+  // const saveHubReleasesToState = async (hubPubkey, hubReleases) => {
+  //   try {
+  //     let updatedState = {...hubState}
+
+  //     if (!updatedState[hubPubkey]?.hubReleases) {
+  //       updatedState[hubPubkey].hubReleases = {}
+  //     }
+
+  //     for await (let hubRelease of hubReleases) {
+  //       // console.log('hubRelease.hub.toBase58() :>> ', hubRelease.hub.toBase58());
+  //       // console.log('hubRelease.release.toBase58() :>> ', hubRelease.release.toBase58());
+  //       // console.log('hubRelease.publicKey.toBase58() :>> ', hubRelease.hub.toBase58());
+  //       const hubReleasePublicKey = hubRelease.publicKey.toBase58()
+  //         updatedState[hubPubkey] = {
+  //           ...updatedState[hubPubkey],
+  //           hubReleases: {
+  //             ...updatedState[hubPubkey].hubReleases,
+  //             [hubReleasePublicKey]: {
+  //              release: hubRelease.release
+  //            }
+  //           }
+  //         }
+  //       }
+  //       setHubState(updatedState)
+  //     }
+
+  //    catch (error) {
+  //     console.warn(error)
+  //   }
+  // }
 
   const filterHubsByCurator = (userPubkey = undefined) => {
     // if (!wallet?.connected || (!userPubkey && !wallet?.publicKey)) {
@@ -519,7 +463,8 @@ const hubContextHelper = ({
     hubRemoveArtist,
     hubRemoveRelease,
     filterHubsByCurator,
-    getHubArtists
+    getHubArtists,
+    getHubReleases
   }
 }
 export default HubContextProvider
