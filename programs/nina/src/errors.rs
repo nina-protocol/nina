@@ -50,5 +50,6 @@ pub enum ErrorCode {
     HubArtistCannotBeRemovedFromHubUnauthorized,
     #[msg("HubArtist Cannot Remove Curator From Hub")]
     HubArtistCannotRemoveCuratorFromHub,
-
+    #[msg("HubRelease Cannot Be Removed From Hub Unauthorized")]
+    HubReleaseCannotBeRemovedFromHubUnauthorized,
 }

@@ -4119,7 +4119,7 @@ describe('Hub', async () => {
     )
   })
 
-  it('should not remove release from hub if not curator', async () => {
+  it('should not remove release from hub if unauthorized', async () => {
     const [hubRelease, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
@@ -4133,7 +4133,7 @@ describe('Hub', async () => {
       async () => {
         await nina.rpc.hubRemoveRelease({
           accounts: {
-            curator: user2.publicKey,
+            payer: user2.publicKey,
             hub,
             hubRelease,
             release,
@@ -4143,12 +4143,12 @@ describe('Hub', async () => {
         })
       },
       (err) => {
-        assert.equal(err.code, 2003);
+        console.log(err)
+        assert.equal(err.code, 6024);
         return true;
       }
     );
   })
-
 
   it('should remove artist from hub', async () => {
     const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
@@ -4191,17 +4191,37 @@ describe('Hub', async () => {
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
         hub.toBuffer(),
-        release.toBuffer(),
+        release2.toBuffer(),
       ],
       nina.programId
     );
 
-    await nina.rpc.hubRemoveRelease({
+    const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        hub.toBuffer(),
+        provider.wallet.publicKey.toBuffer(),
+      ],
+      nina.programId
+    );
+
+    await nina.rpc.hubAddRelease({
       accounts: {
-        curator: provider.wallet.publicKey,
+        payer: provider.wallet.publicKey,
         hub,
         hubRelease,
-        release,
+        hubArtist,
+        release: release2,
+        systemProgram: anchor.web3.SystemProgram.programId,
+        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+      }
+    })
+    await nina.rpc.hubRemoveRelease({
+      accounts: {
+        payer: provider.wallet.publicKey,
+        hub,
+        hubRelease,
+        release: release2,
         systemProgram: anchor.web3.SystemProgram.programId,
       }
     })
