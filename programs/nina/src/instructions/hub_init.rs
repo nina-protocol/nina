@@ -58,6 +58,7 @@ pub fn handler (
     let hub_artist = &mut ctx.accounts.hub_artist;
     hub_artist.hub = ctx.accounts.hub.key();
     hub_artist.artist = ctx.accounts.curator.key();
-
+    hub_artist.can_add_release = true;
+    
     Ok(())
 }

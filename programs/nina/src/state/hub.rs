@@ -25,6 +25,7 @@ pub struct HubRelease {
 pub struct HubArtist {
 	pub hub: Pubkey,
 	pub artist: Pubkey,
+	pub can_add_release: bool,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Default)]

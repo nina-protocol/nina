@@ -43,5 +43,7 @@ pub enum ErrorCode {
     #[msg("Cant withdraw more than deposited")]
     VaultWithdrawAmountTooHigh,
     #[msg("Withdraw amount must be greater than 0")]
-    VaultWithdrawAmountMustBeGreaterThanZero
+    VaultWithdrawAmountMustBeGreaterThanZero,
+    #[msg("HubArtist Cannot Add Release To Hub")]
+    HubArtistCannotAddReleaseToHub
 }

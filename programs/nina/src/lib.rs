@@ -170,8 +170,9 @@ pub mod nina {
 
     pub fn hub_add_artist(
         ctx: Context<HubAddArtist>,
+        can_add_release: bool
     ) -> ProgramResult {
-        instructions::hub_add_artist::handler(ctx)
+        instructions::hub_add_artist::handler(ctx, can_add_release)
     }
 
     pub fn hub_add_release(

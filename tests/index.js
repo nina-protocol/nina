@@ -63,6 +63,8 @@ let releasePrice = 10000000;
 let expectedAmountExchangeSellOffer = 5000000;
 let initializerAmount = 5000000;
 
+let releaseSellOut
+
 describe('Init', async () => {
   it('Set up USDC Mint + Users', async () => {
     user1 = await newAccount(provider);
@@ -944,14 +946,14 @@ describe('Release', async () => {
       0,
     );
 
-    const [releaseSellOut, releaseBump] = await anchor.web3.PublicKey.findProgramAddress(
+    const [_releaseSellOut, releaseBump] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-release")),
         releaseMintSellOut.publicKey.toBuffer(),
       ],
       nina.programId,
     );
-
+      releaseSellOut = _releaseSellOut
     const [releaseSignerSellOut, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
       [releaseSellOut.toBuffer()],
       nina.programId,
@@ -3518,6 +3520,7 @@ describe('Hub', async () => {
     assert.equal(hubArtistAfter.artist.toBase58(), provider.wallet.publicKey.toBase58())
     assert.equal(hubArtistAfter.hub.toBase58(), hub.toBase58())
   })
+
   let hubArtist
   it('should add artist to hub', async () => {
     const [_hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
@@ -3529,7 +3532,7 @@ describe('Hub', async () => {
       nina.programId
     );
     hubArtist = _hubArtist
-    await nina.rpc.hubAddArtist({
+    await nina.rpc.hubAddArtist(false, {
       accounts: {
         curator: provider.wallet.publicKey,
         hub,
@@ -3555,11 +3558,21 @@ describe('Hub', async () => {
       nina.programId
     );
 
+    const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        hub.toBuffer(),
+        provider.wallet.publicKey.toBuffer(),
+      ],
+      nina.programId
+    );
+
     await nina.rpc.hubAddRelease({
       accounts: {
-        curator: provider.wallet.publicKey,
+        payer: provider.wallet.publicKey,
         hub,
         hubRelease,
+        hubArtist,
         release,
         systemProgram: anchor.web3.SystemProgram.programId,
         rent: anchor.web3.SYSVAR_RENT_PUBKEY,
@@ -3569,6 +3582,47 @@ describe('Hub', async () => {
     const hubReleaseAfter = await nina.account.hubRelease.fetch(hubRelease)
     assert.equal(hubReleaseAfter.release.toBase58(), release.toBase58())
     assert.equal(hubReleaseAfter.hub.toBase58(), hub.toBase58())
+  })
+
+  it('should not add release to hub if artist doesnt have authority to', async () => {
+    const [hubRelease, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
+        hub.toBuffer(),
+        releaseSellOut.toBuffer(),
+      ],
+      nina.programId
+    );
+    
+    const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        hub.toBuffer(),
+        user1.publicKey.toBuffer(),
+      ],
+      nina.programId
+    );
+    await assert.rejects(
+      async () => {
+        await nina.rpc.hubAddRelease({
+          accounts: {
+            payer: user1.publicKey,
+            hub,
+            hubRelease,
+            hubArtist,
+            release: releaseSellOut,
+            systemProgram: anchor.web3.SystemProgram.programId,
+            rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+          },
+          signers: [user1]
+        })
+      },
+      (err) => {
+        console.log(err)
+        assert.equal(err.code, 6021);
+        return true;
+      }
+    );
   })
 
   it('should not add artist to hub with wrong curator', async () => {
@@ -3582,7 +3636,7 @@ describe('Hub', async () => {
     );
     await assert.rejects(
       async () => {
-        await nina.rpc.hubAddArtist({
+        await nina.rpc.hubAddArtist(true, {
           accounts: {
             curator: user1.publicKey,
             hub,
@@ -3591,36 +3645,6 @@ describe('Hub', async () => {
             systemProgram: anchor.web3.SystemProgram.programId,
             rent: anchor.web3.SYSVAR_RENT_PUBKEY,
           }, 
-          signers: [user1]
-        })
-      },
-      (err) => {
-        assert.equal(err.code, 2003);
-        return true;
-      }
-    );
-  })
-
-  it('should not add release to hub with wrong curator', async () => {
-    const [hubRelease, bump] = await anchor.web3.PublicKey.findProgramAddress(
-      [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
-        hub.toBuffer(),
-        release2.toBuffer(),
-      ],
-      nina.programId
-    );
-    await assert.rejects(
-      async () => {
-        await nina.rpc.hubAddRelease({
-          accounts: {
-            curator: user1.publicKey,
-            hub,
-            hubRelease,
-            release: release2,
-            systemProgram: anchor.web3.SystemProgram.programId,
-            rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-          },
           signers: [user1]
         })
       },

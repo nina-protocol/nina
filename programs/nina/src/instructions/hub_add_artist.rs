@@ -24,10 +24,12 @@ pub struct HubAddArtist<'info> {
 
 pub fn handler (
     ctx: Context<HubAddArtist>,
+    can_add_release: bool,
 ) -> ProgramResult {
     let hub_artist = &mut ctx.accounts.hub_artist;
     hub_artist.hub = ctx.accounts.hub.key();
     hub_artist.artist = ctx.accounts.artist.key();
-
+    hub_artist.can_add_release = can_add_release;
+    
     Ok(())
 }
