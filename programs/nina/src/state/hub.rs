@@ -5,10 +5,10 @@ use anchor_lang::prelude::*;
 pub struct Hub {
 	pub curator: Pubkey,
 	pub hub_signer: Pubkey,
-	pub usdc_token_account: Pubkey,
-	pub fee: u64,
+	pub publish_fee: u64,
 	pub name: [u8; 100],
 	pub uri: [u8; 200],
+	pub referral_fee: u64,
 }
 
 #[account]
@@ -30,7 +30,8 @@ pub struct HubArtist {
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Default)]
 pub struct HubInitParams {
-    pub fee: u64,
+    pub publish_fee: u64,
     pub name: String,
 	pub uri: String,
+	pub referral_fee: u64,
 }

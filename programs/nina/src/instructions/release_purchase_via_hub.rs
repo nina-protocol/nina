@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 use anchor_lang::solana_program::{
     program_option::{COption},
 };
-use anchor_spl::token::{self, TokenAccount, Token, Mint};
+use anchor_spl::token::{self, TokenAccount, Token, Transfer, Mint};
 
 use crate::state::*;
 use crate::errors::ErrorCode;
@@ -55,6 +55,21 @@ pub struct ReleasePurchaseViaHub<'info> {
         bump,
     )]
     pub hub_release: Box<Account<'info, HubRelease>>,
+    #[account(
+        constraint = hub.load()?.curator == hub_curator.key(),
+    )]
+    pub hub_curator: UncheckedAccount<'info>,
+    #[account(
+        seeds = [b"nina-hub-signer".as_ref(), hub.key().as_ref()],
+        bump,
+    )]
+    pub hub_signer: UncheckedAccount<'info>,
+    #[account(
+        mut,
+        constraint = hub_token_account.owner == hub_signer.key(),
+        constraint = hub_token_account.mint == release.load()?.payment_mint
+    )]
+    pub hub_token_account: Box<Account<'info, TokenAccount>>,
     #[account(address = token::ID)]
     pub token_program: Program<'info, Token>,
     pub clock: Sysvar<'info, Clock>,
@@ -80,6 +95,18 @@ pub fn handler(
         ctx.accounts.clock.clone(),
         amount,
     )?;
+
+    // Transfer referral fee from Payer to Hub curator
+    let cpi_accounts = Transfer {
+        from: ctx.accounts.payer_token_account.to_account_info(),
+        to: ctx.accounts.hub_token_account.to_account_info(),
+        authority: ctx.accounts.payer.to_account_info().clone(),
+    };
+    let cpi_program = ctx.accounts.token_program.to_account_info().clone();
+    let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
+    let hub = ctx.accounts.hub.load()?;
+    let referral_amount = (amount * hub.referral_fee) / 1000000;
+    token::transfer(cpi_ctx, referral_amount)?;    
 
     emit!(ReleaseSoldViaHub {
         public_key: *ctx.accounts.release.to_account_info().key,

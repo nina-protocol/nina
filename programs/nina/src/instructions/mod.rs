@@ -27,6 +27,7 @@ pub mod hub_add_artist;
 pub mod hub_add_release;
 pub mod hub_remove_artist;
 pub mod hub_remove_release;
+pub mod hub_withdraw;
 
 pub use release_init_protected::*;
 pub use release_init_with_credit::*;
@@ -57,4 +58,4 @@ pub use hub_add_artist::*;
 pub use hub_add_release::*;
 pub use hub_remove_artist::*;
 pub use hub_remove_release::*;
-
+pub use hub_withdraw::*;

@@ -52,4 +52,9 @@ pub enum ErrorCode {
     HubArtistCannotRemoveCuratorFromHub,
     #[msg("HubRelease Cannot Be Removed From Hub Unauthorized")]
     HubReleaseCannotBeRemovedFromHubUnauthorized,
+    #[msg("Hub Cant withdraw more than deposited")]
+    HubWithdrawAmountTooHigh,
+    #[msg("Hub Withdraw amount must be greater than 0")]
+    HubWithdrawAmountMustBeGreaterThanZero,
+
 }

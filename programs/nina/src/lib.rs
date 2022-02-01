@@ -193,4 +193,11 @@ pub mod nina {
         instructions::hub_remove_release::handler(ctx)
     }
 
+    pub fn hub_withdraw(
+        ctx: Context<HubWithdraw>,
+        amount: u64,
+        bump: u8,
+    ) -> ProgramResult {
+        instructions::hub_withdraw::handler(ctx, amount, bump)
+    }
 }
