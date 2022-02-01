@@ -32,10 +32,10 @@ const ReleaseCreateViaHub = () => {
   const router = useRouter()
   const hubPubkey = router.query.hubPubkey
   const wallet = useWallet()
-  const { pressingState, resetPressingState, releaseState } =
+  const { pressingState, resetPressingState, releaseState, releaseInitViaHub } =
     useContext(ReleaseContext)
   const { healthOk } = useContext(ConnectionContext)
-  const { getHub, hubState, releaseInitViaHub } = useContext(HubContext)
+  const { getHub, hubState} = useContext(HubContext)
 
   const [track, setTrack] = useState(undefined)
   const [artwork, setArtwork] = useState()

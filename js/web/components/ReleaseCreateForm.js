@@ -225,7 +225,7 @@ export default withFormik({
   },
   mapPropsToValues: () => {
     return {
-      artist: 'test name',
+      artist: 'new test',
       title: 'test title  ',
       description: 'descriptioj',
       catalogNumber: 'CLG1',

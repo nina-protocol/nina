@@ -59,6 +59,7 @@ const ReleaseContextProvider = ({ children }) => {
 
   const {
     releaseCreate,
+    releaseInitViaHub,
     releaseFetchStatus,
     releasePurchase,
     collectRoyaltyForRelease,
@@ -118,6 +119,7 @@ const ReleaseContextProvider = ({ children }) => {
         pressingState,
         resetPressingState,
         releaseCreate,
+        releaseInitViaHub,
         releaseFetchStatus,
         releasePurchase,
         releasePurchasePending,
@@ -334,6 +336,155 @@ const releaseContextHelper = ({
       return ninaErrorHandler(error)
     }
   }
+
+  const releaseInitViaHub = async (
+    {hubPubkey,
+      artistPubkey,
+      retailPrice,
+      amount,
+      resalePercentage,
+      isUsdc = true, }
+  ) => {
+    setPressingState({
+      ...pressingState,
+      pending: true,
+    })
+
+    try {
+      const nina = await NinaClient.connect(provider)
+      hubPubkey = new anchor.web3.PublicKey(hubPubkey)
+      const hub = await nina.program.account.hub.fetch(new anchor.web3.PublicKey(hubPubkey))
+
+      const releaseMint = anchor.web3.Keypair.generate()
+      const paymentMint = new anchor.web3.PublicKey(
+        isUsdc ? NinaClient.ids().mints.usdc : NinaClient.ids().mints.wsol
+      )
+
+      const [release, releaseBump] =
+        await anchor.web3.PublicKey.findProgramAddress(
+          [
+            Buffer.from(anchor.utils.bytes.utf8.encode('nina-release')),
+            releaseMint.publicKey.toBuffer(),
+          ],
+          nina.program.programId
+        )
+
+      const [releaseSigner, releaseSignerBump] =
+        await anchor.web3.PublicKey.findProgramAddress(
+          [release.toBuffer()],
+          nina.program.programId
+        )
+
+      setPressingState({
+        ...pressingState,
+        releasePubkey: release,
+      })
+      console.log('release :>> ', release);
+      console.log('pressingState :>> ', pressingState);
+
+      const releaseMintIx = await createMintInstructions(
+        provider,
+        provider.wallet.publicKey,
+        releaseMint.publicKey,
+        0
+      )
+
+      const [authorityTokenAccount, authorityTokenAccountIx] =
+        await findOrCreateAssociatedTokenAccount(
+          provider.connection,
+          provider.wallet.publicKey,
+          provider.wallet.publicKey,
+          anchor.web3.SystemProgram.programId,
+          anchor.web3.SYSVAR_RENT_PUBKEY,
+          paymentMint
+        )
+
+      const [royaltyTokenAccount, royaltyTokenAccountIx] =
+        await findOrCreateAssociatedTokenAccount(
+          provider.connection,
+          provider.wallet.publicKey,
+          releaseSigner,
+          anchor.web3.SystemProgram.programId,
+          anchor.web3.SYSVAR_RENT_PUBKEY,
+          paymentMint,
+          true
+        )
+
+      const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+        [
+          Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")),
+          hubPubkey.toBuffer(),
+          provider.wallet.publicKey.toBuffer(),
+        ],
+        nina.program.programId
+      );
+
+      const [hubRelease, hubReleaseBump] = await anchor.web3.PublicKey.findProgramAddress(
+        [
+          Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")),
+          hubPubkey.toBuffer(),
+          release.toBuffer(),
+        ],
+        nina.program.programId
+      );
+      let instructions = [...releaseMintIx, royaltyTokenAccountIx]
+
+      if (authorityTokenAccountIx) {
+        instructions.push(authorityTokenAccountIx)
+      }
+
+      const config = {
+        amountTotalSupply: new anchor.BN(amount),
+        amountToArtistTokenAccount: new anchor.BN(0),
+        amountToVaultTokenAccount: new anchor.BN(0),
+        resalePercentage: new anchor.BN(resalePercentage * 10000),
+        price: new anchor.BN(NinaClient.uiToNative(retailPrice, paymentMint)),
+        releaseDatetime: new anchor.BN(Date.now() / 1000),
+      }
+
+      const bumps = {
+        release: releaseBump,
+        signer: releaseSignerBump,
+      }
+
+      const txid = await nina.program.rpc.releaseInitViaHub(config, bumps, {
+        accounts: {
+          release,
+          releaseSigner,
+          hub: hubPubkey,
+          hubArtist,
+          hubRelease,
+          hubCurator: hub.curator,
+          hubCuratorUsdcTokenAccount: hub.usdcTokenAccount,
+          releaseMint: releaseMint.publicKey,
+          payer: provider.wallet.publicKey,
+          authority: provider.wallet.publicKey,
+          authorityTokenAccount: authorityTokenAccount,
+          paymentMint,
+          royaltyTokenAccount,
+          systemProgram: anchor.web3.SystemProgram.programId,
+          tokenProgram: NinaClient.TOKEN_PROGRAM_ID,
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        },
+        signers: [releaseMint],
+        instructions,
+      })
+      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+
+      await getRelease(release)
+
+      setPressingState({
+        ...pressingState,
+        pending: false,
+        completed: true,
+      })
+      console.log("bottom of releaseInitViaHub");
+      return true
+    } catch (error) {
+      return ninaErrorHandler(error)
+    }
+  }
+
 
   const releasePurchase = async (releasePubkey) => {
     const nina = await NinaClient.connect(provider)
@@ -1637,6 +1788,7 @@ const releaseContextHelper = ({
   return {
     addRoyaltyRecipient,
     releaseCreate,
+    releaseInitViaHub,
     releaseFetchStatus,
     releasePurchase,
     collectRoyaltyForRelease,

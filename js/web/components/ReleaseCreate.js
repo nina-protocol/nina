@@ -59,6 +59,7 @@ const ReleaseCreate = () => {
   }, [wallet?.connected])
 
   useEffect(() => {
+    console.log('pressingState :>> ', pressingState);
     if (pressingState.releasePubkey) {
       setReleasePubkey(pressingState.releasePubkey)
     }
@@ -146,7 +147,7 @@ const ReleaseCreate = () => {
           artwork={artwork}
         />
         <ReleaseSettings
-          releasePubkey={releasePubkey}
+          releasePubkey={releasePubkey.toBase58()}
           inCreateFlow={true}
           tempMetadata={formValues.releaseForm}
           artwork={artwork}
