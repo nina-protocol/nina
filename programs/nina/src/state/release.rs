@@ -1,5 +1,11 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{self, Transfer, SetAuthority};
+use anchor_lang::solana_program::{
+    program::{invoke},
+    program_option::{COption},
+};
+use anchor_spl::token::{self, TokenAccount, MintTo, Transfer, Token, Mint, SetAuthority};
+use spl_token::instruction::{close_account};
+use crate::utils::{wrapped_sol};
 
 use crate::errors::*;
 
@@ -31,6 +37,89 @@ pub struct Release {
 }
 
 impl Release {
+    pub fn release_purchase_handler<'info> (
+        payer: Signer<'info>,
+        purchaser: UncheckedAccount<'info>,
+        release_loader: &AccountLoader<'info, Release>,
+        release_signer: UncheckedAccount<'info>,
+        payer_token_account: Box<Account<'info, TokenAccount>>,
+        purchaser_release_token_account: Box<Account<'info, TokenAccount>>,
+        royalty_token_account: Box<Account<'info, TokenAccount>>,
+        release_mint: Account<'info, Mint>,
+        token_program: Program<'info, Token>,
+        clock: Sysvar<'info, Clock>,
+        amount: u64,
+    ) -> ProgramResult {
+        let mut release = release_loader.load_mut()?;
+
+        if !(release.release_datetime < clock.unix_timestamp) {
+            return Err(ErrorCode::ReleaseNotLive.into());
+        }
+    
+        if release.remaining_supply == 0 {
+            return Err(ErrorCode::SoldOut.into())
+        }
+    
+        if amount != release.price {
+            return Err(ErrorCode::WrongAmount.into())
+        };
+    
+        // Transfer USDC from Payer to Royalty USDC Account
+        let cpi_accounts = Transfer {
+            from: payer_token_account.to_account_info(),
+            to: royalty_token_account.to_account_info(),
+            authority: payer.to_account_info().clone(),
+        };
+        let cpi_program = token_program.to_account_info().clone();
+        let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
+        token::transfer(cpi_ctx, amount)?;
+    
+        // Update Sales Counters
+        release.total_collected += amount;
+        release.sale_counter += 1;
+        release.sale_total += amount;
+        release.remaining_supply -= 1;
+    
+        //Update Royalty Recipent Counters
+        release.update_royalty_recipients_owed(amount);
+    
+        //MintTo PurchaserReleaseTokenAccount
+        let cpi_accounts = MintTo {
+            mint: release_mint.to_account_info(),
+            to: purchaser_release_token_account.to_account_info(),
+            authority: release_signer.to_account_info().clone(),
+        };
+        let cpi_program = token_program.to_account_info().clone();
+    
+        let seeds = &[
+            release_loader.to_account_info().key.as_ref(),
+            &[release.bumps.signer],
+        ];
+        let signer = &[&seeds[..]];
+        let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer);
+        token::mint_to(cpi_ctx, 1)?;
+    
+        if release.payment_mint == wrapped_sol::ID {
+            invoke(
+                &close_account(
+                    token_program.to_account_info().key,
+                    payer_token_account.to_account_info().key,
+                    payer.to_account_info().key,
+                    payer.to_account_info().key,
+                    &[],
+                )?,
+                &[
+                    payer.to_account_info().clone(),
+                    payer_token_account.to_account_info().clone(),
+                    payer.to_account_info().clone(),
+                    token_program.to_account_info().clone(),
+                ]
+            )?;
+        }
+    
+        Ok(())
+    }
+
     pub fn release_revenue_share_transfer_handler<'info> (
         release_loader: &AccountLoader<'info, Release>,
         release_signer: AccountInfo<'info>,
@@ -383,6 +472,7 @@ pub struct RoyaltyRecipientAdded {
 #[event]
 pub struct ReleaseSold {
     pub public_key: Pubkey,
+    pub purchaser: Pubkey,
     #[index]
     pub date: i64,
 }
