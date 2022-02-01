@@ -22,6 +22,7 @@ const linksConnected = [
   'collection',
   'releases',
   'upload',
+  'hubs',
   'faq',
   'radio',
   'the soft lp',
@@ -32,6 +33,7 @@ const linksNotConnected = [
   'all Releases',
   'upload',
   'faq',
+  'hubs',
   'radio',
   'the soft lp',
 ]
