@@ -66,7 +66,7 @@ const ReleaseCreateViaHub = () => {
   useEffect(() => {
     if (wallet.connected) {
       if (
-        wallet?.publicKey?.toBase58() === hubData?.account.curator.toBase58()
+        wallet?.publicKey?.toBase58() === hubData?.curator.toBase58()
       ) {
         setUserIsCurator(true)
       }

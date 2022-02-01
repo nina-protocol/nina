@@ -41,6 +41,11 @@ const Hub = () => {
   }, [hubArtistsState[hubPubkey]])
 
   useEffect(() => {
+    console.log('hubReleasesState :>> ', hubReleasesState[hubPubkey]);
+    setHubReleases(hubReleasesState[hubPubkey])
+  }, [hubReleasesState[hubPubkey]])
+
+  useEffect(() => {
     if (!hubArtistsState[hubPubkey] && hubPubkey) {
       getHubArtists(hubPubkey)
     }
@@ -51,10 +56,6 @@ const Hub = () => {
       getHubReleases(hubPubkey)
     }
   }, [hubReleasesState[hubPubkey]])
-
-
-
-  console.log('hubState :>> ', hubState);
 
   useEffect(() => {
     if (wallet.connected) {
@@ -112,6 +113,7 @@ const Hub = () => {
           There are {Object.keys(hubReleases).length} releases associated with this hub:
           <ul>
             {Object.keys(hubReleases).map(releasePubkey => {
+              console.log('releasePubkey :>> ', releasePubkey);
               const hubRelease = hubReleases[releasePubkey]
               return <li>{hubRelease.release.toBase58()}</li>
             })}

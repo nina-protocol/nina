@@ -186,6 +186,8 @@ const hubContextHelper = ({
 
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed');
 
+      await getHubArtists(hubPubkey)
+
       return {
         success: true,
         msg: 'Artist Added to hub',
