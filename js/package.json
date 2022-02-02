@@ -4,15 +4,12 @@
   "main": "index.js",
   "private": true,
   "workspaces": [
-    "hub",
     "nina-common",
     "nina-radio",
     "soft-lp",
     "web"
   ],
   "scripts": {
-    "hub": "yarn workspace hub",
-    "hub:build": "yarn nina-common build && yarn hub build",
     "nina-common": "yarn workspace nina-common",
     "nina-radio": "yarn workspace nina-radio",
     "nina-radio:build": "yarn nina-common build && yarn nina-radio build",

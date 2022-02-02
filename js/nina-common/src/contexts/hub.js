@@ -238,7 +238,8 @@ const hubContextHelper = ({
         accounts: {
           payer: provider.wallet.publicKey,
           hub: hubPubkey,
-          hubRelease: hubArtist,
+          hubRelease,
+          hubArtist,
           release: releasePubkey,
           systemProgram: anchor.web3.SystemProgram.programId,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
