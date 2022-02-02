@@ -99,6 +99,12 @@ pub fn handler(
     hub_release.release = ctx.accounts.release.key();
     hub_release.published_through_hub = true;
     hub_release.sales = 0;
+    
+    emit!(HubReleaseAdded {
+        public_key: ctx.accounts.hub_release.key(),
+        hub: ctx.accounts.hub.key(),
+        release: ctx.accounts.release.key(),
+    });
 
     Ok(())
 }

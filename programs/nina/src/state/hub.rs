@@ -35,3 +35,43 @@ pub struct HubInitParams {
 	pub uri: String,
 	pub referral_fee: u64,
 }
+
+#[event]
+pub struct HubCreated {
+	#[index]
+	pub public_key: Pubkey,
+	pub hub_artist: Pubkey,
+	pub artist: Pubkey,
+}
+
+#[event]
+pub struct HubArtistAdded {
+	#[index]
+	pub public_key: Pubkey,
+	pub hub: Pubkey,
+	pub artist: Pubkey,
+}
+
+#[event]
+pub struct HubArtistRemoved {
+	#[index]
+	pub public_key: Pubkey,
+	pub hub: Pubkey,	
+	pub artist: Pubkey,
+}
+
+#[event]
+pub struct HubReleaseAdded {
+	#[index]
+	pub public_key: Pubkey,
+	pub hub: Pubkey,
+	pub release: Pubkey,
+}
+
+#[event]
+pub struct HubReleaseRemoved {
+	#[index]
+	pub public_key: Pubkey,
+	pub hub: Pubkey,
+	pub release: Pubkey,
+}

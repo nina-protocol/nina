@@ -36,5 +36,11 @@ pub fn handler (
         return Err(ErrorCode::HubArtistCannotRemoveCuratorFromHub.into());
     }
 
+    emit!(HubArtistRemoved {
+        public_key: ctx.accounts.hub_artist.key(),
+        hub: ctx.accounts.hub.key(),
+        artist: ctx.accounts.artist.key(),
+    });
+
     Ok(())
 }

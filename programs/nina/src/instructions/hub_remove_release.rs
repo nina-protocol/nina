@@ -31,5 +31,12 @@ pub fn handler (
        *ctx.accounts.payer.to_account_info().key != release.authority {
         return Err(ErrorCode::HubReleaseCannotBeRemovedFromHubUnauthorized.into());
     }
+
+    emit!(HubReleaseRemoved {
+        public_key: ctx.accounts.hub_release.key(),
+        hub: ctx.accounts.hub.key(),
+        release: ctx.accounts.release.key(),
+    });
+
     Ok(())
 }

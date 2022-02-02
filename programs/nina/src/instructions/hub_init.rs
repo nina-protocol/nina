@@ -70,5 +70,11 @@ pub fn handler (
     hub_artist.artist = ctx.accounts.curator.key();
     hub_artist.can_add_release = true;
 
+    emit!(HubCreated {
+        public_key: ctx.accounts.hub.key(),
+        hub_artist: ctx.accounts.hub_artist.key(),
+        artist: ctx.accounts.curator.key(),
+    });
+
     Ok(())
 }
