@@ -1,14 +1,14 @@
-import React, { useEffect, useState, useContext } from "react";
-import debounce from "lodash.debounce";
-import Head from "next/head";
-import { styled } from "@mui/material/styles";
-import ninaCommon from "nina-common";
-import { Typography, Box } from "@mui/material";
-import { isMobile } from "react-device-detect";
-import ReleaseListTable from "./ReleaseListTable";
-import ScrollablePageWrapper from "./ScrollablePageWrapper";
-import ReleaseTileList from "./ReleaseTileList";
-import ReleaseSearch from "./ReleaseSearch";
+import React, { useEffect, useState, useContext } from 'react'
+import debounce from 'lodash.debounce'
+import Head from 'next/head'
+import { styled } from '@mui/material/styles'
+import ninaCommon from 'nina-common'
+import { Typography, Box } from '@mui/material'
+import { isMobile } from 'react-device-detect'
+import ReleaseListTable from './ReleaseListTable'
+import ScrollablePageWrapper from './ScrollablePageWrapper'
+import ReleaseTileList from './ReleaseTileList'
+import ReleaseSearch from './ReleaseSearch'
 
 const { ReleaseContext } = ninaCommon.contexts
 const { Dots } = ninaCommon.components
@@ -114,33 +114,33 @@ const StyledDots = styled(Box)(() => ({
 }))
 
 const StyledReleaseSearch = styled(ReleaseSearch)(() => ({
-  position: "sticky",
-}));
+  position: 'sticky',
+}))
 const CollectionHeader = styled(Typography)(() => ({
-  maxWidth: "100%",
-  margin: "0 auto",
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "flex-end",
-  marginBottom: "15px",
-  fontWeight: "700",
-  textTransform: "uppercase",
-  cursor: "pointer",
-}));
+  maxWidth: '100%',
+  margin: '0 auto',
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'flex-end',
+  marginBottom: '15px',
+  fontWeight: '700',
+  textTransform: 'uppercase',
+  cursor: 'pointer',
+}))
 
 const AllReleasesWrapper = styled(Box)(({ theme }) => ({
-  maxWidth: "960px",
-  height: "auto",
-  minHeight: "50vh",
-  margin: "0 auto",
-  position: "relative",
-  "& a": {
+  maxWidth: '960px',
+  height: 'auto',
+  minHeight: '50vh',
+  margin: '0 auto',
+  position: 'relative',
+  '& a': {
     color: theme.palette.blue,
   },
-  [theme.breakpoints.down("md")]: {
-    padding: "0px 30px",
-    overflowX: "auto",
-    minHeight: "80vh",
+  [theme.breakpoints.down('md')]: {
+    padding: '0px 30px',
+    overflowX: 'auto',
+    minHeight: '80vh',
   },
 }))
 

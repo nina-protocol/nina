@@ -9,12 +9,12 @@ const HubPage = ({ hubPubkey }) => {
 }
 
 export const getServerSideProps = async (context) => {
-  const hubPubkey = context.params.hubPubkey;
+  const hubPubkey = context.params.hubPubkey
   return {
     props: {
       hubPubkey,
     },
-  };
-};
+  }
+}
 
 export default HubPage

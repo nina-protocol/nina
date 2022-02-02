@@ -39,7 +39,6 @@ const Hubs = () => {
 
   useEffect(() => {
     if (wallet?.connected) {
-      console.log('hubState :>> ', hubState)
       setUserCuratedHubs(filterHubsByCurator())
     } else {
       setUserCuratedHubs()
@@ -134,9 +133,7 @@ const Hubs = () => {
               <ul>
                 {userCuratedHubs.map((hub, i) => (
                   <li key={i}>
-                    <Link href={`/hubs/${hub.publicKey}`}>
-                      {hub.name}
-                    </Link>
+                    <Link href={`/hubs/${hub.publicKey}`}>{hub.name}</Link>
                   </li>
                 ))}
               </ul>

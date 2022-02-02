@@ -1,36 +1,36 @@
-import React, { useContext, useMemo, useState, useEffect } from "react";
-import { styled } from "@mui/material/styles";
-import { Typography, Box } from "@mui/material";
-import Tooltip from "@mui/material/Tooltip";
-import ninaCommon from "nina-common";
-import NavDrawer from "./NavDrawer";
-import { withFormik } from "formik";
-import Link from "next/link";
-import { useWallet } from "@solana/wallet-adapter-react";
+import React, { useContext, useMemo, useState, useEffect } from 'react'
+import { styled } from '@mui/material/styles'
+import { Typography, Box } from '@mui/material'
+import Tooltip from '@mui/material/Tooltip'
+import ninaCommon from 'nina-common'
+import NavDrawer from './NavDrawer'
+import { withFormik } from 'formik'
+import Link from 'next/link'
+import { useWallet } from '@solana/wallet-adapter-react'
 import {
   WalletDialogProvider,
   WalletMultiButton,
-} from "@solana/wallet-adapter-material-ui";
-import Breadcrumbs from "./Breadcrumbs";
-const { NinaContext, ConnectionContext } = ninaCommon.contexts;
+} from '@solana/wallet-adapter-material-ui'
+import Breadcrumbs from './Breadcrumbs'
+const { NinaContext, ConnectionContext } = ninaCommon.contexts
 
 const NavBar = () => {
-  const { usdcBalance } = useContext(NinaContext);
-  const { healthOk } = useContext(ConnectionContext);
-  const wallet = useWallet();
+  const { usdcBalance } = useContext(NinaContext)
+  const { healthOk } = useContext(ConnectionContext)
+  const wallet = useWallet()
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),
     [wallet?.publicKey]
   )
   const walletDisplay = useMemo(() => {
-    if (!wallet || !base58) return null;
-    return base58.slice(0, 4) + ".." + base58.slice(-4);
-  }, [wallet, base58]);
-  const [connectedString, setConnectedString] = useState();
+    if (!wallet || !base58) return null
+    return base58.slice(0, 4) + '..' + base58.slice(-4)
+  }, [wallet, base58])
+  const [connectedString, setConnectedString] = useState()
 
   useEffect(() => {
-    setConnectedString(healthOk ? "connected-healthy" : "connected-unhealthy");
-  }, [healthOk]);
+    setConnectedString(healthOk ? 'connected-healthy' : 'connected-unhealthy')
+  }, [healthOk])
 
   return (
     <Root>
@@ -62,14 +62,14 @@ const NavBar = () => {
               <Tooltip
                 title={
                   healthOk
-                    ? "Network Status: Good"
-                    : "Network Status: Degraded - Transactions may fail."
+                    ? 'Network Status: Good'
+                    : 'Network Status: Degraded - Transactions may fail.'
                 }
                 placement="bottom-end"
               >
                 <ConnectionDot
                   className={`${classes.connectionDot} ${
-                    wallet?.connected ? connectedString : ""
+                    wallet?.connected ? connectedString : ''
                   }`}
                 ></ConnectionDot>
               </Tooltip>
@@ -129,10 +129,10 @@ const NavCtas = styled('div')(() => ({
 
 const NavBalance = styled(Typography)(({ theme }) => ({
   color: theme.palette.blue,
-  [theme.breakpoints.down("md")]: {
-    display: "none",
+  [theme.breakpoints.down('md')]: {
+    display: 'none',
   },
-}));
+}))
 
 const Logo = styled('div')(({ theme }) => ({
   position: 'absolute',
@@ -150,8 +150,8 @@ const Logo = styled('div')(({ theme }) => ({
 }))
 
 const DesktopWalletWrapper = styled(Box)(() => ({
-  display: "flex",
-}));
+  display: 'flex',
+}))
 
 const StyledWalletDialogProvider = styled(WalletDialogProvider)(
   ({ theme }) => ({
@@ -224,19 +224,19 @@ const ConnectionDot = styled('span')(({ theme }) => ({
   height: '11px',
   width: '14px',
   backgroundColor: theme.palette.red,
-  borderRadius: "50%",
-  display: "inline-block",
-  marginTop: "2px",
-  "&.connected-healthy": {
+  borderRadius: '50%',
+  display: 'inline-block',
+  marginTop: '2px',
+  '&.connected-healthy': {
     backgroundColor: theme.palette.green,
   },
-  "&.connected-unhealthy": {
+  '&.connected-unhealthy': {
     backgroundColor: theme.palette.yellow,
   },
-  [theme.breakpoints.down("md")]: {
-    marginRight: "15px",
+  [theme.breakpoints.down('md')]: {
+    marginRight: '15px',
   },
-}));
+}))
 
 export default withFormik({
   enableReinitialize: true,

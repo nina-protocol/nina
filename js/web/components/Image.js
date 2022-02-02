@@ -1,26 +1,26 @@
-import React, { useState } from "react";
-import NextImage from "next/image";
-import { DateTime } from "luxon";
+import React, { useState } from 'react'
+import NextImage from 'next/image'
+import { DateTime } from 'luxon'
 
 function Image({ src, height, width, layout, priority, release }) {
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(false)
 
   const handleLoad = (event, byPass) => {
-    event.persist();
+    event.persist()
     if (event.target.srcset || byPass) {
-      setReady(true);
+      setReady(true)
     }
-  };
-  let ImageComponent;
+  }
+  let ImageComponent
   if (release) {
     if (release.tokenData) {
-      release = release.tokenData;
+      release = release.tokenData
     }
-    const now = DateTime.now();
+    const now = DateTime.now()
     const releaseDatetime = DateTime.fromMillis(
       release.releaseDatetime.toNumber() * 1000
-    );
-    const hours = now.diff(releaseDatetime, "hours").toObject().hours;
+    )
+    const hours = now.diff(releaseDatetime, 'hours').toObject().hours
 
     if (hours < 0.05) {
       if (src) {
@@ -28,9 +28,9 @@ function Image({ src, height, width, layout, priority, release }) {
           <img
             src={src}
             onLoad={(e) => handleLoad(e, true)}
-            style={{ width: "100%", height: "100%" }}
+            style={{ width: '100%', height: '100%' }}
           />
-        );
+        )
       }
     }
   }
@@ -44,7 +44,7 @@ function Image({ src, height, width, layout, priority, release }) {
         layout={layout}
         onLoad={(e) => handleLoad(e, false)}
       />
-    );
+    )
   }
 
   return (
@@ -61,8 +61,8 @@ function Image({ src, height, width, layout, priority, release }) {
 }
 
 function srcComparision(prevImage, nextImage) {
-  return prevImage.src === nextImage.src && nextImage.release;
+  return prevImage.src === nextImage.src && nextImage.release
 }
 
-const MemoizedImage = React.memo(Image, srcComparision);
-export default MemoizedImage;
+const MemoizedImage = React.memo(Image, srcComparision)
+export default MemoizedImage

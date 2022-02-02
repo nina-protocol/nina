@@ -1,27 +1,27 @@
-import React, { useContext, useMemo } from "react";
-import { styled } from "@mui/material/styles";
-import ninaCommon from "nina-common";
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import { Typography } from "@mui/material";
-import { Fade } from "@mui/material";
-import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
-import ControlPointIcon from "@mui/icons-material/ControlPoint";
-import Image from "./Image";
+import React, { useContext, useMemo } from 'react'
+import { styled } from '@mui/material/styles'
+import ninaCommon from 'nina-common'
+import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
+import { Typography } from '@mui/material'
+import { Fade } from '@mui/material'
+import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
+import ControlPointIcon from '@mui/icons-material/ControlPoint'
+import Image from './Image'
 
-const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts;
+const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts
 
 const ReleaseCard = (props) => {
-  const { artwork, metadata, preview, releasePubkey } = props;
-  const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext);
-  const { releaseState } = useContext(ReleaseContext);
-  const image = useMemo(() => metadata?.image);
+  const { artwork, metadata, preview, releasePubkey } = props
+  const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext)
+  const { releaseState } = useContext(ReleaseContext)
+  const image = useMemo(() => metadata?.image)
 
   return (
     <StyledReleaseCard>
       <StyledReleaseInfo>
         {metadata && (
-          <CtaWrapper sx={{ display: "flex" }}>
+          <CtaWrapper sx={{ display: 'flex' }}>
             <Button
               onClick={() =>
                 updateTxid(
@@ -50,7 +50,7 @@ const ReleaseCard = (props) => {
             <Typography variant="h4" color="white" align="left">
               {metadata?.properties?.artist.substring(0, 100) ||
                 metadata?.artist.substring(0, 100)}
-              ,{" "}
+              ,{' '}
               <i>
                 {metadata?.properties?.title.substring(0, 100) ||
                   metadata?.title.substring(0, 100)}
@@ -89,10 +89,10 @@ const ReleaseCard = (props) => {
 }
 
 const StyledReleaseCard = styled(Box)(() => ({
-  width: "100%",
-  minHeight: "100%",
-  margin: "auto",
-}));
+  width: '100%',
+  minHeight: '100%',
+  margin: 'auto',
+}))
 
 const CtaWrapper = styled(Box)(() => ({
   '& .MuiButton-root': {
@@ -110,11 +110,11 @@ const StyledReleaseInfo = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   justifyContent: 'space-between',
   padding: theme.spacing(1),
-  overflow: "hidden",
-  [theme.breakpoints.down("md")]: {
-    minHeight: "52px",
-    height: "unset",
-    paddingBottom: "15px",
+  overflow: 'hidden',
+  [theme.breakpoints.down('md')]: {
+    minHeight: '52px',
+    height: 'unset',
+    paddingBottom: '15px',
   },
 }))
 

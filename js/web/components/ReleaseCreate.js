@@ -1,18 +1,18 @@
-import React, { useState, useContext, useEffect } from "react";
-import { styled } from "@mui/material/styles";
-import ninaCommon from "nina-common";
-import { useSnackbar } from "notistack";
-import Button from "@mui/material/Button";
-import LinearProgress from "@mui/material/LinearProgress";
-import { Typography, Box } from "@mui/material";
-import { useWallet } from "@solana/wallet-adapter-react";
-import ReleaseCreateForm from "./ReleaseCreateForm";
-import ReleaseCreateConfirm from "./ReleaseCreateConfirm";
-import ReleaseCard from "./ReleaseCard";
-import NinaBox from "./NinaBox";
-import MediaDropzones from "./MediaDropzones";
-import * as Yup from "yup";
-import Link from "next/link";
+import React, { useState, useContext, useEffect } from 'react'
+import { styled } from '@mui/material/styles'
+import ninaCommon from 'nina-common'
+import { useSnackbar } from 'notistack'
+import Button from '@mui/material/Button'
+import LinearProgress from '@mui/material/LinearProgress'
+import { Typography, Box } from '@mui/material'
+import { useWallet } from '@solana/wallet-adapter-react'
+import ReleaseCreateForm from './ReleaseCreateForm'
+import ReleaseCreateConfirm from './ReleaseCreateConfirm'
+import ReleaseCard from './ReleaseCard'
+import NinaBox from './NinaBox'
+import MediaDropzones from './MediaDropzones'
+import * as Yup from 'yup'
+import Link from 'next/link'
 
 const { ReleaseSettings, Dots } = ninaCommon.components
 const { ConnectionContext, ReleaseContext, NinaContext } = ninaCommon.contexts
@@ -43,10 +43,10 @@ const ReleaseCreate = () => {
   const [formIsValid, setFormIsValid] = useState(false)
   const [formValues, setFormValues] = useState({
     releaseForm: {},
-  });
-  const [formValuesConfirmed, setFormValuesConfirmed] = useState(false);
-  const [imageProgress, setImageProgress] = useState();
-  const [audioProgress, setAudioProgress] = useState();
+  })
+  const [formValuesConfirmed, setFormValuesConfirmed] = useState(false)
+  const [imageProgress, setImageProgress] = useState()
+  const [audioProgress, setAudioProgress] = useState()
 
   useEffect(() => {
     return () => {
@@ -59,7 +59,6 @@ const ReleaseCreate = () => {
   }, [wallet?.connected])
 
   useEffect(() => {
-    console.log('object :>> ', object);
     if (pressingState.releasePubkey) {
       setReleasePubkey(pressingState.releasePubkey)
     }
@@ -84,14 +83,14 @@ const ReleaseCreate = () => {
 
   useEffect(async () => {
     if (track && artwork) {
-      setFormIsValid(await valid());
+      setFormIsValid(await valid())
     }
-  }, [formValues, track, artwork]);
+  }, [formValues, track, artwork])
 
   const valid = async () =>
     await ReleaseCreateSchema.isValid(formValues.releaseForm, {
       abortEarly: true,
-    });
+    })
 
   const handleSubmit = async () => {
     if (track && artwork) {
@@ -115,11 +114,11 @@ const ReleaseCreate = () => {
         })
         await track.restart()
       } else {
-        setFormValuesConfirmed(false);
-        enqueueSnackbar("Unable to create Release", {
-          variant: "failure",
-        });
-        setPending(false);
+        setFormValuesConfirmed(false)
+        enqueueSnackbar('Unable to create Release', {
+          variant: 'failure',
+        })
+        setPending(false)
       }
     }
   }
@@ -244,15 +243,15 @@ const ReleaseCreate = () => {
                 disabled={
                   pending ||
                   !formIsValid ||
-                  artwork?.meta.status === "uploading" ||
-                  track?.meta.status === "uploading"
+                  artwork?.meta.status === 'uploading' ||
+                  track?.meta.status === 'uploading'
                 }
-                sx={{ height: "54px" }}
+                sx={{ height: '54px' }}
               >
                 {pending && (
                   <Dots
                     msg={`Uploading ${
-                      audioProgress > 0 ? "Track" : "Image"
+                      audioProgress > 0 ? 'Track' : 'Image'
                     } - Please don't close this window`}
                   />
                 )}
@@ -314,8 +313,8 @@ const CreateCta = styled(Box)(({ theme }) => ({
 
 const NetworkDegradedMessage = styled(Box)(({ theme }) => ({
   color: theme.palette.red,
-  padding: "0 0 50px",
-}));
+  padding: '0 0 50px',
+}))
 
 const NpcMessage = styled(Box)(({ theme }) => ({
   textAlign: 'left',

@@ -35,7 +35,7 @@ const ReleaseCreateViaHub = () => {
   const { pressingState, resetPressingState, releaseState, releaseInitViaHub } =
     useContext(ReleaseContext)
   const { healthOk } = useContext(ConnectionContext)
-  const { getHub, hubState} = useContext(HubContext)
+  const { getHub, hubState } = useContext(HubContext)
 
   const [track, setTrack] = useState(undefined)
   const [artwork, setArtwork] = useState()
@@ -65,9 +65,7 @@ const ReleaseCreateViaHub = () => {
 
   useEffect(() => {
     if (wallet.connected) {
-      if (
-        wallet?.publicKey?.toBase58() === hubData?.curator.toBase58()
-      ) {
+      if (wallet?.publicKey?.toBase58() === hubData?.curator.toBase58()) {
         setUserIsCurator(true)
       }
     }

@@ -337,14 +337,13 @@ const releaseContextHelper = ({
     }
   }
 
-  const releaseInitViaHub = async (
-    {hubPubkey,
-      artistPubkey,
-      retailPrice,
-      amount,
-      resalePercentage,
-      isUsdc = true, }
-  ) => {
+  const releaseInitViaHub = async ({
+    hubPubkey,
+    retailPrice,
+    amount,
+    resalePercentage,
+    isUsdc = true, 
+  }) => {
     setPressingState({
       ...pressingState,
       pending: true,
@@ -353,7 +352,7 @@ const releaseContextHelper = ({
     try {
       const nina = await NinaClient.connect(provider)
       hubPubkey = new anchor.web3.PublicKey(hubPubkey)
-      const hub = await nina.program.account.hub.fetch(new anchor.web3.PublicKey(hubPubkey))
+      const hub = await nina.program.account.hub.fetch(hubPubkey)
 
       const releaseMint = anchor.web3.Keypair.generate()
       const paymentMint = new anchor.web3.PublicKey(
@@ -379,8 +378,6 @@ const releaseContextHelper = ({
         ...pressingState,
         releasePubkey: release,
       })
-      console.log('release :>> ', release);
-      console.log('pressingState :>> ', pressingState);
 
       const releaseMintIx = await createMintInstructions(
         provider,
@@ -410,7 +407,7 @@ const releaseContextHelper = ({
           true
         )
 
-      const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      const [hubArtist] = await anchor.web3.PublicKey.findProgramAddress(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")),
           hubPubkey.toBuffer(),
@@ -419,7 +416,7 @@ const releaseContextHelper = ({
         nina.program.programId
       );
 
-      const [hubRelease, hubReleaseBump] = await anchor.web3.PublicKey.findProgramAddress(
+      const [hubRelease] = await anchor.web3.PublicKey.findProgramAddress(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")),
           hubPubkey.toBuffer(),
@@ -478,7 +475,6 @@ const releaseContextHelper = ({
         pending: false,
         completed: true,
       })
-      console.log("bottom of releaseInitViaHub");
       return true
     } catch (error) {
       return ninaErrorHandler(error)
@@ -967,7 +963,6 @@ const releaseContextHelper = ({
   */
 
   const fetchRelease = async (releasePubkey) => {
-    console.log('releasePubkey :>> ', releasePubkey);
     try {
       const nina = await NinaClient.connect(provider)
       releasePubkey = new anchor.web3.PublicKey(releasePubkey)

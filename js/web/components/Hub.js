@@ -5,13 +5,20 @@ import ninaCommon from 'nina-common'
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Link from 'next/link'
-import HubAddArtist from "./HubAddArtist";
+import HubAddArtist from './HubAddArtist'
 
 const { HubContext } = ninaCommon.contexts
 
-const Hub = ({hubPubkey}) => {
+const Hub = ({ hubPubkey }) => {
   const wallet = useWallet()
-  const { getHub, hubState, hubArtistsState, hubReleasesState, filterHubArtistsByHub, filterHubReleasesByHub } = useContext(HubContext)
+  const {
+    getHub,
+    hubState,
+    hubArtistsState,
+    hubReleasesState,
+    filterHubArtistsByHub,
+    filterHubReleasesByHub,
+  } = useContext(HubContext)
 
   const [hubData, setHubData] = useState(hubState[hubPubkey])
   const [hubArtists, setHubArtists] = useState(hubArtistsState[hubPubkey])
@@ -27,20 +34,16 @@ const Hub = ({hubPubkey}) => {
   }, [hubState[hubPubkey]])
 
   useEffect(() => {
-    console.log('hubArtistsState :>> ', hubArtistsState);
     setHubArtists(filterHubArtistsByHub(hubPubkey))
   }, [hubArtistsState])
 
   useEffect(() => {
-    console.log('hubReleasesState :>> ', hubReleasesState);
     setHubReleases(filterHubReleasesByHub(hubPubkey))
   }, [hubReleasesState])
 
   useEffect(() => {
     if (wallet.connected) {
-      if (
-        wallet?.publicKey?.toBase58() === hubData?.curator.toBase58()
-      ) {
+      if (wallet?.publicKey?.toBase58() === hubData?.curator.toBase58()) {
         setUserIsCurator(true)
       }
     }
@@ -50,7 +53,7 @@ const Hub = ({hubPubkey}) => {
     <HubWrapper>
       {hubData && (
         <>
-           <h1>{hubData.name}</h1>
+          <h1>{hubData.name}</h1>
           {/* {JSON.stringify(hubData, null, 2)}  */}
         </>
       )}
@@ -65,40 +68,38 @@ const Hub = ({hubPubkey}) => {
             </Link>
           </Box>
 
-          
           <Box width="40%">
-            <Typography>
-                add an artist to your hub
-            </Typography>
+            <Typography>add an artist to your hub</Typography>
 
             <HubAddArtist hubPubkey={hubPubkey} />
           </Box>
         </>
       )}
 
-      {hubArtists && Object.keys(hubArtists).length > 0 &&
+      {hubArtists && Object.keys(hubArtists).length > 0 && (
         <Box>
-            There are {Object.keys(hubArtists).length} artists associated with this hub:
-            <ul>
-            {Object.keys(hubArtists).map(artistPubkey => {
-              const hubArtist = hubArtists[artistPubkey]
-              return <li>{hubArtist.artist}</li>
-            }) }
-            </ul>
-        </Box>
-      }
-      {hubReleases && Object.keys(hubReleases).length > 0 &&
-        <Box>
-          There are {Object.keys(hubReleases).length} releases associated with this hub:
+          There are {Object.keys(hubArtists).length} artists associated with
+          this hub:
           <ul>
-            {Object.keys(hubReleases).map(releasePubkey => {
-              console.log('releasePubkey :>> ', releasePubkey);
-              const hubRelease = hubReleases[releasePubkey]
-              return <li>{hubRelease.release}</li>
+            {Object.keys(hubArtists).map((artistPubkey) => {
+              const hubArtist = hubArtists[artistPubkey]
+              return <li key={hubArtist.artist}>{hubArtist.artist}</li>
             })}
           </ul>
         </Box>
-      }
+      )}
+      {hubReleases && Object.keys(hubReleases).length > 0 && (
+        <Box>
+          There are {Object.keys(hubReleases).length} releases associated with
+          this hub:
+          <ul>
+            {Object.keys(hubReleases).map((releasePubkey) => {
+              const hubRelease = hubReleases[releasePubkey]
+              return <li key={hubRelease.release}>{hubRelease.release}</li>
+            })}
+          </ul>
+        </Box>
+      )}
     </HubWrapper>
   )
 }

@@ -18,17 +18,17 @@ import Typography from '@mui/material/Typography'
 import QueueDrawer from './QueueDrawer'
 import Image from './Image'
 
-const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts;
-const { NinaClient } = ninaCommon.utils;
+const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts
+const { NinaClient } = ninaCommon.utils
 
 const AudioPlayer = () => {
   const { txid, updateTxid, playlist, isPlaying, setIsPlaying, currentIndex } =
-    useContext(AudioPlayerContext);
-  const { releaseState } = useContext(ReleaseContext);
-  const wallet = useWallet();
-  let playerRef = useRef();
-  const intervalRef = useRef();
-  const playlistRef = useRef([]);
+    useContext(AudioPlayerContext)
+  const { releaseState } = useContext(ReleaseContext)
+  const wallet = useWallet()
+  let playerRef = useRef()
+  const intervalRef = useRef()
+  const playlistRef = useRef([])
   // const [volume, setVolume] = useState(0.8)
   // const [muted, setMuted] = useState(false)
   const [trackProgress, setTrackProgress] = useState(0)

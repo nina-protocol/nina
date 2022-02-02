@@ -98,7 +98,7 @@ const RecentlyPublished = (props) => {
           {releasesStack.map((release, i) => {
             const imageUrl = release.metadata.image
             const isMultiple =
-              artistCount[release.metadata.properties.artist] > 1;
+              artistCount[release.metadata.properties.artist] > 1
             return (
               <ReleaseSlideWrapper key={i}>
                 <ReleaseSlide key={i}>
@@ -118,7 +118,7 @@ const RecentlyPublished = (props) => {
                       />
                     </a>
                   </Link>
-                  <ReleaseCopy sx={{ display: "flex" }}>
+                  <ReleaseCopy sx={{ display: 'flex' }}>
                     {isMultiple && (
                       <Typography variant="body2">
                         {`${
