@@ -1,7 +1,7 @@
-import Releases from "../../components/Releases";
+import Releases from '../../components/Releases'
 
 const Highlights = () => {
-  return <Releases type="highlights" />;
-};
+  return <Releases type="highlights" />
+}
 
-export default Highlights;
+export default Highlights

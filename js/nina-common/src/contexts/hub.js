@@ -4,14 +4,8 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { ConnectionContext } from './connection'
 import NinaClient from '../utils/client'
 import { ninaErrorHandler } from '../utils/errors'
-import {
-  createMintInstructions,
-  findOrCreateAssociatedTokenAccount,
-  getProgramAccounts
-} from '../utils/web3'
-import {
-  decodeNonEncryptedByteArray,
-} from '../utils/encrypt'
+import { findOrCreateAssociatedTokenAccount } from '../utils/web3'
+import { decodeNonEncryptedByteArray } from '../utils/encrypt'
 const USDC_MINT = new anchor.web3.PublicKey(NinaClient.ids().mints.usdc)
 const WRAPPED_SOL_MINT = new anchor.web3.PublicKey(NinaClient.ids().mints.wsol)
 
@@ -31,10 +25,9 @@ const HubContextProvider = ({ children }) => {
     hubAddRelease,
     hubRemoveArtist,
     hubRemoveRelease,
-    releaseInitViaHub,
-    filterHubsByCurator, 
-    getHubArtists,
-    getHubReleases,
+    filterHubsByCurator,
+    filterHubArtistsByHub,
+    filterHubReleasesByHub,
   } = hubContextHelper({
     connection,
     wallet,
@@ -59,10 +52,9 @@ const HubContextProvider = ({ children }) => {
         hubState,
         hubArtistsState,
         hubReleasesState,
-        releaseInitViaHub,
         filterHubsByCurator,
-        getHubArtists,
-        getHubReleases
+        filterHubArtistsByHub,
+        filterHubReleasesByHub,
       }}
     >
       {children}
@@ -87,42 +79,46 @@ const hubContextHelper = ({
   )
 
   const hubInit = async (hubParams) => {
-    console.log('~Hub Init~');
-    hubParams.publish_fee = new anchor.BN(hubParams.publish_fee)
-    hubParams.referral_fee = new anchor.BN(hubParams.referral_fee)
     try {
       const nina = await NinaClient.connect(provider)
+      hubParams.publish_fee = new anchor.BN(hubParams.publish_fee)
+      hubParams.referral_fee = new anchor.BN(hubParams.referral_fee)
 
-      const [hub] = await anchor.web3.PublicKey.findProgramAddress([
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub")), 
-        Buffer.from(anchor.utils.bytes.utf8.encode(hubParams.name))],
+      const [hub] = await anchor.web3.PublicKey.findProgramAddress(
+        [
+          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub')),
+          Buffer.from(anchor.utils.bytes.utf8.encode(hubParams.name)),
+        ],
         nina.program.programId
-      );
+      )
 
       const [hubSigner] = await anchor.web3.PublicKey.findProgramAddress(
-        [Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-signer")), hub.toBuffer()],
+        [
+          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-signer')),
+          hub.toBuffer(),
+        ],
         nina.program.programId
-      );
+      )
 
-      const [hubArtist] = await anchor.web3.PublicKey.findProgramAddress([
-          Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+      const [hubArtist] = await anchor.web3.PublicKey.findProgramAddress(
+        [
+          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-artist')),
           hub.toBuffer(),
           provider.wallet.publicKey.toBuffer(),
         ],
         nina.program.programId
-      );
+      )
 
-      let [usdcVault, usdcVaultIx] =
-        await findOrCreateAssociatedTokenAccount(
-          connection,
-          provider.wallet.publicKey,
-          hubSigner,
-          anchor.web3.SystemProgram.programId,
-          anchor.web3.SYSVAR_RENT_PUBKEY,
-          USDC_MINT
-        )
+      let [usdcVault, usdcVaultIx] = await findOrCreateAssociatedTokenAccount(
+        connection,
+        provider.wallet.publicKey,
+        hubSigner,
+        anchor.web3.SystemProgram.programId,
+        anchor.web3.SYSVAR_RENT_PUBKEY,
+        USDC_MINT
+      )
 
-        let [wrappedSolVault, wrappedSolVaultIx] =
+      let [wrappedSolVault, wrappedSolVaultIx] =
         await findOrCreateAssociatedTokenAccount(
           connection,
           provider.wallet.publicKey,
@@ -132,31 +128,26 @@ const hubContextHelper = ({
           WRAPPED_SOL_MINT
         )
 
-        //add IX for create
+      //add IX for create
 
-      const txid = await nina.program.rpc.hubInit(
-        hubParams, {
-          accounts: {
-            curator: provider.wallet.publicKey,
-            hub,
-            hubSigner,
-            hubArtist,
-            usdcMint: USDC_MINT,
-            wrappedSolMint: WRAPPED_SOL_MINT,
-            usdcVault,
-            wrappedSolVault,
-            systemProgram: anchor.web3.SystemProgram.programId,
-            tokenProgram: NinaClient.TOKEN_PROGRAM_ID,
-            rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-          },
-          instructions: [
-            usdcVaultIx,
-            wrappedSolVaultIx
-          ]
-        }
-      )
+      const txid = await nina.program.rpc.hubInit(hubParams, {
+        accounts: {
+          curator: provider.wallet.publicKey,
+          hub,
+          hubSigner,
+          hubArtist,
+          usdcMint: USDC_MINT,
+          wrappedSolMint: WRAPPED_SOL_MINT,
+          usdcVault,
+          wrappedSolVault,
+          systemProgram: anchor.web3.SystemProgram.programId,
+          tokenProgram: NinaClient.TOKEN_PROGRAM_ID,
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        },
+        instructions: [usdcVaultIx, wrappedSolVaultIx],
+      })
 
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed');
+      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
 
       await getHub(hub.toBase58())
 
@@ -164,27 +155,24 @@ const hubContextHelper = ({
         success: true,
         msg: 'Hub Created',
       }
-      
     } catch (error) {
       return ninaErrorHandler(error)
     }
   }
 
   const hubAddArtist = async (artistPubkey, hubPubkey, canAddReleases) => {
-
-    artistPubkey = new anchor.web3.PublicKey(artistPubkey)
-    hubPubkey = new anchor.web3.PublicKey(hubPubkey)
-
     try {
       const nina = await NinaClient.connect(provider)
+      artistPubkey = new anchor.web3.PublicKey(artistPubkey)
+      hubPubkey = new anchor.web3.PublicKey(hubPubkey)
       const [hubArtist] = await anchor.web3.PublicKey.findProgramAddress(
         [
-          Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-artist')),
           hubPubkey.toBuffer(),
           artistPubkey.toBuffer(),
         ],
         nina.program.programId
-      );
+      )
 
       const txid = await nina.program.rpc.hubAddArtist(canAddReleases, {
         accounts: {
@@ -194,19 +182,17 @@ const hubContextHelper = ({
           artist: artistPubkey,
           systemProgram: anchor.web3.SystemProgram.programId,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-        }
+        },
       })
 
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed');
+      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
 
-      await getHubArtists(hubPubkey)
+      await getHub(hubPubkey.toBase58())
 
       return {
         success: true,
         msg: 'Artist Added to hub',
       }
-
-
     } catch (error) {
       return ninaErrorHandler(error)
     }
@@ -217,88 +203,102 @@ const hubContextHelper = ({
 
     try {
       const nina = await NinaClient.connect(provider)
+      hubPubkey = new anchor.web3.PublicKey(hubPubkey)
+      releasePubkey = new anchor.web3.PublicKey(releasePubkey)
       const [hubRelease] = await anchor.web3.PublicKey.findProgramAddress(
         [
-          Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
+          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-release')),
           hubPubkey.toBuffer(),
           releasePubkey.toBuffer(),
         ],
         nina.programId
-      );
-      
+      )
+
       const [hubArtist] = await anchor.web3.PublicKey.findProgramAddress(
         [
-          Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-artist')),
           hubPubkey.toBuffer(),
           provider.wallet.publicKey.toBuffer(),
         ],
         nina.programId
-      );
+      )
 
-
-      await nina.rpc.hubAddRelease({
+      const txid = await nina.rpc.hubAddRelease({
         accounts: {
           payer: provider.wallet.publicKey,
           hub: hubPubkey,
-          hubRelease: hubArtist,
+          hubRelease,
+          hubArtist,
           release: releasePubkey,
           systemProgram: anchor.web3.SystemProgram.programId,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-        }
+        },
       })
+      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+
+      await getHub(hubPubkey.toBase58())
     } catch (error) {
       return ninaErrorHandler(error)
     }
   }
 
-  const hubRemoveArtist = async (artistPubkey) => {
+  const hubRemoveArtist = async (hubPubkey, artistPubkey) => {
     try {
       const nina = await NinaClient.connect(provider)
+      hubPubkey = new anchor.web3.PublicKey(hubPubkey)
+      artistPubkey = new anchor.web3.PublicKey(artistPubkey)
       const [hubArtist] = await anchor.web3.PublicKey.findProgramAddress(
         [
-          Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
-          hub.toBuffer(),
+          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-artist')),
+          hubPubkey.toBuffer(),
           artistPubkey.toBuffer(),
         ],
         nina.programId
-      );
+      )
 
-      await nina.rpc.hubRemoveArtist({
+      const txid = await nina.rpc.hubRemoveArtist({
         accounts: {
           payer: provider.wallet.publicKey,
-          hub,
+          hub: hubPubkey,
           hubArtist,
           artist: artistPubkey,
           systemProgram: anchor.web3.SystemProgram.programId,
-        }
+        },
       })
+      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+
+      await getHub(hubPubkey.toBase58())
     } catch (error) {
       return ninaErrorHandler(error)
     }
   }
 
-  const hubRemoveRelease = async (releasePubkey) => {
+  const hubRemoveRelease = async (hubPubkey, releasePubkey) => {
     try {
       const nina = await NinaClient.connect(provider)
+      hubPubkey = new anchor.web3.PublicKey(hubPubkey)
+      releasePubkey = new anchor.web3.PublicKey(releasePubkey)
       const [hubRelease] = await anchor.web3.PublicKey.findProgramAddress(
         [
-          Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
-          hub.toBuffer(),
+          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-release')),
+          hubPubkey.toBuffer(),
           releasePubkey.toBuffer(),
         ],
         nina.programId
-      );
+      )
 
-      await nina.rpc.hubRemoveRelease({
+      const txid = await nina.rpc.hubRemoveRelease({
         accounts: {
           payer: provider.wallet.publicKey,
-          hub,
+          hub: hubPubkey,
           hubRelease,
           release: releasePubkey,
           systemProgram: anchor.web3.SystemProgram.programId,
-        }
+        },
       })
-      
+      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+
+      await getHub(hubPubkey.toBase58())
     } catch (error) {
       return ninaErrorHandler(error)
     }
@@ -307,40 +307,48 @@ const hubContextHelper = ({
   const getHub = async (hubPubkey) => {
     try {
       const nina = await NinaClient.connect(provider)
-      const hub = await nina.program.account.hub.fetch(new anchor.web3.PublicKey(hubPubkey))
-      const formattedHub = {publicKey: new anchor.web3.PublicKey(hubPubkey), account: hub}
+      const hub = await nina.program.account.hub.fetch(
+        new anchor.web3.PublicKey(hubPubkey)
+      )
+      const formattedHub = {
+        publicKey: new anchor.web3.PublicKey(hubPubkey),
+        account: hub,
+      }
+
+      const hubResult = await fetch(
+        `${NinaClient.endpoints.api}/hubs/${hubPubkey}`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+      const hubJSON = await hubResult.json()
+
+      const hubArtists = []
+      let hubArtistAccounts = await anchor.utils.rpc.getMultipleAccounts(
+        connection,
+        hubJSON.hubArtists.map((r) => new anchor.web3.PublicKey(r))
+      )
+      hubArtistAccounts = hubArtistAccounts.filter((item) => item != null)
+      hubArtistAccounts.map((hubArtistAccounts) => {
+        const hubArtistPublicKey = hubArtistAccounts.publicKey.toBase58()
+        hubArtists.push(hubArtistPublicKey)
+      })
+
+      const hubReleases = []
+      let hubReleasesAccounts = await anchor.utils.rpc.getMultipleAccounts(
+        connection,
+        hubJSON.hubReleases.map((r) => new anchor.web3.PublicKey(r))
+      )
+      hubReleasesAccounts = hubReleasesAccounts.filter((item) => item != null)
+      hubReleasesAccounts.map((hubReleasesAccounts) => {
+        const hubReleasesPublicKey = hubReleasesAccounts.publicKey.toBase58()
+        hubReleases.push(hubReleasesPublicKey)
+      })
+
       saveHubsToState([formattedHub])
-    } catch (error) {
-      return ninaErrorHandler(error)
-    }
-  }
-
-  const getHubArtists = async (hubPubkey) => {
-    try {
-      const nina = await NinaClient.connect(provider)
-      let hubArtists = await getProgramAccounts(
-        nina.program,
-        'HubArtist',
-        {hub: hubPubkey},
-        connection
-      )
-
-      saveHubArtistsToState(hubPubkey, hubArtists)
-    } catch (error) {
-      return ninaErrorHandler(error)
-    }
-  }
-
-  const getHubReleases = async (hubPubkey) => {
-    try {
-      const nina = await NinaClient.connect(provider)
-      let hubReleases = await getProgramAccounts(
-        nina.program,
-        'HubRelease',
-        {hub: hubPubkey},
-        connection
-      )
-      saveHubReleasesToState(hubPubkey, hubReleases)
+      saveHubArtistsToState(hubArtistAccounts)
+      saveHubReleasesToState(hubReleasesAccounts)
     } catch (error) {
       return ninaErrorHandler(error)
     }
@@ -348,7 +356,7 @@ const hubContextHelper = ({
 
   const getAllHubs = async () => {
     try {
-      const nina = await NinaClient.connect(provider)     
+      const nina = await NinaClient.connect(provider)
       const hubs = await nina.program.account.hub.all()
       await saveHubsToState(hubs)
     } catch (error) {
@@ -364,102 +372,93 @@ const hubContextHelper = ({
 
   const saveHubsToState = async (hubs) => {
     try {
-      let updatedState = {...hubState}
-      
+      let updatedState = { ...hubState }
 
       for await (let hub of hubs) {
         const publicKey = hub.publicKey.toBase58()
-          updatedState[publicKey] = {
-              curator: hub.account.curator,
-              fee: hub.account.fee,
-              hubSigner: hub.account.hubSigner,
-              name: decodeNonEncryptedByteArray(hub.account.name),
-              uri: decodeNonEncryptedByteArray(hub.account.uri),
-              usdcTokenAccount: hub.account.usdcTokenAccount,
-          }
+        updatedState[publicKey] = {
+          curator: hub.account.curator,
+          fee: hub.account.fee,
+          hubSigner: hub.account.hubSigner,
+          name: decodeNonEncryptedByteArray(hub.account.name),
+          uri: decodeNonEncryptedByteArray(hub.account.uri),
+          usdcTokenAccount: hub.account.usdcTokenAccount,
         }
-         setHubState(updatedState)
       }
-
-     catch (error) {
+      setHubState(updatedState)
+    } catch (error) {
       console.warn(error)
     }
   }
 
-  const saveHubArtistsToState = async (hubPubkey, hubArtists) => {
+  const saveHubArtistsToState = async (hubArtists) => {
     try {
-      let updatedState = {...hubArtistsState}
-
-      for await (let hubArtist of hubArtists) {
-        const hubAristPublicKey = hubArtist.publicKey.toBase58()
-          updatedState[hubPubkey] = {
-            ...updatedState[hubPubkey],
-            [hubAristPublicKey]: {
-             artist: hubArtist.artist
-           }
-          }
+      const nina = await NinaClient.connect(provider)
+      let updatedState = { ...hubArtistsState }
+      for (let hubArtist of hubArtists) {
+        const layout =
+          nina.program.coder.accounts.accountLayouts.get('HubArtist')
+        let dataParsed = layout.decode(hubArtist.account.data.slice(8))
+        updatedState = {
+          ...updatedState,
+          [hubArtist.publicKey.toBase58()]: {
+            hub: dataParsed.hub.toBase58(),
+            artist: dataParsed.artist.toBase58(),
+            publicKey: hubArtist.publicKey.toBase58(),
+          },
         }
-        console.log('updatedState artists :>> ', updatedState);
-        setHubArtistsState(updatedState)
       }
-
-     catch (error) {
+      setHubArtistsState(updatedState)
+    } catch (error) {
       console.warn(error)
     }
   }
 
-  const saveHubReleasesToState = async (hubPubkey, hubReleases) => {
+  const saveHubReleasesToState = async (hubReleases) => {
     try {
-      let updatedState = {...hubReleasesState}
+      const nina = await NinaClient.connect(provider)
+      let updatedState = { ...hubReleasesState }
+      for (let hubRelease of hubReleases) {
+        const layout =
+          nina.program.coder.accounts.accountLayouts.get('HubRelease')
+        let dataParsed = layout.decode(hubRelease.account.data.slice(8))
 
-      for await (let hubRelease of hubReleases) {
-        const hubReleasePublicKey = hubRelease.publicKey.toBase58()
-          updatedState[hubPubkey] = {
-            ...updatedState[hubPubkey],
-            [hubReleasePublicKey]: {
-             release: hubRelease.release
-           }
-          }
+        updatedState = {
+          ...updatedState,
+          [hubRelease.publicKey.toBase58()]: {
+            hub: dataParsed.hub.toBase58(),
+            release: dataParsed.release.toBase58(),
+            publicKey: hubRelease.publicKey.toBase58(),
+          },
         }
-        console.log('updatedState Releases :>> ', updatedState);
-        setHubReleasesState(updatedState)
       }
-
-     catch (error) {
+      setHubReleasesState(updatedState)
+    } catch (error) {
       console.warn(error)
     }
   }
 
-  // const saveHubReleasesToState = async (hubPubkey, hubReleases) => {
-  //   try {
-  //     let updatedState = {...hubState}
+  const filterHubArtistsByHub = (hubPubkey) => {
+    const hubArtists = []
+    Object.keys(hubArtistsState).forEach((hubArtistPubkey) => {
+      const hubArtist = hubArtistsState[hubArtistPubkey]
+      if (hubArtist.hub === hubPubkey) {
+        hubArtists.push(hubArtist)
+      }
+    })
+    return hubArtists
+  }
 
-  //     if (!updatedState[hubPubkey]?.hubReleases) {
-  //       updatedState[hubPubkey].hubReleases = {}
-  //     }
-
-  //     for await (let hubRelease of hubReleases) {
-  //       // console.log('hubRelease.hub.toBase58() :>> ', hubRelease.hub.toBase58());
-  //       // console.log('hubRelease.release.toBase58() :>> ', hubRelease.release.toBase58());
-  //       // console.log('hubRelease.publicKey.toBase58() :>> ', hubRelease.hub.toBase58());
-  //       const hubReleasePublicKey = hubRelease.publicKey.toBase58()
-  //         updatedState[hubPubkey] = {
-  //           ...updatedState[hubPubkey],
-  //           hubReleases: {
-  //             ...updatedState[hubPubkey].hubReleases,
-  //             [hubReleasePublicKey]: {
-  //              release: hubRelease.release
-  //            }
-  //           }
-  //         }
-  //       }
-  //       setHubState(updatedState)
-  //     }
-
-  //    catch (error) {
-  //     console.warn(error)
-  //   }
-  // }
+  const filterHubReleasesByHub = (hubPubkey) => {
+    const hubReleases = []
+    Object.keys(hubReleasesState).forEach((hubReleasePubkey) => {
+      const hubRelease = hubReleasesState[hubReleasePubkey]
+      if (hubRelease.hub === hubPubkey) {
+        hubReleases.push(hubRelease)
+      }
+    })
+    return hubReleases
+  }
 
   const filterHubsByCurator = (userPubkey = undefined) => {
     // if (!wallet?.connected || (!userPubkey && !wallet?.publicKey)) {
@@ -469,12 +468,11 @@ const hubContextHelper = ({
     if (!userPubkey) {
       userPubkey = wallet?.publicKey.toBase58()
     }
-    
+
     const hubs = []
     Object.keys(hubState).forEach((hubPubkey) => {
       const hubData = hubState[hubPubkey]
       hubData.publicKey = hubPubkey
-      console.log('hubData :>> ', hubData);
       if (hubData.curator.toBase58() === userPubkey) {
         hubs.push(hubData)
       }
@@ -491,8 +489,8 @@ const hubContextHelper = ({
     hubRemoveArtist,
     hubRemoveRelease,
     filterHubsByCurator,
-    getHubArtists,
-    getHubReleases
+    filterHubArtistsByHub,
+    filterHubReleasesByHub,
   }
 }
 export default HubContextProvider

@@ -78,7 +78,7 @@ const ReleaseTileList = (props) => {
                   />
                 )}
               </HoverCard>
-              <Box sx={{ padding: "10px 0 0" }}>
+              <Box sx={{ padding: '10px 0 0' }}>
                 <ReleaseName>
                   {release.metadata.name.substring(0, 100)}
                 </ReleaseName>
@@ -92,15 +92,15 @@ const ReleaseTileList = (props) => {
 }
 
 const TileGrid = styled(Box)(({ theme }) => ({
-  display: "grid",
-  gridTemplateColumns: "repeat(3, 1fr)",
-  gridColumnGap: "30px",
-  gridRowGap: "30px",
-  maxWidth: "960px",
-  margin: "auto",
-  [theme.breakpoints.down("md")]: {
-    gridTemplateColumns: "repeat(2, 1fr)",
-    paddingBottom: "120px",
+  display: 'grid',
+  gridTemplateColumns: 'repeat(3, 1fr)',
+  gridColumnGap: '30px',
+  gridRowGap: '30px',
+  maxWidth: '960px',
+  margin: 'auto',
+  [theme.breakpoints.down('md')]: {
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    paddingBottom: '120px',
   },
 }))
 

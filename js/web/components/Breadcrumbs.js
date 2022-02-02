@@ -10,29 +10,27 @@ const { ReleaseContext } = ninaCommon.contexts
 
 const YourCollectionBreadcrumb = () => {
   const { releaseState, filterReleasesUserCollection } =
-    useContext(ReleaseContext);
-  const wallet = useWallet();
+    useContext(ReleaseContext)
+  const wallet = useWallet()
 
   const [userCollectionReleasesCount, setUserCollectionReleasesCount] =
     useState()
 
   useEffect(() => {
     if (wallet?.connected) {
-      setUserCollectionReleasesCount(
-        filterReleasesUserCollection().length || 0
-      );
+      setUserCollectionReleasesCount(filterReleasesUserCollection().length || 0)
     } else {
-      setUserCollectionReleasesCount(0);
+      setUserCollectionReleasesCount(0)
     }
-  }, [releaseState, wallet]);
+  }, [releaseState, wallet])
 
   return `Your Collection (${userCollectionReleasesCount || 0})`
 }
 
 const YourReleasesBreadcrumb = () => {
   const { releaseState, filterReleasesPublishedByUser } =
-    useContext(ReleaseContext);
-  const wallet = useWallet();
+    useContext(ReleaseContext)
+  const wallet = useWallet()
 
   const [userPublishedReleasesCount, setUserPublishedReleasesCount] =
     useState(0)

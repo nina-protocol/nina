@@ -128,7 +128,7 @@ const RecentlyPurchased = (props) => {
                   <div display="inline">
                     <Typography display="inline" variant="body2">
                       {release.metadata.properties.artist.substring(0, 100)},
-                    </Typography>{" "}
+                    </Typography>{' '}
                     <Typography
                       display="inline"
                       variant="body2"
@@ -196,16 +196,16 @@ const classes = {
 }
 
 const RecentlyPurchasedContainer = styled(Box)(({ theme }) => ({
-  minHeight: "400px",
-  maxHeight: "400px",
-  flexShrink: "0",
-  alignItems: "center",
-  "& a": {
-    minWidth: "400px",
-    maxWidth: "400px",
-    [theme.breakpoints.down("md")]: {
-      width: "100% !important",
-      minWidth: "unset",
+  minHeight: '400px',
+  maxHeight: '400px',
+  flexShrink: '0',
+  alignItems: 'center',
+  '& a': {
+    minWidth: '400px',
+    maxWidth: '400px',
+    [theme.breakpoints.down('md')]: {
+      width: '100% !important',
+      minWidth: 'unset',
     },
   },
   [theme.breakpoints.down('md')]: {
