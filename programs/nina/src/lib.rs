@@ -46,6 +46,13 @@ pub mod nina {
         instructions::release_purchase::handler(ctx, amount)
     }
 
+    pub fn release_purchase_via_hub(
+        ctx: Context<ReleasePurchaseViaHub>,
+        amount: u64,
+    ) -> ProgramResult {
+        instructions::release_purchase_via_hub::handler(ctx, amount)
+    }
+
     pub fn release_revenue_share_collect(
         ctx: Context<ReleaseRevenueShareCollect>,
     ) -> ProgramResult {
@@ -163,8 +170,9 @@ pub mod nina {
 
     pub fn hub_add_artist(
         ctx: Context<HubAddArtist>,
+        can_add_release: bool
     ) -> ProgramResult {
-        instructions::hub_add_artist::handler(ctx)
+        instructions::hub_add_artist::handler(ctx, can_add_release)
     }
 
     pub fn hub_add_release(
@@ -185,4 +193,11 @@ pub mod nina {
         instructions::hub_remove_release::handler(ctx)
     }
 
+    pub fn hub_withdraw(
+        ctx: Context<HubWithdraw>,
+        amount: u64,
+        bump: u8,
+    ) -> ProgramResult {
+        instructions::hub_withdraw::handler(ctx, amount, bump)
+    }
 }

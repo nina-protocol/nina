@@ -1,44 +1,44 @@
-import React, { useEffect, useState, useContext } from "react";
-import axios from "axios";
-import { styled } from "@mui/material/styles";
-import ninaCommon from "nina-common";
-import { useWallet } from "@solana/wallet-adapter-react";
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import { useSnackbar } from "notistack";
-import { Typography } from "@mui/material";
-import Link from "next/link";
-import CollectorModal from "./CollectorModal";
-const { Dots, ReleaseSettings } = ninaCommon.components;
-const { ReleaseContext, NinaContext, ExchangeContext } = ninaCommon.contexts;
-const { NinaClient } = ninaCommon.utils;
+import React, { useEffect, useState, useContext } from 'react'
+import axios from 'axios'
+import { styled } from '@mui/material/styles'
+import ninaCommon from 'nina-common'
+import { useWallet } from '@solana/wallet-adapter-react'
+import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
+import { useSnackbar } from 'notistack'
+import { Typography } from '@mui/material'
+import Link from 'next/link'
+import CollectorModal from './CollectorModal'
+const { Dots, ReleaseSettings } = ninaCommon.components
+const { ReleaseContext, NinaContext, ExchangeContext } = ninaCommon.contexts
+const { NinaClient } = ninaCommon.utils
 
 const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, router, relatedReleases } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const { releasePurchase, releasePurchasePending, releaseState, getRelease } =
-    useContext(ReleaseContext);
-  const { getAmountHeld, collection } = useContext(NinaContext);
+    useContext(ReleaseContext)
+  const { getAmountHeld, collection } = useContext(NinaContext)
   const {
     exchangeState,
     filterExchangesForReleaseBuySell,
     getExchangesForRelease,
-  } = useContext(ExchangeContext);
-  const [pending, setPending] = useState(undefined);
-  const [release, setRelease] = useState(undefined);
-  const [amountHeld, setAmountHeld] = useState(collection[releasePubkey]);
-  const [amountPendingBuys, setAmountPendingBuys] = useState(0);
-  const [amountPendingSales, setAmountPendingSales] = useState(0);
-  const [downloadButtonString, setDownloadButtonString] = useState("Download");
-  const [userIsRecipient, setUserIsRecipient] = useState(false);
-  const [exchangeTotalBuys, setExchangeTotalBuys] = useState(0);
-  const [exchangeTotalSells, setExchangeTotalSells] = useState(0);
+  } = useContext(ExchangeContext)
+  const [pending, setPending] = useState(undefined)
+  const [release, setRelease] = useState(undefined)
+  const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
+  const [amountPendingBuys, setAmountPendingBuys] = useState(0)
+  const [amountPendingSales, setAmountPendingSales] = useState(0)
+  const [downloadButtonString, setDownloadButtonString] = useState('Download')
+  const [userIsRecipient, setUserIsRecipient] = useState(false)
+  const [exchangeTotalBuys, setExchangeTotalBuys] = useState(0)
+  const [exchangeTotalSells, setExchangeTotalSells] = useState(0)
 
   useEffect(() => {
-    getRelease(releasePubkey);
-    getExchangesForRelease(releasePubkey);
-  }, [releasePubkey]);
+    getRelease(releasePubkey)
+    getExchangesForRelease(releasePubkey)
+  }, [releasePubkey])
 
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
@@ -68,14 +68,14 @@ const ReleasePurchase = (props) => {
     )
     setAmountPendingSales(
       filterExchangesForReleaseBuySell(releasePubkey, false, true).length
-    );
+    )
     setExchangeTotalBuys(
       filterExchangesForReleaseBuySell(releasePubkey, true, false).length
-    );
+    )
     setExchangeTotalSells(
       filterExchangesForReleaseBuySell(releasePubkey, false, false).length
-    );
-  }, [exchangeState]);
+    )
+  }, [exchangeState])
 
   useEffect(() => {
     if (release?.royaltyRecipients) {
@@ -173,7 +173,7 @@ const ReleasePurchase = (props) => {
         Artist Resale: {release.resalePercentage.toNumber() / 10000}%
       </Typography>
       <Typography variant="body2" align="left" paddingBottom="10px">
-        {" "}
+        {' '}
         <StyledLink href={`${pathString}/${releasePubkey}/market`} passHref>
           {`View Secondary Market (${exchangeTotalBuys + exchangeTotalSells})`}
         </StyledLink>
@@ -271,11 +271,11 @@ const AmountRemaining = styled(Typography)(({ theme }) => ({
 }))
 
 const StyledLink = styled(Link)(() => ({
-  "&:hover": {
-    cursor: "pointer",
-    opacity: "0.5 !import",
+  '&:hover': {
+    cursor: 'pointer',
+    opacity: '0.5 !import',
   },
-}));
+}))
 const StyledUserAmount = styled(Box)(({ theme }) => ({
   color: theme.palette.black,
   ...theme.helpers.baseFont,
@@ -292,4 +292,4 @@ const StyledDescription = styled(Typography)(({ theme }) => ({
   },
 }))
 
-export default ReleasePurchase;
+export default ReleasePurchase

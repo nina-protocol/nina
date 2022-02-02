@@ -150,9 +150,9 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
         });
       </script>
     </html>
-  `;
-  return <div dangerouslySetInnerHTML={{ __html: player }}></div>;
-};
+  `
+  return <div dangerouslySetInnerHTML={{ __html: player }}></div>
+}
 
 export const getServerSideProps = async (context) => {
   const releasePubkey = context.params.releasePubkey

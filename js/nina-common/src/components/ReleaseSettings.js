@@ -14,10 +14,10 @@ const ReleaseSettings = (props) => {
   const [release, setRelease] = useState(releaseState.tokenData[releasePubkey])
   const [metadata, setMetadata] = useState(releaseState.metadata[releasePubkey])
   const [displayValues, setDisplayValues] = useState({})
-  const [uploadStatus, setUploadStatus] = useState({
-    status: "pending",
-    reason: "image",
-  })
+  // const [uploadStatus, setUploadStatus] = useState({
+  //   status: "pending",
+  //   reason: "image",
+  // })
   let timer = undefined
 
   useEffect(() => {
@@ -37,8 +37,8 @@ const ReleaseSettings = (props) => {
 
   const hasMetadata = async (releasePubkey) => {
     const result = await releaseFetchStatus(releasePubkey)
-    setUploadStatus(result)
-    if (result.status === "success") {
+    // setUploadStatus(result)
+    if (result.status === 'success') {
       clearInterval(timer)
       timer = null
     }

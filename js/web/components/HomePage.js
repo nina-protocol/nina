@@ -1,21 +1,21 @@
-import React, { useContext, useState, useEffect } from "react";
-import { styled } from "@mui/material/styles";
-import { Typography, Box } from "@mui/material";
-import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
-import Button from "@mui/material/Button";
-import ninaCommon from "nina-common";
-import { useSnackbar } from "notistack";
-import RecentlyPublished from "./RecentlyPublished";
-import Link from "next/link";
-import ScrollablePageWrapper from "./ScrollablePageWrapper";
-const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts;
+import React, { useContext, useState, useEffect } from 'react'
+import { styled } from '@mui/material/styles'
+import { Typography, Box } from '@mui/material'
+import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
+import Button from '@mui/material/Button'
+import ninaCommon from 'nina-common'
+import { useSnackbar } from 'notistack'
+import RecentlyPublished from './RecentlyPublished'
+import Link from 'next/link'
+import ScrollablePageWrapper from './ScrollablePageWrapper'
+const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts
 
 const HomePage = () => {
   const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
-    useContext(ReleaseContext);
-  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext);
-  const [releasesRecent, setReleasesRecent] = useState({});
-  const { enqueueSnackbar } = useSnackbar();
+    useContext(ReleaseContext)
+  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext)
+  const [releasesRecent, setReleasesRecent] = useState({})
+  const { enqueueSnackbar } = useSnackbar()
 
   useEffect(() => {
     getReleasesRecent()
@@ -33,14 +33,14 @@ const HomePage = () => {
           align="left"
           sx={{ padding: { md: '0 165px 140px', xs: '30px 0px' } }}
         >
-          Nina is a new way to <Link href="/upload">publish</Link>,{" "}
-          <Link href="https://radio.nina.market">stream</Link>, and{" "}
+          Nina is a new way to <Link href="/upload">publish</Link>,{' '}
+          <Link href="https://radio.nina.market">stream</Link>, and{' '}
           <Link href="/releases">purchase</Link> music. We build tools for
-          artists + fans to create their context.{" "}
+          artists + fans to create their context.{' '}
         </BlueTypography>
 
-        <Box sx={{ padding: { md: "0 40px 140px 40px", xs: "30px 0px" } }}>
-          <Box sx={{ display: "flex", paddingLeft: { md: "30px", xs: "0" } }}>
+        <Box sx={{ padding: { md: '0 40px 140px 40px', xs: '30px 0px' } }}>
+          <Box sx={{ display: 'flex', paddingLeft: { md: '30px', xs: '0' } }}>
             <Typography
               variant="body1"
               align="left"
@@ -54,13 +54,13 @@ const HomePage = () => {
                       (release) => release.releasePubkey
                     )
                   ).then(() => {
-                    enqueueSnackbar("Now Playing: Nina Highlights", {
-                      variant: "info",
-                    });
+                    enqueueSnackbar('Now Playing: Nina Highlights', {
+                      variant: 'info',
+                    })
                   })
                 }
               >
-                <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
+                <PlayCircleOutlineOutlinedIcon sx={{ color: 'black' }} />
               </Button>
             </Typography>
           </Box>
@@ -77,7 +77,7 @@ const HomePage = () => {
         <Typography
           variant="h1"
           align="left"
-          sx={{ paddingBottom: { md: "30px", xs: "30px" } }}
+          sx={{ paddingBottom: { md: '30px', xs: '30px' } }}
         >
           Music on Nina can be publicly streamed by anyone, while also being
           released in the form of a digital edition as scarce or ubiquitous as
@@ -88,12 +88,12 @@ const HomePage = () => {
         <BlueTypography
           variant="h1"
           align="left"
-          sx={{ paddingBottom: { md: "140px", xs: "30px" } }}
+          sx={{ paddingBottom: { md: '140px', xs: '30px' } }}
         >
           More questions? Read our <Link href="/faq">FAQ</Link>.
         </BlueTypography>
-        <Box sx={{ padding: { md: "0 40px 140px 40px", xs: "30px 0px" } }}>
-          <Box sx={{ display: "flex", paddingLeft: { md: "30px", xs: "0" } }}>
+        <Box sx={{ padding: { md: '0 40px 140px 40px', xs: '30px 0px' } }}>
+          <Box sx={{ display: 'flex', paddingLeft: { md: '30px', xs: '0' } }}>
             <Typography
               variant="body1"
               align="left"
@@ -107,13 +107,13 @@ const HomePage = () => {
                       (release) => release.releasePubkey
                     )
                   ).then(() => {
-                    enqueueSnackbar("Now Playing: New Releases", {
-                      variant: "info",
-                    });
+                    enqueueSnackbar('Now Playing: New Releases', {
+                      variant: 'info',
+                    })
                   })
                 }
               >
-                <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
+                <PlayCircleOutlineOutlinedIcon sx={{ color: 'black' }} />
               </Button>
             </Typography>
           </Box>
@@ -139,7 +139,7 @@ const HomePage = () => {
         <BlueTypography
           variant="h1"
           align="center"
-          sx={{ paddingBottom: { md: "140px", xs: "30px" } }}
+          sx={{ paddingBottom: { md: '140px', xs: '30px' } }}
         >
           <Link href="/releases">Start exploring.</Link>
         </BlueTypography>
@@ -165,21 +165,21 @@ const HomePageContainer = styled('div')(({ theme }) => ({
   [`& .${classes.sectionHeader}`]: {
     fontWeight: '700 !important',
     paddingBottom: `${theme.spacing(1)}`,
-    textTransform: "uppercase !important",
-    position: "relative",
-    "& .MuiTypography-root": {
-      textTransform: "uppercase !important",
-      fontWeight: "700 !important",
+    textTransform: 'uppercase !important',
+    position: 'relative',
+    '& .MuiTypography-root': {
+      textTransform: 'uppercase !important',
+      fontWeight: '700 !important',
     },
-    "& .MuiButton-root": {
-      position: "absolute",
-      top: "-10px",
+    '& .MuiButton-root': {
+      position: 'absolute',
+      top: '-10px',
     },
   },
 }))
 
 const BlueTypography = styled(Typography)(({ theme }) => ({
-  "& a": { color: theme.palette.blue },
-}));
+  '& a': { color: theme.palette.blue },
+}))
 
 export default HomePage

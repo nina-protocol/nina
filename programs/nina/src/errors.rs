@@ -43,5 +43,18 @@ pub enum ErrorCode {
     #[msg("Cant withdraw more than deposited")]
     VaultWithdrawAmountTooHigh,
     #[msg("Withdraw amount must be greater than 0")]
-    VaultWithdrawAmountMustBeGreaterThanZero
+    VaultWithdrawAmountMustBeGreaterThanZero,
+    #[msg("HubArtist Cannot Add Release To Hub Unauthorized")]
+    HubArtistCannotAddReleaseToHubUnauthorized,
+    #[msg("HubArtist Cannot Be Removed From Hub Unauthorized")]
+    HubArtistCannotBeRemovedFromHubUnauthorized,
+    #[msg("HubArtist Cannot Remove Curator From Hub")]
+    HubArtistCannotRemoveCuratorFromHub,
+    #[msg("HubRelease Cannot Be Removed From Hub Unauthorized")]
+    HubReleaseCannotBeRemovedFromHubUnauthorized,
+    #[msg("Hub Cant withdraw more than deposited")]
+    HubWithdrawAmountTooHigh,
+    #[msg("Hub Withdraw amount must be greater than 0")]
+    HubWithdrawAmountMustBeGreaterThanZero,
+
 }

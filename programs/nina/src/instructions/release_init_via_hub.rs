@@ -31,6 +31,9 @@ pub struct ReleaseInitializeViaHub<'info> {
         payer = payer,
     )]
     pub hub_release: Box<Account<'info, HubRelease>>,
+    #[account(
+        constraint = hub.load()?.curator == hub_curator.key(),
+    )]
     pub hub_curator: UncheckedAccount<'info>,
     #[account(
         constraint = hub_curator_usdc_token_account.owner == hub_curator.key(),
@@ -87,13 +90,21 @@ pub fn handler(
         *ctx.accounts.hub_curator.to_account_info().key,
         ctx.accounts.hub_curator_usdc_token_account.to_account_info().clone(),
         ctx.accounts.token_program.to_account_info().clone(),
-        hub.fee,
+        hub.publish_fee,
         true,
     )?;
 
     let hub_release = &mut ctx.accounts.hub_release;
     hub_release.hub = ctx.accounts.hub.key();
     hub_release.release = ctx.accounts.release.key();
+    hub_release.published_through_hub = true;
+    hub_release.sales = 0;
+    
+    emit!(HubReleaseAdded {
+        public_key: ctx.accounts.hub_release.key(),
+        hub: ctx.accounts.hub.key(),
+        release: ctx.accounts.release.key(),
+    });
 
     Ok(())
 }

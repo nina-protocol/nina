@@ -388,12 +388,12 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
     '& .MuiTableCell-root': {
       ...theme.helpers.baseFont,
       padding: theme.spacing(1),
-      textAlign: "left",
-      whiteSpace: "nowrap",
-      textOverflow: "ellipsis",
-      maxWidth: "120px",
-      overflow: "hidden",
-      display: "table-cell",
+      textAlign: 'left',
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+      maxWidth: '120px',
+      overflow: 'hidden',
+      display: 'table-cell',
     },
   },
 
