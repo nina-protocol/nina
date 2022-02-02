@@ -11,7 +11,7 @@ const { HubContext } = ninaCommon.contexts
 
 const Hub = ({hubPubkey}) => {
   const wallet = useWallet()
-  const { getHub, hubState, hubArtistsState, hubReleasesState, getHubArtists, getHubReleases, filterHubArtistsByHub, filterHubReleasesByHub } = useContext(HubContext)
+  const { getHub, hubState, hubArtistsState, hubReleasesState, filterHubArtistsByHub, filterHubReleasesByHub } = useContext(HubContext)
 
   const [hubData, setHubData] = useState(hubState[hubPubkey])
   const [hubArtists, setHubArtists] = useState(hubArtistsState[hubPubkey])
@@ -20,8 +20,6 @@ const Hub = ({hubPubkey}) => {
 
   useEffect(() => {
     getHub(hubPubkey)
-    getHubArtists(hubPubkey)
-    getHubReleases(hubPubkey)
   }, [hubPubkey])
 
   useEffect(() => {

@@ -32,8 +32,6 @@ const HubContextProvider = ({ children }) => {
     hubRemoveArtist,
     hubRemoveRelease,
     filterHubsByCurator, 
-    getHubArtists,
-    getHubReleases,
     filterHubArtistsByHub,
     filterHubReleasesByHub,
   } = hubContextHelper({
@@ -63,8 +61,6 @@ const HubContextProvider = ({ children }) => {
         filterHubsByCurator,
         filterHubArtistsByHub,
         filterHubReleasesByHub,    
-        getHubArtists,
-        getHubReleases
       }}
     >
       {children}
@@ -311,46 +307,41 @@ const hubContextHelper = ({
       const nina = await NinaClient.connect(provider)
       const hub = await nina.program.account.hub.fetch(new anchor.web3.PublicKey(hubPubkey))
       const formattedHub = {publicKey: new anchor.web3.PublicKey(hubPubkey), account: hub}
+
+      const hubResult = await fetch(
+        `${NinaClient.endpoints.api}/hubs/${hubPubkey}`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+      const hubJSON = await hubResult.json()
+      
+      const hubArtists = []
+      let hubArtistAccounts = await anchor.utils.rpc.getMultipleAccounts(
+        connection,
+        hubJSON.hubArtists.map((r) => new anchor.web3.PublicKey(r))
+      )
+      hubArtistAccounts = hubArtistAccounts.filter((item) => item != null)
+      hubArtistAccounts.map((hubArtistAccounts) => {
+        const hubArtistPublicKey = hubArtistAccounts.publicKey.toBase58()
+        hubArtists.push(hubArtistPublicKey)
+      })
+
+      const hubReleases = []
+      let hubReleasesAccounts = await anchor.utils.rpc.getMultipleAccounts(
+        connection,
+        hubJSON.hubReleases.map((r) => new anchor.web3.PublicKey(r))
+      )
+      hubReleasesAccounts = hubReleasesAccounts.filter((item) => item != null)
+      hubReleasesAccounts.map((hubReleasesAccounts) => {
+        const hubReleasesPublicKey = hubReleasesAccounts.publicKey.toBase58()
+        hubReleases.push(hubReleasesPublicKey)
+      })
+
       saveHubsToState([formattedHub])
-    } catch (error) {
-      return ninaErrorHandler(error)
-    }
-  }
-
-  const getHubArtists = async (hubPubkey) => {
-    if (!hubPubkey) {
-      return
-    }
-    try {
-      const nina = await NinaClient.connect(provider)
-      const hubArtists = await nina.program.account.hubArtist.all()
-      const hubArtistsForHub = []
-      for await (let hubArtist of hubArtists) {
-        if (hubArtist.account.hub.toBase58() === hubPubkey) {
-          hubArtistsForHub.push(hubArtist)
-          console.log(hubArtist.publicKey.toBase58())
-        }
-      }
-      saveHubArtistsToState(hubArtistsForHub)
-    } catch (error) {
-      return ninaErrorHandler(error)
-    }
-  }
-
-  const getHubReleases = async (hubPubkey) => {
-    if (!hubPubkey) {
-      return
-    }
-    try {
-      const nina = await NinaClient.connect(provider)
-      const hubReleases = await nina.program.account.hubRelease.all()
-      const hubReleasesForHub = []
-      for await (let hubRelease of hubReleases) {
-        if (hubRelease.account.hub.toBase58() === hubPubkey) {
-          hubReleasesForHub.push(hubReleases)
-        }
-      }
-      saveHubReleasesToState(hubReleasesForHub)
+      saveHubArtistsToState(hubArtistAccounts)
+      saveHubReleasesToState(hubReleasesAccounts)
     } catch (error) {
       return ninaErrorHandler(error)
     }
@@ -376,7 +367,6 @@ const hubContextHelper = ({
     try {
       let updatedState = {...hubState}
       
-
       for await (let hub of hubs) {
         const publicKey = hub.publicKey.toBase58()
           updatedState[publicKey] = {
@@ -398,18 +388,20 @@ const hubContextHelper = ({
 
   const saveHubArtistsToState = async (hubArtists) => {
     try {
+      const nina = await NinaClient.connect(provider)     
       let updatedState = {...hubArtistsState}
-      console.log("saveHubArtistsToState: ", hubArtists)
       for (let hubArtist of hubArtists) {
+        const layout = nina.program.coder.accounts.accountLayouts.get('HubArtist')
+        let dataParsed = layout.decode(hubArtist.account.data.slice(8))
         updatedState = {
             ...updatedState,
             [hubArtist.publicKey.toBase58()]: {
-              hub: hubArtist.account.hub.toBase58(),
-              artist: hubArtist.account.artist.toBase58(),
+              hub: dataParsed.hub.toBase58(),
+              artist: dataParsed.artist.toBase58(),
+              publicKey: hubArtist.publicKey.toBase58(),
            }
           }
         }
-        console.log('updatedState artists :>> ', updatedState);
         setHubArtistsState(updatedState)
       }
 
@@ -423,15 +415,18 @@ const hubContextHelper = ({
       let updatedState = {...hubReleasesState}
 
       for (let hubRelease of hubReleases) {
+        const layout = nina.program.coder.accounts.accountLayouts.get('HubRelease')
+        let dataParsed = layout.decode(hubRelease.account.data.slice(8))
+
           updatedState = {
             ...updatedState,
             [hubRelease.publicKey.toBase58()]: {
-              hub: hubRelease.account.hub.toBase58(),
-              release: hubRelease.account.release.toBase58(),
+              hub: dataParsed.hub.toBase58(),
+              release: dataParsed.release.toBase58(),
+              publicKey: hubRelease.publicKey.toBase58(),
             }
           }
         }
-        console.log('updatedState Releases :>> ', updatedState);
         setHubReleasesState(updatedState)
       }
 
@@ -495,8 +490,6 @@ const hubContextHelper = ({
     filterHubsByCurator,
     filterHubArtistsByHub,
     filterHubReleasesByHub,
-    getHubArtists,
-    getHubReleases
   }
 }
 export default HubContextProvider
