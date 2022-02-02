@@ -81,8 +81,8 @@ const hubContextHelper = ({
   const hubInit = async (hubParams) => {
     try {
       const nina = await NinaClient.connect(provider)
-      hubParams.publish_fee = new anchor.BN(hubParams.publish_fee)
-      hubParams.referral_fee = new anchor.BN(hubParams.referral_fee)
+      hubParams.publish_fee = new anchor.BN(hubParams.publishFee)
+      hubParams.referral_fee = new anchor.BN(hubParams.referralFee)
 
       const [hub] = await anchor.web3.PublicKey.findProgramAddress(
         [
@@ -378,7 +378,8 @@ const hubContextHelper = ({
         const publicKey = hub.publicKey.toBase58()
         updatedState[publicKey] = {
           curator: hub.account.curator,
-          fee: hub.account.fee,
+          publish_fee: hub.account.publish_fee,
+          referral_fee: hub.account.referral_fee,
           hubSigner: hub.account.hubSigner,
           name: decodeNonEncryptedByteArray(hub.account.name),
           uri: decodeNonEncryptedByteArray(hub.account.uri),

@@ -36,7 +36,7 @@ const HubCreateForm = ({ values, onChange, errors, touched }) => {
           )}
         </Field>
 
-        <Field name="fee">
+        <Field name="publishFee">
           {(props) => (
             <Box className={classes.fieldInputWrapper}>
               <TextField
@@ -53,7 +53,23 @@ const HubCreateForm = ({ values, onChange, errors, touched }) => {
             </Box>
           )}
         </Field>
-
+        <Field name="referralFee">
+          {(props) => (
+            <Box className={classes.fieldInputWrapper}>
+              <TextField
+                className={classes.formField}
+                variant="standard"
+                label={NinaClient.formatPlaceholder(props.field.name)}
+                size="small"
+                InputLabelProps={touched.title ? { shrink: true } : ''}
+                placeholder={
+                  errors.title && touched.title ? errors.title : null
+                }
+                {...props.field}
+              />
+            </Box>
+          )}
+        </Field>
         <Field name="uri">
           {(props) => (
             <Box className={classes.fieldInputWrapper}>
@@ -111,7 +127,8 @@ export default withFormik({
   mapPropsToValues: () => {
     return {
       name: 'my first hub',
-      fee: 5,
+      publishFee: 2,
+      referralFee: 2,
       uri: 'www.hub.com',
     }
   },
