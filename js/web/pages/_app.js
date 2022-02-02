@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import Router from "next/router";
-import { SnackbarProvider } from "notistack";
-import { ThemeProvider } from "@mui/material/styles";
-import ninaCommon from "nina-common";
-import { CacheProvider } from "@emotion/react";
-import { NinaTheme } from "../NinaTheme";
-import Layout from "../components/Layout";
+import React, { useState } from 'react'
+import Router from 'next/router'
+import { SnackbarProvider } from 'notistack'
+import { ThemeProvider } from '@mui/material/styles'
+import ninaCommon from 'nina-common'
+import { CacheProvider } from '@emotion/react'
+import { NinaTheme } from '../NinaTheme'
+import Layout from '../components/Layout'
 
 const {
   ReleaseContextProvider,
@@ -14,52 +14,53 @@ const {
   NameContextProvider,
   NinaContextProvider,
   ConnectionContextProvider,
-} = ninaCommon.contexts;
+  HubContextProvider,
+} = ninaCommon.contexts
 
-const { Dots } = ninaCommon.components;
+const { Dots } = ninaCommon.components
 
 const ENDPOINTS = {
   devnet: {
-    name: "devnet",
-    endpoint: "https://api.devnet.solana.com",
+    name: 'devnet',
+    endpoint: 'https://api.devnet.solana.com',
     custom: false,
   },
   testnet: {
-    name: "testnet",
-    endpoint: "https://api.testnet.solana.com",
+    name: 'testnet',
+    endpoint: 'https://api.testnet.solana.com',
     custom: false,
   },
   mainnet: {
-    name: "mainnet",
-    endpoint: "https://nina.rpcpool.com",
+    name: 'mainnet',
+    endpoint: 'https://nina.rpcpool.com',
     custom: true,
   },
-};
+}
 
 function Application({ Component, clientSideEmotionCache, pageProps }) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
   React.useEffect(() => {
     const start = () => {
-      setLoading(true);
-    };
+      setLoading(true)
+    }
     const end = () => {
-      setLoading(false);
-    };
-    Router.events.on("routeChangeStart", start);
-    Router.events.on("routeChangeComplete", end);
-    Router.events.on("routeChangeError", end);
+      setLoading(false)
+    }
+    Router.events.on('routeChangeStart', start)
+    Router.events.on('routeChangeComplete', end)
+    Router.events.on('routeChangeError', end)
 
-    const jssStyles = document.querySelector("#jss-server-side");
+    const jssStyles = document.querySelector('#jss-server-side')
     if (jssStyles) {
-      jssStyles.parentElement.removeChild(jssStyles);
+      jssStyles.parentElement.removeChild(jssStyles)
     }
 
     return () => {
-      Router.events.off("routeChangeStart", start);
-      Router.events.off("routeChangeComplete", end);
-      Router.events.off("routeChangeError", end);
-    };
-  }, []);
+      Router.events.off('routeChangeStart', start)
+      Router.events.off('routeChangeComplete', end)
+      Router.events.off('routeChangeError', end)
+    }
+  }, [])
 
   return (
     <SnackbarProvider
@@ -73,35 +74,37 @@ function Application({ Component, clientSideEmotionCache, pageProps }) {
         }
       }
       anchorOrigin={{
-        vertical: "top",
-        horizontal: "left",
+        vertical: 'top',
+        horizontal: 'left',
       }}
     >
       <ConnectionContextProvider ENDPOINTS={ENDPOINTS}>
         <NinaContextProvider>
           <ReleaseContextProvider>
             <NameContextProvider>
-              <AudioPlayerContextProvider>
-                <ExchangeContextProvider>
-                  <CacheProvider value={clientSideEmotionCache}>
-                    <ThemeProvider theme={NinaTheme}>
-                      <Layout>
-                        {loading ? (
-                          <Dots size="80px" />
-                        ) : (
-                          <Component {...pageProps} />
-                        )}
-                      </Layout>
-                    </ThemeProvider>
-                  </CacheProvider>
-                </ExchangeContextProvider>
-              </AudioPlayerContextProvider>
+              <HubContextProvider>
+                <AudioPlayerContextProvider>
+                  <ExchangeContextProvider>
+                    <CacheProvider value={clientSideEmotionCache}>
+                      <ThemeProvider theme={NinaTheme}>
+                        <Layout>
+                          {loading ? (
+                            <Dots size="80px" />
+                          ) : (
+                            <Component {...pageProps} />
+                          )}
+                        </Layout>
+                      </ThemeProvider>
+                    </CacheProvider>
+                  </ExchangeContextProvider>
+                </AudioPlayerContextProvider>
+              </HubContextProvider>
             </NameContextProvider>
           </ReleaseContextProvider>
         </NinaContextProvider>
       </ConnectionContextProvider>
     </SnackbarProvider>
-  );
+  )
 }
 
-export default Application;
+export default Application

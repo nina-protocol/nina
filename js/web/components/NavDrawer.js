@@ -1,63 +1,65 @@
-import React, { useState, useEffect } from "react";
-import { styled } from "@mui/material/styles";
-import { useWallet } from "@solana/wallet-adapter-react";
-import Drawer from "@mui/material/Drawer";
-import Button from "@mui/material/Button";
-import { Typography, Box } from "@mui/material";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import Link from "next/link";
-import { Icon } from "@material-ui/core";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
-import { faTwitter } from "@fortawesome/free-brands-svg-icons";
-import { faInstagramSquare } from "@fortawesome/free-brands-svg-icons";
-import CloseIcon from "@mui/icons-material/Close";
-import Image from "next/image";
+import React, { useState, useEffect } from 'react'
+import { styled } from '@mui/material/styles'
+import { useWallet } from '@solana/wallet-adapter-react'
+import Drawer from '@mui/material/Drawer'
+import Button from '@mui/material/Button'
+import { Typography, Box } from '@mui/material'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
+import Link from 'next/link'
+import { Icon } from '@material-ui/core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faDiscord } from '@fortawesome/free-brands-svg-icons'
+import { faTwitter } from '@fortawesome/free-brands-svg-icons'
+import { faInstagramSquare } from '@fortawesome/free-brands-svg-icons'
+import CloseIcon from '@mui/icons-material/Close'
+import Image from 'next/image'
 
 const linksConnected = [
-  "home",
-  "all Releases",
-  "collection",
-  "releases",
-  "upload",
-  "faq",
-  "radio",
-  "the soft lp",
-];
+  'home',
+  'all Releases',
+  'collection',
+  'releases',
+  'upload',
+  'hubs',
+  'faq',
+  'radio',
+  'the soft lp',
+]
 
 const linksNotConnected = [
-  "home",
-  "all Releases",
-  "upload",
-  "faq",
-  "radio",
-  "the soft lp",
-];
+  'home',
+  'all Releases',
+  'upload',
+  'faq',
+  'hubs',
+  'radio',
+  'the soft lp',
+]
 
 const NavDrawer = () => {
-  const wallet = useWallet();
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [links, setLinks] = useState(linksNotConnected);
+  const wallet = useWallet()
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [links, setLinks] = useState(linksNotConnected)
 
   useEffect(() => {
     if (wallet?.connected) {
-      setLinks(linksConnected);
+      setLinks(linksConnected)
     } else {
-      setLinks(linksNotConnected);
+      setLinks(linksNotConnected)
     }
-  }, [wallet?.connected]);
+  }, [wallet?.connected])
 
   const toggleDrawer = (open) => (event) => {
     if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
+      event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift')
     ) {
-      return;
+      return
     }
-    setDrawerOpen(open);
-  };
+    setDrawerOpen(open)
+  }
 
   const list = () => (
     <Box
@@ -68,12 +70,12 @@ const NavDrawer = () => {
       <CloseIcon
         fontSize="large"
         onClick={toggleDrawer}
-        sx={{ padding: "15px 15px" }}
+        sx={{ padding: '15px 15px' }}
       />
       <StyledList disablePadding>
         {links.map((link) => {
           switch (link) {
-            case "collection":
+            case 'collection':
               return (
                 <Link
                   className={`${classes.drawerLink}`}
@@ -83,13 +85,11 @@ const NavDrawer = () => {
                   passHref
                 >
                   <ListItem button key={link}>
-                    <ListItemText
-                      primary={`your ${link}`}
-                    />
+                    <StyledListItemText primary={`your ${link}`} />
                   </ListItem>
                 </Link>
-              );
-            case "releases":
+              )
+            case 'releases':
               return (
                 <Link
                   className={`${classes.drawerLink}`}
@@ -99,17 +99,15 @@ const NavDrawer = () => {
                   passHref
                 >
                   <ListItem button key={link}>
-                    <ListItemText
-                      primary={`your ${link}`}
-                    />
+                    <StyledListItemText primary={`your ${link}`} />
                   </ListItem>
                 </Link>
-              );
-            case "the soft lp":
+              )
+            case 'the soft lp':
               return (
                 <ListItem button key={link}>
-                  <ListItemText>
-                    <Link
+                  <StyledListItemText>
+                    <a
                       href="https://softlp.nina.market"
                       target="_blank"
                       rel="noreferrer"
@@ -117,15 +115,15 @@ const NavDrawer = () => {
                       passHref
                     >
                       The Soft LP
-                    </Link>
-                  </ListItemText>
+                    </a>
+                  </StyledListItemText>
                 </ListItem>
-              );
-            case "radio":
+              )
+            case 'radio':
               return (
                 <ListItem button key={link}>
-                  <ListItemText>
-                    <Link
+                  <StyledListItemText>
+                    <a
                       href="https://radio.nina.market"
                       target="_blank"
                       rel="noreferrer"
@@ -133,11 +131,11 @@ const NavDrawer = () => {
                       passHref
                     >
                       Nina Radio
-                    </Link>
-                  </ListItemText>
+                    </a>
+                  </StyledListItemText>
                 </ListItem>
-              );
-            case "all Releases":
+              )
+            case 'all Releases':
               return (
                 <Link
                   className={`${classes.drawerLink}`}
@@ -147,44 +145,44 @@ const NavDrawer = () => {
                   passHref
                 >
                   <ListItem button key={link}>
-                    <ListItemText primary="All Releases" />
+                    <StyledListItemText primary="All Releases" />
                   </ListItem>
                 </Link>
-              );
+              )
 
             default:
               return (
                 <Link
                   className={`${classes.drawerLink}`}
                   href={`${
-                    link === "home" ? "/" : `/${link.replace(" ", "")}`
+                    link === 'home' ? '/' : `/${link.replace(' ', '')}`
                   }`}
                   activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
                   key={link}
                   passHref
                 >
                   <ListItem button key={link}>
-                    <ListItemText primary={link} />
+                    <StyledListItemText primary={link} />
                   </ListItem>
                 </Link>
-              );
+              )
           }
         })}
       </StyledList>
     </Box>
-  );
+  )
 
   return (
     <div>
       {
-        <Box key={"left"}>
+        <Box key={'left'}>
           <StyledMenuButton onClick={toggleDrawer(true)}>
             <Icon>
-              <Image src={"/hamburger.svg"} height={25} width={25} />
+              <Image src={'/hamburger.svg'} height={25} width={25} />
             </Icon>
           </StyledMenuButton>
           <StyledDrawer
-            anchor={"left"}
+            anchor={'left'}
             open={drawerOpen}
             onClose={toggleDrawer(false)}
             BackdropProps={{ invisible: true }}
@@ -197,7 +195,7 @@ const NavDrawer = () => {
                   href="https://twitter.com/nina_market_"
                   target="_blank"
                   rel="noreferrer"
-                  style={{ paddingRight: "15px" }}
+                  style={{ paddingRight: '15px' }}
                 >
                   <FontAwesomeIcon icon={faTwitter} />
                 </a>
@@ -225,65 +223,71 @@ const NavDrawer = () => {
         </Box>
       }
     </div>
-  );
-};
+  )
+}
 
-const PREFIX = "NavDrawer";
+const PREFIX = 'NavDrawer'
 
 const classes = {
   toggle: `${PREFIX}-toggle`,
   list: `${PREFIX}-list`,
   drawerLink: `${PREFIX}-drawerLink`,
-};
+}
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
-  "& .MuiPaper-root": {
+  '& .MuiPaper-root': {
     width: 436,
-    [theme.breakpoints.down("md")]: {
-      width: "100vw",
+    [theme.breakpoints.down('md')]: {
+      width: '100vw',
     },
   },
-}));
+}))
 
 const StyledList = styled(List)(({ theme }) => ({
-  padding: `${theme.spacing("100px", 4, 0, 4)} !important`,
-  "& .MuiListItem-root": {
-    padding: "5px 0",
-    "&:hover": {
+  padding: `${theme.spacing('100px', 4, 0, 4)} !important`,
+  '& .MuiListItem-root': {
+    padding: '5px 0',
+    '&:hover': {
       backgroundColor: theme.palette.transparent,
     },
-    "& .MuiListItemText-root": {
+    '& .MuiListItemText-root': {
       margin: 0,
-      "& span": {
-        textTransform: "capitalize",
-        fontSize: "18px !important",
-        lineHeight: "20.7px !important",
+      '& span': {
+        textTransform: 'capitalize',
+        fontSize: '18px !important',
+        lineHeight: '20.7px !important',
       },
     },
   },
-}));
+}))
 
 const StyledMenuButton = styled(Button)(({ theme }) => ({
-  padding: "0px !important",
-  zIndex: "10",
-  "&:hover": {
+  padding: '0px !important',
+  zIndex: '10',
+  '&:hover': {
     backgroundColor: `${theme.palette.transparent} !important`,
   },
-  "& .MuiSvgIcon-root": {
+  '& .MuiSvgIcon-root': {
     color: theme.palette.black,
   },
-}));
+}))
 
 const DrawerFooter = styled(Box)(() => ({
-  position: "absolute",
-  bottom: "10px",
-  width: "75%",
-  left: "60px",
-  transform: "translateY(-50%)",
-  display: "flex",
-  justifyContent: "space-between",
-  "& a": {
-    paddingRight: "15px",
+  position: 'absolute',
+  bottom: '10px',
+  width: '75%',
+  left: '60px',
+  transform: 'translateY(-50%)',
+  display: 'flex',
+  justifyContent: 'space-between',
+  '& a': {
+    paddingRight: '15px',
+  },
+}))
+
+const StyledListItemText = styled(ListItemText)(() => ({
+  "&:hover": {
+    opacity: 0.5,
   },
 }));
 

@@ -1,5 +1,8 @@
 node_modules
+<<<<<<< HEAD
 yarn.lock
 package-lock.json
 public
+=======
+>>>>>>> d19478923d0633029315f1203cf6521f4d02e5ee
 build

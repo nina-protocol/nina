@@ -1,5 +1,5 @@
-import ninaCommon from "nina-common";
-const { NinaClient } = ninaCommon.utils;
+import ninaCommon from 'nina-common'
+const { NinaClient } = ninaCommon.utils
 
 const ReleaseEmbedPage = ({ host, metadata }) => {
   const player = `
@@ -7,7 +7,11 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
       <head>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <style>
+          html {
+            overflow: auto;
+          }
           body {
+            height: 100%
             margin: 0px;
           }
 
@@ -21,8 +25,8 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
           }
 
           #container {
-            height: 565px;
-            width: 100%;
+            height:calc(100vh);
+            width:calc(100vw);
             position: relative;
             flex-direction: column;
           }
@@ -81,7 +85,9 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
         <div id="container">
           <div id="overlay"></div>
           <div id="title">
-            <a href=${metadata.external_url} target="_blank" rel="noreferrer"><h4>${metadata.name.toUpperCase()} - NINA</h4></a>
+            <a href=${
+              metadata.external_url
+            } target="_blank" rel="noreferrer"><h4>${metadata.name.toUpperCase()} - NINA</h4></a>
           </div>
           <div id="vertical-center">
             <input id="player-button" type="image" src="https://${host}/play.svg" width="40px height="40px />
@@ -145,29 +151,20 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
       </script>
     </html>
   `;
-  var dataURI = "data:text/html," + encodeURIComponent(player);
-  return (
-    <iframe
-      id="nina-player"
-      width="565px"
-      height="565px"
-      style={{ border: "none" }}
-      src={dataURI}
-    />
-  );
+  return <div dangerouslySetInnerHTML={{ __html: player }}></div>;
 };
 
 export const getServerSideProps = async (context) => {
-  const releasePubkey = context.params.releasePubkey;
+  const releasePubkey = context.params.releasePubkey
   const metadataResult = await fetch(
     `${NinaClient.endpoints.api}/metadata/bulk`,
     {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ids: [releasePubkey] }),
     }
-  );
-  const metadataJson = await metadataResult.json();
+  )
+  const metadataJson = await metadataResult.json()
   return {
     props: {
       metadata: metadataJson[releasePubkey],
@@ -175,7 +172,7 @@ export const getServerSideProps = async (context) => {
       isEmbed: true,
       host: context.req.headers.host,
     },
-  };
-};
+  }
+}
 
-export default ReleaseEmbedPage;
+export default ReleaseEmbedPage
