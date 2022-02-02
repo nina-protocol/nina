@@ -31,10 +31,11 @@ const HubContextProvider = ({ children }) => {
     hubAddRelease,
     hubRemoveArtist,
     hubRemoveRelease,
-    releaseInitViaHub,
     filterHubsByCurator, 
     getHubArtists,
     getHubReleases,
+    filterHubArtistsByHub,
+    filterHubReleasesByHub,
   } = hubContextHelper({
     connection,
     wallet,
@@ -59,8 +60,9 @@ const HubContextProvider = ({ children }) => {
         hubState,
         hubArtistsState,
         hubReleasesState,
-        releaseInitViaHub,
         filterHubsByCurator,
+        filterHubArtistsByHub,
+        filterHubReleasesByHub,    
         getHubArtists,
         getHubReleases
       }}
@@ -316,31 +318,39 @@ const hubContextHelper = ({
   }
 
   const getHubArtists = async (hubPubkey) => {
+    if (!hubPubkey) {
+      return
+    }
     try {
       const nina = await NinaClient.connect(provider)
-      let hubArtists = await getProgramAccounts(
-        nina.program,
-        'HubArtist',
-        {hub: hubPubkey},
-        connection
-      )
-
-      saveHubArtistsToState(hubPubkey, hubArtists)
+      const hubArtists = await nina.program.account.hubArtist.all()
+      const hubArtistsForHub = []
+      for await (let hubArtist of hubArtists) {
+        if (hubArtist.account.hub.toBase58() === hubPubkey) {
+          hubArtistsForHub.push(hubArtist)
+          console.log(hubArtist.publicKey.toBase58())
+        }
+      }
+      saveHubArtistsToState(hubArtistsForHub)
     } catch (error) {
       return ninaErrorHandler(error)
     }
   }
 
   const getHubReleases = async (hubPubkey) => {
+    if (!hubPubkey) {
+      return
+    }
     try {
       const nina = await NinaClient.connect(provider)
-      let hubReleases = await getProgramAccounts(
-        nina.program,
-        'HubRelease',
-        {hub: hubPubkey},
-        connection
-      )
-      saveHubReleasesToState(hubPubkey, hubReleases)
+      const hubReleases = await nina.program.account.hubRelease.all()
+      const hubReleasesForHub = []
+      for await (let hubRelease of hubReleases) {
+        if (hubRelease.account.hub.toBase58() === hubPubkey) {
+          hubReleasesForHub.push(hubReleases)
+        }
+      }
+      saveHubReleasesToState(hubReleasesForHub)
     } catch (error) {
       return ninaErrorHandler(error)
     }
@@ -386,16 +396,16 @@ const hubContextHelper = ({
     }
   }
 
-  const saveHubArtistsToState = async (hubPubkey, hubArtists) => {
+  const saveHubArtistsToState = async (hubArtists) => {
     try {
       let updatedState = {...hubArtistsState}
-
-      for await (let hubArtist of hubArtists) {
-        const hubAristPublicKey = hubArtist.publicKey.toBase58()
-          updatedState[hubPubkey] = {
-            ...updatedState[hubPubkey],
-            [hubAristPublicKey]: {
-             artist: hubArtist.artist
+      console.log("saveHubArtistsToState: ", hubArtists)
+      for (let hubArtist of hubArtists) {
+        updatedState = {
+            ...updatedState,
+            [hubArtist.publicKey.toBase58()]: {
+              hub: hubArtist.account.hub.toBase58(),
+              artist: hubArtist.account.artist.toBase58(),
            }
           }
         }
@@ -408,17 +418,17 @@ const hubContextHelper = ({
     }
   }
 
-  const saveHubReleasesToState = async (hubPubkey, hubReleases) => {
+  const saveHubReleasesToState = async (hubReleases) => {
     try {
       let updatedState = {...hubReleasesState}
 
-      for await (let hubRelease of hubReleases) {
-        const hubReleasePublicKey = hubRelease.publicKey.toBase58()
-          updatedState[hubPubkey] = {
-            ...updatedState[hubPubkey],
-            [hubReleasePublicKey]: {
-             release: hubRelease.release
-           }
+      for (let hubRelease of hubReleases) {
+          updatedState = {
+            ...updatedState,
+            [hubRelease.publicKey.toBase58()]: {
+              hub: hubRelease.account.hub.toBase58(),
+              release: hubRelease.account.release.toBase58(),
+            }
           }
         }
         console.log('updatedState Releases :>> ', updatedState);
@@ -430,36 +440,28 @@ const hubContextHelper = ({
     }
   }
 
-  // const saveHubReleasesToState = async (hubPubkey, hubReleases) => {
-  //   try {
-  //     let updatedState = {...hubState}
+  const filterHubArtistsByHub = (hubPubkey) => {
+    const hubArtists = []
+    Object.keys(hubArtistsState).forEach(hubArtistPubkey => {
+      const hubArtist = hubArtistsState[hubArtistPubkey]
+      if (hubArtist.hub === hubPubkey) {
+        hubArtists.push(hubArtist)
+      }
+    })
+    return hubArtists
+  }
 
-  //     if (!updatedState[hubPubkey]?.hubReleases) {
-  //       updatedState[hubPubkey].hubReleases = {}
-  //     }
+  const filterHubReleasesByHub = (hubPubkey) => {
+    const hubReleases = []
+    Object.keys(hubReleasesState).forEach(hubReleasePubkey => {
+      const hubRelease = hubReleasesState[hubReleasePubkey]
+      if (hubRelease.hub === hubPubkey) {
+        hubReleases.push(hubRelease)
+      }
+    })
+    return hubReleases
+  }
 
-  //     for await (let hubRelease of hubReleases) {
-  //       // console.log('hubRelease.hub.toBase58() :>> ', hubRelease.hub.toBase58());
-  //       // console.log('hubRelease.release.toBase58() :>> ', hubRelease.release.toBase58());
-  //       // console.log('hubRelease.publicKey.toBase58() :>> ', hubRelease.hub.toBase58());
-  //       const hubReleasePublicKey = hubRelease.publicKey.toBase58()
-  //         updatedState[hubPubkey] = {
-  //           ...updatedState[hubPubkey],
-  //           hubReleases: {
-  //             ...updatedState[hubPubkey].hubReleases,
-  //             [hubReleasePublicKey]: {
-  //              release: hubRelease.release
-  //            }
-  //           }
-  //         }
-  //       }
-  //       setHubState(updatedState)
-  //     }
-
-  //    catch (error) {
-  //     console.warn(error)
-  //   }
-  // }
 
   const filterHubsByCurator = (userPubkey = undefined) => {
     // if (!wallet?.connected || (!userPubkey && !wallet?.publicKey)) {
@@ -491,6 +493,8 @@ const hubContextHelper = ({
     hubRemoveArtist,
     hubRemoveRelease,
     filterHubsByCurator,
+    filterHubArtistsByHub,
+    filterHubReleasesByHub,
     getHubArtists,
     getHubReleases
   }

@@ -2,23 +2,16 @@ import React, { useState, useContext, useEffect } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Typography from '@mui/material/Typography'
 import ninaCommon from 'nina-common'
-
+import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Link from 'next/link'
-
-import { styled } from '@mui/material/styles'
-
 import HubAddArtist from "./HubAddArtist";
-
-import { useRouter } from 'next/router'
 
 const { HubContext } = ninaCommon.contexts
 
-const Hub = () => {
-  const router = useRouter()
-  const hubPubkey = router.query.hubPubkey
+const Hub = ({hubPubkey}) => {
   const wallet = useWallet()
-  const { getHub, hubState, hubArtistsState, hubReleasesState, getHubArtists, getHubReleases } = useContext(HubContext)
+  const { getHub, hubState, hubArtistsState, hubReleasesState, getHubArtists, getHubReleases, filterHubArtistsByHub, filterHubReleasesByHub } = useContext(HubContext)
 
   const [hubData, setHubData] = useState(hubState[hubPubkey])
   const [hubArtists, setHubArtists] = useState(hubArtistsState[hubPubkey])
@@ -26,36 +19,24 @@ const Hub = () => {
   const [userIsCurator, setUserIsCurator] = useState(false)
 
   useEffect(() => {
-    if (!hubData) {
-      getHub(hubPubkey)
-    }
-  }, [])
+    getHub(hubPubkey)
+    getHubArtists(hubPubkey)
+    getHubReleases(hubPubkey)
+  }, [hubPubkey])
 
   useEffect(() => {
     setHubData(hubState[hubPubkey])
   }, [hubState[hubPubkey]])
 
   useEffect(() => {
-    console.log('hubArtistsState :>> ', hubArtistsState[hubPubkey]);
-    setHubArtists(hubArtistsState[hubPubkey])
-  }, [hubArtistsState[hubPubkey]])
+    console.log('hubArtistsState :>> ', hubArtistsState);
+    setHubArtists(filterHubArtistsByHub(hubPubkey))
+  }, [hubArtistsState])
 
   useEffect(() => {
-    console.log('hubReleasesState :>> ', hubReleasesState[hubPubkey]);
-    setHubReleases(hubReleasesState[hubPubkey])
-  }, [hubReleasesState[hubPubkey]])
-
-  useEffect(() => {
-    if (!hubArtistsState[hubPubkey] && hubPubkey) {
-      getHubArtists(hubPubkey)
-    }
-  }, [hubArtistsState[hubPubkey]])
-
-  useEffect(() => {
-    if (!hubReleasesState[hubPubkey] && hubPubkey) {
-      getHubReleases(hubPubkey)
-    }
-  }, [hubReleasesState[hubPubkey]])
+    console.log('hubReleasesState :>> ', hubReleasesState);
+    setHubReleases(filterHubReleasesByHub(hubPubkey))
+  }, [hubReleasesState])
 
   useEffect(() => {
     if (wallet.connected) {
@@ -103,7 +84,7 @@ const Hub = () => {
             <ul>
             {Object.keys(hubArtists).map(artistPubkey => {
               const hubArtist = hubArtists[artistPubkey]
-              return <li>{hubArtist.artist.toBase58()}</li>
+              return <li>{hubArtist.artist}</li>
             }) }
             </ul>
         </Box>
@@ -115,7 +96,7 @@ const Hub = () => {
             {Object.keys(hubReleases).map(releasePubkey => {
               console.log('releasePubkey :>> ', releasePubkey);
               const hubRelease = hubReleases[releasePubkey]
-              return <li>{hubRelease.release.toBase58()}</li>
+              return <li>{hubRelease.release}</li>
             })}
           </ul>
         </Box>
