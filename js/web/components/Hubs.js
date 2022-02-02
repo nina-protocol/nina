@@ -23,7 +23,7 @@ const { ConnectionContext, HubContext } = ninaCommon.contexts
 const Hubs = () => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const { hubInit, hubState, getAllHubs, filterHubsByCurator } =
+  const { hubInit, hubState, getAllHubs, filterHubsByCurator, count } =
     useContext(HubContext)
   const { healthOk } = useContext(ConnectionContext)
 
@@ -123,7 +123,7 @@ const Hubs = () => {
 
       <Box sx={{ textAlign: 'left' }}>
         <Typography mt={1}>
-          There are {Object.keys(hubState).length} hubs on Nina.
+          There are {count} hubs on Nina.
         </Typography>
 
         {userCuratedHubs && (

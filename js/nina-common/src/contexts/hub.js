@@ -16,6 +16,8 @@ const HubContextProvider = ({ children }) => {
   const [hubState, setHubState] = useState({})
   const [hubArtistsState, setHubArtistsState] = useState({})
   const [hubReleasesState, setHubReleasesState] = useState({})
+  const [allHubs, setAllHubs] = useState([])
+  const [count, setCount] = useState(undefined)
 
   const {
     getAllHubs,
@@ -37,6 +39,10 @@ const HubContextProvider = ({ children }) => {
     setHubArtistsState,
     hubReleasesState,
     setHubReleasesState,
+    allHubs,
+    setAllHubs,
+    count,
+    setCount,
   })
 
   return (
@@ -55,6 +61,7 @@ const HubContextProvider = ({ children }) => {
         filterHubsByCurator,
         filterHubArtistsByHub,
         filterHubReleasesByHub,
+        count
       }}
     >
       {children}
@@ -71,6 +78,10 @@ const hubContextHelper = ({
   setHubArtistsState,
   hubReleasesState,
   setHubReleasesState,
+  allHubs,
+  setAllHubs,
+  count,
+  setCount,
 }) => {
   const provider = new anchor.Provider(
     connection,
@@ -357,7 +368,31 @@ const hubContextHelper = ({
   const getAllHubs = async () => {
     try {
       const nina = await NinaClient.connect(provider)
-      const hubs = await nina.program.account.hubV1.all()
+      const all = [...allHubs]
+      const hubResult = await fetch(
+        `${NinaClient.endpoints.api}/hubs?offset=${allHubs.length}`,
+      )
+      const json = await hubResult.json()
+      json.hubs.forEach((id) => {
+        if (!allHubs.includes(id)) {
+          all.push(id)
+        }
+      })
+      setCount(json.count)
+      setAllHubs(all)
+      const hubs = []
+      let hubAccounts = await anchor.utils.rpc.getMultipleAccounts(
+        connection,
+        all.map(id => new anchor.web3.PublicKey(id))
+      )
+      hubAccounts = hubAccounts.filter((item) => item != null)
+      const layout = nina.program.coder.accounts.accountLayouts.get('HubV1')
+      hubAccounts.forEach(hub => {
+        let dataParsed = layout.decode(hub.account.data.slice(8))
+        dataParsed.publicKey = hub.publicKey
+        hubs.push(dataParsed)
+      })
+      console.log('HUBS: ', hubs)
       await saveHubsToState(hubs)
     } catch (error) {
       return ninaErrorHandler(error)
@@ -377,13 +412,12 @@ const hubContextHelper = ({
       for await (let hub of hubs) {
         const publicKey = hub.publicKey.toBase58()
         updatedState[publicKey] = {
-          curator: hub.account.curator,
-          publish_fee: hub.account.publish_fee,
-          referral_fee: hub.account.referral_fee,
-          hubSigner: hub.account.hubSigner,
-          name: decodeNonEncryptedByteArray(hub.account.name),
-          uri: decodeNonEncryptedByteArray(hub.account.uri),
-          usdcTokenAccount: hub.account.usdcTokenAccount,
+          curator: hub.curator,
+          publishFee: hub.publishFee,
+          referralFee: hub.referralFee,
+          hubSigner: hub.hubSigner,
+          name: decodeNonEncryptedByteArray(hub.name),
+          uri: decodeNonEncryptedByteArray(hub.uri),
         }
       }
       setHubState(updatedState)
