@@ -307,7 +307,7 @@ const hubContextHelper = ({
   const getHub = async (hubPubkey) => {
     try {
       const nina = await NinaClient.connect(provider)
-      const hub = await nina.program.account.hub.fetch(
+      const hub = await nina.program.account.hubV1.fetch(
         new anchor.web3.PublicKey(hubPubkey)
       )
       const formattedHub = {
@@ -357,7 +357,7 @@ const hubContextHelper = ({
   const getAllHubs = async () => {
     try {
       const nina = await NinaClient.connect(provider)
-      const hubs = await nina.program.account.hub.all()
+      const hubs = await nina.program.account.hubV1.all()
       await saveHubsToState(hubs)
     } catch (error) {
       return ninaErrorHandler(error)
@@ -397,7 +397,7 @@ const hubContextHelper = ({
       let updatedState = { ...hubArtistsState }
       for (let hubArtist of hubArtists) {
         const layout =
-          nina.program.coder.accounts.accountLayouts.get('HubArtist')
+          nina.program.coder.accounts.accountLayouts.get('HubArtistV1')
         let dataParsed = layout.decode(hubArtist.account.data.slice(8))
         updatedState = {
           ...updatedState,
@@ -420,7 +420,7 @@ const hubContextHelper = ({
       let updatedState = { ...hubReleasesState }
       for (let hubRelease of hubReleases) {
         const layout =
-          nina.program.coder.accounts.accountLayouts.get('HubRelease')
+          nina.program.coder.accounts.accountLayouts.get('HubReleaseV1')
         let dataParsed = layout.decode(hubRelease.account.data.slice(8))
 
         updatedState = {
