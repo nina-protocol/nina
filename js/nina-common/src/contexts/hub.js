@@ -199,6 +199,8 @@ const hubContextHelper = ({
   }
 
   const hubAddRelease = async (hubPubkey, releasePubkey) => {
+    hubPubkey = new anchor.web3.PublicKey(hubPubkey)
+
     try {
       const nina = await NinaClient.connect(provider)
       hubPubkey = new anchor.web3.PublicKey(hubPubkey)
