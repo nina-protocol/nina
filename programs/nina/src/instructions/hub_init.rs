@@ -15,7 +15,7 @@ pub struct HubInit<'info> {
         payer = curator,
         space = 388
     )]
-    pub hub: AccountLoader<'info, Hub>,
+    pub hub: AccountLoader<'info, HubV1>,
     #[account(
         seeds = [b"nina-hub-signer".as_ref(), hub.key().as_ref()],
         bump,
@@ -27,7 +27,7 @@ pub struct HubInit<'info> {
         bump,
         payer = curator,
     )]
-    pub hub_artist: Account<'info, HubArtist>,
+    pub hub_artist: Account<'info, HubArtistV1>,
     #[account(
         constraint = usdc_vault.mint == usdc_mint.key(),
         constraint = usdc_vault.owner == *hub_signer.key

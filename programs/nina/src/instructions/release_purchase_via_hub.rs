@@ -48,13 +48,13 @@ pub struct ReleasePurchaseViaHub<'info> {
         constraint = release_mint.mint_authority == COption::Some(*release_signer.key),
     )]
     pub release_mint: Account<'info, Mint>,
-    pub hub: AccountLoader<'info, Hub>,
+    pub hub: AccountLoader<'info, HubV1>,
     #[account(
         mut,
         seeds = [b"nina-hub-release".as_ref(), hub.key().as_ref(), release.key().as_ref()],
         bump,
     )]
-    pub hub_release: Box<Account<'info, HubRelease>>,
+    pub hub_release: Box<Account<'info, HubReleaseV1>>,
     #[account(
         constraint = hub.load()?.curator == hub_curator.key(),
     )]

@@ -10,7 +10,7 @@ pub struct HubWithdraw<'info> {
     #[account(
         constraint = hub.load()?.curator == curator.key(),
     )]
-    pub hub: AccountLoader<'info, Hub>,
+    pub hub: AccountLoader<'info, HubV1>,
     #[account(
         seeds = [b"nina-hub-signer".as_ref(), hub.key().as_ref()],
         bump,

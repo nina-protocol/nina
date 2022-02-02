@@ -3533,13 +3533,13 @@ describe('Hub', async () => {
       }
     )
 
-    const hubAfter = await nina.account.hub.fetch(hub)
+    const hubAfter = await nina.account.hubV1.fetch(hub)
     assert.equal(encrypt.decode(hubAfter.name), hubParams.name)
     assert.equal(hubAfter.publishFee.toNumber(), hubParams.publishFee)
     assert.equal(encrypt.decode(hubAfter.uri), hubParams.uri)
     assert.equal(hubAfter.curator.toBase58(), provider.wallet.publicKey.toBase58())
 
-    const hubArtistAfter = await nina.account.hubArtist.fetch(hubArtist)
+    const hubArtistAfter = await nina.account.hubArtistV1.fetch(hubArtist)
     assert.equal(hubArtistAfter.artist.toBase58(), provider.wallet.publicKey.toBase58())
     assert.equal(hubArtistAfter.hub.toBase58(), hub.toBase58())
   })
@@ -3566,7 +3566,7 @@ describe('Hub', async () => {
       }
     })
 
-    const hubArtistAfter = await nina.account.hubArtist.fetch(hubArtist)
+    const hubArtistAfter = await nina.account.hubArtistV1.fetch(hubArtist)
     assert.equal(hubArtistAfter.artist.toBase58(), user1.publicKey.toBase58())
     assert.equal(hubArtistAfter.hub.toBase58(), hub.toBase58())
   })
@@ -3602,7 +3602,7 @@ describe('Hub', async () => {
       }
     })
 
-    const hubReleaseAfter = await nina.account.hubRelease.fetch(hubRelease)
+    const hubReleaseAfter = await nina.account.hubReleaseV1.fetch(hubRelease)
     assert.equal(hubReleaseAfter.release.toBase58(), release.toBase58())
     assert.equal(hubReleaseAfter.hub.toBase58(), hub.toBase58())
   })
@@ -3778,8 +3778,8 @@ describe('Hub', async () => {
         instructions,
       }
     );
-    const hubAfter = await nina.account.hub.fetch(hub)
-    const hubReleaseAfter = await nina.account.hubRelease.fetch(hubRelease)
+    const hubAfter = await nina.account.hubV1.fetch(hub)
+    const hubReleaseAfter = await nina.account.hubReleaseV1.fetch(hubRelease)
     const releaseAfter = await nina.account.release.fetch(hubReleaseAccount)
     assert.equal(releaseAfter.royaltyRecipients[0].percentShare.toNumber(), 1000000 - releaseAfter.royaltyRecipients[1].percentShare.toNumber())
     assert.equal(releaseAfter.royaltyRecipients[1].percentShare.toNumber(), hubParams.publishFee.toNumber())
@@ -3821,7 +3821,7 @@ describe('Hub', async () => {
     );
 
     const releaseBefore = await nina.account.release.fetch(hubReleaseAccount);
-    const hubBefore = await nina.account.hub.fetch(hub)
+    const hubBefore = await nina.account.hubV1.fetch(hub)
 
     await nina.rpc.releasePurchaseViaHub(
       new anchor.BN(releasePrice), {
@@ -3864,7 +3864,7 @@ describe('Hub', async () => {
     assert.equal(releaseAfter.saleCounter.toNumber(), 1);
     assert.equal(releaseAfter.totalCollected.toNumber(), releasePrice);
 
-    const hubReleaseAfter = await nina.account.hubRelease.fetch(hubRelease);
+    const hubReleaseAfter = await nina.account.hubReleaseV1.fetch(hubRelease);
     assert.equal(hubReleaseAfter.sales.toNumber(), 1);
 
     const royaltyTokenAccountAfter = await getTokenAccount(
@@ -4151,7 +4151,7 @@ describe('Hub', async () => {
     })
     await assert.rejects(
       async () => {
-        await nina.account.hubArtist.fetch(hubArtist)
+        await nina.account.hubArtistV1.fetch(hubArtist)
       }
     )
   })
@@ -4217,7 +4217,7 @@ describe('Hub', async () => {
     })
     await assert.rejects(
       async () => {
-        await nina.account.hubArtist.fetch(hubArtist)
+        await nina.account.hubArtistV1.fetch(hubArtist)
       }
     )
   })
@@ -4263,7 +4263,7 @@ describe('Hub', async () => {
     })
     await assert.rejects(
       async () => {
-        await nina.account.hubRelease.fetch(hubRelease)
+        await nina.account.hubReleaseV1.fetch(hubRelease)
       }
     );
   })

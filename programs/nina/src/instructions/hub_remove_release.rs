@@ -7,7 +7,7 @@ use crate::errors::*;
 pub struct HubRemoveRelease<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
-    pub hub: AccountLoader<'info, Hub>,
+    pub hub: AccountLoader<'info, HubV1>,
     #[account(
         mut,
         seeds = [b"nina-hub-release".as_ref(), hub.key().as_ref(), release.key().as_ref()],
@@ -15,7 +15,7 @@ pub struct HubRemoveRelease<'info> {
         constraint = release.key() == hub_release.release.key(),
         close = payer,
     )]
-    pub hub_release: Account<'info, HubRelease>,
+    pub hub_release: Account<'info, HubReleaseV1>,
     pub release: AccountLoader<'info, Release>,
     pub system_program: Program<'info, System>,
 }

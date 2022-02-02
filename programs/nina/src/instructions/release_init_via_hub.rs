@@ -22,15 +22,15 @@ pub struct ReleaseInitializeViaHub<'info> {
         bump,
         constraint = hub_artist.artist == payer.key(),
     )]
-    pub hub_artist: Box<Account<'info, HubArtist>>,
-    pub hub: AccountLoader<'info, Hub>,
+    pub hub_artist: Box<Account<'info, HubArtistV1>>,
+    pub hub: AccountLoader<'info, HubV1>,
     #[account(
         init,
         seeds = [b"nina-hub-release".as_ref(), hub.key().as_ref(), release.key().as_ref()],
         bump,
         payer = payer,
     )]
-    pub hub_release: Box<Account<'info, HubRelease>>,
+    pub hub_release: Box<Account<'info, HubReleaseV1>>,
     #[account(
         constraint = hub.load()?.curator == hub_curator.key(),
     )]

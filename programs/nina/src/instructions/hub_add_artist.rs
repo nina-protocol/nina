@@ -9,14 +9,14 @@ pub struct HubAddArtist<'info> {
     #[account(
         constraint = hub.load()?.curator == curator.key(),
     )]
-    pub hub: AccountLoader<'info, Hub>,
+    pub hub: AccountLoader<'info, HubV1>,
     #[account(
         init,
         seeds = [b"nina-hub-artist".as_ref(), hub.key().as_ref(), artist.key().as_ref()],
         bump,
         payer = curator,
     )]
-    pub hub_artist: Account<'info, HubArtist>,
+    pub hub_artist: Account<'info, HubArtistV1>,
     pub artist: UncheckedAccount<'info>,
     pub system_program: Program<'info, System>,
     pub rent: Sysvar<'info, Rent>,

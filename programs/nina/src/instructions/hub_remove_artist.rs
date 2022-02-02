@@ -7,7 +7,7 @@ use crate::errors::*;
 pub struct HubRemoveArtist<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
-    pub hub: AccountLoader<'info, Hub>,
+    pub hub: AccountLoader<'info, HubV1>,
     #[account(
         mut,
         seeds = [b"nina-hub-artist".as_ref(), hub.key().as_ref(), artist.key().as_ref()],
@@ -15,7 +15,7 @@ pub struct HubRemoveArtist<'info> {
         constraint = artist.key() == hub_artist.artist.key(),
         close = payer
     )]
-    pub hub_artist: Account<'info, HubArtist>,
+    pub hub_artist: Account<'info, HubArtistV1>,
     pub artist: UncheckedAccount<'info>,
     pub system_program: Program<'info, System>,
 }
