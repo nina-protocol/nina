@@ -342,7 +342,7 @@ const releaseContextHelper = ({
     retailPrice,
     amount,
     resalePercentage,
-    isUsdc = true, 
+    isUsdc = true,
   }) => {
     setPressingState({
       ...pressingState,
@@ -409,21 +409,21 @@ const releaseContextHelper = ({
 
       const [hubArtist] = await anchor.web3.PublicKey.findProgramAddress(
         [
-          Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")),
+          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-artist')),
           hubPubkey.toBuffer(),
           provider.wallet.publicKey.toBuffer(),
         ],
         nina.program.programId
-      );
+      )
 
       const [hubRelease] = await anchor.web3.PublicKey.findProgramAddress(
         [
-          Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")),
+          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-release')),
           hubPubkey.toBuffer(),
           release.toBuffer(),
         ],
         nina.program.programId
-      );
+      )
       let instructions = [...releaseMintIx, royaltyTokenAccountIx]
 
       if (authorityTokenAccountIx) {
@@ -480,7 +480,6 @@ const releaseContextHelper = ({
       return ninaErrorHandler(error)
     }
   }
-
 
   const releasePurchase = async (releasePubkey) => {
     const nina = await NinaClient.connect(provider)
@@ -1741,7 +1740,7 @@ const releaseContextHelper = ({
     if (typeof releasePubkey !== 'string') {
       releasePubkey = releasePubkey.toBase58()
     }
-    
+
     try {
       const result = await fetch(
         `${NinaClient.endpoints.pressingPlant}/api/file/status?tokenId=${releasePubkey}`
