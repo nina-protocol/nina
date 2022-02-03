@@ -29,7 +29,12 @@
     "@mui/styled-engine": "npm:@mui/styled-engine-sc@latest",
     "@mui/styled-engine-sc": "^5.0.3",
     "@mui/styles": "^5.0.1",
-    "next": "^12.0.7",
+    "ansi-regex": "^5.0.1",
+    "glob-parent": "^5.1.2",
+    "next": "^12.0.9",
+    "nanoid": "^3.1.31",
+    "node-fetch": "^2.6.7",
+    "node-forge": "^1.0.0",
     "react-animated-ellipsis": "^1.0.0",
     "styled-components": "^5.3.3"
   },
