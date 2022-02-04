@@ -112,7 +112,9 @@ pub fn handler(
     encryption_public_key_array[..encryption_public_key.len()].copy_from_slice(&encryption_public_key);
     redemption_record.encryption_public_key = encryption_public_key_array;
 
-    redeemable.redeemed_count +=1;
+    redeemable.redeemed_count = u64::from(redeemable.redeemed_count)
+        .checked_add(1)
+        .unwrap();
 
     emit!(RedeemableRedeemed {
         authority: *ctx.accounts.redeemer.to_account_info().key,

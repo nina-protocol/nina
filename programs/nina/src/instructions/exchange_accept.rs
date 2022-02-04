@@ -323,9 +323,15 @@ pub fn handler (
         .unwrap();
 
     // Update Sales Counters
-    release.total_collected += amount_to_royalties;
-    release.exchange_sale_counter += 1;
-    release.exchange_sale_total += amount_to_royalties;
+    release.total_collected = u64::from(release.total_collected)
+        .checked_add(amount_to_royalties)
+        .unwrap();
+    release.exchange_sale_counter = u64::from(release.exchange_sale_counter)
+        .checked_add(1)
+        .unwrap();
+    release.exchange_sale_total = u64::from(release.exchange_sale_total)
+        .checked_add(amount_to_royalties)
+        .unwrap();
 
     //Update Royalty Recipent Counters
     release.update_royalty_recipients_owed(amount_to_royalties);

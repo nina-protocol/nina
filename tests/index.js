@@ -3682,7 +3682,114 @@ describe('Hub', async () => {
   let hubRoyaltyTokenAccount
   let hubRelease
   let hubReleaseMint
-  it('should create a release via hub', async () => {
+  it('should create a release via hub as curator', async () => {
+    const paymentMint = usdcMint;
+    hubReleaseMint = anchor.web3.Keypair.generate();
+    const releaseMintIx = await createMintInstructions(
+      provider,
+      provider.wallet.publicKey,
+      hubReleaseMint.publicKey,
+      0,
+    );
+
+    const [_hubReleaseAccount, releaseBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-release")),
+        hubReleaseMint.publicKey.toBuffer(),
+      ],
+      nina.programId,
+    );
+    hubReleaseAccount = _hubReleaseAccount
+
+    const [_hubReleaseSigner, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [hubReleaseAccount.toBuffer()],
+      nina.programId,
+    );
+    hubReleaseSigner = _hubReleaseSigner
+
+    let [_hubRoyaltyTokenAccount, royaltyTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+      provider,
+      hubReleaseSigner,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      paymentMint,
+    );
+    hubRoyaltyTokenAccount = _hubRoyaltyTokenAccount
+
+    const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        hub.toBuffer(),
+        provider.wallet.publicKey.toBuffer(),
+      ],
+      nina.programId
+    );
+
+    const [_hubRelease, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
+        hub.toBuffer(),
+        hubReleaseAccount.toBuffer(),
+      ],
+      nina.programId
+    );
+    hubRelease = _hubRelease
+
+    const config = {
+      amountTotalSupply: new anchor.BN(1000),
+      amountToArtistTokenAccount: new anchor.BN(0),
+      amountToVaultTokenAccount: new anchor.BN(0),
+      resalePercentage: new anchor.BN(200000),
+      price: new anchor.BN(releasePrice),
+      releaseDatetime: new anchor.BN((Date.now() / 1000) - 5),
+    };
+
+    const bumps = {
+      release: releaseBump,
+      signer: releaseSignerBump,
+    }
+    const instructions = [
+      ...releaseMintIx,
+      royaltyTokenAccountIx,
+    ]
+
+    await nina.rpc.releaseInitViaHub(
+      config,
+      bumps, {
+        accounts: {
+          release: hubReleaseAccount,
+          releaseSigner: hubReleaseSigner,
+          hub,
+          hubArtist,
+          hubRelease,
+          hubCurator: provider.wallet.publicKey,
+          hubCuratorUsdcTokenAccount: usdcTokenAccount,
+          releaseMint: hubReleaseMint.publicKey,
+          payer: provider.wallet.publicKey,
+          authority: provider.wallet.publicKey,
+          authorityTokenAccount: usdcTokenAccount,
+          paymentMint,
+          royaltyTokenAccount: hubRoyaltyTokenAccount,
+          systemProgram: anchor.web3.SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        },
+        signers: [hubReleaseMint],
+        instructions,
+      }
+    );
+    const hubAfter = await nina.account.hubV1.fetch(hub)
+    const hubReleaseAfter = await nina.account.hubReleaseV1.fetch(hubRelease)
+    const releaseAfter = await nina.account.release.fetch(hubReleaseAccount)
+    assert.equal(releaseAfter.royaltyRecipients[0].percentShare.toNumber(), 1000000)
+    assert.equal(releaseAfter.royaltyRecipients[0].recipientAuthority.toBase58(), provider.wallet.publicKey.toBase58())
+    assert.equal(hubReleaseAfter.hub.toBase58(), hub.toBase58())
+    assert.equal(hubReleaseAfter.release.toBase58(), hubReleaseAccount.toBase58())
+    assert.equal(hubReleaseAfter.sales.toNumber(), 0)
+    assert.equal(hubReleaseAfter.publishedThroughHub, true)
+  })
+
+  it('should create a release via hub as user', async () => {
     const paymentMint = usdcMint;
     hubReleaseMint = anchor.web3.Keypair.generate();
     const releaseMintIx = await createMintInstructions(

@@ -266,23 +266,33 @@ impl Release {
         let vault_fee_percentage = 0;
 
         // Expand math to calculate vault fee avoiding floats
-        let mut vault_fee = ((config.amount_total_supply * 1000000) * vault_fee_percentage) / 1000000;
+        let mut vault_fee = u64::from(config.amount_total_supply)
+            .checked_mul(1000000)
+            .unwrap()
+            .checked_mul(vault_fee_percentage)
+            .unwrap()
+            .checked_div(1000000)
+            .unwrap();
 
         // Releases are not fractional and the fee rounds up all fractions to ensure at least 1 release is paid as fee
         if vault_fee % 1000000 > 0 {
-            vault_fee += 1000000
+            vault_fee = u64::from(vault_fee)
+                .checked_add(1000000)
+                .unwrap();
         }
 
         // Unexpand math
-        vault_fee = vault_fee / 1000000;
+        vault_fee = u64::from(vault_fee)
+            .checked_div(1000000)
+            .unwrap();
         
         if vault_fee != config.amount_to_vault_token_account {
             return Err(ErrorCode::InvalidVaultFee.into());
         }
-
-        if config.amount_to_artist_token_account + 
-           config.amount_to_vault_token_account > 
-           config.amount_total_supply {
+        let amount_minted = config.amount_to_artist_token_account
+            .checked_add(config.amount_to_vault_token_account)
+            .unwrap();
+        if amount_minted > config.amount_total_supply {
             return Err(ErrorCode::InvalidAmountMintToArtist.into())
         }
 
@@ -297,7 +307,11 @@ impl Release {
 
         release.price = config.price;
         release.total_supply = config.amount_total_supply;
-        release.remaining_supply = config.amount_total_supply - config.amount_to_artist_token_account - config.amount_to_vault_token_account;
+        release.remaining_supply = config.amount_total_supply
+            .checked_sub(config.amount_to_artist_token_account)
+            .unwrap()
+            .checked_sub(config.amount_to_vault_token_account)
+            .unwrap();
         release.resale_percentage = config.resale_percentage;
         release.release_datetime = config.release_datetime;
 
@@ -384,10 +398,14 @@ impl Release {
         royalty_recipient: RoyaltyRecipient
     ) -> ProgramResult{
         self.royalty_recipients[Release::index_of(self.head)] = royalty_recipient;
-        if Release::index_of(self.head + 1) == Release::index_of(self.tail) {
-            self.tail += 1;
+        if Release::index_of(self.head.checked_add(1).unwrap()) == Release::index_of(self.tail) {
+            self.tail = u64::from(self.tail)
+                .checked_add(1)
+                .unwrap();
         }
-        self.head += 1;
+        self.head = u64::from(self.head)
+            .checked_add(1)
+            .unwrap();
 
         // Don't allow more than 10 revenue shares
         if self.head <= 10 {

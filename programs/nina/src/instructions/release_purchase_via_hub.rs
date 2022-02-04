@@ -80,7 +80,9 @@ pub fn handler(
     amount: u64,
 ) -> ProgramResult {
     let hub_release = &mut ctx.accounts.hub_release;
-    hub_release.sales += 1;
+    hub_release.sales = u64::from(hub_release.sales)
+        .checked_add(1)
+        .unwrap();
 
     Release::release_purchase_handler(
         ctx.accounts.payer.clone(),
@@ -105,7 +107,11 @@ pub fn handler(
     let cpi_program = ctx.accounts.token_program.to_account_info().clone();
     let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
     let hub = ctx.accounts.hub.load()?;
-    let referral_amount = (amount * hub.referral_fee) / 1000000;
+    let referral_amount = u64::from(amount)
+        .checked_mul(hub.referral_fee)
+        .unwrap()
+        .checked_div(1000000)
+        .unwrap();
     token::transfer(cpi_ctx, referral_amount)?;    
 
     emit!(ReleaseSoldViaHub {
