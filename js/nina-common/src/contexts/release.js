@@ -62,6 +62,7 @@ const ReleaseContextProvider = ({ children }) => {
     releaseInitViaHub,
     releaseFetchStatus,
     releasePurchase,
+    releasePurchaseViaHub,
     collectRoyaltyForRelease,
     addRoyaltyRecipient,
     getRelease,
@@ -122,6 +123,7 @@ const ReleaseContextProvider = ({ children }) => {
         releaseInitViaHub,
         releaseFetchStatus,
         releasePurchase,
+        releasePurchaseViaHub,
         releasePurchasePending,
         releaseState,
         collectRoyaltyForRelease,
@@ -352,7 +354,7 @@ const releaseContextHelper = ({
     try {
       const nina = await NinaClient.connect(provider)
       hubPubkey = new anchor.web3.PublicKey(hubPubkey)
-      const hub = await nina.program.account.hub.fetch(hubPubkey)
+      const hub = await nina.program.account.hubV1.fetch(hubPubkey)
 
       const releaseMint = anchor.web3.Keypair.generate()
       const paymentMint = new anchor.web3.PublicKey(
@@ -555,6 +557,136 @@ const releaseContextHelper = ({
       }
 
       const txid = await nina.program.rpc.releasePurchase(
+        release.price,
+        request
+      )
+      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+
+      setReleasePurchasePending({
+        ...releasePurchasePending,
+        [releasePubkey]: false,
+      })
+      getUsdcBalance()
+      await getRelease(releasePubkey)
+      await addReleaseToCollection(releasePubkey)
+      return {
+        success: true,
+        msg: 'Release purchased!',
+      }
+    } catch (error) {
+      getUsdcBalance()
+      getRelease(releasePubkey)
+      setReleasePurchasePending({
+        ...releasePurchasePending,
+        [releasePubkey]: false,
+      })
+      return ninaErrorHandler(error)
+    }
+  }
+
+  const releasePurchaseViaHub = async (releasePubkey, hubPubkey) => {
+    try {
+      releasePubkey = new anchor.web3.PublicKey(releasePubkey)
+      hubPubkey = new anchor.web3.PublicKey(hubPubkey)
+      const nina = await NinaClient.connect(provider)
+
+      let release = releaseState.tokenData[releasePubkey]
+      if (!release) {
+        release = await nina.program.account.release.fetch(
+          releasePubkey
+        )
+      }
+      
+      setReleasePurchasePending({
+        ...releasePurchasePending,
+        [releasePubkey.toBase58()]: true,
+      })
+  
+      let [payerTokenAccount] = await findOrCreateAssociatedTokenAccount(
+        connection,
+        provider.wallet.publicKey,
+        provider.wallet.publicKey,
+        anchor.web3.SystemProgram.programId,
+        anchor.web3.SYSVAR_RENT_PUBKEY,
+        release.paymentMint
+      )
+
+      let [purchaserReleaseTokenAccount, purchaserReleaseTokenAccountIx] =
+        await findOrCreateAssociatedTokenAccount(
+          connection,
+          provider.wallet.publicKey,
+          provider.wallet.publicKey,
+          anchor.web3.SystemProgram.programId,
+          anchor.web3.SYSVAR_RENT_PUBKEY,
+          release.releaseMint
+        )
+
+      const hub = await nina.program.account.hubV1.fetch(hubPubkey)
+      const [hubRelease] = await anchor.web3.PublicKey.findProgramAddress(
+        [
+          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-release')),
+          hubPubkey.toBuffer(),
+          releasePubkey.toBuffer(),
+        ],
+        nina.program.programId
+      )
+      const [hubSigner] = await anchor.web3.PublicKey.findProgramAddress(
+        [Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-signer")), hubPubkey.toBuffer()],
+        nina.programId
+      );  
+
+      let [hubTokenAccount] = await findOrCreateAssociatedTokenAccount(
+        provider,
+        hubSigner,
+        anchor.web3.SystemProgram.programId,
+        anchor.web3.SYSVAR_RENT_PUBKEY,
+        release.paymentMint,
+      );
+  
+      const request = {
+        accounts: {
+          release: release.publicKey,
+          releaseSigner: release.releaseSigner,
+          payer: provider.wallet.publicKey,
+          payerTokenAccount,
+          purchaser: provider.wallet.publicKey,
+          purchaserReleaseTokenAccount,
+          royaltyTokenAccount: release.royaltyTokenAccount,
+          releaseMint: release.releaseMint,
+          hub: hubPubkey,
+          hubRelease,
+          hubSigner,
+          hubCurator: hub.curator,
+          hubTokenAccount,
+          tokenProgram: NinaClient.TOKEN_PROGRAM_ID,
+          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+        },
+      }
+
+      const instructions = []
+      if (purchaserReleaseTokenAccountIx) {
+        instructions.push(purchaserReleaseTokenAccountIx)
+      }
+
+      if (instructions.length > 0) {
+        request.instructions = instructions
+      }
+
+      if (NinaClient.isSol(release.paymentMint)) {
+        const { instructions, signers } = await wrapSol(
+          provider,
+          new anchor.BN(release.price)
+        )
+        if (!request.instructions) {
+          request.instructions = [...instructions]
+        } else {
+          request.instructions.push(...instructions)
+        }
+        request.signers = signers
+        request.accounts.payerTokenAccount = signers[0].publicKey
+      }
+
+      const txid = await nina.program.rpc.releasePurchaseViaHub(
         release.price,
         request
       )
@@ -1789,6 +1921,7 @@ const releaseContextHelper = ({
     releaseInitViaHub,
     releaseFetchStatus,
     releasePurchase,
+    releasePurchaseViaHub,
     collectRoyaltyForRelease,
     getRelease,
     getReleasesInCollection,

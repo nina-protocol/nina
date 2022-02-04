@@ -90,7 +90,6 @@ const hubContextHelper = ({
   setHubReleasesState,
   allHubs,
   setAllHubs,
-  count,
   setCount,
 }) => {
   const provider = new anchor.Provider(
@@ -329,7 +328,7 @@ const hubContextHelper = ({
       hubPubkey = new anchor.web3.PublicKey(hubPubkey)
 
       const [hubSigner, hubSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
-        [Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-signer")), hub.toBuffer()],
+        [Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-signer")), hubPubkey.toBuffer()],
         nina.programId
       );
 
@@ -349,17 +348,24 @@ const hubContextHelper = ({
         USDC_MINT,
       );
 
+      let tokenAccounts = await connection.getParsedTokenAccountsByOwner(
+        hubSigner,
+        { mint: USDC_MINT }
+      )
+
+      const withdrawAmount = tokenAccounts.value[0].account.data.parsed.info.tokenAmount.uiAmount
+
       await nina.rpc.hubWithdraw(
         new anchor.BN(withdrawAmount),
         hubSignerBump, {
           accounts: {
             curator: provider.wallet.publicKey,
-            hub,
+            hub: hubPubkey,
             hubSigner,
             withdrawTarget,
             withdrawDestination,
             withdrawMint: USDC_MINT,
-            tokenProgram: TOKEN_PROGRAM_ID,
+            tokenProgram: NinaClient.TOKEN_PROGRAM_ID,
           }
         }
       );
