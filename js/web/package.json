@@ -17,7 +17,7 @@
     "eslint-plugin-react-hooks": "^4.3.0",
     "lodash.union": "^4.6.0",
     "luxon": "^2.3.0",
-    "next": "^12.0.7",
+    "next": "^12.0.9",
     "next-transpile-modules": "^9.0.0",
     "nextjs-breadcrumbs": "^1.1.9",
     "nina-common": "0.1.0",
