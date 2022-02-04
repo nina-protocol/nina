@@ -3,10 +3,10 @@ import { Connection } from '@solana/web3.js'
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
 import { WalletProvider } from '@solana/wallet-adapter-react'
 import {
-  PhantomWallet,
-  SolflareWallet,
-  SolletWallet,
-  SolletExtensionWallet,
+  PhantomWalletAdapter,
+  SolflareWalletAdapter,
+  SolletWalletAdapter,
+  SolletExtensionWalletAdapter,
 } from '@solana/wallet-adapter-wallets'
 import { isMobile } from 'react-device-detect'
 
@@ -25,14 +25,14 @@ const ConnectionContextProvider = ({ children, ENDPOINTS }) => {
   )
 
   const walletOptions = [
-    PhantomWallet({ network }),
-    SolflareWallet({ network }),
+    PhantomWalletAdapter({ network }),
+    SolflareWalletAdapter({ network }),
   ]
 
   if (!isMobile) {
     walletOptions.push(
-      SolletWallet({ network }),
-      SolletExtensionWallet({ network })
+      SolletWalletAdapter({ network }),
+      SolletExtensionWalletAdapter({ network })
     )
   }
 
