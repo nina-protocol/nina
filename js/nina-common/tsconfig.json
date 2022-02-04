@@ -15,7 +15,6 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "moduleResolution": "node",
-    "module": "es6",
     "target": "es2019",
     "composite": true,
   },

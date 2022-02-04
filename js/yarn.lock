@@ -136,13 +136,6 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.16.7":
-  version "7.17.0"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.17.0.tgz#b8d142fc0f7664fb3d9b5833fd40dcbab89276c0"
-  integrity sha512-etcO/ohMNaNA2UBdaXBBSX/3aEzFMRrVfaPv8Ptc0k+cWpWW0QFiGZ2XnVqQZI1Cf734LbPGmqBKWESfW4x/dQ==
-  dependencies:
-    regenerator-runtime "^0.13.4"
-
 "@babel/template@^7.16.7":
   version "7.16.7"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.16.7.tgz#8d126c8701fde4d66b264b3eba3d96f07666d155"
@@ -635,21 +628,12 @@
     "@mui/utils" "^5.2.3"
     prop-types "^15.7.2"
 
-"@mui/styled-engine-sc@^5.0.3", "@mui/styled-engine@npm:@mui/styled-engine-sc@latest":
+"@mui/styled-engine-sc@^5.0.3", "@mui/styled-engine@^5.2.6", "@mui/styled-engine@npm:@mui/styled-engine-sc@latest":
   name "@mui/styled-engine"
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/@mui/styled-engine-sc/-/styled-engine-sc-5.1.0.tgz#672fcc97192a7286cf306c92e71bad84eb0885a1"
   integrity sha512-5ZELhN5OAU65CDOutaB8WCo/tVJY0Sc93LnS+dZovCID4kzjvCtqbQZIbvutc3nvDl1GFukhMkG8oaGWLAsbkw==
   dependencies:
-    prop-types "^15.7.2"
-
-"@mui/styled-engine@^5.2.6":
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/@mui/styled-engine/-/styled-engine-5.3.0.tgz#b260a06398fc7335a62fd65ebbb9fc3c4071027b"
-  integrity sha512-I4YemFy9WnCLUdZ5T+6egpzc8e7Jq/uh9AJ3QInZHbyNu/9I2SWvNn7vHjWOT/D8Y8LMzIOhu5WwZbzjez7YRw==
-  dependencies:
-    "@babel/runtime" "^7.16.7"
-    "@emotion/cache" "^11.7.1"
     prop-types "^15.7.2"
 
 "@mui/styles@^5.0.1":
