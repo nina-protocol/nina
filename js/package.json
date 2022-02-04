@@ -36,7 +36,8 @@
     "styled-components": "^5.3.3"
   },
   "browser": {
-    "crypto": false
+    "crypto": false,
+    "fs": false
   },
   "resolutions": {
     "@mui/styled-engine": "npm:@mui/styled-engine-sc@latest"
