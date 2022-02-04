@@ -25,14 +25,14 @@ const ConnectionContextProvider = ({ children, ENDPOINTS }) => {
   )
 
   const walletOptions = [
-    PhantomWalletAdapter({ network }),
-    SolflareWalletAdapter({ network }),
+    new PhantomWalletAdapter({ network }),
+    new SolflareWalletAdapter({ network }),
   ]
 
   if (!isMobile) {
     walletOptions.push(
-      SolletWalletAdapter({ network }),
-      SolletExtensionWalletAdapter({ network })
+      new SolletWalletAdapter({ network }),
+      new SolletExtensionWalletAdapter({ network })
     )
   }
 
