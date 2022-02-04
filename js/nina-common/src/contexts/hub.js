@@ -22,6 +22,8 @@ const HubContextProvider = ({ children }) => {
   const {
     getAllHubs,
     getHub,
+    getHubsForArtist,
+    getHubsForRelease,
     hubInit,
     hubAddArtist,
     hubAddRelease,
@@ -30,6 +32,8 @@ const HubContextProvider = ({ children }) => {
     filterHubsByCurator,
     filterHubArtistsByHub,
     filterHubReleasesByHub,
+    filterHubsByArtist,
+    filterHubsByRelease,
   } = hubContextHelper({
     connection,
     wallet,
@@ -50,6 +54,8 @@ const HubContextProvider = ({ children }) => {
       value={{
         getAllHubs,
         getHub,
+        getHubsForArtist,
+        getHubsForRelease,
         hubInit,
         hubAddArtist,
         hubAddRelease,
@@ -61,6 +67,8 @@ const HubContextProvider = ({ children }) => {
         filterHubsByCurator,
         filterHubArtistsByHub,
         filterHubReleasesByHub,
+        filterHubsByArtist,
+        filterHubsByRelease,
         count
       }}
     >
@@ -314,52 +322,68 @@ const hubContextHelper = ({
       return ninaErrorHandler(error)
     }
   }
-
   const getHub = async (hubPubkey) => {
+    await getHubs([hubPubkey])
+  }
+
+  const getHubs = async (hubPubkeys) => {
     try {
       const nina = await NinaClient.connect(provider)
-      const hub = await nina.program.account.hubV1.fetch(
-        new anchor.web3.PublicKey(hubPubkey)
-      )
-      const formattedHub = {
-        publicKey: new anchor.web3.PublicKey(hubPubkey),
-        account: hub,
+      let hubArtists = []
+      let hubReleases = []
+      let hubs = []
+      for await (let hubPubkey of hubPubkeys) {
+        const hub = await nina.program.account.hubV1.fetch(
+          new anchor.web3.PublicKey(hubPubkey)
+        )
+        hubs.push({
+          publicKey: new anchor.web3.PublicKey(hubPubkey),
+          ...hub,
+        })
+        const hubResult = await fetch(
+          `${NinaClient.endpoints.api}/hubs/${hubPubkey}`,
+        )
+        const hubJSON = await hubResult.json()
+  
+        let hubArtistAccounts = await anchor.utils.rpc.getMultipleAccounts(
+          connection,
+          hubJSON.hubArtists.map((r) => new anchor.web3.PublicKey(r))
+        )
+        hubArtists.push(...hubArtistAccounts)
+        let hubReleasesAccounts = await anchor.utils.rpc.getMultipleAccounts(
+          connection,
+          hubJSON.hubReleases.map((r) => new anchor.web3.PublicKey(r))
+        )
+        hubReleases.push(hubReleasesAccounts)
       }
 
-      const hubResult = await fetch(
-        `${NinaClient.endpoints.api}/hubs/${hubPubkey}`,
-        {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        }
-      )
-      const hubJSON = await hubResult.json()
+      saveHubsToState(hubs)
+      saveHubArtistsToState(hubArtists.filter((item) => item != null))
+      saveHubReleasesToState(hubReleases.filter((item) => item != null))
+    } catch (error) {
+      return ninaErrorHandler(error)
+    }
+  }
 
-      const hubArtists = []
-      let hubArtistAccounts = await anchor.utils.rpc.getMultipleAccounts(
-        connection,
-        hubJSON.hubArtists.map((r) => new anchor.web3.PublicKey(r))
+  const getHubsForArtist = async (publicKey) => {
+    try {
+      const hubsResult = await fetch(
+        `${NinaClient.endpoints.api}/hubs/artist/${publicKey}`,
       )
-      hubArtistAccounts = hubArtistAccounts.filter((item) => item != null)
-      hubArtistAccounts.map((hubArtistAccounts) => {
-        const hubArtistPublicKey = hubArtistAccounts.publicKey.toBase58()
-        hubArtists.push(hubArtistPublicKey)
-      })
+      const hubsJSON = await hubsResult.json()
+      await getHubs(hubsJSON.hubs)
+    } catch (error) {
+      return ninaErrorHandler(error)
+    }
+  }
 
-      const hubReleases = []
-      let hubReleasesAccounts = await anchor.utils.rpc.getMultipleAccounts(
-        connection,
-        hubJSON.hubReleases.map((r) => new anchor.web3.PublicKey(r))
+  const getHubsForRelease = async (publicKey) => {
+    try {
+      const hubsResult = await fetch(
+        `${NinaClient.endpoints.api}/hubs/release/${publicKey}`,
       )
-      hubReleasesAccounts = hubReleasesAccounts.filter((item) => item != null)
-      hubReleasesAccounts.map((hubReleasesAccounts) => {
-        const hubReleasesPublicKey = hubReleasesAccounts.publicKey.toBase58()
-        hubReleases.push(hubReleasesPublicKey)
-      })
-
-      saveHubsToState([formattedHub])
-      saveHubArtistsToState(hubArtistAccounts)
-      saveHubReleasesToState(hubReleasesAccounts)
+      const hubsJSON = await hubsResult.json()
+      await getHubs(hubsJSON.hubs)
     } catch (error) {
       return ninaErrorHandler(error)
     }
@@ -392,7 +416,6 @@ const hubContextHelper = ({
         dataParsed.publicKey = hub.publicKey
         hubs.push(dataParsed)
       })
-      console.log('HUBS: ', hubs)
       await saveHubsToState(hubs)
     } catch (error) {
       return ninaErrorHandler(error)
@@ -412,10 +435,10 @@ const hubContextHelper = ({
       for await (let hub of hubs) {
         const publicKey = hub.publicKey.toBase58()
         updatedState[publicKey] = {
-          curator: hub.curator,
-          publishFee: hub.publishFee,
-          referralFee: hub.referralFee,
-          hubSigner: hub.hubSigner,
+          curator: hub.curator.toBase58(),
+          publishFee: hub.publishFee.toNumber(),
+          referralFee: hub.referralFee.toNumber(),
+          hubSigner: hub.hubSigner.toBase58(),
           name: decodeNonEncryptedByteArray(hub.name),
           uri: decodeNonEncryptedByteArray(hub.uri),
         }
@@ -496,10 +519,6 @@ const hubContextHelper = ({
   }
 
   const filterHubsByCurator = (userPubkey = undefined) => {
-    // if (!wallet?.connected || (!userPubkey && !wallet?.publicKey)) {
-    //   return
-    // }
-    // Return results for passed in user if another user isn't specified
     if (!userPubkey) {
       userPubkey = wallet?.publicKey.toBase58()
     }
@@ -508,8 +527,34 @@ const hubContextHelper = ({
     Object.keys(hubState).forEach((hubPubkey) => {
       const hubData = hubState[hubPubkey]
       hubData.publicKey = hubPubkey
-      if (hubData.curator.toBase58() === userPubkey) {
+      if (hubData.curator === userPubkey) {
         hubs.push(hubData)
+      }
+    })
+    return hubs
+  }
+
+  const filterHubsByArtist = (userPubkey = undefined) => {
+    if (!userPubkey) {
+      userPubkey = wallet?.publicKey.toBase58()
+    }
+
+    const hubs = []
+    Object.keys(hubArtistsState).forEach((hubArtistId) => {
+      const hubArtist = hubArtistsState[hubArtistId]
+      if (hubArtist.artist === userPubkey) {
+        hubs.push(hubState[hubArtist.hub])
+      }
+    })
+    return hubs
+  }
+
+  const filterHubsByRelease = (releasePubkey) => {
+    const hubs = []
+    Object.keys(hubReleasesState).forEach((hubReleaseId) => {
+      const hubRelease = hubReleasesState[hubReleaseId]
+      if (hubRelease.release === releasePubkey) {
+        hubs.push(hubState[hubRelease.hub])
       }
     })
     return hubs
@@ -518,12 +563,16 @@ const hubContextHelper = ({
   return {
     getAllHubs,
     getHub,
+    getHubsForArtist,
+    getHubsForRelease,
     hubInit,
     hubAddArtist,
     hubAddRelease,
     hubRemoveArtist,
     hubRemoveRelease,
     filterHubsByCurator,
+    filterHubsByArtist,
+    filterHubsByRelease,
     filterHubArtistsByHub,
     filterHubReleasesByHub,
   }

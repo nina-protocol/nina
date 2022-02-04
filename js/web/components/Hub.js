@@ -43,7 +43,7 @@ const Hub = ({ hubPubkey }) => {
 
   useEffect(() => {
     if (wallet.connected) {
-      if (wallet?.publicKey?.toBase58() === hubData?.curator.toBase58()) {
+      if (wallet?.publicKey?.toBase58() === hubData?.curator) {
         setUserIsCurator(true)
       }
     }
