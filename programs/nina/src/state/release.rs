@@ -75,10 +75,18 @@ impl Release {
         token::transfer(cpi_ctx, amount)?;
     
         // Update Sales Counters
-        release.total_collected += amount;
-        release.sale_counter += 1;
-        release.sale_total += amount;
-        release.remaining_supply -= 1;
+        release.total_collected = u64::from(release.total_collected)
+            .checked_add(amount)
+            .unwrap();
+        release.sale_counter = u64::from(release.sale_counter)
+            .checked_add(1)
+            .unwrap();
+        release.sale_total = u64::from(release.sale_total)
+            .checked_add(amount)
+            .unwrap();
+        release.remaining_supply = u64::from(release.remaining_supply)
+            .checked_sub(1)
+            .unwrap();
     
         //Update Royalty Recipent Counters
         release.update_royalty_recipients_owed(amount);
@@ -156,7 +164,9 @@ impl Release {
         };
 
         // Take share from current user
-        royalty_recipient.percent_share -= transfer_share;
+        royalty_recipient.percent_share = u64::from(royalty_recipient.percent_share)
+            .checked_sub(transfer_share)
+            .unwrap();
         let existing_royalty_recipient = release.find_royalty_recipient(new_royalty_recipient);
         // If new_royalty_recipient doesn't already have a share, add them as a new recipient
         if existing_royalty_recipient.is_none() {
@@ -183,7 +193,9 @@ impl Release {
                 let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer);
                 token::transfer(cpi_ctx, existing_royalty_recipient_unwrapped.owed as u64)?;
             }
-            existing_royalty_recipient_unwrapped.percent_share += transfer_share;
+            existing_royalty_recipient_unwrapped.percent_share = u64::from(existing_royalty_recipient_unwrapped.percent_share)
+                .checked_add(transfer_share)
+                .unwrap();
         }
 
         // Make sure royalty shares of all recipients does not exceed 1000000
@@ -229,7 +241,9 @@ impl Release {
         token::transfer(cpi_ctx, royalty_recipient.owed as u64)?;
 
         // Update Royalty Recipient's Counters
-        royalty_recipient.collected += royalty_recipient.owed;
+        royalty_recipient.collected = u64::from(royalty_recipient.collected)
+            .checked_add(royalty_recipient.owed)
+            .unwrap();
         royalty_recipient.owed = 0;
 
         Ok(())
@@ -327,7 +341,15 @@ impl Release {
     pub fn update_royalty_recipients_owed(&mut self, amount: u64) {
         for royalty_recipient in self.royalty_recipients.iter_mut() {
             if royalty_recipient.percent_share > 0 {
-                royalty_recipient.owed += (amount * royalty_recipient.percent_share) / 1000000;
+                royalty_recipient.owed = u64::from(royalty_recipient.owed)
+                    .checked_add(
+                        amount
+                            .checked_mul(royalty_recipient.percent_share)
+                            .unwrap()
+                            .checked_div(1000000)
+                            .unwrap()
+                    )
+                    .unwrap();
             }
         }
     }
@@ -344,7 +366,9 @@ impl Release {
     pub fn royalty_equals_1000000(&mut self) -> bool {
         let mut royalty_counter = 0;
         for royalty_recipient in self.royalty_recipients.iter_mut() {
-            royalty_counter += royalty_recipient.percent_share;
+            royalty_counter = u64::from(royalty_counter)
+                .checked_add(royalty_recipient.percent_share)
+                .unwrap();
         }
 
         if royalty_counter == 1000000 {

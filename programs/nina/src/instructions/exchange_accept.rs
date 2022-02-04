@@ -117,18 +117,42 @@ pub fn handler (
     let buyer;
 
     if exchange.is_selling {
-        amount_to_vault = (params.expected_amount * vault_fee_percentage) / 1000000;
-        amount_to_royalties = (params.expected_amount * params.resale_percentage) / 1000000;
-        amount_to_initializer = params.expected_amount - amount_to_vault - amount_to_royalties;
+        amount_to_vault = u64::from(params.expected_amount)
+            .checked_mul(vault_fee_percentage)
+            .unwrap()
+            .checked_div(1000000)
+            .unwrap();
+        amount_to_royalties = u64::from(params.expected_amount)
+            .checked_mul(params.resale_percentage)
+            .unwrap()
+            .checked_div(1000000)
+            .unwrap();
+        amount_to_initializer = u64::from(params.expected_amount)
+            .checked_sub(amount_to_vault)
+            .unwrap()
+            .checked_sub(amount_to_royalties)
+            .unwrap();
         amount_to_taker = params.initializer_amount;
         seller = ctx.accounts.initializer.to_account_info().key;
         buyer = ctx.accounts.taker.to_account_info().key;
         price = params.expected_amount;
     } else {
-        amount_to_vault = (params.initializer_amount * vault_fee_percentage) / 1000000;
-        amount_to_royalties = (params.initializer_amount * params.resale_percentage) / 1000000;
+        amount_to_vault = u64::from(params.initializer_amount)
+            .checked_mul(vault_fee_percentage)
+            .unwrap()
+            .checked_div(1000000)
+            .unwrap();
+        amount_to_royalties = u64::from(params.initializer_amount)
+            .checked_mul(params.resale_percentage)
+            .unwrap()
+            .checked_div(1000000)
+            .unwrap();
         amount_to_initializer = params.expected_amount;
-        amount_to_taker = params.initializer_amount - amount_to_vault - amount_to_royalties;
+        amount_to_taker = u64::from(params.initializer_amount)
+            .checked_sub(amount_to_vault)
+            .unwrap()
+            .checked_sub(amount_to_royalties)
+            .unwrap();
         seller = ctx.accounts.taker.to_account_info().key;
         buyer = ctx.accounts.initializer.to_account_info().key;
         price = params.initializer_amount;
@@ -213,7 +237,9 @@ pub fn handler (
         }
 
         // Keep track of the rent paid for taker_sending_token_account so we can return to taker later
-        let taker_sending_token_account_lamports = ctx.accounts.taker_sending_token_account.to_account_info().lamports() - amount_to_initializer;
+        let taker_sending_token_account_lamports = u64::from(ctx.accounts.taker_sending_token_account.to_account_info().lamports())
+            .checked_sub(amount_to_initializer)
+            .unwrap();
         invoke(
             // close taker_sending_token_account assign lamports to the exchange account
             &close_account(
@@ -232,18 +258,28 @@ pub fn handler (
         )?;
 
         // transfer amount_to_initializer from exchange account to initializer
-        **exchange.to_account_info().try_borrow_mut_lamports()? -= amount_to_initializer;
-        **ctx.accounts.initializer.to_account_info().try_borrow_mut_lamports()? += amount_to_initializer;
+        **exchange.to_account_info().try_borrow_mut_lamports()? = u64::from(exchange.to_account_info().try_lamports()?)
+            .checked_sub(amount_to_initializer)
+            .unwrap();
+        **ctx.accounts.initializer.to_account_info().try_borrow_mut_lamports()? = u64::from(ctx.accounts.initializer.to_account_info().try_lamports()?)
+            .checked_add(amount_to_initializer)
+            .unwrap();
         
         // transfer taker_sending_token_account rent from exchange account to taker
-        **exchange.to_account_info().try_borrow_mut_lamports()? -= taker_sending_token_account_lamports;
-        **ctx.accounts.taker.to_account_info().try_borrow_mut_lamports()? += taker_sending_token_account_lamports;
+        **exchange.to_account_info().try_borrow_mut_lamports()? = u64::from(exchange.to_account_info().try_lamports()?)
+            .checked_sub(taker_sending_token_account_lamports)
+            .unwrap();
+        **ctx.accounts.taker.to_account_info().try_borrow_mut_lamports()? = u64::from(ctx.accounts.taker.to_account_info().try_lamports()?)
+            .checked_add(taker_sending_token_account_lamports)
+            .unwrap();
     }
 
     // If initializer sent wrapped sol
     if exchange.initializer_sending_mint == wrapped_sol::ID {
         // Keep track of the rent paid for exchange_escrow_token_account so we can return to taker later
-        let exchange_escrow_token_account_lamports = ctx.accounts.exchange_escrow_token_account.to_account_info().lamports() - amount_to_taker;
+        let exchange_escrow_token_account_lamports = u64::from(ctx.accounts.exchange_escrow_token_account.to_account_info().try_lamports()?)
+            .checked_sub(amount_to_taker)
+            .unwrap();
         invoke_signed(
             // close exchange_escrow_token_account assign lamports to the exchange account
             &close_account(
@@ -263,18 +299,28 @@ pub fn handler (
         )?;
 
         // transfer amount_to_taker from exchange account to taker
-        **exchange.to_account_info().try_borrow_mut_lamports()? -= amount_to_taker;
-        **ctx.accounts.taker.to_account_info().try_borrow_mut_lamports()? += amount_to_taker;
+        **exchange.to_account_info().try_borrow_mut_lamports()? = u64::from(exchange.to_account_info().try_lamports()?)
+            .checked_sub(amount_to_taker)
+            .unwrap();
+        **ctx.accounts.taker.to_account_info().try_borrow_mut_lamports()? = u64::from(ctx.accounts.taker.to_account_info().try_lamports()?)
+            .checked_add(amount_to_taker)
+            .unwrap();
 
         // transfer exchange_escrow_token_account rent from exchange account to initializer
-        **exchange.to_account_info().try_borrow_mut_lamports()? -= exchange_escrow_token_account_lamports;
-        **ctx.accounts.initializer.to_account_info().try_borrow_mut_lamports()? += exchange_escrow_token_account_lamports;
+        **exchange.to_account_info().try_borrow_mut_lamports()? = u64::from(exchange.to_account_info().try_lamports()?)
+            .checked_sub(exchange_escrow_token_account_lamports)
+            .unwrap();
+        **ctx.accounts.initializer.to_account_info().try_borrow_mut_lamports()? = u64::from(ctx.accounts.initializer.to_account_info().try_lamports()?)
+            .checked_add(exchange_escrow_token_account_lamports)
+            .unwrap();
     }       
 
     // Transfer rent lamports from Exchange back to Initializer - closing out the exchange account
-    let exchange_lamports = exchange.to_account_info().lamports();
-    **exchange.to_account_info().try_borrow_mut_lamports()? -= exchange_lamports;
-    **ctx.accounts.initializer.to_account_info().try_borrow_mut_lamports()? += exchange_lamports;
+    let exchange_lamports = exchange.to_account_info().try_lamports()?;
+    **exchange.to_account_info().try_borrow_mut_lamports()? = 0;
+    **ctx.accounts.initializer.to_account_info().try_borrow_mut_lamports()? = u64::from(ctx.accounts.initializer.to_account_info().try_lamports()?)
+        .checked_add(exchange_lamports)
+        .unwrap();
 
     // Update Sales Counters
     release.total_collected += amount_to_royalties;
