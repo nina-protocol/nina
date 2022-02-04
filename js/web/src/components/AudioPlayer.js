@@ -270,15 +270,17 @@ const AudioPlayer = () => {
           </Link>
 
           <Button
-            onClick={() =>
-              window.open(
-                `https://twitter.com/intent/tweet?text=${`Checkout ${info.artist} - "${info.title}" on Nina`}&url=nina.market/${
-                  info.releasePubkey
-                }`,
-                null,
-                'status=no,location=no,toolbar=no,menubar=no,height=500,width=500'
-              )
-            }
+            onClick={() => {
+              if (window) {
+                return window.open(
+                  `https://twitter.com/intent/tweet?text=${`Checkout ${info.artist} - "${info.title}" on Nina`}&url=nina.market/${
+                    info.releasePubkey
+                  }`,
+                  null,
+                  'status=no,location=no,toolbar=no,menubar=no,height=500,width=500'
+                )
+              }
+            }}
             disableFocusRipple={true}
             disableRipple={true}
           >

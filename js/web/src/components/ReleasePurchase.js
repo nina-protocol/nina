@@ -126,7 +126,7 @@ const ReleasePurchase = (props) => {
       },
       responseType: 'blob',
     })
-    if (response?.data) {
+    if (response?.data && window) {
       const a = document.createElement('a')
       const url = window.URL.createObjectURL(response.data)
       a.href = url
