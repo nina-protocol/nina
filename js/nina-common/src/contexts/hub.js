@@ -29,6 +29,7 @@ const HubContextProvider = ({ children }) => {
     hubAddRelease,
     hubRemoveArtist,
     hubRemoveRelease,
+    hubWithdraw,
     filterHubsByCurator,
     filterHubArtistsByHub,
     filterHubReleasesByHub,
@@ -61,6 +62,7 @@ const HubContextProvider = ({ children }) => {
         hubAddRelease,
         hubRemoveArtist,
         hubRemoveRelease,
+        hubWithdraw,
         hubState,
         hubArtistsState,
         hubReleasesState,
@@ -218,8 +220,6 @@ const hubContextHelper = ({
   }
 
   const hubAddRelease = async (hubPubkey, releasePubkey) => {
-    hubPubkey = new anchor.web3.PublicKey(hubPubkey)
-
     try {
       const nina = await NinaClient.connect(provider)
       hubPubkey = new anchor.web3.PublicKey(hubPubkey)
@@ -322,6 +322,52 @@ const hubContextHelper = ({
       return ninaErrorHandler(error)
     }
   }
+
+  const hubWithdraw = async (hubPubkey) => {
+    try {
+      const nina = await NinaClient.connect(provider)
+      hubPubkey = new anchor.web3.PublicKey(hubPubkey)
+
+      const [hubSigner, hubSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
+        [Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-signer")), hub.toBuffer()],
+        nina.programId
+      );
+
+      let [withdrawTarget] = await findOrCreateAssociatedTokenAccount(
+        provider,
+        hubSigner,
+        anchor.web3.SystemProgram.programId,
+        anchor.web3.SYSVAR_RENT_PUBKEY,
+        USDC_MINT,
+      );
+
+      let [withdrawDestination] = await findOrCreateAssociatedTokenAccount(
+        provider,
+        provider.wallet.publicKey,
+        anchor.web3.SystemProgram.programId,
+        anchor.web3.SYSVAR_RENT_PUBKEY,
+        USDC_MINT,
+      );
+
+      await nina.rpc.hubWithdraw(
+        new anchor.BN(withdrawAmount),
+        hubSignerBump, {
+          accounts: {
+            curator: provider.wallet.publicKey,
+            hub,
+            hubSigner,
+            withdrawTarget,
+            withdrawDestination,
+            withdrawMint: USDC_MINT,
+            tokenProgram: TOKEN_PROGRAM_ID,
+          }
+        }
+      );
+    } catch (error) {
+      console.warn(error)
+    }
+  }
+
   const getHub = async (hubPubkey) => {
     await getHubs([hubPubkey])
   }
@@ -570,6 +616,7 @@ const hubContextHelper = ({
     hubAddRelease,
     hubRemoveArtist,
     hubRemoveRelease,
+    hubWithdraw,
     filterHubsByCurator,
     filterHubsByArtist,
     filterHubsByRelease,
