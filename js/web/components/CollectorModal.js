@@ -5,10 +5,10 @@ import Backdrop from '@mui/material/Backdrop'
 import Box from '@mui/material/Box'
 import { Typography, Paper } from '@mui/material'
 import { useWallet } from '@solana/wallet-adapter-react'
-import ninaCommon from 'nina-common'
+import nina from '@ninaprotocol/nina-sdk'
 import Link from 'next/link'
 
-const { ReleaseContext, NinaContext } = ninaCommon.contexts
+const { ReleaseContext, NinaContext } = nina.contexts
 
 const CollectorModal = (props) => {
   const { releasePubkey, metadata } = props

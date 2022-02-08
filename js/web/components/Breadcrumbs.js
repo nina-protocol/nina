@@ -3,10 +3,10 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { styled } from '@mui/material/styles'
 import { Typography, Box } from '@mui/material'
-import ninaCommon from 'nina-common'
+import nina from '@ninaprotocol/nina-sdk'
 import { useWallet } from '@solana/wallet-adapter-react'
 
-const { ReleaseContext } = ninaCommon.contexts
+const { ReleaseContext } = nina.contexts
 
 const YourCollectionBreadcrumb = () => {
   const { releaseState, filterReleasesUserCollection } =

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
+import nina from '@ninaprotocol/nina-sdk'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import 'react-tabs/style/react-tabs.css'
@@ -8,7 +9,7 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import ReleasePurchase from './ReleasePurchase'
 
 const { Exchange, ReleaseInfo, ReleaseSettings } = ninaCommon.components
-const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
+const { ExchangeContext, ReleaseContext } = nina.contexts
 
 const ReleaseTabs = (props) => {
   const { releasePubkey } = props

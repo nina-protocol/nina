@@ -6,22 +6,17 @@ import { ThemeProvider } from '@mui/material/styles'
 import { StyledEngineProvider } from '@mui/styled-engine'
 import { NinaTheme } from './NinaTheme'
 import Router from './routes'
-import ninaCommon from 'nina-common'
+import nina from '@ninaprotocol/nina-sdk'
 
 const {
   ConnectionContextProvider,
   ReleaseContextProvider,
   ExchangeContextProvider,
   AudioPlayerContextProvider,
-  NameContextProvider,
   NinaContextProvider,
-} = ninaCommon.contexts
-
-const { extendBorsh } = ninaCommon.utils.metaplex.borsh
+} = nina.contexts
 
 function App({ classes }) {
-  extendBorsh()
-
   return (
     <>
       <Helmet>
@@ -51,13 +46,11 @@ function App({ classes }) {
                 releasePubkey={process.env.REACT_APP_RELEASE_PUBKEY}
               >
                 <ReleaseContextProvider>
-                  <NameContextProvider>
-                    <AudioPlayerContextProvider>
-                      <ExchangeContextProvider>
-                        <Router />
-                      </ExchangeContextProvider>
-                    </AudioPlayerContextProvider>
-                  </NameContextProvider>
+                  <AudioPlayerContextProvider>
+                    <ExchangeContextProvider>
+                      <Router />
+                    </ExchangeContextProvider>
+                  </AudioPlayerContextProvider>
                 </ReleaseContextProvider>
               </NinaContextProvider>
             </ConnectionContextProvider>

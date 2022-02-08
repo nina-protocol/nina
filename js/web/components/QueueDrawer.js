@@ -1,7 +1,7 @@
 /* eslint @typescript-eslint/no-unused-vars: 0 */
 import React, { useState, useEffect, useContext } from 'react'
 import { styled } from '@mui/material/styles'
-import ninaCommon from 'nina-common'
+import nina from '@ninaprotocol/nina-sdk'
 import clsx from 'clsx'
 import { useTheme } from '@mui/material/styles'
 import Drawer from '@mui/material/Drawer'
@@ -18,8 +18,8 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import Typography from '@mui/material/Typography'
 import QueueList from './QueueList'
 
-const { AudioPlayerContext } = ninaCommon.contexts
-const { NinaClient } = ninaCommon.utils
+const { AudioPlayerContext } = nina.contexts
+const { NinaClient } = nina.utils
 
 const QueueDrawer = (props) => {
   const theme = useTheme()

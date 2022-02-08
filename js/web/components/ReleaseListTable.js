@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { styled } from '@mui/material/styles'
-import ninaCommon from 'nina-common'
+import nina from '@ninaprotocol/nina-sdk'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -17,8 +17,8 @@ import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutline
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import { useRouter } from 'next/router'
 
-const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts
-const { NinaClient } = ninaCommon.utils
+const { AudioPlayerContext, ReleaseContext } = nina.contexts
+const { NinaClient } = nina.utils
 
 const descendingComparator = (a, b, orderBy) => {
   switch (orderBy) {

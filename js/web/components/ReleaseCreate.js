@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
+import nina from '@ninaprotocol/nina-sdk'
 import { useSnackbar } from 'notistack'
 import Button from '@mui/material/Button'
 import LinearProgress from '@mui/material/LinearProgress'
@@ -15,7 +16,7 @@ import * as Yup from 'yup'
 import Link from 'next/link'
 
 const { ReleaseSettings, Dots } = ninaCommon.components
-const { ConnectionContext, ReleaseContext, NinaContext } = ninaCommon.contexts
+const { ConnectionContext, ReleaseContext, NinaContext } = nina.contexts
 
 const ReleaseCreateSchema = Yup.object().shape({
   artist: Yup.string().required('Artist Name is Required'),

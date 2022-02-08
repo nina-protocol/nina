@@ -2,7 +2,7 @@ import React, { useContext, useMemo, useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import { Typography, Box } from '@mui/material'
 import Tooltip from '@mui/material/Tooltip'
-import ninaCommon from 'nina-common'
+import nina from '@ninaprotocol/nina-sdk'
 import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
 import Link from 'next/link'
@@ -12,7 +12,7 @@ import {
   WalletMultiButton,
 } from '@solana/wallet-adapter-material-ui'
 import Breadcrumbs from './Breadcrumbs'
-const { NinaContext, ConnectionContext } = ninaCommon.contexts
+const { NinaContext, ConnectionContext } = nina.contexts
 
 const NavBar = () => {
   const { usdcBalance } = useContext(NinaContext)
@@ -51,29 +51,31 @@ const NavBar = () => {
             {wallet?.connected ? `Balance: $${usdcBalance}` : null}
           </NavBalance>
           <NavCtas>
-            <StyledWalletDialogProvider featuredWallets={4}>
-              <StyledWalletButton>
-                <Typography variant="subtitle1" sx={{ textTransform: 'none' }}>
-                  {wallet?.connected
-                    ? `${wallet.wallet.name} – ${walletDisplay}`
-                    : 'Connect Wallet'}
-                </Typography>
-              </StyledWalletButton>
-              <Tooltip
-                title={
-                  healthOk
-                    ? 'Network Status: Good'
-                    : 'Network Status: Degraded - Transactions may fail.'
-                }
-                placement="bottom-end"
-              >
-                <ConnectionDot
-                  className={`${classes.connectionDot} ${
-                    wallet?.connected ? connectedString : ''
-                  }`}
-                ></ConnectionDot>
+            {wallet.wallets &&
+              <StyledWalletDialogProvider featuredWallets={4}>
+                <StyledWalletButton>
+                  <Typography variant="subtitle1" sx={{ textTransform: 'none' }}>
+                    {wallet?.connected
+                      ? `${wallet.wallet.name} – ${walletDisplay}`
+                      : 'Connect Wallet'}
+                  </Typography>
+                </StyledWalletButton>
+                <Tooltip
+                  title={
+                    healthOk
+                      ? 'Network Status: Good'
+                      : 'Network Status: Degraded - Transactions may fail.'
+                  }
+                  placement="bottom-end"
+                >
+                  <ConnectionDot
+                    className={`${classes.connectionDot} ${
+                      wallet?.connected ? connectedString : ''
+                    }`}
+                  ></ConnectionDot>
               </Tooltip>
             </StyledWalletDialogProvider>
+            }
           </NavCtas>
         </DesktopWalletWrapper>
       </NavRight>

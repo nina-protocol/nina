@@ -3,6 +3,7 @@ import debounce from 'lodash.debounce'
 import Head from 'next/head'
 import { styled } from '@mui/material/styles'
 import ninaCommon from 'nina-common'
+import nina from '@ninaprotocol/nina-sdk'
 import { Typography, Box } from '@mui/material'
 import { isMobile } from 'react-device-detect'
 import ReleaseListTable from './ReleaseListTable'
@@ -10,7 +11,7 @@ import ScrollablePageWrapper from './ScrollablePageWrapper'
 import ReleaseTileList from './ReleaseTileList'
 import ReleaseSearch from './ReleaseSearch'
 
-const { ReleaseContext } = ninaCommon.contexts
+const { ReleaseContext } = nina.contexts
 const { Dots } = ninaCommon.components
 
 const Releases = () => {

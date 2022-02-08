@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Router from 'next/router'
 import { SnackbarProvider } from 'notistack'
 import { ThemeProvider } from '@mui/material/styles'
+import nina from '@ninaprotocol/nina-sdk'
 import ninaCommon from 'nina-common'
 import { CacheProvider } from '@emotion/react'
 import { NinaTheme } from '../NinaTheme'
@@ -11,11 +12,10 @@ const {
   ReleaseContextProvider,
   ExchangeContextProvider,
   AudioPlayerContextProvider,
-  NameContextProvider,
   NinaContextProvider,
   ConnectionContextProvider,
   HubContextProvider,
-} = ninaCommon.contexts
+} = nina.contexts
 
 const { Dots } = ninaCommon.components
 
@@ -81,25 +81,23 @@ function Application({ Component, clientSideEmotionCache, pageProps }) {
       <ConnectionContextProvider ENDPOINTS={ENDPOINTS}>
         <NinaContextProvider>
           <ReleaseContextProvider>
-            <NameContextProvider>
-              <HubContextProvider>
-                <AudioPlayerContextProvider>
-                  <ExchangeContextProvider>
-                    <CacheProvider value={clientSideEmotionCache}>
-                      <ThemeProvider theme={NinaTheme}>
-                        <Layout>
-                          {loading ? (
-                            <Dots size="80px" />
-                          ) : (
-                            <Component {...pageProps} />
-                          )}
-                        </Layout>
-                      </ThemeProvider>
-                    </CacheProvider>
-                  </ExchangeContextProvider>
-                </AudioPlayerContextProvider>
-              </HubContextProvider>
-            </NameContextProvider>
+            <HubContextProvider>
+              <AudioPlayerContextProvider>
+                <ExchangeContextProvider>
+                  <CacheProvider value={clientSideEmotionCache}>
+                    <ThemeProvider theme={NinaTheme}>
+                      <Layout>
+                        {loading ? (
+                          <Dots size="80px" />
+                        ) : (
+                          <Component {...pageProps} />
+                        )}
+                      </Layout>
+                    </ThemeProvider>
+                  </CacheProvider>
+                </ExchangeContextProvider>
+              </AudioPlayerContextProvider>
+            </HubContextProvider>
           </ReleaseContextProvider>
         </NinaContextProvider>
       </ConnectionContextProvider>

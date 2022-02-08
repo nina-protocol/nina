@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import Head from 'next/head'
-import ninaCommon from 'nina-common'
+import nina from '@ninaprotocol/nina-sdk'
 import { styled } from '@mui/material/styles'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Typography, Box } from '@mui/material'
@@ -12,7 +12,7 @@ import ReleaseListTable from './ReleaseListTable'
 import ReleaseTileList from './ReleaseTileList'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 
-const { AudioPlayerContext, ReleaseContext, NinaContext } = ninaCommon.contexts
+const { AudioPlayerContext, ReleaseContext, NinaContext } = nina.contexts
 
 const ReleaseList = ({ userId }) => {
   const { enqueueSnackbar } = useSnackbar()

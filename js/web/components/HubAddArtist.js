@@ -1,9 +1,9 @@
 import React, { useContext } from 'react'
 import { useFormik } from 'formik'
-import ninaCommon from 'nina-common'
+import nina from '@ninaprotocol/nina-sdk'
 // import {useWallet} from "@solana/wallet-adapter-react";
 
-const { HubContext } = ninaCommon.contexts
+const { HubContext } = nina.contexts
 
 const HubAddArtist = (props) => {
   const { hubPubkey } = props

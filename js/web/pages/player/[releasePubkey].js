@@ -1,5 +1,5 @@
-import ninaCommon from 'nina-common'
-const { NinaClient } = ninaCommon.utils
+import nina from '@ninaprotocol/nina-sdk'
+const { NinaClient } = nina.utils
 
 const ReleaseEmbedPage = ({ host, metadata }) => {
   const player = `

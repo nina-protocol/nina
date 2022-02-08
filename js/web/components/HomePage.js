@@ -3,12 +3,12 @@ import { styled } from '@mui/material/styles'
 import { Typography, Box } from '@mui/material'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import Button from '@mui/material/Button'
-import ninaCommon from 'nina-common'
+import nina from '@ninaprotocol/nina-sdk'
 import { useSnackbar } from 'notistack'
 import RecentlyPublished from './RecentlyPublished'
 import Link from 'next/link'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
-const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts
+const { AudioPlayerContext, ReleaseContext } = nina.contexts
 
 const HomePage = () => {
   const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =

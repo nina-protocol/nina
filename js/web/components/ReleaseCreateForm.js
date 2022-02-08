@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'
 import { styled } from '@mui/material/styles'
-import ninaCommon from 'nina-common'
+import nina from '@ninaprotocol/nina-sdk'
 import { withFormik, Form, Field } from 'formik'
 import Typography from '@mui/material/Typography'
 import { TextField } from '@mui/material'
 import Slider from '@mui/material/Slider'
 import Box from '@mui/material/Box'
 
-const { NinaClient } = ninaCommon.utils
+const { NinaClient } = nina.utils
 
 const ReleaseCreateForm = ({
   field,

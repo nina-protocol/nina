@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
-import ninaCommon from 'nina-common'
+import nina from '@ninaprotocol/nina-sdk'
 import { useSnackbar } from 'notistack'
 import Button from '@mui/material/Button'
 import { Typography, Box } from '@mui/material'
@@ -8,7 +8,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import Link from 'next/link'
 import HubCreateForm from './HubCreateForm'
 
-const { ConnectionContext, HubContext } = ninaCommon.contexts
+const { ConnectionContext, HubContext } = nina.contexts
 
 // const ReleaseCreateSchema = Yup.object().shape({
 //   artist: Yup.string().required("Artist Name is Required"),
