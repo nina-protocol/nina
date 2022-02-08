@@ -31,7 +31,7 @@ const NavBar = () => {
   useEffect(() => {
     setConnectedString(healthOk ? 'connected-healthy' : 'connected-unhealthy')
   }, [healthOk])
-  console.log('wallet', wallet)
+
   return (
     <Root>
       <NavLeft>
