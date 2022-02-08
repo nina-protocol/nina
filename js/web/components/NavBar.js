@@ -31,7 +31,7 @@ const NavBar = () => {
   useEffect(() => {
     setConnectedString(healthOk ? 'connected-healthy' : 'connected-unhealthy')
   }, [healthOk])
-
+  console.log('wallet', wallet)
   return (
     <Root>
       <NavLeft>
@@ -56,7 +56,7 @@ const NavBar = () => {
                 <StyledWalletButton>
                   <Typography variant="subtitle1" sx={{ textTransform: 'none' }}>
                     {wallet?.connected
-                      ? `${wallet.wallet.name} – ${walletDisplay}`
+                      ? `${wallet.wallet.adapter.name} – ${walletDisplay}`
                       : 'Connect Wallet'}
                   </Typography>
                 </StyledWalletButton>
