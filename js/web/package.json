@@ -28,7 +28,7 @@
     "react-multi-carousel": "^2.6.5",
     "react-router-breadcrumbs-hoc": "^4.1.0",
     "react-slick": "^0.28.1",
-    "sharp": "^0.29.3",
+    "sharp": "^0.30.1",
     "slick-carousel": "^1.8.1"
   },
   "scripts": {
