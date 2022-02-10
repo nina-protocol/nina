@@ -12,14 +12,15 @@ import ReleaseTileList from "./ReleaseTileList";
 
 const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts;
 
-const Releases = ({type}) => {
-  const { getReleasesRecent, filterReleasesRecent, releasesRecentState } = useContext(ReleaseContext)
-  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext)
+const Releases = ({ type }) => {
+  const { getReleasesRecent, filterReleasesRecent, releasesRecentState } =
+    useContext(ReleaseContext);
+  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext);
   const [listView, setListView] = useState(false);
-  const [releases, setReleases] = useState([])
+  const [releases, setReleases] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
 
-  const titleString = type === "new" ? "New Releases" : "Highlights"
+  const titleString = type === "new" ? "New Releases" : "Highlights";
 
   useEffect(() => {
     getReleasesRecent();
@@ -27,9 +28,9 @@ const Releases = ({type}) => {
 
   useEffect(() => {
     if (type === "new") {
-      setReleases(filterReleasesRecent().published)
+      setReleases(filterReleasesRecent().published);
     } else {
-      setReleases(filterReleasesRecent().highlights)
+      setReleases(filterReleasesRecent().highlights);
     }
   }, [releasesRecentState]);
 
@@ -51,9 +52,7 @@ const Releases = ({type}) => {
               <Button
                 onClick={() =>
                   resetQueueWithPlaylist(
-                    releases.map(
-                      (release) => release.releasePubkey
-                    )
+                    releases.map((release) => release.releasePubkey)
                   ).then(() =>
                     enqueueSnackbar(`Now Playing: ${titleString}`, {
                       variant: "info",
@@ -79,11 +78,7 @@ const Releases = ({type}) => {
             />
           )}
 
-          {!listView && (
-            <ReleaseTileList
-              releases={releases}
-            />
-          )}
+          {!listView && <ReleaseTileList releases={releases} />}
         </ReleasesWrapper>
       </ScrollablePageWrapper>
     </>

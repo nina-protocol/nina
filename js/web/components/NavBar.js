@@ -12,7 +12,6 @@ import {
   WalletMultiButton,
 } from "@solana/wallet-adapter-material-ui";
 import Breadcrumbs from "./Breadcrumbs";
-import MobileWalletModal from "./MobileWalletModal";
 const { NinaContext, ConnectionContext } = ninaCommon.contexts;
 
 const NavBar = () => {
@@ -77,10 +76,6 @@ const NavBar = () => {
             </StyledWalletDialogProvider>
           </NavCtas>
         </DesktopWalletWrapper>
-
-        <MobileWalletWrapper>
-          <MobileWalletModal />
-        </MobileWalletWrapper>
       </NavRight>
     </Root>
   );
@@ -134,6 +129,9 @@ const NavCtas = styled("div")(() => ({
 
 const NavBalance = styled(Typography)(({ theme }) => ({
   color: theme.palette.blue,
+  [theme.breakpoints.down("md")]: {
+    display: "none",
+  },
 }));
 
 const Logo = styled("div")(({ theme }) => ({
@@ -151,17 +149,8 @@ const Logo = styled("div")(({ theme }) => ({
   },
 }));
 
-const DesktopWalletWrapper = styled(Box)(({ theme }) => ({
+const DesktopWalletWrapper = styled(Box)(() => ({
   display: "flex",
-  [theme.breakpoints.down("md")]: {
-    display: "none",
-  },
-}));
-const MobileWalletWrapper = styled(Box)(({ theme }) => ({
-  display: "none",
-  [theme.breakpoints.down("md")]: {
-    display: "flex",
-  },
 }));
 
 const StyledWalletDialogProvider = styled(WalletDialogProvider)(
@@ -243,6 +232,9 @@ const ConnectionDot = styled("span")(({ theme }) => ({
   },
   "&.connected-unhealthy": {
     backgroundColor: theme.palette.yellow,
+  },
+  [theme.breakpoints.down("md")]: {
+    marginRight: "15px",
   },
 }));
 
