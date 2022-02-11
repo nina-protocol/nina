@@ -1,6 +1,6 @@
 import React, { useContext, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
-import nina from '@ninaprotocol/nina-sdk'
+import nina from "@nina-protocol/nina-sdk";
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { Typography } from '@mui/material'

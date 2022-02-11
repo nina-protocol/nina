@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { styled } from '@mui/material/styles'
-import nina from '@ninaprotocol/nina-sdk'
+import nina from "@nina-protocol/nina-sdk";
 import { withFormik, Form, Field } from 'formik'
 import Typography from '@mui/material/Typography'
 import { TextField } from '@mui/material'

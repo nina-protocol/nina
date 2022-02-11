@@ -4,17 +4,12 @@
   "main": "index.js",
   "private": true,
   "workspaces": [
-    "nina-common",
     "nina-radio",
-    "soft-lp",
     "web"
   ],
   "scripts": {
-    "nina-common": "yarn workspace nina-common",
     "nina-radio": "yarn workspace nina-radio",
     "nina-radio:build": "yarn nina-common build && yarn nina-radio build",
-    "soft-lp": "yarn workspace soft-lp",
-    "soft-lp:build": "yarn nina-common build && yarn soft-lp build",
     "web": "yarn workspace web",
     "web:build": "yarn nina-common build && yarn web build"
   },
@@ -26,12 +21,15 @@
     "@mui/styled-engine": "npm:@mui/styled-engine-sc@latest",
     "@mui/styled-engine-sc": "^5.0.3",
     "@mui/styles": "^5.0.1",
+    "@nina-protocol/nina-sdk": "^0.0.2",
     "ansi-regex": "^5.0.1",
     "glob-parent": "^5.1.2",
-    "next": "^12.0.9",
     "nanoid": "^3.1.31",
+    "next": "^12.0.9",
     "node-fetch": "^2.6.7",
     "node-forge": "^1.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "react-animated-ellipsis": "^1.0.0",
     "styled-components": "^5.3.3"
   },

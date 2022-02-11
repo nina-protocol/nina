@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import { useFormik } from 'formik'
-import nina from '@ninaprotocol/nina-sdk'
-// import {useWallet} from "@solana/wallet-adapter-react";
+import nina from "@nina-protocol/nina-sdk";
 
 const { HubContext } = nina.contexts
 

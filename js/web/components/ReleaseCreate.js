@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
-import ninaCommon from 'nina-common'
-import nina from '@ninaprotocol/nina-sdk'
+import nina from "@nina-protocol/nina-sdk";
 import { useSnackbar } from 'notistack'
 import Button from '@mui/material/Button'
 import LinearProgress from '@mui/material/LinearProgress'
@@ -14,8 +13,9 @@ import NinaBox from './NinaBox'
 import MediaDropzones from './MediaDropzones'
 import * as Yup from 'yup'
 import Link from 'next/link'
+import Dots from './Dots'
+import ReleaseSettings from './ReleaseSettings'
 
-const { ReleaseSettings, Dots } = ninaCommon.components
 const { ConnectionContext, ReleaseContext, NinaContext } = nina.contexts
 
 const ReleaseCreateSchema = Yup.object().shape({

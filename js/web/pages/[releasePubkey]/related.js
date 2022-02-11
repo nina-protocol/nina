@@ -1,4 +1,4 @@
-import nina from '@ninaprotocol/nina-sdk'
+import nina from "@nina-protocol/nina-sdk";
 import Head from 'next/head'
 import ReleaseRelated from '../../components/ReleaseRelated'
 

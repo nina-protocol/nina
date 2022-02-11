@@ -2,17 +2,16 @@ import React, { useEffect, useState, useContext } from 'react'
 import debounce from 'lodash.debounce'
 import Head from 'next/head'
 import { styled } from '@mui/material/styles'
-import ninaCommon from 'nina-common'
-import nina from '@ninaprotocol/nina-sdk'
+import nina from "@nina-protocol/nina-sdk";
 import { Typography, Box } from '@mui/material'
 import { isMobile } from 'react-device-detect'
 import ReleaseListTable from './ReleaseListTable'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 import ReleaseTileList from './ReleaseTileList'
 import ReleaseSearch from './ReleaseSearch'
+import Dots from './Dots'
 
 const { ReleaseContext } = nina.contexts
-const { Dots } = ninaCommon.components
 
 const Releases = () => {
   const {

@@ -5,12 +5,11 @@ import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
 import CloseIcon from '@mui/icons-material/Close'
 import axios from 'axios'
-import nina from '@ninaprotocol/nina-sdk'
-import ninaCommon from 'nina-common'
+import nina from "@nina-protocol/nina-sdk";
+import Dots from './Dots'
 
 const { ReleaseContext } = nina.contexts
 const { NinaClient } = nina.utils
-const { Dots } = ninaCommon.components
 
 let path = NinaClient.endpoints.api
 const ReleaseSearch = () => {

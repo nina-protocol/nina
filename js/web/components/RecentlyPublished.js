@@ -4,13 +4,12 @@ import { Box } from '@mui/material'
 import Slider from 'react-slick'
 import 'react-multi-carousel/lib/styles.css'
 import Typography from '@mui/material/Typography'
-import ninaCommon from 'nina-common'
 import Link from 'next/link'
 // import Image from "next/image";
 import Image from './Image'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
-const { Dots } = ninaCommon.components
+import Dots from './Dots'
 
 const RecentlyPublished = (props) => {
   const { releases } = props

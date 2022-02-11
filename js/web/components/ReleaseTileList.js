@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { styled } from '@mui/material/styles'
-import nina from '@ninaprotocol/nina-sdk'
+import nina from "@nina-protocol/nina-sdk";
 import Image from './Image'
 import { useRouter } from 'next/router'
 import { Typography, Box } from '@mui/material'

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { styled } from '@mui/material/styles'
 import { Typography, Box } from '@mui/material'
-import nina from '@ninaprotocol/nina-sdk'
+import nina from "@nina-protocol/nina-sdk";
 import { useWallet } from '@solana/wallet-adapter-react'
 
 const { ReleaseContext } = nina.contexts

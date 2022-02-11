@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles'
 import { Typography, Box } from '@mui/material'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import Button from '@mui/material/Button'
-import nina from '@ninaprotocol/nina-sdk'
+import nina from "@nina-protocol/nina-sdk";
 import { useSnackbar } from 'notistack'
 import RecentlyPublished from './RecentlyPublished'
 import Link from 'next/link'
@@ -11,6 +11,7 @@ import ScrollablePageWrapper from './ScrollablePageWrapper'
 const { AudioPlayerContext, ReleaseContext } = nina.contexts
 
 const HomePage = () => {
+  console.log('ReleaseContext: ', nina.contexts)
   const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
     useContext(ReleaseContext)
   const { resetQueueWithPlaylist } = useContext(AudioPlayerContext)

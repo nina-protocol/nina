@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { styled } from '@mui/material/styles'
-import nina from '@ninaprotocol/nina-sdk'
+import nina from "@nina-protocol/nina-sdk";
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'

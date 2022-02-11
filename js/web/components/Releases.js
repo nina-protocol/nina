@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import Head from 'next/head'
 import { styled } from '@mui/material/styles'
-import nina from '@ninaprotocol/nina-sdk'
+import nina from "@nina-protocol/nina-sdk";
 import { Typography, Box } from '@mui/material'
 import Button from '@mui/material/Button'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'

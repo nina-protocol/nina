@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
-import nina from '@ninaprotocol/nina-sdk'
+import nina from "@nina-protocol/nina-sdk";
 import { useSnackbar } from 'notistack'
 import Button from '@mui/material/Button'
 import { Typography, Box } from '@mui/material'

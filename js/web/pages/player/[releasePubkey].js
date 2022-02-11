@@ -1,4 +1,4 @@
-import nina from '@ninaprotocol/nina-sdk'
+import nina from "@nina-protocol/nina-sdk";
 const { NinaClient } = nina.utils
 
 const ReleaseEmbedPage = ({ host, metadata }) => {

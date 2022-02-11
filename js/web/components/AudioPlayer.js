@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from 'react'
 import { styled } from '@mui/material/styles'
-import nina from '@ninaprotocol/nina-sdk'
+import nina from "@nina-protocol/nina-sdk";
 import { useWallet } from '@solana/wallet-adapter-react'
 import Link from 'next/link'
 import Box from '@mui/material/Box'

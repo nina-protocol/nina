@@ -1,5 +1,5 @@
 import Release from '../../components/Release'
-import nina from '@ninaprotocol/nina-sdk'
+import nina from "@nina-protocol/nina-sdk";
 import Head from 'next/head'
 const { NinaClient } = nina.utils
 
