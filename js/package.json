@@ -9,9 +9,9 @@
   ],
   "scripts": {
     "nina-radio": "yarn workspace nina-radio",
-    "nina-radio:build": "yarn nina-common build && yarn nina-radio build",
+    "nina-radio:build": "yarn nina-radio build",
     "web": "yarn workspace web",
-    "web:build": "yarn nina-common build && yarn web build"
+    "web:build": "yarn web build"
   },
   "dependencies": {
     "@emotion/react": "^11.5.0",
