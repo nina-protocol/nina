@@ -15,7 +15,7 @@ import { useRouter } from 'next/router'
 import Dots from './Dots'
 import ReleaseSettings from './ReleaseSettings'
 
-const { ConnectionContext, ReleaseContext, HubContext } = nina.contexts
+const { HubContext, NinaContext, ReleaseContext } = nina.contexts
 
 const ReleaseCreateSchema = Yup.object().shape({
   artist: Yup.string().required('Artist Name is Required'),
@@ -34,7 +34,7 @@ const ReleaseCreateViaHub = () => {
   const wallet = useWallet()
   const { pressingState, resetPressingState, releaseState, releaseInitViaHub } =
     useContext(ReleaseContext)
-  const { healthOk } = useContext(ConnectionContext)
+  const { healthOk } = useContext(NinaContext)
   const { getHub, hubState } = useContext(HubContext)
 
   const [track, setTrack] = useState(undefined)

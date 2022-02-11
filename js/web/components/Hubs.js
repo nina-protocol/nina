@@ -23,7 +23,7 @@ const { HubContext, NinaContext } = nina.contexts
 const Hubs = () => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const { hubInit, hubState, getAllHubs, filterHubsByCurator, count } =
+  const { hubInitWithCredit, hubState, getAllHubs, filterHubsByCurator, count } =
     useContext(HubContext)
   const { healthOk } = useContext(NinaContext)
 
@@ -77,7 +77,7 @@ const Hubs = () => {
       fee: hubForm.fee,
       uri: hubForm.uri,
     }
-    const success = await hubInit(data)
+    const success = await hubInitWithCredit(data)
     if (success) {
       enqueueSnackbar('Hub Created', {
         variant: 'info',
