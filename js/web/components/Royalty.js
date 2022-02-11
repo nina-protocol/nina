@@ -31,7 +31,6 @@ const Royalty = (props) => {
   useEffect(() => {
     if (release?.royaltyRecipients) {
       release.royaltyRecipients.forEach((recipient) => {
-        const recipientPubkey = recipient.recipientAuthority.toBase58()
         if (
           wallet?.connected &&
           recipient.recipientAuthority.toBase58() ===

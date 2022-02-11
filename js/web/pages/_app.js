@@ -109,6 +109,7 @@ const NinaWrapper = ({children}) => {
       ExchangeContextProvider,
       AudioPlayerContextProvider,
       NinaContextProvider,
+      HubContextProvider,
   } = nina.contexts      
   const wallet = useWallet();
   const connection = useConnection();
@@ -121,7 +122,9 @@ const NinaWrapper = ({children}) => {
       <ReleaseContextProvider wallet={wallet} connection={connection.connection}>
         <AudioPlayerContextProvider wallet={wallet} connection={connection.connection}>
           <ExchangeContextProvider wallet={wallet} connection={connection.connection}>
-            {children}
+            <HubContextProvider wallet={wallet} connection={connection.connection}>
+              {children}
+            </HubContextProvider>
           </ExchangeContextProvider>
         </AudioPlayerContextProvider>
       </ReleaseContextProvider>

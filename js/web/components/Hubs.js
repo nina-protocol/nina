@@ -8,7 +8,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import Link from 'next/link'
 import HubCreateForm from './HubCreateForm'
 
-const { ConnectionContext, HubContext } = nina.contexts
+const { HubContext, NinaContext } = nina.contexts
 
 // const ReleaseCreateSchema = Yup.object().shape({
 //   artist: Yup.string().required("Artist Name is Required"),
@@ -25,7 +25,7 @@ const Hubs = () => {
   const wallet = useWallet()
   const { hubInit, hubState, getAllHubs, filterHubsByCurator, count } =
     useContext(HubContext)
-  const { healthOk } = useContext(ConnectionContext)
+  const { healthOk } = useContext(NinaContext)
 
   // const [formIsValid, setFormIsValid] = useState(false);
   const [formValues, setFormValues] = useState({

@@ -16,7 +16,7 @@ import Link from 'next/link'
 import Dots from './Dots'
 import ReleaseSettings from './ReleaseSettings'
 
-const { ConnectionContext, ReleaseContext, NinaContext } = nina.contexts
+const { ReleaseContext, NinaContext } = nina.contexts
 
 const ReleaseCreateSchema = Yup.object().shape({
   artist: Yup.string().required('Artist Name is Required'),
@@ -33,8 +33,7 @@ const ReleaseCreate = () => {
   const wallet = useWallet()
   const { releaseCreate, pressingState, resetPressingState, releaseState } =
     useContext(ReleaseContext)
-  const { healthOk } = useContext(ConnectionContext)
-  const { getNpcAmountHeld, npcAmountHeld } = useContext(NinaContext)
+  const { getNpcAmountHeld, healthOk, npcAmountHeld } = useContext(NinaContext)
   const [track, setTrack] = useState(undefined)
   const [artwork, setArtwork] = useState()
   const [releasePubkey, setReleasePubkey] = useState(undefined)
