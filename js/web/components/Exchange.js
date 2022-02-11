@@ -5,7 +5,7 @@ import { Typography, Box, Fade, Button } from '@mui/material'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import RefreshIcon from '@mui/icons-material/Refresh'
-import { useWallet } from '@solana/wallet-adapter-react'
+import { useWallet, useConnection } from '@solana/wallet-adapter-react'
 import nina from "@nina-protocol/nina-sdk";
 import BuySell from './BuySell'
 import ExchangeHistoryModal from './ExchangeHistoryModal'
@@ -19,6 +19,7 @@ const Exchange = (props) => {
   const { releasePubkey, metadata } = props
 
   const wallet = useWallet()
+  const connection = useConnection()
   const { enqueueSnackbar } = useSnackbar()
   const { releaseState, getRelease } = useContext(ReleaseContext)
   const {
@@ -33,7 +34,6 @@ const Exchange = (props) => {
     getExchangeHistoryForRelease,
     filterExchangeHistoryForRelease,
   } = useContext(ExchangeContext)
-  const { connection } = useContext(ConnectionContext)
   const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext)
 
   const [exchangeAwaitingConfirm, setExchangeAwaitingConfirm] =

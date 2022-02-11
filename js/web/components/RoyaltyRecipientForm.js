@@ -14,7 +14,6 @@ const RoyaltyRecipientForm = (props) => {
     props
   const { enqueueSnackbar } = useSnackbar()
   const { addRoyaltyRecipient } = useContext(ReleaseContext)
-  const { addRoyaltyRecipientByTwitterHandle } = useContext(NameContext)
 
   const handleDisplayPercent = (value) => {
     const sending = parseInt(value)
@@ -44,19 +43,10 @@ const RoyaltyRecipientForm = (props) => {
           percentShare: 20,
         }}
         onSubmit={async (values, { resetForm, initialValues }) => {
-          let result
           enqueueSnackbar('Transferring Royalty...', {
             variant: 'info',
           })
-          if (values.recipientAddress.length !== 44) {
-            result = await addRoyaltyRecipientByTwitterHandle(
-              release,
-              values,
-              releasePubkey
-            )
-          } else {
-            result = await addRoyaltyRecipient(release, values, releasePubkey)
-          }
+          const result = await addRoyaltyRecipient(release, values, releasePubkey)
           enqueueSnackbar(result.msg, {
             variant: result.success ? 'success' : 'warn',
           })

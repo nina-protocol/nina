@@ -27,19 +27,11 @@ const Royalty = (props) => {
   const [userDisplayShare, setUserDisplayShare] = useState(undefined)
   const [formToggleText, setFormToggleText] = useState('Add Royalty Recipient')
   const { collectRoyaltyForRelease } = useContext(ReleaseContext)
-  const { twitterHandlePublicKeyMap, lookupUserTwitterHandle } =
-    useContext(NameContext)
 
   useEffect(() => {
     if (release?.royaltyRecipients) {
       release.royaltyRecipients.forEach((recipient) => {
         const recipientPubkey = recipient.recipientAuthority.toBase58()
-        if (
-          recipient.percentShare.toNumber() > 0 &&
-          !twitterHandlePublicKeyMap[recipientPubkey]
-        ) {
-          lookupUserTwitterHandle(recipient.recipientAuthority)
-        }
         if (
           wallet?.connected &&
           recipient.recipientAuthority.toBase58() ===
@@ -134,24 +126,16 @@ const Royalty = (props) => {
                         recipient?.recipientAuthority.toBase58()
                         ? true
                         : false
-                    const twitterHandle =
-                      twitterHandlePublicKeyMap[
-                        recipient.recipientAuthority.toBase58()
-                      ]
                     const recipientHandle = walletAuthorizedToCollect ? (
                       'Your Royalties:'
                     ) : (
                       <a
                         href={
-                          twitterHandle
-                            ? `https://www.twitter.com/${twitterHandle}`
-                            : `https://explorer.solana.com/address/${recipient.recipientAuthority.toBase58()}`
+                          `https://explorer.solana.com/address/${recipient.recipientAuthority.toBase58()}`
                         }
                         rel="noopener"
                       >
-                        {twitterHandlePublicKeyMap[
-                          recipient.recipientAuthority.toBase58()
-                        ] || `Collaborator ${i}`}
+                        {`Collaborator ${i}`}
                       </a>
                     )
                     const percentShare = `percent share: ${

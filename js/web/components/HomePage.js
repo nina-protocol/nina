@@ -11,7 +11,6 @@ import ScrollablePageWrapper from './ScrollablePageWrapper'
 const { AudioPlayerContext, ReleaseContext } = nina.contexts
 
 const HomePage = () => {
-  console.log('ReleaseContext: ', nina.contexts)
   const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
     useContext(ReleaseContext)
   const { resetQueueWithPlaylist } = useContext(AudioPlayerContext)

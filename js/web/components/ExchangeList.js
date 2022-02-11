@@ -4,6 +4,9 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import ExchangeListItem from './ExchangeListItem'
+import nina from '@nina-protocol/nina-sdk'
+
+const {NinaContext} = nina.utils
 
 const ExchangeList = (props) => {
   let { list, onExchangeButtonAction, release, metadata, isBuy } = props
