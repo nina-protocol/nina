@@ -11,7 +11,7 @@ import {
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
-import ninaCommon from 'nina-common'
+import nina from "@nina-protocol/nina-sdk";
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded'
 import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
 import { useRouter } from 'next/router'
@@ -19,8 +19,8 @@ import { Typography } from '@mui/material'
 import { useWallet } from '@solana/wallet-adapter-react'
 import CloseIcon from '@mui/icons-material/Close'
 
-const { AudioPlayerContext } = ninaCommon.contexts
-const { NinaClient } = ninaCommon.utils
+const { AudioPlayerContext } = nina.contexts
+const { NinaClient } = nina.utils
 
 const getItemStyle = (isDragging, draggableStyle) => ({
   // styles we need to apply on draggables

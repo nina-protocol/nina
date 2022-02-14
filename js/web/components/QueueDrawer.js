@@ -1,25 +1,17 @@
 /* eslint @typescript-eslint/no-unused-vars: 0 */
 import React, { useState, useEffect, useContext } from 'react'
 import { styled } from '@mui/material/styles'
-import ninaCommon from 'nina-common'
-import clsx from 'clsx'
+import nina from "@nina-protocol/nina-sdk";
 import { useTheme } from '@mui/material/styles'
 import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import ListItemText from '@mui/material/ListItemText'
-import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded'
-import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import Typography from '@mui/material/Typography'
 import QueueList from './QueueList'
 
-const { AudioPlayerContext } = ninaCommon.contexts
-const { NinaClient } = ninaCommon.utils
+const { AudioPlayerContext } = nina.contexts
+const { NinaClient } = nina.utils
 
 const QueueDrawer = (props) => {
   const theme = useTheme()

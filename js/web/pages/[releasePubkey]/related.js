@@ -1,8 +1,8 @@
-import ninaCommon from 'nina-common'
+import nina from "@nina-protocol/nina-sdk";
 import Head from 'next/head'
 import ReleaseRelated from '../../components/ReleaseRelated'
 
-const { NinaClient } = ninaCommon.utils
+const { NinaClient } = nina.utils
 
 const Related = (props) => {
   const { metadata } = props

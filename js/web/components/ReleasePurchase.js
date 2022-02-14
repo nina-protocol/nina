@@ -1,17 +1,19 @@
 import React, { useEffect, useState, useContext } from 'react'
 import axios from 'axios'
 import { styled } from '@mui/material/styles'
-import ninaCommon from 'nina-common'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
 import { Typography } from '@mui/material'
 import Link from 'next/link'
+import nina from "@nina-protocol/nina-sdk";
 import CollectorModal from './CollectorModal'
-const { Dots, ReleaseSettings } = ninaCommon.components
-const { ReleaseContext, NinaContext, ExchangeContext } = ninaCommon.contexts
-const { NinaClient } = ninaCommon.utils
+import Dots from './Dots'
+import ReleaseSettings from './ReleaseSettings'
+
+const { ReleaseContext, NinaContext, ExchangeContext } = nina.contexts
+const { NinaClient } = nina.utils
 
 const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, router, relatedReleases } = props

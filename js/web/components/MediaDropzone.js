@@ -1,5 +1,5 @@
 import React from 'react'
-import ninaCommon from 'nina-common'
+import nina from "@nina-protocol/nina-sdk";
 import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
 import { Typography, Box } from '@mui/material'
@@ -8,7 +8,7 @@ import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined'
 import Image from 'next/image'
 import { useWallet } from '@solana/wallet-adapter-react'
 
-const { NinaClient } = ninaCommon.utils
+const { NinaClient } = nina.utils
 const MediaDropzone = ({
   type,
   releasePubkey,

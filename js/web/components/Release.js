@@ -1,16 +1,15 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
-import ninaCommon from 'nina-common'
+import nina from "@nina-protocol/nina-sdk";
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
+import { useRouter } from 'next/router'
 import NinaBox from './NinaBox'
 import ReleaseCard from './ReleaseCard'
 import ReleasePurchase from './ReleasePurchase'
-import { useRouter } from 'next/router'
-
-const { Exchange } = ninaCommon.components
-const { ExchangeContext, ReleaseContext } = ninaCommon.contexts
+import Exchange from './Exchange'
+const { ExchangeContext, ReleaseContext } = nina.contexts
 
 const Release = ({ metadataSsr }) => {
   const router = useRouter()

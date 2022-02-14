@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from 'react'
 import { styled } from '@mui/material/styles'
-import ninaCommon from 'nina-common'
+import nina from "@nina-protocol/nina-sdk";
 import { useWallet } from '@solana/wallet-adapter-react'
 import Link from 'next/link'
 import Box from '@mui/material/Box'
@@ -18,8 +18,8 @@ import Typography from '@mui/material/Typography'
 import QueueDrawer from './QueueDrawer'
 import Image from './Image'
 
-const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts
-const { NinaClient } = ninaCommon.utils
+const { AudioPlayerContext, ReleaseContext } = nina.contexts
+const { NinaClient } = nina.utils
 
 const AudioPlayer = () => {
   const { txid, updateTxid, playlist, isPlaying, setIsPlaying, currentIndex } =

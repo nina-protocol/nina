@@ -1,41 +1,23 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
+import { ConnectionProvider, WalletProvider, useWallet, useConnection } from '@solana/wallet-adapter-react';
+import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
+import {
+    PhantomWalletAdapter,
+    SolflareWalletAdapter,
+    SolletExtensionWalletAdapter,
+    SolletWalletAdapter,
+} from '@solana/wallet-adapter-wallets'
+import { clusterApiUrl } from '@solana/web3.js'
 import Router from 'next/router'
 import { SnackbarProvider } from 'notistack'
+import { isMobile } from 'react-device-detect'
 import { ThemeProvider } from '@mui/material/styles'
-import ninaCommon from 'nina-common'
+import nina from "@nina-protocol/nina-sdk";
 import { CacheProvider } from '@emotion/react'
 import { NinaTheme } from '../NinaTheme'
 import Layout from '../components/Layout'
-
-const {
-  ReleaseContextProvider,
-  ExchangeContextProvider,
-  AudioPlayerContextProvider,
-  NameContextProvider,
-  NinaContextProvider,
-  ConnectionContextProvider,
-  HubContextProvider,
-} = ninaCommon.contexts
-
-const { Dots } = ninaCommon.components
-
-const ENDPOINTS = {
-  devnet: {
-    name: 'devnet',
-    endpoint: 'https://api.devnet.solana.com',
-    custom: false,
-  },
-  testnet: {
-    name: 'testnet',
-    endpoint: 'https://api.testnet.solana.com',
-    custom: false,
-  },
-  mainnet: {
-    name: 'mainnet',
-    endpoint: 'https://nina.rpcpool.com',
-    custom: true,
-  },
-}
+import Dots from '../components/Dots'
 
 function Application({ Component, clientSideEmotionCache, pageProps }) {
   const [loading, setLoading] = useState(false)
@@ -62,49 +44,91 @@ function Application({ Component, clientSideEmotionCache, pageProps }) {
     }
   }, [])
 
+  // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
+  const network = process.env.REACT_CLUSTER === 'devnet' ? 
+    WalletAdapterNetwork.Devnet : 
+    WalletAdapterNetwork.MainnetBeta
+
+  // You can also provide a custom RPC endpoint
+  const endpoint = useMemo(() => {
+    if (network === WalletAdapterNetwork.MainnetBeta) {
+      return 'https://nina.rpcpool.com'
+    }
+    return clusterApiUrl(network)
+  }, [network]);
+
+  const walletOptions = [
+    new PhantomWalletAdapter({ network }),
+    new SolflareWalletAdapter({ network }),
+  ]
+
+  if (!isMobile) {
+    walletOptions.push(
+      new SolletWalletAdapter({ network }),
+      new SolletExtensionWalletAdapter({ network })
+    )
+  }
+  const wallets = useMemo(
+      () => walletOptions,
+      [network]
+  );
   return (
     <SnackbarProvider
       maxSnack={3}
-      classes={
-        {
-          // containerRoot: classes.containerRoot,
-          // variantSuccess: classes.success,
-          // variantError: classes.error,
-          // variantInfo: classes.info,
-        }
-      }
       anchorOrigin={{
         vertical: 'top',
         horizontal: 'left',
       }}
     >
-      <ConnectionContextProvider ENDPOINTS={ENDPOINTS}>
-        <NinaContextProvider>
-          <ReleaseContextProvider>
-            <NameContextProvider>
-              <HubContextProvider>
-                <AudioPlayerContextProvider>
-                  <ExchangeContextProvider>
-                    <CacheProvider value={clientSideEmotionCache}>
-                      <ThemeProvider theme={NinaTheme}>
-                        <Layout>
-                          {loading ? (
-                            <Dots size="80px" />
-                          ) : (
-                            <Component {...pageProps} />
-                          )}
-                        </Layout>
-                      </ThemeProvider>
-                    </CacheProvider>
-                  </ExchangeContextProvider>
-                </AudioPlayerContextProvider>
-              </HubContextProvider>
-            </NameContextProvider>
-          </ReleaseContextProvider>
-        </NinaContextProvider>
-      </ConnectionContextProvider>
+      <ConnectionProvider endpoint={endpoint}>
+        <WalletProvider wallets={wallets} autoConnect>
+          <WalletModalProvider>
+            <NinaWrapper>
+              <CacheProvider value={clientSideEmotionCache}>
+                <ThemeProvider theme={NinaTheme}>
+                  <Layout>
+                    {loading ? (
+                      <Dots size="80px" />
+                    ) : (
+                      <Component {...pageProps} />
+                    )}
+                  </Layout>
+                </ThemeProvider>
+              </CacheProvider>
+            </NinaWrapper>
+          </WalletModalProvider>
+        </WalletProvider>
+      </ConnectionProvider>
     </SnackbarProvider>
   )
 }
 
+const NinaWrapper = ({children}) => {
+  const {
+      ReleaseContextProvider,
+      ExchangeContextProvider,
+      AudioPlayerContextProvider,
+      NinaContextProvider,
+      HubContextProvider,
+  } = nina.contexts      
+  const wallet = useWallet();
+  const connection = useConnection();
+  return (
+    <NinaContextProvider
+        releasePubkey={process.env.REACT_APP_RELEASE_PUBKEY}
+        wallet={wallet}
+        connection={connection.connection}
+    >
+      <ReleaseContextProvider wallet={wallet} connection={connection.connection}>
+        <AudioPlayerContextProvider wallet={wallet} connection={connection.connection}>
+          <ExchangeContextProvider wallet={wallet} connection={connection.connection}>
+            <HubContextProvider wallet={wallet} connection={connection.connection}>
+              {children}
+            </HubContextProvider>
+          </ExchangeContextProvider>
+        </AudioPlayerContextProvider>
+      </ReleaseContextProvider>
+    </NinaContextProvider>
+  )
+}
 export default Application

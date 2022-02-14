@@ -1,8 +1,8 @@
-import ninaCommon from 'nina-common'
+import nina from "@nina-protocol/nina-sdk";
 import Head from 'next/head'
 import Release from '../../components/Release'
 
-const { NinaClient } = ninaCommon.utils
+const { NinaClient } = nina.utils
 
 const ReleaseMarketPage = (props) => {
   const { metadata } = props

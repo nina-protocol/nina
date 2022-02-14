@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import Head from 'next/head'
 import { styled } from '@mui/material/styles'
-import ninaCommon from 'nina-common'
+import nina from "@nina-protocol/nina-sdk";
 import { Typography, Box } from '@mui/material'
 import Button from '@mui/material/Button'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
@@ -10,7 +10,7 @@ import ReleaseListTable from './ReleaseListTable'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 import ReleaseTileList from './ReleaseTileList'
 
-const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts
+const { AudioPlayerContext, ReleaseContext } = nina.contexts
 
 const Releases = ({ type }) => {
   const { getReleasesRecent, filterReleasesRecent, releasesRecentState } =
