@@ -2,15 +2,15 @@ import * as anchor from '@project-serum/anchor'
 import React, { useEffect, useState, useContext } from 'react'
 import { Helmet } from 'react-helmet'
 import { styled } from '@mui/material/styles'
-import ninaCommon from 'nina-common'
+import nina from "@nina-protocol/nina-sdk";
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Box, Typography } from '@mui/material'
 import ReleaseListTable from './ReleaseListTable'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 import Link from 'next/link'
 
-const { NinaClient } = ninaCommon.utils
-const { ReleaseContext, NinaContext } = ninaCommon.contexts
+const { NinaClient } = nina.utils
+const { ReleaseContext, NinaContext } = nina.contexts
 
 const usdcMint = NinaClient.ids().mints.usdc
 const USDC_MINT_ID = new anchor.web3.PublicKey(usdcMint)

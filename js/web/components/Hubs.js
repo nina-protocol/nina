@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
-import ninaCommon from 'nina-common'
+import nina from "@nina-protocol/nina-sdk";
 import { useSnackbar } from 'notistack'
 import Button from '@mui/material/Button'
 import { Typography, Box } from '@mui/material'
@@ -8,7 +8,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import Link from 'next/link'
 import HubCreateForm from './HubCreateForm'
 
-const { ConnectionContext, HubContext } = ninaCommon.contexts
+const { HubContext, NinaContext } = nina.contexts
 
 // const ReleaseCreateSchema = Yup.object().shape({
 //   artist: Yup.string().required("Artist Name is Required"),
@@ -23,9 +23,9 @@ const { ConnectionContext, HubContext } = ninaCommon.contexts
 const Hubs = () => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const { hubInit, hubState, getAllHubs, filterHubsByCurator, count } =
+  const { hubInitWithCredit, hubState, getAllHubs, filterHubsByCurator, count } =
     useContext(HubContext)
-  const { healthOk } = useContext(ConnectionContext)
+  const { healthOk } = useContext(NinaContext)
 
   // const [formIsValid, setFormIsValid] = useState(false);
   const [formValues, setFormValues] = useState({
@@ -77,7 +77,7 @@ const Hubs = () => {
       fee: hubForm.fee,
       uri: hubForm.uri,
     }
-    const success = await hubInit(data)
+    const success = await hubInitWithCredit(data)
     if (success) {
       enqueueSnackbar('Hub Created', {
         variant: 'info',

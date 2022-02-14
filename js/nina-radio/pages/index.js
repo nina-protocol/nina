@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useContext } from 'react'
-import ninaCommon from 'nina-common'
+import nina from "@nina-protocol/nina-sdk";
 import axios from 'axios'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -8,10 +8,10 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import { styled } from "@mui/material/styles"
+import Dots from '../components/Dots'
 
-const { ReleaseContext } = ninaCommon.contexts
-const { Dots } = ninaCommon.components
-const { NinaClient } = ninaCommon.utils
+const { ReleaseContext } = nina.contexts
+const { NinaClient } = nina.utils
 
 export default function Home() {
   const playerRef = useRef()

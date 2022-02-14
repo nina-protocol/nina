@@ -1,13 +1,13 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Typography from '@mui/material/Typography'
-import ninaCommon from 'nina-common'
+import nina from "@nina-protocol/nina-sdk";
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Link from 'next/link'
 import HubAddArtist from './HubAddArtist'
 
-const { HubContext } = ninaCommon.contexts
+const { HubContext } = nina.contexts
 
 const Hub = ({ hubPubkey }) => {
   const wallet = useWallet()

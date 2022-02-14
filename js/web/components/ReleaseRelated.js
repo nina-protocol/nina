@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { Helmet } from 'react-helmet'
-import ninaCommon from 'nina-common'
+import nina from "@nina-protocol/nina-sdk";
 import { styled } from '@mui/material/styles'
 import { Typography, Box } from '@mui/material'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
@@ -10,7 +10,7 @@ import ReleaseListTable from './ReleaseListTable'
 import ReleaseTileList from './ReleaseTileList'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 
-const { ReleaseContext, AudioPlayerContext } = ninaCommon.contexts
+const { ReleaseContext, AudioPlayerContext } = nina.contexts
 
 const ReleaseRelated = ({ releasePubkey }) => {
   const { getRelatedForRelease, filterRelatedForRelease, releaseState } =

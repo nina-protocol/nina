@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
-import ninaCommon from 'nina-common'
+import nina from "@nina-protocol/nina-sdk";
 import { useSnackbar } from 'notistack'
 import Button from '@mui/material/Button'
 import LinearProgress from '@mui/material/LinearProgress'
@@ -13,9 +13,10 @@ import NinaBox from './NinaBox'
 import MediaDropzones from './MediaDropzones'
 import * as Yup from 'yup'
 import Link from 'next/link'
+import Dots from './Dots'
+import ReleaseSettings from './ReleaseSettings'
 
-const { ReleaseSettings, Dots } = ninaCommon.components
-const { ConnectionContext, ReleaseContext, NinaContext } = ninaCommon.contexts
+const { ReleaseContext, NinaContext } = nina.contexts
 
 const ReleaseCreateSchema = Yup.object().shape({
   artist: Yup.string().required('Artist Name is Required'),
@@ -32,8 +33,7 @@ const ReleaseCreate = () => {
   const wallet = useWallet()
   const { releaseCreate, pressingState, resetPressingState, releaseState } =
     useContext(ReleaseContext)
-  const { healthOk } = useContext(ConnectionContext)
-  const { getNpcAmountHeld, npcAmountHeld } = useContext(NinaContext)
+  const { getNpcAmountHeld, healthOk, npcAmountHeld } = useContext(NinaContext)
   const [track, setTrack] = useState(undefined)
   const [artwork, setArtwork] = useState()
   const [releasePubkey, setReleasePubkey] = useState(undefined)

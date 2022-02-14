@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { styled } from '@mui/material/styles'
-import ninaCommon from 'nina-common'
+import nina from "@nina-protocol/nina-sdk";
 import Image from './Image'
 import { useRouter } from 'next/router'
 import { Typography, Box } from '@mui/material'
@@ -8,7 +8,7 @@ import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutline
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Button from '@mui/material/Button'
 
-const { AudioPlayerContext } = ninaCommon.contexts
+const { AudioPlayerContext } = nina.contexts
 
 const ReleaseTileList = (props) => {
   const { releases } = props

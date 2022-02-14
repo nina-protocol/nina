@@ -4,14 +4,12 @@ import { Typography, Box } from '@mui/material'
 import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
 import CloseIcon from '@mui/icons-material/Close'
-
 import axios from 'axios'
+import nina from "@nina-protocol/nina-sdk";
+import Dots from './Dots'
 
-import ninaCommon from 'nina-common'
-
-const { ReleaseContext } = ninaCommon.contexts
-const { NinaClient } = ninaCommon.utils
-const { Dots } = ninaCommon.components
+const { ReleaseContext } = nina.contexts
+const { NinaClient } = nina.utils
 
 let path = NinaClient.endpoints.api
 const ReleaseSearch = () => {
