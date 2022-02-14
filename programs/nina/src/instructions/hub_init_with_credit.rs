@@ -1,11 +1,11 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{self, Token, TokenAccount, Mint};
+use anchor_spl::token::{self, Burn, Token, TokenAccount, Mint};
 use crate::state::*;
-use crate::utils::{wrapped_sol};
+use crate::utils::{wrapped_sol, nina_hub_credit_mint};
 
 #[derive(Accounts)]
 #[instruction(params: HubInitParams)]
-pub struct HubInit<'info> {
+pub struct HubInitWithCredit<'info> {
     #[account(mut)]
     pub curator: Signer<'info>,
     #[account(
@@ -41,6 +41,18 @@ pub struct HubInit<'info> {
     pub usdc_mint: Account<'info, Mint>,
     #[account(address = wrapped_sol::ID)]
     pub wrapped_sol_mint: Account<'info, Mint>,
+    #[account(
+        mut,
+        constraint = curator_hub_credit_token_account.owner == curator.key(),
+        constraint = curator_hub_credit_token_account.mint == hub_credit_mint.key(),
+    )]
+    pub curator_hub_credit_token_account: Box<Account<'info, TokenAccount>>,
+    #[account(mut)]
+    #[cfg_attr(
+        not(feature = "test"),
+        account(address = nina_hub_credit_mint::ID),
+    )]
+    pub hub_credit_mint: Account<'info, Mint>,
     pub system_program: Program<'info, System>,
     #[account(address = token::ID)]
     pub token_program: Program<'info, Token>,
@@ -48,9 +60,19 @@ pub struct HubInit<'info> {
 }
 
 pub fn handler (
-    ctx: Context<HubInit>,
+    ctx: Context<HubInitWithCredit>,
     params: HubInitParams,
 ) -> ProgramResult {
+    // Curator burn hub credit
+    let cpi_program = ctx.accounts.token_program.to_account_info().clone();
+    let cpi_accounts = Burn {
+        mint: ctx.accounts.hub_credit_mint.to_account_info(),
+        to: ctx.accounts.curator_hub_credit_token_account.to_account_info(),
+        authority: ctx.accounts.curator.to_account_info().clone(),
+    };
+    let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
+    token::burn(cpi_ctx, 1)?;
+    
     let mut hub = ctx.accounts.hub.load_init()?;
     hub.curator = *ctx.accounts.curator.to_account_info().key;
     hub.hub_signer = *ctx.accounts.hub_signer.to_account_info().key;

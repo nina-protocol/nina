@@ -12,10 +12,12 @@ pub struct HubRemoveRelease<'info> {
         mut,
         seeds = [b"nina-hub-release".as_ref(), hub.key().as_ref(), release.key().as_ref()],
         bump,
-        constraint = release.key() == hub_release.release.key(),
         close = payer,
     )]
     pub hub_release: Account<'info, HubReleaseV1>,
+    #[account(
+        constraint = release.key() == hub_release.release,
+    )]
     pub release: AccountLoader<'info, Release>,
     pub system_program: Program<'info, System>,
 }

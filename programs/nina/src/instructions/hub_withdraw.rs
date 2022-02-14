@@ -38,8 +38,6 @@ pub fn handler(
     amount: u64,
     bump: u8,
 ) -> ProgramResult {
-    let hub = ctx.accounts.hub.load()?;
-
     if ctx.accounts.withdraw_target.amount < amount {
         return Err(ErrorCode::HubWithdrawAmountTooHigh.into());
     }

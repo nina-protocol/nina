@@ -56,5 +56,7 @@ pub enum ErrorCode {
     HubWithdrawAmountTooHigh,
     #[msg("Hub Withdraw amount must be greater than 0")]
     HubWithdrawAmountMustBeGreaterThanZero,
+    #[msg("Wrong Purchaser")]
+    WrongPurchaser,
 
 }

@@ -1,7 +1,6 @@
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::{
     program::{invoke},
-    program_option::{COption},
 };
 use anchor_spl::token::{self, TokenAccount, MintTo, Transfer, Token, Mint, SetAuthority};
 use spl_token::instruction::{close_account};
@@ -52,6 +51,10 @@ impl Release {
     ) -> ProgramResult {
         let mut release = release_loader.load_mut()?;
 
+        if purchaser.key() != purchaser_release_token_account.owner {
+            return Err(ErrorCode::WrongPurchaser.into());
+        }
+        
         if !(release.release_datetime < clock.unix_timestamp) {
             return Err(ErrorCode::ReleaseNotLive.into());
         }
@@ -440,6 +443,7 @@ impl Release {
 }
 
 #[zero_copy]
+#[repr(packed)]
 #[derive(Default)]
 pub struct RoyaltyRecipient {
     pub recipient_authority: Pubkey,

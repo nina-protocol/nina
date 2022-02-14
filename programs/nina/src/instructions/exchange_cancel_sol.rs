@@ -23,7 +23,7 @@ pub struct ExchangeCancelSol<'info> {
     pub exchange_escrow_token_account: Box<Account<'info, TokenAccount>>,
     #[account(
         seeds = [exchange.to_account_info().key.as_ref()],
-        bump = exchange.bump,
+        bump,
     )]
     pub exchange_signer: UncheckedAccount<'info>,
     #[account(address = token::ID)]

@@ -22,3 +22,8 @@ pub mod pressing_plant_account {
     use solana_program::declare_id;
     declare_id!("BZx8SmoadJtLJD7CHpSBLftPUCbwFeDEoGFEL8xveBHU");
 }
+
+pub mod nina_hub_credit_mint {
+    use solana_program::declare_id;
+    declare_id!("nhcTKoW1Jt832uWMmtRP8N1HAQdDKYRkX8eWESa67Ko");
+}

@@ -22,7 +22,7 @@ pub mod exchange_accept;
 pub mod vault_init;
 pub mod vault_withdraw;
 
-pub mod hub_init;
+pub mod hub_init_with_credit;
 pub mod hub_add_artist;
 pub mod hub_add_release;
 pub mod hub_remove_artist;
@@ -53,7 +53,7 @@ pub use exchange_accept::*;
 pub use vault_init::*;
 pub use vault_withdraw::*;
 
-pub use hub_init::*;
+pub use hub_init_with_credit::*;
 pub use hub_add_artist::*;
 pub use hub_add_release::*;
 pub use hub_remove_artist::*;

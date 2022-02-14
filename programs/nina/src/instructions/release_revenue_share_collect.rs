@@ -20,7 +20,7 @@ pub struct ReleaseRevenueShareCollect<'info> {
     pub royalty_token_account: Box<Account<'info, TokenAccount>>,
     #[account(
         seeds = [release.to_account_info().key.as_ref()],
-        bump = release.load()?.bumps.signer,
+        bump,
     )]
     pub release_signer: UncheckedAccount<'info>,
     #[account(

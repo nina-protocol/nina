@@ -12,10 +12,12 @@ pub struct HubRemoveArtist<'info> {
         mut,
         seeds = [b"nina-hub-artist".as_ref(), hub.key().as_ref(), artist.key().as_ref()],
         bump,
-        constraint = artist.key() == hub_artist.artist.key(),
         close = payer
     )]
     pub hub_artist: Account<'info, HubArtistV1>,
+    #[account(
+        constraint = artist.key() == hub_artist.artist,
+    )]
     pub artist: UncheckedAccount<'info>,
     pub system_program: Program<'info, System>,
 }

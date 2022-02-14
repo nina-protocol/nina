@@ -28,6 +28,7 @@ let vault;
 let usdcMint;
 let wrappedSolMint = new anchor.web3.PublicKey('So11111111111111111111111111111111111111112');
 let npcMint;
+let nhcMint;
 let releaseMint;
 let releaseMint2;
 let releaseMint3;
@@ -57,6 +58,7 @@ let purchaserReleaseTokenAccount2;
 let wrongReleaseTokenAccount;
 let publishingCreditTokenAccount;
 let publishingCreditTokenAccount2;
+let hubCreditTokenAccount;
 
 // Misc
 let releasePrice = 10000000;
@@ -71,6 +73,7 @@ describe('Init', async () => {
     user2 = await newAccount(provider);
     usdcMint = await createMint(provider, provider.wallet.publicKey, 6);
     npcMint = await createMint(provider, provider.wallet.publicKey, 0);
+    nhcMint = await createMint(provider, provider.wallet.publicKey, 0);
 
     const [_usdcTokenAccount, usdcTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
       provider,
@@ -99,6 +102,15 @@ describe('Init', async () => {
     );
     publishingCreditTokenAccount = _publishingCreditTokenAccount;
 
+    let [_hubCreditTokenAccount, hubCreditTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+      provider,
+      provider.wallet.publicKey,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      nhcMint,
+    )
+    hubCreditTokenAccount = _hubCreditTokenAccount
+
     const [_user1UsdcTokenAccount, user1UsdcTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
       provider,
       user1.publicKey,
@@ -123,7 +135,8 @@ describe('Init', async () => {
       user1UsdcTokenAccountIx,
       wrappedSolTokenAccountIx,
       user1WrappedSolTokenAccountIx,
-      publishingCreditTokenAccountIx
+      publishingCreditTokenAccountIx,
+      hubCreditTokenAccountIx
     );
     await provider.send(tx, []);
 
@@ -132,6 +145,14 @@ describe('Init', async () => {
       usdcMint,
       usdcTokenAccount,
       new anchor.BN(100000000),
+      provider.wallet.publicKey,
+    );
+
+    await mintToAccount(
+      provider,
+      nhcMint,
+      hubCreditTokenAccount,
+      new anchor.BN(100),
       provider.wallet.publicKey,
     );
 
@@ -3494,7 +3515,7 @@ describe('Hub', async () => {
       ],
       nina.programId
     );
-    
+
     let [usdcVault, usdcVaultIx] = await findOrCreateAssociatedTokenAccount(
       provider,
       hubSigner,
@@ -3511,7 +3532,7 @@ describe('Hub', async () => {
       wrappedSolMint,
     );
 
-    await nina.rpc.hubInit(
+    await nina.rpc.hubInitWithCredit(
       hubParams, {
         accounts: {
           curator: provider.wallet.publicKey,
@@ -3522,6 +3543,8 @@ describe('Hub', async () => {
           wrappedSolMint,
           usdcVault,
           wrappedSolVault,
+          curatorHubCreditTokenAccount: hubCreditTokenAccount,
+          hubCreditMint: nhcMint,
           systemProgram: anchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
@@ -3543,7 +3566,6 @@ describe('Hub', async () => {
     assert.equal(hubArtistAfter.artist.toBase58(), provider.wallet.publicKey.toBase58())
     assert.equal(hubArtistAfter.hub.toBase58(), hub.toBase58())
   })
-
   let hubArtist
   it('should add artist to hub', async () => {
     const [_hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(

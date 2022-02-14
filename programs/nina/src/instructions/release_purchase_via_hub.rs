@@ -5,7 +5,6 @@ use anchor_lang::solana_program::{
 use anchor_spl::token::{self, TokenAccount, Token, Transfer, Mint};
 
 use crate::state::*;
-use crate::errors::ErrorCode;
 
 #[derive(Accounts)]
 pub struct ReleasePurchaseViaHub<'info> {

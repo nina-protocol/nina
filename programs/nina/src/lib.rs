@@ -1,5 +1,4 @@
 use anchor_lang::prelude::*;
-use metaplex_token_metadata::state::{Data};
 
 declare_id!("ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4");
 
@@ -161,11 +160,11 @@ pub mod nina {
         instructions::vault_withdraw::handler(ctx, amount)
     }
 
-    pub fn hub_init(
-        ctx: Context<HubInit>,
+    pub fn hub_init_with_credit(
+        ctx: Context<HubInitWithCredit>,
         params: HubInitParams,
     ) -> ProgramResult {
-        instructions::hub_init::handler(ctx, params)
+        instructions::hub_init_with_credit::handler(ctx, params)
     }
 
     pub fn hub_add_artist(
