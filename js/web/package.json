@@ -66,8 +66,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint ./ --ignore-path ../../.gitignore",
-    "lint:fix": "npm run lint -- --fix",
-    "format": "prettier -w \"{,!(node_modules)/**/}*.js\""
+    "lint:fix": "yarn lint -- --fix",
+    "format": "prettier -l .",
+    "format:fix": "prettier -w .",
+    "check-all": "yarn lint && yarn format"
   },
   "browser": {
     "crypto": false
