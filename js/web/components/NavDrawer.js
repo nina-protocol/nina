@@ -122,7 +122,7 @@ const NavDrawer = () => {
                 <ListItem button key={link}>
                   <StyledListItemText>
                     <a
-                      href="https://radio.nina.market"
+                      href="https://radio.ninaprotocol.com"
                       target="_blank"
                       rel="noreferrer"
                       className={`${classes.drawerLink}`}
@@ -190,7 +190,7 @@ const NavDrawer = () => {
             <DrawerFooter>
               <Box>
                 <a
-                  href="https://twitter.com/nina_market_"
+                  href="https://twitter.com/ninaprotocol"
                   target="_blank"
                   rel="noreferrer"
                   style={{ paddingRight: "15px" }}
@@ -205,7 +205,7 @@ const NavDrawer = () => {
                   <FontAwesomeIcon icon={faDiscord} />
                 </a>
                 <a
-                  href="https://www.instagram.com/nina_market__/"
+                  href="https://www.instagram.com/ninaprotocol/"
                   target="_blank"
                   rel="noreferrer"
                 >
