@@ -82,7 +82,7 @@ const RecentlyPublished = (props) => {
           nextArrow={<CustomNextArrow />}
           prevArrow={<CustomPrevArrow />}
         >
-          {releases.map((release, i) => {
+          {releases?.map((release, i) => {
             const imageUrl = release.metadata.image;
             return (
               <ReleaseSlideWrapper key={i}>
