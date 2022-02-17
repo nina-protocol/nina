@@ -196,9 +196,9 @@ const ReleaseCreate = () => {
               <Link
                 target="_blank"
                 rel="noreferrer"
-                href="href=mailto:artists@nina.market"
+                href="href=mailto:artists@ninaprotocol.com"
               >
-                artists@nina.market
+                artists@ninaprotocol.com
               </Link>{" "}
               with any questions.
             </Typography>
