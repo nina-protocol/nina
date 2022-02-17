@@ -258,7 +258,7 @@ const FaqPageContent = () => {
             <a
               rel="noreferrer"
               target="_blank"
-              href="https://github.com/nina-market/nina"
+              href="https://github.com/nina-protocol/nina"
             >
               {" "}
               here

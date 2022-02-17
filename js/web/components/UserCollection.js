@@ -114,7 +114,7 @@ const ReleaseList = ({ userId }) => {
                   onClick={() =>
                     navigator.clipboard
                       .writeText(
-                        `https://nina.market/collection/${
+                        `https://ninaprotocol.com/collection/${
                           userId || wallet.publicKey.toBase58()
                         }`
                       )

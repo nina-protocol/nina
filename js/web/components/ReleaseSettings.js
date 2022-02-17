@@ -3,20 +3,22 @@ import { styled } from '@mui/material/styles'
 import { Box, Button } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
-
+import nina from "@nina-protocol/nina-sdk";
 import Royalty from './Royalty.js'
-import NinaClient from '../utils/client'
-import { ReleaseContext } from '../contexts'
+const {ReleaseContext} = nina.contexts
+const {NinaClient} = nina.utils
 
 const ReleaseSettings = (props) => {
   const { releasePubkey, tempMetadata, inCreateFlow } = props
 
-  const { releaseState, releaseFetchMetadata } = useContext(ReleaseContext)
-
+  const { releaseState, releaseFetchStatus } = useContext(ReleaseContext)
   const [release, setRelease] = useState(releaseState.tokenData[releasePubkey])
   const [metadata, setMetadata] = useState(releaseState.metadata[releasePubkey])
   const [displayValues, setDisplayValues] = useState({})
-
+  // const [uploadStatus, setUploadStatus] = useState({
+  //   status: "pending",
+  //   reason: "image",
+  // })
   let timer = undefined
 
   useEffect(() => {
@@ -32,12 +34,12 @@ const ReleaseSettings = (props) => {
       clearInterval(timer)
       timer = null
     }
-  }, [releaseFetchMetadata])
+  }, [releaseFetchStatus])
 
   const hasMetadata = async (releasePubkey) => {
-    const metadataTxid = await releaseFetchMetadata(releasePubkey)
-
-    if (metadataTxid) {
+    const result = await releaseFetchStatus(releasePubkey)
+    // setUploadStatus(result)
+    if (result.status === 'success') {
       clearInterval(timer)
       timer = null
     }
@@ -173,7 +175,6 @@ const ReleaseSettings = (props) => {
           >
             <Typography variant="body2">Share to Twitter</Typography>
           </Button>
-
           {inCreateFlow && (
             <Button
               variant="outlined"

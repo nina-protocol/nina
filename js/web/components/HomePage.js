@@ -34,7 +34,7 @@ const HomePage = () => {
           sx={{ padding: { md: "0 165px 140px", xs: "30px 0px" } }}
         >
           Nina is a new way to <Link href="/upload">publish</Link>,{" "}
-          <Link href="https://radio.nina.market">stream</Link>, and{" "}
+          <Link href="https://radio.ninaprotocol.com">stream</Link>, and{" "}
           <Link href="/releases">purchase</Link> music. We build tools for
           artists + fans to create their context.{" "}
         </BlueTypography>
