@@ -308,11 +308,21 @@ const FaqPageContent = () => {
             On Nina, all releases are priced in USDC. The USDC used on Nina is
             SPL-wrapped USDC, native to the Solana blockchain. It is important
             to make sure that your exchange accepts SPL-USDC.{" "}
-            <a target="_blank" href="https://www.ftx.us">
+            <a
+              target="_blank"
+              href="https://www.ftx.us"
+              rel="noreferrer"
+              target="_blank"
+            >
               FTX
             </a>{" "}
             and{" "}
-            <a target="_blank" href="https://www.binance.us">
+            <a
+              target="_blank"
+              href="https://www.binance.us"
+              rel="noreferrer"
+              target="_blank"
+            >
               Binance
             </a>{" "}
             both accept SPL-USDC (make sure to send to the SPL-USDC address
