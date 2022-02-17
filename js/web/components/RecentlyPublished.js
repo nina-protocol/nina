@@ -74,7 +74,7 @@ const RecentlyPublished = (props) => {
         <Slider
           dots={false}
           infinite={true}
-          speed={1500}
+          speed={500}
           responsive={responsiveSettings}
           slidesToShow={3}
           slidesToScroll={3}
