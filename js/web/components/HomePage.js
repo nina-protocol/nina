@@ -64,7 +64,7 @@ const HomePage = () => {
               </Button>
             </Typography>
           </Box>
-          <RecentlyPublished releases={releasesRecent.highlights} />
+          <RecentlyPublished releases={releasesRecent.highlights || []} />
         </Box>
 
         <Typography
@@ -117,7 +117,7 @@ const HomePage = () => {
               </Button>
             </Typography>
           </Box>
-          <RecentlyPublished releases={releasesRecent.published} />
+          <RecentlyPublished releases={releasesRecent.published || []} />
         </Box>
         <Typography
           variant="body1"
