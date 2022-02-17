@@ -309,7 +309,6 @@ const FaqPageContent = () => {
             SPL-wrapped USDC, native to the Solana blockchain. It is important
             to make sure that your exchange accepts SPL-USDC.{" "}
             <a
-              target="_blank"
               href="https://www.ftx.us"
               rel="noreferrer"
               target="_blank"
@@ -318,7 +317,6 @@ const FaqPageContent = () => {
             </a>{" "}
             and{" "}
             <a
-              target="_blank"
               href="https://www.binance.us"
               rel="noreferrer"
               target="_blank"
