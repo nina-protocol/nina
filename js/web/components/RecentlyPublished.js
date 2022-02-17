@@ -84,8 +84,6 @@ const RecentlyPublished = (props) => {
         >
           {releases.map((release, i) => {
             const imageUrl = release.metadata.image;
-            const isMultiple =
-              artistCount[release.metadata.properties.artist] > 1;
             return (
               <ReleaseSlideWrapper key={i}>
                 <ReleaseSlide key={i}>
