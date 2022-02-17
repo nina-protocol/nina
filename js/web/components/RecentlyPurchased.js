@@ -93,7 +93,6 @@ const RecentlyPurchased = (props) => {
               responsive={responsive}
               infinite={true}
               autoPlay={false}
-              autoPlaySpeed={4000}
               keyBoardControl={true}
               transitionDuration={700}
               customTransition="transform 700ms ease-in-out"

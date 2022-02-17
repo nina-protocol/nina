@@ -88,7 +88,6 @@ const RecentlyPublished = (props) => {
           speed={1500}
           autoplay="false"
           responsive={responsiveSettings}
-          autoplaySpeed={2500}
           slidesToShow={3}
           slidesToScroll={1}
           alignItems="left"
