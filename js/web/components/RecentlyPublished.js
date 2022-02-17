@@ -86,7 +86,7 @@ const RecentlyPublished = (props) => {
           dots="false"
           infinite="true"
           speed={1500}
-          autoplay="true"
+          autoplay="false"
           responsive={responsiveSettings}
           autoplaySpeed={2500}
           slidesToShow={3}
