@@ -34,8 +34,9 @@ pub mod nina {
         ctx: Context<ReleaseInitializeViaHub>,
         config: ReleaseConfig,
         bumps: ReleaseBumps,
+        metadata_data: ReleaseMetadataData
     ) -> ProgramResult {
-        instructions::release_init_via_hub::handler(ctx, config, bumps)
+        instructions::release_init_via_hub::handler(ctx, config, bumps, metadata_data)
     }
 
     pub fn release_purchase(

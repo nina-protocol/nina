@@ -3,18 +3,15 @@ const { Token, TOKEN_PROGRAM_ID } = require("@solana/spl-token");
 const assert = require("assert");
 const encrypt = require('./utils/encrypt');
 const {
-  sleep,
   getTokenAccount,
   createMint,
   createMintInstructions,
-  createTokenAccount,
   mintToAccount,
   findOrCreateAssociatedTokenAccount,
   bnToDecimal,
   newAccount,
   wrapSol,
 } = require("./utils");
-const {createMetadata} = require("../deps/metaplex/js/packages/common/dist/lib/actions/metadata");
 
 let nina = anchor.workspace.Nina;
 let provider = anchor.Provider.env();
@@ -3775,9 +3772,23 @@ describe('Hub', async () => {
       royaltyTokenAccountIx,
     ]
 
+    const metadataProgram = new anchor.web3.PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s')
+    const [metadata] = await anchor.web3.PublicKey.findProgramAddress(
+      [Buffer.from('metadata'), metadataProgram.toBuffer(), hubReleaseMint.publicKey.toBuffer()],
+      metadataProgram,
+    );
+
+    const metadataData = {
+      name: `Nina with the Nina`,
+      symbol: `NINA`,
+      uri: `https://arweave.net`,
+      sellerFeeBasisPoints: 2000,
+    }
+
     await nina.rpc.releaseInitViaHub(
       config,
-      bumps, {
+      bumps,
+      metadataData, {
         accounts: {
           release: hubReleaseAccount,
           releaseSigner: hubReleaseSigner,
@@ -3792,8 +3803,10 @@ describe('Hub', async () => {
           authorityTokenAccount: usdcTokenAccount,
           paymentMint,
           royaltyTokenAccount: hubRoyaltyTokenAccount,
-          systemProgram: anchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
+          systemProgram: anchor.web3.SystemProgram.programId,
+          metadata,
+          metadataProgram,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         },
         signers: [hubReleaseMint],
@@ -3882,9 +3895,23 @@ describe('Hub', async () => {
       royaltyTokenAccountIx,
     ]
 
+    const metadataProgram = new anchor.web3.PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s')
+    const [metadata] = await anchor.web3.PublicKey.findProgramAddress(
+      [Buffer.from('metadata'), metadataProgram.toBuffer(), hubReleaseMint.publicKey.toBuffer()],
+      metadataProgram,
+    );
+
+    const metadataData = {
+      name: `Nina with the Nina`,
+      symbol: `NINA`,
+      uri: `https://arweave.net`,
+      sellerFeeBasisPoints: 2000,
+    }
+
     await nina.rpc.releaseInitViaHub(
       config,
-      bumps, {
+      bumps,
+      metadataData, {
         accounts: {
           release: hubReleaseAccount,
           releaseSigner: hubReleaseSigner,
@@ -3899,8 +3926,10 @@ describe('Hub', async () => {
           authorityTokenAccount: user1UsdcTokenAccount,
           paymentMint,
           royaltyTokenAccount: hubRoyaltyTokenAccount,
-          systemProgram: anchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
+          systemProgram: anchor.web3.SystemProgram.programId,
+          metadata,
+          metadataProgram,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         },
         signers: [user1, hubReleaseMint],
@@ -4068,11 +4097,27 @@ describe('Hub', async () => {
       ...releaseMintIx,
       royaltyTokenAccountIx,
     ]
+
+    const metadataProgram = new anchor.web3.PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s')
+    const [metadata] = await anchor.web3.PublicKey.findProgramAddress(
+      [Buffer.from('metadata'), metadataProgram.toBuffer(), hubReleaseMint.publicKey.toBuffer()],
+      metadataProgram,
+    );
+
+    const metadataData = {
+      name: `Nina with the Nina`,
+      symbol: `NINA`,
+      uri: `https://arweave.net`,
+      sellerFeeBasisPoints: 2000,
+    }
+
+
     await assert.rejects(
       async () => {
         await nina.rpc.releaseInitViaHub(
           config,
-          bumps, {
+          bumps,
+          metadataData, {
             accounts: {
               release: hubReleaseAccount,
               releaseSigner: hubReleaseSigner,
@@ -4087,8 +4132,10 @@ describe('Hub', async () => {
               authorityTokenAccount: user1UsdcTokenAccount,
               paymentMint,
               royaltyTokenAccount: hubRoyaltyTokenAccount,
-              systemProgram: anchor.web3.SystemProgram.programId,
               tokenProgram: TOKEN_PROGRAM_ID,
+              systemProgram: anchor.web3.SystemProgram.programId,
+              metadata,
+              metadataProgram,
               rent: anchor.web3.SYSVAR_RENT_PUBKEY,
             },
             signers: [user2, hubReleaseMint],
@@ -4168,11 +4215,27 @@ describe('Hub', async () => {
       ...releaseMintIx,
       royaltyTokenAccountIx,
     ]
+
+    const metadataProgram = new anchor.web3.PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s')
+    const [metadata] = await anchor.web3.PublicKey.findProgramAddress(
+      [Buffer.from('metadata'), metadataProgram.toBuffer(), hubReleaseMint.publicKey.toBuffer()],
+      metadataProgram,
+    );
+
+    const metadataData = {
+      name: `Nina with the Nina`,
+      symbol: `NINA`,
+      uri: `https://arweave.net`,
+      sellerFeeBasisPoints: 2000,
+    }
+
+
     await assert.rejects(
       async () => {
         await nina.rpc.releaseInitViaHub(
           config,
-          bumps, {
+          bumps,
+          metadataData, {
             accounts: {
               release: hubReleaseAccount,
               releaseSigner: hubReleaseSigner,
@@ -4187,8 +4250,10 @@ describe('Hub', async () => {
               authorityTokenAccount: user1UsdcTokenAccount,
               paymentMint,
               royaltyTokenAccount: hubRoyaltyTokenAccount,
-              systemProgram: anchor.web3.SystemProgram.programId,
               tokenProgram: TOKEN_PROGRAM_ID,
+              systemProgram: anchor.web3.SystemProgram.programId,
+              metadata,
+              metadataProgram,
               rent: anchor.web3.SYSVAR_RENT_PUBKEY,
             },
             signers: [user2, hubReleaseMint],

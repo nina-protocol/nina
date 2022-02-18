@@ -22,12 +22,8 @@ test-with-build = "anchor run build && anchor test ./tests --skip-build --provid
 nina-upgrade = "anchor upgrade --program-id ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4 ./target/deploy/nina.so"
 build = "anchor run build-deps && anchor build"
 build-deps = "anchor run build-metaplex"
-build-metaplex = "cd ./deps/metaplex/rust && pwd && cargo build-bpf && cd ../../../"
+build-metaplex = "cd ./deps/metaplex/metaplex-program-library/token-metadata/program && pwd && cargo build-bpf && cd ../../../"
 
 [[test.genesis]]
 address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
-program = "./deps/metaplex/rust/target/deploy/metaplex.so"
-
-[[test.genesis]]
-address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
-program = "./deps/metaplex/rust/target/deploy/metaplex_token_metadata.so"
+program = "./deps/metaplex/metaplex-program-library/token-metadata/target/deploy/mpl_token_metadata.so"

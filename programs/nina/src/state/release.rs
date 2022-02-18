@@ -533,7 +533,7 @@ pub struct ReleaseSoldViaHub {
 }
 
 #[event]
-pub struct ReleaseMetadataUpdated {
+pub struct ReleaseMetadataCreated {
     pub public_key: Pubkey,
     pub metadata_public_key: Pubkey,
     pub uri: String,

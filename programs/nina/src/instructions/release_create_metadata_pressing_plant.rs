@@ -4,10 +4,10 @@ use anchor_lang::solana_program::{
     program_option::{COption},
 };
 use anchor_spl::token::{Mint, Token};
-use metaplex_token_metadata::{
+use mpl_token_metadata::{
     self,
     state::{Creator},
-    instruction::{create_metadata_accounts},
+    instruction::{create_metadata_accounts_v2},
 };
 
 use crate::state::*;
@@ -76,7 +76,7 @@ pub fn handler(
     ];
 
     invoke_signed(
-        &create_metadata_accounts(
+        &create_metadata_accounts_v2(
             ctx.accounts.token_metadata_program.key(),
             ctx.accounts.metadata.key(),
             ctx.accounts.release_mint.key(),
@@ -90,12 +90,14 @@ pub fn handler(
             metadata_data.seller_fee_basis_points,
             true,
             false,
+            None,
+            None
         ),
         metadata_infos.as_slice(),
         &[seeds],
     )?;
     
-    emit!(ReleaseMetadataUpdated {
+    emit!(ReleaseMetadataCreated {
         public_key: ctx.accounts.release.key(),
         metadata_public_key: *ctx.accounts.metadata.to_account_info().key,
         uri: metadata_data.uri

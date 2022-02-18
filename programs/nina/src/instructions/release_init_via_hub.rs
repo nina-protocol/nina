@@ -1,6 +1,13 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, TokenAccount, Mint, Token};
-
+use anchor_lang::solana_program::{
+    program::{invoke_signed},
+};
+use mpl_token_metadata::{
+    self,
+    state::{Creator},
+    instruction::{create_metadata_accounts_v2},
+};
 use crate::state::*;
 
 #[derive(Accounts)]
@@ -16,7 +23,7 @@ pub struct ReleaseInitializeViaHub<'info> {
         seeds = [release.key().as_ref()],
         bump,
     )]
-    pub release_signer: UncheckedAccount<'info>,
+    pub release_signer: AccountInfo<'info>,
     #[account(
         seeds = [b"nina-hub-artist".as_ref(), hub.key().as_ref(), payer.key().as_ref()],
         bump,
@@ -58,6 +65,9 @@ pub struct ReleaseInitializeViaHub<'info> {
     pub royalty_token_account: Box<Account<'info, TokenAccount>>,
     #[account(address = token::ID)]
     pub token_program: Program<'info, Token>,
+    #[account(mut)]
+    pub metadata: AccountInfo<'info>,
+    pub metadata_program: AccountInfo<'info>,
     pub system_program: Program<'info, System>,
     pub rent: Sysvar<'info, Rent>,
 }
@@ -66,7 +76,13 @@ pub fn handler(
     ctx: Context<ReleaseInitializeViaHub>,
     config: ReleaseConfig,
     bumps: ReleaseBumps,
+    metadata_data: ReleaseMetadataData,
 ) -> ProgramResult {
+    let seeds = &[
+        ctx.accounts.release.to_account_info().key.as_ref(),
+        &[bumps.signer],
+    ];
+
     Release::release_init_handler(
         &ctx.accounts.release,
         ctx.accounts.release_signer.to_account_info().clone(),
@@ -92,6 +108,47 @@ pub fn handler(
         ctx.accounts.token_program.to_account_info().clone(),
         hub.publish_fee,
         true,
+    )?;
+
+    let creators: Vec<Creator> =
+        vec![Creator {
+            address: *ctx.accounts.release_signer.to_account_info().key,
+            verified: true,
+            share: 100,
+        }];
+
+    let metadata_infos = vec![
+        ctx.accounts.metadata.clone(),
+        ctx.accounts.release_mint.to_account_info().clone(),
+        ctx.accounts.release_signer.clone(),
+        ctx.accounts.payer.to_account_info().clone(),
+        ctx.accounts.metadata_program.clone(),
+        ctx.accounts.token_program.to_account_info().clone(),
+        ctx.accounts.system_program.to_account_info().clone(),
+        ctx.accounts.rent.to_account_info().clone(),
+        ctx.accounts.release.to_account_info().clone(),
+    ];
+
+    invoke_signed(
+        &create_metadata_accounts_v2(
+            ctx.accounts.metadata_program.key(),
+            ctx.accounts.metadata.key(),
+            ctx.accounts.release_mint.key(),
+            ctx.accounts.release_signer.key(),
+            ctx.accounts.payer.key(),
+            ctx.accounts.release_signer.key(),
+            metadata_data.name,
+            metadata_data.symbol,
+            metadata_data.uri.clone(),
+            Some(creators),
+            metadata_data.seller_fee_basis_points,
+            true,
+            false,
+            None,
+            None
+        ),
+        metadata_infos.as_slice(),
+        &[seeds],
     )?;
 
     let hub_release = &mut ctx.accounts.hub_release;
