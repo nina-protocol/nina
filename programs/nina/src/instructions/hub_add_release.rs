@@ -1,12 +1,17 @@
 use anchor_lang::prelude::*;
 
 use crate::state::*;
-use crate::errors::*;
+use crate::errors::ErrorCode;
 
 #[derive(Accounts)]
+#[instruction(hub_name: String)]
 pub struct HubAddRelease<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
+    #[account(
+        seeds = [b"nina-hub".as_ref(), hub_name.as_bytes()],
+        bump,
+    )]
     pub hub: AccountLoader<'info, HubV1>,
     #[account(
         init,
@@ -27,10 +32,11 @@ pub struct HubAddRelease<'info> {
 
 pub fn handler (
     ctx: Context<HubAddRelease>,
-) -> ProgramResult {
+    _hub_name: String,
+) -> Result<()> {
     let hub_artist = &mut ctx.accounts.hub_artist;
     if !hub_artist.can_add_release {
-        return Err(ErrorCode::HubArtistCannotAddReleaseToHubUnauthorized.into())
+        return Err(error!(ErrorCode::HubArtistCannotAddReleaseToHubUnauthorized))
     }
 
     let hub_release = &mut ctx.accounts.hub_release;

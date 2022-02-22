@@ -16,6 +16,7 @@ pub struct HubInitWithCredit<'info> {
         space = 388
     )]
     pub hub: AccountLoader<'info, HubV1>,
+    /// CHECK: This is safe because we are deriving the PDA from hub - which is initialized above
     #[account(
         seeds = [b"nina-hub-signer".as_ref(), hub.key().as_ref()],
         bump,
@@ -62,7 +63,7 @@ pub struct HubInitWithCredit<'info> {
 pub fn handler (
     ctx: Context<HubInitWithCredit>,
     params: HubInitParams,
-) -> ProgramResult {
+) -> Result<()> {
     // Curator burn hub credit
     let cpi_program = ctx.accounts.token_program.to_account_info().clone();
     let cpi_accounts = Burn {

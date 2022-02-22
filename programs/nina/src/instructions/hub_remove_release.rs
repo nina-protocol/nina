@@ -1,12 +1,17 @@
 use anchor_lang::prelude::*;
 
 use crate::state::*;
-use crate::errors::*;
+use crate::errors::ErrorCode;
 
 #[derive(Accounts)]
+#[instruction(hub_name: String)]
 pub struct HubRemoveRelease<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
+    #[account(
+        seeds = [b"nina-hub".as_ref(), hub_name.as_bytes()],
+        bump,
+    )]
     pub hub: AccountLoader<'info, HubV1>,
     #[account(
         mut,
@@ -24,14 +29,15 @@ pub struct HubRemoveRelease<'info> {
 
 pub fn handler (
     ctx: Context<HubRemoveRelease>,
-) -> ProgramResult {
+    _hub_name: String,
+) -> Result<()> {
     let hub = ctx.accounts.hub.load()?;
     let release = ctx.accounts.release.load()?;
 
     // Only hub curator and release authority can remove a hub release
     if *ctx.accounts.payer.to_account_info().key != hub.curator &&
        *ctx.accounts.payer.to_account_info().key != release.authority {
-        return Err(ErrorCode::HubReleaseCannotBeRemovedFromHubUnauthorized.into());
+        return Err(error!(ErrorCode::HubReleaseCannotBeRemovedFromHubUnauthorized));
     }
 
     emit!(HubReleaseRemoved {

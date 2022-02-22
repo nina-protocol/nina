@@ -5,12 +5,20 @@ use crate::state::*;
 use crate::errors::ErrorCode;
 
 #[derive(Accounts)]
+#[instruction(
+    amount: u64,
+    bump: u8,
+    hub_name: String
+)]
 pub struct HubWithdraw<'info> {
     pub curator: Signer<'info>,
     #[account(
         constraint = hub.load()?.curator == curator.key(),
+        seeds = [b"nina-hub".as_ref(), hub_name.as_bytes()],
+        bump,    
     )]
     pub hub: AccountLoader<'info, HubV1>,
+    /// CHECK: This is safe because we derive PDA from hub and check hub.curator
     #[account(
         seeds = [b"nina-hub-signer".as_ref(), hub.key().as_ref()],
         bump,
@@ -37,13 +45,14 @@ pub fn handler(
     ctx: Context<HubWithdraw>,
     amount: u64,
     bump: u8,
-) -> ProgramResult {
+    _hub_name: String,
+) -> Result<()> {
     if ctx.accounts.withdraw_target.amount < amount {
-        return Err(ErrorCode::HubWithdrawAmountTooHigh.into());
+        return Err(error!(ErrorCode::HubWithdrawAmountTooHigh));
     }
 
     if amount <= 0 {
-        return Err(ErrorCode::HubWithdrawAmountMustBeGreaterThanZero.into());
+        return Err(error!(ErrorCode::HubWithdrawAmountMustBeGreaterThanZero));
     }
 
     //Withdraw to Authority Token Account

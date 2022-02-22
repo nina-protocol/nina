@@ -1,3 +1,8 @@
+/** 
+    This was originally implemented so that only nina_publishing_account
+    could publish.  This was before release_init_via_credit was implemented
+    to provide permissioned publishing.
+*/ 
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, TokenAccount, Mint, Token};
 
@@ -13,6 +18,7 @@ pub struct ReleaseInitializeProtected<'info> {
         payer = payer,
     )]
     pub release: AccountLoader<'info, Release>,
+    /// CHECK: This is safe because release is being initialized above
 	#[account(
         seeds = [release.key().as_ref()],
         bump,
@@ -25,6 +31,8 @@ pub struct ReleaseInitializeProtected<'info> {
         account(address = address = nina_publishing_account::ID),
     )]
     pub payer: Signer<'info>,
+    /// CHECK: the payer is usually the authority, though they can set someone else as authority
+    /// This is safe because we don't care who the payer sets as authority.
     pub authority: UncheckedAccount<'info>,
     #[account(
         constraint = authority_token_account.owner == authority.key(),
@@ -47,7 +55,7 @@ pub fn handler(
     ctx: Context<ReleaseInitializeProtected>,
     config: ReleaseConfig,
     bumps: ReleaseBumps,
-) -> ProgramResult {
+) -> Result<()> {
     Release::release_init_handler(
         &ctx.accounts.release,
         ctx.accounts.release_signer.to_account_info().clone(),

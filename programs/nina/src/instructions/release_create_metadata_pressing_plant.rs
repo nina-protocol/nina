@@ -27,18 +27,27 @@ pub struct ReleaseCreateMetadataPressingPlant<'info> {
         bump,
     )]
     pub release: AccountLoader<'info, Release>,
+    /// CHECK: This is safe because this method an only be called by pressing_plant_account
     #[account(
         seeds = [release.key().as_ref()],
         bump,
     )]
     pub release_signer: AccountInfo<'info>,
-    #[account(mut)]
+    /// CHECK: This is safe because metadata is inititalized here
+    #[account(
+        mut,
+        seeds = [b"metadata".as_ref(), token_metadata_program.key().as_ref(), release_mint.key().as_ref()],
+        bump,
+        seeds::program = token_metadata_program.key()
+    )]
     pub metadata: AccountInfo<'info>,
     #[account(
         address = release.load()?.release_mint,
         constraint = release_mint.mint_authority == COption::Some(*release_signer.key),
     )]
     pub release_mint: Account<'info, Mint>,
+    /// CHECK: This is safe because we are checking address against mpl_token_metadata
+    #[account(address = mpl_token_metadata::ID)]
     pub token_metadata_program: AccountInfo<'info>,
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
@@ -48,7 +57,7 @@ pub struct ReleaseCreateMetadataPressingPlant<'info> {
 pub fn handler(
     ctx: Context<ReleaseCreateMetadataPressingPlant>,
     metadata_data: ReleaseMetadataData,
-) -> ProgramResult {
+) -> Result<()> {
     let release = ctx.accounts.release.load()?;
 
     let seeds = &[

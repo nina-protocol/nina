@@ -18,7 +18,7 @@ pub mod nina {
         ctx: Context<ReleaseInitializeProtected>,
         config: ReleaseConfig,
         bumps: ReleaseBumps,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         instructions::release_init_protected::handler(ctx, config, bumps)
     }
 
@@ -26,7 +26,7 @@ pub mod nina {
         ctx: Context<ReleaseInitializeWithCredit>,
         config: ReleaseConfig,
         bumps: ReleaseBumps,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         instructions::release_init_with_credit::handler(ctx, config, bumps)
     }
 
@@ -34,55 +34,57 @@ pub mod nina {
         ctx: Context<ReleaseInitializeViaHub>,
         config: ReleaseConfig,
         bumps: ReleaseBumps,
-        metadata_data: ReleaseMetadataData
-    ) -> ProgramResult {
-        instructions::release_init_via_hub::handler(ctx, config, bumps, metadata_data)
+        metadata_data: ReleaseMetadataData,
+        hub_name: String,
+    ) -> Result<()> {
+        instructions::release_init_via_hub::handler(ctx, config, bumps, metadata_data, hub_name)
     }
 
     pub fn release_purchase(
         ctx: Context<ReleasePurchase>,
         amount: u64,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         instructions::release_purchase::handler(ctx, amount)
     }
 
     pub fn release_purchase_via_hub(
         ctx: Context<ReleasePurchaseViaHub>,
         amount: u64,
-    ) -> ProgramResult {
-        instructions::release_purchase_via_hub::handler(ctx, amount)
+        hub_name: String,
+    ) -> Result<()> {
+        instructions::release_purchase_via_hub::handler(ctx, amount, hub_name)
     }
 
     pub fn release_revenue_share_collect(
         ctx: Context<ReleaseRevenueShareCollect>,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         instructions::release_revenue_share_collect::handler(ctx)
     }
 
     pub fn release_revenue_share_transfer(
         ctx: Context<ReleaseRevenueShareTransfer>,
         transfer_share: u64,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         instructions::release_revenue_share_transfer::handler(ctx, transfer_share)
     }
 
     pub fn release_airdrop(
         ctx: Context<ReleaseAirdrop>,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         instructions::release_airdrop::handler(ctx)
     }
 
     pub fn release_create_metadata(
         ctx: Context<ReleaseCreateMetadata>,
         metadata_data: ReleaseMetadataData
-    ) -> ProgramResult {
+    ) -> Result<()> {
         instructions::release_create_metadata::handler(ctx, metadata_data)
     }
 
     pub fn release_create_metadata_pressing_plant(
         ctx: Context<ReleaseCreateMetadataPressingPlant>,
         metadata_data: ReleaseMetadataData
-    ) -> ProgramResult {
+    ) -> Result<()> {
         instructions::release_create_metadata_pressing_plant::handler(ctx, metadata_data)
     }
     
@@ -90,14 +92,14 @@ pub mod nina {
         ctx: Context<RedeemableInitialize>,
         config: RedeemableConfig,
         bumps: RedeemableBumps,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         instructions::redeemable_init::handler(ctx, config, bumps)
     }
 
     pub fn redeemable_update_config(
         ctx: Context<RedeemableUpdateConfig>,
         config: RedeemableConfig,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         instructions::redeemable_update_config::handler(ctx, config)
     }
 
@@ -106,7 +108,7 @@ pub mod nina {
         encryption_public_key: Vec<u8>,
         address: Vec<u8>,
         iv: Vec<u8>,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         instructions::redeemable_redeem::handler(ctx, encryption_public_key, address, iv)
     }
 
@@ -114,7 +116,7 @@ pub mod nina {
         ctx: Context<RedeemableShippingUpdate>,
         shipper: Vec<u8>,
         tracking_number: Vec<u8>,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         instructions::redeemable_shipping_update::handler(ctx, shipper, tracking_number)
     }
 
@@ -122,82 +124,87 @@ pub mod nina {
         ctx: Context<ExchangeInitialize>,
         config: ExchangeConfig,
         bump: u8,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         instructions::exchange_init::handler(ctx, config, bump)
     }
 
     pub fn exchange_cancel(
         ctx: Context<ExchangeCancel>,
         amount: u64,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         instructions::exchange_cancel::handler(ctx, amount)
     }
 
     pub fn exchange_cancel_sol(
         ctx: Context<ExchangeCancelSol>,
         amount: u64,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         instructions::exchange_cancel_sol::handler(ctx, amount)
     }
 
     pub fn exchange_accept(
         ctx: Context<ExchangeAccept>,
         params: ExchangeAcceptParams,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         instructions::exchange_accept::handler(ctx, params)
     }
 
     pub fn vault_init(
         ctx: Context<VaultInitialize>,
         bumps: VaultBumps,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         instructions::vault_init::handler(ctx, bumps)
     }
 
     pub fn vault_withdraw(
         ctx: Context<VaultWithdraw>,
         amount: u64,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         instructions::vault_withdraw::handler(ctx, amount)
     }
 
     pub fn hub_init_with_credit(
         ctx: Context<HubInitWithCredit>,
         params: HubInitParams,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         instructions::hub_init_with_credit::handler(ctx, params)
     }
 
     pub fn hub_add_artist(
         ctx: Context<HubAddArtist>,
-        can_add_release: bool
-    ) -> ProgramResult {
-        instructions::hub_add_artist::handler(ctx, can_add_release)
+        can_add_release: bool,
+        hub_name: String
+    ) -> Result<()> {
+        instructions::hub_add_artist::handler(ctx, can_add_release, hub_name)
     }
 
     pub fn hub_add_release(
         ctx: Context<HubAddRelease>,
-    ) -> ProgramResult {
-        instructions::hub_add_release::handler(ctx)
+        hub_name: String
+    ) -> Result<()> {
+        instructions::hub_add_release::handler(ctx, hub_name)
     }
 
     pub fn hub_remove_artist(
         ctx: Context<HubRemoveArtist>,
-    ) -> ProgramResult {
-        instructions::hub_remove_artist::handler(ctx)
+        hub_name: String
+    ) -> Result<()> {
+        instructions::hub_remove_artist::handler(ctx, hub_name)
     }
 
     pub fn hub_remove_release(
         ctx: Context<HubRemoveRelease>,
-    ) -> ProgramResult {
-        instructions::hub_remove_release::handler(ctx)
+        hub_name: String
+    ) -> Result<()> {
+        instructions::hub_remove_release::handler(ctx, hub_name)
     }
 
     pub fn hub_withdraw(
         ctx: Context<HubWithdraw>,
         amount: u64,
         bump: u8,
-    ) -> ProgramResult {
-        instructions::hub_withdraw::handler(ctx, amount, bump)
+        hub_name: String
+    ) -> Result<()> {
+        instructions::hub_withdraw::handler(ctx, amount, bump, hub_name)
     }
 }

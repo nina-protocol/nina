@@ -37,6 +37,7 @@ pub struct ExchangeInitialize<'info> {
         constraint = exchange_escrow_token_account.mint == initializer_sending_mint.key(),
     )]
     pub exchange_escrow_token_account: Box<Account<'info, TokenAccount>>,
+    /// CHECK: This is safe because we derive PDA from exchange which is initilaized above
     #[account(
         seeds = [exchange.key().as_ref()],
         bump,
@@ -58,9 +59,9 @@ pub fn handler (
     ctx: Context<ExchangeInitialize>,
     config: ExchangeConfig,
     bump: u8,
-) -> ProgramResult {
+) -> Result<()> {
     if config.expected_amount <= 0 || config.initializer_amount <= 0 {
-        return Err(ErrorCode::PriceTooLow.into());
+        return Err(error!(ErrorCode::PriceTooLow));
     }
 
     let exchange = &mut ctx.accounts.exchange;
@@ -103,7 +104,7 @@ pub fn handler (
         // If initializer_sending_token_account includes more than amount expected throw an error
         // this account is probably not one that we want to be closing
         if ctx.accounts.initializer_sending_token_account.amount != exchange.initializer_amount {
-            return Err(ErrorCode::NotUsingTemporaryTokenAccount.into());
+            return Err(error!(ErrorCode::NotUsingTemporaryTokenAccount));
         }
         
         invoke(

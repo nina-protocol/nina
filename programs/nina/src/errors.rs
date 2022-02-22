@@ -1,6 +1,6 @@
-use anchor_lang::error;
+use anchor_lang::prelude::*;
 
-#[error]
+#[error_code]
 pub enum ErrorCode {
     #[msg("Amount sent does not match price")]
     WrongAmount,
@@ -56,7 +56,7 @@ pub enum ErrorCode {
     HubWithdrawAmountTooHigh,
     #[msg("Hub Withdraw amount must be greater than 0")]
     HubWithdrawAmountMustBeGreaterThanZero,
-    #[msg("Wrong Purchaser")]
-    WrongPurchaser,
+    #[msg("Release Purchase Wrong Receiver")]
+    ReleasePurchaseWrongReceiver,
 
 }

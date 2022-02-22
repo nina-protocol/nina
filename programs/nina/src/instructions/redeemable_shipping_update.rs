@@ -20,7 +20,7 @@ pub fn handler(
     ctx: Context<RedeemableShippingUpdate>,
     shipper: Vec<u8>,
     tracking_number: Vec<u8>,
-) -> ProgramResult {
+) -> Result<()> {
     let mut redemption_record = ctx.accounts.redemption_record.load_mut()?;
 
     let mut shipper_array = [0u8; 32];

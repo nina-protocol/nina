@@ -7,9 +7,15 @@ use anchor_spl::token::{self, TokenAccount, Token, Transfer, Mint};
 use crate::state::*;
 
 #[derive(Accounts)]
+#[instruction(
+    _amount: u64,
+    hub_name: String
+)]
 pub struct ReleasePurchaseViaHub<'info> {
     pub payer: Signer<'info>,
-    pub purchaser: UncheckedAccount<'info>,
+    /// CHECK: the payer is usually the purchaser, though they can purchase for another account (receiver)
+    /// This is safe because we don't care who the payer sets as receiver.
+    pub receiver: UncheckedAccount<'info>,
     #[account(
         mut,
         has_one = royalty_token_account,
@@ -18,6 +24,7 @@ pub struct ReleasePurchaseViaHub<'info> {
         bump,
     )]
     pub release: AccountLoader<'info, Release>,
+    /// CHECK: This is safe because it is derived from release which is checked above
     #[account(
         seeds = [release.key().as_ref()],
         bump,
@@ -31,10 +38,10 @@ pub struct ReleasePurchaseViaHub<'info> {
     pub payer_token_account: Box<Account<'info, TokenAccount>>,
     #[account(
         mut,
-        constraint = purchaser_release_token_account.owner == *purchaser.key,
-        constraint = purchaser_release_token_account.mint == release.load()?.release_mint
+        constraint = receiver_release_token_account.owner == *receiver.key,
+        constraint = receiver_release_token_account.mint == release.load()?.release_mint
     )]
-    pub purchaser_release_token_account: Box<Account<'info, TokenAccount>>,
+    pub receiver_release_token_account: Box<Account<'info, TokenAccount>>,
     #[account(
         mut,
         constraint = royalty_token_account.owner == *release_signer.key,
@@ -47,6 +54,10 @@ pub struct ReleasePurchaseViaHub<'info> {
         constraint = release_mint.mint_authority == COption::Some(*release_signer.key),
     )]
     pub release_mint: Account<'info, Mint>,
+    #[account(
+        seeds = [b"nina-hub".as_ref(), hub_name.as_bytes()],
+        bump,    
+    )]
     pub hub: AccountLoader<'info, HubV1>,
     #[account(
         mut,
@@ -54,10 +65,12 @@ pub struct ReleasePurchaseViaHub<'info> {
         bump,
     )]
     pub hub_release: Box<Account<'info, HubReleaseV1>>,
+    /// CHECK: This is safe because PDA is derived from hub which is checked above
     #[account(
         constraint = hub.load()?.curator == hub_curator.key(),
     )]
     pub hub_curator: UncheckedAccount<'info>,
+    /// CHECK: This is safe because PDA is derived from hub which is checked above
     #[account(
         seeds = [b"nina-hub-signer".as_ref(), hub.key().as_ref()],
         bump,
@@ -77,7 +90,8 @@ pub struct ReleasePurchaseViaHub<'info> {
 pub fn handler(
     ctx: Context<ReleasePurchaseViaHub>,
     amount: u64,
-) -> ProgramResult {
+    _hub_name: String,
+) -> Result<()> {
     let hub_release = &mut ctx.accounts.hub_release;
     hub_release.sales = u64::from(hub_release.sales)
         .checked_add(1)
@@ -85,11 +99,11 @@ pub fn handler(
 
     Release::release_purchase_handler(
         ctx.accounts.payer.clone(),
-        ctx.accounts.purchaser.clone(),
+        ctx.accounts.receiver.clone(),
         &ctx.accounts.release,
         ctx.accounts.release_signer.clone(),
         ctx.accounts.payer_token_account.clone(),
-        ctx.accounts.purchaser_release_token_account.clone(),
+        ctx.accounts.receiver_release_token_account.clone(),
         ctx.accounts.royalty_token_account.clone(),
         ctx.accounts.release_mint.clone(),
         ctx.accounts.token_program.clone(),
@@ -115,7 +129,7 @@ pub fn handler(
 
     emit!(ReleaseSoldViaHub {
         public_key: *ctx.accounts.release.to_account_info().key,
-        purchaser: *ctx.accounts.purchaser.to_account_info().key,
+        purchaser: *ctx.accounts.receiver.to_account_info().key,
         hub: *ctx.accounts.hub.to_account_info().key,
         date: ctx.accounts.clock.unix_timestamp
     });

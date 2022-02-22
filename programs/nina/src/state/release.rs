@@ -6,7 +6,7 @@ use anchor_spl::token::{self, TokenAccount, MintTo, Transfer, Token, Mint, SetAu
 use spl_token::instruction::{close_account};
 use crate::utils::{wrapped_sol};
 
-use crate::errors::*;
+use crate::errors::ErrorCode;
 
 #[account(zero_copy)]
 #[repr(packed)]
@@ -38,33 +38,33 @@ pub struct Release {
 impl Release {
     pub fn release_purchase_handler<'info> (
         payer: Signer<'info>,
-        purchaser: UncheckedAccount<'info>,
+        receiver: UncheckedAccount<'info>,
         release_loader: &AccountLoader<'info, Release>,
         release_signer: UncheckedAccount<'info>,
         payer_token_account: Box<Account<'info, TokenAccount>>,
-        purchaser_release_token_account: Box<Account<'info, TokenAccount>>,
+        receiver_release_token_account: Box<Account<'info, TokenAccount>>,
         royalty_token_account: Box<Account<'info, TokenAccount>>,
         release_mint: Account<'info, Mint>,
         token_program: Program<'info, Token>,
         clock: Sysvar<'info, Clock>,
         amount: u64,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         let mut release = release_loader.load_mut()?;
 
-        if purchaser.key() != purchaser_release_token_account.owner {
-            return Err(ErrorCode::WrongPurchaser.into());
+        if receiver.key() != receiver_release_token_account.owner {
+            return Err(error!(ErrorCode::ReleasePurchaseWrongReceiver));
         }
         
         if !(release.release_datetime < clock.unix_timestamp) {
-            return Err(ErrorCode::ReleaseNotLive.into());
+            return Err(error!(ErrorCode::ReleaseNotLive));
         }
     
         if release.remaining_supply == 0 {
-            return Err(ErrorCode::SoldOut.into())
+            return Err(error!(ErrorCode::SoldOut));
         }
     
         if amount != release.price {
-            return Err(ErrorCode::WrongAmount.into())
+            return Err(error!(ErrorCode::WrongAmount));
         };
     
         // Transfer USDC from Payer to Royalty USDC Account
@@ -97,7 +97,7 @@ impl Release {
         //MintTo PurchaserReleaseTokenAccount
         let cpi_accounts = MintTo {
             mint: release_mint.to_account_info(),
-            to: purchaser_release_token_account.to_account_info(),
+            to: receiver_release_token_account.to_account_info(),
             authority: release_signer.to_account_info().clone(),
         };
         let cpi_program = token_program.to_account_info().clone();
@@ -141,7 +141,7 @@ impl Release {
         token_program: AccountInfo<'info>,
         transfer_share: u64,
         is_init: bool,
-    ) -> ProgramResult {
+    ) -> Result<()> {
 
         let mut release;
         if is_init {
@@ -158,12 +158,12 @@ impl Release {
 
         let mut royalty_recipient = match release.find_royalty_recipient(authority) {
             Some(royalty_recipient) => royalty_recipient,
-            None => return Err(ErrorCode::InvalidRoyaltyRecipientAuthority.into())
+            None => return Err(error!(ErrorCode::InvalidRoyaltyRecipientAuthority)),
         };
 
         // Add New Royalty Recipient
         if transfer_share > royalty_recipient.percent_share {
-            return Err(ErrorCode::RoyaltyTransferTooLarge.into())
+            return Err(error!(ErrorCode::RoyaltyTransferTooLarge));
         };
 
         // Take share from current user
@@ -209,7 +209,7 @@ impl Release {
             });
             Ok(())
         } else {
-            return Err(ErrorCode::RoyaltyExceeds100Percent.into())
+            return Err(error!(ErrorCode::RoyaltyExceeds100Percent));
         }
     }
 
@@ -220,7 +220,7 @@ impl Release {
         authority: Pubkey,
         authority_token_account: AccountInfo<'info>,
         token_program: AccountInfo<'info>,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         let mut release = release_loader.load_mut()?;
 
         let seeds = &[
@@ -231,7 +231,7 @@ impl Release {
 
         let mut royalty_recipient = match release.find_royalty_recipient(authority) {
             Some(royalty_recipient) => royalty_recipient,
-            None => return Err(ErrorCode::InvalidRoyaltyRecipientAuthority.into())
+            None => return Err(error!(ErrorCode::InvalidRoyaltyRecipientAuthority)),
         };
 
         // Transfer Royalties from the royalty account to the user collecting
@@ -264,7 +264,7 @@ impl Release {
         token_program: AccountInfo<'info>,
         config: ReleaseConfig,
         bumps: ReleaseBumps,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         // Hard code fee that publishers pay in their release to the NinaVault
         let vault_fee_percentage = 0;
 
@@ -290,13 +290,13 @@ impl Release {
             .unwrap();
         
         if vault_fee != config.amount_to_vault_token_account {
-            return Err(ErrorCode::InvalidVaultFee.into());
+            return Err(error!(ErrorCode::InvalidVaultFee));
         }
         let amount_minted = config.amount_to_artist_token_account
             .checked_add(config.amount_to_vault_token_account)
             .unwrap();
         if amount_minted > config.amount_total_supply {
-            return Err(ErrorCode::InvalidAmountMintToArtist.into())
+            return Err(error!(ErrorCode::InvalidAmountMintToArtist));
         }
 
         let mut release = release_loader.load_init()?;
@@ -399,7 +399,7 @@ impl Release {
     pub fn append_royalty_recipient(
         &mut self,
         royalty_recipient: RoyaltyRecipient
-    ) -> ProgramResult{
+    ) -> Result<()> {
         self.royalty_recipients[Release::index_of(self.head)] = royalty_recipient;
         if Release::index_of(self.head.checked_add(1).unwrap()) == Release::index_of(self.tail) {
             self.tail = u64::from(self.tail)
@@ -414,7 +414,7 @@ impl Release {
         if self.head <= 10 {
             Ok(())
         } else {
-            return Err(ErrorCode::MaximumAmountOfRevenueShares.into())
+            return Err(error!(ErrorCode::MaximumAmountOfRevenueShares));
 
         }
     }
@@ -428,14 +428,14 @@ impl Release {
         initializer_sending_mint:Pubkey,
         initializer_expected_mint: Pubkey,
         is_selling: bool,
-    ) -> ProgramResult {
+    ) -> Result<()> {
 
         if is_selling && initializer_expected_mint != release.payment_mint {
-            return Err(ErrorCode::WrongMintForExchange.into());
+            return Err(error!(ErrorCode::WrongMintForExchange));
         }
 
         if !is_selling && initializer_sending_mint != release.payment_mint {
-            return Err(ErrorCode::WrongMintForExchange.into());
+            return Err(error!(ErrorCode::WrongMintForExchange));
         }
 
         Ok(())

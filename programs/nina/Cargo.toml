@@ -1,6 +1,6 @@
 [package]
 name = "nina"
-version = "0.1.0"
+version = "0.2.0"
 description = "Nina - A self-publishing protocol"
 edition = "2018"
 
@@ -16,8 +16,8 @@ default = ["test"]
 test = []
 
 [dependencies]
-anchor-lang = "0.21.0"
-anchor-spl = "0.21.0"
+anchor-lang = "0.22.0"
+anchor-spl = "0.22.0"
 spl-token = { version = "3.2.0", features = ["no-entrypoint"] }
 solana-program = "1.9.4"
 thiserror = "1.0"

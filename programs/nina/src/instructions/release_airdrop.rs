@@ -20,11 +20,13 @@ pub struct ReleaseAirdrop<'info> {
         bump,
     )]
     pub release: AccountLoader<'info, Release>,
+    /// CHECK: This is safe because the PDA is derived from release which is checked above
     #[account(
         seeds = [release.key().as_ref()],
         bump,
     )]
     pub release_signer: UncheckedAccount<'info>,
+    /// CHECK: This is safe because we don't care about who the release.authority is sending token to
     pub recipient: UncheckedAccount<'info>,
     #[account(
         mut,
@@ -45,11 +47,11 @@ pub struct ReleaseAirdrop<'info> {
 
 pub fn handler(
     ctx: Context<ReleaseAirdrop>,
-) -> ProgramResult {
+) -> Result<()> {
     let mut release = ctx.accounts.release.load_mut()?;
 
     if release.remaining_supply == 0 {
-        return Err(ErrorCode::SoldOut.into())
+        return Err(error!(ErrorCode::SoldOut))
     }
 
     // Update Counters

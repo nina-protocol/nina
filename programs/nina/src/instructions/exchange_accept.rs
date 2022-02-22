@@ -13,11 +13,16 @@ use crate::utils::{wrapped_sol};
 pub struct ExchangeAccept<'info> {
     #[account(mut)]
     pub taker: Signer<'info>,
+    /// CHECK: This is safe because we check against exchange.initializer
+    #[account(mut)]
+    pub initializer: AccountInfo<'info>,
     #[account(
         mut,
-        constraint = exchange.initializer == *initializer.key
+        close = initializer,
+        constraint = exchange.initializer == *initializer.key,
+        constraint = exchange.exchange_escrow_token_account == exchange_escrow_token_account.key(),
     )]
-    pub initializer: UncheckedAccount<'info>,
+    pub exchange: Account<'info, Exchange>,
     #[account(
         mut,
         constraint = initializer_expected_token_account.owner == *initializer.key,
@@ -42,18 +47,12 @@ pub struct ExchangeAccept<'info> {
         constraint = exchange_escrow_token_account.mint == exchange.initializer_sending_mint,
     )]
     pub exchange_escrow_token_account: Box<Account<'info, TokenAccount>>,
+    /// CHECK: This is safe because we derive PDA from exchange and check exchange.initializer above
     #[account(
         seeds = [exchange.to_account_info().key.as_ref()],
         bump,
     )]
     pub exchange_signer: UncheckedAccount<'info>,
-    #[account(
-        mut,
-        close = initializer,
-        constraint = exchange.initializer == *initializer.key,
-        constraint = exchange.exchange_escrow_token_account == exchange_escrow_token_account.key(),
-    )]
-    pub exchange: Account<'info, Exchange>,
     #[account(
         mut,
         constraint = vault_token_account.owner == vault.vault_signer,
@@ -88,21 +87,21 @@ pub struct ExchangeAccept<'info> {
 pub fn handler (
     ctx: Context<ExchangeAccept>,
     params: ExchangeAcceptParams,
-) -> ProgramResult {
+) -> Result<()> {
     let vault_fee_percentage = 12500;
     let exchange = &mut ctx.accounts.exchange;
     let release = &mut ctx.accounts.release.load_mut()?;
 
     if release.resale_percentage != params.resale_percentage {
-        return Err(ErrorCode::RoyaltyPercentageIncorrect.into())
+        return Err(error!(ErrorCode::RoyaltyPercentageIncorrect))
     }
 
     if exchange.expected_amount != params.expected_amount {
-        return Err(ErrorCode::ExpectedAmountMismatch.into())
+        return Err(error!(ErrorCode::ExpectedAmountMismatch))
     }
 
     if exchange.initializer_amount != params.initializer_amount {
-        return Err(ErrorCode::InitializerAmountMismatch.into())
+        return Err(error!(ErrorCode::InitializerAmountMismatch))
     }
 
     let is_wrapped_sol = exchange.initializer_sending_mint == wrapped_sol::ID || exchange.initializer_expected_mint == wrapped_sol::ID;
@@ -233,7 +232,7 @@ pub fn handler (
         // If taker_sending_token_account includes more than amount expected throw an error
         // this account is probably not one that we want to be closing
         if ctx.accounts.taker_sending_token_account.amount != params.expected_amount {
-            return Err(ErrorCode::NotUsingTemporaryTokenAccount.into());
+            return Err(error!(ErrorCode::NotUsingTemporaryTokenAccount));
         }
 
         // Keep track of the rent paid for taker_sending_token_account so we can return to taker later

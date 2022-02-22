@@ -3,7 +3,7 @@ use anchor_spl::token::{self, TokenAccount, MintTo, Burn, Token, Mint};
 use solana_program::program_option::COption;
 
 use crate::state::*;
-use crate::errors::*;
+use crate::errors::ErrorCode;
 
 #[derive(Accounts)]
 pub struct RedeemableRedeem<'info> {
@@ -25,6 +25,7 @@ pub struct RedeemableRedeem<'info> {
         bump,
     )]
     pub redeemable: AccountLoader<'info, Redeemable>,
+    /// CHECK: This is safe because the PDA is derived from redeemable above which is verified via seeds
     #[account(
         seeds = [b"nina-redeemable-signer".as_ref(), redeemable.key().as_ref()],
         bump,
@@ -60,11 +61,11 @@ pub fn handler(
     encryption_public_key: Vec<u8>,
     address: Vec<u8>,
     iv: Vec<u8>,
-) -> ProgramResult {
+) -> Result<()> {
     let mut redeemable = ctx.accounts.redeemable.load_mut()?;
 
     if redeemable.redeemed_count >= redeemable.redeemed_max {
-        return Err(ErrorCode::NoMoreRedeemablesAvailable.into())
+        return Err(error!(ErrorCode::NoMoreRedeemablesAvailable))
     }
 
     // Redeemer burn redeemable token

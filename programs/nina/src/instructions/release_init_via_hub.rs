@@ -11,47 +11,57 @@ use mpl_token_metadata::{
 use crate::state::*;
 
 #[derive(Accounts)]
+#[instruction(
+    _config: ReleaseConfig,
+    _bumps: ReleaseBumps,
+    _metadata_data: ReleaseMetadataData,
+    hub_name: String
+)]
 pub struct ReleaseInitializeViaHub<'info> {
     #[account(
         init,
         seeds = [b"nina-release".as_ref(), release_mint.key().as_ref()],
         bump,
-        payer = payer,
+        payer = authority,
     )]
     pub release: AccountLoader<'info, Release>,
+    /// CHECK: This is safe because it is derived from release which is checked above
     #[account(
         seeds = [release.key().as_ref()],
         bump,
     )]
     pub release_signer: AccountInfo<'info>,
     #[account(
-        seeds = [b"nina-hub-artist".as_ref(), hub.key().as_ref(), payer.key().as_ref()],
+        seeds = [b"nina-hub-artist".as_ref(), hub.key().as_ref(), authority.key().as_ref()],
         bump,
-        constraint = hub_artist.artist == payer.key(),
+        constraint = hub_artist.artist == authority.key(),
     )]
     pub hub_artist: Box<Account<'info, HubArtistV1>>,
+    #[account(
+        seeds = [b"nina-hub".as_ref(), hub_name.as_bytes()],
+        bump,    
+    )]
     pub hub: AccountLoader<'info, HubV1>,
     #[account(
         init,
         seeds = [b"nina-hub-release".as_ref(), hub.key().as_ref(), release.key().as_ref()],
         bump,
-        payer = payer,
+        payer = authority,
     )]
     pub hub_release: Box<Account<'info, HubReleaseV1>>,
+    /// CHECK: This is safe because we check hub via seeds above
     #[account(
         constraint = hub.load()?.curator == hub_curator.key(),
     )]
     pub hub_curator: UncheckedAccount<'info>,
     #[account(
-        constraint = hub_curator_usdc_token_account.owner == hub_curator.key(),
-        constraint = hub_curator_usdc_token_account.mint == payment_mint.key(),
+        constraint = hub_curator_token_account.owner == hub_curator.key(),
+        constraint = hub_curator_token_account.mint == payment_mint.key(),
     )]
-    pub hub_curator_usdc_token_account: Box<Account<'info, TokenAccount>>,
+    pub hub_curator_token_account: Box<Account<'info, TokenAccount>>,
     pub release_mint: Box<Account<'info, Mint>>,
     #[account(mut)]
-    pub payer: Signer<'info>,
-    #[account(mut)]
-    pub authority: UncheckedAccount<'info>,
+    pub authority: Signer<'info>,
     #[account(
         constraint = authority_token_account.owner == authority.key(),
         constraint = authority_token_account.mint == payment_mint.key(),
@@ -65,8 +75,11 @@ pub struct ReleaseInitializeViaHub<'info> {
     pub royalty_token_account: Box<Account<'info, TokenAccount>>,
     #[account(address = token::ID)]
     pub token_program: Program<'info, Token>,
+    /// CHECK: This is safe because it is initialized here
     #[account(mut)]
     pub metadata: AccountInfo<'info>,
+    /// CHECK: This is safe because we check against ID
+    #[account(address = mpl_token_metadata::ID)]
     pub metadata_program: AccountInfo<'info>,
     pub system_program: Program<'info, System>,
     pub rent: Sysvar<'info, Rent>,
@@ -77,7 +90,8 @@ pub fn handler(
     config: ReleaseConfig,
     bumps: ReleaseBumps,
     metadata_data: ReleaseMetadataData,
-) -> ProgramResult {
+    _hub_name: String,
+) -> Result<()> {
     let seeds = &[
         ctx.accounts.release.to_account_info().key.as_ref(),
         &[bumps.signer],
@@ -88,7 +102,7 @@ pub fn handler(
         ctx.accounts.release_signer.to_account_info().clone(),
         ctx.accounts.release_mint.to_account_info().clone(),
         ctx.accounts.payment_mint.to_account_info().clone(),
-        ctx.accounts.payer.to_account_info().clone(),
+        ctx.accounts.authority.to_account_info().clone(),
         ctx.accounts.authority.to_account_info().clone(),
         ctx.accounts.authority_token_account.to_account_info().clone(),
         ctx.accounts.royalty_token_account.to_account_info(),
@@ -104,7 +118,7 @@ pub fn handler(
         ctx.accounts.royalty_token_account.to_account_info(),
         *ctx.accounts.authority.to_account_info().key,
         *ctx.accounts.hub_curator.to_account_info().key,
-        ctx.accounts.hub_curator_usdc_token_account.to_account_info().clone(),
+        ctx.accounts.hub_curator_token_account.to_account_info().clone(),
         ctx.accounts.token_program.to_account_info().clone(),
         hub.publish_fee,
         true,
@@ -121,7 +135,7 @@ pub fn handler(
         ctx.accounts.metadata.clone(),
         ctx.accounts.release_mint.to_account_info().clone(),
         ctx.accounts.release_signer.clone(),
-        ctx.accounts.payer.to_account_info().clone(),
+        ctx.accounts.authority.to_account_info().clone(),
         ctx.accounts.metadata_program.clone(),
         ctx.accounts.token_program.to_account_info().clone(),
         ctx.accounts.system_program.to_account_info().clone(),
@@ -135,7 +149,7 @@ pub fn handler(
             ctx.accounts.metadata.key(),
             ctx.accounts.release_mint.key(),
             ctx.accounts.release_signer.key(),
-            ctx.accounts.payer.key(),
+            ctx.accounts.authority.key(),
             ctx.accounts.release_signer.key(),
             metadata_data.name,
             metadata_data.symbol,

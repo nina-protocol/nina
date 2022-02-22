@@ -9,7 +9,9 @@ use crate::state::*;
 #[derive(Accounts)]
 pub struct ReleasePurchase<'info> {
     pub payer: Signer<'info>,
-    pub purchaser: UncheckedAccount<'info>,
+    /// CHECK: the payer is usually the purchaser, though they can purchase for another account (receiver)
+    /// This is safe because we don't care who the payer sets as receiver.
+    pub receiver: UncheckedAccount<'info>,
     #[account(
         mut,
         has_one = royalty_token_account,
@@ -18,6 +20,7 @@ pub struct ReleasePurchase<'info> {
         bump,
     )]
     pub release: AccountLoader<'info, Release>,
+    /// CHECK: This is safe because it is derived from release which is checked above
     #[account(
         seeds = [release.key().as_ref()],
         bump,
@@ -31,10 +34,10 @@ pub struct ReleasePurchase<'info> {
     pub payer_token_account: Box<Account<'info, TokenAccount>>,
     #[account(
         mut,
-        constraint = purchaser_release_token_account.owner == *purchaser.key,
-        constraint = purchaser_release_token_account.mint == release.load()?.release_mint
+        constraint = receiver_release_token_account.owner == *receiver.key,
+        constraint = receiver_release_token_account.mint == release.load()?.release_mint
     )]
-    pub purchaser_release_token_account: Box<Account<'info, TokenAccount>>,
+    pub receiver_release_token_account: Box<Account<'info, TokenAccount>>,
     #[account(
         mut,
         constraint = royalty_token_account.owner == *release_signer.key,
@@ -55,14 +58,14 @@ pub struct ReleasePurchase<'info> {
 pub fn handler(
     ctx: Context<ReleasePurchase>,
     amount: u64,
-) -> ProgramResult {
+) -> Result<()> {
     Release::release_purchase_handler(
         ctx.accounts.payer.clone(),
-        ctx.accounts.purchaser.clone(),
+        ctx.accounts.receiver.clone(),
         &ctx.accounts.release,
         ctx.accounts.release_signer.clone(),
         ctx.accounts.payer_token_account.clone(),
-        ctx.accounts.purchaser_release_token_account.clone(),
+        ctx.accounts.receiver_release_token_account.clone(),
         ctx.accounts.royalty_token_account.clone(),
         ctx.accounts.release_mint.clone(),
         ctx.accounts.token_program.clone(),
@@ -72,7 +75,7 @@ pub fn handler(
 
     emit!(ReleaseSold {
         public_key: *ctx.accounts.release.to_account_info().key,
-        purchaser: *ctx.accounts.purchaser.to_account_info().key,
+        purchaser: *ctx.accounts.receiver.to_account_info().key,
         date: ctx.accounts.clock.unix_timestamp
     });
 

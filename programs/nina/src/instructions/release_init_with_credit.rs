@@ -13,6 +13,7 @@ pub struct ReleaseInitializeWithCredit<'info> {
         payer = payer,
     )]
     pub release: AccountLoader<'info, Release>,
+    /// CHECK: This is safe because it is derived from release which is checked above
     #[account(
         seeds = [release.key().as_ref()],
         bump,
@@ -21,6 +22,8 @@ pub struct ReleaseInitializeWithCredit<'info> {
     pub release_mint: Account<'info, Mint>,
     #[account(mut)]
     pub payer: Signer<'info>,
+    /// CHECK: the payer is usually the authority, though they can set someone else as authority
+    /// This is safe because we don't care who the payer sets as authority.
     #[account(mut)]
     pub authority: UncheckedAccount<'info>,
     #[account(
@@ -56,7 +59,7 @@ pub fn handler(
     ctx: Context<ReleaseInitializeWithCredit>,
     config: ReleaseConfig,
     bumps: ReleaseBumps,
-) -> ProgramResult {
+) -> Result<()> {
 
     // Redeemer burn redeemable token
     let cpi_program = ctx.accounts.token_program.to_account_info().clone();

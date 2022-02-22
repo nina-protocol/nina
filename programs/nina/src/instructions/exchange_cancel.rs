@@ -15,9 +15,9 @@ pub struct ExchangeCancel<'info> {
     pub initializer_sending_token_account: Box<Account<'info, TokenAccount>>,
     #[account(
         mut,
-        close = initializer,
-        has_one = exchange_escrow_token_account,
         has_one = initializer,
+        has_one = exchange_escrow_token_account,
+        close = initializer,
     )]
     pub exchange: Account<'info, Exchange>,
     #[account(
@@ -25,6 +25,7 @@ pub struct ExchangeCancel<'info> {
         constraint = exchange_escrow_token_account.owner == *exchange_signer.key,
     )]
     pub exchange_escrow_token_account: Box<Account<'info, TokenAccount>>,
+    /// CHECK: This is safe because we derive PDA from exchange and check exchange.initializer
     #[account(
         seeds = [exchange.to_account_info().key.as_ref()],
         bump,
@@ -41,11 +42,11 @@ pub struct ExchangeCancel<'info> {
 pub fn handler(
     ctx: Context<ExchangeCancel>,
     amount: u64,
-) -> ProgramResult {
+) -> Result<()> {
     let exchange = &mut ctx.accounts.exchange;
 
     if exchange.initializer_amount != amount {
-        return Err(ErrorCode::ExchangeCancelAmountMismatch.into());
+        return Err(error!(ErrorCode::ExchangeCancelAmountMismatch));
     }
     let seeds = &[
         exchange.to_account_info().key.as_ref(),

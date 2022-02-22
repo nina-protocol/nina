@@ -1,5 +1,8 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{self, TokenAccount, Token};
+use anchor_lang::solana_program::{
+    program_option::{COption},
+};
+use anchor_spl::token::{self, Mint, Token, TokenAccount};
 
 use crate::state::*;
 
@@ -18,18 +21,25 @@ pub struct ReleaseRevenueShareTransfer<'info> {
     )]
     pub royalty_token_account: Box<Account<'info, TokenAccount>>,
     #[account(
-        seeds = [release.to_account_info().key.as_ref()],
-        bump = release.load()?.bumps.signer,
+        constraint = release_mint.key() == release.load()?.release_mint,
+        constraint = release_mint.mint_authority == COption::Some(*release_signer.key),
     )]
-    pub release_signer: UncheckedAccount<'info>,
+    pub release_mint: Box<Account<'info, Mint>>,
     #[account(
         mut,
         has_one = release_signer,
         has_one = royalty_token_account,
-        seeds = [b"nina-release".as_ref(), release.load()?.release_mint.as_ref()],
-        bump = release.load()?.bumps.release,
+        seeds = [b"nina-release".as_ref(), release_mint.key().as_ref()],
+        bump,
     )]
     pub release: AccountLoader<'info, Release>,
+    /// CHECK: This is safe because it is derived from release which is checked above
+    #[account(
+        seeds = [release.to_account_info().key.as_ref()],
+        bump,
+    )]
+    pub release_signer: UncheckedAccount<'info>,
+    /// CHECK: This is safe because we don't care who the authority is assigning as new_royalty_recipient
     pub new_royalty_recipient: UncheckedAccount<'info>,
     #[account(
         constraint = new_royalty_recipient_token_account.owner == *new_royalty_recipient.key,
@@ -43,7 +53,7 @@ pub struct ReleaseRevenueShareTransfer<'info> {
 pub fn handler(
     ctx: Context<ReleaseRevenueShareTransfer>,
     transfer_share: u64,
-) -> ProgramResult {
+) -> Result<()> {
     // Collect Royalty so transferring user has no pending royalties
     Release::release_revenue_share_collect_handler(
         &ctx.accounts.release,

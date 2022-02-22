@@ -44,14 +44,14 @@ let usdcTokenAccount;
 let royaltyTokenAccount;
 let royaltyTokenAccount2;
 let royaltyTokenAccount3;
-let purchaserReleaseTokenAccount;
+let receiverReleaseTokenAccount;
 let user2UsdcTokenAccount;
 let authorityReleaseTokenAccount;
 let authorityReleaseTokenAccount2;
 let user1UsdcTokenAccount;
 let wrappedSolTokenAccount;
 let user1WrappedSolTokenAccount;
-let purchaserReleaseTokenAccount2;
+let receiverReleaseTokenAccount2;
 let wrongReleaseTokenAccount;
 let publishingCreditTokenAccount;
 let publishingCreditTokenAccount2;
@@ -674,14 +674,14 @@ describe('Release', async () => {
     );
     const usdcTokenAccountBeforeBalanceTx = usdcTokenAccountBefore.amount.toNumber();
 
-    let [_purchaserReleaseTokenAccount, purchaserReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+    let [_receiverReleaseTokenAccount, receiverReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
       provider,
       user1.publicKey,
       anchor.web3.SystemProgram.programId,
       anchor.web3.SYSVAR_RENT_PUBKEY,
       releaseMint.publicKey,
     );
-    purchaserReleaseTokenAccount = _purchaserReleaseTokenAccount;
+    receiverReleaseTokenAccount = _receiverReleaseTokenAccount;
 
     const releaseBefore = await nina.account.release.fetch(release);
 
@@ -692,23 +692,23 @@ describe('Release', async () => {
           releaseSigner,
           payer: user1.publicKey,
           payerTokenAccount: user1UsdcTokenAccount,
-          purchaser: user1.publicKey,
-          purchaserReleaseTokenAccount,
+          receiver: user1.publicKey,
+          receiverReleaseTokenAccount,
           royaltyTokenAccount,
           releaseMint: releaseMint.publicKey,
           tokenProgram: TOKEN_PROGRAM_ID,
           clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
         },
         signers: [user1],
-        instructions: [purchaserReleaseTokenAccountIx],
+        instructions: [receiverReleaseTokenAccountIx],
       }
     );
 
-    const purchaserReleaseTokenAccountAfter = await getTokenAccount(
+    const receiverReleaseTokenAccountAfter = await getTokenAccount(
       provider,
-      purchaserReleaseTokenAccount,
+      receiverReleaseTokenAccount,
     );
-    assert.ok(purchaserReleaseTokenAccountAfter.amount.toNumber() === 1)
+    assert.ok(receiverReleaseTokenAccountAfter.amount.toNumber() === 1)
 
     const usdcTokenAccountAfter = await getTokenAccount(
       provider,
@@ -733,14 +733,14 @@ describe('Release', async () => {
     const solBeforeBalance = await provider.connection.getBalance(user1.publicKey);
     const releaseBefore = await nina.account.release.fetch(release2);
 
-    let [_purchaserReleaseTokenAccount2, purchaserReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+    let [_receiverReleaseTokenAccount2, receiverReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
       provider,
       user1.publicKey,
       anchor.web3.SystemProgram.programId,
       anchor.web3.SYSVAR_RENT_PUBKEY,
       releaseMint2.publicKey,
     );
-    purchaserReleaseTokenAccount2 = _purchaserReleaseTokenAccount2;
+    receiverReleaseTokenAccount2 = _receiverReleaseTokenAccount2;
 
     const {instructions, signers} = await wrapSol(
       provider,
@@ -756,8 +756,8 @@ describe('Release', async () => {
           releaseSigner: releaseSigner2,
           payer: user1.publicKey,
           payerTokenAccount: signers[0].publicKey,
-          purchaser: user1.publicKey,
-          purchaserReleaseTokenAccount: purchaserReleaseTokenAccount2,
+          receiver: user1.publicKey,
+          receiverReleaseTokenAccount: receiverReleaseTokenAccount2,
           royaltyTokenAccount: royaltyTokenAccount2,
           tokenProgram: TOKEN_PROGRAM_ID,
           clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
@@ -765,16 +765,16 @@ describe('Release', async () => {
         signers: [user1, ...signers],
         instructions: [
           ...instructions,
-          purchaserReleaseTokenAccountIx,
+          receiverReleaseTokenAccountIx,
         ],
       }
     );
 
-    const purchaserReleaseTokenAccountAfter = await getTokenAccount(
+    const receiverReleaseTokenAccountAfter = await getTokenAccount(
       provider,
-      purchaserReleaseTokenAccount,
+      receiverReleaseTokenAccount,
     );
-    assert.ok(purchaserReleaseTokenAccountAfter.amount.toNumber() === 1)
+    assert.ok(receiverReleaseTokenAccountAfter.amount.toNumber() === 1)
 
     const solAfterBalance = await provider.connection.getBalance(user1.publicKey);
     assert.equal(solAfterBalance, solBeforeBalance - releasePrice);
@@ -796,14 +796,14 @@ describe('Release', async () => {
     const solBeforeBalance = await provider.connection.getBalance(user1.publicKey);
     const releaseBefore = await nina.account.release.fetch(release2);
 
-    let [_purchaserReleaseTokenAccount2, purchaserReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+    let [_receiverReleaseTokenAccount2, receiverReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
       provider,
       user1.publicKey,
       anchor.web3.SystemProgram.programId,
       anchor.web3.SYSVAR_RENT_PUBKEY,
       releaseMint2.publicKey,
     );
-    purchaserReleaseTokenAccount2 = _purchaserReleaseTokenAccount2;
+    receiverReleaseTokenAccount2 = _receiverReleaseTokenAccount2;
 
     const {instructions, signers} = await wrapSol(
       provider,
@@ -819,8 +819,8 @@ describe('Release', async () => {
           releaseSigner: releaseSigner2,
           payer: user1.publicKey,
           payerTokenAccount: signers[0].publicKey,
-          purchaser: user1.publicKey,
-          purchaserReleaseTokenAccount: purchaserReleaseTokenAccount2,
+          receiver: user1.publicKey,
+          receiverReleaseTokenAccount: receiverReleaseTokenAccount2,
           royaltyTokenAccount: royaltyTokenAccount2,
           tokenProgram: TOKEN_PROGRAM_ID,
           clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
@@ -832,11 +832,11 @@ describe('Release', async () => {
       }
     );
 
-    const purchaserReleaseTokenAccountAfter = await getTokenAccount(
+    const receiverReleaseTokenAccountAfter = await getTokenAccount(
       provider,
-      purchaserReleaseTokenAccount,
+      receiverReleaseTokenAccount,
     );
-    assert.ok(purchaserReleaseTokenAccountAfter.amount.toNumber() === 1)
+    assert.ok(receiverReleaseTokenAccountAfter.amount.toNumber() === 1)
 
     const solAfterBalance = await provider.connection.getBalance(user1.publicKey);
     assert.equal(solAfterBalance, solBeforeBalance - releasePrice);
@@ -863,8 +863,8 @@ describe('Release', async () => {
             releaseSigner,
             payer: user1.publicKey,
             payerTokenAccount: user1UsdcTokenAccount,
-            purchaser: user1.publicKey,
-            purchaserReleaseTokenAccount,
+            receiver: user1.publicKey,
+            receiverReleaseTokenAccount,
             royaltyTokenAccount,
             releaseMint: releaseMint.publicKey,
             tokenProgram: TOKEN_PROGRAM_ID,
@@ -985,7 +985,7 @@ describe('Release', async () => {
       paymentMint,
     );
 
-    let [purchaserReleaseTokenAccountSellOut, purchaserReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+    let [receiverReleaseTokenAccountSellOut, receiverReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
       provider,
       user1.publicKey,
       anchor.web3.SystemProgram.programId,
@@ -1027,7 +1027,7 @@ describe('Release', async () => {
         instructions: [
           ...releaseMintIx,
           royaltyTokenAccountIx,
-          purchaserReleaseTokenAccountIx,
+          receiverReleaseTokenAccountIx,
         ],
       }
     );
@@ -1050,8 +1050,8 @@ describe('Release', async () => {
                 releaseSigner: releaseSignerSellOut,
                 payer: user1.publicKey,
                 payerTokenAccount: user1UsdcTokenAccount,
-                purchaser: user1.publicKey,
-                purchaserReleaseTokenAccount: purchaserReleaseTokenAccountSellOut,
+                receiver: user1.publicKey,
+                receiverReleaseTokenAccount: receiverReleaseTokenAccountSellOut,
                 royaltyTokenAccount: royaltyTokenAccountSellOut,
                 releaseMint: releaseMintSellOut.publicKey,
                 tokenProgram: TOKEN_PROGRAM_ID,
@@ -1145,7 +1145,7 @@ describe('Release', async () => {
 
     await assert.rejects(
       async () => {
-        let [purchaserReleaseTokenAccountTest, purchaserReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+        let [receiverReleaseTokenAccountTest, receiverReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
           provider,
           user1.publicKey,
           anchor.web3.SystemProgram.programId,
@@ -1160,15 +1160,15 @@ describe('Release', async () => {
               releaseSigner: releaseSignerTest,
               payer: user1.publicKey,
               payerTokenAccount: user1UsdcTokenAccount,
-              purchaser: user1.publicKey,
-              purchaserReleaseTokenAccount: purchaserReleaseTokenAccountTest,
+              receiver: user1.publicKey,
+              receiverReleaseTokenAccount: receiverReleaseTokenAccountTest,
               royaltyTokenAccount: royaltyTokenAccountTest,
               releaseMint: releaseMintTest.publicKey,
               tokenProgram: TOKEN_PROGRAM_ID,
               clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
             },
             signers: [user1],
-            instructions: [purchaserReleaseTokenAccountIx],
+            instructions: [receiverReleaseTokenAccountIx],
           }
         );
       },
@@ -1179,113 +1179,6 @@ describe('Release', async () => {
       }
     );
   });
-
-
-  // it('Will not publish a release if via releaseInitProtected if payer !== Nina Publishing Account', async () => {
-  //   const paymentMint = usdcMint;
-  //   const releaseMintTest = anchor.web3.Keypair.generate();
-  //   const releaseMintIx = await createMintInstructions(
-  //     provider,
-  //     user1.publicKey,
-  //     releaseMintTest.publicKey,
-  //     0,
-  //   );
-
-  //   const [releaseTest, releaseBump] = await anchor.web3.PublicKey.findProgramAddress(
-  //     [
-  //       Buffer.from(anchor.utils.bytes.utf8.encode("nina-release")),
-  //       releaseMintTest.publicKey.toBuffer(),
-  //     ],
-  //     nina.programId,
-  //   );
-
-  //   const [releaseSignerTest, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
-  //     [releaseTest.toBuffer()],
-  //     nina.programId,
-  //   );
-
-  //   let [authorityReleaseTokenAccountTest, authorityReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
-  //     provider,
-  //     user1.publicKey,
-  //     anchor.web3.SystemProgram.programId,
-  //     anchor.web3.SYSVAR_RENT_PUBKEY,
-  //     releaseMintTest.publicKey,
-  //     false,
-  //     true,
-  //   );
-
-  //   let [royaltyTokenAccountTest, royaltyTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
-  //     provider,
-  //     releaseSignerTest,
-  //     anchor.web3.SystemProgram.programId,
-  //     anchor.web3.SYSVAR_RENT_PUBKEY,
-  //     paymentMint,
-  //   );
-
-  //   let [vaultTokenAccountTest, vaultTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
-  //     provider,
-  //     vaultSigner,
-  //     anchor.web3.SystemProgram.programId,
-  //     anchor.web3.SYSVAR_RENT_PUBKEY,
-  //     releaseMintTest.publicKey,
-  //     false,
-  //     true,
-  //   );
-
-  //   const releasePriceTest = new anchor.BN(100);
-  //   const config = {
-  //     amountTotalSupply: new anchor.BN(5),
-  //     amountToArtistTokenAccount: new anchor.BN(0),
-  //     amountToVaultTokenAccount: new anchor.BN(1),
-  //     resalePercentage: new anchor.BN(200000),
-  //     price: releasePriceTest,
-  //     releaseDatetime: new anchor.BN((Date.now() / 1000)),
-  //   };
-
-  //   const bumps = {
-  //     release: releaseBump,
-  //     signer: releaseSignerBump,
-  //   }
-
-  //   await assert.rejects(
-  //     async () => {
-  //       await nina.rpc.releaseInitProtected(
-  //         config,
-  //         bumps, {
-  //           accounts: {
-  //             release: releaseTest,
-  //             releaseSigner: releaseSignerTest,
-  //             releaseMint: releaseMintTest.publicKey,
-  //             payer: user1.publicKey,
-  //             authority: user1.publicKey,
-  //             authorityTokenAccount: user1UsdcTokenAccount,
-  //             authorityReleaseTokenAccount: authorityReleaseTokenAccountTest,
-  //             paymentMint,
-  //             vaultTokenAccount: vaultTokenAccountTest,
-  //             vault,
-  //             royaltyTokenAccount: royaltyTokenAccountTest,
-  //             systemProgram: anchor.web3.SystemProgram.programId,
-  //             tokenProgram: TOKEN_PROGRAM_ID,
-  //             rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-  //           },
-  //           signers: [releaseMintTest, user1],
-  //           instructions: [
-  //             ...releaseMintIx,
-  //             authorityReleaseTokenAccountIx,
-  //             royaltyTokenAccountIx,
-  //             vaultTokenAccountIx,
-  //           ],
-  //         }
-  //       );
-  //     },
-  //     (err) => {
-  //       assert.equal(err.code, 152);
-  //       assert.equal(err.msg, "An address constraint was violated");
-  //       return true;
-  //     }
-  //   );
-  // });
-
 });
 
 describe("Revenue Share", async () => {
@@ -1311,6 +1204,7 @@ describe("Revenue Share", async () => {
         authorityTokenAccount: usdcTokenAccount,
         release,
         releaseSigner,
+        releaseMint: releaseMint.publicKey,
         royaltyTokenAccount,
         tokenProgram: TOKEN_PROGRAM_ID,
       },
@@ -1348,6 +1242,7 @@ describe("Revenue Share", async () => {
             authorityTokenAccount: user1UsdcTokenAccount,
             release,
             releaseSigner,
+            releaseMint: releaseMint.publicKey,
             royaltyTokenAccount,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
@@ -1383,6 +1278,7 @@ describe("Revenue Share", async () => {
         authority: provider.wallet.publicKey,
         authorityTokenAccount: wrappedSolTokenAccount,
         release: release2,
+        releaseMint: releaseMint2.publicKey,
         releaseSigner: releaseSigner2,
         royaltyTokenAccount: royaltyTokenAccount2,
         tokenProgram: TOKEN_PROGRAM_ID,
@@ -1433,6 +1329,7 @@ describe("Revenue Share", async () => {
         authorityTokenAccount: usdcTokenAccount,
         release,
         releaseSigner,
+        releaseMint: releaseMint.publicKey,
         royaltyTokenAccount,
         newRoyaltyRecipient: user2.publicKey,
         newRoyaltyRecipientTokenAccount: user2UsdcTokenAccount,
@@ -1474,6 +1371,7 @@ describe("Revenue Share", async () => {
             authorityTokenAccount: user3UsdcTokenAccount,
             release,
             releaseSigner,
+            releaseMint: releaseMint.publicKey,
             royaltyTokenAccount,
             newRoyaltyRecipient: user2.publicKey,
             newRoyaltyRecipientTokenAccount: user2UsdcTokenAccount,
@@ -1504,6 +1402,7 @@ describe("Revenue Share", async () => {
             authorityTokenAccount: usdcTokenAccount,
             release,
             releaseSigner,
+            releaseMint: releaseMint.publicKey,
             royaltyTokenAccount,
             newRoyaltyRecipient: user2.publicKey,
             newRoyaltyRecipientTokenAccount: user2UsdcTokenAccount,
@@ -1546,6 +1445,7 @@ describe("Revenue Share", async () => {
               authorityTokenAccount: usdcTokenAccount,
               release,
               releaseSigner,
+              releaseMint: releaseMint.publicKey,
               royaltyTokenAccount,
               newRoyaltyRecipient: user.publicKey,
               newRoyaltyRecipientTokenAccount: userUsdc,
@@ -1577,6 +1477,7 @@ describe("Revenue Share", async () => {
         authorityTokenAccount: usdcTokenAccount,
         release,
         releaseSigner,
+        releaseMint: releaseMint.publicKey,
         royaltyTokenAccount,
         newRoyaltyRecipient: user2.publicKey,
         newRoyaltyRecipientTokenAccount: user2UsdcTokenAccount,
@@ -1884,7 +1785,7 @@ describe("Exchange", async () => {
               initializer: provider.wallet.publicKey,
               initializerExpectedTokenAccount: authorityReleaseTokenAccount,
               takerExpectedTokenAccount: user1UsdcTokenAccount,
-              takerSendingTokenAccount: purchaserReleaseTokenAccount,
+              takerSendingTokenAccount: receiverReleaseTokenAccount,
               exchangeEscrowTokenAccount,
               exchangeSigner,
               taker: user1.publicKey,
@@ -1931,7 +1832,7 @@ describe("Exchange", async () => {
               initializer: provider.wallet.publicKey,
               initializerExpectedTokenAccount: authorityReleaseTokenAccount,
               takerExpectedTokenAccount: user1UsdcTokenAccount,
-              takerSendingTokenAccount: purchaserReleaseTokenAccount,
+              takerSendingTokenAccount: receiverReleaseTokenAccount,
               exchangeEscrowTokenAccount,
               exchangeSigner,
               taker: user1.publicKey,
@@ -1978,7 +1879,7 @@ describe("Exchange", async () => {
               initializer: provider.wallet.publicKey,
               initializerExpectedTokenAccount: authorityReleaseTokenAccount,
               takerExpectedTokenAccount: user1UsdcTokenAccount,
-              takerSendingTokenAccount: purchaserReleaseTokenAccount,
+              takerSendingTokenAccount: receiverReleaseTokenAccount,
               exchangeEscrowTokenAccount,
               exchangeSigner,
               taker: user1.publicKey,
@@ -2013,11 +1914,11 @@ describe("Exchange", async () => {
     );
     const user1UsdcTokenAccountBeforeBalance = user1UsdcTokenAccountBefore.amount.toNumber();
 
-    const purchaserReleaseTokenAccountBefore = await getTokenAccount(
+    const receiverReleaseTokenAccountBefore = await getTokenAccount(
       provider,
-      purchaserReleaseTokenAccount,
+      receiverReleaseTokenAccount,
     );
-    const purchaserReleaseTokenAccountBeforeBalance = purchaserReleaseTokenAccountBefore.amount.toNumber();
+    const receiverReleaseTokenAccountBeforeBalance = receiverReleaseTokenAccountBefore.amount.toNumber();
 
     const authorityReleaseTokenAccountBefore = await getTokenAccount(
       provider,
@@ -2055,7 +1956,7 @@ describe("Exchange", async () => {
           initializer: provider.wallet.publicKey,
           initializerExpectedTokenAccount: authorityReleaseTokenAccount,
           takerExpectedTokenAccount: user1UsdcTokenAccount,
-          takerSendingTokenAccount: purchaserReleaseTokenAccount,
+          takerSendingTokenAccount: receiverReleaseTokenAccount,
           exchangeEscrowTokenAccount,
           exchangeSigner,
           taker: user1.publicKey,
@@ -2080,11 +1981,11 @@ describe("Exchange", async () => {
     );
     const user1UsdcTokenAccountAfterBalance = user1UsdcTokenAccountAfter.amount.toNumber();
 
-    const purchaserReleaseTokenAccountAfter = await getTokenAccount(
+    const receiverReleaseTokenAccountAfter = await getTokenAccount(
       provider,
-      purchaserReleaseTokenAccount,
+      receiverReleaseTokenAccount,
     );
-    const purchaserReleaseTokenAccountAfterBalance = purchaserReleaseTokenAccountAfter.amount.toNumber();
+    const receiverReleaseTokenAccountAfterBalance = receiverReleaseTokenAccountAfter.amount.toNumber();
 
     const authorityReleaseTokenAccountAfter = await getTokenAccount(
       provider,
@@ -2221,11 +2122,11 @@ describe("Exchange", async () => {
     );
     const user1UsdcTokenAccountBeforeBalance = user1UsdcTokenAccountBefore.amount.toNumber();
 
-    const purchaserReleaseTokenAccountBefore = await getTokenAccount(
+    const receiverReleaseTokenAccountBefore = await getTokenAccount(
       provider,
-      purchaserReleaseTokenAccount,
+      receiverReleaseTokenAccount,
     );
-    const purchaserReleaseTokenAccountBeforeBalance = purchaserReleaseTokenAccountBefore.amount.toNumber();
+    const receiverReleaseTokenAccountBeforeBalance = receiverReleaseTokenAccountBefore.amount.toNumber();
 
     const royaltyTokenAccountBefore = await getTokenAccount(
       provider,
@@ -2256,7 +2157,7 @@ describe("Exchange", async () => {
         accounts: {
           initializer: provider.wallet.publicKey,
           initializerExpectedTokenAccount: usdcTokenAccount,
-          takerExpectedTokenAccount: purchaserReleaseTokenAccount,
+          takerExpectedTokenAccount: receiverReleaseTokenAccount,
           takerSendingTokenAccount: user1UsdcTokenAccount,
           exchangeEscrowTokenAccount,
           exchangeSigner,
@@ -2288,11 +2189,11 @@ describe("Exchange", async () => {
     );
     const user1UsdcTokenAccountAfterBalance = user1UsdcTokenAccountAfter.amount.toNumber();
 
-    const purchaserReleaseTokenAccountAfter = await getTokenAccount(
+    const receiverReleaseTokenAccountAfter = await getTokenAccount(
       provider,
-      purchaserReleaseTokenAccount,
+      receiverReleaseTokenAccount,
     );
-    const purchaserReleaseTokenAccountAfterBalance = purchaserReleaseTokenAccountAfter.amount.toNumber();
+    const receiverReleaseTokenAccountAfterBalance = receiverReleaseTokenAccountAfter.amount.toNumber();
 
     const royaltyTokenAccountAfter = await getTokenAccount(
       provider,
@@ -2311,7 +2212,7 @@ describe("Exchange", async () => {
 
     assert.ok(usdcTokenAccountAfterBalance === usdcTokenAccountBeforeBalance + initializerAmount - expectedVaultFee - expectedRoyaltyFee)
     assert.ok(user1UsdcTokenAccountAfterBalance === user1UsdcTokenAccountBeforeBalance - initializerAmount);
-    assert.ok(purchaserReleaseTokenAccountAfterBalance === purchaserReleaseTokenAccountBeforeBalance + 1);
+    assert.ok(receiverReleaseTokenAccountAfterBalance === receiverReleaseTokenAccountBeforeBalance + 1);
     assert.ok(royaltyTokenAccountAfterBalance === royaltyTokenAccountBeforeBalance + expectedRoyaltyFee);
     assert.ok(vaultUsdcTokenAccountAfterBalance === vaultUsdcTokenAccountBeforeBalance + expectedVaultFee);
 
@@ -2523,11 +2424,11 @@ describe("Exchange", async () => {
   it('Accepts an existing buy exchange wSOL', async () => {
     const solBeforeBalance = await provider.connection.getBalance(user1.publicKey);
 
-    const purchaserReleaseTokenAccount2Before = await getTokenAccount(
+    const receiverReleaseTokenAccount2Before = await getTokenAccount(
       provider,
-      purchaserReleaseTokenAccount2,
+      receiverReleaseTokenAccount2,
     );
-    const purchaserReleaseTokenAccount2BeforeBalance = purchaserReleaseTokenAccount2Before.amount.toNumber();
+    const receiverReleaseTokenAccount2BeforeBalance = receiverReleaseTokenAccount2Before.amount.toNumber();
 
     const authorityReleaseTokenAccount2Before = await getTokenAccount(
       provider,
@@ -2565,7 +2466,7 @@ describe("Exchange", async () => {
           initializer: provider.wallet.publicKey,
           initializerExpectedTokenAccount: authorityReleaseTokenAccount2,
           takerExpectedTokenAccount: user1WrappedSolTokenAccount,
-          takerSendingTokenAccount: purchaserReleaseTokenAccount2,
+          takerSendingTokenAccount: receiverReleaseTokenAccount2,
           exchangeEscrowTokenAccount,
           exchangeSigner,
           taker: user1.publicKey,
@@ -2586,11 +2487,11 @@ describe("Exchange", async () => {
 
     const solAfterBalance = await provider.connection.getBalance(user1.publicKey);
 
-    const purchaserReleaseTokenAccount2After = await getTokenAccount(
+    const receiverReleaseTokenAccount2After = await getTokenAccount(
       provider,
-      purchaserReleaseTokenAccount2,
+      receiverReleaseTokenAccount2,
     );
-    const purchaserReleaseTokenAccount2AfterBalance = purchaserReleaseTokenAccount2After.amount.toNumber();
+    const receiverReleaseTokenAccount2AfterBalance = receiverReleaseTokenAccount2After.amount.toNumber();
 
     const authorityReleaseTokenAccount2After = await getTokenAccount(
       provider,
@@ -2719,11 +2620,11 @@ describe("Exchange", async () => {
 
     const user1SolBeforeBalance = await provider.connection.getBalance(user1.publicKey);
 
-    const purchaserReleaseTokenAccountBefore = await getTokenAccount(
+    const receiverReleaseTokenAccountBefore = await getTokenAccount(
       provider,
-      purchaserReleaseTokenAccount2,
+      receiverReleaseTokenAccount2,
     );
-    const purchaserReleaseTokenAccountBeforeBalance = purchaserReleaseTokenAccountBefore.amount.toNumber();
+    const receiverReleaseTokenAccountBeforeBalance = receiverReleaseTokenAccountBefore.amount.toNumber();
 
     const royaltyTokenAccountBefore = await getTokenAccount(
       provider,
@@ -2760,7 +2661,7 @@ describe("Exchange", async () => {
         accounts: {
           initializer: provider.wallet.publicKey,
           initializerExpectedTokenAccount: wrappedSolTokenAccount,
-          takerExpectedTokenAccount: purchaserReleaseTokenAccount2,
+          takerExpectedTokenAccount: receiverReleaseTokenAccount2,
           takerSendingTokenAccount: signers[0].publicKey,
           exchangeEscrowTokenAccount,
           exchangeSigner,
@@ -2787,11 +2688,11 @@ describe("Exchange", async () => {
 
     const user1SolAfterBalance = await provider.connection.getBalance(user1.publicKey);
 
-    const purchaserReleaseTokenAccountAfter = await getTokenAccount(
+    const receiverReleaseTokenAccountAfter = await getTokenAccount(
       provider,
-      purchaserReleaseTokenAccount2,
+      receiverReleaseTokenAccount2,
     );
-    const purchaserReleaseTokenAccountAfterBalance = purchaserReleaseTokenAccountAfter.amount.toNumber();
+    const receiverReleaseTokenAccountAfterBalance = receiverReleaseTokenAccountAfter.amount.toNumber();
 
     const royaltyTokenAccountAfter = await getTokenAccount(
       provider,
@@ -2810,7 +2711,7 @@ describe("Exchange", async () => {
 
     assert.ok(solAfterBalance > solBeforeBalance + initializerAmount - expectedVaultFee - expectedRoyaltyFee)
     assert.ok(user1SolAfterBalance === user1SolBeforeBalance - initializerAmount);
-    assert.ok(purchaserReleaseTokenAccountAfterBalance === purchaserReleaseTokenAccountBeforeBalance + 1);
+    assert.ok(receiverReleaseTokenAccountAfterBalance === receiverReleaseTokenAccountBeforeBalance + 1);
     assert.ok(royaltyTokenAccountAfterBalance === royaltyTokenAccountBeforeBalance + expectedRoyaltyFee);
     assert.ok(vaultWrappedSolTokenAccountAfterBalance === vaultWrappedSolTokenAccountBeforeBalance + expectedVaultFee);
 
@@ -3140,7 +3041,7 @@ describe('Redeemable', async () => {
           redeemableSigner,
           release,
           redemptionRecord: redemptionRecord.publicKey,
-          redeemerRedeemableTokenAccount: purchaserReleaseTokenAccount,
+          redeemerRedeemableTokenAccount: receiverReleaseTokenAccount,
           redeemerRedeemedTokenAccount: redeemedTokenAccount,
           tokenProgram: TOKEN_PROGRAM_ID,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
@@ -3168,11 +3069,11 @@ describe('Redeemable', async () => {
     const address = await encrypt.decryptData(redemptionRecordAfter.address, redeemerEncryptionPublicKey, iv, publisherKeys);
     assert.ok(address === addressString);
 
-    const purchaserReleaseTokenAccountAfter = await getTokenAccount(
+    const receiverReleaseTokenAccountAfter = await getTokenAccount(
       provider,
-      purchaserReleaseTokenAccount,
+      receiverReleaseTokenAccount,
     );
-    assert.ok(purchaserReleaseTokenAccountAfter.amount.toNumber() === 0);
+    assert.ok(receiverReleaseTokenAccountAfter.amount.toNumber() === 0);
 
     const redeemedTokenAccountAfter = await getTokenAccount(
       provider,
@@ -3251,8 +3152,8 @@ it('Fails when redeeming more redeemables than available', async () => {
                 releaseSigner,
                 payer: user1.publicKey,
                 payerTokenAccount: user1UsdcTokenAccount,
-                purchaser: user1.publicKey,
-                purchaserReleaseTokenAccount: purchaserReleaseTokenAccount,
+                receiver: user1.publicKey,
+                receiverReleaseTokenAccount: receiverReleaseTokenAccount,
                 royaltyTokenAccount,
                 releaseMint: releaseMint.publicKey,
                 tokenProgram: TOKEN_PROGRAM_ID,
@@ -3276,7 +3177,7 @@ it('Fails when redeeming more redeemables than available', async () => {
                 redeemableSigner,
                 release,
                 redemptionRecord: redemptionRecord.publicKey,
-                redeemerRedeemableTokenAccount: purchaserReleaseTokenAccount,
+                redeemerRedeemableTokenAccount: receiverReleaseTokenAccount,
                 redeemerRedeemedTokenAccount: redeemedTokenAccount,
                 tokenProgram: TOKEN_PROGRAM_ID,
                 rent: anchor.web3.SYSVAR_RENT_PUBKEY,
@@ -3574,7 +3475,9 @@ describe('Hub', async () => {
       nina.programId
     );
     hubArtist = _hubArtist
-    await nina.rpc.hubAddArtist(false, {
+    await nina.rpc.hubAddArtist(
+      false,
+      hubParams.name, {
       accounts: {
         curator: provider.wallet.publicKey,
         hub,
@@ -3609,7 +3512,8 @@ describe('Hub', async () => {
       nina.programId
     );
 
-    await nina.rpc.hubAddRelease({
+    await nina.rpc.hubAddRelease(
+      hubParams.name, {
       accounts: {
         payer: provider.wallet.publicKey,
         hub,
@@ -3646,7 +3550,8 @@ describe('Hub', async () => {
     );
     await assert.rejects(
       async () => {
-        await nina.rpc.hubAddRelease({
+        await nina.rpc.hubAddRelease(
+          hubParams.name, {
           accounts: {
             payer: user1.publicKey,
             hub,
@@ -3677,7 +3582,9 @@ describe('Hub', async () => {
     );
     await assert.rejects(
       async () => {
-        await nina.rpc.hubAddArtist(true, {
+        await nina.rpc.hubAddArtist(
+          true,
+          hubParams.name, {
           accounts: {
             curator: user1.publicKey,
             hub,
@@ -3788,7 +3695,8 @@ describe('Hub', async () => {
     await nina.rpc.releaseInitViaHub(
       config,
       bumps,
-      metadataData, {
+      metadataData,
+      hubParams.name, {
         accounts: {
           release: hubReleaseAccount,
           releaseSigner: hubReleaseSigner,
@@ -3796,9 +3704,8 @@ describe('Hub', async () => {
           hubArtist,
           hubRelease,
           hubCurator: provider.wallet.publicKey,
-          hubCuratorUsdcTokenAccount: usdcTokenAccount,
+          hubCuratorTokenAccount: usdcTokenAccount,
           releaseMint: hubReleaseMint.publicKey,
-          payer: provider.wallet.publicKey,
           authority: provider.wallet.publicKey,
           authorityTokenAccount: usdcTokenAccount,
           paymentMint,
@@ -3911,7 +3818,8 @@ describe('Hub', async () => {
     await nina.rpc.releaseInitViaHub(
       config,
       bumps,
-      metadataData, {
+      metadataData,
+      hubParams.name, {
         accounts: {
           release: hubReleaseAccount,
           releaseSigner: hubReleaseSigner,
@@ -3919,9 +3827,8 @@ describe('Hub', async () => {
           hubArtist,
           hubRelease,
           hubCurator: provider.wallet.publicKey,
-          hubCuratorUsdcTokenAccount: usdcTokenAccount,
+          hubCuratorTokenAccount: usdcTokenAccount,
           releaseMint: hubReleaseMint.publicKey,
-          payer: user1.publicKey,
           authority: user1.publicKey,
           authorityTokenAccount: user1UsdcTokenAccount,
           paymentMint,
@@ -3961,14 +3868,14 @@ describe('Hub', async () => {
       nina.programId
     );
 
-    let [_purchaserReleaseTokenAccount, purchaserReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+    let [_receiverReleaseTokenAccount, receiverReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
       provider,
       user1.publicKey,
       anchor.web3.SystemProgram.programId,
       anchor.web3.SYSVAR_RENT_PUBKEY,
       hubReleaseMint.publicKey,
     );
-    purchaserReleaseTokenAccount = _purchaserReleaseTokenAccount;
+    receiverReleaseTokenAccount = _receiverReleaseTokenAccount;
 
     let [hubTokenAccount, hubTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
       provider,
@@ -3982,14 +3889,15 @@ describe('Hub', async () => {
     const hubBefore = await nina.account.hubV1.fetch(hub)
 
     await nina.rpc.releasePurchaseViaHub(
-      new anchor.BN(releasePrice), {
+      new anchor.BN(releasePrice),
+      hubParams.name, {
         accounts: {
           release: hubReleaseAccount,
           releaseSigner: hubReleaseSigner,
           payer: user1.publicKey,
           payerTokenAccount: user1UsdcTokenAccount,
-          purchaser: user1.publicKey,
-          purchaserReleaseTokenAccount,
+          receiver: user1.publicKey,
+          receiverReleaseTokenAccount,
           royaltyTokenAccount: hubRoyaltyTokenAccount,
           releaseMint: hubReleaseMint.publicKey,
           hub,
@@ -4001,15 +3909,15 @@ describe('Hub', async () => {
           clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
         },
         signers: [user1],
-        instructions: [purchaserReleaseTokenAccountIx],
+        instructions: [receiverReleaseTokenAccountIx],
       }
     );
     
-    const purchaserReleaseTokenAccountAfter = await getTokenAccount(
+    const receiverReleaseTokenAccountAfter = await getTokenAccount(
       provider,
-      purchaserReleaseTokenAccount,
+      receiverReleaseTokenAccount,
     );
-    assert.ok(purchaserReleaseTokenAccountAfter.amount.toNumber() === 1)
+    assert.ok(receiverReleaseTokenAccountAfter.amount.toNumber() === 1)
 
     const usdcTokenAccountAfter = await getTokenAccount(
       provider,
@@ -4111,13 +4019,13 @@ describe('Hub', async () => {
       sellerFeeBasisPoints: 2000,
     }
 
-
     await assert.rejects(
       async () => {
         await nina.rpc.releaseInitViaHub(
           config,
           bumps,
-          metadataData, {
+          metadataData,
+          hubParams.name, {
             accounts: {
               release: hubReleaseAccount,
               releaseSigner: hubReleaseSigner,
@@ -4125,9 +4033,8 @@ describe('Hub', async () => {
               hubArtist,
               hubRelease,
               hubCurator: provider.wallet.publicKey,
-              hubCuratorUsdcTokenAccount: usdcTokenAccount,
+              hubCuratorTokenAccount: usdcTokenAccount,
               releaseMint: hubReleaseMint.publicKey,
-              payer: user2.publicKey,
               authority: user2.publicKey,
               authorityTokenAccount: user1UsdcTokenAccount,
               paymentMint,
@@ -4235,7 +4142,8 @@ describe('Hub', async () => {
         await nina.rpc.releaseInitViaHub(
           config,
           bumps,
-          metadataData, {
+          metadataData,
+          hubParams.name, {
             accounts: {
               release: hubReleaseAccount,
               releaseSigner: hubReleaseSigner,
@@ -4243,9 +4151,8 @@ describe('Hub', async () => {
               hubArtist,
               hubRelease,
               hubCurator: provider.wallet.publicKey,
-              hubCuratorUsdcTokenAccount: usdcTokenAccount,
+              hubCuratorTokenAccount: usdcTokenAccount,
               releaseMint: hubReleaseMint.publicKey,
-              payer: user2.publicKey,
               authority: user2.publicKey,
               authorityTokenAccount: user1UsdcTokenAccount,
               paymentMint,
@@ -4279,7 +4186,8 @@ describe('Hub', async () => {
     );
     await assert.rejects(
       async () => {
-        await nina.rpc.hubRemoveArtist({
+        await nina.rpc.hubRemoveArtist(
+          hubParams.name, {
           accounts: {
             payer: user2.publicKey,
             hub,
@@ -4307,7 +4215,8 @@ describe('Hub', async () => {
     );
     await assert.rejects(
       async () => {
-        await nina.rpc.hubRemoveArtist({
+        await nina.rpc.hubRemoveArtist(
+          hubParams.name, {
           accounts: {
             payer: provider.wallet.publicKey,
             hub,
@@ -4333,7 +4242,8 @@ describe('Hub', async () => {
       nina.programId
     );
 
-    await nina.rpc.hubRemoveArtist({
+    await nina.rpc.hubRemoveArtist(
+      hubParams.name, {
       accounts: {
         payer: user1.publicKey,
         hub,
@@ -4362,7 +4272,8 @@ describe('Hub', async () => {
 
     await assert.rejects(
       async () => {
-        await nina.rpc.hubRemoveRelease({
+        await nina.rpc.hubRemoveRelease(
+          hubParams.name, {
           accounts: {
             payer: user2.publicKey,
             hub,
@@ -4389,7 +4300,9 @@ describe('Hub', async () => {
       ],
       nina.programId
     );
-    await nina.rpc.hubAddArtist(false, {
+    await nina.rpc.hubAddArtist(
+      false, 
+      hubParams.name, {
       accounts: {
         curator: provider.wallet.publicKey,
         hub,
@@ -4400,7 +4313,8 @@ describe('Hub', async () => {
       }
     })
 
-    await nina.rpc.hubRemoveArtist({
+    await nina.rpc.hubRemoveArtist(
+      hubParams.name, {
       accounts: {
         payer: provider.wallet.publicKey,
         hub,
@@ -4435,7 +4349,8 @@ describe('Hub', async () => {
       nina.programId
     );
 
-    await nina.rpc.hubAddRelease({
+    await nina.rpc.hubAddRelease(
+      hubParams.name, {
       accounts: {
         payer: provider.wallet.publicKey,
         hub,
@@ -4446,7 +4361,8 @@ describe('Hub', async () => {
         rent: anchor.web3.SYSVAR_RENT_PUBKEY,
       }
     })
-    await nina.rpc.hubRemoveRelease({
+    await nina.rpc.hubRemoveRelease(
+      hubParams.name, {
       accounts: {
         payer: provider.wallet.publicKey,
         hub,
@@ -4493,7 +4409,8 @@ describe('Hub', async () => {
 
     await nina.rpc.hubWithdraw(
       new anchor.BN(withdrawAmount),
-      hubSignerBump, {
+      hubSignerBump,
+      hubParams.name, {
         accounts: {
           curator: provider.wallet.publicKey,
           hub,
