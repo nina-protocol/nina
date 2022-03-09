@@ -17,7 +17,7 @@ pub struct HubWithdraw<'info> {
         seeds = [b"nina-hub".as_ref(), hub_name.as_bytes()],
         bump,    
     )]
-    pub hub: AccountLoader<'info, HubV1>,
+    pub hub: AccountLoader<'info, Hub>,
     /// CHECK: This is safe because we derive PDA from hub and check hub.curator
     #[account(
         seeds = [b"nina-hub-signer".as_ref(), hub.key().as_ref()],

@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 
 #[account(zero_copy)]
 #[repr(packed)]
-pub struct HubV1 {
+pub struct Hub {
 	pub curator: Pubkey,
 	pub hub_signer: Pubkey,
 	pub publish_fee: u64,
@@ -13,7 +13,8 @@ pub struct HubV1 {
 
 #[account]
 #[derive(Default)]
-pub struct HubReleaseV1 {
+pub struct HubRelease {
+	pub authority: Pubkey,
 	pub hub: Pubkey,
 	pub release: Pubkey,
 	pub sales: u64,
@@ -22,16 +23,18 @@ pub struct HubReleaseV1 {
 
 #[account]
 #[derive(Default)]
-pub struct HubArtistV1 {
+pub struct HubArtist {
+	pub authority: Pubkey,
 	pub hub: Pubkey,
 	pub artist: Pubkey,
 	pub can_add_release: bool,
+	pub can_add_artist: bool,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Default)]
 pub struct HubInitParams {
-    pub publish_fee: u64,
-    pub name: String,
+	pub publish_fee: u64,
+	pub name: String,
 	pub uri: String,
 	pub referral_fee: u64,
 }
@@ -74,4 +77,11 @@ pub struct HubReleaseRemoved {
 	pub public_key: Pubkey,
 	pub hub: Pubkey,
 	pub release: Pubkey,
+}
+
+#[event]
+pub struct HubUriUpdated {
+	#[index]
+	pub public_key: Pubkey,
+	pub uri: String,
 }

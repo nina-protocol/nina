@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4");
+declare_id!("77BKtqWTbTRxj5eZPuFbeXjx3qz4TTHoXRnpCejYWiQH");
 
 pub mod state;
 pub mod instructions;
@@ -173,9 +173,10 @@ pub mod nina {
     pub fn hub_add_artist(
         ctx: Context<HubAddArtist>,
         can_add_release: bool,
+        can_add_artist: bool,
         hub_name: String
     ) -> Result<()> {
-        instructions::hub_add_artist::handler(ctx, can_add_release, hub_name)
+        instructions::hub_add_artist::handler(ctx, can_add_release, can_add_artist, hub_name)
     }
 
     pub fn hub_add_release(
@@ -197,6 +198,14 @@ pub mod nina {
         hub_name: String
     ) -> Result<()> {
         instructions::hub_remove_release::handler(ctx, hub_name)
+    }
+
+    pub fn hub_update_uri(
+        ctx: Context<HubUpdateUri>,
+        uri: String,
+        hub_name: String,
+    ) -> Result<()> {
+        instructions::hub_update_uri::handler(ctx, uri, hub_name)
     }
 
     pub fn hub_withdraw(

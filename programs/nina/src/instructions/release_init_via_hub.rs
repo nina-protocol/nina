@@ -36,19 +36,19 @@ pub struct ReleaseInitializeViaHub<'info> {
         bump,
         constraint = hub_artist.artist == authority.key(),
     )]
-    pub hub_artist: Box<Account<'info, HubArtistV1>>,
+    pub hub_artist: Box<Account<'info, HubArtist>>,
     #[account(
         seeds = [b"nina-hub".as_ref(), hub_name.as_bytes()],
         bump,    
     )]
-    pub hub: AccountLoader<'info, HubV1>,
+    pub hub: AccountLoader<'info, Hub>,
     #[account(
         init,
         seeds = [b"nina-hub-release".as_ref(), hub.key().as_ref(), release.key().as_ref()],
         bump,
         payer = authority,
     )]
-    pub hub_release: Box<Account<'info, HubReleaseV1>>,
+    pub hub_release: Box<Account<'info, HubRelease>>,
     /// CHECK: This is safe because we check hub via seeds above
     #[account(
         constraint = hub.load()?.curator == hub_curator.key(),

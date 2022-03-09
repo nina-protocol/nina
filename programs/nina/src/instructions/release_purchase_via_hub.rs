@@ -58,13 +58,13 @@ pub struct ReleasePurchaseViaHub<'info> {
         seeds = [b"nina-hub".as_ref(), hub_name.as_bytes()],
         bump,    
     )]
-    pub hub: AccountLoader<'info, HubV1>,
+    pub hub: AccountLoader<'info, Hub>,
     #[account(
         mut,
         seeds = [b"nina-hub-release".as_ref(), hub.key().as_ref(), release.key().as_ref()],
         bump,
     )]
-    pub hub_release: Box<Account<'info, HubReleaseV1>>,
+    pub hub_release: Box<Account<'info, HubRelease>>,
     /// CHECK: This is safe because PDA is derived from hub which is checked above
     #[account(
         constraint = hub.load()?.curator == hub_curator.key(),

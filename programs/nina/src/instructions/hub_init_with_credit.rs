@@ -15,7 +15,7 @@ pub struct HubInitWithCredit<'info> {
         payer = curator,
         space = 388
     )]
-    pub hub: AccountLoader<'info, HubV1>,
+    pub hub: AccountLoader<'info, Hub>,
     /// CHECK: This is safe because we are deriving the PDA from hub - which is initialized above
     #[account(
         seeds = [b"nina-hub-signer".as_ref(), hub.key().as_ref()],
@@ -28,7 +28,7 @@ pub struct HubInitWithCredit<'info> {
         bump,
         payer = curator,
     )]
-    pub hub_artist: Account<'info, HubArtistV1>,
+    pub hub_artist: Account<'info, HubArtist>,
     #[account(
         constraint = usdc_vault.mint == usdc_mint.key(),
         constraint = usdc_vault.owner == *hub_signer.key
@@ -89,9 +89,11 @@ pub fn handler (
     hub.uri = uri_array;
 
     let hub_artist = &mut ctx.accounts.hub_artist;
+    hub_artist.authority = ctx.accounts.curator.key();
     hub_artist.hub = ctx.accounts.hub.key();
     hub_artist.artist = ctx.accounts.curator.key();
     hub_artist.can_add_release = true;
+    hub_artist.can_add_artist = true;
 
     emit!(HubCreated {
         public_key: ctx.accounts.hub.key(),

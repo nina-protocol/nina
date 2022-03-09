@@ -58,5 +58,7 @@ pub enum ErrorCode {
     HubWithdrawAmountMustBeGreaterThanZero,
     #[msg("Release Purchase Wrong Receiver")]
     ReleasePurchaseWrongReceiver,
+    #[msg("HubArtist Cannot Add Artist")]
+    HubArtistCannotAddArtist,
 
 }

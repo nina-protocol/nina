@@ -3454,13 +3454,13 @@ describe('Hub', async () => {
       }
     )
 
-    const hubAfter = await nina.account.hubV1.fetch(hub)
+    const hubAfter = await nina.account.hub.fetch(hub)
     assert.equal(encrypt.decode(hubAfter.name), hubParams.name)
     assert.equal(hubAfter.publishFee.toNumber(), hubParams.publishFee)
     assert.equal(encrypt.decode(hubAfter.uri), hubParams.uri)
     assert.equal(hubAfter.curator.toBase58(), provider.wallet.publicKey.toBase58())
 
-    const hubArtistAfter = await nina.account.hubArtistV1.fetch(hubArtist)
+    const hubArtistAfter = await nina.account.hubArtist.fetch(hubArtist)
     assert.equal(hubArtistAfter.artist.toBase58(), provider.wallet.publicKey.toBase58())
     assert.equal(hubArtistAfter.hub.toBase58(), hub.toBase58())
   })
@@ -3474,12 +3474,23 @@ describe('Hub', async () => {
       ],
       nina.programId
     );
+    const [payerHubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        hub.toBuffer(),
+        provider.wallet.publicKey.toBuffer(),
+      ],
+      nina.programId
+    );
+
     hubArtist = _hubArtist
     await nina.rpc.hubAddArtist(
       false,
+      false,
       hubParams.name, {
       accounts: {
-        curator: provider.wallet.publicKey,
+        payer: provider.wallet.publicKey,
+        payerHubArtist,
         hub,
         hubArtist,
         artist: user1.publicKey,
@@ -3488,7 +3499,7 @@ describe('Hub', async () => {
       }
     })
 
-    const hubArtistAfter = await nina.account.hubArtistV1.fetch(hubArtist)
+    const hubArtistAfter = await nina.account.hubArtist.fetch(hubArtist)
     assert.equal(hubArtistAfter.artist.toBase58(), user1.publicKey.toBase58())
     assert.equal(hubArtistAfter.hub.toBase58(), hub.toBase58())
   })
@@ -3525,7 +3536,7 @@ describe('Hub', async () => {
       }
     })
 
-    const hubReleaseAfter = await nina.account.hubReleaseV1.fetch(hubRelease)
+    const hubReleaseAfter = await nina.account.hubRelease.fetch(hubRelease)
     assert.equal(hubReleaseAfter.release.toBase58(), release.toBase58())
     assert.equal(hubReleaseAfter.hub.toBase58(), hub.toBase58())
   })
@@ -3554,6 +3565,7 @@ describe('Hub', async () => {
           hubParams.name, {
           accounts: {
             payer: user1.publicKey,
+            payerHubArtist: hubArtist,
             hub,
             hubRelease,
             hubArtist,
@@ -3571,7 +3583,7 @@ describe('Hub', async () => {
     );
   })
 
-  it('should not add artist to hub with wrong curator', async () => {
+  it('should not add artist to hub without permissions', async () => {
     const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
@@ -3580,13 +3592,23 @@ describe('Hub', async () => {
       ],
       nina.programId
     );
+    const [payerHubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        hub.toBuffer(),
+        user1.publicKey.toBuffer(),
+      ],
+      nina.programId
+    );
     await assert.rejects(
       async () => {
         await nina.rpc.hubAddArtist(
           true,
+          true,
           hubParams.name, {
           accounts: {
-            curator: user1.publicKey,
+            payer: user1.publicKey,
+            payerHubArtist,
             hub,
             hubArtist,
             artist: user2.publicKey,
@@ -3597,7 +3619,7 @@ describe('Hub', async () => {
         })
       },
       (err) => {
-        assert.equal(err.code, 2003);
+        assert.equal(err.code, 6028);
         return true;
       }
     );
@@ -3720,8 +3742,8 @@ describe('Hub', async () => {
         instructions,
       }
     );
-    const hubAfter = await nina.account.hubV1.fetch(hub)
-    const hubReleaseAfter = await nina.account.hubReleaseV1.fetch(hubRelease)
+    const hubAfter = await nina.account.hub.fetch(hub)
+    const hubReleaseAfter = await nina.account.hubRelease.fetch(hubRelease)
     const releaseAfter = await nina.account.release.fetch(hubReleaseAccount)
     assert.equal(releaseAfter.royaltyRecipients[0].percentShare.toNumber(), 1000000)
     assert.equal(releaseAfter.royaltyRecipients[0].recipientAuthority.toBase58(), provider.wallet.publicKey.toBase58())
@@ -3843,8 +3865,8 @@ describe('Hub', async () => {
         instructions,
       }
     );
-    const hubAfter = await nina.account.hubV1.fetch(hub)
-    const hubReleaseAfter = await nina.account.hubReleaseV1.fetch(hubRelease)
+    const hubAfter = await nina.account.hub.fetch(hub)
+    const hubReleaseAfter = await nina.account.hubRelease.fetch(hubRelease)
     const releaseAfter = await nina.account.release.fetch(hubReleaseAccount)
     assert.equal(releaseAfter.royaltyRecipients[0].percentShare.toNumber(), 1000000 - releaseAfter.royaltyRecipients[1].percentShare.toNumber())
     assert.equal(releaseAfter.royaltyRecipients[1].percentShare.toNumber(), hubParams.publishFee.toNumber())
@@ -3886,7 +3908,7 @@ describe('Hub', async () => {
     );
 
     const releaseBefore = await nina.account.release.fetch(hubReleaseAccount);
-    const hubBefore = await nina.account.hubV1.fetch(hub)
+    const hubBefore = await nina.account.hub.fetch(hub)
 
     await nina.rpc.releasePurchaseViaHub(
       new anchor.BN(releasePrice),
@@ -3930,7 +3952,7 @@ describe('Hub', async () => {
     assert.equal(releaseAfter.saleCounter.toNumber(), 1);
     assert.equal(releaseAfter.totalCollected.toNumber(), releasePrice);
 
-    const hubReleaseAfter = await nina.account.hubReleaseV1.fetch(hubRelease);
+    const hubReleaseAfter = await nina.account.hubRelease.fetch(hubRelease);
     assert.equal(hubReleaseAfter.sales.toNumber(), 1);
 
     const royaltyTokenAccountAfter = await getTokenAccount(
@@ -3939,6 +3961,43 @@ describe('Hub', async () => {
     );
     assert.equal(royaltyTokenAccountAfter.amount.toNumber(), releasePrice);
   });
+
+  it ('should update hub uri is curator', async () => {
+    const uri = 'https://arweave.net/jsdlkfj4j3kl4j3lkj43l3kjflksjd'
+    await nina.rpc.hubUpdateUri(
+      uri,
+      hubParams.name, {
+        accounts: {
+          curator: provider.wallet.publicKey,
+          hub,
+        }
+      }
+    )
+    const hubAfter = await nina.account.hub.fetch(hub)
+    console.log("hubAfter ::> ", hubAfter)
+    assert.equal(encrypt.decode(hubAfter.uri), uri)
+  })
+  
+  it ('should not update hub uri is curator', async () => {
+    await assert.rejects(
+      async () => {
+        const uri = 'https://arweave.net/jsdlkfj4j3kl4j3lkj43l3kjflksjd'
+        await nina.rpc.hubUpdateUri(
+          uri,
+          hubParams.name, {
+            accounts: {
+              curator: user2.publicKey,
+              hub,
+            },
+            signers: [user2]
+          }
+        )
+      }, (err) => {
+        assert.equal(err.code, 2003);
+        return true;
+      }
+    )
+  })
 
   it('should not create a release via hub if artist hubArtist does not match', async () => {
     const paymentMint = usdcMint;
@@ -4255,7 +4314,7 @@ describe('Hub', async () => {
     })
     await assert.rejects(
       async () => {
-        await nina.account.hubArtistV1.fetch(hubArtist)
+        await nina.account.hubArtist.fetch(hubArtist)
       }
     )
   })
@@ -4300,11 +4359,23 @@ describe('Hub', async () => {
       ],
       nina.programId
     );
+
+    const [payerHubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        hub.toBuffer(),
+        provider.wallet.publicKey.toBuffer(),
+      ],
+      nina.programId
+    );
+
     await nina.rpc.hubAddArtist(
-      false, 
+      false,
+      true, 
       hubParams.name, {
       accounts: {
-        curator: provider.wallet.publicKey,
+        payer: provider.wallet.publicKey,
+        payerHubArtist,
         hub,
         hubArtist,
         artist: user2.publicKey,
@@ -4325,7 +4396,7 @@ describe('Hub', async () => {
     })
     await assert.rejects(
       async () => {
-        await nina.account.hubArtistV1.fetch(hubArtist)
+        await nina.account.hubArtist.fetch(hubArtist)
       }
     )
   })
@@ -4373,7 +4444,7 @@ describe('Hub', async () => {
     })
     await assert.rejects(
       async () => {
-        await nina.account.hubReleaseV1.fetch(hubRelease)
+        await nina.account.hubRelease.fetch(hubRelease)
       }
     );
   })

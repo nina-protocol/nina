@@ -12,14 +12,14 @@ pub struct HubRemoveArtist<'info> {
         seeds = [b"nina-hub".as_ref(), hub_name.as_bytes()],
         bump,
     )]
-    pub hub: AccountLoader<'info, HubV1>,
+    pub hub: AccountLoader<'info, Hub>,
     #[account(
         mut,
         seeds = [b"nina-hub-artist".as_ref(), hub.key().as_ref(), artist.key().as_ref()],
         bump,
         close = payer
     )]
-    pub hub_artist: Account<'info, HubArtistV1>,
+    pub hub_artist: Account<'info, HubArtist>,
     /// CHECK: This is safe because it is checked against hub_artist which verifies the HubArtistV1 by seeds
     #[account(
         constraint = artist.key() == hub_artist.artist,
