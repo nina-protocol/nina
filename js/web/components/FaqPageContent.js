@@ -159,11 +159,11 @@ const FaqPageContent = () => {
             wallet you can purchase SOL using a credit card by clicking on
             ‘Deposit’ and then ‘Buy with MoonPay’. You can also buy SOL on an
             exchange like{" "}
-            <a target="_blank" href="www.ftx.us" rel="noreferrer">
+            <a target="_blank" href="https://www.ftx.us" rel="noreferrer">
               FTX
             </a>
             ,{" "}
-            <a target="_blank" href="www.coinbase.com" rel="noreferrer">
+            <a target="_blank" href="https://www.coinbase.com" rel="noreferrer">
               Coinbase
             </a>
             ,{" "}
@@ -258,7 +258,7 @@ const FaqPageContent = () => {
             <a
               rel="noreferrer"
               target="_blank"
-              href="https://github.com/nina-market/nina"
+              href="https://github.com/nina-protocol/nina"
             >
               {" "}
               here
@@ -308,11 +308,19 @@ const FaqPageContent = () => {
             On Nina, all releases are priced in USDC. The USDC used on Nina is
             SPL-wrapped USDC, native to the Solana blockchain. It is important
             to make sure that your exchange accepts SPL-USDC.{" "}
-            <a target="_blank" href="www.ftx.us">
+            <a
+              href="https://www.ftx.us"
+              rel="noreferrer"
+              target="_blank"
+            >
               FTX
             </a>{" "}
             and{" "}
-            <a target="_blank" href="www.binance.us">
+            <a
+              href="https://www.binance.us"
+              rel="noreferrer"
+              target="_blank"
+            >
               Binance
             </a>{" "}
             both accept SPL-USDC (make sure to send to the SPL-USDC address

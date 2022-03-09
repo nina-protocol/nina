@@ -197,7 +197,7 @@ export default function Home() {
       <Typography >{`You are currently listening to a selection of ${isRecent ? ` ${playlist.length} releases published in the last 7 days` : ` all ${playlist.length} releases`}.`}</Typography>
       <ClickableTypography onClick={() => setIsRecent(!isRecent)}>{`Switch to ${isRecent ? "All" : "Recent"} releases instead?`}</ClickableTypography>
       <a
-        href="https://nina.market"
+        href="https://ninaprotocol.com"
         target="_blank"
         rel="noreferrer"
       >

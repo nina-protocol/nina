@@ -287,7 +287,7 @@ const AudioPlayer = () => {
           <Button
             onClick={() =>
               window.open(
-                `https://twitter.com/intent/tweet?text=${`${info.artist} - "${info.title}" on Nina`}&url=nina.market/${
+                `https://twitter.com/intent/tweet?text=${`${info.artist} - "${info.title}" on Nina`}&url=ninaprotocol.com/${
                   info.releasePubkey
                 }`,
                 null,
