@@ -81,6 +81,13 @@ pub mod nina {
         instructions::release_create_metadata::handler(ctx, metadata_data)
     }
 
+    pub fn release_update_metadata(
+        ctx: Context<ReleaseUpdateMetadata>,
+        metadata_data: ReleaseMetadataData
+    ) -> Result<()> {
+        instructions::release_update_metadata::handler(ctx, metadata_data)
+    }
+
     pub fn release_create_metadata_pressing_plant(
         ctx: Context<ReleaseCreateMetadataPressingPlant>,
         metadata_data: ReleaseMetadataData
