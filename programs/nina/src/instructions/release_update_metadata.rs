@@ -33,12 +33,7 @@ pub struct ReleaseUpdateMetadata<'info> {
     )]
     pub release_signer: AccountInfo<'info>,
     /// CHECK: This is safe because metadata is inititalized here
-    #[account(
-        mut,
-        seeds = [b"nina-release".as_ref(), token_metadata_program.key().as_ref(), release_mint.key().as_ref()],
-        bump,
-        seeds::program = token_metadata_program.key()
-    )]
+    #[account(mut)]
     pub metadata: AccountInfo<'info>,
     #[account(
         address = release.load()?.release_mint,
