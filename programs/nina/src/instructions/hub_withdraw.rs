@@ -7,18 +7,18 @@ use crate::errors::ErrorCode;
 #[derive(Accounts)]
 #[instruction(
     amount: u64,
-    bump: u8,
-    hub_name: String
+    hub_handle: String
 )]
 pub struct HubWithdraw<'info> {
-    pub curator: Signer<'info>,
+    #[account(mut)]
+    pub authority: Signer<'info>,
     #[account(
-        constraint = hub.load()?.curator == curator.key(),
-        seeds = [b"nina-hub".as_ref(), hub_name.as_bytes()],
+        constraint = hub.load()?.authority == authority.key(),
+        seeds = [b"nina-hub".as_ref(), hub_handle.as_bytes()],
         bump,    
     )]
     pub hub: AccountLoader<'info, Hub>,
-    /// CHECK: This is safe because we derive PDA from hub and check hub.curator
+    /// CHECK: This is safe because we derive PDA from hub and check hub.authority
     #[account(
         seeds = [b"nina-hub-signer".as_ref(), hub.key().as_ref()],
         bump,
@@ -32,7 +32,7 @@ pub struct HubWithdraw<'info> {
     pub withdraw_target: Box<Account<'info, TokenAccount>>,
     #[account(
         mut,
-        constraint = withdraw_destination.owner == *curator.key,
+        constraint = withdraw_destination.owner == *authority.key,
         constraint = withdraw_destination.mint == withdraw_mint.key()
     )]
     pub withdraw_destination: Box<Account<'info, TokenAccount>>,
@@ -44,8 +44,7 @@ pub struct HubWithdraw<'info> {
 pub fn handler(
     ctx: Context<HubWithdraw>,
     amount: u64,
-    bump: u8,
-    _hub_name: String,
+    _hub_handle: String,
 ) -> Result<()> {
     if ctx.accounts.withdraw_target.amount < amount {
         return Err(error!(ErrorCode::HubWithdrawAmountTooHigh));
@@ -54,6 +53,8 @@ pub fn handler(
     if amount <= 0 {
         return Err(error!(ErrorCode::HubWithdrawAmountMustBeGreaterThanZero));
     }
+
+    let hub = ctx.accounts.hub.load()?;
 
     //Withdraw to Authority Token Account
     let cpi_accounts = Transfer {
@@ -66,7 +67,7 @@ pub fn handler(
     let seeds = &[
         b"nina-hub-signer".as_ref(),
         ctx.accounts.hub.to_account_info().key.as_ref(),
-        &[bump],
+        &[hub.hub_signer_bump],
     ];
     let signer = &[&seeds[..]];
     let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer);

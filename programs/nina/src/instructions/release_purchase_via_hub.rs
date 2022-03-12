@@ -9,7 +9,7 @@ use crate::state::*;
 #[derive(Accounts)]
 #[instruction(
     _amount: u64,
-    hub_name: String
+    hub_handle: String
 )]
 pub struct ReleasePurchaseViaHub<'info> {
     pub payer: Signer<'info>,
@@ -55,7 +55,8 @@ pub struct ReleasePurchaseViaHub<'info> {
     )]
     pub release_mint: Account<'info, Mint>,
     #[account(
-        seeds = [b"nina-hub".as_ref(), hub_name.as_bytes()],
+        mut,
+        seeds = [b"nina-hub".as_ref(), hub_handle.as_bytes()],
         bump,    
     )]
     pub hub: AccountLoader<'info, Hub>,
@@ -67,9 +68,9 @@ pub struct ReleasePurchaseViaHub<'info> {
     pub hub_release: Box<Account<'info, HubRelease>>,
     /// CHECK: This is safe because PDA is derived from hub which is checked above
     #[account(
-        constraint = hub.load()?.curator == hub_curator.key(),
+        constraint = hub.load()?.hub_wallet == hub_wallet.key(),
     )]
-    pub hub_curator: UncheckedAccount<'info>,
+    pub hub_: UncheckedAccount<'info>,
     /// CHECK: This is safe because PDA is derived from hub which is checked above
     #[account(
         seeds = [b"nina-hub-signer".as_ref(), hub.key().as_ref()],
@@ -78,10 +79,10 @@ pub struct ReleasePurchaseViaHub<'info> {
     pub hub_signer: UncheckedAccount<'info>,
     #[account(
         mut,
-        constraint = hub_token_account.owner == hub_signer.key(),
-        constraint = hub_token_account.mint == release.load()?.payment_mint
+        constraint = hub_wallet.owner == hub_signer.key(),
+        constraint = hub_wallet.mint == release.load()?.payment_mint
     )]
-    pub hub_token_account: Box<Account<'info, TokenAccount>>,
+    pub hub_wallet: Box<Account<'info, TokenAccount>>,
     #[account(address = token::ID)]
     pub token_program: Program<'info, Token>,
     pub clock: Sysvar<'info, Clock>,
@@ -90,7 +91,7 @@ pub struct ReleasePurchaseViaHub<'info> {
 pub fn handler(
     ctx: Context<ReleasePurchaseViaHub>,
     amount: u64,
-    _hub_name: String,
+    _hub_handle: String,
 ) -> Result<()> {
     let hub_release = &mut ctx.accounts.hub_release;
     hub_release.sales = u64::from(hub_release.sales)
@@ -114,18 +115,22 @@ pub fn handler(
     // Transfer referral fee from Payer to Hub curator
     let cpi_accounts = Transfer {
         from: ctx.accounts.payer_token_account.to_account_info(),
-        to: ctx.accounts.hub_token_account.to_account_info(),
+        to: ctx.accounts.hub_wallet.to_account_info(),
         authority: ctx.accounts.payer.to_account_info().clone(),
     };
     let cpi_program = ctx.accounts.token_program.to_account_info().clone();
     let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
-    let hub = ctx.accounts.hub.load()?;
+    let mut hub = ctx.accounts.hub.load_mut()?;
     let referral_amount = u64::from(amount)
         .checked_mul(hub.referral_fee)
         .unwrap()
         .checked_div(1000000)
         .unwrap();
-    token::transfer(cpi_ctx, referral_amount)?;    
+    token::transfer(cpi_ctx, referral_amount)?;
+
+    hub.total_fees_earned = u64::from(hub.total_fees_earned)
+        .checked_add(referral_amount)
+        .unwrap();
 
     emit!(ReleaseSoldViaHub {
         public_key: *ctx.accounts.release.to_account_info().key,

@@ -3385,8 +3385,9 @@ describe('Vault', async () => {
 describe('Hub', async () => {
   let hub
   let hubSigner
+  let hubWallet
   let hubParams = {
-    name: 'Nina Hub',
+    handle: 'NinaHub',
     publishFee: new anchor.BN(50000),
     uri: 'https://arweave.net/xxxxx',
     referralFee: new anchor.BN(50000),
@@ -3395,7 +3396,7 @@ describe('Hub', async () => {
   it('should init a Hub', async () => {
     const [_hub, hubBump] = await anchor.web3.PublicKey.findProgramAddress([
       Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub")), 
-      Buffer.from(anchor.utils.bytes.utf8.encode(hubParams.name))],
+      Buffer.from(anchor.utils.bytes.utf8.encode(hubParams.handle))],
       nina.programId
     );
     hub = _hub
@@ -3405,106 +3406,107 @@ describe('Hub', async () => {
       nina.programId
     );
     hubSigner = _hubSigner
+    hubParams.hubSignerBump = hubSignerBump
 
-    const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress([
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+    const [hubCollaborator, bump] = await anchor.web3.PublicKey.findProgramAddress([
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
         hub.toBuffer(),
         provider.wallet.publicKey.toBuffer(),
       ],
       nina.programId
     );
 
-    let [usdcVault, usdcVaultIx] = await findOrCreateAssociatedTokenAccount(
+    let [_hubWallet, hubWalletIx] = await findOrCreateAssociatedTokenAccount(
       provider,
       hubSigner,
       anchor.web3.SystemProgram.programId,
       anchor.web3.SYSVAR_RENT_PUBKEY,
       usdcMint,
     );
-
-    let [wrappedSolVault, wrappedSolVaultIx] = await findOrCreateAssociatedTokenAccount(
-      provider,
-      hubSigner,
-      anchor.web3.SystemProgram.programId,
-      anchor.web3.SYSVAR_RENT_PUBKEY,
-      wrappedSolMint,
-    );
+    hubWallet = _hubWallet
 
     await nina.rpc.hubInitWithCredit(
       hubParams, {
         accounts: {
-          curator: provider.wallet.publicKey,
+          authority: provider.wallet.publicKey,
           hub,
           hubSigner,
-          hubArtist,
+          hubCollaborator,
           usdcMint,
-          wrappedSolMint,
-          usdcVault,
-          wrappedSolVault,
-          curatorHubCreditTokenAccount: hubCreditTokenAccount,
+          hubWallet,
+          authorityHubCreditTokenAccount: hubCreditTokenAccount,
           hubCreditMint: nhcMint,
           systemProgram: anchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         }, 
         instructions:[
-          usdcVaultIx,
-          wrappedSolVaultIx
+          hubWalletIx,
         ]
       }
     )
 
     const hubAfter = await nina.account.hub.fetch(hub)
-    assert.equal(encrypt.decode(hubAfter.name), hubParams.name)
+    assert.equal(encrypt.decode(hubAfter.handle), hubParams.handle)
     assert.equal(hubAfter.publishFee.toNumber(), hubParams.publishFee)
     assert.equal(encrypt.decode(hubAfter.uri), hubParams.uri)
-    assert.equal(hubAfter.curator.toBase58(), provider.wallet.publicKey.toBase58())
+    assert.equal(hubAfter.authority.toBase58(), provider.wallet.publicKey.toBase58())
 
-    const hubArtistAfter = await nina.account.hubArtist.fetch(hubArtist)
-    assert.equal(hubArtistAfter.artist.toBase58(), provider.wallet.publicKey.toBase58())
-    assert.equal(hubArtistAfter.hub.toBase58(), hub.toBase58())
+    const hubCollaboratorAfter = await nina.account.hubCollaborator.fetch(hubCollaborator)
+    assert.equal(hubCollaboratorAfter.collaborator.toBase58(), provider.wallet.publicKey.toBase58())
+    assert.equal(hubCollaboratorAfter.hub.toBase58(), hub.toBase58())
   })
-  let hubArtist
-  it('should add artist to hub', async () => {
-    const [_hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+
+  let hubCollaborator
+  it('should add collaborator to hub', async () => {
+    const [_hubCollaborator, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
         hub.toBuffer(),
         user1.publicKey.toBuffer(),
       ],
       nina.programId
     );
-    const [payerHubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+    const [payerHubCollaborator, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
         hub.toBuffer(),
         provider.wallet.publicKey.toBuffer(),
       ],
       nina.programId
     );
 
-    hubArtist = _hubArtist
-    await nina.rpc.hubAddArtist(
+    hubCollaborator = _hubCollaborator
+    await nina.rpc.hubAddCollaborator(
       false,
       false,
-      hubParams.name, {
+      hubParams.handle, {
       accounts: {
         payer: provider.wallet.publicKey,
-        payerHubArtist,
+        payerHubCollaborator,
         hub,
-        hubArtist,
-        artist: user1.publicKey,
+        hubCollaborator,
+        collaborator: user1.publicKey,
         systemProgram: anchor.web3.SystemProgram.programId,
         rent: anchor.web3.SYSVAR_RENT_PUBKEY,
       }
     })
 
-    const hubArtistAfter = await nina.account.hubArtist.fetch(hubArtist)
-    assert.equal(hubArtistAfter.artist.toBase58(), user1.publicKey.toBase58())
-    assert.equal(hubArtistAfter.hub.toBase58(), hub.toBase58())
+    const hubCollaboratorAfter = await nina.account.hubCollaborator.fetch(hubCollaborator)
+    assert.equal(hubCollaboratorAfter.collaborator.toBase58(), user1.publicKey.toBase58())
+    assert.equal(hubCollaboratorAfter.hub.toBase58(), hub.toBase58())
   })
 
   it('should add release to hub', async () => {
+    const [hubContent, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-content")), 
+        hub.toBuffer(),
+        release.toBuffer(),
+      ],
+      nina.programId
+    );
+
     const [hubRelease, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
@@ -3514,9 +3516,9 @@ describe('Hub', async () => {
       nina.programId
     );
 
-    const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+    const [hubCollaborator, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
         hub.toBuffer(),
         provider.wallet.publicKey.toBuffer(),
       ],
@@ -3524,12 +3526,14 @@ describe('Hub', async () => {
     );
 
     await nina.rpc.hubAddRelease(
-      hubParams.name, {
+      hubParams.handle, {
       accounts: {
         payer: provider.wallet.publicKey,
+        authority: provider.wallet.publicKey,
         hub,
+        hubContent,
         hubRelease,
-        hubArtist,
+        hubCollaborator,
         release,
         systemProgram: anchor.web3.SystemProgram.programId,
         rent: anchor.web3.SYSVAR_RENT_PUBKEY,
@@ -3541,7 +3545,16 @@ describe('Hub', async () => {
     assert.equal(hubReleaseAfter.hub.toBase58(), hub.toBase58())
   })
 
-  it('should not add release to hub if artist doesnt have authority to', async () => {
+  it('should not add release to hub if collaborator doesnt have authority to', async () => {
+    const [hubContent, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-content")), 
+        hub.toBuffer(),
+        releaseSellOut.toBuffer(),
+      ],
+      nina.programId
+    );
+    
     const [hubRelease, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
@@ -3551,24 +3564,27 @@ describe('Hub', async () => {
       nina.programId
     );
     
-    const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+    const [hubCollaborator, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
         hub.toBuffer(),
         user1.publicKey.toBuffer(),
       ],
       nina.programId
     );
+
     await assert.rejects(
       async () => {
         await nina.rpc.hubAddRelease(
-          hubParams.name, {
+          hubParams.handle, {
           accounts: {
+            authority: user1.publicKey,
             payer: user1.publicKey,
-            payerHubArtist: hubArtist,
+            payerHubAuthority: hubCollaborator,
             hub,
+            hubContent,
             hubRelease,
-            hubArtist,
+            hubCollaborator,
             release: releaseSellOut,
             systemProgram: anchor.web3.SystemProgram.programId,
             rent: anchor.web3.SYSVAR_RENT_PUBKEY,
@@ -3583,18 +3599,18 @@ describe('Hub', async () => {
     );
   })
 
-  it('should not add artist to hub without permissions', async () => {
-    const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+  it('should not add collaborator to hub without permissions', async () => {
+    const [hubCollaborator, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
         hub.toBuffer(),
         user2.publicKey.toBuffer(),
       ],
       nina.programId
     );
-    const [payerHubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+    const [payerHubCollaborator, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
         hub.toBuffer(),
         user1.publicKey.toBuffer(),
       ],
@@ -3602,16 +3618,16 @@ describe('Hub', async () => {
     );
     await assert.rejects(
       async () => {
-        await nina.rpc.hubAddArtist(
+        await nina.rpc.hubAddCollaborator(
           true,
           true,
-          hubParams.name, {
+          hubParams.handle, {
           accounts: {
             payer: user1.publicKey,
-            payerHubArtist,
+            payerHubCollaborator,
             hub,
-            hubArtist,
-            artist: user2.publicKey,
+            hubCollaborator,
+            collaborator: user2.publicKey,
             systemProgram: anchor.web3.SystemProgram.programId,
             rent: anchor.web3.SYSVAR_RENT_PUBKEY,
           }, 
@@ -3625,12 +3641,12 @@ describe('Hub', async () => {
     );
   })
 
-  let hubReleaseAccount
-  let hubReleaseSigner
+  let releaseAccount
+  let releaseSigner
   let hubRoyaltyTokenAccount
   let hubRelease
   let hubReleaseMint
-  it('should create a release via hub as curator', async () => {
+  it('should create a release via hub as authority', async () => {
     const paymentMint = usdcMint;
     hubReleaseMint = anchor.web3.Keypair.generate();
     const releaseMintIx = await createMintInstructions(
@@ -3640,35 +3656,44 @@ describe('Hub', async () => {
       0,
     );
 
-    const [_hubReleaseAccount, releaseBump] = await anchor.web3.PublicKey.findProgramAddress(
+    const [_releaseAccount, releaseBump] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-release")),
         hubReleaseMint.publicKey.toBuffer(),
       ],
       nina.programId,
     );
-    hubReleaseAccount = _hubReleaseAccount
+    releaseAccount = _releaseAccount
 
-    const [_hubReleaseSigner, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
-      [hubReleaseAccount.toBuffer()],
+    const [releaseSigner, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [releaseAccount.toBuffer()],
       nina.programId,
     );
-    hubReleaseSigner = _hubReleaseSigner
+    releaseSigner = releaseSigner
 
     let [_hubRoyaltyTokenAccount, royaltyTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
       provider,
-      hubReleaseSigner,
+      releaseSigner,
       anchor.web3.SystemProgram.programId,
       anchor.web3.SYSVAR_RENT_PUBKEY,
       paymentMint,
     );
     hubRoyaltyTokenAccount = _hubRoyaltyTokenAccount
 
-    const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+    const [hubCollaborator, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
         hub.toBuffer(),
         provider.wallet.publicKey.toBuffer(),
+      ],
+      nina.programId
+    );
+
+    const [hubContent, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-content")), 
+        hub.toBuffer(),
+        releaseAccount.toBuffer(),
       ],
       nina.programId
     );
@@ -3677,7 +3702,7 @@ describe('Hub', async () => {
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
         hub.toBuffer(),
-        hubReleaseAccount.toBuffer(),
+        releaseAccount.toBuffer(),
       ],
       nina.programId
     );
@@ -3718,24 +3743,27 @@ describe('Hub', async () => {
       config,
       bumps,
       metadataData,
-      hubParams.name, {
+      hubParams.handle, {
         accounts: {
-          release: hubReleaseAccount,
-          releaseSigner: hubReleaseSigner,
-          hub,
-          hubArtist,
-          hubRelease,
-          hubCurator: provider.wallet.publicKey,
-          hubCuratorTokenAccount: usdcTokenAccount,
-          releaseMint: hubReleaseMint.publicKey,
           authority: provider.wallet.publicKey,
+          release: releaseAccount,
+          releaseSigner: releaseSigner,
+          hub,
+          hubCollaborator,
+          hubContent,
+          hubRelease,
+          hubSigner,
+          hubWallet,
+          hubAuthority: provider.wallet.publicKey,
+          hubAuthorityTokenAccount: usdcTokenAccount,
+          releaseMint: hubReleaseMint.publicKey,
           authorityTokenAccount: usdcTokenAccount,
           paymentMint,
           royaltyTokenAccount: hubRoyaltyTokenAccount,
           tokenProgram: TOKEN_PROGRAM_ID,
-          systemProgram: anchor.web3.SystemProgram.programId,
           metadata,
           metadataProgram,
+          systemProgram: anchor.web3.SystemProgram.programId,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         },
         signers: [hubReleaseMint],
@@ -3743,12 +3771,14 @@ describe('Hub', async () => {
       }
     );
     const hubAfter = await nina.account.hub.fetch(hub)
+    const hubContentAfter = await nina.account.hubContent.fetch(hubContent)
     const hubReleaseAfter = await nina.account.hubRelease.fetch(hubRelease)
-    const releaseAfter = await nina.account.release.fetch(hubReleaseAccount)
-    assert.equal(releaseAfter.royaltyRecipients[0].percentShare.toNumber(), 1000000)
+    const releaseAfter = await nina.account.release.fetch(releaseAccount)
+    console.log("hubAfter, hubReleaseAfter ::> ", hubAfter, hubReleaseAfter, hubRelease, releaseAfter, hubContentAfter)
+    assert.equal(releaseAfter.royaltyRecipients[0].percentShare.toNumber(), 950000)
     assert.equal(releaseAfter.royaltyRecipients[0].recipientAuthority.toBase58(), provider.wallet.publicKey.toBase58())
     assert.equal(hubReleaseAfter.hub.toBase58(), hub.toBase58())
-    assert.equal(hubReleaseAfter.release.toBase58(), hubReleaseAccount.toBase58())
+    assert.equal(hubReleaseAfter.release.toBase58(), releaseAccount.toBase58())
     assert.equal(hubReleaseAfter.sales.toNumber(), 0)
     assert.equal(hubReleaseAfter.publishedThroughHub, true)
   })
@@ -3770,28 +3800,37 @@ describe('Hub', async () => {
       ],
       nina.programId,
     );
-    hubReleaseAccount = _hubReleaseAccount
+    releaseAccount = _hubReleaseAccount
 
-    const [_hubReleaseSigner, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
-      [hubReleaseAccount.toBuffer()],
+    const [_releaseSigner, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [releaseAccount.toBuffer()],
       nina.programId,
     );
-    hubReleaseSigner = _hubReleaseSigner
+    releaseSigner = _releaseSigner
 
     let [_hubRoyaltyTokenAccount, royaltyTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
       provider,
-      hubReleaseSigner,
+      releaseSigner,
       anchor.web3.SystemProgram.programId,
       anchor.web3.SYSVAR_RENT_PUBKEY,
       paymentMint,
     );
     hubRoyaltyTokenAccount = _hubRoyaltyTokenAccount
 
-    const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+    const [hubCollaborator, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
         hub.toBuffer(),
         user1.publicKey.toBuffer(),
+      ],
+      nina.programId
+    );
+
+    const [hubContent, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-content")), 
+        hub.toBuffer(),
+        releaseAccount.toBuffer(),
       ],
       nina.programId
     );
@@ -3800,7 +3839,7 @@ describe('Hub', async () => {
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
         hub.toBuffer(),
-        hubReleaseAccount.toBuffer(),
+        releaseAccount.toBuffer(),
       ],
       nina.programId
     );
@@ -3841,17 +3880,20 @@ describe('Hub', async () => {
       config,
       bumps,
       metadataData,
-      hubParams.name, {
+      hubParams.handle, {
         accounts: {
-          release: hubReleaseAccount,
-          releaseSigner: hubReleaseSigner,
-          hub,
-          hubArtist,
-          hubRelease,
-          hubCurator: provider.wallet.publicKey,
-          hubCuratorTokenAccount: usdcTokenAccount,
-          releaseMint: hubReleaseMint.publicKey,
           authority: user1.publicKey,
+          release: releaseAccount,
+          releaseSigner,
+          hub,
+          hubCollaborator,
+          hubContent,
+          hubRelease,
+          hubSigner,
+          hubWallet,
+          hubAuthority: provider.wallet.publicKey,
+          hubAuthorityTokenAccount: usdcTokenAccount,
+          releaseMint: hubReleaseMint.publicKey,
           authorityTokenAccount: user1UsdcTokenAccount,
           paymentMint,
           royaltyTokenAccount: hubRoyaltyTokenAccount,
@@ -3867,13 +3909,13 @@ describe('Hub', async () => {
     );
     const hubAfter = await nina.account.hub.fetch(hub)
     const hubReleaseAfter = await nina.account.hubRelease.fetch(hubRelease)
-    const releaseAfter = await nina.account.release.fetch(hubReleaseAccount)
+    const releaseAfter = await nina.account.release.fetch(releaseAccount)
     assert.equal(releaseAfter.royaltyRecipients[0].percentShare.toNumber(), 1000000 - releaseAfter.royaltyRecipients[1].percentShare.toNumber())
     assert.equal(releaseAfter.royaltyRecipients[1].percentShare.toNumber(), hubParams.publishFee.toNumber())
     assert.equal(releaseAfter.royaltyRecipients[0].recipientAuthority.toBase58(), user1.publicKey.toBase58())
-    assert.equal(releaseAfter.royaltyRecipients[1].recipientAuthority.toBase58(), hubAfter.curator.toBase58())
+    assert.equal(releaseAfter.royaltyRecipients[1].recipientAuthority.toBase58(), hubAfter.hubSigner.toBase58())
     assert.equal(hubReleaseAfter.hub.toBase58(), hub.toBase58())
-    assert.equal(hubReleaseAfter.release.toBase58(), hubReleaseAccount.toBase58())
+    assert.equal(hubReleaseAfter.release.toBase58(), releaseAccount.toBase58())
     assert.equal(hubReleaseAfter.sales.toNumber(), 0)
     assert.equal(hubReleaseAfter.publishedThroughHub, true)
   })
@@ -3907,15 +3949,15 @@ describe('Hub', async () => {
       usdcMint,
     );
 
-    const releaseBefore = await nina.account.release.fetch(hubReleaseAccount);
+    const releaseBefore = await nina.account.release.fetch(releaseAccount);
     const hubBefore = await nina.account.hub.fetch(hub)
-
+      console.log("releaseSigner ::> ", releaseSigner)
     await nina.rpc.releasePurchaseViaHub(
       new anchor.BN(releasePrice),
-      hubParams.name, {
+      hubParams.handle, {
         accounts: {
-          release: hubReleaseAccount,
-          releaseSigner: hubReleaseSigner,
+          release: releaseAccount,
+          releaseSigner,
           payer: user1.publicKey,
           payerTokenAccount: user1UsdcTokenAccount,
           receiver: user1.publicKey,
@@ -3925,7 +3967,7 @@ describe('Hub', async () => {
           hub,
           hubRelease,
           hubSigner,
-          hubCurator: provider.wallet.publicKey,
+          hubWallet,
           hubTokenAccount,
           tokenProgram: TOKEN_PROGRAM_ID,
           clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
@@ -3947,7 +3989,7 @@ describe('Hub', async () => {
     );
     assert.ok(usdcTokenAccountAfter.amount.toNumber() === usdcTokenAccountBeforeBalanceTx - releasePrice - ((releasePrice * hubBefore.referralFee.toNumber()) / 1000000))
 
-    const releaseAfter = await nina.account.release.fetch(hubReleaseAccount);
+    const releaseAfter = await nina.account.release.fetch(releaseAccount);
     assert.ok(releaseAfter.remainingSupply.toNumber() === releaseBefore.remainingSupply.toNumber() - 1);
     assert.equal(releaseAfter.saleCounter.toNumber(), 1);
     assert.equal(releaseAfter.totalCollected.toNumber(), releasePrice);
@@ -3962,13 +4004,13 @@ describe('Hub', async () => {
     assert.equal(royaltyTokenAccountAfter.amount.toNumber(), releasePrice);
   });
 
-  it ('should update hub uri is curator', async () => {
+  it ('should update hub uri is authority', async () => {
     const uri = 'https://arweave.net/jsdlkfj4j3kl4j3lkj43l3kjflksjd'
     await nina.rpc.hubUpdateUri(
       uri,
-      hubParams.name, {
+      hubParams.handle, {
         accounts: {
-          curator: provider.wallet.publicKey,
+          authority: provider.wallet.publicKey,
           hub,
         }
       }
@@ -3978,15 +4020,15 @@ describe('Hub', async () => {
     assert.equal(encrypt.decode(hubAfter.uri), uri)
   })
   
-  it ('should not update hub uri is curator', async () => {
+  it ('should not update hub uri is authority', async () => {
     await assert.rejects(
       async () => {
         const uri = 'https://arweave.net/jsdlkfj4j3kl4j3lkj43l3kjflksjd'
         await nina.rpc.hubUpdateUri(
           uri,
-          hubParams.name, {
+          hubParams.handle, {
             accounts: {
-              curator: user2.publicKey,
+              authority: user2.publicKey,
               hub,
             },
             signers: [user2]
@@ -3999,7 +4041,7 @@ describe('Hub', async () => {
     )
   })
 
-  it('should not create a release via hub if artist hubArtist does not match', async () => {
+  it('should not create a release via hub if collaborator hubCollaborator does not match', async () => {
     const paymentMint = usdcMint;
     const hubReleaseMint = anchor.web3.Keypair.generate();
     const releaseMintIx = await createMintInstructions(
@@ -4009,7 +4051,7 @@ describe('Hub', async () => {
       0,
     );
 
-    const [hubReleaseAccount, releaseBump] = await anchor.web3.PublicKey.findProgramAddress(
+    const [releaseAccount, releaseBump] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-release")),
         hubReleaseMint.publicKey.toBuffer(),
@@ -4017,32 +4059,42 @@ describe('Hub', async () => {
       nina.programId,
     );
 
-    const [hubReleaseSigner, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
-      [hubReleaseAccount.toBuffer()],
+    const [releaseSigner, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [releaseAccount.toBuffer()],
       nina.programId,
     );
 
     let [hubRoyaltyTokenAccount, royaltyTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
       provider,
-      hubReleaseSigner,
+      releaseSigner,
       anchor.web3.SystemProgram.programId,
       anchor.web3.SYSVAR_RENT_PUBKEY,
       paymentMint,
     );
-    const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+    const [hubCollaborator, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
         hub.toBuffer(),
         user1.publicKey.toBuffer(),
       ],
       nina.programId
     );
 
+    const [hubContent, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-content")), 
+        hub.toBuffer(),
+        releaseAccount.toBuffer(),
+      ],
+      nina.programId
+    );
+
+
     const [hubRelease, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
         hub.toBuffer(),
-        hubReleaseAccount.toBuffer(),
+        releaseAccount.toBuffer(),
       ],
       nina.programId
     );
@@ -4084,17 +4136,18 @@ describe('Hub', async () => {
           config,
           bumps,
           metadataData,
-          hubParams.name, {
+          hubParams.handle, {
             accounts: {
-              release: hubReleaseAccount,
-              releaseSigner: hubReleaseSigner,
-              hub,
-              hubArtist,
-              hubRelease,
-              hubCurator: provider.wallet.publicKey,
-              hubCuratorTokenAccount: usdcTokenAccount,
-              releaseMint: hubReleaseMint.publicKey,
               authority: user2.publicKey,
+              release: releaseAccount,
+              releaseSigner: releaseSigner,
+              hub,
+              hubCollaborator,
+              hubContent,
+              hubRelease,
+              hubSigner,
+              hubWallet,
+              releaseMint: hubReleaseMint.publicKey,
               authorityTokenAccount: user1UsdcTokenAccount,
               paymentMint,
               royaltyTokenAccount: hubRoyaltyTokenAccount,
@@ -4116,7 +4169,7 @@ describe('Hub', async () => {
     );
   })
 
-  it('should not create a release via hub if artist hubArtist does not exist', async () => {
+  it('should not create a release via hub if collaborator hubCollaborator does not exist', async () => {
     const paymentMint = usdcMint;
     const hubReleaseMint = anchor.web3.Keypair.generate();
     const releaseMintIx = await createMintInstructions(
@@ -4126,7 +4179,7 @@ describe('Hub', async () => {
       0,
     );
 
-    const [hubReleaseAccount, releaseBump] = await anchor.web3.PublicKey.findProgramAddress(
+    const [releaseAccount, releaseBump] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-release")),
         hubReleaseMint.publicKey.toBuffer(),
@@ -4134,23 +4187,31 @@ describe('Hub', async () => {
       nina.programId,
     );
 
-    const [hubReleaseSigner, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
-      [hubReleaseAccount.toBuffer()],
+    const [releaseSigner, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [releaseAccount.toBuffer()],
       nina.programId,
     );
 
     let [hubRoyaltyTokenAccount, royaltyTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
       provider,
-      hubReleaseSigner,
+      releaseSigner,
       anchor.web3.SystemProgram.programId,
       anchor.web3.SYSVAR_RENT_PUBKEY,
       paymentMint,
     );
-    const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+    const [hubCollaborator, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
         hub.toBuffer(),
         user2.publicKey.toBuffer(),
+      ],
+      nina.programId
+    );
+    const [hubContent, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-content")), 
+        hub.toBuffer(),
+        releaseAccount.toBuffer(),
       ],
       nina.programId
     );
@@ -4159,7 +4220,7 @@ describe('Hub', async () => {
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
         hub.toBuffer(),
-        hubReleaseAccount.toBuffer(),
+        releaseAccount.toBuffer(),
       ],
       nina.programId
     );
@@ -4195,24 +4256,24 @@ describe('Hub', async () => {
       sellerFeeBasisPoints: 2000,
     }
 
-
     await assert.rejects(
       async () => {
         await nina.rpc.releaseInitViaHub(
           config,
           bumps,
           metadataData,
-          hubParams.name, {
+          hubParams.handle, {
             accounts: {
-              release: hubReleaseAccount,
-              releaseSigner: hubReleaseSigner,
-              hub,
-              hubArtist,
-              hubRelease,
-              hubCurator: provider.wallet.publicKey,
-              hubCuratorTokenAccount: usdcTokenAccount,
-              releaseMint: hubReleaseMint.publicKey,
               authority: user2.publicKey,
+              release: releaseAccount,
+              releaseSigner: releaseSigner,
+              hub,
+              hubCollaborator,
+              hubContent,
+              hubRelease,
+              hubSigner,
+              hubWallet,
+              releaseMint: hubReleaseMint.publicKey,
               authorityTokenAccount: user1UsdcTokenAccount,
               paymentMint,
               royaltyTokenAccount: hubRoyaltyTokenAccount,
@@ -4233,25 +4294,35 @@ describe('Hub', async () => {
       }
     );
   })
-
-  it('should not remove hub artist from hub who is unauthorized', async () => {
-    const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+  let payerHubCollaborator
+  it('should not remove hub collaborator from hub who is unauthorized', async () => {
+    const [hubCollaborator, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
         hub.toBuffer(),
         user1.publicKey.toBuffer(),
       ],
       nina.programId
     );
+    const [_payerHubCollaborator, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
+        hub.toBuffer(),
+        user2.publicKey.toBuffer(),
+      ],
+      nina.programId
+    );
+    payerHubCollaborator = _payerHubCollaborator
     await assert.rejects(
       async () => {
-        await nina.rpc.hubRemoveArtist(
-          hubParams.name, {
+        await nina.rpc.hubRemoveCollaborator(
+          hubParams.handle, {
           accounts: {
             payer: user2.publicKey,
+            payerHubCollaborator,
             hub,
-            hubArtist,
-            artist: user1.publicKey,
+            hubCollaborator,
+            collaborator: user1.publicKey,
             systemProgram: anchor.web3.SystemProgram.programId,
           },
           signers: [user2]
@@ -4263,24 +4334,36 @@ describe('Hub', async () => {
     );
   })
 
-  it('should not remove hub artist account for hub curator', async () => {
-    const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+  it('should not remove hub collaborator account for hub authority', async () => {
+    const [hubCollaborator, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
         hub.toBuffer(),
         provider.wallet.publicKey.toBuffer(),
       ],
       nina.programId
     );
+
+    const [_payerHubCollaborator, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
+        hub.toBuffer(),
+        provider.wallet.publicKey.toBuffer(),
+      ],
+      nina.programId
+    );
+    payerHubCollaborator = _payerHubCollaborator
+
     await assert.rejects(
       async () => {
-        await nina.rpc.hubRemoveArtist(
-          hubParams.name, {
+        await nina.rpc.hubRemoveCollaborator(
+          hubParams.handle, {
           accounts: {
             payer: provider.wallet.publicKey,
+            payerHubCollaborator,
             hub,
-            hubArtist,
-            artist: provider.wallet.publicKey,
+            hubCollaborator,
+            collaborator: provider.wallet.publicKey,
             systemProgram: anchor.web3.SystemProgram.programId,
           },
         })
@@ -4291,35 +4374,53 @@ describe('Hub', async () => {
     );
   })
 
-  it('should remove artist from hub who is not curator', async () => {
-    const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+  it('should remove collaborator from hub who is not authority', async () => {
+    const [hubCollaborator, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
         hub.toBuffer(),
         user1.publicKey.toBuffer(),
       ],
       nina.programId
     );
+    const [_payerHubCollaborator, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
+        hub.toBuffer(),
+        user1.publicKey.toBuffer(),
+      ],
+      nina.programId
+    );
+    payerHubCollaborator = _payerHubCollaborator
 
-    await nina.rpc.hubRemoveArtist(
-      hubParams.name, {
+    await nina.rpc.hubRemoveCollaborator(
+      hubParams.handle, {
       accounts: {
         payer: user1.publicKey,
+        payerHubCollaborator,
         hub,
-        hubArtist,
-        artist: user1.publicKey,
+        hubCollaborator,
+        collaborator: user1.publicKey,
         systemProgram: anchor.web3.SystemProgram.programId,
       },
       signers: [user1]
     })
     await assert.rejects(
       async () => {
-        await nina.account.hubArtist.fetch(hubArtist)
+        await nina.account.hubCollaborator.fetch(hubCollaborator)
       }
     )
   })
 
   it('should not remove release from hub if unauthorized', async () => {
+    const [hubContent, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-content")), 
+        hub.toBuffer(),
+        release.toBuffer(),
+      ],
+      nina.programId
+    );
     const [hubRelease, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
@@ -4332,10 +4433,11 @@ describe('Hub', async () => {
     await assert.rejects(
       async () => {
         await nina.rpc.hubRemoveRelease(
-          hubParams.name, {
+          hubParams.handle, {
           accounts: {
             payer: user2.publicKey,
             hub,
+            hubContent,
             hubRelease,
             release,
             systemProgram: anchor.web3.SystemProgram.programId,
@@ -4350,58 +4452,68 @@ describe('Hub', async () => {
     );
   })
 
-  it('should remove artist from hub', async () => {
-    const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+  it('should remove collaborator from hub', async () => {
+    const [hubCollaborator, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
         hub.toBuffer(),
         user2.publicKey.toBuffer(),
       ],
       nina.programId
     );
 
-    const [payerHubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+    const [payerHubCollaborator, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
         hub.toBuffer(),
         provider.wallet.publicKey.toBuffer(),
       ],
       nina.programId
     );
 
-    await nina.rpc.hubAddArtist(
+    await nina.rpc.hubAddCollaborator(
       false,
       true, 
-      hubParams.name, {
+      hubParams.handle, {
       accounts: {
         payer: provider.wallet.publicKey,
-        payerHubArtist,
+        payerHubCollaborator,
         hub,
-        hubArtist,
-        artist: user2.publicKey,
+        hubCollaborator,
+        collaborator: user2.publicKey,
         systemProgram: anchor.web3.SystemProgram.programId,
         rent: anchor.web3.SYSVAR_RENT_PUBKEY,
       }
     })
 
-    await nina.rpc.hubRemoveArtist(
-      hubParams.name, {
+    await nina.rpc.hubRemoveCollaborator(
+      hubParams.handle, {
       accounts: {
         payer: provider.wallet.publicKey,
         hub,
-        hubArtist,
-        artist: user2.publicKey,
+        hubCollaborator,
+        payerHubCollaborator,
+        collaborator: user2.publicKey,
         systemProgram: anchor.web3.SystemProgram.programId,
       }
     })
     await assert.rejects(
       async () => {
-        await nina.account.hubArtist.fetch(hubArtist)
+        await nina.account.hubCollaborator.fetch(hubCollaborator)
       }
     )
   })
 
   it('should remove release from hub', async () => {
+    const [hubContent, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-content")), 
+        hub.toBuffer(),
+        release2.toBuffer(),
+      ],
+      nina.programId
+    );
+
     const [hubRelease, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
@@ -4411,9 +4523,9 @@ describe('Hub', async () => {
       nina.programId
     );
 
-    const [hubArtist, bump] = await anchor.web3.PublicKey.findProgramAddress(
+    const [hubCollaborator, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-artist")), 
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
         hub.toBuffer(),
         provider.wallet.publicKey.toBuffer(),
       ],
@@ -4421,22 +4533,26 @@ describe('Hub', async () => {
     );
 
     await nina.rpc.hubAddRelease(
-      hubParams.name, {
-      accounts: {
+      hubParams.handle, {
+        accounts: {
         payer: provider.wallet.publicKey,
+        authority: provider.wallet.publicKey,
         hub,
+        hubContent,
         hubRelease,
-        hubArtist,
+        hubCollaborator,
         release: release2,
         systemProgram: anchor.web3.SystemProgram.programId,
         rent: anchor.web3.SYSVAR_RENT_PUBKEY,
       }
     })
+
     await nina.rpc.hubRemoveRelease(
-      hubParams.name, {
+      hubParams.handle, {
       accounts: {
         payer: provider.wallet.publicKey,
         hub,
+        hubContent,
         hubRelease,
         release: release2,
         systemProgram: anchor.web3.SystemProgram.programId,
@@ -4449,7 +4565,7 @@ describe('Hub', async () => {
     );
   })
 
-  it('Withdraws From the Hub to Hub Curator', async () => {
+  it('Withdraws From the Hub to Hub Authority', async () => {
     let [hubTokenAccount, hubTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
       provider,
       hubSigner,
@@ -4480,10 +4596,9 @@ describe('Hub', async () => {
 
     await nina.rpc.hubWithdraw(
       new anchor.BN(withdrawAmount),
-      hubSignerBump,
-      hubParams.name, {
+      hubParams.handle, {
         accounts: {
-          curator: provider.wallet.publicKey,
+          authority: provider.wallet.publicKey,
           hub,
           hubSigner,
           withdrawTarget: hubTokenAccount,

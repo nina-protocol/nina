@@ -177,50 +177,49 @@ pub mod nina {
         instructions::hub_init_with_credit::handler(ctx, params)
     }
 
-    pub fn hub_add_artist(
-        ctx: Context<HubAddArtist>,
-        can_add_release: bool,
-        can_add_artist: bool,
-        hub_name: String
+    pub fn hub_add_collaborator(
+        ctx: Context<HubAddCollaborator>,
+        can_add_content: bool,
+        can_add_collaborator: bool,
+        hub_handle: String
     ) -> Result<()> {
-        instructions::hub_add_artist::handler(ctx, can_add_release, can_add_artist, hub_name)
+        instructions::hub_add_collaborator::handler(ctx, can_add_content, can_add_collaborator, hub_handle)
     }
 
     pub fn hub_add_release(
         ctx: Context<HubAddRelease>,
-        hub_name: String
+        hub_handle: String
     ) -> Result<()> {
-        instructions::hub_add_release::handler(ctx, hub_name)
+        instructions::hub_add_release::handler(ctx, hub_handle)
     }
 
-    pub fn hub_remove_artist(
-        ctx: Context<HubRemoveArtist>,
-        hub_name: String
+    pub fn hub_remove_collaborator(
+        ctx: Context<HubRemoveCollaborator>,
+        hub_handle: String
     ) -> Result<()> {
-        instructions::hub_remove_artist::handler(ctx, hub_name)
+        instructions::hub_remove_collaborator::handler(ctx, hub_handle)
     }
 
     pub fn hub_remove_release(
         ctx: Context<HubRemoveRelease>,
-        hub_name: String
+        hub_handle: String
     ) -> Result<()> {
-        instructions::hub_remove_release::handler(ctx, hub_name)
+        instructions::hub_remove_release::handler(ctx, hub_handle)
     }
 
     pub fn hub_update_uri(
         ctx: Context<HubUpdateUri>,
         uri: String,
-        hub_name: String,
+        hub_handle: String,
     ) -> Result<()> {
-        instructions::hub_update_uri::handler(ctx, uri, hub_name)
+        instructions::hub_update_uri::handler(ctx, uri, hub_handle)
     }
 
     pub fn hub_withdraw(
         ctx: Context<HubWithdraw>,
         amount: u64,
-        bump: u8,
-        hub_name: String
+        hub_handle: String
     ) -> Result<()> {
-        instructions::hub_withdraw::handler(ctx, amount, bump, hub_name)
+        instructions::hub_withdraw::handler(ctx, amount, hub_handle)
     }
 }

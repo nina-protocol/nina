@@ -7,13 +7,13 @@ use crate::utils::{wrapped_sol, nina_hub_credit_mint};
 #[instruction(params: HubInitParams)]
 pub struct HubInitWithCredit<'info> {
     #[account(mut)]
-    pub curator: Signer<'info>,
+    pub authority: Signer<'info>,
     #[account(
         init,
-        seeds = [b"nina-hub".as_ref(), params.name.as_bytes()],
+        seeds = [b"nina-hub".as_ref(), params.handle.as_bytes()],
         bump,
-        payer = curator,
-        space = 388
+        payer = authority,
+        space = 361
     )]
     pub hub: AccountLoader<'info, Hub>,
     /// CHECK: This is safe because we are deriving the PDA from hub - which is initialized above
@@ -24,30 +24,21 @@ pub struct HubInitWithCredit<'info> {
     pub hub_signer: UncheckedAccount<'info>,
     #[account(
         init,
-        seeds = [b"nina-hub-artist".as_ref(), hub.key().as_ref(), curator.key().as_ref()],
+        seeds = [b"nina-hub-collaborator".as_ref(), hub.key().as_ref(), authority.key().as_ref()],
         bump,
-        payer = curator,
+        payer = authority,
     )]
-    pub hub_artist: Account<'info, HubArtist>,
+    pub hub_collaborator: Account<'info, HubCollaborator>,
     #[account(
-        constraint = usdc_vault.mint == usdc_mint.key(),
-        constraint = usdc_vault.owner == *hub_signer.key
+        constraint = hub_wallet.owner == hub_signer.key()
     )]
-    pub usdc_vault: Box<Account<'info, TokenAccount>>,
-    #[account(
-        constraint = wrapped_sol_vault.mint == wrapped_sol_mint.key(),
-        constraint = wrapped_sol_vault.owner == *hub_signer.key
-    )]
-    pub wrapped_sol_vault: Box<Account<'info, TokenAccount>>,
-    pub usdc_mint: Account<'info, Mint>,
-    #[account(address = wrapped_sol::ID)]
-    pub wrapped_sol_mint: Account<'info, Mint>,
+    pub hub_wallet: Box<Account<'info, TokenAccount>>,
     #[account(
         mut,
-        constraint = curator_hub_credit_token_account.owner == curator.key(),
-        constraint = curator_hub_credit_token_account.mint == hub_credit_mint.key(),
+        constraint = authority_hub_credit_token_account.owner == authority.key(),
+        constraint = authority_hub_credit_token_account.mint == hub_credit_mint.key(),
     )]
-    pub curator_hub_credit_token_account: Box<Account<'info, TokenAccount>>,
+    pub authority_hub_credit_token_account: Box<Account<'info, TokenAccount>>,
     #[account(mut)]
     #[cfg_attr(
         not(feature = "test"),
@@ -64,41 +55,43 @@ pub fn handler (
     ctx: Context<HubInitWithCredit>,
     params: HubInitParams,
 ) -> Result<()> {
-    // Curator burn hub credit
+    // Authority burn hub credit
     let cpi_program = ctx.accounts.token_program.to_account_info().clone();
     let cpi_accounts = Burn {
         mint: ctx.accounts.hub_credit_mint.to_account_info(),
-        to: ctx.accounts.curator_hub_credit_token_account.to_account_info(),
-        authority: ctx.accounts.curator.to_account_info().clone(),
+        to: ctx.accounts.authority_hub_credit_token_account.to_account_info(),
+        authority: ctx.accounts.authority.to_account_info().clone(),
     };
     let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
     token::burn(cpi_ctx, 1)?;
     
     let mut hub = ctx.accounts.hub.load_init()?;
-    hub.curator = *ctx.accounts.curator.to_account_info().key;
+    hub.authority = *ctx.accounts.authority.to_account_info().key;
     hub.hub_signer = *ctx.accounts.hub_signer.to_account_info().key;
+    hub.hub_wallet = *ctx.accounts.hub_wallet.to_account_info().key;
     hub.publish_fee = params.publish_fee;
     hub.referral_fee = params.referral_fee;
+    hub.total_fees_earned = 0;
+    hub.hub_signer_bump = params.hub_signer_bump;
 
-    let mut name_array = [0u8; 100];
-    name_array[..params.name.len()].copy_from_slice(&params.name.as_bytes());
-    hub.name = name_array;
+    let mut handle_array = [0u8; 100];
+    handle_array[..params.handle.len()].copy_from_slice(&params.handle.as_bytes());
+    hub.handle = handle_array;
 
-    let mut uri_array = [0u8; 200];
+    let mut uri_array = [0u8; 100];
     uri_array[..params.uri.len()].copy_from_slice(&params.uri.as_bytes());
     hub.uri = uri_array;
 
-    let hub_artist = &mut ctx.accounts.hub_artist;
-    hub_artist.authority = ctx.accounts.curator.key();
-    hub_artist.hub = ctx.accounts.hub.key();
-    hub_artist.artist = ctx.accounts.curator.key();
-    hub_artist.can_add_release = true;
-    hub_artist.can_add_artist = true;
+    let hub_collaborator = &mut ctx.accounts.hub_collaborator;
+    hub_collaborator.hub = ctx.accounts.hub.key();
+    hub_collaborator.collaborator = ctx.accounts.authority.key();
+    hub_collaborator.can_add_content = true;
+    hub_collaborator.can_add_collaborator = true;
 
     emit!(HubCreated {
         public_key: ctx.accounts.hub.key(),
-        hub_artist: ctx.accounts.hub_artist.key(),
-        artist: ctx.accounts.curator.key(),
+        hub_collaborator: ctx.accounts.hub_collaborator.key(),
+        collaborator: ctx.accounts.authority.key(),
     });
 
     Ok(())

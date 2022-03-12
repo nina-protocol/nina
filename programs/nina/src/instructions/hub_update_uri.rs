@@ -9,10 +9,10 @@ use crate::state::*;
 )]
 pub struct HubUpdateUri<'info> {
     #[account(mut)]
-    pub curator: Signer<'info>,
+    pub authority: Signer<'info>,
     #[account(
         mut,
-        constraint = hub.load()?.curator == curator.key(),
+        constraint = hub.load()?.authority == authority.key(),
         seeds = [b"nina-hub".as_ref(), hub_name.as_bytes()],
         bump,
     )]
@@ -26,7 +26,7 @@ pub fn handler (
 ) -> Result<()> {
     let mut hub = ctx.accounts.hub.load_mut()?;
 
-    let mut uri_array = [0u8; 200];
+    let mut uri_array = [0u8; 100];
     uri_array[..uri.len()].copy_from_slice(&uri.as_bytes());
 
     hub.uri = uri_array;

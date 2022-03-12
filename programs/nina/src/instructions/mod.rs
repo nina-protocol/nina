@@ -24,9 +24,9 @@ pub mod vault_init;
 pub mod vault_withdraw;
 
 pub mod hub_init_with_credit;
-pub mod hub_add_artist;
+pub mod hub_add_collaborator;
 pub mod hub_add_release;
-pub mod hub_remove_artist;
+pub mod hub_remove_collaborator;
 pub mod hub_remove_release;
 pub mod hub_update_uri;
 pub mod hub_withdraw;
@@ -57,9 +57,9 @@ pub use vault_init::*;
 pub use vault_withdraw::*;
 
 pub use hub_init_with_credit::*;
-pub use hub_add_artist::*;
+pub use hub_add_collaborator::*;
 pub use hub_add_release::*;
-pub use hub_remove_artist::*;
+pub use hub_remove_collaborator::*;
 pub use hub_remove_release::*;
 pub use hub_update_uri::*;
 pub use hub_withdraw::*;

@@ -1,6 +1,11 @@
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::{
-    program::{invoke},
+    program::{invoke, invoke_signed},
+};
+use mpl_token_metadata::{
+    self,
+    state::{Creator},
+    instruction::{create_metadata_accounts_v2},
 };
 use anchor_spl::token::{self, TokenAccount, MintTo, Transfer, Token, Mint, SetAuthority};
 use spl_token::instruction::{close_account};
@@ -83,7 +88,7 @@ impl Release {
             .unwrap();
         release.sale_counter = u64::from(release.sale_counter)
             .checked_add(1)
-            .unwrap();
+            .unwrap();  
         release.sale_total = u64::from(release.sale_total)
             .checked_add(amount)
             .unwrap();
@@ -131,6 +136,7 @@ impl Release {
         Ok(())
     }
 
+	#[inline(never)]
     pub fn release_revenue_share_transfer_handler<'info> (
         release_loader: &AccountLoader<'info, Release>,
         release_signer: AccountInfo<'info>,
@@ -251,7 +257,71 @@ impl Release {
 
         Ok(())
     }
+    
+    #[inline(never)]
+    pub fn create_metadata_handler<'info>(
+        release_signer: AccountInfo<'info>,
+        metadata: AccountInfo<'info>,
+        release_mint: Box<Account<'info, Mint>>,
+        authority: Signer<'info>,
+        metadata_program: AccountInfo<'info>,
+        token_program: Program<'info, Token>,
+        system_program: Program<'info, System>,
+        rent: Sysvar<'info, Rent>,
+        release: AccountLoader<'info, Release>,
+        metadata_data: ReleaseMetadataData,
+        bumps: ReleaseBumps,
+    ) -> Result<()> {
+        let creators: Vec<Creator> =
+        vec![Creator {
+            address: *release_signer.to_account_info().key,
+            verified: true,
+            share: 100,
+        }];
 
+        let metadata_infos = vec![
+            metadata.clone(),
+            release_mint.to_account_info().clone(),
+            release_signer.clone(),
+            authority.to_account_info().clone(),
+            metadata_program.clone(),
+            token_program.to_account_info().clone(),
+            system_program.to_account_info().clone(),
+            rent.to_account_info().clone(),
+            release.to_account_info().clone(),
+        ];
+
+        let seeds = &[
+            release.to_account_info().key.as_ref(),
+            &[bumps.signer],
+        ];
+    
+        invoke_signed(
+            &create_metadata_accounts_v2(
+                metadata_program.key(),
+                metadata.key(),
+                release_mint.key(),
+                release_signer.key(),
+                authority.key(),
+                release_signer.key(),
+                metadata_data.name,
+                metadata_data.symbol,
+                metadata_data.uri.clone(),
+                Some(creators),
+                metadata_data.seller_fee_basis_points,
+                true,
+                false,
+                None,
+                None
+            ),
+            metadata_infos.as_slice(),
+            &[seeds],
+        )?;
+
+        Ok(())
+    }
+
+    #[inline(never)]
     pub fn release_init_handler<'info>(
         release_loader: &AccountLoader<'info, Release>,
         release_signer: AccountInfo<'info>,

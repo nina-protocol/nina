@@ -44,12 +44,12 @@ pub enum ErrorCode {
     VaultWithdrawAmountTooHigh,
     #[msg("Withdraw amount must be greater than 0")]
     VaultWithdrawAmountMustBeGreaterThanZero,
-    #[msg("HubArtist Cannot Add Release To Hub Unauthorized")]
-    HubArtistCannotAddReleaseToHubUnauthorized,
-    #[msg("HubArtist Cannot Be Removed From Hub Unauthorized")]
-    HubArtistCannotBeRemovedFromHubUnauthorized,
-    #[msg("HubArtist Cannot Remove Curator From Hub")]
-    HubArtistCannotRemoveCuratorFromHub,
+    #[msg("HubCollaborator Cannot Add Release To Hub Unauthorized")]
+    HubCollaboratorCannotAddReleaseToHubUnauthorized,
+    #[msg("HubCollaborator Cannot Be Removed From Hub Unauthorized")]
+    HubCollaboratorCannotBeRemovedFromHubUnauthorized,
+    #[msg("HubCollaborator Cannot Remove Authority From Hub")]
+    HubCollaboratorCannotRemoveAuthorityFromHub,
     #[msg("HubRelease Cannot Be Removed From Hub Unauthorized")]
     HubReleaseCannotBeRemovedFromHubUnauthorized,
     #[msg("Hub Cant withdraw more than deposited")]
@@ -58,7 +58,7 @@ pub enum ErrorCode {
     HubWithdrawAmountMustBeGreaterThanZero,
     #[msg("Release Purchase Wrong Receiver")]
     ReleasePurchaseWrongReceiver,
-    #[msg("HubArtist Cannot Add Artist")]
-    HubArtistCannotAddArtist,
+    #[msg("HubCollaborator Cannot Add Collaborator")]
+    HubCollaboratorCannotAddCollaborator,
 
 }
