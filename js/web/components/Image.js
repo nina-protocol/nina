@@ -37,11 +37,12 @@ function Image({ src, height, width, layout, priority, release }) {
   if (!ImageComponent) {
     ImageComponent = () => (
       <NextImage
-        src={src}
+        src={src} 
         height={height}
         width={width}
         priority={priority}
         layout={layout}
+        sizes="320 640 750 828 1080 1200 1920 2048"
         onLoad={(e) => handleLoad(e, false)}
       />
     );
