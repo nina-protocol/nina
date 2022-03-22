@@ -4,7 +4,7 @@ import { DateTime } from "luxon";
 
 function Image({ src, height, width, layout, priority, release }) {
   const [ready, setReady] = useState(false);
-
+  console.log("layout ::> ", layout)
   const handleLoad = (event, byPass) => {
     event.persist();
     if (event.target.srcset || byPass) {
@@ -37,7 +37,7 @@ function Image({ src, height, width, layout, priority, release }) {
   if (!ImageComponent) {
     ImageComponent = () => (
       <NextImage
-        src={src}
+        src={src} 
         height={height}
         width={width}
         priority={priority}
