@@ -13,7 +13,7 @@ pub struct HubInitWithCredit<'info> {
         seeds = [b"nina-hub".as_ref(), params.handle.as_bytes()],
         bump,
         payer = authority,
-        space = 361
+        space = 361 + 40
     )]
     pub hub: AccountLoader<'info, Hub>,
     /// CHECK: This is safe because we are deriving the PDA from hub - which is initialized above
@@ -29,10 +29,6 @@ pub struct HubInitWithCredit<'info> {
         payer = authority,
     )]
     pub hub_collaborator: Account<'info, HubCollaborator>,
-    #[account(
-        constraint = hub_wallet.owner == hub_signer.key()
-    )]
-    pub hub_wallet: Box<Account<'info, TokenAccount>>,
     #[account(
         mut,
         constraint = authority_hub_credit_token_account.owner == authority.key(),
@@ -68,7 +64,6 @@ pub fn handler (
     let mut hub = ctx.accounts.hub.load_init()?;
     hub.authority = *ctx.accounts.authority.to_account_info().key;
     hub.hub_signer = *ctx.accounts.hub_signer.to_account_info().key;
-    hub.hub_wallet = *ctx.accounts.hub_wallet.to_account_info().key;
     hub.publish_fee = params.publish_fee;
     hub.referral_fee = params.referral_fee;
     hub.total_fees_earned = 0;

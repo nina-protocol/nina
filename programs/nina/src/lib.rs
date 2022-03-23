@@ -35,9 +35,9 @@ pub mod nina {
         config: ReleaseConfig,
         bumps: ReleaseBumps,
         metadata_data: ReleaseMetadataData,
-        hub_name: String,
+        hub_handle: String,
     ) -> Result<()> {
-        instructions::release_init_via_hub::handler(ctx, config, bumps, metadata_data, hub_name)
+        instructions::release_init_via_hub::handler(ctx, config, bumps, metadata_data, hub_handle)
     }
 
     pub fn release_purchase(
@@ -207,12 +207,14 @@ pub mod nina {
         instructions::hub_remove_release::handler(ctx, hub_handle)
     }
 
-    pub fn hub_update_uri(
-        ctx: Context<HubUpdateUri>,
+    pub fn hub_update_config(
+        ctx: Context<HubUpdateConfig>,
         uri: String,
         hub_handle: String,
+        publish_fee: u64,
+        referral_fee: u64,    
     ) -> Result<()> {
-        instructions::hub_update_uri::handler(ctx, uri, hub_handle)
+        instructions::hub_update_config::handler(ctx, uri, hub_handle, publish_fee, referral_fee)
     }
 
     pub fn hub_withdraw(

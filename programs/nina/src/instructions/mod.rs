@@ -28,7 +28,7 @@ pub mod hub_add_collaborator;
 pub mod hub_add_release;
 pub mod hub_remove_collaborator;
 pub mod hub_remove_release;
-pub mod hub_update_uri;
+pub mod hub_update_config;
 pub mod hub_withdraw;
 
 pub use release_init_protected::*;
@@ -61,5 +61,5 @@ pub use hub_add_collaborator::*;
 pub use hub_add_release::*;
 pub use hub_remove_collaborator::*;
 pub use hub_remove_release::*;
-pub use hub_update_uri::*;
+pub use hub_update_config::*;
 pub use hub_withdraw::*;

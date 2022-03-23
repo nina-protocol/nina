@@ -6,9 +6,7 @@ use crate::state::*;
 #[repr(packed)]
 pub struct Hub {
 	pub authority: Pubkey,
-	pub hub_wallet: Pubkey,
 	pub hub_signer: Pubkey,
-	pub hub_funding_wallet: Pubkey,
 	pub handle: [u8; 100],
 	pub uri: [u8; 100],
 	pub publish_fee: u64,
@@ -21,19 +19,16 @@ impl Hub {
 	#[inline(never)]
 	pub fn hub_release_create_handler<'info> (
 		hub: AccountLoader<'info, Hub>,
-		hub_content: &mut Box<Account<'info, HubContent>>,
 		hub_release: &mut Box<Account<'info, HubRelease>>,
 		release: AccountLoader<'info, Release>,
 		authority: Signer<'info>,
+		published_through_hub: bool,
 	) -> Result<()> {
-    hub_content.hub = hub.key();
-    hub_content.added_by = authority.key();
-    hub_content.content_type = HubContentType::ReleaseV1;
-    hub_content.datetime = Clock::get()?.unix_timestamp;
-
+    hub_release.added_by = authority.key();
+    hub_release.datetime = Clock::get()?.unix_timestamp;
 		hub_release.hub = hub.key();
     hub_release.release = release.key();
-    hub_release.published_through_hub = true;
+    hub_release.published_through_hub = published_through_hub;
     hub_release.sales = 0;
 
 		emit!(HubReleaseAdded {
@@ -46,50 +41,26 @@ impl Hub {
 	}
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Copy, Debug)]
-pub enum HubContentType {
-	ReleaseV1 = 0,
-	Post = 1,
-}
-
-impl Default for HubContentType {
-	fn default() -> Self {
-		HubContentType::ReleaseV1
-	}
-}
-
-#[account]
-#[derive(Default)]
-pub struct HubContent {
-	pub added_by: Pubkey,
-	pub hub: Pubkey,
-	pub content_type: HubContentType,
-	pub datetime: i64,
-}
-
-#[account]
-#[derive(Default)]
-pub struct HubContentComment {
-	pub hub: Pubkey,
-	pub hub_content: Pubkey,
-	pub hub_post: Pubkey,
-}
-
 #[account]
 #[derive(Default)]
 pub struct HubRelease {
+	pub added_by: Pubkey,
+	pub datetime: i64,
 	pub hub: Pubkey,
+	pub published_through_hub: bool,
 	pub release: Pubkey,
 	pub sales: u64,
-	pub published_through_hub: bool,
 }
 
 #[account(zero_copy)]
 #[repr(packed)]
 pub struct HubPost {
+	pub added_by: Pubkey,
+	pub datetime: i64,
 	pub hub: Pubkey,
+	pub hub_release: Option<Pubkey>,
+	pub slug: [u8; 100],
 	pub uri:  [u8; 100],
-	pub is_comment: bool,
 }
 
 #[account]
@@ -152,7 +123,7 @@ pub struct HubReleaseRemoved {
 }
 
 #[event]
-pub struct HubUriUpdated {
+pub struct HubConfigUpdated {
 	#[index]
 	pub public_key: Pubkey,
 	pub uri: String,

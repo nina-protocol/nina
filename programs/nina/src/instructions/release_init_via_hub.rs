@@ -7,7 +7,7 @@ use crate::state::*;
     _config: ReleaseConfig,
     _bumps: ReleaseBumps,
     _metadata_data: ReleaseMetadataData,
-    hub_name: String
+    hub_handle: String
 )]
 pub struct ReleaseInitializeViaHub<'info> {
     #[account(mut)]
@@ -33,24 +33,15 @@ pub struct ReleaseInitializeViaHub<'info> {
     )]
     pub hub_collaborator: Box<Account<'info, HubCollaborator>>,
     #[account(
-        seeds = [b"nina-hub".as_ref(), hub_name.as_bytes()],
+        seeds = [b"nina-hub".as_ref(), hub_handle.as_bytes()],
         bump,    
     )]
     pub hub: AccountLoader<'info, Hub>,
     #[account(
         init,
-        seeds = [b"nina-hub-content".as_ref(), hub.key().as_ref(), release.key().as_ref()],
-        bump,
-        payer = authority,
-        space = 32 + 32 + 8 + 8 + 8
-    )]
-    pub hub_content: Box<Account<'info, HubContent>>,
-    #[account(
-        init,
         seeds = [b"nina-hub-release".as_ref(), hub.key().as_ref(), release.key().as_ref()],
         bump,
         payer = authority,
-        space = 32 + 32 + 8 + 1 + 8
     )]
     pub hub_release: Box<Account<'info, HubRelease>>,
     /// CHECK: This is safe because we are deriving the PDA from hub - which is initialized above
@@ -60,8 +51,8 @@ pub struct ReleaseInitializeViaHub<'info> {
     )]
     pub hub_signer: UncheckedAccount<'info>,
     #[account(
-        constraint = hub_wallet.owner == hub_signer.key (),
-        constraint = hub_wallet.key() == hub.load()?.hub_wallet 
+        constraint = hub_wallet.owner == hub_signer.key(),
+        constraint = hub_wallet.mint == payment_mint.key() 
     )]
     pub hub_wallet: Box<Account<'info, TokenAccount>>,
     pub release_mint: Box<Account<'info, Mint>>,
@@ -72,8 +63,8 @@ pub struct ReleaseInitializeViaHub<'info> {
     pub authority_token_account: Box<Account<'info, TokenAccount>>,
     pub payment_mint: Box<Account<'info, Mint>>,
     #[account(
+        constraint = royalty_token_account.owner == release_signer.key(),
         constraint = royalty_token_account.mint == payment_mint.key(),
-        constraint = royalty_token_account.owner == *release_signer.key
     )]
     pub royalty_token_account: Box<Account<'info, TokenAccount>>,
     #[account(address = token::ID)]
@@ -93,7 +84,7 @@ pub fn handler(
     config: ReleaseConfig,
     bumps: ReleaseBumps,
     metadata_data: ReleaseMetadataData,
-    _hub_name: String,
+    _hub_handle: String,
 ) -> Result<()> {
     Release::release_init_handler(
         &ctx.accounts.release,
@@ -138,10 +129,10 @@ pub fn handler(
 
     Hub::hub_release_create_handler(
         ctx.accounts.hub.clone(),
-        &mut ctx.accounts.hub_content,
         &mut ctx.accounts.hub_release,
         ctx.accounts.release.clone(),
         ctx.accounts.authority.clone(),
+        true,
     )?;
 
     Ok(())

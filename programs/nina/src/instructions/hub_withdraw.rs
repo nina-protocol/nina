@@ -20,6 +20,7 @@ pub struct HubWithdraw<'info> {
     pub hub: AccountLoader<'info, Hub>,
     /// CHECK: This is safe because we derive PDA from hub and check hub.authority
     #[account(
+        constraint = hub.load()?.hub_signer == hub_signer.key(),
         seeds = [b"nina-hub-signer".as_ref(), hub.key().as_ref()],
         bump,
     )]

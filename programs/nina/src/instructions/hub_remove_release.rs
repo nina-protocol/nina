@@ -15,13 +15,6 @@ pub struct HubRemoveRelease<'info> {
     pub hub: AccountLoader<'info, Hub>,
     #[account(
         mut,
-        seeds = [b"nina-hub-content".as_ref(), hub.key().as_ref(), release.key().as_ref()],
-        bump,
-        close = payer,
-    )]
-    pub hub_content: Account<'info, HubContent>,
-    #[account(
-        mut,
         seeds = [b"nina-hub-release".as_ref(), hub.key().as_ref(), release.key().as_ref()],
         bump,
         close = payer,

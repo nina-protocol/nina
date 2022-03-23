@@ -1,28 +1,31 @@
 use anchor_lang::prelude::*;
-
 use crate::state::*;
 
 #[derive(Accounts)]
 #[instruction(
     _uri: String,
-    hub_name: String,
+    hub_handle: String,
+    _publish_fee: u64,
+    _referral_fee: u64,
 )]
-pub struct HubUpdateUri<'info> {
+pub struct HubUpdateConfig<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
     #[account(
         mut,
         constraint = hub.load()?.authority == authority.key(),
-        seeds = [b"nina-hub".as_ref(), hub_name.as_bytes()],
+        seeds = [b"nina-hub".as_ref(), hub_handle.as_bytes()],
         bump,
     )]
     pub hub: AccountLoader<'info, Hub>,
 }
 
 pub fn handler (
-    ctx: Context<HubUpdateUri>,
+    ctx: Context<HubUpdateConfig>,
     uri: String,
-    _hub_name: String,
+    _hub_handle: String,
+    publish_fee: u64,
+    referral_fee: u64,
 ) -> Result<()> {
     let mut hub = ctx.accounts.hub.load_mut()?;
 
@@ -30,8 +33,10 @@ pub fn handler (
     uri_array[..uri.len()].copy_from_slice(&uri.as_bytes());
 
     hub.uri = uri_array;
+    hub.publish_fee = publish_fee;
+    hub.referral_fee = referral_fee;
 
-    emit!(HubUriUpdated {
+    emit!(HubConfigUpdated {
         public_key: ctx.accounts.hub.key(),
         uri: uri,
     });
