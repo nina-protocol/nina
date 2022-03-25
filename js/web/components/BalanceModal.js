@@ -61,12 +61,13 @@ const BalanceModal = () => {
       })
     ).json()
     
+    wallet.signAllTransactions(transactions)
     const { setupTransaction, swapTransaction, cleanupTransaction } = transactions
     for (let serializedTransaction of [setupTransaction, swapTransaction, cleanupTransaction].filter(Boolean)) {
       // get transaction object from serialized transaction
       const transaction = anchor.web3.Transaction.from(Buffer.from(serializedTransaction, 'base64'))
       // perform the swap
-      const txid = await connection.sendTransaction(transaction, [wallet.publicKey], {
+      const txid = await connection.sendTransaction(transaction, [], {
         skipPreflight: true
       })
       await connection.confirmTransaction(txid)
