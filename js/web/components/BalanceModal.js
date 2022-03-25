@@ -51,7 +51,7 @@ const BalanceModal = () => {
           // route from /quote api
           route,
           // user public key to be used for the swap
-          userPublicKey: wallet.publicKey.toString(),
+          userPublicKey: wallet.publicKey.toBase58(),
           // auto wrap and unwrap SOL. default is true
           wrapUnwrapSOL: true,
           // feeAccount is optional. Use if you want to charge a fee.  feeBps must have been passed in /quote API.
@@ -66,7 +66,7 @@ const BalanceModal = () => {
       // get transaction object from serialized transaction
       const transaction = anchor.web3.Transaction.from(Buffer.from(serializedTransaction, 'base64'))
       // perform the swap
-      const txid = await connection.sendTransaction(transaction, [wallet.payer], {
+      const txid = await connection.sendTransaction(transaction, [wallet.publicKey], {
         skipPreflight: true
       })
       await connection.confirmTransaction(txid)
@@ -74,7 +74,6 @@ const BalanceModal = () => {
       console.log(`https://solscan.io/tx/${txid}`)
     }
   }
-
 
   return (
     <Root>
