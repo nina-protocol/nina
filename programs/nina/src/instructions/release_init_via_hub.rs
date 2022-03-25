@@ -44,6 +44,13 @@ pub struct ReleaseInitializeViaHub<'info> {
         payer = authority,
     )]
     pub hub_release: Box<Account<'info, HubRelease>>,
+    #[account(
+        init,
+        seeds = [b"nina-hub-content".as_ref(), hub.key().as_ref(), release.key().as_ref()],
+        bump,
+        payer = authority,
+    )]
+    pub hub_content: Box<Account<'info, HubContent>>,
     /// CHECK: This is safe because we are deriving the PDA from hub - which is initialized above
     #[account(
         seeds = [b"nina-hub-signer".as_ref(), hub.key().as_ref()],
@@ -129,6 +136,7 @@ pub fn handler(
 
     Hub::hub_release_create_handler(
         ctx.accounts.hub.clone(),
+        &mut ctx.accounts.hub_content,
         &mut ctx.accounts.hub_release,
         ctx.accounts.release.clone(),
         ctx.accounts.authority.clone(),

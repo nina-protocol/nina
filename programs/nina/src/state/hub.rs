@@ -19,16 +19,21 @@ impl Hub {
 	#[inline(never)]
 	pub fn hub_release_create_handler<'info> (
 		hub: AccountLoader<'info, Hub>,
+		hub_content: &mut Box<Account<'info, HubContent>>,
 		hub_release: &mut Box<Account<'info, HubRelease>>,
 		release: AccountLoader<'info, Release>,
 		authority: Signer<'info>,
-		published_through_hub: bool,
+		is_published_through_hub: bool,
 	) -> Result<()> {
-    hub_release.added_by = authority.key();
-    hub_release.datetime = Clock::get()?.unix_timestamp;
+    hub_content.added_by = authority.key();
+    hub_content.hub = hub.key();
+		hub_content.child = hub_release.key();
+    hub_content.content_type = HubContentType::NinaReleaseV1;
+    hub_content.datetime = Clock::get()?.unix_timestamp;
+
 		hub_release.hub = hub.key();
     hub_release.release = release.key();
-    hub_release.published_through_hub = published_through_hub;
+    hub_release.published_through_hub = is_published_through_hub;
     hub_release.sales = 0;
 
 		emit!(HubReleaseAdded {
@@ -52,15 +57,35 @@ pub struct HubRelease {
 	pub sales: u64,
 }
 
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Copy, Debug)]
+pub enum HubContentType {
+	NinaReleaseV1 = 0,
+	Post = 1,
+}
+
+impl Default for HubContentType {
+	fn default() -> Self {
+		HubContentType::NinaReleaseV1
+	}
+}
+
+#[account]
+#[derive(Default)]
+pub struct HubContent {
+	pub added_by: Pubkey,
+	pub hub: Pubkey,
+	pub child: Pubkey,
+	pub content_type: HubContentType,
+	pub datetime: i64,
+}
+
 #[account(zero_copy)]
 #[repr(packed)]
 pub struct HubPost {
-	pub added_by: Pubkey,
-	pub datetime: i64,
 	pub hub: Pubkey,
-	pub hub_release: Option<Pubkey>,
-	pub slug: [u8; 100],
-	pub uri:  [u8; 100],
+	pub post: Pubkey,
+	pub note_on_hub_content: Option<Pubkey>,
+	pub version_uri:  [u8; 100],
 }
 
 #[account]
@@ -126,5 +151,13 @@ pub struct HubReleaseRemoved {
 pub struct HubConfigUpdated {
 	#[index]
 	pub public_key: Pubkey,
+	pub uri: String,
+}
+
+#[event]
+pub struct HubPostAdded {
+	#[index]
+	pub public_key: Pubkey,
+	pub hub: Pubkey,
 	pub uri: String,
 }
