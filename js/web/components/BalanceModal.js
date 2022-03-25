@@ -41,38 +41,47 @@ const BalanceModal = () => {
   }
 
   const handleSwap = async () => {
-    const transactions = await (
-      await fetch('https://quote-api.jup.ag/v1/swap', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          // route from /quote api
-          route,
-          // user public key to be used for the swap
-          userPublicKey: wallet.publicKey.toBase58(),
-          // auto wrap and unwrap SOL. default is true
-          wrapUnwrapSOL: true,
-          // feeAccount is optional. Use if you want to charge a fee.  feeBps must have been passed in /quote API.
-          // This is the ATA account for the output token where the fee will be sent to. If you are swapping from SOL->USDC then this would be the USDC ATA you want to collect the fee.
-          feeAccount: NinaClient.ids().accounts.vaultUsdc,  
+    try {
+      const transactions = await (
+        await fetch('https://quote-api.jup.ag/v1/swap', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            // route from /quote api
+            route,
+            // user public key to be used for the swap
+            userPublicKey: wallet.publicKey.toBase58(),
+            // auto wrap and unwrap SOL. default is true
+            wrapUnwrapSOL: true,
+            // feeAccount is optional. Use if you want to charge a fee.  feeBps must have been passed in /quote API.
+            // This is the ATA account for the output token where the fee will be sent to. If you are swapping from SOL->USDC then this would be the USDC ATA you want to collect the fee.
+            feeAccount: NinaClient.ids().accounts.vaultUsdc,  
+          })
         })
-      })
-    ).json()
-    
-    wallet.signAllTransactions(transactions)
-    const { setupTransaction, swapTransaction, cleanupTransaction } = transactions
-    for (let serializedTransaction of [setupTransaction, swapTransaction, cleanupTransaction].filter(Boolean)) {
-      // get transaction object from serialized transaction
-      const transaction = anchor.web3.Transaction.from(Buffer.from(serializedTransaction, 'base64'))
-      // perform the swap
-      const txid = await connection.sendTransaction(transaction, [], {
-        skipPreflight: true
-      })
-      await connection.confirmTransaction(txid)
+      ).json()
+      const {
+        setupTransaction,
+        swapTransaction,
+        cleanupTransaction
+      } = transactions
+      const serializedTransactions = [setupTransaction, swapTransaction, cleanupTransaction].filter(Boolean).map(tx => anchor.web3.Transaction.from(Buffer.from(tx, 'base64')))
+      await wallet.signAllTransactions(serializedTransactions);
+      for (let transaction of serializedTransactions) {
+        // get transaction object from serialized transaction
+  
+        // perform the swap
+        const txid = await connection.sendRawTransaction(
+          transaction.serialize()
+        );
+  
+        await connection.confirmTransaction(txid);
+        console.log(`https://solscan.io/tx/${txid}`);
+      }
       getUsdcBalance()
-      console.log(`https://solscan.io/tx/${txid}`)
+    } catch (err) {
+      console.log("err ::> ", err)
     }
   }
 
