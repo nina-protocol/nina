@@ -12,6 +12,7 @@ import {
   WalletMultiButton,
 } from "@solana/wallet-adapter-material-ui";
 import Breadcrumbs from "./Breadcrumbs";
+import BalanceModal from "./BalanceModal";
 const { NinaContext, ConnectionContext } = ninaCommon.contexts;
 
 const NavBar = () => {
@@ -47,9 +48,7 @@ const NavBar = () => {
 
       <NavRight>
         <DesktopWalletWrapper>
-          <NavBalance variant="subtitle1">
-            {wallet?.connected ? `Balance: $${usdcBalance}` : null}
-          </NavBalance>
+          <BalanceModal />
           <NavCtas>
             <StyledWalletDialogProvider featuredWallets={4}>
               <StyledWalletButton>
@@ -125,13 +124,6 @@ const NavRight = styled("div")(({ theme }) => ({
 const NavCtas = styled("div")(() => ({
   display: "flex",
   alignItems: "flex-start",
-}));
-
-const NavBalance = styled(Typography)(({ theme }) => ({
-  color: theme.palette.blue,
-  [theme.breakpoints.down("md")]: {
-    display: "none",
-  },
 }));
 
 const Logo = styled("div")(({ theme }) => ({
