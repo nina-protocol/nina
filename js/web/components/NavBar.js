@@ -13,10 +13,9 @@ import {
 } from "@solana/wallet-adapter-material-ui";
 import Breadcrumbs from "./Breadcrumbs";
 import BalanceModal from "./BalanceModal";
-const { NinaContext, ConnectionContext } = ninaCommon.contexts;
+const { ConnectionContext } = ninaCommon.contexts;
 
 const NavBar = () => {
-  const { usdcBalance } = useContext(NinaContext);
   const { healthOk } = useContext(ConnectionContext);
   const wallet = useWallet();
   const base58 = useMemo(

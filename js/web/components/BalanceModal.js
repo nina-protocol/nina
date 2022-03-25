@@ -9,7 +9,6 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField';
 import nina from 'nina-common'
-import {useSnackbar} from 'notistack'
 import { useWallet } from "@solana/wallet-adapter-react";
 
 const { ConnectionContext, NinaContext } = nina.contexts;
@@ -21,7 +20,6 @@ const BalanceModal = () => {
   const wallet = useWallet();
 
   const [open, setOpen] = useState(false);
-  const {enqueueSnackbar} = useSnackbar()
   const [inputAmount, setInputAmount] = useState();
   const [outputAmount, setOutputAmount] = useState();
   const [route, setRoute] = useState();
@@ -137,13 +135,7 @@ const BalanceModal = () => {
   )
 }
 
-const PREFIX = 'Royalty'
-
-const classes = {
-  recipientData: `${PREFIX}-recipientData`,
-}
-
-const Root = styled('div')(({ theme }) => ({
+const Root = styled('div')(() => ({
   display: 'flex',
   alignItems: 'center',
   width: '100%',
