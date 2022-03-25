@@ -199,7 +199,7 @@ const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
   backgroundColor: `${theme.palette.transparent} !important`,
   boxShadow: "none !important",
   paddingTop: "0 !important",
-
+  whiteSpace: 'nowrap',
   "& img": {
     display: "none",
   },

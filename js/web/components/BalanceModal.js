@@ -87,8 +87,8 @@ const BalanceModal = () => {
 
   return (
     <Root>
-      <Button
-        variant="contained"
+      <CtaButton
+        // variant="contained"
         color="primary"
         type="submit"
         onClick={() => setOpen(true)}
@@ -96,7 +96,7 @@ const BalanceModal = () => {
         <NavBalance variant="subtitle1">
           {wallet?.connected ? `Balance: $${usdcBalance}` : null}
         </NavBalance>
-      </Button>
+      </CtaButton>
       <StyledModal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -146,7 +146,7 @@ const BalanceModal = () => {
 
 const Root = styled('div')(() => ({
   display: 'flex',
-  alignItems: 'center',
+  alignItems: 'flex-start',
   width: '100%',
 }))
 
@@ -174,9 +174,14 @@ const InputWrapper = styled(Box)(() => ({
 
 const NavBalance = styled(Typography)(({ theme }) => ({
   color: theme.palette.blue,
+  textTransform: 'none',
   [theme.breakpoints.down("md")]: {
     display: "none",
   },
+}));
+
+const CtaButton = styled(Button)(() => ({
+  padding: '0px !important'
 }));
 
 export default BalanceModal
