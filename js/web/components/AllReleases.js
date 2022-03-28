@@ -24,13 +24,13 @@ const Releases = () => {
   const [listView, setListView] = useState(false);
   const [pendingFetch, setPendingFetch] = useState(false);
   const [totalCount, setTotalCount] = useState(null);
-  const scrollRef = useRef()
+  const scrollRef = useRef();
 
   useEffect(() => {
     getReleasesAll();
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -49,7 +49,9 @@ const Releases = () => {
   };
 
   const handleScroll = () => {
-    const bottom =  scrollRef.current.getBoundingClientRect().bottom - 250 <= window.innerHeight 
+    const bottom =
+      scrollRef.current.getBoundingClientRect().bottom - 250 <=
+      window.innerHeight;
     if (
       bottom &&
       !pendingFetch &&

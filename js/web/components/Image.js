@@ -36,7 +36,7 @@ function Image({ src, height, width, layout, priority, release }) {
   if (!ImageComponent) {
     ImageComponent = () => (
       <NextImage
-        src={src} 
+        src={src}
         height={height}
         width={width}
         priority={priority}

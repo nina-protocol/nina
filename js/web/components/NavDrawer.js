@@ -15,6 +15,7 @@ import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { faInstagramSquare } from "@fortawesome/free-brands-svg-icons";
 import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
+import {height} from "@mui/system";
 
 const linksConnected = [
   "home",
@@ -280,6 +281,9 @@ const DrawerFooter = styled(Box)(() => ({
   justifyContent: "space-between",
   "& a": {
     paddingRight: "15px",
+    '& svg': {
+      height: '16px'
+    }
   },
 }));
 
