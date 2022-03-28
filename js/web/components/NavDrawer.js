@@ -188,7 +188,7 @@ const NavDrawer = () => {
             {list()}
 
             <DrawerFooter>
-              <Box>
+              <Box display="flex">
                 <a
                   href="https://twitter.com/ninaprotocol"
                   target="_blank"
@@ -281,7 +281,7 @@ const DrawerFooter = styled(Box)(() => ({
   "& a": {
     paddingRight: "15px",
     "& svg": {
-      height: "16px",
+      height: '15px !important',
     },
   },
 }));
