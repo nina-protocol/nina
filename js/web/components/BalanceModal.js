@@ -8,9 +8,13 @@ import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField';
+import Input from '@mui/material/Input'
+import Grow from '@mui/material/Grow';
 import nina from 'nina-common'
 import { useWallet } from "@solana/wallet-adapter-react";
+import {useEffect} from 'react';
 
+const {Dots} = nina.components
 const { ConnectionContext, NinaContext } = nina.contexts;
 const {NinaClient} = nina.utils;
 
@@ -20,24 +24,42 @@ const BalanceModal = () => {
   const wallet = useWallet();
 
   const [open, setOpen] = useState(false);
-  const [inputAmount, setInputAmount] = useState();
+  const [inputAmount, setInputAmount] = useState('');
   const [outputAmount, setOutputAmount] = useState();
   const [route, setRoute] = useState();
+  const [solBalance, setSolBalance] = useState(0)
+  const [loading, setLoading] = useState(false)
+
+  useEffect(async () => {
+    if (wallet?.connected) {
+      const balance = await connection.getBalance(wallet.publicKey)
+      setSolBalance(
+        NinaClient.nativeToUi(
+          balance, NinaClient.ids().mints.wsol
+        )
+      ) 
+      console.log('balance :>> ', balance);
+    }
+  }, [wallet?.connected, connection])
 
   const handleQuote = async (e) => {
+    setOutputAmount()
+    setLoading(true)
     const input = e.target.value
+    console.log('input :>> ', input);
     setInputAmount(input)
-    const { data } = await (
-      await fetch(
-        `https://quote-api.jup.ag/v1/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${NinaClient.uiToNative(input, 'So11111111111111111111111111111111111111112')}&slippage=0.5&feeBps=20`
-      )
-    ).json()
-    if (data) {
-      setRoute(data[0])
-      const output = NinaClient.nativeToUi(data[0].outAmountWithSlippage, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v')
-      setOutputAmount(output)
-      console.log(data)  
-    }
+      const { data } = await (
+        await fetch(
+          `https://quote-api.jup.ag/v1/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${NinaClient.uiToNative(input, 'So11111111111111111111111111111111111111112')}&slippage=0.5&feeBps=20`
+        )
+      ).json()
+      if (data) {
+        setRoute(data[0])
+        const output = NinaClient.nativeToUi(data[0].outAmountWithSlippage, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v')
+        setLoading(false)
+        setOutputAmount(output)
+        console.log(data)  
+      }
   }
 
   const handleSwap = async () => {
@@ -116,24 +138,46 @@ const BalanceModal = () => {
             <Typography align="left" variant="subtitle1" >
               Releases on Nina are denominated in USDC - convert some SOL to USDC here.  Powered by jup.ag.
             </Typography>    
+            <Typography align="left" variant="subtitle1" >
+              You Current Sol Balance: {solBalance}
+            </Typography>    
               <InputWrapper >
-                <TextField
+                <Input
                   fullWidth
                   id="input"
                   name="input"
                   label="You pay (SOL):"
                   onChange={(e) => handleQuote(e)}
-                  value={inputAmount}
+                  value={inputAmount > 0 ? inputAmount : ''}
+                  variant="standard"
+                  type="number"
+             
                 />
-                <TextField
+                {/* <FormField
                   fullWidth
                   id="output"
                   name="output"
                   label="You receive (USDC):"
                   onChange={(e) => setOutputAmount(e.target.value)}
                   value={outputAmount}
-                />
-                <Button style={{marginTop: '15px'}} color="primary" variant="outlined" onClick={() => handleSwap()} >
+                  variant="standard"
+                /> */}
+
+                <OutputWrapper>
+                  <Grow in={inputAmount > 0 }>
+                    <Typography display="flex" alignItems="flex-end">
+                      You Recieve: {loading ? <Dots /> : outputAmount + ' USDC'} 
+                    </Typography>
+                  </Grow>
+          
+                </OutputWrapper>
+
+                <Button
+                  style={{marginTop: '15px'}} 
+                  color="primary" 
+                  variant="outlined" 
+                  onClick={() => handleSwap()} 
+                  >
                   Swap
                 </Button>
               </InputWrapper>
@@ -172,6 +216,11 @@ const InputWrapper = styled(Box)(() => ({
   flexDirection: 'column'
 }));
 
+const OutputWrapper = styled(Box)(() => ({
+  display: "flex",
+  height: '24px'
+}));
+
 const NavBalance = styled(Typography)(({ theme }) => ({
   color: theme.palette.blue,
   textTransform: 'none',
@@ -183,5 +232,20 @@ const NavBalance = styled(Typography)(({ theme }) => ({
 const CtaButton = styled(Button)(() => ({
   padding: '0px !important'
 }));
+
+const FormField = styled(TextField)(({theme}) => ({
+  ...theme.helpers.baseFont,
+  marginBottom: "8px",
+  width: "100%",
+  textTransform: "capitalize",
+  position: "relative",
+  "& input": {
+    textAlign: "left",
+    "&::placeholder": {
+      color: theme.palette.red,
+    },
+  },
+}));
+
 
 export default BalanceModal
