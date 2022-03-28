@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import debounce from "lodash.debounce";
 import Head from "next/head";
 import { styled } from "@mui/material/styles";
@@ -24,9 +24,14 @@ const Releases = () => {
   const [listView, setListView] = useState(false);
   const [pendingFetch, setPendingFetch] = useState(false);
   const [totalCount, setTotalCount] = useState(null);
+  const scrollRef = useRef()
 
   useEffect(() => {
     getReleasesAll();
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -43,9 +48,8 @@ const Releases = () => {
     setListView(!listView);
   };
 
-  const handleScroll = (e) => {
-    const bottom =
-      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+  const handleScroll = () => {
+    const bottom =  scrollRef.current.getBoundingClientRect().bottom - 250 <= window.innerHeight 
     if (
       bottom &&
       !pendingFetch &&
@@ -63,8 +67,8 @@ const Releases = () => {
         <title>{`Nina: All Releases`}</title>
         <meta name="description" content={"Nina: All Releases"} />
       </Head>
-      <ScrollablePageWrapper onScroll={debounce((e) => handleScroll(e), 500)}>
-        <AllReleasesWrapper>
+      <ScrollablePageWrapper onScroll={debounce(() => handleScroll(), 500)}>
+        <AllReleasesWrapper ref={scrollRef}>
           <StyledReleaseSearch />
           <CollectionHeader
             onClick={handleViewChange}
