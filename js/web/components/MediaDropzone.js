@@ -52,7 +52,7 @@ const MediaDropzone = ({
         } else {
           alert(
             `your image is ${size} mb... \nPlease upload an image smaller than 3 mb`
-          )
+          );
         }
       }
       remove();
@@ -104,7 +104,6 @@ const MediaDropzone = ({
     const height = fileWithMeta.meta.height;
     const width = fileWithMeta.meta.width;
     const size = fileWithMeta.file.size / 1000000;
-
 
     if (height !== width) {
       return true;
