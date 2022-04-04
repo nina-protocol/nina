@@ -1,17 +1,17 @@
-import React, { useEffect, useState, useContext, useRef } from "react";
+import React, {useEffect, useState, useContext, useRef} from "react";
 import debounce from "lodash.debounce";
 import Head from "next/head";
-import { styled } from "@mui/material/styles";
+import {styled} from "@mui/material/styles";
 import ninaCommon from "nina-common";
-import { Typography, Box } from "@mui/material";
-import { isMobile } from "react-device-detect";
+import {Typography, Box} from "@mui/material";
+import {isMobile} from "react-device-detect";
 import ReleaseListTable from "./ReleaseListTable";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
 import ReleaseTileList from "./ReleaseTileList";
 import ReleaseSearch from "./ReleaseSearch";
 
-const { ReleaseContext } = ninaCommon.contexts;
-const { Dots } = ninaCommon.components;
+const {ReleaseContext} = ninaCommon.contexts;
+const {Dots} = ninaCommon.components;
 
 const Releases = () => {
   const {
@@ -99,8 +99,8 @@ const Releases = () => {
                 searchResults.pending || searchResults.searched
                   ? searchResults.releases
                   : isMobile
-                  ? filterReleasesAll().reverse()
-                  : filterReleasesAll()
+                    ? filterReleasesAll().reverse()
+                    : filterReleasesAll()
               }
             />
           )}
@@ -134,7 +134,7 @@ const CollectionHeader = styled(Typography)(() => ({
   cursor: "pointer",
 }));
 
-const AllReleasesWrapper = styled(Box)(({ theme }) => ({
+const AllReleasesWrapper = styled(Box)(({theme}) => ({
   maxWidth: "960px",
   height: "auto",
   minHeight: "50vh",
