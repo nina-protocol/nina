@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useContext, useRef} from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import debounce from "lodash.debounce";
 import Head from "next/head";
 import {styled} from "@mui/material/styles";
