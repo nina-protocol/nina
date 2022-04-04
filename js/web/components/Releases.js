@@ -9,6 +9,7 @@ import { useSnackbar } from "notistack";
 import ReleaseListTable from "./ReleaseListTable";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
 import ReleaseTileList from "./ReleaseTileList";
+import Link from 'next/link';
 
 const { AudioPlayerContext, ReleaseContext } = ninaCommon.contexts;
 
@@ -80,6 +81,14 @@ const Releases = ({ type }) => {
 
           {!listView && <ReleaseTileList releases={releases} />}
         </ReleasesWrapper>
+
+          {type === 'new' && (
+            <BlueTypography variant="h1">
+              <Link href='/releases'>
+                  All Releases
+              </Link>
+            </BlueTypography>
+          )}
       </ScrollablePageWrapper>
     </>
   );
@@ -113,5 +122,13 @@ const ReleasesWrapper = styled(Box)(({ theme }) => ({
     minHeight: "80vh",
   },
 }));
+
+const BlueTypography = styled(Typography)(({theme}) => ({
+  "& a": {color: theme.palette.blue},
+  marginTop: theme.spacing(6),
+  [theme.breakpoints.down("md")]: {
+    marginTop: '0'
+  },
+}))
 
 export default Releases;
