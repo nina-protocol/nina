@@ -125,7 +125,7 @@ const BlueTypography = styled(Typography)(({ theme }) => ({
   "& a": { color: theme.palette.blue },
   marginTop: theme.spacing(6),
   [theme.breakpoints.down("md")]: {
-    marginTop: "0",
+    marginTop: "-80px",
   },
 }));
 
