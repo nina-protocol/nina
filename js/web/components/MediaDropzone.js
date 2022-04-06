@@ -45,9 +45,15 @@ const MediaDropzone = ({
           `your track is ${size} mb... \nPlease upload a smaller than 80 mb`
         );
       } else {
-        alert(
-          `your image's dimensions are ${height} x ${width}... \nPlease upload a square image`
-        );
+        if (height !== width) {
+          alert(
+            `your image's dimensions are ${height} x ${width}... \nPlease upload a square image`
+          );
+        } else {
+          alert(
+            `your image is ${size} mb... \nPlease upload an image smaller than 3 mb`
+          );
+        }
       }
       remove();
     }
@@ -94,11 +100,16 @@ const MediaDropzone = ({
     }
   };
 
-  const validateSquareImage = (fileWithMeta) => {
+  const validateImage = (fileWithMeta) => {
     const height = fileWithMeta.meta.height;
     const width = fileWithMeta.meta.width;
+    const size = fileWithMeta.file.size / 1000000;
 
     if (height !== width) {
+      return true;
+    }
+
+    if (size > 3) {
       return true;
     }
     return false;
@@ -187,7 +198,7 @@ const MediaDropzone = ({
       validate={
         type === "track"
           ? (fileWithMeta) => validateFileSize(fileWithMeta)
-          : (fileWithMeta) => validateSquareImage(fileWithMeta)
+          : (fileWithMeta) => validateImage(fileWithMeta)
       }
       SubmitButtonComponent={null}
       autoUpload={false}
