@@ -80,13 +80,14 @@ const Releases = ({ type }) => {
           )}
 
           {!listView && <ReleaseTileList releases={releases} />}
-        </ReleasesWrapper>
 
         {type === "new" && (
           <BlueTypography variant="h1">
             <Link href="/releases">All Releases</Link>
           </BlueTypography>
         )}
+        </ReleasesWrapper>
+
       </ScrollablePageWrapper>
     </>
   );
@@ -115,8 +116,7 @@ const ReleasesWrapper = styled(Box)(({ theme }) => ({
     color: theme.palette.blue,
   },
   [theme.breakpoints.down("md")]: {
-    padding: "0px 30px",
-    overflowX: "auto",
+    padding: "0px 30px 50px",
     minHeight: "80vh",
   },
 }));
