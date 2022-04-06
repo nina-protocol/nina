@@ -281,7 +281,7 @@ const DrawerFooter = styled(Box)(() => ({
   "& a": {
     paddingRight: "15px",
     "& svg": {
-      height: '15px !important',
+      height: "15px !important",
     },
   },
 }));
