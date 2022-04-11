@@ -7,8 +7,8 @@ use crate::state::*;
 pub struct Hub {
 	pub authority: Pubkey,
 	pub hub_signer: Pubkey,
-	pub handle: [u8; 100],
-	pub uri: [u8; 100],
+	pub handle: [u8; 80],
+	pub uri: [u8; 80],
 	pub publish_fee: u64,
 	pub referral_fee: u64,
 	pub total_fees_earned: u64,
@@ -84,8 +84,8 @@ pub struct HubContent {
 pub struct HubPost {
 	pub hub: Pubkey,
 	pub post: Pubkey,
-	pub note_on_hub_content: Option<Pubkey>,
-	pub version_uri:  [u8; 100],
+	pub reference_hub_content: Option<Pubkey>,
+	pub version_uri:  [u8; 80],
 }
 
 #[account]

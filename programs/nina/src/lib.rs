@@ -224,4 +224,22 @@ pub mod nina {
     ) -> Result<()> {
         instructions::hub_withdraw::handler(ctx, amount, hub_handle)
     }
+
+    pub fn post_init_via_hub(
+        ctx: Context<PostInitViaHub>,
+        hub_handle: String,
+        slug: String,
+        uri: String,
+    ) -> Result<()> {
+        instructions::post_init_via_hub::handler(ctx, hub_handle, slug, uri)
+    }
+
+    pub fn post_init_via_hub_with_reference_content(
+        ctx: Context<PostInitViaHubWithReferenceContent>,
+        hub_handle: String,
+        slug: String,
+        uri: String,
+    ) -> Result<()> {
+        instructions::post_init_via_hub_with_reference_content::handler(ctx, hub_handle, slug, uri)
+    }
 }

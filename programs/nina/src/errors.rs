@@ -60,5 +60,6 @@ pub enum ErrorCode {
     ReleasePurchaseWrongReceiver,
     #[msg("HubCollaborator Cannot Add Collaborator")]
     HubCollaboratorCannotAddCollaborator,
-
+    #[msg("HubCollaborator Cannot Init Post")]
+    HubCollaboratorCannotInitPost,
 }

@@ -31,6 +31,9 @@ pub mod hub_remove_release;
 pub mod hub_update_config;
 pub mod hub_withdraw;
 
+pub mod post_init_via_hub;
+pub mod post_init_via_hub_with_reference_content;
+
 pub use release_init_protected::*;
 pub use release_init_with_credit::*;
 pub use release_init_via_hub::*;
@@ -63,3 +66,6 @@ pub use hub_remove_collaborator::*;
 pub use hub_remove_release::*;
 pub use hub_update_config::*;
 pub use hub_withdraw::*;
+
+pub use post_init_via_hub::*;
+pub use post_init_via_hub_with_reference_content::*;

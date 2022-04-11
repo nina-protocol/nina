@@ -8,7 +8,7 @@ use crate::errors::ErrorCode;
     slug: String,
     _uri: String,
 )]
-pub struct PostInitViaHub<'info> {
+pub struct PostInitViaHubWithReferenceContent<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
     #[account(
@@ -39,6 +39,7 @@ pub struct PostInitViaHub<'info> {
         payer = authority,
     )]
     pub hub_content: Account<'info, HubContent>,
+    pub reference_hub_content: Account<'info, HubContent>,
     #[account(
         seeds = [b"nina-hub-collaborator".as_ref(), hub.key().as_ref(), authority.key().as_ref()],
         bump,
@@ -49,7 +50,7 @@ pub struct PostInitViaHub<'info> {
 }
 
 pub fn handler (
-    ctx: Context<PostInitViaHub>,
+    ctx: Context<PostInitViaHubWithReferenceContent>,
     _hub_handle: String,
     slug: String,
     uri: String,
@@ -68,9 +69,9 @@ pub fn handler (
 
     let mut slug_array = [0u8; 80];
     slug_array[..slug.len()].copy_from_slice(&slug.as_bytes());
-	post.slug = slug_array;
+	  post.slug = slug_array;
 
-	let mut uri_array = [0u8; 80];
+	  let mut uri_array = [0u8; 80];
     uri_array[..uri.len()].copy_from_slice(&uri.as_bytes());
     post.uri = uri_array;
 
@@ -82,11 +83,12 @@ pub fn handler (
     hub_content.datetime = post.created_at;
 
     let mut hub_post = ctx.accounts.hub_post.load_init()?;
-	hub_post.hub = ctx.accounts.hub.key();
+	  hub_post.hub = ctx.accounts.hub.key();
     hub_post.post = ctx.accounts.post.key();
+    hub_post.reference_hub_content = Some(ctx.accounts.reference_hub_content.key());
     hub_post.version_uri = uri_array;
 
-    emit!(PostInitializedViaHub {
+    emit!(PostInitializedViaHubWithReferenceContent {
         public_key: ctx.accounts.hub_post.key(),
         hub: ctx.accounts.hub.key(),
         uri: uri,
