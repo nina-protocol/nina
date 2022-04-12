@@ -4927,19 +4927,6 @@ describe('Hub', async () => {
   it('should not update a post via hub if author is incorrect', async () => {
     const updatedUri = "arweave:newURI-1234567890987654"
 
-    await nina.rpc.postUpdateViaHubPost(
-      hubParams.handle,
-      slug,
-      updatedUri, {
-        accounts: {
-          author: provider.wallet.publicKey,
-          hub,
-          post,
-          hubPost,
-          hubCollaborator,
-        }
-      }
-    )
     await assert.rejects(
       async () => {
         await nina.rpc.postUpdateViaHubPost(
