@@ -187,6 +187,16 @@ pub mod nina {
         instructions::hub_add_collaborator::handler(ctx, can_add_content, can_add_collaborator, allowance, hub_handle)
     }
 
+    pub fn hub_update_collaborator_permissions(
+        ctx: Context<HubUpdateCollaboratorPermissions>,
+        can_add_content: bool,
+        can_add_collaborator: bool,
+        allowance: i8,
+        hub_handle: String
+    ) -> Result<()> {
+        instructions::hub_update_collaborator_permissions::handler(ctx, can_add_content, can_add_collaborator, allowance, hub_handle)
+    }
+
     pub fn hub_add_release(
         ctx: Context<HubAddRelease>,
         hub_handle: String
@@ -242,5 +252,14 @@ pub mod nina {
         uri: String,
     ) -> Result<()> {
         instructions::post_init_via_hub_with_reference_content::handler(ctx, hub_handle, slug, uri)
+    }
+
+    pub fn post_update_via_hub_post(
+        ctx: Context<PostUpdateViaHubPost>,
+        hub_handle: String,
+        slug: String,
+        uri: String,
+    ) -> Result<()> {
+        instructions::post_update_via_hub_post::handler(ctx, hub_handle, slug, uri)
     }
 }

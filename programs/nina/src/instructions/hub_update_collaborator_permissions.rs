@@ -10,7 +10,7 @@ use crate::errors::ErrorCode;
     _allowance: i8,
     hub_handle: String,
 )]
-pub struct HubAddCollaborator<'info> {
+pub struct HubUpdateCollaboratorPermissions<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
     #[account(
@@ -24,40 +24,32 @@ pub struct HubAddCollaborator<'info> {
     )]
     pub hub: AccountLoader<'info, Hub>,
     #[account(
-        init,
+        mut,
         seeds = [b"nina-hub-collaborator".as_ref(), hub.key().as_ref(), collaborator.key().as_ref()],
         bump,
-        payer = payer,
     )]
     pub hub_collaborator: Account<'info, HubCollaborator>,
     /// CHECK: This is safe because we are initializing the HubCollaborator account with this value
     pub collaborator: UncheckedAccount<'info>,
-    pub system_program: Program<'info, System>,
-    pub rent: Sysvar<'info, Rent>,
 }
 
 pub fn handler (
-    ctx: Context<HubAddCollaborator>,
+    ctx: Context<HubUpdateCollaboratorPermissions>,
     can_add_content: bool,
     can_add_collaborator: bool,
     allowance: i8,
     _hub_handle: String,
-) -> Result<()> {
-    let payer_hub_collaborator = &ctx.accounts.payer_hub_collaborator;
-
-    if !payer_hub_collaborator.can_add_collaborator {
-        return Err(error!(ErrorCode::HubCollaboratorCannotAddCollaborator));
+) -> Result<()> {  
+    if ctx.accounts.payer.key() != ctx.accounts.hub.load()?.authority {
+      return Err(error!(ErrorCode::HubCollaboratorCannotUpdateHubCollaboratorUnauthorized))
     }
-    
+  
     let hub_collaborator = &mut ctx.accounts.hub_collaborator;
-    hub_collaborator.added_by = ctx.accounts.payer.key();
-    hub_collaborator.hub = ctx.accounts.hub.key();
-    hub_collaborator.collaborator = ctx.accounts.collaborator.key();
     hub_collaborator.can_add_content = can_add_content;
     hub_collaborator.can_add_collaborator = can_add_collaborator;
     hub_collaborator.allowance = allowance;
 
-    emit!(HubCollaboratorAdded {
+    emit!(HubCollaboratorUpdated {
         public_key: ctx.accounts.hub_collaborator.key(),
         hub: ctx.accounts.hub.key(),
         collaborator: ctx.accounts.collaborator.key(),

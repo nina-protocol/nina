@@ -149,6 +149,14 @@ pub struct HubCollaboratorAdded {
 }
 
 #[event]
+pub struct HubCollaboratorUpdated {
+	#[index]
+	pub public_key: Pubkey,
+	pub hub: Pubkey,
+	pub collaborator: Pubkey,
+}
+
+#[event]
 pub struct HubCollaboratorRemoved {
 	#[index]
 	pub public_key: Pubkey,
