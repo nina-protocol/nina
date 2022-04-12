@@ -82,6 +82,7 @@ pub fn handler (
     hub_collaborator.collaborator = ctx.accounts.authority.key();
     hub_collaborator.can_add_content = true;
     hub_collaborator.can_add_collaborator = true;
+    hub_collaborator.allowance = -1;
 
     emit!(HubCreated {
         public_key: ctx.accounts.hub.key(),

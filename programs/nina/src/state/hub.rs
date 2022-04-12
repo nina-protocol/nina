@@ -1,6 +1,7 @@
 use anchor_lang::prelude::*;
 use std::default::Default;
 use crate::state::*;
+use crate::errors::ErrorCode;
 
 #[account(zero_copy)]
 #[repr(packed)]
@@ -41,6 +42,27 @@ impl Hub {
         hub: hub.key(),
         release: release.key(),
     });
+
+		Ok(())
+	}
+
+	pub fn hub_collaborator_can_add_or_publish_content<'info> (
+		hub_collaborator: &mut Account<'info, HubCollaborator>,
+		is_publish: bool,
+	) -> Result<()> {
+    if !is_publish && !hub_collaborator.can_add_content {
+        return Err(error!(ErrorCode::HubCollaboratorCannotAddReleaseToHubUnauthorized))
+    }
+
+    if hub_collaborator.allowance == 0 {
+        return Err(error!(ErrorCode::HubCollaboratorCannotAddReleaseToHubAllowanceUsed))
+    }
+
+    if hub_collaborator.allowance > 0 {
+        hub_collaborator.allowance = i8::from(hub_collaborator.allowance)
+            .checked_sub(1)
+            .unwrap();
+    }
 
 		Ok(())
 	}
@@ -93,6 +115,9 @@ pub struct HubPost {
 pub struct HubCollaborator {
 	pub added_by: Pubkey,
 	pub hub: Pubkey,
+	/// If allowance == -1, allow adding unlimited content
+	/// otherwise allowance == amount of posts user can make
+	pub allowance: i8,
 	pub collaborator: Pubkey,
 	pub can_add_content: bool,
 	pub can_add_collaborator: bool,

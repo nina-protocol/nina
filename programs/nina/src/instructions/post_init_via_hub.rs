@@ -56,9 +56,10 @@ pub fn handler (
 ) -> Result<()> {
     let hub_collaborator = &mut ctx.accounts.hub_collaborator;
     
-    if !hub_collaborator.can_add_content {
-        return Err(error!(ErrorCode::HubCollaboratorCannotInitPost))
-    }
+    Hub::hub_collaborator_can_add_or_publish_content(
+        &mut ctx.accounts.hub_collaborator,
+        false
+    )?;
 
     let mut post = ctx.accounts.post.load_init()?;
     post.author = ctx.accounts.authority.key();

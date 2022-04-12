@@ -7,6 +7,7 @@ use crate::errors::ErrorCode;
 #[instruction(
     _can_add_content: bool,
     _can_add_collaborator: bool,
+    _allowance: i8,
     hub_handle: String,
 )]
 pub struct HubAddCollaborator<'info> {
@@ -39,6 +40,7 @@ pub fn handler (
     ctx: Context<HubAddCollaborator>,
     can_add_content: bool,
     can_add_collaborator: bool,
+    allowance: i8,
     _hub_handle: String,
 ) -> Result<()> {
     let payer_hub_collaborator = &ctx.accounts.payer_hub_collaborator;
@@ -52,6 +54,7 @@ pub fn handler (
     hub_collaborator.collaborator = ctx.accounts.collaborator.key();
     hub_collaborator.can_add_content = can_add_content;
     hub_collaborator.can_add_collaborator = can_add_collaborator;
+    hub_collaborator.allowance = allowance;
 
     emit!(HubCollaboratorAdded {
         public_key: ctx.accounts.hub_collaborator.key(),

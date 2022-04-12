@@ -181,9 +181,10 @@ pub mod nina {
         ctx: Context<HubAddCollaborator>,
         can_add_content: bool,
         can_add_collaborator: bool,
+        allowance: i8,
         hub_handle: String
     ) -> Result<()> {
-        instructions::hub_add_collaborator::handler(ctx, can_add_content, can_add_collaborator, hub_handle)
+        instructions::hub_add_collaborator::handler(ctx, can_add_content, can_add_collaborator, allowance, hub_handle)
     }
 
     pub fn hub_add_release(

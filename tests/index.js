@@ -3480,6 +3480,7 @@ describe('Hub', async () => {
     await nina.rpc.hubAddCollaborator(
       false,
       false,
+      new anchor.BN(10),
       hubParams.handle, {
       accounts: {
         payer: provider.wallet.publicKey,
@@ -3618,6 +3619,7 @@ describe('Hub', async () => {
         await nina.rpc.hubAddCollaborator(
           true,
           true,
+          new anchor.BN(10),
           hubParams.handle, {
           accounts: {
             payer: user1.publicKey,
@@ -4477,6 +4479,7 @@ describe('Hub', async () => {
     await nina.rpc.hubAddCollaborator(
       false,
       true, 
+      new anchor.BN(10),
       hubParams.handle, {
       accounts: {
         payer: provider.wallet.publicKey,
@@ -4689,6 +4692,70 @@ describe('Hub', async () => {
     console.log("hubAfter ::> ", hubAfter)
     console.log("hubPostAfter ::> ", hubPostAfter)
     console.log("postAfter ::> ", postAfter)
+  })  
+
+  it('should not create a post via hub as authority, if slug already exists', async () => {
+    const slug = "my_first_post"
+    const uri = "arweave:f-VGVpbBqe4p7wWPhjKhGX1hnMJEGQ_eBRlUEQkCjEM"
+
+    const [post, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-post")),
+        hub.toBuffer(),
+        Buffer.from(anchor.utils.bytes.utf8.encode(slug)),
+      ],
+      nina.programId,
+    );
+
+    const [hubPost, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-post")), 
+        hub.toBuffer(),
+        post.toBuffer(),
+      ],
+      nina.programId
+    );
+
+    const [hubContent, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-content")), 
+        hub.toBuffer(),
+        post.toBuffer(),
+      ],
+      nina.programId
+    );
+
+    const [hubCollaborator, bump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
+        hub.toBuffer(),
+        provider.wallet.publicKey.toBuffer(),
+      ],
+      nina.programId
+    );
+    await assert.rejects(
+      async () => {
+        await nina.rpc.postInitViaHub(
+          hubParams.handle,
+          slug,
+          uri, {
+            accounts: {
+              authority: provider.wallet.publicKey,
+              hub,
+              post,
+              hubPost,
+              hubContent,
+              hubCollaborator,
+              systemProgram: anchor.web3.SystemProgram.programId,
+              rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+            },
+          }
+        );
+      },
+      (err) => {
+        return true;
+      }
+    );
   })  
 
   it('should create a post via hub as authority with a reference', async () => {

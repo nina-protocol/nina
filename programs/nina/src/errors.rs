@@ -62,4 +62,6 @@ pub enum ErrorCode {
     HubCollaboratorCannotAddCollaborator,
     #[msg("HubCollaborator Cannot Init Post")]
     HubCollaboratorCannotInitPost,
+    #[msg("HubCollaborator Cannot Add Release To Hub Allowance Used")]
+    HubCollaboratorCannotAddReleaseToHubAllowanceUsed,
 }

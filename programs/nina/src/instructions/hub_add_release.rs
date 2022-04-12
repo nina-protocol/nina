@@ -1,6 +1,5 @@
 use anchor_lang::prelude::*;
 use crate::state::*;
-use crate::errors::ErrorCode;
 
 #[derive(Accounts)]
 #[instruction(hub_handle: String)]
@@ -40,11 +39,10 @@ pub fn handler (
     ctx: Context<HubAddRelease>,
     _hub_handle: String,
 ) -> Result<()> {
-    let hub_collaborator = &mut ctx.accounts.hub_collaborator;
-
-    if !hub_collaborator.can_add_content {
-        return Err(error!(ErrorCode::HubCollaboratorCannotAddReleaseToHubUnauthorized))
-    }
+    Hub::hub_collaborator_can_add_or_publish_content(
+        &mut ctx.accounts.hub_collaborator,
+        false
+    )?;
     
     Hub::hub_release_create_handler(
         ctx.accounts.hub.clone(),

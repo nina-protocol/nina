@@ -1,6 +1,4 @@
 use anchor_lang::prelude::*;
-use std::default::Default;
-use crate::state::*;
 
 #[account(zero_copy)]
 #[repr(packed)]

@@ -27,11 +27,12 @@ pub struct ReleaseInitializeViaHub<'info> {
     )]
     pub release_signer: AccountInfo<'info>,
     #[account(
+        mut,
         seeds = [b"nina-hub-collaborator".as_ref(), hub.key().as_ref(), authority.key().as_ref()],
         bump,
         constraint = hub_collaborator.collaborator == authority.key(),
     )]
-    pub hub_collaborator: Box<Account<'info, HubCollaborator>>,
+    pub hub_collaborator: Account<'info, HubCollaborator>,
     #[account(
         seeds = [b"nina-hub".as_ref(), hub_handle.as_bytes()],
         bump,    
@@ -93,6 +94,11 @@ pub fn handler(
     metadata_data: ReleaseMetadataData,
     _hub_handle: String,
 ) -> Result<()> {
+    Hub::hub_collaborator_can_add_or_publish_content(
+        &mut ctx.accounts.hub_collaborator,
+        true
+    )?;
+
     Release::release_init_handler(
         &ctx.accounts.release,
         ctx.accounts.release_signer.to_account_info().clone(),
