@@ -7,8 +7,8 @@ pub struct Post {
     pub author: Pubkey,
     pub created_at: i64,
     pub updated_at: i64,
-    pub slug: [u8; 80],
-	pub uri:  [u8; 80],
+    pub slug: [u8; 100],
+	pub uri:  [u8; 100],
 	pub published_through_hub: Pubkey,
 }
 
@@ -35,11 +35,11 @@ impl Post {
         post.created_at = Clock::get()?.unix_timestamp;
         post.updated_at = post.created_at;
     
-        let mut slug_array = [0u8; 80];
+        let mut slug_array = [0u8; 100];
         slug_array[..slug.len()].copy_from_slice(&slug.as_bytes());
         post.slug = slug_array;
     
-        let mut uri_array = [0u8; 80];
+        let mut uri_array = [0u8; 100];
         uri_array[..uri.len()].copy_from_slice(&uri.as_bytes());
         post.uri = uri_array;
     

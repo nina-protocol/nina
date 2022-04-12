@@ -45,7 +45,7 @@ pub fn handler (
 ) -> Result<()> {
     let mut post = ctx.accounts.post.load_mut()?;
 
-    let mut uri_array = [0u8; 80];
+    let mut uri_array = [0u8; 100];
     uri_array[..uri.len()].copy_from_slice(&uri.as_bytes());
     post.uri = uri_array;
     post.updated_at = Clock::get()?.unix_timestamp;

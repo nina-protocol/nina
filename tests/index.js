@@ -4760,12 +4760,12 @@ describe('Hub', async () => {
         },
       }
     );
-    const hubAfter = await nina.account.hub.fetch(hub)
     const hubPostAfter = await nina.account.hubPost.fetch(hubPost)
     const postAfter = await nina.account.post.fetch(post)
-    console.log("hubAfter ::> ", hubAfter)
-    console.log("hubPostAfter ::> ", hubPostAfter)
-    console.log("postAfter ::> ", postAfter)
+    assert.equal(postAfter.publishedThroughHub.toBase58(), hub.toBase58())
+    assert.equal(encrypt.decode(hubPostAfter.versionUri), uri)
+    assert.equal(encrypt.decode(postAfter.uri), uri)
+    assert.equal(encrypt.decode(postAfter.slug), slug)
   })  
 
   it('should not create a post via hub as authority, if slug already exists', async () => {
@@ -4894,12 +4894,12 @@ describe('Hub', async () => {
         },
       }
     );
-    const hubAfter = await nina.account.hub.fetch(hub)
     const hubPostAfter = await nina.account.hubPost.fetch(hubPost)
     const postAfter = await nina.account.post.fetch(post)
-    console.log("hubAfter ::> ", hubAfter)
-    console.log("hubPostAfter ::> ", hubPostAfter)
-    console.log("postAfter ::> ", postAfter)
+    assert.equal(encrypt.decode(hubPostAfter.versionUri), uri)
+    assert.equal(hubPostAfter.referenceHubContent.toBase58(), referenceHubContent.toBase58())
+    assert.equal(encrypt.decode(postAfter.uri), uri)
+    assert.equal(encrypt.decode(postAfter.slug), slug)
   })  
   
   it('should update a post via hub if author is correct', async () => {

@@ -107,7 +107,7 @@ pub struct HubPost {
 	pub hub: Pubkey,
 	pub post: Pubkey,
 	pub reference_hub_content: Option<Pubkey>,
-	pub version_uri:  [u8; 80],
+	pub version_uri:  [u8; 100],
 }
 
 #[account]
