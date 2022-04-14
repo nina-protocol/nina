@@ -8,8 +8,8 @@ use crate::errors::ErrorCode;
 pub struct Hub {
 	pub authority: Pubkey,
 	pub hub_signer: Pubkey,
-	pub handle: [u8; 80],
-	pub uri: [u8; 80],
+	pub handle: [u8; 100],
+	pub uri: [u8; 100],
 	pub publish_fee: u64,
 	pub referral_fee: u64,
 	pub total_fees_earned: u64,

@@ -262,4 +262,23 @@ pub mod nina {
     ) -> Result<()> {
         instructions::post_update_via_hub_post::handler(ctx, hub_handle, slug, uri)
     }
+
+    pub fn subscription_subscribe_account(
+        ctx: Context<SubscriptionSubscribeAccount>
+    ) -> Result <()> {
+        instructions::subscription_subscribe_account::handler(ctx)
+    }
+
+    pub fn subscription_subscribe_hub(
+        ctx: Context<SubscriptionSubscribeHub>,
+        hub_handle: String,
+    ) -> Result <()> {
+        instructions::subscription_subscribe_hub::handler(ctx, hub_handle)
+    }
+
+    pub fn subscription_unsubscribe(
+        ctx: Context<SubscriptionUnsubscribe>
+    ) -> Result <()> {
+        instructions::subscription_unsubscribe::handler(ctx)
+    }
 }

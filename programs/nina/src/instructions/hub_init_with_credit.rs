@@ -13,7 +13,7 @@ pub struct HubInitWithCredit<'info> {
         seeds = [b"nina-hub".as_ref(), params.handle.as_bytes()],
         bump,
         payer = authority,
-        space = 257 + 40
+        space = 297 + 40
     )]
     pub hub: AccountLoader<'info, Hub>,
     /// CHECK: This is safe because we are deriving the PDA from hub - which is initialized above
@@ -69,11 +69,11 @@ pub fn handler (
     hub.total_fees_earned = 0;
     hub.hub_signer_bump = params.hub_signer_bump;
 
-    let mut handle_array = [0u8; 80];
+    let mut handle_array = [0u8; 100];
     handle_array[..params.handle.len()].copy_from_slice(&params.handle.as_bytes());
     hub.handle = handle_array;
 
-    let mut uri_array = [0u8; 80];
+    let mut uri_array = [0u8; 100];
     uri_array[..params.uri.len()].copy_from_slice(&params.uri.as_bytes());
     hub.uri = uri_array;
 

@@ -29,7 +29,7 @@ pub fn handler (
 ) -> Result<()> {
     let mut hub = ctx.accounts.hub.load_mut()?;
 
-    let mut uri_array = [0u8; 80];
+    let mut uri_array = [0u8; 100];
     uri_array[..uri.len()].copy_from_slice(&uri.as_bytes());
 
     hub.uri = uri_array;

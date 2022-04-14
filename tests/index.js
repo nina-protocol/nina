@@ -4950,3 +4950,80 @@ describe('Hub', async () => {
     );  
   })
 })
+
+describe('Subscription', async () => {
+  let subscription
+  it('should subscribe to an account', async () => {
+    const [_subscription] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-subscription")), 
+        provider.wallet.publicKey.toBuffer(),
+        user1.publicKey.toBuffer(),
+      ],
+      nina.programId
+    );
+    subscription = _subscription
+
+    await nina.rpc.subscriptionSubscribeAccount(
+      {
+        accounts: {
+          from: provider.wallet.publicKey,
+          subscription,
+          to: user1.publicKey,
+          systemProgram: anchor.web3.SystemProgram.programId,
+        }
+      }
+    )
+    const subscriptionAfter = await nina.account.subscription.fetch(subscription)
+    assert.equal(Object.keys(subscriptionAfter.subscriptionType)[0], 'account')
+  })
+
+  it('should unsubscribe from an account', async () => {
+    await nina.rpc.subscriptionUnsubscribe(
+      {
+        accounts: {
+          from: provider.wallet.publicKey,
+          subscription,
+          to: user1.publicKey,
+        }
+      }
+    )
+    await assert.rejects(
+      async () => {
+        await nina.account.subscription.fetch(subscription)
+      }
+    );
+
+  })
+
+  it('should subscribe to a hub', async () => {
+    const hubHandle = 'NinaHub'
+    const [hub] = await anchor.web3.PublicKey.findProgramAddress([
+      Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub")), 
+      Buffer.from(anchor.utils.bytes.utf8.encode(hubHandle))],
+      nina.programId
+    );
+    const [subscription] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-subscription")), 
+        provider.wallet.publicKey.toBuffer(),
+        hub.toBuffer(),
+      ],
+      nina.programId
+    );
+
+    await nina.rpc.subscriptionSubscribeHub(
+      hubHandle, {
+        accounts: {
+          from: provider.wallet.publicKey,
+          subscription,
+          to: hub,
+          systemProgram: anchor.web3.SystemProgram.programId,
+        }
+      }
+    )
+
+    const subscriptionAfter = await nina.account.subscription.fetch(subscription)
+    assert.equal(Object.keys(subscriptionAfter.subscriptionType)[0], 'hub')
+  })
+})
