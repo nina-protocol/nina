@@ -40,7 +40,7 @@ module.exports = withTM({
     return config;
   },
   env: {
-    REACT_APP_CLUSTER: "mainnet",
+    REACT_APP_CLUSTER: "devnet",
   },
   images: {
     domains: ["www.arweave.net"],
