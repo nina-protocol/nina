@@ -43,6 +43,7 @@ pub struct ReleaseInitializeViaHub<'info> {
         seeds = [b"nina-hub-release".as_ref(), hub.key().as_ref(), release.key().as_ref()],
         bump,
         payer = authority,
+        space = 161
     )]
     pub hub_release: Box<Account<'info, HubRelease>>,
     #[account(
@@ -50,6 +51,7 @@ pub struct ReleaseInitializeViaHub<'info> {
         seeds = [b"nina-hub-content".as_ref(), hub.key().as_ref(), release.key().as_ref()],
         bump,
         payer = authority,
+        space = 153
     )]
     pub hub_content: Box<Account<'info, HubContent>>,
     /// CHECK: This is safe because we are deriving the PDA from hub - which is initialized above

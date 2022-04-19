@@ -7,7 +7,7 @@ use crate::errors::ErrorCode;
 #[instruction(hub_handle: String)]
 pub struct HubRemoveCollaborator<'info> {
     #[account(mut)]
-    pub payer: Signer<'info>,
+    pub authority: Signer<'info>,
     #[account(
         seeds = [b"nina-hub".as_ref(), hub_handle.as_bytes()],
         bump,
@@ -17,7 +17,7 @@ pub struct HubRemoveCollaborator<'info> {
         mut,
         seeds = [b"nina-hub-collaborator".as_ref(), hub.key().as_ref(), collaborator.key().as_ref()],
         bump,
-        close = payer
+        close = authority
     )]
     pub hub_collaborator: Account<'info, HubCollaborator>,
     /// CHECK: This is safe because it is checked against hub_collaborator which verifies the HubCollaboratorV1 by seeds
@@ -35,8 +35,8 @@ pub fn handler (
     let hub = ctx.accounts.hub.load()?;
     
     // Only authority of hub and collaborator in the HubCollaborator account can remove the account
-    if ctx.accounts.payer.to_account_info().key != ctx.accounts.collaborator.to_account_info().key && 
-        *ctx.accounts.payer.to_account_info().key != hub.authority {
+    if ctx.accounts.authority.to_account_info().key != ctx.accounts.collaborator.to_account_info().key && 
+        *ctx.accounts.authority.to_account_info().key != hub.authority {
         return Err(error!(ErrorCode::HubCollaboratorCannotBeRemovedFromHubUnauthorized));
     }
 

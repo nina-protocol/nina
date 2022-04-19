@@ -7,7 +7,7 @@ use crate::errors::ErrorCode;
 #[instruction(hub_handle: String)]
 pub struct HubRemoveRelease<'info> {
     #[account(mut)]
-    pub payer: Signer<'info>,
+    pub authority: Signer<'info>,
     #[account(
         seeds = [b"nina-hub".as_ref(), hub_handle.as_bytes()],
         bump,
@@ -17,14 +17,14 @@ pub struct HubRemoveRelease<'info> {
         mut,
         seeds = [b"nina-hub-release".as_ref(), hub.key().as_ref(), release.key().as_ref()],
         bump,
-        close = payer,
+        close = authority,
     )]
     pub hub_release: Account<'info, HubRelease>,
     #[account(
         mut,
         seeds = [b"nina-hub-content".as_ref(), hub.key().as_ref(), release.key().as_ref()],
         bump,
-        close = payer,
+        close = authority,
     )]
     pub hub_content: Account<'info, HubContent>,
     #[account(
@@ -42,8 +42,8 @@ pub fn handler (
     let release = ctx.accounts.release.load()?;
 
     // Only hub curator and release authority can remove a hub release
-    if *ctx.accounts.payer.to_account_info().key != hub.authority &&
-       *ctx.accounts.payer.to_account_info().key != release.authority {
+    if *ctx.accounts.authority.to_account_info().key != hub.authority &&
+       *ctx.accounts.authority.to_account_info().key != release.authority {
         return Err(error!(ErrorCode::HubReleaseCannotBeRemovedFromHubUnauthorized));
     }
 

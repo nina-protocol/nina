@@ -27,6 +27,7 @@ pub struct HubInitWithCredit<'info> {
         seeds = [b"nina-hub-collaborator".as_ref(), hub.key().as_ref(), authority.key().as_ref()],
         bump,
         payer = authority,
+        space = 147,
     )]
     pub hub_collaborator: Account<'info, HubCollaborator>,
     #[account(

@@ -10,6 +10,7 @@ pub struct SubscriptionSubscribeAccount<'info> {
         seeds = [b"nina-subscription", from.key().as_ref(), to.key().as_ref()],
         bump,
         payer = from,
+        space = 113
     )]
     pub subscription: Account<'info, Subscription>,
     /// CHECK: This is safe because we don't need to verify anything about

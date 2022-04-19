@@ -12,12 +12,12 @@ use crate::errors::ErrorCode;
 )]
 pub struct HubAddCollaborator<'info> {
     #[account(mut)]
-    pub payer: Signer<'info>,
+    pub authority: Signer<'info>,
     #[account(
-        seeds = [b"nina-hub-collaborator".as_ref(), hub.key().as_ref(), payer.key().as_ref()],
+        seeds = [b"nina-hub-collaborator".as_ref(), hub.key().as_ref(), authority.key().as_ref()],
         bump,
     )]
-    pub payer_hub_collaborator: Account<'info, HubCollaborator>,
+    pub authority_hub_collaborator: Account<'info, HubCollaborator>,
     #[account(
         seeds = [b"nina-hub".as_ref(), hub_handle.as_bytes()],
         bump,
@@ -27,7 +27,8 @@ pub struct HubAddCollaborator<'info> {
         init,
         seeds = [b"nina-hub-collaborator".as_ref(), hub.key().as_ref(), collaborator.key().as_ref()],
         bump,
-        payer = payer,
+        payer = authority,
+        space = 147,
     )]
     pub hub_collaborator: Account<'info, HubCollaborator>,
     /// CHECK: This is safe because we are initializing the HubCollaborator account with this value
@@ -43,14 +44,14 @@ pub fn handler (
     allowance: i8,
     _hub_handle: String,
 ) -> Result<()> {
-    let payer_hub_collaborator = &ctx.accounts.payer_hub_collaborator;
+    let authority_hub_collaborator = &ctx.accounts.authority_hub_collaborator;
 
-    if !payer_hub_collaborator.can_add_collaborator {
+    if !authority_hub_collaborator.can_add_collaborator {
         return Err(error!(ErrorCode::HubCollaboratorCannotAddCollaborator));
     }
     
     let hub_collaborator = &mut ctx.accounts.hub_collaborator;
-    hub_collaborator.added_by = ctx.accounts.payer.key();
+    hub_collaborator.added_by = ctx.accounts.authority.key();
     hub_collaborator.hub = ctx.accounts.hub.key();
     hub_collaborator.collaborator = ctx.accounts.collaborator.key();
     hub_collaborator.can_add_content = can_add_content;

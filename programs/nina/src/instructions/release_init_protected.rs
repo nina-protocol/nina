@@ -16,6 +16,7 @@ pub struct ReleaseInitializeProtected<'info> {
         seeds = [b"nina-release".as_ref(), release_mint.key().as_ref()],
         bump,
         payer = payer,
+        space = 1210
     )]
     pub release: AccountLoader<'info, Release>,
     /// CHECK: This is safe because release is being initialized above

@@ -3,6 +3,7 @@ use crate::state::*;
 
 #[account(zero_copy)]
 #[repr(packed)]
+// size = 8 + 32 + 8 + 8 + 100 + 100 + 32 (+ 40) = 328
 pub struct Post {
     pub author: Pubkey,
     pub created_at: i64,

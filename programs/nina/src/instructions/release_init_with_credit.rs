@@ -11,6 +11,7 @@ pub struct ReleaseInitializeWithCredit<'info> {
         seeds = [b"nina-release".as_ref(), release_mint.key().as_ref()],
         bump,
         payer = payer,
+        space = 1210
     )]
     pub release: AccountLoader<'info, Release>,
     /// CHECK: This is safe because it is derived from release which is checked above

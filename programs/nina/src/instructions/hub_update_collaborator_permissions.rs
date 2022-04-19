@@ -12,12 +12,12 @@ use crate::errors::ErrorCode;
 )]
 pub struct HubUpdateCollaboratorPermissions<'info> {
     #[account(mut)]
-    pub payer: Signer<'info>,
+    pub authority: Signer<'info>,
     #[account(
-        seeds = [b"nina-hub-collaborator".as_ref(), hub.key().as_ref(), payer.key().as_ref()],
+        seeds = [b"nina-hub-collaborator".as_ref(), hub.key().as_ref(), authority.key().as_ref()],
         bump,
     )]
-    pub payer_hub_collaborator: Account<'info, HubCollaborator>,
+    pub authority_hub_collaborator: Account<'info, HubCollaborator>,
     #[account(
         seeds = [b"nina-hub".as_ref(), hub_handle.as_bytes()],
         bump,
@@ -29,7 +29,7 @@ pub struct HubUpdateCollaboratorPermissions<'info> {
         bump,
     )]
     pub hub_collaborator: Account<'info, HubCollaborator>,
-    /// CHECK: This is safe because we are initializing the HubCollaborator account with this value
+    /// CHECK: This is safe because we are checking the HubCollaborator above
     pub collaborator: UncheckedAccount<'info>,
 }
 
@@ -40,7 +40,7 @@ pub fn handler (
     allowance: i8,
     _hub_handle: String,
 ) -> Result<()> {  
-    if ctx.accounts.payer.key() != ctx.accounts.hub.load()?.authority {
+    if ctx.accounts.authority.key() != ctx.accounts.hub.load()?.authority {
       return Err(error!(ErrorCode::HubCollaboratorCannotUpdateHubCollaboratorUnauthorized))
     }
   

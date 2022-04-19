@@ -2,6 +2,7 @@ use anchor_lang::prelude::*;
 
 #[account]
 #[derive(Default)]
+// space =  8 + 32 + 32 + 32 + 32 + 4 = 140
 pub struct Vault {
     pub authority: Pubkey,
     pub vault_signer: Pubkey,

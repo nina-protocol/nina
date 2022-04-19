@@ -20,7 +20,7 @@ pub struct PostInitViaHub<'info> {
         seeds = [b"nina-post".as_ref(), hub.key().as_ref(), slug.as_ref()],
         bump,
         payer = author,
-        space = 8 + 32 + 8 + 8 + 100 + 100 + 32 + 40
+        space = 328
     )]
     pub post: AccountLoader<'info, Post>,
     #[account(
@@ -28,7 +28,7 @@ pub struct PostInitViaHub<'info> {
         seeds = [b"nina-hub-post".as_ref(), hub.key().as_ref(), post.key().as_ref()],
         bump,
         payer = author,
-        space = 8 + 32 + 32 + 32 + 100 + 40
+        space = 244
     )]
     pub hub_post: AccountLoader<'info, HubPost>,
     #[account(
@@ -36,6 +36,7 @@ pub struct PostInitViaHub<'info> {
         seeds = [b"nina-hub-content".as_ref(), hub.key().as_ref(), post.key().as_ref()],
         bump,
         payer = author,
+        space = 153
     )]
     pub hub_content: Account<'info, HubContent>,
     #[account(

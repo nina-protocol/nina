@@ -12,6 +12,7 @@ pub struct SubscriptionSubscribeHub<'info> {
         seeds = [b"nina-subscription", from.key().as_ref(), to.key().as_ref()],
         bump,
         payer = from,
+        space = 113
     )]
     pub subscription: Account<'info, Subscription>,
     #[account(

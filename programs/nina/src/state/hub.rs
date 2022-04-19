@@ -5,6 +5,7 @@ use crate::errors::ErrorCode;
 
 #[account(zero_copy)]
 #[repr(packed)]
+// size = 8 + 32 + 32 + 100 + 100 + 8 + 8 + 8 + 1 (+ 40 extra) = 337
 pub struct Hub {
 	pub authority: Pubkey,
 	pub hub_signer: Pubkey,
@@ -70,6 +71,7 @@ impl Hub {
 
 #[account]
 #[derive(Default)]
+// size = 8 + 32 + 8 + 32  + 1 + 32 + 8 (+ 40) = 161
 pub struct HubRelease {
 	pub added_by: Pubkey,
 	pub datetime: i64,
@@ -93,6 +95,7 @@ impl Default for HubContentType {
 
 #[account]
 #[derive(Default)]
+// size = 8 + 32 + 32 + 32 + 1 + 8 (+ 40) = 153
 pub struct HubContent {
 	pub added_by: Pubkey,
 	pub hub: Pubkey,
@@ -103,6 +106,7 @@ pub struct HubContent {
 
 #[account(zero_copy)]
 #[repr(packed)]
+// size = 8 + 32 + 32 + 32 + 100 (+ 40) = 244
 pub struct HubPost {
 	pub hub: Pubkey,
 	pub post: Pubkey,
@@ -112,6 +116,7 @@ pub struct HubPost {
 
 #[account]
 #[derive(Default)]
+// size = 8 + 32 + 32 + 1 + 32 + 1 + 1 (+ 40) = 147
 pub struct HubCollaborator {
 	pub added_by: Pubkey,
 	pub hub: Pubkey,

@@ -14,6 +14,7 @@ pub struct VaultInitialize<'info> {
         seeds = [b"nina-vault".as_ref()],
         bump,
         payer = authority,
+        space = 140
     )]
     pub vault: Account<'info, Vault>,
     /// CHECK: This is safe because we are initializing the vault
