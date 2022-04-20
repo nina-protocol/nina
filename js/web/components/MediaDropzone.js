@@ -116,7 +116,7 @@ const MediaDropzone = ({
   };
   const validateFileSize = (fileWithMeta) => {
     const size = fileWithMeta.file.size / 1000000;
-    if (size > 80) {
+    if (size > 100) {
       return true;
     }
     return false;
