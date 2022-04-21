@@ -50,7 +50,8 @@ impl Post {
         hub_content.child = hub_post_account_loader.key();
         hub_content.content_type = HubContentType::Post;
         hub_content.datetime = post.created_at;
-    
+        hub_content.visible = true;
+
         let mut hub_post = hub_post_account_loader.load_init()?;
         hub_post.hub = hub.key();
         hub_post.post = post_account_loader.key();

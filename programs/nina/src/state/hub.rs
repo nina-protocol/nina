@@ -32,6 +32,7 @@ impl Hub {
 		hub_content.child = hub_release.key();
     hub_content.content_type = HubContentType::NinaReleaseV1;
     hub_content.datetime = Clock::get()?.unix_timestamp;
+		hub_content.visible = true;
 
 		hub_release.hub = hub.key();
     hub_release.release = release.key();
@@ -95,13 +96,14 @@ impl Default for HubContentType {
 
 #[account]
 #[derive(Default)]
-// size = 8 + 32 + 32 + 32 + 1 + 8 (+ 40) = 153
+// size = 8 + 32 + 32 + 32 + 1 + 8 + 1 (+ 39) = 153
 pub struct HubContent {
 	pub added_by: Pubkey,
 	pub hub: Pubkey,
 	pub child: Pubkey,
 	pub content_type: HubContentType,
 	pub datetime: i64,
+	pub visible: bool,
 }
 
 #[account(zero_copy)]
@@ -178,11 +180,12 @@ pub struct HubReleaseAdded {
 }
 
 #[event]
-pub struct HubReleaseRemoved {
+pub struct HubContentToggled {
 	#[index]
 	pub public_key: Pubkey,
 	pub hub: Pubkey,
-	pub release: Pubkey,
+	pub content_account: Pubkey,
+	pub visible: bool,
 }
 
 #[event]

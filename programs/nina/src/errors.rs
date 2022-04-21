@@ -50,8 +50,8 @@ pub enum ErrorCode {
     HubCollaboratorCannotBeRemovedFromHubUnauthorized,
     #[msg("HubCollaborator Cannot Remove Authority From Hub")]
     HubCollaboratorCannotRemoveAuthorityFromHub,
-    #[msg("HubRelease Cannot Be Removed From Hub Unauthorized")]
-    HubReleaseCannotBeRemovedFromHubUnauthorized,
+    #[msg("HubContent Cannot Be Toggled Unauthorized")]
+    HubContentCannotBeToggledUnauthorized,
     #[msg("Hub Cant withdraw more than deposited")]
     HubWithdrawAmountTooHigh,
     #[msg("Hub Withdraw amount must be greater than 0")]

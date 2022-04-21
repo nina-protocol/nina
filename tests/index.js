@@ -4483,7 +4483,7 @@ describe('Hub', async () => {
     )
   })
 
-  it('should not remove release from hub if unauthorized', async () => {
+  it('should not toggle hubContent visibility if unauthorized', async () => {
     const [hubRelease] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
@@ -4500,17 +4500,15 @@ describe('Hub', async () => {
       ],
       nina.programId
     );
-
     await assert.rejects(
       async () => {
-        await nina.rpc.hubRemoveRelease(
+        await nina.rpc.hubContentToggleVisibility(
           hubParams.handle, {
           accounts: {
             authority: user2.publicKey,
             hub,
-            hubRelease,
             hubContent,
-            release,
+            contentAccount: release,
             systemProgram: anchor.web3.SystemProgram.programId,
           },
           signers: [user2]
@@ -4577,7 +4575,7 @@ describe('Hub', async () => {
     )
   })
 
-  it('should remove release from hub', async () => {
+  it('should toggle Hub Content visibility', async () => {
     const [hubRelease] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
@@ -4620,22 +4618,18 @@ describe('Hub', async () => {
       }
     )
 
-    await nina.rpc.hubRemoveRelease(
+    await nina.rpc.hubContentToggleVisibility(
       hubParams.handle, {
       accounts: {
         authority: provider.wallet.publicKey,
         hub,
-        hubRelease,
         hubContent,
-        release: release2,
+        contentAccount: release2,
         systemProgram: anchor.web3.SystemProgram.programId,
       }
     })
-    await assert.rejects(
-      async () => {
-        await nina.account.hubRelease.fetch(hubRelease)
-      }
-    );
+    const hubContentAfter = await nina.account.hubContent.fetch(hubContent);
+    assert.equal(hubContentAfter.visible, false)
   })
 
   it('Withdraws From the Hub to Hub Authority', async () => {

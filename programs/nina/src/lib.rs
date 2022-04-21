@@ -211,11 +211,11 @@ pub mod nina {
         instructions::hub_remove_collaborator::handler(ctx, hub_handle)
     }
 
-    pub fn hub_remove_release(
-        ctx: Context<HubRemoveRelease>,
+    pub fn hub_content_toggle_visibility(
+        ctx: Context<HubContentToggleVisibility>,
         hub_handle: String
     ) -> Result<()> {
-        instructions::hub_remove_release::handler(ctx, hub_handle)
+        instructions::hub_content_toggle_visibility::handler(ctx, hub_handle)
     }
 
     pub fn hub_update_config(
