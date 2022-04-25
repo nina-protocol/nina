@@ -114,7 +114,7 @@ impl Release {
         let signer = &[&seeds[..]];
         let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer);
         token::mint_to(cpi_ctx, 1)?;
-    
+        
         if release.payment_mint == wrapped_sol::ID {
             invoke(
                 &close_account(

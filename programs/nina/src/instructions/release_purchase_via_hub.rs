@@ -3,8 +3,8 @@ use anchor_lang::solana_program::{
     program_option::{COption},
 };
 use anchor_spl::token::{self, TokenAccount, Token, Transfer, Mint};
-
 use crate::state::*;
+use crate::utils::{wrapped_sol};
 
 #[derive(Accounts)]
 #[instruction(
@@ -88,9 +88,29 @@ pub fn handler(
     amount: u64,
     _hub_handle: String,
 ) -> Result<()> {
+    // Transfer referral fee from Payer to Hub Wallet
+    let cpi_accounts = Transfer {
+        from: ctx.accounts.payer_token_account.to_account_info(),
+        to: ctx.accounts.hub_wallet.to_account_info(),
+        authority: ctx.accounts.payer.to_account_info().clone(),
+    };
+    let divide_by_amount = if ctx.accounts.payer_token_account.mint == wrapped_sol::ID {1000000000} else {1000000};
+    let mut hub = ctx.accounts.hub.load_mut()?;
+    let referral_amount = u64::from(amount)
+        .checked_mul(hub.referral_fee)
+        .unwrap()
+        .checked_div(divide_by_amount)
+        .unwrap();
+    let cpi_program = ctx.accounts.token_program.to_account_info().clone();
+    let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);    
+    token::transfer(cpi_ctx, referral_amount)?;
+
     let hub_release = &mut ctx.accounts.hub_release;
     hub_release.sales = u64::from(hub_release.sales)
         .checked_add(1)
+        .unwrap();
+    hub.total_fees_earned = u64::from(hub.total_fees_earned)
+        .checked_add(referral_amount)
         .unwrap();
 
     Release::release_purchase_handler(
@@ -106,26 +126,6 @@ pub fn handler(
         ctx.accounts.clock.clone(),
         amount,
     )?;
-
-    // Transfer referral fee from Payer to Hub curator
-    let cpi_accounts = Transfer {
-        from: ctx.accounts.payer_token_account.to_account_info(),
-        to: ctx.accounts.hub_wallet.to_account_info(),
-        authority: ctx.accounts.payer.to_account_info().clone(),
-    };
-    let cpi_program = ctx.accounts.token_program.to_account_info().clone();
-    let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
-    let mut hub = ctx.accounts.hub.load_mut()?;
-    let referral_amount = u64::from(amount)
-        .checked_mul(hub.referral_fee)
-        .unwrap()
-        .checked_div(1000000)
-        .unwrap();
-    token::transfer(cpi_ctx, referral_amount)?;
-
-    hub.total_fees_earned = u64::from(hub.total_fees_earned)
-        .checked_add(referral_amount)
-        .unwrap();
 
     emit!(ReleaseSoldViaHub {
         public_key: *ctx.accounts.release.to_account_info().key,
