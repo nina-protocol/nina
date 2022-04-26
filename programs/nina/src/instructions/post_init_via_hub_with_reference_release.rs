@@ -8,7 +8,7 @@ use crate::state::*;
     slug: String,
     _uri: String,
 )]
-pub struct PostInitViaHubWithReferenceContent<'info> {
+pub struct PostInitViaHubWithReferenceRelease<'info> {
     #[account(mut)]
     pub author: Signer<'info>,
     #[account(
@@ -40,7 +40,7 @@ pub struct PostInitViaHubWithReferenceContent<'info> {
         space = 153
     )]
     pub hub_content: Account<'info, HubContent>,
-    pub reference_hub_content: Account<'info, HubContent>,
+    pub reference_release: AccountLoader<'info, Release>,
     #[account(
         mut,
         seeds = [b"nina-hub-collaborator".as_ref(), hub.key().as_ref(), author.key().as_ref()],
@@ -52,7 +52,7 @@ pub struct PostInitViaHubWithReferenceContent<'info> {
 }
 
 pub fn handler (
-    ctx: Context<PostInitViaHubWithReferenceContent>,
+    ctx: Context<PostInitViaHubWithReferenceRelease>,
     _hub_handle: String,
     slug: String,
     uri: String,
@@ -65,7 +65,7 @@ pub fn handler (
         &mut ctx.accounts.hub_post,
         &mut ctx.accounts.hub_content,
         &mut ctx.accounts.hub_collaborator,
-        Some(ctx.accounts.reference_hub_content.clone()),
+        Some(ctx.accounts.reference_release.clone()),
         slug,
         uri
    )?;

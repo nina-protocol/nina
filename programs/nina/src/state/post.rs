@@ -20,7 +20,7 @@ impl Post {
         hub_post_account_loader: &mut AccountLoader<'info, HubPost>,
         hub_content_account: &mut Account<'info, HubContent>,
         hub_collaborator: &mut Account<'info, HubCollaborator>,
-        reference_hub_content: Option<Account<'info, HubContent>>,
+        reference_release: Option<AccountLoader<'info, Release>>,
         slug: String,
         uri: String,    
     ) -> Result<()> {    
@@ -50,13 +50,15 @@ impl Post {
         hub_content.datetime = post.created_at;
         hub_content.visible = true;
         hub_content.published_through_hub = true;
-        
+
         let mut hub_post = hub_post_account_loader.load_init()?;
         hub_post.hub = hub.key();
         hub_post.post = post_account_loader.key();
         hub_post.version_uri = uri_array;
-        if reference_hub_content.is_some() {
-            hub_post.reference_hub_content = Some(reference_hub_content.unwrap().key());
+
+        if reference_release.is_some() {
+            hub_post.reference_content = Some(reference_release.unwrap().key());
+            hub_post.reference_content_type = HubContentType::NinaReleaseV1;
         }      
 
         emit!(PostInitializedViaHub {

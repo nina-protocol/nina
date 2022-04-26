@@ -245,13 +245,13 @@ pub mod nina {
         instructions::post_init_via_hub::handler(ctx, hub_handle, slug, uri)
     }
 
-    pub fn post_init_via_hub_with_reference_content(
-        ctx: Context<PostInitViaHubWithReferenceContent>,
+    pub fn post_init_via_hub_with_reference_release(
+        ctx: Context<PostInitViaHubWithReferenceRelease>,
         hub_handle: String,
         slug: String,
         uri: String,
     ) -> Result<()> {
-        instructions::post_init_via_hub_with_reference_content::handler(ctx, hub_handle, slug, uri)
+        instructions::post_init_via_hub_with_reference_release::handler(ctx, hub_handle, slug, uri)
     }
 
     pub fn post_update_via_hub_post(

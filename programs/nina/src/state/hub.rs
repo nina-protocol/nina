@@ -102,12 +102,13 @@ pub struct HubContent {
 
 #[account(zero_copy)]
 #[repr(packed)]
-// size = 8 + 32 + 32 + 32 + 100 (+ 40) = 244
+// size = 8 + 32 + 32 + 32 + 100 + 1 (+ 39) = 244
 pub struct HubPost {
 	pub hub: Pubkey,
 	pub post: Pubkey,
-	pub reference_hub_content: Option<Pubkey>,
+	pub reference_content: Option<Pubkey>,
 	pub version_uri:  [u8; 100],
+	pub reference_content_type: HubContentType,
 }
 
 #[account]

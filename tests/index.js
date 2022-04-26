@@ -3849,7 +3849,7 @@ describe('Hub', async () => {
     assert.equal(hubContentAfter.publishedThroughHub, true)
   })
 
-  let referenceHubContent
+  let referenceRelease
   it('should create a release via hub as user', async () => {
     const paymentMint = usdcMint;
     hubReleaseMint = anchor.web3.Keypair.generate();
@@ -3912,7 +3912,7 @@ describe('Hub', async () => {
       nina.programId
     );
     hubContent = _hubContent
-    referenceHubContent = _hubContent
+    referenceRelease = releaseAccount
 
     const config = {
       amountTotalSupply: new anchor.BN(1000),
@@ -4867,7 +4867,7 @@ describe('Hub', async () => {
     );
     hubCollaborator = _hubCollaborator
 
-    await nina.rpc.postInitViaHubWithReferenceContent(
+    await nina.rpc.postInitViaHubWithReferenceRelease(
       hubParams.handle,
       slug,
       uri, {
@@ -4878,16 +4878,17 @@ describe('Hub', async () => {
           hubPost,
           hubContent,
           hubCollaborator,
-          referenceHubContent,
+          referenceRelease,
           systemProgram: anchor.web3.SystemProgram.programId,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         },
       }
     );
     const hubPostAfter = await nina.account.hubPost.fetch(hubPost)
+    console.log("hubPostAfter ::> ", hubPostAfter)
     const postAfter = await nina.account.post.fetch(post)
     assert.equal(encrypt.decode(hubPostAfter.versionUri), uri)
-    assert.equal(hubPostAfter.referenceHubContent.toBase58(), referenceHubContent.toBase58())
+    assert.equal(hubPostAfter.referenceContent.toBase58(), referenceRelease.toBase58())
     assert.equal(encrypt.decode(postAfter.uri), uri)
     assert.equal(encrypt.decode(postAfter.slug), slug)
   })  
