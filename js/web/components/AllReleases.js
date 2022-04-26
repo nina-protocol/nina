@@ -24,10 +24,15 @@ const Releases = () => {
   const [listView, setListView] = useState(false)
   const [pendingFetch, setPendingFetch] = useState(false)
   const [totalCount, setTotalCount] = useState(null)
+  const scrollRef = useRef();
 
   useEffect(() => {
-    getReleasesAll()
-  }, [])
+    getReleasesAll();
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   useEffect(() => {
     if (allReleases.length > 0) {
@@ -43,9 +48,10 @@ const Releases = () => {
     setListView(!listView)
   }
 
-  const handleScroll = (e) => {
+  const handleScroll = () => {
     const bottom =
-      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight
+      scrollRef.current.getBoundingClientRect().bottom - 250 <=
+      window.innerHeight;
     if (
       bottom &&
       !pendingFetch &&
@@ -63,8 +69,8 @@ const Releases = () => {
         <title>{`Nina: All Releases`}</title>
         <meta name="description" content={'Nina: All Releases'} />
       </Head>
-      <ScrollablePageWrapper onScroll={debounce((e) => handleScroll(e), 500)}>
-        <AllReleasesWrapper>
+      <ScrollablePageWrapper onScroll={debounce(() => handleScroll(), 500)}>
+        <AllReleasesWrapper ref={scrollRef}>
           <StyledReleaseSearch />
           <CollectionHeader
             onClick={handleViewChange}

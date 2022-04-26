@@ -124,7 +124,7 @@ const NavDrawer = () => {
                 <ListItem button key={link}>
                   <StyledListItemText>
                     <a
-                      href="https://radio.nina.market"
+                      href="https://radio.ninaprotocol.com"
                       target="_blank"
                       rel="noreferrer"
                       className={`${classes.drawerLink}`}
@@ -190,9 +190,9 @@ const NavDrawer = () => {
             {list()}
 
             <DrawerFooter>
-              <Box>
+              <Box display="flex">
                 <a
-                  href="https://twitter.com/nina_market_"
+                  href="https://twitter.com/ninaprotocol"
                   target="_blank"
                   rel="noreferrer"
                   style={{ paddingRight: '15px' }}
@@ -207,7 +207,7 @@ const NavDrawer = () => {
                   <FontAwesomeIcon icon={faDiscord} />
                 </a>
                 <a
-                  href="https://www.instagram.com/nina_market__/"
+                  href="https://www.instagram.com/ninaprotocol/"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -273,15 +273,18 @@ const StyledMenuButton = styled(Button)(({ theme }) => ({
 }))
 
 const DrawerFooter = styled(Box)(() => ({
-  position: 'absolute',
-  bottom: '10px',
-  width: '75%',
-  left: '60px',
-  transform: 'translateY(-50%)',
-  display: 'flex',
-  justifyContent: 'space-between',
-  '& a': {
-    paddingRight: '15px',
+  position: "absolute",
+  bottom: "10px",
+  width: "75%",
+  left: "60px",
+  transform: "translateY(-50%)",
+  display: "flex",
+  justifyContent: "space-between",
+  "& a": {
+    paddingRight: "15px",
+    "& svg": {
+      height: "15px !important",
+    },
   },
 }))
 

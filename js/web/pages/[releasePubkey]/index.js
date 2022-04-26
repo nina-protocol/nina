@@ -24,8 +24,8 @@ const ReleasePage = (props) => {
           content={`${metadata?.properties.artist} - "${metadata?.properties.title}": ${metadata?.description} \n Published on Nina.`}
         />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@nina_market_" />
-        <meta name="twitter:creator" content="@nina_market_" />
+        <meta name="twitter:site" content="@ninaprotocol" />
+        <meta name="twitter:creator" content="@ninaprotocol" />
         <meta name="twitter:image:type" content="image/jpg" />
         <meta
           name="twitter:title"

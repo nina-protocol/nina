@@ -12,18 +12,7 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 import Dots from './Dots'
 
 const RecentlyPublished = (props) => {
-  const { releases } = props
-  const artistCount = {}
-  const releasesStack = []
-
-  releases?.forEach((release) => {
-    if (!artistCount[release.metadata.properties.artist]) {
-      releasesStack.push(release)
-      artistCount[release.metadata.properties.artist] = 1
-    } else {
-      artistCount[release.metadata.properties.artist] += 1
-    }
-  })
+  const { releases } = props;
 
   const responsiveSettings = [
     {
@@ -64,7 +53,7 @@ const RecentlyPublished = (props) => {
     />
   )
 
-  if (releasesStack.length === 0) {
+  if (releases.length === 0) {
     return (
       <Box
         sx={{
@@ -80,32 +69,24 @@ const RecentlyPublished = (props) => {
   }
   return (
     <RecentlyPublishedWrapper>
-      {releasesStack?.length > 0 && (
+      {releases?.length > 0 && (
         <Slider
-          dots="false"
-          infinite="true"
-          speed={1500}
-          autoplay="true"
+          dots={false}
+          infinite={true}
+          speed={1000}
           responsive={responsiveSettings}
-          autoplaySpeed={2500}
           slidesToShow={3}
-          slidesToScroll={1}
+          slidesToScroll={3}
           alignItems="left"
           nextArrow={<CustomNextArrow />}
           prevArrow={<CustomPrevArrow />}
         >
-          {releasesStack.map((release, i) => {
-            const imageUrl = release.metadata.image
-            const isMultiple =
-              artistCount[release.metadata.properties.artist] > 1
+          {releases?.map((release, i) => {
+            const imageUrl = release.metadata.image;
             return (
               <ReleaseSlideWrapper key={i}>
                 <ReleaseSlide key={i}>
-                  <Link
-                    href={`/${release.releasePubkey}${
-                      isMultiple ? '/related' : ''
-                    }`}
-                  >
+                  <Link href={`/${release.releasePubkey}`}>
                     <a>
                       <Image
                         src={imageUrl}
@@ -117,20 +98,11 @@ const RecentlyPublished = (props) => {
                       />
                     </a>
                   </Link>
-                  <ReleaseCopy sx={{ display: 'flex' }}>
-                    {isMultiple && (
-                      <Typography variant="body2">
-                        {`${
-                          artistCount[release.metadata.properties.artist]
-                        } releases by ${release.metadata.properties.artist}`}
-                      </Typography>
-                    )}
-                    {!isMultiple && (
-                      <Typography variant="body2">
-                        {release.metadata.properties.artist},{' '}
-                        <i>{release.metadata.properties.title}</i>
-                      </Typography>
-                    )}
+                  <ReleaseCopy sx={{ display: "flex" }}>
+                    <Typography variant="body2">
+                      {release.metadata.properties.artist},{" "}
+                      <i>{release.metadata.properties.title}</i>
+                    </Typography>
                   </ReleaseCopy>
                 </ReleaseSlide>
               </ReleaseSlideWrapper>

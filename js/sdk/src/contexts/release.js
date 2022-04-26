@@ -1218,8 +1218,7 @@ const releaseContextHelper = ({
   }
 
   const getReleasesPublishedByUser = async (publicKey) => {
-    await getReleasesHandler(publicKey, lookupTypes.REVENUE_SHARE)
-    await getReleasesHandler(publicKey, lookupTypes.PUBLISHED_BY)
+    await getReleasesHandler(publicKey, lookupTypes.REVENUE_SHARE) 
   }
 
   const getRelatedForRelease = async (releasePubkey) => {

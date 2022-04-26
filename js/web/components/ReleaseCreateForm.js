@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react'
-import { styled } from '@mui/material/styles'
-import nina from "@nina-protocol/nina-sdk";
-import { withFormik, Form, Field } from 'formik'
-import Typography from '@mui/material/Typography'
-import { TextField } from '@mui/material'
-import Slider from '@mui/material/Slider'
-import Box from '@mui/material/Box'
+import React, { useEffect } from "react";
+import { styled } from "@mui/material/styles";
+import ninaCommon from "nina-common";
+import { withFormik, Form, Field } from "formik";
+import Typography from "@mui/material/Typography";
+import { TextField } from "@mui/material";
+import Slider from "@mui/material/Slider";
+import Box from "@mui/material/Box";
+import Fade from '@mui/material/Fade';
 
 const { formatPlaceholder } = nina.utils
 
@@ -177,6 +178,7 @@ const ReleaseCreateForm = ({
               step={1}
               min={0}
               max={100}
+              value={values.resalePercentage}
               name="resalePercentage"
               onChange={(event, value) => {
                 setFieldValue('resalePercentage', value)
@@ -184,6 +186,11 @@ const ReleaseCreateForm = ({
               {...field}
               {...form}
             />
+              <Fade in={values.resalePercentage > 20}>
+                <Warning variant="subtitle1" align="left">
+                  Are you certain about a {values.resalePercentage}% resale fee? High resale may discourage potential collectors.
+                </Warning>
+              </Fade>
           </Box>
         </Box>
       </Form>
@@ -218,6 +225,13 @@ const Root = styled('div')(({ theme }) => ({
   },
 }))
 
+const Warning = styled(Typography)(({theme}) => ({
+  position: 'absolute',
+  textTransform: 'none !important',
+  color: theme.palette.red,
+  opacity: '85%'
+}));
+
 export default withFormik({
   enableReinitialize: true,
   validationSchema: (props) => {
@@ -225,13 +239,13 @@ export default withFormik({
   },
   mapPropsToValues: () => {
     return {
-      artist: 'new test',
-      title: 'test title  ',
-      description: 'descriptioj',
-      catalogNumber: 'CLG1',
-      amount: 10,
-      retailPrice: 5,
-      resalePercentage: 0,
-    }
+      artist: "",
+      title: "",
+      description: "",
+      catalogNumber: "",
+      amount: undefined,
+      retailPrice: undefined,
+      resalePercentage: 10,
+    };
   },
 })(ReleaseCreateForm)

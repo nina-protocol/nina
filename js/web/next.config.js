@@ -44,6 +44,8 @@ module.exports = withTM({
     REACT_APP_CLUSTER: 'devnet',
   },
   images: {
-    domains: ['www.arweave.net'],
+    domains: ["www.arweave.net", "arweave.net"],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    minimumCacheTTL: 60,
   },
 })

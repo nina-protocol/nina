@@ -3,8 +3,7 @@ import NextImage from 'next/image'
 import { DateTime } from 'luxon'
 
 function Image({ src, height, width, layout, priority, release }) {
-  const [ready, setReady] = useState(false)
-
+  const [ready, setReady] = useState(false);
   const handleLoad = (event, byPass) => {
     event.persist()
     if (event.target.srcset || byPass) {
