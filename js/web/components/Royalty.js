@@ -12,8 +12,7 @@ import ListItemText from '@mui/material/ListItemText'
 import { useWallet } from '@solana/wallet-adapter-react'
 import nina from "@nina-protocol/nina-sdk";
 import RoyaltyRecipientForm from './RoyaltyRecipientForm'
-const {ReleaseContext} = nina.contexts
-const {NinaClient} = nina.utils
+const {NinaContext, ReleaseContext} = nina.contexts
 
 const Royalty = (props) => {
   const { release, releasePubkey } = props
@@ -27,6 +26,7 @@ const Royalty = (props) => {
   const [userDisplayShare, setUserDisplayShare] = useState(undefined)
   const [formToggleText, setFormToggleText] = useState('Add Royalty Recipient')
   const { collectRoyaltyForRelease } = useContext(ReleaseContext)
+  const { ninaClient } = useContext(NinaContext);
 
   useEffect(() => {
     if (release?.royaltyRecipients) {
@@ -145,7 +145,7 @@ const Royalty = (props) => {
 
                     const owed =
                       walletAuthorizedToCollect && recipient.owed.toNumber() > 0
-                        ? `owed: ${NinaClient.nativeToUiString(
+                        ? `owed: ${ninaClient.nativeToUiString(
                             recipient.owed.toNumber(),
                             release.paymentMint
                           )}`

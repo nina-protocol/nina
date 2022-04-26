@@ -20,7 +20,8 @@ const ReleaseTileList = (props) => {
     router.push({
       pathname: `/${releasePubkey}`,
     })
-  }
+  } 
+  console.log("releases RTL ::> ", releases)
 
   return (
     <Box>

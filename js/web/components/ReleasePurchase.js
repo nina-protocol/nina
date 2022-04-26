@@ -13,7 +13,6 @@ import Dots from './Dots'
 import ReleaseSettings from './ReleaseSettings'
 
 const { ReleaseContext, NinaContext, ExchangeContext } = nina.contexts
-const { NinaClient } = nina.utils
 
 const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, router, relatedReleases } = props
@@ -21,7 +20,7 @@ const ReleasePurchase = (props) => {
   const wallet = useWallet()
   const { releasePurchase, releasePurchasePending, releaseState, getRelease } =
     useContext(ReleaseContext)
-  const { getAmountHeld, collection } = useContext(NinaContext)
+  const { getAmountHeld, collection, ninaClient } = useContext(NinaContext)
   const {
     exchangeState,
     filterExchangesForReleaseBuySell,
@@ -124,11 +123,11 @@ const ReleasePurchase = (props) => {
 
   const buttonText =
     release.remainingSupply > 0
-      ? `Buy $${NinaClient.nativeToUiString(
+      ? `Buy $${ninaClient.nativeToUiString(
           release.price.toNumber(),
           release.paymentMint
         )}`
-      : `Sold Out ($${NinaClient.nativeToUi(
+      : `Sold Out ($${ninaClient.nativeToUi(
           release.price.toNumber(),
           release.paymentMint
         ).toFixed(2)})`

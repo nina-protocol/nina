@@ -293,7 +293,7 @@ const ninaContextHelper = ({
                 Buffer.from(anchor.utils.bytes.utf8.encode('nina-release')),
                 mint.toBuffer(),
               ],
-              nina.program.programId
+              program.programId
             )
 
             releaseAmountMap[release.toBase58()] = account.tokenAmount.uiAmount
@@ -337,7 +337,7 @@ const ninaContextHelper = ({
       try {
         const updatedCollection = {}
         const program = await ninaClient.useProgram()
-        const release = await nina.program.account.release.fetch(
+        const release = await program.account.release.fetch(
           new anchor.web3.PublicKey(releasePubkey)
         )
 
