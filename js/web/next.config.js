@@ -25,12 +25,23 @@ module.exports = withTM({
     }
     config.resolve.alias = {
       ...config.resolve.alias,
-      react: path.resolve('../node_modules/react')
+      react: path.resolve('../node_modules/react'),
+      crypto: path.resolve('../node_modules/crypto-browserify'),
+      stream: path.resolve('../node_modules/stream-browserify'),
+      zlib: path.resolve('../node_modules/zlib-browserify'),
+      'bn.js': path.resolve('../node_modules/bn.js'),
+      '@solana/web3.js': path.resolve('../node_modules/@solana/web3.js'),
+      '@project-serum/serum': path.resolve('../node_modules/@project-serum/serum'),
+      '@project-serum/anchor': path.resolve('../node_modules/@project-serum/anchor'),
+      axios: path.resolve('../node_modules/axios'),
+      buffer: path.resolve('../node_modules/buffer'),
+      'buffer-layout': path.resolve('../node_modules/buffer-layout'),
+      arweave: path.resolve('../node_modules/arweave')
     }
     return config
   },
   env: {
-    REACT_APP_CLUSTER: 'mainnet',
+    REACT_APP_CLUSTER: 'devnet',
   },
   images: {
     domains: ['www.arweave.net'],

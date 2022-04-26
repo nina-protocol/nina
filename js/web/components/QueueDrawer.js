@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import nina from "@nina-protocol/nina-sdk";
-import { useTheme } from '@mui/material/styles'
 import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
@@ -14,7 +13,6 @@ const { AudioPlayerContext } = nina.contexts
 const { NinaClient } = nina.utils
 
 const QueueDrawer = (props) => {
-  const theme = useTheme()
   const { txid, updateTxid, playlist, reorderPlaylist, currentIndex } =
     useContext(AudioPlayerContext)
   const wallet = useWallet()

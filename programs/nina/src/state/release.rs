@@ -318,6 +318,12 @@ impl Release {
             &[seeds],
         )?;
 
+        emit!(ReleaseMetadataCreated {
+            public_key: release.key(),
+            metadata_public_key: metadata.key(),
+            uri: metadata_data.uri
+        });
+    
         Ok(())
     }
 
@@ -415,13 +421,6 @@ impl Release {
         let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
         token::set_authority(cpi_ctx, AuthorityType::MintTokens.into(), Some(release.release_signer))?;
         
-        emit!(ReleaseCreated {
-            public_key: *release_loader.to_account_info().key,
-            mint: *release_mint.to_account_info().key,
-            authority: *authority.to_account_info().key,
-            date: config.release_datetime,
-        });
-
         Ok(())
     }
 

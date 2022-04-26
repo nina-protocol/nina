@@ -1,25 +1,30 @@
 import React, { useState, useMemo } from 'react'
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
-import { ConnectionProvider, WalletProvider, useWallet, useConnection } from '@solana/wallet-adapter-react';
-import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
-import {
-    PhantomWalletAdapter,
-    SolflareWalletAdapter,
-    SolletExtensionWalletAdapter,
-    SolletWalletAdapter,
-} from '@solana/wallet-adapter-wallets'
+import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
+import {WalletAdapterNetwork} from '@solana/wallet-adapter-base';
+import {WalletModalProvider} from '@solana/wallet-adapter-react-ui';
+import {PhantomWalletAdapter} from '@solana/wallet-adapter-phantom';
+import {SolflareWalletAdapter} from '@solana/wallet-adapter-solflare';
 import { clusterApiUrl } from '@solana/web3.js'
+import dynamic from 'next/dynamic'
 import Router from 'next/router'
 import { SnackbarProvider } from 'notistack'
 import { isMobile } from 'react-device-detect'
-import { ThemeProvider } from '@mui/material/styles'
-import nina from "@nina-protocol/nina-sdk";
+import { ThemeProvider } from "@mui/material/styles";
 import { CacheProvider } from '@emotion/react'
+import createCache from '@emotion/cache';
 import { NinaTheme } from '../NinaTheme'
-import Layout from '../components/Layout'
-import Dots from '../components/Dots'
 
-function Application({ Component, clientSideEmotionCache, pageProps }) {
+const createEmotionCache = () => {
+  return createCache({key: 'css'});
+}
+
+const NinaWrapper = dynamic(() => import('../components/NinaWrapper'))
+const Dots = dynamic(() => import('../components/Dots'));
+const Layout = dynamic(() => import('../components/Layout'));
+
+const clientSideEmotionCache = createEmotionCache();
+
+function Application({ Component, pageProps }) {
   const [loading, setLoading] = useState(false)
   React.useEffect(() => {
     const start = () => {
@@ -53,6 +58,8 @@ function Application({ Component, clientSideEmotionCache, pageProps }) {
   const endpoint = useMemo(() => {
     if (network === WalletAdapterNetwork.MainnetBeta) {
       return 'https://nina.rpcpool.com'
+    } else if (network === WalletAdapterNetwork.Devnet) {
+      return 'https://nina.devnet.rpcpool.com'
     }
     return clusterApiUrl(network)
   }, [network]);
@@ -62,12 +69,12 @@ function Application({ Component, clientSideEmotionCache, pageProps }) {
     new SolflareWalletAdapter({ network }),
   ]
 
-  if (!isMobile) {
-    walletOptions.push(
-      new SolletWalletAdapter({ network }),
-      new SolletExtensionWalletAdapter({ network })
-    )
-  }
+  // if (!isMobile) {
+  //   walletOptions.push(
+  //     new SolletWalletAdapter({ network }),
+  //     new SolletExtensionWalletAdapter({ network })
+  //   )
+  // }
   const wallets = useMemo(
       () => walletOptions,
       [network]
@@ -83,7 +90,7 @@ function Application({ Component, clientSideEmotionCache, pageProps }) {
       <ConnectionProvider endpoint={endpoint}>
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
-            <NinaWrapper>
+            <NinaWrapper network={process.env.REACT_APP_CLUSTER}>
               <CacheProvider value={clientSideEmotionCache}>
                 <ThemeProvider theme={NinaTheme}>
                   <Layout>
@@ -103,32 +110,4 @@ function Application({ Component, clientSideEmotionCache, pageProps }) {
   )
 }
 
-const NinaWrapper = ({children}) => {
-  const {
-      ReleaseContextProvider,
-      ExchangeContextProvider,
-      AudioPlayerContextProvider,
-      NinaContextProvider,
-      HubContextProvider,
-  } = nina.contexts      
-  const wallet = useWallet();
-  const connection = useConnection();
-  return (
-    <NinaContextProvider
-        releasePubkey={process.env.REACT_APP_RELEASE_PUBKEY}
-        wallet={wallet}
-        connection={connection.connection}
-    >
-      <ReleaseContextProvider wallet={wallet} connection={connection.connection}>
-        <AudioPlayerContextProvider wallet={wallet} connection={connection.connection}>
-          <ExchangeContextProvider wallet={wallet} connection={connection.connection}>
-            <HubContextProvider wallet={wallet} connection={connection.connection}>
-              {children}
-            </HubContextProvider>
-          </ExchangeContextProvider>
-        </AudioPlayerContextProvider>
-      </ReleaseContextProvider>
-    </NinaContextProvider>
-  )
-}
 export default Application

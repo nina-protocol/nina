@@ -43,7 +43,7 @@ pub struct ReleaseInitializeViaHub<'info> {
         seeds = [b"nina-hub-release".as_ref(), hub.key().as_ref(), release.key().as_ref()],
         bump,
         payer = authority,
-        space = 161
+        space = 120
     )]
     pub hub_release: Box<Account<'info, HubRelease>>,
     #[account(
@@ -138,7 +138,7 @@ pub fn handler(
         ctx.accounts.system_program.clone(),
         ctx.accounts.rent.clone(),
         ctx.accounts.release.clone(),
-        metadata_data,
+        metadata_data.clone(),
         bumps,
     )?;
 
@@ -150,6 +150,17 @@ pub fn handler(
         ctx.accounts.authority.clone(),
         true,
     )?;
+
+    emit!(ReleaseInitializedViaHub {
+        public_key: ctx.accounts.release.key(),
+        mint: ctx.accounts.release_mint.key(),
+        authority: ctx.accounts.authority.key(),
+        datetime: config.release_datetime,
+        hub: ctx.accounts.hub.key(),
+        hub_release: ctx.accounts.hub_release.key(),
+        metadata_public_key: ctx.accounts.metadata.key(),
+        uri: metadata_data.uri,
+    });
 
     Ok(())
 }

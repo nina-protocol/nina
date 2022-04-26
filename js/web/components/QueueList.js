@@ -7,7 +7,7 @@ import {
   TableHead,
   TableRow,
   Paper,
-} from '@material-ui/core'
+} from '@mui/material'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'

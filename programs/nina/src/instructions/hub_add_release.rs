@@ -16,7 +16,7 @@ pub struct HubAddRelease<'info> {
         seeds = [b"nina-hub-release".as_ref(), hub.key().as_ref(), release.key().as_ref()],
         bump,
         payer = authority,
-        space  = 161
+        space  = 120
     )]
     pub hub_release: Box<Account<'info, HubRelease>>,
     #[account(
@@ -54,6 +54,12 @@ pub fn handler (
         ctx.accounts.authority.clone(),
         false,
     )?;
+
+    emit!(HubReleaseAdded {
+        public_key: ctx.accounts.hub_release.key(),
+        hub:ctx.accounts.hub.key(),
+        release: ctx.accounts.release.key(),
+    });
 
     Ok(())
 }

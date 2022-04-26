@@ -87,5 +87,12 @@ pub fn handler(
         bumps,
     )?;
 
+    emit!(ReleaseCreated {
+        public_key: ctx.accounts.release.key(),
+        mint: ctx.accounts.release_mint.key(),
+        authority: ctx.accounts.authority.key(),
+        date: config.release_datetime,
+    });
+
     Ok(())
 }

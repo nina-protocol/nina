@@ -3,14 +3,13 @@ use crate::state::*;
 
 #[account(zero_copy)]
 #[repr(packed)]
-// size = 8 + 32 + 8 + 8 + 100 + 100 + 32 (+ 40) = 328
+// size = 8 + 32 + 8 + 8 + 100 + 100 (+ 40) = 296
 pub struct Post {
     pub author: Pubkey,
     pub created_at: i64,
     pub updated_at: i64,
     pub slug: [u8; 100],
 	pub uri:  [u8; 100],
-	pub published_through_hub: Pubkey,
 }
 
 impl Post {
@@ -32,7 +31,6 @@ impl Post {
     
         let mut post = post_account_loader.load_init()?;
         post.author = author.key();
-        post.published_through_hub = hub.key();
         post.created_at = Clock::get()?.unix_timestamp;
         post.updated_at = post.created_at;
     
@@ -51,7 +49,8 @@ impl Post {
         hub_content.content_type = HubContentType::Post;
         hub_content.datetime = post.created_at;
         hub_content.visible = true;
-
+        hub_content.published_through_hub = true;
+        
         let mut hub_post = hub_post_account_loader.load_init()?;
         hub_post.hub = hub.key();
         hub_post.post = post_account_loader.key();

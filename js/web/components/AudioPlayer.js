@@ -18,12 +18,12 @@ import Typography from '@mui/material/Typography'
 import QueueDrawer from './QueueDrawer'
 import Image from './Image'
 
-const { AudioPlayerContext, ReleaseContext } = nina.contexts
-const { NinaClient } = nina.utils
+const { AudioPlayerContext, NinaContext, ReleaseContext } = nina.contexts
 
 const AudioPlayer = () => {
   const { txid, updateTxid, playlist, isPlaying, setIsPlaying, currentIndex } =
     useContext(AudioPlayerContext)
+  const { ninaClient } = useContext(NinaContext)
   const { releaseState } = useContext(ReleaseContext)
   const wallet = useWallet()
   let playerRef = useRef()

@@ -13,7 +13,7 @@ pub struct HubInitWithCredit<'info> {
         seeds = [b"nina-hub".as_ref(), params.handle.as_bytes()],
         bump,
         payer = authority,
-        space = 297 + 40
+        space = 337
     )]
     pub hub: AccountLoader<'info, Hub>,
     /// CHECK: This is safe because we are deriving the PDA from hub - which is initialized above
@@ -87,8 +87,9 @@ pub fn handler (
 
     emit!(HubCreated {
         public_key: ctx.accounts.hub.key(),
-        hub_collaborator: ctx.accounts.hub_collaborator.key(),
-        collaborator: ctx.accounts.authority.key(),
+        authority: ctx.accounts.authority.key(),
+        handle: params.handle,
+        uri: params.uri,
     });
 
     Ok(())

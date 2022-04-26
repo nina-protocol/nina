@@ -32,18 +32,12 @@ impl Hub {
 		hub_content.child = hub_release.key();
     hub_content.content_type = HubContentType::NinaReleaseV1;
     hub_content.datetime = Clock::get()?.unix_timestamp;
+    hub_content.published_through_hub = is_published_through_hub;
 		hub_content.visible = true;
 
 		hub_release.hub = hub.key();
     hub_release.release = release.key();
-    hub_release.published_through_hub = is_published_through_hub;
     hub_release.sales = 0;
-
-		emit!(HubReleaseAdded {
-        public_key: hub_release.key(),
-        hub: hub.key(),
-        release: release.key(),
-    });
 
 		Ok(())
 	}
@@ -72,12 +66,11 @@ impl Hub {
 
 #[account]
 #[derive(Default)]
-// size = 8 + 32 + 8 + 32  + 1 + 32 + 8 (+ 40) = 161
+// size = 8 + 32  + 32 + 8 (+ 40) = 120
 pub struct HubRelease {
 	pub added_by: Pubkey,
 	pub datetime: i64,
 	pub hub: Pubkey,
-	pub published_through_hub: bool,
 	pub release: Pubkey,
 	pub sales: u64,
 }
@@ -96,7 +89,7 @@ impl Default for HubContentType {
 
 #[account]
 #[derive(Default)]
-// size = 8 + 32 + 32 + 32 + 1 + 8 + 1 (+ 39) = 153
+// size = 8 + 32 + 32 + 32 + 1 + 8 + 1 + 1 (+ 38) = 153
 pub struct HubContent {
 	pub added_by: Pubkey,
 	pub hub: Pubkey,
@@ -104,6 +97,7 @@ pub struct HubContent {
 	pub content_type: HubContentType,
 	pub datetime: i64,
 	pub visible: bool,
+	pub published_through_hub: bool,
 }
 
 #[account(zero_copy)]
@@ -143,8 +137,9 @@ pub struct HubInitParams {
 pub struct HubCreated {
 	#[index]
 	pub public_key: Pubkey,
-	pub hub_collaborator: Pubkey,
-	pub collaborator: Pubkey,
+	pub authority: Pubkey,
+	pub handle: String,
+	pub uri: String,
 }
 
 #[event]
@@ -180,11 +175,24 @@ pub struct HubReleaseAdded {
 }
 
 #[event]
+pub struct ReleaseInitializedViaHub {
+	#[index]
+	pub public_key: Pubkey,
+	pub mint: Pubkey,
+	pub authority: Pubkey,
+	pub datetime: i64,
+	pub hub: Pubkey,
+	pub hub_release: Pubkey,
+	pub metadata_public_key: Pubkey,
+	pub uri: String,
+}
+
+
+#[event]
 pub struct HubContentToggled {
 	#[index]
 	pub public_key: Pubkey,
-	pub hub: Pubkey,
-	pub content_account: Pubkey,
+	pub content_type: HubContentType,
 	pub visible: bool,
 }
 

@@ -1,7 +1,8 @@
-import Release from '../../components/Release'
+import React from 'react'
 import nina from "@nina-protocol/nina-sdk";
+import dynamic from 'next/dynamic';
 import Head from 'next/head'
-const { NinaClient } = nina.utils
+const Release = dynamic(() => import("../../components/Release"));
 
 const ReleasePage = (props) => {
   const { metadata } = props
@@ -43,7 +44,7 @@ const ReleasePage = (props) => {
 export const getServerSideProps = async (context) => {
   const releasePubkey = context.params.releasePubkey
   const metadataResult = await fetch(
-    `${NinaClient.endpoints.api}/metadata/bulk`,
+    `https://api-dev.nina.market:443/metadata/bulk`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

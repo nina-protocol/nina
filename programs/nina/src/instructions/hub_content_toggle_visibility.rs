@@ -41,8 +41,7 @@ pub fn handler (
 
     emit!(HubContentToggled {
         public_key: hub_content.key(),
-        hub: ctx.accounts.hub.key(),
-        content_account: ctx.accounts.content_account.key(),
+        content_type: hub_content.content_type,
         visible: hub_content.visible,
     });
 

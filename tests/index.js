@@ -3839,13 +3839,14 @@ describe('Hub', async () => {
     );
     const hubAfter = await nina.account.hub.fetch(hub)
     const hubReleaseAfter = await nina.account.hubRelease.fetch(hubRelease)
+    const hubContentAfter = await nina.account.hubContent.fetch(hubContent)
     const releaseAfter = await nina.account.release.fetch(releaseAccount)
     assert.equal(releaseAfter.royaltyRecipients[0].percentShare.toNumber(), 950000)
     assert.equal(releaseAfter.royaltyRecipients[0].recipientAuthority.toBase58(), provider.wallet.publicKey.toBase58())
     assert.equal(hubReleaseAfter.hub.toBase58(), hub.toBase58())
     assert.equal(hubReleaseAfter.release.toBase58(), releaseAccount.toBase58())
     assert.equal(hubReleaseAfter.sales.toNumber(), 0)
-    assert.equal(hubReleaseAfter.publishedThroughHub, true)
+    assert.equal(hubContentAfter.publishedThroughHub, true)
   })
 
   let referenceHubContent
@@ -3977,6 +3978,7 @@ describe('Hub', async () => {
     );
     const hubAfter = await nina.account.hub.fetch(hub)
     const hubReleaseAfter = await nina.account.hubRelease.fetch(hubRelease)
+    const hubContentAfter = await nina.account.hubContent.fetch(hubContent)
     const releaseAfter = await nina.account.release.fetch(releaseAccount)
     assert.equal(releaseAfter.royaltyRecipients[0].percentShare.toNumber(), 1000000 - releaseAfter.royaltyRecipients[1].percentShare.toNumber())
     assert.equal(releaseAfter.royaltyRecipients[1].percentShare.toNumber(), hubParams.publishFee.toNumber())
@@ -3985,7 +3987,7 @@ describe('Hub', async () => {
     assert.equal(hubReleaseAfter.hub.toBase58(), hub.toBase58())
     assert.equal(hubReleaseAfter.release.toBase58(), releaseAccount.toBase58())
     assert.equal(hubReleaseAfter.sales.toNumber(), 0)
-    assert.equal(hubReleaseAfter.publishedThroughHub, true)
+    assert.equal(hubContentAfter.publishedThroughHub, true)
   })
 
   it("Purchases a release with USDC via Hub", async () => {
@@ -4749,7 +4751,8 @@ describe('Hub', async () => {
     );
     const hubPostAfter = await nina.account.hubPost.fetch(hubPost)
     const postAfter = await nina.account.post.fetch(post)
-    assert.equal(postAfter.publishedThroughHub.toBase58(), hub.toBase58())
+    const hubContentAfter = await nina.account.hubContent.fetch(hubContent)
+    assert.equal(hubContentAfter.publishedThroughHub, true)
     assert.equal(encrypt.decode(hubPostAfter.versionUri), uri)
     assert.equal(encrypt.decode(postAfter.uri), uri)
     assert.equal(encrypt.decode(postAfter.slug), slug)
