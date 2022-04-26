@@ -8,9 +8,7 @@ import Box from '@mui/material/Box'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Typography from '@mui/material/Typography'
 import QueueList from './QueueList'
-
 const { AudioPlayerContext } = nina.contexts
-const { NinaClient } = nina.utils
 
 const QueueDrawer = (props) => {
   const { txid, updateTxid, playlist, reorderPlaylist, currentIndex } =

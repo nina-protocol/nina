@@ -8,14 +8,14 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import nina from "@nina-protocol/nina-sdk";
 import Dots from './Dots'
 
-const {ExchangeContext} = nina.contexts 
-const {NinaClient} = nina.utils
+const {ExchangeContext, NinaContext} = nina.contexts 
 
 const BuySellForm = (props) => {
   const { onSubmit, isBuy, release, amount, setAmount } = props
 
   const wallet = useWallet()
   const { exchangeInitPending } = useContext(ExchangeContext)
+  const { ninaClient } = useContext(NinaContext)
   const [pending, setPending] = useState(false)
   const [buyPending, setBuyPending] = useState(false)
   const [sellPending, setSellPending] = useState(false)
@@ -65,7 +65,7 @@ const BuySellForm = (props) => {
           onChange={(e) => handleChange(e)}
           disableUnderline={true}
           placeholder={`Enter price in ${
-            NinaClient.isUsdc(release.paymentMint) ? 'USDC' : 'SOL'
+            ninaClient.isUsdc(release.paymentMint) ? 'USDC' : 'SOL'
           }`}
           value={amount !== undefined ? amount : ''}
         />

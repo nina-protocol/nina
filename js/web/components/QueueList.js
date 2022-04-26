@@ -18,9 +18,8 @@ import { useRouter } from 'next/router'
 import { Typography } from '@mui/material'
 import { useWallet } from '@solana/wallet-adapter-react'
 import CloseIcon from '@mui/icons-material/Close'
-
 const { AudioPlayerContext } = nina.contexts
-const { NinaClient } = nina.utils
+const { arrayMove } = nina.utils
 
 const getItemStyle = (isDragging, draggableStyle) => ({
   // styles we need to apply on draggables
@@ -81,7 +80,7 @@ const QueueList = (props) => {
     }
     // change local playlist state
     const newPlaylist = [...playlistState]
-    NinaClient.arrayMove(
+    arrayMove(
       newPlaylist,
       result.source.index,
       result.destination.index

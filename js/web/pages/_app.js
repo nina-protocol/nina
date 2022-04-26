@@ -48,9 +48,8 @@ function Application({ Component, pageProps }) {
       Router.events.off('routeChangeError', end)
     }
   }, [])
-
   // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
-  const network = process.env.REACT_CLUSTER === 'devnet' ? 
+  const network = process.env.REACT_APP_CLUSTER === 'devnet' ? 
     WalletAdapterNetwork.Devnet : 
     WalletAdapterNetwork.MainnetBeta
 

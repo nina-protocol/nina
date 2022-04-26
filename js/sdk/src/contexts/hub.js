@@ -27,14 +27,16 @@ const HubContextProvider = ({ children, hubPubkey }) => {
   }, [hubPubkey])
 
   useEffect(() => {
-    const releaseCount = Object.keys(releaseState.metadata).length
-    const hubReleaseCount = Object.values(hubContentState).filter(
-      (hubContent) => hubContent.contentType === 'NinaReleaseV1'
-    ).length
-    if (releaseCount > hubReleaseCount) {
-      getHubContent(new anchor.web3.PublicKey(hubPubkey))
+    if (hubPubkey) {
+      const releaseCount = Object.keys(releaseState.metadata).length
+      const hubReleaseCount = Object.values(hubContentState).filter(
+        (hubContent) => hubContent.contentType === 'NinaReleaseV1'
+      ).length
+      if (releaseCount > hubReleaseCount) {
+        getHubContent(new anchor.web3.PublicKey(hubPubkey))
+      }
     }
-  }, [releaseState])
+  }, [releaseState, hubPubkey])
 
   const {
     getHub,

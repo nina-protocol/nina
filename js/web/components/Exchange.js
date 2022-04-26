@@ -12,8 +12,7 @@ import ExchangeHistoryModal from './ExchangeHistoryModal'
 import ExchangeList from './ExchangeList'
 import ExchangeModal from './ExchangeModal'
 
-const {AudioPlayerContext, ExchangeContext, ReleaseContext} = nina.contexts 
-const {NinaClient} = nina.utils
+const {AudioPlayerContext, ExchangeContext, NinaContext, ReleaseContext} = nina.contexts 
 
 const Exchange = (props) => {
   const { releasePubkey, metadata } = props
@@ -21,6 +20,7 @@ const Exchange = (props) => {
   const wallet = useWallet()
   const connection = useConnection()
   const { enqueueSnackbar } = useSnackbar()
+  const { ninaClient } = useContext(NinaContext)
   const { releaseState, getRelease } = useContext(ReleaseContext)
   const {
     exchangeState,
@@ -99,7 +99,7 @@ const Exchange = (props) => {
     let result
     const data = {
       releasePubkey,
-      amount: NinaClient.uiToNative(amount, release.paymentMint),
+      amount: ninaClient.uiToNative(amount, release.paymentMint),
       isSelling: !isBuy,
       isInit: true,
     }

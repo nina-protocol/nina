@@ -9,11 +9,7 @@ import ReleaseListTable from './ReleaseListTable'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 import Link from 'next/link'
 
-const { NinaClient } = nina.utils
 const { ReleaseContext, NinaContext } = nina.contexts
-
-const usdcMint = NinaClient.ids().mints.usdc
-const USDC_MINT_ID = new anchor.web3.PublicKey(usdcMint)
 
 const ReleaseList = () => {
   const {
@@ -24,7 +20,7 @@ const ReleaseList = () => {
   } = useContext(ReleaseContext)
 
   const wallet = useWallet()
-  const { collection } = useContext(NinaContext)
+  const { collection, ninaClient } = useContext(NinaContext)
   const [userPublishedReleases, setUserPublishedReleases] = useState([])
   const [sales, setSales] = useState(0)
   const [editionTotal, setEditionTotal] = useState(0)

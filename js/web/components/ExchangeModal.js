@@ -1,12 +1,11 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import { Typography, Box } from '@mui/material'
 import Button from '@mui/material/Button'
 import Fade from '@mui/material/Fade'
 import Modal from '@mui/material/Modal'
 import nina from "@nina-protocol/nina-sdk";
-
-const {NinaClient} = nina.utils
+const { NinaContext } = nina.contexts
 
 const ExchangeModal = (props) => {
   const {
@@ -18,15 +17,15 @@ const ExchangeModal = (props) => {
     isAccept,
     metadata,
   } = props
-
+  const {ninaClient} = useContext(NinaContext)
   const [pendingConfirm, setPendingConfirm] = useState(false)
 
   const nativeAmount = isAccept
     ? amount
-    : NinaClient.uiToNative(amount, release.paymentMint)
+    : ninaClient.uiToNative(amount, release.paymentMint)
   const artistFee =
     (nativeAmount * release.resalePercentage.toNumber()) / 1000000
-  const vaultFee = (nativeAmount * NinaClient.NINA_VAULT_FEE) / 1000000
+  const vaultFee = (nativeAmount * ninaClient.NINA_VAULT_FEE) / 1000000
   const sellerAmount = nativeAmount - artistFee - vaultFee
 
   const handleSubmit = (e) => {
@@ -51,7 +50,7 @@ const ExchangeModal = (props) => {
             YOU ARE {isAccept ? 'SELLING' : 'CREATING A LISTING TO SELL'} 1{' '}
             {`${metadata?.symbol} `}
             FOR{' '}
-            {` ${NinaClient.nativeToUiString(
+            {` ${ninaClient.nativeToUiString(
               nativeAmount,
               release.paymentMint
             )}`}
@@ -59,7 +58,7 @@ const ExchangeModal = (props) => {
           </Typography>
           <Typography variant="subtitle" className={classes.receivingAmount}>
             {isAccept ? '' : 'UPON SALE '}YOU WILL RECEIVE
-            {` ${NinaClient.nativeToUiString(
+            {` ${ninaClient.nativeToUiString(
               sellerAmount,
               release.paymentMint
             )}`}
@@ -67,7 +66,7 @@ const ExchangeModal = (props) => {
           </Typography>
           <Typography variant="overline">
             THE ARTIST WILL RECEIVE A ROYALTY OF
-            {` ${NinaClient.nativeToUiString(
+            {` ${ninaClient.nativeToUiString(
               artistFee,
               release.paymentMint
             )}`}{' '}
@@ -75,8 +74,8 @@ const ExchangeModal = (props) => {
           </Typography>
           <Typography variant="overline">
             THE PROTOCOL WILL RECEIVE
-            {` ${NinaClient.nativeToUiString(vaultFee, release.paymentMint)}`} [
-            {NinaClient.NINA_VAULT_FEE / 10000}%]
+            {` ${ninaClient.nativeToUiString(vaultFee, release.paymentMint)}`} [
+            {ninaClient.NINA_VAULT_FEE / 10000}%]
           </Typography>
           <Button
             onClick={(e) => handleSubmit(e, false)}

@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { useWallet } from '@solana/wallet-adapter-react'
 import nina from "@nina-protocol/nina-sdk";
-
-const {NinaClient} = nina.utils
+const { NinaContext } = nina.contexts
 
 const ExchangeListItem = (props) => {
   const {
@@ -18,13 +17,13 @@ const ExchangeListItem = (props) => {
     symbol,
     amount,
   } = props
-
+  const { ninaClient } = useContext(NinaContext)
   const displayPrice = isSelling
-    ? NinaClient.nativeToUiString(
+    ? ninaClient.nativeToUiString(
         expectedAmount?.toNumber() || amount,
         release.paymentMint
       )
-    : NinaClient.nativeToUiString(amount, release.paymentMint)
+    : ninaClient.nativeToUiString(amount, release.paymentMint)
 
   const itemData = (
     <Root>
@@ -40,12 +39,12 @@ const ExchangeListItem = (props) => {
           {displayPrice}
         </span>
       </Typography>
-      {NinaClient.isSol(release.paymentMint) && (
+      {ninaClient.isSol(release.paymentMint) && (
         <Typography
           className={`${classes.exchangeListItemPrice} ${classes.exchangeListItemPrice}--usd`}
         >
           {(
-            NinaClient.nativeToUi(
+            ninaClient.nativeToUi(
               isSelling ? expectedAmount?.toNumber() : amount,
               release.paymentMint
             ) * solPrice

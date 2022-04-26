@@ -44,7 +44,7 @@ const ReleasePage = (props) => {
 export const getServerSideProps = async (context) => {
   const releasePubkey = context.params.releasePubkey
   const metadataResult = await fetch(
-    `https://api-dev.nina.market:443/metadata/bulk`,
+    `http://localhost:3001/metadata/bulk`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

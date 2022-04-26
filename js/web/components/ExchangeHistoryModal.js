@@ -1,15 +1,15 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Box from '@mui/material/Box'
 import { Typography, Paper } from '@mui/material'
 import nina from "@nina-protocol/nina-sdk";
-const {NinaClient} = nina.utils
+const {NinaContext} = nina.contexts
 
 const ExchangeHistoryModal = (props) => {
   const { release, exchangeHistory } = props
-
+  const { ninaClient } = useContext(NinaContext)
   const [open, setOpen] = useState(false)
 
   return (
@@ -50,7 +50,7 @@ const ExchangeHistoryModal = (props) => {
                     <tr key={i}>
                       <td>{entry.dateFormatted}</td>
                       <td>
-                        {NinaClient.nativeToUiString(
+                        {ninaClient.nativeToUiString(
                           entry.price.toNumber(),
                           release.paymentMint
                         )}

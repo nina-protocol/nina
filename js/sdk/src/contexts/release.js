@@ -5,6 +5,7 @@ import {
   createMintInstructions,
   findOrCreateAssociatedTokenAccount,
   wrapSol,
+  TOKEN_PROGRAM_ID
 } from '../utils/web3'
 import { ninaErrorHandler } from '../utils/errors'
 import {
@@ -182,7 +183,7 @@ const releaseContextHelper = ({
   setAllReleasesCount,
   setSearchResults,
 }) => {
-  const { provider, ids, nativeToUi, uiToNative, isSol } = ninaClient
+  const { provider, ids, nativeToUi, uiToNative, isSol, isUsdc, endpoints } = ninaClient
   const initializeReleaseAndMint = async () => {
     const program = await ninaClient.useProgram()
     const releaseMint = anchor.web3.Keypair.generate()
@@ -523,10 +524,10 @@ const releaseContextHelper = ({
 
       const releaseMint = anchor.web3.Keypair.generate()
       const paymentMint = new anchor.web3.PublicKey(
-        isUsdc ? NinaClient.ids().mints.usdc : NinaClient.ids().mints.wsol
+        isUsdc ? ids.mints.usdc : ids.mints.wsol
       )
       const publishingCreditMint = new anchor.web3.PublicKey(
-        NinaClient.ids().mints.publishingCredit
+        ids.mints.publishingCredit
       )
       const [release, releaseBump] =
         await anchor.web3.PublicKey.findProgramAddress(
@@ -534,13 +535,13 @@ const releaseContextHelper = ({
             Buffer.from(anchor.utils.bytes.utf8.encode('nina-release')),
             releaseMint.publicKey.toBuffer(),
           ],
-          nina.program.programId
+          program.programId
         )
 
       const [releaseSigner, releaseSignerBump] =
         await anchor.web3.PublicKey.findProgramAddress(
           [release.toBuffer()],
-          nina.program.programId
+          program.programId
         )
 
       setPressingState({
@@ -603,7 +604,7 @@ const releaseContextHelper = ({
         amountToArtistTokenAccount: new anchor.BN(0),
         amountToVaultTokenAccount: new anchor.BN(0),
         resalePercentage: new anchor.BN(resalePercentage * 10000),
-        price: new anchor.BN(NinaClient.uiToNative(retailPrice, paymentMint)),
+        price: new anchor.BN(uiToNative(retailPrice, paymentMint)),
         releaseDatetime: new anchor.BN(Date.now() / 1000),
       }
 
@@ -612,7 +613,7 @@ const releaseContextHelper = ({
         signer: releaseSignerBump,
       }
 
-      const txid = await nina.program.rpc.releaseInitWithCredit(config, bumps, {
+      const txid = await program.rpc.releaseInitWithCredit(config, bumps, {
         accounts: {
           release,
           releaseSigner,
@@ -625,7 +626,7 @@ const releaseContextHelper = ({
           paymentMint,
           royaltyTokenAccount,
           systemProgram: anchor.web3.SystemProgram.programId,
-          tokenProgram: NinaClient.TOKEN_PROGRAM_ID,
+          tokenProgram: TOKEN_PROGRAM_ID,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         },
         signers: [releaseMint],
@@ -655,7 +656,7 @@ const releaseContextHelper = ({
 
     let release = releaseState.tokenData[releasePubkey]
     if (!release) {
-      release = await nina.program.account.release.fetch(
+      release = await program.account.release.fetch(
         new anchor.web3.PublicKey(releasePubkey)
       )
     }
@@ -695,7 +696,7 @@ const releaseContextHelper = ({
           purchaserReleaseTokenAccount,
           royaltyTokenAccount: release.royaltyTokenAccount,
           releaseMint: release.releaseMint,
-          tokenProgram: NinaClient.TOKEN_PROGRAM_ID,
+          tokenProgram: TOKEN_PROGRAM_ID,
           clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
         },
       }
@@ -709,7 +710,7 @@ const releaseContextHelper = ({
         request.instructions = instructions
       }
 
-      if (NinaClient.isSol(release.paymentMint)) {
+      if (isSol(release.paymentMint)) {
         const { instructions, signers } = await wrapSol(
           provider,
           new anchor.BN(release.price)
@@ -723,7 +724,7 @@ const releaseContextHelper = ({
         request.accounts.payerTokenAccount = signers[0].publicKey
       }
 
-      const txid = await nina.program.rpc.releasePurchase(
+      const txid = await program.rpc.releasePurchase(
         release.price,
         request
       )
@@ -760,7 +761,7 @@ const releaseContextHelper = ({
     try {
       let release = releaseState.tokenData[releasePubkey]
       if (!release) {
-        release = await nina.program.account.release.fetch(
+        release = await program.account.release.fetch(
           new anchor.web3.PublicKey(releasePubkey)
         )
       }
@@ -782,7 +783,7 @@ const releaseContextHelper = ({
           release: new anchor.web3.PublicKey(releasePubkey),
           releaseSigner: release.releaseSigner,
           royaltyTokenAccount: release.royaltyTokenAccount,
-          tokenProgram: NinaClient.TOKEN_PROGRAM_ID,
+          tokenProgram: TOKEN_PROGRAM_ID,
         },
       }
 
@@ -790,14 +791,14 @@ const releaseContextHelper = ({
         request.instructions = [authorityTokenAccountIx]
       }
 
-      const txid = await nina.program.rpc.releaseRevenueShareCollect(request)
+      const txid = await program.rpc.releaseRevenueShareCollect(request)
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
 
       getRelease(releasePubkey)
       getUsdcBalance()
       return {
         success: true,
-        msg: `You collected $${NinaClient.nativeToUi(
+        msg: `You collected $${nativeToUi(
           recipient.owed.toNumber(),
           release.paymentMint
         )}`,
@@ -814,7 +815,7 @@ const releaseContextHelper = ({
     const releasePublicKey = new anchor.web3.PublicKey(releasePubkey)
     try {
       if (!release) {
-        release = await nina.program.account.release.fetch(releasePublicKey)
+        release = await program.account.release.fetch(releasePublicKey)
       }
 
       const recipientPublicKey = new anchor.web3.PublicKey(
@@ -851,7 +852,7 @@ const releaseContextHelper = ({
           royaltyTokenAccount: release.royaltyTokenAccount,
           newRoyaltyRecipient: recipientPublicKey,
           newRoyaltyRecipientTokenAccount,
-          tokenProgram: NinaClient.TOKEN_PROGRAM_ID,
+          tokenProgram: TOKEN_PROGRAM_ID,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         },
       }
@@ -864,7 +865,7 @@ const releaseContextHelper = ({
         request.instructions = [authorityTokenAccountIx]
       }
 
-      const txid = await nina.program.rpc.releaseRevenueShareTransfer(
+      const txid = await program.rpc.releaseRevenueShareTransfer(
         new anchor.BN(updateAmount),
         request
       )
@@ -896,7 +897,7 @@ const releaseContextHelper = ({
       const encryptionPublicKeyBuffer = Buffer.from(encryptionPublicKey)
 
       const release = new anchor.web3.PublicKey(releasePubkey)
-      const releaseAccount = await nina.program.account.release.fetch(release)
+      const releaseAccount = await program.account.release.fetch(release)
       const redeemedTokenMint = anchor.web3.Keypair.generate()
 
       const [redeemable, redeemableBump] =
@@ -906,7 +907,7 @@ const releaseContextHelper = ({
             release.toBuffer(),
             redeemedTokenMint.publicKey.toBuffer(),
           ],
-          nina.program.programId
+          program.programId
         )
       const [redeemableSigner, redeemableSignerBump] =
         await anchor.web3.PublicKey.findProgramAddress(
@@ -916,7 +917,7 @@ const releaseContextHelper = ({
             ),
             redeemable.toBuffer(),
           ],
-          nina.program.programId
+          program.programId
         )
 
       const redeemedTokenMintIx = await createMintInstructions(
@@ -937,7 +938,7 @@ const releaseContextHelper = ({
         signer: redeemableSignerBump,
       }
 
-      const txid = await nina.program.rpc.redeemableInit(config, bumps, {
+      const txid = await program.rpc.redeemableInit(config, bumps, {
         accounts: {
           authority: provider.wallet.publicKey,
           release,
@@ -971,12 +972,12 @@ const releaseContextHelper = ({
     try {
       const redemptionRecord = anchor.web3.Keypair.generate()
       const redemptionRecordIx =
-        await nina.program.account.redemptionRecord.createInstruction(
+        await program.account.redemptionRecord.createInstruction(
           redemptionRecord
         )
 
       const release = new anchor.web3.PublicKey(releasePubkey)
-      const releaseAccount = await nina.program.account.release.fetch(release)
+      const releaseAccount = await program.account.release.fetch(release)
 
       let [redeemerRedeemedTokenAccount, redeemerRedeemedTokenAccountIx] =
         await findOrCreateAssociatedTokenAccount(
@@ -1022,7 +1023,7 @@ const releaseContextHelper = ({
           redemptionRecord: redemptionRecord.publicKey,
           redeemerRedeemableTokenAccount,
           redeemerRedeemedTokenAccount,
-          tokenProgram: NinaClient.TOKEN_PROGRAM_ID,
+          tokenProgram: TOKEN_PROGRAM_ID,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
           systemProgram: anchor.web3.SystemProgram.programId,
         },
@@ -1037,7 +1038,7 @@ const releaseContextHelper = ({
         ]
       }
 
-      const txid = await nina.program.rpc.redeemableRedeem(
+      const txid = await program.rpc.redeemableRedeem(
         encryptionPublicKeyBuffer,
         encryptedAddress,
         iv,
@@ -1074,7 +1075,7 @@ const releaseContextHelper = ({
 
       const redemptionRecord = new anchor.web3.PublicKey(redemptionRecordPubkey)
       const redemptionRecordAccount =
-        await nina.program.account.redemptionRecord.fetch(redemptionRecord)
+        await program.account.redemptionRecord.fetch(redemptionRecord)
       const redemptionRecordEncryptionPublicKey = new Uint8Array(
         redemptionRecordAccount.encryptionPublicKey
       )
@@ -1092,7 +1093,7 @@ const releaseContextHelper = ({
         new Uint8Array(redemptionRecordAccount.iv)
       )
 
-      const txid = await nina.program.rpc.redeemableShippingUpdate(
+      const txid = await program.rpc.redeemableShippingUpdate(
         encryptedShipper,
         encryptedTrackingNumber,
         {
@@ -1113,7 +1114,7 @@ const releaseContextHelper = ({
     } catch (error) {
       const program = await ninaClient.useProgram()
       const redeemable = new anchor.web3.PublicKey(redeemablePubkey)
-      const redeemableAccount = await nina.program.account.redeemable.fetch(
+      const redeemableAccount = await program.account.redeemable.fetch(
         redeemable
       )
       const releasePubkey = redeemableAccount.release.toBase58()
@@ -1135,7 +1136,7 @@ const releaseContextHelper = ({
       const program = await ninaClient.useProgram()
       releasePubkey = new anchor.web3.PublicKey(releasePubkey)
 
-      const releaseAccount = await nina.program.account.release.fetch(
+      const releaseAccount = await program.account.release.fetch(
         releasePubkey
       )
       releaseAccount.publicKey = releasePubkey
@@ -1167,7 +1168,7 @@ const releaseContextHelper = ({
       return
     }
     try {
-      let path = NinaClient.endpoints.api
+      let path = endpoints.api
       switch (type) {
         case lookupTypes.PUBLISHED_BY:
           path += `/releases/published/${publicKey.toBase58()}`
@@ -1191,7 +1192,7 @@ const releaseContextHelper = ({
     }
     if (recipient?.percentShare?.toNumber() > 0) {
       try {
-        let path = NinaClient.endpoints.api
+        let path = endpoints.api
         switch (type) {
           case lookupTypes.PUBLISHED_BY:
             path += `/releases/published/${recipient.recipientAuthority.toBase58()}`
@@ -1264,7 +1265,7 @@ const releaseContextHelper = ({
       )
 
       const layout =
-        nina.program.coder.accounts.accountLayouts.get('Redeemable')
+        program.coder.accounts.accountLayouts.get('Redeemable')
       redeemableAccounts.forEach((redeemable) => {
         let dataParsed = layout.decode(redeemable.account.data.slice(8))
         dataParsed.publicKey = redeemable.publicKey
@@ -1286,7 +1287,7 @@ const releaseContextHelper = ({
   const getRedemptionRecordsForRelease = async (releasePubkey) => {
     try {
       const program = await ninaClient.useProgram()
-      const release = await nina.program.account.release.fetch(releasePubkey)
+      const release = await program.account.release.fetch(releasePubkey)
       const parsedRedemptionRecords = []
 
       if (!release) {
@@ -1309,10 +1310,10 @@ const releaseContextHelper = ({
       )
 
       const layout =
-        nina.program.coder.accounts.accountLayouts.get('RedemptionRecord')
+        program.coder.accounts.accountLayouts.get('RedemptionRecord')
       for await (let redemptionRecord of redemptionRecords) {
         let dataParsed = layout.decode(redemptionRecord.account.data.slice(8))
-        const redeemable = await nina.program.account.redeemable.fetch(
+        const redeemable = await program.account.redeemable.fetch(
           dataParsed.redeemable
         )
 
@@ -1367,9 +1368,10 @@ const releaseContextHelper = ({
 
   const getReleasesRecent = async () => {
     try {
-      const result = await fetch(`${NinaClient.endpoints.api}/releases/recent`)
+      const result = await fetch(`${endpoints.api}/releases/recent`)
       const { published, purchased, highlights } = await result.json()
       const releaseIds = [...published, ...purchased, ...highlights]
+      console.log("releaseIds ::> ", releaseIds)
       await fetchAndSaveReleasesToState(releaseIds)
 
       setReleasesRecentState({
@@ -1386,7 +1388,7 @@ const releaseContextHelper = ({
     try {
       const all = [...allReleases]
       const result = await fetch(
-        `${NinaClient.endpoints.api}/releases/?offset=${allReleases.length}`
+        `${endpoints.api}/releases/?offset=${allReleases.length}`
       )
       const json = await result.json()
       json.releases.forEach((id) => {
@@ -1414,7 +1416,7 @@ const releaseContextHelper = ({
     const encodedQuery = encodeURIComponent(query)
     try {
       const result = await fetch(
-        `${NinaClient.endpoints.api}/releases/search?s=${encodedQuery}`
+        `${endpoints.api}/releases/search?s=${encodedQuery}`
       )
       const json = await result.json()
       await fetchAndSaveReleasesToState(json.releases, query)
@@ -1429,7 +1431,7 @@ const releaseContextHelper = ({
       const userCollection = []
       let tokenAccounts = await connection.getParsedTokenAccountsByOwner(
         new anchor.web3.PublicKey(userId),
-        { programId: NinaClient.TOKEN_PROGRAM_ID }
+        { programId: TOKEN_PROGRAM_ID }
       )
       const walletTokenAccounts = tokenAccounts.value.map(
         (value) => value.account.data.parsed.info
@@ -1446,7 +1448,7 @@ const releaseContextHelper = ({
               Buffer.from(anchor.utils.bytes.utf8.encode('nina-release')),
               mint.toBuffer(),
             ],
-            nina.program.programId
+            program.programId
           )
 
           releaseAmountMap[release.toBase58()] = account.tokenAmount.uiAmount
@@ -1472,7 +1474,7 @@ const releaseContextHelper = ({
 
   const getCollectorsForRelease = async (releasePubkey) => {
     const collectorsResult = await fetch(
-      `${NinaClient.endpoints.api}/releases/${releasePubkey}/collectors`,
+      `${endpoints.api}/releases/${releasePubkey}/collectors`,
       {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
@@ -1696,9 +1698,9 @@ const releaseContextHelper = ({
           const owed = recipient.owed.toNumber()
           if (owed > 0) {
             royaltyUncollected.push(release)
-            royaltyOwed += NinaClient.nativeToUi(owed, release.paymentMint)
+            royaltyOwed += nativeToUi(owed, release.paymentMint)
           }
-          royaltyCollected += NinaClient.nativeToUi(
+          royaltyCollected += nativeToUi(
             recipient.collected.toNumber(),
             release.paymentMint
           )
@@ -1733,10 +1735,10 @@ const releaseContextHelper = ({
     let secondarySalesAmountSol = 0
 
     releases.forEach((release) => {
-      if (NinaClient.isUsdc(release.paymentMint)) {
+      if (isUsdc(release.paymentMint)) {
         salesAmountUsdc += release.saleTotal.toNumber()
         secondarySalesAmountUsdc += release.exchangeSaleTotal.toNumber()
-      } else if (NinaClient.isSol(release.paymentMint)) {
+      } else if (isSol(release.paymentMint)) {
         salesAmountSol += release.saleTotal.toNumber()
         secondarySalesAmountSol += release.exchangeSaleTotal.toNumber()
       }
@@ -1747,22 +1749,22 @@ const releaseContextHelper = ({
     return {
       publishedCount: releases.length,
       salesCount,
-      salesAmountUsdc: NinaClient.nativeToUi(
+      salesAmountUsdc: nativeToUi(
         salesAmountUsdc,
-        NinaClient.ids().mints.usdc
+        ids.mints.usdc
       ),
-      salesAmountSol: NinaClient.nativeToUi(
+      salesAmountSol: nativeToUi(
         salesAmountSol,
-        NinaClient.ids().mints.wsol
+        ids.mints.wsol
       ),
       secondarySalesCount,
-      secondarySalesAmountUsdc: NinaClient.nativeToUi(
+      secondarySalesAmountUsdc: nativeToUi(
         secondarySalesAmountUsdc,
-        NinaClient.ids().mints.usdc
+        ids.mints.usdc
       ),
-      secondarySalesAmountSol: NinaClient.nativeToUi(
+      secondarySalesAmountSol: nativeToUi(
         secondarySalesAmountSol,
-        NinaClient.ids().mints.wsol
+        ids.mints.wsol
       ),
     }
   }
@@ -1794,17 +1796,16 @@ const releaseContextHelper = ({
       releaseIds = releaseIds.map((id) => new anchor.web3.PublicKey(id))
       try {
         const program = await ninaClient.useProgram()
-        let releaseAccounts = await anchor.utils.rpc.getMultipleAccounts(
-          connection,
-          releaseIds
+        let releaseAccounts = await program.account.release.fetchMultiple(
+          releaseIds,
+          "confirmed"
         )
+        console.log("releaseAccounts ::> ", releaseAccounts)
         const releases = []
-        const layout = nina.program.coder.accounts.accountLayouts.get('Release')
-        releaseAccounts.forEach((release) => {
+        releaseAccounts.forEach((release, i) => {
           if (release) {
-            let dataParsed = layout.decode(release.account.data.slice(8))
-            dataParsed.publicKey = release.publicKey
-            releases.push(dataParsed)
+            release.publicKey = releaseIds[i]
+            releases.push(release)
           }
         })
         await saveReleasesToState(releases, query)
@@ -1910,12 +1911,12 @@ const releaseContextHelper = ({
   const releaseFetchMetadata = async (releasePubkey) => {
     try {
       const arweaveTxidResult = await fetch(
-        `${NinaClient.endpoints.pressingPlant}/api/file/findArweaveTxid?tokenId=${releasePubkey}`
+        `${endpoints.pressingPlant}/api/file/findArweaveTxid?tokenId=${releasePubkey}`
       )
       const arweaveTxidJson = await arweaveTxidResult.json()
 
       if (arweaveTxidJson.txid) {
-        const arweaveMetadataUri = `${NinaClient.endpoints.arweave}/${arweaveTxidJson.txid}`
+        const arweaveMetadataUri = `${endpoints.arweave}/${arweaveTxidJson.txid}`
         const arweaveJsonResult = await fetch(arweaveMetadataUri)
         const arweaveJson = await arweaveJsonResult.json()
 
@@ -1955,7 +1956,7 @@ const releaseContextHelper = ({
         }
       })
       const metadataResult = await fetch(
-        `${NinaClient.endpoints.api}/metadata/bulk`,
+        `${endpoints.api}/metadata/bulk`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

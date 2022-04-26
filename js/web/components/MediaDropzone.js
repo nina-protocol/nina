@@ -8,7 +8,6 @@ import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined'
 import Image from 'next/image'
 import { useWallet } from '@solana/wallet-adapter-react'
 
-const { NinaClient } = nina.utils
 const MediaDropzone = ({
   type,
   releasePubkey,
@@ -35,7 +34,7 @@ const MediaDropzone = ({
       body.append('trackCount', 1)
     }
     return {
-      url: `${NinaClient.endpoints.pressingPlant}/api/file`,
+      url: `https://pressingplant-dev.nina.market:443/file`,
       body,
     }
   }
