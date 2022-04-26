@@ -1490,7 +1490,7 @@ const releaseContextHelper = ({
   */
   const filterReleasesUserCollection = () => {
     if (!wallet?.connected) {
-      return
+      return []
     }
 
     const releases = []

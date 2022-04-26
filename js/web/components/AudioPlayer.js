@@ -19,11 +19,10 @@ import QueueDrawer from './QueueDrawer'
 import Image from './Image'
 
 const { AudioPlayerContext, NinaContext, ReleaseContext } = nina.contexts
-
+const { formatDuration } = nina.utils
 const AudioPlayer = () => {
   const { txid, updateTxid, playlist, isPlaying, setIsPlaying, currentIndex } =
     useContext(AudioPlayerContext)
-  const { ninaClient } = useContext(NinaContext)
   const { releaseState } = useContext(ReleaseContext)
   const wallet = useWallet()
   let playerRef = useRef()
@@ -258,7 +257,7 @@ const AudioPlayer = () => {
             sx={{ padding: '0 10px', display: { xs: 'block', md: 'none' } }}
             variant="subtitle1"
           >
-            {NinaClient.formatDuration(trackProgress) || '00:00'}
+            {formatDuration(trackProgress) || '00:00'}
           </Typography>
         </Box>
       </ProgressContainer>
@@ -267,7 +266,7 @@ const AudioPlayer = () => {
         sx={{ padding: '0 30px', display: { xs: 'none', md: 'block' } }}
         variant="subtitle1"
       >
-        {NinaClient.formatDuration(trackProgress) || '00:00'}
+        {formatDuration(trackProgress) || '00:00'}
       </Typography>
 
       {info && (

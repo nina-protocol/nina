@@ -8,16 +8,15 @@ import axios from 'axios'
 import nina from "@nina-protocol/nina-sdk";
 import Dots from './Dots'
 
-const { ReleaseContext } = nina.contexts
-const { NinaClient } = nina.utils
+const { NinaContext, ReleaseContext } = nina.contexts
 
-let path = NinaClient.endpoints.api
 const ReleaseSearch = () => {
   const [query, setQuery] = useState('')
   const [artists, setArtists] = useState(null)
-
+  const { ninaClient } = useContext(NinaContext)
   const { getReleasesBySearch, searchResults, resetSearchResults } =
     useContext(ReleaseContext)
+  let path = ninaClient.endpoints.api
 
   useEffect(() => {
     getArtists()

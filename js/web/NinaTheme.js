@@ -97,10 +97,6 @@ export const NinaTheme = createTheme({
       fontSize: '10px !important',
     },
   },
-  vars: {
-    borderWidth: '1.5px',
-    borderRadius: '30px',
-  },
   transitions: {
     easing: {
       easeOut: 'cubic-bezier(0, 1.5, .8, 1)',

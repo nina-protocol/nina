@@ -1,7 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react'
 import * as anchor from '@project-serum/anchor'
-import { findOrCreateAssociatedTokenAccount } from '../utils/web3'
-
+import { findOrCreateAssociatedTokenAccount, TOKEN_PROGRAM_ID } from '../utils/web3'
 export const NinaContext = createContext()
 const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [collection, setCollection] = useState({})
@@ -269,13 +268,13 @@ const ninaContextHelper = ({
   // Collection
 
   const createCollection = async () => {
-    if (wallet?.connected) {
+    if (provider.wallet?.connected) {
       try {
         const program = await ninaClient.useProgram()
         const updatedCollection = {}
-        let tokenAccounts = await connection.getParsedTokenAccountsByOwner(
-          wallet.publicKey,
-          { programId: NinaClient.TOKEN_PROGRAM_ID }
+        let tokenAccounts = await provider.connection.getParsedTokenAccountsByOwner(
+          provider.wallet.publicKey,
+          { programId: TOKEN_PROGRAM_ID }
         )
         const walletTokenAccounts = tokenAccounts.value.map(
           (value) => value.account.data.parsed.info
@@ -286,7 +285,7 @@ const ninaContextHelper = ({
           const mint = new anchor.web3.PublicKey(account.mint)
           const balance = account.tokenAmount.uiAmount
 
-          if (account.mint === NinaClient.ids().mints.usdc) {
+          if (account.mint === ids.mints.usdc) {
             setUsdcBalance(balance.toFixed(2))
           } else if (balance > 0 && balance % 1 === 0) {
             const [release] = await anchor.web3.PublicKey.findProgramAddress(
@@ -302,7 +301,7 @@ const ninaContextHelper = ({
         }
 
         let releaseAccounts = await anchor.utils.rpc.getMultipleAccounts(
-          connection,
+          provider.connection,
           Object.keys(releaseAmountMap).map((r) => new anchor.web3.PublicKey(r))
         )
         releaseAccounts = releaseAccounts.filter((item) => item != null)
@@ -334,7 +333,7 @@ const ninaContextHelper = ({
   }
 
   const createCollectionForSingleRelease = async (releasePubkey) => {
-    if (wallet?.connected) {
+    if (provider.wallet?.connected) {
       try {
         const updatedCollection = {}
         const program = await ninaClient.useProgram()
@@ -342,9 +341,9 @@ const ninaContextHelper = ({
           new anchor.web3.PublicKey(releasePubkey)
         )
 
-        let tokenAccounts = await connection.getParsedTokenAccountsByOwner(
-          wallet.publicKey,
-          { programId: NinaClient.TOKEN_PROGRAM_ID }
+        let tokenAccounts = await provider.connection.getParsedTokenAccountsByOwner(
+          provider.wallet.publicKey,
+          { programId: TOKEN_PROGRAM_ID }
         )
         const walletTokenAccounts = tokenAccounts.value.map(
           (value) => value.account.data.parsed.info
@@ -353,7 +352,7 @@ const ninaContextHelper = ({
         for await (let account of walletTokenAccounts) {
           const balance = account.tokenAmount.uiAmount
 
-          if (account.mint === NinaClient.ids().mints.usdc) {
+          if (account.mint === ids.mints.usdc) {
             setUsdcBalance(balance.toFixed(2))
           } else if (account.mint === release.releaseMint.toBase58()) {
             updatedCollection[releasePubkey] = account.tokenAmount.uiAmount
@@ -403,9 +402,9 @@ const ninaContextHelper = ({
     releasePubkey,
     releaseMint
   ) => {
-    let tokenAccounts = await connection.getParsedTokenAccountsByOwner(
-      wallet?.publicKey,
-      { programId: NinaClient.TOKEN_PROGRAM_ID }
+    let tokenAccounts = await provider.connection.getParsedTokenAccountsByOwner(
+      provider.wallet?.publicKey,
+      { programId: TOKEN_PROGRAM_ID }
     )
 
     const account = tokenAccounts.value.filter(
@@ -427,10 +426,10 @@ const ninaContextHelper = ({
   }
 
   const getAmountHeld = async (releaseMint) => {
-    if (wallet?.connected) {
-      let tokenAccounts = await connection.getParsedTokenAccountsByOwner(
-        wallet?.publicKey,
-        { programId: NinaClient.TOKEN_PROGRAM_ID }
+    if (provider.wallet?.connected) {
+      let tokenAccounts = await provider.connection.getParsedTokenAccountsByOwner(
+        provider.wallet?.publicKey,
+        { programId: TOKEN_PROGRAM_ID }
       )
       tokenAccounts.value.forEach((value) => {
         const account = value.account.data.parsed.info
@@ -443,19 +442,19 @@ const ninaContextHelper = ({
   }
 
   const getUsdcBalance = async () => {
-    if (wallet?.connected && wallet?.publicKey) {
+    if (provider.wallet?.connected && provider.wallet?.publicKey) {
       try {
         let [usdcTokenAccountPubkey] = await findOrCreateAssociatedTokenAccount(
-          connection,
-          wallet.publicKey,
-          wallet.publicKey,
+          provider.connection,
+          provider.wallet.publicKey,
+          provider.wallet.publicKey,
           anchor.web3.SystemProgram.programId,
           anchor.web3.SYSVAR_RENT_PUBKEY,
-          new anchor.web3.PublicKey(NinaClient.ids().mints.usdc)
+          new anchor.web3.PublicKey(ids.mints.usdc)
         )
 
         if (usdcTokenAccountPubkey) {
-          let usdcTokenAccount = await connection.getTokenAccountBalance(
+          let usdcTokenAccount = await provider.connection.getTokenAccountBalance(
             usdcTokenAccountPubkey
           )
           setUsdcBalance(usdcTokenAccount.value.uiAmount.toFixed(2))
@@ -471,12 +470,12 @@ const ninaContextHelper = ({
 
   const getNpcAmountHeld = async () => {
     const publishingCreditMint = new anchor.web3.PublicKey(
-      NinaClient.ids().mints.publishingCredit
+      ids.mints.publishingCredit
     )
 
-    if (wallet?.connected) {
-      let npcAccount = await connection.getParsedTokenAccountsByOwner(
-        wallet?.publicKey,
+    if (provider.wallet?.connected) {
+      let npcAccount = await provider.connection.getParsedTokenAccountsByOwner(
+        provider.wallet?.publicKey,
         { mint: publishingCreditMint }
       )
       if (npcAccount.value[0]) {

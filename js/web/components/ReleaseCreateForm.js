@@ -7,7 +7,7 @@ import { TextField } from '@mui/material'
 import Slider from '@mui/material/Slider'
 import Box from '@mui/material/Box'
 
-const { NinaClient } = nina.utils
+const { formatPlaceholder } = nina.utils
 
 const ReleaseCreateForm = ({
   field,
@@ -37,7 +37,7 @@ const ReleaseCreateForm = ({
               <TextField
                 className={classes.formField}
                 variant="standard"
-                label={NinaClient.formatPlaceholder(props.field.name)}
+                label={formatPlaceholder(props.field.name)}
                 size="small"
                 InputLabelProps={touched.artist ? { shrink: true } : ''}
                 placeholder={
@@ -55,7 +55,7 @@ const ReleaseCreateForm = ({
               <TextField
                 className={classes.formField}
                 variant="standard"
-                label={NinaClient.formatPlaceholder(props.field.name)}
+                label={formatPlaceholder(props.field.name)}
                 size="small"
                 InputLabelProps={touched.title ? { shrink: true } : ''}
                 placeholder={
@@ -73,7 +73,7 @@ const ReleaseCreateForm = ({
               <TextField
                 className={classes.formField}
                 variant="standard"
-                label={NinaClient.formatPlaceholder(props.field.name)}
+                label={formatPlaceholder(props.field.name)}
                 size="small"
                 InputLabelProps={touched.description ? { shrink: true } : ''}
                 placeholder={
@@ -93,7 +93,7 @@ const ReleaseCreateForm = ({
               <TextField
                 className={`${classes.formField}`}
                 variant="standard"
-                label={NinaClient.formatPlaceholder(field.name)}
+                label={formatPlaceholder(field.name)}
                 size="small"
                 InputLabelProps={touched.catalogNumber ? { shrink: true } : ''}
                 placeholder={
@@ -122,7 +122,7 @@ const ReleaseCreateForm = ({
               <TextField
                 className={`${classes.formField}`}
                 variant="standard"
-                label={NinaClient.formatPlaceholder(field.name)}
+                label={formatPlaceholder(field.name)}
                 size="small"
                 InputLabelProps={touched.amount ? { shrink: true } : ''}
                 placeholder={
@@ -141,7 +141,7 @@ const ReleaseCreateForm = ({
               <TextField
                 className={`${classes.formField}`}
                 variant="standard"
-                label={NinaClient.formatPlaceholder(field.name)}
+                label={formatPlaceholder(field.name)}
                 size="small"
                 InputLabelProps={touched.retailPrice ? { shrink: true } : ''}
                 placeholder={
