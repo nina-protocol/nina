@@ -1,11 +1,14 @@
+import React, { useContext } from 'react'
 import nina from "@nina-protocol/nina-sdk";
 import Head from 'next/head'
 import ReleaseRelated from '../../components/ReleaseRelated'
 
-const { NinaClient } = nina.utils
+const { NinaContext } = nina
 
 const Related = (props) => {
   const { metadata } = props
+  const { ninaClient } = useContext(NinaContext)
+  
   return (
     <>
       <Head>
@@ -43,7 +46,7 @@ const Related = (props) => {
 export const getServerSideProps = async (context) => {
   const releasePubkey = context.params.releasePubkey
   const metadataResult = await fetch(
-    `${NinaClient.endpoints.api}/metadata/bulk`,
+    `${ninaClient.endpoints.api}/metadata/bulk`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

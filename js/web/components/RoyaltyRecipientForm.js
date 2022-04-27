@@ -6,8 +6,8 @@ import Button from '@mui/material/Button'
 import { TextField, Typography, Box } from '@mui/material'
 import Slider from '@mui/material/Slider'
 import nina from "@nina-protocol/nina-sdk";
-const {ReleaseContext} = nina.contexts
-const {NinaClient} = nina.utils
+const { ReleaseContext} = nina.contexts
+const { formatPlaceholder } = nina.utils
 
 const RoyaltyRecipientForm = (props) => {
   const { release, userShare, setUserDisplayShare, releasePubkey, toggleForm } =
@@ -66,8 +66,8 @@ const RoyaltyRecipientForm = (props) => {
                     <TextField
                       className={classes.formField}
                       variant="outlined"
-                      placeholder={NinaClient.formatPlaceholder(field.name)}
-                      label={NinaClient.formatPlaceholder(field.name)}
+                      placeholder={formatPlaceholder(field.name)}
+                      label={formatPlaceholder(field.name)}
                       {...field}
                     />
                   </>

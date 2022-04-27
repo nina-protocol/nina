@@ -1,5 +1,4 @@
-import nina from "@nina-protocol/nina-sdk";
-const { NinaClient } = nina.utils
+import React, { useContext } from 'react'
 
 const ReleaseEmbedPage = ({ host, metadata }) => {
   const player = `

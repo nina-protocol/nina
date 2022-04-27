@@ -82,13 +82,13 @@ const ReleaseList = () => {
                     <span> {sales}</span> of <span>{editionTotal} </span>{' '}
                     available editions for a total of{' '}
                     <span>
-                      {NinaClient.nativeToUiString(revenue, USDC_MINT_ID)}
+                      {ninaClient.nativeToUiString(revenue, USDC_MINT_ID)}
                     </span>
                     .{`  You've`} had <span>{exchanges}</span>{' '}
                     {exchanges === 1 ? 'sale' : 'sales'} on the secondary market
                     for a total of{' '}
                     <span>
-                      {NinaClient.nativeToUiString(exchangeSales, USDC_MINT_ID)}
+                      {ninaClient.nativeToUiString(exchangeSales, USDC_MINT_ID)}
                     </span>
                     .
                   </Typography>

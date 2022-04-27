@@ -17,9 +17,8 @@ import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutline
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import { useRouter } from 'next/router'
 
-const { AudioPlayerContext, ReleaseContext } = nina.contexts
-const { NinaClient } = nina.utils
-
+const { AudioPlayerContext, NinaContext, ReleaseContext } = nina.contexts
+const {formatDuration} = nina.utils
 const descendingComparator = (a, b, orderBy) => {
   switch (orderBy) {
     case 'artist':
@@ -156,6 +155,7 @@ const EnhancedTableHead = (props) => {
 const ReleaseListTable = (props) => {
   const { releases, tableType, collectRoyaltyForRelease } = props
   const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext)
+  const { ninaClient } = useContext(NinaContext)
   const { releaseState } = useContext(ReleaseContext)
   const router = useRouter()
 
@@ -213,14 +213,14 @@ const ReleaseListTable = (props) => {
     }
 
     if (tableType === 'userCollection') {
-      const duration = NinaClient.formatDuration(
+      const duration = formatDuration(
         metadata.properties.files[0].duration
       )
       rowData['duration'] = duration
     }
 
     if (tableType === 'allReleases') {
-      rowData['price'] = `${NinaClient.nativeToUiString(
+      rowData['price'] = `${ninaClient.nativeToUiString(
         tokenData.price.toNumber(),
         tokenData.paymentMint
       )}`
@@ -246,7 +246,7 @@ const ReleaseListTable = (props) => {
           Collect
           {collectable && (
             <span>
-              {NinaClient.nativeToUiString(
+              {ninaClient.nativeToUiString(
                 recipient.owed.toNumber(),
                 tokenData.paymentMint
               )}
@@ -255,7 +255,7 @@ const ReleaseListTable = (props) => {
         </StyledCollectButton>
       )
 
-      rowData['price'] = `${NinaClient.nativeToUiString(
+      rowData['price'] = `${ninaClient.nativeToUiString(
         tokenData.price.toNumber(),
         tokenData.paymentMint
       )}`
@@ -268,7 +268,7 @@ const ReleaseListTable = (props) => {
           .toISOString()
           .split('T')[0]
       }`
-      rowData['collected'] = `${NinaClient.nativeToUiString(
+      rowData['collected'] = `${ninaClient.nativeToUiString(
         recipient.collected.toNumber(),
         tokenData.paymentMint
       )}`
