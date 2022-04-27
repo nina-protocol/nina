@@ -162,7 +162,7 @@ const Root = styled(Box)(({ theme }) => ({
     borderColor: `${theme.palette.black}`,
     padding: `${theme.spacing(0.5, 1)} !important`,
     width: '100px',
-    borderRadius: theme.vars.borderRadius,
+    borderRadius: "30px",
     margin: 0,
     '&:hover': {
       backgroundColor: `${theme.palette.white} !important`,

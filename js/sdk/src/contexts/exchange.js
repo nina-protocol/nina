@@ -7,6 +7,7 @@ import {
   getProgramAccounts,
   findOrCreateAssociatedTokenAccount,
   wrapSol,
+  TOKEN_PROGRAM_ID
 } from '../utils/web3'
 import { ninaErrorHandler } from '../utils/errors'
 
@@ -168,7 +169,7 @@ const exchangeContextHelper = ({
             : vault.wrappedSolVault,
           vaultSigner: vault.vaultSigner,
           royaltyTokenAccount: release.royaltyTokenAccount,
-          tokenProgram: ninaClient.TOKEN_PROGRAM_ID,
+          tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: anchor.web3.SystemProgram.programId,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         },
@@ -309,7 +310,7 @@ const exchangeContextHelper = ({
           exchange: exchange.publicKey,
           release,
           systemProgram: anchor.web3.SystemProgram.programId,
-          tokenProgram: ninaClient.TOKEN_PROGRAM_ID,
+          tokenProgram: TOKEN_PROGRAM_ID,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         },
         signers: [exchange],
@@ -345,7 +346,7 @@ const exchangeContextHelper = ({
       }
 
       const txid = await program.rpc.exchangeInit(config, bump, request)
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await provider.connection.getParsedConfirmedTransaction(txid, 'finalized')
 
       setExchangeInitPending({
         ...exchangeInitPending,
@@ -394,7 +395,7 @@ const exchangeContextHelper = ({
           exchangeEscrowTokenAccount: exchange.exchangeEscrowTokenAccount,
           exchangeSigner: exchange.exchangeSigner,
           exchange: exchange.publicKey,
-          tokenProgram: ninaClient.TOKEN_PROGRAM_ID,
+          tokenProgram: TOKEN_PROGRAM_ID,
         },
       }
 
@@ -441,7 +442,7 @@ const exchangeContextHelper = ({
     if (!provider.connection) {
       return
     }
-
+    console.log('hello')
     let path = ninaClient.endpoints.api
     switch (type) {
       case lookupTypes.USER:
@@ -453,6 +454,7 @@ const exchangeContextHelper = ({
     }
     const response = await fetch(path)
     const exchangeIds = await response.json()
+    console.log("exchangeIds ::> ", exchangeIds)
     if (exchangeIds.length > 0) {
       const program = await ninaClient.useProgram()
       const exchangeAccounts = await anchor.utils.rpc.getMultipleAccounts(
@@ -469,7 +471,7 @@ const exchangeContextHelper = ({
           existingExchanges.push(dataParsed)
         }
       })
-
+      console.log("existingExchanges ::> ", existingExchanges)
       const releaseExchangeIds = filterExchangesForRelease(releasePubkey).map(
         (exchange) => exchange.publicKey.toBase58()
       )
@@ -750,10 +752,11 @@ const exchangeContextHelper = ({
     })
   }
 
-  const getUpdates = (releasePubkey) => {
-    getUsdcBalance()
-    getRelease(releasePubkey)
-    getExchangesForRelease(releasePubkey)
+  const getUpdates = async (releasePubkey) => {
+    await getUsdcBalance()
+    await getRelease(releasePubkey)
+    console.log('getUpdates')
+    await getExchangesForRelease(releasePubkey)
   }
 
   return {
