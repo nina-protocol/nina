@@ -168,8 +168,6 @@ const releaseContextHelper = ({
   releasePurchasePending,
   setReleasePurchasePending,
   addReleaseToCollection,
-  wallet,
-  connection,
   getUsdcBalance,
   encryptData,
   collection,
@@ -668,7 +666,7 @@ const releaseContextHelper = ({
 
     try {
       let [payerTokenAccount] = await findOrCreateAssociatedTokenAccount(
-        connection,
+        provider.connection,
         provider.wallet.publicKey,
         provider.wallet.publicKey,
         anchor.web3.SystemProgram.programId,
@@ -676,9 +674,9 @@ const releaseContextHelper = ({
         release.paymentMint
       )
 
-      let [purchaserReleaseTokenAccount, purchaserReleaseTokenAccountIx] =
+      let [receiverReleaseTokenAccount, receiverReleaseTokenAccountIx] =
         await findOrCreateAssociatedTokenAccount(
-          connection,
+          provider.connection,
           provider.wallet.publicKey,
           provider.wallet.publicKey,
           anchor.web3.SystemProgram.programId,
@@ -692,8 +690,8 @@ const releaseContextHelper = ({
           releaseSigner: release.releaseSigner,
           payer: provider.wallet.publicKey,
           payerTokenAccount,
-          purchaser: provider.wallet.publicKey,
-          purchaserReleaseTokenAccount,
+          receiver: provider.wallet.publicKey,
+          receiverReleaseTokenAccount,
           royaltyTokenAccount: release.royaltyTokenAccount,
           releaseMint: release.releaseMint,
           tokenProgram: TOKEN_PROGRAM_ID,
@@ -702,8 +700,8 @@ const releaseContextHelper = ({
       }
 
       const instructions = []
-      if (purchaserReleaseTokenAccountIx) {
-        instructions.push(purchaserReleaseTokenAccountIx)
+      if (receiverReleaseTokenAccountIx) {
+        instructions.push(receiverReleaseTokenAccountIx)
       }
 
       if (instructions.length > 0) {
@@ -1164,7 +1162,7 @@ const releaseContextHelper = ({
   }
 
   const getReleasesHandler = async (publicKey, type) => {
-    if (!connection) {
+    if (!provider.connection) {
       return
     }
     try {
@@ -1187,7 +1185,7 @@ const releaseContextHelper = ({
   }
 
   const getReleaseIdsHandler = async (recipient, type) => {
-    if (!connection) {
+    if (!provider.connection) {
       return
     }
     if (recipient?.percentShare?.toNumber() > 0) {
@@ -1259,7 +1257,7 @@ const releaseContextHelper = ({
 
       const program = await ninaClient.useProgram()
       let redeemableAccounts = await anchor.utils.rpc.getMultipleAccounts(
-        connection,
+        provider.connection,
         redeemableIds.map((id) => new anchor.web3.PublicKey(id))
       )
 
@@ -1304,7 +1302,7 @@ const releaseContextHelper = ({
       )
       const redemptionRecordIds = await response.json()
       let redemptionRecords = await anchor.utils.rpc.getMultipleAccounts(
-        connection,
+        provider.connection,
         redemptionRecordIds.map((id) => new anchor.web3.PublicKey(id))
       )
 
@@ -1428,7 +1426,7 @@ const releaseContextHelper = ({
     try {
       const program = await ninaClient.useProgram()
       const userCollection = []
-      let tokenAccounts = await connection.getParsedTokenAccountsByOwner(
+      let tokenAccounts = await provider.connection.getParsedTokenAccountsByOwner(
         new anchor.web3.PublicKey(userId),
         { programId: TOKEN_PROGRAM_ID }
       )
@@ -1455,7 +1453,7 @@ const releaseContextHelper = ({
       }
 
       let releaseAccounts = await anchor.utils.rpc.getMultipleAccounts(
-        connection,
+        provider.connection,
         Object.keys(releaseAmountMap).map((r) => new anchor.web3.PublicKey(r))
       )
       releaseAccounts = releaseAccounts.filter((item) => item != null)
