@@ -1294,12 +1294,12 @@ const releaseContextHelper = ({
       }
 
       let authority
-      if (wallet?.publicKey.toBase58() !== release.authority.toBase58()) {
-        authority = wallet?.publicKey.toBase58()
+      if (provider.wallet?.publicKey.toBase58() !== release.authority.toBase58()) {
+        authority = provider.wallet?.publicKey.toBase58()
       }
       const response = await fetch(
         `/releases/${releasePubkey}/redemptionRecords${
-          authority ? `/${wallet.publicKey.toBase58()}` : ''
+          authority ? `/${provider.wallet.publicKey.toBase58()}` : ''
         }`
       )
       const redemptionRecordIds = await response.json()
@@ -1318,7 +1318,7 @@ const releaseContextHelper = ({
 
         dataParsed.publicKey = redemptionRecord.publicKey
         const otherPartyEncryptionKey =
-          wallet?.publicKey.toBase58() === redeemable.authority.toBase58()
+        provider.wallet?.publicKey.toBase58() === redeemable.authority.toBase58()
             ? dataParsed.encryptionPublicKey
             : redeemable.encryptionPublicKey
         if (!dataParsed.address.every((item) => item === 0)) {
@@ -1346,7 +1346,7 @@ const releaseContextHelper = ({
         } else {
           dataParsed.trackingNumber = undefined
         }
-        if (redeemable.authority.toBase58() === wallet.publicKey.toBase58()) {
+        if (redeemable.authority.toBase58() === provider.wallet.publicKey.toBase58()) {
           dataParsed.userIsPublisher = true
         } else {
           dataParsed.userIsPublisher = false
@@ -1490,15 +1490,17 @@ const releaseContextHelper = ({
 
   */
   const filterReleasesUserCollection = () => {
-    if (!wallet?.connected) {
+    if (!provider.wallet?.connected) {
       return []
     }
 
     const releases = []
+    console.log("collection 3 ::> ", collection)
     Object.keys(collection).forEach((releasePubkey) => {
       if (collection[releasePubkey] > 0) {
         const tokenData = releaseState.tokenData[releasePubkey]
         const metadata = releaseState.metadata[releasePubkey]
+        console.log("metadata ::> ", metadata)
         if (metadata) {
           releases.push({ tokenData, metadata, releasePubkey })
         }
@@ -1592,12 +1594,9 @@ const releaseContextHelper = ({
   }
 
   const filterReleasesPublishedByUser = (userPubkey = undefined) => {
-    // if (!wallet?.connected || (!userPubkey && !wallet?.publicKey)) {
-    //   return
-    // }
     // Return results for passed in user if another user isn't specified
     if (!userPubkey) {
-      userPubkey = wallet?.publicKey.toBase58()
+      userPubkey = provider.wallet?.publicKey.toBase58()
     }
 
     const releases = []
@@ -1632,12 +1631,12 @@ const releaseContextHelper = ({
   }
 
   const filterRoyaltiesByUser = (userPubkey = undefined) => {
-    if (!wallet?.connected || (!userPubkey && !wallet?.publicKey)) {
+    if (!provider.wallet?.connected || (!userPubkey && !provider.wallet?.publicKey)) {
       return
     }
     // Return results for passed in user if another user isn't specified
     if (!userPubkey) {
-      userPubkey = wallet?.publicKey.toBase58()
+      userPubkey = provider.wallet?.publicKey.toBase58()
     }
 
     const releases = []
@@ -1716,12 +1715,12 @@ const releaseContextHelper = ({
   }
 
   const calculateReleaseStatsByUser = (userPubkey = undefined) => {
-    if (!wallet?.connected || (!userPubkey && !wallet?.publicKey)) {
+    if (!provider.wallet?.connected || (!userPubkey && !provider.wallet?.publicKey)) {
       return
     }
     // Return results for passed in user if another user isn't specified
     if (!userPubkey) {
-      userPubkey = wallet?.publicKey.toBase58()
+      userPubkey = provider.wallet?.publicKey.toBase58()
     }
 
     const releases = filterReleasesPublishedByUser(userPubkey)
@@ -1769,12 +1768,12 @@ const releaseContextHelper = ({
   }
 
   const calculateStatsByUser = (userPubkey = undefined) => {
-    if (!wallet?.connected || (!userPubkey && !wallet?.publicKey)) {
+    if (!provider.wallet?.connected || (!userPubkey && !provider.wallet?.publicKey)) {
       return
     }
     // Return results for passed in user if another user isn't specified
     if (!userPubkey) {
-      userPubkey = wallet?.publicKey.toBase58()
+      userPubkey = provider.wallet?.publicKey.toBase58()
     }
 
     return {

@@ -156,7 +156,7 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
 export const getServerSideProps = async (context) => {
   const releasePubkey = context.params.releasePubkey
   const metadataResult = await fetch(
-    `${NinaClient.endpoints.api}/metadata/bulk`,
+    `${process.env.REACT_APP_API_ENDPOINT}/metadata/bulk`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

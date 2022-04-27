@@ -71,7 +71,6 @@ const NinaClient = function (provider, network) {
   obj.useProgram = async () => {
     const NINA_ID = obj.ids.programs.nina
     const idl = await anchor.Program.fetchIdl(NINA_ID, obj.provider)
-    console.log("idl, NINA_ID ::> ", idl, NINA_ID, obj.provider)
     return new anchor.Program(idl, NINA_ID, obj.provider)
   }
   obj.isUsdc = (mint) => {

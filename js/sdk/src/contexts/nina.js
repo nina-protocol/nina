@@ -295,7 +295,7 @@ const ninaContextHelper = ({
               ],
               program.programId
             )
-
+              
             releaseAmountMap[release.toBase58()] = account.tokenAmount.uiAmount
           }
         }
@@ -317,7 +317,7 @@ const ninaContextHelper = ({
               releaseAmountMap[releasePublicKey]
           }
         })
-
+        console.log("updatedCollection ::> ", updatedCollection)
         setCollection({
           ...collection,
           ...updatedCollection,

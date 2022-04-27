@@ -3,10 +3,10 @@ import { NinaContext } from './nina'
 import { ReleaseContext } from './release'
 
 export const AudioPlayerContext = createContext()
-const AudioPlayerContextProvider = ({ children, connection, wallet }) => {
-  const { collection, shouldRemainInCollectionAfterSale } =
+const AudioPlayerContextProvider = ({ children }) => {
+  const { collection, shouldRemainInCollectionAfterSale, ninaClient } =
     useContext(NinaContext)
-
+  const { provider } = ninaClient
   const { releaseState } = useContext(ReleaseContext)
   const [txid, setTxid] = useState(null)
   const [playlist, setPlaylist] = useState([])
@@ -14,13 +14,13 @@ const AudioPlayerContextProvider = ({ children, connection, wallet }) => {
 
   useEffect(() => {
     if (
-      wallet?.connected &&
+      provider.wallet?.connected &&
       playlist.length == 0 &&
       Object.keys(collection)?.length > 0
     ) {
       createPlaylistFromTracks()
     }
-  }, [wallet?.connected, collection, releaseState.metadata])
+  }, [provider.wallet?.connected, collection, releaseState.metadata])
 
   const updateTxid = async (newTxid, releasePubkey, shouldPlay = false) => {
     if (newTxid !== playlist[currentIndex()]) {
@@ -41,8 +41,6 @@ const AudioPlayerContextProvider = ({ children, connection, wallet }) => {
     resetQueueWithPlaylist,
   } = audioPlayerContextHelper({
     releaseState,
-    wallet,
-    connection,
     collection,
     playlist,
     setPlaylist,

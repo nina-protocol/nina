@@ -42,6 +42,7 @@ module.exports = withTM({
   },
   env: {
     REACT_APP_CLUSTER: 'devnet',
+    REACT_APP_API_ENDPOINT: 'http://localhost:3001'
   },
   images: {
     domains: ["www.arweave.net", "arweave.net"],
