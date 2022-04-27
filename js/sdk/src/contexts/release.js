@@ -847,6 +847,7 @@ const releaseContextHelper = ({
           authority: provider.wallet.publicKey,
           authorityTokenAccount,
           release: releasePublicKey,
+          releaseMint: release.releaseMint,
           releaseSigner: release.releaseSigner,
           royaltyTokenAccount: release.royaltyTokenAccount,
           newRoyaltyRecipient: recipientPublicKey,
