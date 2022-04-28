@@ -9,9 +9,9 @@ import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import { styled } from "@mui/material/styles"
 import Dots from '../components/Dots'
-
+import nina from '@nina-protocol/nina-sdk'
 const { ReleaseContext } = nina.contexts
-const { NinaClient } = nina.utils
+const { formatDuration } = nina.utils
 
 export default function Home() {
   const playerRef = useRef()
@@ -236,7 +236,7 @@ export default function Home() {
                 >
                   {activeTrack.current.properties.title}
                 </Typography>
-                <Typography>{`${NinaClient.formatDuration(trackProgress)} / ${NinaClient.formatDuration(activeTrack.current.properties.files[0].duration)}`}</Typography>
+                <Typography>{`${formatDuration(trackProgress)} / ${formatDuration(activeTrack.current.properties.files[0].duration)}`}</Typography>
                 <Links>
                   <a
                     href={activeTrack.current.external_url}

@@ -115,13 +115,17 @@ const NinaWrapper = ({children}) => {
   } = nina.contexts      
   const wallet = useWallet();
   const connection = useConnection();
+  const provider = new AnchorProvider(
+    connection,
+    wallet,
+    AnchorProvider.defaultOptions()
+  )  
+
+  const ninaClient = nina.client(provider, network)
+
   return (
-    <NinaContextProvider
-        releasePubkey={process.env.REACT_APP_RELEASE_PUBKEY}
-        wallet={wallet}
-        connection={connection.connection}
-    >
-      <ReleaseContextProvider wallet={wallet} connection={connection.connection}>
+    <NinaContextProvider ninaClient={ninaClient}>
+      <ReleaseContextProvider>
         {children}
       </ReleaseContextProvider>
     </NinaContextProvider>
