@@ -72,7 +72,7 @@ pub fn handler(
     let cpi_program = ctx.accounts.token_program.to_account_info().clone();
     let cpi_accounts = Burn {
         mint: ctx.accounts.redeemable_mint.to_account_info(),
-        to: ctx.accounts.redeemer_redeemable_token_account.to_account_info(),
+        from: ctx.accounts.redeemer_redeemable_token_account.to_account_info(),
         authority: ctx.accounts.redeemer.to_account_info().clone(),
     };
     

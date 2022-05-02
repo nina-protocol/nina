@@ -564,7 +564,7 @@ const hubContextHelper = ({
     hubPubkey,
     slug,
     uri,
-    referenceHubContent = undefined
+    referenceRelease = undefined
   ) => {
     try {
       const program = await ninaClient.useProgram()
@@ -619,15 +619,47 @@ const hubContextHelper = ({
 
       let txid
       const params = [hub.handle, slug, uri]
-      if (referenceHubContent) {
-        accounts.referenceHubContent = referenceHubContent
-        txid = await program.rpc.postInitViaHubWithReferenceContent(...params, {
-          accounts,
-        })
+      const request = { accounts }
+      if (referenceRelease) {
+        accounts.referenceRelease = referenceRelease
+
+        const instructions = []
+        const [referenceReleaseHubRelease, referenceReleaseHubReleaseIx] =
+          await anchor.web3.PublicKey.findProgramAddress(
+            [
+              Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-release')),
+              hubPubkey.toBuffer(),
+              referenceRelease.toBuffer(),
+            ],
+            program.programId
+          )
+        request.accounts.referenceReleaseHubRelease = referenceReleaseHubRelease
+
+        if (referenceReleaseHubReleaseIx) {
+          instructions.push(referenceReleaseHubReleaseIx)
+        }
+  
+        const [referenceReleaseHubContent, referenceReleaseHubContentIx] =
+          await anchor.web3.PublicKey.findProgramAddress(
+            [
+              Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-content')),
+              hubPubkey.toBuffer(),
+              referenceRelease.toBuffer(),
+            ],
+            program.programId
+          )
+        request.accounts.referenceReleaseHubContent = referenceReleaseHubContent
+
+        if (referenceReleaseHubContentIx) {
+          instructions.push(referenceReleaseHubContentIx)
+        }
+
+        if (instructions.length > 0) {
+          request.instructions = instructions
+        }
+        txid = await program.rpc.postInitViaHubWithReferenceContent(...params, request)
       } else {
-        txid = await program.rpc.postInitViaHub(...params, {
-          accounts,
-        })
+        txid = await program.rpc.postInitViaHub(...params, request)
       }
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
       await getHub(hubPubkey)

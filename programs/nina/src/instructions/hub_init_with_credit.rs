@@ -56,7 +56,7 @@ pub fn handler (
     let cpi_program = ctx.accounts.token_program.to_account_info().clone();
     let cpi_accounts = Burn {
         mint: ctx.accounts.hub_credit_mint.to_account_info(),
-        to: ctx.accounts.authority_hub_credit_token_account.to_account_info(),
+        from: ctx.accounts.authority_hub_credit_token_account.to_account_info(),
         authority: ctx.accounts.authority.to_account_info().clone(),
     };
     let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);

@@ -41,13 +41,19 @@ pub struct PostInitViaHubWithReferenceRelease<'info> {
     )]
     pub hub_content: Account<'info, HubContent>,
     #[account(
+        init_if_needed,
         seeds = [b"nina-hub-content".as_ref(), hub.key().as_ref(), reference_release.key().as_ref()],
         bump,
+        payer = author,
+        space = 153
     )]
     pub reference_release_hub_content: Box<Account<'info, HubContent>>,
     #[account(
+        init_if_needed,
         seeds = [b"nina-hub-release".as_ref(), hub.key().as_ref(), reference_release.key().as_ref()],
         bump,
+        payer = author,
+        space  = 120
     )]
     pub reference_release_hub_release: Box<Account<'info, HubRelease>>,
     pub reference_release: AccountLoader<'info, Release>,

@@ -81,7 +81,7 @@ impl Post {
             slug: slug,
             uri: uri,
             datetime: hub_content.datetime,
-            hub_content:hub_content.key(),
+            hub_content: hub_content.key(),
             reference_content: hub_post.reference_content,
             reference_hub_content: if reference_hub_content.is_some() { Some(reference_hub_content.unwrap().key())} else { None },
             reference_hub_content_child: if reference_hub_release.is_some() { Some(reference_hub_release.unwrap().key()) } else { None }
