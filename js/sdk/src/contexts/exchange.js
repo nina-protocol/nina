@@ -204,8 +204,13 @@ const exchangeContextHelper = ({
         datetime: new anchor.BN(Date.now() / 1000),
       }
 
-      const txid = await program.rpc.exchangeAccept(params, request)
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      const txid = await program.methods
+        .exchangeAccept(params)
+        .accounts(request.accounts)
+        .preInstructions(request.preInstructions)
+        .signers(request.signers)
+        .rpc()
+      await provider.connection.getParsedTransaction(txid, 'confirmed')
 
       if (exchange.isSelling) {
         addReleaseToCollection(releasePubkey)
@@ -216,13 +221,13 @@ const exchangeContextHelper = ({
         )
       }
 
-      getUpdates(releasePubkey)
+      await getUpdates(releasePubkey, exchange.publicKey.toBase58())
       return {
         success: true,
         msg: 'Offer accepted!',
       }
     } catch (error) {
-      getUpdates(releasePubkey)
+      await getUpdates(releasePubkey, exchange.publicKey.toBase58())
       return ninaErrorHandler(error)
     }
   }
@@ -345,9 +350,14 @@ const exchangeContextHelper = ({
         isSelling,
       }
 
-      const txid = await program.rpc.exchangeInit(config, bump, request)
-      await provider.connection.getParsedConfirmedTransaction(txid, 'finalized')
-
+      const txid = await program.methods
+        .exchangeInit(config, bump)
+        .accounts(request.accounts)
+        .preInstructions(request.instructions)
+        .signers(request.signers)
+        .rpc()
+      await provider.connection.getParsedTransaction(txid, 'confirmed')
+  
       setExchangeInitPending({
         ...exchangeInitPending,
         [releasePubkey]: false,
@@ -357,15 +367,14 @@ const exchangeContextHelper = ({
         removeReleaseFromCollection(releasePubkey, releaseMint.toBase58())
       }
 
-      getUpdates(releasePubkey)
+      await getUpdates(releasePubkey, exchange.publicKey.toBase58())
 
       return {
         success: true,
         msg: 'Offer created!',
       }
     } catch (error) {
-      getUpdates(releasePubkey)
-
+      console.warn(error)
       setExchangeInitPending({
         ...exchangeInitPending,
         [releasePubkey]: false,
@@ -404,30 +413,35 @@ const exchangeContextHelper = ({
       }
 
       let txid
+      const params = new anchor.BN(exchange.isSelling ? 1 : exchange.initializerAmount)
+
       if (ninaClient.isSol(exchange.initializerSendingMint)) {
-        txid = await program.rpc.exchangeCancelSol(
-          new anchor.BN(exchange.isSelling ? 1 : exchange.initializerAmount),
-          request
-        )
+        txid = await program.methods.exchangeCancelSol(params)
+          .accounts(request.accounts)
+          .preInstructions(request.instructions || [])
+          .signers(request.signers || [])
+          .rpc()
+
       } else {
-        txid = await program.rpc.exchangeCancel(
-          new anchor.BN(exchange.isSelling ? 1 : exchange.initializerAmount),
-          request
-        )
+        txid = await program.methods.exchangeCancel(params)
+          .accounts(request.accounts)
+          .preInstructions(request.instructions || [])
+          .signers(request.signers || [])
+          .rpc()
       }
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await provider.connection.getParsedTransaction(txid, 'confirmed')
 
       if (exchange.isSelling) {
         addReleaseToCollection(exchange.release.publicKey.toBase58())
       }
 
-      getUpdates(exchange.release.publicKey.toBase58())
+      await getUpdates(exchange.release.publicKey.toBase58(), exchange.publicKey.toBase58())
       return {
         success: true,
         msg: 'Offer cancelled!',
       }
     } catch (error) {
-      getUpdates(exchange.release.publicKey.toBase58())
+      await getUpdates(exchange.release.publicKey.toBase58(), exchange.publicKey.toBase58())
       return ninaErrorHandler(error)
     }
   }
@@ -438,28 +452,31 @@ const exchangeContextHelper = ({
 
   */
 
-  const getExchangesHandler = async (type, releasePubkey = null) => {
+  const getExchangesHandler = async (type, releasePubkey = null, exchangeId = null) => {
     if (!provider.connection) {
       return
     }
-    console.log('hello')
     let path = ninaClient.endpoints.api
     switch (type) {
       case lookupTypes.USER:
         path += `/userAccounts/${provider.wallet.publicKey.toBase58()}/exchanges`
         break
       case lookupTypes.RELEASE:
-        path += `/releases/${releasePubkey}/exchanges`
+        if (exchangeId) {
+          path += `/releases/${releasePubkey}/exchanges?exchangeId=${exchangeId}`
+        } else {
+          path += `/releases/${releasePubkey}/exchanges`
+        }
         break
     }
     const response = await fetch(path)
     const exchangeIds = await response.json()
-    console.log("exchangeIds ::> ", exchangeIds)
     if (exchangeIds.length > 0) {
       const program = await ninaClient.useProgram()
       const exchangeAccounts = await anchor.utils.rpc.getMultipleAccounts(
         provider.connection,
-        exchangeIds.map((id) => new anchor.web3.PublicKey(id))
+        exchangeIds.map((id) => new anchor.web3.PublicKey(id)),
+        'confirmed'
       )
 
       const existingExchanges = []
@@ -471,14 +488,13 @@ const exchangeContextHelper = ({
           existingExchanges.push(dataParsed)
         }
       })
-      console.log("existingExchanges ::> ", existingExchanges)
-      const releaseExchangeIds = filterExchangesForRelease(releasePubkey).map(
+
+      const releaseExchangeIds = existingExchanges.map(
         (exchange) => exchange.publicKey.toBase58()
       )
-      const idsToRemove = releaseExchangeIds.filter(
-        (id) => !exchangeIds.includes(id)
+      const idsToRemove = Object.keys(exchangeState).filter(
+        (id) => !releaseExchangeIds.includes(id)
       )
-
       if (exchangeAccounts.error) {
         throw exchangeAccounts.error
       } else {
@@ -501,8 +517,8 @@ const exchangeContextHelper = ({
     getExchangesHandler(lookupTypes.USER)
   }
 
-  const getExchangesForRelease = async (releasePubkey) => {
-    getExchangesHandler(lookupTypes.RELEASE, releasePubkey)
+  const getExchangesForRelease = async (releasePubkey, exchangeId = null) => {
+    getExchangesHandler(lookupTypes.RELEASE, releasePubkey, exchangeId)
   }
 
   const getExchangeHistoryForRelease = async (releasePubkey) => {
@@ -752,11 +768,10 @@ const exchangeContextHelper = ({
     })
   }
 
-  const getUpdates = async (releasePubkey) => {
+  const getUpdates = async (releasePubkey, exchangeId = null) => {
     await getUsdcBalance()
     await getRelease(releasePubkey)
-    console.log('getUpdates')
-    await getExchangesForRelease(releasePubkey)
+    await getExchangesForRelease(releasePubkey, exchangeId)
   }
 
   return {
