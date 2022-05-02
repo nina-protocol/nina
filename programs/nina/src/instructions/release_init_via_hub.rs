@@ -160,6 +160,7 @@ pub fn handler(
         hub_release: ctx.accounts.hub_release.key(),
         metadata_public_key: ctx.accounts.metadata.key(),
         uri: metadata_data.uri,
+        hub_content: ctx.accounts.hub_content.key(),
     });
 
     Ok(())

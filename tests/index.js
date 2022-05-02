@@ -4857,6 +4857,24 @@ describe('Hub', async () => {
     );
     hubContent = _hubContent
 
+    const [referenceReleaseHubContent] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-content")), 
+        hub.toBuffer(),
+        referenceRelease.toBuffer(),
+      ],
+      nina.programId
+    );
+
+    const [referenceReleaseHubRelease] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
+        hub.toBuffer(),
+        referenceRelease.toBuffer(),
+      ],
+      nina.programId
+    );
+
     const [_hubCollaborator] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
@@ -4878,6 +4896,8 @@ describe('Hub', async () => {
           hubPost,
           hubContent,
           hubCollaborator,
+          referenceReleaseHubRelease,
+          referenceReleaseHubContent,
           referenceRelease,
           systemProgram: anchor.web3.SystemProgram.programId,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,

@@ -39,6 +39,7 @@ const HubContextProvider = ({ children, hubPubkey }) => {
   }, [releaseState, hubPubkey])
 
   const {
+    getHubs,
     getHub,
     getHubContent,
     hubInitWithCredit,
@@ -68,6 +69,7 @@ const HubContextProvider = ({ children, hubPubkey }) => {
   return (
     <HubContext.Provider
       value={{
+        getHubs,
         getHub,
         hubInitWithCredit,
         hubUpdateConfig,
@@ -101,7 +103,7 @@ const hubContextHelper = ({
   setHubFeePending,
   hubPubkey,
 }) => {
-  const { ids, provider } = ninaClient
+  const { ids, provider, endpoints } = ninaClient
 
   const hubInitWithCredit = async (hubParams) => {
     try {
@@ -699,16 +701,21 @@ const hubContextHelper = ({
     }
   }
 
+  const getHubs = async () => {
+    try {
+      let path = endpoints.api + `/hubs`
+      const response = await fetch(path)
+      const hubIds = await response.json()
+      console.log("hubIds", hubIds)
+      return hubIds
+    } catch (error) {
+      console.warn(error)
+    }
+  }
+
   const getHub = async () => {
     const program = await ninaClient.useProgram()
     const hub = await program.account.hub.fetch(hubPubkey)
-    const hubCollaborators = await getFilteredAnchorAccounts(
-      program,
-      'HubCollaborator',
-      {
-        hub: hubPubkey,
-      }
-    )
     let hubTokenAccount = await findAssociatedTokenAddress(
       hub.hubSigner,
       new anchor.web3.PublicKey(ids.mints.usdc)
@@ -862,6 +869,7 @@ const hubContextHelper = ({
   }
 
   return {
+    getHubs,
     getHub,
     getHubContent,
     hubInitWithCredit,

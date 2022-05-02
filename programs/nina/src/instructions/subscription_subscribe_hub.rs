@@ -12,7 +12,7 @@ pub struct SubscriptionSubscribeHub<'info> {
         seeds = [b"nina-subscription", from.key().as_ref(), to.key().as_ref()],
         bump,
         payer = from,
-        space = 113
+        space = 121
     )]
     pub subscription: Account<'info, Subscription>,
     #[account(
@@ -31,6 +31,15 @@ pub fn handler(
     subscription.from = ctx.accounts.from.key();
     subscription.to = ctx.accounts.to.key();
     subscription.subscription_type = SubscriptionType::Hub;
+    subscription.datetime = Clock::get()?.unix_timestamp;
     
+    emit!(SubscriptionSubscribed {
+        public_key: subscription.key(),
+        from: subscription.from,
+        to: subscription.to,
+        subscription_type: subscription.subscription_type,
+        datetime: subscription.datetime,
+    });
+
     Ok(())
 }

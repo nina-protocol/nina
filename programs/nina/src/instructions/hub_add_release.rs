@@ -59,6 +59,10 @@ pub fn handler (
         public_key: ctx.accounts.hub_release.key(),
         hub:ctx.accounts.hub.key(),
         release: ctx.accounts.release.key(),
+        datetime: Clock::get()?.unix_timestamp,
+        hub_content: ctx.accounts.hub_content.key(),
+        added_by: ctx.accounts.authority.key(),
+        published_through_hub: false,
     });
 
     Ok(())

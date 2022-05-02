@@ -68,6 +68,7 @@ pub fn handler (
     hub.publish_fee = params.publish_fee;
     hub.referral_fee = params.referral_fee;
     hub.total_fees_earned = 0;
+    hub.datetime = Clock::get()?.unix_timestamp;
     hub.hub_signer_bump = params.hub_signer_bump;
 
     let mut handle_array = [0u8; 100];
@@ -84,12 +85,15 @@ pub fn handler (
     hub_collaborator.can_add_content = true;
     hub_collaborator.can_add_collaborator = true;
     hub_collaborator.allowance = -1;
+    hub_collaborator.datetime = hub.datetime;
 
     emit!(HubCreated {
         public_key: ctx.accounts.hub.key(),
         authority: ctx.accounts.authority.key(),
         handle: params.handle,
         uri: params.uri,
+        datetime: hub.datetime,
+        hub_collaborator: ctx.accounts.hub_collaborator.key()
     });
 
     Ok(())

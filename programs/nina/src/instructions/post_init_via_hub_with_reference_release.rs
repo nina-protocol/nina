@@ -40,6 +40,16 @@ pub struct PostInitViaHubWithReferenceRelease<'info> {
         space = 153
     )]
     pub hub_content: Account<'info, HubContent>,
+    #[account(
+        seeds = [b"nina-hub-content".as_ref(), hub.key().as_ref(), reference_release.key().as_ref()],
+        bump,
+    )]
+    pub reference_release_hub_content: Box<Account<'info, HubContent>>,
+    #[account(
+        seeds = [b"nina-hub-release".as_ref(), hub.key().as_ref(), reference_release.key().as_ref()],
+        bump,
+    )]
+    pub reference_release_hub_release: Box<Account<'info, HubRelease>>,
     pub reference_release: AccountLoader<'info, Release>,
     #[account(
         mut,
@@ -57,7 +67,6 @@ pub fn handler (
     slug: String,
     uri: String,
 ) -> Result<()> {
-    
     Post::post_init_helper(
         &mut ctx.accounts.author,
         ctx.accounts.hub.clone(),
@@ -66,6 +75,8 @@ pub fn handler (
         &mut ctx.accounts.hub_content,
         &mut ctx.accounts.hub_collaborator,
         Some(ctx.accounts.reference_release.clone()),
+        Some(ctx.accounts.reference_release_hub_release.clone()),
+        Some(ctx.accounts.reference_release_hub_content.clone()),
         slug,
         uri
    )?;

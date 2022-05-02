@@ -57,11 +57,13 @@ pub fn handler (
     hub_collaborator.can_add_content = can_add_content;
     hub_collaborator.can_add_collaborator = can_add_collaborator;
     hub_collaborator.allowance = allowance;
+    hub_collaborator.datetime = Clock::get()?.unix_timestamp;
 
     emit!(HubCollaboratorAdded {
-        public_key: ctx.accounts.hub_collaborator.key(),
+        public_key: hub_collaborator.key(),
         hub: ctx.accounts.hub.key(),
         collaborator: ctx.accounts.collaborator.key(),
+        datetime: hub_collaborator.datetime,
     });
     
     Ok(())

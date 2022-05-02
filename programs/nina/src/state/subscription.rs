@@ -14,9 +14,26 @@ impl Default for SubscriptionType {
 
 #[account]
 #[derive(Default)]
-// size = 8 + 32 + 32 + 1 (+ 40) = 113
+// size = 8 + 32 + 32 + 1 + 8(+ 40) = 121
 pub struct Subscription {
     pub from: Pubkey,
     pub to: Pubkey,
     pub subscription_type: SubscriptionType,
+		pub datetime: i64,
+}
+
+#[event]
+pub struct SubscriptionSubscribed {
+	#[index]
+	pub public_key: Pubkey,
+	pub from: Pubkey,
+	pub to: Pubkey,
+	pub subscription_type: SubscriptionType,
+	pub datetime: i64,
+}
+
+#[event]
+pub struct SubscriptionUnsubscribed {
+	#[index]
+	pub public_key: Pubkey,
 }

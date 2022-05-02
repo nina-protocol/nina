@@ -63,6 +63,8 @@ pub fn handler (
         &mut ctx.accounts.hub_content,
         &mut ctx.accounts.hub_collaborator,
         None,
+        None,
+        None,
         slug,
         uri
    )?;

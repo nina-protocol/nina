@@ -5,7 +5,7 @@ use crate::errors::ErrorCode;
 
 #[account(zero_copy)]
 #[repr(packed)]
-// size = 8 + 32 + 32 + 100 + 100 + 8 + 8 + 8 + 1 (+ 40 extra) = 337
+// size = 8 + 32 + 32 + 100 + 100 + 8 + 8 + 8 + 1 + 8 (+ 32 extra) = 337
 pub struct Hub {
 	pub authority: Pubkey,
 	pub hub_signer: Pubkey,
@@ -14,7 +14,8 @@ pub struct Hub {
 	pub publish_fee: u64,
 	pub referral_fee: u64,
 	pub total_fees_earned: u64,
-	pub hub_signer_bump: u8
+	pub hub_signer_bump: u8,
+	pub datetime: i64,
 }
 
 impl Hub {
@@ -68,8 +69,6 @@ impl Hub {
 #[derive(Default)]
 // size = 8 + 32  + 32 + 8 (+ 40) = 120
 pub struct HubRelease {
-	pub added_by: Pubkey,
-	pub datetime: i64,
 	pub hub: Pubkey,
 	pub release: Pubkey,
 	pub sales: u64,
@@ -113,7 +112,7 @@ pub struct HubPost {
 
 #[account]
 #[derive(Default)]
-// size = 8 + 32 + 32 + 1 + 32 + 1 + 1 (+ 40) = 147
+// size = 8 + 32 + 32 + 1 + 32 + 1 + 1 + 8 (+ 32) = 147
 pub struct HubCollaborator {
 	pub added_by: Pubkey,
 	pub hub: Pubkey,
@@ -123,6 +122,7 @@ pub struct HubCollaborator {
 	pub collaborator: Pubkey,
 	pub can_add_content: bool,
 	pub can_add_collaborator: bool,
+	pub datetime: i64,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Default)]
@@ -141,6 +141,8 @@ pub struct HubCreated {
 	pub authority: Pubkey,
 	pub handle: String,
 	pub uri: String,
+	pub datetime: i64,
+	pub hub_collaborator: Pubkey,
 }
 
 #[event]
@@ -149,6 +151,7 @@ pub struct HubCollaboratorAdded {
 	pub public_key: Pubkey,
 	pub hub: Pubkey,
 	pub collaborator: Pubkey,
+	pub datetime: i64,
 }
 
 #[event]
@@ -173,6 +176,10 @@ pub struct HubReleaseAdded {
 	pub public_key: Pubkey,
 	pub hub: Pubkey,
 	pub release: Pubkey,
+	pub datetime: i64,
+	pub hub_content: Pubkey,
+	pub added_by: Pubkey,
+	pub published_through_hub: bool,
 }
 
 #[event]
@@ -186,6 +193,7 @@ pub struct ReleaseInitializedViaHub {
 	pub hub_release: Pubkey,
 	pub metadata_public_key: Pubkey,
 	pub uri: String,
+	pub hub_content: Pubkey
 }
 
 
@@ -210,4 +218,5 @@ pub struct HubPostAdded {
 	pub public_key: Pubkey,
 	pub hub: Pubkey,
 	pub uri: String,
+	pub datetime: i64,
 }
