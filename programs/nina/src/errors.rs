@@ -66,4 +66,8 @@ pub enum ErrorCode {
     HubCollaboratorCannotAddReleaseToHubAllowanceUsed,
     #[msg("HubCollaborator Cannot Update HubCollaborator Unauthorized")]
     HubCollaboratorCannotUpdateHubCollaboratorUnauthorized,
+    #[msg("HubPublishFeeInvalidValue must be between 0 and 1000000")]
+    HubPublishFeeInvalidValue,
+    #[msg("HubReferralFeeInvalidValue must be between 0 and 1000000")]
+    HubReferralFeeInvalidValue,
 }

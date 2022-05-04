@@ -10,6 +10,7 @@ import {
 import { decodeNonEncryptedByteArray } from '../utils/encrypt'
 import { ReleaseContext } from './release'
 import { NinaContext } from './nina'
+import { result } from 'lodash'
 
 export const HubContext = createContext()
 const HubContextProvider = ({ children, hubPubkey }) => {
@@ -737,9 +738,8 @@ const hubContextHelper = ({
     try {
       let path = endpoints.api + `/hubs`
       const response = await fetch(path)
-      const hubIds = await response.json()
-      console.log("hubIds", hubIds)
-      return hubIds
+      const result = await response.json()
+      saveHubsToState(result.hubs)
     } catch (error) {
       console.warn(error)
     }
@@ -755,23 +755,16 @@ const hubContextHelper = ({
     const hubFeePendingAmount =
       await provider.connection.getTokenAccountBalance(hubTokenAccount)
     setHubFeePending(hubFeePendingAmount)
-    saveHubsToState([hub], [hubPubkey])
-    saveHubCollaboratorsToState(hubCollaborators)
+    saveHubsToState([hub])
     getHubContent(hubPubkey)
   }
-
+  
   const getHubContent = async (hubPubkey) => {
-    const program = await ninaClient.useProgram()
-    const hubContents = await getFilteredAnchorAccounts(program, 'HubContent', {
-      hub: hubPubkey,
-    })
-    const hubReleases = await getFilteredAnchorAccounts(program, 'HubRelease', {
-      hub: hubPubkey,
-    })
-    const hubPosts = await getFilteredAnchorAccounts(program, 'HubPost', {
-      hub: hubPubkey,
-    })
-    saveHubContentToState(hubContents, hubReleases, hubPosts)
+    let path = endpoints.api + `/hubs/${hubPubkey}`
+    const response = await fetch(path)
+    console.log(response)
+    saveHubCollaboratorsToState(response.hubCollaborators)
+    saveHubContentToState(response.hubReleases, response.hubPosts)
   }
 
   /*
@@ -780,26 +773,13 @@ const hubContextHelper = ({
 
   */
 
-  const saveHubsToState = async (hubs, publicKeys) => {
+  const saveHubsToState = async (hubs) => {
     try {
       let updatedState = { ...hubState }
-      let i = 0
-      for (let hub of hubs) {
-        const uri = decodeNonEncryptedByteArray(hub.uri)
-        const metadataJson = await axios.get(uri)
-        const publicKey = publicKeys[i]
-        updatedState[publicKey] = {
-          authority: hub.authority.toBase58(),
-          publishFee: hub.publishFee.toNumber(),
-          referralFee: hub.referralFee.toNumber(),
-          hubSigner: hub.hubSigner.toBase58(),
-          handle: decodeNonEncryptedByteArray(hub.handle),
-          totalFeesEarned: hub.totalFeesEarned.toNumber(),
-          uri,
-          metadata: metadataJson.data,
-        }
-        i++
-      }
+      hubs.forEach(hub => {
+        hub.publicKey = hub.id
+        updatedState[hub.publicKey] = hub
+      })
       setHubState(updatedState)
     } catch (error) {
       console.warn(error)
@@ -812,13 +792,9 @@ const hubContextHelper = ({
       for (let hubCollaborator of hubCollaborators) {
         updatedState = {
           ...updatedState,
-          [hubCollaborator.publicKey.toBase58()]: {
-            hub: hubCollaborator.account.hub.toBase58(),
-            collaborator: hubCollaborator.account.collaborator.toBase58(),
-            publicKey: hubCollaborator.publicKey.toBase58(),
-            canAddContent: hubCollaborator.account.canAddContent,
-            canAddCollaborator: hubCollaborator.account.canAddCollaborator,
-            allowance: hubCollaborator.account.allowance,
+          [hubCollaborator.id]: {
+            ...hubCollaborator,
+            publicKey: hubCollaborator.id,
           },
         }
       }
@@ -828,72 +804,52 @@ const hubContextHelper = ({
     }
   }
 
-  const saveHubContentToState = async (hubContents, hubReleases, hubPosts) => {
+  const saveHubContentToState = async (hubReleases, hubPosts) => {
     try {
       let updatedState = {}
-      for (let content of hubContents) {
-        switch (Object.keys(content.account.contentType)[0]) {
-          case 'ninaReleaseV1': {
-            const hubRelease = hubReleases.find(
-              (element) =>
-                element.publicKey.toBase58() ===
-                content.account.child.toBase58()
-            )
-            if (hubRelease) {
-              updatedState = {
-                ...updatedState,
-                [hubRelease.publicKey.toBase58()]: {
-                  addedBy: content.account.addedBy.toBase58(),
-                  child: content.account.child.toBase58(),
-                  contentType: 'NinaReleaseV1',
-                  datetime: content.account.datetime.toNumber(),
-                  publicKeyHubContent: content.publicKey.toBase58(),
-                  hub: hubRelease.account.hub.toBase58(),
-                  release: hubRelease.account.release.toBase58(),
-                  publicKey: hubRelease.publicKey.toBase58(),
-                  sales: hubRelease.account.sales.toNumber(),
-                  publishedThroughHub: hubRelease.account.publishedThroughHub,
-                  visible: content.account.visible,
-                },
-              }
-            }
-            break
+      for (let hubRelease of hubReleases) {
+        updatedState = {
+          ...updatedState,
+          [hubRelease.id]: {
+            addedBy: hubRelease.addedBy,
+            child: hubRelease.id,
+            contentType: 'NinaReleaseV1',
+            datetime: hubRelease.datetime,
+            publicKeyHubContent: hubRelease.hubContent,
+            hub: hubRelease.hubId,
+            release: hubRelease.releaseId,
+            publicKey: hubRelease.id,
+            publishedThroughHub: hubRelease.publishedThroughHub,
+            visible: hubRelease.visible,
           }
-          case 'post': {
-            const hubPost = hubPosts.find(
-              (element) =>
-                element.publicKey.toBase58() ===
-                content.account.child.toBase58()
-            )
-            if (hubPost) {
-              updatedState = {
-                ...updatedState,
-                [hubPost.publicKey.toBase58()]: {
-                  addedBy: content.account.addedBy.toBase58(),
-                  child: content.account.child.toBase58(),
-                  contentType: 'Post',
-                  datetime: content.account.datetime.toNumber(),
-                  publicKeyHubContent: content.publicKey.toBase58(),
-                  hub: hubPost.account.hub.toBase58(),
-                  post: hubPost.account.post.toBase58(),
-                  publicKey: hubPost.publicKey.toBase58(),
-                  referenceHubContent:
-                    hubPost.account.referenceHubContent.toNumber(),
-                  visible: content.account.visible,
-                  versionUri: hubPost.account.versionUri,
-                },
-              }
-            }
-            break
+        }
+      }
+
+      for (let hubPost of hubPosts) {
+        updatedState = {
+          ...updatedState,
+          [hubPost.id]: {
+            addedBy: hubPost.addedBy,
+            child: hubPost.id,
+            contentType: 'Post',
+            datetime: hubPost.datetime,
+            publicKeyHubContent: hubPost.hubContent,
+            hub: hubPost.hubId,
+            post: hubPost.postId,
+            publicKey: hubPost.id,
+            publishedThroughHub: hubPost.publishedThroughHub,
+            visible: hubPost.visible,
+            referenceHubContent: hubPost.referenceContent,
+            referenceHubContentType: hubPost.referenceContentType,
+            versionUri: hubPost.post.uri,
           }
-          default:
-            break
         }
       }
       await getReleases(
-        hubReleases.map((hubRelease) => hubRelease.account.release)
+        hubReleases.map((hubRelease) => hubRelease.publicKey)
       )
-      await getPosts(hubPosts.map((hubPost) => hubPost.account.post))
+      await getPosts(hubPosts.map((hubPost) => hubPost.publicKey))
+      console.log("updatedState HUBS ::> ", updatedState)
       setHubContentState(updatedState)
     } catch (error) {
       console.warn(error)

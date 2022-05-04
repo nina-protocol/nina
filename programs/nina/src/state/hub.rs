@@ -43,6 +43,21 @@ impl Hub {
 		Ok(())
 	}
 
+    pub fn check_hub_fees (
+        publish_fee: u64,
+        referral_fee: u64
+    ) -> Result<()> {
+        if publish_fee > 1000000 || publish_fee < 0 {
+            return Err(error!(ErrorCode::HubPublishFeeInvalidValue))
+        }
+        
+        if referral_fee > 1000000 || referral_fee < 0 {
+            return Err(error!(ErrorCode::HubReferralFeeInvalidValue))
+        }
+
+        Ok(())
+    }
+
 	pub fn hub_collaborator_can_add_or_publish_content<'info> (
 		hub_collaborator: &mut Account<'info, HubCollaborator>,
 		is_publish: bool,
@@ -150,6 +165,7 @@ pub struct HubCollaboratorAdded {
 	pub public_key: Pubkey,
 	pub hub: Pubkey,
 	pub collaborator: Pubkey,
+    pub added_by: Pubkey,
 	pub datetime: i64,
 }
 

@@ -24,6 +24,7 @@ nina-upgrade-idl-devnet = "anchor idl upgrade --filepath ./target/idl/nina.json 
 build = "anchor run build-deps && anchor build"
 build-deps = "anchor run build-metaplex"
 build-metaplex = "cd ./deps/metaplex/metaplex-program-library/token-metadata/program && pwd && cargo build-bpf && cd ../../../"
+upgrade-devnet = "anchor run nina-upgrade-devnet && anchor run nina-upgrade-idl-devnet"
 
 [[test.genesis]]
 address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"

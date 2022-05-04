@@ -27,11 +27,16 @@ pub fn handler (
     publish_fee: u64,
     referral_fee: u64,
 ) -> Result<()> {
+    Hub::check_hub_fees(
+        publish_fee,
+        referral_fee
+    )?;
+
     let mut hub = ctx.accounts.hub.load_mut()?;
 
     let mut uri_array = [0u8; 100];
     uri_array[..uri.len()].copy_from_slice(&uri.as_bytes());
-
+    
     hub.uri = uri_array;
     hub.publish_fee = publish_fee;
     hub.referral_fee = referral_fee;

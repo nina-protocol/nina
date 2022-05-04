@@ -63,6 +63,7 @@ pub fn handler (
         public_key: hub_collaborator.key(),
         hub: ctx.accounts.hub.key(),
         collaborator: ctx.accounts.collaborator.key(),
+        added_by: ctx.accounts.authority.key(),
         datetime: hub_collaborator.datetime,
     });
     

@@ -4184,8 +4184,52 @@ describe('Hub', async () => {
     const hubAfter = await nina.account.hub.fetch(hub)
     assert.equal(encrypt.decode(hubAfter.uri), uri)
   })
+
+  it ('should not update hub publish fee if too high', async () => {
+    await assert.rejects(
+      async () => {
+        const uri = 'https://arweave.net/jsdlkfj4j3kl4j3lkj43l3kjflksjd'
+        await nina.rpc.hubUpdateConfig(
+          uri,
+          hubParams.handle, 
+          hubParams.publishFee,
+          new anchor.BN(1000001), {
+            accounts: {
+              authority: provider.wallet.publicKey,
+              hub,
+            }
+          }
+        )
+      }, (err) => {
+        assert.equal(err.code, 6033);
+        return true;
+      }
+    )
+  })
   
-  it ('should not update hub uri is authority', async () => {
+  it ('should not update hub publish fee if too high', async () => {
+    await assert.rejects(
+      async () => {
+        const uri = 'https://arweave.net/jsdlkfj4j3kl4j3lkj43l3kjflksjd'
+        await nina.rpc.hubUpdateConfig(
+          uri,
+          hubParams.handle, 
+          new anchor.BN(1000001),
+          hubParams.referralFee, {
+            accounts: {
+              authority: provider.wallet.publicKey,
+              hub,
+            }
+          }
+        )
+      }, (err) => {
+        assert.equal(err.code, 6032);
+        return true;
+      }
+    )
+  })
+  
+  it ('should not update hub uri if is not authority', async () => {
     await assert.rejects(
       async () => {
         const uri = 'https://arweave.net/jsdlkfj4j3kl4j3lkj43l3kjflksjd'
