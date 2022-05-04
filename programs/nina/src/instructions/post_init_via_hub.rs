@@ -63,11 +63,23 @@ pub fn handler (
         &mut ctx.accounts.hub_content,
         &mut ctx.accounts.hub_collaborator,
         None,
-        None,
-        None,
-        slug,
-        uri
-   )?;
+        slug.clone(),
+        uri.clone()
+    )?;
+
+    emit!(PostInitializedViaHub {
+        public_key: ctx.accounts.post.key(),
+        added_by: ctx.accounts.author.key(),
+        hub: ctx.accounts.hub.key(),
+        hub_post: ctx.accounts.hub_post.key(),
+        slug: slug.clone(),
+        uri: uri.clone(),
+        datetime: Clock::get()?.unix_timestamp,
+        hub_content: ctx.accounts.hub_content.key(),
+        reference_content: None,
+        reference_hub_content: None,
+        reference_hub_content_child: None
+    });
 
     Ok(())
 }

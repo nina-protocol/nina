@@ -21,8 +21,6 @@ impl Post {
         hub_content_account: &mut Account<'info, HubContent>,
         hub_collaborator: &mut Account<'info, HubCollaborator>,
         reference_release: Option<AccountLoader<'info, Release>>,
-        reference_hub_release: Option<Box<Account<'info, HubRelease>>>,
-        reference_hub_content: Option<Box<Account<'info, HubContent>>>,
         slug: String,
         uri: String,    
     ) -> Result<()> {    
@@ -59,33 +57,10 @@ impl Post {
         hub_post.version_uri = uri_array;
 
         if reference_release.is_some() {
-            let release = reference_release.unwrap();
-            Hub::hub_release_create_handler(
-                hub.clone(),
-                &mut reference_hub_content.clone().unwrap(),
-                &mut reference_hub_release.clone().unwrap(),
-                release.clone(),
-                author.clone(),
-                false,
-            )?;
-        
+            let release = reference_release.unwrap();        
             hub_post.reference_content = Some(release.key());
             hub_post.reference_content_type = HubContentType::NinaReleaseV1;
         }      
-
-        emit!(PostInitializedViaHub {
-            public_key: post_account_loader.key(),
-            added_by: author.key(),
-            hub: hub.key(),
-            hub_post: hub_post_account_loader.key(),
-            slug: slug,
-            uri: uri,
-            datetime: hub_content.datetime,
-            hub_content: hub_content.key(),
-            reference_content: hub_post.reference_content,
-            reference_hub_content: if reference_hub_content.is_some() { Some(reference_hub_content.unwrap().key())} else { None },
-            reference_hub_content_child: if reference_hub_release.is_some() { Some(reference_hub_release.unwrap().key()) } else { None }
-        });
 
         Ok(())
     }

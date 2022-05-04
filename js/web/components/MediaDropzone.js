@@ -117,7 +117,8 @@ const MediaDropzone = ({
       return true;
     }
     return false;
-  };
+  }
+  
   const validateFileSize = (fileWithMeta) => {
     const size = fileWithMeta.file.size / 1000000;
     if (size > 100) {

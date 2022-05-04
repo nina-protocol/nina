@@ -73,6 +73,8 @@ pub fn handler (
     slug: String,
     uri: String,
 ) -> Result<()> {
+    let release = &ctx.accounts.reference_release;
+
     Post::post_init_helper(
         &mut ctx.accounts.author,
         ctx.accounts.hub.clone(),
@@ -80,12 +82,39 @@ pub fn handler (
         &mut ctx.accounts.hub_post,
         &mut ctx.accounts.hub_content,
         &mut ctx.accounts.hub_collaborator,
-        Some(ctx.accounts.reference_release.clone()),
-        Some(ctx.accounts.reference_release_hub_release.clone()),
-        Some(ctx.accounts.reference_release_hub_content.clone()),
-        slug,
-        uri
-   )?;
+        Some(release.clone()),
+        slug.clone(),
+        uri.clone()
+    )?;
+
+    let reference_release_hub_content = &mut ctx.accounts.reference_release_hub_content;
+    let reference_release_hub_release = &mut ctx.accounts.reference_release_hub_release;
+
+    reference_release_hub_content.added_by = ctx.accounts.author.key();
+    reference_release_hub_content.hub = ctx.accounts.hub.key();
+    reference_release_hub_content.child = reference_release_hub_release.key();
+    reference_release_hub_content.content_type = HubContentType::NinaReleaseV1;
+    reference_release_hub_content.datetime = Clock::get()?.unix_timestamp;
+    reference_release_hub_content.published_through_hub = false;
+    reference_release_hub_content.visible = true;
+
+    reference_release_hub_release.hub = ctx.accounts.hub.key();
+    reference_release_hub_release.release = release.key();
+    reference_release_hub_release.sales = 0;
+
+    emit!(PostInitializedViaHub {
+        public_key: ctx.accounts.post.key(),
+        added_by: ctx.accounts.author.key(),
+        hub: ctx.accounts.hub.key(),
+        hub_post: ctx.accounts.hub_post.key(),
+        slug: slug.clone(),
+        uri: uri.clone(),
+        datetime: ctx.accounts.hub_content.datetime,
+        hub_content: ctx.accounts.hub_content.key(),
+        reference_content: Some(release.key()),
+        reference_hub_content: Some(reference_release_hub_content.key()),
+        reference_hub_content_child: Some(reference_release_hub_release.key())
+    });
 
     Ok(())
 }

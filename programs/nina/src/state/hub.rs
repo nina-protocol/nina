@@ -28,17 +28,17 @@ impl Hub {
 		authority: Signer<'info>,
 		is_published_through_hub: bool,
 	) -> Result<()> {
-    hub_content.added_by = authority.key();
-    hub_content.hub = hub.key();
+		hub_content.added_by = authority.key();
+		hub_content.hub = hub.key();
 		hub_content.child = hub_release.key();
-    hub_content.content_type = HubContentType::NinaReleaseV1;
-    hub_content.datetime = Clock::get()?.unix_timestamp;
-    hub_content.published_through_hub = is_published_through_hub;
+		hub_content.content_type = HubContentType::NinaReleaseV1;
+		hub_content.datetime = Clock::get()?.unix_timestamp;
+		hub_content.published_through_hub = is_published_through_hub;
 		hub_content.visible = true;
 
 		hub_release.hub = hub.key();
-    hub_release.release = release.key();
-    hub_release.sales = 0;
+		hub_release.release = release.key();
+		hub_release.sales = 0;
 
 		Ok(())
 	}
@@ -60,7 +60,6 @@ impl Hub {
             .checked_sub(1)
             .unwrap();
     }
-
 		Ok(())
 	}
 }
