@@ -47,11 +47,11 @@ impl Hub {
         publish_fee: u64,
         referral_fee: u64
     ) -> Result<()> {
-        if publish_fee > 1000000 || publish_fee < 0 {
+        if publish_fee > 1000000 {
             return Err(error!(ErrorCode::HubPublishFeeInvalidValue))
         }
         
-        if referral_fee > 1000000 || referral_fee < 0 {
+        if referral_fee > 1000000 {
             return Err(error!(ErrorCode::HubReferralFeeInvalidValue))
         }
 
