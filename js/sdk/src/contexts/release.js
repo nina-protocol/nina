@@ -84,6 +84,7 @@ const ReleaseContextProvider = ({ children }) => {
     getReleasesBySearch,
     filterSearchResults,
     getCollectorsForRelease,
+    fetchAndSaveReleasesToState,
   } = releaseContextHelper({
     ninaClient,
     releaseState,
@@ -151,6 +152,7 @@ const ReleaseContextProvider = ({ children }) => {
         setSearchResults,
         getUserCollection,
         getCollectorsForRelease,
+        fetchAndSaveReleasesToState
       }}
     >
       {children}
@@ -2049,6 +2051,7 @@ const releaseContextHelper = ({
     getCollectorsForRelease,
     initializeReleaseAndMint,
     releaseCreateMetadataJson,
+    fetchAndSaveReleasesToState
   }
 }
 

@@ -68,7 +68,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const {
     subscriptionSubscribe,
     subscriptionUnsubscribe,
-    getPosts,
+    savePostsToState,
     createCollection,
     createCollectionForSingleRelease,
     addReleaseToCollection,
@@ -107,7 +107,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
       value={{
         subscriptionSubscribe,
         subscriptionUnsubscribe,
-        getPosts,
+        savePostsToState,
         postState,
         collection,
         createCollection,
@@ -132,6 +132,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         getSolPrice,
         bundlrUpload,
         initBundlr,
+        savePostsToState,
       }}
     >
       {children}
@@ -223,45 +224,18 @@ const ninaContextHelper = ({
     }
   }
   
-  const getPosts = async (postPubkeys) => {
-    try {
-      const program = await ninaClient.useProgram()
-      const postAccounts = await program.account.release.fetchMultiple(
-        postPubkeys
-      )
-      postAccounts.forEach((postAccount, i) => {
-        postAccount.publicKey = postPubkeys[i]
-      })
-      await savePostsToState(postAccounts)
-    } catch (error) {
-      console.warn(error)
-    }
-  }
-
   const savePostsToState = async (posts) => {
     let updatedState = { ...postState }
-
-    for await (let post of posts) {
-      try {
-        const postPubkey =
-          typeof post.publicKey === 'string'
-            ? post.publicKey
-            : post.publicKey.toBase58()
-        post = post.account ? post.account : post
-        post.slug = decodeNonEncryptedByteArray(post.slug)
-        post.uri = decodeNonEncryptedByteArray(post.uri)
-        const postJson = await axios.get(post.uri)
-        updatedState = {
-          ...updatedState,
-          [postPubkey]: {
-            ...post,
-            json: postJson,
-          },
+    posts.forEach(post => {
+      updatedState = {
+        ...updatedState,
+        [post.id]: {
+          ...post,
+          publicKey: post.id,          
         }
-      } catch (error) {
-        console.warn(error)
       }
-    }
+    }) 
+
     setPostState(updatedState)
   }
 
@@ -593,7 +567,6 @@ const ninaContextHelper = ({
   return {
     subscriptionSubscribe,
     subscriptionUnsubscribe,
-    getPosts,
     createCollection,
     createCollectionForSingleRelease,
     addReleaseToCollection,
@@ -609,5 +582,6 @@ const ninaContextHelper = ({
     getSolPrice,
     bundlrUpload,
     initBundlr,
+    savePostsToState,
   }
 }

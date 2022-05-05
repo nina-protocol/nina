@@ -5,40 +5,19 @@ import { ninaErrorHandler } from '../utils/errors'
 import {
   findAssociatedTokenAddress,
   findOrCreateAssociatedTokenAccount,
-  getFilteredAnchorAccounts,
 } from '../utils/web3'
 import { decodeNonEncryptedByteArray } from '../utils/encrypt'
 import { ReleaseContext } from './release'
 import { NinaContext } from './nina'
-import { result } from 'lodash'
 
 export const HubContext = createContext()
-const HubContextProvider = ({ children, hubPubkey }) => {
-  const { getReleases, releaseState } = useContext(ReleaseContext)
-  const { ninaClient, getPosts } = useContext(NinaContext)
+const HubContextProvider = ({ children }) => {
+  const { fetchAndSaveReleasesToState, releaseState } = useContext(ReleaseContext)
+  const { ninaClient, savePostsToState, postState } = useContext(NinaContext)
   const [hubState, setHubState] = useState({})
   const [hubCollaboratorsState, setHubCollaboratorsState] = useState({})
   const [hubContentState, setHubContentState] = useState({})
   const [hubFeePending, setHubFeePending] = useState()
-
-  useEffect(() => {
-    if (hubPubkey && !hubState[hubPubkey]) {
-      getHub(new anchor.web3.PublicKey(hubPubkey))
-    }
-  }, [hubPubkey])
-
-  useEffect(() => {
-    if (hubPubkey) {
-      const releaseCount = Object.keys(releaseState.metadata).length
-      const hubReleaseCount = Object.values(hubContentState).filter(
-        (hubContent) => hubContent.contentType === 'NinaReleaseV1'
-      ).length
-      if (releaseCount > hubReleaseCount) {
-        getHubContent(new anchor.web3.PublicKey(hubPubkey))
-      }
-    }
-  }, [releaseState, hubPubkey])
-
   const {
     getHubs,
     getHub,
@@ -53,18 +32,21 @@ const HubContextProvider = ({ children, hubPubkey }) => {
     hubWithdraw,
     postInitViaHub,
     postUpdateViaHubPost,
+    filterHubCollaboratorsForHub,
+    filterHubContentForHub,
+    filterHubsForUser
   } = hubContextHelper({
     ninaClient,
-    getPosts,
+    savePostsToState,
     hubState,
     setHubState,
     hubCollaboratorsState,
     setHubCollaboratorsState,
     hubContentState,
     setHubContentState,
-    getReleases,
+    fetchAndSaveReleasesToState,
     setHubFeePending,
-    hubPubkey,
+    postState
   })
 
   return (
@@ -86,6 +68,9 @@ const HubContextProvider = ({ children, hubPubkey }) => {
         hubCollaboratorsState,
         hubContentState,
         hubFeePending,
+        filterHubCollaboratorsForHub,
+        filterHubContentForHub,
+        filterHubsForUser  
       }}
     >
       {children}
@@ -95,14 +80,16 @@ const HubContextProvider = ({ children, hubPubkey }) => {
 
 const hubContextHelper = ({
   ninaClient,
-  getPosts,
+  savePostsToState,
   hubState,
   setHubState,
+  hubCollaboratorsState,
   setHubCollaboratorsState,
+  hubContentState,
   setHubContentState,
-  getReleases,
+  fetchAndSaveReleasesToState,
   setHubFeePending,
-  hubPubkey,
+  postState
 }) => {
   const { ids, provider, endpoints } = ninaClient
 
@@ -745,7 +732,7 @@ const hubContextHelper = ({
     }
   }
 
-  const getHub = async () => {
+  const getHub = async (hubPubkey) => {
     const program = await ninaClient.useProgram()
     const hub = await program.account.hub.fetch(hubPubkey)
     let hubTokenAccount = await findAssociatedTokenAddress(
@@ -762,11 +749,19 @@ const hubContextHelper = ({
   const getHubContent = async (hubPubkey) => {
     let path = endpoints.api + `/hubs/${hubPubkey}`
     const response = await fetch(path)
-    console.log(response)
-    saveHubCollaboratorsToState(response.hubCollaborators)
-    saveHubContentToState(response.hubReleases, response.hubPosts)
+    const result = await response.json()
+    console.log(result)
+    saveHubCollaboratorsToState(result.hubCollaborators)
+    saveHubContentToState(result.hubReleases, result.hubPosts)
   }
 
+  const getHubsForUser = (publicKey) => {
+    let path = endpoints.api + `/hubCollaboratorss/${publicKey}/hubs`
+    const response = await fetch(path)
+    const result = await response.json()
+    saveHubCollaboratorsToState(result.hubCollaborators)
+    saveHubsToState(result.hubs)
+  }
   /*
 
   STATE
@@ -788,7 +783,7 @@ const hubContextHelper = ({
 
   const saveHubCollaboratorsToState = async (hubCollaborators) => {
     try {
-      let updatedState = {}
+      let updatedState = {...hubCollaboratorsState}
       for (let hubCollaborator of hubCollaborators) {
         updatedState = {
           ...updatedState,
@@ -798,6 +793,7 @@ const hubContextHelper = ({
           },
         }
       }
+      console.log("updatedState rsdsd ::> ", updatedState)
       setHubCollaboratorsState(updatedState)
     } catch (error) {
       console.warn(error)
@@ -806,10 +802,11 @@ const hubContextHelper = ({
 
   const saveHubContentToState = async (hubReleases, hubPosts) => {
     try {
-      let updatedState = {}
+      let updatedState = { ...hubContentState }
+      let contentState = {}
       for (let hubRelease of hubReleases) {
-        updatedState = {
-          ...updatedState,
+        contentState = {
+          ...contentState,
           [hubRelease.id]: {
             addedBy: hubRelease.addedBy,
             child: hubRelease.id,
@@ -826,8 +823,8 @@ const hubContextHelper = ({
       }
 
       for (let hubPost of hubPosts) {
-        updatedState = {
-          ...updatedState,
+        contentState = {
+          ...contentState,
           [hubPost.id]: {
             addedBy: hubPost.addedBy,
             child: hubPost.id,
@@ -845,15 +842,62 @@ const hubContextHelper = ({
           }
         }
       }
-      await getReleases(
-        hubReleases.map((hubRelease) => hubRelease.publicKey)
-      )
-      await getPosts(hubPosts.map((hubPost) => hubPost.publicKey))
-      console.log("updatedState HUBS ::> ", updatedState)
+      updatedState = {
+        ...updatedState,
+        ...contentState,
+      }
+      await fetchAndSaveReleasesToState(hubReleases.map(hubRelease => hubRelease.releaseId))
+      console.log("hubPosts ::> ", hubPosts)
+      await savePostsToState(hubPosts.map((hubPost) => hubPost.post))
+
       setHubContentState(updatedState)
     } catch (error) {
       console.warn(error)
     }
+  }
+
+  const filterHubContentForHub = (hubPubkey) => {
+    const hubReleases = []
+    const hubPosts = []
+
+    Object.values(hubContentState).forEach((hubContent) => {
+      console.log("hubContent ::> ", hubContent)
+      if (hubContent.hub === hubPubkey) {
+        console.log("1 ::> ")
+        if (hubContent.contentType === 'NinaReleaseV1') {
+          console.log("2 ::> ")
+          hubReleases.push(hubContent)
+        } else if (hubContent.contentType === 'Post') {
+          console.log("3 ::> ")
+          hubPosts.push(hubContent)
+        }
+      }
+    })
+
+    return [
+      hubReleases,
+      hubPosts
+    ]
+  }
+
+  const filterHubCollaboratorsForHub = (hubPubkey) => {
+    const hubCollaborators = []
+    Object.values(hubCollaboratorsState).forEach(hubCollaborator => {
+      if (hubCollaborator.hubId === hubPubkey) {
+        hubCollaborators.push(hubCollaborator)
+      }
+    })
+    return hubCollaborators.sort((a,b) => b.datetime - a.datetime)
+  }
+
+  const filterHubsForUser = (publicKey) => {
+    const hubs = []
+    Object.values(hubCollaboratorsState).forEach(hubCollaborator => {
+      if (hubCollaborator.collaborator === publicKey) {
+        hubs.push(hubState[hubCollaborator.hubId])
+      }
+    })
+    return hubs
   }
 
   return {
@@ -870,6 +914,9 @@ const hubContextHelper = ({
     hubWithdraw,
     postInitViaHub,
     postUpdateViaHubPost,
+    filterHubCollaboratorsForHub,
+    filterHubContentForHub,
+    filterHubsForUser
   }
 }
 export default HubContextProvider
