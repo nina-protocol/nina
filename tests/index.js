@@ -3731,11 +3731,11 @@ describe('Hub', async () => {
     );
     releaseAccount = _releaseAccount
 
-    const [releaseSigner, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
+    const [_releaseSigner, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
       [releaseAccount.toBuffer()],
       nina.programId,
     );
-    releaseSigner = releaseSigner
+    releaseSigner = _releaseSigner
 
     let [_hubRoyaltyTokenAccount, royaltyTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
       provider,
@@ -4426,7 +4426,6 @@ describe('Hub', async () => {
       ],
       nina.programId
     );  
-    hubRelease = _hubRelease
 
     const [_hubContent, bump] = await anchor.web3.PublicKey.findProgramAddress(
       [
@@ -4772,6 +4771,86 @@ describe('Hub', async () => {
     const hubContentAfter = await nina.account.hubContent.fetch(hubContent);
     assert.equal(hubContentAfter.visible, false)
   })
+
+  it('Should fail to Collect Revenue Share USDC via Hub if not authority', async () => {
+    await assert.rejects(
+      async () => {
+        await nina.rpc.releaseRevenueShareCollectViaHub(
+          hubParams.handle, {
+          accounts: {
+            authority: user2.publicKey,
+            royaltyTokenAccount: hubRoyaltyTokenAccount,
+            release:releaseAccount,
+            releaseMint: hubReleaseMint.publicKey,
+            releaseSigner,
+            hub,
+            hubRelease,
+            hubSigner,
+            hubWallet,
+            tokenProgram: TOKEN_PROGRAM_ID,
+          },
+          signers: [user2]
+        });
+      },
+      (err) => {
+        assert.equal(err.code, 2003);
+        return true;
+      }
+    );
+  });
+
+  it('Collects Revenue Share USDC via Hub', async () => {
+    const usdcTokenAccountBefore = await getTokenAccount(
+      provider,
+      hubWallet,
+    );
+    const usdcTokenAccountBeforeBalance = usdcTokenAccountBefore.amount.toNumber(); 
+    const royaltyTokenAccountBefore = await getTokenAccount(
+      provider,
+      hubRoyaltyTokenAccount,
+    );
+    const royaltyTokenAccountBeforeBalance = royaltyTokenAccountBefore.amount.toNumber(); 
+
+    const releaseBefore = await nina.account.release.fetch(releaseAccount);
+    const royaltyRecipientOwedBefore = releaseBefore.royaltyRecipients[1].owed.toNumber();
+    await nina.rpc.releaseRevenueShareCollectViaHub(
+      hubParams.handle, {
+      accounts: {
+        authority: provider.wallet.publicKey,
+        royaltyTokenAccount: hubRoyaltyTokenAccount,
+        release:releaseAccount,
+        releaseMint: hubReleaseMint.publicKey,
+        releaseSigner,
+        hub,
+        hubRelease,
+        hubSigner,
+        hubWallet,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      },
+    });
+
+    const releaseAfter = await nina.account.release.fetch(releaseAccount);
+    assert.equal(releaseAfter.royaltyRecipients[1].owed.toNumber(), 0);
+    assert.equal(
+      releaseAfter.royaltyRecipients[1].collected.toNumber(),
+      royaltyRecipientOwedBefore,
+    )
+
+    const royaltyTokenAccountAfter = await getTokenAccount(
+      provider,
+      releaseAfter.royaltyTokenAccount,
+    );
+    assert.equal(royaltyTokenAccountAfter.amount.toNumber(), royaltyTokenAccountBeforeBalance - royaltyRecipientOwedBefore)
+
+    const usdcTokenAccountAfter = await getTokenAccount(
+      provider,
+      hubWallet,
+    );
+    assert.equal(
+      usdcTokenAccountAfter.amount.toNumber(),
+      royaltyRecipientOwedBefore + usdcTokenAccountBeforeBalance
+    );
+  });
 
   it('Withdraws From the Hub to Hub Authority', async () => {
     let [hubTokenAccount] = await findOrCreateAssociatedTokenAccount(

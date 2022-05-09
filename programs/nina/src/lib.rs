@@ -61,6 +61,13 @@ pub mod nina {
         instructions::release_revenue_share_collect::handler(ctx)
     }
 
+    pub fn release_revenue_share_collect_via_hub(
+        ctx: Context<ReleaseRevenueShareCollectViaHub>,
+        hub_handle: String,
+    ) -> Result<()> {
+        instructions::release_revenue_share_collect_via_hub::handler(ctx, hub_handle)
+    }
+
     pub fn release_revenue_share_transfer(
         ctx: Context<ReleaseRevenueShareTransfer>,
         transfer_share: u64,

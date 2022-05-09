@@ -52,6 +52,11 @@ pub fn handler (
     ctx: Context<HubInitWithCredit>,
     params: HubInitParams,
 ) -> Result<()> {
+    Hub::check_hub_fees(
+        params.publish_fee,
+        params.referral_fee
+    )?;
+
     // Authority burn hub credit
     let cpi_program = ctx.accounts.token_program.to_account_info().clone();
     let cpi_accounts = Burn {
