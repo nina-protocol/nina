@@ -25,6 +25,7 @@ module.exports = withTM({
     }
     config.resolve.alias = {
       ...config.resolve.alias,
+      "@nina-protocol/nina-sdk": path.resolve('../node_modules/@nina-protocol/nina-sdk'),
       react: path.resolve('../node_modules/react'),
       crypto: path.resolve('../node_modules/crypto-browserify'),
       stream: path.resolve('../node_modules/stream-browserify'),
@@ -42,7 +43,7 @@ module.exports = withTM({
   },
   env: {
     REACT_APP_CLUSTER: 'devnet',
-    REACT_APP_API_ENDPOINT: 'http://localhost:3001'
+    REACT_APP_API_ENDPOINT: 'https://api-dev.nina.market:443', 
   },
   images: {
     domains: ["www.arweave.net", "arweave.net"],

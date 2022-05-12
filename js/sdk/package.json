@@ -9,7 +9,7 @@
   "unpkg": "./dist/index.umd.js",
   "exports": {
     "require": "./dist/index.js",
-    "default": "./dist/index.modern.js"
+    "default": "./dist/ind``ex.modern.js"
   },
   "dependencies": {
     "@bundlr-network/client": "^0.6.1",

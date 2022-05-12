@@ -225,17 +225,19 @@ const ninaContextHelper = ({
   }
   
   const savePostsToState = async (posts) => {
+    console.log('savePostsToState: ', posts)
     let updatedState = { ...postState }
     posts.forEach(post => {
       updatedState = {
         ...updatedState,
         [post.id]: {
           ...post,
-          publicKey: post.id,          
+          publicKey: post.id,
+          createdAt: new Date(post.createdAt)          
         }
       }
     }) 
-
+    console.log("updatedState ::> ", updatedState)
     setPostState(updatedState)
   }
 

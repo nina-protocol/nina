@@ -6,14 +6,17 @@
   "workspaces": [
     "nina-radio",
     "sdk",
-    "web"
+    "web",
+    "hubs"
   ],
   "scripts": {
     "sdk": "yarn workspace @nina-protocol/nina-sdk",
     "nina-radio": "yarn workspace nina-radio",
     "nina-radio:build": "yarn nina-radio build",
     "web": "yarn workspace web",
-    "web:build": "yarn web build"
+    "web:build": "yarn web build",
+    "hubs": "yarn workspace hubs",
+    "hubs:build": "yarn hubs build"
   },
   "dependencies": {
     "@emotion/cache": "^11.7.1",

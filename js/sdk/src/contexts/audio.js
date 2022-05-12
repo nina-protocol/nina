@@ -9,8 +9,33 @@ const AudioPlayerContextProvider = ({ children }) => {
   const { provider } = ninaClient
   const { releaseState } = useContext(ReleaseContext)
   const [txid, setTxid] = useState(null)
+  const [track, setTrack] = useState(null)
   const [playlist, setPlaylist] = useState([])
   const [isPlaying, setIsPlaying] = useState(false)
+
+  const updateTrack = (releasePubkey, shouldPlay = false) => {
+    const newTrack = playlist.filter(
+      (item) => item.releasePubkey === releasePubkey
+    )[0]
+    if (newTrack) {
+      setTrack(newTrack)
+    }
+    setIsPlaying(shouldPlay)
+  }
+
+  const playPrev = (shouldPlay = false) => {
+    if (playlist[currentIndex() - 1]) {
+      setTrack(playlist[currentIndex() - 1])
+      setIsPlaying(shouldPlay)
+    }
+  }
+
+  const playNext = (shouldPlay = false) => {
+    if (playlist[currentIndex() + 1]) {
+      setTrack(playlist[currentIndex() + 1])
+      setIsPlaying(shouldPlay)
+    }
+  }
 
   useEffect(() => {
     if (
@@ -47,6 +72,7 @@ const AudioPlayerContextProvider = ({ children }) => {
     shouldRemainInCollectionAfterSale,
     setTxid,
     setIsPlaying,
+    setTrack,
   })
 
   const currentIndex = () => {
@@ -63,6 +89,10 @@ const AudioPlayerContextProvider = ({ children }) => {
   return (
     <AudioPlayerContext.Provider
       value={{
+        track,
+        updateTrack,
+        playNext,
+        playPrev,
         txid,
         updateTxid,
         playlist,
@@ -74,6 +104,7 @@ const AudioPlayerContextProvider = ({ children }) => {
         setIsPlaying,
         currentIndex,
         resetQueueWithPlaylist,
+        createPlaylistFromTracks
       }}
     >
       {children}

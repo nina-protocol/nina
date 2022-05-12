@@ -82,25 +82,27 @@ const HubSlider = (props) => {
           prevArrow={<CustomPrevArrow />}
         >
           {hubs?.map((hub, i) => {
-            const imageUrl = hub.json.image;
+            const imageUrl = hub?.json?.image;
             console.log("hub ::> ", hub)
             return (
               <HubSlideWrapper key={i}>
                 <HubSlide key={i}>
-                  <Link href={`/hubs/${hub.publicKey}`}>
-                    <a>
-                      <Image
-                        src={imageUrl}
-                        height={100}
-                        width={100}
-                        layout="responsive"
-                        priority={true}
-                      />
-                    </a>
-                  </Link>
+                  {imageUrl &&
+                    <Link href={`/hubs/${hub.publicKey}`}>
+                      <a>
+                        <Image
+                          src={imageUrl}
+                          height={100}
+                          width={100}
+                          layout="responsive"
+                          priority={true}
+                        />
+                      </a>
+                    </Link>
+                  }
                   <HubCopy sx={{ display: "flex" }}>
                     <Typography variant="body2">
-                      {hub.json.displayName}
+                      {hub?.json?.displayName}
                     </Typography>
                   </HubCopy>
                 </HubSlide>

@@ -18,6 +18,7 @@ const HubContextProvider = ({ children }) => {
   const [hubCollaboratorsState, setHubCollaboratorsState] = useState({})
   const [hubContentState, setHubContentState] = useState({})
   const [hubFeePending, setHubFeePending] = useState()
+  const [initialLoad, setInitialLoad] = useState(false)
   const {
     getHubs,
     getHub,
@@ -46,7 +47,9 @@ const HubContextProvider = ({ children }) => {
     setHubContentState,
     fetchAndSaveReleasesToState,
     setHubFeePending,
-    postState
+    postState,
+    initialLoad,
+    setInitialLoad
   })
 
   return (
@@ -70,7 +73,8 @@ const HubContextProvider = ({ children }) => {
         hubFeePending,
         filterHubCollaboratorsForHub,
         filterHubContentForHub,
-        filterHubsForUser  
+        filterHubsForUser,
+        initialLoad,
       }}
     >
       {children}
@@ -89,7 +93,9 @@ const hubContextHelper = ({
   setHubContentState,
   fetchAndSaveReleasesToState,
   setHubFeePending,
-  postState
+  postState,
+  initialLoad,
+  setInitialLoad
 }) => {
   const { ids, provider, endpoints } = ninaClient
 
@@ -721,6 +727,72 @@ const hubContextHelper = ({
     }
   }
 
+  const collectRoyaltyForReleaseViaHub = async (releasePubkey, hubPubkey) => {
+    try {
+      const program = await ninaClient.useProgram()
+      releasePubkey = new anchor.web3.PublicKey(releasePubkey)
+      hubPubkey = new anchor.web3.PublicKey(hubPubkey)
+
+      let release = await program.account.release.fetch(releasePubkey)
+      let hub = await program.account.hub.fetch(hubPubkey)
+      const recipient = release.royaltyRecipients.find(
+        (recipient) =>
+          recipient.recipientAuthority.toBase58() === hub.hubSigner.toBase58()
+      )
+
+      const [hubWallet] = await findOrCreateAssociatedTokenAccount(
+        provider.connection,
+        provider.wallet.publicKey,
+        new anchor.web3.PublicKey(hub.hubSigner),
+        anchor.web3.SystemProgram.programId,
+        anchor.web3.SYSVAR_RENT_PUBKEY,
+        release.paymentMint
+      )
+      const [hubRelease] = await anchor.web3.PublicKey.findProgramAddress(
+        [
+          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-release')),
+          hubPubkey.toBuffer(),
+          releasePubkey.toBuffer(),
+        ],
+        program.programId
+      )
+
+      const request = {
+        accounts: {
+          authority: provider.wallet.publicKey,
+          royaltyTokenAccount: release.royaltyTokenAccount,
+          release: releasePubkey,
+          releaseSigner: release.releaseSigner,
+          releaseMint: release.releaseMint,
+          hub: hubPubkey,
+          hubRelease,
+          hubSigner: hub.hubSigner,
+          hubWallet,
+          tokenProgram: ids.programs.token,
+        },
+      }
+
+      const txid = await program.rpc.releaseRevenueShareCollectViaHub(
+        decodeNonEncryptedByteArray(hub.handle),
+        request
+      )
+      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+
+      getRelease(releasePubkey.toBase58())
+      getHub(hubPubkey.toBase58())
+      return {
+        success: true,
+        msg: `You collected $${nativeToUi(
+          recipient.owed.toNumber(),
+          release.paymentMint
+        )} to the hub`,
+      }
+    } catch (error) {
+      getRelease(releasePubkey.toBase58())
+      return ninaErrorHandler(error)
+    }
+  }
+
   const getHubs = async () => {
     try {
       let path = endpoints.api + `/hubs`
@@ -742,7 +814,6 @@ const hubContextHelper = ({
     const hubFeePendingAmount =
       await provider.connection.getTokenAccountBalance(hubTokenAccount)
     setHubFeePending(hubFeePendingAmount)
-    saveHubsToState([hub])
     getHubContent(hubPubkey)
   }
   
@@ -753,9 +824,10 @@ const hubContextHelper = ({
     console.log(result)
     saveHubCollaboratorsToState(result.hubCollaborators)
     saveHubContentToState(result.hubReleases, result.hubPosts)
+    saveHubsToState([result.hub])
   }
 
-  const getHubsForUser = (publicKey) => {
+  const getHubsForUser = async (publicKey) => {
     let path = endpoints.api + `/hubCollaboratorss/${publicKey}/hubs`
     const response = await fetch(path)
     const result = await response.json()
@@ -811,7 +883,7 @@ const hubContextHelper = ({
             addedBy: hubRelease.addedBy,
             child: hubRelease.id,
             contentType: 'NinaReleaseV1',
-            datetime: hubRelease.datetime,
+            datetime: new Date(hubRelease.datetime),
             publicKeyHubContent: hubRelease.hubContent,
             hub: hubRelease.hubId,
             release: hubRelease.releaseId,
@@ -829,7 +901,7 @@ const hubContextHelper = ({
             addedBy: hubPost.addedBy,
             child: hubPost.id,
             contentType: 'Post',
-            datetime: hubPost.datetime,
+            datetime: new Date(hubPost.datetime),
             publicKeyHubContent: hubPost.hubContent,
             hub: hubPost.hubId,
             post: hubPost.postId,
@@ -851,6 +923,9 @@ const hubContextHelper = ({
       await savePostsToState(hubPosts.map((hubPost) => hubPost.post))
 
       setHubContentState(updatedState)
+      if (!initialLoad) {
+        setInitialLoad(true)
+      }
     } catch (error) {
       console.warn(error)
     }

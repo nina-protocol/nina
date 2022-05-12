@@ -44,7 +44,7 @@ const ReleasePage = (props) => {
 export const getServerSideProps = async (context) => {
   const releasePubkey = context.params.releasePubkey
   const metadataResult = await fetch(
-    `http://localhost:3001/metadata/bulk`,
+    `${process.env.REACT_APP_API_ENDPOINT}/metadata/bulk`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
