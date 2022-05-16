@@ -47,7 +47,6 @@ export default function Home() {
       if (releases.length > 0) {
         activeTrack.current = tracks[releases[0]]
         if ("mediaSession" in navigator) {
-          console.log('in here: ', activeTrack.current)
           navigator.mediaSession.metadata = new MediaMetadata({
             title: activeTrack.current.properties.title,
             artist: activeTrack.current.properties.artist,
@@ -64,7 +63,6 @@ export default function Home() {
     const track = tracks[playlist[activeIndexRef.current]]
     if (track) {
       if (track && "mediaSession" in navigator) {
-        console.log('in here: ', track)
         navigator.mediaSession.metadata = new MediaMetadata({
           title: track.properties.title,
           artist: track.properties.artist,

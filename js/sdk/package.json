@@ -41,7 +41,12 @@
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.12.0",
+    "@next/eslint-plugin-next": "^12.0.7",
+    "@types/bs58": "^4.0.1",
     "@typescript-eslint/parser": "^5.12.0",
+    "@types/coingecko-api": "^1.0.1",
+    "@types/node": "^16.9.6",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-react": "^7.28.0",
     "microbundle": "^0.14.2",
     "prettier": "^2.5.1"

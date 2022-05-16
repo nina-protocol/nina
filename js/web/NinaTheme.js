@@ -152,6 +152,10 @@ export const NinaTheme = createTheme({
             padding: '20px',
             borderColor: colors.black,
             color: colors.black,
+            '&.Mui-disabled': {
+              border: `1px solid ${colors.grey}`,
+              color: colors.grey,
+            },
             '&:hover': {
               borderColor: colors.black,
               color: colors.black,

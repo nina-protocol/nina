@@ -79,6 +79,11 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
     })
   }
 
+  console.log('activeHubPosts :>> ', activeHubPosts);
+  console.log('hubPosts :>> ', hubPosts);
+  console.log('postState :>> ', postState);
+
+
   return (
     <>
       <DashboardWrapper
@@ -95,7 +100,7 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
           />
         </DashboardContent>
         <DashboardContent item md={6}>
-          {activeHubPosts && (
+          {activeHubPosts && postState && (
             <>
               <DashboardHeader style={{ fontWeight: 600 }}>
                 There are {Object.keys(activeHubPosts).length}{' '}
@@ -105,12 +110,10 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
               <ul>
                 {Object.keys(activeHubPosts).map((postPubkey) => {
                   const hubPost = activeHubPosts[postPubkey]
-                  const postData = postState[hubPost.post].json.data
+                  const postContent = postState[hubPost.post].postContent
                   return (
                     <DashboardEntry key={hubPost.post}>
-                      <Link href={`/posts/${hubPost.post}`}>
-                        {postData.title}
-                      </Link>
+                      <Link href={`/posts/${hubPost.post}`}>{postContent.json.title}</Link>
                       {canTogglePost(hubPost) && hubPostsShowArchived && (
                         <AddIcon
                           onClick={() =>

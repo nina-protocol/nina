@@ -9,13 +9,20 @@ import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutline
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Image from './Image'
 
-const { AudioPlayerContext, ReleaseContext } = nina.contexts
+import {useSnackbar} from 'notistack'
+import AddToHubModal from './AddToHubModal.js'
+
+const {AudioPlayerContext, ReleaseContext, HubContext} = nina.contexts
 
 const ReleaseCard = (props) => {
-  const { artwork, metadata, preview, releasePubkey } = props
+  const { artwork, metadata, preview, releasePubkey, userHubs } = props
   const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext)
   const { releaseState } = useContext(ReleaseContext)
   const image = useMemo(() => metadata?.image)
+  const {enqueueSnackbar} = useSnackbar()
+
+  console.log('userHubs :>> ', userHubs);
+
 
   return (
     <StyledReleaseCard>
@@ -42,6 +49,12 @@ const ReleaseCard = (props) => {
             >
               <ControlPointIcon sx={{ color: 'white' }} />
             </Button>
+
+            {userHubs?.length > 0 && (
+              <Repost>
+                <AddToHubModal userHubs={userHubs} releasePubkey={releasePubkey} metadata={metadata}/>
+              </Repost>
+            )}
           </CtaWrapper>
         )}
 
@@ -99,6 +112,10 @@ const CtaWrapper = styled(Box)(() => ({
     width: '21px',
     marginRight: '10px',
   },
+}))
+
+const Repost = styled(Box)(() => ({
+  border: '2px solid red'
 }))
 
 const StyledReleaseInfo = styled(Box)(({ theme }) => ({

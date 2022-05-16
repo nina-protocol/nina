@@ -36,7 +36,6 @@ function Image({ src, height, width, layout, priority, release }) {
     }
   }
   if (!ImageComponent) {
-    console.log ('in here 3')
     ImageComponent = () => (
       <NextImage
         src={src}
