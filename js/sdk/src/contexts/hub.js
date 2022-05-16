@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import * as anchor from '@project-serum/anchor'
-import axios from 'axios'
 import { ninaErrorHandler } from '../utils/errors'
 import {
   findAssociatedTokenAddress,
@@ -23,6 +22,7 @@ const HubContextProvider = ({ children }) => {
     getHubs,
     getHub,
     getHubContent,
+    getHubsForUser,
     hubInitWithCredit,
     hubUpdateConfig,
     hubAddCollaborator,
@@ -57,6 +57,7 @@ const HubContextProvider = ({ children }) => {
       value={{
         getHubs,
         getHub,
+        getHubsForUser,
         hubInitWithCredit,
         hubUpdateConfig,
         hubAddCollaborator,
@@ -785,7 +786,7 @@ const hubContextHelper = ({
         msg: `You collected $${nativeToUi(
           recipient.owed.toNumber(),
           release.paymentMint
-        )} to the hub`,
+        )} to the hub`, 
       }
     } catch (error) {
       getRelease(releasePubkey.toBase58())
@@ -828,9 +829,10 @@ const hubContextHelper = ({
   }
 
   const getHubsForUser = async (publicKey) => {
-    let path = endpoints.api + `/hubCollaboratorss/${publicKey}/hubs`
+    let path = endpoints.api + `/hubCollaborators/${publicKey}/hubs` 
     const response = await fetch(path)
     const result = await response.json()
+    console.log('result :>> ', result);
     saveHubCollaboratorsToState(result.hubCollaborators)
     saveHubsToState(result.hubs)
   }
@@ -966,18 +968,24 @@ const hubContextHelper = ({
   }
 
   const filterHubsForUser = (publicKey) => {
+    console.log('FILTERING');
     const hubs = []
     Object.values(hubCollaboratorsState).forEach(hubCollaborator => {
+      console.log('hubCollaborator :>> ', hubCollaborator);
+      console.log('publicKey :>> ', publicKey);
       if (hubCollaborator.collaborator === publicKey) {
+        console.log('MATCH');
         hubs.push(hubState[hubCollaborator.hubId])
       }
     })
+    console.log('hubs in filter :>> ', hubs);
     return hubs
   }
 
   return {
     getHubs,
     getHub,
+    getHubsForUser,
     getHubContent,
     hubInitWithCredit,
     hubUpdateConfig,

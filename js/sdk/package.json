@@ -9,7 +9,7 @@
   "unpkg": "./dist/index.umd.js",
   "exports": {
     "require": "./dist/index.js",
-    "default": "./dist/ind``ex.modern.js"
+    "default": "./dist/index.modern.js"
   },
   "dependencies": {
     "@bundlr-network/client": "^0.6.1",
@@ -22,16 +22,17 @@
     "encoding": "^0.1.13",
     "eslint": "^7.27.0",
     "events": "^3.3.0",
+    "formik": "^2.2.9",
     "https": "^1.0.0",
     "idb-keyval": "^5.0.6",
     "lodash": "^4.17.21",
-    "notistack": "^1.0.6",
+    "notistack": "^2.0.5",
     "process": "^0.11.10",
     "querystring": "^0.2.1"
   },
   "scripts": {
-    "build": "rm -rf dist/ && microbundle --jsx React.createElement",
-    "watch": "microbundle watch --no-compress --jsx React.createElement",
+    "build": "rm -rf dist/ && microbundle --jsx React.createElement --jsxImportSource react",
+    "watch": "microbundle watch --no-compress --jsx 'React.createElement' --jsxImportSource react",
     "lint": "eslint ./ --ignore-path ./.gitignore",
     "lint:fix": "yarn lint -- --fix",
     "format": "prettier -l .",
