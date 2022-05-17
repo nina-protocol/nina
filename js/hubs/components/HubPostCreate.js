@@ -44,7 +44,8 @@ const HubPostCreate = ({
   hubPubkey,
   canAddContent,
   hubReleasesToReference,
-  preloadedRelease = undefined
+  preloadedRelease = undefined,
+  setParentOpen
 }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
@@ -229,6 +230,7 @@ const HubPostCreate = ({
           setFormValues({ postForm: {} })
           setPostCreated(true)
           setOpen(false)
+          setParentOpen(false)
         }
       }
     } catch (error) {
