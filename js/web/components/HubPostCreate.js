@@ -6,7 +6,7 @@ import React, {
   useCallback,
 } from 'react'
 import * as Yup from 'yup'
-// import nina from '@nina-protocol/nina-sdk'
+import nina from '@nina-protocol/nina-sdk'
 import { useSnackbar } from 'notistack'
 import { styled } from '@mui/material/styles'
 import Button from '@mui/material/Button'
@@ -27,11 +27,11 @@ import {
   createUpload,
   updateUpload,
   removeUpload,
-  UploadType, 
+  UploadType,
   uploadHasItemForType,
 } from '../utils/uploadManager'
 
-import { NinaContext, HubContext } from '../contexts'
+const { NinaContext, HubContext } = nina.contexts
 
 const PostCreateSchema = Yup.object().shape({
   title: Yup.string().required('Title is Required'),
@@ -44,11 +44,13 @@ const HubPostCreate = ({
   hubPubkey,
   canAddContent,
   hubReleasesToReference,
+  preloadedRelease,
+  selectedHubId
 }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const { postInitViaHub, hubState } = useContext(HubContext)
-  const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
+  const hubData = useMemo(() => hubState[hubPubkey || selectedHubId], [hubState, hubPubkey, selectedHubId])
   const {
     bundlrUpload,
     bundlrBalance,
@@ -86,6 +88,7 @@ const HubPostCreate = ({
     [bundlrBalance, solPrice]
   )
 
+
   useEffect(() => {
     refreshBundlr()
   }, [])
@@ -122,7 +125,7 @@ const HubPostCreate = ({
         }
       }
     } else {
-      setButtonText(`You do not have permission to create posts`)
+      setButtonText(preloadedRelease ? `Create Post on ${hubData?.json.handle}` : `You do not have permission to create posts`)
     }
   }, [metadataTx, isPublishing, postCreated, bundlrBalance, canAddContent])
 
@@ -176,6 +179,14 @@ const HubPostCreate = ({
             metadataJson.reference = formValues.postForm.reference
           }
 
+          if (preloadedRelease) {
+            metadataJson.reference = preloadedRelease
+            formValues.postForm.reference = preloadedRelease
+            console.log('metadataJson :>> ', metadataJson);
+          }
+          
+          console.log('formvalues.postForm :>> ', formValues.postForm);
+
           metadataResult = (
             await bundlrUpload(
               new Blob([JSON.stringify(metadataJson)], {
@@ -202,7 +213,7 @@ const HubPostCreate = ({
 
           if (metadataJson.reference) {
             result = await postInitViaHub(
-              hubPubkey,
+              hubPubkey || selectedHubId,
               slug,
               uri,
               metadataJson.reference
@@ -241,8 +252,9 @@ const HubPostCreate = ({
         variant="outlined"
         fullWidth
         onClick={() => setOpen(true)}
-      >
-        Publish a new Post test
+        disabled={!selectedHubId}
+      > 
+        {preloadedRelease ? 'Create an editorial post about this release' : 'Publish a new post'}
       </CreateCtaButton>
       <StyledModal
         aria-labelledby="transition-modal-title"
@@ -258,7 +270,7 @@ const HubPostCreate = ({
         <Fade in={open}>
           <StyledPaper>
             <Grid item md={12}>
-              {/* {wallet?.connected && ( */}
+              {wallet?.connected && (
                 <Box margin="auto">
                   <PostFormWrapper>
                     <HubPostCreateForm
@@ -269,6 +281,7 @@ const HubPostCreate = ({
                       hubData={hubData}
                       postCreated={postCreated}
                       hubReleasesToReference={hubReleasesToReference}
+                      preloadedRelease={preloadedRelease}
                     />
                   </PostFormWrapper>
 
@@ -283,7 +296,7 @@ const HubPostCreate = ({
                         disabled={
                           isPublishing ||
                           !formIsValid ||
-                          !canAddContent ||
+                          (!preloadedRelease && !canAddContent) ||
                           bundlrBalance === 0 ||
                           mbs < uploadSize
                         }
@@ -323,7 +336,7 @@ const HubPostCreate = ({
                     </Box>
                   </CreateCta>
                 </Box>
-              {/* )} */}
+              )}
             </Grid>
           </StyledPaper>
         </Fade>
@@ -332,9 +345,10 @@ const HubPostCreate = ({
   )
 }
 
-const CreateCtaButton = styled(Button)(() => ({
+const CreateCtaButton = styled(Button)(({theme}) => ({
   display: 'flex',
-  margin: '0px auto 40px',
+  ...theme.helpers.baseFont,
+  marginTop: theme.spacing(1)
 }))
 
 const StyledPaper = styled(Paper)(({ theme }) => ({

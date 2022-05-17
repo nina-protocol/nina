@@ -50,7 +50,7 @@ const ReleaseCard = (props) => {
               <ControlPointIcon sx={{ color: 'white' }} />
             </Button>
 
-            {userHubs?.length > 0 && (
+            {userHubs?.length > 0 && releasePubkey && (
               <Repost>
                 <AddToHubModal userHubs={userHubs} releasePubkey={releasePubkey} metadata={metadata}/>
               </Repost>

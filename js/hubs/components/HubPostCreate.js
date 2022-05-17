@@ -44,6 +44,7 @@ const HubPostCreate = ({
   hubPubkey,
   canAddContent,
   hubReleasesToReference,
+  preloadedRelease = undefined
 }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
@@ -332,9 +333,10 @@ const HubPostCreate = ({
   )
 }
 
-const CreateCtaButton = styled(Button)(() => ({
+const CreateCtaButton = styled(Button)(({theme}) => ({
   display: 'flex',
   margin: '0px auto 40px',
+  fontSize: theme.helpers.baseFont
 }))
 
 const StyledPaper = styled(Paper)(({ theme }) => ({

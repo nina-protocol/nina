@@ -22,17 +22,16 @@
     "encoding": "^0.1.13",
     "eslint": "^7.27.0",
     "events": "^3.3.0",
-    "formik": "^2.2.9",
     "https": "^1.0.0",
     "idb-keyval": "^5.0.6",
     "lodash": "^4.17.21",
-    "notistack": "^2.0.5",
+    "notistack": "^1.0.6",
     "process": "^0.11.10",
     "querystring": "^0.2.1"
   },
   "scripts": {
-    "build": "rm -rf dist/ && microbundle --jsx React.createElement --jsxImportSource react",
-    "watch": "microbundle watch --no-compress --jsx 'React.createElement' --jsxImportSource react",
+    "build": "rm -rf dist/ && microbundle --jsx React.createElement ",
+    "watch": "microbundle watch --no-compress --jsx React.createElement",
     "lint": "eslint ./ --ignore-path ./.gitignore",
     "lint:fix": "yarn lint -- --fix",
     "format": "prettier -l .",
@@ -41,12 +40,7 @@
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.12.0",
-    "@next/eslint-plugin-next": "^12.0.7",
-    "@types/bs58": "^4.0.1",
     "@typescript-eslint/parser": "^5.12.0",
-    "@types/coingecko-api": "^1.0.1",
-    "@types/node": "^16.9.6",
-    "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-react": "^7.28.0",
     "microbundle": "^0.14.2",
     "prettier": "^2.5.1"
@@ -56,6 +50,7 @@
     "browserify-zlib": "^0.2.0",
     "crypto-browserify": "^3.12.0",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "notistack": "^1.0.6"
   }
 }

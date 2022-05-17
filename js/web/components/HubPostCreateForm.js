@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
-// import nina from '@nina-protocol/nina-sdk'
+import nina from '@nina-protocol/nina-sdk'
 import { withFormik, Form, Field } from 'formik'
 import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
@@ -11,8 +11,8 @@ import FormControl from '@mui/material/FormControl'
 import { useQuill } from 'react-quilljs'
 import 'quill/dist/quill.snow.css'
 
-const { formatPlaceholder } = '../utils'
-const { ReleaseContext } ='../contexts'
+const { formatPlaceholder } = nina.utils
+const { ReleaseContext } = nina.contexts
 
 const HubPostCreateForm = ({
   field,
@@ -20,13 +20,14 @@ const HubPostCreateForm = ({
   values,
   onChange,
   errors,
-  touched, 
+  touched,
   setFieldValue,
   update,
   hubData,
   postCreated,
   resetForm,
   hubReleasesToReference,
+  preloadedRelease
 }) => {
   const { releaseState } = useContext(ReleaseContext)
 
@@ -75,35 +76,44 @@ const HubPostCreateForm = ({
           )}
         </Field>
 
-        <Field name="reference">
-          {(props) => (
-            <FormControl fullWidth>
-              <Select
-                className="formField"
-                value={props.field.value}
-                placeholder="Release Reference"
-                displayEmpty
-                onChange={(e) => {
-                  props.form.setFieldValue('reference', e.target.value)
-                }}
-              >
-                <MenuItem disabled value="">
-                  Reference a release in Post? (Optional)
-                </MenuItem>
-                {hubReleasesToReference.map((hubRelease) => {
-                  return (
-                    <MenuItem
-                      key={hubRelease.release}
-                      value={hubRelease.release}
-                    >
-                      {releaseState.metadata[hubRelease.release]?.name}
+
+          {!preloadedRelease && (
+            <Field name="reference">
+              {(props) => (
+                <FormControl fullWidth>
+                  <Select
+                    className="formField"
+                    value={props.field.value}
+                    placeholder="Release Reference"
+                    displayEmpty
+                    onChange={(e) => {
+                      props.form.setFieldValue('reference', e.target.value)
+                    }}
+                  >
+                    <MenuItem disabled value="">
+                      Reference a release in Post? (Optional)
                     </MenuItem>
-                  )
-                })}
-              </Select>
-            </FormControl>
+                    {hubReleasesToReference.map((hubRelease) => {
+                      return (
+                        <MenuItem
+                          key={hubRelease.release}
+                          value={hubRelease.release}
+                        >
+                          {releaseState.metadata[hubRelease.release]?.name}
+                        </MenuItem>
+                      )
+                    })}
+                  </Select>
+                </FormControl>
+              )}
+            </Field>
           )}
-        </Field>
+
+          {preloadedRelease && (
+            <Typography>
+              Referencing {releaseState.metadata[preloadedRelease].name}
+            </Typography>
+          )}
       </Form>
     </Root>
   )
@@ -169,7 +179,7 @@ export default withFormik({
     return {
       title: '',
       body: null,
-      reference: '',
+      reference:  '',
     }
   },
 })(HubPostCreateForm)

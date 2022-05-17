@@ -565,6 +565,9 @@ const hubContextHelper = ({
       const program = await ninaClient.useProgram()
       const hub = await program.account.hub.fetch(hubPubkey)
       hubPubkey = new anchor.web3.PublicKey(hubPubkey)
+      if (referenceRelease) {
+        referenceRelease = new anchor.web3.PublicKey(referenceRelease)
+      }
 
       const [post] = await anchor.web3.PublicKey.findProgramAddress(
         [
@@ -613,7 +616,8 @@ const hubContextHelper = ({
       }
 
       let txid
-      const params = [hub.handle, slug, uri]
+      const handle = decodeNonEncryptedByteArray(hub.handle)
+      const params = [handle, slug, uri]
       const request = { accounts }
       if (referenceRelease) {
         accounts.referenceRelease = referenceRelease
@@ -652,6 +656,10 @@ const hubContextHelper = ({
         if (instructions.length > 0) {
           request.instructions = instructions
         }
+
+        console.log('request :>> ', request);
+        console.log('params :>> ', params);
+        
         txid = await program.rpc.postInitViaHubWithReferenceContent(...params, request)
       } else {
         txid = await program.rpc.postInitViaHub(...params, request)

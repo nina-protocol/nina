@@ -11,15 +11,13 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import {FormControl , InputLabel} from '@mui/material'
+import HubPostCreate from './HubPostCreate'
 
 import nina from '@nina-protocol/nina-sdk'
 import {useSnackbar} from 'notistack'
 import Dots from './Dots'
-import {setIn} from 'formik'
 
 const {HubContext, NinaContext} = nina.contexts
-const {HubPostCreate} = nina.components
-console.log('nina :>> ', nina);
 
 const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
   const [open, setOpen] = useState(false)
@@ -130,7 +128,7 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
               </Typography>
             </Button>
 
-            <HubPostCreate />
+            <HubPostCreate preloadedRelease={releasePubkey} selectedHubId={selectedHubId} />
 
           </StyledPaper>
         </Fade>

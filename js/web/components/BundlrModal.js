@@ -10,11 +10,11 @@ import InputAdornment from '@mui/material/InputAdornment'
 import TextField from '@mui/material/TextField'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-// import nina from '@nina-protocol/nina-sdk'
+import nina from '@nina-protocol/nina-sdk'
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
 
-const { NinaContext } = '../contexts'
+const { NinaContext } = nina.contexts
 
 const BundlrModal = ({ inCreate }) => {
   const [open, setOpen] = useState(false)
