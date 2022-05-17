@@ -58,7 +58,6 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
     setSelectedHubId()
   }
 
-  console.log('userHubs :>> ', userHubs);
   return (
     <Root>
         <Button

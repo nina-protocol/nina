@@ -46,13 +46,13 @@ const Release = ({ metadataSsr }) => {
     }
   }, [releaseState?.metadata[releasePubkey]])
 
-  useEffect(async () => {
-    setRelatedReleases(await filterRelatedForRelease(releasePubkey))
+  useEffect(() => {
+    setRelatedReleases(filterRelatedForRelease(releasePubkey))
   }, [releaseState])
 
   useEffect(() => {
     if (wallet.connected) {
-      getHubsForUser(wallet.publicKey)
+      getHubsForUser(wallet.publicKey.toBase58())
     }
   }, [wallet.connect])
 
