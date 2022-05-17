@@ -28,32 +28,34 @@ const ReleaseCard = (props) => {
     <StyledReleaseCard>
       <StyledReleaseInfo>
         {metadata && (
-          <CtaWrapper sx={{ display: 'flex' }}>
-            <Button
-              onClick={() =>
-                updateTxid(
-                  metadata.properties.files[0].uri,
-                  releasePubkey,
-                  true
-                )
-              }
-              sx={{ height: '22px', width: '28px' }}
-            >
-              <PlayCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
-            </Button>
-            <Button
-              onClick={() => {
-                addTrackToQueue(releasePubkey)
-              }}
-              sx={{ height: '22px', width: '28px' }}
-            >
-              <ControlPointIcon sx={{ color: 'white' }} />
-            </Button>
+          <CtaWrapper>
+            <Box>
+              <Button
+                onClick={() =>
+                  updateTxid(
+                    metadata.properties.files[0].uri,
+                    releasePubkey,
+                    true
+                  )
+                }
+                sx={{ height: '22px', width: '28px' }}
+              >
+                <PlayCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
+              </Button>
+              <Button
+                onClick={() => {
+                  addTrackToQueue(releasePubkey)
+                }}
+                sx={{ height: '22px', width: '28px' }}
+              >
+                <ControlPointIcon sx={{ color: 'white' }} />
+              </Button>
+            </Box>
 
             {userHubs?.length > 0 && releasePubkey && (
-              <Repost>
+              <Box>
                 <AddToHubModal userHubs={userHubs} releasePubkey={releasePubkey} metadata={metadata}/>
-              </Repost>
+              </Box>
             )}
           </CtaWrapper>
         )}
@@ -108,14 +110,12 @@ const StyledReleaseCard = styled(Box)(() => ({
 }))
 
 const CtaWrapper = styled(Box)(() => ({
+  display: 'flex',
+  justifyContent: 'space-between',
   '& .MuiButton-root': {
     width: '21px',
     marginRight: '10px',
   },
-}))
-
-const Repost = styled(Box)(() => ({
-  border: '2px solid red'
 }))
 
 const StyledReleaseInfo = styled(Box)(({ theme }) => ({

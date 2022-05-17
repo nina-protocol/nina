@@ -164,7 +164,7 @@ export const NinaTheme = createTheme({
           '&.MuiButton-contained': {
             padding: '10px',
             borderRadius: '0px',
-            backgroundColor: `${colors.white}`,
+            backgroundColor: `${colors.transparent}`,
             color: `${colors.black}`,
             boxShadow: 'none',
             '&:hover': {

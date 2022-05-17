@@ -618,12 +618,12 @@ const hubContextHelper = ({
       let txid
       const handle = decodeNonEncryptedByteArray(hub.handle)
       const params = [handle, slug, uri]
-      const request = { accounts }
+      // const request = { accounts }
       if (referenceRelease) {
         accounts.referenceRelease = referenceRelease
 
         const instructions = []
-        const [referenceReleaseHubRelease, referenceReleaseHubReleaseIx] =
+        const [referenceReleaseHubRelease] =
           await anchor.web3.PublicKey.findProgramAddress(
             [
               Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-release')),
@@ -632,13 +632,13 @@ const hubContextHelper = ({
             ],
             program.programId
           )
-        request.accounts.referenceReleaseHubRelease = referenceReleaseHubRelease
+        accounts.referenceReleaseHubRelease = referenceReleaseHubRelease
 
-        if (referenceReleaseHubReleaseIx) {
-          instructions.push(referenceReleaseHubReleaseIx)
-        }
+        // if (referenceReleaseHubReleaseIx) {
+        //   instructions.push(referenceReleaseHubReleaseIx)
+        // }
   
-        const [referenceReleaseHubContent, referenceReleaseHubContentIx] =
+        const [referenceReleaseHubContent] =
           await anchor.web3.PublicKey.findProgramAddress(
             [
               Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-content')),
@@ -647,20 +647,18 @@ const hubContextHelper = ({
             ],
             program.programId
           )
-        request.accounts.referenceReleaseHubContent = referenceReleaseHubContent
+        accounts.referenceReleaseHubContent = referenceReleaseHubContent
 
-        if (referenceReleaseHubContentIx) {
-          instructions.push(referenceReleaseHubContentIx)
-        }
+        // if (referenceReleaseHubContentIx) {
+        //   instructions.push(referenceReleaseHubContentIx)
+        // }
 
-        if (instructions.length > 0) {
-          request.instructions = instructions
-        }
-
-        console.log('request :>> ', request);
-        console.log('params :>> ', params);
+        // if (instructions.length > 0) {
+        //   request.instructions = instructions
+        // }
+        console.log('program.rpc :>> ', program.rpc);
         
-        txid = await program.rpc.postInitViaHubWithReferenceContent(...params, request)
+        txid = await program.rpc.postInitViaHubWithReferenceRelease(...params, {accounts})
       } else {
         txid = await program.rpc.postInitViaHub(...params, request)
       }

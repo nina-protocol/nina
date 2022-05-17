@@ -254,7 +254,9 @@ const HubPostCreate = ({
         onClick={() => setOpen(true)}
         disabled={!selectedHubId}
       > 
+        <Typography>
         {preloadedRelease ? 'Create an editorial post about this release' : 'Publish a new post'}
+        </Typography>
       </CreateCtaButton>
       <StyledModal
         aria-labelledby="transition-modal-title"

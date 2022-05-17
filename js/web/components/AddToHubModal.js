@@ -22,13 +22,9 @@ const {HubContext, NinaContext} = nina.contexts
 const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
   const [open, setOpen] = useState(false)
   const {enqueueSnackbar} = useSnackbar()
-  const {ninaClient} = useContext(NinaContext)
 
   const {hubAddRelease} = useContext(HubContext)
-
-  const [mode, setMode] = useState('deposit')
   const [selectedHubId, setSelectedHubId] = useState()
-
   const [inProgress, setInProgress] = useState(false)
 
   const handleRepost = async (e) => {
@@ -57,8 +53,10 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
           color="primary"
           type="submit"
           onClick={() => setOpen(true)}
+          sx={{height: '22px', width: '28px', m: 0}}
+
         >
-          <AutorenewIcon />
+          <AutorenewIcon sx={{color: 'white'}} />
         </Button>
 
       <StyledModal
@@ -83,17 +81,17 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
               Add {metadata.name} to one of your hubs
             </Typography>
      
-            <FormControl width="200px">
+            <FormControl sx={{mt: 1}} >
               <InputLabel disabled value="">
-                Select a hub to add 
+                Select a hub to add to
               </InputLabel>
             
               <Select
                 className="formField"
                 placeholder="Release Reference"
                 displayEmpty
-                label="Select hub to add to release to"
-                style={{width: '300px'}}
+                label="Select hub"
+                fullWidth
                 onChange={(e, userHubs) => {
                   setSelectedHubId(e.target.value)
                 }}
@@ -124,7 +122,6 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
                 {inProgress && (
                   <Dots msg={'Please aprrove transaction in wallet'} />
                 )}
-
               </Typography>
             </Button>
 
