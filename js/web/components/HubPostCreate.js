@@ -45,7 +45,8 @@ const HubPostCreate = ({
   canAddContent,
   hubReleasesToReference,
   preloadedRelease,
-  selectedHubId
+  selectedHubId,
+  setParentOpen
 }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
@@ -125,9 +126,9 @@ const HubPostCreate = ({
         }
       }
     } else {
-      setButtonText(preloadedRelease ? `Create Post on ${hubData?.json.handle}` : `You do not have permission to create posts`)
+      setButtonText(preloadedRelease ? `Create Post on ${hubData?.json.displayName}` : `You do not have permission to create posts`)
     }
-  }, [metadataTx, isPublishing, postCreated, bundlrBalance, canAddContent])
+  }, [metadataTx, isPublishing, postCreated, bundlrBalance, canAddContent, hubData])
 
   const handleFormChange = useCallback(
     async (values) => {
@@ -239,6 +240,7 @@ const HubPostCreate = ({
           setFormValues({ postForm: {} })
           setPostCreated(true)
           setOpen(false)
+          setParentOpen(false)
         }
       }
     } catch (error) {
@@ -358,7 +360,6 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   boxShadow: theme.shadows[5],
   padding: theme.spacing(2, 4),
-  ...theme.gradient,
   zIndex: '10',
 }))
 

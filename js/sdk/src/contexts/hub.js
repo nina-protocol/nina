@@ -977,8 +977,6 @@ const hubContextHelper = ({
     console.log('FILTERING');
     const hubs = []
     Object.values(hubCollaboratorsState).forEach(hubCollaborator => {
-      console.log('hubCollaborator :>> ', hubCollaborator);
-      console.log('publicKey :>> ', publicKey);
       if (hubCollaborator.collaborator === publicKey) {
         console.log('MATCH');
         hubs.push(hubState[hubCollaborator.hubId])

@@ -49,10 +49,11 @@ const HubPostCreateForm = ({
       <Form style={{ padding: '0 15px', height: '100%' }}>
         <Field name="title">
           {(props) => (
-            <Box>
+            <Box mb={1}>
               <TextField
                 className="formField"
                 variant="standard"
+                fullWidth
                 label={
                   formatPlaceholder(props.field.name) +
                   (update ? ` (${hubData.json.title})` : '')
@@ -68,7 +69,7 @@ const HubPostCreateForm = ({
           )}
         </Field>
 
-        <Field name="body">
+        <Field name="body" >
           {(props) => (
             <Box>
               <Quill props={props} postCreated={postCreated} />
@@ -110,8 +111,8 @@ const HubPostCreateForm = ({
           )}
 
           {preloadedRelease && (
-            <Typography>
-              Referencing {releaseState.metadata[preloadedRelease].name}
+            <Typography mt={1}>
+              <i>{releaseState.metadata[preloadedRelease].name}</i> will be associated with this post
             </Typography>
           )}
       </Form>

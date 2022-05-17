@@ -46,20 +46,19 @@ const Release = ({ metadataSsr }) => {
     }
   }, [releaseState?.metadata[releasePubkey]])
 
-  useEffect(() => {
-    setRelatedReleases(filterRelatedForRelease(releasePubkey))
+  useEffect(async () => {
+    setRelatedReleases(await filterRelatedForRelease(releasePubkey))
   }, [releaseState])
 
   useEffect(() => {
     if (wallet.connected) {
-      console.log('getting');
       getHubsForUser(wallet.publicKey)
     }
   }, [wallet.connect])
 
   useEffect(() => {
-    console.log('hubCollaboratorsState :>> ', hubCollaboratorsState);
-    if (wallet.connected) {
+    console.log('hubCollaboratorState :>> ', hubCollaboratorsState);
+    if (wallet.connected && hubCollaboratorsState) {
       setUserHubs(filterHubsForUser(wallet.publicKey.toBase58()))
     }
   }, [hubCollaboratorsState])

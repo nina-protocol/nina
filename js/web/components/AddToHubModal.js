@@ -27,6 +27,12 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
   const [selectedHubId, setSelectedHubId] = useState()
   const [inProgress, setInProgress] = useState(false)
 
+  useEffect(() => {
+    if (userHubs.length === 1) {
+      setSelectedHubId(userHubs[0]?.id)
+    }
+  }, [userHubs])
+
   const handleRepost = async (e) => {
     setInProgress(true)
     enqueueSnackbar('Adding Release to Hub', {
@@ -39,13 +45,20 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
         variant: 'info',
       })
     } else {
-      enqueueSnackbar('Collaborator Not Added', {
+      enqueueSnackbar('Release not added to hub', {
         variant: 'failure',
       })
     }
     setInProgress(false)
-
+    handleClose()
   }
+
+  const handleClose = () => {
+    setOpen(false)
+    setSelectedHubId()
+  }
+
+  console.log('userHubs :>> ', userHubs);
   return (
     <Root>
         <Button
@@ -63,7 +76,7 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={() => handleClose()}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
@@ -78,37 +91,40 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
               id="transition-modal-title"
               gutterBottom
             >
-              Add {metadata.name} to one of your hubs
+              Add {metadata.name} to {userHubs.length > 1 ? 'one of your hubs' : userHubs[0]?.json.displayName} 
             </Typography>
-     
-            <FormControl sx={{mt: 1}} >
-              <InputLabel disabled value="">
-                Select a hub to add to
-              </InputLabel>
-            
-              <Select
-                className="formField"
-                placeholder="Release Reference"
-                displayEmpty
-                label="Select hub"
-                fullWidth
-                onChange={(e, userHubs) => {
-                  setSelectedHubId(e.target.value)
-                }}
-              >
-                {userHubs?.map((hub) => {
-                  return (
-                    <MenuItem
-                      key={hub?.id}
-                      value={hub?.id}
-                    >
-                      {hub?.json.displayName}
-                    </MenuItem>
-                  )
-                })}
-              </Select>
 
-            </FormControl>
+            {userHubs.length > 1 && (
+              <FormControl sx={{mt: 1}} >
+                <InputLabel disabled value="">
+                  Select a hub to add to
+                </InputLabel>
+              
+                <Select
+                  className="formField"
+                  placeholder="Release Reference"
+                  displayEmpty
+                  label="Select hub"
+                  fullWidth
+                  variant='standard'
+                  onChange={(e, userHubs) => {
+                    setSelectedHubId(e.target.value)
+                  }}
+                >
+                  {userHubs?.map((hub) => {
+                    return (
+                      <MenuItem
+                        key={hub?.id}
+                        value={hub?.id}
+                      >
+                        {hub?.json.displayName}
+                      </MenuItem>
+                    )
+                  })}
+                </Select>
+              </FormControl>
+            )}
+     
 
             <Button
               style={{marginTop: '15px'}}
@@ -125,7 +141,7 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
               </Typography>
             </Button>
 
-            <HubPostCreate preloadedRelease={releasePubkey} selectedHubId={selectedHubId} />
+            <HubPostCreate preloadedRelease={releasePubkey} selectedHubId={selectedHubId} setParentOpen={handleClose} />
 
           </StyledPaper>
         </Fade>
