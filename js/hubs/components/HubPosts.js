@@ -79,11 +79,6 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
     })
   }
 
-  console.log('activeHubPosts :>> ', activeHubPosts);
-  console.log('hubPosts :>> ', hubPosts);
-  console.log('postState :>> ', postState);
-
-
   return (
     <>
       <DashboardWrapper

@@ -618,11 +618,9 @@ const hubContextHelper = ({
       let txid
       const handle = decodeNonEncryptedByteArray(hub.handle)
       const params = [handle, slug, uri]
-      // const request = { accounts }
       if (referenceRelease) {
         accounts.referenceRelease = referenceRelease
 
-        const instructions = []
         const [referenceReleaseHubRelease] =
           await anchor.web3.PublicKey.findProgramAddress(
             [
@@ -634,9 +632,7 @@ const hubContextHelper = ({
           )
         accounts.referenceReleaseHubRelease = referenceReleaseHubRelease
 
-        // if (referenceReleaseHubReleaseIx) {
-        //   instructions.push(referenceReleaseHubReleaseIx)
-        // }
+  
   
         const [referenceReleaseHubContent] =
           await anchor.web3.PublicKey.findProgramAddress(
@@ -648,15 +644,6 @@ const hubContextHelper = ({
             program.programId
           )
         accounts.referenceReleaseHubContent = referenceReleaseHubContent
-
-        // if (referenceReleaseHubContentIx) {
-        //   instructions.push(referenceReleaseHubContentIx)
-        // }
-
-        // if (instructions.length > 0) {
-        //   request.instructions = instructions
-        // }
-        console.log('program.rpc :>> ', program.rpc);
         
         txid = await program.rpc.postInitViaHubWithReferenceRelease(...params, {accounts})
       } else {
