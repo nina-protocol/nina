@@ -39,7 +39,6 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
       variant: 'info',
     })
     const result = await hubAddRelease(selectedHubId, releasePubkey)
-    console.log('result :>> ', result);
     if (result.success) {
       enqueueSnackbar(result.msg, {
         variant: 'info',
@@ -110,7 +109,7 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
                     setSelectedHubId(e.target.value)
                   }}
                 >
-                  {userHubs?.map((hub) => {
+                  {userHubs?.filter(hub => hub.canAddContent).map((hub) => {
                     return (
                       <MenuItem
                         key={hub?.id}

@@ -8,7 +8,6 @@ function Image({ src, height, width, layout, priority, release }) {
     event.persist()
     console.log('event: ', event)
     if (event.target.srcset || byPass) {
-      console.log('in here')
       setReady(true)
     }
   }

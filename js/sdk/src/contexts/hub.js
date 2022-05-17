@@ -825,7 +825,6 @@ const hubContextHelper = ({
     let path = endpoints.api + `/hubCollaborators/${publicKey}/hubs` 
     const response = await fetch(path)
     const result = await response.json()
-    console.log('result :>> ', result);
     saveHubCollaboratorsToState(result.hubCollaborators)
     saveHubsToState(result.hubs)
   }
@@ -849,18 +848,35 @@ const hubContextHelper = ({
   }
 
   const saveHubCollaboratorsToState = async (hubCollaborators) => {
+    let hubCollaboratorIds = hubCollaborators.map(hubCollaborator => hubCollaborator.id)
+    hubCollaboratorIds = hubCollaboratorIds.map((id) => new anchor.web3.PublicKey(id))
+
     try {
+      const program = await ninaClient.useProgram()
+      let hubCollaboratorAccounts = await program.account.hubCollaborator.fetchMultiple(
+        hubCollaboratorIds,
+        'confirmed'
+      )
+
       let updatedState = {...hubCollaboratorsState}
-      for (let hubCollaborator of hubCollaborators) {
-        updatedState = {
-          ...updatedState,
-          [hubCollaborator.id]: {
-            ...hubCollaborator,
-            publicKey: hubCollaborator.id,
-          },
-        }
-      }
-      console.log("updatedState rsdsd ::> ", updatedState)
+
+      hubCollaboratorAccounts.forEach((hubCollaborator, i) => {
+        hubCollaborator.id = hubCollaborators[i].id
+        hubCollaborator.addedBy = hubCollaborator.addedBy.toBase58()
+        hubCollaborator.collaborator = hubCollaborator.collaborator.toBase58()
+        hubCollaborator.datetime = hubCollaborator.datetime.toNumber()
+        hubCollaborator.hub = hubCollaborator.hub.toBase58()
+        
+          updatedState = {
+            ...updatedState,
+            [hubCollaborator.id]: {
+              ...hubCollaborator,
+              publicKey: hubCollaborator.id,
+            },
+          }
+      })
+
+ 
       setHubCollaboratorsState(updatedState)
     } catch (error) {
       console.warn(error)
@@ -961,15 +977,15 @@ const hubContextHelper = ({
   }
 
   const filterHubsForUser = (publicKey) => {
-    console.log('FILTERING');
     const hubs = []
     Object.values(hubCollaboratorsState).forEach(hubCollaborator => {
       if (hubCollaborator.collaborator === publicKey) {
-        console.log('MATCH');
-        hubs.push(hubState[hubCollaborator.hubId])
+        hubs.push({
+          ...hubState[hubCollaborator.hub],
+          canAddContent: hubCollaborator.canAddContent
+        })
       }
     })
-    console.log('hubs in filter :>> ', hubs);
     return hubs
   }
 

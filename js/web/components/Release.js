@@ -57,7 +57,6 @@ const Release = ({ metadataSsr }) => {
   }, [wallet.connect])
 
   useEffect(() => {
-    console.log('hubCollaboratorState :>> ', hubCollaboratorsState);
     if (wallet.connected && hubCollaboratorsState) {
       setUserHubs(filterHubsForUser(wallet.publicKey.toBase58()))
     }
