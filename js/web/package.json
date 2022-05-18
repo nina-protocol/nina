@@ -60,7 +60,7 @@
     "yup": "^0.32.11",
     "zlib": "^1.0.5",
     "zlib-browserify": "^0.0.3",
-    "@nina-protocol/nina-sdk": "0.1.0"
+    "@nina-protocol/nina-sdk": "../sdk"
   },
   "scripts": {
     "dev": "next",
