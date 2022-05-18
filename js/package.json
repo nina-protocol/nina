@@ -11,6 +11,7 @@
   ],
   "scripts": {
     "sdk": "yarn workspace @nina-protocol/nina-sdk",
+    "sdk:build": "yarn sdk build",
     "nina-radio": "yarn workspace nina-radio",
     "nina-radio:build": "yarn nina-radio build",
     "web": "yarn workspace web",
