@@ -13,8 +13,9 @@ const ReleasePurchase = dynamic(() => import('./ReleasePurchase'))
 const { HubContext, ReleaseContext, AudioPlayerContext } = nina.contexts
 
 const PostRelease = ({ metadata, releasePubkey }) => {
-  const hubPubkey = process.env.REACT_HUB_PUBLIC_KEY
   const router = useRouter()
+  console.log("router ::> ", router)
+  const hubPubkey = process.env.REACT_HUB_PUBLIC_KEY
   const { updateTrack, track, isPlaying } = useContext(AudioPlayerContext)
   const { releaseState, getRelease } = useContext(ReleaseContext)
   const { getHub, hubState } = useContext(HubContext)
@@ -42,7 +43,7 @@ const PostRelease = ({ metadata, releasePubkey }) => {
       setMetadata(releaseState.metadata[releasePubkey])
     }
   }, [releaseState, metadata, releasePubkey])
-
+  console.log("metadata, releasePubkey, releaseState ::> ", metadata, releasePubkey, releaseState)
   return (
     <>
       <BackButton onClick={() => router.back()} />

@@ -23,7 +23,7 @@ const NinaWrapper = ({ children, network }) => {
     <NinaContextProvider ninaClient={ninaClient}>
       <ReleaseContextProvider>
         <AudioPlayerContextProvider>
-          <HubContextProvider hubPubkey={process.env.REACT_HUB_PUBLIC_KEY}>
+          <HubContextProvider>
             {children}
           </HubContextProvider>
         </AudioPlayerContextProvider>

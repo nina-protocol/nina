@@ -21,6 +21,7 @@ import {
 import { useWallet } from '@solana/wallet-adapter-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 
 const { HubContext } = nina.contexts
 
@@ -89,7 +90,9 @@ const useStyles = makeStyles(({ theme }) => ({
   },
 }))
 
-const Navigation = ({ hubPubkey }) => {
+const Navigation = () => {
+  const router = useRouter()
+  const hubPubkey = router.query.hubPubkey
   const { header, menuButton, toolbar, ctaWrapper, drawerContainer } =
     useStyles()
   const wallet = useWallet()
@@ -146,7 +149,7 @@ const Navigation = ({ hubPubkey }) => {
     }
     return false
   }, [hubCollaborators, hubData, wallet])
-
+  console.log('KSLKFLSDKFSD: ', hubData)
   const displayDesktop = () => {
     return (
       <Toolbar
@@ -165,11 +168,13 @@ const Navigation = ({ hubPubkey }) => {
                 alt="hub logo"
               />
             )}
-            <Typography style={{ marginLeft: '15px' }}>
-              {process.env.REACT_HUB_PUBLIC_KEY
-                ? hubData?.json.displayName
-                : 'Nina Hub Create'}
-            </Typography>
+            {hubPubkey ? (
+              <Typography style={{ marginLeft: '15px' }}>
+                {hubData?.json.displayName}
+              </Typography>
+            ) : (
+              <Typography variant="h4">NINA HUBS</Typography>
+            )}
           </LogoLinkWrapper>
         </Link>
         <Box className={ctaWrapper}>
@@ -273,7 +278,7 @@ const Navigation = ({ hubPubkey }) => {
       sx={{ backgroundColor: '#66000000 !important', boxShadow: 'none' }}
       className={header}
     >
-      {hubData && displayDesktop()}
+      {displayDesktop()}
     </AppBar>
   )
 }
@@ -304,6 +309,9 @@ const LogoLinkWrapper = styled('a')(() => ({
     '&:hover': {
       opacity: '50%',
     },
+  },
+  '& .MuiTypography-h4': {
+    fontWeight: 'bold',
   },
 }))
 

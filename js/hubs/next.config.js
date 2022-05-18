@@ -28,7 +28,7 @@ module.exports = withBundleAnalyzer({
       process: require.resolve('process/browser'),
       zlib: require.resolve('zlib-browserify'),
       'bn.js': path.resolve('../node_modules/bn.js'),
-      '@nina-protocol/nina-sdk': path.resolve('../node_modules/@nina-protocol/nina-sdk'),
+      '@nina-protocol/nina-sdk': path.resolve('../sdk'),
       '@solana/web3.js': path.resolve('../node_modules/@solana/web3.js'),
       '@project-serum/serum': path.resolve(
         '../node_modules/@project-serum/serum'
@@ -49,7 +49,6 @@ module.exports = withBundleAnalyzer({
       cluster === 'devnet'
         ? 'https://nina.devnet.rpcpool.com'
         : 'https://nina.rpcpool.com',
-    REACT_HUB_PUBLIC_KEY: '4xHeZW8BK8HeCinoDLsGiGwtYsjQ9zBb71m5vdDa5ceS',
     REACT_PROGRAM_ID:
       cluster === 'devnet'
         ? '77BKtqWTbTRxj5eZPuFbeXjx3qz4TTHoXRnpCejYWiQH'

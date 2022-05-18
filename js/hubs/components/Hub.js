@@ -6,27 +6,29 @@ import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import Dots from './Dots'
 
 import { useWallet } from '@solana/wallet-adapter-react'
 const ContentTileView = dynamic(() => import('./ContentTileView'))
 const { HubContext, NinaContext, ReleaseContext } = nina.contexts
 
-const Hub = ({ hubPubkey }) => {
-  const { hubState, hubContentState, hubCollaboratorsState, initialLoad, getHub } =
+const Hub = () => {
+  const router = useRouter()
+  const hubPubkey = router.query.hubPubkey
+  const { hubState, hubContentState, hubCollaboratorsState, initialLoad, getHub, filterHubCollaboratorsForHub, filterHubContentForHub } =
     useContext(HubContext)
   const { postState } = useContext(NinaContext)
   const { releaseState } = useContext(ReleaseContext)
   const wallet = useWallet()
-
   useEffect(() => {
     getHub(hubPubkey)
   }, [hubPubkey])
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
   const hubCollaborators = useMemo(
-    () => hubCollaboratorsState,
-    [hubCollaboratorsState]
+    () => filterHubCollaboratorsForHub(hubPubkey) || [],
+    [hubCollaboratorsState, hubPubkey]
   )
   const canAddContent = useMemo(() => {
     if (wallet?.connected) {
@@ -46,16 +48,18 @@ const Hub = ({ hubPubkey }) => {
 
   const content = useMemo(() => {
     const contentArray = []
-    Object.keys(hubContentState).forEach((content) => {
-      let hubContentData = hubContentState[content]
+    const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey)
+    const hubContent = [...hubReleases, ...hubPosts]
+    hubContent.forEach((hubContentData) => {
+      console.log("hubContentData ::> ", hubContentData)
       if (
         hubContentData.contentType === 'NinaReleaseV1' &&
         releaseState.metadata[hubContentData.release] &&
         hubContentData.visible
       ) {
         const hubReleaseIsReference =
-          Object.values(hubContentState).filter(
-            (c) => c.referenceContent === hubContentData.release
+          hubContent.filter(
+            (c) => c.referenceHubContent === hubContentData.release
           ).length > 0
         if (!hubReleaseIsReference) {
           hubContentData = {
@@ -73,8 +77,7 @@ const Hub = ({ hubPubkey }) => {
           ...hubContentData,
           ...postState[hubContentData.post],
         }
-        console.log("hubContentData.referenceContent ::> ", hubContentData)
-        if (hubContentData.referenceHubContent) {
+        if (hubContentData.referenceHubContent !== null) {
           hubContentData.releaseMetadata =
             releaseState.metadata[hubContentData.referenceHubContent]
           hubContentData.contentType = 'PostWithRelease'
@@ -83,9 +86,8 @@ const Hub = ({ hubPubkey }) => {
       }
     })
     return contentArray
-      .filter((item) => item)
-      .sort((a, b) => b.datetime - a.datetime)
-  }, [hubContentState, releaseState, postState])
+      .sort((a, b) => new Date(b.datetime) - new Date(a.datetime))
+  }, [hubContentState, releaseState, postState, hubPubkey])
 
   console.log("hubData, hubState, hubContentState ::> ", hubData, hubState, hubContentState, hubPubkey)
   console.log("content, initialLoad ::> ", content, initialLoad)

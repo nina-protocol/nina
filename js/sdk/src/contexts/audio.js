@@ -8,7 +8,6 @@ const AudioPlayerContextProvider = ({ children }) => {
     useContext(NinaContext)
   const { provider } = ninaClient
   const { releaseState } = useContext(ReleaseContext)
-  const [txid, setTxid] = useState(null)
   const [track, setTrack] = useState(null)
   const [playlist, setPlaylist] = useState([])
   const [isPlaying, setIsPlaying] = useState(false)
@@ -31,6 +30,7 @@ const AudioPlayerContextProvider = ({ children }) => {
   }
 
   const playNext = (shouldPlay = false) => {
+    console.log("playlist, currentIndex, playlist[currentIndex()] ::> ", playlist, currentIndex(), playlist[currentIndex()])
     if (playlist[currentIndex() + 1]) {
       setTrack(playlist[currentIndex() + 1])
       setIsPlaying(shouldPlay)
@@ -47,14 +47,16 @@ const AudioPlayerContextProvider = ({ children }) => {
     }
   }, [provider.wallet?.connected, collection, releaseState.metadata])
 
-  const updateTxid = async (newTxid, releasePubkey, shouldPlay = false) => {
-    if (newTxid !== playlist[currentIndex()]) {
-      if (!playlist.some((item) => item.releasePubkey === releasePubkey)) {
-        addTrackToQueue(releasePubkey)
+  const currentIndex = () => {
+    let index = undefined
+    playlist.forEach((item, i) => {
+      console.log("CURRENT INDEX ::> ", item, i, track)
+      if (item.txid === track.txid) {
+        index = i
+        return
       }
-      setTxid(newTxid)
-      setIsPlaying(shouldPlay)
-    }
+    })
+    return index
   }
 
   const {
@@ -64,27 +66,18 @@ const AudioPlayerContextProvider = ({ children }) => {
     addTrackToQueue,
     removeTrackFromQueue,
     resetQueueWithPlaylist,
+    createPlaylistFromTracksHubs
   } = audioPlayerContextHelper({
     releaseState,
     collection,
     playlist,
     setPlaylist,
     shouldRemainInCollectionAfterSale,
-    setTxid,
     setIsPlaying,
     setTrack,
+    currentIndex,
   })
-
-  const currentIndex = () => {
-    let index = undefined
-    playlist.forEach((item, i) => {
-      if (item.txid === txid) {
-        index = i
-        return
-      }
-    })
-    return index
-  }
+  console.log("createPlaylistFromTracks ::> ", createPlaylistFromTracks)
 
   return (
     <AudioPlayerContext.Provider
@@ -93,8 +86,7 @@ const AudioPlayerContextProvider = ({ children }) => {
         updateTrack,
         playNext,
         playPrev,
-        txid,
-        updateTxid,
+        updateTrack,
         playlist,
         reorderPlaylist,
         removeTrackFromPlaylist,
@@ -104,7 +96,8 @@ const AudioPlayerContextProvider = ({ children }) => {
         setIsPlaying,
         currentIndex,
         resetQueueWithPlaylist,
-        createPlaylistFromTracks
+        createPlaylistFromTracks,
+        createPlaylistFromTracksHubs
       }}
     >
       {children}
@@ -121,8 +114,8 @@ const audioPlayerContextHelper = ({
   setPlaylist,
   collection,
   shouldRemainInCollectionAfterSale,
-  setTxid,
   setIsPlaying,
+  currentIndex
 }) => {
   const reorderPlaylist = (updatedPlaylist) => {
     setPlaylist([...updatedPlaylist])
@@ -161,9 +154,24 @@ const audioPlayerContextHelper = ({
     const playlistEntries = []
     Object.keys(collection).forEach((releasePubkey) => {
       const playlistEntry = createPlaylistEntry(releasePubkey)
+      console.log("playlistEntry ::> ", playlistEntry)
       if (playlistEntry) {
         playlistEntries.push(playlistEntry)
       }
+    })
+    setPlaylist([...playlist, ...playlistEntries])
+  }
+
+  const createPlaylistFromTracksHubs = (tracks) => {
+    const playlistEntries = []
+    tracks.forEach((releasePubkey) => {
+      // if (playlist.filter(item => item.releasePubkey === releasePubkey).length === 0) {
+        const playlistEntry = createPlaylistEntry(releasePubkey)
+        console.log("playlistEntry ::> ", playlistEntry)
+        if (playlistEntry) {
+          playlistEntries.push(playlistEntry)
+        }
+      // }
     })
     setPlaylist([...playlist, ...playlistEntries])
   }
@@ -190,7 +198,7 @@ const audioPlayerContextHelper = ({
       newPlaylist.push(playlistEntry)
     })
     setPlaylist(newPlaylist)
-    await setTxid(newPlaylist[0].txid)
+    await setTrack(newPlaylist[0])
     await setIsPlaying(true)
   }
 
@@ -218,5 +226,6 @@ const audioPlayerContextHelper = ({
     addTrackToQueue,
     removeTrackFromQueue,
     resetQueueWithPlaylist,
+    createPlaylistFromTracksHubs,
   }
 }

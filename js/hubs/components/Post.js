@@ -37,8 +37,8 @@ const Post = ({ postDataSsr }) => {
 
   const [metadata, setMetadata] = useState()
 
-  const { postState, getPosts } = useContext(NinaContext)
-  const { getHub, hubState, hubContentState } = useContext(HubContext)
+  const { postState } = useContext(NinaContext)
+  const { getHub, hubState, hubContentState, getHubPost } = useContext(HubContext)
   const { getRelease, releaseState } = useContext(ReleaseContext)
 
   const { current: postPubkey } = useRef(router.query.postPubkey)
@@ -46,7 +46,7 @@ const Post = ({ postDataSsr }) => {
   useEffect(() => {
     console.log("postState, postPubkey ::> ", postState, postPubkey)
     if (postPubkey && !postState[postPubkey]) {
-      getPosts([postPubkey])
+      getHubPost(postPubkey, hubPubkey)
     }
   }, [postPubkey])
 
@@ -68,9 +68,9 @@ const Post = ({ postDataSsr }) => {
         (content) => content.post === postPubkey
       )
       setMetadata(metadata)
-      if (metadata?.referenceContent && !referenceReleasePubkey) {
-        setReferenceReleasePubkey(metadata.referenceContent)
-        getRelease(metadata.referenceContent)
+      if (metadata?.referenceHubContent && !referenceReleasePubkey) {
+        setReferenceReleasePubkey(metadata.referenceHubContent)
+        getRelease(metadata.referenceHubContent)
       }
     }
   }, [hubContentState, postPubkey])
@@ -80,7 +80,7 @@ const Post = ({ postDataSsr }) => {
       setReferenceReleaseMetadata(releaseState.metadata[referenceReleasePubkey])
     }
   }, [releaseState, referenceReleasePubkey])
-
+  console.log("referenceReleasePubkey ::> ", referenceReleasePubkey)
   useEffect(() => {
     console.log("postState, postPubkey dddd ::> ", postState, postPubkey)
     if (postState[postPubkey]?.postContent.json.body) {
@@ -107,11 +107,9 @@ const Post = ({ postDataSsr }) => {
     }
   }, [postState[postPubkey]])
 
-  const formattedDate = (seconds) => {
-    const date = new Date(seconds * 1000).toLocaleDateString()
-    return date
+  const formattedDate = (date) => {
+    return new Date(typeof date === 'number' ? date * 1000 : date).toLocaleDateString()
   }
-
   return (
     <>
       <BackButton onClick={() => router.back()} />

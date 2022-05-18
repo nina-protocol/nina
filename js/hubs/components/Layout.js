@@ -83,14 +83,11 @@ const Layout = ({ children, hubPubkey }) => {
                   justifyContent: { xs: 'center' },
                 }}
               >
-                {process.env.REACT_HUB_PUBLIC_KEY && children}
-                {!process.env.REACT_HUB_PUBLIC_KEY && <HubCreate />}
+                {children}
               </Grid>
-              {process.env.REACT_HUB_PUBLIC_KEY && (
-                <AudioPlayerWrapper>
-                  <AudioPlayer hubPubkey={hubPubkey} />
-                </AudioPlayerWrapper>
-              )}
+              <AudioPlayerWrapper>
+                <AudioPlayer hubPubkey={hubPubkey} />
+              </AudioPlayerWrapper>
             </main>
           </Container>
         </CssBaseline>
