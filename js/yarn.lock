@@ -2243,7 +2243,7 @@
   resolved "https://registry.yarnpkg.com/@next/swc-win32-x64-msvc/-/swc-win32-x64-msvc-12.1.6.tgz#a350caf42975e7197b24b495b8d764eec7e6a36e"
   integrity sha512-4ZEwiRuZEicXhXqmhw3+de8Z4EpOLQj/gp+D9fFWo6ii6W1kBkNNvvEx4A90ugppu+74pT1lIJnOuz3A9oQeJA==
 
-"@nina-protocol/nina-sdk@./sdk", "@nina-protocol/nina-sdk@file:sdk":
+"@nina-protocol/nina-sdk@file:./sdk", "@nina-protocol/nina-sdk@file:sdk":
   version "0.1.0"
   dependencies:
     "@bundlr-network/client" "^0.6.1"
