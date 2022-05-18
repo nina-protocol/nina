@@ -1,3 +1,4 @@
+ /* eslint-disable react/display-name */
 import React, { useState } from 'react'
 import NextImage from 'next/image'
 import { DateTime } from 'luxon'
