@@ -21,7 +21,6 @@ module.exports = withBundleAnalyzer({
     }
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@nina-protocol/nina-sdk': path.resolve('../sdk'),
       path: require.resolve('path-browserify'),
       react: path.resolve('../node_modules/react'),
       crypto: require.resolve('crypto-browserify'),
