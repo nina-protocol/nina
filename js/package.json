@@ -10,7 +10,7 @@
     "hubs"
   ],
   "scripts": {
-    "sdk": "yarn workspace @nina-protocol/nina-sdk",
+    "sdk": "yarn workspace sdk",
     "sdk:build": "yarn sdk build",
     "nina-radio": "yarn workspace nina-radio",
     "nina-radio:build": "yarn nina-radio build",
