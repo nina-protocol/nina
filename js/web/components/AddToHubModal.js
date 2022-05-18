@@ -1,4 +1,5 @@
 import React, {useState, useEffect, useContext, useMemo} from 'react'
+import nina from '@nina-protocol/nina-sdk'
 import {styled} from '@mui/material/styles'
 import {Box, Paper} from '@mui/material'
 import Modal from '@mui/material/Modal'
@@ -13,7 +14,6 @@ import AutorenewIcon from '@mui/icons-material/Autorenew';
 import {FormControl , InputLabel} from '@mui/material'
 import HubPostCreate from './HubPostCreate'
 
-import nina from '@nina-protocol/nina-sdk'
 import {useSnackbar} from 'notistack'
 import Dots from './Dots'
 
