@@ -29,7 +29,7 @@
     "@mui/icons-material": "^5.4.1",
     "@mui/material": "^5.6.3",
     "@mui/styles": "^5.6.2",
-    "@nina-protocol/nina-sdk": "./sdk",
+    "@nina-protocol/nina-sdk": "0.0.28",
     "ansi-regex": "^5.0.1",
     "glob-parent": "^5.1.2",
     "nanoid": "^3.1.31",

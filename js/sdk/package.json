@@ -1,6 +1,6 @@
 {
   "name": "@nina-protocol/nina-sdk",
-  "version": "0.1.0",
+  "version": "0.0.28",
   "files": [
     "dist/**/*"
   ],
