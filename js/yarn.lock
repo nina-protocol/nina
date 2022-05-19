@@ -2186,8 +2186,30 @@
   resolved "https://registry.yarnpkg.com/@next/swc-win32-x64-msvc/-/swc-win32-x64-msvc-12.1.6.tgz#a350caf42975e7197b24b495b8d764eec7e6a36e"
   integrity sha512-4ZEwiRuZEicXhXqmhw3+de8Z4EpOLQj/gp+D9fFWo6ii6W1kBkNNvvEx4A90ugppu+74pT1lIJnOuz3A9oQeJA==
 
-"@nina-protocol/nina-sdk@file:sdk":
+"@nina-protocol/nina-sdk@0.0.28":
   version "0.0.28"
+  resolved "https://registry.yarnpkg.com/@nina-protocol/nina-sdk/-/nina-sdk-0.0.28.tgz#c74f62596942eed14ce0a9ba7bb51dffdf00d59b"
+  integrity sha512-43tamE73bn7JXHNaJpQ/A+e6J/BflLkwIKWM9HNjujKNWpG3pOLn71XKnhs2344elbVjvfaM/i99ZjLczEAMvg==
+  dependencies:
+    "@bundlr-network/client" "^0.6.1"
+    "@metaplex-foundation/mpl-token-metadata" "^1.2.4"
+    "@project-serum/serum" "^0.13.61"
+    assert "^2.0.0"
+    axios "^0.26.0"
+    borsh "^0.4.0"
+    coingecko-api "^1.0.10"
+    encoding "^0.1.13"
+    eslint "^7.27.0"
+    events "^3.3.0"
+    https "^1.0.0"
+    idb-keyval "^5.0.6"
+    lodash "^4.17.21"
+    notistack "^1.0.6"
+    process "^0.11.10"
+    querystring "^0.2.1"
+
+"@nina-protocol/nina-sdk@file:sdk":
+  version "0.0.30"
   dependencies:
     "@bundlr-network/client" "^0.6.1"
     "@metaplex-foundation/mpl-token-metadata" "^1.2.4"
