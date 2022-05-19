@@ -1,6 +1,6 @@
 {
   "name": "@nina-protocol/nina-sdk",
-  "version": "0.1.0",
+  "version": "0.0.28",
   "files": [
     "dist/**/*"
   ],
@@ -9,7 +9,7 @@
   "unpkg": "./dist/index.umd.js",
   "exports": {
     "require": "./dist/index.js",
-    "default": "./dist/ind``ex.modern.js"
+    "default": "./dist/index.modern.js"
   },
   "dependencies": {
     "@bundlr-network/client": "^0.6.1",
@@ -30,7 +30,7 @@
     "querystring": "^0.2.1"
   },
   "scripts": {
-    "build": "rm -rf dist/ && microbundle --jsx React.createElement",
+    "build": "rm -rf dist/ && microbundle --jsx React.createElement ",
     "watch": "microbundle watch --no-compress --jsx React.createElement",
     "lint": "eslint ./ --ignore-path ./.gitignore",
     "lint:fix": "yarn lint -- --fix",
@@ -50,6 +50,7 @@
     "browserify-zlib": "^0.2.0",
     "crypto-browserify": "^3.12.0",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "notistack": "^1.0.6"
   }
 }

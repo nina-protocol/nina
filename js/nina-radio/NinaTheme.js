@@ -137,7 +137,7 @@ export const NinaTheme = createTheme({
   components: {
     MuiButton: {
       defaultProps: {
-        disableRipple: "true",
+        disableRipple: true,
       },
       styleOverrides: {
         root: {
@@ -210,7 +210,7 @@ export const NinaTheme = createTheme({
     },
     MuiListItem: {
       defaultProps: {
-        disableRipple: "true",
+        disableRipple: true,
       },
     },
     MuiTextField: {

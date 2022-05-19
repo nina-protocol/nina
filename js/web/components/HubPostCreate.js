@@ -44,13 +44,14 @@ const HubPostCreate = ({
   hubPubkey,
   canAddContent,
   hubReleasesToReference,
-  preloadedRelease = undefined,
+  preloadedRelease,
+  selectedHubId,
   setParentOpen
 }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const { postInitViaHub, hubState } = useContext(HubContext)
-  const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
+  const hubData = useMemo(() => hubState[hubPubkey || selectedHubId], [hubState, hubPubkey, selectedHubId])
   const {
     bundlrUpload,
     bundlrBalance,
@@ -88,6 +89,7 @@ const HubPostCreate = ({
     [bundlrBalance, solPrice]
   )
 
+
   useEffect(() => {
     refreshBundlr()
   }, [])
@@ -124,9 +126,9 @@ const HubPostCreate = ({
         }
       }
     } else {
-      setButtonText(`You do not have permission to create posts`)
+      setButtonText(preloadedRelease ? `Create Post on ${hubData?.json.displayName}` : `You do not have permission to create posts`)
     }
-  }, [metadataTx, isPublishing, postCreated, bundlrBalance, canAddContent])
+  }, [metadataTx, isPublishing, postCreated, bundlrBalance, canAddContent, hubData])
 
   const handleFormChange = useCallback(
     async (values) => {
@@ -178,6 +180,14 @@ const HubPostCreate = ({
             metadataJson.reference = formValues.postForm.reference
           }
 
+          if (preloadedRelease) {
+            metadataJson.reference = preloadedRelease
+            formValues.postForm.reference = preloadedRelease
+            console.log('metadataJson :>> ', metadataJson);
+          }
+          
+          console.log('formvalues.postForm :>> ', formValues.postForm);
+
           metadataResult = (
             await bundlrUpload(
               new Blob([JSON.stringify(metadataJson)], {
@@ -204,7 +214,7 @@ const HubPostCreate = ({
 
           if (metadataJson.reference) {
             result = await postInitViaHub(
-              hubPubkey,
+              hubPubkey || selectedHubId,
               slug,
               uri,
               metadataJson.reference
@@ -244,8 +254,11 @@ const HubPostCreate = ({
         variant="outlined"
         fullWidth
         onClick={() => setOpen(true)}
-      >
-        Publish a new Post
+        disabled={!selectedHubId}
+      > 
+        <Typography>
+        {preloadedRelease ? 'Create an editorial post about this release' : 'Publish a new post'}
+        </Typography>
       </CreateCtaButton>
       <StyledModal
         aria-labelledby="transition-modal-title"
@@ -272,6 +285,7 @@ const HubPostCreate = ({
                       hubData={hubData}
                       postCreated={postCreated}
                       hubReleasesToReference={hubReleasesToReference}
+                      preloadedRelease={preloadedRelease}
                     />
                   </PostFormWrapper>
 
@@ -286,7 +300,7 @@ const HubPostCreate = ({
                         disabled={
                           isPublishing ||
                           !formIsValid ||
-                          !canAddContent ||
+                          (!preloadedRelease && !canAddContent) ||
                           bundlrBalance === 0 ||
                           mbs < uploadSize
                         }
@@ -337,8 +351,8 @@ const HubPostCreate = ({
 
 const CreateCtaButton = styled(Button)(({theme}) => ({
   display: 'flex',
-  margin: '0px auto 40px',
-  fontSize: theme.helpers.baseFont
+  ...theme.helpers.baseFont,
+  marginTop: theme.spacing(1)
 }))
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
@@ -346,7 +360,6 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   boxShadow: theme.shadows[5],
   padding: theme.spacing(2, 4),
-  ...theme.gradient,
   zIndex: '10',
 }))
 
