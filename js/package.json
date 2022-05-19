@@ -15,7 +15,7 @@
     "nina-radio:build": "yarn nina-radio build",
     "web": "yarn workspace web",
     "web:build": "yarn web build",
-    "hubs": "yarn workspace hubs",
+    "hubs": "yarn workspace @nina-protocol/nina-hubs",
     "hubs:build": "yarn hubs build"
   },
   "dependencies": {
