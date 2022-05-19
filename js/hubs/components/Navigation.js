@@ -149,7 +149,7 @@ const Navigation = () => {
     }
     return false
   }, [hubCollaborators, hubData, wallet])
-  console.log('KSLKFLSDKFSD: ', hubData)
+
   const displayDesktop = () => {
     return (
       <Toolbar
