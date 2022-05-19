@@ -37,5 +37,5 @@ export const ninaErrorHandler = (error, errorString) => {
     }
   }
 
-  return undefined
+  return {success: false}
 }

@@ -9,7 +9,8 @@ import NinaBox from './NinaBox'
 import ReleaseCard from './ReleaseCard'
 import ReleasePurchase from './ReleasePurchase'
 import Exchange from './Exchange'
-const { ExchangeContext, ReleaseContext } = nina.contexts
+
+const { ExchangeContext, ReleaseContext, HubContext } = nina.contexts
 
 const Release = ({ metadataSsr }) => {
   const router = useRouter()
@@ -24,7 +25,9 @@ const Release = ({ metadataSsr }) => {
   } = useContext(ReleaseContext)
   const { getExchangeHistoryForRelease, exchangeState } =
     useContext(ExchangeContext)
+    const {getHubsForUser, filterHubsForUser, hubCollaboratorsState } = useContext(HubContext)
   const [relatedReleases, setRelatedReleases] = useState(null)
+  const [userHubs, setUserHubs] = useState()
 
   const [metadata, setMetadata] = useState(
     metadataSsr || releaseState?.metadata[releasePubkey] || null
@@ -46,6 +49,18 @@ const Release = ({ metadataSsr }) => {
   useEffect(() => {
     setRelatedReleases(filterRelatedForRelease(releasePubkey))
   }, [releaseState])
+
+  useEffect(() => {
+    if (wallet.connected) {
+      getHubsForUser(wallet.publicKey.toBase58())
+    }
+  }, [wallet.connect])
+
+  useEffect(() => {
+    if (wallet.connected && hubCollaboratorsState) {
+      setUserHubs(filterHubsForUser(wallet.publicKey.toBase58()))
+    }
+  }, [hubCollaboratorsState])
 
   if (metadata && Object.keys(metadata).length === 0) {
     return (
@@ -69,6 +84,7 @@ const Release = ({ metadataSsr }) => {
               metadata={metadata}
               preview={false}
               releasePubkey={releasePubkey}
+              userHubs={userHubs}
             />
             <ReleaseCtaWrapper>
               <ReleasePurchase

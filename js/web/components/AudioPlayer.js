@@ -16,7 +16,7 @@ import PauseIcon from '@mui/icons-material/Pause'
 // import VolumeOffIcon from '@mui/icons-material/VolumeOff'
 import Typography from '@mui/material/Typography'
 import QueueDrawer from './QueueDrawer'
-import Image from './Image'
+import Image from 'next/image'
 
 const { AudioPlayerContext, NinaContext, ReleaseContext } = nina.contexts
 const { formatDuration } = nina.utils
@@ -190,19 +190,21 @@ const AudioPlayer = () => {
         <source src={txid + '?ext=mp3'} type="audio/mp3" />
       </audio>
 
-      {info && (
-        <Link href={`/${info.releasePubkey}`} passHref>
-          <AlbumArt>
-            <Image
-              src={info.cover}
-              height="60px"
-              width="60px"
-              layout="responsive"
-              release={releaseState.tokenData[info.releasePubkey]}
-            />
-          </AlbumArt>
-        </Link>
-      )}
+      <Box width="60px">
+        {info && (
+          <Link href={`/${info.releasePubkey}`} passHref>
+            <AlbumArt>
+              <Image
+                src={info.cover}
+                height="60px"
+                width="60px"
+                layout="responsive"
+                release={releaseState.tokenData[info.releasePubkey]}
+              />
+            </AlbumArt>
+          </Link>
+        )}
+      </Box>
 
       <Controls>
         <IconButton

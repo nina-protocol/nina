@@ -371,6 +371,8 @@ const HubCreate = (props) => {
     }
   }
 
+
+  console.log('bundlrBalance :>> ', bundlrBalance);
   if (hubCreated) {
     return (
       <Box margin="auto">
@@ -443,6 +445,7 @@ const HubCreate = (props) => {
 
           <CreateCta>
             {bundlrBalance === 0 && <BundlrModal inCreate={true} />}
+            
             {bundlrBalance > 0 && formValuesConfirmed && (
               <Button
                 fullWidth
@@ -463,7 +466,7 @@ const HubCreate = (props) => {
               </Button>
             )}
 
-            {!formValuesConfirmed && (
+            {bundlrBalance > 0 && !formValuesConfirmed && (
               <HubCreateConfirm
                 hubData={hubData}
                 formValues={formValues}

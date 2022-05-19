@@ -21,7 +21,7 @@ module.exports = withBundleAnalyzer({
     }
     config.resolve.alias = {
       ...config.resolve.alias,
-      path: require.resolve('path-browserify'),
+      '@nina-protocol/nina-sdk': path.resolve('../node_modules/@nina-protocol/nina-sdk'),      path: require.resolve('path-browserify'),
       react: path.resolve('../node_modules/react'),
       crypto: require.resolve('crypto-browserify'),
       stream: require.resolve('stream-browserify'),
@@ -49,7 +49,7 @@ module.exports = withBundleAnalyzer({
       cluster === 'devnet'
         ? 'https://nina.devnet.rpcpool.com'
         : 'https://nina.rpcpool.com',
-    REACT_HUB_PUBLIC_KEY: '4xHeZW8BK8HeCinoDLsGiGwtYsjQ9zBb71m5vdDa5ceS',
+    REACT_HUB_PUBLIC_KEY: '3s2c2BdGEQQnV62togiQZfzdR1t4CpvYHkgtuXbtEPfj',
     REACT_PROGRAM_ID:
       cluster === 'devnet'
         ? '77BKtqWTbTRxj5eZPuFbeXjx3qz4TTHoXRnpCejYWiQH'
