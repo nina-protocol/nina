@@ -48,6 +48,7 @@ module.exports = withBundleAnalyzer({
       cluster === 'devnet'
         ? 'https://nina.devnet.rpcpool.com'
         : 'https://nina.rpcpool.com',
+    REACT_HUB_PUBLIC_KEY: 'HsWutvySaqWXT67qfoJ8xZFtPFa1SorDPTJSyndMf7Ld',
     REACT_PROGRAM_ID:
       cluster === 'devnet'
         ? '77BKtqWTbTRxj5eZPuFbeXjx3qz4TTHoXRnpCejYWiQH'
