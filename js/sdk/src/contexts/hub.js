@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import * as anchor from '@project-serum/anchor'
-import axios from 'axios'
 import { ninaErrorHandler } from '../utils/errors'
 import {
   findAssociatedTokenAddress,
@@ -23,6 +22,7 @@ const HubContextProvider = ({ children }) => {
     getHubs,
     getHub,
     getHubContent,
+    getHubsForUser,
     hubInitWithCredit,
     hubUpdateConfig,
     hubAddCollaborator,
@@ -58,6 +58,7 @@ const HubContextProvider = ({ children }) => {
       value={{
         getHubs,
         getHub,
+        getHubsForUser,
         hubInitWithCredit,
         hubUpdateConfig,
         hubAddCollaborator,
@@ -566,6 +567,9 @@ const hubContextHelper = ({
       const program = await ninaClient.useProgram()
       const hub = await program.account.hub.fetch(hubPubkey)
       hubPubkey = new anchor.web3.PublicKey(hubPubkey)
+      if (referenceRelease) {
+        referenceRelease = new anchor.web3.PublicKey(referenceRelease)
+      }
 
       const [post] = await anchor.web3.PublicKey.findProgramAddress(
         [
@@ -614,13 +618,12 @@ const hubContextHelper = ({
       }
 
       let txid
-      const params = [hub.handle, slug, uri]
-      const request = { accounts }
+      const handle = decodeNonEncryptedByteArray(hub.handle)
+      const params = [handle, slug, uri]
       if (referenceRelease) {
         accounts.referenceRelease = referenceRelease
 
-        const instructions = []
-        const [referenceReleaseHubRelease, referenceReleaseHubReleaseIx] =
+        const [referenceReleaseHubRelease] =
           await anchor.web3.PublicKey.findProgramAddress(
             [
               Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-release')),
@@ -629,13 +632,11 @@ const hubContextHelper = ({
             ],
             program.programId
           )
-        request.accounts.referenceReleaseHubRelease = referenceReleaseHubRelease
+        accounts.referenceReleaseHubRelease = referenceReleaseHubRelease
 
-        if (referenceReleaseHubReleaseIx) {
-          instructions.push(referenceReleaseHubReleaseIx)
-        }
   
-        const [referenceReleaseHubContent, referenceReleaseHubContentIx] =
+  
+        const [referenceReleaseHubContent] =
           await anchor.web3.PublicKey.findProgramAddress(
             [
               Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-content')),
@@ -644,16 +645,9 @@ const hubContextHelper = ({
             ],
             program.programId
           )
-        request.accounts.referenceReleaseHubContent = referenceReleaseHubContent
-
-        if (referenceReleaseHubContentIx) {
-          instructions.push(referenceReleaseHubContentIx)
-        }
-
-        if (instructions.length > 0) {
-          request.instructions = instructions
-        }
-        txid = await program.rpc.postInitViaHubWithReferenceContent(...params, request)
+        accounts.referenceReleaseHubContent = referenceReleaseHubContent
+        
+        txid = await program.rpc.postInitViaHubWithReferenceRelease(...params, {accounts})
       } else {
         txid = await program.rpc.postInitViaHub(...params, request)
       }
@@ -787,7 +781,7 @@ const hubContextHelper = ({
         msg: `You collected $${nativeToUi(
           recipient.owed.toNumber(),
           release.paymentMint
-        )} to the hub`,
+        )} to the hub`, 
       }
     } catch (error) {
       getRelease(releasePubkey.toBase58())
@@ -839,7 +833,7 @@ const hubContextHelper = ({
   }
 
   const getHubsForUser = async (publicKey) => {
-    let path = endpoints.api + `/hubCollaboratorss/${publicKey}/hubs`
+    let path = endpoints.api + `/hubCollaborators/${publicKey}/hubs` 
     const response = await fetch(path)
     const result = await response.json()
     saveHubCollaboratorsToState(result.hubCollaborators)
@@ -865,17 +859,35 @@ const hubContextHelper = ({
   }
 
   const saveHubCollaboratorsToState = async (hubCollaborators) => {
+    let hubCollaboratorIds = hubCollaborators.map(hubCollaborator => hubCollaborator.id)
+    hubCollaboratorIds = hubCollaboratorIds.map((id) => new anchor.web3.PublicKey(id))
+
     try {
+      const program = await ninaClient.useProgram()
+      let hubCollaboratorAccounts = await program.account.hubCollaborator.fetchMultiple(
+        hubCollaboratorIds,
+        'confirmed'
+      )
+
       let updatedState = {...hubCollaboratorsState}
-      for (let hubCollaborator of hubCollaborators) {
-        updatedState = {
-          ...updatedState,
-          [hubCollaborator.id]: {
-            ...hubCollaborator,
-            publicKey: hubCollaborator.id,
-          },
-        }
-      }
+
+      hubCollaboratorAccounts.forEach((hubCollaborator, i) => {
+        hubCollaborator.id = hubCollaborators[i].id
+        hubCollaborator.addedBy = hubCollaborator.addedBy.toBase58()
+        hubCollaborator.collaborator = hubCollaborator.collaborator.toBase58()
+        hubCollaborator.datetime = hubCollaborator.datetime.toNumber()
+        hubCollaborator.hub = hubCollaborator.hub.toBase58()
+        
+          updatedState = {
+            ...updatedState,
+            [hubCollaborator.id]: {
+              ...hubCollaborator,
+              publicKey: hubCollaborator.id,
+            },
+          }
+      })
+
+ 
       setHubCollaboratorsState(updatedState)
     } catch (error) {
       console.warn(error)
@@ -979,7 +991,10 @@ const hubContextHelper = ({
     const hubs = []
     Object.values(hubCollaboratorsState).forEach(hubCollaborator => {
       if (hubCollaborator.collaborator === publicKey) {
-        hubs.push(hubState[hubCollaborator.hubId])
+        hubs.push({
+          ...hubState[hubCollaborator.hub],
+          canAddContent: hubCollaborator.canAddContent
+        })
       }
     })
     return hubs
@@ -988,6 +1003,7 @@ const hubContextHelper = ({
   return {
     getHubs,
     getHub,
+    getHubsForUser,
     getHubContent,
     hubInitWithCredit,
     hubUpdateConfig,

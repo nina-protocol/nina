@@ -9,39 +9,54 @@ import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutline
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Image from './Image'
 
-const { AudioPlayerContext, ReleaseContext } = nina.contexts
+import {useSnackbar} from 'notistack'
+import AddToHubModal from './AddToHubModal.js'
+
+const {AudioPlayerContext, ReleaseContext, HubContext} = nina.contexts
 
 const ReleaseCard = (props) => {
-  const { artwork, metadata, preview, releasePubkey } = props
+  const { artwork, metadata, preview, releasePubkey, userHubs } = props
   const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext)
   const { releaseState } = useContext(ReleaseContext)
   const image = useMemo(() => metadata?.image)
+  const {enqueueSnackbar} = useSnackbar()
+
+  console.log('userHubs :>> ', userHubs);
+
 
   return (
     <StyledReleaseCard>
       <StyledReleaseInfo>
         {metadata && (
-          <CtaWrapper sx={{ display: 'flex' }}>
-            <Button
-              onClick={() =>
-                updateTxid(
-                  metadata.properties.files[0].uri,
-                  releasePubkey,
-                  true
-                )
-              }
-              sx={{ height: '22px', width: '28px' }}
-            >
-              <PlayCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
-            </Button>
-            <Button
-              onClick={() => {
-                addTrackToQueue(releasePubkey)
-              }}
-              sx={{ height: '22px', width: '28px' }}
-            >
-              <ControlPointIcon sx={{ color: 'white' }} />
-            </Button>
+          <CtaWrapper>
+            <Box>
+              <Button
+                onClick={() =>
+                  updateTxid(
+                    metadata.properties.files[0].uri,
+                    releasePubkey,
+                    true
+                  )
+                }
+                sx={{ height: '22px', width: '28px' }}
+              >
+                <PlayCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
+              </Button>
+              <Button
+                onClick={() => {
+                  addTrackToQueue(releasePubkey)
+                }}
+                sx={{ height: '22px', width: '28px' }}
+              >
+                <ControlPointIcon sx={{ color: 'white' }} />
+              </Button>
+            </Box>
+
+            {userHubs?.length > 0 && releasePubkey && (
+              <Box>
+                <AddToHubModal userHubs={userHubs} releasePubkey={releasePubkey} metadata={metadata}/>
+              </Box>
+            )}
           </CtaWrapper>
         )}
 
@@ -95,6 +110,8 @@ const StyledReleaseCard = styled(Box)(() => ({
 }))
 
 const CtaWrapper = styled(Box)(() => ({
+  display: 'flex',
+  justifyContent: 'space-between',
   '& .MuiButton-root': {
     width: '21px',
     marginRight: '10px',

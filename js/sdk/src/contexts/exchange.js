@@ -13,7 +13,7 @@ import { ninaErrorHandler } from '../utils/errors'
 
 const lookupTypes = {
   RELEASE: 'release',
-  USER: 'user',
+  USER: 'user', 
 }
 
 export const ExchangeContext = createContext()
@@ -41,7 +41,7 @@ const ExchangeContextProvider = ({ children }) => {
     filterExchangesForReleaseBuySell,
     filterExchangesForReleaseMarketPrice,
     filterExchangeMatch,
-    getExchangeHistoryForUser,
+    getExchangeHistoryForUser,   
     getExchangeHistoryForRelease,
     filterExchangeHistoryForUser,
     filterExchangeHistoryForRelease,

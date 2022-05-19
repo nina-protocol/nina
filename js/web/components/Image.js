@@ -1,3 +1,4 @@
+ /* eslint-disable react/display-name */
 import React, { useState } from 'react'
 import NextImage from 'next/image'
 import { DateTime } from 'luxon'
@@ -8,7 +9,6 @@ function Image({ src, height, width, layout, priority, release }) {
     event.persist()
     console.log('event: ', event)
     if (event.target.srcset || byPass) {
-      console.log('in here')
       setReady(true)
     }
   }
@@ -36,7 +36,6 @@ function Image({ src, height, width, layout, priority, release }) {
     }
   }
   if (!ImageComponent) {
-    console.log ('in here 3')
     ImageComponent = () => (
       <NextImage
         src={src}

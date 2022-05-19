@@ -1,4 +1,3 @@
-/* eslint @typescript-eslint/no-unused-vars: 0 */
 import React, { useState, useEffect, useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import nina from "@nina-protocol/nina-sdk";

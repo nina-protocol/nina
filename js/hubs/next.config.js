@@ -28,7 +28,6 @@ module.exports = withBundleAnalyzer({
       process: require.resolve('process/browser'),
       zlib: require.resolve('zlib-browserify'),
       'bn.js': path.resolve('../node_modules/bn.js'),
-      '@nina-protocol/nina-sdk': path.resolve('../sdk'),
       '@solana/web3.js': path.resolve('../node_modules/@solana/web3.js'),
       '@project-serum/serum': path.resolve(
         '../node_modules/@project-serum/serum'
