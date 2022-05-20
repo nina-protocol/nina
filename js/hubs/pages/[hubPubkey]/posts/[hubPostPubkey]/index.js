@@ -7,23 +7,23 @@ const Post = dynamic(() => import('../../../../components/Post'))
 import { Metadata } from '@metaplex-foundation/mpl-token-metadata'
 
 const PostPage = (props) => {
-  const { post, hub, postPubkey, hubPubkey } = props
+  const { metadata, post, hub, postPubkey, hubPubkey } = props
   return (
     <>
-      {/* <Head>
-        <title>{`${hub?.metadata.displayName}: ${metadata?.properties.artist} - "${metadata?.properties.title}"`}</title>
-        <meta
-          name="description"
-          content={`${metadata?.properties.artist} - "${metadata?.properties.title}": ${metadata?.description} \n Published on ${hub.metadata.displayName}.  Powered by Nina.`}
-        />
+      <Head>
+        <title>{`${hub?.json.displayName}: ${post.postContent.json.title}`}</title>
         <meta name="og:type" content="website" />
         <meta
+          name="description"
+          content={`${metadata?.json.name}: ${metadata?.json.description} \n Published on ${hub?.json.displayName}.  Powered by Nina.`}
+        />
+        <meta
           name="og:title"
-          content={`${metadata?.properties.artist} - "${metadata?.properties.title}" on ${hub.metadata.displayName}`}
+          content={`${metadata?.json.name} on ${hub.json.displayName}`}
         />
         <meta
           name="og:description"
-          content={`${metadata?.properties.artist} - "${metadata?.properties.title}": ${metadata?.description} \n Published on ${hub.metadata.displayName}.  Powered by Nina.`}
+          content={`${metadata?.json.name}: ${metadata?.json.description} \n Published on ${hub?.json.displayName}.  Powered by Nina.`}
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@ninaprotocol" />
@@ -31,13 +31,13 @@ const PostPage = (props) => {
         <meta name="twitter:image:type" content="image/jpg" />
         <meta
           name="twitter:title"
-          content={`${metadata?.properties.artist} - "${metadata?.properties.title}" on ${hub?.metadata.displayName}`}
+          content={`${post.postContent.json.title} on ${hub?.json.displayName}`}
         />
         <meta name="twitter:description" content={metadata?.description} />
+        <meta name="twitter:image" content={metadata?.json.image || hub.json.image} />
+        <meta name="og:image" content={metadata?.json.image || hub.json.image} /> 
 
-        <meta name="twitter:image" content={metadata?.image} />
-        <meta name="og:image" content={metadata?.image} />
-      </Head> */}
+      </Head>
       <Post postDataSsr={post} postPubkey={postPubkey} hub={hub} hubPubkey={hubPubkey} />
     </>
   )
@@ -55,16 +55,19 @@ PostPage.getInitialProps = async (context) => {
   let post;
   let hub;
   let hubPubkey;
+  let metadata;
   
   if (data) {
     console.log('data :>> ', data);
     console.log('data.hubPost :>> ', data.hubPost);
     console.log('data.hubPost.hub :>> ', data.hubPost.hub);
-     hubPost = data.hubPost
-     post = hubPost.post
-     postPubkey = hubPost.postId
-     hub = hubPost.hub
-     hubPubkey = hubPost.hubId
+    metadata = data.metadata
+    hubPost = data.hubPost
+    post = hubPost.post
+    postPubkey = hubPost.postId
+    hub = hubPost.hub
+    hubPubkey = hubPost.hubId
+
   }
   // let metadata = context.query.metadata
   // let hub = context.query.hub
@@ -79,6 +82,7 @@ PostPage.getInitialProps = async (context) => {
   
 
   return {
+    metadata,
     hubPostPubkey,
     postPubkey,
     post,

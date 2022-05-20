@@ -91,7 +91,7 @@ const App = ({ Component, pageProps }) => {
             <NinaWrapper network={process.env.REACT_APP_CLUSTER}>
               <CacheProvider value={clientSideEmotionCache}>
                 {/* <ThemeProvider theme={lightTheme}> */}
-                <Layout hubPubkey={process.env.REACT_HUB_PUBLIC_KEY}>
+                <Layout>
                   {loading ? (
                     <Box width="100%" margin="auto">
                       <Dots size="80px" />
@@ -99,7 +99,6 @@ const App = ({ Component, pageProps }) => {
                   ) : (
                     <Component
                       {...pageProps}
-                      hubPubkey={process.env.REACT_HUB_PUBLIC_KEY}
                     />
                   )}
                 </Layout>
