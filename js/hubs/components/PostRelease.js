@@ -14,7 +14,6 @@ const { HubContext, ReleaseContext, AudioPlayerContext } = nina.contexts
 
 const PostRelease = ({ metadata, releasePubkey }) => {
   const router = useRouter()
-  console.log("router ::> ", router)
   const hubPubkey = process.env.REACT_HUB_PUBLIC_KEY
   const { updateTrack, track, isPlaying } = useContext(AudioPlayerContext)
   const { releaseState, getRelease } = useContext(ReleaseContext)

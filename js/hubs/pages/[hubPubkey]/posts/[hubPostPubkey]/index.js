@@ -7,7 +7,7 @@ const Post = dynamic(() => import('../../../../components/Post'))
 import { Metadata } from '@metaplex-foundation/mpl-token-metadata'
 
 const PostPage = (props) => {
-  const { post, hub, postPubkey } = props
+  const { post, hub, postPubkey, hubPubkey } = props
   return (
     <>
       {/* <Head>
@@ -38,7 +38,7 @@ const PostPage = (props) => {
         <meta name="twitter:image" content={metadata?.image} />
         <meta name="og:image" content={metadata?.image} />
       </Head> */}
-      <Post postDataSsr={post} postPubkey={postPubkey} hub={hub} />
+      <Post postDataSsr={post} postPubkey={postPubkey} hub={hub} hubPubkey={hubPubkey} />
     </>
   )
 }
@@ -54,15 +54,17 @@ PostPage.getInitialProps = async (context) => {
   let postPubkey;
   let post;
   let hub;
+  let hubPubkey;
   
   if (data) {
     console.log('data :>> ', data);
-    console.log('data.hubPost.post :>> ', data.hubPost.post);
-    console.log('data.hubPost.post :>> ', data.hubPost.post);
+    console.log('data.hubPost :>> ', data.hubPost);
+    console.log('data.hubPost.hub :>> ', data.hubPost.hub);
      hubPost = data.hubPost
      post = hubPost.post
      postPubkey = hubPost.postId
      hub = hubPost.hub
+     hubPubkey = hubPost.hubId
   }
   // let metadata = context.query.metadata
   // let hub = context.query.hub
@@ -80,7 +82,8 @@ PostPage.getInitialProps = async (context) => {
     hubPostPubkey,
     postPubkey,
     post,
-    hub
+    hub,
+    hubPubkey
   }
 }
 

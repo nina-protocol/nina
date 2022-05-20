@@ -25,8 +25,9 @@ const PostRelease = dynamic(() => import('./PostRelease'))
 const { HubContext, NinaContext, ReleaseContext, AudioPlayerContext } =
   nina.contexts
 
-const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey }) => {
-  const hubPubkey = hub?.id
+const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, }) => {
+  const hubPubkey = hub.id
+  console.log('hubPubkey !! :>> ', hubPubkey);
   const router = useRouter()
   // const {updateTrack, track, isPlaying} = useContext(AudioPlayerContext);
   const [referenceReleasePubkey, setReferenceReleasePubkey] = useState()
