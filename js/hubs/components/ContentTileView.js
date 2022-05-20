@@ -28,18 +28,18 @@ const ContentTileView = ({ content, hubPubkey }) => {
   //    }
   //   }, [releases])
 
-  const handleClick = (releasePubkey, hubPostPubkey=null) => {
+  const handleClick = (hubReleasePubkey, hubPostPubkey=null) => {
     console.log("releaseState, hubData ::> ", releaseState, hubData, hubState, hubPubkey)
     const pathString = hubPostPubkey ? 'posts' : 'releases'
     router.push(
       {
-        pathname: `/${hubPubkey}/${pathString}/${hubPostPubkey || releasePubkey}`,
+        pathname: `/${hubPubkey}/${pathString}/${hubPostPubkey || hubReleasePubkey}`,
         // query: {
-        //   metadata: JSON.stringify(releaseState.metadata[releasePubkey]),
+        //   metadata: JSON.stringify(releaseState.metadata[hubReleasePubkey]),
         //   hub: JSON.stringify(hubData),
         // },
       },
-      `/${hubPubkey}/${pathString}/${hubPostPubkey || releasePubkey}`
+      `/${hubPubkey}/${pathString}/${hubPostPubkey || hubReleasePubkey}`
     )
   }
 

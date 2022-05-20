@@ -13,7 +13,6 @@ const AudioPlayer = () => {
   const { releaseState } = useContext(ReleaseContext)
   const { hubContentState, filterHubContentForHub } = useContext(HubContext)
   const audio = useContext(AudioPlayerContext)
-  console.log("audio ::> ", audio)
   const {
     track,
     playNext,

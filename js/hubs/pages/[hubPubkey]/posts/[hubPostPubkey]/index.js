@@ -47,39 +47,28 @@ PostPage.getInitialProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL
   const hubPostPubkey = context.query.hubPostPubkey
   const indexerPath = indexerUrl + `hubPosts/${hubPostPubkey}`
-  const result = await axios.get(indexerPath)
-  const data = result.data
-
+  
   let hubPost;
   let postPubkey;
   let post;
   let hub;
   let hubPubkey;
   let metadata;
-  
-  if (data) {
-    console.log('data :>> ', data);
-    console.log('data.hubPost :>> ', data.hubPost);
-    console.log('data.hubPost.hub :>> ', data.hubPost.hub);
-    metadata = data.metadata
-    hubPost = data.hubPost
-    post = hubPost.post
-    postPubkey = hubPost.postId
-    hub = hubPost.hub
-    hubPubkey = hubPost.hubId
-
+  try {
+    const result = await axios.get(indexerPath)
+    const data = result.data
+    if (data) {
+      metadata = data.metadata
+      hubPost = data.hubPost
+      post = hubPost.post
+      postPubkey = hubPost.postId
+      hub = hubPost.hub
+      hubPubkey = hubPost.hubId
+    }
+    
+  } catch (error) {
+    console.warn(error)
   }
-  // let metadata = context.query.metadata
-  // let hub = context.query.hub
-  // let referenceData
-  // console.log('postPubkey ::> ', postPubkey)
-  // console.log('metadata, hub ::> ', metadata, hub)
-    // try {
-
-    // } catch (error) {
-    //   console.warn(error)
-    // }
-  
 
   return {
     metadata,

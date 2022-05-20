@@ -43,7 +43,6 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey}) => {
 
 
   useEffect(() => {
-    console.log("postState, postPubkey ::> ", postState, postPubkey)
     if (hubPostPubkey && !postState[postPubkey]) {
       getHubPost(hubPostPubkey)
     }

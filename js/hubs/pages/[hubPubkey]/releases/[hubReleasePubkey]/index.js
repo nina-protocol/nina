@@ -7,10 +7,10 @@ const Release = dynamic(() => import('../../../../components/Release'))
 import { Metadata } from '@metaplex-foundation/mpl-token-metadata'
 
 const ReleasePage = (props) => {
-  const { metadata, hub, releasePubkey } = props
+  const { metadata, hub, releasePubkey, hubPubkey } = props
   return (
     <>
-      <Head>
+       <Head>
         <title>{`${metadata?.properties.artist} - "${metadata?.properties.title}"`}</title>
         <meta
           name="description"
@@ -23,7 +23,7 @@ const ReleasePage = (props) => {
         />
         <meta
           name="og:description"
-          content={`${metadata?.properties.artist} - "${metadata?.properties.title}": ${metadata?.description} \nPowered by Nina.`}
+          content={`${metadata?.properties.artist} - "${metadata?.properties.title}": ${metadata?.description} \n Published on ${hub?.json.displayName} \nPowered by Nina.`}
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@ninaprotocol" />
@@ -38,28 +38,42 @@ const ReleasePage = (props) => {
         <meta name="twitter:image" content={metadata?.image} />
         <meta name="og:image" content={metadata?.image} />
       </Head>
-      <Release metadataSsr={metadata} releasePubkey={releasePubkey} />
+      <Release metadataSsr={metadata} releasePubkey={releasePubkey} hubPubkey={hubPubkey} />
     </>
   )
 }
 
 ReleasePage.getInitialProps = async (context) => {
-  console.log("context.params ::> ", context)
-  const releasePubkey = context.query.releasePubkey
-  const metadataResult = await fetch(
-    `https://api-dev.nina.market/metadata/bulk`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ids: [releasePubkey] }),
+  const indexerUrl = process.env.INDEXER_URL
+  const hubReleasePubkey = context.query.hubReleasePubkey
+  const indexerPath = indexerUrl + `hubReleases/${hubReleasePubkey}`
+
+  let hubRelease;
+  let release;
+  let hub;
+  let releasePubkey;
+  let metadata;
+  let hubPubkey;
+  try {
+    const result = await axios.get(indexerPath)
+    const data = result.data
+    if (data) {
+      hubRelease = data.hubRelease
+      release = hubRelease.release
+      metadata = release.metadataAccount.json
+      releasePubkey = hubRelease.releaseId
+      hub = hubRelease.hub
+      hubPubkey = hubRelease.hubId
     }
-  )
-  const metadataJson = await metadataResult.json()
-  
+
+  } catch (error) {
+    console.warn(error)
+  }
 
   return {
     releasePubkey,
-    metadata: metadataJson[releasePubkey] || null,
+    metadata,
+    hubPubkey
   }
 }
 
