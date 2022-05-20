@@ -21,13 +21,14 @@ module.exports = withBundleAnalyzer({
     }
     config.resolve.alias = {
       ...config.resolve.alias,
-      path: require.resolve('path-browserify'),
+      '@nina-protocol/nina-sdk': path.resolve('../node_modules/@nina-protocol/nina-sdk'),      path: require.resolve('path-browserify'),
       react: path.resolve('../node_modules/react'),
       crypto: require.resolve('crypto-browserify'),
       stream: require.resolve('stream-browserify'),
       process: require.resolve('process/browser'),
       zlib: require.resolve('zlib-browserify'),
       'bn.js': path.resolve('../node_modules/bn.js'),
+      '@nina-protocol/nina-sdk': path.resolve('../node_modules/@nina-protocol/nina-sdk'),
       '@solana/web3.js': path.resolve('../node_modules/@solana/web3.js'),
       '@project-serum/serum': path.resolve(
         '../node_modules/@project-serum/serum'
@@ -48,12 +49,12 @@ module.exports = withBundleAnalyzer({
       cluster === 'devnet'
         ? 'https://nina.devnet.rpcpool.com'
         : 'https://nina.rpcpool.com',
-    REACT_HUB_PUBLIC_KEY: 'HsWutvySaqWXT67qfoJ8xZFtPFa1SorDPTJSyndMf7Ld',
+    REACT_HUB_PUBLIC_KEY: '3s2c2BdGEQQnV62togiQZfzdR1t4CpvYHkgtuXbtEPfj',
     REACT_PROGRAM_ID:
       cluster === 'devnet'
         ? '77BKtqWTbTRxj5eZPuFbeXjx3qz4TTHoXRnpCejYWiQH'
         : 'ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4',
-    BASE_URL: 'https://hubs.ninaprotocol.com/',
+    INDEXER_URL: cluster === 'devnet' ? 'https://api-dev.nina.market/' : 'https://hubs.ninaprotocol.com/',
   },
   images: {
     domains: ['www.arweave.net', 'arweave.net'],

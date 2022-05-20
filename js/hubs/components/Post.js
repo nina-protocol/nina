@@ -25,8 +25,8 @@ const PostRelease = dynamic(() => import('./PostRelease'))
 const { HubContext, NinaContext, ReleaseContext, AudioPlayerContext } =
   nina.contexts
 
-const Post = ({ postDataSsr }) => {
-  const hubPubkey = process.env.REACT_HUB_PUBLIC_KEY
+const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey }) => {
+  const hubPubkey = hub?.id
   const router = useRouter()
   // const {updateTrack, track, isPlaying} = useContext(AudioPlayerContext);
   const [referenceReleasePubkey, setReferenceReleasePubkey] = useState()
@@ -41,18 +41,17 @@ const Post = ({ postDataSsr }) => {
   const { getHub, hubState, hubContentState, getHubPost } = useContext(HubContext)
   const { getRelease, releaseState } = useContext(ReleaseContext)
 
-  const { current: postPubkey } = useRef(router.query.postPubkey)
 
   useEffect(() => {
     console.log("postState, postPubkey ::> ", postState, postPubkey)
-    if (postPubkey && !postState[postPubkey]) {
-      getHubPost(postPubkey, hubPubkey)
+    if (hubPostPubkey && !postState[postPubkey]) {
+      getHubPost(hubPostPubkey)
     }
-  }, [postPubkey])
+  }, [hubPostPubkey])
 
   useEffect(() => {
-    if (!hubState[hubPubkey]) {
-      getHub({ hubPubkey })
+    if (hubPubkey && !hubState[hubPubkey]) {
+      getHub( hubPubkey )
     }
   }, [hubPubkey, getHub])
 

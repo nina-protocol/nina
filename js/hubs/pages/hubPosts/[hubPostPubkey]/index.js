@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import * as anchor from '@project-serum/anchor'
 import axios from 'axios'
-const Post = dynamic(() => import('../../../../components/Post'))
+const Post = dynamic(() => import('../../../components/Post'))
 import { Metadata } from '@metaplex-foundation/mpl-token-metadata'
 
 const PostPage = (props) => {
@@ -45,11 +45,11 @@ const PostPage = (props) => {
 
 PostPage.getInitialProps = async (context) => {
   console.log("HELLLO ::> ")
-  const postPubkey = context.query.postPubkey
+  const hubPostPubkey = context.query.hubPostPubkey
   let metadata = context.query.metadata
   let hub = context.query.hub
   let referenceData
-  console.log('postPubkey ::> ', postPubkey)
+  console.log('hubPostPubkey ::> ', hubPostPubkey)
   console.log('metadata, hub ::> ', metadata, hub)
   if (metadata && hub) {
     metadata = JSON.parse(metadata)
@@ -63,7 +63,7 @@ PostPage.getInitialProps = async (context) => {
   }
 
   return {
-    postPubkey,
+    hubPostPubkey,
     metadata,
     hub,
   }

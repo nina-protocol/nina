@@ -28,18 +28,18 @@ const ContentTileView = ({ content, hubPubkey }) => {
   //    }
   //   }, [releases])
 
-  const handleClick = (releasePubkey, postPubkey=null) => {
+  const handleClick = (releasePubkey, hubPostPubkey=null) => {
     console.log("releaseState, hubData ::> ", releaseState, hubData, hubState, hubPubkey)
-    const pathString = postPubkey ? 'posts' : 'releases'
+    const pathString = hubPostPubkey ? 'posts' : 'releases'
     router.push(
       {
-        pathname: `/${hubPubkey}/${pathString}/${postPubkey || releasePubkey}`,
-        query: {
-          metadata: JSON.stringify(releaseState.metadata[releasePubkey]),
-          hub: JSON.stringify(hubData),
-        },
+        pathname: `/${hubPubkey}/${pathString}/${hubPostPubkey || releasePubkey}`,
+        // query: {
+        //   metadata: JSON.stringify(releaseState.metadata[releasePubkey]),
+        //   hub: JSON.stringify(hubData),
+        // },
       },
-      `/${pathString}/${postPubkey || releasePubkey}`
+      `/${hubPubkey}/${pathString}/${hubPostPubkey || releasePubkey}`
     )
   }
 
@@ -50,6 +50,7 @@ const ContentTileView = ({ content, hubPubkey }) => {
   return (
     <TileGrid columnCount={columnCount}>
       {content.map((item, i) => {
+        console.log('item :>> ', item);
         return (
           <>
             {item?.contentType === 'NinaReleaseV1' && (
@@ -125,7 +126,7 @@ const ContentTileView = ({ content, hubPubkey }) => {
                 <HoverCard
                  onClick={(e) => {
                   e.stopPropagation()
-                  handleClick(item.referenceHubContent, item.publicKey)
+                  handleClick(item.referenceHubContent, item.hubPostPublicKey)
                  }}>
                   <CardCta>
                     <PostInfo sx={{ padding: '10px 0 0' }}>
