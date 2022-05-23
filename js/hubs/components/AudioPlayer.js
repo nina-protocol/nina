@@ -126,7 +126,7 @@ const AudioPlayer = () => {
       updateTrack(playlist[0].releasePubkey, false)
     }
   }, [playlist, activeIndexRef.current])
-
+  
   const startTimer = () => {
     // Clear any timers already running
     clearInterval(intervalRef.current)

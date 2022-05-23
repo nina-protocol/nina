@@ -72,10 +72,11 @@ const Hub = () => {
         postState[hubContentData.post] &&
         hubContentData.visible
       ) {
+        // console.log('hubContentData :>> ', hubContentData);
         hubContentData = {
           ...hubContentData,
           ...postState[hubContentData.post],
-          hubPostPubkey: hubContentData.publicKey
+          hubPostPublicKey: hubContentData.publicKey
         }
         if (hubContentData.referenceHubContent !== null) {
           hubContentData.releaseMetadata =
@@ -131,7 +132,7 @@ const Hub = () => {
             <Dots size="80px" />
           </Box>
         )}
-        {content?.length > 0 && <ContentTileView content={content} />}
+        {content?.length > 0 && <ContentTileView content={content} hubPubkey={hubPubkey}/>}
       </ContentViewWrapper>
     </>
   )

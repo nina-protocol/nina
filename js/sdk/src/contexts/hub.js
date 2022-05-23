@@ -804,6 +804,7 @@ const hubContextHelper = ({
     if (typeof hubPubkey ==='string') {
       hubPubkey = new anchor.web3.PublicKey(hubPubkey)
     }
+    console.log('hubPubkey :>> ', hubPubkey);
     const program = await ninaClient.useProgram()
     const hub = await program.account.hub.fetch(hubPubkey)
     let hubTokenAccount = await findAssociatedTokenAddress(
@@ -825,8 +826,8 @@ const hubContextHelper = ({
     saveHubsToState([result.hub])
   }
 
-  const getHubPost = async (postPubkey, hubPubkey) => {
-    let path = endpoints.api + `/hubPosts/${postPubkey}?hub=${hubPubkey}`
+  const getHubPost = async (hubPostPubkey) => {
+    let path = endpoints.api + `/hubPosts/${hubPostPubkey}`
     const response = await fetch(path)
     const result = await response.json()
     saveHubContentToState(result.hubReleases, result.hubPosts)

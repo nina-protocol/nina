@@ -27,17 +27,13 @@ const ContentTileView = ({ content, hubPubkey }) => {
   //    }
   //   }, [releases])
 
-  const handleClick = (releasePubkey, postPubkey=null) => {
-    const pathString = postPubkey ? 'posts' : 'releases'
+  const handleClick = (hubReleasePubkey, hubPostPubkey=null) => {
+    const pathString = hubPostPubkey ? 'posts' : 'releases'
     router.push(
       {
-        pathname: `/${hubPubkey}/${pathString}/${postPubkey || releasePubkey}`,
-        query: {
-          metadata: JSON.stringify(releaseState.metadata[releasePubkey]),
-          hub: JSON.stringify(hubData),
-        },
+        pathname: `/${hubPubkey}/${pathString}/${hubPostPubkey || hubReleasePubkey}`,
       },
-      `/${hubPubkey}/${pathString}/${postPubkey || releasePubkey}`
+      `/${hubPubkey}/${pathString}/${hubPostPubkey || hubReleasePubkey}`
     )
   }
 
@@ -110,7 +106,7 @@ const ContentTileView = ({ content, hubPubkey }) => {
                   </Typography>
                 </PostInfo>
                 <HoverCard>
-                  <Link href={`/${hubPubkey}/posts/${item.publicKey}`} passHref>
+                  <Link href={`/${hubPubkey}/posts/${item.hubPostPublicKey}`} passHref>
                     <CardCta>
                       <PostLink>View Post</PostLink>
                     </CardCta>
@@ -123,7 +119,7 @@ const ContentTileView = ({ content, hubPubkey }) => {
                 <HoverCard
                  onClick={(e) => {
                   e.stopPropagation()
-                  handleClick(item.referenceHubContent, item.publicKey)
+                  handleClick(item.referenceHubContent, item.hubPostPublicKey)
                  }}>
                   <CardCta>
                     <PostInfo sx={{ padding: '10px 0 0' }}>

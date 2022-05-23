@@ -25,7 +25,7 @@ const PostRelease = dynamic(() => import('./PostRelease'))
 const { HubContext, NinaContext, ReleaseContext, AudioPlayerContext } =
   nina.contexts
 
-const Post = ({ postPubkey, hubPubkey }) => {
+const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
   const router = useRouter()
   // const {updateTrack, track, isPlaying} = useContext(AudioPlayerContext);
   const [referenceReleasePubkey, setReferenceReleasePubkey] = useState()
@@ -42,14 +42,14 @@ const Post = ({ postPubkey, hubPubkey }) => {
 
 
   useEffect(() => {
-    if (postPubkey && !postState[postPubkey]) {
-      getHubPost(postPubkey, hubPubkey)
+    if (hubPostPubkey && !postState[postPubkey]) {
+      getHubPost(hubPostPubkey)
     }
-  }, [postPubkey])
+  }, [hubPostPubkey])
 
   useEffect(() => {
-    if (!hubState[hubPubkey]) {
-      getHub({ hubPubkey })
+    if (hubPubkey && !hubState[hubPubkey]) {
+      getHub( hubPubkey )
     }
   }, [hubPubkey, getHub])
 
@@ -121,6 +121,7 @@ const Post = ({ postPubkey, hubPubkey }) => {
           <PostRelease
             metadata={referenceReleaseMetadata}
             releasePubkey={referenceReleasePubkey}
+            hubPubkey={hubPubkey}
           />
         )}
       </Grid>

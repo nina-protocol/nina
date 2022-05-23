@@ -21,7 +21,6 @@ module.exports = withBundleAnalyzer({
     }
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@nina-protocol/nina-sdk': path.resolve('../node_modules/@nina-protocol/nina-sdk'),
       path: require.resolve('path-browserify'),
       react: path.resolve('../node_modules/react'),
       crypto: require.resolve('crypto-browserify'),
@@ -53,7 +52,7 @@ module.exports = withBundleAnalyzer({
       cluster === 'devnet'
         ? '77BKtqWTbTRxj5eZPuFbeXjx3qz4TTHoXRnpCejYWiQH'
         : 'ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4',
-    BASE_URL: 'https://hubs.ninaprotocol.com/',
+    INDEXER_URL: cluster === 'devnet' ? 'https://api-dev.nina.market/' : 'https://hubs.ninaprotocol.com/',
   },
   images: {
     domains: ['www.arweave.net', 'arweave.net'],
