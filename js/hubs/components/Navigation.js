@@ -177,7 +177,7 @@ const Navigation = () => {
           </LogoLinkWrapper>
         </Link>
         <Box className={ctaWrapper}>
-          {!mobileView && canAddContent && getMenuButtons()}
+          {!mobileView && canAddContent && getMenuButtons(hubPubkey)}
           <WalletWrapper>
             <NavCtas>
               {wallet.wallets && (
@@ -252,10 +252,13 @@ const Navigation = () => {
     })
   }
 
-  const getMenuButtons = () => {
+  const getMenuButtons = (hubPubkey) => {
     return (
       <List>
         {navData.map(({ label, href }) => {
+          console.log('!!!', hubPubkey)
+          href = `/${hubPubkey}${href}`
+          console.log('!!!!!!!', href)
           return (
             <Link
               key={label}

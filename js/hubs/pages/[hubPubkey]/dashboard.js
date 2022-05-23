@@ -1,6 +1,11 @@
 import Dashboard from '../../components/Dashboard'
 
 const DashboardPage = () => {
-  return <Dashboard hubPubkey={process.env.REACT_HUB_PUBLIC_KEY} />
+  return (
+    <>
+    <Dashboard />
+      <h1>hi</h1>
+    </>
+  )
 }
 export default DashboardPage

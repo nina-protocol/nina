@@ -26,9 +26,11 @@ const toTitleCase = (text) => {
   })
 }
 
-const Dashboard = ({ hubPubkey }) => {
+const Dashboard = () => {
   const wallet = useWallet()
   const router = useRouter()
+  const hubPubkey = router.query.hubPubkey
+  
 
   const { getHub, hubState, hubCollaboratorsState, hubContentState } =
     useContext(HubContext)
@@ -95,7 +97,9 @@ const Dashboard = ({ hubPubkey }) => {
   }, [hubCollaborators, hubData, wallet])
 
   useEffect(() => {
-    getHub(hubPubkey)
+    if (hubPubkey) {
+      getHub(hubPubkey)
+    }
   }, [hubPubkey])
 
   useEffect(() => {
@@ -117,9 +121,9 @@ const Dashboard = ({ hubPubkey }) => {
     const index = e.target.getAttribute('data-index')
     if (index !== '0') {
       const actionParam = actions[index]
-      router.push('/dashboard?action=' + actionParam)
+      router.push(`/${hubPubkey}/dashboard?action=` + actionParam)
     } else {
-      router.push('/dashboard')
+      router.push(`/${hubPubkey}/dashboard`)
     }
     setActiveAction(index)
   }

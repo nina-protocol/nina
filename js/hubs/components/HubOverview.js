@@ -85,7 +85,7 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
     })
     revenue = ninaClient.nativeToUi(revenue, ninaClient.ids.mints.usdc)
     return revenue
-  }, [releases])
+  }, [releases])  
 
   return (
     <Overview>
