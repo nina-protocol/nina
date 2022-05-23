@@ -41,7 +41,6 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
       setMetadata(releaseState.metadata[releasePubkey])
     }
   }, [releaseState, metadata, releasePubkey])
-  console.log("metadata, releasePubkey, releaseState ::> ", metadata, releasePubkey, releaseState)
   return (
     <>
       <BackButton onClick={() => router.back()} />

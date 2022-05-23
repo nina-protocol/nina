@@ -17,7 +17,6 @@ const ContentTileView = ({ content, hubPubkey }) => {
   const { releaseState } = useContext(ReleaseContext)
   const [columnCount, setColumnCount] = useState(3)
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
-  console.log("content ::> ", content)
   const router = useRouter()
 
   //  useEffect(() => {
@@ -29,15 +28,10 @@ const ContentTileView = ({ content, hubPubkey }) => {
   //   }, [releases])
 
   const handleClick = (hubReleasePubkey, hubPostPubkey=null) => {
-    console.log("releaseState, hubData ::> ", releaseState, hubData, hubState, hubPubkey)
     const pathString = hubPostPubkey ? 'posts' : 'releases'
     router.push(
       {
         pathname: `/${hubPubkey}/${pathString}/${hubPostPubkey || hubReleasePubkey}`,
-        // query: {
-        //   metadata: JSON.stringify(releaseState.metadata[hubReleasePubkey]),
-        //   hub: JSON.stringify(hubData),
-        // },
       },
       `/${hubPubkey}/${pathString}/${hubPostPubkey || hubReleasePubkey}`
     )
@@ -50,7 +44,6 @@ const ContentTileView = ({ content, hubPubkey }) => {
   return (
     <TileGrid columnCount={columnCount}>
       {content.map((item, i) => {
-        console.log('item :>> ', item);
         return (
           <>
             {item?.contentType === 'NinaReleaseV1' && (

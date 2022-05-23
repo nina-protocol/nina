@@ -26,7 +26,6 @@ const { HubContext, NinaContext, ReleaseContext, AudioPlayerContext } =
   nina.contexts
 
 const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey}) => {
-  // const hubPubkey = hub.id
   const router = useRouter()
   // const {updateTrack, track, isPlaying} = useContext(AudioPlayerContext);
   const [referenceReleasePubkey, setReferenceReleasePubkey] = useState()
@@ -50,7 +49,6 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey}) => {
 
   useEffect(() => {
     if (hubPubkey && !hubState[hubPubkey]) {
-      console.log('hubPubkey !!!! :>> ', hubPubkey);
       getHub( hubPubkey )
     }
   }, [hubPubkey, getHub])
@@ -79,9 +77,7 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey}) => {
       setReferenceReleaseMetadata(releaseState.metadata[referenceReleasePubkey])
     }
   }, [releaseState, referenceReleasePubkey])
-  console.log("referenceReleasePubkey ::> ", referenceReleasePubkey)
   useEffect(() => {
-    console.log("postState, postPubkey dddd ::> ", postState, postPubkey)
     if (postState[postPubkey]?.postContent.json.body) {
       unified()
         .use(rehypeParse, { fragment: true })

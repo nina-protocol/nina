@@ -47,7 +47,6 @@ ReleasePage.getInitialProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL
   const hubReleasePubkey = context.query.hubReleasePubkey
   const indexerPath = indexerUrl + `hubReleases/${hubReleasePubkey}`
-  console.log('indexerPath :>> ', indexerPath);
 
   let hubRelease;
   let release;

@@ -27,8 +27,7 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   }, [releasePubkey])
 
   useEffect(() => {
-    if (!hubState[hubPubkey]) {
-      console.log('getting hub');
+    if (hubPubkey && !hubState[hubPubkey]) {
       getHub(hubPubkey)
     }
   }, [hubPubkey, getHub])
