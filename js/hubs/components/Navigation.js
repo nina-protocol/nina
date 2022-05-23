@@ -256,9 +256,7 @@ const Navigation = () => {
     return (
       <List>
         {navData.map(({ label, href }) => {
-          console.log('!!!', hubPubkey)
           href = `/${hubPubkey}${href}`
-          console.log('!!!!!!!', href)
           return (
             <Link
               key={label}
