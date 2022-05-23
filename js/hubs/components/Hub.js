@@ -51,7 +51,6 @@ const Hub = () => {
     const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey)
     const hubContent = [...hubReleases, ...hubPosts]
     hubContent.forEach((hubContentData) => {
-      console.log("hubContentData ::> ", hubContentData)
       if (
         hubContentData.contentType === 'NinaReleaseV1' &&
         releaseState.metadata[hubContentData.release] &&
@@ -76,6 +75,7 @@ const Hub = () => {
         hubContentData = {
           ...hubContentData,
           ...postState[hubContentData.post],
+          hubPostPubkey: hubContentData.publicKey
         }
         if (hubContentData.referenceHubContent !== null) {
           hubContentData.releaseMetadata =
@@ -88,9 +88,6 @@ const Hub = () => {
     return contentArray
       .sort((a, b) => new Date(b.datetime) - new Date(a.datetime))
   }, [hubContentState, releaseState, postState, hubPubkey])
-
-  console.log("hubData, hubState, hubContentState ::> ", hubData, hubState, hubContentState, hubPubkey)
-  console.log("content, initialLoad ::> ", content, initialLoad)
 
   if (!hubState[hubPubkey]?.json) {
     return null

@@ -25,8 +25,7 @@ const PostRelease = dynamic(() => import('./PostRelease'))
 const { HubContext, NinaContext, ReleaseContext, AudioPlayerContext } =
   nina.contexts
 
-const Post = ({ postDataSsr }) => {
-  const hubPubkey = process.env.REACT_HUB_PUBLIC_KEY
+const Post = ({ postPubkey, hubPubkey }) => {
   const router = useRouter()
   // const {updateTrack, track, isPlaying} = useContext(AudioPlayerContext);
   const [referenceReleasePubkey, setReferenceReleasePubkey] = useState()
@@ -41,10 +40,8 @@ const Post = ({ postDataSsr }) => {
   const { getHub, hubState, hubContentState, getHubPost } = useContext(HubContext)
   const { getRelease, releaseState } = useContext(ReleaseContext)
 
-  const { current: postPubkey } = useRef(router.query.postPubkey)
 
   useEffect(() => {
-    console.log("postState, postPubkey ::> ", postState, postPubkey)
     if (postPubkey && !postState[postPubkey]) {
       getHubPost(postPubkey, hubPubkey)
     }
@@ -80,9 +77,7 @@ const Post = ({ postDataSsr }) => {
       setReferenceReleaseMetadata(releaseState.metadata[referenceReleasePubkey])
     }
   }, [releaseState, referenceReleasePubkey])
-  console.log("referenceReleasePubkey ::> ", referenceReleasePubkey)
   useEffect(() => {
-    console.log("postState, postPubkey dddd ::> ", postState, postPubkey)
     if (postState[postPubkey]?.postContent.json.body) {
       unified()
         .use(rehypeParse, { fragment: true })

@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import * as anchor from '@project-serum/anchor'
 import axios from 'axios'
-const Release = dynamic(() => import('../../../../components/Release'))
+const Release = dynamic(() => import('../../../components/Release'))
 import { Metadata } from '@metaplex-foundation/mpl-token-metadata'
 
 const ReleasePage = (props) => {

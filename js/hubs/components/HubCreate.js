@@ -371,8 +371,6 @@ const HubCreate = (props) => {
     }
   }
 
-
-  console.log('bundlrBalance :>> ', bundlrBalance);
   if (hubCreated) {
     return (
       <Box margin="auto">

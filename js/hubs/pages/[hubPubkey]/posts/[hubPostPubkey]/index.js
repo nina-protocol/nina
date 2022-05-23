@@ -7,11 +7,11 @@ const Post = dynamic(() => import('../../../../components/Post'))
 import { Metadata } from '@metaplex-foundation/mpl-token-metadata'
 
 const PostPage = (props) => {
-  const { post, hub, postPubkey } = props
+  const { hubPost } = props
   return (
     <>
-      {/* <Head>
-        <title>{`${hub?.metadata.displayName}: ${metadata?.properties.artist} - "${metadata?.properties.title}"`}</title>
+      <Head>
+        <title>{`${hubPost.hub.json.displayName}: ${hubPost.post.postContent.json.title}"`}</title>
         <meta
           name="description"
           content={`${metadata?.properties.artist} - "${metadata?.properties.title}": ${metadata?.description} \n Published on ${hub.metadata.displayName}.  Powered by Nina.`}
@@ -37,35 +37,17 @@ const PostPage = (props) => {
 
         <meta name="twitter:image" content={metadata?.image} />
         <meta name="og:image" content={metadata?.image} />
-      </Head> */}
-      <Post postDataSsr={post?.metadata} postPubkey={postPubkey} />
+      </Head>
+      <Post hubPubkey={hubPost.hubId} postPubkey={hubPost.release.postId} />
     </>
   )
 }
 
 PostPage.getInitialProps = async (context) => {
-  console.log("HELLLO ::> ")
-  const postPubkey = context.query.postPubkey
-  let metadata = context.query.metadata
-  let hub = context.query.hub
-  let referenceData
-  console.log('postPubkey ::> ', postPubkey)
-  console.log('metadata, hub ::> ', metadata, hub)
-  if (metadata && hub) {
-    metadata = JSON.parse(metadata)
-    hub = JSON.parse(hub)
-  } else {
-    try {
-
-    } catch (error) {
-      console.warn(error)
-    }
-  }
+  const response = getHubPostFromIndexer(context.query.hubPostPubkey)
 
   return {
-    postPubkey,
-    metadata,
-    hub,
+    hubPost: response.hubPost,
   }
 }
 

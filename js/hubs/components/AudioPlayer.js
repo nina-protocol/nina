@@ -13,7 +13,7 @@ const AudioPlayer = () => {
   const { releaseState } = useContext(ReleaseContext)
   const { hubContentState, filterHubContentForHub } = useContext(HubContext)
   const audio = useContext(AudioPlayerContext)
-  console.log("audio ::> ", audio)
+  const [tracks, setTracks] = useState({})
   const {
     track,
     playNext,
@@ -23,7 +23,7 @@ const AudioPlayer = () => {
     createPlaylistFromTracksHubs,
     isPlaying,
   } = audio
-  const tracks = useMemo(() => {
+  useEffect(() => {
     const trackObject = {}
     const [hubReleases] = filterHubContentForHub(hubPubkey)
     hubReleases.forEach((hubRelease) => {
@@ -40,9 +40,8 @@ const AudioPlayer = () => {
         trackObject[hubRelease.release] = contentItem
       }
     })
-    console.log('FFFF: ', trackObject)
-    return trackObject
-  }, [hubContentState])
+    setTracks(trackObject)
+  }, [hubContentState, hubPubkey])
   const activeTrack = useRef()
   const playerRef = useRef()
   const intervalRef = useRef()
@@ -54,7 +53,7 @@ const AudioPlayer = () => {
 
   useEffect(() => {
     playerRef.current = document.querySelector('#audio')
-
+    
     const actionHandlers = [
       ['play', () => play()],
       ['pause', () => play()],
@@ -78,13 +77,13 @@ const AudioPlayer = () => {
   }, [])
 
   useEffect(() => {
-    if (Object.values(tracks).length > 1) {
+    if (Object.values(tracks).length > 0) {
       const trackIds = Object.values(tracks)
-        .sort((a, b) => b.datetime - a.datetime)
+        .sort((a, b) => new Date(b.datetime) - new Date(a.datetime))
         .map((track) => track.publicKey)
       createPlaylistFromTracksHubs(trackIds)
     }
-  }, [tracks])
+  }, [tracks, hubContentState])
 
   useEffect(() => {
     const initialized = activeIndexRef.current >= 0
@@ -100,9 +99,9 @@ const AudioPlayer = () => {
     if (track) {
       activeIndexRef.current = playlist.indexOf(track)
       activeTrack.current = track
-      hasNext.current = activeIndexRef.current + 1 < playlist.length
-      hasPrevious.current = activeIndexRef.current > 0
       playerRef.current.src = track.txid
+      hasNext.current = activeIndexRef.current + 1 < playlist.length
+      hasPrevious.current = activeIndexRef.current > 0  
       if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
           title: activeTrack.current.title,
@@ -117,18 +116,17 @@ const AudioPlayer = () => {
         })
       }
     }
-
     if (initialized && isPlaying) {
       play()
     }
   }, [track])
 
   useEffect(() => {
-    if (playlist.length > 0 && !activeIndexRef.current) {
+    if (playlist.length > 0 && !activeIndexRef.current && track?.releasePubkey != playlist[0].releasePubkey) {
       updateTrack(playlist[0].releasePubkey, false)
     }
   }, [playlist, activeIndexRef.current])
-  console.log("playlist ::> ", playlist)
+
   const startTimer = () => {
     // Clear any timers already running
     clearInterval(intervalRef.current)
@@ -156,12 +154,10 @@ const AudioPlayer = () => {
   const play = () => {
     if (playerRef.current.paused) {
       playerRef.current.play()
-      if (!playerRef.current.paused) {
-        setPlaying(true)
-        startTimer()
-      }
+      setPlaying(true)
+      startTimer()
     } else {
-      pause()
+      // pause()
     }
   }
 
@@ -180,7 +176,7 @@ const AudioPlayer = () => {
     setPlaying(false)
     clearInterval(intervalRef.current)
     if (track) {
-      updateTrack(track.releasePubkey)
+      updateTrack(track.releasePubkey, false)
     }
   }
 

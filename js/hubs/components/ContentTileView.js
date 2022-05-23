@@ -17,7 +17,6 @@ const ContentTileView = ({ content, hubPubkey }) => {
   const { releaseState } = useContext(ReleaseContext)
   const [columnCount, setColumnCount] = useState(3)
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
-  console.log("content ::> ", content)
   const router = useRouter()
 
   //  useEffect(() => {
@@ -29,7 +28,6 @@ const ContentTileView = ({ content, hubPubkey }) => {
   //   }, [releases])
 
   const handleClick = (releasePubkey, postPubkey=null) => {
-    console.log("releaseState, hubData ::> ", releaseState, hubData, hubState, hubPubkey)
     const pathString = postPubkey ? 'posts' : 'releases'
     router.push(
       {
@@ -39,7 +37,7 @@ const ContentTileView = ({ content, hubPubkey }) => {
           hub: JSON.stringify(hubData),
         },
       },
-      `/${pathString}/${postPubkey || releasePubkey}`
+      `/${hubPubkey}/${pathString}/${postPubkey || releasePubkey}`
     )
   }
 
@@ -71,7 +69,7 @@ const ContentTileView = ({ content, hubPubkey }) => {
                     <Button
                       onClick={(e) => {
                         e.stopPropagation()
-                        updateTrack(item.publicKey, true)
+                        updateTrack(item.release, true)
                       }}
                       disableRipple
                     >
