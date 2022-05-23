@@ -827,12 +827,9 @@ const hubContextHelper = ({
   }
 
   const getHubPost = async (hubPostPubkey) => {
-    console.log('endpoints.api :>> ', endpoints.api);
     let path = endpoints.api + `/hubPosts/${hubPostPubkey}`
-    console.log('path :>> ', path);
     const response = await fetch(path)
     const result = await response.json()
-    console.log('result getHubPost :>> ', result);
     saveHubContentToState(result.hubReleases, result.hubPosts)
   }
 
