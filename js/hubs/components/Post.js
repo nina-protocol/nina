@@ -50,6 +50,7 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey}) => {
 
   useEffect(() => {
     if (hubPubkey && !hubState[hubPubkey]) {
+      console.log('hubPubkey !!!! :>> ', hubPubkey);
       getHub( hubPubkey )
     }
   }, [hubPubkey, getHub])
@@ -124,6 +125,7 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey}) => {
           <PostRelease
             metadata={referenceReleaseMetadata}
             releasePubkey={referenceReleasePubkey}
+            hubPubkey={hubPubkey}
           />
         )}
       </Grid>

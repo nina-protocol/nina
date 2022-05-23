@@ -12,9 +12,8 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 const ReleasePurchase = dynamic(() => import('./ReleasePurchase'))
 const { HubContext, ReleaseContext, AudioPlayerContext } = nina.contexts
 
-const PostRelease = ({ metadata, releasePubkey }) => {
+const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
   const router = useRouter()
-  const hubPubkey = process.env.REACT_HUB_PUBLIC_KEY
   const { updateTrack, track, isPlaying } = useContext(AudioPlayerContext)
   const { releaseState, getRelease } = useContext(ReleaseContext)
   const { getHub, hubState } = useContext(HubContext)
@@ -33,7 +32,7 @@ const PostRelease = ({ metadata, releasePubkey }) => {
 
   useEffect(() => {
     if (!hubState[hubPubkey]) {
-      getHub({ hubPubkey })
+      getHub( hubPubkey )
     }
   }, [hubPubkey, getHub])
 

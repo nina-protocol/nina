@@ -57,7 +57,7 @@ PostPage.getInitialProps = async (context) => {
   try {
     const result = await axios.get(indexerPath)
     const data = result.data
-    if (data) {
+    if (data.hubPost) {
       metadata = data.metadata
       hubPost = data.hubPost
       post = hubPost.post

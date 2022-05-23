@@ -4,7 +4,7 @@ import Head from 'next/head'
 import Hub from '../../components/Hub'
 
 const HubPage = ({ hubPubkey, hub }) => {
-  console.log("hub, hubPubkey ::> ", hub, hubPubkey)
+  // console.log("hub, hubPubkey ::> ", hub, hubPubkey)
   return (
     <>
       <Head>
