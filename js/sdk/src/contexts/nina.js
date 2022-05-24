@@ -225,7 +225,6 @@ const ninaContextHelper = ({
   }
   
   const savePostsToState = async (posts) => {
-    console.log('savePostsToState: ', posts)
     let updatedState = { ...postState }
     posts.forEach(post => {
       updatedState = {
@@ -237,7 +236,6 @@ const ninaContextHelper = ({
         }
       }
     }) 
-    console.log("updatedState ::> ", updatedState)
     setPostState(updatedState)
   }
 
@@ -293,7 +291,6 @@ const ninaContextHelper = ({
               releaseAmountMap[releasePublicKey]
           }
         })
-        console.log("updatedCollection ::> ", updatedCollection)
         setCollection({
           ...collection,
           ...updatedCollection,

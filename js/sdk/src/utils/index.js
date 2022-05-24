@@ -1,8 +1,8 @@
 import * as encrypt from './encrypt'
 import * as web3 from './web3'
 
-const dateConverter = (UNIX_timestamp) => {
-  var a = new Date(UNIX_timestamp * 1000)
+const dateConverter = (date) => {
+  var a = new Date(typeof date === 'number' ? date * 1000 : date)
   var months = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
   var year = a.getFullYear()
   var month = months[a.getMonth()]

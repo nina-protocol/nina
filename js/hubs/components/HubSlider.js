@@ -52,6 +52,7 @@ const HubSlider = (props) => {
       onClick={onClick}
     />
   )
+
   if (hubs.length === 0) {
     return (
       <Box
@@ -86,7 +87,7 @@ const HubSlider = (props) => {
               <HubSlideWrapper key={i}>
                 <HubSlide key={i}>
                   {imageUrl &&
-                    <Link href={`/hubs/${hub.publicKey}`}>
+                    <Link href={`/${hub.publicKey}`}>
                       <a>
                         <Image
                           src={imageUrl}

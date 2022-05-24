@@ -1,4 +1,6 @@
 /* eslint-disable react/jsx-filename-extension */
+/* eslint-disable @next/next/no-sync-scripts */
+
 import React from 'react'
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 import { ServerStyleSheet } from 'styled-components'
@@ -55,7 +57,11 @@ class MyDocument extends Document {
             rel="stylesheet"
             href="https://fonts.googleapis.com/icon?family=Material+Icons"
           />
-
+          <link
+            rel="stylesheet"
+            type="text/css"
+            href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
+          />
           <link
             rel="apple-touch-icon"
             sizes="180x180"
