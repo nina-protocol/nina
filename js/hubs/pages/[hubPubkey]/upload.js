@@ -1,4 +1,4 @@
-import ReleaseCreateViaHub from '../components/ReleaseCreateViaHub'
+import ReleaseCreateViaHub from '../../components/ReleaseCreateViaHub'
 
 const HubReleaseCreatePage = () => {
   return <ReleaseCreateViaHub />

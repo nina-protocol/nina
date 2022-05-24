@@ -21,6 +21,7 @@ import {
 import { useWallet } from '@solana/wallet-adapter-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 
 const { HubContext } = nina.contexts
 
@@ -89,7 +90,9 @@ const useStyles = makeStyles(({ theme }) => ({
   },
 }))
 
-const Navigation = ({ hubPubkey }) => {
+const Navigation = () => {
+  const router = useRouter()
+  const hubPubkey = router.query.hubPubkey
   const { header, menuButton, toolbar, ctaWrapper, drawerContainer } =
     useStyles()
   const wallet = useWallet()
@@ -146,7 +149,6 @@ const Navigation = ({ hubPubkey }) => {
     }
     return false
   }, [hubCollaborators, hubData, wallet])
-
   const displayDesktop = () => {
     return (
       <Toolbar
@@ -165,15 +167,17 @@ const Navigation = ({ hubPubkey }) => {
                 alt="hub logo"
               />
             )}
-            <Typography style={{ marginLeft: '15px' }}>
-              {process.env.REACT_HUB_PUBLIC_KEY
-                ? hubData?.json.displayName
-                : 'Nina Hub Create'}
-            </Typography>
+            {hubPubkey ? (
+              <Typography style={{ marginLeft: '15px' }}>
+                {hubData?.json.displayName}
+              </Typography>
+            ) : (
+              <Typography variant="h4">NINA HUBS</Typography>
+            )}
           </LogoLinkWrapper>
         </Link>
         <Box className={ctaWrapper}>
-          {!mobileView && canAddContent && getMenuButtons()}
+          {!mobileView && canAddContent && getMenuButtons(hubPubkey)}
           <WalletWrapper>
             <NavCtas>
               {wallet.wallets && (
@@ -248,10 +252,11 @@ const Navigation = ({ hubPubkey }) => {
     })
   }
 
-  const getMenuButtons = () => {
+  const getMenuButtons = (hubPubkey) => {
     return (
       <List>
         {navData.map(({ label, href }) => {
+          href = `/${hubPubkey}${href}`
           return (
             <Link
               key={label}
@@ -273,7 +278,7 @@ const Navigation = ({ hubPubkey }) => {
       sx={{ backgroundColor: '#66000000 !important', boxShadow: 'none' }}
       className={header}
     >
-      {hubData && displayDesktop()}
+      {displayDesktop()}
     </AppBar>
   )
 }
@@ -304,6 +309,9 @@ const LogoLinkWrapper = styled('a')(() => ({
     '&:hover': {
       opacity: '50%',
     },
+  },
+  '& .MuiTypography-h4': {
+    fontWeight: 'bold',
   },
 }))
 

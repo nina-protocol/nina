@@ -3,37 +3,40 @@ import nina from '@nina-protocol/nina-sdk'
 import { styled } from '@mui/material/styles'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
+import { useRouter } from 'next/router'
 
 const { AudioPlayerContext, HubContext, ReleaseContext } = nina.contexts
 const { formatDuration } = nina.utils
-const AudioPlayer = ({ hubPubkey }) => {
+const AudioPlayer = () => {
+  const router = useRouter()
+  const hubPubkey = router.query.hubPubkey
   const { releaseState } = useContext(ReleaseContext)
-  const { hubContentState } = useContext(HubContext)
+  const { hubContentState, filterHubContentForHub } = useContext(HubContext)
+  const audio = useContext(AudioPlayerContext)
   const {
     track,
     playNext,
     playPrev,
     updateTrack,
     playlist,
-    createPlaylistFromTracks,
+    createPlaylistFromTracksHubs,
     isPlaying,
-  } = useContext(AudioPlayerContext)
-
+  } = audio
   const tracks = useMemo(() => {
     const trackObject = {}
-    Object.keys(hubContentState).forEach((content) => {
-      const hubContentData = hubContentState[content]
+    const [hubReleases] = filterHubContentForHub(hubPubkey)
+    hubReleases.forEach((hubRelease) => {
       let contentItem
       if (
-        hubContentData.contentType === 'NinaReleaseV1' &&
-        releaseState.metadata[hubContentData.release] &&
-        hubContentData.visible
+        hubRelease.contentType === 'NinaReleaseV1' &&
+        releaseState.metadata[hubRelease.release] &&
+        hubRelease.visible
       ) {
-        contentItem = releaseState.metadata[hubContentData.release]
-        contentItem.contentType = hubContentData.contentType
-        contentItem.publicKey = hubContentData.release
-        contentItem.datetime = hubContentData.datetime
-        trackObject[hubContentData.release] = contentItem
+        contentItem = releaseState.metadata[hubRelease.release]
+        contentItem.contentType = hubRelease.contentType
+        contentItem.publicKey = hubRelease.release
+        contentItem.datetime = hubRelease.datetime
+        trackObject[hubRelease.release] = contentItem
       }
     })
     return trackObject
@@ -73,10 +76,12 @@ const AudioPlayer = ({ hubPubkey }) => {
   }, [])
 
   useEffect(() => {
-    const trackIds = Object.values(tracks)
-      .sort((a, b) => b.datetime - a.datetime)
-      .map((track) => track.publicKey)
-    createPlaylistFromTracks(trackIds)
+    if (Object.values(tracks).length > 1) {
+      const trackIds = Object.values(tracks)
+        .sort((a, b) => b.datetime - a.datetime)
+        .map((track) => track.publicKey)
+      createPlaylistFromTracksHubs(trackIds)
+    }
   }, [tracks])
 
   useEffect(() => {
@@ -121,7 +126,6 @@ const AudioPlayer = ({ hubPubkey }) => {
       updateTrack(playlist[0].releasePubkey, false)
     }
   }, [playlist, activeIndexRef.current])
-
   const startTimer = () => {
     // Clear any timers already running
     clearInterval(intervalRef.current)

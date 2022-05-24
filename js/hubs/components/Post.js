@@ -25,8 +25,7 @@ const PostRelease = dynamic(() => import('./PostRelease'))
 const { HubContext, NinaContext, ReleaseContext, AudioPlayerContext } =
   nina.contexts
 
-const Post = ({ postDataSsr }) => {
-  const hubPubkey = process.env.REACT_HUB_PUBLIC_KEY
+const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey}) => {
   const router = useRouter()
   // const {updateTrack, track, isPlaying} = useContext(AudioPlayerContext);
   const [referenceReleasePubkey, setReferenceReleasePubkey] = useState()
@@ -37,22 +36,20 @@ const Post = ({ postDataSsr }) => {
 
   const [metadata, setMetadata] = useState()
 
-  const { postState, getPosts } = useContext(NinaContext)
-  const { getHub, hubState, hubContentState } = useContext(HubContext)
+  const { postState } = useContext(NinaContext)
+  const { getHub, hubState, hubContentState, getHubPost } = useContext(HubContext)
   const { getRelease, releaseState } = useContext(ReleaseContext)
 
-  const { current: postPubkey } = useRef(router.query.postPubkey)
 
   useEffect(() => {
-    console.log("postState, postPubkey ::> ", postState, postPubkey)
-    if (postPubkey && !postState[postPubkey]) {
-      getPosts([postPubkey])
+    if (hubPostPubkey && !postState[postPubkey]) {
+      getHubPost(hubPostPubkey)
     }
-  }, [postPubkey])
+  }, [hubPostPubkey])
 
   useEffect(() => {
-    if (!hubState[hubPubkey]) {
-      getHub({ hubPubkey })
+    if (hubPubkey && !hubState[hubPubkey]) {
+      getHub( hubPubkey )
     }
   }, [hubPubkey, getHub])
 
@@ -68,9 +65,9 @@ const Post = ({ postDataSsr }) => {
         (content) => content.post === postPubkey
       )
       setMetadata(metadata)
-      if (metadata?.referenceContent && !referenceReleasePubkey) {
-        setReferenceReleasePubkey(metadata.referenceContent)
-        getRelease(metadata.referenceContent)
+      if (metadata?.referenceHubContent && !referenceReleasePubkey) {
+        setReferenceReleasePubkey(metadata.referenceHubContent)
+        getRelease(metadata.referenceHubContent)
       }
     }
   }, [hubContentState, postPubkey])
@@ -80,9 +77,7 @@ const Post = ({ postDataSsr }) => {
       setReferenceReleaseMetadata(releaseState.metadata[referenceReleasePubkey])
     }
   }, [releaseState, referenceReleasePubkey])
-
   useEffect(() => {
-    console.log("postState, postPubkey dddd ::> ", postState, postPubkey)
     if (postState[postPubkey]?.postContent.json.body) {
       unified()
         .use(rehypeParse, { fragment: true })
@@ -107,11 +102,9 @@ const Post = ({ postDataSsr }) => {
     }
   }, [postState[postPubkey]])
 
-  const formattedDate = (seconds) => {
-    const date = new Date(seconds * 1000).toLocaleDateString()
-    return date
+  const formattedDate = (date) => {
+    return new Date(typeof date === 'number' ? date * 1000 : date).toLocaleDateString()
   }
-
   return (
     <>
       <BackButton onClick={() => router.back()} />
@@ -128,6 +121,7 @@ const Post = ({ postDataSsr }) => {
           <PostRelease
             metadata={referenceReleaseMetadata}
             releasePubkey={referenceReleasePubkey}
+            hubPubkey={hubPubkey}
           />
         )}
       </Grid>

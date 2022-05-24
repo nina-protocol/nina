@@ -21,7 +21,6 @@ const ReleaseTileList = (props) => {
       pathname: `/${releasePubkey}`,
     })
   } 
-  console.log("releases RTL ::> ", releases)
 
   return (
     <Box>

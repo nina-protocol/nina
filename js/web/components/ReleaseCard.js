@@ -21,9 +21,6 @@ const ReleaseCard = (props) => {
   const image = useMemo(() => metadata?.image)
   const {enqueueSnackbar} = useSnackbar()
 
-  console.log('userHubs :>> ', userHubs);
-
-
   return (
     <StyledReleaseCard>
       <StyledReleaseInfo>

@@ -17,7 +17,6 @@ const ContentTileView = ({ content, hubPubkey }) => {
   const { releaseState } = useContext(ReleaseContext)
   const [columnCount, setColumnCount] = useState(3)
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
-
   const router = useRouter()
 
   //  useEffect(() => {
@@ -28,23 +27,18 @@ const ContentTileView = ({ content, hubPubkey }) => {
   //    }
   //   }, [releases])
 
-  const handleClick = (releasePubkey) => {
-    console.log("releaseState, hubData ::> ", releaseState, hubData, hubState, hubPubkey)
+  const handleClick = (hubReleasePubkey, hubPostPubkey=null) => {
+    const pathString = hubPostPubkey ? 'posts' : 'releases'
     router.push(
       {
-        pathname: `/releases/${releasePubkey}`,
-        query: {
-          metadata: JSON.stringify(releaseState.metadata[releasePubkey]),
-          hub: JSON.stringify(hubData),
-        },
+        pathname: `/${hubPubkey}/${pathString}/${hubPostPubkey || hubReleasePubkey}`,
       },
-      `/releases/${releasePubkey}`
+      `/${hubPubkey}/${pathString}/${hubPostPubkey || hubReleasePubkey}`
     )
   }
 
-  const formattedDate = (seconds) => {
-    const date = new Date(seconds * 1000).toLocaleDateString()
-    return date
+  const formattedDate = (date) => {
+    return new Date(typeof date === 'number' ? date * 1000 : date).toLocaleDateString()
   }
 
   return (
@@ -112,7 +106,7 @@ const ContentTileView = ({ content, hubPubkey }) => {
                   </Typography>
                 </PostInfo>
                 <HoverCard>
-                  <Link href={`/posts/${item.publicKey}`} passHref>
+                  <Link href={`/${hubPubkey}/posts/${item.hubPostPublicKey}`} passHref>
                     <CardCta>
                       <PostLink>View Post</PostLink>
                     </CardCta>
@@ -120,30 +114,31 @@ const ContentTileView = ({ content, hubPubkey }) => {
                 </HoverCard>
               </PostTile>
             )}
-
             {item.contentType === 'PostWithRelease' && (
               <Tile className={'tile'} key={i}>
-                <HoverCard>
-                  <Link href={`/posts/${item.publicKey}`} passHref>
-                    <CardCta>
-                      <PostInfo sx={{ padding: '10px 0 0' }}>
-                        <Typography
-                          variant="h2"
-                          sx={{
-                            color: 'text.primary',
-                            textTransform: 'uppercase',
-                          }}
-                        >
-                          {item.postContent.json.title.substring(0, 100)}
-                          {item.postContent.json.title.length > 100 ? '...' : ''}
-                        </Typography>
-                        <Typography sx={{ color: 'text.primary' }}>
-                          published: {formattedDate(item.createdAt)}
-                        </Typography>
-                      </PostInfo>
-                      <PostLink>View Post</PostLink>
-                    </CardCta>
-                  </Link>
+                <HoverCard
+                 onClick={(e) => {
+                  e.stopPropagation()
+                  handleClick(item.referenceHubContent, item.hubPostPublicKey)
+                 }}>
+                  <CardCta>
+                    <PostInfo sx={{ padding: '10px 0 0' }}>
+                      <Typography
+                        variant="h2"
+                        sx={{
+                          color: 'text.primary',
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        {item.postContent.json.title.substring(0, 100)}
+                        {item.postContent.json.title.length > 100 ? '...' : ''}
+                      </Typography>
+                      <Typography sx={{ color: 'text.primary' }}>
+                        published: {formattedDate(item.createdAt)}
+                      </Typography>
+                    </PostInfo>
+                    <PostLink>View Post</PostLink>
+                  </CardCta>
                   {item.releaseMetadata?.image && (
                     <Image
                       width={100}
