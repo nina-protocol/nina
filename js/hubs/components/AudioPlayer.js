@@ -45,9 +45,7 @@ const AudioPlayer = () => {
   const activeTrack = useRef()
   const playerRef = useRef()
   const intervalRef = useRef()
-  const hasPrevious = useRef(false)
-  const hasNext = useRef(false)
-  const activeIndexRef = useRef()
+  const activeIndexRef = useRef(0)
   const [playing, setPlaying] = useState(false)
   const [trackProgress, setTrackProgress] = useState(0.0)
 
@@ -93,15 +91,18 @@ const AudioPlayer = () => {
       pause()
     }
   }, [isPlaying])
-
+  const hasNext = useMemo(() => 
+    activeIndexRef.current + 1 < playlist.length
+  , [activeIndexRef.current, playlist])
+  const hasPrevious = useMemo(() => 
+    activeIndexRef.current > 0
+  , [activeIndexRef.current])
   useEffect(() => {
     const initialized = activeIndexRef.current >= 0
     if (track) {
       activeIndexRef.current = playlist.indexOf(track)
       activeTrack.current = track
       playerRef.current.src = track.txid
-      hasNext.current = activeIndexRef.current + 1 < playlist.length
-      hasPrevious.current = activeIndexRef.current > 0  
       if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
           title: activeTrack.current.title,
@@ -181,7 +182,7 @@ const AudioPlayer = () => {
   }
 
   const next = () => {
-    if (hasNext.current) {
+    if (hasNext) {
       setTrackProgress(0)
       activeIndexRef.current = activeIndexRef.current + 1
       playNext(true)
@@ -196,7 +197,7 @@ const AudioPlayer = () => {
       {track && (
         <>
           <Controls>
-            <Button onClick={() => previous()} disabled={!hasPrevious.current}>
+            <Button onClick={() => previous()} disabled={!hasPrevious}>
               Previous
             </Button>
             <span>{` | `}</span>
@@ -204,7 +205,7 @@ const AudioPlayer = () => {
               {playing ? 'Pause' : 'Play'}
             </Button>
             <span>{` | `}</span>
-            <Button onClick={() => next()} disabled={!hasNext.current}>
+            <Button onClick={() => next()} disabled={!hasNext}>
               Next
             </Button>
             {track && (

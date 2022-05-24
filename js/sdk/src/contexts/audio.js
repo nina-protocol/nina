@@ -30,7 +30,6 @@ const AudioPlayerContextProvider = ({ children }) => {
   }
 
   const playNext = (shouldPlay = false) => {
-    console.log("playlist, currentIndex, playlist[currentIndex()] ::> ", playlist, currentIndex(), playlist[currentIndex()])
     if (playlist[currentIndex() + 1]) {
       setTrack(playlist[currentIndex() + 1])
       setIsPlaying(shouldPlay)
@@ -43,15 +42,14 @@ const AudioPlayerContextProvider = ({ children }) => {
       playlist.length == 0 &&
       Object.keys(collection)?.length > 0
     ) {
-      createPlaylistFromTracks()
+      // createPlaylistFromTracks()
     }
   }, [provider.wallet?.connected, collection, releaseState.metadata])
 
   const currentIndex = () => {
     let index = undefined
     playlist.forEach((item, i) => {
-      console.log("CURRENT INDEX ::> ", item, i, track)
-      if (item.txid === track.txid) {
+      if (item.releasePubkey === track.releasePubkey) {
         index = i
         return
       }
@@ -77,7 +75,6 @@ const AudioPlayerContextProvider = ({ children }) => {
     setTrack,
     currentIndex,
   })
-  console.log("createPlaylistFromTracks ::> ", createPlaylistFromTracks)
 
   return (
     <AudioPlayerContext.Provider
@@ -154,7 +151,6 @@ const audioPlayerContextHelper = ({
     const playlistEntries = []
     Object.keys(collection).forEach((releasePubkey) => {
       const playlistEntry = createPlaylistEntry(releasePubkey)
-      console.log("playlistEntry ::> ", playlistEntry)
       if (playlistEntry) {
         playlistEntries.push(playlistEntry)
       }
@@ -165,13 +161,12 @@ const audioPlayerContextHelper = ({
   const createPlaylistFromTracksHubs = (tracks) => {
     const playlistEntries = []
     tracks.forEach((releasePubkey) => {
-      // if (playlist.filter(item => item.releasePubkey === releasePubkey).length === 0) {
+      if (playlist.filter(item => item.releasePubkey === releasePubkey).length === 0) {
         const playlistEntry = createPlaylistEntry(releasePubkey)
-        console.log("playlistEntry ::> ", playlistEntry)
         if (playlistEntry) {
           playlistEntries.push(playlistEntry)
         }
-      // }
+      }
     })
     setPlaylist([...playlist, ...playlistEntries])
   }

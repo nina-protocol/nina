@@ -45,7 +45,7 @@ const ContentTileView = ({ content, hubPubkey }) => {
     <TileGrid columnCount={columnCount}>
       {content.map((item, i) => {
         return (
-          <>
+          <React.Fragment key={i}>
             {item?.contentType === 'NinaReleaseV1' && (
               <Tile className={'tile'} key={i}>
                 <HoverCard
@@ -151,7 +151,7 @@ const ContentTileView = ({ content, hubPubkey }) => {
                 </HoverCard>
               </Tile>
             )}
-          </>
+          </React.Fragment>
         )
       })}
     </TileGrid>
