@@ -4,9 +4,7 @@ import Head from 'next/head'
 import Hub from '../../components/Hub'
 
 const HubPage = (props) => {
-  // console.log("hub, hubPubkey ::> ", hub, hubPubkey)
-  const { hub, hubPubkey} = props
-  console.log('hub !!!! :>> ', hub);
+  const { hub, hubPubkey } = props
   return (
     <>
       <Head>

@@ -6,7 +6,6 @@ import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import Dots from './Dots'
 
 import { useWallet } from '@solana/wallet-adapter-react'
@@ -70,7 +69,6 @@ const Hub = ({hubPubkey}) => {
         postState[hubContentData.post] &&
         hubContentData.visible
       ) {
-        // console.log('hubContentData :>> ', hubContentData);
         hubContentData = {
           ...hubContentData,
           ...postState[hubContentData.post],
@@ -87,10 +85,7 @@ const Hub = ({hubPubkey}) => {
     return contentArray
       .sort((a, b) => new Date(b.datetime) - new Date(a.datetime))
   }, [hubContentState, releaseState, postState, hubPubkey])
-
-  console.log("hubData, hubState, hubContentState ::> ", hubData, hubState, hubContentState, hubPubkey)
-  console.log("content, initialLoad ::> ", content, initialLoad)
-
+  
   if (!hubState[hubPubkey]?.json) {
     return null
   }
