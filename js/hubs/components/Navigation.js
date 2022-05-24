@@ -149,7 +149,6 @@ const Navigation = () => {
     }
     return false
   }, [hubCollaborators, hubData, wallet])
-
   const displayDesktop = () => {
     return (
       <Toolbar

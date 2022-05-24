@@ -1374,7 +1374,6 @@ const releaseContextHelper = ({
       const result = await fetch(`${endpoints.api}/releases/recent`)
       const { published, purchased, highlights } = await result.json()
       const releaseIds = [...published, ...purchased, ...highlights]
-      console.log("releaseIds ::> ", releaseIds)
       await fetchAndSaveReleasesToState(releaseIds)
 
       setReleasesRecentState({
@@ -1499,12 +1498,10 @@ const releaseContextHelper = ({
     }
 
     const releases = []
-    console.log("collection 3 ::> ", collection)
     Object.keys(collection).forEach((releasePubkey) => {
       if (collection[releasePubkey] > 0) {
         const tokenData = releaseState.tokenData[releasePubkey]
         const metadata = releaseState.metadata[releasePubkey]
-        console.log("metadata ::> ", metadata)
         if (metadata) {
           releases.push({ tokenData, metadata, releasePubkey })
         }
@@ -1802,7 +1799,6 @@ const releaseContextHelper = ({
           releaseIds,
           "confirmed"
         )
-        console.log("releaseAccounts ::> ", releaseAccounts)
         const releases = []
         releaseAccounts.forEach((release, i) => {
           if (release) {

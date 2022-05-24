@@ -804,7 +804,6 @@ const hubContextHelper = ({
     if (typeof hubPubkey ==='string') {
       hubPubkey = new anchor.web3.PublicKey(hubPubkey)
     }
-    console.log('hubPubkey :>> ', hubPubkey);
     const program = await ninaClient.useProgram()
     const hub = await program.account.hub.fetch(hubPubkey)
     let hubTokenAccount = await findAssociatedTokenAddress(
@@ -942,7 +941,6 @@ const hubContextHelper = ({
         ...contentState,
       }
       await fetchAndSaveReleasesToState(hubReleases.map(hubRelease => hubRelease.releaseId))
-      console.log("hubPosts ::> ", hubPosts)
       await savePostsToState(hubPosts.map((hubPost) => hubPost.post))
 
       setHubContentState(updatedState)
@@ -959,14 +957,10 @@ const hubContextHelper = ({
     const hubPosts = []
 
     Object.values(hubContentState).forEach((hubContent) => {
-      console.log("hubContent ::> ", hubContent)
       if (hubContent.hub === hubPubkey) {
-        console.log("1 ::> ")
         if (hubContent.contentType === 'NinaReleaseV1') {
-          console.log("2 ::> ")
           hubReleases.push(hubContent)
         } else if (hubContent.contentType === 'Post') {
-          console.log("3 ::> ")
           hubPosts.push(hubContent)
         }
       }

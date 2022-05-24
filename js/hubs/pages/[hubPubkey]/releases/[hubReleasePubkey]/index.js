@@ -70,7 +70,6 @@ ReleasePage.getInitialProps = async (context) => {
   } catch (error) {
     console.warn(error)
   }
-
   return {
     releasePubkey,
     metadata,
