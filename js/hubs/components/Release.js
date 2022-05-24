@@ -10,6 +10,7 @@ import Image from 'next/image'
 import Typography from '@mui/material/Typography'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 const ReleasePurchase = dynamic(() => import('./ReleasePurchase'))
+const AddToHubModal = dynamic(() => import('./AddToHubModal'))
 const { HubContext, ReleaseContext, AudioPlayerContext } = nina.contexts
 
 const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {

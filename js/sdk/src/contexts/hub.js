@@ -904,6 +904,7 @@ const hubContextHelper = ({
           [hubRelease.id]: {
             addedBy: hubRelease.addedBy,
             child: hubRelease.id,
+            hubReleaseId: hubRelease.id,
             contentType: 'NinaReleaseV1',
             datetime: hubRelease.datetime,
             publicKeyHubContent: hubRelease.hubContent,

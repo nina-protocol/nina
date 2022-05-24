@@ -30,7 +30,6 @@ const AudioPlayerContextProvider = ({ children }) => {
   }
 
   const playNext = (shouldPlay = false) => {
-    console.log("playlist, currentIndex, playlist[currentIndex()] ::> ", playlist, currentIndex(), playlist[currentIndex()])
     if (playlist[currentIndex() + 1]) {
       setTrack(playlist[currentIndex() + 1])
       setIsPlaying(shouldPlay)
@@ -152,7 +151,6 @@ const audioPlayerContextHelper = ({
     const playlistEntries = []
     Object.keys(collection).forEach((releasePubkey) => {
       const playlistEntry = createPlaylistEntry(releasePubkey)
-      console.log("playlistEntry ::> ", playlistEntry)
       if (playlistEntry) {
         playlistEntries.push(playlistEntry)
       }

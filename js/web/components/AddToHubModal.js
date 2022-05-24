@@ -13,6 +13,7 @@ import MenuItem from '@mui/material/MenuItem'
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import {FormControl , InputLabel} from '@mui/material'
 import HubPostCreate from './HubPostCreate'
+import Link from 'next/link'
 
 import {useSnackbar} from 'notistack'
 import Dots from './Dots'
@@ -26,9 +27,10 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
   const {hubAddRelease} = useContext(HubContext)
   const [selectedHubId, setSelectedHubId] = useState()
   const [inProgress, setInProgress] = useState(false)
+  const userHasHubs = useMemo(() => userHubs?.length > 0, [userHubs])
 
   useEffect(() => {
-    if (userHubs.length === 1) {
+    if (userHubs?.length === 1) {
       setSelectedHubId(userHubs[0]?.id)
     }
   }, [userHubs])
@@ -57,6 +59,8 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
     setSelectedHubId()
   }
 
+  console.log('userHasHubs :>> ', userHasHubs);
+
   return (
     <Root>
         <Button
@@ -83,52 +87,71 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
       >
         <Fade in={open}>
           <StyledPaper>
-            <Typography
-              align="center"
-              variant="h4"
-              id="transition-modal-title"
-              gutterBottom
-            >
-              Add {metadata.name} to {userHubs.length > 1 ? 'one of your hubs' : userHubs[0]?.json.displayName} 
-            </Typography>
-
-            {userHubs.length > 1 && (
-              <FormControl sx={{mt: 1}} >
-                <InputLabel disabled value="">
-                  Select a hub to add to
-                </InputLabel>
-              
-                <Select
-                  className="formField"
-                  placeholder="Release Reference"
-                  displayEmpty
-                  label="Select hub"
-                  fullWidth
-                  variant='standard'
-                  onChange={(e, userHubs) => {
-                    setSelectedHubId(e.target.value)
-                  }}
-                >
-                  {userHubs?.filter(hub => hub.canAddContent).map((hub) => {
-                    return (
-                      <MenuItem
-                        key={hub?.id}
-                        value={hub?.id}
-                      >
-                        {hub?.json.displayName}
-                      </MenuItem>
-                    )
-                  })}
-                </Select>
-              </FormControl>
+            {!userHasHubs && (
+              <>
+                <Typography gutterBottom>
+                  The connected wallet is not a collaborator on any hub.
+                </Typography>
+                <Typography>
+                  <a
+                    href="https://docs.google.com/forms/d/1JOgbVh-5SbA4mCwSWAiSolPCAHCjx6baSiJGh0J7N1g"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Click here to get started setting up your hub.
+                  </a>
+                </Typography>
+              </>
             )}
-     
+            {userHasHubs && (
+              <>
+                <Typography
+                  align="center"
+                  variant="h4"
+                  id="transition-modal-title"
+                  gutterBottom
+                >
+                  Add {metadata.name} to {userHubs.length > 1 ? 'one of your hubs' : userHubs[0]?.json.displayName} 
+                </Typography>
+
+              {userHubs.length > 1 && (
+                <FormControl sx={{mt: 1}} >
+                  <InputLabel disabled value="">
+                    Select a hub to add to
+                  </InputLabel>
+                
+                  <Select
+                    className="formField"
+                    placeholder="Release Reference"
+                    displayEmpty
+                    label="Select hub"
+                    fullWidth
+                    variant='standard'
+                    onChange={(e, userHubs) => {
+                      setSelectedHubId(e.target.value)
+                    }}
+                  >
+                    {userHubs?.filter(hub => hub.canAddContent).map((hub) => {
+                      return (
+                        <MenuItem
+                          key={hub?.id}
+                          value={hub?.id}
+                        >
+                          {hub?.json.displayName}
+                        </MenuItem>
+                      )
+                    })}
+                  </Select>
+                </FormControl>
+              )}
+              </>
+            )}
 
             <Button
               style={{marginTop: '15px'}}
               color="primary"
               variant="outlined"
-              disabled={inProgress || !selectedHubId}
+              disabled={inProgress || !selectedHubId || !userHasHubs}
               onClick={handleRepost}
             >
               <Typography>
@@ -139,7 +162,7 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
               </Typography>
             </Button>
 
-            <HubPostCreate preloadedRelease={releasePubkey} selectedHubId={selectedHubId} setParentOpen={handleClose} />
+            <HubPostCreate preloadedRelease={releasePubkey} selectedHubId={selectedHubId} setParentOpen={handleClose} userHasHubs={userHasHubs} />
 
           </StyledPaper>
         </Fade>

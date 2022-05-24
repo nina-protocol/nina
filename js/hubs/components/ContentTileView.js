@@ -44,7 +44,6 @@ const ContentTileView = ({ content, hubPubkey }) => {
   return (
     <TileGrid columnCount={columnCount}>
       {content.map((item, i) => {
-        console.log('item :>> ', item);
         return (
           <>
             {item?.contentType === 'NinaReleaseV1' && (
@@ -52,13 +51,13 @@ const ContentTileView = ({ content, hubPubkey }) => {
                 <HoverCard
                   onClick={(e) => {
                     e.stopPropagation()
-                    handleClick(item.publicKey)
+                    handleClick(item.hubReleaseId)
                   }}
                 >
                   <CardCta
                     onClick={(e) => {
                       e.stopPropagation()
-                      handleClick(item.publicKey)
+                      handleClick(item.hubReleaseId)
                     }}
                     display="flex"
                     flexDirection={'column'}

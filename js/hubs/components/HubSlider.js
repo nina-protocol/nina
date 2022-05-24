@@ -82,10 +82,6 @@ const HubSlider = (props) => {
         >
           {hubs?.map((hub, i) => {
             const imageUrl = hub?.json?.image;
-<<<<<<< HEAD
-            console.log("hub ::> ", hub)
-=======
->>>>>>> 9dc23385944c14636fc0c1b8981d4e1ad3a5048e
             return (
               <HubSlideWrapper key={i}>
                 <HubSlide key={i}>
