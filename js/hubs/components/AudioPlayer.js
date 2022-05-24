@@ -39,7 +39,6 @@ const AudioPlayer = () => {
         trackObject[hubRelease.release] = contentItem
       }
     })
-    console.log('FFFF: ', trackObject)
     return trackObject
   }, [hubContentState])
   const activeTrack = useRef()

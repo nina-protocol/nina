@@ -183,11 +183,8 @@ const HubPostCreate = ({
           if (preloadedRelease) {
             metadataJson.reference = preloadedRelease
             formValues.postForm.reference = preloadedRelease
-            console.log('metadataJson :>> ', metadataJson);
           }
           
-          console.log('formvalues.postForm :>> ', formValues.postForm);
-
           metadataResult = (
             await bundlrUpload(
               new Blob([JSON.stringify(metadataJson)], {
