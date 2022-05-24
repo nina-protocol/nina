@@ -13,9 +13,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 const ContentTileView = dynamic(() => import('./ContentTileView'))
 const { HubContext, NinaContext, ReleaseContext } = nina.contexts
 
-const Hub = () => {
-  const router = useRouter()
-  const hubPubkey = router.query.hubPubkey
+const Hub = ({hubPubkey}) => {
   const { hubState, hubContentState, hubCollaboratorsState, initialLoad, getHub, filterHubCollaboratorsForHub, filterHubContentForHub } =
     useContext(HubContext)
   const { postState } = useContext(NinaContext)
@@ -51,7 +49,6 @@ const Hub = () => {
     const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey)
     const hubContent = [...hubReleases, ...hubPosts]
     hubContent.forEach((hubContentData) => {
-      console.log("hubContentData ::> ", hubContentData)
       if (
         hubContentData.contentType === 'NinaReleaseV1' &&
         releaseState.metadata[hubContentData.release] &&

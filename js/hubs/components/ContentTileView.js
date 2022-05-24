@@ -44,6 +44,7 @@ const ContentTileView = ({ content, hubPubkey }) => {
   return (
     <TileGrid columnCount={columnCount}>
       {content.map((item, i) => {
+        console.log('item :>> ', item);
         return (
           <>
             {item?.contentType === 'NinaReleaseV1' && (

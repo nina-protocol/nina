@@ -51,7 +51,7 @@ const AudioPlayerContextProvider = ({ children }) => {
     let index = undefined
     playlist.forEach((item, i) => {
       console.log("CURRENT INDEX ::> ", item, i, track)
-      if (item.txid === track.txid) {
+      if (item?.txid === track?.txid) {
         index = i
         return
       }
