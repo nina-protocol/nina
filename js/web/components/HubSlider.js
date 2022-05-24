@@ -52,7 +52,6 @@ const HubSlider = (props) => {
       onClick={onClick}
     />
   )
-  console.log("hubs ::> ", hubs)
   if (hubs.length === 0) {
     return (
       <Box
@@ -83,7 +82,6 @@ const HubSlider = (props) => {
         >
           {hubs?.map((hub, i) => {
             const imageUrl = hub?.json?.image;
-            console.log("hub ::> ", hub)
             return (
               <HubSlideWrapper key={i}>
                 <HubSlide key={i}>

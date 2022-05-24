@@ -50,7 +50,6 @@ const AudioPlayerContextProvider = ({ children }) => {
   const currentIndex = () => {
     let index = undefined
     playlist.forEach((item, i) => {
-      console.log("CURRENT INDEX ::> ", item, i, track)
       if (item?.txid === track?.txid) {
         index = i
         return
@@ -77,7 +76,6 @@ const AudioPlayerContextProvider = ({ children }) => {
     setTrack,
     currentIndex,
   })
-  console.log("createPlaylistFromTracks ::> ", createPlaylistFromTracks)
 
   return (
     <AudioPlayerContext.Provider
@@ -167,7 +165,6 @@ const audioPlayerContextHelper = ({
     tracks.forEach((releasePubkey) => {
       // if (playlist.filter(item => item.releasePubkey === releasePubkey).length === 0) {
         const playlistEntry = createPlaylistEntry(releasePubkey)
-        console.log("playlistEntry ::> ", playlistEntry)
         if (playlistEntry) {
           playlistEntries.push(playlistEntry)
         }

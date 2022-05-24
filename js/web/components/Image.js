@@ -7,7 +7,6 @@ function Image({ src, height, width, layout, priority, release }) {
   const [ready, setReady] = useState(true);
   const handleLoad = (event, byPass) => {
     event.persist()
-    console.log('event: ', event)
     if (event.target.srcset || byPass) {
       setReady(true)
     }
@@ -22,7 +21,6 @@ function Image({ src, height, width, layout, priority, release }) {
       release.releaseDatetime.toNumber() * 1000
     )
     const hours = now.diff(releaseDatetime, 'hours').toObject().hours
-      console.log("src ::> ", src)
     if (hours < 0.05) {
       if (src) {
         ImageComponent = () => (
