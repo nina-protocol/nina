@@ -282,6 +282,8 @@ const releaseContextHelper = ({
       if (authorityPublishingCreditTokenAccountIx) {
         instructions.push(authorityPublishingCreditTokenAccountIx)
       }
+      let now = Date.now()
+      now.setDate(now.getHours() - 12)
 
       const config = {
         amountTotalSupply: new anchor.BN(amount),
@@ -289,7 +291,7 @@ const releaseContextHelper = ({
         amountToVaultTokenAccount: new anchor.BN(0),
         resalePercentage: new anchor.BN(resalePercentage * 10000),
         price: new anchor.BN(NinaClient.uiToNative(retailPrice, paymentMint)),
-        releaseDatetime: new anchor.BN(Date.now() / 1000),
+        releaseDatetime: new anchor.BN(now / 1000),
       }
 
       const bumps = {
