@@ -283,7 +283,7 @@ const releaseContextHelper = ({
         instructions.push(authorityPublishingCreditTokenAccountIx)
       }
       let now = new Date()
-      now.setDate(now.getHours() - 12)
+      now.setHours(now.getHours() - 12)
 
       const config = {
         amountTotalSupply: new anchor.BN(amount),
