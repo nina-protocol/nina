@@ -30,6 +30,7 @@ const BundlrModal = ({ inCreate }) => {
     getSolPrice,
     initBundlr,
     ninaClient,
+    bundlr
   } = useContext(NinaContext)
   const [amount, setAmount] = useState()
   const mbs = useMemo(
@@ -48,10 +49,12 @@ const BundlrModal = ({ inCreate }) => {
   }, [])
 
   useEffect(() => {
-    getBundlrPricePerMb()
-    getBundlrBalance()
-    getSolPrice()
-  }, [getBundlrBalance, getBundlrPricePerMb, getSolPrice])
+    if (bundlr) {
+      getBundlrPricePerMb()
+      getBundlrBalance()
+      getSolPrice()
+    }
+  }, [bundlr])
 
   const handleFund = async (fundAmount) => {
     setInProgress(true)

@@ -18,22 +18,22 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
     hubState,
     hubContentState,
     hubCollaboratorsState,
+    filterHubContentForHub,
+    filterHubCollaboratorsForHub,
     hubFeePending,
     hubWithdraw,
   } = useContext(HubContext)
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
-  const hubContent = useMemo(() => hubContentState, [hubContentState])
   const hubReleases = useMemo(
     () =>
-      Object.values(hubContent).filter(
-        (c) => c.contentType === 'NinaReleaseV1'
-      ),
-    [hubContent]
+    filterHubContentForHub(hubPubkey)[0],
+    [hubContentState, hubPubkey]
   )
   const hubCollaborators = useMemo(
-    () => hubCollaboratorsState,
-    [hubCollaboratorsState]
+    () => filterHubCollaboratorsForHub(hubPubkey),
+    [hubCollaboratorsState, hubPubkey]
   )
+
   const hubSales = useMemo(
     () =>
       hubReleases
@@ -41,15 +41,10 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
         .reduce((prev, curr) => prev + curr, 0),
     [hubReleases]
   )
+
   const releases = useMemo(() => {
     const ids =
-      Object.values(hubContent)
-        ?.filter(
-          (content) =>
-            content.contentType === 'NinaReleaseV1' &&
-            content.publishedThroughHub
-        )
-        .map((content) => content.release) || []
+        filterHubContentForHub(hubPubkey)[0].map((content) => content.release) || []
     const releaseArray = []
     ids.forEach((id) => {
       const recipient = releaseState.tokenData[id].royaltyRecipients.find(
@@ -67,7 +62,7 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
       }
     })
     return releaseArray
-  }, [releaseState, hubContent, hubData])
+  }, [releaseState, hubContentState, hubData, hubPubkey])
 
   const releaseRevenueTotal = useMemo(() => {
     let revenue = 0
@@ -85,8 +80,8 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
     })
     revenue = ninaClient.nativeToUi(revenue, ninaClient.ids.mints.usdc)
     return revenue
-  }, [releases])  
-
+  }, [releases])
+  console.log("hubFeePending ::> ", hubFeePending)
   return (
     <Overview>
       {hubData && (
@@ -119,14 +114,14 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
               link="/dashboard?action=releases"
               action="Manage"
               title="Reposted Releases"
-              count={hubReleases.length - releases.length}
+              count={hubReleases?.length - releases.length}
             />
             <Divider orientation="vertical" flexItem />
             <CtaButton
               link="/dashboard?action=collaborators"
               action="Manage"
               title="Collaborators"
-              count={Object.keys(hubCollaborators).length}
+              count={Object.keys(hubCollaborators || []).length}
             />
             {isAuthority && (
               <>
@@ -135,7 +130,7 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
                   method={() => hubWithdraw(hubPubkey)}
                   action={`Withdraw $${hubFeePending} to wallet`}
                   title="Total Hub Fee Revenue"
-                  count={`$${hubData.totalFeesEarned + releaseRevenueTotal}`}
+                  count={`$${ninaClient.nativeToUi(hubData.totalFeesEarned, ninaClient.ids.mints.usdc) + releaseRevenueTotal}`}
                 />
               </>
             )}

@@ -11,7 +11,7 @@ import { NinaContext } from './nina'
 
 export const HubContext = createContext()
 const HubContextProvider = ({ children }) => {
-  const { fetchAndSaveReleasesToState, releaseState } = useContext(ReleaseContext)
+  const { fetchAndSaveReleasesToState, releaseState, getRelease } = useContext(ReleaseContext)
   const { ninaClient, savePostsToState, postState } = useContext(NinaContext)
   const [hubState, setHubState] = useState({})
   const [hubCollaboratorsState, setHubCollaboratorsState] = useState({})
@@ -36,7 +36,8 @@ const HubContextProvider = ({ children }) => {
     filterHubCollaboratorsForHub,
     filterHubContentForHub,
     filterHubsForUser,
-    getHubPost
+    getHubPost,
+    collectRoyaltyForReleaseViaHub,
   } = hubContextHelper({
     ninaClient,
     savePostsToState,
@@ -50,7 +51,8 @@ const HubContextProvider = ({ children }) => {
     setHubFeePending,
     postState,
     initialLoad,
-    setInitialLoad
+    setInitialLoad,
+    getRelease
   })
 
   return (
@@ -78,6 +80,7 @@ const HubContextProvider = ({ children }) => {
         filterHubsForUser,
         initialLoad,
         getHubPost,
+        collectRoyaltyForReleaseViaHub
       }}
     >
       {children}
@@ -98,7 +101,8 @@ const hubContextHelper = ({
   setHubFeePending,
   postState,
   initialLoad,
-  setInitialLoad
+  setInitialLoad,
+  getRelease
 }) => {
   const { ids, provider, endpoints } = ninaClient
 
@@ -504,9 +508,10 @@ const hubContextHelper = ({
           ],
           program.programId
         )
-
+          console.log("hubSigner ::> ", hubSigner)
       let [withdrawTarget] = await findOrCreateAssociatedTokenAccount(
-        provider,
+        provider.connection,
+        provider.wallet.publicKey,
         hubSigner,
         anchor.web3.SystemProgram.programId,
         anchor.web3.SYSVAR_RENT_PUBKEY,
@@ -514,7 +519,8 @@ const hubContextHelper = ({
       )
 
       let [withdrawDestination] = await findOrCreateAssociatedTokenAccount(
-        provider,
+        provider.connection,
+        provider.wallet.publicKey,
         provider.wallet.publicKey,
         anchor.web3.SystemProgram.programId,
         anchor.web3.SYSVAR_RENT_PUBKEY,
@@ -530,9 +536,8 @@ const hubContextHelper = ({
         tokenAccounts.value[0].account.data.parsed.info.tokenAmount.uiAmount
 
       const txid = await program.rpc.hubWithdraw(
-        new anchor.BN(withdrawAmount),
-        hubSignerBump,
-        hub.name,
+        new anchor.BN(ninaClient.uiToNative(withdrawAmount, USDC_MINT)),
+        hub.handle,
         {
           accounts: {
             authority: provider.wallet.publicKey,
@@ -778,7 +783,7 @@ const hubContextHelper = ({
       getHub(hubPubkey.toBase58())
       return {
         success: true,
-        msg: `You collected $${nativeToUi(
+        msg: `You collected $${ninaClient.nativeToUi(
           recipient.owed.toNumber(),
           release.paymentMint
         )} to the hub`, 
@@ -812,7 +817,7 @@ const hubContextHelper = ({
     )
     const hubFeePendingAmount =
       await provider.connection.getTokenAccountBalance(hubTokenAccount)
-    setHubFeePending(hubFeePendingAmount)
+    setHubFeePending(hubFeePendingAmount.value.uiAmount)
     getHubContent(hubPubkey)
   }
   
@@ -848,10 +853,27 @@ const hubContextHelper = ({
   const saveHubsToState = async (hubs) => {
     try {
       let updatedState = { ...hubState }
-      hubs.forEach(hub => {
-        hub.publicKey = hub.id
-        updatedState[hub.publicKey] = hub
+      const program = await ninaClient.useProgram()
+      let hubAccounts = await program.account.hub.fetchMultiple(
+        hubs.map(hub => new anchor.web3.PublicKey(hub.id)),
+        'confirmed'
+      )
+      console.log("hubAccounts ::> ", hubAccounts)
+      const hubDict = {}
+      hubAccounts.forEach((hub, i) => {
+        if (hub) {
+          hub.publicKey = hubs[i].id
+          hubDict[hubs[i].id] = hub
+        }
       })
+      for await (let hub of hubs) {
+        hub.publicKey = hub.id
+        hub.hubSigner = hubDict[hub.id].hubSigner.toBase58()
+        hub.publishFee = hubDict[hub.id].publishFee.toNumber()
+        hub.referralFee = hubDict[hub.id].referralFee.toNumber()
+        hub.totalFeesEarned = hubDict[hub.id].totalFeesEarned.toNumber()
+        updatedState[hub.id] = hub
+      }
       setHubState(updatedState)
     } catch (error) {
       console.warn(error)
@@ -896,6 +918,19 @@ const hubContextHelper = ({
 
   const saveHubContentToState = async (hubReleases, hubPosts) => {
     try {
+      const program = await ninaClient.useProgram()
+      let hubReleaseAccounts = await program.account.hubRelease.fetchMultiple(
+        hubReleases.map(hubRelease => new anchor.web3.PublicKey(hubRelease.id)),
+        "confirmed"
+      )
+      const hubReleaseDict = {}
+      hubReleaseAccounts.forEach((release, i) => {
+        if (release) {
+          release.publicKey = hubReleases[i].id
+          hubReleaseDict[hubReleases[i].id] = release
+        }
+      })
+
       let updatedState = {...hubContentState}
       let contentState = {}
       for (let hubRelease of hubReleases) {
@@ -912,6 +947,7 @@ const hubContextHelper = ({
             publicKey: hubRelease.id,
             publishedThroughHub: hubRelease.publishedThroughHub,
             visible: hubRelease.visible,
+            sales: hubReleaseDict[hubRelease.id].sales.toNumber(),
           }
         }
       }
@@ -975,7 +1011,7 @@ const hubContextHelper = ({
   const filterHubCollaboratorsForHub = (hubPubkey) => {
     const hubCollaborators = []
     Object.values(hubCollaboratorsState).forEach(hubCollaborator => {
-      if (hubCollaborator.hubId === hubPubkey) {
+      if (hubCollaborator.hub === hubPubkey) {
         hubCollaborators.push(hubCollaborator)
       }
     })
@@ -1013,7 +1049,8 @@ const hubContextHelper = ({
     filterHubCollaboratorsForHub,
     filterHubContentForHub,
     filterHubsForUser,
-    getHubPost
+    getHubPost,
+    collectRoyaltyForReleaseViaHub
   }
 }
 export default HubContextProvider
