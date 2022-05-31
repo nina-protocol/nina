@@ -11,6 +11,11 @@ function Image({ src, height, width, layout, priority, release }) {
       setReady(true);
     }
   };
+
+  const loaderProp = ({ src }) => {
+    return src;
+  };
+
   let ImageComponent;
   if (release) {
     if (release.tokenData) {
@@ -42,6 +47,7 @@ function Image({ src, height, width, layout, priority, release }) {
         priority={priority}
         layout={layout}
         onLoad={(e) => handleLoad(e, false)}
+        loader={loaderProp}
       />
     );
   }
