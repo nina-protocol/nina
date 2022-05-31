@@ -90,9 +90,8 @@ const useStyles = makeStyles(({ theme }) => ({
   },
 }))
 
-const Navigation = () => {
+const Navigation = ({hubPubkey}) => {
   const router = useRouter()
-  const hubPubkey = router.query.hubPubkey
   const { header, menuButton, toolbar, ctaWrapper, drawerContainer } =
     useStyles()
   const wallet = useWallet()
@@ -100,13 +99,12 @@ const Navigation = () => {
   const [mobileView, setMobileView] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
 
-  const { hubState, hubCollaboratorsState } = useContext(HubContext)
+  const { hubState, hubCollaboratorsState, filterHubCollaboratorsForHub } = useContext(HubContext)
+  const hubCollaborators = useMemo(() => filterHubCollaboratorsForHub(hubPubkey), [hubCollaboratorsState, hubPubkey])
 
-  const hubCollaborators = useMemo(
-    () => hubCollaboratorsState,
-    [hubCollaboratorsState]
-  )
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
+
+  console.log('hubCollaborators :>> ', hubCollaborators);
 
   useEffect(() => {
     const setResponsiveness = () => {
@@ -157,7 +155,7 @@ const Navigation = () => {
       >
         {mobileView && canAddContent && displayMobile()}
 
-        <Link href="/" passHref>
+        <Link href={`/${hubPubkey}`} passHref>
           <LogoLinkWrapper>
             {hubData && (
               <Image
@@ -175,6 +173,9 @@ const Navigation = () => {
               <Typography variant="h4">NINA HUBS</Typography>
             )}
           </LogoLinkWrapper>
+        </Link>
+        <Link href='/'>
+          All Hubs
         </Link>
         <Box className={ctaWrapper}>
           {!mobileView && canAddContent && getMenuButtons(hubPubkey)}

@@ -8,20 +8,30 @@ import { styled } from '@mui/material/styles'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import Typography from '@mui/material/Typography'
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
+import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
+import {useWallet} from '@solana/wallet-adapter-react'
+
 const ReleasePurchase = dynamic(() => import('./ReleasePurchase'))
+const AddToHubModal = dynamic(() => import('./AddToHubModal'))
+
 const { HubContext, ReleaseContext, AudioPlayerContext } = nina.contexts
 
 const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
   const router = useRouter()
+  const wallet = useWallet()
+
   const { updateTrack, track, isPlaying } = useContext(AudioPlayerContext)
   const { releaseState, getRelease } = useContext(ReleaseContext)
-  const { getHub, hubState } = useContext(HubContext)
+  const {getHub, hubState, getHubsForUser, filterHubsForUser, hubCollaboratorsState} = useContext(HubContext)
+
+  const [userHubs, setUserHubs] = useState()
 
   // const {current: releasePubkey} = useRef(router.query.releasePubkey)
 
   // const [metadata, setMetadata] = useState(
-  //   metadataSsr || null
+  //   metadata || null
   // )
 
   useEffect(() => {
@@ -41,6 +51,21 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
       setMetadata(releaseState.metadata[releasePubkey])
     }
   }, [releaseState, metadata, releasePubkey])
+
+  useEffect(() => {
+    if (wallet.connected) {
+      getHubsForUser(wallet.publicKey.toBase58())
+    }
+  }, [wallet.connect])
+
+  useEffect(() => {
+    if (wallet.connected && hubCollaboratorsState && !userHubs) {
+      setUserHubs(filterHubsForUser(wallet.publicKey.toBase58()))
+    }
+  }, [hubCollaboratorsState])
+
+
+  
   return (
     <>
       <BackButton onClick={() => router.back()} />
@@ -81,14 +106,17 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
                 alt={metadata.description || 'album art'}
               />
             </MobileImageWrapper>
-            <Typography
-              variant="h3"
-              align="left"
-              sx={{ color: 'text.primary' }}
-              mt={1}
-            >
-              {metadata.properties.artist} - {metadata.properties.title} (
+            <CtaWrapper >
+              <Typography
+                variant="h3"
+                align="left"
+                sx={{color: 'text.primary', whiteSpace: 'nowrap', mr: 1}}
+              >
+                {metadata.properties.artist} - {metadata.properties.title}
+              </Typography>
+
               <PlayButton
+                sx={{height: '22px', width: '28px', m: 0}}
                 onClick={(e) => {
                   e.stopPropagation()
                   updateTrack(
@@ -98,11 +126,14 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
                 }}
               >
                 {isPlaying && track.releasePubkey === releasePubkey
-                  ? 'Pause'
-                  : 'Play'}
+                  ? <PauseCircleOutlineIcon />
+                  : <PlayCircleOutlineIcon />}
               </PlayButton>
-              )
-            </Typography>
+
+              {releasePubkey && metadata && (
+                <AddToHubModal userHubs={userHubs} releasePubkey={releasePubkey} metadata={metadata} hubPubkey={hubPubkey} />
+              )}
+            </CtaWrapper>
             {/* <StyledDescription variant="h4" align="left">{metadata.description}</StyledDescription> */}
           </>
         )}
@@ -138,9 +169,7 @@ const StyledDescription = styled(Typography)(({ theme }) => ({
 }))
 
 const DesktopImageGridItem = styled(Grid)(({ theme }) => ({
-  // padding: '0 !important',
-  // height: '100%',
-  // position: 'relative',
+
   display: 'flex',
   alignItems: 'flex-end',
   [theme.breakpoints.down('md')]: {
@@ -159,6 +188,12 @@ const MobileImageWrapper = styled(Grid)(({ theme }) => ({
 const ImageContainer = styled(Box)(() => ({
   width: '100%',
 }))
+
+const CtaWrapper = styled(Box)(() => ({
+  display: 'flex',
+  marginTop: '15px'
+}))
+
 
 const BackButton = styled(ArrowBackIosIcon)(({ theme }) => ({
   width: '30px',

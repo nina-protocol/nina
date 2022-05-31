@@ -834,8 +834,10 @@ const hubContextHelper = ({
 
   const getHubsForUser = async (publicKey) => {
     let path = endpoints.api + `/hubCollaborators/${publicKey}/hubs` 
+    console.log('path :>> ', path);
     const response = await fetch(path)
     const result = await response.json()
+    console.log('result.collaborators :>> ', result.hubCollaborators);
     saveHubCollaboratorsToState(result.hubCollaborators)
     saveHubsToState(result.hubs)
   }
@@ -993,6 +995,7 @@ const hubContextHelper = ({
         })
       }
     })
+    console.log('hubs in filter :>> ', hubs);
     return hubs
   }
 

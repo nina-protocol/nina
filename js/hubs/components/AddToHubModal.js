@@ -18,9 +18,9 @@ import Link from 'next/link'
 import {useSnackbar} from 'notistack'
 import Dots from './Dots'
 
-const {HubContext, NinaContext} = nina.contexts
+const {HubContext} = nina.contexts
 
-const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
+const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
   const [open, setOpen] = useState(false)
   const {enqueueSnackbar} = useSnackbar()
 
@@ -61,7 +61,7 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
 
   return (
     <Root>
-        <Button
+        <ModalToggle
           variant="contained"
           color="primary"
           type="submit"
@@ -69,8 +69,8 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
           sx={{height: '22px', width: '28px', m: 0}}
 
         >
-          <AutorenewIcon sx={{color: 'white'}} />
-        </Button>
+          <AutorenewIcon sx={{color: 'black'}} />
+        </ModalToggle>
 
       <StyledModal
         aria-labelledby="transition-modal-title"
@@ -129,13 +129,13 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
                       setSelectedHubId(e.target.value)
                     }}
                   >
-                    {userHubs?.filter(hub => hub.canAddContent).map((hub) => {
+                    {userHubs?.filter(hub => (hub.canAddContent && hub.id !== hubPubkey)).map((hub) => {
                       return (
                         <MenuItem
                           key={hub?.id}
                           value={hub?.id}
                         >
-                          {hub?.json.displayName}
+                          {hub?.json?.displayName}
                         </MenuItem>
                       )
                     })}
@@ -174,6 +174,17 @@ const Root = styled('div')(({theme}) => ({
   display: 'flex',
   alignItems: 'center',
   width: '100%',
+}))
+
+const ModalToggle = styled(Button)(({theme}) => ({
+  color: `${theme.palette.text.primary} !important`,
+  ':disabled': {
+    color: theme.palette.text.primary + 'a0',
+  },
+  '&:hover': {
+    opacity: '50%',
+    backgroundColor: `${theme.palette.transparent} !important`,
+  },
 }))
 
 const StyledModal = styled(Modal)(() => ({

@@ -45,7 +45,9 @@ const HubPostCreate = ({
   canAddContent,
   hubReleasesToReference,
   preloadedRelease = undefined,
-  setParentOpen
+  setParentOpen,
+  selectedHubId,
+  userHasHubs
 }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
@@ -244,6 +246,8 @@ const HubPostCreate = ({
         variant="outlined"
         fullWidth
         onClick={() => setOpen(true)}
+        disabled={!selectedHubId || (preloadedRelease && !userHasHubs)}
+
       >
         Publish a new Post
       </CreateCtaButton>
