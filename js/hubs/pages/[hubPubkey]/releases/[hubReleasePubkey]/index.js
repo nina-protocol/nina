@@ -46,7 +46,7 @@ const ReleasePage = (props) => {
 ReleasePage.getInitialProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL
   const hubReleasePubkey = context.query.hubReleasePubkey
-  const indexerPath = indexerUrl + `hubReleases/${hubReleasePubkey}`
+  const indexerPath = indexerUrl + `/hubReleases/${hubReleasePubkey}`
 
   let hubRelease;
   let release;
@@ -57,7 +57,6 @@ ReleasePage.getInitialProps = async (context) => {
   try {
     const result = await axios.get(indexerPath)
     const data = result.data
-    
     if (data.hubRelease) {
       hubRelease = data.hubRelease
       release = hubRelease.release

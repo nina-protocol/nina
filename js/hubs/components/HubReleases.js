@@ -67,7 +67,7 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
   return (
     <DashboardWrapper md={9} columnSpacing={2} columnGap={2}>
       <Grid item md={6} sx={{ display: { xs: 'none', md: 'block' } }}>
-        <Link href={`/dashboard?action=publishRelease`}>
+        <Link href={`/${hubPubkey}/dashboard?action=publishRelease`}>
           <CreateCta variant="outlined" fullWidth>
             Publish a new release
           </CreateCta>

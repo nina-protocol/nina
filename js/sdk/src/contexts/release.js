@@ -86,6 +86,9 @@ const ReleaseContextProvider = ({ children }) => {
     getCollectorsForRelease,
     fetchAndSaveReleasesToState,
     releasePurchaseViaHub,
+    initializeReleaseAndMint,
+    releaseCreateMetadataJson,
+    releaseInitViaHub,
   } = releaseContextHelper({
     ninaClient,
     releaseState,
@@ -154,7 +157,10 @@ const ReleaseContextProvider = ({ children }) => {
         getUserCollection,
         getCollectorsForRelease,
         fetchAndSaveReleasesToState,
-        releasePurchaseViaHub
+        releasePurchaseViaHub,
+        initializeReleaseAndMint,
+        releaseCreateMetadataJson,
+        releaseInitViaHub
       }}
     >
       {children}
@@ -186,7 +192,7 @@ const releaseContextHelper = ({
   setSearchResults,
 }) => {
   const { provider, ids, nativeToUi, uiToNative, isSol, isUsdc, endpoints } = ninaClient
-  const initializeReleaseAndMint = async () => {
+  const initializeReleaseAndMint = async (hubPubkey) => {
     const program = await ninaClient.useProgram()
     const releaseMint = anchor.web3.Keypair.generate()
     const [release, releaseBump] =
@@ -197,11 +203,21 @@ const releaseContextHelper = ({
         ],
         program.programId
       )
+      const [hubRelease] =
+      await anchor.web3.PublicKey.findProgramAddress(
+        [
+          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-release')),
+          new anchor.web3.PublicKey(hubPubkey).toBuffer(),
+          release.toBuffer(),
+        ],
+        program.programId
+      )
 
     return {
       release,
       releaseBump,
       releaseMint,
+      hubRelease,
     }
   }
 
@@ -2043,8 +2059,8 @@ const releaseContextHelper = ({
     getRedemptionRecordsForRelease,
     getRedeemablesForRelease,
     getRelatedForRelease,
-    filterRelatedForRelease,
     getReleasesBySearch,
+    filterRelatedForRelease,
     filterSearchResults,
     getCollectorsForRelease,
     initializeReleaseAndMint,

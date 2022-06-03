@@ -46,7 +46,7 @@ const PostPage = (props) => {
 PostPage.getInitialProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL
   const hubPostPubkey = context.query.hubPostPubkey
-  const indexerPath = indexerUrl + `hubPosts/${hubPostPubkey}`
+  const indexerPath = indexerUrl + `/hubPosts/${hubPostPubkey}`
   
   let hubPost;
   let postPubkey;

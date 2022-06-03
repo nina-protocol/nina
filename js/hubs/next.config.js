@@ -53,7 +53,7 @@ module.exports = withBundleAnalyzer({
       cluster === 'devnet'
         ? '77BKtqWTbTRxj5eZPuFbeXjx3qz4TTHoXRnpCejYWiQH'
         : 'ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4',
-    INDEXER_URL: cluster === 'devnet' ? 'https://api-dev.nina.market/' : 'https://hubs.ninaprotocol.com/',
+    INDEXER_URL: cluster === 'devnet' ? 'https://api-dev.nina.market' : 'https://hubs.ninaprotocol.com',
   },
   images: {
     domains: ['www.arweave.net', 'arweave.net'],
