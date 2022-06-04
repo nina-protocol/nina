@@ -918,6 +918,7 @@ const hubContextHelper = ({
 
   const saveHubContentToState = async (hubReleases, hubPosts) => {
     try {
+      console.log("hubReleases ::> ", hubReleases)
       const program = await ninaClient.useProgram()
       let hubReleaseAccounts = await program.account.hubRelease.fetchMultiple(
         hubReleases.map(hubRelease => new anchor.web3.PublicKey(hubRelease.id)),

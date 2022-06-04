@@ -209,10 +209,12 @@ impl Release {
 
         // Make sure royalty shares of all recipients does not exceed 1000000
         if release.royalty_equals_1000000() {
-            emit!(RoyaltyRecipientAdded {
-                authority: new_royalty_recipient,
-                public_key: release_loader.key(),
-            });
+            if !is_init {
+                emit!(RoyaltyRecipientAdded {
+                    authority: new_royalty_recipient,
+                    public_key: release_loader.key(),
+                });
+            }
             Ok(())
         } else {
             return Err(error!(ErrorCode::RoyaltyExceeds100Percent));

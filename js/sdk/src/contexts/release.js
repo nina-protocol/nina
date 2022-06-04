@@ -390,10 +390,35 @@ const releaseContextHelper = ({
       )
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
       await getRelease(release)
+      await hasMetadata(metadata.toBase58())
 
       return true
     } catch (error) {
       return ninaErrorHandler(error)
+    }
+  }
+
+  const hasMetadata = async(metadata) => {
+    let metadataResponse = null
+    try {
+      const metadataResult = await fetch(
+        `${endpoints.api}/metadata/${metadata}/exists`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+      metadataResponse = await metadataResult.json()
+      if (metadataResponse) {
+        return
+      } else {
+        await sleep(2500)
+        return await hasMetadata(metadata)
+      }
+    } catch (error) {
+      console.warn(error)
+      await sleep(2500)
+      return await hasMetadata(metadata)
     }
   }
 
@@ -2081,4 +2106,8 @@ const searchResultsInitialState = {
   searched: false,
   pending: false,
   query: null,
+}
+
+const sleep = (ms) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
