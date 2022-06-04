@@ -130,7 +130,7 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
                   method={() => hubWithdraw(hubPubkey)}
                   action={`Withdraw $${hubFeePending} to wallet`}
                   title="Total Hub Fee Revenue"
-                  count={`$${ninaClient.nativeToUi(hubData.totalFeesEarned, ninaClient.ids.mints.usdc) + releaseRevenueTotal}`}
+                  count={`$${(ninaClient.nativeToUi(hubData.totalFeesEarned, ninaClient.ids.mints.usdc) + releaseRevenueTotal).toFixed(4)}`}
                 />
               </>
             )}
