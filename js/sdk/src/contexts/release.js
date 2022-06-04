@@ -410,6 +410,7 @@ const releaseContextHelper = ({
       )
       metadataResponse = await metadataResult.json()
       if (metadataResponse) {
+        await sleep(1000)
         return
       } else {
         await sleep(2500)
