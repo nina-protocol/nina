@@ -21,16 +21,16 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const [metadata, setMetadata] = useState(metadataSsr || null)
 
   useEffect(() => {
+    if (hubPubkey && !hubState[hubPubkey]) {
+      getHub(hubPubkey)
+    }
+  }, [])
+
+  useEffect(() => {
     if (releasePubkey) {
       getRelease(releasePubkey)
     }
   }, [releasePubkey])
-
-  useEffect(() => {
-    if (hubPubkey && !hubState[hubPubkey]) {
-      getHub(hubPubkey)
-    }
-  }, [hubPubkey, getHub])
 
   useEffect(() => {
     if (releaseState.metadata[releasePubkey] && !metadata) {

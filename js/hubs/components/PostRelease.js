@@ -17,24 +17,18 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
   const { updateTrack, track, isPlaying } = useContext(AudioPlayerContext)
   const { releaseState, getRelease } = useContext(ReleaseContext)
   const { getHub, hubState } = useContext(HubContext)
-
-  // const {current: releasePubkey} = useRef(router.query.releasePubkey)
-
-  // const [metadata, setMetadata] = useState(
-  //   metadataSsr || null
-  // )
+  
+  useEffect(() => {
+    if (!hubState[hubPubkey]) {
+      getHub(hubPubkey)
+    }
+  }, [])
 
   useEffect(() => {
     if (releasePubkey) {
       getRelease(releasePubkey)
-    }
-  }, [releasePubkey])
-
-  useEffect(() => {
-    if (!hubState[hubPubkey]) {
-      getHub( hubPubkey )
-    }
-  }, [hubPubkey, getHub])
+    }  
+  }, [releasePubkey])  
 
   useEffect(() => {
     if (releaseState.metadata[releasePubkey] && !metadata) {

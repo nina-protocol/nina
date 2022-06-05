@@ -40,18 +40,18 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
   const { getHub, hubState, hubContentState, getHubPost } = useContext(HubContext)
   const { getRelease, releaseState } = useContext(ReleaseContext)
 
-
+  useEffect(() => {
+    if (hubPubkey && !hubState[hubPubkey]) {
+      getHub( hubPubkey )
+    }
+  }, [])
+  
   useEffect(() => {
     if (hubPostPubkey && !postState[postPubkey]) {
       getHubPost(hubPostPubkey)
     }
   }, [hubPostPubkey])
 
-  useEffect(() => {
-    if (hubPubkey && !hubState[hubPubkey]) {
-      getHub( hubPubkey )
-    }
-  }, [hubPubkey, getHub])
 
   useEffect(() => {
     if (postState[postPubkey] && !postData) {
