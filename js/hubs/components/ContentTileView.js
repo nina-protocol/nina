@@ -78,6 +78,7 @@ const ContentTileView = ({ content, hubPubkey }) => {
                       layout="responsive"
                       src={item?.image}
                       release={item}
+                      priority={true}
                     />
                   )}
                 </HoverCard>
@@ -139,6 +140,7 @@ const ContentTileView = ({ content, hubPubkey }) => {
                       layout="responsive"
                       src={item.releaseMetadata?.image}
                       release={item.referenceContent}
+                      priority={true}
                     />
                   )}
                 </HoverCard>
