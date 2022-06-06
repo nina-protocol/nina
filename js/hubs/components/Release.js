@@ -38,7 +38,7 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
     if (hubPubkey && !hubState[hubPubkey]) {
       getHub(hubPubkey)
     }
-  }, [hubPubkey, getHub])
+  }, [])
 
   useEffect(() => {
     if (releaseState.metadata[releasePubkey] && !metadata) {
@@ -47,17 +47,18 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   }, [releaseState, metadata, releasePubkey])
 
   useEffect(() => {
-    if (wallet.connected) {
+    if (wallet.connected && hubState[hubPubkey] && !userHubs) {
       getHubsForUser(wallet.publicKey.toBase58())
     }
-  }, [wallet.connect])
+  }, [wallet.connect, hubState[hubPubkey]])
 
   useEffect(() => {
-    if (wallet.connected && hubCollaboratorsState && !userHubs ) {
+    if (wallet.connected && hubState) {
       setUserHubs(filterHubsForUser(wallet.publicKey.toBase58()))
     }
-  }, [hubCollaboratorsState])
+  }, [hubState])
   
+
 
   return (
     <>

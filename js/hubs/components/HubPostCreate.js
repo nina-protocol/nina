@@ -247,9 +247,10 @@ const HubPostCreate = ({
         fullWidth
         onClick={() => setOpen(true)}
         disabled={!selectedHubId || (preloadedRelease && !userHasHubs)}
+        style={{marginTop: '15px'}}
 
       >
-        Publish a new Post
+        Create an editorial post about this release
       </CreateCtaButton>
       <StyledModal
         aria-labelledby="transition-modal-title"
@@ -341,8 +342,9 @@ const HubPostCreate = ({
 
 const CreateCtaButton = styled(Button)(({theme}) => ({
   display: 'flex',
-  margin: '0px auto 40px',
-  fontSize: theme.helpers.baseFont
+  margin: '0px auto',
+  fontSize: theme.helpers.baseFont,
+  textTransform: 'uppercase'
 }))
 
 const StyledPaper = styled(Paper)(({ theme }) => ({

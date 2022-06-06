@@ -25,7 +25,7 @@ const Release = ({ metadataSsr }) => {
   } = useContext(ReleaseContext)
   const { getExchangeHistoryForRelease, exchangeState } =
     useContext(ExchangeContext)
-    const {getHubsForUser, filterHubsForUser, hubCollaboratorsState } = useContext(HubContext)
+    const {getHubsForUser, filterHubsForUser, hubState } = useContext(HubContext)
   const [relatedReleases, setRelatedReleases] = useState(null)
   const [userHubs, setUserHubs] = useState()
 
@@ -57,11 +57,18 @@ const Release = ({ metadataSsr }) => {
   }, [wallet.connect])
 
   useEffect(() => {
-    if (wallet.connected && hubCollaboratorsState) {
-      setUserHubs(filterHubsForUser(wallet.publicKey.toBase58()))
+    if (wallet.connected) {
+      getHubsForUser(wallet.publicKey.toBase58())
     }
-  }, [hubCollaboratorsState])
+  }, [])
 
+  useEffect(() => {
+    if (wallet.connected && hubState) {
+      setUserHubs(filterHubsForUser(wallet.publicKey.toBase58()))
+      console.log('userHubs :>> ', userHubs);
+    }
+  }, [hubState])
+  
   if (metadata && Object.keys(metadata).length === 0) {
     return (
       <div>

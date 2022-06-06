@@ -104,8 +104,6 @@ const Navigation = ({hubPubkey}) => {
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
 
-  console.log('hubCollaborators :>> ', hubCollaborators);
-
   useEffect(() => {
     const setResponsiveness = () => {
       return window.innerWidth < 900

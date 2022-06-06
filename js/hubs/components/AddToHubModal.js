@@ -109,7 +109,7 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
                   id="transition-modal-title"
                   gutterBottom
                 >
-                  Add {metadata.name} to {userHubs.length > 1 ? 'one of your hubs' : 'your hub: ' + userHubs[0]?.json.displayName} 
+                  Add {metadata.name} to {userHubs.length > 1 ? 'one of your hubs' : 'your hub: ' + userHubs[0]?.json?.displayName} 
                 </Typography>
 
               {userHubs.length > 1 && (
@@ -129,7 +129,7 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
                       setSelectedHubId(e.target.value)
                     }}
                   >
-                    {userHubs?.filter(hub => (hub.canAddContent && hub.id !== hubPubkey)).map((hub) => {
+                    {userHubs?.filter(hub => (hub.id !== hubPubkey)).map((hub) => {
                       return (
                         <MenuItem
                           key={hub?.id}
@@ -146,18 +146,16 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
             )}
 
             <Button
-              style={{marginTop: '15px'}}
-              color="primary"
+              style={{marginTop: '15px', textTransform: 'uppercase'}}
+              // color="primary"
               variant="outlined"
               disabled={inProgress || !selectedHubId || !userHasHubs}
               onClick={handleRepost}
             >
-              <Typography>
                 {!inProgress && ('Repost release to your hub')}
                 {inProgress && (
                   <Dots msg={'Please aprrove transaction in wallet'} />
                 )}
-              </Typography>
             </Button>
 
             <HubPostCreate preloadedRelease={releasePubkey} selectedHubId={selectedHubId} setParentOpen={handleClose} userHasHubs={userHasHubs} />
@@ -197,13 +195,15 @@ const StyledPaper = styled(Paper)(({theme}) => ({
   backgroundColor: theme.palette.background.paper,
   border: '2px solid #000',
   boxShadow: theme.shadows[5],
-  padding: theme.spacing(2, 4, 3),
+  // padding: theme.spacing(2, 4, 3),
+  padding: `30px 60px 45px`,
   width: '40vw',
   maxHeight: '90vh',
   overflowY: 'auto',
   zIndex: '10',
   display: 'flex',
-  flexDirection: 'column'
+  flexDirection: 'column',
+  minWidth: '600px'
 }))
 
 export default AddToHubModal

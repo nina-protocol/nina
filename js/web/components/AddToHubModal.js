@@ -129,7 +129,7 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
                       setSelectedHubId(e.target.value)
                     }}
                   >
-                    {userHubs?.filter(hub => hub.canAddContent).map((hub) => {
+                    {userHubs?.filter(hub => hub.userCanAddContent).map((hub) => {
                       return (
                         <MenuItem
                           key={hub?.id}
