@@ -46,7 +46,8 @@ const HubPostCreate = ({
   hubReleasesToReference,
   preloadedRelease,
   selectedHubId,
-  setParentOpen
+  setParentOpen,
+  userHasHubs
 }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
@@ -251,7 +252,7 @@ const HubPostCreate = ({
         variant="outlined"
         fullWidth
         onClick={() => setOpen(true)}
-        disabled={!selectedHubId}
+        disabled={!selectedHubId || (preloadedRelease && !userHasHubs)}
       > 
         <Typography>
         {preloadedRelease ? 'Create an editorial post about this release' : 'Publish a new post'}

@@ -836,8 +836,8 @@ const hubContextHelper = ({
     let path = endpoints.api + `/hubCollaborators/${publicKey}/hubs` 
     const response = await fetch(path)
     const result = await response.json()
-    saveHubCollaboratorsToState(result.hubCollaborators)
-    saveHubsToState(result.hubs)
+    await saveHubCollaboratorsToState(result.hubCollaborators)
+    await saveHubsToState(result.hubs)
   }
   /*
 
@@ -852,7 +852,10 @@ const hubContextHelper = ({
         hub.publicKey = hub.id
         updatedState[hub.publicKey] = hub
       })
-      setHubState(updatedState)
+      setHubState({
+        ...hubState,
+        ...updatedState
+      })
     } catch (error) {
       console.warn(error)
     }
@@ -877,6 +880,7 @@ const hubContextHelper = ({
         hubCollaborator.collaborator = hubCollaborator.collaborator.toBase58()
         hubCollaborator.datetime = hubCollaborator.datetime.toNumber()
         hubCollaborator.hub = hubCollaborator.hub.toBase58()
+        hubCollaborator.canAddContent = hubCollaborator.canAddContent
         
           updatedState = {
             ...updatedState,
@@ -887,7 +891,6 @@ const hubContextHelper = ({
           }
       })
 
- 
       setHubCollaboratorsState(updatedState)
     } catch (error) {
       console.warn(error)
@@ -904,6 +907,7 @@ const hubContextHelper = ({
           [hubRelease.id]: {
             addedBy: hubRelease.addedBy,
             child: hubRelease.id,
+            hubReleaseId: hubRelease.id,
             contentType: 'NinaReleaseV1',
             datetime: hubRelease.datetime,
             publicKeyHubContent: hubRelease.hubContent,
@@ -984,11 +988,12 @@ const hubContextHelper = ({
 
   const filterHubsForUser = (publicKey) => {
     const hubs = []
+
     Object.values(hubCollaboratorsState).forEach(hubCollaborator => {
       if (hubCollaborator.collaborator === publicKey) {
         hubs.push({
           ...hubState[hubCollaborator.hub],
-          canAddContent: hubCollaborator.canAddContent
+          userCanAddContent: hubCollaborator.canAddContent
         })
       }
     })
