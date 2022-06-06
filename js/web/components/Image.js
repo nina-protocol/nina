@@ -1,7 +1,7 @@
- /* eslint-disable react/display-name */
-import React, { useState } from 'react'
-import NextImage from 'next/image'
-import { DateTime } from 'luxon'
+/* eslint-disable react/display-name */
+import React, { useState } from "react";
+import NextImage from "next/image";
+import { DateTime } from "luxon";
 
 function Image({ src, height, width, layout, priority, release }) {
   const [ready, setReady] = useState(true);
@@ -10,8 +10,13 @@ function Image({ src, height, width, layout, priority, release }) {
     if (event.target.srcset || byPass) {
       setReady(true)
     }
-  }
-  let ImageComponent
+  };
+
+  const loaderProp = ({ src }) => {
+    return src;
+  };
+
+  let ImageComponent;
   if (release) {
     if (release.tokenData) {
       release = release.tokenData
@@ -19,9 +24,9 @@ function Image({ src, height, width, layout, priority, release }) {
     const now = DateTime.now()
     const releaseDatetime = DateTime.fromMillis(
       release.releaseDatetime.toNumber() * 1000
-    )
-    const hours = now.diff(releaseDatetime, 'hours').toObject().hours
-    if (hours < 0.05) {
+    );
+    const hours = now.diff(releaseDatetime, "hours").toObject().hours;
+    if (hours < 12.05) {
       if (src) {
         ImageComponent = () => (
           <img
@@ -42,6 +47,7 @@ function Image({ src, height, width, layout, priority, release }) {
         priority={priority}
         layout={layout}
         onLoad={(e) => handleLoad(e, false)}
+        loader={loaderProp}
       />
     )
   }

@@ -5,8 +5,7 @@ import Typography from "@mui/material/Typography";
 import { TextField } from "@mui/material";
 import Slider from "@mui/material/Slider";
 import Box from "@mui/material/Box";
-import Fade from '@mui/material/Fade';
-import nina from "@nina-protocol/nina-sdk"
+import Fade from "@mui/material/Fade";
 
 const { formatPlaceholder } = nina.utils
 
@@ -186,11 +185,12 @@ const ReleaseCreateForm = ({
               {...field}
               {...form}
             />
-              <Fade in={values.resalePercentage > 20}>
-                <Warning variant="subtitle1" align="left">
-                  Are you certain about a {values.resalePercentage}% resale fee? High resale may discourage potential collectors.
-                </Warning>
-              </Fade>
+            <Fade in={values.resalePercentage > 20}>
+              <Warning variant="subtitle1" align="left">
+                Are you certain about a {values.resalePercentage}% resale fee?
+                High resale may discourage potential collectors.
+              </Warning>
+            </Fade>
           </Box>
         </Box>
       </Form>
@@ -225,11 +225,11 @@ const Root = styled('div')(({ theme }) => ({
   },
 }))
 
-const Warning = styled(Typography)(({theme}) => ({
-  position: 'absolute',
-  textTransform: 'none !important',
+const Warning = styled(Typography)(({ theme }) => ({
+  position: "absolute",
+  textTransform: "none !important",
   color: theme.palette.red,
-  opacity: '85%'
+  opacity: "85%",
 }));
 
 export default withFormik({
