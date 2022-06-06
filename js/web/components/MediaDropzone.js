@@ -46,7 +46,7 @@ const MediaDropzone = ({
       const size = meta.size / 1000000
       if (file.type.includes('audio')) {
         alert(
-          `your track is ${size} mb... \nPlease upload a smaller than 80 mb`
+          `your track is ${size} mb... \nPlease upload a file smaller than 80 mb`
         )
       } else {
         if (height !== width) {

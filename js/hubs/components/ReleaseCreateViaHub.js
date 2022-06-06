@@ -176,6 +176,8 @@ const ReleaseCreateViaHub = ({ canAddContent }) => {
         setFormIsValid(isValid)
       }
       valid()
+    } else {
+      setFormIsValid(false)
     }
   }, [formValues, track, artwork])
 

@@ -185,6 +185,8 @@ const ReleaseCreate = () => {
         setFormIsValid(isValid)
       }
       valid()
+    } else {
+      setFormIsValid(false)
     }
   }, [formValues, track, artwork])
 
@@ -431,12 +433,14 @@ const ReleaseCreate = () => {
               </Button>
             )}
 
-            {!formValuesConfirmed && (
+            {bundlrBalance > 0 && !formValuesConfirmed && (
               <ReleaseCreateConfirm
                 formValues={formValues}
                 formIsValid={formIsValid}
                 handleSubmit={handleSubmit}
                 setFormValuesConfirmed={setFormValuesConfirmed}
+                artwork={artwork}
+                track={track}
               />
             )}
 
