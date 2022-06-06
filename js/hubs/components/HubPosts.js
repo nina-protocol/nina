@@ -109,7 +109,7 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
                   const postContent = postState[hubPost.post].postContent
                   return (
                     <DashboardEntry key={hubPost.post}>
-                      <Link href={`/posts/${hubPost.post}`}>{postContent.json.title}</Link>
+                      <Link href={`/${hubPubkey}/posts/${hubPost.publicKey}`}>{postContent.json.title}</Link>
                       {canTogglePost(hubPost) && hubPostsShowArchived && (
                         <AddIcon
                           onClick={() =>
