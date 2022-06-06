@@ -153,9 +153,11 @@ const Logo = styled('div')(({ theme }) => ({
 const DesktopWalletWrapper = styled(Box)(() => ({
   display: 'flex',
 }))
-
 const StyledWalletDialogProvider = styled(WalletDialogProvider)(
-  ({ theme }) => ({
+  ({theme}) => ({
+    '& .MuiList-root': {
+      background: `${theme.palette.transparent} !important`,
+    },
     '& .MuiButton-root': {
       backgroundColor: `${theme.palette.white}`,
     },
@@ -167,30 +169,45 @@ const StyledWalletDialogProvider = styled(WalletDialogProvider)(
       height: 'auto',
       ...theme.helpers.gradient,
       '& .MuiDialogTitle-root': {
-        color: `${theme.palette.white}`,
+        color: `${theme.palette.white} !important`,
         textAlign: 'center',
-        padding: `${theme.spacing(6, 0, 0)}`,
+        padding: '60px 0 0',
         textTransform: 'uppercase',
+        margin: 'auto',
+        background: 'none !important',
+        fontSize: '16px !important',
+        fontWeight: '700 !important',
         '& h2': {
-          fontSize: '16px !important',
-          fontWeight: '700',
+          backgroundColor: `${theme.palette.transparent} !important`,
+          border: '2px solid red',
         },
         '& .MuiButtonBase-root': {
           display: 'none',
         },
       },
-      '& .MuiListItem-gutters': {
-        padding: `${theme.spacing(0.5, 0)}`,
+      '& .MuiDialogContent-root': {
+        padding: '24px',
+      },
+      '& .MuiListItem-root': {
+        padding: `8px 24px`,
+        boxShadow: 'none',
+        width: '241px',
+        margin: 'auto',
+        '&:hover': {
+          boxShadow: 'none',
+        },
         '& .MuiButton-root': {
-          width: '241px',
-          margin: 'auto',
-          backgroundColor: `${theme.palette.white}`,
+          textAlign: 'center',
           borderRadius: '50px',
           color: `${theme.palette.blue}`,
           fontSize: '10px',
           fontWeight: '700',
+          justifyContent: 'center',
+          textTransform: 'uppercase',
+          padding: '6px 0',
           '&:hover': {
-            backgroundColor: `${theme.palette.blue}`,
+            opacity: '1',
+            backgroundColor: `${theme.palette.blue} !important`,
             color: `${theme.palette.white}`,
           },
           '& .MuiButton-endIcon': {
