@@ -675,7 +675,7 @@ const releaseContextHelper = ({
         signer: releaseSignerBump,
       }
 
-      const txid = await program.rpc.releaseInitWithCredit(config, bumps, metadataData {
+      const txid = await program.rpc.releaseInitWithCredit(config, bumps, metadataData, {
         accounts: {
           release,
           releaseSigner,
