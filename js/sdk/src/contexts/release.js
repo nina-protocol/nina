@@ -650,13 +650,8 @@ const releaseContextHelper = ({
         amountToArtistTokenAccount: new anchor.BN(0),
         amountToVaultTokenAccount: new anchor.BN(0),
         resalePercentage: new anchor.BN(resalePercentage * 10000),
-<<<<<<< HEAD:js/sdk/src/contexts/release.js
-        price: new anchor.BN(uiToNative(retailPrice, paymentMint)),
-        releaseDatetime: new anchor.BN(Date.now() / 1000),
-=======
         price: new anchor.BN(NinaClient.uiToNative(retailPrice, paymentMint)),
         releaseDatetime: new anchor.BN(now.getTime() / 1000),
->>>>>>> 25950e807367dd24c3b7a040b4001cbec552853d:js/nina-common/src/contexts/release.js
       }
 
       const bumps = {
