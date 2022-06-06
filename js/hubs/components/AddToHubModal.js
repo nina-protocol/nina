@@ -23,11 +23,11 @@ const {HubContext} = nina.contexts
 const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
   const [open, setOpen] = useState(false)
   const {enqueueSnackbar} = useSnackbar()
-
+  
   const {hubAddRelease} = useContext(HubContext)
   const [selectedHubId, setSelectedHubId] = useState()
   const [inProgress, setInProgress] = useState(false)
-  const userHasHubs = useMemo(() => userHubs?.length > 0, [userHubs])
+  const userHasHubs = useMemo(() => userHubs && userHubs.length > 0, [userHubs])
 
   useEffect(() => {
     if (userHubs?.length === 1) {
@@ -69,7 +69,7 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
           sx={{height: '22px', width: '28px', m: 0}}
 
         >
-          <AutorenewIcon sx={{color: 'black'}} />
+          <AutorenewIcon />
         </ModalToggle>
 
       <StyledModal
@@ -87,7 +87,7 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
           <StyledPaper>
             {!userHasHubs && (
               <>
-                <Typography gutterBottom>
+                <Typography gutterBottom color="black">
                   The connected wallet is not a collaborator on any hub.
                 </Typography>
                 <Typography>
@@ -95,6 +95,7 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
                     href="https://docs.google.com/forms/d/1JOgbVh-5SbA4mCwSWAiSolPCAHCjx6baSiJGh0J7N1g"
                     target="_blank"
                     rel="noopener noreferrer"
+                    style={{color: 'black'}}
                   >
                     Click here to get started setting up your hub.
                   </a>
@@ -108,13 +109,14 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
                   variant="h4"
                   id="transition-modal-title"
                   gutterBottom
+                  color={'black'}
                 >
                   Add {metadata.name} to {userHubs.length > 1 ? 'one of your hubs' : 'your hub: ' + userHubs[0]?.json?.displayName} 
                 </Typography>
 
               {userHubs.length > 1 && (
                 <FormControl sx={{mt: 1}} >
-                  <InputLabel disabled value="">
+                  <InputLabel disabled >
                     Select a hub to add to
                   </InputLabel>
                 
@@ -134,6 +136,7 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
                         <MenuItem
                           key={hub?.id}
                           value={hub?.id}
+                          sx={{color: 'black'}}
                         >
                           {hub?.json?.displayName}
                         </MenuItem>
@@ -147,7 +150,6 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
 
             <Button
               style={{marginTop: '15px', textTransform: 'uppercase'}}
-              // color="primary"
               variant="outlined"
               disabled={inProgress || !selectedHubId || !userHasHubs}
               onClick={handleRepost}
@@ -203,7 +205,7 @@ const StyledPaper = styled(Paper)(({theme}) => ({
   zIndex: '10',
   display: 'flex',
   flexDirection: 'column',
-  minWidth: '600px'
+  minWidth: '600px',
 }))
 
 export default AddToHubModal

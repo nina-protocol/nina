@@ -25,11 +25,7 @@ module.exports = withTM({
     }
     config.resolve.alias = {
       ...config.resolve.alias,
-<<<<<<< HEAD
-      '@nina-protocol/nina-sdk': path.resolve('../node_modules/@nina-protocol/nina-sdk'),
-=======
       '@nina-protocol/nina-sdk': path.resolve('../sdk'),
->>>>>>> 9dc23385944c14636fc0c1b8981d4e1ad3a5048e
       react: path.resolve('../node_modules/react'),
       crypto: path.resolve('../node_modules/crypto-browserify'),
       stream: path.resolve('../node_modules/stream-browserify'),

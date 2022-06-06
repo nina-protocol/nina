@@ -111,7 +111,7 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                 </PlayButton>
 
                 {releasePubkey && metadata && (
-                  <AddToHubModal userHubs={userHubs} releasePubkey={releasePubkey} metadata={metadata} hubPubkey={hubPubkey} />
+                  <AddToHubModal userHubs={userHubs[0]} releasePubkey={releasePubkey} metadata={metadata} hubPubkey={hubPubkey} />
                 )}
             </CtaWrapper>
 

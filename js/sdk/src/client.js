@@ -53,11 +53,7 @@ const NinaClient = function (provider, network) {
   obj.endpoints = {
     arweave: obj.ENDPOINT_ARWEAVE,
     pressingPlant: 'https://pressingplant-dev.nina.market:443',
-<<<<<<< Updated upstream
-    api: 'https://api-dev.nina.market',
-=======
     api: 'https://api-dev.nina.market:443',
->>>>>>> Stashed changes
   }
   obj.decimalsForMint = (mint) => {
     switch (typeof mint === 'string' ? mint : mint.toBase58()) {
