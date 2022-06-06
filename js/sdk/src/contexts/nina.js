@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react'
 import * as anchor from '@project-serum/anchor'
-import { findOrCreateAssociatedTokenAccount, TOKEN_PROGRAM_ID } from '../utils/web3'
 import axios from 'axios'
+import { findOrCreateAssociatedTokenAccount, TOKEN_PROGRAM_ID } from '../utils/web3'
 
 export const NinaContext = createContext()
 const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
@@ -135,6 +135,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         bundlrUpload,
         initBundlr,
         savePostsToState,
+        bundlr,
       }}
     >
       {children}

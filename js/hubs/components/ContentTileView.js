@@ -19,14 +19,6 @@ const ContentTileView = ({ content, hubPubkey }) => {
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
   const router = useRouter()
 
-  //  useEffect(() => {
-  //    if (releases.length >= 3) {
-  //      setColumnCount(3)
-  //    } else {
-  //      setColumnCount(releases.length)
-  //    }
-  //   }, [releases])
-
   const handleClick = (hubReleasePubkey, hubPostPubkey=null) => {
     const pathString = hubPostPubkey ? 'posts' : 'releases'
     router.push(
@@ -44,20 +36,21 @@ const ContentTileView = ({ content, hubPubkey }) => {
   return (
     <TileGrid columnCount={columnCount}>
       {content.map((item, i) => {
+        console.log("item ::> ", item)
         return (
-          <>
+          <React.Fragment key={i}>
             {item?.contentType === 'NinaReleaseV1' && (
               <Tile className={'tile'} key={i}>
                 <HoverCard
                   onClick={(e) => {
                     e.stopPropagation()
-                    handleClick(item.hubReleaseId)
+                    handleClick(item.child)
                   }}
                 >
                   <CardCta
                     onClick={(e) => {
                       e.stopPropagation()
-                      handleClick(item.hubReleaseId)
+                      handleClick(item.child)
                     }}
                     display="flex"
                     flexDirection={'column'}
@@ -65,7 +58,7 @@ const ContentTileView = ({ content, hubPubkey }) => {
                     <Button
                       onClick={(e) => {
                         e.stopPropagation()
-                        updateTrack(item.publicKey, true)
+                        updateTrack(item.release, true)
                       }}
                       disableRipple
                     >
@@ -85,6 +78,7 @@ const ContentTileView = ({ content, hubPubkey }) => {
                       layout="responsive"
                       src={item?.image}
                       release={item}
+                      priority={true}
                     />
                   )}
                 </HoverCard>
@@ -146,12 +140,13 @@ const ContentTileView = ({ content, hubPubkey }) => {
                       layout="responsive"
                       src={item.releaseMetadata?.image}
                       release={item.referenceContent}
+                      priority={true}
                     />
                   )}
                 </HoverCard>
               </Tile>
             )}
-          </>
+          </React.Fragment>
         )
       })}
     </TileGrid>

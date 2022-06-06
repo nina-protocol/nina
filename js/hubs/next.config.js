@@ -21,13 +21,14 @@ module.exports = withBundleAnalyzer({
     }
     config.resolve.alias = {
       ...config.resolve.alias,
+      '@nina-protocol/nina-sdk': path.resolve('../node_modules/@nina-protocol/nina-sdk'),
+      path: require.resolve('path-browserify'),
       react: path.resolve('../node_modules/react'),
       crypto: require.resolve('crypto-browserify'),
       stream: require.resolve('stream-browserify'),
       process: require.resolve('process/browser'),
       zlib: require.resolve('zlib-browserify'),
       'bn.js': path.resolve('../node_modules/bn.js'),
-      '@nina-protocol/nina-sdk': path.resolve('../node_modules/@nina-protocol/nina-sdk'),
       '@solana/web3.js': path.resolve('../node_modules/@solana/web3.js'),
       '@project-serum/serum': path.resolve(
         '../node_modules/@project-serum/serum'
@@ -52,7 +53,7 @@ module.exports = withBundleAnalyzer({
       cluster === 'devnet'
         ? '77BKtqWTbTRxj5eZPuFbeXjx3qz4TTHoXRnpCejYWiQH'
         : 'ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4',
-    INDEXER_URL: cluster === 'devnet' ? 'https://api-dev.nina.market/' : 'https://hubs.ninaprotocol.com/',
+    INDEXER_URL: cluster === 'devnet' ? 'https://api-dev.nina.market' : 'https://hubs.ninaprotocol.com',
   },
   images: {
     domains: ['www.arweave.net', 'arweave.net'],

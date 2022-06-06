@@ -153,7 +153,7 @@ const Navigation = ({hubPubkey}) => {
       >
         {mobileView && canAddContent && displayMobile()}
 
-        <Link href={`/${hubPubkey}`} passHref>
+        <Link href={`/${hubPubkey || ''}`} passHref>
           <LogoLinkWrapper>
             {hubData && (
               <Image

@@ -209,10 +209,12 @@ impl Release {
 
         // Make sure royalty shares of all recipients does not exceed 1000000
         if release.royalty_equals_1000000() {
-            emit!(RoyaltyRecipientAdded {
-                authority: new_royalty_recipient,
-                public_key: release_loader.key(),
-            });
+            if !is_init {
+                emit!(RoyaltyRecipientAdded {
+                    authority: new_royalty_recipient,
+                    public_key: release_loader.key(),
+                });
+            }
             Ok(())
         } else {
             return Err(error!(ErrorCode::RoyaltyExceeds100Percent));
@@ -317,12 +319,6 @@ impl Release {
             metadata_infos.as_slice(),
             &[seeds],
         )?;
-
-        emit!(ReleaseMetadataCreated {
-            public_key: release.key(),
-            metadata_public_key: metadata.key(),
-            uri: metadata_data.uri
-        });
     
         Ok(())
     }
@@ -572,10 +568,12 @@ impl From<AuthorityType> for spl_token::instruction::AuthorityType {
 #[event]
 pub struct ReleaseCreated {
     pub authority: Pubkey,
-    pub date: i64,
+    pub datetime: i64,
     pub mint: Pubkey,
     #[index]
     pub public_key: Pubkey,
+    pub metadata_public_key: Pubkey,
+    pub uri: String,
 }
 
 #[event]
@@ -599,13 +597,6 @@ pub struct ReleaseSoldViaHub {
     pub hub: Pubkey,
     #[index]
     pub date: i64,
-}
-
-#[event]
-pub struct ReleaseMetadataCreated {
-    pub public_key: Pubkey,
-    pub metadata_public_key: Pubkey,
-    pub uri: String,
 }
 
 

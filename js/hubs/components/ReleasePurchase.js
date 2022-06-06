@@ -7,22 +7,23 @@ import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
 import Typography from '@mui/material/Typography'
+import { useRouter } from 'next/router'
 import Dots from './Dots'
 import ReleaseSettings from './ReleaseSettings'
 const { ReleaseContext, NinaContext, HubContext } = nina.contexts
 
 const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, inPost } = props
-  const hubPubkey = process.env.REACT_HUB_PUBLIC_KEY
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
+  const router = useRouter()
+  const hubPubkey = router.query.hubPubkey
   const {
     releasePurchaseViaHub,
     releasePurchasePending,
     releaseState,
     getRelease,
   } = useContext(ReleaseContext)
-  const { hubState } = useContext(HubContext)
   const { ninaClient } = useContext(NinaContext)
   const { getAmountHeld, collection } = useContext(NinaContext)
   const [pending, setPending] = useState(undefined)

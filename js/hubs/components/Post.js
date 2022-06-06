@@ -25,7 +25,7 @@ const PostRelease = dynamic(() => import('./PostRelease'))
 const { HubContext, NinaContext, ReleaseContext, AudioPlayerContext } =
   nina.contexts
 
-const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey}) => {
+const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
   const router = useRouter()
   // const {updateTrack, track, isPlaying} = useContext(AudioPlayerContext);
   const [referenceReleasePubkey, setReferenceReleasePubkey] = useState()
@@ -40,18 +40,18 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey}) => {
   const { getHub, hubState, hubContentState, getHubPost } = useContext(HubContext)
   const { getRelease, releaseState } = useContext(ReleaseContext)
 
-
+  useEffect(() => {
+    if (hubPubkey && !hubState[hubPubkey]) {
+      getHub( hubPubkey )
+    }
+  }, [])
+  
   useEffect(() => {
     if (hubPostPubkey && !postState[postPubkey]) {
       getHubPost(hubPostPubkey)
     }
   }, [hubPostPubkey])
 
-  useEffect(() => {
-    if (hubPubkey && !hubState[hubPubkey]) {
-      getHub( hubPubkey )
-    }
-  }, [hubPubkey, getHub])
 
   useEffect(() => {
     if (postState[postPubkey] && !postData) {

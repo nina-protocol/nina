@@ -35,16 +35,16 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
   // )
 
   useEffect(() => {
-    if (releasePubkey) {
-      getRelease(releasePubkey)
-    }
-  }, [releasePubkey])
-
-  useEffect(() => {
-    if (hubPubkey && !hubState[hubPubkey]) {
+    if (!hubState[hubPubkey]) {
       getHub(hubPubkey)
     }
   }, [])
+
+  useEffect(() => {
+    if (releasePubkey) {
+      getRelease(releasePubkey)
+    }  
+  }, [releasePubkey])  
 
   useEffect(() => {
     if (releaseState.metadata[releasePubkey] && !metadata) {

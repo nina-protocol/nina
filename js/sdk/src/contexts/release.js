@@ -86,6 +86,9 @@ const ReleaseContextProvider = ({ children }) => {
     getCollectorsForRelease,
     fetchAndSaveReleasesToState,
     releasePurchaseViaHub,
+    initializeReleaseAndMint,
+    releaseCreateMetadataJson,
+    releaseInitViaHub,
   } = releaseContextHelper({
     ninaClient,
     releaseState,
@@ -154,7 +157,10 @@ const ReleaseContextProvider = ({ children }) => {
         getUserCollection,
         getCollectorsForRelease,
         fetchAndSaveReleasesToState,
-        releasePurchaseViaHub
+        releasePurchaseViaHub,
+        initializeReleaseAndMint,
+        releaseCreateMetadataJson,
+        releaseInitViaHub
       }}
     >
       {children}
@@ -186,7 +192,7 @@ const releaseContextHelper = ({
   setSearchResults,
 }) => {
   const { provider, ids, nativeToUi, uiToNative, isSol, isUsdc, endpoints } = ninaClient
-  const initializeReleaseAndMint = async () => {
+  const initializeReleaseAndMint = async (hubPubkey) => {
     const program = await ninaClient.useProgram()
     const releaseMint = anchor.web3.Keypair.generate()
     const [release, releaseBump] =
@@ -197,11 +203,21 @@ const releaseContextHelper = ({
         ],
         program.programId
       )
+      const [hubRelease] =
+      await anchor.web3.PublicKey.findProgramAddress(
+        [
+          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-release')),
+          new anchor.web3.PublicKey(hubPubkey).toBuffer(),
+          release.toBuffer(),
+        ],
+        program.programId
+      )
 
     return {
       release,
       releaseBump,
       releaseMint,
+      hubRelease,
     }
   }
 
@@ -374,10 +390,36 @@ const releaseContextHelper = ({
       )
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
       await getRelease(release)
+      await hasHubRelease(hubRelease.toBase58())
 
       return true
     } catch (error) {
       return ninaErrorHandler(error)
+    }
+  }
+
+  const hasHubRelease = async(hubReleaseId) => {
+    let hubReleaseResponse = null
+    try {
+      const hubReleaseRequest = await fetch(
+        `${endpoints.api}/hubReleases/${hubReleaseId}`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+      hubReleaseResponse = await hubReleaseRequest.json()
+      if (hubReleaseResponse) {
+        await sleep(1000)
+        return
+      } else {
+        await sleep(2500)
+        return await hasHubRelease(hubReleaseId)
+      }
+    } catch (error) {
+      console.warn(error)
+      await sleep(2500)
+      return await hasHubRelease(hubReleaseId)
     }
   }
 
@@ -600,14 +642,32 @@ const releaseContextHelper = ({
       if (authorityPublishingCreditTokenAccountIx) {
         instructions.push(authorityPublishingCreditTokenAccountIx)
       }
+      let now = new Date()
 
       const config = {
         amountTotalSupply: new anchor.BN(amount),
         amountToArtistTokenAccount: new anchor.BN(0),
         amountToVaultTokenAccount: new anchor.BN(0),
         resalePercentage: new anchor.BN(resalePercentage * 10000),
-        price: new anchor.BN(uiToNative(retailPrice, paymentMint)),
-        releaseDatetime: new anchor.BN(Date.now() / 1000),
+        price: new anchor.BN(NinaClient.uiToNative(retailPrice, paymentMint)),
+        releaseDatetime: new anchor.BN(now.getTime() / 1000),
+      }
+
+      const metadataProgram = new anchor.web3.PublicKey(ids.programs.metaplex)
+      const [metadata] = await anchor.web3.PublicKey.findProgramAddress(
+        [
+          Buffer.from('metadata'),
+          metadataProgram.toBuffer(),
+          releaseMint.publicKey.toBuffer(),
+        ],
+        metadataProgram
+      )
+
+      const metadataData = {
+        name: `${artist} - ${title}`.substring(0, 32),
+        symbol: catalogNumber.substring(0, 10),
+        uri: metadataUri,
+        sellerFeeBasisPoints: resalePercentage,
       }
 
       const bumps = {
@@ -615,7 +675,7 @@ const releaseContextHelper = ({
         signer: releaseSignerBump,
       }
 
-      const txid = await program.rpc.releaseInitWithCredit(config, bumps, {
+      const txid = await program.rpc.releaseInitWithCredit(config, bumps, metadataData, {
         accounts: {
           release,
           releaseSigner,
@@ -627,6 +687,8 @@ const releaseContextHelper = ({
           publishingCreditMint,
           paymentMint,
           royaltyTokenAccount,
+          metadata,
+          metadataProgram,
           systemProgram: anchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
@@ -2043,8 +2105,8 @@ const releaseContextHelper = ({
     getRedemptionRecordsForRelease,
     getRedeemablesForRelease,
     getRelatedForRelease,
-    filterRelatedForRelease,
     getReleasesBySearch,
+    filterRelatedForRelease,
     filterSearchResults,
     getCollectorsForRelease,
     initializeReleaseAndMint,
@@ -2065,4 +2127,8 @@ const searchResultsInitialState = {
   searched: false,
   pending: false,
   query: null,
+}
+
+const sleep = (ms) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

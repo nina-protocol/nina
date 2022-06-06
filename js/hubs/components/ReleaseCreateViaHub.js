@@ -41,7 +41,6 @@ const ReleaseCreateSchema = Yup.object().shape({
   retailPrice: Yup.number().required('Sale Price is Required'),
   resalePercentage: Yup.number().required('Resale Percent Amount is Required'),
 })
-const hubPubkey = process.env.REACT_HUB_PUBLIC_KEY
 
 const ReleaseCreateViaHub = ({ canAddContent }) => {
   const { enqueueSnackbar } = useSnackbar()
@@ -54,6 +53,8 @@ const ReleaseCreateViaHub = ({ canAddContent }) => {
   } = useContext(ReleaseContext)
   const { hubState } = useContext(HubContext)
   const router = useRouter()
+  const hubPubkey = router.query.hubPubkey
+
   const {
     bundlrUpload,
     bundlrBalance,
@@ -190,13 +191,13 @@ const ReleaseCreateViaHub = ({ canAddContent }) => {
       if (releaseCreated) {
         router.push(
           {
-            pathname: `/${hubPubkey}/releases/${releasePubkey.toBase58()}`,
+            pathname: `/${hubPubkey}/releases/${releaseInfo.hubRelease.toBase58()}`,
             query: {
               metadata: JSON.stringify(metadata),
               hub: JSON.stringify(hubData),
             },
           },
-          `/${hubPubkey}/releases/${releasePubkey.toBase58()}`
+          `/${hubPubkey}/releases/${releaseInfo.hubRelease.toBase58()}`
         )
       } else if (track && artwork) {
         let upload = uploadId
@@ -233,7 +234,7 @@ const ReleaseCreateViaHub = ({ canAddContent }) => {
           }
           if (uploadHasItemForType(upload, UploadType.track) || trackResult) {
             let metadataResult = metadataTx
-            const info = releaseInfo || (await initializeReleaseAndMint())
+            const info = releaseInfo || (await initializeReleaseAndMint(hubPubkey))
             setReleaseInfo(info)
             setReleasePubkey(info.release)
             if (!uploadHasItemForType(upload, UploadType.metadataJson)) {
@@ -311,6 +312,7 @@ const ReleaseCreateViaHub = ({ canAddContent }) => {
       }
     } catch (error) {
       setIsPublishing(false)
+      console.warn(error)
     }
   }
 

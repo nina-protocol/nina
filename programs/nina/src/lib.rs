@@ -14,20 +14,13 @@ use instructions::*;
 pub mod nina {
     use super::*;
 
-    pub fn release_init_protected(
-        ctx: Context<ReleaseInitializeProtected>,
-        config: ReleaseConfig,
-        bumps: ReleaseBumps,
-    ) -> Result<()> {
-        instructions::release_init_protected::handler(ctx, config, bumps)
-    }
-
     pub fn release_init_with_credit(
         ctx: Context<ReleaseInitializeWithCredit>,
         config: ReleaseConfig,
         bumps: ReleaseBumps,
+        metadata_data: ReleaseMetadataData
     ) -> Result<()> {
-        instructions::release_init_with_credit::handler(ctx, config, bumps)
+        instructions::release_init_with_credit::handler(ctx, config, bumps, metadata_data)
     }
 
     pub fn release_init_via_hub(
@@ -79,27 +72,6 @@ pub mod nina {
         ctx: Context<ReleaseAirdrop>,
     ) -> Result<()> {
         instructions::release_airdrop::handler(ctx)
-    }
-
-    pub fn release_create_metadata(
-        ctx: Context<ReleaseCreateMetadata>,
-        metadata_data: ReleaseMetadataData
-    ) -> Result<()> {
-        instructions::release_create_metadata::handler(ctx, metadata_data)
-    }
-
-    pub fn release_update_metadata(
-        ctx: Context<ReleaseUpdateMetadata>,
-        metadata_data: ReleaseMetadataData
-    ) -> Result<()> {
-        instructions::release_update_metadata::handler(ctx, metadata_data)
-    }
-
-    pub fn release_create_metadata_pressing_plant(
-        ctx: Context<ReleaseCreateMetadataPressingPlant>,
-        metadata_data: ReleaseMetadataData
-    ) -> Result<()> {
-        instructions::release_create_metadata_pressing_plant::handler(ctx, metadata_data)
     }
     
     pub fn redeemable_init(
