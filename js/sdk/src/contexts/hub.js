@@ -508,7 +508,6 @@ const hubContextHelper = ({
           ],
           program.programId
         )
-          console.log("hubSigner ::> ", hubSigner)
       let [withdrawTarget] = await findOrCreateAssociatedTokenAccount(
         provider.connection,
         provider.wallet.publicKey,
@@ -638,8 +637,6 @@ const hubContextHelper = ({
             program.programId
           )
         accounts.referenceReleaseHubRelease = referenceReleaseHubRelease
-
-  
   
         const [referenceReleaseHubContent] =
           await anchor.web3.PublicKey.findProgramAddress(
@@ -654,17 +651,44 @@ const hubContextHelper = ({
         
         txid = await program.rpc.postInitViaHubWithReferenceRelease(...params, {accounts})
       } else {
-        txid = await program.rpc.postInitViaHub(...params, request)
+        txid = await program.rpc.postInitViaHub(...params, {accounts})
       }
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await hasPost(hubPost.toBase58())
       await getHub(hubPubkey)
 
       return {
         success: true,
         msg: 'Post created.',
       }
-    } catch (error) {
+    } catch (error) {   
       return ninaErrorHandler(error)
+    }
+  }
+
+  const hasPost = async(hubPostId) => {
+    let hubPostResult = null
+    try {
+      const hubPostRequest = await fetch(
+        `${endpoints.api}/hubPosts/${hubPostId}`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+      console.log(hubPostRequest)
+      hubPostResult = await hubPostRequest.json()
+      if (hubPostResult) {
+        await sleep(1000)
+        return
+      } else {
+        await sleep(2500)
+        return await hasPost(hubPostId)
+      }
+    } catch (error) {
+      console.warn(error)
+      await sleep(2500)
+      return await hasPost(hubPostId)
     }
   }
 
@@ -1057,3 +1081,7 @@ const hubContextHelper = ({
   }
 }
 export default HubContextProvider
+
+const sleep = (ms) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

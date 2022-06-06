@@ -390,7 +390,7 @@ const releaseContextHelper = ({
       )
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
       await getRelease(release)
-      await hasMetadata(metadata.toBase58())
+      await hasHubRelease(hubRelease.toBase58())
 
       return true
     } catch (error) {
@@ -398,28 +398,28 @@ const releaseContextHelper = ({
     }
   }
 
-  const hasMetadata = async(metadata) => {
-    let metadataResponse = null
+  const hasHubRelease = async(hubReleaseId) => {
+    let hubReleaseResponse = null
     try {
-      const metadataResult = await fetch(
-        `${endpoints.api}/metadata/${metadata}/exists`,
+      const hubReleaseRequest = await fetch(
+        `${endpoints.api}/hubReleases/${hubReleaseId}`,
         {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
         }
       )
-      metadataResponse = await metadataResult.json()
-      if (metadataResponse) {
+      hubReleaseResponse = await hubReleaseRequest.json()
+      if (hubReleaseResponse) {
         await sleep(1000)
         return
       } else {
         await sleep(2500)
-        return await hasMetadata(metadata)
+        return await hasHubRelease(hubReleaseId)
       }
     } catch (error) {
       console.warn(error)
       await sleep(2500)
-      return await hasMetadata(metadata)
+      return await hasHubRelease(hubReleaseId)
     }
   }
 
