@@ -643,7 +643,6 @@ const releaseContextHelper = ({
         instructions.push(authorityPublishingCreditTokenAccountIx)
       }
       let now = new Date()
-      now.setHours(now.getHours() - 12)
 
       const config = {
         amountTotalSupply: new anchor.BN(amount),
@@ -654,12 +653,29 @@ const releaseContextHelper = ({
         releaseDatetime: new anchor.BN(now.getTime() / 1000),
       }
 
+      const metadataProgram = new anchor.web3.PublicKey(ids.programs.metaplex)
+      const [metadata] = await anchor.web3.PublicKey.findProgramAddress(
+        [
+          Buffer.from('metadata'),
+          metadataProgram.toBuffer(),
+          releaseMint.publicKey.toBuffer(),
+        ],
+        metadataProgram
+      )
+
+      const metadataData = {
+        name: `${artist} - ${title}`.substring(0, 32),
+        symbol: catalogNumber.substring(0, 10),
+        uri: metadataUri,
+        sellerFeeBasisPoints: resalePercentage,
+      }
+
       const bumps = {
         release: releaseBump,
         signer: releaseSignerBump,
       }
 
-      const txid = await program.rpc.releaseInitWithCredit(config, bumps, {
+      const txid = await program.rpc.releaseInitWithCredit(config, bumps, metadataData {
         accounts: {
           release,
           releaseSigner,
@@ -671,6 +687,8 @@ const releaseContextHelper = ({
           publishingCreditMint,
           paymentMint,
           royaltyTokenAccount,
+          metadata,
+          metadataProgram,
           systemProgram: anchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,

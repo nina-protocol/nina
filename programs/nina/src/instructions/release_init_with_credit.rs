@@ -20,7 +20,7 @@ pub struct ReleaseInitializeWithCredit<'info> {
         bump,
     )]
     pub release_signer: UncheckedAccount<'info>,
-    pub release_mint: Account<'info, Mint>,
+    pub release_mint: Box<Account<'info, Mint>>,
     #[account(mut)]
     pub payer: Signer<'info>,
     /// CHECK: the payer is usually the authority, though they can set someone else as authority
@@ -50,6 +50,12 @@ pub struct ReleaseInitializeWithCredit<'info> {
         constraint = royalty_token_account.owner == *release_signer.key
     )]
     pub royalty_token_account: Box<Account<'info, TokenAccount>>,
+    /// CHECK: This is safe because it is initialized here
+    #[account(mut)]
+    pub metadata: AccountInfo<'info>,
+    /// CHECK: This is safe because we check against ID
+    #[account(address = mpl_token_metadata::ID)]
+    pub metadata_program: AccountInfo<'info>,
     #[account(address = token::ID)]
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
@@ -60,6 +66,7 @@ pub fn handler(
     ctx: Context<ReleaseInitializeWithCredit>,
     config: ReleaseConfig,
     bumps: ReleaseBumps,
+    metadata_data: ReleaseMetadataData,
 ) -> Result<()> {
 
     // Redeemer burn redeemable token
@@ -87,11 +94,27 @@ pub fn handler(
         bumps,
     )?;
 
+    Release::create_metadata_handler(
+        ctx.accounts.release_signer.to_account_info().clone(),
+        ctx.accounts.metadata.to_account_info().clone(),
+        ctx.accounts.release_mint.clone(),
+        ctx.accounts.payer.clone(),
+        ctx.accounts.metadata_program.to_account_info().clone(),
+        ctx.accounts.token_program.clone(),
+        ctx.accounts.system_program.clone(),
+        ctx.accounts.rent.clone(),
+        ctx.accounts.release.clone(),
+        metadata_data.clone(),
+        bumps,
+    )?;
+
     emit!(ReleaseCreated {
         public_key: ctx.accounts.release.key(),
         mint: ctx.accounts.release_mint.key(),
         authority: ctx.accounts.authority.key(),
-        date: config.release_datetime,
+        datetime: config.release_datetime,
+        metadata_public_key: ctx.accounts.metadata.key(),
+        uri: metadata_data.uri,
     });
 
     Ok(())
