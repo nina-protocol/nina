@@ -22,6 +22,7 @@ import NinaBox from './NinaBox'
 import MediaDropzones from './MediaDropzones'
 import Dots from './Dots'
 import Grid from '@mui/material/Grid'
+import Link from 'next/link'
 import {
   createUpload,
   updateUpload,
@@ -61,7 +62,10 @@ const ReleaseCreate = () => {
     bundlrPricePerMb,
     solPrice,
     getSolPrice,
+    getNpcAmountHeld, 
+    npcAmountHeld
   } = useContext(NinaContext)
+
   const [track, setTrack] = useState(undefined)
   const [artwork, setArtwork] = useState()
   const [uploadSize, setUploadSize] = useState()
@@ -73,6 +77,8 @@ const ReleaseCreate = () => {
   const [formValues, setFormValues] = useState({
     releaseForm: {},
   })
+  const [imageProgress, setImageProgress] = useState()
+  const [audioProgress, setAudioProgress] = useState()
   const [formValuesConfirmed, setFormValuesConfirmed] = useState(false)
   const [isPublishing, setIsPublishing] = useState(false)
   const [releaseInfo, setReleaseInfo] = useState()
@@ -102,6 +108,11 @@ const ReleaseCreate = () => {
     getBundlrBalance()
     getSolPrice()
   }
+
+  useEffect(async () => {
+    getNpcAmountHeld();
+  }, [wallet?.connected]);
+
 
   useEffect(() => {
     if (isPublishing) {
@@ -182,6 +193,8 @@ const ReleaseCreate = () => {
     const artworkSize = artwork ? artwork.meta.size / 1000000 : 0
     setUploadSize((trackSize + artworkSize).toFixed(2))
   }, [track, artwork])
+
+  
 
   const handleSubmit = async () => {
     try {
@@ -311,6 +324,14 @@ const ReleaseCreate = () => {
     }
   }
 
+  const handleProgress = (progress, isImage) => {
+    if (isImage) {
+      setImageProgress(progress)
+    } else {
+      setAudioProgress(progress)
+    }
+  }
+
   return (
     <Grid item md={12}>
       {!wallet.connected && (
@@ -318,7 +339,51 @@ const ReleaseCreate = () => {
           Please connect your wallet to start publishing
         </ConnectMessage>
       )}
-      {wallet?.connected && (
+
+      {wallet?.connected && npcAmountHeld < 1 && (
+        <Box style={{display: "flex"}}>
+          <NpcMessage>
+            <Typography variant="h3">
+              Currently, Nina Publishing Credits (NPCs) are required to access
+              the publishing flow.
+            </Typography>
+            <Typography variant="h3">
+              1 NPC allows the publishing of 1 Release.
+            </Typography>
+            <Typography variant="h3">
+              If you don’t have a Solana wallet, please set one up at{" "}
+              <Link target="_blank" rel="noreferrer" href="https://phantom.app">
+                phantom.app
+              </Link>
+              .
+            </Typography>
+            <Typography variant="h3">
+              Please fill out{" "}
+              <Link
+                target="_blank"
+                rel="noreferrer"
+                href="https://docs.google.com/forms/d/e/1FAIpQLSdj13RKQcw9GXv3A5U4ebJhzJjjfxzxuCtB092X4mkHm5XX0w/viewform"
+              >
+                this form
+              </Link>{" "}
+              and we will notify you when your credits have been distributed.
+            </Typography>
+
+            <Typography variant="h3">
+              Check our <Link href="/faq">FAQ</Link> or hit us at{" "}
+              <Link
+                target="_blank"
+                rel="noreferrer"
+                href="href=mailto:artists@ninaprotocol.com"
+              >
+                artists@ninaprotocol.com
+              </Link>{" "}
+              with any questions.
+            </Typography>
+          </NpcMessage>
+        </Box>
+      )}
+      {wallet?.connected && npcAmountHeld > 0 && (
         <NinaBox columns="350px 400px" gridColumnGap="10px">
           <Box sx={{width: '100%'}}>
             <MediaDropzones
@@ -328,6 +393,7 @@ const ReleaseCreate = () => {
               releasePubkey={releasePubkey}
               track={track}
               disabled={isPublishing || releaseCreated}
+              handleProgress={handleProgress}
             />
           </Box>
 
@@ -435,5 +501,21 @@ const BundlrBalanceInfo = styled(Typography)(({theme}) => ({
   whiteSpace: 'nowrap',
   margin: '5px 0',
 }))
+
+const NpcMessage = styled(Box)(({theme}) => ({
+  textAlign: "left",
+  margin: "auto",
+  width: "800px",
+  padding: "0 0 50px",
+  [theme.breakpoints.down("md")]: {
+    width: "80vw",
+  },
+  "& .MuiTypography-root": {
+    paddingBottom: "10px",
+  },
+  "& a": {
+    color: theme.palette.blue,
+  },
+}));
 
 export default ReleaseCreate

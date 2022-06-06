@@ -211,7 +211,9 @@ const BundlrModal = ({ inCreate }) => {
                 }}
                 disabled={inProgress || !amount}
               >
-                {!inProgress && (mode === 'deposit' ? 'Deposit' : 'Withdraw')}
+                <Typography variant='body1'>
+                  {!inProgress && (mode === 'deposit' ? 'Deposit' : 'Withdraw')}
+                </Typography>
                 {inProgress && (
                   <Dots msg={'Please aprrove transaction in wallet'} />
                 )}
@@ -222,12 +224,6 @@ const BundlrModal = ({ inCreate }) => {
       </StyledModal>
     </Root>
   )
-}
-
-const PREFIX = 'Royalty'
-
-const classes = {
-  recipientData: `${PREFIX}-recipientData`,
 }
 
 const Root = styled('div')(({ theme }) => ({
