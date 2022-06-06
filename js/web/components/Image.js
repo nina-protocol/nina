@@ -11,6 +11,11 @@ function Image({ src, height, width, layout, priority, release }) {
       setReady(true);
     }
   };
+
+  const loaderProp = ({ src }) => {
+    return src;
+  };
+
   let ImageComponent;
   if (release) {
     if (release.tokenData) {
@@ -21,7 +26,7 @@ function Image({ src, height, width, layout, priority, release }) {
       release.releaseDatetime.toNumber() * 1000
     );
     const hours = now.diff(releaseDatetime, "hours").toObject().hours;
-    if (hours < 12.05) {
+    if (hours < 0.05) {
       if (src) {
         ImageComponent = () => (
           <img
@@ -42,6 +47,7 @@ function Image({ src, height, width, layout, priority, release }) {
         priority={priority}
         layout={layout}
         onLoad={(e) => handleLoad(e, false)}
+        loader={loaderProp}
       />
     );
   }
