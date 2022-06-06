@@ -16,8 +16,10 @@ const AudioPlayer = dynamic(() => import('./AudioPlayer'))
 const { HubContext, NinaContext } = nina.contexts
 const lightTheme = createTheme(lightThemeOptions)
 
-const Layout = ({ children, hubPubkey }) => {
+const Layout = ({ children }) => {
   const router = useRouter()
+  const hubPubkey = router.query.hubPubkey
+
 
   // if (!hubState[hubPubkey]?.metadata) {
   //   return (
@@ -26,6 +28,7 @@ const Layout = ({ children, hubPubkey }) => {
   //     </Box>
   //   )
   // }
+
 
   const { hubState } = useContext(HubContext)
 

@@ -18,9 +18,9 @@ import Link from 'next/link'
 import {useSnackbar} from 'notistack'
 import Dots from './Dots'
 
-const {HubContext, NinaContext} = nina.contexts
+const {HubContext} = nina.contexts
 
-const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
+const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
   const [open, setOpen] = useState(false)
   const {enqueueSnackbar} = useSnackbar()
 
@@ -61,7 +61,7 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
 
   return (
     <Root>
-        <Button
+        <ModalToggle
           variant="contained"
           color="primary"
           type="submit"
@@ -69,8 +69,8 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
           sx={{height: '22px', width: '28px', m: 0}}
 
         >
-          <AutorenewIcon sx={{color: 'white'}} />
-        </Button>
+          <AutorenewIcon sx={{color: 'black'}} />
+        </ModalToggle>
 
       <StyledModal
         aria-labelledby="transition-modal-title"
@@ -109,7 +109,7 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
                   id="transition-modal-title"
                   gutterBottom
                 >
-                  Add {metadata.name} to {userHubs.length > 1 ? 'one of your hubs' : 'your hub: ' + userHubs[0]?.json.displayName} 
+                  Add {metadata.name} to {userHubs.length > 1 ? 'one of your hubs' : 'your hub: ' + userHubs[0]?.json?.displayName} 
                 </Typography>
 
               {userHubs.length > 1 && (
@@ -129,13 +129,13 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
                       setSelectedHubId(e.target.value)
                     }}
                   >
-                    {userHubs?.filter(hub => hub.userCanAddContent).map((hub) => {
+                    {userHubs?.filter(hub => (hub.id !== hubPubkey && hub.userCanAddContent)).map((hub) => {
                       return (
                         <MenuItem
                           key={hub?.id}
                           value={hub?.id}
                         >
-                          {hub?.json.displayName}
+                          {hub?.json?.displayName}
                         </MenuItem>
                       )
                     })}
@@ -146,18 +146,16 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
             )}
 
             <Button
-              style={{marginTop: '15px'}}
-              color="primary"
+              style={{marginTop: '15px', textTransform: 'uppercase'}}
+              // color="primary"
               variant="outlined"
               disabled={inProgress || !selectedHubId || !userHasHubs}
               onClick={handleRepost}
             >
-              <Typography>
                 {!inProgress && ('Repost release to your hub')}
                 {inProgress && (
                   <Dots msg={'Please aprrove transaction in wallet'} />
                 )}
-              </Typography>
             </Button>
 
             <HubPostCreate preloadedRelease={releasePubkey} selectedHubId={selectedHubId} setParentOpen={handleClose} userHasHubs={userHasHubs} />
@@ -176,6 +174,17 @@ const Root = styled('div')(({theme}) => ({
   width: '100%',
 }))
 
+const ModalToggle = styled(Button)(({theme}) => ({
+  color: `${theme.palette.text.primary} !important`,
+  ':disabled': {
+    color: theme.palette.text.primary + 'a0',
+  },
+  '&:hover': {
+    opacity: '50%',
+    backgroundColor: `${theme.palette.transparent} !important`,
+  },
+}))
+
 const StyledModal = styled(Modal)(() => ({
   display: 'flex',
   alignItems: 'center',
@@ -186,13 +195,15 @@ const StyledPaper = styled(Paper)(({theme}) => ({
   backgroundColor: theme.palette.background.paper,
   border: '2px solid #000',
   boxShadow: theme.shadows[5],
-  padding: theme.spacing(2, 4, 3),
+  // padding: theme.spacing(2, 4, 3),
+  padding: `30px 60px 45px`,
   width: '40vw',
   maxHeight: '90vh',
   overflowY: 'auto',
   zIndex: '10',
   display: 'flex',
-  flexDirection: 'column'
+  flexDirection: 'column',
+  minWidth: '600px'
 }))
 
 export default AddToHubModal

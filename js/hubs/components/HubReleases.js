@@ -95,7 +95,7 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
                 const hubRelease = activeHubReleases[releasePubkey]
                 return (
                   <DashboardEntry key={hubRelease.release}>
-                    <Link href={`/releases/${hubRelease.release}`}>
+                    <Link href={`/${hubPubkey}/releases/${hubRelease.publicKey}`}>
                       {`${hubRelease.publishedThroughHub ? '*' : ''}${
                         releaseState.metadata[hubRelease.release]?.name
                       } (${hubRelease.sales} ${

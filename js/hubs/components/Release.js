@@ -9,16 +9,24 @@ import { useRouter } from 'next/router'
 import Image from 'next/image'
 import Typography from '@mui/material/Typography'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
+import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
+import {useWallet} from '@solana/wallet-adapter-react'
+
 const ReleasePurchase = dynamic(() => import('./ReleasePurchase'))
-const { HubContext, ReleaseContext, AudioPlayerContext } = nina.contexts
+const AddToHubModal = dynamic(() => import('./AddToHubModal'))
+const { HubContext, ReleaseContext, AudioPlayerContext, } = nina.contexts
 
 const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const router = useRouter()
+  const wallet = useWallet()
+
   const { updateTrack, track, isPlaying } = useContext(AudioPlayerContext)
   const { releaseState, getRelease } = useContext(ReleaseContext)
-  const { getHub, hubState } = useContext(HubContext)
+  const {getHub, hubState, getHubsForUser, filterHubsForUser, hubCollaboratorsState } = useContext(HubContext)
 
   const [metadata, setMetadata] = useState(metadataSsr || null)
+  const [userHubs, setUserHubs] = useState()
 
   useEffect(() => {
     if (hubPubkey && !hubState[hubPubkey]) {
@@ -38,6 +46,20 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
     }
   }, [releaseState, metadata, releasePubkey])
 
+  useEffect(() => {
+    if (wallet.connected && hubState[hubPubkey] && !userHubs) {
+      getHubsForUser(wallet.publicKey.toBase58())
+    }
+  }, [wallet.connect, hubState[hubPubkey]])
+
+  useEffect(() => {
+    if (wallet.connected && hubState) {
+      setUserHubs(filterHubsForUser(wallet.publicKey.toBase58()))
+    }
+  }, [hubState])
+  
+
+
   return (
     <>
       <BackButton onClick={() => router.back()} />
@@ -46,7 +68,6 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
         md={6}
         xs={12}
         sx={{
-          // margin: {md: '50px auto auto', xs: '0px'},
           margin: { md: '0px auto auto', xs: '0px' },
           padding: '0 15px',
         }}
@@ -64,27 +85,36 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                 alt={metadata.description || 'album art'}
               />
             </MobileImageWrapper>
-            <Typography
-              variant="h3"
-              align="left"
-              sx={{ color: 'text.primary' }}
-            >
-              {metadata.properties.artist} - {metadata.properties.title} (
-              <PlayButton
-                onClick={(e) => {
-                  e.stopPropagation()
-                  updateTrack(
-                    releasePubkey,
-                    !(isPlaying && track.releasePubkey === releasePubkey)
-                  )
-                }}
+
+            <CtaWrapper >
+              <Typography
+                variant="h3"
+                align="left"
+                sx={{ color: 'text.primary' , whiteSpace: 'nowrap', mr: 1}}
               >
-                {isPlaying && track.releasePubkey === releasePubkey
-                  ? 'Pause'
-                  : 'Play'}
-              </PlayButton>
-              )
-            </Typography>
+                {metadata.properties.artist} - {metadata.properties.title} 
+              </Typography>
+              
+                <PlayButton
+                  sx={{height: '22px', width: '28px', m: 0}}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    updateTrack(
+                      releasePubkey,
+                      !(isPlaying && track.releasePubkey === releasePubkey)
+                    )
+                  }}
+                >
+                  {isPlaying && track.releasePubkey === releasePubkey
+                    ? <PauseCircleOutlineIcon />
+                  : <PlayCircleOutlineIcon />}
+                </PlayButton>
+
+                {releasePubkey && metadata && (
+                  <AddToHubModal userHubs={userHubs} releasePubkey={releasePubkey} metadata={metadata} hubPubkey={hubPubkey} />
+                )}
+            </CtaWrapper>
+
             <StyledDescription variant="h4" align="left">
               {metadata.description}
             </StyledDescription>
@@ -115,8 +145,6 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
 }
 
 const PlayButton = styled(Button)(({ theme }) => ({
-  fontSize: theme.typography.body1.fontSize,
-  padding: '0 10px',
   color: `${theme.palette.text.primary} !important`,
   ':disabled': {
     color: theme.palette.text.primary + 'a0',
@@ -153,6 +181,10 @@ const MobileImageWrapper = styled(Grid)(({ theme }) => ({
 
 const ImageContainer = styled(Box)(() => ({
   width: '100%',
+}))
+
+const CtaWrapper = styled(Box)(() => ({
+  display: 'flex'
 }))
 
 const BackButton = styled(ArrowBackIosIcon)(({ theme }) => ({
