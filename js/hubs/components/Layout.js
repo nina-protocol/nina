@@ -87,7 +87,7 @@ const Layout = ({ children }) => {
                 {children}
               </Grid>
               <AudioPlayerWrapper>
-                <AudioPlayer hubPubkey={hubPubkey} />
+                <AudioPlayer />
               </AudioPlayerWrapper>
             </main>
           </Container>

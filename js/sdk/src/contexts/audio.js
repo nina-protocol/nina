@@ -42,14 +42,14 @@ const AudioPlayerContextProvider = ({ children }) => {
       playlist.length == 0 &&
       Object.keys(collection)?.length > 0
     ) {
-      createPlaylistFromTracks()
+      // createPlaylistFromTracks()
     }
   }, [provider.wallet?.connected, collection, releaseState.metadata])
 
   const currentIndex = () => {
     let index = undefined
     playlist.forEach((item, i) => {
-      if (item?.txid === track?.txid) {
+      if (item.releasePubkey === track.releasePubkey) {
         index = i
         return
       }
@@ -161,12 +161,12 @@ const audioPlayerContextHelper = ({
   const createPlaylistFromTracksHubs = (tracks) => {
     const playlistEntries = []
     tracks.forEach((releasePubkey) => {
-      // if (playlist.filter(item => item.releasePubkey === releasePubkey).length === 0) {
+      if (playlist.filter(item => item.releasePubkey === releasePubkey).length === 0) {
         const playlistEntry = createPlaylistEntry(releasePubkey)
         if (playlistEntry) {
           playlistEntries.push(playlistEntry)
         }
-      // }
+      }
     })
     setPlaylist([...playlist, ...playlistEntries])
   }

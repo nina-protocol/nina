@@ -6,13 +6,17 @@ import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import Dots from './Dots'
 
 import { useWallet } from '@solana/wallet-adapter-react'
 const ContentTileView = dynamic(() => import('./ContentTileView'))
 const { HubContext, NinaContext, ReleaseContext } = nina.contexts
 
-const Hub = ({hubPubkey}) => {
+const Hub = () => {
+  const router = useRouter()
+  const hubPubkey = router.query.hubPubkey
+
   const { hubState, hubContentState, hubCollaboratorsState, initialLoad, getHub, filterHubCollaboratorsForHub, filterHubContentForHub } =
     useContext(HubContext)
   const { postState } = useContext(NinaContext)
@@ -69,6 +73,7 @@ const Hub = ({hubPubkey}) => {
         postState[hubContentData.post] &&
         hubContentData.visible
       ) {
+        // console.log('hubContentData :>> ', hubContentData);
         hubContentData = {
           ...hubContentData,
           ...postState[hubContentData.post],
