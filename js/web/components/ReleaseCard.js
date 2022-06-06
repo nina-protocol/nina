@@ -49,7 +49,7 @@ const ReleaseCard = (props) => {
               </Button>
             </Box>
 
-            {userHubs?.length > 0 && releasePubkey && (
+            {releasePubkey && (
               <Box>
                 <AddToHubModal userHubs={userHubs} releasePubkey={releasePubkey} metadata={metadata}/>
               </Box>

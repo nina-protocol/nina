@@ -52,7 +52,6 @@ const HubSlider = (props) => {
       onClick={onClick}
     />
   )
-
   if (hubs.length === 0) {
     return (
       <Box

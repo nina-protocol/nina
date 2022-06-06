@@ -128,13 +128,13 @@ const lightThemeOptions = {
           },
           '&.MuiButton-outlined': {
             borderRadius: '0px',
-            padding: '0px',
+            padding: '20px',
             border: `1px solid ${colors.black}`,
             color: colors.black,
             height: '50px',
             '&.Mui-disabled': {
               border: `1px solid ${colors.grey}`,
-              color: colors.grey,
+              color: `${colors.grey} !important`,
             },
           },
           '&.MuiButton-contained': {
@@ -287,8 +287,6 @@ const DashboardContent = styled(Grid)(() => ({
 const DashboardHeader = styled(Typography)(() => ({
   position: 'absolute',
   top: '0',
-  // height: '30px',
-  // width: '100%',
 }))
 
 const DashboardEntry = styled('li')(() => ({

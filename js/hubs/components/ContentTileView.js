@@ -51,13 +51,13 @@ const ContentTileView = ({ content, hubPubkey }) => {
                 <HoverCard
                   onClick={(e) => {
                     e.stopPropagation()
-                    handleClick(item.publicKey)
+                    handleClick(item.hubReleaseId)
                   }}
                 >
                   <CardCta
                     onClick={(e) => {
                       e.stopPropagation()
-                      handleClick(item.publicKey)
+                      handleClick(item.hubReleaseId)
                     }}
                     display="flex"
                     flexDirection={'column'}
