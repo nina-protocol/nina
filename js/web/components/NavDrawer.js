@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import { useWallet } from '@solana/wallet-adapter-react'
-import Drawer from '@mui/material/Drawer'
+import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button'
 import { Typography, Box } from '@mui/material'
 import List from '@mui/material/List'

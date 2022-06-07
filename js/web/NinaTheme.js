@@ -97,12 +97,12 @@ export const NinaTheme = createTheme({
       fontSize: '10px !important',
     },
   },
-  transitions: {
-    easing: {
-      easeOut: 'cubic-bezier(0, 1.5, .8, 1)',
-      sharp: 'linear',
-    },
-  },
+  // transitions: {
+  //   easing: {
+  //     easeOut: 'cubic-bezier(0, 1.5, .8, 1)',
+  //     sharp: 'linear',
+  //   },
+  // },
   spacing: 15,
   helpers: {
     grid: {
@@ -140,7 +140,7 @@ export const NinaTheme = createTheme({
       styleOverrides: {
         root: {
           padding: '10px',
-          fontSize: '100px',
+          fontSize: '10px',
           boxShadow: 'none',
           minWidth: 'unset !important',
           '&:hover': {
@@ -201,6 +201,13 @@ export const NinaTheme = createTheme({
       styleOverrides: {
         root: {
           cursor: 'pointer',
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          outline: '0'
         },
       },
     },
@@ -305,11 +312,11 @@ export const NinaTheme = createTheme({
           '& li button': {
             display: 'none',
           },
-          '& .MuiListItem-root': {
+          '& li': {
             justifyContent: 'flex-end',
             fontSize: '10px',
-            paddingTop: '0px',
-            paddingBottom: '0px',
+            padding: '0 16px',
+            fontSize: '10px !important',
             '&:hover': {
               backgroundColor: `${colors.white}`,
               color: `${colors.blue}`,

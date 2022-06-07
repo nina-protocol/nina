@@ -13,10 +13,11 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import nina from '@nina-protocol/nina-sdk'
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
+import {display} from '@mui/system'
 
 const { NinaContext } = nina.contexts
 
-const BundlrModal = ({ inCreate }) => {
+const BundlrModal = ({ inCreate, displaySmall }) => {
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const {
@@ -92,15 +93,26 @@ const BundlrModal = ({ inCreate }) => {
   }
 
   return (
-    <Root>
-      {!inCreate && (
+    <Root displaySmall={displaySmall}>
+      {!inCreate && displaySmall && (
+        <StyledSmallToggle
+         align={'right'}
+        variant='subtitle1' 
+        textTransform={'none'}
+        onClick={() => setOpen(true)}
+
+        >
+          Manage Upload Account 
+        </StyledSmallToggle>
+      )}
+      {!inCreate && !displaySmall && (
         <Button
           variant="contained"
           color="primary"
           type="submit"
           onClick={() => setOpen(true)}
         >
-          <Typography align="left" textTransform={'none'}>
+          <Typography align={'right'} variant='subtitle1'  textTransform={'none'}>
             Manage Upload Account
           </Typography>
         </Button>
@@ -114,7 +126,7 @@ const BundlrModal = ({ inCreate }) => {
           onClick={() => setOpen(true)}
           sx={{ height: '54px' }}
         >
-          <Typography align="left" textTransform={'none'}>
+          <Typography align={displaySmall ? 'right' : "left"} textTransform={'none'}>
             Click here to fund your Bundlr and start publishing
           </Typography>
         </Button>
@@ -206,7 +218,9 @@ const BundlrModal = ({ inCreate }) => {
                 }}
                 disabled={inProgress || !amount}
               >
-                {!inProgress && (mode === 'deposit' ? 'Deposit' : 'Withdraw')}
+                <Typography variant='body1'>
+                  {!inProgress && (mode === 'deposit' ? 'Deposit' : 'Withdraw')}
+                </Typography>
                 {inProgress && (
                   <Dots msg={'Please aprrove transaction in wallet'} />
                 )}
@@ -219,22 +233,25 @@ const BundlrModal = ({ inCreate }) => {
   )
 }
 
-const PREFIX = 'Royalty'
-
-const classes = {
-  recipientData: `${PREFIX}-recipientData`,
-}
-
-const Root = styled('div')(({ theme }) => ({
+const Root = styled('div')(({ theme, displaySmall }) => ({
   display: 'flex',
-  alignItems: 'center',
-  width: '100%',
+  alignItems: displaySmall ? 'right' : 'center',
+  width: displaySmall ? '' : '100%',
 }))
 
 const StyledModal = styled(Modal)(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+}))
+
+const StyledSmallToggle = styled(Typography)(() => ({
+  cursor: 'pointer',
+  margin: '5px 0',
+  textDecoration: 'underline',
+  '&:hover': {
+    opacity: '50%'
+  }
 }))
 
 const StyledPaper = styled(Paper)(({ theme }) => ({

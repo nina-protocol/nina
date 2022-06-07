@@ -28,13 +28,13 @@ const StyledDots = styled('span', {
     fontSize: size ? size : 'inherit',
     borderRadius: '50%',
     animation: 'blink 1s infinite',
-    '&:nth-child(1)': {
+    '&:nth-of-type(1)': {
       animationDelay: '0ms',
     },
-    '&:nth-child(2)': {
+    '&:nth-of-type(2)': {
       animationDelay: '250ms',
     },
-    '&:nth-child(3)': {
+    '&:nth-of-type(3)': {
       animationDelay: '5000ms',
     },
   },
