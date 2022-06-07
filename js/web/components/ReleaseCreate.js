@@ -457,7 +457,7 @@ const ReleaseCreate = () => {
             <Box display="flex" justifyContent="space-between">
               {bundlrBalance > 0 && (
                 <BundlrBalanceInfo variant="subtitle1" align="left">
-                  Bundlr Balance: {bundlrBalance?.toFixed(4)} SOL / $
+                  Balance: {bundlrBalance?.toFixed(4)} SOL / $
                   {bundlrUsdBalance.toFixed(2)} / {mbs?.toFixed(2)} MB ($
                   {(bundlrUsdBalance / mbs)?.toFixed(4)}/MB)
                 </BundlrBalanceInfo>
@@ -473,11 +473,7 @@ const ReleaseCreate = () => {
                   {(uploadSize * (bundlrUsdBalance / mbs)).toFixed(2)}
                 </Typography>
               )}
-              {npcAmountHeld > 0 && (
-                <Typography variant="subtitle1" align="right">
-                  Nina Publishing Credits: {npcAmountHeld} 
-                </Typography>
-              )}
+    
               <BundlrModal inCreate={false} displaySmall={true}/>
             </Box>
           </CreateCta>

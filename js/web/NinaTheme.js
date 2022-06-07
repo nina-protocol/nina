@@ -204,6 +204,13 @@ export const NinaTheme = createTheme({
         },
       },
     },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          outline: '0'
+        },
+      },
+    },
     MuiTypography: {
       styleOverrides: {
         root: {

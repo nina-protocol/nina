@@ -252,6 +252,8 @@ const StyledModal = styled(Modal)(() => ({
 
 const StyledSmallToggle = styled(Typography)(() => ({
   cursor: 'pointer',
+  margin: '5px 0',
+  textDecoration: 'underline',
   '&:hover': {
     opacity: '50%'
   }
