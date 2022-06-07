@@ -47,10 +47,10 @@ const ReleaseCreate = () => {
   const {enqueueSnackbar} = useSnackbar()
   const wallet = useWallet()
   const {
-    releaseInitViaHub,
     releaseState,
     initializeReleaseAndMint,
     releaseCreateMetadataJson,
+    releaseCreate
   } = useContext(ReleaseContext)
   const {hubState} = useContext(HubContext)
   const router = useRouter()
@@ -159,6 +159,7 @@ const ReleaseCreate = () => {
 
   useEffect(() => {
     if (releasePubkey && releaseState.tokenData[releasePubkey]) {
+      console.log('releasePubkey :>> ', releasePubkey);
       setRelease(releaseState.tokenData[releasePubkey])
     }
   }, [releaseState.tokenData[releasePubkey]])
@@ -199,8 +200,10 @@ const ReleaseCreate = () => {
   
 
   const handleSubmit = async () => {
+    console.log('SUBMIT');
     try {
       if (releaseCreated) {
+        console.log('navigating to release');
         router.push(
           {
             pathname: `/${releasePubkey.toBase58()}`,
@@ -245,8 +248,12 @@ const ReleaseCreate = () => {
             updateUpload(upload, UploadType.track, trackResult)
           }
           if (uploadHasItemForType(upload, UploadType.track) || trackResult) {
+            console.log('in metadata step');
+            console.log('metadataTx :>> ', metadataTx);
+            console.log('releaseInfo :>> ', releaseInfo);
             let metadataResult = metadataTx
             const info = releaseInfo || (await initializeReleaseAndMint())
+            console.log('info :>> ', info);
             setReleaseInfo(info)
             setReleasePubkey(info.release)
             if (!uploadHasItemForType(upload, UploadType.metadataJson)) {
@@ -273,6 +280,8 @@ const ReleaseCreate = () => {
                   })
                 )
               ).data.id
+
+              console.log('metadataResult :>> ', metadataResult);
               setMetadata(metadataJson)
               setMetadataTx(metadataResult)
               updateUpload(
@@ -293,7 +302,10 @@ const ReleaseCreate = () => {
                 }
               )
 
-              const success = await releaseCreate({
+              console.log('formValues.releaseForm :>> ', formValues.releaseForm);
+              console.log('info :>> ', info);
+
+              const result = await releaseCreate({
                 ...formValues.releaseForm,
                 release: info.release,
                 releaseBump: info.releaseBump,
@@ -301,8 +313,10 @@ const ReleaseCreate = () => {
                 metadataUri: `https://arweave.net/${metadataResult}`,
               })
 
-              if (success) {
-                enqueueSnackbar('Release Created!', {
+              console.log('result :>> ', result);
+
+              if (result.success) {
+                enqueueSnackbar('Release Created!', {  
                   variant: 'success',
                 })
 
@@ -468,6 +482,11 @@ const ReleaseCreate = () => {
                 <Typography variant="subtitle1" align="right">
                   Upload Size: {uploadSize} MB | Cost: $
                   {(uploadSize * (bundlrUsdBalance / mbs)).toFixed(2)}
+                </Typography>
+              )}
+              {npcAmountHeld > 0 && (
+                <Typography variant="subtitle1" align="right">
+                  Nina Publishing Credits: {npcAmountHeld} 
                 </Typography>
               )}
             </Box>

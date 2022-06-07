@@ -193,6 +193,7 @@ const releaseContextHelper = ({
 }) => {
   const { provider, ids, nativeToUi, uiToNative, isSol, isUsdc, endpoints } = ninaClient
   const initializeReleaseAndMint = async (hubPubkey) => {
+    console.log('in init release');
     const program = await ninaClient.useProgram()
     const releaseMint = anchor.web3.Keypair.generate()
     const [release, releaseBump] =
@@ -203,15 +204,18 @@ const releaseContextHelper = ({
         ],
         program.programId
       )
-      const [hubRelease] =
-      await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-release')),
-          new anchor.web3.PublicKey(hubPubkey).toBuffer(),
-          release.toBuffer(),
-        ],
-        program.programId
-      )
+      let hubRelease;
+      if (hubPubkey) {
+        [hubRelease] =
+        await anchor.web3.PublicKey.findProgramAddress(
+          [
+            Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-release')),
+            new anchor.web3.PublicKey(hubPubkey).toBuffer(),
+            release.toBuffer(),
+          ],
+          program.programId
+        )
+      }
 
     return {
       release,
@@ -556,8 +560,13 @@ const releaseContextHelper = ({
     retailPrice,
     amount,
     resalePercentage,
+    artist,
+    title,
+    catalogNumber,
+    metadataUri,
     isUsdc = true,
   }) => {
+    console.log('release create');
     setPressingState({
       ...pressingState,
       pending: true,
@@ -649,7 +658,7 @@ const releaseContextHelper = ({
         amountToArtistTokenAccount: new anchor.BN(0),
         amountToVaultTokenAccount: new anchor.BN(0),
         resalePercentage: new anchor.BN(resalePercentage * 10000),
-        price: new anchor.BN(NinaClient.uiToNative(retailPrice, paymentMint)),
+        price: new anchor.BN(ninaClient.uiToNative(retailPrice, paymentMint)),
         releaseDatetime: new anchor.BN(now.getTime() / 1000),
       }
 
@@ -699,13 +708,14 @@ const releaseContextHelper = ({
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
 
       await getRelease(release)
+      console.log('release :>> ', release.toBase58());
 
       setPressingState({
         ...pressingState,
         pending: false,
         completed: true,
       })
-      return true
+      return {success: true}
     } catch (error) {
       setPressingState({
         pending: false,
