@@ -470,6 +470,10 @@ const ninaContextHelper = ({
         if (!value) return
         await bundlr.fund(value)
         await getBundlrBalance()
+        return {
+          success: true,
+          msg: `${fundAmount} Sol successfully deposited`
+        }
       }
     } catch (error) {
       console.warn('Bundlr fund error: ', error)
@@ -483,6 +487,10 @@ const ninaContextHelper = ({
         if (!value) return
         await bundlr.withdrawBalance(value)
         await getBundlrBalance()
+        return {
+          success: true,
+          msg: `${withdrawAmount} Sol successfully withdrawn`
+        }
       }
     } catch (error) {
       console.warn('Bundlr withdraw error: ', error)

@@ -486,6 +486,7 @@ const ReleaseCreate = () => {
                   Nina Publishing Credits: {npcAmountHeld} 
                 </Typography>
               )}
+              <BundlrModal inCreate={false} displaySmall={true}/>
             </Box>
           </CreateCta>
         </NinaBox>
