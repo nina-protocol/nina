@@ -34,7 +34,7 @@ const Exchange = (props) => {
     getExchangeHistoryForRelease,
     filterExchangeHistoryForRelease,
   } = useContext(ExchangeContext)
-  const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext)
+  const { updateTrack, addTrackToQueue } = useContext(AudioPlayerContext)
 
   const [exchangeAwaitingConfirm, setExchangeAwaitingConfirm] =
     useState(undefined)
@@ -170,8 +170,7 @@ const Exchange = (props) => {
               <CtaWrapper sx={{ display: 'flex' }}>
                 <Button
                   onClick={() =>
-                    updateTxid(
-                      metadata.properties.files[0].uri,
+                    updateTrack(
                       releasePubkey,
                       true
                     )
