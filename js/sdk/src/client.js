@@ -52,7 +52,7 @@ const NinaClient = function (provider, network) {
   obj.ENDPOINT_ARWEAVE = 'https://arweave.net' //'https://h6chwwrsde.medianet.work'
   obj.endpoints = {
     arweave: obj.ENDPOINT_ARWEAVE,
-    pressingPlant: 'https://pressingplant-dev.nina.market:443',
+    pressingPlant: 'https://pressingplant-dev.nina.market',
     api: 'https://api-dev.nina.market:443',
   }
   obj.decimalsForMint = (mint) => {

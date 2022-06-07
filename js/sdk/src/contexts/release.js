@@ -193,7 +193,6 @@ const releaseContextHelper = ({
 }) => {
   const { provider, ids, nativeToUi, uiToNative, isSol, isUsdc, endpoints } = ninaClient
   const initializeReleaseAndMint = async (hubPubkey) => {
-    console.log('in init release');
     const program = await ninaClient.useProgram()
     const releaseMint = anchor.web3.Keypair.generate()
     const [release, releaseBump] =
@@ -569,7 +568,6 @@ const releaseContextHelper = ({
     releaseBump,
     releaseMint,
   }) => {
-    console.log('release create');
     setPressingState({
       ...pressingState,
       pending: true,
@@ -702,7 +700,6 @@ const releaseContextHelper = ({
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
       await hasRelease(release.toBase58())
       await getRelease(release)
-      console.log('release :>> ', release.toBase58());
 
       setPressingState({
         ...pressingState,

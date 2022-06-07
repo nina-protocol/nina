@@ -159,7 +159,6 @@ const ReleaseCreate = () => {
 
   useEffect(() => {
     if (releasePubkey && releaseState.tokenData[releasePubkey]) {
-      console.log('releasePubkey :>> ', releasePubkey);
       setRelease(releaseState.tokenData[releasePubkey])
     }
   }, [releaseState.tokenData[releasePubkey]])
@@ -200,10 +199,8 @@ const ReleaseCreate = () => {
   
 
   const handleSubmit = async () => {
-    console.log('SUBMIT');
     try {
       if (releaseCreated) {
-        console.log('navigating to release');
         router.push(
           {
             pathname: `/${releasePubkey.toBase58()}`,
@@ -296,9 +293,6 @@ const ReleaseCreate = () => {
                 }
               )
 
-              console.log('formValues.releaseForm :>> ', formValues.releaseForm);
-              console.log('info :>> ', info);
-
               const result = await releaseCreate({
                 ...formValues.releaseForm,
                 release: info.release,
@@ -309,8 +303,6 @@ const ReleaseCreate = () => {
                 releaseBump: info.releaseBump,
                 releaseMint: info.releaseMint,            
               })
-
-              console.log('result :>> ', result);
 
               if (result.success) {
                 enqueueSnackbar('Release Created!', {  
