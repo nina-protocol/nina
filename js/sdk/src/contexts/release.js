@@ -565,6 +565,9 @@ const releaseContextHelper = ({
     catalogNumber,
     metadataUri,
     isUsdc = true,
+    release,
+    releaseBump,
+    releaseMint,
   }) => {
     console.log('release create');
     setPressingState({
@@ -575,21 +578,12 @@ const releaseContextHelper = ({
     try {
       const program = await ninaClient.useProgram()
 
-      const releaseMint = anchor.web3.Keypair.generate()
       const paymentMint = new anchor.web3.PublicKey(
         isUsdc ? ids.mints.usdc : ids.mints.wsol
       )
       const publishingCreditMint = new anchor.web3.PublicKey(
         ids.mints.publishingCredit
       )
-      const [release, releaseBump] =
-        await anchor.web3.PublicKey.findProgramAddress(
-          [
-            Buffer.from(anchor.utils.bytes.utf8.encode('nina-release')),
-            releaseMint.publicKey.toBuffer(),
-          ],
-          program.programId
-        )
 
       const [releaseSigner, releaseSignerBump] =
         await anchor.web3.PublicKey.findProgramAddress(

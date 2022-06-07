@@ -311,6 +311,9 @@ const ReleaseCreate = () => {
                 releaseBump: info.releaseBump,
                 releaseMint: info.releaseMint,
                 metadataUri: `https://arweave.net/${metadataResult}`,
+                release: info.release,
+                releaseBump: info.releaseBump,
+                releaseMint: info.releaseMint,            
               })
 
               console.log('result :>> ', result);
