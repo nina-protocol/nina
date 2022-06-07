@@ -203,15 +203,18 @@ const releaseContextHelper = ({
         ],
         program.programId
       )
-      const [hubRelease] =
-      await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-release')),
-          new anchor.web3.PublicKey(hubPubkey).toBuffer(),
-          release.toBuffer(),
-        ],
-        program.programId
-      )
+      let hubRelease;
+      if (hubPubkey) {
+        [hubRelease] =
+        await anchor.web3.PublicKey.findProgramAddress(
+          [
+            Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-release')),
+            new anchor.web3.PublicKey(hubPubkey).toBuffer(),
+            release.toBuffer(),
+          ],
+          program.programId
+        )
+      }
 
     return {
       release,
@@ -556,7 +559,14 @@ const releaseContextHelper = ({
     retailPrice,
     amount,
     resalePercentage,
+    artist,
+    title,
+    catalogNumber,
+    metadataUri,
     isUsdc = true,
+    release,
+    releaseBump,
+    releaseMint,
   }) => {
     setPressingState({
       ...pressingState,
@@ -566,21 +576,12 @@ const releaseContextHelper = ({
     try {
       const program = await ninaClient.useProgram()
 
-      const releaseMint = anchor.web3.Keypair.generate()
       const paymentMint = new anchor.web3.PublicKey(
         isUsdc ? ids.mints.usdc : ids.mints.wsol
       )
       const publishingCreditMint = new anchor.web3.PublicKey(
         ids.mints.publishingCredit
       )
-      const [release, releaseBump] =
-        await anchor.web3.PublicKey.findProgramAddress(
-          [
-            Buffer.from(anchor.utils.bytes.utf8.encode('nina-release')),
-            releaseMint.publicKey.toBuffer(),
-          ],
-          program.programId
-        )
 
       const [releaseSigner, releaseSignerBump] =
         await anchor.web3.PublicKey.findProgramAddress(
@@ -649,7 +650,7 @@ const releaseContextHelper = ({
         amountToArtistTokenAccount: new anchor.BN(0),
         amountToVaultTokenAccount: new anchor.BN(0),
         resalePercentage: new anchor.BN(resalePercentage * 10000),
-        price: new anchor.BN(NinaClient.uiToNative(retailPrice, paymentMint)),
+        price: new anchor.BN(ninaClient.uiToNative(retailPrice, paymentMint)),
         releaseDatetime: new anchor.BN(now.getTime() / 1000),
       }
 
@@ -697,7 +698,7 @@ const releaseContextHelper = ({
         instructions,
       })
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
-
+      await hasRelease(release.toBase58())
       await getRelease(release)
 
       setPressingState({
@@ -705,13 +706,36 @@ const releaseContextHelper = ({
         pending: false,
         completed: true,
       })
-      return true
+      return {success: true}
     } catch (error) {
       setPressingState({
         pending: false,
         completed: false,
       })
       return ninaErrorHandler(error)
+    }
+  }
+
+  const hasRelease = async(releaseId) => {
+    try {
+      const releaseRequest = await fetch(
+        `${endpoints.api}/releases/${releaseId}`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+      if (releaseRequest.status === 200) {
+        await sleep(1000)
+        return
+      } else {
+        await sleep(2500)
+        return await hasRelease(releaseId)
+      }
+    } catch (error) {
+      console.warn(error)
+      await sleep(2500)
+      return await hasRelease(releaseId)
     }
   }
 

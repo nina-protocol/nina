@@ -52,8 +52,8 @@ const NinaClient = function (provider, network) {
   obj.ENDPOINT_ARWEAVE = 'https://arweave.net' //'https://h6chwwrsde.medianet.work'
   obj.endpoints = {
     arweave: obj.ENDPOINT_ARWEAVE,
-    pressingPlant: 'https://pressingplant-dev.nina.market:443',
-    api: 'https://api-dev.nina.market',
+    pressingPlant: 'https://pressingplant-dev.nina.market',
+    api: 'https://api-dev.nina.market:443',
   }
   obj.decimalsForMint = (mint) => {
     switch (typeof mint === 'string' ? mint : mint.toBase58()) {
@@ -74,7 +74,10 @@ const NinaClient = function (provider, network) {
     return new anchor.Program(idl, NINA_ID, obj.provider)
   }
   obj.isUsdc = (mint) => {
-    return mint.toBase58() === obj.ids.mints.usdc
+    if (typeof mint !== 'string') {
+      return mint.toBase58() === obj.ids.mints.usdc
+    }
+    return mint === obj.ids.mints.usdc
   }
   obj.nativeToUiString = (
     amount,

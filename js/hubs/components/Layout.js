@@ -20,7 +20,6 @@ const Layout = ({ children }) => {
   const router = useRouter()
   const hubPubkey = router.query.hubPubkey
 
-
   // if (!hubState[hubPubkey]?.metadata) {
   //   return (
   //     <Box width="100%" display="flex" justifyContent="center" height="100vh">
@@ -29,13 +28,12 @@ const Layout = ({ children }) => {
   //   )
   // }
 
-
   const { hubState } = useContext(HubContext)
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
 
   useEffect(() => {
-    if (!router.pathname.includes('dashboard')) {
+    if (!router.pathname.includes('dashboard') && router.route !== '/') {
       if (hubData?.json.backgroundColor) {
         lightTheme.palette.background.default = hubData.json.backgroundColor
       }

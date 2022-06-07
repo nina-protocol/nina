@@ -28,6 +28,8 @@ const ReleaseList = () => {
   const [exchanges, setExchanges] = useState(0)
   const [exchangeSales, setExchangeSales] = useState(0)
 
+  const USDC_MINT_ID = ninaClient.ids.mints.usdc
+
   useEffect(() => {
     if (wallet?.connected) {
       getReleasesPublishedByUser(wallet.publicKey)
