@@ -10,7 +10,7 @@ import QueueList from './QueueList'
 const { AudioPlayerContext } = nina.contexts
 
 const QueueDrawer = (props) => {
-  const { txid, updateTxid, playlist, reorderPlaylist, currentIndex } =
+  const { track, updateTrack, playlist, reorderPlaylist, currentIndex } =
     useContext(AudioPlayerContext)
   const wallet = useWallet()
   const [selectedIndex, setSelectedIndex] = useState(0)
@@ -26,7 +26,7 @@ const QueueDrawer = (props) => {
         setNextInfo(playlist[index + 1])
       }
     }
-  }, [txid, playlist])
+  }, [track, playlist])
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -39,17 +39,12 @@ const QueueDrawer = (props) => {
   }
 
   useEffect(() => {
-    const playlistEntry = playlist.find((entry) => entry.txid === txid)
+    const playlistEntry = playlist.find((entry) => entry.releasePubkey === track.releasePubkey)
 
     if (playlistEntry) {
       setSelectedIndex(playlist?.indexOf(playlistEntry) || 0)
     }
-  }, [txid, playlist])
-
-  const handleListItemClick = (event, index, txid) => {
-    setSelectedIndex(index)
-    updateTxid(txid)
-  }
+  }, [track, playlist])
 
   const getItemStyle = (isDragging, draggableStyle) => ({
     // styles we need to apply on draggables

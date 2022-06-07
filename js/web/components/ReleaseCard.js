@@ -16,7 +16,7 @@ const {AudioPlayerContext, ReleaseContext, HubContext} = nina.contexts
 
 const ReleaseCard = (props) => {
   const { artwork, metadata, preview, releasePubkey, userHubs } = props
-  const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext)
+  const { updateTrack, addTrackToQueue } = useContext(AudioPlayerContext)
   const { releaseState } = useContext(ReleaseContext)
   const image = useMemo(() => metadata?.image)
   const {enqueueSnackbar} = useSnackbar()
@@ -29,10 +29,10 @@ const ReleaseCard = (props) => {
             <Box>
               <Button
                 onClick={() =>
-                  updateTxid(
-                    metadata.properties.files[0].uri,
+                  updateTrack(
                     releasePubkey,
-                    true
+                    true,
+                    true,
                   )
                 }
                 sx={{ height: '22px', width: '28px' }}

@@ -36,8 +36,8 @@ const QueueList = (props) => {
   const wallet = useWallet()
   const router = useRouter()
   const {
-    txid,
-    updateTxid,
+    track,
+    updateTrack,
     playlist,
     reorderPlaylist,
     removeTrackFromQueue,
@@ -49,12 +49,12 @@ const QueueList = (props) => {
   const [skipForReorder, setSkipForReorder] = useState(false)
 
   useEffect(() => {
-    const playlistEntry = playlist.find((entry) => entry.txid === txid)
+    const playlistEntry = playlist.find((entry) => entry.releasePubkey === track.releasePubkey)
 
     if (playlistEntry) {
       setSelectedIndex(playlist?.indexOf(playlistEntry) || 0)
     }
-  }, [txid, playlist])
+  }, [track, playlist])
 
   useEffect(() => {
     if (!skipForReorder) {
@@ -64,9 +64,9 @@ const QueueList = (props) => {
     }
   }, [playlist])
 
-  const handleListItemClick = (event, index, txid) => {
+  const handleListItemClick = (event, index) => {
     setSelectedIndex(index)
-    updateTxid(txid, playlist[index].releasePubkey, true)
+    updateTrack(playlist[index].releasePubkey, true)
   }
 
   const goToRelease = (e, releasePubkey) => {
@@ -86,7 +86,7 @@ const QueueList = (props) => {
       result.source.index,
       result.destination.index
     )
-    const playlistEntry = playlistState.find((entry) => entry.txid === txid)
+    const playlistEntry = playlistState.find((entry) => entry.releasePubkey === track.releasePubkey)
 
     if (playlistEntry) {
       setSelectedIndex(playlist?.indexOf(playlistEntry) || 0)
@@ -136,13 +136,13 @@ const QueueList = (props) => {
               >
                 {playlist.map((entry, i) => (
                   <TableRow
-                    component={DraggableComponent(entry.txid, i)}
-                    key={entry.txid}
+                    component={DraggableComponent(entry.releasePubkey, i)}
+                    key={entry.releasePubkey}
                   >
                     <TableCell scope="row">{i + 1}</TableCell>
                     <TableCell
                       onClick={(event) =>
-                        handleListItemClick(event, i, entry.txid)
+                        handleListItemClick(event, i, entry.releasePubkey)
                       }
                     >
                       {isPlaying && selectedIndex === i ? (
@@ -152,10 +152,9 @@ const QueueList = (props) => {
                           onClick={() =>
                             selectedIndex === i
                               ? setIsPlaying(true)
-                              : updateTxid(
-                                  entry.txid,
+                              : updateTrack(
                                   entry.releasePubkey,
-                                  true
+                                  true,
                                 )
                           }
                         />

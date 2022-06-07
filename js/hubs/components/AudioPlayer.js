@@ -145,7 +145,7 @@ const AudioPlayer = () => {
   }
 
   const previous = () => {
-    if (hasPrevious.current) {
+    if (hasPrevious) {
       setTrackProgress(0)
       activeIndexRef.current = activeIndexRef.current - 1
       playPrev(true)

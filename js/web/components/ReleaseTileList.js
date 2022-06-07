@@ -12,7 +12,7 @@ const { AudioPlayerContext } = nina.contexts
 
 const ReleaseTileList = (props) => {
   const { releases } = props
-  const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext)
+  const { updateTrack, addTrackToQueue } = useContext(AudioPlayerContext)
 
   const router = useRouter()
 
@@ -43,9 +43,9 @@ const ReleaseTileList = (props) => {
                   <Button
                     onClick={(e) => {
                       e.stopPropagation()
-                      updateTxid(
-                        release.metadata.properties.files[0].uri,
+                      updateTrack(
                         release.releasePubkey,
+                        true,
                         true
                       )
                     }}

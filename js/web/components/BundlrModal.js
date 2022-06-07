@@ -189,12 +189,7 @@ const BundlrModal = ({ inCreate }) => {
                   endAdornment: (
                     <InputAdornment position="start">
                       {amount > 0
-                        ? `(${ninaClient
-                            .uiToNative(
-                              bundlrPricePerMb * amount,
-                              ninaClient.ids.mints.wsol
-                            )
-                            .toFixed(2)} MBs)`
+                        ? `(${(amount / bundlrPricePerMb).toFixed(2)} MBs)`
                         : ''}
                     </InputAdornment>
                   ),

@@ -154,7 +154,7 @@ const EnhancedTableHead = (props) => {
 
 const ReleaseListTable = (props) => {
   const { releases, tableType, collectRoyaltyForRelease } = props
-  const { updateTxid, addTrackToQueue } = useContext(AudioPlayerContext)
+  const { updateTrack, addTrackToQueue } = useContext(AudioPlayerContext)
   const { ninaClient } = useContext(NinaContext)
   const { releaseState } = useContext(ReleaseContext)
   const router = useRouter()
@@ -176,9 +176,9 @@ const ReleaseListTable = (props) => {
   const handlePlay = (e, releasePubkey) => {
     e.stopPropagation()
     e.preventDefault()
-    updateTxid(
-      releaseState.metadata[releasePubkey].properties.files[0].uri,
+    updateTrack(
       releasePubkey,
+      true,
       true
     )
   }
