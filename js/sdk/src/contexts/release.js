@@ -700,7 +700,7 @@ const releaseContextHelper = ({
         instructions,
       })
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
-
+      await hasRelease(release.toBase58())
       await getRelease(release)
       console.log('release :>> ', release.toBase58());
 
@@ -716,6 +716,29 @@ const releaseContextHelper = ({
         completed: false,
       })
       return ninaErrorHandler(error)
+    }
+  }
+
+  const hasRelease = async(releaseId) => {
+    try {
+      const releaseRequest = await fetch(
+        `${endpoints.api}/releases/${releaseId}`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+      if (releaseRequest.status === 200) {
+        await sleep(1000)
+        return
+      } else {
+        await sleep(2500)
+        return await hasRelease(releaseId)
+      }
+    } catch (error) {
+      console.warn(error)
+      await sleep(2500)
+      return await hasRelease(releaseId)
     }
   }
 
