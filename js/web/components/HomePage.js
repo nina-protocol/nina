@@ -48,6 +48,7 @@ const HomePage = () => {
             >
               <Link href="/releases/highlights">Highlights</Link>
               <Button
+                sx={{padding: '6px 8px'}}
                 onClick={() =>
                   resetQueueWithPlaylist(
                     releasesRecent.highlights.map(
@@ -101,6 +102,7 @@ const HomePage = () => {
             >
               <Link href="/releases/new">New Releases</Link>
               <Button
+                sx={{padding: '6px 8px'}}
                 onClick={() =>
                   resetQueueWithPlaylist(
                     releasesRecent.published.map(

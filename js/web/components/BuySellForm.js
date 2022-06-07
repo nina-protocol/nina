@@ -102,6 +102,7 @@ const StyledForm = styled('form')(({ theme }) => ({
   marginTop: '10px',
   borderBottom: `1px solid ${theme.palette.greyLight}`,
   backgroundColor: `${theme.palette.white}`,
+  fontSize: '14px',
 
   [`& .${classes.buySellFormInputLabel}`]: {
     fontSize: '2rem',

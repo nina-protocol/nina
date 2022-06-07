@@ -23,7 +23,7 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
 
   const { updateTrack, track, isPlaying } = useContext(AudioPlayerContext)
   const { releaseState, getRelease } = useContext(ReleaseContext)
-  const {getHub, hubState, getHubsForUser, filterHubsForUser, hubCollaboratorsState } = useContext(HubContext)
+  const {getHub, hubState, getHubsForUser, filterHubsForUser } = useContext(HubContext)
 
   const [metadata, setMetadata] = useState(metadataSsr || null)
   const [userHubs, setUserHubs] = useState()

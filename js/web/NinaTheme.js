@@ -140,7 +140,7 @@ export const NinaTheme = createTheme({
       styleOverrides: {
         root: {
           padding: '10px',
-          fontSize: '100px',
+          fontSize: '10px',
           boxShadow: 'none',
           minWidth: 'unset !important',
           '&:hover': {

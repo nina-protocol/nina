@@ -74,7 +74,10 @@ const NinaClient = function (provider, network) {
     return new anchor.Program(idl, NINA_ID, obj.provider)
   }
   obj.isUsdc = (mint) => {
-    return mint.toBase58() === obj.ids.mints.usdc
+    if (typeof mint !== 'string') {
+      return mint.toBase58() === obj.ids.mints.usdc
+    }
+    return mint === obj.ids.mints.usdc
   }
   obj.nativeToUiString = (
     amount,

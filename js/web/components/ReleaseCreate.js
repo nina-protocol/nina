@@ -209,7 +209,6 @@ const ReleaseCreate = () => {
             pathname: `/${releasePubkey.toBase58()}`,
             query: {
               metadata: JSON.stringify(metadata),
-              hub: JSON.stringify(hubData),
             },
           },
           `/${releasePubkey.toBase58()}`
@@ -248,12 +247,8 @@ const ReleaseCreate = () => {
             updateUpload(upload, UploadType.track, trackResult)
           }
           if (uploadHasItemForType(upload, UploadType.track) || trackResult) {
-            console.log('in metadata step');
-            console.log('metadataTx :>> ', metadataTx);
-            console.log('releaseInfo :>> ', releaseInfo);
-            let metadataResult = metadataTx
+                     let metadataResult = metadataTx
             const info = releaseInfo || (await initializeReleaseAndMint())
-            console.log('info :>> ', info);
             setReleaseInfo(info)
             setReleasePubkey(info.release)
             if (!uploadHasItemForType(upload, UploadType.metadataJson)) {
@@ -281,7 +276,6 @@ const ReleaseCreate = () => {
                 )
               ).data.id
 
-              console.log('metadataResult :>> ', metadataResult);
               setMetadata(metadataJson)
               setMetadataTx(metadataResult)
               updateUpload(
