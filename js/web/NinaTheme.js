@@ -97,12 +97,12 @@ export const NinaTheme = createTheme({
       fontSize: '10px !important',
     },
   },
-  transitions: {
-    easing: {
-      easeOut: 'cubic-bezier(0, 1.5, .8, 1)',
-      sharp: 'linear',
-    },
-  },
+  // transitions: {
+  //   easing: {
+  //     easeOut: 'cubic-bezier(0, 1.5, .8, 1)',
+  //     sharp: 'linear',
+  //   },
+  // },
   spacing: 15,
   helpers: {
     grid: {
@@ -288,7 +288,6 @@ export const NinaTheme = createTheme({
           },
         },
         '#wallet-menu': {
-          border: '2px solid red',
           '&.MuiPopover-root': {
             backgroundColor: `${colors.transparent}`,
           },
