@@ -288,6 +288,7 @@ export const NinaTheme = createTheme({
           },
         },
         '#wallet-menu': {
+          border: '2px solid red',
           '&.MuiPopover-root': {
             backgroundColor: `${colors.transparent}`,
           },
@@ -305,11 +306,11 @@ export const NinaTheme = createTheme({
           '& li button': {
             display: 'none',
           },
-          '& .MuiListItem-root': {
+          '& li': {
             justifyContent: 'flex-end',
             fontSize: '10px',
-            paddingTop: '0px',
-            paddingBottom: '0px',
+            padding: '0 16px',
+            fontSize: '10px !important',
             '&:hover': {
               backgroundColor: `${colors.white}`,
               color: `${colors.blue}`,
