@@ -35,7 +35,7 @@ const Exchange = (props) => {
     getExchangeHistoryForRelease,
     filterExchangeHistoryForRelease,
   } = useContext(ExchangeContext)
-  const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying } = useContext(AudioPlayerContext)
+  const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } = useContext(AudioPlayerContext)
 
   const [exchangeAwaitingConfirm, setExchangeAwaitingConfirm] =
     useState(undefined)
