@@ -23,7 +23,6 @@ const ReleaseSearch = () => {
   }, [])
 
   const getArtists = async () => {
-    console.log('ninaClient.endpoints :>> ', ninaClient.endpoints);
     const response = await axios.get(path + '/releases/artists')
     const data = response.data
     setArtists(data.artists)
