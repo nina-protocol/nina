@@ -9,7 +9,6 @@ import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import { styled } from "@mui/material/styles"
 import Dots from '../components/Dots'
-import nina from '@nina-protocol/nina-sdk'
 const { ReleaseContext } = nina.contexts
 const { formatDuration } = nina.utils
 

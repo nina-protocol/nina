@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import {AnchorProvider} from '@project-serum/anchor'
 import Router from "next/router";
 import { SnackbarProvider } from "notistack";
 import { ThemeProvider } from "@mui/material/styles";
@@ -15,17 +16,18 @@ import {
 } from '@solana/wallet-adapter-wallets'
 import { clusterApiUrl } from '@solana/web3.js'
 import { isMobile } from 'react-device-detect'
+import createCache from '@emotion/cache';
 import { NinaTheme } from "../NinaTheme";
 import Layout from "../components/Layout";
 import Dots from '../components/Dots'
 
-const {
-  ReleaseContextProvider,
-  NinaContextProvider,
-} = nina.contexts;
+const createEmotionCache = () => {
+  return createCache({key: 'css'});
+}
 
-function Application({ Component, clientSideEmotionCache, pageProps }) {
+function Application({ Component, pageProps }) {
   const [loading, setLoading] = useState(false);
+  const clientSideEmotionCache = createEmotionCache();
   React.useEffect(() => {
     const start = () => {
       setLoading(true);
@@ -74,8 +76,8 @@ function Application({ Component, clientSideEmotionCache, pageProps }) {
     )
   }
   const wallets = useMemo(
-      () => walletOptions,
-      [network]
+    () => walletOptions,
+    [network]
   );
   return (
     <SnackbarProvider
@@ -118,10 +120,13 @@ const NinaWrapper = ({children}) => {
   const provider = new AnchorProvider(
     connection,
     wallet,
-    AnchorProvider.defaultOptions()
+    {
+      commitment: 'confirmed',
+      preflightCommitment: 'processed'
+    }
   )  
 
-  const ninaClient = nina.client(provider, network)
+  const ninaClient = nina.client(provider, process.env.REACT_APP_CLUSTER)
 
   return (
     <NinaContextProvider ninaClient={ninaClient}>

@@ -25,7 +25,9 @@ module.exports = withTM({
     };
     config.resolve.alias = {
       ...config.resolve.alias,
-      react: path.resolve('../node_modules/react')
+      '@nina-protocol/nina-sdk': path.resolve('../node_modules/@nina-protocol/nina-sdk'),
+      react: path.resolve('../node_modules/react'),
+      zlib: require.resolve('zlib-browserify'),
     }
 
     return config;
