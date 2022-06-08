@@ -5,13 +5,13 @@ import Typography from "@mui/material/Typography";
 import Link from "next/link";
 import nina from "@nina-protocol/nina-sdk";
 import Royalty from "./Royalty.js";
-const { ReleaseContext } = nina.contexts;
-const { NinaClient } = nina.utils;
+const { NinaContext, ReleaseContext } = nina.contexts;
 
 const ReleaseSettings = (props) => {
   const { releasePubkey, tempMetadata, inCreateFlow } = props;
 
   const { releaseState, releaseFetchStatus } = useContext(ReleaseContext);
+  const { ninaClient } = useContext(NinaContext);
   const [release, setRelease] = useState(releaseState.tokenData[releasePubkey]);
   const [metadata, setMetadata] = useState(
     releaseState.metadata[releasePubkey]
@@ -102,7 +102,7 @@ const ReleaseSettings = (props) => {
           <ReleaseStat variant="body1" component="p">
             <ReleaseStatLeft variant="subtitle1">Cost USD</ReleaseStatLeft>
             <ReleaseStatRight variant="subtitle1">
-              {NinaClient.nativeToUiString(
+              {ninaClient.nativeToUiString(
                 release?.price.toNumber(),
                 release?.paymentMint,
                 false,
@@ -141,7 +141,7 @@ const ReleaseSettings = (props) => {
                   Total Earnings
                 </ReleaseStatLeft>
                 <ReleaseStatRight variant="subtitle1">
-                  {NinaClient.nativeToUiString(
+                  {ninaClient.nativeToUiString(
                     release?.totalCollected.toNumber(),
                     release?.paymentMint
                   )}

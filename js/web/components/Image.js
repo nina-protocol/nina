@@ -4,11 +4,11 @@ import NextImage from "next/image";
 import { DateTime } from "luxon";
 
 function Image({ src, height, width, layout, priority, release }) {
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(true);
   const handleLoad = (event, byPass) => {
-    event.persist();
+    event.persist()
     if (event.target.srcset || byPass) {
-      setReady(true);
+      setReady(true)
     }
   };
 
@@ -19,22 +19,26 @@ function Image({ src, height, width, layout, priority, release }) {
   let ImageComponent;
   if (release) {
     if (release.tokenData) {
-      release = release.tokenData;
+      release = release.tokenData
     }
-    const now = DateTime.now();
+    const now = DateTime.now()
     const releaseDatetime = DateTime.fromMillis(
       release.releaseDatetime.toNumber() * 1000
     );
     const hours = now.diff(releaseDatetime, "hours").toObject().hours;
+<<<<<<< HEAD
     if (hours < 0.05) {
+=======
+    if (hours < 12.05) {
+>>>>>>> 1d5a4178f6b01ac5b2844997797dc4e33219c9eb
       if (src) {
         ImageComponent = () => (
           <img
             src={src}
             onLoad={(e) => handleLoad(e, true)}
-            style={{ width: "100%", height: "100%" }}
+            style={{ width: '100%', height: '100%' }}
           />
-        );
+        )
       }
     }
   }
@@ -49,25 +53,25 @@ function Image({ src, height, width, layout, priority, release }) {
         onLoad={(e) => handleLoad(e, false)}
         loader={loaderProp}
       />
-    );
+    )
   }
 
   return (
     <div
       style={{
         opacity: ready ? 1 : 0,
-        transition: "opacity .3s ease-in-out",
+        transition: 'opacity .3s ease-in-out',
       }}
       className="imageWrapper"
     >
       <ImageComponent />
     </div>
-  );
+  )
 }
 
 function srcComparision(prevImage, nextImage) {
-  return prevImage.src === nextImage.src && nextImage.release;
+  return prevImage.src === nextImage.src && nextImage.release
 }
 
-const MemoizedImage = React.memo(Image, srcComparision);
-export default MemoizedImage;
+const MemoizedImage = React.memo(Image, srcComparision)
+export default MemoizedImage

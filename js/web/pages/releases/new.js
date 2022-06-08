@@ -1,7 +1,7 @@
-import Releases from "../../components/Releases";
+import Releases from '../../components/Releases'
 
 const NewReleases = () => {
-  return <Releases type="new" />;
-};
+  return <Releases type="new" />
+}
 
-export default NewReleases;
+export default NewReleases

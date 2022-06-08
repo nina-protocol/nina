@@ -1,4 +1,4 @@
-anchor_version = "0.18.0"
+anchor_version = "0.24.2"
 
 [provider]
 cluster = "localnet"
@@ -8,26 +8,24 @@ wallet = "~/.config/solana/nina.json"
 nina = "ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4"
 
 [programs.devnet]
-nina = "ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4"
+nina = "77BKtqWTbTRxj5eZPuFbeXjx3qz4TTHoXRnpCejYWiQH"
 
 [programs.localnet]
-nina = "ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4"
+nina = "77BKtqWTbTRxj5eZPuFbeXjx3qz4TTHoXRnpCejYWiQH"
 
 [registry]
 url = "https://anchor.projectserum.com"
 
 [scripts]
-test = "ts-mocha -t 1000000 -p tsconfig.json"
-test-with-build = "anchor run build && anchor test ./tests --skip-build"
-nina-upgrade = "anchor upgrade --program-id ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4 ./target/deploy/nina.so"
+test = "ts-mocha -t 1000000 -p ./tsconfig.json --provider.cluster localnet -b"
+test-with-build = "anchor run build && anchor test ./tests --skip-build --provider.cluster localnet"
+nina-upgrade-devnet = "anchor upgrade --program-id 77BKtqWTbTRxj5eZPuFbeXjx3qz4TTHoXRnpCejYWiQH ./target/deploy/nina.so --provider.cluster https://nina.devnet.rpcpool.com/a4720dd909cb194f1d9ea07d50ee"
+nina-upgrade-idl-devnet = "anchor idl upgrade --filepath ./target/idl/nina.json 77BKtqWTbTRxj5eZPuFbeXjx3qz4TTHoXRnpCejYWiQH --provider.cluster https://nina.devnet.rpcpool.com/a4720dd909cb194f1d9ea07d50ee"
 build = "anchor run build-deps && anchor build"
 build-deps = "anchor run build-metaplex"
-build-metaplex = "cd ./deps/metaplex/rust && pwd && cargo build-bpf && cd ../../../"
+build-metaplex = "cd ./deps/metaplex/metaplex-program-library/token-metadata/program && pwd && cargo build-bpf && cd ../../../"
+upgrade-devnet = "anchor run nina-upgrade-devnet && anchor run nina-upgrade-idl-devnet"
 
 [[test.genesis]]
 address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
-program = "./deps/metaplex/rust/target/deploy/metaplex.so"
-
-[[test.genesis]]
-address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
-program = "./deps/metaplex/rust/target/deploy/metaplex_token_metadata.so"
+program = "./deps/metaplex/metaplex-program-library/token-metadata/target/deploy/mpl_token_metadata.so"

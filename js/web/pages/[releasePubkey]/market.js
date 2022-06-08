@@ -1,11 +1,9 @@
-import ninaCommon from "nina-common";
-import Head from "next/head";
-import Release from "../../components/Release";
+import Head from 'next/head'
+import Release from '../../components/Release'
 
-const { NinaClient } = ninaCommon.utils;
 
 const ReleaseMarketPage = (props) => {
-  const { metadata } = props;
+  const { metadata } = props
   return (
     <>
       <Head>
@@ -37,26 +35,26 @@ const ReleaseMarketPage = (props) => {
       </Head>
       <Release {...props} />
     </>
-  );
-};
+  )
+}
 
 export const getServerSideProps = async (context) => {
-  const releasePubkey = context.params.releasePubkey;
+  const releasePubkey = context.params.releasePubkey
   const metadataResult = await fetch(
-    `${NinaClient.endpoints.api}/metadata/bulk`,
+    `${process.env.REACT_APP_API_ENDPOINT}/metadata/bulk`,
     {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ids: [releasePubkey] }),
     }
-  );
-  const metadataJson = await metadataResult.json();
+  )
+  const metadataJson = await metadataResult.json()
   return {
     props: {
       metadata: metadataJson[releasePubkey],
       releasePubkey,
     },
-  };
-};
+  }
+}
 
-export default ReleaseMarketPage;
+export default ReleaseMarketPage

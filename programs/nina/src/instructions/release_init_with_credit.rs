@@ -11,16 +11,20 @@ pub struct ReleaseInitializeWithCredit<'info> {
         seeds = [b"nina-release".as_ref(), release_mint.key().as_ref()],
         bump,
         payer = payer,
+        space = 1210
     )]
-    pub release: Loader<'info, Release>,
+    pub release: AccountLoader<'info, Release>,
+    /// CHECK: This is safe because it is derived from release which is checked above
     #[account(
         seeds = [release.key().as_ref()],
         bump,
     )]
     pub release_signer: UncheckedAccount<'info>,
-    pub release_mint: Account<'info, Mint>,
+    pub release_mint: Box<Account<'info, Mint>>,
     #[account(mut)]
     pub payer: Signer<'info>,
+    /// CHECK: the payer is usually the authority, though they can set someone else as authority
+    /// This is safe because we don't care who the payer sets as authority.
     #[account(mut)]
     pub authority: UncheckedAccount<'info>,
     #[account(
@@ -46,6 +50,12 @@ pub struct ReleaseInitializeWithCredit<'info> {
         constraint = royalty_token_account.owner == *release_signer.key
     )]
     pub royalty_token_account: Box<Account<'info, TokenAccount>>,
+    /// CHECK: This is safe because it is initialized here
+    #[account(mut)]
+    pub metadata: AccountInfo<'info>,
+    /// CHECK: This is safe because we check against ID
+    #[account(address = mpl_token_metadata::ID)]
+    pub metadata_program: AccountInfo<'info>,
     #[account(address = token::ID)]
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
@@ -56,13 +66,14 @@ pub fn handler(
     ctx: Context<ReleaseInitializeWithCredit>,
     config: ReleaseConfig,
     bumps: ReleaseBumps,
-) -> ProgramResult {
+    metadata_data: ReleaseMetadataData,
+) -> Result<()> {
 
     // Redeemer burn redeemable token
     let cpi_program = ctx.accounts.token_program.to_account_info().clone();
     let cpi_accounts = Burn {
         mint: ctx.accounts.publishing_credit_mint.to_account_info(),
-        to: ctx.accounts.authority_publishing_credit_token_account.to_account_info(),
+        from: ctx.accounts.authority_publishing_credit_token_account.to_account_info(),
         authority: ctx.accounts.authority.to_account_info().clone(),
     };
     
@@ -82,6 +93,29 @@ pub fn handler(
         config,
         bumps,
     )?;
+
+    Release::create_metadata_handler(
+        ctx.accounts.release_signer.to_account_info().clone(),
+        ctx.accounts.metadata.to_account_info().clone(),
+        ctx.accounts.release_mint.clone(),
+        ctx.accounts.payer.clone(),
+        ctx.accounts.metadata_program.to_account_info().clone(),
+        ctx.accounts.token_program.clone(),
+        ctx.accounts.system_program.clone(),
+        ctx.accounts.rent.clone(),
+        ctx.accounts.release.clone(),
+        metadata_data.clone(),
+        bumps,
+    )?;
+
+    emit!(ReleaseCreated {
+        public_key: ctx.accounts.release.key(),
+        mint: ctx.accounts.release_mint.key(),
+        authority: ctx.accounts.authority.key(),
+        datetime: config.release_datetime,
+        metadata_public_key: ctx.accounts.metadata.key(),
+        uri: metadata_data.uri,
+    });
 
     Ok(())
 }

@@ -1,6 +1,6 @@
-use anchor_lang::error;
+use anchor_lang::prelude::*;
 
-#[error]
+#[error_code]
 pub enum ErrorCode {
     #[msg("Amount sent does not match price")]
     WrongAmount,
@@ -43,5 +43,31 @@ pub enum ErrorCode {
     #[msg("Cant withdraw more than deposited")]
     VaultWithdrawAmountTooHigh,
     #[msg("Withdraw amount must be greater than 0")]
-    VaultWithdrawAmountMustBeGreaterThanZero
+    VaultWithdrawAmountMustBeGreaterThanZero,
+    #[msg("HubCollaborator Cannot Add Release To Hub Unauthorized")]
+    HubCollaboratorCannotAddReleaseToHubUnauthorized,
+    #[msg("HubCollaborator Cannot Be Removed From Hub Unauthorized")]
+    HubCollaboratorCannotBeRemovedFromHubUnauthorized,
+    #[msg("HubCollaborator Cannot Remove Authority From Hub")]
+    HubCollaboratorCannotRemoveAuthorityFromHub,
+    #[msg("HubContent Cannot Be Toggled Unauthorized")]
+    HubContentCannotBeToggledUnauthorized,
+    #[msg("Hub Cant withdraw more than deposited")]
+    HubWithdrawAmountTooHigh,
+    #[msg("Hub Withdraw amount must be greater than 0")]
+    HubWithdrawAmountMustBeGreaterThanZero,
+    #[msg("Release Purchase Wrong Receiver")]
+    ReleasePurchaseWrongReceiver,
+    #[msg("HubCollaborator Cannot Add Collaborator")]
+    HubCollaboratorCannotAddCollaborator,
+    #[msg("HubCollaborator Cannot Init Post")]
+    HubCollaboratorCannotInitPost,
+    #[msg("HubCollaborator Cannot Add Release To Hub Allowance Used")]
+    HubCollaboratorCannotAddReleaseToHubAllowanceUsed,
+    #[msg("HubCollaborator Cannot Update HubCollaborator Unauthorized")]
+    HubCollaboratorCannotUpdateHubCollaboratorUnauthorized,
+    #[msg("HubPublishFeeInvalidValue must be between 0 and 1000000")]
+    HubPublishFeeInvalidValue,
+    #[msg("HubReferralFeeInvalidValue must be between 0 and 1000000")]
+    HubReferralFeeInvalidValue,
 }
