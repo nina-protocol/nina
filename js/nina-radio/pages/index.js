@@ -9,7 +9,6 @@ import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import { styled } from "@mui/material/styles"
 import Dots from '../components/Dots'
-import nina from '@nina-protocol/nina-sdk'
 const { ReleaseContext } = nina.contexts
 const { formatDuration } = nina.utils
 
@@ -146,7 +145,7 @@ export default function Home() {
 
   const shareOnTwitter = () => {
     window.open(
-      `https://twitter.com/intent/tweet?text=${`${activeTrack.current.properties.artist} - "${activeTrack.current.properties.title}" on Nina%0A`}&url=nina.market/${playlist[activeIndex]}`,
+      `https://twitter.com/intent/tweet?text=${`${activeTrack.current.properties.artist} - "${activeTrack.current.properties.title}" on Nina%0A`}&url=ninaprotocol.com/${playlist[activeIndex]}`,
       null,
       'status=no,location=no,toolbar=no,menubar=no,height=500,width=500'
     )
