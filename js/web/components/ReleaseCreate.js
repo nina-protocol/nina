@@ -90,7 +90,6 @@ const ReleaseCreate = () => {
   const [releaseCreated, setReleaseCreated] = useState(false)
   const [uploadId, setUploadId] = useState()
   const [publishingStepText, setPublishingStepText] = useState()
-  const [userHasSeenUpdateMessage, setUserHasSeenUpdateMessage] = useState(false)
 
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
@@ -100,14 +99,6 @@ const ReleaseCreate = () => {
     () => bundlrBalance * solPrice,
     [bundlrBalance, solPrice]
   )
-
-  useEffect(() => {
-    refreshBundlr()
-    const updateInfoCheck = localStorage.getItem('nina-upload-update-message')
-    if (updateInfoCheck) {
-      setUserHasSeenUpdateMessage(true)
-    }
-  }, [])
 
   const refreshBundlr = () => {
     getBundlrPricePerMb()
@@ -397,7 +388,7 @@ const ReleaseCreate = () => {
       )}
       {wallet?.connected && npcAmountHeld > 0 && (
         <>
-          <UploadInfoModal userHasSeenUpdateMessage={userHasSeenUpdateMessage}/>
+          <UploadInfoModal userHasSeenUpdateMessage={localStorage.getItem('nina-upload-update-message')}/>
           <NinaBox columns="350px 400px" gridColumnGap="10px">
 
             <Box sx={{width: '100%'}}>
