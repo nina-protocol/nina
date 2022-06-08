@@ -47,7 +47,7 @@ const RoyaltyRecipientForm = (props) => {
             variant: 'info',
           })
           const result = await addRoyaltyRecipient(release, values, releasePubkey)
-          enqueueSnackbar(result.msg, {
+          enqueueSnackbar(result.success ? result.msg : 'Transfer Cancelled', {
             variant: result.success ? 'success' : 'warn',
           })
           resetForm(initialValues)
@@ -66,8 +66,8 @@ const RoyaltyRecipientForm = (props) => {
                     <TextField
                       className={classes.formField}
                       variant="outlined"
-                      placeholder={formatPlaceholder(field.name)}
                       label={formatPlaceholder(field.name)}
+                      variant='standard'
                       {...field}
                     />
                   </>
@@ -86,7 +86,6 @@ const RoyaltyRecipientForm = (props) => {
                   defaultValue={20}
                   getAriaValueText={valuetext}
                   aria-labelledby="percent"
-                  // valueLabelDisplay="auto"
                   className={`${classes.formField} ${classes.formSlider}`}
                   step={1}
                   min={0}
@@ -105,11 +104,12 @@ const RoyaltyRecipientForm = (props) => {
               <Box mt={3}>
                 <Button
                   type="submit"
-                  variant="contained"
+                  variant="outlined"
                   color="primary"
                   fullWidth
+                  disabled={!values.recipientAddress}
                 >
-                  Transfer Royalty
+                  Transfer Revenue Share
                 </Button>
               </Box>
             </Form>

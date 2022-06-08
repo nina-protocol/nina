@@ -51,7 +51,7 @@ const Royalty = (props) => {
       setFormToggleText('Cancel')
     } else {
       setFormShown(false)
-      setFormToggleText('Add Royalty Recipient')
+      setFormToggleText('Add Revenue Recipient')
     }
   }
 
@@ -64,7 +64,7 @@ const Royalty = (props) => {
       <>
         {userIsRecipient && (
           <Button
-            variant="contained"
+            variant="outlined"
             color="primary"
             onClick={toggleForm}
             fullWidth
@@ -97,7 +97,7 @@ const Royalty = (props) => {
         onClick={() => setOpen(true)}
         fullWidth
       >
-        <Typography variant="body2">Royalty Info</Typography>
+        <Typography variant="body2">Revenue Share Info</Typography>
       </Button>
       <StyledModal
         aria-labelledby="transition-modal-title"
@@ -113,7 +113,7 @@ const Royalty = (props) => {
         <Fade in={open}>
           <StyledPaper>
             <Typography align="center" variant="h4" id="transition-modal-title">
-              Royalty Information:
+              Revenue Share Information:
             </Typography>
             <List>
               {release?.royaltyRecipients &&
@@ -126,7 +126,7 @@ const Royalty = (props) => {
                         ? true
                         : false
                     const recipientHandle = walletAuthorizedToCollect ? (
-                      'Your Royalties:'
+                      'Your Revenue Share:'
                     ) : (
                       <a
                         href={
