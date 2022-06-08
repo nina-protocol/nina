@@ -5,6 +5,7 @@ import Image from './Image'
 import { useRouter } from 'next/router'
 import { Typography, Box } from '@mui/material'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
+import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Button from '@mui/material/Button'
 
@@ -12,7 +13,7 @@ const { AudioPlayerContext } = nina.contexts
 
 const ReleaseTileList = (props) => {
   const { releases } = props
-  const { updateTrack, addTrackToQueue } = useContext(AudioPlayerContext)
+  const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } = useContext(AudioPlayerContext)
 
   const router = useRouter()
 
@@ -43,14 +44,22 @@ const ReleaseTileList = (props) => {
                   <Button
                     onClick={(e) => {
                       e.stopPropagation()
-                      updateTrack(
-                        release.releasePubkey,
-                        true,
-                        true
-                      )
+                      if (isPlaying && track.releasePubkey === release.releasePubkey) {
+                        setIsPlaying(false)
+                      } else {
+                        updateTrack(
+                          release.releasePubkey,
+                          true,
+                          true,
+                        )
+                      }
                     }}
                   >
-                    <PlayCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
+                    {isPlaying && track.releasePubkey === release.releasePubkey ? (
+                      <PauseCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
+                      ) : (
+                      <PlayCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
+                    )}
                   </Button>
 
                   <Button

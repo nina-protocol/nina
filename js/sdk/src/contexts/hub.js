@@ -39,6 +39,7 @@ const HubContextProvider = ({ children }) => {
     filterHubsForUser,
     getHubPost,
     collectRoyaltyForReleaseViaHub,
+    getHubPubkeyForHubHandle,
   } = hubContextHelper({
     ninaClient,
     savePostsToState,
@@ -81,7 +82,8 @@ const HubContextProvider = ({ children }) => {
         filterHubsForUser,
         initialLoad,
         getHubPost,
-        collectRoyaltyForReleaseViaHub
+        collectRoyaltyForReleaseViaHub,
+        getHubPubkeyForHubHandle
       }}
     >
       {children}
@@ -202,27 +204,26 @@ const hubContextHelper = ({
     }
   }
 
-  const hubUpdateConfig = async (uri, publishFee, referralFee) => {
+  const hubUpdateConfig = async (hubPubkey, uri, publishFee, referralFee) => {
     const hub = hubState[hubPubkey]
     const program = await ninaClient.useProgram()
-    hubPubkey = new anchor.web3.PublicKey(hubPubkey)
 
     try {
       const txid = await program.rpc.hubUpdateConfig(
         uri,
         hub.handle,
-        publishFee,
-        referralFee,
+        new anchor.BN(publishFee * 10000),
+        new anchor.BN(referralFee * 10000),
         {
           accounts: {
             authority: provider.wallet.publicKey,
-            hub: hubPubkey,
+            hub: new anchor.web3.PublicKey(hubPubkey),
           },
         }
       )
 
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
-      await getHub(hub)
+      await getHub(hubPubkey)
 
       return {
         success: true,
@@ -869,8 +870,8 @@ const hubContextHelper = ({
       for await (let hub of hubs) {
         hub.publicKey = hub.id
         hub.hubSigner = hubDict[hub.id].hubSigner.toBase58()
-        hub.publishFee = hubDict[hub.id].publishFee.toNumber()
-        hub.referralFee = hubDict[hub.id].referralFee.toNumber()
+        hub.publishFee = (hubDict[hub.id].publishFee.toNumber() / 10000).toFixed(2)
+        hub.referralFee = (hubDict[hub.id].referralFee.toNumber() / 10000).toFixed(2)
         hub.totalFeesEarned = hubDict[hub.id].totalFeesEarned.toNumber()
         updatedState[hub.id] = hub
       }
@@ -1033,6 +1034,20 @@ const hubContextHelper = ({
     })
     return hubs
   }
+  const getHubPubkeyForHubHandle = async (handle) => {
+    if (handle) {
+      let hub = Object.values(hubState).filter(hub => hub.handle === handle)[0]
+      console.log("hub ::> ", hub)
+      if (!hub) {
+        let path = endpoints.api + `/hubs/${handle}`
+        const response = await fetch(path)
+        hub = (await response.json()).hub
+      }
+      console.log("HUB ::> ", hub)
+      return hub?.id
+    }
+    return undefined
+  }
 
   return {
     getHubs,
@@ -1053,7 +1068,8 @@ const hubContextHelper = ({
     filterHubContentForHub,
     filterHubsForUser,
     getHubPost,
-    collectRoyaltyForReleaseViaHub
+    collectRoyaltyForReleaseViaHub,
+    getHubPubkeyForHubHandle
   }
 }
 export default HubContextProvider

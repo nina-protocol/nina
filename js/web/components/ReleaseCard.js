@@ -6,6 +6,7 @@ import Box from '@mui/material/Box'
 import { Typography } from '@mui/material'
 import { Fade } from '@mui/material'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
+import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Image from './Image'
 
@@ -16,7 +17,7 @@ const {AudioPlayerContext, ReleaseContext, HubContext} = nina.contexts
 
 const ReleaseCard = (props) => {
   const { artwork, metadata, preview, releasePubkey, userHubs } = props
-  const { updateTrack, addTrackToQueue } = useContext(AudioPlayerContext)
+  const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } = useContext(AudioPlayerContext)
   const { releaseState } = useContext(ReleaseContext)
   const image = useMemo(() => metadata?.image)
   const {enqueueSnackbar} = useSnackbar()
@@ -28,16 +29,24 @@ const ReleaseCard = (props) => {
           <CtaWrapper>
             <Box>
               <Button
-                onClick={() =>
-                  updateTrack(
-                    releasePubkey,
-                    true,
-                    true,
-                  )
-                }
+                onClick={() => {
+                  if (isPlaying && track.releasePubkey === releasePubkey) {
+                    setIsPlaying(false)
+                  } else {
+                    updateTrack(
+                      releasePubkey,
+                      true,
+                      true,
+                    )
+                  }
+                }}
                 sx={{ height: '22px', width: '28px' }}
               >
-                <PlayCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
+                {isPlaying && track.releasePubkey === releasePubkey ? (
+                  <PauseCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
+                  ) : (
+                  <PlayCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
+                )}
               </Button>
               <Button
                 onClick={() => {
