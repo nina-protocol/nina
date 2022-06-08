@@ -55,7 +55,7 @@ const UploadInfoModal = ({userHasSeenUpdateMessage}) => {
               Update to Publishing:
             </StyledTypography>
             <StyledTypography>
-              We are now using <a href="https://bundlr.network/" target="_blank" style={{textDecoration: 'underline'}}>Bundlr</a> to allow artist to directly upload their releases to Arweave.
+              We are now using <a href="https://bundlr.network/" target="_blank" style={{textDecoration: 'underline'}}>Bundlr</a> to allow artists to directly upload their releases to Arweave.
             </StyledTypography>
             <StyledTypography>
               This update brings us closer to permissionless access and expands file size limitations.
