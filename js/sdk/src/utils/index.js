@@ -54,11 +54,42 @@ const formatDuration = (duration) => {
   return minutes + ':' + seconds
 }
 
+const indexerHasRecord = async(publicKey, struct) => {
+  let result = null
+  try {
+    const request = await fetch(
+      `${process.env.INDEXER_URL}/${struct}s/${publicKey}`,
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      }
+    )
+    result = await request.json()
+    if (result) {
+      await sleep(1000)
+      return
+    } else {
+      await sleep(2500)
+      return await indexerHasRecord(publicKey, struct)
+    }
+  } catch (error) {
+    console.warn(error)
+    await sleep(2500)
+    return await indexerHasRecord(publicKey, struct)
+  }
+}
+
+const sleep = (ms) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export {
   arrayMove,
   dateConverter,
   formatDuration,
   formatPlaceholder,
+  indexerHasRecord,
+  sleep,
   encrypt,
   web3,
 }

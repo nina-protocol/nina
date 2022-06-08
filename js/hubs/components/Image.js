@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import NextImage from 'next/image'
-import { DateTime } from 'luxon'
 
-function Image({ src, height, width, layout, priority, release }) {
+function Image({ src, height, width, layout, priority }) {
   const [ready, setReady] = useState(false)
   const handleLoad = (event, byPass) => {
     event.persist()
@@ -10,7 +9,11 @@ function Image({ src, height, width, layout, priority, release }) {
       setReady(true)
     }
   }
-  
+
+  const loaderProp = ({ src }) => {
+    return src;
+  };
+
   return (
     <div
       style={{
@@ -26,6 +29,7 @@ function Image({ src, height, width, layout, priority, release }) {
         priority={priority}
         layout={layout}
         onLoad={(e) => handleLoad(e, false)}
+        loader={loaderProp}
       />
     </div>
   )

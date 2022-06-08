@@ -14,6 +14,7 @@ import {
   decodeNonEncryptedByteArray,
   decryptData,
 } from '../utils/encrypt'
+import { indexerHasRecord } from '../utils'
 
 const lookupTypes = {
   PUBLISHED_BY: 'published_by',
@@ -392,37 +393,12 @@ const releaseContextHelper = ({
         }
       )
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await indexerHasRecord(hubRelease.toBase58(), 'hubRelease')
       await getRelease(release)
-      await hasHubRelease(hubRelease.toBase58())
 
       return true
     } catch (error) {
       return ninaErrorHandler(error)
-    }
-  }
-
-  const hasHubRelease = async(hubReleaseId) => {
-    let hubReleaseResponse = null
-    try {
-      const hubReleaseRequest = await fetch(
-        `${endpoints.api}/hubReleases/${hubReleaseId}`,
-        {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        }
-      )
-      hubReleaseResponse = await hubReleaseRequest.json()
-      if (hubReleaseResponse) {
-        await sleep(1000)
-        return
-      } else {
-        await sleep(2500)
-        return await hasHubRelease(hubReleaseId)
-      }
-    } catch (error) {
-      console.warn(error)
-      await sleep(2500)
-      return await hasHubRelease(hubReleaseId)
     }
   }
 
@@ -698,7 +674,7 @@ const releaseContextHelper = ({
         instructions,
       })
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
-      await hasRelease(release.toBase58())
+      await indexerHasRecord(release.toBase58(), 'release')
       await getRelease(release)
 
       setPressingState({
@@ -713,29 +689,6 @@ const releaseContextHelper = ({
         completed: false,
       })
       return ninaErrorHandler(error)
-    }
-  }
-
-  const hasRelease = async(releaseId) => {
-    try {
-      const releaseRequest = await fetch(
-        `${endpoints.api}/releases/${releaseId}`,
-        {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        }
-      )
-      if (releaseRequest.status === 200) {
-        await sleep(1000)
-        return
-      } else {
-        await sleep(2500)
-        return await hasRelease(releaseId)
-      }
-    } catch (error) {
-      console.warn(error)
-      await sleep(2500)
-      return await hasRelease(releaseId)
     }
   }
 
@@ -2151,8 +2104,4 @@ const searchResultsInitialState = {
   searched: false,
   pending: false,
   query: null,
-}
-
-const sleep = (ms) => {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
