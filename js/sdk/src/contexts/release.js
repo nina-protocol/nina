@@ -620,7 +620,6 @@ const releaseContextHelper = ({
         instructions.push(authorityPublishingCreditTokenAccountIx)
       }
       let now = new Date()
-
       const config = {
         amountTotalSupply: new anchor.BN(amount),
         amountToArtistTokenAccount: new anchor.BN(0),
