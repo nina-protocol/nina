@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import NextImage from 'next/image'
-import { DateTime } from 'luxon'
 
-function Image({ src, height, width, layout, priority, release }) {
+function Image({ src, height, width, layout, priority }) {
   const [ready, setReady] = useState(false)
   const handleLoad = (event, byPass) => {
     event.persist()
