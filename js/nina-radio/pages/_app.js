@@ -79,6 +79,7 @@ function Application({ Component, pageProps }) {
     () => walletOptions,
     [network]
   );
+
   return (
     <SnackbarProvider
       maxSnack={3}
@@ -88,7 +89,7 @@ function Application({ Component, pageProps }) {
       }}
     >
       <ConnectionProvider endpoint={endpoint}>
-        <WalletProvider wallets={wallets} autoConnect>
+        <WalletProvider wallets={wallets}>
           <WalletModalProvider>
             <NinaWrapper>
               <CacheProvider value={clientSideEmotionCache}>
