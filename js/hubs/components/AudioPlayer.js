@@ -7,9 +7,8 @@ import { useRouter } from 'next/router'
 
 const { AudioPlayerContext, HubContext, ReleaseContext } = nina.contexts
 const { formatDuration } = nina.utils
-const AudioPlayer = () => {
+const AudioPlayer = ({hubPubkey}) => {
   const router = useRouter()
-  const hubPubkey = router.query.hubPubkey
   const { releaseState } = useContext(ReleaseContext)
   const { hubContentState, filterHubContentForHub } = useContext(HubContext)
   const audio = useContext(AudioPlayerContext)
