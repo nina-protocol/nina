@@ -11,6 +11,7 @@ const withTM = require('next-transpile-modules')([
   '@solana/wallet-adapter-sollet',
 ]) // pass the modules you would like to see transpiled
 
+const cluster = 'devnet'
 module.exports = withTM({
   distDir: './build',
   webpack5: true,
@@ -44,6 +45,7 @@ module.exports = withTM({
   env: {
     REACT_APP_CLUSTER: 'devnet',
     REACT_APP_API_ENDPOINT: 'https://api-dev.nina.market:443', 
+    INDEXER_URL: cluster === 'devnet' ? 'https://api-dev.nina.market' : 'https://api.nina.market',
   },
   images: {
     domains: ["www.arweave.net", "arweave.net"],
