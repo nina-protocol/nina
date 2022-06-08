@@ -10,7 +10,11 @@ function Image({ src, height, width, layout, priority, release }) {
       setReady(true)
     }
   }
-  
+
+  const loaderProp = ({ src }) => {
+    return src;
+  };
+
   return (
     <div
       style={{
@@ -26,6 +30,7 @@ function Image({ src, height, width, layout, priority, release }) {
         priority={priority}
         layout={layout}
         onLoad={(e) => handleLoad(e, false)}
+        loader={loaderProp}
       />
     </div>
   )
