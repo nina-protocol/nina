@@ -26,11 +26,7 @@ function Image({ src, height, width, layout, priority, release }) {
       release.releaseDatetime.toNumber() * 1000
     );
     const hours = now.diff(releaseDatetime, "hours").toObject().hours;
-<<<<<<< HEAD
-    if (hours < 0.05) {
-=======
-    if (hours < 12.05) {
->>>>>>> 1d5a4178f6b01ac5b2844997797dc4e33219c9eb
+    if (hours < .05) {
       if (src) {
         ImageComponent = () => (
           <img

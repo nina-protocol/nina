@@ -20,6 +20,7 @@ import ReleaseCreateForm from './ReleaseCreateForm'
 import ReleaseCreateConfirm from './ReleaseCreateConfirm'
 import NinaBox from './NinaBox'
 import MediaDropzones from './MediaDropzones'
+import UploadInfoModal from './UploadInfoModal'
 import Dots from './Dots'
 import Grid from '@mui/material/Grid'
 import Link from 'next/link'
@@ -89,6 +90,7 @@ const ReleaseCreate = () => {
   const [releaseCreated, setReleaseCreated] = useState(false)
   const [uploadId, setUploadId] = useState()
   const [publishingStepText, setPublishingStepText] = useState()
+  const [userHasSeenUpdateMessage, setUserHasSeenUpdateMessage] = useState(false)
 
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
@@ -101,6 +103,10 @@ const ReleaseCreate = () => {
 
   useEffect(() => {
     refreshBundlr()
+    const updateInfoCheck = localStorage.getItem('nina-upload-update-message')
+    if (updateInfoCheck) {
+      setUserHasSeenUpdateMessage(true)
+    }
   }, [])
 
   const refreshBundlr = () => {
@@ -112,6 +118,7 @@ const ReleaseCreate = () => {
   useEffect(async () => {
     getNpcAmountHeld();
   }, [wallet?.connected]);
+  
 
 
   useEffect(() => {
@@ -389,95 +396,99 @@ const ReleaseCreate = () => {
         </Box>
       )}
       {wallet?.connected && npcAmountHeld > 0 && (
-        <NinaBox columns="350px 400px" gridColumnGap="10px">
-          <Box sx={{width: '100%'}}>
-            <MediaDropzones
-              setTrack={setTrack}
-              setArtwork={setArtwork}
-              values={formValues}
-              releasePubkey={releasePubkey}
-              track={track}
-              disabled={isPublishing || releaseCreated}
-              handleProgress={handleProgress}
-            />
-          </Box>
+        <>
+          <UploadInfoModal userHasSeenUpdateMessage={userHasSeenUpdateMessage}/>
+          <NinaBox columns="350px 400px" gridColumnGap="10px">
 
-          <CreateFormWrapper>
-            <ReleaseCreateForm
-              onChange={handleFormChange}
-              values={formValues.releaseForm}
-              ReleaseCreateSchema={ReleaseCreateSchema}
-              disabled={isPublishing}
-            />
-          </CreateFormWrapper>
-
-          <CreateCta>
-            {bundlrBalance === 0 && <BundlrModal inCreate={true} />}
-            {bundlrBalance > 0 && formValuesConfirmed && (
-              <Button
-                fullWidth
-                variant="outlined"
-                color="primary"
-                onClick={handleSubmit}
-                disabled={
-                  isPublishing ||
-                  !formIsValid ||
-                  bundlrBalance === 0 ||
-                  mbs < uploadSize ||
-                  artwork?.meta.status === 'uploading' ||
-                  (track?.meta.status === 'uploading' && !releaseCreated)
-                }
-                sx={{height: '54px'}}
-              >
-                {isPublishing && !releaseCreated && (
-                  <Dots msg={publishingStepText} />
-                )}
-                {!isPublishing && buttonText}
-              </Button>
-            )}
-
-            {bundlrBalance > 0 && !formValuesConfirmed && (
-              <ReleaseCreateConfirm
-                formValues={formValues}
-                formIsValid={formIsValid}
-                handleSubmit={handleSubmit}
-                setFormValuesConfirmed={setFormValuesConfirmed}
-                artwork={artwork}
+            <Box sx={{width: '100%'}}>
+              <MediaDropzones
+                setTrack={setTrack}
+                setArtwork={setArtwork}
+                values={formValues}
+                releasePubkey={releasePubkey}
                 track={track}
+                disabled={isPublishing || releaseCreated}
+                handleProgress={handleProgress}
               />
-            )}
-
-            {pending && (
-              <LinearProgress
-                variant="determinate"
-                value={audioProgress || imageProgress}
-              />
-            )}
-
-            <Box display="flex" justifyContent="space-between">
-              {bundlrBalance > 0 && (
-                <BundlrBalanceInfo variant="subtitle1" align="left">
-                  Balance: {bundlrBalance?.toFixed(4)} SOL / $
-                  {bundlrUsdBalance.toFixed(2)} / {mbs?.toFixed(2)} MB ($
-                  {(bundlrUsdBalance / mbs)?.toFixed(4)}/MB)
-                </BundlrBalanceInfo>
-              )}
-              {bundlrBalance === 0 && (
-                <BundlrBalanceInfo variant="subtitle1" align="left">
-                  Please fund your Bundlr Account to enable publishing
-                </BundlrBalanceInfo>
-              )}
-              {uploadSize > 0 && (
-                <Typography variant="subtitle1" align="right">
-                  Upload Size: {uploadSize} MB | Cost: $
-                  {(uploadSize * (bundlrUsdBalance / mbs)).toFixed(2)}
-                </Typography>
-              )}
-    
-              <BundlrModal inCreate={false} displaySmall={true}/>
             </Box>
-          </CreateCta>
-        </NinaBox>
+
+            <CreateFormWrapper>
+              <ReleaseCreateForm
+                onChange={handleFormChange}
+                values={formValues.releaseForm}
+                ReleaseCreateSchema={ReleaseCreateSchema}
+                disabled={isPublishing}
+              />
+            </CreateFormWrapper>
+
+            <CreateCta>
+              {bundlrBalance === 0 && <BundlrModal inCreate={true} />}
+              {bundlrBalance > 0 && formValuesConfirmed && (
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  color="primary"
+                  onClick={handleSubmit}
+                  disabled={
+                    isPublishing ||
+                    !formIsValid ||
+                    bundlrBalance === 0 ||
+                    mbs < uploadSize ||
+                    artwork?.meta.status === 'uploading' ||
+                    (track?.meta.status === 'uploading' && !releaseCreated)
+                  }
+                  sx={{height: '54px'}}
+                >
+                  {isPublishing && !releaseCreated && (
+                    <Dots msg={publishingStepText} />
+                  )}
+                  {!isPublishing && buttonText}
+                </Button>
+              )}
+
+              {bundlrBalance > 0 && !formValuesConfirmed && (
+                <ReleaseCreateConfirm
+                  formValues={formValues}
+                  formIsValid={formIsValid}
+                  handleSubmit={handleSubmit}
+                  setFormValuesConfirmed={setFormValuesConfirmed}
+                  artwork={artwork}
+                  track={track}
+                />
+              )}
+
+              {pending && (
+                <LinearProgress
+                  variant="determinate"
+                  value={audioProgress || imageProgress}
+                />
+              )}
+
+              <Box display="flex" justifyContent="space-between">
+                {bundlrBalance > 0 && (
+                  <BundlrBalanceInfo variant="subtitle1" align="left">
+                    Balance: {bundlrBalance?.toFixed(4)} SOL / $
+                    {bundlrUsdBalance.toFixed(2)} / {mbs?.toFixed(2)} MB ($
+                    {(bundlrUsdBalance / mbs)?.toFixed(4)}/MB)
+                  </BundlrBalanceInfo>
+                )}
+                {bundlrBalance === 0 && (
+                  <BundlrBalanceInfo variant="subtitle1" align="left">
+                    Please fund your Bundlr Account to enable publishing
+                  </BundlrBalanceInfo>
+                )}
+                {uploadSize > 0 && (
+                  <Typography variant="subtitle1" align="right">
+                    Upload Size: {uploadSize} MB | Cost: $
+                    {(uploadSize * (bundlrUsdBalance / mbs)).toFixed(2)}
+                  </Typography>
+                )}
+      
+                <BundlrModal inCreate={false} displaySmall={true}/>
+              </Box>
+            </CreateCta>
+          </NinaBox>
+        </>
       )}
     </Grid>
   )
