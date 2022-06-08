@@ -376,7 +376,6 @@ const HubCreate = (props) => {
   if (hubCreated) {
     return (
       <Box margin="auto">
-        <Typography>{`${formValues.hubForm.displayName}  has been created!`}</Typography>
         <Button
           fullWidth
           variant="outlined"
