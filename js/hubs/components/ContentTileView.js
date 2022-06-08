@@ -11,7 +11,7 @@ import Link from 'next/link'
 
 const { AudioPlayerContext, HubContext, ReleaseContext } = nina.contexts
 
-const ContentTileView = ({ content, hubPubkey }) => {
+const ContentTileView = ({ content, hubPubkey, hubHandle }) => {
   const { updateTrack } = useContext(AudioPlayerContext)
   const { hubState } = useContext(HubContext)
   const { releaseState } = useContext(ReleaseContext)
@@ -23,9 +23,9 @@ const ContentTileView = ({ content, hubPubkey }) => {
     const pathString = hubPostPubkey ? 'posts' : 'releases'
     router.push(
       {
-        pathname: `/${hubPubkey}/${pathString}/${hubPostPubkey || hubReleasePubkey}`,
+        pathname: `/${hubHandle}/${pathString}/${hubPostPubkey || hubReleasePubkey}`,
       },
-      `/${hubPubkey}/${pathString}/${hubPostPubkey || hubReleasePubkey}`
+      `/${hubHandle}/${pathString}/${hubPostPubkey || hubReleasePubkey}`
     )
   }
 

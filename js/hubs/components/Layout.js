@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo } from 'react'
+import React, { useContext, useEffect, useState, useMemo } from 'react'
 import Container from '@mui/material/Container'
 import { styled } from '@mui/material/styles'
 import Grid from '@mui/material/Grid'
@@ -18,8 +18,17 @@ const lightTheme = createTheme(lightThemeOptions)
 
 const Layout = ({ children }) => {
   const router = useRouter()
-  const hubPubkey = router.query.hubPubkey
-
+  const [hubPubkey, setHubPubkey] = useState()
+  const { hubState, getHubPubkeyForHubHandle } = useContext(HubContext)
+  
+  useEffect(() => {
+    const getHubPubkey = async (handle) => {
+      const id = await getHubPubkeyForHubHandle(handle)
+      setHubPubkey(id)
+    }
+    getHubPubkey(router.query.hubPubkey)
+  }, [router.query.hubPubkey])
+  console.log("hubPubkey ::> ", hubPubkey)
   // if (!hubState[hubPubkey]?.metadata) {
   //   return (
   //     <Box width="100%" display="flex" justifyContent="center" height="100vh">
@@ -28,7 +37,6 @@ const Layout = ({ children }) => {
   //   )
   // }
 
-  const { hubState } = useContext(HubContext)
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
 

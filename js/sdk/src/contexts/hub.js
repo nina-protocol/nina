@@ -38,6 +38,7 @@ const HubContextProvider = ({ children }) => {
     filterHubsForUser,
     getHubPost,
     collectRoyaltyForReleaseViaHub,
+    getHubPubkeyForHubHandle,
   } = hubContextHelper({
     ninaClient,
     savePostsToState,
@@ -80,7 +81,8 @@ const HubContextProvider = ({ children }) => {
         filterHubsForUser,
         initialLoad,
         getHubPost,
-        collectRoyaltyForReleaseViaHub
+        collectRoyaltyForReleaseViaHub,
+        getHubPubkeyForHubHandle
       }}
     >
       {children}
@@ -1057,6 +1059,20 @@ const hubContextHelper = ({
     })
     return hubs
   }
+  const getHubPubkeyForHubHandle = async (handle) => {
+    if (handle) {
+      let hub = Object.values(hubState).filter(hub => hub.handle === handle)[0]
+      console.log("hub ::> ", hub)
+      if (!hub) {
+        let path = endpoints.api + `/hubs/${handle}`
+        const response = await fetch(path)
+        hub = (await response.json()).hub
+      }
+      console.log("HUB ::> ", hub)
+      return hub?.id
+    }
+    return undefined
+  }
 
   return {
     getHubs,
@@ -1077,7 +1093,8 @@ const hubContextHelper = ({
     filterHubContentForHub,
     filterHubsForUser,
     getHubPost,
-    collectRoyaltyForReleaseViaHub
+    collectRoyaltyForReleaseViaHub,
+    getHubPubkeyForHubHandle
   }
 }
 export default HubContextProvider
