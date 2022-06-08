@@ -3,6 +3,7 @@ import { styled } from '@mui/material/styles'
 import { useSnackbar } from 'notistack'
 import { Typography, Box, Fade, Button } from '@mui/material'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
+import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import { useWallet, useConnection } from '@solana/wallet-adapter-react'
@@ -34,7 +35,7 @@ const Exchange = (props) => {
     getExchangeHistoryForRelease,
     filterExchangeHistoryForRelease,
   } = useContext(ExchangeContext)
-  const { updateTrack, addTrackToQueue } = useContext(AudioPlayerContext)
+  const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } = useContext(AudioPlayerContext)
 
   const [exchangeAwaitingConfirm, setExchangeAwaitingConfirm] =
     useState(undefined)
@@ -169,15 +170,24 @@ const Exchange = (props) => {
             {metadata && (
               <CtaWrapper sx={{ display: 'flex' }}>
                 <Button
-                  onClick={() =>
-                    updateTrack(
-                      releasePubkey,
-                      true
-                    )
-                  }
+                  onClick={() => {
+                    if (isPlaying && track.releasePubkey === releasePubkey) {
+                      setIsPlaying(false)
+                    } else {
+                      updateTrack(
+                        releasePubkey,
+                        true,
+                        true,
+                      )
+                    }
+                  }}
                   sx={{ height: '22px', width: '28px' }}
                 >
-                  <PlayCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
+                  {isPlaying && track.releasePubkey === releasePubkey ? (
+                    <PauseCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
+                    ) : (
+                    <PlayCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
+                  )}
                 </Button>
                 <Button
                   onClick={() => {

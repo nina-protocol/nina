@@ -91,7 +91,6 @@ const useStyles = makeStyles(({ theme }) => ({
 }))
 
 const Navigation = ({hubPubkey}) => {
-  const router = useRouter()
   const { header, menuButton, toolbar, ctaWrapper, drawerContainer } =
     useStyles()
   const wallet = useWallet()
@@ -153,7 +152,7 @@ const Navigation = ({hubPubkey}) => {
       >
         {mobileView && canAddContent && displayMobile()}
 
-        <Link href={`/${hubPubkey || ''}`} passHref>
+        <Link href={`/${hubData?.handle || ''}`} passHref>
           <LogoLinkWrapper>
             {hubData && (
               <Image
@@ -176,7 +175,7 @@ const Navigation = ({hubPubkey}) => {
           All Hubs
         </Link>
         <Box className={ctaWrapper}>
-          {!mobileView && canAddContent && getMenuButtons(hubPubkey)}
+          {!mobileView && canAddContent && getMenuButtons(hubData?.handle)}
           <WalletWrapper>
             <NavCtas>
               {wallet.wallets && (
@@ -251,11 +250,11 @@ const Navigation = ({hubPubkey}) => {
     })
   }
 
-  const getMenuButtons = (hubPubkey) => {
+  const getMenuButtons = (hubHandle) => {
     return (
       <List>
         {navData.map(({ label, href }) => {
-          href = `/${hubPubkey}${href}`
+          href = `/${hubHandle}${href}`
           return (
             <Link
               key={label}

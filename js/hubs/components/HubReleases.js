@@ -22,8 +22,9 @@ const { HubContext, ReleaseContext } = nina.contexts
 const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'))
   const wallet = useWallet()
-  const { hubContentToggleVisibility } = useContext(HubContext)
+  const { hubContentToggleVisibility, hubState } = useContext(HubContext)
   const { releaseState } = useContext(ReleaseContext)
+  const hubData = useMemo(() => hubState[hubPubkey], [hubState])
   const { enqueueSnackbar } = useSnackbar()
   const hubReleases = useMemo(
     () =>
@@ -67,7 +68,7 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
   return (
     <DashboardWrapper md={9} columnSpacing={2} columnGap={2}>
       <Grid item md={6} sx={{ display: { xs: 'none', md: 'block' } }}>
-        <Link href={`/${hubPubkey}/dashboard?action=publishRelease`}>
+        <Link href={`/${hubData.handle}/dashboard?action=publishRelease`}>
           <CreateCta variant="outlined" fullWidth>
             Publish a new release
           </CreateCta>
@@ -95,7 +96,7 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
                 const hubRelease = activeHubReleases[releasePubkey]
                 return (
                   <DashboardEntry key={hubRelease.release}>
-                    <Link href={`/${hubPubkey}/releases/${hubRelease.publicKey}`}>
+                    <Link href={`/${hubData.handle}/releases/${hubRelease.publicKey}`}>
                       {`${hubRelease.publishedThroughHub ? '*' : ''}${
                         releaseState.metadata[hubRelease.release]?.name
                       } (${hubRelease.sales} ${

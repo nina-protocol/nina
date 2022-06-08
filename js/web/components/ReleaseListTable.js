@@ -14,6 +14,7 @@ import { visuallyHidden } from '@mui/utils'
 import Box from '@mui/material/Box'
 import { Fade } from '@mui/material'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
+import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import { useRouter } from 'next/router'
 
@@ -154,7 +155,7 @@ const EnhancedTableHead = (props) => {
 
 const ReleaseListTable = (props) => {
   const { releases, tableType, collectRoyaltyForRelease } = props
-  const { updateTrack, addTrackToQueue } = useContext(AudioPlayerContext)
+  const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } = useContext(AudioPlayerContext)
   const { ninaClient } = useContext(NinaContext)
   const { releaseState } = useContext(ReleaseContext)
   const router = useRouter()
@@ -176,11 +177,15 @@ const ReleaseListTable = (props) => {
   const handlePlay = (e, releasePubkey) => {
     e.stopPropagation()
     e.preventDefault()
-    updateTrack(
-      releasePubkey,
-      true,
-      true
-    )
+    if (isPlaying && track.releasePubkey === releasePubkey) {
+      setIsPlaying(false)
+    } else {
+      updateTrack(
+        releasePubkey,
+        true,
+        true,
+      )
+    }
   }
 
   const handleAddTrackToQueue = (e, releasePubkey) => {
@@ -325,10 +330,15 @@ const ReleaseListTable = (props) => {
                                   }
                                   sx={{ color: 'black', marginRight: '15px' }}
                                 />
-                                <PlayCircleOutlineOutlinedIcon
-                                  onClick={(e) => handlePlay(e, row.id)}
-                                  sx={{ color: 'black' }}
-                                />
+                                  {isPlaying && track.releasePubkey === row.id ? (
+                                    <PauseCircleOutlineOutlinedIcon 
+                                      onClick={(e) => handlePlay(e, row.id)}
+                                      sx={{ color: 'black' }} />
+                                  ) : (
+                                    <PlayCircleOutlineOutlinedIcon
+                                      onClick={(e) => handlePlay(e, row.id)}
+                                      sx={{ color: 'black' }} />
+                                  )}
                               </TableCell>
                             )
                           } else if (cellName === 'title') {

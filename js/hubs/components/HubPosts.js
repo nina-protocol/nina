@@ -20,7 +20,8 @@ const { HubContext, NinaContext } = nina.contexts
 
 const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
   const wallet = useWallet()
-  const { hubContentToggleVisibility, hubContentState } = useContext(HubContext)
+  const { hubContentToggleVisibility, hubContentState, hubState } = useContext(HubContext)
+  const hubData = useMemo(() => hubState[hubPubkey], [hubState])
   const { postState } = useContext(NinaContext)
 
   const { enqueueSnackbar } = useSnackbar()
@@ -107,9 +108,10 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
                 {Object.keys(activeHubPosts).map((postPubkey) => {
                   const hubPost = activeHubPosts[postPubkey]
                   const postContent = postState[hubPost.post].postContent
+                  console.log("hubPost ::> ", hubPost)
                   return (
                     <DashboardEntry key={hubPost.post}>
-                      <Link href={`/posts/${hubPost.post}`}>{postContent.json.title}</Link>
+                      <Link href={`/${hubData.handle}/posts/${hubPost.publicKey}`}>{postContent.json.title}</Link>
                       {canTogglePost(hubPost) && hubPostsShowArchived && (
                         <AddIcon
                           onClick={() =>
