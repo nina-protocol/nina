@@ -100,7 +100,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle }) => {
                   </Typography>
                 </PostInfo>
                 <HoverCard>
-                  <Link href={`/${hubPubkey}/posts/${item.hubPostPublicKey}`} passHref>
+                  <Link href={`/${hubHandle}/posts/${item.hubPostPublicKey}`} passHref>
                     <CardCta>
                       <PostLink>View Post</PostLink>
                     </CardCta>

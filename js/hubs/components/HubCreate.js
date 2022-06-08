@@ -41,11 +41,9 @@ const HubCreateSchema = Yup.object().shape({
   publishFee: Yup.number().required('Publish Fee is Required'),
   referralFee: Yup.number().required('Referall Fee is Required'),
   description: Yup.string().required('Description is Required'),
-  externalUrl: Yup.string().required('External Url is Required'),
 })
 
-const HubCreate = (props) => {
-  const { update, hubData } = props
+const HubCreate = ({ update, hubData }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const { hubInitWithCredit, hubState, hubUpdateConfig } =
@@ -64,7 +62,7 @@ const HubCreate = (props) => {
   } = useContext(NinaContext)
   const [artwork, setArtwork] = useState()
   const [uploadSize, setUploadSize] = useState()
-  const [hubPubkey, setHubPubkey] = useState(props.hubPubkey)
+  const [hubPubkey, setHubPubkey] = useState(hubData?.id || undefined)
   const [buttonText, setButtonText] = useState(
     update ? 'Update Hub' : 'Create Hub'
   )
@@ -263,6 +261,7 @@ const HubCreate = (props) => {
           })
 
           const result = await hubUpdateConfig(
+            hubPubkey,
             `https://arweave.net/${metadataResult}`,
             formValues.hubForm.publishFee,
             formValues.hubForm.referralFee
@@ -319,7 +318,7 @@ const HubCreate = (props) => {
               const metadataJson = {
                 displayName: formValues.hubForm.displayName,
                 description: formValues.hubForm.description,
-                externalUrl: formValues.hubForm.externalUrl,
+                externalUrl: `https://hubs.ninaprotocol.com/${formValues.hubForm.handle}`,
                 image: `https://arweave.net/${artworkResult}`,
               }
               metadataResult = (

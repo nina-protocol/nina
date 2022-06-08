@@ -76,7 +76,7 @@ const HubCreateForm = ({
                       value.length < 100
                     ) {
                       setFieldValue('handle', value)
-                      setFieldValue('externalUrl', process.env.BASE_URL + value)
+                      setFieldValue('externalUrl', `https://hubs.ninaprotocol.com/${value}`)
                     }
                   }}
                   value={props.field.value}
