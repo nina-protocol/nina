@@ -1,4 +1,5 @@
-import React, {useState, useEffect, useContext, useMemo} from 'react'
+import React, {useState, useContext, useMemo} from 'react'
+import nina from '@nina-protocol/nina-sdk'
 import {styled} from '@mui/material/styles'
 import { Paper} from '@mui/material'
 import Modal from '@mui/material/Modal'
@@ -6,14 +7,19 @@ import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import TextField from '@mui/material/TextField'
 import AutorenewIcon from '@mui/icons-material/Autorenew';
-
-import {useSnackbar} from 'notistack'
-import Dots from './Dots'
+const {NinaContext} = nina.contexts
 
 const UploadInfoModal = ({userHasSeenUpdateMessage}) => {
   const [open, setOpen] = useState(userHasSeenUpdateMessage ? false : true)
+  const {
+    bundlrPricePerMb,
+  } = useContext(NinaContext)
+
+  const mbPerTenthSol = useMemo(() => {
+    console.log('bundlrPricePerMb: ', bundlrPricePerMb)
+    return 0.1 / bundlrPricePerMb
+  }, [bundlrPricePerMb])
 
   const handleClose = () => {
     localStorage.setItem('nina-upload-update-message', true) 
@@ -45,24 +51,24 @@ const UploadInfoModal = ({userHasSeenUpdateMessage}) => {
       >
         <Fade in={open}>
           <StyledPaper>
-            <Typography variant='h4' gutterBottom>
-              Update:
-            </Typography>
-            <Typography gutterBottom>
-              Our Upload flow has been updated.
-            </Typography>
-            <Typography gutterBottom>
-              We are now using <a href="https://bundlr.network/" target="_blank" style={{textDecoration: 'underline'}}>Bundlr</a> which allows users to easily deposit Sol to their Upload Account. This covers Arweave storage fees.
-            </Typography>
-            <Typography gutterBottom>
+            <StyledTypography variant='h4' gutterBottom>
+              Update to Publishing:
+            </StyledTypography>
+            <StyledTypography>
+              We are now using <a href="https://bundlr.network/" target="_blank" style={{textDecoration: 'underline'}}>Bundlr</a> to allow artist to directly upload their releases to Arweave.
+            </StyledTypography>
+            <StyledTypography>
               This update brings us closer to permissionless access and expands file size limitations.
-            </Typography>
-            <Typography gutterBottom>
-              After closing this window, you will see a button that enables the Upload Account interface. You will need to depost ~.10 Sol to create a release.
-            </Typography>
-            <Typography>
+            </StyledTypography>
+            <StyledTypography>
+              After closing this window, you will see a button that enables the Upload Account interface. You will need to deposit SOL in order to publish a release.
+            </StyledTypography>
+            <StyledTypography>
+              0.1 SOL will cover ~{mbPerTenthSol.toFixed(2)} MBs.  Any SOL you don't use on this release will be saved in your Upload Account for your next release.  You can withdraw from you account at any time by clicking 'Manage Upload Account' on the Upload page.
+            </StyledTypography>
+            <StyledTypography>
               If you have any questions or need assitance, please reach out to contact@ninaprotocol.com or hop into <a href='https://discord.gg/Uu7U6VKHwj' target="_blank" style={{textDecoration: 'underline'}}>our discord</a>. 
-            </Typography>
+            </StyledTypography>
 
             <Button
               style={{marginTop: '15px'}}
@@ -105,7 +111,10 @@ const StyledPaper = styled(Paper)(({theme}) => ({
   overflowY: 'auto',
   zIndex: '10',
   display: 'flex',
-  flexDirection: 'column'
+  flexDirection: 'column',
 }))
 
+const StyledTypography = styled(Typography)(({theme}) => ({
+    marginBottom: '20px'
+}))
 export default UploadInfoModal
