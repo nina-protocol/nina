@@ -65,19 +65,20 @@ PostPage.getInitialProps = async (context) => {
       hub = hubPost.hub
       hubPubkey = hubPost.hubId
     }
-    
+    console.log("data ::> ", data)
+    return {
+      metadata,
+      hubPostPubkey,
+      postPubkey,
+      post,
+      hub,
+      hubPubkey: hub.id
+    }
   } catch (error) {
     console.warn(error)
+    return {}
   }
 
-  return {
-    metadata,
-    hubPostPubkey,
-    postPubkey,
-    post,
-    hub,
-    hubPubkey
-  }
 }
 
 export default PostPage

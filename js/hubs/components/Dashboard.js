@@ -26,12 +26,9 @@ const toTitleCase = (text) => {
   })
 }
 
-const Dashboard = () => {
+const Dashboard = ({hubPubkey}) => {
   const wallet = useWallet()
   const router = useRouter()
-  const hubPubkey = router.query.hubPubkey
-  
-
   const { getHub, hubState, hubCollaboratorsState, hubContentState } =
     useContext(HubContext)
 
@@ -121,9 +118,9 @@ const Dashboard = () => {
     const index = e.target.getAttribute('data-index')
     if (index !== '0') {
       const actionParam = actions[index]
-      router.push(`/${hubPubkey}/dashboard?action=` + actionParam)
+      router.push(`/${hubData.handle}/dashboard?action=` + actionParam)
     } else {
-      router.push(`/${hubPubkey}/dashboard`)
+      router.push(`/${hubData.handle}/dashboard`)
     }
     setActiveAction(index)
   }

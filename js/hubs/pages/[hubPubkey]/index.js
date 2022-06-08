@@ -37,6 +37,7 @@ const HubPage = (props) => {
 HubPage.getInitialProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL
   const hubPubkey= context.query.hubPubkey
+
   const indexerPath = indexerUrl + `/hubs/${hubPubkey}`
   let hub;
 
@@ -44,13 +45,14 @@ HubPage.getInitialProps = async (context) => {
     const result = await axios.get(indexerPath)
     const data = result.data
     hub = result.data.hub
+
+    return {
+      hub,
+      hubPubkey: hub.id
+    }
   } catch (error) {
     console.warn(error)
-  }
-
-  return {
-    hub,
-    hubPubkey
+    return {}
   }
 }
 export default HubPage

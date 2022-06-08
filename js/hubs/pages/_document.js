@@ -48,7 +48,7 @@ class MyDocument extends Document {
           <meta name="theme-color" content="#000000" />
           <link rel="icon" href="/images/favicon.ico" />
           <link rel="apple-touch-icon" href="/images/logo192.png" />
-          <link rel="manifest" href="/manifest.json" />
+          <link rel="manifest" href="/misc/manifest.json" />
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"

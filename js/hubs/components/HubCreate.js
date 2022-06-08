@@ -13,15 +13,16 @@ import Button from '@mui/material/Button'
 import LinearProgress from '@mui/material/LinearProgress'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
 import { useWallet } from '@solana/wallet-adapter-react'
+import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
 import HubCreateForm from './HubCreateForm'
 import HubCreateConfirm from './HubCreateConfirm'
 import NinaBox from './NinaBox'
 import HubImageDropzone from './HubImageDropzone'
 import Dots from './Dots'
-import Grid from '@mui/material/Grid'
 import BundlrModal from './BundlrModal'
-import dynamic from 'next/dynamic'
 
 const ColorModal = dynamic(() => import('./ColorModal'))
 
@@ -41,15 +42,14 @@ const HubCreateSchema = Yup.object().shape({
   publishFee: Yup.number().required('Publish Fee is Required'),
   referralFee: Yup.number().required('Referall Fee is Required'),
   description: Yup.string().required('Description is Required'),
-  externalUrl: Yup.string().required('External Url is Required'),
 })
 
-const HubCreate = (props) => {
-  const { update, hubData } = props
+const HubCreate = ({ update, hubData }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const { hubInitWithCredit, hubState, hubUpdateConfig } =
     useContext(HubContext)
+  const router = useRouter()
   const {
     healthOk,
     bundlrUpload,
@@ -64,7 +64,7 @@ const HubCreate = (props) => {
   } = useContext(NinaContext)
   const [artwork, setArtwork] = useState()
   const [uploadSize, setUploadSize] = useState()
-  const [hubPubkey, setHubPubkey] = useState(props.hubPubkey)
+  const [hubPubkey, setHubPubkey] = useState(hubData?.id || undefined)
   const [buttonText, setButtonText] = useState(
     update ? 'Update Hub' : 'Create Hub'
   )
@@ -128,7 +128,7 @@ const HubCreate = (props) => {
         setButtonText('Restart 4/4: Finalize Hub')
       } else if (mbs < uploadSize) {
         setButtonText(
-          `Release requires more storage than available in your bundlr account, please top up`
+          `Upload requires more storage than available in your bundlr account, please top up`
         )
       }
     }
@@ -218,7 +218,7 @@ const HubCreate = (props) => {
 
         if (!uploadHasItemForType(upload, UploadType.metadataJson)) {
           enqueueSnackbar(
-            'Uploading Metadata to Arweave.  Please confirm in wallet.',
+            'Uploading Hub Info to Arweave.  Please confirm in wallet.',
             {
               variant: 'info',
             }
@@ -263,6 +263,7 @@ const HubCreate = (props) => {
           })
 
           const result = await hubUpdateConfig(
+            hubPubkey,
             `https://arweave.net/${metadataResult}`,
             formValues.hubForm.publishFee,
             formValues.hubForm.referralFee
@@ -288,7 +289,7 @@ const HubCreate = (props) => {
           if (!uploadId) {
             setIsPublishing(true)
             enqueueSnackbar(
-              'Uploading Hub image to Arweave.  Please confirm in wallet.',
+              'Uploading Hub Image to Arweave.  Please confirm in wallet.',
               {
                 variant: 'info',
               }
@@ -319,7 +320,7 @@ const HubCreate = (props) => {
               const metadataJson = {
                 displayName: formValues.hubForm.displayName,
                 description: formValues.hubForm.description,
-                externalUrl: formValues.hubForm.externalUrl,
+                externalUrl: `https://hubs.ninaprotocol.com/${formValues.hubForm.handle}`,
                 image: `https://arweave.net/${artworkResult}`,
               }
               metadataResult = (
@@ -374,8 +375,15 @@ const HubCreate = (props) => {
   if (hubCreated) {
     return (
       <Box margin="auto">
-        <Typography>{`${formValues.hubForm.displayName}  has been created.`}</Typography>
-        <Typography>{`Publickey: ${hubPubkey}`}</Typography>
+        <Button
+          fullWidth
+          variant="outlined"
+          color="primary"
+          onClick={() => router.push(`/${hubPubkey}`)}
+          sx={{ height: '54px' }}
+        >
+          {`${formValues.hubForm.displayName}  has been created!  View Hub.`}
+        </Button>
       </Box>
     )
   }

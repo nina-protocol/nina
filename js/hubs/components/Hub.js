@@ -6,16 +6,13 @@ import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import Dots from './Dots'
 
 import { useWallet } from '@solana/wallet-adapter-react'
 const ContentTileView = dynamic(() => import('./ContentTileView'))
 const { HubContext, NinaContext, ReleaseContext } = nina.contexts
 
-const Hub = () => {
-  const router = useRouter()
-  const hubPubkey = router.query.hubPubkey
+const Hub = ({hubPubkey}) => {
 
   const { hubState, hubContentState, hubCollaboratorsState, initialLoad, getHub, filterHubCollaboratorsForHub, filterHubContentForHub } =
     useContext(HubContext)
@@ -133,7 +130,7 @@ const Hub = () => {
             <Dots size="80px" />
           </Box>
         )}
-        {content?.length > 0 && <ContentTileView content={content} hubPubkey={hubPubkey}/>}
+        {content?.length > 0 && <ContentTileView content={content} hubPubkey={hubPubkey} hubHandle={hubData.handle}/>}
       </ContentViewWrapper>
     </>
   )
