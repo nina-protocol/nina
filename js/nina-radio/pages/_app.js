@@ -17,7 +17,7 @@ import {
 import { clusterApiUrl } from '@solana/web3.js'
 import { isMobile } from 'react-device-detect'
 import createCache from '@emotion/cache';
-import { NinaTheme } from "../NinaTheme";
+import { NinaTheme } from "../../NinaTheme";
 import Layout from "../components/Layout";
 import Dots from '../components/Dots'
 

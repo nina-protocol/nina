@@ -145,7 +145,7 @@ export default function Home() {
 
   const shareOnTwitter = () => {
     window.open(
-      `https://twitter.com/intent/tweet?text=${`${activeTrack.current.properties.artist} - "${activeTrack.current.properties.title}" on Nina%0A`}&url=nina.market/${playlist[activeIndex]}`,
+      `https://twitter.com/intent/tweet?text=${`${activeTrack.current.properties.artist} - "${activeTrack.current.properties.title}" on Nina%0A`}&url=ninaprotocol.com/${playlist[activeIndex]}`,
       null,
       'status=no,location=no,toolbar=no,menubar=no,height=500,width=500'
     )
