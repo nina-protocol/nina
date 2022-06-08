@@ -22,7 +22,6 @@ const linksConnected = [
   'collection',
   'releases',
   'upload',
-  'hubs',
   'faq',
   'radio',
   'the soft lp',
@@ -33,7 +32,6 @@ const linksNotConnected = [
   'all Releases',
   'upload',
   'faq',
-  'hubs',
   'radio',
   'the soft lp',
 ]
@@ -131,6 +129,22 @@ const NavDrawer = () => {
                       passHref
                     >
                       Nina Radio
+                    </a>
+                  </StyledListItemText>
+                </ListItem>
+              )
+            case 'faq':
+              return (
+                <ListItem button key={link}>
+                  <StyledListItemText>
+                    <a
+                      href="https://nina-protocol.notion.site/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612"
+                      target="_blank"
+                      rel="noreferrer"
+                      className={`${classes.drawerLink}`}
+                      passHref
+                    >
+                      Faq
                     </a>
                   </StyledListItemText>
                 </ListItem>
