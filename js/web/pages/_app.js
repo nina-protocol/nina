@@ -15,10 +15,7 @@ import createCache from '@emotion/cache';
 import { NinaTheme } from '../../NinaTheme'
 import Layout from '../components/Layout'
 import Dots from '../components/Dots'
-
-const createEmotionCache = () => {
-  return createCache({key: 'css'});
-}
+import createEmotionCache from '../createEmotionCache'
 
 const NinaWrapper = dynamic(() => import('../components/NinaWrapper'))
 
@@ -26,6 +23,7 @@ const clientSideEmotionCache = createEmotionCache();
 
 function Application({ Component, pageProps }) {
   const [loading, setLoading] = useState(false)
+  
   React.useEffect(() => {
     const start = () => {
       setLoading(true)
