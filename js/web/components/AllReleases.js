@@ -120,7 +120,8 @@ const StyledDots = styled(Box)(() => ({
 }))
 
 const StyledReleaseSearch = styled(ReleaseSearch)(() => ({
-  position: 'sticky',
+  position: 'absolute',
+  top: '0',
 }))
 const CollectionHeader = styled(Typography)(() => ({
   maxWidth: '100%',
@@ -137,7 +138,7 @@ const CollectionHeader = styled(Typography)(() => ({
 const AllReleasesWrapper = styled(Box)(({ theme }) => ({
   maxWidth: '960px',
   height: 'auto',
-  minHeight: '50vh',
+  minHeight: '75vh',
   margin: '0 auto',
   position: 'relative',
   '& a': {
