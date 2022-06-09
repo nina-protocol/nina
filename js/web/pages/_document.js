@@ -4,7 +4,7 @@ import React from 'react'
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 import { ServerStyleSheet } from 'styled-components'
 import ServerStyleSheets from '@mui/styles/ServerStyleSheets'
-import createEmotionServer from '@emotion/server/create-instance';
+// import createEmotionServer from '@emotion/server/create-instance';
 // import createEmotionCache from '../src/createEmotionCache';
 // import {styled} from '@mui/material/styles'
 
@@ -28,7 +28,7 @@ class MyDocument extends Document {
         ...initialProps,
         styles: (
           <React.Fragment>
-            {extractCritical(initialProps.styles)}
+            {initialProps.styles}
             {materialSheets.getStyleElement()}
             {styledComponentsSheet.getStyleElement()}
           </React.Fragment>
