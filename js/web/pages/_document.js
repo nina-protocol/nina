@@ -4,7 +4,7 @@ import React from 'react'
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 import { ServerStyleSheet } from 'styled-components'
 import ServerStyleSheets from '@mui/styles/ServerStyleSheets'
-// import createEmotionServer from '@emotion/server/create-instance';
+import createEmotionServer from '@emotion/server/create-instance';
 // import createEmotionCache from '../src/createEmotionCache';
 // import {styled} from '@mui/material/styles'
 
@@ -16,7 +16,6 @@ class MyDocument extends Document {
     const originalRenderPage = ctx.renderPage
 
     try {
-      const initialProps = await Document.getInitialProps(ctx)
       ctx.renderPage = () =>
         originalRenderPage({
           enhanceApp: (App) => (props) =>
@@ -24,11 +23,12 @@ class MyDocument extends Document {
               materialSheets.collect(<App {...props} />)
             ),
         })
+      const initialProps = await Document.getInitialProps(ctx)
       return {
         ...initialProps,
         styles: (
           <React.Fragment>
-            {initialProps.styles}
+            {extractCritical(initialProps.styles)}
             {materialSheets.getStyleElement()}
             {styledComponentsSheet.getStyleElement()}
           </React.Fragment>
