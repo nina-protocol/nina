@@ -92,7 +92,7 @@ function Application({ Component, pageProps }) {
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
             <NinaWrapper network={process.env.REACT_APP_CLUSTER}>
-              {/* <CacheProvider value={clientSideEmotionCache}> */}
+              <CacheProvider value={clientSideEmotionCache}>
                 <ThemeProvider theme={NinaTheme}>
                   <Layout>
                     {loading ? (
@@ -102,7 +102,7 @@ function Application({ Component, pageProps }) {
                     )}
                   </Layout>
                 </ThemeProvider>
-              {/* </CacheProvider> */}
+              </CacheProvider>
             </NinaWrapper>
           </WalletModalProvider>
         </WalletProvider>
