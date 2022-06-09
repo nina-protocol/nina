@@ -14,7 +14,7 @@ import { CacheProvider } from '@emotion/react'
 import createCache from '@emotion/cache';
 import { NinaTheme } from '../../NinaTheme'
 import Layout from '../components/Layout'
-import Dots from '../component/Dots'
+import Dots from '../components/Dots'
 
 const createEmotionCache = () => {
   return createCache({key: 'css'});

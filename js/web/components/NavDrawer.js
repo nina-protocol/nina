@@ -303,6 +303,9 @@ const DrawerFooter = styled(Box)(() => ({
 }))
 
 const StyledListItemText = styled(ListItemText)(() => ({
+  '& a': {
+    display: 'block'
+  },
   '&:hover': {
     opacity: 0.5,
   },
