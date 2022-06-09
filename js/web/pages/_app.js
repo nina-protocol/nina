@@ -10,12 +10,16 @@ import Router from 'next/router'
 import { SnackbarProvider } from 'notistack'
 import { isMobile } from 'react-device-detect'
 import { ThemeProvider } from "@mui/material/styles";
+import { CacheProvider } from '@emotion/react'
+import createCache from '@emotion/cache';
 import { NinaTheme } from '../../NinaTheme'
 import Layout from '../components/Layout'
 import Dots from '../components/Dots'
+import createEmotionCache from '../createEmotionCache'
 
 const NinaWrapper = dynamic(() => import('../components/NinaWrapper'))
 
+const clientSideEmotionCache = createEmotionCache();
 
 function Application({ Component, pageProps }) {
   const [loading, setLoading] = useState(false)
@@ -84,15 +88,17 @@ function Application({ Component, pageProps }) {
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
             <NinaWrapper network={process.env.REACT_APP_CLUSTER}>
-              <ThemeProvider theme={NinaTheme}>
-                <Layout>
-                  {loading ? (
-                    <Dots size="80px" />
-                  ) : (
-                    <Component {...pageProps} />
-                  )}
-                </Layout>
-              </ThemeProvider>
+              <CacheProvider value={clientSideEmotionCache}>
+                <ThemeProvider theme={NinaTheme}>
+                  <Layout>
+                    {loading ? (
+                      <Dots size="80px" />
+                    ) : (
+                      <Component {...pageProps} />
+                    )}
+                  </Layout>
+                </ThemeProvider>
+              </CacheProvider>
             </NinaWrapper>
           </WalletModalProvider>
         </WalletProvider>

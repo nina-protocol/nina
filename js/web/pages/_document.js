@@ -15,7 +15,7 @@ class MyDocument extends Document {
     // However, be aware that it can have global side effects.
     const cache = createEmotionCache();
     const { extractCriticalToChunks } = createEmotionServer(cache);
-    console.log('cache: ', cache)
+
     ctx.renderPage = () =>
       originalRenderPage({
         enhanceApp: (App) =>

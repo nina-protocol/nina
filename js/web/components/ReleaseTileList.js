@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import nina from "@nina-protocol/nina-sdk";
-import Image from './Image'
+import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { Typography, Box } from '@mui/material'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
@@ -83,7 +83,10 @@ const ReleaseTileList = (props) => {
                       zIndex: '1',
                     }}
                     src={release.metadata.image}
-                    release={release}
+                    priority={true}
+                    loader={({ src }) => {
+                      return src;
+                    }}
                   />
                 )}
               </HoverCard>

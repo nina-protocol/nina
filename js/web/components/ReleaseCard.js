@@ -8,7 +8,7 @@ import { Fade } from '@mui/material'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
-import Image from './Image'
+import Image from 'next/image'
 
 import {useSnackbar} from 'notistack'
 import AddToHubModal from './AddToHubModal.js'
@@ -91,7 +91,10 @@ const ReleaseCard = (props) => {
             layout="responsive"
             height={350}
             width={350}
-            release={releaseState[releasePubkey]}
+            priority={true}
+            loader={({ src }) => {
+              return src;
+            }}
           />
         ) : (
           <Image
@@ -100,8 +103,10 @@ const ReleaseCard = (props) => {
             layout="responsive"
             src={image}
             alt={metadata?.name}
-            release={releaseState.tokenData[releasePubkey]}
             priority={true}
+            loader={({ src }) => {
+              return src;
+            }}
           />
         )}
       </Box>

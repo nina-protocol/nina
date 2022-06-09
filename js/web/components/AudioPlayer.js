@@ -200,7 +200,9 @@ const AudioPlayer = () => {
                 height="60px"
                 width="60px"
                 layout="responsive"
-                release={releaseState.tokenData[track.releasePubkey]}
+                loader={({ src }) => {
+                  return src;
+                }}
               />
             </AlbumArt>
           </Link>
