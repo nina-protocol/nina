@@ -13,6 +13,8 @@ import MenuItem from '@mui/material/MenuItem'
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import {FormControl , InputLabel} from '@mui/material'
 import HubPostCreate from './HubPostCreate'
+import {useWallet} from '@solana/wallet-adapter-react'
+
 import Link from 'next/link'
 
 import {useSnackbar} from 'notistack'
@@ -23,6 +25,7 @@ const {HubContext, NinaContext} = nina.contexts
 const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
   const [open, setOpen] = useState(false)
   const {enqueueSnackbar} = useSnackbar()
+  const wallet = useWallet()
 
   const {hubAddRelease} = useContext(HubContext)
   const [selectedHubId, setSelectedHubId] = useState()
@@ -88,13 +91,14 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
             {!userHasHubs && (
               <>
                 <Typography gutterBottom>
-                  The connected wallet is not a collaborator on any hub.
+                  {wallet?.connected ? 'The connected wallet is not a collaborator on any hub.' : 'Connect your wallet to see your hubs'}
                 </Typography>
                 <Typography>
                   <a
                     href="https://docs.google.com/forms/d/1JOgbVh-5SbA4mCwSWAiSolPCAHCjx6baSiJGh0J7N1g"
                     target="_blank"
                     rel="noopener noreferrer"
+                    style={{textDecoration: 'underline'}}
                   >
                     Click here to get started setting up your hub.
                   </a>
