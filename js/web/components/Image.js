@@ -16,13 +16,6 @@ function Image({ src, height, width, layout, priority }) {
   };
 
   return (
-    <div
-      style={{
-        opacity: ready ? 1 : 0,
-        transition: 'opacity .3s ease-in-out',
-      }}
-      className="imageWrapper"
-    >
       <NextImage
         src={src}
         height={height}
@@ -32,13 +25,7 @@ function Image({ src, height, width, layout, priority }) {
         onLoad={(e) => handleLoad(e, false)}
         loader={loaderProp}
       />
-    </div>
   )
 }
 
-function srcComparision(prevImage, nextImage) {
-  return prevImage.src === nextImage.src && nextImage.release
-}
-
-const MemoizedImage = React.memo(Image, srcComparision)
-export default MemoizedImage
+export default Image
