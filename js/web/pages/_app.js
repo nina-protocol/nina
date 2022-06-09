@@ -13,14 +13,14 @@ import { ThemeProvider } from "@mui/material/styles";
 import { CacheProvider } from '@emotion/react'
 import createCache from '@emotion/cache';
 import { NinaTheme } from '../../NinaTheme'
+import Layout from '../components/Layout'
+import Dots from '../component/Dots'
 
 const createEmotionCache = () => {
   return createCache({key: 'css'});
 }
 
 const NinaWrapper = dynamic(() => import('../components/NinaWrapper'))
-const Dots = dynamic(() => import('../components/Dots'));
-const Layout = dynamic(() => import('../components/Layout'));
 
 const clientSideEmotionCache = createEmotionCache();
 
