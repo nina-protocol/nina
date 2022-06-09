@@ -26,7 +26,7 @@ const Royalty = (props) => {
   const [userRecipientData, setUserRecipientData] = useState(undefined)
   const [userShare, setUserShare] = useState(undefined)
   const [userDisplayShare, setUserDisplayShare] = useState(undefined)
-  const [formToggleText, setFormToggleText] = useState('Add Royalty Recipient')
+  const [formToggleText, setFormToggleText] = useState('Add Revenue Split Recipient')
   const { collectRoyaltyForRelease } = useContext(ReleaseContext)
   const { ninaClient } = useContext(NinaContext)
 
@@ -53,7 +53,7 @@ const Royalty = (props) => {
       setFormToggleText('Cancel')
     } else {
       setFormShown(false)
-      setFormToggleText('Add Royalty Recipient')
+      setFormToggleText('Add Revenue Split Recipient')
     }
   }
 
