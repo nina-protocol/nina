@@ -10,6 +10,7 @@ import {
   TOKEN_PROGRAM_ID
 } from '../utils/web3'
 import { ninaErrorHandler } from '../utils/errors'
+import { dateConverter } from '../utils'
 
 const lookupTypes = {
   RELEASE: 'release',
@@ -106,7 +107,7 @@ const exchangeContextHelper = ({
     try {
       const program = await ninaClient.useProgram()
       const VAULT_ID = new anchor.web3.PublicKey(
-        ninaClient.ids().accounts.vault
+        ninaClient.ids.accounts.vault
       )
       const vault = await program.account.vault.fetch(VAULT_ID)
       const release = await program.account.release.fetch(
@@ -207,7 +208,7 @@ const exchangeContextHelper = ({
       const txid = await program.methods
         .exchangeAccept(params)
         .accounts(request.accounts)
-        .preInstructions(request.preInstructions)
+        .preInstructions(request.instructions)
         .signers(request.signers)
         .rpc()
       await provider.connection.getParsedTransaction(txid, 'confirmed')
@@ -531,7 +532,7 @@ const exchangeContextHelper = ({
     )
 
     exchangeHistoryAccounts = exchangeHistoryAccounts.map((e) => {
-      e.dateFormatted = ninaClient.dateConverter(e.datetime)
+      e.dateFormatted = dateConverter(e.datetime)
       return e
     })
 
