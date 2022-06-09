@@ -12,7 +12,7 @@ import { isMobile } from 'react-device-detect'
 import { ThemeProvider } from "@mui/material/styles";
 import { CacheProvider } from '@emotion/react'
 import createCache from '@emotion/cache';
-import { NinaTheme } from '../NinaTheme'
+import { NinaTheme } from '../../NinaTheme'
 
 const createEmotionCache = () => {
   return createCache({key: 'css'});
