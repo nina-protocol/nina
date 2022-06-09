@@ -83,6 +83,7 @@ const AudioPlayer = () => {
   const hasPrevious = useMemo(() => 
     activeIndexRef.current > 0
   , [activeIndexRef.current])
+
   useEffect(() => {
     const initialized = activeIndexRef.current >= 0
     if (track) {
@@ -178,6 +179,13 @@ const AudioPlayer = () => {
       setPlaying(false)
     }
   }
+
+  const seek = (newValue) => {
+    if (playerRef.current) {
+      setTrackProgress(newValue);
+      playerRef.current.currentTime = newValue;
+    }
+  };
 
   const iconStyle = {
     width: '60px',
