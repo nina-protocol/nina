@@ -103,6 +103,7 @@ class MyDocument extends Document {
           />
         </Head>
         <body style={{ margin: '0px', position: 'relative' }}>
+          <script>0</script>
           <Main />
           <NextScript />
         </body>
