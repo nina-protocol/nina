@@ -219,18 +219,14 @@ const ReleaseCreate = () => {
               variant: 'info',
             }
           )
-          try {
-            artworkResult = (await bundlrUpload(artwork.file)).data.id
-            setArtworkTx(artworkResult)
-            upload = createUpload(
-              UploadType.artwork,
-              artworkResult,
-              formValues.releaseForm
-            )
-            setUploadId(upload)
-          } catch (error) {
-            console.warn(error)
-          }
+          artworkResult = (await bundlrUpload(artwork.file)).data.id
+          setArtworkTx(artworkResult)
+          upload = createUpload(
+            UploadType.artwork,
+            artworkResult,
+            formValues.releaseForm
+          )
+          setUploadId(upload)
         }
         if (uploadHasItemForType(upload, UploadType.artwork) || artworkResult) {
           let trackResult = trackTx
@@ -241,15 +237,12 @@ const ReleaseCreate = () => {
                 variant: 'info',
               }
             )
-
-            try {
-              trackResult = (await bundlrUpload(track.file)).data.id
+            trackResult = (await bundlrUpload(track.file)).data.id
+            console.log('trackResult :>> ', trackResult);
+            if (trackResult) {
               setTrackTx(trackResult)
               updateUpload(upload, UploadType.track, trackResult)
-            } catch (error) {
-              setIsPublishing(false)
-              console.warn(error)
-            }
+            } 
           }
           if (uploadHasItemForType(upload, UploadType.track) || trackResult) {
                      let metadataResult = metadataTx
@@ -273,26 +266,22 @@ const ReleaseCreate = () => {
                 artworkType: artwork.file.type,
                 duration: track.meta.duration,
               })
-              try {
-                metadataResult = (
-                  await bundlrUpload(
-                    new Blob([JSON.stringify(metadataJson)], {
-                      type: 'application/json',
-                    })
-                  )
-                ).data.id
-                setMetadata(metadataJson)
-                setMetadataTx(metadataResult)
-                updateUpload(
-                  upload,
-                  UploadType.metadataJson,
-                  metadataResult,
-                  info
+              metadataResult = (
+                await bundlrUpload(
+                  new Blob([JSON.stringify(metadataJson)], {
+                    type: 'application/json',
+                  })
                 )
-              } catch (error) {
-                console.warn(error)
-              }
+              ).data.id
 
+              setMetadata(metadataJson)
+              setMetadataTx(metadataResult)
+              updateUpload(
+                upload,
+                UploadType.metadataJson,
+                metadataResult,
+                info
+              )
             }
             if (
               uploadHasItemForType(upload, UploadType.metadataJson) ||
@@ -332,11 +321,10 @@ const ReleaseCreate = () => {
               }
             }
           }
-        } else {
-          console.warn('didnt mean condition')
-        }
+        } 
       }
     } catch (error) {
+      console.log('error !!! :>> ', error);
       setIsPublishing(false)
     }
   }

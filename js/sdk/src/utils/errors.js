@@ -1,7 +1,5 @@
 export const ninaErrorHandler = (error, errorString) => {
   console.warn(error)
-  console.warn('!!!!', error)
-  
 
   let msg
   if (

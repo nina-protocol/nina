@@ -549,7 +549,7 @@ const ninaContextHelper = ({
               { name: 'Content-Type', value: file.type },
             ])
           } catch (error) {
-            return ninaErrorHandler(error)
+            ninaErrorHandler(error)
           }
           getBundlrBalance()
           resolve(res)
