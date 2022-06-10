@@ -255,7 +255,7 @@ const HubPostCreate = ({
         disabled={!selectedHubId || (preloadedRelease && !userHasHubs)}
       > 
         <Typography>
-        {preloadedRelease ? 'Create an editorial post about this release' : 'Publish a new post'}
+        {preloadedRelease ? 'Create Text Post' : 'Publish a new post'}
         </Typography>
       </CreateCtaButton>
       <StyledModal
