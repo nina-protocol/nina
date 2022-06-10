@@ -8,19 +8,19 @@ pub struct RedeemableShippingUpdate<'info> {
     #[account(
         constraint = redeemable.load()?.authority == *authority.key
     )]
-    pub redeemable: Loader<'info, Redeemable>,
+    pub redeemable: AccountLoader<'info, Redeemable>,
     #[account(
         mut,
         constraint = redemption_record.load()?.redeemable == *redeemable.to_account_info().key
     )]
-    pub redemption_record: Loader<'info, RedemptionRecord>,
+    pub redemption_record: AccountLoader<'info, RedemptionRecord>,
 }
 
 pub fn handler(
     ctx: Context<RedeemableShippingUpdate>,
     shipper: Vec<u8>,
     tracking_number: Vec<u8>,
-) -> ProgramResult {
+) -> Result<()> {
     let mut redemption_record = ctx.accounts.redemption_record.load_mut()?;
 
     let mut shipper_array = [0u8; 32];

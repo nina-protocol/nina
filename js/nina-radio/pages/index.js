@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useContext } from 'react'
-import ninaCommon from 'nina-common'
+import nina from "@nina-protocol/nina-sdk";
 import axios from 'axios'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -8,10 +8,9 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import { styled } from "@mui/material/styles"
-
-const { ReleaseContext } = ninaCommon.contexts
-const { Dots } = ninaCommon.components
-const { NinaClient } = ninaCommon.utils
+import Dots from '../components/Dots'
+const { ReleaseContext } = nina.contexts
+const { formatDuration } = nina.utils
 
 export default function Home() {
   const playerRef = useRef()
@@ -47,7 +46,6 @@ export default function Home() {
       if (releases.length > 0) {
         activeTrack.current = tracks[releases[0]]
         if ("mediaSession" in navigator) {
-          console.log('in here: ', activeTrack.current)
           navigator.mediaSession.metadata = new MediaMetadata({
             title: activeTrack.current.properties.title,
             artist: activeTrack.current.properties.artist,
@@ -64,7 +62,6 @@ export default function Home() {
     const track = tracks[playlist[activeIndexRef.current]]
     if (track) {
       if (track && "mediaSession" in navigator) {
-        console.log('in here: ', track)
         navigator.mediaSession.metadata = new MediaMetadata({
           title: track.properties.title,
           artist: track.properties.artist,
@@ -148,7 +145,7 @@ export default function Home() {
 
   const shareOnTwitter = () => {
     window.open(
-      `https://twitter.com/intent/tweet?text=${`${activeTrack.current.properties.artist} - "${activeTrack.current.properties.title}" on Nina%0A`}&url=nina.market/${playlist[activeIndex]}`,
+      `https://twitter.com/intent/tweet?text=${`${activeTrack.current.properties.artist} - "${activeTrack.current.properties.title}" on Nina%0A`}&url=ninaprotocol.com/${playlist[activeIndex]}`,
       null,
       'status=no,location=no,toolbar=no,menubar=no,height=500,width=500'
     )
@@ -236,7 +233,7 @@ export default function Home() {
                 >
                   {activeTrack.current.properties.title}
                 </Typography>
-                <Typography>{`${NinaClient.formatDuration(trackProgress)} / ${NinaClient.formatDuration(activeTrack.current.properties.files[0].duration)}`}</Typography>
+                <Typography>{`${formatDuration(trackProgress)} / ${formatDuration(activeTrack.current.properties.files[0].duration)}`}</Typography>
                 <Links>
                   <a
                     href={activeTrack.current.external_url}

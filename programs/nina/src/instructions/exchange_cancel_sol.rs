@@ -9,9 +9,9 @@ pub struct ExchangeCancelSol<'info> {
     pub initializer: Signer<'info>,
     #[account(
         mut,
-        close = initializer,
         constraint = exchange.initializer == *initializer.key,
         constraint = exchange.exchange_escrow_token_account == exchange_escrow_token_account.key(),
+        close = initializer,
     )]
     pub exchange: Account<'info, Exchange>,
     #[account(
@@ -21,9 +21,10 @@ pub struct ExchangeCancelSol<'info> {
         constraint = exchange_escrow_token_account.mint == exchange.initializer_sending_mint,
     )]
     pub exchange_escrow_token_account: Box<Account<'info, TokenAccount>>,
+    /// CHECK: This is safe because we derive PDA from exchange and check exchange.initializer above
     #[account(
         seeds = [exchange.to_account_info().key.as_ref()],
-        bump = exchange.bump,
+        bump,
     )]
     pub exchange_signer: UncheckedAccount<'info>,
     #[account(address = token::ID)]
@@ -37,7 +38,7 @@ pub struct ExchangeCancelSol<'info> {
 pub fn handler(
     ctx: Context<ExchangeCancelSol>,
     amount: u64,
-) -> ProgramResult {
+) -> Result<()> {
     Exchange::close_escrow_token_account(
         ctx.accounts.initializer.to_account_info(),
         &ctx.accounts.exchange,

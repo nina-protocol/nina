@@ -7,14 +7,17 @@ use crate::utils::{wrapped_sol};
 #[derive(Accounts)]
 #[instruction(bumps: VaultBumps)]
 pub struct VaultInitialize<'info> {
+    #[account(mut)]
     pub authority: Signer<'info>,
     #[account(
         init,
         seeds = [b"nina-vault".as_ref()],
         bump,
         payer = authority,
+        space = 140
     )]
     pub vault: Account<'info, Vault>,
+    /// CHECK: This is safe because we are initializing the vault
     #[account(
         seeds = [b"nina-vault-signer".as_ref(), vault.key().as_ref()],
         bump,
@@ -50,7 +53,7 @@ pub struct VaultInitialize<'info> {
 pub fn handler(
     ctx: Context<VaultInitialize>,
     bumps: VaultBumps,
-) -> ProgramResult {
+) -> Result<()> {
     let vault = &mut ctx.accounts.vault;
     vault.authority = *ctx.accounts.authority.to_account_info().key;
     vault.vault_signer = *ctx.accounts.vault_signer.to_account_info().key;

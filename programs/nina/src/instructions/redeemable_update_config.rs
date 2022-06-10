@@ -14,13 +14,14 @@ pub struct RedeemableUpdateConfig<'info> {
         seeds = [b"nina-release".as_ref(), redeemable_mint.key().as_ref()],
         bump,
     )]
-    pub release: Loader<'info, Release>,
+    pub release: AccountLoader<'info, Release>,
     #[account(
         mut,
         seeds = [b"nina-redeemable".as_ref(), release.key().as_ref(), redeemed_mint.key().as_ref()],
         bump,
     )]
-    pub redeemable: Loader<'info, Redeemable>,
+    pub redeemable: AccountLoader<'info, Redeemable>,
+    /// CHECK: This is safe because the PDA is derived from redeemable above which is verified via seeds
     #[account(
         seeds = [b"nina-redeemable-signer".as_ref(), redeemable.key().as_ref()],
         bump,
@@ -41,7 +42,7 @@ pub struct RedeemableUpdateConfig<'info> {
 pub fn handler(
     ctx: Context<RedeemableUpdateConfig>,
     config: RedeemableConfig,
-) -> ProgramResult {
+) -> Result<()> {
     let mut redeemable = ctx.accounts.redeemable.load_mut()?;
 
     let mut encryption_public_key_array = [0u8; 120];

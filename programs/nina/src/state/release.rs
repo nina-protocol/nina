@@ -1,9 +1,20 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{self, Transfer, MintTo, SetAuthority};
+use anchor_lang::solana_program::{
+    program::{invoke, invoke_signed},
+};
+use mpl_token_metadata::{
+    self,
+    state::{Creator},
+    instruction::{create_metadata_accounts_v2},
+};
+use anchor_spl::token::{self, TokenAccount, MintTo, Transfer, Token, Mint, SetAuthority};
+use spl_token::instruction::{close_account};
+use crate::utils::{wrapped_sol};
 
-use crate::errors::*;
+use crate::errors::ErrorCode;
 
 #[account(zero_copy)]
+#[repr(packed)]
 #[derive(Default)]
 pub struct Release {
     pub payer: Pubkey,
@@ -30,14 +41,194 @@ pub struct Release {
 }
 
 impl Release {
+    pub fn release_purchase_handler<'info> (
+        payer: Signer<'info>,
+        receiver: UncheckedAccount<'info>,
+        release_loader: &AccountLoader<'info, Release>,
+        release_signer: UncheckedAccount<'info>,
+        payer_token_account: Box<Account<'info, TokenAccount>>,
+        receiver_release_token_account: Box<Account<'info, TokenAccount>>,
+        royalty_token_account: Box<Account<'info, TokenAccount>>,
+        release_mint: Account<'info, Mint>,
+        token_program: Program<'info, Token>,
+        clock: Sysvar<'info, Clock>,
+        amount: u64,
+    ) -> Result<()> {
+        let mut release = release_loader.load_mut()?;
+
+        if receiver.key() != receiver_release_token_account.owner {
+            return Err(error!(ErrorCode::ReleasePurchaseWrongReceiver));
+        }
+        
+        if !(release.release_datetime < clock.unix_timestamp) {
+            return Err(error!(ErrorCode::ReleaseNotLive));
+        }
+    
+        if release.remaining_supply == 0 {
+            return Err(error!(ErrorCode::SoldOut));
+        }
+    
+        if amount != release.price {
+            return Err(error!(ErrorCode::WrongAmount));
+        };
+    
+        // Transfer USDC from Payer to Royalty USDC Account
+        let cpi_accounts = Transfer {
+            from: payer_token_account.to_account_info(),
+            to: royalty_token_account.to_account_info(),
+            authority: payer.to_account_info().clone(),
+        };
+        let cpi_program = token_program.to_account_info().clone();
+        let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
+        token::transfer(cpi_ctx, amount)?;
+    
+        // Update Sales Counters
+        release.total_collected = u64::from(release.total_collected)
+            .checked_add(amount)
+            .unwrap();
+        release.sale_counter = u64::from(release.sale_counter)
+            .checked_add(1)
+            .unwrap();  
+        release.sale_total = u64::from(release.sale_total)
+            .checked_add(amount)
+            .unwrap();
+        release.remaining_supply = u64::from(release.remaining_supply)
+            .checked_sub(1)
+            .unwrap();
+    
+        //Update Royalty Recipent Counters
+        release.update_royalty_recipients_owed(amount);
+    
+        //MintTo PurchaserReleaseTokenAccount
+        let cpi_accounts = MintTo {
+            mint: release_mint.to_account_info(),
+            to: receiver_release_token_account.to_account_info(),
+            authority: release_signer.to_account_info().clone(),
+        };
+        let cpi_program = token_program.to_account_info().clone();
+    
+        let seeds = &[
+            release_loader.to_account_info().key.as_ref(),
+            &[release.bumps.signer],
+        ];
+        let signer = &[&seeds[..]];
+        let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer);
+        token::mint_to(cpi_ctx, 1)?;
+        
+        if release.payment_mint == wrapped_sol::ID {
+            invoke(
+                &close_account(
+                    token_program.to_account_info().key,
+                    payer_token_account.to_account_info().key,
+                    payer.to_account_info().key,
+                    payer.to_account_info().key,
+                    &[],
+                )?,
+                &[
+                    payer.to_account_info().clone(),
+                    payer_token_account.to_account_info().clone(),
+                    payer.to_account_info().clone(),
+                    token_program.to_account_info().clone(),
+                ]
+            )?;
+        }
+    
+        Ok(())
+    }
+
+	#[inline(never)]
+    pub fn release_revenue_share_transfer_handler<'info> (
+        release_loader: &AccountLoader<'info, Release>,
+        release_signer: AccountInfo<'info>,
+        royalty_token_account: AccountInfo<'info>,
+        authority: Pubkey,
+        new_royalty_recipient: Pubkey,
+        new_royalty_recipient_token_account: AccountInfo<'info>,
+        token_program: AccountInfo<'info>,
+        transfer_share: u64,
+        is_init: bool,
+    ) -> Result<()> {
+
+        let mut release;
+        if is_init {
+            release = release_loader.load_init()?;
+        } else {
+            release = release_loader.load_mut()?;
+        }
+
+        let seeds = &[
+            release_loader.to_account_info().key.as_ref(),
+            &[release.bumps.signer],
+        ];
+        let signer = &[&seeds[..]];
+
+        let mut royalty_recipient = match release.find_royalty_recipient(authority) {
+            Some(royalty_recipient) => royalty_recipient,
+            None => return Err(error!(ErrorCode::InvalidRoyaltyRecipientAuthority)),
+        };
+
+        // Add New Royalty Recipient
+        if transfer_share > royalty_recipient.percent_share {
+            return Err(error!(ErrorCode::RoyaltyTransferTooLarge));
+        };
+
+        // Take share from current user
+        royalty_recipient.percent_share = u64::from(royalty_recipient.percent_share)
+            .checked_sub(transfer_share)
+            .unwrap();
+        let existing_royalty_recipient = release.find_royalty_recipient(new_royalty_recipient);
+        // If new_royalty_recipient doesn't already have a share, add them as a new recipient
+        if existing_royalty_recipient.is_none() {
+            release.append_royalty_recipient({
+                RoyaltyRecipient {
+                    recipient_authority: new_royalty_recipient,
+                    recipient_token_account: new_royalty_recipient_token_account.key(),
+                    percent_share: transfer_share,
+                    owed: 0 as u64,
+                    collected: 0 as u64,
+                }
+            })?;
+        } else {
+            // new_royalty_recipient already has a share of the release, so collect royalties and append share
+            let existing_royalty_recipient_unwrapped = existing_royalty_recipient.unwrap();
+            if existing_royalty_recipient_unwrapped.owed > 0 {
+                // Transfer Royalties from the existing royalty account to the existing user receiving more royalty share
+                let cpi_accounts = Transfer {
+                    from: royalty_token_account,
+                    to: new_royalty_recipient_token_account,
+                    authority: release_signer,
+                };
+                let cpi_program = token_program;
+                let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer);
+                token::transfer(cpi_ctx, existing_royalty_recipient_unwrapped.owed as u64)?;
+            }
+            existing_royalty_recipient_unwrapped.percent_share = u64::from(existing_royalty_recipient_unwrapped.percent_share)
+                .checked_add(transfer_share)
+                .unwrap();
+        }
+
+        // Make sure royalty shares of all recipients does not exceed 1000000
+        if release.royalty_equals_1000000() {
+            if !is_init {
+                emit!(RoyaltyRecipientAdded {
+                    authority: new_royalty_recipient,
+                    public_key: release_loader.key(),
+                });
+            }
+            Ok(())
+        } else {
+            return Err(error!(ErrorCode::RoyaltyExceeds100Percent));
+        }
+    }
+
     pub fn release_revenue_share_collect_handler<'info> (
-        release_loader: &Loader<'info, Release>,
+        release_loader: &AccountLoader<'info, Release>,
         release_signer: AccountInfo<'info>,
         royalty_token_account: AccountInfo<'info>,
         authority: Pubkey,
         authority_token_account: AccountInfo<'info>,
         token_program: AccountInfo<'info>,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         let mut release = release_loader.load_mut()?;
 
         let seeds = &[
@@ -48,7 +239,7 @@ impl Release {
 
         let mut royalty_recipient = match release.find_royalty_recipient(authority) {
             Some(royalty_recipient) => royalty_recipient,
-            None => return Err(ErrorCode::InvalidRoyaltyRecipientAuthority.into())
+            None => return Err(error!(ErrorCode::InvalidRoyaltyRecipientAuthority)),
         };
 
         // Transfer Royalties from the royalty account to the user collecting
@@ -61,14 +252,80 @@ impl Release {
         token::transfer(cpi_ctx, royalty_recipient.owed as u64)?;
 
         // Update Royalty Recipient's Counters
-        royalty_recipient.collected += royalty_recipient.owed;
+        royalty_recipient.collected = u64::from(royalty_recipient.collected)
+            .checked_add(royalty_recipient.owed)
+            .unwrap();
         royalty_recipient.owed = 0;
 
         Ok(())
     }
+    
+    #[inline(never)]
+    pub fn create_metadata_handler<'info>(
+        release_signer: AccountInfo<'info>,
+        metadata: AccountInfo<'info>,
+        release_mint: Box<Account<'info, Mint>>,
+        authority: Signer<'info>,
+        metadata_program: AccountInfo<'info>,
+        token_program: Program<'info, Token>,
+        system_program: Program<'info, System>,
+        rent: Sysvar<'info, Rent>,
+        release: AccountLoader<'info, Release>,
+        metadata_data: ReleaseMetadataData,
+        bumps: ReleaseBumps,
+    ) -> Result<()> {
+        let creators: Vec<Creator> =
+        vec![Creator {
+            address: *release_signer.to_account_info().key,
+            verified: true,
+            share: 100,
+        }];
 
+        let metadata_infos = vec![
+            metadata.clone(),
+            release_mint.to_account_info().clone(),
+            release_signer.clone(),
+            authority.to_account_info().clone(),
+            metadata_program.clone(),
+            token_program.to_account_info().clone(),
+            system_program.to_account_info().clone(),
+            rent.to_account_info().clone(),
+            release.to_account_info().clone(),
+        ];
+
+        let seeds = &[
+            release.to_account_info().key.as_ref(),
+            &[bumps.signer],
+        ];
+    
+        invoke_signed(
+            &create_metadata_accounts_v2(
+                metadata_program.key(),
+                metadata.key(),
+                release_mint.key(),
+                release_signer.key(),
+                authority.key(),
+                release_signer.key(),
+                metadata_data.name,
+                metadata_data.symbol,
+                metadata_data.uri.clone(),
+                Some(creators),
+                metadata_data.seller_fee_basis_points,
+                true,
+                false,
+                None,
+                None
+            ),
+            metadata_infos.as_slice(),
+            &[seeds],
+        )?;
+    
+        Ok(())
+    }
+
+    #[inline(never)]
     pub fn release_init_handler<'info>(
-        release_loader: &Loader<'info, Release>,
+        release_loader: &AccountLoader<'info, Release>,
         release_signer: AccountInfo<'info>,
         release_mint: AccountInfo<'info>,
         payment_mint: AccountInfo<'info>,
@@ -79,29 +336,39 @@ impl Release {
         token_program: AccountInfo<'info>,
         config: ReleaseConfig,
         bumps: ReleaseBumps,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         // Hard code fee that publishers pay in their release to the NinaVault
         let vault_fee_percentage = 0;
 
         // Expand math to calculate vault fee avoiding floats
-        let mut vault_fee = ((config.amount_total_supply * 1000000) * vault_fee_percentage) / 1000000;
+        let mut vault_fee = u64::from(config.amount_total_supply)
+            .checked_mul(1000000)
+            .unwrap()
+            .checked_mul(vault_fee_percentage)
+            .unwrap()
+            .checked_div(1000000)
+            .unwrap();
 
         // Releases are not fractional and the fee rounds up all fractions to ensure at least 1 release is paid as fee
         if vault_fee % 1000000 > 0 {
-            vault_fee += 1000000
+            vault_fee = u64::from(vault_fee)
+                .checked_add(1000000)
+                .unwrap();
         }
 
         // Unexpand math
-        vault_fee = vault_fee / 1000000;
+        vault_fee = u64::from(vault_fee)
+            .checked_div(1000000)
+            .unwrap();
         
         if vault_fee != config.amount_to_vault_token_account {
-            return Err(ErrorCode::InvalidVaultFee.into());
+            return Err(error!(ErrorCode::InvalidVaultFee));
         }
-
-        if config.amount_to_artist_token_account + 
-           config.amount_to_vault_token_account > 
-           config.amount_total_supply {
-            return Err(ErrorCode::InvalidAmountMintToArtist.into())
+        let amount_minted = config.amount_to_artist_token_account
+            .checked_add(config.amount_to_vault_token_account)
+            .unwrap();
+        if amount_minted > config.amount_total_supply {
+            return Err(error!(ErrorCode::InvalidAmountMintToArtist));
         }
 
         let mut release = release_loader.load_init()?;
@@ -115,24 +382,28 @@ impl Release {
 
         release.price = config.price;
         release.total_supply = config.amount_total_supply;
-        release.remaining_supply = config.amount_total_supply - config.amount_to_artist_token_account - config.amount_to_vault_token_account;
+        release.remaining_supply = config.amount_total_supply
+            .checked_sub(config.amount_to_artist_token_account)
+            .unwrap()
+            .checked_sub(config.amount_to_vault_token_account)
+            .unwrap();
         release.resale_percentage = config.resale_percentage;
-        release.release_datetime = config.release_datetime as i64;
+        release.release_datetime = config.release_datetime;
 
-        release.total_collected = 0 as u64;
-        release.sale_counter = 0 as u64;
-        release.sale_total = 0 as u64;
-        release.exchange_sale_counter = 0 as u64;
-        release.exchange_sale_total = 0 as u64;
+        release.total_collected = 0;
+        release.sale_counter = 0;
+        release.sale_total = 0;
+        release.exchange_sale_counter = 0;
+        release.exchange_sale_total = 0;
         release.bumps = bumps;
 
         release.append_royalty_recipient({
             RoyaltyRecipient {
                 recipient_authority: *authority.to_account_info().key,
                 recipient_token_account: *authority_token_account.to_account_info().key,
-                percent_share: 1000000 as u64,
-                owed: 0 as u64,
-                collected: 0 as u64,
+                percent_share: 1000000,
+                owed: 0,
+                collected: 0,
             }
         })?;
 
@@ -146,20 +417,21 @@ impl Release {
         let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
         token::set_authority(cpi_ctx, AuthorityType::MintTokens.into(), Some(release.release_signer))?;
         
-        emit!(ReleaseCreated {
-            public_key: *release_loader.to_account_info().key,
-            mint: *release_mint.to_account_info().key,
-            authority: *authority.to_account_info().key,
-            date: config.release_datetime,
-        });
-
         Ok(())
     }
 
     pub fn update_royalty_recipients_owed(&mut self, amount: u64) {
         for royalty_recipient in self.royalty_recipients.iter_mut() {
             if royalty_recipient.percent_share > 0 {
-                royalty_recipient.owed += (amount * royalty_recipient.percent_share) / 1000000;
+                royalty_recipient.owed = u64::from(royalty_recipient.owed)
+                    .checked_add(
+                        amount
+                            .checked_mul(royalty_recipient.percent_share)
+                            .unwrap()
+                            .checked_div(1000000)
+                            .unwrap()
+                    )
+                    .unwrap();
             }
         }
     }
@@ -176,7 +448,9 @@ impl Release {
     pub fn royalty_equals_1000000(&mut self) -> bool {
         let mut royalty_counter = 0;
         for royalty_recipient in self.royalty_recipients.iter_mut() {
-            royalty_counter += royalty_recipient.percent_share;
+            royalty_counter = u64::from(royalty_counter)
+                .checked_add(royalty_recipient.percent_share)
+                .unwrap();
         }
 
         if royalty_counter == 1000000 {
@@ -190,18 +464,22 @@ impl Release {
     pub fn append_royalty_recipient(
         &mut self,
         royalty_recipient: RoyaltyRecipient
-    ) -> ProgramResult{
+    ) -> Result<()> {
         self.royalty_recipients[Release::index_of(self.head)] = royalty_recipient;
-        if Release::index_of(self.head + 1) == Release::index_of(self.tail) {
-            self.tail += 1;
+        if Release::index_of(self.head.checked_add(1).unwrap()) == Release::index_of(self.tail) {
+            self.tail = u64::from(self.tail)
+                .checked_add(1)
+                .unwrap();
         }
-        self.head += 1;
+        self.head = u64::from(self.head)
+            .checked_add(1)
+            .unwrap();
 
         // Don't allow more than 10 revenue shares
         if self.head <= 10 {
             Ok(())
         } else {
-            return Err(ErrorCode::MaximumAmountOfRevenueShares.into())
+            return Err(error!(ErrorCode::MaximumAmountOfRevenueShares));
 
         }
     }
@@ -215,14 +493,14 @@ impl Release {
         initializer_sending_mint:Pubkey,
         initializer_expected_mint: Pubkey,
         is_selling: bool,
-    ) -> ProgramResult {
+    ) -> Result<()> {
 
         if is_selling && initializer_expected_mint != release.payment_mint {
-            return Err(ErrorCode::WrongMintForExchange.into());
+            return Err(error!(ErrorCode::WrongMintForExchange));
         }
 
         if !is_selling && initializer_sending_mint != release.payment_mint {
-            return Err(ErrorCode::WrongMintForExchange.into());
+            return Err(error!(ErrorCode::WrongMintForExchange));
         }
 
         Ok(())
@@ -230,6 +508,7 @@ impl Release {
 }
 
 #[zero_copy]
+#[repr(packed)]
 #[derive(Default)]
 pub struct RoyaltyRecipient {
     pub recipient_authority: Pubkey,
@@ -289,10 +568,12 @@ impl From<AuthorityType> for spl_token::instruction::AuthorityType {
 #[event]
 pub struct ReleaseCreated {
     pub authority: Pubkey,
-    pub date: i64,
+    pub datetime: i64,
     pub mint: Pubkey,
     #[index]
     pub public_key: Pubkey,
+    pub metadata_public_key: Pubkey,
+    pub uri: String,
 }
 
 #[event]
@@ -304,15 +585,18 @@ pub struct RoyaltyRecipientAdded {
 #[event]
 pub struct ReleaseSold {
     pub public_key: Pubkey,
+    pub purchaser: Pubkey,
     #[index]
     pub date: i64,
 }
 
 #[event]
-pub struct ReleaseMetadataUpdated {
+pub struct ReleaseSoldViaHub {
     pub public_key: Pubkey,
-    pub metadata_public_key: Pubkey,
-    pub uri: String,
+    pub purchaser: Pubkey,
+    pub hub: Pubkey,
+    #[index]
+    pub date: i64,
 }
 
 

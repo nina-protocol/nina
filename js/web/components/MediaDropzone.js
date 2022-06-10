@@ -1,94 +1,74 @@
-import React from "react";
-import ninaCommon from "nina-common";
-import "react-dropzone-uploader/dist/styles.css";
-import Dropzone from "react-dropzone-uploader";
-import { Typography, Box } from "@mui/material";
-import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
-import Image from "next/image";
+import React from 'react'
+import nina from '@nina-protocol/nina-sdk'
+import 'react-dropzone-uploader/dist/styles.css'
+import Dropzone from 'react-dropzone-uploader'
+import { Typography, Box } from '@mui/material'
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined'
+import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined'
+import Image from 'next/image'
+import { useWallet } from '@solana/wallet-adapter-react'
 
-const { NinaClient } = ninaCommon.utils;
-const MediaDropzone = ({
-  type,
-  releasePubkey,
-  metadata,
-  setArtwork,
-  setTrack,
-  handleProgress,
-}) => {
-  const getUploadParams = ({ file }) => {
-    const body = new FormData();
-    body.append("file", file);
-    body.append("type", type);
-    body.append("tokenId", releasePubkey);
-    if (metadata) {
-      body.append("artist", metadata.artist);
-      body.append("title", metadata.title);
-      body.append("description", metadata.description);
-      body.append("duration", metadata.duration);
-      body.append("catalogNumber", metadata.catalogNumber);
-      body.append("sellerFeeBasisPoints", metadata.resalePercentage);
-    }
-    return {
-      url: `${NinaClient.endpoints.pressingPlant}/api/file`,
-      body,
-    };
-  };
+const MediaDropzone = ({ type, setArtwork, setTrack, handleProgress }) => {
+  const wallet = useWallet()
 
   const handleChangeStatus = ({ file, meta, restart, remove }, status) => {
-    if (meta.status === "error_validation") {
-      const height = meta.height;
-      const width = meta.width;
-      const size = meta.size / 1000000;
-      if (file.type.includes("audio")) {
-        alert(
-          `your track is ${size} mb... \nPlease upload a smaller than 80 mb`
-        );
+    if (meta.status === 'error_validation') {
+      const height = meta.height
+      const width = meta.width
+      const size = meta.size / 1000000
+      if (file.type.includes('audio')) {
+        if (file.type !== 'audio/mpeg') {
+          alert(`Your track is not an MP3. \nPlease upload an MP3.`)
+        } else {
+          alert(
+            `Your track is ${size} mb... \nPlease upload a file smaller than 120 mb`
+          )
+        }
       } else {
         if (height !== width) {
           alert(
             `your image's dimensions are ${height} x ${width}... \nPlease upload a square image`
-          );
+          )
         } else {
           alert(
             `your image is ${size} mb... \nPlease upload an image smaller than 3 mb`
-          );
+          )
         }
       }
-      remove();
+      remove()
     }
-    if (type === "artwork") {
-      if (status === "removed") {
-        setArtwork(undefined);
+    if (type === 'artwork') {
+      if (status === 'removed') {
+        setArtwork(undefined)
       } else {
         setArtwork({
           file,
           meta,
           restart,
-        });
+        })
       }
-    } else if (type === "track") {
-      if (status === "removed") {
-        setTrack(undefined);
+    } else if (type === 'track') {
+      if (status === 'removed') {
+        setTrack(undefined)
       } else {
         setTrack({
           file,
           meta,
           restart,
-        });
+        })
       }
     }
-  };
+  }
 
   const inputLayout = (type) => {
-    if (type === "track") {
+    if (type === 'track') {
       return (
         <>
           <AddOutlinedIcon />
           <Typography variant="h2">Upload Track</Typography>
-          <Typography variant="subtitle1">File Formats: MP3, WAV</Typography>
+          <Typography variant="subtitle1">File Formats: MP3</Typography>
         </>
-      );
+      )
     } else {
       return (
         <>
@@ -96,50 +76,54 @@ const MediaDropzone = ({
           <Typography variant="h2">Upload Artwork</Typography>
           <Typography variant="subtitle1">File Formats: JPG, PNG</Typography>
         </>
-      );
+      )
     }
-  };
+  }
 
   const validateImage = (fileWithMeta) => {
-    const height = fileWithMeta.meta.height;
-    const width = fileWithMeta.meta.width;
-    const size = fileWithMeta.file.size / 1000000;
+    const height = fileWithMeta.meta.height
+    const width = fileWithMeta.meta.width
+    const size = fileWithMeta.file.size / 1000000
 
     if (height !== width) {
-      return true;
+      return true
     }
 
     if (size > 3) {
-      return true;
+      return true
     }
-    return false;
-  };
-  const validateFileSize = (fileWithMeta) => {
-    const size = fileWithMeta.file.size / 1000000;
-    if (size > 100) {
-      return true;
+    return false
+  }
+
+  const validateTrack = (fileWithMeta) => {
+    const size = fileWithMeta.file.size / 1000000
+    if (size > 120) {
+      return true
     }
-    return false;
-  };
+    if (fileWithMeta.file.type !== 'audio/mpeg') {
+      return true
+    }
+    return false
+  }
 
   const Preview = ({ meta, fileWithMeta }) => {
-    if (meta.type.includes("image") && meta.previewUrl) {
-      handleProgress(meta.percent, meta.type.includes("image"));
+    if (meta.type.includes('image') && meta.previewUrl) {
+      handleProgress(meta.percent, meta.type.includes('image'))
       return (
         <Box style={previewBoxStyles}>
           {cancelIcon(fileWithMeta.remove)}
           <Image src={meta.previewUrl} layout="fill" />
         </Box>
-      );
-    } else if (meta.type.includes("audio")) {
-      handleProgress(meta.percent, meta.type.includes("image"));
-      var minutes = Math.floor(meta.duration / 60);
-      var seconds = Math.ceil(meta.duration - minutes * 60);
+      )
+    } else if (meta.type.includes('audio')) {
+      handleProgress(meta.percent, meta.type.includes('image'))
+      var minutes = Math.floor(meta.duration / 60)
+      var seconds = Math.ceil(meta.duration - minutes * 60)
 
       return (
         <Box style={{ ...previewBoxStyles, ...audioPreviewStyles }}>
           {cancelIcon(fileWithMeta.remove)}
-          <Box sx={{ padding: "35px 15px" }}>
+          <Box sx={{ padding: '35px 15px' }}>
             <Typography
               align="left"
               variant="h5"
@@ -155,49 +139,48 @@ const MediaDropzone = ({
             </Typography>
           </Box>
         </Box>
-      );
+      )
     } else {
-      return null;
+      return null
     }
-  };
+  }
 
   const previewBoxStyles = {
-    position: "relative",
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    color: "white",
-  };
+    position: 'relative',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    color: 'white',
+  }
 
   const audioPreviewStyles = {
-    backgroundColor: "#2D81FF",
-    "& h5": {
-      border: "2px solid red !important",
-      color: "red !important",
+    backgroundColor: '#2D81FF',
+    '& h5': {
+      border: '2px solid red !important',
+      color: 'red !important',
     },
-  };
+  }
 
   const cancelIcon = (remove) => (
     <ClearOutlinedIcon
       onClick={remove}
       style={{
-        position: "absolute",
-        top: "15px",
-        left: "10px",
-        color: "white",
+        position: 'absolute',
+        top: '15px',
+        left: '10px',
+        color: 'white',
       }}
     />
-  );
+  )
 
   return (
     <Dropzone
-      getUploadParams={getUploadParams}
       onChangeStatus={handleChangeStatus}
-      accept={type === "track" ? "audio/*" : "image/*"}
+      accept={type === 'track' ? 'audio/*' : 'image/*'}
       maxFiles={1}
       validate={
-        type === "track"
-          ? (fileWithMeta) => validateFileSize(fileWithMeta)
+        type === 'track'
+          ? (fileWithMeta) => validateTrack(fileWithMeta)
           : (fileWithMeta) => validateImage(fileWithMeta)
       }
       SubmitButtonComponent={null}
@@ -214,42 +197,42 @@ const MediaDropzone = ({
       styles={{
         dropzone: {
           minHeight: 60,
-          display: "flex",
-          justifyContent: "center",
-          width: "100%",
-          height: type === "track" ? "113px" : "350px",
-          cursor: "pointer",
-          marginBottom: type === "track" ? "15px" : "",
-          boxShadow: "inset 0px 0px 30px 0px #0000001A",
-          backgroundColor: "#EAEAEA",
+          display: 'flex',
+          justifyContent: 'center',
+          width: '100%',
+          height: type === 'track' ? '113px' : '350px',
+          cursor: 'pointer',
+          marginBottom: type === 'track' ? '15px' : '',
+          boxShadow: 'inset 0px 0px 30px 0px #0000001A',
+          backgroundColor: '#EAEAEA',
         },
         preview: {
-          margin: "auto",
-          alignItems: "center",
+          margin: 'auto',
+          alignItems: 'center',
         },
         previewImage: {
-          width: "100%",
-          maxHeight: "100%",
-          maxWidth: "unset",
+          width: '100%',
+          maxHeight: '100%',
+          maxWidth: 'unset',
         },
         inputLabel: {
-          cursor: "pointer",
-          width: "100%",
-          textAlign: "left",
-          padding: "15px",
+          cursor: 'pointer',
+          width: '100%',
+          textAlign: 'left',
+          padding: '15px',
         },
       }}
     />
-  );
-};
+  )
+}
 
-const PREFIX = "MediaDropzone";
+const PREFIX = 'MediaDropzone'
 
 const classes = {
   dropZone: `${PREFIX}-dropZone`,
   dropZoneInputLabel: `${PREFIX}-dropZoneInputLabel`,
   dropZonePreviewWrapper: `${PREFIX}-dropZonePreviewWrapper`,
   dropZonePreviewStatusContainer: `${PREFIX}-dropZonePreviewStatusContainer`,
-};
+}
 
-export default MediaDropzone;
+export default MediaDropzone
