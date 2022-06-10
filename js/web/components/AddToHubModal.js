@@ -196,7 +196,13 @@ const StyledPaper = styled(Paper)(({theme}) => ({
   overflowY: 'auto',
   zIndex: '10',
   display: 'flex',
-  flexDirection: 'column'
+  flexDirection: 'column',
+  [theme.breakpoints.down('md')]: {
+    width: 'unset',
+    margin:'15px',
+    padding: theme.spacing(2),
+
+  },
 }))
 
 export default AddToHubModal
