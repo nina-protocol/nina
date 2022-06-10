@@ -83,6 +83,7 @@ const AudioPlayer = () => {
   const hasPrevious = useMemo(() => 
     activeIndexRef.current > 0
   , [activeIndexRef.current])
+
   useEffect(() => {
     const initialized = activeIndexRef.current >= 0
     if (track) {
@@ -179,6 +180,13 @@ const AudioPlayer = () => {
     }
   }
 
+  const seek = (newValue) => {
+    if (playerRef.current) {
+      setTrackProgress(newValue);
+      playerRef.current.currentTime = newValue;
+    }
+  };
+
   const iconStyle = {
     width: '60px',
     height: '60px',
@@ -200,7 +208,9 @@ const AudioPlayer = () => {
                 height="60px"
                 width="60px"
                 layout="responsive"
-                release={releaseState.tokenData[track.releasePubkey]}
+                loader={({ src }) => {
+                  return src;
+                }}
               />
             </AlbumArt>
           </Link>

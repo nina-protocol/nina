@@ -67,6 +67,10 @@ const Release = ({ metadataSsr }) => {
       setUserHubs(filterHubsForUser(wallet.publicKey.toBase58()))
     }
   }, [hubState])
+
+  useEffect(() => {
+    setUserHubs(null)
+  }, [wallet?.disconnecting])
   
   if (metadata && Object.keys(metadata).length === 0) {
     return (

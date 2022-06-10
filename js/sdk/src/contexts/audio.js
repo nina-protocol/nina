@@ -28,12 +28,16 @@ const AudioPlayerContextProvider = ({ children }) => {
 
   const currentIndex = () => {
     let index = undefined
-    playlist.forEach((item, i) => {
-      if (item.releasePubkey === track.releasePubkey) {
-        index = i
-        return
-      }
-    })
+    if (playlist.length > 0) {
+      playlist.forEach((item, i) => {
+        if (item.releasePubkey === track?.releasePubkey) {
+          index = i
+          return
+        }
+      })
+    } else {
+      index = 0
+    }
     return index
   }
 

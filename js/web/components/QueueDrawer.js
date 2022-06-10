@@ -39,7 +39,7 @@ const QueueDrawer = (props) => {
   }
 
   useEffect(() => {
-    const playlistEntry = playlist.find((entry) => entry.releasePubkey === track.releasePubkey)
+    const playlistEntry = playlist.find((entry) => entry.releasePubkey === track?.releasePubkey)
 
     if (playlistEntry) {
       setSelectedIndex(playlist?.indexOf(playlistEntry) || 0)

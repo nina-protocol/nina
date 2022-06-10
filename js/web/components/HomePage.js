@@ -91,7 +91,14 @@ const HomePage = () => {
           align="left"
           sx={{ paddingBottom: { md: '140px', xs: '30px' } }}
         >
-          More questions? Read our <Link href="/faq">FAQ</Link>.
+          More questions? Read our                <a
+            href="https://nina-protocol.notion.site/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612"
+            target="_blank"
+            rel="noreferrer"
+            passHref
+          >
+            FAQ
+          </a>.
         </BlueTypography>
         <Box sx={{ padding: { md: '0 40px 140px 40px', xs: '30px 0px' } }}>
           <Box sx={{ display: 'flex', paddingLeft: { md: '30px', xs: '0' } }}>

@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Link from 'next/link'
-import Image from './Image'
+import Image from 'next/image'
 import Carousel from 'react-multi-carousel'
 import 'react-multi-carousel/lib/styles.css'
 import Button from '@mui/material/Button'
@@ -154,7 +154,9 @@ const RecentlyPurchased = (props) => {
                           width="400px"
                           height="400px"
                           priority={true}
-                          release={release}
+                          loader={({ src }) => {
+                            return src;
+                          }}  
                         />
                       </a>
                     </Link>
