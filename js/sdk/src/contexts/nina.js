@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect } from 'react'
 import * as anchor from '@project-serum/anchor'
 import axios from 'axios'
 import { findOrCreateAssociatedTokenAccount, TOKEN_PROGRAM_ID } from '../utils/web3'
+import {ninaErrorHandler} from '../utils/errors'
 
 export const NinaContext = createContext()
 const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
@@ -475,8 +476,10 @@ const ninaContextHelper = ({
           msg: `${fundAmount} Sol successfully deposited`
         }
       }
-    } catch (error) {
+    } catch (error) {      
       console.warn('Bundlr fund error: ', error)
+      return ninaErrorHandler(error)
+
     }
   }
 
@@ -494,6 +497,8 @@ const ninaContextHelper = ({
       }
     } catch (error) {
       console.warn('Bundlr withdraw error: ', error)
+      return ninaErrorHandler(error)
+
     }
   }
 
@@ -517,7 +522,7 @@ const ninaContextHelper = ({
       const price = await bundlrInstance.getPrice(1000000)
       setBundlrPricePerMb(nativeToUi(price, ids.mints.wsol))
     } catch (error) {
-      console.warn(error)
+      return ninaErrorHandler(error)
     }
   }
 
@@ -528,7 +533,7 @@ const ninaContextHelper = ({
       )
       setSolPrice(price.data.solana.usd)
     } catch (error) {
-      console.warn(error)
+      return ninaErrorHandler(error)
     }
   }
 
@@ -538,9 +543,14 @@ const ninaContextHelper = ({
         const reader = new FileReader()
         reader.onload = async () => {
           const data = reader.result
-          const res = await bundlr.uploader.upload(data, [
-            { name: 'Content-Type', value: file.type },
-          ])
+          let res;
+          try {
+             res = await bundlr.uploader.upload(data, [
+              { name: 'Content-Type', value: file.type },
+            ])
+          } catch (error) {
+            return ninaErrorHandler(error)
+          }
           getBundlrBalance()
           resolve(res)
         }
@@ -550,7 +560,7 @@ const ninaContextHelper = ({
         reader.readAsArrayBuffer(file)
       })
     } catch (error) {
-      console.warn(error)
+      return ninaErrorHandler(error)
     }
   }
 

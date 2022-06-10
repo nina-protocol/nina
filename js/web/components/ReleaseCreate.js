@@ -219,14 +219,18 @@ const ReleaseCreate = () => {
               variant: 'info',
             }
           )
-          artworkResult = (await bundlrUpload(artwork.file)).data.id
-          setArtworkTx(artworkResult)
-          upload = createUpload(
-            UploadType.artwork,
-            artworkResult,
-            formValues.releaseForm
-          )
-          setUploadId(upload)
+          try {
+            artworkResult = (await bundlrUpload(artwork.file)).data.id
+            setArtworkTx(artworkResult)
+            upload = createUpload(
+              UploadType.artwork,
+              artworkResult,
+              formValues.releaseForm
+            )
+            setUploadId(upload)
+          } catch (error) {
+            console.warn(error)
+          }
         }
         if (uploadHasItemForType(upload, UploadType.artwork) || artworkResult) {
           let trackResult = trackTx
@@ -237,9 +241,15 @@ const ReleaseCreate = () => {
                 variant: 'info',
               }
             )
-            trackResult = (await bundlrUpload(track.file)).data.id
-            setTrackTx(trackResult)
-            updateUpload(upload, UploadType.track, trackResult)
+
+            try {
+              trackResult = (await bundlrUpload(track.file)).data.id
+              setTrackTx(trackResult)
+              updateUpload(upload, UploadType.track, trackResult)
+            } catch (error) {
+              setIsPublishing(false)
+              console.warn(error)
+            }
           }
           if (uploadHasItemForType(upload, UploadType.track) || trackResult) {
                      let metadataResult = metadataTx
@@ -263,22 +273,26 @@ const ReleaseCreate = () => {
                 artworkType: artwork.file.type,
                 duration: track.meta.duration,
               })
-              metadataResult = (
-                await bundlrUpload(
-                  new Blob([JSON.stringify(metadataJson)], {
-                    type: 'application/json',
-                  })
+              try {
+                metadataResult = (
+                  await bundlrUpload(
+                    new Blob([JSON.stringify(metadataJson)], {
+                      type: 'application/json',
+                    })
+                  )
+                ).data.id
+                setMetadata(metadataJson)
+                setMetadataTx(metadataResult)
+                updateUpload(
+                  upload,
+                  UploadType.metadataJson,
+                  metadataResult,
+                  info
                 )
-              ).data.id
+              } catch (error) {
+                console.warn(error)
+              }
 
-              setMetadata(metadataJson)
-              setMetadataTx(metadataResult)
-              updateUpload(
-                upload,
-                UploadType.metadataJson,
-                metadataResult,
-                info
-              )
             }
             if (
               uploadHasItemForType(upload, UploadType.metadataJson) ||
