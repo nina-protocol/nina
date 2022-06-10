@@ -70,7 +70,6 @@ const Hub = ({hubPubkey}) => {
         postState[hubContentData.post] &&
         hubContentData.visible
       ) {
-        // console.log('hubContentData :>> ', hubContentData);
         hubContentData = {
           ...hubContentData,
           ...postState[hubContentData.post],

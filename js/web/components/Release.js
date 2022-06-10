@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
-import nina from "@nina-protocol/nina-sdk";
+import nina from '@nina-protocol/nina-sdk'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
@@ -25,7 +25,7 @@ const Release = ({ metadataSsr }) => {
   } = useContext(ReleaseContext)
   const { getExchangeHistoryForRelease, exchangeState } =
     useContext(ExchangeContext)
-    const {getHubsForUser, filterHubsForUser, hubState } = useContext(HubContext)
+  const { getHubsForUser, filterHubsForUser, hubState } = useContext(HubContext)
   const [relatedReleases, setRelatedReleases] = useState(null)
   const [userHubs, setUserHubs] = useState()
 
@@ -71,7 +71,7 @@ const Release = ({ metadataSsr }) => {
   useEffect(() => {
     setUserHubs(null)
   }, [wallet?.disconnecting])
-  
+
   if (metadata && Object.keys(metadata).length === 0) {
     return (
       <div>

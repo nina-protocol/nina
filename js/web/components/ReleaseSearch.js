@@ -5,7 +5,7 @@ import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
 import CloseIcon from '@mui/icons-material/Close'
 import axios from 'axios'
-import nina from "@nina-protocol/nina-sdk";
+import nina from '@nina-protocol/nina-sdk'
 import Dots from './Dots'
 
 const { NinaContext, ReleaseContext } = nina.contexts

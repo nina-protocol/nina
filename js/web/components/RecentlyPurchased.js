@@ -155,8 +155,8 @@ const RecentlyPurchased = (props) => {
                           height="400px"
                           priority={true}
                           loader={({ src }) => {
-                            return src;
-                          }}  
+                            return src
+                          }}
                         />
                       </a>
                     </Link>

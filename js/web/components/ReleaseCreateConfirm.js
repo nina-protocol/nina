@@ -82,7 +82,7 @@ const ReleaseCreateConfirm = (props) => {
               fullWidth
               onClick={submitAndCloseModal}
             >
-              <Typography variant='body1'>
+              <Typography variant="body1">
                 Confirm and Publish Release
               </Typography>
             </Button>
@@ -94,9 +94,7 @@ const ReleaseCreateConfirm = (props) => {
               onClick={handleClose}
               sx={{ marginTop: '15px !important' }}
             >
-              <Typography variant="body1">
-                Close and Edit
-              </Typography>
+              <Typography variant="body1">Close and Edit</Typography>
             </Button>
             <Typography variant="subtitle1" mt={1} sx={{ color: 'red' }}>
               ONCE PUBLISHED, YOUR RELEASE INFORMATION WILL BE PERMANENT AND YOU

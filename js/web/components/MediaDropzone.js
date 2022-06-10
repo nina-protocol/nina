@@ -1,5 +1,5 @@
 import React from 'react'
-import nina from "@nina-protocol/nina-sdk";
+import nina from '@nina-protocol/nina-sdk'
 import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
 import { Typography, Box } from '@mui/material'
@@ -8,12 +8,7 @@ import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined'
 import Image from 'next/image'
 import { useWallet } from '@solana/wallet-adapter-react'
 
-const MediaDropzone = ({
-  type,
-  setArtwork,
-  setTrack,
-  handleProgress,
-}) => {
+const MediaDropzone = ({ type, setArtwork, setTrack, handleProgress }) => {
   const wallet = useWallet()
 
   const handleChangeStatus = ({ file, meta, restart, remove }, status) => {
@@ -23,9 +18,7 @@ const MediaDropzone = ({
       const size = meta.size / 1000000
       if (file.type.includes('audio')) {
         if (file.type !== 'audio/mpeg') {
-          alert(
-            `Your track is not an MP3. \nPlease upload an MP3.`
-          )  
+          alert(`Your track is not an MP3. \nPlease upload an MP3.`)
         } else {
           alert(
             `Your track is ${size} mb... \nPlease upload a file smaller than 120 mb`
@@ -35,11 +28,11 @@ const MediaDropzone = ({
         if (height !== width) {
           alert(
             `your image's dimensions are ${height} x ${width}... \nPlease upload a square image`
-          );
+          )
         } else {
           alert(
             `your image is ${size} mb... \nPlease upload an image smaller than 3 mb`
-          );
+          )
         }
       }
       remove()
@@ -88,25 +81,24 @@ const MediaDropzone = ({
   }
 
   const validateImage = (fileWithMeta) => {
-    const height = fileWithMeta.meta.height;
-    const width = fileWithMeta.meta.width;
-    const size = fileWithMeta.file.size / 1000000;
+    const height = fileWithMeta.meta.height
+    const width = fileWithMeta.meta.width
+    const size = fileWithMeta.file.size / 1000000
 
     if (height !== width) {
       return true
     }
 
     if (size > 3) {
-      return true;
+      return true
     }
-    return false;
+    return false
   }
-  
+
   const validateTrack = (fileWithMeta) => {
-    console.log('fileWithMeta: ', fileWithMeta)
-    const size = fileWithMeta.file.size / 1000000;
+    const size = fileWithMeta.file.size / 1000000
     if (size > 120) {
-      return true;
+      return true
     }
     if (fileWithMeta.file.type !== 'audio/mpeg') {
       return true

@@ -5,7 +5,7 @@ import Backdrop from '@mui/material/Backdrop'
 import Box from '@mui/material/Box'
 import { Typography, Paper } from '@mui/material'
 import { useWallet } from '@solana/wallet-adapter-react'
-import nina from "@nina-protocol/nina-sdk";
+import nina from '@nina-protocol/nina-sdk'
 import Link from 'next/link'
 
 const { ReleaseContext, NinaContext } = nina.contexts

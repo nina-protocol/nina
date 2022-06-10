@@ -5,8 +5,8 @@ import { Formik, Field, Form } from 'formik'
 import Button from '@mui/material/Button'
 import { TextField, Typography, Box } from '@mui/material'
 import Slider from '@mui/material/Slider'
-import nina from "@nina-protocol/nina-sdk";
-const { ReleaseContext} = nina.contexts
+import nina from '@nina-protocol/nina-sdk'
+const { ReleaseContext } = nina.contexts
 const { formatPlaceholder } = nina.utils
 
 const RoyaltyRecipientForm = (props) => {
@@ -46,7 +46,11 @@ const RoyaltyRecipientForm = (props) => {
           enqueueSnackbar('Transferring Royalty...', {
             variant: 'info',
           })
-          const result = await addRoyaltyRecipient(release, values, releasePubkey)
+          const result = await addRoyaltyRecipient(
+            release,
+            values,
+            releasePubkey
+          )
           enqueueSnackbar(result.success ? result.msg : 'Transfer Cancelled', {
             variant: result.success ? 'success' : 'warn',
           })
@@ -67,7 +71,7 @@ const RoyaltyRecipientForm = (props) => {
                       className={classes.formField}
                       variant="outlined"
                       label={formatPlaceholder(field.name)}
-                      variant='standard'
+                      variant="standard"
                       {...field}
                     />
                   </>

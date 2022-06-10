@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
-import nina from "@nina-protocol/nina-sdk";
+import nina from '@nina-protocol/nina-sdk'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Link from 'next/link'
 import Box from '@mui/material/Box'
@@ -32,7 +32,7 @@ const AudioPlayer = () => {
     updateTrack,
     playlist,
     isPlaying,
-    currentIndex
+    currentIndex,
   } = audio
 
   const activeTrack = useRef()
@@ -44,7 +44,7 @@ const AudioPlayer = () => {
 
   useEffect(() => {
     playerRef.current = document.querySelector('#audio')
-    
+
     const actionHandlers = [
       ['play', () => play()],
       ['pause', () => play()],
@@ -68,7 +68,6 @@ const AudioPlayer = () => {
   }, [])
 
   useEffect(() => {
-    console.log("isPlaying, initialized ::> ", isPlaying, initialized)
     const initialized = activeIndexRef.current >= 0
     if (isPlaying && initialized) {
       play()
@@ -77,12 +76,14 @@ const AudioPlayer = () => {
     }
   }, [isPlaying])
 
-  const hasNext = useMemo(() => 
-    activeIndexRef.current + 1 < playlist.length
-  , [activeIndexRef.current, playlist])
-  const hasPrevious = useMemo(() => 
-    activeIndexRef.current > 0
-  , [activeIndexRef.current])
+  const hasNext = useMemo(
+    () => activeIndexRef.current + 1 < playlist.length,
+    [activeIndexRef.current, playlist]
+  )
+  const hasPrevious = useMemo(
+    () => activeIndexRef.current > 0,
+    [activeIndexRef.current]
+  )
 
   useEffect(() => {
     const initialized = activeIndexRef.current >= 0
@@ -110,11 +111,15 @@ const AudioPlayer = () => {
   }, [track])
 
   useEffect(() => {
-    if (playlist.length > 0 && !activeIndexRef.current && track?.releasePubkey != playlist[0].releasePubkey) {
+    if (
+      playlist.length > 0 &&
+      !activeIndexRef.current &&
+      track?.releasePubkey != playlist[0].releasePubkey
+    ) {
       updateTrack(playlist[0].releasePubkey, false)
     }
   }, [playlist, activeIndexRef.current])
-  
+
   const startTimer = () => {
     // Clear any timers already running
     clearInterval(intervalRef.current)
@@ -141,7 +146,6 @@ const AudioPlayer = () => {
 
   const play = () => {
     if (playerRef.current.paused) {
-      console.log("playerRef.current.paused ::> ", playerRef.current.paused)
       playerRef.current.play()
       setPlaying(true)
       startTimer()
@@ -182,10 +186,10 @@ const AudioPlayer = () => {
 
   const seek = (newValue) => {
     if (playerRef.current) {
-      setTrackProgress(newValue);
-      playerRef.current.currentTime = newValue;
+      setTrackProgress(newValue)
+      playerRef.current.currentTime = newValue
     }
-  };
+  }
 
   const iconStyle = {
     width: '60px',
@@ -209,7 +213,7 @@ const AudioPlayer = () => {
                 width="60px"
                 layout="responsive"
                 loader={({ src }) => {
-                  return src;
+                  return src
                 }}
               />
             </AlbumArt>
@@ -223,10 +227,7 @@ const AudioPlayer = () => {
           disableFocusRipple={true}
           disableRipple={true}
         >
-          <SkipPreviousIcon
-            onClick={() => previous()}
-            sx={iconStyle}
-          />
+          <SkipPreviousIcon onClick={() => previous()} sx={iconStyle} />
         </IconButton>
         <IconButton
           disabled={playlist.length === 0}
@@ -241,8 +242,7 @@ const AudioPlayer = () => {
         </IconButton>
         <IconButton
           disabled={
-            currentIndex() + 1 === playlist.length ||
-            playlist.length <= 1
+            currentIndex() + 1 === playlist.length || playlist.length <= 1
           }
           disableFocusRipple={true}
           disableRipple={true}

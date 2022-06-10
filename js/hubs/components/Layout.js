@@ -28,15 +28,6 @@ const Layout = ({ children }) => {
     }
     getHubPubkey(router.query.hubPubkey)
   }, [router.query.hubPubkey])
-  console.log("hubPubkey ::> ", hubPubkey)
-  // if (!hubState[hubPubkey]?.metadata) {
-  //   return (
-  //     <Box width="100%" display="flex" justifyContent="center" height="100vh">
-  //       <Dots size="80px" />
-  //     </Box>
-  //   )
-  // }
-
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
 

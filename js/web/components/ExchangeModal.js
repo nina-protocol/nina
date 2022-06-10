@@ -4,7 +4,7 @@ import { Typography, Box } from '@mui/material'
 import Button from '@mui/material/Button'
 import Fade from '@mui/material/Fade'
 import Modal from '@mui/material/Modal'
-import nina from "@nina-protocol/nina-sdk";
+import nina from '@nina-protocol/nina-sdk'
 const { NinaContext } = nina.contexts
 
 const ExchangeModal = (props) => {
@@ -17,7 +17,7 @@ const ExchangeModal = (props) => {
     isAccept,
     metadata,
   } = props
-  const {ninaClient} = useContext(NinaContext)
+  const { ninaClient } = useContext(NinaContext)
   const [pendingConfirm, setPendingConfirm] = useState(false)
 
   const nativeAmount = isAccept

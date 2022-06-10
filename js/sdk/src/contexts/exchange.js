@@ -7,14 +7,14 @@ import {
   getProgramAccounts,
   findOrCreateAssociatedTokenAccount,
   wrapSol,
-  TOKEN_PROGRAM_ID
+  TOKEN_PROGRAM_ID,
 } from '../utils/web3'
 import { ninaErrorHandler } from '../utils/errors'
 import { dateConverter } from '../utils'
 
 const lookupTypes = {
   RELEASE: 'release',
-  USER: 'user', 
+  USER: 'user',
 }
 
 export const ExchangeContext = createContext()
@@ -42,7 +42,7 @@ const ExchangeContextProvider = ({ children }) => {
     filterExchangesForReleaseBuySell,
     filterExchangesForReleaseMarketPrice,
     filterExchangeMatch,
-    getExchangeHistoryForUser,   
+    getExchangeHistoryForUser,
     getExchangeHistoryForRelease,
     filterExchangeHistoryForUser,
     filterExchangeHistoryForRelease,
@@ -106,9 +106,7 @@ const exchangeContextHelper = ({
   const exchangeAccept = async (exchange, releasePubkey) => {
     try {
       const program = await ninaClient.useProgram()
-      const VAULT_ID = new anchor.web3.PublicKey(
-        ninaClient.ids.accounts.vault
-      )
+      const VAULT_ID = new anchor.web3.PublicKey(ninaClient.ids.accounts.vault)
       const vault = await program.account.vault.fetch(VAULT_ID)
       const release = await program.account.release.fetch(
         new anchor.web3.PublicKey(releasePubkey)
@@ -148,9 +146,7 @@ const exchangeContextHelper = ({
 
       const exchangeHistory = anchor.web3.Keypair.generate()
       const createExchangeHistoryIx =
-        await program.account.exchangeHistory.createInstruction(
-          exchangeHistory
-        )
+        await program.account.exchangeHistory.createInstruction(exchangeHistory)
 
       const request = {
         accounts: {
@@ -300,8 +296,9 @@ const exchangeContextHelper = ({
         initializerExpectedMint
       )
 
-      const exchangeCreateIx =
-        await program.account.exchange.createInstruction(exchange)
+      const exchangeCreateIx = await program.account.exchange.createInstruction(
+        exchange
+      )
 
       const request = {
         accounts: {
@@ -358,7 +355,7 @@ const exchangeContextHelper = ({
         .signers(request.signers)
         .rpc()
       await provider.connection.getParsedTransaction(txid, 'confirmed')
-  
+
       setExchangeInitPending({
         ...exchangeInitPending,
         [releasePubkey]: false,
@@ -414,17 +411,20 @@ const exchangeContextHelper = ({
       }
 
       let txid
-      const params = new anchor.BN(exchange.isSelling ? 1 : exchange.initializerAmount)
+      const params = new anchor.BN(
+        exchange.isSelling ? 1 : exchange.initializerAmount
+      )
 
       if (ninaClient.isSol(exchange.initializerSendingMint)) {
-        txid = await program.methods.exchangeCancelSol(params)
+        txid = await program.methods
+          .exchangeCancelSol(params)
           .accounts(request.accounts)
           .preInstructions(request.instructions || [])
           .signers(request.signers || [])
           .rpc()
-
       } else {
-        txid = await program.methods.exchangeCancel(params)
+        txid = await program.methods
+          .exchangeCancel(params)
           .accounts(request.accounts)
           .preInstructions(request.instructions || [])
           .signers(request.signers || [])
@@ -436,13 +436,19 @@ const exchangeContextHelper = ({
         addReleaseToCollection(exchange.release.publicKey.toBase58())
       }
 
-      await getUpdates(exchange.release.publicKey.toBase58(), exchange.publicKey.toBase58())
+      await getUpdates(
+        exchange.release.publicKey.toBase58(),
+        exchange.publicKey.toBase58()
+      )
       return {
         success: true,
         msg: 'Offer cancelled!',
       }
     } catch (error) {
-      await getUpdates(exchange.release.publicKey.toBase58(), exchange.publicKey.toBase58())
+      await getUpdates(
+        exchange.release.publicKey.toBase58(),
+        exchange.publicKey.toBase58()
+      )
       return ninaErrorHandler(error)
     }
   }
@@ -453,7 +459,11 @@ const exchangeContextHelper = ({
 
   */
 
-  const getExchangesHandler = async (type, releasePubkey = null, exchangeId = null) => {
+  const getExchangesHandler = async (
+    type,
+    releasePubkey = null,
+    exchangeId = null
+  ) => {
     if (!provider.connection) {
       return
     }
@@ -490,8 +500,8 @@ const exchangeContextHelper = ({
         }
       })
 
-      const releaseExchangeIds = existingExchanges.map(
-        (exchange) => exchange.publicKey.toBase58()
+      const releaseExchangeIds = existingExchanges.map((exchange) =>
+        exchange.publicKey.toBase58()
       )
       const idsToRemove = Object.keys(exchangeState).filter(
         (id) => !releaseExchangeIds.includes(id)
@@ -665,7 +675,8 @@ const exchangeContextHelper = ({
       }
 
       exchanges = exchanges.filter(
-        (e) => e.initializer.toBase58() === provider.wallet?.publicKey.toBase58()
+        (e) =>
+          e.initializer.toBase58() === provider.wallet?.publicKey.toBase58()
       )
     }
 
@@ -744,7 +755,8 @@ const exchangeContextHelper = ({
       const exchangeItem = {
         ...exchange,
         isCurrentUser:
-          exchange.initializer.toBase58() === provider.wallet?.publicKey?.toBase58(),
+          exchange.initializer.toBase58() ===
+          provider.wallet?.publicKey?.toBase58(),
       }
       exchangeItem.amount = exchange.isSelling
         ? exchange.expectedAmount

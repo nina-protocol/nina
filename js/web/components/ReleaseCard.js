@@ -1,6 +1,6 @@
 import React, { useContext, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
-import nina from "@nina-protocol/nina-sdk";
+import nina from '@nina-protocol/nina-sdk'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { Typography } from '@mui/material'
@@ -10,17 +10,18 @@ import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutli
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Image from 'next/image'
 
-import {useSnackbar} from 'notistack'
+import { useSnackbar } from 'notistack'
 import AddToHubModal from './AddToHubModal.js'
 
-const {AudioPlayerContext, ReleaseContext, HubContext} = nina.contexts
+const { AudioPlayerContext, ReleaseContext, HubContext } = nina.contexts
 
 const ReleaseCard = (props) => {
   const { artwork, metadata, preview, releasePubkey, userHubs } = props
-  const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } = useContext(AudioPlayerContext)
+  const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
+    useContext(AudioPlayerContext)
   const { releaseState } = useContext(ReleaseContext)
   const image = useMemo(() => metadata?.image)
-  const {enqueueSnackbar} = useSnackbar()
+  const { enqueueSnackbar } = useSnackbar()
 
   return (
     <StyledReleaseCard>
@@ -33,18 +34,14 @@ const ReleaseCard = (props) => {
                   if (isPlaying && track.releasePubkey === releasePubkey) {
                     setIsPlaying(false)
                   } else {
-                    updateTrack(
-                      releasePubkey,
-                      true,
-                      true,
-                    )
+                    updateTrack(releasePubkey, true, true)
                   }
                 }}
                 sx={{ height: '22px', width: '28px' }}
               >
                 {isPlaying && track.releasePubkey === releasePubkey ? (
                   <PauseCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
-                  ) : (
+                ) : (
                   <PlayCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
                 )}
               </Button>
@@ -60,7 +57,11 @@ const ReleaseCard = (props) => {
 
             {releasePubkey && (
               <Box>
-                <AddToHubModal userHubs={userHubs} releasePubkey={releasePubkey} metadata={metadata}/>
+                <AddToHubModal
+                  userHubs={userHubs}
+                  releasePubkey={releasePubkey}
+                  metadata={metadata}
+                />
               </Box>
             )}
           </CtaWrapper>
@@ -93,7 +94,7 @@ const ReleaseCard = (props) => {
             width={350}
             priority={true}
             loader={({ src }) => {
-              return src;
+              return src
             }}
           />
         ) : (
@@ -105,7 +106,7 @@ const ReleaseCard = (props) => {
             alt={metadata?.name}
             priority={true}
             loader={({ src }) => {
-              return src;
+              return src
             }}
           />
         )}

@@ -54,7 +54,7 @@ const formatDuration = (duration) => {
   return minutes + ':' + seconds
 }
 
-const indexerHasRecord = async(publicKey, struct) => {
+const indexerHasRecord = async (publicKey, struct) => {
   let result = null
   try {
     const request = await fetch(
@@ -80,7 +80,7 @@ const indexerHasRecord = async(publicKey, struct) => {
 }
 
 const sleep = (ms) => {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 export {

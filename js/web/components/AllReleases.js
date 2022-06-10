@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext, useRef } from 'react'
 import debounce from 'lodash.debounce'
 import Head from 'next/head'
 import { styled } from '@mui/material/styles'
-import nina from "@nina-protocol/nina-sdk";
+import nina from '@nina-protocol/nina-sdk'
 import { Typography, Box } from '@mui/material'
 import { isMobile } from 'react-device-detect'
 import ReleaseListTable from './ReleaseListTable'
@@ -24,15 +24,15 @@ const Releases = () => {
   const [listView, setListView] = useState(false)
   const [pendingFetch, setPendingFetch] = useState(false)
   const [totalCount, setTotalCount] = useState(null)
-  const scrollRef = useRef();
+  const scrollRef = useRef()
 
   useEffect(() => {
-    getReleasesAll();
-    window.addEventListener("scroll", handleScroll);
+    getReleasesAll()
+    window.addEventListener('scroll', handleScroll)
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
 
   useEffect(() => {
     if (allReleases.length > 0) {
@@ -51,7 +51,7 @@ const Releases = () => {
   const handleScroll = () => {
     const bottom =
       scrollRef.current.getBoundingClientRect().bottom - 250 <=
-      window.innerHeight;
+      window.innerHeight
     if (
       bottom &&
       !pendingFetch &&

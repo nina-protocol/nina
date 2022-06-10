@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { styled } from '@mui/material/styles'
-import nina from "@nina-protocol/nina-sdk";
+import nina from '@nina-protocol/nina-sdk'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { Typography, Box } from '@mui/material'
@@ -13,7 +13,8 @@ const { AudioPlayerContext } = nina.contexts
 
 const ReleaseTileList = (props) => {
   const { releases } = props
-  const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } = useContext(AudioPlayerContext)
+  const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
+    useContext(AudioPlayerContext)
 
   const router = useRouter()
 
@@ -21,7 +22,7 @@ const ReleaseTileList = (props) => {
     router.push({
       pathname: `/${releasePubkey}`,
     })
-  } 
+  }
 
   return (
     <Box>
@@ -44,20 +45,20 @@ const ReleaseTileList = (props) => {
                   <Button
                     onClick={(e) => {
                       e.stopPropagation()
-                      if (isPlaying && track.releasePubkey === release.releasePubkey) {
+                      if (
+                        isPlaying &&
+                        track.releasePubkey === release.releasePubkey
+                      ) {
                         setIsPlaying(false)
                       } else {
-                        updateTrack(
-                          release.releasePubkey,
-                          true,
-                          true,
-                        )
+                        updateTrack(release.releasePubkey, true, true)
                       }
                     }}
                   >
-                    {isPlaying && track.releasePubkey === release.releasePubkey ? (
+                    {isPlaying &&
+                    track.releasePubkey === release.releasePubkey ? (
                       <PauseCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
-                      ) : (
+                    ) : (
                       <PlayCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
                     )}
                   </Button>
@@ -85,7 +86,7 @@ const ReleaseTileList = (props) => {
                     src={release.metadata.image}
                     priority={true}
                     loader={({ src }) => {
-                      return src;
+                      return src
                     }}
                   />
                 )}

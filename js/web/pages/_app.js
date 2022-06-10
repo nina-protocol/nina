@@ -1,17 +1,20 @@
 import React, { useState, useMemo } from 'react'
-import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
-import {WalletAdapterNetwork} from '@solana/wallet-adapter-base';
-import {WalletModalProvider} from '@solana/wallet-adapter-react-ui';
-import {PhantomWalletAdapter} from '@solana/wallet-adapter-phantom';
-import {SolflareWalletAdapter} from '@solana/wallet-adapter-solflare';
-import {GlowWalletAdapter} from '@solana/wallet-adapter-glow';
-import {SolletWalletAdapter} from '@solana/wallet-adapter-sollet';
+import {
+  ConnectionProvider,
+  WalletProvider,
+} from '@solana/wallet-adapter-react'
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
+import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
+import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare'
+import { GlowWalletAdapter } from '@solana/wallet-adapter-glow'
+import { SolletWalletAdapter } from '@solana/wallet-adapter-sollet'
 import { clusterApiUrl } from '@solana/web3.js'
 import dynamic from 'next/dynamic'
 import Router from 'next/router'
 import { SnackbarProvider } from 'notistack'
 import { isMobile } from 'react-device-detect'
-import { ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider } from '@mui/material/styles'
 import { NinaTheme } from '../../NinaTheme'
 import Layout from '../components/Layout'
 import Dots from '../components/Dots'
@@ -21,7 +24,7 @@ const NinaWrapper = dynamic(() => import('../components/NinaWrapper'))
 
 function Application({ Component, pageProps }) {
   const [loading, setLoading] = useState(false)
-  
+
   React.useEffect(() => {
     const start = () => {
       setLoading(true)
@@ -45,9 +48,10 @@ function Application({ Component, pageProps }) {
     }
   }, [])
   // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
-  const network = process.env.REACT_APP_CLUSTER === 'devnet' ? 
-    WalletAdapterNetwork.Devnet : 
-    WalletAdapterNetwork.MainnetBeta
+  const network =
+    process.env.REACT_APP_CLUSTER === 'devnet'
+      ? WalletAdapterNetwork.Devnet
+      : WalletAdapterNetwork.MainnetBeta
 
   // You can also provide a custom RPC endpoint
   const endpoint = useMemo(() => {
@@ -57,7 +61,7 @@ function Application({ Component, pageProps }) {
       return 'https://nina.devnet.rpcpool.com'
     }
     return clusterApiUrl(network)
-  }, [network]);
+  }, [network])
 
   const walletOptions = [
     new PhantomWalletAdapter({ network }),
@@ -72,10 +76,7 @@ function Application({ Component, pageProps }) {
   //     new SolletExtensionWalletAdapter({ network })
   //   )
   // }
-  const wallets = useMemo(
-      () => walletOptions,
-      [network]
-  );
+  const wallets = useMemo(() => walletOptions, [network])
   return (
     <SnackbarProvider
       maxSnack={3}

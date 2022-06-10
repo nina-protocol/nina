@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { useWallet } from '@solana/wallet-adapter-react'
-import nina from "@nina-protocol/nina-sdk";
+import nina from '@nina-protocol/nina-sdk'
 const { NinaContext } = nina.contexts
 
 const ExchangeListItem = (props) => {
@@ -162,7 +162,7 @@ const Root = styled(Box)(({ theme }) => ({
     borderColor: `${theme.palette.black}`,
     padding: `${theme.spacing(0.5, 1)} !important`,
     width: '100px',
-    borderRadius: "30px",
+    borderRadius: '30px',
     margin: 0,
     '&:hover': {
       backgroundColor: `${theme.palette.white} !important`,

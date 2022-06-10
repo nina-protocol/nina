@@ -60,19 +60,24 @@ const AudioPlayerContextProvider = ({ children }) => {
     setTrack,
     currentIndex,
     setTrack,
-    track
+    track,
   })
 
-  const updateTrack = (releasePubkey, shouldPlay = false, addToPlaylist = false) => {
+  const updateTrack = (
+    releasePubkey,
+    shouldPlay = false,
+    addToPlaylist = false
+  ) => {
     const existingTrack = playlist.filter(
       (item) => item.releasePubkey === releasePubkey
     )[0]
-    console.log("newTrack, addToPlaylist, playlist.length ::> ", existingTrack, addToPlaylist, playlist, releasePubkey)
-    if ((addToPlaylist && playlist.length === 0) || (addToPlaylist && !existingTrack)) {
+    if (
+      (addToPlaylist && playlist.length === 0) ||
+      (addToPlaylist && !existingTrack)
+    ) {
       const updatedPlaylist = [...playlist]
       const item = createPlaylistEntry(releasePubkey)
       updatedPlaylist.push(item)
-      console.log("updatedPlaylist ::> ", updatedPlaylist)
       setPlaylist(updatedPlaylist)
       setTrack(item)
     } else if (existingTrack) {
@@ -99,7 +104,7 @@ const AudioPlayerContextProvider = ({ children }) => {
         currentIndex,
         resetQueueWithPlaylist,
         createPlaylistFromTracks,
-        createPlaylistFromTracksHubs
+        createPlaylistFromTracksHubs,
       }}
     >
       {children}
@@ -119,11 +124,10 @@ const audioPlayerContextHelper = ({
   setIsPlaying,
   currentIndex,
   setTrack,
-  track
+  track,
 }) => {
   const reorderPlaylist = (updatedPlaylist) => {
     setPlaylist([...updatedPlaylist])
-    console.log("updatedPlaylist ::> ", updatedPlaylist)
     if (updatedPlaylist.length === 0) {
       setIsPlaying(false)
     }
@@ -155,7 +159,7 @@ const audioPlayerContextHelper = ({
     if (updatedPlaylist.length === 0) {
       setIsPlaying(false)
       setTrack()
-    } else if(deletingCurrentTrack) {
+    } else if (deletingCurrentTrack) {
       if (updatedPlaylist.length >= index + 1) {
         setTrack(updatedPlaylist[index])
       } else {
@@ -184,7 +188,10 @@ const audioPlayerContextHelper = ({
   const createPlaylistFromTracksHubs = (tracks) => {
     const playlistEntries = []
     tracks.forEach((releasePubkey) => {
-      if (playlist.filter(item => item.releasePubkey === releasePubkey).length === 0) {
+      if (
+        playlist.filter((item) => item.releasePubkey === releasePubkey)
+          .length === 0
+      ) {
         const playlistEntry = createPlaylistEntry(releasePubkey)
         if (playlistEntry) {
           playlistEntries.push(playlistEntry)
@@ -195,7 +202,10 @@ const audioPlayerContextHelper = ({
   }
 
   const addTrackToQueue = (releasePubkey) => {
-    if (playlist.filter(item => item.releasePubkey === releasePubkey)[0] === undefined) {
+    if (
+      playlist.filter((item) => item.releasePubkey === releasePubkey)[0] ===
+      undefined
+    ) {
       const playlistEntry = createPlaylistEntry(releasePubkey)
       if (playlistEntry) {
         setPlaylist([...playlist, playlistEntry])
@@ -217,7 +227,6 @@ const audioPlayerContextHelper = ({
       const playlistEntry = createPlaylistEntry(releasePubkey)
       newPlaylist.push(playlistEntry)
     })
-    console.log("newPlaylist ::> ", newPlaylist)
     setTrack(newPlaylist[0])
     setPlaylist(newPlaylist)
     setIsPlaying(true)

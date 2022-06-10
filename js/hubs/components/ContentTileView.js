@@ -36,7 +36,6 @@ const ContentTileView = ({ content, hubPubkey, hubHandle }) => {
   return (
     <TileGrid columnCount={columnCount}>
       {content.map((item, i) => {
-        console.log("item ::> ", item)
         return (
           <React.Fragment key={i}>
             {item?.contentType === 'NinaReleaseV1' && (

@@ -108,7 +108,6 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
                 {Object.keys(activeHubPosts).map((postPubkey) => {
                   const hubPost = activeHubPosts[postPubkey]
                   const postContent = postState[hubPost.post].postContent
-                  console.log("hubPost ::> ", hubPost)
                   return (
                     <DashboardEntry key={hubPost.post}>
                       <Link href={`/${hubData.handle}/posts/${hubPost.publicKey}`}>{postContent.json.title}</Link>

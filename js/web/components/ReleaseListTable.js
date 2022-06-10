@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { styled } from '@mui/material/styles'
-import nina from "@nina-protocol/nina-sdk";
+import nina from '@nina-protocol/nina-sdk'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -19,7 +19,7 @@ import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import { useRouter } from 'next/router'
 
 const { AudioPlayerContext, NinaContext, ReleaseContext } = nina.contexts
-const {formatDuration} = nina.utils
+const { formatDuration } = nina.utils
 const descendingComparator = (a, b, orderBy) => {
   switch (orderBy) {
     case 'artist':
@@ -155,7 +155,8 @@ const EnhancedTableHead = (props) => {
 
 const ReleaseListTable = (props) => {
   const { releases, tableType, collectRoyaltyForRelease } = props
-  const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } = useContext(AudioPlayerContext)
+  const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
+    useContext(AudioPlayerContext)
   const { ninaClient } = useContext(NinaContext)
   const { releaseState } = useContext(ReleaseContext)
   const router = useRouter()
@@ -180,11 +181,7 @@ const ReleaseListTable = (props) => {
     if (isPlaying && track.releasePubkey === releasePubkey) {
       setIsPlaying(false)
     } else {
-      updateTrack(
-        releasePubkey,
-        true,
-        true,
-      )
+      updateTrack(releasePubkey, true, true)
     }
   }
 
@@ -218,9 +215,7 @@ const ReleaseListTable = (props) => {
     }
 
     if (tableType === 'userCollection') {
-      const duration = formatDuration(
-        metadata.properties.files[0].duration
-      )
+      const duration = formatDuration(metadata.properties.files[0].duration)
       rowData['duration'] = duration
     }
 
@@ -330,15 +325,17 @@ const ReleaseListTable = (props) => {
                                   }
                                   sx={{ color: 'black', marginRight: '15px' }}
                                 />
-                                  {isPlaying && track.releasePubkey === row.id ? (
-                                    <PauseCircleOutlineOutlinedIcon 
-                                      onClick={(e) => handlePlay(e, row.id)}
-                                      sx={{ color: 'black' }} />
-                                  ) : (
-                                    <PlayCircleOutlineOutlinedIcon
-                                      onClick={(e) => handlePlay(e, row.id)}
-                                      sx={{ color: 'black' }} />
-                                  )}
+                                {isPlaying && track.releasePubkey === row.id ? (
+                                  <PauseCircleOutlineOutlinedIcon
+                                    onClick={(e) => handlePlay(e, row.id)}
+                                    sx={{ color: 'black' }}
+                                  />
+                                ) : (
+                                  <PlayCircleOutlineOutlinedIcon
+                                    onClick={(e) => handlePlay(e, row.id)}
+                                    sx={{ color: 'black' }}
+                                  />
+                                )}
                               </TableCell>
                             )
                           } else if (cellName === 'title') {

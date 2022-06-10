@@ -1,8 +1,11 @@
 import React, { createContext, useState, useEffect } from 'react'
 import * as anchor from '@project-serum/anchor'
 import axios from 'axios'
-import { findOrCreateAssociatedTokenAccount, TOKEN_PROGRAM_ID } from '../utils/web3'
-import {ninaErrorHandler} from '../utils/errors'
+import {
+  findOrCreateAssociatedTokenAccount,
+  TOKEN_PROGRAM_ID,
+} from '../utils/web3'
+import { ninaErrorHandler } from '../utils/errors'
 
 export const NinaContext = createContext()
 const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
@@ -227,19 +230,19 @@ const ninaContextHelper = ({
       return ninaErrorHandler(error)
     }
   }
-  
+
   const savePostsToState = async (posts) => {
     let updatedState = { ...postState }
-    posts.forEach(post => {
+    posts.forEach((post) => {
       updatedState = {
         ...updatedState,
         [post.id]: {
           ...post,
           publicKey: post.id,
-          createdAt: new Date(post.createdAt)          
-        }
+          createdAt: new Date(post.createdAt),
+        },
       }
-    }) 
+    })
     setPostState(updatedState)
   }
 
@@ -250,10 +253,11 @@ const ninaContextHelper = ({
       try {
         const program = await ninaClient.useProgram()
         const updatedCollection = {}
-        let tokenAccounts = await provider.connection.getParsedTokenAccountsByOwner(
-          provider.wallet.publicKey,
-          { programId: TOKEN_PROGRAM_ID }
-        )
+        let tokenAccounts =
+          await provider.connection.getParsedTokenAccountsByOwner(
+            provider.wallet.publicKey,
+            { programId: TOKEN_PROGRAM_ID }
+          )
         const walletTokenAccounts = tokenAccounts.value.map(
           (value) => value.account.data.parsed.info
         )
@@ -273,7 +277,7 @@ const ninaContextHelper = ({
               ],
               program.programId
             )
-              
+
             releaseAmountMap[release.toBase58()] = account.tokenAmount.uiAmount
           }
         }
@@ -318,10 +322,11 @@ const ninaContextHelper = ({
           new anchor.web3.PublicKey(releasePubkey)
         )
 
-        let tokenAccounts = await provider.connection.getParsedTokenAccountsByOwner(
-          provider.wallet.publicKey,
-          { programId: TOKEN_PROGRAM_ID }
-        )
+        let tokenAccounts =
+          await provider.connection.getParsedTokenAccountsByOwner(
+            provider.wallet.publicKey,
+            { programId: TOKEN_PROGRAM_ID }
+          )
         const walletTokenAccounts = tokenAccounts.value.map(
           (value) => value.account.data.parsed.info
         )
@@ -404,10 +409,11 @@ const ninaContextHelper = ({
 
   const getAmountHeld = async (releaseMint) => {
     if (provider.wallet?.connected) {
-      let tokenAccounts = await provider.connection.getParsedTokenAccountsByOwner(
-        provider.wallet?.publicKey,
-        { programId: TOKEN_PROGRAM_ID }
-      )
+      let tokenAccounts =
+        await provider.connection.getParsedTokenAccountsByOwner(
+          provider.wallet?.publicKey,
+          { programId: TOKEN_PROGRAM_ID }
+        )
       tokenAccounts.value.forEach((value) => {
         const account = value.account.data.parsed.info
         if (account.mint === releaseMint) {
@@ -431,9 +437,10 @@ const ninaContextHelper = ({
         )
 
         if (usdcTokenAccountPubkey) {
-          let usdcTokenAccount = await provider.connection.getTokenAccountBalance(
-            usdcTokenAccountPubkey
-          )
+          let usdcTokenAccount =
+            await provider.connection.getTokenAccountBalance(
+              usdcTokenAccountPubkey
+            )
           setUsdcBalance(usdcTokenAccount.value.uiAmount.toFixed(2))
           return
         }
@@ -473,13 +480,12 @@ const ninaContextHelper = ({
         await getBundlrBalance()
         return {
           success: true,
-          msg: `${fundAmount} Sol successfully deposited`
+          msg: `${fundAmount} Sol successfully deposited`,
         }
       }
-    } catch (error) {      
+    } catch (error) {
       console.warn('Bundlr fund error: ', error)
       return ninaErrorHandler(error)
-
     }
   }
 
@@ -492,13 +498,12 @@ const ninaContextHelper = ({
         await getBundlrBalance()
         return {
           success: true,
-          msg: `${withdrawAmount} Sol successfully withdrawn`
+          msg: `${withdrawAmount} Sol successfully withdrawn`,
         }
       }
     } catch (error) {
       console.warn('Bundlr withdraw error: ', error)
       return ninaErrorHandler(error)
-
     }
   }
 
@@ -543,9 +548,9 @@ const ninaContextHelper = ({
         const reader = new FileReader()
         reader.onload = async () => {
           const data = reader.result
-          let res;
+          let res
           try {
-             res = await bundlr.uploader.upload(data, [
+            res = await bundlr.uploader.upload(data, [
               { name: 'Content-Type', value: file.type },
             ])
           } catch (error) {

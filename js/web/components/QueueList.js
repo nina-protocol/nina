@@ -1,4 +1,4 @@
-/* eslint-disable react/display-name */ 
+/* eslint-disable react/display-name */
 import React, { useEffect, useState, useContext } from 'react'
 import {
   TableContainer,
@@ -12,7 +12,7 @@ import {
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
-import nina from "@nina-protocol/nina-sdk";
+import nina from '@nina-protocol/nina-sdk'
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded'
 import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
 import { useRouter } from 'next/router'
@@ -49,7 +49,9 @@ const QueueList = (props) => {
   const [skipForReorder, setSkipForReorder] = useState(false)
 
   useEffect(() => {
-    const playlistEntry = playlist.find((entry) => entry.releasePubkey === track.releasePubkey)
+    const playlistEntry = playlist.find(
+      (entry) => entry.releasePubkey === track.releasePubkey
+    )
 
     if (playlistEntry) {
       setSelectedIndex(playlist?.indexOf(playlistEntry) || 0)
@@ -81,12 +83,10 @@ const QueueList = (props) => {
     }
     // change local playlist state
     const newPlaylist = [...playlistState]
-    arrayMove(
-      newPlaylist,
-      result.source.index,
-      result.destination.index
+    arrayMove(newPlaylist, result.source.index, result.destination.index)
+    const playlistEntry = playlistState.find(
+      (entry) => entry.releasePubkey === track.releasePubkey
     )
-    const playlistEntry = playlistState.find((entry) => entry.releasePubkey === track.releasePubkey)
 
     if (playlistEntry) {
       setSelectedIndex(playlist?.indexOf(playlistEntry) || 0)
@@ -152,10 +152,7 @@ const QueueList = (props) => {
                           onClick={() =>
                             selectedIndex === i
                               ? setIsPlaying(true)
-                              : updateTrack(
-                                  entry.releasePubkey,
-                                  true,
-                                )
+                              : updateTrack(entry.releasePubkey, true)
                           }
                         />
                       )}

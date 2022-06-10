@@ -11,7 +11,7 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 import Dots from './Dots'
 
 const RecentlyPublished = (props) => {
-  const { releases } = props;
+  const { releases } = props
 
   const responsiveSettings = [
     {
@@ -81,7 +81,7 @@ const RecentlyPublished = (props) => {
           prevArrow={<CustomPrevArrow />}
         >
           {releases?.map((release, i) => {
-            const imageUrl = release.metadata.image;
+            const imageUrl = release.metadata.image
             return (
               <ReleaseSlideWrapper key={i}>
                 <ReleaseSlide key={i}>
@@ -94,14 +94,14 @@ const RecentlyPublished = (props) => {
                         layout="responsive"
                         priority={true}
                         loader={({ src }) => {
-                          return src;
+                          return src
                         }}
                       />
                     </a>
                   </Link>
-                  <ReleaseCopy sx={{ display: "flex" }}>
+                  <ReleaseCopy sx={{ display: 'flex' }}>
                     <Typography variant="body2">
-                      {release.metadata.properties.artist},{" "}
+                      {release.metadata.properties.artist},{' '}
                       <i>{release.metadata.properties.title}</i>
                     </Typography>
                   </ReleaseCopy>

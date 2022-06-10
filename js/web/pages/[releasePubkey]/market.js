@@ -1,7 +1,6 @@
 import Head from 'next/head'
 import Release from '../../components/Release'
 
-
 const ReleaseMarketPage = (props) => {
   const { metadata } = props
   return (

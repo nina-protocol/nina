@@ -81,7 +81,7 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
     revenue = ninaClient.nativeToUi(revenue, ninaClient.ids.mints.usdc)
     return revenue
   }, [releases])
-  console.log("hubFeePending ::> ", hubFeePending)
+
   return (
     <Overview>
       {hubData && (

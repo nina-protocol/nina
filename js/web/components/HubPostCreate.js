@@ -47,12 +47,15 @@ const HubPostCreate = ({
   preloadedRelease,
   selectedHubId,
   setParentOpen,
-  userHasHubs
+  userHasHubs,
 }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const { postInitViaHub, hubState } = useContext(HubContext)
-  const hubData = useMemo(() => hubState[hubPubkey || selectedHubId], [hubState, hubPubkey, selectedHubId])
+  const hubData = useMemo(
+    () => hubState[hubPubkey || selectedHubId],
+    [hubState, hubPubkey, selectedHubId]
+  )
   const {
     bundlrUpload,
     bundlrBalance,
@@ -90,7 +93,6 @@ const HubPostCreate = ({
     [bundlrBalance, solPrice]
   )
 
-
   useEffect(() => {
     refreshBundlr()
   }, [])
@@ -127,9 +129,20 @@ const HubPostCreate = ({
         }
       }
     } else {
-      setButtonText(preloadedRelease ? `Create Post on ${hubData?.json.displayName}` : `You do not have permission to create posts`)
+      setButtonText(
+        preloadedRelease
+          ? `Create Post on ${hubData?.json.displayName}`
+          : `You do not have permission to create posts`
+      )
     }
-  }, [metadataTx, isPublishing, postCreated, bundlrBalance, canAddContent, hubData])
+  }, [
+    metadataTx,
+    isPublishing,
+    postCreated,
+    bundlrBalance,
+    canAddContent,
+    hubData,
+  ])
 
   const handleFormChange = useCallback(
     async (values) => {
@@ -185,7 +198,7 @@ const HubPostCreate = ({
             metadataJson.reference = preloadedRelease
             formValues.postForm.reference = preloadedRelease
           }
-          
+
           metadataResult = (
             await bundlrUpload(
               new Blob([JSON.stringify(metadataJson)], {
@@ -253,9 +266,9 @@ const HubPostCreate = ({
         fullWidth
         onClick={() => setOpen(true)}
         disabled={!selectedHubId || (preloadedRelease && !userHasHubs)}
-      > 
+      >
         <Typography>
-        {preloadedRelease ? 'Create Text Post' : 'Publish a new post'}
+          {preloadedRelease ? 'Create Text Post' : 'Publish a new post'}
         </Typography>
       </CreateCtaButton>
       <StyledModal
@@ -347,10 +360,10 @@ const HubPostCreate = ({
   )
 }
 
-const CreateCtaButton = styled(Button)(({theme}) => ({
+const CreateCtaButton = styled(Button)(({ theme }) => ({
   display: 'flex',
   ...theme.helpers.baseFont,
-  marginTop: theme.spacing(1)
+  marginTop: theme.spacing(1),
 }))
 
 const StyledPaper = styled(Paper)(({ theme }) => ({

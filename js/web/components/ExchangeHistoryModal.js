@@ -4,8 +4,8 @@ import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Box from '@mui/material/Box'
 import { Typography, Paper } from '@mui/material'
-import nina from "@nina-protocol/nina-sdk";
-const {NinaContext} = nina.contexts
+import nina from '@nina-protocol/nina-sdk'
+const { NinaContext } = nina.contexts
 
 const ExchangeHistoryModal = (props) => {
   const { release, exchangeHistory } = props

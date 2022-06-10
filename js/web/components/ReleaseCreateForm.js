@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
-import { styled } from "@mui/material/styles";
-import { withFormik, Form, Field } from "formik";
-import Typography from "@mui/material/Typography";
-import { TextField } from "@mui/material";
-import Slider from "@mui/material/Slider";
-import Box from "@mui/material/Box";
-import Fade from "@mui/material/Fade";
+import React, { useEffect } from 'react'
+import { styled } from '@mui/material/styles'
+import { withFormik, Form, Field } from 'formik'
+import Typography from '@mui/material/Typography'
+import { TextField } from '@mui/material'
+import Slider from '@mui/material/Slider'
+import Box from '@mui/material/Box'
+import Fade from '@mui/material/Fade'
 import nina from '@nina-protocol/nina-sdk'
 
 const { formatPlaceholder } = nina.utils
@@ -123,9 +123,9 @@ const ReleaseCreateForm = ({
               <TextField
                 className={`${classes.formField}`}
                 variant="standard"
-                label={formatPlaceholder("Edition Size")}
+                label={formatPlaceholder('Edition Size')}
                 size="small"
-                type='number'
+                type="number"
                 InputLabelProps={touched.amount ? { shrink: true } : ''}
                 placeholder={
                   errors.amount && touched.amount ? errors.amount : null
@@ -148,7 +148,7 @@ const ReleaseCreateForm = ({
               <TextField
                 className={`${classes.formField}`}
                 variant="standard"
-                label={formatPlaceholder("Price")}
+                label={formatPlaceholder('Price')}
                 size="small"
                 InputLabelProps={touched.retailPrice ? { shrink: true } : ''}
                 placeholder={
@@ -233,11 +233,11 @@ const Root = styled('div')(({ theme }) => ({
 }))
 
 const Warning = styled(Typography)(({ theme }) => ({
-  position: "absolute",
-  textTransform: "none !important",
+  position: 'absolute',
+  textTransform: 'none !important',
   color: theme.palette.red,
-  opacity: "85%",
-}));
+  opacity: '85%',
+}))
 
 export default withFormik({
   enableReinitialize: true,
@@ -246,13 +246,13 @@ export default withFormik({
   },
   mapPropsToValues: () => {
     return {
-      artist: "",
-      title: "",
-      description: "",
-      catalogNumber: "",
+      artist: '',
+      title: '',
+      description: '',
+      catalogNumber: '',
       amount: undefined,
       retailPrice: undefined,
       resalePercentage: 10,
-    };
+    }
   },
 })(ReleaseCreateForm)

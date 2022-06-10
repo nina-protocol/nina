@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import { useWallet } from '@solana/wallet-adapter-react'
-import Drawer from '@mui/material/Drawer';
+import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
 import { Typography, Box } from '@mui/material'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import Link from 'next/link'
-import { Icon } from "@material-ui/core";
+import { Icon } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDiscord } from '@fortawesome/free-brands-svg-icons'
 import { faTwitter } from '@fortawesome/free-brands-svg-icons'
@@ -287,17 +287,17 @@ const StyledMenuButton = styled(Button)(({ theme }) => ({
 }))
 
 const DrawerFooter = styled(Box)(() => ({
-  position: "absolute",
-  bottom: "10px",
-  width: "75%",
-  left: "60px",
-  transform: "translateY(-50%)",
-  display: "flex",
-  justifyContent: "space-between",
-  "& a": {
-    paddingRight: "15px",
-    "& svg": {
-      height: "15px !important",
+  position: 'absolute',
+  bottom: '10px',
+  width: '75%',
+  left: '60px',
+  transform: 'translateY(-50%)',
+  display: 'flex',
+  justifyContent: 'space-between',
+  '& a': {
+    paddingRight: '15px',
+    '& svg': {
+      height: '15px !important',
     },
   },
 }))

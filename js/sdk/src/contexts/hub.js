@@ -12,7 +12,8 @@ import { indexerHasRecord } from '../utils'
 
 export const HubContext = createContext()
 const HubContextProvider = ({ children }) => {
-  const { fetchAndSaveReleasesToState, releaseState, getRelease } = useContext(ReleaseContext)
+  const { fetchAndSaveReleasesToState, releaseState, getRelease } =
+    useContext(ReleaseContext)
   const { ninaClient, savePostsToState, postState } = useContext(NinaContext)
   const [hubState, setHubState] = useState({})
   const [hubCollaboratorsState, setHubCollaboratorsState] = useState({})
@@ -83,7 +84,7 @@ const HubContextProvider = ({ children }) => {
         initialLoad,
         getHubPost,
         collectRoyaltyForReleaseViaHub,
-        getHubPubkeyForHubHandle
+        getHubPubkeyForHubHandle,
       }}
     >
       {children}
@@ -105,7 +106,7 @@ const hubContextHelper = ({
   postState,
   initialLoad,
   setInitialLoad,
-  getRelease
+  getRelease,
 }) => {
   const { ids, provider, endpoints } = ninaClient
 
@@ -640,7 +641,7 @@ const hubContextHelper = ({
             program.programId
           )
         accounts.referenceReleaseHubRelease = referenceReleaseHubRelease
-  
+
         const [referenceReleaseHubContent] =
           await anchor.web3.PublicKey.findProgramAddress(
             [
@@ -651,10 +652,12 @@ const hubContextHelper = ({
             program.programId
           )
         accounts.referenceReleaseHubContent = referenceReleaseHubContent
-        
-        txid = await program.rpc.postInitViaHubWithReferenceRelease(...params, {accounts})
+
+        txid = await program.rpc.postInitViaHubWithReferenceRelease(...params, {
+          accounts,
+        })
       } else {
-        txid = await program.rpc.postInitViaHub(...params, {accounts})
+        txid = await program.rpc.postInitViaHub(...params, { accounts })
       }
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
       await indexerHasRecord(hubPost.toBase58(), 'hubPost')
@@ -664,7 +667,7 @@ const hubContextHelper = ({
         success: true,
         msg: 'Post created.',
       }
-    } catch (error) {   
+    } catch (error) {
       return ninaErrorHandler(error)
     }
   }
@@ -787,7 +790,7 @@ const hubContextHelper = ({
         msg: `You collected $${ninaClient.nativeToUi(
           recipient.owed.toNumber(),
           release.paymentMint
-        )} to the hub`, 
+        )} to the hub`,
       }
     } catch (error) {
       getRelease(releasePubkey.toBase58())
@@ -807,7 +810,7 @@ const hubContextHelper = ({
   }
 
   const getHub = async (hubPubkey) => {
-    if (typeof hubPubkey ==='string') {
+    if (typeof hubPubkey === 'string') {
       hubPubkey = new anchor.web3.PublicKey(hubPubkey)
     }
     const program = await ninaClient.useProgram()
@@ -821,7 +824,7 @@ const hubContextHelper = ({
     setHubFeePending(hubFeePendingAmount.value.uiAmount)
     getHubContent(hubPubkey)
   }
-  
+
   const getHubContent = async (hubPubkey) => {
     let path = endpoints.api + `/hubs/${hubPubkey}`
     const response = await fetch(path)
@@ -839,7 +842,7 @@ const hubContextHelper = ({
   }
 
   const getHubsForUser = async (publicKey) => {
-    let path = endpoints.api + `/hubCollaborators/${publicKey}/hubs` 
+    let path = endpoints.api + `/hubCollaborators/${publicKey}/hubs`
     const response = await fetch(path)
     const result = await response.json()
     await saveHubCollaboratorsToState(result.hubCollaborators)
@@ -856,10 +859,9 @@ const hubContextHelper = ({
       let updatedState = { ...hubState }
       const program = await ninaClient.useProgram()
       let hubAccounts = await program.account.hub.fetchMultiple(
-        hubs.map(hub => new anchor.web3.PublicKey(hub.id)),
+        hubs.map((hub) => new anchor.web3.PublicKey(hub.id)),
         'confirmed'
       )
-      console.log("hubAccounts ::> ", hubAccounts)
       const hubDict = {}
       hubAccounts.forEach((hub, i) => {
         if (hub) {
@@ -870,8 +872,12 @@ const hubContextHelper = ({
       for await (let hub of hubs) {
         hub.publicKey = hub.id
         hub.hubSigner = hubDict[hub.id].hubSigner.toBase58()
-        hub.publishFee = (hubDict[hub.id].publishFee.toNumber() / 10000).toFixed(2)
-        hub.referralFee = (hubDict[hub.id].referralFee.toNumber() / 10000).toFixed(2)
+        hub.publishFee = (
+          hubDict[hub.id].publishFee.toNumber() / 10000
+        ).toFixed(2)
+        hub.referralFee = (
+          hubDict[hub.id].referralFee.toNumber() / 10000
+        ).toFixed(2)
         hub.totalFeesEarned = hubDict[hub.id].totalFeesEarned.toNumber()
         updatedState[hub.id] = hub
       }
@@ -882,17 +888,22 @@ const hubContextHelper = ({
   }
 
   const saveHubCollaboratorsToState = async (hubCollaborators) => {
-    let hubCollaboratorIds = hubCollaborators.map(hubCollaborator => hubCollaborator.id)
-    hubCollaboratorIds = hubCollaboratorIds.map((id) => new anchor.web3.PublicKey(id))
+    let hubCollaboratorIds = hubCollaborators.map(
+      (hubCollaborator) => hubCollaborator.id
+    )
+    hubCollaboratorIds = hubCollaboratorIds.map(
+      (id) => new anchor.web3.PublicKey(id)
+    )
 
     try {
       const program = await ninaClient.useProgram()
-      let hubCollaboratorAccounts = await program.account.hubCollaborator.fetchMultiple(
-        hubCollaboratorIds,
-        'confirmed'
-      )
+      let hubCollaboratorAccounts =
+        await program.account.hubCollaborator.fetchMultiple(
+          hubCollaboratorIds,
+          'confirmed'
+        )
 
-      let updatedState = {...hubCollaboratorsState}
+      let updatedState = { ...hubCollaboratorsState }
 
       hubCollaboratorAccounts.forEach((hubCollaborator, i) => {
         hubCollaborator.id = hubCollaborators[i].id
@@ -901,14 +912,14 @@ const hubContextHelper = ({
         hubCollaborator.datetime = hubCollaborator.datetime.toNumber()
         hubCollaborator.hub = hubCollaborator.hub.toBase58()
         hubCollaborator.canAddContent = hubCollaborator.canAddContent
-        
-          updatedState = {
-            ...updatedState,
-            [hubCollaborator.id]: {
-              ...hubCollaborator,
-              publicKey: hubCollaborator.id,
-            },
-          }
+
+        updatedState = {
+          ...updatedState,
+          [hubCollaborator.id]: {
+            ...hubCollaborator,
+            publicKey: hubCollaborator.id,
+          },
+        }
       })
 
       setHubCollaboratorsState(updatedState)
@@ -919,11 +930,12 @@ const hubContextHelper = ({
 
   const saveHubContentToState = async (hubReleases, hubPosts) => {
     try {
-      console.log("hubReleases ::> ", hubReleases)
       const program = await ninaClient.useProgram()
       let hubReleaseAccounts = await program.account.hubRelease.fetchMultiple(
-        hubReleases.map(hubRelease => new anchor.web3.PublicKey(hubRelease.id)),
-        "confirmed"
+        hubReleases.map(
+          (hubRelease) => new anchor.web3.PublicKey(hubRelease.id)
+        ),
+        'confirmed'
       )
       const hubReleaseDict = {}
       hubReleaseAccounts.forEach((release, i) => {
@@ -933,7 +945,7 @@ const hubContextHelper = ({
         }
       })
 
-      let updatedState = {...hubContentState}
+      let updatedState = { ...hubContentState }
       let contentState = {}
       for (let hubRelease of hubReleases) {
         contentState = {
@@ -951,7 +963,7 @@ const hubContextHelper = ({
             publishedThroughHub: hubRelease.publishedThroughHub,
             visible: hubRelease.visible,
             sales: hubReleaseDict[hubRelease.id].sales.toNumber(),
-          }
+          },
         }
       }
 
@@ -972,14 +984,16 @@ const hubContextHelper = ({
             referenceHubContent: hubPost.referenceContent,
             referenceHubContentType: hubPost.referenceContentType,
             versionUri: hubPost.post.uri,
-          }
+          },
         }
       }
       updatedState = {
         ...updatedState,
         ...contentState,
       }
-      await fetchAndSaveReleasesToState(hubReleases.map(hubRelease => hubRelease.releaseId))
+      await fetchAndSaveReleasesToState(
+        hubReleases.map((hubRelease) => hubRelease.releaseId)
+      )
       await savePostsToState(hubPosts.map((hubPost) => hubPost.post))
 
       setHubContentState(updatedState)
@@ -1005,30 +1019,27 @@ const hubContextHelper = ({
       }
     })
 
-    return [
-      hubReleases,
-      hubPosts
-    ]
+    return [hubReleases, hubPosts]
   }
 
   const filterHubCollaboratorsForHub = (hubPubkey) => {
     const hubCollaborators = []
-    Object.values(hubCollaboratorsState).forEach(hubCollaborator => {
+    Object.values(hubCollaboratorsState).forEach((hubCollaborator) => {
       if (hubCollaborator.hub === hubPubkey) {
         hubCollaborators.push(hubCollaborator)
       }
     })
-    return hubCollaborators.sort((a,b) => b.datetime - a.datetime)
+    return hubCollaborators.sort((a, b) => b.datetime - a.datetime)
   }
 
   const filterHubsForUser = (publicKey) => {
     const hubs = []
 
-    Object.values(hubCollaboratorsState).forEach(hubCollaborator => {
+    Object.values(hubCollaboratorsState).forEach((hubCollaborator) => {
       if (hubCollaborator.collaborator === publicKey) {
         hubs.push({
           ...hubState[hubCollaborator.hub],
-          userCanAddContent: hubCollaborator.canAddContent
+          userCanAddContent: hubCollaborator.canAddContent,
         })
       }
     })
@@ -1036,14 +1047,14 @@ const hubContextHelper = ({
   }
   const getHubPubkeyForHubHandle = async (handle) => {
     if (handle) {
-      let hub = Object.values(hubState).filter(hub => hub.handle === handle)[0]
-      console.log("hub ::> ", hub)
+      let hub = Object.values(hubState).filter(
+        (hub) => hub.handle === handle
+      )[0]
       if (!hub) {
         let path = endpoints.api + `/hubs/${handle}`
         const response = await fetch(path)
         hub = (await response.json()).hub
       }
-      console.log("HUB ::> ", hub)
       return hub?.id
     }
     return undefined
@@ -1069,7 +1080,7 @@ const hubContextHelper = ({
     filterHubsForUser,
     getHubPost,
     collectRoyaltyForReleaseViaHub,
-    getHubPubkeyForHubHandle
+    getHubPubkeyForHubHandle,
   }
 }
 export default HubContextProvider

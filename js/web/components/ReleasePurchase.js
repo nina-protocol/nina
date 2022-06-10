@@ -7,7 +7,7 @@ import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
 import { Typography } from '@mui/material'
 import Link from 'next/link'
-import nina from "@nina-protocol/nina-sdk";
+import nina from '@nina-protocol/nina-sdk'
 import CollectorModal from './CollectorModal'
 import Dots from './Dots'
 import ReleaseSettings from './ReleaseSettings'
@@ -108,7 +108,6 @@ const ReleasePurchase = (props) => {
   }
 
   const showCompletedTransaction = (result) => {
-    console.log('result :>> ', result);
     enqueueSnackbar(result.msg, {
       variant: result.success ? 'success' : 'warn',
     })
@@ -128,10 +127,9 @@ const ReleasePurchase = (props) => {
           release.price.toNumber(),
           release.paymentMint
         )}`
-      : `Sold Out ($${ninaClient.nativeToUi(
-          release.price.toNumber(),
-          release.paymentMint
-        ).toFixed(2)})`
+      : `Sold Out ($${ninaClient
+          .nativeToUi(release.price.toNumber(), release.paymentMint)
+          .toFixed(2)})`
 
   const buttonDisabled =
     wallet?.connected && release.remainingSupply > 0 ? false : true

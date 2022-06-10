@@ -10,9 +10,9 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import { useWallet } from '@solana/wallet-adapter-react'
-import nina from "@nina-protocol/nina-sdk";
+import nina from '@nina-protocol/nina-sdk'
 import RoyaltyRecipientForm from './RoyaltyRecipientForm'
-const {NinaContext, ReleaseContext} = nina.contexts
+const { NinaContext, ReleaseContext } = nina.contexts
 
 const Royalty = (props) => {
   const { release, releasePubkey } = props
@@ -24,9 +24,11 @@ const Royalty = (props) => {
   const [userRecipientData, setUserRecipientData] = useState(undefined)
   const [userShare, setUserShare] = useState(undefined)
   const [userDisplayShare, setUserDisplayShare] = useState(undefined)
-  const [formToggleText, setFormToggleText] = useState('Add Revenue Split Recipient')
+  const [formToggleText, setFormToggleText] = useState(
+    'Add Revenue Split Recipient'
+  )
   const { collectRoyaltyForRelease } = useContext(ReleaseContext)
-  const { ninaClient } = useContext(NinaContext);
+  const { ninaClient } = useContext(NinaContext)
 
   useEffect(() => {
     if (release?.royaltyRecipients) {
@@ -129,9 +131,7 @@ const Royalty = (props) => {
                       'Your Revenue Share:'
                     ) : (
                       <a
-                        href={
-                          `https://explorer.solana.com/address/${recipient.recipientAuthority.toBase58()}`
-                        }
+                        href={`https://explorer.solana.com/address/${recipient.recipientAuthority.toBase58()}`}
                         rel="noopener"
                       >
                         {`Collaborator ${i}`}

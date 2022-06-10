@@ -1,7 +1,7 @@
-import React, {useState, useEffect, useContext, useMemo} from 'react'
+import React, { useState, useEffect, useContext, useMemo } from 'react'
 import nina from '@nina-protocol/nina-sdk'
-import {styled} from '@mui/material/styles'
-import {Box, Paper} from '@mui/material'
+import { styled } from '@mui/material/styles'
+import { Box, Paper } from '@mui/material'
 import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
@@ -10,24 +10,24 @@ import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
-import AutorenewIcon from '@mui/icons-material/Autorenew';
-import {FormControl , InputLabel} from '@mui/material'
+import AutorenewIcon from '@mui/icons-material/Autorenew'
+import { FormControl, InputLabel } from '@mui/material'
 import HubPostCreate from './HubPostCreate'
-import {useWallet} from '@solana/wallet-adapter-react'
+import { useWallet } from '@solana/wallet-adapter-react'
 
 import Link from 'next/link'
 
-import {useSnackbar} from 'notistack'
+import { useSnackbar } from 'notistack'
 import Dots from './Dots'
 
-const {HubContext, NinaContext} = nina.contexts
+const { HubContext, NinaContext } = nina.contexts
 
-const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
+const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
   const [open, setOpen] = useState(false)
-  const {enqueueSnackbar} = useSnackbar()
+  const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
 
-  const {hubAddRelease} = useContext(HubContext)
+  const { hubAddRelease } = useContext(HubContext)
   const [selectedHubId, setSelectedHubId] = useState()
   const [inProgress, setInProgress] = useState(false)
   const userHasHubs = useMemo(() => userHubs?.length > 0, [userHubs])
@@ -64,16 +64,15 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
 
   return (
     <Root>
-        <Button
-          variant="contained"
-          color="primary"
-          type="submit"
-          onClick={() => setOpen(true)}
-          sx={{height: '22px', width: '28px', m: 0}}
-
-        >
-          <AutorenewIcon sx={{color: 'white'}} />
-        </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        type="submit"
+        onClick={() => setOpen(true)}
+        sx={{ height: '22px', width: '28px', m: 0 }}
+      >
+        <AutorenewIcon sx={{ color: 'white' }} />
+      </Button>
 
       <StyledModal
         aria-labelledby="transition-modal-title"
@@ -91,14 +90,16 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
             {!userHasHubs && (
               <>
                 <Typography gutterBottom>
-                  {wallet?.connected ? 'The connected wallet is not a collaborator on any hub.' : 'Connect your wallet to see your hubs'}
+                  {wallet?.connected
+                    ? 'The connected wallet is not a collaborator on any hub.'
+                    : 'Connect your wallet to see your hubs'}
                 </Typography>
                 <Typography>
                   <a
                     href="https://docs.google.com/forms/d/1JOgbVh-5SbA4mCwSWAiSolPCAHCjx6baSiJGh0J7N1g"
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{textDecoration: 'underline'}}
+                    style={{ textDecoration: 'underline' }}
                   >
                     Click here to get started setting up your hub.
                   </a>
@@ -113,59 +114,65 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
                   id="transition-modal-title"
                   gutterBottom
                 >
-                  Add {metadata.name} to {userHubs.length > 1 ? 'one of your hubs' : 'your hub: ' + userHubs[0]?.json.displayName} 
+                  Add {metadata.name} to{' '}
+                  {userHubs.length > 1
+                    ? 'one of your hubs'
+                    : 'your hub: ' + userHubs[0]?.json.displayName}
                 </Typography>
 
-              {userHubs.length > 1 && (
-                <FormControl sx={{mt: 1}} >
-                  <InputLabel disabled value="">
-                    Select a hub to add to
-                  </InputLabel>
-                
-                  <Select
-                    className="formField"
-                    placeholder="Release Reference"
-                    displayEmpty
-                    label="Select hub"
-                    fullWidth
-                    variant='standard'
-                    onChange={(e, userHubs) => {
-                      setSelectedHubId(e.target.value)
-                    }}
-                  >
-                    {userHubs?.filter(hub => hub.userCanAddContent).map((hub) => {
-                      return (
-                        <MenuItem
-                          key={hub?.id}
-                          value={hub?.id}
-                        >
-                          {hub?.json.displayName}
-                        </MenuItem>
-                      )
-                    })}
-                  </Select>
-                </FormControl>
-              )}
+                {userHubs.length > 1 && (
+                  <FormControl sx={{ mt: 1 }}>
+                    <InputLabel disabled value="">
+                      Select a hub to add to
+                    </InputLabel>
+
+                    <Select
+                      className="formField"
+                      placeholder="Release Reference"
+                      displayEmpty
+                      label="Select hub"
+                      fullWidth
+                      variant="standard"
+                      onChange={(e, userHubs) => {
+                        setSelectedHubId(e.target.value)
+                      }}
+                    >
+                      {userHubs
+                        ?.filter((hub) => hub.userCanAddContent)
+                        .map((hub) => {
+                          return (
+                            <MenuItem key={hub?.id} value={hub?.id}>
+                              {hub?.json.displayName}
+                            </MenuItem>
+                          )
+                        })}
+                    </Select>
+                  </FormControl>
+                )}
               </>
             )}
 
             <Button
-              style={{marginTop: '15px'}}
+              style={{ marginTop: '15px' }}
               color="primary"
               variant="outlined"
               disabled={inProgress || !selectedHubId || !userHasHubs}
               onClick={handleRepost}
             >
               <Typography>
-                {!inProgress && ('Repost')}
+                {!inProgress && 'Repost'}
                 {inProgress && (
                   <Dots msg={'Please aprrove transaction in wallet'} />
                 )}
               </Typography>
             </Button>
 
-            <HubPostCreate preloadedRelease={releasePubkey} selectedHubId={selectedHubId} setParentOpen={handleClose} userHasHubs={userHasHubs} />
-
+            <HubPostCreate
+              preloadedRelease={releasePubkey}
+              selectedHubId={selectedHubId}
+              setParentOpen={handleClose}
+              userHasHubs={userHasHubs}
+            />
           </StyledPaper>
         </Fade>
       </StyledModal>
@@ -173,8 +180,7 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata}) => {
   )
 }
 
-
-const Root = styled('div')(({theme}) => ({
+const Root = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   width: '100%',
@@ -186,7 +192,7 @@ const StyledModal = styled(Modal)(() => ({
   justifyContent: 'center',
 }))
 
-const StyledPaper = styled(Paper)(({theme}) => ({
+const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   border: '2px solid #000',
   boxShadow: theme.shadows[5],
@@ -199,9 +205,8 @@ const StyledPaper = styled(Paper)(({theme}) => ({
   flexDirection: 'column',
   [theme.breakpoints.down('md')]: {
     width: 'unset',
-    margin:'15px',
+    margin: '15px',
     padding: theme.spacing(2),
-
   },
 }))
 

@@ -1,15 +1,15 @@
-import React, { useEffect, useState, useContext } from "react";
-import Head from "next/head";
-import { styled } from "@mui/material/styles";
-import nina from "@nina-protocol/nina-sdk";
-import { Typography, Box } from "@mui/material";
-import Button from "@mui/material/Button";
-import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
-import { useSnackbar } from "notistack";
-import ReleaseListTable from "./ReleaseListTable";
-import ScrollablePageWrapper from "./ScrollablePageWrapper";
-import ReleaseTileList from "./ReleaseTileList";
-import Link from "next/link";
+import React, { useEffect, useState, useContext } from 'react'
+import Head from 'next/head'
+import { styled } from '@mui/material/styles'
+import nina from '@nina-protocol/nina-sdk'
+import { Typography, Box } from '@mui/material'
+import Button from '@mui/material/Button'
+import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
+import { useSnackbar } from 'notistack'
+import ReleaseListTable from './ReleaseListTable'
+import ScrollablePageWrapper from './ScrollablePageWrapper'
+import ReleaseTileList from './ReleaseTileList'
+import Link from 'next/link'
 
 const { AudioPlayerContext, ReleaseContext } = nina.contexts
 
@@ -82,7 +82,7 @@ const Releases = ({ type }) => {
           {!listView && <ReleaseTileList releases={releases} />}
         </ReleasesWrapper>
 
-        {type === "new" && (
+        {type === 'new' && (
           <BlueTypography variant="h1">
             <Link href="/releases">All Releases</Link>
           </BlueTypography>
@@ -122,11 +122,11 @@ const ReleasesWrapper = styled(Box)(({ theme }) => ({
 }))
 
 const BlueTypography = styled(Typography)(({ theme }) => ({
-  "& a": { color: theme.palette.blue },
+  '& a': { color: theme.palette.blue },
   marginTop: theme.spacing(6),
-  [theme.breakpoints.down("md")]: {
-    marginTop: "0",
+  [theme.breakpoints.down('md')]: {
+    marginTop: '0',
   },
-}));
+}))
 
-export default Releases;
+export default Releases

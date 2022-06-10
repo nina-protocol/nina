@@ -13,7 +13,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import nina from '@nina-protocol/nina-sdk'
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
-import {display} from '@mui/system'
+import { display } from '@mui/system'
 
 const { NinaContext } = nina.contexts
 
@@ -96,13 +96,12 @@ const BundlrModal = ({ inCreate, displaySmall }) => {
     <Root displaySmall={displaySmall}>
       {!inCreate && displaySmall && (
         <StyledSmallToggle
-         align={'right'}
-        variant='subtitle1' 
-        textTransform={'none'}
-        onClick={() => setOpen(true)}
-
+          align={'right'}
+          variant="subtitle1"
+          textTransform={'none'}
+          onClick={() => setOpen(true)}
         >
-          Manage Upload Account 
+          Manage Upload Account
         </StyledSmallToggle>
       )}
       {!inCreate && !displaySmall && (
@@ -112,7 +111,11 @@ const BundlrModal = ({ inCreate, displaySmall }) => {
           type="submit"
           onClick={() => setOpen(true)}
         >
-          <Typography align={'right'} variant='subtitle1'  textTransform={'none'}>
+          <Typography
+            align={'right'}
+            variant="subtitle1"
+            textTransform={'none'}
+          >
             Manage Upload Account
           </Typography>
         </Button>
@@ -126,7 +129,10 @@ const BundlrModal = ({ inCreate, displaySmall }) => {
           onClick={() => setOpen(true)}
           sx={{ height: '54px' }}
         >
-          <Typography align={displaySmall ? 'right' : "left"} textTransform={'none'}>
+          <Typography
+            align={displaySmall ? 'right' : 'left'}
+            textTransform={'none'}
+          >
             Click here to fund your Bundlr and start publishing
           </Typography>
         </Button>
@@ -218,7 +224,7 @@ const BundlrModal = ({ inCreate, displaySmall }) => {
                 }}
                 disabled={inProgress || !amount}
               >
-                <Typography variant='body1'>
+                <Typography variant="body1">
                   {!inProgress && (mode === 'deposit' ? 'Deposit' : 'Withdraw')}
                 </Typography>
                 {inProgress && (
@@ -250,8 +256,8 @@ const StyledSmallToggle = styled(Typography)(() => ({
   margin: '5px 0',
   textDecoration: 'underline',
   '&:hover': {
-    opacity: '50%'
-  }
+    opacity: '50%',
+  },
 }))
 
 const StyledPaper = styled(Paper)(({ theme }) => ({

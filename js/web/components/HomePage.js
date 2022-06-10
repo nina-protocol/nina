@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles'
 import { Typography, Box } from '@mui/material'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import Button from '@mui/material/Button'
-import nina from "@nina-protocol/nina-sdk";
+import nina from '@nina-protocol/nina-sdk'
 import { useSnackbar } from 'notistack'
 import RecentlyPublished from './RecentlyPublished'
 import Link from 'next/link'
@@ -33,8 +33,8 @@ const HomePage = () => {
           align="left"
           sx={{ padding: { md: '0 165px 140px', xs: '30px 0px' } }}
         >
-          Nina is a new way to <Link href="/upload">publish</Link>,{" "}
-          <Link href="https://radio.ninaprotocol.com">listen to</Link>, and{" "}
+          Nina is a new way to <Link href="/upload">publish</Link>,{' '}
+          <Link href="https://radio.ninaprotocol.com">listen to</Link>, and{' '}
           <Link href="/releases">purchase</Link> music. We build tools for
           artists + fans to create their context.{' '}
         </BlueTypography>
@@ -48,7 +48,7 @@ const HomePage = () => {
             >
               <Link href="/releases/highlights">Highlights</Link>
               <Button
-                sx={{padding: '6px 8px'}}
+                sx={{ padding: '6px 8px' }}
                 onClick={() =>
                   resetQueueWithPlaylist(
                     releasesRecent.highlights.map(
@@ -91,14 +91,16 @@ const HomePage = () => {
           align="left"
           sx={{ paddingBottom: { md: '140px', xs: '30px' } }}
         >
-          More questions? Read our                <a
+          More questions? Read our{' '}
+          <a
             href="https://nina-protocol.notion.site/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612"
             target="_blank"
             rel="noreferrer"
             passHref
           >
             FAQ
-          </a>.
+          </a>
+          .
         </BlueTypography>
         <Box sx={{ padding: { md: '0 40px 140px 40px', xs: '30px 0px' } }}>
           <Box sx={{ display: 'flex', paddingLeft: { md: '30px', xs: '0' } }}>
@@ -109,7 +111,7 @@ const HomePage = () => {
             >
               <Link href="/releases/new">New Releases</Link>
               <Button
-                sx={{padding: '6px 8px'}}
+                sx={{ padding: '6px 8px' }}
                 onClick={() =>
                   resetQueueWithPlaylist(
                     releasesRecent.published.map(

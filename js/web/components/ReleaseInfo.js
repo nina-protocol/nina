@@ -4,11 +4,11 @@ import Typography from '@mui/material/Typography'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Box from '@mui/material/Box'
-import nina from "@nina-protocol/nina-sdk";
+import nina from '@nina-protocol/nina-sdk'
 import RedeemableInitialize from './RedeemableInitialize.js'
 import Royalty from './Royalty.js'
 
-const {ReleaseContext} = nina.contexts
+const { ReleaseContext } = nina.contexts
 
 const ReleaseInfo = (props) => {
   const {

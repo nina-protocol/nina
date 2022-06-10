@@ -1,10 +1,9 @@
 import Head from 'next/head'
 import ReleaseRelated from '../../components/ReleaseRelated'
 
-
 const Related = (props) => {
   const { metadata } = props
-  
+
   return (
     <>
       <Head>

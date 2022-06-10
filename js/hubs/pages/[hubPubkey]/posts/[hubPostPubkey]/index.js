@@ -65,7 +65,6 @@ PostPage.getInitialProps = async (context) => {
       hub = hubPost.hub
       hubPubkey = hubPost.hubId
     }
-    console.log("data ::> ", data)
     return {
       metadata,
       hubPostPubkey,
