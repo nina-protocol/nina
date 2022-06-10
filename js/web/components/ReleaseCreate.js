@@ -230,6 +230,7 @@ const ReleaseCreate = () => {
         }
         if (uploadHasItemForType(upload, UploadType.artwork) || artworkResult) {
           let trackResult = trackTx
+          setIsPublishing(true)
           if (!uploadHasItemForType(upload, UploadType.track)) {
             enqueueSnackbar(
               'Uploading track to Arweave.  Please confirm in wallet.',
@@ -245,7 +246,8 @@ const ReleaseCreate = () => {
             } 
           }
           if (uploadHasItemForType(upload, UploadType.track) || trackResult) {
-                     let metadataResult = metadataTx
+            let metadataResult = metadataTx
+            setIsPublishing(true)
             const info = releaseInfo || (await initializeReleaseAndMint())
             setReleaseInfo(info)
             setReleasePubkey(info.release)
