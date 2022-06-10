@@ -230,6 +230,7 @@ const ReleaseCreate = () => {
         }
         if (uploadHasItemForType(upload, UploadType.artwork) || artworkResult) {
           let trackResult = trackTx
+          setIsPublishing(true)
           if (!uploadHasItemForType(upload, UploadType.track)) {
             enqueueSnackbar(
               'Uploading track to Arweave.  Please confirm in wallet.',
@@ -238,11 +239,15 @@ const ReleaseCreate = () => {
               }
             )
             trackResult = (await bundlrUpload(track.file)).data.id
-            setTrackTx(trackResult)
-            updateUpload(upload, UploadType.track, trackResult)
+            console.log('trackResult :>> ', trackResult);
+            if (trackResult) {
+              setTrackTx(trackResult)
+              updateUpload(upload, UploadType.track, trackResult)
+            } 
           }
           if (uploadHasItemForType(upload, UploadType.track) || trackResult) {
-                     let metadataResult = metadataTx
+            let metadataResult = metadataTx
+            setIsPublishing(true)
             const info = releaseInfo || (await initializeReleaseAndMint())
             setReleaseInfo(info)
             setReleasePubkey(info.release)
@@ -318,11 +323,10 @@ const ReleaseCreate = () => {
               }
             }
           }
-        } else {
-          console.warn('didnt mean condition')
-        }
+        } 
       }
     } catch (error) {
+      console.log('error !!! :>> ', error);
       setIsPublishing(false)
     }
   }

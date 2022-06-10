@@ -108,6 +108,7 @@ const ReleasePurchase = (props) => {
   }
 
   const showCompletedTransaction = (result) => {
+    console.log('result :>> ', result);
     enqueueSnackbar(result.msg, {
       variant: result.success ? 'success' : 'warn',
     })
