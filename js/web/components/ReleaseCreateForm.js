@@ -125,11 +125,17 @@ const ReleaseCreateForm = ({
                 variant="standard"
                 label={formatPlaceholder("Edition Size")}
                 size="small"
+                type='number'
                 InputLabelProps={touched.amount ? { shrink: true } : ''}
                 placeholder={
                   errors.amount && touched.amount ? errors.amount : null
                 }
-                type="number"
+                InputProps={{
+                  onChange: (event) => {
+                    let whole = parseInt(event.target.value)
+                    setFieldValue('amount', whole)
+                  },
+                }}
                 {...field}
               />
             </Box>
