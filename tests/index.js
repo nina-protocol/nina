@@ -4050,14 +4050,12 @@ describe('Hub', async () => {
       }
     );
     const hubPostAfter = await nina.account.hubPost.fetch(hubPost)
-    console.log("hubPostAfter ::> ", hubPostAfter)
     const postAfter = await nina.account.post.fetch(post)
     assert.equal(encrypt.decode(hubPostAfter.versionUri), uri)
     assert.equal(hubPostAfter.referenceContent.toBase58(), release.toBase58())
     assert.equal(encrypt.decode(postAfter.uri), uri)
     assert.equal(encrypt.decode(postAfter.slug), slug)
     const referenceReleaseHubReleaseAfter = await nina.account.hubRelease.fetch(referenceReleaseHubRelease)
-    console.log("referenceReleaseHubReleaseAfter ::> ", referenceReleaseHubReleaseAfter)
     assert.equal(referenceReleaseHubReleaseAfter.hub.toBase58(), hub.toBase58())
     assert.equal(referenceReleaseHubReleaseAfter.release.toBase58(), release.toBase58())
   })  
