@@ -35,12 +35,12 @@ const BundlrModal = dynamic(() => import('./BundlrModal'))
 const {ReleaseContext, NinaContext, HubContext} = nina.contexts
 
 const ReleaseCreateSchema = Yup.object().shape({
-  artist: Yup.string().required('Artist Name is Required'),
+  artist: Yup.string().required('Artist is Required'),
   title: Yup.string().required('Title is Required'),
   description: Yup.string().required('Description is Required'),
   catalogNumber: Yup.string().required('Catalog Number is Required'),
-  amount: Yup.number().required('Edition Amount is Required'),
-  retailPrice: Yup.number().required('Sale Price is Required'),
+  amount: Yup.number().required('Edition Size is Required'),
+  retailPrice: Yup.number().required('Price is Required'),
   resalePercentage: Yup.number().required('Resale Percent Amount is Required'),
 })
 

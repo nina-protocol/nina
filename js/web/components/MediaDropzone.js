@@ -10,34 +10,11 @@ import { useWallet } from '@solana/wallet-adapter-react'
 
 const MediaDropzone = ({
   type,
-  releasePubkey,
-  metadata,
   setArtwork,
   setTrack,
   handleProgress,
 }) => {
   const wallet = useWallet()
-
-  const getUploadParams = ({ file }) => {
-    const body = new FormData()
-    body.append('file', file)
-    body.append('type', type)
-    body.append('tokenId', releasePubkey)
-    body.append('authority', wallet?.publicKey.toBase58())
-    if (metadata) {
-      body.append('artist', metadata.artist)
-      body.append('title', metadata.title)
-      body.append('description', metadata.description)
-      body.append('duration', metadata.duration)
-      body.append('catalogNumber', metadata.catalogNumber)
-      body.append('sellerFeeBasisPoints', metadata.resalePercentage)
-      body.append('trackCount', 1)
-    }
-    return {
-      url: `https://pressingplant-dev.nina.market:443/file`,
-      body,
-    }
-  }
 
   const handleChangeStatus = ({ file, meta, restart, remove }, status) => {
     if (meta.status === 'error_validation') {
@@ -45,9 +22,15 @@ const MediaDropzone = ({
       const width = meta.width
       const size = meta.size / 1000000
       if (file.type.includes('audio')) {
-        alert(
-          `your track is ${size} mb... \nPlease upload a file smaller than 80 mb`
-        )
+        if (file.type !== 'audio/mpeg') {
+          alert(
+            `Your track is not an MP3. \nPlease upload an MP3.`
+          )  
+        } else {
+          alert(
+            `Your track is ${size} mb... \nPlease upload a file smaller than 120 mb`
+          )
+        }
       } else {
         if (height !== width) {
           alert(
@@ -90,7 +73,7 @@ const MediaDropzone = ({
         <>
           <AddOutlinedIcon />
           <Typography variant="h2">Upload Track</Typography>
-          <Typography variant="subtitle1">File Formats: MP3, WAV</Typography>
+          <Typography variant="subtitle1">File Formats: MP3</Typography>
         </>
       )
     } else {
@@ -119,10 +102,14 @@ const MediaDropzone = ({
     return false;
   }
   
-  const validateFileSize = (fileWithMeta) => {
+  const validateTrack = (fileWithMeta) => {
+    console.log('fileWithMeta: ', fileWithMeta)
     const size = fileWithMeta.file.size / 1000000;
-    if (size > 100) {
+    if (size > 120) {
       return true;
+    }
+    if (fileWithMeta.file.type !== 'audio/mpeg') {
+      return true
     }
     return false
   }
@@ -196,13 +183,12 @@ const MediaDropzone = ({
 
   return (
     <Dropzone
-      getUploadParams={getUploadParams}
       onChangeStatus={handleChangeStatus}
       accept={type === 'track' ? 'audio/*' : 'image/*'}
       maxFiles={1}
       validate={
         type === 'track'
-          ? (fileWithMeta) => validateFileSize(fileWithMeta)
+          ? (fileWithMeta) => validateTrack(fileWithMeta)
           : (fileWithMeta) => validateImage(fileWithMeta)
       }
       SubmitButtonComponent={null}

@@ -123,7 +123,7 @@ const ReleaseCreateForm = ({
               <TextField
                 className={`${classes.formField}`}
                 variant="standard"
-                label={formatPlaceholder(field.name)}
+                label={formatPlaceholder("Edition Size")}
                 size="small"
                 InputLabelProps={touched.amount ? { shrink: true } : ''}
                 placeholder={
@@ -142,7 +142,7 @@ const ReleaseCreateForm = ({
               <TextField
                 className={`${classes.formField}`}
                 variant="standard"
-                label={formatPlaceholder(field.name)}
+                label={formatPlaceholder("Price")}
                 size="small"
                 InputLabelProps={touched.retailPrice ? { shrink: true } : ''}
                 placeholder={

@@ -67,10 +67,10 @@ const ReleaseCreateConfirm = (props) => {
               Catalog Number:<span>{data.catalogNumber}</span>
             </Value>
             <Value sx={{ mt: 1 }}>
-              Amount: <span>{data.amount}</span>
+              Edition Size: <span>{data.amount}</span>
             </Value>
             <Value sx={{ mt: 1 }}>
-              Retail Price:<span>${data.retailPrice}</span>
+              Price:<span>${data.retailPrice}</span>
             </Value>
             <Value sx={{ mt: 1, mb: 1 }}>
               Resale Percentage: <span>{data.resalePercentage}%</span>

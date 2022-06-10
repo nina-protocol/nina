@@ -30,7 +30,6 @@ const MediaDropzones = ({
       <label htmlFor="track"></label>
       <MediaDropzone
         type="track"
-        releasePubkey={releasePubkey}
         track={track}
         setTrack={setTrack}
         handleProgress={handleProgress}
@@ -40,8 +39,6 @@ const MediaDropzones = ({
         type="artwork"
         artwork={artwork}
         setArtwork={setArtwork}
-        releasePubkey={releasePubkey}
-        metadata={metadata}
         handleProgress={handleProgress}
       />
     </StyledDropZones>
