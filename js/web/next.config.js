@@ -43,8 +43,7 @@ module.exports = withTM({
     return config
   },
   env: {
-    REACT_APP_CLUSTER: 'devnet',
-    REACT_APP_API_ENDPOINT: 'https://api-dev.nina.market:443', 
+    REACT_APP_CLUSTER: cluster,
     INDEXER_URL: cluster === 'devnet' ? 'https://api-dev.nina.market' : 'https://api.nina.market',
   },
   images: {
