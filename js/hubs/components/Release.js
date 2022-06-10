@@ -123,7 +123,7 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
           </>
         )}
         <Box sx={{ marginTop: '100px' }}>
-          <ReleasePurchase releasePubkey={releasePubkey} metadata={metadata} />
+          <ReleasePurchase releasePubkey={releasePubkey} metadata={metadata} hubPubkey={hubPubkey} />
         </Box>
       </Grid>
 

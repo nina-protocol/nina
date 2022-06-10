@@ -147,6 +147,7 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
           releasePubkey={releasePubkey}
           metadata={metadata}
           inPost={true}
+          hubPubkey={hubPubkey}
         />
       </Grid>
     </>

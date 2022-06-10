@@ -507,7 +507,7 @@ const releaseContextHelper = ({
       }
       const txid = await program.rpc.releasePurchaseViaHub(
         release.price,
-        hub.handle,
+        decodeNonEncryptedByteArray(hub.handle),
         request
       )
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
