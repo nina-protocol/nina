@@ -1,48 +1,48 @@
-import React, { useEffect, useState, useContext } from "react";
-import { Helmet } from "react-helmet";
-import ninaCommon from "nina-common";
-import { styled } from "@mui/material/styles";
-import { Typography, Box } from "@mui/material";
-import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
-import Button from "@mui/material/Button";
-import { useSnackbar } from "notistack";
-import ReleaseListTable from "./ReleaseListTable";
-import ReleaseTileList from "./ReleaseTileList";
-import ScrollablePageWrapper from "./ScrollablePageWrapper";
+import React, { useEffect, useState, useContext } from 'react'
+import { Helmet } from 'react-helmet'
+import nina from '@nina-protocol/nina-sdk'
+import { styled } from '@mui/material/styles'
+import { Typography, Box } from '@mui/material'
+import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
+import Button from '@mui/material/Button'
+import { useSnackbar } from 'notistack'
+import ReleaseListTable from './ReleaseListTable'
+import ReleaseTileList from './ReleaseTileList'
+import ScrollablePageWrapper from './ScrollablePageWrapper'
 
-const { ReleaseContext, AudioPlayerContext } = ninaCommon.contexts;
+const { ReleaseContext, AudioPlayerContext } = nina.contexts
 
 const ReleaseRelated = ({ releasePubkey }) => {
   const { getRelatedForRelease, filterRelatedForRelease, releaseState } =
-    useContext(ReleaseContext);
-  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext);
-  const [listView, setListView] = useState(false);
-  const [relatedReleases, setRelatedReleases] = useState(null);
-  const [userHandles, setUserHandles] = useState(null);
-  const { enqueueSnackbar } = useSnackbar();
+    useContext(ReleaseContext)
+  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext)
+  const [listView, setListView] = useState(false)
+  const [relatedReleases, setRelatedReleases] = useState(null)
+  const [userHandles, setUserHandles] = useState(null)
+  const { enqueueSnackbar } = useSnackbar()
 
   useEffect(() => {
-    getRelatedForRelease(releasePubkey);
-  }, []);
+    getRelatedForRelease(releasePubkey)
+  }, [])
 
   useEffect(() => {
-    const related = filterRelatedForRelease(releasePubkey);
-    setRelatedReleases(related);
-  }, [releaseState.tokenData]);
+    const related = filterRelatedForRelease(releasePubkey)
+    setRelatedReleases(related)
+  }, [releaseState.tokenData])
 
   useEffect(() => {
     if (relatedReleases) {
       const handles = relatedReleases.map((release) => {
-        return release.metadata.properties.artist;
-      });
-      const filteredHandles = [...new Set(handles)];
-      setUserHandles(filteredHandles.join(" / "));
+        return release.metadata.properties.artist
+      })
+      const filteredHandles = [...new Set(handles)]
+      setUserHandles(filteredHandles.join(' / '))
     }
-  }, [relatedReleases]);
+  }, [relatedReleases])
 
   const handleViewChange = () => {
-    setListView(!listView);
-  };
+    setListView(!listView)
+  }
 
   return (
     <>
@@ -57,7 +57,7 @@ const ReleaseRelated = ({ releasePubkey }) => {
               <CollectionHeader listView={listView}>
                 <Typography
                   variant="body1"
-                  sx={{ fontWeight: "700 !important" }}
+                  sx={{ fontWeight: '700 !important' }}
                   align="left"
                 >
                   Releases by {userHandles}
@@ -71,20 +71,20 @@ const ReleaseRelated = ({ releasePubkey }) => {
                         ).then(() => {
                           enqueueSnackbar(
                             `Now Playing: Releases by ${userHandles}`,
-                            { variant: "info" }
-                          );
+                            { variant: 'info' }
+                          )
                         })
                       }
                     >
-                      <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
+                      <PlayCircleOutlineOutlinedIcon sx={{ color: 'black' }} />
                     </Button>
                   </span>
                 </Typography>
                 <Typography
                   onClick={handleViewChange}
-                  sx={{ cursor: "pointer" }}
+                  sx={{ cursor: 'pointer' }}
                 >
-                  {listView ? "Cover View" : "List View"}
+                  {listView ? 'Cover View' : 'List View'}
                 </Typography>
               </CollectionHeader>
 
@@ -101,23 +101,23 @@ const ReleaseRelated = ({ releasePubkey }) => {
         </Wrapper>
       </ScrollablePageWrapper>
     </>
-  );
-};
+  )
+}
 
 const CollectionHeader = styled(Box)(() => ({
-  maxWidth: "960px",
-  margin: "auto",
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "flex-end",
-  marginBottom: "15px",
-}));
+  maxWidth: '960px',
+  margin: 'auto',
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: '15px',
+}))
 
 const Wrapper = styled(Box)(({ theme }) => ({
-  [theme.breakpoints.down("md")]: {
-    padding: "0px 30px",
-    overflowX: "auto",
+  [theme.breakpoints.down('md')]: {
+    padding: '0px 30px',
+    overflowX: 'auto',
   },
-}));
+}))
 
-export default ReleaseRelated;
+export default ReleaseRelated

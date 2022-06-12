@@ -1,7 +1,7 @@
-import ReleaseList from "../../components/ReleaseList";
+import ReleaseList from '../../components/ReleaseList'
 
 const UserReleasePage = () => {
-  return <ReleaseList />;
-};
+  return <ReleaseList />
+}
 
-export default UserReleasePage;
+export default UserReleasePage

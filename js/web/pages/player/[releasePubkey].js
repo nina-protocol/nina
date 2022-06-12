@@ -1,5 +1,4 @@
-import ninaCommon from "nina-common";
-const { NinaClient } = ninaCommon.utils;
+import React, { useContext } from 'react'
 
 const ReleaseEmbedPage = ({ host, metadata }) => {
   const player = `
@@ -150,21 +149,21 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
         });
       </script>
     </html>
-  `;
-  return <div dangerouslySetInnerHTML={{ __html: player }}></div>;
-};
+  `
+  return <div dangerouslySetInnerHTML={{ __html: player }}></div>
+}
 
 export const getServerSideProps = async (context) => {
-  const releasePubkey = context.params.releasePubkey;
+  const releasePubkey = context.params.releasePubkey
   const metadataResult = await fetch(
-    `${NinaClient.endpoints.api}/metadata/bulk`,
+    `${process.env.INDEXER_URL}/metadata/bulk`,
     {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ids: [releasePubkey] }),
     }
-  );
-  const metadataJson = await metadataResult.json();
+  )
+  const metadataJson = await metadataResult.json()
   return {
     props: {
       metadata: metadataJson[releasePubkey],
@@ -172,7 +171,7 @@ export const getServerSideProps = async (context) => {
       isEmbed: true,
       host: context.req.headers.host,
     },
-  };
-};
+  }
+}
 
-export default ReleaseEmbedPage;
+export default ReleaseEmbedPage

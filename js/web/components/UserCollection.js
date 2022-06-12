@@ -1,85 +1,84 @@
-import React, { useEffect, useState, useContext } from "react";
-import Head from "next/head";
-import ninaCommon from "nina-common";
-import { styled } from "@mui/material/styles";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { Typography, Box } from "@mui/material";
-import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
-import ShareIcon from "@mui/icons-material/Share";
-import Button from "@mui/material/Button";
-import { useSnackbar } from "notistack";
-import ReleaseListTable from "./ReleaseListTable";
-import ReleaseTileList from "./ReleaseTileList";
-import ScrollablePageWrapper from "./ScrollablePageWrapper";
+import React, { useEffect, useState, useContext } from 'react'
+import Head from 'next/head'
+import nina from '@nina-protocol/nina-sdk'
+import { styled } from '@mui/material/styles'
+import { useWallet } from '@solana/wallet-adapter-react'
+import { Typography, Box } from '@mui/material'
+import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
+import ShareIcon from '@mui/icons-material/Share'
+import Button from '@mui/material/Button'
+import { useSnackbar } from 'notistack'
+import ReleaseListTable from './ReleaseListTable'
+import ReleaseTileList from './ReleaseTileList'
+import ScrollablePageWrapper from './ScrollablePageWrapper'
 
-const { AudioPlayerContext, ReleaseContext, NinaContext } = ninaCommon.contexts;
+const { AudioPlayerContext, ReleaseContext, NinaContext } = nina.contexts
 
 const ReleaseList = ({ userId }) => {
-  const { enqueueSnackbar } = useSnackbar();
-  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext);
+  const { enqueueSnackbar } = useSnackbar()
+  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext)
   const {
     getReleasesInCollection,
     filterReleasesUserCollection,
     releaseState,
     getUserCollection,
     filterReleasesList,
-  } = useContext(ReleaseContext);
-  const [listView, setListView] = useState(false);
+  } = useContext(ReleaseContext)
+  const [listView, setListView] = useState(false)
 
-  const wallet = useWallet();
-  const { collection, createCollection } = useContext(NinaContext);
+  const wallet = useWallet()
+  const { collection, createCollection } = useContext(NinaContext)
   const [userCollectionReleases, setUserCollectionReleases] =
-    useState(undefined);
-  const [userCollectionList, setUserCollectionList] = useState(undefined);
-  const [loading, setLoading] = useState(true);
+    useState(undefined)
+  const [userCollectionList, setUserCollectionList] = useState(undefined)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     if (userId) {
-      getOtherUserCollectionHandler(userId);
+      getOtherUserCollectionHandler(userId)
     } else {
-      createCollection();
+      createCollection()
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
     if (wallet?.connected && !userId) {
-      getReleasesInCollection();
+      getReleasesInCollection()
     } else if (!wallet.connected && !userId) {
-      setUserCollectionList(undefined);
-      setUserCollectionReleases(undefined);
+      setUserCollectionList(undefined)
+      setUserCollectionReleases(undefined)
     }
-  }, [collection]);
+  }, [collection])
 
   useEffect(() => {
     if (userId && userCollectionList) {
-      setUserCollectionReleases(filterReleasesList(userCollectionList));
+      setUserCollectionReleases(filterReleasesList(userCollectionList))
     } else if (!userId && wallet?.connected) {
       const hasCollection = Object.keys(collection).every((releasePubkey) => {
-        return releaseState.metadata[releasePubkey];
-      });
-
+        return releaseState.metadata[releasePubkey]
+      })
       if (hasCollection) {
-        setUserCollectionReleases(filterReleasesUserCollection());
+        setUserCollectionReleases(filterReleasesUserCollection())
       }
     }
-  }, [releaseState, userCollectionList]);
+  }, [releaseState, userCollectionList])
 
   useEffect(() => {
-    setLoading(false);
-  }, [userCollectionReleases]);
+    setLoading(false)
+  }, [userCollectionReleases])
 
   const getOtherUserCollectionHandler = async (userId) => {
-    const collection = await getUserCollection(userId);
-    setUserCollectionList(collection);
-  };
+    const collection = await getUserCollection(userId)
+    setUserCollectionList(collection)
+  }
 
   const handleViewChange = () => {
-    setListView(!listView);
-  };
+    setListView(!listView)
+  }
 
   const nameString = userId
-    ? `${userId.slice(0, 4) + ".." + userId.slice(-4)}'s`
-    : "Your";
+    ? `${userId.slice(0, 4) + '..' + userId.slice(-4)}'s`
+    : 'Your'
 
   return (
     <>
@@ -87,7 +86,7 @@ const ReleaseList = ({ userId }) => {
         <title>{`Nina: ${nameString} Collection(${
           userCollectionReleases?.length || 0
         })`}</title>
-        <meta name="description" content={"Your collection on Nina."} />
+        <meta name="description" content={'Your collection on Nina.'} />
       </Head>
       <ScrollablePageWrapper>
         {userCollectionReleases?.length > 0 && (
@@ -103,12 +102,12 @@ const ReleaseList = ({ userId }) => {
                       )
                     ).then(() =>
                       enqueueSnackbar(`Now Playing: ${nameString} Collection`, {
-                        variant: "info",
+                        variant: 'info',
                       })
                     )
                   }
                 >
-                  <PlayCircleOutlineOutlinedIcon sx={{ color: "black" }} />
+                  <PlayCircleOutlineOutlinedIcon sx={{ color: 'black' }} />
                 </Button>
                 <Button
                   onClick={() =>
@@ -120,20 +119,20 @@ const ReleaseList = ({ userId }) => {
                       )
                       .then(() =>
                         enqueueSnackbar(
-                          "Link to collection copied to clipboard",
-                          { variant: "info" }
+                          'Link to collection copied to clipboard',
+                          { variant: 'info' }
                         )
                       )
                   }
                 >
-                  <ShareIcon sx={{ color: "black" }} />
+                  <ShareIcon sx={{ color: 'black' }} />
                 </Button>
               </Typography>
               <Typography
                 onClick={handleViewChange}
-                sx={{ cursor: "pointer", margin: "auto 0" }}
+                sx={{ cursor: 'pointer', margin: 'auto 0' }}
               >
-                {listView ? "Cover View" : "List View"}
+                {listView ? 'Cover View' : 'List View'}
               </Typography>
             </CollectionHeader>
 
@@ -165,30 +164,30 @@ const ReleaseList = ({ userId }) => {
         )}
       </ScrollablePageWrapper>
     </>
-  );
-};
+  )
+}
 
 const CollectionHeader = styled(Box)(({ theme }) => ({
-  maxWidth: "100%",
-  margin: "auto",
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "flex-end",
-  marginBottom: "15px",
-  "& .MuiButton-root:last-of-type": {
-    [theme.breakpoints.down("md")]: {
-      paddingRight: "4px",
+  maxWidth: '100%',
+  margin: 'auto',
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'flex-end',
+  marginBottom: '15px',
+  '& .MuiButton-root:last-of-type': {
+    [theme.breakpoints.down('md')]: {
+      paddingRight: '4px',
     },
   },
-}));
+}))
 
 const Wrapper = styled(Box)(({ theme }) => ({
-  maxWidth: "960px",
-  margin: "auto",
-  [theme.breakpoints.down("md")]: {
-    padding: "0px 30px",
-    overflowX: "auto",
+  maxWidth: '960px',
+  margin: 'auto',
+  [theme.breakpoints.down('md')]: {
+    padding: '0px 30px',
+    overflowX: 'auto',
   },
-}));
+}))
 
-export default ReleaseList;
+export default ReleaseList

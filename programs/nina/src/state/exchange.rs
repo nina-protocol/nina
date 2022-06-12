@@ -27,9 +27,9 @@ impl Exchange {
     pub fn cancel_amount_validation(
         exchange: &Exchange,
         amount: u64,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         if exchange.initializer_amount != amount {
-            return Err(ErrorCode::ExchangeCancelAmountMismatch.into());
+            return Err(error!(ErrorCode::ExchangeCancelAmountMismatch))
         }
 
         Ok(())
@@ -41,7 +41,7 @@ impl Exchange {
         exchange_signer: AccountInfo<'info>,
         exchange_escrow_token_account: AccountInfo<'info>,
         token_program: AccountInfo<'info>,
-    ) -> ProgramResult {
+    ) -> Result<()> {
         // Close exchange_escrow_token_account transferring all lamports back to initializer
         let seeds = &[
             exchange.to_account_info().key.as_ref(),

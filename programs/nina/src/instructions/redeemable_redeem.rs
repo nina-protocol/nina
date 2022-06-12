@@ -3,7 +3,7 @@ use anchor_spl::token::{self, TokenAccount, MintTo, Burn, Token, Mint};
 use solana_program::program_option::COption;
 
 use crate::state::*;
-use crate::errors::*;
+use crate::errors::ErrorCode;
 
 #[derive(Accounts)]
 pub struct RedeemableRedeem<'info> {
@@ -24,7 +24,8 @@ pub struct RedeemableRedeem<'info> {
         seeds = [b"nina-redeemable".as_ref(), release.key().as_ref(), redeemed_mint.key().as_ref()],
         bump,
     )]
-    pub redeemable: Loader<'info, Redeemable>,
+    pub redeemable: AccountLoader<'info, Redeemable>,
+    /// CHECK: This is safe because the PDA is derived from redeemable above which is verified via seeds
     #[account(
         seeds = [b"nina-redeemable-signer".as_ref(), redeemable.key().as_ref()],
         bump,
@@ -34,9 +35,9 @@ pub struct RedeemableRedeem<'info> {
         seeds = [b"nina-release".as_ref(), redeemable_mint.key().as_ref()],
         bump,
     )]
-    pub release: Loader<'info, Release>,
+    pub release: AccountLoader<'info, Release>,
     #[account(zero)]
-    pub redemption_record: Loader<'info, RedemptionRecord>,
+    pub redemption_record: AccountLoader<'info, RedemptionRecord>,
     #[account(
         mut,
         constraint = redeemer_redeemable_token_account.owner == *redeemer.key,
@@ -60,18 +61,18 @@ pub fn handler(
     encryption_public_key: Vec<u8>,
     address: Vec<u8>,
     iv: Vec<u8>,
-) -> ProgramResult {
+) -> Result<()> {
     let mut redeemable = ctx.accounts.redeemable.load_mut()?;
 
     if redeemable.redeemed_count >= redeemable.redeemed_max {
-        return Err(ErrorCode::NoMoreRedeemablesAvailable.into())
+        return Err(error!(ErrorCode::NoMoreRedeemablesAvailable))
     }
 
     // Redeemer burn redeemable token
     let cpi_program = ctx.accounts.token_program.to_account_info().clone();
     let cpi_accounts = Burn {
         mint: ctx.accounts.redeemable_mint.to_account_info(),
-        to: ctx.accounts.redeemer_redeemable_token_account.to_account_info(),
+        from: ctx.accounts.redeemer_redeemable_token_account.to_account_info(),
         authority: ctx.accounts.redeemer.to_account_info().clone(),
     };
     
@@ -112,7 +113,9 @@ pub fn handler(
     encryption_public_key_array[..encryption_public_key.len()].copy_from_slice(&encryption_public_key);
     redemption_record.encryption_public_key = encryption_public_key_array;
 
-    redeemable.redeemed_count +=1;
+    redeemable.redeemed_count = u64::from(redeemable.redeemed_count)
+        .checked_add(1)
+        .unwrap();
 
     emit!(RedeemableRedeemed {
         authority: *ctx.accounts.redeemer.to_account_info().key,

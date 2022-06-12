@@ -2,12 +2,33 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, SetAuthority, Token};
 use solana_program::program_option::COption;
 
+use crate::utils::{nina_publishing_account};
 use crate::state::*;
 
 #[derive(Accounts)]
 pub struct RedeemableInitialize<'info> {
     #[account(
+        mut,
         constraint = authority.key() == release.load()?.authority,
+    )]
+    /**
+        Only nina_publishing_account can make redeemables.
+
+        This functionality was put in place for The Soft LP, but 
+        the interface for encrypting shipping info is precarious:
+
+        if either party loses their encryption key which is stored in localStorage
+        then they will never be able to decrypt existing shipping info again.
+
+        This is especially bad in the case of an artist as they will not be able
+        to fulfill any subsequent redemptions on that release.
+
+        Redemptions either need to have better key maintenance ux or perhaps
+        shouldn't happen on-chain at all.
+    */
+    #[cfg_attr(
+        not(feature = "test"),
+        account(address = address = nina_publishing_account::ID),
     )]
     pub authority: Signer<'info>,
     #[account(
@@ -15,7 +36,7 @@ pub struct RedeemableInitialize<'info> {
         seeds = [b"nina-release".as_ref(), redeemable_mint.key().as_ref()],
         bump,
     )]
-    pub release: Loader<'info, Release>,
+    pub release: AccountLoader<'info, Release>,
     #[account(
         init,
         seeds = [b"nina-redeemable".as_ref(), release.key().as_ref(), redeemed_mint.key().as_ref()],
@@ -23,7 +44,8 @@ pub struct RedeemableInitialize<'info> {
         payer = authority,
         space = 586,
     )]
-    pub redeemable: Loader<'info, Redeemable>,
+    pub redeemable: AccountLoader<'info, Redeemable>,
+    /// CHECK: This is safe because PDA is derived from redeemable which is initialized above
     #[account(
         seeds = [b"nina-redeemable-signer".as_ref(), redeemable.key().as_ref()],
         bump,
@@ -47,7 +69,7 @@ pub fn handler(
     ctx: Context<RedeemableInitialize>,
     config: RedeemableConfig,
     bumps: RedeemableBumps,
-) -> ProgramResult {
+) -> Result<()> {
     let authority = *ctx.accounts.authority.to_account_info().key;
     
     let mut redeemable = ctx.accounts.redeemable.load_init()?;

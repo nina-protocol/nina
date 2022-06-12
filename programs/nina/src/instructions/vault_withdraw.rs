@@ -13,6 +13,7 @@ pub struct VaultWithdraw<'info> {
         constraint = vault.authority == authority.key(),
     )]
     pub vault: Account<'info, Vault>,
+    /// CHECK: This is safe because PDA is derived from vault which is checked above
     #[account(
         seeds = [b"nina-vault-signer".as_ref(), vault.key().as_ref()],
         bump,
@@ -38,15 +39,15 @@ pub struct VaultWithdraw<'info> {
 pub fn handler(
     ctx: Context<VaultWithdraw>,
     amount: u64,
-) -> ProgramResult {
+) -> Result<()> {
     let vault = &ctx.accounts.vault;
 
     if ctx.accounts.withdraw_target.amount < amount {
-        return Err(ErrorCode::VaultWithdrawAmountTooHigh.into());
+        return Err(error!(ErrorCode::VaultWithdrawAmountTooHigh));
     }
 
     if amount <= 0 {
-        return Err(ErrorCode::VaultWithdrawAmountMustBeGreaterThanZero.into());
+        return Err(error!(ErrorCode::VaultWithdrawAmountMustBeGreaterThanZero));
     }
 
     //Withdraw to Authority Token Account
