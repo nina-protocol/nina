@@ -95,10 +95,6 @@ const HubPostCreate = ({
     [bundlrBalance, solPrice]
   )
 
-
-console.log('hubData :>> ', hubData);
-console.log('userHubs :>> ', userHubs);
-
   useEffect(() => {
     refreshBundlr()
   }, [])
@@ -109,8 +105,9 @@ console.log('userHubs :>> ', userHubs);
     getSolPrice()
   }
 
+  
   useEffect(() => {
-    // if (canAddContent) {
+    if (canAddContent) {
       if (!update) {
         if (!metadataTx) {
           setPublishingStepText(
@@ -134,10 +131,10 @@ console.log('userHubs :>> ', userHubs);
           )
         }
       }
-    // } else {
-    //   setButtonText(`You do not have permission to create posts`)
-    // }
-  }, [metadataTx, isPublishing, postCreated, bundlrBalance, canAddContent])
+    } else {
+      // setButtonText(`You do not have permission to create posts`)
+    }
+  }, [metadataTx, canAddContent])
 
   const handleFormChange = useCallback(
     async (values) => {
@@ -163,11 +160,6 @@ console.log('userHubs :>> ', userHubs);
     valid()
   }, [formValues])
 
-  // console.log('preloadedRelease :>> ', preloadedRelease);
-  // console.log('userHasHubs :>> ', userHasHubs);
-  // console.log('selectedHubId :>> ', selectedHubId);
-  // console.log('formIsValid :>> ', formIsValid);
-console.log('formValues :>> ', formValues);
   const handleSubmit = async () => {
     try {
       setPostCreated(false)
@@ -311,7 +303,7 @@ console.log('formValues :>> ', formValues);
                         disabled={
                           isPublishing ||
                           // !formIsValid ||
-                          // !canAddContent ||
+                          !canAddContent ||
                           bundlrBalance === 0 ||
                           mbs < uploadSize
                         }
