@@ -1034,7 +1034,6 @@ const hubContextHelper = ({
 
   const filterHubsForUser = (publicKey) => {
     const hubs = []
-
     Object.values(hubCollaboratorsState).forEach((hubCollaborator) => {
       if (hubCollaborator.collaborator === publicKey) {
         hubs.push({
