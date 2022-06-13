@@ -82,6 +82,9 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                 height={100}
                 width={100}
                 alt={metadata.description || 'album art'}
+                loader={({ src }) => {
+                  return src;
+                }}
               />
             </MobileImageWrapper>
 
@@ -120,7 +123,7 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
           </>
         )}
         <Box sx={{ marginTop: '100px' }}>
-          <ReleasePurchase releasePubkey={releasePubkey} metadata={metadata} />
+          <ReleasePurchase releasePubkey={releasePubkey} metadata={metadata} hubPubkey={hubPubkey} />
         </Box>
       </Grid>
 
@@ -135,6 +138,9 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
               width="100"
               objectPosition={'right bottom'}
               alt={metadata.description || 'album art'}
+              loader={({ src }) => {
+                return src;
+              }}
             />
           </ImageContainer>
         )}

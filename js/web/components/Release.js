@@ -102,6 +102,7 @@ const Release = ({ metadataSsr }) => {
                 metadata={metadata}
                 router={router}
                 relatedReleases={relatedReleases}
+                hubPubkey={hubPubkey}
               />
             </ReleaseCtaWrapper>
           </NinaBox>
