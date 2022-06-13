@@ -40,7 +40,7 @@ const HubCreateSchema = Yup.object().shape({
   handle: Yup.string().required('Hub Handle is Required'),
   displayName: Yup.string().required('Display Name is Required'),
   publishFee: Yup.number().required('Publish Fee is Required'),
-  referralFee: Yup.number().required('Referall Fee is Required'),
+  referralFee: Yup.number().required('Referral Fee is Required'),
   description: Yup.string().required('Description is Required'),
 })
 
@@ -447,7 +447,18 @@ const HubCreate = ({ update, hubData }) => {
                 </Typography>
               )}
             </ColorWrapper>
+
+            {formValues.hubForm.publishFee > 30 || formValues.hubForm.referralFee > 30 && (
+              <Box>
+                <Warning variant='subtitle1'>
+                  Are you certain about the fees you set? High fees may discourage potential collectors.
+                </Warning>
+              </Box>
+            )}
           </CreateFormWrapper>
+
+
+
 
           <CreateCta>
             {bundlrBalance === 0 && <BundlrModal inCreate={true} />}
@@ -555,6 +566,13 @@ const BundlrBalanceInfo = styled(Typography)(({ theme }) => ({
 const ColorWrapper = styled(Box)(({ theme }) => ({
   textAlign: 'left',
   padding: '5px 15px 15px',
+}))
+
+
+const Warning = styled(Typography)(({theme}) => ({
+  textTransform: 'none !important',
+  color: theme.palette.red,
+  opacity: '85%',
 }))
 
 export default HubCreate
