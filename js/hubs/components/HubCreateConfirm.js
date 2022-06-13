@@ -41,9 +41,9 @@ const HubCreateConfirm = (props) => {
   const [buttonText, setButtonText] = useState('Create Hub')
 
   const submitAndCloseModal = async () => {
-    await setFormValuesConfirmed(true)
+    setFormValuesConfirmed(true)
     await handleSubmit()
-    handleClose()
+    setOpen(false)
   }
 
   useEffect(() => {

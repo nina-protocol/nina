@@ -47,7 +47,7 @@ const HubCreateSchema = Yup.object().shape({
 const HubCreate = ({ update, hubData }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const { hubInitWithCredit, hubState, hubUpdateConfig } =
+  const { hubInitWithCredit, hubState, hubUpdateConfig, getHubs } =
     useContext(HubContext)
   const router = useRouter()
   const {
@@ -83,6 +83,7 @@ const HubCreate = ({ update, hubData }) => {
   const [hubCreated, setHubCreated] = useState(false)
   const [hubUpdated, setHubUpdated] = useState(false)
   const [uploadId, setUploadId] = useState()
+  const [hubHandleValid, setHubHandleValid] = useState(false)
   const [publishingStepText, setPublishingStepText] = useState()
 
   const mbs = useMemo(
@@ -96,6 +97,7 @@ const HubCreate = ({ update, hubData }) => {
 
   useEffect(() => {
     refreshBundlr()
+    getHubs()
   }, [])
 
   const refreshBundlr = () => {
@@ -116,7 +118,7 @@ const HubCreate = ({ update, hubData }) => {
         )
       } else {
         setPublishingStepText(
-          '3/3 Finalizing Release.  Please confirm in wallet and do not close this window.'
+          '3/3 Finalizing Hub.  Please confirm in wallet and do not close this window.'
         )
       }
     } else {
@@ -180,7 +182,19 @@ const HubCreate = ({ update, hubData }) => {
     setTextColor()
   }
 
+  const validateHubHandle = async (handle) => {
+    const hubHandles = await Object.values(hubState).map(hub => hub.handle)
+    console.log('hubHandles :>> ', hubHandles);
+    if (hubHandles.indexOf(handle) > -1) {
+      setFormValuesConfirmed(false)
+      alert(`A hub with the handle ${handle} all ready exists, please choose a different handle.`)
+      return false
+    }
+    return true
+  }
+
   const handleSubmit = async () => {
+    console.log('HANDLE SUBMIT');
     try {
       if (update) {
         let upload = uploadId
@@ -283,7 +297,9 @@ const HubCreate = ({ update, hubData }) => {
           }
         }
       } else {
-        if (artwork) {
+        // await validateHubHandle(formValues.hubForm.handle)
+        // console.log('hubHandleValid :>> ', hubHandleValid);
+        if (artwork && await validateHubHandle(formValues.hubForm.handle)) {
           let upload = uploadId
           let artworkResult = artworkTx
           if (!uploadId) {
@@ -359,7 +375,7 @@ const HubCreate = ({ update, hubData }) => {
                 setHubCreated(true)
                 setHubPubkey(result.hubPubkey)
               } else {
-                enqueueSnackbar(result.msg, {
+                enqueueSnackbar('Hub Not Created', {
                   variant: 'error',
                 })
               }
