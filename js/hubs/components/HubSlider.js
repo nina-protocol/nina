@@ -6,6 +6,10 @@ import 'react-multi-carousel/lib/styles.css'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
 import Image from "next/image";
+<<<<<<< HEAD
+=======
+// import Image from './Image'
+>>>>>>> cc7f2ad86925cb83fe83ad0dfd89d8778c5550ec
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 import Dots from './Dots'
