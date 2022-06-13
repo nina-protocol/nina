@@ -47,12 +47,17 @@ const HubPostCreate = ({
   preloadedRelease = undefined,
   setParentOpen,
   selectedHubId,
-  userHasHubs
+  userHasHubs,
+  userHubs
 }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const { postInitViaHub, hubState } = useContext(HubContext)
-  const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
+  const hubData = useMemo(
+    () => hubState[ selectedHubId || hubPubkey],
+    [hubState, hubPubkey, selectedHubId]
+  )
+
   const {
     bundlrUpload,
     bundlrBalance,
@@ -90,6 +95,10 @@ const HubPostCreate = ({
     [bundlrBalance, solPrice]
   )
 
+
+console.log('hubData :>> ', hubData);
+console.log('userHubs :>> ', userHubs);
+
   useEffect(() => {
     refreshBundlr()
   }, [])
@@ -101,7 +110,7 @@ const HubPostCreate = ({
   }
 
   useEffect(() => {
-    if (canAddContent) {
+    // if (canAddContent) {
       if (!update) {
         if (!metadataTx) {
           setPublishingStepText(
@@ -125,9 +134,9 @@ const HubPostCreate = ({
           )
         }
       }
-    } else {
-      setButtonText(`You do not have permission to create posts`)
-    }
+    // } else {
+    //   setButtonText(`You do not have permission to create posts`)
+    // }
   }, [metadataTx, isPublishing, postCreated, bundlrBalance, canAddContent])
 
   const handleFormChange = useCallback(
@@ -154,6 +163,11 @@ const HubPostCreate = ({
     valid()
   }, [formValues])
 
+  // console.log('preloadedRelease :>> ', preloadedRelease);
+  // console.log('userHasHubs :>> ', userHasHubs);
+  // console.log('selectedHubId :>> ', selectedHubId);
+  // console.log('formIsValid :>> ', formIsValid);
+console.log('formValues :>> ', formValues);
   const handleSubmit = async () => {
     try {
       setPostCreated(false)
@@ -180,6 +194,11 @@ const HubPostCreate = ({
             metadataJson.reference = formValues.postForm.reference
           }
 
+          if (preloadedRelease) {
+            metadataJson.reference = preloadedRelease
+            formValues.postForm.reference = preloadedRelease
+          }
+          console.log('formValues :>> ', formValues);     
           metadataResult = (
             await bundlrUpload(
               new Blob([JSON.stringify(metadataJson)], {
@@ -206,7 +225,7 @@ const HubPostCreate = ({
 
           if (metadataJson.reference) {
             result = await postInitViaHub(
-              hubPubkey,
+              hubPubkey || selectedHubId,
               slug,
               uri,
               metadataJson.reference
@@ -277,6 +296,7 @@ const HubPostCreate = ({
                       hubData={hubData}
                       postCreated={postCreated}
                       hubReleasesToReference={hubReleasesToReference}
+                      preloadedRelease={preloadedRelease}
                     />
                   </PostFormWrapper>
 
@@ -290,8 +310,8 @@ const HubPostCreate = ({
                         onClick={handleSubmit}
                         disabled={
                           isPublishing ||
-                          !formIsValid ||
-                          !canAddContent ||
+                          // !formIsValid ||
+                          // !canAddContent ||
                           bundlrBalance === 0 ||
                           mbs < uploadSize
                         }

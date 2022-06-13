@@ -195,6 +195,7 @@ const releaseContextHelper = ({
   const { provider, ids, nativeToUi, uiToNative, isSol, isUsdc, endpoints } =
     ninaClient
   const initializeReleaseAndMint = async (hubPubkey) => {
+    console.log('hubPubkey !!! :>> ', hubPubkey);
     const program = await ninaClient.useProgram()
     const releaseMint = anchor.web3.Keypair.generate()
     const [release, releaseBump] =

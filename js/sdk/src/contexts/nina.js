@@ -543,6 +543,7 @@ const ninaContextHelper = ({
   }
 
   const bundlrUpload = async (file) => {
+    console.log('file :>> ', file);
     try {
       return new Promise((resolve, reject) => {
         const reader = new FileReader()

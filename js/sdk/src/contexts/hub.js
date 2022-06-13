@@ -111,6 +111,7 @@ const hubContextHelper = ({
   const { ids, provider, endpoints } = ninaClient
 
   const hubInitWithCredit = async (hubParams) => {
+    console.log('hubParams :>> ', hubParams);
     try {
       const program = await ninaClient.useProgram()
       const USDC_MINT = new anchor.web3.PublicKey(ids.mints.usdc)

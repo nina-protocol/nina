@@ -23,6 +23,8 @@ import NinaBox from './NinaBox'
 import HubImageDropzone from './HubImageDropzone'
 import Dots from './Dots'
 import BundlrModal from './BundlrModal'
+import axios from 'axios'
+
 
 const ColorModal = dynamic(() => import('./ColorModal'))
 
@@ -61,7 +63,10 @@ const HubCreate = ({ update, hubData }) => {
     bundlrPricePerMb,
     solPrice,
     getSolPrice,
+    ninaClient
   } = useContext(NinaContext)
+  const {endpoints} = ninaClient
+
   const [artwork, setArtwork] = useState()
   const [uploadSize, setUploadSize] = useState()
   const [hubPubkey, setHubPubkey] = useState(hubData?.id || undefined)
@@ -181,8 +186,10 @@ const HubCreate = ({ update, hubData }) => {
   }
 
   const validateHubHandle = async (handle) => {
-    const hubHandles = await Object.values(hubState).map(hub => hub.handle)
-    if (hubHandles.indexOf(handle) > -1) {
+    let path = endpoints.api + `/hubs/${handle}`
+    const response = await axios.get(path)
+    console.log('result :>> ', result);    
+    if (response.status === 200) {
       setFormValuesConfirmed(false)
       alert(`A hub with the handle ${handle} all ready exists, please choose a different handle.`)
       return false

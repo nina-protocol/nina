@@ -36,6 +36,7 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
 
   useEffect(() => {
     if (releasePubkey) {
+      console.log('releasePubkey :>> ', releasePubkey);
       getRelease(releasePubkey)
     }
   }, [releasePubkey])

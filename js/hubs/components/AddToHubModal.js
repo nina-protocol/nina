@@ -160,7 +160,7 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
                 )}
             </Button>
 
-            <HubPostCreate preloadedRelease={releasePubkey} selectedHubId={selectedHubId} setParentOpen={handleClose} userHasHubs={userHasHubs} />
+            <HubPostCreate userHubs={userHubs} preloadedRelease={releasePubkey} selectedHubId={selectedHubId} setParentOpen={handleClose} userHasHubs={userHasHubs} />
 
           </StyledPaper>
         </Fade>
