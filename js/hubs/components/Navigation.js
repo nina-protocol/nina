@@ -171,9 +171,6 @@ const Navigation = ({hubPubkey}) => {
             )}
           </LogoLinkWrapper>
         </Link>
-        <Link href='/'>
-          All Hubs
-        </Link>
         <Box className={ctaWrapper}>
           {!mobileView && canAddContent && getMenuButtons(hubData?.handle)}
           <WalletWrapper>

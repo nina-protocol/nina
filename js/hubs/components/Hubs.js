@@ -22,7 +22,7 @@ const Hubs = () => {
   return (
     <ScrollablePageWrapper>
       <HubsContainer overflowX="visible">
-        <Box sx={{ padding: { md: '40px 40px 140px 40px', xs: '30px 0px' } }}>
+        <Box sx={{ padding: { md: '40px 40px 140px 40px !important', xs: '30px 0px' } }}>
           {/* <Box sx={{ paddingLeft: { md: '30px', xs: '0' } }}>
             <Typography
               variant="body1"
@@ -52,7 +52,12 @@ const Hubs = () => {
             align="left"
             sx={{ padding: { md: '0 165px 140px', xs: '30px 0px' } }}
           >
-            <Link href="/upload">Sign up</Link> to get started or connect your wallet.  Learn more.
+            <Link
+              href="https://docs.google.com/forms/d/e/1FAIpQLScSdwCMqUz6VGqhkO6xdfUxu1pzdZEdsGoXL9TGDYIGa9t2ig/viewform"
+              target="_blank"
+              rel="noreferrer"
+              passHref
+            >Sign up</Link> to get started or connect your wallet.  Learn more.
           </BlueTypography>
         </Box>
 
@@ -68,13 +73,19 @@ const classes = {
 }
 
 const BlueTypography = styled(Typography)(({ theme }) => ({
-  '& a': { color: theme.palette.blue },
+  '& a': { 
+    color: theme.palette.blue,
+    textDecoration: 'none',
+  },
 }))
 
 const HubsContainer = styled('div')(({ theme }) => ({
   width: '1010px',
   margin: 'auto',
   overflowX: 'visible',
+  '& .MuiBox-root': {
+    paddingTop: '40px !important',
+  },
   [theme.breakpoints.down('md')]: {
     width: '80vw',
     marginBottom: '100px',
