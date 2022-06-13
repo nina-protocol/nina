@@ -42,7 +42,7 @@ const ReleaseCreateSchema = Yup.object().shape({
   resalePercentage: Yup.number().required('Resale Percent Amount is Required'),
 })
 
-const ReleaseCreateViaHub = ({ canAddContent }) => {
+const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const {
@@ -53,7 +53,6 @@ const ReleaseCreateViaHub = ({ canAddContent }) => {
   } = useContext(ReleaseContext)
   const { hubState } = useContext(HubContext)
   const router = useRouter()
-  const hubPubkey = router.query.hubPubkey
 
   const {
     bundlrUpload,
