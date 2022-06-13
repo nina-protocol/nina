@@ -29,10 +29,11 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
   const hubReleases = useMemo(
     () =>
       Object.values(hubContent)
-        .filter((c) => c.contentType === 'NinaReleaseV1' && c.visible)
+        .filter((c) => c.contentType === 'NinaReleaseV1' && c.visible && c.hub === hubPubkey)
         .sort((a, b) => b.datetime - a.datetime),
     [hubContent]
   )
+  console.log('hubReleases: ', hubReleases)
   const hubReleasesArchived = useMemo(
     () =>
       Object.values(hubContent).filter(
