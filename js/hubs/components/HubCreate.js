@@ -23,6 +23,7 @@ import NinaBox from './NinaBox'
 import HubImageDropzone from './HubImageDropzone'
 import Dots from './Dots'
 import BundlrModal from './BundlrModal'
+import Link from 'next/link'
 
 const ColorModal = dynamic(() => import('./ColorModal'))
 
@@ -61,6 +62,8 @@ const HubCreate = ({ update, hubData }) => {
     bundlrPricePerMb,
     solPrice,
     getSolPrice,
+    getNpcAmountHeld,
+    npcAmountHeld
   } = useContext(NinaContext)
   const [artwork, setArtwork] = useState()
   const [uploadSize, setUploadSize] = useState()
@@ -103,6 +106,10 @@ const HubCreate = ({ update, hubData }) => {
     getBundlrBalance()
     getSolPrice()
   }
+
+  useEffect(async () => {
+    getNpcAmountHeld()
+  }, [wallet?.connected])
 
   useEffect(() => {
     if (isPublishing) {
@@ -395,7 +402,60 @@ const HubCreate = ({ update, hubData }) => {
           Please connect your wallet to create a hub
         </ConnectMessage>
       )}
-      {wallet?.connected && (
+
+
+      {wallet?.connected && npcAmountHeld < 1 && (
+        <Box style={{display: 'flex'}}>
+          <NpcMessage>
+            <Typography variant="h3">
+              Currently, Nina Publishing Credits (NPCs) are required to access
+              the hub create.
+            </Typography>
+            <Typography variant="h3">
+              1 NPC allows the creation of 1 hub.
+            </Typography>
+            <Typography variant="h3">
+              If you don’t have a Solana wallet, please set one up at{' '}
+              <Link target="_blank" rel="noreferrer" href="https://phantom.app">
+                phantom.app
+              </Link>
+              .
+            </Typography>
+            <Typography variant="h3">
+              Please fill out{' '}
+              <a
+                target="_blank"
+                rel="noreferrer"
+                href="https://docs.google.com/forms/d/e/1FAIpQLScSdwCMqUz6VGqhkO6xdfUxu1pzdZEdsGoXL9TGDYIGa9t2ig/viewform"
+              >
+                this form
+              </a>{' '}
+              and we will notify you when your credits have been distributed.
+            </Typography>
+
+            <Typography variant="h3">
+              Check our{' '}           
+               <a
+                target="_blank"
+                rel="noreferrer"
+                href="https://nina-protocol.notion.site/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612"
+              >
+                faq
+              </a>{' '}or hit us at{' '}
+              <Link
+                target="_blank"
+                rel="noreferrer"
+                href="href=mailto:artists@ninaprotocol.com"
+              >
+                artists@ninaprotocol.com
+              </Link>{' '}
+              with any questions.
+            </Typography>
+          </NpcMessage>
+        </Box>
+      )}
+
+      {wallet?.connected && npcAmountHeld > 0 && (
         <NinaBox columns="500px" gridColumnGap="10px">
           <CreateFormWrapper>
             <HubCreateForm
@@ -556,5 +616,22 @@ const ColorWrapper = styled(Box)(({ theme }) => ({
   textAlign: 'left',
   padding: '5px 15px 15px',
 }))
+
+const NpcMessage = styled(Box)(({theme}) => ({
+  textAlign: 'left',
+  margin: 'auto',
+  width: '800px',
+  padding: '0 0 50px',
+  [theme.breakpoints.down('md')]: {
+    width: '80vw',
+  },
+  '& .MuiTypography-root': {
+    paddingBottom: '10px',
+  },
+  '& a': {
+    color: theme.palette.blue,
+  },
+}))
+
 
 export default HubCreate

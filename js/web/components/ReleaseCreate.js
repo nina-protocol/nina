@@ -371,7 +371,17 @@ const ReleaseCreate = () => {
             </Typography>
 
             <Typography variant="h3">
-              Check our <Link href="/faq">FAQ</Link> or hit us at{' '}
+              Check our {' '}
+              <a
+                target="_blank"
+                rel="noreferrer"
+                href="https://nina-protocol.notion.site/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612"
+              >
+                faq
+              </a>
+              {' '}
+               or hit us at
+              {' '}
               <Link
                 target="_blank"
                 rel="noreferrer"
