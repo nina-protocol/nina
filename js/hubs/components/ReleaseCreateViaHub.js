@@ -192,13 +192,13 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
       if (releaseCreated) {
         router.push(
           {
-            pathname: `/${hubPubkey}/releases/${releaseInfo.hubRelease.toBase58()}`,
+            pathname: `/${hubData.handle}/releases/${releaseInfo.hubRelease.toBase58()}`,
             query: {
               metadata: JSON.stringify(metadata),
               hub: JSON.stringify(hubData),
             },
           },
-          `/${hubPubkey}/releases/${releaseInfo.hubRelease.toBase58()}`
+          `/${hubData.handle}/releases/${releaseInfo.hubRelease.toBase58()}`
         )
       } else if (track && artwork) {
         let upload = uploadId
