@@ -124,10 +124,8 @@ const HubCreate = ({ update, hubData }) => {
     } else {
       if (artworkTx && !metadataTx) {
         setButtonText('Restart 2/3: Upload Metadata.')
-      } else if (artworkTx && !metadataTx) {
-        setButtonText('Restart 3/4: Upload Metadata.')
       } else if (artworkTx && metadataTx && !hubCreated) {
-        setButtonText('Restart 4/4: Finalize Hub')
+        setButtonText('Restart 3/3: Finalize Hub')
       } else if (mbs < uploadSize) {
         setButtonText(
           `Upload requires more storage than available in your bundlr account, please top up`
@@ -194,7 +192,6 @@ const HubCreate = ({ update, hubData }) => {
   }
 
   const handleSubmit = async () => {
-    console.log('HANDLE SUBMIT');
     try {
       if (update) {
         let upload = uploadId
@@ -231,6 +228,7 @@ const HubCreate = ({ update, hubData }) => {
         }
 
         if (!uploadHasItemForType(upload, UploadType.metadataJson)) {
+          setIsPublishing(true)
           enqueueSnackbar(
             'Uploading Hub Info to Arweave.  Please confirm in wallet.',
             {
@@ -272,6 +270,7 @@ const HubCreate = ({ update, hubData }) => {
           uploadHasItemForType(upload, UploadType.metadataJson) ||
           metadataResult
         ) {
+          setIsPublishing(true)
           enqueueSnackbar('Finalizing Hub.  Please confirm in wallet.', {
             variant: 'info',
           })
@@ -384,6 +383,7 @@ const HubCreate = ({ update, hubData }) => {
         }
       }
     } catch (error) {
+      setIsPublishing(false)
       console.warn(error)
     }
   }
