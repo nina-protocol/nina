@@ -33,7 +33,7 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
         .sort((a, b) => b.datetime - a.datetime),
     [hubContent]
   )
-  console.log('hubReleases: ', hubReleases)
+
   const hubReleasesArchived = useMemo(
     () =>
       Object.values(hubContent).filter(
