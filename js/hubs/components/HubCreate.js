@@ -49,7 +49,7 @@ const HubCreateSchema = Yup.object().shape({
 const HubCreate = ({ update, hubData }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const { hubInitWithCredit, hubState, hubUpdateConfig, getHubs } =
+  const { hubInitWithCredit, hubState, hubUpdateConfig, getHubs, validateHubHandle } =
     useContext(HubContext)
   const router = useRouter()
   const {
@@ -185,17 +185,17 @@ const HubCreate = ({ update, hubData }) => {
     setTextColor()
   }
 
-  const validateHubHandle = async (handle) => {
-    let path = endpoints.api + `/hubs/${handle}`
-    const response = await axios.get(path)
-    console.log('result :>> ', result);    
-    if (response.status === 200) {
-      setFormValuesConfirmed(false)
-      alert(`A hub with the handle ${handle} all ready exists, please choose a different handle.`)
-      return false
-    }
-    return true
-  }
+  // const validateHubHandle = async (handle) => {
+  //   let path = endpoints.api + `/hubs/${handle}`
+  //   const response = await axios.get(path)
+  //   console.log('result :>> ', result);    
+  //   if (response.status === 200) {
+  //     setFormValuesConfirmed(false)
+  //     alert(`A hub with the handle ${handle} all ready exists, please choose a different handle.`)
+  //     return false
+  //   }
+  //   return true
+  // }
 
   const handleSubmit = async () => {
     try {
@@ -342,6 +342,7 @@ const HubCreate = ({ update, hubData }) => {
                 externalUrl: `https://hubs.ninaprotocol.com/${formValues.hubForm.handle}`,
                 image: `https://arweave.net/${artworkResult}`,
               }
+              
               metadataResult = (
                 await bundlrUpload(
                   new Blob([JSON.stringify(metadataJson)], {
@@ -384,6 +385,8 @@ const HubCreate = ({ update, hubData }) => {
               }
             }
           }
+        } else {
+          setFormValuesConfirmed(false)
         }
       }
     } catch (error) {
