@@ -77,7 +77,7 @@ const useStyles = makeStyles(({ theme }) => ({
   },
   toolbar: {
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between !important',
     padding: '0px 15px',
   },
   ctaWrapper: {
@@ -148,7 +148,7 @@ const Navigation = ({hubPubkey}) => {
     return (
       <Toolbar
         className={toolbar}
-        style={{ backgroundColor: '#66000000 !important' }}
+        style={{ backgroundColor: '#66000000 !important', justifyContent: 'space-between' }}
       >
         {mobileView && canAddContent && displayMobile()}
 

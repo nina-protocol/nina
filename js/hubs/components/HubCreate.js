@@ -182,7 +182,6 @@ const HubCreate = ({ update, hubData }) => {
 
   const validateHubHandle = async (handle) => {
     const hubHandles = await Object.values(hubState).map(hub => hub.handle)
-    console.log('hubHandles :>> ', hubHandles);
     if (hubHandles.indexOf(handle) > -1) {
       setFormValuesConfirmed(false)
       alert(`A hub with the handle ${handle} all ready exists, please choose a different handle.`)
@@ -296,8 +295,6 @@ const HubCreate = ({ update, hubData }) => {
           }
         }
       } else {
-        // await validateHubHandle(formValues.hubForm.handle)
-        // console.log('hubHandleValid :>> ', hubHandleValid);
         if (artwork && await validateHubHandle(formValues.hubForm.handle)) {
           let upload = uploadId
           let artworkResult = artworkTx
