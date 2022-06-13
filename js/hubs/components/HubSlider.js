@@ -93,9 +93,8 @@ const HubSlider = (props) => {
                           width={100}
                           layout="responsive"
                           priority={true}
-                          loader={({ src }) => {
-                            return src;
-                          }}    
+                          unoptimized={true}
+                          loading="eager"
                         />
                       </a>
                     </Link>

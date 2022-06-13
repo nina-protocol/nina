@@ -160,9 +160,8 @@ const Navigation = ({hubPubkey}) => {
                 height="50"
                 width="50"
                 alt="hub logo"
-                loader={({ src }) => {
-                  return src;
-                }}
+                unoptimized={true}
+                loading="eager"
               />
             )}
             {hubPubkey ? (
