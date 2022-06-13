@@ -92,7 +92,7 @@ const Hubs = () => {
               align="left"
               sx={{ padding: { md: '0 165px 40px', xs: '30px 0px' } }}
             >
-              You don{`&apos;`}t have any NPCs to start a Hub.  Please{` `}<Link
+              You do not have any credits to create a Hub.  Please{` `}<Link
                 href="https://docs.google.com/forms/d/e/1FAIpQLScSdwCMqUz6VGqhkO6xdfUxu1pzdZEdsGoXL9TGDYIGa9t2ig/viewform"
                 target="_blank"
                 rel="noreferrer"
