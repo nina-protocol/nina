@@ -24,6 +24,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
 
   useEffect(() => {
     if (provider.wallet?.wallet && provider.wallet.publicKey) {
+      getNpcAmountHeld()
       if (releasePubkey) {
         createCollectionForSingleRelease(releasePubkey)
       } else {

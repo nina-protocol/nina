@@ -160,6 +160,8 @@ const Navigation = ({hubPubkey}) => {
                 height="50"
                 width="50"
                 alt="hub logo"
+                unoptimized={true}
+                loading="eager"
               />
             )}
             {hubPubkey ? (
@@ -170,9 +172,6 @@ const Navigation = ({hubPubkey}) => {
               <Typography variant="h4">NINA HUBS</Typography>
             )}
           </LogoLinkWrapper>
-        </Link>
-        <Link href='/'>
-          All Hubs
         </Link>
         <Box className={ctaWrapper}>
           {!mobileView && canAddContent && getMenuButtons(hubData?.handle)}

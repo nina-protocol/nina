@@ -25,6 +25,9 @@ build = "anchor run build-deps && anchor build"
 build-deps = "anchor run build-metaplex"
 build-metaplex = "cd ./deps/metaplex/metaplex-program-library/token-metadata/program && pwd && cargo build-bpf && cd ../../../"
 upgrade-devnet = "anchor run nina-upgrade-devnet && anchor run nina-upgrade-idl-devnet"
+nina-upgrade-mainnet = "anchor upgrade --program-id ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4 ./target/deploy/nina.so --provider.cluster https://nina.rpcpool.com/a4720dd909cb194f1d9ea07d50ee"
+nina-upgrade-idl-mainnet = "anchor idl upgrade --filepath ./target/idl/nina.json ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4 --provider.cluster https://nina.rpcpool.com/a4720dd909cb194f1d9ea07d50ee"
+upgrade-mainnet = "anchor run nina-upgrade-mainnet && anchor run nina-upgrade-idl-mainnet"
 
 [[test.genesis]]
 address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
