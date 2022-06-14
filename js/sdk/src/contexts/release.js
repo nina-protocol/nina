@@ -1291,7 +1291,7 @@ const releaseContextHelper = ({
         }
       }
       const filteredReleaseIds = new Set(releaseIds)
-      await fetchAndSaveReleasesToState([...filteredReleaseIds])
+      await fetchAndSaveReleasesToState(Array.from(filteredReleaseIds))
     } catch (error) {
       console.warn(error)
     }

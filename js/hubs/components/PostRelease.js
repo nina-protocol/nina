@@ -81,6 +81,8 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
               width="100"
               objectPosition={'right bottom'}
               alt={metadata.description || 'album art'}
+              unoptimized={true}
+              loading="eager"
             />
           </ImageContainer>
         )}
@@ -104,6 +106,8 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
                 height={100}
                 width={100}
                 alt={metadata.description || 'album art'}
+                unoptimized={true}
+                loading="eager"
               />
             </MobileImageWrapper>
             <CtaWrapper >
@@ -141,6 +145,7 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
           releasePubkey={releasePubkey}
           metadata={metadata}
           inPost={true}
+          hubPubkey={hubPubkey}
         />
       </Grid>
     </>

@@ -154,9 +154,8 @@ const RecentlyPurchased = (props) => {
                           width="400px"
                           height="400px"
                           priority={true}
-                          loader={({ src }) => {
-                            return src
-                          }}
+                          unoptimized={true}
+                          loading="eager"
                         />
                       </a>
                     </Link>
