@@ -29,6 +29,7 @@ const Hubs = () => {
       getHubsForUser(wallet.publicKey.toBase58())
     }
   }, [wallet.connected])
+  
   const userHubs = useMemo(() => {
     if (wallet.connected) {
       return filterHubsForUser(wallet.publicKey.toBase58())
@@ -86,12 +87,12 @@ const Hubs = () => {
         }
         {wallet.connected &&
           <>
-            {npcAmountHeld === 0 && userHubs?.length === 0 &&
+            {npcAmountHeld === 0 && userHubs && userHubs?.length === 0 &&
               <BlueTypography
-              variant="h1"
-              align="left"
-              sx={{ padding: { md: '0 165px 40px', xs: '30px 0px' } }}
-            >
+                variant="h1"
+                align="left"
+                sx={{ padding: { md: '0 165px 40px', xs: '30px 0px' } }}
+              >
               You do not have any credits to create a Hub.  Please{` `}<Link
                 href="https://docs.google.com/forms/d/e/1FAIpQLScSdwCMqUz6VGqhkO6xdfUxu1pzdZEdsGoXL9TGDYIGa9t2ig/viewform"
                 target="_blank"
