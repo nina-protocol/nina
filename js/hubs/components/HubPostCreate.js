@@ -264,7 +264,9 @@ const HubPostCreate = ({
         style={{marginTop: '15px'}}
 
       >
-        Create an editorial post about this release
+        <Typography>
+          {preloadedRelease ? 'Create Text Post' : 'Publish a new post'}
+        </Typography>
       </CreateCtaButton>
       <StyledModal
         aria-labelledby="transition-modal-title"
