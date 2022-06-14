@@ -1,45 +1,42 @@
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable @next/next/no-sync-scripts */
+
 import React from 'react'
 import Document, { Html, Head, Main, NextScript } from 'next/document'
-import createEmotionServer from '@emotion/server/create-instance'
-import createEmotionCache from '../createEmotionCache'
+import { ServerStyleSheet } from 'styled-components'
+import ServerStyleSheets from '@mui/styles/ServerStyleSheets'
+// import createEmotionServer from '@emotion/server/create-instance';
+// import createEmotionCache from '../src/createEmotionCache';
 // import {styled} from '@mui/material/styles'
 
 // const sheets = new ServerStyleSheets();
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
+    const styledComponentsSheet = new ServerStyleSheet()
+    const materialSheets = new ServerStyleSheets()
     const originalRenderPage = ctx.renderPage
 
-    // You can consider sharing the same emotion cache between all the SSR requests to speed up performance.
-    // However, be aware that it can have global side effects.
-    const cache = createEmotionCache()
-    const { extractCriticalToChunks } = createEmotionServer(cache)
-
-    ctx.renderPage = () =>
-      originalRenderPage({
-        enhanceApp: (App) =>
-          function EnhanceApp(props) {
-            return <App emotionCache={cache} {...props} />
-          },
-      })
-
-    const initialProps = await Document.getInitialProps(ctx)
-    // This is important. It prevents emotion to render invalid HTML.
-    // See https://github.com/mui/material-ui/issues/26561#issuecomment-855286153
-    const emotionStyles = extractCriticalToChunks(initialProps.html)
-    const emotionStyleTags = emotionStyles.styles.map((style) => (
-      <style
-        data-emotion={`${style.key} ${style.ids.join(' ')}`}
-        key={style.key}
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: style.css }}
-      />
-    ))
-
-    return {
-      ...initialProps,
-      emotionStyleTags,
+    try {
+      ctx.renderPage = () =>
+        originalRenderPage({
+          enhanceApp: (App) => (props) =>
+            styledComponentsSheet.collectStyles(
+              materialSheets.collect(<App {...props} />)
+            ),
+        })
+      const initialProps = await Document.getInitialProps(ctx)
+      return {
+        ...initialProps,
+        styles: (
+          <React.Fragment>
+            {initialProps.styles}
+            {materialSheets.getStyleElement()}
+            {styledComponentsSheet.getStyleElement()}
+          </React.Fragment>
+        ),
+      }
+    } finally {
+      styledComponentsSheet.seal()
     }
   }
 
@@ -51,7 +48,7 @@ class MyDocument extends Document {
           <meta name="theme-color" content="#000000" />
           <link rel="icon" href="/images/favicon.ico" />
           <link rel="apple-touch-icon" href="/images/logo192.png" />
-          <link rel="manifest" href="/manifest.json" />
+          <link rel="manifest" href="/misc/manifest.json" />
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
@@ -60,7 +57,11 @@ class MyDocument extends Document {
             rel="stylesheet"
             href="https://fonts.googleapis.com/icon?family=Material+Icons"
           />
-
+          <link
+            rel="stylesheet"
+            type="text/css"
+            href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
+          />
           <link
             rel="apple-touch-icon"
             sizes="180x180"
@@ -80,16 +81,6 @@ class MyDocument extends Document {
           />
           <link rel="manifest" href="/site.webmanifest" />
 
-          <link
-            rel="stylesheet"
-            type="text/css"
-            href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
-          />
-          <link
-            rel="stylesheet"
-            type="text/css"
-            href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
-          />
           <script src="https://cdn.dashjs.org/v3.2.1/dash.all.min.js" />
           <script
             async
@@ -105,7 +96,6 @@ class MyDocument extends Document {
               `,
             }}
           />
-          {this.props.emotionStyleTags}
         </Head>
         <body style={{ margin: '0px', position: 'relative' }}>
           <Main />

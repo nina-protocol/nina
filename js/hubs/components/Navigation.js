@@ -77,7 +77,7 @@ const useStyles = makeStyles(({ theme }) => ({
   },
   toolbar: {
     display: 'flex',
-    justifyContent: 'space-between !important',
+    justifyContent: 'space-between',
     padding: '0px 15px',
   },
   ctaWrapper: {
@@ -160,9 +160,6 @@ const Navigation = ({hubPubkey}) => {
                 height="50"
                 width="50"
                 alt="hub logo"
-                loader={({ src }) => {
-                  return src;
-                }}
               />
             )}
             {hubPubkey ? (

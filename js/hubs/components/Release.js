@@ -36,7 +36,6 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
 
   useEffect(() => {
     if (releasePubkey) {
-      console.log('releasePubkey :>> ', releasePubkey);
       getRelease(releasePubkey)
     }
   }, [releasePubkey])
@@ -83,9 +82,6 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                 height={100}
                 width={100}
                 alt={metadata.description || 'album art'}
-                loader={({ src }) => {
-                  return src;
-                }}
               />
             </MobileImageWrapper>
 
@@ -139,9 +135,6 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
               width="100"
               objectPosition={'right bottom'}
               alt={metadata.description || 'album art'}
-              loader={({ src }) => {
-                return src;
-              }}
             />
           </ImageContainer>
         )}

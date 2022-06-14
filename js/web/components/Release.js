@@ -12,7 +12,7 @@ import Exchange from './Exchange'
 
 const { ExchangeContext, ReleaseContext, HubContext } = nina.contexts
 
-const Release = ({ metadataSsr, hubPubkey }) => {
+const Release = ({ metadataSsr }) => {
   const router = useRouter()
   const releasePubkey = router.query.releasePubkey
 
@@ -102,7 +102,6 @@ const Release = ({ metadataSsr, hubPubkey }) => {
                 metadata={metadata}
                 router={router}
                 relatedReleases={relatedReleases}
-                hubPubkey={hubPubkey}
               />
             </ReleaseCtaWrapper>
           </NinaBox>

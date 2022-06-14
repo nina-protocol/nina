@@ -47,17 +47,25 @@ const HubPostCreate = ({
   preloadedRelease = undefined,
   setParentOpen,
   selectedHubId,
+<<<<<<< HEAD
   userHasHubs,
   userHubs
+=======
+  userHasHubs
+>>>>>>> cc7f2ad86925cb83fe83ad0dfd89d8778c5550ec
 }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const { postInitViaHub, hubState } = useContext(HubContext)
+<<<<<<< HEAD
   const hubData = useMemo(
     () => hubState[ selectedHubId || hubPubkey],
     [hubState, hubPubkey, selectedHubId]
   )
 
+=======
+  const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
+>>>>>>> cc7f2ad86925cb83fe83ad0dfd89d8778c5550ec
   const {
     bundlrUpload,
     bundlrBalance,
@@ -105,7 +113,10 @@ const HubPostCreate = ({
     getSolPrice()
   }
 
+<<<<<<< HEAD
   
+=======
+>>>>>>> cc7f2ad86925cb83fe83ad0dfd89d8778c5550ec
   useEffect(() => {
     if (canAddContent) {
       if (!update) {
@@ -132,9 +143,15 @@ const HubPostCreate = ({
         }
       }
     } else {
+<<<<<<< HEAD
       // setButtonText(`You do not have permission to create posts`)
     }
   }, [metadataTx, canAddContent])
+=======
+      setButtonText(`You do not have permission to create posts`)
+    }
+  }, [metadataTx, isPublishing, postCreated, bundlrBalance, canAddContent])
+>>>>>>> cc7f2ad86925cb83fe83ad0dfd89d8778c5550ec
 
   const handleFormChange = useCallback(
     async (values) => {
@@ -186,11 +203,14 @@ const HubPostCreate = ({
             metadataJson.reference = formValues.postForm.reference
           }
 
+<<<<<<< HEAD
           if (preloadedRelease) {
             metadataJson.reference = preloadedRelease
             formValues.postForm.reference = preloadedRelease
           }
           console.log('formValues :>> ', formValues);     
+=======
+>>>>>>> cc7f2ad86925cb83fe83ad0dfd89d8778c5550ec
           metadataResult = (
             await bundlrUpload(
               new Blob([JSON.stringify(metadataJson)], {
@@ -217,7 +237,11 @@ const HubPostCreate = ({
 
           if (metadataJson.reference) {
             result = await postInitViaHub(
+<<<<<<< HEAD
               hubPubkey || selectedHubId,
+=======
+              hubPubkey,
+>>>>>>> cc7f2ad86925cb83fe83ad0dfd89d8778c5550ec
               slug,
               uri,
               metadataJson.reference
@@ -288,7 +312,10 @@ const HubPostCreate = ({
                       hubData={hubData}
                       postCreated={postCreated}
                       hubReleasesToReference={hubReleasesToReference}
+<<<<<<< HEAD
                       preloadedRelease={preloadedRelease}
+=======
+>>>>>>> cc7f2ad86925cb83fe83ad0dfd89d8778c5550ec
                     />
                   </PostFormWrapper>
 
@@ -302,7 +329,11 @@ const HubPostCreate = ({
                         onClick={handleSubmit}
                         disabled={
                           isPublishing ||
+<<<<<<< HEAD
                           // !formIsValid ||
+=======
+                          !formIsValid ||
+>>>>>>> cc7f2ad86925cb83fe83ad0dfd89d8778c5550ec
                           !canAddContent ||
                           bundlrBalance === 0 ||
                           mbs < uploadSize

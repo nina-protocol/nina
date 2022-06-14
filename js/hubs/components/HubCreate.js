@@ -102,7 +102,6 @@ const HubCreate = ({ update, hubData }) => {
 
   useEffect(() => {
     refreshBundlr()
-    getHubs()
   }, [])
 
   const refreshBundlr = () => {
@@ -184,18 +183,6 @@ const HubCreate = ({ update, hubData }) => {
     setBackgroundColor()
     setTextColor()
   }
-
-  // const validateHubHandle = async (handle) => {
-  //   let path = endpoints.api + `/hubs/${handle}`
-  //   const response = await axios.get(path)
-  //   console.log('result :>> ', result);    
-  //   if (response.status === 200) {
-  //     setFormValuesConfirmed(false)
-  //     alert(`A hub with the handle ${handle} all ready exists, please choose a different handle.`)
-  //     return false
-  //   }
-  //   return true
-  // }
 
   const handleSubmit = async () => {
     try {
