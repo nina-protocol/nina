@@ -104,21 +104,21 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
             }}
           >
             <CtaButton
-              link={`/${hubPubkey}/dashboard?action=publishRelease`}
+              link={`/${hubData.handle}/dashboard?action=publishRelease`}
               action="Publish a Release"
               title="Releases Published"
               count={releases.length}
             />
             <Divider orientation="vertical" flexItem />
             <CtaButton
-              link={`/${hubPubkey}/dashboard?action=releases`}
+              link={`/${hubData.handle}/dashboard?action=releases`}
               action="Manage"
               title="Reposted Releases"
               count={hubReleases?.length - releases.length}
             />
             <Divider orientation="vertical" flexItem />
             <CtaButton
-              link={`/${hubPubkey}/dashboard?action=collaborators`}
+              link={`/${hubData.handle}/dashboard?action=collaborators`}
               action="Manage"
               title="Collaborators"
               count={Object.keys(hubCollaborators || []).length}

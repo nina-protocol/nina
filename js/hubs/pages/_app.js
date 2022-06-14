@@ -55,15 +55,18 @@ const App = ({ Component, pageProps }) => {
   //   };
   // }, []);
   // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
-  const network = WalletAdapterNetwork.MainnetBeta
-  // You can also provide a custom RPC endpoint
-  const endpoint = useMemo(
-    () =>
-      network === 'devnet'
-        ? 'https://nina.devnet.rpcpool.com'
-        : 'https://nina.rpcpool.com',
-    [network]
-  )
+  const network = process.env.REACT_APP_CLUSTER === 'devnet' ? 
+  WalletAdapterNetwork.Devnet : 
+  WalletAdapterNetwork.MainnetBeta
+
+  const endpoint = useMemo(() => {
+    if (network === WalletAdapterNetwork.MainnetBeta) {
+      return 'https://nina.rpcpool.com'
+    } else if (network === WalletAdapterNetwork.Devnet) {
+      return 'https://nina.devnet.rpcpool.com'
+    }
+    return clusterApiUrl(network)
+  }, [network]);
 
   // @solana/wallet-adapter-wallets includes all the adapters but supports tree shaking and lazy loading --
   // Only the wallets you configure here will be compiled into your application, and only the dependencies

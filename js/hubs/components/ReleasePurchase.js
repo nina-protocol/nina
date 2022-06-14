@@ -13,11 +13,10 @@ import ReleaseSettings from './ReleaseSettings'
 const { ReleaseContext, NinaContext, HubContext } = nina.contexts
 
 const ReleasePurchase = (props) => {
-  const { releasePubkey, metadata, inPost } = props
+  const { releasePubkey, metadata, inPost, hubPubkey } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const router = useRouter()
-  const hubPubkey = router.query.hubPubkey
   const {
     releasePurchaseViaHub,
     releasePurchasePending,

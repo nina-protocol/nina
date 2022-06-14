@@ -168,7 +168,7 @@ const Dashboard = ({hubPubkey}) => {
           <HubCreate update={true} hubPubkey={hubPubkey} hubData={hubData} />
         )
       case '5':
-        return <ReleaseCreateViaHub canAddContent={canAddContent} />
+        return <ReleaseCreateViaHub canAddContent={canAddContent} hubPubkey={hubPubkey} />
       default:
         break
     }

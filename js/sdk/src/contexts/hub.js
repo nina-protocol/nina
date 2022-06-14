@@ -287,7 +287,7 @@ const hubContextHelper = ({
       )
 
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
-
+      await indexerHasRecord(hubCollaborator.toBase58(), 'hubCollaborator')
       await getHub(hubPubkey)
 
       return {
@@ -408,7 +408,7 @@ const hubContextHelper = ({
         },
       })
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
-
+      await indexerHasRecord(hubRelease.toBase58(), 'hubRelease')
       await getHub(hubPubkey)
 
       return {
@@ -1034,7 +1034,6 @@ const hubContextHelper = ({
 
   const filterHubsForUser = (publicKey) => {
     const hubs = []
-
     Object.values(hubCollaboratorsState).forEach((hubCollaborator) => {
       if (hubCollaborator.collaborator === publicKey) {
         hubs.push({

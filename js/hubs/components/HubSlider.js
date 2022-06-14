@@ -6,7 +6,6 @@ import 'react-multi-carousel/lib/styles.css'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
 import Image from "next/image";
-// import Image from './Image'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 import Dots from './Dots'
@@ -94,7 +93,7 @@ const HubSlider = (props) => {
                           width={100}
                           layout="responsive"
                           priority={true}
-                          unoptimize={true}
+                          unoptimized={true}
                           loading="eager"
                         />
                       </a>

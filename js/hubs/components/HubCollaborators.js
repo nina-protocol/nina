@@ -29,7 +29,10 @@ const HubCollaborators = ({
     useContext(HubContext)
   const [activeSelection, setActiveSelection] = useState(undefined)
   const hubCollaborators = useMemo(
-    () => hubCollaboratorsState,
+    () => 
+      Object.values(hubCollaboratorsState)
+        .filter(c => c.hub === hubPubkey)
+        .sort((a, b) => b.datetime - a.datetime),
     [hubCollaboratorsState]
   )
 
@@ -96,20 +99,19 @@ const HubCollaborators = ({
         </Wrapper>
       </Grid>
       <DashboardContent item md={6}>
-        {hubCollaborators && Object.keys(hubCollaborators).length > 0 && (
+        {hubCollaborators && hubCollaborators.length > 0 && (
           <>
             {!activeSelection && (
               <>
                 <DashboardHeader fontWeight={600}>
-                  There are {Object.keys(hubCollaborators).length} Collaborators
+                  There are {hubCollaborators.length} Collaborators
                   associated with this hub:
                 </DashboardHeader>
                 <ul>
                   <DashboardEntry>
                     {authority} is this hub&#39;s authority
                   </DashboardEntry>
-                  {Object.keys(hubCollaborators).map((collaboratorPubkey) => {
-                    const hubCollaborator = hubCollaborators[collaboratorPubkey]
+                  {hubCollaborators.map((hubCollaborator) => {
                     if (hubCollaborator.collaborator !== authority) {
                       return (
                         <DashboardEntry
