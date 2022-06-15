@@ -110,14 +110,9 @@ const HubCreate = ({ update, hubData }) => {
     getSolPrice()
   }
 
-  console.log('npcAmountHeld !! :>> ', npcAmountHeld);
-
-
   useEffect(() => {
     getNpcAmountHeld()
-    console.log('npcAmountHeld :>> ', npcAmountHeld);
   }, [wallet?.connected])
-
 
   useEffect(() => {
     if (isPublishing) {
@@ -549,7 +544,7 @@ const HubCreate = ({ update, hubData }) => {
               )}
               {bundlrBalance === 0 && (
                 <BundlrBalanceInfo variant="subtitle1" align="left">
-                  Please fund your Bundlr Account to enable publishing
+                  Please fund your Upload Account to enable publishing
                 </BundlrBalanceInfo>
               )}
               {uploadSize > 0 && (
