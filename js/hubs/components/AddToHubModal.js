@@ -53,7 +53,7 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
       variant: 'info',
     })
     const result = await hubAddRelease(selectedHubId, releasePubkey)
-    if (result.success) {
+    if (result?.success) {
       enqueueSnackbar(result.msg, {
         variant: 'info',
       })
@@ -68,8 +68,10 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
 
   const handleClose = () => {
     setOpen(false)
-    setSelectedHubId()
+    setSelectedHubId(null)
   }
+
+  console.log('selectedHubId :>> ', selectedHubId);
 
   return (
     <Root>
