@@ -24,7 +24,7 @@ import HubImageDropzone from './HubImageDropzone'
 import Dots from './Dots'
 import BundlrModal from './BundlrModal'
 import axios from 'axios'
-
+import Link from 'next/link'
 
 const ColorModal = dynamic(() => import('./ColorModal'))
 
@@ -113,7 +113,7 @@ const HubCreate = ({ update, hubData }) => {
   console.log('npcAmountHeld !! :>> ', npcAmountHeld);
 
 
-  useEffect(async () => {
+  useEffect(() => {
     getNpcAmountHeld()
     console.log('npcAmountHeld :>> ', npcAmountHeld);
   }, [wallet?.connected])
@@ -408,7 +408,7 @@ const HubCreate = ({ update, hubData }) => {
   }
 
   return (
-    <Grid item md={12}>
+    <Grid item md={12} justifyContent="center" alignItems={'center'}>
       {!wallet.connected && (
         <ConnectMessage variant="body" gutterBottom>
           Please connect your wallet to create a hub
@@ -416,18 +416,20 @@ const HubCreate = ({ update, hubData }) => {
       )}
 
       {wallet?.connected && npcAmountHeld === 0 &&
-        <BlueTypography
-          variant="h1"
-          align="left"
-          sx={{padding: {md: '0 165px 40px', xs: '30px 0px'}}}
-        >
-          You do not have any credits to create a Hub.  Please{` `}<Link
-            href="https://docs.google.com/forms/d/e/1FAIpQLScSdwCMqUz6VGqhkO6xdfUxu1pzdZEdsGoXL9TGDYIGa9t2ig/viewform"
-            target="_blank"
-            rel="noreferrer"
-            passHref
-          >apply</Link> here to get started.
-        </BlueTypography>
+        <Box width="50%" margin="24vh auto">
+          <BlueTypography
+            variant="h1"
+            align="left"
+            sx={{padding: {md: '0 100px 40px', xs: '30px 0px'}}}
+          >
+            You do not have any credits to create a Hub.  Please{` `}<Link
+              href="https://docs.google.com/forms/d/e/1FAIpQLScSdwCMqUz6VGqhkO6xdfUxu1pzdZEdsGoXL9TGDYIGa9t2ig/viewform"
+              target="_blank"
+              rel="noreferrer"
+              passHref
+            >apply</Link> here to get started.
+          </BlueTypography>
+        </Box>
       }
       {wallet?.connected && npcAmountHeld > 0 && (
         <NinaBox columns="500px" gridColumnGap="10px">
@@ -602,11 +604,18 @@ const ColorWrapper = styled(Box)(({ theme }) => ({
   padding: '5px 15px 15px',
 }))
 
-
 const Warning = styled(Typography)(({theme}) => ({
   textTransform: 'none !important',
   color: theme.palette.red,
   opacity: '85%',
 }))
+
+const BlueTypography = styled(Typography)(({theme}) => ({
+  '& a': {
+    color: theme.palette.blue,
+    textDecoration: 'none',
+  },
+}))
+
 
 export default HubCreate
