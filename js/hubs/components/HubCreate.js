@@ -63,9 +63,9 @@ const HubCreate = ({ update, hubData }) => {
     bundlrPricePerMb,
     solPrice,
     getSolPrice,
-    ninaClient
+    getNpcAmountHeld,
+    npcAmountHeld,
   } = useContext(NinaContext)
-  const {endpoints} = ninaClient
 
   const [artwork, setArtwork] = useState()
   const [uploadSize, setUploadSize] = useState()
@@ -109,6 +109,15 @@ const HubCreate = ({ update, hubData }) => {
     getBundlrBalance()
     getSolPrice()
   }
+
+  console.log('npcAmountHeld !! :>> ', npcAmountHeld);
+
+
+  useEffect(async () => {
+    getNpcAmountHeld()
+    console.log('npcAmountHeld :>> ', npcAmountHeld);
+  }, [wallet?.connected])
+
 
   useEffect(() => {
     if (isPublishing) {
@@ -405,7 +414,22 @@ const HubCreate = ({ update, hubData }) => {
           Please connect your wallet to create a hub
         </ConnectMessage>
       )}
-      {wallet?.connected && (
+
+      {wallet?.connected && npcAmountHeld === 0 &&
+        <BlueTypography
+          variant="h1"
+          align="left"
+          sx={{padding: {md: '0 165px 40px', xs: '30px 0px'}}}
+        >
+          You do not have any credits to create a Hub.  Please{` `}<Link
+            href="https://docs.google.com/forms/d/e/1FAIpQLScSdwCMqUz6VGqhkO6xdfUxu1pzdZEdsGoXL9TGDYIGa9t2ig/viewform"
+            target="_blank"
+            rel="noreferrer"
+            passHref
+          >apply</Link> here to get started.
+        </BlueTypography>
+      }
+      {wallet?.connected && npcAmountHeld > 0 && (
         <NinaBox columns="500px" gridColumnGap="10px">
           <CreateFormWrapper>
             <HubCreateForm
