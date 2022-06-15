@@ -216,20 +216,20 @@ const AudioPlayer = ({hubPubkey}) => {
               </div>
             )}
           </Controls>
-          <Typography>
-            <a
-              href={`https://ninaprotocol.com/hubs/${hubPubkey || ''}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Powered by Nina.
-            </a>
-          </Typography>
         </>
       )}
       <audio id="audio" style={{ width: '100%' }}>
         <source src={track?.txid} type="audio/mp3" />
       </audio>
+      <Typography>
+        <a
+          href={`https://ninaprotocol.com/`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Powered by Nina.
+        </a>
+      </Typography>
     </Player>
   )
 }
