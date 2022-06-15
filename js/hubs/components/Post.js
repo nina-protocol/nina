@@ -104,6 +104,7 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
   const formattedDate = (date) => {
     return new Date(typeof date === 'number' ? date * 1000 : date).toLocaleDateString()
   }
+  console.log("postData ::> ", postData)
   return (
     <>
       <Grid
@@ -150,7 +151,7 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
               </a>{' '}
               at{' '}
               <a
-                href={`https://explorer.solana.com/account/${postData.postId}`}
+                href={`https://explorer.solana.com/account/${postData.id}`}
                 target="_blank"
                 rel="noreferrer"
               >
