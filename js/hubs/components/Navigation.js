@@ -236,12 +236,9 @@ const Navigation = ({hubPubkey}) => {
   }
 
   return (
-    <AppBar
-      sx={{ backgroundColor: '#66000000 !important', boxShadow: 'none', width: '100% !important' }}
-      className={header}
-    >
+    <StyledAppBar>
       {displayDesktop()}
-    </AppBar>
+    </StyledAppBar>
   )
 }
 
@@ -370,22 +367,26 @@ const CtaWrapper = styled(Box)(({theme}) => ({
   display: 'flex',
 }))
 
-const useStyles = makeStyles(({theme}) => ({
-  header: {
-    backgroundColor: `none !important`,
-    color: 'black',
-    paddingRight: '0px',
-    paddingLeft: '0px',
-    height: '64px',
-    boxShadow: 'none',
-    position: 'absolute',
-    '& p': {
-      cursor: 'pointer',
-    },
-    '@media (max-width: 900px)': {
-      paddingLeft: 0,
-    },
+const StyledAppBar = styled(AppBar)(({theme}) => ({
+  backgroundColor: `none !important`,
+  color: 'black',
+  paddingRight: '0px',
+  paddingLeft: '0px',
+  height: '64px',
+  boxShadow: 'none',
+  position: 'absolute',
+  backgroundColor: '#66000000 !important', 
+  boxShadow: 'none',
+  width: '100% !important',
+  '& p': {
+    cursor: 'pointer',
   },
+  '@media (max-width: 900px)': {
+    paddingLeft: 0,
+  },
+}))
+
+const useStyles = makeStyles(({theme}) => ({
   menuButton: {
     fontFamily: 'Helvetica, sans-serif',
     size: '14px',
