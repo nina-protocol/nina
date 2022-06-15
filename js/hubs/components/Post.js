@@ -20,7 +20,6 @@ import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 
 import Typography from '@mui/material/Typography'
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 const PostRelease = dynamic(() => import('./PostRelease'))
 const { HubContext, NinaContext, ReleaseContext, AudioPlayerContext } =
   nina.contexts
@@ -107,7 +106,6 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
   }
   return (
     <>
-      <BackButton onClick={() => router.back()} />
       <Grid
         item
         md={6}
@@ -175,16 +173,5 @@ const PostWrapper = styled(Box)(({ theme }) => ({
   },
 }))
 
-const BackButton = styled(ArrowBackIosIcon)(({ theme }) => ({
-  width: '30px',
-  height: '30px',
-  position: 'absolute',
-  zIndex: '1000000',
-  top: '15px',
-  left: '15px',
-  [theme.breakpoints.up('md')]: {
-    display: 'none',
-  },
-}))
 
 export default Post

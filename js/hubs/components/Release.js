@@ -8,7 +8,6 @@ import { styled } from '@mui/material/styles'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import Typography from '@mui/material/Typography'
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
 import {useWallet} from '@solana/wallet-adapter-react'
@@ -61,7 +60,6 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
 
   return (
     <>
-      <BackButton onClick={() => router.back()} />
       <Grid
         item
         md={6}
@@ -188,18 +186,6 @@ const ImageContainer = styled(Box)(() => ({
 
 const CtaWrapper = styled(Box)(() => ({
   display: 'flex'
-}))
-
-const BackButton = styled(ArrowBackIosIcon)(({ theme }) => ({
-  width: '30px',
-  height: '30px',
-  position: 'absolute',
-  zIndex: '1000000',
-  top: '15px',
-  left: '15px',
-  [theme.breakpoints.up('md')]: {
-    display: 'none',
-  },
 }))
 
 export default Release
