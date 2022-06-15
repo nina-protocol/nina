@@ -113,7 +113,7 @@ const Navigation = ({hubPubkey}) => {
     return (
       <Toolbar
         className={toolbar}
-        style={{ backgroundColor: '#66000000 !important', justifyContent: 'space-between' }}
+        style={{ backgroundColor: '#66000000 !important', justifyContent: 'space-between', flexDirection: 'row' }}
       >
         {mobileView && canAddContent && displayMobile()}
 
