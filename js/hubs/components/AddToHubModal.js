@@ -27,13 +27,25 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
   const {hubAddRelease} = useContext(HubContext)
   const [selectedHubId, setSelectedHubId] = useState()
   const [inProgress, setInProgress] = useState(false)
+  const [canAddContent, setCanAddContent] = useState(false)
   const userHasHubs = useMemo(() => userHubs && userHubs.length > 0, [userHubs])
+
 
   useEffect(() => {
     if (userHubs?.length === 1) {
       setSelectedHubId(userHubs[0]?.id)
     }
   }, [userHubs])
+
+  useEffect(() => {
+    if (selectedHubId && userHubs) {
+      const selectedHub = userHubs.find(hub => hub.id === selectedHubId)
+      if (selectedHub.userCanAddContent) {
+        setCanAddContent(true)
+      }
+    }
+    
+  }, [selectedHubId, userHubs])
 
   const handleRepost = async (e) => {
     setInProgress(true)
@@ -151,7 +163,7 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
             <Button
               style={{marginTop: '15px', textTransform: 'uppercase'}}
               variant="outlined"
-              disabled={inProgress || !selectedHubId || !userHasHubs}
+              disabled={inProgress || !selectedHubId || !userHasHubs || !canAddContent}
               onClick={handleRepost}
             >
                 {!inProgress && ('Repost release to your hub')}
@@ -160,7 +172,15 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
                 )}
             </Button>
 
-            <HubPostCreate preloadedRelease={releasePubkey} selectedHubId={selectedHubId} setParentOpen={handleClose} userHasHubs={userHasHubs} />
+            <HubPostCreate 
+             userHubs={userHubs} 
+             preloadedRelease={releasePubkey} 
+             selectedHubId={selectedHubId} 
+             setParentOpen={handleClose} 
+             userHasHubs={userHasHubs}
+             canAddContent={canAddContent}
+             update={false}
+             />
 
           </StyledPaper>
         </Fade>

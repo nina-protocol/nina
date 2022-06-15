@@ -92,8 +92,6 @@ const App = ({ Component, pageProps }) => {
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
             <NinaWrapper network={process.env.REACT_APP_CLUSTER}>
-              <CacheProvider value={clientSideEmotionCache}>
-                {/* <ThemeProvider theme={lightTheme}> */}
                 <Layout>
                   {loading ? (
                     <Box width="100%" margin="auto">
@@ -105,8 +103,6 @@ const App = ({ Component, pageProps }) => {
                     />
                   )}
                 </Layout>
-                {/* </ThemeProvider> */}
-              </CacheProvider>
             </NinaWrapper>
           </WalletModalProvider>
         </WalletProvider>

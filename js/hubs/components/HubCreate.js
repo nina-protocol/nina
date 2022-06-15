@@ -23,6 +23,8 @@ import NinaBox from './NinaBox'
 import HubImageDropzone from './HubImageDropzone'
 import Dots from './Dots'
 import BundlrModal from './BundlrModal'
+import axios from 'axios'
+
 
 const ColorModal = dynamic(() => import('./ColorModal'))
 
@@ -40,14 +42,14 @@ const HubCreateSchema = Yup.object().shape({
   handle: Yup.string().required('Hub Handle is Required'),
   displayName: Yup.string().required('Display Name is Required'),
   publishFee: Yup.number().required('Publish Fee is Required'),
-  referralFee: Yup.number().required('Referall Fee is Required'),
-  description: Yup.string().required('Description is Required'),
+  referralFee: Yup.number().required('Referral Fee is Required'),
+  description: Yup.string()
 })
 
 const HubCreate = ({ update, hubData }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const { hubInitWithCredit, hubState, hubUpdateConfig } =
+  const { hubInitWithCredit, hubState, hubUpdateConfig, getHubs, validateHubHandle } =
     useContext(HubContext)
   const router = useRouter()
   const {
@@ -61,7 +63,10 @@ const HubCreate = ({ update, hubData }) => {
     bundlrPricePerMb,
     solPrice,
     getSolPrice,
+    ninaClient
   } = useContext(NinaContext)
+  const {endpoints} = ninaClient
+
   const [artwork, setArtwork] = useState()
   const [uploadSize, setUploadSize] = useState()
   const [hubPubkey, setHubPubkey] = useState(hubData?.id || undefined)
@@ -83,6 +88,7 @@ const HubCreate = ({ update, hubData }) => {
   const [hubCreated, setHubCreated] = useState(false)
   const [hubUpdated, setHubUpdated] = useState(false)
   const [uploadId, setUploadId] = useState()
+  const [hubHandleValid, setHubHandleValid] = useState(false)
   const [publishingStepText, setPublishingStepText] = useState()
 
   const mbs = useMemo(
@@ -116,16 +122,14 @@ const HubCreate = ({ update, hubData }) => {
         )
       } else {
         setPublishingStepText(
-          '3/3 Finalizing Release.  Please confirm in wallet and do not close this window.'
+          '3/3 Finalizing Hub.  Please confirm in wallet and do not close this window.'
         )
       }
     } else {
       if (artworkTx && !metadataTx) {
         setButtonText('Restart 2/3: Upload Metadata.')
-      } else if (artworkTx && !metadataTx) {
-        setButtonText('Restart 3/4: Upload Metadata.')
       } else if (artworkTx && metadataTx && !hubCreated) {
-        setButtonText('Restart 4/4: Finalize Hub')
+        setButtonText('Restart 3/3: Finalize Hub')
       } else if (mbs < uploadSize) {
         setButtonText(
           `Upload requires more storage than available in your bundlr account, please top up`
@@ -217,6 +221,7 @@ const HubCreate = ({ update, hubData }) => {
         }
 
         if (!uploadHasItemForType(upload, UploadType.metadataJson)) {
+          setIsPublishing(true)
           enqueueSnackbar(
             'Uploading Hub Info to Arweave.  Please confirm in wallet.',
             {
@@ -258,6 +263,7 @@ const HubCreate = ({ update, hubData }) => {
           uploadHasItemForType(upload, UploadType.metadataJson) ||
           metadataResult
         ) {
+          setIsPublishing(true)
           enqueueSnackbar('Finalizing Hub.  Please confirm in wallet.', {
             variant: 'info',
           })
@@ -283,7 +289,7 @@ const HubCreate = ({ update, hubData }) => {
           }
         }
       } else {
-        if (artwork) {
+        if (artwork && await validateHubHandle(formValues.hubForm.handle)) {
           let upload = uploadId
           let artworkResult = artworkTx
           if (!uploadId) {
@@ -323,6 +329,7 @@ const HubCreate = ({ update, hubData }) => {
                 externalUrl: `https://hubs.ninaprotocol.com/${formValues.hubForm.handle}`,
                 image: `https://arweave.net/${artworkResult}`,
               }
+              
               metadataResult = (
                 await bundlrUpload(
                   new Blob([JSON.stringify(metadataJson)], {
@@ -359,15 +366,18 @@ const HubCreate = ({ update, hubData }) => {
                 setHubCreated(true)
                 setHubPubkey(result.hubPubkey)
               } else {
-                enqueueSnackbar(result.msg, {
+                enqueueSnackbar('Hub Not Created', {
                   variant: 'error',
                 })
               }
             }
           }
+        } else {
+          setFormValuesConfirmed(false)
         }
       }
     } catch (error) {
+      setIsPublishing(false)
       console.warn(error)
     }
   }
@@ -447,7 +457,18 @@ const HubCreate = ({ update, hubData }) => {
                 </Typography>
               )}
             </ColorWrapper>
+
+            {formValues.hubForm.publishFee > 30 || formValues.hubForm.referralFee > 30 && (
+              <Box>
+                <Warning variant='subtitle1'>
+                  Are you certain about the fees you set? High fees may discourage potential collectors.
+                </Warning>
+              </Box>
+            )}
           </CreateFormWrapper>
+
+
+
 
           <CreateCta>
             {bundlrBalance === 0 && <BundlrModal inCreate={true} />}
@@ -555,6 +576,13 @@ const BundlrBalanceInfo = styled(Typography)(({ theme }) => ({
 const ColorWrapper = styled(Box)(({ theme }) => ({
   textAlign: 'left',
   padding: '5px 15px 15px',
+}))
+
+
+const Warning = styled(Typography)(({theme}) => ({
+  textTransform: 'none !important',
+  color: theme.palette.red,
+  opacity: '85%',
 }))
 
 export default HubCreate

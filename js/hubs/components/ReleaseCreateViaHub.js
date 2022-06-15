@@ -35,7 +35,7 @@ const { ReleaseContext, NinaContext, HubContext } = nina.contexts
 const ReleaseCreateSchema = Yup.object().shape({
   artist: Yup.string().required('Artist Name is Required'),
   title: Yup.string().required('Title is Required'),
-  description: Yup.string().required('Description is Required'),
+  description: Yup.string(),
   catalogNumber: Yup.string().required('Catalog Number is Required'),
   amount: Yup.number().required('Edition Amount is Required'),
   retailPrice: Yup.number().required('Sale Price is Required'),
@@ -235,6 +235,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
           }
           if (uploadHasItemForType(upload, UploadType.track) || trackResult) {
             let metadataResult = metadataTx
+            console.log('hubPubkey :>> ', hubPubkey);
             const info = releaseInfo || (await initializeReleaseAndMint(hubPubkey))
             setReleaseInfo(info)
             setReleasePubkey(info.release)

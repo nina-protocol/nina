@@ -10,7 +10,6 @@ import Image from 'next/image'
 import Typography from '@mui/material/Typography'
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import {useWallet} from '@solana/wallet-adapter-react'
 
 const ReleasePurchase = dynamic(() => import('./ReleasePurchase'))
@@ -68,7 +67,7 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
   
   return (
     <>
-      <BackButton onClick={() => router.back()} />
+      {/* <BackButton onClick={() => router.back()} /> */}
 
       <DesktopImageGridItem item md={6}>
         {metadata && (
@@ -196,20 +195,7 @@ const ImageContainer = styled(Box)(() => ({
 
 const CtaWrapper = styled(Box)(() => ({
   display: 'flex',
-  marginTop: '15px'
-}))
-
-
-const BackButton = styled(ArrowBackIosIcon)(({ theme }) => ({
-  width: '30px',
-  height: '30px',
-  position: 'absolute',
-  zIndex: '1000000',
-  top: '15px',
-  left: '15px',
-  [theme.breakpoints.up('md')]: {
-    display: 'none',
-  },
+  marginTop: '15px',
 }))
 
 export default PostRelease

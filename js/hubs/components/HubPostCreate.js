@@ -47,12 +47,17 @@ const HubPostCreate = ({
   preloadedRelease = undefined,
   setParentOpen,
   selectedHubId,
-  userHasHubs
+  userHasHubs,
+  userHubs
 }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const { postInitViaHub, hubState } = useContext(HubContext)
-  const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
+  const hubData = useMemo(
+    () => hubState[ selectedHubId || hubPubkey],
+    [hubState, hubPubkey, selectedHubId]
+  )
+
   const {
     bundlrUpload,
     bundlrBalance,
@@ -126,9 +131,13 @@ const HubPostCreate = ({
         }
       }
     } else {
-      setButtonText(`You do not have permission to create posts`)
+      setButtonText(
+        preloadedRelease
+          ? `Create Post on ${hubData?.json.displayName}`
+          : `You do not have permission to create posts`
+      )
     }
-  }, [metadataTx, isPublishing, postCreated, bundlrBalance, canAddContent])
+  }, [canAddContent, metadataTx, hubData])
 
   const handleFormChange = useCallback(
     async (values) => {
@@ -180,6 +189,11 @@ const HubPostCreate = ({
             metadataJson.reference = formValues.postForm.reference
           }
 
+          if (preloadedRelease) {
+            metadataJson.reference = preloadedRelease
+            formValues.postForm.reference = preloadedRelease
+          }
+          console.log('formValues :>> ', formValues);     
           metadataResult = (
             await bundlrUpload(
               new Blob([JSON.stringify(metadataJson)], {
@@ -206,7 +220,7 @@ const HubPostCreate = ({
 
           if (metadataJson.reference) {
             result = await postInitViaHub(
-              hubPubkey,
+              hubPubkey || selectedHubId,
               slug,
               uri,
               metadataJson.reference
@@ -250,7 +264,9 @@ const HubPostCreate = ({
         style={{marginTop: '15px'}}
 
       >
-        Create an editorial post about this release
+        <Typography>
+          {preloadedRelease ? 'Create Text Post' : 'Publish a new post'}
+        </Typography>
       </CreateCtaButton>
       <StyledModal
         aria-labelledby="transition-modal-title"
@@ -277,6 +293,7 @@ const HubPostCreate = ({
                       hubData={hubData}
                       postCreated={postCreated}
                       hubReleasesToReference={hubReleasesToReference}
+                      preloadedRelease={preloadedRelease}
                     />
                   </PostFormWrapper>
 

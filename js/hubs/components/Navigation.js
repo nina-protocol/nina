@@ -54,42 +54,6 @@ const mobileNavData = [
   },
 ]
 
-const useStyles = makeStyles(({ theme }) => ({
-  header: {
-    backgroundColor: `none !important`,
-    color: 'black',
-    paddingRight: '0px',
-    paddingLeft: '0px',
-    height: '64px',
-    boxShadow: 'none',
-    position: 'absolute',
-    '& p': {
-      cursor: 'pointer',
-    },
-    '@media (max-width: 900px)': {
-      paddingLeft: 0,
-    },
-  },
-  menuButton: {
-    fontFamily: 'Helvetica, sans-serif',
-    size: '14px',
-    marginLeft: '38px',
-  },
-  toolbar: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '0px 15px',
-  },
-  ctaWrapper: {
-    display: 'flex',
-  },
-  drawerContainer: {
-    padding: '20px 30px 20px 0',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-}))
-
 const Navigation = ({hubPubkey}) => {
   const { header, menuButton, toolbar, ctaWrapper, drawerContainer } =
     useStyles()
@@ -144,11 +108,12 @@ const Navigation = ({hubPubkey}) => {
     }
     return false
   }, [hubCollaborators, hubData, wallet])
+
   const displayDesktop = () => {
     return (
       <Toolbar
         className={toolbar}
-        style={{ backgroundColor: '#66000000 !important' }}
+        style={{ backgroundColor: '#66000000 !important', justifyContent: 'space-between', flexDirection: 'row' }}
       >
         {mobileView && canAddContent && displayMobile()}
 
@@ -173,7 +138,7 @@ const Navigation = ({hubPubkey}) => {
             )}
           </LogoLinkWrapper>
         </Link>
-        <Box className={ctaWrapper}>
+        <CtaWrapper>
           {!mobileView && canAddContent && getMenuButtons(hubData?.handle)}
           <WalletWrapper>
             <NavCtas>
@@ -193,7 +158,7 @@ const Navigation = ({hubPubkey}) => {
               )}
             </NavCtas>
           </WalletWrapper>
-        </Box>
+        </CtaWrapper>
       </Toolbar>
     )
   }
@@ -271,12 +236,9 @@ const Navigation = ({hubPubkey}) => {
   }
 
   return (
-    <AppBar
-      sx={{ backgroundColor: '#66000000 !important', boxShadow: 'none' }}
-      className={header}
-    >
+    <StyledAppBar>
       {displayDesktop()}
-    </AppBar>
+    </StyledAppBar>
   )
 }
 
@@ -342,7 +304,6 @@ const StyledWalletDialogProvider = styled(WalletDialogProvider)(
           fontSize: '16px !important',
           fontWeight: '700',
           backgroundColor: `${theme.palette.transparent} !important`,
-          border: '2px solid red',
         },
         '& .MuiButtonBase-root': {
           display: 'none',
@@ -399,5 +360,46 @@ const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
   },
   '& .MuiButton-label': {
     color: theme.palette.black,
+  },
+}))
+
+const CtaWrapper = styled(Box)(({theme}) => ({
+  display: 'flex',
+}))
+
+const StyledAppBar = styled(AppBar)(({theme}) => ({
+  backgroundColor: `none !important`,
+  color: 'black',
+  paddingRight: '0px',
+  paddingLeft: '0px',
+  height: '64px',
+  boxShadow: 'none',
+  position: 'absolute',
+  backgroundColor: '#66000000 !important', 
+  boxShadow: 'none',
+  width: '100% !important',
+  '& p': {
+    cursor: 'pointer',
+  },
+  '@media (max-width: 900px)': {
+    paddingLeft: 0,
+  },
+}))
+
+const useStyles = makeStyles(({theme}) => ({
+  menuButton: {
+    fontFamily: 'Helvetica, sans-serif',
+    size: '14px',
+    marginLeft: '38px',
+  },
+  toolbar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    padding: '0px 15px',
+  },
+  drawerContainer: {
+    padding: '20px 30px 20px 0',
+    display: 'flex',
+    flexDirection: 'column',
   },
 }))

@@ -27,6 +27,7 @@ const HubPostCreateForm = ({
   postCreated,
   resetForm,
   hubReleasesToReference,
+  preloadedRelease,
 }) => {
   const { releaseState } = useContext(ReleaseContext)
 
@@ -44,7 +45,6 @@ const HubPostCreateForm = ({
 
   return (
     <Root>
-      {update && <Typography>Updating {hubData.name}</Typography>}
       <Form style={{ padding: '0 15px', height: '100%' }}>
         <Field name="title">
           {(props) => (
@@ -75,35 +75,44 @@ const HubPostCreateForm = ({
           )}
         </Field>
 
-        <Field name="reference">
-          {(props) => (
-            <FormControl fullWidth>
-              <Select
-                className="formField"
-                value={props.field.value}
-                placeholder="Release Reference"
-                displayEmpty
-                onChange={(e) => {
-                  props.form.setFieldValue('reference', e.target.value)
-                }}
-              >
-                <MenuItem disabled value="">
-                  Reference a release in Post? (Optional)
-                </MenuItem>
-                {hubReleasesToReference.map((hubRelease) => {
-                  return (
-                    <MenuItem
-                      key={hubRelease.release}
-                      value={hubRelease.release}
+            {!preloadedRelease && (
+              <Field name="reference">
+                {(props) => (
+                  <FormControl fullWidth>
+                    <Select
+                      className="formField"
+                      value={props.field.value}
+                      placeholder="Release Reference"
+                      displayEmpty
+                      onChange={(e) => {
+                        props.form.setFieldValue('reference', e.target.value)
+                      }}
                     >
-                      {releaseState.metadata[hubRelease.release]?.name}
-                    </MenuItem>
-                  )
-                })}
-              </Select>
-            </FormControl>
-          )}
-        </Field>
+                      <MenuItem disabled value="">
+                        Reference a release in Post? (Optional)
+                      </MenuItem>
+                      {hubReleasesToReference.map((hubRelease) => {
+                        return (
+                          <MenuItem
+                            key={hubRelease.release}
+                            value={hubRelease.release}
+                          >
+                            {releaseState.metadata[hubRelease.release]?.name}
+                          </MenuItem>
+                        )
+                      })}
+                    </Select>
+                  </FormControl>
+                )}
+              </Field>
+            )}
+
+        {preloadedRelease && (
+          <Typography mt={1}>
+            <i>{releaseState.metadata[preloadedRelease].name}</i> will be
+            associated with this post
+          </Typography>
+        )}
       </Form>
     </Root>
   )

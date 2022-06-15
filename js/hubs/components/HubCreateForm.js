@@ -20,8 +20,8 @@ const HubCreateForm = ({
   setFieldValue,
   update,
   hubData,
+  handleBlur
 }) => {
-  // const baseUrl = 'https://hubs.ninaprotocol.com/'
   useEffect(() => {
     if (onChange) {
       onChange(values)
@@ -79,6 +79,7 @@ const HubCreateForm = ({
                       setFieldValue('externalUrl', `https://hubs.ninaprotocol.com/${value}`)
                     }
                   }}
+                  onBlur={() => touched.handle = true}
                   value={props.field.value}
                 />
               </Box>
@@ -116,15 +117,32 @@ const HubCreateForm = ({
                 className="formField"
                 variant="standard"
                 size="small"
-                InputLabelProps={touched.title ? { shrink: true } : ''}
+                InputLabelProps={touched.publishFee ? { shrink: true } : ''}
+                type="number"
                 label={
                   <Box display="flex" alignItems="center">
                     {formatPlaceholder(props.field.name) + ' (%)'}
                     <IconWithTooltip field={props.field.name} />
                   </Box>
                 }
+                InputProps={{
+                  inputProps: {
+                    max: 100, min: 0
+                  },
+                  onChange: (e) => {
+                    const value = e.target.value ?  parseInt( e.target.value ) : ''
+                    if (value > 100) {
+                      value = 100
+                    }
+                    if (value < 0) {
+                      value = 0
+                    }
+                    setFieldValue('publishFee', value)
+                  }
+                }}
+  
                 placeholder={
-                  errors.title && touched.title ? errors.title : null
+                  errors.publishFee && touched.publishFee ? errors.publishFee : null
                 }
                 {...props.field}
               />
@@ -144,9 +162,25 @@ const HubCreateForm = ({
                   </Box>
                 }
                 size="small"
-                InputLabelProps={touched.title ? { shrink: true } : ''}
+                InputLabelProps={touched.referralFee ? { shrink: true } : ''}
+                type="number"
+                InputProps={{
+                  inputProps: {
+                    max: 100, min: 0
+                  },
+                  onChange: (e) => {
+                    const value = e.target.value ? parseInt(e.target.value) : ''
+                    if (value > 100) {
+                      value = 100
+                    }
+                    if (value < 0) {
+                      value = 0
+                    }
+                    setFieldValue('referralFee', value)
+                  }
+                }}
                 placeholder={
-                  errors.title && touched.title ? errors.title : null
+                  errors.referralFee && touched.referralFee ? errors.referralFee : null
                 }
                 {...props.field}
               />
