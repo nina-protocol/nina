@@ -415,7 +415,7 @@ const HubCreate = ({ update, hubData }) => {
           <BlueTypography
             variant="h1"
             align="left"
-            sx={{padding: {md: '0 100px 40px', xs: '30px 0px'}}}
+                sx={{ padding: { md: '0px 150pxx', xs: '30px 0px' } }}
           >
             You do not have any credits to create a Hub.  Please{` `}<Link
               href="https://docs.google.com/forms/d/e/1FAIpQLScSdwCMqUz6VGqhkO6xdfUxu1pzdZEdsGoXL9TGDYIGa9t2ig/viewform"
