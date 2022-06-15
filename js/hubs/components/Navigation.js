@@ -237,7 +237,7 @@ const Navigation = ({hubPubkey}) => {
 
   return (
     <AppBar
-      sx={{ backgroundColor: '#66000000 !important', boxShadow: 'none' }}
+      sx={{ backgroundColor: '#66000000 !important', boxShadow: 'none', width: '100%' }}
       className={header}
     >
       {displayDesktop()}
