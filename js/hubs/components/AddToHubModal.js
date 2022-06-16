@@ -71,8 +71,6 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
     setSelectedHubId(null)
   }
 
-  console.log('selectedHubId :>> ', selectedHubId);
-
   return (
     <Root>
         <ModalToggle
