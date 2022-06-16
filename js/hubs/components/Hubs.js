@@ -40,16 +40,7 @@ const Hubs = () => {
   return (
     <HubsContainer overflowX="visible">
       <Box sx={{ padding: { md: '40px 40px 140px 40px !important', xs: '30px 0px' } }}>
-        {/* <Box sx={{ paddingLeft: { md: '30px', xs: '0' } }}>
-          <Typography
-            variant="body1"
-            align="left"
-            className={classes.sectionHeader}
-          >
-            Hubs
-          </Typography>
-        </Box>
-        <HubSlider hubs={hubs} /> */}
+
         {!wallet?.connected &&
           <>
             <Typography

@@ -7,6 +7,7 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
 import Dots from './Dots'
+import UserReleasesPrompt from './UserReleasesPrompt'
 
 import { useWallet } from '@solana/wallet-adapter-react'
 const ContentTileView = dynamic(() => import('./ContentTileView'))
@@ -106,7 +107,9 @@ const Hub = ({hubPubkey}) => {
             {hubData?.json.description}
           </Typography>
 
-          {initialLoad && content?.length === 0 && canAddContent && (
+          <UserReleasesPrompt hubPubkey={hubPubkey} />
+
+          {/* {initialLoad && content?.length === 0 && canAddContent && (
             <Box margin="100px auto 0">
               <Typography variant="h2" gutterBottom>
                 This hub has no Releases
@@ -118,8 +121,9 @@ const Hub = ({hubPubkey}) => {
                 </Link>{' '}
                 to publish tracks
               </Typography>
+
             </Box>
-          )}
+          )} */}
         </Box>
       </Grid>
 
