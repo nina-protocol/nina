@@ -466,7 +466,7 @@ const ReleaseCreate = () => {
                 )}
                 {bundlrBalance === 0 && (
                   <BundlrBalanceInfo variant="subtitle1" align="left">
-                    Please fund your Bundlr Account to enable publishing
+                    Please fund your Upload Account to enable publishing
                   </BundlrBalanceInfo>
                 )}
                 {uploadSize > 0 && (
