@@ -167,6 +167,9 @@ const TileGrid = styled(Box)(({ theme, columnCount }) => ({
   overflow: 'scroll',
   marginTop: '1px',
   paddingBottom: '100px',
+  '&::-webkit-scrollbar': {
+    display: 'none'  
+  },
   gridAutoRows: 'minmax(21vw, 100px)',
   [theme.breakpoints.down('md')]: {
     maxWidth: '580px',
