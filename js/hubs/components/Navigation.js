@@ -23,6 +23,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 
+
 const { HubContext } = nina.contexts
 
 const navData = [
@@ -140,24 +141,24 @@ const Navigation = ({hubPubkey}) => {
         </Link>
         <CtaWrapper>
           {!mobileView && canAddContent && getMenuButtons(hubData?.handle)}
-          <WalletWrapper>
-            <NavCtas>
-              {wallet.wallets && (
-                <StyledWalletDialogProvider featuredWallets={4}>
-                  <StyledWalletButton>
-                    <StyledWalletButtonTypography
-                      variant="body1"
-                      sx={{ textTransform: 'none' }}
-                    >
-                      {wallet?.connected
-                        ? `${wallet.wallet.adapter.name} – ${walletDisplay}`
-                        : 'Connect Wallet'}
-                    </StyledWalletButtonTypography>
-                  </StyledWalletButton>
-                </StyledWalletDialogProvider>
-              )}
-            </NavCtas>
-          </WalletWrapper>
+            <WalletWrapper id="wallet-wrapper">
+              <NavCtas>
+                {wallet.wallets && (
+                  <StyledWalletDialogProvider featuredWallets={4}>
+                    <StyledWalletButton >
+                      <StyledWalletButtonTypography
+                        variant="body1"
+                        sx={{ textTransform: 'none' }}
+                      >
+                        {wallet?.connected
+                          ? `${wallet.wallet.adapter.name} – ${walletDisplay}`
+                          : 'Connect Wallet'}
+                      </StyledWalletButtonTypography>
+                    </StyledWalletButton>
+                  </StyledWalletDialogProvider>
+                )}
+              </NavCtas>
+            </WalletWrapper>
         </CtaWrapper>
       </Toolbar>
     )
@@ -274,7 +275,6 @@ const LogoLinkWrapper = styled('a')(({theme}) => ({
   },
   '& img': {
     [theme.breakpoints.down('md')]: {
-      border: '2px solid red',
       paddingTop: '15px !important'
     },
   }
@@ -288,7 +288,6 @@ const StyledWalletDialogProvider = styled(WalletDialogProvider)(
   ({ theme }) => ({
     '& .MuiList-root': {
       background: `${theme.palette.transparent} !important`,
-      border: '2px solid red'
     },
     '& .MuiButton-root': {
       backgroundColor: `${theme.palette.white}`,
@@ -362,10 +361,13 @@ const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
   backgroundColor: `${theme.palette.transparent} !important`,
   boxShadow: 'none !important',
   paddingTop: '0 !important',
+  border:'2px solid red',
   '& img': {
     display: 'none',
   },
   '& .MuiButton-label': {
+    border: '2px solid red',
+
     color: theme.palette.black,
   },
 }))
@@ -391,6 +393,9 @@ const StyledAppBar = styled(AppBar)(({theme}) => ({
   '@media (max-width: 900px)': {
     paddingLeft: 0,
   },
+  ' #wallet-menu':{
+    border: '10px solid red'
+  }
 }))
 
 const useStyles = makeStyles(({theme}) => ({

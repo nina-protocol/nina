@@ -144,7 +144,7 @@ const ContentViewWrapper = styled(Grid)(({ theme }) => ({
 
 const DescriptionWrapper = styled(Grid)(({ theme }) => ({
   padding:' 0px 15px',
-  maxHeight: '70vh  ',
+  maxHeight: '68vh  ',
   overflowX: 'scroll',
   [theme.breakpoints.down('md')]: {
     padding: '100px 15px 50px',
