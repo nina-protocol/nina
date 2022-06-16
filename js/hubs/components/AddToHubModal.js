@@ -52,7 +52,7 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
     enqueueSnackbar('Adding Release to Hub', {
       variant: 'info',
     })
-    const result = await hubAddRelease(selectedHubId, releasePubkey)
+    const result = await hubAddRelease(selectedHubId, releasePubkey, hubPubkey)
     if (result.success) {
       enqueueSnackbar(result.msg, {
         variant: 'info',
@@ -173,14 +173,15 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
             </Button>
 
             <HubPostCreate 
-             userHubs={userHubs} 
-             preloadedRelease={releasePubkey} 
-             selectedHubId={selectedHubId} 
-             setParentOpen={handleClose} 
-             userHasHubs={userHasHubs}
-             canAddContent={canAddContent}
-             update={false}
-             />
+              userHubs={userHubs} 
+              preloadedRelease={releasePubkey}
+              hubPubkey={hubPubkey} 
+              selectedHubId={selectedHubId} 
+              setParentOpen={handleClose} 
+              userHasHubs={userHasHubs}
+              canAddContent={canAddContent}
+              update={false}
+            />
 
           </StyledPaper>
         </Fade>

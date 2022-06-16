@@ -364,7 +364,7 @@ const hubContextHelper = ({
     }
   }
 
-  const hubAddRelease = async (hubPubkey, releasePubkey) => {
+  const hubAddRelease = async (hubPubkey, releasePubkey, fromHub) => {
     try {
       const hub = hubState[hubPubkey]
       const program = await ninaClient.useProgram()
@@ -397,7 +397,7 @@ const hubContextHelper = ({
         program.programId
       )
 
-      const txid = await program.rpc.hubAddRelease(hub.handle, {
+      const request = {
         accounts: {
           authority: provider.wallet.publicKey,
           hub: hubPubkey,
@@ -408,7 +408,15 @@ const hubContextHelper = ({
           systemProgram: anchor.web3.SystemProgram.programId,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         },
-      })
+      }
+      if (fromHub) {
+        request.remainingAccounts = [{
+          pubkey: new anchor.web3.PublicKey(fromHub),
+          isWritable: false,
+          isSigner: false,
+        }]
+      }
+      const txid = await program.rpc.hubAddRelease(hub.handle, request)
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
       await indexerHasRecord(hubRelease.toBase58(), 'hubRelease')
       await getHub(hubPubkey)
@@ -571,7 +579,8 @@ const hubContextHelper = ({
     hubPubkey,
     slug,
     uri,
-    referenceRelease = undefined
+    referenceRelease = undefined,
+    fromHub
   ) => {
     try {
       const program = await ninaClient.useProgram()
@@ -616,22 +625,26 @@ const hubContextHelper = ({
         ],
         program.programId
       )
-      const accounts = {
-        author: provider.wallet.publicKey,
-        hub: hubPubkey,
-        post,
-        hubPost,
-        hubContent,
-        hubCollaborator,
-        systemProgram: anchor.web3.SystemProgram.programId,
-        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-      }
-
       let txid
       const handle = decodeNonEncryptedByteArray(hub.handle)
       const params = [handle, slug, uri]
+      const request = {
+        accounts: {
+          author: provider.wallet.publicKey,
+          hub: hubPubkey,
+          post,
+          hubPost,
+          hubContent,
+          hubCollaborator,
+          systemProgram: anchor.web3.SystemProgram.programId,
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        }
+      }
+      if (fromHub) {
+        request.remainingAccounts = [new anchor.web3.PublicKey(fromHub)]
+      }
       if (referenceRelease) {
-        accounts.referenceRelease = referenceRelease
+        request.accounts.referenceRelease = referenceRelease
 
         const [referenceReleaseHubRelease] =
           await anchor.web3.PublicKey.findProgramAddress(
@@ -642,7 +655,7 @@ const hubContextHelper = ({
             ],
             program.programId
           )
-        accounts.referenceReleaseHubRelease = referenceReleaseHubRelease
+        request.accounts.referenceReleaseHubRelease = referenceReleaseHubRelease
 
         const [referenceReleaseHubContent] =
           await anchor.web3.PublicKey.findProgramAddress(
@@ -653,13 +666,11 @@ const hubContextHelper = ({
             ],
             program.programId
           )
-        accounts.referenceReleaseHubContent = referenceReleaseHubContent
+          request.accounts.referenceReleaseHubContent = referenceReleaseHubContent
 
-        txid = await program.rpc.postInitViaHubWithReferenceRelease(...params, {
-          accounts,
-        })
+        txid = await program.rpc.postInitViaHubWithReferenceRelease(...params, request)
       } else {
-        txid = await program.rpc.postInitViaHub(...params, { accounts })
+        txid = await program.rpc.postInitViaHub(...params, request)
       }
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
       await indexerHasRecord(hubPost.toBase58(), 'hubPost')
