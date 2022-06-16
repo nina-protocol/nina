@@ -23,6 +23,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 
+
 const { HubContext } = nina.contexts
 
 const navData = [
@@ -140,24 +141,24 @@ const Navigation = ({hubPubkey}) => {
         </Link>
         <CtaWrapper>
           {!mobileView && canAddContent && getMenuButtons(hubData?.handle)}
-          <WalletWrapper>
-            <NavCtas>
-              {wallet.wallets && (
-                <StyledWalletDialogProvider featuredWallets={4}>
-                  <StyledWalletButton>
-                    <StyledWalletButtonTypography
-                      variant="body1"
-                      sx={{ textTransform: 'none' }}
-                    >
-                      {wallet?.connected
-                        ? `${wallet.wallet.adapter.name} – ${walletDisplay}`
-                        : 'Connect Wallet'}
-                    </StyledWalletButtonTypography>
-                  </StyledWalletButton>
-                </StyledWalletDialogProvider>
-              )}
-            </NavCtas>
-          </WalletWrapper>
+            <WalletWrapper id="wallet-wrapper">
+              <NavCtas>
+                {wallet.wallets && (
+                  <StyledWalletDialogProvider featuredWallets={4}>
+                    <StyledWalletButton >
+                      <StyledWalletButtonTypography
+                        variant="body1"
+                        sx={{ textTransform: 'none' }}
+                      >
+                        {wallet?.connected
+                          ? `${wallet.wallet.adapter.name} – ${walletDisplay}`
+                          : 'Connect Wallet'}
+                      </StyledWalletButtonTypography>
+                    </StyledWalletButton>
+                  </StyledWalletDialogProvider>
+                )}
+              </NavCtas>
+            </WalletWrapper>
         </CtaWrapper>
       </Toolbar>
     )
@@ -257,7 +258,7 @@ const WalletWrapper = styled(Box)(() => ({
   display: 'flex',
 }))
 
-const LogoLinkWrapper = styled('a')(() => ({
+const LogoLinkWrapper = styled('a')(({theme}) => ({
   display: 'flex',
   alignItems: 'center',
   textDecoration: 'none',
@@ -272,6 +273,11 @@ const LogoLinkWrapper = styled('a')(() => ({
   '& .MuiTypography-h4': {
     fontWeight: 'bold',
   },
+  '& img': {
+    [theme.breakpoints.down('md')]: {
+      paddingTop: '15px !important'
+    },
+  }
 }))
 
 const NavCtas = styled('div')(() => ({
@@ -359,6 +365,8 @@ const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
     display: 'none',
   },
   '& .MuiButton-label': {
+    border: '2px solid red',
+
     color: theme.palette.black,
   },
 }))
