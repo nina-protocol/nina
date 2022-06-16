@@ -361,7 +361,6 @@ const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
   backgroundColor: `${theme.palette.transparent} !important`,
   boxShadow: 'none !important',
   paddingTop: '0 !important',
-  border:'2px solid red',
   '& img': {
     display: 'none',
   },
@@ -393,9 +392,6 @@ const StyledAppBar = styled(AppBar)(({theme}) => ({
   '@media (max-width: 900px)': {
     paddingLeft: 0,
   },
-  ' #wallet-menu':{
-    border: '10px solid red'
-  }
 }))
 
 const useStyles = makeStyles(({theme}) => ({
