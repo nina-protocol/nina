@@ -66,6 +66,12 @@ pub struct ReleasePurchaseViaHub<'info> {
         bump,
     )]
     pub hub_release: Box<Account<'info, HubRelease>>,
+    #[account(
+        mut,
+        seeds = [b"nina-hub-content".as_ref(), hub.key().as_ref(), release.key().as_ref()],
+        bump,
+    )]
+    pub hub_content: Box<Account<'info, HubContent>>,
     /// CHECK: This is safe because PDA is derived from hub which is checked above
     #[account(
         seeds = [b"nina-hub-signer".as_ref(), hub.key().as_ref()],
@@ -88,29 +94,35 @@ pub fn handler(
     amount: u64,
     _hub_handle: String,
 ) -> Result<()> {
-    // Transfer referral fee from Payer to Hub Wallet
-    let cpi_accounts = Transfer {
-        from: ctx.accounts.payer_token_account.to_account_info(),
-        to: ctx.accounts.hub_wallet.to_account_info(),
-        authority: ctx.accounts.payer.to_account_info().clone(),
-    };
-    let divide_by_amount = if ctx.accounts.payer_token_account.mint == wrapped_sol::ID {1000000000} else {1000000};
     let mut hub = ctx.accounts.hub.load_mut()?;
-    let referral_amount = u64::from(amount)
-        .checked_mul(hub.referral_fee)
-        .unwrap()
-        .checked_div(divide_by_amount)
-        .unwrap();
-    let cpi_program = ctx.accounts.token_program.to_account_info().clone();
-    let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);    
-    token::transfer(cpi_ctx, referral_amount)?;
-
     let hub_release = &mut ctx.accounts.hub_release;
+    let hub_content = &ctx.accounts.hub_content;
+
+    if ctx.accounts.release.load()?.authority != hub.authority &&
+       !hub_content.published_through_hub {
+        // Transfer referral fee from Payer to Hub Wallet
+        let cpi_accounts = Transfer {
+            from: ctx.accounts.payer_token_account.to_account_info(),
+            to: ctx.accounts.hub_wallet.to_account_info(),
+            authority: ctx.accounts.payer.to_account_info().clone(),
+        };
+        let divide_by_amount = if ctx.accounts.payer_token_account.mint == wrapped_sol::ID {1000000000} else {1000000};
+        let referral_amount = u64::from(amount)
+            .checked_mul(hub.referral_fee)
+            .unwrap()
+            .checked_div(divide_by_amount)
+            .unwrap();
+        let cpi_program = ctx.accounts.token_program.to_account_info().clone();
+        let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);    
+        token::transfer(cpi_ctx, referral_amount)?;
+
+        hub.total_fees_earned = u64::from(hub.total_fees_earned)
+            .checked_add(referral_amount)
+            .unwrap();
+    }
+
     hub_release.sales = u64::from(hub_release.sales)
         .checked_add(1)
-        .unwrap();
-    hub.total_fees_earned = u64::from(hub.total_fees_earned)
-        .checked_add(referral_amount)
         .unwrap();
 
     Release::release_purchase_handler(

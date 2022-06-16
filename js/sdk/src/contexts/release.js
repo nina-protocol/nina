@@ -445,6 +445,15 @@ const releaseContextHelper = ({
         ],
         program.programId
       )
+      const [hubContent] = await anchor.web3.PublicKey.findProgramAddress(
+        [
+          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-content')),
+          hubPubkey.toBuffer(),
+          releasePubkey.toBuffer(),
+        ],
+        program.programId
+      )
+
       const [hubSigner] = await anchor.web3.PublicKey.findProgramAddress(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-signer')),
@@ -473,6 +482,7 @@ const releaseContextHelper = ({
           releaseMint: release.releaseMint,
           hub: hubPubkey,
           hubRelease,
+          hubContent,
           hubSigner,
           hubWallet,
           tokenProgram: ids.programs.token,
