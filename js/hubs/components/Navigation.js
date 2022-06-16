@@ -257,7 +257,7 @@ const WalletWrapper = styled(Box)(() => ({
   display: 'flex',
 }))
 
-const LogoLinkWrapper = styled('a')(() => ({
+const LogoLinkWrapper = styled('a')(({theme}) => ({
   display: 'flex',
   alignItems: 'center',
   textDecoration: 'none',
@@ -272,6 +272,12 @@ const LogoLinkWrapper = styled('a')(() => ({
   '& .MuiTypography-h4': {
     fontWeight: 'bold',
   },
+  '& img': {
+    [theme.breakpoints.down('md')]: {
+      border: '2px solid red',
+      paddingTop: '15px !important'
+    },
+  }
 }))
 
 const NavCtas = styled('div')(() => ({
@@ -282,6 +288,7 @@ const StyledWalletDialogProvider = styled(WalletDialogProvider)(
   ({ theme }) => ({
     '& .MuiList-root': {
       background: `${theme.palette.transparent} !important`,
+      border: '2px solid red'
     },
     '& .MuiButton-root': {
       backgroundColor: `${theme.palette.white}`,

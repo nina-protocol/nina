@@ -89,13 +89,13 @@ const ContentTileView = ({ content, hubPubkey, hubHandle }) => {
             {item.contentType === 'Post' && (
               <PostTile className={'tile'} key={i}>
                 <PostInfo sx={{ padding: '10px 0 0' }}>
-                  <Typography
+                  <PostTitle
                     variant="h2"
                     sx={{ color: 'text.primary', textTransform: 'uppercase' }}
                   >
                     {item.postContent.json.title.substring(0, 100)}
                     {item.postContent.json.title.length > 100 ? '...' : ''}
-                  </Typography>
+                  </PostTitle>
                   <Typography sx={{ color: 'text.primary' }}>
                     published: {formattedDate(item.createdAt)}
                   </Typography>
@@ -262,6 +262,13 @@ const PostInfo = styled(Typography)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
+
+}))
+
+const PostTitle = styled(Typography)(({theme}) => ({
+  [theme.breakpoints.down('md')]: {
+    fontSize: '14px !important'
+  },
 }))
 
 export default ContentTileView

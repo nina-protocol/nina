@@ -176,7 +176,7 @@ const MobileImageWrapper = styled(Grid)(({ theme }) => ({
   display: 'none',
   [theme.breakpoints.down('md')]: {
     display: 'block',
-    padding: '30px 0 0',
+    padding: '45px 0 0',
   },
 }))
 
@@ -184,8 +184,11 @@ const ImageContainer = styled(Box)(() => ({
   width: '100%',
 }))
 
-const CtaWrapper = styled(Box)(() => ({
-  display: 'flex'
+const CtaWrapper = styled(Box)(({theme}) => ({
+  display: 'flex',
+  [theme.breakpoints.down('md')]: {
+    paddingTop: '15px'
+  },
 }))
 
 export default Release

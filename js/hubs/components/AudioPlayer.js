@@ -216,7 +216,7 @@ const AudioPlayer = ({hubPubkey}) => {
               </div>
             )}
           </Controls>
-          <Typography>
+          <Typography sx={{pb: '5px'}}>
             <a
               href={`https://ninaprotocol.com/hubs/${hubPubkey || ''}`}
               target="_blank"
@@ -235,7 +235,6 @@ const AudioPlayer = ({hubPubkey}) => {
 }
 
 const Controls = styled('div')(({ theme }) => ({
-  paddingTop: theme.spacing(2),
   paddingBottom: theme.spacing(2),
   width: '100%',
   '& .MuiButton-root': {
@@ -254,11 +253,12 @@ const Controls = styled('div')(({ theme }) => ({
 const Player = styled('div')(({ theme }) => ({
   paddingTop: theme.spacing(2),
   width: '100%',
+  background: theme.palette.background.default,
   [theme.breakpoints.down('md')]: {
     position: 'fixed',
     bottom: '0',
     width: '100vw',
-    background: theme.palette.white,
+    background: theme.palette.background.default,
     paddingTop: '0',
   },
   '& .MuiButton-root': {
