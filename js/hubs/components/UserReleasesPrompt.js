@@ -112,9 +112,9 @@ const UserReleasesPrompt = ({userHubs, releasePubkey, metadata, hubPubkey, hubRe
               Click on a Release below to add it to your hub:
             </Typography>
             <Grid container spacing={1}>
-              {unpostedUserReleases?.map(release => {
+              {unpostedUserReleases?.map((release, i) => {
                 return (
-                  <Grid item md={4}>
+                  <Grid item md={4} key={i}>
                     <ReleaseImage
                       width={50}
                       height={50}
