@@ -25,6 +25,8 @@ const Hub = ({hubPubkey}) => {
   }, [hubPubkey])
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
+  const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey)
+
   const hubCollaborators = useMemo(
     () => filterHubCollaboratorsForHub(hubPubkey) || [],
     [hubCollaboratorsState, hubPubkey]
@@ -44,10 +46,10 @@ const Hub = ({hubPubkey}) => {
     }
     return false
   }, [hubCollaborators, hubData, wallet])
-
+  
   const content = useMemo(() => {
     const contentArray = []
-    const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey)
+    // const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey)
     const hubContent = [...hubReleases, ...hubPosts]
     hubContent.forEach((hubContentData) => {
       if (
@@ -107,7 +109,10 @@ const Hub = ({hubPubkey}) => {
             {hubData?.json.description}
           </Typography>
 
-          <UserReleasesPrompt hubPubkey={hubPubkey} />
+
+          {wallet?.connected && wallet?.publicKey?.toBase58() === hubData?.authority && hubReleases && (
+            <UserReleasesPrompt hubPubkey={hubPubkey} hubReleases={hubReleases} />
+          )}
 
           {/* {initialLoad && content?.length === 0 && canAddContent && (
             <Box margin="100px auto 0">
