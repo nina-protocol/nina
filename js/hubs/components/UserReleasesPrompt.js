@@ -142,13 +142,13 @@ const Root = styled('div')(({theme}) => ({
   display: 'flex',
   alignItems: 'center',
   width: '100%',
+  padding : '0 15px'
 }))
 
 const ModalToggle = styled(Button)(({theme}) => ({
   color: `${theme.palette.text.primary} !important`,
   width: '100% !important',
   border: '2px solid red',
-  marginTop: '15px !important',
   ':disabled': {
     color: theme.palette.text.primary + 'a0',
   },
