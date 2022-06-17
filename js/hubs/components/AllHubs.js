@@ -59,7 +59,7 @@ const Hubs = () => {
               const imageUrl = hub?.json?.image;
               console.log('hub :>> ', hub);
               return(
-                <HubTile item md={4}>
+                <HubTile item md={4} xs={6}>
                   {imageUrl &&
                     <Link href={`/${hub.handle}`}>
                       <a>
@@ -97,16 +97,19 @@ const HubsContainer = styled('div')(({ theme }) => ({
   overflowX: 'visible',
   [theme.breakpoints.down('md')]: {
     width: '80vw',
-    marginBottom: '100px',
+    margin: '100px 0',
   },
 }))
 
-const HubGrid = styled(Grid)(() => ({
+const HubGrid = styled(Grid)(({theme}) => ({
   overflowY: 'scroll',
   maxHeight: '100vh',
   '&::-webkit-scrollbar': { 
     display: 'none'
-}
+  },
+  [theme.breakpoints.down('md')]: {
+    paddingBottom: '100px'
+  },
 }))
 
 const HubTile = styled(Grid)(() => ({
