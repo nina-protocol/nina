@@ -38,9 +38,9 @@ const HubCollaborators = ({
 
   const { enqueueSnackbar } = useSnackbar()
 
-  const handleActiveSelection = (e) => {
+  const handleActiveSelection = (e) => {   
     const selectedHubCollaborator =
-      hubCollaborators[e.target.getAttribute('data-index')]
+      hubCollaborators.find(collaborator => collaborator.publicKey === e.target.getAttribute('data-index') )
     setActiveSelection(selectedHubCollaborator)
   }
 

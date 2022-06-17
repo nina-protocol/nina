@@ -250,6 +250,7 @@ const HubPostCreate = ({
         }
       }
     } catch (error) {
+      setParentOpen(false)
       console.warn(error)
     }
   }
@@ -264,9 +265,7 @@ const HubPostCreate = ({
         style={{marginTop: '15px'}}
 
       >
-        <Typography>
           {preloadedRelease ? 'Create Text Post' : 'Publish a new post'}
-        </Typography>
       </CreateCtaButton>
       <StyledModal
         aria-labelledby="transition-modal-title"
@@ -337,7 +336,7 @@ const HubPostCreate = ({
                       )}
                       {bundlrBalance === 0 && (
                         <BundlrBalanceInfo variant="subtitle1" align="left">
-                          Please fund your Bundlr Account to enable publishing
+                          Please fund your Upload Account to enable publishing
                         </BundlrBalanceInfo>
                       )}
                       {uploadSize > 0 && (

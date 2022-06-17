@@ -104,7 +104,7 @@ const Hub = ({hubPubkey}) => {
   return (
     <>
       <Grid item md={4}>
-        <Box padding="100px 15px">
+        <DescriptionWrapper sx={{padding: {md: '0px 15px', xs: '100px 15px 50px'}}}>
           <Typography align="left" sx={{ color: 'text.primary' }}>
             {hubData?.json.description}
           </Typography>
@@ -113,23 +113,7 @@ const Hub = ({hubPubkey}) => {
           {wallet?.connected && wallet?.publicKey?.toBase58() === hubData?.authority && hubReleases && (
             <UserReleasesPrompt hubPubkey={hubPubkey} hubReleases={hubReleases} />
           )}
-
-          {/* {initialLoad && content?.length === 0 && canAddContent && (
-            <Box margin="100px auto 0">
-              <Typography variant="h2" gutterBottom>
-                This hub has no Releases
-              </Typography>
-              <Typography>
-                Visit to your{' '}
-                <Link href={`/${hubData.handle}/dashboard?action=publishRelease`}>
-                  <a style={{ textDecoration: 'underline' }}> dashboard </a>
-                </Link>{' '}
-                to publish tracks
-              </Typography>
-
-            </Box>
-          )} */}
-        </Box>
+        </DescriptionWrapper>
       </Grid>
 
       <ContentViewWrapper item md={8} height="100%">
@@ -148,6 +132,15 @@ const ContentViewWrapper = styled(Grid)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     width: '100%',
     padding: '15px',
+  },
+}))
+
+const DescriptionWrapper = styled(Grid)(({ theme }) => ({
+  padding:' 0px 15px',
+  maxHeight: '68vh  ',
+  overflowX: 'scroll',
+  [theme.breakpoints.down('md')]: {
+    padding: '100px 15px 50px',
   },
 }))
 
