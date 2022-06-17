@@ -9,6 +9,7 @@ import { styled } from '@mui/material/styles'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useRouter } from 'next/router'
 import Dots from './Dots'
+import ScrollablePageWrapper from './ScrollablePageWrapper'
 import Image from "next/image";
 
 
@@ -43,49 +44,44 @@ const Hubs = () => {
   }
 
   return (
-    <HubsContainer overflowX="visible">
-      <Box>
-        <Box sx={{ paddingLeft: { md: '15px', xs: '0' } }}>
-          <Typography
-            variant="h2"
-            align="left"
-            fontWeight={'700'}
-            className={classes.sectionHeader}
-          >
-            Hubs
-          </Typography>
-        </Box>
-        <HubGrid container >
-          {hubs?.map(hub => {
-            const imageUrl = hub?.json?.image;
-            console.log('hub :>> ', hub);
-            return(
-              <HubTile item md={4}>
-                {imageUrl &&
-                  <Link href={`/${hub.handle}`}>
-                    <a>
-                      <Image
-                        src={imageUrl}
-                        height={100}
-                        width={100}
-                        layout="responsive"
-                        priority={true}
-                        unoptimized={true}
-                        loading="eager"
-                      />
-                    </a>
-                  </Link>
-                }
-              </HubTile>
-            )
-          })}
+      <HubsContainer overflowX="visible">
+          <Box sx={{ paddingLeft: { md: '15px', xs: '0' } }}>
+            <Typography
+              variant="h2"
+              align="left"
+              sx={{fontWeight: '700 !important'}}
+            >
+              Hubs
+            </Typography>
+          </Box>
+          <HubGrid container >
+            {hubs?.map(hub => {
+              const imageUrl = hub?.json?.image;
+              console.log('hub :>> ', hub);
+              return(
+                <HubTile item md={4}>
+                  {imageUrl &&
+                    <Link href={`/${hub.handle}`}>
+                      <a>
+                        <Image
+                          src={imageUrl}
+                          height={100}
+                          width={100}
+                          layout="responsive"
+                          priority={true}
+                          unoptimized={true}
+                          loading="eager"
+                        />
+                      </a>
+                    </Link>
+                  }
+                </HubTile>
+              )
+            })}
 
-        </HubGrid>
+          </HubGrid>
+      </HubsContainer>
 
-        
-        {/* <HubSlider hubs={hubs} /> */}
-      </Box>
-    </HubsContainer>
   )
 }
 
@@ -106,12 +102,14 @@ const HubsContainer = styled('div')(({ theme }) => ({
 }))
 
 const HubGrid = styled(Grid)(() => ({
-  border: '2px solid red',
-  // padding: '15px 15px 15px'
+  overflowY: 'scroll',
+  maxHeight: '100vh',
+  '&::-webkit-scrollbar': { 
+    display: 'none'
+}
 }))
 
 const HubTile = styled(Grid)(() => ({
-  border: '2px solid red',
   padding: '15px 15px 15px'
 }))
 
