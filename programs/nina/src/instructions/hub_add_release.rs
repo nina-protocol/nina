@@ -67,6 +67,7 @@ pub fn handler (
         hub_content: ctx.accounts.hub_content.key(),
         added_by: ctx.accounts.authority.key(),
         published_through_hub: false,
+        reposted_from_hub: if ctx.remaining_accounts.len() == 1 {Some(ctx.remaining_accounts[0].key())} else {None}
     });
 
     Ok(())

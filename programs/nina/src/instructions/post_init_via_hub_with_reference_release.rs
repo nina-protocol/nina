@@ -119,7 +119,8 @@ pub fn handler (
         hub_content: ctx.accounts.hub_content.key(),
         reference_content: Some(release.key()),
         reference_hub_content: Some(reference_release_hub_content.key()),
-        reference_hub_content_child: Some(reference_release_hub_release.key())
+        reference_hub_content_child: Some(reference_release_hub_release.key()),
+        reposted_from_hub: Some(reference_release_hub_content.reposted_from_hub)
     });
 
     Ok(())
