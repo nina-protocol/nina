@@ -15,7 +15,7 @@ import Image from "next/image";
 
 const { HubContext } = nina.contexts
 
-const Hubs = () => {
+const HomepageHubDisplay = () => {
   const { getHubs, hubState } = useContext(HubContext)
   const wallet = useWallet()
 
@@ -44,22 +44,28 @@ const Hubs = () => {
   }
 
   return (
-      <HubsContainer overflowX="visible">
-          <Box sx={{ paddingLeft: { md: '15px', xs: '0' } }}>
+      <HubsContainer >
+          {/* <Box sx={{ paddingLeft: { md: '15px', xs: '0' } }} */}
             <Typography
               variant="h2"
               align="left"
-              sx={{fontWeight: '700 !important'}}
+              sx={{
+                fontWeight: '700 !important', 
+                paddingLeft: {md: '15px', xs: '0'},
+                position: 'absolute',
+                top: '0',
+                background: 'white',
+                zIndex: '1',
+                width: '100%'
+              }}
             >
-              Hubs
+             Explore Hubs
             </Typography>
-          </Box>
           <HubGrid container >
             {hubs?.map(hub => {
               const imageUrl = hub?.json?.image;
-              console.log('hub :>> ', hub);
               return(
-                <HubTile item md={4} xs={6}>
+                <HubTile item md={3} xs={6}>
             
                   {imageUrl &&
                     <HubLink href={`/${hub.handle}`}>
@@ -91,9 +97,12 @@ const Hubs = () => {
 
 
 const HubsContainer = styled('div')(({ theme }) => ({
-  width: '1010px',
   margin: 'auto',
   overflowX: 'visible',
+  maxHeight: '40vh',
+  overflowY: 'scroll',
+  marginBottom: '40px',
+  position: 'relative',
   [theme.breakpoints.down('md')]: {
     width: '90vw',
     margin: '100px 0',
@@ -101,9 +110,9 @@ const HubsContainer = styled('div')(({ theme }) => ({
 }))
 
 const HubGrid = styled(Grid)(({theme}) => ({
-  // overflowY: 'scroll',
-  // maxHeight: '100vh',
-  paddingBottom: '200px',
+  maxHeight: '40vh',
+  overflowY: 'scroll',
+  paddingTop: '20px',
   '&::-webkit-scrollbar': { 
     display: 'none'
   },
@@ -131,4 +140,4 @@ const HubName = styled(Typography)(({theme}) => ({
 }))
 
 
-export default Hubs
+export default HomepageHubDisplay

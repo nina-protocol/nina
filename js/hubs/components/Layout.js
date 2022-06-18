@@ -122,7 +122,7 @@ const Root = styled('div')(({ theme }) => ({
     position: 'relative',
     textAlign: 'center',
     minHeight: '100%',
-    overflow: 'hidden',
+    overflowX: 'hidden',
     [theme.breakpoints.down('md')]: {
       overflow: 'scroll',
     },

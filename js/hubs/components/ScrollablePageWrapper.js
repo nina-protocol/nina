@@ -8,7 +8,7 @@ const ScrollablePageWrapper = ({ onScroll, children }) => {
 
 const ScrollablePage = styled(Box)(({ theme }) => ({
   width: '100vw',
-  padding: '210px 0',
+  padding: '0',
   overflowY: 'scroll',
   overflowX: 'hidden',
   [theme.breakpoints.down('md')]: {
