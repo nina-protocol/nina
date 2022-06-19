@@ -67,8 +67,6 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
   
   return (
     <>
-      {/* <BackButton onClick={() => router.back()} /> */}
-
       <DesktopImageGridItem item md={6}>
         {metadata && (
           <ImageContainer>

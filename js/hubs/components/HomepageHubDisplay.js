@@ -53,7 +53,7 @@ const HomepageHubDisplay = () => {
                 paddingLeft: {md: '15px', xs: '0'},
                 position: 'absolute',
                 top: '0',
-                left: '4px',
+                left: '0px',
                 background: 'white',
                 zIndex: '1',
                 width: '100%'
@@ -101,10 +101,9 @@ const HubsContainer = styled('div')(({ theme }) => ({
   overflowX: 'visible',
   marginBottom: '40px',
   position: 'relative',
-  // border: '2px solid blue',
   [theme.breakpoints.down('md')]: {
     // width: '90vw',
-    margin: ' 0  0 100px 0',
+    margin: ' 0  0 30px 0',
   },
 }))
 
@@ -125,7 +124,7 @@ const HubTile = styled(Grid)(({theme}) => ({
   padding: '15px 15px 15px',
   position: 'relative',
   [theme.breakpoints.down('md')]: {
-    padding: '5px'
+    padding: '5px 5px 5px 0px'
   },
 }))
 

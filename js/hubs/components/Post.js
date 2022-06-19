@@ -106,12 +106,13 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
   }
   return (
     <>
+    {referenceReleaseMetadata && (
       <Grid
         item
         md={6}
         xs={12}
         sx={{
-          margin: { md: '0px auto auto', xs: '100px' },
+          margin: { md: '0px auto auto', xs: '100px 0 15px' },
           padding: '0 15px',
           overflowX: 'hidden'
         }}
@@ -124,13 +125,14 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
           />
         )}
       </Grid>
+    )}
       <Grid
         item
         md={6}
         xs={12}
         sx={{
           margin: { md: '0px auto auto', xs: '0px' },
-          padding: '0 15px',
+          padding: {md: '0 15px', xs: `${referenceReleaseMetadata ? '15px': '75px'} 15px`},
         }}
       >
         {postData && (
@@ -171,6 +173,10 @@ const PostWrapper = styled(Box)(({ theme }) => ({
   overflowX: 'scroll',
   '&::-webkit-scrollbar': {
     display: 'none',
+  },
+  [theme.breakpoints.down('md')]: {
+    maxHeight: 'unset',
+    paddingBottom: '100px'
   },
 }))
 
