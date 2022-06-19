@@ -53,6 +53,7 @@ const HomepageHubDisplay = () => {
                 paddingLeft: {md: '15px', xs: '0'},
                 position: 'absolute',
                 top: '0',
+                left: '4px',
                 background: 'white',
                 zIndex: '1',
                 width: '100%'
@@ -98,25 +99,25 @@ const HomepageHubDisplay = () => {
 const HubsContainer = styled('div')(({ theme }) => ({
   margin: 'auto',
   overflowX: 'visible',
-  maxHeight: '40vh',
-  overflowY: 'scroll',
   marginBottom: '40px',
   position: 'relative',
+  // border: '2px solid blue',
   [theme.breakpoints.down('md')]: {
-    width: '90vw',
-    margin: '100px 0',
+    // width: '90vw',
+    margin: ' 0  0 100px 0',
   },
 }))
 
 const HubGrid = styled(Grid)(({theme}) => ({
   maxHeight: '40vh',
   overflowY: 'scroll',
-  paddingTop: '20px',
+  paddingTop: '30px',
   '&::-webkit-scrollbar': { 
     display: 'none'
   },
   [theme.breakpoints.down('md')]: {
     paddingBottom: '100px',
+    maxHeight: '380px',
   },
 }))
 
@@ -124,7 +125,7 @@ const HubTile = styled(Grid)(({theme}) => ({
   padding: '15px 15px 15px',
   position: 'relative',
   [theme.breakpoints.down('md')]: {
-    padding: '10px'
+    padding: '5px'
   },
 }))
 

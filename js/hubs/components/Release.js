@@ -66,7 +66,7 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
         xs={12}
         sx={{
           margin: { md: '0px auto auto', xs: '0px' },
-          padding: '0 15px',
+          padding: {md: '0 15px', xs: '75px 15px'},
         }}
       >
         {metadata && (
@@ -94,10 +94,10 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                 {metadata.properties.artist} - {metadata.properties.title} 
               </Typography>
               
-              <Box display="flex" sx={{mt: '15px'}}>
+              <Box display="flex" sx={{mt: '15px', mb:'15px'}}>
 
                 <PlayButton
-                  sx={{height: '22px', width: '28px', m: 0}}
+                  sx={{height: '22px', width: '28px', m: 0, paddingLeft: 0}}
                   onClick={(e) => {
                     e.stopPropagation()
                     updateTrack(

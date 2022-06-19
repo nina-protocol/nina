@@ -152,6 +152,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle }) => {
           </React.Fragment>
         )
       })}
+      {/* <Box></Box> */}
     </TileGrid>
   )
 }
@@ -175,7 +176,9 @@ const TileGrid = styled(Box)(({ theme, columnCount }) => ({
     maxWidth: '580px',
     gridTemplateColumns: 'repeat(2, 1fr)',
     maxHeight: 'unset',
-    gridAutoRows: 'minmax(41vw, 50%)',
+    // gridAutoRows: 'minmax(41vw, 50%)',
+    gridAutoRows: 'minmax(185px, 50vw)',
+    gridRowGap: '15px',
     paddingBottom: '250px',
     '& .tile:last-of-type': {
       marginBottom: '175px',
