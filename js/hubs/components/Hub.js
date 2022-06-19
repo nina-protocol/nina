@@ -146,6 +146,9 @@ const DescriptionWrapper = styled(Grid)(({ theme }) => ({
   padding:' 0px 15px',
   maxHeight: '68vh  ',
   overflowX: 'scroll',
+  '&::-webkit-scrollbar': {
+    display: 'none'
+  },
   [theme.breakpoints.down('md')]: {
     padding: '100px 15px 50px',
   },
