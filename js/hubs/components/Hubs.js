@@ -47,13 +47,16 @@ const Hubs = () => {
 
           {!wallet?.connected &&
             <>
-              <Typography
+              <BlueTypography
                 variant="h1"
                 align="left"
                 sx={{ padding: { md: '0 165px 40px', xs: '30px 0px' } }}
               >
-                Hubs are a new way to publish, share, and discuss music.
-              </Typography>
+                <Link href="/all">
+                  Hubs{' '}
+                </Link>
+                 are a new way to publish, share, and discuss music.
+              </BlueTypography>
               <BlueTypography
                 variant="h1"
                 align="left"

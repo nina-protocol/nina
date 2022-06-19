@@ -89,11 +89,13 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
               <Typography
                 variant="h3"
                 align="left"
-                sx={{ color: 'text.primary' , whiteSpace: 'nowrap', mr: 1}}
+                sx={{ color: 'text.primary' ,  mr: 1}}
               >
                 {metadata.properties.artist} - {metadata.properties.title} 
               </Typography>
               
+              <Box display="flex" sx={{mt: '15px'}}>
+
                 <PlayButton
                   sx={{height: '22px', width: '28px', m: 0}}
                   onClick={(e) => {
@@ -112,6 +114,7 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                 {releasePubkey && metadata && (
                   <AddToHubModal userHubs={userHubs} releasePubkey={releasePubkey} metadata={metadata} hubPubkey={hubPubkey} />
                 )}
+              </Box>
             </CtaWrapper>
 
             <StyledDescription variant="h4" align="left">
@@ -176,7 +179,7 @@ const MobileImageWrapper = styled(Grid)(({ theme }) => ({
   display: 'none',
   [theme.breakpoints.down('md')]: {
     display: 'block',
-    padding: '45px 0 0',
+    padding: '30px 0 0',
   },
 }))
 
@@ -184,11 +187,9 @@ const ImageContainer = styled(Box)(() => ({
   width: '100%',
 }))
 
-const CtaWrapper = styled(Box)(({theme}) => ({
+const CtaWrapper = styled(Box)(() => ({
   display: 'flex',
-  [theme.breakpoints.down('md')]: {
-    paddingTop: '15px'
-  },
+  flexDirection: 'column'
 }))
 
 export default Release

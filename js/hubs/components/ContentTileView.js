@@ -66,7 +66,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle }) => {
                       />
                     </Button>
 
-                    <ContentName sx={{ color: 'text.primary' }}>
+                    <ContentName sx={{ color: 'text.primary', padding: '0 15px' }}>
                       {item.name.substring(0, 100)}
                     </ContentName>
                   </CardCta>
@@ -189,8 +189,10 @@ const TileGrid = styled(Box)(({ theme, columnCount }) => ({
 const Tile = styled(Box)(({ theme }) => ({
   textAlign: 'left',
   maxWidth: '100%',
+  boxSizing: 'border-box',
+  border: `2px solid ${theme.palette.transparent}`,
   '&:hover': {
-    border: '2px solid',
+    border: `2px solid ${theme.palette.text.primary}`,
   },
   maxHeight: '300px',
   width: '100%',
