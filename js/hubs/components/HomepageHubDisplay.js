@@ -45,7 +45,6 @@ const HomepageHubDisplay = () => {
 
   return (
       <HubsContainer >
-          {/* <Box sx={{ paddingLeft: { md: '15px', xs: '0' } }} */}
             <Typography
               variant="h2"
               align="left"
@@ -62,10 +61,10 @@ const HomepageHubDisplay = () => {
              Explore Hubs
             </Typography>
           <HubGrid container >
-            {hubs?.map(hub => {
+            {hubs?.map((hub, i) => {
               const imageUrl = hub?.json?.image;
               return(
-                <HubTile item md={3} xs={6}>
+                <HubTile item md={3} xs={6} key={i}>
             
                   {imageUrl &&
                     <HubLink href={`/${hub.handle}`}>

@@ -111,8 +111,9 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
         md={6}
         xs={12}
         sx={{
-          margin: { md: '0px auto auto', xs: '0px' },
+          margin: { md: '0px auto auto', xs: '100px' },
           padding: '0 15px',
+          overflowX: 'hidden'
         }}
       >
         {referenceReleaseMetadata && (
