@@ -135,7 +135,7 @@ const Navigation = ({hubPubkey}) => {
                 {hubData?.json.displayName}
               </Typography>
             ) : (
-              <Typography variant="h4">NINA HUBS</Typography>
+              <Typography variant="h4">NINA HUBS [beta]</Typography>
             )}
           </LogoLinkWrapper>
         </Link>
@@ -143,7 +143,7 @@ const Navigation = ({hubPubkey}) => {
           {!mobileView && canAddContent && getMenuButtons(hubData?.handle)}
             <WalletWrapper id="wallet-wrapper">
               <NavCtas>
-                {wallet.wallets && (
+                         {wallet.wallets && (
                   <StyledWalletDialogProvider featuredWallets={4}>
                     <StyledWalletButton >
                       <StyledWalletButtonTypography

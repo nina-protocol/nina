@@ -55,12 +55,10 @@ const Hubs = () => {
             </Typography>
           </Box>
           <HubGrid container >
-            {hubs?.map(hub => {
+            {hubs?.map((hub, i )=> {
               const imageUrl = hub?.json?.image;
-              console.log('hub :>> ', hub);
               return(
-                <HubTile item md={4} xs={6}>
-            
+                <HubTile item md={4} xs={6} key={i}>            
                   {imageUrl &&
                     <HubLink href={`/${hub.handle}`}>
                       <a>
