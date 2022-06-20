@@ -1,41 +1,42 @@
-import React, {useContext, useEffect, useMemo} from 'react'
-import nina from '@nina-protocol/nina-sdk'
-import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
-import Link from '@mui/material/Link'
-import { styled } from '@mui/material/styles'
-import { useWallet } from '@solana/wallet-adapter-react'
-import { useRouter } from 'next/router'
+import React, { useContext, useEffect, useMemo } from "react";
+import nina from "@nina-protocol/nina-sdk";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Link from "@mui/material/Link";
+import { styled } from "@mui/material/styles";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { useRouter } from "next/router";
 
-import HubSlider from './HubSlider'
+import HubSlider from "./HubSlider";
 import {
   DashboardWrapper,
   DashboardContent,
   DashboardHeader,
   DashboardEntry,
-} from '../styles/theme/lightThemeOptions.js'
+} from "../styles/theme/lightThemeOptions.js";
 
-const { HubContext, NinaContext } = nina.contexts
+const { HubContext, NinaContext } = nina.contexts;
 
 const Hubs = () => {
-  const { getHubsForUser, hubState, filterHubsForUser } = useContext(HubContext)
-  const { npcAmountHeld } = useContext(NinaContext)
-  const router = useRouter()
-  const wallet = useWallet()
+  const { getHubsForUser, hubState, filterHubsForUser } =
+    useContext(HubContext);
+  const { npcAmountHeld } = useContext(NinaContext);
+  const router = useRouter();
+  const wallet = useWallet();
 
   useEffect(() => {
     if (wallet.connected) {
-      getHubsForUser(wallet.publicKey.toBase58())
+      getHubsForUser(wallet.publicKey.toBase58());
     }
-  }, [wallet.connected])
-  
+  }, [wallet.connected]);
+
   const userHubs = useMemo(() => {
     if (wallet.connected) {
-      return filterHubsForUser(wallet.publicKey.toBase58())
+      return filterHubsForUser(wallet.publicKey.toBase58());
     }
-    return undefined
-  }, [hubState, wallet.connected])
+    return undefined;
+  }, [hubState, wallet.connected]);
 
   return (
     <HubsContainer overflowX="visible">
@@ -46,60 +47,71 @@ const Hubs = () => {
             <Typography
               variant="h1"
               align="left"
-              sx={{ padding: { md: '0 165px 40px', xs: '30px 0px' } }}
+              sx={{ padding: { md: "0 165px 40px", xs: "30px 0px" } }}
             >
               Hubs are a new way to publish, share, and discuss music.
             </Typography>
             <BlueTypography
               variant="h1"
               align="left"
-              sx={{ padding: { md: '0 165px 40px', xs: '30px 0px' } }}
+              sx={{ padding: { md: "0 165px 40px", xs: "30px 0px" } }}
             >
-              Hubs give you a space to create your context.{`  `}<Link
+              Hubs give you a space to create your context.{`  `}
+              <Link
                 href="https://www.notion.so/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612#c7abd525851545a199e06ecd14a16a15"
                 target="_blank"
                 rel="noreferrer"
                 passHref
-              >Learn More</Link>.
+              >
+                Learn More
+              </Link>
+              .
             </BlueTypography>
             <BlueTypography
               variant="h1"
               align="left"
-              sx={{ padding: { md: '0 165px 40px', xs: '30px 0px' } }}
+              sx={{ padding: { md: "0 165px 40px", xs: "30px 0px" } }}
             >
               <Link
                 href="https://docs.google.com/forms/d/e/1FAIpQLScSdwCMqUz6VGqhkO6xdfUxu1pzdZEdsGoXL9TGDYIGa9t2ig/viewform"
                 target="_blank"
                 rel="noreferrer"
                 passHref
-              >Apply</Link> for a Hub or connect your wallet to get started.
+              >
+                Apply
+              </Link>{" "}
+              for a Hub or connect your wallet to get started.
             </BlueTypography>
           </>
-        }
-        {wallet.connected &&
+        )}
+        {wallet.connected && (
           <>
-            {npcAmountHeld === 0 && userHubs && userHubs?.length === 0 &&
+            {npcAmountHeld === 0 && userHubs && userHubs?.length === 0 && (
               <BlueTypography
                 variant="h1"
                 align="left"
-                sx={{ padding: { md: '0 165px 40px', xs: '30px 0px' } }}
+                sx={{ padding: { md: "0 165px 40px", xs: "30px 0px" } }}
               >
-              You do not have any credits to create a Hub.  Please{` `}<Link
-                href="https://docs.google.com/forms/d/e/1FAIpQLScSdwCMqUz6VGqhkO6xdfUxu1pzdZEdsGoXL9TGDYIGa9t2ig/viewform"
-                target="_blank"
-                rel="noreferrer"
-                passHref
-              >apply</Link> here to get started.
-            </BlueTypography>
-            }
-            {userHubs?.length > 0 &&
+                You do not have any credits to create a Hub. Please{` `}
+                <Link
+                  href="https://docs.google.com/forms/d/e/1FAIpQLScSdwCMqUz6VGqhkO6xdfUxu1pzdZEdsGoXL9TGDYIGa9t2ig/viewform"
+                  target="_blank"
+                  rel="noreferrer"
+                  passHref
+                >
+                  apply
+                </Link>{" "}
+                here to get started.
+              </BlueTypography>
+            )}
+            {userHubs?.length > 0 && (
               <DashboardWrapper
                 md={9}
                 columnSpacing={2}
                 columnGap={2}
                 height="100% !important"
               >
-                {npcAmountHeld === 0 &&
+                {npcAmountHeld === 0 && (
                   <DashboardContent item md={6}>
                     <StyledLink
                       href="https://docs.google.com/forms/d/e/1FAIpQLScSdwCMqUz6VGqhkO6xdfUxu1pzdZEdsGoXL9TGDYIGa9t2ig/viewform"
@@ -111,94 +123,96 @@ const Hubs = () => {
                         color="primary"
                         variant="outlined"
                         fullWidth
-                        type="submit"                    
+                        type="submit"
                       >
                         Apply For More Hubs
                       </Button>
                     </StyledLink>
                   </DashboardContent>
-                }
-                {npcAmountHeld > 0 &&
+                )}
+                {npcAmountHeld > 0 && (
                   <DashboardContent item md={6}>
                     <StyledLink>
                       <Button
                         color="primary"
                         variant="outlined"
                         fullWidth
-                        type="submit"                    
-                        onClick={() => router.push('/create')}
+                        type="submit"
+                        onClick={() => router.push("/create")}
                       >
                         Create a Hub
                       </Button>
                     </StyledLink>
                   </DashboardContent>
-                }
+                )}
                 <DashboardContent item md={6}>
                   <>
                     <DashboardHeader style={{ fontWeight: 600 }}>
-                      You have {userHubs.length}{' '}Hubs
+                      You have {userHubs.length} Hubs
                     </DashboardHeader>
-                    <ul style={{ height: '500px', overflowY:'scroll' }}>
+                    <ul style={{ height: "500px", overflowY: "scroll" }}>
                       {userHubs.map((hub) => {
                         return (
                           <DashboardEntry key={hub.id}>
-                            <Link href={`/${hub.handle}`}>{hub.json.displayName}</Link>
+                            <Link href={`/${hub.handle}`}>
+                              {hub.json.displayName}
+                            </Link>
                           </DashboardEntry>
-                        )
+                        );
                       })}
                     </ul>
                   </>
                 </DashboardContent>
               </DashboardWrapper>
-            }
+            )}
           </>
-        }
+        )}
       </Box>
     </HubsContainer>
-  )
-}
+  );
+};
 
-const PREFIX = 'hubs'
+const PREFIX = "hubs";
 
 const classes = {
   sectionHeader: `${PREFIX}-sectionHeader`,
-}
+};
 
 const BlueTypography = styled(Typography)(({ theme }) => ({
-  '& a': { 
+  "& a": {
     color: theme.palette.blue,
-    textDecoration: 'none',
+    textDecoration: "none",
   },
-}))
+}));
 
 const StyledLink = styled(Link)(() => ({
-  textDecoration: 'none'
-}))
-const HubsContainer = styled('div')(({ theme }) => ({
-  width: '1010px',
-  margin: 'auto',
-  overflowX: 'visible',
-  '& .MuiBox-root': {
-    paddingTop: '40px !important',
+  textDecoration: "none",
+}));
+const HubsContainer = styled("div")(({ theme }) => ({
+  width: "1010px",
+  margin: "auto",
+  overflowX: "visible",
+  "& .MuiBox-root": {
+    paddingTop: "40px !important",
   },
-  [theme.breakpoints.down('md')]: {
-    width: '80vw',
-    marginBottom: '100px',
+  [theme.breakpoints.down("md")]: {
+    width: "80vw",
+    marginBottom: "100px",
   },
   [`& .${classes.sectionHeader}`]: {
-    fontWeight: '700 !important',
+    fontWeight: "700 !important",
     paddingBottom: `${theme.spacing(1)}`,
-    textTransform: 'uppercase !important',
-    position: 'relative',
-    '& .MuiTypography-root': {
-      textTransform: 'uppercase !important',
-      fontWeight: '700 !important',
+    textTransform: "uppercase !important",
+    position: "relative",
+    "& .MuiTypography-root": {
+      textTransform: "uppercase !important",
+      fontWeight: "700 !important",
     },
-    '& .MuiButton-root': {
-      position: 'absolute',
-      top: '-10px',
+    "& .MuiButton-root": {
+      position: "absolute",
+      top: "-10px",
     },
   },
-}))
+}));
 
-export default Hubs
+export default Hubs;

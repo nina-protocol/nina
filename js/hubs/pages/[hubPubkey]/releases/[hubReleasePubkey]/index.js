@@ -1,16 +1,16 @@
-import React, { useContext } from 'react'
-import dynamic from 'next/dynamic'
-import Head from 'next/head'
-import * as anchor from '@project-serum/anchor'
-import axios from 'axios'
-const Release = dynamic(() => import('../../../../components/Release'))
-import { Metadata } from '@metaplex-foundation/mpl-token-metadata'
+import React, { useContext } from "react";
+import dynamic from "next/dynamic";
+import Head from "next/head";
+import * as anchor from "@project-serum/anchor";
+import axios from "axios";
+const Release = dynamic(() => import("../../../../components/Release"));
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 
 const ReleasePage = (props) => {
-  const { metadata, hub, releasePubkey, hubPubkey } = props
+  const { metadata, hub, releasePubkey, hubPubkey } = props;
   return (
     <>
-       <Head>
+      <Head>
         <title>{`${metadata?.properties.artist} - "${metadata?.properties.title}"`}</title>
         <meta
           name="description"
@@ -38,15 +38,19 @@ const ReleasePage = (props) => {
         <meta name="twitter:image" content={metadata?.image} />
         <meta name="og:image" content={metadata?.image} />
       </Head>
-      <Release metadataSsr={metadata} releasePubkey={releasePubkey} hubPubkey={hubPubkey} />
+      <Release
+        metadataSsr={metadata}
+        releasePubkey={releasePubkey}
+        hubPubkey={hubPubkey}
+      />
     </>
-  )
-}
+  );
+};
 
 ReleasePage.getInitialProps = async (context) => {
-  const indexerUrl = process.env.INDEXER_URL
-  const hubReleasePubkey = context.query.hubReleasePubkey
-  const indexerPath = indexerUrl + `/hubReleases/${hubReleasePubkey}`
+  const indexerUrl = process.env.INDEXER_URL;
+  const hubReleasePubkey = context.query.hubReleasePubkey;
+  const indexerPath = indexerUrl + `/hubReleases/${hubReleasePubkey}`;
 
   let hubRelease;
   let release;
@@ -55,25 +59,24 @@ ReleasePage.getInitialProps = async (context) => {
   let metadata;
   let hubPubkey;
   try {
-    const result = await axios.get(indexerPath)
-    const data = result.data
+    const result = await axios.get(indexerPath);
+    const data = result.data;
     if (data.hubRelease) {
-      hubRelease = data.hubRelease
-      release = hubRelease.release
-      metadata = release.metadataAccount.json
-      releasePubkey = hubRelease.releaseId
-      hub = hubRelease.hub
-      hubPubkey = hubRelease.hubId
+      hubRelease = data.hubRelease;
+      release = hubRelease.release;
+      metadata = release.metadataAccount.json;
+      releasePubkey = hubRelease.releaseId;
+      hub = hubRelease.hub;
+      hubPubkey = hubRelease.hubId;
     }
-
   } catch (error) {
-    console.warn(error)
+    console.warn(error);
   }
   return {
     releasePubkey,
     metadata,
-    hubPubkey: hubRelease.hubId
-  }
-}
+    hubPubkey: hubRelease.hubId,
+  };
+};
 
-export default ReleasePage
+export default ReleasePage;
