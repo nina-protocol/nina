@@ -44,7 +44,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
       variant: 'info',
     })
     const result = await hubAddRelease(selectedHubId, releasePubkey)
-    if (result.success) {
+    if (result?.success) {
       enqueueSnackbar(result.msg, {
         variant: 'info',
       })
