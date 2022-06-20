@@ -133,7 +133,7 @@ const Quill = ({ props, postCreated }) => {
     clipboard: {
       matchVisual: false,
     },
-    magicUrl: true
+    magicUrl: true,
   }
 
   const placeholder = ''
@@ -148,22 +148,26 @@ const Quill = ({ props, postCreated }) => {
     'script',
   ]
 
-  const { quill, quillRef, Quill } = useQuill({ theme, modules, formats, placeholder })
+  const { quill, quillRef, Quill } = useQuill({
+    theme,
+    modules,
+    formats,
+    placeholder,
+  })
   if (Quill) {
-    const MagicUrl = require('quill-magic-url').default; // Install with 'yarn add quill-magic-url'
-    Quill.register('modules/magicUrl', MagicUrl);
-    var Link = Quill.import('formats/link');
-    var builtInFunc = Link.sanitize;
+    const MagicUrl = require('quill-magic-url').default // Install with 'yarn add quill-magic-url'
+    Quill.register('modules/magicUrl', MagicUrl)
+    var Link = Quill.import('formats/link')
+    var builtInFunc = Link.sanitize
     Link.sanitize = function customSanitizeLinkInput(linkValueInput) {
-        var val = linkValueInput;
-    
-        // do nothing, since this implies user's already using a custom protocol
-        if (/^\w+:/.test(val));
-        else if (!/^https?:/.test(val))
-            val = "http://" + val;
-    
-        return builtInFunc.call(this, val); // retain the built-in logic
-    };
+      var val = linkValueInput
+
+      // do nothing, since this implies user's already using a custom protocol
+      if (/^\w+:/.test(val));
+      else if (!/^https?:/.test(val)) val = 'http://' + val
+
+      return builtInFunc.call(this, val) // retain the built-in logic
+    }
   }
 
   useEffect(() => {

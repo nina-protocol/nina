@@ -41,7 +41,7 @@ const HubContextProvider = ({ children }) => {
     getHubPost,
     collectRoyaltyForReleaseViaHub,
     getHubPubkeyForHubHandle,
-    validateHubHandle
+    validateHubHandle,
   } = hubContextHelper({
     ninaClient,
     savePostsToState,
@@ -86,7 +86,7 @@ const HubContextProvider = ({ children }) => {
         getHubPost,
         collectRoyaltyForReleaseViaHub,
         getHubPubkeyForHubHandle,
-        validateHubHandle
+        validateHubHandle,
       }}
     >
       {children}
@@ -1065,7 +1065,9 @@ const hubContextHelper = ({
     let path = endpoints.api + `/hubs/${handle}`
     const response = await fetch(path)
     if (response.status === 200) {
-      alert(`A hub with the handle ${handle} all ready exists, please choose a different handle.`)
+      alert(
+        `A hub with the handle ${handle} all ready exists, please choose a different handle.`
+      )
       return false
     }
     return true
@@ -1092,7 +1094,7 @@ const hubContextHelper = ({
     getHubPost,
     collectRoyaltyForReleaseViaHub,
     getHubPubkeyForHubHandle,
-    validateHubHandle
+    validateHubHandle,
   }
 }
 export default HubContextProvider

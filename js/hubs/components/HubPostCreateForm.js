@@ -1,19 +1,19 @@
-import React, { useContext, useEffect } from 'react'
-import { styled } from '@mui/material/styles'
-import nina from '@nina-protocol/nina-sdk'
-import { withFormik, Form, Field } from 'formik'
-import Typography from '@mui/material/Typography'
-import TextField from '@mui/material/TextField'
-import Box from '@mui/material/Box'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
-import { useQuill } from 'react-quilljs'
+import React, { useContext, useEffect } from "react";
+import { styled } from "@mui/material/styles";
+import nina from "@nina-protocol/nina-sdk";
+import { withFormik, Form, Field } from "formik";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import { useQuill } from "react-quilljs";
 
-import 'quill/dist/quill.snow.css'
+import "quill/dist/quill.snow.css";
 
-const { formatPlaceholder } = nina.utils
-const { ReleaseContext } = nina.contexts
+const { formatPlaceholder } = nina.utils;
+const { ReleaseContext } = nina.contexts;
 
 const HubPostCreateForm = ({
   field,
@@ -30,23 +30,23 @@ const HubPostCreateForm = ({
   hubReleasesToReference,
   preloadedRelease,
 }) => {
-  const { releaseState } = useContext(ReleaseContext)
+  const { releaseState } = useContext(ReleaseContext);
 
   useEffect(() => {
     if (onChange) {
-      onChange(values)
+      onChange(values);
     }
-  }, [values])
+  }, [values]);
 
   useEffect(() => {
     if (postCreated) {
-      resetForm()
+      resetForm();
     }
-  }, [postCreated])
+  }, [postCreated]);
 
   return (
     <Root>
-      <Form style={{ padding: '0 15px', height: '100%' }}>
+      <Form style={{ padding: "0 15px", height: "100%" }}>
         <Field name="title">
           {(props) => (
             <Box>
@@ -55,10 +55,10 @@ const HubPostCreateForm = ({
                 variant="standard"
                 label={
                   formatPlaceholder(props.field.name) +
-                  (update ? ` (${hubData.json.title})` : '')
+                  (update ? ` (${hubData.json.title})` : "")
                 }
                 size="small"
-                InputLabelProps={touched.title ? { shrink: true } : ''}
+                InputLabelProps={touched.title ? { shrink: true } : ""}
                 placeholder={
                   errors.title && touched.title ? errors.title : null
                 }
@@ -76,37 +76,37 @@ const HubPostCreateForm = ({
           )}
         </Field>
 
-            {!preloadedRelease && (
-              <Field name="reference">
-                {(props) => (
-                  <FormControl fullWidth>
-                    <Select
-                      className="formField"
-                      value={props.field.value}
-                      placeholder="Release Reference"
-                      displayEmpty
-                      onChange={(e) => {
-                        props.form.setFieldValue('reference', e.target.value)
-                      }}
-                    >
-                      <MenuItem disabled value="">
-                        Reference a release in Post? (Optional)
+        {!preloadedRelease && (
+          <Field name="reference">
+            {(props) => (
+              <FormControl fullWidth>
+                <Select
+                  className="formField"
+                  value={props.field.value}
+                  placeholder="Release Reference"
+                  displayEmpty
+                  onChange={(e) => {
+                    props.form.setFieldValue("reference", e.target.value);
+                  }}
+                >
+                  <MenuItem disabled value="">
+                    Reference a release in Post? (Optional)
+                  </MenuItem>
+                  {hubReleasesToReference.map((hubRelease) => {
+                    return (
+                      <MenuItem
+                        key={hubRelease.release}
+                        value={hubRelease.release}
+                      >
+                        {releaseState.metadata[hubRelease.release]?.name}
                       </MenuItem>
-                      {hubReleasesToReference.map((hubRelease) => {
-                        return (
-                          <MenuItem
-                            key={hubRelease.release}
-                            value={hubRelease.release}
-                          >
-                            {releaseState.metadata[hubRelease.release]?.name}
-                          </MenuItem>
-                        )
-                      })}
-                    </Select>
-                  </FormControl>
-                )}
-              </Field>
+                    );
+                  })}
+                </Select>
+              </FormControl>
             )}
+          </Field>
+        )}
 
         {preloadedRelease && (
           <Typography mt={1}>
@@ -116,86 +116,90 @@ const HubPostCreateForm = ({
         )}
       </Form>
     </Root>
-  )
-}
+  );
+};
 
 const Quill = ({ props, postCreated }) => {
-  const theme = 'snow'
+  const theme = "snow";
 
   const modules = {
     toolbar: [
       [{ header: [1, 2, 3, 4, 5, 6, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ script: 'sub' }, { script: 'super' }],
-      ['link'],
+      ["bold", "italic", "underline", "strike"],
+      [{ script: "sub" }, { script: "super" }],
+      ["link"],
     ],
     clipboard: {
       matchVisual: false,
     },
-    magicUrl: true
-  }
+    magicUrl: true,
+  };
 
-  const placeholder = ''
+  const placeholder = "";
 
   const formats = [
-    'bold',
-    'italic',
-    'underline',
-    'strike',
-    'header',
-    'link',
-    'script',
-  ]
-  const { quill, quillRef, Quill } = useQuill({ theme, modules, formats, placeholder })
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "header",
+    "link",
+    "script",
+  ];
+  const { quill, quillRef, Quill } = useQuill({
+    theme,
+    modules,
+    formats,
+    placeholder,
+  });
   if (Quill) {
-    const MagicUrl = require('quill-magic-url').default; // Install with 'yarn add quill-magic-url'
-    Quill.register('modules/magicUrl', MagicUrl);
-    var Link = Quill.import('formats/link');
+    const MagicUrl = require("quill-magic-url").default; // Install with 'yarn add quill-magic-url'
+    Quill.register("modules/magicUrl", MagicUrl);
+    var Link = Quill.import("formats/link");
     var builtInFunc = Link.sanitize;
     Link.sanitize = function customSanitizeLinkInput(linkValueInput) {
-        var val = linkValueInput;
-    
-        // do nothing, since this implies user's already using a custom protocol
-        if (/^\w+:/.test(val));
-        else if (!/^https?:/.test(val))
-            val = "http://" + val;
-    
-        return builtInFunc.call(this, val); // retain the built-in logic
+      var val = linkValueInput;
+
+      // do nothing, since this implies user's already using a custom protocol
+      if (/^\w+:/.test(val));
+      else if (!/^https?:/.test(val)) val = "http://" + val;
+
+      return builtInFunc.call(this, val); // retain the built-in logic
     };
   }
-  
+
   useEffect(() => {
     if (quill) {
-      quill.on('text-change', () => {
-        props.form.setFieldValue('body', JSON.stringify(quill.root.innerHTML))
-      })
+      quill.on("text-change", () => {
+        props.form.setFieldValue("body", JSON.stringify(quill.root.innerHTML));
+      });
     }
-  }, [quill])
+  }, [quill]);
 
   useEffect(() => {
     if (postCreated) {
-      quill?.setContents([{ insert: '\n' }])
+      quill?.setContents([{ insert: "\n" }]);
     }
-  }, [postCreated])
+  }, [postCreated]);
 
-  return <Box style={{ height: '300px' }} ref={quillRef} />
-}
+  return <Box style={{ height: "300px" }} ref={quillRef} />;
+};
 
-const Root = styled('div')(({ theme }) => ({
-  width: '100%',
-  height: '100%',
-}))
+const Root = styled("div")(({ theme }) => ({
+  width: "100%",
+  height: "100%",
+}));
 
 export default withFormik({
   enableReinitialize: true,
   validationSchema: (props) => {
-    return props.PostCreateSchema
+    return props.PostCreateSchema;
   },
   mapPropsToValues: () => {
     return {
-      title: '',
+      title: "",
       body: null,
-      reference: '',
-    }
+      reference: "",
+    };
   },
-})(HubPostCreateForm)
+})(HubPostCreateForm);

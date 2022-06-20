@@ -1,5 +1,5 @@
-import Hubs from '../components/Hubs'
-import Head from 'next/head'
+import Hubs from "../components/Hubs";
+import Head from "next/head";
 
 export default function Home() {
   return (
@@ -9,5 +9,5 @@ export default function Home() {
       </Head>
       <Hubs />
     </>
-  )
+  );
 }

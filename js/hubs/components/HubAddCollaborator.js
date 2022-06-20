@@ -1,25 +1,25 @@
-import { useContext, useState } from 'react'
-import { useSnackbar } from 'notistack'
-import nina from '@nina-protocol/nina-sdk'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import Box from '@mui/material/Box'
-import { styled } from '@mui/material/styles'
-import { toggleButtonClasses, Typography } from '@mui/material'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Checkbox from '@mui/material/Checkbox'
-import Tooltip from '@mui/material/Tooltip'
-import HelpIcon from '@mui/icons-material/Help'
-import { DashboardHeader } from '../styles/theme/lightThemeOptions.js'
+import { useContext, useState } from "react";
+import { useSnackbar } from "notistack";
+import nina from "@nina-protocol/nina-sdk";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
+import { styled } from "@mui/material/styles";
+import { toggleButtonClasses, Typography } from "@mui/material";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Tooltip from "@mui/material/Tooltip";
+import HelpIcon from "@mui/icons-material/Help";
+import { DashboardHeader } from "../styles/theme/lightThemeOptions.js";
 
-import { useFormik } from 'formik'
-const { HubContext } = nina.contexts
+import { useFormik } from "formik";
+const { HubContext } = nina.contexts;
 
 const HubAddCollaborator = (props) => {
-  const { hubPubkey, canAddCollaborators } = props
-  const { enqueueSnackbar } = useSnackbar()
-  const { hubAddCollaborator } = useContext(HubContext)
-  const [unlimitedAllowance, setUnlimitAllowance] = useState(false)
+  const { hubPubkey, canAddCollaborators } = props;
+  const { enqueueSnackbar } = useSnackbar();
+  const { hubAddCollaborator } = useContext(HubContext);
+  const [unlimitedAllowance, setUnlimitAllowance] = useState(false);
 
   // const IconWithTooltip = () => {
   //   return (
@@ -31,17 +31,17 @@ const HubAddCollaborator = (props) => {
 
   const toggleAllowance = (formik) => {
     if (unlimitedAllowance) {
-      setUnlimitAllowance(false)
-      formik.setFieldValue('allowance', 3)
+      setUnlimitAllowance(false);
+      formik.setFieldValue("allowance", 3);
     } else {
-      setUnlimitAllowance(true)
-      formik.setFieldValue('allowance', -1)
+      setUnlimitAllowance(true);
+      formik.setFieldValue("allowance", -1);
     }
-  }
+  };
 
   const formik = useFormik({
     initialValues: {
-      collaboratorPubkey: '',
+      collaboratorPubkey: "",
       canAddContent: true,
       canAddCollaborator: true,
       allowance: 3,
@@ -52,26 +52,26 @@ const HubAddCollaborator = (props) => {
         canAddContent,
         canAddCollaborator,
         allowance,
-      } = values
+      } = values;
       const result = await hubAddCollaborator(
         collaboratorPubkey,
         hubPubkey,
         canAddContent,
         canAddCollaborator,
         allowance
-      )
+      );
       if (result.success) {
         enqueueSnackbar(result.msg, {
-          variant: 'info',
-        })
+          variant: "info",
+        });
       } else {
-        enqueueSnackbar('Collaborator Not Added', {
-          variant: 'failure',
-        })
+        enqueueSnackbar("Collaborator Not Added", {
+          variant: "failure",
+        });
       }
-      resetForm()
+      resetForm();
     },
-  })
+  });
 
   return (
     <Root>
@@ -82,10 +82,10 @@ const HubAddCollaborator = (props) => {
       <form
         onSubmit={formik.handleSubmit}
         style={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: '100%',
-          marginTop: '16px',
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          marginTop: "16px",
         }}
       >
         <TextField
@@ -100,12 +100,12 @@ const HubAddCollaborator = (props) => {
         />
 
         <Box
-          display={'flex'}
+          display={"flex"}
           alignItems="flex-end"
-          sx={{ margin: ' 15px 0px 0', padding: '0' }}
+          sx={{ margin: " 15px 0px 0", padding: "0" }}
         >
           <FormControlLabel
-            sx={{ margin: '0', padding: '0' }}
+            sx={{ margin: "0", padding: "0" }}
             control={
               <Checkbox
                 value={formik.values.canAddContent}
@@ -118,7 +118,7 @@ const HubAddCollaborator = (props) => {
             label="Can Add Content"
           />
           <FormControlLabel
-            sx={{ margin: '0', paddingLeft: '15px' }}
+            sx={{ margin: "0", paddingLeft: "15px" }}
             control={
               <Checkbox
                 value={formik.values.canAddCollaborator}
@@ -135,21 +135,21 @@ const HubAddCollaborator = (props) => {
               id="allowance"
               label={
                 <Box display="flex" alignItems="center">
-                  {'Allowance'}
+                  {"Allowance"}
                 </Box>
               }
               name="allowance"
               type="number"
               variant="standard"
-              style={{ width: '100px', marginLeft: '15px', fontSize: '13px' }}
-              value={unlimitedAllowance ? '' : formik.values.allowance}
+              style={{ width: "100px", marginLeft: "15px", fontSize: "13px" }}
+              value={unlimitedAllowance ? "" : formik.values.allowance}
               onChange={formik.handleChange}
               disabled={unlimitedAllowance}
             />
           </Box>
 
           <FormControlLabel
-            sx={{ margin: '0', paddingLeft: '15px' }}
+            sx={{ margin: "0", paddingLeft: "15px" }}
             control={
               <Checkbox
                 value={formik.values.canAddCollaborator}
@@ -163,26 +163,26 @@ const HubAddCollaborator = (props) => {
         </Box>
 
         <Button
-          style={{ marginTop: '15px' }}
+          style={{ marginTop: "15px" }}
           variant="outlined"
           fullWidth
           type="submit"
           disabled={!canAddCollaborators}
         >
           {canAddCollaborators
-            ? 'Add Collaborator'
-            : 'You Do Not Have Permission To Add Collaborators'}
+            ? "Add Collaborator"
+            : "You Do Not Have Permission To Add Collaborators"}
         </Button>
       </form>
     </Root>
-  )
-}
+  );
+};
 
 const Root = styled(Box)(({ theme }) => ({
   // whiteSpace: 'nowrap',
-  '& .MuiFormControlLabel-label': {
-    fontSize: '13px !important',
+  "& .MuiFormControlLabel-label": {
+    fontSize: "13px !important",
   },
-}))
+}));
 
-export default HubAddCollaborator
+export default HubAddCollaborator;
