@@ -1,8 +1,8 @@
-import NotFound from '../components/NotFound'
+import NotFound from "../components/NotFound";
 
 const NotFoundPage = (props) => {
-  console.log('NOT FOUND: ', props)
-  return <NotFound />
-}
+  console.log("NOT FOUND: ", props);
+  return <NotFound />;
+};
 
-export default NotFoundPage
+export default NotFoundPage;

@@ -1,10 +1,10 @@
-import * as anchor from '@project-serum/anchor'
-import axios from 'axios'
-import Head from 'next/head'
-import Hub from '../../components/Hub'
+import * as anchor from "@project-serum/anchor";
+import axios from "axios";
+import Head from "next/head";
+import Hub from "../../components/Hub";
 
 const HubPage = (props) => {
-  const { hub, hubPubkey } = props
+  const { hub, hubPubkey } = props;
   return (
     <>
       <Head>
@@ -31,28 +31,28 @@ const HubPage = (props) => {
       </Head>
       <Hub hubPubkey={hubPubkey} />
     </>
-  )
-}
+  );
+};
 
 HubPage.getInitialProps = async (context) => {
-  const indexerUrl = process.env.INDEXER_URL
-  const hubPubkey= context.query.hubPubkey
+  const indexerUrl = process.env.INDEXER_URL;
+  const hubPubkey = context.query.hubPubkey;
 
-  const indexerPath = indexerUrl + `/hubs/${hubPubkey}`
+  const indexerPath = indexerUrl + `/hubs/${hubPubkey}`;
   let hub;
 
   try {
-    const result = await axios.get(indexerPath)
-    const data = result.data
-    hub = result.data.hub
+    const result = await axios.get(indexerPath);
+    const data = result.data;
+    hub = result.data.hub;
 
     return {
       hub,
-      hubPubkey: hub.id
-    }
+      hubPubkey: hub.id,
+    };
   } catch (error) {
-    console.warn(error)
-    return {}
+    console.warn(error);
+    return {};
   }
-}
-export default HubPage
+};
+export default HubPage;

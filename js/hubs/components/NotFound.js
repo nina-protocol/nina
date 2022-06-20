@@ -1,10 +1,5 @@
 const NotFound = (props) => {
+  return <div>404: PAGE NOT FOUND</div>;
+};
 
-  return (
-    <div>
-      404: PAGE NOT FOUND
-    </div>
-  )
-}
-
-export default NotFound
+export default NotFound;
