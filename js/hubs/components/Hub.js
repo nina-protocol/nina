@@ -54,7 +54,6 @@ const Hub = ({ hubPubkey }) => {
 
   const content = useMemo(() => {
     const contentArray = [];
-    const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey)
     const hubContent = [...hubReleases, ...hubPosts];
     hubContent.forEach((hubContentData) => {
       if (
@@ -94,7 +93,7 @@ const Hub = ({ hubPubkey }) => {
     return contentArray.sort(
       (a, b) => new Date(b.datetime) - new Date(a.datetime)
     );
-  }, [hubContentState, releaseState, postState, hubPubkey]);
+  }, [hubContentState, releaseState, postState, hubPubkey, hubReleases, hubPosts]);
 
   if (!hubState[hubPubkey]?.json) {
     return null;

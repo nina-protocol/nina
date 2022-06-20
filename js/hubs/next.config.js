@@ -4,11 +4,7 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.ANALYZE === "true",
 });
 
-<<<<<<< HEAD
 const cluster = 'devnet'
-=======
-const cluster = "mainnet-beta";
->>>>>>> fd4bebc686d1a12e3480b9f1a5f9f3ab39feb432
 /** @type {import('next').NextConfig} */
 module.exports = withBundleAnalyzer({
   reactStrictMode: true,
