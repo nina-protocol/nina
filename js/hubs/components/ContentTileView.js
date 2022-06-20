@@ -173,16 +173,14 @@ const TileGrid = styled(Box)(({ theme, columnCount }) => ({
   },
   gridAutoRows: 'minmax(21vw, 100px)',
   [theme.breakpoints.down('md')]: {
-    maxWidth: '580px',
+    // border: '2px solid red',
     gridTemplateColumns: 'repeat(2, 1fr)',
     maxHeight: 'unset',
-    // gridAutoRows: 'minmax(41vw, 50%)',
+    overflowX: 'hidden',
+    overflowY: 'hidden',
     gridAutoRows: 'minmax(185px, 50vw)',
-    gridRowGap: '15px',
-    paddingBottom: '250px',
-    '& .tile:last-of-type': {
-      marginBottom: '175px',
-    },
+    gridRowGap: '0px',
+    paddingBottom: '120px',
   },
   [theme.breakpoints.up('xl')]: {
     gridAutoRows: 'minmax(300px, 100px)',

@@ -153,7 +153,7 @@ const Hubs = () => {
                         {userHubs.map((hub) => {
                           return (
                             <DashboardEntry key={hub.id}>
-                              <Link href={`/${hub.handle}`}>{hub.json.displayName}</Link>
+                              <Link href={`/${hub.handle}`}>{hub?.json?.displayName}</Link>
                             </DashboardEntry>
                           )
                         })}

@@ -261,6 +261,7 @@ const Player = styled('div')(({ theme }) => ({
     width: '100vw',
     background: theme.palette.background.default,
     paddingTop: '0',
+    paddingLeft: '8px'
   },
   '& .MuiButton-root': {
     fontSize: theme.typography.body1.fontSize,
