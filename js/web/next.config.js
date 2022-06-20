@@ -11,7 +11,7 @@ const withTM = require('next-transpile-modules')([
   '@solana/wallet-adapter-sollet',
 ]) // pass the modules you would like to see transpiled
 
-const cluster = 'devnet'
+const cluster = 'mainnet-beta'
 module.exports = withTM({
   distDir: './build',
   webpack5: true,
