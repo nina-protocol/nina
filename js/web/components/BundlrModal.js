@@ -228,7 +228,7 @@ const BundlrModal = ({ inCreate, displaySmall }) => {
                   {!inProgress && (mode === 'deposit' ? 'Deposit' : 'Withdraw')}
                 </Typography>
                 {inProgress && (
-                  <Dots msg={'Please aprrove transaction in wallet'} />
+                  <Dots msg={'Please approve transaction in wallet'} />
                 )}
               </Button>
             </InputWrapper>
