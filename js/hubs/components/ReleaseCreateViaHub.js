@@ -42,7 +42,7 @@ const ReleaseCreateSchema = Yup.object().shape({
   resalePercentage: Yup.number().required('Resale Percent Amount is Required'),
 })
 
-const ReleaseCreateViaHub = ({ canAddContent }) => {
+const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const {
@@ -53,7 +53,6 @@ const ReleaseCreateViaHub = ({ canAddContent }) => {
   } = useContext(ReleaseContext)
   const { hubState } = useContext(HubContext)
   const router = useRouter()
-  const hubPubkey = router.query.hubPubkey
 
   const {
     bundlrUpload,
@@ -193,13 +192,13 @@ const ReleaseCreateViaHub = ({ canAddContent }) => {
       if (releaseCreated) {
         router.push(
           {
-            pathname: `/${hubPubkey}/releases/${releaseInfo.hubRelease.toBase58()}`,
+            pathname: `/${hubData.handle}/releases/${releaseInfo.hubRelease.toBase58()}`,
             query: {
               metadata: JSON.stringify(metadata),
               hub: JSON.stringify(hubData),
             },
           },
-          `/${hubPubkey}/releases/${releaseInfo.hubRelease.toBase58()}`
+          `/${hubData.handle}/releases/${releaseInfo.hubRelease.toBase58()}`
         )
       } else if (track && artwork) {
         let upload = uploadId

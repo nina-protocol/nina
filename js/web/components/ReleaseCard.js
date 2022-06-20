@@ -93,9 +93,8 @@ const ReleaseCard = (props) => {
             height={350}
             width={350}
             priority={true}
-            loader={({ src }) => {
-              return src
-            }}
+            unoptimized={true}
+            loading="eager"
           />
         ) : (
           <Image
@@ -105,9 +104,8 @@ const ReleaseCard = (props) => {
             src={image}
             alt={metadata?.name}
             priority={true}
-            loader={({ src }) => {
-              return src
-            }}
+            unoptimized={true}
+            loading="eager"
           />
         )}
       </Box>

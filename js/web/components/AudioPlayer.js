@@ -212,9 +212,8 @@ const AudioPlayer = () => {
                 height="60px"
                 width="60px"
                 layout="responsive"
-                loader={({ src }) => {
-                  return src
-                }}
+                unoptimized={true}
+                loading="eager"
               />
             </AlbumArt>
           </Link>

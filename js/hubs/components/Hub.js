@@ -113,10 +113,10 @@ const Hub = ({hubPubkey}) => {
               </Typography>
               <Typography>
                 Visit to your{' '}
-                <Link href="/dashboard">
+                <Link href={`/${hubData.handle}/dashboard?action=publishRelease`}>
                   <a style={{ textDecoration: 'underline' }}> dashboard </a>
                 </Link>{' '}
-                to add content to your hub
+                to publish tracks
               </Typography>
             </Box>
           )}
