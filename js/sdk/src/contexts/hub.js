@@ -20,6 +20,7 @@ const HubContextProvider = ({ children }) => {
   const [hubContentState, setHubContentState] = useState({})
   const [hubFeePending, setHubFeePending] = useState()
   const [initialLoad, setInitialLoad] = useState(false)
+  const [addToHubQueue, setAddToHubQueue] = useState(new Set())
   const [hubsCount, setHubsCount] = useState(0)
   const [allHubs, setAllHubs] = useState([])
   const {
@@ -63,6 +64,8 @@ const HubContextProvider = ({ children }) => {
     setHubsCount,
     allHubs,
     setAllHubs,
+    addToHubQueue,
+    setAddToHubQueue,
   })
 
   return (
@@ -93,6 +96,7 @@ const HubContextProvider = ({ children }) => {
         collectRoyaltyForReleaseViaHub,
         getHubPubkeyForHubHandle,
         validateHubHandle,
+        addToHubQueue,
       }}
     >
       {children}
@@ -119,6 +123,8 @@ const hubContextHelper = ({
   setHubsCount,
   allHubs,
   setAllHubs,
+  addToHubQueue,
+  setAddToHubQueue,
 }) => {
   const { ids, provider, endpoints } = ninaClient
 
@@ -376,6 +382,9 @@ const hubContextHelper = ({
 
   const hubAddRelease = async (hubPubkey, releasePubkey, fromHub) => {
     try {
+      let queue = new Set(addToHubQueue)
+      queue.add(releasePubkey)
+      setAddToHubQueue(queue)
       const hub = hubState[hubPubkey]
       const program = await ninaClient.useProgram()
       hubPubkey = new anchor.web3.PublicKey(hubPubkey)
@@ -432,12 +441,17 @@ const hubContextHelper = ({
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
       await indexerHasRecord(hubRelease.toBase58(), 'hubRelease')
       await getHub(hubPubkey)
-
+      queue = new Set(addToHubQueue)
+      queue.delete(releasePubkey.toBase58())
+      setAddToHubQueue(queue)
       return {
         success: true,
         msg: 'Release Added to Hub',
       }
     } catch (error) {
+      const queue = new Set(addToHubQueue)
+      addToHubQueue.delete(releasePubkey.toBase58())
+      setAddToHubQueue(queue)
       return ninaErrorHandler(error)
     }
   }

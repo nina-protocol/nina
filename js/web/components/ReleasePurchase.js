@@ -18,8 +18,13 @@ const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, router, relatedReleases } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const { releasePurchase, releasePurchasePending, releaseState, getRelease } =
-    useContext(ReleaseContext)
+  const {
+    releasePurchase,
+    releasePurchasePending,
+    releaseState,
+    getRelease,
+    getPublishedHubForRelease,
+  } = useContext(ReleaseContext)
   const { getAmountHeld, collection, ninaClient } = useContext(NinaContext)
   const {
     exchangeState,
@@ -35,10 +40,17 @@ const ReleasePurchase = (props) => {
   const [userIsRecipient, setUserIsRecipient] = useState(false)
   const [exchangeTotalBuys, setExchangeTotalBuys] = useState(0)
   const [exchangeTotalSells, setExchangeTotalSells] = useState(0)
+  const [publishedHub, setPublishedHub] = useState()
 
   useEffect(() => {
     getRelease(releasePubkey)
     getExchangesForRelease(releasePubkey)
+
+    const hubForRelease = async (releasePubkey) => {
+      const result = await getPublishedHubForRelease(releasePubkey)
+      setPublishedHub(result?.hub)
+    }
+    hubForRelease(releasePubkey)
   }, [releasePubkey])
 
   useEffect(() => {
@@ -200,7 +212,18 @@ const ReleasePurchase = (props) => {
           ) : null}
         </StyledUserAmount>
       )}
-
+      {publishedHub && (
+        <Typography variant="body2" align="left" paddingBottom="10px">
+          <StyledLink
+            href={publishedHub.json.externalUrl}
+            target="_blank"
+            rel="noreferrer"
+            passHref
+          >
+            {`Published via ${publishedHub.json.displayName}`}
+          </StyledLink>
+        </Typography>
+      )}
       <StyledDescription variant="h3" align="left">
         {metadata.description}
       </StyledDescription>
