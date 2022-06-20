@@ -42,6 +42,31 @@ const Hubs = () => {
         </Box>
         <HubSlider hubs={hubs} />
       </Box>
+      <HubGrid container>
+        {hubs?.map((hub, i) => {
+          const imageUrl = hub?.json?.image;
+          return (
+            <HubTile item md={4} xs={6} key={i}>
+              {imageUrl && (
+                <HubLink href={`/${hub.handle}`}>
+                  <a>
+                    <Image
+                      src={imageUrl}
+                      height={100}
+                      width={100}
+                      layout="responsive"
+                      priority={true}
+                      unoptimized={true}
+                      loading="eager"
+                    />
+                  </a>
+                </HubLink>
+              )}
+              <HubName variant="h4">{hub.json.displayName}</HubName>
+            </HubTile>
+          );
+        })}
+      </HubGrid>
     </HubsContainer>
   );
 };

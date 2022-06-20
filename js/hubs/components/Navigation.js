@@ -142,7 +142,7 @@ const Navigation = ({ hubPubkey }) => {
                 {hubData?.json.displayName}
               </Typography>
             ) : (
-              <Typography variant="h4">NINA HUBS</Typography>
+              <Typography variant="h4">NINA HUBS [beta]</Typography>
             )}
           </LogoLinkWrapper>
         </Link>

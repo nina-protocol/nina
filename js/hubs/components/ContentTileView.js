@@ -1,4 +1,4 @@
-import React, { useContext, useState, useMemo } from "react";
+import React, { useContext, useState, useMemo, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import nina from "@nina-protocol/nina-sdk";
 import Image from "next/image";
@@ -8,6 +8,15 @@ import Box from "@mui/material/Box";
 import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
 import Button from "@mui/material/Button";
 import Link from "next/link";
+import AutorenewTwoToneIcon from "@mui/icons-material/AutorenewTwoTone";
+
+import FormatBoldIcon from "@mui/icons-material/FormatBold";
+import FormatItalicIcon from "@mui/icons-material/FormatItalic";
+import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
+import FormatColorFillIcon from "@mui/icons-material/FormatColorFill";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
 const { AudioPlayerContext, HubContext, ReleaseContext } = nina.contexts;
 
@@ -18,6 +27,51 @@ const ContentTileView = ({ content, hubPubkey, hubHandle }) => {
   const [columnCount, setColumnCount] = useState(3);
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const router = useRouter();
+
+  const [displayType, setDisplayType] = useState("all");
+  const [filteredContent, setFilteredContent] = useState(content);
+
+  useEffect(() => {
+    let filtered;
+    switch (displayType) {
+      case "all":
+        setFilteredContent(content);
+        break;
+      case "releases":
+        filtered = content.filter((item) => {
+          return (
+            item.contentType === "NinaReleaseV1" &&
+            item.publishedThroughHub === true
+          );
+        });
+        setFilteredContent(filtered);
+        break;
+
+      case "reposts":
+        filtered = content.filter((item) => {
+          return (
+            item.contentType === "NinaReleaseV1" &&
+            item.publishedThroughHub === false
+          );
+        });
+        setFilteredContent(filtered);
+        break;
+
+      case "posts":
+        filtered = content.filter((item) => {
+          return item.contentType === "Post";
+        });
+        setFilteredContent(filtered);
+        break;
+
+      default:
+        break;
+    }
+  }, [displayType]);
+
+  const handleFormat = (event, newDisplayType) => {
+    setDisplayType(newDisplayType);
+  };
 
   const handleClick = (hubReleasePubkey, hubPostPubkey = null) => {
     const pathString = hubPostPubkey ? "posts" : "releases";
@@ -39,7 +93,27 @@ const ContentTileView = ({ content, hubPubkey, hubHandle }) => {
 
   return (
     <TileGrid columnCount={columnCount}>
-      {content.map((item, i) => {
+      <ToggleButtonGroup
+        exclusive
+        value={displayType}
+        onChange={handleFormat}
+        aria-label="text formatting"
+      >
+        <ToggleButton value="all" aria-label="all">
+          All
+        </ToggleButton>
+        <ToggleButton value="releases" aria-label="releases">
+          Releases
+        </ToggleButton>
+        <ToggleButton value="reposts" aria-label="Reposts">
+          Reposts
+        </ToggleButton>
+        <ToggleButton value="posts" aria-label="posts">
+          Text Posts
+        </ToggleButton>
+      </ToggleButtonGroup>
+
+      {filteredContent.map((item, i) => {
         return (
           <React.Fragment key={i}>
             {item?.contentType === "NinaReleaseV1" && (
@@ -70,7 +144,9 @@ const ContentTileView = ({ content, hubPubkey, hubHandle }) => {
                       />
                     </Button>
 
-                    <ContentName sx={{ color: "text.primary" }}>
+                    <ContentName
+                      sx={{ color: "text.primary", padding: "0 15px" }}
+                    >
                       {item.name.substring(0, 100)}
                     </ContentName>
                   </CardCta>
@@ -87,6 +163,9 @@ const ContentTileView = ({ content, hubPubkey, hubHandle }) => {
                     />
                   )}
                 </HoverCard>
+                {!item.publishedThroughHub && (
+                  <StyledAutorenewIcon fontSize="small" />
+                )}
               </Tile>
             )}
 
@@ -183,14 +262,13 @@ const TileGrid = styled(Box)(({ theme, columnCount }) => ({
   },
   gridAutoRows: "minmax(21vw, 100px)",
   [theme.breakpoints.down("md")]: {
-    maxWidth: "580px",
     gridTemplateColumns: "repeat(2, 1fr)",
     maxHeight: "unset",
-    gridAutoRows: "minmax(41vw, 50%)",
-    paddingBottom: "250px",
-    "& .tile:last-of-type": {
-      marginBottom: "175px",
-    },
+    overflowX: "hidden",
+    overflowY: "hidden",
+    gridAutoRows: "minmax(185px, 50vw)",
+    gridRowGap: "0px",
+    paddingBottom: "120px",
   },
   [theme.breakpoints.up("xl")]: {
     gridAutoRows: "minmax(300px, 100px)",
@@ -200,13 +278,15 @@ const TileGrid = styled(Box)(({ theme, columnCount }) => ({
 const Tile = styled(Box)(({ theme }) => ({
   textAlign: "left",
   maxWidth: "100%",
-  "&:hover": {
-    border: "2px solid",
-  },
+  boxSizing: "border-box",
   maxHeight: "300px",
   width: "100%",
-  height: "0",
+  position: "relative",
   paddingBottom: "calc(100% - 4px)",
+  border: `2px solid ${theme.palette.transparent}`,
+  "&:hover": {
+    border: `2px solid ${theme.palette.text.primary}`,
+  },
 }));
 
 const PostTile = styled(Box)(({ theme }) => ({
@@ -246,7 +326,7 @@ const CardCta = styled(Box)(({ theme }) => ({
   alignItems: "center",
   "&:hover": {
     opacity: "1",
-    // cursor: "pointer",
+    cursor: "pointer",
   },
   [theme.breakpoints.down("md")]: {
     display: "none",
@@ -282,6 +362,15 @@ const PostTitle = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.down("md")]: {
     fontSize: "14px !important",
   },
+}));
+
+const StyledAutorenewIcon = styled(AutorenewTwoToneIcon)(({ theme }) => ({
+  position: "absolute",
+  top: "auto",
+  bottom: "5px",
+  right: "5px",
+  background: "rgba(255,255,255,0.5)",
+  borderRadius: "50%",
 }));
 
 export default ContentTileView;

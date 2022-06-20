@@ -53,6 +53,8 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
     enqueueSnackbar("Adding Release to Hub", {
       variant: "info",
     });
+
+    handleClose();
     const result = await hubAddRelease(selectedHubId, releasePubkey, hubPubkey);
     if (result?.success) {
       enqueueSnackbar(result.msg, {
