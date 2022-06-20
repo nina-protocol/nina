@@ -1,22 +1,22 @@
-import React, { useState, useContext, useMemo, useEffect } from 'react'
-import { styled } from '@mui/material/styles'
-import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import { useWallet } from '@solana/wallet-adapter-react'
-import CloseIcon from '@mui/icons-material/Close'
-import Grid from '@mui/material/Grid'
-import nina from '@nina-protocol/nina-sdk'
-import { useSnackbar } from 'notistack'
-import HubAddCollaborator from './HubAddCollaborator'
-import CollaboratorPermissions from './CollaboratorPermissions'
+import React, { useState, useContext, useMemo, useEffect } from "react";
+import { styled } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import { useWallet } from "@solana/wallet-adapter-react";
+import CloseIcon from "@mui/icons-material/Close";
+import Grid from "@mui/material/Grid";
+import nina from "@nina-protocol/nina-sdk";
+import { useSnackbar } from "notistack";
+import HubAddCollaborator from "./HubAddCollaborator";
+import CollaboratorPermissions from "./CollaboratorPermissions";
 import {
   DashboardWrapper,
   DashboardContent,
   DashboardHeader,
   DashboardEntry,
-} from '../styles/theme/lightThemeOptions.js'
+} from "../styles/theme/lightThemeOptions.js";
 
-const { HubContext, ReleaseContext } = nina.contexts
+const { HubContext, ReleaseContext } = nina.contexts;
 
 const HubCollaborators = ({
   hubPubkey,
@@ -24,52 +24,54 @@ const HubCollaborators = ({
   authority,
   canAddCollaborators,
 }) => {
-  const wallet = useWallet()
+  const wallet = useWallet();
   const { hubRemoveCollaborator, hubCollaboratorsState } =
-    useContext(HubContext)
-  const [activeSelection, setActiveSelection] = useState(undefined)
+    useContext(HubContext);
+  const [activeSelection, setActiveSelection] = useState(undefined);
   const hubCollaborators = useMemo(
-    () => 
+    () =>
       Object.values(hubCollaboratorsState)
-        .filter(c => c.hub === hubPubkey)
+        .filter((c) => c.hub === hubPubkey)
         .sort((a, b) => b.datetime - a.datetime),
     [hubCollaboratorsState]
-  )
+  );
 
-  const { enqueueSnackbar } = useSnackbar()
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleActiveSelection = (e) => {
-    const selectedHubCollaborator =
-      hubCollaborators[e.target.getAttribute('data-index')]
-    setActiveSelection(selectedHubCollaborator)
-  }
+    const selectedHubCollaborator = hubCollaborators.find(
+      (collaborator) =>
+        collaborator.publicKey === e.target.getAttribute("data-index")
+    );
+    setActiveSelection(selectedHubCollaborator);
+  };
 
   const canRemoveCollaborators = (collaboratorPubKey) => {
     if (collaboratorPubKey == wallet?.publicKey?.toBase58() || isAuthority) {
-      return true
+      return true;
     }
-    return false
-  }
+    return false;
+  };
 
   const handleRemoveCollaborator = async (e, hubPubkey, collaboratorPubkey) => {
-    e.stopPropagation()
-    const result = await hubRemoveCollaborator(hubPubkey, collaboratorPubkey)
+    e.stopPropagation();
+    const result = await hubRemoveCollaborator(hubPubkey, collaboratorPubkey);
     if (result?.success) {
       enqueueSnackbar(result.msg, {
-        variant: 'info',
-      })
+        variant: "info",
+      });
     } else {
-      enqueueSnackbar('Collaborator Not Removed', {
-        variant: 'failure',
-      })
+      enqueueSnackbar("Collaborator Not Removed", {
+        variant: "failure",
+      });
     }
-  }
+  };
 
   useEffect(() => {
     if (activeSelection) {
-      setActiveSelection(hubCollaborators[activeSelection?.publicKey])
+      setActiveSelection(hubCollaborators[activeSelection?.publicKey]);
     }
-  }, [hubCollaborators])
+  }, [hubCollaborators]);
 
   return (
     <DashboardWrapper
@@ -78,7 +80,7 @@ const HubCollaborators = ({
       columnGap={2}
       position="relative"
     >
-      <Grid item md={6} sx={{ display: { xs: 'none', md: 'block' } }}>
+      <Grid item md={6} sx={{ display: { xs: "none", md: "block" } }}>
         <Wrapper>
           <HubAddCollaborator
             hubPubkey={hubPubkey}
@@ -104,8 +106,8 @@ const HubCollaborators = ({
             {!activeSelection && (
               <>
                 <DashboardHeader fontWeight={600}>
-                  There are {hubCollaborators.length} Collaborators
-                  associated with this hub:
+                  There are {hubCollaborators.length} Collaborators associated
+                  with this hub:
                 </DashboardHeader>
                 <ul>
                   <DashboardEntry>
@@ -138,7 +140,7 @@ const HubCollaborators = ({
                             )}
                           </>
                         </DashboardEntry>
-                      )
+                      );
                     }
                   })}
                 </ul>
@@ -158,28 +160,28 @@ const HubCollaborators = ({
             )}
           </>
         )}
-        <Typography sx={{ display: { xs: 'block', md: 'none' } }}>
+        <Typography sx={{ display: { xs: "block", md: "none" } }}>
           Please visit your hub on desktop to add / edit collaborators
         </Typography>
       </DashboardContent>
     </DashboardWrapper>
-  )
-}
+  );
+};
 
 const Wrapper = styled(Box)(() => ({
-  textAlign: 'left',
+  textAlign: "left",
   // width: '500px',
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'flex-start',
-  margin: 'auto',
-}))
+  height: "100%",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "flex-start",
+  margin: "auto",
+}));
 
 const Note = styled(Typography)(({ theme }) => ({
-  fontStyle: 'italic',
-  marginTop: '30px',
-  bottom: '0px',
-}))
+  fontStyle: "italic",
+  marginTop: "30px",
+  bottom: "0px",
+}));
 
-export default HubCollaborators
+export default HubCollaborators;

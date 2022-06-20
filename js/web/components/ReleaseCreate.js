@@ -37,7 +37,7 @@ const { ReleaseContext, NinaContext, HubContext } = nina.contexts
 const ReleaseCreateSchema = Yup.object().shape({
   artist: Yup.string().required('Artist is Required'),
   title: Yup.string().required('Title is Required'),
-  description: Yup.string().required('Description is Required'),
+  description: Yup.string(),
   catalogNumber: Yup.string().required('Catalog Number is Required'),
   amount: Yup.number().required('Edition Size is Required'),
   retailPrice: Yup.number().required('Price is Required'),
@@ -466,7 +466,7 @@ const ReleaseCreate = () => {
                 )}
                 {bundlrBalance === 0 && (
                   <BundlrBalanceInfo variant="subtitle1" align="left">
-                    Please fund your Bundlr Account to enable publishing
+                    Please fund your Upload Account to enable publishing
                   </BundlrBalanceInfo>
                 )}
                 {uploadSize > 0 && (

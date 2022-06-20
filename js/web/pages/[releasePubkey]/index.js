@@ -1,8 +1,8 @@
 import React from 'react'
-import nina from "@nina-protocol/nina-sdk";
-import dynamic from 'next/dynamic';
+import nina from '@nina-protocol/nina-sdk'
+import dynamic from 'next/dynamic'
 import Head from 'next/head'
-const Release = dynamic(() => import("../../components/Release"));
+const Release = dynamic(() => import('../../components/Release'))
 
 const ReleasePage = (props) => {
   const { metadata } = props
@@ -36,7 +36,7 @@ const ReleasePage = (props) => {
         <meta name="twitter:image" content={metadata?.image} />
         <meta name="og:image" content={metadata?.image} />
       </Head>
-      <Release metadataSsr={metadata} />;
+      <Release metadataSsr={metadata} />
     </>
   )
 }

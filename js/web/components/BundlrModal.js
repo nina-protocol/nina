@@ -133,7 +133,7 @@ const BundlrModal = ({ inCreate, displaySmall }) => {
             align={displaySmall ? 'right' : 'left'}
             textTransform={'none'}
           >
-            Click here to fund your Bundlr and start publishing
+            Click here to fund your Upload Account and start publishing
           </Typography>
         </Button>
       )}
@@ -228,7 +228,7 @@ const BundlrModal = ({ inCreate, displaySmall }) => {
                   {!inProgress && (mode === 'deposit' ? 'Deposit' : 'Withdraw')}
                 </Typography>
                 {inProgress && (
-                  <Dots msg={'Please aprrove transaction in wallet'} />
+                  <Dots msg={'Please approve transaction in wallet'} />
                 )}
               </Button>
             </InputWrapper>

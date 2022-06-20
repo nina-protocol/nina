@@ -1,35 +1,35 @@
-import { useState } from 'react'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
-import Modal from '@mui/material/Modal'
-import { styled } from '@mui/material/styles'
+import { useState } from "react";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+import { styled } from "@mui/material/styles";
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: 'background.paper',
+  bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
-}
+};
 
 const ReleaseCreateConfirm = (props) => {
   const { formIsValid, formValues, handleSubmit, setFormValuesConfirmed } =
-    props
-  const [open, setOpen] = useState(false)
-  const handleOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
+    props;
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const submitAndCloseModal = () => {
-    setFormValuesConfirmed(true)
-    handleSubmit()
-    handleClose()
-  }
+    setFormValuesConfirmed(true);
+    handleSubmit();
+    handleClose();
+  };
 
-  const data = formValues.releaseForm
+  const data = formValues.releaseForm;
 
   return (
     <div>
@@ -90,11 +90,11 @@ const ReleaseCreateConfirm = (props) => {
               color="primary"
               fullWidth
               onClick={handleClose}
-              sx={{ marginTop: '15px !important' }}
+              sx={{ marginTop: "15px !important" }}
             >
               Close and Edit
             </Button>
-            <Typography variant="subtitle1" mt={1} sx={{ color: 'red' }}>
+            <Typography variant="subtitle1" mt={1} sx={{ color: "red" }}>
               ONCE PUBLISHED, YOUR RELEASE INFORMATION WILL BE PERMANENT AND YOU
               WILL NOT BE ABLE TO EDIT IT.
             </Typography>
@@ -102,24 +102,24 @@ const ReleaseCreateConfirm = (props) => {
         </Box>
       </Modal>
     </div>
-  )
-}
+  );
+};
 
 const Value = styled(Typography)(({ theme }) => ({
-  display: 'flex',
-  justifyContent: 'space-between',
-  '& span': {
-    textAlign: 'right',
+  display: "flex",
+  justifyContent: "space-between",
+  "& span": {
+    textAlign: "right",
   },
 
-  '&.description': {
-    '& span': {
+  "&.description": {
+    "& span": {
       paddingLeft: theme.spacing(1),
-      textAlign: 'left',
-      maxHeight: '150px',
-      overflowY: 'scroll',
+      textAlign: "left",
+      maxHeight: "150px",
+      overflowY: "scroll",
     },
   },
-}))
+}));
 
-export default ReleaseCreateConfirm
+export default ReleaseCreateConfirm;

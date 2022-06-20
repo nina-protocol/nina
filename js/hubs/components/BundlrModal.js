@@ -1,24 +1,24 @@
-import React, { useState, useEffect, useContext, useMemo } from 'react'
-import { styled } from '@mui/material/styles'
-import { Box, Paper } from '@mui/material'
-import Modal from '@mui/material/Modal'
-import Backdrop from '@mui/material/Backdrop'
-import Fade from '@mui/material/Fade'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
-import InputAdornment from '@mui/material/InputAdornment'
-import TextField from '@mui/material/TextField'
-import ToggleButton from '@mui/material/ToggleButton'
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import nina from '@nina-protocol/nina-sdk'
-import { useSnackbar } from 'notistack'
-import Dots from './Dots'
+import React, { useState, useEffect, useContext, useMemo } from "react";
+import { styled } from "@mui/material/styles";
+import { Box, Paper } from "@mui/material";
+import Modal from "@mui/material/Modal";
+import Backdrop from "@mui/material/Backdrop";
+import Fade from "@mui/material/Fade";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import InputAdornment from "@mui/material/InputAdornment";
+import TextField from "@mui/material/TextField";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import nina from "@nina-protocol/nina-sdk";
+import { useSnackbar } from "notistack";
+import Dots from "./Dots";
 
-const { NinaContext } = nina.contexts
+const { NinaContext } = nina.contexts;
 
 const BundlrModal = ({ inCreate }) => {
-  const [open, setOpen] = useState(false)
-  const { enqueueSnackbar } = useSnackbar()
+  const [open, setOpen] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
   const {
     bundlrBalance,
     getBundlrBalance,
@@ -30,69 +30,69 @@ const BundlrModal = ({ inCreate }) => {
     getSolPrice,
     initBundlr,
     ninaClient,
-    bundlr
-  } = useContext(NinaContext)
-  const [amount, setAmount] = useState()
+    bundlr,
+  } = useContext(NinaContext);
+  const [amount, setAmount] = useState();
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
     [bundlrBalance, bundlrPricePerMb]
-  )
+  );
   const bundlrUsdBalance = useMemo(
     () => bundlrBalance * solPrice,
     [bundlrBalance, solPrice]
-  )
-  const [mode, setMode] = useState('deposit')
-  const [inProgress, setInProgress] = useState(false)
+  );
+  const [mode, setMode] = useState("deposit");
+  const [inProgress, setInProgress] = useState(false);
 
   useEffect(() => {
-    initBundlr()
-  }, [])
+    initBundlr();
+  }, []);
 
   useEffect(() => {
     if (bundlr) {
-      getBundlrPricePerMb()
-      getBundlrBalance()
-      getSolPrice()
+      getBundlrPricePerMb();
+      getBundlrBalance();
+      getSolPrice();
     }
-  }, [bundlr])
+  }, [bundlr]);
 
   const handleFund = async (fundAmount) => {
-    setInProgress(true)
-    const result = await bundlrFund(fundAmount)
+    setInProgress(true);
+    const result = await bundlrFund(fundAmount);
     if (result?.success) {
       enqueueSnackbar(result.msg, {
-        variant: 'info',
-      })
-      setOpen(false)
+        variant: "info",
+      });
+      setOpen(false);
     } else {
-      enqueueSnackbar('Account not funded', {
-        variant: 'failure',
-      })
+      enqueueSnackbar("Account not funded", {
+        variant: "failure",
+      });
     }
-    setAmount('')
-    setInProgress(false)
-  }
+    setAmount("");
+    setInProgress(false);
+  };
 
   const handleWithdraw = async (withdrawAmount) => {
-    setInProgress(true)
-    const result = await bundlrWithdraw(withdrawAmount)
+    setInProgress(true);
+    const result = await bundlrWithdraw(withdrawAmount);
     if (result?.success) {
       enqueueSnackbar(result.msg, {
-        variant: 'info',
-      })
-      setOpen(false)
+        variant: "info",
+      });
+      setOpen(false);
     } else {
-      enqueueSnackbar('Withdrawl not completed', {
-        variant: 'failure',
-      })
+      enqueueSnackbar("Withdrawl not completed", {
+        variant: "failure",
+      });
     }
-    setAmount('')
-    setInProgress(false)
-  }
+    setAmount("");
+    setInProgress(false);
+  };
 
   const handleToggleMode = () => {
-    setMode(mode === 'deposit' ? 'withdraw' : 'deposit')
-  }
+    setMode(mode === "deposit" ? "withdraw" : "deposit");
+  };
 
   return (
     <Root>
@@ -103,7 +103,7 @@ const BundlrModal = ({ inCreate }) => {
           type="submit"
           onClick={() => setOpen(true)}
         >
-          <Typography align="left" textTransform={'none'}>
+          <Typography align="left" textTransform={"none"}>
             Manage Upload Account
           </Typography>
         </Button>
@@ -115,9 +115,9 @@ const BundlrModal = ({ inCreate }) => {
           type="submit"
           fullWidth
           onClick={() => setOpen(true)}
-          sx={{ height: '54px' }}
+          sx={{ height: "54px" }}
         >
-          <Typography align="left" textTransform={'none'}>
+          <Typography align="left" textTransform={"none"}>
             Click here to fund your Bundlr and start publishing
           </Typography>
         </Button>
@@ -157,10 +157,10 @@ const BundlrModal = ({ inCreate }) => {
               {bundlrUsdBalance.toFixed(2)})
             </Typography>
             <Typography>
-              Available Storage: {mbs?.toFixed(2)} MBs{' '}
+              Available Storage: {mbs?.toFixed(2)} MBs{" "}
               {bundlrBalance > 0 && mbs > 0
                 ? `($${(bundlrUsdBalance / mbs)?.toFixed(4)} /MB)`
-                : ''}
+                : ""}
             </Typography>
             {bundlrBalance > 0 && (
               <ToggleButtonGroup
@@ -169,7 +169,7 @@ const BundlrModal = ({ inCreate }) => {
                 onChange={handleToggleMode}
                 fullWidth={true}
                 size="small"
-                sx={{ margin: '15px 0' }}
+                sx={{ margin: "15px 0" }}
               >
                 <ToggleButton value="deposit">Deposit</ToggleButton>
                 <ToggleButton value="withdraw">Withdraw</ToggleButton>
@@ -178,11 +178,11 @@ const BundlrModal = ({ inCreate }) => {
             <InputWrapper>
               <TextField
                 fullWidth
-                id={mode === 'deposit' ? 'fund' : 'withdraw'}
-                name={mode === 'deposit' ? 'fund' : 'withdraw'}
+                id={mode === "deposit" ? "fund" : "withdraw"}
+                name={mode === "deposit" ? "fund" : "withdraw"}
                 label={
-                  `${mode === 'deposit' ? 'Deposit' : 'Withdraw'}` +
-                  ' Amount (SOL):'
+                  `${mode === "deposit" ? "Deposit" : "Withdraw"}` +
+                  " Amount (SOL):"
                 }
                 onChange={(e) => setAmount(e.target.value)}
                 value={amount}
@@ -192,26 +192,26 @@ const BundlrModal = ({ inCreate }) => {
                   endAdornment: (
                     <InputAdornment position="start">
                       {amount > 0
-                        ? `(${amount / bundlrPricePerMb} MBs)`
-                        : ''}
+                        ? `(${(amount / bundlrPricePerMb).toFixed(2)} MBs)`
+                        : ""}
                     </InputAdornment>
                   ),
                 }}
               />
               <Button
-                style={{ marginTop: '15px' }}
+                style={{ marginTop: "15px" }}
                 color="primary"
                 variant="outlined"
                 onClick={() => {
-                  mode === 'deposit'
+                  mode === "deposit"
                     ? handleFund(amount)
-                    : handleWithdraw(amount)
+                    : handleWithdraw(amount);
                 }}
                 disabled={inProgress || !amount}
               >
-                {!inProgress && (mode === 'deposit' ? 'Deposit' : 'Withdraw')}
+                {!inProgress && (mode === "deposit" ? "Deposit" : "Withdraw")}
                 {inProgress && (
-                  <Dots msg={'Please aprrove transaction in wallet'} />
+                  <Dots msg={"Please approve transaction in wallet"} />
                 )}
               </Button>
             </InputWrapper>
@@ -219,41 +219,41 @@ const BundlrModal = ({ inCreate }) => {
         </Fade>
       </StyledModal>
     </Root>
-  )
-}
+  );
+};
 
-const PREFIX = 'Royalty'
+const PREFIX = "Royalty";
 
 const classes = {
   recipientData: `${PREFIX}-recipientData`,
-}
+};
 
-const Root = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  width: '100%',
-}))
+const Root = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  width: "100%",
+}));
 
 const StyledModal = styled(Modal)(() => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}))
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}));
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
-  border: '2px solid #000',
+  border: "2px solid #000",
   boxShadow: theme.shadows[5],
   padding: theme.spacing(2, 4, 3),
-  width: '40vw',
-  maxHeight: '90vh',
-  overflowY: 'auto',
-  zIndex: '10',
-}))
+  width: "40vw",
+  maxHeight: "90vh",
+  overflowY: "auto",
+  zIndex: "10",
+}));
 
 const InputWrapper = styled(Box)(() => ({
-  display: 'flex',
-  flexDirection: 'column',
-}))
+  display: "flex",
+  flexDirection: "column",
+}));
 
-export default BundlrModal
+export default BundlrModal;

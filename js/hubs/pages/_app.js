@@ -1,36 +1,36 @@
-import React, { useMemo, useContext, useEffect, useState } from 'react'
+import React, { useMemo, useContext, useEffect, useState } from "react";
 import {
   ConnectionProvider,
   WalletProvider,
-} from '@solana/wallet-adapter-react'
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
-import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
-import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
-import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare'
-import { GlowWalletAdapter } from '@solana/wallet-adapter-glow'
+} from "@solana/wallet-adapter-react";
+import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
+import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
+import { PhantomWalletAdapter } from "@solana/wallet-adapter-phantom";
+import { SolflareWalletAdapter } from "@solana/wallet-adapter-solflare";
+import { GlowWalletAdapter } from "@solana/wallet-adapter-glow";
 // import {ThemeProvider, createTheme} from "@mui/material/styles";
-import { CacheProvider } from '@emotion/react'
-import { SnackbarProvider } from 'notistack'
-import Box from '@mui/material/Box'
-import Router from 'next/router'
-import dynamic from 'next/dynamic'
-import nina from '@nina-protocol/nina-sdk'
+import { CacheProvider } from "@emotion/react";
+import { SnackbarProvider } from "notistack";
+import Box from "@mui/material/Box";
+import Router from "next/router";
+import dynamic from "next/dynamic";
+import nina from "@nina-protocol/nina-sdk";
 
-import createEmotionCache from '../utils/createEmotionCache'
-import { lightThemeOptions } from '../styles/theme/lightThemeOptions'
+import createEmotionCache from "../utils/createEmotionCache";
+import { lightThemeOptions } from "../styles/theme/lightThemeOptions";
 
 // Use require instead of import since order matters
 // require('@solana/wallet-adapter-react-ui/styles.css');
 // require('../styles/globals.css');
-const NinaWrapper = dynamic(() => import('../components/NinaWrapper'))
-const Dots = dynamic(() => import('../components/Dots'))
-const Layout = dynamic(() => import('../components/Layout'))
-const clientSideEmotionCache = createEmotionCache()
+const NinaWrapper = dynamic(() => import("../components/NinaWrapper"));
+const Dots = dynamic(() => import("../components/Dots"));
+const Layout = dynamic(() => import("../components/Layout"));
+const clientSideEmotionCache = createEmotionCache();
 // const lightTheme = createTheme(lightThemeOptions);
-const { HubContext } = nina.contexts
+const { HubContext } = nina.contexts;
 
 const App = ({ Component, pageProps }) => {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   // useEffect(() => {
   //   const start = () => {
@@ -55,17 +55,18 @@ const App = ({ Component, pageProps }) => {
   //   };
   // }, []);
   // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
-  const network = process.env.REACT_APP_CLUSTER === 'devnet' ? 
-  WalletAdapterNetwork.Devnet : 
-  WalletAdapterNetwork.MainnetBeta
+  const network =
+    process.env.REACT_APP_CLUSTER === "devnet"
+      ? WalletAdapterNetwork.Devnet
+      : WalletAdapterNetwork.MainnetBeta;
 
   const endpoint = useMemo(() => {
     if (network === WalletAdapterNetwork.MainnetBeta) {
-      return 'https://nina.rpcpool.com'
+      return "https://nina.rpcpool.com";
     } else if (network === WalletAdapterNetwork.Devnet) {
-      return 'https://nina.devnet.rpcpool.com'
+      return "https://nina.devnet.rpcpool.com";
     }
-    return clusterApiUrl(network)
+    return clusterApiUrl(network);
   }, [network]);
 
   // @solana/wallet-adapter-wallets includes all the adapters but supports tree shaking and lazy loading --
@@ -78,41 +79,35 @@ const App = ({ Component, pageProps }) => {
       new GlowWalletAdapter({ network }),
     ],
     [network]
-  )
+  );
 
   return (
     <SnackbarProvider
       maxSnack={3}
       anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'left',
+        vertical: "top",
+        horizontal: "left",
       }}
     >
       <ConnectionProvider endpoint={endpoint}>
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
             <NinaWrapper network={process.env.REACT_APP_CLUSTER}>
-              <CacheProvider value={clientSideEmotionCache}>
-                {/* <ThemeProvider theme={lightTheme}> */}
-                <Layout>
-                  {loading ? (
-                    <Box width="100%" margin="auto">
-                      <Dots size="80px" />
-                    </Box>
-                  ) : (
-                    <Component
-                      {...pageProps}
-                    />
-                  )}
-                </Layout>
-                {/* </ThemeProvider> */}
-              </CacheProvider>
+              <Layout>
+                {loading ? (
+                  <Box width="100%" margin="auto">
+                    <Dots size="80px" />
+                  </Box>
+                ) : (
+                  <Component {...pageProps} />
+                )}
+              </Layout>
             </NinaWrapper>
           </WalletModalProvider>
         </WalletProvider>
       </ConnectionProvider>
     </SnackbarProvider>
-  )
-}
+  );
+};
 
-export default App
+export default App;

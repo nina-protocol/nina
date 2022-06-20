@@ -1,7 +1,7 @@
-import AllHubs from '../components/AllHubs'
+import AllHubs from "../components/AllHubs";
 
 const AllHubsPage = () => {
-  return <AllHubs />
-}
+  return <AllHubs />;
+};
 
-export default AllHubsPage
+export default AllHubsPage;
