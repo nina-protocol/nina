@@ -1,13 +1,13 @@
-import React, { useContext } from 'react'
-import dynamic from 'next/dynamic'
-import Head from 'next/head'
-import * as anchor from '@project-serum/anchor'
-import axios from 'axios'
-const Post = dynamic(() => import('../../../../components/Post'))
-import { Metadata } from '@metaplex-foundation/mpl-token-metadata'
+import React, { useContext } from "react";
+import dynamic from "next/dynamic";
+import Head from "next/head";
+import * as anchor from "@project-serum/anchor";
+import axios from "axios";
+const Post = dynamic(() => import("../../../../components/Post"));
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 
 const PostPage = (props) => {
-  const { metadata, post, hub, postPubkey, hubPubkey } = props
+  const { metadata, post, hub, postPubkey, hubPubkey } = props;
   return (
     <>
       <Head>
@@ -34,20 +34,30 @@ const PostPage = (props) => {
           content={`${post.postContent.json.title} on ${hub?.json.displayName}`}
         />
         <meta name="twitter:description" content={metadata?.description} />
-        <meta name="twitter:image" content={metadata?.json.image || hub.json.image} />
-        <meta name="og:image" content={metadata?.json.image || hub.json.image} /> 
-
+        <meta
+          name="twitter:image"
+          content={metadata?.json.image || hub.json.image}
+        />
+        <meta
+          name="og:image"
+          content={metadata?.json.image || hub.json.image}
+        />
       </Head>
-      <Post postDataSsr={post} postPubkey={postPubkey} hub={hub} hubPubkey={hubPubkey} />
+      <Post
+        postDataSsr={post}
+        postPubkey={postPubkey}
+        hub={hub}
+        hubPubkey={hubPubkey}
+      />
     </>
-  )
-}
+  );
+};
 
 PostPage.getInitialProps = async (context) => {
-  const indexerUrl = process.env.INDEXER_URL
-  const hubPostPubkey = context.query.hubPostPubkey
-  const indexerPath = indexerUrl + `/hubPosts/${hubPostPubkey}`
-  
+  const indexerUrl = process.env.INDEXER_URL;
+  const hubPostPubkey = context.query.hubPostPubkey;
+  const indexerPath = indexerUrl + `/hubPosts/${hubPostPubkey}`;
+
   let hubPost;
   let postPubkey;
   let post;
@@ -55,15 +65,15 @@ PostPage.getInitialProps = async (context) => {
   let hubPubkey;
   let metadata;
   try {
-    const result = await axios.get(indexerPath)
-    const data = result.data
+    const result = await axios.get(indexerPath);
+    const data = result.data;
     if (data.hubPost) {
-      metadata = data.metadata
-      hubPost = data.hubPost
-      post = hubPost.post
-      postPubkey = hubPost.postId
-      hub = hubPost.hub
-      hubPubkey = hubPost.hubId
+      metadata = data.metadata;
+      hubPost = data.hubPost;
+      post = hubPost.post;
+      postPubkey = hubPost.postId;
+      hub = hubPost.hub;
+      hubPubkey = hubPost.hubId;
     }
     return {
       metadata,
@@ -71,13 +81,12 @@ PostPage.getInitialProps = async (context) => {
       postPubkey,
       post,
       hub,
-      hubPubkey: hub.id
-    }
+      hubPubkey: hub.id,
+    };
   } catch (error) {
-    console.warn(error)
-    return {}
+    console.warn(error);
+    return {};
   }
+};
 
-}
-
-export default PostPage
+export default PostPage;

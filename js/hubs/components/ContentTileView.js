@@ -1,72 +1,79 @@
-import React, { useContext, useState, useMemo } from 'react'
-import { styled } from '@mui/material/styles'
-import nina from '@nina-protocol/nina-sdk'
-import Image from 'next/image'
-import { useRouter } from 'next/router'
-import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
-import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
-import Button from '@mui/material/Button'
-import Link from 'next/link'
+import React, { useContext, useState, useMemo } from "react";
+import { styled } from "@mui/material/styles";
+import nina from "@nina-protocol/nina-sdk";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
+import Button from "@mui/material/Button";
+import Link from "next/link";
 
-const { AudioPlayerContext, HubContext, ReleaseContext } = nina.contexts
+const { AudioPlayerContext, HubContext, ReleaseContext } = nina.contexts;
 
 const ContentTileView = ({ content, hubPubkey, hubHandle }) => {
-  const { updateTrack } = useContext(AudioPlayerContext)
-  const { hubState } = useContext(HubContext)
-  const { releaseState } = useContext(ReleaseContext)
-  const [columnCount, setColumnCount] = useState(3)
-  const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
-  const router = useRouter()
+  const { updateTrack } = useContext(AudioPlayerContext);
+  const { hubState } = useContext(HubContext);
+  const { releaseState } = useContext(ReleaseContext);
+  const [columnCount, setColumnCount] = useState(3);
+  const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
+  const router = useRouter();
 
-  const handleClick = (hubReleasePubkey, hubPostPubkey=null) => {
-    const pathString = hubPostPubkey ? 'posts' : 'releases'
+  const handleClick = (hubReleasePubkey, hubPostPubkey = null) => {
+    const pathString = hubPostPubkey ? "posts" : "releases";
     router.push(
       {
-        pathname: `/${hubHandle}/${pathString}/${hubPostPubkey || hubReleasePubkey}`,
+        pathname: `/${hubHandle}/${pathString}/${
+          hubPostPubkey || hubReleasePubkey
+        }`,
       },
       `/${hubHandle}/${pathString}/${hubPostPubkey || hubReleasePubkey}`
-    )
-  }
+    );
+  };
 
   const formattedDate = (date) => {
-    return new Date(typeof date === 'number' ? date * 1000 : date).toLocaleDateString()
-  }
+    return new Date(
+      typeof date === "number" ? date * 1000 : date
+    ).toLocaleDateString();
+  };
 
   return (
     <TileGrid columnCount={columnCount}>
       {content.map((item, i) => {
+        console.log("item :>> ", item);
         return (
           <React.Fragment key={i}>
-            {item?.contentType === 'NinaReleaseV1' && (
-              <Tile className={'tile'} key={i}>
+            {item?.contentType === "NinaReleaseV1" && (
+              <Tile className={"tile"} key={i}>
                 <HoverCard
                   onClick={(e) => {
-                    e.stopPropagation()
-                    handleClick(item.child)
+                    e.stopPropagation();
+                    handleClick(item.child);
                   }}
                 >
                   <CardCta
                     onClick={(e) => {
-                      e.stopPropagation()
-                      handleClick(item.child)
+                      e.stopPropagation();
+                      handleClick(item.child);
                     }}
                     display="flex"
-                    flexDirection={'column'}
+                    flexDirection={"column"}
                   >
                     <Button
                       onClick={(e) => {
-                        e.stopPropagation()
-                        updateTrack(item.release, true)
+                        e.stopPropagation();
+                        updateTrack(item.release, true);
                       }}
                       disableRipple
                     >
                       <PlayCircleOutlineOutlinedIcon
-                        sx={{ color: 'text.primary' }}
+                        sx={{ color: "text.primary" }}
                       />
                     </Button>
 
-                    <ContentName sx={{ color: 'text.primary', padding: '0 15px' }}>
+                    <ContentName
+                      sx={{ color: "text.primary", padding: "0 15px" }}
+                    >
                       {item.name.substring(0, 100)}
                     </ContentName>
                   </CardCta>
@@ -86,22 +93,25 @@ const ContentTileView = ({ content, hubPubkey, hubHandle }) => {
               </Tile>
             )}
 
-            {item.contentType === 'Post' && (
-              <PostTile className={'tile'} key={i}>
-                <PostInfo sx={{ padding: '10px 0 0' }}>
+            {item.contentType === "Post" && (
+              <PostTile className={"tile"} key={i}>
+                <PostInfo sx={{ padding: "10px 0 0" }}>
                   <PostTitle
                     variant="h2"
-                    sx={{ color: 'text.primary', textTransform: 'uppercase' }}
+                    sx={{ color: "text.primary", textTransform: "uppercase" }}
                   >
                     {item.postContent.json.title.substring(0, 100)}
-                    {item.postContent.json.title.length > 100 ? '...' : ''}
+                    {item.postContent.json.title.length > 100 ? "..." : ""}
                   </PostTitle>
-                  <Typography sx={{ color: 'text.primary' }}>
+                  <Typography sx={{ color: "text.primary" }}>
                     published: {formattedDate(item.createdAt)}
                   </Typography>
                 </PostInfo>
                 <HoverCard>
-                  <Link href={`/${hubHandle}/posts/${item.hubPostPublicKey}`} passHref>
+                  <Link
+                    href={`/${hubHandle}/posts/${item.hubPostPublicKey}`}
+                    passHref
+                  >
                     <CardCta>
                       <PostLink>View Post</PostLink>
                     </CardCta>
@@ -109,26 +119,30 @@ const ContentTileView = ({ content, hubPubkey, hubHandle }) => {
                 </HoverCard>
               </PostTile>
             )}
-            {item.contentType === 'PostWithRelease' && (
-              <Tile className={'tile'} key={i}>
+            {item.contentType === "PostWithRelease" && (
+              <Tile className={"tile"} key={i}>
                 <HoverCard
-                 onClick={(e) => {
-                  e.stopPropagation()
-                  handleClick(item.referenceHubContent, item.hubPostPublicKey)
-                 }}>
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleClick(
+                      item.referenceHubContent,
+                      item.hubPostPublicKey
+                    );
+                  }}
+                >
                   <CardCta>
-                    <PostInfo sx={{ padding: '10px 0 0' }}>
+                    <PostInfo sx={{ padding: "10px 0 0" }}>
                       <Typography
                         variant="h2"
                         sx={{
-                          color: 'text.primary',
-                          textTransform: 'uppercase',
+                          color: "text.primary",
+                          textTransform: "uppercase",
                         }}
                       >
                         {item.postContent.json.title.substring(0, 100)}
-                        {item.postContent.json.title.length > 100 ? '...' : ''}
+                        {item.postContent.json.title.length > 100 ? "..." : ""}
                       </Typography>
-                      <Typography sx={{ color: 'text.primary' }}>
+                      <Typography sx={{ color: "text.primary" }}>
                         published: {formattedDate(item.createdAt)}
                       </Typography>
                     </PostInfo>
@@ -150,131 +164,129 @@ const ContentTileView = ({ content, hubPubkey, hubHandle }) => {
               </Tile>
             )}
           </React.Fragment>
-        )
+        );
       })}
-      {/* <Box></Box> */}
     </TileGrid>
-  )
-}
+  );
+};
 
 const TileGrid = styled(Box)(({ theme, columnCount }) => ({
-  display: 'grid',
+  display: "grid",
   gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
-  gridColumnGap: '30px',
-  gridRowGap: '30px',
-  maxWidth: '960px',
-  margin: 'auto',
-  maxHeight: '92vh',
-  overflow: 'scroll',
-  marginTop: '1px',
-  paddingBottom: '100px',
-  '&::-webkit-scrollbar': {
-    display: 'none'  
+  gridColumnGap: "30px",
+  gridRowGap: "30px",
+  maxWidth: "960px",
+  margin: "auto",
+  maxHeight: "92vh",
+  overflow: "scroll",
+  marginTop: "1px",
+  paddingBottom: "100px",
+  "&::-webkit-scrollbar": {
+    display: "none",
   },
-  gridAutoRows: 'minmax(21vw, 100px)',
-  [theme.breakpoints.down('md')]: {
+  gridAutoRows: "minmax(21vw, 100px)",
+  [theme.breakpoints.down("md")]: {
     // border: '2px solid red',
-    gridTemplateColumns: 'repeat(2, 1fr)',
-    maxHeight: 'unset',
-    overflowX: 'hidden',
-    overflowY: 'hidden',
-    gridAutoRows: 'minmax(185px, 50vw)',
-    gridRowGap: '0px',
-    paddingBottom: '120px',
+    gridTemplateColumns: "repeat(2, 1fr)",
+    maxHeight: "unset",
+    overflowX: "hidden",
+    overflowY: "hidden",
+    gridAutoRows: "minmax(185px, 50vw)",
+    gridRowGap: "0px",
+    paddingBottom: "120px",
   },
-  [theme.breakpoints.up('xl')]: {
-    gridAutoRows: 'minmax(300px, 100px)',
+  [theme.breakpoints.up("xl")]: {
+    gridAutoRows: "minmax(300px, 100px)",
   },
-}))
+}));
 
 const Tile = styled(Box)(({ theme }) => ({
-  textAlign: 'left',
-  maxWidth: '100%',
-  boxSizing: 'border-box',
+  textAlign: "left",
+  maxWidth: "100%",
+  boxSizing: "border-box",
   border: `2px solid ${theme.palette.transparent}`,
-  '&:hover': {
+  "&:hover": {
     border: `2px solid ${theme.palette.text.primary}`,
   },
-  maxHeight: '300px',
-  width: '100%',
-  height: '0',
-  paddingBottom: 'calc(100% - 4px)',
-}))
+  maxHeight: "300px",
+  width: "100%",
+  height: "0",
+  paddingBottom: "calc(100% - 4px)",
+}));
 
 const PostTile = styled(Box)(({ theme }) => ({
-  textAlign: 'left',
-  maxWidth: '100%',
-  height: '100%',
-  border: '2px solid',
-  position: 'relative',
-  width: '100%',
-  height: '0',
-  paddingBottom: 'calc(100% - 4px)',
-  boxSizing: 'border-box',
-  [theme.breakpoints.down('md')]: {
-    maxHeight: '272px',
+  textAlign: "left",
+  maxWidth: "100%",
+  height: "100%",
+  border: "2px solid",
+  position: "relative",
+  width: "100%",
+  height: "0",
+  paddingBottom: "calc(100% - 4px)",
+  boxSizing: "border-box",
+  [theme.breakpoints.down("md")]: {
+    maxHeight: "272px",
   },
-}))
+}));
 
 const HoverCard = styled(Box)(({ theme }) => ({
-  position: 'relative',
-  width: '100%',
-  height: '0',
-  paddingBottom: '100%',
-  [theme.breakpoints.down('md')]: {
-    minHeight: '144px',
+  position: "relative",
+  width: "100%",
+  height: "0",
+  paddingBottom: "100%",
+  [theme.breakpoints.down("md")]: {
+    minHeight: "144px",
   },
-}))
+}));
 
 const CardCta = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-  backgroundColor: theme.palette.background.default + 'c4',
-  zIndex: '2',
-  opacity: '0',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  '&:hover': {
-    opacity: '1',
+  position: "absolute",
+  width: "100%",
+  height: "100%",
+  backgroundColor: theme.palette.background.default + "c4",
+  zIndex: "2",
+  opacity: "0",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  "&:hover": {
+    opacity: "1",
     // cursor: "pointer",
   },
-  [theme.breakpoints.down('md')]: {
-    display: 'none',
-    zIndex: '-1',
+  [theme.breakpoints.down("md")]: {
+    display: "none",
+    zIndex: "-1",
   },
-}))
+}));
 
-const ContentName = styled('a')(() => ({
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  cursor: 'pointer',
-  marginTop: '15px',
-}))
+const ContentName = styled("a")(() => ({
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  cursor: "pointer",
+  marginTop: "15px",
+}));
 
-const PostLink = styled('a')(({ theme }) => ({
+const PostLink = styled("a")(({ theme }) => ({
   color: `${theme.palette.text.primary} !important`,
-  cursor: 'pointer',
-  padding: '15px',
-}))
+  cursor: "pointer",
+  padding: "15px",
+}));
 
 const PostInfo = styled(Typography)(({ theme }) => ({
-  padding: '10px 0 0 10px',
-  position: 'absolute',
-  top: '0',
-  left: '5px',
-  height: '98%',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-between',
+  padding: "10px 0 0 10px",
+  position: "absolute",
+  top: "0",
+  left: "5px",
+  height: "98%",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+}));
 
-}))
-
-const PostTitle = styled(Typography)(({theme}) => ({
-  [theme.breakpoints.down('md')]: {
-    fontSize: '14px !important'
+const PostTitle = styled(Typography)(({ theme }) => ({
+  [theme.breakpoints.down("md")]: {
+    fontSize: "14px !important",
   },
-}))
+}));
 
-export default ContentTileView
+export default ContentTileView;

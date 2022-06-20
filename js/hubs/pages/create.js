@@ -1,7 +1,7 @@
-import HubCreate from '../components/HubCreate'
+import HubCreate from "../components/HubCreate";
 
 const CreateHubPage = () => {
-  return <HubCreate update={false} />
-}
+  return <HubCreate update={false} />;
+};
 
-export default CreateHubPage
+export default CreateHubPage;

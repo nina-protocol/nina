@@ -5,77 +5,79 @@ import React, {
   useRef,
   createElement,
   Fragment,
-} from 'react'
-import dynamic from 'next/dynamic'
-import nina from '@nina-protocol/nina-sdk'
-import Grid from '@mui/material/Grid'
-import Box from '@mui/material/Box'
-import { styled } from '@mui/material/styles'
-import Divider from '@mui/material/Divider'
-import { useRouter } from 'next/router'
-import { unified } from 'unified'
-import rehypeParse from 'rehype-parse'
-import rehypeReact from 'rehype-react'
-import rehypeSanitize from 'rehype-sanitize'
-import rehypeExternalLinks from 'rehype-external-links'
+} from "react";
+import dynamic from "next/dynamic";
+import nina from "@nina-protocol/nina-sdk";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import { styled } from "@mui/material/styles";
+import Divider from "@mui/material/Divider";
+import { useRouter } from "next/router";
+import { unified } from "unified";
+import rehypeParse from "rehype-parse";
+import rehypeReact from "rehype-react";
+import rehypeSanitize from "rehype-sanitize";
+import rehypeExternalLinks from "rehype-external-links";
 
-import Typography from '@mui/material/Typography'
-const PostRelease = dynamic(() => import('./PostRelease'))
+import Typography from "@mui/material/Typography";
+const PostRelease = dynamic(() => import("./PostRelease"));
 const { HubContext, NinaContext, ReleaseContext, AudioPlayerContext } =
-  nina.contexts
+  nina.contexts;
 
 const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
-  const router = useRouter()
+  const router = useRouter();
   // const {updateTrack, track, isPlaying} = useContext(AudioPlayerContext);
-  const [referenceReleasePubkey, setReferenceReleasePubkey] = useState()
-  const [referenceReleaseMetadata, setReferenceReleaseMetadata] = useState()
-  const [postContent, setPostContent] = useState(Fragment)
+  const [referenceReleasePubkey, setReferenceReleasePubkey] = useState();
+  const [referenceReleaseMetadata, setReferenceReleaseMetadata] = useState();
+  const [postContent, setPostContent] = useState(Fragment);
 
-  const [postData, setPostData] = useState(postDataSsr || null)
+  const [postData, setPostData] = useState(postDataSsr || null);
 
-  const [metadata, setMetadata] = useState()
+  const [metadata, setMetadata] = useState();
 
-  const { postState } = useContext(NinaContext)
-  const { getHub, hubState, hubContentState, getHubPost } = useContext(HubContext)
-  const { getRelease, releaseState } = useContext(ReleaseContext)
+  const { postState } = useContext(NinaContext);
+  const { getHub, hubState, hubContentState, getHubPost } =
+    useContext(HubContext);
+  const { getRelease, releaseState } = useContext(ReleaseContext);
 
   useEffect(() => {
     if (hubPubkey && !hubState[hubPubkey]) {
-      getHub( hubPubkey )
+      getHub(hubPubkey);
     }
-  }, [])
-  
+  }, []);
+
   useEffect(() => {
     if (hubPostPubkey && !postState[postPubkey]) {
-      getHubPost(hubPostPubkey)
+      getHubPost(hubPostPubkey);
     }
-  }, [hubPostPubkey])
-
+  }, [hubPostPubkey]);
 
   useEffect(() => {
     if (postState[postPubkey] && !postData) {
-      setPostData(postState[postPubkey])
+      setPostData(postState[postPubkey]);
     }
-  }, [postState, postPubkey])
+  }, [postState, postPubkey]);
 
   useEffect(() => {
     if (hubContentState && postPubkey) {
       const metadata = Object.values(hubContentState).find(
         (content) => content.post === postPubkey
-      )
-      setMetadata(metadata)
+      );
+      setMetadata(metadata);
       if (metadata?.referenceHubContent && !referenceReleasePubkey) {
-        setReferenceReleasePubkey(metadata.referenceHubContent)
-        getRelease(metadata.referenceHubContent)
+        setReferenceReleasePubkey(metadata.referenceHubContent);
+        getRelease(metadata.referenceHubContent);
       }
     }
-  }, [hubContentState, postPubkey])
+  }, [hubContentState, postPubkey]);
 
   useEffect(() => {
     if (releaseState.metadata[referenceReleasePubkey]) {
-      setReferenceReleaseMetadata(releaseState.metadata[referenceReleasePubkey])
+      setReferenceReleaseMetadata(
+        releaseState.metadata[referenceReleasePubkey]
+      );
     }
-  }, [releaseState, referenceReleasePubkey])
+  }, [releaseState, referenceReleasePubkey]);
   useEffect(() => {
     if (postState[postPubkey]?.postContent.json.body) {
       unified()
@@ -87,52 +89,57 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
         })
         .use(rehypeExternalLinks, {
           target: false,
-          rel: ['nofollow', 'noreferrer'],
+          rel: ["nofollow", "noreferrer"],
         })
         .process(
           JSON.parse(postState[postPubkey].postContent.json.body).replaceAll(
-            '<p><br></p>',
-            '<br>'
+            "<p><br></p>",
+            "<br>"
           )
         )
         .then((file) => {
-          setPostContent(file.result)
-        })
+          setPostContent(file.result);
+        });
     }
-  }, [postState[postPubkey]])
+  }, [postState[postPubkey]]);
 
   const formattedDate = (date) => {
-    return new Date(typeof date === 'number' ? date * 1000 : date).toLocaleDateString()
-  }
+    return new Date(
+      typeof date === "number" ? date * 1000 : date
+    ).toLocaleDateString();
+  };
   return (
     <>
-    {referenceReleaseMetadata && (
+      {referenceReleaseMetadata && (
+        <Grid
+          item
+          md={6}
+          xs={12}
+          sx={{
+            margin: { md: "0px auto auto", xs: "100px 0 15px" },
+            padding: "0 15px",
+            overflowX: "hidden",
+          }}
+        >
+          {referenceReleaseMetadata && (
+            <PostRelease
+              metadata={referenceReleaseMetadata}
+              releasePubkey={referenceReleasePubkey}
+              hubPubkey={hubPubkey}
+            />
+          )}
+        </Grid>
+      )}
       <Grid
         item
         md={6}
         xs={12}
         sx={{
-          margin: { md: '0px auto auto', xs: '100px 0 15px' },
-          padding: '0 15px',
-          overflowX: 'hidden'
-        }}
-      >
-        {referenceReleaseMetadata && (
-          <PostRelease
-            metadata={referenceReleaseMetadata}
-            releasePubkey={referenceReleasePubkey}
-            hubPubkey={hubPubkey}
-          />
-        )}
-      </Grid>
-    )}
-      <Grid
-        item
-        md={6}
-        xs={12}
-        sx={{
-          margin: { md: '0px auto auto', xs: '0px' },
-          padding: {md: '0 15px', xs: `${referenceReleaseMetadata ? '15px': '75px'} 15px`},
+          margin: { md: "0px auto auto", xs: "0px" },
+          padding: {
+            md: "0 15px",
+            xs: `${referenceReleaseMetadata ? "15px" : "75px"} 15px`,
+          },
         }}
       >
         {postData && (
@@ -142,16 +149,16 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
             </Typography>
             <Typography align="left">{postContent}</Typography>
             <Divider />
-            <Typography align="left" sx={{ marginTop: '20px' }}>
-              Published by:{' '}
+            <Typography align="left" sx={{ marginTop: "20px" }}>
+              Published by:{" "}
               <a
                 href={`https://ninaprotocol.com/collection/${postData.author}`}
                 target="_blank"
                 rel="noreferrer"
               >
                 {postData.author}
-              </a>{' '}
-              at{' '}
+              </a>{" "}
+              at{" "}
               <a
                 href={`https://explorer.solana.com/account/${postData.postId}`}
                 target="_blank"
@@ -164,21 +171,20 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
         )}
       </Grid>
     </>
-  )
-}
+  );
+};
 
 const PostWrapper = styled(Box)(({ theme }) => ({
-  paddingBottom: '20px',
-  maxHeight: '86vh',
-  overflowX: 'scroll',
-  '&::-webkit-scrollbar': {
-    display: 'none',
+  paddingBottom: "20px",
+  maxHeight: "86vh",
+  overflowX: "scroll",
+  "&::-webkit-scrollbar": {
+    display: "none",
   },
-  [theme.breakpoints.down('md')]: {
-    maxHeight: 'unset',
-    paddingBottom: '100px'
+  [theme.breakpoints.down("md")]: {
+    maxHeight: "unset",
+    paddingBottom: "100px",
   },
-}))
+}));
 
-
-export default Post
+export default Post;
