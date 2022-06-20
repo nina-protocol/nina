@@ -1,4 +1,4 @@
-import React, { useContext, useState, useMemo } from "react";
+import React, { useContext, useState, useMemo, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import nina from "@nina-protocol/nina-sdk";
 import Image from "next/image";
@@ -10,6 +10,15 @@ import Button from "@mui/material/Button";
 import Link from "next/link";
 import AutorenewTwoToneIcon from '@mui/icons-material/AutorenewTwoTone';
 
+import FormatBoldIcon from '@mui/icons-material/FormatBold';
+import FormatItalicIcon from '@mui/icons-material/FormatItalic';
+import FormatUnderlinedIcon from '@mui/icons-material/FormatUnderlined';
+import FormatColorFillIcon from '@mui/icons-material/FormatColorFill';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+
+
 const { AudioPlayerContext, HubContext, ReleaseContext } = nina.contexts;
 
 const ContentTileView = ({ content, hubPubkey, hubHandle }) => {
@@ -19,6 +28,52 @@ const ContentTileView = ({ content, hubPubkey, hubHandle }) => {
   const [columnCount, setColumnCount] = useState(3);
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const router = useRouter();
+
+  const [displayType, setDisplayType] = useState('all');
+  const [filteredContent, setFilteredContent] = useState(content);
+
+  useEffect(() => {
+    let filtered;
+    switch (displayType) {
+      case 'all':
+        setFilteredContent(content)
+        break;
+      case 'releases':
+        filtered = content.filter(item => {
+          return (
+            item.contentType === "NinaReleaseV1" && item.publishedThroughHub === true
+          )
+        } )
+        setFilteredContent(filtered)
+        break;
+    
+      case 'reposts':
+        filtered = content.filter(item => {
+          return (
+            item.contentType === "NinaReleaseV1" && item.publishedThroughHub === false
+          )
+        } )
+        setFilteredContent(filtered)
+        break;
+    
+  
+      case 'posts':
+        filtered = content.filter(item => {
+          return (
+            item.contentType === "Post"
+          )
+        } )
+        setFilteredContent(filtered)
+        break;
+  
+      default:
+        break;
+    }
+  }, [displayType])
+
+  const handleFormat = (event, newDisplayType) => {
+    setDisplayType(newDisplayType);
+  };
 
   const handleClick = (hubReleasePubkey, hubPostPubkey = null) => {
     const pathString = hubPostPubkey ? "posts" : "releases";
@@ -40,8 +95,28 @@ const ContentTileView = ({ content, hubPubkey, hubHandle }) => {
 
   return (
     <TileGrid columnCount={columnCount}>
-      {content.map((item, i) => {
-        console.log("item.publishedThroughHub :>> ", item.publishedThroughHub);
+
+      <ToggleButtonGroup
+        exclusive
+        value={displayType}
+        onChange={handleFormat}
+        aria-label="text formatting"
+      >
+        <ToggleButton value="all" aria-label="all">
+            All
+        </ToggleButton>
+        <ToggleButton value="releases" aria-label="releases">
+            Releases
+        </ToggleButton>
+        <ToggleButton value="reposts" aria-label="Reposts">
+            Reposts
+        </ToggleButton>
+        <ToggleButton value="posts" aria-label="posts">
+            Text Posts
+        </ToggleButton>
+      </ToggleButtonGroup>
+
+      {filteredContent.map((item, i) => {
         return (
           <React.Fragment key={i}>
             {item?.contentType === "NinaReleaseV1" && (
