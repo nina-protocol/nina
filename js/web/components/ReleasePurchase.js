@@ -18,8 +18,13 @@ const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, router, relatedReleases } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const { releasePurchase, releasePurchasePending, releaseState, getRelease, getPublishedHubForRelease } =
-    useContext(ReleaseContext)
+  const {
+    releasePurchase,
+    releasePurchasePending,
+    releaseState,
+    getRelease,
+    getPublishedHubForRelease,
+  } = useContext(ReleaseContext)
   const { getAmountHeld, collection, ninaClient } = useContext(NinaContext)
   const {
     exchangeState,

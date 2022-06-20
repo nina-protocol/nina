@@ -163,7 +163,7 @@ const ReleaseContextProvider = ({ children }) => {
         initializeReleaseAndMint,
         releaseCreateMetadataJson,
         releaseInitViaHub,
-        getPublishedHubForRelease
+        getPublishedHubForRelease,
       }}
     >
       {children}
@@ -1315,12 +1315,11 @@ const releaseContextHelper = ({
       const response = await fetch(path)
       const hub = await response.json()
       return hub
-  } catch (error) {
+    } catch (error) {
       console.warn(error)
       return undefined
     }
   }
-
 
   const getRedeemablesForRelease = async (releasePubkey) => {
     try {

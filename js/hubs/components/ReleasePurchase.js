@@ -32,7 +32,7 @@ const ReleasePurchase = (props) => {
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey]);
   const [downloadButtonString, setDownloadButtonString] = useState("Download");
   const [userIsRecipient, setUserIsRecipient] = useState(false);
-  const [publishedHub, setPublishedHub] = useState()
+  const [publishedHub, setPublishedHub] = useState();
 
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
@@ -52,10 +52,10 @@ const ReleasePurchase = (props) => {
     getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey);
 
     const hubForRelease = async (releasePubkey) => {
-      const result = await getPublishedHubForRelease(releasePubkey)
-      setPublishedHub(result?.hub)
-    }
-    hubForRelease(releasePubkey)
+      const result = await getPublishedHubForRelease(releasePubkey);
+      setPublishedHub(result?.hub);
+    };
+    hubForRelease(releasePubkey);
   }, [releasePubkey, releaseState.releaseMintMap]);
 
   useEffect(() => {
@@ -235,11 +235,11 @@ const StyledUserAmount = styled(Box)(({ theme }) => ({
   flexDirection: "column",
 }));
 const StyledLink = styled(Link)(() => ({
-  '&:hover': {
-    cursor: 'pointer',
-    opacity: '0.5 !import',
+  "&:hover": {
+    cursor: "pointer",
+    opacity: "0.5 !import",
   },
-  textDecoration: 'none'
-}))
+  textDecoration: "none",
+}));
 
 export default ReleasePurchase;
