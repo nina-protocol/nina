@@ -22,7 +22,7 @@ const UserReleasesPrompt = ({userHubs, releasePubkey, metadata, hubPubkey, hubRe
   const wallet = useWallet()
 
   const {releaseState, getReleasesPublishedByUser, filterReleasesPublishedByUser} = useContext(ReleaseContext)
-  const {hubAddRelease, getHub} = useContext(HubContext)
+  const {hubAddRelease, getHub, addToHubQueue} = useContext(HubContext)
   const {collection} = useContext(NinaContext)
   const [selectedHubId, setSelectedHubId] = useState()
   const [inProgress, setInProgress] = useState(false)
@@ -125,6 +125,9 @@ const UserReleasesPrompt = ({userHubs, releasePubkey, metadata, hubPubkey, hubRe
                       loading="eager"
                       onClick={() => handleRepost(release)}
                     />
+                    {addToHubQueue.has(release.releasePubkey) &&
+                      <h1>PENDING</h1>
+                    }
                   </Grid>
                 )
               })}
