@@ -201,7 +201,7 @@ pub struct HubReleaseAdded {
 	pub hub_content: Pubkey,
 	pub added_by: Pubkey,
 	pub published_through_hub: bool,
-	pub reposted_from_hub: Pubkey,
+	pub reposted_from_hub: Option<Pubkey>,
 }
 
 #[event]
