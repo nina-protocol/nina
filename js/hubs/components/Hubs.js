@@ -40,9 +40,12 @@ const Hubs = () => {
 
   return (
     <HubsContainer overflowX="visible">
-      <Box sx={{ padding: { md: '40px 40px 140px 40px !important', xs: '30px 0px' } }}>
-
-        {!wallet?.connected &&
+      <Box
+        sx={{
+          padding: { md: "40px 40px 140px 40px !important", xs: "30px 0px" },
+        }}
+      >
+        {!wallet?.connected && (
           <>
             <Typography
               variant="h1"

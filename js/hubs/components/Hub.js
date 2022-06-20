@@ -1,13 +1,13 @@
-import React, { useState, useContext, useEffect, useMemo } from 'react'
-import dynamic from 'next/dynamic'
-import nina from '@nina-protocol/nina-sdk'
-import { styled } from '@mui/material/styles'
-import Grid from '@mui/material/Grid'
-import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import Link from 'next/link'
-import Dots from './Dots'
-import UserReleasesPrompt from './UserReleasesPrompt'
+import React, { useState, useContext, useEffect, useMemo } from "react";
+import dynamic from "next/dynamic";
+import nina from "@nina-protocol/nina-sdk";
+import { styled } from "@mui/material/styles";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Link from "next/link";
+import Dots from "./Dots";
+import UserReleasesPrompt from "./UserReleasesPrompt";
 
 import { useWallet } from "@solana/wallet-adapter-react";
 const ContentTileView = dynamic(() => import("./ContentTileView"));
@@ -30,8 +30,8 @@ const Hub = ({ hubPubkey }) => {
     getHub(hubPubkey);
   }, [hubPubkey]);
 
-  const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
-  const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey)
+  const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
+  const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey);
 
   const hubCollaborators = useMemo(
     () => filterHubCollaboratorsForHub(hubPubkey) || [],
@@ -50,13 +50,13 @@ const Hub = ({ hubPubkey }) => {
         return true;
       }
     }
-    return false
-  }, [hubCollaborators, hubData, wallet])
-  
+    return false;
+  }, [hubCollaborators, hubData, wallet]);
+
   const content = useMemo(() => {
-    const contentArray = []
+    const contentArray = [];
     // const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey)
-    const hubContent = [...hubReleases, ...hubPosts]
+    const hubContent = [...hubReleases, ...hubPosts];
     hubContent.forEach((hubContentData) => {
       if (
         hubContentData.contentType === "NinaReleaseV1" &&
@@ -111,11 +111,18 @@ const Hub = ({ hubPubkey }) => {
   return (
     <>
       <Grid item md={4}>
-        {wallet?.connected && wallet?.publicKey?.toBase58() === hubData?.authority && hubReleases && (
-          <UserReleasesPrompt hubPubkey={hubPubkey} hubReleases={hubReleases} />
-        )}
-        <DescriptionWrapper sx={{padding: {md: '15px', xs: '100px 15px 50px'}}}>
-          <Typography align="left" sx={{ color: 'text.primary' }}>
+        {wallet?.connected &&
+          wallet?.publicKey?.toBase58() === hubData?.authority &&
+          hubReleases && (
+            <UserReleasesPrompt
+              hubPubkey={hubPubkey}
+              hubReleases={hubReleases}
+            />
+          )}
+        <DescriptionWrapper
+          sx={{ padding: { md: "15px", xs: "100px 15px 50px" } }}
+        >
+          <Typography align="left" sx={{ color: "text.primary" }}>
             {hubData?.json.description}
           </Typography>
         </DescriptionWrapper>

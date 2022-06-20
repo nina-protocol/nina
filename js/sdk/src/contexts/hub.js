@@ -92,7 +92,7 @@ const HubContextProvider = ({ children }) => {
         collectRoyaltyForReleaseViaHub,
         getHubPubkeyForHubHandle,
         validateHubHandle,
-        addToHubQueue
+        addToHubQueue,
       }}
     >
       {children}
