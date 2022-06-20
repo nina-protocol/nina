@@ -108,7 +108,6 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
       typeof date === "number" ? date * 1000 : date
     ).toLocaleDateString();
   };
-  console.log("postData ::> ", postData);
   return (
     <>
       <Grid

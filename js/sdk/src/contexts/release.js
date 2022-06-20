@@ -90,6 +90,7 @@ const ReleaseContextProvider = ({ children }) => {
     initializeReleaseAndMint,
     releaseCreateMetadataJson,
     releaseInitViaHub,
+    getPublishedHubForRelease,
   } = releaseContextHelper({
     ninaClient,
     releaseState,
@@ -162,6 +163,7 @@ const ReleaseContextProvider = ({ children }) => {
         initializeReleaseAndMint,
         releaseCreateMetadataJson,
         releaseInitViaHub,
+        getPublishedHubForRelease,
       }}
     >
       {children}
@@ -445,6 +447,15 @@ const releaseContextHelper = ({
         ],
         program.programId
       )
+      const [hubContent] = await anchor.web3.PublicKey.findProgramAddress(
+        [
+          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-content')),
+          hubPubkey.toBuffer(),
+          releasePubkey.toBuffer(),
+        ],
+        program.programId
+      )
+
       const [hubSigner] = await anchor.web3.PublicKey.findProgramAddress(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-signer')),
@@ -473,6 +484,7 @@ const releaseContextHelper = ({
           releaseMint: release.releaseMint,
           hub: hubPubkey,
           hubRelease,
+          hubContent,
           hubSigner,
           hubWallet,
           tokenProgram: ids.programs.token,
@@ -1297,6 +1309,18 @@ const releaseContextHelper = ({
     }
   }
 
+  const getPublishedHubForRelease = async (releasePubkey) => {
+    try {
+      let path = `${endpoints.api}/releases/${releasePubkey}/publishedThroughHub`
+      const response = await fetch(path)
+      const hub = await response.json()
+      return hub
+    } catch (error) {
+      console.warn(error)
+      return undefined
+    }
+  }
+
   const getRedeemablesForRelease = async (releasePubkey) => {
     try {
       const response = await fetch(`/releases/${releasePubkey}/redeemables`)
@@ -2098,6 +2122,7 @@ const releaseContextHelper = ({
     initializeReleaseAndMint,
     releaseCreateMetadataJson,
     fetchAndSaveReleasesToState,
+    getPublishedHubForRelease,
   }
 }
 

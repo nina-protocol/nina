@@ -216,18 +216,13 @@ const HubPostCreate = ({
             .toLowerCase()
             .replace(" ", "_")}_${Math.round(new Date().getTime() / 1000)}`;
 
-          let result;
-
-          if (metadataJson.reference) {
-            result = await postInitViaHub(
-              hubPubkey || selectedHubId,
-              slug,
-              uri,
-              metadataJson.reference
-            );
-          } else {
-            result = await postInitViaHub(hubPubkey, slug, uri);
-          }
+          let result = await postInitViaHub(
+            selectedHubId || hubPubkey,
+            slug,
+            uri,
+            preloadedRelease ? metadataJson.reference : undefined,
+            selectedHubId || undefined
+          );
 
           if (result?.success) {
             enqueueSnackbar(result.msg, {

@@ -149,6 +149,7 @@ pub fn handler(
         ctx.accounts.release.clone(),
         ctx.accounts.authority.clone(),
         true,
+        None,
     )?;
 
     emit!(ReleaseInitializedViaHub {

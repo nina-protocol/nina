@@ -71,7 +71,6 @@ const RoyaltyRecipientForm = (props) => {
                       className={classes.formField}
                       variant="outlined"
                       label={formatPlaceholder(field.name)}
-                      variant="standard"
                       {...field}
                     />
                   </>
