@@ -1,29 +1,29 @@
-import createBreakpoints from '@mui/system/createTheme/createBreakpoints'
+import createBreakpoints from "@mui/system/createTheme/createBreakpoints";
 
-const breakpoints = createBreakpoints({})
-import { styled } from '@mui/material/styles'
-import Grid from '@mui/material/Grid'
-import Typography from '@mui/material/Typography'
+const breakpoints = createBreakpoints({});
+import { styled } from "@mui/material/styles";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 
 const colors = {
-  purple: '#9999cc',
-  purpleLight: '#bcb2bf',
-  red: '#FF2828',
-  orange: 'rgba(244, 73, 73, 0.94)',
-  green: '#66F523',
-  white: '#ffffff',
-  greyLight: '#E3E3E3',
-  grey: 'rgba(0, 0, 0, 0.2)',
-  transparent: '#ffffff00',
-  overlay: '#574a4ac4',
-  black: '#000000',
-  blue: '#2D81FF',
-}
+  purple: "#9999cc",
+  purpleLight: "#bcb2bf",
+  red: "#FF2828",
+  orange: "rgba(244, 73, 73, 0.94)",
+  green: "#66F523",
+  white: "#ffffff",
+  greyLight: "#E3E3E3",
+  grey: "rgba(0, 0, 0, 0.2)",
+  transparent: "#ffffff00",
+  overlay: "#574a4ac4",
+  black: "#000000",
+  blue: "#2D81FF",
+};
 
 const lightThemeOptions = {
   palette: {
     secondary: {
-      main: '#9999cc',
+      main: "#9999cc",
     },
     background: {
       default: colors.white,
@@ -45,65 +45,65 @@ const lightThemeOptions = {
     greyLight: colors.greyLight,
   },
   typography: {
-    fontFamily: ['Helvetica', 'san-serif'].join(','),
+    fontFamily: ["Helvetica", "san-serif"].join(","),
     berthold: {
-      fontFamily: ['BlockBE-Heavy'].join(','),
+      fontFamily: ["BlockBE-Heavy"].join(","),
     },
     gutterBottom: {
-      marginBottom: '15px !important',
+      marginBottom: "15px !important",
     },
     h1: {
-      fontSize: '36px !important',
-      fontWeight: '400 !important',
-      [breakpoints.down('md')]: {
-        fontSize: '24px !important',
+      fontSize: "36px !important",
+      fontWeight: "400 !important",
+      [breakpoints.down("md")]: {
+        fontSize: "24px !important",
       },
     },
     h2: {
-      fontSize: '25px !important',
-      fontWeight: '400 !important',
+      fontSize: "25px !important",
+      fontWeight: "400 !important",
     },
     h3: {
-      fontSize: '20px !important',
-      lineHeight: '23px !important',
-      [breakpoints.down('md')]: {
-        lineHeight: '23px !important',
-        fontSize: '16px !important',
+      fontSize: "20px !important",
+      lineHeight: "23px !important",
+      [breakpoints.down("md")]: {
+        lineHeight: "23px !important",
+        fontSize: "16px !important",
       },
     },
     h4: {
-      fontSize: '18px !important',
-      lineHeight: '20.7px !important',
-      [breakpoints.down('md')]: {
-        lineHeight: '23px !important',
-        fontSize: '16px !important',
+      fontSize: "18px !important",
+      lineHeight: "20.7px !important",
+      [breakpoints.down("md")]: {
+        lineHeight: "23px !important",
+        fontSize: "16px !important",
       },
     },
     body1: {
-      fontSize: '14px !important',
-      lineHeight: '16.1px !important',
+      fontSize: "14px !important",
+      lineHeight: "16.1px !important",
     },
     body2: {
-      fontSize: '12px !important',
-      lineHeight: '13.8px !important',
+      fontSize: "12px !important",
+      lineHeight: "13.8px !important",
     },
     subtitle1: {
-      fontSize: '10px !important',
+      fontSize: "10px !important",
     },
   },
   helpers: {
     grid: {
-      display: 'grid',
-      gridAutoRows: '1fr',
-      justifyContent: 'center',
-      alignContent: 'center',
-      justifyItems: 'center',
+      display: "grid",
+      gridAutoRows: "1fr",
+      justifyContent: "center",
+      alignContent: "center",
+      justifyItems: "center",
       gridColumnGap: `10px`,
       gridRowGap: `10px`,
     },
     baseFont: {
-      fontSize: '12px !important',
-      lineHeight: '13.8px !important',
+      fontSize: "12px !important",
+      lineHeight: "13.8px !important",
     },
     gradient: {
       background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(143,175,223,1) 0%, rgb(35,99,196) 100%)`,
@@ -117,35 +117,35 @@ const lightThemeOptions = {
       },
       styleOverrides: {
         root: {
-          padding: '10px',
-          fontSize: '14px',
-          boxShadow: 'none',
-          minWidth: 'unset !important',
-          textTransform: 'none',
-          '&:hover': {
+          padding: "10px",
+          fontSize: "14px",
+          boxShadow: "none",
+          minWidth: "unset !important",
+          textTransform: "none",
+          "&:hover": {
             backgroundColor: `${colors.transparent}`,
-            boxShadow: 'none',
+            boxShadow: "none",
           },
-          '&.MuiButton-outlined': {
-            borderRadius: '0px',
-            padding: '20px',
+          "&.MuiButton-outlined": {
+            borderRadius: "0px",
+            padding: "20px",
             border: `1px solid ${colors.black}`,
             color: colors.black,
-            height: '50px',
-            '&.Mui-disabled': {
+            height: "50px",
+            "&.Mui-disabled": {
               border: `1px solid ${colors.grey}`,
               color: `${colors.grey} !important`,
             },
           },
-          '&.MuiButton-contained': {
-            padding: '0px',
-            borderRadius: '0px',
+          "&.MuiButton-contained": {
+            padding: "0px",
+            borderRadius: "0px",
             backgroundColor: `${colors.transparent}`,
             color: `${colors.black}`,
-            boxShadow: 'none',
-            '&:hover': {
+            boxShadow: "none",
+            "&:hover": {
               backgroundColor: `${colors.transparent}`,
-              boxShadow: 'none',
+              boxShadow: "none",
             },
           },
         },
@@ -154,15 +154,15 @@ const lightThemeOptions = {
     MuiTypography: {
       styleOverrides: {
         root: {
-          color: 'black',
+          color: "black",
         },
       },
     },
     MuiCheckbox: {
       styleOverrides: {
         root: {
-          color: 'black !important',
-          padding: '0',
+          color: "black !important",
+          padding: "0",
         },
       },
     },
@@ -183,13 +183,13 @@ const lightThemeOptions = {
     MuiTextField: {
       styleOverrides: {
         root: {
-          '& .MuiInputLabel-root.Mui-focused': {
-            color: 'rgba(0,0,0,0.6)',
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "rgba(0,0,0,0.6)",
           },
-          '& .MuiInputBase-root-MuiInput-root:after': {
+          "& .MuiInputBase-root-MuiInput-root:after": {
             borderBottom: `2px solid rgba(0,0,0,0.6)`,
           },
-          '& .MuiInput-underline:after': {
+          "& .MuiInput-underline:after": {
             borderBottom: `2px solid rgba(0,0,0,0.6) !important`,
           },
         },
@@ -200,118 +200,119 @@ const lightThemeOptions = {
         a: {
           color: colors.black,
           // textDecoration: "none",
-          cursor: 'pointer !important',
-          '&:hover': {
-            opacity: '50% !important',
+          cursor: "pointer !important",
+          "&:hover": {
+            opacity: "50% !important",
           },
         },
-        '.formField': {
-          marginBottom: '8px !important',
-          width: '100%',
-          textTransform: 'capitalize',
-          position: 'relative',
-          fontSize: '12px !important',
-          lineHeight: '13.8px !important',
-          '& input, textarea': {
-            textAlign: 'left',
-            '&::placeholder': {
+        ".formField": {
+          marginBottom: "8px !important",
+          width: "100%",
+          textTransform: "capitalize",
+          position: "relative",
+          fontSize: "12px !important",
+          lineHeight: "13.8px !important",
+          "& input, textarea": {
+            textAlign: "left",
+            "&::placeholder": {
               color: colors.red,
             },
           },
         },
-        '#wallet-menu': {
-          '&.MuiPopover-root': {
+        "#wallet-menu": {
+          "&.MuiPopover-root": {
             backgroundColor: `${colors.transparent}`,
           },
-          '& .MuiPopover-paper': {
-            overflowX: ' visible',
+          "& .MuiPopover-paper": {
+            overflowX: " visible",
           },
-          '& .MuiPaper-root': {
+          "& .MuiPaper-root": {
             backgroundColor: `${colors.transparent}`,
             background: `${colors.white}`,
-            top: '40px !important',
-            right: '24px !important',
-            boxShadow: 'none',
-            overflowX: 'visible',
-            left: 'unset !important',
+            top: "40px !important",
+            right: "24px !important",
+            boxShadow: "none",
+            overflowX: "visible",
+            left: "unset !important",
           },
-          '& li button': {
-            display: 'none',
+          "& li button": {
+            display: "none",
           },
-          '& .MuiListItem-root': {
-            justifyContent: 'flex-end',
-            fontSize: '10px',
-            paddingTop: '0px',
-            paddingBottom: '0px',
-            '&:hover': {
+          "& .MuiListItem-root": {
+            justifyContent: "flex-end",
+            fontSize: "10px",
+            paddingTop: "0px",
+            paddingBottom: "0px",
+            border: "2px solid red",
+            "&:hover": {
               backgroundColor: `${colors.white}`,
               color: `${colors.blue}`,
             },
           },
-          '& .MuiListItemIcon-root': {
-            display: 'none',
+          "& .MuiListItemIcon-root": {
+            display: "none",
           },
         },
       },
     },
   },
-}
+};
 
 const DashboardWrapper = styled(Grid)(() => ({
-  textAlign: 'left',
-  height: '75%',
-  overflow: 'hidden',
-  margin: ' 0 auto',
-  display: 'flex',
-  [breakpoints.down('md')]: {
-    width: '100%',
-    margin: '80px 15px 0',
-    display: 'block',
+  textAlign: "left",
+  height: "75%",
+  overflow: "hidden",
+  margin: " 0 auto",
+  display: "flex",
+  [breakpoints.down("md")]: {
+    width: "100%",
+    margin: "80px 15px 0",
+    display: "block",
   },
-}))
+}));
 
 const DashboardContent = styled(Grid)(() => ({
-  textAlign: 'left',
-  height: '100%',
-  position: 'relative',
-  '& ul': {
-    padding: '12px 0px 50px',
-    overflowY: 'scroll',
-    height: '100%',
-    [breakpoints.down('md')]: {
-      height: 'unset',
+  textAlign: "left",
+  height: "100%",
+  position: "relative",
+  "& ul": {
+    padding: "12px 0px 50px",
+    overflowY: "scroll",
+    height: "100%",
+    [breakpoints.down("md")]: {
+      height: "unset",
     },
   },
-}))
+}));
 
 const DashboardHeader = styled(Typography)(() => ({
-  position: 'absolute',
-  top: '0',
-}))
+  position: "absolute",
+  top: "0",
+}));
 
-const DashboardEntry = styled('li')(() => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  width: '100%',
-  borderBottom: '1px solid black',
-  padding: '5px 0',
-  cursor: 'pointer',
-  height: '34px',
-  maxWidth: '480px',
-  '& a': {
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-    textDecoration: 'none',
+const DashboardEntry = styled("li")(() => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  width: "100%",
+  borderBottom: "1px solid black",
+  padding: "5px 0",
+  cursor: "pointer",
+  height: "34px",
+  maxWidth: "480px",
+  "& a": {
+    whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
+    overflow: "hidden",
+    textDecoration: "none",
   },
-  '& svg': {
-    cursor: 'pointer',
-    '&:hover': {
-      opacity: '50%',
+  "& svg": {
+    cursor: "pointer",
+    "&:hover": {
+      opacity: "50%",
     },
   },
-}))
+}));
 
 export {
   lightThemeOptions,
@@ -319,4 +320,4 @@ export {
   DashboardContent,
   DashboardHeader,
   DashboardEntry,
-}
+};

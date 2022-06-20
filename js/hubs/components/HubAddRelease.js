@@ -1,39 +1,39 @@
-import React, { useContext } from 'react'
-import { useFormik } from 'formik'
-import nina from '@nina-protocol/nina-sdk'
-import { useSnackbar } from 'notistack'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import { styled } from '@mui/material/styles'
+import React, { useContext } from "react";
+import { useFormik } from "formik";
+import nina from "@nina-protocol/nina-sdk";
+import { useSnackbar } from "notistack";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import { styled } from "@mui/material/styles";
 
-const { HubContext } = nina.contexts
+const { HubContext } = nina.contexts;
 
 const HubAddRelease = (props) => {
-  const { hubPubkey, canAddContent } = props
-  const { enqueueSnackbar } = useSnackbar()
+  const { hubPubkey, canAddContent } = props;
+  const { enqueueSnackbar } = useSnackbar();
 
-  const { hubAddRelease } = useContext(HubContext)
+  const { hubAddRelease } = useContext(HubContext);
 
   const formik = useFormik({
     initialValues: {
-      release: '',
+      release: "",
     },
     onSubmit: async (values, { resetForm }) => {
-      const result = await hubAddRelease(hubPubkey, values.release)
+      const result = await hubAddRelease(hubPubkey, values.release);
       if (result?.success) {
         enqueueSnackbar(result.msg, {
-          variant: 'info',
-        })
+          variant: "info",
+        });
       } else {
-        enqueueSnackbar('Release Not Added', {
-          variant: 'failure',
-        })
+        enqueueSnackbar("Release Not Added", {
+          variant: "failure",
+        });
       }
-      resetForm()
+      resetForm();
     },
-  })
+  });
 
   return (
     <Wrapper>
@@ -43,7 +43,7 @@ const HubAddRelease = (props) => {
 
       <form
         onSubmit={formik.handleSubmit}
-        style={{ display: 'flex', flexDirection: 'column' }}
+        style={{ display: "flex", flexDirection: "column" }}
       >
         <TextField
           fullWidth
@@ -57,7 +57,7 @@ const HubAddRelease = (props) => {
         />
 
         <Button
-          style={{ marginTop: '15px' }}
+          style={{ marginTop: "15px" }}
           color="primary"
           variant="outlined"
           fullWidth
@@ -65,22 +65,22 @@ const HubAddRelease = (props) => {
           disabled={!canAddContent}
         >
           {canAddContent
-            ? 'Submit'
-            : 'You do not have permission to add releases'}
+            ? "Submit"
+            : "You do not have permission to add releases"}
         </Button>
       </form>
     </Wrapper>
-  )
-}
+  );
+};
 
 const Wrapper = styled(Box)(() => ({
-  textAlign: 'left',
-  width: '500px',
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'flex-start',
-  margin: 'auto',
-}))
+  textAlign: "left",
+  width: "500px",
+  height: "100%",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "flex-start",
+  margin: "auto",
+}));
 
-export default HubAddRelease
+export default HubAddRelease;

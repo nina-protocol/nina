@@ -37,6 +37,8 @@ export const ninaErrorHandler = (error, errorString) => {
     }
   }
 
-  // return {success: false}
-  return undefined
+  return {
+    success: false,
+    msg: `Error: ${error.toString()}`,
+  }
 }

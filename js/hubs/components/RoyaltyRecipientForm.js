@@ -1,63 +1,63 @@
-import React, { useContext } from 'react'
-import { styled } from '@mui/material/styles'
-import { useSnackbar } from 'notistack'
-import { Formik, Field, Form } from 'formik'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
-import Slider from '@mui/material/Slider'
+import React, { useContext } from "react";
+import { styled } from "@mui/material/styles";
+import { useSnackbar } from "notistack";
+import { Formik, Field, Form } from "formik";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import Slider from "@mui/material/Slider";
 
-import nina from '@nina-protocol/nina-sdk'
+import nina from "@nina-protocol/nina-sdk";
 
-const { formatPlaceholder } = nina.utils
+const { formatPlaceholder } = nina.utils;
 
-const { ReleaseContext } = nina.contexts
+const { ReleaseContext } = nina.contexts;
 
 const RoyaltyRecipientForm = (props) => {
   const { release, userShare, setUserDisplayShare, releasePubkey, toggleForm } =
-    props
-  const { enqueueSnackbar } = useSnackbar()
-  const { addRoyaltyRecipient } = useContext(ReleaseContext)
+    props;
+  const { enqueueSnackbar } = useSnackbar();
+  const { addRoyaltyRecipient } = useContext(ReleaseContext);
 
   const handleDisplayPercent = (value) => {
-    const sending = parseInt(value)
-    setUserDisplayShare(userShare - sending)
-  }
+    const sending = parseInt(value);
+    setUserDisplayShare(userShare - sending);
+  };
 
   const valuetext = (value) => {
-    return `${value}%`
-  }
+    return `${value}%`;
+  };
 
   const marks = [
     {
       value: 0,
-      label: '0%',
+      label: "0%",
     },
     {
       value: userShare,
       label: `${userShare}%`,
     },
-  ]
+  ];
 
   return (
     <Root>
       <Formik
         initialValues={{
-          recipientAddress: '',
+          recipientAddress: "",
           percentShare: 20,
         }}
         onSubmit={async (values, { resetForm, initialValues }) => {
-          let result
-          enqueueSnackbar('Transferring Royalty...', {
-            variant: 'info',
-          })
-          result = await addRoyaltyRecipient(release, values, releasePubkey)
+          let result;
+          enqueueSnackbar("Transferring Royalty...", {
+            variant: "info",
+          });
+          result = await addRoyaltyRecipient(release, values, releasePubkey);
           enqueueSnackbar(result.msg, {
-            variant: result.success ? 'success' : 'warn',
-          })
-          resetForm(initialValues)
-          toggleForm()
+            variant: result.success ? "success" : "warn",
+          });
+          resetForm(initialValues);
+          toggleForm();
         }}
       >
         {({ values, setFieldValue, field, form }) => (
@@ -83,7 +83,7 @@ const RoyaltyRecipientForm = (props) => {
               <Typography
                 id="discrete-slider-custom"
                 align="left"
-                style={{ color: 'rgba(0, 0, 0, 0.54)' }}
+                style={{ color: "rgba(0, 0, 0, 0.54)" }}
               >
                 Percent Share:
               </Typography>
@@ -100,8 +100,8 @@ const RoyaltyRecipientForm = (props) => {
                   name="resalePercentage"
                   marks={marks}
                   onChange={(event, value) => {
-                    handleDisplayPercent(value)
-                    setFieldValue('percentShare', value)
+                    handleDisplayPercent(value);
+                    setFieldValue("percentShare", value);
                   }}
                   {...field}
                   {...form}
@@ -123,10 +123,10 @@ const RoyaltyRecipientForm = (props) => {
         )}
       </Formik>
     </Root>
-  )
-}
+  );
+};
 
-const PREFIX = 'RoyaltyRecipientForm'
+const PREFIX = "RoyaltyRecipientForm";
 
 const classes = {
   redeemableForm: `${PREFIX}-redeemableForm`,
@@ -135,57 +135,57 @@ const classes = {
   formInputGroup: `${PREFIX}-formInputGroup`,
   royaltyPercentageWrapper: `${PREFIX}-royaltyPercentageWrapper`,
   formError: `${PREFIX}-formError`,
-}
+};
 
-const Root = styled('div')(({ theme }) => ({
+const Root = styled("div")(({ theme }) => ({
   [`& .${classes.redeemableForm}`]: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '0 1rem',
-    overflowY: 'auto',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "0 1rem",
+    overflowY: "auto",
   },
 
   [`& .${classes.formField}`]: {
-    margin: '0.75rem 0em',
-    width: '100%',
-    textTransform: 'capitalize',
-    '& :placeholder': {
-      textTransform: 'capitalize',
+    margin: "0.75rem 0em",
+    width: "100%",
+    textTransform: "capitalize",
+    "& :placeholder": {
+      textTransform: "capitalize",
     },
   },
 
   [`& .${classes.formSelect}`]: {
-    padding: '18.5px 14px',
-    boxSizing: 'border-box',
-    borderColor: 'rgba(0, 0, 0, 0.23)',
-    color: 'rgba(0, 0, 0, 0.5)',
-    '& $option': {
-      color: 'red',
+    padding: "18.5px 14px",
+    boxSizing: "border-box",
+    borderColor: "rgba(0, 0, 0, 0.23)",
+    color: "rgba(0, 0, 0, 0.5)",
+    "& $option": {
+      color: "red",
     },
   },
 
   [`& .${classes.formInputGroup}`]: {
-    display: 'flex',
-    width: '100%',
-    '& > :first-child': {
-      marginLeft: '0',
+    display: "flex",
+    width: "100%",
+    "& > :first-child": {
+      marginLeft: "0",
     },
-    '& > :last-child': {
-      marginRight: '0',
+    "& > :last-child": {
+      marginRight: "0",
     },
   },
 
   [`& .${classes.royaltyPercentageWrapper}`]: {
-    display: 'flex',
-    justifyContent: 'space-inbetween',
-    alignItems: 'center',
+    display: "flex",
+    justifyContent: "space-inbetween",
+    alignItems: "center",
   },
 
   [`& .${classes.formError}`]: {
     color: `${theme.palette.red}`,
   },
-}))
+}));
 
-export default RoyaltyRecipientForm
+export default RoyaltyRecipientForm;
