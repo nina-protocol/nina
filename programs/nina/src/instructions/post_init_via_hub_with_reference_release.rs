@@ -65,6 +65,9 @@ pub struct PostInitViaHubWithReferenceRelease<'info> {
     pub hub_collaborator: Account<'info, HubCollaborator>,
     pub system_program: Program<'info, System>,
     pub rent: Sysvar<'info, Rent>,
+    //    Remaining Accounts
+    //    Only needed if reposted
+    //    reposted_from_hub
 }
 
 pub fn handler (
@@ -97,10 +100,13 @@ pub fn handler (
     reference_release_hub_content.datetime = Clock::get()?.unix_timestamp;
     reference_release_hub_content.published_through_hub = false;
     reference_release_hub_content.visible = true;
-
     reference_release_hub_release.hub = ctx.accounts.hub.key();
     reference_release_hub_release.release = release.key();
     reference_release_hub_release.sales = 0;
+
+    if ctx.remaining_accounts.len() == 1 {
+        reference_release_hub_content.reposted_from_hub = ctx.remaining_accounts[0].key();
+    }
 
     emit!(PostInitializedViaHub {
         public_key: ctx.accounts.post.key(),
@@ -113,7 +119,8 @@ pub fn handler (
         hub_content: ctx.accounts.hub_content.key(),
         reference_content: Some(release.key()),
         reference_hub_content: Some(reference_release_hub_content.key()),
-        reference_hub_content_child: Some(reference_release_hub_release.key())
+        reference_hub_content_child: Some(reference_release_hub_release.key()),
+        reposted_from_hub: Some(reference_release_hub_content.reposted_from_hub)
     });
 
     Ok(())

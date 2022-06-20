@@ -27,6 +27,7 @@ impl Hub {
 		release: AccountLoader<'info, Release>,
 		authority: Signer<'info>,
 		is_published_through_hub: bool,
+		reposted_from_hub: Option<AccountInfo>
 	) -> Result<()> {
 		hub_content.added_by = authority.key();
 		hub_content.hub = hub.key();
@@ -35,6 +36,10 @@ impl Hub {
 		hub_content.datetime = Clock::get()?.unix_timestamp;
 		hub_content.published_through_hub = is_published_through_hub;
 		hub_content.visible = true;
+
+		if reposted_from_hub.is_some() {
+			hub_content.reposted_from_hub = reposted_from_hub.unwrap().key();
+		}
 
 		hub_release.hub = hub.key();
 		hub_release.release = release.key();
@@ -102,7 +107,7 @@ impl Default for HubContentType {
 
 #[account]
 #[derive(Default)]
-// size = 8 + 32 + 32 + 32 + 1 + 8 + 1 + 1 (+ 38) = 153
+// size = 8 + 32 + 32 + 32 + 1 + 8 + 1 + 1 + 32 (+ 6) = 153
 pub struct HubContent {
 	pub added_by: Pubkey,
 	pub hub: Pubkey,
@@ -111,6 +116,7 @@ pub struct HubContent {
 	pub datetime: i64,
 	pub visible: bool,
 	pub published_through_hub: bool,
+	pub reposted_from_hub: Pubkey
 }
 
 #[account(zero_copy)]
@@ -165,7 +171,7 @@ pub struct HubCollaboratorAdded {
 	pub public_key: Pubkey,
 	pub hub: Pubkey,
 	pub collaborator: Pubkey,
-    pub added_by: Pubkey,
+  pub added_by: Pubkey,
 	pub datetime: i64,
 }
 
@@ -195,6 +201,7 @@ pub struct HubReleaseAdded {
 	pub hub_content: Pubkey,
 	pub added_by: Pubkey,
 	pub published_through_hub: bool,
+	pub reposted_from_hub: Pubkey,
 }
 
 #[event]
