@@ -60,7 +60,7 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
 
   return (
     <>
-      <Grid
+      <StyledGrid
         item
         md={6}
         xs={12}
@@ -125,7 +125,7 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
         <Box sx={{ marginTop:  {md: '100px', xs: '30px'}}}>
           <ReleasePurchase releasePubkey={releasePubkey} metadata={metadata} hubPubkey={hubPubkey} />
         </Box>
-      </Grid>
+      </StyledGrid>
 
       <DesktopImageGridItem item md={6}>
         {metadata && (
@@ -147,6 +147,15 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
     </>
   )
 }
+
+const StyledGrid = styled(Grid)(({theme}) => ({
+  // [theme.breakpoints.down('md')]: {
+  //   border: '2px solid red',
+  //   '&:-webkit-scrollbar': {
+  //     display: 'none !important'
+  //   },
+  // },
+}))
 
 const PlayButton = styled(Button)(({ theme }) => ({
   color: `${theme.palette.text.primary} !important`,
@@ -187,9 +196,12 @@ const ImageContainer = styled(Box)(() => ({
   width: '100%',
 }))
 
-const CtaWrapper = styled(Box)(() => ({
+const CtaWrapper = styled(Box)(({theme}) => ({
   display: 'flex',
-  flexDirection: 'column'
+  flexDirection: 'column',
+  [theme.breakpoints.down('md')]: {
+    marginTop: '15px',
+  },
 }))
 
 export default Release
