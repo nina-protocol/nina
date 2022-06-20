@@ -20,6 +20,9 @@ const HubContextProvider = ({ children }) => {
   const [hubContentState, setHubContentState] = useState({})
   const [hubFeePending, setHubFeePending] = useState()
   const [initialLoad, setInitialLoad] = useState(false)
+  const [addToHubQueue, setAddToHubQueue] = useState(new Set())
+  const [hubsCount, setHubsCount] = useState(0)
+  const [allHubs, setAllHubs] = useState([])
   const {
     getHubs,
     getHub,
@@ -41,7 +44,7 @@ const HubContextProvider = ({ children }) => {
     getHubPost,
     collectRoyaltyForReleaseViaHub,
     getHubPubkeyForHubHandle,
-    validateHubHandle
+    validateHubHandle,
   } = hubContextHelper({
     ninaClient,
     savePostsToState,
@@ -57,6 +60,12 @@ const HubContextProvider = ({ children }) => {
     initialLoad,
     setInitialLoad,
     getRelease,
+    addToHubQueue,
+    setAddToHubQueue,
+    allHubs,
+    setAllHubs,
+    hubsCount,
+    setHubsCount,
   })
 
   return (
@@ -86,7 +95,8 @@ const HubContextProvider = ({ children }) => {
         getHubPost,
         collectRoyaltyForReleaseViaHub,
         getHubPubkeyForHubHandle,
-        validateHubHandle
+        validateHubHandle,
+        addToHubQueue,
       }}
     >
       {children}
@@ -109,6 +119,12 @@ const hubContextHelper = ({
   initialLoad,
   setInitialLoad,
   getRelease,
+  addToHubQueue,
+  setAddToHubQueue,
+  allHubs,
+  setAllHubs,
+  hubsCount,
+  setHubsCount,
 }) => {
   const { ids, provider, endpoints } = ninaClient
 
@@ -364,8 +380,11 @@ const hubContextHelper = ({
     }
   }
 
-  const hubAddRelease = async (hubPubkey, releasePubkey) => {
+  const hubAddRelease = async (hubPubkey, releasePubkey, fromHub) => {
     try {
+      let queue = new Set(addToHubQueue)
+      queue.add(releasePubkey)
+      setAddToHubQueue(queue)
       const hub = hubState[hubPubkey]
       const program = await ninaClient.useProgram()
       hubPubkey = new anchor.web3.PublicKey(hubPubkey)
@@ -397,7 +416,7 @@ const hubContextHelper = ({
         program.programId
       )
 
-      const txid = await program.rpc.hubAddRelease(hub.handle, {
+      const request = {
         accounts: {
           authority: provider.wallet.publicKey,
           hub: hubPubkey,
@@ -408,16 +427,31 @@ const hubContextHelper = ({
           systemProgram: anchor.web3.SystemProgram.programId,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         },
-      })
+      }
+      if (fromHub) {
+        request.remainingAccounts = [
+          {
+            pubkey: new anchor.web3.PublicKey(fromHub),
+            isWritable: false,
+            isSigner: false,
+          },
+        ]
+      }
+      const txid = await program.rpc.hubAddRelease(hub.handle, request)
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
       await indexerHasRecord(hubRelease.toBase58(), 'hubRelease')
       await getHub(hubPubkey)
-
+      queue = new Set(addToHubQueue)
+      queue.delete(releasePubkey.toBase58())
+      setAddToHubQueue(queue)
       return {
         success: true,
         msg: 'Release Added to Hub',
       }
     } catch (error) {
+      const queue = new Set(addToHubQueue)
+      addToHubQueue.delete(releasePubkey.toBase58())
+      setAddToHubQueue(queue)
       return ninaErrorHandler(error)
     }
   }
@@ -487,9 +521,15 @@ const hubContextHelper = ({
           systemProgram: anchor.web3.SystemProgram.programId,
         },
       })
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await provider.connection.getParsedTransaction(txid, 'finalized')
 
-      await getHub(hubPubkey)
+      const toggledContent = Object.values(hubContentState).filter(
+        (c) => c.publicKeyHubContent === hubContent.toBase58()
+      )[0]
+      toggledContent.visible = !toggledContent.visible
+      const hubContentStateCopy = { ...hubContentState }
+      hubContentState[toggledContent.publicKey] = toggledContent
+      setHubContentState(hubContentStateCopy)
       return {
         success: true,
         msg: `${type} has been archived`,
@@ -571,7 +611,8 @@ const hubContextHelper = ({
     hubPubkey,
     slug,
     uri,
-    referenceRelease = undefined
+    referenceRelease = undefined,
+    fromHub
   ) => {
     try {
       const program = await ninaClient.useProgram()
@@ -616,22 +657,26 @@ const hubContextHelper = ({
         ],
         program.programId
       )
-      const accounts = {
-        author: provider.wallet.publicKey,
-        hub: hubPubkey,
-        post,
-        hubPost,
-        hubContent,
-        hubCollaborator,
-        systemProgram: anchor.web3.SystemProgram.programId,
-        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-      }
-
       let txid
       const handle = decodeNonEncryptedByteArray(hub.handle)
       const params = [handle, slug, uri]
+      const request = {
+        accounts: {
+          author: provider.wallet.publicKey,
+          hub: hubPubkey,
+          post,
+          hubPost,
+          hubContent,
+          hubCollaborator,
+          systemProgram: anchor.web3.SystemProgram.programId,
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        },
+      }
+      if (fromHub) {
+        request.remainingAccounts = [new anchor.web3.PublicKey(fromHub)]
+      }
       if (referenceRelease) {
-        accounts.referenceRelease = referenceRelease
+        request.accounts.referenceRelease = referenceRelease
 
         const [referenceReleaseHubRelease] =
           await anchor.web3.PublicKey.findProgramAddress(
@@ -642,7 +687,7 @@ const hubContextHelper = ({
             ],
             program.programId
           )
-        accounts.referenceReleaseHubRelease = referenceReleaseHubRelease
+        request.accounts.referenceReleaseHubRelease = referenceReleaseHubRelease
 
         const [referenceReleaseHubContent] =
           await anchor.web3.PublicKey.findProgramAddress(
@@ -653,13 +698,14 @@ const hubContextHelper = ({
             ],
             program.programId
           )
-        accounts.referenceReleaseHubContent = referenceReleaseHubContent
+        request.accounts.referenceReleaseHubContent = referenceReleaseHubContent
 
-        txid = await program.rpc.postInitViaHubWithReferenceRelease(...params, {
-          accounts,
-        })
+        txid = await program.rpc.postInitViaHubWithReferenceRelease(
+          ...params,
+          request
+        )
       } else {
-        txid = await program.rpc.postInitViaHub(...params, { accounts })
+        txid = await program.rpc.postInitViaHub(...params, request)
       }
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
       await indexerHasRecord(hubPost.toBase58(), 'hubPost')
@@ -800,12 +846,21 @@ const hubContextHelper = ({
     }
   }
 
-  const getHubs = async () => {
+  const getHubs = async (recent = false) => {
     try {
-      let path = endpoints.api + `/hubs`
-      const response = await fetch(path)
+      const all = [...allHubs]
+      const response = await fetch(
+        `${endpoints.api}/hubs${recent ? '' : `/?offset=${allHubs.length}`}`
+      )
       const result = await response.json()
+      setAllHubs(result.count)
+      result.hubs.forEach((hub) => {
+        if (!all.includes(hub.id)) {
+          all.push(hub.id)
+        }
+      })
       saveHubsToState(result.hubs)
+      setAllHubs(all)
     } catch (error) {
       console.warn(error)
     }
@@ -933,16 +988,24 @@ const hubContextHelper = ({
   const saveHubContentToState = async (hubReleases, hubPosts) => {
     try {
       const program = await ninaClient.useProgram()
+      let hubReleaseContentAccounts =
+        await program.account.hubContent.fetchMultiple(
+          hubReleases.map(
+            (hubRelease) => new anchor.web3.PublicKey(hubRelease.hubContent)
+          ),
+          'processed'
+        )
       let hubReleaseAccounts = await program.account.hubRelease.fetchMultiple(
         hubReleases.map(
           (hubRelease) => new anchor.web3.PublicKey(hubRelease.id)
         ),
-        'confirmed'
+        'processed'
       )
       const hubReleaseDict = {}
       hubReleaseAccounts.forEach((release, i) => {
         if (release) {
           release.publicKey = hubReleases[i].id
+          hubReleases[i].visible = hubReleaseContentAccounts[i].visible
           hubReleaseDict[hubReleases[i].id] = release
         }
       })
@@ -968,6 +1031,18 @@ const hubContextHelper = ({
           },
         }
       }
+      let hubPostsContentAccounts =
+        await program.account.hubContent.fetchMultiple(
+          hubPosts.map(
+            (hubPost) => new anchor.web3.PublicKey(hubPost.hubContent)
+          ),
+          'processed'
+        )
+      hubPostsContentAccounts.forEach((post, i) => {
+        if (post) {
+          hubPosts[i].visible = hubPostsContentAccounts[i].visible
+        }
+      })
 
       for (let hubPost of hubPosts) {
         contentState = {
@@ -1065,7 +1140,9 @@ const hubContextHelper = ({
     let path = endpoints.api + `/hubs/${handle}`
     const response = await fetch(path)
     if (response.status === 200) {
-      alert(`A hub with the handle ${handle} all ready exists, please choose a different handle.`)
+      alert(
+        `A hub with the handle ${handle} all ready exists, please choose a different handle.`
+      )
       return false
     }
     return true
@@ -1092,7 +1169,7 @@ const hubContextHelper = ({
     getHubPost,
     collectRoyaltyForReleaseViaHub,
     getHubPubkeyForHubHandle,
-    validateHubHandle
+    validateHubHandle,
   }
 }
 export default HubContextProvider

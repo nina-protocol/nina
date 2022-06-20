@@ -32,7 +32,7 @@ const UserReleasesPrompt = ({
     getReleasesPublishedByUser,
     filterReleasesPublishedByUser,
   } = useContext(ReleaseContext);
-  const { hubAddRelease, getHub } = useContext(HubContext);
+  const { hubAddRelease, getHub, addToHubQueue } = useContext(HubContext);
   const { collection } = useContext(NinaContext);
   const [selectedHubId, setSelectedHubId] = useState();
   const [inProgress, setInProgress] = useState(false);
@@ -125,7 +125,7 @@ const UserReleasesPrompt = ({
             <Grid container spacing={1}>
               {unpostedUserReleases?.map((release, i) => {
                 return (
-                  <Grid item md={4} key={i}>
+                  <Grid item md={4} key={i} position="relative">
                     <ReleaseImage
                       width={50}
                       height={50}
@@ -135,7 +135,17 @@ const UserReleasesPrompt = ({
                       unoptimized={true}
                       loading="eager"
                       onClick={() => handleRepost(release)}
+                      sx={{
+                        opacity: addToHubQueue.has(release.releasePubkey)
+                          ? "50%"
+                          : "",
+                      }}
                     />
+                    {addToHubQueue.has(release.releasePubkey) && (
+                      <PendingBox>
+                        <Dots size="50px" />
+                      </PendingBox>
+                    )}
                   </Grid>
                 );
               })}
@@ -188,10 +198,19 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 }));
 
 const ReleaseImage = styled(Image)(({ theme }) => ({
-  border: "2px solid red",
   "&:hover": {
     opacity: "50%",
   },
+}));
+
+const PendingBox = styled(Box)(({ theme }) => ({
+  position: "absolute",
+  top: "0",
+  width: "100%",
+  height: "100%",
+  display: "flex",
+  justifyContent: "center",
+  background: ``,
 }));
 
 export default UserReleasesPrompt;

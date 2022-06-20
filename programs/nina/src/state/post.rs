@@ -80,6 +80,7 @@ pub struct PostInitializedViaHub {
     pub reference_hub_content: Option<Pubkey>,
     pub reference_hub_content_child: Option<Pubkey>,
     pub added_by: Pubkey,
+    pub reposted_from_hub: Option<Pubkey>,
 }
 
 #[event]

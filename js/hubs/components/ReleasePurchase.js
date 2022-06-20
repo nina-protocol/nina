@@ -4,6 +4,7 @@ import { styled } from "@mui/material/styles";
 import nina from "@nina-protocol/nina-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Button from "@mui/material/Button";
+import Link from "@mui/material/Link";
 import Box from "@mui/material/Box";
 import { useSnackbar } from "notistack";
 import Typography from "@mui/material/Typography";
@@ -22,6 +23,7 @@ const ReleasePurchase = (props) => {
     releasePurchasePending,
     releaseState,
     getRelease,
+    getPublishedHubForRelease,
   } = useContext(ReleaseContext);
   const { ninaClient } = useContext(NinaContext);
   const { getAmountHeld, collection } = useContext(NinaContext);
@@ -30,6 +32,7 @@ const ReleasePurchase = (props) => {
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey]);
   const [downloadButtonString, setDownloadButtonString] = useState("Download");
   const [userIsRecipient, setUserIsRecipient] = useState(false);
+  const [publishedHub, setPublishedHub] = useState();
 
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
@@ -47,7 +50,13 @@ const ReleasePurchase = (props) => {
 
   useEffect(() => {
     getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey);
-  }, [releasePubkey, releaseState.releaseMintMap, getAmountHeld]);
+
+    const hubForRelease = async (releasePubkey) => {
+      const result = await getPublishedHubForRelease(releasePubkey);
+      setPublishedHub(result?.hub);
+    };
+    hubForRelease(releasePubkey);
+  }, [releasePubkey, releaseState.releaseMintMap]);
 
   useEffect(() => {
     if (release?.royaltyRecipients) {
@@ -149,6 +158,18 @@ const ReleasePurchase = (props) => {
       {wallet?.connected && userIsRecipient && !inPost && (
         <ReleaseSettings releasePubkey={releasePubkey} inCreateFlow={false} />
       )}
+      {publishedHub && publishedHub.id !== hubPubkey && (
+        <Typography variant="body2" align="left" paddingBottom="10px">
+          <StyledLink
+            href={publishedHub.json.externalUrl}
+            target="_blank"
+            rel="noreferrer"
+            passHref
+          >
+            {`Published via ${publishedHub.json.displayName}`}
+          </StyledLink>
+        </Typography>
+      )}
 
       <form onSubmit={handleSubmit} style={{ textAlign: "left" }}>
         <BuyButton variant="contained" type="submit" disabled={buttonDisabled}>
@@ -212,6 +233,13 @@ const StyledUserAmount = styled(Box)(({ theme }) => ({
   paddingBottom: "10px",
   display: "flex",
   flexDirection: "column",
+}));
+const StyledLink = styled(Link)(() => ({
+  "&:hover": {
+    cursor: "pointer",
+    opacity: "0.5 !import",
+  },
+  textDecoration: "none",
 }));
 
 export default ReleasePurchase;
