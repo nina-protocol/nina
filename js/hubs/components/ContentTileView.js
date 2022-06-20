@@ -8,6 +8,7 @@ import Box from "@mui/material/Box";
 import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
 import Button from "@mui/material/Button";
 import Link from "next/link";
+import AutorenewTwoToneIcon from '@mui/icons-material/AutorenewTwoTone';
 
 const { AudioPlayerContext, HubContext, ReleaseContext } = nina.contexts;
 
@@ -40,7 +41,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle }) => {
   return (
     <TileGrid columnCount={columnCount}>
       {content.map((item, i) => {
-        console.log("item :>> ", item);
+        console.log("item.publishedThroughHub :>> ", item.publishedThroughHub);
         return (
           <React.Fragment key={i}>
             {item?.contentType === "NinaReleaseV1" && (
@@ -90,6 +91,9 @@ const ContentTileView = ({ content, hubPubkey, hubHandle }) => {
                     />
                   )}
                 </HoverCard>
+                {!item.publishedThroughHub && (
+                  <StyledAutorenewIcon fontSize='small' />
+                )}
               </Tile>
             )}
 
@@ -186,7 +190,6 @@ const TileGrid = styled(Box)(({ theme, columnCount }) => ({
   },
   gridAutoRows: "minmax(21vw, 100px)",
   [theme.breakpoints.down("md")]: {
-    // border: '2px solid red',
     gridTemplateColumns: "repeat(2, 1fr)",
     maxHeight: "unset",
     overflowX: "hidden",
@@ -204,14 +207,14 @@ const Tile = styled(Box)(({ theme }) => ({
   textAlign: "left",
   maxWidth: "100%",
   boxSizing: "border-box",
+  maxHeight: "300px",
+  width: "100%",
+  position: 'relative',
+  paddingBottom: "calc(100% - 4px)",
   border: `2px solid ${theme.palette.transparent}`,
   "&:hover": {
     border: `2px solid ${theme.palette.text.primary}`,
   },
-  maxHeight: "300px",
-  width: "100%",
-  height: "0",
-  paddingBottom: "calc(100% - 4px)",
 }));
 
 const PostTile = styled(Box)(({ theme }) => ({
@@ -251,7 +254,7 @@ const CardCta = styled(Box)(({ theme }) => ({
   alignItems: "center",
   "&:hover": {
     opacity: "1",
-    // cursor: "pointer",
+    cursor: "pointer",
   },
   [theme.breakpoints.down("md")]: {
     display: "none",
@@ -287,6 +290,15 @@ const PostTitle = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.down("md")]: {
     fontSize: "14px !important",
   },
+}));
+
+const StyledAutorenewIcon = styled(AutorenewTwoToneIcon)(({ theme }) => ({
+  position: 'absolute',
+  top: 'auto',
+  bottom: '5px',
+  right: '5px',
+  background: 'rgba(255,255,255,0.5)',
+  borderRadius: '50%'
 }));
 
 export default ContentTileView;
