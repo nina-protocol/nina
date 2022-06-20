@@ -76,7 +76,6 @@ const UserReleasesPrompt = ({
     enqueueSnackbar(`Adding ${release.metadata.name} to Hub`, {
       variant: "info",
     });
-    console.log("addToHubQue :>> ", addToHubQueue);
     const result = await hubAddRelease(hubPubkey, release.releasePubkey);
     if (result?.success) {
       enqueueSnackbar(result.msg, {

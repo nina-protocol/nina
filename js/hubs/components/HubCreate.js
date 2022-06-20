@@ -244,8 +244,8 @@ const HubCreate = ({ update, hubData }) => {
               ? formValues.hubForm.displayName
               : hubData.json.displayName,
             description: formValues.hubForm.description
-              ? formValues.hubForm.description
-              : hubCreated.metadata.description,
+              ? hubData.hubForm.description
+              : hubData.json.description,
             externalUrl: formValues.hubForm.externalUrl
               ? formValues.hubForm.externalUrl
               : hubData.json.externalUrl,

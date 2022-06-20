@@ -62,6 +62,10 @@ const HubContextProvider = ({ children }) => {
     getRelease,
     addToHubQueue,
     setAddToHubQueue,
+    allHubs,
+    setAllHubs,
+    hubsCount,
+    setHubsCount,
   })
 
   return (
@@ -117,6 +121,10 @@ const hubContextHelper = ({
   getRelease,
   addToHubQueue,
   setAddToHubQueue,
+  allHubs,
+  setAllHubs,
+  hubsCount,
+  setHubsCount,
 }) => {
   const { ids, provider, endpoints } = ninaClient
 

@@ -118,7 +118,7 @@ const BundlrModal = ({ inCreate }) => {
           sx={{ height: "54px" }}
         >
           <Typography align="left" textTransform={"none"}>
-            Click here to fund your Bundlr and start publishing
+            Click here to fund your Upload Account and start publishing
           </Typography>
         </Button>
       )}
