@@ -1,76 +1,88 @@
-import React, {useState, useEffect, useContext, useMemo} from 'react'
-import nina from '@nina-protocol/nina-sdk'
-import {styled} from '@mui/material/styles'
-import {Box, Paper} from '@mui/material'
-import Modal from '@mui/material/Modal'
-import Backdrop from '@mui/material/Backdrop'
-import Fade from '@mui/material/Fade'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
-import TextField from '@mui/material/TextField'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-import AutorenewIcon from '@mui/icons-material/Autorenew';
-import {FormControl , InputLabel} from '@mui/material'
-import HubPostCreate from './HubPostCreate'
-import Link from 'next/link'
+import React, { useState, useEffect, useContext, useMemo } from "react";
+import nina from "@nina-protocol/nina-sdk";
+import { styled } from "@mui/material/styles";
+import { Box, Paper } from "@mui/material";
+import Modal from "@mui/material/Modal";
+import Backdrop from "@mui/material/Backdrop";
+import Fade from "@mui/material/Fade";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import AutorenewIcon from "@mui/icons-material/Autorenew";
+import { FormControl, InputLabel } from "@mui/material";
+import HubPostCreate from "./HubPostCreate";
+import Link from "next/link";
 
-import {useSnackbar} from 'notistack'
-import Dots from './Dots'
+import { useSnackbar } from "notistack";
+import Dots from "./Dots";
 
-const {HubContext} = nina.contexts
+const { HubContext } = nina.contexts;
 
-const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
-  const [open, setOpen] = useState(false)
-  const {enqueueSnackbar} = useSnackbar()
-  
-  const {hubAddRelease} = useContext(HubContext)
-  const [selectedHubId, setSelectedHubId] = useState()
-  const [inProgress, setInProgress] = useState(false)
-  const userHasHubs = useMemo(() => userHubs && userHubs.length > 0, [userHubs])
+const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
+  const [open, setOpen] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
+
+  const { hubAddRelease } = useContext(HubContext);
+  const [selectedHubId, setSelectedHubId] = useState();
+  const [inProgress, setInProgress] = useState(false);
+  const [canAddContent, setCanAddContent] = useState(false);
+  const userHasHubs = useMemo(
+    () => userHubs && userHubs.length > 0,
+    [userHubs]
+  );
 
   useEffect(() => {
     if (userHubs?.length === 1) {
-      setSelectedHubId(userHubs[0]?.id)
+      setSelectedHubId(userHubs[0]?.id);
     }
-  }, [userHubs])
+  }, [userHubs]);
+
+  useEffect(() => {
+    if (selectedHubId && userHubs) {
+      const selectedHub = userHubs.find((hub) => hub.id === selectedHubId);
+      if (selectedHub.userCanAddContent) {
+        setCanAddContent(true);
+      }
+    }
+  }, [selectedHubId, userHubs]);
 
   const handleRepost = async (e) => {
-    setInProgress(true)
-    enqueueSnackbar('Adding Release to Hub', {
-      variant: 'info',
-    })
-    const result = await hubAddRelease(selectedHubId, releasePubkey)
-    if (result.success) {
+    setInProgress(true);
+    enqueueSnackbar("Adding Release to Hub", {
+      variant: "info",
+    });
+    const result = await hubAddRelease(selectedHubId, releasePubkey, hubPubkey);
+    if (result?.success) {
       enqueueSnackbar(result.msg, {
-        variant: 'info',
-      })
+        variant: "info",
+      });
     } else {
-      enqueueSnackbar('Release not added to hub', {
-        variant: 'failure',
-      })
+      enqueueSnackbar("Release not added to hub", {
+        variant: "failure",
+      });
     }
-    setInProgress(false)
-    handleClose()
-  }
+    setInProgress(false);
+    handleClose();
+  };
 
   const handleClose = () => {
-    setOpen(false)
-    setSelectedHubId()
-  }
+    setOpen(false);
+    setSelectedHubId(null);
+  };
 
   return (
     <Root>
-        <ModalToggle
-          variant="contained"
-          color="primary"
-          type="submit"
-          onClick={() => setOpen(true)}
-          sx={{height: '22px', width: '28px', m: 0}}
-
-        >
-          <AutorenewIcon />
-        </ModalToggle>
+      <ModalToggle
+        variant="contained"
+        color="primary"
+        type="submit"
+        onClick={() => setOpen(true)}
+        sx={{ height: "22px", width: "28px", m: 0 }}
+      >
+        <AutorenewIcon />
+      </ModalToggle>
 
       <StyledModal
         aria-labelledby="transition-modal-title"
@@ -95,7 +107,7 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
                     href="https://docs.google.com/forms/d/1JOgbVh-5SbA4mCwSWAiSolPCAHCjx6baSiJGh0J7N1g"
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{color: 'black'}}
+                    style={{ color: "black" }}
                   >
                     Click here to get started setting up your hub.
                   </a>
@@ -109,103 +121,117 @@ const AddToHubModal = ({userHubs, releasePubkey, metadata, hubPubkey}) => {
                   variant="h4"
                   id="transition-modal-title"
                   gutterBottom
-                  color={'black'}
+                  color={"black"}
                 >
-                  Add {metadata.name} to {userHubs.length > 1 ? 'one of your hubs' : 'your hub: ' + userHubs[0]?.json?.displayName} 
+                  Add {metadata.name} to{" "}
+                  {userHubs.length > 1
+                    ? "one of your hubs"
+                    : "your hub: " + userHubs[0]?.json?.displayName}
                 </Typography>
 
-              {userHubs.length > 1 && (
-                <FormControl sx={{mt: 1}} >
-                  <InputLabel disabled >
-                    Select a hub to add to
-                  </InputLabel>
-                
-                  <Select
-                    className="formField"
-                    placeholder="Release Reference"
-                    displayEmpty
-                    label="Select hub"
-                    fullWidth
-                    variant='standard'
-                    onChange={(e, userHubs) => {
-                      setSelectedHubId(e.target.value)
-                    }}
-                  >
-                    {userHubs?.filter(hub => (hub.id !== hubPubkey && hub.userCanAddContent)).map((hub) => {
-                      return (
-                        <MenuItem
-                          key={hub?.id}
-                          value={hub?.id}
-                          sx={{color: 'black'}}
-                        >
-                          {hub?.json?.displayName}
-                        </MenuItem>
-                      )
-                    })}
-                  </Select>
-                </FormControl>
-              )}
+                {userHubs.length > 1 && (
+                  <FormControl sx={{ mt: 1 }}>
+                    <InputLabel disabled>Select a hub to add to</InputLabel>
+
+                    <Select
+                      className="formField"
+                      placeholder="Release Reference"
+                      displayEmpty
+                      label="Select hub"
+                      fullWidth
+                      variant="standard"
+                      onChange={(e, userHubs) => {
+                        setSelectedHubId(e.target.value);
+                      }}
+                    >
+                      {userHubs
+                        ?.filter(
+                          (hub) => hub.id !== hubPubkey && hub.userCanAddContent
+                        )
+                        .map((hub) => {
+                          return (
+                            <MenuItem
+                              key={hub?.id}
+                              value={hub?.id}
+                              sx={{ color: "black" }}
+                            >
+                              {hub?.json?.displayName}
+                            </MenuItem>
+                          );
+                        })}
+                    </Select>
+                  </FormControl>
+                )}
               </>
             )}
 
             <Button
-              style={{marginTop: '15px', textTransform: 'uppercase'}}
+              style={{ marginTop: "15px", textTransform: "uppercase" }}
               variant="outlined"
-              disabled={inProgress || !selectedHubId || !userHasHubs}
+              disabled={
+                inProgress || !selectedHubId || !userHasHubs || !canAddContent
+              }
               onClick={handleRepost}
             >
-                {!inProgress && ('Repost release to your hub')}
-                {inProgress && (
-                  <Dots msg={'Please aprrove transaction in wallet'} />
-                )}
+              {!inProgress && "Repost release to your hub"}
+              {inProgress && (
+                <Dots msg={"Please aprrove transaction in wallet"} />
+              )}
             </Button>
 
-            <HubPostCreate preloadedRelease={releasePubkey} selectedHubId={selectedHubId} setParentOpen={handleClose} userHasHubs={userHasHubs} />
-
+            <HubPostCreate
+              userHubs={userHubs}
+              preloadedRelease={releasePubkey}
+              hubPubkey={hubPubkey}
+              selectedHubId={selectedHubId}
+              setParentOpen={handleClose}
+              userHasHubs={userHasHubs}
+              canAddContent={canAddContent}
+              update={false}
+            />
           </StyledPaper>
         </Fade>
       </StyledModal>
     </Root>
-  )
-}
+  );
+};
 
+const Root = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  width: "100%",
+}));
 
-const Root = styled('div')(({theme}) => ({
-  display: 'flex',
-  alignItems: 'center',
-  width: '100%',
-}))
-
-const ModalToggle = styled(Button)(({theme}) => ({
+const ModalToggle = styled(Button)(({ theme }) => ({
   color: `${theme.palette.text.primary} !important`,
-  ':disabled': {
-    color: theme.palette.text.primary + 'a0',
+  ":disabled": {
+    color: theme.palette.text.primary + "a0",
   },
-  '&:hover': {
-    opacity: '50%',
+  "&:hover": {
+    opacity: "50%",
     backgroundColor: `${theme.palette.transparent} !important`,
   },
-}))
+}));
 
 const StyledModal = styled(Modal)(() => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}))
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}));
 
-const StyledPaper = styled(Paper)(({theme}) => ({
+const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
-  border: '2px solid #000',
+  border: "2px solid #000",
   boxShadow: theme.shadows[5],
   // padding: theme.spacing(2, 4, 3),
   padding: `30px 60px 45px`,
-  width: '40vw',
-  maxHeight: '90vh',
-  overflowY: 'auto',
-  zIndex: '10',
-  display: 'flex',
-  flexDirection: 'column',
-  minWidth: '600px',
-}))
+  width: "40vw",
+  maxHeight: "90vh",
+  overflowY: "auto",
+  zIndex: "10",
+  display: "flex",
+  flexDirection: "column",
+  minWidth: "600px",
+}));
 
-export default AddToHubModal
+export default AddToHubModal;

@@ -1,51 +1,52 @@
-import React, { useMemo, useContext, useState, useEffect } from 'react'
-import Button from '@mui/material/Button'
-import Link from 'next/link'
-import { useWallet } from '@solana/wallet-adapter-react'
-import AddIcon from '@mui/icons-material/Add'
-import CloseIcon from '@mui/icons-material/Close'
-import Grid from '@mui/material/Grid'
-import nina from '@nina-protocol/nina-sdk'
-import { useSnackbar } from 'notistack'
-import { styled } from '@mui/material/styles'
-import HubPostCreate from './HubPostCreate'
+import React, { useMemo, useContext, useState, useEffect } from "react";
+import Button from "@mui/material/Button";
+import Link from "next/link";
+import { useWallet } from "@solana/wallet-adapter-react";
+import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
+import Grid from "@mui/material/Grid";
+import nina from "@nina-protocol/nina-sdk";
+import { useSnackbar } from "notistack";
+import { styled } from "@mui/material/styles";
+import HubPostCreate from "./HubPostCreate";
 import {
   DashboardWrapper,
   DashboardContent,
   DashboardHeader,
   DashboardEntry,
-} from '../styles/theme/lightThemeOptions.js'
+} from "../styles/theme/lightThemeOptions.js";
 
-const { HubContext, NinaContext } = nina.contexts
+const { HubContext, NinaContext } = nina.contexts;
 
 const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
-  const wallet = useWallet()
-  const { hubContentToggleVisibility, hubContentState, hubState } = useContext(HubContext)
-  const hubData = useMemo(() => hubState[hubPubkey], [hubState])
-  const { postState } = useContext(NinaContext)
+  const wallet = useWallet();
+  const { hubContentToggleVisibility, hubContentState, hubState } =
+    useContext(HubContext);
+  const hubData = useMemo(() => hubState[hubPubkey], [hubState]);
+  const { postState } = useContext(NinaContext);
 
-  const { enqueueSnackbar } = useSnackbar()
+  const { enqueueSnackbar } = useSnackbar();
   const hubPosts = useMemo(
     () =>
       Object.values(hubContentState)
         .sort((a, b) => b.datetime - a.datetime)
-        .filter((c) => c.contentType === 'Post' && c.visible),
+        .filter((c) => c.contentType === "Post" && c.visible),
     [hubContentState]
-  )
+  );
   const hubPostsArchived = useMemo(
     () =>
       Object.values(hubContentState).filter(
-        (c) => c.contentType === 'Post' && !c.visible
+        (c) => c.contentType === "Post" && !c.visible
       ),
     [hubContentState]
-  )
+  );
   const hubReleases = useMemo(
     () =>
       Object.values(hubContentState)
         .sort((a, b) => b.datetime - a.datetime)
         .filter(
           (c) =>
-            c.contentType === 'NinaReleaseV1' &&
+            c.contentType === "NinaReleaseV1" &&
             c.visible &&
             hubPosts.filter((post) => post.referenceContent === c.publicKey)
               .length === 0 &&
@@ -54,31 +55,31 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
             ).length === 0
         ),
     [hubContentState, hubPosts, hubPostsArchived]
-  )
+  );
 
-  const [hubPostsShowArchived, sethubPostsShowArchived] = useState(false)
+  const [hubPostsShowArchived, sethubPostsShowArchived] = useState(false);
   const activeHubPosts = useMemo(
     () => (hubPostsShowArchived ? hubPostsArchived : hubPosts),
     [hubPostsShowArchived, hubPosts, hubPostsArchived]
-  )
+  );
 
   const canTogglePost = (hubPost) => {
     if (hubPost.addedBy == wallet?.publicKey?.toBase58() || isAuthority) {
-      return true
+      return true;
     }
-    return false
-  }
+    return false;
+  };
 
   const handleTogglePost = async (hubPubkey, postPubkey) => {
     const result = await hubContentToggleVisibility(
       hubPubkey,
       postPubkey,
-      'Post'
-    )
+      "Post"
+    );
     enqueueSnackbar(result.msg, {
-      variant: result.success ? 'info' : 'failure',
-    })
-  }
+      variant: result.success ? "info" : "failure",
+    });
+  };
 
   return (
     <>
@@ -93,24 +94,27 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
             canAddContent={canAddContent}
             hubPubkey={hubPubkey}
             hubReleasesToReference={hubReleases}
-            selectedHubId={hubPubkey}
           />
         </DashboardContent>
         <DashboardContent item md={6}>
           {activeHubPosts && postState && (
             <>
               <DashboardHeader style={{ fontWeight: 600 }}>
-                There are {Object.keys(activeHubPosts).length}{' '}
-                {hubPostsShowArchived ? 'archived' : ''} Posts associated with
+                There are {Object.keys(activeHubPosts).length}{" "}
+                {hubPostsShowArchived ? "archived" : ""} Posts associated with
                 this hub:
               </DashboardHeader>
               <ul>
                 {Object.keys(activeHubPosts).map((postPubkey) => {
-                  const hubPost = activeHubPosts[postPubkey]
-                  const postContent = postState[hubPost.post].postContent
+                  const hubPost = activeHubPosts[postPubkey];
+                  const postContent = postState[hubPost.post].postContent;
                   return (
                     <DashboardEntry key={hubPost.post}>
-                      <Link href={`/${hubData.handle}/posts/${hubPost.publicKey}`}>{postContent.json.title}</Link>
+                      <Link
+                        href={`/${hubData.handle}/posts/${hubPost.publicKey}`}
+                      >
+                        {postContent.json.title}
+                      </Link>
                       {canTogglePost(hubPost) && hubPostsShowArchived && (
                         <AddIcon
                           onClick={() =>
@@ -127,19 +131,19 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
                         ></CloseIcon>
                       )}
                     </DashboardEntry>
-                  )
+                  );
                 })}
                 <Button
                   onClick={() => sethubPostsShowArchived(!hubPostsShowArchived)}
-                  sx={{ paddingLeft: '0' }}
+                  sx={{ paddingLeft: "0" }}
                 >
-                  View{' '}
+                  View{" "}
                   {
                     Object.keys(
                       !hubPostsShowArchived ? hubPostsArchived : hubPosts
                     ).length
-                  }{' '}
-                  {!hubPostsShowArchived ? 'Archived' : ''} Posts
+                  }{" "}
+                  {!hubPostsShowArchived ? "Archived" : ""} Posts
                 </Button>
               </ul>
             </>
@@ -147,7 +151,7 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
         </DashboardContent>
       </DashboardWrapper>
     </>
-  )
-}
+  );
+};
 
-export default HubPosts
+export default HubPosts;
