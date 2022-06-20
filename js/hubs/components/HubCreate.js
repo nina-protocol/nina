@@ -211,7 +211,6 @@ const HubCreate = ({ update, hubData }) => {
           );
           artworkResult = (await bundlrUpload(artwork.file)).data.id;
           setArtworkTx(artworkResult);
-          console.log("artworkResult :>> ", artworkResult);
           metadataJson.image = `https://arweave.net/${artworkResult}`;
 
           upload = createUpload(

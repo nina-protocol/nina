@@ -66,7 +66,6 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
       releasePubkey,
       "Release"
     );
-    console.log("result :>> ", result);
     enqueueSnackbar(result.msg, {
       variant: result.success ? "info" : "failure",
     });

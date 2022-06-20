@@ -55,7 +55,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
     });
 
     handleClose();
-    const result = await hubAddRelease(selectedHubId, releasePubkey);
+    const result = await hubAddRelease(selectedHubId, releasePubkey, hubPubkey);
     if (result?.success) {
       enqueueSnackbar(result.msg, {
         variant: "info",
@@ -177,13 +177,14 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
             >
               {!inProgress && "Repost release to your hub"}
               {inProgress && (
-                <Dots msg={"Please aprrove transaction in wallet"} />
+                <Dots msg={"Please approve transaction in wallet"} />
               )}
             </Button>
 
             <HubPostCreate
               userHubs={userHubs}
               preloadedRelease={releasePubkey}
+              hubPubkey={hubPubkey}
               selectedHubId={selectedHubId}
               setParentOpen={handleClose}
               userHasHubs={userHasHubs}
