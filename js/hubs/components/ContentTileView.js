@@ -21,16 +21,19 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 const { AudioPlayerContext, HubContext, ReleaseContext } = nina.contexts;
 
-const ContentTileView = ({ content, hubPubkey, hubHandle }) => {
+const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
   const { updateTrack } = useContext(AudioPlayerContext);
   const { hubState } = useContext(HubContext);
   const { releaseState } = useContext(ReleaseContext);
   const [columnCount, setColumnCount] = useState(3);
-  const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
+  // const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const router = useRouter();
 
   const [displayType, setDisplayType] = useState('all');
   const [filteredContent, setFilteredContent] = useState(content);
+
+
+  console.log('contentTypes :>> ', contentTypes);
 
   useEffect(() => {
     let filtered;
@@ -57,7 +60,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle }) => {
         break;
     
   
-      case 'posts':
+      case 'textposts':
         filtered = content.filter(item => {
           return (
             item.contentType === "Post"
@@ -94,158 +97,162 @@ const ContentTileView = ({ content, hubPubkey, hubHandle }) => {
   };
 
   return (
-    <TileGrid columnCount={columnCount}>
+    <Box position='relative'>
 
-      <ToggleButtonGroup
-        exclusive
-        value={displayType}
-        onChange={handleFormat}
-        aria-label="text formatting"
-      >
-        <ToggleButton value="all" aria-label="all">
-            All
-        </ToggleButton>
-        <ToggleButton value="releases" aria-label="releases">
-            Releases
-        </ToggleButton>
-        <ToggleButton value="reposts" aria-label="Reposts">
-            Reposts
-        </ToggleButton>
-        <ToggleButton value="posts" aria-label="posts">
-            Text Posts
-        </ToggleButton>
-      </ToggleButtonGroup>
+        {contentTypes.length > 2 && (
+          <StyledButtonGroup
+            exclusive
+            value={displayType}
+            onChange={handleFormat}
+            aria-label="text formatting"
+          >
+            <ToggleButton value="all" aria-label="all" disableRipple	>
+                All
+            </ToggleButton>
+            {contentTypes.map(type => {
+              return (
+                <ToggleButton value={type.toLowerCase().replace(' ', '')} aria-label={type} disableRipple	>
+                  {type}
+                </ToggleButton>
+              )
+            })}
+          </StyledButtonGroup>
 
-      {filteredContent.map((item, i) => {
-        return (
-          <React.Fragment key={i}>
-            {item?.contentType === "NinaReleaseV1" && (
-              <Tile className={"tile"} key={i}>
-                <HoverCard
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleClick(item.child);
-                  }}
-                >
-                  <CardCta
+        )}
+      <TileGrid columnCount={columnCount}>
+
+
+        {filteredContent.map((item, i) => {
+          return (
+            <React.Fragment key={i}>
+              {item?.contentType === "NinaReleaseV1" && (
+                <Tile className={"tile"} key={i}>
+                  <HoverCard
                     onClick={(e) => {
                       e.stopPropagation();
                       handleClick(item.child);
                     }}
-                    display="flex"
-                    flexDirection={"column"}
                   >
-                    <Button
+                    <CardCta
                       onClick={(e) => {
                         e.stopPropagation();
-                        updateTrack(item.release, true);
+                        handleClick(item.child);
                       }}
-                      disableRipple
+                      display="flex"
+                      flexDirection={"column"}
                     >
-                      <PlayCircleOutlineOutlinedIcon
-                        sx={{ color: "text.primary" }}
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          updateTrack(item.release, true);
+                        }}
+                        disableRipple
+                      >
+                        <PlayCircleOutlineOutlinedIcon
+                          sx={{ color: "text.primary" }}
+                        />
+                      </Button>
+
+                      <ContentName
+                        sx={{ color: "text.primary", padding: "0 15px" }}
+                      >
+                        {item.name.substring(0, 100)}
+                      </ContentName>
+                    </CardCta>
+                    {item.image && (
+                      <Image
+                        width={100}
+                        height={100}
+                        layout="responsive"
+                        src={item?.image}
+                        release={item}
+                        priority={true}
+                        unoptimized={true}
+                        loading="eager"
                       />
-                    </Button>
-
-                    <ContentName
-                      sx={{ color: "text.primary", padding: "0 15px" }}
-                    >
-                      {item.name.substring(0, 100)}
-                    </ContentName>
-                  </CardCta>
-                  {item.image && (
-                    <Image
-                      width={100}
-                      height={100}
-                      layout="responsive"
-                      src={item?.image}
-                      release={item}
-                      priority={true}
-                      unoptimized={true}
-                      loading="eager"
-                    />
+                    )}
+                  </HoverCard>
+                  {!item.publishedThroughHub && (
+                    <StyledAutorenewIcon fontSize='small' />
                   )}
-                </HoverCard>
-                {!item.publishedThroughHub && (
-                  <StyledAutorenewIcon fontSize='small' />
-                )}
-              </Tile>
-            )}
+                </Tile>
+              )}
 
-            {item.contentType === "Post" && (
-              <PostTile className={"tile"} key={i}>
-                <PostInfo sx={{ padding: "10px 0 0" }}>
-                  <PostTitle
-                    variant="h2"
-                    sx={{ color: "text.primary", textTransform: "uppercase" }}
-                  >
-                    {item.postContent.json.title.substring(0, 100)}
-                    {item.postContent.json.title.length > 100 ? "..." : ""}
-                  </PostTitle>
-                  <Typography sx={{ color: "text.primary" }}>
-                    published: {formattedDate(item.createdAt)}
-                  </Typography>
-                </PostInfo>
-                <HoverCard>
-                  <Link
-                    href={`/${hubHandle}/posts/${item.hubPostPublicKey}`}
-                    passHref
+              {item.contentType === "Post" && (
+                <PostTile className={"tile"} key={i}>
+                  <PostInfo sx={{ padding: "10px 0 0" }}>
+                    <PostTitle
+                      variant="h2"
+                      sx={{ color: "text.primary", textTransform: "uppercase" }}
+                    >
+                      {item.postContent.json.title.substring(0, 100)}
+                      {item.postContent.json.title.length > 100 ? "..." : ""}
+                    </PostTitle>
+                    <Typography sx={{ color: "text.primary" }}>
+                      published: {formattedDate(item.createdAt)}
+                    </Typography>
+                  </PostInfo>
+                  <HoverCard>
+                    <Link
+                      href={`/${hubHandle}/posts/${item.hubPostPublicKey}`}
+                      passHref
+                    >
+                      <CardCta>
+                        <PostLink>View Post</PostLink>
+                      </CardCta>
+                    </Link>
+                  </HoverCard>
+                </PostTile>
+              )}
+              {item.contentType === "PostWithRelease" && (
+                <Tile className={"tile"} key={i}>
+                  <HoverCard
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleClick(
+                        item.referenceHubContent,
+                        item.hubPostPublicKey
+                      );
+                    }}
                   >
                     <CardCta>
+                      <PostInfo sx={{ padding: "10px 0 0" }}>
+                        <Typography
+                          variant="h2"
+                          sx={{
+                            color: "text.primary",
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          {item.postContent.json.title.substring(0, 100)}
+                          {item.postContent.json.title.length > 100 ? "..." : ""}
+                        </Typography>
+                        <Typography sx={{ color: "text.primary" }}>
+                          published: {formattedDate(item.createdAt)}
+                        </Typography>
+                      </PostInfo>
                       <PostLink>View Post</PostLink>
                     </CardCta>
-                  </Link>
-                </HoverCard>
-              </PostTile>
-            )}
-            {item.contentType === "PostWithRelease" && (
-              <Tile className={"tile"} key={i}>
-                <HoverCard
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleClick(
-                      item.referenceHubContent,
-                      item.hubPostPublicKey
-                    );
-                  }}
-                >
-                  <CardCta>
-                    <PostInfo sx={{ padding: "10px 0 0" }}>
-                      <Typography
-                        variant="h2"
-                        sx={{
-                          color: "text.primary",
-                          textTransform: "uppercase",
-                        }}
-                      >
-                        {item.postContent.json.title.substring(0, 100)}
-                        {item.postContent.json.title.length > 100 ? "..." : ""}
-                      </Typography>
-                      <Typography sx={{ color: "text.primary" }}>
-                        published: {formattedDate(item.createdAt)}
-                      </Typography>
-                    </PostInfo>
-                    <PostLink>View Post</PostLink>
-                  </CardCta>
-                  {item.releaseMetadata?.image && (
-                    <Image
-                      width={100}
-                      height={100}
-                      layout="responsive"
-                      src={item.releaseMetadata?.image}
-                      release={item.referenceContent}
-                      priority={true}
-                      unoptimized={true}
-                      loading="eager"
-                    />
-                  )}
-                </HoverCard>
-              </Tile>
-            )}
-          </React.Fragment>
-        );
-      })}
-    </TileGrid>
+                    {item.releaseMetadata?.image && (
+                      <Image
+                        width={100}
+                        height={100}
+                        layout="responsive"
+                        src={item.releaseMetadata?.image}
+                        release={item.referenceContent}
+                        priority={true}
+                        unoptimized={true}
+                        loading="eager"
+                      />
+                    )}
+                  </HoverCard>
+                </Tile>
+              )}
+            </React.Fragment>
+          );
+        })}
+      </TileGrid>
+    </Box>
   );
 };
 
@@ -259,7 +266,7 @@ const TileGrid = styled(Box)(({ theme, columnCount }) => ({
   maxHeight: "92vh",
   overflow: "scroll",
   marginTop: "1px",
-  paddingBottom: "100px",
+  paddingBottom: "34px",
   "&::-webkit-scrollbar": {
     display: "none",
   },
@@ -374,6 +381,27 @@ const StyledAutorenewIcon = styled(AutorenewTwoToneIcon)(({ theme }) => ({
   right: '5px',
   background: 'rgba(255,255,255,0.5)',
   borderRadius: '50%'
+}));
+
+const StyledButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
+  position: 'absolute',
+  top: '-56px',
+  right: '0',
+  '& .MuiButtonBase-root': {
+    border: 'none',
+    textTransform: 'capitalize',
+    '&:hover':{
+      backgroundColor: theme.palette.transparent
+    }
+  },
+  '& .Mui-selected ' :{
+    // backgroundColor: 'none !important'
+    backgroundColor: theme.palette.transparent,
+    textDecortation: 'underline !important',
+  },
+  [theme.breakpoints.down("md")]: {
+    position: 'unset'
+  },
 }));
 
 export default ContentTileView;
