@@ -85,7 +85,7 @@ const HubSlider = (props) => {
               <HubSlideWrapper key={i}>
                 <HubSlide key={i}>
                   {imageUrl && (
-                    <Link href={`https://hubs.ninaprotocol.com//${hub.handle}`}>
+                    <Link href={`https://hubs.ninaprotocol.com/${hub.handle}`}>
                       <a>
                         <Image
                           src={imageUrl}
