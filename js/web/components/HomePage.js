@@ -8,22 +8,31 @@ import { useSnackbar } from 'notistack'
 import RecentlyPublished from './RecentlyPublished'
 import Link from 'next/link'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
-const { AudioPlayerContext, ReleaseContext } = nina.contexts
+import HubSlider from './HubSlider'
+const { AudioPlayerContext, ReleaseContext, HubContext } = nina.contexts
 
 const HomePage = () => {
   const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
     useContext(ReleaseContext)
   const { resetQueueWithPlaylist } = useContext(AudioPlayerContext)
+  const { getHubs, hubState, filterFeaturedHubs } = useContext(HubContext)
   const [releasesRecent, setReleasesRecent] = useState({})
+  const [hubs, setHubs] = useState()
+
   const { enqueueSnackbar } = useSnackbar()
 
   useEffect(() => {
     getReleasesRecent()
+    getHubs(true)
   }, [])
 
   useEffect(() => {
     setReleasesRecent(filterReleasesRecent())
   }, [releasesRecentState])
+
+  useEffect(() => {
+    setHubs(filterFeaturedHubs())
+  }, [hubState])
 
   return (
     <ScrollablePageWrapper>
@@ -38,6 +47,55 @@ const HomePage = () => {
           <Link href="/releases">purchase</Link> music. We build tools for
           artists + fans to create their <Link href="https://hubs.ninaprotocol.com/">context</Link>.{' '}
         </BlueTypography>
+
+        <Box sx={{ padding: { md: '0 40px 140px 40px', xs: '30px 0px' } }}>
+          <Box sx={{ display: 'flex', paddingLeft: { md: '30px', xs: '0' } }}>
+            <Typography
+              variant="body1"
+              align="left"
+              className={classes.sectionHeader}
+            >
+              <Link href="https://hubs.ninaprotocol.com/">Hubs</Link>
+            </Typography>
+          </Box>
+          <HubSlider hubs={hubs} />
+        </Box>
+
+        <Typography
+          variant="body1"
+          align="left"
+          className={classes.sectionHeader}
+        >
+          How it works
+        </Typography>
+        <Typography
+          variant="h1"
+          align="left"
+          sx={{paddingBottom: {md: '30px', xs: '30px'}}}
+        >
+          Music on Nina can be publicly streamed by anyone, while also being
+          released in the form of a digital edition as scarce or ubiquitous as
+          the artist desires. You can use Nina to simply host your music, to
+          sell digital editions, or to build out a patronage mechanism by
+          providing unique content + experiences to paying supporters.
+        </Typography>
+        <BlueTypography
+          variant="h1"
+          align="left"
+          sx={{paddingBottom: {md: '140px', xs: '30px'}}}
+        >
+          More questions? Read our{' '}
+          <a
+            href="https://nina-protocol.notion.site/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612"
+            target="_blank"
+            rel="noreferrer"
+            passHref
+          >
+            FAQ
+          </a>
+          .
+        </BlueTypography>
+
 
         <Box sx={{ padding: { md: '0 40px 140px 40px', xs: '30px 0px' } }}>
           <Box sx={{ display: 'flex', paddingLeft: { md: '30px', xs: '0' } }}>
@@ -68,40 +126,6 @@ const HomePage = () => {
           <RecentlyPublished releases={releasesRecent.highlights || []} />
         </Box>
 
-        <Typography
-          variant="body1"
-          align="left"
-          className={classes.sectionHeader}
-        >
-          How it works
-        </Typography>
-        <Typography
-          variant="h1"
-          align="left"
-          sx={{ paddingBottom: { md: '30px', xs: '30px' } }}
-        >
-          Music on Nina can be publicly streamed by anyone, while also being
-          released in the form of a digital edition as scarce or ubiquitous as
-          the artist desires. You can use Nina to simply host your music, to
-          sell digital editions, or to build out a patronage mechanism by
-          providing unique content + experiences to paying supporters.
-        </Typography>
-        <BlueTypography
-          variant="h1"
-          align="left"
-          sx={{ paddingBottom: { md: '140px', xs: '30px' } }}
-        >
-          More questions? Read our{' '}
-          <a
-            href="https://nina-protocol.notion.site/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612"
-            target="_blank"
-            rel="noreferrer"
-            passHref
-          >
-            FAQ
-          </a>
-          .
-        </BlueTypography>
         <Box sx={{ padding: { md: '0 40px 140px 40px', xs: '30px 0px' } }}>
           <Box sx={{ display: 'flex', paddingLeft: { md: '30px', xs: '0' } }}>
             <Typography
