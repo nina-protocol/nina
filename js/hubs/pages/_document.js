@@ -114,7 +114,6 @@ class MyDocument extends Document {
     );
   }
 }
-
 const StyledBody = styled("body")(({ theme }) => ({
   margin: "0px",
   position: "relative",

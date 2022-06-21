@@ -204,6 +204,12 @@ const HubsContainer = styled("div")(({ theme }) => ({
   width: "1010px",
   margin: "auto",
   overflowX: "visible",
+<<<<<<< HEAD
+=======
+  "& .MuiBox-root": {
+    paddingTop: "40px !important",
+  },
+>>>>>>> fd4bebc686d1a12e3480b9f1a5f9f3ab39feb432
   [theme.breakpoints.down("md")]: {
     width: "80vw",
     marginBottom: "100px",

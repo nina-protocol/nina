@@ -135,6 +135,23 @@ const Hub = ({ hubPubkey }) => {
           <Typography align="left" sx={{ color: "text.primary" }}>
             {hubData?.json.description}
           </Typography>
+
+          {initialLoad && content?.length === 0 && canAddContent && (
+            <Box margin="100px auto 0">
+              <Typography variant="h2" gutterBottom>
+                This hub has no Releases
+              </Typography>
+              <Typography>
+                Visit to your{" "}
+                <Link
+                  href={`/${hubData.handle}/dashboard?action=publishRelease`}
+                >
+                  <a style={{ textDecoration: "underline" }}> dashboard </a>
+                </Link>{" "}
+                to publish tracks
+              </Typography>
+            </Box>
+          )}
         </DescriptionWrapper>
       </Grid>
 

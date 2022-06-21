@@ -177,7 +177,11 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
             >
               {!inProgress && "Repost release to your hub"}
               {inProgress && (
+<<<<<<< HEAD
                 <Dots msg={"Please approve transaction in wallet"} />
+=======
+                <Dots msg={"Please aprrove transaction in wallet"} />
+>>>>>>> fd4bebc686d1a12e3480b9f1a5f9f3ab39feb432
               )}
             </Button>
 

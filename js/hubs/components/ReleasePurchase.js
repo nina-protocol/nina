@@ -4,7 +4,10 @@ import { styled } from "@mui/material/styles";
 import nina from "@nina-protocol/nina-sdk";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Button from "@mui/material/Button";
+<<<<<<< HEAD
 import Link from "@mui/material/Link";
+=======
+>>>>>>> fd4bebc686d1a12e3480b9f1a5f9f3ab39feb432
 import Box from "@mui/material/Box";
 import { useSnackbar } from "notistack";
 import Typography from "@mui/material/Typography";
@@ -23,7 +26,10 @@ const ReleasePurchase = (props) => {
     releasePurchasePending,
     releaseState,
     getRelease,
+<<<<<<< HEAD
     getPublishedHubForRelease,
+=======
+>>>>>>> fd4bebc686d1a12e3480b9f1a5f9f3ab39feb432
   } = useContext(ReleaseContext);
   const { ninaClient } = useContext(NinaContext);
   const { getAmountHeld, collection } = useContext(NinaContext);
@@ -32,7 +38,10 @@ const ReleasePurchase = (props) => {
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey]);
   const [downloadButtonString, setDownloadButtonString] = useState("Download");
   const [userIsRecipient, setUserIsRecipient] = useState(false);
+<<<<<<< HEAD
   const [publishedHub, setPublishedHub] = useState();
+=======
+>>>>>>> fd4bebc686d1a12e3480b9f1a5f9f3ab39feb432
 
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
@@ -50,6 +59,7 @@ const ReleasePurchase = (props) => {
 
   useEffect(() => {
     getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey);
+<<<<<<< HEAD
 
     const hubForRelease = async (releasePubkey) => {
       const result = await getPublishedHubForRelease(releasePubkey);
@@ -57,6 +67,9 @@ const ReleasePurchase = (props) => {
     };
     hubForRelease(releasePubkey);
   }, [releasePubkey, releaseState.releaseMintMap]);
+=======
+  }, [releasePubkey, releaseState.releaseMintMap, getAmountHeld]);
+>>>>>>> fd4bebc686d1a12e3480b9f1a5f9f3ab39feb432
 
   useEffect(() => {
     if (release?.royaltyRecipients) {
@@ -234,6 +247,7 @@ const StyledUserAmount = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
 }));
+<<<<<<< HEAD
 const StyledLink = styled(Link)(() => ({
   "&:hover": {
     cursor: "pointer",
@@ -241,5 +255,7 @@ const StyledLink = styled(Link)(() => ({
   },
   textDecoration: "none",
 }));
+=======
+>>>>>>> fd4bebc686d1a12e3480b9f1a5f9f3ab39feb432
 
 export default ReleasePurchase;
