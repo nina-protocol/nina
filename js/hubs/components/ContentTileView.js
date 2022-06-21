@@ -31,7 +31,6 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
   const [displayType, setDisplayType] = useState("all");
   const [filteredContent, setFilteredContent] = useState(content);
 
-  console.log("contentTypes :>> ", contentTypes);
 
   useEffect(() => {
     let filtered;
@@ -61,7 +60,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
 
       case "textposts":
         filtered = content.filter((item) => {
-          return item.contentType === "Post";
+          return item.contentType === "Post" || item.contentType === "PostWithRelease";
         });
         setFilteredContent(filtered);
         break;
@@ -129,8 +128,6 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                       e.stopPropagation();
                       handleClick(item.child);
                     }}
-                    display="flex"
-                    flexDirection={"column"}
                   >
                     <CardCta
                       onClick={(e) => {
@@ -396,8 +393,8 @@ const StyledButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
     },
   },
   "& .Mui-selected ": {
-    // backgroundColor: 'none !important'
-    backgroundColor: theme.palette.transparent,
+    // backgroundColor: 'none !important',
+    backgroundColor: `${theme.palette.transparent} !important`,
     textDecortation: "underline !important",
   },
   [theme.breakpoints.down("md")]: {

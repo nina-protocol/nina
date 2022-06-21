@@ -191,13 +191,9 @@ const BundlrModal = ({ inCreate }) => {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="start">
-<<<<<<< HEAD
-                      {amount > 0 ? `(${amount / bundlrPricePerMb} MBs)` : ""}
-=======
                       {amount > 0
                         ? `(${(amount / bundlrPricePerMb).toFixed(2)} MBs)`
                         : ""}
->>>>>>> b703f577b7a2e5098f1f66f23a642b8da4241c95
                     </InputAdornment>
                   ),
                 }}
@@ -215,11 +211,7 @@ const BundlrModal = ({ inCreate }) => {
               >
                 {!inProgress && (mode === "deposit" ? "Deposit" : "Withdraw")}
                 {inProgress && (
-<<<<<<< HEAD
-                  <Dots msg={"Please aprrove transaction in wallet"} />
-=======
                   <Dots msg={"Please approve transaction in wallet"} />
->>>>>>> b703f577b7a2e5098f1f66f23a642b8da4241c95
                 )}
               </Button>
             </InputWrapper>

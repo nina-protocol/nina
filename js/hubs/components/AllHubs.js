@@ -92,8 +92,6 @@ const HubsContainer = styled("div")(({ theme }) => ({
 }));
 
 const HubGrid = styled(Grid)(({ theme }) => ({
-  // overflowY: 'scroll',
-  // maxHeight: '100vh',
   paddingBottom: "200px",
   "&::-webkit-scrollbar": {
     display: "none",
