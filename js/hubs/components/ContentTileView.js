@@ -31,6 +31,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
   const [displayType, setDisplayType] = useState("all");
   const [filteredContent, setFilteredContent] = useState(content);
 
+
   useEffect(() => {
     let filtered;
     switch (displayType) {
@@ -93,7 +94,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
 
   return (
     <Box position="relative">
-      {/* {contentTypes.length > 2 && (
+      {contentTypes.length > 2 && (
         <StyledButtonGroup
           exclusive
           value={displayType}
@@ -116,7 +117,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
             );
           })}
         </StyledButtonGroup>
-      )} */}
+      )}
       <TileGrid columnCount={columnCount}>
         {filteredContent.map((item, i) => {
           return (

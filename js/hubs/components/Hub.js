@@ -52,9 +52,9 @@ const Hub = ({ hubPubkey }) => {
     return false;
   }, [hubCollaborators, hubData, wallet]);
 
-  const [contentTypes, setContentTypes] = useState([])
+  const [contentTypes, setContentTypes] = useState()
 
-  const content = useMemo(() => {
+  const contentData = useMemo(() => {
     const contentArray = [];
     const types = []
     // const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey);
@@ -100,11 +100,13 @@ const Hub = ({ hubPubkey }) => {
         contentArray.push(hubContentData);
       }
     });
-    // const uniqueTypes = [...new Set(types)]
-    // setContentTypes(uniqueTypes)
-    return contentArray.sort(
+    const uniqueTypes = [...new Set(types)]
+    return {
+      content: contentArray.sort(
       (a, b) => new Date(b.datetime) - new Date(a.datetime)
-    );
+    ),
+      contentTypes: uniqueTypes
+  };
   }, [hubReleases, hubPosts]);
 
   if (!hubState[hubPubkey]?.json) {
@@ -144,12 +146,12 @@ const Hub = ({ hubPubkey }) => {
             <Dots size="80px" />
           </Box>
         )}
-        {content?.length > 0 && (
+        {contentData.content?.length > 0 && (
           <ContentTileView
-            content={content}
+            content={contentData.content}
             hubPubkey={hubPubkey}
             hubHandle={hubData.handle}
-            contentTypes={contentTypes}
+            contentTypes={contentData.contentTypes}
           />
         )}
       </ContentViewWrapper>
