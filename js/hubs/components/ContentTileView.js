@@ -110,6 +110,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                 value={type.toLowerCase().replace(" ", "")}
                 aria-label={type}
                 disableRipple
+                key={type}
               >
                 {type}
               </ToggleButton>
