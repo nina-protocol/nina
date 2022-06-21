@@ -7,7 +7,7 @@ import Link from "@mui/material/Link";
 import { styled } from "@mui/material/styles";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter } from "next/router";
-
+import Image from "next/image";
 import HubSlider from "./HubSlider";
 
 const { HubContext, NinaContext } = nina.contexts;
@@ -71,37 +71,44 @@ const Hubs = () => {
   );
 };
 
-const PREFIX = "hubs";
-
-const classes = {
-  sectionHeader: `${PREFIX}-sectionHeader`,
-};
-
 const HubsContainer = styled("div")(({ theme }) => ({
   width: "1010px",
   margin: "auto",
   overflowX: "visible",
-  "& .MuiBox-root": {
-    paddingTop: "40px !important",
+  [theme.breakpoints.down("md")]: {
+    width: "90vw",
+    margin: "100px 0",
+  },
+}));
+
+const HubGrid = styled(Grid)(({ theme }) => ({
+  // overflowY: 'scroll',
+  // maxHeight: '100vh',
+  paddingBottom: "200px",
+  "&::-webkit-scrollbar": {
+    display: "none",
   },
   [theme.breakpoints.down("md")]: {
-    width: "80vw",
-    marginBottom: "100px",
+    paddingBottom: "100px",
   },
-  [`& .${classes.sectionHeader}`]: {
-    fontWeight: "700 !important",
-    paddingBottom: `${theme.spacing(1)}`,
-    textTransform: "uppercase !important",
-    position: "relative",
-    "& .MuiTypography-root": {
-      textTransform: "uppercase !important",
-      fontWeight: "700 !important",
-    },
-    "& .MuiButton-root": {
-      position: "absolute",
-      top: "-10px",
-    },
+}));
+
+const HubTile = styled(Grid)(({ theme }) => ({
+  padding: "15px 15px 15px",
+  position: "relative",
+  [theme.breakpoints.down("md")]: {
+    padding: "10px",
   },
+}));
+
+const HubLink = styled(Link)(({ theme }) => ({
+  height: "100%",
+  width: "100%",
+}));
+
+const HubName = styled(Typography)(({ theme }) => ({
+  paddingTop: "5px",
+  fontWeight: "500",
 }));
 
 export default Hubs;
