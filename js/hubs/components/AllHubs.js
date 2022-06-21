@@ -45,9 +45,11 @@ const Hubs = () => {
   }, [hubsCount])
 
   const handleScroll = () => {
+    console.log('HANDLE SCORLL')
     const bottom =
       scrollRef.current.getBoundingClientRect().bottom - 250 <=
       window.innerHeight
+      console.log(totalCount, hubs)
     if (
       bottom &&
       !pendingFetch &&
@@ -63,7 +65,7 @@ const Hubs = () => {
         <title>{`Nina Hubs: All`}</title>
         <meta name="description" content={'Nina Hubs: All'} />
       </Head>
-      <ScrollablePageWrapper onScroll={debounce(() => handleScroll(), 500)}>
+      <ScrollablePageWrapper onScroll={debounce(() => handleScroll(), 500)} sx={{overflowY: "scroll"}}>
         <AllHubsWrapper ref={scrollRef}>
           <HubTileView hubs={hubs} />
         </AllHubsWrapper>

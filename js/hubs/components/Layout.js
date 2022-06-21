@@ -81,8 +81,7 @@ const Layout = ({ children }) => {
                   marginTop: { md: topSpace, xs: "0px" },
                   minHeight: `calc(100% - ${topSpace})`,
                   justifyContent: { xs: "center" },
-                  overflowY: 'scroll',
-                  paddingBottom: "40px"
+                  paddingBottom: "40px",
                 }}
               >
                 {children}
