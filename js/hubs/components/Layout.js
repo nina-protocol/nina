@@ -112,14 +112,6 @@ const Root = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    [theme.breakpoints.down("md")]: {
-      overflowY: "scroll",
-      minHeight: "unset",
-      height: "unset",
-      "&:-webkit-scrollbar": {
-        display: "none !important",
-      },
-    },
   },
 
   [`& .${classes.bodyContainer}`]: {
@@ -130,12 +122,9 @@ const Root = styled("div")(({ theme }) => ({
     position: "relative",
     textAlign: "center",
     minHeight: "100%",
-    overflowX: "hidden",
+    overflow: "hidden",
     [theme.breakpoints.down("md")]: {
-      overflowY: "scroll",
-      "&::-webkit-scrollbar": {
-        display: "none !important",
-      },
+      overflow: "scroll",
     },
   },
 }));
@@ -147,8 +136,5 @@ const AudioPlayerWrapper = styled("div")(({ theme }) => ({
   paddingLeft: "8px",
   textAlign: "left",
   paddingBottom: theme.spacing(1),
-  [theme.breakpoints.down("md")]: {
-    paddingLeft: "0px",
-  },
 }));
 export default Layout;

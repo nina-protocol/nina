@@ -10,6 +10,11 @@ import Button from "@mui/material/Button";
 import Link from "next/link";
 import AutorenewTwoToneIcon from "@mui/icons-material/AutorenewTwoTone";
 
+import FormatBoldIcon from "@mui/icons-material/FormatBold";
+import FormatItalicIcon from "@mui/icons-material/FormatItalic";
+import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
+import FormatColorFillIcon from "@mui/icons-material/FormatColorFill";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
@@ -20,12 +25,11 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
   const { hubState } = useContext(HubContext);
   const { releaseState } = useContext(ReleaseContext);
   const [columnCount, setColumnCount] = useState(3);
-  // const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
+  const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const router = useRouter();
 
   const [displayType, setDisplayType] = useState("all");
   const [filteredContent, setFilteredContent] = useState(content);
-
 
   useEffect(() => {
     let filtered;
@@ -217,9 +221,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                           }}
                         >
                           {item.postContent.json.title.substring(0, 100)}
-                          {item.postContent.json.title.length > 100
-                            ? "..."
-                            : ""}
+                          {item.postContent.json.title.length > 100 ? "..." : ""}
                         </Typography>
                         <Typography sx={{ color: "text.primary" }}>
                           published: {formattedDate(item.createdAt)}
@@ -260,7 +262,7 @@ const TileGrid = styled(Box)(({ theme, columnCount }) => ({
   maxHeight: "92vh",
   overflow: "scroll",
   marginTop: "1px",
-  paddingBottom: "34px",
+  paddingBottom: "100px",
   "&::-webkit-scrollbar": {
     display: "none",
   },
@@ -290,6 +292,12 @@ const Tile = styled(Box)(({ theme }) => ({
   border: `2px solid ${theme.palette.transparent}`,
   "&:hover": {
     border: `2px solid ${theme.palette.text.primary}`,
+  },
+  [theme.breakpoints.down("md")]: {
+    border: `none`,
+    "&:hover": {
+      border: `none`,
+    },
   },
 }));
 
@@ -401,5 +409,6 @@ const StyledButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
     position: "unset",
   },
 }));
+
 
 export default ContentTileView;

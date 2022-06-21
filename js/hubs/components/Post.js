@@ -160,7 +160,7 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
               </a>{" "}
               at{" "}
               <a
-                href={`https://explorer.solana.com/account/${postData.postId}`}
+                href={`https://explorer.solana.com/account/${postData.id}`}
                 target="_blank"
                 rel="noreferrer"
               >

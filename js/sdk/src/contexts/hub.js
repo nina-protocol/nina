@@ -23,6 +23,7 @@ const HubContextProvider = ({ children }) => {
   const [addToHubQueue, setAddToHubQueue] = useState(new Set())
   const [hubsCount, setHubsCount] = useState(0)
   const [allHubs, setAllHubs] = useState([])
+  const [featuredHubs, setFeaturedHubs] = useState([])
   const {
     getHubs,
     getHub,
@@ -45,6 +46,7 @@ const HubContextProvider = ({ children }) => {
     collectRoyaltyForReleaseViaHub,
     getHubPubkeyForHubHandle,
     validateHubHandle,
+    filterFeaturedHubs,
   } = hubContextHelper({
     ninaClient,
     savePostsToState,
@@ -66,6 +68,8 @@ const HubContextProvider = ({ children }) => {
     setAllHubs,
     hubsCount,
     setHubsCount,
+    featuredHubs,
+    setFeaturedHubs,
   })
 
   return (
@@ -97,6 +101,8 @@ const HubContextProvider = ({ children }) => {
         getHubPubkeyForHubHandle,
         validateHubHandle,
         addToHubQueue,
+        featuredHubs,
+        filterFeaturedHubs
       }}
     >
       {children}
@@ -125,6 +131,8 @@ const hubContextHelper = ({
   setAllHubs,
   hubsCount,
   setHubsCount,
+  featuredHubs,
+  setFeaturedHubs,
 }) => {
   const { ids, provider, endpoints } = ninaClient
 
@@ -846,19 +854,24 @@ const hubContextHelper = ({
     }
   }
 
-  const getHubs = async (recent = false) => {
+  const getHubs = async (featured = false) => {
     try {
       const all = [...allHubs]
       const response = await fetch(
-        `${endpoints.api}/hubs${recent ? '' : `/?offset=${allHubs.length}`}`
+        `${endpoints.api}/hubs${featured ? '/featured' : `/?offset=${allHubs.length}`}`
       )
       const result = await response.json()
-      setAllHubs(result.count)
-      result.hubs.forEach((hub) => {
-        if (!all.includes(hub.id)) {
-          all.push(hub.id)
-        }
-      })
+      if (featured) {
+        setFeaturedHubs(result.hubs.map(row => row.id))
+      } else {
+        setAllHubs(result.count)
+        result.hubs.forEach((hub) => {
+          if (!all.includes(hub.id)) {
+            all.push(hub.id)
+          }
+        })
+        setAllHubs(all)
+      }
       saveHubsToState(result.hubs)
       setAllHubs(all)
     } catch (error) {
@@ -1109,6 +1122,17 @@ const hubContextHelper = ({
     return hubCollaborators.sort((a, b) => b.datetime - a.datetime)
   }
 
+  const filterFeaturedHubs = () => {
+    const featured = []
+    featuredHubs.forEach(hubId => {
+      const hub = hubState[hubId]
+      if (hub) {
+        featured.push(hub)
+      }
+    })
+    return featured
+  }
+
   const filterHubsForUser = (publicKey) => {
     const hubs = []
     Object.values(hubCollaboratorsState).forEach((hubCollaborator) => {
@@ -1170,6 +1194,7 @@ const hubContextHelper = ({
     collectRoyaltyForReleaseViaHub,
     getHubPubkeyForHubHandle,
     validateHubHandle,
+    filterFeaturedHubs,
   }
 }
 export default HubContextProvider
