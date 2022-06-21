@@ -14,7 +14,7 @@ import {
   decodeNonEncryptedByteArray,
   decryptData,
 } from '../utils/encrypt'
-import { indexerHasRecord } from '../utils'
+import { indexerHasRecord, shuffle } from '../utils'
 
 const lookupTypes = {
   PUBLISHED_BY: 'published_by',
@@ -1450,7 +1450,7 @@ const releaseContextHelper = ({
       setReleasesRecentState({
         published,
         purchased,
-        highlights,
+        highlights: shuffle(highlights),
       })
     } catch (error) {
       console.warn(error)

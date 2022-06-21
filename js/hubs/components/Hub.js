@@ -32,7 +32,6 @@ const Hub = ({ hubPubkey }) => {
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey);
-
   const hubCollaborators = useMemo(
     () => filterHubCollaboratorsForHub(hubPubkey) || [],
     [hubCollaboratorsState, hubPubkey]
@@ -105,7 +104,7 @@ const Hub = ({ hubPubkey }) => {
     return contentArray.sort(
       (a, b) => new Date(b.datetime) - new Date(a.datetime)
     );
-  }, [hubContentState, releaseState, postState, hubPubkey]);
+  }, [hubContentState, releaseState, postState, hubPubkey, hubReleases, hubPosts]);
 
   if (!hubState[hubPubkey]?.json) {
     return null;
@@ -156,6 +155,7 @@ const Hub = ({ hubPubkey }) => {
     </>
   );
 };
+
 
 const ContentViewWrapper = styled(Grid)(({ theme }) => ({
   [theme.breakpoints.down("md")]: {
