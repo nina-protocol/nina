@@ -38,7 +38,7 @@ const UserReleasesPrompt = ({
   const [inProgress, setInProgress] = useState(false);
   const [canAddContent, setCanAddContent] = useState(false);
   const [userPublishedReleases, setUserPublishedReleases] = useState([]);
-  const [unpostedUserReleases, setUnpostedUserReleases] = useState([]);
+  const [unpostedUserReleases, setUnpostedUserReleases] = useState();
 
   const userHasHubs = useMemo(
     () => userHubs && userHubs.length > 0,
@@ -59,6 +59,7 @@ const UserReleasesPrompt = ({
 
   const filterUnpostedReleases = (hubReleases) => {
     let unposted;
+    console.log('hubReleases :>> ', hubReleases);
     if (hubReleases.length > 0) {
       const userPostedReleases = filterReleasesPublishedByUser();
       unposted = userPostedReleases.filter((release) => {
@@ -67,10 +68,11 @@ const UserReleasesPrompt = ({
         }
       });
     } else {
-      unposted = filterReleasesPublishedByUser();
+      unposted = filterReleasesPublishedByUser();   
     }
+    console.log('unposted :>> ', unposted); 
     return unposted;
-  };
+  }; 
 
   const handleRepost = async (release) => {
     enqueueSnackbar(`Adding ${release.metadata.name} to Hub`, {

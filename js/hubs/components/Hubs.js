@@ -1,12 +1,10 @@
-import React, { useContext, useEffect, useMemo } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import nina from "@nina-protocol/nina-sdk";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
-import AllHubs from "./AllHubs";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
-import HomepageHubDisplay from "./HomepageHubDisplay";
 import { styled } from "@mui/material/styles";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter } from "next/router";
@@ -22,11 +20,16 @@ import {
 const { HubContext, NinaContext } = nina.contexts;
 
 const Hubs = () => {
-  const { getHubsForUser, hubState, filterHubsForUser } =
+  const { getHubsForUser, hubState, filterHubsForUser, getHubs, filterFeaturedHubs } =
     useContext(HubContext);
   const { npcAmountHeld } = useContext(NinaContext);
+  const [hubs, setHubs] = useState()
   const router = useRouter();
   const wallet = useWallet();
+
+  useEffect(() => {
+    getHubs(true)
+  }, [])
 
   useEffect(() => {
     if (wallet.connected) {
@@ -38,6 +41,7 @@ const Hubs = () => {
     if (wallet.connected) {
       return filterHubsForUser(wallet.publicKey.toBase58());
     }
+    setHubs(filterFeaturedHubs())
     return undefined;
   }, [hubState, wallet.connected]);
 
@@ -64,8 +68,15 @@ const Hubs = () => {
                 align="left"
                 sx={{ padding: { md: "0 165px 40px", xs: "30px 0px" } }}
               >
-                Hubs give you a space to create your context.{`  `}
                 <Link
+                  href="https://docs.google.com/forms/d/e/1FAIpQLScSdwCMqUz6VGqhkO6xdfUxu1pzdZEdsGoXL9TGDYIGa9t2ig/viewform"
+                  target="_blank"
+                  rel="noreferrer"
+                  passHref
+                >
+                  Apply
+                </Link>{" "}
+                for a Hub or connect your wallet to get started.                <Link
                   href="https://www.notion.so/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612#c7abd525851545a199e06ecd14a16a15"
                   target="_blank"
                   rel="noreferrer"
@@ -75,24 +86,16 @@ const Hubs = () => {
                 </Link>
                 .
               </BlueTypography>
-
-              <HomepageHubDisplay />
-
-              <BlueTypography
-                variant="h1"
-                align="left"
-                sx={{ padding: { md: "0 165px 40px", xs: "30px 0px" } }}
-              >
-                <Link
-                  href="https://docs.google.com/forms/d/e/1FAIpQLScSdwCMqUz6VGqhkO6xdfUxu1pzdZEdsGoXL9TGDYIGa9t2ig/viewform"
-                  target="_blank"
-                  rel="noreferrer"
-                  passHref
+              <Box sx={{ display: 'flex', paddingLeft: { md: '30px', xs: '0' } }}>
+                <Typography
+                  variant="body1"
+                  align="left"
+                  className={classes.sectionHeader}
                 >
-                  Apply
-                </Link>{" "}
-                for a Hub or connect your wallet to get started.
-              </BlueTypography>
+                  Featured Hubs:
+                </Typography>
+              </Box>
+              <HubSlider hubs={hubs} />
             </>
           )}
           {wallet.connected && (

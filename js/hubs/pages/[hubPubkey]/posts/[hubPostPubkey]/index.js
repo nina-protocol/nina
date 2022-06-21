@@ -15,7 +15,7 @@ const PostPage = (props) => {
         <meta name="og:type" content="website" />
         <meta
           name="description"
-          content={`${metadata?.json.name}: ${metadata?.json.description} \n Published on ${hub?.json.displayName}.  Powered by Nina.`}
+          content={`${metadata?.json.name || post.postContent.json.title}: ${metadata?.json.description || post.postContent.json.body} \n Published on ${hub?.json.displayName}.  Powered by Nina.`}
         />
         <meta
           name="og:title"
@@ -23,7 +23,7 @@ const PostPage = (props) => {
         />
         <meta
           name="og:description"
-          content={`${metadata?.json.name}: ${metadata?.json.description} \n Published on ${hub?.json.displayName}.  Powered by Nina.`}
+          content={`${metadata?.json.name ? metadata?.json.name + ':' : ''} ${metadata?.json.description || post.postContent.json.body} \n Published on ${hub?.json.displayName}.  Powered by Nina.`}
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@ninaprotocol" />
