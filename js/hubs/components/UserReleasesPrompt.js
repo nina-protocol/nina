@@ -70,7 +70,7 @@ const UserReleasesPrompt = ({
       unposted = filterReleasesPublishedByUser();
     }
     return unposted;
-  };
+  }; 
 
   const handleRepost = async (release) => {
     enqueueSnackbar(`Adding ${release.metadata.name} to Hub`, {
