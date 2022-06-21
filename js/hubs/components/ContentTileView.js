@@ -133,7 +133,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                     <CardCta
                       onClick={(e) => {
                         e.stopPropagation();
-                        updateTrack(item.release, true);
+                        handleClick(item.child);
                       }}
                       display="flex"
                       flexDirection={"column"}
