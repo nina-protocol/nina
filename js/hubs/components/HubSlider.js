@@ -85,6 +85,7 @@ const HubSlider = (props) => {
               <HubSlideWrapper key={i}>
                 <HubSlide key={i}>
                   {imageUrl &&
+                    <Link href={`/${hub.handle}`}>
                       <a>
                         <Image
                           src={imageUrl}
