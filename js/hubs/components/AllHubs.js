@@ -90,16 +90,6 @@ const AllHubsWrapper = styled(Box)(({ theme }) => ({
   },
 }));
 
-const HubLink = styled(Link)(({ theme }) => ({
-  height: "100%",
-  width: "100%",
-}));
-
-const HubName = styled(Typography)(({ theme }) => ({
-  paddingTop: "5px",
-  fontWeight: "500",
-}));
-
 const HubGrid = styled(Grid)(({ theme }) => ({
   paddingBottom: "200px",
   "&::-webkit-scrollbar": {
