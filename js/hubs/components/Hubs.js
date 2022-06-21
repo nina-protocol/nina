@@ -20,7 +20,7 @@ import {
 const { HubContext, NinaContext } = nina.contexts;
 
 const Hubs = () => {
-  const { getHubsForUser, hubState, filterHubsForUser, getHubs } =
+  const { getHubsForUser, hubState, filterHubsForUser, getHubs, filterFeaturedHubs } =
     useContext(HubContext);
   const { npcAmountHeld } = useContext(NinaContext);
   const [hubs, setHubs] = useState()
@@ -28,7 +28,7 @@ const Hubs = () => {
   const wallet = useWallet();
 
   useEffect(() => {
-    getHubs()
+    getHubs(true)
   }, [])
 
   useEffect(() => {
@@ -41,7 +41,7 @@ const Hubs = () => {
     if (wallet.connected) {
       return filterHubsForUser(wallet.publicKey.toBase58());
     }
-    setHubs(Object.values(hubState))
+    setHubs(filterFeaturedHubs())
     return undefined;
   }, [hubState, wallet.connected]);
 
