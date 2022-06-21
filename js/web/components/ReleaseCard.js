@@ -105,7 +105,7 @@ const ReleaseCard = (props) => {
             alt={metadata?.name}
             priority={false}
             unoptimized={true}
-            loading="eager"
+            // loading="eager"
           />
         )}
       </Box>
