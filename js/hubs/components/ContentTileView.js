@@ -293,6 +293,12 @@ const Tile = styled(Box)(({ theme }) => ({
   "&:hover": {
     border: `2px solid ${theme.palette.text.primary}`,
   },
+  [theme.breakpoints.down("md")]: {
+    border: `none`,
+    "&:hover": {
+      border: `none`,
+    },
+  },
 }));
 
 const PostTile = styled(Box)(({ theme }) => ({
@@ -377,6 +383,10 @@ const StyledAutorenewIcon = styled(AutorenewTwoToneIcon)(({ theme }) => ({
   right: "5px",
   background: "rgba(255,255,255,0.5)",
   borderRadius: "50%",
+  [theme.breakpoints.down("md")]: {
+    bottom: "35px",
+    right: "3px",
+  },
 }));
 
 const StyledButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({

@@ -255,7 +255,7 @@ const Controls = styled("div")(({ theme }) => ({
 
 const Player = styled("div")(({ theme }) => ({
   paddingTop: theme.spacing(2),
-  width: '100%',
+  width: '90%',
   background: theme.palette.background.default,
   [theme.breakpoints.down('md')]: {
     position: 'fixed',
