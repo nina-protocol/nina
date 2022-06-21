@@ -141,7 +141,7 @@ const Root = styled("div")(({ theme }) => ({
 }));
 
 const AudioPlayerWrapper = styled("div")(({ theme }) => ({
-  position: "absolute",
+  position: "fixed",
   bottom: 0,
   left: 0,
   paddingLeft: "8px",

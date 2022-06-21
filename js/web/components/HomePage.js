@@ -36,7 +36,7 @@ const HomePage = () => {
           Nina is a new way to <Link href="/upload">publish</Link>,{' '}
           <Link href="https://radio.ninaprotocol.com">listen to</Link>, and{' '}
           <Link href="/releases">purchase</Link> music. We build tools for
-          artists + fans to create their context.{' '}
+          artists + fans to create their <Link href="https://hubs.ninaprotocol.com/">context</Link>.{' '}
         </BlueTypography>
 
         <Box sx={{ padding: { md: '0 40px 140px 40px', xs: '30px 0px' } }}>
