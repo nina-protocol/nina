@@ -58,7 +58,7 @@ const Hub = ({ hubPubkey }) => {
   const content = useMemo(() => {
     const contentArray = [];
     const types = []
-    const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey);
+    // const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey);
     const hubContent = [...hubReleases, ...hubPosts];
     hubContent.forEach((hubContentData) => {
       if (
@@ -121,14 +121,14 @@ const Hub = ({ hubPubkey }) => {
   return (
     <>
       <Grid item md={4}>
-        {wallet?.connected &&
+        {/* {wallet?.connected &&
           wallet?.publicKey?.toBase58() === hubData?.authority &&
           hubReleases && (
             <UserReleasesPrompt
               hubPubkey={hubPubkey}
               hubReleases={hubReleases}
             />
-          )}
+          )} */}
         <DescriptionWrapper
           sx={{ padding: { md: "15px", xs: "100px 15px 50px" } }}
         >
