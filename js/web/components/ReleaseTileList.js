@@ -86,7 +86,7 @@ const ReleaseTileList = (props) => {
                     src={release.metadata.image}
                     priority={false}
                     unoptimized={true}
-                    loading="eager"
+                    // loading="eager"
                   />
                 )}
               </HoverCard>
