@@ -227,8 +227,8 @@ const AudioPlayer = ({ hubPubkey }) => {
       <audio id="audio" style={{ width: "100%" }}>
         <source src={track?.txid} type="audio/mp3" />
       </audio>
-      <Typography>
-        <a href={`https://ninaprotocol.com/`} target="_blank" rel="noreferrer" sx={{pb: "5px"}}>
+      <Typography sx={{pb: "5px", whiteSpace: 'nowrap'}}>
+        <a href={`https://ninaprotocol.com/`} target="_blank" rel="noreferrer" >
           Powered by Nina.
         </a>
       </Typography>
@@ -240,6 +240,7 @@ const Controls = styled("div")(({ theme }) => ({
   paddingBottom: theme.spacing(2),
   width: "100%",
   maxWidth: "500px",
+  minWidth: '200px',
   "& .MuiButton-root": {
     fontSize: theme.typography.body1.fontSize,
     padding: 0,
