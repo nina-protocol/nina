@@ -53,8 +53,12 @@ const Hub = ({ hubPubkey }) => {
     return false;
   }, [hubCollaborators, hubData, wallet]);
 
+  const [contentTypes, setContentTypes] = useState([])
+
   const content = useMemo(() => {
     const contentArray = [];
+    const types = []
+    // const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey);
     const hubContent = [...hubReleases, ...hubPosts];
     hubContent.forEach((hubContentData) => {
       if (
@@ -73,6 +77,11 @@ const Hub = ({ hubPubkey }) => {
           };
           contentArray.push(hubContentData);
         }
+        if (hubContentData.publishedThroughHub) {
+          types.push('Releases')
+        } else {
+          types.push('Reposts')
+        }
       } else if (
         hubContentData.contentType === "Post" &&
         postState[hubContentData.post] &&
@@ -88,6 +97,8 @@ const Hub = ({ hubPubkey }) => {
             releaseState.metadata[hubContentData.referenceHubContent];
           hubContentData.contentType = "PostWithRelease";
         }
+        types.push('Text Posts')
+        setContentTypes([...new Set(types)])
         contentArray.push(hubContentData);
       }
     });
@@ -110,14 +121,14 @@ const Hub = ({ hubPubkey }) => {
   return (
     <>
       <Grid item md={4}>
-        {wallet?.connected &&
+        {/* {wallet?.connected &&
           wallet?.publicKey?.toBase58() === hubData?.authority &&
           hubReleases && (
             <UserReleasesPrompt
               hubPubkey={hubPubkey}
               hubReleases={hubReleases}
             />
-          )}
+          )} */}
         <DescriptionWrapper
           sx={{ padding: { md: "15px", xs: "100px 15px 50px" } }}
         >
@@ -138,6 +149,7 @@ const Hub = ({ hubPubkey }) => {
             content={content}
             hubPubkey={hubPubkey}
             hubHandle={hubData.handle}
+            contentTypes={contentTypes}
           />
         )}
       </ContentViewWrapper>

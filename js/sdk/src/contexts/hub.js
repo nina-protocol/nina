@@ -862,7 +862,6 @@ const hubContextHelper = ({
       )
       const result = await response.json()
       if (featured) {
-        console.log('result: ', result)
         setFeaturedHubs(result.hubs.map(row => row.id))
       } else {
         setAllHubs(result.count)
@@ -874,6 +873,7 @@ const hubContextHelper = ({
         setAllHubs(all)
       }
       saveHubsToState(result.hubs)
+      setAllHubs(all)
     } catch (error) {
       console.warn(error)
     }
