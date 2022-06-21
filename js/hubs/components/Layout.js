@@ -130,7 +130,7 @@ const Root = styled("div")(({ theme }) => ({
     position: "relative",
     textAlign: "center",
     minHeight: "100%",
-    overflowX: "hidden",
+    overflow: "hidden",
     [theme.breakpoints.down("md")]: {
       overflowY: "scroll",
       "&::-webkit-scrollbar": {
