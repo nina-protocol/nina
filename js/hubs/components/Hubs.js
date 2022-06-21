@@ -50,7 +50,7 @@ const Hubs = () => {
       <HubsContainer>
         <Box
           sx={{
-            padding: { md: "0px 40px 140px 40px !important", xs: "30px 0px" },
+            padding: { md: "0px 40px 40px 40px !important", xs: "30px 0px" },
           }}
         >
           {!wallet?.connected && (
