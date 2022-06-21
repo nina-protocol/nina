@@ -86,9 +86,16 @@ const Hubs = () => {
                 </Link>
                 .
               </BlueTypography>
-
+              <Box sx={{ display: 'flex', paddingLeft: { md: '30px', xs: '0' } }}>
+                <Typography
+                  variant="body1"
+                  align="left"
+                  className={classes.sectionHeader}
+                >
+                  Featured Hubs:
+                </Typography>
+              </Box>
               <HubSlider hubs={hubs} />
-
             </>
           )}
           {wallet.connected && (
