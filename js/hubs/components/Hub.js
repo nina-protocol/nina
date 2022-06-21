@@ -50,11 +50,11 @@ const Hub = ({ hubPubkey }) => {
     return false;
   }, [hubCollaborators, hubData, wallet]);
 
-  const [contentTypes, setContentTypes] = useState([])
+  const [contentTypes, setContentTypes] = useState([]);
 
   const content = useMemo(() => {
     const contentArray = [];
-    const types = []
+    const types = [];
     const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey);
     const hubContent = [...hubReleases, ...hubPosts];
     hubContent.forEach((hubContentData) => {
@@ -75,9 +75,9 @@ const Hub = ({ hubPubkey }) => {
           contentArray.push(hubContentData);
         }
         if (hubContentData.publishedThroughHub) {
-          types.push('Releases')
+          types.push("Releases");
         } else {
-          types.push('Reposts')
+          types.push("Reposts");
         }
       } else if (
         hubContentData.contentType === "Post" &&
@@ -94,8 +94,8 @@ const Hub = ({ hubPubkey }) => {
             releaseState.metadata[hubContentData.referenceHubContent];
           hubContentData.contentType = "PostWithRelease";
         }
-        types.push('Text Posts')
-        setContentTypes([...new Set(types)])
+        types.push("Text Posts");
+        setContentTypes([...new Set(types)]);
         contentArray.push(hubContentData);
       }
     });

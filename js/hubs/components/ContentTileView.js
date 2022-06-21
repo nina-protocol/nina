@@ -8,16 +8,15 @@ import Box from "@mui/material/Box";
 import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
 import Button from "@mui/material/Button";
 import Link from "next/link";
-import AutorenewTwoToneIcon from '@mui/icons-material/AutorenewTwoTone';
+import AutorenewTwoToneIcon from "@mui/icons-material/AutorenewTwoTone";
 
-import FormatBoldIcon from '@mui/icons-material/FormatBold';
-import FormatItalicIcon from '@mui/icons-material/FormatItalic';
-import FormatUnderlinedIcon from '@mui/icons-material/FormatUnderlined';
-import FormatColorFillIcon from '@mui/icons-material/FormatColorFill';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-
+import FormatBoldIcon from "@mui/icons-material/FormatBold";
+import FormatItalicIcon from "@mui/icons-material/FormatItalic";
+import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
+import FormatColorFillIcon from "@mui/icons-material/FormatColorFill";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
 const { AudioPlayerContext, HubContext, ReleaseContext } = nina.contexts;
 
@@ -29,50 +28,48 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
   // const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const router = useRouter();
 
-  const [displayType, setDisplayType] = useState('all');
+  const [displayType, setDisplayType] = useState("all");
   const [filteredContent, setFilteredContent] = useState(content);
 
-
-  console.log('contentTypes :>> ', contentTypes);
+  console.log("contentTypes :>> ", contentTypes);
 
   useEffect(() => {
     let filtered;
     switch (displayType) {
-      case 'all':
-        setFilteredContent(content)
+      case "all":
+        setFilteredContent(content);
         break;
-      case 'releases':
-        filtered = content.filter(item => {
+      case "releases":
+        filtered = content.filter((item) => {
           return (
-            item.contentType === "NinaReleaseV1" && item.publishedThroughHub === true
-          )
-        } )
-        setFilteredContent(filtered)
+            item.contentType === "NinaReleaseV1" &&
+            item.publishedThroughHub === true
+          );
+        });
+        setFilteredContent(filtered);
         break;
-    
-      case 'reposts':
-        filtered = content.filter(item => {
+
+      case "reposts":
+        filtered = content.filter((item) => {
           return (
-            item.contentType === "NinaReleaseV1" && item.publishedThroughHub === false
-          )
-        } )
-        setFilteredContent(filtered)
+            item.contentType === "NinaReleaseV1" &&
+            item.publishedThroughHub === false
+          );
+        });
+        setFilteredContent(filtered);
         break;
-    
-  
-      case 'textposts':
-        filtered = content.filter(item => {
-          return (
-            item.contentType === "Post"
-          )
-        } )
-        setFilteredContent(filtered)
+
+      case "textposts":
+        filtered = content.filter((item) => {
+          return item.contentType === "Post";
+        });
+        setFilteredContent(filtered);
         break;
-  
+
       default:
         break;
     }
-  }, [displayType])
+  }, [displayType]);
 
   const handleFormat = (event, newDisplayType) => {
     setDisplayType(newDisplayType);
@@ -97,31 +94,31 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
   };
 
   return (
-    <Box position='relative'>
-
-        {contentTypes.length > 2 && (
-          <StyledButtonGroup
-            exclusive
-            value={displayType}
-            onChange={handleFormat}
-            aria-label="text formatting"
-          >
-            <ToggleButton value="all" aria-label="all" disableRipple	>
-                All
-            </ToggleButton>
-            {contentTypes.map(type => {
-              return (
-                <ToggleButton value={type.toLowerCase().replace(' ', '')} aria-label={type} disableRipple	>
-                  {type}
-                </ToggleButton>
-              )
-            })}
-          </StyledButtonGroup>
-
-        )}
+    <Box position="relative">
+      {contentTypes.length > 2 && (
+        <StyledButtonGroup
+          exclusive
+          value={displayType}
+          onChange={handleFormat}
+          aria-label="text formatting"
+        >
+          <ToggleButton value="all" aria-label="all" disableRipple>
+            All
+          </ToggleButton>
+          {contentTypes.map((type) => {
+            return (
+              <ToggleButton
+                value={type.toLowerCase().replace(" ", "")}
+                aria-label={type}
+                disableRipple
+              >
+                {type}
+              </ToggleButton>
+            );
+          })}
+        </StyledButtonGroup>
+      )}
       <TileGrid columnCount={columnCount}>
-
-
         {filteredContent.map((item, i) => {
           return (
             <React.Fragment key={i}>
@@ -173,7 +170,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                     )}
                   </HoverCard>
                   {!item.publishedThroughHub && (
-                    <StyledAutorenewIcon fontSize='small' />
+                    <StyledAutorenewIcon fontSize="small" />
                   )}
                 </Tile>
               )}
@@ -225,7 +222,9 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                           }}
                         >
                           {item.postContent.json.title.substring(0, 100)}
-                          {item.postContent.json.title.length > 100 ? "..." : ""}
+                          {item.postContent.json.title.length > 100
+                            ? "..."
+                            : ""}
                         </Typography>
                         <Typography sx={{ color: "text.primary" }}>
                           published: {formattedDate(item.createdAt)}
@@ -291,7 +290,7 @@ const Tile = styled(Box)(({ theme }) => ({
   boxSizing: "border-box",
   maxHeight: "300px",
   width: "100%",
-  position: 'relative',
+  position: "relative",
   paddingBottom: "calc(100% - 4px)",
   border: `2px solid ${theme.palette.transparent}`,
   "&:hover": {
@@ -375,32 +374,32 @@ const PostTitle = styled(Typography)(({ theme }) => ({
 }));
 
 const StyledAutorenewIcon = styled(AutorenewTwoToneIcon)(({ theme }) => ({
-  position: 'absolute',
-  top: 'auto',
-  bottom: '5px',
-  right: '5px',
-  background: 'rgba(255,255,255,0.5)',
-  borderRadius: '50%'
+  position: "absolute",
+  top: "auto",
+  bottom: "5px",
+  right: "5px",
+  background: "rgba(255,255,255,0.5)",
+  borderRadius: "50%",
 }));
 
 const StyledButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
-  position: 'absolute',
-  top: '-56px',
-  right: '0',
-  '& .MuiButtonBase-root': {
-    border: 'none',
-    textTransform: 'capitalize',
-    '&:hover':{
-      backgroundColor: theme.palette.transparent
-    }
+  position: "absolute",
+  top: "-56px",
+  right: "0",
+  "& .MuiButtonBase-root": {
+    border: "none",
+    textTransform: "capitalize",
+    "&:hover": {
+      backgroundColor: theme.palette.transparent,
+    },
   },
-  '& .Mui-selected ' :{
+  "& .Mui-selected ": {
     // backgroundColor: 'none !important'
     backgroundColor: theme.palette.transparent,
-    textDecortation: 'underline !important',
+    textDecortation: "underline !important",
   },
   [theme.breakpoints.down("md")]: {
-    position: 'unset'
+    position: "unset",
   },
 }));
 
