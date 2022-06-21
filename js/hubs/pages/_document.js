@@ -4,7 +4,7 @@ import React from "react";
 import Document, { Html, Head, Main, NextScript } from "next/document";
 import createEmotionServer from "@emotion/server/create-instance";
 import createEmotionCache from "../createEmotionCache";
-// import {styled} from '@mui/material/styles'
+import { styled } from "@mui/material/styles";
 
 // const sheets = new ServerStyleSheets();
 class MyDocument extends Document {
@@ -106,12 +106,21 @@ class MyDocument extends Document {
           />
           {this.props.emotionStyleTags}
         </Head>
-        <body style={{ margin: "0px", position: "relative" }}>
+        <StyledBody style={{ margin: "0px", position: "relative" }}>
           <Main />
           <NextScript />
-        </body>
+        </StyledBody>
       </Html>
     );
   }
 }
+const StyledBody = styled("body")(({ theme }) => ({
+  margin: "0px",
+  position: "relative",
+  [theme.breakpoints.down("md")]: {
+    "&::-webkit-scrollbar": {
+      display: "none !important",
+    },
+  },
+}));
 export default MyDocument;

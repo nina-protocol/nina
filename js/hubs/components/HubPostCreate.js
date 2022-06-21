@@ -241,7 +241,9 @@ const HubPostCreate = ({
           setFormValues({ postForm: {} });
           setPostCreated(true);
           setOpen(false);
-          setParentOpen(false);
+          if (setParentOpen) {
+            setParentOpen(false);
+          }
         }
       }
     } catch (error) {

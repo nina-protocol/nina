@@ -14,7 +14,7 @@ import Image from "next/image";
 
 const { HubContext } = nina.contexts;
 
-const Hubs = () => {
+const HomepageHubDisplay = () => {
   const { getHubs, hubState } = useContext(HubContext);
   const wallet = useWallet();
 
@@ -42,21 +42,28 @@ const Hubs = () => {
   }
 
   return (
-    <HubsContainer overflowX="visible">
-      <Box sx={{ paddingLeft: { md: "15px", xs: "0" } }}>
-        <Typography
-          variant="h2"
-          align="left"
-          sx={{ fontWeight: "700 !important" }}
-        >
-          Hubs
-        </Typography>
-      </Box>
+    <HubsContainer>
+      <Typography
+        variant="h2"
+        align="left"
+        sx={{
+          fontWeight: "700 !important",
+          paddingLeft: { md: "15px", xs: "0" },
+          position: "absolute",
+          top: "0",
+          left: "0px",
+          background: "white",
+          zIndex: "1",
+          width: "100%",
+        }}
+      >
+        Explore Hubs
+      </Typography>
       <HubGrid container>
         {hubs?.map((hub, i) => {
           const imageUrl = hub?.json?.image;
           return (
-            <HubTile item md={4} xs={6} key={i}>
+            <HubTile item md={3} xs={6} key={i}>
               {imageUrl && (
                 <HubLink href={`/${hub.handle}`}>
                   <a>
@@ -82,22 +89,26 @@ const Hubs = () => {
 };
 
 const HubsContainer = styled("div")(({ theme }) => ({
-  width: "1010px",
   margin: "auto",
   overflowX: "visible",
+  marginBottom: "40px",
+  position: "relative",
   [theme.breakpoints.down("md")]: {
-    width: "90vw",
-    margin: "100px 0",
+    // width: '90vw',
+    margin: " 0  0 30px 0",
   },
 }));
 
 const HubGrid = styled(Grid)(({ theme }) => ({
-  paddingBottom: "200px",
+  maxHeight: "40vh",
+  overflowY: "scroll",
+  paddingTop: "30px",
   "&::-webkit-scrollbar": {
     display: "none",
   },
   [theme.breakpoints.down("md")]: {
     paddingBottom: "100px",
+    maxHeight: "380px",
   },
 }));
 
@@ -105,7 +116,7 @@ const HubTile = styled(Grid)(({ theme }) => ({
   padding: "15px 15px 15px",
   position: "relative",
   [theme.breakpoints.down("md")]: {
-    padding: "10px",
+    padding: "5px 5px 5px 0px",
   },
 }));
 
@@ -119,4 +130,4 @@ const HubName = styled(Typography)(({ theme }) => ({
   fontWeight: "500",
 }));
 
-export default Hubs;
+export default HomepageHubDisplay;

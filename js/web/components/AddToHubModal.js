@@ -43,6 +43,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
     enqueueSnackbar('Adding Release to Hub', {
       variant: 'info',
     })
+    handleClose()
     const result = await hubAddRelease(selectedHubId, releasePubkey)
     if (result?.success) {
       enqueueSnackbar(result.msg, {
@@ -162,7 +163,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
               <Typography>
                 {!inProgress && 'Repost'}
                 {inProgress && (
-                  <Dots msg={'Please aprrove transaction in wallet'} />
+                  <Dots msg={'Please approve transaction in wallet'} />
                 )}
               </Typography>
             </Button>

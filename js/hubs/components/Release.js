@@ -60,13 +60,13 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
 
   return (
     <>
-      <Grid
+      <StyledGrid
         item
         md={6}
         xs={12}
         sx={{
           margin: { md: "0px auto auto", xs: "0px" },
-          padding: "0 15px",
+          padding: { md: "0 15px", xs: "75px 15px" },
         }}
       >
         {metadata && (
@@ -89,36 +89,38 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
               <Typography
                 variant="h3"
                 align="left"
-                sx={{ color: "text.primary", whiteSpace: "nowrap", mr: 1 }}
+                sx={{ color: "text.primary", mr: 1 }}
               >
                 {metadata.properties.artist} - {metadata.properties.title}
               </Typography>
 
-              <PlayButton
-                sx={{ height: "22px", width: "28px", m: 0 }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  updateTrack(
-                    releasePubkey,
-                    !(isPlaying && track.releasePubkey === releasePubkey)
-                  );
-                }}
-              >
-                {isPlaying && track.releasePubkey === releasePubkey ? (
-                  <PauseCircleOutlineIcon />
-                ) : (
-                  <PlayCircleOutlineIcon />
-                )}
-              </PlayButton>
+              <Box display="flex" sx={{ mt: "15px", mb: "15px" }}>
+                <PlayButton
+                  sx={{ height: "22px", width: "28px", m: 0, paddingLeft: 0 }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    updateTrack(
+                      releasePubkey,
+                      !(isPlaying && track.releasePubkey === releasePubkey)
+                    );
+                  }}
+                >
+                  {isPlaying && track.releasePubkey === releasePubkey ? (
+                    <PauseCircleOutlineIcon />
+                  ) : (
+                    <PlayCircleOutlineIcon />
+                  )}
+                </PlayButton>
 
-              {releasePubkey && metadata && (
-                <AddToHubModal
-                  userHubs={userHubs}
-                  releasePubkey={releasePubkey}
-                  metadata={metadata}
-                  hubPubkey={hubPubkey}
-                />
-              )}
+                {releasePubkey && metadata && (
+                  <AddToHubModal
+                    userHubs={userHubs}
+                    releasePubkey={releasePubkey}
+                    metadata={metadata}
+                    hubPubkey={hubPubkey}
+                  />
+                )}
+              </Box>
             </CtaWrapper>
 
             <StyledDescription variant="h4" align="left">
@@ -126,14 +128,14 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
             </StyledDescription>
           </>
         )}
-        <Box sx={{ marginTop: "100px" }}>
+        <Box sx={{ marginTop: { md: "100px", xs: "30px" } }}>
           <ReleasePurchase
             releasePubkey={releasePubkey}
             metadata={metadata}
             hubPubkey={hubPubkey}
           />
         </Box>
-      </Grid>
+      </StyledGrid>
 
       <DesktopImageGridItem item md={6}>
         {metadata && (
@@ -155,6 +157,15 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
     </>
   );
 };
+
+const StyledGrid = styled(Grid)(({ theme }) => ({
+  // [theme.breakpoints.down('md')]: {
+  //   border: '2px solid red',
+  //   '&:-webkit-scrollbar': {
+  //     display: 'none !important'
+  //   },
+  // },
+}));
 
 const PlayButton = styled(Button)(({ theme }) => ({
   color: `${theme.palette.text.primary} !important`,
@@ -187,7 +198,7 @@ const MobileImageWrapper = styled(Grid)(({ theme }) => ({
   display: "none",
   [theme.breakpoints.down("md")]: {
     display: "block",
-    padding: "45px 0 0",
+    padding: "30px 0 0",
   },
 }));
 
@@ -197,8 +208,9 @@ const ImageContainer = styled(Box)(() => ({
 
 const CtaWrapper = styled(Box)(({ theme }) => ({
   display: "flex",
+  flexDirection: "column",
   [theme.breakpoints.down("md")]: {
-    paddingTop: "15px",
+    marginTop: "15px",
   },
 }));
 

@@ -7,6 +7,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Link from "next/link";
 import Dots from "./Dots";
+import UserReleasesPrompt from "./UserReleasesPrompt";
 
 import { useWallet } from "@solana/wallet-adapter-react";
 const ContentTileView = dynamic(() => import("./ContentTileView"));
@@ -30,6 +31,8 @@ const Hub = ({ hubPubkey }) => {
   }, [hubPubkey]);
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
+  const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey);
+
   const hubCollaborators = useMemo(
     () => filterHubCollaboratorsForHub(hubPubkey) || [],
     [hubCollaboratorsState, hubPubkey]
@@ -50,9 +53,12 @@ const Hub = ({ hubPubkey }) => {
     return false;
   }, [hubCollaborators, hubData, wallet]);
 
+  const [contentTypes, setContentTypes] = useState([])
+
   const content = useMemo(() => {
     const contentArray = [];
-    const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey);
+    const types = []
+    // const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey);
     const hubContent = [...hubReleases, ...hubPosts];
     hubContent.forEach((hubContentData) => {
       if (
@@ -71,6 +77,11 @@ const Hub = ({ hubPubkey }) => {
           };
           contentArray.push(hubContentData);
         }
+        if (hubContentData.publishedThroughHub) {
+          types.push('Releases')
+        } else {
+          types.push('Reposts')
+        }
       } else if (
         hubContentData.contentType === "Post" &&
         postState[hubContentData.post] &&
@@ -86,6 +97,8 @@ const Hub = ({ hubPubkey }) => {
             releaseState.metadata[hubContentData.referenceHubContent];
           hubContentData.contentType = "PostWithRelease";
         }
+        types.push('Text Posts')
+        setContentTypes([...new Set(types)])
         contentArray.push(hubContentData);
       }
     });
@@ -108,8 +121,16 @@ const Hub = ({ hubPubkey }) => {
   return (
     <>
       <Grid item md={4}>
+        {/* {wallet?.connected &&
+          wallet?.publicKey?.toBase58() === hubData?.authority &&
+          hubReleases && (
+            <UserReleasesPrompt
+              hubPubkey={hubPubkey}
+              hubReleases={hubReleases}
+            />
+          )} */}
         <DescriptionWrapper
-          sx={{ padding: { md: "0px 15px", xs: "100px 15px 50px" } }}
+          sx={{ padding: { md: "15px", xs: "100px 15px 50px" } }}
         >
           <Typography align="left" sx={{ color: "text.primary" }}>
             {hubData?.json.description}
@@ -145,6 +166,7 @@ const Hub = ({ hubPubkey }) => {
             content={content}
             hubPubkey={hubPubkey}
             hubHandle={hubData.handle}
+            contentTypes={contentTypes}
           />
         )}
       </ContentViewWrapper>
@@ -163,6 +185,9 @@ const DescriptionWrapper = styled(Grid)(({ theme }) => ({
   padding: " 0px 15px",
   maxHeight: "68vh  ",
   overflowX: "scroll",
+  "&::-webkit-scrollbar": {
+    display: "none",
+  },
   [theme.breakpoints.down("md")]: {
     padding: "100px 15px 50px",
   },
