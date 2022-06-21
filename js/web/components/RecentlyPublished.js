@@ -74,7 +74,7 @@ const RecentlyPublished = (props) => {
           infinite={true}
           speed={1000}
           responsive={responsiveSettings}
-          // lazyLoad={true}
+          lazyLoad={true}
           slidesToShow={3}
           slidesToScroll={3}
           alignItems="left"
