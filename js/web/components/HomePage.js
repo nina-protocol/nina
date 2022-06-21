@@ -45,7 +45,12 @@ const HomePage = () => {
           Nina is a new way to <Link href="/upload">publish</Link>,{' '}
           <Link href="https://radio.ninaprotocol.com">listen to</Link>, and{' '}
           <Link href="/releases">purchase</Link> music. We build tools for
-          artists + fans to create their <Link href="https://hubs.ninaprotocol.com/">context</Link>.{' '}
+          artists + fans to create their <a
+            href="https://hubs.ninaprotocol.com/"
+            target="_blank"
+            rel="noreferrer"
+            passHref
+          >context</a>.{' '}
         </BlueTypography>
 
         <Box sx={{ padding: { md: '0 40px 140px 40px', xs: '30px 0px' } }}>
@@ -55,7 +60,12 @@ const HomePage = () => {
               align="left"
               className={classes.sectionHeader}
             >
-              <Link href="https://hubs.ninaprotocol.com/">Hubs</Link>
+              <a
+                href="https://hubs.ninaprotocol.com/"
+                target="_blank"
+                rel="noreferrer"
+                passHref
+              >Hubs</a>
             </Typography>
           </Box>
           <HubSlider hubs={hubs} />

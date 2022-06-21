@@ -86,15 +86,15 @@ const Hubs = () => {
                 .
               </BlueTypography>
               <Box sx={{ display: 'flex', paddingLeft: { md: '30px', xs: '0' } }}>
-                <BlueTypography
+                <Typography
                   variant="body1"
                   align="left"
                   className={classes.sectionHeader}
                 >
-                  <Link href='/all'>
-                    Featured Hubs:
+                  <Link href='/all' sx={{textDecoration: 'none'}}>
+                    Featured Hubs
                   </Link>
-                </BlueTypography>
+                </Typography>
               </Box>
               <HubSlider hubs={hubs} />
             </>
