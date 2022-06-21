@@ -95,7 +95,7 @@ const RecentlyPublished = (props) => {
                         layout="responsive"
                         priority={false}
                         unoptimized={true}
-                        loading="eager"
+                        // loading="eager"
                       />
                     </a>
                   </Link>

@@ -94,7 +94,7 @@ const ReleaseCard = (props) => {
             width={350}
             priority={false}
             unoptimized={true}
-            loading="eager"
+            // loading="eager"
           />
         ) : (
           <Image
