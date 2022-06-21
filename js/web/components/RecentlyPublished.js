@@ -74,6 +74,7 @@ const RecentlyPublished = (props) => {
           infinite={true}
           speed={1000}
           responsive={responsiveSettings}
+          // lazyLoad={true}
           slidesToShow={3}
           slidesToScroll={3}
           alignItems="left"
@@ -92,7 +93,7 @@ const RecentlyPublished = (props) => {
                         height={100}
                         width={100}
                         layout="responsive"
-                        priority={true}
+                        priority={false}
                         unoptimized={true}
                         loading="eager"
                       />
@@ -115,6 +116,7 @@ const RecentlyPublished = (props) => {
 }
 
 const RecentlyPublishedWrapper = styled(Box)(({ theme }) => ({
+  // border: '2px solid red',
   '& .sliderArrow': {
     top: '-12% !important',
     position: 'absolute',
