@@ -78,7 +78,8 @@ pub fn handler (
         hub_content: ctx.accounts.hub_content.key(),
         reference_content: None,
         reference_hub_content: None,
-        reference_hub_content_child: None
+        reference_hub_content_child: None,
+        reposted_from_hub: None,
     });
 
     Ok(())

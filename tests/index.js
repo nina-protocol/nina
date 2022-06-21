@@ -4072,6 +4072,15 @@ describe('Hub', async () => {
       nina.programId
     );
 
+    const [hubContent] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-content")), 
+        hub.toBuffer(),
+        releaseAccount.toBuffer(),
+      ],
+      nina.programId
+    );
+
     let [_receiverReleaseTokenAccount, receiverReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
       provider,
       user1.publicKey,
@@ -4105,6 +4114,7 @@ describe('Hub', async () => {
           releaseMint: hubReleaseMint.publicKey,
           hub,
           hubRelease,
+          hubContent,
           hubSigner,
           hubWallet,
           hubTokenAccount,
@@ -4126,7 +4136,7 @@ describe('Hub', async () => {
       provider,
       user1UsdcTokenAccount,
     );
-    assert.ok(usdcTokenAccountAfter.amount.toNumber() === usdcTokenAccountBeforeBalanceTx - releasePrice - ((releasePrice * hubBefore.referralFee.toNumber()) / 1000000))
+    assert.ok(usdcTokenAccountAfter.amount.toNumber() === usdcTokenAccountBeforeBalanceTx - releasePrice)
 
     const releaseAfter = await nina.account.release.fetch(releaseAccount);
     assert.ok(releaseAfter.remainingSupply.toNumber() === releaseBefore.remainingSupply.toNumber() - 1);

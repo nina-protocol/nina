@@ -163,7 +163,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
               <Typography>
                 {!inProgress && 'Repost'}
                 {inProgress && (
-                  <Dots msg={'Please aprrove transaction in wallet'} />
+                  <Dots msg={'Please approve transaction in wallet'} />
                 )}
               </Typography>
             </Button>

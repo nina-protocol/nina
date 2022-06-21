@@ -35,6 +35,9 @@ pub struct HubAddRelease<'info> {
     pub release: AccountLoader<'info, Release>,
     pub system_program: Program<'info, System>,
     pub rent: Sysvar<'info, Rent>,
+    //    Remaining Accounts
+    //    Only needed if reposted
+    //    reposted_from_hub
 }
 
 pub fn handler (
@@ -53,6 +56,7 @@ pub fn handler (
         ctx.accounts.release.clone(),
         ctx.accounts.authority.clone(),
         false,
+        if ctx.remaining_accounts.len() == 1 {Some(ctx.remaining_accounts[0].clone())} else {None}
     )?;
 
     emit!(HubReleaseAdded {
@@ -63,6 +67,7 @@ pub fn handler (
         hub_content: ctx.accounts.hub_content.key(),
         added_by: ctx.accounts.authority.key(),
         published_through_hub: false,
+        reposted_from_hub: if ctx.remaining_accounts.len() == 1 {Some(ctx.remaining_accounts[0].key())} else {None}
     });
 
     Ok(())
