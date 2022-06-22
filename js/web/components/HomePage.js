@@ -133,7 +133,7 @@ const HomePage = () => {
               </Button>
             </Typography>
           </Box>
-          <RecentlyPublished releases={releasesRecent.highlights || []} />
+          <RecentlyPublished releases={releasesRecent.highlights?.slice(0, 15) || []} />
         </Box>
 
         <Box sx={{ padding: { md: '0 40px 140px 40px', xs: '30px 0px' } }}>
