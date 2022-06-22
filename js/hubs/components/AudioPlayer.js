@@ -240,7 +240,7 @@ const Controls = styled("div")(({ theme }) => ({
   paddingBottom: theme.spacing(2),
   width: "100%",
   maxWidth: "500px",
-  minWidth: '200px',
+  minWidth: '250px',
   "& .MuiButton-root": {
     fontSize: theme.typography.body1.fontSize,
     padding: 0,

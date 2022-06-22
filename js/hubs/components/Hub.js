@@ -97,14 +97,15 @@ const Hub = ({ hubPubkey }) => {
           hubContentData.contentType = "PostWithRelease";
         }
         types.push('Text Posts')
-        setContentTypes([...new Set(types)])
         contentArray.push(hubContentData);
       }
     });
+    // const uniqueTypes = [...new Set(types)]
+    // setContentTypes(uniqueTypes)
     return contentArray.sort(
       (a, b) => new Date(b.datetime) - new Date(a.datetime)
     );
-  }, [hubContentState, releaseState, postState, hubPubkey, hubReleases, hubPosts]);
+  }, [hubReleases, hubPosts]);
 
   if (!hubState[hubPubkey]?.json) {
     return null;

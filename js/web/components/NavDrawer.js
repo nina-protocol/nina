@@ -19,6 +19,7 @@ import Image from 'next/image'
 const linksConnected = [
   'home',
   'all Releases',
+  'hubs',
   'collection',
   'releases',
   'upload',
@@ -30,6 +31,7 @@ const linksConnected = [
 const linksNotConnected = [
   'home',
   'all Releases',
+  'hubs',
   'upload',
   'faq',
   'radio',
@@ -162,6 +164,22 @@ const NavDrawer = () => {
                     <StyledListItemText primary="All Releases" />
                   </ListItem>
                 </Link>
+              )
+            case 'hubs':
+              return (
+                <ListItem button key={link}>
+                  <StyledListItemText>
+                    <a
+                      href="https://hubs.ninaprotocol.com/"
+                      target="_blank"
+                      rel="noreferrer"
+                      className={`${classes.drawerLink}`}
+                      passHref
+                    >
+                      Hubs
+                    </a>
+                  </StyledListItemText>
+                </ListItem>
               )
 
             default:

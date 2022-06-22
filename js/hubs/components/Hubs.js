@@ -46,7 +46,6 @@ const Hubs = () => {
   }, [hubState, wallet.connected]);
 
   return (
-    <ScrollablePageWrapper>
       <HubsContainer>
         <Box
           sx={{
@@ -92,7 +91,9 @@ const Hubs = () => {
                   align="left"
                   className={classes.sectionHeader}
                 >
-                  Featured Hubs:
+                  <Link href='/all' sx={{textDecoration: 'none'}}>
+                    Featured Hubs
+                  </Link>
                 </Typography>
               </Box>
               <HubSlider hubs={hubs} />
@@ -183,7 +184,6 @@ const Hubs = () => {
           )}
         </Box>
       </HubsContainer>
-    </ScrollablePageWrapper>
   );
 };
 
