@@ -94,6 +94,7 @@ const RecentlyPublished = (props) => {
                         width={100}
                         layout="responsive"
                         priority={false}
+                        lazyLoad={true}
                         unoptimized={true}
                       />
                     </a>
