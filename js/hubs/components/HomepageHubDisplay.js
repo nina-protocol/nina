@@ -74,7 +74,6 @@ const HomepageHubDisplay = () => {
                       layout="responsive"
                       priority={true}
                       unoptimized={true}
-                      loading="eager"
                     />
                   </a>
                 </HubLink>

@@ -49,7 +49,6 @@ const HubTileView = (props) => {
                     src={hub.json.image}
                     priority={true}
                     unoptimized={true}
-                    loading="eager"
                   />
                 )}
               </HoverCard>

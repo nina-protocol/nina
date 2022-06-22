@@ -155,7 +155,6 @@ const RecentlyPurchased = (props) => {
                           height="400px"
                           priority={true}
                           unoptimized={true}
-                          loading="eager"
                         />
                       </a>
                     </Link>
