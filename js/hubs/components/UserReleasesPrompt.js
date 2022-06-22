@@ -135,7 +135,6 @@ const UserReleasesPrompt = ({
                       src={release.metadata.image}
                       priority={true}
                       unoptimized={true}
-                      loading="eager"
                       onClick={() => handleRepost(release)}
                       sx={{
                         opacity: addToHubQueue.has(release.releasePubkey)

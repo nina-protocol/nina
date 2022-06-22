@@ -134,7 +134,6 @@ const Navigation = ({ hubPubkey }) => {
                 width="50"
                 alt="hub logo"
                 unoptimized={true}
-                loading="eager"
               />
             )}
             {hubPubkey ? (
