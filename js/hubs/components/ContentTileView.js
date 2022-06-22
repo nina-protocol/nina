@@ -42,7 +42,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
           return (
             item.contentType === "NinaReleaseV1" &&
             (item.publishedThroughHub === true ||
-              item.authority === hubData?.authority
+              releaseState.tokenData[item.release]?.authority.toBase58() === hubData?.authority
           ));
         });
         setFilteredContent(filtered);
@@ -168,7 +168,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                       />
                     )}
                   </HoverCard>
-                  {!item.publishedThroughHub && item.authority !== hubData?.authority && (
+                  {!item.publishedThroughHub && releaseState.tokenData[item.release]?.authority.toBase58() !== hubData?.authority && (
                     <StyledAutorenewIcon fontSize="small" />
                   )}
                 </Tile>
