@@ -84,7 +84,7 @@ const ReleaseTileList = (props) => {
                       zIndex: '1',
                     }}
                     src={release.metadata.image}
-                    priority={false}
+                    priority={true}
                     unoptimized={true}
                     lazyLoad={true}
                   />

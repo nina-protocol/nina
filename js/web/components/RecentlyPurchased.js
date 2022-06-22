@@ -153,7 +153,7 @@ const RecentlyPurchased = (props) => {
                           src={imageUrl}
                           width="400px"
                           height="400px"
-                          priority={false}
+                          priority={true}
                           unoptimized={true}
                         />
                       </a>

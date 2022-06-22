@@ -92,7 +92,7 @@ const ReleaseCard = (props) => {
             layout="responsive"
             height={350}
             width={350}
-            priority={false}
+            priority={true}
             unoptimized={true}
           />
         ) : (
