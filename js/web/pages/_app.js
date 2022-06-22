@@ -19,6 +19,7 @@ import { NinaTheme } from '../../NinaTheme'
 import Layout from '../components/Layout'
 import Dots from '../components/Dots'
 import createEmotionCache from '../createEmotionCache'
+import Head from "next/head";
 
 const NinaWrapper = dynamic(() => import('../components/NinaWrapper'))
 
@@ -84,7 +85,11 @@ function Application({ Component, pageProps }) {
         vertical: 'top',
         horizontal: 'left',
       }}
-    >
+    >     
+    <Head>
+      <meta name="theme-color" content={'#ffffff'} key="theme" />
+     </Head>
+      
       <ConnectionProvider endpoint={endpoint}>
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>

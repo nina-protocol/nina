@@ -8,6 +8,8 @@ import { useRouter } from "next/router";
 import nina from "@nina-protocol/nina-sdk";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { lightThemeOptions } from "../styles/theme/lightThemeOptions";
+import Head from "next/head";
+
 
 import Dots from "./Dots";
 const HubCreate = dynamic(() => import("./HubCreate"));
@@ -65,6 +67,9 @@ const Layout = ({ children }) => {
 
   return (
     <ThemeProvider theme={lightTheme}>
+      <Head>
+        <meta name="theme-color" content={lightTheme.palette.background.default} key="theme" />
+      </Head>
       <Root>
         <CssBaseline>
           <Container
@@ -112,6 +117,8 @@ const Root = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
+    backgroundColor: theme.palette.background.default,
+
     [theme.breakpoints.down("md")]: {
       overflowY: "scroll",
       minHeight: "unset",
@@ -131,6 +138,7 @@ const Root = styled("div")(({ theme }) => ({
     textAlign: "center",
     minHeight: "100%",
     overflow: "hidden",
+    background: theme.palette.background.default,
     [theme.breakpoints.down("md")]: {
       overflowY: "scroll",
       "&::-webkit-scrollbar": {
