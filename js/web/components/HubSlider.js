@@ -1,6 +1,7 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
+import { isMobile } from 'react-device-detect'
 import Slider from "react-slick";
 import "react-multi-carousel/lib/styles.css";
 import Typography from "@mui/material/Typography";
@@ -9,6 +10,7 @@ import Image from "next/image";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import Dots from "./Dots";
+import { isMobile } from "react-device-detect";
 
 const HubSlider = (props) => {
   const { hubs } = props;
@@ -92,7 +94,7 @@ const HubSlider = (props) => {
                           height={100}
                           width={100}
                           layout="responsive"
-                          priority={true}
+                          priority={!isMobile}
                           unoptimized={true}
                         />
                       </a>

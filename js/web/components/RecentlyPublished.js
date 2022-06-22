@@ -3,6 +3,7 @@ import { styled } from '@mui/material/styles'
 import { Box } from '@mui/material'
 import Slider from 'react-slick'
 import 'react-multi-carousel/lib/styles.css'
+import { isMobile } from 'react-device-detect'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -92,8 +93,7 @@ const RecentlyPublished = (props) => {
                         height={100}
                         width={100}
                         layout="responsive"
-                        priority={false}
-                        lazyLoad={true}
+                        priority={!isMobile}
                         unoptimized={true}
                       />
                     </a>

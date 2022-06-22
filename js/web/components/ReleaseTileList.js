@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import nina from '@nina-protocol/nina-sdk'
 import Image from 'next/image'
+import { isMobile } from 'react-device-detect'
 import { useRouter } from 'next/router'
 import { Typography, Box } from '@mui/material'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
@@ -84,7 +85,7 @@ const ReleaseTileList = (props) => {
                       zIndex: '1',
                     }}
                     src={release.metadata.image}
-                    priority={true}
+                    priority={!isMobile}
                     unoptimized={true}
                   />
                 )}

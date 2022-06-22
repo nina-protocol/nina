@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import nina from '@nina-protocol/nina-sdk'
+import { isMobile } from 'react-device-detect'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { Typography, Box } from '@mui/material'
@@ -47,7 +48,7 @@ const HubTileView = (props) => {
                       zIndex: '1',
                     }}
                     src={hub.json.image}
-                    priority={true}
+                    priority={!isMobile}
                     unoptimized={true}
                   />
                 )}

@@ -2,6 +2,7 @@ import React, { useContext, useState, useMemo, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import nina from "@nina-protocol/nina-sdk";
 import Image from "next/image";
+import { isMobile } from 'react-device-detect'
 import { useRouter } from "next/router";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -236,7 +237,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                         layout="responsive"
                         src={item.releaseMetadata?.image}
                         release={item.referenceContent}
-                        priority={true}
+                        priority={!isMobile}
                         unoptimized={true}
                       />
                     )}
