@@ -10,7 +10,6 @@ import Image from "next/image";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import Dots from "./Dots";
-import { isMobile } from "react-device-detect";
 
 const HubSlider = (props) => {
   const { hubs } = props;
