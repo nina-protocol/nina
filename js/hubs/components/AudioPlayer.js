@@ -225,7 +225,7 @@ const AudioPlayer = ({ hubPubkey }) => {
         </>
       )}
       <audio id="audio" style={{ width: "100%" }}>
-        <source src={track?.txid} type="audio/mp3" />
+        {/* <source src={track?.txid + '?ext=mp3'} type="audio/mp3" /> */}
       </audio>
       <Typography sx={{pb: "5px", whiteSpace: 'nowrap'}}>
         <a href={`https://ninaprotocol.com/`} target="_blank" rel="noreferrer" >
