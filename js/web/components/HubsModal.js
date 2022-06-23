@@ -4,15 +4,12 @@ import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Box from '@mui/material/Box'
 import { Typography, Paper } from '@mui/material'
-import { useWallet } from '@solana/wallet-adapter-react'
 import nina from '@nina-protocol/nina-sdk'
-import Link from 'next/link'
 
-const { ReleaseContext, NinaContext, HubContext } = nina.contexts
+const { ReleaseContext } = nina.contexts
 
 const HubsModal = (props) => {
   const { releasePubkey, metadata } = props
-  const wallet = useWallet()
   const { getHubsForRelease } = useContext(ReleaseContext)
   const [open, setOpen] = useState(false)
   const [hubs, setHubs] = useState([])
@@ -65,14 +62,14 @@ const HubsModal = (props) => {
                   return (
                     <tr key={i}>
                       <td>
-                        <Link
+                        <a
                           href={entry.json.externalUrl}
                           passHref
                           target="_blank"
                           rel="noopener noreferrer"      
                         >
                           {entry.json.displayName}
-                        </Link>
+                        </a>
                       </td>
                     </tr>
                   )
