@@ -119,18 +119,19 @@ const Hubs = () => {
                     </Link>{" "}
                     here to get started.
                   </BlueTypography>
-                  <StyledLink>
-                    <Button
-                      color="primary"
-                      variant="outlined"
-                      fullWidth
-                      type="submit"
-                      onClick={() => router.push("/all")}
+                  <Box sx={{ display: 'flex', paddingLeft: { md: '30px', xs: '0' } }}>
+                    <Typography
+                      variant="body1"
+                      align="left"
+                      className={classes.sectionHeader}
                     >
-                      Browse All Hubs
-                    </Button>
-                  </StyledLink>
-                  </DashboardContent>
+                      <Link href='/all' sx={{textDecoration: 'none'}}>
+                        Featured Hubs
+                      </Link>
+                    </Typography>
+                  </Box>
+                  <HubSlider hubs={hubs} />
+                </DashboardContent>
               )}
               {userHubs?.length > 0 && (
                 <DashboardWrapper

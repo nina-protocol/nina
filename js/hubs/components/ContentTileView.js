@@ -141,8 +141,8 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                     >
                       <Button
                         onClick={(e) => {
-                          setInitialized(true)
                           e.stopPropagation();
+                          setInitialized(true)
                           audioPlayerRef.current.load();
                           updateTrack(item.release, true);
                         }}
@@ -178,7 +178,11 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
               )}
 
               {item.contentType === "Post" && (
-                <PostTile className={"tile"} key={i}>
+                <PostTile
+                  className={"tile"}
+                  key={i}
+                  onClick={() => router.push(`/${hubHandle}/posts/${item.hubPostPublicKey}`)}
+                >
                   <PostInfo sx={{ padding: "10px 0 0" }}>
                     <PostTitle
                       variant="h2"
@@ -192,14 +196,9 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                     </Typography>
                   </PostInfo>
                   <HoverCard>
-                    <Link
-                      href={`/${hubHandle}/posts/${item.hubPostPublicKey}`}
-                      passHref
-                    >
-                      <CardCta>
-                        <PostLink>View Post</PostLink>
-                      </CardCta>
-                    </Link>
+                    <CardCta>
+                      <PostLink>View Post</PostLink>
+                    </CardCta>
                   </HoverCard>
                 </PostTile>
               )}
