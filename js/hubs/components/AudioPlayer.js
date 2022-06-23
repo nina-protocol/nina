@@ -199,6 +199,9 @@ const AudioPlayer = ({ hubPubkey }) => {
 
   return (
     <Player>
+      <audio id="audio" style={{width: "100%"}}>
+        <source src={track?.txid} type="audio/mp3" />
+      </audio>
       {track && (
         <>
           <Controls>
@@ -209,6 +212,7 @@ const AudioPlayer = ({ hubPubkey }) => {
             <Button onClick={() => playButtonHandler()} disabled={!track}>
               {playing ? "Pause" : "Play"}
             </Button>
+
             <span>{` | `}</span>
             <Button onClick={() => next()} disabled={!hasNext}>
               Next
@@ -224,9 +228,7 @@ const AudioPlayer = ({ hubPubkey }) => {
           </Controls>
         </>
       )}
-      <audio id="audio" style={{ width: "100%" }}>
-        <source src={track?.txid} type="audio/mp3" />
-      </audio>
+
       <Typography sx={{pb: "5px", whiteSpace: 'nowrap'}}>
         <a href={`https://ninaprotocol.com/`} target="_blank" rel="noreferrer" >
           Powered by Nina.
