@@ -22,7 +22,7 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 const { AudioPlayerContext, HubContext, ReleaseContext } = nina.contexts;
 
 const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
-  const { updateTrack } = useContext(AudioPlayerContext);
+  const { updateTrack, setInitialized, audioPlayerRef } = useContext(AudioPlayerContext);
   const { hubState } = useContext(HubContext);
   const { releaseState } = useContext(ReleaseContext);
   const [columnCount, setColumnCount] = useState(3);
@@ -141,7 +141,9 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                     >
                       <Button
                         onClick={(e) => {
+                          setInitialized(true)
                           e.stopPropagation();
+                          audioPlayerRef.current.load();
                           updateTrack(item.release, true);
                         }}
                         disableRipple

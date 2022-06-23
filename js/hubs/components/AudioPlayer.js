@@ -13,7 +13,6 @@ const AudioPlayer = ({ hubPubkey }) => {
   const { hubContentState, filterHubContentForHub } = useContext(HubContext);
   const audio = useContext(AudioPlayerContext);
   const [tracks, setTracks] = useState({});
-  const [initialized, setInitialized] = useState(false)
   const {
     track,
     playNext,
@@ -22,7 +21,12 @@ const AudioPlayer = ({ hubPubkey }) => {
     playlist,
     createPlaylistFromTracksHubs,
     isPlaying,
+    initialized,
+    setInitialized,
+    audioPlayerRef
   } = audio;
+
+  const audioInitialized = useMemo(() => initialized, [initialized])
   useEffect(() => {
     const trackObject = {};
     const [hubReleases] = filterHubContentForHub(hubPubkey);
@@ -43,14 +47,13 @@ const AudioPlayer = ({ hubPubkey }) => {
     setTracks(trackObject);
   }, [hubContentState, hubPubkey]);
   const activeTrack = useRef();
-  const playerRef = useRef();
   const intervalRef = useRef();
   const activeIndexRef = useRef(0);
   const [playing, setPlaying] = useState(false);
   const [trackProgress, setTrackProgress] = useState(0.0);
 
   useEffect(() => {
-    playerRef.current = document.querySelector("#audio");
+    audioPlayerRef.current = document.querySelector("#audio");
 
     const actionHandlers = [
       ["play", () => play()],
@@ -82,9 +85,9 @@ const AudioPlayer = ({ hubPubkey }) => {
       createPlaylistFromTracksHubs(trackIds);
     }
   }, [tracks, hubContentState]);
-
+  console.log('audioInitialized', audioInitialized)
   useEffect(() => {
-    if (isPlaying && initialized) {
+    if (isPlaying && audioInitialized) {
       play();
     } else {
       pause();
@@ -99,10 +102,10 @@ const AudioPlayer = ({ hubPubkey }) => {
     [activeIndexRef.current]
   );
   useEffect(() => {
-    if (track) {
+    if (track && audioInitialized) {
       activeIndexRef.current = playlist.indexOf(track);
       activeTrack.current = track;
-      playerRef.current.src = track.txid;
+      audioPlayerRef.current.src = track.txid;
       if ("mediaSession" in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
           title: activeTrack.current.title,
@@ -117,11 +120,11 @@ const AudioPlayer = ({ hubPubkey }) => {
         });
       }
     }
-    if (initialized && isPlaying) {
+    if (audioInitialized && isPlaying) {
       play();
     }
-  }, [track]);
-  console.log('init: ', initialized)
+  }, [track, audioInitialized, isPlaying]);
+
   useEffect(() => {
     if (
       playlist.length > 0 &&
@@ -137,12 +140,12 @@ const AudioPlayer = ({ hubPubkey }) => {
     clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
       if (
-        playerRef.current.currentTime > 0 &&
-        playerRef.current.currentTime < playerRef.current.duration &&
-        !playerRef.current.paused
+        audioPlayerRef.current.currentTime > 0 &&
+        audioPlayerRef.current.currentTime < audioPlayerRef.current.duration &&
+        !audioPlayerRef.current.paused
       ) {
-        setTrackProgress(Math.ceil(playerRef.current.currentTime));
-      } else if (playerRef.current.currentTime >= playerRef.current.duration) {
+        setTrackProgress(Math.ceil(audioPlayerRef.current.currentTime));
+      } else if (audioPlayerRef.current.currentTime >= audioPlayerRef.current.duration) {
         next();
       }
     }, [300]);
@@ -157,8 +160,8 @@ const AudioPlayer = ({ hubPubkey }) => {
   };
 
   const play = () => {
-    if (playerRef.current.paused) {
-      playerRef.current.play();
+    if (audioPlayerRef.current.paused) {
+      audioPlayerRef.current.play();
       setPlaying(true);
       startTimer();
     } else {
@@ -168,7 +171,7 @@ const AudioPlayer = ({ hubPubkey }) => {
 
   const playButtonHandler = () => {
     setInitialized(true)
-    if (playerRef.current.paused) {
+    if (audioPlayerRef.current.paused) {
       if (track) {
         updateTrack(track.releasePubkey, true);
       }
@@ -178,7 +181,7 @@ const AudioPlayer = ({ hubPubkey }) => {
   };
 
   const pause = () => {
-    playerRef.current.pause();
+    audioPlayerRef.current.pause();
     setPlaying(false);
     clearInterval(intervalRef.current);
     if (track) {

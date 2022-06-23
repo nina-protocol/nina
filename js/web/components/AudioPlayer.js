@@ -213,7 +213,6 @@ const AudioPlayer = () => {
                 width="60px"
                 layout="responsive"
                 unoptimized={true}
-                loading="eager"
               />
             </AlbumArt>
           </Link>

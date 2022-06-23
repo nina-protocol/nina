@@ -1,5 +1,5 @@
 import { release } from 'process'
-import React, { createContext, useState, useContext, useEffect } from 'react'
+import React, { createContext, useState, useContext, useEffect, useRef } from 'react'
 import { NinaContext } from './nina'
 import { ReleaseContext } from './release'
 
@@ -11,7 +11,9 @@ const AudioPlayerContextProvider = ({ children }) => {
   const [track, setTrack] = useState(null)
   const [playlist, setPlaylist] = useState([])
   const [isPlaying, setIsPlaying] = useState(false)
-
+  const [initialized, setInitialized] = useState(false)
+  const audioPlayerRef = useRef();
+  
   const playPrev = (shouldPlay = false) => {
     if (playlist[currentIndex() - 1]) {
       setTrack(playlist[currentIndex() - 1])
@@ -105,6 +107,9 @@ const AudioPlayerContextProvider = ({ children }) => {
         resetQueueWithPlaylist,
         createPlaylistFromTracks,
         createPlaylistFromTracksHubs,
+        initialized,
+        setInitialized,
+        audioPlayerRef,
       }}
     >
       {children}
