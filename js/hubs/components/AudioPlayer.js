@@ -167,10 +167,7 @@ const AudioPlayer = ({ hubPubkey }) => {
   };
 
   const playButtonHandler = () => {
-    if (!initialized) {
-      setInitialized(true)
-    }
-
+    setInitialized(true)
     if (playerRef.current.paused) {
       if (track) {
         updateTrack(track.releasePubkey, true);
@@ -209,7 +206,7 @@ const AudioPlayer = ({ hubPubkey }) => {
               Previous
             </Button>
             <span>{` | `}</span>
-            <Button onClick={() => playButtonHandler()} disabled={!track}>
+            <Button onClickCapture={() => playButtonHandler()} disabled={!track}>
               {playing ? "Pause" : "Play"}
             </Button>
             <span>{` | `}</span>
