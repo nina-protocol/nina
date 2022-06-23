@@ -78,7 +78,7 @@ const AllHubsWrapper = styled(Box)(({ theme }) => ({
   maxWidth: '960px',
   height: 'auto',
   minHeight: '75vh',
-  margin: '0 auto',
+  margin: '0 15px 0 auto',
   position: 'relative',
   '& a': {
     color: theme.palette.blue,
