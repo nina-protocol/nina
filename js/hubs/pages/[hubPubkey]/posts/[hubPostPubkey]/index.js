@@ -1,10 +1,8 @@
-import React, { useContext } from "react";
+import React from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import * as anchor from "@project-serum/anchor";
 import axios from "axios";
 const Post = dynamic(() => import("../../../../components/Post"));
-import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 
 const PostPage = (props) => {
   const { metadata, post, hub, postPubkey, hubPubkey } = props;
@@ -62,7 +60,6 @@ PostPage.getInitialProps = async (context) => {
   let postPubkey;
   let post;
   let hub;
-  let hubPubkey;
   let metadata;
   try {
     const result = await axios.get(indexerPath);
@@ -73,7 +70,6 @@ PostPage.getInitialProps = async (context) => {
       post = hubPost.post;
       postPubkey = hubPost.postId;
       hub = hubPost.hub;
-      hubPubkey = hubPost.hubId;
     }
     return {
       metadata,

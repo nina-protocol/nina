@@ -16,7 +16,7 @@ import {
   DashboardEntry,
 } from "../styles/theme/lightThemeOptions.js";
 
-const { HubContext, ReleaseContext } = nina.contexts;
+const { HubContext } = nina.contexts;
 
 const HubCollaborators = ({
   hubPubkey,
@@ -170,7 +170,6 @@ const HubCollaborators = ({
 
 const Wrapper = styled(Box)(() => ({
   textAlign: "left",
-  // width: '500px',
   height: "100%",
   display: "flex",
   flexDirection: "column",
@@ -178,7 +177,7 @@ const Wrapper = styled(Box)(() => ({
   margin: "auto",
 }));
 
-const Note = styled(Typography)(({ theme }) => ({
+const Note = styled(Typography)(() => ({
   fontStyle: "italic",
   marginTop: "30px",
   bottom: "0px",

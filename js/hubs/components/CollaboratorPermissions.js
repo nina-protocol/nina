@@ -4,7 +4,6 @@ import nina from "@nina-protocol/nina-sdk";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
-import { Typography } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { styled } from "@mui/material/styles";
@@ -144,7 +143,7 @@ const CollaboratorPermissions = (props) => {
                 <Checkbox
                   value={formik.values.canAddCollaborator}
                   id="allowance"
-                  onChange={(e) => toggleAllowance(formik)}
+                  onChange={() => toggleAllowance(formik)}
                   padding="0px !important"
                   defaultChecked={unlimitedAllowance}
                 />
@@ -179,8 +178,7 @@ const CollaboratorPermissions = (props) => {
   );
 };
 
-const Root = styled(Box)(({ theme }) => ({
-  // whiteSpace: 'nowrap',
+const Root = styled(Box)(() => ({
   "& .MuiFormControlLabel-label": {
     fontSize: "13px !important",
     whiteSpace: "nowrap",

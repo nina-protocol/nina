@@ -5,11 +5,8 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
-import { toggleButtonClasses, Typography } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Tooltip from "@mui/material/Tooltip";
-import HelpIcon from "@mui/icons-material/Help";
 import { DashboardHeader } from "../styles/theme/lightThemeOptions.js";
 
 import { useFormik } from "formik";
@@ -20,14 +17,6 @@ const HubAddCollaborator = (props) => {
   const { enqueueSnackbar } = useSnackbar();
   const { hubAddCollaborator } = useContext(HubContext);
   const [unlimitedAllowance, setUnlimitAllowance] = useState(false);
-
-  // const IconWithTooltip = () => {
-  //   return (
-  //     <Tooltip title={`Allowance sets the amount of actions a collaborator can execute, like publishing releases or creating posts`}>
-  //       <HelpIcon sx={{fontSize: '16px !important', marginLeft: '5px'}} />
-  //     </Tooltip>
-  //   )
-  // }
 
   const toggleAllowance = (formik) => {
     if (unlimitedAllowance) {
@@ -154,7 +143,7 @@ const HubAddCollaborator = (props) => {
               <Checkbox
                 value={formik.values.canAddCollaborator}
                 id="canAddCollaborator"
-                onChange={(e) => toggleAllowance(formik)}
+                onChange={() => toggleAllowance(formik)}
                 padding="0px !important"
               />
             }
@@ -178,8 +167,7 @@ const HubAddCollaborator = (props) => {
   );
 };
 
-const Root = styled(Box)(({ theme }) => ({
-  // whiteSpace: 'nowrap',
+const Root = styled(Box)(() => ({
   "& .MuiFormControlLabel-label": {
     fontSize: "13px !important",
   },

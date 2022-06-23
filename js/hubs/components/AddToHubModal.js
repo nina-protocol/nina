@@ -1,19 +1,17 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
 import nina from "@nina-protocol/nina-sdk";
 import { styled } from "@mui/material/styles";
-import { Box, Paper } from "@mui/material";
+import { Paper } from "@mui/material";
 import Modal from "@mui/material/Modal";
 import Backdrop from "@mui/material/Backdrop";
 import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import { FormControl, InputLabel } from "@mui/material";
 import HubPostCreate from "./HubPostCreate";
-import Link from "next/link";
 
 import { useSnackbar } from "notistack";
 import Dots from "./Dots";
@@ -48,7 +46,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
     }
   }, [selectedHubId, userHubs]);
 
-  const handleRepost = async (e) => {
+  const handleRepost = async () => {
     setInProgress(true);
     enqueueSnackbar("Adding Release to Hub", {
       variant: "info",
@@ -142,7 +140,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
                       label="Select hub"
                       fullWidth
                       variant="standard"
-                      onChange={(e, userHubs) => {
+                      onChange={(e) => {
                         setSelectedHubId(e.target.value);
                       }}
                     >
@@ -198,7 +196,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
   );
 };
 
-const Root = styled("div")(({ theme }) => ({
+const Root = styled("div")(() => ({
   display: "flex",
   alignItems: "center",
   width: "100%",
@@ -225,7 +223,6 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   border: "2px solid #000",
   boxShadow: theme.shadows[5],
-  // padding: theme.spacing(2, 4, 3),
   padding: `30px 60px 45px`,
   width: "40vw",
   maxHeight: "90vh",

@@ -29,7 +29,6 @@ const BundlrModal = ({ inCreate }) => {
     solPrice,
     getSolPrice,
     initBundlr,
-    ninaClient,
     bundlr,
   } = useContext(NinaContext);
   const [amount, setAmount] = useState();
@@ -222,13 +221,7 @@ const BundlrModal = ({ inCreate }) => {
   );
 };
 
-const PREFIX = "Royalty";
-
-const classes = {
-  recipientData: `${PREFIX}-recipientData`,
-};
-
-const Root = styled("div")(({ theme }) => ({
+const Root = styled("div")(() => ({
   display: "flex",
   alignItems: "center",
   width: "100%",

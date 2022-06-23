@@ -1,10 +1,8 @@
-import React, { useContext } from "react";
+import React from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import * as anchor from "@project-serum/anchor";
 import axios from "axios";
 const Release = dynamic(() => import("../../../../components/Release"));
-import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 
 const ReleasePage = (props) => {
   const { metadata, hub, releasePubkey, hubPubkey } = props;
@@ -57,7 +55,6 @@ ReleasePage.getInitialProps = async (context) => {
   let hub;
   let releasePubkey;
   let metadata;
-  let hubPubkey;
   try {
     const result = await axios.get(indexerPath);
     const data = result.data;

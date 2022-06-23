@@ -11,11 +11,6 @@ import Button from "@mui/material/Button";
 import Link from "next/link";
 import AutorenewTwoToneIcon from "@mui/icons-material/AutorenewTwoTone";
 
-import FormatBoldIcon from "@mui/icons-material/FormatBold";
-import FormatItalicIcon from "@mui/icons-material/FormatItalic";
-import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
-import FormatColorFillIcon from "@mui/icons-material/FormatColorFill";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
@@ -25,7 +20,6 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
   const { updateTrack, setInitialized, audioPlayerRef } = useContext(AudioPlayerContext);
   const { hubState } = useContext(HubContext);
   const { releaseState } = useContext(ReleaseContext);
-  const [columnCount, setColumnCount] = useState(3);
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const router = useRouter();
 
@@ -119,7 +113,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
           })}
         </StyledButtonGroup>
       )}
-      <TileGrid columnCount={columnCount}>
+      <TileGrid>
         {filteredContent.map((item, i) => {
           return (
             <React.Fragment key={i}>
@@ -254,9 +248,9 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
   );
 };
 
-const TileGrid = styled(Box)(({ theme, columnCount }) => ({
+const TileGrid = styled(Box)(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
+  gridTemplateColumns: `repeat(3, 1fr)`,
   gridColumnGap: "30px",
   gridRowGap: "30px",
   maxWidth: "960px",
@@ -361,7 +355,7 @@ const PostLink = styled("a")(({ theme }) => ({
   padding: "15px",
 }));
 
-const PostInfo = styled(Typography)(({ theme }) => ({
+const PostInfo = styled(Typography)(() => ({
   padding: "10px 0 0 10px",
   position: "absolute",
   top: "0",
@@ -403,7 +397,6 @@ const StyledButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
     },
   },
   "& .Mui-selected ": {
-    // backgroundColor: 'none !important',
     backgroundColor: `${theme.palette.transparent} !important`,
     textDecortation: "underline !important",
   },

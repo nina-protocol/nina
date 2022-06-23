@@ -4,7 +4,6 @@ import Typography from "@mui/material/Typography";
 import nina from "@nina-protocol/nina-sdk";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import { useSnackbar } from "notistack";
 import { useRouter } from "next/router";
 
 import Grid from "@mui/material/Grid";
@@ -17,7 +16,6 @@ import HubCollaborators from "./HubCollaborators";
 import HubReleases from "./HubReleases";
 
 const { HubContext } = nina.contexts;
-// const {toTitleCase} = nina.utils;
 
 const toTitleCase = (text) => {
   // Add to sdk
@@ -41,7 +39,6 @@ const Dashboard = ({ hubPubkey }) => {
     "publishRelease",
   ];
 
-  const { enqueueSnackbar } = useSnackbar();
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const hubCollaborators = useMemo(
     () => hubCollaboratorsState,

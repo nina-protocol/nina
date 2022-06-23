@@ -1,11 +1,10 @@
-import React, {useState, useContext, useEffect, useMemo} from "react";
+import React, {useContext, useEffect, useMemo} from "react";
 import dynamic from "next/dynamic";
 import nina from "@nina-protocol/nina-sdk";
 import {styled} from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Link from "next/link";
 import Dots from "./Dots";
 import UserReleasesPrompt from "./UserReleasesPrompt";
 
@@ -32,31 +31,10 @@ const Hub = ({hubPubkey}) => {
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey);
-  const hubCollaborators = useMemo(
-    () => filterHubCollaboratorsForHub(hubPubkey) || [],
-    [hubCollaboratorsState, hubPubkey]
-  );
-  const canAddContent = useMemo(() => {
-    if (wallet?.connected) {
-      const hubCollaboratorForWallet = Object.values(hubCollaborators)?.filter(
-        (hubCollaborator) =>
-          hubCollaborator.collaborator === wallet?.publicKey?.toBase58()
-      )[0];
-      if (hubCollaboratorForWallet && hubCollaboratorForWallet.canAddContent) {
-        return true;
-      }
-      if (wallet?.publicKey?.toBase58() === hubData?.authority) {
-        return true;
-      }
-    }
-    return false;
-  }, [hubCollaborators, hubData, wallet]);
-
 
   const contentData = useMemo(() => {
     const contentArray = [];
     const types = []
-    // const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey);
     const hubContent = [...hubReleases, ...hubPosts];
     hubContent.forEach((hubContentData) => {
       if (

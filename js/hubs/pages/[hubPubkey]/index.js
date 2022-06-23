@@ -1,4 +1,3 @@
-import * as anchor from "@project-serum/anchor";
 import axios from "axios";
 import Head from "next/head";
 import Hub from "../../components/Hub";
@@ -43,7 +42,6 @@ HubPage.getInitialProps = async (context) => {
 
   try {
     const result = await axios.get(indexerPath);
-    const data = result.data;
     hub = result.data.hub;
 
     return {
