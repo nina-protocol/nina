@@ -399,7 +399,7 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
 
 const useStyles = makeStyles(({ theme }) => ({
   menuButton: {
-    fontFamily: "Helvetica, sans-serif",
+    fontFamily: "Helvetica, Arial, sans-serif",
     size: "14px",
     marginLeft: "38px",
   },
