@@ -175,11 +175,6 @@ const ReleaseListTable = (props) => {
     const tokenData = release.tokenData;
     const releasePubkey = release.releasePubkey;
 
-    const linkData = {
-      releasePubkey,
-      txId: metadata?.image,
-    };
-
     const rowData = {
       id: releasePubkey,
       artist: metadata.properties.artist,

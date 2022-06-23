@@ -19,8 +19,7 @@ import {
 
 const { HubContext, ReleaseContext } = nina.contexts;
 
-const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
-  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
+const HubReleases = ({ hubPubkey, hubContent, isAuthority }) => {
   const wallet = useWallet();
   const { hubContentToggleVisibility, hubState } = useContext(HubContext);
   const { releaseState } = useContext(ReleaseContext);

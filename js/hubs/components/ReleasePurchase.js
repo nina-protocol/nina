@@ -8,21 +8,18 @@ import Link from "@mui/material/Link";
 import Box from "@mui/material/Box";
 import { useSnackbar } from "notistack";
 import Typography from "@mui/material/Typography";
-import { useRouter } from "next/router";
 import Dots from "./Dots";
 import ReleaseSettings from "./ReleaseSettings";
-const { ReleaseContext, NinaContext, HubContext } = nina.contexts;
+const { ReleaseContext, NinaContext } = nina.contexts;
 
 const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, inPost, hubPubkey } = props;
   const { enqueueSnackbar } = useSnackbar();
   const wallet = useWallet();
-  const router = useRouter();
   const {
     releasePurchaseViaHub,
     releasePurchasePending,
     releaseState,
-    getRelease,
     getPublishedHubForRelease,
   } = useContext(ReleaseContext);
   const { ninaClient } = useContext(NinaContext);
@@ -206,7 +203,7 @@ const ReleasePurchase = (props) => {
   );
 };
 
-const BuyButton = styled(Button)(({ theme }) => ({
+const BuyButton = styled(Button)(() => ({
   "& p": {
     "&:hover": {
       opacity: "50%",

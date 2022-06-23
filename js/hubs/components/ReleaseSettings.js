@@ -171,7 +171,7 @@ const ReleaseSettings = (props) => {
     </StyledBox>
   );
 };
-const SettingsButton = styled(Button)(({ theme }) => ({
+const SettingsButton = styled(Button)(() => ({
   "& p": {
     "&:hover": {
       opacity: "50%",

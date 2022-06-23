@@ -11,8 +11,6 @@ import HelpIcon from "@mui/icons-material/Help";
 const { formatPlaceholder } = nina.utils;
 
 const HubCreateForm = ({
-  field,
-  form,
   values,
   onChange,
   errors,
@@ -20,7 +18,6 @@ const HubCreateForm = ({
   setFieldValue,
   update,
   hubData,
-  handleBlur,
 }) => {
   useEffect(() => {
     if (onChange) {

@@ -15,13 +15,10 @@ const { formatPlaceholder } = nina.utils;
 const { ReleaseContext } = nina.contexts;
 
 const HubPostCreateForm = ({
-  field,
-  form,
   values,
   onChange,
   errors,
   touched,
-  setFieldValue,
   update,
   hubData,
   postCreated,
@@ -184,7 +181,7 @@ const Quill = ({ props, postCreated }) => {
   return <Box style={{ height: "300px" }} ref={quillRef} />;
 };
 
-const Root = styled("div")(({ theme }) => ({
+const Root = styled("div")(() => ({
   width: "100%",
   height: "100%",
 }));

@@ -1,11 +1,10 @@
-import React, { useState, useContext, useEffect, useMemo, useRef } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import dynamic from "next/dynamic";
 import nina from "@nina-protocol/nina-sdk";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
-import { useRouter } from "next/router";
 import Image from "next/image";
 import Typography from "@mui/material/Typography";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
@@ -17,7 +16,6 @@ const AddToHubModal = dynamic(() => import("./AddToHubModal"));
 const { HubContext, ReleaseContext, AudioPlayerContext } = nina.contexts;
 
 const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
-  const router = useRouter();
   const wallet = useWallet();
 
   const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } = useContext(AudioPlayerContext);
@@ -158,7 +156,7 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   );
 };
 
-const StyledGrid = styled(Grid)(({ theme }) => ({
+const StyledGrid = styled(Grid)(() => ({
   // [theme.breakpoints.down('md')]: {
   //   border: '2px solid red',
   //   '&:-webkit-scrollbar': {

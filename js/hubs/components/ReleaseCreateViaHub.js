@@ -461,11 +461,6 @@ const CreateCta = styled(Box)(({ theme }) => ({
   },
 }));
 
-const NetworkDegradedMessage = styled(Box)(({ theme }) => ({
-  color: theme.palette.red,
-  padding: "0 0 50px",
-}));
-
 const BundlrBalanceInfo = styled(Typography)(({ theme }) => ({
   whiteSpace: "nowrap",
   margin: "5px 0",

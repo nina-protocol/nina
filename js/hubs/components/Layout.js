@@ -34,6 +34,7 @@ const Layout = ({ children }) => {
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
 
   useEffect(() => {
+
     if (router.pathname.includes('/[hubPubkey]')) {
       if (hubData?.json.backgroundColor) {
         lightTheme.palette.background.default = hubData.json.backgroundColor;
@@ -45,7 +46,7 @@ const Layout = ({ children }) => {
           hubData.json.textColor;
         lightTheme.components.MuiCssBaseline.styleOverrides.a.color =
           hubData.json.textColor;
-      }
+      } 
     } else {
       lightTheme.palette.background.default = "#ffffff";
       lightTheme.palette.text.primary = "#000000";

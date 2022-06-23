@@ -1,11 +1,10 @@
-import React, { useState, useContext, useEffect, useMemo, useRef } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import dynamic from "next/dynamic";
 import nina from "@nina-protocol/nina-sdk";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
-import { useRouter } from "next/router";
 import Image from "next/image";
 import Typography from "@mui/material/Typography";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
@@ -18,7 +17,6 @@ const AddToHubModal = dynamic(() => import("./AddToHubModal"));
 const { HubContext, ReleaseContext, AudioPlayerContext } = nina.contexts;
 
 const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
-  const router = useRouter();
   const wallet = useWallet();
 
   const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } = useContext(AudioPlayerContext);
@@ -28,16 +26,9 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
     hubState,
     getHubsForUser,
     filterHubsForUser,
-    hubCollaboratorsState,
   } = useContext(HubContext);
 
   const [userHubs, setUserHubs] = useState();
-
-  // const {current: releasePubkey} = useRef(router.query.releasePubkey)
-
-  // const [metadata, setMetadata] = useState(
-  //   metadata || null
-  // )
 
   useEffect(() => {
     if (!hubState[hubPubkey]) {
@@ -146,7 +137,6 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
                 />
               )}
             </CtaWrapper>
-            {/* <StyledDescription variant="h4" align="left">{metadata.description}</StyledDescription> */}
           </>
         )}
         <ReleasePurchase
@@ -173,13 +163,6 @@ const PlayButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const StyledDescription = styled(Typography)(({ theme }) => ({
-  overflowWrap: "anywhere",
-  [theme.breakpoints.up("md")]: {
-    maxHeight: "225px",
-    overflowY: "scroll",
-  },
-}));
 
 const DesktopImageGridItem = styled(Grid)(({ theme }) => ({
   display: "flex",

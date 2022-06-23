@@ -2,7 +2,6 @@ import React, {
   useState,
   useContext,
   useEffect,
-  useRef,
   createElement,
   Fragment,
 } from "react";
@@ -12,7 +11,6 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import Divider from "@mui/material/Divider";
-import { useRouter } from "next/router";
 import { unified } from "unified";
 import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
@@ -21,12 +19,10 @@ import rehypeExternalLinks from "rehype-external-links";
 
 import Typography from "@mui/material/Typography";
 const PostRelease = dynamic(() => import("./PostRelease"));
-const { HubContext, NinaContext, ReleaseContext, AudioPlayerContext } =
+const { HubContext, NinaContext, ReleaseContext } =
   nina.contexts;
 
-const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
-  const router = useRouter();
-  // const {updateTrack, track, isPlaying} = useContext(AudioPlayerContext);
+const Post = ({ postDataSsr, postPubkey, hubPostPubkey, hubPubkey }) => {
   const [referenceReleasePubkey, setReferenceReleasePubkey] = useState();
   const [referenceReleaseMetadata, setReferenceReleaseMetadata] = useState();
   const [postContent, setPostContent] = useState(Fragment);

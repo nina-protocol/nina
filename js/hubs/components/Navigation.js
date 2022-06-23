@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useMemo, useContext } from "react";
-import dynamic from "next/dynamic";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import MenuItem from "@mui/material/MenuItem";
 import List from "@mui/material/List";
 import Box from "@mui/material/Box";
 import makeStyles from "@mui/styles/makeStyles";
@@ -21,7 +19,6 @@ import {
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/router";
 
 const { HubContext } = nina.contexts;
 
@@ -55,7 +52,7 @@ const mobileNavData = [
 ];
 
 const Navigation = ({ hubPubkey }) => {
-  const { header, menuButton, toolbar, ctaWrapper, drawerContainer } =
+  const {  toolbar, drawerContainer } =
     useStyles();
   const wallet = useWallet();
 
@@ -373,11 +370,11 @@ const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
   },
 }));
 
-const CtaWrapper = styled(Box)(({ theme }) => ({
+const CtaWrapper = styled(Box)(() => ({
   display: "flex",
 }));
 
-const StyledAppBar = styled(AppBar)(({ theme }) => ({
+const StyledAppBar = styled(AppBar)(() => ({
   backgroundColor: `none !important`,
   color: "black",
   paddingRight: "0px",
@@ -397,7 +394,7 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
   },
 }));
 
-const useStyles = makeStyles(({ theme }) => ({
+const useStyles = makeStyles(() => ({
   menuButton: {
     fontFamily: "Helvetica, Arial, sans-serif",
     size: "14px",

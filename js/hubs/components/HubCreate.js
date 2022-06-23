@@ -23,6 +23,7 @@ import NinaBox from "./NinaBox";
 import HubImageDropzone from "./HubImageDropzone";
 import Dots from "./Dots";
 import BundlrModal from "./BundlrModal";
+import axios from "axios";
 import Link from "next/link";
 
 const ColorModal = dynamic(() => import("./ColorModal"));
@@ -50,14 +51,19 @@ const HubCreate = ({ update, hubData }) => {
   const wallet = useWallet();
   const {
     hubInitWithCredit,
+    hubState,
     hubUpdateConfig,
+    getHubs,
     validateHubHandle,
   } = useContext(HubContext);
   const router = useRouter();
   const {
+    healthOk,
     bundlrUpload,
     bundlrBalance,
     getBundlrBalance,
+    bundlrFund,
+    bundlrWithdraw,
     getBundlrPricePerMb,
     bundlrPricePerMb,
     solPrice,
@@ -81,6 +87,7 @@ const HubCreate = ({ update, hubData }) => {
   const [textColor, setTextColor] = useState();
   const [formValuesConfirmed, setFormValuesConfirmed] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
+  const [hubInfo, setHubInfo] = useState();
   const [artworkTx, setArtworkTx] = useState();
   const [metadataTx, setMetadataTx] = useState();
   const [hubCreated, setHubCreated] = useState(false);

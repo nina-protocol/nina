@@ -201,7 +201,7 @@ const classes = {
   recipientData: `${PREFIX}-recipientData`,
 };
 
-const SettingsButton = styled(Button)(({ theme }) => ({
+const SettingsButton = styled(Button)(() => ({
   "& p": {
     "&:hover": {
       opacity: "50%",

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useMemo } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import nina from "@nina-protocol/nina-sdk";
 import { styled } from "@mui/material/styles";
 import { Box, Paper } from "@mui/material";
@@ -17,9 +17,6 @@ import { useWallet } from "@solana/wallet-adapter-react";
 const { HubContext, ReleaseContext, NinaContext } = nina.contexts;
 
 const UserReleasesPrompt = ({
-  userHubs,
-  releasePubkey,
-  metadata,
   hubPubkey,
   hubReleases,
 }) => {
@@ -34,16 +31,7 @@ const UserReleasesPrompt = ({
   } = useContext(ReleaseContext);
   const { hubAddRelease, getHub, addToHubQueue } = useContext(HubContext);
   const { collection } = useContext(NinaContext);
-  const [selectedHubId, setSelectedHubId] = useState();
-  const [inProgress, setInProgress] = useState(false);
-  const [canAddContent, setCanAddContent] = useState(false);
-  const [userPublishedReleases, setUserPublishedReleases] = useState([]);
   const [unpostedUserReleases, setUnpostedUserReleases] = useState();
-
-  const userHasHubs = useMemo(
-    () => userHubs && userHubs.length > 0,
-    [userHubs]
-  );
 
   useEffect(() => {
     if (wallet?.connected) {
@@ -158,7 +146,7 @@ const UserReleasesPrompt = ({
   );
 };
 
-const Root = styled("div")(({ theme }) => ({
+const Root = styled("div")(() => ({
   display: "flex",
   alignItems: "center",
   width: "100%",
@@ -198,13 +186,13 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   minWidth: "600px",
 }));
 
-const ReleaseImage = styled(Image)(({ theme }) => ({
+const ReleaseImage = styled(Image)(() => ({
   "&:hover": {
     opacity: "50%",
   },
 }));
 
-const PendingBox = styled(Box)(({ theme }) => ({
+const PendingBox = styled(Box)(() => ({
   position: "absolute",
   top: "0",
   width: "100%",
