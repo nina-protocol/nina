@@ -1,7 +1,7 @@
-import React, { useState, useContext, useEffect, useMemo } from "react";
+import React, {useState, useContext, useEffect, useMemo} from "react";
 import dynamic from "next/dynamic";
 import nina from "@nina-protocol/nina-sdk";
-import { styled } from "@mui/material/styles";
+import {styled} from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -9,11 +9,11 @@ import Link from "next/link";
 import Dots from "./Dots";
 import UserReleasesPrompt from "./UserReleasesPrompt";
 
-import { useWallet } from "@solana/wallet-adapter-react";
+import {useWallet} from "@solana/wallet-adapter-react";
 const ContentTileView = dynamic(() => import("./ContentTileView"));
-const { HubContext, NinaContext, ReleaseContext } = nina.contexts;
+const {HubContext, NinaContext, ReleaseContext} = nina.contexts;
 
-const Hub = ({ hubPubkey }) => {
+const Hub = ({hubPubkey}) => {
   const {
     hubState,
     hubContentState,
@@ -23,8 +23,8 @@ const Hub = ({ hubPubkey }) => {
     filterHubCollaboratorsForHub,
     filterHubContentForHub,
   } = useContext(HubContext);
-  const { postState } = useContext(NinaContext);
-  const { releaseState } = useContext(ReleaseContext);
+  const {postState} = useContext(NinaContext);
+  const {releaseState} = useContext(ReleaseContext);
   const wallet = useWallet();
   useEffect(() => {
     getHub(hubPubkey);
@@ -52,9 +52,8 @@ const Hub = ({ hubPubkey }) => {
     return false;
   }, [hubCollaborators, hubData, wallet]);
 
-  const [contentTypes, setContentTypes] = useState([])
 
-  const content = useMemo(() => {
+  const contentData = useMemo(() => {
     const contentArray = [];
     const types = []
     // const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey);
@@ -100,11 +99,13 @@ const Hub = ({ hubPubkey }) => {
         contentArray.push(hubContentData);
       }
     });
-    // const uniqueTypes = [...new Set(types)]
-    // setContentTypes(uniqueTypes)
-    return contentArray.sort(
-      (a, b) => new Date(b.datetime) - new Date(a.datetime)
-    );
+    const uniqueTypes = [...new Set(types)]
+    return {
+      content: contentArray.sort(
+        (a, b) => new Date(b.datetime) - new Date(a.datetime)
+      ),
+      contentTypes: uniqueTypes
+    };
   }, [hubReleases, hubPosts]);
 
   if (!hubState[hubPubkey]?.json) {
@@ -130,9 +131,9 @@ const Hub = ({ hubPubkey }) => {
             />
           )} */}
         <DescriptionWrapper
-          sx={{ padding: { md: "15px", xs: "100px 15px 50px" } }}
+          sx={{padding: {md: "15px", xs: "100px 15px 50px"}}}
         >
-          <Typography align="left" sx={{ color: "text.primary" }}>
+          <Typography align="left" sx={{color: "text.primary"}}>
             {hubData?.json.description}
           </Typography>
         </DescriptionWrapper>
@@ -144,12 +145,12 @@ const Hub = ({ hubPubkey }) => {
             <Dots size="80px" />
           </Box>
         )}
-        {content?.length > 0 && (
+        {contentData.content?.length > 0 && (
           <ContentTileView
-            content={content}
+            content={contentData.content}
             hubPubkey={hubPubkey}
             hubHandle={hubData.handle}
-            contentTypes={contentTypes}
+            contentTypes={contentData.contentTypes}
           />
         )}
       </ContentViewWrapper>
@@ -158,14 +159,14 @@ const Hub = ({ hubPubkey }) => {
 };
 
 
-const ContentViewWrapper = styled(Grid)(({ theme }) => ({
+const ContentViewWrapper = styled(Grid)(({theme}) => ({
   [theme.breakpoints.down("md")]: {
     width: "100%",
     padding: "15px",
   },
 }));
 
-const DescriptionWrapper = styled(Grid)(({ theme }) => ({
+const DescriptionWrapper = styled(Grid)(({theme}) => ({
   padding: " 0px 15px",
   maxHeight: "68vh  ",
   overflowX: "scroll",
