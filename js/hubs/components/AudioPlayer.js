@@ -1,16 +1,16 @@
-import React, { useEffect, useState, useRef, useContext, useMemo } from "react";
+import React, {useEffect, useState, useRef, useContext, useMemo} from "react";
 import nina from "@nina-protocol/nina-sdk";
-import { styled } from "@mui/material/styles";
+import {styled} from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { useRouter } from "next/router";
+import {useRouter} from "next/router";
 
-const { AudioPlayerContext, HubContext, ReleaseContext } = nina.contexts;
-const { formatDuration } = nina.utils;
-const AudioPlayer = ({ hubPubkey }) => {
+const {AudioPlayerContext, HubContext, ReleaseContext} = nina.contexts;
+const {formatDuration} = nina.utils;
+const AudioPlayer = ({hubPubkey}) => {
   const router = useRouter();
-  const { releaseState } = useContext(ReleaseContext);
-  const { hubContentState, filterHubContentForHub } = useContext(HubContext);
+  const {releaseState} = useContext(ReleaseContext);
+  const {hubContentState, filterHubContentForHub} = useContext(HubContext);
   const audio = useContext(AudioPlayerContext);
   const [tracks, setTracks] = useState({});
   const [initialized, setInitialized] = useState(false)
@@ -199,9 +199,6 @@ const AudioPlayer = ({ hubPubkey }) => {
 
   return (
     <Player>
-      <audio id="audio" style={{width: "100%"}}>
-        <source src={track?.txid} type="audio/mp3" />
-      </audio>
       {track && (
         <>
           <Controls>
@@ -212,7 +209,6 @@ const AudioPlayer = ({ hubPubkey }) => {
             <Button onClickCapture={() => playButtonHandler()} disabled={!track}>
               {playing ? "Pause" : "Play"}
             </Button>
-
             <span>{` | `}</span>
             <Button onClick={() => next()} disabled={!hasNext}>
               Next
@@ -228,13 +224,9 @@ const AudioPlayer = ({ hubPubkey }) => {
           </Controls>
         </>
       )}
-<<<<<<< HEAD
-
-=======
-      <audio id="audio" style={{ width: "100%" }}>
+      <audio id="audio" style={{width: "100%"}}>
         <source src={track?.txid + '?ext=mp3'} type="audio/mp3" />
       </audio>
->>>>>>> ac3e46315346afbe3355ce65c6b1d273108b710c
       <Typography sx={{pb: "5px", whiteSpace: 'nowrap'}}>
         <a href={`https://ninaprotocol.com/`} target="_blank" rel="noreferrer" >
           Powered by Nina.
@@ -244,7 +236,7 @@ const AudioPlayer = ({ hubPubkey }) => {
   );
 };
 
-const Controls = styled("div")(({ theme }) => ({
+const Controls = styled("div")(({theme}) => ({
   paddingBottom: theme.spacing(2),
   width: "100%",
   maxWidth: "500px",
@@ -262,7 +254,7 @@ const Controls = styled("div")(({ theme }) => ({
   },
 }));
 
-const Player = styled("div")(({ theme }) => ({
+const Player = styled("div")(({theme}) => ({
   paddingTop: theme.spacing(2),
   width: '90%',
   background: theme.palette.background.default,
