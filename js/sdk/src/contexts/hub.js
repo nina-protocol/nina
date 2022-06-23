@@ -623,9 +623,9 @@ const hubContextHelper = ({
     fromHub
   ) => {
     try {
+      hubPubkey = new anchor.web3.PublicKey(hubPubkey)
       const program = await ninaClient.useProgram()
       const hub = await program.account.hub.fetch(hubPubkey)
-      hubPubkey = new anchor.web3.PublicKey(hubPubkey)
       if (referenceRelease) {
         referenceRelease = new anchor.web3.PublicKey(referenceRelease)
       }
@@ -680,10 +680,18 @@ const hubContextHelper = ({
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         },
       }
+      console.log('FROM: ', fromHub)
       if (fromHub) {
-        request.remainingAccounts = [new anchor.web3.PublicKey(fromHub)]
+        request.remainingAccounts = [
+          {
+            pubkey: new anchor.web3.PublicKey(fromHub),
+            isWritable: false,
+            isSigner: false,
+          },
+        ]
       }
       if (referenceRelease) {
+        console.log("referenceRelease ::> ", referenceRelease)
         request.accounts.referenceRelease = referenceRelease
 
         const [referenceReleaseHubRelease] =
@@ -707,7 +715,7 @@ const hubContextHelper = ({
             program.programId
           )
         request.accounts.referenceReleaseHubContent = referenceReleaseHubContent
-
+          console.log("request ::> ", request)
         txid = await program.rpc.postInitViaHubWithReferenceRelease(
           ...params,
           request
