@@ -13,6 +13,7 @@ const AudioPlayer = ({ hubPubkey }) => {
   const { hubContentState, filterHubContentForHub } = useContext(HubContext);
   const audio = useContext(AudioPlayerContext);
   const [tracks, setTracks] = useState({});
+  const [initialized, setInitialized] = useState(false)
   const {
     track,
     playNext,
@@ -83,7 +84,6 @@ const AudioPlayer = ({ hubPubkey }) => {
   }, [tracks, hubContentState]);
 
   useEffect(() => {
-    const initialized = activeIndexRef.current >= 0;
     if (isPlaying && initialized) {
       play();
     } else {
@@ -99,7 +99,6 @@ const AudioPlayer = ({ hubPubkey }) => {
     [activeIndexRef.current]
   );
   useEffect(() => {
-    const initialized = activeIndexRef.current >= 0;
     if (track) {
       activeIndexRef.current = playlist.indexOf(track);
       activeTrack.current = track;
@@ -122,7 +121,7 @@ const AudioPlayer = ({ hubPubkey }) => {
       play();
     }
   }, [track]);
-
+  console.log('init: ', initialized)
   useEffect(() => {
     if (
       playlist.length > 0 &&
@@ -168,6 +167,7 @@ const AudioPlayer = ({ hubPubkey }) => {
   };
 
   const playButtonHandler = () => {
+    setInitialized(true)
     if (playerRef.current.paused) {
       if (track) {
         updateTrack(track.releasePubkey, true);
@@ -209,7 +209,7 @@ const AudioPlayer = ({ hubPubkey }) => {
               Previous
             </Button>
             <span>{` | `}</span>
-            <Button onClick={() => playButtonHandler()} disabled={!track}>
+            <Button onClickCapture={() => playButtonHandler()} disabled={!track}>
               {playing ? "Pause" : "Play"}
             </Button>
 
@@ -228,7 +228,13 @@ const AudioPlayer = ({ hubPubkey }) => {
           </Controls>
         </>
       )}
+<<<<<<< HEAD
 
+=======
+      <audio id="audio" style={{ width: "100%" }}>
+        <source src={track?.txid + '?ext=mp3'} type="audio/mp3" />
+      </audio>
+>>>>>>> ac3e46315346afbe3355ce65c6b1d273108b710c
       <Typography sx={{pb: "5px", whiteSpace: 'nowrap'}}>
         <a href={`https://ninaprotocol.com/`} target="_blank" rel="noreferrer" >
           Powered by Nina.
