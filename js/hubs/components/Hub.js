@@ -44,7 +44,7 @@ const Hub = ({hubPubkey}) => {
       ) {
         const hubReleaseIsReference =
           hubContent.filter(
-            (c) => c.referenceHubContent === hubContentData.release
+            (c) => c.referenceHubContent === hubContentData.release && c.visible
           ).length > 0;
         if (!hubReleaseIsReference) {
           hubContentData = {
