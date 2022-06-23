@@ -680,6 +680,7 @@ const hubContextHelper = ({
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         },
       }
+      console.log('FROM: ', fromHub)
       if (fromHub) {
         request.remainingAccounts = [
           {
