@@ -1,127 +1,114 @@
-import React, {useEffect, useState, useRef, useContext, useMemo} from "react";
-import nina from "@nina-protocol/nina-sdk";
-import {styled} from "@mui/material/styles";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import {useRouter} from "next/router";
+import React, {useState, useEffect, useContext, useRef, useMemo} from 'react'
+import {styled} from '@mui/material/styles'
+import nina from '@nina-protocol/nina-sdk'
+import {useWallet} from '@solana/wallet-adapter-react'
+import Link from 'next/link'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Slider from '@mui/material/Slider'
+import SkipNextIcon from '@mui/icons-material/SkipNext'
+import IconButton from '@mui/material/IconButton'
+import SkipPreviousIcon from '@mui/icons-material/SkipPrevious'
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import PauseIcon from '@mui/icons-material/Pause'
+// import SvgIcon from '@mui/material/SvgIcon';
+// import VolumeUpIcon from '@mui/icons-material/VolumeUp'
+// import VolumeOffIcon from '@mui/icons-material/VolumeOff'
+import Typography from '@mui/material/Typography'
+import {useRouter} from 'next/router'
+import Image from 'next/image'
+import QueueDrawer from './QueueDrawer'
 
-const {AudioPlayerContext, HubContext, ReleaseContext} = nina.contexts;
-const {formatDuration} = nina.utils;
-const AudioPlayer = ({hubPubkey}) => {
-  const router = useRouter();
-  const {releaseState} = useContext(ReleaseContext);
-  const {hubContentState, filterHubContentForHub} = useContext(HubContext);
-  const audio = useContext(AudioPlayerContext);
-  const [tracks, setTracks] = useState({});
+const {AudioPlayerContext, NinaContext, ReleaseContext} = nina.contexts
+const {formatDuration} = nina.utils
+const AudioPlayer = () => {
+  const router = useRouter()
+  const {releaseState} = useContext(ReleaseContext)
+  const audio = useContext(AudioPlayerContext)
   const {
     track,
     playNext,
     playPrev,
     updateTrack,
     playlist,
-    createPlaylistFromTracksHubs,
     isPlaying,
-  } = audio;
-  useEffect(() => {
-    const trackObject = {};
-    const [hubReleases] = filterHubContentForHub(hubPubkey);
-    hubReleases.forEach((hubRelease) => {
-      let contentItem;
-      if (
-        hubRelease.contentType === "NinaReleaseV1" &&
-        releaseState.metadata[hubRelease.release] &&
-        hubRelease.visible
-      ) {
-        contentItem = releaseState.metadata[hubRelease.release];
-        contentItem.contentType = hubRelease.contentType;
-        contentItem.publicKey = hubRelease.release;
-        contentItem.datetime = hubRelease.datetime;
-        trackObject[hubRelease.release] = contentItem;
-      }
-    });
-    setTracks(trackObject);
-  }, [hubContentState, hubPubkey]);
-  const activeTrack = useRef();
-  const playerRef = useRef();
-  const intervalRef = useRef();
-  const activeIndexRef = useRef(0);
-  const [playing, setPlaying] = useState(false);
-  const [trackProgress, setTrackProgress] = useState(0.0);
+    currentIndex,
+  } = audio
+
+  const activeTrack = useRef()
+  const playerRef = useRef()
+  const intervalRef = useRef()
+  const activeIndexRef = useRef(0)
+  const [playing, setPlaying] = useState(false)
+  const [trackProgress, setTrackProgress] = useState(0.0)
 
   useEffect(() => {
-    playerRef.current = document.querySelector("#audio");
+    playerRef.current = document.querySelector('#audio')
 
     const actionHandlers = [
-      ["play", () => play()],
-      ["pause", () => play()],
-      ["previoustrack", () => previous()],
-      ["nexttrack", () => next()],
-    ];
+      ['play', () => play()],
+      ['pause', () => play()],
+      ['previoustrack', () => previous()],
+      ['nexttrack', () => next()],
+    ]
 
     for (const [action, handler] of actionHandlers) {
       try {
-        navigator.mediaSession.setActionHandler(action, handler);
+        navigator.mediaSession.setActionHandler(action, handler)
       } catch (error) {
         console.warn(
           `The media session action "${action}" is not supported yet.`
-        );
+        )
       }
     }
 
     return () => {
-      clearInterval(intervalRef.current);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (Object.values(tracks).length > 0) {
-      const trackIds = Object.values(tracks)
-        .sort((a, b) => new Date(b.datetime) - new Date(a.datetime))
-        .map((track) => track.publicKey);
-      createPlaylistFromTracksHubs(trackIds);
+      clearInterval(intervalRef.current)
     }
-  }, [tracks, hubContentState]);
+  }, [])
 
   useEffect(() => {
-    const initialized = activeIndexRef.current >= 0;
+    const initialized = activeIndexRef.current >= 0
     if (isPlaying && initialized) {
-      play();
+      play()
     } else {
-      pause();
+      pause()
     }
-  }, [isPlaying]);
+  }, [isPlaying])
+
   const hasNext = useMemo(
     () => activeIndexRef.current + 1 < playlist.length,
     [activeIndexRef.current, playlist]
-  );
+  )
   const hasPrevious = useMemo(
     () => activeIndexRef.current > 0,
     [activeIndexRef.current]
-  );
+  )
+
   useEffect(() => {
-    const initialized = activeIndexRef.current >= 0;
+    const initialized = activeIndexRef.current >= 0
     if (track) {
-      activeIndexRef.current = playlist.indexOf(track);
-      activeTrack.current = track;
-      playerRef.current.src = track.txid;
-      if ("mediaSession" in navigator) {
+      activeIndexRef.current = playlist.indexOf(track)
+      activeTrack.current = track
+      playerRef.current.src = track.txid
+      if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
           title: activeTrack.current.title,
           artist: activeTrack.current.artist,
           artwork: [
             {
               src: activeTrack.current.cover,
-              sizes: "512x512",
-              type: "image/jpeg",
+              sizes: '512x512',
+              type: 'image/jpeg',
             },
           ],
-        });
+        })
       }
     }
     if (initialized && isPlaying) {
-      play();
+      play()
     }
-  }, [track]);
+  }, [track])
 
   useEffect(() => {
     if (
@@ -129,157 +116,290 @@ const AudioPlayer = ({hubPubkey}) => {
       !activeIndexRef.current &&
       track?.releasePubkey != playlist[0].releasePubkey
     ) {
-      updateTrack(playlist[0].releasePubkey, false);
+      updateTrack(playlist[0].releasePubkey, false)
     }
-  }, [playlist, activeIndexRef.current]);
+  }, [playlist, activeIndexRef.current])
 
   const startTimer = () => {
     // Clear any timers already running
-    clearInterval(intervalRef.current);
+    clearInterval(intervalRef.current)
     intervalRef.current = setInterval(() => {
       if (
         playerRef.current.currentTime > 0 &&
         playerRef.current.currentTime < playerRef.current.duration &&
         !playerRef.current.paused
       ) {
-        setTrackProgress(Math.ceil(playerRef.current.currentTime));
+        setTrackProgress(Math.ceil(playerRef.current.currentTime))
       } else if (playerRef.current.currentTime >= playerRef.current.duration) {
-        next();
+        next()
       }
-    }, [300]);
-  };
+    }, [300])
+  }
 
   const previous = () => {
     if (hasPrevious) {
-      setTrackProgress(0);
-      activeIndexRef.current = activeIndexRef.current - 1;
-      playPrev(true);
+      setTrackProgress(0)
+      activeIndexRef.current = activeIndexRef.current - 1
+      playPrev(true)
     }
-  };
+  }
 
   const play = () => {
     if (playerRef.current.paused) {
-      playerRef.current.play();
-      setPlaying(true);
-      startTimer();
+      playerRef.current.play()
+      setPlaying(true)
+      startTimer()
     } else {
       // pause()
     }
-  };
+  }
 
   const playButtonHandler = () => {
     if (playerRef.current.paused) {
       if (track) {
-        updateTrack(track.releasePubkey, true);
+        updateTrack(track.releasePubkey, true)
       }
     } else {
-      pause();
+      pause()
     }
-  };
+  }
 
   const pause = () => {
-    playerRef.current.pause();
-    setPlaying(false);
-    clearInterval(intervalRef.current);
+    playerRef.current.pause()
+    setPlaying(false)
+    clearInterval(intervalRef.current)
     if (track) {
-      updateTrack(track.releasePubkey, false);
+      updateTrack(track.releasePubkey, false)
     }
-  };
+  }
 
   const next = () => {
     if (hasNext) {
-      setTrackProgress(0);
-      activeIndexRef.current = activeIndexRef.current + 1;
-      playNext(true);
+      setTrackProgress(0)
+      activeIndexRef.current = activeIndexRef.current + 1
+      playNext(true)
     } else {
       // This means we've reached the end of the playlist
-      setPlaying(false);
+      setPlaying(false)
     }
-  };
+  }
+
+  const seek = (newValue) => {
+    if (playerRef.current) {
+      setTrackProgress(newValue)
+      playerRef.current.currentTime = newValue
+    }
+  }
+
+  const iconStyle = {
+    width: '60px',
+    height: '60px',
+    cursor: 'pointer',
+  }
 
   return (
-    <Player>
-      {track && (
-        <>
-          <Controls>
-            <Button onClick={() => previous()} disabled={!hasPrevious}>
-              Previous
-            </Button>
-            <span>{` | `}</span>
-            <Button onClick={() => playButtonHandler()} disabled={!track}>
-              {playing ? "Pause" : "Play"}
-            </Button>
-            <span>{` | `}</span>
-            <Button onClick={() => next()} disabled={!hasNext}>
-              Next
-            </Button>
-            {track && (
-              <div>
-                <Typography>{`Now Playing: ${track.artist} - ${track.title}`}</Typography>
-                <Typography>{`${formatDuration(
-                  trackProgress
-                )} / ${formatDuration(track.duration)}`}</Typography>
-              </div>
-            )}
-          </Controls>
-          <Typography sx={{pb: "5px"}}>
-            <a
-              href={`https://ninaprotocol.com/hubs/${hubPubkey || ""}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Powered by Nina.
-            </a>
-          </Typography>
-        </>
-      )}
-      <audio id="audio" style={{width: "100%"}}>
-        <source src={track?.txid} type="audio/mp3" />
+    <StyledAudioPlayer>
+      <audio id="audio" style={{width: '100%'}}>
+        <source src={track?.txid + '?ext=mp3'} type="audio/mp3" />
       </audio>
-    </Player>
-  );
-};
 
-const Controls = styled("div")(({theme}) => ({
-  paddingBottom: theme.spacing(2),
-  width: "100%",
-  "& .MuiButton-root": {
-    fontSize: theme.typography.body1.fontSize,
-    padding: 0,
-    color: theme.palette.text.primary,
-    ":hover": {
-      opacity: "50%",
-    },
-    ":disabled": {
-      color: theme.palette.text.primary + "a0",
-    },
-  },
-}));
+      <Box width="60px">
+        {track && (
+          <Link href={`/${track.releasePubkey}`} passHref>
+            <AlbumArt>
+              <Image
+                src={track.cover}
+                height="60px"
+                width="60px"
+                layout="responsive"
+                unoptimized={true}
+                loading="eager"
+              />
+            </AlbumArt>
+          </Link>
+        )}
+      </Box>
 
-const Player = styled("div")(({theme}) => ({
-  paddingTop: theme.spacing(2),
-  width: "100%",
-  background: theme.palette.background.default,
-  [theme.breakpoints.down("md")]: {
-    position: "fixed",
-    bottom: "0",
-    width: "100vw",
-    background: theme.palette.background.default,
-    paddingTop: "0",
+      <Controls>
+        <IconButton
+          disabled={!currentIndex()}
+          disableFocusRipple={true}
+          disableRipple={true}
+        >
+          <SkipPreviousIcon onClick={() => previous()} sx={iconStyle} />
+        </IconButton>
+        <IconButton
+          disabled={playlist.length === 0}
+          disableFocusRipple={true}
+          disableRipple={true}
+        >
+          {isPlaying ? (
+            <PauseIcon onClick={() => playButtonHandler()} sx={iconStyle} />
+          ) : (
+            <PlayArrowIcon onClick={() => playButtonHandler()} sx={iconStyle} />
+          )}
+        </IconButton>
+        <IconButton
+          disabled={
+            currentIndex() + 1 === playlist.length || playlist.length <= 1
+          }
+          disableFocusRipple={true}
+          disableRipple={true}
+        >
+          <SkipNextIcon onClick={() => next()} sx={iconStyle} />
+        </IconButton>
+      </Controls>
+
+      <ProgressContainer>
+        {track && (
+          <ArtistInfo align="left" variant="subtitle1">
+            {track.artist}, <i>{track.title}</i>
+          </ArtistInfo>
+        )}
+        <Box sx={{display: 'flex', alignItems: 'center'}}>
+          <Slider
+            value={track ? trackProgress : 0}
+            onChange={(e, newValue) => seek(newValue)}
+            aria-labelledby="continuous-slider"
+            min={0}
+            max={track?.duration}
+          />
+
+          <Typography
+            sx={{padding: '0 10px', display: {xs: 'block', md: 'none'}}}
+            variant="subtitle1"
+          >
+            {formatDuration(trackProgress) || '00:00'}
+          </Typography>
+        </Box>
+      </ProgressContainer>
+
+      <Typography
+        sx={{padding: '0 30px', display: {xs: 'none', md: 'block'}}}
+        variant="subtitle1"
+      >
+        {formatDuration(trackProgress) || '00:00'}
+      </Typography>
+
+      {track && (
+        <LinkWrapper>
+          <Link
+            href={`/${track.releasePubkey}`}
+            style={{marginRight: '30px'}}
+            passHref
+          >
+            <a>
+              <Typography variant="subtitle1" sx={{padding: '0'}}>
+                View Info
+              </Typography>
+            </a>
+          </Link>
+
+          <Button
+            onClick={() =>
+              window.open(
+                `https://twitter.com/intent/tweet?text=${`${track.artist} - "${track.title}" on Nina`}&url=ninaprotocol.com/${track.releasePubkey
+                }`,
+                null,
+                'status=no,location=no,toolbar=no,menubar=no,height=500,width=500'
+              )
+            }
+            disableFocusRipple={true}
+            disableRipple={true}
+          >
+            <Image src={'/shareArrow.svg'} width="15px" height="15px" />
+          </Button>
+        </LinkWrapper>
+      )}
+      <QueueDrawer />
+    </StyledAudioPlayer>
+  )
+}
+
+const StyledAudioPlayer = styled(Box)(({theme}) => ({
+  position: 'fixed',
+  bottom: '0',
+  width: '100%',
+  height: '60px',
+  maxWidth: '100vw',
+  alignItems: 'center',
+  boxShadow: `0px -1px 5px 0px rgba(0,0,0,0.06)`,
+
+  background: `${theme.palette.white}`,
+  display: 'flex',
+  zIndex: '100',
+}))
+
+const AlbumArt = styled('a')(() => ({
+  width: '60px',
+  height: '60px',
+}))
+
+const ArtistInfo = styled(Typography)(({theme}) => ({
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  [theme.breakpoints.down('md')]: {
+    whiteSpace: 'wrap',
   },
-  "& .MuiButton-root": {
-    fontSize: theme.typography.body1.fontSize,
-    backgroundColor: `${theme.palette.transparent} !important`,
-    padding: 0,
-    color: theme.palette.text.primary,
-    ":disabled": {
-      color: theme.palette.text.primary + "b0",
+}))
+
+const Controls = styled(Box)(({theme}) => ({
+  display: 'flex',
+  alignItems: 'center',
+  padding: theme.spacing(0, 2),
+  '& svg': {
+    height: '24px',
+    width: '24px',
+  },
+  [theme.breakpoints.down('md')]: {
+    padding: '10px',
+    paddingRight: '0',
+  },
+}))
+
+const ProgressContainer = styled(Box)(({theme}) => ({
+  width: '250px',
+  height: '48px',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-around',
+  paddingRight: theme.spacing(2),
+  [theme.breakpoints.down('md')]: {
+    width: '100px',
+    padding: theme.spacing(0, 1),
+  },
+  '& .MuiSlider-root': {
+    height: '7px',
+    padding: '0',
+    '& .MuiSlider-thumb': {
+      color: theme.palette.blue,
+      width: '14px',
+      height: '11px',
+    },
+    '& .MuiSlider-track': {
+      color: theme.palette.greyLight,
+      height: '7px',
+      border: 'none',
+    },
+    '& .MuiSlider-rail': {
+      color: theme.palette.greyLight,
+      height: '7px',
     },
   },
-  "& a": {
-    color: theme.palette.text.primary,
-    textDecoration: "none",
-  },
-}));
+}))
 
-export default AudioPlayer;
+const LinkWrapper = styled(Box)(({theme}) => ({
+  display: 'flex',
+  height: '100%',
+  alignItems: 'center',
+  '& img': {
+    height: '17px',
+    width: '17px',
+  },
+  [theme.breakpoints.down('md')]: {
+    display: 'none',
+  },
+}))
+
+export default AudioPlayer
