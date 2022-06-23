@@ -102,22 +102,35 @@ const Hubs = () => {
           {wallet.connected && (
             <>
               {npcAmountHeld === 0 && userHubs && userHubs?.length === 0 && (
-                <BlueTypography
-                  variant="h1"
-                  align="left"
-                  sx={{ padding: { md: "0 165px 40px", xs: "30px 0px" } }}
-                >
-                  You do not have any credits to create a Hub. Please{` `}
-                  <Link
-                    href="https://docs.google.com/forms/d/e/1FAIpQLScSdwCMqUz6VGqhkO6xdfUxu1pzdZEdsGoXL9TGDYIGa9t2ig/viewform"
-                    target="_blank"
-                    rel="noreferrer"
-                    passHref
+                <DashboardContent>
+                  <BlueTypography
+                    variant="h1"
+                    align="left"
+                    sx={{ padding: { md: "0 165px 40px", xs: "30px 0px" } }}
                   >
-                    apply
-                  </Link>{" "}
-                  here to get started.
-                </BlueTypography>
+                    You do not have any credits to create a Hub. Please{` `}
+                    <Link
+                      href="https://docs.google.com/forms/d/e/1FAIpQLScSdwCMqUz6VGqhkO6xdfUxu1pzdZEdsGoXL9TGDYIGa9t2ig/viewform"
+                      target="_blank"
+                      rel="noreferrer"
+                      passHref
+                    >
+                      apply
+                    </Link>{" "}
+                    here to get started.
+                  </BlueTypography>
+                  <StyledLink>
+                    <Button
+                      color="primary"
+                      variant="outlined"
+                      fullWidth
+                      type="submit"
+                      onClick={() => router.push("/all")}
+                    >
+                      Browse All Hubs
+                    </Button>
+                  </StyledLink>
+                  </DashboardContent>
               )}
               {userHubs?.length > 0 && (
                 <DashboardWrapper
@@ -143,6 +156,17 @@ const Hubs = () => {
                           Apply For More Hubs
                         </Button>
                       </StyledLink>
+                      <StyledLink>
+                        <Button
+                          color="primary"
+                          variant="outlined"
+                          fullWidth
+                          type="submit"
+                          onClick={() => router.push("/all")}
+                        >
+                          Browse All Hubs
+                        </Button>
+                      </StyledLink>
                     </DashboardContent>
                   )}
                   {npcAmountHeld > 0 && (
@@ -156,6 +180,17 @@ const Hubs = () => {
                           onClick={() => router.push("/create")}
                         >
                           Create a Hub
+                        </Button>
+                      </StyledLink>
+                      <StyledLink>
+                        <Button
+                          color="primary"
+                          variant="outlined"
+                          fullWidth
+                          type="submit"
+                          onClick={() => router.push("/all")}
+                        >
+                          Browse All Hubs
                         </Button>
                       </StyledLink>
                     </DashboardContent>
