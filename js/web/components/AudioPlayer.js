@@ -1,7 +1,7 @@
-import React, {useState, useEffect, useContext, useRef, useMemo} from 'react'
-import {styled} from '@mui/material/styles'
+import React, { useState, useEffect, useContext, useRef, useMemo } from 'react'
+import { styled } from '@mui/material/styles'
 import nina from '@nina-protocol/nina-sdk'
-import {useWallet} from '@solana/wallet-adapter-react'
+import { useWallet } from '@solana/wallet-adapter-react'
 import Link from 'next/link'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -15,15 +15,15 @@ import PauseIcon from '@mui/icons-material/Pause'
 // import VolumeUpIcon from '@mui/icons-material/VolumeUp'
 // import VolumeOffIcon from '@mui/icons-material/VolumeOff'
 import Typography from '@mui/material/Typography'
-import {useRouter} from 'next/router'
+import { useRouter } from 'next/router'
 import Image from 'next/image'
 import QueueDrawer from './QueueDrawer'
 
-const {AudioPlayerContext, NinaContext, ReleaseContext} = nina.contexts
-const {formatDuration} = nina.utils
+const { AudioPlayerContext, NinaContext, ReleaseContext } = nina.contexts
+const { formatDuration } = nina.utils
 const AudioPlayer = () => {
   const router = useRouter()
-  const {releaseState} = useContext(ReleaseContext)
+  const { releaseState } = useContext(ReleaseContext)
   const audio = useContext(AudioPlayerContext)
   const {
     track,
@@ -199,7 +199,7 @@ const AudioPlayer = () => {
 
   return (
     <StyledAudioPlayer>
-      <audio id="audio" style={{width: '100%'}}>
+      <audio id="audio" style={{ width: '100%' }}>
         <source src={track?.txid + '?ext=mp3'} type="audio/mp3" />
       </audio>
 
@@ -213,7 +213,7 @@ const AudioPlayer = () => {
                 width="60px"
                 layout="responsive"
                 unoptimized={true}
-                loading="eager"
+                // loading="eager"
               />
             </AlbumArt>
           </Link>
@@ -256,7 +256,7 @@ const AudioPlayer = () => {
             {track.artist}, <i>{track.title}</i>
           </ArtistInfo>
         )}
-        <Box sx={{display: 'flex', alignItems: 'center'}}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Slider
             value={track ? trackProgress : 0}
             onChange={(e, newValue) => seek(newValue)}
@@ -266,7 +266,7 @@ const AudioPlayer = () => {
           />
 
           <Typography
-            sx={{padding: '0 10px', display: {xs: 'block', md: 'none'}}}
+            sx={{ padding: '0 10px', display: { xs: 'block', md: 'none' } }}
             variant="subtitle1"
           >
             {formatDuration(trackProgress) || '00:00'}
@@ -275,7 +275,7 @@ const AudioPlayer = () => {
       </ProgressContainer>
 
       <Typography
-        sx={{padding: '0 30px', display: {xs: 'none', md: 'block'}}}
+        sx={{ padding: '0 30px', display: { xs: 'none', md: 'block' } }}
         variant="subtitle1"
       >
         {formatDuration(trackProgress) || '00:00'}
@@ -285,11 +285,11 @@ const AudioPlayer = () => {
         <LinkWrapper>
           <Link
             href={`/${track.releasePubkey}`}
-            style={{marginRight: '30px'}}
+            style={{ marginRight: '30px' }}
             passHref
           >
             <a>
-              <Typography variant="subtitle1" sx={{padding: '0'}}>
+              <Typography variant="subtitle1" sx={{ padding: '0' }}>
                 View Info
               </Typography>
             </a>
@@ -298,7 +298,8 @@ const AudioPlayer = () => {
           <Button
             onClick={() =>
               window.open(
-                `https://twitter.com/intent/tweet?text=${`${track.artist} - "${track.title}" on Nina`}&url=ninaprotocol.com/${track.releasePubkey
+                `https://twitter.com/intent/tweet?text=${`${track.artist} - "${track.title}" on Nina`}&url=ninaprotocol.com/${
+                  track.releasePubkey
                 }`,
                 null,
                 'status=no,location=no,toolbar=no,menubar=no,height=500,width=500'
@@ -316,7 +317,7 @@ const AudioPlayer = () => {
   )
 }
 
-const StyledAudioPlayer = styled(Box)(({theme}) => ({
+const StyledAudioPlayer = styled(Box)(({ theme }) => ({
   position: 'fixed',
   bottom: '0',
   width: '100%',
@@ -335,7 +336,7 @@ const AlbumArt = styled('a')(() => ({
   height: '60px',
 }))
 
-const ArtistInfo = styled(Typography)(({theme}) => ({
+const ArtistInfo = styled(Typography)(({ theme }) => ({
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
@@ -344,7 +345,7 @@ const ArtistInfo = styled(Typography)(({theme}) => ({
   },
 }))
 
-const Controls = styled(Box)(({theme}) => ({
+const Controls = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   padding: theme.spacing(0, 2),
@@ -358,7 +359,7 @@ const Controls = styled(Box)(({theme}) => ({
   },
 }))
 
-const ProgressContainer = styled(Box)(({theme}) => ({
+const ProgressContainer = styled(Box)(({ theme }) => ({
   width: '250px',
   height: '48px',
   display: 'flex',
@@ -389,7 +390,7 @@ const ProgressContainer = styled(Box)(({theme}) => ({
   },
 }))
 
-const LinkWrapper = styled(Box)(({theme}) => ({
+const LinkWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   height: '100%',
   alignItems: 'center',

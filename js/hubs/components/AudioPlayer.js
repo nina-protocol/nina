@@ -1,19 +1,19 @@
-import React, {useEffect, useState, useRef, useContext, useMemo} from "react";
+import React, { useEffect, useState, useRef, useContext, useMemo } from "react";
 import nina from "@nina-protocol/nina-sdk";
-import {styled} from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 
-const {AudioPlayerContext, HubContext, ReleaseContext} = nina.contexts;
-const {formatDuration} = nina.utils;
-const AudioPlayer = ({hubPubkey}) => {
+const { AudioPlayerContext, HubContext, ReleaseContext } = nina.contexts;
+const { formatDuration } = nina.utils;
+const AudioPlayer = ({ hubPubkey }) => {
   const router = useRouter();
-  const {releaseState} = useContext(ReleaseContext);
-  const {hubContentState, filterHubContentForHub} = useContext(HubContext);
+  const { releaseState } = useContext(ReleaseContext);
+  const { hubContentState, filterHubContentForHub } = useContext(HubContext);
   const audio = useContext(AudioPlayerContext);
   const [tracks, setTracks] = useState({});
-  const [initialized, setInitialized] = useState(false)
+  const [initialized, setInitialized] = useState(false);
   const {
     track,
     playNext,
@@ -121,7 +121,7 @@ const AudioPlayer = ({hubPubkey}) => {
       play();
     }
   }, [track]);
-  console.log('init: ', initialized)
+  console.log("init: ", initialized);
   useEffect(() => {
     if (
       playlist.length > 0 &&
@@ -167,7 +167,7 @@ const AudioPlayer = ({hubPubkey}) => {
   };
 
   const playButtonHandler = () => {
-    setInitialized(true)
+    setInitialized(true);
     if (playerRef.current.paused) {
       if (track) {
         updateTrack(track.releasePubkey, true);
@@ -206,7 +206,10 @@ const AudioPlayer = ({hubPubkey}) => {
               Previous
             </Button>
             <span>{` | `}</span>
-            <Button onClickCapture={() => playButtonHandler()} disabled={!track}>
+            <Button
+              onClickCapture={() => playButtonHandler()}
+              disabled={!track}
+            >
               {playing ? "Pause" : "Play"}
             </Button>
             <span>{` | `}</span>
@@ -224,11 +227,11 @@ const AudioPlayer = ({hubPubkey}) => {
           </Controls>
         </>
       )}
-      <audio id="audio" style={{width: "100%"}}>
-        <source src={track?.txid + '?ext=mp3'} type="audio/mp3" />
+      <audio id="audio" style={{ width: "100%" }}>
+        <source src={track?.txid + "?ext=mp3"} type="audio/mp3" />
       </audio>
-      <Typography sx={{pb: "5px", whiteSpace: 'nowrap'}}>
-        <a href={`https://ninaprotocol.com/`} target="_blank" rel="noreferrer" >
+      <Typography sx={{ pb: "5px", whiteSpace: "nowrap" }}>
+        <a href={`https://ninaprotocol.com/`} target="_blank" rel="noreferrer">
           Powered by Nina.
         </a>
       </Typography>
@@ -236,11 +239,11 @@ const AudioPlayer = ({hubPubkey}) => {
   );
 };
 
-const Controls = styled("div")(({theme}) => ({
+const Controls = styled("div")(({ theme }) => ({
   paddingBottom: theme.spacing(2),
   width: "100%",
   maxWidth: "500px",
-  minWidth: '250px',
+  minWidth: "250px",
   "& .MuiButton-root": {
     fontSize: theme.typography.body1.fontSize,
     padding: 0,
@@ -254,17 +257,17 @@ const Controls = styled("div")(({theme}) => ({
   },
 }));
 
-const Player = styled("div")(({theme}) => ({
+const Player = styled("div")(({ theme }) => ({
   paddingTop: theme.spacing(2),
-  width: '90%',
+  width: "90%",
   background: theme.palette.background.default,
-  [theme.breakpoints.down('md')]: {
-    position: 'fixed',
-    bottom: '0',
-    width: '100vw',
+  [theme.breakpoints.down("md")]: {
+    position: "fixed",
+    bottom: "0",
+    width: "100vw",
     background: theme.palette.background.default,
-    paddingTop: '0',
-    paddingLeft: '15px'
+    paddingTop: "0",
+    paddingLeft: "15px",
   },
   "& .MuiButton-root": {
     fontSize: theme.typography.body1.fontSize,
