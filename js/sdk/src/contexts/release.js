@@ -91,6 +91,7 @@ const ReleaseContextProvider = ({ children }) => {
     releaseCreateMetadataJson,
     releaseInitViaHub,
     getPublishedHubForRelease,
+    getHubsForRelease,
   } = releaseContextHelper({
     ninaClient,
     releaseState,
@@ -164,6 +165,7 @@ const ReleaseContextProvider = ({ children }) => {
         releaseCreateMetadataJson,
         releaseInitViaHub,
         getPublishedHubForRelease,
+        getHubsForRelease,
       }}
     >
       {children}
@@ -1321,6 +1323,18 @@ const releaseContextHelper = ({
     }
   }
 
+  const getHubsForRelease = async (releasePubkey) => {
+    try {
+      let path = `${endpoints.api}/releases/${releasePubkey}/hubs`
+      const response = await fetch(path)
+      const json = await response.json()
+      return json.hubs
+    } catch (error) {
+      console.warn(error)
+      return undefined
+    }
+  }
+
   const getRedeemablesForRelease = async (releasePubkey) => {
     try {
       const response = await fetch(`/releases/${releasePubkey}/redeemables`)
@@ -2123,6 +2137,7 @@ const releaseContextHelper = ({
     releaseCreateMetadataJson,
     fetchAndSaveReleasesToState,
     getPublishedHubForRelease,
+    getHubsForRelease,
   }
 }
 

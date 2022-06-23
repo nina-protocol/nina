@@ -11,6 +11,7 @@ import Typography from "@mui/material/Typography";
 import { useRouter } from "next/router";
 import Dots from "./Dots";
 import ReleaseSettings from "./ReleaseSettings";
+import HubsModal from './HubsModal'
 const { ReleaseContext, NinaContext, HubContext } = nina.contexts;
 
 const ReleasePurchase = (props) => {
@@ -170,6 +171,7 @@ const ReleasePurchase = (props) => {
           </StyledLink>
         </Typography>
       )}
+      <HubsModal releasePubkey={releasePubkey} metadata={metadata} />
 
       <form onSubmit={handleSubmit} style={{ textAlign: "left" }}>
         <BuyButton variant="contained" type="submit" disabled={buttonDisabled}>

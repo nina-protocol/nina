@@ -9,6 +9,7 @@ import { Typography } from '@mui/material'
 import Link from 'next/link'
 import nina from '@nina-protocol/nina-sdk'
 import CollectorModal from './CollectorModal'
+import HubsModal from './HubsModal'
 import Dots from './Dots'
 import ReleaseSettings from './ReleaseSettings'
 
@@ -191,6 +192,7 @@ const ReleasePurchase = (props) => {
         </StyledLink>
       </Typography>
       <CollectorModal releasePubkey={releasePubkey} metadata={metadata} />
+      <HubsModal releasePubkey={releasePubkey} metadata={metadata} />
       {wallet?.connected && (
         <StyledUserAmount>
           {metadata && (
