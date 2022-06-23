@@ -78,7 +78,7 @@ const AllHubsWrapper = styled(Box)(({ theme }) => ({
   maxWidth: '960px',
   height: 'auto',
   minHeight: '75vh',
-  margin: '0 auto',
+  margin: '0 15px 0 auto',
   position: 'relative',
   '& a': {
     color: theme.palette.blue,
@@ -87,35 +87,9 @@ const AllHubsWrapper = styled(Box)(({ theme }) => ({
     padding: '0px 30px',
     overflowX: 'auto',
     minHeight: '80vh',
+    margin: '0 auto',
   },
 }));
 
-const HubGrid = styled(Grid)(({ theme }) => ({
-  paddingBottom: "200px",
-  "&::-webkit-scrollbar": {
-    display: "none",
-  },
-  [theme.breakpoints.down("md")]: {
-    paddingBottom: "100px",
-  },
-}));
-
-const HubTile = styled(Grid)(({ theme }) => ({
-  padding: "15px 15px 15px",
-  position: "relative",
-  [theme.breakpoints.down("md")]: {
-    padding: "10px",
-  },
-}));
-
-const HubLink = styled(Link)(({ theme }) => ({
-  height: "100%",
-  width: "100%",
-}));
-
-const HubName = styled(Typography)(({ theme }) => ({
-  paddingTop: "5px",
-  fontWeight: "500",
-}));
 
 export default Hubs;
