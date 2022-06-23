@@ -9,7 +9,6 @@ import Grid from "@mui/material/Grid";
 import nina from "@nina-protocol/nina-sdk";
 import { useSnackbar } from "notistack";
 import { styled } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import {
   DashboardWrapper,
   DashboardContent,

@@ -60,8 +60,6 @@ const HubPostCreate = ({
     bundlrUpload,
     bundlrBalance,
     getBundlrBalance,
-    bundlrFund,
-    bundlrWithdraw,
     getBundlrPricePerMb,
     bundlrPricePerMb,
     solPrice,

@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
-import nina from "@nina-protocol/nina-sdk";
+import React from "react";
 import "react-dropzone-uploader/dist/styles.css";
 import Dropzone from "react-dropzone-uploader";
 import { Typography, Box } from "@mui/material";
@@ -8,10 +7,9 @@ import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import Image from "next/image";
 
-const { NinaContext } = nina.contexts;
 
 const HubImageDropzone = ({ type, setArtwork, currentImageUrl, update }) => {
-  const handleChangeStatus = ({ meta, file, remove }, status) => {
+  const handleChangeStatus = ({ meta, file }, status) => {
     if (type === "artwork") {
       if (status === "removed") {
         setArtwork(undefined);
@@ -24,7 +22,7 @@ const HubImageDropzone = ({ type, setArtwork, currentImageUrl, update }) => {
     }
   };
 
-  const inputLayout = (type) => {
+  const inputLayout = () => {
     return (
       <>
         <AddOutlinedIcon />
@@ -139,12 +137,12 @@ const classes = {
   dropZonePreviewStatusContainer: `${PREFIX}-dropZonePreviewStatusContainer`,
 };
 
-const Root = styled(Box)(({ theme }) => ({
+const Root = styled(Box)(() => ({
   display: "flex",
   alignItems: "center",
 }));
 
-const Copy = styled(Box)(({ theme }) => ({
+const Copy = styled(Box)(() => ({
   display: "flex",
   flexDirection: "column",
   // alignItems: 'center',

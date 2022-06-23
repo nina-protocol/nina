@@ -10,12 +10,9 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { lightThemeOptions } from "../styles/theme/lightThemeOptions";
 import Head from "next/head";
 
-
-import Dots from "./Dots";
-const HubCreate = dynamic(() => import("./HubCreate"));
 const Navigation = dynamic(() => import("./Navigation"));
 const AudioPlayer = dynamic(() => import("./AudioPlayer"));
-const { HubContext, NinaContext } = nina.contexts;
+const { HubContext } = nina.contexts;
 const lightTheme = createTheme(lightThemeOptions);
 
 const Layout = ({ children }) => {
