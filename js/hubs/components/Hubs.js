@@ -28,13 +28,10 @@ const Hubs = () => {
   const wallet = useWallet();
 
   useEffect(() => {
-    getHubs(true)
-  }, [])
-
-  useEffect(() => {
     if (wallet.connected) {
       getHubsForUser(wallet.publicKey.toBase58());
     }
+    getHubs(true)
   }, [wallet.connected]);
 
   const userHubs = useMemo(() => {
