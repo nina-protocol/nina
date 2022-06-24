@@ -56,7 +56,6 @@ const Hub = ({hubPubkey}) => {
   const contentData = useMemo(() => {
     const contentArray = [];
     const types = []
-    // const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey);
     const hubContent = [...hubReleases, ...hubPosts];
     hubContent.forEach((hubContentData) => {
       if (
@@ -119,9 +118,12 @@ const Hub = ({hubPubkey}) => {
     );
   }
 
+  console.log('hubData?.json.description :>> ', hubData?.json.description.length);
+
   return (
     <>
-      <Grid item md={4}>
+      <Grid item md={4} sx={{padding: {md: "15px", xs: "40px 15px 15px"}}}
+>
         {/* {wallet?.connected &&
           wallet?.publicKey?.toBase58() === hubData?.authority &&
           hubReleases && (
@@ -130,13 +132,15 @@ const Hub = ({hubPubkey}) => {
               hubReleases={hubReleases}
             />
           )} */}
-        <DescriptionWrapper
-          sx={{padding: {md: "15px", xs: "100px 15px 50px"}}}
-        >
-          <Typography align="left" sx={{color: "text.primary"}}>
-            {hubData?.json.description}
-          </Typography>
-        </DescriptionWrapper>
+          {hubData.json.description.length > 0 && (
+            <DescriptionWrapper
+              sx={{padding: {md: "15px", xs: "40px 0 0"}}}
+            >
+              <Typography align="left" sx={{color: "text.primary"}}>
+                {hubData?.json.description}
+              </Typography>
+            </DescriptionWrapper>
+          )}
       </Grid>
 
       <ContentViewWrapper item md={8} height="100%">

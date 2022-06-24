@@ -49,7 +49,7 @@ const Hubs = () => {
       <HubsContainer>
         <Box
           sx={{
-            padding: { md: "0px 40px 40px 40px !important", xs: "30px 0px" },
+            padding: { md: "0px 40px 40px 40px !important", xs: "60px 0px 30px" },
           }}
         >
           {!wallet?.connected && (
@@ -57,7 +57,7 @@ const Hubs = () => {
               <BlueTypography
                 variant="h1"
                 align="left"
-                sx={{ padding: { md: "0 165px 40px", xs: "30px 0px" } }}
+                sx={{ padding: { md: "0 165px 40px", xs: "30px 0px 10px" } }}
               >
                 <Link href="/all">Hubs </Link>
                 are a new way to publish, share, and discuss music.
@@ -247,7 +247,10 @@ const HubsContainer = styled("div")(({ theme }) => ({
   overflowX: "visible",
   [theme.breakpoints.down("md")]: {
     width: "80vw",
-    marginBottom: "100px",
+    // margin: "10vh auto",    
+    // maxHeight: '100vh',
+    overflowY: 'hidden'
+    // height: '100vh'
   },
   [`& .${classes.sectionHeader}`]: {
     fontWeight: "700 !important",
