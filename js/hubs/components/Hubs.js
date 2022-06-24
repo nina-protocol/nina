@@ -164,6 +164,7 @@ const Hubs = () => {
                           fullWidth
                           type="submit"
                           onClick={() => router.push("/all")}
+                          sx={{mt: '15px'}}
                         >
                           Browse All Hubs
                         </Button>
@@ -190,6 +191,7 @@ const Hubs = () => {
                           fullWidth
                           type="submit"
                           onClick={() => router.push("/all")}
+                          sx={{mt: '15px'}}
                         >
                           Browse All Hubs
                         </Button>
