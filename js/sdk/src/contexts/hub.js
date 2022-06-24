@@ -715,10 +715,6 @@ const hubContextHelper = ({
             program.programId
           )
         request.accounts.referenceReleaseHubContent = referenceReleaseHubContent
-<<<<<<< HEAD
-          console.log("request ::> ", request)
-=======
->>>>>>> 73d8bb20ebb1909d544ae7f4f7a7f877596cb0e9
         txid = await program.rpc.postInitViaHubWithReferenceRelease(
           ...params,
           request
