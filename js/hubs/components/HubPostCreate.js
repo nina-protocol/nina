@@ -210,7 +210,6 @@ const HubPostCreate = ({
           const slug = `${hubData.handle
             .toLowerCase()
             .replace(" ", "_")}_${Math.round(new Date().getTime() / 1000)}`;
-          console.log('selectedHubId', metadataJson, hubPubkey)
           let result = await postInitViaHub(
             selectedHubId || hubPubkey,
             slug,

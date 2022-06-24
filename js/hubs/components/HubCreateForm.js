@@ -39,7 +39,7 @@ const HubCreateForm = ({
           </div>
           <div style={{ paddingBottom: "15px" }}>
             ie: a 5% Publish Fee means the publisher of the release will have
-            95% of their revnue and the hub has 5%.
+            95% of the release's revenue share and the hub has 5%.
           </div>
           <div style={{ paddingBottom: "15px" }}>
             Publish Fee is optional and can be set to 0%

@@ -85,7 +85,7 @@ const AudioPlayer = ({ hubPubkey }) => {
       createPlaylistFromTracksHubs(trackIds);
     }
   }, [tracks, hubContentState]);
-  console.log('audioInitialized', audioInitialized)
+
   useEffect(() => {
     if (isPlaying && audioInitialized) {
       play();

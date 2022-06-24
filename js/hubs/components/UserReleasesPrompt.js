@@ -59,7 +59,6 @@ const UserReleasesPrompt = ({
 
   const filterUnpostedReleases = (hubReleases) => {
     let unposted;
-    console.log('hubReleases :>> ', hubReleases);
     if (hubReleases.length > 0) {
       const userPostedReleases = filterReleasesPublishedByUser();
       unposted = userPostedReleases.filter((release) => {
@@ -70,7 +69,6 @@ const UserReleasesPrompt = ({
     } else {
       unposted = filterReleasesPublishedByUser();   
     }
-    console.log('unposted :>> ', unposted); 
     return unposted;
   }; 
 

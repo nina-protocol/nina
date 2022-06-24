@@ -680,7 +680,6 @@ const hubContextHelper = ({
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         },
       }
-      console.log('FROM: ', fromHub)
       if (fromHub) {
         request.remainingAccounts = [
           {
@@ -691,7 +690,6 @@ const hubContextHelper = ({
         ]
       }
       if (referenceRelease) {
-        console.log("referenceRelease ::> ", referenceRelease)
         request.accounts.referenceRelease = referenceRelease
 
         const [referenceReleaseHubRelease] =
@@ -715,7 +713,6 @@ const hubContextHelper = ({
             program.programId
           )
         request.accounts.referenceReleaseHubContent = referenceReleaseHubContent
-          console.log("request ::> ", request)
         txid = await program.rpc.postInitViaHubWithReferenceRelease(
           ...params,
           request
