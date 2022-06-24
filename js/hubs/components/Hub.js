@@ -7,10 +7,11 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Link from "next/link";
 import Dots from "./Dots";
-import UserReleasesPrompt from "./UserReleasesPrompt";
+// import UserReleasesPrompt from "./UserReleasesPrompt";
 
 import {useWallet} from "@solana/wallet-adapter-react";
 const ContentTileView = dynamic(() => import("./ContentTileView"));
+const UserReleasesPrompt = dynamic(() => import("./UserReleasesPrompt"));
 const {HubContext, NinaContext, ReleaseContext} = nina.contexts;
 
 const Hub = ({hubPubkey}) => {
@@ -36,22 +37,6 @@ const Hub = ({hubPubkey}) => {
     () => filterHubCollaboratorsForHub(hubPubkey) || [],
     [hubCollaboratorsState, hubPubkey]
   );
-  const canAddContent = useMemo(() => {
-    if (wallet?.connected) {
-      const hubCollaboratorForWallet = Object.values(hubCollaborators)?.filter(
-        (hubCollaborator) =>
-          hubCollaborator.collaborator === wallet?.publicKey?.toBase58()
-      )[0];
-      if (hubCollaboratorForWallet && hubCollaboratorForWallet.canAddContent) {
-        return true;
-      }
-      if (wallet?.publicKey?.toBase58() === hubData?.authority) {
-        return true;
-      }
-    }
-    return false;
-  }, [hubCollaborators, hubData, wallet]);
-
 
   const contentData = useMemo(() => {
     const contentArray = [];
@@ -120,16 +105,15 @@ const Hub = ({hubPubkey}) => {
 
   return (
     <>
-      <Grid item md={4} sx={{padding: {md: "15px", xs: "40px 15px 15px"}}}
->
-        {/* {wallet?.connected &&
+      <Grid item md={4} sx={{padding: {md: "15px", xs: "40px 15px 15px"}}}>
+        {wallet?.connected &&
           wallet?.publicKey?.toBase58() === hubData?.authority &&
           hubReleases && (
             <UserReleasesPrompt
               hubPubkey={hubPubkey}
               hubReleases={hubReleases}
             />
-          )} */}
+          )}
           {hubData.json.description.length > 0 && (
             <DescriptionWrapper
               sx={{padding: {md: "15px", xs: "40px 0 0"}}}

@@ -40,10 +40,6 @@ const UserReleasesPrompt = ({
   const [userPublishedReleases, setUserPublishedReleases] = useState([]);
   const [unpostedUserReleases, setUnpostedUserReleases] = useState();
 
-  const userHasHubs = useMemo(
-    () => userHubs && userHubs.length > 0,
-    [userHubs]
-  );
 
   useEffect(() => {
     if (wallet?.connected) {
@@ -55,7 +51,7 @@ const UserReleasesPrompt = ({
     if (wallet?.connected) {
       setUnpostedUserReleases(filterUnpostedReleases(hubReleases));
     }
-  }, [releaseState, collection, hubReleases]);
+  }, [releaseState, hubReleases]);
 
   const filterUnpostedReleases = (hubReleases) => {
     let unposted;
