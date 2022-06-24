@@ -1,82 +1,93 @@
-import React, { useContext, useEffect, useMemo } from "react";
+import React, { useContext, useEffect, useMemo, useState, useRef } from "react";
 import nina from "@nina-protocol/nina-sdk";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import { styled } from "@mui/material/styles";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter } from "next/router";
+import Dots from "./Dots";
+import ScrollablePageWrapper from "./ScrollablePageWrapper";
+import Image from "next/image";
+import Head from "next/head";
+import debounce from 'lodash.debounce'
+import HubTileView from "./HubTileView";
 
-import HubSlider from "./HubSlider";
-
-const { HubContext, NinaContext } = nina.contexts;
+const { HubContext } = nina.contexts;
 
 const Hubs = () => {
-  const { getHubs, hubState } = useContext(HubContext);
+  const { getHubs, hubState, hubsCount } = useContext(HubContext);
   const wallet = useWallet();
+  const [pendingFetch, setPendingFetch] = useState(false)
+  const [totalCount, setTotalCount] = useState(null)
+  const scrollRef = useRef()
 
   useEffect(() => {
     getHubs();
+    window.addEventListener('scroll', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
   }, []);
 
   const hubs = useMemo(() => {
+    if (Object.values(hubState).length > 0) {
+      setPendingFetch(false)
+    }
     return Object.values(hubState);
   }, [hubState]);
 
+
+  useEffect(() => {
+    setTotalCount(hubsCount)
+  }, [hubsCount])
+
+  const handleScroll = () => {
+    const bottom =
+      scrollRef.current.getBoundingClientRect().bottom - 250 <=
+      window.innerHeight
+    if (
+      bottom &&
+      !pendingFetch &&
+      totalCount !== hubs.length
+    ) {
+      setPendingFetch(true)
+      getHubs()
+    }
+  }
   return (
-    <HubsContainer overflowX="visible">
-      <Box
-        sx={{
-          padding: { md: "40px 40px 140px 40px !important", xs: "30px 0px" },
-        }}
-      >
-        <Box sx={{ paddingLeft: { md: "30px", xs: "0" } }}>
-          <Typography
-            variant="body1"
-            align="left"
-            className={classes.sectionHeader}
-          >
-            Hubs
-          </Typography>
-        </Box>
-        <HubSlider hubs={hubs} />
-      </Box>
-    </HubsContainer>
+    <>
+      <Head>
+        <title>{`Nina Hubs: All`}</title>
+        <meta name="description" content={'Nina Hubs: All'} />
+      </Head>
+      <ScrollablePageWrapper onScroll={debounce(() => handleScroll(), 500)} sx={{overflowY: "scroll"}}>
+        <AllHubsWrapper ref={scrollRef}>
+          <HubTileView hubs={hubs} />
+        </AllHubsWrapper>
+      </ScrollablePageWrapper>
+    </>
   );
 };
 
-const PREFIX = "hubs";
-
-const classes = {
-  sectionHeader: `${PREFIX}-sectionHeader`,
-};
-
-const HubsContainer = styled("div")(({ theme }) => ({
-  width: "1010px",
-  margin: "auto",
-  overflowX: "visible",
-  "& .MuiBox-root": {
-    paddingTop: "40px !important",
+const AllHubsWrapper = styled(Box)(({ theme }) => ({
+  maxWidth: '960px',
+  height: 'auto',
+  minHeight: '75vh',
+  margin: '0 15px 0 auto',
+  position: 'relative',
+  '& a': {
+    color: theme.palette.blue,
   },
-  [theme.breakpoints.down("md")]: {
-    width: "80vw",
-    marginBottom: "100px",
-  },
-  [`& .${classes.sectionHeader}`]: {
-    fontWeight: "700 !important",
-    paddingBottom: `${theme.spacing(1)}`,
-    textTransform: "uppercase !important",
-    position: "relative",
-    "& .MuiTypography-root": {
-      textTransform: "uppercase !important",
-      fontWeight: "700 !important",
-    },
-    "& .MuiButton-root": {
-      position: "absolute",
-      top: "-10px",
-    },
+  [theme.breakpoints.down('md')]: {
+    padding: '0px 30px',
+    overflowX: 'auto',
+    minHeight: '80vh',
+    margin: '0 auto',
   },
 }));
+
 
 export default Hubs;

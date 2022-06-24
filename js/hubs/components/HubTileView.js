@@ -1,79 +1,42 @@
 import React, { useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import nina from '@nina-protocol/nina-sdk'
-import Image from 'next/image'
 import { isMobile } from 'react-device-detect'
+import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { Typography, Box } from '@mui/material'
-import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
-import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
-import ControlPointIcon from '@mui/icons-material/ControlPoint'
-import Button from '@mui/material/Button'
 
-const { AudioPlayerContext } = nina.contexts
 
-const ReleaseTileList = (props) => {
-  const { releases } = props
-  const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
-    useContext(AudioPlayerContext)
-
+const HubTileView = (props) => {
+  const { hubs } = props
   const router = useRouter()
 
-  const handleClick = (releasePubkey) => {
+  const handleClick = (handle) => {
     router.push({
-      pathname: `/${releasePubkey}`,
+      pathname: `/${handle}`,
     })
   }
 
   return (
     <Box>
       <TileGrid>
-        {releases.map((release, i) => {
+        {hubs.map((hub, i) => {
           return (
             <Tile key={i}>
               <HoverCard
                 onClick={(e) => {
                   e.stopPropagation()
-                  handleClick(release.releasePubkey)
+                  handleClick(hub.handle)
                 }}
               >
                 <CardCta
                   onClick={(e) => {
                     e.stopPropagation()
-                    handleClick(release.releasePubkey)
+                    handleClick(hub.handle)
                   }}
                 >
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      if (
-                        isPlaying &&
-                        track.releasePubkey === release.releasePubkey
-                      ) {
-                        setIsPlaying(false)
-                      } else {
-                        updateTrack(release.releasePubkey, true, true)
-                      }
-                    }}
-                  >
-                    {isPlaying &&
-                    track.releasePubkey === release.releasePubkey ? (
-                      <PauseCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
-                    ) : (
-                      <PlayCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
-                    )}
-                  </Button>
-
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      addTrackToQueue(release.releasePubkey)
-                    }}
-                  >
-                    <ControlPointIcon sx={{ color: 'white' }} />
-                  </Button>
                 </CardCta>
-                {release.metadata.image && (
+                {hub.json.image && (
                   <Image
                     width={100}
                     height={100}
@@ -84,16 +47,16 @@ const ReleaseTileList = (props) => {
                       top: '0',
                       zIndex: '1',
                     }}
-                    src={release.metadata.image}
+                    src={hub.json.image}
                     priority={!isMobile}
                     unoptimized={true}
                   />
                 )}
               </HoverCard>
               <Box sx={{ padding: '10px 0 0' }}>
-                <ReleaseName>
-                  {release.metadata.name.substring(0, 100)}
-                </ReleaseName>
+                <HubName>
+                  {hub.json.displayName}
+                </HubName>
               </Box>
             </Tile>
           )
@@ -153,9 +116,9 @@ const CardCta = styled(Box)(({ theme }) => ({
   },
 }))
 
-const ReleaseName = styled(Typography)(() => ({
+const HubName = styled(Typography)(() => ({
   overflow: 'hidden',
   textOverflow: 'ellipsis',
 }))
 
-export default ReleaseTileList
+export default HubTileView

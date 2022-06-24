@@ -134,7 +134,6 @@ const Navigation = ({ hubPubkey }) => {
                 width="50"
                 alt="hub logo"
                 unoptimized={true}
-                loading="eager"
               />
             )}
             {hubPubkey ? (
@@ -142,7 +141,7 @@ const Navigation = ({ hubPubkey }) => {
                 {hubData?.json.displayName}
               </Typography>
             ) : (
-              <Typography variant="h4">NINA HUBS</Typography>
+              <Typography variant="h4">NINA HUBS [beta]</Typography>
             )}
           </LogoLinkWrapper>
         </Link>
@@ -394,12 +393,13 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
   },
   "@media (max-width: 900px)": {
     paddingLeft: 0,
+    position: 'fixed'
   },
 }));
 
 const useStyles = makeStyles(({ theme }) => ({
   menuButton: {
-    fontFamily: "Helvetica, sans-serif",
+    fontFamily: "Helvetica, Arial, sans-serif",
     size: "14px",
     marginLeft: "38px",
   },

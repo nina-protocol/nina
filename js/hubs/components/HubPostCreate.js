@@ -185,15 +185,10 @@ const HubPostCreate = ({
             body: formValues.postForm.body,
           };
 
-          if (formValues.postForm.reference) {
-            metadataJson.reference = formValues.postForm.reference;
+          if (formValues.postForm.reference || preloadedRelease) {
+            metadataJson.reference = formValues.postForm.reference || preloadedRelease;
           }
 
-          if (preloadedRelease) {
-            metadataJson.reference = preloadedRelease;
-            formValues.postForm.reference = preloadedRelease;
-          }
-          console.log("formValues :>> ", formValues);
           metadataResult = (
             await bundlrUpload(
               new Blob([JSON.stringify(metadataJson)], {
@@ -215,13 +210,12 @@ const HubPostCreate = ({
           const slug = `${hubData.handle
             .toLowerCase()
             .replace(" ", "_")}_${Math.round(new Date().getTime() / 1000)}`;
-
           let result = await postInitViaHub(
             selectedHubId || hubPubkey,
             slug,
             uri,
-            preloadedRelease ? metadataJson.reference : undefined,
-            selectedHubId || undefined
+            metadataJson.reference || undefined,
+            hubPubkey || undefined
           );
 
           if (result?.success) {
@@ -241,12 +235,16 @@ const HubPostCreate = ({
           setFormValues({ postForm: {} });
           setPostCreated(true);
           setOpen(false);
-          setParentOpen(false);
+          if (setParentOpen) {
+            setParentOpen(false);
+          }
         }
       }
     } catch (error) {
-      setParentOpen(false);
       console.warn(error);
+      if (setParentOpen) {
+        setParentOpen(false);
+      }
     }
   };
 

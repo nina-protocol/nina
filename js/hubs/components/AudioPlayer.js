@@ -21,7 +21,12 @@ const AudioPlayer = ({ hubPubkey }) => {
     playlist,
     createPlaylistFromTracksHubs,
     isPlaying,
+    initialized,
+    setInitialized,
+    audioPlayerRef
   } = audio;
+
+  const audioInitialized = useMemo(() => initialized, [initialized])
   useEffect(() => {
     const trackObject = {};
     const [hubReleases] = filterHubContentForHub(hubPubkey);
@@ -42,14 +47,13 @@ const AudioPlayer = ({ hubPubkey }) => {
     setTracks(trackObject);
   }, [hubContentState, hubPubkey]);
   const activeTrack = useRef();
-  const playerRef = useRef();
   const intervalRef = useRef();
   const activeIndexRef = useRef(0);
   const [playing, setPlaying] = useState(false);
   const [trackProgress, setTrackProgress] = useState(0.0);
 
   useEffect(() => {
-    playerRef.current = document.querySelector("#audio");
+    audioPlayerRef.current = document.querySelector("#audio");
 
     const actionHandlers = [
       ["play", () => play()],
@@ -83,8 +87,7 @@ const AudioPlayer = ({ hubPubkey }) => {
   }, [tracks, hubContentState]);
 
   useEffect(() => {
-    const initialized = activeIndexRef.current >= 0;
-    if (isPlaying && initialized) {
+    if (isPlaying && audioInitialized) {
       play();
     } else {
       pause();
@@ -99,11 +102,10 @@ const AudioPlayer = ({ hubPubkey }) => {
     [activeIndexRef.current]
   );
   useEffect(() => {
-    const initialized = activeIndexRef.current >= 0;
-    if (track) {
+    if (track && audioInitialized) {
       activeIndexRef.current = playlist.indexOf(track);
       activeTrack.current = track;
-      playerRef.current.src = track.txid;
+      audioPlayerRef.current.src = track.txid;
       if ("mediaSession" in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
           title: activeTrack.current.title,
@@ -118,10 +120,10 @@ const AudioPlayer = ({ hubPubkey }) => {
         });
       }
     }
-    if (initialized && isPlaying) {
+    if (audioInitialized && isPlaying) {
       play();
     }
-  }, [track]);
+  }, [track, audioInitialized, isPlaying]);
 
   useEffect(() => {
     if (
@@ -138,12 +140,12 @@ const AudioPlayer = ({ hubPubkey }) => {
     clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
       if (
-        playerRef.current.currentTime > 0 &&
-        playerRef.current.currentTime < playerRef.current.duration &&
-        !playerRef.current.paused
+        audioPlayerRef.current.currentTime > 0 &&
+        audioPlayerRef.current.currentTime < audioPlayerRef.current.duration &&
+        !audioPlayerRef.current.paused
       ) {
-        setTrackProgress(Math.ceil(playerRef.current.currentTime));
-      } else if (playerRef.current.currentTime >= playerRef.current.duration) {
+        setTrackProgress(Math.ceil(audioPlayerRef.current.currentTime));
+      } else if (audioPlayerRef.current.currentTime >= audioPlayerRef.current.duration) {
         next();
       }
     }, [300]);
@@ -158,8 +160,8 @@ const AudioPlayer = ({ hubPubkey }) => {
   };
 
   const play = () => {
-    if (playerRef.current.paused) {
-      playerRef.current.play();
+    if (audioPlayerRef.current.paused) {
+      audioPlayerRef.current.play();
       setPlaying(true);
       startTimer();
     } else {
@@ -168,7 +170,8 @@ const AudioPlayer = ({ hubPubkey }) => {
   };
 
   const playButtonHandler = () => {
-    if (playerRef.current.paused) {
+    setInitialized(true)
+    if (audioPlayerRef.current.paused) {
       if (track) {
         updateTrack(track.releasePubkey, true);
       }
@@ -178,7 +181,7 @@ const AudioPlayer = ({ hubPubkey }) => {
   };
 
   const pause = () => {
-    playerRef.current.pause();
+    audioPlayerRef.current.pause();
     setPlaying(false);
     clearInterval(intervalRef.current);
     if (track) {
@@ -206,7 +209,7 @@ const AudioPlayer = ({ hubPubkey }) => {
               Previous
             </Button>
             <span>{` | `}</span>
-            <Button onClick={() => playButtonHandler()} disabled={!track}>
+            <Button onClickCapture={() => playButtonHandler()} disabled={!track}>
               {playing ? "Pause" : "Play"}
             </Button>
             <span>{` | `}</span>
@@ -222,20 +225,16 @@ const AudioPlayer = ({ hubPubkey }) => {
               </div>
             )}
           </Controls>
-          <Typography sx={{ pb: "5px" }}>
-            <a
-              href={`https://ninaprotocol.com/hubs/${hubPubkey || ""}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Powered by Nina.
-            </a>
-          </Typography>
         </>
       )}
       <audio id="audio" style={{ width: "100%" }}>
-        <source src={track?.txid} type="audio/mp3" />
+        <source src={track?.txid + '?ext=mp3'} type="audio/mp3" />
       </audio>
+      <Typography sx={{pb: "5px", whiteSpace: 'nowrap'}}>
+        <a href={`https://ninaprotocol.com/`} target="_blank" rel="noreferrer" >
+          Powered by Nina.
+        </a>
+      </Typography>
     </Player>
   );
 };
@@ -243,6 +242,8 @@ const AudioPlayer = ({ hubPubkey }) => {
 const Controls = styled("div")(({ theme }) => ({
   paddingBottom: theme.spacing(2),
   width: "100%",
+  maxWidth: "500px",
+  minWidth: '250px',
   "& .MuiButton-root": {
     fontSize: theme.typography.body1.fontSize,
     padding: 0,
@@ -258,14 +259,15 @@ const Controls = styled("div")(({ theme }) => ({
 
 const Player = styled("div")(({ theme }) => ({
   paddingTop: theme.spacing(2),
-  width: "100%",
+  width: '90%',
   background: theme.palette.background.default,
-  [theme.breakpoints.down("md")]: {
-    position: "fixed",
-    bottom: "0",
-    width: "100vw",
+  [theme.breakpoints.down('md')]: {
+    position: 'fixed',
+    bottom: '0',
+    width: '100vw',
     background: theme.palette.background.default,
-    paddingTop: "0",
+    paddingTop: '0',
+    paddingLeft: '15px'
   },
   "& .MuiButton-root": {
     fontSize: theme.typography.body1.fontSize,

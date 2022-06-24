@@ -45,7 +45,7 @@ const lightThemeOptions = {
     greyLight: colors.greyLight,
   },
   typography: {
-    fontFamily: ["Helvetica", "san-serif"].join(","),
+    fontFamily: ["Helvetica", "Arial", "sans-serif"].join(","),
     berthold: {
       fontFamily: ["BlockBE-Heavy"].join(","),
     },

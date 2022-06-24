@@ -8,6 +8,8 @@ import { useRouter } from "next/router";
 import nina from "@nina-protocol/nina-sdk";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { lightThemeOptions } from "../styles/theme/lightThemeOptions";
+import Head from "next/head";
+
 
 import Dots from "./Dots";
 const HubCreate = dynamic(() => import("./HubCreate"));
@@ -32,7 +34,7 @@ const Layout = ({ children }) => {
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
 
   useEffect(() => {
-    if (!router.pathname.includes("dashboard") && router.route !== "/") {
+    if (router.pathname.includes('/[hubPubkey]') && !router.pathname.includes('/dashboard')) {
       if (hubData?.json.backgroundColor) {
         lightTheme.palette.background.default = hubData.json.backgroundColor;
       }
@@ -65,6 +67,9 @@ const Layout = ({ children }) => {
 
   return (
     <ThemeProvider theme={lightTheme}>
+      <Head>
+        <meta name="theme-color" content={lightTheme.palette.background.default} key="theme" />
+      </Head>
       <Root>
         <CssBaseline>
           <Container
@@ -112,6 +117,16 @@ const Root = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
+    backgroundColor: theme.palette.background.default,
+
+    [theme.breakpoints.down("md")]: {
+      overflowY: "scroll",
+      minHeight: "unset",
+      height: "unset",
+      "&:-webkit-scrollbar": {
+        display: "none !important",
+      },
+    },
   },
 
   [`& .${classes.bodyContainer}`]: {
@@ -123,18 +138,25 @@ const Root = styled("div")(({ theme }) => ({
     textAlign: "center",
     minHeight: "100%",
     overflow: "hidden",
+    background: theme.palette.background.default,
     [theme.breakpoints.down("md")]: {
-      overflow: "scroll",
+      overflowY: "scroll",
+      "&::-webkit-scrollbar": {
+        display: "none !important",
+      },
     },
   },
 }));
 
 const AudioPlayerWrapper = styled("div")(({ theme }) => ({
-  position: "absolute",
+  position: "fixed",
   bottom: 0,
   left: 0,
   paddingLeft: "8px",
   textAlign: "left",
   paddingBottom: theme.spacing(1),
+  [theme.breakpoints.down("md")]: {
+    paddingLeft: "0px",
+  },
 }));
 export default Layout;

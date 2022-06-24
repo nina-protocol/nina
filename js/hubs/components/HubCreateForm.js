@@ -31,12 +31,41 @@ const HubCreateForm = ({
   const IconWithTooltip = ({ field }) => {
     let copy;
     if (field === "publishFee") {
-      copy = "publish fee explanation";
+      copy = (
+        <div>
+          <div style={{ paddingBottom: "15px" }}>
+            The Publish Fee sets the % of revenue shares that releases published
+            through this hub will send to the Hub.
+          </div>
+          <div style={{ paddingBottom: "15px" }}>
+            ie: a 5% Publish Fee means the publisher of the release will have
+            95% of the {`release's`} revenue share and the hub will have 5%.
+          </div>
+          <div style={{ paddingBottom: "15px" }}>
+            Publish Fee is optional and can be set to 0%
+          </div>
+        </div>
+      );
     } else {
-      copy = "referall fee explanation";
+      copy = (
+        <div>
+          <div style={{ paddingBottom: "15px" }}>
+            The Referral Fee sets the percent of sale price that the hub will
+            receive for sales made of tracks reposted from other hubs.
+          </div>
+          <div style={{ paddingBottom: "15px" }}>
+            ie: a 5% Referral Fee. You repost a release from a different hub
+            that costs $1. If it is purchased through your hub the buyer pays
+            $1.05. You receive $0.05 and the original publisher receives $1.00.{" "}
+          </div>
+          <div style={{ paddingBottom: "15px" }}>
+            Referral Fee is optional and can be set to 0%
+          </div>
+        </div>
+      );
     }
     return (
-      <Tooltip title={`${copy}`}>
+      <Tooltip title={copy} style={{ whiteSpace: "pre-line" }}>
         <HelpIcon sx={{ fontSize: "16px !important", marginLeft: "5px" }} />
       </Tooltip>
     );

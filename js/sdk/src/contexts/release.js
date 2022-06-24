@@ -14,7 +14,7 @@ import {
   decodeNonEncryptedByteArray,
   decryptData,
 } from '../utils/encrypt'
-import { indexerHasRecord } from '../utils'
+import { indexerHasRecord, shuffle } from '../utils'
 
 const lookupTypes = {
   PUBLISHED_BY: 'published_by',
@@ -90,6 +90,8 @@ const ReleaseContextProvider = ({ children }) => {
     initializeReleaseAndMint,
     releaseCreateMetadataJson,
     releaseInitViaHub,
+    getPublishedHubForRelease,
+    getHubsForRelease,
   } = releaseContextHelper({
     ninaClient,
     releaseState,
@@ -162,6 +164,8 @@ const ReleaseContextProvider = ({ children }) => {
         initializeReleaseAndMint,
         releaseCreateMetadataJson,
         releaseInitViaHub,
+        getPublishedHubForRelease,
+        getHubsForRelease,
       }}
     >
       {children}
@@ -1307,6 +1311,30 @@ const releaseContextHelper = ({
     }
   }
 
+  const getPublishedHubForRelease = async (releasePubkey) => {
+    try {
+      let path = `${endpoints.api}/releases/${releasePubkey}/publishedThroughHub`
+      const response = await fetch(path)
+      const hub = await response.json()
+      return hub
+    } catch (error) {
+      console.warn(error)
+      return undefined
+    }
+  }
+
+  const getHubsForRelease = async (releasePubkey) => {
+    try {
+      let path = `${endpoints.api}/releases/${releasePubkey}/hubs`
+      const response = await fetch(path)
+      const json = await response.json()
+      return json.hubs
+    } catch (error) {
+      console.warn(error)
+      return undefined
+    }
+  }
+
   const getRedeemablesForRelease = async (releasePubkey) => {
     try {
       const response = await fetch(`/releases/${releasePubkey}/redeemables`)
@@ -1436,7 +1464,7 @@ const releaseContextHelper = ({
       setReleasesRecentState({
         published,
         purchased,
-        highlights,
+        highlights: shuffle(highlights),
       })
     } catch (error) {
       console.warn(error)
@@ -2108,6 +2136,8 @@ const releaseContextHelper = ({
     initializeReleaseAndMint,
     releaseCreateMetadataJson,
     fetchAndSaveReleasesToState,
+    getPublishedHubForRelease,
+    getHubsForRelease,
   }
 }
 

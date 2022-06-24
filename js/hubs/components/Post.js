@@ -110,30 +110,36 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
   };
   return (
     <>
+      {referenceReleaseMetadata && (
+        <Grid
+          item
+          md={6}
+          xs={12}
+          sx={{
+            margin: { md: "0px auto auto", xs: "100px 0 15px" },
+            padding: "0 15px",
+            overflowX: "hidden",
+          }}
+        >
+          {referenceReleaseMetadata && (
+            <PostRelease
+              metadata={referenceReleaseMetadata}
+              releasePubkey={referenceReleasePubkey}
+              hubPubkey={hubPubkey}
+            />
+          )}
+        </Grid>
+      )}
       <Grid
         item
         md={6}
         xs={12}
         sx={{
           margin: { md: "0px auto auto", xs: "0px" },
-          padding: "0 15px",
-        }}
-      >
-        {referenceReleaseMetadata && (
-          <PostRelease
-            metadata={referenceReleaseMetadata}
-            releasePubkey={referenceReleasePubkey}
-            hubPubkey={hubPubkey}
-          />
-        )}
-      </Grid>
-      <Grid
-        item
-        md={6}
-        xs={12}
-        sx={{
-          margin: { md: "0px auto auto", xs: "0px" },
-          padding: "0 15px",
+          padding: {
+            md: "0 15px",
+            xs: `${referenceReleaseMetadata ? "15px" : "75px"} 15px`,
+          },
         }}
       >
         {postData && (
@@ -154,7 +160,7 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
               </a>{" "}
               at{" "}
               <a
-                href={`https://explorer.solana.com/account/${postData.postId}`}
+                href={`https://explorer.solana.com/account/${postData.id}`}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -174,6 +180,10 @@ const PostWrapper = styled(Box)(({ theme }) => ({
   overflowX: "scroll",
   "&::-webkit-scrollbar": {
     display: "none",
+  },
+  [theme.breakpoints.down("md")]: {
+    maxHeight: "unset",
+    paddingBottom: "100px",
   },
 }));
 

@@ -21,7 +21,7 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
   const router = useRouter();
   const wallet = useWallet();
 
-  const { updateTrack, track, isPlaying } = useContext(AudioPlayerContext);
+  const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } = useContext(AudioPlayerContext);
   const { releaseState, getRelease } = useContext(ReleaseContext);
   const {
     getHub,
@@ -71,8 +71,6 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
 
   return (
     <>
-      {/* <BackButton onClick={() => router.back()} /> */}
-
       <DesktopImageGridItem item md={6}>
         {metadata && (
           <ImageContainer>
@@ -85,7 +83,6 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
               objectPosition={"right bottom"}
               alt={metadata.description || "album art"}
               unoptimized={true}
-              loading="eager"
             />
           </ImageContainer>
         )}
@@ -110,7 +107,6 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
                 width={100}
                 alt={metadata.description || "album art"}
                 unoptimized={true}
-                loading="eager"
               />
             </MobileImageWrapper>
             <CtaWrapper>
@@ -124,8 +120,10 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
 
               <PlayButton
                 sx={{ height: "22px", width: "28px", m: 0 }}
-                onClick={(e) => {
+                onClickCapture={(e) => {
                   e.stopPropagation();
+                  setInitialized(true)
+                  audioPlayerRef.current.load()
                   updateTrack(
                     releasePubkey,
                     !(isPlaying && track.releasePubkey === releasePubkey)
