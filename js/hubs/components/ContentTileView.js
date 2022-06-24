@@ -95,7 +95,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
 
   return (
     <Box position="relative">
-      {contentTypes.length > 2 && (
+      {contentTypes.length >= 2 && (
         <StyledButtonGroup
           exclusive
           value={displayType}
