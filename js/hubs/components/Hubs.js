@@ -247,10 +247,7 @@ const HubsContainer = styled("div")(({ theme }) => ({
   overflowX: "visible",
   [theme.breakpoints.down("md")]: {
     width: "80vw",
-    // margin: "10vh auto",    
-    // maxHeight: '100vh',
     overflowY: 'hidden'
-    // height: '100vh'
   },
   [`& .${classes.sectionHeader}`]: {
     fontWeight: "700 !important",

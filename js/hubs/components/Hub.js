@@ -118,8 +118,6 @@ const Hub = ({hubPubkey}) => {
     );
   }
 
-  console.log('hubData?.json.description :>> ', hubData?.json.description.length);
-
   return (
     <>
       <Grid item md={4} sx={{padding: {md: "15px", xs: "40px 15px 15px"}}}
