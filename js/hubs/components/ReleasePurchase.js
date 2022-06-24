@@ -10,7 +10,8 @@ import { useSnackbar } from "notistack";
 import Typography from "@mui/material/Typography";
 import Dots from "./Dots";
 import ReleaseSettings from "./ReleaseSettings";
-const { ReleaseContext, NinaContext } = nina.contexts;
+import HubsModal from './HubsModal'
+const { ReleaseContext, NinaContext, HubContext } = nina.contexts;
 
 const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, inPost, hubPubkey } = props;
@@ -20,6 +21,7 @@ const ReleasePurchase = (props) => {
     releasePurchaseViaHub,
     releasePurchasePending,
     releaseState,
+    getRelease,
     getPublishedHubForRelease,
   } = useContext(ReleaseContext);
   const { ninaClient } = useContext(NinaContext);
@@ -167,6 +169,7 @@ const ReleasePurchase = (props) => {
           </StyledLink>
         </Typography>
       )}
+      <HubsModal releasePubkey={releasePubkey} metadata={metadata} />
 
       <form onSubmit={handleSubmit} style={{ textAlign: "left" }}>
         <BuyButton variant="contained" type="submit" disabled={buttonDisabled}>

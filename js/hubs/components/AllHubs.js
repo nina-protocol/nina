@@ -36,11 +36,9 @@ const Hubs = () => {
   }, [hubsCount])
 
   const handleScroll = () => {
-    console.log('HANDLE SCORLL')
     const bottom =
       scrollRef.current.getBoundingClientRect().bottom - 250 <=
       window.innerHeight
-      console.log(totalCount, hubs)
     if (
       bottom &&
       !pendingFetch &&

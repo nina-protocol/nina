@@ -237,7 +237,6 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
           }
           if (uploadHasItemForType(upload, UploadType.track) || trackResult) {
             let metadataResult = metadataTx;
-            console.log("hubPubkey :>> ", hubPubkey);
             const info =
               releaseInfo || (await initializeReleaseAndMint(hubPubkey));
             setReleaseInfo(info);

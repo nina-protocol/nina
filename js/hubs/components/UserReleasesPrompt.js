@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
 import nina from "@nina-protocol/nina-sdk";
 import { styled } from "@mui/material/styles";
 import { Box, Paper } from "@mui/material";
@@ -17,6 +17,9 @@ import { useWallet } from "@solana/wallet-adapter-react";
 const { HubContext, ReleaseContext, NinaContext } = nina.contexts;
 
 const UserReleasesPrompt = ({
+  userHubs,
+  releasePubkey,
+  metadata,
   hubPubkey,
   hubReleases,
 }) => {
@@ -47,7 +50,6 @@ const UserReleasesPrompt = ({
 
   const filterUnpostedReleases = (hubReleases) => {
     let unposted;
-    console.log('hubReleases :>> ', hubReleases);
     if (hubReleases.length > 0) {
       const userPostedReleases = filterReleasesPublishedByUser();
       unposted = userPostedReleases.filter((release) => {
@@ -58,7 +60,6 @@ const UserReleasesPrompt = ({
     } else {
       unposted = filterReleasesPublishedByUser();   
     }
-    console.log('unposted :>> ', unposted); 
     return unposted;
   }; 
 
