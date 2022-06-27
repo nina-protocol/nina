@@ -774,7 +774,7 @@ const releaseContextHelper = ({
       }
       if (ninaClient.uiToNative(usdcBalance, ids.mints.usdc) < ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)) {
         const additionalComputeBudgetInstruction = anchor.web3.ComputeBudgetProgram.requestUnits({
-          units: 200000,
+          units: 400000,
           additionalFee: 0,
         });
         instructions.push(additionalComputeBudgetInstruction)
