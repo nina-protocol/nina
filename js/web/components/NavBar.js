@@ -30,10 +30,8 @@ const NavBar = () => {
   useEffect(() => {
     setConnectedString(healthOk ? 'connected-healthy' : 'connected-unhealthy')
   }, [healthOk])
-  const combinedBalance = useMemo(() =>
-    (parseFloat(usdcBalance) + parseFloat(solUsdcBalance)).toFixed(2)
-  , [usdcBalance, solUsdcBalance])
-
+  console.log("usdcBalance ::> ", usdcBalance)
+  console.log("solUsdcBalance ::> ", solUsdcBalance)
   return (
     <Root>
       <NavLeft>
@@ -50,7 +48,7 @@ const NavBar = () => {
       <NavRight>
         <DesktopWalletWrapper>
           <NavBalance variant="subtitle1">
-            {wallet?.connected ? `Balance: $${combinedBalance}` : null}
+            {wallet?.connected ? `Balance: $${(parseFloat(usdcBalance) + parseFloat(solUsdcBalance)).toFixed(2)}` : null}
           </NavBalance>
           <NavCtas>
             {wallet.wallets && (
