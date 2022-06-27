@@ -120,8 +120,7 @@ const Hub = ({hubPubkey}) => {
 
   return (
     <>
-      <Grid item md={4} sx={{padding: {md: "15px", xs: "40px 15px 15px"}}}
->
+      <Grid item md={4} sx={{padding: {md: "15px", xs: "40px 15px 15px"}}}>
         {/* {wallet?.connected &&
           wallet?.publicKey?.toBase58() === hubData?.authority &&
           hubReleases && (
