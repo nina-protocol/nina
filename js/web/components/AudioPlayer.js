@@ -233,9 +233,9 @@ const AudioPlayer = () => {
           disableRipple={true}
         >
           {isPlaying ? (
-            <PauseIcon onClick={() => playButtonHandler()} sx={iconStyle} />
+            <PauseIcon onClickCapture={() => playButtonHandler()} sx={iconStyle} />
           ) : (
-            <PlayArrowIcon onClick={() => playButtonHandler()} sx={iconStyle} />
+            <PlayArrowIcon onClickCapture={() => playButtonHandler()} sx={iconStyle} />
           )}
         </IconButton>
         <IconButton
