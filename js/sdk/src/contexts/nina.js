@@ -534,10 +534,10 @@ const ninaContextHelper = ({
 
   const getSolPrice = async () => {
     try {
-      const price = await axios.get(
-        'https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd'
+      const priceResult = await axios.get(
+        `https://price.jup.ag/v1/price?id=SOL&vsAmount=${ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)}`
       )
-      setSolPrice(price.data.solana.usd)
+      setSolPrice(priceResult.data.data.price)
     } catch (error) {
       return ninaErrorHandler(error)
     }
