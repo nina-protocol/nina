@@ -931,7 +931,7 @@ const hubContextHelper = ({
 
   const saveHubsToState = async (hubs) => {
     try {
-      let updatedState = { ...hubState }
+      let updatedState = {}
       const program = await ninaClient.useProgram()
       let hubAccounts = await program.account.hub.fetchMultiple(
         hubs.map((hub) => new anchor.web3.PublicKey(hub.id)),
@@ -956,7 +956,7 @@ const hubContextHelper = ({
         hub.totalFeesEarned = hubDict[hub.id].totalFeesEarned.toNumber()
         updatedState[hub.id] = hub
       }
-      setHubState(updatedState)
+      setHubState((prevHubState) => ({...prevHubState, ...updatedState}))
     } catch (error) {
       console.warn(error)
     }
