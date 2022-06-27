@@ -52,7 +52,6 @@ pub struct ReleasePurchase<'info> {
     pub release_mint: Account<'info, Mint>,
     #[account(address = token::ID)]
     pub token_program: Program<'info, Token>,
-    pub clock: Sysvar<'info, Clock>,
 }
 
 pub fn handler(
@@ -69,14 +68,13 @@ pub fn handler(
         ctx.accounts.royalty_token_account.clone(),
         ctx.accounts.release_mint.clone(),
         ctx.accounts.token_program.clone(),
-        ctx.accounts.clock.clone(),
         amount,
     )?;
 
     emit!(ReleaseSold {
         public_key: *ctx.accounts.release.to_account_info().key,
         purchaser: *ctx.accounts.receiver.to_account_info().key,
-        date: ctx.accounts.clock.unix_timestamp
+        date: Clock::get()?.unix_timestamp
     });
 
     Ok(())

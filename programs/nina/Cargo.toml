@@ -1,6 +1,6 @@
 [package]
 name = "nina"
-version = "0.2.1"
+version = "0.2.11"
 description = "Nina - A self-publishing protocol"
 edition = "2018"
 

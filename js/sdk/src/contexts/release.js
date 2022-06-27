@@ -497,7 +497,6 @@ const releaseContextHelper = ({
           hubSigner,
           hubWallet,
           tokenProgram: ids.programs.token,
-          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
         },
       }
 
@@ -513,6 +512,16 @@ const releaseContextHelper = ({
         const { data } = await axios.get(
           `https://quote-api.jup.ag/v1/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative((releaseUiPrice + (releaseUiPrice * .01)) / solPrice, ids.mints.wsol)}&slippage=0.5&feeBps=50&onlyDirectRoutes=true`
         )
+        data.data.map(d => {
+          const transactions = await axios.post(
+            'https://quote-api.jup.ag/v1/swap', {
+            route: d[0],
+            userPublicKey: provider.wallet.publicKey.toBase58(),
+            feeAccount: ids.accounts.vaultUsdc,
+          })
+  
+          console.log('tx: ', anchor.web3.Transaction.from(Buffer.from(transactions.data.swapTransaction, 'base64')))
+        })
         const transactions = await axios.post(
           'https://quote-api.jup.ag/v1/swap', {
           route: data.data[0],
@@ -787,7 +796,6 @@ const releaseContextHelper = ({
           royaltyTokenAccount: release.royaltyTokenAccount,
           releaseMint: release.releaseMint,
           tokenProgram: TOKEN_PROGRAM_ID,
-          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
         },
       }
 

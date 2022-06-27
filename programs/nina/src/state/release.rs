@@ -51,7 +51,6 @@ impl Release {
         royalty_token_account: Box<Account<'info, TokenAccount>>,
         release_mint: Account<'info, Mint>,
         token_program: Program<'info, Token>,
-        clock: Sysvar<'info, Clock>,
         amount: u64,
     ) -> Result<()> {
         let mut release = release_loader.load_mut()?;
@@ -60,7 +59,7 @@ impl Release {
             return Err(error!(ErrorCode::ReleasePurchaseWrongReceiver));
         }
         
-        if !(release.release_datetime < clock.unix_timestamp) {
+        if !(release.release_datetime < Clock::get()?.unix_timestamp) {
             return Err(error!(ErrorCode::ReleaseNotLive));
         }
     

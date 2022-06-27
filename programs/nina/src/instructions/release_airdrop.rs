@@ -42,7 +42,6 @@ pub struct ReleaseAirdrop<'info> {
     pub release_mint: Account<'info, Mint>,
     #[account(address = token::ID)]
     pub token_program: Program<'info, Token>,
-    pub clock: Sysvar<'info, Clock>,
 }
 
 pub fn handler(
