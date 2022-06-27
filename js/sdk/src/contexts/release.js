@@ -7,6 +7,7 @@ import {
   wrapSol,
   TOKEN_PROGRAM_ID,
 } from '../utils/web3'
+import axios from 'axios'
 import { ninaErrorHandler } from '../utils/errors'
 import {
   encryptData,
@@ -27,6 +28,7 @@ const ReleaseContextProvider = ({ children }) => {
     addReleaseToCollection,
     collection,
     getUsdcBalance,
+    usdcBalance,
     removeReleaseFromCollection,
   } = useContext(NinaContext)
   const [releasePurchasePending, setReleasePurchasePending] = useState({})
@@ -100,6 +102,7 @@ const ReleaseContextProvider = ({ children }) => {
     setPressingState,
     releasePurchasePending,
     setReleasePurchasePending,
+    usdcBalance,
     getUsdcBalance,
     addReleaseToCollection,
     encryptData,
@@ -183,6 +186,7 @@ const releaseContextHelper = ({
   releasePurchasePending,
   setReleasePurchasePending,
   addReleaseToCollection,
+  usdcBalance,
   getUsdcBalance,
   encryptData,
   collection,
@@ -730,7 +734,7 @@ const releaseContextHelper = ({
     })
 
     try {
-      let [payerTokenAccount] = await findOrCreateAssociatedTokenAccount(
+      let [payerTokenAccount, payerTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
         provider.connection,
         provider.wallet.publicKey,
         provider.wallet.publicKey,
@@ -765,6 +769,34 @@ const releaseContextHelper = ({
       }
 
       const instructions = []
+      if (payerTokenAccountIx) {
+        instructions.push(payerTokenAccountIx)
+      }
+      if (ninaClient.uiToNative(usdcBalance, ids.mints.usdc) < ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)) {
+        const additionalComputeBudgetInstruction = anchor.web3.ComputeBudgetProgram.requestUnits({
+          units: 200000,
+          additionalFee: 0,
+        });
+        instructions.push(additionalComputeBudgetInstruction)
+        const priceResult = await axios.get(
+          `https://price.jup.ag/v1/price?id=SOL&vsAmount=${ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)}`
+        )
+        const price = priceResult.data.data.price
+        console.log('PRICE: ', price, priceResult)
+        const { data } = await axios.get(
+          `https://quote-api.jup.ag/v1/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative(release.price.toNumber() / price, ids.mints.wsol)}&slippage=0.5&feeBps=4&onlyDirectRoutes=true`
+        )
+        const transactions = await axios.post(
+          'https://quote-api.jup.ag/v1/swap', {
+          route: data.data[0],
+          userPublicKey: provider.wallet.publicKey.toBase58(),
+          feeAccount: 'HDhJyie5Gpck7opvAbYi5H22WWofAR3ygKFghdzDkmLf',
+        })
+        instructions.push(...anchor.web3.Transaction.from(Buffer.from(transactions.data.swapTransaction, 'base64')).instructions)
+        console.log('transactions: ', transactions, anchor.web3.Transaction.from(Buffer.from(transactions.data.swapTransaction, 'base64')))
+        console.log('DATA: ', data)
+      }
+
       if (receiverReleaseTokenAccountIx) {
         instructions.push(receiverReleaseTokenAccountIx)
       }
