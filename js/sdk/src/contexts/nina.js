@@ -427,18 +427,14 @@ const ninaContextHelper = ({
   }
 
   const getUsdcBalance = async () => {
-    console.log("GET USDC BALANCE")
     if (provider.wallet?.connected && provider.wallet?.publicKey) {
       try {
         const solPrice =  await axios.get(
           `https://price.jup.ag/v1/price?id=SOL`
         )
-        console.log('solPrice: ', solPrice)
         let solUsdcBalanceResult = await provider.connection.getBalance(
           provider.wallet.publicKey
         )
-        console.log('solUsdcBalanceResult: ', nativeToUi(solUsdcBalanceResult, ids.mints.wsol))
-        console.log("nativeToUi(solUsdcBalanceResult, ids.mints.wsol) * solPrice.data.data.price).toFixed(2) ::> ", ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) * solPrice.data.data.price.toFixed(2))
         setSolUsdcBalance((ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) * solPrice.data.data.price).toFixed(2))
 
         let [usdcTokenAccountPubkey] = await findOrCreateAssociatedTokenAccount(
@@ -455,7 +451,6 @@ const ninaContextHelper = ({
             await provider.connection.getTokenAccountBalance(
               usdcTokenAccountPubkey
             )
-          console.log("usdcTokenAccount ::> ", usdcTokenAccount)
           setUsdcBalance(usdcTokenAccount.value.uiAmount.toFixed(2))
           return
         } else {

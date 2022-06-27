@@ -30,8 +30,7 @@ const NavBar = () => {
   useEffect(() => {
     setConnectedString(healthOk ? 'connected-healthy' : 'connected-unhealthy')
   }, [healthOk])
-  console.log("usdcBalance ::> ", usdcBalance)
-  console.log("solUsdcBalance ::> ", solUsdcBalance)
+
   return (
     <Root>
       <NavLeft>
