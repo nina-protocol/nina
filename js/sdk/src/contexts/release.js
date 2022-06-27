@@ -502,10 +502,6 @@ const releaseContextHelper = ({
       }
 
       const instructions = []
-      if (payerTokenAccountIx) {
-        instructions.push(payerTokenAccountIx)
-      }
-
       if (usdcBalance < ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)) {
         const additionalComputeBudgetInstruction = anchor.web3.ComputeBudgetProgram.requestUnits({
           units: 400000,

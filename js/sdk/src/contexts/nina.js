@@ -462,13 +462,10 @@ const ninaContextHelper = ({
           setUsdcBalance(0)
         }
       } catch {
-        setUsdcBalance(0)
-        setSolUsdcBalance(0)
       }
     } else {
       setUsdcBalance(0)
-      setSolUsdcBalance(0
-        )
+      setSolUsdcBalance(0)
     }
   }
 
