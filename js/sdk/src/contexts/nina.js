@@ -557,6 +557,7 @@ const ninaContextHelper = ({
         `https://price.jup.ag/v1/price?id=SOL`
       )
       setSolPrice(priceResult.data.data.price)
+      return priceResult.data.data.price
     } catch (error) {
       return ninaErrorHandler(error)
     }
