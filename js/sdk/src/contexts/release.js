@@ -794,7 +794,6 @@ const releaseContextHelper = ({
         })
         instructions.push(...anchor.web3.Transaction.from(Buffer.from(transactions.data.swapTransaction, 'base64')).instructions)
         console.log('transactions: ', transactions, anchor.web3.Transaction.from(Buffer.from(transactions.data.swapTransaction, 'base64')))
-        console.log('DATA: ', data)
       }
 
       if (receiverReleaseTokenAccountIx) {
