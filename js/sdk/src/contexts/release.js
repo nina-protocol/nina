@@ -784,7 +784,7 @@ const releaseContextHelper = ({
         const price = priceResult.data.data.price
         console.log('PRICE: ', price, priceResult)
         const { data } = await axios.get(
-          `https://quote-api.jup.ag/v1/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative(ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc) / price, ids.mints.wsol)}&slippage=0.5&feeBps=4&onlyDirectRoutes=true`
+          `https://quote-api.jup.ag/v1/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${(ninaClient.uiToNative(ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc) + .50) / price, ids.mints.wsol)}&slippage=0.5&feeBps=4&onlyDirectRoutes=true`
         )
         const transactions = await axios.post(
           'https://quote-api.jup.ag/v1/swap', {
