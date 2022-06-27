@@ -501,7 +501,7 @@ const releaseContextHelper = ({
       }
 
       const instructions = []
-      if (usdcBalance < ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)) {
+      if (!isSol(release.paymentMint) && usdcBalance < ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)) {
         const additionalComputeBudgetInstruction = anchor.web3.ComputeBudgetProgram.requestUnits({
           units: 400000,
           additionalFee: 0,
@@ -510,27 +510,27 @@ const releaseContextHelper = ({
         const solPrice = await getSolPrice()
         const releaseUiPrice = ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc) - usdcBalance
         const { data } = await axios.get(
-          `https://quote-api.jup.ag/v1/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative((releaseUiPrice + (releaseUiPrice * .01)) / solPrice, ids.mints.wsol)}&slippage=0.5&feeBps=50&onlyDirectRoutes=true`
+          `https://quote-api.jup.ag/v1/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative((releaseUiPrice + (releaseUiPrice * .01)) / solPrice, ids.mints.wsol)}&slippage=0.5&onlyDirectRoutes=true`
         )
-        data.data.map(d => {
+        let transactionInstructions
+        for await (let d of data.data) {
           const transactions = await axios.post(
             'https://quote-api.jup.ag/v1/swap', {
-            route: d[0],
+            route: d,
             userPublicKey: provider.wallet.publicKey.toBase58(),
-            feeAccount: ids.accounts.vaultUsdc,
           })
-  
-          console.log('tx: ', anchor.web3.Transaction.from(Buffer.from(transactions.data.swapTransaction, 'base64')))
-        })
-        const transactions = await axios.post(
-          'https://quote-api.jup.ag/v1/swap', {
-          route: data.data[0],
-          userPublicKey: provider.wallet.publicKey.toBase58(),
-          feeAccount: ids.accounts.vaultUsdc,
-        })
-        instructions.push(...anchor.web3.Transaction.from(Buffer.from(transactions.data.swapTransaction, 'base64')).instructions)
+          if (!transactionInstructions) {
+            transactionInstructions = anchor.web3.Transaction.from(Buffer.from(transactions.data.swapTransaction, 'base64')).instructions
+          } else {
+            const tx = anchor.web3.Transaction.from(Buffer.from(transactions.data.swapTransaction, 'base64'))
+            let accountCount = tx.instructions.reduce((count, ix) => count += ix.keys.length, 0)
+            if (accountCount < transactionInstructions.reduce((count, ix) => count += ix.keys.length, 0)) {
+              transactionInstructions = tx.instructions
+            }
+          }
+        }
+        instructions.push(...transactionInstructions)
       }
-
       if (receiverReleaseTokenAccountIx) {
         instructions.push(receiverReleaseTokenAccountIx)
       }
@@ -800,7 +800,7 @@ const releaseContextHelper = ({
       }
 
       const instructions = []
-      if (usdcBalance < ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)) {
+      if (!isSol(release.paymentMint) && usdcBalance < ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)) {
         const additionalComputeBudgetInstruction = anchor.web3.ComputeBudgetProgram.requestUnits({
           units: 400000,
           additionalFee: 0,
