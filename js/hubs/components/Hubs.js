@@ -46,7 +46,7 @@ const Hubs = () => {
       <HubsContainer>
         <Box
           sx={{
-            padding: { md: "0px 40px 40px 40px !important", xs: "60px 0px 30px" },
+            padding: { md: "0px 40px 40px 40px !important", xs: "0px" },
           }}
         >
           {!wallet?.connected && (
@@ -54,7 +54,7 @@ const Hubs = () => {
               <BlueTypography
                 variant="h1"
                 align="left"
-                sx={{ padding: { md: "0 165px 40px", xs: "30px 0px 10px" } }}
+                sx={{ padding: { md: "0 165px 40px", xs: "0px 0px 10px" } }}
               >
                 <Link href="/all">Hubs </Link>
                 are a new way to publish, share, and discuss music.
@@ -82,7 +82,8 @@ const Hubs = () => {
                 </Link>
                 .
               </BlueTypography>
-              <Box sx={{ display: 'flex', paddingLeft: { md: '30px', xs: '0' } }}>
+
+              <Box sx={{ display: 'flex', paddingLeft: { md: '30px', xs: '0' }}}>
                 <Typography
                   variant="body1"
                   align="left"
@@ -93,7 +94,17 @@ const Hubs = () => {
                   </Link>
                 </Typography>
               </Box>
+              
               <HubSlider hubs={hubs} />
+
+              <Box sx={{mt: '40px'}}>
+              <BlueTypography variant="h1">
+                <Link href="/all">
+                  Start Exploring.
+                </Link>
+              </BlueTypography>
+              </Box>
+
             </>
           )}
           {wallet.connected && (
@@ -128,6 +139,7 @@ const Hubs = () => {
                     </Typography>
                   </Box>
                   <HubSlider hubs={hubs} />
+
                 </DashboardContent>
               )}
               {userHubs?.length > 0 && (
@@ -244,7 +256,10 @@ const HubsContainer = styled("div")(({ theme }) => ({
   overflowX: "visible",
   [theme.breakpoints.down("md")]: {
     width: "80vw",
-    overflowY: 'hidden'
+    overflowY: 'hidden',
+    marginTop: '6vh',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
   [`& .${classes.sectionHeader}`]: {
     fontWeight: "700 !important",

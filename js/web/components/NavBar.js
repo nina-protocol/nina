@@ -12,10 +12,11 @@ import {
   WalletMultiButton,
 } from '@solana/wallet-adapter-material-ui'
 import Breadcrumbs from './Breadcrumbs'
-const { NinaContext } = nina.contexts
+const { NinaContext, HubContext } = nina.contexts
 
 const NavBar = () => {
   const { healthOk, usdcBalance } = useContext(NinaContext)
+  const {getHubsForuser, filterHubsForUser, getHubsForUser, hubState, getHubs } = useContext(HubContext)
   const wallet = useWallet()
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),
@@ -30,6 +31,20 @@ const NavBar = () => {
   useEffect(() => {
     setConnectedString(healthOk ? 'connected-healthy' : 'connected-unhealthy')
   }, [healthOk])
+
+  useEffect(() => {
+    if (wallet.connected) {
+      getHubsForUser(wallet.publicKey.toBase58());
+    }
+    // getHubs(false)
+  }, [wallet.connected]);
+
+  const userHubs = useMemo(() => {
+    if (wallet.connected) {
+      return filterHubsForUser(wallet.publicKey.toBase58());
+    }
+    return undefined;
+  }, [hubState, wallet.connected]);
 
   return (
     <Root>
@@ -46,6 +61,16 @@ const NavBar = () => {
 
       <NavRight>
         <DesktopWalletWrapper>
+          {userHubs && (
+              <a 
+                href={`https://hubs.ninaprotocol.com/${userHubs.length === 1 ? userHubs[0].handle : ''  }` }
+                target="_blank"
+              >
+                <Typography variant="subtitle1" sx={{mr: '15px'}}>
+                  My Hub{userHubs.length > 1 ? 's' : ''}
+                </Typography>
+              </a>
+          )}
           <NavBalance variant="subtitle1">
             {wallet?.connected ? `Balance: $${usdcBalance}` : null}
           </NavBalance>
