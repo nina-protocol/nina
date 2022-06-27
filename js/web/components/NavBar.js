@@ -15,7 +15,7 @@ import Breadcrumbs from './Breadcrumbs'
 const { NinaContext } = nina.contexts
 
 const NavBar = () => {
-  const { healthOk, usdcBalance } = useContext(NinaContext)
+  const { healthOk, usdcBalance, solUsdcBalance } = useContext(NinaContext)
   const wallet = useWallet()
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),
@@ -30,6 +30,9 @@ const NavBar = () => {
   useEffect(() => {
     setConnectedString(healthOk ? 'connected-healthy' : 'connected-unhealthy')
   }, [healthOk])
+  const combinedBalance = useMemo(() =>
+    (parseFloat(usdcBalance) + parseFloat(solUsdcBalance)).toFixed(2)
+  , [usdcBalance, solUsdcBalance])
 
   return (
     <Root>
@@ -47,7 +50,7 @@ const NavBar = () => {
       <NavRight>
         <DesktopWalletWrapper>
           <NavBalance variant="subtitle1">
-            {wallet?.connected ? `Balance: $${usdcBalance}` : null}
+            {wallet?.connected ? `Balance: $${combinedBalance}` : null}
           </NavBalance>
           <NavCtas>
             {wallet.wallets && (

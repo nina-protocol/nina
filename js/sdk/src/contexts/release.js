@@ -428,7 +428,7 @@ const releaseContextHelper = ({
         [releasePubkey.toBase58()]: true,
       })
 
-      let [payerTokenAccount] = await findOrCreateAssociatedTokenAccount(
+      let [payerTokenAccount, payerTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
         provider.connection,
         provider.wallet.publicKey,
         provider.wallet.publicKey,
@@ -502,6 +502,30 @@ const releaseContextHelper = ({
       }
 
       const instructions = []
+      if (payerTokenAccountIx) {
+        instructions.push(payerTokenAccountIx)
+      }
+
+      if (usdcBalance < ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)) {
+        const additionalComputeBudgetInstruction = anchor.web3.ComputeBudgetProgram.requestUnits({
+          units: 400000,
+          additionalFee: 0,
+        });
+        instructions.push(additionalComputeBudgetInstruction)
+        const solPrice = await getSolPrice()
+        const releaseUiPrice = ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc) - usdcBalance
+        const { data } = await axios.get(
+          `https://quote-api.jup.ag/v1/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative((releaseUiPrice + (releaseUiPrice * .01)) / solPrice, ids.mints.wsol)}&slippage=0.5&feeBps=20&onlyDirectRoutes=true`
+        )
+        const transactions = await axios.post(
+          'https://quote-api.jup.ag/v1/swap', {
+          route: data.data[0],
+          userPublicKey: provider.wallet.publicKey.toBase58(),
+          feeAccount: ids.accounts.vaultUsdc,
+        })
+        instructions.push(...anchor.web3.Transaction.from(Buffer.from(transactions.data.swapTransaction, 'base64')).instructions)
+      }
+
       if (receiverReleaseTokenAccountIx) {
         instructions.push(receiverReleaseTokenAccountIx)
       }

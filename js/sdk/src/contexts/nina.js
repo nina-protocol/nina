@@ -12,6 +12,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [collection, setCollection] = useState({})
   const [postState, setPostState] = useState({})
   const [usdcBalance, setUsdcBalance] = useState(0)
+  const [solUsdcBalance, setSolUsdcBalance] = useState(0)
   const [npcAmountHeld, setNpcAmountHeld] = useState(0)
   const [solPrice, setSolPrice] = useState(0)
   const [healthOk, setHealthOk] = useState(true)
@@ -25,6 +26,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   useEffect(() => {
     if (provider.wallet?.wallet && provider.wallet.publicKey) {
       getNpcAmountHeld()
+      getUsdcBalance()
       if (releasePubkey) {
         createCollectionForSingleRelease(releasePubkey)
       } else {
@@ -107,6 +109,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     solPrice,
     setSolPrice,
     bundlrHttpAddress,
+    setSolUsdcBalance
   })
 
   return (
@@ -141,6 +144,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         initBundlr,
         savePostsToState,
         bundlr,
+        solUsdcBalance,
       }}
     >
       {children}
@@ -163,6 +167,7 @@ const ninaContextHelper = ({
   setBundlrPricePerMb,
   setSolPrice,
   bundlrHttpAddress,
+  setSolUsdcBalance,
 }) => {
   const { provider, ids, uiToNative, nativeToUi } = ninaClient
 
@@ -335,10 +340,8 @@ const ninaContextHelper = ({
         for await (let account of walletTokenAccounts) {
           const balance = account.tokenAmount.uiAmount
 
-          if (account.mint === ids.mints.usdc) {
-            setUsdcBalance(balance.toFixed(2))
-          } else if (account.mint === release.releaseMint.toBase58()) {
-            updatedCollection[releasePubkey] = account.tokenAmount.uiAmount
+          if (account.mint === release.releaseMint.toBase58()) {
+            updatedCollection[releasePubkey] = balance
           }
         }
 
@@ -426,8 +429,20 @@ const ninaContextHelper = ({
   }
 
   const getUsdcBalance = async () => {
+    console.log("GET USDC BALANCE")
     if (provider.wallet?.connected && provider.wallet?.publicKey) {
       try {
+        const solPrice =  await axios.get(
+          `https://price.jup.ag/v1/price?id=SOL`
+        )
+        console.log('solPrice: ', solPrice)
+        let solUsdcBalanceResult = await provider.connection.getBalance(
+          provider.wallet.publicKey
+        )
+        console.log('solUsdcBalanceResult: ', nativeToUi(solUsdcBalanceResult, ids.mints.wsol))
+        console.log("nativeToUi(solUsdcBalanceResult, ids.mints.wsol) * solPrice.data.data.price).toFixed(2) ::> ", ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) * solPrice.data.data.price.toFixed(2))
+        setSolUsdcBalance((ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) * solPrice.data.data.price).toFixed(2))
+
         let [usdcTokenAccountPubkey] = await findOrCreateAssociatedTokenAccount(
           provider.connection,
           provider.wallet.publicKey,
@@ -442,14 +457,18 @@ const ninaContextHelper = ({
             await provider.connection.getTokenAccountBalance(
               usdcTokenAccountPubkey
             )
+          console.log("usdcTokenAccount ::> ", usdcTokenAccount)
           setUsdcBalance(usdcTokenAccount.value.uiAmount.toFixed(2))
           return
         }
       } catch {
         setUsdcBalance(0)
+        setSolUsdcBalance(0)
       }
     } else {
       setUsdcBalance(0)
+      setSolUsdcBalance(0
+        )
     }
   }
 
@@ -535,7 +554,7 @@ const ninaContextHelper = ({
   const getSolPrice = async () => {
     try {
       const priceResult = await axios.get(
-        `https://price.jup.ag/v1/price?id=SOL&vsAmount=${ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)}`
+        `https://price.jup.ag/v1/price?id=SOL`
       )
       setSolPrice(priceResult.data.data.price)
     } catch (error) {
