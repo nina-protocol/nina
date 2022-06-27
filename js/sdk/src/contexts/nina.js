@@ -273,9 +273,7 @@ const ninaContextHelper = ({
           const mint = new anchor.web3.PublicKey(account.mint)
           const balance = account.tokenAmount.uiAmount
 
-          if (account.mint === ids.mints.usdc) {
-            setUsdcBalance(balance.toFixed(2))
-          } else if (balance > 0 && balance % 1 === 0) {
+          if (account.mint !== ids.mints.usdc && balance > 0 && balance % 1 === 0) {
             const [release] = await anchor.web3.PublicKey.findProgramAddress(
               [
                 Buffer.from(anchor.utils.bytes.utf8.encode('nina-release')),
@@ -460,6 +458,8 @@ const ninaContextHelper = ({
           console.log("usdcTokenAccount ::> ", usdcTokenAccount)
           setUsdcBalance(usdcTokenAccount.value.uiAmount.toFixed(2))
           return
+        } else {
+          setUsdcBalance(0)
         }
       } catch {
         setUsdcBalance(0)
