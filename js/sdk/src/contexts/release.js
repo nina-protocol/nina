@@ -517,6 +517,7 @@ const releaseContextHelper = ({
           const transactions = await axios.post(
             'https://quote-api.jup.ag/v1/swap', {
             route: d,
+            wrapUnwrapSOL: false,
             userPublicKey: provider.wallet.publicKey.toBase58(),
           })
           if (!transactionInstructions) {
