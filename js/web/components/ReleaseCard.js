@@ -30,7 +30,7 @@ const ReleaseCard = (props) => {
           <CtaWrapper>
             <Box>
               <Button
-                onClick={() => {
+                onClickCapture={() => {
                   if (isPlaying && track.releasePubkey === releasePubkey) {
                     setIsPlaying(false)
                   } else {

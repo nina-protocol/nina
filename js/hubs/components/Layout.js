@@ -10,12 +10,9 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { lightThemeOptions } from "../styles/theme/lightThemeOptions";
 import Head from "next/head";
 
-
-import Dots from "./Dots";
-const HubCreate = dynamic(() => import("./HubCreate"));
 const Navigation = dynamic(() => import("./Navigation"));
 const AudioPlayer = dynamic(() => import("./AudioPlayer"));
-const { HubContext, NinaContext } = nina.contexts;
+const { HubContext } = nina.contexts;
 const lightTheme = createTheme(lightThemeOptions);
 
 const Layout = ({ children }) => {
@@ -63,6 +60,10 @@ const Layout = ({ children }) => {
 
   if (router.pathname.includes("/releases")) {
     topSpace = "80px";
+  }
+  
+  if (router.pathname === '/') {
+    topSpace = "45px";
   }
 
   return (
@@ -141,6 +142,7 @@ const Root = styled("div")(({ theme }) => ({
     background: theme.palette.background.default,
     [theme.breakpoints.down("md")]: {
       overflowY: "scroll",
+      height: '100vh',
       "&::-webkit-scrollbar": {
         display: "none !important",
       },
