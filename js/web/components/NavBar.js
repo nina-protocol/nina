@@ -12,10 +12,11 @@ import {
   WalletMultiButton,
 } from '@solana/wallet-adapter-material-ui'
 import Breadcrumbs from './Breadcrumbs'
-const { NinaContext } = nina.contexts
+const { NinaContext, HubContext } = nina.contexts
 
 const NavBar = () => {
-  const { healthOk, usdcBalance, solUsdcBalance } = useContext(NinaContext)
+  const { healthOk } = useContext(NinaContext)
+  const {getHubsForuser, filterHubsForUser, getHubsForUser, hubState, getHubs } = useContext(HubContext)
   const wallet = useWallet()
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),
@@ -30,6 +31,20 @@ const NavBar = () => {
   useEffect(() => {
     setConnectedString(healthOk ? 'connected-healthy' : 'connected-unhealthy')
   }, [healthOk])
+
+  useEffect(() => {
+    if (wallet.connected) {
+      getHubsForUser(wallet.publicKey.toBase58());
+    }
+    // getHubs(false)
+  }, [wallet.connected]);
+
+  const userHubs = useMemo(() => {
+    if (wallet.connected) {
+      return filterHubsForUser(wallet.publicKey.toBase58());
+    }
+    return undefined;
+  }, [hubState, wallet.connected]);
 
   return (
     <Root>
@@ -46,9 +61,16 @@ const NavBar = () => {
 
       <NavRight>
         <DesktopWalletWrapper>
-          <NavBalance variant="subtitle1">
-            {wallet?.connected ? `Balance: $${(parseFloat(usdcBalance) + parseFloat(solUsdcBalance)).toFixed(2)}` : null}
-          </NavBalance>
+          {userHubs && (
+              <a 
+                href={`https://hubs.ninaprotocol.com/${userHubs.length === 1 ? userHubs[0].handle : ''  }` }
+                target="_blank"
+              >
+                <Typography variant="subtitle1" sx={{mr: '15px'}}>
+                  My Hub{userHubs.length > 1 ? 's' : ''}
+                </Typography>
+              </a>
+          )}
           <NavCtas>
             {wallet.wallets && (
               <StyledWalletDialogProvider featuredWallets={4}>
@@ -129,13 +151,6 @@ const NavRight = styled('div')(({ theme }) => ({
 const NavCtas = styled('div')(() => ({
   display: 'flex',
   alignItems: 'flex-start',
-}))
-
-const NavBalance = styled(Typography)(({ theme }) => ({
-  color: theme.palette.blue,
-  [theme.breakpoints.down('md')]: {
-    display: 'none',
-  },
 }))
 
 const Logo = styled('div')(({ theme }) => ({
