@@ -509,7 +509,7 @@ const releaseContextHelper = ({
         instructions.push(additionalComputeBudgetInstruction)
         const solPrice = await getSolPrice()
         let releasePriceUi = ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)
-        let convertAmount = releasePriceUi + (releasePriceUi * hub.referralFee.toNumber * 10000)
+        let convertAmount = releasePriceUi + (releasePriceUi * hub.referralFee.toNumber() / 10000)
         convertAmount -= usdcBalance
         const { data } = await axios.get(
           `https://quote-api.jup.ag/v1/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative((convertAmount + (convertAmount * .01)) / solPrice, ids.mints.wsol)}&slippage=0.5&onlyDirectRoutes=true`
