@@ -7,6 +7,8 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
 import HelpIcon from "@mui/icons-material/Help";
+import {useQuill} from 'react-quilljs'
+import 'quill/dist/quill.snow.css'
 
 const { formatPlaceholder } = nina.utils;
 
@@ -35,7 +37,7 @@ const HubCreateForm = ({
         <div>
           <div style={{ paddingBottom: "15px" }}>
             The Publish Fee sets the % of revenue shares that releases published
-            through this hub will send to the Hub.
+            through this hub will send to the hub.
           </div>
           <div style={{ paddingBottom: "15px" }}>
             ie: a 5% Publish Fee means the publisher of the release will have
@@ -232,21 +234,7 @@ const HubCreateForm = ({
         <Field name="description">
           {(props) => (
             <Box>
-              <TextField
-                className="formField"
-                variant="standard"
-                label={formatPlaceholder(props.field.name)}
-                size="small"
-                multiline
-                rows={3}
-                InputLabelProps={touched.description ? { shrink: true } : ""}
-                placeholder={
-                  errors.description && touched.description
-                    ? errors.description
-                    : null
-                }
-                {...props.field}
-              />
+              <Quill props={props} />
             </Box>
           )}
         </Field>
@@ -259,6 +247,73 @@ const Root = styled("div")(() => ({
   margin: "auto",
   width: "100%",
 }));
+
+const Quill = ({props}) => {
+  const theme = 'snow'
+
+  const modules = {
+    toolbar: [
+      [{header: [1, 2, 3, 4, 5, 6, false]}],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{script: 'sub'}, {script: 'super'}],
+      ['link'],
+    ],
+    clipboard: {
+      matchVisual: false,
+    },
+    magicUrl: true,
+  }
+
+  const placeholder = ''
+
+  const formats = [
+    'bold',
+    'italic',
+    'underline',
+    'strike',
+    'header',
+    'link',
+    'script',
+  ]
+
+  const {quill, quillRef, Quill} = useQuill({
+    theme,
+    modules,
+    formats,
+    placeholder,
+  })
+  if (Quill) {
+    const MagicUrl = require('quill-magic-url').default // Install with 'yarn add quill-magic-url'
+    Quill.register('modules/magicUrl', MagicUrl)
+    var Link = Quill.import('formats/link')
+    var builtInFunc = Link.sanitize
+    Link.sanitize = function customSanitizeLinkInput(linkValueInput) {
+      var val = linkValueInput
+
+      // do nothing, since this implies user's already using a custom protocol
+      if (/^\w+:/.test(val));
+      else if (!/^https?:/.test(val)) val = 'http://' + val
+
+      return builtInFunc.call(this, val) // retain the built-in logic
+    }
+  }
+
+  useEffect(() => {
+    if (quill) {
+      quill.on('text-change', () => {
+        props.form.setFieldValue('description', JSON.stringify(quill.root.innerHTML))
+      })
+    }
+  }, [quill])
+
+  // useEffect(() => {
+  //   if (postCreated) {
+  //     quill?.setContents([{insert: '\n'}])
+  //   }
+  // }, [postCreated])
+
+  return <Box style={{height: '150px'}} ref={quillRef} />
+}
 
 export default withFormik({
   enableReinitialize: true,

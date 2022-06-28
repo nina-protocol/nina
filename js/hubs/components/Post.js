@@ -78,6 +78,7 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
       );
     }
   }, [releaseState, referenceReleasePubkey]);
+
   useEffect(() => {
     if (postState[postPubkey]?.postContent.json.body) {
       unified()

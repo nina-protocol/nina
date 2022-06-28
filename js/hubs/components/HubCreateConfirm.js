@@ -1,10 +1,16 @@
-import { useState, useMemo, useEffect } from "react";
+import {useState, useMemo, useEffect, createElement, Fragment } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { styled } from "@mui/material/styles";
 import { useWallet } from "@solana/wallet-adapter-react";
+
+import {unified} from "unified";
+import rehypeParse from "rehype-parse";
+import rehypeReact from "rehype-react";
+import rehypeSanitize from "rehype-sanitize";
+import rehypeExternalLinks from "rehype-external-links";
 
 const style = {
   position: "absolute",
@@ -39,6 +45,7 @@ const HubCreateConfirm = (props) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [buttonText, setButtonText] = useState("Create Hub");
+  const [description, setDescription] = useState();
 
   const submitAndCloseModal = async () => {
     setFormValuesConfirmed(true);
@@ -53,6 +60,31 @@ const HubCreateConfirm = (props) => {
       setButtonText("You do not have permission to update Hub Info");
     }
   }, [update, isAuthority]);
+
+  useEffect(() => {
+    if (formValues.hubForm.description) {
+      unified()
+      .use(rehypeParse, {fragment: true})
+      .use(rehypeSanitize)
+      .use(rehypeReact, {
+        createElement,
+        Fragment,
+      })
+      .use(rehypeExternalLinks, {
+        target: false,
+        rel: ["nofollow", "noreferrer"],
+      })
+      .process(
+        JSON.parse(formValues.hubForm.description).replaceAll(
+          "<p><br></p>",
+          ""
+        )
+      )
+      .then((file) => {
+        setDescription(file.result);
+      });
+    }
+  }, [formValues.hubForm.description]);
 
   return (
     <div>

@@ -1,13 +1,19 @@
-import React, {useState, useContext, useEffect, useMemo} from "react";
+import React, {useState, useContext, useEffect, useMemo, createElement, Fragment} from "react";
 import dynamic from "next/dynamic";
 import nina from "@nina-protocol/nina-sdk";
 import {styled} from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Link from "next/link";
 import Dots from "./Dots";
 import UserReleasesPrompt from "./UserReleasesPrompt";
+
+import {unified} from "unified";
+import rehypeParse from "rehype-parse";
+import rehypeReact from "rehype-react";
+import rehypeSanitize from "rehype-sanitize";
+import rehypeExternalLinks from "rehype-external-links";
+
 
 import {useWallet} from "@solana/wallet-adapter-react";
 const ContentTileView = dynamic(() => import("./ContentTileView"));
@@ -16,7 +22,6 @@ const {HubContext, NinaContext, ReleaseContext} = nina.contexts;
 const Hub = ({hubPubkey}) => {
   const {
     hubState,
-    hubContentState,
     hubCollaboratorsState,
     initialLoad,
     getHub,
@@ -32,26 +37,11 @@ const Hub = ({hubPubkey}) => {
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey);
+  const [description, setDescription] = useState();
   const hubCollaborators = useMemo(
     () => filterHubCollaboratorsForHub(hubPubkey) || [],
     [hubCollaboratorsState, hubPubkey]
   );
-  const canAddContent = useMemo(() => {
-    if (wallet?.connected) {
-      const hubCollaboratorForWallet = Object.values(hubCollaborators)?.filter(
-        (hubCollaborator) =>
-          hubCollaborator.collaborator === wallet?.publicKey?.toBase58()
-      )[0];
-      if (hubCollaboratorForWallet && hubCollaboratorForWallet.canAddContent) {
-        return true;
-      }
-      if (wallet?.publicKey?.toBase58() === hubData?.authority) {
-        return true;
-      }
-    }
-    return false;
-  }, [hubCollaborators, hubData, wallet]);
-
 
   const contentData = useMemo(() => {
     const contentArray = [];
@@ -107,6 +97,36 @@ const Hub = ({hubPubkey}) => {
     };
   }, [hubReleases, hubPosts]);
 
+  useEffect(() => {
+    console.log('(hubData?.json.description) :>> ', (hubData?.json.description));
+    if (hubData?.json.description.includes('<p>')) {
+      console.log('rich description');
+      unified()
+        .use(rehypeParse, {fragment: true})
+        .use(rehypeSanitize)
+        .use(rehypeReact, {
+          createElement,
+          Fragment,
+        })
+        .use(rehypeExternalLinks, {
+          target: false,
+          rel: ["nofollow", "noreferrer"],
+        })
+        .process(
+          JSON.parse(hubData.json.description).replaceAll(
+            "<p><br></p>",
+            ""
+          )
+        )
+        .then((file) => {
+          setDescription(file.result);
+        });
+    } else {
+      console.log('normal description');
+      setDescription(hubData?.json.description)
+    }
+  }, [hubData?.json.description]);
+
   if (!hubState[hubPubkey]?.json) {
     return null;
   }
@@ -134,7 +154,7 @@ const Hub = ({hubPubkey}) => {
               sx={{padding: {md: "15px", xs: "40px 0 0"}}}
             >
               <Typography align="left" sx={{color: "text.primary"}}>
-                {hubData?.json.description}
+                {description}
               </Typography>
             </DescriptionWrapper>
           )}
