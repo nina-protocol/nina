@@ -512,8 +512,8 @@ const releaseContextHelper = ({
         let releasePriceUi = ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)
         console.log('releasePriceUi: ', releasePriceUi)
         console.log('hub.referralFee.toNumber(): ', hub.referralFee.toNumber())
-        console.log('releasePriceUi * hub.referralFee.toNumber() / 10000: ', releasePriceUi * hub.referralFee.toNumber() / 10000)
-        let convertAmount = releasePriceUi + (releasePriceUi * hub.referralFee.toNumber() / 10000)
+        console.log('releasePriceUi * hub.referralFee.toNumber() / 10000: ', releasePriceUi * hub.referralFee.toNumber() / 1000000)
+        let convertAmount = releasePriceUi + (releasePriceUi * hub.referralFee.toNumber() / 1000000)
         console.log('convertAmount 1: ', convertAmount)
         convertAmount -= usdcBalance
         console.log('convertAmount 2: ', convertAmount)
