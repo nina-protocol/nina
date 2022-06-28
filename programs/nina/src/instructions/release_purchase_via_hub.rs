@@ -72,15 +72,9 @@ pub struct ReleasePurchaseViaHub<'info> {
         bump,
     )]
     pub hub_content: Box<Account<'info, HubContent>>,
-    /// CHECK: This is safe because PDA is derived from hub which is checked above
-    #[account(
-        seeds = [b"nina-hub-signer".as_ref(), hub.key().as_ref()],
-        bump,
-    )]
-    pub hub_signer: UncheckedAccount<'info>,
     #[account(
         mut,
-        constraint = hub_wallet.owner == hub_signer.key(),
+        constraint = hub_wallet.owner == hub.load()?.hub_signer,
         constraint = hub_wallet.mint == release.load()?.payment_mint
     )]
     pub hub_wallet: Box<Account<'info, TokenAccount>>,
