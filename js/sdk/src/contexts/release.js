@@ -33,6 +33,7 @@ const ReleaseContextProvider = ({ children }) => {
     getSolPrice,
   } = useContext(NinaContext)
   const [releasePurchasePending, setReleasePurchasePending] = useState({})
+  const [releasePurchaseTransactionPending, setReleasePurchaseTransactionPending] = useState({})
   const [pressingState, setPressingState] = useState(defaultPressingState)
   const [redeemableState, setRedeemableState] = useState({})
   const [searchResults, setSearchResults] = useState(searchResultsInitialState)
@@ -119,6 +120,8 @@ const ReleaseContextProvider = ({ children }) => {
     setAllReleases,
     setAllReleasesCount,
     getSolPrice,
+    releasePurchaseTransactionPending,
+    setReleasePurchaseTransactionPending,
   })
 
   return (
@@ -171,6 +174,7 @@ const ReleaseContextProvider = ({ children }) => {
         releaseInitViaHub,
         getPublishedHubForRelease,
         getHubsForRelease,
+        releasePurchaseTransactionPending,
       }}
     >
       {children}
@@ -202,6 +206,8 @@ const releaseContextHelper = ({
   setAllReleasesCount,
   setSearchResults,
   getSolPrice,
+  releasePurchaseTransactionPending,
+  setReleasePurchaseTransactionPending,
 }) => {
   const { provider, ids, nativeToUi, uiToNative, isSol, isUsdc, endpoints } =
     ninaClient
@@ -415,6 +421,11 @@ const releaseContextHelper = ({
 
   const releasePurchaseViaHub = async (releasePubkey, hubPubkey) => {
     try {
+      setReleasePurchaseTransactionPending({
+        ...releasePurchaseTransactionPending,
+        [releasePubkey]: true,
+      })
+
       const program = await ninaClient.useProgram()
       let release = releaseState.tokenData[releasePubkey]
       releasePubkey = new anchor.web3.PublicKey(releasePubkey)
@@ -428,7 +439,7 @@ const releaseContextHelper = ({
         [releasePubkey.toBase58()]: true,
       })
 
-      let [payerTokenAccount, payerTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+      let [payerTokenAccount] = await findOrCreateAssociatedTokenAccount(
         provider.connection,
         provider.wallet.publicKey,
         provider.wallet.publicKey,
@@ -557,6 +568,10 @@ const releaseContextHelper = ({
         request.signers = signers
         request.accounts.payerTokenAccount = signers[0].publicKey
       }
+      setReleasePurchaseTransactionPending({
+        ...releasePurchaseTransactionPending,
+        [releasePubkey.toBase58()]: false,
+      })
       const txid = await program.rpc.releasePurchaseViaHub(
         release.price,
         decodeNonEncryptedByteArray(hub.handle),
@@ -566,7 +581,7 @@ const releaseContextHelper = ({
 
       setReleasePurchasePending({
         ...releasePurchasePending,
-        [releasePubkey]: false,
+        [releasePubkey.toBase58()]: false,
       })
       getUsdcBalance()
       addReleaseToCollection(releasePubkey.toBase58())
@@ -581,7 +596,11 @@ const releaseContextHelper = ({
       getRelease(releasePubkey)
       setReleasePurchasePending({
         ...releasePurchasePending,
-        [releasePubkey]: false,
+        [releasePubkey.toBase58()]: false,
+      })
+      setReleasePurchaseTransactionPending({
+        ...releasePurchaseTransactionPending,
+        [releasePubkey.toBase58()]: false,
       })
       return ninaErrorHandler(error)
     }
@@ -753,6 +772,10 @@ const releaseContextHelper = ({
   }
 
   const releasePurchase = async (releasePubkey) => {
+    setReleasePurchaseTransactionPending({
+      ...releasePurchaseTransactionPending,
+      [releasePubkey]: true,
+    })
     const program = await ninaClient.useProgram()
 
     let release = releaseState.tokenData[releasePubkey]
@@ -843,6 +866,10 @@ const releaseContextHelper = ({
         request.signers = signers
         request.accounts.payerTokenAccount = signers[0].publicKey
       }
+      setReleasePurchaseTransactionPending({
+        ...releasePurchaseTransactionPending,
+        [releasePubkey]: false,
+      })
 
       const txid = await program.rpc.releasePurchase(release.price, request)
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
@@ -863,6 +890,10 @@ const releaseContextHelper = ({
       getRelease(releasePubkey)
       setReleasePurchasePending({
         ...releasePurchasePending,
+        [releasePubkey]: false,
+      })
+      setReleasePurchaseTransactionPending({
+        ...releasePurchaseTransactionPending,
         [releasePubkey]: false,
       })
       return ninaErrorHandler(error)

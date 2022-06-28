@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext, useMemo } from 'react'
 import axios from 'axios'
 import { styled } from '@mui/material/styles'
 import { useWallet } from '@solana/wallet-adapter-react'
@@ -22,6 +22,7 @@ const ReleasePurchase = (props) => {
   const {
     releasePurchase,
     releasePurchasePending,
+    releasePurchaseTransactionPending,
     releaseState,
     getRelease,
     getPublishedHubForRelease,
@@ -32,7 +33,6 @@ const ReleasePurchase = (props) => {
     filterExchangesForReleaseBuySell,
     getExchangesForRelease,
   } = useContext(ExchangeContext)
-  const [pending, setPending] = useState(undefined)
   const [release, setRelease] = useState(undefined)
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
   const [amountPendingBuys, setAmountPendingBuys] = useState(0)
@@ -42,6 +42,8 @@ const ReleasePurchase = (props) => {
   const [exchangeTotalBuys, setExchangeTotalBuys] = useState(0)
   const [exchangeTotalSells, setExchangeTotalSells] = useState(0)
   const [publishedHub, setPublishedHub] = useState()
+  const txPending = useMemo(() => releasePurchaseTransactionPending[releasePubkey], [releasePubkey, releasePurchaseTransactionPending])
+  const pending = useMemo(() => releasePurchasePending[releasePubkey], [releasePubkey, releasePurchasePending])
 
   useEffect(() => {
     getRelease(releasePubkey)
@@ -59,10 +61,6 @@ const ReleasePurchase = (props) => {
       setRelease(releaseState.tokenData[releasePubkey])
     }
   }, [releaseState.tokenData[releasePubkey]])
-
-  useEffect(() => {
-    setPending(releasePurchasePending[releasePubkey])
-  }, [releasePurchasePending[releasePubkey]])
 
   useEffect(() => {
     getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
@@ -241,7 +239,15 @@ const ReleasePurchase = (props) => {
             fullWidth
           >
             <Typography variant="body2">
-              {pending ? <Dots msg="awaiting wallet approval" /> : buttonText}
+              {txPending &&
+                <Dots msg="preparing transaction" />
+              }
+              {!txPending && pending &&
+                <Dots msg="awaiting wallet approval" />
+              }
+              {!txPending && !pending &&
+                buttonText
+              }
             </Typography>
           </Button>
         </form>
