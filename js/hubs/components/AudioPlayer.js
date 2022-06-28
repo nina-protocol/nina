@@ -242,7 +242,7 @@ const AudioPlayer = ({ hubPubkey }) => {
 const Controls = styled("div")(({ theme }) => ({
   paddingBottom: theme.spacing(2),
   width: "100%",
-  maxWidth: "500px",
+  maxWidth: "480px",
   minWidth: '250px',
   "& .MuiButton-root": {
     fontSize: theme.typography.body1.fontSize,
