@@ -12,7 +12,7 @@ import { useRouter } from "next/router";
 import Dots from "./Dots";
 import ReleaseSettings from "./ReleaseSettings";
 import HubsModal from './HubsModal'
-const { ReleaseContext, NinaContext } = nina.contexts;
+const { ReleaseContext, NinaContext, HubContext } = nina.contexts;
 
 const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, inPost, hubPubkey } = props;
@@ -26,6 +26,7 @@ const ReleasePurchase = (props) => {
     releaseState,
     getPublishedHubForRelease,
   } = useContext(ReleaseContext);
+  const { hubState } = useContext(HubContext)
   const { getAmountHeld, collection, usdcBalance, ninaClient } = useContext(NinaContext);
   const [release, setRelease] = useState(undefined);
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey]);
@@ -75,8 +76,8 @@ const ReleasePurchase = (props) => {
     let result;
 
     if (!release.pending) {
-      let releasePriceUi = ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)
-      let convertAmount = releasePriceUi + (releasePriceUi * hub.referralFee.toNumber() / 1000000)
+      let releasePriceUi = ninaClient.nativeToUi(release.price.toNumber(), ninaClient.ids.mints.usdc)
+      let convertAmount = releasePriceUi + (releasePriceUi * hubState[hubPubkey].referralFee / 100)
       if (!ninaClient.isSol(release.releaseMint) && usdcBalance < convertAmount) {
         enqueueSnackbar("Calculating SOL - USDC Swap...", {
           variant: "info",
