@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useMemo } from "react";
 import axios from "axios";
 import { styled } from "@mui/material/styles";
 import nina from "@nina-protocol/nina-sdk";
@@ -22,28 +22,25 @@ const ReleasePurchase = (props) => {
   const {
     releasePurchaseViaHub,
     releasePurchasePending,
+    releasePurchaseTransactionPending,
     releaseState,
-    getRelease,
     getPublishedHubForRelease,
   } = useContext(ReleaseContext);
-  const { ninaClient } = useContext(NinaContext);
-  const { getAmountHeld, collection } = useContext(NinaContext);
-  const [pending, setPending] = useState(undefined);
+  const { hubState } = useContext(HubContext)
+  const { getAmountHeld, collection, usdcBalance, ninaClient } = useContext(NinaContext);
   const [release, setRelease] = useState(undefined);
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey]);
   const [downloadButtonString, setDownloadButtonString] = useState("Download");
   const [userIsRecipient, setUserIsRecipient] = useState(false);
   const [publishedHub, setPublishedHub] = useState();
+  const txPending = useMemo(() => releasePurchaseTransactionPending[releasePubkey], [releasePubkey, releasePurchaseTransactionPending])
+  const pending = useMemo(() => releasePurchasePending[releasePubkey], [releasePubkey, releasePurchasePending])
 
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
       setRelease(releaseState.tokenData[releasePubkey]);
     }
   }, [releaseState]);
-
-  useEffect(() => {
-    setPending(releasePurchasePending[releasePubkey]);
-  }, [releasePurchasePending, releasePubkey]);
 
   useEffect(() => {
     setAmountHeld(collection[releasePubkey]);
@@ -79,9 +76,17 @@ const ReleasePurchase = (props) => {
     let result;
 
     if (!release.pending) {
-      enqueueSnackbar("Making transaction...", {
-        variant: "info",
-      });
+      let releasePriceUi = ninaClient.nativeToUi(release.price.toNumber(), ninaClient.ids.mints.usdc)
+      let convertAmount = releasePriceUi + (releasePriceUi * hubState[hubPubkey].referralFee / 100)
+      if (!ninaClient.isSol(release.releaseMint) && usdcBalance < convertAmount) {
+        enqueueSnackbar("Calculating SOL - USDC Swap...", {
+          variant: "info",
+        });
+      } else {
+        enqueueSnackbar("Preparing transaction...", {
+          variant: "info",
+        });
+      }
       result = await releasePurchaseViaHub(releasePubkey, hubPubkey);
       if (result) {
         showCompletedTransaction(result);
@@ -176,7 +181,15 @@ const ReleasePurchase = (props) => {
       <form onSubmit={handleSubmit} style={{ textAlign: "left" }}>
         <BuyButton variant="contained" type="submit" disabled={buttonDisabled}>
           <Typography variant="body2" align="left">
-            {pending ? <Dots msg="awaiting wallet approval" /> : buttonText}
+            {txPending &&
+              <Dots msg="preparing transaction" />
+            }
+            {!txPending && pending &&
+              <Dots msg="awaiting wallet approval" />
+            }
+            {!txPending && !pending &&
+              buttonText
+            }
           </Typography>
         </BuyButton>
       </form>

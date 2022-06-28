@@ -15,7 +15,7 @@ import Breadcrumbs from './Breadcrumbs'
 const { NinaContext, HubContext } = nina.contexts
 
 const NavBar = () => {
-  const { healthOk, usdcBalance } = useContext(NinaContext)
+  const { healthOk } = useContext(NinaContext)
   const {getHubsForuser, filterHubsForUser, getHubsForUser, hubState, getHubs } = useContext(HubContext)
   const wallet = useWallet()
   const base58 = useMemo(
@@ -71,9 +71,6 @@ const NavBar = () => {
                 </Typography>
               </a>
           )}
-          <NavBalance variant="subtitle1">
-            {wallet?.connected ? `Balance: $${usdcBalance}` : null}
-          </NavBalance>
           <NavCtas>
             {wallet.wallets && (
               <StyledWalletDialogProvider featuredWallets={4}>
@@ -154,13 +151,6 @@ const NavRight = styled('div')(({ theme }) => ({
 const NavCtas = styled('div')(() => ({
   display: 'flex',
   alignItems: 'flex-start',
-}))
-
-const NavBalance = styled(Typography)(({ theme }) => ({
-  color: theme.palette.blue,
-  [theme.breakpoints.down('md')]: {
-    display: 'none',
-  },
 }))
 
 const Logo = styled('div')(({ theme }) => ({
