@@ -512,15 +512,15 @@ const releaseContextHelper = ({
       }
 
       const instructions = []
-      if (!isSol(release.paymentMint) && usdcBalance < ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)) {
+      const solPrice = await getSolPrice()
+      let releasePriceUi = ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)
+      let convertAmount = releasePriceUi + (releasePriceUi * hub.referralFee.toNumber() / 1000000)
+      if (!isSol(release.paymentMint) && usdcBalance < convertAmount) {
         const additionalComputeBudgetInstruction = anchor.web3.ComputeBudgetProgram.requestUnits({
           units: 400000,
           additionalFee: 0,
         });
         instructions.push(additionalComputeBudgetInstruction)
-        const solPrice = await getSolPrice()
-        let releasePriceUi = ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)
-        let convertAmount = releasePriceUi + (releasePriceUi * hub.referralFee.toNumber() / 1000000)
         convertAmount -= usdcBalance
         const { data } = await axios.get(
           `https://quote-api.jup.ag/v1/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative((convertAmount + (convertAmount * .01)) / solPrice, ids.mints.wsol)}&slippage=0.5&onlyDirectRoutes=true`

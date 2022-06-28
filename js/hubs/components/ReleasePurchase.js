@@ -12,7 +12,7 @@ import { useRouter } from "next/router";
 import Dots from "./Dots";
 import ReleaseSettings from "./ReleaseSettings";
 import HubsModal from './HubsModal'
-const { ReleaseContext, NinaContext, HubContext } = nina.contexts;
+const { ReleaseContext, NinaContext } = nina.contexts;
 
 const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, inPost, hubPubkey } = props;
@@ -26,8 +26,7 @@ const ReleasePurchase = (props) => {
     releaseState,
     getPublishedHubForRelease,
   } = useContext(ReleaseContext);
-  const { ninaClient } = useContext(NinaContext);
-  const { getAmountHeld, collection } = useContext(NinaContext);
+  const { getAmountHeld, collection, usdcBalance, ninaClient } = useContext(NinaContext);
   const [release, setRelease] = useState(undefined);
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey]);
   const [downloadButtonString, setDownloadButtonString] = useState("Download");
@@ -76,9 +75,17 @@ const ReleasePurchase = (props) => {
     let result;
 
     if (!release.pending) {
-      enqueueSnackbar("Making transaction...", {
-        variant: "info",
-      });
+      let releasePriceUi = ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)
+      let convertAmount = releasePriceUi + (releasePriceUi * hub.referralFee.toNumber() / 1000000)
+      if (!ninaClient.isSol(release.releaseMint) && usdcBalance < convertAmount) {
+        enqueueSnackbar("Calculating SOL - USDC Swap...", {
+          variant: "info",
+        });
+      } else {
+        enqueueSnackbar("Preparing transaction...", {
+          variant: "info",
+        });
+      }
       result = await releasePurchaseViaHub(releasePubkey, hubPubkey);
       if (result) {
         showCompletedTransaction(result);

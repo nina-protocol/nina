@@ -27,7 +27,7 @@ const ReleasePurchase = (props) => {
     getRelease,
     getPublishedHubForRelease,
   } = useContext(ReleaseContext)
-  const { getAmountHeld, collection, ninaClient } = useContext(NinaContext)
+  const { getAmountHeld, collection, ninaClient, usdcBalance } = useContext(NinaContext)
   const {
     exchangeState,
     filterExchangesForReleaseBuySell,
@@ -108,9 +108,15 @@ const ReleasePurchase = (props) => {
     let result
 
     if (!release.pending) {
-      enqueueSnackbar('Making transaction...', {
-        variant: 'info',
-      })
+      if (!ninaClient.isSol(release.paymentMint) && usdcBalance < ninaClient.nativeToUi(release.price.toNumber(), ninaClient.ids.mints.usdc)) {
+        enqueueSnackbar('Calculating SOL - USDC Swap...', {
+          variant: 'info',
+        })
+      } else {
+        enqueueSnackbar('Preparing transaction...', {
+          variant: 'info',
+        })
+      }
       result = await releasePurchase(releasePubkey)
       if (result) {
         showCompletedTransaction(result)
