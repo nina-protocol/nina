@@ -508,17 +508,9 @@ const releaseContextHelper = ({
         });
         instructions.push(additionalComputeBudgetInstruction)
         const solPrice = await getSolPrice()
-        console.log('solPrice: ', solPrice)
         let releasePriceUi = ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)
-        console.log('releasePriceUi: ', releasePriceUi)
-        console.log('hub.referralFee.toNumber(): ', hub.referralFee.toNumber())
-        console.log('releasePriceUi * hub.referralFee.toNumber() / 10000: ', releasePriceUi * hub.referralFee.toNumber() / 1000000)
         let convertAmount = releasePriceUi + (releasePriceUi * hub.referralFee.toNumber() / 1000000)
-        console.log('convertAmount 1: ', convertAmount)
         convertAmount -= usdcBalance
-        console.log('convertAmount 2: ', convertAmount)
-        console.log('convertAmount 3: ', (convertAmount + (convertAmount * .01)))
-        console.log('convertAmount 4: ', ninaClient.uiToNative((convertAmount + (convertAmount * .01)) / solPrice, ids.mints.wsol))
         const { data } = await axios.get(
           `https://quote-api.jup.ag/v1/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative((convertAmount + (convertAmount * .01)) / solPrice, ids.mints.wsol)}&slippage=0.5&onlyDirectRoutes=true`
         )

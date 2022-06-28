@@ -21,7 +21,6 @@ import {
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/router";
 
 const { HubContext, NinaContext } = nina.contexts;
 
@@ -64,7 +63,6 @@ const Navigation = ({ hubPubkey }) => {
 
   const { hubState, hubCollaboratorsState, filterHubCollaboratorsForHub } =
     useContext(HubContext);
-  const { usdcBalance, solUsdcBalance } = useContext(NinaContext)
   const hubCollaborators = useMemo(
     () => filterHubCollaboratorsForHub(hubPubkey),
     [hubCollaboratorsState, hubPubkey]
@@ -149,9 +147,6 @@ const Navigation = ({ hubPubkey }) => {
         <CtaWrapper>
           {!mobileView && canAddContent && getMenuButtons(hubData?.handle)}
           <WalletWrapper id="wallet-wrapper">
-            <NavBalance sx={{paddingRight: "8px"}}>
-              {wallet?.connected ? `Balance: $${(parseFloat(usdcBalance) + parseFloat(solUsdcBalance)).toFixed(2)}` : null}
-            </NavBalance>
             <NavCtas>
               {wallet.wallets && (
                 <StyledWalletDialogProvider featuredWallets={4}>
@@ -418,10 +413,3 @@ const useStyles = makeStyles(({ theme }) => ({
     flexDirection: "column",
   },
 }));
-
-const NavBalance = styled(Typography)(({ theme }) => ({
-  color: theme.palette.text.primary,
-  [theme.breakpoints.down('md')]: {
-    display: 'none',
-  },
-}))
