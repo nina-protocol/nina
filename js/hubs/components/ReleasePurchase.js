@@ -40,7 +40,7 @@ const ReleasePurchase = (props) => {
     if (releaseState.tokenData[releasePubkey]) {
       setRelease(releaseState.tokenData[releasePubkey]);
     }
-  }, [releaseState]);
+  }, [releaseState.tokenData[releasePubkey]]);
 
   useEffect(() => {
     setAmountHeld(collection[releasePubkey]);
