@@ -436,6 +436,17 @@ const HubCreate = ({ update, hubData }) => {
           </BlueTypography>
         </Box>
       )}
+
+      {update && (
+        <Typography gutterBottom>
+          Updating {hubData.json.displayName}
+        </Typography>
+      )}
+      {!update && (
+        <Typography variant="h3" gutterBottom>
+          Create Hub
+        </Typography>
+      )}
       {wallet?.connected && npcAmountHeld > 0 && (
         <NinaBox columns="500px" gridColumnGap="10px">
           <CreateFormWrapper>
@@ -503,7 +514,7 @@ const HubCreate = ({ update, hubData }) => {
           <CreateCta>
             {bundlrBalance === 0 && <BundlrModal inCreate={true} />}
 
-            {bundlrBalance > 0 && formValuesConfirmed && update && (
+            {bundlrBalance > 0 && formValuesConfirmed && (update || isPublishing ) && (
               <Button
                 fullWidth
                 variant="outlined"

@@ -216,7 +216,7 @@ const PlayButton = styled(Button)(({ theme }) => ({
 const StyledDescription = styled(Typography)(({ theme }) => ({
   overflowWrap: "anywhere",
   [theme.breakpoints.up("md")]: {
-    maxHeight: "225px",
+    maxHeight: "275px",
     overflowY: "scroll",
   },
 }));

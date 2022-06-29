@@ -9,9 +9,11 @@ import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
 
-
 const Quill = ({props, update, type}) => {
   const theme = 'snow'
+
+
+  console.log('props :>> ', props);
   const [valuePlaced, setValuePlaced] = useState(false)
   let toolbarValues;
   let height;
@@ -25,12 +27,21 @@ const Quill = ({props, update, type}) => {
       break;
     case 'hub':
       toolbarValues = [
-        [{header: [1, 2, 3, 4, 5, 6, false]}],
+        [{header: [1, 2, 3, 4, 5, false]}],
         ['bold', 'italic', 'underline', 'strike'],
         [{script: 'sub'}, {script: 'super'}],
         ['link'],
       ]
-      
+      height = '150px'
+      break;
+    case 'post':
+      toolbarValues = [
+        [{header: [1, 2, 3, 4, 5, false]}],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{script: 'sub'}, {script: 'super'}],
+        ['link'],
+      ]
+      height = '300px'
       break;
   
     default:
@@ -76,11 +87,11 @@ const Quill = ({props, update, type}) => {
     'italic',
     'underline',
     'strike',
-    // 'header',
+    'header',
     'link',
     'script',
   ]
-  const placeholder = `enter your ${type} description here`
+  const placeholder = type !== 'post' ? `enter your ${type} description here` : ''
 
   const {quill, quillRef, Quill} = useQuill({
     theme,
@@ -107,7 +118,7 @@ const Quill = ({props, update, type}) => {
   useEffect(() => {
     if (quill) {
       quill.on('text-change', () => {
-        props.form.setFieldValue('description', JSON.stringify(quill.root.innerHTML))
+        props.form.setFieldValue(props.field.name, JSON.stringify(quill.root.innerHTML))
       })
     }
   }, [quill])

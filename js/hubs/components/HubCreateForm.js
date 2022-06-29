@@ -9,8 +9,6 @@ import Tooltip from "@mui/material/Tooltip";
 import HelpIcon from "@mui/icons-material/Help";
 import Quill from './Quill'
 
-
-
 const { formatPlaceholder } = nina.utils;
 
 const HubCreateForm = ({
@@ -81,7 +79,7 @@ const HubCreateForm = ({
           Updating {hubData.json.displayName}
         </Typography>
       )}
-      <Form style={{ padding: "0 15px" }}>
+      <Form style={{ padding: "15px 15px" }}>
         {!update && (
           <Field name="handle">
             {(props) => (
@@ -235,7 +233,7 @@ const HubCreateForm = ({
         <Field name="description">
           {(props) => (
             <Box sx={{mb: '8px'}}>
-              <Quill props={props} update={update} />
+              <Quill props={props} update={update} type={'hub'}/>
             </Box>
           )}
         </Field>

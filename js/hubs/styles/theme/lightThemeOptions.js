@@ -199,7 +199,6 @@ const lightThemeOptions = {
       styleOverrides: {
         a: {
           color: colors.black,
-          // textDecoration: "none",
           cursor: "pointer !important",
           "&:hover": {
             opacity: "50% !important",
@@ -207,6 +206,9 @@ const lightThemeOptions = {
         },
         'p, h1, h2, h3, h4, figure, blockquote, dl, dd': {
           margin: 0
+        },
+        '.ql-toolbar': {
+          textAlign: 'left'
         },
         ".formField": {
           marginBottom: "8px !important",

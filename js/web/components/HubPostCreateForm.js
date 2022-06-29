@@ -120,72 +120,72 @@ const HubPostCreateForm = ({
   )
 }
 
-const Quill = ({ props, postCreated }) => {
-  const theme = 'snow'
+// const Quill = ({ props, postCreated }) => {
+//   const theme = 'snow'
 
-  const modules = {
-    toolbar: [
-      [{ header: [1, 2, 3, 4, 5, 6, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ script: 'sub' }, { script: 'super' }],
-      ['link'],
-    ],
-    clipboard: {
-      matchVisual: false,
-    },
-    magicUrl: true,
-  }
+//   const modules = {
+//     toolbar: [
+//       [{ header: [1, 2, 3, 4, 5, 6, false] }],
+//       ['bold', 'italic', 'underline', 'strike'],
+//       [{ script: 'sub' }, { script: 'super' }],
+//       ['link'],
+//     ],
+//     clipboard: {
+//       matchVisual: false,
+//     },
+//     magicUrl: true,
+//   }
 
-  const placeholder = ''
+//   const placeholder = ''
 
-  const formats = [
-    'bold',
-    'italic',
-    'underline',
-    'strike',
-    'header',
-    'link',
-    'script',
-  ]
+//   const formats = [
+//     'bold',
+//     'italic',
+//     'underline',
+//     'strike',
+//     'header',
+//     'link',
+//     'script',
+//   ]
 
-  const { quill, quillRef, Quill } = useQuill({
-    theme,
-    modules,
-    formats,
-    placeholder,
-  })
-  if (Quill) {
-    const MagicUrl = require('quill-magic-url').default // Install with 'yarn add quill-magic-url'
-    Quill.register('modules/magicUrl', MagicUrl)
-    var Link = Quill.import('formats/link')
-    var builtInFunc = Link.sanitize
-    Link.sanitize = function customSanitizeLinkInput(linkValueInput) {
-      var val = linkValueInput
+//   const { quill, quillRef, Quill } = useQuill({
+//     theme,
+//     modules,
+//     formats,
+//     placeholder,
+//   })
+//   if (Quill) {
+//     const MagicUrl = require('quill-magic-url').default // Install with 'yarn add quill-magic-url'
+//     Quill.register('modules/magicUrl', MagicUrl)
+//     var Link = Quill.import('formats/link')
+//     var builtInFunc = Link.sanitize
+//     Link.sanitize = function customSanitizeLinkInput(linkValueInput) {
+//       var val = linkValueInput
 
-      // do nothing, since this implies user's already using a custom protocol
-      if (/^\w+:/.test(val));
-      else if (!/^https?:/.test(val)) val = 'http://' + val
+//       // do nothing, since this implies user's already using a custom protocol
+//       if (/^\w+:/.test(val));
+//       else if (!/^https?:/.test(val)) val = 'http://' + val
 
-      return builtInFunc.call(this, val) // retain the built-in logic
-    }
-  }
+//       return builtInFunc.call(this, val) // retain the built-in logic
+//     }
+//   }
 
-  useEffect(() => {
-    if (quill) {
-      quill.on('text-change', () => {
-        props.form.setFieldValue('body', JSON.stringify(quill.root.innerHTML))
-      })
-    }
-  }, [quill])
+//   useEffect(() => {
+//     if (quill) {
+//       quill.on('text-change', () => {
+//         props.form.setFieldValue('body', JSON.stringify(quill.root.innerHTML))
+//       })
+//     }
+//   }, [quill])
 
-  useEffect(() => {
-    if (postCreated) {
-      quill?.setContents([{ insert: '\n' }])
-    }
-  }, [postCreated])
+//   useEffect(() => {
+//     if (postCreated) {
+//       quill?.setContents([{ insert: '\n' }])
+//     }
+//   }, [postCreated])
 
-  return <Box style={{ height: '300px' }} ref={quillRef} />
-}
+//   return <Box style={{ height: '300px' }} ref={quillRef} />
+// }
 
 const Root = styled('div')(({ theme }) => ({
   width: '100%',
