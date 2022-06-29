@@ -39,9 +39,6 @@ const ReleaseCreateConfirm = (props) => {
   };
 
   useEffect(() => {
-      console.log('rich description');
-      console.log('formValues.description :>> ', formValues.description);
-      console.log('data.description :>> ', data.description);
       if (data.description) {
         unified()
           .use(rehypeParse, {fragment: true})
@@ -65,7 +62,6 @@ const ReleaseCreateConfirm = (props) => {
             setDescription(file.result);
           });
       }
-    
   }, [data.description]);
 
 

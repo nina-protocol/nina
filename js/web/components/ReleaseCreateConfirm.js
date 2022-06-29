@@ -1,35 +1,69 @@
-import { useState } from 'react'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
-import Modal from '@mui/material/Modal'
-import { styled } from '@mui/material/styles'
+import {useState, useEffect, createElement, Fragment} from "react";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+import {styled} from "@mui/material/styles";
+
+import {unified} from "unified";
+import rehypeParse from "rehype-parse";
+import rehypeReact from "rehype-react";
+import rehypeSanitize from "rehype-sanitize";
+import rehypeExternalLinks from "rehype-external-links";
+
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: 'background.paper',
+  bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
-}
+};
 
 const ReleaseCreateConfirm = (props) => {
-  const { formIsValid, formValues, handleSubmit, setFormValuesConfirmed } =
-    props
-  const [open, setOpen] = useState(false)
-  const handleOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
+  const {formIsValid, formValues, handleSubmit, setFormValuesConfirmed} =
+    props;
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [description, setDescription] = useState();
+  const data = formValues.releaseForm;
 
   const submitAndCloseModal = () => {
-    setFormValuesConfirmed(true)
-    handleSubmit()
-    handleClose()
-  }
+    setFormValuesConfirmed(true);
+    handleSubmit();
+    handleClose();
+  };
 
-  const data = formValues.releaseForm
+  useEffect(() => {
+    if (data.description) {
+      unified()
+        .use(rehypeParse, {fragment: true})
+        .use(rehypeSanitize)
+        .use(rehypeReact, {
+          createElement,
+          Fragment,
+        })
+        .use(rehypeExternalLinks, {
+          target: false,
+          rel: ["nofollow", "noreferrer"],
+        })
+        .process(
+          JSON.parse(data.description).replaceAll(
+            "<p><br></p>",
+            "<br>"
+          )
+        )
+        .then((file) => {
+          console.log('file.result inHub:>> ', file.result);
+          setDescription(file.result);
+        });
+    }
+  }, [data.description]);
+
 
   return (
     <div>
@@ -54,26 +88,27 @@ const ReleaseCreateConfirm = (props) => {
             release:
           </Typography>
           <Box>
-            <Value sx={{ mt: 1 }}>
+            <Value sx={{mt: 1}}>
               Artist: <span>{data.artist}</span>
             </Value>
-            <Value sx={{ mt: 1 }}>
+            <Value sx={{mt: 1}}>
               Title: <span>{data.title}</span>
             </Value>
-            <Value className="description" sx={{ mt: 1 }}>
-              Description: <span>{data.description}</span>
-            </Value>
-            <Value sx={{ mt: 1 }}>
+
+            <Value sx={{mt: 1}}>
               Catalog Number:<span>{data.catalogNumber}</span>
             </Value>
-            <Value sx={{ mt: 1 }}>
-              Edition Size: <span>{data.amount}</span>
+            <Value sx={{mt: 1}}>
+              Amount: <span>{data.amount}</span>
             </Value>
-            <Value sx={{ mt: 1 }}>
-              Price:<span>${data.retailPrice}</span>
+            <Value sx={{mt: 1}}>
+              Retail Price:<span>${data.retailPrice}</span>
             </Value>
-            <Value sx={{ mt: 1, mb: 1 }}>
+            <Value sx={{mt: 1, mb: 1}}>
               Resale Percentage: <span>{data.resalePercentage}%</span>
+            </Value>
+            <Value className="description" sx={{mt: 1, flexDirection: 'column', mb: 1}}>
+              Description: <span style={{marginTop: '8px', paddingLeft: '0'}}>{description}</span>
             </Value>
 
             <Button
@@ -82,9 +117,7 @@ const ReleaseCreateConfirm = (props) => {
               fullWidth
               onClick={submitAndCloseModal}
             >
-              <Typography variant="body1">
-                Confirm and Publish Release
-              </Typography>
+              Confirm and Publish Release
             </Button>
 
             <Button
@@ -92,11 +125,11 @@ const ReleaseCreateConfirm = (props) => {
               color="primary"
               fullWidth
               onClick={handleClose}
-              sx={{ marginTop: '15px !important' }}
+              sx={{marginTop: "15px !important"}}
             >
-              <Typography variant="body1">Close and Edit</Typography>
+              Close and Edit
             </Button>
-            <Typography variant="subtitle1" mt={1} sx={{ color: 'red' }}>
+            <Typography variant="subtitle1" mt={1} sx={{color: "red"}}>
               ONCE PUBLISHED, YOUR RELEASE INFORMATION WILL BE PERMANENT AND YOU
               WILL NOT BE ABLE TO EDIT IT.
             </Typography>
@@ -104,25 +137,24 @@ const ReleaseCreateConfirm = (props) => {
         </Box>
       </Modal>
     </div>
-  )
-}
+  );
+};
 
-const Value = styled(Typography)(({ theme }) => ({
-  display: 'flex',
-  justifyContent: 'space-between',
-  '& span': {
-    textAlign: 'right',
+const Value = styled(Typography)(({theme}) => ({
+  display: "flex",
+  justifyContent: "space-between",
+  "& span": {
+    textAlign: "right",
   },
 
-  '&.description': {
-    '& span': {
+  "&.description": {
+    "& span": {
       paddingLeft: theme.spacing(1),
-      textAlign: 'left',
-      // border: '2px solid blue',
-      maxHeight: '150px',
-      overflowY: 'scroll',
+      textAlign: "left",
+      maxHeight: "150px",
+      overflowY: "scroll",
     },
   },
-}))
+}));
 
-export default ReleaseCreateConfirm
+export default ReleaseCreateConfirm;

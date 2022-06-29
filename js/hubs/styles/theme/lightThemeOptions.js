@@ -207,7 +207,7 @@ const lightThemeOptions = {
         'a, p, h1, h2, h3, h4, figure, blockquote, dl, dd': {
           margin: 0
         },
-        '.ql-toolbar': {
+        '.ql-toolbar': { // for left aligning Quill toolbar
           textAlign: 'left'
         },
         ".formField": {

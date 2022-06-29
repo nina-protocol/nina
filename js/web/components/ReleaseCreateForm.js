@@ -7,6 +7,7 @@ import Slider from '@mui/material/Slider'
 import Box from '@mui/material/Box'
 import Fade from '@mui/material/Fade'
 import nina from '@nina-protocol/nina-sdk'
+import Quill from './Quill'
 
 const { formatPlaceholder } = nina.utils
 
@@ -68,7 +69,7 @@ const ReleaseCreateForm = ({
           )}
         </Field>
 
-        <Field name="description">
+        {/* <Field name="description">
           {(props) => (
             <Box className={classes.fieldInputWrapper}>
               <TextField
@@ -86,7 +87,7 @@ const ReleaseCreateForm = ({
               />
             </Box>
           )}
-        </Field>
+        </Field> */}
 
         <Field name="catalogNumber">
           {({ field }) => (
@@ -198,6 +199,14 @@ const ReleaseCreateForm = ({
                 High resale may discourage potential collectors.
               </Warning>
             </Fade>
+
+            <Field name="description">
+              {(props) => (
+                <Box className={classes.fieldInputWrapper}>
+                  <Quill props={props} type="release" />
+                </Box>
+              )}
+            </Field>
           </Box>
         </Box>
       </Form>
@@ -237,6 +246,9 @@ const Warning = styled(Typography)(({ theme }) => ({
   textTransform: 'none !important',
   color: theme.palette.red,
   opacity: '85%',
+  top: '-5%',
+  left: '122%',
+  width: '220px'
 }))
 
 export default withFormik({
