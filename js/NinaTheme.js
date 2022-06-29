@@ -283,6 +283,9 @@ export const NinaTheme = createTheme({
         '*, *::before, *::after': {
           boxSizing: 'content-box',
         },
+        'a, p, h1, h2, h3, h4, figure, blockquote, dl, dd': {
+          margin: 0
+        },
         body: {
           overflow: 'hidden',
         },

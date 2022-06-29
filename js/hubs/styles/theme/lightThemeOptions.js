@@ -204,7 +204,7 @@ const lightThemeOptions = {
             opacity: "50% !important",
           },
         },
-        'p, h1, h2, h3, h4, figure, blockquote, dl, dd': {
+        'a, p, h1, h2, h3, h4, figure, blockquote, dl, dd': {
           margin: 0
         },
         '.ql-toolbar': {

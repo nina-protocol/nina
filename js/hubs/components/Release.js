@@ -10,8 +10,6 @@ import Typography from "@mui/material/Typography";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import { useWallet } from "@solana/wallet-adapter-react";
-
-
 import {unified} from "unified";
 import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
