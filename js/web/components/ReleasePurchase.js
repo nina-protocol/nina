@@ -57,6 +57,7 @@ const ReleasePurchase = (props) => {
   }, [releasePubkey])
 
   useEffect(() => {
+    console.log('RELEASE UPDATED: ', releaseState.tokenData[releasePubkey], releaseState.tokenData[releasePubkey].remainingSupply.toNumber())
     if (releaseState.tokenData[releasePubkey]) {
       setRelease(releaseState.tokenData[releasePubkey])
     }
