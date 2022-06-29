@@ -1,23 +1,29 @@
-import React, { useState, useContext, useEffect, useMemo, useRef } from "react";
+import React, { useState, useContext, useEffect, createElement, Fragment } from "react";
 import dynamic from "next/dynamic";
 import nina from "@nina-protocol/nina-sdk";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
-import { useRouter } from "next/router";
 import Image from "next/image";
 import Typography from "@mui/material/Typography";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import { useWallet } from "@solana/wallet-adapter-react";
 
+
+import {unified} from "unified";
+import rehypeParse from "rehype-parse";
+import rehypeReact from "rehype-react";
+import rehypeSanitize from "rehype-sanitize";
+import rehypeExternalLinks from "rehype-external-links";
+
+
 const ReleasePurchase = dynamic(() => import("./ReleasePurchase"));
 const AddToHubModal = dynamic(() => import("./AddToHubModal"));
 const { HubContext, ReleaseContext, AudioPlayerContext } = nina.contexts;
 
 const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
-  const router = useRouter();
   const wallet = useWallet();
 
   const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } = useContext(AudioPlayerContext);
@@ -26,6 +32,7 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
     useContext(HubContext);
 
   const [metadata, setMetadata] = useState(metadataSsr || null);
+  const [description, setDescription] = useState();
   const [userHubs, setUserHubs] = useState();
 
   useEffect(() => {
@@ -57,6 +64,34 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
       setUserHubs(filterHubsForUser(wallet.publicKey.toBase58()));
     }
   }, [hubState]);
+
+  useEffect(() => {
+    if (metadata?.description.includes('<p>')) {
+      unified()
+        .use(rehypeParse, {fragment: true})
+        .use(rehypeSanitize)
+        .use(rehypeReact, {
+          createElement,
+          Fragment,
+        })
+        .use(rehypeExternalLinks, {
+          target: false,
+          rel: ["nofollow", "noreferrer"],
+        })
+        .process(
+          JSON.parse(metadata.description).replaceAll(
+            "<p><br></p>",
+            "<br>"
+          )
+        )
+        .then((file) => {
+          setDescription(file.result);
+        });
+    } else {
+      console.log('normal description');
+      setDescription(metadata.description)
+    }
+  }, [metadata?.description]);
 
   return (
     <>
@@ -124,8 +159,8 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
               </Box>
             </CtaWrapper>
 
-            <StyledDescription variant="h4" align="left">
-              {metadata.description}
+            <StyledDescription variant="body1" align="left">
+              {description}
             </StyledDescription>
           </>
         )}

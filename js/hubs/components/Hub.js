@@ -98,7 +98,6 @@ const Hub = ({hubPubkey}) => {
   }, [hubReleases, hubPosts]);
 
   useEffect(() => {
-    console.log('(hubData?.json.description) :>> ', (hubData?.json.description));
     if (hubData?.json.description.includes('<p>')) {
       console.log('rich description');
       unified()

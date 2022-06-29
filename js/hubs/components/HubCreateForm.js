@@ -7,14 +7,7 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
 import HelpIcon from "@mui/icons-material/Help";
-import {useQuill} from 'react-quilljs'
-import 'quill/dist/quill.snow.css'
-
-import {unified} from "unified";
-import rehypeParse from "rehype-parse";
-import rehypeReact from "rehype-react";
-import rehypeSanitize from "rehype-sanitize";
-import rehypeExternalLinks from "rehype-external-links";
+import Quill from './Quill'
 
 
 
@@ -255,103 +248,6 @@ const Root = styled("div")(() => ({
   margin: "auto",
   width: "100%",
 }));
-
-const Quill = ({props, update}) => {
-  const theme = 'snow'
-  console.log('props :>> ', props);
-  const [placeholder, setPlaceholder] = useState('testests')
-  const [valuePlaced, setValuePlaced] = useState(false)
-  const modules = {
-    toolbar: [
-      [{header: [1, 2, 3, 4, 5, 6, false]}],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{script: 'sub'}, {script: 'super'}],
-      ['link'],
-    ],
-    clipboard: {
-      matchVisual: false,
-    },
-    magicUrl: true,
-  }
-
-  useEffect(() => {
-    if (update) {
-       unified()
-        .use(rehypeParse, {fragment: true})
-        .use(rehypeSanitize)
-        .use(rehypeReact, {
-          createElement,
-          Fragment,
-        })
-        .use(rehypeExternalLinks, {
-          target: false,
-          rel: ["nofollow", "noreferrer"],
-        })
-        .process(
-          JSON.parse(props.field.value).replaceAll(
-            "<p><br></p>",
-            "<br>"
-          )
-        )
-        .then((file) => {
-          console.log('file.result :>> ', file.result);
-          quill?.setContents([{insert: `${props.field.value}`}])
-          setPlaceholder(file.result);
-      });
-    }
-
-  }, [update])
-  
-
-  const formats = [
-    'bold',
-    'italic',
-    'underline',
-    'strike',
-    'header',
-    'link',
-    'script',
-  ]
-
-  const {quill, quillRef, Quill} = useQuill({
-    theme,
-    modules,
-    formats,
-    // placeholder,
-  })
-  if (Quill) {
-    const MagicUrl = require('quill-magic-url').default // Install with 'yarn add quill-magic-url'
-    Quill.register('modules/magicUrl', MagicUrl)
-    var Link = Quill.import('formats/link')
-    var builtInFunc = Link.sanitize
-    Link.sanitize = function customSanitizeLinkInput(linkValueInput) {
-      var val = linkValueInput
-
-      // do nothing, since this implies user's already using a custom protocol
-      if (/^\w+:/.test(val));
-      else if (!/^https?:/.test(val)) val = 'http://' + val
-
-      return builtInFunc.call(this, val) // retain the built-in logic
-    }
-  }
-
-  useEffect(() => {
-    if (quill) {
-      quill.on('text-change', () => {
-        props.form.setFieldValue('description', JSON.stringify(quill.root.innerHTML))
-      })
-    }
-  }, [quill])
-
-  useEffect(() => {
-    if (update && props.field.value && quill && !valuePlaced) {
-      setValuePlaced(true)
-      quill.root.innerHTML = props.field.value.slice(1, -1 )
-    }
-  }, [props.field.value, update, quill])
-
-  return <Box style={{height: '150px'}} ref={quillRef} />
-}
 
 export default withFormik({
   enableReinitialize: true,

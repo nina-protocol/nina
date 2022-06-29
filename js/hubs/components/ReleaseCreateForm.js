@@ -7,6 +7,7 @@ import TextField from "@mui/material/TextField";
 import Slider from "@mui/material/Slider";
 import Box from "@mui/material/Box";
 import Fade from "@mui/material/Fade";
+import Quill from "./Quill";
 
 const { formatPlaceholder } = nina.utils;
 
@@ -71,7 +72,7 @@ const ReleaseCreateForm = ({
           )}
         </Field>
 
-        <Field name="description">
+        {/* <Field name="description">
           {(props) => (
             <Box>
               <TextField
@@ -92,8 +93,8 @@ const ReleaseCreateForm = ({
               />
             </Box>
           )}
-        </Field>
-
+        </Field> */}
+    
         <Field name="catalogNumber">
           {({ field }) => (
             <Box>
@@ -196,6 +197,15 @@ const ReleaseCreateForm = ({
               {...form}
             />
           </Box>
+
+          <Field name="description">
+            {(props) => (
+              <Box>
+                <Quill props={props} type={'release'} update={false} />
+              </Box>
+            )}
+          </Field>
+
           <Fade in={values.resalePercentage > 20}>
             <Warning variant="subtitle1" align="left">
               Are you certain about a {values.resalePercentage}% resale fee?
@@ -224,7 +234,7 @@ const Root = styled("div")(({ theme }) => ({
     ...theme.helpers.baseFont,
     marginBottom: "8px",
     width: "100%",
-    textTransform: "capitalize",
+    // textTransform: "capitalize",
     position: "relative",
     "& input": {
       textAlign: "left",
