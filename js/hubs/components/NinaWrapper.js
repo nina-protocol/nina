@@ -12,11 +12,10 @@ const NinaWrapper = ({ children, network }) => {
     NinaContextProvider,
     HubContextProvider,
   } = nina.contexts;
-  const provider = new AnchorProvider(
-    connection,
-    wallet,
-    AnchorProvider.defaultOptions()
-  );
+  const provider = new AnchorProvider(connection, wallet, {
+    commitment: 'confirmed',
+    preflightCommitment: 'processed',
+  })
 
   const ninaClient = nina.client(provider, network);
   return (
