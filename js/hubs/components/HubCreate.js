@@ -406,7 +406,7 @@ const HubCreate = ({ update, hubData }) => {
       </Box>
     );
   }
-  console.log('update: ', update)
+
   return (
     <Grid item md={12} justifyContent="center" alignItems={"center"}>
       {!wallet.connected && (
@@ -437,7 +437,6 @@ const HubCreate = ({ update, hubData }) => {
       )}
       {(update || npcAmountHeld > 0) && (
         <NinaBox columns="500px" gridColumnGap="10px">
-          {console.log('in here')}
           <CreateFormWrapper>
             <HubCreateForm
               onChange={handleFormChange}
