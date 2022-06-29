@@ -33,7 +33,6 @@ const ReleasePurchase = (props) => {
     filterExchangesForReleaseBuySell,
     getExchangesForRelease,
   } = useContext(ExchangeContext)
-  const [release, setRelease] = useState(undefined)
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
   const [amountPendingBuys, setAmountPendingBuys] = useState(0)
   const [amountPendingSales, setAmountPendingSales] = useState(0)
@@ -56,12 +55,7 @@ const ReleasePurchase = (props) => {
     hubForRelease(releasePubkey)
   }, [releasePubkey])
 
-  useEffect(() => {
-    console.log('RELEASE UPDATED: ', releaseState.tokenData[releasePubkey], releaseState.tokenData[releasePubkey].remainingSupply.toNumber())
-    if (releaseState.tokenData[releasePubkey]) {
-      setRelease(releaseState.tokenData[releasePubkey])
-    }
-  }, [releaseState.tokenData[releasePubkey]])
+  const release = useMemo(() => releaseState.tokenData[releasePubkey], [releaseState.tokenData, releasePubkey])
 
   useEffect(() => {
     getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
@@ -120,6 +114,7 @@ const ReleasePurchase = (props) => {
       }
       result = await releasePurchase(releasePubkey)
       if (result) {
+        getRelease(releasePubkey)
         showCompletedTransaction(result)
       }
     }

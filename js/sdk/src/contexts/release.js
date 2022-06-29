@@ -1299,7 +1299,9 @@ const releaseContextHelper = ({
 
   const getRelease = async (releasePubkey) => {
     try {
+      console.log('getRelease: ', releasePubkey)
       const releaseAccount = await fetchRelease(releasePubkey)
+      console.log("releaseAccount ::> ", releaseAccount)
       if (releaseAccount.error) {
         throw releaseAccount.error
       } else {
@@ -1991,6 +1993,7 @@ const releaseContextHelper = ({
 
   const saveReleasesToState = async (releases, query = undefined) => {
     try {
+      console.log('saveReleasesToState, ', releases, releaseState)
       let updatedState = { ...releaseState }
       let search = undefined
 
@@ -2058,7 +2061,8 @@ const releaseContextHelper = ({
         search.releases = finalSearchReleases
         await setSearchResults(search)
       }
-      await setReleaseState(updatedState)
+      console.log('updateState: ', updatedState)
+      setReleaseState(updatedState)
     } catch (error) {
       console.warn(error)
     }
