@@ -165,11 +165,12 @@ const HubCreate = ({ update, hubData }) => {
     },
     [formValues]
   );
-
+  
   useEffect(() => {
     if (update) {
       //double check that this works
       setFormIsValid(true);
+      setFormValuesConfirmed(true)
       return;
     }
     if (artwork) {
@@ -502,7 +503,7 @@ const HubCreate = ({ update, hubData }) => {
           <CreateCta>
             {bundlrBalance === 0 && <BundlrModal inCreate={true} />}
 
-            {bundlrBalance > 0 && formValuesConfirmed && (
+            {bundlrBalance > 0 && formValuesConfirmed && update && (
               <Button
                 fullWidth
                 variant="outlined"
@@ -518,7 +519,7 @@ const HubCreate = ({ update, hubData }) => {
                 sx={{ height: "54px" }}
               >
                 {isPublishing && <Dots msg={publishingStepText} />}
-                {!isPublishing && buttonText}
+                {!isPublishing && buttonText} 
               </Button>
             )}
 

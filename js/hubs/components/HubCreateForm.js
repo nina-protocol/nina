@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, createElement, Fragment } from "react";
 import { styled } from "@mui/material/styles";
 import nina from "@nina-protocol/nina-sdk";
 import { withFormik, Form, Field } from "formik";
@@ -9,6 +9,14 @@ import Tooltip from "@mui/material/Tooltip";
 import HelpIcon from "@mui/icons-material/Help";
 import {useQuill} from 'react-quilljs'
 import 'quill/dist/quill.snow.css'
+
+import {unified} from "unified";
+import rehypeParse from "rehype-parse";
+import rehypeReact from "rehype-react";
+import rehypeSanitize from "rehype-sanitize";
+import rehypeExternalLinks from "rehype-external-links";
+
+
 
 const { formatPlaceholder } = nina.utils;
 
@@ -233,8 +241,8 @@ const HubCreateForm = ({
 
         <Field name="description">
           {(props) => (
-            <Box>
-              <Quill props={props} />
+            <Box sx={{mb: '8px'}}>
+              <Quill props={props} update={update} />
             </Box>
           )}
         </Field>
@@ -248,9 +256,11 @@ const Root = styled("div")(() => ({
   width: "100%",
 }));
 
-const Quill = ({props}) => {
+const Quill = ({props, update}) => {
   const theme = 'snow'
-
+  console.log('props :>> ', props);
+  const [placeholder, setPlaceholder] = useState('testests')
+  const [valuePlaced, setValuePlaced] = useState(false)
   const modules = {
     toolbar: [
       [{header: [1, 2, 3, 4, 5, 6, false]}],
@@ -264,7 +274,34 @@ const Quill = ({props}) => {
     magicUrl: true,
   }
 
-  const placeholder = ''
+  useEffect(() => {
+    if (update) {
+       unified()
+        .use(rehypeParse, {fragment: true})
+        .use(rehypeSanitize)
+        .use(rehypeReact, {
+          createElement,
+          Fragment,
+        })
+        .use(rehypeExternalLinks, {
+          target: false,
+          rel: ["nofollow", "noreferrer"],
+        })
+        .process(
+          JSON.parse(props.field.value).replaceAll(
+            "<p><br></p>",
+            "<br>"
+          )
+        )
+        .then((file) => {
+          console.log('file.result :>> ', file.result);
+          quill?.setContents([{insert: `${props.field.value}`}])
+          setPlaceholder(file.result);
+      });
+    }
+
+  }, [update])
+  
 
   const formats = [
     'bold',
@@ -280,7 +317,7 @@ const Quill = ({props}) => {
     theme,
     modules,
     formats,
-    placeholder,
+    // placeholder,
   })
   if (Quill) {
     const MagicUrl = require('quill-magic-url').default // Install with 'yarn add quill-magic-url'
@@ -306,11 +343,12 @@ const Quill = ({props}) => {
     }
   }, [quill])
 
-  // useEffect(() => {
-  //   if (postCreated) {
-  //     quill?.setContents([{insert: '\n'}])
-  //   }
-  // }, [postCreated])
+  useEffect(() => {
+    if (update && props.field.value && quill && !valuePlaced) {
+      setValuePlaced(true)
+      quill.root.innerHTML = props.field.value.slice(1, -1 )
+    }
+  }, [props.field.value, update, quill])
 
   return <Box style={{height: '150px'}} ref={quillRef} />
 }

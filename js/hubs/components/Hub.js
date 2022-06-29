@@ -115,10 +115,11 @@ const Hub = ({hubPubkey}) => {
         .process(
           JSON.parse(hubData.json.description).replaceAll(
             "<p><br></p>",
-            ""
+            "<br>"
           )
         )
         .then((file) => {
+          console.log('file.result inHub:>> ', file.result);
           setDescription(file.result);
         });
     } else {
@@ -197,6 +198,13 @@ const DescriptionWrapper = styled(Grid)(({theme}) => ({
   [theme.breakpoints.down("md")]: {
     padding: "100px 15px 50px",
   },
+  'p, a': {
+    padding: '0 0 8px',
+    margin: '0'
+  },
+  'a': {
+    textDecoration: 'underline'
+  }
 }));
 
 export default Hub;

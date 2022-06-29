@@ -45,7 +45,6 @@ const HubCreateConfirm = (props) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [buttonText, setButtonText] = useState("Create Hub");
-  const [description, setDescription] = useState();
 
   const submitAndCloseModal = async () => {
     setFormValuesConfirmed(true);
@@ -60,31 +59,6 @@ const HubCreateConfirm = (props) => {
       setButtonText("You do not have permission to update Hub Info");
     }
   }, [update, isAuthority]);
-
-  useEffect(() => {
-    if (formValues.hubForm.description) {
-      unified()
-      .use(rehypeParse, {fragment: true})
-      .use(rehypeSanitize)
-      .use(rehypeReact, {
-        createElement,
-        Fragment,
-      })
-      .use(rehypeExternalLinks, {
-        target: false,
-        rel: ["nofollow", "noreferrer"],
-      })
-      .process(
-        JSON.parse(formValues.hubForm.description).replaceAll(
-          "<p><br></p>",
-          ""
-        )
-      )
-      .then((file) => {
-        setDescription(file.result);
-      });
-    }
-  }, [formValues.hubForm.description]);
 
   return (
     <div>
@@ -112,24 +86,10 @@ const HubCreateConfirm = (props) => {
           </Typography>
           <Box sx={{ mt: 1 }}>
             <Value sx={{ mt: 1 }}>
-              Display Name: <span>{formValues.hubForm.displayName}</span>
+              Handle: <span style={{paddingLeft: '15px'}}>{formValues.hubForm.handle}</span>
             </Value>
 
-            <Value sx={{ mt: 1 }}>
-              Publish Fee:<span>{formValues.hubForm.publishFee}%</span>
-            </Value>
-
-            <Value sx={{ mt: 1 }}>
-              Referral Fee:<span>{formValues.hubForm.referralFee}%</span>
-            </Value>
-
-            <Value className="description" sx={{ mt: 1 }}>
-              Description: <span>{formValues.hubForm.description}</span>
-            </Value>
-
-            <Value sx={{ mt: 1 }}>
-              External Url: <span>{formValues.hubForm.externalUrl}</span>
-            </Value>
+            <Typography sx={{mt: 1}} variant="subtitle1">note: all values other than Handle can be updated at anytime.</Typography>
 
             {backgroundColor && (
               <Typography
@@ -181,7 +141,7 @@ const HubCreateConfirm = (props) => {
 
 const Value = styled(Typography)(({ theme }) => ({
   display: "flex",
-  justifyContent: "space-between",
+  // justifyContent: "space-between",
   "& span": {
     textAlign: "right",
   },
