@@ -584,8 +584,8 @@ const releaseContextHelper = ({
         [releasePubkey.toBase58()]: false,
       })
       getUsdcBalance()
-      addReleaseToCollection(releasePubkey.toBase58())
-      await getRelease(releasePubkey)
+      await getRelease(releasePubkey.toBase58())
+      await addReleaseToCollection(releasePubkey.toBase58())
 
       return {
         success: true,
