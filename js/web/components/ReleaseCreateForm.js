@@ -230,7 +230,7 @@ const Root = styled('div')(({ theme }) => ({
     ...theme.helpers.baseFont,
     marginBottom: '8px',
     width: '100%',
-    textTransform: 'capitalize',
+    // textTransform: 'capitalize',
     position: 'relative',
     '& input': {
       textAlign: 'left',

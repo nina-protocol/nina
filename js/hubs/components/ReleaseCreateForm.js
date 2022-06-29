@@ -245,12 +245,15 @@ const Root = styled("div")(({ theme }) => ({
   },
 }));
 
-const Warning = styled(Typography)(({ theme }) => ({
-  position: "absolute",
-  textTransform: "none !important",
+const Warning = styled(Typography)(({theme}) => ({
+  position: 'absolute',
+  textTransform: 'none !important',
   color: theme.palette.red,
-  opacity: "85%",
-}));
+  opacity: '85%',
+  top: '-5%',
+  left: '122%',
+  width: '220px'
+}))
 
 export default withFormik({
   enableReinitialize: true,

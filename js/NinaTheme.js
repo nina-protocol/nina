@@ -152,6 +152,7 @@ export const NinaTheme = createTheme({
             padding: '20px',
             borderColor: colors.black,
             color: colors.black,
+            maxHeight: "55px",
             '&.Mui-disabled': {
               border: `1px solid ${colors.grey}`,
               color: colors.grey,
@@ -284,7 +285,7 @@ export const NinaTheme = createTheme({
           boxSizing: 'content-box',
         },
         'a, p, h1, h2, h3, h4, figure, blockquote, dl, dd': {
-          margin: 0
+          margin: '8px 0'
         },
         '.ql-toolbar': { // for left aligning Quill toolbar
           textAlign: 'left'

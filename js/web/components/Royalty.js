@@ -98,6 +98,7 @@ const Royalty = (props) => {
         type="submit"
         onClick={() => setOpen(true)}
         fullWidth
+        sx={{maxWidth: '98%', mr: 1}}
       >
         <Typography variant="body2">Revenue Share Info</Typography>
       </Button>
