@@ -168,8 +168,6 @@ const ReleasePurchase = (props) => {
         <Typography variant="body2" align="left" paddingBottom="10px">
           <StyledLink
             href={publishedHub.json.externalUrl}
-            target="_blank"
-            rel="noreferrer"
             passHref
           >
             {`Published via ${publishedHub.json.displayName}`}
