@@ -184,6 +184,9 @@ const BreadcrumbsContainer = styled(Box)(({ theme }) => ({
       },
     },
   },
+  '& a':{
+    margin: 0
+  },
   [theme.breakpoints.down('md')]: {
     display: 'none',
   },

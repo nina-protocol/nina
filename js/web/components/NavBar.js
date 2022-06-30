@@ -36,7 +36,6 @@ const NavBar = () => {
     if (wallet.connected) {
       getHubsForUser(wallet.publicKey.toBase58());
     }
-    // getHubs(false)
   }, [wallet.connected]);
 
   const userHubs = useMemo(() => {
@@ -65,15 +64,14 @@ const NavBar = () => {
               <a 
                 href={`https://hubs.ninaprotocol.com/${userHubs.length === 1 ? userHubs[0].handle : ''  }` }
                 target="_blank"
+                style={{margin: '0'}}
               >
                 <Typography variant="subtitle1" sx={{mr: '15px'}}>
                   My Hub{userHubs.length > 1 ? 's' : ''}
                 </Typography>
               </a>
           )}
-          <NavBalance variant="subtitle1">
-            {wallet?.connected ? `Balance: $${usdcBalance}` : null}
-          </NavBalance>
+
           <NavCtas>
             {wallet.wallets && (
               <StyledWalletDialogProvider featuredWallets={4}>
