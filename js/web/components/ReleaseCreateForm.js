@@ -69,26 +69,6 @@ const ReleaseCreateForm = ({
           )}
         </Field>
 
-        {/* <Field name="description">
-          {(props) => (
-            <Box className={classes.fieldInputWrapper}>
-              <TextField
-                className={classes.formField}
-                variant="standard"
-                label={formatPlaceholder(props.field.name)}
-                size="small"
-                InputLabelProps={touched.description ? { shrink: true } : ''}
-                placeholder={
-                  errors.description && touched.description
-                    ? errors.description
-                    : null
-                }
-                {...props.field}
-              />
-            </Box>
-          )}
-        </Field> */}
-
         <Field name="catalogNumber">
           {({ field }) => (
             <Box className={classes.fieldInputWrapper}>
@@ -230,7 +210,6 @@ const Root = styled('div')(({ theme }) => ({
     ...theme.helpers.baseFont,
     marginBottom: '8px',
     width: '100%',
-    // textTransform: 'capitalize',
     position: 'relative',
     '& input': {
       textAlign: 'left',

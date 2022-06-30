@@ -11,9 +11,6 @@ import rehypeExternalLinks from "rehype-external-links";
 
 const Quill = ({props, update, type}) => {
   const theme = 'snow'
-
-
-  console.log('props :>> ', props);
   const [valuePlaced, setValuePlaced] = useState(false)
   let toolbarValues;
   let height;

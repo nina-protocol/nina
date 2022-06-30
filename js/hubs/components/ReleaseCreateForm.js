@@ -72,29 +72,6 @@ const ReleaseCreateForm = ({
           )}
         </Field>
 
-        {/* <Field name="description">
-          {(props) => (
-            <Box>
-              <TextField
-                className="formField"
-                variant="standard"
-                label={formatPlaceholder(props.field.name)}
-                size="small"
-                multiline
-                rows={3}
-                InputLabelProps={touched.description ? { shrink: true } : ""}
-                placeholder={
-                  errors.description && touched.description
-                    ? errors.description
-                    : null
-                }
-                disabled={disabled}
-                {...props.field}
-              />
-            </Box>
-          )}
-        </Field> */}
-    
         <Field name="catalogNumber">
           {({ field }) => (
             <Box>

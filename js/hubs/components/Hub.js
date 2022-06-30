@@ -99,7 +99,6 @@ const Hub = ({hubPubkey}) => {
 
   useEffect(() => {
     if (hubData?.json.description.includes('<p>')) {
-      console.log('rich description');
       unified()
         .use(rehypeParse, {fragment: true})
         .use(rehypeSanitize)
@@ -118,11 +117,9 @@ const Hub = ({hubPubkey}) => {
           )
         )
         .then((file) => {
-          console.log('file.result inHub:>> ', file.result);
           setDescription(file.result);
         });
     } else {
-      console.log('normal description');
       setDescription(hubData?.json.description)
     }
   }, [hubData?.json.description]);
