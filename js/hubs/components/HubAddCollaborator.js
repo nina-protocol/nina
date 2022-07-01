@@ -47,6 +47,9 @@ const HubAddCollaborator = (props) => {
       allowance: 3,
     },
     onSubmit: async (values, { resetForm }) => {
+      enqueueSnackbar("Adding Collaborator...", {
+        variant: "info",
+      });
       const {
         collaboratorPubkey,
         canAddContent,

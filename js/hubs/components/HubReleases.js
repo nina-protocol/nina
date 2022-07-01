@@ -164,6 +164,7 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
 const CreateCta = styled(Button)(() => ({
   display: "flex",
   margin: "0px auto 40px !important",
+  textTransform: 'capitalize'
 }));
 
 export default HubReleases;

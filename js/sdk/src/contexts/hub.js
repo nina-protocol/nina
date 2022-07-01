@@ -311,9 +311,9 @@ const hubContextHelper = ({
           },
         }
       )
+      
 
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
-      await indexerHasRecord(hubCollaborator.toBase58(), 'hubCollaborator')
       await getHub(hubPubkey)
 
       return {
@@ -489,7 +489,6 @@ const hubContextHelper = ({
         },
       })
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
-
       await getHub(hubPubkey)
 
       return {
@@ -979,7 +978,7 @@ const hubContextHelper = ({
         )
 
       let updatedState = { ...hubCollaboratorsState }
-
+          
       hubCollaboratorAccounts.forEach((hubCollaborator, i) => {
         hubCollaborator.id = hubCollaborators[i].id
         hubCollaborator.addedBy = hubCollaborator.addedBy.toBase58()

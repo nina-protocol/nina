@@ -255,7 +255,6 @@ const HubPostCreate = ({
         fullWidth
         onClick={() => setOpen(true)}
         disabled={!selectedHubId || (preloadedRelease && !userHasHubs)}
-        style={{ marginTop: "15px" }}
       >
         {preloadedRelease ? "Create Text Post" : "Publish a new post"}
       </CreateCtaButton>
@@ -352,7 +351,7 @@ const CreateCtaButton = styled(Button)(({ theme }) => ({
   display: "flex",
   margin: "0px auto",
   fontSize: theme.helpers.baseFont,
-  textTransform: "uppercase",
+  textTransform: "capitalize",
 }));
 
 const StyledPaper = styled(Paper)(({ theme }) => ({

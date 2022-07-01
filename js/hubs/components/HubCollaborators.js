@@ -94,7 +94,7 @@ const HubCollaborators = ({
               them unlimited actions. This can be updated at any time.
             </Note>
             <Typography mt={2}>
-              Select a Collaborator&apos;s publicKey from the left to edit their
+              Select a Collaborator&apos;s publicKey from the right to edit their
               permissions
             </Typography>
           </>

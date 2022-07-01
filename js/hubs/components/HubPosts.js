@@ -30,9 +30,10 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
     () =>
       Object.values(hubContentState)
         .sort((a, b) => b.datetime - a.datetime)
-        .filter((c) => c.contentType === "Post" && c.visible),
+        .filter((c) => c.contentType === "Post" && c.visible).reverse(),
     [hubContentState]
   );
+
   const hubPostsArchived = useMemo(
     () =>
       Object.values(hubContentState).filter(
