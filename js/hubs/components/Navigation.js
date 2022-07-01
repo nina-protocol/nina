@@ -388,6 +388,7 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: "#66000000 !important",
   boxShadow: "none",
   width: "100% !important",
+  backgroundColor: theme.palette.background.default,
   "& p": {
     cursor: "pointer",
   },
