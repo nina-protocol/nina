@@ -409,7 +409,7 @@ const HubCreate = ({ update, hubData }) => {
   }
 
   return (
-    <Grid item md={12} justifyContent="center" alignItems={"center"}>
+    <StyledGrid item md={12} >
       {!wallet.connected && (
         <ConnectMessage variant="body" gutterBottom>
           Please connect your wallet to create a hub
@@ -576,9 +576,16 @@ const HubCreate = ({ update, hubData }) => {
           </CreateCta>
         </NinaBox>
       )}
-    </Grid>
+    </StyledGrid>
   );
 };
+
+const StyledGrid = styled(Grid)(() => ({
+  maxHeight: '90vh',
+  overflowY: 'scroll',
+  justifyContent: 'center',
+  alignItems: 'center'
+}));
 
 const ConnectMessage = styled(Typography)(() => ({
   gridColumn: "1/3",

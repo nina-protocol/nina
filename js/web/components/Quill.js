@@ -45,6 +45,7 @@ const Quill = ({props, update, type}) => {
     default:
       break;
   }
+  
   const modules = {
     toolbar: toolbarValues,
     clipboard: {
