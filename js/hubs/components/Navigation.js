@@ -165,6 +165,7 @@ const Navigation = ({ hubPubkey }) => {
             <a
               href={`https://hubs.ninaprotocol.com/${userHubs.length === 1 ? userHubs[0].handle : ''}`}
               target="_blank"
+              rel="noreferrer"
               style={{textDecoration: 'none'}}
             >
               <Typography variant="body1" sx={{mr: '15px'}}>
