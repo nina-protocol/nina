@@ -177,7 +177,7 @@ const ReleaseCreateForm = ({
 
           <Field name="description">
             {(props) => (
-              <Box>
+              <Box sx={{borderBottom: '1px solid grey'}}>
                 <Quill props={props} type={'release'} update={false} />
               </Box>
             )}
