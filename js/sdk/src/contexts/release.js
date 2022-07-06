@@ -7,6 +7,7 @@ import {
   wrapSol,
   TOKEN_PROGRAM_ID,
 } from '../utils/web3'
+import axios from 'axios'
 import { ninaErrorHandler } from '../utils/errors'
 import {
   encryptData,
@@ -27,9 +28,12 @@ const ReleaseContextProvider = ({ children }) => {
     addReleaseToCollection,
     collection,
     getUsdcBalance,
+    usdcBalance,
     removeReleaseFromCollection,
+    getSolPrice,
   } = useContext(NinaContext)
   const [releasePurchasePending, setReleasePurchasePending] = useState({})
+  const [releasePurchaseTransactionPending, setReleasePurchaseTransactionPending] = useState({})
   const [pressingState, setPressingState] = useState(defaultPressingState)
   const [redeemableState, setRedeemableState] = useState({})
   const [searchResults, setSearchResults] = useState(searchResultsInitialState)
@@ -100,6 +104,7 @@ const ReleaseContextProvider = ({ children }) => {
     setPressingState,
     releasePurchasePending,
     setReleasePurchasePending,
+    usdcBalance,
     getUsdcBalance,
     addReleaseToCollection,
     encryptData,
@@ -114,6 +119,9 @@ const ReleaseContextProvider = ({ children }) => {
     allReleases,
     setAllReleases,
     setAllReleasesCount,
+    getSolPrice,
+    releasePurchaseTransactionPending,
+    setReleasePurchaseTransactionPending,
   })
 
   return (
@@ -166,6 +174,7 @@ const ReleaseContextProvider = ({ children }) => {
         releaseInitViaHub,
         getPublishedHubForRelease,
         getHubsForRelease,
+        releasePurchaseTransactionPending,
       }}
     >
       {children}
@@ -183,6 +192,7 @@ const releaseContextHelper = ({
   releasePurchasePending,
   setReleasePurchasePending,
   addReleaseToCollection,
+  usdcBalance,
   getUsdcBalance,
   encryptData,
   collection,
@@ -195,6 +205,9 @@ const releaseContextHelper = ({
   setAllReleases,
   setAllReleasesCount,
   setSearchResults,
+  getSolPrice,
+  releasePurchaseTransactionPending,
+  setReleasePurchaseTransactionPending,
 }) => {
   const { provider, ids, nativeToUi, uiToNative, isSol, isUsdc, endpoints } =
     ninaClient
@@ -211,7 +224,7 @@ const releaseContextHelper = ({
       )
     let hubRelease
     if (hubPubkey) {
-      ;[hubRelease] = await anchor.web3.PublicKey.findProgramAddress(
+      [hubRelease] = await anchor.web3.PublicKey.findProgramAddress(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-release')),
           new anchor.web3.PublicKey(hubPubkey).toBuffer(),
@@ -408,6 +421,11 @@ const releaseContextHelper = ({
 
   const releasePurchaseViaHub = async (releasePubkey, hubPubkey) => {
     try {
+      setReleasePurchaseTransactionPending({
+        ...releasePurchaseTransactionPending,
+        [releasePubkey]: true,
+      })
+
       const program = await ninaClient.useProgram()
       let release = releaseState.tokenData[releasePubkey]
       releasePubkey = new anchor.web3.PublicKey(releasePubkey)
@@ -490,11 +508,42 @@ const releaseContextHelper = ({
           hubSigner,
           hubWallet,
           tokenProgram: ids.programs.token,
-          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
         },
       }
 
       const instructions = []
+      const solPrice = await getSolPrice()
+      let releasePriceUi = ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)
+      let convertAmount = releasePriceUi + (releasePriceUi * hub.referralFee.toNumber() / 1000000)
+      if (!isSol(release.paymentMint) && usdcBalance < convertAmount) {
+        const additionalComputeBudgetInstruction = anchor.web3.ComputeBudgetProgram.requestUnits({
+          units: 400000,
+          additionalFee: 0,
+        });
+        instructions.push(additionalComputeBudgetInstruction)
+        convertAmount -= usdcBalance
+        const { data } = await axios.get(
+          `https://quote-api.jup.ag/v1/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative((convertAmount + (convertAmount * .01)) / solPrice, ids.mints.wsol)}&slippage=0.5&onlyDirectRoutes=true`
+        )
+        let transactionInstructions
+        for await (let d of data.data) {
+          const transactions = await axios.post(
+            'https://quote-api.jup.ag/v1/swap', {
+            route: d,
+            userPublicKey: provider.wallet.publicKey.toBase58(),
+          })
+          if (!transactionInstructions) {
+            transactionInstructions = anchor.web3.Transaction.from(Buffer.from(transactions.data.swapTransaction, 'base64')).instructions
+          } else {
+            const tx = anchor.web3.Transaction.from(Buffer.from(transactions.data.swapTransaction, 'base64'))
+            let accountCount = tx.instructions.reduce((count, ix) => count += ix.keys.length, 0)
+            if (accountCount < transactionInstructions.reduce((count, ix) => count += ix.keys.length, 0)) {
+              transactionInstructions = tx.instructions
+            }
+          }
+        }
+        instructions.push(...transactionInstructions)
+      }
       if (receiverReleaseTokenAccountIx) {
         instructions.push(receiverReleaseTokenAccountIx)
       }
@@ -519,6 +568,10 @@ const releaseContextHelper = ({
         request.signers = signers
         request.accounts.payerTokenAccount = signers[0].publicKey
       }
+      setReleasePurchaseTransactionPending({
+        ...releasePurchaseTransactionPending,
+        [releasePubkey.toBase58()]: false,
+      })
       const txid = await program.rpc.releasePurchaseViaHub(
         release.price,
         decodeNonEncryptedByteArray(hub.handle),
@@ -528,7 +581,7 @@ const releaseContextHelper = ({
 
       setReleasePurchasePending({
         ...releasePurchasePending,
-        [releasePubkey]: false,
+        [releasePubkey.toBase58()]: false,
       })
       getUsdcBalance()
       addReleaseToCollection(releasePubkey.toBase58())
@@ -543,7 +596,11 @@ const releaseContextHelper = ({
       getRelease(releasePubkey)
       setReleasePurchasePending({
         ...releasePurchasePending,
-        [releasePubkey]: false,
+        [releasePubkey.toBase58()]: false,
+      })
+      setReleasePurchaseTransactionPending({
+        ...releasePurchaseTransactionPending,
+        [releasePubkey.toBase58()]: false,
       })
       return ninaErrorHandler(error)
     }
@@ -715,6 +772,10 @@ const releaseContextHelper = ({
   }
 
   const releasePurchase = async (releasePubkey) => {
+    setReleasePurchaseTransactionPending({
+      ...releasePurchaseTransactionPending,
+      [releasePubkey]: true,
+    })
     const program = await ninaClient.useProgram()
 
     let release = releaseState.tokenData[releasePubkey]
@@ -730,7 +791,7 @@ const releaseContextHelper = ({
     })
 
     try {
-      let [payerTokenAccount] = await findOrCreateAssociatedTokenAccount(
+      let [payerTokenAccount, payerTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
         provider.connection,
         provider.wallet.publicKey,
         provider.wallet.publicKey,
@@ -760,11 +821,29 @@ const releaseContextHelper = ({
           royaltyTokenAccount: release.royaltyTokenAccount,
           releaseMint: release.releaseMint,
           tokenProgram: TOKEN_PROGRAM_ID,
-          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
         },
       }
 
       const instructions = []
+      if (!isSol(release.paymentMint) && usdcBalance < ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)) {
+        const additionalComputeBudgetInstruction = anchor.web3.ComputeBudgetProgram.requestUnits({
+          units: 400000,
+          additionalFee: 0,
+        });
+        instructions.push(additionalComputeBudgetInstruction)
+        const solPrice = await getSolPrice()
+        const releaseUiPrice = ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc) - usdcBalance
+        const { data } = await axios.get(
+          `https://quote-api.jup.ag/v1/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative((releaseUiPrice + (releaseUiPrice * .01)) / solPrice, ids.mints.wsol)}&slippage=0.5&onlyDirectRoutes=true`
+        )
+        const transactions = await axios.post(
+          'https://quote-api.jup.ag/v1/swap', {
+          route: data.data[0],
+          userPublicKey: provider.wallet.publicKey.toBase58(),
+        })
+        instructions.push(...anchor.web3.Transaction.from(Buffer.from(transactions.data.swapTransaction, 'base64')).instructions)
+      }
+
       if (receiverReleaseTokenAccountIx) {
         instructions.push(receiverReleaseTokenAccountIx)
       }
@@ -786,6 +865,10 @@ const releaseContextHelper = ({
         request.signers = signers
         request.accounts.payerTokenAccount = signers[0].publicKey
       }
+      setReleasePurchaseTransactionPending({
+        ...releasePurchaseTransactionPending,
+        [releasePubkey]: false,
+      })
 
       const txid = await program.rpc.releasePurchase(release.price, request)
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
@@ -806,6 +889,10 @@ const releaseContextHelper = ({
       getRelease(releasePubkey)
       setReleasePurchasePending({
         ...releasePurchasePending,
+        [releasePubkey]: false,
+      })
+      setReleasePurchaseTransactionPending({
+        ...releasePurchaseTransactionPending,
         [releasePubkey]: false,
       })
       return ninaErrorHandler(error)

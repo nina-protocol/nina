@@ -638,7 +638,6 @@ describe('Release', async () => {
           royaltyTokenAccount,
           releaseMint: releaseMint.publicKey,
           tokenProgram: TOKEN_PROGRAM_ID,
-          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
         },
         signers: [user1],
         instructions: [receiverReleaseTokenAccountIx],
@@ -701,7 +700,6 @@ describe('Release', async () => {
           receiverReleaseTokenAccount: receiverReleaseTokenAccount2,
           royaltyTokenAccount: royaltyTokenAccount2,
           tokenProgram: TOKEN_PROGRAM_ID,
-          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
         },
         signers: [user1, ...signers],
         instructions: [
@@ -764,7 +762,6 @@ describe('Release', async () => {
           receiverReleaseTokenAccount: receiverReleaseTokenAccount2,
           royaltyTokenAccount: royaltyTokenAccount2,
           tokenProgram: TOKEN_PROGRAM_ID,
-          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
         },
         signers: [user1, ...signers],
         instructions: [
@@ -809,7 +806,6 @@ describe('Release', async () => {
             royaltyTokenAccount,
             releaseMint: releaseMint.publicKey,
             tokenProgram: TOKEN_PROGRAM_ID,
-            clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
           },
           signers:[user1],
         })
@@ -844,7 +840,6 @@ describe('Release', async () => {
         recipientReleaseTokenAccount,
         releaseMint: releaseMint.publicKey,
         tokenProgram: TOKEN_PROGRAM_ID,
-        clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
       },
       instructions:[recipientReleaseTokenAccountIx],
     })
@@ -881,7 +876,6 @@ describe('Release', async () => {
             recipientReleaseTokenAccount,
             releaseMint: releaseMint.publicKey,
             tokenProgram: TOKEN_PROGRAM_ID,
-            clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
           },
           signers:[newUser],
           instructions:[recipientReleaseTokenAccountIx],
@@ -1015,7 +1009,6 @@ describe('Release', async () => {
                 royaltyTokenAccount: royaltyTokenAccountSellOut,
                 releaseMint: releaseMintSellOut.publicKey,
                 tokenProgram: TOKEN_PROGRAM_ID,
-                clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
               },
               signers: [user1],
             }
@@ -1144,7 +1137,6 @@ describe('Release', async () => {
               royaltyTokenAccount: royaltyTokenAccountTest,
               releaseMint: releaseMintTest.publicKey,
               tokenProgram: TOKEN_PROGRAM_ID,
-              clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
             },
             signers: [user1],
             instructions: [receiverReleaseTokenAccountIx],
@@ -3130,7 +3122,6 @@ it('Fails when redeeming more redeemables than available', async () => {
                 royaltyTokenAccount,
                 releaseMint: releaseMint.publicKey,
                 tokenProgram: TOKEN_PROGRAM_ID,
-                clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
               },
               signers: [user1],
             }
@@ -4119,7 +4110,6 @@ describe('Hub', async () => {
           hubWallet,
           hubTokenAccount,
           tokenProgram: TOKEN_PROGRAM_ID,
-          clock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
         },
         signers: [user1],
         instructions: [receiverReleaseTokenAccountIx],

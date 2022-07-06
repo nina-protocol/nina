@@ -28,17 +28,17 @@ const ReleasePurchase = (props) => {
   const {
     releasePurchase,
     releasePurchasePending,
+    releasePurchaseTransactionPending,
     releaseState,
     getRelease,
     getPublishedHubForRelease,
   } = useContext(ReleaseContext)
-  const { getAmountHeld, collection, ninaClient } = useContext(NinaContext)
+  const { getAmountHeld, collection, ninaClient, usdcBalance } = useContext(NinaContext)
   const {
     exchangeState,
     filterExchangesForReleaseBuySell,
     getExchangesForRelease,
   } = useContext(ExchangeContext)
-  const [pending, setPending] = useState(undefined)
   const [release, setRelease] = useState(undefined)
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
   const [amountPendingBuys, setAmountPendingBuys] = useState(0)
@@ -49,6 +49,8 @@ const ReleasePurchase = (props) => {
   const [exchangeTotalSells, setExchangeTotalSells] = useState(0)
   const [publishedHub, setPublishedHub] = useState()
   const [description, setDescription] = useState()
+  const txPending = useMemo(() => releasePurchaseTransactionPending[releasePubkey], [releasePubkey, releasePurchaseTransactionPending])
+  const pending = useMemo(() => releasePurchasePending[releasePubkey], [releasePubkey, releasePurchasePending])
 
   useEffect(() => {
     getRelease(releasePubkey)
@@ -66,10 +68,6 @@ const ReleasePurchase = (props) => {
       setRelease(releaseState.tokenData[releasePubkey])
     }
   }, [releaseState.tokenData[releasePubkey]])
-
-  useEffect(() => {
-    setPending(releasePurchasePending[releasePubkey])
-  }, [releasePurchasePending[releasePubkey]])
 
   useEffect(() => {
     getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
@@ -145,9 +143,15 @@ const ReleasePurchase = (props) => {
     let result
 
     if (!release.pending) {
-      enqueueSnackbar('Making transaction...', {
-        variant: 'info',
-      })
+      if (!ninaClient.isSol(release.paymentMint) && usdcBalance < ninaClient.nativeToUi(release.price.toNumber(), ninaClient.ids.mints.usdc)) {
+        enqueueSnackbar('Calculating SOL - USDC Swap...', {
+          variant: 'info',
+        })
+      } else {
+        enqueueSnackbar('Preparing transaction...', {
+          variant: 'info',
+        })
+      }
       result = await releasePurchase(releasePubkey)
       if (result) {
         showCompletedTransaction(result)
@@ -276,7 +280,15 @@ const ReleasePurchase = (props) => {
             fullWidth
           >
             <Typography variant="body2">
-              {pending ? <Dots msg="awaiting wallet approval" /> : buttonText}
+              {txPending &&
+                <Dots msg="preparing transaction" />
+              }
+              {!txPending && pending &&
+                <Dots msg="awaiting wallet approval" />
+              }
+              {!txPending && !pending &&
+                buttonText
+              }
             </Typography>
           </Button>
         </form>

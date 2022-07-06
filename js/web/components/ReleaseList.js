@@ -95,7 +95,12 @@ const ReleaseList = () => {
                     .
                   </Typography>
 
-                  <Link href="/faq">How do I withdraw my USDC?</Link>
+                  <Link
+                    href="https://www.notion.so/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612#c7abd525851545a199e06ecd14a16a15"
+                    target="_blank"
+                    rel="noreferrer"
+                    passHref
+                  >How do I withdraw my USDC?</Link>
                 </ReleaseStats>
               )}
               <ReleaseListTable

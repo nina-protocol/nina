@@ -12,6 +12,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [collection, setCollection] = useState({})
   const [postState, setPostState] = useState({})
   const [usdcBalance, setUsdcBalance] = useState(0)
+  const [solUsdcBalance, setSolUsdcBalance] = useState(0)
   const [npcAmountHeld, setNpcAmountHeld] = useState(0)
   const [solPrice, setSolPrice] = useState(0)
   const [healthOk, setHealthOk] = useState(true)
@@ -25,6 +26,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   useEffect(() => {
     if (provider.wallet?.wallet && provider.wallet.publicKey) {
       getNpcAmountHeld()
+      getUsdcBalance()
       if (releasePubkey) {
         createCollectionForSingleRelease(releasePubkey)
       } else {
@@ -107,6 +109,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     solPrice,
     setSolPrice,
     bundlrHttpAddress,
+    setSolUsdcBalance
   })
 
   return (
@@ -141,6 +144,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         initBundlr,
         savePostsToState,
         bundlr,
+        solUsdcBalance,
       }}
     >
       {children}
@@ -163,6 +167,7 @@ const ninaContextHelper = ({
   setBundlrPricePerMb,
   setSolPrice,
   bundlrHttpAddress,
+  setSolUsdcBalance,
 }) => {
   const { provider, ids, uiToNative, nativeToUi } = ninaClient
 
@@ -268,9 +273,7 @@ const ninaContextHelper = ({
           const mint = new anchor.web3.PublicKey(account.mint)
           const balance = account.tokenAmount.uiAmount
 
-          if (account.mint === ids.mints.usdc) {
-            setUsdcBalance(balance.toFixed(2))
-          } else if (balance > 0 && balance % 1 === 0) {
+          if (account.mint !== ids.mints.usdc && balance > 0 && balance % 1 === 0) {
             const [release] = await anchor.web3.PublicKey.findProgramAddress(
               [
                 Buffer.from(anchor.utils.bytes.utf8.encode('nina-release')),
@@ -335,10 +338,8 @@ const ninaContextHelper = ({
         for await (let account of walletTokenAccounts) {
           const balance = account.tokenAmount.uiAmount
 
-          if (account.mint === ids.mints.usdc) {
-            setUsdcBalance(balance.toFixed(2))
-          } else if (account.mint === release.releaseMint.toBase58()) {
-            updatedCollection[releasePubkey] = account.tokenAmount.uiAmount
+          if (account.mint === release.releaseMint.toBase58()) {
+            updatedCollection[releasePubkey] = balance
           }
         }
 
@@ -428,6 +429,14 @@ const ninaContextHelper = ({
   const getUsdcBalance = async () => {
     if (provider.wallet?.connected && provider.wallet?.publicKey) {
       try {
+        const solPrice =  await axios.get(
+          `https://price.jup.ag/v1/price?id=SOL`
+        )
+        let solUsdcBalanceResult = await provider.connection.getBalance(
+          provider.wallet.publicKey
+        )
+        setSolUsdcBalance((ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) * solPrice.data.data.price).toFixed(2))
+
         let [usdcTokenAccountPubkey] = await findOrCreateAssociatedTokenAccount(
           provider.connection,
           provider.wallet.publicKey,
@@ -444,12 +453,14 @@ const ninaContextHelper = ({
             )
           setUsdcBalance(usdcTokenAccount.value.uiAmount.toFixed(2))
           return
+        } else {
+          setUsdcBalance(0)
         }
       } catch {
-        setUsdcBalance(0)
       }
     } else {
       setUsdcBalance(0)
+      setSolUsdcBalance(0)
     }
   }
 
@@ -534,10 +545,11 @@ const ninaContextHelper = ({
 
   const getSolPrice = async () => {
     try {
-      const price = await axios.get(
-        'https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd'
+      const priceResult = await axios.get(
+        `https://price.jup.ag/v1/price?id=SOL`
       )
-      setSolPrice(price.data.solana.usd)
+      setSolPrice(priceResult.data.data.price)
+      return priceResult.data.data.price
     } catch (error) {
       return ninaErrorHandler(error)
     }

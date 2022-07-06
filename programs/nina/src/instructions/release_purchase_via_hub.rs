@@ -72,21 +72,14 @@ pub struct ReleasePurchaseViaHub<'info> {
         bump,
     )]
     pub hub_content: Box<Account<'info, HubContent>>,
-    /// CHECK: This is safe because PDA is derived from hub which is checked above
-    #[account(
-        seeds = [b"nina-hub-signer".as_ref(), hub.key().as_ref()],
-        bump,
-    )]
-    pub hub_signer: UncheckedAccount<'info>,
     #[account(
         mut,
-        constraint = hub_wallet.owner == hub_signer.key(),
+        constraint = hub_wallet.owner == hub.load()?.hub_signer,
         constraint = hub_wallet.mint == release.load()?.payment_mint
     )]
     pub hub_wallet: Box<Account<'info, TokenAccount>>,
     #[account(address = token::ID)]
     pub token_program: Program<'info, Token>,
-    pub clock: Sysvar<'info, Clock>,
 }
 
 pub fn handler(
@@ -135,7 +128,6 @@ pub fn handler(
         ctx.accounts.royalty_token_account.clone(),
         ctx.accounts.release_mint.clone(),
         ctx.accounts.token_program.clone(),
-        ctx.accounts.clock.clone(),
         amount,
     )?;
 
@@ -143,7 +135,7 @@ pub fn handler(
         public_key: *ctx.accounts.release.to_account_info().key,
         purchaser: *ctx.accounts.receiver.to_account_info().key,
         hub: *ctx.accounts.hub.to_account_info().key,
-        date: ctx.accounts.clock.unix_timestamp
+        date: Clock::get()?.unix_timestamp
     });
 
     Ok(())

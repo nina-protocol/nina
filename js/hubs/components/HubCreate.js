@@ -416,7 +416,7 @@ const HubCreate = ({ update, hubData }) => {
         </ConnectMessage>
       )}
 
-      {wallet?.connected && npcAmountHeld === 0 && (
+      {!update && wallet?.connected && npcAmountHeld === 0 && (
         <Box width="50%" margin="24vh auto">
           <BlueTypography
             variant="h1"
@@ -447,7 +447,7 @@ const HubCreate = ({ update, hubData }) => {
           Create Hub
         </Typography>
       )}
-      {wallet?.connected && npcAmountHeld > 0 && (
+      {wallet?.connected && (update || npcAmountHeld > 0) > 0 && (
         <NinaBox columns="500px" gridColumnGap="10px">
           <CreateFormWrapper>
             <HubCreateForm

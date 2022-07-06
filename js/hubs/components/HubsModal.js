@@ -66,8 +66,6 @@ const HubsModal = (props) => {
                         <a
                           href={entry.json.externalUrl}
                           passHref
-                          target="_blank"
-                          rel="noopener noreferrer"
                           className={entry.publishedThroughHub ? 'publishingHub' : ''}      
                         >
                           {entry.json.displayName}
