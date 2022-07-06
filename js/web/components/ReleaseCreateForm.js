@@ -182,11 +182,12 @@ const ReleaseCreateForm = ({
 
             <Field name="description">
               {(props) => (
-                <Box className={classes.fieldInputWrapper}>
-                  <Quill props={props} type="release" />
+                <Box sx={{borderBottom: '1px solid grey'}}>
+                  <Quill props={props} type={'release'} update={false} />
                 </Box>
               )}
             </Field>
+
           </Box>
         </Box>
       </Form>

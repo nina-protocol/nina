@@ -3,8 +3,6 @@ import Box from "@mui/material/Box";
 import {useQuill} from 'react-quilljs'
 import {styled} from "@mui/material/styles";
 import InputLabel from '@mui/material/InputLabel';
-import TextField from "@mui/material/TextField";
-
 
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
@@ -16,8 +14,7 @@ import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
 
 const Quill = ({props, update, type}) => {
-  console.log('type :>> ', type);
-  const theme = type === 'post' ? 'snow' : 'bubble'
+  const theme = type === 'release' ? 'bubble' : 'snow'
   const [valuePlaced, setValuePlaced] = useState(false)
   let toolbarValues;
   let height;
@@ -92,13 +89,11 @@ const Quill = ({props, update, type}) => {
     'link',
     'script',
   ]
-  const placeholder = type !== 'post' ? `enter your ${type} description here` : ''
 
   const {quill, quillRef, Quill} = useQuill({
     theme,
     modules,
     formats,
-    // placeholder
   })
   if (Quill) {
     const MagicUrl = require('quill-magic-url').default // Install with 'yarn add quill-magic-url'
@@ -133,7 +128,6 @@ const Quill = ({props, update, type}) => {
 
   return  (
     <QuillWrapper type={type}>
-
     {type !== 'post' && (
       <InputLabel 
         align="left" 
@@ -146,8 +140,8 @@ const Quill = ({props, update, type}) => {
 
 const QuillWrapper = styled(Box)(({theme, type}) => ({
   '& .ql-editor': {
-    padding: type !== 'post' ? '0px' : '',
-    maxHeight: type !== 'post' ? '100px' : 'unset',
+    padding: type === 'release' ? '0px' : '',
+    maxHeight: type === 'release' ? '100px' : 'unset',
     overflowY: 'scroll'
   }
 }))

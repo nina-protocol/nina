@@ -1,7 +1,10 @@
 import React, {useEffect, useState, createElement, Fragment} from "react";
 import Box from "@mui/material/Box";
+import InputLabel from '@mui/material/InputLabel';
 import {useQuill} from 'react-quilljs'
 import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+import {styled} from "@mui/material/styles";
 
 import {unified} from "unified";
 import rehypeParse from "rehype-parse";
@@ -10,17 +13,14 @@ import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
 
 const Quill = ({props, update, type}) => {
-  const theme = 'snow'
+  const theme = type === 'release' ? 'bubble' : 'snow'
 
   const [valuePlaced, setValuePlaced] = useState(false)
   let toolbarValues;
   let height;
   switch (type) {
     case 'release':
-      toolbarValues = [
-        ['bold', 'italic', 'underline', 'strike'],
-        ['link'],
-      ]
+      toolbarValues = false
       height = '100px'
       break;
     case 'hub':
@@ -90,13 +90,11 @@ const Quill = ({props, update, type}) => {
     'link',
     'script',
   ]
-  const placeholder = type !== 'post' ? `enter your ${type} description here` : ''
 
   const {quill, quillRef, Quill} = useQuill({
     theme,
     modules,
     formats,
-    placeholder
   })
   if (Quill) {
     const MagicUrl = require('quill-magic-url').default // Install with 'yarn add quill-magic-url'
@@ -129,7 +127,25 @@ const Quill = ({props, update, type}) => {
     }
   }, [props.field.value, update, quill])
 
-  return <Box style={{height}} ref={quillRef} />
+  return (
+    <QuillWrapper type={type}>
+      {type !== 'post' && (
+        <InputLabel
+          align="left"
+          shrink={props.field.value ? true : ''}>DESCRIPTION</InputLabel>
+      )}
+      <Box style={{height}} ref={quillRef} />
+    </QuillWrapper>
+  )
 }
+
+const QuillWrapper = styled(Box)(({theme, type}) => ({
+  '& .ql-editor': {
+    padding: type === 'release' ? '0px' : '',
+    maxHeight: type === 'release' ? '100px' : 'unset',
+    overflowY: 'scroll'
+  }
+}))
+
 
 export default Quill
