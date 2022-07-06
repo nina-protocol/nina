@@ -74,11 +74,7 @@ const HubCreateForm = ({
 
   return (
     <Root>
-      {update && (
-        <Typography gutterBottom>
-          Updating {hubData.json.displayName}
-        </Typography>
-      )}
+
       <Form style={{ padding: "15px 15px" }}>
         {!update && (
           <Field name="handle">

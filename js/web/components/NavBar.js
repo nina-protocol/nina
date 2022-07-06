@@ -71,10 +71,6 @@ const NavBar = () => {
                 </Typography>
               </a>
           )}
-<<<<<<< HEAD
-
-=======
->>>>>>> b0d65803492c5025e5ee86febc410a52c4c3b6b5
           <NavCtas>
             {wallet.wallets && (
               <StyledWalletDialogProvider featuredWallets={4}>

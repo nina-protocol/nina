@@ -30,7 +30,7 @@ const Quill = ({props, update, type}) => {
         [{script: 'sub'}, {script: 'super'}],
         ['link'],
       ]
-      height = '150px'
+      height = '110px'
       break;
     case 'post':
       toolbarValues = [
@@ -54,7 +54,8 @@ const Quill = ({props, update, type}) => {
   }
 
   useEffect(() => {
-    if (update) {
+    console.log('props.field.value :>> ', props.field.value);
+    if (update &&  props.field.value.includes('<p>')) {
       unified()
         .use(rehypeParse, {fragment: true})
         .use(rehypeSanitize)
