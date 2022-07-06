@@ -99,7 +99,9 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                   onClickCapture={(e) => {
                     e.stopPropagation();
                     setInitialized(true)
-                    audioPlayerRef.current.load()
+                    if (!audioPlayerRef.current.src) {
+                      audioPlayerRef.current.load()
+                    }
                     updateTrack(
                       releasePubkey,
                       !(isPlaying && track.releasePubkey === releasePubkey)
