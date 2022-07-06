@@ -405,14 +405,13 @@ const CtaWrapper = styled(Box)(({ theme }) => ({
 }));
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
-  backgroundColor: `none !important`,
+  backgroundColor: theme.palette.background.default,
   color: "black",
   paddingRight: "0px",
   paddingLeft: "0px",
   height: "64px",
   boxShadow: "none",
   position: "absolute",
-  backgroundColor: "#66000000 !important",
   boxShadow: "none",
   width: "100% !important",
   "& p": {

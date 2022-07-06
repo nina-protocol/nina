@@ -125,7 +125,7 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                 {metadata.properties.artist} - {metadata.properties.title}
               </Typography>
 
-              <Box display="flex" sx={{ mt: "15px", mb: "15px" }}>
+              <Box display="flex" sx={{ mt: "15px", mb: {md: "15px", xs: '0px'} }}>
                 <PlayButton
                   sx={{ height: "22px", width: "28px", m: 0, paddingLeft: 0 }}
                   onClickCapture={(e) => {
@@ -156,18 +156,19 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
               </Box>
             </CtaWrapper>
 
+            <Box sx={{ marginTop: { md: "0px", xs: "30px" } }}>
+              <ReleasePurchase
+                releasePubkey={releasePubkey}
+                metadata={metadata}
+                hubPubkey={hubPubkey}
+              />
+            </Box>
+
             <StyledDescription variant="body1" align="left">
               {description}
             </StyledDescription>
           </>
         )}
-        <Box sx={{ marginTop: { md: "100px", xs: "30px" } }}>
-          <ReleasePurchase
-            releasePubkey={releasePubkey}
-            metadata={metadata}
-            hubPubkey={hubPubkey}
-          />
-        </Box>
       </StyledGrid>
 
       <DesktopImageGridItem item md={6}>
@@ -191,12 +192,11 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
 };
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
-  // [theme.breakpoints.down('md')]: {
-  //   border: '2px solid red',
-  //   '&:-webkit-scrollbar': {
-  //     display: 'none !important'
-  //   },
-  // },
+  [theme.breakpoints.down('md')]: {
+    '&:-webkit-scrollbar': {
+      display: 'none !important'
+    },
+  },
 }));
 
 const PlayButton = styled(Button)(({ theme }) => ({
@@ -211,10 +211,13 @@ const PlayButton = styled(Button)(({ theme }) => ({
 }));
 
 const StyledDescription = styled(Typography)(({ theme }) => ({
-  overflowWrap: "anywhere",
+  // overflowWrap: "anywhere",
   [theme.breakpoints.up("md")]: {
     maxHeight: "275px",
     overflowY: "scroll",
+  },
+  [theme.breakpoints.down("md")]: {
+    paddingBottom: '40px'
   },
 }));
 

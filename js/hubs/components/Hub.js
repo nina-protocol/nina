@@ -148,7 +148,7 @@ const Hub = ({hubPubkey}) => {
           )} */}
           {hubData.json.description.length > 0 && (
             <DescriptionWrapper
-              sx={{padding: {md: "15px", xs: "40px 0 0"}}}
+              sx={{padding: {md: "15px", xs: "40px 0 0"}, width: '100%'}}
             >
               <Typography align="left" sx={{color: "text.primary"}}>
                 {description}
