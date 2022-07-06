@@ -6,7 +6,7 @@ import InputLabel from '@mui/material/InputLabel';
 import TextField from "@mui/material/TextField";
 
 
-// import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 
 import {unified} from "unified";
@@ -16,16 +16,14 @@ import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
 
 const Quill = ({props, update, type}) => {
-  const theme = 'bubble'
+  console.log('type :>> ', type);
+  const theme = type === 'post' ? 'snow' : 'bubble'
   const [valuePlaced, setValuePlaced] = useState(false)
   let toolbarValues;
   let height;
   switch (type) {
     case 'release':
-      toolbarValues = [
-        ['bold', 'italic', 'underline', 'strike'],
-        ['link'],
-      ]
+      toolbarValues = false
       height = '100px'
       break;
     case 'hub':
@@ -134,19 +132,22 @@ const Quill = ({props, update, type}) => {
   }, [props.field.value, update, quill])
 
   return  (
-    <QuillWrapper>
+    <QuillWrapper type={type}>
+
+    {type !== 'post' && (
       <InputLabel 
         align="left" 
         shrink={props.field.value ? true : ''}>DESCRIPTION</InputLabel>
+    )}
       <Box style={{height}} ref={quillRef} />
     </QuillWrapper>
   )
 }
 
-const QuillWrapper = styled(Box)(({theme}) => ({
+const QuillWrapper = styled(Box)(({theme, type}) => ({
   '& .ql-editor': {
-    padding: '0px',
-    maxHeight: '100px',
+    padding: type !== 'post' ? '0px' : '',
+    maxHeight: type !== 'post' ? '100px' : 'unset',
     overflowY: 'scroll'
   }
 }))
