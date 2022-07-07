@@ -122,8 +122,6 @@ const Quill = ({props, update, type}) => {
 
   useEffect(() => {
     if (update && props.field.value && quill && !valuePlaced ) {
-
-      console.log('props.field.value :>> ', props.field.value);
       let value;
       setValuePlaced(true)
       if (props.field.value.includes('<p>')) {
