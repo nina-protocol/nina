@@ -152,6 +152,7 @@ export const NinaTheme = createTheme({
             padding: '20px',
             borderColor: colors.black,
             color: colors.black,
+            maxHeight: "55px",
             '&.Mui-disabled': {
               border: `1px solid ${colors.grey}`,
               color: colors.grey,
@@ -282,6 +283,15 @@ export const NinaTheme = createTheme({
       styleOverrides: {
         '*, *::before, *::after': {
           boxSizing: 'content-box',
+        },
+        'a, p, h1, h2, h3, h4, h5, h6. figure, blockquote, dl, dd': {
+          margin: '8px 0'
+        },
+        '.ql-toolbar': { // QL classes are for overriding Quill components
+          textAlign: 'left'
+        },
+        '.ql-bubble a::before, a::after': {
+          display: 'none'
         },
         body: {
           overflow: 'hidden',

@@ -405,6 +405,10 @@ const StyledButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
     "&:hover": {
       backgroundColor: theme.palette.transparent,
     },
+    '&:not(.Mui-selected)': {
+      color: theme.palette.text.primary,
+      opacity: 0.5
+    },
   },
   "& .Mui-selected ": {
     // backgroundColor: 'none !important',

@@ -7,6 +7,7 @@ import TextField from "@mui/material/TextField";
 import Slider from "@mui/material/Slider";
 import Box from "@mui/material/Box";
 import Fade from "@mui/material/Fade";
+import Quill from "./Quill";
 
 const { formatPlaceholder } = nina.utils;
 
@@ -63,29 +64,6 @@ const ReleaseCreateForm = ({
                 InputLabelProps={touched.title ? { shrink: true } : ""}
                 placeholder={
                   errors.title && touched.title ? errors.title : null
-                }
-                disabled={disabled}
-                {...props.field}
-              />
-            </Box>
-          )}
-        </Field>
-
-        <Field name="description">
-          {(props) => (
-            <Box>
-              <TextField
-                className="formField"
-                variant="standard"
-                label={formatPlaceholder(props.field.name)}
-                size="small"
-                multiline
-                rows={3}
-                InputLabelProps={touched.description ? { shrink: true } : ""}
-                placeholder={
-                  errors.description && touched.description
-                    ? errors.description
-                    : null
                 }
                 disabled={disabled}
                 {...props.field}
@@ -196,6 +174,15 @@ const ReleaseCreateForm = ({
               {...form}
             />
           </Box>
+
+          <Field name="description">
+            {(props) => (
+              <Box sx={{borderBottom: '1px solid grey'}}>
+                <Quill props={props} type={'release'} update={false} />
+              </Box>
+            )}
+          </Field>
+
           <Fade in={values.resalePercentage > 20}>
             <Warning variant="subtitle1" align="left">
               Are you certain about a {values.resalePercentage}% resale fee?
@@ -224,7 +211,7 @@ const Root = styled("div")(({ theme }) => ({
     ...theme.helpers.baseFont,
     marginBottom: "8px",
     width: "100%",
-    textTransform: "capitalize",
+    // textTransform: "capitalize",
     position: "relative",
     "& input": {
       textAlign: "left",
@@ -235,12 +222,15 @@ const Root = styled("div")(({ theme }) => ({
   },
 }));
 
-const Warning = styled(Typography)(({ theme }) => ({
-  position: "absolute",
-  textTransform: "none !important",
+const Warning = styled(Typography)(({theme}) => ({
+  position: 'absolute',
+  textTransform: 'none !important',
   color: theme.palette.red,
-  opacity: "85%",
-}));
+  opacity: '85%',
+  top: '-5%',
+  left: '122%',
+  width: '220px'
+}))
 
 export default withFormik({
   enableReinitialize: true,

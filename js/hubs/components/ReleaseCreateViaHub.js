@@ -424,7 +424,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                 </BundlrBalanceInfo>
               )}
               {uploadSize > 0 && (
-                <Typography variant="subtitle1" align="right">
+                <Typography variant="subtitle1" align="right" sx={{mt: '5px'}}>
                   Upload Size: {uploadSize} MB | Cost: $
                   {(uploadSize * (bundlrUsdBalance / mbs)).toFixed(2)}
                 </Typography>

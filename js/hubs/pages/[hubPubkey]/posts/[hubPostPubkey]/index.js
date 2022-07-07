@@ -11,7 +11,7 @@ const PostPage = (props) => {
   return (
     <>
       <Head>
-        <title>{`${hub?.json.displayName}: ${post.postContent.json.title}`}</title>
+        <title>{`${hub?.json.displayName}: ${post?.postContent.json.title}`}</title>
         <meta name="og:type" content="website" />
         <meta
           name="description"
