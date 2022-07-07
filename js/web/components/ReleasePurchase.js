@@ -265,12 +265,9 @@ const ReleasePurchase = (props) => {
           </StyledLink>
         </Typography>
       )}
-      <StyledDescription variant="body1" align="left">
+      <StyledDescription align="left">
         {description}
       </StyledDescription>
-      {wallet?.connected && userIsRecipient && (
-        <ReleaseSettings releasePubkey={releasePubkey} inCreateFlow={false} />
-      )}
       <Box mt={1}>
         <form onSubmit={handleSubmit}>
           <Button
@@ -358,6 +355,9 @@ const StyledUserAmount = styled(Box)(({ theme }) => ({
 
 const StyledDescription = styled(Typography)(({ theme }) => ({
   overflowWrap: 'anywhere',
+  '& p':{
+    fontSize: '20px'
+  },
   [theme.breakpoints.up('md')]: {
     maxHeight: '152px',
     overflowY: 'scroll',
