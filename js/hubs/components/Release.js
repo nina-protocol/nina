@@ -164,7 +164,7 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
               />
             </Box>
 
-            <StyledDescription variant="body1" align="left">
+            <StyledDescription align="left">
               {description}
             </StyledDescription>
           </>
@@ -211,7 +211,9 @@ const PlayButton = styled(Button)(({ theme }) => ({
 }));
 
 const StyledDescription = styled(Typography)(({ theme }) => ({
-  // overflowWrap: "anywhere",
+  '& p': {
+    fontSize: '18px'
+  },
   [theme.breakpoints.up("md")]: {
     maxHeight: "275px",
     overflowY: "scroll",
