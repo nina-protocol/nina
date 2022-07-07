@@ -210,6 +210,9 @@ const lightThemeOptions = {
         '.ql-toolbar': { // for left aligning Quill toolbar
           textAlign: 'left'
         },
+        '.ql-bubble a::before, a::after': {
+          display: 'none'      
+        },
         ".formField": {
           marginBottom: "8px !important",
           width: "100%",
