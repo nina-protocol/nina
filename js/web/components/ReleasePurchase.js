@@ -358,6 +358,7 @@ const StyledDescription = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
     maxHeight: '152px',
     overflowY: 'scroll',
+    height: '152px'
   },
 }))
 
