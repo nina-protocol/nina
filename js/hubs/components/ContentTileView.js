@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
+import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import Button from "@mui/material/Button";
 import Link from "next/link";
 import AutorenewTwoToneIcon from "@mui/icons-material/AutorenewTwoTone";
@@ -22,7 +23,7 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 const { AudioPlayerContext, HubContext, ReleaseContext } = nina.contexts;
 
 const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
-  const { updateTrack, setInitialized, audioPlayerRef } = useContext(AudioPlayerContext);
+  const { updateTrack, setInitialized, audioPlayerRef, isPlaying, track } = useContext(AudioPlayerContext);
   const { hubState } = useContext(HubContext);
   const { releaseState } = useContext(ReleaseContext);
   const [columnCount, setColumnCount] = useState(3);
@@ -143,16 +144,20 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                         onClick={(e) => {
                           e.stopPropagation();
                           setInitialized(true)
-                          audioPlayerRef.current.load();
-                          updateTrack(item.release, true);
+                          if (!audioPlayerRef.current.src) {
+                            audioPlayerRef.current.load()
+                          }
+                          updateTrack(item.release, !isPlaying);
                         }}
                         disableRipple
                       >
-                        <PlayCircleOutlineOutlinedIcon
-                          sx={{ color: "text.primary" }}
-                        />
+                        {isPlaying &&
+                          track.releasePubkey === item.release ? (
+                            <PauseCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
+                          ) : (
+                            <PlayCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
+                          )}
                       </Button>
-
                       <ContentName
                         sx={{ color: "text.primary", padding: "0 15px" }}
                       >
@@ -399,6 +404,10 @@ const StyledButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
     textTransform: "capitalize",
     "&:hover": {
       backgroundColor: theme.palette.transparent,
+    },
+    '&:not(.Mui-selected)': {
+      color: theme.palette.text.primary,
+      opacity: 0.5
     },
   },
   "& .Mui-selected ": {

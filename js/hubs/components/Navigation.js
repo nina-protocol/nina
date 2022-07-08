@@ -61,7 +61,7 @@ const Navigation = ({ hubPubkey }) => {
   const [mobileView, setMobileView] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const { hubState, hubCollaboratorsState, filterHubCollaboratorsForHub } =
+  const { hubState, hubCollaboratorsState, filterHubCollaboratorsForHub, getHubsForUser, filterHubsForUser } =
     useContext(HubContext);
   const hubCollaborators = useMemo(
     () => filterHubCollaboratorsForHub(hubPubkey),
@@ -69,6 +69,20 @@ const Navigation = ({ hubPubkey }) => {
   );
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
+
+  useEffect(() => {
+    if (wallet.connected) {
+      getHubsForUser(wallet.publicKey.toBase58());
+    }
+  }, [wallet.connected]);
+
+  const userHubs = useMemo(() => {
+    if (wallet.connected) {
+      return filterHubsForUser(wallet.publicKey.toBase58());
+    }
+    return undefined;
+  }, [hubState, wallet.connected]);
+
 
   useEffect(() => {
     const setResponsiveness = () => {
@@ -145,6 +159,20 @@ const Navigation = ({ hubPubkey }) => {
           </LogoLinkWrapper>
         </Link>
         <CtaWrapper>
+
+          {userHubs && (
+            <a
+              href={`https://hubs.ninaprotocol.com/${userHubs.length === 1 ? userHubs[0].handle : ''}`}
+              target="_blank"
+              rel="noreferrer"
+              style={{textDecoration: 'none'}}
+            >
+              <Typography variant="body1" sx={{mr: '15px'}}>
+                My Hub{userHubs.length > 1 ? 's' : ''}
+              </Typography>
+            </a>
+          )}
+
           {!mobileView && canAddContent && getMenuButtons(hubData?.handle)}
           <WalletWrapper id="wallet-wrapper">
             <NavCtas>
@@ -247,8 +275,8 @@ const Navigation = ({ hubPubkey }) => {
 export default Navigation;
 const MenuItemContent = styled("span")(({ theme }) => ({
   color: theme.palette.text.primary,
-  paddingRight: "20px",
-  paddingLeft: "20px",
+  paddingRight: "15px",
+  paddingLeft: "0px",
   "&:hover": {
     opacity: "50%",
     cursor: "pointer",
@@ -377,14 +405,13 @@ const CtaWrapper = styled(Box)(({ theme }) => ({
 }));
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
-  backgroundColor: `none !important`,
+  backgroundColor: theme.palette.background.default,
   color: "black",
   paddingRight: "0px",
   paddingLeft: "0px",
   height: "64px",
   boxShadow: "none",
   position: "absolute",
-  backgroundColor: "#66000000 !important",
   boxShadow: "none",
   width: "100% !important",
   "& p": {
@@ -392,7 +419,7 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
   },
   "@media (max-width: 900px)": {
     paddingLeft: 0,
-    position: 'fixed'
+    position: "fixed",
   },
 }));
 

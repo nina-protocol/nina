@@ -115,6 +115,9 @@ const StyledReleaseCard = styled(Box)(() => ({
   width: '100%',
   minHeight: '100%',
   margin: 'auto',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center'
 }))
 
 const CtaWrapper = styled(Box)(() => ({

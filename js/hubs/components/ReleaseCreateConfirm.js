@@ -1,9 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect, createElement, Fragment } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { styled } from "@mui/material/styles";
+
+import {unified} from "unified";
+import rehypeParse from "rehype-parse";
+import rehypeReact from "rehype-react";
+import rehypeSanitize from "rehype-sanitize";
+import rehypeExternalLinks from "rehype-external-links";
+
 
 const style = {
   position: "absolute",
@@ -22,6 +29,8 @@ const ReleaseCreateConfirm = (props) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [description, setDescription] = useState();
+  const data = formValues.releaseForm;
 
   const submitAndCloseModal = () => {
     setFormValuesConfirmed(true);
@@ -29,7 +38,32 @@ const ReleaseCreateConfirm = (props) => {
     handleClose();
   };
 
-  const data = formValues.releaseForm;
+  useEffect(() => {
+      if (data.description) {
+        unified()
+          .use(rehypeParse, {fragment: true})
+          .use(rehypeSanitize)
+          .use(rehypeReact, {
+            createElement,
+            Fragment,
+          })
+          .use(rehypeExternalLinks, {
+            target: false,
+            rel: ["nofollow", "noreferrer"],
+          })
+          .process(
+            JSON.parse(data.description).replaceAll(
+              "<p><br></p>",
+              "<br>"
+            )
+          )
+          .then((file) => {
+            console.log('file.result inHub:>> ', file.result);
+            setDescription(file.result);
+          });
+      }
+  }, [data.description]);
+
 
   return (
     <div>
@@ -60,9 +94,7 @@ const ReleaseCreateConfirm = (props) => {
             <Value sx={{ mt: 1 }}>
               Title: <span>{data.title}</span>
             </Value>
-            <Value className="description" sx={{ mt: 1 }}>
-              Description: <span>{data.description}</span>
-            </Value>
+        
             <Value sx={{ mt: 1 }}>
               Catalog Number:<span>{data.catalogNumber}</span>
             </Value>
@@ -74,6 +106,9 @@ const ReleaseCreateConfirm = (props) => {
             </Value>
             <Value sx={{ mt: 1, mb: 1 }}>
               Resale Percentage: <span>{data.resalePercentage}%</span>
+            </Value>
+            <Value className="description" sx={{mt: 1, flexDirection: 'column' , mb: 1}}>
+              Description: <span style={{marginTop: '8px', paddingLeft: '0'}}>{description}</span>
             </Value>
 
             <Button

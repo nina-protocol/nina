@@ -165,11 +165,12 @@ const HubCreate = ({ update, hubData }) => {
     },
     [formValues]
   );
-
+  
   useEffect(() => {
     if (update) {
       //double check that this works
       setFormIsValid(true);
+      setFormValuesConfirmed(true)
       return;
     }
     if (artwork) {
@@ -408,7 +409,7 @@ const HubCreate = ({ update, hubData }) => {
   }
 
   return (
-    <Grid item md={12} justifyContent="center" alignItems={"center"}>
+    <StyledGrid item md={12} >
       {!wallet.connected && (
         <ConnectMessage variant="body" gutterBottom>
           Please connect your wallet to create a hub
@@ -435,7 +436,18 @@ const HubCreate = ({ update, hubData }) => {
           </BlueTypography>
         </Box>
       )}
-      {(update || npcAmountHeld > 0) && (
+
+      {update && (
+        <Typography gutterBottom>
+          Updating {hubData.json.displayName}
+        </Typography>
+      )}
+      {!update && (
+        <Typography variant="h3" gutterBottom>
+          Create Hub
+        </Typography>
+      )}
+      {wallet?.connected && (update || npcAmountHeld > 0) > 0 && (
         <NinaBox columns="500px" gridColumnGap="10px">
           <CreateFormWrapper>
             <HubCreateForm
@@ -502,7 +514,7 @@ const HubCreate = ({ update, hubData }) => {
           <CreateCta>
             {bundlrBalance === 0 && <BundlrModal inCreate={true} />}
 
-            {bundlrBalance > 0 && formValuesConfirmed && (
+            {bundlrBalance > 0 && formValuesConfirmed && (update || isPublishing ) && (
               <Button
                 fullWidth
                 variant="outlined"
@@ -518,7 +530,7 @@ const HubCreate = ({ update, hubData }) => {
                 sx={{ height: "54px" }}
               >
                 {isPublishing && <Dots msg={publishingStepText} />}
-                {!isPublishing && buttonText}
+                {!isPublishing && buttonText} 
               </Button>
             )}
 
@@ -564,9 +576,16 @@ const HubCreate = ({ update, hubData }) => {
           </CreateCta>
         </NinaBox>
       )}
-    </Grid>
+    </StyledGrid>
   );
 };
+
+const StyledGrid = styled(Grid)(() => ({
+  maxHeight: '90vh',
+  overflowY: 'scroll',
+  justifyContent: 'center',
+  alignItems: 'center'
+}));
 
 const ConnectMessage = styled(Typography)(() => ({
   gridColumn: "1/3",

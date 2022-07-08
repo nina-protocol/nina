@@ -194,7 +194,6 @@ const ReleaseInfoWrapper = styled(Box)(() => ({
 
 const ReleaseInfo = styled(Box)(({ theme }) => ({
   marginBottom: theme.spacing(1),
-  paddingTop: "20px",
   "& .inCreateFlow": {
     border: `1px solid ${theme.palette.grey.primary}`,
     padding: "20px",

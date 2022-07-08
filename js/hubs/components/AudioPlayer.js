@@ -103,9 +103,11 @@ const AudioPlayer = ({ hubPubkey }) => {
   );
   useEffect(() => {
     if (track && audioInitialized) {
-      activeIndexRef.current = playlist.indexOf(track);
-      activeTrack.current = track;
-      audioPlayerRef.current.src = track.txid;
+      if (audioPlayerRef.current.src !== track.txid) {
+        activeIndexRef.current = playlist.indexOf(track);
+        activeTrack.current = track;
+        audioPlayerRef.current.src = track.txid;
+      }
       if ("mediaSession" in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
           title: activeTrack.current.title,
@@ -123,7 +125,7 @@ const AudioPlayer = ({ hubPubkey }) => {
     if (audioInitialized && isPlaying) {
       play();
     }
-  }, [track, audioInitialized, isPlaying]);
+  }, [track, audioInitialized]);
 
   useEffect(() => {
     if (
@@ -170,7 +172,9 @@ const AudioPlayer = ({ hubPubkey }) => {
   };
 
   const playButtonHandler = () => {
-    setInitialized(true)
+    if (!initialized) {
+      setInitialized(true)
+    }
     if (audioPlayerRef.current.paused) {
       if (track) {
         updateTrack(track.releasePubkey, true);

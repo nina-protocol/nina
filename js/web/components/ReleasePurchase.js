@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useMemo } from 'react'
+import React, { useEffect, useState, useMemo, useContext, createElement, Fragment } from 'react'
 import axios from 'axios'
 import { styled } from '@mui/material/styles'
 import { useWallet } from '@solana/wallet-adapter-react'
@@ -12,6 +12,12 @@ import CollectorModal from './CollectorModal'
 import HubsModal from './HubsModal'
 import Dots from './Dots'
 import ReleaseSettings from './ReleaseSettings'
+import {unified} from "unified";
+import rehypeParse from "rehype-parse";
+import rehypeReact from "rehype-react";
+import rehypeSanitize from "rehype-sanitize";
+import rehypeExternalLinks from "rehype-external-links";
+
 
 const { ReleaseContext, NinaContext, ExchangeContext } = nina.contexts
 
@@ -42,6 +48,7 @@ const ReleasePurchase = (props) => {
   const [exchangeTotalBuys, setExchangeTotalBuys] = useState(0)
   const [exchangeTotalSells, setExchangeTotalSells] = useState(0)
   const [publishedHub, setPublishedHub] = useState()
+  const [description, setDescription] = useState()
   const txPending = useMemo(() => releasePurchaseTransactionPending[releasePubkey], [releasePubkey, releasePurchaseTransactionPending])
   const pending = useMemo(() => releasePurchasePending[releasePubkey], [releasePubkey, releasePurchasePending])
 
@@ -102,6 +109,33 @@ const ReleasePurchase = (props) => {
       })
     }
   }, [release?.royaltyRecipients, wallet?.connected])
+
+  useEffect(() => {
+    if (metadata?.description.includes('<p>')) {
+      unified()
+        .use(rehypeParse, {fragment: true})
+        .use(rehypeSanitize)
+        .use(rehypeReact, {
+          createElement,
+          Fragment,
+        })
+        .use(rehypeExternalLinks, {
+          target: false,
+          rel: ["nofollow", "noreferrer"],
+        })
+        .process(
+          JSON.parse(metadata.description).replaceAll(
+            "<p><br></p>",
+            "<br>"
+          )
+        )
+        .then((file) => {
+          setDescription(file.result);
+        });
+    } else {
+      setDescription(metadata.description)
+    }
+  }, [metadata?.description]);
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -230,12 +264,9 @@ const ReleasePurchase = (props) => {
           </StyledLink>
         </Typography>
       )}
-      <StyledDescription variant="h3" align="left">
-        {metadata.description}
+      <StyledDescription align="left">
+        {description}
       </StyledDescription>
-      {wallet?.connected && userIsRecipient && (
-        <ReleaseSettings releasePubkey={releasePubkey} inCreateFlow={false} />
-      )}
       <Box mt={1}>
         <form onSubmit={handleSubmit}>
           <Button
@@ -323,8 +354,11 @@ const StyledUserAmount = styled(Box)(({ theme }) => ({
 
 const StyledDescription = styled(Typography)(({ theme }) => ({
   overflowWrap: 'anywhere',
+  '& p':{
+    fontSize: '18px'
+  },
   [theme.breakpoints.up('md')]: {
-    maxHeight: '225px',
+    maxHeight: '152px',
     overflowY: 'scroll',
   },
 }))

@@ -199,11 +199,19 @@ const lightThemeOptions = {
       styleOverrides: {
         a: {
           color: colors.black,
-          // textDecoration: "none",
           cursor: "pointer !important",
           "&:hover": {
             opacity: "50% !important",
           },
+        },
+        'a, p, h1, h2, h3, h4, h4, h5, h6, figure, blockquote, dl, dd': {
+          margin: '8px 0'
+        },
+        '.ql-toolbar': { // QL classes are for overriding Quill components
+          textAlign: 'left'
+        },
+        '.ql-bubble a::before, a::after': {
+          display: 'none'      
         },
         ".formField": {
           marginBottom: "8px !important",
