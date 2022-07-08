@@ -54,7 +54,6 @@ const Quill = ({props, update, type}) => {
   }
 
   useEffect(() => {
-    console.log('props.field.value :>> ', props.field.value);
     if (update &&  props.field.value.includes('<p>')) {
       unified()
         .use(rehypeParse, {fragment: true})

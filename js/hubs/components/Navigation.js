@@ -160,7 +160,7 @@ const Navigation = ({ hubPubkey }) => {
         </Link>
         <CtaWrapper>
 
-          {userHubs && (
+          {userHubs?.length > 0 && (
             <a
               href={`https://hubs.ninaprotocol.com/${userHubs.length === 1 ? userHubs[0].handle : ''}`}
               target="_blank"
