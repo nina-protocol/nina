@@ -1,10 +1,16 @@
-import { useState, useMemo, useEffect } from "react";
+import {useState, useMemo, useEffect, createElement, Fragment } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { styled } from "@mui/material/styles";
 import { useWallet } from "@solana/wallet-adapter-react";
+
+import {unified} from "unified";
+import rehypeParse from "rehype-parse";
+import rehypeReact from "rehype-react";
+import rehypeSanitize from "rehype-sanitize";
+import rehypeExternalLinks from "rehype-external-links";
 
 const style = {
   position: "absolute",
@@ -80,24 +86,10 @@ const HubCreateConfirm = (props) => {
           </Typography>
           <Box sx={{ mt: 1 }}>
             <Value sx={{ mt: 1 }}>
-              Display Name: <span>{formValues.hubForm.displayName}</span>
+              Handle: <span style={{paddingLeft: '15px'}}>{formValues.hubForm.handle}</span>
             </Value>
 
-            <Value sx={{ mt: 1 }}>
-              Publish Fee:<span>{formValues.hubForm.publishFee}%</span>
-            </Value>
-
-            <Value sx={{ mt: 1 }}>
-              Referral Fee:<span>{formValues.hubForm.referralFee}%</span>
-            </Value>
-
-            <Value className="description" sx={{ mt: 1 }}>
-              Description: <span>{formValues.hubForm.description}</span>
-            </Value>
-
-            <Value sx={{ mt: 1 }}>
-              External Url: <span>{formValues.hubForm.externalUrl}</span>
-            </Value>
+            <Typography sx={{mt: 1}} variant="subtitle1">note: all values other than Handle can be updated at anytime.</Typography>
 
             {backgroundColor && (
               <Typography
@@ -149,7 +141,7 @@ const HubCreateConfirm = (props) => {
 
 const Value = styled(Typography)(({ theme }) => ({
   display: "flex",
-  justifyContent: "space-between",
+  // justifyContent: "space-between",
   "& span": {
     textAlign: "right",
   },

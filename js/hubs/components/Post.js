@@ -78,6 +78,7 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
       );
     }
   }, [releaseState, referenceReleasePubkey]);
+
   useEffect(() => {
     if (postState[postPubkey]?.postContent.json.body) {
       unified()
@@ -148,7 +149,7 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
               {postData.postContent.json.title}
             </Typography>
             <Typography align="left">{postContent}</Typography>
-            <Divider />
+            <Divider sx={{mt: 1}}/>
             <Typography align="left" sx={{ marginTop: "20px" }}>
               Published by:{" "}
               <a

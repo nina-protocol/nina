@@ -28,17 +28,26 @@ const Hubs = () => {
   const wallet = useWallet();
 
   useEffect(() => {
+    if (!hubs) {
+      getHubs(true)
+      console.log('gettong');
+    }
+  }, [])
+
+  useEffect(() => {
+    setHubs(filterFeaturedHubs())
+  }, [hubState])
+
+  useEffect(() => {
     if (wallet.connected) {
       getHubsForUser(wallet.publicKey.toBase58());
     }
-    getHubs(true)
   }, [wallet.connected]);
 
   const userHubs = useMemo(() => {
     if (wallet.connected) {
       return filterHubsForUser(wallet.publicKey.toBase58());
     }
-    setHubs(filterFeaturedHubs())
     return undefined;
   }, [hubState, wallet.connected]);
 
@@ -139,6 +148,14 @@ const Hubs = () => {
                     </Typography>
                   </Box>
                   <HubSlider hubs={hubs} />
+
+                <Box sx={{mt: '40px'}} display="flex">
+                  <BlueTypography variant="h1" margin="auto">
+                    <Link href="/all">
+                      Start Exploring.
+                    </Link>
+                  </BlueTypography>
+                </Box>
 
                 </DashboardContent>
               )}

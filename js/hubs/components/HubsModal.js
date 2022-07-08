@@ -95,6 +95,8 @@ const classes = {
 
 const Cta = styled(Typography)(({ theme }) => ({
   cursor: 'pointer',
+  width: 'min-content',
+  whiteSpace: 'nowrap',
   ':hover': {
     opacity: 0.5,
   },

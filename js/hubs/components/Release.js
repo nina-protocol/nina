@@ -1,23 +1,27 @@
-import React, { useState, useContext, useEffect, useMemo, useRef } from "react";
+import React, { useState, useContext, useEffect, createElement, Fragment } from "react";
 import dynamic from "next/dynamic";
 import nina from "@nina-protocol/nina-sdk";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
-import { useRouter } from "next/router";
 import Image from "next/image";
 import Typography from "@mui/material/Typography";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import { useWallet } from "@solana/wallet-adapter-react";
+import {unified} from "unified";
+import rehypeParse from "rehype-parse";
+import rehypeReact from "rehype-react";
+import rehypeSanitize from "rehype-sanitize";
+import rehypeExternalLinks from "rehype-external-links";
+
 
 const ReleasePurchase = dynamic(() => import("./ReleasePurchase"));
 const AddToHubModal = dynamic(() => import("./AddToHubModal"));
 const { HubContext, ReleaseContext, AudioPlayerContext } = nina.contexts;
 
 const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
-  const router = useRouter();
   const wallet = useWallet();
 
   const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } = useContext(AudioPlayerContext);
@@ -26,6 +30,7 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
     useContext(HubContext);
 
   const [metadata, setMetadata] = useState(metadataSsr || null);
+  const [description, setDescription] = useState();
   const [userHubs, setUserHubs] = useState();
 
   useEffect(() => {
@@ -57,6 +62,33 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
       setUserHubs(filterHubsForUser(wallet.publicKey.toBase58()));
     }
   }, [hubState]);
+
+  useEffect(() => {
+    if (metadata?.description.includes('<p>')) {
+      unified()
+        .use(rehypeParse, {fragment: true})
+        .use(rehypeSanitize)
+        .use(rehypeReact, {
+          createElement,
+          Fragment,
+        })
+        .use(rehypeExternalLinks, {
+          target: false,
+          rel: ["nofollow", "noreferrer"],
+        })
+        .process(
+          JSON.parse(metadata.description).replaceAll(
+            "<p><br></p>",
+            "<br>"
+          )
+        )
+        .then((file) => {
+          setDescription(file.result);
+        });
+    } else {
+      setDescription(metadata.description)
+    }
+  }, [metadata?.description]);
 
   return (
     <>
@@ -93,13 +125,15 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                 {metadata.properties.artist} - {metadata.properties.title}
               </Typography>
 
-              <Box display="flex" sx={{ mt: "15px", mb: "15px" }}>
+              <Box display="flex" sx={{ mt: "15px", mb: {md: "15px", xs: '0px'} }}>
                 <PlayButton
                   sx={{ height: "22px", width: "28px", m: 0, paddingLeft: 0 }}
                   onClickCapture={(e) => {
                     e.stopPropagation();
                     setInitialized(true)
-                    audioPlayerRef.current.load()
+                    if (!audioPlayerRef.current.src) {
+                      audioPlayerRef.current.load()
+                    }
                     updateTrack(
                       releasePubkey,
                       !(isPlaying && track.releasePubkey === releasePubkey)
@@ -124,18 +158,19 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
               </Box>
             </CtaWrapper>
 
-            <StyledDescription variant="h4" align="left">
-              {metadata.description}
+            <Box sx={{ marginTop: { md: "0px", xs: "30px" } }}>
+              <ReleasePurchase
+                releasePubkey={releasePubkey}
+                metadata={metadata}
+                hubPubkey={hubPubkey}
+              />
+            </Box>
+
+            <StyledDescription align="left">
+              {description}
             </StyledDescription>
           </>
         )}
-        <Box sx={{ marginTop: { md: "100px", xs: "30px" } }}>
-          <ReleasePurchase
-            releasePubkey={releasePubkey}
-            metadata={metadata}
-            hubPubkey={hubPubkey}
-          />
-        </Box>
       </StyledGrid>
 
       <DesktopImageGridItem item md={6}>
@@ -159,12 +194,11 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
 };
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
-  // [theme.breakpoints.down('md')]: {
-  //   border: '2px solid red',
-  //   '&:-webkit-scrollbar': {
-  //     display: 'none !important'
-  //   },
-  // },
+  [theme.breakpoints.down('md')]: {
+    '&:-webkit-scrollbar': {
+      display: 'none !important'
+    },
+  },
 }));
 
 const PlayButton = styled(Button)(({ theme }) => ({
@@ -179,10 +213,15 @@ const PlayButton = styled(Button)(({ theme }) => ({
 }));
 
 const StyledDescription = styled(Typography)(({ theme }) => ({
-  overflowWrap: "anywhere",
+  fontSize: '18px !important',
+  lineHeight: '20.7px !important',
   [theme.breakpoints.up("md")]: {
-    maxHeight: "225px",
+    maxHeight: "275px",
     overflowY: "scroll",
+    height: '275px'
+  },
+  [theme.breakpoints.down("md")]: {
+    paddingBottom: '40px'
   },
 }));
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, createElement, Fragment } from "react";
 import { styled } from "@mui/material/styles";
 import nina from "@nina-protocol/nina-sdk";
 import { withFormik, Form, Field } from "formik";
@@ -7,6 +7,7 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
 import HelpIcon from "@mui/icons-material/Help";
+import Quill from './Quill'
 
 const { formatPlaceholder } = nina.utils;
 
@@ -35,7 +36,7 @@ const HubCreateForm = ({
         <div>
           <div style={{ paddingBottom: "15px" }}>
             The Publish Fee sets the % of revenue shares that releases published
-            through this hub will send to the Hub.
+            through this hub will send to the hub.
           </div>
           <div style={{ paddingBottom: "15px" }}>
             ie: a 5% Publish Fee means the publisher of the release will have
@@ -73,12 +74,8 @@ const HubCreateForm = ({
 
   return (
     <Root>
-      {update && (
-        <Typography gutterBottom>
-          Updating {hubData.json.displayName}
-        </Typography>
-      )}
-      <Form style={{ padding: "0 15px" }}>
+
+      <Form style={{ padding: "15px 15px" }}>
         {!update && (
           <Field name="handle">
             {(props) => (
@@ -231,22 +228,8 @@ const HubCreateForm = ({
 
         <Field name="description">
           {(props) => (
-            <Box>
-              <TextField
-                className="formField"
-                variant="standard"
-                label={formatPlaceholder(props.field.name)}
-                size="small"
-                multiline
-                rows={3}
-                InputLabelProps={touched.description ? { shrink: true } : ""}
-                placeholder={
-                  errors.description && touched.description
-                    ? errors.description
-                    : null
-                }
-                {...props.field}
-              />
+            <Box sx={{mb: '8px'}}>
+              <Quill props={props} update={update} type={'hub'}/>
             </Box>
           )}
         </Field>

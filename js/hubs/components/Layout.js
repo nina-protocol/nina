@@ -58,11 +58,11 @@ const Layout = ({ children }) => {
 
   let topSpace = "125px";
 
-  if (router.pathname.includes("/releases")) {
+  if (router.pathname.includes("/releases")  ) {
     topSpace = "80px";
   }
   
-  if (router.pathname === '/') {
+  if (router.pathname === '/' || router.pathname.includes("/create")) {
     topSpace = "45px";
   }
 

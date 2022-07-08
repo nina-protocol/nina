@@ -161,9 +161,6 @@ const ReleasePurchase = (props) => {
           )}
         </StyledUserAmount>
       )}
-      {wallet?.connected && userIsRecipient && !inPost && (
-        <ReleaseSettings releasePubkey={releasePubkey} inCreateFlow={false} />
-      )}
       {publishedHub && publishedHub.id !== hubPubkey && (
         <Typography variant="body2" align="left" paddingBottom="10px">
           <StyledLink
@@ -174,10 +171,10 @@ const ReleasePurchase = (props) => {
           </StyledLink>
         </Typography>
       )}
-      <HubsModal releasePubkey={releasePubkey} metadata={metadata} />
+      <HubsModal releasePubkey={releasePubkey} metadata={metadata}  />
 
-      <form onSubmit={handleSubmit} style={{ textAlign: "left" }}>
-        <BuyButton variant="contained" type="submit" disabled={buttonDisabled}>
+      <form onSubmit={handleSubmit} style={{ textAlign: "left", marginBottom: '10px' }}>
+        <BuyButton variant="contained" type="submit" disabled={buttonDisabled} >
           <Typography variant="body2" align="left">
             {txPending &&
               <Dots msg="preparing transaction" />
@@ -195,7 +192,7 @@ const ReleasePurchase = (props) => {
       {amountHeld > 0 && (
         <BuyButton
           variant="contained"
-          sx={{ marginTop: "15px !important" }}
+          sx={{ marginBottom: "10px !important" }}
           onClick={(e) => {
             e.stopPropagation();
             downloadAs(
