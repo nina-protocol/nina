@@ -354,7 +354,8 @@ const StyledUserAmount = styled(Box)(({ theme }) => ({
 
 const StyledDescription = styled(Typography)(({ theme }) => ({
   overflowWrap: 'anywhere',
-  fontSize: '20px !important',
+  fontSize: '18px !important',
+  lineHeight: '20.7px !important',
   [theme.breakpoints.up('md')]: {
     maxHeight: '152px',
     overflowY: 'scroll',
