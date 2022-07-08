@@ -106,13 +106,13 @@ const Hubs = () => {
               
               <HubSlider hubs={hubs} />
 
-              {/* <Box sx={{mt: '40px'}}>
+              <Box sx={{mt: '40px'}}>
               <BlueTypography variant="h1">
                 <Link href="/all">
                   Start Exploring.
                 </Link>
               </BlueTypography>
-              </Box> */}
+              </Box>
 
             </>
           )}
@@ -148,6 +148,14 @@ const Hubs = () => {
                     </Typography>
                   </Box>
                   <HubSlider hubs={hubs} />
+
+                <Box sx={{mt: '40px'}} display="flex">
+                  <BlueTypography variant="h1" margin="auto">
+                    <Link href="/all">
+                      Start Exploring.
+                    </Link>
+                  </BlueTypography>
+                </Box>
 
                 </DashboardContent>
               )}
@@ -238,15 +246,6 @@ const Hubs = () => {
               )}
             </>
           )}
-
-        <Box sx={{mt: '40px'}}>
-          <BlueTypography variant="h1">
-            <Link href="/all">
-              Start Exploring.
-            </Link>
-          </BlueTypography>
-        </Box>
-
         </Box>
       </HubsContainer>
   );
