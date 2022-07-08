@@ -192,7 +192,7 @@ const ReleasePurchase = (props) => {
       {amountHeld > 0 && (
         <BuyButton
           variant="contained"
-          sx={{ marginTop: "15px !important" }}
+          sx={{ marginBottom: "10px !important" }}
           onClick={(e) => {
             e.stopPropagation();
             downloadAs(
