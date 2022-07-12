@@ -1,6 +1,7 @@
 import * as anchor from "@project-serum/anchor";
 import axios from "axios";
 import Head from "next/head";
+import {hrtime} from "process";
 import Hub from "../../components/Hub";
 
 const HubPage = (props) => {
@@ -34,25 +35,29 @@ const HubPage = (props) => {
   );
 };
 
-HubPage.getInitialProps = async (context) => {
+export default HubPage;
+
+export const getServerSideProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL;
   const hubPubkey = context.query.hubPubkey;
-
   const indexerPath = indexerUrl + `/hubs/${hubPubkey}`;
+  
   let hub;
-
-  try {
-    const result = await axios.get(indexerPath);
-    const data = result.data;
-    hub = result.data.hub;
-
-    return {
-      hub,
-      hubPubkey: hub.id,
-    };
-  } catch (error) {
-    console.warn(error);
-    return {};
+  if (hubPubkey !== 'manifest.json') {
+    try {
+      const result = await axios.get(indexerPath);
+      const data = result.data;
+      hub = data.hub;
+  
+      return {
+        props: {
+          hub,
+          hubPubkey: hub.id,
+        },
+      };
+    } catch (error) {
+      console.warn(error);
+    }
   }
+  return {props:{}};
 };
-export default HubPage;
