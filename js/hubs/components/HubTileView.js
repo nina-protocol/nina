@@ -21,6 +21,7 @@ const HubTileView = (props) => {
     <Box>
       <TileGrid>
         {hubs.map((hub, i) => {
+          console.log('hub :>> ', hub);
           return (
             <Tile key={i}>
               <HoverCard
@@ -50,6 +51,7 @@ const HubTileView = (props) => {
                     src={hub.json.image}
                     priority={!isMobile}
                     unoptimized={true}
+                    alt={hub.handle}
                   />
                 )}
               </HoverCard>

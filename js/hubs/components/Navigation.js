@@ -54,7 +54,7 @@ const mobileNavData = [
 ];
 
 const Navigation = ({ hubPubkey }) => {
-  const { header, menuButton, toolbar, ctaWrapper, drawerContainer } =
+  const { toolbar, drawerContainer } =
     useStyles();
   const wallet = useWallet();
 
@@ -145,7 +145,7 @@ const Navigation = ({ hubPubkey }) => {
                 src={hubData.json.image}
                 height="50"
                 width="50"
-                alt="hub logo"
+                alt="hub-logo"
                 unoptimized={true}
               />
             )}

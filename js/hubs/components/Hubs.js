@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
-import ScrollablePageWrapper from "./ScrollablePageWrapper";
+import Head from "next/head";
 import { styled } from "@mui/material/styles";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter } from "next/router";
@@ -30,7 +30,6 @@ const Hubs = () => {
   useEffect(() => {
     if (!hubs) {
       getHubs(true)
-      console.log('gettong');
     }
   }, [])
 
@@ -52,6 +51,25 @@ const Hubs = () => {
   }, [hubState, wallet.connected]);
 
   return (
+    <>
+      <Head>
+
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
+          media="print"
+          onload="this.media='all'"
+
+       />
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
+          media="print"
+          onload="this.media='all'"
+        />
+      </Head>
       <HubsContainer>
         <Box
           sx={{
@@ -248,6 +266,7 @@ const Hubs = () => {
           )}
         </Box>
       </HubsContainer>
+    </>
   );
 };
 

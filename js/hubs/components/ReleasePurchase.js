@@ -10,8 +10,11 @@ import { useSnackbar } from "notistack";
 import Typography from "@mui/material/Typography";
 import { useRouter } from "next/router";
 import Dots from "./Dots";
-import ReleaseSettings from "./ReleaseSettings";
 import HubsModal from './HubsModal'
+const HubsModal = dynamic(() => import("./HubsModal"));
+
+import dynamic from "next/dynamic";
+
 const { ReleaseContext, NinaContext, HubContext } = nina.contexts;
 
 const ReleasePurchase = (props) => {

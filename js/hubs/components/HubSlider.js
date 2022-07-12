@@ -95,6 +95,7 @@ const HubSlider = (props) => {
                           layout="responsive"
                           priority={!isMobile}
                           unoptimized={true}
+                          alt={`${hub.handle}`}
                         />
                       </a>
                     </Link>

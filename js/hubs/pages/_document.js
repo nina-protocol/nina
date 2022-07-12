@@ -5,7 +5,6 @@ import Document, { Html, Head, Main, NextScript } from "next/document";
 import createEmotionServer from "@emotion/server/create-instance";
 import createEmotionCache from "../createEmotionCache";
 import { styled } from "@mui/material/styles";
-
 // const sheets = new ServerStyleSheets();
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
@@ -82,13 +81,17 @@ class MyDocument extends Document {
             rel="stylesheet"
             type="text/css"
             href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
+            media="print"
+            onload="this.media='all'"
           />
           <link
             rel="stylesheet"
             type="text/css"
             href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
+            media="print"
+            onload="this.media='all'"
           />
-          <script src="https://cdn.dashjs.org/v3.2.1/dash.all.min.js" />
+          <script src="https://cdn.dashjs.org/v3.2.1/dash.all.min.js" async/>
           <script
             async
             src="https://www.googletagmanager.com/gtag/js?id=G-VDD58V1D22"
