@@ -47,10 +47,13 @@ const ReleasePage = (props) => {
   );
 };
 
-ReleasePage.getInitialProps = async (context) => {
+export default ReleasePage;
+
+export const getServerSideProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL;
   const hubReleasePubkey = context.query.hubReleasePubkey;
   const indexerPath = indexerUrl + `/hubReleases/${hubReleasePubkey}`;
+
 
   let hubRelease;
   let release;
@@ -69,15 +72,17 @@ ReleasePage.getInitialProps = async (context) => {
       hub = hubRelease.hub;
       hubPubkey = hubRelease.hubId;
     }
+    return {
+      props: {
+        releasePubkey,
+        metadata,
+        hubPubkey,
+        hub
+      }
+    } 
   } catch (error) {
     console.warn(error);
   }
-  return {
-    releasePubkey,
-    metadata,
-    hubPubkey: hubRelease.hubId,
-    hub
-  };
+  return {props: {}}
 };
 
-export default ReleasePage;

@@ -53,10 +53,14 @@ const PostPage = (props) => {
   );
 };
 
-PostPage.getInitialProps = async (context) => {
+export default PostPage;
+
+ export const getServerSideProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL;
   const hubPostPubkey = context.query.hubPostPubkey;
   const indexerPath = indexerUrl + `/hubPosts/${hubPostPubkey}`;
+
+  console.log('hubPostPubkey :>> ', hubPostPubkey);
 
   let hubPost;
   let postPubkey;
@@ -64,11 +68,19 @@ PostPage.getInitialProps = async (context) => {
   let hub;
   let hubPubkey;
   let metadata;
+
+  if (hubPostPubkey !== undefined) {
+    console.log('hubPostPubkey :>> ', hubPostPubkey);
+  } else {
+    'undef'
+  }
   try {
     const result = await axios.get(indexerPath);
     const data = result.data;
+    console.log('data.hubPost :>> ', data.hubPost);
     if (data.hubPost) {
-      metadata = data.metadata;
+      console.log('hubPost :>> ', hubPost);
+      // metadata = data.metadata;
       hubPost = data.hubPost;
       post = hubPost.post;
       postPubkey = hubPost.postId;
@@ -76,17 +88,18 @@ PostPage.getInitialProps = async (context) => {
       hubPubkey = hubPost.hubId;
     }
     return {
-      metadata,
-      hubPostPubkey,
-      postPubkey,
-      post,
-      hub,
-      hubPubkey: hub.id,
-    };
+      props: {
+        // metadata,
+        hubPostPubkey,
+        postPubkey,
+        post,
+        hub,
+        hubPubkey: hub.id,
+      }
+    } 
   } catch (error) {
     console.warn(error);
-    return {};
   }
+  return {props: {}};
 };
 
-export default PostPage;

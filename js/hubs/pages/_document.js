@@ -77,20 +77,6 @@ class MyDocument extends Document {
           />
           <link rel="manifest" href="/site.webmanifest" />
 
-          <link
-            rel="stylesheet"
-            type="text/css"
-            href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
-            media="print"
-            onload="this.media='all'"
-          />
-          <link
-            rel="stylesheet"
-            type="text/css"
-            href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
-            media="print"
-            onload="this.media='all'"
-          />
           <script defer src="https://cdn.dashjs.org/v3.2.1/dash.all.min.js"/>
           <script
             defer

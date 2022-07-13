@@ -138,14 +138,6 @@ const Hub = ({hubPubkey}) => {
   return (
     <>
       <Grid item md={4} sx={{padding: {md: "15px", xs: "40px 15px 15px"}}}>
-        {/* {wallet?.connected &&
-          wallet?.publicKey?.toBase58() === hubData?.authority &&
-          hubReleases && (
-            <UserReleasesPrompt
-              hubPubkey={hubPubkey}
-              hubReleases={hubReleases}
-            />
-          )} */}
           {hubData.json.description.length > 0 && (
             <DescriptionWrapper
               sx={{padding: {md: "15px", xs: "40px 0 0"}, width: '100%'}}

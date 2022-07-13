@@ -29,6 +29,21 @@ const HubPage = (props) => {
 
         <meta name="twitter:image" content={hub?.json.image} />
         <meta name="og:image" content={hub?.json.image} />
+      
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
+          media="print"
+          onload="this.media='all'"
+        />
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
+          media="print"
+          onload="this.media='all'"
+        />
       </Head>
       <Hub hubPubkey={hubPubkey} />
     </>
@@ -43,7 +58,7 @@ export const getServerSideProps = async (context) => {
   const indexerPath = indexerUrl + `/hubs/${hubPubkey}`;
   
   let hub;
-  if (hubPubkey !== 'manifest.json') {
+  if (hubPubkey && hubPubkey !== 'manifest.json') {
     try {
       const result = await axios.get(indexerPath);
       const data = result.data;
