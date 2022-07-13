@@ -35,14 +35,14 @@ const HubPage = (props) => {
           type="text/css"
           href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
           media="print"
-          onload="this.media='all'"
+          // onload="this.media='all'"
         />
         <link
           rel="stylesheet"
           type="text/css"
           href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
           media="print"
-          onload="this.media='all'"
+          // onload="this.media='all'"
         />
       </Head>
       <Hub hubPubkey={hubPubkey} />

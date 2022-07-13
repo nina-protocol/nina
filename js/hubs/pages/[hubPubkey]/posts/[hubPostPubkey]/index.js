@@ -8,6 +8,12 @@ import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 
 const PostPage = (props) => {
   const { metadata, post, hub, postPubkey, hubPubkey } = props;
+  console.log('props :>> ', props);
+  console.log('hub :>> ', hub);
+
+  if (!hub) {
+    return (<></>)
+  }
   return (
     <>
       <Head>
@@ -53,14 +59,10 @@ const PostPage = (props) => {
   );
 };
 
-export default PostPage;
-
- export const getServerSideProps = async (context) => {
+PostPage.getInitialProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL;
   const hubPostPubkey = context.query.hubPostPubkey;
   const indexerPath = indexerUrl + `/hubPosts/${hubPostPubkey}`;
-
-  console.log('hubPostPubkey :>> ', hubPostPubkey);
 
   let hubPost;
   let postPubkey;
@@ -68,19 +70,11 @@ export default PostPage;
   let hub;
   let hubPubkey;
   let metadata;
-
-  if (hubPostPubkey !== undefined) {
-    console.log('hubPostPubkey :>> ', hubPostPubkey);
-  } else {
-    'undef'
-  }
   try {
     const result = await axios.get(indexerPath);
     const data = result.data;
-    console.log('data.hubPost :>> ', data.hubPost);
     if (data.hubPost) {
-      console.log('hubPost :>> ', hubPost);
-      // metadata = data.metadata;
+      metadata = data.metadata;
       hubPost = data.hubPost;
       post = hubPost.post;
       postPubkey = hubPost.postId;
@@ -88,18 +82,17 @@ export default PostPage;
       hubPubkey = hubPost.hubId;
     }
     return {
-      props: {
-        // metadata,
-        hubPostPubkey,
-        postPubkey,
-        post,
-        hub,
-        hubPubkey: hub.id,
-      }
-    } 
+      metadata,
+      hubPostPubkey,
+      postPubkey,
+      post,
+      hub,
+      hubPubkey: hub.id,
+    };
   } catch (error) {
     console.warn(error);
+    return {};
   }
-  return {props: {}};
 };
 
+export default PostPage;
