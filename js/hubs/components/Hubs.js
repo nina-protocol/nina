@@ -60,7 +60,7 @@ const Hubs = () => {
           type="text/css"
           href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
           media="print"
-          onLoad="this.media='all'"
+          // onLoad="this.media='all'"
 
        />
         <link
@@ -68,7 +68,7 @@ const Hubs = () => {
           type="text/css"
           href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
           media="print"
-          onLoad="this.media='all'"
+          // onLoad="this.media='all'"
         />
       </Head>
       <HubsContainer>
