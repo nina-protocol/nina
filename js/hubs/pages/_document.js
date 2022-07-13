@@ -91,9 +91,9 @@ class MyDocument extends Document {
             media="print"
             onload="this.media='all'"
           />
-          <script src="https://cdn.dashjs.org/v3.2.1/dash.all.min.js" async/>
+          <script defer src="https://cdn.dashjs.org/v3.2.1/dash.all.min.js"/>
           <script
-            async
+            defer
             src="https://www.googletagmanager.com/gtag/js?id=G-VDD58V1D22"
           />
           <script
