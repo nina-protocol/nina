@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import * as anchor from "@project-serum/anchor";
+// import * as anchor from "@sproject-serum/anchor";
 import axios from "axios";
 const Release = dynamic(() => import("../../../../components/Release"));
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
@@ -60,8 +60,8 @@ export async function getStaticPaths() {
   return {
     paths: [
       {params: {
-        hubPubkey: '',
-        hubReleasePubkey: ""
+        hubPubkey: 'placeholder',
+        hubReleasePubkey: "placeholder"
       }}
     ],
     fallback: 'blocking' // false or 'blocking'
