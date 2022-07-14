@@ -5,7 +5,7 @@ import * as anchor from "@project-serum/anchor";
 import axios from "axios";
 const Release = dynamic(() => import("../../../../components/Release"));
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
-import {GetStaticPathsResult, GetStaticPropsResult, GetStaticPropsContext} from 'next';
+// import {GetStaticPathsResult, GetStaticPropsResult, GetStaticPropsContext} from 'next';
 
 
 const ReleasePage = (props) => {
