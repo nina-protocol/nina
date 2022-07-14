@@ -39,43 +39,18 @@ const HubPage = (props) => {
 
 export default HubPage;
 
-// export const getServerSideProps = async (context) => {
-//   const indexerUrl = process.env.INDEXER_URL;
-//   const hubPubkey = context.query.hubPubkey;
-//   const indexerPath = indexerUrl + `/hubs/${hubPubkey}`;
-  
-//   let hub;
-//   if (hubPubkey && hubPubkey !== 'manifest.json') {
-//     try {
-//       const result = await axios.get(indexerPath);
-//       const data = result.data;
-//       hub = data.hub;
-  
-//       return {
-//         props: {
-//           hub,
-//           hubPubkey: hub.id,
-//         },
-//       };
-//     } catch (error) {
-//       console.warn(error);
-//     }
-//   }
-//   return {props:{}};
-// };
-
-export const getStaticProps = async (context) => {
+export const getServerSideProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL;
-  const hubPubkey = context.params.hubPubkey;
+  const hubPubkey = context.query.hubPubkey;
   const indexerPath = indexerUrl + `/hubs/${hubPubkey}`;
-
+  
   let hub;
   if (hubPubkey && hubPubkey !== 'manifest.json') {
     try {
       const result = await axios.get(indexerPath);
       const data = result.data;
       hub = data.hub;
-
+  
       return {
         props: {
           hub,
@@ -87,11 +62,36 @@ export const getStaticProps = async (context) => {
     }
   }
   return {props:{}};
-}
+};
 
-export async function getStaticPaths() {
-  return {
-    paths: [],
-    fallback: 'blocking',
-  }
-}
+// export const getStaticProps = async (context) => {
+//   const indexerUrl = process.env.INDEXER_URL;
+//   const hubPubkey = context.params.hubPubkey;
+//   const indexerPath = indexerUrl + `/hubs/${hubPubkey}`;
+
+//   let hub;
+//   if (hubPubkey && hubPubkey !== 'manifest.json') {
+//     try {
+//       const result = await axios.get(indexerPath);
+//       const data = result.data;
+//       hub = data.hub;
+
+//       return {
+//         props: {
+//           hub,
+//           hubPubkey: hub.id,
+//         },
+//       };
+//     } catch (error) {
+//       console.warn(error);
+//     }
+//   }
+//   return {props:{}};
+// }
+
+// export async function getStaticPaths() {
+//   return {
+//     paths: [],
+//     fallback: 'blocking',
+//   }
+// }
