@@ -5,9 +5,13 @@ import * as anchor from "@project-serum/anchor";
 import axios from "axios";
 const Release = dynamic(() => import("../../../../components/Release"));
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
+import {GetStaticPathsResult, GetStaticPropsResult, GetStaticPropsContext} from 'next';
+
 
 const ReleasePage = (props) => {
   const { metadata, hub, releasePubkey, hubPubkey } = props;
+
+  const handlePubkey = (hubPubkey) => hubPubkey
   return (
     <>
       <Head>
@@ -49,9 +53,26 @@ const ReleasePage = (props) => {
 
 export default ReleasePage;
 
-export const getServerSideProps = async (context) => {
+export async function getStaticPaths() {
+  // console.log('[hubPubkey] :>> ', [hubPubkey]);
+  // console.log('ReleasePage :>> ', ReleasePage);
+
+  return {
+    paths: [
+      {params: {
+        hubPubkey: '',
+        hubReleasePubkey: ""
+      }}
+    ],
+    fallback: 'blocking' // false or 'blocking'
+  }
+}
+
+
+export const getStaticProps = async (context) => {
+  console.log('context :>> ', context);
   const indexerUrl = process.env.INDEXER_URL;
-  const hubReleasePubkey = context.query.hubReleasePubkey;
+  const hubReleasePubkey = context.params.hubReleasePubkey;
   const indexerPath = indexerUrl + `/hubReleases/${hubReleasePubkey}`;
 
 
