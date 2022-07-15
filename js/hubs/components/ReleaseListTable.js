@@ -142,7 +142,7 @@ const EnhancedTableHead = (props) => {
 };
 
 const ReleaseListTable = (props) => {
-  const { releases, tableType, hubPubkey } = props;
+  const { releases, tableType, hubPubkey, hubData } = props;
   const { ninaClient } = useContext(NinaContext);
   const { collectRoyaltyForReleaseViaHub } = useContext(HubContext);
   const router = useRouter();
@@ -156,9 +156,9 @@ const ReleaseListTable = (props) => {
     setOrderBy(property);
   };
 
-  const handleClick = (e, releasePubkey) => {
+  const handleClick = (e, hubReleasePubkey, hubHandle) => {
     e.preventDefault();
-    router.push(`/releases/${releasePubkey}`);
+    router.push(`/${hubHandle}/releases/${hubReleasePubkey}`);
   };
 
   const handleCollect = (e, releasePubkey, hubPubkey) => {
@@ -184,6 +184,7 @@ const ReleaseListTable = (props) => {
       id: releasePubkey,
       artist: metadata.properties.artist,
       title: metadata.properties.title,
+      hubReleasePubkey: release.hubReleasePubkey
     };
 
     if (tableType === "userPublished") {
@@ -258,7 +259,7 @@ const ReleaseListTable = (props) => {
                       hover
                       tabIndex={-1}
                       key={row.id}
-                      onClick={(e) => handleClick(e, row.id)}
+                      onClick={(e) => handleClick(e, row.hubReleasePubkey, hubData.handle)}
                     >
                       {Object.keys(row).map((cellName) => {
                         const cellData = row[cellName];

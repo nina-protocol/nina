@@ -8,7 +8,7 @@ import {
 import { decodeNonEncryptedByteArray } from '../utils/encrypt'
 import { ReleaseContext } from './release'
 import { NinaContext } from './nina'
-import { indexerHasRecord } from '../utils'
+import { indexerHasRecord, shuffle } from '../utils'
 
 export const HubContext = createContext()
 const HubContextProvider = ({ children }) => {
@@ -1135,7 +1135,7 @@ const hubContextHelper = ({
         featured.push(hub)
       }
     })
-    return featured
+    return shuffle(featured)
   }
 
   const filterHubsForUser = (publicKey) => {

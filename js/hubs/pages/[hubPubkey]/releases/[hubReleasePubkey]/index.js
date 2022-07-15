@@ -75,7 +75,7 @@ ReleasePage.getInitialProps = async (context) => {
   return {
     releasePubkey,
     metadata,
-    hubPubkey: hubRelease.hubId,
+    hubPubkey: hubRelease?.hubId,
     hub
   };
 };
