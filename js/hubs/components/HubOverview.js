@@ -54,10 +54,7 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
           recipient.recipientAuthority.toBase58() === hubData.hubSigner
       );
       if (recipient) {
-        // console.log('id :>> ', id);
-        // console.log('hubContentState :>> ', hubContentState);
         let hubReleasePubkey = Object.values(hubContentState).find(content =>  content.release === id).hubReleaseId
-        console.log('hubReleasePubkey :>> ', hubReleasePubkey);
         const release = {
           metadata: releaseState.metadata[id],
           tokenData: releaseState.tokenData[id],
