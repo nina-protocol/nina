@@ -33,8 +33,6 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
     [hubCollaboratorsState, hubPubkey]
   );
 
-  console.log('hubReleases :>> ', hubReleases);
-
   const hubSales = useMemo(
     () =>
       hubReleases
