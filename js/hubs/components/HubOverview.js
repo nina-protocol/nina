@@ -33,6 +33,8 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
     [hubCollaboratorsState, hubPubkey]
   );
 
+  console.log('hubReleases :>> ', hubReleases);
+
   const hubSales = useMemo(
     () =>
       hubReleases
@@ -52,11 +54,16 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
           recipient.recipientAuthority.toBase58() === hubData.hubSigner
       );
       if (recipient) {
+        // console.log('id :>> ', id);
+        // console.log('hubContentState :>> ', hubContentState);
+        let hubReleasePubkey = Object.values(hubContentState).find(content =>  content.release === id).hubReleaseId
+        console.log('hubReleasePubkey :>> ', hubReleasePubkey);
         const release = {
           metadata: releaseState.metadata[id],
           tokenData: releaseState.tokenData[id],
           releasePubkey: id,
           recipient,
+          hubReleasePubkey
         };
         releaseArray.push(release);
       }
@@ -152,6 +159,7 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
               <ReleaseListTable
                 releases={releases}
                 hubPubkey={hubPubkey}
+                hubData={hubData}
                 tableType="userPublished"
                 key="releases"
               />
