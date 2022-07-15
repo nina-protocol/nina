@@ -5,13 +5,14 @@ import Head from "next/head";
 import axios from "axios";
 const Release = dynamic(() => import("../../../../components/Release"));
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
-// import {GetStaticPathsResult, GetStaticPropsResult, GetStaticPropsContext} from 'next';
+import { GetStaticPropsContext } from 'next';
 
+import Router from 'next/router'
 
 const ReleasePage = (props) => {
   const { metadata, hub, releasePubkey, hubPubkey } = props;
+  // console.log('Router1111 :>> ', Router);
 
-  const handlePubkey = (hubPubkey) => hubPubkey
   return (
     <>
       <Head>
@@ -53,7 +54,21 @@ const ReleasePage = (props) => {
 
 export default ReleasePage;
 
+
+const handleContext = () => {
+  console.log('Router!!! :>> ', Router);
+  console.log('Router.pathmane!!! :>> ', Router.pathnae);
+
+
+  // console.log('handleData');
+
+  // console.log('router :>> ', router);
+}
+
+
 export async function getStaticPaths() {
+
+  handleContext()
   // console.log('[hubPubkey] :>> ', [hubPubkey]);
   // console.log('ReleasePage :>> ', ReleasePage);
 
@@ -70,7 +85,7 @@ export async function getStaticPaths() {
 
 
 export const getStaticProps = async (context) => {
-  console.log('context :>> ', context);
+  // console.log('context :>> ', context);
   const indexerUrl = process.env.INDEXER_URL;
   const hubReleasePubkey = context.params.hubReleasePubkey;
   const indexerPath = indexerUrl + `/hubReleases/${hubReleasePubkey}`;
