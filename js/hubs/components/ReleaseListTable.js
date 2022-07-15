@@ -157,7 +157,6 @@ const ReleaseListTable = (props) => {
   };
 
   const handleClick = (e, hubReleasePubkey, hubHandle) => {
-    console.log('hubData!!! :>> ', hubData);
     e.preventDefault();
     router.push(`/${hubHandle}/releases/${hubReleasePubkey}`);
   };
@@ -175,8 +174,6 @@ const ReleaseListTable = (props) => {
     const metadata = release.metadata;
     const tokenData = release.tokenData;
     const releasePubkey = release.releasePubkey;
-
-    console.log('release :>> ', release);
 
     const linkData = {
       releasePubkey,
