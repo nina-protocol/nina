@@ -184,7 +184,6 @@ const ReleaseListTable = (props) => {
       id: releasePubkey,
       artist: metadata.properties.artist,
       title: metadata.properties.title,
-      hubReleasePubkey: release.hubReleasePubkey
     };
 
     if (tableType === "userPublished") {
