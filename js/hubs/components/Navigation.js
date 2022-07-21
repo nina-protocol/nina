@@ -26,9 +26,13 @@ const { HubContext, NinaContext } = nina.contexts;
 
 const navData = [
   {
+    label: "+ Publish",
+    href: "/dashboard?action=publishRelease"
+  },
+  {
     label: "Dashboard",
     href: "/dashboard",
-  },
+  }
 ];
 const mobileNavData = [
   {
