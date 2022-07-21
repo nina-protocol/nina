@@ -110,12 +110,4 @@ const App = ({ Component, pageProps }) => {
   );
 };
 
-const ErrorFallback = () => {
-  return (
-    <Typography>
-      We're sorry, something went wrong.  We've been notified of the error and will fix it ASAP.
-    </Typography>
-  )
-}
-
 export default App;
