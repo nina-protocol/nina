@@ -56,7 +56,7 @@ const App = ({ Component, pageProps }) => {
   // }, []);
   // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
   const network =
-    process.env.REACT_APP_CLUSTER === "devnet"
+    process.env.REACT_APP_CLUSTER === "mainnet-beta"
       ? WalletAdapterNetwork.Devnet
       : WalletAdapterNetwork.MainnetBeta;
 
