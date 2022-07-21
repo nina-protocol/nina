@@ -30,6 +30,7 @@
     "@mui/material": "^5.6.3",
     "@mui/styles": "^5.6.2",
     "@nina-protocol/nina-sdk": "0.0.34",
+    "@sentry/nextjs": "^7.7.0",
     "ansi-regex": "^5.0.1",
     "glob-parent": "^5.1.2",
     "nanoid": "^3.1.31",

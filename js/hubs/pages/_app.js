@@ -56,7 +56,7 @@ const App = ({ Component, pageProps }) => {
   // }, []);
   // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
   const network =
-    process.env.REACT_APP_CLUSTER === "devnet"
+    process.env.REACT_APP_CLUSTER === "mainnet-beta"
       ? WalletAdapterNetwork.Devnet
       : WalletAdapterNetwork.MainnetBeta;
 
@@ -109,5 +109,13 @@ const App = ({ Component, pageProps }) => {
     </SnackbarProvider>
   );
 };
+
+const ErrorFallback = () => {
+  return (
+    <Typography>
+      We're sorry, something went wrong.  We've been notified of the error and will fix it ASAP.
+    </Typography>
+  )
+}
 
 export default App;
