@@ -35,7 +35,11 @@ const Hubs = () => {
   }, [])
 
   useEffect(() => {
-    setHubs(filterFeaturedHubs())
+    console.log('hubstate update: ', hubs, hubState)
+    if (!hubs && Object.keys(hubState).length > 0) {
+      console.log('yoyoyo: ', filterFeaturedHubs())
+      setHubs(filterFeaturedHubs())
+    }
   }, [hubState])
 
   useEffect(() => {

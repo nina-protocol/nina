@@ -31,7 +31,9 @@ const HomePage = () => {
   }, [releasesRecentState])
 
   useEffect(() => {
-    setHubs(filterFeaturedHubs())
+    if (!hubs) {
+      setHubs(filterFeaturedHubs())
+    }
   }, [hubState])
 
   return (
