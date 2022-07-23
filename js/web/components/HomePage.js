@@ -17,7 +17,7 @@ const HomePage = () => {
   const { resetQueueWithPlaylist } = useContext(AudioPlayerContext)
   const { getHubs, hubState, filterFeaturedHubs } = useContext(HubContext)
   const [releasesRecent, setReleasesRecent] = useState({})
-  const [hubs, setHubs] = useState()
+  const [hubs, setHubs] = useState(undefined)
 
   const { enqueueSnackbar } = useSnackbar()
 
@@ -31,7 +31,7 @@ const HomePage = () => {
   }, [releasesRecentState])
 
   useEffect(() => {
-    if (!hubs) {
+    if (!hubs & Object.keys(hubState).length > 0) {
       setHubs(filterFeaturedHubs())
     }
   }, [hubState])
