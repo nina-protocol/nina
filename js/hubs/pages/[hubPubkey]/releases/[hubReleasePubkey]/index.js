@@ -84,10 +84,7 @@ export const getServerSideProps = async (context) => {
     console.warn(error);
   }
   return {
-    releasePubkey,
-    metadata,
-    hubPubkey: hubRelease?.hubId,
-    hub
+    props: {}
   };
 };
 

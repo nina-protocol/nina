@@ -77,7 +77,6 @@ class MyDocument extends Document {
           />
           <link rel="manifest" href="/site.webmanifest" />
 
-          <script defer src="https://cdn.dashjs.org/v3.2.1/dash.all.min.js"/>
           <script
             defer
             src="https://www.googletagmanager.com/gtag/js?id=G-VDD58V1D22"
