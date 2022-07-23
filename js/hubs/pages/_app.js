@@ -56,9 +56,9 @@ const App = ({ Component, pageProps }) => {
   // }, []);
   // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
   const network =
-    process.env.REACT_APP_CLUSTER === "devnet"
-      ? WalletAdapterNetwork.Devnet
-      : WalletAdapterNetwork.MainnetBeta;
+    process.env.REACT_APP_CLUSTER === "mainnet-beta"
+      ? WalletAdapterNetwork.MainnetBeta
+      : WalletAdapterNetwork.Devnet;
 
   const endpoint = useMemo(() => {
     if (network === WalletAdapterNetwork.MainnetBeta) {

@@ -35,7 +35,9 @@ const Hubs = () => {
   }, [])
 
   useEffect(() => {
-    setHubs(filterFeaturedHubs())
+    if (!hubs && Object.keys(hubState).length > 0) {
+      setHubs(filterFeaturedHubs())
+    }
   }, [hubState])
 
   useEffect(() => {
@@ -246,7 +248,7 @@ const Hubs = () => {
                   <DashboardContent item md={6}>
                     <>
                       <DashboardHeader style={{ fontWeight: 600 }}>
-                        You have {userHubs.length} Hubs
+                        You have {userHubs.length} Hub {userHubs.length ? 's' : ''}
                       </DashboardHeader>
                       <ul style={{ height: "500px", overflowY: "scroll" }}>
                         {userHubs.map((hub) => {
