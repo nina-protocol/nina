@@ -1,7 +1,5 @@
-import * as anchor from "@project-serum/anchor";
 import axios from "axios";
 import Head from "next/head";
-import {hrtime} from "process";
 import Hub from "../../components/Hub";
 
 const HubPage = (props) => {
@@ -28,22 +26,7 @@ const HubPage = (props) => {
         <meta name="twitter:description" content={hub?.json.description} />
 
         <meta name="twitter:image" content={hub?.json.image} />
-        <meta name="og:image" content={hub?.json.image} />
-      
-        <link
-          rel="stylesheet"
-          type="text/css"
-          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
-          media="print"
-          // onload="this.media='all'"
-        />
-        <link
-          rel="stylesheet"
-          type="text/css"
-          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
-          media="print"
-          // onload="this.media='all'"
-        />
+        <meta name="og:image" content={hub?.json.image} />      
       </Head>
       <Hub hubPubkey={hubPubkey} />
     </>

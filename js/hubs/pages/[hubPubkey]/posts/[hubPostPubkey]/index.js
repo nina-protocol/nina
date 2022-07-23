@@ -1,10 +1,8 @@
-import React, { useContext } from "react";
+import React from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import * as anchor from "@project-serum/anchor";
 import axios from "axios";
 const Post = dynamic(() => import("../../../../components/Post"));
-import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 
 const PostPage = (props) => {
   const { metadata, post, hub, postPubkey, hubPubkey } = props;

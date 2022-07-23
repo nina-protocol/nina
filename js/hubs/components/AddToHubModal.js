@@ -1,19 +1,17 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
 import nina from "@nina-protocol/nina-sdk";
 import { styled } from "@mui/material/styles";
-import { Box, Paper } from "@mui/material";
+import Paper from "@mui/material/Paper";
 import Modal from "@mui/material/Modal";
 import Backdrop from "@mui/material/Backdrop";
 import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import { FormControl, InputLabel } from "@mui/material";
 import HubPostCreate from "./HubPostCreate";
-import Link from "next/link";
 
 import { useSnackbar } from "notistack";
 import Dots from "./Dots";

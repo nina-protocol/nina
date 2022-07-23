@@ -1,15 +1,13 @@
 import React, { useState, useEffect, useMemo, useContext } from "react";
-import dynamic from "next/dynamic";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import MenuItem from "@mui/material/MenuItem";
 import List from "@mui/material/List";
 import Box from "@mui/material/Box";
 import makeStyles from "@mui/styles/makeStyles";
 import { styled } from "@mui/material/styles";
 import nina from "@nina-protocol/nina-sdk";
-import { IconButton } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 import Drawer from "@mui/material/Drawer";
 
 import MenuIcon from "@mui/icons-material/Menu";

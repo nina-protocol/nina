@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { styled } from '@mui/material/styles'
-import { Box, Paper } from '@mui/material'
+import Paper from '@mui/material/Paper'
+import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'

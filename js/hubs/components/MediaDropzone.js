@@ -1,5 +1,4 @@
-import React, { useContext } from "react";
-import nina from "@nina-protocol/nina-sdk";
+import React from "react";
 import "react-dropzone-uploader/dist/styles.css";
 import Dropzone from "react-dropzone-uploader";
 import Typography from "@mui/material/Typography";

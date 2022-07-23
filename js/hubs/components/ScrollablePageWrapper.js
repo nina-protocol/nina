@@ -1,6 +1,6 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 
 const ScrollablePageWrapper = ({ onScroll, children }) => {
   return <ScrollablePage onScroll={onScroll}>{children}</ScrollablePage>;

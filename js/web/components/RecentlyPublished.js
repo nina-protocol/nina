@@ -1,6 +1,6 @@
 import React from 'react'
 import { styled } from '@mui/material/styles'
-import { Box } from '@mui/material'
+import Box from '@mui/material/Box'
 import Slider from 'react-slick'
 import { isMobile } from 'react-device-detect'
 import Typography from '@mui/material/Typography'
