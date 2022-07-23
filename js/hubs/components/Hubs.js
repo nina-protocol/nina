@@ -30,14 +30,11 @@ const Hubs = () => {
   useEffect(() => {
     if (!hubs) {
       getHubs(true)
-      console.log('gettong');
     }
   }, [])
 
   useEffect(() => {
-    console.log('hubstate update: ', hubs, hubState)
     if (!hubs && Object.keys(hubState).length > 0) {
-      console.log('yoyoyo: ', filterFeaturedHubs())
       setHubs(filterFeaturedHubs())
     }
   }, [hubState])
