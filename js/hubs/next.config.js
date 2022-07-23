@@ -12,8 +12,8 @@ const sentryWebpackPluginOptions = {
   // https://github.com/getsentry/sentry-webpack-plugin#options.
 };
 
-// const cluster = "mainnet-beta";
-const cluster = "devnet";
+const cluster = "mainnet-beta";
+// const cluster = "devnet";
 /** @type {import('next').NextConfig} */
 const moduleExports = {
   reactStrictMode: true,
