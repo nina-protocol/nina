@@ -10,7 +10,8 @@ import Typography from "@mui/material/Typography";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
-import { FormControl, InputLabel } from "@mui/material";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
 import HubPostCreate from "./HubPostCreate";
 
 import { useSnackbar } from "notistack";
