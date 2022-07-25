@@ -12,6 +12,7 @@ import Button from "@mui/material/Button";
 import AutorenewTwoToneIcon from "@mui/icons-material/AutorenewTwoTone";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import { getImageFromCDN, loader } from "../utils/imageManager";
 
 const { AudioPlayerContext, HubContext, ReleaseContext } = nina.contexts;
 
@@ -25,7 +26,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
 
   const [displayType, setDisplayType] = useState("all");
   const [filteredContent, setFilteredContent] = useState(content);
-
+  
   useEffect(() => {
     let filtered;
     switch (displayType) {
@@ -115,7 +116,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
         </StyledButtonGroup>
       )}
       <TileGrid columnCount={columnCount}>
-        {filteredContent.map((item, i) => {
+        {filteredContent.map((item, i) => {          
           return (
             <React.Fragment key={i}>
               {item?.contentType === "NinaReleaseV1" && (
@@ -160,13 +161,13 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                     </CardCta>
                     {item.image && (
                       <Image
+                        loader={loader}
                         width={100}
                         height={100}
                         layout="responsive"
-                        src={item?.image}
+                        src={getImageFromCDN(item.image, 400)}
                         release={item}
                         priority={true}
-                        unoptimized={true}
                       />
                     )}
                   </HoverCard>
@@ -232,13 +233,13 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                     </CardCta>
                     {item.releaseMetadata?.image && (
                       <Image
+                        loader={loader}
                         width={100}
                         height={100}
                         layout="responsive"
-                        src={item.releaseMetadata?.image}
+                        src={getImageFromCDN(item.releaseMetadata?.image, 400)}
                         release={item.referenceContent}
                         priority={!isMobile}
-                        unoptimized={true}
                       />
                     )}
                   </HoverCard>

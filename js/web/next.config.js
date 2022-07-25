@@ -23,7 +23,7 @@ const sentryWebpackPluginOptions = {
   // https://github.com/getsentry/sentry-webpack-plugin#options.
 };
 
-const cluster = 'mainnet-beta'
+const cluster = 'devnet'
 const moduleExports = withTM({
   distDir: './build',
   webpack5: true,

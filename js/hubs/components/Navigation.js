@@ -19,6 +19,7 @@ import {
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 import Image from "next/image";
+import { getImageFromCDN, loader } from "../utils/imageManager";
 
 const { HubContext, NinaContext } = nina.contexts;
 
@@ -144,11 +145,11 @@ const Navigation = ({ hubPubkey }) => {
           <LogoLinkWrapper>
             {hubData && (
               <Image
-                src={hubData.json.image}
+                loader={loader}
+                src={getImageFromCDN(hubData.json.image, 100)}
                 height="50"
                 width="50"
                 alt="hub-logo"
-                unoptimized={true}
               />
             )}
             {hubPubkey ? (

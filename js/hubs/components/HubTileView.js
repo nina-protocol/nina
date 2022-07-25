@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-
+import { getImageFromCDN, loader } from "../utils/imageManager";
 
 const HubTileView = (props) => {
   const { hubs } = props
@@ -48,9 +48,9 @@ const HubTileView = (props) => {
                       top: '0',
                       zIndex: '1',
                     }}
-                    src={hub.json.image}
+                    loader={loader}
+                    src={getImageFromCDN(hub.json.image, 400)}
                     priority={!isMobile}
-                    unoptimized={true}
                     alt={hub.handle}
                   />
                 )}

@@ -9,6 +9,7 @@ import Image from "next/image";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 import Dots from './Dots'
+import { getImageFromCDN, loader } from "../utils/imageManager";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
@@ -90,12 +91,12 @@ const HubSlider = (props) => {
                     <Link href={`/${hub.handle}`}>
                       <a>
                         <Image
-                          src={imageUrl}
+                          loader={loader}
+                          src={getImageFromCDN(imageUrl, 400)}
                           height={100}
                           width={100}
                           layout="responsive"
                           priority={!isMobile}
-                          unoptimized={true}
                           alt={`${hub.handle}`}
                         />
                       </a>

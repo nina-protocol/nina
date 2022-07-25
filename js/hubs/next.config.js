@@ -12,8 +12,11 @@ const sentryWebpackPluginOptions = {
   // https://github.com/getsentry/sentry-webpack-plugin#options.
 };
 
-const cluster = "mainnet-beta";
-// const cluster = "devnet";
+// const cluster = "mainnet-beta";
+const cluster = "devnet";
+const IMGIX_URL = cluster === "devnet" 
+  ? "nina-dev.imgix.net"
+  : "nina.imgix.net"
 /** @type {import('next').NextConfig} */
 const moduleExports = {
   reactStrictMode: true,
@@ -55,6 +58,7 @@ const moduleExports = {
     return config;
   },
   env: {
+    IMGIX_URL,
     REACT_APP_CLUSTER: cluster,
     REACT_APP_CLUSTER_URL:
       cluster === "devnet"
@@ -70,7 +74,10 @@ const moduleExports = {
         : "https://api.nina.market",
   },
   images: {
-    domains: ["www.arweave.net", "arweave.net"],
+    deviceSizes: [320, 420, 768, 1024, 1200],
+    loader: 'imgix',
+    path: `https://${IMGIX_URL}/`,
+    domains: ["www.arweave.net", "arweave.net", IMGIX_URL],
   },
 };
 
