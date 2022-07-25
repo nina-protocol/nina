@@ -14,12 +14,12 @@ import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
-import { getImageFromCDN, loader } from "../utils/imageManager";
 
 const Button = dynamic(() => import("@mui/material/Button"));
 const ReleasePurchase = dynamic(() => import("./ReleasePurchase"));
 const AddToHubModal = dynamic(() => import("./AddToHubModal"));
 const { HubContext, ReleaseContext, AudioPlayerContext } = nina.contexts;
+const { getImageFromCDN, loader } = nina.utils.imageManager;
 
 const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const wallet = useWallet();

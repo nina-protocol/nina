@@ -1,5 +1,6 @@
 import React from 'react'
 import { styled } from '@mui/material/styles'
+import nina from "@nina-protocol/nina-sdk";
 import Box from '@mui/material/Box'
 import Slider from 'react-slick'
 import { isMobile } from 'react-device-detect'
@@ -9,7 +10,7 @@ import Image from "next/image";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 import Dots from './Dots'
-import { getImageFromCDN, loader } from "../utils/imageManager";
+const { getImageFromCDN, loader } = nina.utils.imageManager;
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 

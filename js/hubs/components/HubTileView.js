@@ -1,11 +1,12 @@
 import React from 'react'
 import { styled } from '@mui/material/styles'
+import nina from "@nina-protocol/nina-sdk";
 import { isMobile } from 'react-device-detect'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-import { getImageFromCDN, loader } from "../utils/imageManager";
+const { getImageFromCDN, loader } = nina.utils.imageManager;
 
 const HubTileView = (props) => {
   const { hubs } = props

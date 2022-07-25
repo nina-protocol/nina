@@ -10,18 +10,15 @@ import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutli
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Image from 'next/image'
 
-import { useSnackbar } from 'notistack'
 import AddToHubModal from './AddToHubModal.js'
-
-const { AudioPlayerContext, ReleaseContext, HubContext } = nina.contexts
+const { getImageFromCDN, loader } = nina.utils.imageManager
+const { AudioPlayerContext } = nina.contexts
 
 const ReleaseCard = (props) => {
   const { artwork, metadata, preview, releasePubkey, userHubs } = props
   const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
     useContext(AudioPlayerContext)
-  const { releaseState } = useContext(ReleaseContext)
   const image = useMemo(() => metadata?.image)
-  const { enqueueSnackbar } = useSnackbar()
 
   return (
     <StyledReleaseCard>
@@ -100,10 +97,10 @@ const ReleaseCard = (props) => {
             height={350}
             width={350}
             layout="responsive"
-            src={image}
+            src={getImageFromCDN(image, 600)}
             alt={metadata?.name}
             priority={true}
-            unoptimized={true}
+            loader={loader}
           />
         )}
       </Box>

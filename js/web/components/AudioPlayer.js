@@ -16,6 +16,8 @@ import QueueDrawer from './QueueDrawer'
 
 const { AudioPlayerContext } = nina.contexts
 const { formatDuration } = nina.utils
+const { getImageFromCDN, loader } = nina.utils.imageManager;
+
 const AudioPlayer = () => {
   const audio = useContext(AudioPlayerContext)
   const {
@@ -201,11 +203,11 @@ const AudioPlayer = () => {
           <Link href={`/${track.releasePubkey}`} passHref>
             <AlbumArt>
               <Image
-                src={track.cover}
+                src={getImageFromCDN(track.cover, 100)}
+                loader={loader}
                 height="60px"
                 width="60px"
                 layout="responsive"
-                unoptimized={true}
               />
             </AlbumArt>
           </Link>

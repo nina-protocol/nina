@@ -12,6 +12,7 @@ import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Button from '@mui/material/Button'
 
 const { AudioPlayerContext } = nina.contexts
+const { getImageFromCDN, loader } = nina.utils.imageManager
 
 const ReleaseTileList = (props) => {
   const { releases } = props
@@ -85,9 +86,9 @@ const ReleaseTileList = (props) => {
                       top: '0',
                       zIndex: '1',
                     }}
-                    src={release.metadata.image}
+                    src={getImageFromCDN(release.metadata.image, 400)}
                     priority={!isMobile}
-                    unoptimized={true}
+                    loader={loader}
                   />
                 )}
               </HoverCard>

@@ -11,12 +11,12 @@ import Typography from "@mui/material/Typography";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { getImageFromCDN, loader } from "../utils/imageManager";
 
 const ReleasePurchase = dynamic(() => import("./ReleasePurchase"));
 const AddToHubModal = dynamic(() => import("./AddToHubModal"));
 
 const { HubContext, ReleaseContext, AudioPlayerContext } = nina.contexts;
+const { getImageFromCDN, loader } = nina.utils.imageManager;
 
 const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
   const router = useRouter();

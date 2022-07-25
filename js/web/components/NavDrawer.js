@@ -211,7 +211,7 @@ const NavDrawer = () => {
         <Box key={'left'}>
           <StyledMenuButton onClick={toggleDrawer(true)}>
             <Icon>
-              <Image src={'/hamburger.svg'} height={25} width={25} />
+              <img src={'/hamburger.svg'} height={25} width={25} />
             </Icon>
           </StyledMenuButton>
           <StyledDrawer

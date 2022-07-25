@@ -12,7 +12,7 @@ import Button from "@mui/material/Button";
 import AutorenewTwoToneIcon from "@mui/icons-material/AutorenewTwoTone";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import { getImageFromCDN, loader } from "../utils/imageManager";
+const { getImageFromCDN, loader } = nina.utils.imageManager;
 
 const { AudioPlayerContext, HubContext, ReleaseContext } = nina.contexts;
 

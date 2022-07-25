@@ -1,5 +1,6 @@
 import * as encrypt from './encrypt'
 import * as web3 from './web3'
+import * as imageManager from './imageManager'
 
 const dateConverter = (date) => {
   var a = new Date(typeof date === 'object' ? date.toNumber() * 1000 : date)
@@ -106,6 +107,7 @@ export {
   dateConverter,
   formatDuration,
   formatPlaceholder,
+  imageManager,
   indexerHasRecord,
   sleep,
   encrypt,

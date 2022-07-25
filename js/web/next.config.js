@@ -24,6 +24,9 @@ const sentryWebpackPluginOptions = {
 };
 
 const cluster = 'devnet'
+const IMGIX_URL = cluster === "devnet" 
+  ? "nina-dev.imgix.net"
+  : "nina.imgix.net"
 const moduleExports = withTM({
   distDir: './build',
   webpack5: true,
@@ -61,6 +64,7 @@ const moduleExports = withTM({
     return config
   },
   env: {
+    IMGIX_URL,
     REACT_APP_CLUSTER: cluster,
     INDEXER_URL:
       cluster === 'devnet'
@@ -68,9 +72,10 @@ const moduleExports = withTM({
         : 'https://api.nina.market',
   },
   images: {
-    domains: ['www.arweave.net', 'arweave.net'],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
-    minimumCacheTTL: 60,
+    loader: 'imgix',
+    path: `https://${IMGIX_URL}/`,
+    domains: ["www.arweave.net", "arweave.net", IMGIX_URL],
+    deviceSizes: [320, 420, 640, 750, 828, 1080, 1200, 1920, 2048],
   },
 })
 

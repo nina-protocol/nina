@@ -9,7 +9,6 @@ import { styled } from "@mui/material/styles";
 import nina from "@nina-protocol/nina-sdk";
 import IconButton from "@mui/material/IconButton";
 import Drawer from "@mui/material/Drawer";
-
 import MenuIcon from "@mui/icons-material/Menu";
 
 import {
@@ -19,8 +18,8 @@ import {
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 import Image from "next/image";
-import { getImageFromCDN, loader } from "../utils/imageManager";
 
+const { getImageFromCDN, loader } = nina.utils.imageManager;
 const { HubContext, NinaContext } = nina.contexts;
 
 const navData = [

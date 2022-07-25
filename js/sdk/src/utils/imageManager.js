@@ -1,8 +1,8 @@
 import ImgixClient from '@imgix/js-core';
 
-export const getImageFromCDN = (url, width) => {
+export const getImageFromCDN = (url, width=400) => {
   const client = new ImgixClient({
-    domain: 'nina-dev.imgix.net',
+    domain: process.env.IMGIX_URL,
     secureURLToken: process.env.NEXT_PUBLIC_IMGIX_TOKEN,
   });
 
