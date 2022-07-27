@@ -15,9 +15,13 @@ const MediaDropzone = ({ type, setArtwork, setTrack, disabled }) => {
       const width = meta.width;
       const size = meta.size / 1000000;
       if (file.type.includes("audio")) {
-        alert(
-          `your track is ${size} mb... \nPlease upload a smaller than 80 mb`
-        );
+        if (file.type !== 'audio/mpeg') {
+          alert(`Your track is not an MP3. \nPlease upload an MP3.`)
+        } else {
+          alert(
+            `your track is ${size} mb... \nPlease upload a smaller than 80 mb`
+          );
+        }
       } else {
         if (height !== width) {
           alert(
