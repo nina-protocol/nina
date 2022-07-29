@@ -5,6 +5,8 @@ import Document, { Html, Head, Main, NextScript } from "next/document";
 import createEmotionServer from "@emotion/server/create-instance";
 import createEmotionCache from "../createEmotionCache";
 import { styled } from "@mui/material/styles";
+import Script from 'next/script'
+
 // const sheets = new ServerStyleSheets();
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
@@ -77,11 +79,10 @@ class MyDocument extends Document {
           />
           <link rel="manifest" href="/site.webmanifest" />
 
-          <script
-            defer
+          <Script
             src="https://www.googletagmanager.com/gtag/js?id=G-VDD58V1D22"
           />
-          <script
+          <Script
             dangerouslySetInnerHTML={{
               __html: `
                 window.dataLayer = window.dataLayer || [];

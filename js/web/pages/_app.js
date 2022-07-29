@@ -15,11 +15,11 @@ import Router from 'next/router'
 import { SnackbarProvider } from 'notistack'
 import { ThemeProvider } from '@mui/material/styles'
 import { NinaTheme } from '../../NinaTheme'
-import Layout from '../components/Layout'
 import Dots from '../components/Dots'
 import Head from "next/head";
 
 const NinaWrapper = dynamic(() => import('../components/NinaWrapper'))
+const Layout = dynamic(() => import('../components/Layout'))
 
 function Application({ Component, pageProps }) {
   const [loading, setLoading] = useState(false)
