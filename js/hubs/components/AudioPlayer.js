@@ -3,12 +3,10 @@ import nina from "@nina-protocol/nina-sdk";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { useRouter } from "next/router";
 
 const { AudioPlayerContext, HubContext, ReleaseContext } = nina.contexts;
 const { formatDuration } = nina.utils;
 const AudioPlayer = ({ hubPubkey }) => {
-  const router = useRouter();
   const { releaseState } = useContext(ReleaseContext);
   const { hubContentState, filterHubContentForHub } = useContext(HubContext);
   const audio = useContext(AudioPlayerContext);

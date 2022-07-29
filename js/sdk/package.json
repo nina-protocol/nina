@@ -29,7 +29,7 @@
     "querystring": "^0.2.1"
   },
   "scripts": {
-    "build": "rm -rf dist/ && microbundle --jsx React.createElement ",
+    "build": "rm -rf dist/ && microbundle --sourcemap false --jsx React.createElement ",
     "watch": "microbundle watch --no-compress --jsx React.createElement",
     "lint": "eslint ./ --ignore-path ./.gitignore",
     "lint:fix": "yarn lint -- --fix",
