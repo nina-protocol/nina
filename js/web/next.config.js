@@ -10,6 +10,7 @@ const withTM = require('next-transpile-modules')([
   '@solana/wallet-adapter-solflare',
   '@solana/wallet-adapter-sollet',
 ]) // pass the modules you would like to see transpiled
+
 const { withSentryConfig } = require('@sentry/nextjs');
 const sentryWebpackPluginOptions = {
   // Additional config options for the Sentry Webpack plugin. Keep in mind that
@@ -23,7 +24,7 @@ const sentryWebpackPluginOptions = {
   // https://github.com/getsentry/sentry-webpack-plugin#options.
 };
 
-const cluster = 'devnet'
+const cluster = 'mainnet-beta'
 const IMGIX_URL = cluster === "devnet" 
   ? "nina-dev.imgix.net"
   : "nina.imgix.net"
