@@ -83,6 +83,7 @@ class MyDocument extends Document {
             src="https://www.googletagmanager.com/gtag/js?id=G-VDD58V1D22"
           />
           <Script
+            id="google-analytics"
             dangerouslySetInnerHTML={{
               __html: `
                 window.dataLayer = window.dataLayer || [];
