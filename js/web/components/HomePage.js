@@ -32,7 +32,7 @@ const HomePage = () => {
   }, [releasesRecentState])
 
   useEffect(() => {
-    if (!hubs & Object.keys(hubState).length > 0) {
+    if ((!hubs || hubs.length === 0) & Object.keys(hubState).length > 0) {
       setHubs(filterFeaturedHubs())
     }
   }, [hubState])
