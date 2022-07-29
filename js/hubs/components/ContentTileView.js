@@ -54,7 +54,8 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
         filtered = content.filter((item) => {
           return (
             item.contentType === "NinaReleaseV1" &&
-            item.publishedThroughHub === false
+            item.publishedThroughHub === false &&
+            releaseState.tokenData[item.release]?.authority.toBase58() !== hubData?.authority
           );
         });
         setFilteredContent(filtered);

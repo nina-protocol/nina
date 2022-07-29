@@ -52,11 +52,13 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
           recipient.recipientAuthority.toBase58() === hubData.hubSigner
       );
       if (recipient) {
+        let hubReleasePubkey = Object.values(hubContentState).find(content =>  content.release === id).hubReleaseId
         const release = {
           metadata: releaseState.metadata[id],
           tokenData: releaseState.tokenData[id],
           releasePubkey: id,
           recipient,
+          hubReleasePubkey
         };
         releaseArray.push(release);
       }
@@ -152,6 +154,7 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
               <ReleaseListTable
                 releases={releases}
                 hubPubkey={hubPubkey}
+                hubData={hubData}
                 tableType="userPublished"
                 key="releases"
               />

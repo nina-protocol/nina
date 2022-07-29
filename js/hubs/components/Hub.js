@@ -64,7 +64,7 @@ const Hub = ({hubPubkey}) => {
           };
           contentArray.push(hubContentData);
         }
-        if (hubContentData.publishedThroughHub) {
+        if (hubContentData.publishedThroughHub || releaseState.tokenData[hubContentData.release]?.authority.toBase58() === hubData?.authority) {
           types.push('Releases')
         } else {
           types.push('Reposts')

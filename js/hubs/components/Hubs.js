@@ -30,12 +30,13 @@ const Hubs = () => {
   useEffect(() => {
     if (!hubs) {
       getHubs(true)
-      console.log('gettong');
     }
   }, [])
 
   useEffect(() => {
-    setHubs(filterFeaturedHubs())
+    if (!hubs && Object.keys(hubState).length > 0) {
+      setHubs(filterFeaturedHubs())
+    }
   }, [hubState])
 
   useEffect(() => {
@@ -227,7 +228,7 @@ const Hubs = () => {
                   <DashboardContent item md={6}>
                     <>
                       <DashboardHeader style={{ fontWeight: 600 }}>
-                        You have {userHubs.length} Hubs
+                        You have {userHubs.length} {userHubs.length > 1 ? 'Hubs' : 'Hub'}
                       </DashboardHeader>
                       <ul style={{ height: "500px", overflowY: "scroll" }}>
                         {userHubs.map((hub) => {
