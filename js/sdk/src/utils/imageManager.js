@@ -8,6 +8,7 @@ export const getImageFromCDN = (url, width=400) => {
 
   const image = client.buildURL(url, {
     width,
+    fm: 'webp'
   });
 
   return image
