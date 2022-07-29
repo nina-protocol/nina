@@ -18,7 +18,7 @@ const MediaDropzone = ({ type, setArtwork, setTrack, disabled }) => {
           alert(`Your track is not an MP3. \nPlease upload an MP3.`)
         } else {
           alert(
-            `your track is ${size} mb... \nPlease upload a smaller than 80 mb`
+            `your track is ${size} mb... \nPlease upload a smaller than 110 mb`
           );
         }
       } else {
@@ -93,8 +93,11 @@ const MediaDropzone = ({ type, setArtwork, setTrack, disabled }) => {
 
   const validateTrack = (fileWithMeta) => {
     const size = fileWithMeta.file.size / 1000000;
-    if (size > 190) {
+    if (size > 110) {
       return true;
+    }
+    if (fileWithMeta.file.type !== 'audio/mpeg') {
+      return true
     }
     return false;
   };

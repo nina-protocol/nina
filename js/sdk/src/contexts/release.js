@@ -376,7 +376,7 @@ const releaseContextHelper = ({
         name: `${artist} - ${title}`.substring(0, 32),
         symbol: catalogNumber.substring(0, 10),
         uri: metadataUri,
-        sellerFeeBasisPoints: resalePercentage,
+        sellerFeeBasisPoints: resalePercentage * 100,
       }
 
       const txid = await program.rpc.releaseInitViaHub(
@@ -718,7 +718,7 @@ const releaseContextHelper = ({
         name: `${artist} - ${title}`.substring(0, 32),
         symbol: catalogNumber.substring(0, 10),
         uri: metadataUri,
-        sellerFeeBasisPoints: resalePercentage,
+        sellerFeeBasisPoints: resalePercentage * 100,
       }
 
       const bumps = {
