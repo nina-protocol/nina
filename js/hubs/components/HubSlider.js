@@ -2,16 +2,31 @@ import React from 'react'
 import { styled } from '@mui/material/styles'
 import { getImageFromCDN, loader } from "@nina-protocol/nina-sdk/src/utils/imageManager";
 import Box from '@mui/material/Box'
-import Slider from 'react-slick'
 import { isMobile } from 'react-device-detect'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
 import Image from "next/image";
-import NavigateNextIcon from '@mui/icons-material/NavigateNext'
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 import Dots from './Dots'
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import dynamic from 'next/dynamic';
+
+const Slider = dynamic(() => import('react-slick'), {
+  ssr: false,
+  loading: () => (
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '250px',
+      }}
+    >
+      <Dots size="80px" />
+    </Box>
+  )})
+const NavigateNextIcon = dynamic(() => import('@mui/icons-material/NavigateNext'))
+const NavigateBeforeIcon = dynamic(() => import('@mui/icons-material/NavigateBefore'))
 
 const HubSlider = (props) => {
   const { hubs } = props;
@@ -54,20 +69,6 @@ const HubSlider = (props) => {
       onClick={onClick}
     />
   )
-  if (hubs?.length === 0) {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: '250px',
-        }}
-      >
-        <Dots size="80px" />
-      </Box>
-    )
-  }
   return (
     <HubSliderWrapper>
       {hubs?.length > 0 && (
