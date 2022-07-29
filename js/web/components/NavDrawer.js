@@ -3,7 +3,8 @@ import { styled } from '@mui/material/styles'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
-import { Typography, Box } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
@@ -210,7 +211,7 @@ const NavDrawer = () => {
         <Box key={'left'}>
           <StyledMenuButton onClick={toggleDrawer(true)}>
             <Icon>
-              <Image src={'/hamburger.svg'} height={25} width={25} />
+              <img src={'/hamburger.svg'} height={25} width={25} />
             </Icon>
           </StyledMenuButton>
           <StyledDrawer

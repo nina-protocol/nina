@@ -1,14 +1,12 @@
 /* eslint-disable react/display-name */
 import React, { useEffect, useState, useContext } from 'react'
-import {
-  TableContainer,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Paper,
-} from '@mui/material'
+import TableContainer from '@mui/material/TableContainer'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Paper from '@mui/material/Paper'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
@@ -16,7 +14,7 @@ import nina from '@nina-protocol/nina-sdk'
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded'
 import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
 import { useRouter } from 'next/router'
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 import { useWallet } from '@solana/wallet-adapter-react'
 import CloseIcon from '@mui/icons-material/Close'
 const { AudioPlayerContext } = nina.contexts

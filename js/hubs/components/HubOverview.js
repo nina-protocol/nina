@@ -3,9 +3,7 @@ import Link from "next/link";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
-import Button from "@mui/material/Button";
-import { Typography } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
+import Typography from "@mui/material/Typography";
 import nina from "@nina-protocol/nina-sdk";
 import ReleaseListTable from "./ReleaseListTable";
 

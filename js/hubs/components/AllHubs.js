@@ -1,16 +1,9 @@
 import React, { useContext, useEffect, useMemo, useState, useRef } from "react";
 import nina from "@nina-protocol/nina-sdk";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
-import Link from "@mui/material/Link";
 import { styled } from "@mui/material/styles";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { useRouter } from "next/router";
-import Dots from "./Dots";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
-import Image from "next/image";
 import Head from "next/head";
 import debounce from 'lodash.debounce'
 import HubTileView from "./HubTileView";

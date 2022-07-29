@@ -5,11 +5,8 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
-import { toggleButtonClasses, Typography } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Tooltip from "@mui/material/Tooltip";
-import HelpIcon from "@mui/icons-material/Help";
 import { DashboardHeader } from "../styles/theme/lightThemeOptions.js";
 
 import { useFormik } from "formik";

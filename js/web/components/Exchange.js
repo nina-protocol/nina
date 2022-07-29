@@ -1,18 +1,23 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import { useSnackbar } from 'notistack'
-import { Typography, Box, Fade, Button } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
+import Fade from '@mui/material/Fade'
+import Button from '@mui/material/Button'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import { useWallet, useConnection } from '@solana/wallet-adapter-react'
 import nina from '@nina-protocol/nina-sdk'
+import Image from 'next/image'
 import BuySell from './BuySell'
 import ExchangeHistoryModal from './ExchangeHistoryModal'
 import ExchangeList from './ExchangeList'
 import ExchangeModal from './ExchangeModal'
 
+const {getImageFromCDN, loader} = nina.utils.imageManager
 const { AudioPlayerContext, ExchangeContext, NinaContext, ReleaseContext } =
   nina.contexts
 
@@ -165,7 +170,7 @@ const Exchange = (props) => {
       <ExchangeWrapper>
         <StyledReleaseInfo>
           <ReleaseImage>
-            {metadata && <img src={metadata.image} alt={metadata.name} />}
+            {metadata && <Image src={getImageFromCDN(metadata.image, 100)} alt={metadata.name} height={100} width = {100} loader={loader}/>}
           </ReleaseImage>
 
           <InfoCopy>

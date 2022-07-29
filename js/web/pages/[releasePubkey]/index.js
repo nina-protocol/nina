@@ -1,5 +1,4 @@
 import React from 'react'
-import nina from '@nina-protocol/nina-sdk'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
 const Release = dynamic(() => import('../../components/Release'))

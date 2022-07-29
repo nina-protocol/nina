@@ -1,15 +1,17 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 import { isMobile } from 'react-device-detect'
 import Slider from "react-slick";
-import "react-multi-carousel/lib/styles.css";
 import Typography from "@mui/material/Typography";
 import Link from "next/link";
 import Image from "next/image";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import Dots from "./Dots";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { getImageFromCDN, loader } from '@nina-protocol/nina-sdk/src/utils/imageManager'
 
 const HubSlider = (props) => {
   const { hubs } = props;
@@ -89,12 +91,12 @@ const HubSlider = (props) => {
                     <Link href={`https://hubs.ninaprotocol.com/${hub.handle}`}>
                       <a>
                         <Image
-                          src={imageUrl}
+                          src={getImageFromCDN(imageUrl, 400)}
+                          loader={loader}
                           height={100}
                           width={100}
                           layout="responsive"
                           priority={!isMobile}
-                          unoptimized={true}
                         />
                       </a>
                     </Link>

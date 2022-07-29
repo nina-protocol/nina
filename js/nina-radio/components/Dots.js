@@ -1,6 +1,6 @@
 import React from 'react'
 import { styled } from '@mui/material/styles'
-import { Typography } from '@mui/material'
+import Typography from '@mui/material/Typography'
 
 const Dots = ({ size, msg }) => {
   return (

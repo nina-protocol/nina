@@ -3,8 +3,7 @@ import nina from "@nina-protocol/nina-sdk";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import Link from "@mui/material/Link";
-import ScrollablePageWrapper from "./ScrollablePageWrapper";
+import Link from "next/link";
 import { styled } from "@mui/material/styles";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter } from "next/router";
@@ -34,7 +33,7 @@ const Hubs = () => {
   }, [])
 
   useEffect(() => {
-    if (!hubs && Object.keys(hubState).length > 0) {
+    if ((!hubs || hubs.length === 0) & Object.keys(hubState).length > 0) {
       setHubs(filterFeaturedHubs())
     }
   }, [hubState])
@@ -53,6 +52,7 @@ const Hubs = () => {
   }, [hubState, wallet.connected]);
 
   return (
+    <>
       <HubsContainer>
         <Box
           sx={{
@@ -249,6 +249,7 @@ const Hubs = () => {
           )}
         </Box>
       </HubsContainer>
+    </>
   );
 };
 

@@ -13,12 +13,10 @@ import { clusterApiUrl } from '@solana/web3.js'
 import dynamic from 'next/dynamic'
 import Router from 'next/router'
 import { SnackbarProvider } from 'notistack'
-import { isMobile } from 'react-device-detect'
 import { ThemeProvider } from '@mui/material/styles'
 import { NinaTheme } from '../../NinaTheme'
 import Layout from '../components/Layout'
 import Dots from '../components/Dots'
-import createEmotionCache from '../createEmotionCache'
 import Head from "next/head";
 
 const NinaWrapper = dynamic(() => import('../components/NinaWrapper'))

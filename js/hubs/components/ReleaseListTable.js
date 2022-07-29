@@ -12,7 +12,7 @@ import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import { visuallyHidden } from "@mui/utils";
 import Box from "@mui/material/Box";
-import { Fade } from "@mui/material";
+import Fade from "@mui/material/Fade";
 import { useRouter } from "next/router";
 
 const { NinaContext, HubContext } = nina.contexts;

@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect, createElement, Fragment } from "react";
 import dynamic from "next/dynamic";
 import nina from "@nina-protocol/nina-sdk";
-import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
@@ -16,10 +15,11 @@ import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
 
-
+const Button = dynamic(() => import("@mui/material/Button"));
 const ReleasePurchase = dynamic(() => import("./ReleasePurchase"));
 const AddToHubModal = dynamic(() => import("./AddToHubModal"));
 const { HubContext, ReleaseContext, AudioPlayerContext } = nina.contexts;
+const { getImageFromCDN, loader } = nina.utils.imageManager;
 
 const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const wallet = useWallet();
@@ -101,18 +101,18 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
           padding: { md: "0 15px", xs: "75px 15px" },
         }}
       >
-        {metadata && (
+        {metadata && metadata.image && (
           <>
             <MobileImageWrapper>
               <Image
-                src={metadata?.image}
+                src={getImageFromCDN(metadata.image, 1200)}
+                loader={loader}
                 layout="responsive"
                 objectFit="contain"
                 objectPosition={"center"}
                 height={100}
                 width={100}
                 alt={metadata.description || "album art"}
-                unoptimized={true}
               />
             </MobileImageWrapper>
 
@@ -174,17 +174,17 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
       </StyledGrid>
 
       <DesktopImageGridItem item md={6}>
-        {metadata && (
+        {metadata && metadata.image && (
           <ImageContainer>
             <Image
-              src={metadata?.image}
+              src={getImageFromCDN(metadata.image, 1200)}
+              loader={loader}
               layout="responsive"
               objectFit="contain"
               height="100"
               width="100"
               objectPosition={"right bottom"}
               alt={metadata.description || "album art"}
-              unoptimized={true}
             />
           </ImageContainer>
         )}

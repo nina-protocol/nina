@@ -5,17 +5,13 @@ import {styled} from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Dots from "./Dots";
-import UserReleasesPrompt from "./UserReleasesPrompt";
-
 import {unified} from "unified";
 import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
-
-
 import {useWallet} from "@solana/wallet-adapter-react";
+import Dots from "./Dots";
 const ContentTileView = dynamic(() => import("./ContentTileView"));
 const {HubContext, NinaContext, ReleaseContext} = nina.contexts;
 
@@ -138,14 +134,6 @@ const Hub = ({hubPubkey}) => {
   return (
     <>
       <Grid item md={4} sx={{padding: {md: "15px", xs: "40px 15px 15px"}}}>
-        {/* {wallet?.connected &&
-          wallet?.publicKey?.toBase58() === hubData?.authority &&
-          hubReleases && (
-            <UserReleasesPrompt
-              hubPubkey={hubPubkey}
-              hubReleases={hubReleases}
-            />
-          )} */}
           {hubData.json.description.length > 0 && (
             <DescriptionWrapper
               sx={{padding: {md: "15px", xs: "40px 0 0"}, width: '100%'}}
