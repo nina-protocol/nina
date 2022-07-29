@@ -48,7 +48,7 @@ const Hubs = () => {
     if (wallet.connected) {
       return filterHubsForUser(wallet.publicKey.toBase58());
     }
-    return undefined;
+    return [];
   }, [hubState, wallet.connected]);
 
   return (
@@ -82,7 +82,8 @@ const Hubs = () => {
                 >
                   Apply
                 </Link>{" "}
-                for a Hub or connect your wallet to get started.                <Link
+                for a Hub or connect your wallet to get started.                
+                <Link
                   href="https://www.notion.so/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612#c7abd525851545a199e06ecd14a16a15"
                   target="_blank"
                   rel="noreferrer"
@@ -184,13 +185,13 @@ const Hubs = () => {
                           Apply For More Hubs
                         </Button>
                       </StyledLink>
-                      <StyledLink>
+                      <StyledLink
+                      href="/all">
                         <Button
                           color="primary"
                           variant="outlined"
                           fullWidth
                           type="submit"
-                          onClick={() => router.push("/all")}
                           sx={{mt: '15px'}}
                         >
                           Browse All Hubs
@@ -200,24 +201,26 @@ const Hubs = () => {
                   )}
                   {npcAmountHeld > 0 && (
                     <DashboardContent item md={6}>
-                      <StyledLink>
+                      <StyledLink
+                        href="/create"
+                      >
                         <Button
                           color="primary"
                           variant="outlined"
                           fullWidth
                           type="submit"
-                          onClick={() => router.push("/create")}
                         >
                           Create a Hub
                         </Button>
                       </StyledLink>
-                      <StyledLink>
+                      <StyledLink
+                        href="/all"
+                      >
                         <Button
                           color="primary"
                           variant="outlined"
                           fullWidth
                           type="submit"
-                          onClick={() => router.push("/all")}
                           sx={{mt: '15px'}}
                         >
                           Browse All Hubs
