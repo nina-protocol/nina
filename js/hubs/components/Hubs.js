@@ -3,7 +3,7 @@ import nina from "@nina-protocol/nina-sdk";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import Link from "@mui/material/Link";
+import Link from "next/link";
 import { styled } from "@mui/material/styles";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter } from "next/router";
