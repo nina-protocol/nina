@@ -81,8 +81,11 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
         </Link>
 
         <Typography fontStyle="italic" gutterBottom>
-          Hitting &apos;X&apos; on a release will archive it, releases can be
+          Clicking &apos;X&apos; on a release will archive it, releases can be
           unarchived at any time.
+        </Typography>
+        <Typography fontStyle="italic" gutterBottom>
+          NOTE:  THIS DOES NOT DELETE THE RELEASE, IT WILL STILL BE VISIBLE ON NINAPROTOCOL.COM.
         </Typography>
         <Typography fontStyle="italic">
           A asterisk ( * ) next to a release indicates that it was published
