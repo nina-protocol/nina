@@ -20,7 +20,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 const { getImageFromCDN, loader } = nina.utils.imageManager;
-const { HubContext, NinaContext } = nina.contexts;
+const { HubContext } = nina.contexts;
 
 const navData = [
   {

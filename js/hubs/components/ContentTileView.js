@@ -13,7 +13,6 @@ import AutorenewTwoToneIcon from "@mui/icons-material/AutorenewTwoTone";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 const { getImageFromCDN, loader } = nina.utils.imageManager;
-
 const { AudioPlayerContext, HubContext, ReleaseContext } = nina.contexts;
 
 const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {

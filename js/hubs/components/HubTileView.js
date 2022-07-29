@@ -1,12 +1,11 @@
 import React from 'react'
 import { styled } from '@mui/material/styles'
-import nina from "@nina-protocol/nina-sdk";
+import { getImageFromCDN, loader } from "@nina-protocol/nina-sdk/src/utils/imageManager";
 import { isMobile } from 'react-device-detect'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-const { getImageFromCDN, loader } = nina.utils.imageManager;
 
 const HubTileView = (props) => {
   const { hubs } = props
@@ -22,7 +21,6 @@ const HubTileView = (props) => {
     <Box>
       <TileGrid>
         {hubs.map((hub, i) => {
-          console.log('hub :>> ', hub);
           return (
             <Tile key={i}>
               <HoverCard
