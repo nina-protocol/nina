@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import axios from "axios";
@@ -48,7 +48,7 @@ const ReleasePage = (props) => {
 
 export default ReleasePage;
 
-export async function getStaticPaths() {
+export const getStaticPaths = async () => {
   return {
     paths: [
       {params: {
