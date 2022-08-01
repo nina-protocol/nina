@@ -10,25 +10,27 @@ import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutli
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import { useWallet, useConnection } from '@solana/wallet-adapter-react'
-import nina from '@nina-protocol/nina-sdk'
+import Audio from '@nina-protocol/nina-sdk/esm/Audio'
+import Exchange from '@nina-protocol/nina-sdk/esm/Exchange'
+import Nina from '@nina-protocol/nina-sdk/esm/Nina'
+import Release from '@nina-protocol/nina-sdk/esm/Release'
+import { imageManager } from '@nina-protocol/nina-sdk/esm/utils'
 import Image from 'next/image'
 import BuySell from './BuySell'
 import ExchangeHistoryModal from './ExchangeHistoryModal'
 import ExchangeList from './ExchangeList'
 import ExchangeModal from './ExchangeModal'
 
-const {getImageFromCDN, loader} = nina.utils.imageManager
-const { AudioPlayerContext, ExchangeContext, NinaContext, ReleaseContext } =
-  nina.contexts
+const {getImageFromCDN, loader} = imageManager
 
-const Exchange = (props) => {
+const ExchangeComponent = (props) => {
   const { releasePubkey, metadata } = props
 
   const wallet = useWallet()
   const connection = useConnection()
   const { enqueueSnackbar } = useSnackbar()
-  const { ninaClient } = useContext(NinaContext)
-  const { releaseState, getRelease } = useContext(ReleaseContext)
+  const { ninaClient } = useContext(Nina.Context)
+  const { releaseState, getRelease } = useContext(Release.Context)
   const {
     exchangeState,
     getExchangesForRelease,
@@ -40,9 +42,9 @@ const Exchange = (props) => {
     filterExchangeMatch,
     getExchangeHistoryForRelease,
     filterExchangeHistoryForRelease,
-  } = useContext(ExchangeContext)
+  } = useContext(Exchange.Context)
   const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
-    useContext(AudioPlayerContext)
+    useContext(Audio.Context)
 
   const [exchangeAwaitingConfirm, setExchangeAwaitingConfirm] =
     useState(undefined)
@@ -170,7 +172,7 @@ const Exchange = (props) => {
       <ExchangeWrapper>
         <StyledReleaseInfo>
           <ReleaseImage>
-            {metadata && <Image src={getImageFromCDN(metadata.image, 100)} alt={metadata.name} height={100} width = {100} loader={loader}/>}
+            {metadata && <Image src={getImageFromCDN(metadata.image, 100, new Date(release.releaseDatetime * 1000))} alt={metadata.name} height={100} width = {100} loader={loader}/>}
           </ReleaseImage>
 
           <InfoCopy>
@@ -419,4 +421,4 @@ const CtaWrapper = styled(Box)(() => ({
   },
 }))
 
-export default Exchange
+export default ExchangeComponent

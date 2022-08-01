@@ -12,10 +12,10 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { useWallet } from "@solana/wallet-adapter-react";
-import nina from "@nina-protocol/nina-sdk";
+import Nina from "@nina-protocol/nina-sdk/esm/Nina"
+import Release from "@nina-protocol/nina-sdk/esm/Release";
 
 const RoyaltyRecipientForm = dynamic(() => import("./RoyaltyRecipientForm"));
-const { ReleaseContext, NinaContext } = nina.contexts;
 
 const Royalty = (props) => {
   const { release, releasePubkey } = props;
@@ -30,8 +30,8 @@ const Royalty = (props) => {
   const [formToggleText, setFormToggleText] = useState(
     "Add Revenue Split Recipient"
   );
-  const { collectRoyaltyForRelease } = useContext(ReleaseContext);
-  const { ninaClient } = useContext(NinaContext);
+  const { collectRoyaltyForRelease } = useContext(Release.Context);
+  const { ninaClient } = useContext(Nina.Context);
 
   useEffect(() => {
     if (release?.royaltyRecipients) {

@@ -3,7 +3,9 @@ import {AnchorProvider} from '@project-serum/anchor'
 import Router from "next/router";
 import { SnackbarProvider } from "notistack";
 import { ThemeProvider } from "@mui/material/styles";
-import nina from "@nina-protocol/nina-sdk";
+import Nina from "@nina-protocol/nina-sdk/esm/Nina";
+import Release from "@nina-protocol/nina-sdk/esm/Release";
+import NinaClient from "@nina-protocol/nina-sdk/esm/client";
 import { CacheProvider } from "@emotion/react";
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
 import { ConnectionProvider, WalletProvider, useWallet, useConnection } from '@solana/wallet-adapter-react';
@@ -112,10 +114,6 @@ function Application({ Component, pageProps }) {
 }
 
 const NinaWrapper = ({children}) => {
-  const {
-      ReleaseContextProvider,
-      NinaContextProvider,
-  } = nina.contexts      
   const wallet = useWallet();
   const connection = useConnection();
   const provider = new AnchorProvider(
@@ -127,14 +125,14 @@ const NinaWrapper = ({children}) => {
     }
   )  
 
-  const ninaClient = nina.client(provider, process.env.REACT_APP_CLUSTER)
+  const ninaClient = NinaClient(provider, process.env.REACT_APP_CLUSTER)
 
   return (
-    <NinaContextProvider ninaClient={ninaClient}>
-      <ReleaseContextProvider>
+    <Nina.Provider ninaClient={ninaClient}>
+      <Release.Provider>
         {children}
-      </ReleaseContextProvider>
-    </NinaContextProvider>
+      </Release.Provider>
+    </Nina.Provider>
   )
 }
 export default Application;

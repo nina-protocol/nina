@@ -11,8 +11,8 @@ import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import Dots from "./Dots";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { getImageFromCDN, loader } from '@nina-protocol/nina-sdk/src/utils/imageManager'
-
+import { imageManager } from '@nina-protocol/nina-sdk/src/utils'
+const { getImageFromCDN, loader } = imageManager
 const HubSlider = (props) => {
   const { hubs } = props;
 
@@ -91,7 +91,7 @@ const HubSlider = (props) => {
                     <Link href={`https://hubs.ninaprotocol.com/${hub.handle}`}>
                       <a>
                         <Image
-                          src={getImageFromCDN(imageUrl, 400)}
+                          src={getImageFromCDN(imageUrl, 400, new Date(Date.parse(hub.datetime)))}
                           loader={loader}
                           height={100}
                           width={100}

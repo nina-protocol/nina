@@ -1,12 +1,12 @@
 import React from 'react'
 import { styled } from '@mui/material/styles'
-import { getImageFromCDN, loader } from "@nina-protocol/nina-sdk/src/utils/imageManager";
+import { imageManager } from "@nina-protocol/nina-sdk/src/utils";
 import { isMobile } from 'react-device-detect'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-
+const { getImageFromCDN, loader } = imageManager
 const HubTileView = (props) => {
   const { hubs } = props
   const router = useRouter()
@@ -48,7 +48,7 @@ const HubTileView = (props) => {
                       zIndex: '1',
                     }}
                     loader={loader}
-                    src={getImageFromCDN(hub.json.image, 400)}
+                    src={getImageFromCDN(hub.json.image, 400, new Date(Date.parse(hub.datetime)))}
                     priority={!isMobile}
                     alt={hub.handle}
                   />

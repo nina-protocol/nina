@@ -5,14 +5,14 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Link from "next/link";
-import nina from "@nina-protocol/nina-sdk";
+import Nina from "@nina-protocol/nina-sdk/esm/Nina";
+import Release from "@nina-protocol/nina-sdk/esm/Release";
 const Royalty = dynamic(() => import("./Royalty.js"));
-const { ReleaseContext, NinaContext } = nina.contexts;
 
 const ReleaseSettings = (props) => {
   const { releasePubkey, tempMetadata, inCreateFlow } = props;
-  const { ninaClient } = useContext(NinaContext);
-  const { releaseState } = useContext(ReleaseContext);
+  const { ninaClient } = useContext(Nina.Context);
+  const { releaseState } = useContext(Release.Context);
   const [release, setRelease] = useState(releaseState.tokenData[releasePubkey]);
   const [metadata, setMetadata] = useState(
     releaseState.metadata[releasePubkey]

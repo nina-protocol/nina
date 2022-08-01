@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
-import nina from "@nina-protocol/nina-sdk";
+import React from "react";
 import "react-dropzone-uploader/dist/styles.css";
 import Dropzone from "react-dropzone-uploader";
 import Typography from "@mui/material/Typography";
@@ -8,8 +7,6 @@ import { styled } from "@mui/material/styles";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import Image from "next/image";
-
-const { NinaContext } = nina.contexts;
 
 const HubImageDropzone = ({ type, setArtwork, currentImageUrl, update }) => {
   const handleChangeStatus = ({ meta, file, remove }, status) => {

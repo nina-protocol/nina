@@ -1,6 +1,7 @@
 import React, { useContext, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
-import nina from '@nina-protocol/nina-sdk'
+import Audio from '@nina-protocol/nina-sdk/esm/Audio'
+import { imageManager } from '@nina-protocol/nina-sdk/src/utils'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -11,15 +12,13 @@ import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Image from 'next/image'
 
 import AddToHubModal from './AddToHubModal.js'
-const { getImageFromCDN, loader } = nina.utils.imageManager
-const { AudioPlayerContext } = nina.contexts
+const { getImageFromCDN, loader } = imageManager
 
 const ReleaseCard = (props) => {
   const { artwork, metadata, preview, releasePubkey, userHubs } = props
   const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
-    useContext(AudioPlayerContext)
+    useContext(Audio.Context)
   const image = useMemo(() => metadata?.image)
-
   return (
     <StyledReleaseCard>
       <StyledReleaseInfo>
@@ -80,7 +79,7 @@ const ReleaseCard = (props) => {
       </StyledReleaseInfo>
 
       <Box>
-        {preview ? (
+        {preview && (
           <Image
             src={
               artwork?.meta.status === undefined ? '' : artwork.meta.previewUrl
@@ -90,14 +89,14 @@ const ReleaseCard = (props) => {
             height={350}
             width={350}
             priority={true}
-            unoptimized={true}
           />
-        ) : (
+        )}
+        {!preview && metadata && (
           <Image
             height={350}
             width={350}
             layout="responsive"
-            src={getImageFromCDN(image, 600)}
+            src={getImageFromCDN(image, 400, new Date(Date.parse(metadata.properties.date)))}
             alt={metadata?.name}
             priority={true}
             loader={loader}

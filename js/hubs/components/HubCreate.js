@@ -6,7 +6,8 @@ import React, {
   useCallback,
 } from "react";
 import * as Yup from "yup";
-import nina from "@nina-protocol/nina-sdk";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-sdk/esm/Nina";
 import { useSnackbar } from "notistack";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -35,8 +36,6 @@ import {
   uploadHasItemForType,
 } from "../utils/uploadManager";
 
-const { NinaContext, HubContext } = nina.contexts;
-
 const HubCreateSchema = Yup.object().shape({
   handle: Yup.string().required("Hub Handle is Required"),
   displayName: Yup.string().required("Display Name is Required"),
@@ -54,7 +53,7 @@ const HubCreate = ({ update, hubData }) => {
     hubUpdateConfig,
     getHubs,
     validateHubHandle,
-  } = useContext(HubContext);
+  } = useContext(Hub.Context);
   const router = useRouter();
   const {
     healthOk,
@@ -69,7 +68,7 @@ const HubCreate = ({ update, hubData }) => {
     getSolPrice,
     getNpcAmountHeld,
     npcAmountHeld,
-  } = useContext(NinaContext);
+  } = useContext(Nina.Context);
 
   const [artwork, setArtwork] = useState();
   const [uploadSize, setUploadSize] = useState();

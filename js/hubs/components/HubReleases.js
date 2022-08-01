@@ -6,10 +6,10 @@ import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
-import nina from "@nina-protocol/nina-sdk";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Release from "@nina-protocol/nina-sdk/esm/Release";
 import { useSnackbar } from "notistack";
 import { styled } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import {
   DashboardWrapper,
   DashboardContent,
@@ -17,13 +17,10 @@ import {
   DashboardEntry,
 } from "../styles/theme/lightThemeOptions.js";
 
-const { HubContext, ReleaseContext } = nina.contexts;
-
 const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
-  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const wallet = useWallet();
-  const { hubContentToggleVisibility, hubState } = useContext(HubContext);
-  const { releaseState } = useContext(ReleaseContext);
+  const { hubContentToggleVisibility, hubState } = useContext(Hub.Context);
+  const { releaseState } = useContext(Release.Context);
   const hubData = useMemo(() => hubState[hubPubkey], [hubState]);
   const { enqueueSnackbar } = useSnackbar();
   const hubReleases = useMemo(

@@ -4,14 +4,14 @@ import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
-import nina from "@nina-protocol/nina-sdk";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-sdk/esm/Nina";
+import Release from "@nina-protocol/nina-sdk/esm/Release";
 import ReleaseListTable from "./ReleaseListTable";
 
-const { HubContext, NinaContext, ReleaseContext } = nina.contexts;
-
 const HubOverview = ({ hubPubkey, isAuthority }) => {
-  const { releaseState } = useContext(ReleaseContext);
-  const { ninaClient } = useContext(NinaContext);
+  const { releaseState } = useContext(Release.Context);
+  const { ninaClient } = useContext(Nina.Context);
   const {
     hubState,
     hubContentState,
@@ -20,7 +20,7 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
     filterHubCollaboratorsForHub,
     hubFeePending,
     hubWithdraw,
-  } = useContext(HubContext);
+  } = useContext(Hub.Context);
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const hubReleases = useMemo(
     () => filterHubContentForHub(hubPubkey)[0],

@@ -5,20 +5,19 @@ import Grid from "@mui/material/Grid";
 import CssBaseline from "@mui/material/CssBaseline";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import nina from "@nina-protocol/nina-sdk";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub"
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { lightThemeOptions } from "../styles/theme/lightThemeOptions";
 import Head from "next/head";
 
 const Navigation = dynamic(() => import("./Navigation"));
 const AudioPlayer = dynamic(() => import("./AudioPlayer"));
-const { HubContext } = nina.contexts;
 const lightTheme = createTheme(lightThemeOptions);
 
 const Layout = ({ children }) => {
   const router = useRouter();
   const [hubPubkey, setHubPubkey] = useState();
-  const { hubState, getHubPubkeyForHubHandle } = useContext(HubContext);
+  const { hubState, getHubPubkeyForHubHandle } = useContext(Hub.Context);
 
   useEffect(() => {
     const getHubPubkey = async (handle) => {

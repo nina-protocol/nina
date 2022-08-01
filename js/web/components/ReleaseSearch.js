@@ -6,17 +6,16 @@ import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
 import CloseIcon from '@mui/icons-material/Close'
 import axios from 'axios'
-import nina from '@nina-protocol/nina-sdk'
+import Nina from '@nina-protocol/nina-sdk/esm/Nina'
+import Release from '@nina-protocol/nina-sdk/esm/Release'
 import Dots from './Dots'
-
-const { NinaContext, ReleaseContext } = nina.contexts
 
 const ReleaseSearch = () => {
   const [query, setQuery] = useState('')
   const [artists, setArtists] = useState(null)
-  const { ninaClient } = useContext(NinaContext)
+  const { ninaClient } = useContext(Nina.Context)
   const { getReleasesBySearch, searchResults, resetSearchResults } =
-    useContext(ReleaseContext)
+    useContext(Release.Context)
   let path = ninaClient.endpoints.api
 
   useEffect(() => {

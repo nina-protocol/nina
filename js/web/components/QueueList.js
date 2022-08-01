@@ -10,15 +10,14 @@ import Paper from '@mui/material/Paper'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
-import nina from '@nina-protocol/nina-sdk'
+import Audio from '@nina-protocol/nina-sdk/esm/Audio'
+import { arrayMove } from '@nina-protocol/nina-sdk/esm/utils'
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded'
 import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
 import { useRouter } from 'next/router'
 import Typography from '@mui/material/Typography'
 import { useWallet } from '@solana/wallet-adapter-react'
 import CloseIcon from '@mui/icons-material/Close'
-const { AudioPlayerContext } = nina.contexts
-const { arrayMove } = nina.utils
 
 const getItemStyle = (isDragging, draggableStyle) => ({
   // styles we need to apply on draggables

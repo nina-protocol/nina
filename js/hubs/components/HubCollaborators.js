@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import { useWallet } from "@solana/wallet-adapter-react";
 import CloseIcon from "@mui/icons-material/Close";
 import Grid from "@mui/material/Grid";
-import nina from "@nina-protocol/nina-sdk";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
 import { useSnackbar } from "notistack";
 import HubAddCollaborator from "./HubAddCollaborator";
 import CollaboratorPermissions from "./CollaboratorPermissions";
@@ -16,8 +16,6 @@ import {
   DashboardEntry,
 } from "../styles/theme/lightThemeOptions.js";
 
-const { HubContext, ReleaseContext } = nina.contexts;
-
 const HubCollaborators = ({
   hubPubkey,
   isAuthority,
@@ -26,7 +24,7 @@ const HubCollaborators = ({
 }) => {
   const wallet = useWallet();
   const { hubRemoveCollaborator, hubCollaboratorsState } =
-    useContext(HubContext);
+    useContext(Hub.Context);
   const [activeSelection, setActiveSelection] = useState(undefined);
   const hubCollaborators = useMemo(
     () =>

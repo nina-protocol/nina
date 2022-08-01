@@ -6,10 +6,8 @@ import TextField from '@mui/material/TextField'
 import Slider from '@mui/material/Slider'
 import Box from '@mui/material/Box'
 import Fade from '@mui/material/Fade'
-import nina from '@nina-protocol/nina-sdk'
+import {formatPlaceholder} from '@nina-protocol/nina-sdk/esm/utils'
 import Quill from './Quill'
-
-const { formatPlaceholder } = nina.utils
 
 const ReleaseCreateForm = ({
   field,

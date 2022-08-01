@@ -1,5 +1,4 @@
 import React from 'react'
-import nina from '@nina-protocol/nina-sdk'
 import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
 import Typography from '@mui/material/Typography'
@@ -7,11 +6,8 @@ import Box from '@mui/material/Box'
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined'
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined'
 import Image from 'next/image'
-import { useWallet } from '@solana/wallet-adapter-react'
 
 const MediaDropzone = ({ type, setArtwork, setTrack, handleProgress }) => {
-  const wallet = useWallet()
-
   const handleChangeStatus = ({ file, meta, restart, remove }, status) => {
     if (meta.status === 'error_validation') {
       const height = meta.height

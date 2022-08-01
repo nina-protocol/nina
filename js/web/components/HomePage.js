@@ -4,19 +4,20 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import Button from '@mui/material/Button'
-import nina from '@nina-protocol/nina-sdk'
+import Audio from '@nina-protocol/nina-sdk/esm/Audio'
+import Hub from '@nina-protocol/nina-sdk/esm/Hub'
+import Release from '@nina-protocol/nina-sdk/esm/Release'
 import { useSnackbar } from 'notistack'
 import RecentlyPublished from './RecentlyPublished'
 import Link from 'next/link'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 import HubSlider from './HubSlider'
-const { AudioPlayerContext, ReleaseContext, HubContext } = nina.contexts
 
 const HomePage = () => {
+  const { resetQueueWithPlaylist } = useContext(Audio.Context)
+  const { getHubs, hubState, filterFeaturedHubs } = useContext(Hub.Context)
   const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
-    useContext(ReleaseContext)
-  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext)
-  const { getHubs, hubState, filterFeaturedHubs } = useContext(HubContext)
+    useContext(Release.Context)
   const [releasesRecent, setReleasesRecent] = useState({})
   const [hubs, setHubs] = useState(undefined)
 

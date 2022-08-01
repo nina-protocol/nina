@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useWallet } from "@solana/wallet-adapter-react";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
-import nina from "@nina-protocol/nina-sdk";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-sdk/esm/Nina";
 import { useSnackbar } from "notistack";
 import HubPostCreate from "./HubPostCreate";
 import {
@@ -14,15 +15,13 @@ import {
   DashboardEntry,
 } from "../styles/theme/lightThemeOptions.js";
 
-const { HubContext, NinaContext } = nina.contexts;
-
 const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
   const wallet = useWallet();
   const { hubContentToggleVisibility, hubContentState, hubState } =
-    useContext(HubContext);
+    useContext(Hub.Context);
+  const { postState } = useContext(Nina.Context);
+    
   const hubData = useMemo(() => hubState[hubPubkey], [hubState]);
-  const { postState } = useContext(NinaContext);
-
   const { enqueueSnackbar } = useSnackbar();
   const hubPosts = useMemo(
     () =>

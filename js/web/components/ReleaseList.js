@@ -1,8 +1,8 @@
-import * as anchor from '@project-serum/anchor'
 import React, { useEffect, useState, useContext } from 'react'
 import { Helmet } from 'react-helmet'
 import { styled } from '@mui/material/styles'
-import nina from '@nina-protocol/nina-sdk'
+import Nina from '@nina-protocol/nina-sdk/esm/Nina'
+import Release from '@nina-protocol/nina-sdk/esm/Release'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
@@ -10,7 +10,6 @@ import ReleaseListTable from './ReleaseListTable'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 import Link from 'next/link'
 
-const { ReleaseContext, NinaContext } = nina.contexts
 
 const ReleaseList = () => {
   const {
@@ -18,10 +17,10 @@ const ReleaseList = () => {
     filterReleasesPublishedByUser,
     collectRoyaltyForRelease,
     releaseState,
-  } = useContext(ReleaseContext)
+  } = useContext(Release.Context)
+  const { collection, ninaClient } = useContext(Nina.Context)
 
   const wallet = useWallet()
-  const { collection, ninaClient } = useContext(NinaContext)
   const [userPublishedReleases, setUserPublishedReleases] = useState([])
   const [sales, setSales] = useState(0)
   const [editionTotal, setEditionTotal] = useState(0)

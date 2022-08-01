@@ -9,3 +9,5 @@ dist
 build
 scripts
 docker-target
+cjs
+esm

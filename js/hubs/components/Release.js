@@ -1,6 +1,9 @@
 import React, { useState, useContext, useEffect, createElement, Fragment } from "react";
 import dynamic from "next/dynamic";
-import nina from "@nina-protocol/nina-sdk";
+import Audio from "@nina-protocol/nina-sdk/esm/Audio";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Release from "@nina-protocol/nina-sdk/esm/Release";
+import { imageManager } from "@nina-protocol/nina-sdk/esm/utils"
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
@@ -14,20 +17,19 @@ import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
+const { getImageFromCDN, loader } = imageManager
 
 const Button = dynamic(() => import("@mui/material/Button"));
 const ReleasePurchase = dynamic(() => import("./ReleasePurchase"));
 const AddToHubModal = dynamic(() => import("./AddToHubModal"));
-const { HubContext, ReleaseContext, AudioPlayerContext } = nina.contexts;
-const { getImageFromCDN, loader } = nina.utils.imageManager;
 
-const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
+const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const wallet = useWallet();
 
-  const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } = useContext(AudioPlayerContext);
-  const { releaseState, getRelease } = useContext(ReleaseContext);
+  const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } = useContext(Audio.Context);
+  const { releaseState, getRelease } = useContext(Release.Context);
   const { getHub, hubState, getHubsForUser, filterHubsForUser } =
-    useContext(HubContext);
+    useContext(Hub.Context);
 
   const [metadata, setMetadata] = useState(metadataSsr || null);
   const [description, setDescription] = useState();
@@ -105,7 +107,7 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
           <>
             <MobileImageWrapper>
               <Image
-                src={getImageFromCDN(metadata.image, 1200)}
+                src={getImageFromCDN(metadata.image, 1200, new Date(Date.parse(metadata.properties.date)))}
                 loader={loader}
                 layout="responsive"
                 objectFit="contain"
@@ -177,7 +179,7 @@ const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
         {metadata && metadata.image && (
           <ImageContainer>
             <Image
-              src={getImageFromCDN(metadata.image, 1200)}
+              src={getImageFromCDN(metadata.image, 1200, new Date(Date.parse(metadata.properties.date)))}
               loader={loader}
               layout="responsive"
               objectFit="contain"
@@ -253,4 +255,4 @@ const CtaWrapper = styled(Box)(({ theme }) => ({
   },
 }));
 
-export default Release;
+export default ReleaseComponent;

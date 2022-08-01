@@ -1,6 +1,8 @@
 import React, {useState, useContext, useEffect, useMemo, createElement, Fragment} from "react";
 import dynamic from "next/dynamic";
-import nina from "@nina-protocol/nina-sdk";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-sdk/esm/Nina"
+import Release from "@nina-protocol/nina-sdk/esm/Release"
 import {styled} from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -12,11 +14,9 @@ import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
-import {useWallet} from "@solana/wallet-adapter-react";
 const ContentTileView = dynamic(() => import("./ContentTileView"));
-const {HubContext, NinaContext, ReleaseContext} = nina.contexts;
 
-const Hub = ({hubPubkey}) => {
+const HubComponent = ({hubPubkey}) => {
   const {
     hubState,
     hubCollaboratorsState,
@@ -24,10 +24,9 @@ const Hub = ({hubPubkey}) => {
     getHub,
     filterHubCollaboratorsForHub,
     filterHubContentForHub,
-  } = useContext(HubContext);
-  const {postState} = useContext(NinaContext);
-  const {releaseState} = useContext(ReleaseContext);
-  const wallet = useWallet();
+  } = useContext(Hub.Context);
+  const {postState} = useContext(Nina.Context);
+  const {releaseState} = useContext(Release.Context);
   useEffect(() => {
     getHub(hubPubkey);
   }, [hubPubkey]);
@@ -192,4 +191,4 @@ const DescriptionWrapper = styled(Grid)(({theme}) => ({
   }
 }));
 
-export default Hub;
+export default HubComponent;

@@ -1,6 +1,6 @@
 import React from 'react'
 import { styled } from '@mui/material/styles'
-import { getImageFromCDN, loader } from "@nina-protocol/nina-sdk/src/utils/imageManager";
+import { imageManager } from "@nina-protocol/nina-sdk/esm/utils";
 import Box from '@mui/material/Box'
 import { isMobile } from 'react-device-detect'
 import Typography from '@mui/material/Typography'
@@ -10,6 +10,7 @@ import Dots from './Dots'
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import dynamic from 'next/dynamic';
+const { getImageFromCDN, loader } = imageManager
 
 const Slider = dynamic(() => import('react-slick'), {
   ssr: false,
@@ -107,7 +108,7 @@ const HubSlider = (props) => {
                       <a>
                         <Image
                           loader={loader}
-                          src={getImageFromCDN(imageUrl, 400)}
+                          src={getImageFromCDN(imageUrl, 400, new Date(Date.parse(hub.datetime)))}
                           height={100}
                           width={100}
                           layout="responsive"

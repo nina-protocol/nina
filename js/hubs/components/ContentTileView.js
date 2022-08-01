@@ -1,6 +1,9 @@
 import React, { useContext, useState, useMemo, useEffect } from "react";
 import { styled } from "@mui/material/styles";
-import nina from "@nina-protocol/nina-sdk";
+import Audio from "@nina-protocol/nina-sdk/esm/Audio";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Release from "@nina-protocol/nina-sdk/esm/Release";
+import { imageManager } from "@nina-protocol/nina-sdk/esm/utils";
 import Image from "next/image";
 import { isMobile } from 'react-device-detect'
 import { useRouter } from "next/router";
@@ -12,13 +15,12 @@ import Button from "@mui/material/Button";
 import AutorenewTwoToneIcon from "@mui/icons-material/AutorenewTwoTone";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-const { getImageFromCDN, loader } = nina.utils.imageManager;
-const { AudioPlayerContext, HubContext, ReleaseContext } = nina.contexts;
+const { getImageFromCDN, loader } = imageManager
 
 const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
-  const { updateTrack, setInitialized, audioPlayerRef, isPlaying, track } = useContext(AudioPlayerContext);
-  const { hubState } = useContext(HubContext);
-  const { releaseState } = useContext(ReleaseContext);
+  const { updateTrack, setInitialized, audioPlayerRef, isPlaying, track } = useContext(Audio.Context);
+  const { hubState } = useContext(Hub.Context);
+  const { releaseState } = useContext(Release.Context);
   const [columnCount, setColumnCount] = useState(3);
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const router = useRouter();
@@ -164,7 +166,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                         width={100}
                         height={100}
                         layout="responsive"
-                        src={getImageFromCDN(item.image, 400)}
+                        src={getImageFromCDN(item.image, isMobile ? 100 : 400, new Date(releaseState.tokenData[item.release].releaseDatetime.toNumber() * 1000))}
                         release={item}
                         priority={true}
                       />
@@ -236,9 +238,9 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                         width={100}
                         height={100}
                         layout="responsive"
-                        src={getImageFromCDN(item.releaseMetadata?.image, 400)}
+                        src={getImageFromCDN(item.releaseMetadata?.image, isMobile ? 100 : 400)}
                         release={item.referenceContent}
-                        priority={!isMobile}
+                        priority={true}
                       />
                     )}
                   </HoverCard>
