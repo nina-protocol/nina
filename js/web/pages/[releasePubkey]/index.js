@@ -72,7 +72,6 @@ export const getStaticProps = async (context) => {
       props: {
         metadata: metadataJson[releasePubkey] || null,
         releasePubkey,
-        host: context.req.headers.host,
       },
     }
   } catch (error) {
