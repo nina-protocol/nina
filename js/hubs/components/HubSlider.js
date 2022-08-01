@@ -69,6 +69,20 @@ const HubSlider = (props) => {
       onClick={onClick}
     />
   )
+  if (hubs?.length === 0) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '250px',
+        }}
+      >
+        <Dots size="80px" />
+      </Box>
+    )
+  }
   return (
     <HubSliderWrapper>
       {hubs?.length > 0 && (

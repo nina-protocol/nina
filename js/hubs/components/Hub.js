@@ -5,13 +5,14 @@ import {styled} from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import Dots from "./Dots";
+
 import {unified} from "unified";
 import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
 import {useWallet} from "@solana/wallet-adapter-react";
-import Dots from "./Dots";
 const ContentTileView = dynamic(() => import("./ContentTileView"));
 const {HubContext, NinaContext, ReleaseContext} = nina.contexts;
 

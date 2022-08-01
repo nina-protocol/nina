@@ -133,7 +133,7 @@ const ReleasePurchase = (props) => {
           setDescription(file.result);
         });
     } else {
-      setDescription(metadata.description)
+      setDescription(metadata?.description)
     }
   }, [metadata?.description]);
 

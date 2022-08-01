@@ -6,6 +6,7 @@ const Release = dynamic(() => import("../../../../components/Release"));
 
 const ReleasePage = (props) => {
   const { metadata, hub, releasePubkey, hubPubkey } = props;
+
   return (
     <>
       <Head>
@@ -47,9 +48,21 @@ const ReleasePage = (props) => {
 
 export default ReleasePage;
 
-export const getServerSideProps = async (context) => {
+export const getStaticPaths = async () => {
+  return {
+    paths: [
+      {params: {
+        hubPubkey: 'placeholder',
+        hubReleasePubkey: "placeholder"
+      }}
+    ],
+    fallback: 'blocking'
+  }
+}
+
+export const getStaticProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL;
-  const hubReleasePubkey = context.query.hubReleasePubkey;
+  const hubReleasePubkey = context.params.hubReleasePubkey;
   const indexerPath = indexerUrl + `/hubReleases/${hubReleasePubkey}`;
 
 
@@ -76,13 +89,12 @@ export const getServerSideProps = async (context) => {
         metadata,
         hubPubkey,
         hub
-      }
+      },
+      revalidate: 10
     } 
   } catch (error) {
     console.warn(error);
   }
-  return {
-    props: {}
-  };
+  return {props: {}}
 };
 
