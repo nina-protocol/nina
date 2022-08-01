@@ -48,7 +48,7 @@ const HubTileView = (props) => {
                       zIndex: '1',
                     }}
                     loader={loader}
-                    src={getImageFromCDN(hub.json.image, 400)}
+                    src={getImageFromCDN(hub.json.image, 400, new Date(Date.parse(hub.datetime)))}
                     priority={!isMobile}
                     alt={hub.handle}
                   />

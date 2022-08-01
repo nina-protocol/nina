@@ -19,7 +19,7 @@ const ReleaseCard = (props) => {
   const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
     useContext(Audio.Context)
   const image = useMemo(() => metadata?.image)
-
+  console.log(metadata)
   return (
     <StyledReleaseCard>
       <StyledReleaseInfo>
@@ -96,7 +96,7 @@ const ReleaseCard = (props) => {
             height={350}
             width={350}
             layout="responsive"
-            src={getImageFromCDN(image, 600)}
+            src={getImageFromCDN(image, 600, new Date(Date.parse(metadata.properties.date)))}
             alt={metadata?.name}
             priority={true}
             loader={loader}

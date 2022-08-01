@@ -91,7 +91,7 @@ const HubSlider = (props) => {
                     <Link href={`https://hubs.ninaprotocol.com/${hub.handle}`}>
                       <a>
                         <Image
-                          src={getImageFromCDN(imageUrl, 400)}
+                          src={getImageFromCDN(imageUrl, 400, new Date(Date.parse(hub.datetime)))}
                           loader={loader}
                           height={100}
                           width={100}

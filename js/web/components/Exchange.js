@@ -172,7 +172,7 @@ const ExchangeComponent = (props) => {
       <ExchangeWrapper>
         <StyledReleaseInfo>
           <ReleaseImage>
-            {metadata && <Image src={getImageFromCDN(metadata.image, 100)} alt={metadata.name} height={100} width = {100} loader={loader}/>}
+            {metadata && <Image src={getImageFromCDN(metadata.image, 100, new Date(release.releaseDatetime * 1000))} alt={metadata.name} height={100} width = {100} loader={loader}/>}
           </ReleaseImage>
 
           <InfoCopy>

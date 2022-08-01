@@ -108,7 +108,7 @@ const HubSlider = (props) => {
                       <a>
                         <Image
                           loader={loader}
-                          src={getImageFromCDN(imageUrl, 400)}
+                          src={getImageFromCDN(imageUrl, 400, new Date(Date.parse(hub.datetime)))}
                           height={100}
                           width={100}
                           layout="responsive"

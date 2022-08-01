@@ -107,7 +107,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
           <>
             <MobileImageWrapper>
               <Image
-                src={getImageFromCDN(metadata.image, 1200)}
+                src={getImageFromCDN(metadata.image, 1200, new Date(Date.parse(metadata.properties.date)))}
                 loader={loader}
                 layout="responsive"
                 objectFit="contain"
@@ -179,7 +179,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
         {metadata && metadata.image && (
           <ImageContainer>
             <Image
-              src={getImageFromCDN(metadata.image, 1200)}
+              src={getImageFromCDN(metadata.image, 1200, new Date(Date.parse(metadata.properties.date)))}
               loader={loader}
               layout="responsive"
               objectFit="contain"

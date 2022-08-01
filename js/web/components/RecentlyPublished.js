@@ -93,7 +93,7 @@ const RecentlyPublished = (props) => {
                   <Link href={`/${release.releasePubkey}`}>
                     <a>
                       <Image
-                        src={getImageFromCDN(imageUrl, 400)}
+                        src={getImageFromCDN(imageUrl, 400, new Date(release.tokenData.releaseDatetime.toNumber() * 1000))}
                         loader={loader}
                         height={100}
                         width={100}
