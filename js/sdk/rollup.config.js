@@ -32,11 +32,13 @@ export default [
       output: [
           {
               dir: 'esm',
-              format: 'esm'
+              format: 'esm',
+              exports: 'auto'
           },
           {
               dir: 'cjs',
-              format: 'cjs'
+              format: 'cjs',
+              exports: 'auto'
           }
       ],
   }
