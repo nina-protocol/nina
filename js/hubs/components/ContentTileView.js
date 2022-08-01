@@ -166,7 +166,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                         width={100}
                         height={100}
                         layout="responsive"
-                        src={getImageFromCDN(item.image, 400)}
+                        src={getImageFromCDN(item.image, isMobile ? 100 : 400)}
                         release={item}
                         priority={true}
                       />
@@ -238,7 +238,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                         width={100}
                         height={100}
                         layout="responsive"
-                        src={getImageFromCDN(item.releaseMetadata?.image, 400)}
+                        src={getImageFromCDN(item.releaseMetadata?.image, isMobile ? 100 : 400)}
                         release={item.referenceContent}
                         priority={true}
                       />

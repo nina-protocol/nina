@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useMemo } from 'react'
-import nina from '@nina-protocol/nina-sdk'
+import Hub from '@nina-protocol/nina-sdk/esm/Hub'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
@@ -17,14 +17,12 @@ import { useSnackbar } from 'notistack'
 import Dots from './Dots'
 import HubPostCreate from './HubPostCreate'
 
-const { HubContext } = nina.contexts
-
 const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
 
-  const { hubAddRelease } = useContext(HubContext)
+  const { hubAddRelease } = useContext(Hub.Context)
   const [selectedHubId, setSelectedHubId] = useState()
   const [inProgress, setInProgress] = useState(false)
   const userHasHubs = useMemo(() => userHubs?.length > 0, [userHubs])
