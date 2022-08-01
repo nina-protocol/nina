@@ -31,7 +31,7 @@ const Hubs = () => {
   }, [])
 
   useEffect(() => {
-    if ((!hubs || hubs.length === 0) & Object.keys(hubState).length > 0) {
+    if ((!hubs || hubs.length === 0) && Object.keys(hubState).length > 0) {
       setHubs(filterFeaturedHubs())
     }
   }, [hubState])
@@ -178,6 +178,36 @@ const Hubs = () => {
                 </Box>
 
                 </DashboardContent>
+              )}
+              {userHubs?.length === 0 && npcAmountHeld > 0 && (
+                <DashboardContent item md={12}>
+                  <StyledLink
+                    href="/create"
+                  >
+                    <Button
+                      color="primary"
+                      variant="outlined"
+                      fullWidth
+                      type="submit"
+                    >
+                      Create a Hub
+                    </Button>
+                  </StyledLink>
+                  <StyledLink
+                    href="/all"
+                  >
+                    <Button
+                      color="primary"
+                      variant="outlined"
+                      fullWidth
+                      type="submit"
+                      sx={{mt: '15px'}}
+                    >
+                      Browse All Hubs
+                    </Button>
+                  </StyledLink>
+                </DashboardContent>
+
               )}
               {userHubs?.length > 0 && (
                 <DashboardWrapper
