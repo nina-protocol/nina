@@ -13,7 +13,6 @@ import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
 import {useWallet} from "@solana/wallet-adapter-react";
-import Dots from "./Dots";
 const ContentTileView = dynamic(() => import("./ContentTileView"));
 const {HubContext, NinaContext, ReleaseContext} = nina.contexts;
 
