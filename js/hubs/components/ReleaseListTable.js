@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { styled } from "@mui/material/styles";
-import nina from "@nina-protocol/nina-sdk";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
+import {NinaContext} from "@nina-protocol/nina-sdk/esm/contexts/Nina/Nina";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -15,7 +16,6 @@ import Box from "@mui/material/Box";
 import Fade from "@mui/material/Fade";
 import { useRouter } from "next/router";
 
-const { NinaContext, HubContext } = nina.contexts;
 const descendingComparator = (a, b, orderBy) => {
   switch (orderBy) {
     case "artist":

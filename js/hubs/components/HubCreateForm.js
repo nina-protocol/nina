@@ -1,15 +1,12 @@
 import React, { useEffect, useState, createElement, Fragment } from "react";
 import { styled } from "@mui/material/styles";
-import nina from "@nina-protocol/nina-sdk";
+import { formatPlaceholder } from "@nina-protocol/nina-sdk/esm/utils/utils";
 import { withFormik, Form, Field } from "formik";
-import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
 import HelpIcon from "@mui/icons-material/Help";
 import Quill from './Quill'
-
-const { formatPlaceholder } = nina.utils;
 
 const HubCreateForm = ({
   field,

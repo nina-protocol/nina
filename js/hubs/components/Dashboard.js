@@ -1,7 +1,7 @@
 import React, { useState, useContext, useMemo, useEffect } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Typography from "@mui/material/Typography";
-import nina from "@nina-protocol/nina-sdk";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import { useSnackbar } from "notistack";
@@ -16,7 +16,6 @@ import HubPosts from "./HubPosts";
 import HubCollaborators from "./HubCollaborators";
 import HubReleases from "./HubReleases";
 
-const { HubContext } = nina.contexts;
 // const {toTitleCase} = nina.utils;
 
 const toTitleCase = (text) => {

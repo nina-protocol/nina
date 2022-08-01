@@ -15,8 +15,6 @@ import {NinaContext} from "@nina-protocol/nina-sdk/esm/contexts/Nina/Nina";
 import { useSnackbar } from "notistack";
 import Dots from "./Dots";
 
-const { NinaContext } = nina.contexts;
-
 const BundlrModal = ({ inCreate }) => {
   const [open, setOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();

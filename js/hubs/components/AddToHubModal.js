@@ -17,8 +17,6 @@ import HubPostCreate from "./HubPostCreate";
 import { useSnackbar } from "notistack";
 import Dots from "./Dots";
 
-const { HubContext } = nina.contexts;
-
 const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
   const [open, setOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();

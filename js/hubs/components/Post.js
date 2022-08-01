@@ -7,7 +7,9 @@ import React, {
   Fragment,
 } from "react";
 import dynamic from "next/dynamic";
-import nina from "@nina-protocol/nina-sdk";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
+import {NinaContext} from "@nina-protocol/nina-sdk/esm/contexts/Nina/Nina";
+import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/contexts/Release/Release";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
@@ -21,8 +23,6 @@ import rehypeExternalLinks from "rehype-external-links";
 
 import Typography from "@mui/material/Typography";
 const PostRelease = dynamic(() => import("./PostRelease"));
-const { HubContext, NinaContext, ReleaseContext, AudioPlayerContext } =
-  nina.contexts;
 
 const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
   const router = useRouter();

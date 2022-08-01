@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { styled } from "@mui/material/styles";
-import nina from "@nina-protocol/nina-sdk";
+import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/contexts/Release/Release";
+import {formatPlaceholder} from "@nina-protocol/nina-sdk/esm/utils/utils";
 import { withFormik, Form, Field } from "formik";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
@@ -9,9 +10,6 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Quill from './Quill'
-
-const { formatPlaceholder } = nina.utils;
-const { ReleaseContext } = nina.contexts;
 
 const HubPostCreateForm = ({
   field,

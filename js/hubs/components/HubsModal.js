@@ -5,9 +5,7 @@ import Backdrop from '@mui/material/Backdrop'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
-import nina from '@nina-protocol/nina-sdk'
-
-const { ReleaseContext } = nina.contexts
+import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/contexts/Release/Release";
 
 const HubsModal = (props) => {
   const { releasePubkey, metadata } = props

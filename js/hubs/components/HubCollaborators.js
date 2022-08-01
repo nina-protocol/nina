@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import { useWallet } from "@solana/wallet-adapter-react";
 import CloseIcon from "@mui/icons-material/Close";
 import Grid from "@mui/material/Grid";
-import nina from "@nina-protocol/nina-sdk";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
 import { useSnackbar } from "notistack";
 import HubAddCollaborator from "./HubAddCollaborator";
 import CollaboratorPermissions from "./CollaboratorPermissions";
@@ -15,8 +15,6 @@ import {
   DashboardHeader,
   DashboardEntry,
 } from "../styles/theme/lightThemeOptions.js";
-
-const { HubContext, ReleaseContext } = nina.contexts;
 
 const HubCollaborators = ({
   hubPubkey,

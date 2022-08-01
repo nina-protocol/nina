@@ -4,10 +4,10 @@ import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
-import nina from "@nina-protocol/nina-sdk";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
+import {NinaContext} from "@nina-protocol/nina-sdk/esm/contexts/Nina/Nina";
+import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/contexts/Release/Release";
 import ReleaseListTable from "./ReleaseListTable";
-
-const { HubContext, NinaContext, ReleaseContext } = nina.contexts;
 
 const HubOverview = ({ hubPubkey, isAuthority }) => {
   const { releaseState } = useContext(ReleaseContext);

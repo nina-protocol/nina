@@ -12,10 +12,10 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { useWallet } from "@solana/wallet-adapter-react";
-import nina from "@nina-protocol/nina-sdk";
+import {NinaContext} from "@nina-protocol/nina-sdk/esm/contexts/Nina/Nina";
+import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/contexts/Release/Release";
 
 const RoyaltyRecipientForm = dynamic(() => import("./RoyaltyRecipientForm"));
-const { ReleaseContext, NinaContext } = nina.contexts;
 
 const Royalty = (props) => {
   const { release, releasePubkey } = props;

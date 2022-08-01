@@ -1,6 +1,9 @@
 import React, { useState, useContext, useEffect, createElement, Fragment } from "react";
 import dynamic from "next/dynamic";
-import nina from "@nina-protocol/nina-sdk";
+import {AudioPlayerContext} from "@nina-protocol/nina-sdk/esm/contexts/Audio/Audio";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
+import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/contexts/Release/Release";
+import { getImageFromCDN, loader } from "@nina-protocol/nina-sdk/esm/utils/imageManager"
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
@@ -18,8 +21,6 @@ import rehypeExternalLinks from "rehype-external-links";
 const Button = dynamic(() => import("@mui/material/Button"));
 const ReleasePurchase = dynamic(() => import("./ReleasePurchase"));
 const AddToHubModal = dynamic(() => import("./AddToHubModal"));
-const { HubContext, ReleaseContext, AudioPlayerContext } = nina.contexts;
-const { getImageFromCDN, loader } = nina.utils.imageManager;
 
 const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const wallet = useWallet();

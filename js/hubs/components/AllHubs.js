@@ -2,17 +2,13 @@ import React, { useContext, useEffect, useMemo, useState, useRef } from "react";
 import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
-import { useWallet } from "@solana/wallet-adapter-react";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
 import Head from "next/head";
 import debounce from 'lodash.debounce'
 import HubTileView from "./HubTileView";
 
-const { HubContext } = nina.contexts;
-
 const Hubs = () => {
   const { getHubs, hubState, hubsCount } = useContext(HubContext);
-  const wallet = useWallet();
   const [pendingFetch, setPendingFetch] = useState(false)
   const [totalCount, setTotalCount] = useState(null)
   const scrollRef = useRef()

@@ -1,16 +1,14 @@
 import { useContext, useState } from "react";
 import { useSnackbar } from "notistack";
-import nina from "@nina-protocol/nina-sdk";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { styled } from "@mui/material/styles";
 
 import { useFormik } from "formik";
-const { HubContext } = nina.contexts;
 import { DashboardHeader } from "../styles/theme/lightThemeOptions.js";
 
 const CollaboratorPermissions = (props) => {

@@ -1,6 +1,6 @@
 import React from 'react'
 import { styled } from '@mui/material/styles'
-import { getImageFromCDN, loader } from "@nina-protocol/nina-sdk/src/utils/imageManager";
+import { getImageFromCDN, loader } from "@nina-protocol/nina-sdk/esm/utils/imageManager";
 import Box from '@mui/material/Box'
 import { isMobile } from 'react-device-detect'
 import Typography from '@mui/material/Typography'

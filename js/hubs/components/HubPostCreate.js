@@ -6,7 +6,8 @@ import React, {
   useCallback,
 } from "react";
 import * as Yup from "yup";
-import nina from "@nina-protocol/nina-sdk";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
+import {NinaContext} from "@nina-protocol/nina-sdk/esm/contexts/Nina/Nina";
 import { useSnackbar } from "notistack";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -30,8 +31,6 @@ import {
   UploadType,
   uploadHasItemForType,
 } from "../utils/uploadManager";
-
-const { NinaContext, HubContext } = nina.contexts;
 
 const PostCreateSchema = Yup.object().shape({
   title: Yup.string().required("Title is Required"),

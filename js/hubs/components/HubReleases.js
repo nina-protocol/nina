@@ -6,10 +6,10 @@ import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
-import nina from "@nina-protocol/nina-sdk";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
+import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/contexts/Release/Release";
 import { useSnackbar } from "notistack";
 import { styled } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import {
   DashboardWrapper,
   DashboardContent,
@@ -17,10 +17,7 @@ import {
   DashboardEntry,
 } from "../styles/theme/lightThemeOptions.js";
 
-const { HubContext, ReleaseContext } = nina.contexts;
-
 const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
-  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const wallet = useWallet();
   const { hubContentToggleVisibility, hubState } = useContext(HubContext);
   const { releaseState } = useContext(ReleaseContext);

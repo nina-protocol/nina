@@ -1,6 +1,9 @@
 import React, { useState, useContext, useEffect, useMemo, useRef } from "react";
 import dynamic from "next/dynamic";
-import nina from "@nina-protocol/nina-sdk";
+import {AudioPlayerContext} from "@nina-protocol/nina-sdk/esm/contexts/Audio/Audio";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
+import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/contexts/Release/Release";
+import { getImageFromCDN, loader } from "@nina-protocol/nina-sdk/esm/utils/imageManager"
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -14,9 +17,6 @@ import { useWallet } from "@solana/wallet-adapter-react";
 
 const ReleasePurchase = dynamic(() => import("./ReleasePurchase"));
 const AddToHubModal = dynamic(() => import("./AddToHubModal"));
-
-const { HubContext, ReleaseContext, AudioPlayerContext } = nina.contexts;
-const { getImageFromCDN, loader } = nina.utils.imageManager;
 
 const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
   const router = useRouter();

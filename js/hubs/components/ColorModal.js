@@ -7,11 +7,8 @@ import Backdrop from "@mui/material/Backdrop";
 import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import nina from "@nina-protocol/nina-sdk";
-import { useSnackbar } from "notistack";
 import { HexColorPicker } from "react-colorful";
 
-const { NinaContext } = nina.contexts;
 
 const ColorModal = ({
   backgroundColor,
@@ -21,7 +18,6 @@ const ColorModal = ({
   colorReset,
 }) => {
   const [open, setOpen] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
 
   const handleCancel = () => {
     colorReset();

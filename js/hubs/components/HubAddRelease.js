@@ -1,14 +1,12 @@
 import React, { useContext } from "react";
 import { useFormik } from "formik";
-import nina from "@nina-protocol/nina-sdk";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
 import { useSnackbar } from "notistack";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
-
-const { HubContext } = nina.contexts;
 
 const HubAddRelease = (props) => {
   const { hubPubkey, canAddContent } = props;

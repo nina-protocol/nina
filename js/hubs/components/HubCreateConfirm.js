@@ -6,12 +6,6 @@ import Modal from "@mui/material/Modal";
 import { styled } from "@mui/material/styles";
 import { useWallet } from "@solana/wallet-adapter-react";
 
-import {unified} from "unified";
-import rehypeParse from "rehype-parse";
-import rehypeReact from "rehype-react";
-import rehypeSanitize from "rehype-sanitize";
-import rehypeExternalLinks from "rehype-external-links";
-
 const style = {
   position: "absolute",
   top: "50%",

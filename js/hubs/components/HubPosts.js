@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useWallet } from "@solana/wallet-adapter-react";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
-import nina from "@nina-protocol/nina-sdk";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
+import {NinaContext} from "@nina-protocol/nina-sdk/esm/contexts/Nina/Nina";
 import { useSnackbar } from "notistack";
 import HubPostCreate from "./HubPostCreate";
 import {
@@ -13,8 +14,6 @@ import {
   DashboardHeader,
   DashboardEntry,
 } from "../styles/theme/lightThemeOptions.js";
-
-const { HubContext, NinaContext } = nina.contexts;
 
 const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
   const wallet = useWallet();

@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { useSnackbar } from "notistack";
-import nina from "@nina-protocol/nina-sdk";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
@@ -10,7 +10,6 @@ import Checkbox from "@mui/material/Checkbox";
 import { DashboardHeader } from "../styles/theme/lightThemeOptions.js";
 
 import { useFormik } from "formik";
-const { HubContext } = nina.contexts;
 
 const HubAddCollaborator = (props) => {
   const { hubPubkey, canAddCollaborators } = props;
