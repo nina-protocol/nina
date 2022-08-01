@@ -1,5 +1,6 @@
 import axios from "axios";
 import Head from "next/head";
+import {hrtime} from "process";
 import Hub from "../../components/Hub";
 
 const HubPage = (props) => {
@@ -35,9 +36,22 @@ const HubPage = (props) => {
 
 export default HubPage;
 
-export const getServerSideProps = async (context) => {
+export const getStaticPaths = async () => {
+  return {
+    paths: [
+      {
+        params: {
+          hubPubkey: 'placeholder',
+        }
+      }
+    ],
+    fallback: 'blocking'
+  }
+}
+
+export const getStaticProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL;
-  const hubPubkey = context.query.hubPubkey;
+  const hubPubkey = context.params.hubPubkey;
   const indexerPath = indexerUrl + `/hubs/${hubPubkey}`;
   
   let hub;
@@ -52,6 +66,7 @@ export const getServerSideProps = async (context) => {
           hub,
           hubPubkey: hub.id,
         },
+        revalidate: 10
       };
     } catch (error) {
       console.warn(error);
