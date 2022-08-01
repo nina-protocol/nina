@@ -56,14 +56,12 @@ const Hubs = () => {
   return (
     <>
       <Head>
-
         <link
           rel="stylesheet"
           type="text/css"
           href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
           media="print"
           // onLoad="this.media='all'"
-
        />
         <link
           rel="stylesheet"
