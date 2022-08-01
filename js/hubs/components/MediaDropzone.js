@@ -1,5 +1,4 @@
-import React, { useContext } from "react";
-import nina from "@nina-protocol/nina-sdk";
+import React from "react";
 import "react-dropzone-uploader/dist/styles.css";
 import Dropzone from "react-dropzone-uploader";
 import Typography from "@mui/material/Typography";
@@ -15,9 +14,13 @@ const MediaDropzone = ({ type, setArtwork, setTrack, disabled }) => {
       const width = meta.width;
       const size = meta.size / 1000000;
       if (file.type.includes("audio")) {
-        alert(
-          `your track is ${size} mb... \nPlease upload a smaller than 80 mb`
-        );
+        if (file.type !== 'audio/mpeg') {
+          alert(`Your track is not an MP3. \nPlease upload an MP3.`)
+        } else {
+          alert(
+            `your track is ${size} mb... \nPlease upload a smaller than 110 mb`
+          );
+        }
       } else {
         if (height !== width) {
           alert(
@@ -90,8 +93,11 @@ const MediaDropzone = ({ type, setArtwork, setTrack, disabled }) => {
 
   const validateTrack = (fileWithMeta) => {
     const size = fileWithMeta.file.size / 1000000;
-    if (size > 190) {
+    if (size > 110) {
       return true;
+    }
+    if (fileWithMeta.file.type !== 'audio/mpeg') {
+      return true
     }
     return false;
   };

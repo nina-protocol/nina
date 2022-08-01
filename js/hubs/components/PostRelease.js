@@ -16,6 +16,7 @@ const ReleasePurchase = dynamic(() => import("./ReleasePurchase"));
 const AddToHubModal = dynamic(() => import("./AddToHubModal"));
 
 const { HubContext, ReleaseContext, AudioPlayerContext } = nina.contexts;
+const { getImageFromCDN, loader } = nina.utils.imageManager;
 
 const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
   const router = useRouter();
@@ -72,17 +73,17 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
   return (
     <>
       <DesktopImageGridItem item md={6}>
-        {metadata && (
+        {metadata && metadata.image && (
           <ImageContainer>
             <Image
-              src={metadata?.image}
+              src={getImageFromCDN(metadata.image, 600)}
+              loader={loader}
               layout="responsive"
               objectFit="contain"
               height="100"
               width="100"
               objectPosition={"right bottom"}
               alt={metadata.description || "album art"}
-              unoptimized={true}
             />
           </ImageContainer>
         )}
@@ -95,18 +96,18 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
           padding: "0px",
         }}
       >
-        {metadata && (
+        {metadata && metadata.image &&(
           <>
             <MobileImageWrapper>
               <Image
-                src={metadata?.image}
+                src={getImageFromCDN(metadata.image, 600)}
+                loader={loader}
                 layout="responsive"
                 objectFit="contain"
                 objectPosition={"center"}
                 height={100}
                 width={100}
                 alt={metadata.description || "album art"}
-                unoptimized={true}
               />
             </MobileImageWrapper>
             <CtaWrapper>

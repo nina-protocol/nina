@@ -58,7 +58,6 @@ const ReleaseCreateConfirm = (props) => {
             )
           )
           .then((file) => {
-            console.log('file.result inHub:>> ', file.result);
             setDescription(file.result);
           });
       }

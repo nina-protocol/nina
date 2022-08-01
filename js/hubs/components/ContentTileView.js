@@ -9,17 +9,10 @@ import Box from "@mui/material/Box";
 import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import Button from "@mui/material/Button";
-import Link from "next/link";
 import AutorenewTwoToneIcon from "@mui/icons-material/AutorenewTwoTone";
-
-import FormatBoldIcon from "@mui/icons-material/FormatBold";
-import FormatItalicIcon from "@mui/icons-material/FormatItalic";
-import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
-import FormatColorFillIcon from "@mui/icons-material/FormatColorFill";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-
+const { getImageFromCDN, loader } = nina.utils.imageManager;
 const { AudioPlayerContext, HubContext, ReleaseContext } = nina.contexts;
 
 const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
@@ -32,7 +25,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
 
   const [displayType, setDisplayType] = useState("all");
   const [filteredContent, setFilteredContent] = useState(content);
-
+  
   useEffect(() => {
     let filtered;
     switch (displayType) {
@@ -54,7 +47,8 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
         filtered = content.filter((item) => {
           return (
             item.contentType === "NinaReleaseV1" &&
-            item.publishedThroughHub === false
+            item.publishedThroughHub === false &&
+            releaseState.tokenData[item.release]?.authority.toBase58() !== hubData?.authority
           );
         });
         setFilteredContent(filtered);
@@ -121,7 +115,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
         </StyledButtonGroup>
       )}
       <TileGrid columnCount={columnCount}>
-        {filteredContent.map((item, i) => {
+        {filteredContent.map((item, i) => {          
           return (
             <React.Fragment key={i}>
               {item?.contentType === "NinaReleaseV1" && (
@@ -166,13 +160,13 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                     </CardCta>
                     {item.image && (
                       <Image
+                        loader={loader}
                         width={100}
                         height={100}
                         layout="responsive"
-                        src={item?.image}
+                        src={getImageFromCDN(item.image, 400)}
                         release={item}
                         priority={true}
-                        unoptimized={true}
                       />
                     )}
                   </HoverCard>
@@ -238,13 +232,13 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                     </CardCta>
                     {item.releaseMetadata?.image && (
                       <Image
+                        loader={loader}
                         width={100}
                         height={100}
                         layout="responsive"
-                        src={item.releaseMetadata?.image}
+                        src={getImageFromCDN(item.releaseMetadata?.image, 400)}
                         release={item.referenceContent}
                         priority={!isMobile}
-                        unoptimized={true}
                       />
                     )}
                   </HoverCard>

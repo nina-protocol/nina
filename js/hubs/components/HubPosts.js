@@ -4,10 +4,8 @@ import Link from "next/link";
 import { useWallet } from "@solana/wallet-adapter-react";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
-import Grid from "@mui/material/Grid";
 import nina from "@nina-protocol/nina-sdk";
 import { useSnackbar } from "notistack";
-import { styled } from "@mui/material/styles";
 import HubPostCreate from "./HubPostCreate";
 import {
   DashboardWrapper,

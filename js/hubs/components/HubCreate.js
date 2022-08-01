@@ -23,7 +23,6 @@ import NinaBox from "./NinaBox";
 import HubImageDropzone from "./HubImageDropzone";
 import Dots from "./Dots";
 import BundlrModal from "./BundlrModal";
-import axios from "axios";
 import Link from "next/link";
 
 const ColorModal = dynamic(() => import("./ColorModal"));

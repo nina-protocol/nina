@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
-import { Box, Paper } from '@mui/material'
+import Box from '@mui/material/Box'
+import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
@@ -13,7 +14,6 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import nina from '@nina-protocol/nina-sdk'
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
-import { display } from '@mui/system'
 
 const { NinaContext } = nina.contexts
 

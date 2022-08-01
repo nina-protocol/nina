@@ -1,4 +1,4 @@
-import React, { useMemo, useContext, useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   ConnectionProvider,
   WalletProvider,
@@ -8,16 +8,9 @@ import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import { PhantomWalletAdapter } from "@solana/wallet-adapter-phantom";
 import { SolflareWalletAdapter } from "@solana/wallet-adapter-solflare";
 import { GlowWalletAdapter } from "@solana/wallet-adapter-glow";
-// import {ThemeProvider, createTheme} from "@mui/material/styles";
-import { CacheProvider } from "@emotion/react";
 import { SnackbarProvider } from "notistack";
 import Box from "@mui/material/Box";
-import Router from "next/router";
 import dynamic from "next/dynamic";
-import nina from "@nina-protocol/nina-sdk";
-
-import createEmotionCache from "../utils/createEmotionCache";
-import { lightThemeOptions } from "../styles/theme/lightThemeOptions";
 
 // Use require instead of import since order matters
 // require('@solana/wallet-adapter-react-ui/styles.css');
@@ -25,9 +18,7 @@ import { lightThemeOptions } from "../styles/theme/lightThemeOptions";
 const NinaWrapper = dynamic(() => import("../components/NinaWrapper"));
 const Dots = dynamic(() => import("../components/Dots"));
 const Layout = dynamic(() => import("../components/Layout"));
-const clientSideEmotionCache = createEmotionCache();
 // const lightTheme = createTheme(lightThemeOptions);
-const { HubContext } = nina.contexts;
 
 const App = ({ Component, pageProps }) => {
   const [loading, setLoading] = useState(false);
@@ -56,9 +47,9 @@ const App = ({ Component, pageProps }) => {
   // }, []);
   // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
   const network =
-    process.env.REACT_APP_CLUSTER === "devnet"
-      ? WalletAdapterNetwork.Devnet
-      : WalletAdapterNetwork.MainnetBeta;
+    process.env.REACT_APP_CLUSTER === "mainnet-beta"
+      ? WalletAdapterNetwork.MainnetBeta
+      : WalletAdapterNetwork.Devnet;
 
   const endpoint = useMemo(() => {
     if (network === WalletAdapterNetwork.MainnetBeta) {

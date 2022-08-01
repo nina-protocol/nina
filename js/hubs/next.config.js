@@ -1,13 +1,23 @@
 const path = require("path");
-const webpack = require("webpack");
-const withBundleAnalyzer = require("@next/bundle-analyzer")({
-  enabled: process.env.ANALYZE === "true",
-});
+const { withSentryConfig } = require('@sentry/nextjs');
+const sentryWebpackPluginOptions = {
+  // Additional config options for the Sentry Webpack plugin. Keep in mind that
+  // the following options are set automatically, and overriding them is not
+  // recommended:
+  //   release, url, org, project, authToken, configFile, stripPrefix,
+  //   urlPrefix, include, ignore
+  silent: true, // Suppresses all logs
+  // For all available options, see:
+  // https://github.com/getsentry/sentry-webpack-plugin#options.
+};
 
 // const cluster = "mainnet-beta";
 const cluster = "devnet";
+const IMGIX_URL = cluster === "devnet" 
+  ? "nina-dev.imgix.net"
+  : "nina.imgix.net"
 /** @type {import('next').NextConfig} */
-module.exports = withBundleAnalyzer({
+const moduleExports = {
   reactStrictMode: true,
   webpack5: true,
   webpack: (config) => {
@@ -47,6 +57,7 @@ module.exports = withBundleAnalyzer({
     return config;
   },
   env: {
+    IMGIX_URL,
     REACT_APP_CLUSTER: cluster,
     REACT_APP_CLUSTER_URL:
       cluster === "devnet"
@@ -62,6 +73,11 @@ module.exports = withBundleAnalyzer({
         : "https://api.nina.market",
   },
   images: {
-    domains: ["www.arweave.net", "arweave.net"],
+    deviceSizes: [320, 420, 640, 750, 828, 1080, 1200, 1920, 2048],
+    loader: 'imgix',
+    path: `https://${IMGIX_URL}/`,
+    domains: ["www.arweave.net", "arweave.net", IMGIX_URL],
   },
-});
+};
+
+module.exports = withSentryConfig(moduleExports, sentryWebpackPluginOptions)

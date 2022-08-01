@@ -1,7 +1,8 @@
 import { useState, useEffect, useContext } from "react";
 import { styled } from "@mui/material/styles";
 import dynamic from "next/dynamic";
-import { Box, Button } from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Link from "next/link";
 import nina from "@nina-protocol/nina-sdk";

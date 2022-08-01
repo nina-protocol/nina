@@ -1,15 +1,32 @@
 import React from 'react'
 import { styled } from '@mui/material/styles'
-import { Box } from '@mui/material'
-import Slider from 'react-slick'
-import 'react-multi-carousel/lib/styles.css'
+import { getImageFromCDN, loader } from "@nina-protocol/nina-sdk/src/utils/imageManager";
+import Box from '@mui/material/Box'
 import { isMobile } from 'react-device-detect'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
 import Image from "next/image";
-import NavigateNextIcon from '@mui/icons-material/NavigateNext'
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 import Dots from './Dots'
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import dynamic from 'next/dynamic';
+
+const Slider = dynamic(() => import('react-slick'), {
+  ssr: false,
+  loading: () => (
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '250px',
+      }}
+    >
+      <Dots size="80px" />
+    </Box>
+  )})
+const NavigateNextIcon = dynamic(() => import('@mui/icons-material/NavigateNext'))
+const NavigateBeforeIcon = dynamic(() => import('@mui/icons-material/NavigateBefore'))
 
 const HubSlider = (props) => {
   const { hubs } = props;
@@ -89,12 +106,12 @@ const HubSlider = (props) => {
                     <Link href={`/${hub.handle}`}>
                       <a>
                         <Image
-                          src={imageUrl}
+                          loader={loader}
+                          src={getImageFromCDN(imageUrl, 400)}
                           height={100}
                           width={100}
                           layout="responsive"
                           priority={!isMobile}
-                          unoptimized={true}
                           alt={`${hub.handle}`}
                         />
                       </a>

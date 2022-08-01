@@ -12,7 +12,7 @@ import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import { visuallyHidden } from "@mui/utils";
 import Box from "@mui/material/Box";
-import { Fade } from "@mui/material";
+import Fade from "@mui/material/Fade";
 import { useRouter } from "next/router";
 
 const { NinaContext, HubContext } = nina.contexts;
@@ -142,7 +142,7 @@ const EnhancedTableHead = (props) => {
 };
 
 const ReleaseListTable = (props) => {
-  const { releases, tableType, hubPubkey } = props;
+  const { releases, tableType, hubPubkey, hubData } = props;
   const { ninaClient } = useContext(NinaContext);
   const { collectRoyaltyForReleaseViaHub } = useContext(HubContext);
   const router = useRouter();
@@ -156,9 +156,9 @@ const ReleaseListTable = (props) => {
     setOrderBy(property);
   };
 
-  const handleClick = (e, releasePubkey) => {
+  const handleClick = (e, hubReleasePubkey, hubHandle) => {
     e.preventDefault();
-    router.push(`/releases/${releasePubkey}`);
+    router.push(`/${hubHandle}/releases/${hubReleasePubkey}`);
   };
 
   const handleCollect = (e, releasePubkey, hubPubkey) => {
@@ -253,12 +253,13 @@ const ReleaseListTable = (props) => {
                 .slice()
                 .sort(getComparator(order, orderBy))
                 .map((row) => {
+                  const release = releases.filter(r => r.releasePubkey === row.id)[0]
                   return (
                     <TableRow
                       hover
                       tabIndex={-1}
                       key={row.id}
-                      onClick={(e) => handleClick(e, row.id)}
+                      onClick={(e) => handleClick(e, release.hubReleasePubkey, hubData.handle)}
                     >
                       {Object.keys(row).map((cellName) => {
                         const cellData = row[cellName];

@@ -3,7 +3,8 @@ import { styled } from '@mui/material/styles'
 import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Box from '@mui/material/Box'
-import { Typography, Paper } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import Paper from '@mui/material/Paper'
 import nina from '@nina-protocol/nina-sdk'
 const { NinaContext } = nina.contexts
 

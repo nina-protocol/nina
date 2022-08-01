@@ -65,6 +65,7 @@ export const getStaticProps = async (context) => {
   const hubReleasePubkey = context.params.hubReleasePubkey;
   const indexerPath = indexerUrl + `/hubReleases/${hubReleasePubkey}`;
 
+
   let hubRelease;
   let release;
   let hub;

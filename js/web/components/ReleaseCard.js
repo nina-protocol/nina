@@ -3,25 +3,22 @@ import { styled } from '@mui/material/styles'
 import nina from '@nina-protocol/nina-sdk'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
-import { Typography } from '@mui/material'
-import { Fade } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import Fade from '@mui/material/Fade'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Image from 'next/image'
 
-import { useSnackbar } from 'notistack'
 import AddToHubModal from './AddToHubModal.js'
-
-const { AudioPlayerContext, ReleaseContext, HubContext } = nina.contexts
+const { getImageFromCDN, loader } = nina.utils.imageManager
+const { AudioPlayerContext } = nina.contexts
 
 const ReleaseCard = (props) => {
   const { artwork, metadata, preview, releasePubkey, userHubs } = props
   const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
     useContext(AudioPlayerContext)
-  const { releaseState } = useContext(ReleaseContext)
   const image = useMemo(() => metadata?.image)
-  const { enqueueSnackbar } = useSnackbar()
 
   return (
     <StyledReleaseCard>
@@ -100,10 +97,10 @@ const ReleaseCard = (props) => {
             height={350}
             width={350}
             layout="responsive"
-            src={image}
+            src={getImageFromCDN(image, 600)}
             alt={metadata?.name}
             priority={true}
-            unoptimized={true}
+            loader={loader}
           />
         )}
       </Box>

@@ -3,9 +3,7 @@ import Link from "next/link";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
-import Button from "@mui/material/Button";
-import { Typography } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
+import Typography from "@mui/material/Typography";
 import nina from "@nina-protocol/nina-sdk";
 import ReleaseListTable from "./ReleaseListTable";
 
@@ -52,11 +50,13 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
           recipient.recipientAuthority.toBase58() === hubData.hubSigner
       );
       if (recipient) {
+        let hubReleasePubkey = Object.values(hubContentState).find(content =>  content.release === id).hubReleaseId
         const release = {
           metadata: releaseState.metadata[id],
           tokenData: releaseState.tokenData[id],
           releasePubkey: id,
           recipient,
+          hubReleasePubkey
         };
         releaseArray.push(release);
       }
@@ -152,6 +152,7 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
               <ReleaseListTable
                 releases={releases}
                 hubPubkey={hubPubkey}
+                hubData={hubData}
                 tableType="userPublished"
                 key="releases"
               />

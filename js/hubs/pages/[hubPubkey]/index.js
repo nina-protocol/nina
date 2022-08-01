@@ -1,4 +1,3 @@
-import * as anchor from "@project-serum/anchor";
 import axios from "axios";
 import Head from "next/head";
 import {hrtime} from "process";
@@ -28,9 +27,7 @@ const HubPage = (props) => {
         <meta name="twitter:description" content={hub?.json.description} />
 
         <meta name="twitter:image" content={hub?.json.image} />
-        <meta name="og:image" content={hub?.json.image} />
-      
-
+        <meta name="og:image" content={hub?.json.image} />      
       </Head>
       <Hub hubPubkey={hubPubkey} />
     </>
@@ -77,4 +74,3 @@ export const getStaticProps = async (context) => {
   }
   return {props:{}};
 };
-

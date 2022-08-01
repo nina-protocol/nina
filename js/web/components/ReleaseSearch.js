@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react'
 import { styled } from '@mui/material/styles'
-import { Typography, Box } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
 import CloseIcon from '@mui/icons-material/Close'

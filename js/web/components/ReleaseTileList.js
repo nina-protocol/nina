@@ -4,13 +4,15 @@ import nina from '@nina-protocol/nina-sdk'
 import Image from 'next/image'
 import { isMobile } from 'react-device-detect'
 import { useRouter } from 'next/router'
-import { Typography, Box } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Button from '@mui/material/Button'
 
 const { AudioPlayerContext } = nina.contexts
+const { getImageFromCDN, loader } = nina.utils.imageManager
 
 const ReleaseTileList = (props) => {
   const { releases } = props
@@ -84,9 +86,9 @@ const ReleaseTileList = (props) => {
                       top: '0',
                       zIndex: '1',
                     }}
-                    src={release.metadata.image}
+                    src={getImageFromCDN(release.metadata.image, 400)}
                     priority={!isMobile}
-                    unoptimized={true}
+                    loader={loader}
                   />
                 )}
               </HoverCard>

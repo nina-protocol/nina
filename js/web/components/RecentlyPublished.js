@@ -1,8 +1,8 @@
 import React from 'react'
 import { styled } from '@mui/material/styles'
-import { Box } from '@mui/material'
+import nina from '@nina-protocol/nina-sdk'
+import Box from '@mui/material/Box'
 import Slider from 'react-slick'
-import 'react-multi-carousel/lib/styles.css'
 import { isMobile } from 'react-device-detect'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
@@ -10,6 +10,10 @@ import Image from 'next/image'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 import Dots from './Dots'
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+const { getImageFromCDN, loader } = nina.utils.imageManager;
 
 const RecentlyPublished = (props) => {
   const { releases } = props
@@ -90,12 +94,12 @@ const RecentlyPublished = (props) => {
                   <Link href={`/${release.releasePubkey}`}>
                     <a>
                       <Image
-                        src={imageUrl}
+                        src={getImageFromCDN(imageUrl, 400)}
+                        loader={loader}
                         height={100}
                         width={100}
                         layout="responsive"
                         priority={!isMobile}
-                        unoptimized={true}
                       />
                     </a>
                   </Link>

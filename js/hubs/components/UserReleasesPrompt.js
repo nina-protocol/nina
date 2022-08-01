@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
 import nina from "@nina-protocol/nina-sdk";
 import { styled } from "@mui/material/styles";
-import { Box, Paper } from "@mui/material";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
 import Modal from "@mui/material/Modal";
 import Backdrop from "@mui/material/Backdrop";
 import Fade from "@mui/material/Fade";

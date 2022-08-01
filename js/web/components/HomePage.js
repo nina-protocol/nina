@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
-import { Typography, Box } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import Button from '@mui/material/Button'
 import nina from '@nina-protocol/nina-sdk'
@@ -17,7 +18,7 @@ const HomePage = () => {
   const { resetQueueWithPlaylist } = useContext(AudioPlayerContext)
   const { getHubs, hubState, filterFeaturedHubs } = useContext(HubContext)
   const [releasesRecent, setReleasesRecent] = useState({})
-  const [hubs, setHubs] = useState()
+  const [hubs, setHubs] = useState(undefined)
 
   const { enqueueSnackbar } = useSnackbar()
 
@@ -31,7 +32,9 @@ const HomePage = () => {
   }, [releasesRecentState])
 
   useEffect(() => {
-    setHubs(filterFeaturedHubs())
+    if ((!hubs || hubs.length === 0) & Object.keys(hubState).length > 0) {
+      setHubs(filterFeaturedHubs())
+    }
   }, [hubState])
 
   return (

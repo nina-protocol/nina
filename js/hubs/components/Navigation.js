@@ -1,17 +1,14 @@
 import React, { useState, useEffect, useMemo, useContext } from "react";
-import dynamic from "next/dynamic";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import MenuItem from "@mui/material/MenuItem";
 import List from "@mui/material/List";
 import Box from "@mui/material/Box";
 import makeStyles from "@mui/styles/makeStyles";
 import { styled } from "@mui/material/styles";
 import nina from "@nina-protocol/nina-sdk";
-import { IconButton } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 import Drawer from "@mui/material/Drawer";
-
 import MenuIcon from "@mui/icons-material/Menu";
 
 import {
@@ -22,13 +19,18 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 import Image from "next/image";
 
-const { HubContext, NinaContext } = nina.contexts;
+const { getImageFromCDN, loader } = nina.utils.imageManager;
+const { HubContext } = nina.contexts;
 
 const navData = [
   {
+    label: "+ Publish",
+    href: "/dashboard?action=publishRelease"
+  },
+  {
     label: "Dashboard",
     href: "/dashboard",
-  },
+  }
 ];
 const mobileNavData = [
   {
@@ -142,11 +144,11 @@ const Navigation = ({ hubPubkey }) => {
           <LogoLinkWrapper>
             {hubData && (
               <Image
-                src={hubData.json.image}
+                loader={loader}
+                src={getImageFromCDN(hubData.json.image, 100)}
                 height="50"
                 width="50"
                 alt="hub-logo"
-                unoptimized={true}
               />
             )}
             {hubPubkey ? (
