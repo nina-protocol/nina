@@ -15,8 +15,6 @@ const NinaWrapper = ({ children, network }) => {
   })
 
   const ninaClient = NinaClient(provider, network);
-  console.log('ninaClient: ', ninaClient)
-  console.log('Audio: ', Audio)
   return (
     <Nina.Provider ninaClient={ninaClient}>
       <Release.Provider>
