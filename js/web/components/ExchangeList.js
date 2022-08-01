@@ -4,7 +4,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import ExchangeListItem from './ExchangeListItem'
-import Nina from '@nina-protocol/nina-sdk'
+import Nina from '@nina-protocol/nina-sdk/esm/Nina'
 
 
 const ExchangeList = (props) => {

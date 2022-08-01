@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { styled } from '@mui/material/styles'
-import Audio from '@nina-protocol/nina-sdk'
+import Audio from '@nina-protocol/nina-sdk/esm/Audio'
 import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'

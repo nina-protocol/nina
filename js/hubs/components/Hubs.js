@@ -100,14 +100,14 @@ const Hubs = () => {
                 >
                   Apply
                 </Link>{" "}
-                for a Hub or connect your wallet to get started.                
+                for a Hub or connect your wallet to get started.{"  "}             
                 <Link
                   href="https://www.notion.so/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612#c7abd525851545a199e06ecd14a16a15"
                   target="_blank"
                   rel="noreferrer"
                   passHref
                 >
-                {"  "}Learn More
+                Learn More
                 </Link>
                 .
               </BlueTypography>

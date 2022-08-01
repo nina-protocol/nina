@@ -14,17 +14,16 @@ import Audio from '@nina-protocol/nina-sdk/esm/Audio'
 import Exchange from '@nina-protocol/nina-sdk/esm/Exchange'
 import Nina from '@nina-protocol/nina-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-sdk/esm/Release'
+import { imageManager } from '@nina-protocol/nina-sdk/esm/utils'
 import Image from 'next/image'
 import BuySell from './BuySell'
 import ExchangeHistoryModal from './ExchangeHistoryModal'
 import ExchangeList from './ExchangeList'
 import ExchangeModal from './ExchangeModal'
 
-const {getImageFromCDN, loader} = nina.utils.imageManager
-const { AudioPlayerContext, ExchangeContext, NinaContext, ReleaseContext } =
-  nina.contexts
+const {getImageFromCDN, loader} = imageManager
 
-const Exchange = (props) => {
+const ExchangeComponent = (props) => {
   const { releasePubkey, metadata } = props
 
   const wallet = useWallet()
@@ -422,4 +421,4 @@ const CtaWrapper = styled(Box)(() => ({
   },
 }))
 
-export default Exchange
+export default ExchangeComponent

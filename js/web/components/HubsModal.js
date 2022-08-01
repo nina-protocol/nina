@@ -9,7 +9,7 @@ import Release from '@nina-protocol/nina-sdk/esm/Release'
 
 const HubsModal = (props) => {
   const { releasePubkey, metadata } = props
-  const { getHubsForRelease } = useContext(Releas.Context)
+  const { getHubsForRelease } = useContext(Release.Context)
   const [open, setOpen] = useState(false)
   const [hubs, setHubs] = useState([])
   useEffect(() => {

@@ -10,7 +10,7 @@ import { useRouter } from 'next/router'
 import NinaBox from './NinaBox'
 import ReleaseCard from './ReleaseCard'
 import ReleasePurchase from './ReleasePurchase'
-import Exchange from './Exchange'
+import ExchangeComponent from './Exchange'
 
 const ReleaseComponent = ({ metadataSsr }) => {
   const router = useRouter()
@@ -109,7 +109,7 @@ const ReleaseComponent = ({ metadataSsr }) => {
 
         {router.pathname.includes('market') && (
           <NinaBox columns={'repeat(1, 1fr)'}>
-            <Exchange
+            <ExchangeComponent
               releasePubkey={releasePubkey}
               exchanges={exchangeState.exchanges}
               metadata={metadata}

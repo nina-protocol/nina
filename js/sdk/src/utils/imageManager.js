@@ -14,7 +14,7 @@ export const getImageFromCDN = (url, width=400) => {
   return image
 }
 
-export const loader = ({src}) => {
+export const loader = ({src, width}) => {
   const url = new URL(src)
   let fixedURL = src.replace(`&s=${url.searchParams.get('s')}`, '')
   return fixedURL += `&s=${url.searchParams.get('s')}`

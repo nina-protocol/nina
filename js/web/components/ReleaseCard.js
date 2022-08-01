@@ -1,7 +1,7 @@
 import React, { useContext, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
 import Audio from '@nina-protocol/nina-sdk/esm/Audio'
-import { getImageFromCDN, loader } from '@nina-protocol/nina-sdk/esm/utils/imageManager'
+import { imageManager } from '@nina-protocol/nina-sdk/src/utils'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -12,6 +12,7 @@ import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Image from 'next/image'
 
 import AddToHubModal from './AddToHubModal.js'
+const { getImageFromCDN, loader } = imageManager
 
 const ReleaseCard = (props) => {
   const { artwork, metadata, preview, releasePubkey, userHubs } = props
@@ -89,7 +90,6 @@ const ReleaseCard = (props) => {
             height={350}
             width={350}
             priority={true}
-            unoptimized={true}
           />
         ) : (
           <Image

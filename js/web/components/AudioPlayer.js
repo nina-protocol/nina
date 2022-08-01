@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useRef, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
 import Audio from '@nina-protocol/nina-sdk/esm/Audio'
 import { formatDuration }  from '@nina-protocol/nina-sdk/esm/utils'
-import { getImageFromCDN, loader }  from '@nina-protocol/nina-sdk/esm/utils/imageManager'
+import { imageManager }  from '@nina-protocol/nina-sdk/esm/utils'
 import Link from 'next/link'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -16,6 +16,7 @@ import Typography from '@mui/material/Typography'
 import Image from 'next/image'
 import QueueDrawer from './QueueDrawer'
 
+const { getImageFromCDN, loader } = imageManager
 const AudioPlayer = () => {
   const audio = useContext(Audio.Context)
   const {

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import Audio from '@nina-protocol/nina-sdk/esm/Audio'
-import { getImageFromCDN, loader } from '@nina-protocol/nina-sdk/esm/utils/imageManager'
+import { imageManager } from '@nina-protocol/nina-sdk/src/utils'
 import Image from 'next/image'
 import { isMobile } from 'react-device-detect'
 import { useRouter } from 'next/router'
@@ -12,6 +12,7 @@ import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutli
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Button from '@mui/material/Button'
 
+const { getImageFromCDN, loader } = imageManager
 const ReleaseTileList = (props) => {
   const { releases } = props
   const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
