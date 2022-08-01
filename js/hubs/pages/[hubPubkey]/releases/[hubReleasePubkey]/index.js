@@ -60,7 +60,6 @@ export const getStaticPaths = async () => {
   }
 }
 
-
 export const getStaticProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL;
   const hubReleasePubkey = context.params.hubReleasePubkey;

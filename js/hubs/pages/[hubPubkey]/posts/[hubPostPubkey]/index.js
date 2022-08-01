@@ -6,8 +6,6 @@ const Post = dynamic(() => import("../../../../components/Post"));
 
 const PostPage = (props) => {
   const { metadata, post, hub, postPubkey, hubPubkey } = props;
-  console.log('props :>> ', props);
-  console.log('hub :>> ', hub);
 
   if (!hub) {
     return (<></>)
@@ -50,6 +48,7 @@ const PostPage = (props) => {
             />
           </>
         )}
+        
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@ninaprotocol" />
         <meta name="twitter:creator" content="@ninaprotcol" />

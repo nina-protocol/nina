@@ -39,9 +39,22 @@ const HubPage = (props) => {
 
 export default HubPage;
 
-export const getServerSideProps = async (context) => {
+export const getStaticPaths = async () => {
+  return {
+    paths: [
+      {
+        params: {
+          hubPubkey: 'placeholder',
+        }
+      }
+    ],
+    fallback: 'blocking'
+  }
+}
+
+export const getStaticProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL;
-  const hubPubkey = context.query.hubPubkey;
+  const hubPubkey = context.params.hubPubkey;
   const indexerPath = indexerUrl + `/hubs/${hubPubkey}`;
   
   let hub;
@@ -56,6 +69,7 @@ export const getServerSideProps = async (context) => {
           hub,
           hubPubkey: hub.id,
         },
+        revalidate: 10
       };
     } catch (error) {
       console.warn(error);
@@ -64,34 +78,3 @@ export const getServerSideProps = async (context) => {
   return {props:{}};
 };
 
-// export const getStaticProps = async (context) => {
-//   const indexerUrl = process.env.INDEXER_URL;
-//   const hubPubkey = context.params.hubPubkey;
-//   const indexerPath = indexerUrl + `/hubs/${hubPubkey}`;
-
-//   let hub;
-//   if (hubPubkey && hubPubkey !== 'manifest.json') {
-//     try {
-//       const result = await axios.get(indexerPath);
-//       const data = result.data;
-//       hub = data.hub;
-
-//       return {
-//         props: {
-//           hub,
-//           hubPubkey: hub.id,
-//         },
-//       };
-//     } catch (error) {
-//       console.warn(error);
-//     }
-//   }
-//   return {props:{}};
-// }
-
-// export async function getStaticPaths() {
-//   return {
-//     paths: [],
-//     fallback: 'blocking',
-//   }
-// }
