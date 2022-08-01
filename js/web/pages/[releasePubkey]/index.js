@@ -40,24 +40,44 @@ const ReleasePage = (props) => {
   )
 }
 
-export const getServerSideProps = async (context) => {
-  const releasePubkey = context.params.releasePubkey
-  const metadataResult = await fetch(
-    `${process.env.INDEXER_URL}/metadata/bulk`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ids: [releasePubkey] }),
-    }
-  )
-  const metadataJson = await metadataResult.json()
+export default ReleasePage
+
+export const getStaticPaths = async () => {
   return {
-    props: {
-      metadata: metadataJson[releasePubkey] || null,
-      releasePubkey,
-      host: context.req.headers.host,
-    },
+    paths: [
+      {
+        params: {
+          releasePubkey: 'placeholder',
+        }
+      }
+    ],
+    fallback: 'blocking'
   }
 }
 
-export default ReleasePage
+export const getStaticProps = async (context) => {
+  const releasePubkey = context.params.releasePubkey
+
+  try {
+    const metadataResult = await fetch(
+      `${process.env.INDEXER_URL}/metadata/bulk`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: [releasePubkey] }),
+      }
+    )
+    const metadataJson = await metadataResult.json()
+    return {
+      props: {
+        metadata: metadataJson[releasePubkey] || null,
+        releasePubkey,
+        host: context.req.headers.host,
+      },
+    }
+  } catch (error) {
+    console.warn(error);
+  }
+  return {props: {}}
+}
+
