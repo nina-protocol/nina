@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
-import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
-import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/Release";
-import { NinaContext } from "@nina-protocol/nina-sdk/esm/Nina";
+import Hub from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
+import Release from "@nina-protocol/nina-sdk/esm/Release";
+import Nina from "@nina-protocol/nina-sdk/esm/Nina";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
@@ -32,9 +32,9 @@ const UserReleasesPrompt = ({
     releaseState,
     getReleasesPublishedByUser,
     filterReleasesPublishedByUser,
-  } = useContext(ReleaseContext);
-  const { hubAddRelease, getHub, addToHubQueue } = useContext(HubContext);
-  const { collection } = useContext(NinaContext);
+  } = useContext(Release.Context);
+  const { hubAddRelease, getHub, addToHubQueue } = useContext(Hub.Context);
+  const { collection } = useContext(Nina.Context);
   const [selectedHubId, setSelectedHubId] = useState();
   const [inProgress, setInProgress] = useState(false);
   const [canAddContent, setCanAddContent] = useState(false);

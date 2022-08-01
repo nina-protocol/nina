@@ -1,12 +1,12 @@
 import React, { createContext, useState, useContext, useRef } from 'react'
-import { NinaContext } from '../Nina'
-import { ReleaseContext } from '../Release'
+import Nina from '../Nina'
+import Release from '../Release'
 
-export const AudioPlayerContext = createContext()
-export const AudioPlayerContextProvider = ({ children }) => {
-  const { collection, shouldRemainInCollectionAfterSale, ninaClient } =
-    useContext(NinaContext)
-  const { releaseState } = useContext(ReleaseContext)
+const AudioPlayerContext = createContext()
+const AudioPlayerContextProvider = ({ children }) => {
+  const { collection, shouldRemainInCollectionAfterSale } =
+    useContext(Nina.Context)
+  const { releaseState } = useContext(Release.Context)
   const [track, setTrack] = useState(null)
   const [playlist, setPlaylist] = useState([])
   const [isPlaying, setIsPlaying] = useState(false)
@@ -261,4 +261,9 @@ const audioPlayerContextHelper = ({
     createPlaylistFromTracksHubs,
     createPlaylistEntry,
   }
+}
+
+export default {
+  Context: AudioPlayerContext,
+  Provider: AudioPlayerContextProvider
 }

@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext } from 'react'
 import * as anchor from '@project-serum/anchor'
-import { NinaContext } from '../Nina'
+import Nina from '../Nina'
 import {
   createMintInstructions,
   findOrCreateAssociatedTokenAccount,
@@ -21,8 +21,8 @@ const lookupTypes = {
   PUBLISHED_BY: 'published_by',
   REVENUE_SHARE: 'revenue_share',
 }
-export const ReleaseContext = createContext()
-export const ReleaseContextProvider = ({ children }) => {
+const ReleaseContext = createContext()
+const ReleaseContextProvider = ({ children }) => {
   const {
     ninaClient,
     addReleaseToCollection,
@@ -31,7 +31,7 @@ export const ReleaseContextProvider = ({ children }) => {
     usdcBalance,
     removeReleaseFromCollection,
     getSolPrice,
-  } = useContext(NinaContext)
+  } = useContext(Nina.Context)
   const [releasePurchasePending, setReleasePurchasePending] = useState({})
   const [releasePurchaseTransactionPending, setReleasePurchaseTransactionPending] = useState({})
   const [pressingState, setPressingState] = useState(defaultPressingState)
@@ -2239,4 +2239,9 @@ const searchResultsInitialState = {
   searched: false,
   pending: false,
   query: null,
+}
+
+export default {
+  Context: ReleaseContext,
+  Provider: ReleaseContextProvider
 }

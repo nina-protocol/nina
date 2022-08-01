@@ -6,15 +6,15 @@ import {
   findOrCreateAssociatedTokenAccount,
 } from '../../utils/web3'
 import { decodeNonEncryptedByteArray } from '../../utils/encrypt'
-import { ReleaseContext } from '../Release'
-import { NinaContext } from '../Nina'
+import Release from '../Release'
+import Nina from '../Nina'
 import { indexerHasRecord, shuffle } from '../../utils'
 
-export const HubContext = createContext()
-export const HubContextProvider = ({ children }) => {
-  const { fetchAndSaveReleasesToState, releaseState, getRelease } =
-    useContext(ReleaseContext)
-  const { ninaClient, savePostsToState, postState } = useContext(NinaContext)
+const HubContext = createContext()
+const HubContextProvider = ({ children }) => {
+  const { fetchAndSaveReleasesToState, getRelease } =
+    useContext(Release.Context)
+  const { ninaClient, savePostsToState, postState } = useContext(Nina.Context)
   const [hubState, setHubState] = useState({})
   const [hubCollaboratorsState, setHubCollaboratorsState] = useState({})
   const [hubContentState, setHubContentState] = useState({})
@@ -1202,4 +1202,9 @@ const hubContextHelper = ({
     validateHubHandle,
     filterFeaturedHubs,
   }
+}
+
+export default {
+  Context: HubContext,
+  Provider: HubContextProvider
 }

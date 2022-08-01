@@ -7,8 +7,8 @@ import {
 } from '../../utils/web3'
 import { ninaErrorHandler } from '../../utils/errors'
 
-export const NinaContext = createContext()
-export const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
+const NinaContext = createContext()
+const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [collection, setCollection] = useState({})
   const [postState, setPostState] = useState({})
   const [usdcBalance, setUsdcBalance] = useState(0)
@@ -621,4 +621,9 @@ const ninaContextHelper = ({
     initBundlr,
     savePostsToState,
   }
+}
+
+export default {
+  Context: NinaContext,
+  Provider: NinaContextProvider
 }

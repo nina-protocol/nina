@@ -1,4 +1,2 @@
-export {
-  NinaContextProvider,
-  NinaContext,
-} from './nina'
+import Nina from './nina'
+export default Nina

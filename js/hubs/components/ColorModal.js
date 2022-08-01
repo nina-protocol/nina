@@ -9,7 +9,6 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { HexColorPicker } from "react-colorful";
 
-
 const ColorModal = ({
   backgroundColor,
   setBackgroundColor,

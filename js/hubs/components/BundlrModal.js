@@ -11,7 +11,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import {NinaContext} from "@nina-protocol/nina-sdk/esm/Nina";
+import Nina from "@nina-protocol/nina-sdk/esm/Nina";
 import { useSnackbar } from "notistack";
 import Dots from "./Dots";
 
@@ -30,7 +30,7 @@ const BundlrModal = ({ inCreate }) => {
     initBundlr,
     ninaClient,
     bundlr,
-  } = useContext(NinaContext);
+  } = useContext(Nina.Context);
   const [amount, setAmount] = useState();
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,

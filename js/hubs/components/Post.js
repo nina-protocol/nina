@@ -7,9 +7,9 @@ import React, {
   Fragment,
 } from "react";
 import dynamic from "next/dynamic";
-import {HubContext} from "@nina-protocol/nina-sdk/esm/Hub";
-import {NinaContext} from "@nina-protocol/nina-sdk/esm/Nina";
-import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/Release";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-sdk/esm/Nina";
+import Release from "@nina-protocol/nina-sdk/esm/Release";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
@@ -35,10 +35,10 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
 
   const [metadata, setMetadata] = useState();
 
-  const { postState } = useContext(NinaContext);
+  const { postState } = useContext(Nina.Context);
   const { getHub, hubState, hubContentState, getHubPost } =
-    useContext(HubContext);
-  const { getRelease, releaseState } = useContext(ReleaseContext);
+    useContext(Hub.Context);
+  const { getRelease, releaseState } = useContext(Release.Context);
 
   useEffect(() => {
     if (hubPubkey && !hubState[hubPubkey]) {

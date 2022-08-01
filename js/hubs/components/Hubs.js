@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { HubContext } from "@nina-protocol/nina-sdk/esm/Hub";
-import { NinaContext } from "@nina-protocol/nina-sdk/esm/Nina";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-sdk/esm/Nina";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -19,8 +19,8 @@ import {
 
 const Hubs = () => {
   const { getHubsForUser, hubState, filterHubsForUser, getHubs, filterFeaturedHubs } =
-    useContext(HubContext);
-  const { npcAmountHeld } = useContext(NinaContext);
+    useContext(Hub.Context);
+  const { npcAmountHeld } = useContext(Nina.Context);
   const [hubs, setHubs] = useState()
   const router = useRouter();
   const wallet = useWallet();

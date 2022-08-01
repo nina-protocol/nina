@@ -1,8 +1,8 @@
 import React, { createContext, useState, useContext } from 'react'
 import * as anchor from '@project-serum/anchor'
-import { NinaContext } from '../Nina'
-import { ReleaseContext } from '../Release'
-import { AudioPlayerContext } from '../Audio'
+import Audio from '../Audio'
+import Nina from '../Nina'
+import Release from '../Release'
 import {
   getProgramAccounts,
   findOrCreateAssociatedTokenAccount,
@@ -17,16 +17,16 @@ const lookupTypes = {
   USER: 'user',
 }
 
-export const ExchangeContext = createContext()
-export const ExchangeContextProvider = ({ children }) => {
+const ExchangeContext = createContext()
+const ExchangeContextProvider = ({ children }) => {
   const {
     addReleaseToCollection,
     removeReleaseFromCollection,
     getUsdcBalance,
     ninaClient,
-  } = useContext(NinaContext)
-  const { getRelease } = useContext(ReleaseContext)
-  const { removeTrackFromPlaylist } = useContext(AudioPlayerContext)
+  } = useContext(Nina.Context)
+  const { getRelease } = useContext(Release.Context)
+  const { removeTrackFromPlaylist } = useContext(Audio.Context)
   const [exchangeState, setExchangeState] = useState({})
   const [exchangeHistoryState, setExchangeHistoryState] = useState({})
   const [exchangeInitPending, setExchangeInitPending] = useState({})
@@ -803,4 +803,9 @@ const exchangeContextHelper = ({
     filterExchangeHistoryForUser,
     filterExchangeHistoryForRelease,
   }
+}
+
+export default {
+  Context: ExchangeContext,
+  Provider: ExchangeContextProvider,
 }

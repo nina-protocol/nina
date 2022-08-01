@@ -6,9 +6,9 @@ import React, {
   useCallback,
 } from "react";
 import * as Yup from "yup";
-import {HubContext} from "@nina-protocol/nina-sdk/esm/Hub";
-import {NinaContext} from "@nina-protocol/nina-sdk/esm/Nina";
-import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/Release";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-sdk/esm/Nina";
+import Release from "@nina-protocol/nina-sdk/esm/Release";
 import { useSnackbar } from "notistack";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -51,8 +51,8 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
     releaseState,
     initializeReleaseAndMint,
     releaseCreateMetadataJson,
-  } = useContext(ReleaseContext);
-  const { hubState } = useContext(HubContext);
+  } = useContext(Release.Context);
+  const { hubState } = useContext(Hub.Context);
   const router = useRouter();
 
   const {
@@ -63,7 +63,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
     bundlrPricePerMb,
     solPrice,
     getSolPrice,
-  } = useContext(NinaContext);
+  } = useContext(Nina.Context);
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const [track, setTrack] = useState(undefined);
   const [artwork, setArtwork] = useState();

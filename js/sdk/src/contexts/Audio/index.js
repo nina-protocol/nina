@@ -1,4 +1,2 @@
-export {
-  AudioPlayerContextProvider,
-  AudioPlayerContext,
-} from './audio'
+import Audio from './audio'
+export default Audio

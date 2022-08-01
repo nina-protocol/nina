@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect, useMemo } from "react";
 import axios from "axios";
 import { styled } from "@mui/material/styles";
-import {HubContext} from "@nina-protocol/nina-sdk/esm/Hub";
-import {NinaContext} from "@nina-protocol/nina-sdk/esm/Nina";
-import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/Release";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-sdk/esm/Nina";
+import Release from "@nina-protocol/nina-sdk/esm/Release";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
@@ -27,9 +27,9 @@ const ReleasePurchase = (props) => {
     releasePurchaseTransactionPending,
     releaseState,
     getPublishedHubForRelease,
-  } = useContext(ReleaseContext);
-  const { hubState } = useContext(HubContext)
-  const { getAmountHeld, collection, usdcBalance, ninaClient } = useContext(NinaContext);
+  } = useContext(Release.Context);
+  const { hubState } = useContext(Hub.Context)
+  const { getAmountHeld, collection, usdcBalance, ninaClient } = useContext(Nina.Context);
   const [release, setRelease] = useState(undefined);
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey]);
   const [downloadButtonString, setDownloadButtonString] = useState("Download");

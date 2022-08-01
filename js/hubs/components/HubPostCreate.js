@@ -6,8 +6,8 @@ import React, {
   useCallback,
 } from "react";
 import * as Yup from "yup";
-import {HubContext} from "@nina-protocol/nina-sdk/esm/Hub";
-import {NinaContext} from "@nina-protocol/nina-sdk/esm/Nina";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-sdk/esm/Nina";
 import { useSnackbar } from "notistack";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -51,12 +51,7 @@ const HubPostCreate = ({
 }) => {
   const { enqueueSnackbar } = useSnackbar();
   const wallet = useWallet();
-  const { postInitViaHub, hubState } = useContext(HubContext);
-  const hubData = useMemo(
-    () => hubState[selectedHubId || hubPubkey],
-    [hubState, hubPubkey, selectedHubId]
-  );
-
+  const { postInitViaHub, hubState } = useContext(Hub.Context);
   const {
     bundlrUpload,
     bundlrBalance,
@@ -67,7 +62,11 @@ const HubPostCreate = ({
     bundlrPricePerMb,
     solPrice,
     getSolPrice,
-  } = useContext(NinaContext);
+  } = useContext(Nina.Context);
+  const hubData = useMemo(
+    () => hubState[selectedHubId || hubPubkey],
+    [hubState, hubPubkey, selectedHubId]
+  );
   const [uploadSize, setUploadSize] = useState();
   const [buttonText, setButtonText] = useState(
     update ? "Update Post" : "Create Post"

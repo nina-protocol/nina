@@ -1,4 +1,2 @@
-export {
-  HubContextProvider,
-  HubContext,
-} from './hub'
+import Hub from './hub'
+export default Hub

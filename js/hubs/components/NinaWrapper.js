@@ -1,16 +1,8 @@
 import React from "react";
-import {
-  AudioPlayerContextProvider,
-} from "@nina-protocol/nina-sdk/esm/Audio";
-import {
-  ReleaseContextProvider,
-} from "@nina-protocol/nina-sdk/esm/Release";
-import {
-  HubContextProvider,
-} from "@nina-protocol/nina-sdk/esm/Hub";
-import {
-  NinaContextProvider,
-} from "@nina-protocol/nina-sdk/esm/Nina";
+import Audio from "@nina-protocol/nina-sdk/esm/Audio";
+import Release from "@nina-protocol/nina-sdk/esm/Release";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-sdk/esm/Nina";
 import NinaClient from "@nina-protocol/nina-sdk/esm/client"
 import { AnchorProvider } from "@project-serum/anchor";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
@@ -24,15 +16,15 @@ const NinaWrapper = ({ children, network }) => {
 
   const ninaClient = NinaClient(provider, network);
   console.log('ninaClient: ', ninaClient)
-  console.log('AudioPlayerContextProvider: ', AudioPlayerContextProvider)
+  console.log('Audio: ', Audio)
   return (
-    <NinaContextProvider ninaClient={ninaClient}>
-      <ReleaseContextProvider>
-        <AudioPlayerContextProvider>
-          <HubContextProvider>{children}</HubContextProvider>
-        </AudioPlayerContextProvider>
-      </ReleaseContextProvider>
-    </NinaContextProvider>
+    <Nina.Provider ninaClient={ninaClient}>
+      <Release.Provider>
+        <Audio.Provider>
+          <Hub.Provider>{children}</Hub.Provider>
+        </Audio.Provider>
+      </Release.Provider>
+    </Nina.Provider>
   );
 };
 

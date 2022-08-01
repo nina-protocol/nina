@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect, useMemo, useRef } from "react";
 import dynamic from "next/dynamic";
-import {AudioPlayerContext} from "@nina-protocol/nina-sdk/esm/Audio";
-import {HubContext} from "@nina-protocol/nina-sdk/esm/Hub";
-import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/Release";
+import Audio from "@nina-protocol/nina-sdk/esm/Audio";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Release from "@nina-protocol/nina-sdk/esm/Release";
 import { imageManager } from "@nina-protocol/nina-sdk/esm/utils"
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
@@ -22,15 +22,15 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
   const router = useRouter();
   const wallet = useWallet();
 
-  const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } = useContext(AudioPlayerContext);
-  const { releaseState, getRelease } = useContext(ReleaseContext);
+  const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } = useContext(Audio.Context);
+  const { releaseState, getRelease } = useContext(Release.Context);
   const {
     getHub,
     hubState,
     getHubsForUser,
     filterHubsForUser,
     hubCollaboratorsState,
-  } = useContext(HubContext);
+  } = useContext(Hub.Context);
 
   const [userHubs, setUserHubs] = useState();
 

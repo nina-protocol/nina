@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect, createElement, Fragment } from "react";
 import dynamic from "next/dynamic";
-import {AudioPlayerContext} from "@nina-protocol/nina-sdk/esm/Audio";
-import {HubContext} from "@nina-protocol/nina-sdk/esm/Hub";
-import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/Release";
+import Audio from "@nina-protocol/nina-sdk/esm/Audio";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Release from "@nina-protocol/nina-sdk/esm/Release";
 import { imageManager } from "@nina-protocol/nina-sdk/esm/utils"
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -23,13 +23,13 @@ const Button = dynamic(() => import("@mui/material/Button"));
 const ReleasePurchase = dynamic(() => import("./ReleasePurchase"));
 const AddToHubModal = dynamic(() => import("./AddToHubModal"));
 
-const Release = ({ metadataSsr, releasePubkey, hubPubkey }) => {
+const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const wallet = useWallet();
 
-  const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } = useContext(AudioPlayerContext);
-  const { releaseState, getRelease } = useContext(ReleaseContext);
+  const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } = useContext(Audio.Context);
+  const { releaseState, getRelease } = useContext(Release.Context);
   const { getHub, hubState, getHubsForUser, filterHubsForUser } =
-    useContext(HubContext);
+    useContext(Hub.Context);
 
   const [metadata, setMetadata] = useState(metadataSsr || null);
   const [description, setDescription] = useState();
@@ -255,4 +255,4 @@ const CtaWrapper = styled(Box)(({ theme }) => ({
   },
 }));
 
-export default Release;
+export default ReleaseComponent;

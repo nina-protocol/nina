@@ -1,4 +1,2 @@
-export {
-  ExchangeContextProvider,
-  ExchangeContext,
-} from './exchange'
+import Exchange from './exchange'
+export default Exchange

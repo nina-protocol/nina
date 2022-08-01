@@ -6,7 +6,7 @@ import List from "@mui/material/List";
 import Box from "@mui/material/Box";
 import makeStyles from "@mui/styles/makeStyles";
 import { styled } from "@mui/material/styles";
-import { HubContext } from "@nina-protocol/nina-sdk/esm/Hub";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
 import { imageManager } from '@nina-protocol/nina-sdk/esm/utils'
 import IconButton from "@mui/material/IconButton";
 import Drawer from "@mui/material/Drawer";
@@ -63,7 +63,7 @@ const Navigation = ({ hubPubkey }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const { hubState, hubCollaboratorsState, filterHubCollaboratorsForHub, getHubsForUser, filterHubsForUser } =
-    useContext(HubContext);
+    useContext(Hub.Context);
   const hubCollaborators = useMemo(
     () => filterHubCollaboratorsForHub(hubPubkey),
     [hubCollaboratorsState, hubPubkey]

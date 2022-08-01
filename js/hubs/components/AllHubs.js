@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState, useRef } from "react";
-import {HubContext} from "@nina-protocol/nina-sdk/esm/Hub";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
@@ -8,7 +8,7 @@ import debounce from 'lodash.debounce'
 import HubTileView from "./HubTileView";
 
 const Hubs = () => {
-  const { getHubs, hubState, hubsCount } = useContext(HubContext);
+  const { getHubs, hubState, hubsCount } = useContext(Hub.HubContext);
   const [pendingFetch, setPendingFetch] = useState(false)
   const [totalCount, setTotalCount] = useState(null)
   const scrollRef = useRef()

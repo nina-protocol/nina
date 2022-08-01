@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { styled } from "@mui/material/styles";
-import {HubContext} from "@nina-protocol/nina-sdk/esm/Hub";
-import {NinaContext} from "@nina-protocol/nina-sdk/esm/Nina";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-sdk/esm/Nina";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -143,8 +143,8 @@ const EnhancedTableHead = (props) => {
 
 const ReleaseListTable = (props) => {
   const { releases, tableType, hubPubkey, hubData } = props;
-  const { ninaClient } = useContext(NinaContext);
-  const { collectRoyaltyForReleaseViaHub } = useContext(HubContext);
+  const { ninaClient } = useContext(Nina.Context);
+  const { collectRoyaltyForReleaseViaHub } = useContext(Hub.Context);
   const router = useRouter();
 
   const [order, setOrder] = useState("asc");

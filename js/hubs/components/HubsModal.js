@@ -5,11 +5,11 @@ import Backdrop from '@mui/material/Backdrop'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
-import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/Release";
+import Release from "@nina-protocol/nina-sdk/esm/Release";
 
 const HubsModal = (props) => {
   const { releasePubkey, metadata } = props
-  const { getHubsForRelease } = useContext(ReleaseContext)
+  const { getHubsForRelease } = useContext(Release.Context)
   const [open, setOpen] = useState(false)
   const [hubs, setHubs] = useState([])
   

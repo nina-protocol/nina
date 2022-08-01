@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { useSnackbar } from "notistack";
-import {HubContext} from "@nina-protocol/nina-sdk/esm/Hub";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
@@ -14,7 +14,7 @@ import { DashboardHeader } from "../styles/theme/lightThemeOptions.js";
 const CollaboratorPermissions = (props) => {
   const { hubPubkey, activeSelection, isAuthority, setActiveSelection } = props;
   const { enqueueSnackbar } = useSnackbar();
-  const { hubUpdateCollaboratorPermission } = useContext(HubContext);
+  const { hubUpdateCollaboratorPermission } = useContext(Hub.Context);
   const [unlimitedAllowance, setUnlimitAllowance] = useState(
     activeSelection.allowance === -1
   );
