@@ -57,15 +57,19 @@ const Hubs = () => {
           type="text/css"
           href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
           media="print"
-          // onLoad="this.media='all'"
         />
         <link
           rel="stylesheet"
           type="text/css"
           href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
           media="print"
-          // onLoad="this.media='all'"
         />
+        <title>{`Nina Hubs`}</title>
+        <meta
+          name="description"
+          content={`Hubs are a new way to publish, share, and discuss music. Apply for a Hub or connect your wallet to get started.`}
+        />
+        <meta name="og:type" content="website" />
       </Head>
       <HubsContainer>
         <Box
