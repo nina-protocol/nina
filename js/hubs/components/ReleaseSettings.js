@@ -5,8 +5,8 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Link from "next/link";
-import {NinaContext} from "@nina-protocol/nina-sdk/esm/contexts/Nina/Nina";
-import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/contexts/Release/Release";
+import {NinaContext} from "@nina-protocol/nina-sdk/esm/Nina";
+import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/Release";
 const Royalty = dynamic(() => import("./Royalty.js"));
 
 const ReleaseSettings = (props) => {

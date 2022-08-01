@@ -8,8 +8,8 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 
-import {formatPlaceholder} from "@nina-protocol/nina-sdk/esm/utils/utils"
-import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/contexts/Release/Release";
+import {formatPlaceholder} from "@nina-protocol/nina-sdk/esm/utils"
+import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/Release";
 
 const RoyaltyRecipientForm = (props) => {
   const { release, userShare, setUserDisplayShare, releasePubkey, toggleForm } =

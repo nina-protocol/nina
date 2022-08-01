@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { HubContext } from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
-import { NinaContext } from "@nina-protocol/nina-sdk/esm/contexts/Nina/Nina";
+import { HubContext } from "@nina-protocol/nina-sdk/esm/Hub";
+import { NinaContext } from "@nina-protocol/nina-sdk/esm/Nina";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";

@@ -6,8 +6,8 @@ import List from "@mui/material/List";
 import Box from "@mui/material/Box";
 import makeStyles from "@mui/styles/makeStyles";
 import { styled } from "@mui/material/styles";
-import { HubContext } from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
-import { getImageFromCDN, loader } from '@nina-protocol/nina-sdk/esm/utils/imageManager'
+import { HubContext } from "@nina-protocol/nina-sdk/esm/Hub";
+import { imageManager } from '@nina-protocol/nina-sdk/esm/utils'
 import IconButton from "@mui/material/IconButton";
 import Drawer from "@mui/material/Drawer";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -19,6 +19,7 @@ import {
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 import Image from "next/image";
+const { getImageFromCDN, loader } = imageManager
 
 const navData = [
   {

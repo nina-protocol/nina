@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { styled } from "@mui/material/styles";
-import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
-import {NinaContext} from "@nina-protocol/nina-sdk/esm/contexts/Nina/Nina";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/Hub";
+import {NinaContext} from "@nina-protocol/nina-sdk/esm/Nina";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";

@@ -1,9 +1,9 @@
 import React, { useContext, useState, useMemo, useEffect } from "react";
 import { styled } from "@mui/material/styles";
-import {AudioPlayerContext} from "@nina-protocol/nina-sdk/esm/contexts/Audio/Audio";
-import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
-import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/contexts/Release/Release";
-import { getImageFromCDN, loader } from "@nina-protocol/nina-sdk/esm/utils/imageManager";
+import {AudioPlayerContext} from "@nina-protocol/nina-sdk/esm/Audio";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/Hub";
+import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/Release";
+import { imageManager } from "@nina-protocol/nina-sdk/esm/utils";
 import Image from "next/image";
 import { isMobile } from 'react-device-detect'
 import { useRouter } from "next/router";
@@ -15,6 +15,7 @@ import Button from "@mui/material/Button";
 import AutorenewTwoToneIcon from "@mui/icons-material/AutorenewTwoTone";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+const { getImageFromCDN, loader } = imageManager
 
 const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
   const { updateTrack, setInitialized, audioPlayerRef, isPlaying, track } = useContext(AudioPlayerContext);

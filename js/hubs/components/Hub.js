@@ -1,8 +1,8 @@
 import React, {useState, useContext, useEffect, useMemo, createElement, Fragment} from "react";
 import dynamic from "next/dynamic";
-import { HubContext } from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
-import { NinaContext } from "@nina-protocol/nina-sdk/esm/contexts/Nina/Nina"
-import { ReleaseContext } from "@nina-protocol/nina-sdk/esm/contexts/Release/Release"
+import { HubContext } from "@nina-protocol/nina-sdk/esm/Hub";
+import { NinaContext } from "@nina-protocol/nina-sdk/esm/Nina"
+import { ReleaseContext } from "@nina-protocol/nina-sdk/esm/Release"
 import {styled} from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";

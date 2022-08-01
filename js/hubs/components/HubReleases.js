@@ -6,8 +6,8 @@ import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
-import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
-import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/contexts/Release/Release";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/Hub";
+import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/Release";
 import { useSnackbar } from "notistack";
 import { styled } from "@mui/material/styles";
 import {

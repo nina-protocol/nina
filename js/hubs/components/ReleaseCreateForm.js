@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { styled } from "@mui/material/styles";
-import { formatPlaceholder } from "@nina-protocol/nina-sdk/esm/utils/utils";
+import { formatPlaceholder } from "@nina-protocol/nina-sdk/esm/utils";
 import { withFormik, Form, Field } from "formik";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";

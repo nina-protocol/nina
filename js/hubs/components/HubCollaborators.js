@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import { useWallet } from "@solana/wallet-adapter-react";
 import CloseIcon from "@mui/icons-material/Close";
 import Grid from "@mui/material/Grid";
-import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/Hub";
 import { useSnackbar } from "notistack";
 import HubAddCollaborator from "./HubAddCollaborator";
 import CollaboratorPermissions from "./CollaboratorPermissions";

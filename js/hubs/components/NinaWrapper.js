@@ -1,16 +1,16 @@
 import React from "react";
 import {
   AudioPlayerContextProvider,
-} from "@nina-protocol/nina-sdk/esm/contexts/Audio/Audio";
+} from "@nina-protocol/nina-sdk/esm/Audio";
 import {
   ReleaseContextProvider,
-} from "@nina-protocol/nina-sdk/esm/contexts/Release/Release";
+} from "@nina-protocol/nina-sdk/esm/Release";
 import {
   HubContextProvider,
-} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
+} from "@nina-protocol/nina-sdk/esm/Hub";
 import {
   NinaContextProvider,
-} from "@nina-protocol/nina-sdk/esm/contexts/Nina/Nina";
+} from "@nina-protocol/nina-sdk/esm/Nina";
 import NinaClient from "@nina-protocol/nina-sdk/esm/client"
 import { AnchorProvider } from "@project-serum/anchor";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";

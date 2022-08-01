@@ -8,7 +8,6 @@ import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import Image from "next/image";
 
-
 const HubImageDropzone = ({ type, setArtwork, currentImageUrl, update }) => {
   const handleChangeStatus = ({ meta, file, remove }, status) => {
     if (type === "artwork") {

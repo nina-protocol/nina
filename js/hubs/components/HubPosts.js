@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useWallet } from "@solana/wallet-adapter-react";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
-import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
-import {NinaContext} from "@nina-protocol/nina-sdk/esm/contexts/Nina/Nina";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/Hub";
+import {NinaContext} from "@nina-protocol/nina-sdk/esm/Nina";
 import { useSnackbar } from "notistack";
 import HubPostCreate from "./HubPostCreate";
 import {

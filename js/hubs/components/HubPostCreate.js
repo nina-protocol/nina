@@ -6,8 +6,8 @@ import React, {
   useCallback,
 } from "react";
 import * as Yup from "yup";
-import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
-import {NinaContext} from "@nina-protocol/nina-sdk/esm/contexts/Nina/Nina";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/Hub";
+import {NinaContext} from "@nina-protocol/nina-sdk/esm/Nina";
 import { useSnackbar } from "notistack";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";

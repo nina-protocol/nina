@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect, createElement, Fragment } from "react";
 import dynamic from "next/dynamic";
-import {AudioPlayerContext} from "@nina-protocol/nina-sdk/esm/contexts/Audio/Audio";
-import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
-import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/contexts/Release/Release";
-import { getImageFromCDN, loader } from "@nina-protocol/nina-sdk/esm/utils/imageManager"
+import {AudioPlayerContext} from "@nina-protocol/nina-sdk/esm/Audio";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/Hub";
+import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/Release";
+import { imageManager } from "@nina-protocol/nina-sdk/esm/utils"
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
@@ -17,6 +17,7 @@ import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
+const { getImageFromCDN, loader } = imageManager
 
 const Button = dynamic(() => import("@mui/material/Button"));
 const ReleasePurchase = dynamic(() => import("./ReleasePurchase"));

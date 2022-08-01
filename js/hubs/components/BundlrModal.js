@@ -11,7 +11,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import {NinaContext} from "@nina-protocol/nina-sdk/esm/contexts/Nina/Nina";
+import {NinaContext} from "@nina-protocol/nina-sdk/esm/Nina";
 import { useSnackbar } from "notistack";
 import Dots from "./Dots";
 

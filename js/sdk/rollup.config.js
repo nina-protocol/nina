@@ -12,7 +12,6 @@ export default [
         'idb-keyval',
         '@bundlr-network/client/build/web'
       ],
-      preserveModules: true,
       plugins: [
         babel({ 
             exclude: 'node_modules/**',

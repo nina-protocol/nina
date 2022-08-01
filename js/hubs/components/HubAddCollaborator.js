@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { useSnackbar } from "notistack";
-import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/Hub";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
