@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef, useContext, useMemo } from "react";
-import nina from "@nina-protocol/nina-sdk";
+import {AudioPlayerContext} from "@nina-protocol/nina-sdk/esm/contexts/Audio/Audio";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
+import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/contexts/Release/Release";
+import { formatDuration } from "@nina-protocol/nina-sdk/esm/utils/utils"
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
-const { AudioPlayerContext, HubContext, ReleaseContext } = nina.contexts;
-const { formatDuration } = nina.utils;
 const AudioPlayer = ({ hubPubkey }) => {
   const { releaseState } = useContext(ReleaseContext);
   const { hubContentState, filterHubContentForHub } = useContext(HubContext);

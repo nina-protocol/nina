@@ -4,11 +4,11 @@ import axios from 'axios'
 import {
   findOrCreateAssociatedTokenAccount,
   TOKEN_PROGRAM_ID,
-} from '../utils/web3'
-import { ninaErrorHandler } from '../utils/errors'
+} from '../../utils/web3'
+import { ninaErrorHandler } from '../../utils/errors'
 
 export const NinaContext = createContext()
-const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
+export const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [collection, setCollection] = useState({})
   const [postState, setPostState] = useState({})
   const [usdcBalance, setUsdcBalance] = useState(0)
@@ -151,7 +151,6 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     </NinaContext.Provider>
   )
 }
-export default NinaContextProvider
 
 const ninaContextHelper = ({
   ninaClient,

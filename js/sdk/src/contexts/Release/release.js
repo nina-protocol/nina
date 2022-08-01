@@ -1,28 +1,28 @@
 import React, { createContext, useState, useContext } from 'react'
 import * as anchor from '@project-serum/anchor'
-import { NinaContext } from './nina'
+import { NinaContext } from '../Nina'
 import {
   createMintInstructions,
   findOrCreateAssociatedTokenAccount,
   wrapSol,
   TOKEN_PROGRAM_ID,
-} from '../utils/web3'
+} from '../../utils/web3'
 import axios from 'axios'
-import { ninaErrorHandler } from '../utils/errors'
+import { ninaErrorHandler } from '../../utils/errors'
 import {
   encryptData,
   exportPublicKey,
   decodeNonEncryptedByteArray,
   decryptData,
-} from '../utils/encrypt'
-import { indexerHasRecord, shuffle } from '../utils'
+} from '../../utils/encrypt'
+import { indexerHasRecord, shuffle } from '../../utils'
 
 const lookupTypes = {
   PUBLISHED_BY: 'published_by',
   REVENUE_SHARE: 'revenue_share',
 }
 export const ReleaseContext = createContext()
-const ReleaseContextProvider = ({ children }) => {
+export const ReleaseContextProvider = ({ children }) => {
   const {
     ninaClient,
     addReleaseToCollection,
@@ -181,7 +181,6 @@ const ReleaseContextProvider = ({ children }) => {
     </ReleaseContext.Provider>
   )
 }
-export default ReleaseContextProvider
 
 const releaseContextHelper = ({
   ninaClient,

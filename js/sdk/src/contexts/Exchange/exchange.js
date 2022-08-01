@@ -1,16 +1,16 @@
 import React, { createContext, useState, useContext } from 'react'
 import * as anchor from '@project-serum/anchor'
-import { NinaContext } from './nina'
-import { ReleaseContext } from './release'
-import { AudioPlayerContext } from './audio'
+import { NinaContext } from '../Nina'
+import { ReleaseContext } from '../Release'
+import { AudioPlayerContext } from '../Audio'
 import {
   getProgramAccounts,
   findOrCreateAssociatedTokenAccount,
   wrapSol,
   TOKEN_PROGRAM_ID,
-} from '../utils/web3'
-import { ninaErrorHandler } from '../utils/errors'
-import { dateConverter } from '../utils'
+} from '../../utils/web3'
+import { ninaErrorHandler } from '../../utils/errors'
+import { dateConverter } from '../../utils'
 
 const lookupTypes = {
   RELEASE: 'release',
@@ -18,7 +18,7 @@ const lookupTypes = {
 }
 
 export const ExchangeContext = createContext()
-const ExchangeContextProvider = ({ children }) => {
+export const ExchangeContextProvider = ({ children }) => {
   const {
     addReleaseToCollection,
     removeReleaseFromCollection,
@@ -804,4 +804,3 @@ const exchangeContextHelper = ({
     filterExchangeHistoryForRelease,
   }
 }
-export default ExchangeContextProvider

@@ -1,17 +1,17 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useState } from 'react'
 import * as anchor from '@project-serum/anchor'
-import { ninaErrorHandler } from '../utils/errors'
+import { ninaErrorHandler } from '../../utils/errors'
 import {
   findAssociatedTokenAddress,
   findOrCreateAssociatedTokenAccount,
-} from '../utils/web3'
-import { decodeNonEncryptedByteArray } from '../utils/encrypt'
-import { ReleaseContext } from './release'
-import { NinaContext } from './nina'
-import { indexerHasRecord, shuffle } from '../utils'
+} from '../../utils/web3'
+import { decodeNonEncryptedByteArray } from '../../utils/encrypt'
+import { ReleaseContext } from '../Release'
+import { NinaContext } from '../Nina'
+import { indexerHasRecord, shuffle } from '../../utils'
 
 export const HubContext = createContext()
-const HubContextProvider = ({ children }) => {
+export const HubContextProvider = ({ children }) => {
   const { fetchAndSaveReleasesToState, releaseState, getRelease } =
     useContext(ReleaseContext)
   const { ninaClient, savePostsToState, postState } = useContext(NinaContext)
@@ -1202,4 +1202,3 @@ const hubContextHelper = ({
     filterFeaturedHubs,
   }
 }
-export default HubContextProvider

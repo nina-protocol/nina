@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import nina from "@nina-protocol/nina-sdk";
+import { HubContext } from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
+import { NinaContext } from "@nina-protocol/nina-sdk/esm/contexts/Nina/Nina";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -15,8 +16,6 @@ import {
   DashboardHeader,
   DashboardEntry,
 } from "../styles/theme/lightThemeOptions.js";
-
-const { HubContext, NinaContext } = nina.contexts;
 
 const Hubs = () => {
   const { getHubsForUser, hubState, filterHubsForUser, getHubs, filterFeaturedHubs } =

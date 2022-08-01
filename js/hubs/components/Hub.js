@@ -1,6 +1,8 @@
 import React, {useState, useContext, useEffect, useMemo, createElement, Fragment} from "react";
 import dynamic from "next/dynamic";
-import nina from "@nina-protocol/nina-sdk";
+import { HubContext } from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
+import { NinaContext } from "@nina-protocol/nina-sdk/esm/contexts/Nina/Nina"
+import { ReleaseContext } from "@nina-protocol/nina-sdk/esm/contexts/Release/Release"
 import {styled} from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -13,7 +15,6 @@ import rehypeExternalLinks from "rehype-external-links";
 import {useWallet} from "@solana/wallet-adapter-react";
 import Dots from "./Dots";
 const ContentTileView = dynamic(() => import("./ContentTileView"));
-const {HubContext, NinaContext, ReleaseContext} = nina.contexts;
 
 const Hub = ({hubPubkey}) => {
   const {

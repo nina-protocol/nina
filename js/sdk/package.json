@@ -1,17 +1,15 @@
 {
   "name": "@nina-protocol/nina-sdk",
-  "version": "0.0.34",
+  "version": "0.0.35",
   "files": [
-    "dist/**/*"
+    "cjs/*",
+    "esm/*"
   ],
-  "main": "./dist/index.js",
-  "module": "./dist/index.module.js",
-  "unpkg": "./dist/index.umd.js",
-  "exports": {
-    "require": "./dist/index.js",
-    "default": "./dist/index.modern.js"
-  },
+  "main": "cjs/index.js",
+  "module": "esm/index.js",
+  "default": "esm/index.js",
   "dependencies": {
+    "@babel/preset-react": "^7.18.6",
     "@bundlr-network/client": "^0.6.1",
     "@metaplex-foundation/mpl-token-metadata": "^1.2.4",
     "assert": "^2.0.0",
@@ -26,10 +24,23 @@
     "lodash": "^4.17.21",
     "notistack": "^1.0.6",
     "process": "^0.11.10",
-    "querystring": "^0.2.1"
+    "querystring": "^0.2.1",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-commonjs": "^10.1.0"
+  },
+  "sideEffects": false,
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-react",
+        {
+          "pure": true
+        }
+      ]
+    ]
   },
   "scripts": {
-    "build": "rm -rf dist/ && microbundle --sourcemap false --jsx React.createElement ",
+    "build": "rm -rf cjs/ rm -rf esm && rollup --config",
     "watch": "rm -rf dist/ && microbundle watch --no-compress --jsx React.createElement",
     "lint": "eslint ./ --ignore-path ./.gitignore",
     "lint:fix": "yarn lint -- --fix",
@@ -42,14 +53,15 @@
     "@typescript-eslint/parser": "^5.12.0",
     "eslint-plugin-react": "^7.28.0",
     "microbundle": "^0.14.2",
-    "prettier": "^2.5.1"
+    "prettier": "^2.5.1",
+    "rollup-plugin-terser": "^7.0.2"
   },
   "peerDependencies": {
     "@project-serum/anchor": "^0.25.0",
     "browserify-zlib": "^0.2.0",
     "crypto-browserify": "^3.12.0",
+    "notistack": "^1.0.6",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "notistack": "^1.0.6"
+    "react-dom": "^17.0.2"
   }
 }
