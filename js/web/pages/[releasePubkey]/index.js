@@ -73,6 +73,7 @@ export const getStaticProps = async (context) => {
         metadata: metadataJson[releasePubkey] || null,
         releasePubkey,
       },
+      revalidate: 10
     }
   } catch (error) {
     console.warn(error);
