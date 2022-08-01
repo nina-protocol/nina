@@ -42,8 +42,8 @@
     ]
   },
   "scripts": {
-    "build": "rm -rf cjs/ rm -rf esm && rollup -c",
-    "watch": "rm -rf cjs/ rm -rf esm && rollup -c -w",
+    "build": "rm -rf cjs/ rm -rf esm/ && rollup -c",
+    "watch": "rm -rf cjs/ rm -rf esm/ && rollup -c -w",
     "lint": "eslint ./ --ignore-path ./.gitignore",
     "lint:fix": "yarn lint -- --fix",
     "format": "prettier -l .",
