@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { styled } from "@mui/material/styles";
-import {ReleaseContext} from "@nina-protocol/nina-sdk/esm/Release";
+import Release from "@nina-protocol/nina-sdk/esm/Release";
 import {formatPlaceholder} from "@nina-protocol/nina-sdk/esm/utils";
 import { withFormik, Form, Field } from "formik";
 import Typography from "@mui/material/Typography";
@@ -26,7 +26,7 @@ const HubPostCreateForm = ({
   hubReleasesToReference,
   preloadedRelease,
 }) => {
-  const { releaseState } = useContext(ReleaseContext);
+  const { releaseState } = useContext(Release.Context);
 
   useEffect(() => {
     if (onChange) {

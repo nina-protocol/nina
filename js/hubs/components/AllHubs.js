@@ -7,8 +7,8 @@ import Head from "next/head";
 import debounce from 'lodash.debounce'
 import HubTileView from "./HubTileView";
 
-const Hubs = () => {
-  const { getHubs, hubState, hubsCount } = useContext(Hub.HubContext);
+const AllHubs = () => {
+  const { getHubs, hubState, hubsCount } = useContext(Hub.Context);
   const [pendingFetch, setPendingFetch] = useState(false)
   const [totalCount, setTotalCount] = useState(null)
   const scrollRef = useRef()
@@ -79,4 +79,4 @@ const AllHubsWrapper = styled(Box)(({ theme }) => ({
 }));
 
 
-export default Hubs;
+export default AllHubs;
