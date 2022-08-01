@@ -166,7 +166,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                         width={100}
                         height={100}
                         layout="responsive"
-                        src={getImageFromCDN(item.image, isMobile ? 100 : 400, new Date(releaseState.tokenData[item.release].releaseDatetime.toNumber() * 1000))}
+                        src={getImageFromCDN(item.image, 400, new Date(releaseState.tokenData[item.release].releaseDatetime.toNumber() * 1000))}
                         release={item}
                         priority={true}
                       />
