@@ -14,7 +14,6 @@ import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
-import Dots from "./Dots";
 const ContentTileView = dynamic(() => import("./ContentTileView"));
 
 const HubComponent = ({hubPubkey}) => {
