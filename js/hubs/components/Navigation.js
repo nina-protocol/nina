@@ -144,7 +144,7 @@ const Navigation = ({ hubPubkey }) => {
             {hubData && (
               <Image
                 loader={loader}
-                src={getImageFromCDN(hubData.json.image, 100, new Date(Date.parse(hub.datetime)))}
+                src={getImageFromCDN(hubData.json.image, 100, new Date(Date.parse(hubData.datetime)))}
                 height="50"
                 width="50"
                 alt="hub-logo"

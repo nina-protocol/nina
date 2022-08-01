@@ -945,7 +945,6 @@ const hubContextHelper = ({
           hubDict[hubs[i].id] = hub
         }
       })
-      console.log('hubs: ', hubs)
       for await (let hub of hubs) {
         hub.publicKey = hub.id
         hub.hubSigner = hubDict[hub.id].hubSigner.toBase58()

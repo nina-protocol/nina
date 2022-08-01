@@ -19,7 +19,6 @@ const ReleaseCard = (props) => {
   const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
     useContext(Audio.Context)
   const image = useMemo(() => metadata?.image)
-  console.log(metadata)
   return (
     <StyledReleaseCard>
       <StyledReleaseInfo>

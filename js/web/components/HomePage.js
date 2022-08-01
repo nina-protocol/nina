@@ -29,7 +29,6 @@ const HomePage = () => {
   }, [])
 
   useEffect(() => {
-    console.log(filterReleasesRecent())
     setReleasesRecent(filterReleasesRecent())
   }, [releasesRecentState])
 
