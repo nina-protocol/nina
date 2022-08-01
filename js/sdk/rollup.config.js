@@ -4,6 +4,14 @@ import { terser } from "rollup-plugin-terser";
 
 export default [
   {
+      external: [
+        '@project-serum/anchor',
+        'react',
+        'axios',
+        '@imgix/js-core',
+        'idb-keyval',
+        '@bundlr-network/client/build/web'
+      ],
       preserveModules: true,
       plugins: [
         babel({ 
@@ -11,7 +19,7 @@ export default [
             presets: ['@babel/env', '@babel/preset-react']
         }),
         commonjs(),
-        terser()
+        terser(),
     ],  
       input: {
           Audio: 'src/contexts/Audio/index.js',
@@ -31,6 +39,6 @@ export default [
               dir: 'cjs',
               format: 'cjs'
           }
-      ]
+      ],
   }
 ];

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState, useRef } from "react";
-import nina from "@nina-protocol/nina-sdk";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import { useWallet } from "@solana/wallet-adapter-react";

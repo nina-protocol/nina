@@ -24,6 +24,7 @@ export const HubContextProvider = ({ children }) => {
   const [hubsCount, setHubsCount] = useState(0)
   const [allHubs, setAllHubs] = useState([])
   const [featuredHubs, setFeaturedHubs] = useState([])
+  
   const {
     getHubs,
     getHub,

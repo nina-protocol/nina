@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
-import nina from "@nina-protocol/nina-sdk";
+import {HubContext} from "@nina-protocol/nina-sdk/esm/contexts/Hub/Hub";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import Modal from "@mui/material/Modal";

@@ -12,6 +12,8 @@
     "@babel/preset-react": "^7.18.6",
     "@bundlr-network/client": "^0.6.1",
     "@metaplex-foundation/mpl-token-metadata": "^1.2.4",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.3.0",
     "assert": "^2.0.0",
     "axios": "^0.26.0",
     "borsh": "^0.4.0",
@@ -40,8 +42,8 @@
     ]
   },
   "scripts": {
-    "build": "rm -rf cjs/ rm -rf esm && rollup --config",
-    "watch": "rm -rf dist/ && microbundle watch --no-compress --jsx React.createElement",
+    "build": "rm -rf cjs/ rm -rf esm && rollup -c",
+    "watch": "rm -rf cjs/ rm -rf esm && rollup -c -w",
     "lint": "eslint ./ --ignore-path ./.gitignore",
     "lint:fix": "yarn lint -- --fix",
     "format": "prettier -l .",
