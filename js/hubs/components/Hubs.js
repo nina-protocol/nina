@@ -8,8 +8,6 @@ import Link from "@mui/material/Link";
 import Head from "next/head";
 import { styled } from "@mui/material/styles";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { useRouter } from "next/router";
-
 
 import HubSlider from "./HubSlider";
 import {
@@ -24,7 +22,6 @@ const Hubs = () => {
     useContext(Hub.Context);
   const { npcAmountHeld } = useContext(Nina.Context);
   const [hubs, setHubs] = useState()
-  const router = useRouter();
   const wallet = useWallet();
 
   useEffect(() => {
@@ -55,15 +52,13 @@ const Hubs = () => {
   return (
     <>
       <Head>
-
         <link
           rel="stylesheet"
           type="text/css"
           href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
           media="print"
           // onLoad="this.media='all'"
-
-       />
+        />
         <link
           rel="stylesheet"
           type="text/css"
