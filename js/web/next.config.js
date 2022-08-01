@@ -28,6 +28,7 @@ const cluster = 'mainnet-beta'
 const IMGIX_URL = cluster === "devnet" 
   ? "nina-dev.imgix.net"
   : "nina.imgix.net"
+const NEXT_PUBLIC_IMGIX_TOKEN = cluster === "devnet" ? process.env.NEXT_PUBLIC_IMGIX_TOKEN_DEV : process.env.NEXT_PUBLIC_IMGIX_TOKEN
 const moduleExports = withTM({
   distDir: './build',
   webpack5: true,
@@ -66,6 +67,7 @@ const moduleExports = withTM({
   },
   env: {
     IMGIX_URL,
+    NEXT_PUBLIC_IMGIX_TOKEN,
     REACT_APP_CLUSTER: cluster,
     INDEXER_URL:
       cluster === 'devnet'
