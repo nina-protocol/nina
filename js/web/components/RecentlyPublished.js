@@ -1,6 +1,6 @@
 import React from 'react'
 import { styled } from '@mui/material/styles'
-import nina from '@nina-protocol/nina-sdk'
+import { getImageFromCDN, loader } from '@nina-protocol/nina-sdk/esm/utils/imageManager'
 import Box from '@mui/material/Box'
 import Slider from 'react-slick'
 import { isMobile } from 'react-device-detect'
@@ -12,8 +12,6 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 import Dots from './Dots'
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
-const { getImageFromCDN, loader } = nina.utils.imageManager;
 
 const RecentlyPublished = (props) => {
   const { releases } = props

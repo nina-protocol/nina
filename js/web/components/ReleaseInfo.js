@@ -4,11 +4,9 @@ import Typography from '@mui/material/Typography'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Box from '@mui/material/Box'
-import nina from '@nina-protocol/nina-sdk'
+import Release from '@nina-protocol/nina-sdk/esm/Release'
 import RedeemableInitialize from './RedeemableInitialize.js'
 import Royalty from './Royalty.js'
-
-const { ReleaseContext } = nina.contexts
 
 const ReleaseInfo = (props) => {
   const {
@@ -19,7 +17,7 @@ const ReleaseInfo = (props) => {
     redeemables,
   } = props
 
-  const { releaseState } = useContext(ReleaseContext)
+  const { releaseState } = useContext(Release.Context)
   const [release, setRelease] = useState(releaseState.tokenData[releasePubkey])
 
   useEffect(() => {

@@ -5,17 +5,17 @@ import Button from '@mui/material/Button'
 import Input from '@mui/material/Input'
 import Box from '@mui/material/Box'
 import { useWallet } from '@solana/wallet-adapter-react'
-import nina from '@nina-protocol/nina-sdk'
+import Nina from '@nina-protocol/nina-sdk/esm/Nina'
+import Exchange from '@nina-protocol/nina-sdk/esm/Exchange'
 import Dots from './Dots'
 
-const { ExchangeContext, NinaContext } = nina.contexts
 
 const BuySellForm = (props) => {
   const { onSubmit, isBuy, release, amount, setAmount } = props
 
   const wallet = useWallet()
-  const { exchangeInitPending } = useContext(ExchangeContext)
-  const { ninaClient } = useContext(NinaContext)
+  const { exchangeInitPending } = useContext(Exchange.Context)
+  const { ninaClient } = useContext(Nina.Context)
   const [pending, setPending] = useState(false)
   const [buyPending, setBuyPending] = useState(false)
   const [sellPending, setSellPending] = useState(false)

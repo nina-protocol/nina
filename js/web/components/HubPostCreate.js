@@ -6,7 +6,8 @@ import React, {
   useCallback,
 } from 'react'
 import * as Yup from 'yup'
-import nina from '@nina-protocol/nina-sdk'
+import Hub from '@nina-protocol/nina-sdk/esm/Hub'
+import Nina from '@nina-protocol/nina-sdk/esm/Nina'
 import { useSnackbar } from 'notistack'
 import { styled } from '@mui/material/styles'
 import Button from '@mui/material/Button'
@@ -31,8 +32,6 @@ import {
   uploadHasItemForType,
 } from '../utils/uploadManager'
 
-const { NinaContext, HubContext } = nina.contexts
-
 const PostCreateSchema = Yup.object().shape({
   title: Yup.string().required('Title is Required'),
   body: Yup.string().required('Body is Required'),
@@ -51,7 +50,7 @@ const HubPostCreate = ({
 }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const { postInitViaHub, hubState } = useContext(HubContext)
+  const { postInitViaHub, hubState } = useContext(Hub.Context)
   const hubData = useMemo(
     () => hubState[hubPubkey || selectedHubId],
     [hubState, hubPubkey, selectedHubId]
@@ -60,13 +59,11 @@ const HubPostCreate = ({
     bundlrUpload,
     bundlrBalance,
     getBundlrBalance,
-    bundlrFund,
-    bundlrWithdraw,
     getBundlrPricePerMb,
     bundlrPricePerMb,
     solPrice,
     getSolPrice,
-  } = useContext(NinaContext)
+  } = useContext(Nina.Context)
   const [uploadSize, setUploadSize] = useState()
   const [buttonText, setButtonText] = useState(
     update ? 'Update Post' : 'Create Post'

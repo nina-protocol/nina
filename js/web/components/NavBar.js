@@ -3,7 +3,8 @@ import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Tooltip from '@mui/material/Tooltip'
-import nina from '@nina-protocol/nina-sdk'
+import Hub from '@nina-protocol/nina-sdk/esm/Hub'
+import Nina from '@nina-protocol/nina-sdk/esm/Nina'
 import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
 import Link from 'next/link'
@@ -13,11 +14,10 @@ import {
   WalletMultiButton,
 } from '@solana/wallet-adapter-material-ui'
 import Breadcrumbs from './Breadcrumbs'
-const { NinaContext, HubContext } = nina.contexts
 
 const NavBar = () => {
-  const { healthOk } = useContext(NinaContext)
-  const {getHubsForuser, filterHubsForUser, getHubsForUser, hubState, getHubs } = useContext(HubContext)
+  const { healthOk } = useContext(Nina.Context)
+  const {getHubsForuser, filterHubsForUser, getHubsForUser, hubState, getHubs } = useContext(Hub.Context)
   const wallet = useWallet()
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),

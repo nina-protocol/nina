@@ -4,8 +4,7 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { useWallet } from '@solana/wallet-adapter-react'
-import nina from '@nina-protocol/nina-sdk'
-const { NinaContext } = nina.contexts
+import Nina from '@nina-protocol/nina-sdk/esm/Nina'
 
 const ExchangeListItem = (props) => {
   const {
@@ -17,7 +16,7 @@ const ExchangeListItem = (props) => {
     symbol,
     amount,
   } = props
-  const { ninaClient } = useContext(NinaContext)
+  const { ninaClient } = useContext(Nina.Context)
   const displayPrice = isSelling
     ? ninaClient.nativeToUiString(
         expectedAmount?.toNumber() || amount,

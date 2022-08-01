@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
-import nina from '@nina-protocol/nina-sdk'
+import { formatPlaceholder } from '@nina-protocol/nina-sdk/esm/utils'
+import Release from '@nina-protocol/nina-sdk/esm/Release'
 import { withFormik, Form, Field } from 'formik'
 import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
@@ -8,12 +9,8 @@ import Box from '@mui/material/Box'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
-import { useQuill } from 'react-quilljs'
 import 'quill/dist/quill.snow.css'
 import Quill from './Quill'
-
-const { formatPlaceholder } = nina.utils
-const { ReleaseContext } = nina.contexts
 
 const HubPostCreateForm = ({
   field,
@@ -30,7 +27,7 @@ const HubPostCreateForm = ({
   hubReleasesToReference,
   preloadedRelease,
 }) => {
-  const { releaseState } = useContext(ReleaseContext)
+  const { releaseState } = useContext(Release.Context)
 
   useEffect(() => {
     if (onChange) {

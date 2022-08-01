@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext, useRef } from 'react'
 import debounce from 'lodash.debounce'
 import Head from 'next/head'
 import { styled } from '@mui/material/styles'
-import {Context as ReleaseContext} from '@nina-protocol/nina-sdk/esm/Release'
+import Release from '@nina-protocol/nina-sdk/esm/Release'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import { isMobile } from 'react-device-detect'
@@ -19,7 +19,7 @@ const Releases = () => {
     allReleases,
     allReleasesCount,
     searchResults,
-  } = useContext(ReleaseContext)
+  } = useContext(Release.Context)
   const [listView, setListView] = useState(false)
   const [pendingFetch, setPendingFetch] = useState(false)
   const [totalCount, setTotalCount] = useState(null)

@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react'
 import Head from 'next/head'
 import { styled } from '@mui/material/styles'
-import nina from '@nina-protocol/nina-sdk'
+import Audio from '@nina-protocol/nina-sdk/esm/Audio'
+import Release from '@nina-protocol/nina-sdk/esm/Release'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -12,12 +13,10 @@ import ScrollablePageWrapper from './ScrollablePageWrapper'
 import ReleaseTileList from './ReleaseTileList'
 import Link from 'next/link'
 
-const { AudioPlayerContext, ReleaseContext } = nina.contexts
-
 const Releases = ({ type }) => {
+  const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { getReleasesRecent, filterReleasesRecent, releasesRecentState } =
-    useContext(ReleaseContext)
-  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext)
+    useContext(Release.Context)
   const [listView, setListView] = useState(false)
   const [releases, setReleases] = useState([])
   const { enqueueSnackbar } = useSnackbar()

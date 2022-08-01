@@ -6,7 +6,8 @@ import React, {
   useCallback,
 } from 'react'
 import * as Yup from 'yup'
-import nina from '@nina-protocol/nina-sdk'
+import Nina from '@nina-protocol/nina-sdk/esm/Nina'
+import Release from '@nina-protocol/nina-sdk/esm/Release'
 import { useSnackbar } from 'notistack'
 import { styled } from '@mui/material/styles'
 import Button from '@mui/material/Button'
@@ -32,7 +33,6 @@ import {
   uploadHasItemForType,
 } from '../utils/uploadManager'
 const BundlrModal = dynamic(() => import('./BundlrModal'))
-const { ReleaseContext, NinaContext, HubContext } = nina.contexts
 
 const ReleaseCreateSchema = Yup.object().shape({
   artist: Yup.string().required('Artist is Required'),
@@ -52,8 +52,7 @@ const ReleaseCreate = () => {
     initializeReleaseAndMint,
     releaseCreateMetadataJson,
     releaseCreate,
-  } = useContext(ReleaseContext)
-  const { hubState } = useContext(HubContext)
+  } = useContext(Release.Context)
   const router = useRouter()
   const {
     bundlrUpload,
@@ -65,7 +64,7 @@ const ReleaseCreate = () => {
     getSolPrice,
     getNpcAmountHeld,
     npcAmountHeld,
-  } = useContext(NinaContext)
+  } = useContext(Nina.Context)
 
   const [track, setTrack] = useState(undefined)
   const [artwork, setArtwork] = useState()

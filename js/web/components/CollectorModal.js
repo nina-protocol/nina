@@ -6,16 +6,15 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
 import { useWallet } from '@solana/wallet-adapter-react'
-import nina from '@nina-protocol/nina-sdk'
+import Nina from '@nina-protocol/nina-sdk/esm/Nina'
+import Release from '@nina-protocol/nina-sdk/esm/Release'
 import Link from 'next/link'
-
-const { ReleaseContext, NinaContext } = nina.contexts
 
 const CollectorModal = (props) => {
   const { releasePubkey, metadata } = props
   const wallet = useWallet()
-  const { collection } = useContext(NinaContext)
-  const { getCollectorsForRelease } = useContext(ReleaseContext)
+  const { collection } = useContext(Nina.Context)
+  const { getCollectorsForRelease } = useContext(Release.Context)
   const [open, setOpen] = useState(false)
   const [collectors, setCollectors] = useState()
   useEffect(() => {

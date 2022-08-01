@@ -4,13 +4,12 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import ExchangeListItem from './ExchangeListItem'
-import nina from '@nina-protocol/nina-sdk'
+import Nina from '@nina-protocol/nina-sdk'
 
-const { NinaContext } = nina.contexts
 
 const ExchangeList = (props) => {
   let { list, onExchangeButtonAction, release, metadata, isBuy } = props
-  const { solPrice } = useContext(NinaContext)
+  const { solPrice } = useContext(Nina.Context)
 
   if (!list) {
     return (

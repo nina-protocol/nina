@@ -10,7 +10,10 @@ import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutli
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import { useWallet, useConnection } from '@solana/wallet-adapter-react'
-import nina from '@nina-protocol/nina-sdk'
+import Audio from '@nina-protocol/nina-sdk/esm/Audio'
+import Exchange from '@nina-protocol/nina-sdk/esm/Exchange'
+import Nina from '@nina-protocol/nina-sdk/esm/Nina'
+import Release from '@nina-protocol/nina-sdk/esm/Release'
 import Image from 'next/image'
 import BuySell from './BuySell'
 import ExchangeHistoryModal from './ExchangeHistoryModal'
@@ -27,8 +30,8 @@ const Exchange = (props) => {
   const wallet = useWallet()
   const connection = useConnection()
   const { enqueueSnackbar } = useSnackbar()
-  const { ninaClient } = useContext(NinaContext)
-  const { releaseState, getRelease } = useContext(ReleaseContext)
+  const { ninaClient } = useContext(Nina.Context)
+  const { releaseState, getRelease } = useContext(Release.Context)
   const {
     exchangeState,
     getExchangesForRelease,
@@ -40,9 +43,9 @@ const Exchange = (props) => {
     filterExchangeMatch,
     getExchangeHistoryForRelease,
     filterExchangeHistoryForRelease,
-  } = useContext(ExchangeContext)
+  } = useContext(Exchange.Context)
   const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
-    useContext(AudioPlayerContext)
+    useContext(Audio.Context)
 
   const [exchangeAwaitingConfirm, setExchangeAwaitingConfirm] =
     useState(undefined)

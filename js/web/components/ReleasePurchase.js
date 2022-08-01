@@ -7,19 +7,17 @@ import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
-import nina from '@nina-protocol/nina-sdk'
+import Exchange from '@nina-protocol/nina-sdk/esm/Exchange'
+import Nina from '@nina-protocol/nina-sdk/esm/Nina'
+import Release from '@nina-protocol/nina-sdk/esm/Release'
 import CollectorModal from './CollectorModal'
 import HubsModal from './HubsModal'
 import Dots from './Dots'
-import ReleaseSettings from './ReleaseSettings'
 import {unified} from "unified";
 import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
-
-
-const { ReleaseContext, NinaContext, ExchangeContext } = nina.contexts
 
 const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, router, relatedReleases } = props
@@ -32,13 +30,13 @@ const ReleasePurchase = (props) => {
     releaseState,
     getRelease,
     getPublishedHubForRelease,
-  } = useContext(ReleaseContext)
-  const { getAmountHeld, collection, ninaClient, usdcBalance } = useContext(NinaContext)
+  } = useContext(Release.Context)
+  const { getAmountHeld, collection, ninaClient, usdcBalance } = useContext(Nina.Context)
   const {
     exchangeState,
     filterExchangesForReleaseBuySell,
     getExchangesForRelease,
-  } = useContext(ExchangeContext)
+  } = useContext(Exchange.Context)
   const [release, setRelease] = useState(undefined)
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
   const [amountPendingBuys, setAmountPendingBuys] = useState(0)

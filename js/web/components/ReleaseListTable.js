@@ -1,6 +1,8 @@
 import React, { useState, useContext } from 'react'
 import { styled } from '@mui/material/styles'
-import nina from '@nina-protocol/nina-sdk'
+import Audio from '@nina-protocol/nina-sdk/esm/Audio'
+import Nina from '@nina-protocol/nina-sdk/esm/Nina'
+import { formatDuration } from '@nina-protocol/nina-sdk/esm/utils'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -18,8 +20,6 @@ import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutli
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import { useRouter } from 'next/router'
 
-const { AudioPlayerContext, NinaContext, ReleaseContext } = nina.contexts
-const { formatDuration } = nina.utils
 const descendingComparator = (a, b, orderBy) => {
   switch (orderBy) {
     case 'artist':
@@ -156,9 +156,8 @@ const EnhancedTableHead = (props) => {
 const ReleaseListTable = (props) => {
   const { releases, tableType, collectRoyaltyForRelease } = props
   const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
-    useContext(AudioPlayerContext)
-  const { ninaClient } = useContext(NinaContext)
-  const { releaseState } = useContext(ReleaseContext)
+    useContext(Audio.Context)
+  const { ninaClient } = useContext(Nina.Context)
   const router = useRouter()
 
   const [order, setOrder] = useState('asc')

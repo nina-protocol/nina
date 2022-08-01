@@ -1,6 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
-import nina from '@nina-protocol/nina-sdk'
+import Exchange from '@nina-protocol/nina-sdk/esm/Exchange'
+import Hub from '@nina-protocol/nina-sdk/esm/Hub'
+import Release from '@nina-protocol/nina-sdk/esm/Release'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
@@ -10,9 +12,7 @@ import ReleaseCard from './ReleaseCard'
 import ReleasePurchase from './ReleasePurchase'
 import Exchange from './Exchange'
 
-const { ExchangeContext, ReleaseContext, HubContext } = nina.contexts
-
-const Release = ({ metadataSsr }) => {
+const ReleaseComponent = ({ metadataSsr }) => {
   const router = useRouter()
   const releasePubkey = router.query.releasePubkey
 
@@ -22,10 +22,10 @@ const Release = ({ metadataSsr }) => {
     getRelease,
     getRelatedForRelease,
     filterRelatedForRelease,
-  } = useContext(ReleaseContext)
+  } = useContext(Release.Context)
   const { getExchangeHistoryForRelease, exchangeState } =
-    useContext(ExchangeContext)
-  const { getHubsForUser, filterHubsForUser, hubState } = useContext(HubContext)
+    useContext(Exchange.Context)
+  const { getHubsForUser, filterHubsForUser, hubState } = useContext(Hub.Context)
   const [relatedReleases, setRelatedReleases] = useState(null)
   const [userHubs, setUserHubs] = useState()
 
@@ -143,4 +143,4 @@ const ReleaseCtaWrapper = styled(Box)(({ theme }) => ({
   },
 }))
 
-export default Release
+export default ReleaseComponent
