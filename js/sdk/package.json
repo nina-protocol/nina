@@ -42,7 +42,7 @@
     ]
   },
   "scripts": {
-    "build": "rm -rf cjs/ rm -rf esm/ && rollup -c",
+    "build": "rm -rf cjs/ rm -rf esm/ && rollup -c --compact --minifyInternalImports",
     "watch": "rm -rf cjs/ rm -rf esm/ && rollup -c -w",
     "lint": "eslint ./ --ignore-path ./.gitignore",
     "lint:fix": "yarn lint -- --fix",
