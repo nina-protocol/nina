@@ -5,12 +5,8 @@ import {styled} from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-<<<<<<< HEAD
 import Dots from "./Dots";
-import UserReleasesPrompt from "./UserReleasesPrompt";
 
-=======
->>>>>>> c30a0ec662a24f0f5c5fa104e8f4b586d62a4715
 import {unified} from "unified";
 import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
