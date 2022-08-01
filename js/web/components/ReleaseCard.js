@@ -79,7 +79,7 @@ const ReleaseCard = (props) => {
       </StyledReleaseInfo>
 
       <Box>
-        {preview ? (
+        {preview && (
           <Image
             src={
               artwork?.meta.status === undefined ? '' : artwork.meta.previewUrl
@@ -90,12 +90,13 @@ const ReleaseCard = (props) => {
             width={350}
             priority={true}
           />
-        ) : (
+        )}
+        {!preview && metadata && (
           <Image
             height={350}
             width={350}
             layout="responsive"
-            src={getImageFromCDN(image, 600, new Date(Date.parse(metadata.properties.date)))}
+            src={getImageFromCDN(image, 400, new Date(Date.parse(metadata.properties.date)))}
             alt={metadata?.name}
             priority={true}
             loader={loader}
