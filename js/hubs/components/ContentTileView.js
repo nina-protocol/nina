@@ -299,6 +299,7 @@ const Tile = styled(Box)(({ theme }) => ({
   },
   [theme.breakpoints.down("md")]: {
     border: `none`,
+    boxSizing: "border-box",
     "&:hover": {
       border: `none`,
     },
@@ -316,13 +317,18 @@ const PostTile = styled(Box)(({ theme }) => ({
   paddingBottom: "calc(100% - 0px)",
   boxSizing: "border-box",
   '& .postInfo': {
-    height: '98%'
+    height: '98%',
+    [theme.breakpoints.down("md")]: {
+      height: '95%'
+    }
   },
   '& .hoverCard': {
     boxSizing: 'border-box'
   },
   [theme.breakpoints.down("md")]: {
     maxHeight: "272px",
+    boxSizing: "border-box",
+
   },
 }));
 
@@ -334,9 +340,11 @@ const HoverCard = styled(Box)(({ theme }) => ({
   boxSizing: 'content-box',
   border: `2px solid ${theme.palette.transparent}`,
   zIndex: 0,
-  '&.hoverBorder': {
-    "&:hover": {
-      border: `2px solid ${theme.palette.text.primary}`,
+  [theme.breakpoints.up("md")]: {
+    '&.hoverBorder': {
+      "&:hover": {
+        border: `2px solid ${theme.palette.text.primary}`,
+      },
     },
   },
   [theme.breakpoints.down("md")]: {
