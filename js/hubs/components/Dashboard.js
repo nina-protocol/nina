@@ -1,12 +1,11 @@
 import React, { useState, useContext, useMemo, useEffect } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Typography from "@mui/material/Typography";
-import nina from "@nina-protocol/nina-sdk";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import { useSnackbar } from "notistack";
 import { useRouter } from "next/router";
-
 import Grid from "@mui/material/Grid";
 import ReleaseCreateViaHub from "./ReleaseCreateViaHub";
 import HubOverview from "./HubOverview";
@@ -16,7 +15,6 @@ import HubPosts from "./HubPosts";
 import HubCollaborators from "./HubCollaborators";
 import HubReleases from "./HubReleases";
 
-const { HubContext } = nina.contexts;
 // const {toTitleCase} = nina.utils;
 
 const toTitleCase = (text) => {
@@ -30,7 +28,7 @@ const Dashboard = ({ hubPubkey }) => {
   const wallet = useWallet();
   const router = useRouter();
   const { getHub, hubState, hubCollaboratorsState, hubContentState } =
-    useContext(HubContext);
+    useContext(Hub.Context);
 
   const actions = [
     "hubOverview",

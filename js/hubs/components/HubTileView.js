@@ -1,12 +1,12 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { styled } from '@mui/material/styles'
-import nina from '@nina-protocol/nina-sdk'
+import { imageManager } from "@nina-protocol/nina-sdk/src/utils";
 import { isMobile } from 'react-device-detect'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { Typography, Box } from '@mui/material'
-
-
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
+const { getImageFromCDN, loader } = imageManager
 const HubTileView = (props) => {
   const { hubs } = props
   const router = useRouter()
@@ -47,9 +47,10 @@ const HubTileView = (props) => {
                       top: '0',
                       zIndex: '1',
                     }}
-                    src={hub.json.image}
+                    loader={loader}
+                    src={getImageFromCDN(hub.json.image, 400, new Date(Date.parse(hub.datetime)))}
                     priority={!isMobile}
-                    unoptimized={true}
+                    alt={hub.handle}
                   />
                 )}
               </HoverCard>

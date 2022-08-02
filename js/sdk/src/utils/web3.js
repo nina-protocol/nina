@@ -1,28 +1,16 @@
 import * as anchor from '@project-serum/anchor'
-
-const {
-  PublicKey,
-  Keypair,
-  SystemProgram,
-  TransactionInstruction,
-  SYSVAR_RENT_PUBKEY,
-} = require('@solana/web3.js')
-const { Token } = require('@solana/spl-token')
-
 const BufferLayout = require('buffer-layout')
 
-const TokenInstructions = require('@project-serum/serum').TokenInstructions
-
-const WRAPPED_SOL_MINT_ID = new PublicKey(
+const WRAPPED_SOL_MINT_ID = new anchor.web3.PublicKey(
   'So11111111111111111111111111111111111111112'
 )
 
-export const TOKEN_PROGRAM_ID = new PublicKey(
-  TokenInstructions.TOKEN_PROGRAM_ID.toString()
+export const TOKEN_PROGRAM_ID = new anchor.web3.PublicKey(
+  anchor.utils.token.TOKEN_PROGRAM_ID.toString()
 )
 
-const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
-  'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+const ASSOCIATED_TOKEN_PROGRAM_ID = new anchor.web3.PublicKey(
+  anchor.utils.token.ASSOCIATED_PROGRAM_ID.toString()
 )
 
 export async function createMintInstructions(
@@ -31,20 +19,38 @@ export async function createMintInstructions(
   mint,
   decimals
 ) {
+  const tokenProgram = anchor.Spl.token(provider)
+  const systemProgram = anchor.Native.system(provider);
+  const mintSize = tokenProgram.coder.accounts.size(
+    tokenProgram.idl.accounts[0]
+  );
+
+  const mintRentExemption =
+    await provider.connection.getMinimumBalanceForRentExemption(mintSize);
+
   let instructions = [
-    SystemProgram.createAccount({
-      fromPubkey: provider.wallet.publicKey,
-      newAccountPubkey: mint,
-      space: 82,
-      lamports: await provider.connection.getMinimumBalanceForRentExemption(82),
-      programId: TOKEN_PROGRAM_ID,
-    }),
-    TokenInstructions.initializeMint({
-      mint,
+    await systemProgram.methods
+    .createAccount(
+      new anchor.BN(mintRentExemption),
+      new anchor.BN(mintSize),
+      tokenProgram.programId
+    )
+    .accounts({
+      from: authority,
+      to: mint,
+    })
+    .instruction(),
+    await tokenProgram.methods.initializeMint(
       decimals,
-      mintAuthority: authority,
-    }),
+      authority,
+      null
+    )
+    .accounts({
+      mint
+    })
+    .instruction()
   ]
+
   return instructions
 }
 
@@ -102,13 +108,13 @@ export const findOrCreateAssociatedTokenAccount = async (
         isWritable: false,
       },
       {
-        pubkey: SYSVAR_RENT_PUBKEY,
+        pubkey: anchor.web3.SYSVAR_RENT_PUBKEY,
         isSigner: false,
         isWritable: false,
       },
     ]
 
-    const ix = new TransactionInstruction({
+    const ix = new anchor.web3.TransactionInstruction({
       keys,
       programId: ASSOCIATED_TOKEN_PROGRAM_ID,
       data: Buffer.from([]),
@@ -174,7 +180,7 @@ export const getProgramAccounts = async (
     const results = response.map((result) => {
       try {
         let dataParsed = layout.decode(result.account.data.slice(8))
-        dataParsed.publicKey = new PublicKey(result.pubkey)
+        dataParsed.publicKey = new anchor.web3.PublicKey(result.pubkey)
         return dataParsed
       } catch (error) {
         console.warn('error :>> ', error)
@@ -234,38 +240,28 @@ export const apiPost = async (url, body, headers) => {
 }
 
 export const wrapSol = async (provider, amount) => {
-  const wrappedSolAccount = Keypair.generate()
+  const wrappedSolAccount = anchor.web3.Keypair.generate()
   const signers = [wrappedSolAccount]
   const instructions = []
   // Create new, rent exempt account.
   instructions.push(
-    SystemProgram.createAccount({
-      fromPubkey: provider.wallet.publicKey,
-      newAccountPubkey: wrappedSolAccount.publicKey,
-      lamports: await Token.getMinBalanceRentForExemptAccount(
-        provider.connection
-      ),
-      space: 165,
-      programId: TOKEN_PROGRAM_ID,
+    anchor.Spl.token(provider).methods.initializeAccount()
+    .accounts({
+      account: wrappedSolAccount.publicKey,
+      mint: WRAPPED_SOL_MINT_ID,
+      authority: provider.wallet.publicKey,
+      rent: anchor.web3.SYSVAR_RENT_PUBKEY
     })
+    .instruction()
   )
   // Transfer lamports. These will be converted to an SPL balance by the
   // token program.
   instructions.push(
-    SystemProgram.transfer({
+    anchor.web3.SystemProgram.transfer({
       fromPubkey: provider.wallet.publicKey,
       toPubkey: wrappedSolAccount.publicKey,
       lamports: amount.toNumber(),
     })
-  )
-  // Initialize the account.
-  instructions.push(
-    Token.createInitAccountInstruction(
-      TOKEN_PROGRAM_ID,
-      WRAPPED_SOL_MINT_ID,
-      wrappedSolAccount.publicKey,
-      provider.wallet.publicKey
-    )
   )
   return { instructions, signers }
 }

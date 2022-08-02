@@ -4,6 +4,7 @@ import React from 'react'
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 import createEmotionServer from '@emotion/server/create-instance'
 import createEmotionCache from '../createEmotionCache'
+import Script from 'next/script'
 // import {styled} from '@mui/material/styles'
 
 // const sheets = new ServerStyleSheets();
@@ -79,23 +80,10 @@ class MyDocument extends Document {
             href="/images/favicon-16x16.png"
           />
           <link rel="manifest" href="/site.webmanifest" />
-
-          <link
-            rel="stylesheet"
-            type="text/css"
-            href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
-          />
-          <link
-            rel="stylesheet"
-            type="text/css"
-            href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
-          />
-          <script src="https://cdn.dashjs.org/v3.2.1/dash.all.min.js" />
-          <script
-            async
+          <Script
             src="https://www.googletagmanager.com/gtag/js?id=G-VDD58V1D22"
           />
-          <script
+          <Script
             dangerouslySetInnerHTML={{
               __html: `
                 window.dataLayer = window.dataLayer || [];

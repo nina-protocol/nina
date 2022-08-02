@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext, useRef, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
-import nina from '@nina-protocol/nina-sdk'
-import { useWallet } from '@solana/wallet-adapter-react'
+import Audio from '@nina-protocol/nina-sdk/esm/Audio'
+import { formatDuration }  from '@nina-protocol/nina-sdk/esm/utils'
+import { imageManager }  from '@nina-protocol/nina-sdk/esm/utils'
 import Link from 'next/link'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -11,20 +12,13 @@ import IconButton from '@mui/material/IconButton'
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import PauseIcon from '@mui/icons-material/Pause'
-// import SvgIcon from '@mui/material/SvgIcon';
-// import VolumeUpIcon from '@mui/icons-material/VolumeUp'
-// import VolumeOffIcon from '@mui/icons-material/VolumeOff'
 import Typography from '@mui/material/Typography'
-import { useRouter } from 'next/router'
 import Image from 'next/image'
 import QueueDrawer from './QueueDrawer'
 
-const { AudioPlayerContext, NinaContext, ReleaseContext } = nina.contexts
-const { formatDuration } = nina.utils
+const { getImageFromCDN, loader } = imageManager
 const AudioPlayer = () => {
-  const router = useRouter()
-  const { releaseState } = useContext(ReleaseContext)
-  const audio = useContext(AudioPlayerContext)
+  const audio = useContext(Audio.Context)
   const {
     track,
     playNext,
@@ -208,11 +202,11 @@ const AudioPlayer = () => {
           <Link href={`/${track.releasePubkey}`} passHref>
             <AlbumArt>
               <Image
-                src={track.cover}
+                src={getImageFromCDN(track.cover, 100)}
+                loader={loader}
                 height="60px"
                 width="60px"
                 layout="responsive"
-                unoptimized={true}
               />
             </AlbumArt>
           </Link>

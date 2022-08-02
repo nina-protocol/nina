@@ -1,7 +1,9 @@
 import React, { useState, useContext, useEffect, useMemo } from "react";
 import axios from "axios";
 import { styled } from "@mui/material/styles";
-import nina from "@nina-protocol/nina-sdk";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-sdk/esm/Nina";
+import Release from "@nina-protocol/nina-sdk/esm/Release";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
@@ -10,9 +12,9 @@ import { useSnackbar } from "notistack";
 import Typography from "@mui/material/Typography";
 import { useRouter } from "next/router";
 import Dots from "./Dots";
-import ReleaseSettings from "./ReleaseSettings";
-import HubsModal from './HubsModal'
-const { ReleaseContext, NinaContext, HubContext } = nina.contexts;
+const HubsModal = dynamic(() => import("./HubsModal"));
+
+import dynamic from "next/dynamic";
 
 const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, inPost, hubPubkey } = props;
@@ -25,9 +27,9 @@ const ReleasePurchase = (props) => {
     releasePurchaseTransactionPending,
     releaseState,
     getPublishedHubForRelease,
-  } = useContext(ReleaseContext);
-  const { hubState } = useContext(HubContext)
-  const { getAmountHeld, collection, usdcBalance, ninaClient } = useContext(NinaContext);
+  } = useContext(Release.Context);
+  const { hubState } = useContext(Hub.Context)
+  const { getAmountHeld, collection, usdcBalance, ninaClient } = useContext(Nina.Context);
   const [release, setRelease] = useState(undefined);
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey]);
   const [downloadButtonString, setDownloadButtonString] = useState("Download");

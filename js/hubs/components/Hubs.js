@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import nina from "@nina-protocol/nina-sdk";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-sdk/esm/Nina";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import Head from "next/head";
 import Link from "next/link";
 import { styled } from "@mui/material/styles";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { useRouter } from "next/router";
 
 import HubSlider from "./HubSlider";
 import {
@@ -16,14 +17,11 @@ import {
   DashboardEntry,
 } from "../styles/theme/lightThemeOptions.js";
 
-const { HubContext, NinaContext } = nina.contexts;
-
 const Hubs = () => {
   const { getHubsForUser, hubState, filterHubsForUser, getHubs, filterFeaturedHubs } =
-    useContext(HubContext);
-  const { npcAmountHeld } = useContext(NinaContext);
+    useContext(Hub.Context);
+  const { npcAmountHeld } = useContext(Nina.Context);
   const [hubs, setHubs] = useState()
-  const router = useRouter();
   const wallet = useWallet();
 
   useEffect(() => {
@@ -33,7 +31,7 @@ const Hubs = () => {
   }, [])
 
   useEffect(() => {
-    if ((!hubs || hubs.length === 0) & Object.keys(hubState).length > 0) {
+    if ((!hubs || hubs.length === 0) && Object.keys(hubState).length > 0) {
       setHubs(filterFeaturedHubs())
     }
   }, [hubState])
@@ -53,6 +51,26 @@ const Hubs = () => {
 
   return (
     <>
+      <Head>
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
+          media="print"
+        />
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
+          media="print"
+        />
+        <title>{`Nina Hubs`}</title>
+        <meta
+          name="description"
+          content={`Hubs are a new way to publish, share, and discuss music. Apply for a Hub or connect your wallet to get started.`}
+        />
+        <meta name="og:type" content="website" />
+      </Head>
       <HubsContainer>
         <Box
           sx={{
@@ -82,14 +100,14 @@ const Hubs = () => {
                 >
                   Apply
                 </Link>{" "}
-                for a Hub or connect your wallet to get started.                
+                for a Hub or connect your wallet to get started.{"  "}             
                 <Link
                   href="https://www.notion.so/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612#c7abd525851545a199e06ecd14a16a15"
                   target="_blank"
                   rel="noreferrer"
                   passHref
                 >
-                  Learn More
+                Learn More
                 </Link>
                 .
               </BlueTypography>
@@ -160,6 +178,36 @@ const Hubs = () => {
                 </Box>
 
                 </DashboardContent>
+              )}
+              {userHubs?.length === 0 && npcAmountHeld > 0 && (
+                <DashboardContent item md={12}>
+                  <StyledLink
+                    href="/create"
+                  >
+                    <Button
+                      color="primary"
+                      variant="outlined"
+                      fullWidth
+                      type="submit"
+                    >
+                      Create a Hub
+                    </Button>
+                  </StyledLink>
+                  <StyledLink
+                    href="/all"
+                  >
+                    <Button
+                      color="primary"
+                      variant="outlined"
+                      fullWidth
+                      type="submit"
+                      sx={{mt: '15px'}}
+                    >
+                      Browse All Hubs
+                    </Button>
+                  </StyledLink>
+                </DashboardContent>
+
               )}
               {userHubs?.length > 0 && (
                 <DashboardWrapper

@@ -1,30 +1,54 @@
-import React, { useContext } from "react";
+import React from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import * as anchor from "@project-serum/anchor";
 import axios from "axios";
 const Post = dynamic(() => import("../../../../components/Post"));
-import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 
 const PostPage = (props) => {
   const { metadata, post, hub, postPubkey, hubPubkey } = props;
+
+  if (!hub) {
+    return (<></>)
+  }
   return (
     <>
       <Head>
         <title>{`${hub?.json.displayName}: ${post?.postContent.json.title}`}</title>
         <meta name="og:type" content="website" />
-        <meta
-          name="description"
-          content={`${metadata?.json.name || post.postContent.json.title}: ${metadata?.json.description || post.postContent.json.body} \n Published on ${hub?.json.displayName}.  Powered by Nina.`}
-        />
-        <meta
-          name="og:title"
-          content={`${metadata?.json.name} on ${hub.json.displayName}`}
-        />
-        <meta
-          name="og:description"
-          content={`${metadata?.json.name ? metadata?.json.name + ':' : ''} ${metadata?.json.description || post.postContent.json.body} \n Published on ${hub?.json.displayName}.  Powered by Nina.`}
-        />
+        {metadata && (
+          <>
+          <meta
+            name="description"
+            content={`${metadata?.json.name || post.postContent.json.title}: ${metadata?.json.description || post.postContent.json.body} \n Published on ${hub?.json.displayName}.  Powered by Nina.`}
+          />
+          <meta
+            name="og:title"
+            content={`${metadata?.json.name} on ${hub.json.displayName}`}
+          />
+          <meta
+            name="og:description"
+            content={`${metadata?.json.name ? metadata?.json.name + ':' : ''} ${metadata?.json.description || post.postContent.json.body} \n Published on ${hub?.json.displayName}.  Powered by Nina.`}
+          />
+          </>
+        )}
+
+        {!metadata && (
+          <>
+            <meta
+              name="description"
+              content={`${post.postContent.json.title} on ${hub?.json.displayName}`}
+            />
+            <meta
+              name="og:title"
+              content={`${post.postContent.json.title} on ${hub?.json.displayName}`}
+            />
+            <meta
+              name="og:description"
+              content={`${post.postContent.json.title} on ${hub?.json.displayName}`}
+            />
+          </>
+        )}
+
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@ninaprotocol" />
         <meta name="twitter:creator" content="@ninaprotcol" />
@@ -53,9 +77,25 @@ const PostPage = (props) => {
   );
 };
 
-PostPage.getInitialProps = async (context) => {
+export default PostPage;
+
+export const getStaticPaths = async () => {
+  return {
+    paths: [
+      {
+        params: {
+          hubPubkey: 'placeholder',
+          hubPostPubkey: "placeholder"
+        }
+      }
+    ],
+    fallback: 'blocking'
+  }
+}
+
+export const getStaticProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL;
-  const hubPostPubkey = context.query.hubPostPubkey;
+  const hubPostPubkey = context.params.hubPostPubkey;
   const indexerPath = indexerUrl + `/hubPosts/${hubPostPubkey}`;
 
   let hubPost;
@@ -68,7 +108,7 @@ PostPage.getInitialProps = async (context) => {
     const result = await axios.get(indexerPath);
     const data = result.data;
     if (data.hubPost) {
-      metadata = data.metadata;
+      metadata = data.metadata || null;
       hubPost = data.hubPost;
       post = hubPost.post;
       postPubkey = hubPost.postId;
@@ -76,17 +116,19 @@ PostPage.getInitialProps = async (context) => {
       hubPubkey = hubPost.hubId;
     }
     return {
-      metadata,
-      hubPostPubkey,
-      postPubkey,
-      post,
-      hub,
-      hubPubkey: hub.id,
+      props: {
+        metadata,
+        hubPostPubkey,
+        postPubkey,
+        post,
+        hub,
+        hubPubkey
+      },
+      revalidate: 10
     };
   } catch (error) {
     console.warn(error);
-    return {};
   }
+  return {props: {}};
 };
 
-export default PostPage;

@@ -2,15 +2,14 @@ import React, { useEffect, useState, useContext } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { styled } from '@mui/material/styles'
-import { Typography, Box } from '@mui/material'
-import nina from '@nina-protocol/nina-sdk'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
+import Release from '@nina-protocol/nina-sdk/esm/Release'
 import { useWallet } from '@solana/wallet-adapter-react'
-
-const { ReleaseContext } = nina.contexts
 
 const YourCollectionBreadcrumb = () => {
   const { releaseState, filterReleasesUserCollection } =
-    useContext(ReleaseContext)
+    useContext(Release.Context)
   const wallet = useWallet()
 
   const [userCollectionReleasesCount, setUserCollectionReleasesCount] =

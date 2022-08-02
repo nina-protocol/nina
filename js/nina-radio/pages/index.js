@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef, useContext } from 'react'
-import nina from "@nina-protocol/nina-sdk";
+import Release from "@nina-protocol/nina-sdk/esm/Release";
+import { formatDuration } from "@nina-protocol/nina-sdk/esm/utils";
 import axios from 'axios'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -9,8 +10,6 @@ import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import { styled } from "@mui/material/styles"
 import Dots from '../components/Dots'
-const { ReleaseContext } = nina.contexts
-const { formatDuration } = nina.utils
 
 export default function Home() {
   const playerRef = useRef()
@@ -26,7 +25,7 @@ export default function Home() {
   const hasNext = useRef(false)
   const activeIndexRef = useRef()
   const [related, setRelated] = useState([])
-  const { getRelatedForRelease, filterRelatedForRelease, releaseState } = useContext(ReleaseContext)
+  const { getRelatedForRelease, filterRelatedForRelease, releaseState } = useContext(Release.Context)
 
   useEffect(() => {
     playerRef.current = document.querySelector("#audio")

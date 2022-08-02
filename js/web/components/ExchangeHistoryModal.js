@@ -3,13 +3,13 @@ import { styled } from '@mui/material/styles'
 import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Box from '@mui/material/Box'
-import { Typography, Paper } from '@mui/material'
-import nina from '@nina-protocol/nina-sdk'
-const { NinaContext } = nina.contexts
+import Typography from '@mui/material/Typography'
+import Paper from '@mui/material/Paper'
+import Nina from '@nina-protocol/nina-sdk/esm/Nina'
 
 const ExchangeHistoryModal = (props) => {
   const { release, exchangeHistory } = props
-  const { ninaClient } = useContext(NinaContext)
+  const { ninaClient } = useContext(Nina.Context)
   const [open, setOpen] = useState(false)
 
   return (

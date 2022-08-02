@@ -1,20 +1,16 @@
 {
   "name": "@nina-protocol/nina-sdk",
-  "version": "0.0.34",
+  "version": "0.0.35",
   "files": [
-    "dist/**/*"
+    "cjs/*",
+    "esm/*"
   ],
-  "main": "./dist/index.js",
-  "module": "./dist/index.module.js",
-  "unpkg": "./dist/index.umd.js",
-  "exports": {
-    "require": "./dist/index.js",
-    "default": "./dist/index.modern.js"
-  },
+  "main": "cjs/index.js",
+  "module": "esm/index.js",
+  "default": "esm/index.js",
   "dependencies": {
     "@bundlr-network/client": "^0.6.1",
     "@metaplex-foundation/mpl-token-metadata": "^1.2.4",
-    "@project-serum/serum": "^0.13.61",
     "assert": "^2.0.0",
     "axios": "^0.26.0",
     "borsh": "^0.4.0",
@@ -29,9 +25,20 @@
     "process": "^0.11.10",
     "querystring": "^0.2.1"
   },
+  "sideEffects": false,
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-react",
+        {
+          "pure": true
+        }
+      ]
+    ]
+  },
   "scripts": {
-    "build": "rm -rf dist/ && microbundle --jsx React.createElement ",
-    "watch": "microbundle watch --no-compress --jsx React.createElement",
+    "build": "rm -rf cjs/ rm -rf esm/ && rollup -c --compact --minifyInternalExports",
+    "watch": "rm -rf cjs/ rm -rf esm/ && rollup -c -w",
     "lint": "eslint ./ --ignore-path ./.gitignore",
     "lint:fix": "yarn lint -- --fix",
     "format": "prettier -l .",
@@ -39,18 +46,24 @@
     "check-all": "yarn lint && yarn format"
   },
   "devDependencies": {
+    "@babel/preset-react": "^7.18.6",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.3.0",
     "@typescript-eslint/eslint-plugin": "^5.12.0",
     "@typescript-eslint/parser": "^5.12.0",
     "eslint-plugin-react": "^7.28.0",
     "microbundle": "^0.14.2",
-    "prettier": "^2.5.1"
+    "prettier": "^2.5.1",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-terser": "^7.0.2"
   },
   "peerDependencies": {
-    "@project-serum/anchor": "^0.24.2",
+    "@project-serum/anchor": "^0.25.0",
     "browserify-zlib": "^0.2.0",
     "crypto-browserify": "^3.12.0",
+    "notistack": "^1.0.6",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "notistack": "^1.0.6"
+    "react-dom": "^17.0.2"
   }
 }

@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { styled } from "@mui/material/styles";
-import nina from "@nina-protocol/nina-sdk";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-sdk/esm/Nina";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -12,10 +13,9 @@ import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import { visuallyHidden } from "@mui/utils";
 import Box from "@mui/material/Box";
-import { Fade } from "@mui/material";
+import Fade from "@mui/material/Fade";
 import { useRouter } from "next/router";
 
-const { NinaContext, HubContext } = nina.contexts;
 const descendingComparator = (a, b, orderBy) => {
   switch (orderBy) {
     case "artist":
@@ -143,8 +143,8 @@ const EnhancedTableHead = (props) => {
 
 const ReleaseListTable = (props) => {
   const { releases, tableType, hubPubkey, hubData } = props;
-  const { ninaClient } = useContext(NinaContext);
-  const { collectRoyaltyForReleaseViaHub } = useContext(HubContext);
+  const { ninaClient } = useContext(Nina.Context);
+  const { collectRoyaltyForReleaseViaHub } = useContext(Hub.Context);
   const router = useRouter();
 
   const [order, setOrder] = useState("asc");

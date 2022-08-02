@@ -1,22 +1,20 @@
 import { useContext, useState } from "react";
 import { useSnackbar } from "notistack";
-import nina from "@nina-protocol/nina-sdk";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
-import { Typography } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { styled } from "@mui/material/styles";
 
 import { useFormik } from "formik";
-const { HubContext } = nina.contexts;
 import { DashboardHeader } from "../styles/theme/lightThemeOptions.js";
 
 const CollaboratorPermissions = (props) => {
   const { hubPubkey, activeSelection, isAuthority, setActiveSelection } = props;
   const { enqueueSnackbar } = useSnackbar();
-  const { hubUpdateCollaboratorPermission } = useContext(HubContext);
+  const { hubUpdateCollaboratorPermission } = useContext(Hub.Context);
   const [unlimitedAllowance, setUnlimitAllowance] = useState(
     activeSelection.allowance === -1
   );

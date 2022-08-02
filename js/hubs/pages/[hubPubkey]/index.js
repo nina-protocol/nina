@@ -1,6 +1,6 @@
-import * as anchor from "@project-serum/anchor";
 import axios from "axios";
 import Head from "next/head";
+import {hrtime} from "process";
 import Hub from "../../components/Hub";
 
 const HubPage = (props) => {
@@ -27,32 +27,50 @@ const HubPage = (props) => {
         <meta name="twitter:description" content={hub?.json.description} />
 
         <meta name="twitter:image" content={hub?.json.image} />
-        <meta name="og:image" content={hub?.json.image} />
+        <meta name="og:image" content={hub?.json.image} />      
       </Head>
       <Hub hubPubkey={hubPubkey} />
     </>
   );
 };
 
-HubPage.getInitialProps = async (context) => {
-  const indexerUrl = process.env.INDEXER_URL;
-  const hubPubkey = context.query.hubPubkey;
-
-  const indexerPath = indexerUrl + `/hubs/${hubPubkey}`;
-  let hub;
-
-  try {
-    const result = await axios.get(indexerPath);
-    const data = result.data;
-    hub = result.data.hub;
-
-    return {
-      hub,
-      hubPubkey: hub.id,
-    };
-  } catch (error) {
-    console.warn(error);
-    return {};
-  }
-};
 export default HubPage;
+
+export const getStaticPaths = async () => {
+  return {
+    paths: [
+      {
+        params: {
+          hubPubkey: 'placeholder',
+        }
+      }
+    ],
+    fallback: 'blocking'
+  }
+}
+
+export const getStaticProps = async (context) => {
+  const indexerUrl = process.env.INDEXER_URL;
+  const hubPubkey = context.params.hubPubkey;
+  const indexerPath = indexerUrl + `/hubs/${hubPubkey}`;
+  
+  let hub;
+  if (hubPubkey && hubPubkey !== 'manifest.json') {
+    try {
+      const result = await axios.get(indexerPath);
+      const data = result.data;
+      hub = data.hub;
+  
+      return {
+        props: {
+          hub,
+          hubPubkey: hub.id,
+        },
+        revalidate: 10
+      };
+    } catch (error) {
+      console.warn(error);
+    }
+  }
+  return {props:{}};
+};

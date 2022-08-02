@@ -2,16 +2,15 @@ import React, { useEffect, useState, useContext, useRef } from 'react'
 import debounce from 'lodash.debounce'
 import Head from 'next/head'
 import { styled } from '@mui/material/styles'
-import nina from '@nina-protocol/nina-sdk'
-import { Typography, Box } from '@mui/material'
+import Release from '@nina-protocol/nina-sdk/esm/Release'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
 import { isMobile } from 'react-device-detect'
 import ReleaseListTable from './ReleaseListTable'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 import ReleaseTileList from './ReleaseTileList'
 import ReleaseSearch from './ReleaseSearch'
 import Dots from './Dots'
-
-const { ReleaseContext } = nina.contexts
 
 const Releases = () => {
   const {
@@ -20,7 +19,7 @@ const Releases = () => {
     allReleases,
     allReleasesCount,
     searchResults,
-  } = useContext(ReleaseContext)
+  } = useContext(Release.Context)
   const [listView, setListView] = useState(false)
   const [pendingFetch, setPendingFetch] = useState(false)
   const [totalCount, setTotalCount] = useState(null)

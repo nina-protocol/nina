@@ -1,21 +1,22 @@
 import React, { useContext } from 'react'
 import { styled } from '@mui/material/styles'
-import nina from '@nina-protocol/nina-sdk'
+import Audio from '@nina-protocol/nina-sdk/esm/Audio'
+import { imageManager } from '@nina-protocol/nina-sdk/src/utils'
 import Image from 'next/image'
 import { isMobile } from 'react-device-detect'
 import { useRouter } from 'next/router'
-import { Typography, Box } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Button from '@mui/material/Button'
 
-const { AudioPlayerContext } = nina.contexts
-
+const { getImageFromCDN, loader } = imageManager
 const ReleaseTileList = (props) => {
   const { releases } = props
   const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
-    useContext(AudioPlayerContext)
+    useContext(Audio.Context)
 
   const router = useRouter()
 
@@ -84,9 +85,9 @@ const ReleaseTileList = (props) => {
                       top: '0',
                       zIndex: '1',
                     }}
-                    src={release.metadata.image}
+                    src={getImageFromCDN(release.metadata.image, 400, new Date(Date.parse(release.metadata.properties.date)))}
                     priority={!isMobile}
-                    unoptimized={true}
+                    loader={loader}
                   />
                 )}
               </HoverCard>

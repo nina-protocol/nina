@@ -1,12 +1,11 @@
 import * as anchor from '@project-serum/anchor'
-import { TokenInstructions } from '@project-serum/serum'
 
 export const NINA_CLIENT_IDS = {
   'mainnet-beta': {
     programs: {
       nina: 'ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4',
       metaplex: 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-      token: TokenInstructions.TOKEN_PROGRAM_ID.toString(),
+      token: anchor.utils.token.TOKEN_PROGRAM_ID.toString(),
     },
     accounts: {
       vault: '53ueyguZx5bHjgHQdU1EcoLkcupAt97wVbcYeAi6iAYy',
@@ -24,7 +23,7 @@ export const NINA_CLIENT_IDS = {
     programs: {
       nina: '77BKtqWTbTRxj5eZPuFbeXjx3qz4TTHoXRnpCejYWiQH',
       metaplex: 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
-      token: TokenInstructions.TOKEN_PROGRAM_ID.toString(),
+      token: anchor.utils.token.TOKEN_PROGRAM_ID.toString(),
     },
     accounts: {
       vault: 'AzhSWZCtvfRkzGzzAhPxzrvBcMBcYGKp2rwCh17hARhi',

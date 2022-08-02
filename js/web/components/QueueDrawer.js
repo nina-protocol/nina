@@ -1,18 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { styled } from '@mui/material/styles'
-import nina from '@nina-protocol/nina-sdk'
+import Audio from '@nina-protocol/nina-sdk/esm/Audio'
 import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
-import { useWallet } from '@solana/wallet-adapter-react'
 import Typography from '@mui/material/Typography'
 import QueueList from './QueueList'
-const { AudioPlayerContext } = nina.contexts
 
 const QueueDrawer = (props) => {
-  const { track, updateTrack, playlist, reorderPlaylist, currentIndex } =
-    useContext(AudioPlayerContext)
-  const wallet = useWallet()
+  const { track, playlist, currentIndex } =
+    useContext(Audio.Context)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [nextInfo, setNextInfo] = useState()

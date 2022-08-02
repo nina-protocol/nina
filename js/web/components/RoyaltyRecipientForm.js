@@ -3,17 +3,18 @@ import { styled } from '@mui/material/styles'
 import { useSnackbar } from 'notistack'
 import { Formik, Field, Form } from 'formik'
 import Button from '@mui/material/Button'
-import { TextField, Typography, Box } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
+import TextField from '@mui/material/TextField'
 import Slider from '@mui/material/Slider'
-import nina from '@nina-protocol/nina-sdk'
-const { ReleaseContext } = nina.contexts
-const { formatPlaceholder } = nina.utils
+import Release from '@nina-protocol/nina-sdk/esm/Release'
+import { formatPlaceholder } from '@nina-protocol/nina-sdk/esm/utils'
 
 const RoyaltyRecipientForm = (props) => {
   const { release, userShare, setUserDisplayShare, releasePubkey, toggleForm } =
     props
   const { enqueueSnackbar } = useSnackbar()
-  const { addRoyaltyRecipient } = useContext(ReleaseContext)
+  const { addRoyaltyRecipient } = useContext(Release.Context)
 
   const handleDisplayPercent = (value) => {
     const sending = parseInt(value)

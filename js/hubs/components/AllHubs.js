@@ -1,25 +1,14 @@
 import React, { useContext, useEffect, useMemo, useState, useRef } from "react";
-import nina from "@nina-protocol/nina-sdk";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
-import Link from "@mui/material/Link";
 import { styled } from "@mui/material/styles";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { useRouter } from "next/router";
-import Dots from "./Dots";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
-import Image from "next/image";
 import Head from "next/head";
 import debounce from 'lodash.debounce'
 import HubTileView from "./HubTileView";
 
-const { HubContext } = nina.contexts;
-
-const Hubs = () => {
-  const { getHubs, hubState, hubsCount } = useContext(HubContext);
-  const wallet = useWallet();
+const AllHubs = () => {
+  const { getHubs, hubState, hubsCount } = useContext(Hub.Context);
   const [pendingFetch, setPendingFetch] = useState(false)
   const [totalCount, setTotalCount] = useState(null)
   const scrollRef = useRef()
@@ -90,4 +79,4 @@ const AllHubsWrapper = styled(Box)(({ theme }) => ({
 }));
 
 
-export default Hubs;
+export default AllHubs;

@@ -1,18 +1,17 @@
 import React, { useState, useContext, useMemo } from 'react'
-import nina from '@nina-protocol/nina-sdk'
+import Nina from '@nina-protocol/nina-sdk/esm/Nina'
 import { styled } from '@mui/material/styles'
-import { Paper } from '@mui/material'
+import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import AutorenewIcon from '@mui/icons-material/Autorenew'
-const { NinaContext } = nina.contexts
 
 const UploadInfoModal = ({ userHasSeenUpdateMessage }) => {
   const [open, setOpen] = useState(userHasSeenUpdateMessage ? false : true)
-  const { bundlrPricePerMb } = useContext(NinaContext)
+  const { bundlrPricePerMb } = useContext(Nina.Context)
 
   const mbPerTenthSol = useMemo(() => {
     return 0.1 / bundlrPricePerMb

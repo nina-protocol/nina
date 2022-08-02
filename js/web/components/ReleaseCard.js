@@ -1,28 +1,24 @@
 import React, { useContext, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
-import nina from '@nina-protocol/nina-sdk'
+import Audio from '@nina-protocol/nina-sdk/esm/Audio'
+import { imageManager } from '@nina-protocol/nina-sdk/src/utils'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
-import { Typography } from '@mui/material'
-import { Fade } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import Fade from '@mui/material/Fade'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Image from 'next/image'
 
-import { useSnackbar } from 'notistack'
 import AddToHubModal from './AddToHubModal.js'
-
-const { AudioPlayerContext, ReleaseContext, HubContext } = nina.contexts
+const { getImageFromCDN, loader } = imageManager
 
 const ReleaseCard = (props) => {
   const { artwork, metadata, preview, releasePubkey, userHubs } = props
   const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
-    useContext(AudioPlayerContext)
-  const { releaseState } = useContext(ReleaseContext)
+    useContext(Audio.Context)
   const image = useMemo(() => metadata?.image)
-  const { enqueueSnackbar } = useSnackbar()
-
   return (
     <StyledReleaseCard>
       <StyledReleaseInfo>
@@ -83,7 +79,7 @@ const ReleaseCard = (props) => {
       </StyledReleaseInfo>
 
       <Box>
-        {preview ? (
+        {preview && (
           <Image
             src={
               artwork?.meta.status === undefined ? '' : artwork.meta.previewUrl
@@ -93,17 +89,17 @@ const ReleaseCard = (props) => {
             height={350}
             width={350}
             priority={true}
-            unoptimized={true}
           />
-        ) : (
+        )}
+        {!preview && metadata && (
           <Image
             height={350}
             width={350}
             layout="responsive"
-            src={image}
+            src={getImageFromCDN(image, 400, new Date(Date.parse(metadata.properties.date)))}
             alt={metadata?.name}
             priority={true}
-            unoptimized={true}
+            loader={loader}
           />
         )}
       </Box>

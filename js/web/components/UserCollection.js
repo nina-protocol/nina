@@ -1,9 +1,12 @@
 import React, { useEffect, useState, useContext } from 'react'
 import Head from 'next/head'
-import nina from '@nina-protocol/nina-sdk'
+import Audio from '@nina-protocol/nina-sdk/esm/Audio'
+import Nina from '@nina-protocol/nina-sdk/esm/Nina'
+import Release from '@nina-protocol/nina-sdk/esm/Release'
 import { styled } from '@mui/material/styles'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { Typography, Box } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import ShareIcon from '@mui/icons-material/Share'
 import Button from '@mui/material/Button'
@@ -12,22 +15,20 @@ import ReleaseListTable from './ReleaseListTable'
 import ReleaseTileList from './ReleaseTileList'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 
-const { AudioPlayerContext, ReleaseContext, NinaContext } = nina.contexts
-
 const ReleaseList = ({ userId }) => {
   const { enqueueSnackbar } = useSnackbar()
-  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext)
+  const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const {
     getReleasesInCollection,
     filterReleasesUserCollection,
     releaseState,
     getUserCollection,
     filterReleasesList,
-  } = useContext(ReleaseContext)
+  } = useContext(Release.Context)
   const [listView, setListView] = useState(false)
 
   const wallet = useWallet()
-  const { collection, createCollection } = useContext(NinaContext)
+  const { collection, createCollection } = useContext(Nina.Context)
   const [userCollectionReleases, setUserCollectionReleases] =
     useState(undefined)
   const [userCollectionList, setUserCollectionList] = useState(undefined)

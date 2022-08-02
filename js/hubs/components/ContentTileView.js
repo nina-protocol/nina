@@ -1,6 +1,9 @@
 import React, { useContext, useState, useMemo, useEffect } from "react";
 import { styled } from "@mui/material/styles";
-import nina from "@nina-protocol/nina-sdk";
+import Audio from "@nina-protocol/nina-sdk/esm/Audio";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Release from "@nina-protocol/nina-sdk/esm/Release";
+import { imageManager } from "@nina-protocol/nina-sdk/esm/utils";
 import Image from "next/image";
 import { isMobile } from 'react-device-detect'
 import { useRouter } from "next/router";
@@ -9,30 +12,22 @@ import Box from "@mui/material/Box";
 import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import Button from "@mui/material/Button";
-import Link from "next/link";
 import AutorenewTwoToneIcon from "@mui/icons-material/AutorenewTwoTone";
-
-import FormatBoldIcon from "@mui/icons-material/FormatBold";
-import FormatItalicIcon from "@mui/icons-material/FormatItalic";
-import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
-import FormatColorFillIcon from "@mui/icons-material/FormatColorFill";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-
-const { AudioPlayerContext, HubContext, ReleaseContext } = nina.contexts;
+const { getImageFromCDN, loader } = imageManager
 
 const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
-  const { updateTrack, setInitialized, audioPlayerRef, isPlaying, track } = useContext(AudioPlayerContext);
-  const { hubState } = useContext(HubContext);
-  const { releaseState } = useContext(ReleaseContext);
+  const { updateTrack, setInitialized, audioPlayerRef, isPlaying, track } = useContext(Audio.Context);
+  const { hubState } = useContext(Hub.Context);
+  const { releaseState } = useContext(Release.Context);
   const [columnCount, setColumnCount] = useState(3);
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const router = useRouter();
 
   const [displayType, setDisplayType] = useState("all");
   const [filteredContent, setFilteredContent] = useState(content);
-
+  
   useEffect(() => {
     let filtered;
     switch (displayType) {
@@ -122,7 +117,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
         </StyledButtonGroup>
       )}
       <TileGrid columnCount={columnCount}>
-        {filteredContent.map((item, i) => {
+        {filteredContent.map((item, i) => {          
           return (
             <React.Fragment key={i}>
               {item?.contentType === "NinaReleaseV1" && (
@@ -167,13 +162,13 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                     </CardCta>
                     {item.image && (
                       <Image
+                        loader={loader}
                         width={100}
                         height={100}
                         layout="responsive"
-                        src={item?.image}
+                        src={getImageFromCDN(item.image, 400, new Date(releaseState.tokenData[item.release].releaseDatetime.toNumber() * 1000))}
                         release={item}
                         priority={true}
-                        unoptimized={true}
                       />
                     )}
                   </HoverCard>
@@ -239,13 +234,13 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                     </CardCta>
                     {item.releaseMetadata?.image && (
                       <Image
+                        loader={loader}
                         width={100}
                         height={100}
                         layout="responsive"
-                        src={item.releaseMetadata?.image}
+                        src={getImageFromCDN(item.releaseMetadata?.image, isMobile ? 100 : 400)}
                         release={item.referenceContent}
-                        priority={!isMobile}
-                        unoptimized={true}
+                        priority={true}
                       />
                     )}
                   </HoverCard>

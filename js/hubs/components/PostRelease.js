@@ -1,6 +1,9 @@
 import React, { useState, useContext, useEffect, useMemo, useRef } from "react";
 import dynamic from "next/dynamic";
-import nina from "@nina-protocol/nina-sdk";
+import Audio from "@nina-protocol/nina-sdk/esm/Audio";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Release from "@nina-protocol/nina-sdk/esm/Release";
+import { imageManager } from "@nina-protocol/nina-sdk/esm/utils"
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -11,25 +14,23 @@ import Typography from "@mui/material/Typography";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import { useWallet } from "@solana/wallet-adapter-react";
-
+const { getImageFromCDN, loader } = imageManager
 const ReleasePurchase = dynamic(() => import("./ReleasePurchase"));
 const AddToHubModal = dynamic(() => import("./AddToHubModal"));
-
-const { HubContext, ReleaseContext, AudioPlayerContext } = nina.contexts;
 
 const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
   const router = useRouter();
   const wallet = useWallet();
 
-  const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } = useContext(AudioPlayerContext);
-  const { releaseState, getRelease } = useContext(ReleaseContext);
+  const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } = useContext(Audio.Context);
+  const { releaseState, getRelease } = useContext(Release.Context);
   const {
     getHub,
     hubState,
     getHubsForUser,
     filterHubsForUser,
     hubCollaboratorsState,
-  } = useContext(HubContext);
+  } = useContext(Hub.Context);
 
   const [userHubs, setUserHubs] = useState();
 
@@ -72,17 +73,17 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
   return (
     <>
       <DesktopImageGridItem item md={6}>
-        {metadata && (
+        {metadata && metadata.image && (
           <ImageContainer>
             <Image
-              src={metadata?.image}
+              src={getImageFromCDN(metadata.image, 600)}
+              loader={loader}
               layout="responsive"
               objectFit="contain"
               height="100"
               width="100"
               objectPosition={"right bottom"}
               alt={metadata.description || "album art"}
-              unoptimized={true}
             />
           </ImageContainer>
         )}
@@ -95,18 +96,18 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
           padding: "0px",
         }}
       >
-        {metadata && (
+        {metadata && metadata.image &&(
           <>
             <MobileImageWrapper>
               <Image
-                src={metadata?.image}
+                src={getImageFromCDN(metadata.image, 600)}
+                loader={loader}
                 layout="responsive"
                 objectFit="contain"
                 objectPosition={"center"}
                 height={100}
                 width={100}
                 alt={metadata.description || "album art"}
-                unoptimized={true}
               />
             </MobileImageWrapper>
             <CtaWrapper>

@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { Helmet } from 'react-helmet'
-import nina from '@nina-protocol/nina-sdk'
+import Audio from '@nina-protocol/nina-sdk/esm/Audio'
+import Release from '@nina-protocol/nina-sdk/esm/Release'
 import { styled } from '@mui/material/styles'
-import { Typography, Box } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import Button from '@mui/material/Button'
 import { useSnackbar } from 'notistack'
@@ -10,12 +12,11 @@ import ReleaseListTable from './ReleaseListTable'
 import ReleaseTileList from './ReleaseTileList'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 
-const { ReleaseContext, AudioPlayerContext } = nina.contexts
 
 const ReleaseRelated = ({ releasePubkey }) => {
   const { getRelatedForRelease, filterRelatedForRelease, releaseState } =
-    useContext(ReleaseContext)
-  const { resetQueueWithPlaylist } = useContext(AudioPlayerContext)
+    useContext(Release.Context)
+  const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const [listView, setListView] = useState(false)
   const [relatedReleases, setRelatedReleases] = useState(null)
   const [userHandles, setUserHandles] = useState(null)

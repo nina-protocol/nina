@@ -1,13 +1,12 @@
-import React, { useContext } from "react";
+import React from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import * as anchor from "@project-serum/anchor";
 import axios from "axios";
 const Release = dynamic(() => import("../../../../components/Release"));
-import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 
 const ReleasePage = (props) => {
   const { metadata, hub, releasePubkey, hubPubkey } = props;
+
   return (
     <>
       <Head>
@@ -47,10 +46,25 @@ const ReleasePage = (props) => {
   );
 };
 
-ReleasePage.getInitialProps = async (context) => {
+export default ReleasePage;
+
+export const getStaticPaths = async () => {
+  return {
+    paths: [
+      {params: {
+        hubPubkey: 'placeholder',
+        hubReleasePubkey: "placeholder"
+      }}
+    ],
+    fallback: 'blocking'
+  }
+}
+
+export const getStaticProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL;
-  const hubReleasePubkey = context.query.hubReleasePubkey;
+  const hubReleasePubkey = context.params.hubReleasePubkey;
   const indexerPath = indexerUrl + `/hubReleases/${hubReleasePubkey}`;
+
 
   let hubRelease;
   let release;
@@ -69,15 +83,18 @@ ReleasePage.getInitialProps = async (context) => {
       hub = hubRelease.hub;
       hubPubkey = hubRelease.hubId;
     }
+    return {
+      props: {
+        releasePubkey,
+        metadata,
+        hubPubkey,
+        hub
+      },
+      revalidate: 10
+    } 
   } catch (error) {
     console.warn(error);
   }
-  return {
-    releasePubkey,
-    metadata,
-    hubPubkey: hubRelease?.hubId,
-    hub
-  };
+  return {props: {}}
 };
 
-export default ReleasePage;

@@ -1,17 +1,15 @@
 import React, { useState, useEffect, useMemo, useContext } from "react";
-import dynamic from "next/dynamic";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import MenuItem from "@mui/material/MenuItem";
 import List from "@mui/material/List";
 import Box from "@mui/material/Box";
 import makeStyles from "@mui/styles/makeStyles";
 import { styled } from "@mui/material/styles";
-import nina from "@nina-protocol/nina-sdk";
-import { IconButton } from "@mui/material";
+import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import { imageManager } from '@nina-protocol/nina-sdk/esm/utils'
+import IconButton from "@mui/material/IconButton";
 import Drawer from "@mui/material/Drawer";
-
 import MenuIcon from "@mui/icons-material/Menu";
 
 import {
@@ -21,8 +19,7 @@ import {
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 import Image from "next/image";
-
-const { HubContext, NinaContext } = nina.contexts;
+const { getImageFromCDN, loader } = imageManager
 
 const navData = [
   {
@@ -58,7 +55,7 @@ const mobileNavData = [
 ];
 
 const Navigation = ({ hubPubkey }) => {
-  const { header, menuButton, toolbar, ctaWrapper, drawerContainer } =
+  const { toolbar, drawerContainer } =
     useStyles();
   const wallet = useWallet();
 
@@ -66,7 +63,7 @@ const Navigation = ({ hubPubkey }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const { hubState, hubCollaboratorsState, filterHubCollaboratorsForHub, getHubsForUser, filterHubsForUser } =
-    useContext(HubContext);
+    useContext(Hub.Context);
   const hubCollaborators = useMemo(
     () => filterHubCollaboratorsForHub(hubPubkey),
     [hubCollaboratorsState, hubPubkey]
@@ -146,11 +143,11 @@ const Navigation = ({ hubPubkey }) => {
           <LogoLinkWrapper>
             {hubData && (
               <Image
-                src={hubData.json.image}
+                loader={loader}
+                src={getImageFromCDN(hubData.json.image, 100, new Date(Date.parse(hubData.datetime)))}
                 height="50"
                 width="50"
-                alt="hub logo"
-                unoptimized={true}
+                alt="hub-logo"
               />
             )}
             {hubPubkey ? (

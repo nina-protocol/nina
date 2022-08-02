@@ -1,16 +1,13 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import { Box, Paper } from "@mui/material";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
 import Modal from "@mui/material/Modal";
 import Backdrop from "@mui/material/Backdrop";
 import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import nina from "@nina-protocol/nina-sdk";
-import { useSnackbar } from "notistack";
 import { HexColorPicker } from "react-colorful";
-
-const { NinaContext } = nina.contexts;
 
 const ColorModal = ({
   backgroundColor,
@@ -20,7 +17,6 @@ const ColorModal = ({
   colorReset,
 }) => {
   const [open, setOpen] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
 
   const handleCancel = () => {
     colorReset();
