@@ -26,7 +26,6 @@ const PostRelease = dynamic(() => import("./PostRelease"));
 
 const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
   const router = useRouter();
-  // const {updateTrack, track, isPlaying} = useContext(AudioPlayerContext);
   const [referenceReleasePubkey, setReferenceReleasePubkey] = useState();
   const [referenceReleaseMetadata, setReferenceReleaseMetadata] = useState();
   const [postContent, setPostContent] = useState(Fragment);

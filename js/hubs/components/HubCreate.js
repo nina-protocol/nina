@@ -440,7 +440,7 @@ const HubCreate = ({ update, hubData }) => {
           Updating {hubData.json.displayName}
         </Typography>
       )}
-      {!update && (
+      {!update && npcAmountHeld > 0 && (
         <Typography variant="h3" gutterBottom>
           Create Hub
         </Typography>
@@ -579,6 +579,7 @@ const HubCreate = ({ update, hubData }) => {
 };
 
 const StyledGrid = styled(Grid)(() => ({
+  paddingTop: '20px',
   maxHeight: '90vh',
   overflowY: 'scroll',
   justifyContent: 'center',

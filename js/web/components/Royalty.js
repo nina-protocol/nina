@@ -14,7 +14,6 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import Nina from '@nina-protocol/nina-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-sdk/esm/Release'
 import RoyaltyRecipientForm from './RoyaltyRecipientForm'
-const { NinaContext, ReleaseContext } = nina.contexts
 
 const Royalty = (props) => {
   const { release, releasePubkey } = props

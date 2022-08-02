@@ -28,7 +28,7 @@ const YourCollectionBreadcrumb = () => {
 
 const YourReleasesBreadcrumb = () => {
   const { releaseState, filterReleasesPublishedByUser } =
-    useContext(ReleaseContext)
+    useContext(Release.Context)
   const wallet = useWallet()
 
   const [userPublishedReleasesCount, setUserPublishedReleasesCount] =

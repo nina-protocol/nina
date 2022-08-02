@@ -35,10 +35,15 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     } else {
       setCollection({})
       setUsdcBalance(0)
+      setNpcAmountHeld(0)
+      setBundlrBalance(0.0)
     }
 
     return () => {
       setCollection({})
+      setUsdcBalance(0)
+      setNpcAmountHeld(0)
+      setBundlrBalance(0.0)
     }
   }, [provider.wallet.wallet, provider.wallet.publicKey])
 
