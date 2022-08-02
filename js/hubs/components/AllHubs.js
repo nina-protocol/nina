@@ -5,6 +5,7 @@ import { styled } from "@mui/material/styles";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
 import Head from "next/head";
 import debounce from 'lodash.debounce'
+import { isMobile } from 'react-device-detect'
 import HubTileView from "./HubTileView";
 
 const AllHubs = () => {
@@ -50,7 +51,7 @@ const AllHubs = () => {
       </Head>
       <ScrollablePageWrapper onScroll={debounce(() => handleScroll(), 500)} sx={{overflowY: "scroll"}}>
         <AllHubsWrapper ref={scrollRef}>
-          <HubTileView hubs={hubs.length > 0 ? filterHubsAll() : []} />
+          <HubTileView hubs={hubs.length > 0 ? (isMobile ? filterHubsAll().reverse() : filterHubsAll()) : []} />
         </AllHubsWrapper>
       </ScrollablePageWrapper>
     </>
