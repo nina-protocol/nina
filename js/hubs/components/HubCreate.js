@@ -440,7 +440,7 @@ const HubCreate = ({ update, hubData }) => {
           Updating {hubData.json.displayName}
         </Typography>
       )}
-      {!update && (
+      {!update && npcAmountHeld > 0 && (
         <Typography variant="h3" gutterBottom>
           Create Hub
         </Typography>
