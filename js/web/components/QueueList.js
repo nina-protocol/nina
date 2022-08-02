@@ -40,7 +40,7 @@ const QueueList = (props) => {
     removeTrackFromQueue,
     isPlaying,
     setIsPlaying,
-  } = useContext(AudioPlayerContext)
+  } = useContext(Audio.Context)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [playlistState, setPlaylistState] = useState(undefined)
   const [skipForReorder, setSkipForReorder] = useState(false)
