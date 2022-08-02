@@ -91,7 +91,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
   };
 
   return (
-    <Box position="relative" sx={{mr: '15px'}}>
+    <Box position="relative" sx={{mr: {md: '15px', xs: '0px'}}}>
       {contentTypes.length >= 2 && (
         <StyledButtonGroup
           exclusive
@@ -333,13 +333,14 @@ const HoverCard = styled(Box)(({ theme }) => ({
   paddingBottom: "100%",
   boxSizing: 'content-box',
   border: `2px solid ${theme.palette.transparent}`,
-  zIndex: 10,
+  zIndex: 0,
   '&.hoverBorder': {
     "&:hover": {
       border: `2px solid ${theme.palette.text.primary}`,
     },
   },
   [theme.breakpoints.down("md")]: {
+    boxSizing: 'inherit',
     minHeight: "144px",
   },
 }));
