@@ -392,7 +392,7 @@ const PostInfo = styled(Typography)(({ theme }) => ({
   position: "absolute",
   top: "0",
   left: "5px",
-  height: "93%",
+  height: "94%",
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
