@@ -579,6 +579,7 @@ const HubCreate = ({ update, hubData }) => {
 };
 
 const StyledGrid = styled(Grid)(() => ({
+  paddingTop: '20px',
   maxHeight: '90vh',
   overflowY: 'scroll',
   justifyContent: 'center',
