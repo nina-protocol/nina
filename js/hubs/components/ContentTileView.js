@@ -350,6 +350,7 @@ const HoverCard = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down("md")]: {
     boxSizing: 'inherit',
     minHeight: "144px",
+    cursor: 'pointer'
   },
 }));
 
