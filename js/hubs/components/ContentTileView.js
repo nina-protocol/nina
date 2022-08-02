@@ -268,7 +268,6 @@ const TileGrid = styled(Box)(({ theme, columnCount }) => ({
   marginTop: "1px",
   paddingRight: '4px',
   paddingBottom: "100px",
-  // border: '2px solid red',
   "&::-webkit-scrollbar": {
     display: "none",
   },
@@ -295,11 +294,6 @@ const Tile = styled(Box)(({ theme }) => ({
   width: "100%",
   position: "relative",
   boxSizing: 'content-box',
-  // paddingBottom: "calc(100% - 0px)",
-  // border: `2px solid ${theme.palette.transparent}`,
-  // "&:hover": {
-  //   border: `2px solid ${theme.palette.text.primary}`,
-  // },
   '&.postTile': {
     border: `2px solid ${theme.palette.text.primary}`,
   },
@@ -429,7 +423,6 @@ const StyledButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
     },
   },
   "& .Mui-selected ": {
-    // backgroundColor: 'none !important',
     backgroundColor: `${theme.palette.transparent} !important`,
     textDecortation: "underline !important",
   },
