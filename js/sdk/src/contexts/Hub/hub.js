@@ -18,6 +18,7 @@ const HubContextProvider = ({ children }) => {
   const [hubState, setHubState] = useState({})
   const [hubCollaboratorsState, setHubCollaboratorsState] = useState({})
   const [hubContentState, setHubContentState] = useState({})
+  const [hubContentFetched, setHubContentFetched] = useState(new Set())
   const [hubFeePending, setHubFeePending] = useState()
   const [initialLoad, setInitialLoad] = useState(false)
   const [addToHubQueue, setAddToHubQueue] = useState(new Set())
@@ -72,6 +73,8 @@ const HubContextProvider = ({ children }) => {
     setHubsCount,
     featuredHubs,
     setFeaturedHubs,
+    hubContentFetched,
+    setHubContentFetched
   })
 
   return (
@@ -105,7 +108,8 @@ const HubContextProvider = ({ children }) => {
         addToHubQueue,
         featuredHubs,
         filterFeaturedHubs,
-        filterHubsAll
+        filterHubsAll,
+        hubContentFetched
       }}
     >
       {children}
@@ -136,6 +140,8 @@ const hubContextHelper = ({
   setHubsCount,
   featuredHubs,
   setFeaturedHubs,
+  hubContentFetched,
+  setHubContentFetched
 }) => {
   const { ids, provider, endpoints } = ninaClient
 
@@ -871,6 +877,7 @@ const hubContextHelper = ({
       const result = await response.json()
       if (featured) {
         setFeaturedHubs(result.hubs.map(row => row.id))
+        saveHubsToState(result.hubs)
       } else {
         result.hubs.forEach((hub) => {
           if (!all.includes(hub.id)) {
@@ -878,8 +885,8 @@ const hubContextHelper = ({
           }
         })
         setAllHubs(all)
+        saveHubsToState(result.hubs)
       }
-      saveHubsToState(result.hubs.filter(hub => hub.hubReleases.length > 0 || hub.hubPosts.length > 0))
     } catch (error) {
       console.warn(error)
     }
@@ -906,15 +913,15 @@ const hubContextHelper = ({
     const response = await fetch(path)
     const result = await response.json()
     saveHubCollaboratorsToState(result.hubCollaborators)
-    saveHubContentToState(result.hubReleases, result.hubPosts)
+    saveHubContentToState(result.hubReleases, result.hubPosts, hubPubkey)
     saveHubsToState([result.hub])
   }
 
-  const getHubPost = async (hubPostPubkey) => {
+  const getHubPost = async (hubPostPubkey, hubPubkey) => {
     let path = endpoints.api + `/hubPosts/${hubPostPubkey}`
     const response = await fetch(path)
     const result = await response.json()
-    saveHubContentToState(result.hubReleases, result.hubPosts)
+    saveHubContentToState(result.hubReleases, result.hubPosts, hubPubkey)
   }
 
   const getHubsForUser = async (publicKey) => {
@@ -1004,7 +1011,7 @@ const hubContextHelper = ({
     }
   }
 
-  const saveHubContentToState = async (hubReleases, hubPosts) => {
+  const saveHubContentToState = async (hubReleases, hubPosts, hubPubkey) => {
     try {
       const program = await ninaClient.useProgram()
       let hubReleaseContentAccounts =
@@ -1091,8 +1098,10 @@ const hubContextHelper = ({
         hubReleases.map((hubRelease) => hubRelease.releaseId)
       )
       await savePostsToState(hubPosts.map((hubPost) => hubPost.post))
-
       setHubContentState(updatedState)
+      const updatedHubContentFetched = new Set(hubContentFetched)
+      updatedHubContentFetched.add(hubPubkey.toBase58())
+      setHubContentFetched(updatedHubContentFetched)
       if (!initialLoad) {
         setInitialLoad(true)
       }
