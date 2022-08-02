@@ -91,7 +91,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
   };
 
   return (
-    <Box position="relative">
+    <Box position="relative" sx={{mr: '15px'}}>
       {contentTypes.length >= 2 && (
         <StyledButtonGroup
           exclusive
@@ -123,6 +123,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
               {item?.contentType === "NinaReleaseV1" && (
                 <Tile className={"tile"} key={i}>
                   <HoverCard
+                    className="hoverBorder"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleClick(item.child);
@@ -179,8 +180,8 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
               )}
 
               {item.contentType === "Post" && (
-                <PostTile
-                  className={"tile"}
+                <Tile
+                  className={"tile postTile"}
                   key={i}
                   onClick={() => router.push(`/${hubHandle}/posts/${item.hubPostPublicKey}`)}
                 >
@@ -201,11 +202,12 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                       <PostLink>View Post</PostLink>
                     </CardCta>
                   </HoverCard>
-                </PostTile>
+                </Tile>
               )}
               {item.contentType === "PostWithRelease" && (
                 <Tile className={"tile"} key={i}>
                   <HoverCard
+                  className="hoverBorder"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleClick(
@@ -237,7 +239,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                         loader={loader}
                         width={100}
                         height={100}
-                        layout="responsive"
+                        layout="fill"
                         src={getImageFromCDN(item.releaseMetadata?.image, isMobile ? 100 : 400)}
                         release={item.referenceContent}
                         priority={true}
@@ -257,14 +259,16 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
 const TileGrid = styled(Box)(({ theme, columnCount }) => ({
   display: "grid",
   gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
-  gridColumnGap: "30px",
+  gridColumnGap: "28px",
   gridRowGap: "30px",
   maxWidth: "960px",
   margin: "auto",
   maxHeight: "92vh",
   overflow: "scroll",
   marginTop: "1px",
+  paddingRight: '4px',
   paddingBottom: "100px",
+  // border: '2px solid red',
   "&::-webkit-scrollbar": {
     display: "none",
   },
@@ -290,9 +294,13 @@ const Tile = styled(Box)(({ theme }) => ({
   maxHeight: "300px",
   width: "100%",
   position: "relative",
-  paddingBottom: "calc(100% - 4px)",
-  border: `2px solid ${theme.palette.transparent}`,
-  "&:hover": {
+  boxSizing: 'content-box',
+  // paddingBottom: "calc(100% - 0px)",
+  // border: `2px solid ${theme.palette.transparent}`,
+  // "&:hover": {
+  //   border: `2px solid ${theme.palette.text.primary}`,
+  // },
+  '&.postTile': {
     border: `2px solid ${theme.palette.text.primary}`,
   },
   [theme.breakpoints.down("md")]: {
@@ -303,26 +311,34 @@ const Tile = styled(Box)(({ theme }) => ({
   },
 }));
 
-const PostTile = styled(Box)(({ theme }) => ({
-  textAlign: "left",
-  maxWidth: "100%",
-  height: "100%",
-  border: "2px solid",
-  position: "relative",
-  width: "100%",
-  height: "0",
-  paddingBottom: "calc(100% - 4px)",
-  boxSizing: "border-box",
-  [theme.breakpoints.down("md")]: {
-    maxHeight: "272px",
-  },
-}));
+// const PostTile = styled(Box)(({ theme }) => ({
+//   textAlign: "left",
+//   maxWidth: "100%",
+//   height: "100%",
+//   border: "2px solid",
+//   position: "relative",
+//   width: "100%",
+//   height: "0",
+//   paddingBottom: "calc(100% - 0px)",
+//   boxSizing: "border-box",
+//   [theme.breakpoints.down("md")]: {
+//     maxHeight: "272px",
+//   },
+// }));
 
 const HoverCard = styled(Box)(({ theme }) => ({
   position: "relative",
   width: "100%",
   height: "0",
   paddingBottom: "100%",
+  boxSizing: 'content-box',
+  border: `2px solid ${theme.palette.transparent}`,
+  zIndex: 10,
+  '&.hoverBorder': {
+    "&:hover": {
+      border: `2px solid ${theme.palette.text.primary}`,
+    },
+  },
   [theme.breakpoints.down("md")]: {
     minHeight: "144px",
   },
@@ -362,11 +378,11 @@ const PostLink = styled("a")(({ theme }) => ({
 }));
 
 const PostInfo = styled(Typography)(({ theme }) => ({
-  padding: "10px 0 0 10px",
+  padding: "10px 0 0 0px",
   position: "absolute",
   top: "0",
   left: "5px",
-  height: "98%",
+  height: "93%",
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
@@ -394,7 +410,7 @@ const StyledAutorenewIcon = styled(AutorenewTwoToneIcon)(({ theme }) => ({
 const StyledButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
   position: "absolute",
   top: "-56px",
-  right: "0",
+  right: "6px",
   "& .MuiButtonBase-root": {
     border: "none",
     textTransform: "capitalize",
