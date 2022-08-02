@@ -8,7 +8,7 @@ import debounce from 'lodash.debounce'
 import HubTileView from "./HubTileView";
 
 const AllHubs = () => {
-  const { getHubs, hubState, hubsCount } = useContext(Hub.Context);
+  const { getHubs, hubState, hubsCount, filterHubsAll } = useContext(Hub.Context);
   const [pendingFetch, setPendingFetch] = useState(false)
   const [totalCount, setTotalCount] = useState(null)
   const scrollRef = useRef()
@@ -28,11 +28,6 @@ const AllHubs = () => {
     return Object.values(hubState);
   }, [hubState]);
 
-
-  useEffect(() => {
-    setTotalCount(hubsCount)
-  }, [hubsCount])
-
   const handleScroll = () => {
     const bottom =
       scrollRef.current.getBoundingClientRect().bottom - 250 <=
@@ -46,6 +41,7 @@ const AllHubs = () => {
       getHubs()
     }
   }
+
   return (
     <>
       <Head>
@@ -54,7 +50,7 @@ const AllHubs = () => {
       </Head>
       <ScrollablePageWrapper onScroll={debounce(() => handleScroll(), 500)} sx={{overflowY: "scroll"}}>
         <AllHubsWrapper ref={scrollRef}>
-          <HubTileView hubs={hubs} />
+          <HubTileView hubs={hubs.length > 0 ? filterHubsAll() : []} />
         </AllHubsWrapper>
       </ScrollablePageWrapper>
     </>

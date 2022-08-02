@@ -48,6 +48,7 @@ const HubContextProvider = ({ children }) => {
     getHubPubkeyForHubHandle,
     validateHubHandle,
     filterFeaturedHubs,
+    filterHubsAll,
   } = hubContextHelper({
     ninaClient,
     savePostsToState,
@@ -103,7 +104,8 @@ const HubContextProvider = ({ children }) => {
         validateHubHandle,
         addToHubQueue,
         featuredHubs,
-        filterFeaturedHubs
+        filterFeaturedHubs,
+        filterHubsAll
       }}
     >
       {children}
@@ -870,7 +872,6 @@ const hubContextHelper = ({
       if (featured) {
         setFeaturedHubs(result.hubs.map(row => row.id))
       } else {
-        setAllHubs(result.count)
         result.hubs.forEach((hub) => {
           if (!all.includes(hub.id)) {
             all.push(hub.id)
@@ -878,7 +879,7 @@ const hubContextHelper = ({
         })
         setAllHubs(all)
       }
-      saveHubsToState(result.hubs)
+      saveHubsToState(result.hubs.filter(hub => hub.hubReleases.length > 0 || hub.hubPosts.length > 0))
     } catch (error) {
       console.warn(error)
     }
@@ -1164,6 +1165,22 @@ const hubContextHelper = ({
     }
     return undefined
   }
+  
+
+  const filterHubsAll = () => {
+    const allHubsArray = []
+    allHubs.forEach((hubPubkey) => {
+      const hub = hubState[hubPubkey]
+      if (hub) {
+        allHubsArray.push(hub)
+      }
+    })
+    allHubsArray.sort(
+      (a, b) => a.datetime > b.datetime
+    )
+    return allHubsArray
+  }
+
 
   const validateHubHandle = async (handle) => {
     let path = endpoints.api + `/hubs/${handle}`
@@ -1195,6 +1212,7 @@ const hubContextHelper = ({
     filterHubCollaboratorsForHub,
     filterHubContentForHub,
     filterHubsForUser,
+    filterHubsAll,
     getHubPost,
     collectRoyaltyForReleaseViaHub,
     getHubPubkeyForHubHandle,
