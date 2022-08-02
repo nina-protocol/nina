@@ -180,12 +180,12 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
               )}
 
               {item.contentType === "Post" && (
-                <Tile
+                <PostTile
                   className={"tile postTile"}
                   key={i}
                   onClick={() => router.push(`/${hubHandle}/posts/${item.hubPostPublicKey}`)}
                 >
-                  <PostInfo sx={{ padding: "10px 0 0" }}>
+                  <PostInfo sx={{ padding: "10px 0 0" }} className={'postInfo'}>
                     <PostTitle
                       variant="h2"
                       sx={{ color: "text.primary", textTransform: "uppercase" }}
@@ -197,12 +197,12 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                       published: {formattedDate(item.createdAt)}
                     </Typography>
                   </PostInfo>
-                  <HoverCard>
+                  <HoverCard className="hoverCard">
                     <CardCta>
                       <PostLink>View Post</PostLink>
                     </CardCta>
                   </HoverCard>
-                </Tile>
+                </PostTile>
               )}
               {item.contentType === "PostWithRelease" && (
                 <Tile className={"tile"} key={i}>
@@ -311,20 +311,26 @@ const Tile = styled(Box)(({ theme }) => ({
   },
 }));
 
-// const PostTile = styled(Box)(({ theme }) => ({
-//   textAlign: "left",
-//   maxWidth: "100%",
-//   height: "100%",
-//   border: "2px solid",
-//   position: "relative",
-//   width: "100%",
-//   height: "0",
-//   paddingBottom: "calc(100% - 0px)",
-//   boxSizing: "border-box",
-//   [theme.breakpoints.down("md")]: {
-//     maxHeight: "272px",
-//   },
-// }));
+const PostTile = styled(Box)(({ theme }) => ({
+  textAlign: "left",
+  maxWidth: "100%",
+  height: "100%",
+  border: "2px solid",
+  position: "relative",
+  width: "100%",
+  height: "0",
+  paddingBottom: "calc(100% - 0px)",
+  boxSizing: "border-box",
+  '& .postInfo': {
+    height: '98%'
+  },
+  '& .hoverCard': {
+    boxSizing: 'border-box'
+  },
+  [theme.breakpoints.down("md")]: {
+    maxHeight: "272px",
+  },
+}));
 
 const HoverCard = styled(Box)(({ theme }) => ({
   position: "relative",
@@ -410,7 +416,7 @@ const StyledAutorenewIcon = styled(AutorenewTwoToneIcon)(({ theme }) => ({
 const StyledButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
   position: "absolute",
   top: "-56px",
-  right: "6px",
+  right: "-6px",
   "& .MuiButtonBase-root": {
     border: "none",
     textTransform: "capitalize",
