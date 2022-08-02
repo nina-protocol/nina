@@ -39,7 +39,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
   useEffect(() => {
     if (selectedHubId && userHubs) {
       const selectedHub = userHubs.find((hub) => hub.id === selectedHubId);
-      if (selectedHub.userCanAddContent) {
+      if (selectedHub?.userCanAddContent) {
         setCanAddContent(true);
       }
     }
