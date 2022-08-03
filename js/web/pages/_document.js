@@ -4,7 +4,6 @@ import React from 'react'
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 import createEmotionServer from '@emotion/server/create-instance'
 import createEmotionCache from '../createEmotionCache'
-import Script from 'next/script'
 // import {styled} from '@mui/material/styles'
 
 // const sheets = new ServerStyleSheets();
@@ -80,10 +79,11 @@ class MyDocument extends Document {
             href="/images/favicon-16x16.png"
           />
           <link rel="manifest" href="/site.webmanifest" />
-          <Script
+          <script
+            defer
             src="https://www.googletagmanager.com/gtag/js?id=G-VDD58V1D22"
           />
-          <Script
+          <script
             dangerouslySetInnerHTML={{
               __html: `
                 window.dataLayer = window.dataLayer || [];
