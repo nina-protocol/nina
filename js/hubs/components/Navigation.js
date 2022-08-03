@@ -420,6 +420,7 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
   },
   "@media (max-width: 900px)": {
     paddingLeft: 0,
+    paddingBottom: '8px',
     position: "fixed",
   },
 }));
