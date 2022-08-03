@@ -9,7 +9,7 @@ import * as Yup from "yup";
 import Hub from "@nina-protocol/nina-sdk/esm/Hub";
 import Nina from "@nina-protocol/nina-sdk/esm/Nina";
 import Release from "@nina-protocol/nina-sdk/esm/Release";
-import {getMd5FileHash} from "@nina-protocol/nina-sdk/esm/utils"
+import { getMd5FileHash } from "@nina-protocol/nina-sdk/esm/utils"
 import { useSnackbar } from "notistack";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -52,7 +52,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
     releaseState,
     initializeReleaseAndMint,
     releaseCreateMetadataJson,
-    validateUniqueMd5Disgest
+    validateUniqueMd5Digest
   } = useContext(Release.Context);
   const { hubState } = useContext(Hub.Context);
   const router = useRouter();
@@ -189,7 +189,6 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
     if (track) {
       const handleGetMd5FileHash = async (track) => {
         const hash = await getMd5FileHash(track.file)
-        console.log('hash: ', hash)
         setMd5Digest(hash)
       }
       handleGetMd5FileHash(track)
@@ -220,10 +219,10 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
         );
       } else if (track && artwork) {
 
-        const hashExists = await validateUniqueMd5Disgest(md5Digest)
+        const hashExists = await validateUniqueMd5Digest(md5Digest)
         if (hashExists) {
           enqueueSnackbar(
-            `A release with this file already exists: ${hashExists.json.properties.artist} - ${hashExists.json.properties.title}`,
+            `A release with this track already exists: ${hashExists.json.properties.artist} - ${hashExists.json.properties.title}`,
             {
               variant: "warn",
             }

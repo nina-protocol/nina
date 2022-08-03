@@ -8,6 +8,7 @@ import React, {
 import * as Yup from 'yup'
 import Nina from '@nina-protocol/nina-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-sdk/esm/Release'
+import { getMd5FileHash } from "@nina-protocol/nina-sdk/esm/utils"
 import { useSnackbar } from 'notistack'
 import { styled } from '@mui/material/styles'
 import Button from '@mui/material/Button'
@@ -90,6 +91,7 @@ const ReleaseCreate = () => {
   const [releaseCreated, setReleaseCreated] = useState(false)
   const [uploadId, setUploadId] = useState()
   const [publishingStepText, setPublishingStepText] = useState()
+  const [md5Digest, setMd5Digest] = useState();
 
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
@@ -192,6 +194,17 @@ const ReleaseCreate = () => {
     setUploadSize((trackSize + artworkSize).toFixed(2))
   }, [track, artwork])
 
+  useEffect(() => {
+    if (track) {
+      const handleGetMd5FileHash = async (track) => {
+        const hash = await getMd5FileHash(track.file)
+        setMd5Digest(hash)
+      }
+      handleGetMd5FileHash(track)
+    }
+
+  }, [track])
+
   const handleSubmit = async () => {
     try {
       if (releaseCreated) {
@@ -205,7 +218,7 @@ const ReleaseCreate = () => {
           `/${releasePubkey.toBase58()}`
         )
       } else if (track && artwork) {
-        const hashExists = await validateUniqueMd5Disgest(md5Digest)
+        const hashExists = await validateUniqueMd5Digest(md5Digest)
         if (hashExists) {
           enqueueSnackbar(
             `A release with this track already exists: ${hashExists.json.properties.artist} - ${hashExists.json.properties.title}`,
@@ -216,7 +229,6 @@ const ReleaseCreate = () => {
 
           return 
         }
-
         let upload = uploadId
         let artworkResult = artworkTx
         if (!uploadId) {

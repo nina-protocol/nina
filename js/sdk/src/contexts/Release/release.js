@@ -96,7 +96,7 @@ const ReleaseContextProvider = ({ children }) => {
     releaseInitViaHub,
     getPublishedHubForRelease,
     getHubsForRelease,
-    validateUniqueMd5Disgest
+    validateUniqueMd5Digest
   } = releaseContextHelper({
     ninaClient,
     releaseState,
@@ -176,7 +176,7 @@ const ReleaseContextProvider = ({ children }) => {
         getPublishedHubForRelease,
         getHubsForRelease,
         releasePurchaseTransactionPending,
-        validateUniqueMd5Disgest
+        validateUniqueMd5Digest
       }}
     >
       {children}
@@ -2191,15 +2191,11 @@ const releaseContextHelper = ({
     return metadata
   }
 
-  const validateUniqueMd5Disgest = async (hash) => {
-    if (!provider.connection) {
-      return
-    }
+  const validateUniqueMd5Digest = async (hash) => {
     try {
       let path = endpoints.api + `/metadata/validateHash/${hash}`
       const response = await fetch(path)
       const metadata = await response.json()
-      console.log('metadata: ', metadata)
       if (metadata) {
         return metadata
       } else {
@@ -2248,7 +2244,7 @@ const releaseContextHelper = ({
     fetchAndSaveReleasesToState,
     getPublishedHubForRelease,
     getHubsForRelease,
-    validateUniqueMd5Disgest
+    validateUniqueMd5Digest
   }
 }
 
