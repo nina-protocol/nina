@@ -52,6 +52,7 @@ const ReleaseCreate = () => {
     initializeReleaseAndMint,
     releaseCreateMetadataJson,
     releaseCreate,
+    validateUniqueMd5Digest,
   } = useContext(Release.Context)
   const router = useRouter()
   const {
@@ -204,6 +205,18 @@ const ReleaseCreate = () => {
           `/${releasePubkey.toBase58()}`
         )
       } else if (track && artwork) {
+        const hashExists = await validateUniqueMd5Disgest(md5Digest)
+        if (hashExists) {
+          enqueueSnackbar(
+            `A release with this track already exists: ${hashExists.json.properties.artist} - ${hashExists.json.properties.title}`,
+            {
+              variant: "warn",
+            }
+          );
+
+          return 
+        }
+
         let upload = uploadId
         let artworkResult = artworkTx
         if (!uploadId) {
@@ -261,6 +274,7 @@ const ReleaseCreate = () => {
                 trackType: track.file.type,
                 artworkType: artwork.file.type,
                 duration: track.meta.duration,
+                md5Digest
               })
               metadataResult = (
                 await bundlrUpload(

@@ -52,6 +52,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
     releaseState,
     initializeReleaseAndMint,
     releaseCreateMetadataJson,
+    validateUniqueMd5Disgest
   } = useContext(Release.Context);
   const { hubState } = useContext(Hub.Context);
   const router = useRouter();
@@ -87,6 +88,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
   const [releaseCreated, setReleaseCreated] = useState(false);
   const [uploadId, setUploadId] = useState();
   const [publishingStepText, setPublishingStepText] = useState();
+  const [md5Digest, setMd5Digest] = useState();
 
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
@@ -175,9 +177,6 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
             abortEarly: true,
           }
         );
-        const md5Digest = await getMd5FileHash(track.file)
-        console.log('md5Digest: ', md5Digest)
-
         setFormIsValid(isValid);
       };
       valid();
@@ -185,6 +184,18 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
       setFormIsValid(false);
     }
   }, [formValues, track, artwork]);
+
+  useEffect(() => {
+    if (track) {
+      const handleGetMd5FileHash = async (track) => {
+        const hash = await getMd5FileHash(track.file)
+        console.log('hash: ', hash)
+        setMd5Digest(hash)
+      }
+      handleGetMd5FileHash(track)
+    }
+
+  }, [track])
 
   useEffect(() => {
     const trackSize = track ? track.meta.size / 1000000 : 0;
@@ -208,6 +219,19 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
           `/${hubData.handle}/releases/${releaseInfo.hubRelease.toBase58()}`
         );
       } else if (track && artwork) {
+
+        const hashExists = await validateUniqueMd5Disgest(md5Digest)
+        if (hashExists) {
+          enqueueSnackbar(
+            `A release with this file already exists: ${hashExists.json.properties.artist} - ${hashExists.json.properties.title}`,
+            {
+              variant: "warn",
+            }
+          );
+
+          return 
+        }
+
         let upload = uploadId;
         let artworkResult = artworkTx;
         if (!uploadId) {

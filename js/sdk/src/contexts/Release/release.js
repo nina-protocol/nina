@@ -96,6 +96,7 @@ const ReleaseContextProvider = ({ children }) => {
     releaseInitViaHub,
     getPublishedHubForRelease,
     getHubsForRelease,
+    validateUniqueMd5Disgest
   } = releaseContextHelper({
     ninaClient,
     releaseState,
@@ -175,6 +176,7 @@ const ReleaseContextProvider = ({ children }) => {
         getPublishedHubForRelease,
         getHubsForRelease,
         releasePurchaseTransactionPending,
+        validateUniqueMd5Disgest
       }}
     >
       {children}
@@ -2152,6 +2154,7 @@ const releaseContextHelper = ({
     artworkTx,
     trackType,
     duration,
+    md5Digest,
   }) => {
     const name = `${artist} - ${title}`
     let metadata = {
@@ -2171,6 +2174,7 @@ const releaseContextHelper = ({
         artist: artist,
         title: title,
         date: new Date(),
+        md5Digest,
         files: [
           {
             uri: `https://www.arweave.net/${trackTx}`,
@@ -2186,6 +2190,26 @@ const releaseContextHelper = ({
 
     return metadata
   }
+
+  const validateUniqueMd5Disgest = async (hash) => {
+    if (!provider.connection) {
+      return
+    }
+    try {
+      let path = endpoints.api + `/metadata/validateHash/${hash}`
+      const response = await fetch(path)
+      const metadata = await response.json()
+      console.log('metadata: ', metadata)
+      if (metadata) {
+        return metadata
+      } else {
+        return false
+      }
+    } catch (error) {
+      console.warn(error)
+    }
+  }
+
 
   return {
     releaseInitViaHub,
@@ -2224,6 +2248,7 @@ const releaseContextHelper = ({
     fetchAndSaveReleasesToState,
     getPublishedHubForRelease,
     getHubsForRelease,
+    validateUniqueMd5Disgest
   }
 }
 
