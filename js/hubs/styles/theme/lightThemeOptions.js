@@ -183,6 +183,7 @@ const lightThemeOptions = {
             color: colors.black,
             width: '14px',
             height: '11px',
+            boxShadow: 'none !important',
             '&:hover': {
               boxShadow: 'none',
             },
