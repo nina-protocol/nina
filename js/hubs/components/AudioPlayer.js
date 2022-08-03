@@ -6,6 +6,8 @@ import { formatDuration } from "@nina-protocol/nina-sdk/esm/utils"
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import Box from '@mui/material/Box'
+import Slider from '@mui/material/Slider'
 
 const AudioPlayer = ({ hubPubkey }) => {
   const { releaseState } = useContext(Release.Context);
@@ -203,6 +205,13 @@ const AudioPlayer = ({ hubPubkey }) => {
     }
   };
 
+  const seek = (newValue) => {
+    if (audioPlayerRef.current) {
+      setTrackProgress(newValue)
+      audioPlayerRef.current.currentTime = newValue
+    }
+  }
+
   return (
     <Player>
       {track && (
@@ -228,8 +237,34 @@ const AudioPlayer = ({ hubPubkey }) => {
               </div>
             )}
           </Controls>
+
+
+          <ProgressContainer>
+            {/* {track && (
+              <ArtistInfo align="left" variant="subtitle1">
+                {track.artist}, <i>{track.title}</i>
+              </ArtistInfo>
+            )} */}
+            <Box sx={{display: 'flex', alignItems: 'center'}}>
+              <Slider
+                value={track ? trackProgress : 0}
+                onChange={(e, newValue) => seek(newValue)}
+                aria-labelledby="continuous-slider"
+                min={0}
+                max={track?.duration}
+              />
+
+              <Typography
+                sx={{padding: '0 10px', display: {xs: 'block', md: 'none'}}}
+                variant="subtitle1"
+              >
+                {formatDuration(trackProgress) || '00:00'}
+              </Typography>
+            </Box>
+          </ProgressContainer>
         </>
       )}
+
       <audio id="audio" style={{ width: "100%" }}>
         <source src={track?.txid + '?ext=mp3'} type="audio/mp3" />
       </audio>
@@ -286,5 +321,36 @@ const Player = styled("div")(({ theme }) => ({
     textDecoration: "none",
   },
 }));
+
+const ProgressContainer = styled(Box)(({theme}) => ({
+  width: '250px',
+  height: '48px',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-around',
+  paddingRight: theme.spacing(2),
+  [theme.breakpoints.down('md')]: {
+    width: '100px',
+    padding: theme.spacing(0, 1),
+  },
+  '& .MuiSlider-root': {
+    height: '7px',
+    padding: '0',
+    '& .MuiSlider-thumb': {
+      color: theme.palette.blue,
+      width: '14px',
+      height: '11px',
+    },
+    '& .MuiSlider-track': {
+      color: theme.palette.greyLight,
+      height: '7px',
+      border: 'none',
+    },
+    '& .MuiSlider-rail': {
+      color: theme.palette.greyLight,
+      height: '7px',
+    },
+  },
+}))
 
 export default AudioPlayer;
