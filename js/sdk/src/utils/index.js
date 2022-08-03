@@ -46,6 +46,9 @@ const formatDuration = (duration) => {
   let minutes = Math.floor((sec_num - hours * 3600) / 60)
   let seconds = sec_num - hours * 3600 - minutes * 60
 
+  if (hours > 0) {
+    minutes += hours * 60
+  }
   if (minutes < 10) {
     minutes = '0' + minutes
   }

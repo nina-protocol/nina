@@ -8,12 +8,14 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Box from '@mui/material/Box'
 import Slider from '@mui/material/Slider'
+import Link from 'next/link'
 
 const AudioPlayer = ({ hubPubkey }) => {
   const { releaseState } = useContext(Release.Context);
-  const { hubContentState, filterHubContentForHub } = useContext(Hub.Context);
+  const { hubContentState, filterHubContentForHub, hubState } = useContext(Hub.Context);
   const audio = useContext(Audio.Context);
   const [tracks, setTracks] = useState({});
+  const [trackLink, setTrackLink] = useState('');
   const {
     track,
     playNext,
@@ -33,6 +35,7 @@ const AudioPlayer = ({ hubPubkey }) => {
     const [hubReleases] = filterHubContentForHub(hubPubkey);
     hubReleases.forEach((hubRelease) => {
       let contentItem;
+      console.log('hubState :>> ', hubState);
       if (
         hubRelease.contentType === "NinaReleaseV1" &&
         releaseState.metadata[hubRelease.release] &&
@@ -41,12 +44,15 @@ const AudioPlayer = ({ hubPubkey }) => {
         contentItem = releaseState.metadata[hubRelease.release];
         contentItem.contentType = hubRelease.contentType;
         contentItem.publicKey = hubRelease.release;
+        contentItem.hubReleaseId = hubRelease.hubReleaseId
+        contentItem.hubHandle = hubState[hubRelease.hub].handle
         contentItem.datetime = hubRelease.datetime;
         trackObject[hubRelease.release] = contentItem;
       }
     });
     setTracks(trackObject);
-  }, [hubContentState, hubPubkey]);
+  }, [hubContentState, hubState, hubPubkey]);
+
   const activeTrack = useRef();
   const intervalRef = useRef();
   const activeIndexRef = useRef(0);
@@ -79,6 +85,7 @@ const AudioPlayer = ({ hubPubkey }) => {
   }, []);
 
   useEffect(() => {
+    console.log('tracks :>> ', tracks);
     if (Object.values(tracks).length > 0) {
       const trackIds = Object.values(tracks)
         .sort((a, b) => new Date(b.datetime) - new Date(a.datetime))
@@ -229,12 +236,12 @@ const AudioPlayer = ({ hubPubkey }) => {
               Next
             </Button>
             {track && (
-              <div>
+              <Box >
                 <Typography>{`Now Playing: ${track.artist} - ${track.title}`}</Typography>
                 <Typography>{`${formatDuration(
                   trackProgress
                 )} / ${formatDuration(track.duration)}`}</Typography>
-              </div>
+              </Box>
             )}
           </Controls>
 
@@ -268,15 +275,16 @@ const AudioPlayer = ({ hubPubkey }) => {
 };
 
 const Player = styled("div")(({theme}) => ({
-  paddingTop: theme.spacing(2),
-  width: '90%',
+  paddingTop: '0',
+  width: '100%',
   background: theme.palette.background.default,
+  border: '1p solid red',
   [theme.breakpoints.down('md')]: {
     position: 'fixed',
     bottom: '0',
     width: '100vw',
     background: theme.palette.background.default,
-    paddingTop: '0',
+    paddingTop: '8px',
     paddingLeft: '15px'
   },
   "& .MuiButton-root": {
@@ -298,8 +306,8 @@ const Player = styled("div")(({theme}) => ({
 const Controls = styled("div")(({ theme }) => ({
   paddingBottom: theme.spacing(2),
   width: "100%",
-  maxWidth: "480px",
-  minWidth: '250px',
+  // maxWidth: "480px",
+  // minWidth: '250px',
   [theme.breakpoints.down('md')]: {
     paddingBottom: '0'
   },
@@ -307,6 +315,7 @@ const Controls = styled("div")(({ theme }) => ({
     fontSize: theme.typography.body1.fontSize,
     padding: 0,
     color: theme.palette.text.primary,
+    height: '14px',
     ":hover": {
       opacity: "50%",
     },
@@ -317,7 +326,7 @@ const Controls = styled("div")(({ theme }) => ({
 }));
 
 const ProgressContainer = styled(Box)(({theme}) => ({
-  width: '250px',
+  // width: '250px',
   height: '10px',
   display: 'flex',
   flexDirection: 'column',
