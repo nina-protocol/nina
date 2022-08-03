@@ -286,7 +286,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                 }
               );
 
-              const success = await releaseInitViaHub({
+              const result = await releaseInitViaHub({
                 hubPubkey,
                 ...formValues.releaseForm,
                 release: info.release,
@@ -295,7 +295,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                 metadataUri: `https://arweave.net/${metadataResult}`,
               });
 
-              if (success) {
+              if (result.success) {
                 enqueueSnackbar("Release Created!", {
                   variant: "success",
                 });
