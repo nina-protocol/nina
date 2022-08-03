@@ -91,7 +91,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
   };
 
   return (
-    <Box position="relative">
+    <Box position="relative" sx={{mr: {md: '15px', xs: '0px'}}}>
       {contentTypes.length >= 2 && (
         <StyledButtonGroup
           exclusive
@@ -123,6 +123,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
               {item?.contentType === "NinaReleaseV1" && (
                 <Tile className={"tile"} key={i}>
                   <HoverCard
+                    className="hoverBorder"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleClick(item.child);
@@ -143,7 +144,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                           if (!audioPlayerRef.current.src) {
                             audioPlayerRef.current.load()
                           }
-                          updateTrack(item.release, !isPlaying);
+                          updateTrack(item.release, item.release === track.releasePubkey ? !isPlaying : true);
                         }}
                         disableRipple
                       >
@@ -180,11 +181,11 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
 
               {item.contentType === "Post" && (
                 <PostTile
-                  className={"tile"}
+                  className={"tile postTile"}
                   key={i}
                   onClick={() => router.push(`/${hubHandle}/posts/${item.hubPostPublicKey}`)}
                 >
-                  <PostInfo sx={{ padding: "10px 0 0" }}>
+                  <PostInfo sx={{ padding: "10px 0 0" }} className={'postInfo'}>
                     <PostTitle
                       variant="h2"
                       sx={{ color: "text.primary", textTransform: "uppercase" }}
@@ -196,7 +197,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                       published: {formattedDate(item.createdAt)}
                     </Typography>
                   </PostInfo>
-                  <HoverCard>
+                  <HoverCard className="hoverCard">
                     <CardCta>
                       <PostLink>View Post</PostLink>
                     </CardCta>
@@ -206,6 +207,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
               {item.contentType === "PostWithRelease" && (
                 <Tile className={"tile"} key={i}>
                   <HoverCard
+                  className="hoverBorder"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleClick(
@@ -237,7 +239,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                         loader={loader}
                         width={100}
                         height={100}
-                        layout="responsive"
+                        layout="fill"
                         src={getImageFromCDN(item.releaseMetadata?.image, isMobile ? 100 : 400)}
                         release={item.referenceContent}
                         priority={true}
@@ -257,13 +259,14 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
 const TileGrid = styled(Box)(({ theme, columnCount }) => ({
   display: "grid",
   gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
-  gridColumnGap: "30px",
+  gridColumnGap: "28px",
   gridRowGap: "30px",
   maxWidth: "960px",
   margin: "auto",
   maxHeight: "92vh",
   overflow: "scroll",
   marginTop: "1px",
+  paddingRight: '4px',
   paddingBottom: "100px",
   "&::-webkit-scrollbar": {
     display: "none",
@@ -290,13 +293,13 @@ const Tile = styled(Box)(({ theme }) => ({
   maxHeight: "300px",
   width: "100%",
   position: "relative",
-  paddingBottom: "calc(100% - 4px)",
-  border: `2px solid ${theme.palette.transparent}`,
-  "&:hover": {
+  boxSizing: 'content-box',
+  '&.postTile': {
     border: `2px solid ${theme.palette.text.primary}`,
   },
   [theme.breakpoints.down("md")]: {
     border: `none`,
+    boxSizing: "border-box",
     "&:hover": {
       border: `none`,
     },
@@ -311,10 +314,21 @@ const PostTile = styled(Box)(({ theme }) => ({
   position: "relative",
   width: "100%",
   height: "0",
-  paddingBottom: "calc(100% - 4px)",
+  paddingBottom: "calc(100% - 0px)",
   boxSizing: "border-box",
+  '& .postInfo': {
+    height: '98%',
+    [theme.breakpoints.down("md")]: {
+      height: '95%'
+    }
+  },
+  '& .hoverCard': {
+    boxSizing: 'border-box'
+  },
   [theme.breakpoints.down("md")]: {
     maxHeight: "272px",
+    boxSizing: "border-box",
+
   },
 }));
 
@@ -323,8 +337,20 @@ const HoverCard = styled(Box)(({ theme }) => ({
   width: "100%",
   height: "0",
   paddingBottom: "100%",
+  boxSizing: 'content-box',
+  border: `2px solid ${theme.palette.transparent}`,
+  zIndex: 0,
+  [theme.breakpoints.up("md")]: {
+    '&.hoverBorder': {
+      "&:hover": {
+        border: `2px solid ${theme.palette.text.primary}`,
+      },
+    },
+  },
   [theme.breakpoints.down("md")]: {
+    boxSizing: 'inherit',
     minHeight: "144px",
+    cursor: 'pointer'
   },
 }));
 
@@ -362,11 +388,11 @@ const PostLink = styled("a")(({ theme }) => ({
 }));
 
 const PostInfo = styled(Typography)(({ theme }) => ({
-  padding: "10px 0 0 10px",
+  padding: "10px 0 0 0px",
   position: "absolute",
   top: "0",
   left: "5px",
-  height: "98%",
+  height: "94%",
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
@@ -394,7 +420,7 @@ const StyledAutorenewIcon = styled(AutorenewTwoToneIcon)(({ theme }) => ({
 const StyledButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
   position: "absolute",
   top: "-56px",
-  right: "0",
+  right: "-6px",
   "& .MuiButtonBase-root": {
     border: "none",
     textTransform: "capitalize",
@@ -407,7 +433,6 @@ const StyledButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
     },
   },
   "& .Mui-selected ": {
-    // backgroundColor: 'none !important',
     backgroundColor: `${theme.palette.transparent} !important`,
     textDecortation: "underline !important",
   },

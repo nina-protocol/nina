@@ -24,6 +24,7 @@ const HubComponent = ({hubPubkey}) => {
     getHub,
     filterHubCollaboratorsForHub,
     filterHubContentForHub,
+    hubContentFetched,
   } = useContext(Hub.Context);
   const {postState} = useContext(Nina.Context);
   const {releaseState} = useContext(Release.Context);
@@ -130,7 +131,6 @@ const HubComponent = ({hubPubkey}) => {
       </Box>
     );
   }
-
   return (
     <>
       <Grid item md={4} sx={{padding: {md: "15px", xs: "40px 15px 15px"}}}>
@@ -146,7 +146,7 @@ const HubComponent = ({hubPubkey}) => {
       </Grid>
 
       <ContentViewWrapper item md={8} height="100%">
-        {!initialLoad && (
+        {!hubContentFetched.has(hubPubkey) && (
           <Box mt="29%">
             <Dots size="80px" />
           </Box>
@@ -158,6 +158,9 @@ const HubComponent = ({hubPubkey}) => {
             hubHandle={hubData.handle}
             contentTypes={contentData.contentTypes}
           />
+        )}
+        {hubContentFetched.has(hubPubkey) && contentData.content?.length === 0 && (
+          <Typography>Nothing has been published to this Hub yet</Typography>
         )}
       </ContentViewWrapper>
     </>

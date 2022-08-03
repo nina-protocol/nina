@@ -47,7 +47,7 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
 
   useEffect(() => {
     if (hubPostPubkey && !postState[postPubkey]) {
-      getHubPost(hubPostPubkey);
+      getHubPost(hubPostPubkey, hubPubkey);
     }
   }, [hubPostPubkey]);
 
