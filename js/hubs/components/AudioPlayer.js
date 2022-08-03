@@ -240,11 +240,6 @@ const AudioPlayer = ({ hubPubkey }) => {
 
 
           <ProgressContainer>
-            {/* {track && (
-              <ArtistInfo align="left" variant="subtitle1">
-                {track.artist}, <i>{track.title}</i>
-              </ArtistInfo>
-            )} */}
             <Box sx={{display: 'flex', alignItems: 'center'}}>
               <Slider
                 value={track ? trackProgress : 0}
@@ -277,25 +272,7 @@ const AudioPlayer = ({ hubPubkey }) => {
   );
 };
 
-const Controls = styled("div")(({ theme }) => ({
-  paddingBottom: theme.spacing(2),
-  width: "100%",
-  maxWidth: "480px",
-  minWidth: '250px',
-  "& .MuiButton-root": {
-    fontSize: theme.typography.body1.fontSize,
-    padding: 0,
-    color: theme.palette.text.primary,
-    ":hover": {
-      opacity: "50%",
-    },
-    ":disabled": {
-      color: theme.palette.text.primary + "a0",
-    },
-  },
-}));
-
-const Player = styled("div")(({ theme }) => ({
+const Player = styled("div")(({theme}) => ({
   paddingTop: theme.spacing(2),
   width: '90%',
   background: theme.palette.background.default,
@@ -322,33 +299,63 @@ const Player = styled("div")(({ theme }) => ({
   },
 }));
 
+
+const Controls = styled("div")(({ theme }) => ({
+  paddingBottom: theme.spacing(2),
+  width: "100%",
+  maxWidth: "480px",
+  minWidth: '250px',
+  [theme.breakpoints.down('md')]: {
+    paddingBottom: '0'
+  },
+  "& .MuiButton-root": {
+    fontSize: theme.typography.body1.fontSize,
+    padding: 0,
+    color: theme.palette.text.primary,
+    ":hover": {
+      opacity: "50%",
+    },
+    ":disabled": {
+      color: theme.palette.text.primary + "a0",
+    },
+  },
+}));
+
 const ProgressContainer = styled(Box)(({theme}) => ({
   width: '250px',
-  height: '48px',
+  height: '10px',
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-around',
   paddingRight: theme.spacing(2),
+  paddingBottom: theme.spacing(2),
+  paddingLeft: '7px',
   [theme.breakpoints.down('md')]: {
-    width: '100px',
-    padding: theme.spacing(0, 1),
+    width: '80%',
+    padding: theme.spacing(1, 1),
   },
   '& .MuiSlider-root': {
-    height: '7px',
+    height: '4px',
     padding: '0',
     '& .MuiSlider-thumb': {
-      color: theme.palette.blue,
+      color: theme.palette.primary.main,
+      backgroundColor: theme.palette.primary.main,
       width: '14px',
       height: '11px',
+      borderRadius: '0'
     },
     '& .MuiSlider-track': {
-      color: theme.palette.greyLight,
-      height: '7px',
+      backgroundColor: theme.palette.primary.main,
+      height: '4px',
       border: 'none',
+      marginLeft: '-7px',
+      paddingRight: '5px',
+      borderRadius: '0'
     },
     '& .MuiSlider-rail': {
-      color: theme.palette.greyLight,
-      height: '7px',
+      backgroundColor: theme.palette.primary.main,
+      height: '4px',
+      borderRadius: '0'
     },
   },
 }))

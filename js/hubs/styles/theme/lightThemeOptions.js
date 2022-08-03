@@ -178,6 +178,28 @@ const lightThemeOptions = {
         rail: {
           backgroundColor: colors.black,
         },
+        root: {
+          '& .MuiSlider-thumb': {
+            color: colors.black,
+            width: '14px',
+            height: '11px',
+            '&:hover': {
+              boxShadow: 'none',
+            },
+            '& .Mui-focusVisible': {
+              boxShadow: 'none',
+            },
+          },
+          '& .MuiSlider-track': {
+            color: colors.black,
+            height: '1px',
+            border: 'none',
+          },
+          '& .MuiSlider-rail': {
+            color: colors.black,
+            height: '1px',
+          },
+        },
       },
     },
     MuiTextField: {
