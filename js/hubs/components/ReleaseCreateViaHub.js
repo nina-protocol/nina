@@ -9,6 +9,7 @@ import * as Yup from "yup";
 import Hub from "@nina-protocol/nina-sdk/esm/Hub";
 import Nina from "@nina-protocol/nina-sdk/esm/Nina";
 import Release from "@nina-protocol/nina-sdk/esm/Release";
+import {getMd5FileHash} from "@nina-protocol/nina-sdk/esm/utils"
 import { useSnackbar } from "notistack";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -174,6 +175,9 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
             abortEarly: true,
           }
         );
+        const md5Digest = await getMd5FileHash(track.file)
+        console.log('md5Digest: ', md5Digest)
+
         setFormIsValid(isValid);
       };
       valid();
@@ -258,6 +262,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                 trackType: track.file.type,
                 artworkType: artwork.file.type,
                 duration: track.meta.duration,
+                md5Digest
               });
               metadataResult = (
                 await bundlrUpload(
