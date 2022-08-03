@@ -1,6 +1,7 @@
 import * as encrypt from './encrypt'
 import * as web3 from './web3'
 import * as imageManager from './imageManager'
+import MD5 from "crypto-js/md5";
 
 const dateConverter = (date) => {
   var a = new Date(typeof date === 'object' ? date.toNumber() * 1000 : date)
@@ -102,6 +103,21 @@ const shuffle = (array) => {
   return array;
 }
 
+
+const getMd5FileHash = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+  
+    reader.onload = (e => {
+      const hash = MD5(e.target.result)
+      resolve(hash.toString())
+    })
+    reader.onerror = (e => reject(e))
+    reader.onabort = (e => reject(e))
+    reader.readAsBinaryString(file)
+  })
+}
+
 export {
   arrayMove,
   dateConverter,
@@ -113,4 +129,5 @@ export {
   encrypt,
   web3,
   shuffle,
+  getMd5FileHash
 }

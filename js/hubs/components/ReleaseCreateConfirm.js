@@ -4,7 +4,8 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { styled } from "@mui/material/styles";
-
+import FormControlLabel from "@mui/material/FormControlLabel"
+import Checkbox from "@mui/material/Checkbox"
 import {unified} from "unified";
 import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
@@ -30,6 +31,7 @@ const ReleaseCreateConfirm = (props) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [description, setDescription] = useState();
+  const [confirm, setConfirm] = useState();
   const data = formValues.releaseForm;
 
   const submitAndCloseModal = () => {
@@ -63,6 +65,10 @@ const ReleaseCreateConfirm = (props) => {
       }
   }, [data.description]);
 
+  const handleChangeCheckbox = (e) => {
+    console.log(e.target.checked)
+    setConfirm(e.target.checked)
+  }
 
   return (
     <div>
@@ -109,14 +115,22 @@ const ReleaseCreateConfirm = (props) => {
             <Value className="description" sx={{mt: 1, flexDirection: 'column' , mb: 1}}>
               Description: <span style={{marginTop: '8px', paddingLeft: '0'}}>{description}</span>
             </Value>
+            <Typography variant="subtitle1" mt={1} sx={{ color: "red" }}>
+              ONCE PUBLISHED, YOUR RELEASE INFORMATION WILL BE PERMANENT AND YOU
+              WILL NOT BE ABLE TO EDIT IT.
+            </Typography>
+            <Value>
+              <FormControlLabel sx={{ mt: 1, mb: 1, paddingLeft: '10px' }} control={<Checkbox onChange={handleChangeCheckbox} />} label="Confirm" />
+            </Value>
 
             <Button
               variant="outlined"
               color="primary"
               fullWidth
+              disabled={!confirm}
               onClick={submitAndCloseModal}
             >
-              Confirm and Publish Release
+              Publish Release
             </Button>
 
             <Button
@@ -128,10 +142,6 @@ const ReleaseCreateConfirm = (props) => {
             >
               Close and Edit
             </Button>
-            <Typography variant="subtitle1" mt={1} sx={{ color: "red" }}>
-              ONCE PUBLISHED, YOUR RELEASE INFORMATION WILL BE PERMANENT AND YOU
-              WILL NOT BE ABLE TO EDIT IT.
-            </Typography>
           </Box>
         </Box>
       </Modal>
