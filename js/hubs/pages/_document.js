@@ -5,7 +5,6 @@ import Document, { Html, Head, Main, NextScript } from "next/document";
 import createEmotionServer from "@emotion/server/create-instance";
 import createEmotionCache from "../createEmotionCache";
 import { styled } from "@mui/material/styles";
-import Script from 'next/script'
 
 // const sheets = new ServerStyleSheets();
 class MyDocument extends Document {
@@ -82,8 +81,7 @@ class MyDocument extends Document {
             defer
             src="https://www.googletagmanager.com/gtag/js?id=G-VDD58V1D22"
           />
-          <Script
-            id="google-analytics"
+          <script
             dangerouslySetInnerHTML={{
               __html: `
                 window.dataLayer = window.dataLayer || [];
