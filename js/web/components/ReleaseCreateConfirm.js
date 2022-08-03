@@ -120,7 +120,7 @@ const ReleaseCreateConfirm = (props) => {
               WILL NOT BE ABLE TO EDIT IT.
             </Typography>
             <Value>
-              <FormControlLabel sx={{ mt: 1, mb: 1, paddingLeft: '10px' }} control={<Checkbox onChange={handleChangeCheckbox} />} label="Confirm" />
+              <FormControlLabel sx={{ mt: 1, mb: 1 }} control={<Checkbox onChange={handleChangeCheckbox} />} label="Confirm" />
             </Value>
 
             <Button
