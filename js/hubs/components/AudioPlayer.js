@@ -249,12 +249,7 @@ const AudioPlayer = ({ hubPubkey }) => {
                 max={track?.duration}
               />
 
-              <Typography
-                sx={{padding: '0 10px', display: {xs: 'block', md: 'none'}}}
-                variant="subtitle1"
-              >
-                {formatDuration(trackProgress) || '00:00'}
-              </Typography>
+   
             </Box>
           </ProgressContainer>
         </>
@@ -331,31 +326,28 @@ const ProgressContainer = styled(Box)(({theme}) => ({
   paddingBottom: theme.spacing(2),
   paddingLeft: '7px',
   [theme.breakpoints.down('md')]: {
-    width: '80%',
+    width: 'calc(100% - 15px)',
     padding: theme.spacing(1, 1),
   },
   '& .MuiSlider-root': {
-    height: '4px',
+    height: '2px',
     padding: '0',
     '& .MuiSlider-thumb': {
       color: theme.palette.primary.main,
       backgroundColor: theme.palette.primary.main,
       width: '14px',
       height: '11px',
-      // borderRadius: '0'
     },
     '& .MuiSlider-track': {
       backgroundColor: theme.palette.primary.main,
-      height: '4px',
+      height: '2px',
       border: 'none',
       marginLeft: '-7px',
       paddingRight: '5px',
-      // borderRadius: '0'
     },
     '& .MuiSlider-rail': {
       backgroundColor: theme.palette.primary.main,
-      height: '4px',
-      // borderRadius: '0'
+      height: '2px',
     },
   },
 }))
