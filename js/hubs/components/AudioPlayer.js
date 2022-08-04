@@ -46,6 +46,8 @@ const AudioPlayer = ({ hubPubkey }) => {
         contentItem.hubHandle = hubState[hubRelease.hub].handle
         contentItem.datetime = hubRelease.datetime;
         trackObject[hubRelease.release] = contentItem;
+      } else if (hubRelease.contentType === "PostWithRelease"){
+        console.log('post! :>> ', hubRelease);
       }
     });
     setTracks(trackObject);
@@ -267,7 +269,7 @@ const AudioPlayer = ({ hubPubkey }) => {
       </audio>
       <Typography sx={{pb: "5px", whiteSpace: 'nowrap'}}>
         <a href={`https://hubs.ninaprotocol.com/all`} target="_blank" rel="noreferrer" >
-          Hubs
+          Hubs.
         </a>
         :{' '}
         <a href={`https://ninaprotocol.com/`} target="_blank" rel="noreferrer" >
