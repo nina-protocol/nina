@@ -35,7 +35,6 @@ const AudioPlayer = ({ hubPubkey }) => {
     const [hubReleases] = filterHubContentForHub(hubPubkey);
     hubReleases.forEach((hubRelease) => {
       let contentItem;
-      console.log('hubState :>> ', hubState);
       if (
         hubRelease.contentType === "NinaReleaseV1" &&
         releaseState.metadata[hubRelease.release] &&
@@ -85,11 +84,11 @@ const AudioPlayer = ({ hubPubkey }) => {
   }, []);
 
   useEffect(() => {
-    console.log('tracks :>> ', tracks);
     if (Object.values(tracks).length > 0) {
       const trackIds = Object.values(tracks)
         .sort((a, b) => new Date(b.datetime) - new Date(a.datetime))
-        .map((track) => track.publicKey);
+        // .map((track) => track.publicKey);
+        .map((track) => track);
       createPlaylistFromTracksHubs(trackIds);
     }
   }, [tracks, hubContentState]);
@@ -185,6 +184,7 @@ const AudioPlayer = ({ hubPubkey }) => {
     }
     if (audioPlayerRef.current.paused) {
       if (track) {
+        console.log('track :>> ', track);
         updateTrack(track.releasePubkey, true);
       }
     } else {
@@ -236,8 +236,12 @@ const AudioPlayer = ({ hubPubkey }) => {
               Next
             </Button>
             {track && (
-              <Box >
-                <Typography>{`Now Playing: ${track.artist} - ${track.title}`}</Typography>
+              <Box>
+                <Typography>Now Playing:{' '}
+                <Link href={`/${track.hubHandle}/releases/${track.hubReleaseId}`}>
+                    {`${track.artist} - ${track.title}`}
+                </Link>
+                </Typography>
                 <Typography>{`${formatDuration(
                   trackProgress
                 )} / ${formatDuration(track.duration)}`}</Typography>
@@ -306,8 +310,6 @@ const Player = styled("div")(({theme}) => ({
 const Controls = styled("div")(({ theme }) => ({
   paddingBottom: theme.spacing(2),
   width: "100%",
-  // maxWidth: "480px",
-  // minWidth: '250px',
   [theme.breakpoints.down('md')]: {
     paddingBottom: '0'
   },
