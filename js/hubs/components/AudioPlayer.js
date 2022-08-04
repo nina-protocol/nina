@@ -65,7 +65,6 @@ const AudioPlayer = ({ hubPubkey }) => {
         trackObject[hubPost.release] = contentItem;
       }
     })
-    console.log('trackObject :>> ', trackObject);
     setTracks(trackObject);
   }, [hubContentState, hubState, hubPubkey]);
 
@@ -233,19 +232,6 @@ const AudioPlayer = ({ hubPubkey }) => {
     }
   }
 
-  const handleClick = (hubHandle, hubReleasePubkey, hubPostPubkey = null) => {
-    console.log('CLICK');
-    const pathString = hubPostPubkey ? "posts" : "releases";
-    router.push(
-      {
-        pathname: `/${hubHandle}/${pathString}/${hubPostPubkey || hubReleasePubkey
-          }`,
-      },
-      `/${hubHandle}/${pathString}/${hubPostPubkey || hubReleasePubkey}`
-    );
-  };
-
-
   return (
     <Player>
       {track && (
@@ -266,12 +252,7 @@ const AudioPlayer = ({ hubPubkey }) => {
               <Box>
                 <Typography>Now Playing:{' '}
                 <Link 
-                    href={`/${track.hubHandle}/${track.hubPostPubkey ? 'posts' : 'releases'}/${track.hubPostPubkey ? track.hubPostPubkey : track.hubReleaseId}`}
-                  // onClick={(e) => {
-                  //   console.log('object :>> ', object);
-                  //   e.stopPropagation()
-                  //   handleClick(track.hubHandle, track.hubReleaseId, track.hubPostPubkey)
-                  // }}
+                  href={`/${track.hubHandle}/${track.hubPostPubkey ? 'posts' : 'releases'}/${track.hubPostPubkey ? track.hubPostPubkey : track.hubReleaseId}`}
                   >
                     {`${track.artist} - ${track.title}`}
                 </Link>
