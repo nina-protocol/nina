@@ -155,7 +155,8 @@ const AudioPlayerWrapper = styled("div")(({ theme }) => ({
   left: 0,
   paddingLeft: "8px",
   textAlign: "left",
-  paddingBottom: theme.spacing(1),
+  width: '30vw',
+  paddingBottom: '0',
   [theme.breakpoints.down("md")]: {
     paddingLeft: "0px",
   },

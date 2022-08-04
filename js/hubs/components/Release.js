@@ -48,7 +48,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   }, [releasePubkey]);
 
   useEffect(() => {
-    if (releaseState.metadata[releasePubkey] && !metadata) {
+    if (releaseState.metadata[releasePubkey]) {
       setMetadata(releaseState.metadata[releasePubkey]);
     }
   }, [releaseState, metadata, releasePubkey]);

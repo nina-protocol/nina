@@ -189,13 +189,16 @@ const audioPlayerContextHelper = ({
 
   const createPlaylistFromTracksHubs = (tracks) => {
     const playlistEntries = []
-    tracks.forEach((releasePubkey) => {
+    tracks.forEach((track) => {
       if (
-        playlist.filter((item) => item.releasePubkey === releasePubkey)
+        playlist.filter((item) => item.releasePubkey === track.publicKey)
           .length === 0
       ) {
-        const playlistEntry = createPlaylistEntry(releasePubkey)
+        const playlistEntry = createPlaylistEntry(track.publicKey)
         if (playlistEntry) {
+          playlistEntry.hubHandle = track.hubHandle
+          playlistEntry.hubReleaseId = track.hubReleaseId
+          playlistEntry.hubPostPubkey = track.hubPostPubkey
           playlistEntries.push(playlistEntry)
         }
       }
@@ -247,7 +250,6 @@ const audioPlayerContextHelper = ({
         duration: releaseMetadata.properties.files[0].duration,
       }
     }
-
     return playlistEntry
   }
 

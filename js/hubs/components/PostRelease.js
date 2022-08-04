@@ -114,40 +114,42 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
               <Typography
                 variant="h3"
                 align="left"
-                sx={{ color: "text.primary", whiteSpace: "nowrap", mr: 1 }}
+                sx={{ color: "text.primary", mr: 1 }}
               >
                 {metadata.properties.artist} - {metadata.properties.title}
               </Typography>
 
-              <PlayButton
-                sx={{ height: "22px", width: "28px", m: 0 }}
-                onClickCapture={(e) => {
-                  e.stopPropagation();
-                  setInitialized(true)
-                  if (!audioPlayerRef.current.src) {
-                    audioPlayerRef.current.load()
-                  }
-                  updateTrack(
-                    releasePubkey,
-                    !(isPlaying && track.releasePubkey === releasePubkey)
-                  );
-                }}
-              >
-                {isPlaying && track.releasePubkey === releasePubkey ? (
-                  <PauseCircleOutlineIcon />
-                ) : (
-                  <PlayCircleOutlineIcon />
-                )}
-              </PlayButton>
+              <Box display="flex" alignItems={'flex-start'} sx={{mt: "0px", mb: {md: "15px", xs: '0px'}}}>
+                <PlayButton
+                  sx={{height: "22px", width: "28px", m: 0, paddingLeft: 0}}
+                  onClickCapture={(e) => {
+                    e.stopPropagation();
+                    setInitialized(true)
+                    if (!audioPlayerRef.current.src) {
+                      audioPlayerRef.current.load()
+                    }
+                    updateTrack(
+                      releasePubkey,
+                      !(isPlaying && track.releasePubkey === releasePubkey)
+                    );
+                  }}
+                >
+                  {isPlaying && track.releasePubkey === releasePubkey ? (
+                    <PauseCircleOutlineIcon />
+                  ) : (
+                    <PlayCircleOutlineIcon />
+                  )}
+                </PlayButton>
 
-              {releasePubkey && metadata && (
-                <AddToHubModal
-                  userHubs={userHubs}
-                  releasePubkey={releasePubkey}
-                  metadata={metadata}
-                  hubPubkey={hubPubkey}
-                />
-              )}
+                {releasePubkey && metadata && (
+                  <AddToHubModal
+                    userHubs={userHubs}
+                    releasePubkey={releasePubkey}
+                    metadata={metadata}
+                    hubPubkey={hubPubkey}
+                  />
+                )}
+              </Box>
             </CtaWrapper>
             {/* <StyledDescription variant="h4" align="left">{metadata.description}</StyledDescription> */}
           </>
