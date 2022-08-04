@@ -9,13 +9,15 @@ import Typography from "@mui/material/Typography";
 import Box from '@mui/material/Box'
 import Slider from '@mui/material/Slider'
 import Link from 'next/link'
+import {useRouter} from "next/router";
+
 
 const AudioPlayer = ({ hubPubkey }) => {
+  const router = useRouter();
   const { releaseState } = useContext(Release.Context);
   const { hubContentState, filterHubContentForHub, hubState } = useContext(Hub.Context);
   const audio = useContext(Audio.Context);
   const [tracks, setTracks] = useState({});
-  const [trackLink, setTrackLink] = useState('');
   const {
     track,
     playNext,
@@ -345,7 +347,7 @@ const ProgressContainer = styled(Box)(({theme}) => ({
     padding: '0',
     '& .MuiSlider-thumb': {
       color: theme.palette.primary.main,
-      backgroundColor: theme.palette.primary.main,
+      backgroundColor: `${theme.palette.primary.main} !important`,
       width: '14px',
       height: '11px',
     },
