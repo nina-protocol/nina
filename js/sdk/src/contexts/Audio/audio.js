@@ -196,8 +196,10 @@ const audioPlayerContextHelper = ({
       ) {
         const playlistEntry = createPlaylistEntry(track.publicKey)
         if (playlistEntry) {
+          console.log('track :>> ', track);
           playlistEntry.hubHandle = track.hubHandle
           playlistEntry.hubReleaseId = track.hubReleaseId
+          playlistEntry.hubPostPubkey = track.hubPostPubkey
           playlistEntries.push(playlistEntry)
         }
       }

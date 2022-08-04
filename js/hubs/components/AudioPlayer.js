@@ -9,8 +9,10 @@ import Typography from "@mui/material/Typography";
 import Box from '@mui/material/Box'
 import Slider from '@mui/material/Slider'
 import Link from 'next/link'
+import {useRouter} from "next/router";
 
 const AudioPlayer = ({ hubPubkey }) => {
+  const router = useRouter();
   const { releaseState } = useContext(Release.Context);
   const { hubContentState, filterHubContentForHub, hubState } = useContext(Hub.Context);
   const audio = useContext(Audio.Context);
@@ -31,7 +33,7 @@ const AudioPlayer = ({ hubPubkey }) => {
   const audioInitialized = useMemo(() => initialized, [initialized])
   useEffect(() => {
     const trackObject = {};
-    const [hubReleases] = filterHubContentForHub(hubPubkey);
+    const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey);
     hubReleases.forEach((hubRelease) => {
       let contentItem;
       if (
@@ -46,10 +48,24 @@ const AudioPlayer = ({ hubPubkey }) => {
         contentItem.hubHandle = hubState[hubRelease.hub].handle
         contentItem.datetime = hubRelease.datetime;
         trackObject[hubRelease.release] = contentItem;
-      } else if (hubRelease.contentType === "PostWithRelease"){
-        console.log('post! :>> ', hubRelease);
-      }
+      } 
     });
+    hubPosts.forEach(hubPost => {
+      let contentItem;
+      if (
+        hubPost.contentType === 'Post' &&
+        hubPost.referenceHubContent !== null &&
+        hubPost.visible
+      ) {
+        contentItem = releaseState.metadata[hubPost.referenceHubContent];
+        contentItem.contentType = hubPost.contentType;
+        contentItem.hubHandle = hubState[hubPost.hub].handle
+        contentItem.hubPostPubkey = hubPost.publicKey
+        contentItem.datetime = hubPost.datetime;
+        trackObject[hubPost.release] = contentItem;
+      }
+    })
+    console.log('trackObject :>> ', trackObject);
     setTracks(trackObject);
   }, [hubContentState, hubState, hubPubkey]);
 
@@ -217,6 +233,19 @@ const AudioPlayer = ({ hubPubkey }) => {
     }
   }
 
+  const handleClick = (hubHandle, hubReleasePubkey, hubPostPubkey = null) => {
+    console.log('CLICK');
+    const pathString = hubPostPubkey ? "posts" : "releases";
+    router.push(
+      {
+        pathname: `/${hubHandle}/${pathString}/${hubPostPubkey || hubReleasePubkey
+          }`,
+      },
+      `/${hubHandle}/${pathString}/${hubPostPubkey || hubReleasePubkey}`
+    );
+  };
+
+
   return (
     <Player>
       {track && (
@@ -236,7 +265,14 @@ const AudioPlayer = ({ hubPubkey }) => {
             {track && (
               <Box>
                 <Typography>Now Playing:{' '}
-                <Link href={`/${track.hubHandle}/releases/${track.hubReleaseId}`}>
+                <Link 
+                    href={`/${track.hubHandle}/${track.hubPostPubkey ? 'posts' : 'releases'}/${track.hubPostPubkey ? track.hubPostPubkey : track.hubReleaseId}`}
+                  // onClick={(e) => {
+                  //   console.log('object :>> ', object);
+                  //   e.stopPropagation()
+                  //   handleClick(track.hubHandle, track.hubReleaseId, track.hubPostPubkey)
+                  // }}
+                  >
                     {`${track.artist} - ${track.title}`}
                 </Link>
                 </Typography>
