@@ -9,11 +9,8 @@ import Typography from "@mui/material/Typography";
 import Box from '@mui/material/Box'
 import Slider from '@mui/material/Slider'
 import Link from 'next/link'
-import {useRouter} from "next/router";
-
 
 const AudioPlayer = ({ hubPubkey }) => {
-  const router = useRouter();
   const { releaseState } = useContext(Release.Context);
   const { hubContentState, filterHubContentForHub, hubState } = useContext(Hub.Context);
   const audio = useContext(Audio.Context);
@@ -87,11 +84,9 @@ const AudioPlayer = ({ hubPubkey }) => {
 
   useEffect(() => {
     if (Object.values(tracks).length > 0) {
-      const trackIds = Object.values(tracks)
+      const trackValues = Object.values(tracks)
         .sort((a, b) => new Date(b.datetime) - new Date(a.datetime))
-        // .map((track) => track.publicKey);
-        .map((track) => track);
-      createPlaylistFromTracksHubs(trackIds);
+      createPlaylistFromTracksHubs(trackValues);
     }
   }, [tracks, hubContentState]);
 
@@ -186,7 +181,6 @@ const AudioPlayer = ({ hubPubkey }) => {
     }
     if (audioPlayerRef.current.paused) {
       if (track) {
-        console.log('track :>> ', track);
         updateTrack(track.releasePubkey, true);
       }
     } else {
@@ -334,7 +328,6 @@ const Controls = styled("div")(({ theme }) => ({
 }));
 
 const ProgressContainer = styled(Box)(({theme}) => ({
-  // width: '250px',
   height: '10px',
   display: 'flex',
   flexDirection: 'column',
