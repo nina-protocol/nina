@@ -10,7 +10,7 @@ const NotFound = (props) => {
   return( 
     <StyledBox>
       <Typography variant="h2" align="left">
-        There's nothing here...
+        There&apos;s nothing here...
       </Typography>
 
       <Typography variant='h2' align="left" sx={{mt: '15px'}}>
