@@ -11,7 +11,7 @@ const PostPage = (props) => {
 
   if (!post) {
     return (
-      <NotFound hub={hub} />
+      <NotFound />
     )
   }
   return (

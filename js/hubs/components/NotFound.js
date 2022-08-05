@@ -7,8 +7,6 @@ import Link from 'next/link'
 const NotFound = (props) => {
   const router = useRouter();
 
-  console.log('router :>> ', router);
-
   return( 
     <StyledBox>
       <Typography variant="h2" align="left">
@@ -40,6 +38,6 @@ const StyledBox = styled(Box)(() => ({
   justifyContent: "center",
   flexDirection: 'column',
   marginTop: '-125px'
-  
 }));
+
 export default NotFound;
