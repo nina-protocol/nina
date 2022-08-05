@@ -2,13 +2,17 @@ import React from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import axios from "axios";
+import NotFound from "../../../../components/NotFound";
+
 const Post = dynamic(() => import("../../../../components/Post"));
 
 const PostPage = (props) => {
   const { metadata, post, hub, postPubkey, hubPubkey } = props;
 
-  if (!hub) {
-    return (<></>)
+  if (!post) {
+    return (
+      <NotFound hub={hub} />
+    )
   }
   return (
     <>

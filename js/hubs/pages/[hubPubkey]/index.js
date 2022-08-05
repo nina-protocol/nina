@@ -2,9 +2,16 @@ import axios from "axios";
 import Head from "next/head";
 import {hrtime} from "process";
 import Hub from "../../components/Hub";
+import NotFound from "../../components/NotFound";
 
 const HubPage = (props) => {
   const { hub, hubPubkey } = props;
+
+  if (!hub) {
+    return (
+      <NotFound />
+    )
+  }
   return (
     <>
       <Head>

@@ -2,11 +2,19 @@ import React from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import axios from "axios";
+import NotFound from "../../../../components/NotFound";
+
 const Release = dynamic(() => import("../../../../components/Release"));
 
 const ReleasePage = (props) => {
   const { metadata, hub, releasePubkey, hubPubkey } = props;
 
+
+  if (!metadata) {
+    return (
+      <NotFound hub={hub}/>
+    )
+  }
   return (
     <>
       <Head>
@@ -64,7 +72,6 @@ export const getStaticProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL;
   const hubReleasePubkey = context.params.hubReleasePubkey;
   const indexerPath = indexerUrl + `/hubReleases/${hubReleasePubkey}`;
-
 
   let hubRelease;
   let release;

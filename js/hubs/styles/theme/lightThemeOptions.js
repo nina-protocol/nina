@@ -169,18 +169,18 @@ const lightThemeOptions = {
     MuiSlider: {
       styleOverrides: {
         thumb: {
-          backgroundColor: colors.black,
+          backgroundColor: `${colors.black} !important`,
         },
         track: {
-          backgroundColor: colors.black,
-          borderColor: colors.black,
+          backgroundColor: `${colors.black} !important`,
         },
         rail: {
-          backgroundColor: colors.black,
+          backgroundColor: `${colors.black} !important`,
         },
         root: {
           '& .MuiSlider-thumb': {
             color: colors.black,
+            backgroundColor: `${colors.black} !important`,
             width: '14px',
             height: '11px',
             boxShadow: 'none !important',
@@ -193,11 +193,13 @@ const lightThemeOptions = {
           },
           '& .MuiSlider-track': {
             color: colors.black,
+            backgroundColor: `${colors.black} !important`,
             height: '1px',
             border: 'none',
           },
           '& .MuiSlider-rail': {
             color: colors.black,
+            backgroundColor: `${colors.black} !important`,
             height: '1px',
           },
         },
