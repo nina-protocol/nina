@@ -6,7 +6,7 @@ import Nina from "@nina-protocol/nina-sdk/esm/Nina";
 import Release from "@nina-protocol/nina-sdk/esm/Release";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Button from "@mui/material/Button";
-import Link from "next/Link";
+import Link from "next/link";
 import Box from "@mui/material/Box";
 import { useSnackbar } from "notistack";
 import Typography from "@mui/material/Typography";
