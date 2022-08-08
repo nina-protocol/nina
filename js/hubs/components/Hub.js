@@ -25,6 +25,7 @@ const HubComponent = ({hubPubkey}) => {
     filterHubCollaboratorsForHub,
     filterHubContentForHub,
     hubContentFetched,
+    hubContentState
   } = useContext(Hub.Context);
   const {postState} = useContext(Nina.Context);
   const {releaseState} = useContext(Release.Context);
@@ -33,7 +34,7 @@ const HubComponent = ({hubPubkey}) => {
   }, [hubPubkey]);
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
-  const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey);
+  const [hubReleases, hubPosts] = useMemo(() => filterHubContentForHub(hubPubkey), [hubContentState]);
   const [description, setDescription] = useState();
   const hubCollaborators = useMemo(
     () => filterHubCollaboratorsForHub(hubPubkey) || [],

@@ -5,6 +5,7 @@ import Backdrop from '@mui/material/Backdrop'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
+import Link from 'next/link'
 import Release from "@nina-protocol/nina-sdk/esm/Release";
 
 const HubsModal = (props) => {
@@ -62,13 +63,12 @@ const HubsModal = (props) => {
                   return (
                     <tr key={i}>
                       <td>
-                        <a
-                          href={entry.json.externalUrl}
-                          passHref
+                        <Link
+                          href={`/${entry.handle}`}
                           className={entry.publishedThroughHub ? 'publishingHub' : ''}      
                         >
                           {entry.json.displayName}
-                        </a>
+                        </Link>
                       </td>
                     </tr>
                   )

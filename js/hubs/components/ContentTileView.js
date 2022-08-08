@@ -117,7 +117,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
         </StyledButtonGroup>
       )}
       <TileGrid columnCount={columnCount}>
-        {filteredContent.map((item, i) => {          
+        {filteredContent.map((item, i) => {    
           return (
             <React.Fragment key={i}>
               {item?.contentType === "NinaReleaseV1" && (
@@ -179,7 +179,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                 </Tile>
               )}
 
-              {item.contentType === "Post" && (
+              {item?.contentType === "Post" && (
                 <PostTile
                   className={"tile postTile"}
                   key={i}
@@ -204,7 +204,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                   </HoverCard>
                 </PostTile>
               )}
-              {item.contentType === "PostWithRelease" && (
+              {item?.contentType === "PostWithRelease" && (
                 <Tile className={"tile"} key={i}>
                   <HoverCard
                   className="hoverBorder"

@@ -301,7 +301,6 @@ const Player = styled("div")(({theme}) => ({
   paddingTop: '0',
   width: '100%',
   background: theme.palette.background.default,
-  border: '1p solid red',
   [theme.breakpoints.down('md')]: {
     position: 'fixed',
     bottom: '0',
