@@ -916,7 +916,7 @@ const hubContextHelper = ({
     let path = endpoints.api + `/hubs/${hubPubkey}`
     try {
       const response = await fetch(path)
-      const result = await response.json()
+      const result = await response?.json()
       if (response.status === 200) {
         saveHubCollaboratorsToState(result.hubCollaborators)
         saveHubContentToState(result.hubReleases, result.hubPosts, hubPubkey)
