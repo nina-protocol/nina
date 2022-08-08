@@ -56,7 +56,7 @@ const NotFound = (props) => {
         </Link>
       </Typography>
 
-      {((router.query.hubPostPubkey || router.query.hubReleasePubkey ) || hubData ) && (
+      {((router.query.hubPostPubkey || router.query.hubReleasePubkey ) && (hub || hubData) ) && (
         <>
           <Typography variant='h2' align="left" sx={{mt: '15px'}}>
             <Link href={`/${router.query.hubPubkey}`}>

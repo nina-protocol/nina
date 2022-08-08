@@ -101,16 +101,20 @@ export const getStaticProps = async (context) => {
     } 
   } catch (error) {
     console.warn(error);
-    indexerPath = indexerUrl + `/hubs/${context.params.hubPubkey}`
-    const result = await axios.get(indexerPath);
-    const data = result.data
-
-    if (data.hub) {
-      return{
-        props:{
-          hub: data.hub
+    try {
+      indexerPath = indexerUrl + `/hubs/${context.params.hubPubkey}`
+      const result = await axios.get(indexerPath);
+      const data = result.data
+  
+      if (data.hub) {
+        return{
+          props:{
+            hub: data.hub
+          }
         }
       }
+    } catch (error) {
+      console.log(error);
     }
   }
   return {props: {}}
