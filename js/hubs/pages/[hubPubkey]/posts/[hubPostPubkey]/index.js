@@ -11,7 +11,7 @@ const PostPage = (props) => {
 
   if (!post) {
     return (
-      <NotFound />
+      <NotFound hub={hub} />
     )
   }
   return (
@@ -100,7 +100,7 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL;
   const hubPostPubkey = context.params.hubPostPubkey;
-  const indexerPath = indexerUrl + `/hubPosts/${hubPostPubkey}`;
+  let indexerPath = indexerUrl + `/hubPosts/${hubPostPubkey}`;
 
   let hubPost;
   let postPubkey;
@@ -132,6 +132,17 @@ export const getStaticProps = async (context) => {
     };
   } catch (error) {
     console.warn(error);
+    indexerPath = indexerUrl + `/hubs/${context.params.hubPubkey}`
+    const result = await axios.get(indexerPath);
+    const data = result.data
+
+    if (data.hub) {
+      return {
+        props: {
+          hub: data.hub
+        }
+      }
+    }
   }
   return {props: {}};
 };

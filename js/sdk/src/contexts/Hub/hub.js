@@ -50,6 +50,8 @@ const HubContextProvider = ({ children }) => {
     validateHubHandle,
     filterFeaturedHubs,
     filterHubsAll,
+    saveHubsToState
+
   } = hubContextHelper({
     ninaClient,
     savePostsToState,
@@ -74,7 +76,7 @@ const HubContextProvider = ({ children }) => {
     featuredHubs,
     setFeaturedHubs,
     hubContentFetched,
-    setHubContentFetched
+    setHubContentFetched,
   })
 
   return (
@@ -109,7 +111,9 @@ const HubContextProvider = ({ children }) => {
         featuredHubs,
         filterFeaturedHubs,
         filterHubsAll,
-        hubContentFetched
+        hubContentFetched,
+        saveHubsToState,
+        getHubContent
       }}
     >
       {children}
@@ -910,8 +914,10 @@ const hubContextHelper = ({
 
   const getHubContent = async (hubPubkey) => {
     let path = endpoints.api + `/hubs/${hubPubkey}`
+    console.log('path :>> ', path);
     const response = await fetch(path)
     const result = await response.json()
+    console.log('result :>> ', result);
     saveHubCollaboratorsToState(result.hubCollaborators)
     saveHubContentToState(result.hubReleases, result.hubPosts, hubPubkey)
     saveHubsToState([result.hub])
@@ -1202,7 +1208,7 @@ const hubContextHelper = ({
     }
     return true
   }
-
+    
   return {
     getHubs,
     getHub,
@@ -1227,6 +1233,7 @@ const hubContextHelper = ({
     getHubPubkeyForHubHandle,
     validateHubHandle,
     filterFeaturedHubs,
+    saveHubsToState
   }
 }
 

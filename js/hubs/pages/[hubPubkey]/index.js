@@ -59,7 +59,7 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL;
   const hubPubkey = context.params.hubPubkey;
-  const indexerPath = indexerUrl + `/hubs/${hubPubkey}`;
+  let indexerPath = indexerUrl + `/hubs/${hubPubkey}`;
   
   let hub;
   if (hubPubkey && hubPubkey !== 'manifest.json') {
@@ -77,6 +77,17 @@ export const getStaticProps = async (context) => {
       };
     } catch (error) {
       console.warn(error);
+      indexerPath = indexerUrl + `/hubs/${context.params.hubPubkey}`
+      const result = await axios.get(indexerPath);
+      const data = result.data
+
+      if (data.hub) {
+        return {
+          props: {
+            hub: data.hub
+          }
+        }
+      }  
     }
   }
   return {props:{}};
