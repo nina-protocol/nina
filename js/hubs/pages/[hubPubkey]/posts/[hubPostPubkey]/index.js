@@ -118,31 +118,32 @@ export const getStaticProps = async (context) => {
       postPubkey = hubPost.postId;
       hub = hubPost.hub;
       hubPubkey = hubPost.hubId;
-    }
-    return {
-      props: {
-        metadata,
-        hubPostPubkey,
-        postPubkey,
-        post,
-        hub,
-        hubPubkey
-      },
-      revalidate: 10
-    };
-  } catch (error) {
-    console.warn(error);
-    indexerPath = indexerUrl + `/hubs/${context.params.hubPubkey}`
-    const result = await axios.get(indexerPath);
-    const data = result.data
-
-    if (data.hub) {
       return {
         props: {
-          hub: data.hub
+          metadata,
+          hubPostPubkey,
+          postPubkey,
+          post,
+          hub,
+          hubPubkey
+        },
+        revalidate: 10
+      };
+    } else {
+      indexerPath = indexerUrl + `/hubs/${context.params.hubPubkey}`
+      const result = await axios.get(indexerPath);
+      const data = result.data
+
+      if (data.hub) {
+        return {
+          props: {
+            hub: data.hub
+          }
         }
       }
     }
+  } catch (error) {
+    console.warn(error);
   }
   return {props: {}};
 };

@@ -89,33 +89,30 @@ export const getStaticProps = async (context) => {
       releasePubkey = hubRelease.releaseId;
       hub = hubRelease.hub;
       hubPubkey = hubRelease.hubId;
-    }
-    return {
-      props: {
-        releasePubkey,
-        metadata,
-        hubPubkey,
-        hub
-      },
-      revalidate: 10
-    } 
-  } catch (error) {
-    console.warn(error);
-    try {
+      return {
+        props: {
+          releasePubkey,
+          metadata,
+          hubPubkey,
+          hub
+        },
+        revalidate: 10
+      } 
+    } else {
       indexerPath = indexerUrl + `/hubs/${context.params.hubPubkey}`
       const result = await axios.get(indexerPath);
       const data = result.data
-  
+
       if (data.hub) {
-        return{
-          props:{
+        return {
+          props: {
             hub: data.hub
           }
         }
       }
-    } catch (error) {
-      console.warn(error)
     }
+  } catch (error) {
+    console.warn(error);
   }
   return {props: {}}
 };
