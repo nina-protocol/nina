@@ -914,13 +914,17 @@ const hubContextHelper = ({
 
   const getHubContent = async (hubPubkey) => {
     let path = endpoints.api + `/hubs/${hubPubkey}`
-    console.log('path :>> ', path);
-    const response = await fetch(path)
-    const result = await response.json()
-    console.log('result :>> ', result);
-    saveHubCollaboratorsToState(result.hubCollaborators)
-    saveHubContentToState(result.hubReleases, result.hubPosts, hubPubkey)
-    saveHubsToState([result.hub])
+    try {
+      const response = await fetch(path)
+      const result = await response.json()
+      if (response.status === 200) {
+        saveHubCollaboratorsToState(result.hubCollaborators)
+        saveHubContentToState(result.hubReleases, result.hubPosts, hubPubkey)
+        saveHubsToState([result.hub])
+      }
+    } catch (error) {
+      console.warn(error)
+    }
   }
 
   const getHubPost = async (hubPostPubkey, hubPubkey) => {

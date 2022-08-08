@@ -30,7 +30,7 @@ const Layout = ({ children }) => {
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
 
   useEffect(() => {
-    if ((router.pathname.includes('/[hubPubkey]') || router.pathname.includes('/404')) && !router.pathname.includes('/dashboard')) {
+    if ((router.pathname.includes('/[hubPubkey]')) && !router.pathname.includes('/dashboard')) {
       if (hubData?.json.backgroundColor) {
         lightTheme.palette.background.default = hubData.json.backgroundColor;
       } else {

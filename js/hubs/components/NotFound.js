@@ -25,7 +25,11 @@ const NotFound = (props) => {
 
   useEffect(() => {
     if (router.pathname === '/404') {
-      setHubHandle(router.asPath.split('/')[1])
+      try {
+        setHubHandle(router.asPath.split('/')[1])
+      } catch (error) {
+        console.warn(error)        
+      }
     }
   }, [router.path])
   
@@ -52,7 +56,7 @@ const NotFound = (props) => {
         </Link>
       </Typography>
 
-      {(router.query.hubPostPubkey || router.query.hubReleasePubkey ) || hubData && (
+      {((router.query.hubPostPubkey || router.query.hubReleasePubkey ) || hubData ) && (
         <>
           <Typography variant='h2' align="left" sx={{mt: '15px'}}>
             <Link href={`/${router.query.hubPubkey}`}>
