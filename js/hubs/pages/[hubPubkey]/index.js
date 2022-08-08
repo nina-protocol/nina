@@ -9,7 +9,9 @@ const HubPage = (props) => {
 
   if (!hub) {
     return (
-      <NotFound />
+      <>
+        <NotFound />
+      </>
     )
   }
   return (
@@ -59,10 +61,10 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL;
   const hubPubkey = context.params.hubPubkey;
-  let indexerPath = indexerUrl + `/hubs/${hubPubkey}`;
+  const indexerPath = indexerUrl + `/hubs/${hubPubkey}`;
   
   let hub;
-  if (hubPubkey) {
+  if (hubPubkey && hubPubkey !== 'manifest.json') {
     try {
       const result = await axios.get(indexerPath);
       const data = result.data;
