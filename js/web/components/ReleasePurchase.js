@@ -52,7 +52,6 @@ const ReleasePurchase = (props) => {
 
   useEffect(() => {
     getRelease(releasePubkey)
-    getExchangesForRelease(releasePubkey)
 
     const hubForRelease = async (releasePubkey) => {
       const result = await getPublishedHubForRelease(releasePubkey)
@@ -60,6 +59,11 @@ const ReleasePurchase = (props) => {
     }
     hubForRelease(releasePubkey)
   }, [releasePubkey])
+
+useEffect(() => {
+  getExchangesForRelease(releasePubkey)
+
+}, [releasePubkey, wallet.connected])
 
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
