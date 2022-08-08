@@ -60,7 +60,7 @@ const NotFound = (props) => {
         <>
           <Typography variant='h2' align="left" sx={{mt: '15px'}}>
             <Link href={`/${router.query.hubPubkey}`}>
-              {`Explore ${hub?.json.displayName || hubData.json.displayName}`}
+              {`Explore ${hub?.json.displayName || hubData?.json.displayName}`}
             </Link>
           </Typography>
         </>
