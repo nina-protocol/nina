@@ -44,7 +44,7 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
     if (!hubState[hubPubkey]) {
       getHub(hubPubkey);
     }
-  }, []);
+  }, [hubPubkey]);
 
   useEffect(() => {
     if (releasePubkey) {
