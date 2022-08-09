@@ -81,7 +81,7 @@ const App = ({ Component, pageProps }) => {
       }}
     >
       <ConnectionProvider endpoint={endpoint}>
-        <WalletProvider wallets={wallets}>
+        <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
             <NinaWrapper network={process.env.REACT_APP_CLUSTER}>
               <Layout>
