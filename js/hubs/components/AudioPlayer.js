@@ -259,7 +259,7 @@ const AudioPlayer = ({ hubPubkey }) => {
                 </Typography>
                 <Typography>{`${formatDuration(
                   trackProgress
-                )} / ${formatDuration(track.duration)}`}</Typography>
+                )} / ${formatDuration(audioPlayerRef.current.duration)}`}</Typography>
               </Box>
             )}
           </Controls>
