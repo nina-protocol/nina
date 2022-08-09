@@ -11,8 +11,7 @@ const sentryWebpackPluginOptions = {
   // https://github.com/getsentry/sentry-webpack-plugin#options.
 };
 
-// const cluster = "mainnet-beta";
-const cluster = "devnet";
+const cluster = "mainnet-beta";
 const IMGIX_URL = cluster === "devnet" 
   ? "nina-dev.imgix.net"
   : "nina.imgix.net"

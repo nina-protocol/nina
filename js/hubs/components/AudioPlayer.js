@@ -29,7 +29,7 @@ const AudioPlayer = ({ hubPubkey }) => {
     setInitialized,
     audioPlayerRef
   } = audio;
-
+  const [duration, setDuration] = useState(0)
   const audioInitialized = useMemo(() => initialized, [initialized])
   useEffect(() => {
     const trackObject = {};
@@ -167,6 +167,7 @@ const AudioPlayer = ({ hubPubkey }) => {
         audioPlayerRef.current.currentTime < audioPlayerRef.current.duration &&
         !audioPlayerRef.current.paused
       ) {
+        setDuration(audioPlayerRef.current.duration)
         setTrackProgress(Math.ceil(audioPlayerRef.current.currentTime));
       } else if (audioPlayerRef.current.currentTime >= audioPlayerRef.current.duration) {
         next();
@@ -232,6 +233,13 @@ const AudioPlayer = ({ hubPubkey }) => {
     }
   }
 
+  const seek = (newValue) => {
+    if (audioPlayerRef.current) {
+      setTrackProgress(newValue)
+      audioPlayerRef.current.currentTime = newValue
+    }
+  }
+
   return (
     <Player>
       {track && (
@@ -259,7 +267,7 @@ const AudioPlayer = ({ hubPubkey }) => {
                 </Typography>
                 <Typography>{`${formatDuration(
                   trackProgress
-                )} / ${formatDuration(track.duration)}`}</Typography>
+                )} / ${formatDuration(track?.duration || duration)}`}</Typography>
               </Box>
             )}
           </Controls>
@@ -272,10 +280,8 @@ const AudioPlayer = ({ hubPubkey }) => {
                 onChange={(e, newValue) => seek(newValue)}
                 aria-labelledby="continuous-slider"
                 min={0}
-                max={track?.duration}
+                max={track?.duration || duration}
               />
-
-   
             </Box>
           </ProgressContainer>
         </>
