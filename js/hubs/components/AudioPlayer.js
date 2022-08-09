@@ -224,7 +224,7 @@ const AudioPlayer = ({ hubPubkey }) => {
       setPlaying(false);
     }
   };
-
+ 
   const seek = (newValue) => {
     if (audioPlayerRef.current) {
       setTrackProgress(newValue)
