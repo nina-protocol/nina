@@ -111,12 +111,11 @@ const Navigation = ({ hubPubkey }) => {
     return base58.slice(0, 4) + ".." + base58.slice(-4);
   }, [wallet, base58]);
 
-  // useEffect(() => {
-  //   console.log('wallet: ', wallet)
-  //   if (wallet.wallet && !wallet.publicKey && !wallet.connecting && !wallet.connected) {
-  //     wallet.connect()
-  //   }
-  // }, [wallet])
+  useEffect(() => {
+    if (wallet.wallet && !wallet.publicKey && !wallet.connecting && !wallet.connected) {
+      wallet.connect()
+    }
+  }, [wallet])
 
   const canAddContent = useMemo(() => {
     if (wallet?.connected && hubPubkey) {
