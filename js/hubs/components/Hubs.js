@@ -168,15 +168,13 @@ const Hubs = () => {
                     </Typography>
                   </Box>
                   <HubSlider hubs={hubs} />
-
-                <Box sx={{mt: '40px'}} display="flex">
-                  <BlueTypography variant="h1" margin="auto">
-                    <Link href="/all">
-                      Start Exploring.
-                    </Link>
-                  </BlueTypography>
-                </Box>
-
+                  <Box sx={{mt: '40px'}} display="flex">
+                    <BlueTypography variant="h1" margin="auto">
+                      <Link href="/all">
+                        Start Exploring.
+                      </Link>
+                    </BlueTypography>
+                  </Box>
                 </DashboardContent>
               )}
               {userHubs?.length === 0 && npcAmountHeld > 0 && (
@@ -282,7 +280,7 @@ const Hubs = () => {
                         You have {userHubs.length} {userHubs.length > 1 ? 'Hubs' : 'Hub'}
                       </DashboardHeader>
                       <ul style={{ height: "500px", overflowY: "scroll" }}>
-                        {userHubs.map((hub) => {
+                        {userHubs.filter(hub => hub.id).map((hub) => {
                           return (
                             <DashboardEntry key={hub.id}>
                               <Link href={`/${hub.handle}`}>
