@@ -6,7 +6,7 @@ import Nina from "@nina-protocol/nina-sdk/esm/Nina";
 import Release from "@nina-protocol/nina-sdk/esm/Release";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Button from "@mui/material/Button";
-import Link from "@mui/material/Link";
+import Link from "next/link";
 import Box from "@mui/material/Box";
 import { useSnackbar } from "notistack";
 import Typography from "@mui/material/Typography";
@@ -166,8 +166,7 @@ const ReleasePurchase = (props) => {
       {publishedHub && publishedHub.id !== hubPubkey && (
         <Typography variant="body2" align="left" paddingBottom="10px">
           <StyledLink
-            href={publishedHub.json.externalUrl}
-            passHref
+            href={`/${publishedHub.handle}`}
           >
             {`Published via ${publishedHub.json.displayName}`}
           </StyledLink>

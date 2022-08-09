@@ -33,6 +33,8 @@ const Layout = ({ children }) => {
     if (router.pathname.includes('/[hubPubkey]') && !router.pathname.includes('/dashboard')) {
       if (hubData?.json.backgroundColor) {
         lightTheme.palette.background.default = hubData.json.backgroundColor;
+      } else {
+        lightTheme.palette.background.default = "#ffffff";
       }
       if (hubData?.json.textColor) {
         lightTheme.palette.text.primary = hubData.json.textColor;
@@ -41,6 +43,12 @@ const Layout = ({ children }) => {
           hubData.json.textColor;
         lightTheme.components.MuiCssBaseline.styleOverrides.a.color =
           hubData.json.textColor;
+      } else {
+        lightTheme.palette.text.primary = "#000000";
+        lightTheme.palette.primary.main = "#000000";
+        lightTheme.components.MuiTypography.styleOverrides.root.color = "#000000";
+        lightTheme.components.MuiCssBaseline.styleOverrides.a.color = "#000000";
+  
       }
     } else {
       lightTheme.palette.background.default = "#ffffff";
@@ -155,7 +163,8 @@ const AudioPlayerWrapper = styled("div")(({ theme }) => ({
   left: 0,
   paddingLeft: "8px",
   textAlign: "left",
-  paddingBottom: theme.spacing(1),
+  width: '30vw',
+  paddingBottom: '0',
   [theme.breakpoints.down("md")]: {
     paddingLeft: "0px",
   },

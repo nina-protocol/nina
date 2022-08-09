@@ -17,7 +17,7 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 const { getImageFromCDN, loader } = imageManager
 
-const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
+const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
   const { updateTrack, setInitialized, audioPlayerRef, isPlaying, track } = useContext(Audio.Context);
   const { hubState } = useContext(Hub.Context);
   const { releaseState } = useContext(Release.Context);
@@ -26,13 +26,17 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
   const router = useRouter();
 
   const [displayType, setDisplayType] = useState("all");
-  const [filteredContent, setFilteredContent] = useState(content);
-  
+  const [filteredContent, setFilteredContent] = useState([]);
+  const content = useMemo(() => contentData.content, [contentData, hubPubkey])
+  const contentTypes = useMemo(() => contentData.contentTypes, [contentData, hubPubkey])
+
   useEffect(() => {
     let filtered;
     switch (displayType) {
       case "all":
-        setFilteredContent(content);
+        filtered = content.filter((item) => item.hub === hubPubkey)
+        console.log('filtered: ', filtered)
+        setFilteredContent(filtered);
         break;
       case "releases":
         filtered = content.filter((item) => {
@@ -66,7 +70,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
       default:
         break;
     }
-  }, [displayType]);
+  }, [displayType, content]);
 
   const handleFormat = (event, newDisplayType) => {
     setDisplayType(newDisplayType);
@@ -117,7 +121,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
         </StyledButtonGroup>
       )}
       <TileGrid columnCount={columnCount}>
-        {filteredContent.map((item, i) => {          
+        {filteredContent?.map((item, i) => {    
           return (
             <React.Fragment key={i}>
               {item?.contentType === "NinaReleaseV1" && (
@@ -179,7 +183,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                 </Tile>
               )}
 
-              {item.contentType === "Post" && (
+              {item?.contentType === "Post" && item.postContent && (
                 <PostTile
                   className={"tile postTile"}
                   key={i}
@@ -190,8 +194,8 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                       variant="h2"
                       sx={{ color: "text.primary", textTransform: "uppercase" }}
                     >
-                      {item.postContent.json.title.substring(0, 100)}
-                      {item.postContent.json.title.length > 100 ? "..." : ""}
+                      {item.postContent?.json.title.substring(0, 100)}
+                      {item.postContent?.json.title.length > 100 ? "..." : ""}
                     </PostTitle>
                     <Typography sx={{ color: "text.primary" }}>
                       published: {formattedDate(item.createdAt)}
@@ -204,7 +208,7 @@ const ContentTileView = ({ content, hubPubkey, hubHandle, contentTypes }) => {
                   </HoverCard>
                 </PostTile>
               )}
-              {item.contentType === "PostWithRelease" && (
+              {item?.contentType === "PostWithRelease" && (
                 <Tile className={"tile"} key={i}>
                   <HoverCard
                   className="hoverBorder"

@@ -397,7 +397,7 @@ const HubCreate = ({ update, hubData }) => {
           fullWidth
           variant="outlined"
           color="primary"
-          onClick={() => router.push(`/${hubPubkey}`)}
+          onClick={() => router.push(`/${formValues.hubForm.handle}`)}
           sx={{ height: "54px" }}
         >
           {`${formValues.hubForm.displayName}  has been created!  View Hub.`}

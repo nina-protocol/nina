@@ -6,10 +6,15 @@ import { formatDuration } from "@nina-protocol/nina-sdk/esm/utils"
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import Box from '@mui/material/Box'
+import Slider from '@mui/material/Slider'
+import Link from 'next/link'
+import {useRouter} from "next/router";
 
 const AudioPlayer = ({ hubPubkey }) => {
+  const router = useRouter();
   const { releaseState } = useContext(Release.Context);
-  const { hubContentState, filterHubContentForHub } = useContext(Hub.Context);
+  const { hubContentState, filterHubContentForHub, hubState } = useContext(Hub.Context);
   const audio = useContext(Audio.Context);
   const [tracks, setTracks] = useState({});
   const {
@@ -28,7 +33,7 @@ const AudioPlayer = ({ hubPubkey }) => {
   const audioInitialized = useMemo(() => initialized, [initialized])
   useEffect(() => {
     const trackObject = {};
-    const [hubReleases] = filterHubContentForHub(hubPubkey);
+    const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey);
     hubReleases.forEach((hubRelease) => {
       let contentItem;
       if (
@@ -39,12 +44,30 @@ const AudioPlayer = ({ hubPubkey }) => {
         contentItem = releaseState.metadata[hubRelease.release];
         contentItem.contentType = hubRelease.contentType;
         contentItem.publicKey = hubRelease.release;
+        contentItem.hubReleaseId = hubRelease.hubReleaseId
+        contentItem.hubHandle = hubState[hubRelease.hub].handle
         contentItem.datetime = hubRelease.datetime;
         trackObject[hubRelease.release] = contentItem;
-      }
+      } 
     });
+    hubPosts.forEach(hubPost => {
+      let contentItem;
+      if (
+        hubPost.contentType === 'Post' &&
+        hubPost.referenceHubContent !== null &&
+        hubPost.visible
+      ) {
+        contentItem = releaseState.metadata[hubPost.referenceHubContent];
+        contentItem.contentType = hubPost.contentType;
+        contentItem.hubHandle = hubState[hubPost.hub].handle
+        contentItem.hubPostPubkey = hubPost.publicKey
+        contentItem.datetime = hubPost.datetime;
+        trackObject[hubPost.release] = contentItem;
+      }
+    })
     setTracks(trackObject);
-  }, [hubContentState, hubPubkey]);
+  }, [hubContentState, hubState, hubPubkey]);
+
   const activeTrack = useRef();
   const intervalRef = useRef();
   const activeIndexRef = useRef(0);
@@ -78,10 +101,9 @@ const AudioPlayer = ({ hubPubkey }) => {
 
   useEffect(() => {
     if (Object.values(tracks).length > 0) {
-      const trackIds = Object.values(tracks)
+      const trackValues = Object.values(tracks)
         .sort((a, b) => new Date(b.datetime) - new Date(a.datetime))
-        .map((track) => track.publicKey);
-      createPlaylistFromTracksHubs(trackIds);
+      createPlaylistFromTracksHubs(trackValues);
     }
   }, [tracks, hubContentState]);
 
@@ -203,6 +225,13 @@ const AudioPlayer = ({ hubPubkey }) => {
     }
   };
 
+  const seek = (newValue) => {
+    if (audioPlayerRef.current) {
+      setTrackProgress(newValue)
+      audioPlayerRef.current.currentTime = newValue
+    }
+  }
+
   return (
     <Player>
       {track && (
@@ -220,20 +249,46 @@ const AudioPlayer = ({ hubPubkey }) => {
               Next
             </Button>
             {track && (
-              <div>
-                <Typography>{`Now Playing: ${track.artist} - ${track.title}`}</Typography>
+              <Box>
+                <Typography>Now Playing:{' '}
+                <Link 
+                  href={`/${track.hubHandle}/${track.hubPostPubkey ? 'posts' : 'releases'}/${track.hubPostPubkey ? track.hubPostPubkey : track.hubReleaseId}`}
+                  >
+                    {`${track.artist} - ${track.title}`}
+                </Link>
+                </Typography>
                 <Typography>{`${formatDuration(
                   trackProgress
                 )} / ${formatDuration(track.duration)}`}</Typography>
-              </div>
+              </Box>
             )}
           </Controls>
+
+
+          <ProgressContainer>
+            <Box sx={{display: 'flex', alignItems: 'center'}}>
+              <Slider
+                value={track ? trackProgress : 0}
+                onChange={(e, newValue) => seek(newValue)}
+                aria-labelledby="continuous-slider"
+                min={0}
+                max={track?.duration}
+              />
+
+   
+            </Box>
+          </ProgressContainer>
         </>
       )}
+
       <audio id="audio" style={{ width: "100%" }}>
         <source src={track?.txid + '?ext=mp3'} type="audio/mp3" />
       </audio>
       <Typography sx={{pb: "5px", whiteSpace: 'nowrap'}}>
+        <Link href={`/all`}>
+          Hubs.
+        </Link>
+        {' '}
         <a href={`https://ninaprotocol.com/`} target="_blank" rel="noreferrer" >
           Powered by Nina.
         </a>
@@ -242,34 +297,16 @@ const AudioPlayer = ({ hubPubkey }) => {
   );
 };
 
-const Controls = styled("div")(({ theme }) => ({
-  paddingBottom: theme.spacing(2),
-  width: "100%",
-  maxWidth: "480px",
-  minWidth: '250px',
-  "& .MuiButton-root": {
-    fontSize: theme.typography.body1.fontSize,
-    padding: 0,
-    color: theme.palette.text.primary,
-    ":hover": {
-      opacity: "50%",
-    },
-    ":disabled": {
-      color: theme.palette.text.primary + "a0",
-    },
-  },
-}));
-
-const Player = styled("div")(({ theme }) => ({
-  paddingTop: theme.spacing(2),
-  width: '90%',
+const Player = styled("div")(({theme}) => ({
+  paddingTop: '0',
+  width: '100%',
   background: theme.palette.background.default,
   [theme.breakpoints.down('md')]: {
     position: 'fixed',
     bottom: '0',
     width: '100vw',
     background: theme.palette.background.default,
-    paddingTop: '0',
+    paddingTop: '8px',
     paddingLeft: '15px'
   },
   "& .MuiButton-root": {
@@ -286,5 +323,61 @@ const Player = styled("div")(({ theme }) => ({
     textDecoration: "none",
   },
 }));
+
+
+const Controls = styled("div")(({ theme }) => ({
+  paddingBottom: theme.spacing(2),
+  width: "100%",
+  [theme.breakpoints.down('md')]: {
+    paddingBottom: '0'
+  },
+  "& .MuiButton-root": {
+    fontSize: theme.typography.body1.fontSize,
+    padding: 0,
+    color: theme.palette.text.primary,
+    height: '14px',
+    ":hover": {
+      opacity: "50%",
+    },
+    ":disabled": {
+      color: theme.palette.text.primary + "a0",
+    },
+  },
+}));
+
+const ProgressContainer = styled(Box)(({theme}) => ({
+  height: '10px',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-around',
+  paddingRight: theme.spacing(2),
+  paddingBottom: theme.spacing(2),
+  paddingLeft: '7px',
+  [theme.breakpoints.down('md')]: {
+    width: 'calc(100% - 15px)',
+    padding: theme.spacing(1, 1),
+  },
+  '& .MuiSlider-root': {
+    height: '2px',
+    padding: '0',
+    '& .MuiSlider-thumb': {
+      color: theme.palette.primary.main,
+      backgroundColor: `${theme.palette.primary.main} !important`,
+      width: '14px',
+      height: '11px',
+    },
+    '& .MuiSlider-track': {
+      backgroundColor: theme.palette.primary.main,
+      height: '2px',
+      border: 'none',
+      marginLeft: '-7px',
+      paddingRight: '5px',
+    },
+    '& .MuiSlider-rail': {
+      backgroundColor: theme.palette.primary.main,
+      height: '2px',
+    },
+  },
+}))
 
 export default AudioPlayer;
