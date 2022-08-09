@@ -35,7 +35,7 @@ const AudioPlayer = () => {
   const activeIndexRef = useRef(0)
   const [playing, setPlaying] = useState(false)
   const [trackProgress, setTrackProgress] = useState(0.0)
-
+  const [duration, setDuration] = useState(0)
   useEffect(() => {
     playerRef.current = document.querySelector('#audio')
 
@@ -123,6 +123,7 @@ const AudioPlayer = () => {
         playerRef.current.currentTime < playerRef.current.duration &&
         !playerRef.current.paused
       ) {
+        setDuration(playerRef.current.duration)
         setTrackProgress(Math.ceil(playerRef.current.currentTime))
       } else if (playerRef.current.currentTime >= playerRef.current.duration) {
         next()
@@ -255,7 +256,7 @@ const AudioPlayer = () => {
             onChange={(e, newValue) => seek(newValue)}
             aria-labelledby="continuous-slider"
             min={0}
-            max={audioPlayerRef.current.duration}
+            max={track?.duration || playerRef.current.duration}
           />
 
           <Typography
