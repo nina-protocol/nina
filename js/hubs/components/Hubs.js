@@ -84,7 +84,7 @@ const Hubs = () => {
                 align="left"
                 sx={{ padding: { md: "0 165px 40px", xs: "0px 0px 10px" } }}
               >
-                <Link href="/all">Hubs </Link>
+                <Link href="/all">Hubs</Link>
                 are a new way to publish, share, and discuss music.
               </BlueTypography>
               <BlueTypography
@@ -152,7 +152,7 @@ const Hubs = () => {
                       rel="noreferrer"
                       passHref
                     >
-                      apply
+apply
                     </Link>{" "}
                     here to get started.
                   </BlueTypography>
