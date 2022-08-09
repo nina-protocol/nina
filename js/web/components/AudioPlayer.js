@@ -256,7 +256,7 @@ const AudioPlayer = () => {
             onChange={(e, newValue) => seek(newValue)}
             aria-labelledby="continuous-slider"
             min={0}
-            max={track?.duration || playerRef.current.duration}
+            max={track?.duration || duration}
           />
 
           <Typography
