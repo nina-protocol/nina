@@ -37,6 +37,8 @@ pub mod subscription_subscribe_account;
 pub mod subscription_subscribe_hub;
 pub mod subscription_unsubscribe;
 
+pub mod admin_set_release_mint;
+
 pub use release_init_with_credit::*;
 pub use release_init_via_hub::*;
 pub use release_purchase::*;
@@ -75,3 +77,5 @@ pub use post_update_via_hub_post::*;
 pub use subscription_subscribe_account::*;
 pub use subscription_subscribe_hub::*;
 pub use subscription_unsubscribe::*;
+
+pub use admin_set_release_mint::*;

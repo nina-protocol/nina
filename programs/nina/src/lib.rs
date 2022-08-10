@@ -260,4 +260,10 @@ pub mod nina {
     ) -> Result <()> {
         instructions::subscription_unsubscribe::handler(ctx)
     }
+
+    pub fn admin_set_release_mint(
+        ctx: Context<AdminSetReleaseMint>
+    ) -> Result <()> {
+        instructions::admin_set_release_mint::handler(ctx)
+    }
 }
