@@ -260,11 +260,7 @@ const AudioPlayer = ({ hubPubkey }) => {
                 </Typography>
                 <Typography>{`${formatDuration(
                   trackProgress
-<<<<<<< HEAD
-                )} / ${formatDuration(track.duration)}`}</Typography>
-=======
                 )} / ${formatDuration(track?.duration || duration)}`}</Typography>
->>>>>>> 79a52f64387f2e0e81be13015dfc33a9cf2c24b5
               </Box>
             )}
           </Controls>
@@ -277,15 +273,8 @@ const AudioPlayer = ({ hubPubkey }) => {
                 onChange={(e, newValue) => seek(newValue)}
                 aria-labelledby="continuous-slider"
                 min={0}
-<<<<<<< HEAD
-                max={track?.duration}
-              />
-
-   
-=======
                 max={track?.duration || duration}
               />
->>>>>>> 79a52f64387f2e0e81be13015dfc33a9cf2c24b5
             </Box>
           </ProgressContainer>
         </>

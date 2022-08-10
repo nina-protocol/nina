@@ -47,15 +47,11 @@ const HubComponent = ({hubPubkey}) => {
   }, [hubPubkey]);
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
-<<<<<<< HEAD
-  const [hubReleases, hubPosts] = useMemo(() => filterHubContentForHub(hubPubkey), [hubContentState]);
-=======
   useEffect(() => {
     const [releases, posts] = filterHubContentForHub(hubPubkey)
     setHubReleases(releases)
     setHubPosts(posts)
   }, [hubContentState]);
->>>>>>> 79a52f64387f2e0e81be13015dfc33a9cf2c24b5
   const [description, setDescription] = useState();
   const hubCollaborators = useMemo(
     () => filterHubCollaboratorsForHub(hubPubkey) || [],
