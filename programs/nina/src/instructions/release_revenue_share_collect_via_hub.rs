@@ -24,7 +24,7 @@ pub struct ReleaseRevenueShareCollectViaHub<'info> {
         mut,
         has_one = release_signer,
         has_one = royalty_token_account,
-        seeds = [b"nina-release".as_ref(), release_mint.key().as_ref()],
+        seeds = [b"nina-release".as_ref(), release_mint_seed.key().as_ref()],
         bump = release.load()?.bumps.release,
     )]
     pub release: AccountLoader<'info, Release>,
@@ -33,6 +33,12 @@ pub struct ReleaseRevenueShareCollectViaHub<'info> {
         constraint = release_mint.mint_authority == COption::Some(*release_signer.key),
     )]
     pub release_mint: Box<Account<'info, Mint>>,
+    #[account(
+        mut,
+        address = release.load()?.release_mint_seed,
+        constraint = release_mint_seed.mint_authority == COption::Some(*release_signer.key),
+    )]
+    pub release_mint_seed: Account<'info, Mint>,
     /// CHECK: This is safe because it is derived from release which is checked above
     #[account(
         seeds = [release.to_account_info().key.as_ref()],

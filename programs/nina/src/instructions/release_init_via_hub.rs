@@ -14,7 +14,7 @@ pub struct ReleaseInitializeViaHub<'info> {
     pub authority: Signer<'info>,
     #[account(
         init,
-        seeds = [b"nina-release".as_ref(), release_mint.key().as_ref()],
+        seeds = [b"nina-release".as_ref(), release_mint_seed.key().as_ref()],
         bump,
         payer = authority,
         space = 1210
@@ -66,6 +66,7 @@ pub struct ReleaseInitializeViaHub<'info> {
     )]
     pub hub_wallet: Box<Account<'info, TokenAccount>>,
     pub release_mint: Box<Account<'info, Mint>>,
+    pub release_mint_seed: Box<Account<'info, Mint>>,
     #[account(
         constraint = authority_token_account.owner == authority.key(),
         constraint = authority_token_account.mint == payment_mint.key(),
@@ -105,6 +106,7 @@ pub fn handler(
         &ctx.accounts.release,
         ctx.accounts.release_signer.to_account_info().clone(),
         ctx.accounts.release_mint.to_account_info().clone(),
+        ctx.accounts.release_mint_seed.to_account_info().clone(),
         ctx.accounts.payment_mint.to_account_info().clone(),
         ctx.accounts.authority.to_account_info().clone(),
         ctx.accounts.authority.to_account_info().clone(),

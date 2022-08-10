@@ -16,7 +16,7 @@ pub struct ReleaseAirdrop<'info> {
     #[account(
         mut,
         has_one = release_signer,
-        seeds = [b"nina-release".as_ref(), release_mint.key().as_ref()],
+        seeds = [b"nina-release".as_ref(), release_mint_seed.key().as_ref()],
         bump,
     )]
     pub release: AccountLoader<'info, Release>,
@@ -40,6 +40,12 @@ pub struct ReleaseAirdrop<'info> {
         constraint = release_mint.mint_authority == COption::Some(*release_signer.key),
     )]
     pub release_mint: Account<'info, Mint>,
+    #[account(
+        mut,
+        address = release.load()?.release_mint,
+        constraint = release_mint.mint_authority == COption::Some(*release_signer.key),
+    )]
+    pub release_mint_seed: Account<'info, Mint>,
     #[account(address = token::ID)]
     pub token_program: Program<'info, Token>,
 }

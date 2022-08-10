@@ -40,8 +40,7 @@ async function createMint(provider, authority, decimals=0) {
 
   const tx = new anchor.web3.Transaction();
   tx.add(...instructions);
-
-  await provider.send(tx, [mint]);
+  await provider.sendAndConfirm(tx, [mint]);
 
   return mint.publicKey;
 }
@@ -70,7 +69,7 @@ async function createTokenAccount(provider, mint, owner) {
   tx.add(
     ...(await createTokenAccountInstrs(provider, vault.publicKey, mint, owner))
   );
-  await provider.send(tx, [vault]);
+  await provider.sendAndConfirm(tx, [vault]);
   return vault.publicKey;
 }
 
@@ -117,7 +116,7 @@ async function mintToAccount(
       mintAuthority
     ))
   );
-  await provider.send(tx, []);
+  await provider.sendAndConfirm(tx, []);
   return;
 }
 
@@ -218,7 +217,7 @@ const findOrCreateAssociatedTokenAccount = async(
     if (sendTransaction) {
       const tx = new anchor.web3.Transaction();
       tx.add(ix);
-      await provider.send(tx, []);
+      await provider.sendAndConfirm(tx, []);
     }
     return [associatedTokenAddress, ix];
   } else {

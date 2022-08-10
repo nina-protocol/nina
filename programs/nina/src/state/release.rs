@@ -19,9 +19,9 @@ use crate::errors::ErrorCode;
 pub struct Release {
     pub payer: Pubkey,
     pub authority: Pubkey,
-    pub authority_token_account: Pubkey,
-    pub release_signer: Pubkey,
     pub release_mint: Pubkey,
+    pub release_signer: Pubkey,
+    pub release_mint_seed: Pubkey,
     pub release_datetime: i64,
     pub royalty_token_account: Pubkey,
     pub payment_mint: Pubkey,
@@ -327,6 +327,7 @@ impl Release {
         release_loader: &AccountLoader<'info, Release>,
         release_signer: AccountInfo<'info>,
         release_mint: AccountInfo<'info>,
+        release_mint_seed: AccountInfo<'info>,
         payment_mint: AccountInfo<'info>,
         payer: AccountInfo<'info>,
         authority: AccountInfo<'info>,
@@ -375,7 +376,7 @@ impl Release {
         release.payer = *payer.to_account_info().key;
         release.release_signer = *release_signer.to_account_info().key;
         release.release_mint = *release_mint.to_account_info().key;
-        release.authority_token_account = *authority_token_account.to_account_info().key;
+        release.release_mint_seed = *release_mint_seed.to_account_info().key;
         release.royalty_token_account = *royalty_token_account.to_account_info().key;
         release.payment_mint = *payment_mint.to_account_info().key;
 
@@ -415,7 +416,7 @@ impl Release {
         let cpi_program = token_program.to_account_info().clone();
         let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
         token::set_authority(cpi_ctx, AuthorityType::MintTokens.into(), Some(release.release_signer))?;
-        
+
         Ok(())
     }
 

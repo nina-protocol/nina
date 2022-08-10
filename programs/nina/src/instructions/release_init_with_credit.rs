@@ -8,7 +8,7 @@ use crate::utils::{nina_publishing_credit_mint};
 pub struct ReleaseInitializeWithCredit<'info> {
     #[account(
         init,
-        seeds = [b"nina-release".as_ref(), release_mint.key().as_ref()],
+        seeds = [b"nina-release".as_ref(), release_mint_seed.key().as_ref()],
         bump,
         payer = payer,
         space = 1210
@@ -21,6 +21,7 @@ pub struct ReleaseInitializeWithCredit<'info> {
     )]
     pub release_signer: UncheckedAccount<'info>,
     pub release_mint: Box<Account<'info, Mint>>,
+    pub release_mint_seed: Box<Account<'info, Mint>>,
     #[account(mut)]
     pub payer: Signer<'info>,
     /// CHECK: the payer is usually the authority, though they can set someone else as authority
@@ -84,6 +85,7 @@ pub fn handler(
         &ctx.accounts.release,
         ctx.accounts.release_signer.to_account_info().clone(),
         ctx.accounts.release_mint.to_account_info().clone(),
+        ctx.accounts.release_mint_seed.to_account_info().clone(),
         ctx.accounts.payment_mint.to_account_info().clone(),
         ctx.accounts.payer.to_account_info().clone(),
         ctx.accounts.authority.to_account_info().clone(),
