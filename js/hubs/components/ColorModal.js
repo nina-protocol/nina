@@ -121,7 +121,7 @@ const ColorModal = ({
                     Text:{" "}
                   </Typography>
                   <HexColorInput
-                    color={textColor ? textColor : "#ffffff"}
+                    color={textColor ? textColor : "#000000"}
                     onChange={setTextColor}
                   />
 
@@ -129,7 +129,7 @@ const ColorModal = ({
                     width: '10px',
                     height: '15px',
                     marginLeft: '8px',
-                    borderRight: `15px solid ${textColor || '#ffffff'}`,
+                    borderRight: `15px solid ${textColor || '#000000'}`,
                   }}
                   />
                 </StyledInputWrapper>
