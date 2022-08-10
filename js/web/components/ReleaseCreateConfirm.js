@@ -66,7 +66,6 @@ const ReleaseCreateConfirm = (props) => {
   }, [data.description]);
 
   const handleChangeCheckbox = (e) => {
-    console.log(e.target.checked)
     setConfirm(e.target.checked)
   }
 

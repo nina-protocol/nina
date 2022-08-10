@@ -203,6 +203,29 @@ const lightThemeOptions = {
             height: '1px',
           },
         },
+        root: {
+          '& .MuiSlider-thumb': {
+            color: colors.black,
+            width: '14px',
+            height: '11px',
+            boxShadow: 'none !important',
+            '&:hover': {
+              boxShadow: 'none',
+            },
+            '& .Mui-focusVisible': {
+              boxShadow: 'none',
+            },
+          },
+          '& .MuiSlider-track': {
+            color: colors.black,
+            height: '1px',
+            border: 'none',
+          },
+          '& .MuiSlider-rail': {
+            color: colors.black,
+            height: '1px',
+          },
+        },
       },
     },
     MuiTextField: {

@@ -1047,10 +1047,10 @@ const hubContextHelper = ({
       })
 
       let updatedState = { ...hubContentState }
-      let contentState = {}
+
       for (let hubRelease of hubReleases) {
-        contentState = {
-          ...contentState,
+        updatedState = {
+          ...updatedState,
           [hubRelease.id]: {
             addedBy: hubRelease.addedBy,
             child: hubRelease.id,
@@ -1081,8 +1081,8 @@ const hubContextHelper = ({
       })
 
       for (let hubPost of hubPosts) {
-        contentState = {
-          ...contentState,
+        updatedState = {
+          ...updatedState,
           [hubPost.id]: {
             addedBy: hubPost.addedBy,
             child: hubPost.id,
@@ -1100,14 +1100,10 @@ const hubContextHelper = ({
           },
         }
       }
-      updatedState = {
-        ...updatedState,
-        ...contentState,
-      }
+      await savePostsToState(hubPosts.map((hubPost) => hubPost.post))
       await fetchAndSaveReleasesToState(
         hubReleases.map((hubRelease) => hubRelease.releaseId)
       )
-      await savePostsToState(hubPosts.map((hubPost) => hubPost.post))
       setHubContentState(updatedState)
       const updatedHubContentFetched = new Set(hubContentFetched)
       updatedHubContentFetched.add(hubPubkey.toBase58())
@@ -1123,7 +1119,6 @@ const hubContextHelper = ({
   const filterHubContentForHub = (hubPubkey) => {
     const hubReleases = []
     const hubPosts = []
-
     Object.values(hubContentState).forEach((hubContent) => {
       if (hubContent.hub === hubPubkey) {
         if (hubContent.contentType === 'NinaReleaseV1') {
@@ -1133,7 +1128,6 @@ const hubContextHelper = ({
         }
       }
     })
-
     return [hubReleases, hubPosts]
   }
 

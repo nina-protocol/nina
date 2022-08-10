@@ -29,70 +29,98 @@ const HubComponent = ({hubPubkey}) => {
   } = useContext(Hub.Context);
   const {postState} = useContext(Nina.Context);
   const {releaseState} = useContext(Release.Context);
+  const [contentData, setContentData] = useState({
+    content: [],
+    contentTypes: []
+  })
+  const [hubReleases, setHubReleases] = useState([])
+  const [hubPosts, setHubPosts] = useState([])
+  
   useEffect(() => {
     getHub(hubPubkey);
+    setContentData({
+      content: [],
+      contentTypes: []
+    })
+    setHubReleases([])
+    setHubPosts([])
   }, [hubPubkey]);
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
+<<<<<<< HEAD
   const [hubReleases, hubPosts] = useMemo(() => filterHubContentForHub(hubPubkey), [hubContentState]);
+=======
+  useEffect(() => {
+    const [releases, posts] = filterHubContentForHub(hubPubkey)
+    setHubReleases(releases)
+    setHubPosts(posts)
+  }, [hubContentState]);
+>>>>>>> 79a52f64387f2e0e81be13015dfc33a9cf2c24b5
   const [description, setDescription] = useState();
   const hubCollaborators = useMemo(
     () => filterHubCollaboratorsForHub(hubPubkey) || [],
     [hubCollaboratorsState, hubPubkey]
   );
 
-  const contentData = useMemo(() => {
+  useEffect(() => {
+  }, [hubContentFetched])
+
+  useEffect(() => {
     const contentArray = [];
     const types = []
     const hubContent = [...hubReleases, ...hubPosts];
     hubContent.forEach((hubContentData) => {
-      if (
-        hubContentData.contentType === "NinaReleaseV1" &&
-        releaseState.metadata[hubContentData.release] &&
-        hubContentData.visible
-      ) {
-        const hubReleaseIsReference =
-          hubContent.filter(
-            (c) => c.referenceHubContent === hubContentData.release && c.visible
-          ).length > 0;
-        if (!hubReleaseIsReference) {
+      if (hubContentData.hub === hubPubkey) {        
+        if (
+          hubContentData.contentType === "NinaReleaseV1" &&
+          releaseState.metadata[hubContentData.release] &&
+          hubContentData.visible
+        ) {
+          const hubReleaseIsReference =
+            hubContent.filter(
+              (c) => c.referenceHubContent === hubContentData.release && c.visible
+            ).length > 0;
+          if (!hubReleaseIsReference) {
+            hubContentData = {
+              ...hubContentData,
+              ...releaseState.metadata[hubContentData.release],
+            };
+            contentArray.push(hubContentData);
+          }
+          if (hubContentData.publishedThroughHub || releaseState.tokenData[hubContentData.release]?.authority.toBase58() === hubData?.authority) {
+            types.push('Releases')
+          } else {
+            types.push('Reposts')
+          }
+        } else if (
+          hubContentData.contentType === "Post" &&
+          postState[hubContentData.post] &&
+          hubContentData.visible
+        ) {
           hubContentData = {
             ...hubContentData,
-            ...releaseState.metadata[hubContentData.release],
+            ...postState[hubContentData.post],
+            hubPostPublicKey: hubContentData.publicKey,
           };
+          if (hubContentData.referenceHubContent !== null) {
+            hubContentData.releaseMetadata =
+              releaseState.metadata[hubContentData.referenceHubContent];
+            hubContentData.contentType = "PostWithRelease";
+          }
+          types.push('Text Posts')
           contentArray.push(hubContentData);
         }
-        if (hubContentData.publishedThroughHub || releaseState.tokenData[hubContentData.release]?.authority.toBase58() === hubData?.authority) {
-          types.push('Releases')
-        } else {
-          types.push('Reposts')
-        }
-      } else if (
-        hubContentData.contentType === "Post" &&
-        postState[hubContentData.post] &&
-        hubContentData.visible
-      ) {
-        hubContentData = {
-          ...hubContentData,
-          ...postState[hubContentData.post],
-          hubPostPublicKey: hubContentData.publicKey,
-        };
-        if (hubContentData.referenceHubContent !== null) {
-          hubContentData.releaseMetadata =
-            releaseState.metadata[hubContentData.referenceHubContent];
-          hubContentData.contentType = "PostWithRelease";
-        }
-        types.push('Text Posts')
-        contentArray.push(hubContentData);
       }
     });
     const uniqueTypes = [...new Set(types)]
-    return {
-      content: contentArray.sort(
-        (a, b) => new Date(b.datetime) - new Date(a.datetime)
-      ),
-      contentTypes: uniqueTypes
-    };
+    setContentData(
+      {      
+        content: contentArray.sort(
+          (a, b) => new Date(b.datetime) - new Date(a.datetime)
+        ),
+        contentTypes: uniqueTypes
+      }
+    );
   }, [hubReleases, hubPosts]);
 
   useEffect(() => {
@@ -152,12 +180,11 @@ const HubComponent = ({hubPubkey}) => {
             <Dots size="80px" />
           </Box>
         )}
-        {contentData.content?.length > 0 && (
+        {hubContentFetched.has(hubPubkey) && contentData.content?.length > 0 && (
           <ContentTileView
-            content={contentData.content}
+            contentData={contentData}
             hubPubkey={hubPubkey}
             hubHandle={hubData.handle}
-            contentTypes={contentData.contentTypes}
           />
         )}
         {hubContentFetched.has(hubPubkey) && contentData.content?.length === 0 && (
