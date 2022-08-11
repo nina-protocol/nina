@@ -25,11 +25,6 @@ const ColorModal = ({
     setOpen(false);
   };
 
-  const handleSetBackgroundColor = (value) => {
-    console.log('value :>> ', value);
-    setBackgroundColor(value)
-  }
-
   return (
     <Root>
       <Button
