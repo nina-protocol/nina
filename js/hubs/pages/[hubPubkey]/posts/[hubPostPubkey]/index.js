@@ -2,13 +2,17 @@ import React from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import axios from "axios";
+import NotFound from "../../../../components/NotFound";
+
 const Post = dynamic(() => import("../../../../components/Post"));
 
 const PostPage = (props) => {
   const { metadata, post, hub, postPubkey, hubPubkey } = props;
 
-  if (!hub) {
-    return (<></>)
+  if (!post) {
+    return (
+      <NotFound hub={hub} />
+    )
   }
   return (
     <>
@@ -96,7 +100,7 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL;
   const hubPostPubkey = context.params.hubPostPubkey;
-  const indexerPath = indexerUrl + `/hubPosts/${hubPostPubkey}`;
+  let indexerPath = indexerUrl + `/hubPosts/${hubPostPubkey}`;
 
   let hubPost;
   let postPubkey;
@@ -128,6 +132,21 @@ export const getStaticProps = async (context) => {
     };
   } catch (error) {
     console.warn(error);
+    try {
+      indexerPath = indexerUrl + `/hubs/${context.params.hubPubkey}`
+      const result = await axios.get(indexerPath);
+      const data = result.data
+  
+      if (data.hub) {
+        return {
+          props: {
+            hub: data.hub
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
   return {props: {}};
 };

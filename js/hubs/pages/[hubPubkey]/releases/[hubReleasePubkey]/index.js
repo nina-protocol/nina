@@ -2,11 +2,19 @@ import React from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import axios from "axios";
+import NotFound from "../../../../components/NotFound";
+
 const Release = dynamic(() => import("../../../../components/Release"));
 
 const ReleasePage = (props) => {
   const { metadata, hub, releasePubkey, hubPubkey } = props;
 
+
+  if (!metadata) {
+    return (
+      <NotFound hub={hub}/>
+    )
+  }
   return (
     <>
       <Head>
@@ -63,8 +71,7 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL;
   const hubReleasePubkey = context.params.hubReleasePubkey;
-  const indexerPath = indexerUrl + `/hubReleases/${hubReleasePubkey}`;
-
+  let indexerPath = indexerUrl + `/hubReleases/${hubReleasePubkey}`;
 
   let hubRelease;
   let release;
@@ -94,6 +101,21 @@ export const getStaticProps = async (context) => {
     } 
   } catch (error) {
     console.warn(error);
+    try {
+      indexerPath = indexerUrl + `/hubs/${context.params.hubPubkey}`
+      const result = await axios.get(indexerPath);
+      const data = result.data
+  
+      if (data.hub) {
+        return{
+          props:{
+            hub: data.hub
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
   return {props: {}}
 };
