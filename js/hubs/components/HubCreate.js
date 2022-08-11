@@ -338,6 +338,13 @@ const HubCreate = ({ update, hubData }) => {
                 image: `https://arweave.net/${artworkResult}`,
               };
 
+              if (backgroundColor) {
+                metadataJson.backgroundColor = backgroundColor;
+              }
+              if (textColor) {
+                metadataJson.textColor = textColor;
+              }
+
               metadataResult = (
                 await bundlrUpload(
                   new Blob([JSON.stringify(metadataJson)], {
