@@ -1,16 +1,10 @@
-import React, {useState, useEffect, useContext, useMemo} from "react";
-import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import React from "react";
 import Box from "@mui/material/Box";
 import {styled} from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
-import {useRouter} from "next/router";
 import Link from 'next/link'
 
 const NotFound = (props) => {
-  let {release} = props
-  const [hubHandle, setHubHandle] = useState()
-  const router = useRouter();
-
   return (
     <StyledBox>
       <Typography variant="h2" align="left">
