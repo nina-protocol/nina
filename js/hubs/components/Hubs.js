@@ -152,7 +152,7 @@ const Hubs = () => {
                       rel="noreferrer"
                       passHref
                     >
-                      apply
+apply
                     </Link>{" "}
                     here to get started.
                   </BlueTypography>
