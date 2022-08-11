@@ -233,13 +233,6 @@ const AudioPlayer = ({ hubPubkey }) => {
     }
   }
 
-  const seek = (newValue) => {
-    if (audioPlayerRef.current) {
-      setTrackProgress(newValue)
-      audioPlayerRef.current.currentTime = newValue
-    }
-  }
-
   return (
     <Player>
       {track && (
