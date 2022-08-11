@@ -26,7 +26,6 @@ const StyledBox = styled(Box)(() => ({
   alignItems: "flex-start",
   justifyContent: "center",
   flexDirection: 'column',
-  marginTop: '-125px'
 }));
 
 export default NotFound;
