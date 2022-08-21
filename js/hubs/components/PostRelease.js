@@ -94,6 +94,9 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
         xs={12}
         sx={{
           padding: "0px",
+          maxHeight: {xs: 'unset', md: '30vh'},
+          overflowY: 'scroll',
+          paddingBottom: {md: '15px'}
         }}
       >
         {metadata && metadata.image &&(
@@ -151,7 +154,6 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
                 )}
               </Box>
             </CtaWrapper>
-            {/* <StyledDescription variant="h4" align="left">{metadata.description}</StyledDescription> */}
           </>
         )}
         <ReleasePurchase
@@ -175,14 +177,6 @@ const PlayButton = styled(Button)(({ theme }) => ({
   "&:hover": {
     opacity: "50%",
     backgroundColor: `${theme.palette.transparent} !important`,
-  },
-}));
-
-const StyledDescription = styled(Typography)(({ theme }) => ({
-  overflowWrap: "anywhere",
-  [theme.breakpoints.up("md")]: {
-    maxHeight: "225px",
-    overflowY: "scroll",
   },
 }));
 

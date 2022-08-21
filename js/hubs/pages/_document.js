@@ -81,16 +81,18 @@ class MyDocument extends Document {
             defer
             src="https://www.googletagmanager.com/gtag/js?id=G-VDD58V1D22"
           />
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', 'G-VDD58V1D22', { page_path: window.location.pathname });
-              `,
-            }}
-          />
+          {process.env.REACT_APP_CLUSTER === 'mainnet-beta' && (
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', 'G-VDD58V1D22', { page_path: window.location.pathname });
+                `,
+              }}
+            />
+          )}
           {this.props.emotionStyleTags}
         </Head>
         <StyledBody style={{ margin: "0px", position: "relative" }}>
