@@ -241,7 +241,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
               variant: "info",
             }
           );
-          artworkResult = (await bundlrUpload(artwork.file)).data.id;
+          artworkResult = await bundlrUpload(artwork.file);
           setArtworkTx(artworkResult);
           upload = createUpload(
             UploadType.artwork,
@@ -259,7 +259,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                 variant: "info",
               }
             );
-            trackResult = (await bundlrUpload(track.file)).data.id;
+            trackResult = await bundlrUpload(track.file);
             setTrackTx(trackResult);
             updateUpload(upload, UploadType.track, trackResult);
           }
@@ -287,13 +287,11 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                 duration: track.meta.duration,
                 md5Digest
               });
-              metadataResult = (
-                await bundlrUpload(
+              metadataResult = await bundlrUpload(
                   new Blob([JSON.stringify(metadataJson)], {
                     type: "application/json",
                   })
-                )
-              ).data.id;
+                );
               setMetadata(metadataJson);
               setMetadataTx(metadataResult);
               updateUpload(

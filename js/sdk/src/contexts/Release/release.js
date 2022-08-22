@@ -414,7 +414,7 @@ const releaseContextHelper = ({
       await indexerHasRecord(hubRelease.toBase58(), 'hubRelease')
       await getRelease(release)
 
-      return true
+      return { success: true }
     } catch (error) {
       return ninaErrorHandler(error)
     }

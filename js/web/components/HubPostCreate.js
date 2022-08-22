@@ -196,13 +196,11 @@ const HubPostCreate = ({
             formValues.postForm.reference = preloadedRelease
           }
 
-          metadataResult = (
-            await bundlrUpload(
-              new Blob([JSON.stringify(metadataJson)], {
-                type: 'application/json',
-              })
-            )
-          ).data.id
+          metadataResult = await bundlrUpload(
+            new Blob([JSON.stringify(metadataJson)], {
+              type: 'application/json',
+            })
+          )
 
           setMetadataTx(metadataResult)
 

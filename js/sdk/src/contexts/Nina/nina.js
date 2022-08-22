@@ -565,16 +565,19 @@ const ninaContextHelper = ({
         const reader = new FileReader()
         reader.onload = async () => {
           const data = reader.result
-          let res
+          let txId
           try {
-            res = await bundlr.uploader.upload(data, [
-              { name: 'Content-Type', value: file.type },
-            ])
+            const tx = bundlr.createTransaction(data, {
+              tags: [{ name: 'Content-Type', value: file.type }]
+            })
+            await tx.sign();
+            await tx.upload()
+            txId = (await tx.upload()).data.id
           } catch (error) {
             ninaErrorHandler(error)
           }
           getBundlrBalance()
-          resolve(res)
+          resolve(txId)
         }
         reader.onerror = (error) => {
           reject(error)
