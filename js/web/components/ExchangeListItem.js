@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { useWallet } from '@solana/wallet-adapter-react'
-import Nina from '@nina-protocol/nina-sdk/esm/Nina'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 
 const ExchangeListItem = (props) => {
   const {

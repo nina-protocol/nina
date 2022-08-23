@@ -1,6 +1,6 @@
 import React from 'react'
 import { styled } from '@mui/material/styles'
-import { imageManager } from "@nina-protocol/nina-sdk/src/utils";
+import { imageManager } from "@nina-protocol/nina-internal-sdk/src/utils";
 import { isMobile } from 'react-device-detect'
 import Image from 'next/image'
 import { useRouter } from 'next/router'

@@ -4,7 +4,7 @@ import { Typography, Box } from '@mui/material'
 import Button from '@mui/material/Button'
 import Fade from '@mui/material/Fade'
 import Modal from '@mui/material/Modal'
-import Nina from '@nina-protocol/nina-sdk/esm/Nina'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 
 const ExchangeModal = (props) => {
   const {

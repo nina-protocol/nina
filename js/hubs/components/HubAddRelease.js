@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { useFormik } from "formik";
-import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
 import { useSnackbar } from "notistack";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";

@@ -11,8 +11,8 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import { useWallet } from '@solana/wallet-adapter-react'
-import Nina from '@nina-protocol/nina-sdk/esm/Nina'
-import Release from '@nina-protocol/nina-sdk/esm/Release'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import RoyaltyRecipientForm from './RoyaltyRecipientForm'
 
 const Royalty = (props) => {

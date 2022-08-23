@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef, useContext, useMemo } from "react";
-import Audio from "@nina-protocol/nina-sdk/esm/Audio";
-import Hub from "@nina-protocol/nina-sdk/esm/Hub";
-import Release from "@nina-protocol/nina-sdk/esm/Release";
-import { formatDuration } from "@nina-protocol/nina-sdk/esm/utils"
+import Audio from "@nina-protocol/nina-internal-sdk/esm/Audio";
+import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
+import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
+import { formatDuration } from "@nina-protocol/nina-internal-sdk/esm/utils"
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";

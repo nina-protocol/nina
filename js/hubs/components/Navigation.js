@@ -6,8 +6,8 @@ import List from "@mui/material/List";
 import Box from "@mui/material/Box";
 import makeStyles from "@mui/styles/makeStyles";
 import { styled } from "@mui/material/styles";
-import Hub from "@nina-protocol/nina-sdk/esm/Hub";
-import { imageManager } from '@nina-protocol/nina-sdk/esm/utils'
+import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
+import { imageManager } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import IconButton from "@mui/material/IconButton";
 import Drawer from "@mui/material/Drawer";
 import MenuIcon from "@mui/icons-material/Menu";

@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect, useMemo } from "react";
 import axios from "axios";
 import { styled } from "@mui/material/styles";
-import Hub from "@nina-protocol/nina-sdk/esm/Hub";
-import Nina from "@nina-protocol/nina-sdk/esm/Nina";
-import Release from "@nina-protocol/nina-sdk/esm/Release";
+import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
+import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Button from "@mui/material/Button";
 import Link from "next/link";

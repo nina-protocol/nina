@@ -6,10 +6,10 @@ import React, {
   useCallback,
 } from "react";
 import * as Yup from "yup";
-import Hub from "@nina-protocol/nina-sdk/esm/Hub";
-import Nina from "@nina-protocol/nina-sdk/esm/Nina";
-import Release from "@nina-protocol/nina-sdk/esm/Release";
-import { getMd5FileHash } from "@nina-protocol/nina-sdk/esm/utils"
+import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
+import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
+import { getMd5FileHash } from "@nina-protocol/nina-internal-sdk/esm/utils"
 import { useSnackbar } from "notistack";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
