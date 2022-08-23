@@ -208,7 +208,7 @@ const HubCreate = ({ update, hubData }) => {
               variant: "info",
             }
           );
-          artworkResult = (await bundlrUpload(artwork.file)).data.id;
+          artworkResult = await bundlrUpload(artwork.file);
           setArtworkTx(artworkResult);
           metadataJson.image = `https://arweave.net/${artworkResult}`;
 
@@ -256,13 +256,11 @@ const HubCreate = ({ update, hubData }) => {
             metadataJson.textColor = textColor;
           }
 
-          metadataResult = (
-            await bundlrUpload(
-              new Blob([JSON.stringify(metadataJson)], {
-                type: "application/json",
-              })
-            )
-          ).data.id;
+          metadataResult = await bundlrUpload(
+            new Blob([JSON.stringify(metadataJson)], {
+              type: "application/json",
+            })
+          )
           setMetadataTx(metadataResult);
           updateUpload(upload, UploadType.metadataJson, metadataResult);
         }
@@ -308,7 +306,7 @@ const HubCreate = ({ update, hubData }) => {
                 variant: "info",
               }
             );
-            artworkResult = (await bundlrUpload(artwork.file)).data.id;
+            artworkResult = await bundlrUpload(artwork.file);
             setArtworkTx(artworkResult);
             upload = createUpload(
               UploadType.artwork,
@@ -345,13 +343,11 @@ const HubCreate = ({ update, hubData }) => {
                 metadataJson.textColor = textColor;
               }
 
-              metadataResult = (
-                await bundlrUpload(
-                  new Blob([JSON.stringify(metadataJson)], {
-                    type: "application/json",
-                  })
-                )
-              ).data.id;
+              metadataResult = await bundlrUpload(
+                new Blob([JSON.stringify(metadataJson)], {
+                  type: "application/json",
+                })
+              )
               setMetadataTx(metadataResult);
               updateUpload(upload, UploadType.metadataJson, metadataResult);
             }

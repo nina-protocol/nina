@@ -239,7 +239,7 @@ const ReleaseCreate = () => {
               variant: 'info',
             }
           )
-          artworkResult = (await bundlrUpload(artwork.file)).data.id
+          artworkResult = await bundlrUpload(artwork.file)
           setArtworkTx(artworkResult)
           upload = createUpload(
             UploadType.artwork,
@@ -258,7 +258,7 @@ const ReleaseCreate = () => {
                 variant: 'info',
               }
             )
-            trackResult = (await bundlrUpload(track.file)).data.id
+            trackResult = await bundlrUpload(track.file)
             if (trackResult) {
               setTrackTx(trackResult)
               updateUpload(upload, UploadType.track, trackResult)
@@ -288,13 +288,11 @@ const ReleaseCreate = () => {
                 duration: track.meta.duration,
                 md5Digest
               })
-              metadataResult = (
-                await bundlrUpload(
-                  new Blob([JSON.stringify(metadataJson)], {
-                    type: 'application/json',
-                  })
-                )
-              ).data.id
+              metadataResult = await bundlrUpload(
+                new Blob([JSON.stringify(metadataJson)], {
+                  type: 'application/json',
+                })
+              )
 
               setMetadata(metadataJson)
               setMetadataTx(metadataResult)
@@ -326,7 +324,7 @@ const ReleaseCreate = () => {
                 releaseBump: info.releaseBump,
                 releaseMint: info.releaseMint,
               })
-
+              console.log('result', result)
               if (result.success) {
                 enqueueSnackbar('Release Created!', {
                   variant: 'success',
