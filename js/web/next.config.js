@@ -24,8 +24,7 @@ const sentryWebpackPluginOptions = {
   // https://github.com/getsentry/sentry-webpack-plugin#options.
 };
 
-// const cluster = 'mainnet-beta'
-const cluster = 'devnet'
+const cluster = 'mainnet-beta'
 const IMGIX_URL = cluster === "devnet" 
   ? "nina-dev.imgix.net"
   : "nina.imgix.net"
@@ -44,8 +43,8 @@ const moduleExports = withTM({
     }
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@nina-protocol/nina-internal-sdk': path.resolve(
-        '../node_modules/@nina-protocol/nina-internal-sdk'
+      '@nina-protocol/nina-sdk': path.resolve(
+        '../node_modules/@nina-protocol/nina-sdk'
       ),
       react: path.resolve('../node_modules/react'),
       crypto: path.resolve('../node_modules/crypto-browserify'),
