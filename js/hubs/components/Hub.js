@@ -204,6 +204,9 @@ const DescriptionWrapper = styled(Grid)(({theme}) => ({
   maxHeight: "68vh",
   overflowX: "hidden",
   overflowY: "scroll",
+  'h1' :{
+    lineHeight: '32px',
+  },
   "&::-webkit-scrollbar": {
     display: "none",
   },
