@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-import Release from '@nina-protocol/nina-sdk/esm/Release'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import { useWallet } from '@solana/wallet-adapter-react'
 
 const YourCollectionBreadcrumb = () => {

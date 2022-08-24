@@ -6,8 +6,8 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
 import { useWallet } from '@solana/wallet-adapter-react'
-import Nina from '@nina-protocol/nina-sdk/esm/Nina'
-import Release from '@nina-protocol/nina-sdk/esm/Release'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Link from 'next/link'
 
 const CollectorModal = (props) => {

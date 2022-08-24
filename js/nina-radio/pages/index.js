@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useContext } from 'react'
-import Release from "@nina-protocol/nina-sdk/esm/Release";
-import { formatDuration } from "@nina-protocol/nina-sdk/esm/utils";
+import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
+import { formatDuration } from "@nina-protocol/nina-internal-sdk/esm/utils";
 import axios from 'axios'
 import Head from 'next/head'
 import Image from 'next/image'
