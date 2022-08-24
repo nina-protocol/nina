@@ -201,12 +201,17 @@ const ContentViewWrapper = styled(Grid)(({theme}) => ({
 
 const DescriptionWrapper = styled(Grid)(({theme}) => ({
   padding: " 0px 15px",
-  maxHeight: "68vh  ",
-  overflowX: "scroll",
+  maxHeight: "68vh",
+  overflowX: "hidden",
+  overflowY: "scroll",
+  'h1' :{
+    lineHeight: '32px',
+  },
   "&::-webkit-scrollbar": {
     display: "none",
   },
   [theme.breakpoints.down("md")]: {
+    maxHeight: "unset",
     padding: "100px 15px 50px",
   },
   'p, a': {

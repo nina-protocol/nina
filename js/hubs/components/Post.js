@@ -108,26 +108,24 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
   };
   return (
     <>
-      {referenceReleaseMetadata && (
-        <Grid
-          item
-          md={6}
-          xs={12}
-          sx={{
-            margin: { md: "0px auto auto", xs: "100px 0 15px" },
-            padding: "0 15px",
-            overflowX: "hidden",
-          }}
-        >
-          {referenceReleaseMetadata && (
-            <PostRelease
-              metadata={referenceReleaseMetadata}
-              releasePubkey={referenceReleasePubkey}
-              hubPubkey={hubPubkey}
-            />
-          )}
-        </Grid>
-      )}
+      <Grid
+        item
+        md={6}
+        xs={12}
+        sx={{
+          margin: { md: "0px auto auto", xs: "100px 0 15px" },
+          padding: "0 15px",
+          overflowX: "hidden",
+        }}
+      >
+        {referenceReleaseMetadata && (
+          <PostRelease
+            metadata={referenceReleaseMetadata}
+            releasePubkey={referenceReleasePubkey}
+            hubPubkey={hubPubkey}
+          />
+        )}
+      </Grid>
       <Grid
         item
         md={6}
@@ -173,9 +171,9 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
 };
 
 const PostWrapper = styled(Box)(({ theme }) => ({
-  paddingBottom: "20px",
+  paddingBottom: "40px",
   maxHeight: "86vh",
-  overflowX: "scroll",
+  overflowX: "hidden",
   "&::-webkit-scrollbar": {
     display: "none",
   },
