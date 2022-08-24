@@ -6,8 +6,8 @@ import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
 import CloseIcon from '@mui/icons-material/Close'
 import axios from 'axios'
-import Nina from '@nina-protocol/nina-sdk/esm/Nina'
-import Release from '@nina-protocol/nina-sdk/esm/Release'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Dots from './Dots'
 
 const ReleaseSearch = () => {

@@ -4,9 +4,9 @@ import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
-import Hub from "@nina-protocol/nina-sdk/esm/Hub";
-import Nina from "@nina-protocol/nina-sdk/esm/Nina";
-import Release from "@nina-protocol/nina-sdk/esm/Release";
+import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
+import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
 import ReleaseListTable from "./ReleaseListTable";
 
 const HubOverview = ({ hubPubkey, isAuthority }) => {

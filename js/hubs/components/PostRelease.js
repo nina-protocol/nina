@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect, useMemo, useRef } from "react";
 import dynamic from "next/dynamic";
-import Audio from "@nina-protocol/nina-sdk/esm/Audio";
-import Hub from "@nina-protocol/nina-sdk/esm/Hub";
-import Release from "@nina-protocol/nina-sdk/esm/Release";
-import { imageManager } from "@nina-protocol/nina-sdk/esm/utils"
+import Audio from "@nina-protocol/nina-internal-sdk/esm/Audio";
+import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
+import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
+import { imageManager } from "@nina-protocol/nina-internal-sdk/esm/utils"
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";

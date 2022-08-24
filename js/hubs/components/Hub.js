@@ -1,8 +1,8 @@
 import React, {useState, useContext, useEffect, useMemo, createElement, Fragment} from "react";
 import dynamic from "next/dynamic";
-import Hub from "@nina-protocol/nina-sdk/esm/Hub";
-import Nina from "@nina-protocol/nina-sdk/esm/Nina"
-import Release from "@nina-protocol/nina-sdk/esm/Release"
+import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina"
+import Release from "@nina-protocol/nina-internal-sdk/esm/Release"
 import {styled} from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -201,12 +201,17 @@ const ContentViewWrapper = styled(Grid)(({theme}) => ({
 
 const DescriptionWrapper = styled(Grid)(({theme}) => ({
   padding: " 0px 15px",
-  maxHeight: "68vh  ",
-  overflowX: "scroll",
+  maxHeight: "68vh",
+  overflowX: "hidden",
+  overflowY: "scroll",
+  'h1' :{
+    lineHeight: '32px',
+  },
   "&::-webkit-scrollbar": {
     display: "none",
   },
   [theme.breakpoints.down("md")]: {
+    maxHeight: "unset",
     padding: "100px 15px 50px",
   },
   'p, a': {

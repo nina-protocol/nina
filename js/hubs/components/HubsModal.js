@@ -6,7 +6,7 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
 import Link from 'next/link'
-import Release from "@nina-protocol/nina-sdk/esm/Release";
+import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
 
 const HubsModal = (props) => {
   const { releasePubkey, metadata } = props

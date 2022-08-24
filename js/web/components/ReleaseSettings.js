@@ -4,8 +4,8 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Link from 'next/link'
-import Nina from '@nina-protocol/nina-sdk/esm/Nina'
-import Release from '@nina-protocol/nina-sdk/esm/Release'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Royalty from './Royalty.js'
 
 const ReleaseSettings = (props) => {

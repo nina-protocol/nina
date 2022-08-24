@@ -3,9 +3,9 @@ import {AnchorProvider} from '@project-serum/anchor'
 import Router from "next/router";
 import { SnackbarProvider } from "notistack";
 import { ThemeProvider } from "@mui/material/styles";
-import Nina from "@nina-protocol/nina-sdk/esm/Nina";
-import Release from "@nina-protocol/nina-sdk/esm/Release";
-import NinaClient from "@nina-protocol/nina-sdk/esm/client";
+import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
+import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
+import NinaClient from "@nina-protocol/nina-internal-sdk/esm/client";
 import { CacheProvider } from "@emotion/react";
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
 import { ConnectionProvider, WalletProvider, useWallet, useConnection } from '@solana/wallet-adapter-react';

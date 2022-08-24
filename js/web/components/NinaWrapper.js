@@ -1,10 +1,10 @@
 import React from 'react'
-import Audio from '@nina-protocol/nina-sdk/esm/Audio'
-import Exchange from '@nina-protocol/nina-sdk/esm/Exchange'
-import Hub from '@nina-protocol/nina-sdk/esm/Hub'
-import Nina from '@nina-protocol/nina-sdk/esm/Nina'
-import Release from '@nina-protocol/nina-sdk/esm/Release'
-import NinaClient from "@nina-protocol/nina-sdk/esm/client"
+import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
+import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import NinaClient from "@nina-protocol/nina-internal-sdk/esm/client"
 
 import { AnchorProvider } from '@project-serum/anchor'
 import { useWallet, useConnection } from '@solana/wallet-adapter-react'

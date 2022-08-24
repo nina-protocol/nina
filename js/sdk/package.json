@@ -1,5 +1,5 @@
 {
-  "name": "@nina-protocol/nina-sdk",
+  "name": "@nina-protocol/nina-internal-sdk",
   "version": "0.0.35",
   "files": [
     "cjs/*",

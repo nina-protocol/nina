@@ -7,9 +7,9 @@ import React, {
   Fragment,
 } from "react";
 import dynamic from "next/dynamic";
-import Hub from "@nina-protocol/nina-sdk/esm/Hub";
-import Nina from "@nina-protocol/nina-sdk/esm/Nina";
-import Release from "@nina-protocol/nina-sdk/esm/Release";
+import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
+import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
@@ -108,26 +108,24 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
   };
   return (
     <>
-      {referenceReleaseMetadata && (
-        <Grid
-          item
-          md={6}
-          xs={12}
-          sx={{
-            margin: { md: "0px auto auto", xs: "100px 0 15px" },
-            padding: "0 15px",
-            overflowX: "hidden",
-          }}
-        >
-          {referenceReleaseMetadata && (
-            <PostRelease
-              metadata={referenceReleaseMetadata}
-              releasePubkey={referenceReleasePubkey}
-              hubPubkey={hubPubkey}
-            />
-          )}
-        </Grid>
-      )}
+      <Grid
+        item
+        md={6}
+        xs={12}
+        sx={{
+          margin: { md: "0px auto auto", xs: "100px 0 15px" },
+          padding: "0 15px",
+          overflowX: "hidden",
+        }}
+      >
+        {referenceReleaseMetadata && (
+          <PostRelease
+            metadata={referenceReleaseMetadata}
+            releasePubkey={referenceReleasePubkey}
+            hubPubkey={hubPubkey}
+          />
+        )}
+      </Grid>
       <Grid
         item
         md={6}
@@ -173,9 +171,9 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
 };
 
 const PostWrapper = styled(Box)(({ theme }) => ({
-  paddingBottom: "20px",
+  paddingBottom: "40px",
   maxHeight: "86vh",
-  overflowX: "scroll",
+  overflowX: "hidden",
   "&::-webkit-scrollbar": {
     display: "none",
   },
