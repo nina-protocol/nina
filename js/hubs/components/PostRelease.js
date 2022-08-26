@@ -88,7 +88,7 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
           </ImageContainer>
         )}
       </DesktopImageGridItem>
-      <Grid
+      <StyledGrid
         item
         md={6}
         xs={12}
@@ -162,7 +162,7 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
           inPost={true}
           hubPubkey={hubPubkey}
         />
-      </Grid>
+      </StyledGrid>
     </>
   );
 };
@@ -198,6 +198,12 @@ const MobileImageWrapper = styled(Grid)(({ theme }) => ({
 
 const ImageContainer = styled(Box)(() => ({
   width: "100%",
+}));
+
+const StyledGrid = styled(Grid)(() => ({
+  '&::-webkit-scrollbar': {
+    display: 'none',
+  },
 }));
 
 const CtaWrapper = styled(Box)(() => ({
