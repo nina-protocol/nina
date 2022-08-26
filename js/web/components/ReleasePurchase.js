@@ -358,6 +358,9 @@ const StyledDescription = styled(Typography)(({ theme }) => ({
   overflowWrap: 'anywhere',
   fontSize: '18px !important',
   lineHeight: '20.7px !important',
+  '&::-webkit-scrollbar': {
+    display: 'none',
+  },
   [theme.breakpoints.up('md')]: {
     maxHeight: '152px',
     overflowY: 'scroll',
