@@ -217,6 +217,9 @@ const PlayButton = styled(Button)(({ theme }) => ({
 const StyledDescription = styled(Typography)(({ theme }) => ({
   fontSize: '18px !important',
   lineHeight: '20.7px !important',
+  '&::-webkit-scrollbar': {
+    display: 'none',
+  },
   [theme.breakpoints.up("md")]: {
     maxHeight: "275px",
     overflowY: "scroll",
