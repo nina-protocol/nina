@@ -12,6 +12,8 @@ import { useSnackbar } from "notistack";
 import Typography from "@mui/material/Typography";
 import { useRouter } from "next/router";
 import Dots from "./Dots";
+import Royalty from "./Royalty";
+
 const HubsModal = dynamic(() => import("./HubsModal"));
 
 import dynamic from "next/dynamic";
@@ -212,6 +214,9 @@ const ReleasePurchase = (props) => {
             )}
           </Typography>
         </BuyButton>
+      )}
+      {userIsRecipient && (
+        <Royalty releasePubkey={releasePubkey} release={release} />
       )}
     </ReleasePurchaseWrapper>
   );

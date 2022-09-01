@@ -18,6 +18,7 @@ import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
+import Royalty from './Royalty'
 
 const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, router, relatedReleases } = props
@@ -106,6 +107,7 @@ useEffect(() => {
           recipient.recipientAuthority.toBase58() ===
             wallet?.publicKey.toBase58()
         ) {
+          console.log('USER IS RECIPIENT')
           setUserIsRecipient(true)
         }
       })
@@ -304,6 +306,9 @@ useEffect(() => {
             </Typography>
           </Button>
         </Link>
+      )}
+      {userIsRecipient && (
+        <Royalty releasePubkey={releasePubkey} release={release} />
       )}
       {amountHeld > 0 && (
         <Button
