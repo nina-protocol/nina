@@ -1,11 +1,12 @@
 import axios from "axios"
 import dynamic from "next/dynamic"
+import { Box } from "@mui/system"
 const Hub = dynamic(() => import('../../../components/Hub'))
 const HubPage = (props) => {
   console.log('props', props)
-  return <div>
+  return <Box sx={{width: '100%'}}>
     <Hub hubPubkey={props.hubPubkey}/>
-   </div>
+   </Box>
 }
 
 
