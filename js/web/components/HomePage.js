@@ -6,6 +6,7 @@ import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutline
 import Button from '@mui/material/Button'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import { useSnackbar } from 'notistack'
 import RecentlyPublished from './RecentlyPublished'
@@ -18,12 +19,14 @@ const HomePage = () => {
   const { getHubs, hubState, filterFeaturedHubs } = useContext(Hub.Context)
   const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
     useContext(Release.Context)
+  const { solPrice, NinaProgramAction, NinaProgramActionCost, getSolPrice, getBundlrPricePerMb, bundlrPricePerMb } = useContext(Nina.Context)
   const [releasesRecent, setReleasesRecent] = useState({})
   const [hubs, setHubs] = useState(undefined)
 
   const { enqueueSnackbar } = useSnackbar()
 
   useEffect(() => {
+    getSolPrice()
     getReleasesRecent()
     getHubs(true)
   }, [])
@@ -181,7 +184,7 @@ const HomePage = () => {
           sx={{ paddingBottom: { md: '140px', xs: '30px' } }}
         >
           Artists receive 100% of their sales. The only fee is a one-time
-          payment (on average ~$4/release) that covers the storage and
+          payment (${`${(NinaProgramActionCost[NinaProgramAction.ReleaseInitViaHub] * solPrice).toFixed(2)}`} + $0.005/MB) that covers the storage and
           transaction costs to the Solana and Arweave networks that Nina is
           built on. Nina does not take a cut.
         </Typography>
