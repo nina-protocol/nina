@@ -601,6 +601,16 @@ const ninaContextHelper = ({
   const bundlrUpload = async (file) => {
     try {
       return new Promise((resolve, reject) => {
+        const uploader = bundlr.uploader.chunkedUploader;
+        uploader.on("chunkUpload", (chunkInfo) => {
+          console.log(`Uploaded Chunk number ${chunkInfo.id}, offset of ${chunkInfo.offset}, size ${chunkInfo.size} Bytes, with a total of ${chunkInfo.totalUploaded} bytes uploaded.`);
+        });
+        uploader.on("chunkError", (e) => {
+          console.error(`Error uploading chunk number ${e.id} - ${e.res.statusText}`);
+        });
+        uploader.on("done", (finishRes) => {
+          console.log(`Upload completed with ID ${JSON.stringify(finishRes)}`);
+        });   
         const reader = new FileReader()
         reader.onload = async () => {
           const data = reader.result
@@ -610,8 +620,7 @@ const ninaContextHelper = ({
               tags: [{ name: 'Content-Type', value: file.type }]
             })
             await tx.sign();
-            await tx.upload()
-            txId = (await tx.upload()).data.id
+            txId = (await uploader.uploadTransaction(tx)).data.id
           } catch (error) {
             ninaErrorHandler(error)
           }
