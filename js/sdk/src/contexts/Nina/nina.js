@@ -7,11 +7,40 @@ import {
 } from '../../utils/web3'
 import { ninaErrorHandler } from '../../utils/errors'
 
+const NinaProgramAction = {
+  HubAddCollaborator: 'HubAddCollaborator',
+  HubAddRelease: 'HubAddRelease',
+  HubInitWithCredit: 'HubInitWithCredit',
+  PostInitViaHubWithReferenceRelease: 'PostInitViaHubWithReferenceRelease',
+  PostInitViaHub: 'PostInitViaHub',
+  ReleaseInitViaHub: 'ReleaseInitViaHub',
+  ReleaseInitWithCredit: 'ReleaseInitWithCredit',
+  ReleasePurchase: 'ReleasePurchase',
+  ReleasePurchaseViaHub: 'ReleasePurchaseViaHub',
+  ExchangeInit : 'ExchangeInit',
+  ExchangeAccept: 'ExchangeAccept',
+}
+
+const NinaProgramActionCost = {
+  HubAddCollaborator: 0.001919,
+  HubAddRelease: 0.00368684,
+  HubInitWithCredit: 0.00923396,
+  PostInitViaHubWithReferenceRelease: 0.01140548,
+  PostInitViaHub: 0.00772364,
+  ReleaseInitViaHub: 0.02212192,
+  ReleaseInitWithCredit: 0.02047936,
+  ReleasePurchase: 0.00204428,
+  ReleasePurchaseViaHub: 0.00204428,
+  ExchangeInit: 0,
+  ExchangeAccept: 0,
+}
+
 const NinaContext = createContext()
 const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [collection, setCollection] = useState({})
   const [postState, setPostState] = useState({})
   const [usdcBalance, setUsdcBalance] = useState(0)
+  const [solBalance, setSolBalance] = useState(0)
   const [solUsdcBalance, setSolUsdcBalance] = useState(0)
   const [npcAmountHeld, setNpcAmountHeld] = useState(0)
   const [solPrice, setSolPrice] = useState(0)
@@ -98,6 +127,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     getSolPrice,
     bundlrUpload,
     initBundlr,
+    checkIfHasBalanceToCompleteAction,
   } = ninaContextHelper({
     ninaClient,
     postState,
@@ -114,7 +144,9 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     solPrice,
     setSolPrice,
     bundlrHttpAddress,
-    setSolUsdcBalance
+    setSolUsdcBalance,
+    solBalance,
+    setSolBalance,
   })
 
   return (
@@ -150,6 +182,10 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         savePostsToState,
         bundlr,
         solUsdcBalance,
+        solBalance,
+        NinaProgramAction,
+        NinaProgramActionCost,
+        checkIfHasBalanceToCompleteAction
       }}
     >
       {children}
@@ -172,6 +208,8 @@ const ninaContextHelper = ({
   setSolPrice,
   bundlrHttpAddress,
   setSolUsdcBalance,
+  solBalance,
+  setSolBalance,
 }) => {
   const { provider, ids, uiToNative, nativeToUi } = ninaClient
 
@@ -440,7 +478,8 @@ const ninaContextHelper = ({
           provider.wallet.publicKey
         )
         setSolUsdcBalance((ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) * solPrice.data.data.price).toFixed(2))
-
+        setSolBalance(solUsdcBalanceResult)
+        console.log('solUsdcBalanceResult', solUsdcBalanceResult)
         let [usdcTokenAccountPubkey] = await findOrCreateAssociatedTokenAccount(
           provider.connection,
           provider.wallet.publicKey,
@@ -609,6 +648,12 @@ const ninaContextHelper = ({
     }
   }
 
+  const checkIfHasBalanceToCompleteAction = async (action) => {
+    if (NinaProgramActionCost[action] > solBalance) {
+      throw Error(`You do not have enough SOL to complete the action: ${action}.  You need at least ${NinaProgramActionCost[action]} SOL.`)
+    }
+  }
+
   return {
     subscriptionSubscribe,
     subscriptionUnsubscribe,
@@ -628,6 +673,7 @@ const ninaContextHelper = ({
     bundlrUpload,
     initBundlr,
     savePostsToState,
+    checkIfHasBalanceToCompleteAction,
   }
 }
 

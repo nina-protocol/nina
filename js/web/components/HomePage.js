@@ -19,7 +19,7 @@ const HomePage = () => {
   const { getHubs, hubState, filterFeaturedHubs } = useContext(Hub.Context)
   const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
     useContext(Release.Context)
-  const { solPrice, NinaProgramAction, NinaProgramActionCost, getSolPrice, getBundlrPricePerMb, bundlrPricePerMb } = useContext(Nina.Context)
+  const { solPrice, NinaProgramAction, NinaProgramActionCost, getSolPrice } = useContext(Nina.Context)
   const [releasesRecent, setReleasesRecent] = useState({})
   const [hubs, setHubs] = useState(undefined)
 
