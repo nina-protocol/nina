@@ -145,7 +145,7 @@ export const getStaticProps = async (context) => {
         }
       }
     } catch (error) {
-      console.log(error);
+      console.warn(error);
     }
   }
   return {props: {}};

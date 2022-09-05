@@ -66,6 +66,8 @@ const ReleaseCreate = () => {
     getSolPrice,
     getNpcAmountHeld,
     npcAmountHeld,
+    checkIfHasBalanceToCompleteAction,
+    NinaProgramAction
   } = useContext(Nina.Context)
 
   const [track, setTrack] = useState(undefined)
@@ -218,6 +220,12 @@ const ReleaseCreate = () => {
           `/${releasePubkey.toBase58()}`
         )
       } else if (track && artwork) {
+        const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.RELEASE_INIT_WITH_CREDIT);
+        if (error) {
+          enqueueSnackbar(error.msg, { variant: "failure" });
+          return;
+        }
+    
         const hashExists = await validateUniqueMd5Digest(md5Digest)
         if (hashExists) {
           enqueueSnackbar(
@@ -324,7 +332,7 @@ const ReleaseCreate = () => {
                 releaseBump: info.releaseBump,
                 releaseMint: info.releaseMint,
               })
-              console.log('result', result)
+
               if (result.success) {
                 enqueueSnackbar('Release Created!', {
                   variant: 'success',
