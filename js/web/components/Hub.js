@@ -56,7 +56,6 @@ const HubComponent = ({ hubPubkey }) => {
     setReleaseData(data)
   }, [releaseState, hubReleases])
 
-  console.log('releaseData', releaseData)
 
   const handlePlay = (e, releasePubKey) => {
     e.stopPropagation()

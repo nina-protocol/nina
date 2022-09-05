@@ -5,7 +5,7 @@ const HubReleases = ({releases, onPlay, onQueue}) => {
    
     return (
         releases.map((release) => (
-            <Box key={release.releasePubKey} id={release.releasePubKey} onClick={() => console.log('relpubkey', release.releasePubKey)}>
+            <Box key={release.releasePubKey} id={release.releasePubKey}>
               <HubRelease
                 onPlay={onPlay}
                 onQueue={onQueue}
