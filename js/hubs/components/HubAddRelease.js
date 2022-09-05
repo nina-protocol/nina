@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { useFormik } from "formik";
 import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
 import { useSnackbar } from "notistack";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -19,6 +20,12 @@ const HubAddRelease = (props) => {
       release: "",
     },
     onSubmit: async (values, { resetForm }) => {
+      const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.HUB_ADD_RELEASE);
+      if (error) {
+        enqueueSnackbar(error.msg, { variant: "failure" });
+        return;
+      }
+
       const result = await hubAddRelease(hubPubkey, values.release);
       if (result?.success) {
         enqueueSnackbar(result.msg, {

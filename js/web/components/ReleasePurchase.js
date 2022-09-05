@@ -32,7 +32,7 @@ const ReleasePurchase = (props) => {
     getRelease,
     getPublishedHubForRelease,
   } = useContext(Release.Context)
-  const { getAmountHeld, collection, ninaClient, usdcBalance } = useContext(Nina.Context)
+  const { getAmountHeld, collection, ninaClient, usdcBalance, checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(Nina.Context)
   const {
     exchangeState,
     filterExchangesForReleaseBuySell,
@@ -107,7 +107,6 @@ useEffect(() => {
           recipient.recipientAuthority.toBase58() ===
             wallet?.publicKey.toBase58()
         ) {
-          console.log('USER IS RECIPIENT')
           setUserIsRecipient(true)
         }
       })
@@ -143,7 +142,14 @@ useEffect(() => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    let result
+    let result  
+    if (!amountHeld || amountHeld === 0) {
+      const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.RELEASE_PURCHASE);
+      if (error) {
+        enqueueSnackbar(error.msg, { variant: "failure" });
+        return;
+      }
+    }
 
     if (!release.pending) {
       if (!ninaClient.isSol(release.paymentMint) && usdcBalance < ninaClient.nativeToUi(release.price.toNumber(), ninaClient.ids.mints.usdc)) {

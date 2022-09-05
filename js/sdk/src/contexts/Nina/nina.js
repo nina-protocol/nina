@@ -8,31 +8,31 @@ import {
 import { ninaErrorHandler } from '../../utils/errors'
 
 const NinaProgramAction = {
-  HubAddCollaborator: 'HubAddCollaborator',
-  HubAddRelease: 'HubAddRelease',
-  HubInitWithCredit: 'HubInitWithCredit',
-  PostInitViaHubWithReferenceRelease: 'PostInitViaHubWithReferenceRelease',
-  PostInitViaHub: 'PostInitViaHub',
-  ReleaseInitViaHub: 'ReleaseInitViaHub',
-  ReleaseInitWithCredit: 'ReleaseInitWithCredit',
-  ReleasePurchase: 'ReleasePurchase',
-  ReleasePurchaseViaHub: 'ReleasePurchaseViaHub',
-  ExchangeInit : 'ExchangeInit',
-  ExchangeAccept: 'ExchangeAccept',
+  HUB_ADD_COLLABORATOR: 'HUB_ADD_COLLABORATOR',
+  HUB_ADD_RELEASE: 'HUB_ADD_RELEASE',
+  HUB_INIT_WITH_CREDIT: 'HUB_INIT_WITH_CREDIT',
+  POST_INIT_VIA_HUB_WITH_REFERENCE_RELEASE: 'POST_INIT_VIA_HUB_WITH_REFERENCE_RELEASE',
+  POST_INIT_VIA_HUB: 'POST_INIT_VIA_HUB',
+  RELEASE_INIT_VIA_HUB: 'RELEASE_INIT_VIA_HUB',
+  RELEASE_INIT_WITH_CREDIT: 'RELEASE_INIT_WITH_CREDIT',
+  RELEASE_PURCHASE: 'RELEASE_PURCHASE',
+  RELEASE_PURCHASE_VIA_HUB: 'RELEASE_PURCHASE_VIA_HUB',
+  EXCHANGE_INIT : 'EXCHANGE_INIT',
+  EXCHANGE_ACCEPT: 'EXCHANGE_ACCEPT',
 }
 
 const NinaProgramActionCost = {
-  HubAddCollaborator: 0.001919,
-  HubAddRelease: 0.00368684,
-  HubInitWithCredit: 0.00923396,
-  PostInitViaHubWithReferenceRelease: 0.01140548,
-  PostInitViaHub: 0.00772364,
-  ReleaseInitViaHub: 0.02212192,
-  ReleaseInitWithCredit: 0.02047936,
-  ReleasePurchase: 0.00204428,
-  ReleasePurchaseViaHub: 0.00204428,
-  ExchangeInit: 0,
-  ExchangeAccept: 0,
+  HUB_ADD_COLLABORATOR: 0.001919,
+  HUB_ADD_RELEASE: 0.00368684,
+  HUB_INIT_WITH_CREDIT: 0.00923396,
+  POST_INIT_VIA_HUB_WITH_REFERENCE_RELEASE: 0.01140548,
+  POST_INIT_VIA_HUB: 0.00772364,
+  RELEASE_INIT_VIA_HUB: 0.02212192,
+  RELEASE_INIT_WITH_CREDIT: 0.02047936,
+  RELEASE_PURCHASE: 0.00204428,
+  RELEASE_PURCHASE_VIA_HUB: 0.00204428,
+  EXCHANGE_INIT: 0.0051256,
+  EXCHANGE_ACCEPT: 0.00377536,
 }
 
 const NinaContext = createContext()
@@ -479,7 +479,6 @@ const ninaContextHelper = ({
         )
         setSolUsdcBalance((ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) * solPrice.data.data.price).toFixed(2))
         setSolBalance(solUsdcBalanceResult)
-        console.log('solUsdcBalanceResult', solUsdcBalanceResult)
         let [usdcTokenAccountPubkey] = await findOrCreateAssociatedTokenAccount(
           provider.connection,
           provider.wallet.publicKey,
@@ -657,10 +656,12 @@ const ninaContextHelper = ({
     }
   }
 
-  const checkIfHasBalanceToCompleteAction = async (action) => {
-    if (NinaProgramActionCost[action] > solBalance) {
-      throw Error(`You do not have enough SOL to complete the action: ${action}.  You need at least ${NinaProgramActionCost[action]} SOL.`)
+  const checkIfHasBalanceToCompleteAction = (action) => {
+    if (ninaClient.uiToNative(NinaProgramActionCost[action], ninaClient.ids.mints.wsol) > solBalance) {
+      const error = new Error(`You do not have enough SOL to send the transaction: ${action}.  You need at least ${NinaProgramActionCost[action]} SOL.`)
+      return ninaErrorHandler(error)
     }
+    return undefined
   }
 
   return {
