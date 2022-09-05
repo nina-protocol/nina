@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { useSnackbar } from "notistack";
 import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
@@ -49,6 +50,11 @@ const HubAddCollaborator = (props) => {
         canAddCollaborator,
         allowance,
       } = values;
+      const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.HUB_ADD_COLLABORATOR);
+      if (error) {
+        enqueueSnackbar(error.msg, { variant: "failure" });
+        return;
+      }  
       const result = await hubAddCollaborator(
         collaboratorPubkey,
         hubPubkey,

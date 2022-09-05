@@ -68,6 +68,8 @@ const HubCreate = ({ update, hubData }) => {
     getSolPrice,
     getNpcAmountHeld,
     npcAmountHeld,
+    checkIfHasBalanceToCompleteAction,
+    NinaProgramAction
   } = useContext(Nina.Context);
 
   const [artwork, setArtwork] = useState();
@@ -194,6 +196,11 @@ const HubCreate = ({ update, hubData }) => {
 
   const handleSubmit = async () => {
     try {
+      const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.HUB_INIT_WITH_CREDIT);
+      if (error) {
+        enqueueSnackbar(error.msg, { variant: "failure" });
+        return;
+      }
       if (update) {
         let upload = uploadId;
         const metadataJson = {};
