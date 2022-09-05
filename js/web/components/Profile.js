@@ -35,7 +35,7 @@ const Profile = ({ userId }) => {
     if (userId) {
       getReleasesPublishedByUser(userId)
       handleUserCollection(userId)
-    //   getHubsForUser(userId)
+     getHubsForUser(userId)
     }
   }, [userId])
 
@@ -55,6 +55,7 @@ const Profile = ({ userId }) => {
 
   useEffect(() => {
     const hubs = filterHubsForUser(userId)
+    console.log('hubs', hubs)
     setProfileHubs(hubs)
   }, [hubState])
 

@@ -1,8 +1,12 @@
 import { Box } from '@material-ui/core'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
+import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
+import ControlPointIcon from '@mui/icons-material/ControlPoint'
 
 const ProfileCollections = ({ profileCollection, onPlay, onQueue }) => {
+    if (profileCollection.length === 0) return <Box>This address has no collection yet</Box>
+
   return profileCollection.map((collection) => (
     <Box
       sx={{ display: 'flex', flexDirection: 'row', m: 1, p: 1 }}
@@ -35,7 +39,11 @@ const ProfileCollection = ({ collectionUrl, artist, title, onPlay, onQueue, trac
         onClick={onPlay}
         id={trackId}
       >
-        play
+          <PlayCircleOutlineOutlinedIcon
+          sx={{ color: 'black' }}
+          onClick={onPlay}
+          id={trackId}
+        />
       </Box>
       <Box
         sx={{
@@ -50,7 +58,11 @@ const ProfileCollection = ({ collectionUrl, artist, title, onPlay, onQueue, trac
         key={trackName}
         onClick={onQueue}
       >
-        queue
+            <ControlPointIcon
+          sx={{ color: 'black' }}
+          key={trackName}
+          onClick={onQueue}
+        />
       </Box>
       <Link href={`${collectionUrl ? collectionUrl : ''}`} passHref>
         <a
