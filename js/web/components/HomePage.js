@@ -184,7 +184,7 @@ const HomePage = () => {
           sx={{ paddingBottom: { md: '140px', xs: '30px' } }}
         >
           Artists receive 100% of their sales. The only fee is a one-time
-          payment (${`${(NinaProgramActionCost[NinaProgramAction.ReleaseInitViaHub] * solPrice).toFixed(2)}`} + $0.005/MB) that covers the storage and
+          payment (${`${(NinaProgramActionCost[NinaProgramAction.RELEASE_INIT_VIA_HUB] * solPrice).toFixed(2)}`} + $0.005/MB) that covers the storage and
           transaction costs to the Solana and Arweave networks that Nina is
           built on. Nina does not take a cut.
         </Typography>
