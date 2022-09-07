@@ -1,14 +1,13 @@
 import dynamic from 'next/dynamic'
-
-const Profile = dynamic(() => import('../../components/Profile'))
+import { Box } from '@material-ui/core'
+const Profile = dynamic(() => import('../../../components/Profile'))
 
 const ProfilePage = (props) => {
     const {userId} = props
     return (
-        <div>
+        <Box sx={{width:'50vw'}}>
            <Profile userId={userId} />
-           {/* hello */}
-        </div>
+        </Box>
     );
 }
 

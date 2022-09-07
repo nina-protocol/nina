@@ -12,95 +12,108 @@ const ProfileCollections = dynamic(() => import('./ProfileCollections'))
 const ProfileToggle = dynamic(() => import('./ProfileToggle'))
 const Profile = ({ userId }) => {
   const {
-    getUserCollection,
+    getUserCollectionAndPublished,
     releaseState,
     filterReleasesUserCollection,
     filterReleasesPublishedByUser,
     getReleasesPublishedByUser,
-    filterReleasesList
+    filterReleasesList,
   } = useContext(Release.Context)
 
   const { getHubsForUser, filterHubsForUser, hubState } = useContext(
     Hub.Context
   )
-  const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
-    useContext(Audio.Context)
-  const [profileReleases, setProfileReleases] = useState([])
-  const [profileCollectionIds, setProfileCollectionIds] = useState([])
+
+  const [profilePublishedReleases, setProfilePublishedReleases] = useState([])
   const [profileCollectionReleases, setProfileCollectionReleases] = useState()
   const [profileHubs, setProfileHubs] = useState([])
   const [view, setView] = useState('releases')
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+  const [profileCollectionIds, setProfileCollectionIds] = useState(undefined)
+  const [toggleView, setToggleView] = useState('releases')
   useEffect(() => {
+    const getUserData = async (userId) => {
+      await getHubsForUser(userId)
+      const [collectionIds] = await getUserCollectionAndPublished(userId)
+
+      setProfileCollectionIds(collectionIds)
+    }
     if (userId) {
-      getReleasesPublishedByUser(userId)
-      handleUserCollection(userId)
-     getHubsForUser(userId)
+      getUserData(userId)
     }
   }, [userId])
 
-
   useEffect(() => {
-    if (userId && profileCollectionIds) {
-        setProfileCollectionReleases(filterReleasesList(profileCollectionIds))
+    if (profileCollectionIds?.length > 0 && userId) {
+      setProfileCollectionReleases(filterReleasesList(profileCollectionIds))
+      const releases = filterReleasesPublishedByUser(userId)
+      setProfilePublishedReleases(releases)
     }
   }, [releaseState, profileCollectionIds])
 
   useEffect(() => {
-    const releases = filterReleasesPublishedByUser(userId)
-    console.log('releases', releases)
-    setProfileReleases(releases)
-    console.log('profileReleases', profileReleases)
-  }, [releaseState])
-
-  useEffect(() => {
     const hubs = filterHubsForUser(userId)
-    console.log('hubs', hubs)
     setProfileHubs(hubs)
   }, [hubState])
 
-
-  const handleUserCollection = async (userId) => {
-    console.log('handle')
-    const collection = await getUserCollection(userId)
-    setProfileCollectionIds(collection)
+  const releasesClickHandler = () => {
+    setView('releases')
+    setToggleView('releases')
   }
-
-
-  const handlePlay = (e, releasePubKey) => {
-    e.stopPropagation()
-    e.preventDefault()
-    console.log('releasePubKey', releasePubKey)
-    if (isPlaying && track.releasePubKey === releasePubKey) {
-      setIsPlaying(false)
-    } else {
-      updateTrack(releasePubKey, true, true)
-    }
+  const hubsClickHandler = () => {
+    setView('hubs')
+    setToggleView('hubs')
   }
-  const handleAddTrackToQueue = (e, releasePubKey) => {
-    e.stopPropagation()
-    e.preventDefault()
-    addTrackToQueue(releasePubKey)
-    enqueueSnackbar(`Track successfully added to the queue`)
+  const collectionClickHandler = () => {
+    setView('collection')
+    setToggleView('collection')
   }
-
   return (
-    <Box sx={{ width: '100%' }}>
-        <Box sx={{font:'ultralight'}}>{userId}</Box>
-      <ProfileToggle
-        releaseClick={() => setView('releases')}
-        hubClick={() => setView('hubs')}
-        collectionClick={() => setView('collection')}
-      />
-      {view === 'releases' && (
-        <ProfileReleases profileReleases={profileReleases} onPlay={(e) => handlePlay(e, e.target.id)} onQueue={(e) => handleAddTrackToQueue(e, e.target.id, e.target.key)}/>
-      )}
-      {view === 'hubs' && <ProfileHubs profileHubs={profileHubs} />}
-      {view === 'collection' && (
-        <>
-        <ProfileCollections profileCollection={profileCollectionReleases}  onPlay={(e) => handlePlay(e, e.target.id)} onQueue={(e) => handleAddTrackToQueue(e, e.target.id, e.target.key)}/>
-        </>
-      )}
+    <Box
+      sx={{
+        width: '100%',
+        height: '50vh',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          p: 1,
+          m: 1,
+        }}
+      >
+        {userId}
+      </Box>
+      <Box>
+        <ProfileToggle
+          releaseClick={() => releasesClickHandler()}
+          hubClick={() => hubsClickHandler()}
+          collectionClick={() => collectionClickHandler()}
+          isClicked={toggleView}
+        />
+      </Box>
+      {/* <Box sx={{ height: '25vh', overflow: 'auto', mx: 'auto' }}> */}
+        {view === 'releases' && (
+          <Box sx={{ height: '25vh', overflow: 'auto', mx: 'auto' }}>
+          <ProfileReleases profileReleases={profilePublishedReleases} />
+          </Box>
+        )}
+        {view === 'hubs' && 
+        <Box sx={{ height: '25vh', overflow: 'auto', mx: 'auto' }}>
+        <ProfileHubs profileHubs={profileHubs} />
+        </Box>
+        }
+        {view === 'collection' && (
+          <Box sx={{ height: '25vh', overflow: 'auto', mx: 'auto' }}>
+          <ProfileCollections profileCollection={profileCollectionReleases} />
+          </Box>
+        )}
+      {/* </Box> */}
     </Box>
   )
 }

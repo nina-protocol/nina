@@ -939,6 +939,7 @@ const hubContextHelper = ({
     const response = await fetch(path)
     const result = await response.json()
     await saveHubCollaboratorsToState(result.hubCollaborators)
+    console.log('result.hubs', result.hubs)
     await saveHubsToState(result.hubs)
   }
   /*
@@ -1138,6 +1139,7 @@ const hubContextHelper = ({
         hubCollaborators.push(hubCollaborator)
       }
     })
+    
     return hubCollaborators.sort((a, b) => b.datetime - a.datetime)
   }
 

@@ -5,17 +5,17 @@ const ProfileHubs = ({ profileHubs }) => {
   return profileHubs.map((hub) => (
     <Box key={hub.handle}>
       <ProfileHub
-        hubUrl={hub.json.externalUrl}
+        hubHandle={hub.handle}
         hubName={hub.json.displayName}
       />
     </Box>
   ))
 }
-const ProfileHub = ({ hubUrl, hubName }) => {
+const ProfileHub = ({ hubHandle, hubName }) => {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'row', m: 1, p: 1 }}>
-      <Link href={`${hubUrl ? hubUrl : ''}`} passHref>
-        <a target="_blank" rel="noopener noreferrer">{`${hubName}`}</a>
+    <Box sx={{ display: 'flex', flexDirection: 'row', m: 1, p: 1, justifyContent: 'center', textAlign:'center'}}>
+      <Link href={`/hubs/${hubHandle}`} passHref prefetch>
+        <a>{`${hubName}`}</a>
       </Link>
     </Box>
   )

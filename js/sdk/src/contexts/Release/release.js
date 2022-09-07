@@ -71,7 +71,7 @@ const ReleaseContextProvider = ({ children }) => {
     getReleasesRecent,
     getReleasesAll,
     getReleaseRoyaltiesByUser,
-    getUserCollection,
+    getUserCollectionAndPublished,
     filterReleasesUserCollection,
     filterReleasesPublishedByUser,
     filterReleasesRecent,
@@ -166,7 +166,7 @@ const ReleaseContextProvider = ({ children }) => {
         getReleasesBySearch,
         filterSearchResults,
         setSearchResults,
-        getUserCollection,
+        getUserCollectionAndPublished,
         getCollectorsForRelease,
         fetchAndSaveReleasesToState,
         releasePurchaseViaHub,
@@ -1315,19 +1315,23 @@ const releaseContextHelper = ({
     if (!provider.connection) {
       return
     }
+    if(typeof publicKey !== 'string'){
+      publicKey = publicKey.toBase58()
+    }
     try {
       let path = endpoints.api
       switch (type) {
         case lookupTypes.PUBLISHED_BY:
-          path += `/releases/published/${publicKey.toBase58()}`
+          path += `/releases/published/${publicKey}`
           break
         case lookupTypes.REVENUE_SHARE:
-          path += `/releases/royalties/${publicKey.toBase58()}`
+          path += `/releases/royalties/${publicKey}`
           break
       }
 
       const response = await fetch(path)
       const releaseIds = await response.json()
+      console.log('releaseIds', releaseIds)
       await fetchAndSaveReleasesToState(releaseIds)
     } catch (error) {
       console.warn(error)
@@ -1366,6 +1370,9 @@ const releaseContextHelper = ({
   }
 
   const getReleasesPublishedByUser = async (publicKey) => {
+    if(typeof publicKey !== 'string'){
+      publicKey = publicKey.toBase58()
+    }
     await getReleasesHandler(publicKey, lookupTypes.REVENUE_SHARE)
   }
 
@@ -1554,6 +1561,7 @@ const releaseContextHelper = ({
         purchased,
         highlights: shuffle(highlights),
       })
+      console.log('releasesRecentState', releasesRecentState.purchased)
     } catch (error) {
       console.warn(error)
     }
@@ -1600,7 +1608,7 @@ const releaseContextHelper = ({
     }
   }
 
-  const getUserCollection = async (userId) => {
+  const getUserCollectionAndPublished = async (userId) => {
     try {
       const program = await ninaClient.useProgram()
       const userCollection = []
@@ -1640,8 +1648,15 @@ const releaseContextHelper = ({
         const releasePublicKey = releaseAccount.publicKey.toBase58()
         userCollection.push(releasePublicKey)
       })
-      await fetchAndSaveReleasesToState(userCollection)
-      return userCollection
+
+      let path = endpoints.api + `/releases/royalties/${userId}`
+
+      const response = await fetch(path)
+      const publishedReleaseIds = await response.json()
+
+      console.log('userCollection', userCollection)
+      await fetchAndSaveReleasesToState([...userCollection, ...publishedReleaseIds])
+      return [userCollection, publishedReleaseIds]
     } catch (e) {
       console.warn('error: ', e)
       return
@@ -1667,6 +1682,7 @@ const releaseContextHelper = ({
 
   */
   const filterReleasesUserCollection = () => {
+    console.log('FILTERING')
     if (!provider.wallet?.connected) {
       return []
     }
@@ -1681,6 +1697,7 @@ const releaseContextHelper = ({
         }
       }
     })
+    console.log('releases from filterReleases xxx', releases)
     return releases
   }
 
@@ -1983,6 +2000,7 @@ const releaseContextHelper = ({
             releases.push(release)
           }
         })
+        console.log('test')
         await saveReleasesToState(releases, query)
       } catch (error) {
         console.warn(error)
@@ -1993,6 +2011,7 @@ const releaseContextHelper = ({
   const saveReleasesToState = async (releases, query = undefined) => {
     try {
       let updatedState = { ...releaseState }
+
       let search = undefined
 
       if (query) {
@@ -2059,6 +2078,7 @@ const releaseContextHelper = ({
         search.releases = finalSearchReleases
         await setSearchResults(search)
       }
+      console.log('updatedState', updatedState)
       await setReleaseState(updatedState)
     } catch (error) {
       console.warn(error)
@@ -2217,7 +2237,7 @@ const releaseContextHelper = ({
     collectRoyaltyForRelease,
     getRelease,
     getReleasesInCollection,
-    getUserCollection,
+    getUserCollectionAndPublished,
     getReleasesPublishedByUser,
     getReleasesRecent,
     getReleasesAll,

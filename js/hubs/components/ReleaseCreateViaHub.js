@@ -219,8 +219,10 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
         );
       } else if (track && artwork) {
 
+        const network = process.env.REACT_APP_CLUSTER
+
         const hashExists = await validateUniqueMd5Digest(md5Digest)
-        if (hashExists) {
+        if (hashExists && network !== 'devnet') {
           enqueueSnackbar(
             `A release with this track already exists: ${hashExists.json.properties.artist} - ${hashExists.json.properties.title}`,
             {

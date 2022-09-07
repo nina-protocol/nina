@@ -1,10 +1,9 @@
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useContext } from 'react'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import { Box, Toolbar } from '@mui/material'
-import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import dynamic from 'next/dynamic'
-import { useSnackbar } from 'notistack'
+
 const HubHeader = dynamic(() => import('./HubHeader'))
 const HubCollaborators = dynamic(() => import('./HubCollaborators'))
 const HubToggle = dynamic(() => import('./HubToggle'))
@@ -16,19 +15,17 @@ const HubComponent = ({ hubPubkey }) => {
     hubState,
     filterHubContentForHub,
     filterHubCollaboratorsForHub,
-    hubCollaboratorsState,
     hubContentState,
   } = useContext(Hub.Context)
-  const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
-    useContext(Audio.Context)
+
   const { releaseState } = useContext(Release.Context)
   const [hubReleases, setHubReleases] = useState([])
-  const [hubPosts, setHubPosts] = useState([])
+  const [, setHubPosts] = useState([])
   const [releaseData, setReleaseData] = useState([])
   const [collaboratorsData, setCollaboratorsData] = useState([])
-  const [view, setView] = useState('')
+  const [view, setView] = useState('releases')
+  const [clickedToggle, setClickedToggle] = useState('releases')
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   console.log('hubData', hubData)
 
   useEffect(() => {
@@ -41,7 +38,6 @@ const HubComponent = ({ hubPubkey }) => {
   useEffect(() => {
     const [releases, posts] = filterHubContentForHub(hubPubkey)
     const collaborators = filterHubCollaboratorsForHub(hubPubkey)
-    console.log('collaborators', collaborators)
     setHubReleases(releases)
     setHubPosts(posts)
     setCollaboratorsData(collaborators)
@@ -50,55 +46,57 @@ const HubComponent = ({ hubPubkey }) => {
   useEffect(() => {
     const data = hubReleases.map((hubRelease) => {
       const releaseMetadata = releaseState.metadata[hubRelease.release]
-      releaseMetadata.releasePubKey = hubRelease.release
+      releaseMetadata.releasePubkey = hubRelease.release
       return releaseMetadata
     })
     setReleaseData(data)
   }, [releaseState, hubReleases])
 
-
-  const handlePlay = (e, releasePubKey) => {
-    e.stopPropagation()
-    e.preventDefault()
-    console.log('releasePubKey', releasePubKey)
-    if (isPlaying && track.releasePubKey === releasePubKey) {
-      setIsPlaying(false)
-    } else {
-      updateTrack(releasePubKey, true, true)
-    }
+  const releaseClickHandler = () => {
+    setView("releases");
+    setClickedToggle("releases")
   }
-  const handleAddTrackToQueue = (e, releasePubKey) => {
-    e.stopPropagation()
-    e.preventDefault()
-    addTrackToQueue(releasePubKey)
-    enqueueSnackbar(`Track successfully added to the queue`)
+
+  const collaboratorClickHandler = () => {
+    setView("collaborators")
+    setClickedToggle('collaborators')
   }
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box
+      sx={{
+        width: '100%',
+        height: '50vh',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       {hubData && (
         <HubHeader
-          hubImage={hubData.json.image || ''}
-          hubName={hubData.json.displayName || ''}
-          hubDescription={hubData.json.hubDescription || ''}
-          hubUrl={hubData.json.externalUrl || ''}
-          hubDate={hubData.createdAt}
+          hubImage={`${hubData?.json.image ? hubData.json.image : ''}`}
+          hubName={`${
+            hubData?.json.displayName ? hubData.json.displayName : ''
+          }`}
+          hubDescription={`${
+            hubData?.json.hubDescription ? hubData.json.hubDescription : ''
+          }`}
+          hubUrl={`${
+            hubData?.json.externalUrl ? hubData.json.externalUrl : ''
+          }`}
+          hubDate={`${hubData.createdAt ? hubData.createdAt : ''}`}
         />
       )}
       <HubToggle
-        releaseClick={() => setView('releases')}
-        collaboratorClick={() => setView('collaborators')}
+        releaseClick={() => releaseClickHandler()}
+        collaboratorClick={() => collaboratorClickHandler()}
+        isReleaseClicked={clickedToggle}
+        isCollaboratorClicked={clickedToggle}
       />
-      {view === 'releases' && (
-        <HubReleases
-          releases={releaseData}
-          onPlay={(e) => handlePlay(e, e.target.id)}
-        onQueue={(e) => handleAddTrackToQueue(e, e.target.id, e.target.key)}
-          
-        />
-      )}
-      {view === 'collaborators' && (
-        <HubCollaborators collabData={collaboratorsData} />
-      )}
+      <Box sx={{ height: '25vh', overflow: 'auto', mx: 'auto' }}>
+        {view === 'releases' && <HubReleases hubReleases={releaseData} />}
+        {view === 'collaborators' && (
+          <HubCollaborators collabData={collaboratorsData} />
+        )}
+      </Box>
     </Box>
   )
 }
