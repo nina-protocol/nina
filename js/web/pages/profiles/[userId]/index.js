@@ -5,7 +5,7 @@ const Profile = dynamic(() => import('../../../components/Profile'))
 const ProfilePage = (props) => {
     const {userId} = props
     return (
-        <Box sx={{width:'50vw'}}>
+        <Box>
            <Profile userId={userId} />
         </Box>
     );

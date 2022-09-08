@@ -7,8 +7,9 @@ import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import { useContext } from 'react'
 import Image from 'next/image'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
+import { Button, Typography } from '@mui/material'
+import { useSnackbar } from 'notistack'
 const { getImageFromCDN, loader } = imageManager
-
 const ProfileReleases = ({ profileReleases, onPlay, onQueue }) => {
   if (profileReleases?.length === 0)
     return <Box>No releases belong to this address</Box>
@@ -37,16 +38,41 @@ const ProfileRelease = ({
   trackName,
   date,
 }) => {
-  const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
-    useContext(Audio.Context)
+  const {
+    updateTrack,
+    addTrackToQueue,
+    isPlaying,
+    setIsPlaying,
+    track,
+    playlist,
+  } = useContext(Audio.Context)
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
-  const handlePlay = (e, releasePubKey) => {
+  const snackbarHandler = (message) => {
+    const snackbarMessage = enqueueSnackbar(message, { persistent: 'true' })
+    setTimeout(() => closeSnackbar(snackbarMessage), 1000)
+  }
+  const handlePlay = (e, releasePubkey) => {
     e.stopPropagation()
     e.preventDefault()
-    if (isPlaying && track.releasePubKey === releasePubKey) {
+    if (isPlaying && track.releasePubkey === releasePubkey) {
       setIsPlaying(false)
     } else {
-      updateTrack(releasePubKey, true, true)
+      updateTrack(releasePubkey, true, true)
+    }
+  }
+
+  const handleQueue = (e, releasePubkey) => {
+    e.stopPropagation()
+    e.preventDefault()
+    const isAlreadyQueued = playlist.some((entry) => entry.title === title)
+    const filteredTrackName =
+      title?.length > 12 ? `${title.substring(0, 12)}...` : title
+    if (releasePubkey && !isAlreadyQueued) {
+      addTrackToQueue(releasePubkey)
+      snackbarHandler(`${filteredTrackName} successfully added to queue`)
+    } else {
+      snackbarHandler(`${filteredTrackName} already added to queue`)
     }
   }
   return (
@@ -55,20 +81,34 @@ const ProfileRelease = ({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-     
+        textAlign: 'left',
+        width: '50vw',
       }}
     >
-      <Box
+      <Box sx={{ p: 1 }}>
+        <Button
+          sx={{ cursor: 'pointer' }}
+          id={releasePubkey}
+          key={trackName}
+          onClick={(e) => handleQueue(e, releasePubkey)}
+        >
+          <ControlPointIcon
+            sx={{ color: 'black' }}
+            key={trackName}
+            onClick={(e) => handleQueue(e, releasePubkey)}
+          />
+        </Button>
+      </Box>
+      <Button
         sx={{
-          p: 1,
-          m: 1,
-          cursor: 'pointer',
+          mr: 3,
+          pr: 3,
         }}
-        onClick={(e) => handlePlay(e, releasePubkey)}
+        onClickCapture={(e) => handlePlay(e, releasePubkey)}
         id={releasePubkey}
       >
         {isPlaying && track.releasePubkey === releasePubkey ? (
-          <PlayCircleOutlineOutlinedIcon
+          <PauseCircleOutlineOutlinedIcon
             sx={{ color: 'black' }}
             onClick={(e) => handlePlay(e, releasePubkey)}
             id={releasePubkey}
@@ -76,28 +116,40 @@ const ProfileRelease = ({
         ) : (
           <PlayCircleOutlineOutlinedIcon sx={{ color: 'black' }} />
         )}
+      </Button>
+
+      <Box sx={{ width: '50px', height: 'auto', mr: 1, cursor: 'pointer' }}>
+        <Link href={`/${releasePubkey}`} passHref prefetch>
+          <a>
+            <Image
+              height={'100%'}
+              width={'100%'}
+              layout="responsive"
+              src={getImageFromCDN(image, 400, new Date(Date.parse(date)))}
+              alt={trackName}
+              priority={true}
+              loader={loader}
+            />
+          </a>
+        </Link>
       </Box>
-      <Box sx={{mr:3, pr:3}} id={releasePubkey}>
-        <ControlPointIcon
-          sx={{ color: 'black' }}
-          key={trackName}
-          onClick={() => addTrackToQueue(releasePubkey)}
-        />
+      <Box
+        sx={{
+          flexGrow: 1,
+          overflow: 'hidden',
+          width: '100%',
+          cursor: 'pointer',
+        }}
+      >
+        <Link href={`/${releasePubkey}`} passHref prefetch>
+          <a>
+            <Typography
+              noWrap
+              sx={{ cursor: 'pointer' }}
+            >{`${artist} - ${title}`}</Typography>
+          </a>
+        </Link>
       </Box>
-      <Box sx={{ width: '50px', height: '50px', mr:1 }}>
-        <Image
-          height={'100%'}
-          width={'100%'}
-          layout="responsive"
-          src={getImageFromCDN(image, 400, new Date(Date.parse(date)))}
-          alt={trackName}
-          priority={true}
-          loader={loader}
-        />
-      </Box>
-      <Link href={`/${releasePubkey}`} passHref prefetch>
-        <a>{`${artist} - ${title}`}</a>
-      </Link>
     </Box>
   )
 }

@@ -72,9 +72,11 @@ const Profile = ({ userId }) => {
     <Box
       sx={{
         width: '100%',
-        height: '50vh',
+        height: '65vh',
         display: 'flex',
         flexDirection: 'column',
+        justifyItems: 'center',
+        alignItems: 'center'
       }}
     >
       <Box
@@ -97,23 +99,17 @@ const Profile = ({ userId }) => {
           isClicked={toggleView}
         />
       </Box>
-      {/* <Box sx={{ height: '25vh', overflow: 'auto', mx: 'auto' }}> */}
+      <Box sx={{ height: '50vh', overflow: 'auto'  }}>
         {view === 'releases' && (
-          <Box sx={{ height: '25vh', overflow: 'auto', mx: 'auto' }}>
           <ProfileReleases profileReleases={profilePublishedReleases} />
-          </Box>
         )}
         {view === 'hubs' && 
-        <Box sx={{ height: '25vh', overflow: 'auto', mx: 'auto' }}>
         <ProfileHubs profileHubs={profileHubs} />
-        </Box>
         }
         {view === 'collection' && (
-          <Box sx={{ height: '25vh', overflow: 'auto', mx: 'auto' }}>
           <ProfileCollections profileCollection={profileCollectionReleases} />
-          </Box>
         )}
-      {/* </Box> */}
+      </Box>
     </Box>
   )
 }

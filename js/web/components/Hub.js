@@ -65,9 +65,11 @@ const HubComponent = ({ hubPubkey }) => {
     <Box
       sx={{
         width: '100%',
-        height: '50vh',
+        height: '65vh',
         display: 'flex',
         flexDirection: 'column',
+        justifyItems: 'center',
+        alignItems: 'center'
       }}
     >
       {hubData && (
@@ -91,7 +93,7 @@ const HubComponent = ({ hubPubkey }) => {
         isReleaseClicked={clickedToggle}
         isCollaboratorClicked={clickedToggle}
       />
-      <Box sx={{ height: '25vh', overflow: 'auto', mx: 'auto' }}>
+      <Box sx={{ height: '50vh', overflow: 'auto', mx: 'auto' }}>
         {view === 'releases' && <HubReleases hubReleases={releaseData} />}
         {view === 'collaborators' && (
           <HubCollaborators collabData={collaboratorsData} />

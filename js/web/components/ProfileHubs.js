@@ -13,7 +13,7 @@ const ProfileHubs = ({ profileHubs }) => {
 }
 const ProfileHub = ({ hubHandle, hubName }) => {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'row', m: 1, p: 1, justifyContent: 'center', textAlign:'center'}}>
+    <Box sx={{ display: 'flex', flexDirection: 'row', m: 1, p: 1, }}>
       <Link href={`/hubs/${hubHandle}`} passHref prefetch>
         <a>{`${hubName}`}</a>
       </Link>
