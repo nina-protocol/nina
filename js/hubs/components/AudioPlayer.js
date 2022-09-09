@@ -37,7 +37,7 @@ const AudioPlayer = ({ hubPubkey }) => {
     hubReleases.forEach((hubRelease) => {
       let contentItem;
       if (
-        hubRelease.contentType === "NinaReleaseV1" &&
+        hubRelease.contentType === "ninaReleaseV1" &&
         releaseState.metadata[hubRelease.release] &&
         hubRelease.visible
       ) {
@@ -53,7 +53,7 @@ const AudioPlayer = ({ hubPubkey }) => {
     hubPosts.forEach(hubPost => {
       let contentItem;
       if (
-        hubPost.contentType === 'Post' &&
+        hubPost.contentType === 'post' &&
         hubPost.referenceHubContent !== null &&
         hubPost.visible
       ) {

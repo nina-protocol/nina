@@ -21,7 +21,8 @@ import rehypeExternalLinks from "rehype-external-links";
 import Royalty from './Royalty'
 
 const ReleasePurchase = (props) => {
-  const { releasePubkey, metadata, router, relatedReleases } = props
+  console.log('release purchase props', props)
+  const { releasePubkey, metadata, router } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const {
@@ -30,7 +31,6 @@ const ReleasePurchase = (props) => {
     releasePurchaseTransactionPending,
     releaseState,
     getRelease,
-    getPublishedHubForRelease,
   } = useContext(Release.Context)
   const { getAmountHeld, collection, ninaClient, usdcBalance, checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(Nina.Context)
   const {
@@ -54,16 +54,15 @@ const ReleasePurchase = (props) => {
   useEffect(() => {
     getRelease(releasePubkey)
 
-    const hubForRelease = async (releasePubkey) => {
-      const result = await getPublishedHubForRelease(releasePubkey)
-      setPublishedHub(result?.hub)
-    }
-    hubForRelease(releasePubkey)
+    // const hubForRelease = async (releasePubkey) => {
+    //   const result = await getPublishedHubForRelease(releasePubkey)
+    //   setPublishedHub(result?.hub)
+    // }
+    // hubForRelease(releasePubkey)
   }, [releasePubkey])
 
 useEffect(() => {
   getExchangesForRelease(releasePubkey)
-
 }, [releasePubkey, wallet.connected])
 
   useEffect(() => {
@@ -104,7 +103,7 @@ useEffect(() => {
       release.royaltyRecipients.forEach((recipient) => {
         if (
           wallet?.connected &&
-          recipient.recipientAuthority.toBase58() ===
+          recipient.recipientAuthority ===
             wallet?.publicKey.toBase58()
         ) {
           setUserIsRecipient(true)
@@ -152,7 +151,7 @@ useEffect(() => {
     }
 
     if (!release.pending) {
-      if (!ninaClient.isSol(release.paymentMint) && usdcBalance < ninaClient.nativeToUi(release.price.toNumber(), ninaClient.ids.mints.usdc)) {
+      if (!ninaClient.isSol(release.paymentMint) && usdcBalance < ninaClient.nativeToUi(release.price, ninaClient.ids.mints.usdc)) {
         enqueueSnackbar('Calculating SOL - USDC Swap...', {
           variant: 'info',
         })
@@ -185,11 +184,11 @@ useEffect(() => {
   const buttonText =
     release.remainingSupply > 0
       ? `Buy $${ninaClient.nativeToUiString(
-          release.price.toNumber(),
+          release.price,
           release.paymentMint
         )}`
       : `Sold Out ($${ninaClient
-          .nativeToUi(release.price.toNumber(), release.paymentMint)
+          .nativeToUi(release.price, release.paymentMint)
           .toFixed(2)})`
 
   const buttonDisabled =
@@ -226,12 +225,12 @@ useEffect(() => {
   return (
     <Box>
       <AmountRemaining variant="body2" align="left">
-        Remaining: <span>{release.remainingSupply.toNumber()} </span> /{' '}
-        {release.totalSupply.toNumber()}
+        Remaining: <span>{release.remainingSupply} </span> /{' '}
+        {release.totalSupply}
       </AmountRemaining>
 
       <Typography variant="body2" align="left" paddingBottom="10px">
-        Artist Resale: {release.resalePercentage.toNumber() / 10000}%
+        Artist Resale: {release.resalePercentage / 10000}%
       </Typography>
       <Typography variant="body2" align="left" paddingBottom="10px">
         {' '}
@@ -239,7 +238,7 @@ useEffect(() => {
           {`View Secondary Market (${exchangeTotalBuys + exchangeTotalSells})`}
         </StyledLink>
       </Typography>
-      <CollectorModal releasePubkey={releasePubkey} metadata={metadata} />
+      {/* <CollectorModal releasePubkey={releasePubkey} metadata={metadata} /> */}
       <HubsModal releasePubkey={releasePubkey} metadata={metadata} />
       {wallet?.connected && (
         <StyledUserAmount>
@@ -299,20 +298,6 @@ useEffect(() => {
           </Button>
         </form>
       </Box>
-      {relatedReleases && relatedReleases.length > 1 && (
-        <Link href={`/${releasePubkey}/related`} passHref>
-          <Button
-            variant="outlined"
-            fullWidth
-            sx={{ marginTop: '15px !important' }}
-          >
-            <Typography variant="body2">
-              See {relatedReleases.length - 1} more related release
-              {relatedReleases.length - 1 > 1 ? 's' : ''}
-            </Typography>
-          </Button>
-        </Link>
-      )}
       {userIsRecipient && (
         <Royalty releasePubkey={releasePubkey} release={release} />
       )}

@@ -42,6 +42,7 @@ const CollectorModal = (props) => {
         }
       }
     }
+    console.log('collectorsList', collectorsList)
     setCollectors(collectorsList)
   }
 

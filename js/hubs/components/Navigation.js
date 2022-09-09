@@ -145,7 +145,7 @@ const Navigation = ({ hubPubkey }) => {
             {hubData && (
               <Image
                 loader={loader}
-                src={getImageFromCDN(hubData.json.image, 100, new Date(Date.parse(hubData.datetime)))}
+                src={getImageFromCDN(hubData.data.image, 100, new Date(Date.parse(hubData.datetime)))}
                 height="50"
                 width="50"
                 alt="hub-logo"
@@ -153,7 +153,7 @@ const Navigation = ({ hubPubkey }) => {
             )}
             {hubPubkey ? (
               <Typography style={{ marginLeft: "15px" }}>
-                {hubData?.json.displayName}
+                {hubData?.data.displayName}
               </Typography>
             ) : (
               <Typography variant="h4">NINA HUBS [beta]</Typography>

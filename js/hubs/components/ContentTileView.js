@@ -35,7 +35,6 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
     switch (displayType) {
       case "all":
         filtered = content.filter((item) => item.hub === hubPubkey)
-        console.log('filtered: ', filtered)
         setFilteredContent(filtered);
         break;
       case "releases":
@@ -122,9 +121,10 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
       )}
       <TileGrid columnCount={columnCount}>
         {filteredContent?.map((item, i) => {    
+          console.log('item', item)
           return (
             <React.Fragment key={i}>
-              {item?.contentType === "NinaReleaseV1" && (
+              {item?.contentType === "ninaReleaseV1" && (
                 <Tile className={"tile"} key={i}>
                   <HoverCard
                     className="hoverBorder"
@@ -171,19 +171,19 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
                         width={100}
                         height={100}
                         layout="responsive"
-                        src={getImageFromCDN(item.image, 400, new Date(releaseState.tokenData[item.release].releaseDatetime.toNumber() * 1000))}
+                        src={getImageFromCDN(item.image, 400, new Date(releaseState.tokenData[item.release].releaseDatetime * 1000))}
                         release={item}
                         priority={true}
                       />
                     )}
                   </HoverCard>
-                  {!item.publishedThroughHub && releaseState.tokenData[item.release]?.authority.toBase58() !== hubData?.authority && (
+                  {!item.publishedThroughHub && releaseState.tokenData[item.release]?.authority !== hubData?.authority && (
                     <StyledAutorenewIcon fontSize="small" />
                   )}
                 </Tile>
               )}
 
-              {item?.contentType === "Post" && item.postContent && (
+              {item?.contentType === "post" && item.data && (
                 <PostTile
                   className={"tile postTile"}
                   key={i}
@@ -194,11 +194,11 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
                       variant="h2"
                       sx={{ color: "text.primary", textTransform: "uppercase" }}
                     >
-                      {item.postContent?.json.title.substring(0, 100)}
-                      {item.postContent?.json.title.length > 100 ? "..." : ""}
+                      {item.data.title.substring(0, 100)}
+                      {item.data.title.length > 100 ? "..." : ""}
                     </PostTitle>
                     <Typography sx={{ color: "text.primary" }}>
-                      published: {formattedDate(item.createdAt)}
+                      published: {formattedDate(item.datetime)}
                     </Typography>
                   </PostInfo>
                   <HoverCard className="hoverCard">
@@ -229,8 +229,8 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
                             textTransform: "uppercase",
                           }}
                         >
-                          {item.postContent.json.title.substring(0, 100)}
-                          {item.postContent.json.title.length > 100 ? "..." : ""}
+                          {item.data.title.substring(0, 100)}
+                          {item.data.title.length > 100 ? "..." : ""}
                         </Typography>
                         <Typography sx={{ color: "text.primary" }}>
                           published: {formattedDate(item.createdAt)}
@@ -238,13 +238,13 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
                       </PostInfo>
                       <PostLink>View Post</PostLink>
                     </CardCta>
-                    {item.releaseMetadata?.image && (
+                    {item.image && (
                       <Image
                         loader={loader}
                         width={100}
                         height={100}
                         layout="fill"
-                        src={getImageFromCDN(item.releaseMetadata?.image, isMobile ? 100 : 400)}
+                        src={getImageFromCDN(item.image, isMobile ? 100 : 400)}
                         release={item.referenceContent}
                         priority={true}
                       />

@@ -62,12 +62,12 @@ const HubsModal = (props) => {
                     <tr key={i}>
                       <td>
                         <a
-                          href={entry.json.externalUrl}
+                          href={entry.data.externalUrl}
                           passHref
                           target="_blank"
                           rel="noopener noreferrer"      
                         >
-                          {entry.json.displayName}
+                          {entry.data.displayName}
                         </a>
                       </td>
                     </tr>

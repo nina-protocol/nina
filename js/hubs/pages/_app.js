@@ -11,6 +11,13 @@ import { GlowWalletAdapter } from "@solana/wallet-adapter-glow";
 import { SnackbarProvider } from "notistack";
 import Box from "@mui/material/Box";
 import dynamic from "next/dynamic";
+import NinaSdk from '@nina-protocol/nina-sdk'
+
+NinaSdk.client.init(
+  process.env.NINA_API_ENDPOINT,
+  process.env.SOLANA_CLUSTER_URL,
+  process.env.NINA_PROGRAM_ID
+)
 
 // Use require instead of import since order matters
 // require('@solana/wallet-adapter-react-ui/styles.css');

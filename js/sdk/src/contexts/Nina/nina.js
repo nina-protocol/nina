@@ -156,6 +156,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         subscriptionUnsubscribe,
         savePostsToState,
         postState,
+        setPostState,
         collection,
         createCollection,
         createCollectionForSingleRelease,
