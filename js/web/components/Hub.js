@@ -25,6 +25,7 @@ const HubComponent = ({ hubPubkey }) => {
   const [collaboratorsData, setCollaboratorsData] = useState([])
   const [view, setView] = useState('releases')
   const [clickedToggle, setClickedToggle] = useState('releases')
+  const [hubDescription, setHubDescription] = useState()
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
   console.log('hubData', hubData)
 
@@ -78,8 +79,8 @@ const HubComponent = ({ hubPubkey }) => {
           hubName={`${
             hubData?.json.displayName ? hubData.json.displayName : ''
           }`}
-          hubDescription={`${
-            hubData?.json.hubDescription ? hubData.json.hubDescription : ''
+          description={`${
+            hubData?.json.description ? hubData.json.description : ''
           }`}
           hubUrl={`${
             hubData?.json.externalUrl ? hubData.json.externalUrl : ''
@@ -93,7 +94,7 @@ const HubComponent = ({ hubPubkey }) => {
         isReleaseClicked={clickedToggle}
         isCollaboratorClicked={clickedToggle}
       />
-      <Box sx={{ height: '50vh', overflow: 'auto', mx: 'auto' }}>
+      <Box sx={{ height: '75vh', width: '50vw', overflow: 'auto',}}>
         {view === 'releases' && <HubReleases hubReleases={releaseData} />}
         {view === 'collaborators' && (
           <HubCollaborators collabData={collaboratorsData} />

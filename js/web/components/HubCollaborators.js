@@ -1,23 +1,40 @@
-import { Box } from '@mui/system'
-import dynamic from 'next/dynamic'
 import Link from 'next/link'
+import Paper from '@mui/material/Paper'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import TableCell from '@mui/material/TableCell'
+
 const HubCollaborators = ({ collabData }) => {
-  return collabData.map((collab) => (
-    <Box key={collab.id}>
-      <HubCollaborator
-        collaboratorLink={'https://ninaprotocol.com'}
-        collaboratorID={collab.collaborator}
-      />
-    </Box>
-  ))
-}
-const HubCollaborator = ({ collaboratorID, collaboratorLink }) => {
   return (
-    <Box sx={{display: 'flex', flexDirection: 'row', m:1, p:1}}>
+    <TableContainer component={Paper}>
+      <Table  aria-label="simple table">
+       
+        <TableBody>
+          {collabData.map((collab) => (
+            <TableRow hover key={collab.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+            <TableCell component="th" scope="row">
+              <HubCollaborator
+                collaboratorLink={'https://ninaprotocol.com'}
+                collaboratorID={collab.collaborator}
+              />
+            </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  )
+}
+const HubCollaborator = ({ collaboratorID,  }) => {
+  return (
+    
       <Link href={`/profiles/${collaboratorID}`}>
         <a>{collaboratorID}</a>
       </Link>
-    </Box>
+    
   )
 }
 export default HubCollaborators

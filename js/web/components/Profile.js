@@ -8,7 +8,7 @@ import { useSnackbar } from 'notistack'
 
 const ProfileReleases = dynamic(() => import('./ProfileReleases'))
 const ProfileHubs = dynamic(() => import('./ProfileHubs'))
-const ProfileCollections = dynamic(() => import('./ProfileCollections'))
+const ProfileCollection = dynamic(() => import('./ProfileCollection'))
 const ProfileToggle = dynamic(() => import('./ProfileToggle'))
 const Profile = ({ userId }) => {
   const {
@@ -107,7 +107,7 @@ const Profile = ({ userId }) => {
         <ProfileHubs profileHubs={profileHubs} />
         }
         {view === 'collection' && (
-          <ProfileCollections profileCollection={profileCollectionReleases} />
+          <ProfileCollection profileCollection={profileCollectionReleases} />
         )}
       </Box>
     </Box>
