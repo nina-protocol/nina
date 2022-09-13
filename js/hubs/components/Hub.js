@@ -82,6 +82,8 @@ const HubComponent = ({hubPubkey}) => {
                 ...releaseState.metadata[hubContentData.release],
               };
               contentArray.push(hubContentData);
+            } else {
+              console.log('hub release is reference: ', hubContentData)
             }
             if (hubContentData.publishedThroughHub === hubPubkey || releaseState.tokenData[hubContentData.release]?.authority === hubData?.authority) {
               types.push('Releases')
@@ -99,6 +101,7 @@ const HubComponent = ({hubPubkey}) => {
               hubPostPublicKey: hubContentData.publicKey,
             };
             if (hubContentData.referenceContent !== undefined) {
+              console.log('releaseState.metadata[hubContentData.referenceContent]: ', releaseState.metadata[hubContentData.referenceContent])
               hubContentData.releaseMetadata =
                 releaseState.metadata[hubContentData.referenceContent];
               hubContentData.contentType = "postWithRelease";

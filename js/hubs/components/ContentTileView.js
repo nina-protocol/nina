@@ -170,13 +170,13 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
                         width={100}
                         height={100}
                         layout="responsive"
-                        src={getImageFromCDN(item.image, 400, new Date(releaseState.tokenData[item.publicKey]?.releaseDatetime))}
+                        src={getImageFromCDN(item.image, 400, new Date(releaseState.tokenData[item.release]?.releaseDatetime))}
                         release={item}
                         priority={true}
                       />
                     )}
                   </HoverCard>
-                  {item.publishedThroughHub !== hubPubkey && releaseState.tokenData[item.publicKey]?.authority !== hubData?.authority && (
+                  {item.publishedThroughHub !== hubPubkey && releaseState.tokenData[item.release]?.authority !== hubData?.authority && (
                     <StyledAutorenewIcon fontSize="small" />
                   )}
                 </Tile>
@@ -243,7 +243,7 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
                         width={100}
                         height={100}
                         layout="fill"
-                        src={getImageFromCDN(item.releaseMetadata.image, isMobile ? 100 : 400)}
+                        src={getImageFromCDN(item.releaseMetadata.image, isMobile ? 100 : 400, item.datetime)}
                         release={item.referenceContent}
                         priority={true}
                       />

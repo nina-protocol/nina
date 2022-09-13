@@ -73,6 +73,7 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
       postPubkey,
       "Post"
     );
+    console.log('result', result)
     enqueueSnackbar(result.msg, {
       variant: result.success ? "info" : "failure",
     });

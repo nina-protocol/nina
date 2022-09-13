@@ -529,6 +529,15 @@ const hubContextHelper = ({
         ],
         program.programId
       )
+      const [hubChildPublicKey] = await anchor.web3.PublicKey.findProgramAddress(
+        [
+          Buffer.from(anchor.utils.bytes.utf8.encode(`nina-hub-${type.toLowerCase()}`)),
+          hubPubkey.toBuffer(),
+          contentAccountPubkey.toBuffer(),
+        ],
+        program.programId
+      )
+          
       const txid = await program.rpc.hubContentToggleVisibility(hub.handle, {
         accounts: {
           authority: provider.wallet.publicKey,
@@ -539,17 +548,20 @@ const hubContextHelper = ({
         },
       })
       await provider.connection.getParsedTransaction(txid, 'finalized')
-
+      console.log('type', type)
+      console.log('hubContentState', hubContentState)
+      console.log('hubChildPublicKey.toBase58()', hubChildPublicKey.toBase58())
       const toggledContent = Object.values(hubContentState).filter(
-        (c) => c.publicKeyHubContent === hubContent.toBase58()
+        (c) => c.publicKey === hubChildPublicKey.toBase58()
       )[0]
+      console.log('toggledContent', toggledContent)
       toggledContent.visible = !toggledContent.visible
       const hubContentStateCopy = { ...hubContentState }
       hubContentState[toggledContent.publicKey] = toggledContent
       setHubContentState(hubContentStateCopy)
       return {
         success: true,
-        msg: `${type} has been archived`,
+        msg: `${type} has been ${toggledContent.visible ? 'unarchived' : 'archived'}`,
       }
     } catch (error) {
       return ninaErrorHandler(error)
