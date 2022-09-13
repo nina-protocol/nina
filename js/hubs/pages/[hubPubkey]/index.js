@@ -4,7 +4,7 @@ import NotFound from "../../components/NotFound";
 import NinaSdk from "@nina-protocol/nina-sdk"
 
 const HubPage = (props) => {
-  const { hub, hubPubkey } = props;
+  const { hub } = props;
 
   if (!hub) {
     return (
@@ -37,7 +37,7 @@ const HubPage = (props) => {
         <meta name="twitter:image" content={hub?.data.image} />
         <meta name="og:image" content={hub?.data.image} />      
       </Head>
-      <Hub hubPubkey={hubPubkey} />
+      <Hub hubPubkey={hub.publicKey} />
     </>
   );
 };
@@ -61,12 +61,10 @@ export const getStaticProps = async (context) => {
   const hubPubkey = context.params.hubPubkey;
   if (hubPubkey && hubPubkey !== 'manifest.json' && hubPubkey !== 'undefined') {
     try {
-      const hub = (await NinaSdk.Hub.fetch(hubPubkey)).hub;
-      console.log('hub: ', hub);
+      const { hub } = await NinaSdk.Hub.fetch(hubPubkey);
       return {
         props: {
           hub,
-          hubPubkey: hub.publicKey,
         },
         revalidate: 10
       };

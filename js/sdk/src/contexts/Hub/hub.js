@@ -20,7 +20,6 @@ const HubContextProvider = ({ children }) => {
   const [hubCollaboratorsState, setHubCollaboratorsState] = useState({})
   const [hubContentState, setHubContentState] = useState({})
   const [hubContentFetched, setHubContentFetched] = useState(new Set())
-  const [hubFeePending, setHubFeePending] = useState()
   const [initialLoad, setInitialLoad] = useState(false)
   const [addToHubQueue, setAddToHubQueue] = useState(new Set())
   const [hubsCount, setHubsCount] = useState(0)
@@ -49,6 +48,7 @@ const HubContextProvider = ({ children }) => {
     validateHubHandle,
     filterFeaturedHubs,
     filterHubsAll,
+    getHubFeePending,
   } = hubContextHelper({
     ninaClient,
     savePostsToState,
@@ -58,7 +58,6 @@ const HubContextProvider = ({ children }) => {
     setHubCollaboratorsState,
     hubContentState,
     setHubContentState,
-    setHubFeePending,
     postState,
     setPostState,
     initialLoad,
@@ -97,7 +96,7 @@ const HubContextProvider = ({ children }) => {
         hubState,
         hubCollaboratorsState,
         hubContentState,
-        hubFeePending,
+        getHubFeePending,
         filterHubCollaboratorsForHub,
         filterHubContentForHub,
         filterHubsForUser,
@@ -872,7 +871,7 @@ const hubContextHelper = ({
   const getHubs = async (featured = false) => {
     try {
       const updatedAllHubs = [...allHubs]
-      const hubs = (await NinaSdk.Hub.fetchAll({offset:allHubs.length, limit:25}, true)).hubs
+      const  { hubs } = await NinaSdk.Hub.fetchAll({offset:allHubs.length, limit:25}, true)
 
       const updatedHubState = {...hubState}
       hubs.forEach(hub => {
@@ -884,90 +883,100 @@ const hubContextHelper = ({
           ...hubData,
         }
       })
-      console.log('updatedHubState', updatedHubState)
+      if (featured) {
+        setFeaturedHubs(updatedAllHubs.splice(0, 10))
+      } else {
+        setAllHubs(updatedAllHubs)
+      }
       setHubState(updatedHubState)
-      setAllHubs(updatedAllHubs)
-      setFeaturedHubs(updatedAllHubs.splice(0, 10))
     } catch (error) {
       console.warn(error)
     }
   }
 
   const getHub = async (hubPubkey) => {
-    const hub = await NinaSdk.Hub.fetch(hubPubkey, true)
-    
-    const updatedHubState = { ...hubState }
-    const hubData = hub.hub.accountData
-    updatedHubState[hubPubkey] = {
-      ...hub.hub,
-      ...hubData,
+    try {
+      const hub = await NinaSdk.Hub.fetch(hubPubkey, true)
+      
+      const updatedHubState = { ...hubState }
+      const hubData = hub.hub.accountData
+      updatedHubState[hubPubkey] = {
+        ...hub.hub,
+        ...hubData,
+      }
+      setHubState(updatedHubState)
+  
+      const updatedHubCollaboratorState = { ...hubCollaboratorsState }
+      hub.collaborators.forEach(collaborator => {
+        updatedHubCollaboratorState[collaborator.accountData.collaborator.publicKey] = {
+          ...collaborator.accountData.collaborator
+        }
+      })
+      setHubCollaboratorsState(updatedHubCollaboratorState)
+      
+      const updatedHubContent = { ...hubContentState }
+      const updatedReleaseState = { ...releaseState }
+      hub.releases.forEach(release => {
+        updatedHubContent[release.accountData.hubRelease.publicKey] = {
+          ...release.accountData.hubContent,
+          ...release.accountData.hubRelease,
+          hubReleaseId: release.accountData.hubRelease.publicKey,
+        }
+        updatedReleaseState.tokenData[release.publicKey] = {
+          ...release.accountData.release,
+        }
+        updatedReleaseState.metadata[release.publicKey] = {
+          ...release.metadata,
+          publishedThroughHub: release.publishedThroughHub || undefined,
+        }
+        updatedReleaseState.releaseMintMap = release.mint
+      })
+      setReleaseState(updatedReleaseState)
+  
+      const updatedPostState = { ...postState }
+      hub.posts.forEach(post => {
+        updatedHubContent[post.accountData.hubPost.publicKey] = {
+          ...post.accountData.hubContent,
+          ...post.accountData.hubPost,
+          hubPostId: post.accountData.hubPost.publicKey,
+        }
+        delete post.accountData
+        updatedPostState[post.publicKey] = {
+          publicKey: post.publicKey,
+          ...post,
+        }
+      })
+      setPostState(updatedPostState)
+      setHubContentState(updatedHubContent)
+      setHubContentFetched(new Set([...hubContentFetched, hubPubkey]))
+    } catch (error) {
+      console.warn(error)
     }
-    setHubState(updatedHubState)
-
-    const updatedHubCollaboratorState = { ...hubCollaboratorsState }
-    hub.collaborators.forEach(collaborator => {
-      updatedHubCollaboratorState[collaborator.accountData.collaborator.publicKey] = {
-        ...collaborator.accountData.collaborator
-      }
-    })
-    setHubCollaboratorsState(updatedHubCollaboratorState)
-    
-    const updatedHubContent = { ...hubContentState }
-    const updatedReleaseState = { ...releaseState }
-    hub.releases.forEach(release => {
-      updatedHubContent[release.accountData.hubRelease.publicKey] = {
-        ...release.accountData.hubContent,
-        ...release.accountData.hubRelease,
-        hubReleaseId: release.accountData.hubRelease.publicKey,
-      }
-      updatedReleaseState.tokenData[release.publicKey] = {
-        ...release.accountData.release,
-      }
-      updatedReleaseState.metadata[release.publicKey] = {
-        ...release.metadata,
-        publishedThroughHub: release.publishedThroughHub || undefined,
-      }
-      updatedReleaseState.releaseMintMap = release.mint
-    })
-    setReleaseState(updatedReleaseState)
-
-    const updatedPostState = { ...postState }
-    hub.posts.forEach(post => {
-      updatedHubContent[post.accountData.hubPost.publicKey] = {
-        ...post.accountData.hubContent,
-        ...post.accountData.hubPost,
-        hubPostId: post.accountData.hubPost.publicKey,
-      }
-      delete post.accountData
-      updatedPostState[post.publicKey] = {
-        publicKey: post.publicKey,
-        ...post,
-      }
-    })
-    setPostState(updatedPostState)
-    setHubContentState(updatedHubContent)
-    setHubContentFetched(new Set([...hubContentFetched, hubPubkey]))
   }
 
 
   const getHubsForUser = async (publicKey) => {
-    const hubs = (await NinaSdk.Account.fetchHubs(publicKey, true)).hubs
-
-    const updatedHubCollaboratorState = { ...hubCollaboratorsState }
-    hubs.forEach(hub => {
-      updatedHubCollaboratorState[hub.accountData.collaborator.publicKey] = hub.accountData.collaborator
-    })
-    setHubCollaboratorsState(updatedHubCollaboratorState)
-    const hubAccountData = hub.accountData.hub
-    const updatedHubState = { ...hubState }
-    delete hub.accountData
-    hubs.forEach(hub => {
-      updatedHubState[hub.publicKey] = {
-        ...hub,
-        ...hubAccountData,
-      }
-    })
-    setHubState(updatedHubState)
+    try {
+      const { hubs } = await NinaSdk.Account.fetchHubs(publicKey, true)
+  
+      const updatedHubCollaboratorState = { ...hubCollaboratorsState }
+      hubs.forEach(hub => {
+        updatedHubCollaboratorState[hub.accountData.collaborator.publicKey] = hub.accountData.collaborator
+      })
+      setHubCollaboratorsState(updatedHubCollaboratorState)
+      const hubAccountData = hub.accountData.hub
+      const updatedHubState = { ...hubState }
+      delete hub.accountData
+      hubs.forEach(hub => {
+        updatedHubState[hub.publicKey] = {
+          ...hub,
+          ...hubAccountData,
+        }
+      })
+      setHubState(updatedHubState)
+    } catch (error) {
+      console.warn(error)
+    }
   } 
   /*
 
@@ -978,9 +987,7 @@ const hubContextHelper = ({
   const filterHubContentForHub = (hubPubkey) => {
     const hubReleases = []
     const hubPosts = []
-    console.log('hubContentState', hubContentState, hubPubkey)
     Object.values(hubContentState).forEach((hubContent) => {
-      console.log('hubContent', hubContent, hubPubkey)
       if (hubContent.hub === hubPubkey) {
         if (hubContent.contentType === 'ninaReleaseV1') {
           hubReleases.push(hubContent)
@@ -1025,6 +1032,7 @@ const hubContextHelper = ({
     })
     return hubs
   }
+
   const getHubPubkeyForHubHandle = async (handle) => {
     try {
       if (handle) {
@@ -1043,6 +1051,20 @@ const hubContextHelper = ({
     }
   }
   
+  const getHubFeePending = async (hubPubkey) => {
+    if (typeof hubPubkey === 'string') {
+      hubPubkey = new anchor.web3.PublicKey(hubPubkey)
+    }
+    const program = await ninaClient.useProgram()
+    const hub = await program.account.hub.fetch(hubPubkey)
+    let hubTokenAccount = await findAssociatedTokenAddress(
+      hub.hubSigner,
+      new anchor.web3.PublicKey(ids.mints.usdc)
+    )
+    const hubFeePendingAmount =
+      await provider.connection.getTokenAccountBalance(hubTokenAccount)
+    return hubFeePendingAmount.value.uiAmount
+  }
 
   const filterHubsAll = () => {
     const allHubsArray = []
@@ -1097,6 +1119,7 @@ const hubContextHelper = ({
     getHubPubkeyForHubHandle,
     validateHubHandle,
     filterFeaturedHubs,
+    getHubFeePending
   }
 }
 

@@ -31,9 +31,7 @@ const Hubs = () => {
   }, [])
 
   useEffect(() => {
-    console.log('hubstate', hubState)
     if ((!hubs || hubs.length === 0) && Object.keys(hubState).length > 0) {
-      console.log('filtering hubs', filterFeaturedHubs())
       setHubs(filterFeaturedHubs())
     }
   }, [hubState])
@@ -282,11 +280,11 @@ apply
                         You have {userHubs.length} {userHubs.length > 1 ? 'Hubs' : 'Hub'}
                       </DashboardHeader>
                       <ul style={{ height: "500px", overflowY: "scroll" }}>
-                        {userHubs.filter(hub => hub.id).map((hub) => {
+                        {userHubs.filter(hub => hub.publicKey).map((hub) => {
                           return (
-                            <DashboardEntry key={hub.id}>
+                            <DashboardEntry key={hub.publicKey}>
                               <Link href={`/${hub.handle}`}>
-                                {hub?.json?.displayName}
+                                {hub?.data?.displayName}
                               </Link>
                             </DashboardEntry>
                           );

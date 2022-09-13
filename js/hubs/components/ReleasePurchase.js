@@ -28,7 +28,6 @@ const ReleasePurchase = (props) => {
     releasePurchasePending,
     releasePurchaseTransactionPending,
     releaseState,
-    getPublishedHubForRelease,
   } = useContext(Release.Context);
   const { hubState } = useContext(Hub.Context)
   const { getAmountHeld, collection, usdcBalance, ninaClient, checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(Nina.Context);
@@ -53,11 +52,11 @@ const ReleasePurchase = (props) => {
   useEffect(() => {
     getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey);
 
-    const hubForRelease = async (releasePubkey) => {
-      const result = await getPublishedHubForRelease(releasePubkey);
-      setPublishedHub(result?.hub);
-    };
-    hubForRelease(releasePubkey);
+    // const hubForRelease = async (releasePubkey) => {
+    //   const result = await getPublishedHubForRelease(releasePubkey);
+    //   setPublishedHub(result?.hub);
+    // };
+    // hubForRelease(releasePubkey);
   }, [releasePubkey, releaseState.releaseMintMap]);
 
   useEffect(() => {
@@ -65,9 +64,9 @@ const ReleasePurchase = (props) => {
       release.royaltyRecipients.forEach((recipient) => {
         if (
           wallet?.connected &&
-          recipient.recipientAuthority.toBase58() ===
+          recipient.recipientAuthority ===
             wallet?.publicKey.toBase58() &&
-          recipient.percentShare.toNumber() / 10000 > 0
+          recipient.percentShare / 10000 > 0
         ) {
           setUserIsRecipient(true);
         }
@@ -85,7 +84,7 @@ const ReleasePurchase = (props) => {
       return;
     }
     if (!release.pending) {
-      let releasePriceUi = ninaClient.nativeToUi(release.price.toNumber(), ninaClient.ids.mints.usdc)
+      let releasePriceUi = ninaClient.nativeToUi(release.price, ninaClient.ids.mints.usdc)
       let convertAmount = releasePriceUi + (releasePriceUi * hubState[hubPubkey].referralFee / 100)
       if (!ninaClient.isSol(release.releaseMint) && usdcBalance < convertAmount) {
         enqueueSnackbar("Calculating SOL - USDC Swap...", {
@@ -120,11 +119,11 @@ const ReleasePurchase = (props) => {
   const buttonText =
     release.remainingSupply > 0
       ? `Buy $${ninaClient.nativeToUiString(
-          release.price.toNumber(),
+          release.price,
           release.paymentMint
         )}`
       : `Sold Out ($${ninaClient
-          .nativeToUi(release.price.toNumber(), release.paymentMint)
+          .nativeToUi(release.price, release.paymentMint)
           .toFixed(2)})`;
 
   const buttonDisabled =
@@ -154,12 +153,12 @@ const ReleasePurchase = (props) => {
   return (
     <ReleasePurchaseWrapper mt={1}>
       <AmountRemaining variant="body2" align="left">
-        Remaining: <span>{release.remainingSupply.toNumber()} </span> /{" "}
-        {release.totalSupply.toNumber()}
+        Remaining: <span>{release.remainingSupply} </span> /{" "}
+        {release.totalSupply}
       </AmountRemaining>
 
       <Typography variant="body2" align="left" paddingBottom="10px">
-        Artist Resale: {release.resalePercentage.toNumber() / 10000}%
+        Artist Resale: {release.resalePercentage / 10000}%
       </Typography>
       {wallet?.connected && amountHeld > 0 && (
         <StyledUserAmount>

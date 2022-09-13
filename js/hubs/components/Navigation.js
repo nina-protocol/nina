@@ -84,8 +84,7 @@ const Navigation = ({ hubPubkey }) => {
     }
     return undefined;
   }, [hubState, wallet.connected]);
-
-
+  
   useEffect(() => {
     const setResponsiveness = () => {
       return window.innerWidth < 900

@@ -67,7 +67,7 @@ const HubsModal = (props) => {
                           href={`/${entry.handle}`}
                           className={entry.publishedThroughHub ? 'publishingHub' : ''}      
                         >
-                          {entry.json.displayName}
+                          {entry.data.displayName}
                         </Link>
                       </td>
                     </tr>

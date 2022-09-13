@@ -1,27 +1,19 @@
 import Dashboard from "../../components/Dashboard";
-import axios from "axios";
+import NinaSdk from "@nina-protocol/nina-sdk";
 
-const DashboardPage = ({ hubPubkey }) => {
+const DashboardPage = ({ hub }) => {
   return (
     <>
-      <Dashboard hubPubkey={hubPubkey} />
+      <Dashboard hubPubkey={hub.publicKey} />
     </>
   );
 };
 
 DashboardPage.getInitialProps = async (context) => {
-  const indexerUrl = process.env.INDEXER_URL;
-  const hubPubkey = context.query.hubPubkey;
-
-  const indexerPath = indexerUrl + `/hubs/${hubPubkey}`;
-  let hub;
-
   try {
-    const result = await axios.get(indexerPath);
-    hub = result.data.hub;
+    const { hub } = await NinaSdk.Hub.fetch(context.query.hubPubkey);
     return {
       hub,
-      hubPubkey: hub.id,
     };
   } catch (error) {
     console.warn(error);

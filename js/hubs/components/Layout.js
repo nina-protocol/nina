@@ -17,15 +17,23 @@ const lightTheme = createTheme(lightThemeOptions);
 
 const Layout = ({ children }) => {
   const router = useRouter();
-  const [hubPubkey, setHubPubkey] = useState();
+  const [hubPubkey, setHubPubkey] = useState(undefined);
   const { hubState, getHubPubkeyForHubHandle } = useContext(Hub.Context);
 
   useEffect(() => {
     const getHubPubkey = async (handle) => {
-      const publicKey = (await NinaSdk.Hub.fetch(handle)).hub.publicKey;
-      setHubPubkey(publicKey);
+      try {
+        const publicKey = (await NinaSdk.Hub.fetch(handle)).hub.publicKey;
+        setHubPubkey(publicKey);
+      } catch (error) {
+        setHubPubkey(undefined);
+      }
     };
-    getHubPubkey(router.query.hubPubkey);
+    if (router.query.hubPubkey) {
+      getHubPubkey(router.query.hubPubkey);
+    } else {
+      setHubPubkey(undefined);
+    }
   }, [router.query.hubPubkey]);
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
@@ -109,7 +117,7 @@ const Layout = ({ children }) => {
                 {children}
               </Grid>
               <AudioPlayerWrapper>
-                <AudioPlayer hubPubkey={router.query.hubPubkey} />
+                <AudioPlayer hubPubkey={hubPubkey} />
               </AudioPlayerWrapper>
             </main>
           </Container>

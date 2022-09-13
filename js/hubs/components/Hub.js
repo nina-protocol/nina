@@ -49,12 +49,11 @@ const HubComponent = ({hubPubkey}) => {
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
 
   useEffect(() => {
-    console.log('hubPubkey HJHJHJHJJHJ', hubPubkey)
     const [releases, posts] = filterHubContentForHub(hubPubkey)
-    console.log('releases, posts', releases, posts)
     setHubReleases(releases)
     setHubPosts(posts)
   }, [hubContentState]);
+
   const [description, setDescription] = useState();
   const hubCollaborators = useMemo(
     () => filterHubCollaboratorsForHub(hubPubkey) || [],
@@ -63,14 +62,11 @@ const HubComponent = ({hubPubkey}) => {
 
   useEffect(() => {
     if (hubReleases && hubPosts) {
-      console.log('hubReleases, hubPosts', hubReleases, hubPosts)
       const contentArray = [];
       const types = []
       const hubContent = [...hubReleases, ...hubPosts];
       hubContent.forEach((hubContentData) => {
-        console.log('hubContentData', hubContentData)
         if (hubContentData.hub === hubPubkey) {     
-          console.log('sdsfdsdfsdfs: ', hubPubkey) 
           if (
             hubContentData.contentType === "ninaReleaseV1" &&
             releaseState.metadata[hubContentData.release] &&
@@ -78,7 +74,7 @@ const HubComponent = ({hubPubkey}) => {
           ) {
             const hubReleaseIsReference =
               hubContent.filter(
-                (c) => c.referenceHubContent === hubContentData.release && c.visible
+                (c) => c.referenceContent === hubContentData.release && c.visible
               ).length > 0;
             if (!hubReleaseIsReference) {
               hubContentData = {
@@ -87,7 +83,7 @@ const HubComponent = ({hubPubkey}) => {
               };
               contentArray.push(hubContentData);
             }
-            if (hubContentData.publishedThroughHub || releaseState.tokenData[hubContentData.release]?.authority === hubData?.authority) {
+            if (hubContentData.publishedThroughHub === hubPubkey || releaseState.tokenData[hubContentData.release]?.authority === hubData?.authority) {
               types.push('Releases')
             } else {
               types.push('Reposts')
@@ -102,10 +98,10 @@ const HubComponent = ({hubPubkey}) => {
               ...postState[hubContentData.post],
               hubPostPublicKey: hubContentData.publicKey,
             };
-            if (hubContentData.referenceHubContent !== null) {
+            if (hubContentData.referenceContent !== undefined) {
               hubContentData.releaseMetadata =
-                releaseState.metadata[hubContentData.referenceHubContent];
-              hubContentData.contentType = "PostWithRelease";
+                releaseState.metadata[hubContentData.referenceContent];
+              hubContentData.contentType = "postWithRelease";
             }
             types.push('Text Posts')
             contentArray.push(hubContentData);
