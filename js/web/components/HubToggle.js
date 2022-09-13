@@ -1,13 +1,55 @@
 import { Button, Box, Tabs, Tab } from '@mui/material'
-const HubToggle = ({ releaseClick, collaboratorClick, isReleaseClicked, isCollaboratorClicked }) => {
+import { styled } from '@mui/system'
+
+const HubToggle = ({
+  releaseClick,
+  collaboratorClick,
+  isReleaseClicked,
+  isCollaboratorClicked,
+}) => {
   return (
-    <Box sx={{width:"50vw", borderBottom: 1, borderColor: 'divider', pb:1, px: 1, mx: 1, mb:1, display:"flex", flexDirection:"row", alignItems:'center', justifyContent:'center'}}>
+    <ResponsiveContainer
+      sx={{
+        borderBottom: 1,
+        borderColor: 'divider',
+   
+      }}
+    >
       <Tabs>
-        <Tab onClick={releaseClick} label="Releases"  value='Releases' sx={{color: `${isReleaseClicked === 'releases' ? 'black' : ''}`}}/>
-        <Tab onClick={collaboratorClick} label="Collaborators" value="Collaborators" sx={{color: `${isCollaboratorClicked  === 'collaborators' ? 'black' : ''}`}} />
+        <StyledTab
+          disableRipple
+          onClick={releaseClick}
+          label="Releases"
+          value="Releases"
+          sx={{ color: `${isReleaseClicked === 'releases' ? 'black' : ''}` }}
+        />
+        <StyledTab
+          disableRipple
+          onClick={collaboratorClick}
+          label="Collaborators"
+          value="Collaborators"
+          sx={{
+            color: `${
+              isCollaboratorClicked === 'collaborators' ? 'black' : ''
+            }`,
+          }}
+        />
       </Tabs>
-    </Box>
+    </ResponsiveContainer>
   )
 }
 
+const ResponsiveContainer = styled(Box)(({ theme }) => ({
+  minWidth: '50vw',
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'start',
+  [theme.breakpoints.down('md')]: {
+    width: '100vw',
+  },
+}))
+const StyledTab = styled(Tab)(({theme}) => ({
+  p:0,
+}))
 export default HubToggle

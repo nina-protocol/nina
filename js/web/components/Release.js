@@ -11,7 +11,6 @@ import NinaBox from './NinaBox'
 import ReleaseCard from './ReleaseCard'
 import ReleasePurchase from './ReleasePurchase'
 import ExchangeComponent from './Exchange'
-
 const ReleaseComponent = ({ metadataSsr }) => {
   const router = useRouter()
   const releasePubkey = router.query.releasePubkey

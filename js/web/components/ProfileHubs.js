@@ -2,7 +2,7 @@ import { Box } from '@mui/system'
 import Image from 'next/image'
 import Link from 'next/link'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
-import { useState, useEffect, createElement, Fragment } from 'react'
+import { useState, useEffect, useContext, createElement, Fragment } from 'react'
 import { unified } from 'unified'
 import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
@@ -14,50 +14,98 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import TableSortLabel from '@mui/material/TableSortLabel'
-import Paper from '@mui/material/Paper'
+import { Typography, Button } from '@mui/material'
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import { useSnackbar } from 'notistack'
+import { styled } from '@mui/material'
+import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 
 const { getImageFromCDN, loader } = imageManager
 
-const ProfileHubss = ({ profileHubs, description }) => {
-  if (profileHubs.length === 0) return <Box>No hubs belong to this address</Box>
-  return <ProfileHubs profileHubs={profileHubs} description={description} />
-}
-
 const ProfileHubs = ({ profileHubs }) => {
+  const {
+    getHub,
+    hubState,
+    filterHubContentForHub,
+    filterHubCollaboratorsForHub,
+    hubContentState,
+  } = useContext(Hub.Context)
+  const {
+    updateTrack,
+    addTrackToQueue,
+    isPlaying,
+    setIsPlaying,
+    track,
+    playlist,
+    resetQueueWithPlaylist,
+  } = useContext(Audio.Context)
+  const { releaseState } = useContext(Release.Context)
+  const [hubReleaseData, setHubReleaseData] = useState([])
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+
+  const playHubHandler = (e) => {
+    e.stopPropagation()
+    e.preventDefault()
+    console.log('releaseState', releaseState)
+    setHubReleaseData([releaseState])
+    console.log('typeof releaseState', typeof releaseState)
+    const mints = Object.keys(releaseState.releaseMintMap)
+    resetQueueWithPlaylist(mints).then(() =>
+      enqueueSnackbar(`Hub releases added to queue`, {
+        variant: 'info',
+      })
+    )
+  }
+  console.log('profileHubs', profileHubs)
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell
-              sx={{ fontWeight: 'bold', borderBottom: 'none' }}
-            ></TableCell>
-            <TableCell sx={{ fontWeight: 'bold', borderBottom: 'none' }}>
-              Name
-            </TableCell>
-            <TableCell sx={{ fontWeight: 'bold', borderBottom: 'none' }}>
-              Description
-            </TableCell>
-            <TableCell sx={{ fontWeight: 'bold', borderBottom: 'none' }}>
-              URL
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {profileHubs.map((hub) => (
-            <TableRow
-              hover
-              key={hub.handle}
-              sx={{
-                '&:last-child td, &:last-child th': { border: 0 },
-                height: '50px',
-              }}
-            >
-              <TableCell component="th" scope="row">
-                <Box sx={{ width: '50px' }}>
-                  <Link href={`/hubs/${hub.handle}`} passHref prefetch>
-                    <a>
+    <ResponsiveContainer>
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <StyledTableCell
+                align="left"
+                sx={{
+                  fontWeight: 'bold',
+                  borderBottom: 'none',
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  p: 0,
+                }}
+              >
+                {/* <Typography sx={{ fontWeight: 'bold' }}>Play All </Typography> */}
+                <ResponsivePlayButton onClick={(e) => playHubHandler(e)}>
+                  <PlayCircleOutlineOutlinedIcon sx={{ color: 'black' }} />
+                </ResponsivePlayButton>
+              </StyledTableCell>
+              <StyledTableCell
+                sx={{ fontWeight: 'bold', borderBottom: 'none' }}
+              >
+                <Typography sx={{ fontWeight: 'bold' }}> Name</Typography>
+              </StyledTableCell>
+              <StyledTableCell
+                sx={{ fontWeight: 'bold', borderBottom: 'none' }}
+              >
+                <Typography sx={{ fontWeight: 'bold' }}>
+                  Description
+                </Typography>
+              </StyledTableCell>
+              {/* <StyledTableCell
+                sx={{ fontWeight: 'bold', borderBottom: 'none' }}
+              >
+                <Typography sx={{ fontWeight: 'bold' }}>URL</Typography>
+              </StyledTableCell> */}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {profileHubs.map((hub) => (
+              <Link href={`/hubs/${hub.handle}`} passHref >
+                <TableRow hover key={hub.handle}>
+                  <StyledTableCell align="left">
+                    <Box sx={{ width: '50px' }} align="left">
                       <Image
                         height={'100%'}
                         width={'100%'}
@@ -71,42 +119,36 @@ const ProfileHubs = ({ profileHubs }) => {
                         priority={true}
                         loader={loader}
                       />
-                    </a>
-                  </Link>
-                </Box>
-              </TableCell>
-              <TableCell align="left">
-                {' '}
-                <Link href={`/hubs/${hub.handle}`} passHref prefetch>
-                  <a>{hub.json.displayName} </a>
-                </Link>
-              </TableCell>
-              <TableCell align="left">
-                {' '}
-                <Link href={`/hubs/${hub.handle}`} passHref prefetch>
-                  <HubDescription description={hub.json.description} />
-                </Link>
-              </TableCell>
-              <TableCell align="left">
-                {' '}
-                <Link href={`/hubs/${hub.handle}`} passHref prefetch>
-                  <a>
-                    {hub.json.externalUrl.substring(
-                      8,
-                      hub.json.externalUrl.length
-                    )}{' '}
-                  </a>
-                </Link>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+                    </Box>
+                  </StyledTableCell>
+                  <StyledTableCell align="left" sx={{maxWidth:"20vw",}}>
+                    <Typography>{hub.json.displayName} </Typography>
+                  </StyledTableCell>
+                  <StyledTableCell align="left" sx={{maxWidth:"20vw",}}>
+                    <HubDescription description={hub.json.description} />
+                  </StyledTableCell>
+                  {/* <StyledTableCell
+                    align="left"
+                    sx={{ textDecoration: 'underline' }}
+                  >
+                    <Typography>
+                      {hub.json.externalUrl.substring(
+                        8,
+                        hub.json.externalUrl.length
+                      )}
+                    </Typography>
+                  </StyledTableCell> */}
+                </TableRow>
+              </Link>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </ResponsiveContainer>
   )
 }
 
-const HubDescription = ({description}) => {
+const HubDescription = ({ description }) => {
   const [hubDescription, setHubDescription] = useState()
   useEffect(() => {
     if (description?.includes('<p>')) {
@@ -136,9 +178,43 @@ const HubDescription = ({description}) => {
 
   return (
     <>
-      <a>{descriptionFilter(hubDescription)}</a>
+      <Typography>{descriptionFilter(hubDescription)}</Typography>
     </>
   )
 }
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  padding:'5px 0',
+  [theme.breakpoints.down('md')]: {
+    padding:'0 5px'
+  },
+}))
+
+const ResponsiveContainer = styled(Box)(({ theme }) => ({
+  width: '960px',
+  minHeight:'50vh',
+  margin:'auto',
+  [theme.breakpoints.down('md')]: {
+    width: '100vw'
+  },
+}))
+
+const ResponsivePlayButton = styled(Button)(({ theme }) => ({
+  mr: 3,
+  pr: 3,
+  cursor: 'pointer',
+  [theme.breakpoints.down('md')]: {
+    mr: 0,
+    pr: 0,
+  },
+}))
+
+const ResponsiveAudioControlContainer = styled(TableCell)(({ theme }) => ({
+  padding: 0,
+  [theme.breakpoints.down('md')]: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+}))
 
 export default ProfileHubs

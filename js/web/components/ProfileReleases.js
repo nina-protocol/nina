@@ -1,23 +1,21 @@
 import { Box } from '@mui/system'
-import Link from 'next/link'
-import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
-import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
-import ControlPointIcon from '@mui/icons-material/ControlPoint'
-import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
+import { Button, Typography } from '@mui/material'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import TableSortLabel from '@mui/material/TableSortLabel'
-import Paper from '@mui/material/Paper'
-
+import Link from 'next/link'
+import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
+import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
+import ControlPointIcon from '@mui/icons-material/ControlPoint'
+import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
+import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import { useContext } from 'react'
 import Image from 'next/image'
-import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
-import { Button, Typography } from '@mui/material'
 import { useSnackbar } from 'notistack'
+import {styled} from '@mui/material'
 const { getImageFromCDN, loader } = imageManager
 
 const ProfileReleases = ({ profileReleases }) => {
@@ -28,12 +26,16 @@ const ProfileReleases = ({ profileReleases }) => {
     setIsPlaying,
     track,
     playlist,
+    resetQueueWithPlaylist,
   } = useContext(Audio.Context)
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
   const snackbarHandler = (message) => {
-    const snackbarMessage = enqueueSnackbar(message, { persistent: 'true' })
-    setTimeout(() => closeSnackbar(snackbarMessage), 1000)
+    const snackbarMessage = enqueueSnackbar(message, {
+      persistent: 'true',
+      variant: 'info',
+    })
+    setTimeout(() => closeSnackbar(snackbarMessage), 3000)
   }
   const handlePlay = (e, releasePubkey) => {
     e.stopPropagation()
@@ -59,127 +61,182 @@ const ProfileReleases = ({ profileReleases }) => {
     }
   }
   return (
-    <>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+    <ResponsiveContainer>
+      <TableContainer>
+        <Table>
           <TableHead>
             <TableRow>
-              <TableCell
+              <StyledTableCell
+                align="left"
+                sx={{
+                  fontWeight: 'bold',
+                  borderBottom: 'none',
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  p: 0,
+                }}
+              >
+                {/* <Typography sx={{fontWeight: 'bold'}}>Play All{" "}</Typography> */}
+                <Button
+                  sx={{
+                    cursor: 'pointer',
+                  }}
+                  onClick={() =>
+                    resetQueueWithPlaylist(
+                      profileReleases.map((release) => release.releasePubkey)
+                    ).then(() =>
+                      enqueueSnackbar(`Releases added to queue`, {
+                        variant: 'info',
+                      })
+                    )
+                  }
+                >
+                  <PlayCircleOutlineOutlinedIcon sx={{ color: 'black' }} />
+                </Button>
+              </StyledTableCell>
+        
+              <StyledTableCell
                 sx={{ fontWeight: 'bold', borderBottom: 'none' }}
-              ></TableCell>
-              <TableCell
+              >
+                <Typography sx={{ fontWeight: 'bold' }}>Artist</Typography>
+              </StyledTableCell>
+              <StyledTableCell
                 sx={{ fontWeight: 'bold', borderBottom: 'none' }}
-              ></TableCell>
-              <TableCell sx={{ fontWeight: 'bold', borderBottom: 'none' }}>
-                Artist
-              </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', borderBottom: 'none' }}>
-                Title
-              </TableCell>
+              >
+                <Typography sx={{ fontWeight: 'bold' }}> Title</Typography>
+              </StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {profileReleases?.length === 0 && (
-              <Box>No releases belong to this address</Box>
-            )}
             {profileReleases.map((release) => (
-              <TableRow
-                hover
-                key={release.metadata.properties.name}
-                sx={{
-                  '&:last-child td, &:last-child th': { border: 0 },
-                  height: '50px',
-                }}
+              <Link
+                href={`/${release.releasePubkey}`}
+                passHref
               >
-                <TableCell component="th" scope="row">
-                  <Button
-                    sx={{ cursor: 'pointer' }}
-                    id={release.releasePubkey}
-                    key={release.metadata.properties.title}
-                    onClick={(e) =>
-                      handleQueue(
-                        e,
-                        release.releasePubkey,
-                        release.metadata.properties.title
-                      )
-                    }
-                  >
-                    <ControlPointIcon
-                      sx={{ color: 'black' }}
+                <TableRow hover key={release.metadata.properties.name}>
+                  <StyledTableCell align="left">
+                    <Button
+                      sx={{ cursor: 'pointer' }}
+                      id={release.releasePubkey}
                       key={release.metadata.properties.title}
-                      onClick={(e) =>
+                      onClickCapture={(e) =>
                         handleQueue(
                           e,
                           release.releasePubkey,
                           release.metadata.properties.title
                         )
                       }
-                    />
-                  </Button>
-                  <Button
-                    sx={{
-                      mr: 3,
-                      pr: 3,
-                      cursor: 'pointer',
-                    }}
-                    onClick={(e) => handlePlay(e, release.releasePubkey)}
-                    id={release.releasePubkey}
-                  >
-                    {isPlaying &&
-                    track.releasePubkey === release.releasePubkey ? (
-                      <PauseCircleOutlineOutlinedIcon
+                    >
+                      <ControlPointIcon
                         sx={{ color: 'black' }}
-                        onClick={(e) => handlePlay(e, release.releasePubkey)}
-                        id={release.releasePubkey}
+                        key={release.metadata.properties.title}
+                        onClickCapture={(e) =>
+                          handleQueue(
+                            e,
+                            release.releasePubkey,
+                            release.metadata.properties.title
+                          )
+                        }
                       />
-                    ) : (
-                      <PlayCircleOutlineOutlinedIcon sx={{ color: 'black' }} />
-                    )}
-                  </Button>
-                </TableCell>
-                <TableCell>
-                  <Box sx={{ width: '50px' }}>
-                    <Link href={`/${release.releasePubkey}`} passHref prefetch>
-                      <a>
-                        <Image
-                          height={'100%'}
-                          width={'100%'}
-                          layout="responsive"
-                          src={getImageFromCDN(
-                            release.metadata.image,
-                            400,
-                            new Date(
-                              Date.parse(release.metadata.properties.date)
-                            )
-                          )}
-                          alt={release.metadata.properties.name}
-                          priority={true}
-                          loader={loader}
+                    </Button>
+                    <Button
+                      sx={{
+                        cursor: 'pointer',
+                      }}
+                      onClickCapture={(e) =>
+                        handlePlay(e, release.releasePubkey)
+                      }
+                      id={release.releasePubkey}
+                    >
+                      {isPlaying &&
+                      track.releasePubkey === release.releasePubkey ? (
+                        <PauseCircleOutlineOutlinedIcon
+                          sx={{ color: 'black' }}
+                          onClick={(e) => handlePlay(e, release.releasePubkey)}
+                          id={release.releasePubkey}
                         />
-                      </a>
-                    </Link>
-                  </Box>
-                </TableCell>
-                <TableCell align="left">
-                  {' '}
-                  <Link href={`/${release.releasePubkey}`} passHref prefetch>
-                    <a>{release.metadata.properties.artist} </a>
-                  </Link>
-                </TableCell>
-                <TableCell align="left">
-                  {' '}
-                  <Link href={`/${release.releasePubkey}`} passHref prefetch>
-                    <a>{release.metadata.properties.title} </a>
-                  </Link>
-                </TableCell>
-              </TableRow>
+                      ) : (
+                        <PlayCircleOutlineOutlinedIcon
+                          sx={{ color: 'black' }}
+                        />
+                      )}
+                    </Button>
+                  </StyledTableCell>
+                  <StyledTableCell align="left">
+                    <Box sx={{ width: '50px' }}>
+                      <Image
+                        height={'100%'}
+                        width={'100%'}
+                        layout="responsive"
+                        src={getImageFromCDN(
+                          release.metadata.image,
+                          400,
+                          new Date(Date.parse(release.metadata.properties.date))
+                        )}
+                        alt={release.metadata.properties.name}
+                        priority={true}
+                        loader={loader}
+                      />
+                    </Box>
+                  </StyledTableCell>
+                  <StyledTableCell sx={{ maxWidth: '20vw' }} align="left">
+                    <Box sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      <Typography noWrap>
+                        {release.metadata.properties.artist}
+                      </Typography>
+                    </Box>
+                  </StyledTableCell>
+                  <StyledTableCell
+                    align="left"
+                    sx={{ textDecoration: 'underline', maxWidth: '20vw' }}
+                  >
+                    <Box sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      <Typography noWrap>
+                        {release.metadata.properties.title}
+                      </Typography>
+                    </Box>
+                  </StyledTableCell>
+                </TableRow>
+              </Link>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-    </>
+    </ResponsiveContainer>
   )
 }
 
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  padding: '5px 0',
+  [theme.breakpoints.down('md')]: {
+    padding: '0 5px',
+  },
+}))
 
+const ResponsiveContainer = styled(Box)(({ theme }) => ({
+  width: '960px',
+  minHeight: '50vh',
+  margin: 'auto',
+  [theme.breakpoints.down('md')]: {
+    width: '100vw',
+  },
+}))
+
+const ResponsivePlayButton = styled(Button)(({ theme }) => ({
+  
+  cursor: 'pointer',
+  [theme.breakpoints.down('md')]: {
+    mr: 0,
+    pr: 0,
+  },
+}))
+
+const ResponsiveAudioControlContainer = styled(TableCell)(({ theme }) => ({
+  padding: 0,
+  [theme.breakpoints.down('md')]: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+}))
 export default ProfileReleases

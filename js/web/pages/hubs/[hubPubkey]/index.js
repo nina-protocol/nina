@@ -1,15 +1,27 @@
 import axios from 'axios'
 import dynamic from 'next/dynamic'
 import { Box } from '@mui/system'
+import { styled } from '@mui/system'
 const Hub = dynamic(() => import('../../../components/Hub'))
+const ScrollablePageWrapper = dynamic(() => import('../../../components/ScrollablePageWrapper'))
 const HubPage = (props) => {
-  console.log('props', props)
+
   return (
-    <Box sx={{width:'50vw'}}>
+    // <ScrollablePageWrapper>
+    <ResponsiveHubContainer >
       <Hub hubPubkey={props.hubPubkey} />
-    </Box>
+      </ResponsiveHubContainer>
+    // </ScrollablePageWrapper>
   )
 }
+
+const ResponsiveHubContainer = styled(Box)(({theme}) => ({
+  width: '960px',
+  minHeight: '60vh',
+  [theme.breakpoints.down('md')]: {
+    minHeight:'40vh'
+  }
+}))
 
 export default HubPage
 

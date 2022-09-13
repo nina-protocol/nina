@@ -1,4 +1,4 @@
-import { Toolbar, Grid, Box } from '@mui/material'
+import {  Typography } from '@mui/material'
 import Image from 'next/image'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import Link from 'next/link'
@@ -8,7 +8,8 @@ import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
-
+import { styled } from '@mui/system'
+import {Box} from '@mui/system'
 const { getImageFromCDN, loader } = imageManager
 
 const HubHeader = ({ hubImage, hubName, description, hubUrl, hubDate }) => {
@@ -43,15 +44,17 @@ const HubHeader = ({ hubImage, hubName, description, hubUrl, hubDate }) => {
     return desc?.length > 24 ? `${desc.substring(0,24)}...` : desc
   }
   return (
-    <Box
+    <ResponsiveHubHeader
       sx={{
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
-        p: 1,
-        m: 1,
+        justifyContent: 'start',
+        my: 1,
+       pl:1
+        
       }}
+      
     >
       <Box sx={{ width: '100px' }}>
         <Image
@@ -65,17 +68,23 @@ const HubHeader = ({ hubImage, hubName, description, hubUrl, hubDate }) => {
         />
       </Box>
 
-      {hubName && <Box sx={{ px: 2 }}>{hubName}</Box>}
-      {description && <Box sx={{ pr: 2 }}>{descriptionFilter(hubDescription)}</Box>}
-      {hubUrl && (
-        <Box>
-          <Link href={hubUrl}>
-            <a>{hubUrl.substring(8, hubUrl.length)}</a>
-          </Link>
-        </Box>
-      )}
-    </Box>
+      {hubName && <Link href={hubUrl}><a> <Typography sx={{ px: 2 }}>{hubName}</Typography></a></Link>}
+      {description &&    <Typography sx={{ pr: 2}}>{descriptionFilter(hubDescription)}</Typography>}
+    </ResponsiveHubHeader>
   )
 }
+
+const ResponsiveHubHeader = styled(Box)(({theme}) => ({
+  display: 'flex',
+  minHeight:'100px',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'start',
+  py: 1,
+  my: 1,
+  [theme.breakpoints.down('md')]: {
+    alignItems: 'left'
+  }
+}))
 
 export default HubHeader
