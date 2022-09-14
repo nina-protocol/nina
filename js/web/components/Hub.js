@@ -5,11 +5,15 @@ import { Box, Toolbar } from '@mui/material'
 import dynamic from 'next/dynamic'
 import { styled } from '@mui/system'
 import Head from 'next/head'
+import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
+import { useSnackbar } from 'notistack'
+
 const Dots = dynamic(() => import('./Dots'))
 const HubHeader = dynamic(() => import('./HubHeader'))
 const HubCollaborators = dynamic(() => import('./HubCollaborators'))
 const HubToggle = dynamic(() => import('./HubToggle'))
 const HubReleases = dynamic(() => import('./HubReleases'))
+const ReleaseTable = dynamic(() => import('./ReleaseTable'))
 const HubComponent = ({ hubPubkey }) => {
   const {
     getHub,
@@ -20,6 +24,10 @@ const HubComponent = ({ hubPubkey }) => {
   } = useContext(Hub.Context)
 
   const { releaseState } = useContext(Release.Context)
+
+  const {resetQueueWithPlaylist} = useContext(Audio.Context)
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+
   const [hubReleases, setHubReleases] = useState([])
   const [, setHubPosts] = useState([])
   const [releaseData, setReleaseData] = useState([])
@@ -78,6 +86,15 @@ const HubComponent = ({ hubPubkey }) => {
     setView('collaborators')
     setClickedToggle('collaborators')
   }
+  const playAllHandler = (playlist) => {
+    resetQueueWithPlaylist(
+      playlist.map((release) => release.releasePubkey)
+    ).then(() =>
+      enqueueSnackbar(`Releases added to queue`, {
+        variant: 'info',
+      })
+    )
+}
   return (
     <>
       <Head>
@@ -97,7 +114,11 @@ const HubComponent = ({ hubPubkey }) => {
         />
         <meta
           name="og:description"
-          content={`${hubData?.json.displayName}: ${hubData?.json.description} \n Published via Nina Hubs.`}
+          content={`${
+            hubData?.json.displayName ? hubData?.json.displayName : ''
+          }: ${
+            hubData?.json.description ? hubData?.json.description : ''
+          } \n Published via Nina Hubs.`}
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@ninaprotocol" />
@@ -110,15 +131,10 @@ const HubComponent = ({ hubPubkey }) => {
         <meta name="twitter:description" content={hubData?.json.description} />
         <meta name="twitter:image" content={hubData?.json.image} />
         <meta name="og:image" content={hubData?.json.image} />
-        <meta property='og:title' content="iPhone" />
-        <meta property="og:image" content={`${hubData?.json.image}`}/>
       </Head>
 
       <ResponsiveHubContainer>
         <ResponsiveHubHeaderContainer>
-          {/* {fetchingHubInfo === 'fetched' && !hubData && (
-        <Box>No Hub information available at this address</Box>
-      )} */}
           {fetchingHubInfo === 'fetched' && hubData ? (
             <HubHeader
               hubImage={`${hubData?.json.image ? hubData.json.image : ''}`}
@@ -134,24 +150,24 @@ const HubComponent = ({ hubPubkey }) => {
               hubDate={`${hubData.createdAt ? hubData.createdAt : ''}`}
             />
           ) : (
-            <Box sx={{ my: 1 }}>
+            <ResponsiveDotHeaderContainer>
               <Dots />
-            </Box>
+            </ResponsiveDotHeaderContainer>
           )}
         </ResponsiveHubHeaderContainer>
         <HubToggle
           releaseClick={() => releaseClickHandler()}
           collaboratorClick={() => collaboratorClickHandler()}
-          isReleaseClicked={clickedToggle}
-          isCollaboratorClicked={clickedToggle}
+          isClicked={view}
+          onPlayReleases={() => playAllHandler(releaseData)}
         />
         <ResponsiveHubContentContainer sx={{ minHeight: '50vh' }}>
           {view === 'releases' && (
             <>
               {fetchingReleases === 'fetching' && (
-                <Box>
+                <ResponsiveDotContainer>
                   <Dots />
-                </Box>
+                </ResponsiveDotContainer>
               )}
               {fetchingReleases === 'fetched' && releaseData && (
                 <HubReleases hubReleases={releaseData} />
@@ -161,9 +177,15 @@ const HubComponent = ({ hubPubkey }) => {
           {view === 'collaborators' && (
             <>
               {fetchingCollaborators === 'fetching' && (
-                <Box sx={{ my: 1 }}>
+                <ResponsiveDotContainer
+                  sx={{
+                    display: 'table-cell',
+                    textAlign: 'center',
+                    verticalAlign: 'middle',
+                  }}
+                >
                   <Dots />
-                </Box>
+                </ResponsiveDotContainer>
               )}
               {fetchingCollaborators === 'fetched' && !collaboratorsData && (
                 <Box sx={{ my: 1 }}>No collaborators found in this Hub</Box>
@@ -186,13 +208,15 @@ const ResponsiveHubContainer = styled(Box)(({ theme }) => ({
   textAlign: 'center',
   minWidth: '960px',
   maxWidth: '960px',
+  maxHeight: '60vh',
   webkitOverflowScrolling: 'touch',
   [theme.breakpoints.down('md')]: {
     display: 'flex',
     flexDirection: 'column',
     justifyItems: 'center',
     alignItems: 'center',
-    overflow:'auto'
+    marginTop:"125px",
+    maxHeight: '80vh'
   },
 }))
 
@@ -205,21 +229,47 @@ const ResponsiveHubHeaderContainer = styled(Box)(({ theme }) => ({
   px: 1,
   m: 1,
   minHeight: '115px',
- 
+
   [theme.breakpoints.down('md')]: {
     width: '100vw',
   },
 }))
 
 const ResponsiveHubContentContainer = styled(Box)(({ theme }) => ({
-  minHeight: '50vh',
+  minHeight: '60vh',
   width: '960px',
   webkitOverflowScrolling: 'touch',
   [theme.breakpoints.down('md')]: {
     width: '100vw',
     padding: '0px 30px',
     overflowX: 'auto',
-    minHeight: '50vh'
+    minHeight: '60vh',
+  },
+}))
+
+const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
+  fontSize: '80px',
+  position: 'absolute',
+  left: '50%',
+  top: '50%',
+  display: 'table-cell',
+  textAlign: 'center',
+  verticalAlign: 'middle',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '30px',
+    left: '47%',
+    top: '53%',
+  },
+}))
+
+const ResponsiveDotHeaderContainer = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  top: '20%',
+  left: '20%',
+  fontSize: '80px',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '30px',
+    left: '13%',
   },
 }))
 export default HubComponent

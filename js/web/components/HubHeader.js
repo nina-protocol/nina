@@ -51,7 +51,8 @@ const HubHeader = ({ hubImage, hubName, description, hubUrl, hubDate }) => {
         alignItems: 'center',
         justifyContent: 'start',
         my: 1,
-       pl:1
+        
+        pl:1
         
       }}
       
@@ -76,12 +77,13 @@ const HubHeader = ({ hubImage, hubName, description, hubUrl, hubDate }) => {
 
 const ResponsiveHubHeader = styled(Box)(({theme}) => ({
   display: 'flex',
-  minHeight:'100px',
+  minHeight:'115px',
   flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'start',
   py: 1,
   my: 1,
+
   [theme.breakpoints.down('md')]: {
     alignItems: 'left'
   }

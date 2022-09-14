@@ -117,7 +117,7 @@ const ReleasesWrapper = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     padding: '0px 30px',
     overflowX: 'auto',
-    minHeight: '80vh',
+    minHeight: '50vh',
   },
 }))
 

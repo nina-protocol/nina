@@ -63,46 +63,10 @@ const ProfileHubs = ({ profileHubs }) => {
     <ResponsiveContainer>
       <TableContainer>
         <Table>
-          <TableHead>
-            <TableRow>
-              <StyledTableCell
-                align="left"
-                sx={{
-                  fontWeight: 'bold',
-                  borderBottom: 'none',
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  p: 0,
-                }}
-              >
-                {/* <Typography sx={{ fontWeight: 'bold' }}>Play All </Typography> */}
-                <ResponsivePlayButton onClick={(e) => playHubHandler(e)}>
-                  <PlayCircleOutlineOutlinedIcon sx={{ color: 'black' }} />
-                </ResponsivePlayButton>
-              </StyledTableCell>
-              <StyledTableCell
-                sx={{ fontWeight: 'bold', borderBottom: 'none' }}
-              >
-                <Typography sx={{ fontWeight: 'bold' }}> Name</Typography>
-              </StyledTableCell>
-              <StyledTableCell
-                sx={{ fontWeight: 'bold', borderBottom: 'none' }}
-              >
-                <Typography sx={{ fontWeight: 'bold' }}>
-                  Description
-                </Typography>
-              </StyledTableCell>
-              {/* <StyledTableCell
-                sx={{ fontWeight: 'bold', borderBottom: 'none' }}
-              >
-                <Typography sx={{ fontWeight: 'bold' }}>URL</Typography>
-              </StyledTableCell> */}
-            </TableRow>
-          </TableHead>
+          <HubsTableHead />
           <TableBody>
             {profileHubs.map((hub) => (
-              <Link href={`/hubs/${hub.handle}`} passHref >
+              <Link href={`/hubs/${hub.handle}`} passHref>
                 <TableRow hover key={hub.handle}>
                   <StyledTableCell align="left">
                     <Box sx={{ width: '50px' }} align="left">
@@ -121,23 +85,12 @@ const ProfileHubs = ({ profileHubs }) => {
                       />
                     </Box>
                   </StyledTableCell>
-                  <StyledTableCell align="left" sx={{maxWidth:"20vw",}}>
-                    <Typography>{hub.json.displayName} </Typography>
+                  <StyledTableCell align="left" sx={{maxWidth: '20vw'}}>
+                  <Box sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <Typography noWrap>{hub.json.displayName} </Typography>
+                    </Box>
                   </StyledTableCell>
-                  <StyledTableCell align="left" sx={{maxWidth:"20vw",}}>
-                    <HubDescription description={hub.json.description} />
-                  </StyledTableCell>
-                  {/* <StyledTableCell
-                    align="left"
-                    sx={{ textDecoration: 'underline' }}
-                  >
-                    <Typography>
-                      {hub.json.externalUrl.substring(
-                        8,
-                        hub.json.externalUrl.length
-                      )}
-                    </Typography>
-                  </StyledTableCell> */}
+                  <HubDescription description={hub.json.description} />
                 </TableRow>
               </Link>
             ))}
@@ -145,6 +98,22 @@ const ProfileHubs = ({ profileHubs }) => {
         </Table>
       </TableContainer>
     </ResponsiveContainer>
+  )
+}
+
+const HubsTableHead = () => {
+  return (
+    <TableHead>
+      <TableRow>
+        <StyledTableCell sx={{ borderBottom: 'none' }}></StyledTableCell>
+        <StyledTableCell sx={{ fontWeight: 'bold', borderBottom: 'none' }}>
+          <Typography sx={{ fontWeight: 'bold' }}> Name</Typography>
+        </StyledTableCell>
+        <StyledTableCell sx={{ fontWeight: 'bold', borderBottom: 'none' }}>
+          <Typography sx={{ fontWeight: 'bold' }}>Description</Typography>
+        </StyledTableCell>
+      </TableRow>
+    </TableHead>
   )
 }
 
@@ -171,31 +140,35 @@ const HubDescription = ({ description }) => {
       setHubDescription(description)
     }
   }, [description])
-
+  console.log('hubDescription', typeof hubDescription)
   const descriptionFilter = (desc) => {
-    return desc?.length > 24 ? `${desc.substring(0, 24)}...` : desc
+    return desc?.length > 28 ? `${desc.substring(0, 24)}...` : desc
   }
 
   return (
-    <>
-      <Typography>{descriptionFilter(hubDescription)}</Typography>
-    </>
+    <StyledTableCell align="left" sx={{ maxWidth:'20vw'}}>
+      <Box sx={{ overflow: 'hidden', textOverflow: 'ellipsis', }}>
+        <Typography noWrap>{descriptionFilter(hubDescription)}</Typography>
+      </Box>
+    </StyledTableCell>
   )
 }
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  padding:'5px 0',
+  padding: '5px 0',
+
   [theme.breakpoints.down('md')]: {
-    padding:'0 5px'
+    padding: '0 5px',
+    maxHeight: '50px',
   },
 }))
 
 const ResponsiveContainer = styled(Box)(({ theme }) => ({
   width: '960px',
-  minHeight:'50vh',
-  margin:'auto',
+  minHeight: '50vh',
+  margin: 'auto',
   [theme.breakpoints.down('md')]: {
-    width: '100vw'
+    width: '100vw',
   },
 }))
 

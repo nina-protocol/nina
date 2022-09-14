@@ -69,7 +69,7 @@ const HubReleases = ({ hubReleases }) => {
     <ResponsiveContainer
       sx={{
         width: '100%',
-       
+
         overflow: 'auto',
       }}
     >
@@ -169,7 +169,7 @@ const HubReleases = ({ hubReleases }) => {
                       )}
                     </ResponsivePlayButton>
                   </StyledTableCell>
-                  <StyledTableCell  align="left">
+                  <StyledTableCell align="left">
                     <Box sx={{ width: '50px' }}>
                       <Image
                         height={'100%'}
@@ -186,23 +186,26 @@ const HubReleases = ({ hubReleases }) => {
                       />
                     </Box>
                   </StyledTableCell>
-                  <StyledTableCell sx={{ maxWidth:"20vw"}} align="left">
-                  <Box
-                      sx={{
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                       
-                      }}
-                    >
-                    <Typography noWrap>{release.properties.artist} </Typography>
-                    </Box>
-                  </StyledTableCell >
-                  <StyledTableCell sx={{ textDecoration: 'underline',  maxWidth:"20vw", }}  align="left">
+                  <StyledTableCell sx={{ maxWidth: '20vw' }} align="left">
                     <Box
                       sx={{
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
-                       
+                      }}
+                    >
+                      <Typography noWrap>
+                        {release.properties.artist}{' '}
+                      </Typography>
+                    </Box>
+                  </StyledTableCell>
+                  <StyledTableCell
+                    sx={{ textDecoration: 'underline', maxWidth: '20vw' }}
+                    align="left"
+                  >
+                    <Box
+                      sx={{
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
                       }}
                     >
                       <Typography noWrap>{release.properties.title}</Typography>
@@ -211,6 +214,11 @@ const HubReleases = ({ hubReleases }) => {
                 </TableRow>
               </Link>
             ))}
+            <TableRow sx={{ borderBottom: 'none' }}>
+              <StyledTableCell
+                sx={{ height: '50px', borderBottom: 'none' }}
+              ></StyledTableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>
@@ -222,19 +230,19 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   padding: '5px 0',
 
   [theme.breakpoints.down('md')]: {
-    padding: '0 5px'
+    padding: '0 5px',
   },
 }))
 
 const ResponsiveContainer = styled(Box)(({ theme }) => ({
   width: '960px',
-  minHeight:'50vh',
+  minHeight: '50vh',
   overflow: 'auto',
   [theme.breakpoints.down('md')]: {
     width: '100vw',
-    overflow:'visible',
-    mb:10,
-    pb:10,
+    overflow: 'visible',
+    mb: 10,
+    pb: 10,
     maxHeight: '80vh',
   },
 }))
@@ -249,11 +257,11 @@ const ResponsivePlayButton = styled(Button)(({ theme }) => ({
   },
 }))
 
-const ResponsiveAudioControlContainer = styled(TableCell)(({theme}) => ({
+const ResponsiveAudioControlContainer = styled(TableCell)(({ theme }) => ({
   padding: 0,
   [theme.breakpoints.down('md')]: {
-    display:'flex',
-    flexDirection: 'row'
-  }
+    display: 'flex',
+    flexDirection: 'row',
+  },
 }))
 export default HubReleases

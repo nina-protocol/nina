@@ -1,40 +1,51 @@
 import { Button, Box, Tabs, Tab } from '@mui/material'
 import { styled } from '@mui/system'
-
+import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 const HubToggle = ({
   releaseClick,
   collaboratorClick,
-  isReleaseClicked,
-  isCollaboratorClicked,
+  isClicked,
+  onPlayReleases,
 }) => {
   return (
     <ResponsiveContainer
       sx={{
         borderBottom: 1,
         borderColor: 'divider',
-   
       }}
     >
-      <Tabs>
-        <StyledTab
-          disableRipple
+      <Box sx={{ display: 'flex', flexDirection: 'row', rowGap: 1, py: 1, pl:1 }}>
+        <Box
           onClick={releaseClick}
-          label="Releases"
-          value="Releases"
-          sx={{ color: `${isReleaseClicked === 'releases' ? 'black' : ''}` }}
-        />
-        <StyledTab
-          disableRipple
-          onClick={collaboratorClick}
-          label="Collaborators"
-          value="Collaborators"
           sx={{
-            color: `${
-              isCollaboratorClicked === 'collaborators' ? 'black' : ''
-            }`,
+            cursor: 'pointer',
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'row',
+            textTransform: 'uppercase',
+            fontWeight: `${isClicked === 'releases' ? 'bold' : ''}`,
           }}
-        />
-      </Tabs>
+        >
+          <a>Releases</a>
+          <PlayCircleOutlineOutlinedIcon
+            onClick={onPlayReleases}
+            sx={{ pr: 1.5, pl: 0.5 }}
+          />
+        </Box>
+        <Box
+          onClick={collaboratorClick}
+          sx={{
+            cursor: 'pointer',
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'row',
+            textTransform: 'uppercase',
+            fontWeight: `${isClicked === 'collaborators' ? 'bold' : ''}`,
+          }}
+        >
+          <a>Collaborators</a>
+        </Box>
+      </Box>
     </ResponsiveContainer>
   )
 }
@@ -49,7 +60,7 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
     width: '100vw',
   },
 }))
-const StyledTab = styled(Tab)(({theme}) => ({
-  p:0,
+const StyledTab = styled(Tab)(({ theme }) => ({
+  p: 0,
 }))
 export default HubToggle

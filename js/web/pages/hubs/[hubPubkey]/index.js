@@ -3,21 +3,19 @@ import dynamic from 'next/dynamic'
 import { Box } from '@mui/system'
 import { styled } from '@mui/system'
 const Hub = dynamic(() => import('../../../components/Hub'))
-const ScrollablePageWrapper = dynamic(() => import('../../../components/ScrollablePageWrapper'))
 const HubPage = (props) => {
 
   return (
-    // <ScrollablePageWrapper>
     <ResponsiveHubContainer >
       <Hub hubPubkey={props.hubPubkey} />
       </ResponsiveHubContainer>
-    // </ScrollablePageWrapper>
   )
 }
 
 const ResponsiveHubContainer = styled(Box)(({theme}) => ({
   width: '960px',
   minHeight: '60vh',
+  maxHeight:'100vh',
   [theme.breakpoints.down('md')]: {
     minHeight:'40vh'
   }

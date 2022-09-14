@@ -1,24 +1,23 @@
 import dynamic from 'next/dynamic'
 import { Box } from '@mui/material'
-const Profile = dynamic(() => import('../../../components/Profile'))
 import { styled } from '@mui/system'
-const ScrollablePageWrapper = dynamic(() =>
-  import('../../../components/ScrollablePageWrapper')
-)
+const Profile = dynamic(() => import('../../../components/Profile'))
+
 const ProfilePage = (props) => {
   const { userId } = props
   return (
-    // <ScrollablePageWrapper>
+   
     <ResponsiveProfileContainer>
       <Profile userId={userId} />
     </ResponsiveProfileContainer>
-    // </ScrollablePageWrapper>
+
   )
 }
 
 const ResponsiveProfileContainer = styled(Box)(({theme}) => ({
   width: '960px',
   minHeight: '60vh',
+  maxHeight:'100vh',
   [theme.breakpoints.down('md')]: {
     minHeight:'40vh'
   }

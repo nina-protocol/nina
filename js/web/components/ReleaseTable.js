@@ -15,10 +15,10 @@ import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import { useContext } from 'react'
 import Image from 'next/image'
 import { useSnackbar } from 'notistack'
-import {styled} from '@mui/material'
+import { styled } from '@mui/material'
 const { getImageFromCDN, loader } = imageManager
 
-const ProfileCollection = ({ profileCollection }) => {
+const ReleaseTable = ({ allReleases, tableTabs, }) => {
   const {
     updateTrack,
     addTrackToQueue,
@@ -26,8 +26,8 @@ const ProfileCollection = ({ profileCollection }) => {
     setIsPlaying,
     track,
     playlist,
-    resetQueueWithPlaylist,
   } = useContext(Audio.Context)
+
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
   const snackbarHandler = (message) => {
@@ -60,48 +60,16 @@ const ProfileCollection = ({ profileCollection }) => {
       snackbarHandler(`${filteredTrackName} already added to queue`)
     }
   }
-  const titleFilter = (title) => {
-    return title?.length > 24 ? `${title.substring(0, 24)}...` : title
-  }
   return (
-    <ResponsiveContainer sx={{overflow:'auto'}}>
+    <ResponsiveContainer>
       <TableContainer>
         <Table>
-          <TableHead>
-            <TableRow>
-            <StyledTableCell sx={{ fontWeight: 'bold', borderBottom: 'none', display: 'flex', flexDirection:'row',alignItems:'center', p:0 }}>
-              {/* <Typography sx={{fontWeight:'bold'}}>Play All </Typography> */}
-                <Button
-                  onClick={() =>
-                    resetQueueWithPlaylist(
-                      profileCollection.map((release) => release.releasePubkey)
-                    ).then(() =>
-                      enqueueSnackbar(`Releases added to queue`, {
-                        variant: 'info',
-                      })
-                    )
-                  }
-                >
-                  <PlayCircleOutlineOutlinedIcon sx={{ color: 'black' }} />
-                </Button>
-              </StyledTableCell>
-              <StyledTableCell sx={{ fontWeight: 'bold', borderBottom: 'none' }}>
-                <Typography sx={{ fontWeight: 'bold' }}>Artist</Typography>
-              </StyledTableCell>
-              <StyledTableCell sx={{ fontWeight: 'bold', borderBottom: 'none' }}>
-                <Typography sx={{ fontWeight: 'bold' }}> Title</Typography>
-              </StyledTableCell>
-            </TableRow>
-          </TableHead>
+          <ReleaseTableHead tableTabs={tableTabs} />
           <TableBody>
-            {profileCollection.map((release) => (
-              <Link href={`/${release.releasePubkey}`} passHref >
-                <TableRow
-                  hover
-                  key={release.metadata.properties.name}
-                
-                >
-                  <StyledTableCell align='left'>
+            {allReleases.map((release) => (
+              <Link href={`/${release.releasePubkey}`} passHref>
+                <TableRow hover key={release.metadata.properties.name}>
+                  <StyledTableCell align="left">
                     <Button
                       sx={{ cursor: 'pointer' }}
                       id={release.releasePubkey}
@@ -127,7 +95,9 @@ const ProfileCollection = ({ profileCollection }) => {
                       />
                     </Button>
                     <Button
-                  
+                      sx={{
+                        cursor: 'pointer',
+                      }}
                       onClickCapture={(e) =>
                         handlePlay(e, release.releasePubkey)
                       }
@@ -137,9 +107,7 @@ const ProfileCollection = ({ profileCollection }) => {
                       track.releasePubkey === release.releasePubkey ? (
                         <PauseCircleOutlineOutlinedIcon
                           sx={{ color: 'black' }}
-                          onClickCapture={(e) =>
-                            handlePlay(e, release.releasePubkey)
-                          }
+                          onClick={(e) => handlePlay(e, release.releasePubkey)}
                           id={release.releasePubkey}
                         />
                       ) : (
@@ -149,8 +117,8 @@ const ProfileCollection = ({ profileCollection }) => {
                       )}
                     </Button>
                   </StyledTableCell>
-                  <StyledTableCell  align="left">
-                    <Box sx={{ width: '50px',  }}>
+                  <StyledTableCell align="left">
+                    <Box sx={{ width: '50px' }}>
                       <Image
                         height={'100%'}
                         width={'100%'}
@@ -166,21 +134,18 @@ const ProfileCollection = ({ profileCollection }) => {
                       />
                     </Box>
                   </StyledTableCell>
-                  <StyledTableCell sx={{ maxWidth:"20vw"}} align="left">
-                  <Box sx={{overflow:'hidden', textOverflow:'ellipsis',}}>
-                    <Typography noWrap>
-                      {release.metadata.properties.artist}
-                    </Typography>
+                  <StyledTableCell sx={{ maxWidth: '20vw' }} align="left">
+                    <Box sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      <Typography noWrap>
+                        {release.metadata.properties.artist}
+                      </Typography>
                     </Box>
                   </StyledTableCell>
-                  <StyledTableCell align="left" sx={{ textDecoration: 'underline',  maxWidth:"20vw", }}>
-                    <Box
-                      sx={{
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                     
-                      }}
-                    >
+                  <StyledTableCell
+                    align="left"
+                    sx={{ textDecoration: 'underline', maxWidth: '20vw' }}
+                  >
+                    <Box sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       <Typography noWrap>
                         {release.metadata.properties.title}
                       </Typography>
@@ -189,6 +154,11 @@ const ProfileCollection = ({ profileCollection }) => {
                 </TableRow>
               </Link>
             ))}
+            <TableRow sx={{ borderBottom: 'none' }}>
+              <StyledTableCell
+                sx={{ height: '50px', borderBottom: 'none' }}
+              ></StyledTableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>
@@ -196,23 +166,43 @@ const ProfileCollection = ({ profileCollection }) => {
   )
 }
 
+const ReleaseTableHead = ({ tableTabs }) => {
+  return (
+    <TableHead>
+      <TableRow>
+        {tableTabs.map((tab) => (
+          <StyledTableCell
+            align="left"
+            sx={{
+              fontWeight: 'bold',
+              borderBottom: 'none',
+            }}
+          >
+            <Typography sx={{ fontWeight: 'bold' }}>{tab}</Typography>
+          </StyledTableCell>
+        ))}
+      </TableRow>
+    </TableHead>
+  )
+}
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  padding:'5px 0',
+  padding: '5px 0',
   [theme.breakpoints.down('md')]: {
-    padding:'0 5px'
+    padding: '0 5px',
   },
 }))
+
 const ResponsiveContainer = styled(Box)(({ theme }) => ({
   width: '960px',
   minHeight: '50vh',
-  overflow: 'auto',
+  margin: 'auto',
   [theme.breakpoints.down('md')]: {
-    width: '100vw'
+    width: '100vw',
   },
 }))
 
 const ResponsivePlayButton = styled(Button)(({ theme }) => ({
-
   cursor: 'pointer',
   [theme.breakpoints.down('md')]: {
     mr: 0,
@@ -227,5 +217,4 @@ const ResponsiveAudioControlContainer = styled(TableCell)(({ theme }) => ({
     flexDirection: 'row',
   },
 }))
-
-export default ProfileCollection
+export default ReleaseTable
