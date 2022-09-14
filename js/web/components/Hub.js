@@ -4,7 +4,7 @@ import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import { Box, Toolbar } from '@mui/material'
 import dynamic from 'next/dynamic'
 import { styled } from '@mui/system'
-
+import Head from 'next/head'
 const Dots = dynamic(() => import('./Dots'))
 const HubHeader = dynamic(() => import('./HubHeader'))
 const HubCollaborators = dynamic(() => import('./HubCollaborators'))
@@ -79,61 +79,103 @@ const HubComponent = ({ hubPubkey }) => {
     setClickedToggle('collaborators')
   }
   return (
-    <ResponsiveHubContainer>
-      <ResponsiveHubHeaderContainer>
-        {/* {fetchingHubInfo === 'fetched' && !hubData && (
+    <>
+      <Head>
+        <title>{`Nina: ${
+          hubData?.json.displayName ? `${hubData.json.displayName}'s Hub` : ''
+        }`}</title>
+        <meta
+          name="description"
+          content={`${hubData?.json.displayName}'s Hub on Nina.`}
+        />
+        <meta name="og:type" content="website" />
+        <meta
+          name="og:title"
+          content={`Nina: ${
+            hubData?.json.displayName ? `${hubData.json.displayName}'s Hub` : ''
+          }`}
+        />
+        <meta
+          name="og:description"
+          content={`${hubData?.json.displayName}: ${hubData?.json.description} \n Published via Nina Hubs.`}
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@ninaprotocol" />
+        <meta name="twitter:creator" content="@ninaprotocol" />
+        <meta name="twitter:image:type" content="image/jpg" />
+        <meta
+          name="twitter:title"
+          content={`${hubData?.json.displayName}'s Hub on Nina`}
+        />
+        <meta name="twitter:description" content={hubData?.json.description} />
+        <meta name="twitter:image" content={hubData?.json.image} />
+        <meta name="og:image" content={hubData?.json.image} />
+        <meta property='og:title' content="iPhone" />
+        <meta property="og:image" content={`${hubData?.json.image}`}/>
+      </Head>
+
+      <ResponsiveHubContainer>
+        <ResponsiveHubHeaderContainer>
+          {/* {fetchingHubInfo === 'fetched' && !hubData && (
         <Box>No Hub information available at this address</Box>
       )} */}
-        {fetchingHubInfo === 'fetched' && hubData ? (
-          <HubHeader
-            hubImage={`${hubData?.json.image ? hubData.json.image : ''}`}
-            hubName={`${
-              hubData?.json.displayName ? hubData.json.displayName : ''
-            }`}
-            description={`${
-              hubData?.json.description ? hubData.json.description : ''
-            }`}
-            hubUrl={`${
-              hubData?.json.externalUrl ? hubData.json.externalUrl : ''
-            }`}
-            hubDate={`${hubData.createdAt ? hubData.createdAt : ''}`}
-          />
-        ) : (
-          <Box sx={{my: 1,}}><Dots/></Box>
-        )}
-      </ResponsiveHubHeaderContainer>
-      <HubToggle
-        releaseClick={() => releaseClickHandler()}
-        collaboratorClick={() => collaboratorClickHandler()}
-        isReleaseClicked={clickedToggle}
-        isCollaboratorClicked={clickedToggle}
-      />
-      <ResponsiveHubContentContainer sx={{ minHeight: '50vh' }}>
-        {view === 'releases' && (
-          <>
-            {fetchingReleases === 'fetching' && (
-              <Box><Dots /></Box>
-            )}
-            {fetchingReleases === 'fetched' && releaseData && (
-              <HubReleases hubReleases={releaseData} />
-            )}
-          </>
-        )}
-        {view === 'collaborators' && (
-          <>
-            {fetchingCollaborators === 'fetching' && (
-              <Box sx={{my:1 }}><Dots /></Box>
-            )}
-            {fetchingCollaborators === 'fetched' && !collaboratorsData && (
-              <Box sx={{my:1}}>No collaborators found in this Hub</Box>
-            )}
-            {fetchingCollaborators === 'fetched' && (
-              <HubCollaborators collabData={collaboratorsData} />
-            )}
-          </>
-        )}
-      </ResponsiveHubContentContainer>
-    </ResponsiveHubContainer>
+          {fetchingHubInfo === 'fetched' && hubData ? (
+            <HubHeader
+              hubImage={`${hubData?.json.image ? hubData.json.image : ''}`}
+              hubName={`${
+                hubData?.json.displayName ? hubData.json.displayName : ''
+              }`}
+              description={`${
+                hubData?.json.description ? hubData.json.description : ''
+              }`}
+              hubUrl={`${
+                hubData?.json.externalUrl ? hubData.json.externalUrl : ''
+              }`}
+              hubDate={`${hubData.createdAt ? hubData.createdAt : ''}`}
+            />
+          ) : (
+            <Box sx={{ my: 1 }}>
+              <Dots />
+            </Box>
+          )}
+        </ResponsiveHubHeaderContainer>
+        <HubToggle
+          releaseClick={() => releaseClickHandler()}
+          collaboratorClick={() => collaboratorClickHandler()}
+          isReleaseClicked={clickedToggle}
+          isCollaboratorClicked={clickedToggle}
+        />
+        <ResponsiveHubContentContainer sx={{ minHeight: '50vh' }}>
+          {view === 'releases' && (
+            <>
+              {fetchingReleases === 'fetching' && (
+                <Box>
+                  <Dots />
+                </Box>
+              )}
+              {fetchingReleases === 'fetched' && releaseData && (
+                <HubReleases hubReleases={releaseData} />
+              )}
+            </>
+          )}
+          {view === 'collaborators' && (
+            <>
+              {fetchingCollaborators === 'fetching' && (
+                <Box sx={{ my: 1 }}>
+                  <Dots />
+                </Box>
+              )}
+              {fetchingCollaborators === 'fetched' && !collaboratorsData && (
+                <Box sx={{ my: 1 }}>No collaborators found in this Hub</Box>
+              )}
+              {fetchingCollaborators === 'fetched' && (
+                <HubCollaborators collabData={collaboratorsData} />
+              )}
+            </>
+          )}
+        </ResponsiveHubContentContainer>
+      </ResponsiveHubContainer>
+    </>
   )
 }
 
@@ -142,15 +184,15 @@ const ResponsiveHubContainer = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   justifyItems: 'center',
   textAlign: 'center',
-  minWidth:'960px',
+  minWidth: '960px',
   maxWidth: '960px',
-
+  webkitOverflowScrolling: 'touch',
   [theme.breakpoints.down('md')]: {
     display: 'flex',
     flexDirection: 'column',
     justifyItems: 'center',
     alignItems: 'center',
-    
+    overflow:'auto'
   },
 }))
 
@@ -163,16 +205,21 @@ const ResponsiveHubHeaderContainer = styled(Box)(({ theme }) => ({
   px: 1,
   m: 1,
   minHeight: '115px',
-  [theme.breakpoints.down('md')]:{
-    width: '100vw'
-  }
+ 
+  [theme.breakpoints.down('md')]: {
+    width: '100vw',
+  },
 }))
 
-const ResponsiveHubContentContainer = styled(Box)(({theme}) => ({
-  minHeight:'50vh',
+const ResponsiveHubContentContainer = styled(Box)(({ theme }) => ({
+  minHeight: '50vh',
   width: '960px',
+  webkitOverflowScrolling: 'touch',
   [theme.breakpoints.down('md')]: {
-    width: '100vw'
-  }
+    width: '100vw',
+    padding: '0px 30px',
+    overflowX: 'auto',
+    minHeight: '50vh'
+  },
 }))
 export default HubComponent

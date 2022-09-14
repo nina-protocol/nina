@@ -6,6 +6,7 @@ import { Box } from '@mui/material'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import { useSnackbar } from 'notistack'
 import { styled } from '@mui/system'
+import Head from 'next/head'
 
 const Dots = dynamic(() => import('./Dots'))
 const ScrollablePageWrapper = dynamic(() => import('./ScrollablePageWrapper'))
@@ -87,6 +88,36 @@ const Profile = ({ userId }) => {
   }
   console.log('profileHubs', profileHubs)
   return (
+    <>
+        <Head>
+        <title>{`Nina: ${userId}'s Profile`}</title>
+        <meta name="description" content={'Your profile on Nina.'} />
+        <meta name="og:type" content="website" />
+        <meta
+          name="og:title"
+          content={`Nina: ${
+            userId ? `${userId}'s Hub` : ''
+          }`}
+        />
+        <meta
+          name="og:description"
+          content={`All releases, Hubs, and collection belonging to ${userId}`}
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@ninaprotocol" />
+        <meta name="twitter:creator" content="@ninaprotocol" />
+        <meta name="twitter:image:type" content="image/jpg" />
+        <meta
+          name="twitter:title"
+          content={`${userId} on Nina`}
+        />
+        <meta name="twitter:description" content={`All releases, Hubs, and collection belonging to ${userId}`} />
+        <meta name="twitter:image" content="/images/favicon.ico" />
+        <meta name="og:image" content={"/images/favicon.ico"} />
+        <meta property='og:title' content="iPhone" />
+        <meta property="og:image" content={`/images/favicon.ico`}/>
+      </Head>
+   
     <ResponsiveProfileContainer>
       <ResponsiveProfileHeaderContainer>
         <Box sx={{pl:1, maxWidth: '100%',}}>
@@ -102,7 +133,7 @@ const Profile = ({ userId }) => {
           isClicked={toggleView}
         />
       </Box>
-        <Box sx={{ minHeight: '50vh', }}>      
+        <ResponsiveProfileContentContainer sx={{ minHeight: '50vh', }}>      
         {view === 'releases' && (
           <>
             {fetchingReleases === 'fetching' && <Box><Dots/></Box>}
@@ -129,8 +160,9 @@ const Profile = ({ userId }) => {
           {fetchingCollection === 'fetched' && <ProfileCollection profileCollection={profileCollectionReleases} />} 
           </>
         )}
-        </Box>
+        </ResponsiveProfileContentContainer>
     </ResponsiveProfileContainer>
+    </>
   )
 }
 
@@ -141,6 +173,7 @@ const ResponsiveProfileContainer = styled(Box)(({theme}) => ({
   textAlign:'center',
   minWidth:'960px',
   maxWidth: '960px',
+  webkitOverflowScrolling: 'touch',
   [theme.breakpoints.down('md')]: {
     display: 'flex',
     flexDirection: 'column',
@@ -164,6 +197,18 @@ const ResponsiveProfileHeaderContainer = styled(Box)(({theme}) => ({
     mb:2,
     width: '100vw'
   }
+}))
+
+const ResponsiveProfileContentContainer = styled(Box)(({theme}) => ({
+  minHeight: '50vh',
+  width:'960px',
+  webkitOverflowScrolling: 'touch',
+  [theme.breakpoints.down('md')]: {
+    width: '100vw',
+    padding: '0px 30px',
+    overflowX: 'auto',
+    minHeight: '50vh'
+  },
 }))
 
 export default Profile
