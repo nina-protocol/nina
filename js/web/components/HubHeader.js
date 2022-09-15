@@ -1,15 +1,16 @@
-import {  Typography } from '@mui/material'
 import Image from 'next/image'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import Link from 'next/link'
 import { useState, useEffect, createElement, Fragment } from 'react'
-import {unified} from "unified";
-import rehypeParse from "rehype-parse";
-import rehypeReact from "rehype-react";
-import rehypeSanitize from "rehype-sanitize";
-import rehypeExternalLinks from "rehype-external-links";
+import { Typography } from '@mui/material'
 import { styled } from '@mui/system'
-import {Box} from '@mui/system'
+import { Box } from '@mui/system'
+import { unified } from 'unified'
+import rehypeParse from 'rehype-parse'
+import rehypeReact from 'rehype-react'
+import rehypeSanitize from 'rehype-sanitize'
+import rehypeExternalLinks from 'rehype-external-links'
+
 const { getImageFromCDN, loader } = imageManager
 
 const HubHeader = ({ hubImage, hubName, description, hubUrl, hubDate }) => {
@@ -17,7 +18,7 @@ const HubHeader = ({ hubImage, hubName, description, hubUrl, hubDate }) => {
   useEffect(() => {
     if (description.includes('<p>')) {
       unified()
-        .use(rehypeParse, {fragment: true})
+        .use(rehypeParse, { fragment: true })
         .use(rehypeSanitize)
         .use(rehypeReact, {
           createElement,
@@ -25,23 +26,18 @@ const HubHeader = ({ hubImage, hubName, description, hubUrl, hubDate }) => {
         })
         .use(rehypeExternalLinks, {
           target: false,
-          rel: ["nofollow", "noreferrer"],
+          rel: ['nofollow', 'noreferrer'],
         })
-        .process(
-          JSON.parse(description).replaceAll(
-            "<p><br></p>",
-            "<br>"
-          )
-        )
+        .process(JSON.parse(description).replaceAll('<p><br></p>', '<br>'))
         .then((file) => {
-          setHubDescription(file.result);
-        });
+          setHubDescription(file.result)
+        })
     } else {
       setHubDescription(description)
     }
-  }, [description]);
+  }, [description])
   const descriptionFilter = (desc) => {
-    return desc?.length > 24 ? `${desc.substring(0,24)}...` : desc
+    return desc?.length > 24 ? `${desc.substring(0, 24)}...` : desc
   }
   return (
     <ResponsiveHubHeader
@@ -50,12 +46,8 @@ const HubHeader = ({ hubImage, hubName, description, hubUrl, hubDate }) => {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'start',
-        my: 1,
-        
-        pl:1
-        
+        mb: 1,
       }}
-      
     >
       <Box sx={{ width: '100px' }}>
         <Image
@@ -69,15 +61,26 @@ const HubHeader = ({ hubImage, hubName, description, hubUrl, hubDate }) => {
         />
       </Box>
 
-      {hubName && <Link href={hubUrl}><a> <Typography sx={{ px: 2 }}>{hubName}</Typography></a></Link>}
-      {description &&    <Typography sx={{ pr: 2}}>{descriptionFilter(hubDescription)}</Typography>}
+      {hubName && (
+        <Link href={hubUrl}>
+          <a>
+            {' '}
+            <Typography sx={{ px: 2 }}>{hubName}</Typography>
+          </a>
+        </Link>
+      )}
+      {description && (
+        <Typography sx={{ pr: 2 }}>
+          {descriptionFilter(hubDescription)}
+        </Typography>
+      )}
     </ResponsiveHubHeader>
   )
 }
 
-const ResponsiveHubHeader = styled(Box)(({theme}) => ({
+const ResponsiveHubHeader = styled(Box)(({ theme }) => ({
   display: 'flex',
-  minHeight:'115px',
+  minHeight: '115px',
   flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'start',
@@ -85,8 +88,8 @@ const ResponsiveHubHeader = styled(Box)(({theme}) => ({
   my: 1,
 
   [theme.breakpoints.down('md')]: {
-    alignItems: 'left'
-  }
+    alignItems: 'left',
+  },
 }))
 
 export default HubHeader

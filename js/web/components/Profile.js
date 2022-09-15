@@ -1,22 +1,21 @@
 import { useEffect, useContext, useState, useMemo } from 'react'
-import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import Head from 'next/head'
 import dynamic from 'next/dynamic'
 import { Box, Typography } from '@mui/material'
-import { useSnackbar } from 'notistack'
 import { styled } from '@mui/system'
-import Head from 'next/head'
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
+import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
+import { useSnackbar } from 'notistack'
+
 const Dots = dynamic(() => import('./Dots'))
-const ReleaseTable = dynamic(() => import('./ReleaseTable'))
+const ProfileReleaseTable = dynamic(() => import('./ProfileReleaseTable'))
 const ProfileHubs = dynamic(() => import('./ProfileHubs'))
 const ProfileToggle = dynamic(() => import('./ProfileToggle'))
 
-const findArtistNames = (releases) => {
-  return releases.map((release) => release.metadata.properties.artist)
-}
-
 const Profile = ({ userId }) => {
+  
   const {
     getUserCollectionAndPublished,
     releaseState,
@@ -39,53 +38,61 @@ const Profile = ({ userId }) => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
   const [profileCollectionIds, setProfileCollectionIds] = useState(undefined)
   const [toggleView, setToggleView] = useState('releases')
-  const [fetchingUser, setFetchingUser] = useState('fetching')
-  const [fetchingReleases, setFetchingReleases] = useState('fetching')
-  const [fetchingHubs, setFetchingHubs] = useState('fetching')
-  const [fetchingCollection, setFetchingCollection] = useState('fetching')
-  const [profileArtistData, setProfileArtistData] = useState([])
+  const [fetchedUser, setFetchedUser] = useState(false)
+  const [fetchedReleases, setFetchedReleases] = useState(false)
+  const [fetchedHubs, setFetchedHubs] = useState(false)
+  const [fetchedCollection, setFetchedCollection] = useState(false)
+  // const [profileArtistData, setProfileArtistData] = useState([])
+
   const artistNames = useMemo(
-    () => [...new Set(findArtistNames(profilePublishedReleases))],
+    () => {
+      if (profilePublishedReleases.length > 0) {
+          return [
+          ...new Set(
+            profilePublishedReleases.map(
+              (release) => release.metadata.properties.artist
+            )
+          ),
+        ] 
+      }
+  },
     [profilePublishedReleases]
   )
 
   useEffect(() => {
-    setFetchingUser('fetching')
+    setFetchedUser(false)
     const getUserData = async (userId) => {
       await getHubsForUser(userId)
       const [collectionIds] = await getUserCollectionAndPublished(userId)
       setProfileCollectionIds(collectionIds)
     }
     if (userId) {
-      setFetchingUser('fetched')
+      setFetchedUser(true)
       getUserData(userId)
     }
   }, [userId])
 
   useEffect(() => {
-    setFetchingReleases('fetching')
-    setFetchingCollection('fetching')
+    setFetchedReleases(false)
+    setFetchedCollection(false)
     if (profileCollectionIds?.length > 0 && userId) {
       setProfileCollectionReleases(filterReleasesList(profileCollectionIds))
       const releases = filterReleasesPublishedByUser(userId)
       setProfilePublishedReleases(releases)
-      setFetchingReleases('fetched')
-      setFetchingCollection('fetched')
+      setFetchedReleases(true)
+      setFetchedCollection(true)
     }
   }, [releaseState, profileCollectionIds])
 
   useEffect(() => {
-    setFetchingHubs('fetching')
+    setFetchedHubs(false)
     const hubs = filterHubsForUser(userId)
     if (hubs) {
       setProfileHubs(hubs)
-      setFetchingHubs('fetched')
+      setFetchedHubs(true)
     }
   }, [hubState])
 
-  useEffect(() => {
-    setProfileArtistData(artistNames)
-  }, [])
 
   const releasesClickHandler = () => {
     setView('releases')
@@ -99,8 +106,6 @@ const Profile = ({ userId }) => {
     setView('collection')
     setToggleView('collection')
   }
-
-  console.log('artistNames', profileArtistData)
 
   const playAllHandler = (playlist) => {
     resetQueueWithPlaylist(
@@ -145,20 +150,25 @@ const Profile = ({ userId }) => {
 
       <ResponsiveProfileContainer>
         <ResponsiveProfileHeaderContainer>
-          <Box sx={{ maxWidth: '100%', textAlign: 'left' }}>
-            {fetchingUser === 'fetching' && (
+          <ResponsiveProfileDetailHeaderContainer>
+            {!fetchedUser && (
               <ResponsiveDotHeaderContainer>
                 <Dots />
               </ResponsiveDotHeaderContainer>
             )}
-            {fetchingUser === 'fetched' && profileArtistData.length === 0 && {userId}}
-            {fetchingUser === 'fetched' && (
-              <>
-                <Typography sx={{pb:1}}>{`Profile: ${userId}`}</Typography>
-                <Typography>{`Has published releases as ${profileArtistData.slice(0,-1).join(", ")+` and ${profileArtistData.slice(-1)}.`}`}</Typography>
-              </>
+            {fetchedUser && (
+                <Typography>
+                  {truncateAddress(userId)}
+                </Typography>
+              ) 
+            }
+
+            {fetchedUser && artistNames?.length > 0 && (
+              <Box>
+                {`Publishes as ${artistNames?.map(name => name).join(', ')}`}
+              </Box>
             )}
-          </Box>
+          </ResponsiveProfileDetailHeaderContainer>
         </ResponsiveProfileHeaderContainer>
 
         <Box sx={{ py: 1 }}>
@@ -174,21 +184,21 @@ const Profile = ({ userId }) => {
         <ResponsiveProfileContentContainer>
           {view === 'releases' && (
             <>
-              {fetchingReleases === 'fetching' && (
+              {!fetchedReleases && (
                 <ResponsiveDotContainer>
                   <Dots />
                 </ResponsiveDotContainer>
               )}
-              {fetchingReleases === 'fetched' &&
+              {fetchedReleases &&
                 profilePublishedReleases.length === 0 && (
-                  <Box sx={{ p: 1, m: 1 }}>
+                  <ResponsiveDotContainer>
                     No releases belong to this address
-                  </Box>
+                  </ResponsiveDotContainer>
                 )}
-              {fetchingReleases === 'fetched' && (
-                <ReleaseTable
+              {fetchedReleases && (
+                <ProfileReleaseTable
                   allReleases={profilePublishedReleases}
-                  tableTabs={releaseTabs}
+                  tableCategories={releaseTabs}
                 />
               )}
             </>
@@ -196,16 +206,16 @@ const Profile = ({ userId }) => {
 
           {view === 'collection' && (
             <>
-              {fetchingCollection === 'fetching' && (
+              {!fetchedCollection && (
                 <ResponsiveDotContainer>
                   <Dots />
                 </ResponsiveDotContainer>
               )}
-              {fetchingCollection === 'fetched' && profileHubs.length === 0 && (
-                <Box>No collection found at this address</Box>
+              {fetchedCollection  && profileHubs.length === 0 && (
+                <ResponsiveDotContainer>No collection found at this address</ResponsiveDotContainer>
               )}
-              {fetchingCollection === 'fetched' && (
-                <ReleaseTable
+              {fetchedCollection  && (
+                <ProfileReleaseTable
                   allReleases={profileCollectionReleases}
                   tableTabs={releaseTabs}
                 />
@@ -214,15 +224,15 @@ const Profile = ({ userId }) => {
           )}
           {view === 'hubs' && (
             <>
-              {fetchingHubs === 'fetching' && (
+              {!fetchedHubs  && (
                 <ResponsiveDotContainer>
                   <Dots />
                 </ResponsiveDotContainer>
               )}
-              {fetchingHubs === 'fetched' && profileHubs.length === 0 && (
-                <Box>No Hubs belong to this address</Box>
+              {fetchedHubs && profileHubs.length === 0 && (
+                <ResponsiveDotContainer>No Hubs belong to this address</ResponsiveDotContainer>
               )}
-              {fetchingHubs === 'fetched' && (
+              {fetchedHubs  && (
                 <ProfileHubs profileHubs={profileHubs} />
               )}
             </>
@@ -252,6 +262,14 @@ const ResponsiveProfileContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
+const ResponsiveProfileDetailHeaderContainer = styled(Box)(({theme}) => ({
+  maxWidth: '100%', textAlign: 'left',
+  [theme.breakpoints.down('md')]: {
+    paddingLeft: '10px',
+    paddingRight: '10px',
+  }
+}))
+
 const ResponsiveProfileHeaderContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'row',
@@ -260,13 +278,14 @@ const ResponsiveProfileHeaderContainer = styled(Box)(({ theme }) => ({
   py: 5,
   pl: 1,
   pb: 1,
-  maxWidth: '100%',
+  maxWidth: '100vw',
   minHeight: '115px',
   [theme.breakpoints.down('md')]: {
-    paddingLeft: 0,
-    pb: 2,
-    mb: 2,
+
     width: '100vw',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'no-wrap',
   },
 }))
 

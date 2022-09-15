@@ -1,14 +1,13 @@
 import Link from 'next/link'
-import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
 import { Typography } from '@mui/material'
 import { styled } from '@mui/system'
 import { Box } from '@mui/system'
+import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
 const HubCollaborators = ({ collabData }) => {
   return (
     <ResponsiveContainer>
@@ -40,8 +39,8 @@ const HubCollaborator = ({ collaboratorID }) => {
         }}
       >
     <Link href={`/profiles/${collaboratorID}`}>
-        <Typography noWrap sx={{ cursor: 'pointer', pl: 0.1, pr: 0.1 }}>
-          <a>{collaboratorID}</a>
+        <Typography noWrap sx={{ cursor: 'pointer', pr: 0.1 }}>
+          <a>{truncateAddress(collaboratorID)}</a>
         </Typography>
     </Link>
       </ResponsiveBox>
@@ -49,7 +48,7 @@ const HubCollaborator = ({ collaboratorID }) => {
 }
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  p: 1,
+  py: 1,
 
 }))
 

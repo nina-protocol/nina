@@ -2,7 +2,7 @@ import { Box } from '@mui/system'
 import Image from 'next/image'
 import Link from 'next/link'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
-import { useState, useEffect, useContext, createElement, Fragment } from 'react'
+import { useState, useEffect, createElement, Fragment } from 'react'
 import { unified } from 'unified'
 import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
@@ -14,56 +14,18 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import { Typography, Button } from '@mui/material'
-import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
-import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
-import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-import { useSnackbar } from 'notistack'
+import { Typography } from '@mui/material'
 import { styled } from '@mui/material'
-import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 
 const { getImageFromCDN, loader } = imageManager
 
 const ProfileHubs = ({ profileHubs }) => {
-  const {
-    getHub,
-    hubState,
-    filterHubContentForHub,
-    filterHubCollaboratorsForHub,
-    hubContentState,
-  } = useContext(Hub.Context)
-  const {
-    updateTrack,
-    addTrackToQueue,
-    isPlaying,
-    setIsPlaying,
-    track,
-    playlist,
-    resetQueueWithPlaylist,
-  } = useContext(Audio.Context)
-  const { releaseState } = useContext(Release.Context)
-  const [hubReleaseData, setHubReleaseData] = useState([])
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
-
-  const playHubHandler = (e) => {
-    e.stopPropagation()
-    e.preventDefault()
-    console.log('releaseState', releaseState)
-    setHubReleaseData([releaseState])
-    console.log('typeof releaseState', typeof releaseState)
-    const mints = Object.keys(releaseState.releaseMintMap)
-    resetQueueWithPlaylist(mints).then(() =>
-      enqueueSnackbar(`Hub releases added to queue`, {
-        variant: 'info',
-      })
-    )
-  }
-  console.log('profileHubs', profileHubs)
+  const profileHubsCategories = ['', 'Name', 'Description']
   return (
     <ResponsiveContainer>
       <TableContainer>
         <Table>
-          <HubsTableHead />
+          <HubsTableHead tableCategories={profileHubsCategories} />
           <TableBody>
             {profileHubs.map((hub) => (
               <Link href={`/hubs/${hub.handle}`} passHref>
@@ -85,9 +47,9 @@ const ProfileHubs = ({ profileHubs }) => {
                       />
                     </Box>
                   </StyledTableCell>
-                  <StyledTableCell align="left" sx={{maxWidth: '20vw'}}>
-                  <Box sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    <Typography noWrap>{hub.json.displayName} </Typography>
+                  <StyledTableCell align="left" sx={{ maxWidth: '20vw' }}>
+                    <Box sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      <Typography noWrap>{hub.json.displayName} </Typography>
                     </Box>
                   </StyledTableCell>
                   <HubDescription description={hub.json.description} />
@@ -101,17 +63,15 @@ const ProfileHubs = ({ profileHubs }) => {
   )
 }
 
-const HubsTableHead = () => {
+const HubsTableHead = ({ tableCategories }) => {
   return (
     <TableHead>
       <TableRow>
-        <StyledTableCell sx={{ borderBottom: 'none' }}></StyledTableCell>
-        <StyledTableCell sx={{ fontWeight: 'bold', borderBottom: 'none' }}>
-          <Typography sx={{ fontWeight: 'bold' }}> Name</Typography>
-        </StyledTableCell>
-        <StyledTableCell sx={{ fontWeight: 'bold', borderBottom: 'none' }}>
-          <Typography sx={{ fontWeight: 'bold' }}>Description</Typography>
-        </StyledTableCell>
+        {tableCategories.map((category) => (
+          <StyledTableCell key={category} sx={{ fontWeight: 'bold', borderBottom: 'none' }}>
+            <Typography sx={{ fontWeight: 'bold' }}>{category}</Typography>
+          </StyledTableCell>
+        ))}
       </TableRow>
     </TableHead>
   )
@@ -140,15 +100,14 @@ const HubDescription = ({ description }) => {
       setHubDescription(description)
     }
   }, [description])
-  console.log('hubDescription', typeof hubDescription)
-  const descriptionFilter = (desc) => {
-    return desc?.length > 28 ? `${desc.substring(0, 24)}...` : desc
-  }
+
 
   return (
-    <StyledTableCell align="left" sx={{ maxWidth:'20vw'}}>
-      <Box sx={{ overflow: 'hidden', textOverflow: 'ellipsis', }}>
-        <Typography noWrap>{descriptionFilter(hubDescription)}</Typography>
+    <StyledTableCell align="left" sx={{ maxWidth: '20vw' }}>
+      <Box
+        sx={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '20vw' }}
+      >
+        <Typography noWrap>{hubDescription}</Typography>
       </Box>
     </StyledTableCell>
   )
@@ -169,24 +128,6 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
   margin: 'auto',
   [theme.breakpoints.down('md')]: {
     width: '100vw',
-  },
-}))
-
-const ResponsivePlayButton = styled(Button)(({ theme }) => ({
-  mr: 3,
-  pr: 3,
-  cursor: 'pointer',
-  [theme.breakpoints.down('md')]: {
-    mr: 0,
-    pr: 0,
-  },
-}))
-
-const ResponsiveAudioControlContainer = styled(TableCell)(({ theme }) => ({
-  padding: 0,
-  [theme.breakpoints.down('md')]: {
-    display: 'flex',
-    flexDirection: 'row',
   },
 }))
 

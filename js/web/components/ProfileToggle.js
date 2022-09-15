@@ -1,7 +1,6 @@
-import { Box, Tabs, Tab } from '@mui/material'
+import { Box, Tab } from '@mui/material'
 import { styled } from '@mui/system'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
-import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import { Typography } from '@mui/material'
 const ProfileToggle = ({
   releaseClick,
@@ -12,41 +11,44 @@ const ProfileToggle = ({
   onPlayCollection,
 }) => {
   return (
-    <ResponsiveContainer sx={{ borderBottom: 1, borderColor: 'divider',}}>
-      <Box sx={{ display: 'flex', flexDirection: 'row', rowGap: 1, pb: 1,pl:1  }}>
-        <Box
-          onClick={releaseClick}
-          sx={{
-            cursor: 'pointer',
-            alignItems: 'center',
-            display: 'flex',
-            flexDirection: 'row',
-            textTransform: 'uppercase',
-            fontWeight: `${isClicked === 'releases' ? 'bold' : ''}`,
-            
-          }}
-        >
-          <a>Releases</a>
+    <ResponsiveContainer sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', rowGap: 1, pb: 1 }}>
+        <ResponsiveTab>
+          <a>
+            <Typography
+              onClickCapture={releaseClick}
+              sx={{ fontWeight: `${isClicked === 'releases' ? 'bold' : ''}` }}
+            >
+              Releases
+            </Typography>
+          </a>
+
           <PlayCircleOutlineOutlinedIcon
-            onClick={onPlayReleases}
-            sx={{ pr: 1.5, pl:.5 }}
+            onClickCapture={onPlayReleases}
+            sx={{ pr: 1.5, pl: 0.5 }}
           />
-        </Box>
+        </ResponsiveTab>
         <Box
-          onClick={collectionClick}
           sx={{
             cursor: 'pointer',
             alignItems: 'center',
             display: 'flex',
             flexDirection: 'row',
             textTransform: 'uppercase',
-            fontWeight: `${isClicked === 'collection' ? 'bold' : ''}`,
           }}
         >
-          <a>Collection</a>
+          <a>
+            <Typography
+              onClickCapture={collectionClick}
+              sx={{ fontWeight: `${isClicked === 'collection' ? 'bold' : ''}` }}
+            >
+              Collection
+            </Typography>
+          </a>
+
           <PlayCircleOutlineOutlinedIcon
-            onClick={onPlayCollection}
-            sx={{ pr: 1.5, pl:.5 }}
+            onClickCapture={onPlayCollection}
+            sx={{ pr: 1.5, pl: 0.5 }}
           />
         </Box>
         <Box
@@ -67,11 +69,15 @@ const ProfileToggle = ({
   )
 }
 
-const TabBox = styled(Box)(({ theme }) => ({
+const ResponsiveTab = styled(Box)(({ theme }) => ({
+  cursor: 'pointer',
   alignItems: 'center',
   display: 'flex',
   flexDirection: 'row',
   textTransform: 'uppercase',
+  [theme.breakpoints.down('md')]: {
+    paddingLeft: '10px',
+  },
 }))
 
 const ResponsiveContainer = styled(Box)(({ theme }) => ({
@@ -85,8 +91,5 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
-const StyledTab = styled(Tab)(({ theme }) => ({
-  p: 0,
-}))
 
 export default ProfileToggle

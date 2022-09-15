@@ -1,3 +1,6 @@
+import { useContext } from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
 import { Box } from '@mui/system'
 import { Button, Typography } from '@mui/material'
 import Table from '@mui/material/Table'
@@ -6,19 +9,18 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import Link from 'next/link'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
-import { useContext } from 'react'
-import Image from 'next/image'
-import { useSnackbar } from 'notistack'
 import { styled } from '@mui/material'
+import { useSnackbar } from 'notistack'
+
 const { getImageFromCDN, loader } = imageManager
 
-const ReleaseTable = ({ allReleases, tableTabs, }) => {
+const ProfileReleaseTable = ({ allReleases, tableCategories, }) => {
+
   const {
     updateTrack,
     addTrackToQueue,
@@ -64,26 +66,15 @@ const ReleaseTable = ({ allReleases, tableTabs, }) => {
     <ResponsiveContainer>
       <TableContainer>
         <Table>
-          <ReleaseTableHead tableTabs={tableTabs} />
+          <ProfileReleaseTableHead tableCategories={tableCategories} />
           <TableBody>
             {allReleases.map((release) => (
               <Link href={`/${release.releasePubkey}`} passHref>
                 <TableRow hover key={release.metadata.properties.name}>
-                  <StyledTableCell align="left">
-                    <Button
-                      sx={{ cursor: 'pointer' }}
-                      id={release.releasePubkey}
-                      key={release.metadata.properties.title}
-                      onClickCapture={(e) =>
-                        handleQueue(
-                          e,
-                          release.releasePubkey,
-                          release.metadata.properties.title
-                        )
-                      }
-                    >
-                      <ControlPointIcon
-                        sx={{ color: 'black' }}
+                  <StyledTableCell align="left" sx={{width: '100px', textAlign:'left'}}>
+                      <Button
+                        sx={{ cursor: 'pointer' }}
+                        id={release.releasePubkey}
                         key={release.metadata.properties.title}
                         onClickCapture={(e) =>
                           handleQueue(
@@ -92,33 +83,44 @@ const ReleaseTable = ({ allReleases, tableTabs, }) => {
                             release.metadata.properties.title
                           )
                         }
-                      />
-                    </Button>
-                    <Button
-                      sx={{
-                        cursor: 'pointer',
-                      }}
-                      onClickCapture={(e) =>
-                        handlePlay(e, release.releasePubkey)
-                      }
-                      id={release.releasePubkey}
-                    >
-                      {isPlaying &&
-                      track.releasePubkey === release.releasePubkey ? (
-                        <PauseCircleOutlineOutlinedIcon
+                      >
+                        <ControlPointIcon
                           sx={{ color: 'black' }}
-                          onClick={(e) => handlePlay(e, release.releasePubkey)}
-                          id={release.releasePubkey}
+                          key={release.metadata.properties.title}
+                          onClickCapture={(e) =>
+                            handleQueue(
+                              e,
+                              release.releasePubkey,
+                              release.metadata.properties.title
+                            )
+                          }
                         />
-                      ) : (
-                        <PlayCircleOutlineOutlinedIcon
-                          sx={{ color: 'black' }}
-                        />
-                      )}
-                    </Button>
+                      </Button>
+                      <Button
+                        sx={{
+                          cursor: 'pointer',
+                        }}
+                        onClickCapture={(e) =>
+                          handlePlay(e, release.releasePubkey)
+                        }
+                        id={release.releasePubkey}
+                      >
+                        {isPlaying &&
+                        track.releasePubkey === release.releasePubkey ? (
+                          <PauseCircleOutlineOutlinedIcon
+                            sx={{ color: 'black' }}
+                            onClick={(e) => handlePlay(e, release.releasePubkey)}
+                            id={release.releasePubkey}
+                          />
+                        ) : (
+                          <PlayCircleOutlineOutlinedIcon
+                            sx={{ color: 'black' }}
+                          />
+                        )}
+                      </Button>
                   </StyledTableCell>
                   <StyledTableCell align="left">
-                    <Box sx={{ width: '50px' }}>
+                    <Box sx={{ width: '50px', textAlign: 'left' }}>
                       <Image
                         height={'100%'}
                         width={'100%'}
@@ -134,7 +136,7 @@ const ReleaseTable = ({ allReleases, tableTabs, }) => {
                       />
                     </Box>
                   </StyledTableCell>
-                  <StyledTableCell sx={{ maxWidth: '20vw' }} align="left">
+                  <StyledTableCell sx={{ maxWidth: '20vw', textAlign: 'left' }} align="left">
                     <Box sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       <Typography noWrap>
                         {release.metadata.properties.artist}
@@ -143,7 +145,7 @@ const ReleaseTable = ({ allReleases, tableTabs, }) => {
                   </StyledTableCell>
                   <StyledTableCell
                     align="left"
-                    sx={{ textDecoration: 'underline', maxWidth: '20vw' }}
+                    sx={{ textDecoration: 'underline', maxWidth: '20vw', textAlign: 'left' }}
                   >
                     <Box sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       <Typography noWrap>
@@ -166,19 +168,20 @@ const ReleaseTable = ({ allReleases, tableTabs, }) => {
   )
 }
 
-const ReleaseTableHead = ({ tableTabs }) => {
+const ProfileReleaseTableHead = ({ tableCategories }) => {
   return (
     <TableHead>
       <TableRow>
-        {tableTabs.map((tab) => (
+        {tableCategories.map((category) => (
           <StyledTableCell
             align="left"
+            key={category}
             sx={{
               fontWeight: 'bold',
               borderBottom: 'none',
             }}
           >
-            <Typography sx={{ fontWeight: 'bold' }}>{tab}</Typography>
+            <Typography sx={{ fontWeight: 'bold' }}>{category}</Typography>
           </StyledTableCell>
         ))}
       </TableRow>
@@ -188,6 +191,7 @@ const ReleaseTableHead = ({ tableTabs }) => {
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   padding: '5px 0',
+  textAlign: 'left',
   [theme.breakpoints.down('md')]: {
     padding: '0 5px',
   },
@@ -202,19 +206,4 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
-const ResponsivePlayButton = styled(Button)(({ theme }) => ({
-  cursor: 'pointer',
-  [theme.breakpoints.down('md')]: {
-    mr: 0,
-    pr: 0,
-  },
-}))
-
-const ResponsiveAudioControlContainer = styled(TableCell)(({ theme }) => ({
-  padding: 0,
-  [theme.breakpoints.down('md')]: {
-    display: 'flex',
-    flexDirection: 'row',
-  },
-}))
-export default ReleaseTable
+export default ProfileReleaseTable

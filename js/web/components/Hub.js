@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState, useContext } from 'react'
+import dynamic from 'next/dynamic'
+import Head from 'next/head'
+import { Box, } from '@mui/material'
+import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-import { Box, Toolbar } from '@mui/material'
-import dynamic from 'next/dynamic'
-import { styled } from '@mui/system'
-import Head from 'next/head'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import { useSnackbar } from 'notistack'
 
@@ -13,7 +13,7 @@ const HubHeader = dynamic(() => import('./HubHeader'))
 const HubCollaborators = dynamic(() => import('./HubCollaborators'))
 const HubToggle = dynamic(() => import('./HubToggle'))
 const HubReleases = dynamic(() => import('./HubReleases'))
-const ReleaseTable = dynamic(() => import('./ReleaseTable'))
+
 const HubComponent = ({ hubPubkey }) => {
   const {
     getHub,
@@ -26,45 +26,40 @@ const HubComponent = ({ hubPubkey }) => {
   const { releaseState } = useContext(Release.Context)
 
   const {resetQueueWithPlaylist} = useContext(Audio.Context)
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+  const { enqueueSnackbar } = useSnackbar()
 
   const [hubReleases, setHubReleases] = useState([])
-  const [, setHubPosts] = useState([])
   const [releaseData, setReleaseData] = useState([])
   const [collaboratorsData, setCollaboratorsData] = useState([])
   const [view, setView] = useState('releases')
-  const [clickedToggle, setClickedToggle] = useState('releases')
-  const [fetchingHubInfo, setFetchingHubInfo] = useState('fetching')
-  const [fetchingReleases, setFetchingReleases] = useState('fetching')
-  const [fetchingCollaborators, setFetchingCollaborators] = useState('fetching')
-  const [hubDescription, setHubDescription] = useState()
+  const [fetchedHubInfo, setFetchedHubInfo] = useState(false)
+  const [fetchedReleases, setFetchedReleases] = useState(false)
+  const [fetchedCollaborators, setFetchedCollaborators] = useState(false)
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
-  console.log('hubData', hubData)
 
   useEffect(() => {
     if (!hubPubkey) {
-      setFetchingHubInfo('fetching')
+      setFetchedHubInfo(false)
     }
     getHub(hubPubkey)
     if (hubPubkey) {
-      setFetchingHubInfo('fetched')
+      setFetchedHubInfo(true)
     }
   }, [hubPubkey])
 
   useEffect(() => {
-    const [releases, posts] = filterHubContentForHub(hubPubkey)
+    const [releases] = filterHubContentForHub(hubPubkey)
     const collaborators = filterHubCollaboratorsForHub(hubPubkey)
     setHubReleases(releases)
-    setHubPosts(posts)
     setCollaboratorsData(collaborators)
     if (releases.length > 0) {
-      setFetchingReleases('fetched')
+      setFetchedReleases(true)
     }
     if (releases.length === 0) {
-      setFetchingReleases('fetching')
+      setFetchedReleases(false)
     }
     if (collaborators) {
-      setFetchingCollaborators('fetched')
+      setFetchedCollaborators(true)
     }
   }, [hubContentState])
 
@@ -79,12 +74,10 @@ const HubComponent = ({ hubPubkey }) => {
 
   const releaseClickHandler = () => {
     setView('releases')
-    setClickedToggle('releases')
   }
 
   const collaboratorClickHandler = () => {
     setView('collaborators')
-    setClickedToggle('collaborators')
   }
   const playAllHandler = (playlist) => {
     resetQueueWithPlaylist(
@@ -135,7 +128,7 @@ const HubComponent = ({ hubPubkey }) => {
 
       <ResponsiveHubContainer>
         <ResponsiveHubHeaderContainer>
-          {fetchingHubInfo === 'fetched' && hubData ? (
+          {fetchedHubInfo && hubData ? (
             <HubHeader
               hubImage={`${hubData?.json.image ? hubData.json.image : ''}`}
               hubName={`${
@@ -164,19 +157,19 @@ const HubComponent = ({ hubPubkey }) => {
         <ResponsiveHubContentContainer sx={{ minHeight: '50vh' }}>
           {view === 'releases' && (
             <>
-              {fetchingReleases === 'fetching' && (
+              {!fetchedReleases && (
                 <ResponsiveDotContainer>
                   <Dots />
                 </ResponsiveDotContainer>
               )}
-              {fetchingReleases === 'fetched' && releaseData && (
+              {fetchedReleases && releaseData && (
                 <HubReleases hubReleases={releaseData} />
               )}
             </>
           )}
           {view === 'collaborators' && (
             <>
-              {fetchingCollaborators === 'fetching' && (
+              {!fetchedCollaborators && (
                 <ResponsiveDotContainer
                   sx={{
                     display: 'table-cell',
@@ -187,10 +180,10 @@ const HubComponent = ({ hubPubkey }) => {
                   <Dots />
                 </ResponsiveDotContainer>
               )}
-              {fetchingCollaborators === 'fetched' && !collaboratorsData && (
+              {fetchedCollaborators && !collaboratorsData && (
                 <Box sx={{ my: 1 }}>No collaborators found in this Hub</Box>
               )}
-              {fetchingCollaborators === 'fetched' && (
+              {fetchedCollaborators && (
                 <HubCollaborators collabData={collaboratorsData} />
               )}
             </>

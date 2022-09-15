@@ -1,5 +1,6 @@
-import { Button, Box, Tabs, Tab } from '@mui/material'
+import { Box } from '@mui/material'
 import { styled } from '@mui/system'
+import { Typography } from '@mui/material'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 const HubToggle = ({
   releaseClick,
@@ -14,21 +15,27 @@ const HubToggle = ({
         borderColor: 'divider',
       }}
     >
-      <Box sx={{ display: 'flex', flexDirection: 'row', rowGap: 1, py: 1, pl:1 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', rowGap: 1, py: 1 }}>
         <Box
-          onClick={releaseClick}
           sx={{
             cursor: 'pointer',
             alignItems: 'center',
             display: 'flex',
             flexDirection: 'row',
             textTransform: 'uppercase',
-            fontWeight: `${isClicked === 'releases' ? 'bold' : ''}`,
           }}
         >
-          <a>Releases</a>
+          <a>
+            <Typography
+              sx={{ fontWeight: `${isClicked === 'releases' ? 'bold' : ''}` }}
+              onClickCapture={releaseClick}
+            >
+              Releases
+            </Typography>
+          </a>
+
           <PlayCircleOutlineOutlinedIcon
-            onClick={onPlayReleases}
+            onClickCapture={onPlayReleases}
             sx={{ pr: 1.5, pl: 0.5 }}
           />
         </Box>
@@ -60,7 +67,5 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
     width: '100vw',
   },
 }))
-const StyledTab = styled(Tab)(({ theme }) => ({
-  p: 0,
-}))
+
 export default HubToggle
