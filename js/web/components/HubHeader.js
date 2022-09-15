@@ -91,5 +91,5 @@ const ResponsiveHubHeader = styled(Box)(({ theme }) => ({
     alignItems: 'left',
   },
 }))
-
+ 
 export default HubHeader

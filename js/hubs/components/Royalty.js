@@ -73,6 +73,7 @@ const Royalty = (props) => {
             color="primary"
             onClick={toggleForm}
             stlye={{ fontSize: "14px !important" }}
+            fullWidth
           >
             {formToggleText}
           </Button>

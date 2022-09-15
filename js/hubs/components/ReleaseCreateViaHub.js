@@ -65,6 +65,8 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
     bundlrPricePerMb,
     solPrice,
     getSolPrice,
+    checkIfHasBalanceToCompleteAction,
+    NinaProgramAction,
   } = useContext(Nina.Context);
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const [track, setTrack] = useState(undefined);
@@ -218,9 +220,12 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
           `/${hubData.handle}/releases/${releaseInfo.hubRelease.toBase58()}`
         );
       } else if (track && artwork) {
-
-        const network = process.env.REACT_APP_CLUSTER
-
+        const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.RELEASE_INIT_VIA_HUB);
+        if (error) {
+          enqueueSnackbar(error.msg, { variant: "failure" });
+          return;
+        }
+  
         const hashExists = await validateUniqueMd5Digest(md5Digest)
         if (hashExists && network !== 'devnet') {
           enqueueSnackbar(

@@ -7,11 +7,40 @@ import {
 } from '../../utils/web3'
 import { ninaErrorHandler } from '../../utils/errors'
 
+const NinaProgramAction = {
+  HUB_ADD_COLLABORATOR: 'HUB_ADD_COLLABORATOR',
+  HUB_ADD_RELEASE: 'HUB_ADD_RELEASE',
+  HUB_INIT_WITH_CREDIT: 'HUB_INIT_WITH_CREDIT',
+  POST_INIT_VIA_HUB_WITH_REFERENCE_RELEASE: 'POST_INIT_VIA_HUB_WITH_REFERENCE_RELEASE',
+  POST_INIT_VIA_HUB: 'POST_INIT_VIA_HUB',
+  RELEASE_INIT_VIA_HUB: 'RELEASE_INIT_VIA_HUB',
+  RELEASE_INIT_WITH_CREDIT: 'RELEASE_INIT_WITH_CREDIT',
+  RELEASE_PURCHASE: 'RELEASE_PURCHASE',
+  RELEASE_PURCHASE_VIA_HUB: 'RELEASE_PURCHASE_VIA_HUB',
+  EXCHANGE_INIT : 'EXCHANGE_INIT',
+  EXCHANGE_ACCEPT: 'EXCHANGE_ACCEPT',
+}
+
+const NinaProgramActionCost = {
+  HUB_ADD_COLLABORATOR: 0.001919,
+  HUB_ADD_RELEASE: 0.00368684,
+  HUB_INIT_WITH_CREDIT: 0.00923396,
+  POST_INIT_VIA_HUB_WITH_REFERENCE_RELEASE: 0.01140548,
+  POST_INIT_VIA_HUB: 0.00772364,
+  RELEASE_INIT_VIA_HUB: 0.02212192,
+  RELEASE_INIT_WITH_CREDIT: 0.02047936,
+  RELEASE_PURCHASE: 0.00204428,
+  RELEASE_PURCHASE_VIA_HUB: 0.00204428,
+  EXCHANGE_INIT: 0.0051256,
+  EXCHANGE_ACCEPT: 0.00377536,
+}
+
 const NinaContext = createContext()
 const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [collection, setCollection] = useState({})
   const [postState, setPostState] = useState({})
   const [usdcBalance, setUsdcBalance] = useState(0)
+  const [solBalance, setSolBalance] = useState(0)
   const [solUsdcBalance, setSolUsdcBalance] = useState(0)
   const [npcAmountHeld, setNpcAmountHeld] = useState(0)
   const [solPrice, setSolPrice] = useState(0)
@@ -98,6 +127,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     getSolPrice,
     bundlrUpload,
     initBundlr,
+    checkIfHasBalanceToCompleteAction,
   } = ninaContextHelper({
     ninaClient,
     postState,
@@ -114,7 +144,9 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     solPrice,
     setSolPrice,
     bundlrHttpAddress,
-    setSolUsdcBalance
+    setSolUsdcBalance,
+    solBalance,
+    setSolBalance,
   })
 
   return (
@@ -150,6 +182,10 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         savePostsToState,
         bundlr,
         solUsdcBalance,
+        solBalance,
+        NinaProgramAction,
+        NinaProgramActionCost,
+        checkIfHasBalanceToCompleteAction
       }}
     >
       {children}
@@ -172,6 +208,8 @@ const ninaContextHelper = ({
   setSolPrice,
   bundlrHttpAddress,
   setSolUsdcBalance,
+  solBalance,
+  setSolBalance,
 }) => {
   const { provider, ids, uiToNative, nativeToUi } = ninaClient
 
@@ -440,7 +478,7 @@ const ninaContextHelper = ({
           provider.wallet.publicKey
         )
         setSolUsdcBalance((ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) * solPrice.data.data.price).toFixed(2))
-
+        setSolBalance(solUsdcBalanceResult)
         let [usdcTokenAccountPubkey] = await findOrCreateAssociatedTokenAccount(
           provider.connection,
           provider.wallet.publicKey,
@@ -562,6 +600,16 @@ const ninaContextHelper = ({
   const bundlrUpload = async (file) => {
     try {
       return new Promise((resolve, reject) => {
+        const uploader = bundlr.uploader.chunkedUploader;
+        uploader.on("chunkUpload", (chunkInfo) => {
+          console.log(`Uploaded Chunk number ${chunkInfo.id}, offset of ${chunkInfo.offset}, size ${chunkInfo.size} Bytes, with a total of ${chunkInfo.totalUploaded} bytes uploaded.`);
+        });
+        uploader.on("chunkError", (e) => {
+          console.error(`Error uploading chunk number ${e.id} - ${e.res.statusText}`);
+        });
+        uploader.on("done", (finishRes) => {
+          console.log(`Upload completed with ID ${JSON.stringify(finishRes)}`);
+        });   
         const reader = new FileReader()
         reader.onload = async () => {
           const data = reader.result
@@ -571,8 +619,7 @@ const ninaContextHelper = ({
               tags: [{ name: 'Content-Type', value: file.type }]
             })
             await tx.sign();
-            await tx.upload()
-            txId = (await tx.upload()).data.id
+            txId = (await uploader.uploadTransaction(tx)).data.id
           } catch (error) {
             ninaErrorHandler(error)
           }
@@ -609,6 +656,14 @@ const ninaContextHelper = ({
     }
   }
 
+  const checkIfHasBalanceToCompleteAction = (action) => {
+    if (ninaClient.uiToNative(NinaProgramActionCost[action], ninaClient.ids.mints.wsol) > solBalance) {
+      const error = new Error(`You do not have enough SOL to send the transaction: ${action}.  You need at least ${NinaProgramActionCost[action]} SOL.`)
+      return ninaErrorHandler(error)
+    }
+    return undefined
+  }
+
   return {
     subscriptionSubscribe,
     subscriptionUnsubscribe,
@@ -628,6 +683,7 @@ const ninaContextHelper = ({
     bundlrUpload,
     initBundlr,
     savePostsToState,
+    checkIfHasBalanceToCompleteAction,
   }
 }
 

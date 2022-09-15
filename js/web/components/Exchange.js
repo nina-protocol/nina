@@ -29,7 +29,7 @@ const ExchangeComponent = (props) => {
   const wallet = useWallet()
   const connection = useConnection()
   const { enqueueSnackbar } = useSnackbar()
-  const { ninaClient } = useContext(Nina.Context)
+  const { ninaClient, checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(Nina.Context)
   const { releaseState, getRelease } = useContext(Release.Context)
   const {
     exchangeState,
@@ -77,6 +77,11 @@ const ExchangeComponent = (props) => {
   const handleExchangeAction = async (exchange) => {
     let result
     if (exchange.isInit) {
+      const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.EXCHANGE_INIT);
+      if (error) {
+        enqueueSnackbar(error.msg, { variant: "failure" });
+        return;
+      }  
       showPendingTransaction('Making an offer...')
       result = await exchangeInit(exchange)
       setExchangeAwaitingConfirm(undefined)
@@ -84,6 +89,11 @@ const ExchangeComponent = (props) => {
       showPendingTransaction('Cancelling offer...')
       result = await exchangeCancel(exchange, wallet?.connected, connection)
     } else {
+      const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.EXCHANGE_ACCEPT);
+      if (error) {
+        enqueueSnackbar(error.msg, { variant: "failure" });
+        return;
+      }  
       if (exchange.isSelling) {
         showPendingTransaction('Accepting offer...')
         result = await exchangeAccept(exchange, releasePubkey)
