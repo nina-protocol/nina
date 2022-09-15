@@ -68,6 +68,9 @@ const moduleExports = withTM({
   env: {
     IMGIX_URL,
     NEXT_PUBLIC_IMGIX_TOKEN,
+    NINA_API_ENDPOINT: process.env.NINA_API_ENDPOINT,
+    SOLANA_CLUSTER_URL: process.env.SOLANA_CLUSTER_URL,
+    NINA_PROGRAM_ID: process.env.NINA_PROGRAM_ID,
     REACT_APP_CLUSTER: cluster,
     INDEXER_URL:
       cluster === 'devnet'
