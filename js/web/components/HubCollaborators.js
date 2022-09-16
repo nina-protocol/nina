@@ -8,18 +8,18 @@ import { Typography } from '@mui/material'
 import { styled } from '@mui/system'
 import { Box } from '@mui/system'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
-const HubCollaborators = ({ collabData }) => {
+const HubCollaborators = ({ collaboratorData }) => {
   return (
     <ResponsiveContainer>
       <TableContainer>
         <Table>
           <TableBody sx={{ borderBottom: 'none' }}>
-            {collabData.map((collab) => (
+            {collaboratorData?.map((collab) => (
               <TableRow hover key={collab.id} sx={{overflow: 'visible'}}>
                 <StyledTableCell align="left">
                   <HubCollaborator
                     collaboratorLink={'https://ninaprotocol.com'}
-                    collaboratorID={collab.collaborator}
+                    fooPublicKey={collab.collaborator}
                   />
                 </StyledTableCell>
               </TableRow>
@@ -30,7 +30,7 @@ const HubCollaborators = ({ collabData }) => {
     </ResponsiveContainer>
   )
 }
-const HubCollaborator = ({ collaboratorID }) => {
+const HubCollaborator = ({ fooPublicKey }) => {
   return (
       <ResponsiveBox
         sx={{
@@ -38,9 +38,9 @@ const HubCollaborator = ({ collaboratorID }) => {
           textOverflow: 'ellipsis',
         }}
       >
-    <Link href={`/profiles/${collaboratorID}`}>
+    <Link href={`/profiles/${fooPublicKey}`}>
         <Typography noWrap sx={{ cursor: 'pointer', pr: 0.1 }}>
-          <a>{truncateAddress(collaboratorID)}</a>
+          <a>{truncateAddress(fooPublicKey)}</a>
         </Typography>
     </Link>
       </ResponsiveBox>
@@ -53,7 +53,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }))
 
 const ResponsiveContainer = styled(Box)(({ theme }) => ({
-  width: '960px',
+  width: theme.maxWidth,
   minHeight: '50vh',
   [theme.breakpoints.down('md')]: {
     width: '100vw',

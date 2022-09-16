@@ -17,7 +17,7 @@ const ProfileToggle = ({
           <a>
             <Typography
               onClickCapture={releaseClick}
-              sx={{ fontWeight: `${isClicked === 'releases' ? 'bold' : ''}` }}
+              sx={{ fontWeight: `${isClicked === 0 ? 'bold' : ''}` }}
             >
               Releases
             </Typography>
@@ -40,7 +40,7 @@ const ProfileToggle = ({
           <a>
             <Typography
               onClickCapture={collectionClick}
-              sx={{ fontWeight: `${isClicked === 'collection' ? 'bold' : ''}` }}
+              sx={{ fontWeight: `${isClicked === 1 ? 'bold' : ''}` }}
             >
               Collection
             </Typography>
@@ -59,7 +59,7 @@ const ProfileToggle = ({
             display: 'flex',
             flexDirection: 'row',
             textTransform: 'uppercase',
-            fontWeight: `${isClicked === 'hubs' ? 'bold' : ''}`,
+            fontWeight: `${isClicked === 2 ? 'bold' : ''}`,
           }}
         >
           <a>Hubs</a>

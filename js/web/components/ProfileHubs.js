@@ -47,11 +47,11 @@ const ProfileHubs = ({ profileHubs }) => {
                       />
                     </Box>
                   </StyledTableCell>
-                  <StyledTableCell align="left" sx={{ maxWidth: '20vw' }}>
-                    <Box sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <StyledTableCellNameContainer align="left">
+                    <OverflowContainer>
                       <Typography noWrap>{hub.json.displayName} </Typography>
-                    </Box>
-                  </StyledTableCell>
+                    </OverflowContainer>
+                  </StyledTableCellNameContainer>
                   <HubDescription description={hub.json.description} />
                 </TableRow>
               </Link>
@@ -68,9 +68,9 @@ const HubsTableHead = ({ tableCategories }) => {
     <TableHead>
       <TableRow>
         {tableCategories.map((category) => (
-          <StyledTableCell key={category} sx={{ fontWeight: 'bold', borderBottom: 'none' }}>
+          <StyledTabContainer key={category}>
             <Typography sx={{ fontWeight: 'bold' }}>{category}</Typography>
-          </StyledTableCell>
+          </StyledTabContainer>
         ))}
       </TableRow>
     </TableHead>
@@ -101,34 +101,60 @@ const HubDescription = ({ description }) => {
     }
   }, [description])
 
-
   return (
-    <StyledTableCell align="left" sx={{ maxWidth: '20vw' }}>
-      <Box
-        sx={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '20vw' }}
-      >
+    <StyledTableCell align="left">
+      <StyledTableDescriptionContainer>
         <Typography noWrap>{hubDescription}</Typography>
-      </Box>
+      </StyledTableDescriptionContainer>
     </StyledTableCell>
   )
 }
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   padding: '5px 0',
-
   [theme.breakpoints.down('md')]: {
     padding: '0 5px',
     maxHeight: '50px',
   },
 }))
 
+const StyledTabContainer = styled(Box)(({ theme }) => ({
+  fontWeight: 'bold',
+  borderBottom: 'none',
+  padding: '5px 0',
+  [theme.breakpoints.down('md')]: {
+    padding: '0 5px',
+    maxHeight: '50px',
+  },
+}))
+
+const StyledTableCellNameContainer = styled(Box)(({ theme }) => ({
+  padding: '5px 0',
+  maxWidth: '20vw',
+  [theme.breakpoints.down('md')]: {
+    padding: '0 5px',
+    maxHeight: '50px',
+  },
+}))
+
+const StyledTableDescriptionContainer = styled(Box)(({ theme }) => ({
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  maxWidth: '20vw',
+}))
+
 const ResponsiveContainer = styled(Box)(({ theme }) => ({
-  width: '960px',
+  width: theme.maxWidth,
   minHeight: '50vh',
   margin: 'auto',
   [theme.breakpoints.down('md')]: {
     width: '100vw',
   },
+}))
+
+const OverflowContainer = styled(Box)(({ theme }) => ({
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
 }))
 
 export default ProfileHubs

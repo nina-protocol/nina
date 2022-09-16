@@ -5,9 +5,3 @@ export { default as Exchange } from './contexts/Exchange'
 export { default as Hub } from './contexts/Hub'
 export { default as Nina } from './contexts/Nina'
 export { default as Release } from './contexts/Release'
-console.log('test')
-console.log('test')
-console.log('test')
-console.log('test')
-console.log('test')
-console.log('test')

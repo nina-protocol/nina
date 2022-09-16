@@ -19,8 +19,28 @@ import { useSnackbar } from 'notistack'
 
 const { getImageFromCDN, loader } = imageManager
 
-const ProfileReleaseTable = ({ allReleases, tableCategories, }) => {
+const ProfileReleaseTableHead = ({ tableCategories }) => {
+  return (
+    <TableHead>
+      <TableRow>
+        {tableCategories?.map((category) => (
+          <StyledTableCell
+            align="left"
+            key={category}
+            sx={{
+              fontWeight: 'bold',
+              borderBottom: 'none',
+            }}
+          >
+            <Typography sx={{ fontWeight: 'bold' }}>{category}</Typography>
+          </StyledTableCell>
+        ))}
+      </TableRow>
+    </TableHead>
+  )
+}
 
+const ProfileReleaseTable = ({ allReleases, tableCategories }) => {
   const {
     updateTrack,
     addTrackToQueue,
@@ -71,10 +91,21 @@ const ProfileReleaseTable = ({ allReleases, tableCategories, }) => {
             {allReleases.map((release) => (
               <Link href={`/${release.releasePubkey}`} passHref>
                 <TableRow hover key={release.metadata.properties.name}>
-                  <StyledTableCell align="left" sx={{width: '100px', textAlign:'left'}}>
-                      <Button
-                        sx={{ cursor: 'pointer' }}
-                        id={release.releasePubkey}
+                  <StyledTableCellButtonsContainer align="left">
+                    <Button
+                      sx={{ cursor: 'pointer' }}
+                      id={release.releasePubkey}
+                      key={release.metadata.properties.title}
+                      onClickCapture={(e) =>
+                        handleQueue(
+                          e,
+                          release.releasePubkey,
+                          release.metadata.properties.title
+                        )
+                      }
+                    >
+                      <ControlPointIcon
+                        sx={{ color: 'black' }}
                         key={release.metadata.properties.title}
                         onClickCapture={(e) =>
                           handleQueue(
@@ -83,42 +114,31 @@ const ProfileReleaseTable = ({ allReleases, tableCategories, }) => {
                             release.metadata.properties.title
                           )
                         }
-                      >
-                        <ControlPointIcon
+                      />
+                    </Button>
+                    <Button
+                      sx={{
+                        cursor: 'pointer',
+                      }}
+                      onClickCapture={(e) =>
+                        handlePlay(e, release.releasePubkey)
+                      }
+                      id={release.releasePubkey}
+                    >
+                      {isPlaying &&
+                      track.releasePubkey === release.releasePubkey ? (
+                        <PauseCircleOutlineOutlinedIcon
                           sx={{ color: 'black' }}
-                          key={release.metadata.properties.title}
-                          onClickCapture={(e) =>
-                            handleQueue(
-                              e,
-                              release.releasePubkey,
-                              release.metadata.properties.title
-                            )
-                          }
+                          onClick={(e) => handlePlay(e, release.releasePubkey)}
+                          id={release.releasePubkey}
                         />
-                      </Button>
-                      <Button
-                        sx={{
-                          cursor: 'pointer',
-                        }}
-                        onClickCapture={(e) =>
-                          handlePlay(e, release.releasePubkey)
-                        }
-                        id={release.releasePubkey}
-                      >
-                        {isPlaying &&
-                        track.releasePubkey === release.releasePubkey ? (
-                          <PauseCircleOutlineOutlinedIcon
-                            sx={{ color: 'black' }}
-                            onClick={(e) => handlePlay(e, release.releasePubkey)}
-                            id={release.releasePubkey}
-                          />
-                        ) : (
-                          <PlayCircleOutlineOutlinedIcon
-                            sx={{ color: 'black' }}
-                          />
-                        )}
-                      </Button>
-                  </StyledTableCell>
+                      ) : (
+                        <PlayCircleOutlineOutlinedIcon
+                          sx={{ color: 'black' }}
+                        />
+                      )}
+                    </Button>
+                  </StyledTableCellButtonsContainer>
                   <StyledTableCell align="left">
                     <Box sx={{ width: '50px', textAlign: 'left' }}>
                       <Image
@@ -128,7 +148,7 @@ const ProfileReleaseTable = ({ allReleases, tableCategories, }) => {
                         src={getImageFromCDN(
                           release.metadata.image,
                           400,
-                          new Date(Date.parse(release.metadata.properties.date))
+                          Date.parse(release.metadata.properties.date)
                         )}
                         alt={release.metadata.properties.name}
                         priority={true}
@@ -136,30 +156,29 @@ const ProfileReleaseTable = ({ allReleases, tableCategories, }) => {
                       />
                     </Box>
                   </StyledTableCell>
-                  <StyledTableCell sx={{ maxWidth: '20vw', textAlign: 'left' }} align="left">
-                    <Box sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <StyledTableCellArtistContainer
+                                      align="left"
+                  >
+                    <OverflowContainer>
                       <Typography noWrap>
                         {release.metadata.properties.artist}
                       </Typography>
-                    </Box>
-                  </StyledTableCell>
-                  <StyledTableCell
+                    </OverflowContainer>
+                  </StyledTableCellArtistContainer>
+                  <StyledTableCellTitleContainer
                     align="left"
-                    sx={{ textDecoration: 'underline', maxWidth: '20vw', textAlign: 'left' }}
                   >
-                    <Box sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <OverflowContainer>
                       <Typography noWrap>
                         {release.metadata.properties.title}
                       </Typography>
-                    </Box>
-                  </StyledTableCell>
+                    </OverflowContainer>
+                  </StyledTableCellTitleContainer>
                 </TableRow>
               </Link>
             ))}
             <TableRow sx={{ borderBottom: 'none' }}>
-              <StyledTableCell
-                sx={{ height: '50px', borderBottom: 'none' }}
-              ></StyledTableCell>
+              <StyledTableCellBuffer />
             </TableRow>
           </TableBody>
         </Table>
@@ -168,26 +187,7 @@ const ProfileReleaseTable = ({ allReleases, tableCategories, }) => {
   )
 }
 
-const ProfileReleaseTableHead = ({ tableCategories }) => {
-  return (
-    <TableHead>
-      <TableRow>
-        {tableCategories.map((category) => (
-          <StyledTableCell
-            align="left"
-            key={category}
-            sx={{
-              fontWeight: 'bold',
-              borderBottom: 'none',
-            }}
-          >
-            <Typography sx={{ fontWeight: 'bold' }}>{category}</Typography>
-          </StyledTableCell>
-        ))}
-      </TableRow>
-    </TableHead>
-  )
-}
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   padding: '5px 0',
@@ -197,8 +197,48 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }))
 
+const StyledTableCellButtonsContainer = styled(TableCell)(({ theme }) => ({
+  width: '100px',
+  textAlign: 'left',
+  padding: '5px 0',
+  textAlign: 'left',
+  [theme.breakpoints.down('md')]: {
+    padding: '0 5px',
+  },
+}))
+
+const StyledTableCellArtistContainer = styled(TableCell)(({ theme }) => ({
+  padding: '5px 0',
+  textAlign: 'left',
+  maxWidth: '20vw',
+  textAlign: 'left',
+  [theme.breakpoints.down('md')]: {
+    padding: '0 5px',
+  },
+}))
+
+const OverflowContainer = styled(Box)(({theme}) => ({
+  overflow: 'hidden', textOverflow: 'ellipsis' 
+}))
+
+const StyledTableCellTitleContainer = styled(TableCell)(({theme}) => ({
+  textDecoration: 'underline',
+  maxWidth: '20vw',
+  textAlign: 'left',
+  padding: '5px 0',
+  textAlign: 'left',
+  [theme.breakpoints.down('md')]: {
+    padding: '0 5px',
+  },
+}))
+
+const StyledTableCellBuffer = styled(TableCell)(({ theme }) => ({
+  height: '50px',
+  borderBottom: 'none',
+}))
+
 const ResponsiveContainer = styled(Box)(({ theme }) => ({
-  width: '960px',
+  width: theme.maxWidth,
   minHeight: '50vh',
   margin: 'auto',
   [theme.breakpoints.down('md')]: {

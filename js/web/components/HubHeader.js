@@ -14,7 +14,7 @@ import rehypeExternalLinks from 'rehype-external-links'
 const { getImageFromCDN, loader } = imageManager
 
 const HubHeader = ({ hubImage, hubName, description, hubUrl, hubDate }) => {
-  const [hubDescription, setHubDescription] = useState()
+  const [hubDescription, setHubDescription] = useState(undefined)
   useEffect(() => {
     if (description.includes('<p>')) {
       unified()
@@ -40,15 +40,7 @@ const HubHeader = ({ hubImage, hubName, description, hubUrl, hubDate }) => {
     return desc?.length > 24 ? `${desc.substring(0, 24)}...` : desc
   }
   return (
-    <ResponsiveHubHeader
-      sx={{
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'start',
-        mb: 1,
-      }}
-    >
+    <ResponsiveHubHeader >
       <Box sx={{ width: '100px' }}>
         <Image
           height={'100%'}
@@ -64,7 +56,6 @@ const HubHeader = ({ hubImage, hubName, description, hubUrl, hubDate }) => {
       {hubName && (
         <Link href={hubUrl}>
           <a>
-            {' '}
             <Typography sx={{ px: 2 }}>{hubName}</Typography>
           </a>
         </Link>
@@ -85,8 +76,7 @@ const ResponsiveHubHeader = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'start',
   py: 1,
-  my: 1,
-
+  mb: 1,
   [theme.breakpoints.down('md')]: {
     alignItems: 'left',
   },

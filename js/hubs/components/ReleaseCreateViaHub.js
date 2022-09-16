@@ -227,7 +227,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
         }
   
         const hashExists = await validateUniqueMd5Digest(md5Digest)
-        if (hashExists && network !== 'devnet') {
+        if (hashExists) {
           enqueueSnackbar(
             `A release with this track already exists: ${hashExists.json.properties.artist} - ${hashExists.json.properties.title}`,
             {

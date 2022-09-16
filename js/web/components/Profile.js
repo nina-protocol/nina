@@ -19,9 +19,7 @@ const Profile = ({ userId }) => {
   const {
     getUserCollectionAndPublished,
     releaseState,
-
     filterReleasesPublishedByUser,
-
     filterReleasesList,
   } = useContext(Release.Context)
 
@@ -31,25 +29,24 @@ const Profile = ({ userId }) => {
 
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
 
-  const [profilePublishedReleases, setProfilePublishedReleases] = useState([])
-  const [profileCollectionReleases, setProfileCollectionReleases] = useState()
-  const [profileHubs, setProfileHubs] = useState([])
-  const [view, setView] = useState('releases')
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+  const [profilePublishedReleases, setProfilePublishedReleases] = useState(undefined)
+  const [profileCollectionReleases, setProfileCollectionReleases] = useState(undefined)
+  const [profileHubs, setProfileHubs] = useState(undefined)
+  const [activeView, setActiveView] = useState(0)
+  const { enqueueSnackbar } = useSnackbar()
   const [profileCollectionIds, setProfileCollectionIds] = useState(undefined)
-  const [toggleView, setToggleView] = useState('releases')
+  const [toggleView, setToggleView] = useState(0)
   const [fetchedUser, setFetchedUser] = useState(false)
   const [fetchedReleases, setFetchedReleases] = useState(false)
   const [fetchedHubs, setFetchedHubs] = useState(false)
   const [fetchedCollection, setFetchedCollection] = useState(false)
-  // const [profileArtistData, setProfileArtistData] = useState([])
 
   const artistNames = useMemo(
     () => {
-      if (profilePublishedReleases.length > 0) {
+      if (profilePublishedReleases?.length > 0) {
           return [
           ...new Set(
-            profilePublishedReleases.map(
+            profilePublishedReleases?.map(
               (release) => release.metadata.properties.artist
             )
           ),
@@ -93,20 +90,6 @@ const Profile = ({ userId }) => {
     }
   }, [hubState])
 
-
-  const releasesClickHandler = () => {
-    setView('releases')
-    setToggleView('releases')
-  }
-  const hubsClickHandler = () => {
-    setView('hubs')
-    setToggleView('hubs')
-  }
-  const collectionClickHandler = () => {
-    setView('collection')
-    setToggleView('collection')
-  }
-
   const playAllHandler = (playlist) => {
     resetQueueWithPlaylist(
       playlist.map((release) => release.releasePubkey)
@@ -117,8 +100,13 @@ const Profile = ({ userId }) => {
     )
   }
 
-  const releaseTabs = ['', ' ', 'Artist', 'Title']
+  const viewHandler = (num) => {
+    setActiveView(num)
+    setToggleView(num)
+  }
 
+  const releaseTabs = ['', ' ', 'Artist', 'Title']
+  const activeTables = ['releases', 'collection', 'hubs']
   return (
     <>
       <Head>
@@ -173,16 +161,16 @@ const Profile = ({ userId }) => {
 
         <Box sx={{ py: 1 }}>
           <ProfileToggle
-            releaseClick={() => releasesClickHandler()}
-            hubClick={() => hubsClickHandler()}
-            collectionClick={() => collectionClickHandler()}
+            releaseClick={() => viewHandler(0)}
+            collectionClick={() => viewHandler(1)}
+            hubClick={() => viewHandler(2)}
             isClicked={toggleView}
             onPlayReleases={() => playAllHandler(profilePublishedReleases)}
             onPlayCollection={() => playAllHandler(profileCollectionReleases)}
           />
         </Box>
         <ResponsiveProfileContentContainer>
-          {view === 'releases' && (
+          {activeView === 0 && (
             <>
               {!fetchedReleases && (
                 <ResponsiveDotContainer>
@@ -190,7 +178,7 @@ const Profile = ({ userId }) => {
                 </ResponsiveDotContainer>
               )}
               {fetchedReleases &&
-                profilePublishedReleases.length === 0 && (
+                profilePublishedReleases?.length === 0 && (
                   <ResponsiveDotContainer>
                     No releases belong to this address
                   </ResponsiveDotContainer>
@@ -204,7 +192,7 @@ const Profile = ({ userId }) => {
             </>
           )}
 
-          {view === 'collection' && (
+          {activeView === 1 && (
             <>
               {!fetchedCollection && (
                 <ResponsiveDotContainer>
@@ -217,12 +205,12 @@ const Profile = ({ userId }) => {
               {fetchedCollection  && (
                 <ProfileReleaseTable
                   allReleases={profileCollectionReleases}
-                  tableTabs={releaseTabs}
+                  tableCategories={releaseTabs}
                 />
               )}
             </>
           )}
-          {view === 'hubs' && (
+          {activeView === 2 && (
             <>
               {!fetchedHubs  && (
                 <ResponsiveDotContainer>
@@ -248,8 +236,8 @@ const ResponsiveProfileContainer = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   justifyItems: 'center',
   textAlign: 'center',
-  minWidth: '960px',
-  maxWidth: '960px',
+  minWidth: theme.maxWidth,
+  maxWidth: theme.maxWidth,
   maxHeight: '60vh',
   webkitOverflowScrolling: 'touch',
   [theme.breakpoints.down('md')]: {

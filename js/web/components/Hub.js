@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useContext } from 'react'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
-import { Box, } from '@mui/material'
+import { Box } from '@mui/material'
 import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
@@ -25,13 +25,13 @@ const HubComponent = ({ hubPubkey }) => {
 
   const { releaseState } = useContext(Release.Context)
 
-  const {resetQueueWithPlaylist} = useContext(Audio.Context)
+  const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { enqueueSnackbar } = useSnackbar()
 
-  const [hubReleases, setHubReleases] = useState([])
-  const [releaseData, setReleaseData] = useState([])
-  const [collaboratorsData, setCollaboratorsData] = useState([])
-  const [view, setView] = useState('releases')
+  const [hubReleases, setHubReleases] = useState(undefined)
+  const [releaseData, setReleaseData] = useState(undefined)
+  const [collaboratorsData, setCollaboratorsData] = useState(undefined)
+  const [activeView, setActiveView] = useState(0)
   const [fetchedHubInfo, setFetchedHubInfo] = useState(false)
   const [fetchedReleases, setFetchedReleases] = useState(false)
   const [fetchedCollaborators, setFetchedCollaborators] = useState(false)
@@ -64,7 +64,7 @@ const HubComponent = ({ hubPubkey }) => {
   }, [hubContentState])
 
   useEffect(() => {
-    const data = hubReleases.map((hubRelease) => {
+    const data = hubReleases?.map((hubRelease) => {
       const releaseMetadata = releaseState.metadata[hubRelease.release]
       releaseMetadata.releasePubkey = hubRelease.release
       return releaseMetadata
@@ -72,13 +72,12 @@ const HubComponent = ({ hubPubkey }) => {
     setReleaseData(data)
   }, [releaseState, hubReleases])
 
-  const releaseClickHandler = () => {
-    setView('releases')
+
+  const viewHandler = (num) => {
+    setActiveView(num)
   }
 
-  const collaboratorClickHandler = () => {
-    setView('collaborators')
-  }
+
   const playAllHandler = (playlist) => {
     resetQueueWithPlaylist(
       playlist.map((release) => release.releasePubkey)
@@ -87,7 +86,7 @@ const HubComponent = ({ hubPubkey }) => {
         variant: 'info',
       })
     )
-}
+  }
   return (
     <>
       <Head>
@@ -128,7 +127,12 @@ const HubComponent = ({ hubPubkey }) => {
 
       <ResponsiveHubContainer>
         <ResponsiveHubHeaderContainer>
-          {fetchedHubInfo && hubData ? (
+          {!fetchedHubInfo && (
+            <ResponsiveDotHeaderContainer>
+              <Dots />
+            </ResponsiveDotHeaderContainer>
+          )}
+          {fetchedHubInfo && hubData && (
             <HubHeader
               hubImage={`${hubData?.json.image ? hubData.json.image : ''}`}
               hubName={`${
@@ -142,20 +146,16 @@ const HubComponent = ({ hubPubkey }) => {
               }`}
               hubDate={`${hubData.createdAt ? hubData.createdAt : ''}`}
             />
-          ) : (
-            <ResponsiveDotHeaderContainer>
-              <Dots />
-            </ResponsiveDotHeaderContainer>
           )}
         </ResponsiveHubHeaderContainer>
         <HubToggle
-          releaseClick={() => releaseClickHandler()}
-          collaboratorClick={() => collaboratorClickHandler()}
-          isClicked={view}
+          releaseClick={() => viewHandler(0)}
+          collaboratorClick={() => viewHandler(1)}
+          isClicked={activeView}
           onPlayReleases={() => playAllHandler(releaseData)}
         />
-        <ResponsiveHubContentContainer sx={{ minHeight: '50vh' }}>
-          {view === 'releases' && (
+        <ResponsiveHubContentContainer>
+          {activeView === 0 && (
             <>
               {!fetchedReleases && (
                 <ResponsiveDotContainer>
@@ -167,16 +167,10 @@ const HubComponent = ({ hubPubkey }) => {
               )}
             </>
           )}
-          {view === 'collaborators' && (
+          {activeView === 1 && (
             <>
               {!fetchedCollaborators && (
-                <ResponsiveDotContainer
-                  sx={{
-                    display: 'table-cell',
-                    textAlign: 'center',
-                    verticalAlign: 'middle',
-                  }}
-                >
+                <ResponsiveDotContainer>
                   <Dots />
                 </ResponsiveDotContainer>
               )}
@@ -184,7 +178,7 @@ const HubComponent = ({ hubPubkey }) => {
                 <Box sx={{ my: 1 }}>No collaborators found in this Hub</Box>
               )}
               {fetchedCollaborators && (
-                <HubCollaborators collabData={collaboratorsData} />
+                <HubCollaborators collaboratorData={collaboratorsData} />
               )}
             </>
           )}
@@ -199,17 +193,18 @@ const ResponsiveHubContainer = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   justifyItems: 'center',
   textAlign: 'center',
-  minWidth: '960px',
-  maxWidth: '960px',
+  minWidth: theme.maxWidth,
+  maxWidth: theme.maxWidth,
   maxHeight: '60vh',
   webkitOverflowScrolling: 'touch',
+
   [theme.breakpoints.down('md')]: {
     display: 'flex',
     flexDirection: 'column',
     justifyItems: 'center',
     alignItems: 'center',
-    marginTop:"125px",
-    maxHeight: '80vh'
+    marginTop: '125px',
+    maxHeight: '80vh',
   },
 }))
 
@@ -222,7 +217,6 @@ const ResponsiveHubHeaderContainer = styled(Box)(({ theme }) => ({
   px: 1,
   m: 1,
   minHeight: '115px',
-
   [theme.breakpoints.down('md')]: {
     width: '100vw',
   },
@@ -230,8 +224,9 @@ const ResponsiveHubHeaderContainer = styled(Box)(({ theme }) => ({
 
 const ResponsiveHubContentContainer = styled(Box)(({ theme }) => ({
   minHeight: '60vh',
-  width: '960px',
+  width: tableWidth,
   webkitOverflowScrolling: 'touch',
+  // '50vh
   [theme.breakpoints.down('md')]: {
     width: '100vw',
     padding: '0px 30px',
@@ -245,6 +240,9 @@ const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
   position: 'absolute',
   left: '50%',
   top: '50%',
+  display: 'table-cell',
+  textAlign: 'center',
+  verticalAlign: 'middle',
   display: 'table-cell',
   textAlign: 'center',
   verticalAlign: 'middle',

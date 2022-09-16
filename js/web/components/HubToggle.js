@@ -25,14 +25,12 @@ const HubToggle = ({
             textTransform: 'uppercase',
           }}
         >
-          <a>
-            <Typography
-              sx={{ fontWeight: `${isClicked === 'releases' ? 'bold' : ''}` }}
-              onClickCapture={releaseClick}
-            >
-              Releases
-            </Typography>
-          </a>
+          <Typography
+            sx={{ fontWeight: `${isClicked === 0 ? 'bold' : ''}` }}
+            onClickCapture={releaseClick}
+          >
+            Releases
+          </Typography>
 
           <PlayCircleOutlineOutlinedIcon
             onClickCapture={onPlayReleases}
@@ -47,7 +45,7 @@ const HubToggle = ({
             display: 'flex',
             flexDirection: 'row',
             textTransform: 'uppercase',
-            fontWeight: `${isClicked === 'collaborators' ? 'bold' : ''}`,
+            fontWeight: `${isClicked === 1 ? 'bold' : ''}`,
           }}
         >
           <a>Collaborators</a>
