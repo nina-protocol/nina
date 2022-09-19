@@ -3,13 +3,27 @@ import { useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import TextField from '@mui/material/TextField'
 import { Box } from '@mui/system'
-import axios from 'axios'
 import { Typography } from '@mui/material'
 import { useCallback } from 'react'
-import Autocomplete from '@mui/material'
+import { useAutocomplete } from '@mui/base/AutocompleteUnstyled';
+
 const Search = () => {
+    const {
+        getRootProps,
+        getInputLabelProps,
+        getInputProps,
+        getListboxProps,
+        getOptionProps,
+        groupedOptions,
+    } = useAutocomplete({
+        id: 'nina-search',
+        options: [response],
+        getOptionLabel: (option) => option
+    })
+
   const [query, setQuery] = useState('')
   const [response, setResponse] = useState(undefined)
+
   useEffect(() => {
     NinaSdk.client.init(
       process.env.NINA_API_ENDPOINT,
@@ -37,19 +51,20 @@ const Search = () => {
     <Box>
       <Form onSubmit={(e) => handleSubmit(e)}>
         <SearchInputWrapper>
-          <Autocomplete
+          <TextField
             className="input"
-          
             fullWidth
             onChange={(e) => setQuery(e.target.value)}
             label="Search for anything..."
             id="fullWidth"
             variant="standard"
+            {...getInputProps()}
           />
+        
         </SearchInputWrapper>
       </Form>
       <Box>
-        <Box>
+        {/* <Box>
             <Typography sx={{fontWeight: 'bold'}}>ARTISTS</Typography>
             {
             response?.artists.map((artist) => (
@@ -72,7 +87,7 @@ const Search = () => {
                 <Typography>{hub.displayName}</Typography>
             ))
         }
-      </Box>
+      </Box> */}
       </Box>
     </Box>
   )
