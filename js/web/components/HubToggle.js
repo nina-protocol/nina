@@ -22,8 +22,8 @@ const HubToggle = ({ onToggleClick, isClicked, onPlayReleases }) => {
         >
           <a>
             <Typography
-              sx={{ fontWeight: `${isClicked === '0' ? 'bold' : ''}` }}
-              id={'0'}
+              sx={{ fontWeight: `${isClicked === 0 ? 'bold' : ''}` }}
+              id={0}
               onClickCapture={onToggleClick}
             >
               Releases
@@ -47,7 +47,7 @@ const HubToggle = ({ onToggleClick, isClicked, onPlayReleases }) => {
             <Typography
               onClick={onToggleClick}
               id={1}
-              sx={{ fontWeight: `${isClicked === '1' ? 'bold' : ''}` }}
+              sx={{ fontWeight: `${isClicked === 1 ? 'bold' : ''}` }}
             >
               Collaborators
             </Typography>

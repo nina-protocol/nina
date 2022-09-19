@@ -31,8 +31,8 @@ const HubComponent = ({ hubPubkey }) => {
   const [hubReleases, setHubReleases] = useState(undefined)
   const [releaseData, setReleaseData] = useState(undefined)
   const [collaboratorsData, setCollaboratorsData] = useState(undefined)
-  const [activeView, setActiveView] = useState('0')
-  const [toggleView, setToggleView] = useState('0')
+  const [activeView, setActiveView] = useState(0)
+  const [toggleView, setToggleView] = useState(0)
   const [fetchedHubInfo, setFetchedHubInfo] = useState(false)
   const [fetchedReleases, setFetchedReleases] = useState(false)
   const [fetchedCollaborators, setFetchedCollaborators] = useState(false)
@@ -75,9 +75,8 @@ const HubComponent = ({ hubPubkey }) => {
 
 
   const viewHandler = (id) => {
-    console.log('id', id)
-    setActiveView(id)
-    setToggleView(id)
+    setActiveView(parseInt(id))
+    setToggleView(parseInt(id))
   }
 
 
@@ -157,7 +156,7 @@ const HubComponent = ({ hubPubkey }) => {
           onPlayReleases={() => playAllHandler(releaseData)}
         />
         <ResponsiveHubContentContainer>
-          {activeView === '0' && (
+          {activeView === 0 && (
             <>
               {!fetchedReleases && (
                 <ResponsiveDotContainer>
@@ -169,7 +168,7 @@ const HubComponent = ({ hubPubkey }) => {
               )}
             </>
           )}
-          {activeView === '1' && (
+          {activeView === 1 && (
             <>
               {!fetchedCollaborators && (
                 <ResponsiveDotContainer>

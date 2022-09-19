@@ -32,7 +32,7 @@ const Profile = ({ profilePubkey }) => {
   const [profilePublishedReleases, setProfilePublishedReleases] = useState(undefined)
   const [profileCollectionReleases, setProfileCollectionReleases] = useState(undefined)
   const [profileHubs, setProfileHubs] = useState(undefined)
-  const [activeView, setActiveView] = useState('0')
+  const [activeView, setActiveView] = useState(0)
   const { enqueueSnackbar } = useSnackbar()
   const [profileCollectionIds, setProfileCollectionIds] = useState(undefined)
   const [toggleView, setToggleView] = useState(0)
@@ -101,10 +101,8 @@ const Profile = ({ profilePubkey }) => {
   }
 
   const viewHandler = (id) => {
-    console.log('e.target.id', id)
-    setActiveView(id)
-    setToggleView(id)
-    console.log('activeView', activeView)
+    setActiveView(parseInt(id))
+    setToggleView(parseInt(id))
   }
 
   const releaseTabs = ['', '', 'Artist', 'Title']
@@ -170,7 +168,7 @@ const Profile = ({ profilePubkey }) => {
           />
         </Box>
         <ResponsiveProfileContentContainer>
-          {activeView === '0' && (
+          {activeView === 0 && (
             <>
               {!fetchedReleases && (
                 <ResponsiveDotContainer>
@@ -192,7 +190,7 @@ const Profile = ({ profilePubkey }) => {
             </>
           )}
 
-          {activeView === '1' && (
+          {activeView === 1 && (
             <>
               {!fetchedCollection && (
                 <ResponsiveDotContainer>
@@ -210,7 +208,7 @@ const Profile = ({ profilePubkey }) => {
               )}
             </>
           )}
-          {activeView === '2' && (
+          {activeView === 2 && (
             <>
               {!fetchedHubs  && (
                 <ResponsiveDotContainer>
