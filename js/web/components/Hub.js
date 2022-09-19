@@ -224,9 +224,8 @@ const ResponsiveHubHeaderContainer = styled(Box)(({ theme }) => ({
 
 const ResponsiveHubContentContainer = styled(Box)(({ theme }) => ({
   minHeight: '60vh',
-  width: tableWidth,
+  width: theme.maxWidth,
   webkitOverflowScrolling: 'touch',
-  // '50vh
   [theme.breakpoints.down('md')]: {
     width: '100vw',
     padding: '0px 30px',
