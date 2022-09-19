@@ -6,7 +6,7 @@ import { Box } from '@mui/system'
 import axios from 'axios'
 import { Typography } from '@mui/material'
 import { useCallback } from 'react'
-
+import Autocomplete from '@mui/material'
 const Search = () => {
   const [query, setQuery] = useState('')
   const [response, setResponse] = useState(undefined)
@@ -37,8 +37,9 @@ const Search = () => {
     <Box>
       <Form onSubmit={(e) => handleSubmit(e)}>
         <SearchInputWrapper>
-          <TextField
+          <Autocomplete
             className="input"
+          
             fullWidth
             onChange={(e) => setQuery(e.target.value)}
             label="Search for anything..."
