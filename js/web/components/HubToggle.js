@@ -2,12 +2,7 @@ import { Box } from '@mui/material'
 import { styled } from '@mui/system'
 import { Typography } from '@mui/material'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
-const HubToggle = ({
-  releaseClick,
-  collaboratorClick,
-  isClicked,
-  onPlayReleases,
-}) => {
+const HubToggle = ({ onToggleClick, isClicked, onPlayReleases }) => {
   return (
     <ResponsiveContainer
       sx={{
@@ -25,30 +20,38 @@ const HubToggle = ({
             textTransform: 'uppercase',
           }}
         >
-          <Typography
-            sx={{ fontWeight: `${isClicked === 0 ? 'bold' : ''}` }}
-            onClickCapture={releaseClick}
-          >
-            Releases
-          </Typography>
-
+          <a>
+            <Typography
+              sx={{ fontWeight: `${isClicked === '0' ? 'bold' : ''}` }}
+              id={'0'}
+              onClickCapture={onToggleClick}
+            >
+              Releases
+            </Typography>
+          </a>
           <PlayCircleOutlineOutlinedIcon
             onClickCapture={onPlayReleases}
             sx={{ pr: 1.5, pl: 0.5 }}
           />
         </Box>
         <Box
-          onClick={collaboratorClick}
           sx={{
             cursor: 'pointer',
             alignItems: 'center',
             display: 'flex',
             flexDirection: 'row',
             textTransform: 'uppercase',
-            fontWeight: `${isClicked === 1 ? 'bold' : ''}`,
           }}
         >
-          <a>Collaborators</a>
+          <a>
+            <Typography
+              onClick={onToggleClick}
+              id={1}
+              sx={{ fontWeight: `${isClicked === '1' ? 'bold' : ''}` }}
+            >
+              Collaborators
+            </Typography>
+          </a>
         </Box>
       </Box>
     </ResponsiveContainer>

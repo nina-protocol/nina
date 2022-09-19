@@ -31,7 +31,8 @@ const HubComponent = ({ hubPubkey }) => {
   const [hubReleases, setHubReleases] = useState(undefined)
   const [releaseData, setReleaseData] = useState(undefined)
   const [collaboratorsData, setCollaboratorsData] = useState(undefined)
-  const [activeView, setActiveView] = useState(0)
+  const [activeView, setActiveView] = useState('0')
+  const [toggleView, setToggleView] = useState('0')
   const [fetchedHubInfo, setFetchedHubInfo] = useState(false)
   const [fetchedReleases, setFetchedReleases] = useState(false)
   const [fetchedCollaborators, setFetchedCollaborators] = useState(false)
@@ -73,8 +74,10 @@ const HubComponent = ({ hubPubkey }) => {
   }, [releaseState, hubReleases])
 
 
-  const viewHandler = (num) => {
-    setActiveView(num)
+  const viewHandler = (id) => {
+    console.log('id', id)
+    setActiveView(id)
+    setToggleView(id)
   }
 
 
@@ -149,13 +152,12 @@ const HubComponent = ({ hubPubkey }) => {
           )}
         </ResponsiveHubHeaderContainer>
         <HubToggle
-          releaseClick={() => viewHandler(0)}
-          collaboratorClick={() => viewHandler(1)}
-          isClicked={activeView}
+          onToggleClick={(e) => viewHandler(e.target.id)}
+          isClicked={toggleView}
           onPlayReleases={() => playAllHandler(releaseData)}
         />
         <ResponsiveHubContentContainer>
-          {activeView === 0 && (
+          {activeView === '0' && (
             <>
               {!fetchedReleases && (
                 <ResponsiveDotContainer>
@@ -167,7 +169,7 @@ const HubComponent = ({ hubPubkey }) => {
               )}
             </>
           )}
-          {activeView === 1 && (
+          {activeView === '1' && (
             <>
               {!fetchedCollaborators && (
                 <ResponsiveDotContainer>
