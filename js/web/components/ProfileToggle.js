@@ -3,9 +3,7 @@ import { styled } from '@mui/system'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import { Typography } from '@mui/material'
 const ProfileToggle = ({
-  releaseClick,
-  hubClick,
-  collectionClick,
+  onToggleClick,
   isClicked,
   onPlayReleases,
   onPlayCollection,
@@ -16,8 +14,9 @@ const ProfileToggle = ({
         <ResponsiveTab>
           <a>
             <Typography
-              onClickCapture={releaseClick}
-              sx={{ fontWeight: `${isClicked === 0 ? 'bold' : ''}` }}
+              onClickCapture={onToggleClick}
+              sx={{ fontWeight: `${isClicked === '0' ? 'bold' : ''}` }}
+              id={0}
             >
               Releases
             </Typography>
@@ -39,8 +38,9 @@ const ProfileToggle = ({
         >
           <a>
             <Typography
-              onClickCapture={collectionClick}
-              sx={{ fontWeight: `${isClicked === 1 ? 'bold' : ''}` }}
+              onClickCapture={onToggleClick}
+              id={1}
+              sx={{ fontWeight: `${isClicked === '1' ? 'bold' : ''}` }}
             >
               Collection
             </Typography>
@@ -52,17 +52,23 @@ const ProfileToggle = ({
           />
         </Box>
         <Box
-          onClick={hubClick}
+          
           sx={{
             cursor: 'pointer',
             alignItems: 'center',
             display: 'flex',
             flexDirection: 'row',
             textTransform: 'uppercase',
-            fontWeight: `${isClicked === 2 ? 'bold' : ''}`,
+          
           }}
         >
-          <a>Hubs</a>
+          <a>
+            <Typography
+            onClickCapture={onToggleClick}
+            id={2}
+            sx={{ fontWeight: `${isClicked === '2' ? 'bold' : ''}` }}
+            >Hubs</Typography>
+          </a>
         </Box>
       </Box>
     </ResponsiveContainer>
@@ -90,6 +96,5 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
     width: '100vw',
   },
 }))
-
 
 export default ProfileToggle

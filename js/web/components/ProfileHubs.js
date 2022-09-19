@@ -19,58 +19,21 @@ import { styled } from '@mui/material'
 
 const { getImageFromCDN, loader } = imageManager
 
-const ProfileHubs = ({ profileHubs }) => {
-  const profileHubsCategories = ['', 'Name', 'Description']
-  return (
-    <ResponsiveContainer>
-      <TableContainer>
-        <Table>
-          <HubsTableHead tableCategories={profileHubsCategories} />
-          <TableBody>
-            {profileHubs.map((hub) => (
-              <Link href={`/hubs/${hub.handle}`} passHref>
-                <TableRow hover key={hub.handle}>
-                  <StyledTableCell align="left">
-                    <Box sx={{ width: '50px' }} align="left">
-                      <Image
-                        height={'100%'}
-                        width={'100%'}
-                        layout="responsive"
-                        src={getImageFromCDN(
-                          hub.json.image,
-                          400,
-                          new Date(Date.parse(hub.createdAt))
-                        )}
-                        alt={hub.handle}
-                        priority={true}
-                        loader={loader}
-                      />
-                    </Box>
-                  </StyledTableCell>
-                  <StyledTableCellNameContainer align="left">
-                    <OverflowContainer>
-                      <Typography noWrap>{hub.json.displayName} </Typography>
-                    </OverflowContainer>
-                  </StyledTableCellNameContainer>
-                  <HubDescription description={hub.json.description} />
-                </TableRow>
-              </Link>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </ResponsiveContainer>
-  )
-}
-
 const HubsTableHead = ({ tableCategories }) => {
   return (
     <TableHead>
       <TableRow>
-        {tableCategories.map((category) => (
-          <StyledTabContainer key={category}>
+        {tableCategories?.map((category) => (
+          <StyledTableCell
+            align="left"
+            key={category}
+            sx={{
+              fontWeight: 'bold',
+              borderBottom: 'none',
+            }}
+          >
             <Typography sx={{ fontWeight: 'bold' }}>{category}</Typography>
-          </StyledTabContainer>
+          </StyledTableCell>
         ))}
       </TableRow>
     </TableHead>
@@ -110,8 +73,54 @@ const HubDescription = ({ description }) => {
   )
 }
 
+const ProfileHubs = ({ profileHubs, tableCategories }) => {
+  return (
+    <ResponsiveContainer>
+      <TableContainer>
+        <Table>
+          <HubsTableHead tableCategories={tableCategories} />
+          <TableBody>
+            {profileHubs.map((hub) => (
+              <Link href={`/hubs/${hub.handle}`} passHref>
+                <TableRow hover key={hub.handle}>
+                  <StyledTableCell align="left">
+                    <Box sx={{ width: '50px', paddingLeft: '5px' }} align="left">
+                      <Image
+                        height={'100%'}
+                        width={'100%'}
+                        layout="responsive"
+                        src={getImageFromCDN(
+                          hub.json.image,
+                          400,
+                          new Date(Date.parse(hub.createdAt))
+                        )}
+                        alt={hub.handle}
+                        priority={true}
+                        loader={loader}
+                      />
+                    </Box>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <StyledTableCellNameContainer align="left">
+                      <OverflowContainer>
+                        <Typography noWrap>{hub.json.displayName} </Typography>
+                      </OverflowContainer>
+                    </StyledTableCellNameContainer>
+                  </StyledTableCell>
+                  <HubDescription description={hub.json.description} />
+                </TableRow>
+              </Link>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </ResponsiveContainer>
+  )
+}
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   padding: '5px 0',
+  textAlign: 'left',
   [theme.breakpoints.down('md')]: {
     padding: '0 5px',
     maxHeight: '50px',
@@ -131,6 +140,7 @@ const StyledTabContainer = styled(Box)(({ theme }) => ({
 const StyledTableCellNameContainer = styled(Box)(({ theme }) => ({
   padding: '5px 0',
   maxWidth: '20vw',
+  textAlign: 'left',
   [theme.breakpoints.down('md')]: {
     padding: '0 5px',
     maxHeight: '50px',

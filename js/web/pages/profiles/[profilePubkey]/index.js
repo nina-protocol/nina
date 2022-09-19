@@ -4,11 +4,11 @@ import { styled } from '@mui/system'
 const Profile = dynamic(() => import('../../../components/Profile'))
 
 const ProfilePage = (props) => {
-  const { userId } = props
+  const { profilePubkey } = props
   return (
    
     <ResponsiveProfileContainer>
-      <Profile userId={userId} />
+      <Profile profilePubkey={profilePubkey} />
     </ResponsiveProfileContainer>
 
   )
@@ -30,7 +30,7 @@ export const getStaticPaths = async () => {
     paths: [
       {
         params: {
-          userId: 'placeholder',
+          profilePubkey: 'placeholder',
         },
       },
     ],
@@ -39,10 +39,10 @@ export const getStaticPaths = async () => {
 }
 
 export const getStaticProps = async (context) => {
-  const userId = context.params.userId
+  const profilePubkey = context.params.profilePubkey
   return {
     props: {
-      userId: userId,
+      profilePubkey: profilePubkey,
     },
   }
 }

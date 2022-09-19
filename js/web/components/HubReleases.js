@@ -19,7 +19,7 @@ import { useSnackbar } from 'notistack'
 const { getImageFromCDN, loader } = imageManager
 
 const HubReleases = ({ hubReleases }) => {
-  const hubReleasesCategories = ['', '', 'Artist', 'Title']
+  const hubReleasesCategories = ['',"", 'Artist', 'Title']
   const {
     updateTrack,
     addTrackToQueue,
@@ -64,17 +64,14 @@ const HubReleases = ({ hubReleases }) => {
 
   return (
     <ResponsiveContainer
-      sx={{
-        width: '100%',
-        overflow: 'auto',
-      }}
+    
     >
       <TableContainer>
         <Table>
           <HubTableHead tableCategories={hubReleasesCategories} />
           <TableBody sx={{ borderBottom: 'none' }}>
             {hubReleases.map((release) => (
-              <Link href={`/${release.releasePubkey}`} passHref prefetch>
+              <Link href={`/${release.releasePubkey}`} passHref>
                 <TableRow hover key={release.name}>
                   <StyledTableCell
                     align="left"
@@ -214,7 +211,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }))
 
 const ResponsiveContainer = styled(Box)(({ theme }) => ({
-  width: '960px',
+  width: theme.maxWidth,
   minHeight: '50vh',
   overflow: 'auto',
   [theme.breakpoints.down('md')]: {

@@ -14,7 +14,7 @@ const ProfileReleaseTable = dynamic(() => import('./ProfileReleaseTable'))
 const ProfileHubs = dynamic(() => import('./ProfileHubs'))
 const ProfileToggle = dynamic(() => import('./ProfileToggle'))
 
-const Profile = ({ userId }) => {
+const Profile = ({ profilePubkey }) => {
   
   const {
     getUserCollectionAndPublished,
@@ -32,7 +32,7 @@ const Profile = ({ userId }) => {
   const [profilePublishedReleases, setProfilePublishedReleases] = useState(undefined)
   const [profileCollectionReleases, setProfileCollectionReleases] = useState(undefined)
   const [profileHubs, setProfileHubs] = useState(undefined)
-  const [activeView, setActiveView] = useState(0)
+  const [activeView, setActiveView] = useState('0')
   const { enqueueSnackbar } = useSnackbar()
   const [profileCollectionIds, setProfileCollectionIds] = useState(undefined)
   const [toggleView, setToggleView] = useState(0)
@@ -58,23 +58,23 @@ const Profile = ({ userId }) => {
 
   useEffect(() => {
     setFetchedUser(false)
-    const getUserData = async (userId) => {
-      await getHubsForUser(userId)
-      const [collectionIds] = await getUserCollectionAndPublished(userId)
+    const getUserData = async (profilePubkey) => {
+      await getHubsForUser(profilePubkey)
+      const [collectionIds] = await getUserCollectionAndPublished(profilePubkey)
       setProfileCollectionIds(collectionIds)
     }
-    if (userId) {
+    if (profilePubkey) {
       setFetchedUser(true)
-      getUserData(userId)
+      getUserData(profilePubkey)
     }
-  }, [userId])
+  }, [profilePubkey])
 
   useEffect(() => {
     setFetchedReleases(false)
     setFetchedCollection(false)
-    if (profileCollectionIds?.length > 0 && userId) {
+    if (profileCollectionIds?.length > 0 && profilePubkey) {
       setProfileCollectionReleases(filterReleasesList(profileCollectionIds))
-      const releases = filterReleasesPublishedByUser(userId)
+      const releases = filterReleasesPublishedByUser(profilePubkey)
       setProfilePublishedReleases(releases)
       setFetchedReleases(true)
       setFetchedCollection(true)
@@ -83,8 +83,8 @@ const Profile = ({ userId }) => {
 
   useEffect(() => {
     setFetchedHubs(false)
-    const hubs = filterHubsForUser(userId)
-    if (hubs) {
+    const hubs = filterHubsForUser(profilePubkey)
+    if (hubs?.length > 0) {
       setProfileHubs(hubs)
       setFetchedHubs(true)
     }
@@ -100,35 +100,37 @@ const Profile = ({ userId }) => {
     )
   }
 
-  const viewHandler = (num) => {
-    setActiveView(num)
-    setToggleView(num)
+  const viewHandler = (id) => {
+    console.log('e.target.id', id)
+    setActiveView(id)
+    setToggleView(id)
+    console.log('activeView', activeView)
   }
 
-  const releaseTabs = ['', ' ', 'Artist', 'Title']
-  const activeTables = ['releases', 'collection', 'hubs']
+  const releaseTabs = ['', '', 'Artist', 'Title']
+  const hubTabs = ['', 'Artist', 'Description']
   return (
     <>
       <Head>
-        <title>{`Nina: ${userId}'s Profile`}</title>
+        <title>{`Nina: ${profilePubkey}'s Profile`}</title>
         <meta name="description" content={'Your profile on Nina.'} />
         <meta name="og:type" content="website" />
         <meta
           name="og:title"
-          content={`Nina: ${userId ? `${userId}'s Hub` : ''}`}
+          content={`Nina: ${profilePubkey ? `${profilePubkey}'s Hub` : ''}`}
         />
         <meta
           name="og:description"
-          content={`All releases, Hubs, and collection belonging to ${userId}`}
+          content={`All releases, Hubs, and collection belonging to ${profilePubkey}`}
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@ninaprotocol" />
         <meta name="twitter:creator" content="@ninaprotocol" />
         <meta name="twitter:image:type" content="image/jpg" />
-        <meta name="twitter:title" content={`${userId} on Nina`} />
+        <meta name="twitter:title" content={`${profilePubkey} on Nina`} />
         <meta
           name="twitter:description"
-          content={`All releases, Hubs, and collection belonging to ${userId}`}
+          content={`All releases, Hubs, and collection belonging to ${profilePubkey}`}
         />
         <meta name="twitter:image" content="/images/favicon.ico" />
         <meta name="og:image" content={'/images/favicon.ico'} />
@@ -146,7 +148,7 @@ const Profile = ({ userId }) => {
             )}
             {fetchedUser && (
                 <Typography>
-                  {truncateAddress(userId)}
+                  {truncateAddress(profilePubkey)}
                 </Typography>
               ) 
             }
@@ -161,16 +163,14 @@ const Profile = ({ userId }) => {
 
         <Box sx={{ py: 1 }}>
           <ProfileToggle
-            releaseClick={() => viewHandler(0)}
-            collectionClick={() => viewHandler(1)}
-            hubClick={() => viewHandler(2)}
+            onToggleClick={(e) => viewHandler(e.target.id)}
             isClicked={toggleView}
             onPlayReleases={() => playAllHandler(profilePublishedReleases)}
             onPlayCollection={() => playAllHandler(profileCollectionReleases)}
           />
         </Box>
         <ResponsiveProfileContentContainer>
-          {activeView === 0 && (
+          {activeView === '0' && (
             <>
               {!fetchedReleases && (
                 <ResponsiveDotContainer>
@@ -178,7 +178,7 @@ const Profile = ({ userId }) => {
                 </ResponsiveDotContainer>
               )}
               {fetchedReleases &&
-                profilePublishedReleases?.length === 0 && (
+                profilePublishedReleases?.length < 1 && (
                   <ResponsiveDotContainer>
                     No releases belong to this address
                   </ResponsiveDotContainer>
@@ -192,14 +192,14 @@ const Profile = ({ userId }) => {
             </>
           )}
 
-          {activeView === 1 && (
+          {activeView === '1' && (
             <>
               {!fetchedCollection && (
                 <ResponsiveDotContainer>
                   <Dots />
                 </ResponsiveDotContainer>
               )}
-              {fetchedCollection  && profileHubs.length === 0 && (
+              {fetchedCollection  && profileHubs === undefined && (
                 <ResponsiveDotContainer>No collection found at this address</ResponsiveDotContainer>
               )}
               {fetchedCollection  && (
@@ -210,18 +210,18 @@ const Profile = ({ userId }) => {
               )}
             </>
           )}
-          {activeView === 2 && (
+          {activeView === '2' && (
             <>
               {!fetchedHubs  && (
                 <ResponsiveDotContainer>
                   <Dots />
                 </ResponsiveDotContainer>
               )}
-              {fetchedHubs && profileHubs.length === 0 && (
+              {fetchedHubs && profileHubs === undefined && (
                 <ResponsiveDotContainer>No Hubs belong to this address</ResponsiveDotContainer>
               )}
               {fetchedHubs  && (
-                <ProfileHubs profileHubs={profileHubs} />
+                <ProfileHubs profileHubs={profileHubs} tableCategories={hubTabs} />
               )}
             </>
           )}
@@ -251,7 +251,8 @@ const ResponsiveProfileContainer = styled(Box)(({ theme }) => ({
 }))
 
 const ResponsiveProfileDetailHeaderContainer = styled(Box)(({theme}) => ({
-  maxWidth: '100%', textAlign: 'left',
+  maxWidth: '100%', 
+  textAlign: 'left',
   [theme.breakpoints.down('md')]: {
     paddingLeft: '10px',
     paddingRight: '10px',
@@ -279,7 +280,7 @@ const ResponsiveProfileHeaderContainer = styled(Box)(({ theme }) => ({
 
 const ResponsiveProfileContentContainer = styled(Box)(({ theme }) => ({
   minHeight: '50vh',
-  width: '960px',
+  width: theme.maxWidth,
   webkitOverflowScrolling: 'touch',
   [theme.breakpoints.down('md')]: {
     width: '100vw',
