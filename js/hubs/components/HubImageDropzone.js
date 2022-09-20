@@ -10,7 +10,6 @@ import Image from "next/image";
 
 const HubImageDropzone = ({ type, setArtwork, currentImageUrl, update }) => {
   const handleChangeStatus = ({ meta, file, restart, remove }, status) => {
-
     if (meta.status === 'error_validation') {
       const height = meta.height
       const width = meta.width
