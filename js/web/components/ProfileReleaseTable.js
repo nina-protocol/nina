@@ -135,7 +135,7 @@ const ProfileReleaseTable = ({ allReleases, tableCategories }) => {
                     <Box sx={{ width: '50px', textAlign: 'left' }}>
                       <Image
                         height={'100%'}
-                        width={'100px'}
+                        width={'100%'}
                         layout="responsive"
                         src={getImageFromCDN(
                           release.metadata.image,

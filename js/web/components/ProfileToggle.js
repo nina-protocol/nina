@@ -21,7 +21,11 @@ const ProfileToggle = ({ isActive, profileTabs, viewHandler }) => {
   }
 
   return (
-    <ResponsiveContainer sx={{ borderBottom: 1, borderColor: 'divider' }}>
+    <ResponsiveContainer sx={{ 
+      borderBottom: 1, borderColor: 'divider'
+      
+
+      }}>
       <Box sx={{ display: 'flex', flexDirection: 'row', rowGap: 1, pb: 1 }}>
         {profileTabs?.map((tab, index) => (
           <>

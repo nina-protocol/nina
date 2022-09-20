@@ -36,9 +36,9 @@ const Profile = ({ profilePubkey }) => {
   const [fetchedHubs, setFetchedHubs] = useState(false)
   const [fetchedCollection, setFetchedCollection] = useState(false)
   const [views, setViews] = useState([
-    { name: 'releases', playlist: undefined, visible: true },
-    { name: 'collection', playlist: undefined, visible: true },
-    { name: 'hubs', playlist: null, visible: true },
+    { name: 'releases', playlist: undefined, visible: false },
+    { name: 'collection', playlist: undefined, visible: false },
+    { name: 'hubs', playlist: null, visible: false },
   ])
 
   const artistNames = useMemo(() => {
@@ -77,23 +77,19 @@ const Profile = ({ profilePubkey }) => {
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
       updatedView[viewIndex].playlist = releases
       setFetchedReleases(true)
+
       setProfileCollectionReleases(filterReleasesList(profileCollectionIds))
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
       updatedView[viewIndex].playlist = filterReleasesList(profileCollectionIds)
       setFetchedCollection(true)
-    }
-    setViews(updatedView)
-    console.log('updatedView', updatedView)
-  }, [releaseState, profileCollectionIds, profilePubkey, ])
 
-  useEffect(() => {
-    const hubs = filterHubsForUser(profilePubkey)
-    if (hubs) {
+      const hubs = filterHubsForUser(profilePubkey)
       setProfileHubs(hubs)
       setFetchedHubs(true)
     }
-  }, [hubState])
 
+    setViews(updatedView)
+  }, [releaseState, profileCollectionIds, profilePubkey, hubState ])
 
   useEffect(() => {
     if (fetchedReleases && profilePublishedReleases?.length > 0) {
@@ -114,14 +110,14 @@ const Profile = ({ profilePubkey }) => {
     let viewIndex
     let updatedView = views.slice()
 
-    if (profilePublishedReleases?.length === 0) {
+    if (profilePublishedReleases?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
 
-      updatedView[viewIndex].visible = false
+      updatedView[viewIndex].visible = true
     }
-    if (profileCollectionReleases?.length === 0) {
+    if (profileCollectionReleases?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
-      updatedView[viewIndex].visible = false
+      updatedView[viewIndex].visible = true
     }
   
     setViews(updatedView)
@@ -130,12 +126,10 @@ const Profile = ({ profilePubkey }) => {
   useEffect(() => {
     let viewIndex
     let updatedView = views.slice()
-    console.log('profileHubs.length === 0', profileHubs?.length === 0)
-    console.log('updatedVieeeew', updatedView)
-    if (profileHubs && profileHubs?.length < 1 && fetchedHubs) {
-      
+
+    if (profileHubs && profileHubs?.length > 0 && fetchedHubs) {
       viewIndex = updatedView.findIndex((view) => view.name === 'hubs')
-      updatedView[viewIndex].visible = false
+      updatedView[viewIndex].visible = true
     }
     setViews(updatedView)
 
