@@ -23,10 +23,10 @@ const HubsTableHead = ({ tableCategories }) => {
   return (
     <TableHead>
       <TableRow>
-        {tableCategories?.map((category) => (
+        {tableCategories?.map((category, i) => (
           <StyledTableCell
             align="left"
-            key={category}
+            key={i}
             sx={{
               fontWeight: 'bold',
               borderBottom: 'none',
@@ -80,8 +80,8 @@ const ProfileHubs = ({ profileHubs, tableCategories }) => {
         <Table>
           <HubsTableHead tableCategories={tableCategories} />
           <TableBody>
-            {profileHubs.map((hub) => (
-              <Link href={`/hubs/${hub.handle}`} passHref>
+            {profileHubs.map((hub, i) => (
+              <Link key={i} href={`/hubs/${hub.handle}`} passHref>
                 <TableRow hover key={hub.handle}>
                   <StyledTableCell align="left">
                     <Box sx={{ width: '50px', paddingLeft: '5px' }} align="left">

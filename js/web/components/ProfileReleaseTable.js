@@ -23,10 +23,10 @@ const ProfileReleaseTableHead = ({ tableCategories }) => {
   return (
     <TableHead>
       <TableRow>
-        {tableCategories?.map((category) => (
+        {tableCategories?.map((category, i) => (
           <StyledTableCell
             align="left"
-            key={category}
+            key={i}
             sx={{
               fontWeight: 'bold',
               borderBottom: 'none',
@@ -88,8 +88,8 @@ const ProfileReleaseTable = ({ allReleases, tableCategories }) => {
         <Table>
           <ProfileReleaseTableHead tableCategories={tableCategories} />
           <TableBody>
-            {allReleases.map((release) => (
-              <Link href={`/${release.releasePubkey}`} passHref>
+            {allReleases.map((release, i) => (
+              <Link key={i} href={`/${release.releasePubkey}`} passHref>
                 <TableRow hover key={release.metadata.properties.name}>
                   <StyledTableCellButtonsContainer align="left">
                     <Button
@@ -107,13 +107,6 @@ const ProfileReleaseTable = ({ allReleases, tableCategories }) => {
                       <ControlPointIcon
                         sx={{ color: 'black' }}
                         key={release.metadata.properties.title}
-                        onClickCapture={(e) =>
-                          handleQueue(
-                            e,
-                            release.releasePubkey,
-                            release.metadata.properties.title
-                          )
-                        }
                       />
                     </Button>
                     <Button
@@ -129,7 +122,6 @@ const ProfileReleaseTable = ({ allReleases, tableCategories }) => {
                       track.releasePubkey === release.releasePubkey ? (
                         <PauseCircleOutlineOutlinedIcon
                           sx={{ color: 'black' }}
-                          onClick={(e) => handlePlay(e, release.releasePubkey)}
                           id={release.releasePubkey}
                         />
                       ) : (
@@ -143,7 +135,7 @@ const ProfileReleaseTable = ({ allReleases, tableCategories }) => {
                     <Box sx={{ width: '50px', textAlign: 'left' }}>
                       <Image
                         height={'100%'}
-                        width={'100%'}
+                        width={'100px'}
                         layout="responsive"
                         src={getImageFromCDN(
                           release.metadata.image,
@@ -156,18 +148,14 @@ const ProfileReleaseTable = ({ allReleases, tableCategories }) => {
                       />
                     </Box>
                   </StyledTableCell>
-                  <StyledTableCellArtistContainer
-                                      align="left"
-                  >
+                  <StyledTableCellArtistContainer align="left">
                     <OverflowContainer>
                       <Typography noWrap>
                         {release.metadata.properties.artist}
                       </Typography>
                     </OverflowContainer>
                   </StyledTableCellArtistContainer>
-                  <StyledTableCellTitleContainer
-                    align="left"
-                  >
+                  <StyledTableCellTitleContainer align="left">
                     <OverflowContainer>
                       <Typography noWrap>
                         {release.metadata.properties.title}
@@ -186,8 +174,6 @@ const ProfileReleaseTable = ({ allReleases, tableCategories }) => {
     </ResponsiveContainer>
   )
 }
-
-
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   padding: '5px 0',
@@ -217,11 +203,12 @@ const StyledTableCellArtistContainer = styled(TableCell)(({ theme }) => ({
   },
 }))
 
-const OverflowContainer = styled(Box)(({theme}) => ({
-  overflow: 'hidden', textOverflow: 'ellipsis' 
+const OverflowContainer = styled(Box)(({ theme }) => ({
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
 }))
 
-const StyledTableCellTitleContainer = styled(TableCell)(({theme}) => ({
+const StyledTableCellTitleContainer = styled(TableCell)(({ theme }) => ({
   textDecoration: 'underline',
   maxWidth: '20vw',
   textAlign: 'left',

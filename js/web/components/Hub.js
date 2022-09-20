@@ -31,11 +31,15 @@ const HubComponent = ({ hubPubkey }) => {
   const [hubReleases, setHubReleases] = useState(undefined)
   const [releaseData, setReleaseData] = useState(undefined)
   const [collaboratorsData, setCollaboratorsData] = useState(undefined)
-  const [activeView, setActiveView] = useState(0)
+  const [activeView, setActiveView] = useState(undefined)
   const [toggleView, setToggleView] = useState(0)
   const [fetchedHubInfo, setFetchedHubInfo] = useState(false)
   const [fetchedReleases, setFetchedReleases] = useState(false)
   const [fetchedCollaborators, setFetchedCollaborators] = useState(false)
+  const [views, setViews] = useState([
+    { name: 'releases', playlist: null, visible: true },
+    { name: 'collaborators', playlist: null, visible: true },
+  ])
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
 
   useEffect(() => {
@@ -53,42 +57,43 @@ const HubComponent = ({ hubPubkey }) => {
     const collaborators = filterHubCollaboratorsForHub(hubPubkey)
     setHubReleases(releases)
     setCollaboratorsData(collaborators)
+    let updatedView = views.slice()
+    let viewIndex;
     if (releases.length > 0) {
+      setActiveView(0)
+      viewIndex = updatedView.findIndex((view) => view.name === 'releases')
+      updatedView[viewIndex].visible = true
+      updatedView[viewIndex].playlist = releases
       setFetchedReleases(true)
     }
     if (releases.length === 0) {
+      setActiveView(1)
       setFetchedReleases(false)
     }
     if (collaborators) {
       setFetchedCollaborators(true)
     }
+    setViews(updatedView)
   }, [hubContentState])
 
   useEffect(() => {
+    let updatedView = views.slice()
+    let viewIndex;
     const data = hubReleases?.map((hubRelease) => {
       const releaseMetadata = releaseState.metadata[hubRelease.release]
       releaseMetadata.releasePubkey = hubRelease.release
       return releaseMetadata
     })
     setReleaseData(data)
-  }, [releaseState, hubReleases])
+    viewIndex = updatedView.findIndex((view) => view.name === 'releases')
+    updatedView[viewIndex].playlist = releaseData
+  }, [releaseState, hubReleases,views])
 
-
-  const viewHandler = (id) => {
-    setActiveView(parseInt(id))
-    setToggleView(parseInt(id))
+  const viewHandler = (event) => {
+    const index = parseInt(event.target.id)
+    setActiveView(parseInt(index))
   }
 
-
-  const playAllHandler = (playlist) => {
-    resetQueueWithPlaylist(
-      playlist.map((release) => release.releasePubkey)
-    ).then(() =>
-      enqueueSnackbar(`Releases added to queue`, {
-        variant: 'info',
-      })
-    )
-  }
   return (
     <>
       <Head>
@@ -150,11 +155,14 @@ const HubComponent = ({ hubPubkey }) => {
             />
           )}
         </ResponsiveHubHeaderContainer>
-        <HubToggle
-          onToggleClick={(e) => viewHandler(e.target.id)}
-          isClicked={toggleView}
-          onPlayReleases={() => playAllHandler(releaseData)}
-        />
+        <Box sx={{ py: 1 }}>
+          <HubToggle
+            viewHandler={viewHandler}
+            isActive={activeView}
+            hubTabs={views}
+            releaseData={releaseData}
+          />
+        </Box>
         <ResponsiveHubContentContainer>
           {activeView === 0 && (
             <>

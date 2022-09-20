@@ -1,75 +1,64 @@
+import { useContext } from 'react'
 import { Box, Tab } from '@mui/material'
 import { styled } from '@mui/system'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import { Typography } from '@mui/material'
-const ProfileToggle = ({
-  onToggleClick,
-  isClicked,
-  onPlayReleases,
-  onPlayCollection,
-}) => {
+import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
+import { useSnackbar } from 'notistack'
+
+const ProfileToggle = ({ isActive, profileTabs, viewHandler }) => {
+  const { resetQueueWithPlaylist } = useContext(Audio.Context)
+  const { enqueueSnackbar } = useSnackbar()
+
+  const playAllHandler = (playlist) => {
+    resetQueueWithPlaylist(
+      playlist.map((release) => release.releasePubkey)
+    ).then(() =>
+      enqueueSnackbar(`Releases added to queue`, {
+        variant: 'info',
+      })
+    )
+  }
+
   return (
     <ResponsiveContainer sx={{ borderBottom: 1, borderColor: 'divider' }}>
       <Box sx={{ display: 'flex', flexDirection: 'row', rowGap: 1, pb: 1 }}>
-        <ResponsiveTab>
-          <a>
-            <Typography
-              onClickCapture={onToggleClick}
-              sx={{ fontWeight: `${isClicked === 0 ? 'bold' : ''}` }}
-              id={0}
-            >
-              Releases
-            </Typography>
-          </a>
-
-          <PlayCircleOutlineOutlinedIcon
-            onClickCapture={onPlayReleases}
-            sx={{ pr: 1.5, pl: 0.5 }}
-          />
-        </ResponsiveTab>
-        <Box
-          sx={{
-            cursor: 'pointer',
-            alignItems: 'center',
-            display: 'flex',
-            flexDirection: 'row',
-            textTransform: 'uppercase',
-          }}
-        >
-          <a>
-            <Typography
-              onClickCapture={onToggleClick}
-              id={1}
-              sx={{ fontWeight: `${isClicked === 1 ? 'bold' : ''}` }}
-            >
-              Collection
-            </Typography>
-          </a>
-
-          <PlayCircleOutlineOutlinedIcon
-            onClickCapture={onPlayCollection}
-            sx={{ pr: 1.5, pl: 0.5 }}
-          />
-        </Box>
-        <Box
-          
-          sx={{
-            cursor: 'pointer',
-            alignItems: 'center',
-            display: 'flex',
-            flexDirection: 'row',
-            textTransform: 'uppercase',
-          
-          }}
-        >
-          <a>
-            <Typography
-            onClickCapture={onToggleClick}
-            id={2}
-            sx={{ fontWeight: `${isClicked === 2 ? 'bold' : ''}` }}
-            >Hubs</Typography>
-          </a>
-        </Box>
+        {profileTabs?.map((tab, index) => (
+          <>
+            {tab.visible === true && (
+              <Box
+                key={index}
+                sx={{
+                  cursor: 'pointer',
+                  alignItems: 'center',
+                  display: 'flex',
+                  flexDirection: 'row',
+                  textTransform: 'uppercase',
+                  width: '150px',
+                }}
+              >
+                <ResponsiveTab key={index}>
+                  <a key={index}>
+                    <Typography
+                      key={index}
+                      onClickCapture={viewHandler}
+                      sx={{ fontWeight: `${isActive === index ? 'bold' : ''}` }}
+                      id={index}
+                    >
+                      {tab.name}
+                    </Typography>
+                  </a>
+                  {tab.playlist && (
+                    <PlayCircleOutlineOutlinedIcon
+                      onClickCapture={() => playAllHandler(tab.playlist)}
+                      sx={{ pr: 1.5, pl: 0.5 }}
+                    />
+                  )}
+                </ResponsiveTab>
+              </Box>
+            )}
+          </>
+        ))}
       </Box>
     </ResponsiveContainer>
   )
@@ -92,6 +81,7 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
   flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'start',
+
   [theme.breakpoints.down('md')]: {
     width: '100vw',
   },

@@ -19,7 +19,7 @@ import { useSnackbar } from 'notistack'
 const { getImageFromCDN, loader } = imageManager
 
 const HubReleases = ({ hubReleases }) => {
-  const hubReleasesCategories = ['',"", 'Artist', 'Title']
+  const hubReleasesCategories = ['', '', 'Artist', 'Title']
   const {
     updateTrack,
     addTrackToQueue,
@@ -63,9 +63,7 @@ const HubReleases = ({ hubReleases }) => {
   }
 
   return (
-    <ResponsiveContainer
-    
-    >
+    <ResponsiveContainer>
       <TableContainer>
         <Table>
           <HubTableHead tableCategories={hubReleasesCategories} />
