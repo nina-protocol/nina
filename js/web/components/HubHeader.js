@@ -13,10 +13,10 @@ import rehypeExternalLinks from 'rehype-external-links'
 
 const { getImageFromCDN, loader } = imageManager
 
-const HubHeader = ({ hubImage, hubName, description, hubUrl, hubDate }) => {
+const HubHeader = ({  hubData }) => {
   const [hubDescription, setHubDescription] = useState(undefined)
   useEffect(() => {
-    if (description.includes('<p>')) {
+    if (hubData?.json.description.includes('<p>')) {
       unified()
         .use(rehypeParse, { fragment: true })
         .use(rehypeSanitize)
@@ -28,14 +28,14 @@ const HubHeader = ({ hubImage, hubName, description, hubUrl, hubDate }) => {
           target: false,
           rel: ['nofollow', 'noreferrer'],
         })
-        .process(JSON.parse(description).replaceAll('<p><br></p>', '<br>'))
+        .process(JSON.parse(hubData?.json.description).replaceAll('<p><br></p>', '<br>'))
         .then((file) => {
           setHubDescription(file.result)
         })
     } else {
-      setHubDescription(description)
+      setHubDescription(hubData?.json.description)
     }
-  }, [description])
+  }, [hubData?.json.description])
   const descriptionFilter = (desc) => {
     return desc?.length > 24 ? `${desc.substring(0, 24)}...` : desc
   }
@@ -46,21 +46,21 @@ const HubHeader = ({ hubImage, hubName, description, hubUrl, hubDate }) => {
           height={'100%'}
           width={'100%'}
           layout="responsive"
-          src={getImageFromCDN(hubImage, 400, new Date(Date.parse(hubDate)))}
-          alt={hubName}
+          src={getImageFromCDN(hubData?.json?.image, 400, new Date(Date.parse(hubData?.createdAt)))}
+          alt={hubData?.json.displayName}
           priority={true}
           loader={loader}
         />
       </Box>
 
-      {hubName && (
-        <Link href={hubUrl}>
+      {hubData?.json.displayName && (
+        <Link href={hubData?.json.externalUrl}>
           <a>
-            <Typography sx={{ px: 2 }}>{hubName}</Typography>
+            <Typography sx={{ px: 2 }}>{hubData?.json.displayName}</Typography>
           </a>
         </Link>
       )}
-      {description && (
+      {hubData?.json.description && (
         <Typography sx={{ pr: 2 }}>
           {descriptionFilter(hubDescription)}
         </Typography>

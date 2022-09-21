@@ -9,10 +9,13 @@ import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/trun
 
 const Dots = dynamic(() => import('./Dots'))
 const ProfileReleaseTable = dynamic(() => import('./ProfileReleaseTable'))
-const ProfileHubs = dynamic(() => import('./ProfileHubs'))
+const ProfileHubsTable = dynamic(() => import('./ProfileHubsTable'))
 const ProfileToggle = dynamic(() => import('./ProfileToggle'))
 
 const Profile = ({ profilePubkey }) => {
+  const releaseTabs = ['', '', 'Artist', 'Title']
+  const hubTabs = ['', 'Artist', 'Description']
+
   const {
     getUserCollectionAndPublished,
     releaseState,
@@ -54,7 +57,6 @@ const Profile = ({ profilePubkey }) => {
   }, [profilePublishedReleases])
 
   useEffect(() => {
-    setFetchedUser(false)
     const getUserData = async (profilePubkey) => {
       await getHubsForUser(profilePubkey)
       const [collectionIds] = await getUserCollectionAndPublished(profilePubkey)
@@ -66,8 +68,6 @@ const Profile = ({ profilePubkey }) => {
     }
   }, [profilePubkey])
 
- 
-
   useEffect(() => {
     let viewIndex
     let updatedView = views.slice()
@@ -77,20 +77,18 @@ const Profile = ({ profilePubkey }) => {
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
       updatedView[viewIndex].playlist = releases
       setFetchedReleases(true)
-      console.log('releases', releases)
+
       setProfileCollectionReleases(filterReleasesList(profileCollectionIds))
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
       updatedView[viewIndex].playlist = filterReleasesList(profileCollectionIds)
       setFetchedCollection(true)
-      console.log('filterReleasesList(profileCollectionIds)', filterReleasesList(profileCollectionIds))
       const hubs = filterHubsForUser(profilePubkey)
       setProfileHubs(hubs)
       setFetchedHubs(true)
-      console.log('hubs', hubs)
     }
 
     setViews(updatedView)
-  }, [releaseState, profileCollectionIds, profilePubkey, hubState ])
+  }, [releaseState, profileCollectionIds, profilePubkey, hubState])
 
   useEffect(() => {
     if (fetchedReleases && profilePublishedReleases?.length > 0) {
@@ -109,13 +107,11 @@ const Profile = ({ profilePubkey }) => {
       fetchedReleases &&
       fetchedHubs &&
       profilePublishedReleases?.length === 0 &&
-      profileCollectionReleases?.length === 0 &
-      profileHubs?.length > 0
+      (profileCollectionReleases?.length === 0) & (profileHubs?.length > 0)
     ) {
       setActiveView(2)
     }
   }, [profilePublishedReleases, profileCollectionReleases])
-
 
   useEffect(() => {
     let viewIndex
@@ -130,7 +126,7 @@ const Profile = ({ profilePubkey }) => {
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
       updatedView[viewIndex].visible = true
     }
-  
+
     setViews(updatedView)
   }, [profilePublishedReleases, profileCollectionReleases])
 
@@ -143,7 +139,6 @@ const Profile = ({ profilePubkey }) => {
       updatedView[viewIndex].visible = true
     }
     setViews(updatedView)
-
   }, [profileHubs])
 
   const viewHandler = (event) => {
@@ -151,8 +146,6 @@ const Profile = ({ profilePubkey }) => {
     setActiveView(index)
   }
 
-  const releaseTabs = ['', '', 'Artist', 'Title']
-  const hubTabs = ['', 'Artist', 'Description']
   const noProfile =
     profilePublishedReleases?.length === 0 &&
     profileCollectionReleases?.length === 0 &&
@@ -266,7 +259,7 @@ const Profile = ({ profilePubkey }) => {
                 <Box>No Hubs belong to this address</Box>
               )}
               {fetchedHubs && profileHubs.length > 0 && (
-                <ProfileHubs
+                <ProfileHubsTable
                   profileHubs={profileHubs}
                   tableCategories={hubTabs}
                 />
@@ -328,15 +321,15 @@ const ResponsiveProfileHeaderContainer = styled(Box)(({ theme }) => ({
 const ResponsiveProfileContentContainer = styled(Box)(({ theme }) => ({
   minHeight: '50vh',
   width: theme.maxWidth,
-  webkitOverflowScrolling:'touch',
+  webkitOverflowScrolling: 'touch',
   overflowY: 'auto',
-  "&::-webkit-scrollbar": {
-    display: "none",
+  '&::-webkit-scrollbar': {
+    display: 'none',
   },
   [theme.breakpoints.down('md')]: {
     width: '100vw',
     padding: '0px 30px',
-    height:'100vh',
+    height: '100vh',
     overflowY: 'unset',
     minHeight: '60vh',
   },

@@ -19,7 +19,7 @@ const HubCollaborators = ({ collaboratorData }) => {
                 <StyledTableCell align="left">
                   <HubCollaborator
                     collaboratorLink={'https://ninaprotocol.com'}
-                    fooPublicKey={collab.collaborator}
+                    publicKey={collab.collaborator}
                   />
                 </StyledTableCell>
               </TableRow>
@@ -30,7 +30,7 @@ const HubCollaborators = ({ collaboratorData }) => {
     </ResponsiveContainer>
   )
 }
-const HubCollaborator = ({ fooPublicKey }) => {
+const HubCollaborator = ({ publicKey }) => {
   return (
       <ResponsiveBox
         sx={{
@@ -38,9 +38,9 @@ const HubCollaborator = ({ fooPublicKey }) => {
           textOverflow: 'ellipsis',
         }}
       >
-    <Link href={`/profiles/${fooPublicKey}`}>
+    <Link href={`/profiles/${publicKey}`}>
         <Typography noWrap sx={{ cursor: 'pointer', pr: 0.1 }}>
-          <a>{truncateAddress(fooPublicKey)}</a>
+          <a>{truncateAddress(publicKey)}</a>
         </Typography>
     </Link>
       </ResponsiveBox>

@@ -73,7 +73,7 @@ const HubDescription = ({ description }) => {
   )
 }
 
-const ProfileHubs = ({ profileHubs, tableCategories }) => {
+const ProfileHubsTable = ({ profileHubs, tableCategories }) => {
   return (
     <ResponsiveContainer>
       <TableContainer>
@@ -167,4 +167,4 @@ const OverflowContainer = styled(Box)(({ theme }) => ({
   textOverflow: 'ellipsis',
 }))
 
-export default ProfileHubs
+export default ProfileHubsTable

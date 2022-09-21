@@ -82,6 +82,7 @@ const ProfileReleaseTable = ({ allReleases, tableCategories }) => {
       snackbarHandler(`${filteredTrackName} already added to queue`)
     }
   }
+  console.log('allReleases', allReleases)
   return (
     <ResponsiveContainer>
       <TableContainer>

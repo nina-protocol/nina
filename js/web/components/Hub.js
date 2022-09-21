@@ -25,9 +25,6 @@ const HubComponent = ({ hubPubkey }) => {
 
   const { releaseState } = useContext(Release.Context)
 
-  const { resetQueueWithPlaylist } = useContext(Audio.Context)
-  const { enqueueSnackbar } = useSnackbar()
-
   const [hubReleases, setHubReleases] = useState(undefined)
   const [releaseData, setReleaseData] = useState(undefined)
   const [collaboratorsData, setCollaboratorsData] = useState(undefined)
@@ -43,14 +40,14 @@ const HubComponent = ({ hubPubkey }) => {
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
 
   useEffect(() => {
-     if (!hubPubkey) {
+    if (!hubPubkey) {
       setFetchedHubInfo(false)
-     }
+    }
     getHub(hubPubkey)
     if (hubPubkey) {
       setFetchedHubInfo(true)
     }
-    if(fetchedHubInfo && !hubPubkey){
+    if (fetchedHubInfo && !hubPubkey) {
       setInvalidHubPubkey(true)
     }
   }, [hubPubkey])
@@ -61,7 +58,7 @@ const HubComponent = ({ hubPubkey }) => {
     setHubReleases(releases)
     setCollaboratorsData(collaborators)
     let updatedView = views.slice()
-    let viewIndex;
+    let viewIndex
     if (releases.length > 0) {
       setActiveView(0)
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
@@ -69,7 +66,7 @@ const HubComponent = ({ hubPubkey }) => {
       updatedView[viewIndex].playlist = releases
       setFetchedReleases(true)
     }
-    if (releases.length === 0) {
+    if (releases.length === 0 && collaborators.length > 0) {
       setActiveView(1)
       setFetchedReleases(false)
     }
@@ -81,7 +78,7 @@ const HubComponent = ({ hubPubkey }) => {
 
   useEffect(() => {
     let updatedView = views.slice()
-    let viewIndex;
+    let viewIndex
     const data = hubReleases?.map((hubRelease) => {
       const releaseMetadata = releaseState.metadata[hubRelease.release]
       releaseMetadata.releasePubkey = hubRelease.release
@@ -90,11 +87,11 @@ const HubComponent = ({ hubPubkey }) => {
     setReleaseData(data)
     viewIndex = updatedView.findIndex((view) => view.name === 'releases')
     updatedView[viewIndex].playlist = releaseData
-  }, [releaseState, hubReleases,views])
+  }, [releaseState, hubReleases, views])
 
   const viewHandler = (event) => {
     const index = parseInt(event.target.id)
-    setActiveView(parseInt(index))
+    setActiveView(index)
   }
 
   return (
@@ -142,26 +139,10 @@ const HubComponent = ({ hubPubkey }) => {
               <Dots />
             </ResponsiveDotHeaderContainer>
           )}
-          {fetchedHubInfo && hubData && (
-            <HubHeader
-              hubImage={`${hubData?.json.image ? hubData.json.image : ''}`}
-              hubName={`${
-                hubData?.json.displayName ? hubData.json.displayName : ''
-              }`}
-              description={`${
-                hubData?.json.description ? hubData.json.description : ''
-              }`}
-              hubUrl={`${
-                hubData?.json.externalUrl ? hubData.json.externalUrl : ''
-              }`}
-              hubDate={`${hubData.createdAt ? hubData.createdAt : ''}`}
-            />
+          {fetchedHubInfo && hubData && <HubHeader hubData={hubData} />}
+          {invalidHubPubkey && (
+            <Typography>No Hub found at this address</Typography>
           )}
-          {
-            invalidHubPubkey && (
-              <Typography>No Hub found at this address</Typography>
-            )
-          }
         </ResponsiveHubHeaderContainer>
         <Box sx={{ py: 1 }}>
           <HubToggle
@@ -244,13 +225,13 @@ const ResponsiveHubContentContainer = styled(Box)(({ theme }) => ({
   width: theme.maxWidth,
   webkitOverflowScrolling: 'touch',
   overflowY: 'auto',
-  "&::-webkit-scrollbar": {
-    display: "none",
+  '&::-webkit-scrollbar': {
+    display: 'none',
   },
   [theme.breakpoints.down('md')]: {
     width: '100vw',
     padding: '0px 30px',
-    height:'100vh',
+    height: '100vh',
     overflowY: 'unset',
     minHeight: '60vh',
   },

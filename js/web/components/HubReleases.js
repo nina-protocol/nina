@@ -61,7 +61,6 @@ const HubReleases = ({ hubReleases }) => {
       snackbarHandler(`${filteredTrackName} already added to queue`)
     }
   }
-
   return (
     <ResponsiveContainer>
       <TableContainer>
@@ -147,7 +146,11 @@ const HubReleases = ({ hubReleases }) => {
                       }}
                     >
                       <Typography noWrap>
-                        {release.properties.artist}{' '}
+                        
+                        <a>
+
+                        {release.properties.artist}
+                        </a>
                       </Typography>
                     </Box>
                   </StyledTableCell>
@@ -181,7 +184,7 @@ const HubReleases = ({ hubReleases }) => {
 
 const HubTableHead = ({ tableCategories }) => {
   return (
-    <TableHead sx={{}}>
+    <TableHead>
       <TableRow sx={{ py: 1 }}>
         {tableCategories.map((category) => (
           <StyledTableCell
