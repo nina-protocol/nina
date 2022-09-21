@@ -51,10 +51,13 @@ const Search = () => {
       await NinaSdk.Search.withQuery(query).then(setResponse)
       setFetchedResponse(true)
     }
-    if (response) {
-      setQuery('')
-      updateResponse()
+    if (query === '') {
+    e.preventDefault()
+    e.stopPropagation()
+    return
     }
+    setQuery('')
+    updateResponse()
     console.log('query', query)
     console.log('response', response)
   }
