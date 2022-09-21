@@ -21,11 +21,12 @@ const ProfileToggle = ({ isActive, profileTabs, viewHandler }) => {
   }
 
   return (
-    <ResponsiveContainer sx={{ 
-      borderBottom: 1, borderColor: 'divider'
-      
-
-      }}>
+    <ResponsiveContainer
+      sx={{
+        borderBottom: 1,
+        borderColor: 'divider',
+      }}
+    >
       <Box sx={{ display: 'flex', flexDirection: 'row', rowGap: 1, pb: 1 }}>
         {profileTabs?.map((tab, index) => (
           <>
@@ -38,7 +39,7 @@ const ProfileToggle = ({ isActive, profileTabs, viewHandler }) => {
                   display: 'flex',
                   flexDirection: 'row',
                   textTransform: 'uppercase',
-                  width: '150px',
+                 
                 }}
               >
                 <ResponsiveTab key={index}>
@@ -75,7 +76,7 @@ const ResponsiveTab = styled(Box)(({ theme }) => ({
   flexDirection: 'row',
   textTransform: 'uppercase',
   [theme.breakpoints.down('md')]: {
-    paddingLeft: '10px',
+    paddingLeft: '15px',
   },
 }))
 

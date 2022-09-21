@@ -41,6 +41,7 @@ const HubToggle = ({ isActive, hubTabs, viewHandler, releaseData }) => {
                   width: '150px',
                 }}
               >
+                <ResponsiveTab key={index}>
                 <a>
                   <Typography
                      key={index}
@@ -57,6 +58,7 @@ const HubToggle = ({ isActive, hubTabs, viewHandler, releaseData }) => {
                     sx={{ pr: 1.5, pl: 0.5 }}
                   />
                 )}
+                </ResponsiveTab>
               </Box>
             )}
           </>
@@ -65,6 +67,17 @@ const HubToggle = ({ isActive, hubTabs, viewHandler, releaseData }) => {
     </ResponsiveContainer>
   )
 }
+
+const ResponsiveTab = styled(Box)(({ theme }) => ({
+  cursor: 'pointer',
+  alignItems: 'center',
+  display: 'flex',
+  flexDirection: 'row',
+  textTransform: 'uppercase',
+  [theme.breakpoints.down('md')]: {
+    paddingLeft: '15px',
+  },
+}))
 
 const ResponsiveContainer = styled(Box)(({ theme }) => ({
   minWidth: '50vw',

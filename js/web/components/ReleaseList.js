@@ -32,7 +32,6 @@ const ReleaseList = () => {
 
   useEffect(() => {
     if (wallet?.connected) {
-      console.log('wallet.publicKey', wallet.publicKey)
       getReleasesPublishedByUser(wallet.publicKey)
     }
   }, [wallet?.connected])

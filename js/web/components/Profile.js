@@ -77,15 +77,16 @@ const Profile = ({ profilePubkey }) => {
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
       updatedView[viewIndex].playlist = releases
       setFetchedReleases(true)
-
+      console.log('releases', releases)
       setProfileCollectionReleases(filterReleasesList(profileCollectionIds))
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
       updatedView[viewIndex].playlist = filterReleasesList(profileCollectionIds)
       setFetchedCollection(true)
-
+      console.log('filterReleasesList(profileCollectionIds)', filterReleasesList(profileCollectionIds))
       const hubs = filterHubsForUser(profilePubkey)
       setProfileHubs(hubs)
       setFetchedHubs(true)
+      console.log('hubs', hubs)
     }
 
     setViews(updatedView)
@@ -103,7 +104,14 @@ const Profile = ({ profilePubkey }) => {
     ) {
       setActiveView(1)
     }
-    else {
+    if (
+      fetchedCollection &&
+      fetchedReleases &&
+      fetchedHubs &&
+      profilePublishedReleases?.length === 0 &&
+      profileCollectionReleases?.length === 0 &
+      profileHubs?.length > 0
+    ) {
       setActiveView(2)
     }
   }, [profilePublishedReleases, profileCollectionReleases])
@@ -220,7 +228,7 @@ const Profile = ({ profilePubkey }) => {
               {fetchedReleases && profilePublishedReleases.length === 0 && (
                 <Box>No releases belong to this address</Box>
               )}
-              {fetchedReleases && profileCollectionReleases.length > 1 && (
+              {fetchedReleases && profilePublishedReleases.length > 0 && (
                 <ProfileReleaseTable
                   allReleases={profilePublishedReleases}
                   tableCategories={releaseTabs}
