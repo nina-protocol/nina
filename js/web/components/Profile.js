@@ -103,6 +103,9 @@ const Profile = ({ profilePubkey }) => {
     ) {
       setActiveView(1)
     }
+    else {
+      setActiveView(2)
+    }
   }, [profilePublishedReleases, profileCollectionReleases])
 
 
@@ -317,11 +320,16 @@ const ResponsiveProfileHeaderContainer = styled(Box)(({ theme }) => ({
 const ResponsiveProfileContentContainer = styled(Box)(({ theme }) => ({
   minHeight: '50vh',
   width: theme.maxWidth,
-  webkitOverflowScrolling: 'touch',
+  webkitOverflowScrolling:'touch',
+  overflowY: 'auto',
+  "&::-webkit-scrollbar": {
+    display: "none",
+  },
   [theme.breakpoints.down('md')]: {
     width: '100vw',
     padding: '0px 30px',
-    overflowX: 'auto',
+    height:'100vh',
+    overflowY: 'unset',
     minHeight: '60vh',
   },
 }))

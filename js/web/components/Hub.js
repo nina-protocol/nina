@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useContext } from 'react'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
@@ -32,10 +32,10 @@ const HubComponent = ({ hubPubkey }) => {
   const [releaseData, setReleaseData] = useState(undefined)
   const [collaboratorsData, setCollaboratorsData] = useState(undefined)
   const [activeView, setActiveView] = useState(undefined)
-  const [toggleView, setToggleView] = useState(0)
   const [fetchedHubInfo, setFetchedHubInfo] = useState(false)
   const [fetchedReleases, setFetchedReleases] = useState(false)
   const [fetchedCollaborators, setFetchedCollaborators] = useState(false)
+  const [invalidHubPubkey, setInvalidHubPubkey] = useState(false)
   const [views, setViews] = useState([
     { name: 'releases', playlist: null, visible: true },
     { name: 'collaborators', playlist: null, visible: true },
@@ -43,12 +43,15 @@ const HubComponent = ({ hubPubkey }) => {
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
 
   useEffect(() => {
-    if (!hubPubkey) {
+     if (!hubPubkey) {
       setFetchedHubInfo(false)
-    }
+     }
     getHub(hubPubkey)
     if (hubPubkey) {
       setFetchedHubInfo(true)
+    }
+    if(fetchedHubInfo && !hubPubkey){
+      setInvalidHubPubkey(true)
     }
   }, [hubPubkey])
 
@@ -134,7 +137,7 @@ const HubComponent = ({ hubPubkey }) => {
 
       <ResponsiveHubContainer>
         <ResponsiveHubHeaderContainer>
-          {!fetchedHubInfo && (
+          {!fetchedHubInfo && !hubData && (
             <ResponsiveDotHeaderContainer>
               <Dots />
             </ResponsiveDotHeaderContainer>
@@ -154,6 +157,11 @@ const HubComponent = ({ hubPubkey }) => {
               hubDate={`${hubData.createdAt ? hubData.createdAt : ''}`}
             />
           )}
+          {
+            invalidHubPubkey && (
+              <Typography>No Hub found at this address</Typography>
+            )
+          }
         </ResponsiveHubHeaderContainer>
         <Box sx={{ py: 1 }}>
           <HubToggle
@@ -235,10 +243,15 @@ const ResponsiveHubContentContainer = styled(Box)(({ theme }) => ({
   minHeight: '60vh',
   width: theme.maxWidth,
   webkitOverflowScrolling: 'touch',
+  overflowY: 'auto',
+  "&::-webkit-scrollbar": {
+    display: "none",
+  },
   [theme.breakpoints.down('md')]: {
     width: '100vw',
     padding: '0px 30px',
-    overflowX: 'auto',
+    height:'100vh',
+    overflowY: 'unset',
     minHeight: '60vh',
   },
 }))

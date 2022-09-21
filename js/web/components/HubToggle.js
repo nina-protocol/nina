@@ -38,10 +38,12 @@ const HubToggle = ({ isActive, hubTabs, viewHandler, releaseData }) => {
                   display: 'flex',
                   flexDirection: 'row',
                   textTransform: 'uppercase',
+                  width: '150px',
                 }}
               >
                 <a>
                   <Typography
+                     key={index}
                     sx={{ fontWeight: `${isActive === index ? 'bold' : ''}` }}
                     id={index}
                     onClickCapture={(e) => viewHandler(e)}
