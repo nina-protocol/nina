@@ -295,7 +295,7 @@ const AudioPlayer = ({ hubPubkey }) => {
       )}
 
       <audio id="audio" style={{ width: "100%" }}>
-        <source src={track?.txid + '?ext=mp3'} type="audio/mp3" />
+        <source type="audio/mp3" />
       </audio>
       <Typography sx={{pb: "5px", whiteSpace: 'nowrap'}}>
         <Link href={`/all`}>

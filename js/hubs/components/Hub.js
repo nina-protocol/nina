@@ -101,7 +101,6 @@ const HubComponent = ({hubPubkey}) => {
               hubPostPublicKey: hubContentData.publicKey,
             };
             if (hubContentData.referenceContent !== undefined) {
-              console.log('releaseState.metadata[hubContentData.referenceContent]: ', releaseState.metadata[hubContentData.referenceContent])
               hubContentData.releaseMetadata =
                 releaseState.metadata[hubContentData.referenceContent];
               hubContentData.contentType = "postWithRelease";
@@ -124,7 +123,7 @@ const HubComponent = ({hubPubkey}) => {
   }, [hubReleases, hubPosts]);
 
   useEffect(() => {
-    if (hubData?.data?.description.includes('<p>')) {
+    if (hubData?.data?.descriptionHtml?.includes('<p>')) {
       unified()
         .use(rehypeParse, {fragment: true})
         .use(rehypeSanitize)
@@ -137,7 +136,7 @@ const HubComponent = ({hubPubkey}) => {
           rel: ["nofollow", "noreferrer"],
         })
         .process(
-          JSON.parse(hubData.data.description).replaceAll(
+          JSON.parse(hubData.data.descriptionHtml).replaceAll(
             "<p><br></p>",
             "<br>"
           )
@@ -146,9 +145,9 @@ const HubComponent = ({hubPubkey}) => {
           setDescription(file.result);
         });
     } else {
-      setDescription(hubData?.data.description)
+      setDescription(hubData?.data?.descriptionHtml || hubData?.data?.description);
     }
-  }, [hubData?.data?.description]);
+  }, [hubData?.data?.descriptionHtml, hubData?.data?.description]);
 
   if (!hubState[hubPubkey]?.data) {
     return null;

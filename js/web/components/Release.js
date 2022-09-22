@@ -21,20 +21,13 @@ const ReleaseComponent = ({ metadataSsr }) => {
     releaseState,
     getRelease,
   } = useContext(Release.Context)
-  const { getExchangeHistoryForRelease, exchangeState } =
-    useContext(Exchange.Context)
+  const { exchangeState } = useContext(Exchange.Context)
   const { getHubsForUser, filterHubsForUser, hubState } = useContext(Hub.Context)
   const [userHubs, setUserHubs] = useState()
 
   const [metadata, setMetadata] = useState(
     metadataSsr || releaseState?.metadata[releasePubkey] || null
   )
-
-  useEffect(() => {
-    if (releasePubkey) {
-      getExchangeHistoryForRelease(releasePubkey)
-    }
-  }, [releasePubkey])
 
   useEffect(() => {
     if (releaseState.metadata[releasePubkey] && !metadata) {

@@ -83,7 +83,7 @@ const Navigation = ({ hubPubkey }) => {
       return filterHubsForUser(wallet.publicKey.toBase58());
     }
     return undefined;
-  }, [hubState, wallet.connected]);
+  }, [hubState]);
   
   useEffect(() => {
     const setResponsiveness = () => {

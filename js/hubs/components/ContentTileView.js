@@ -42,7 +42,7 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
           return (
             item.contentType === "ninaReleaseV1" &&
             (item.publishedThroughHub === hubPubkey ||
-              releaseState.tokenData[item.publicKey]?.authority === hubData?.authority
+              releaseState.tokenData[item.release]?.authority === hubData?.authority
           ));
         });
         setFilteredContent(filtered);
@@ -53,7 +53,7 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
           return (
             item.contentType === "ninaReleaseV1" &&
             item.publishedThroughHub !== hubPubkey &&
-            releaseState.tokenData[item.publicKey]?.authority !== hubData?.authority
+            releaseState.tokenData[item.release]?.authority !== hubData?.authority
           );
         });
         setFilteredContent(filtered);
@@ -147,12 +147,13 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
                           if (!audioPlayerRef.current.src) {
                             audioPlayerRef.current.load()
                           }
-                          updateTrack(item.publicKey, item.publicKey === track.releasePubkey ? !isPlaying : true);
+                          console.log('item, track', item, track)
+                          updateTrack(item.release, item.release === track.releasePubkey ? !isPlaying : true);
                         }}
                         disableRipple
                       >
                         {isPlaying &&
-                          track.releasePubkey === item.publicKey ? (
+                          track.releasePubkey === item.release ? (
                             <PauseCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
                           ) : (
                             <PlayCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
@@ -211,14 +212,14 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
                 <Tile className={"tile"} key={i}>
                   <HoverCard
                   className="hoverBorder"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleClick(
-                        item.referenceContent,
-                        item.hubPostPublicKey
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleClick(
+                      item.referenceContent,
+                      item.hubPostPublicKey
                       );
                     }}
-                  >
+                    >
                     <CardCta>
                       <PostInfo sx={{ padding: "10px 0 0" }}>
                         <Typography
@@ -227,7 +228,7 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
                             color: "text.primary",
                             textTransform: "uppercase",
                           }}
-                        >
+                          >
                           {item.data.title.substring(0, 100)}
                           {item.data.title.length > 100 ? "..." : ""}
                         </Typography>

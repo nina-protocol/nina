@@ -133,12 +133,12 @@ const HubPostCreate = ({
     } else {
       setButtonText(
         preloadedRelease
-          ? `Create Post on ${hubData?.json.displayName}`
+          ? `Create Post on ${hubData?.data.displayName}`
           : `You do not have permission to create posts`
       );
     }
   }, [canAddContent, metadataTx, hubData]);
-
+  console.log('canAddContent', canAddContent)
   const handleFormChange = useCallback(
     async (values) => {
       setFormValues({

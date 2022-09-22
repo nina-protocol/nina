@@ -120,7 +120,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
                   Add {metadata.name} to{' '}
                   {userHubs.length > 1
                     ? 'one of your hubs'
-                    : 'your hub: ' + userHubs[0]?.json.displayName}
+                    : 'your hub: ' + userHubs[0]?.data.displayName}
                 </Typography>
 
                 {userHubs.length > 1 && (
@@ -144,8 +144,8 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
                         ?.filter((hub) => hub.userCanAddContent)
                         .map((hub) => {
                           return (
-                            <MenuItem key={hub?.id} value={hub?.id}>
-                              {hub?.json.displayName}
+                            <MenuItem key={hub?.publicKey} value={hub?.publicKey}>
+                              {hub?.data.displayName}
                             </MenuItem>
                           )
                         })}

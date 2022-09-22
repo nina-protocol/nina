@@ -2258,10 +2258,10 @@
   resolved "https://registry.yarnpkg.com/@next/swc-win32-x64-msvc/-/swc-win32-x64-msvc-12.1.5.tgz#02f377e4d41eaaacf265e34bab9bacd8efc4a351"
   integrity sha512-/SoXW1Ntpmpw3AXAzfDRaQidnd8kbZ2oSni8u5z0yw6t4RwJvmdZy1eOaAADRThWKV+2oU90++LSnXJIwBRWYQ==
 
-"@nina-protocol/nina-sdk@^0.1.11":
-  version "0.1.11"
-  resolved "https://registry.yarnpkg.com/@nina-protocol/nina-sdk/-/nina-sdk-0.1.11.tgz#d40423fd94fc3bd0967534d2a62dbae1fc2f2957"
-  integrity sha512-ZugTaf5vVW4cV1b6A0iN+oNAMY8O+9E48p3QdGpk9CgVdWC7S/iAaIZ2jSYpnWhGAqCa3iUk7RIEDqNCYfXjOg==
+"@nina-protocol/nina-sdk@^0.1.15":
+  version "0.1.15"
+  resolved "https://registry.yarnpkg.com/@nina-protocol/nina-sdk/-/nina-sdk-0.1.15.tgz#c7cd4958dd860669f1f8922ae829c8be08e6e4d1"
+  integrity sha512-8N/wDyXiyG8YjybC4+P7HXNmrwbTBW8U4S27Z6rS4itd+71d3Elfwv4H6dWSX2jTkgWoSEwdyjUHOIqLe5tUHA==
   dependencies:
     "@project-serum/anchor" "^0.25.0"
     axios "^0.27.2"
