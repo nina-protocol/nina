@@ -1654,7 +1654,6 @@ const releaseContextHelper = ({
       const response = await fetch(path)
       const publishedReleaseIds = await response.json()
 
-      console.log('userCollection!!!!!!', userCollection)
       await fetchAndSaveReleasesToState([...userCollection, ...publishedReleaseIds])
       return [userCollection, publishedReleaseIds]
     } catch (e) {
@@ -1786,10 +1785,17 @@ const releaseContextHelper = ({
   }
 
   const filterReleasesPublishedByUser = (userPubkey = undefined) => {
+    console.log('userPubkey', userPubkey)
+    console.log('userPubkey', userPubkey)
+    console.log('userPubkey', userPubkey)
+    console.log('userPubkey', userPubkey)
+    console.log('userPubkey', userPubkey)
     // Return results for passed in user if another user isn't specified
     if (!userPubkey) {
       userPubkey = provider.wallet?.publicKey.toBase58()
     }
+
+    console.log('releaseState', releaseState)
 
     const releases = []
     Object.keys(releaseState.tokenData).forEach((releasePubkey) => {
@@ -1797,6 +1803,7 @@ const releaseContextHelper = ({
       const metadata = releaseState.metadata[releasePubkey]
 
       const releaseData = {}
+      console.log('metadata', metadata)
       if (tokenData.authority.toBase58() === userPubkey && metadata) {
         releaseData.tokenData = tokenData
         releaseData.metadata = metadata
@@ -1819,6 +1826,8 @@ const releaseContextHelper = ({
         releases.push(releaseData)
       }
     })
+   
+    console.log('releases !!!!', releases)
     return releases
   }
 
@@ -2078,7 +2087,6 @@ const releaseContextHelper = ({
         search.releases = finalSearchReleases
         await setSearchResults(search)
       }
-      console.log('updatedState', updatedState)
       await setReleaseState(updatedState)
     } catch (error) {
       console.warn(error)

@@ -59,8 +59,10 @@ const Profile = ({ profilePubkey }) => {
   useEffect(() => {
     const getUserData = async (profilePubkey) => {
       await getHubsForUser(profilePubkey)
-      const [collectionIds] = await getUserCollectionAndPublished(profilePubkey)
+      const [collectionIds, publishedIds] = await getUserCollectionAndPublished(profilePubkey)
       setProfileCollectionIds(collectionIds)
+      // setPublishedIds(publishedIds)
+      console.log('publishedIds', publishedIds)
     }
     if (profilePubkey) {
       setFetchedUser(true)
@@ -71,22 +73,25 @@ const Profile = ({ profilePubkey }) => {
   useEffect(() => {
     let viewIndex
     let updatedView = views.slice()
-    if (profileCollectionIds && profilePubkey) {
-      console.log('profilePubkey', profilePubkey)
-      const releases = filterReleasesPublishedByUser(profilePubkey)
-      console.log('releases!!!!!', releases)
-      setProfilePublishedReleases(releases)
-      viewIndex = updatedView.findIndex((view) => view.name === 'releases')
-      updatedView[viewIndex].playlist = releases
-      setFetchedReleases(true)
-      console.log('releases from profiles', releases)
-      setProfileCollectionReleases(filterReleasesList(profileCollectionIds))
-      viewIndex = updatedView.findIndex((view) => view.name === 'collection')
-      updatedView[viewIndex].playlist = filterReleasesList(profileCollectionIds)
-      setFetchedCollection(true)
-      const hubs = filterHubsForUser(profilePubkey)
-      setProfileHubs(hubs)
-      setFetchedHubs(true)
+    if (profilePubkey) {
+      console.log("tito")
+      console.log("tito")
+      console.log("tito")
+      console.log("tito")
+      console.log('filterReleasesPublishedByUser(profilePubkey)', filterReleasesPublishedByUser(profilePubkey))
+      // const releases = filterReleasesPublishedByUser(profilePubkey)
+      // console.log('filterReleasesPublishedByUser(profilePubkey)', filterReleasesPublishedByUser(profilePubkey))
+      // setProfilePublishedReleases(releases)
+      // viewIndex = updatedView.findIndex((view) => view.name === 'releases')
+      // updatedView[viewIndex].playlist = releases
+      // setFetchedReleases(true)
+      // setProfileCollectionReleases(filterReleasesList(profileCollectionIds))
+      // viewIndex = updatedView.findIndex((view) => view.name === 'collection')
+      // updatedView[viewIndex].playlist = filterReleasesList(profileCollectionIds)
+      // setFetchedCollection(true)
+      // const hubs = filterHubsForUser(profilePubkey)
+      // setProfileHubs(hubs)
+      // setFetchedHubs(true)
     }
 
     setViews(updatedView)
@@ -190,7 +195,10 @@ const Profile = ({ profilePubkey }) => {
               </ResponsiveDotHeaderContainer>
             )}
             {fetchedUser && (
-              <Typography>{truncateAddress(profilePubkey)}</Typography>
+              <>
+                <Typography>{truncateAddress(profilePubkey)}</Typography>
+                <Typography>{truncateAddress(profilePubkey)}</Typography>
+              </>
             )}
             {noProfile && (
               <Typography>No profile found at this address</Typography>

@@ -4,4 +4,4 @@ export const truncateAddress = (address) => {
     address.length
   )}`
 }
-      
+  

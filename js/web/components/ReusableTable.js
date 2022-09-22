@@ -74,7 +74,6 @@ const ReusableTableHead = ({ tableType }) => {
 }
 
 const ReusableTableBody = ({ releases }) => {
-  console.log('releases from tablebody', releases)
   const {
     updateTrack,
     addTrackToQueue,
