@@ -25,6 +25,7 @@ const Search = () => {
 
   const [query, setQuery] = useState('')
   const [response, setResponse] = useState(undefined)
+  const [suggestions, setSuggestions] = useState()
   const [fetchedResponse, setFetchedResponse] = useState(undefined)
 
   useEffect(() => {
@@ -41,6 +42,20 @@ const Search = () => {
     },
     [response]
   )
+
+  useEffect(() => {
+    const handleSuggestions = async () => {
+      const response =  await NinaSdk.Search.suggestQuery(query)
+      console.log('response :>> ', response);
+      setSuggestions(response)
+    }
+    if (query) {
+      handleSuggestions()
+    }
+   console.log('suggestions :>> ', suggestions);
+  }, [query])
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault()
