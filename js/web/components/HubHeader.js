@@ -46,7 +46,7 @@ const HubHeader = ({  hubData }) => {
           height={'100%'}
           width={'100%'}
           layout="responsive"
-          src={getImageFromCDN(hubData?.json?.image, 400, new Date(Date.parse(hubData?.createdAt)))}
+          src={getImageFromCDN(hubData?.json?.image, 400, Date.parse(hubData?.createdAt))}
           alt={hubData?.json.displayName}
           priority={true}
           loader={loader}

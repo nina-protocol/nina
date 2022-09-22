@@ -1,19 +1,19 @@
 import { useContext } from 'react'
-
-import { Box } from '@mui/material'
+import { Box, Tab } from '@mui/material'
 import { styled } from '@mui/system'
-import { Typography } from '@mui/material'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
+import { Typography } from '@mui/material'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import { useSnackbar } from 'notistack'
 
-const HubToggle = ({ isActive, hubTabs, viewHandler, releaseData }) => {
+const ProfileToggle = ({ isActive, profileTabs, viewHandler, type, releaseData }) => {
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { enqueueSnackbar } = useSnackbar()
 
   const playAllHandler = (playlist) => {
     resetQueueWithPlaylist(
-      playlist.map((release) => release.releasePubkey)
+      playlist?.map((release) => 
+      release.releasePubkey)
     ).then(() =>
       enqueueSnackbar(`Releases added to queue`, {
         variant: 'info',
@@ -27,37 +27,38 @@ const HubToggle = ({ isActive, hubTabs, viewHandler, releaseData }) => {
         borderColor: 'divider',
       }}
     >
-      <Box sx={{ display: 'flex', flexDirection: 'row', rowGap: 1, py: 1 }}>
-        {hubTabs?.map((tab, index) => (
+      <Box sx={{ display: 'flex', flexDirection: 'row', rowGap: 1, pb: 1 }}>
+        {profileTabs?.map((tab, index) => (
           <>
-            {tab.visible && (
+            {tab.visible === true && (
               <Box
+                key={index}
                 sx={{
                   cursor: 'pointer',
                   alignItems: 'center',
                   display: 'flex',
                   flexDirection: 'row',
                   textTransform: 'uppercase',
-                  width: '150px',
+                 
                 }}
               >
                 <ResponsiveTab key={index}>
-                <a>
-                  <Typography
-                     key={index}
-                    sx={{ fontWeight: `${isActive === index ? 'bold' : ''}` }}
-                    id={index}
-                    onClickCapture={(e) => viewHandler(e)}
-                  >
-                    {tab.name}
-                  </Typography>
-                </a>
-                {tab.playlist && (
-                  <PlayCircleOutlineOutlinedIcon
-                    onClickCapture={() => playAllHandler(releaseData)}
-                    sx={{ pr: 1.5, pl: 0.5 }}
-                  />
-                )}
+                
+                    <Typography
+                      key={index}
+                      onClickCapture={viewHandler}
+                      sx={{ fontWeight: `${isActive === index ? 'bold' : ''}` }}
+                      id={index}
+                    >
+                      {tab.name}
+                    </Typography>
+              
+                  {tab.playlist && (
+                    <PlayCircleOutlineOutlinedIcon
+                      onClickCapture={() => type === 'hubsView' ? playAllHandler(releaseData) : playAllHandler(tab.playlist)}
+                      sx={{ pr: 1.5, pl: 0.5 }}
+                    />
+                  )}
                 </ResponsiveTab>
               </Box>
             )}
@@ -85,9 +86,10 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
   flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'start',
+
   [theme.breakpoints.down('md')]: {
     width: '100vw',
   },
 }))
 
-export default HubToggle
+export default ProfileToggle

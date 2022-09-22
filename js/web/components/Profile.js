@@ -10,8 +10,8 @@ import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/trun
 const Dots = dynamic(() => import('./Dots'))
 const ProfileReleaseTable = dynamic(() => import('./ProfileReleaseTable'))
 const ProfileHubsTable = dynamic(() => import('./ProfileHubsTable'))
-const ProfileToggle = dynamic(() => import('./ProfileToggle'))
-
+const TabHeader = dynamic(() => import('./TabHeader'))
+const ReusableTable = dynamic(() => import('./ReusableTable'))
 const Profile = ({ profilePubkey }) => {
   const releaseTabs = ['', '', 'Artist', 'Title']
   const hubTabs = ['', 'Artist', 'Description']
@@ -32,7 +32,7 @@ const Profile = ({ profilePubkey }) => {
   const [profileCollectionReleases, setProfileCollectionReleases] =
     useState(undefined)
   const [profileHubs, setProfileHubs] = useState(undefined)
-  const [activeView, setActiveView] = useState(undefined)
+  const [activeView, setActiveView] = useState(3)
   const [profileCollectionIds, setProfileCollectionIds] = useState(undefined)
   const [fetchedUser, setFetchedUser] = useState(false)
   const [fetchedReleases, setFetchedReleases] = useState(false)
@@ -72,12 +72,14 @@ const Profile = ({ profilePubkey }) => {
     let viewIndex
     let updatedView = views.slice()
     if (profileCollectionIds && profilePubkey) {
+      console.log('profilePubkey', profilePubkey)
       const releases = filterReleasesPublishedByUser(profilePubkey)
+      console.log('releases!!!!!', releases)
       setProfilePublishedReleases(releases)
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
       updatedView[viewIndex].playlist = releases
       setFetchedReleases(true)
-
+      console.log('releases from profiles', releases)
       setProfileCollectionReleases(filterReleasesList(profileCollectionIds))
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
       updatedView[viewIndex].playlist = filterReleasesList(profileCollectionIds)
@@ -88,7 +90,7 @@ const Profile = ({ profilePubkey }) => {
     }
 
     setViews(updatedView)
-  }, [releaseState, profileCollectionIds, profilePubkey, hubState])
+  }, [releaseState])
 
   useEffect(() => {
     if (fetchedReleases && profilePublishedReleases?.length > 0) {
@@ -202,7 +204,7 @@ const Profile = ({ profilePubkey }) => {
         </ResponsiveProfileHeaderContainer>
         {!noProfile && (
           <Box sx={{ py: 1 }}>
-            <ProfileToggle
+            <TabHeader
               viewHandler={viewHandler}
               isActive={activeView}
               profileTabs={views}
@@ -266,6 +268,12 @@ const Profile = ({ profilePubkey }) => {
               )}
             </>
           )}
+
+          {
+            activeView === 3 && (
+              <ReusableTable tableType={'profilePublishedReleases'} releases={profilePublishedReleases}/>
+            )
+          }
         </ResponsiveProfileContentContainer>
       </ResponsiveProfileContainer>
     </>

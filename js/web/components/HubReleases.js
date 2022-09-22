@@ -130,7 +130,7 @@ const HubReleases = ({ hubReleases }) => {
                         src={getImageFromCDN(
                           release.image,
                           400,
-                          new Date(Date.parse(release.properties.date))
+                          Date.parse(release.properties.date)
                         )}
                         alt={release.name}
                         priority={true}

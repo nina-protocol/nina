@@ -1654,7 +1654,7 @@ const releaseContextHelper = ({
       const response = await fetch(path)
       const publishedReleaseIds = await response.json()
 
-      console.log('userCollection', userCollection)
+      console.log('userCollection!!!!!!', userCollection)
       await fetchAndSaveReleasesToState([...userCollection, ...publishedReleaseIds])
       return [userCollection, publishedReleaseIds]
     } catch (e) {

@@ -11,9 +11,8 @@ import { useSnackbar } from 'notistack'
 const Dots = dynamic(() => import('./Dots'))
 const HubHeader = dynamic(() => import('./HubHeader'))
 const HubCollaborators = dynamic(() => import('./HubCollaborators'))
-const HubToggle = dynamic(() => import('./HubToggle'))
 const HubReleases = dynamic(() => import('./HubReleases'))
-
+const TabHeader = dynamic(() => import('./TabHeader'))
 const HubComponent = ({ hubPubkey }) => {
   const {
     getHub,
@@ -34,8 +33,8 @@ const HubComponent = ({ hubPubkey }) => {
   const [fetchedCollaborators, setFetchedCollaborators] = useState(false)
   const [invalidHubPubkey, setInvalidHubPubkey] = useState(false)
   const [views, setViews] = useState([
-    { name: 'releases', playlist: null, visible: true },
-    { name: 'collaborators', playlist: null, visible: true },
+    { name: 'releases', playlist: undefined, visible: true },
+    { name: 'collaborators', playlist: undefined, visible: true },
   ])
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
 
@@ -63,6 +62,7 @@ const HubComponent = ({ hubPubkey }) => {
       setActiveView(0)
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
       updatedView[viewIndex].visible = true
+      console.log('releaseData', releases)
       updatedView[viewIndex].playlist = releases
       setFetchedReleases(true)
     }
@@ -145,11 +145,12 @@ const HubComponent = ({ hubPubkey }) => {
           )}
         </ResponsiveHubHeaderContainer>
         <Box sx={{ py: 1 }}>
-          <HubToggle
+          <TabHeader
             viewHandler={viewHandler}
             isActive={activeView}
-            hubTabs={views}
+            profileTabs={views}
             releaseData={releaseData}
+            type={'hubsView'}
           />
         </Box>
         <ResponsiveHubContentContainer>

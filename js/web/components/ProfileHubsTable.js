@@ -92,7 +92,7 @@ const ProfileHubsTable = ({ profileHubs, tableCategories }) => {
                         src={getImageFromCDN(
                           hub.json.image,
                           400,
-                          new Date(Date.parse(hub.createdAt))
+                          Date.parse(hub.createdAt)
                         )}
                         alt={hub.handle}
                         priority={true}
