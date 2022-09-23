@@ -1331,7 +1331,6 @@ const releaseContextHelper = ({
 
       const response = await fetch(path)
       const releaseIds = await response.json()
-      console.log('releaseIds', releaseIds)
       await fetchAndSaveReleasesToState(releaseIds)
     } catch (error) {
       console.warn(error)
@@ -1653,7 +1652,6 @@ const releaseContextHelper = ({
 
       const response = await fetch(path)
       const publishedReleaseIds = await response.json()
-
       await fetchAndSaveReleasesToState([...userCollection, ...publishedReleaseIds])
       return [userCollection, publishedReleaseIds]
     } catch (e) {
@@ -1681,7 +1679,7 @@ const releaseContextHelper = ({
 
   */
   const filterReleasesUserCollection = () => {
-    console.log('FILTERING')
+   
     if (!provider.wallet?.connected) {
       return []
     }
@@ -1696,13 +1694,12 @@ const releaseContextHelper = ({
         }
       }
     })
-    console.log('releases from filterReleases xxx', releases)
     return releases
   }
 
   const filterReleasesList = (releaseList) => {
     const releases = []
-    releaseList.forEach((releasePubkey) => {
+    releaseList?.forEach((releasePubkey) => {
       const tokenData = releaseState.tokenData[releasePubkey]
       const metadata = releaseState.metadata[releasePubkey]
       if (metadata) {
@@ -1785,17 +1782,11 @@ const releaseContextHelper = ({
   }
 
   const filterReleasesPublishedByUser = (userPubkey = undefined) => {
-    console.log('userPubkey', userPubkey)
-    console.log('userPubkey', userPubkey)
-    console.log('userPubkey', userPubkey)
-    console.log('userPubkey', userPubkey)
-    console.log('userPubkey', userPubkey)
     // Return results for passed in user if another user isn't specified
     if (!userPubkey) {
       userPubkey = provider.wallet?.publicKey.toBase58()
     }
 
-    console.log('releaseState', releaseState)
 
     const releases = []
     Object.keys(releaseState.tokenData).forEach((releasePubkey) => {
@@ -1803,7 +1794,7 @@ const releaseContextHelper = ({
       const metadata = releaseState.metadata[releasePubkey]
 
       const releaseData = {}
-      console.log('metadata', metadata)
+     
       if (tokenData.authority.toBase58() === userPubkey && metadata) {
         releaseData.tokenData = tokenData
         releaseData.metadata = metadata
@@ -1826,8 +1817,7 @@ const releaseContextHelper = ({
         releases.push(releaseData)
       }
     })
-   
-    console.log('releases !!!!', releases)
+
     return releases
   }
 
@@ -2009,7 +1999,7 @@ const releaseContextHelper = ({
             releases.push(release)
           }
         })
-        console.log('test')
+       
         await saveReleasesToState(releases, query)
       } catch (error) {
         console.warn(error)

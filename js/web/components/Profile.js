@@ -32,7 +32,7 @@ const Profile = ({ profilePubkey }) => {
   const [profileCollectionReleases, setProfileCollectionReleases] =
     useState(undefined)
   const [profileHubs, setProfileHubs] = useState(undefined)
-  const [activeView, setActiveView] = useState(3)
+  const [activeView, setActiveView] = useState(undefined)
   const [profileCollectionIds, setProfileCollectionIds] = useState(undefined)
   const [fetchedUser, setFetchedUser] = useState(false)
   const [fetchedReleases, setFetchedReleases] = useState(false)
@@ -61,7 +61,6 @@ const Profile = ({ profilePubkey }) => {
       await getHubsForUser(profilePubkey)
       const [collectionIds, publishedIds] = await getUserCollectionAndPublished(profilePubkey)
       setProfileCollectionIds(collectionIds)
-      // setPublishedIds(publishedIds)
       console.log('publishedIds', publishedIds)
     }
     if (profilePubkey) {
@@ -74,26 +73,20 @@ const Profile = ({ profilePubkey }) => {
     let viewIndex
     let updatedView = views.slice()
     if (profilePubkey) {
-      console.log("tito")
-      console.log("tito")
-      console.log("tito")
-      console.log("tito")
-      console.log('filterReleasesPublishedByUser(profilePubkey)', filterReleasesPublishedByUser(profilePubkey))
-      // const releases = filterReleasesPublishedByUser(profilePubkey)
-      // console.log('filterReleasesPublishedByUser(profilePubkey)', filterReleasesPublishedByUser(profilePubkey))
-      // setProfilePublishedReleases(releases)
-      // viewIndex = updatedView.findIndex((view) => view.name === 'releases')
-      // updatedView[viewIndex].playlist = releases
-      // setFetchedReleases(true)
-      // setProfileCollectionReleases(filterReleasesList(profileCollectionIds))
-      // viewIndex = updatedView.findIndex((view) => view.name === 'collection')
-      // updatedView[viewIndex].playlist = filterReleasesList(profileCollectionIds)
-      // setFetchedCollection(true)
-      // const hubs = filterHubsForUser(profilePubkey)
-      // setProfileHubs(hubs)
-      // setFetchedHubs(true)
+      const releases = filterReleasesPublishedByUser(profilePubkey)
+      setProfilePublishedReleases(releases)
+      viewIndex = updatedView.findIndex((view) => view.name === 'releases')
+      updatedView[viewIndex].playlist = releases
+      setFetchedReleases(true)
+      setProfileCollectionReleases(filterReleasesList(profileCollectionIds))
+      console.log('profileCollectionIds', profileCollectionIds)
+      viewIndex = updatedView.findIndex((view) => view.name === 'collection')
+      updatedView[viewIndex].playlist = filterReleasesList(profileCollectionIds)
+      setFetchedCollection(true)
+      const hubs = filterHubsForUser(profilePubkey)
+      setProfileHubs(hubs)
+      setFetchedHubs(true)
     }
-
     setViews(updatedView)
   }, [releaseState])
 
@@ -232,10 +225,11 @@ const Profile = ({ profilePubkey }) => {
                 <Box>No releases belong to this address</Box>
               )}
               {fetchedReleases && profilePublishedReleases.length > 0 && (
-                <ProfileReleaseTable
-                  allReleases={profilePublishedReleases}
-                  tableCategories={releaseTabs}
-                />
+                // <ProfileReleaseTable
+                //   allReleases={profilePublishedReleases}
+                //   tableCategories={releaseTabs}
+                // />
+                <ReusableTable tableType={'profilePublishedReleases'} releases={profilePublishedReleases} />
               )}
             </>
           )}
@@ -251,10 +245,7 @@ const Profile = ({ profilePubkey }) => {
                 <Box>No collection found at this address</Box>
               )}
               {fetchedCollection && profileCollectionReleases.length > 0 && (
-                <ProfileReleaseTable
-                  allReleases={profileCollectionReleases}
-                  tableCategories={releaseTabs}
-                />
+                <ReusableTable tableType={'profileCollectedReleases'} releases={profileCollectionReleases} />
               )}
             </>
           )}
@@ -269,9 +260,10 @@ const Profile = ({ profilePubkey }) => {
                 <Box>No Hubs belong to this address</Box>
               )}
               {fetchedHubs && profileHubs.length > 0 && (
-                <ProfileHubsTable
-                  profileHubs={profileHubs}
-                  tableCategories={hubTabs}
+            
+                <ReusableTable
+                  tableType={'profileHubs'}
+                  releases={profileHubs}
                 />
               )}
             </>

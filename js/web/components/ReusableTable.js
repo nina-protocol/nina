@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useState, useEffect, useContext, createElement, Fragment } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Box } from '@mui/system'
@@ -12,6 +12,11 @@ import TableRow from '@mui/material/TableRow'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
+import { unified } from 'unified'
+import rehypeParse from 'rehype-parse'
+import rehypeReact from 'rehype-react'
+import rehypeSanitize from 'rehype-sanitize'
+import rehypeExternalLinks from 'rehype-external-links'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import { styled } from '@mui/material'
@@ -21,19 +26,27 @@ import { useSnackbar } from 'notistack'
 const { getImageFromCDN, loader } = imageManager
 
 const ReusableTableHead = ({ tableType }) => {
-  let headCells = [
-    {
-      id: 'ctas',
-      label: '',
-    },
-  ]
+  let headCells = []
 
   if (tableType === 'profilePublishedReleases') {
-    headCells.push({ id: '', label: '' })
+    headCells.push({id: 'ctas', label: ''})
+    headCells.push({ id: 'image', label: '' })
     headCells.push({ id: 'artist', label: 'Artist' })
     headCells.push({ id: 'title', label: 'Title' })
   }
 
+  if (tableType === 'profileCollectedReleases'){
+    headCells.push({id: 'ctas', label: ''})
+    headCells.push({ id: 'image', label: '' })
+    headCells.push({ id: 'artist', label: 'Artist' })
+    headCells.push({ id: 'title', label: 'Title' })
+  }
+
+  if (tableType === 'profileHubs'){
+    headCells.push({id: 'image', label: ''})
+    headCells.push({id: 'artist', label: 'Artist'})
+    headCells.push({id: 'title', label: 'Title'})
+  }
   //   if (tableType === 'profileCollection') {
   //     headCells.push({ id: '', label: '' })
   //     headCells.push({ id: 'artist', label: 'Artist' })
@@ -72,8 +85,32 @@ const ReusableTableHead = ({ tableType }) => {
     </TableHead>
   )
 }
+const HubDescription = ({ description }) => {
+  const [hubDescription, setHubDescription] = useState()
+  useEffect(() => {
+    if (description?.includes('<p>')) {
+      unified()
+        .use(rehypeParse, { fragment: true })
+        .use(rehypeSanitize)
+        .use(rehypeReact, {
+          createElement,
+          Fragment,
+        })
+        .use(rehypeExternalLinks, {
+          target: false,
+          rel: ['nofollow', 'noreferrer'],
+        })
+        .process(JSON.parse(description).replaceAll('<p><br></p>', '<br>'))
+        .then((file) => {
+          setHubDescription(file.result)
+        })
+    } else {
+      setHubDescription(description)
+    }
+  }, [description])}
 
-const ReusableTableBody = ({ releases }) => {
+
+const ReusableTableBody = ({ releases, tableType }) => {
   const {
     updateTrack,
     addTrackToQueue,
@@ -117,82 +154,152 @@ const ReusableTableBody = ({ releases }) => {
     }
   }
 
+  
+
   let rows = releases?.map((data) => {
     const metadata = data?.metadata
     const properties = data?.metadata?.properties
     const releasePubkey = data?.releasePubkey
-    // const hubPubkey = data.handle
+    const json = data?.json
+    const hubPubkey = data?.handle
     // const hubProperties = data.json
     // const date = data.createdAt
     // const collaboratorPubkey = data.collaborator
     // const collaboratorId = data.id
 
-    console.log('data', data)
-
-    const formattedData = {
+    const playData = {
+      releasePubkey,
+    }
+  
+    let formattedData = {
       id: releasePubkey,
+      link: `/${releasePubkey}`,
+      image: metadata?.image,
+      date: properties?.date,
       artist: properties?.artist,
       title: properties?.title,
     }
 
+    if (tableType === 'profilePublishedReleases') {
+      formattedData = {
+        ctas: playData,
+        ...formattedData
+      }
+    }
+
+    if (tableType === 'profileCollectedReleases'){
+      formattedData = {
+        ctas: playData,
+        ...formattedData
+      }
+    }
+
+    if (tableType === 'profileHubs'){
+      formattedData.id = data?.handle
+      formattedData.link = `/hubs/${hubPubkey}`
+      formattedData.date = data?.createdAt
+      formattedData.image = json?.image
+      formattedData.artist = json?.displayName
+      formattedData.description = json?.description
+    }
+
     return formattedData
   })
-
-  return ( 
+  console.log('rows', rows)
+  return (
     <TableBody>
       {rows?.map((row, i) => (
         <>
-          {console.log('rowxxx', row)}
-          <Link key={i} href={'/'} passHref>
+  
+        <Link key={row.id} href={row.link} passHref>
             <TableRow key={i} hover>
-              {/*  */}
+   
 
               {Object.keys(row).map((cellName) => {
-                console.log('cellNasssssme', cellName)
+            
                 const cellData = row[cellName]
-                console.log('cellDatsssssa', cellData)
-
-                // if (cellName === 'ctas') {
-                //   return (
-                //     <StyledTableCellButtonsContainer align="left">
-                //       <Button
-                //         sx={{ cursor: 'pointer' }}
-                //         id={cellData.id}
-                //         key={cellData.id}
-                //         onClickCapture={(e) => handleQueue()}
-                //       >
-                //         <ControlPointIcon sx={{ color: 'black' }} key={i} />
-                //       </Button>
-                //       <Button
-                //         sx={{
-                //           cursor: 'pointer',
-                //         }}
-                //         onClickCapture={(e) => handlePlay()}
-                //         id={cellData.id}
-                //       >
-                //         {isPlaying &&
-                //         track.releasePubkey === row.releasePubkey ? (
-                //           <PauseCircleOutlineOutlinedIcon
-                //             sx={{ color: 'black' }}
-                //             id={cellData.id}
-                //           />
-                //         ) : (
-                //           <PlayCircleOutlineOutlinedIcon
-                //             sx={{ color: 'black' }}
-                //           />
-                //         )}
-                //       </Button>
-                //     </StyledTableCellButtonsContainer>
-                //   )
-                // }
-                return (
-                  <>
-                    <TableCell>{cellData}</TableCell>
-                  </>
-                )
-              })}
+                
+            
+                if (cellName !== 'id' && cellName !== 'date' && cellName !== 'link') {
+                
+                  if (cellName === 'ctas') {
+                    return (
+                      <>
+                        <StyledTableCellButtonsContainer align="left">
+                          <Button
+                            sx={{ cursor: 'pointer' }}
+                            id={row.id}
+                            key={row.id}
+                            onClickCapture={(e) => handleQueue(e, row.id, row.title)}
+                          >
+                            <ControlPointIcon sx={{ color: 'black' }} key={i} />
+                          </Button>
+                          <Button
+                            sx={{
+                              cursor: 'pointer',
+                            }}
+                            onClickCapture={(e) => handlePlay(e, row.id)}
+                            id={row.id}
+                          >
+                            {isPlaying &&
+                            track.releasePubkey === row.id ? (
+                              <PauseCircleOutlineOutlinedIcon
+                                sx={{ color: 'black' }}
+                                id={row.id}
+                              />
+                            ) : (
+                              <PlayCircleOutlineOutlinedIcon
+                                sx={{ color: 'black' }}
+                              />
+                            )}
+                          </Button>
+                        </StyledTableCellButtonsContainer>
+                      </>
+                    )
+                  } else if (cellName === 'image') {
+                    return (
+                      <StyledTableCell align="left">
+                        <Box sx={{ width: '50px', textAlign: 'left' }}>
+                          <Image
+                            height={'100%'}
+                            width={'100%'}
+                            layout="responsive"
+                            src={getImageFromCDN(
+                              cellData,
+                              400,
+                              Date.parse(row.date)
+                            )}
+                            alt={i}
+                            priority={true}
+                            loader={loader}
+                          />
+                        </Box>
+                      </StyledTableCell>
+                    )
+                  } else if (cellName === 'artist' || cellName === 'title') {
+                    return (
+                      <>
+                        <StyledTableCell>
+                          <OverflowContainer>
+                            <Typography noWrap>{cellData}</Typography>
+                          </OverflowContainer>
+                        </StyledTableCell>
+                      </>
+                    )
+                  } else if (cellName === 'description') {
+                    return (
+                      <>
+                      {/* <HubDescription description={cellData || null } /> */}
+                      </>
+                    )
+                  }
+      
+                } 
+              }
+              )}
             </TableRow>
-          </Link>
+
+      </Link>
         </>
       ))}
     </TableBody>
