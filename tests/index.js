@@ -14,7 +14,7 @@ const {
 } = require("./utils");
 
 let nina = anchor.workspace.Nina;
-let provider = anchor.Provider.env();
+let provider = anchor.AnchorProvider.env();
 
 //Users
 let user1;
@@ -137,7 +137,7 @@ describe('Init', async () => {
       publishingCreditTokenAccountIx,
       hubCreditTokenAccountIx
     );
-    await provider.send(tx, []);
+    await provider.sendAndConfirm(tx, []);
 
     await mintToAccount(
       provider,
@@ -390,6 +390,7 @@ describe('Release', async () => {
         );
       },
       (err) => {
+        console.log('err', err);
         assert.ok(err.toString().includes('0x1'))
         return true;
       }
@@ -811,8 +812,8 @@ describe('Release', async () => {
         })
       },
       (err) => {
-        assert.equal(err.code, 6000);
-        assert.equal(err.msg, "Amount sent does not match price");
+        assert.equal(err.error.errorCode.number, 6000);
+        assert.equal(err.error.errorMessage, "Amount sent does not match price");
         return true;
       }
     );
@@ -882,8 +883,8 @@ describe('Release', async () => {
         })
       },
       (err) => {
-        assert.equal(err.code, 2003);
-        assert.equal(err.msg, "A raw constraint was violated");
+        assert.equal(err.error.errorCode.number, 2003);
+        assert.equal(err.error.errorMessage, "A raw constraint was violated");
         return true;
       }
     );
@@ -1016,8 +1017,8 @@ describe('Release', async () => {
         }
       },
       (err) => {
-        assert.equal(err.code, 6006);
-        assert.equal(err.msg, "Sold out");
+        assert.equal(err.error.errorCode.number, 6006);
+        assert.equal(err.error.errorMessage, "Sold out");
         return true;
       }
     );
@@ -1144,8 +1145,8 @@ describe('Release', async () => {
         );
       },
       (err) => {
-        assert.equal(err.code, 6011);
-        assert.equal(err.msg, "Release is not live yet");
+        assert.equal(err.error.errorCode.number, 6011);
+        assert.equal(err.error.errorMessage, "Release is not live yet");
         return true;
       }
     );
@@ -1221,8 +1222,8 @@ describe("Revenue Share", async () => {
         });      
     },
       (err) => {
-        assert.equal(err.code, 6009);
-        assert.equal(err.msg, "Invalid royalty recipient authority");
+        assert.equal(err.error.errorCode.number, 6009);
+        assert.equal(err.error.errorMessage, "Invalid royalty recipient authority");
         return true;
       }
     );
@@ -1348,8 +1349,8 @@ describe("Revenue Share", async () => {
         })
       },
       (err) => {
-        assert.equal(err.code, 6009);
-        assert.equal(err.msg, "Invalid royalty recipient authority");
+        assert.equal(err.error.errorCode.number, 6009);
+        assert.equal(err.error.errorMessage, "Invalid royalty recipient authority");
         return true;
       }
     );
@@ -1377,8 +1378,8 @@ describe("Revenue Share", async () => {
         })
       },
       (err) => {
-        assert.equal(err.code, 6002);
-        assert.equal(err.msg, "Cannot transfer royalty share larger than current share");
+        assert.equal(err.error.errorCode.number, 6002);
+        assert.equal(err.error.errorMessage, "Cannot transfer royalty share larger than current share");
         return true;
       }
     );
@@ -1422,8 +1423,8 @@ describe("Revenue Share", async () => {
         }      
       },
       (err) => {
-        assert.equal(err.code, 6003);
-        assert.equal(err.msg, "Cannot have more than 10 Revenue Share Holders");
+        assert.equal(err.error.errorCode.number, 6003);
+        assert.equal(err.error.errorMessage, "Cannot have more than 10 Revenue Share Holders");
         return true;
       }
     );
@@ -1556,8 +1557,8 @@ describe("Exchange", async () => {
         );
       },
       (err) => {
-        assert.equal(err.code, 2003);
-        assert.equal(err.msg, "A raw constraint was violated");
+        assert.equal(err.error.errorCode.number, 2003);
+        assert.equal(err.error.errorMessage, "A raw constraint was violated");
         return true;
       }
     );
@@ -1723,7 +1724,8 @@ describe("Exchange", async () => {
        
       },
       (err) => {
-        assert.equal(err.toString(), "A raw constraint was violated");
+        console.log('err', err)
+        assert.equal(err.error.errorMessage, "A raw constraint was violated");
         return true;
       }
     );
@@ -1770,8 +1772,8 @@ describe("Exchange", async () => {
         );
       },
       (err) => {
-        assert.equal(err.code, 6005)
-        assert.equal(err.msg, "Royalty percentage provided is incorrect");
+        assert.equal(err.error.errorCode.number, 6005)
+        assert.equal(err.error.errorMessage, "Royalty percentage provided is incorrect");
         return true;
       }
     );
@@ -1817,8 +1819,8 @@ describe("Exchange", async () => {
         );
       },
       (err) => {
-        assert.equal(err.code, 6017)
-        assert.equal(err.msg, "Initializer Amounts Do Not Match");
+        assert.equal(err.error.errorCode.number, 6017)
+        assert.equal(err.error.errorMessage, "Initializer Amounts Do Not Match");
         return true;
       }
     );
@@ -1864,8 +1866,8 @@ describe("Exchange", async () => {
         );
       },
       (err) => {
-        assert.equal(err.code, 6014)
-        assert.equal(err.msg, "Exchange Expected Amounts Do Not Match");
+        assert.equal(err.error.errorCode.number, 6014)
+        assert.equal(err.error.errorMessage, "Exchange Expected Amounts Do Not Match");
         return true;
       }
     );
@@ -2757,8 +2759,8 @@ describe("Exchange", async () => {
         )
       },
       (err) => {
-        assert.equal(err.code, 6012);
-        assert.equal(err.msg, "Wrong mint provided for exchange");
+        assert.equal(err.error.errorCode.number, 6012);
+        assert.equal(err.error.errorMessage, "Wrong mint provided for exchange");
         return true;
       }
     );
@@ -2817,8 +2819,8 @@ describe("Exchange", async () => {
         )
       },
       (err) => {
-        assert.equal(err.code, 6013);
-        assert.equal(err.msg, "Offer price must be greater than 0");
+        assert.equal(err.error.errorCode.number, 6013);
+        assert.equal(err.error.errorMessage, "Offer price must be greater than 0");
         return true;
       }
     );
@@ -2877,8 +2879,8 @@ describe("Exchange", async () => {
         )
       },
       (err) => {
-        assert.equal(err.code, 6013);
-        assert.equal(err.msg, "Offer price must be greater than 0");
+        assert.equal(err.error.errorCode.number, 6013);
+        assert.equal(err.error.errorMessage, "Offer price must be greater than 0");
         return true;
       }
     );
@@ -3156,8 +3158,8 @@ it('Fails when redeeming more redeemables than available', async () => {
         }
       },
       (err) => {
-        assert.equal(err.code, 6010);
-        assert.equal(err.msg, "No more redeemables available");
+        assert.equal(err.error.errorCode.number, 6010);
+        assert.equal(err.error.errorMessage, "No more redeemables available");
         return true;
       }
     );
@@ -3281,8 +3283,8 @@ describe('Vault', async () => {
         );
       },
       (err) => {
-        assert.equal(err.code, 2003);
-        assert.equal(err.msg, "A raw constraint was violated");
+        assert.equal(err.error.errorCode.number, 2003);
+        assert.equal(err.error.errorMessage, "A raw constraint was violated");
         return true;
       }
     );
@@ -3313,8 +3315,8 @@ describe('Vault', async () => {
         );
       },
       (err) => {
-        assert.equal(err.code, 6019);
-        assert.equal(err.msg, "Cant withdraw more than deposited");
+        assert.equal(err.error.errorCode.number, 6019);
+        assert.equal(err.error.errorMessage, "Cant withdraw more than deposited");
         return true;
       }
     );
@@ -3338,8 +3340,8 @@ describe('Vault', async () => {
         );
       },
       (err) => {
-        assert.equal(err.code, 6020);
-        assert.equal(err.msg, "Withdraw amount must be greater than 0");
+        assert.equal(err.error.errorCode.number, 6020);
+        assert.equal(err.error.errorMessage, "Withdraw amount must be greater than 0");
         return true;
       }
     );
@@ -3625,7 +3627,7 @@ describe('Hub', async () => {
         })
       },
       (err) => {
-        assert.equal(err.code, 6021);
+        assert.equal(err.error.errorCode.number, 6021);
         return true;
       }
     );
@@ -3668,7 +3670,7 @@ describe('Hub', async () => {
         })
       },
       (err) => {
-        assert.equal(err.code, 6028);
+        assert.equal(err.error.errorCode.number, 6028);
         return true;
       }
     );
@@ -4176,7 +4178,7 @@ describe('Hub', async () => {
           }
         )
       }, (err) => {
-        assert.equal(err.code, 6033);
+        assert.equal(err.error.errorCode.number, 6033);
         return true;
       }
     )
@@ -4198,7 +4200,7 @@ describe('Hub', async () => {
           }
         )
       }, (err) => {
-        assert.equal(err.code, 6032);
+        assert.equal(err.error.errorCode.number, 6032);
         return true;
       }
     )
@@ -4221,7 +4223,7 @@ describe('Hub', async () => {
           }
         )
       }, (err) => {
-        assert.equal(err.code, 2003);
+        assert.equal(err.error.errorCode.number, 2003);
         return true;
       }
     )
@@ -4349,7 +4351,7 @@ describe('Hub', async () => {
         );
       },
       (err) => {
-        assert.equal(err.code, 2006);
+        assert.equal(err.error.errorCode.number, 2006);
         return true;
       }
     );
@@ -4475,7 +4477,7 @@ describe('Hub', async () => {
         );
       },
       (err) => {
-        assert.equal(err.code, 3012);
+        assert.equal(err.error.errorCode.number, 3012);
         return true;
       }
     );
@@ -4514,7 +4516,7 @@ describe('Hub', async () => {
           signers: [user2]
         })
       }, (err) => {
-        assert.equal(err.code, 6022);
+        assert.equal(err.error.errorCode.number, 6022);
         return true;
       }
     );
@@ -4554,7 +4556,7 @@ describe('Hub', async () => {
           },
         })
       }, (err) => {
-        assert.equal(err.code, 6023);
+        assert.equal(err.error.errorCode.number, 6023);
         return true;
       }
     );
@@ -4630,7 +4632,7 @@ describe('Hub', async () => {
         })
       },
       (err) => {
-        assert.equal(err.code, 6024);
+        assert.equal(err.error.errorCode.number, 6024);
         return true;
       }
     );
@@ -4768,7 +4770,7 @@ describe('Hub', async () => {
         });
       },
       (err) => {
-        assert.equal(err.code, 2003);
+        assert.equal(err.error.errorCode.number, 2003);
         return true;
       }
     );

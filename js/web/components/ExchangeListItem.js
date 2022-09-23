@@ -17,13 +17,10 @@ const ExchangeListItem = (props) => {
     amount,
   } = props
   const { ninaClient } = useContext(Nina.Context)
-  const displayPrice = isSelling
-    ? ninaClient.nativeToUiString(
-        expectedAmount?.toNumber() || amount,
-        release.paymentMint
-      )
-    : ninaClient.nativeToUiString(amount, release.paymentMint)
-
+  const displayPrice = ninaClient.nativeToUiString(amount, release.paymentMint)
+  console.log('displayPrice', displayPrice)
+  console.log('expectedAmount', expectedAmount)
+  console.log('amount', amount)
   const itemData = (
     <Root>
       <Typography>
@@ -44,7 +41,7 @@ const ExchangeListItem = (props) => {
         >
           {(
             ninaClient.nativeToUi(
-              isSelling ? expectedAmount?.toNumber() : amount,
+              isSelling ? expectedAmount : amount,
               release.paymentMint
             ) * solPrice
           ).toFixed(2)}{' '}

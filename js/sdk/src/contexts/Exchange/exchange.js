@@ -94,7 +94,9 @@ const exchangeContextHelper = ({
       const release = await program.account.release.fetch(
         new anchor.web3.PublicKey(releasePubkey)
       )
-
+      const exchangeAccount = await program.account.exchange.fetch(
+        new anchor.web3.PublicKey(exchange.publicKey)
+      )
       const [takerSendingTokenAccount, takerSendingTokenAccountIx] =
         await findOrCreateAssociatedTokenAccount(
           provider.connection,
@@ -102,7 +104,7 @@ const exchangeContextHelper = ({
           provider.wallet.publicKey,
           anchor.web3.SystemProgram.programId,
           anchor.web3.SYSVAR_RENT_PUBKEY,
-          new anchor.web3.PublicKey(exchange.initializerExpectedMint)
+          exchangeAccount.initializerExpectedMint
         )
 
       const [takerExpectedTokenAccount, takerExpectedTokenAccountIx] =
@@ -112,7 +114,7 @@ const exchangeContextHelper = ({
           provider.wallet.publicKey,
           anchor.web3.SystemProgram.programId,
           anchor.web3.SYSVAR_RENT_PUBKEY,
-          new anchor.web3.PublicKey(exchange.initializerSendingMint)
+          exchangeAccount.initializerSendingMint
         )
 
       const [
@@ -121,10 +123,10 @@ const exchangeContextHelper = ({
       ] = await findOrCreateAssociatedTokenAccount(
         provider.connection,
         provider.wallet.publicKey,
-        new anchor.web3.PublicKey(exchange.initializer),
+        exchangeAccount.initializer,
         anchor.web3.SystemProgram.programId,
         anchor.web3.SYSVAR_RENT_PUBKEY,
-        new anchor.web3.PublicKey(exchange.initializerExpectedMint)
+        exchangeAccount.initializerExpectedMint
       )
 
       const exchangeHistory = anchor.web3.Keypair.generate()
@@ -133,12 +135,12 @@ const exchangeContextHelper = ({
 
       const request = {
         accounts: {
-          initializer: new anchor.web3.PublicKey(exchange.initializer),
+          initializer: exchangeAccount.initializer,
           initializerExpectedTokenAccount,
           takerExpectedTokenAccount,
           takerSendingTokenAccount,
-          exchangeEscrowTokenAccount: new anchor.web3.PublicKey(exchange.exchangeEscrowTokenAccount),
-          exchangeSigner: new anchor.web3.PublicKey(exchange.exchangeSigner),
+          exchangeEscrowTokenAccount: exchangeAccount.exchangeEscrowTokenAccount,
+          exchangeSigner: exchangeAccount.exchangeSigner,
           taker: provider.wallet.publicKey,
           exchange: new anchor.web3.PublicKey(exchange.publicKey),
           exchangeHistory: exchangeHistory.publicKey,
@@ -178,8 +180,8 @@ const exchangeContextHelper = ({
       }
 
       const params = {
-        expectedAmount: exchange.expectedAmount,
-        initializerAmount: exchange.initializerAmount,
+        expectedAmount: exchangeAccount.expectedAmount,
+        initializerAmount: exchangeAccount.initializerAmount,
         resalePercentage: release.resalePercentage,
         datetime: new anchor.BN(Date.now() / 1000),
       }
@@ -197,18 +199,19 @@ const exchangeContextHelper = ({
       } else {
         removeReleaseFromCollection(
           releasePubkey,
-          exchange.releaseMint.toBase58()
+          exchange.releaseMint
         )
       }
       await getUsdcBalance()
-      await getExchange(exchange.publicKey.toBase58(), true, txid)
+      await getExchange(exchange.publicKey, false, txid)
 
       return {
         success: true,
         msg: 'Offer accepted!',
       }
     } catch (error) {
-      await getExchangesForRelease(releasePubkey, exchangeId)
+      console.warn('exchangeAccept error', error)
+      await getExchangesForRelease(releasePubkey, exchange.publicKey)
       return ninaErrorHandler(error)
     }
   }
@@ -399,17 +402,14 @@ const exchangeContextHelper = ({
           tokenProgram: TOKEN_PROGRAM_ID,
         },
       }
-      console.log('request', request)
       if (initializerReturnTokenAccountIx) {
         request.instructions = [initializerReturnTokenAccountIx]
       }
 
       let txid
-      console.log('exchange.initializerAmount', exchange.initializerAmount)
       const params = new anchor.BN(
         exchange.isSelling ? 1 : exchange.initializerAmount.toNumber()
       )
-      console.log('params', params)
       if (ninaClient.isSol(exchange.initializerSendingMint)) {
         txid = await program.methods
           .exchangeCancelSol(params)
@@ -432,15 +432,12 @@ const exchangeContextHelper = ({
       }
 
       await getUsdcBalance()
-      console.log('1234')
       await getExchange(exchangePubkey.toBase58(), false, txid)
-      console.log('5678')
       return {
         success: true,
         msg: 'Offer cancelled!',
       }
     } catch (error) {
-      console.log('ddddd exchange.release: ', releasePubkey, error)
       await getExchangesForRelease(releasePubkey)
       return ninaErrorHandler(error)
     }
@@ -525,9 +522,10 @@ const exchangeContextHelper = ({
         exchange.initializer ===
         provider.wallet?.publicKey?.toBase58(),
     }
-    exchangeItem.amount = exchange.isSelling
-      ? exchange.expectedAmount
+    exchangeItem.amount = exchange.isSale
+      ? exchange.expectedAmount * 1000000
       : exchange.initializerAmount
+    exchangeItem.isSelling = exchange.isSale
     
     return exchangeItem
   }
@@ -541,15 +539,15 @@ const exchangeContextHelper = ({
         // If current user is looking to buy record-coin
         if (isBuy) {
           // If current users offer is higher than a sale offer and less than the distribution price
-          if (price >= exchange.expectedAmount.toNumber()) {
+          if (price >= exchange.expectedAmount) {
             // If there hasn't been a matching condition where current users price completes an exchange
             if (!match) {
               match = exchange
             } else {
               // If this exchange is lower than previously matched exchange
               if (
-                exchange.expectedAmount.toNumber() <
-                match.expectedAmount.toNumber()
+                exchange.expectedAmount <
+                match.expectedAmount
               ) {
                 match = exchange
               }
@@ -557,14 +555,14 @@ const exchangeContextHelper = ({
           }
         } else {
           // If current users sale offer is less than an existing buy
-          if (price <= exchange.initializerAmount.toNumber()) {
+          if (price <= exchange.initializerAmount) {
             if (!match) {
               match = exchange
             } else {
               // If this exchange is higher than previously matched exchange
               if (
-                exchange.initializerAmount.toNumber() >
-                match.initializerAmount.toNumber()
+                exchange.initializerAmount >
+                match.initializerAmount
               ) {
                 match = exchange
               }
