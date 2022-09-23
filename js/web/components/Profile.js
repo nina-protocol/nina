@@ -59,7 +59,9 @@ const Profile = ({ profilePubkey }) => {
   useEffect(() => {
     const getUserData = async (profilePubkey) => {
       await getHubsForUser(profilePubkey)
-      const [collectionIds, publishedIds] = await getUserCollectionAndPublished(profilePubkey)
+      const [collectionIds, publishedIds] = await getUserCollectionAndPublished(
+        profilePubkey
+      )
       setProfileCollectionIds(collectionIds)
       console.log('publishedIds', publishedIds)
     }
@@ -88,7 +90,7 @@ const Profile = ({ profilePubkey }) => {
       setFetchedHubs(true)
     }
     setViews(updatedView)
-  }, [releaseState])
+  }, [profileCollectionIds, releaseState])
 
   useEffect(() => {
     if (fetchedReleases && profilePublishedReleases?.length > 0) {
@@ -146,10 +148,13 @@ const Profile = ({ profilePubkey }) => {
     setActiveView(index)
   }
 
+  const fetchedAll = fetchedCollection && fetchedHubs && fetchedReleases
+
   const noProfile =
     profilePublishedReleases?.length === 0 &&
     profileCollectionReleases?.length === 0 &&
-    profileHubs?.length === 0
+    profileHubs?.length === 0 &&
+    fetchedAll
   return (
     <>
       <Head>
@@ -190,7 +195,6 @@ const Profile = ({ profilePubkey }) => {
             {fetchedUser && (
               <>
                 <Typography>{truncateAddress(profilePubkey)}</Typography>
-                <Typography>{truncateAddress(profilePubkey)}</Typography>
               </>
             )}
             {noProfile && (
@@ -229,7 +233,10 @@ const Profile = ({ profilePubkey }) => {
                 //   allReleases={profilePublishedReleases}
                 //   tableCategories={releaseTabs}
                 // />
-                <ReusableTable tableType={'profilePublishedReleases'} releases={profilePublishedReleases} />
+                <ReusableTable
+                  tableType={'profilePublishedReleases'}
+                  releases={profilePublishedReleases}
+                />
               )}
             </>
           )}
@@ -245,7 +252,10 @@ const Profile = ({ profilePubkey }) => {
                 <Box>No collection found at this address</Box>
               )}
               {fetchedCollection && profileCollectionReleases.length > 0 && (
-                <ReusableTable tableType={'profileCollectedReleases'} releases={profileCollectionReleases} />
+                <ReusableTable
+                  tableType={'profileCollectionReleases'}
+                  releases={profileCollectionReleases}
+                />
               )}
             </>
           )}
@@ -260,7 +270,6 @@ const Profile = ({ profilePubkey }) => {
                 <Box>No Hubs belong to this address</Box>
               )}
               {fetchedHubs && profileHubs.length > 0 && (
-            
                 <ReusableTable
                   tableType={'profileHubs'}
                   releases={profileHubs}
@@ -269,11 +278,12 @@ const Profile = ({ profilePubkey }) => {
             </>
           )}
 
-          {
-            activeView === 3 && (
-              <ReusableTable tableType={'profilePublishedReleases'} releases={profilePublishedReleases}/>
-            )
-          }
+          {activeView === 3 && (
+            <ReusableTable
+              tableType={'profilePublishedReleases'}
+              releases={profilePublishedReleases}
+            />
+          )}
         </ResponsiveProfileContentContainer>
       </ResponsiveProfileContainer>
     </>

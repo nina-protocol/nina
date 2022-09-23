@@ -13,6 +13,7 @@ const HubHeader = dynamic(() => import('./HubHeader'))
 const HubCollaborators = dynamic(() => import('./HubCollaborators'))
 const HubReleases = dynamic(() => import('./HubReleases'))
 const TabHeader = dynamic(() => import('./TabHeader'))
+const ReusableTable = dynamic(() => import('./ReusableTable'))
 const HubComponent = ({ hubPubkey }) => {
   const {
     getHub,
@@ -54,6 +55,7 @@ const HubComponent = ({ hubPubkey }) => {
   useEffect(() => {
     const [releases] = filterHubContentForHub(hubPubkey)
     const collaborators = filterHubCollaboratorsForHub(hubPubkey)
+    console.log('collaborators', collaborators)
     setHubReleases(releases)
     setCollaboratorsData(collaborators)
     let updatedView = views.slice()
@@ -162,7 +164,7 @@ const HubComponent = ({ hubPubkey }) => {
                 </ResponsiveDotContainer>
               )}
               {fetchedReleases && releaseData && (
-                <HubReleases hubReleases={releaseData} />
+                <ReusableTable tableType={'hubReleases'} releases={releaseData} />
               )}
             </>
           )}
@@ -177,7 +179,7 @@ const HubComponent = ({ hubPubkey }) => {
                 <Box sx={{ my: 1 }}>No collaborators found in this Hub</Box>
               )}
               {fetchedCollaborators && (
-                <HubCollaborators collaboratorData={collaboratorsData} />
+                <ReusableTable tableType={'hubCollaborators'} releases={collaboratorsData} />
               )}
             </>
           )}
