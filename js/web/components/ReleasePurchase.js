@@ -301,6 +301,9 @@ useEffect(() => {
       {userIsRecipient && (
         <Royalty releasePubkey={releasePubkey} release={release} />
       )}
+      {userIsRecipient && (
+        <Royalty releasePubkey={releasePubkey} release={release} />
+      )}
       {amountHeld > 0 && (
         <Button
           variant="outlined"
