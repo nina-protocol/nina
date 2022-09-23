@@ -753,7 +753,6 @@ const releaseContextHelper = ({
       [releasePubkey]: true,
     })
     const program = await ninaClient.useProgram()
-
     const release = await program.account.release.fetch(
       new anchor.web3.PublicKey(releasePubkey)
     )
@@ -762,7 +761,7 @@ const releaseContextHelper = ({
       ...releasePurchasePending,
       [releasePubkey]: true,
     })
-
+    
     try {
       let [payerTokenAccount, payerTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
         provider.connection,
@@ -785,7 +784,7 @@ const releaseContextHelper = ({
 
       const request = {
         accounts: {
-          release: release.publicKey,
+          release: new anchor.web3.PublicKey(releasePubkey),
           releaseSigner: release.releaseSigner,
           payer: provider.wallet.publicKey,
           payerTokenAccount,
@@ -796,7 +795,6 @@ const releaseContextHelper = ({
           tokenProgram: TOKEN_PROGRAM_ID,
         },
       }
-
       const instructions = []
       if (!isSol(release.paymentMint) && usdcBalance < ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)) {
         const additionalComputeBudgetInstruction = anchor.web3.ComputeBudgetProgram.requestUnits({

@@ -37,7 +37,6 @@ const ExchangeComponent = (props) => {
     exchangeAccept,
     exchangeCancel,
     exchangeInit,
-    getExchangeHistoryForRelease,
     filterExchangesForReleaseBuySell,
     filterExchangeHistoryForRelease,
     filterExchangeMatch,
@@ -86,7 +85,7 @@ const ExchangeComponent = (props) => {
       setExchangeAwaitingConfirm(undefined)
     } else if (exchange.isCurrentUser) {
       showPendingTransaction('Cancelling offer...')
-      result = await exchangeCancel(exchange, wallet?.connected, connection)
+      result = await exchangeCancel(exchange, releasePubkey)
     } else {
       const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.EXCHANGE_ACCEPT);
       if (error) {

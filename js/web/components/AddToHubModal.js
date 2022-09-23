@@ -145,7 +145,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
                         .map((hub) => {
                           return (
                             <MenuItem key={hub?.publicKey} value={hub?.publicKey}>
-                              {hub?.data.displayName}
+                              {hub?.data?.displayName}
                             </MenuItem>
                           )
                         })}

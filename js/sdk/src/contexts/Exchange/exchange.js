@@ -227,7 +227,7 @@ const exchangeContextHelper = ({
 
       const release = new anchor.web3.PublicKey(releasePubkey)
       const releaseAccount = await program.account.release.fetch(release)
-      const releaseMint = releaseAccount.releaseMintSeed
+      const releaseMint = releaseAccount.releaseMint
       console.log('releaseMint', releaseMint.toBase58())
       console.log('releaseAccount', releaseAccount)
 
@@ -373,9 +373,12 @@ const exchangeContextHelper = ({
     }
   }
 
-  const exchangeCancel = async (exchange) => {
+  const exchangeCancel = async (exchange, releasePubkey) => {
     try {
+      console.log('exchange', exchange)
+      const exchangePubkey = new anchor.web3.PublicKey(exchange.publicKey)
       const program = await ninaClient.useProgram()
+      exchange = await program.account.exchange.fetch(exchangePubkey)
       const [initializerReturnTokenAccount, initializerReturnTokenAccountIx] =
         await findOrCreateAssociatedTokenAccount(
           provider.connection,
@@ -383,29 +386,30 @@ const exchangeContextHelper = ({
           provider.wallet.publicKey,
           anchor.web3.SystemProgram.programId,
           anchor.web3.SYSVAR_RENT_PUBKEY,
-          new anchor.web3.PublicKey(exchange.initializerSendingMint)
+          exchange.initializerSendingMint
         )
-
+      console.log('initializerReturnTokenAccount', initializerReturnTokenAccount)
       const request = {
         accounts: {
           initializer: provider.wallet.publicKey,
           initializerSendingTokenAccount: initializerReturnTokenAccount,
-          exchangeEscrowTokenAccount: new anchor.web3.PublicKey(exchange.exchangeEscrowTokenAccount),
-          exchangeSigner: new anchor.web3.PublicKey(exchange.exchangeSigner),
-          exchange: new anchor.web3.PublicKey(exchange.publicKey),
+          exchangeEscrowTokenAccount: exchange.exchangeEscrowTokenAccount,
+          exchangeSigner: exchange.exchangeSigner,
+          exchange: exchangePubkey,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
       }
-
+      console.log('request', request)
       if (initializerReturnTokenAccountIx) {
         request.instructions = [initializerReturnTokenAccountIx]
       }
 
       let txid
+      console.log('exchange.initializerAmount', exchange.initializerAmount)
       const params = new anchor.BN(
-        exchange.isSelling ? 1 : exchange.initializerAmount
+        exchange.isSelling ? 1 : exchange.initializerAmount.toNumber()
       )
-
+      console.log('params', params)
       if (ninaClient.isSol(exchange.initializerSendingMint)) {
         txid = await program.methods
           .exchangeCancelSol(params)
@@ -422,20 +426,22 @@ const exchangeContextHelper = ({
           .rpc()
       }
       await provider.connection.getParsedTransaction(txid, 'confirmed')
-
+      console.log('')
       if (exchange.isSelling) {
-        addReleaseToCollection(exchange.release)
+        addReleaseToCollection(releasePubkey)
       }
 
       await getUsdcBalance()
-      await getExchange(exchange.publicKey.toBase58(), true, txid)
-
+      console.log('1234')
+      await getExchange(exchangePubkey.toBase58(), false, txid)
+      console.log('5678')
       return {
         success: true,
         msg: 'Offer cancelled!',
       }
     } catch (error) {
-      await getExchangesForRelease(exchange.release)
+      console.log('ddddd exchange.release: ', releasePubkey, error)
+      await getExchangesForRelease(releasePubkey)
       return ninaErrorHandler(error)
     }
   }
@@ -448,6 +454,7 @@ const exchangeContextHelper = ({
 
   const getExchange = async (publicKey, withAccountInfo=false, transactionId) => {
     const { exchange } = await NinaSdk.Exchange.fetch(publicKey, withAccountInfo, transactionId)
+    console.log('exchange', exchange)
     const updatedExchangeState = { ...exchangeState }
     if (exchange.accountData) {
       updatedExchangeState[publicKey] = {
@@ -457,8 +464,10 @@ const exchangeContextHelper = ({
     }
     updatedExchangeState[publicKey] = {
       ...updatedExchangeState[publicKey],
-      ...exchange,
+      ...formatExchange(exchange),
     }
+    console.log('updatedExchangeState', updatedExchangeState)
+    console.log('updatedExchangeState[publicKey]', updatedExchangeState[publicKey])
     setExchangeState(updatedExchangeState)
   }
 
@@ -476,10 +485,10 @@ const exchangeContextHelper = ({
         }
         updatedExchangeState[exchange.publicKey] = {
           ...updatedExchangeState[exchange.publicKey],
-          ...exchange,
+          ...formatExchange(exchange),
         }
-        setExchangeState(updatedExchangeState)
       })
+      setExchangeState(updatedExchangeState)
     } catch (err) {
       console.warn(err)
     }
@@ -498,25 +507,29 @@ const exchangeContextHelper = ({
           delete exchange.accountData
         }
 
-        const exchangeItem = {
-          ...exchange,
-          isCurrentUser:
-            exchange.initializer ===
-            provider.wallet?.publicKey?.toBase58(),
-        }
-        exchangeItem.amount = exchange.isSelling
-          ? exchange.expectedAmount
-          : exchange.initializerAmount
-
         updatedExchangeState[exchange.publicKey] = {
           ...updatedExchangeState[exchange.publicKey],
-          ...exchangeItem,
+          ...formatExchange(exchange),
         }
         setExchangeState(updatedExchangeState)
       })
     } catch (err) {
       console.warn(err)
     }
+  }
+
+  const formatExchange = (exchange) => {
+    const exchangeItem = {
+      ...exchange,
+      isCurrentUser:
+        exchange.initializer ===
+        provider.wallet?.publicKey?.toBase58(),
+    }
+    exchangeItem.amount = exchange.isSelling
+      ? exchange.expectedAmount
+      : exchange.initializerAmount
+    
+    return exchangeItem
   }
 
   const filterExchangeMatch = (price, isBuy, releasePubkey) => {
@@ -630,14 +643,14 @@ const exchangeContextHelper = ({
 
     if (isBuy) {
       return exchanges
-        .filter((e) => !e.isSelling)
+        .filter((e) => !e.isSelling && !e.cancelled && !e.completedBy)
         .sort(
           (e1, e2) =>
             e1.initializerAmount - e2.initializerAmount
         )
     } else {
       return exchanges
-        .filter((e) => e.isSelling)
+        .filter((e) => e.isSelling && !e.cancelled && !e.completedBy)
         .sort(
           (e1, e2) =>
             e1.expectedAmount - e2.expectedAmount

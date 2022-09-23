@@ -54,9 +54,7 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async (context) => {
   const releasePubkey = context.params.releasePubkey
   try {
-    console.log('NinaSdk', NinaSdk)
-    const release = (await NinaSdk.Release.fetch(releasePubkey)).release
-    console.log('release', release)
+    const { release } = await NinaSdk.Release.fetch(releasePubkey)
     return {  
       props: {
         metadata: release.metadata,

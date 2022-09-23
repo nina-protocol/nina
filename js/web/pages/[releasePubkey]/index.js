@@ -60,10 +60,10 @@ export const getStaticProps = async (context) => {
   const releasePubkey = context.params.releasePubkey
 
   try {
-    const release = await NinaSdk.Release.fetch(releasePubkey)
+    const { release } = await NinaSdk.Release.fetch(releasePubkey)
     return {
       props: {
-        metadata: release.metadata || null,
+        metadata: release.metadata,
         releasePubkey,
       },
       revalidate: 10
