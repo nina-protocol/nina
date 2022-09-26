@@ -75,6 +75,7 @@ const ResponsiveTab = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'row',
   textTransform: 'uppercase',
+  minWidth: '100px',
   [theme.breakpoints.down('md')]: {
     paddingLeft: '15px',
   },

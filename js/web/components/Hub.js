@@ -5,15 +5,13 @@ import { Box, Typography } from '@mui/material'
 import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
-import { useSnackbar } from 'notistack'
+
 
 const Dots = dynamic(() => import('./Dots'))
 const HubHeader = dynamic(() => import('./HubHeader'))
-const HubCollaborators = dynamic(() => import('./HubCollaborators'))
-const HubReleases = dynamic(() => import('./HubReleases'))
 const TabHeader = dynamic(() => import('./TabHeader'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
+
 const HubComponent = ({ hubPubkey }) => {
   const {
     getHub,
@@ -55,7 +53,6 @@ const HubComponent = ({ hubPubkey }) => {
   useEffect(() => {
     const [releases] = filterHubContentForHub(hubPubkey)
     const collaborators = filterHubCollaboratorsForHub(hubPubkey)
-    console.log('collaborators', collaborators)
     setHubReleases(releases)
     setCollaboratorsData(collaborators)
     let updatedView = views.slice()
@@ -64,7 +61,6 @@ const HubComponent = ({ hubPubkey }) => {
       setActiveView(0)
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
       updatedView[viewIndex].visible = true
-      console.log('releaseData', releases)
       updatedView[viewIndex].playlist = releases
       setFetchedReleases(true)
     }
@@ -95,6 +91,7 @@ const HubComponent = ({ hubPubkey }) => {
     const index = parseInt(event.target.id)
     setActiveView(index)
   }
+  const noHubs = releaseData?.length === 0 && collaboratorsData?.length === 0;
 
   return (
     <>
@@ -142,10 +139,12 @@ const HubComponent = ({ hubPubkey }) => {
             </ResponsiveDotHeaderContainer>
           )}
           {fetchedHubInfo && hubData && <HubHeader hubData={hubData} />}
-          {invalidHubPubkey && (
+          {invalidHubPubkey || noHubs && (
             <Typography>No Hub found at this address</Typography>
           )}
         </ResponsiveHubHeaderContainer>
+        {
+          !noHubs && (
         <Box sx={{ py: 1 }}>
           <TabHeader
             viewHandler={viewHandler}
@@ -155,6 +154,8 @@ const HubComponent = ({ hubPubkey }) => {
             type={'hubsView'}
           />
         </Box>
+          )
+        }
         <ResponsiveHubContentContainer>
           {activeView === 0 && (
             <>

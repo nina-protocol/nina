@@ -8,13 +8,9 @@ import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
 
 const Dots = dynamic(() => import('./Dots'))
-const ProfileReleaseTable = dynamic(() => import('./ProfileReleaseTable'))
-const ProfileHubsTable = dynamic(() => import('./ProfileHubsTable'))
 const TabHeader = dynamic(() => import('./TabHeader'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
 const Profile = ({ profilePubkey }) => {
-  const releaseTabs = ['', '', 'Artist', 'Title']
-  const hubTabs = ['', 'Artist', 'Description']
 
   const {
     getUserCollectionAndPublished,
@@ -63,7 +59,6 @@ const Profile = ({ profilePubkey }) => {
         profilePubkey
       )
       setProfileCollectionIds(collectionIds)
-      console.log('publishedIds', publishedIds)
     }
     if (profilePubkey) {
       setFetchedUser(true)
@@ -81,7 +76,6 @@ const Profile = ({ profilePubkey }) => {
       updatedView[viewIndex].playlist = releases
       setFetchedReleases(true)
       setProfileCollectionReleases(filterReleasesList(profileCollectionIds))
-      console.log('profileCollectionIds', profileCollectionIds)
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
       updatedView[viewIndex].playlist = filterReleasesList(profileCollectionIds)
       setFetchedCollection(true)
@@ -155,6 +149,7 @@ const Profile = ({ profilePubkey }) => {
     profileCollectionReleases?.length === 0 &&
     profileHubs?.length === 0 &&
     fetchedAll
+    
   return (
     <>
       <Head>
