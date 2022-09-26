@@ -6,7 +6,7 @@ import { Typography } from '@mui/material'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import { useSnackbar } from 'notistack'
 
-const ProfileToggle = ({ isActive, profileTabs, viewHandler, type, releaseData }) => {
+const TabHeader = ({ isActive, profileTabs, viewHandler, type, releaseData, loaded }) => {
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { enqueueSnackbar } = useSnackbar()
 
@@ -23,8 +23,10 @@ const ProfileToggle = ({ isActive, profileTabs, viewHandler, type, releaseData }
   return (
     <ResponsiveContainer
       sx={{
+        
         borderBottom: 1,
-        borderColor: 'divider',
+        borderColor: 'divider'
+        
       }}
     >
       <Box sx={{ display: 'flex', flexDirection: 'row', rowGap: 1, pb: 1 }}>
@@ -93,4 +95,4 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
-export default ProfileToggle
+export default TabHeader

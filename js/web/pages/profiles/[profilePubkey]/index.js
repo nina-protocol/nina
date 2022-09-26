@@ -6,11 +6,9 @@ const Profile = dynamic(() => import('../../../components/Profile'))
 const ProfilePage = (props) => {
   const { profilePubkey } = props
   return (
-   
     <ResponsiveProfileContainer>
       <Profile profilePubkey={profilePubkey} />
     </ResponsiveProfileContainer>
-
   )
 }
 

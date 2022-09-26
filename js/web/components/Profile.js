@@ -10,8 +10,8 @@ import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/trun
 const Dots = dynamic(() => import('./Dots'))
 const TabHeader = dynamic(() => import('./TabHeader'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
-const Profile = ({ profilePubkey }) => {
 
+const Profile = ({ profilePubkey }) => {
   const {
     getUserCollectionAndPublished,
     releaseState,
@@ -30,10 +30,12 @@ const Profile = ({ profilePubkey }) => {
   const [profileHubs, setProfileHubs] = useState(undefined)
   const [activeView, setActiveView] = useState(undefined)
   const [profileCollectionIds, setProfileCollectionIds] = useState(undefined)
-  const [fetchedUser, setFetchedUser] = useState(false)
-  const [fetchedReleases, setFetchedReleases] = useState(false)
-  const [fetchedHubs, setFetchedHubs] = useState(false)
-  const [fetchedCollection, setFetchedCollection] = useState(false)
+  const [fetched, setFetched] = useState({
+    user: false,
+    releases: false,
+    collection: false,
+    hubs: false,
+  })
   const [views, setViews] = useState([
     { name: 'releases', playlist: undefined, visible: false },
     { name: 'collection', playlist: undefined, visible: false },
@@ -60,96 +62,99 @@ const Profile = ({ profilePubkey }) => {
       )
       setProfileCollectionIds(collectionIds)
     }
-    if (profilePubkey) {
-      setFetchedUser(true)
-      getUserData(profilePubkey)
-    }
+
+    getUserData(profilePubkey)
+    fetched.user = true
   }, [profilePubkey])
 
   useEffect(() => {
     let viewIndex
     let updatedView = views.slice()
+
     if (profilePubkey) {
       const releases = filterReleasesPublishedByUser(profilePubkey)
       setProfilePublishedReleases(releases)
+
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
       updatedView[viewIndex].playlist = releases
-      setFetchedReleases(true)
+
+        fetched.releases = true
+        setFetched({
+          ...fetched,
+        })
+  
+
       setProfileCollectionReleases(filterReleasesList(profileCollectionIds))
+
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
       updatedView[viewIndex].playlist = filterReleasesList(profileCollectionIds)
-      setFetchedCollection(true)
+   
+        fetched.collection = true
+        setFetched({
+          ...fetched,
+        })
+  
+
       const hubs = filterHubsForUser(profilePubkey)
+
       setProfileHubs(hubs)
-      setFetchedHubs(true)
+        fetched.hubs = true
+        setFetched({
+          ...fetched,
+        })
     }
+
     setViews(updatedView)
-  }, [profileCollectionIds, releaseState])
+  }, [ profileCollectionIds, releaseState])
 
   useEffect(() => {
-    if (fetchedReleases && profilePublishedReleases?.length > 0) {
+    let viewIndex
+    let updatedView = views.slice()
+
+    if (profilePublishedReleases?.length > 0 && fetched.releases) {
+      viewIndex = updatedView.findIndex((view) => view.name === 'releases')
+      updatedView[viewIndex].visible = true
+    }
+    if (profileCollectionReleases?.length > 0 && fetched.collection) {
+      viewIndex = updatedView.findIndex((view) => view.name === 'collection')
+      updatedView[viewIndex].visible = true
+    }
+
+    if (profileHubs?.length > 0 && fetched.hubs) {
+      viewIndex = updatedView.findIndex((view) => view.name === 'hubs')
+      updatedView[viewIndex].visible = true
+    }
+    setViews(updatedView)
+  }, [profilePublishedReleases, profileCollectionReleases, profileHubs])
+
+  useEffect(() => {
+    if (profilePublishedReleases?.length > 0) {
       setActiveView(0)
     }
     if (
-      fetchedCollection &&
-      fetchedReleases &&
       profilePublishedReleases?.length === 0 &&
       profileCollectionReleases?.length > 0
     ) {
       setActiveView(1)
     }
     if (
-      fetchedCollection &&
-      fetchedReleases &&
-      fetchedHubs &&
+      fetched.collection &&
+      fetched.releases &&
+      fetched.hubs &&
       profilePublishedReleases?.length === 0 &&
-      (profileCollectionReleases?.length === 0) & (profileHubs?.length > 0)
+      profileCollectionReleases?.length === 0 &&
+      profileHubs?.length > 0
     ) {
       setActiveView(2)
     }
-  }, [profilePublishedReleases, profileCollectionReleases])
-
-  useEffect(() => {
-    let viewIndex
-    let updatedView = views.slice()
-
-    if (profilePublishedReleases?.length > 0) {
-      viewIndex = updatedView.findIndex((view) => view.name === 'releases')
-
-      updatedView[viewIndex].visible = true
-    }
-    if (profileCollectionReleases?.length > 0) {
-      viewIndex = updatedView.findIndex((view) => view.name === 'collection')
-      updatedView[viewIndex].visible = true
-    }
-
-    setViews(updatedView)
-  }, [profilePublishedReleases, profileCollectionReleases])
-
-  useEffect(() => {
-    let viewIndex
-    let updatedView = views.slice()
-
-    if (profileHubs && profileHubs?.length > 0 && fetchedHubs) {
-      viewIndex = updatedView.findIndex((view) => view.name === 'hubs')
-      updatedView[viewIndex].visible = true
-    }
-    setViews(updatedView)
-  }, [profileHubs])
+  }, [profilePublishedReleases, profileCollectionReleases, profileHubs])
 
   const viewHandler = (event) => {
     const index = parseInt(event.target.id)
     setActiveView(index)
+    console.log('index', index)
   }
 
-  const fetchedAll = fetchedCollection && fetchedHubs && fetchedReleases
-
-  const noProfile =
-    profilePublishedReleases?.length === 0 &&
-    profileCollectionReleases?.length === 0 &&
-    profileHubs?.length === 0 &&
-    fetchedAll
-    
   return (
     <>
       <Head>
@@ -182,52 +187,50 @@ const Profile = ({ profilePubkey }) => {
       <ResponsiveProfileContainer>
         <ResponsiveProfileHeaderContainer>
           <ResponsiveProfileDetailHeaderContainer>
-            {!fetchedUser && (
-              <ResponsiveDotHeaderContainer>
-                <Dots />
-              </ResponsiveDotHeaderContainer>
-            )}
-            {fetchedUser && (
+       
+            {fetched.user && profilePubkey && (
               <>
                 <Typography>{truncateAddress(profilePubkey)}</Typography>
               </>
             )}
-            {noProfile && (
-              <Typography>No profile found at this address</Typography>
-            )}
-            {fetchedUser && artistNames?.length > 0 && (
+            {fetched.user && artistNames?.length > 0 && (
               <Box>
                 {`Publishes as ${artistNames?.map((name) => name).join(', ')}`}
               </Box>
             )}
+      
           </ResponsiveProfileDetailHeaderContainer>
         </ResponsiveProfileHeaderContainer>
-        {!noProfile && (
-          <Box sx={{ py: 1 }}>
-            <TabHeader
-              viewHandler={viewHandler}
-              isActive={activeView}
-              profileTabs={views}
-            />
-          </Box>
-        )}
+        {profilePublishedReleases?.length > 0 &&
+          profileCollectionReleases?.length > 0 &&
+          profileHubs?.length > 0 &&
+          fetched.user && (
+            <Box sx={{ py: 1 }}>
+              <TabHeader
+                viewHandler={viewHandler}
+                isActive={activeView}
+                profileTabs={views}
+              />
+            </Box>
+          )}
 
         <ResponsiveProfileContentContainer>
+          {activeView === undefined && (
+            <ResponsiveDotContainer>
+              <Dots />
+            </ResponsiveDotContainer>
+          )}
           {activeView === 0 && (
             <>
-              {!fetchedReleases && (
+              {!fetched.releases &&  (
                 <ResponsiveDotContainer>
                   <Dots />
                 </ResponsiveDotContainer>
               )}
-              {fetchedReleases && profilePublishedReleases.length === 0 && (
+              {fetched.releases && profilePublishedReleases.length === 0 && (
                 <Box>No releases belong to this address</Box>
               )}
-              {fetchedReleases && profilePublishedReleases.length > 0 && (
-                // <ProfileReleaseTable
-                //   allReleases={profilePublishedReleases}
-                //   tableCategories={releaseTabs}
-                // />
+              {fetched.releases && profilePublishedReleases.length > 0 && (
                 <ReusableTable
                   tableType={'profilePublishedReleases'}
                   releases={profilePublishedReleases}
@@ -238,15 +241,15 @@ const Profile = ({ profilePubkey }) => {
 
           {activeView === 1 && (
             <>
-              {!fetchedCollection && (
+              {!fetched.collection && (
                 <ResponsiveDotContainer>
                   <Dots />
                 </ResponsiveDotContainer>
               )}
-              {fetchedCollection && profileCollectionReleases.length === 0 && (
+              {fetched.collection && profileCollectionReleases.length === 0 && (
                 <Box>No collection found at this address</Box>
               )}
-              {fetchedCollection && profileCollectionReleases.length > 0 && (
+              {fetched.collection && profileCollectionReleases.length > 0 && (
                 <ReusableTable
                   tableType={'profileCollectionReleases'}
                   releases={profileCollectionReleases}
@@ -256,15 +259,15 @@ const Profile = ({ profilePubkey }) => {
           )}
           {activeView === 2 && (
             <>
-              {!fetchedHubs && (
+              {!fetched.hubs && (
                 <ResponsiveDotContainer>
                   <Dots />
                 </ResponsiveDotContainer>
               )}
-              {fetchedHubs && profileHubs.length === 0 && (
+              {fetched.hubs && profileHubs.length === 0 && (
                 <Box>No Hubs belong to this address</Box>
               )}
-              {fetchedHubs && profileHubs.length > 0 && (
+              {fetched.hubs && profileHubs.length > 0 && (
                 <ReusableTable
                   tableType={'profileHubs'}
                   releases={profileHubs}
@@ -322,7 +325,7 @@ const ResponsiveProfileHeaderContainer = styled(Box)(({ theme }) => ({
   pl: 1,
   pb: 1,
   maxWidth: '100vw',
-  minHeight: '115px',
+  minHeight: '100px',
   [theme.breakpoints.down('md')]: {
     width: '100vw',
     overflow: 'hidden',

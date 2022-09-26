@@ -217,7 +217,7 @@ const ReusableTableBody = ({ releases, tableType }) => {
       {rows?.map((row, i) => (
         <>
           <Link key={row.id} href={row.link} passHref>
-            <TableRow key={i} hover>
+            <TableRow key={i} hover sx={{cursor: 'pointer'}}>
               {Object.keys(row).map((cellName) => {
                 const cellData = row[cellName]
 
@@ -264,13 +264,13 @@ const ReusableTableBody = ({ releases, tableType }) => {
                   } else if (cellName === 'image') {
                     return (
                       <StyledImageTableCell align="left">
-                        <Box sx={{ width: '50px', textAlign: 'left' }}>
+                        <Box sx={{ width: '50px', textAlign: 'left', pr:'15px' }}>
                           <Image
                             height={'100%'}
                             width={'100%'}
                             layout="responsive"
                             src={getImageFromCDN(
-                              cellData,
+                              row.image,
                               400,
                               Date.parse(row.date)
                             )}
@@ -287,7 +287,19 @@ const ReusableTableBody = ({ releases, tableType }) => {
                         <HubDescription description={cellData || null} />
                       </>
                     )
-                  } else {
+                  } else if (cellName === 'title') {
+                    return (
+                      <StyledTableCell>
+                                 <OverflowContainer>
+
+                                
+                        <Typography sx={{textDecoration: 'underline'}} noWrap>{cellData}</Typography>
+                        </OverflowContainer>
+                      </StyledTableCell>
+                    )
+                  } 
+                  
+                  else {
                     return (
                       <>
                         <StyledTableCell>
@@ -325,6 +337,7 @@ const ReusableTable = ({ releases, tableType }) => {
 const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
   padding: '5px',
   textAlign: 'left',
+  cursor: 'pointer',
   [theme.breakpoints.down('md')]: {
     padding: '0 5px',
   },
