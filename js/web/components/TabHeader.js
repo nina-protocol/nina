@@ -6,7 +6,7 @@ import { Typography } from '@mui/material'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import { useSnackbar } from 'notistack'
 
-const TabHeader = ({ isActive, profileTabs, viewHandler, type, releaseData, loaded }) => {
+const TabHeader = ({ isActive, profileTabs, viewHandler, type, releaseData,  }) => {
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { enqueueSnackbar } = useSnackbar()
 
@@ -23,10 +23,8 @@ const TabHeader = ({ isActive, profileTabs, viewHandler, type, releaseData, load
   return (
     <ResponsiveContainer
       sx={{
-        
         borderBottom: 1,
         borderColor: 'divider'
-        
       }}
     >
       <Box sx={{ display: 'flex', flexDirection: 'row', rowGap: 1, pb: 1 }}>
@@ -44,12 +42,13 @@ const TabHeader = ({ isActive, profileTabs, viewHandler, type, releaseData, load
                  
                 }}
               >
+                  <a >
                 <ResponsiveTab key={index}>
                 
                     <Typography
                       key={index}
                       onClickCapture={viewHandler}
-                      sx={{ fontWeight: `${isActive === index ? 'bold' : ''}` }}
+                      sx={{ fontWeight: `${isActive === index ? 'bold' : ''}`}}
                       id={index}
                     >
                       {tab.name}
@@ -57,11 +56,12 @@ const TabHeader = ({ isActive, profileTabs, viewHandler, type, releaseData, load
               
                   {tab.playlist && (
                     <PlayCircleOutlineOutlinedIcon
-                      onClickCapture={() => type === 'hubsView' ? playAllHandler(releaseData) : playAllHandler(tab.playlist)}
-                      sx={{ pr: 1.5, pl: 0.5 }}
+                    onClickCapture={() => type === 'hubsView' ? playAllHandler(releaseData) : playAllHandler(tab.playlist)}
+                    sx={{ pr: 1.5, pl: 0.5 }}
                     />
-                  )}
+                    )}
                 </ResponsiveTab>
+                    </a>
               </Box>
             )}
           </>
