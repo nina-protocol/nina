@@ -7,7 +7,7 @@ import { Typography } from '@mui/material'
 import { useCallback } from 'react'
 import { useAutocomplete } from '@mui/base/AutocompleteUnstyled'
 import Dots from './Dots'
-
+import Link from 'next/link'
 
 const Search = () => {
   // const {
@@ -43,17 +43,17 @@ const Search = () => {
     [response]
   )
 
-  useEffect(() => {
-    const handleSuggestions = async () => {
-      const response =  await NinaSdk.Search.suggestQuery(query)
-      console.log('response :>> ', response);
-      setSuggestions(response)
-    }
-    if (query) {
-      handleSuggestions()
-    }
-   console.log('suggestions :>> ', suggestions);
-  }, [query])
+  // useEffect(() => {
+  //   const handleSuggestions = async () => {
+  //     const response =  await NinaSdk.Search.suggestQuery(query)
+  //     console.log('response :>> ', response);
+  //     setSuggestions(response)
+  //   }
+  //   if (query) {
+  //     handleSuggestions()
+  //   }
+  //  console.log('suggestions :>> ', suggestions);
+  // }, [query])
 
 
 
@@ -61,11 +61,13 @@ const Search = () => {
     e.preventDefault()
     e.stopPropagation()
     setFetchedResponse(false)
+   
     if (e.target.value !== null || e.target.value !== '') {
       setQuery(e.target.value)
       await NinaSdk.Search.withQuery(query).then(setResponse)
       setFetchedResponse(true)
     }
+
     if (query === '') {
     e.preventDefault()
     e.stopPropagation()
@@ -76,6 +78,15 @@ const Search = () => {
     console.log('query', query)
     console.log('response', response)
   }
+
+  const changeHandler = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setQuery(e.target.value)
+    if (e.keyCody === 13){
+      setQuery('')
+    }
+  }
   return (
     <Box sx={{ height: '60vh', width: '960px' }}>
       <Form onSubmit={(e) => handleSubmit(e)}>
@@ -83,7 +94,7 @@ const Search = () => {
           <TextField
             className="input"
             fullWidth
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => changeHandler(e)}
             label="Search for anything..."
             id="fullWidth"
             variant="standard"
@@ -103,7 +114,11 @@ const Search = () => {
             <>
               <Typography sx={{ fontWeight: 'bold' }}>ARTISTS</Typography>
               {response?.artists.map((artist) => (
+                <Link href={`/profiles/${artist.publicKey}`}>
+                  <a>
                 <Typography>{artist.name}</Typography>
+                </a>
+                </Link>
               ))}
             </>
           )}
@@ -118,7 +133,11 @@ const Search = () => {
             <>
               <Typography sx={{ fontWeight: 'bold' }}>RELEASES</Typography>
               {response?.releases.map((release) => (
-                <Typography>{release.title}</Typography>
+                <Link href={`/${release.publicKey}`}>
+                 
+                <Typography> <a>{release.title}   </a></Typography>
+             
+                </Link>
               ))}
             </>
           )}
