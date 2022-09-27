@@ -9,7 +9,23 @@ import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import Image from "next/image";
 
 const HubImageDropzone = ({ type, setArtwork, currentImageUrl, update }) => {
-  const handleChangeStatus = ({ meta, file, remove }, status) => {
+  const handleChangeStatus = ({ meta, file, restart, remove }, status) => {
+    if (meta.status === 'error_validation') {
+      const height = meta.height
+      const width = meta.width
+      const size = meta.size / 1000000
+        if (height !== width) {
+          alert(
+            `your image's dimensions are ${height} x ${width}... \nPlease upload a square image`
+          )
+        } else {
+          alert(
+            `your image is ${size} mb... \nPlease upload an image smaller than 3 mb`
+          )
+        }
+      
+      remove()
+    }
     if (type === "artwork") {
       if (status === "removed") {
         setArtwork(undefined);
@@ -21,6 +37,22 @@ const HubImageDropzone = ({ type, setArtwork, currentImageUrl, update }) => {
       }
     }
   };
+
+  const validateImage = (fileWithMeta) => {
+    console.log('validating');
+    const height = fileWithMeta.meta.height
+    const width = fileWithMeta.meta.width
+    const size = fileWithMeta.file.size / 1000000
+
+    if (height !== width) {
+      return true
+    }
+
+    if (size > 3) {
+      return true
+    }
+    return false
+  }
 
   const inputLayout = (type) => {
     return (
@@ -72,6 +104,7 @@ const HubImageDropzone = ({ type, setArtwork, currentImageUrl, update }) => {
         SubmitButtonComponent={null}
         autoUpload={false}
         canRestart={false}
+        validate={(fileWithMeta) => validateImage(fileWithMeta)}
         classNames={{
           dropzone: classes.dropZone,
           inputLabel: classes.dropZoneInputLabel,
