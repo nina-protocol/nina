@@ -14,10 +14,11 @@ const ProfilePage = (props) => {
 
 const ResponsiveProfileContainer = styled(Box)(({theme}) => ({
   width: theme.maxWidth,
-  minHeight: '60vh',
-  maxHeight:'100vh',
+ 
   [theme.breakpoints.down('md')]: {
-    minHeight:'40vh'
+    minHeight:'40vh',
+    paddingTop: '0px',
+    paddingBottom: '200px'
   }
 }))
 

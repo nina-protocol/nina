@@ -324,10 +324,12 @@ const ReusableTableBody = ({ releases, tableType }) => {
 const ReusableTable = ({ releases, tableType }) => {
   return (
     <ResponsiveContainer>
-      <TableContainer>
+      <TableContainer sx={{marginBottom: '400px'}}>
         <Table>
+          
           <ReusableTableHead tableType={tableType} />
           <ReusableTableBody releases={releases} tableType={tableType} />
+          
         </Table>
       </TableContainer>
     </ResponsiveContainer>
@@ -387,10 +389,20 @@ const StyledTableDescriptionContainer = styled(Box)(({ theme }) => ({
 
 const ResponsiveContainer = styled(Box)(({ theme }) => ({
   width: theme.maxWidth,
-  minHeight: '50vh',
-  margin: 'auto',
+  maxHeight: '80vh',
+  webkitOverflowScrolling: 'touch',
+  overflowY: 'auto',
+  overflowX: 'hidden',
+  '&::-webkit-scrollbar': {
+    display: 'none',
+  },
   [theme.breakpoints.down('md')]: {
     width: '100vw',
+    padding: '0px 30px',
+    height: '60vh',
+    overflowY: 'unset',
+    minHeight: '60vh',
+    height: 'auto'
   },
 }))
 

@@ -203,7 +203,7 @@ const Profile = ({ profilePubkey }) => {
             </Box>
           )}
 
-        <ResponsiveProfileContentContainer>
+        <Box>
           {activeView === undefined && (
             <ResponsiveDotContainer>
               <Dots />
@@ -211,11 +211,6 @@ const Profile = ({ profilePubkey }) => {
           )}
           {activeView === 0 && (
             <>
-              {!fetched.releases && (
-                <ResponsiveDotContainer>
-                  <Dots />
-                </ResponsiveDotContainer>
-              )}
               {fetched.releases && profilePublishedReleases.length === 0 && (
                 <Box>No releases belong to this address</Box>
               )}
@@ -230,11 +225,6 @@ const Profile = ({ profilePubkey }) => {
 
           {activeView === 1 && (
             <>
-              {!fetched.collection && (
-                <ResponsiveDotContainer>
-                  <Dots />
-                </ResponsiveDotContainer>
-              )}
               {fetched.collection && profileCollectionReleases.length === 0 && (
                 <Box>No collection found at this address</Box>
               )}
@@ -248,11 +238,6 @@ const Profile = ({ profilePubkey }) => {
           )}
           {activeView === 2 && (
             <>
-              {!fetched.hubs && (
-                <ResponsiveDotContainer>
-                  <Dots />
-                </ResponsiveDotContainer>
-              )}
               {fetched.hubs && profileHubs.length === 0 && (
                 <Box>No Hubs belong to this address</Box>
               )}
@@ -264,14 +249,7 @@ const Profile = ({ profilePubkey }) => {
               )}
             </>
           )}
-
-          {activeView === 3 && (
-            <ReusableTable
-              tableType={'profilePublishedReleases'}
-              releases={profilePublishedReleases}
-            />
-          )}
-        </ResponsiveProfileContentContainer>
+        </Box>
       </ResponsiveProfileContainer>
     </>
   )
@@ -284,7 +262,11 @@ const ResponsiveProfileContainer = styled(Box)(({ theme }) => ({
   textAlign: 'center',
   minWidth: theme.maxWidth,
   maxWidth: theme.maxWidth,
-  maxHeight: '60vh',
+  height: '86vh',
+  overflowY: 'hidden',
+  margin: '75px auto 0px',
+  // padding: '210px 0',
+  // border: '1px solid blue',
   webkitOverflowScrolling: 'touch',
   [theme.breakpoints.down('md')]: {
     display: 'flex',
@@ -292,7 +274,9 @@ const ResponsiveProfileContainer = styled(Box)(({ theme }) => ({
     justifyItems: 'center',
     alignItems: 'center',
     marginTop: '125px',
-    maxHeight: '80vh',
+    
+    paddingTop: 0,
+    paddingBottom: '210px'
   },
 }))
 
@@ -323,22 +307,24 @@ const ResponsiveProfileHeaderContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
-const ResponsiveProfileContentContainer = styled(Box)(({ theme }) => ({
-  minHeight: '50vh',
-  width: theme.maxWidth,
-  webkitOverflowScrolling: 'touch',
-  overflowY: 'auto',
-  '&::-webkit-scrollbar': {
-    display: 'none',
-  },
-  [theme.breakpoints.down('md')]: {
-    width: '100vw',
-    padding: '0px 30px',
-    height: '100vh',
-    overflowY: 'unset',
-    minHeight: '60vh',
-  },
-}))
+// const ResponsiveProfileContentContainer = styled(Box)(({ theme }) => ({
+
+//   width: theme.maxWidth,
+//   height: '50vh',
+//   webkitOverflowScrolling: 'touch',
+//   overflowY: 'auto',
+//   '&::-webkit-scrollbar': {
+//     display: 'none',
+//   },
+//   [theme.breakpoints.down('md')]: {
+//     width: '100vw',
+//     padding: '0px 30px',
+//     height: '100vh',
+//     overflowY: 'unset',
+//     minHeight: '60vh',
+//     height: 'auto'
+//   },
+// }))
 
 const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
   fontSize: '80px',

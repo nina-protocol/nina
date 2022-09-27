@@ -78,15 +78,14 @@ const HubComponent = ({ hubPubkey }) => {
       updatedView[viewIndex].visible = true
       updatedView[viewIndex].playlist = hubReleases
       fetched.releases = true
-      setFetched({ ...fetched })
     }
     if (hubReleases?.length === 0 && fetched.releases) {
       setActiveView(1)
     }
     if (hubCollaborators?.length > 0) {
       fetched.collaborators = true
-      setFetched({ ...fetched })
     }
+    setFetched({ ...fetched })
     setViews(updatedView)
   }, [hubReleases, hubCollaborators])
 
@@ -149,18 +148,13 @@ const HubComponent = ({ hubPubkey }) => {
           </Box>
         )}
         <ResponsiveHubContentContainer>
-        {activeView === undefined && (
+          {activeView === undefined && (
             <ResponsiveDotContainer>
               <Dots />
             </ResponsiveDotContainer>
           )}
           {activeView === 0 && (
             <>
-              {!fetched.releases && (
-                <ResponsiveDotContainer>
-                  <Dots />
-                </ResponsiveDotContainer>
-              )}
               {fetched.releases && releaseData && (
                 <ReusableTable
                   tableType={'hubReleases'}
@@ -171,11 +165,6 @@ const HubComponent = ({ hubPubkey }) => {
           )}
           {activeView === 1 && (
             <>
-              {!fetched.collaborators && (
-                <ResponsiveDotContainer>
-                  <Dots />
-                </ResponsiveDotContainer>
-              )}
               {fetched.collaborators && !hubCollaborators && (
                 <Box sx={{ my: 1 }}>No collaborators found in this Hub</Box>
               )}

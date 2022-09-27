@@ -46,18 +46,29 @@ const TabHeader = ({
                   textTransform: 'uppercase',
                 }}
               >
-                <a>
-                  <ResponsiveTab key={index}>
-                    <Typography
-                      key={index}
-                      onClickCapture={viewHandler}
-                      sx={{ fontWeight: `${isActive === index ? 'bold' : ''}` }}
-                      id={index}
-                    >
-                      {tab.name}
-                    </Typography>
+                <ResponsiveTab key={index}>
+                  <Typography
+                    key={index}
+                    onClickCapture={viewHandler}
+                    sx={{
+                      fontWeight: `${isActive === index ? 'bold' : ''}`,
+                      '&:hover': {
+                        opacity: 0.5,
+                      },
+                    }}
+                    id={index}
+                  >
+                    {tab.name}
+                  </Typography>
 
-                    {tab.playlist && (
+                  {tab.playlist && (
+                    <Box
+                      sx={{
+                        '&:hover': {
+                          opacity: 0.5,
+                        },
+                      }}
+                    >
                       <PlayCircleOutlineOutlinedIcon
                         onClickCapture={() =>
                           type === 'hubsView'
@@ -66,9 +77,9 @@ const TabHeader = ({
                         }
                         sx={{ pr: 1.5, pl: 0.5 }}
                       />
-                    )}
-                  </ResponsiveTab>
-                </a>
+                    </Box>
+                  )}
+                </ResponsiveTab>
               </Box>
             )}
           </>
@@ -85,6 +96,7 @@ const ResponsiveTab = styled(Box)(({ theme }) => ({
   flexDirection: 'row',
   textTransform: 'uppercase',
   minWidth: '100px',
+
   [theme.breakpoints.down('md')]: {
     paddingLeft: '15px',
   },
