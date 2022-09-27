@@ -78,34 +78,26 @@ const Profile = ({ profilePubkey }) => {
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
       updatedView[viewIndex].playlist = releases
 
-        fetched.releases = true
-        setFetched({
-          ...fetched,
-        })
-  
+      fetched.releases = true
 
       setProfileCollectionReleases(filterReleasesList(profileCollectionIds))
 
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
       updatedView[viewIndex].playlist = filterReleasesList(profileCollectionIds)
-   
-        fetched.collection = true
-        setFetched({
-          ...fetched,
-        })
-  
+
+      fetched.collection = true
 
       const hubs = filterHubsForUser(profilePubkey)
 
       setProfileHubs(hubs)
-        fetched.hubs = true
-        setFetched({
-          ...fetched,
-        })
+      fetched.hubs = true
+      setFetched({
+        ...fetched,
+      })
     }
 
     setViews(updatedView)
-  }, [ profileCollectionIds, releaseState])
+  }, [profileCollectionIds, releaseState])
 
   useEffect(() => {
     let viewIndex
@@ -152,7 +144,6 @@ const Profile = ({ profilePubkey }) => {
   const viewHandler = (event) => {
     const index = parseInt(event.target.id)
     setActiveView(index)
-    console.log('index', index)
   }
 
   return (
@@ -187,7 +178,6 @@ const Profile = ({ profilePubkey }) => {
       <ResponsiveProfileContainer>
         <ResponsiveProfileHeaderContainer>
           <ResponsiveProfileDetailHeaderContainer>
-       
             {fetched.user && profilePubkey && (
               <>
                 <Typography>{truncateAddress(profilePubkey)}</Typography>
@@ -198,7 +188,6 @@ const Profile = ({ profilePubkey }) => {
                 {`Publishes as ${artistNames?.map((name) => name).join(', ')}`}
               </Box>
             )}
-      
           </ResponsiveProfileDetailHeaderContainer>
         </ResponsiveProfileHeaderContainer>
         {profilePublishedReleases?.length > 0 &&
@@ -222,7 +211,7 @@ const Profile = ({ profilePubkey }) => {
           )}
           {activeView === 0 && (
             <>
-              {!fetched.releases &&  (
+              {!fetched.releases && (
                 <ResponsiveDotContainer>
                   <Dots />
                 </ResponsiveDotContainer>
