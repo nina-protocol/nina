@@ -25,6 +25,7 @@ const linksConnected = [
   'releases',
   'upload',
   'faq',
+  'dev',
   'radio',
   'the soft lp',
 ]
@@ -35,6 +36,7 @@ const linksNotConnected = [
   'hubs',
   'upload',
   'faq',
+  'dev',
   'radio',
   'the soft lp',
 ]
@@ -90,6 +92,22 @@ const NavDrawer = () => {
                   </ListItem>
                 </Link>
               )
+            case 'dev':
+              return (
+                <ListItem button key={link}>
+                  <StyledListItemText>
+                    <a
+                      href="https://dev.ninaprotocol.com/"
+                      target="_blank"
+                      rel="noreferrer"
+                      className={`${classes.drawerLink}`}
+                      passHref
+                    >
+                      Nina Dev
+                    </a>
+                  </StyledListItemText>
+                </ListItem>
+              )                
             case 'releases':
               return (
                 <Link
