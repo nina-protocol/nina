@@ -324,17 +324,30 @@ const ReusableTableBody = ({ releases, tableType }) => {
 const ReusableTable = ({ releases, tableType }) => {
   return (
     <ResponsiveContainer>
-      <TableContainer sx={{marginBottom: '400px'}}>
+      <ResponsiveTableContainer >
         <Table>
           
           <ReusableTableHead tableType={tableType} />
           <ReusableTableBody releases={releases} tableType={tableType} />
           
         </Table>
-      </TableContainer>
+      </ResponsiveTableContainer>
     </ResponsiveContainer>
   )
 }
+
+const ResponsiveTableContainer = styled(TableCell)(({theme}) => ({
+  marginBottom: '400px',
+  width: '100vw',
+  borderBottom: 'none',
+  [theme.breakpoints.down('md')]: {
+    paddingBottom: '100px',
+    overflowY: 'unset',
+    height: '100% !important',
+    paddingLeft: 0,
+    paddingRight: 0
+  }
+}))
 
 const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
   padding: '5px',
@@ -366,7 +379,7 @@ const StyledTableCellButtonsContainer = styled(TableCell)(({ theme }) => ({
   padding: '5px 0',
   textAlign: 'left',
   [theme.breakpoints.down('md')]: {
-    padding: '0 5px',
+    padding: '0px 0px',
   },
 }))
 
@@ -398,11 +411,8 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
   },
   [theme.breakpoints.down('md')]: {
     width: '100vw',
-    padding: '0px 30px',
-    height: '60vh',
+    maxHeight: 'unset',
     overflowY: 'unset',
-    minHeight: '60vh',
-    height: 'auto'
   },
 }))
 

@@ -17,8 +17,7 @@ const ResponsiveProfileContainer = styled(Box)(({theme}) => ({
  
   [theme.breakpoints.down('md')]: {
     minHeight:'40vh',
-    paddingTop: '0px',
-    paddingBottom: '200px'
+    padding: '0'
   }
 }))
 

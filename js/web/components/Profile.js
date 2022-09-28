@@ -203,7 +203,7 @@ const Profile = ({ profilePubkey }) => {
             </Box>
           )}
 
-        <Box>
+        <>
           {activeView === undefined && (
             <ResponsiveDotContainer>
               <Dots />
@@ -249,7 +249,7 @@ const Profile = ({ profilePubkey }) => {
               )}
             </>
           )}
-        </Box>
+        </>
       </ResponsiveProfileContainer>
     </>
   )
@@ -265,18 +265,18 @@ const ResponsiveProfileContainer = styled(Box)(({ theme }) => ({
   height: '86vh',
   overflowY: 'hidden',
   margin: '75px auto 0px',
-  // padding: '210px 0',
-  // border: '1px solid blue',
   webkitOverflowScrolling: 'touch',
   [theme.breakpoints.down('md')]: {
     display: 'flex',
     flexDirection: 'column',
     justifyItems: 'center',
     alignItems: 'center',
-    marginTop: '125px',
-    
+    marginTop: '25px', 
     paddingTop: 0,
-    paddingBottom: '210px'
+    minHeight: '100% !important',
+    maxHeight: '80vh',
+    overflow: 'hidden',
+    marginLeft: 0,
   },
 }))
 
@@ -336,20 +336,10 @@ const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
   verticalAlign: 'middle',
   [theme.breakpoints.down('md')]: {
     fontSize: '30px',
-    left: '47%',
-    top: '53%',
+    left: '50%',
+    top: '50%',
   },
 }))
 
-const ResponsiveDotHeaderContainer = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  top: '20%',
-  left: '20%',
-  fontSize: '80px',
-  [theme.breakpoints.down('md')]: {
-    fontSize: '30px',
-    left: '13%',
-  },
-}))
 
 export default Profile
