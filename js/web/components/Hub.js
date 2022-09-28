@@ -189,7 +189,9 @@ const ResponsiveHubContainer = styled(Box)(({ theme }) => ({
   textAlign: 'center',
   minWidth: theme.maxWidth,
   maxWidth: theme.maxWidth,
-  maxHeight: '60vh',
+  height: '86vh',
+  overflowY: 'hidden',
+  margin: '75px auto 0px',
   webkitOverflowScrolling: 'touch',
 
   [theme.breakpoints.down('md')]: {
@@ -197,8 +199,12 @@ const ResponsiveHubContainer = styled(Box)(({ theme }) => ({
     flexDirection: 'column',
     justifyItems: 'center',
     alignItems: 'center',
-    marginTop: '125px',
+    marginTop: '25px', 
+    paddingTop: 0,
+    minHeight: '100% !important',
     maxHeight: '80vh',
+    overflow: 'hidden',
+    marginLeft: 0,
   },
 }))
 

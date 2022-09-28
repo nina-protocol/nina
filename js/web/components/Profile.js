@@ -307,25 +307,6 @@ const ResponsiveProfileHeaderContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
-// const ResponsiveProfileContentContainer = styled(Box)(({ theme }) => ({
-
-//   width: theme.maxWidth,
-//   height: '50vh',
-//   webkitOverflowScrolling: 'touch',
-//   overflowY: 'auto',
-//   '&::-webkit-scrollbar': {
-//     display: 'none',
-//   },
-//   [theme.breakpoints.down('md')]: {
-//     width: '100vw',
-//     padding: '0px 30px',
-//     height: '100vh',
-//     overflowY: 'unset',
-//     minHeight: '60vh',
-//     height: 'auto'
-//   },
-// }))
-
 const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
   fontSize: '80px',
   position: 'absolute',
