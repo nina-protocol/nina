@@ -150,9 +150,11 @@ const HubComponent = ({ hubPubkey }) => {
         <ResponsiveHubContentContainer>
           {activeView === undefined && (
             <ResponsiveDotContainer>
-              <Dots />
+              <Box sx={{width: '100%', margin: 'auto'}}>
+                <Dots />
+              </Box>
             </ResponsiveDotContainer>
-          )}
+           )} 
           {activeView === 0 && (
             <>
               {fetched.releases && releaseData && (
@@ -241,15 +243,8 @@ const ResponsiveHubContentContainer = styled(Box)(({ theme }) => ({
 
 const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
   fontSize: '80px',
-  position: 'absolute',
-  left: '50%',
-  top: '50%',
-  display: 'table-cell',
-  textAlign: 'center',
-  verticalAlign: 'middle',
-  display: 'table-cell',
-  textAlign: 'center',
-  verticalAlign: 'middle',
+  display: 'flex',
+  height: '100%',
   [theme.breakpoints.down('md')]: {
     fontSize: '30px',
     left: '47%',
@@ -257,14 +252,5 @@ const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
-const ResponsiveDotHeaderContainer = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  top: '20%',
-  left: '20%',
-  fontSize: '80px',
-  [theme.breakpoints.down('md')]: {
-    fontSize: '30px',
-    left: '13%',
-  },
-}))
+
 export default HubComponent

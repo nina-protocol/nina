@@ -204,14 +204,14 @@ const Profile = ({ profilePubkey }) => {
           )}
 
         <>
-          {/* {!activeView === undefined && ( */}
+          {!activeView === undefined && (
             <ResponsiveDotContainer>
               <Box sx={{margin: 'auto'}}>
                 <Dots />
               </Box>
             </ResponsiveDotContainer>
-          {/* )} */}
-          {/* {activeView === 0 && (
+          )}
+          {activeView === 0 && (
             <>
               {fetched.releases && profilePublishedReleases.length === 0 && (
                 <Box>No releases belong to this address</Box>
@@ -250,7 +250,7 @@ const Profile = ({ profilePubkey }) => {
                 />
               )}
             </>
-          )} */}
+          )}
         </>
       </ResponsiveProfileContainer>
     </>
