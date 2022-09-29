@@ -137,7 +137,7 @@ const HubComponent = ({ hubPubkey }) => {
           {fetched.info && hubData && <HubHeader hubData={hubData} />}
         </ResponsiveHubHeaderContainer>
         {fetched.info && hubData && (
-          <Box sx={{ py: 1 }}>
+          <ResponsiveTabContainer>
             <TabHeader
               viewHandler={viewHandler}
               isActive={activeView}
@@ -145,7 +145,7 @@ const HubComponent = ({ hubPubkey }) => {
               releaseData={releaseData}
               type={'hubsView'}
             />
-          </Box>
+          </ResponsiveTabContainer>
         )}
         <ResponsiveHubContentContainer>
           {activeView === undefined && (
@@ -205,7 +205,7 @@ const ResponsiveHubContainer = styled(Box)(({ theme }) => ({
     paddingTop: 0,
     minHeight: '100% !important',
     maxHeight: '80vh',
-    overflow: 'hidden',
+    overflow: 'scroll',
     marginLeft: 0,
   },
 }))
@@ -222,6 +222,14 @@ const ResponsiveHubHeaderContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     width: '100vw',
   },
+}))
+
+const ResponsiveTabContainer = styled(Box)(({ theme }) => ({
+  py:1,
+  marginTop: '25px',
+  [theme.breakpoints.down('md')]: {
+    marginTop: '25px'
+  }
 }))
 
 const ResponsiveHubContentContainer = styled(Box)(({ theme }) => ({

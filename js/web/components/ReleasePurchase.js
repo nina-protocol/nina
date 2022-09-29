@@ -222,7 +222,6 @@ useEffect(() => {
     }
     setDownloadButtonString('Download')
   }
-
   return (
     <Box>
       <AmountRemaining variant="body2" align="left">
@@ -265,7 +264,7 @@ useEffect(() => {
       {publishedHub && (
         <Typography variant="body2" align="left" paddingBottom="10px">
           <StyledLink
-            href={publishedHub.json.externalUrl}
+            href={`/hubs/${publishedHub.id}`}
             target="_blank"
             rel="noreferrer"
             passHref

@@ -306,6 +306,7 @@ const ResponsiveProfileHeaderContainer = styled(Box)(({ theme }) => ({
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'no-wrap',
+    height: '100px',
   },
 }))
 

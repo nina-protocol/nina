@@ -44,7 +44,6 @@ const CollectorModal = (props) => {
     }
     setCollectors(collectorsList)
   }
-
   return (
     <Box>
       <Cta
@@ -84,12 +83,12 @@ const CollectorModal = (props) => {
                   return (
                     <tr key={i}>
                       <td>
-                        <Link href={`/collection/${entry}`} passHref>
+                        <Link href={`/profiles/${entry}`} passHref>
                           {`${entry.slice(0, 4) + '..' + entry.slice(-4)}`}
                         </Link>
                       </td>
                       <td>
-                        <Link href={`/collection/${entry}`} passHref>
+                        <Link href={`/profiles/${entry}`} passHref>
                           View Collection
                         </Link>
                       </td>

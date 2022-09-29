@@ -40,6 +40,8 @@ const HubHeader = ({  hubData }) => {
     return desc?.length > 24 ? `${desc.substring(0, 24)}...` : desc
   }
   return (
+    <Box sx={{display: 'flex', flexDirection: 'column',}}>
+   
     <ResponsiveHubHeader >
       <Box sx={{ width: '100px' }}>
         <Image
@@ -61,11 +63,24 @@ const HubHeader = ({  hubData }) => {
         </Link>
       )}
       {hubData?.json.description && (
-        <Typography sx={{ pr: 2 }}>
+        <OverflowContainer>
+
+        <OverflowTypography >
           {descriptionFilter(hubDescription)}
-        </Typography>
+        </OverflowTypography>
+        </OverflowContainer>
       )}
     </ResponsiveHubHeader>
+    <ResponsiveUrlContainer>
+    <Typography sx={{ pb: 2, fontSize: '12px' }}>
+      <Link href={hubData?.json.externalUrl}>
+      <a>
+     {`${(hubData?.json.externalUrl).substring(8, hubData?.json.externalUrl.length)}`} 
+      </a>
+      </Link>
+    </Typography>
+      </ResponsiveUrlContainer>
+    </Box>
   )
 }
 
@@ -83,5 +98,36 @@ const ResponsiveHubHeader = styled(Box)(({ theme }) => ({
     paddingRight: '15px'
   },
 }))
- 
+const ResponsiveUrlContainer = styled(Box)(({ theme }) => ({
+paddingBottom: 2,
+fontSize: '12px',
+textAlign: 'left',
+  [theme.breakpoints.down('md')]: {
+  paddingLeft: '15px',
+
+  }
+}))
+
+const OverflowContainer = styled(Box)(({ theme }) => ({
+  overflow: 'hidden',
+  minWidth: '10vw',
+  maxWidth: '50vw',
+  height: '100px',
+  textAlign: 'left',
+  textOverflow: 'ellipsis',
+  [theme.breakpoints.down('md')]: {
+    minWidth: '0',
+    height: '75px'
+  },
+}))
+
+const OverflowTypography = styled(Typography)(({ theme }) => ({
+  noWrap: false,
+  paddingRight: 2,
+  [theme.breakpoints.down('md')]: {
+    noWrap: true,
+    height: '75px'
+  }
+}))
+
 export default HubHeader
