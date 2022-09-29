@@ -1,8 +1,16 @@
 import Head from 'next/head'
+import dynamic from 'next/dynamic'
 import Release from '../../components/Release'
+const NotFound = dynamic(() => import('../../components/NotFound'))
+
 
 const ReleaseMarketPage = (props) => {
   const { metadata } = props
+  if (!metadata) {
+    return (
+      <NotFound />
+    )
+  }
   return (
     <>
       <Head>
@@ -50,7 +58,7 @@ export const getServerSideProps = async (context) => {
   const metadataJson = await metadataResult.json()
   return {
     props: {
-      metadata: metadataJson[releasePubkey],
+      metadata: metadataJson[releasePubkey] || null,
       releasePubkey,
     },
   }
