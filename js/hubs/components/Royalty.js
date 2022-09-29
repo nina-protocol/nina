@@ -120,7 +120,7 @@ const Royalty = (props) => {
         <Fade in={open}>
           <StyledPaper>
             <Typography align="center" variant="h4" id="transition-modal-title">
-              Revenue Information:
+              Revenue Share Information:
             </Typography>
             <List>
               {release?.royaltyRecipients &&
@@ -182,7 +182,6 @@ const Royalty = (props) => {
                             </Box>
                           }
                         />
-
                         {collectButton}
                       </ListItem>
                     );
