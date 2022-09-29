@@ -6,7 +6,7 @@ import { Button, Typography } from '@mui/material'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
+// import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
@@ -212,6 +212,7 @@ const ReusableTableBody = ({ releases, tableType }) => {
 
     return formattedData
   })
+
   return (
     <TableBody>
       {rows?.map((row, i) => (
@@ -290,15 +291,12 @@ const ReusableTableBody = ({ releases, tableType }) => {
                   } else if (cellName === 'title') {
                     return (
                       <StyledTableCell>
-                                 <OverflowContainer>
-
-                                
+                          <OverflowContainer>
                         <Typography sx={{textDecoration: 'underline'}} noWrap>{cellData}</Typography>
                         </OverflowContainer>
                       </StyledTableCell>
                     )
                   } 
-                  
                   else {
                     return (
                       <>
@@ -337,11 +335,11 @@ const ReusableTable = ({ releases, tableType }) => {
 }
 
 const ResponsiveTableContainer = styled(TableCell)(({theme}) => ({
-  marginBottom: '400px',
   width: '100vw',
   borderBottom: 'none',
+  padding: '0px',
+  paddingBottom: '100px',
   [theme.breakpoints.down('md')]: {
-    paddingBottom: '100px',
     overflowY: 'unset',
     height: '100% !important',
     paddingLeft: 0,

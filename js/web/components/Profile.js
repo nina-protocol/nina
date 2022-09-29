@@ -19,7 +19,7 @@ const Profile = ({ profilePubkey }) => {
     filterReleasesList,
   } = useContext(Release.Context)
 
-  const { getHubsForUser, filterHubsForUser, hubState } = useContext(
+  const { getHubsForUser, filterHubsForUser } = useContext(
     Hub.Context
   )
 
@@ -204,12 +204,14 @@ const Profile = ({ profilePubkey }) => {
           )}
 
         <>
-          {activeView === undefined && (
+          {/* {!activeView === undefined && ( */}
             <ResponsiveDotContainer>
-              <Dots />
+              <Box sx={{margin: 'auto'}}>
+                <Dots />
+              </Box>
             </ResponsiveDotContainer>
-          )}
-          {activeView === 0 && (
+          {/* )} */}
+          {/* {activeView === 0 && (
             <>
               {fetched.releases && profilePublishedReleases.length === 0 && (
                 <Box>No releases belong to this address</Box>
@@ -248,7 +250,7 @@ const Profile = ({ profilePubkey }) => {
                 />
               )}
             </>
-          )}
+          )} */}
         </>
       </ResponsiveProfileContainer>
     </>
@@ -309,12 +311,11 @@ const ResponsiveProfileHeaderContainer = styled(Box)(({ theme }) => ({
 
 const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
   fontSize: '80px',
-  position: 'absolute',
-  left: '50%',
-  top: '50%',
-  display: 'table-cell',
+  display: 'flex',
+  width: '100%',
+  height: '100%',
+  display: 'flex', 
   textAlign: 'center',
-  verticalAlign: 'middle',
   [theme.breakpoints.down('md')]: {
     fontSize: '30px',
     left: '50%',
