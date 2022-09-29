@@ -63,8 +63,6 @@ const HubsModal = (props) => {
                         <a
                           href={`/hubs/${entry.id}`}
                           passHref
-                          target="_blank"
-                          rel="noopener noreferrer"      
                         >
                           {entry.json.displayName}
                         </a>

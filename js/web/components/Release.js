@@ -31,7 +31,7 @@ const ReleaseComponent = ({ metadataSsr }) => {
   const [metadata, setMetadata] = useState(
     metadataSsr || releaseState?.metadata[releasePubkey] || null
   )
-
+    console.log('releaseState', releaseState)
   useEffect(() => {
     if (releasePubkey) {
       getRelatedForRelease(releasePubkey)
@@ -94,6 +94,7 @@ const ReleaseComponent = ({ metadataSsr }) => {
               preview={false}
               releasePubkey={releasePubkey}
               userHubs={userHubs}
+          
             />
             <ReleaseCtaWrapper>
               <ReleasePurchase

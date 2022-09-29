@@ -133,9 +133,9 @@ const HubComponent = ({ hubPubkey }) => {
       </Head>
 
       <ResponsiveHubContainer>
-        <ResponsiveHubHeaderContainer>
+        <>
           {fetched.info && hubData && <HubHeader hubData={hubData} />}
-        </ResponsiveHubHeaderContainer>
+        </>
         {fetched.info && hubData && (
           <ResponsiveTabContainer>
             <TabHeader
@@ -226,9 +226,9 @@ const ResponsiveHubHeaderContainer = styled(Box)(({ theme }) => ({
 
 const ResponsiveTabContainer = styled(Box)(({ theme }) => ({
   py:1,
-  marginTop: '25px',
+
   [theme.breakpoints.down('md')]: {
-    marginTop: '25px'
+    marginTop: '0px'
   }
 }))
 
@@ -259,6 +259,7 @@ const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
     top: '53%',
   },
 }))
+
 
 
 export default HubComponent

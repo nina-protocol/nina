@@ -15,7 +15,7 @@ import AddToHubModal from './AddToHubModal.js'
 const { getImageFromCDN, loader } = imageManager
 
 const ReleaseCard = (props) => {
-  const { artwork, metadata, preview, releasePubkey, userHubs } = props
+  const { artwork, metadata, preview, publicKey, releasePubkey, userHubs } = props
   const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
     useContext(Audio.Context)
   const image = useMemo(() => metadata?.image)

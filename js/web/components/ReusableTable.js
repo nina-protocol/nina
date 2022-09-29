@@ -350,16 +350,16 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
   padding: '5px',
   textAlign: 'left',
   cursor: 'pointer',
-  [theme.breakpoints.down('md')]: {
-    padding: '0 5px',
-  },
+  // [theme.breakpoints.down('md')]: {
+  //   padding: '0 5px',
+  // },
 }))
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   padding: '5px',
   textAlign: 'left',
   height: '50px',
   [theme.breakpoints.down('md')]: {
-    padding: '0 5px',
+    padding: '5px',
   },
 }))
 const StyledImageTableCell = styled(TableCell)(({ theme }) => ({

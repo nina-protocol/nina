@@ -36,9 +36,7 @@ const HubHeader = ({  hubData }) => {
       setHubDescription(hubData?.json.description)
     }
   }, [hubData?.json.description])
-  const descriptionFilter = (desc) => {
-    return desc?.length > 24 ? `${desc.substring(0, 24)}...` : desc
-  }
+
   return (
     <Box sx={{display: 'flex', flexDirection: 'column',}}>
    
@@ -63,12 +61,11 @@ const HubHeader = ({  hubData }) => {
         </Link>
       )}
       {hubData?.json.description && (
-        <OverflowContainer>
-
-        <OverflowTypography >
-          {descriptionFilter(hubDescription)}
-        </OverflowTypography>
-        </OverflowContainer>
+        <>
+          <DescriptionOverflowContainer >
+            {hubDescription}
+          </DescriptionOverflowContainer>
+        </>
       )}
     </ResponsiveHubHeader>
     <ResponsiveUrlContainer>
@@ -88,14 +85,20 @@ const ResponsiveHubHeader = styled(Box)(({ theme }) => ({
   display: 'flex',
   minHeight: '115px',
   flexDirection: 'row',
-  alignItems: 'center',
+  alignItems: 'start',
   justifyContent: 'start',
-  py: 1,
+  // py: 1,
   mb: 1,
+  justifyContent: 'start',
+  py: 5,
+  px: 1,
+
   [theme.breakpoints.down('md')]: {
     alignItems: 'left',
     paddingLeft:'15px',
-    paddingRight: '15px'
+
+    width: '100vw',
+    
   },
 }))
 const ResponsiveUrlContainer = styled(Box)(({ theme }) => ({
@@ -108,25 +111,42 @@ textAlign: 'left',
   }
 }))
 
-const OverflowContainer = styled(Box)(({ theme }) => ({
+// const OverflowContainer = styled(Box)(({ theme }) => ({
+//   overflow: 'hidden',
+//   minWidth: '10vw',
+//   maxWidth: '50vw',
+//   height: '100px',
+//   textAlign: 'left',
+//   textOverflow: 'ellipsis',
+//   [theme.breakpoints.down('md')]: {
+//     minWidth: '0',
+//     height: '75px'
+//   },
+// }))
+
+
+const DescriptionOverflowContainer = styled(Box)(({ theme }) => ({
+  alignItems: 'start',
+  textAlign: 'left',
   overflow: 'hidden',
+  display: "-webkit-box",
+  "-webkit-line-clamp": '6',
+  "-webkit-box-orient": "vertical",  
+  textOverflow: 'ellipsis',
   minWidth: '10vw',
   maxWidth: '50vw',
-  height: '100px',
-  textAlign: 'left',
-  textOverflow: 'ellipsis',
-  [theme.breakpoints.down('md')]: {
-    minWidth: '0',
-    height: '75px'
+  '& p': {
+    margin: 0,
   },
-}))
-
-const OverflowTypography = styled(Typography)(({ theme }) => ({
-  noWrap: false,
-  paddingRight: 2,
+  '& h1': {
+    margin: 0,
+  },
+  '& h2': {
+    margin: 0,
+  },
   [theme.breakpoints.down('md')]: {
-    noWrap: true,
-    height: '75px'
+    "-webkit-line-clamp": '6',
+    width: '30vw'
   }
 }))
 

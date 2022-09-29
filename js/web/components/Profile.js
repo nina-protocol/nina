@@ -6,7 +6,6 @@ import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
-
 const Dots = dynamic(() => import('./Dots'))
 const TabHeader = dynamic(() => import('./TabHeader'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
@@ -179,14 +178,14 @@ const Profile = ({ profilePubkey }) => {
         <ResponsiveProfileHeaderContainer>
           <ResponsiveProfileDetailHeaderContainer>
             {fetched.user && profilePubkey && (
-              <>
+              <Box sx={{mb:1}}>
                 <Typography>{truncateAddress(profilePubkey)}</Typography>
-              </>
+              </Box>
             )}
             {fetched.user && artistNames?.length > 0 && (
-              <Box>
+              <ProfileOverflowContainer>
                 {`Publishes as ${artistNames?.map((name) => name).join(', ')}`}
-              </Box>
+              </ProfileOverflowContainer>
             )}
           </ResponsiveProfileDetailHeaderContainer>
         </ResponsiveProfileHeaderContainer>
@@ -324,5 +323,17 @@ const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
+const ProfileOverflowContainer = styled(Box)(({ theme }) => ({
+  overflow: 'hidden',
+  display: "-webkit-box",
+  "-webkit-line-clamp": '3',
+  "-webkit-box-orient": "vertical",  
+  textOverflow: 'ellipsis',
+  [theme.breakpoints.down('md')]: {
+
+    "-webkit-line-clamp": '5',
+
+  }
+}))
 
 export default Profile

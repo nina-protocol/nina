@@ -298,7 +298,7 @@ useEffect(() => {
           </Button>
         </form>
       </Box>
-      {relatedReleases && relatedReleases.length > 1 && (
+      {/* {relatedReleases && relatedReleases.length > 1 && (
         <Link href={`/${releasePubkey}/related`} passHref>
           <Button
             variant="outlined"
@@ -311,7 +311,7 @@ useEffect(() => {
             </Typography>
           </Button>
         </Link>
-      )}
+      )} */}
       {userIsRecipient && (
         <Royalty releasePubkey={releasePubkey} release={release} />
       )}
