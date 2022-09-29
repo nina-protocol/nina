@@ -55,13 +55,11 @@ const Search = () => {
   //  console.log('suggestions :>> ', suggestions);
   // }, [query])
 
-
-
   const handleSubmit = async (e) => {
     e.preventDefault()
     e.stopPropagation()
     setFetchedResponse(false)
-   
+
     if (e.target.value !== null || e.target.value !== '') {
       setQuery(e.target.value)
       await NinaSdk.Search.withQuery(query).then(setResponse)
@@ -69,9 +67,9 @@ const Search = () => {
     }
 
     if (query === '') {
-    e.preventDefault()
-    e.stopPropagation()
-    return
+      e.preventDefault()
+      e.stopPropagation()
+      return
     }
     setQuery('')
     updateResponse()
@@ -83,7 +81,7 @@ const Search = () => {
     e.preventDefault()
     e.stopPropagation()
     setQuery(e.target.value)
-    if (e.keyCody === 13){
+    if (e.keyCody === 13) {
       setQuery('')
     }
   }
@@ -99,55 +97,56 @@ const Search = () => {
             id="fullWidth"
             variant="standard"
             value={query}
+            autoComplete={'off'}
           />
         </SearchInputWrapper>
       </Form>
       <SearchResultsWrapper>
         <ResponsiveSearchResultContainer>
-
           {fetchedResponse === false && (
-            <Box>
-              <Dots />
-            </Box>
+            <ResponsiveDotContainer>
+              <Box sx={{ width: '100%', paddingTop: '25%', margin: 'auto' }}>
+                <Dots />
+              </Box>
+            </ResponsiveDotContainer>
           )}
+          {fetchedResponse === true &&
+            response.artists.length === 0 &&
+            response.releases.length === 0 &&
+            response.hubs.length === 0 && (
+              <>
+                <Typography>No results found</Typography>
+              </>
+            )}
           {fetchedResponse && response.artists.length > 0 && (
             <>
               <Typography sx={{ fontWeight: 'bold' }}>ARTISTS</Typography>
               {response?.artists.map((artist) => (
                 <Link href={`/profiles/${artist.publicKey}`}>
                   <a>
-                <Typography>{artist.name}</Typography>
-                </a>
+                    <Typography>{artist.name}</Typography>
+                  </a>
                 </Link>
               ))}
             </>
           )}
         </ResponsiveSearchResultContainer>
         <ResponsiveSearchResultContainer>
-          {fetchedResponse === false && (
-            <Box>
-              <Dots />
-            </Box>
-          )}
           {fetchedResponse && response.releases.length > 0 && (
             <>
               <Typography sx={{ fontWeight: 'bold' }}>RELEASES</Typography>
               {response?.releases.map((release) => (
                 <Link href={`/${release.publicKey}`}>
-                 
-                <Typography> <a>{release.title}   </a></Typography>
-             
+                  <Typography>
+                    {' '}
+                    <a>{release.title} </a>
+                  </Typography>
                 </Link>
               ))}
             </>
           )}
         </ResponsiveSearchResultContainer>
         <ResponsiveSearchResultContainer>
-          {fetchedResponse === false && (
-            <Box>
-              <Dots />
-            </Box>
-          )}
           {fetchedResponse && response.hubs.length > 0 && (
             <>
               <Typography sx={{ fontWeight: 'bold' }}>HUBS</Typography>
@@ -163,19 +162,29 @@ const Search = () => {
 }
 
 const SearchInputWrapper = styled(Box)(({ theme }) => ({
-  maxWidth: '960px'
+  maxWidth: '960px',
 }))
-const Form = styled('form')(({ theme }) => ({
-  
-}))
-const SearchResultsWrapper = styled(Box)(({theme}) => ({
-  textAlign: 'left'
+const Form = styled('form')(({ theme }) => ({}))
+const SearchResultsWrapper = styled(Box)(({ theme }) => ({
+  textAlign: 'left',
 }))
 const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
   maxHeight: '60vh',
   width: '960px',
   overflow: 'auto',
   webkitOverflowScrolling: 'touch',
-  padding: '10px 0'
+  padding: '10px 0',
 }))
+
+const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
+  fontSize: '80px',
+  display: 'flex',
+  height: '100%',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '30px',
+    left: '47%',
+    top: '53%',
+  },
+}))
+
 export default Search
