@@ -28,7 +28,7 @@ const MediaDropzone = ({ type, setArtwork, setTrack, handleProgress }) => {
           )
         } else {
           alert(
-            `your image is ${size} mb... \nPlease upload an image smaller than 3 mb`
+            `your image is ${size} mb... \nPlease upload an image smaller than 8 mb`
           )
         }
       }
@@ -86,7 +86,7 @@ const MediaDropzone = ({ type, setArtwork, setTrack, handleProgress }) => {
       return true
     }
 
-    if (size > 3) {
+    if (size > 8) {
       return true
     }
     return false
