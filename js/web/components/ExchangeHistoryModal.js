@@ -5,7 +5,7 @@ import Backdrop from '@mui/material/Backdrop'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
-import Nina from '@nina-protocol/nina-sdk/esm/Nina'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 
 const ExchangeHistoryModal = (props) => {
   const { release, exchangeHistory } = props

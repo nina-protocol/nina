@@ -5,8 +5,8 @@ import Button from '@mui/material/Button'
 import Input from '@mui/material/Input'
 import Box from '@mui/material/Box'
 import { useWallet } from '@solana/wallet-adapter-react'
-import Nina from '@nina-protocol/nina-sdk/esm/Nina'
-import Exchange from '@nina-protocol/nina-sdk/esm/Exchange'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
 import Dots from './Dots'
 
 

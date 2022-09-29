@@ -12,8 +12,8 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { useWallet } from "@solana/wallet-adapter-react";
-import Nina from "@nina-protocol/nina-sdk/esm/Nina"
-import Release from "@nina-protocol/nina-sdk/esm/Release";
+import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina"
+import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
 
 const RoyaltyRecipientForm = dynamic(() => import("./RoyaltyRecipientForm"));
 
@@ -73,6 +73,7 @@ const Royalty = (props) => {
             color="primary"
             onClick={toggleForm}
             stlye={{ fontSize: "14px !important" }}
+            fullWidth
           >
             {formToggleText}
           </Button>

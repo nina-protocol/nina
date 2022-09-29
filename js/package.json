@@ -10,7 +10,7 @@
     "hubs"
   ],
   "scripts": {
-    "sdk": "yarn workspace @nina-protocol/nina-sdk",
+    "sdk": "yarn workspace @nina-protocol/nina-internal-sdk",
     "nina-radio": "yarn workspace nina-radio",
     "nina-radio:build": "yarn nina-radio build",
     "web": "yarn workspace web",
@@ -30,7 +30,7 @@
     "@mui/icons-material": "^5.4.1",
     "@mui/material": "^5.6.3",
     "@mui/styles": "^5.6.2",
-    "@nina-protocol/nina-sdk": "0.0.35",
+    "@nina-protocol/nina-internal-sdk": "0.0.35",
     "@sentry/nextjs": "^7.8.0",
     "ansi-regex": "^5.0.1",
     "glob-parent": "^5.1.2",

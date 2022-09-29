@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState, useRef } from "react";
-import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, useMemo } from 'react'
-import Hub from '@nina-protocol/nina-sdk/esm/Hub'
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
@@ -21,8 +22,8 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-
   const { hubAddRelease } = useContext(Hub.Context)
+  const { checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(Nina.Context)
   const [selectedHubId, setSelectedHubId] = useState()
   const [inProgress, setInProgress] = useState(false)
   const userHasHubs = useMemo(() => userHubs?.length > 0, [userHubs])
@@ -34,6 +35,12 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
   }, [userHubs])
 
   const handleRepost = async (e) => {
+    const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.HUB_ADD_RELEASE);
+    if (error) {
+      enqueueSnackbar(error.msg, { variant: "failure" });
+      return;
+    }
+
     setInProgress(true)
     enqueueSnackbar('Adding Release to Hub', {
       variant: 'info',

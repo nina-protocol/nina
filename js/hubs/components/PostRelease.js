@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect, useMemo, useRef } from "react";
 import dynamic from "next/dynamic";
-import Audio from "@nina-protocol/nina-sdk/esm/Audio";
-import Hub from "@nina-protocol/nina-sdk/esm/Hub";
-import Release from "@nina-protocol/nina-sdk/esm/Release";
-import { imageManager } from "@nina-protocol/nina-sdk/esm/utils"
+import Audio from "@nina-protocol/nina-internal-sdk/esm/Audio";
+import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
+import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
+import { imageManager } from "@nina-protocol/nina-internal-sdk/esm/utils"
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -88,12 +88,15 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
           </ImageContainer>
         )}
       </DesktopImageGridItem>
-      <Grid
+      <StyledGrid
         item
         md={6}
         xs={12}
         sx={{
           padding: "0px",
+          maxHeight: {xs: 'unset', md: '30vh'},
+          overflowY: 'scroll',
+          paddingBottom: {md: '15px'}
         }}
       >
         {metadata && metadata.image &&(
@@ -151,7 +154,6 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
                 )}
               </Box>
             </CtaWrapper>
-            {/* <StyledDescription variant="h4" align="left">{metadata.description}</StyledDescription> */}
           </>
         )}
         <ReleasePurchase
@@ -160,7 +162,7 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
           inPost={true}
           hubPubkey={hubPubkey}
         />
-      </Grid>
+      </StyledGrid>
     </>
   );
 };
@@ -175,14 +177,6 @@ const PlayButton = styled(Button)(({ theme }) => ({
   "&:hover": {
     opacity: "50%",
     backgroundColor: `${theme.palette.transparent} !important`,
-  },
-}));
-
-const StyledDescription = styled(Typography)(({ theme }) => ({
-  overflowWrap: "anywhere",
-  [theme.breakpoints.up("md")]: {
-    maxHeight: "225px",
-    overflowY: "scroll",
   },
 }));
 
@@ -204,6 +198,12 @@ const MobileImageWrapper = styled(Grid)(({ theme }) => ({
 
 const ImageContainer = styled(Box)(() => ({
   width: "100%",
+}));
+
+const StyledGrid = styled(Grid)(() => ({
+  '&::-webkit-scrollbar': {
+    display: 'none',
+  },
 }));
 
 const CtaWrapper = styled(Box)(() => ({

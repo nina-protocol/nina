@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect, createElement, Fragment } from "react";
 import dynamic from "next/dynamic";
-import Audio from "@nina-protocol/nina-sdk/esm/Audio";
-import Hub from "@nina-protocol/nina-sdk/esm/Hub";
-import Release from "@nina-protocol/nina-sdk/esm/Release";
-import { imageManager } from "@nina-protocol/nina-sdk/esm/utils"
+import Audio from "@nina-protocol/nina-internal-sdk/esm/Audio";
+import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
+import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
+import { imageManager } from "@nina-protocol/nina-internal-sdk/esm/utils"
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
@@ -217,6 +217,9 @@ const PlayButton = styled(Button)(({ theme }) => ({
 const StyledDescription = styled(Typography)(({ theme }) => ({
   fontSize: '18px !important',
   lineHeight: '20.7px !important',
+  '&::-webkit-scrollbar': {
+    display: 'none',
+  },
   [theme.breakpoints.up("md")]: {
     maxHeight: "275px",
     overflowY: "scroll",

@@ -7,9 +7,9 @@ import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
-import Exchange from '@nina-protocol/nina-sdk/esm/Exchange'
-import Nina from '@nina-protocol/nina-sdk/esm/Nina'
-import Release from '@nina-protocol/nina-sdk/esm/Release'
+import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import CollectorModal from './CollectorModal'
 import HubsModal from './HubsModal'
 import Dots from './Dots'
@@ -18,6 +18,7 @@ import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
+import Royalty from './Royalty'
 
 const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, router, relatedReleases } = props
@@ -31,7 +32,7 @@ const ReleasePurchase = (props) => {
     getRelease,
     getPublishedHubForRelease,
   } = useContext(Release.Context)
-  const { getAmountHeld, collection, ninaClient, usdcBalance } = useContext(Nina.Context)
+  const { getAmountHeld, collection, ninaClient, usdcBalance, checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(Nina.Context)
   const {
     exchangeState,
     filterExchangesForReleaseBuySell,
@@ -141,7 +142,14 @@ useEffect(() => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    let result
+    let result  
+    if (!amountHeld || amountHeld === 0) {
+      const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.RELEASE_PURCHASE);
+      if (error) {
+        enqueueSnackbar(error.msg, { variant: "failure" });
+        return;
+      }
+    }
 
     if (!release.pending) {
       if (!ninaClient.isSol(release.paymentMint) && usdcBalance < ninaClient.nativeToUi(release.price.toNumber(), ninaClient.ids.mints.usdc)) {
@@ -305,6 +313,9 @@ useEffect(() => {
           </Button>
         </Link>
       )}
+      {userIsRecipient && (
+        <Royalty releasePubkey={releasePubkey} release={release} />
+      )}
       {amountHeld > 0 && (
         <Button
           variant="outlined"
@@ -358,6 +369,9 @@ const StyledDescription = styled(Typography)(({ theme }) => ({
   overflowWrap: 'anywhere',
   fontSize: '18px !important',
   lineHeight: '20.7px !important',
+  '&::-webkit-scrollbar': {
+    display: 'none',
+  },
   [theme.breakpoints.up('md')]: {
     maxHeight: '152px',
     overflowY: 'scroll',

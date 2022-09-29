@@ -6,8 +6,8 @@ import React, {
   useCallback,
 } from "react";
 import * as Yup from "yup";
-import Hub from "@nina-protocol/nina-sdk/esm/Hub";
-import Nina from "@nina-protocol/nina-sdk/esm/Nina";
+import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
 import { useSnackbar } from "notistack";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -62,6 +62,8 @@ const HubPostCreate = ({
     bundlrPricePerMb,
     solPrice,
     getSolPrice,
+    NinaProgramAction,
+    checkIfHasBalanceToCompleteAction,
   } = useContext(Nina.Context);
   const hubData = useMemo(
     () => hubState[selectedHubId || hubPubkey],
@@ -163,8 +165,14 @@ const HubPostCreate = ({
 
   const handleSubmit = async () => {
     try {
-      setPostCreated(false);
+      const referenceRelease = formValues.postForm.reference || preloadedRelease
+      const error = checkIfHasBalanceToCompleteAction(referenceRelease ? NinaProgramAction.POST_INIT_VIA_HUB_WITH_REFERENCE_RELEASE : NinaProgramAction.POST_INIT_VIA_HUB);
+      if (error) {
+        enqueueSnackbar(error.msg, { variant: "failure" });
+        return;
+      }
 
+      setPostCreated(false);
       if (update) {
         //update function
       } else {
@@ -183,17 +191,15 @@ const HubPostCreate = ({
             body: formValues.postForm.body,
           };
 
-          if (formValues.postForm.reference || preloadedRelease) {
-            metadataJson.reference = formValues.postForm.reference || preloadedRelease;
+          if (referenceRelease) {
+            metadataJson.reference = referenceRelease;
           }
 
-          metadataResult = (
-            await bundlrUpload(
-              new Blob([JSON.stringify(metadataJson)], {
-                type: "application/json",
-              })
-            )
-          ).data.id;
+          metadataResult = await bundlrUpload(
+            new Blob([JSON.stringify(metadataJson)], {
+              type: "application/json",
+            })
+          )
 
           setMetadataTx(metadataResult);
 

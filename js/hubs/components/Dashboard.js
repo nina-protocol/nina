@@ -1,7 +1,7 @@
 import React, { useState, useContext, useMemo, useEffect } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Typography from "@mui/material/Typography";
-import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import { useSnackbar } from "notistack";

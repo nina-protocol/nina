@@ -10,11 +10,11 @@ import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutli
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import { useWallet, useConnection } from '@solana/wallet-adapter-react'
-import Audio from '@nina-protocol/nina-sdk/esm/Audio'
-import Exchange from '@nina-protocol/nina-sdk/esm/Exchange'
-import Nina from '@nina-protocol/nina-sdk/esm/Nina'
-import Release from '@nina-protocol/nina-sdk/esm/Release'
-import { imageManager } from '@nina-protocol/nina-sdk/esm/utils'
+import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
+import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import { imageManager } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import Image from 'next/image'
 import BuySell from './BuySell'
 import ExchangeHistoryModal from './ExchangeHistoryModal'
@@ -29,7 +29,7 @@ const ExchangeComponent = (props) => {
   const wallet = useWallet()
   const connection = useConnection()
   const { enqueueSnackbar } = useSnackbar()
-  const { ninaClient } = useContext(Nina.Context)
+  const { ninaClient, checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(Nina.Context)
   const { releaseState, getRelease } = useContext(Release.Context)
   const {
     exchangeState,
@@ -77,6 +77,11 @@ const ExchangeComponent = (props) => {
   const handleExchangeAction = async (exchange) => {
     let result
     if (exchange.isInit) {
+      const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.EXCHANGE_INIT);
+      if (error) {
+        enqueueSnackbar(error.msg, { variant: "failure" });
+        return;
+      }  
       showPendingTransaction('Making an offer...')
       result = await exchangeInit(exchange)
       setExchangeAwaitingConfirm(undefined)
@@ -84,6 +89,11 @@ const ExchangeComponent = (props) => {
       showPendingTransaction('Cancelling offer...')
       result = await exchangeCancel(exchange, wallet?.connected, connection)
     } else {
+      const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.EXCHANGE_ACCEPT);
+      if (error) {
+        enqueueSnackbar(error.msg, { variant: "failure" });
+        return;
+      }  
       if (exchange.isSelling) {
         showPendingTransaction('Accepting offer...')
         result = await exchangeAccept(exchange, releasePubkey)

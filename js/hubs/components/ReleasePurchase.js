@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect, useMemo } from "react";
 import axios from "axios";
 import { styled } from "@mui/material/styles";
-import Hub from "@nina-protocol/nina-sdk/esm/Hub";
-import Nina from "@nina-protocol/nina-sdk/esm/Nina";
-import Release from "@nina-protocol/nina-sdk/esm/Release";
+import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
+import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Button from "@mui/material/Button";
 import Link from "next/link";
@@ -12,6 +12,8 @@ import { useSnackbar } from "notistack";
 import Typography from "@mui/material/Typography";
 import { useRouter } from "next/router";
 import Dots from "./Dots";
+import Royalty from "./Royalty";
+
 const HubsModal = dynamic(() => import("./HubsModal"));
 
 import dynamic from "next/dynamic";
@@ -29,7 +31,7 @@ const ReleasePurchase = (props) => {
     getPublishedHubForRelease,
   } = useContext(Release.Context);
   const { hubState } = useContext(Hub.Context)
-  const { getAmountHeld, collection, usdcBalance, ninaClient } = useContext(Nina.Context);
+  const { getAmountHeld, collection, usdcBalance, ninaClient, checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(Nina.Context);
   const [release, setRelease] = useState(undefined);
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey]);
   const [downloadButtonString, setDownloadButtonString] = useState("Download");
@@ -77,6 +79,11 @@ const ReleasePurchase = (props) => {
     e.preventDefault();
     let result;
 
+    const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.RELEASE_PURCHASE_VIA_HUB);
+    if (error) {
+      enqueueSnackbar(error.msg, { variant: "failure" });
+      return;
+    }
     if (!release.pending) {
       let releasePriceUi = ninaClient.nativeToUi(release.price.toNumber(), ninaClient.ids.mints.usdc)
       let convertAmount = releasePriceUi + (releasePriceUi * hubState[hubPubkey].referralFee / 100)
@@ -212,6 +219,9 @@ const ReleasePurchase = (props) => {
             )}
           </Typography>
         </BuyButton>
+      )}
+      {userIsRecipient && (
+        <Royalty releasePubkey={releasePubkey} release={release} />
       )}
     </ReleasePurchaseWrapper>
   );

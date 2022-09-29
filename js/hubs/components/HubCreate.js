@@ -6,8 +6,8 @@ import React, {
   useCallback,
 } from "react";
 import * as Yup from "yup";
-import Hub from "@nina-protocol/nina-sdk/esm/Hub";
-import Nina from "@nina-protocol/nina-sdk/esm/Nina";
+import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
 import { useSnackbar } from "notistack";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -68,6 +68,8 @@ const HubCreate = ({ update, hubData }) => {
     getSolPrice,
     getNpcAmountHeld,
     npcAmountHeld,
+    checkIfHasBalanceToCompleteAction,
+    NinaProgramAction
   } = useContext(Nina.Context);
 
   const [artwork, setArtwork] = useState();
@@ -194,6 +196,11 @@ const HubCreate = ({ update, hubData }) => {
 
   const handleSubmit = async () => {
     try {
+      const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.HUB_INIT_WITH_CREDIT);
+      if (error) {
+        enqueueSnackbar(error.msg, { variant: "failure" });
+        return;
+      }
       if (update) {
         let upload = uploadId;
         const metadataJson = {};
@@ -208,7 +215,7 @@ const HubCreate = ({ update, hubData }) => {
               variant: "info",
             }
           );
-          artworkResult = (await bundlrUpload(artwork.file)).data.id;
+          artworkResult = await bundlrUpload(artwork.file);
           setArtworkTx(artworkResult);
           metadataJson.image = `https://arweave.net/${artworkResult}`;
 
@@ -256,13 +263,11 @@ const HubCreate = ({ update, hubData }) => {
             metadataJson.textColor = textColor;
           }
 
-          metadataResult = (
-            await bundlrUpload(
-              new Blob([JSON.stringify(metadataJson)], {
-                type: "application/json",
-              })
-            )
-          ).data.id;
+          metadataResult = await bundlrUpload(
+            new Blob([JSON.stringify(metadataJson)], {
+              type: "application/json",
+            })
+          )
           setMetadataTx(metadataResult);
           updateUpload(upload, UploadType.metadataJson, metadataResult);
         }
@@ -308,7 +313,7 @@ const HubCreate = ({ update, hubData }) => {
                 variant: "info",
               }
             );
-            artworkResult = (await bundlrUpload(artwork.file)).data.id;
+            artworkResult = await bundlrUpload(artwork.file);
             setArtworkTx(artworkResult);
             upload = createUpload(
               UploadType.artwork,
@@ -345,13 +350,11 @@ const HubCreate = ({ update, hubData }) => {
                 metadataJson.textColor = textColor;
               }
 
-              metadataResult = (
-                await bundlrUpload(
-                  new Blob([JSON.stringify(metadataJson)], {
-                    type: "application/json",
-                  })
-                )
-              ).data.id;
+              metadataResult = await bundlrUpload(
+                new Blob([JSON.stringify(metadataJson)], {
+                  type: "application/json",
+                })
+              )
               setMetadataTx(metadataResult);
               updateUpload(upload, UploadType.metadataJson, metadataResult);
             }

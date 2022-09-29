@@ -6,9 +6,9 @@ import React, {
   useCallback,
 } from 'react'
 import * as Yup from 'yup'
-import Nina from '@nina-protocol/nina-sdk/esm/Nina'
-import Release from '@nina-protocol/nina-sdk/esm/Release'
-import { getMd5FileHash } from "@nina-protocol/nina-sdk/esm/utils"
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import { getMd5FileHash } from "@nina-protocol/nina-internal-sdk/esm/utils"
 import { useSnackbar } from 'notistack'
 import { styled } from '@mui/material/styles'
 import Button from '@mui/material/Button'
@@ -66,6 +66,8 @@ const ReleaseCreate = () => {
     getSolPrice,
     getNpcAmountHeld,
     npcAmountHeld,
+    checkIfHasBalanceToCompleteAction,
+    NinaProgramAction
   } = useContext(Nina.Context)
 
   const [track, setTrack] = useState(undefined)
@@ -218,6 +220,12 @@ const ReleaseCreate = () => {
           `/${releasePubkey.toBase58()}`
         )
       } else if (track && artwork) {
+        const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.RELEASE_INIT_WITH_CREDIT);
+        if (error) {
+          enqueueSnackbar(error.msg, { variant: "failure" });
+          return;
+        }
+    
         const hashExists = await validateUniqueMd5Digest(md5Digest)
         if (hashExists) {
           enqueueSnackbar(
@@ -239,7 +247,7 @@ const ReleaseCreate = () => {
               variant: 'info',
             }
           )
-          artworkResult = (await bundlrUpload(artwork.file)).data.id
+          artworkResult = await bundlrUpload(artwork.file)
           setArtworkTx(artworkResult)
           upload = createUpload(
             UploadType.artwork,
@@ -258,7 +266,7 @@ const ReleaseCreate = () => {
                 variant: 'info',
               }
             )
-            trackResult = (await bundlrUpload(track.file)).data.id
+            trackResult = await bundlrUpload(track.file)
             if (trackResult) {
               setTrackTx(trackResult)
               updateUpload(upload, UploadType.track, trackResult)
@@ -288,13 +296,11 @@ const ReleaseCreate = () => {
                 duration: track.meta.duration,
                 md5Digest
               })
-              metadataResult = (
-                await bundlrUpload(
-                  new Blob([JSON.stringify(metadataJson)], {
-                    type: 'application/json',
-                  })
-                )
-              ).data.id
+              metadataResult = await bundlrUpload(
+                new Blob([JSON.stringify(metadataJson)], {
+                  type: 'application/json',
+                })
+              )
 
               setMetadata(metadataJson)
               setMetadataTx(metadataResult)

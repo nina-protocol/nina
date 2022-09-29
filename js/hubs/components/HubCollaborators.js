@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import { useWallet } from "@solana/wallet-adapter-react";
 import CloseIcon from "@mui/icons-material/Close";
 import Grid from "@mui/material/Grid";
-import Hub from "@nina-protocol/nina-sdk/esm/Hub";
+import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
 import { useSnackbar } from "notistack";
 import HubAddCollaborator from "./HubAddCollaborator";
 import CollaboratorPermissions from "./CollaboratorPermissions";
@@ -92,7 +92,7 @@ const HubCollaborators = ({
               them unlimited actions. This can be updated at any time.
             </Note>
             <Typography mt={2}>
-              Select a Collaborator&apos;s publicKey from the left to edit their
+              Select a Collaborator&apos;s publicKey from the right to edit their
               permissions
             </Typography>
           </>

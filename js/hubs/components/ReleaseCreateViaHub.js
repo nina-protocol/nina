@@ -6,10 +6,10 @@ import React, {
   useCallback,
 } from "react";
 import * as Yup from "yup";
-import Hub from "@nina-protocol/nina-sdk/esm/Hub";
-import Nina from "@nina-protocol/nina-sdk/esm/Nina";
-import Release from "@nina-protocol/nina-sdk/esm/Release";
-import { getMd5FileHash } from "@nina-protocol/nina-sdk/esm/utils"
+import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
+import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
+import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
+import { getMd5FileHash } from "@nina-protocol/nina-internal-sdk/esm/utils"
 import { useSnackbar } from "notistack";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -65,6 +65,8 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
     bundlrPricePerMb,
     solPrice,
     getSolPrice,
+    checkIfHasBalanceToCompleteAction,
+    NinaProgramAction,
   } = useContext(Nina.Context);
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const [track, setTrack] = useState(undefined);
@@ -218,7 +220,12 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
           `/${hubData.handle}/releases/${releaseInfo.hubRelease.toBase58()}`
         );
       } else if (track && artwork) {
-
+        const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.RELEASE_INIT_VIA_HUB);
+        if (error) {
+          enqueueSnackbar(error.msg, { variant: "failure" });
+          return;
+        }
+  
         const hashExists = await validateUniqueMd5Digest(md5Digest)
         if (hashExists) {
           enqueueSnackbar(
@@ -241,7 +248,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
               variant: "info",
             }
           );
-          artworkResult = (await bundlrUpload(artwork.file)).data.id;
+          artworkResult = await bundlrUpload(artwork.file);
           setArtworkTx(artworkResult);
           upload = createUpload(
             UploadType.artwork,
@@ -259,7 +266,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                 variant: "info",
               }
             );
-            trackResult = (await bundlrUpload(track.file)).data.id;
+            trackResult = await bundlrUpload(track.file);
             setTrackTx(trackResult);
             updateUpload(upload, UploadType.track, trackResult);
           }
@@ -287,13 +294,11 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                 duration: track.meta.duration,
                 md5Digest
               });
-              metadataResult = (
-                await bundlrUpload(
+              metadataResult = await bundlrUpload(
                   new Blob([JSON.stringify(metadataJson)], {
                     type: "application/json",
                   })
-                )
-              ).data.id;
+                );
               setMetadata(metadataJson);
               setMetadataTx(metadataResult);
               updateUpload(

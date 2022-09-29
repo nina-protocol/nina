@@ -1,9 +1,9 @@
 import React, { useContext, useState, useMemo, useEffect } from "react";
 import { styled } from "@mui/material/styles";
-import Audio from "@nina-protocol/nina-sdk/esm/Audio";
-import Hub from "@nina-protocol/nina-sdk/esm/Hub";
-import Release from "@nina-protocol/nina-sdk/esm/Release";
-import { imageManager } from "@nina-protocol/nina-sdk/esm/utils";
+import Audio from "@nina-protocol/nina-internal-sdk/esm/Audio";
+import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
+import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
+import { imageManager } from "@nina-protocol/nina-internal-sdk/esm/utils";
 import Image from "next/image";
 import { isMobile } from 'react-device-detect'
 import { useRouter } from "next/router";
