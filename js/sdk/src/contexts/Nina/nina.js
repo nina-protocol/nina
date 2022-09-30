@@ -216,11 +216,14 @@ const ninaContextHelper = ({
   const subscriptionSubscribe = async (subscribeToAccount, isHub) => {
     try {
       const program = await ninaClient.useProgram()
-      subscribeToAccount = new anchor.web3.publicKey(subscribeToAccount)
+
+      console.log('anchor :>> ', anchor);
+      console.log('program.programId :>> ', program.programId);
+      subscribeToAccount = new anchor.web3.PublicKey(subscribeToAccount)
       const [subscription] = await anchor.web3.PublicKey.findProgramAddress(
-        Buffer.from(anchor.utils.bytes.utf8.encode('nina-subscription')),
+        [Buffer.from(anchor.utils.bytes.utf8.encode('nina-subscription')),
         provider.wallet.publicKey.toBuffer(),
-        subscribeToAccount.toBuffer(),
+        subscribeToAccount.toBuffer()],
         program.programId
       )
 
@@ -229,6 +232,7 @@ const ninaContextHelper = ({
           from: provider.wallet.publicKey,
           subscription,
           to: subscribeToAccount,
+          systemProgram: anchor.web3.SystemProgram.programId,
         },
       }
 
@@ -255,9 +259,9 @@ const ninaContextHelper = ({
       const program = await ninaClient.useProgram()
       unsubscribeAccount = new anchor.web3.publicKey(unsubscribeAccount)
       const [subscription] = await anchor.web3.PublicKey.findProgramAddress(
-        Buffer.from(anchor.utils.bytes.utf8.encode('nina-subscription')),
+        [Buffer.from(anchor.utils.bytes.utf8.encode('nina-subscription')),
         provider.wallet.publicKey.toBuffer(),
-        unsubscribeAccount.toBuffer(),
+        unsubscribeAccount.toBuffer()],
         program.programId
       )
 
@@ -266,6 +270,8 @@ const ninaContextHelper = ({
           from: provider.wallet.publicKey,
           subscription,
           to: unsubscribeAccount,
+          systemProgram: anchor.web3.SystemProgram.programId,
+
         },
       })
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')

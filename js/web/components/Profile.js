@@ -1,11 +1,16 @@
 import { useEffect, useContext, useState, useMemo } from 'react'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
+import { useWallet } from '@solana/wallet-adapter-react'
 import { Box, Typography } from '@mui/material'
+import Button from "@mui/material/Button";
 import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
+import { useSnackbar } from "notistack";
+
 const Dots = dynamic(() => import('./Dots'))
 const TabHeader = dynamic(() => import('./TabHeader'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
@@ -17,10 +22,14 @@ const Profile = ({ profilePubkey }) => {
     filterReleasesPublishedByUser,
     filterReleasesList,
   } = useContext(Release.Context)
+  const { getHubsForUser, filterHubsForUser } = useContext(Hub.Context)
+  const { subscriptionSubscribe } = useContext( Nina.Context )
 
-  const { getHubsForUser, filterHubsForUser } = useContext(
-    Hub.Context
-  )
+  const { enqueueSnackbar } = useSnackbar();
+  const wallet = useWallet()
+
+
+
 
   const [profilePublishedReleases, setProfilePublishedReleases] =
     useState(undefined)
@@ -145,6 +154,21 @@ const Profile = ({ profilePubkey }) => {
     setActiveView(index)
   }
 
+  const handleSubscribe = async (accountAddress) => {
+    console.log('accountAddress', accountAddress)
+    const result = await subscriptionSubscribe(accountAddress, false)
+    console.log('result', result)
+    if (result.success) {
+          enqueueSnackbar(result.msg, {
+            variant: 'success',
+          })
+        } else {
+          enqueueSnackbar('Error creating release - please try again.', {
+            variant: 'error',
+          })
+        }
+  }
+
   return (
     <>
       <Head>
@@ -178,8 +202,16 @@ const Profile = ({ profilePubkey }) => {
         <ResponsiveProfileHeaderContainer>
           <ResponsiveProfileDetailHeaderContainer>
             {fetched.user && profilePubkey && (
-              <Box sx={{mb:1}}>
+              <Box sx={{mb:1}} display='flex'>
                 <Typography>{truncateAddress(profilePubkey)}</Typography>
+                {wallet.connected && (
+                  <Button 
+                    color="primary" 
+                    sx={{padding: '0 15px'}} 
+                    onClick={() => handleSubscribe(profilePubkey)}>
+                    Follow
+                  </Button>
+                )}
               </Box>
             )}
             {fetched.user && artistNames?.length > 0 && (
