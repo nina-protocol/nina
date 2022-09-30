@@ -20,7 +20,7 @@ const HubImageDropzone = ({ type, setArtwork, currentImageUrl, update }) => {
           )
         } else {
           alert(
-            `your image is ${size} mb... \nPlease upload an image smaller than 3 mb`
+            `your image is ${size} mb... \nPlease upload an image smaller than 8 mb`
           )
         }
       
@@ -39,7 +39,6 @@ const HubImageDropzone = ({ type, setArtwork, currentImageUrl, update }) => {
   };
 
   const validateImage = (fileWithMeta) => {
-    console.log('validating');
     const height = fileWithMeta.meta.height
     const width = fileWithMeta.meta.width
     const size = fileWithMeta.file.size / 1000000
@@ -48,7 +47,7 @@ const HubImageDropzone = ({ type, setArtwork, currentImageUrl, update }) => {
       return true
     }
 
-    if (size > 3) {
+    if (size > 8) {
       return true
     }
     return false

@@ -120,7 +120,7 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
           })}
         </StyledButtonGroup>
       )}
-      <TileGrid columnCount={columnCount}>
+      <TileGrid columnCount={columnCount} content={content}>
         {filteredContent?.map((item, i) => {    
           return (
             <React.Fragment key={i}>
@@ -260,7 +260,7 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
   );
 };
 
-const TileGrid = styled(Box)(({ theme, columnCount }) => ({
+const TileGrid = styled(Box)(({ theme, columnCount, content }) => ({
   display: "grid",
   gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
   gridColumnGap: "28px",
@@ -268,7 +268,7 @@ const TileGrid = styled(Box)(({ theme, columnCount }) => ({
   maxWidth: "960px",
   margin: "auto",
   maxHeight: "92vh",
-  overflow: "scroll",
+  overflow: content.length > 6 ? "scroll" : 'hidden',
   marginTop: "1px",
   paddingRight: '4px',
   paddingBottom: "100px",
