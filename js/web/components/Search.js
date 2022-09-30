@@ -1,13 +1,14 @@
-import NinaSdk from '@nina-protocol/nina-sdk'
+import NinaSdk from '@nina-protocol/js-sdk'
 import { useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import TextField from '@mui/material/TextField'
 import { Box } from '@mui/system'
 import { Typography } from '@mui/material'
 import { useCallback } from 'react'
-import { useAutocomplete } from '@mui/base/AutocompleteUnstyled'
+import Autocomplete from '@mui/material/Autocomplete';
 import Dots from './Dots'
 import Link from 'next/link'
+import axios from 'axios'
 
 const Search = () => {
   // const {
@@ -25,15 +26,17 @@ const Search = () => {
 
   const [query, setQuery] = useState('')
   const [response, setResponse] = useState(undefined)
-  const [suggestions, setSuggestions] = useState()
+  const [suggestions, setSuggestions] = useState([])
+  const [artist, setArtist] = useState([])
   const [fetchedResponse, setFetchedResponse] = useState(undefined)
-
+  const [allResults, setAllResults] = useState(undefined)
   useEffect(() => {
     NinaSdk.client.init(
       process.env.NINA_API_ENDPOINT,
       process.env.SOLANA_CLUSTER_URL,
       process.env.NINA_PROGRAM_ID
     )
+    console.log('NinaSdk.client', NinaSdk)
   }, [])
 
   const updateResponse = useCallback(
@@ -42,18 +45,30 @@ const Search = () => {
     },
     [response]
   )
+const autoCompleteUrl = 'https://dev.api.ninaprotocol.com/v1/suggestions'
+  useEffect(() => {
 
-  // useEffect(() => {
-  //   const handleSuggestions = async () => {
-  //     const response =  await NinaSdk.Search.suggestQuery(query)
-  //     console.log('response :>> ', response);
-  //     setSuggestions(response)
-  //   }
-  //   if (query) {
-  //     handleSuggestions()
-  //   }
+    // const handleSuggestions = async () => {
+    //   const response =  await NinaestQuery(Sdk.Search.suggquery)
+    //   console.log('response :>> ', response);
+    //   setSuggestions(response)
+    // }
+    // if (query) {
+    //   handleSuggestions()
+    // }
+   
+    const fetchAllResults = async () => {
+      await NinaSdk.Search.withQuery(query).then(setAllResults)
+    }
+    if(!allResults){
+      fetchAllResults()
+    }
+    if (query) {
+      
+      handleAutoComplete(query)
+    }
   //  console.log('suggestions :>> ', suggestions);
-  // }, [query])
+  }, [query, allResults])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -73,32 +88,50 @@ const Search = () => {
     }
     setQuery('')
     updateResponse()
-    console.log('query', query)
-    console.log('response', response)
-  }
 
+  }
+  const handleAutoComplete = async (query) => {
+    const fetchedSuggestions = []
+    const response = await axios.post(autoCompleteUrl, {query})
+    Object.keys(response.data).forEach(key => {
+      fetchedSuggestions.push(response.data[key])
+    })
+    const artists = fetchedSuggestions.map((suggestion) => suggestion.map((item) => item.name))
+    console.log('artists', artists.map((artist) => artist))
+    setSuggestions(artists.map((artist) => artist[0]))
+  }
   const changeHandler = (e) => {
     e.preventDefault()
     e.stopPropagation()
     setQuery(e.target.value)
+    
     if (e.keyCody === 13) {
       setQuery('')
     }
   }
+  const array = ['jack', 'jill', 'john', 'jane']
   return (
     <Box sx={{ height: '60vh', width: '960px' }}>
       <Form onSubmit={(e) => handleSubmit(e)}>
         <SearchInputWrapper>
-          <TextField
-            className="input"
-            fullWidth
-            onChange={(e) => changeHandler(e)}
-            label="Search for anything..."
-            id="fullWidth"
-            variant="standard"
-            value={query}
-            autoComplete={'off'}
-          />
+          {/*  */}
+      <Autocomplete 
+      id="nina-search"
+      options={suggestions}
+      getOptionLabel={(option) => option}
+      renderInput={(params) => 
+        <TextField
+        {...params}
+        className="input"
+        fullWidth
+        onChange={(e) => changeHandler(e)}
+        label="Search for anything..."
+        variant="standard"
+        // value={query}
+        autoComplete={'off'}
+      />
+      } 
+      /> 
         </SearchInputWrapper>
       </Form>
       <SearchResultsWrapper>
