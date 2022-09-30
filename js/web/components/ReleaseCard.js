@@ -12,13 +12,23 @@ import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Image from 'next/image'
 
 import AddToHubModal from './AddToHubModal.js'
+import Link from 'next/link'
 const { getImageFromCDN, loader } = imageManager
 
 const ReleaseCard = (props) => {
-  const { artwork, metadata, preview, publicKey, releasePubkey, userHubs } = props
+  const {
+    artwork,
+    metadata,
+    preview,
+    publicKey,
+    releasePubkey,
+    userHubs,
+    release,
+  } = props
   const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
     useContext(Audio.Context)
   const image = useMemo(() => metadata?.image)
+  console.log('release.authority', release?.authority.toBase58())
   return (
     <StyledReleaseCard>
       <StyledReleaseInfo>
@@ -66,8 +76,12 @@ const ReleaseCard = (props) => {
         {metadata && (
           <Fade in={true}>
             <Typography variant="h4" color="white" align="left">
-              {metadata?.properties?.artist.substring(0, 100) ||
-                metadata?.artist.substring(0, 100)}
+              <Link href={`/profiles/${release?.authority.toBase58()}`}>
+                <a style={{color:'white'}}>
+                  {metadata?.properties?.artist.substring(0, 100) ||
+                    metadata?.artist.substring(0, 100)}
+                </a>
+              </Link>
               ,{' '}
               <i>
                 {metadata?.properties?.title.substring(0, 100) ||
@@ -96,7 +110,11 @@ const ReleaseCard = (props) => {
             height={350}
             width={350}
             layout="responsive"
-            src={getImageFromCDN(image, 400, new Date(Date.parse(metadata.properties.date)))}
+            src={getImageFromCDN(
+              image,
+              400,
+              new Date(Date.parse(metadata.properties.date))
+            )}
             alt={metadata?.name}
             priority={true}
             loader={loader}
@@ -113,7 +131,7 @@ const StyledReleaseCard = styled(Box)(() => ({
   margin: 'auto',
   display: 'flex',
   flexDirection: 'column',
-  justifyContent: 'center'
+  justifyContent: 'center',
 }))
 
 const CtaWrapper = styled(Box)(() => ({

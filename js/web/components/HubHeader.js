@@ -13,7 +13,7 @@ import rehypeExternalLinks from 'rehype-external-links'
 
 const { getImageFromCDN, loader } = imageManager
 
-const HubHeader = ({  hubData }) => {
+const HubHeader = ({ hubData }) => {
   const [hubDescription, setHubDescription] = useState(undefined)
   useEffect(() => {
     if (hubData?.json.description.includes('<p>')) {
@@ -28,7 +28,12 @@ const HubHeader = ({  hubData }) => {
           target: false,
           rel: ['nofollow', 'noreferrer'],
         })
-        .process(JSON.parse(hubData?.json.description).replaceAll('<p><br></p>', '<br>'))
+        .process(
+          JSON.parse(hubData?.json.description).replaceAll(
+            '<p><br></p>',
+            '<br>'
+          )
+        )
         .then((file) => {
           setHubDescription(file.result)
         })
@@ -38,45 +43,57 @@ const HubHeader = ({  hubData }) => {
   }, [hubData?.json.description])
 
   return (
-    <Box sx={{display: 'flex', flexDirection: 'column',}}>
-   
-    <ResponsiveHubHeader >
-      <Box sx={{ width: '100px' }}>
-        <Image
-          height={'100%'}
-          width={'100%'}
-          layout="responsive"
-          src={getImageFromCDN(hubData?.json?.image, 400, Date.parse(hubData?.createdAt))}
-          alt={hubData?.json.displayName}
-          priority={true}
-          loader={loader}
-        />
-      </Box>
+    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+      <ResponsiveHubHeader>
+        <Box sx={{ width: '100px' }}>
+          <Link href={`${hubData?.json.externalUrl}`} passHref>
+            <a target="_blank" rel="noreferrer">
+              <Image
+                height={'100%'}
+                width={'100%'}
+                layout="responsive"
+                src={getImageFromCDN(
+                  hubData?.json?.image,
+                  400,
+                  Date.parse(hubData?.createdAt)
+                )}
+                alt={hubData?.json.displayName}
+                priority={true}
+                loader={loader}
+              />
+            </a>
+          </Link>
+        </Box>
 
-      {hubData?.json.displayName && (
-        <Link href={hubData?.json.externalUrl}>
-          <a>
-            <Typography sx={{ px: 2 }}>{hubData?.json.displayName}</Typography>
-          </a>
-        </Link>
-      )}
-      {hubData?.json.description && (
-        <>
-          <DescriptionOverflowContainer >
-            {hubDescription}
-          </DescriptionOverflowContainer>
-        </>
-      )}
-    </ResponsiveHubHeader>
-    <ResponsiveUrlContainer>
-    <Typography sx={{ pb: 2, fontSize: '12px' }}>
-      <Link href={hubData?.json.externalUrl}>
-      <a>
-     {`${(hubData?.json.externalUrl).substring(8, hubData?.json.externalUrl.length)}`} 
-      </a>
-      </Link>
-    </Typography>
-      </ResponsiveUrlContainer>
+        {hubData?.json.displayName && (
+          <Link href={hubData?.json.externalUrl} passHref>
+            <a target="_blank" rel="noreferrer">
+              <Typography sx={{ px: 2 }}>
+                {hubData?.json.displayName}
+              </Typography>
+            </a>
+          </Link>
+        )}
+        {hubData?.json.description && (
+          <>
+            <DescriptionOverflowContainer>
+              {hubDescription}
+            </DescriptionOverflowContainer>
+          </>
+        )}
+      </ResponsiveHubHeader>
+      {/* <ResponsiveUrlContainer>
+        <Typography sx={{ pb: 2, fontSize: '12px' }}>
+          <Link href={hubData?.json.externalUrl}>
+            <a>
+              {`${(hubData?.json.externalUrl).substring(
+                8,
+                hubData?.json.externalUrl.length
+              )}`}
+            </a>
+          </Link>
+        </Typography>
+      </ResponsiveUrlContainer> */}
     </Box>
   )
 }
@@ -87,7 +104,6 @@ const ResponsiveHubHeader = styled(Box)(({ theme }) => ({
   flexDirection: 'row',
   alignItems: 'start',
   justifyContent: 'start',
-  // py: 1,
   mb: 1,
   justifyContent: 'start',
   py: 5,
@@ -95,43 +111,27 @@ const ResponsiveHubHeader = styled(Box)(({ theme }) => ({
 
   [theme.breakpoints.down('md')]: {
     alignItems: 'left',
-    paddingLeft:'15px',
+    paddingLeft: '15px',
 
     width: '100vw',
-    
   },
 }))
 const ResponsiveUrlContainer = styled(Box)(({ theme }) => ({
-paddingBottom: 2,
-fontSize: '12px',
-textAlign: 'left',
+  paddingBottom: 2,
+  fontSize: '12px',
+  textAlign: 'left',
   [theme.breakpoints.down('md')]: {
-  paddingLeft: '15px',
-
-  }
+    paddingLeft: '15px',
+  },
 }))
-
-// const OverflowContainer = styled(Box)(({ theme }) => ({
-//   overflow: 'hidden',
-//   minWidth: '10vw',
-//   maxWidth: '50vw',
-//   height: '100px',
-//   textAlign: 'left',
-//   textOverflow: 'ellipsis',
-//   [theme.breakpoints.down('md')]: {
-//     minWidth: '0',
-//     height: '75px'
-//   },
-// }))
-
 
 const DescriptionOverflowContainer = styled(Box)(({ theme }) => ({
   alignItems: 'start',
   textAlign: 'left',
   overflow: 'hidden',
-  display: "-webkit-box",
-  "-webkit-line-clamp": '6',
-  "-webkit-box-orient": "vertical",  
+  display: '-webkit-box',
+  '-webkit-line-clamp': '6',
+  '-webkit-box-orient': 'vertical',
   textOverflow: 'ellipsis',
   minWidth: '10vw',
   maxWidth: '50vw',
@@ -145,9 +145,9 @@ const DescriptionOverflowContainer = styled(Box)(({ theme }) => ({
     margin: 0,
   },
   [theme.breakpoints.down('md')]: {
-    "-webkit-line-clamp": '6',
-    width: '30vw'
-  }
+    '-webkit-line-clamp': '6',
+    width: '30vw',
+  },
 }))
 
 export default HubHeader

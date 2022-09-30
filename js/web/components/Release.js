@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect, useMemo } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
@@ -31,7 +31,9 @@ const ReleaseComponent = ({ metadataSsr }) => {
   const [metadata, setMetadata] = useState(
     metadataSsr || releaseState?.metadata[releasePubkey] || null
   )
-    console.log('releaseState', releaseState)
+  const release = useMemo(() => releaseState.tokenData[releasePubkey], [releaseState, releasePubkey])
+  console.log('release', release)
+  console.log(releaseState)
   useEffect(() => {
     if (releasePubkey) {
       getRelatedForRelease(releasePubkey)
@@ -94,6 +96,7 @@ const ReleaseComponent = ({ metadataSsr }) => {
               preview={false}
               releasePubkey={releasePubkey}
               userHubs={userHubs}
+              release={release}
           
             />
             <ReleaseCtaWrapper>

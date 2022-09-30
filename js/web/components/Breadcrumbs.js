@@ -129,8 +129,17 @@ const Breadcrumbs = () => {
             break
         case '/hubs/[hubPubkey]':
           pathArray = linkPath.map((path, i) => {
+            if (i === 1) {
+              const hub =
+              router.components[`${router.pathname}`].props.pageProps.hub
+              console.log('hub', hub)
+              return {
+                breadcrumb: hub.json.displayName,
+                href: '/' + linkPath.slice(0, i + 1).join('/'),
+              }
+            }
             return {
-              breadcrumb: path !== 'hubs' && path.length > 16 ? `${truncateAddress(path)}` : path,
+              breadcrumb: path,
               href: '/' + linkPath.slice(0, i + 1).join('/'),
             }
           })
