@@ -1138,6 +1138,7 @@ const hubContextHelper = ({
         hubCollaborators.push(hubCollaborator)
       }
     })
+    
     return hubCollaborators.sort((a, b) => b.datetime - a.datetime)
   }
 

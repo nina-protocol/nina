@@ -222,7 +222,6 @@ useEffect(() => {
     }
     setDownloadButtonString('Download')
   }
-
   return (
     <Box>
       <AmountRemaining variant="body2" align="left">
@@ -265,7 +264,7 @@ useEffect(() => {
       {publishedHub && (
         <Typography variant="body2" align="left" paddingBottom="10px">
           <StyledLink
-            href={publishedHub.json.externalUrl}
+            href={`/hubs/${publishedHub.id}`}
             target="_blank"
             rel="noreferrer"
             passHref
@@ -299,7 +298,7 @@ useEffect(() => {
           </Button>
         </form>
       </Box>
-      {relatedReleases && relatedReleases.length > 1 && (
+      {/* {relatedReleases && relatedReleases.length > 1 && (
         <Link href={`/${releasePubkey}/related`} passHref>
           <Button
             variant="outlined"
@@ -312,6 +311,9 @@ useEffect(() => {
             </Typography>
           </Button>
         </Link>
+      )} */}
+      {userIsRecipient && (
+        <Royalty releasePubkey={releasePubkey} release={release} />
       )}
       {userIsRecipient && (
         <Royalty releasePubkey={releasePubkey} release={release} />

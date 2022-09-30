@@ -21,7 +21,6 @@ const HubsModal = (props) => {
 
     setHubs(hubsList)
   }
-
   return (
     <Box>
       <Cta
@@ -62,10 +61,8 @@ const HubsModal = (props) => {
                     <tr key={i}>
                       <td>
                         <a
-                          href={entry.json.externalUrl}
+                          href={`/hubs/${entry.id}`}
                           passHref
-                          target="_blank"
-                          rel="noopener noreferrer"      
                         >
                           {entry.json.displayName}
                         </a>
