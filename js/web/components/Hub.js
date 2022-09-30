@@ -1,18 +1,15 @@
 import { useEffect, useMemo, useState, useContext } from 'react'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
-import { Box, } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
-import { useSnackbar } from 'notistack'
 
 const Dots = dynamic(() => import('./Dots'))
 const HubHeader = dynamic(() => import('./HubHeader'))
-const HubCollaborators = dynamic(() => import('./HubCollaborators'))
-const HubToggle = dynamic(() => import('./HubToggle'))
-const HubReleases = dynamic(() => import('./HubReleases'))
+const TabHeader = dynamic(() => import('./TabHeader'))
+const ReusableTable = dynamic(() => import('./ReusableTable'))
 
 const HubComponent = ({ hubPubkey }) => {
   const {
@@ -25,69 +22,78 @@ const HubComponent = ({ hubPubkey }) => {
 
   const { releaseState } = useContext(Release.Context)
 
-  const {resetQueueWithPlaylist} = useContext(Audio.Context)
-  const { enqueueSnackbar } = useSnackbar()
-
-  const [hubReleases, setHubReleases] = useState([])
-  const [releaseData, setReleaseData] = useState([])
-  const [collaboratorsData, setCollaboratorsData] = useState([])
-  const [view, setView] = useState('releases')
-  const [fetchedHubInfo, setFetchedHubInfo] = useState(false)
-  const [fetchedReleases, setFetchedReleases] = useState(false)
-  const [fetchedCollaborators, setFetchedCollaborators] = useState(false)
+  const [hubReleases, setHubReleases] = useState(undefined)
+  const [releaseData, setReleaseData] = useState(undefined)
+  const [hubCollaborators, setHubCollaborators] = useState(undefined)
+  const [activeView, setActiveView] = useState(undefined)
+  const [fetched, setFetched] = useState({
+    info: false,
+    releases: false,
+    collaborators: false,
+  })
+  const [views, setViews] = useState([
+    { name: 'releases', playlist: undefined, visible: true },
+    { name: 'collaborators', playlist: undefined, visible: true },
+  ])
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
 
   useEffect(() => {
-    if (!hubPubkey) {
-      setFetchedHubInfo(false)
-    }
-    getHub(hubPubkey)
     if (hubPubkey) {
-      setFetchedHubInfo(true)
+      getHub(hubPubkey)
+      fetched.info = true
+      setFetched({ ...fetched })
     }
   }, [hubPubkey])
 
   useEffect(() => {
     const [releases] = filterHubContentForHub(hubPubkey)
     const collaborators = filterHubCollaboratorsForHub(hubPubkey)
+
     setHubReleases(releases)
-    setCollaboratorsData(collaborators)
-    if (releases.length > 0) {
-      setFetchedReleases(true)
-    }
-    if (releases.length === 0) {
-      setFetchedReleases(false)
-    }
-    if (collaborators) {
-      setFetchedCollaborators(true)
-    }
+    setHubCollaborators(collaborators)
   }, [hubContentState])
 
   useEffect(() => {
-    const data = hubReleases.map((hubRelease) => {
+    let updatedView = views.slice()
+    let viewIndex
+
+    const data = hubReleases?.map((hubRelease) => {
       const releaseMetadata = releaseState.metadata[hubRelease.release]
       releaseMetadata.releasePubkey = hubRelease.release
       return releaseMetadata
     })
     setReleaseData(data)
-  }, [releaseState, hubReleases])
 
-  const releaseClickHandler = () => {
-    setView('releases')
+    viewIndex = updatedView.findIndex((view) => view.name === 'releases')
+    updatedView[viewIndex].playlist = releaseData
+  }, [releaseState, hubReleases, views])
+
+  useEffect(() => {
+    let updatedView = views.slice()
+    let viewIndex
+
+    if (hubReleases?.length > 0) {
+      setActiveView(0)
+      viewIndex = updatedView.findIndex((view) => view.name === 'releases')
+      updatedView[viewIndex].visible = true
+      updatedView[viewIndex].playlist = hubReleases
+      fetched.releases = true
+    }
+    if (hubReleases?.length === 0 && fetched.releases) {
+      setActiveView(1)
+    }
+    if (hubCollaborators?.length > 0) {
+      fetched.collaborators = true
+    }
+    setFetched({ ...fetched })
+    setViews(updatedView)
+  }, [hubReleases, hubCollaborators])
+
+  const viewHandler = (event) => {
+    const index = parseInt(event.target.id)
+    setActiveView(index)
   }
 
-  const collaboratorClickHandler = () => {
-    setView('collaborators')
-  }
-  const playAllHandler = (playlist) => {
-    resetQueueWithPlaylist(
-      playlist.map((release) => release.releasePubkey)
-    ).then(() =>
-      enqueueSnackbar(`Releases added to queue`, {
-        variant: 'info',
-      })
-    )
-}
   return (
     <>
       <Head>
@@ -127,64 +133,48 @@ const HubComponent = ({ hubPubkey }) => {
       </Head>
 
       <ResponsiveHubContainer>
-        <ResponsiveHubHeaderContainer>
-          {fetchedHubInfo && hubData ? (
-            <HubHeader
-              hubImage={`${hubData?.json.image ? hubData.json.image : ''}`}
-              hubName={`${
-                hubData?.json.displayName ? hubData.json.displayName : ''
-              }`}
-              description={`${
-                hubData?.json.description ? hubData.json.description : ''
-              }`}
-              hubUrl={`${
-                hubData?.json.externalUrl ? hubData.json.externalUrl : ''
-              }`}
-              hubDate={`${hubData.createdAt ? hubData.createdAt : ''}`}
+        <>
+          {fetched.info && hubData && <HubHeader hubData={hubData} />}
+        </>
+        {fetched.info && hubData && (
+          <ResponsiveTabContainer>
+            <TabHeader
+              viewHandler={viewHandler}
+              isActive={activeView}
+              profileTabs={views}
+              releaseData={releaseData}
+              type={'hubsView'}
             />
-          ) : (
-            <ResponsiveDotHeaderContainer>
-              <Dots />
-            </ResponsiveDotHeaderContainer>
-          )}
-        </ResponsiveHubHeaderContainer>
-        <HubToggle
-          releaseClick={() => releaseClickHandler()}
-          collaboratorClick={() => collaboratorClickHandler()}
-          isClicked={view}
-          onPlayReleases={() => playAllHandler(releaseData)}
-        />
-        <ResponsiveHubContentContainer sx={{ minHeight: '50vh' }}>
-          {view === 'releases' && (
+          </ResponsiveTabContainer>
+        )}
+        <ResponsiveHubContentContainer>
+          {activeView === undefined && (
+            <ResponsiveDotContainer>
+              <Box sx={{width: '100%', margin: 'auto'}}>
+                <Dots />
+              </Box>
+            </ResponsiveDotContainer>
+           )} 
+          {activeView === 0 && (
             <>
-              {!fetchedReleases && (
-                <ResponsiveDotContainer>
-                  <Dots />
-                </ResponsiveDotContainer>
-              )}
-              {fetchedReleases && releaseData && (
-                <HubReleases hubReleases={releaseData} />
+              {fetched.releases && releaseData && (
+                <ReusableTable
+                  tableType={'hubReleases'}
+                  releases={releaseData}
+                />
               )}
             </>
           )}
-          {view === 'collaborators' && (
+          {activeView === 1 && (
             <>
-              {!fetchedCollaborators && (
-                <ResponsiveDotContainer
-                  sx={{
-                    display: 'table-cell',
-                    textAlign: 'center',
-                    verticalAlign: 'middle',
-                  }}
-                >
-                  <Dots />
-                </ResponsiveDotContainer>
-              )}
-              {fetchedCollaborators && !collaboratorsData && (
+              {fetched.collaborators && !hubCollaborators && (
                 <Box sx={{ my: 1 }}>No collaborators found in this Hub</Box>
               )}
-              {fetchedCollaborators && (
-                <HubCollaborators collabData={collaboratorsData} />
+              {fetched.collaborators && (
+                <ReusableTable
+                  tableType={'hubCollaborators'}
+                  releases={hubCollaborators}
+                />
               )}
             </>
           )}
@@ -199,55 +189,56 @@ const ResponsiveHubContainer = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   justifyItems: 'center',
   textAlign: 'center',
-  minWidth: '960px',
-  maxWidth: '960px',
-  maxHeight: '60vh',
+  minWidth: theme.maxWidth,
+  maxWidth: theme.maxWidth,
+  height: '86vh',
+  overflowY: 'hidden',
+  margin: '75px auto 0px',
   webkitOverflowScrolling: 'touch',
+
   [theme.breakpoints.down('md')]: {
     display: 'flex',
     flexDirection: 'column',
     justifyItems: 'center',
     alignItems: 'center',
-    marginTop:"125px",
-    maxHeight: '80vh'
+    marginTop: '25px', 
+    paddingTop: 0,
+    minHeight: '100% !important',
+    maxHeight: '80vh',
+    overflow: 'scroll',
+    marginLeft: 0,
   },
 }))
 
-const ResponsiveHubHeaderContainer = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'left',
-  justifyContent: 'start',
-  py: 5,
-  px: 1,
-  m: 1,
-  minHeight: '115px',
+const ResponsiveTabContainer = styled(Box)(({ theme }) => ({
+  py:1,
 
   [theme.breakpoints.down('md')]: {
-    width: '100vw',
-  },
+    marginTop: '0px'
+  }
 }))
 
 const ResponsiveHubContentContainer = styled(Box)(({ theme }) => ({
   minHeight: '60vh',
-  width: '960px',
+  width: theme.maxWidth,
   webkitOverflowScrolling: 'touch',
+  overflowY: 'auto',
+  '&::-webkit-scrollbar': {
+    display: 'none',
+  },
   [theme.breakpoints.down('md')]: {
     width: '100vw',
     padding: '0px 30px',
-    overflowX: 'auto',
+    height: '100vh',
+    overflowY: 'unset',
     minHeight: '60vh',
   },
 }))
 
 const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
   fontSize: '80px',
-  position: 'absolute',
-  left: '50%',
-  top: '50%',
-  display: 'table-cell',
-  textAlign: 'center',
-  verticalAlign: 'middle',
+  display: 'flex',
+  height: '100%',
   [theme.breakpoints.down('md')]: {
     fontSize: '30px',
     left: '47%',
@@ -255,14 +246,6 @@ const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
-const ResponsiveDotHeaderContainer = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  top: '20%',
-  left: '20%',
-  fontSize: '80px',
-  [theme.breakpoints.down('md')]: {
-    fontSize: '30px',
-    left: '13%',
-  },
-}))
+
+
 export default HubComponent

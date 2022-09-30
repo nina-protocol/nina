@@ -5,142 +5,168 @@ import { Box, Typography } from '@mui/material'
 import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
-import { useSnackbar } from 'notistack'
-
 const Dots = dynamic(() => import('./Dots'))
-const ProfileReleaseTable = dynamic(() => import('./ProfileReleaseTable'))
-const ProfileHubs = dynamic(() => import('./ProfileHubs'))
-const ProfileToggle = dynamic(() => import('./ProfileToggle'))
+const TabHeader = dynamic(() => import('./TabHeader'))
+const ReusableTable = dynamic(() => import('./ReusableTable'))
 
-const Profile = ({ userId }) => {
-  
+const Profile = ({ profilePubkey }) => {
   const {
     getUserCollectionAndPublished,
     releaseState,
-
     filterReleasesPublishedByUser,
-
     filterReleasesList,
   } = useContext(Release.Context)
 
-  const { getHubsForUser, filterHubsForUser, hubState } = useContext(
+  const { getHubsForUser, filterHubsForUser } = useContext(
     Hub.Context
   )
 
-  const { resetQueueWithPlaylist } = useContext(Audio.Context)
-
-  const [profilePublishedReleases, setProfilePublishedReleases] = useState([])
-  const [profileCollectionReleases, setProfileCollectionReleases] = useState()
-  const [profileHubs, setProfileHubs] = useState([])
-  const [view, setView] = useState('releases')
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+  const [profilePublishedReleases, setProfilePublishedReleases] =
+    useState(undefined)
+  const [profileCollectionReleases, setProfileCollectionReleases] =
+    useState(undefined)
+  const [profileHubs, setProfileHubs] = useState(undefined)
+  const [activeView, setActiveView] = useState(undefined)
   const [profileCollectionIds, setProfileCollectionIds] = useState(undefined)
-  const [toggleView, setToggleView] = useState('releases')
-  const [fetchedUser, setFetchedUser] = useState(false)
-  const [fetchedReleases, setFetchedReleases] = useState(false)
-  const [fetchedHubs, setFetchedHubs] = useState(false)
-  const [fetchedCollection, setFetchedCollection] = useState(false)
-  // const [profileArtistData, setProfileArtistData] = useState([])
+  const [fetched, setFetched] = useState({
+    user: false,
+    releases: false,
+    collection: false,
+    hubs: false,
+  })
+  const [views, setViews] = useState([
+    { name: 'releases', playlist: undefined, visible: false },
+    { name: 'collection', playlist: undefined, visible: false },
+    { name: 'hubs', playlist: null, visible: false },
+  ])
 
-  const artistNames = useMemo(
-    () => {
-      if (profilePublishedReleases.length > 0) {
-          return [
-          ...new Set(
-            profilePublishedReleases.map(
-              (release) => release.metadata.properties.artist
-            )
-          ),
-        ] 
-      }
-  },
-    [profilePublishedReleases]
-  )
+  const artistNames = useMemo(() => {
+    if (profilePublishedReleases?.length > 0) {
+      return [
+        ...new Set(
+          profilePublishedReleases?.map(
+            (release) => release.metadata.properties.artist
+          )
+        ),
+      ]
+    }
+  }, [profilePublishedReleases])
 
   useEffect(() => {
-    setFetchedUser(false)
-    const getUserData = async (userId) => {
-      await getHubsForUser(userId)
-      const [collectionIds] = await getUserCollectionAndPublished(userId)
+    const getUserData = async (profilePubkey) => {
+      await getHubsForUser(profilePubkey)
+      const [collectionIds, publishedIds] = await getUserCollectionAndPublished(
+        profilePubkey
+      )
       setProfileCollectionIds(collectionIds)
     }
-    if (userId) {
-      setFetchedUser(true)
-      getUserData(userId)
-    }
-  }, [userId])
+
+    getUserData(profilePubkey)
+    fetched.user = true
+  }, [profilePubkey])
 
   useEffect(() => {
-    setFetchedReleases(false)
-    setFetchedCollection(false)
-    if (profileCollectionIds?.length > 0 && userId) {
-      setProfileCollectionReleases(filterReleasesList(profileCollectionIds))
-      const releases = filterReleasesPublishedByUser(userId)
+    let viewIndex
+    let updatedView = views.slice()
+
+    if (profilePubkey) {
+      const releases = filterReleasesPublishedByUser(profilePubkey)
       setProfilePublishedReleases(releases)
-      setFetchedReleases(true)
-      setFetchedCollection(true)
+
+      viewIndex = updatedView.findIndex((view) => view.name === 'releases')
+      updatedView[viewIndex].playlist = releases
+
+      fetched.releases = true
+
+      setProfileCollectionReleases(filterReleasesList(profileCollectionIds))
+
+      viewIndex = updatedView.findIndex((view) => view.name === 'collection')
+      updatedView[viewIndex].playlist = filterReleasesList(profileCollectionIds)
+
+      fetched.collection = true
+
+      const hubs = filterHubsForUser(profilePubkey)
+
+      setProfileHubs(hubs)
+      fetched.hubs = true
+      setFetched({
+        ...fetched,
+      })
     }
-  }, [releaseState, profileCollectionIds])
+
+    setViews(updatedView)
+  }, [profileCollectionIds, releaseState])
 
   useEffect(() => {
-    setFetchedHubs(false)
-    const hubs = filterHubsForUser(userId)
-    if (hubs) {
-      setProfileHubs(hubs)
-      setFetchedHubs(true)
+    let viewIndex
+    let updatedView = views.slice()
+
+    if (profilePublishedReleases?.length > 0 && fetched.releases) {
+      viewIndex = updatedView.findIndex((view) => view.name === 'releases')
+      updatedView[viewIndex].visible = true
     }
-  }, [hubState])
+    if (profileCollectionReleases?.length > 0 && fetched.collection) {
+      viewIndex = updatedView.findIndex((view) => view.name === 'collection')
+      updatedView[viewIndex].visible = true
+    }
 
+    if (profileHubs?.length > 0 && fetched.hubs) {
+      viewIndex = updatedView.findIndex((view) => view.name === 'hubs')
+      updatedView[viewIndex].visible = true
+    }
+    setViews(updatedView)
+  }, [profilePublishedReleases, profileCollectionReleases, profileHubs])
 
-  const releasesClickHandler = () => {
-    setView('releases')
-    setToggleView('releases')
-  }
-  const hubsClickHandler = () => {
-    setView('hubs')
-    setToggleView('hubs')
-  }
-  const collectionClickHandler = () => {
-    setView('collection')
-    setToggleView('collection')
-  }
+  useEffect(() => {
+    if (profilePublishedReleases?.length > 0) {
+      setActiveView(0)
+    }
+    if (
+      profilePublishedReleases?.length === 0 &&
+      profileCollectionReleases?.length > 0
+    ) {
+      setActiveView(1)
+    }
+    if (
+      fetched.collection &&
+      fetched.releases &&
+      fetched.hubs &&
+      profilePublishedReleases?.length === 0 &&
+      profileCollectionReleases?.length === 0 &&
+      profileHubs?.length > 0
+    ) {
+      setActiveView(2)
+    }
+  }, [profilePublishedReleases, profileCollectionReleases, profileHubs])
 
-  const playAllHandler = (playlist) => {
-    resetQueueWithPlaylist(
-      playlist.map((release) => release.releasePubkey)
-    ).then(() =>
-      enqueueSnackbar(`Releases added to queue`, {
-        variant: 'info',
-      })
-    )
+  const viewHandler = (event) => {
+    const index = parseInt(event.target.id)
+    setActiveView(index)
   }
-
-  const releaseTabs = ['', ' ', 'Artist', 'Title']
 
   return (
     <>
       <Head>
-        <title>{`Nina: ${userId}'s Profile`}</title>
+        <title>{`Nina: ${profilePubkey}'s Profile`}</title>
         <meta name="description" content={'Your profile on Nina.'} />
         <meta name="og:type" content="website" />
         <meta
           name="og:title"
-          content={`Nina: ${userId ? `${userId}'s Hub` : ''}`}
+          content={`Nina: ${profilePubkey ? `${profilePubkey}'s Hub` : ''}`}
         />
         <meta
           name="og:description"
-          content={`All releases, Hubs, and collection belonging to ${userId}`}
+          content={`All releases, Hubs, and collection belonging to ${profilePubkey}`}
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@ninaprotocol" />
         <meta name="twitter:creator" content="@ninaprotocol" />
         <meta name="twitter:image:type" content="image/jpg" />
-        <meta name="twitter:title" content={`${userId} on Nina`} />
+        <meta name="twitter:title" content={`${profilePubkey} on Nina`} />
         <meta
           name="twitter:description"
-          content={`All releases, Hubs, and collection belonging to ${userId}`}
+          content={`All releases, Hubs, and collection belonging to ${profilePubkey}`}
         />
         <meta name="twitter:image" content="/images/favicon.ico" />
         <meta name="og:image" content={'/images/favicon.ico'} />
@@ -151,93 +177,80 @@ const Profile = ({ userId }) => {
       <ResponsiveProfileContainer>
         <ResponsiveProfileHeaderContainer>
           <ResponsiveProfileDetailHeaderContainer>
-            {!fetchedUser && (
-              <ResponsiveDotHeaderContainer>
-                <Dots />
-              </ResponsiveDotHeaderContainer>
-            )}
-            {fetchedUser && (
-                <Typography>
-                  {truncateAddress(userId)}
-                </Typography>
-              ) 
-            }
-
-            {fetchedUser && artistNames?.length > 0 && (
-              <Box>
-                {`Publishes as ${artistNames?.map(name => name).join(', ')}`}
+            {fetched.user && profilePubkey && (
+              <Box sx={{mb:1}}>
+                <Typography>{truncateAddress(profilePubkey)}</Typography>
               </Box>
+            )}
+            {fetched.user && artistNames?.length > 0 && (
+              <ProfileOverflowContainer>
+                {`Publishes as ${artistNames?.map((name) => name).join(', ')}`}
+              </ProfileOverflowContainer>
             )}
           </ResponsiveProfileDetailHeaderContainer>
         </ResponsiveProfileHeaderContainer>
+        {profilePublishedReleases?.length > 0 &&
+          profileCollectionReleases?.length > 0 &&
+          profileHubs?.length > 0 &&
+          fetched.user && (
+            <Box sx={{ py: 1 }}>
+              <TabHeader
+                viewHandler={viewHandler}
+                isActive={activeView}
+                profileTabs={views}
+              />
+            </Box>
+          )}
 
-        <Box sx={{ py: 1 }}>
-          <ProfileToggle
-            releaseClick={() => releasesClickHandler()}
-            hubClick={() => hubsClickHandler()}
-            collectionClick={() => collectionClickHandler()}
-            isClicked={toggleView}
-            onPlayReleases={() => playAllHandler(profilePublishedReleases)}
-            onPlayCollection={() => playAllHandler(profileCollectionReleases)}
-          />
-        </Box>
-        <ResponsiveProfileContentContainer>
-          {view === 'releases' && (
+        <>
+          {!activeView === undefined && (
+            <ResponsiveDotContainer>
+              <Box sx={{margin: 'auto'}}>
+                <Dots />
+              </Box>
+            </ResponsiveDotContainer>
+          )}
+          {activeView === 0 && (
             <>
-              {!fetchedReleases && (
-                <ResponsiveDotContainer>
-                  <Dots />
-                </ResponsiveDotContainer>
+              {fetched.releases && profilePublishedReleases.length === 0 && (
+                <Box>No releases belong to this address</Box>
               )}
-              {fetchedReleases &&
-                profilePublishedReleases.length === 0 && (
-                  <ResponsiveDotContainer>
-                    No releases belong to this address
-                  </ResponsiveDotContainer>
-                )}
-              {fetchedReleases && (
-                <ProfileReleaseTable
-                  allReleases={profilePublishedReleases}
-                  tableCategories={releaseTabs}
+              {fetched.releases && profilePublishedReleases.length > 0 && (
+                <ReusableTable
+                  tableType={'profilePublishedReleases'}
+                  releases={profilePublishedReleases}
                 />
               )}
             </>
           )}
 
-          {view === 'collection' && (
+          {activeView === 1 && (
             <>
-              {!fetchedCollection && (
-                <ResponsiveDotContainer>
-                  <Dots />
-                </ResponsiveDotContainer>
+              {fetched.collection && profileCollectionReleases.length === 0 && (
+                <Box>No collection found at this address</Box>
               )}
-              {fetchedCollection  && profileHubs.length === 0 && (
-                <ResponsiveDotContainer>No collection found at this address</ResponsiveDotContainer>
-              )}
-              {fetchedCollection  && (
-                <ProfileReleaseTable
-                  allReleases={profileCollectionReleases}
-                  tableTabs={releaseTabs}
+              {fetched.collection && profileCollectionReleases.length > 0 && (
+                <ReusableTable
+                  tableType={'profileCollectionReleases'}
+                  releases={profileCollectionReleases}
                 />
               )}
             </>
           )}
-          {view === 'hubs' && (
+          {activeView === 2 && (
             <>
-              {!fetchedHubs  && (
-                <ResponsiveDotContainer>
-                  <Dots />
-                </ResponsiveDotContainer>
+              {fetched.hubs && profileHubs.length === 0 && (
+                <Box>No Hubs belong to this address</Box>
               )}
-              {fetchedHubs && profileHubs.length === 0 && (
-                <ResponsiveDotContainer>No Hubs belong to this address</ResponsiveDotContainer>
-              )}
-              {fetchedHubs  && (
-                <ProfileHubs profileHubs={profileHubs} />
+              {fetched.hubs && profileHubs.length > 0 && (
+                <ReusableTable
+                  tableType={'profileHubs'}
+                  releases={profileHubs}
+                />
               )}
             </>
           )}
-        </ResponsiveProfileContentContainer>
+        </>
       </ResponsiveProfileContainer>
     </>
   )
@@ -248,26 +261,33 @@ const ResponsiveProfileContainer = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   justifyItems: 'center',
   textAlign: 'center',
-  minWidth: '960px',
-  maxWidth: '960px',
-  maxHeight: '60vh',
+  minWidth: theme.maxWidth,
+  maxWidth: theme.maxWidth,
+  height: '86vh',
+  overflowY: 'hidden',
+  margin: '75px auto 0px',
   webkitOverflowScrolling: 'touch',
   [theme.breakpoints.down('md')]: {
     display: 'flex',
     flexDirection: 'column',
     justifyItems: 'center',
     alignItems: 'center',
-    marginTop: '125px',
+    marginTop: '25px', 
+    paddingTop: 0,
+    minHeight: '100% !important',
     maxHeight: '80vh',
+    overflow: 'hidden',
+    marginLeft: 0,
   },
 }))
 
-const ResponsiveProfileDetailHeaderContainer = styled(Box)(({theme}) => ({
-  maxWidth: '100%', textAlign: 'left',
+const ResponsiveProfileDetailHeaderContainer = styled(Box)(({ theme }) => ({
+  maxWidth: '100%',
+  textAlign: 'left',
   [theme.breakpoints.down('md')]: {
     paddingLeft: '10px',
     paddingRight: '10px',
-  }
+  },
 }))
 
 const ResponsiveProfileHeaderContainer = styled(Box)(({ theme }) => ({
@@ -279,52 +299,41 @@ const ResponsiveProfileHeaderContainer = styled(Box)(({ theme }) => ({
   pl: 1,
   pb: 1,
   maxWidth: '100vw',
-  minHeight: '115px',
+  minHeight: '100px',
   [theme.breakpoints.down('md')]: {
-
     width: '100vw',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'no-wrap',
-  },
-}))
-
-const ResponsiveProfileContentContainer = styled(Box)(({ theme }) => ({
-  minHeight: '50vh',
-  width: '960px',
-  webkitOverflowScrolling: 'touch',
-  [theme.breakpoints.down('md')]: {
-    width: '100vw',
-    padding: '0px 30px',
-    overflowX: 'auto',
-    minHeight: '60vh',
+    height: '100px',
   },
 }))
 
 const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
   fontSize: '80px',
-  position: 'absolute',
-  left: '50%',
-  top: '50%',
-  display: 'table-cell',
+  display: 'flex',
+  width: '100%',
+  height: '100%',
+  display: 'flex', 
   textAlign: 'center',
-  verticalAlign: 'middle',
   [theme.breakpoints.down('md')]: {
     fontSize: '30px',
-    left: '47%',
-    top: '53%',
+    left: '50%',
+    top: '50%',
   },
 }))
 
-const ResponsiveDotHeaderContainer = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  top: '20%',
-  left: '20%',
-  fontSize: '80px',
+const ProfileOverflowContainer = styled(Box)(({ theme }) => ({
+  overflow: 'hidden',
+  display: "-webkit-box",
+  "-webkit-line-clamp": '3',
+  "-webkit-box-orient": "vertical",  
+  textOverflow: 'ellipsis',
   [theme.breakpoints.down('md')]: {
-    fontSize: '30px',
-    left: '13%',
-  },
+
+    "-webkit-line-clamp": '5',
+
+  }
 }))
 
 export default Profile

@@ -13,9 +13,8 @@ const HubPage = (props) => {
 }
 
 const ResponsiveHubContainer = styled(Box)(({theme}) => ({
-  width: '960px',
-  minHeight: '60vh',
-  maxHeight:'100vh',
+  width: theme.maxWidth,
+ 
   [theme.breakpoints.down('md')]: {
     minHeight:'40vh'
   }

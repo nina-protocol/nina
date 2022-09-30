@@ -88,7 +88,7 @@ const HubSlider = (props) => {
               <HubSlideWrapper key={i}>
                 <HubSlide key={i}>
                   {imageUrl && (
-                    <Link href={`https://hubs.ninaprotocol.com/${hub.handle}`}>
+                    <Link href={`/hubs/${hub.id}`}>
                       <a>
                         <Image
                           src={getImageFromCDN(imageUrl, 400, new Date(Date.parse(hub.datetime)))}

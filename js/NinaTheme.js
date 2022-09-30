@@ -104,6 +104,7 @@ export const NinaTheme = createTheme({
   //   },
   // },
   spacing: 15,
+  maxWidth:'960px',
   helpers: {
     grid: {
       display: 'grid',

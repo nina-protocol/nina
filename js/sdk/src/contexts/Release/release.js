@@ -1331,7 +1331,6 @@ const releaseContextHelper = ({
 
       const response = await fetch(path)
       const releaseIds = await response.json()
-      console.log('releaseIds', releaseIds)
       await fetchAndSaveReleasesToState(releaseIds)
     } catch (error) {
       console.warn(error)
@@ -1653,8 +1652,6 @@ const releaseContextHelper = ({
 
       const response = await fetch(path)
       const publishedReleaseIds = await response.json()
-
-      console.log('userCollection', userCollection)
       await fetchAndSaveReleasesToState([...userCollection, ...publishedReleaseIds])
       return [userCollection, publishedReleaseIds]
     } catch (e) {
@@ -1682,7 +1679,7 @@ const releaseContextHelper = ({
 
   */
   const filterReleasesUserCollection = () => {
-    console.log('FILTERING')
+   
     if (!provider.wallet?.connected) {
       return []
     }
@@ -1697,13 +1694,12 @@ const releaseContextHelper = ({
         }
       }
     })
-    console.log('releases from filterReleases xxx', releases)
     return releases
   }
 
   const filterReleasesList = (releaseList) => {
     const releases = []
-    releaseList.forEach((releasePubkey) => {
+    releaseList?.forEach((releasePubkey) => {
       const tokenData = releaseState.tokenData[releasePubkey]
       const metadata = releaseState.metadata[releasePubkey]
       if (metadata) {
@@ -1791,12 +1787,14 @@ const releaseContextHelper = ({
       userPubkey = provider.wallet?.publicKey.toBase58()
     }
 
+
     const releases = []
     Object.keys(releaseState.tokenData).forEach((releasePubkey) => {
       const tokenData = releaseState.tokenData[releasePubkey]
       const metadata = releaseState.metadata[releasePubkey]
 
       const releaseData = {}
+     
       if (tokenData.authority.toBase58() === userPubkey && metadata) {
         releaseData.tokenData = tokenData
         releaseData.metadata = metadata
@@ -1819,6 +1817,7 @@ const releaseContextHelper = ({
         releases.push(releaseData)
       }
     })
+
     return releases
   }
 
@@ -2000,7 +1999,7 @@ const releaseContextHelper = ({
             releases.push(release)
           }
         })
-        console.log('test')
+       
         await saveReleasesToState(releases, query)
       } catch (error) {
         console.warn(error)
@@ -2078,7 +2077,6 @@ const releaseContextHelper = ({
         search.releases = finalSearchReleases
         await setSearchResults(search)
       }
-      console.log('updatedState', updatedState)
       await setReleaseState(updatedState)
     } catch (error) {
       console.warn(error)
