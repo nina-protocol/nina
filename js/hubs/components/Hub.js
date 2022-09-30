@@ -7,6 +7,9 @@ import {styled} from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { useRouter } from "next/router";
 import Dots from "./Dots";
 
 import {unified} from "unified";
@@ -17,6 +20,8 @@ import rehypeExternalLinks from "rehype-external-links";
 const ContentTileView = dynamic(() => import("./ContentTileView"));
 
 const HubComponent = ({hubPubkey}) => {
+  const wallet = useWallet();
+  const router = useRouter();
   const {
     hubState,
     hubCollaboratorsState,
@@ -159,15 +164,15 @@ const HubComponent = ({hubPubkey}) => {
   return (
     <>
       <Grid item md={4} sx={{padding: {md: "15px", xs: "40px 15px 15px"}}}>
-          {hubData.json.description.length > 0 && (
-            <DescriptionWrapper
-              sx={{padding: {md: "15px", xs: "40px 0 0"}, width: '100%'}}
-            >
-              <Typography align="left" sx={{color: "text.primary"}}>
-                {description}
-              </Typography>
-            </DescriptionWrapper>
-          )}
+        {hubData.json.description.length > 0 && (
+          <DescriptionWrapper
+            sx={{padding: {md: "15px", xs: "40px 0 0"}, width: '100%'}}
+          >
+            <Typography align="left" sx={{color: "text.primary"}}>
+              {description}
+            </Typography>
+          </DescriptionWrapper>
+        )}
       </Grid>
 
       <ContentViewWrapper item md={8} height="100%">
@@ -184,7 +189,20 @@ const HubComponent = ({hubPubkey}) => {
           />
         )}
         {hubContentFetched.has(hubPubkey) && contentData.content?.length === 0 && (
-          <Typography>Nothing has been published to this Hub yet</Typography>
+          <>
+            <Typography>Nothing has been published to this Hub yet</Typography>
+            {hubCollaborators.map((collaborator) => collaborator.collaborator).includes(wallet?.publicKey?.toBase58()) && (
+              <Button
+                fullWidth
+                variant="outlined"
+                color="primary"
+                onClick={() => router.push(`/${hubData.handle}/dashboard?action=publishRelease`)}
+                sx={{ height: "56px", width: "25%", marginTop: "20px" }}
+              >
+                {`Publish a release`}
+              </Button>
+            )}
+          </>
         )}
       </ContentViewWrapper>
     </>
