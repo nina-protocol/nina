@@ -88,36 +88,44 @@ const autoCompleteUrl = 'https://dev.api.ninaprotocol.com/v1/suggestions'
     }
     setQuery('')
     updateResponse()
-
+    setSuggestions([])
   }
   const handleAutoComplete = async (query) => {
     const fetchedSuggestions = []
+    const fetchedArtists = []
+    const fetchedReleases = []
+    const fetchedHubs = []
     const response = await axios.post(autoCompleteUrl, {query})
     Object.keys(response.data).forEach(key => {
       fetchedSuggestions.push(response.data[key])
     })
-    const artists = fetchedSuggestions.map((suggestion) => suggestion.map((item) => item.name))
-    console.log('artists', artists.map((artist) => artist))
-    setSuggestions(artists.map((artist) => artist[0]))
+    fetchedSuggestions[0].forEach(item => {
+      fetchedArtists.push(`${item.name}`)}
+    )
+    fetchedSuggestions[1].forEach(item => {
+      fetchedReleases.push(`${item.title}`)}
+    )
+    fetchedSuggestions[2].forEach(item => {
+      fetchedHubs.push(`${item.displayName}`)}
+    )
+    setSuggestions([...fetchedArtists, ...fetchedReleases, ...fetchedHubs])
+    console.log('suggestiosssss', suggestions)
   }
   const changeHandler = (e) => {
     e.preventDefault()
     e.stopPropagation()
     setQuery(e.target.value)
-    
     if (e.keyCody === 13) {
       setQuery('')
     }
   }
-  const array = ['jack', 'jill', 'john', 'jane']
-  return (
+    return (
     <Box sx={{ height: '60vh', width: '960px' }}>
       <Form onSubmit={(e) => handleSubmit(e)}>
         <SearchInputWrapper>
-          {/*  */}
       <Autocomplete 
       id="nina-search"
-      options={suggestions}
+      options={suggestions ? suggestions : ''}
       getOptionLabel={(option) => option}
       renderInput={(params) => 
         <TextField
