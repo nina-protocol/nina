@@ -412,6 +412,15 @@ const HubCreate = ({ update, hubData }) => {
         >
           {`${formValues.hubForm.displayName}  has been created!  View Hub.`}
         </Button>
+        <Button
+          fullWidth
+          variant="outlined"
+          color="primary"
+          onClick={() => router.push(`/${formValues.hubForm.handle}/dashboard?action=publishRelease`)}
+          sx={{ height: "54px" }}
+        >
+          {`Publish a release`}
+        </Button>
       </Box>
     );
   }
