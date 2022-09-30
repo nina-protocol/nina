@@ -64,6 +64,7 @@ const TabHeader = ({
                   {tab.playlist && (
                     <Box
                       sx={{
+                         paddingTop: '1px',
                         '&:hover': {
                           opacity: 0.5,
                         },
@@ -96,7 +97,7 @@ const ResponsiveTab = styled(Box)(({ theme }) => ({
   flexDirection: 'row',
   textTransform: 'uppercase',
   minWidth: '100px',
-
+  
   [theme.breakpoints.down('md')]: {
     paddingLeft: '15px',
   },

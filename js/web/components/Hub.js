@@ -210,20 +210,6 @@ const ResponsiveHubContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
-const ResponsiveHubHeaderContainer = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'left',
-  justifyContent: 'start',
-  py: 5,
-  px: 1,
-  m: 1,
-  minHeight: '115px',
-  [theme.breakpoints.down('md')]: {
-    width: '100vw',
-  },
-}))
-
 const ResponsiveTabContainer = styled(Box)(({ theme }) => ({
   py:1,
 
