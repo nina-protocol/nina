@@ -12,7 +12,6 @@ import Link from 'next/link'
 import {useRouter} from "next/router";
 
 const AudioPlayer = ({ hubPubkey }) => {
-  const router = useRouter();
   const { releaseState } = useContext(Release.Context);
   const { hubContentState, filterHubContentForHub, hubState } = useContext(Hub.Context);
   const audio = useContext(Audio.Context);
@@ -222,6 +221,7 @@ const AudioPlayer = ({ hubPubkey }) => {
       playNext(true);
     } else {
       // This means we've reached the end of the playlist
+      setTrackProgress(0)
       setPlaying(false);
     }
   };
