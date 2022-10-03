@@ -159,14 +159,14 @@ const Profile = ({ profilePubkey }) => {
     const result = await subscriptionSubscribe(accountAddress, false)
     console.log('result', result)
     if (result.success) {
-          enqueueSnackbar(result.msg, {
-            variant: 'success',
-          })
-        } else {
-          enqueueSnackbar('Error creating release - please try again.', {
-            variant: 'error',
-          })
-        }
+        enqueueSnackbar(result.msg, {
+          variant: 'success',
+        })
+      } else {
+        enqueueSnackbar('Error Following Account.', {
+          variant: 'error',
+        })
+      }
   }
 
   return (

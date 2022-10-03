@@ -1,20 +1,30 @@
+import { useContext } from 'react'
 import Image from 'next/image'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import Link from 'next/link'
 import { useState, useEffect, createElement, Fragment } from 'react'
+import { useWallet } from '@solana/wallet-adapter-react'
 import { Typography } from '@mui/material'
 import { styled } from '@mui/system'
 import { Box } from '@mui/system'
+import Button from "@mui/material/Button";
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { unified } from 'unified'
 import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
+import { useSnackbar } from "notistack";
+
 
 const { getImageFromCDN, loader } = imageManager
 
 const HubHeader = ({ hubData }) => {
   const [hubDescription, setHubDescription] = useState(undefined)
+  const { subscriptionSubscribe } = useContext( Nina.Context )
+  const { enqueueSnackbar } = useSnackbar();
+  const wallet = useWallet()
+
   useEffect(() => {
     if (hubData?.json.description.includes('<p>')) {
       unified()
@@ -41,6 +51,19 @@ const HubHeader = ({ hubData }) => {
       setHubDescription(hubData?.json.description)
     }
   }, [hubData?.json.description])
+
+    const handleSubscribe = async (accountAddress) => {
+    const result = await subscriptionSubscribe(accountAddress, hubData.handle)
+    if (result.success) {
+        enqueueSnackbar(result.msg, {
+          variant: 'success',
+        })
+      } else {
+        enqueueSnackbar('Error Following Account.', {
+          variant: 'error',
+        })
+      }
+  }
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -82,6 +105,15 @@ const HubHeader = ({ hubData }) => {
           </>
         )}
       </ResponsiveHubHeader>
+          
+    {wallet.connected && (
+          <Button 
+            color="primary" 
+            sx={{padding: '0', width: '67px'}} 
+            onClick={() => handleSubscribe(hubData.id)}>
+            Follow Hub
+          </Button>
+        )}
       {/* <ResponsiveUrlContainer>
         <Typography sx={{ pb: 2, fontSize: '12px' }}>
           <Link href={hubData?.json.externalUrl}>

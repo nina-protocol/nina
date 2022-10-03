@@ -213,17 +213,18 @@ const ninaContextHelper = ({
 }) => {
   const { provider, ids, uiToNative, nativeToUi } = ninaClient
 
-  const subscriptionSubscribe = async (subscribeToAccount, isHub) => {
-    try {
-      const program = await ninaClient.useProgram()
+  //Subscrition
 
-      console.log('anchor :>> ', anchor);
-      console.log('program.programId :>> ', program.programId);
+  const subscriptionSubscribe = async (subscribeToAccount, hubHandle) => {
+    try {
+      const program = await ninaClient.useProgram()      
       subscribeToAccount = new anchor.web3.PublicKey(subscribeToAccount)
       const [subscription] = await anchor.web3.PublicKey.findProgramAddress(
-        [Buffer.from(anchor.utils.bytes.utf8.encode('nina-subscription')),
-        provider.wallet.publicKey.toBuffer(),
-        subscribeToAccount.toBuffer()],
+        [
+          Buffer.from(anchor.utils.bytes.utf8.encode('nina-subscription')),
+          provider.wallet.publicKey.toBuffer(),
+          subscribeToAccount.toBuffer()
+        ],
         program.programId
       )
 
@@ -237,13 +238,14 @@ const ninaContextHelper = ({
       }
 
       let txid
-      if (isHub) {
-        txid = await program.rpc.subscriptionSubscribeHub(request)
+      if (hubHandle) {
+        txid = await program.rpc.subscriptionSubscribeHub(hubHandle, request)
       } else {
         txid = await program.rpc.subscriptionSubscribeAccount(request)
       }
 
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await getSubcription(subscription.toBase58())
       return {
         success: true,
         msg: 'Now Following Account',
@@ -268,7 +270,7 @@ const ninaContextHelper = ({
       const txid = await program.rpc.subscriptionUnsubscribe({
         accounts: {
           from: provider.wallet.publicKey,
-          subscription,
+          subscription,  
           to: unsubscribeAccount,
           systemProgram: anchor.web3.SystemProgram.programId,
 
@@ -284,6 +286,25 @@ const ninaContextHelper = ({
       return ninaErrorHandler(error)
     }
   }
+
+  const getSubcription = async (subscriptionPubkey) => {
+    try {
+      const program = await ninaClient.useProgram()
+      subscriptionPubkey = new anchor.web3.PublicKey(subscriptionPubkey)
+
+      const subscriptionAccount = await program.account.subscription.fetch(subscriptionPubkey)
+      subscriptionAccount.publicKey = subscriptionPubkey
+      if (subscriptionAccount.error) {
+        throw subscriptionAccount.error
+      } else {
+        return subscriptionAccount
+      }
+    } catch (error) {
+      console.warn(error)
+    }
+  }
+
+  //Posts
 
   const savePostsToState = async (posts) => {
     let updatedState = { ...postState }
@@ -449,7 +470,7 @@ const ninaContextHelper = ({
     ) {
       setCollection({
         ...collection,
-        [releasePubkey]:
+        [releasePubkey]:  
           account[0].account.data.parsed.info.tokenAmount.uiAmount,
       })
       return true
