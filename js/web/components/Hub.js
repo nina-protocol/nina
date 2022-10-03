@@ -32,7 +32,7 @@ const HubComponent = ({ hubPubkey }) => {
     collaborators: false,
   })
   const [views, setViews] = useState([
-    { name: 'releases', playlist: undefined, visible: true },
+    { name: 'releases', playlist: undefined, visible: false },
     { name: 'collaborators', playlist: undefined, visible: true },
   ])
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
@@ -48,7 +48,7 @@ const HubComponent = ({ hubPubkey }) => {
   useEffect(() => {
     const [releases] = filterHubContentForHub(hubPubkey)
     const collaborators = filterHubCollaboratorsForHub(hubPubkey)
-
+    fetched.collaborators = true
     setHubReleases(releases)
     setHubCollaborators(collaborators)
   }, [hubContentState])
@@ -66,6 +66,8 @@ const HubComponent = ({ hubPubkey }) => {
 
     viewIndex = updatedView.findIndex((view) => view.name === 'releases')
     updatedView[viewIndex].playlist = releaseData
+    fetched.releases = true
+    setFetched({ ...fetched })
   }, [releaseState, hubReleases, views])
 
   useEffect(() => {
@@ -77,13 +79,10 @@ const HubComponent = ({ hubPubkey }) => {
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
       updatedView[viewIndex].visible = true
       updatedView[viewIndex].playlist = hubReleases
-      fetched.releases = true
     }
-    if (hubReleases?.length === 0 && fetched.releases) {
+    if (hubReleases?.length === 0 && fetched.releases && hubCollaborators.length > 0) {
+      
       setActiveView(1)
-    }
-    if (hubCollaborators?.length > 0) {
-      fetched.collaborators = true
     }
     setFetched({ ...fetched })
     setViews(updatedView)
@@ -149,14 +148,20 @@ const HubComponent = ({ hubPubkey }) => {
         )}
         <ResponsiveHubContentContainer>
           {activeView === undefined && (
+            <>
             <ResponsiveDotContainer>
               <Box sx={{width: '100%', margin: 'auto'}}>
                 <Dots />
               </Box>
             </ResponsiveDotContainer>
+            </>
            )} 
+           
           {activeView === 0 && (
             <>
+             {fetched.releases && !releaseData && (
+                <Box sx={{ my: 1 }}>No releases found in this Hub</Box>
+              )}
               {fetched.releases && releaseData && (
                 <ReusableTable
                   tableType={'hubReleases'}
