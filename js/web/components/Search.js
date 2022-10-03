@@ -27,6 +27,7 @@ const Search = () => {
   const [query, setQuery] = useState('')
   const [response, setResponse] = useState(undefined)
   const [suggestions, setSuggestions] = useState([])
+  const [options, setOptions] = useState(undefined)
   const [artist, setArtist] = useState([])
   const [fetchedResponse, setFetchedResponse] = useState(undefined)
   const [allResults, setAllResults] = useState(undefined)
@@ -96,6 +97,14 @@ const autoCompleteUrl = 'https://dev.api.ninaprotocol.com/v1/suggestions'
     const fetchedReleases = []
     const fetchedHubs = []
     const response = await axios.post(autoCompleteUrl, {query})
+    console.log('response :>> ', response.data);
+    const {artists, releases, hubs} = response.data;
+    const dataArr = [response.data]
+    const responseObject = dataArr.reduce(function(acc, val) {
+      for (let key in val) acc[key] = val[key];
+      return acc;
+    }, {})
+    console.log('responseObject :>> ', responseObject);
     Object.keys(response.data).forEach(key => {
       fetchedSuggestions.push(response.data[key])
     })
@@ -108,8 +117,23 @@ const autoCompleteUrl = 'https://dev.api.ninaprotocol.com/v1/suggestions'
     fetchedSuggestions[2].forEach(item => {
       fetchedHubs.push(`${item.displayName}`)}
     )
+    console.log('resObj',responseObject)
     setSuggestions([...fetchedArtists, ...fetchedReleases, ...fetchedHubs])
+    setOptions([responseObject].map((option, i) => {
+  
+        const category = Object.keys(option)[i];
+        const label = option[category].name || option[category].title || option[category].displayName;
+        return {...option.artists, ...option.releases, ...option.hubs,}
+      //   return {  
+      //     label,
+      //     // name: item.name,
+      //     // displayName: item.displayName,
+      //     ...option
+        
+      // }
+    }))
     console.log('suggestiosssss', suggestions)
+    console.log('options', options)
   }
   const changeHandler = (e) => {
     e.preventDefault()
@@ -119,6 +143,8 @@ const autoCompleteUrl = 'https://dev.api.ninaprotocol.com/v1/suggestions'
       setQuery('')
     }
   }
+
+
     return (
     <Box sx={{ height: '60vh', width: '960px' }}>
       <Form onSubmit={(e) => handleSubmit(e)}>
@@ -127,6 +153,7 @@ const autoCompleteUrl = 'https://dev.api.ninaprotocol.com/v1/suggestions'
       id="nina-search"
       options={suggestions ? suggestions : ''}
       getOptionLabel={(option) => option}
+      groupBy={option => option.title}
       renderInput={(params) => 
         <TextField
         {...params}
