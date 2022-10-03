@@ -21,8 +21,8 @@ const BuySellForm = (props) => {
   const [sellPending, setSellPending] = useState(false)
 
   useEffect(() => {
-    setPending(exchangeInitPending[release.publicKey.toBase58()])
-  }, [exchangeInitPending[release.publicKey.toBase58()]])
+    setPending(exchangeInitPending[release.publicKey])
+  }, [exchangeInitPending[release.publicKey]])
 
   useEffect(() => {
     if (pending && exchangeInitPending.isSelling) {

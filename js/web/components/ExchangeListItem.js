@@ -10,20 +10,15 @@ const ExchangeListItem = (props) => {
   const {
     expectedAmount,
     isSelling,
-    isCurrentUser,
+    initializer,
     release,
     solPrice,
     symbol,
     amount,
   } = props
+  const wallet = useWallet()
   const { ninaClient } = useContext(Nina.Context)
-  const displayPrice = isSelling
-    ? ninaClient.nativeToUiString(
-        expectedAmount?.toNumber() || amount,
-        release.paymentMint
-      )
-    : ninaClient.nativeToUiString(amount, release.paymentMint)
-
+  const displayPrice = isSelling ? ninaClient.nativeToUiString(amount, release.paymentMint) : `${amount} USDC`
   const itemData = (
     <Root>
       <Typography>
@@ -31,7 +26,7 @@ const ExchangeListItem = (props) => {
           className={`
           ${classes.exchangeListItemPrice} 
           ${classes.exchangeListItemPrice}--${
-            isCurrentUser ? 'currentUser' : ''
+            initializer === wallet.publicKey.toBase58()  ? 'currentUser' : ''
           }
           `}
         >
@@ -44,7 +39,7 @@ const ExchangeListItem = (props) => {
         >
           {(
             ninaClient.nativeToUi(
-              isSelling ? expectedAmount?.toNumber() : amount,
+              isSelling ? expectedAmount : amount,
               release.paymentMint
             ) * solPrice
           ).toFixed(2)}{' '}
@@ -65,7 +60,7 @@ const ExchangeListItem = (props) => {
       className={`
       ${classes.exchangeListItem} 
       ${classes.exchangeListItem}--${isSelling ? 'listing' : 'offer'}
-      ${classes.exchangeListItem}--${isCurrentUser ? 'currentUser' : ''}
+      ${classes.exchangeListItem}--${initializer === wallet.publicKey.toBase58() ? 'currentUser' : ''}
       `}
     >
       {itemData}
@@ -74,14 +69,13 @@ const ExchangeListItem = (props) => {
 }
 
 const ExchangeListButton = (props) => {
-  const { onExchangeButtonAction, pending, isSelling, isCurrentUser } = props
-
+  const { onExchangeButtonAction, pending, isSelling, initializer } = props
   const wallet = useWallet()
   const [buttonText, setButtonText] = useState('Pending')
 
   useEffect(() => {
     if (wallet?.connected) {
-      if (isCurrentUser) {
+      if (initializer === wallet.publicKey.toBase58()) {
         if (pending) {
           setButtonText('Pending')
         } else {
@@ -93,7 +87,7 @@ const ExchangeListButton = (props) => {
     } else {
       setButtonText(isSelling ? 'Buy' : 'Accept')
     }
-  }, [wallet?.connected, pending, isCurrentUser, isSelling])
+  }, [wallet?.connected, pending, wallet.publicKey, isSelling])
 
   if (wallet?.connected && !pending) {
     return (

@@ -49,11 +49,11 @@ const ReleaseList = () => {
     let exchangeCount = 0
     let exchangeSalesCount = 0
     userPublishedReleases.forEach((release) => {
-      salesCount += release.tokenData.saleCounter.toNumber()
-      editionCount += release.tokenData.totalSupply.toNumber()
-      revenueCount += release.tokenData.totalCollected.toNumber()
-      exchangeCount += release.tokenData.exchangeSaleCounter.toNumber()
-      exchangeSalesCount += release.tokenData.exchangeSaleTotal.toNumber()
+      salesCount += release.tokenData.saleCounter
+      editionCount += release.tokenData.totalSupply
+      revenueCount += release.tokenData.totalCollected
+      exchangeCount += release.tokenData.exchangeSaleCounter
+      exchangeSalesCount += release.tokenData.exchangeSaleTotal
     })
     setSales(salesCount)
     setEditionTotal(editionCount)

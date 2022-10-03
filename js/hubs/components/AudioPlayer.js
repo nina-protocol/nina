@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext, useMemo } from "react";
+import React, { useEffect, useState, useRef, useContext, useMemo, useCallback } from "react";
 import Audio from "@nina-protocol/nina-internal-sdk/esm/Audio";
 import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
 import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
@@ -13,10 +13,10 @@ import {useRouter} from "next/router";
 
 const AudioPlayer = ({ hubPubkey }) => {
   const router = useRouter();
+  const [tracks, setTracks] = useState([]);
   const { releaseState } = useContext(Release.Context);
   const { hubContentState, filterHubContentForHub, hubState } = useContext(Hub.Context);
   const audio = useContext(Audio.Context);
-  const [tracks, setTracks] = useState({});
   const {
     track,
     playNext,
@@ -31,42 +31,56 @@ const AudioPlayer = ({ hubPubkey }) => {
   } = audio;
   const [duration, setDuration] = useState(0)
   const audioInitialized = useMemo(() => initialized, [initialized])
+  const [hubReleases, setHubReleases] = useState(undefined)
+  const [hubPosts, setHubPosts] = useState(undefined)
+
+  useEffect(() => {
+    const [releases, posts] = filterHubContentForHub(hubPubkey)
+    setHubReleases(releases)
+    setHubPosts(posts)
+  }, [hubContentState]);
+
   useEffect(() => {
     const trackObject = {};
-    const [hubReleases, hubPosts] = filterHubContentForHub(hubPubkey);
-    hubReleases.forEach((hubRelease) => {
-      let contentItem;
-      if (
-        hubRelease.contentType === "NinaReleaseV1" &&
-        releaseState.metadata[hubRelease.release] &&
-        hubRelease.visible
-      ) {
-        contentItem = releaseState.metadata[hubRelease.release];
-        contentItem.contentType = hubRelease.contentType;
-        contentItem.publicKey = hubRelease.release;
-        contentItem.hubReleaseId = hubRelease.hubReleaseId
-        contentItem.hubHandle = hubState[hubRelease.hub].handle
-        contentItem.datetime = hubRelease.datetime;
-        trackObject[hubRelease.release] = contentItem;
-      } 
-    });
-    hubPosts.forEach(hubPost => {
-      let contentItem;
-      if (
-        hubPost.contentType === 'Post' &&
-        hubPost.referenceHubContent !== null &&
-        hubPost.visible
-      ) {
-        contentItem = releaseState.metadata[hubPost.referenceHubContent];
-        contentItem.contentType = hubPost.contentType;
-        contentItem.hubHandle = hubState[hubPost.hub].handle
-        contentItem.hubPostPubkey = hubPost.publicKey
-        contentItem.datetime = hubPost.datetime;
-        trackObject[hubPost.release] = contentItem;
-      }
-    })
-    setTracks(trackObject);
-  }, [hubContentState, hubState, hubPubkey]);
+    if (hubReleases) {
+      hubReleases.forEach((hubRelease) => {
+        let contentItem;
+        if (
+          hubRelease.contentType === "ninaReleaseV1" &&
+          releaseState.metadata[hubRelease.release] &&
+          hubRelease.visible
+        ) {
+          contentItem = releaseState.metadata[hubRelease.release];
+          contentItem.contentType = hubRelease.contentType;
+          contentItem.publicKey = hubRelease.release;
+          contentItem.hubReleaseId = hubRelease.hubReleaseId
+          contentItem.hubHandle = hubState[hubRelease.hub].handle
+          contentItem.datetime = hubRelease.datetime;
+          trackObject[hubRelease.release] = contentItem;
+        } 
+      });
+    }
+    if (hubPosts) {
+      hubPosts.forEach(hubPost => {
+        let contentItem;
+        if (
+          hubPost.contentType === 'post' &&
+          hubPost.referenceContent !== undefined &&
+          hubPost.visible
+        ) {
+          contentItem = releaseState.metadata[hubPost.referenceContent];
+          if (contentItem) {
+            contentItem.contentType = hubPost.contentType;
+            contentItem.hubHandle = hubState[hubPost.hub].handle
+            contentItem.hubPostPubkey = hubPost.publicKey
+            contentItem.datetime = hubPost.datetime;
+            trackObject[hubPost.release] = contentItem;
+          }
+        }
+      })
+    }
+    setTracks(trackObject)
+  }, [hubReleases, hubPosts]);
 
   const activeTrack = useRef();
   const intervalRef = useRef();
@@ -105,7 +119,7 @@ const AudioPlayer = ({ hubPubkey }) => {
         .sort((a, b) => new Date(b.datetime) - new Date(a.datetime))
       createPlaylistFromTracksHubs(trackValues);
     }
-  }, [tracks, hubContentState]);
+  }, [tracks]);
 
   useEffect(() => {
     if (isPlaying && audioInitialized) {
@@ -281,7 +295,7 @@ const AudioPlayer = ({ hubPubkey }) => {
       )}
 
       <audio id="audio" style={{ width: "100%" }}>
-        <source src={track?.txid + '?ext=mp3'} type="audio/mp3" />
+        <source type="audio/mp3" />
       </audio>
       <Typography sx={{pb: "5px", whiteSpace: 'nowrap'}}>
         <Link href={`/all`}>

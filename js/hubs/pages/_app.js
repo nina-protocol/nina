@@ -11,6 +11,13 @@ import { GlowWalletAdapter } from "@solana/wallet-adapter-glow";
 import { SnackbarProvider } from "notistack";
 import Box from "@mui/material/Box";
 import dynamic from "next/dynamic";
+import NinaSdk from '@nina-protocol/js-sdk'
+
+NinaSdk.client.init(
+  process.env.NINA_API_ENDPOINT,
+  process.env.SOLANA_CLUSTER_URL,
+  process.env.NINA_PROGRAM_ID
+)
 
 // Use require instead of import since order matters
 // require('@solana/wallet-adapter-react-ui/styles.css');
@@ -47,17 +54,12 @@ const App = ({ Component, pageProps }) => {
   // }, []);
   // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
   const network =
-    process.env.REACT_APP_CLUSTER === "mainnet-beta"
+    process.env.SOLANA_CLUSTER === "mainnet-beta"
       ? WalletAdapterNetwork.MainnetBeta
       : WalletAdapterNetwork.Devnet;
 
   const endpoint = useMemo(() => {
-    if (network === WalletAdapterNetwork.MainnetBeta) {
-      return "https://nina.rpcpool.com";
-    } else if (network === WalletAdapterNetwork.Devnet) {
-      return "https://nina.devnet.rpcpool.com";
-    }
-    return clusterApiUrl(network);
+    return process.env.SOLANA_CLUSTER_URL;
   }, [network]);
 
   // @solana/wallet-adapter-wallets includes all the adapters but supports tree shaking and lazy loading --
@@ -83,7 +85,7 @@ const App = ({ Component, pageProps }) => {
       <ConnectionProvider endpoint={endpoint}>
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
-            <NinaWrapper network={process.env.REACT_APP_CLUSTER}>
+            <NinaWrapper network={process.env.SOLANA_CLUSTER}>
               <Layout>
                 {loading ? (
                   <Box width="100%" margin="auto">

@@ -36,15 +36,15 @@ const Royalty = (props) => {
   useEffect(() => {
     if (release?.royaltyRecipients) {
       release.royaltyRecipients.forEach((recipient) => {
-        const recipientPubkey = recipient.recipientAuthority.toBase58();
+        const recipientPubkey = recipient.recipientAuthority;
         if (
           wallet?.connected &&
           recipientPubkey === wallet?.publicKey.toBase58()
         ) {
           setUserIsRecipient(true);
           setUserRecipientData(recipient);
-          setUserShare(recipient.percentShare.toNumber() / 10000);
-          setUserDisplayShare(recipient.percentShare.toNumber() / 10000);
+          setUserShare(recipient.percentShare / 10000);
+          setUserDisplayShare(recipient.percentShare / 10000);
         }
       });
     }
@@ -125,18 +125,18 @@ const Royalty = (props) => {
             <List>
               {release?.royaltyRecipients &&
                 release.royaltyRecipients.map((recipient, i) => {
-                  if (recipient.percentShare.toNumber() > 0) {
+                  if (recipient.percentShare > 0) {
                     const walletAuthorizedToCollect =
                       wallet?.connected &&
                       wallet?.publicKey.toBase58() ===
-                        recipient?.recipientAuthority.toBase58()
+                        recipient?.recipientAuthority
                         ? true
                         : false;
                     const recipientHandle = walletAuthorizedToCollect ? (
                       "Your Royalties:"
                     ) : (
                       <a
-                        href={`https://explorer.solana.com/address/${recipient.recipientAuthority.toBase58()}`}
+                        href={`https://explorer.solana.com/address/${recipient.recipientAuthority}`}
                         rel="noopener"
                       >
                         {`Collaborator ${i}`}
@@ -145,19 +145,19 @@ const Royalty = (props) => {
                     const percentShare = `percent share: ${
                       walletAuthorizedToCollect
                         ? userDisplayShare
-                        : recipient.percentShare.toNumber() / 10000
+                        : recipient.percentShare / 10000
                     }%`;
 
                     const owed =
-                      walletAuthorizedToCollect && recipient.owed.toNumber() > 0
+                      walletAuthorizedToCollect && recipient.owed > 0
                         ? `owed: ${ninaClient.nativeToUiString(
-                            recipient.owed.toNumber(),
+                            recipient.owed,
                             release.paymentMint
                           )}`
                         : "";
 
                     const collectButton = walletAuthorizedToCollect &&
-                      recipient.owed.toNumber() > 0 && (
+                      recipient.owed > 0 && (
                         <Button
                           onClick={() => handleCollectRoyalty(recipient)}
                           variant="contained"

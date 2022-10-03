@@ -19,13 +19,9 @@ const ReleaseComponent = ({ metadataSsr }) => {
   const {
     releaseState,
     getRelease,
-    getRelatedForRelease,
-    filterRelatedForRelease,
   } = useContext(Release.Context)
-  const { getExchangeHistoryForRelease, exchangeState } =
-    useContext(Exchange.Context)
+  const { exchangeState } = useContext(Exchange.Context)
   const { getHubsForUser, filterHubsForUser, hubState } = useContext(Hub.Context)
-  const [relatedReleases, setRelatedReleases] = useState(null)
   const [userHubs, setUserHubs] = useState()
 
   const [metadata, setMetadata] = useState(
@@ -35,20 +31,12 @@ const ReleaseComponent = ({ metadataSsr }) => {
   console.log('release', release)
   console.log(releaseState)
   useEffect(() => {
-    if (releasePubkey) {
-      getRelatedForRelease(releasePubkey)
-      getExchangeHistoryForRelease(releasePubkey)
-    }
-  }, [releasePubkey])
-
-  useEffect(() => {
     if (releaseState.metadata[releasePubkey] && !metadata) {
       setMetadata(releaseState.metadata[releasePubkey])
     }
   }, [releaseState?.metadata[releasePubkey]])
 
   useEffect(() => {
-    setRelatedReleases(filterRelatedForRelease(releasePubkey))
   }, [releaseState])
 
   useEffect(() => {
@@ -85,7 +73,8 @@ const ReleaseComponent = ({ metadataSsr }) => {
   if (!wallet?.connected && router.pathname.includes('releases')) {
     router.push(`/${releasePubkey}`)
   }
-
+  console.log('releasePubkey', releasePubkey)
+  console.log('metadata', metadata)
   return (
     <>
       <ReleaseWrapper>
@@ -104,7 +93,6 @@ const ReleaseComponent = ({ metadataSsr }) => {
                 releasePubkey={releasePubkey}
                 metadata={metadata}
                 router={router}
-                relatedReleases={relatedReleases}
               />
             </ReleaseCtaWrapper>
           </NinaBox>

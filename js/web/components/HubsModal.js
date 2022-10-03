@@ -5,22 +5,23 @@ import Backdrop from '@mui/material/Backdrop'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
-import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 
 const HubsModal = (props) => {
   const { releasePubkey, metadata } = props
-  const { getHubsForRelease } = useContext(Release.Context)
+  const { getHubsForRelease, hubState, filterHubsForRelease } = useContext(Hub.Context)
   const [open, setOpen] = useState(false)
   const [hubs, setHubs] = useState([])
+
   useEffect(() => {
-    handleGetHubsForRelease(releasePubkey)
+    getHubsForRelease(releasePubkey)
   }, [])
 
-  const handleGetHubsForRelease = async (releasePubkey) => {
-    const hubsList = await getHubsForRelease(releasePubkey)
+  useEffect(() => {
+    console.log('hubs hubs hubs', filterHubsForRelease(releasePubkey))
+    setHubs(filterHubsForRelease(releasePubkey))
+  }, [hubState, releasePubkey])
 
-    setHubs(hubsList)
-  }
   return (
     <Box>
       <Cta
@@ -61,10 +62,10 @@ const HubsModal = (props) => {
                     <tr key={i}>
                       <td>
                         <a
-                          href={`/hubs/${entry.id}`}
+                          href={entry.data.externalUrl}
                           passHref
                         >
-                          {entry.json.displayName}
+                          {entry.data.displayName}
                         </a>
                       </td>
                     </tr>

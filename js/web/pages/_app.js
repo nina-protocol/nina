@@ -17,6 +17,13 @@ import { ThemeProvider } from '@mui/material/styles'
 import { NinaTheme } from '../../NinaTheme'
 import Dots from '../components/Dots'
 import Head from "next/head";
+import NinaSdk from '@nina-protocol/js-sdk'
+
+NinaSdk.client.init(
+  process.env.NINA_API_ENDPOINT,
+  process.env.SOLANA_CLUSTER_URL,
+  process.env.NINA_PROGRAM_ID
+)
 
 const NinaWrapper = dynamic(() => import('../components/NinaWrapper'))
 const Layout = dynamic(() => import('../components/Layout'))

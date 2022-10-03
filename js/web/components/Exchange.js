@@ -37,11 +37,9 @@ const ExchangeComponent = (props) => {
     exchangeAccept,
     exchangeCancel,
     exchangeInit,
-    exchangeStateHistory,
     filterExchangesForReleaseBuySell,
-    filterExchangeMatch,
-    getExchangeHistoryForRelease,
     filterExchangeHistoryForRelease,
+    filterExchangeMatch,
   } = useContext(Exchange.Context)
   const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
     useContext(Audio.Context)
@@ -55,9 +53,12 @@ const ExchangeComponent = (props) => {
   const [updateTime, setUpdateTime] = useState(Date.now())
 
   useEffect(() => {
-    getRelease(releasePubkey)
-    refreshExchange()
-  }, [])
+    const handleGetExchanges = async () => {
+      await getRelease(releasePubkey)
+      await refreshExchange()
+    }
+    handleGetExchanges()
+  }, [wallet.publicKey, releasePubkey])
 
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
@@ -66,13 +67,15 @@ const ExchangeComponent = (props) => {
   }, [releaseState.tokenData[releasePubkey]])
 
   useEffect(() => {
+    console.log('a', filterExchangesForReleaseBuySell(releasePubkey, true))
+    console.log('b', filterExchangesForReleaseBuySell(releasePubkey, false))
     setExchangesBuy(filterExchangesForReleaseBuySell(releasePubkey, true))
     setExchangesSell(filterExchangesForReleaseBuySell(releasePubkey, false))
-  }, [exchangeState, releasePubkey, filterExchangesForReleaseBuySell])
+  }, [exchangeState, releasePubkey])
 
   useEffect(() => {
     setExchangeHistory(filterExchangeHistoryForRelease(releasePubkey))
-  }, [exchangeStateHistory, filterExchangeHistoryForRelease, releasePubkey])
+  }, [exchangeState, releasePubkey])
 
   const handleExchangeAction = async (exchange) => {
     let result
@@ -87,7 +90,7 @@ const ExchangeComponent = (props) => {
       setExchangeAwaitingConfirm(undefined)
     } else if (exchange.isCurrentUser) {
       showPendingTransaction('Cancelling offer...')
-      result = await exchangeCancel(exchange, wallet?.connected, connection)
+      result = await exchangeCancel(exchange, releasePubkey)
     } else {
       const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.EXCHANGE_ACCEPT);
       if (error) {
@@ -169,7 +172,6 @@ const ExchangeComponent = (props) => {
 
   const refreshExchange = () => {
     getExchangesForRelease(releasePubkey)
-    getExchangeHistoryForRelease(releasePubkey)
     setUpdateTime(Date.now())
   }
 

@@ -24,7 +24,7 @@ const sentryWebpackPluginOptions = {
   // https://github.com/getsentry/sentry-webpack-plugin#options.
 };
 
-const cluster = 'devnet'
+const cluster = "devnet";
 const IMGIX_URL = cluster === "devnet" 
   ? "nina-dev.imgix.net"
   : "nina.imgix.net"
@@ -69,10 +69,9 @@ const moduleExports = withTM({
     IMGIX_URL,
     NEXT_PUBLIC_IMGIX_TOKEN,
     REACT_APP_CLUSTER: cluster,
-    INDEXER_URL:
-      cluster === 'devnet'
-        ? 'https://api-dev.nina.market'
-        : 'https://api.nina.market',
+    NINA_API_ENDPOINT: process.env.NINA_API_ENDPOINT,
+    NINA_PROGRAM_ID: process.env.NINA_PROGRAM_ID,
+    SOLANA_CLUSTER_URL: process.env.SOLANA_CLUSTER_URL,
   },
   images: {
     loader: 'imgix',

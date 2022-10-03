@@ -46,35 +46,37 @@ const ExchangeHistoryModal = (props) => {
             <TableBody>
               {exchangeHistory &&
                 exchangeHistory.map((entry, i) => {
+                  console.log('entry', entry)
+                  const seller = entry.isSale ? entry.initializer : entry.completedBy
+                  const buyer = entry.isSale ? entry.completedBy : entry.initializer
+                  const amount = entry.isSale ? entry.expectedAmount * 1000000 : entry.initializerAmount
                   return (
                     <tr key={i}>
-                      <td>{entry.dateFormatted}</td>
+                      <td>{entry.updatedDate}</td>
                       <td>
                         {ninaClient.nativeToUiString(
-                          entry.price.toNumber(),
+                          amount,
                           release.paymentMint
                         )}
                       </td>
                       <td>
                         <a
                           className="link"
-                          href={`https://solscan.io/account/${entry.seller.toBase58()}`}
+                          href={`https://solscan.io/account/${seller}`}
                           target="_blank"
                           rel="noreferrer"
                         >
-                          ...
-                          {entry.seller.toBase58().slice(-6)}
+                          {seller.slice(0,6)}...{seller.slice(-6)}
                         </a>
                       </td>
                       <td>
                         <a
                           className="link"
-                          href={`https://solscan.io/account/${entry.buyer.toBase58()}`}
+                          href={`https://solscan.io/account/${buyer}`}
                           target="_blank"
                           rel="noreferrer"
                         >
-                          ...
-                          {entry.buyer.toBase58().slice(-6)}
+                          {buyer.slice(0,6)}...{buyer.slice(-6)}
                         </a>
                       </td>
                     </tr>

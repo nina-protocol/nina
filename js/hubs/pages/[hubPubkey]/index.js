@@ -1,11 +1,10 @@
-import axios from "axios";
 import Head from "next/head";
-import {hrtime} from "process";
 import Hub from "../../components/Hub";
 import NotFound from "../../components/NotFound";
+import NinaSdk from "@nina-protocol/js-sdk"
 
 const HubPage = (props) => {
-  const { hub, hubPubkey } = props;
+  const { hub } = props;
 
   if (!hub) {
     return (
@@ -17,28 +16,28 @@ const HubPage = (props) => {
   return (
     <>
       <Head>
-        <title>{`${hub?.json.displayName}`}</title>
+        <title>{`${hub?.data.displayName}`}</title>
         <meta
           name="description"
-          content={`${hub?.json.description}\n Powered by Nina.`}
+          content={`${hub?.data.description}\n Powered by Nina.`}
         />
         <meta name="og:type" content="website" />
-        <meta name="og:title" content={`${hub?.json.displayName}`} />
+        <meta name="og:title" content={`${hub?.data.displayName}`} />
         <meta
           name="og:description"
-          content={`${hub?.json.description}\n Powered by Nina.`}
+          content={`${hub?.data.description}\n Powered by Nina.`}
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@ninaprotocol" />
         <meta name="twitter:creator" content="@ninaprotcol" />
         <meta name="twitter:image:type" content="image/jpg" />
-        <meta name="twitter:title" content={`${hub?.json.displayName}`} />
-        <meta name="twitter:description" content={hub?.json.description} />
+        <meta name="twitter:title" content={`${hub?.data.displayName}`} />
+        <meta name="twitter:description" content={hub?.data.description} />
 
-        <meta name="twitter:image" content={hub?.json.image} />
-        <meta name="og:image" content={hub?.json.image} />      
+        <meta name="twitter:image" content={hub?.data.image} />
+        <meta name="og:image" content={hub?.data.image} />      
       </Head>
-      <Hub hubPubkey={hubPubkey} />
+      <Hub hubPubkey={hub.publicKey} />
     </>
   );
 };
@@ -59,21 +58,13 @@ export const getStaticPaths = async () => {
 }
 
 export const getStaticProps = async (context) => {
-  const indexerUrl = process.env.INDEXER_URL;
   const hubPubkey = context.params.hubPubkey;
-  const indexerPath = indexerUrl + `/hubs/${hubPubkey}`;
-  
-  let hub;
-  if (hubPubkey && hubPubkey !== 'manifest.json') {
+  if (hubPubkey && hubPubkey !== 'manifest.json' && hubPubkey !== 'undefined') {
     try {
-      const result = await axios.get(indexerPath);
-      const data = result.data;
-      hub = data.hub;
-  
+      const { hub } = await NinaSdk.Hub.fetch(hubPubkey);
       return {
         props: {
           hub,
-          hubPubkey: hub.id,
         },
         revalidate: 10
       };
