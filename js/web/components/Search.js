@@ -118,21 +118,17 @@ const autoCompleteUrl = 'https://dev.api.ninaprotocol.com/v1/suggestions'
       fetchedHubs.push(`${item.displayName}`)}
     )
     console.log('resObj',responseObject)
-    setSuggestions([...fetchedArtists, ...fetchedReleases, ...fetchedHubs])
-    setOptions([responseObject].map((option, i) => {
-  
-        const category = Object.keys(option)[i];
-        const label = option[category].name || option[category].title || option[category].displayName;
-        return {...option.artists, ...option.releases, ...option.hubs,}
-      //   return {  
-      //     label,
-      //     // name: item.name,
-      //     // displayName: item.displayName,
-      //     ...option
-        
-      // }
-    }))
-    console.log('suggestiosssss', suggestions)
+    const objVal = Object.values(responseObject)
+    console.log('objVal',objVal)
+    // setSuggestions([...fetchedArtists, ...fetchedReleases, ...fetchedHubs])
+    setSuggestions([responseObject])
+    console.log(suggestions)
+    setOptions(Object.keys([responseObject]))
+    console.log('options :>> ', options);
+    // setOptions([responseObject].map((option, i) => {
+    //     return {...option.artists, ...option.releases, ...option.hubs,}
+    // }))
+    console.log('suggestiossssssssss', suggestions)
     console.log('options', options)
   }
   const changeHandler = (e) => {
@@ -151,9 +147,11 @@ const autoCompleteUrl = 'https://dev.api.ninaprotocol.com/v1/suggestions'
         <SearchInputWrapper>
       <Autocomplete 
       id="nina-search"
-      options={suggestions ? suggestions : ''}
-      getOptionLabel={(option) => option}
-      groupBy={option => option.title}
+      options={suggestions.map((option) => option)}
+      getOptionLabel={object => object}
+      groupBy={option =>
+        
+        Object.keys(option)}
       renderInput={(params) => 
         <TextField
         {...params}
