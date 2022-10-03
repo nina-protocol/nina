@@ -134,7 +134,7 @@ const DescriptionOverflowContainer = styled(Box)(({ theme }) => ({
   },
   [theme.breakpoints.down('md')]: {
     ['-webkit-line-clamp']: '6',
-    width: '30vw',
+    width: '40vw',
   },
 }))
 
