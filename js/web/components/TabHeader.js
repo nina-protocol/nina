@@ -5,7 +5,7 @@ import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutline
 import { Typography } from '@mui/material'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import { useSnackbar } from 'notistack'
-
+import {Button} from '@mui/material'
 const TabHeader = ({
   isActive,
   profileTabs,
@@ -37,7 +37,7 @@ const TabHeader = ({
           <>
             {tab.visible === true && (
               <Box
-                key={index}
+               key={index}
                 sx={{
                   cursor: 'pointer',
                   alignItems: 'center',
@@ -46,9 +46,9 @@ const TabHeader = ({
                   textTransform: 'uppercase',
                 }}
               >
-                <ResponsiveTab key={index}>
+                <ResponsiveTab>
                   <Typography
-                    key={index}
+                
                     onClickCapture={viewHandler}
                     sx={{
                       fontWeight: `${isActive === index ? 'bold' : ''}`,
@@ -62,23 +62,29 @@ const TabHeader = ({
                   </Typography>
 
                   {tab.playlist && (
-                    <Box
+                    <ResponsiveCircleOutlineIconContainer
+                 
                       sx={{
+                        paddingRight: 1.5,
                          paddingTop: '1px',
                         '&:hover': {
                           opacity: 0.5,
                         },
                       }}
                     >
-                      <PlayCircleOutlineOutlinedIcon
-                        onClickCapture={() =>
+                      <PlayCircleOutlineIconButtonWrapper 
+                 
+                      onClickCapture={() =>
                           type === 'hubsView'
                             ? playAllHandler(releaseData)
                             : playAllHandler(tab.playlist)
                         }
-                        sx={{ pr: 1.5, pl: 0.5 }}
+                        >
+                      <PlayCircleOutlineOutlinedIcon
                       />
-                    </Box>
+
+                      </PlayCircleOutlineIconButtonWrapper>
+                    </ResponsiveCircleOutlineIconContainer>
                   )}
                 </ResponsiveTab>
               </Box>
@@ -97,7 +103,6 @@ const ResponsiveTab = styled(Box)(({ theme }) => ({
   flexDirection: 'row',
   textTransform: 'uppercase',
   minWidth: '100px',
-  
   [theme.breakpoints.down('md')]: {
     paddingLeft: '15px',
   },
@@ -113,6 +118,26 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     width: '100vw',
   },
+}))
+
+const PlayCircleOutlineIconButtonWrapper = styled(Button)(({ theme }) => ({
+  m:0,
+  color: 'black',
+  px: 1,
+   [theme.breakpoints.down('md')]: {
+    paddingRight: 0.5,
+  },
+}))
+
+const ResponsiveCircleOutlineIconContainer = styled(Box)(({ theme }) => ({
+    paddingRight: 1.5,
+     paddingTop: '1px',
+    '&:hover': {
+      opacity: 0.5,
+    },
+    [theme.breakpoints.down('md')]: {
+      paddingRight: '15px',
+    },
 }))
 
 export default TabHeader

@@ -131,12 +131,12 @@ const HubComponent = ({ hubPubkey }) => {
         <meta name="og:image" content={hubData?.json.image} />
       </Head>
 
-      <ResponsiveHubContainer>
+      <HubContainer>
         <>
           {fetched.info && hubData && <HubHeader hubData={hubData} />}
         </>
         {fetched.info && hubData && (
-          <ResponsiveTabContainer>
+          <HubTabWrapper>
             <TabHeader
               viewHandler={viewHandler}
               isActive={activeView}
@@ -144,16 +144,24 @@ const HubComponent = ({ hubPubkey }) => {
               releaseData={releaseData}
               type={'hubsView'}
             />
-          </ResponsiveTabContainer>
+          </HubTabWrapper>
         )}
-        <ResponsiveHubContentContainer>
+        <>
           {activeView === undefined && (
             <>
+<<<<<<< HEAD
             <ResponsiveDotContainer>
               <Box sx={{width: '100%', margin: 'auto'}}>
                 <Dots />
               </Box>
             </ResponsiveDotContainer>
+=======
+            <HubDotWrapper>
+              <Box sx={{width: '100%', margin: 'auto'}}>
+                <Dots />
+              </Box>
+            </HubDotWrapper>
+>>>>>>> 1bbb3c7049bc0816479c559f96ad187419e1cded
             </>
            )} 
            
@@ -183,13 +191,13 @@ const HubComponent = ({ hubPubkey }) => {
               )}
             </>
           )}
-        </ResponsiveHubContentContainer>
-      </ResponsiveHubContainer>
+        </>
+      </HubContainer>
     </>
   )
 }
 
-const ResponsiveHubContainer = styled(Box)(({ theme }) => ({
+const HubContainer = styled(Box)(({ theme }) => ({
   display: 'inline-flex',
   flexDirection: 'column',
   justifyItems: 'center',
@@ -199,8 +207,7 @@ const ResponsiveHubContainer = styled(Box)(({ theme }) => ({
   height: '86vh',
   overflowY: 'hidden',
   margin: '75px auto 0px',
-  webkitOverflowScrolling: 'touch',
-
+  ['-webkit-overflow-scroll']: 'touch',
   [theme.breakpoints.down('md')]: {
     display: 'flex',
     flexDirection: 'column',
@@ -210,37 +217,19 @@ const ResponsiveHubContainer = styled(Box)(({ theme }) => ({
     paddingTop: 0,
     minHeight: '100% !important',
     maxHeight: '80vh',
-    overflow: 'scroll',
+    overflow: 'hidden',
     marginLeft: 0,
   },
 }))
 
-const ResponsiveTabContainer = styled(Box)(({ theme }) => ({
+const HubTabWrapper = styled(Box)(({ theme }) => ({
   py:1,
-
   [theme.breakpoints.down('md')]: {
     marginTop: '0px'
   }
 }))
 
-const ResponsiveHubContentContainer = styled(Box)(({ theme }) => ({
-  minHeight: '60vh',
-  width: theme.maxWidth,
-  webkitOverflowScrolling: 'touch',
-  overflowY: 'auto',
-  '&::-webkit-scrollbar': {
-    display: 'none',
-  },
-  [theme.breakpoints.down('md')]: {
-    width: '100vw',
-    padding: '0px 30px',
-    height: '100vh',
-    overflowY: 'unset',
-    minHeight: '60vh',
-  },
-}))
-
-const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
+const HubDotWrapper = styled(Box)(({ theme }) => ({
   fontSize: '80px',
   display: 'flex',
   height: '100%',

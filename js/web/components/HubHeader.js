@@ -82,18 +82,6 @@ const HubHeader = ({ hubData }) => {
           </>
         )}
       </ResponsiveHubHeader>
-      {/* <ResponsiveUrlContainer>
-        <Typography sx={{ pb: 2, fontSize: '12px' }}>
-          <Link href={hubData?.json.externalUrl}>
-            <a>
-              {`${(hubData?.json.externalUrl).substring(
-                8,
-                hubData?.json.externalUrl.length
-              )}`}
-            </a>
-          </Link>
-        </Typography>
-      </ResponsiveUrlContainer> */}
     </Box>
   )
 }
@@ -129,9 +117,9 @@ const DescriptionOverflowContainer = styled(Box)(({ theme }) => ({
   alignItems: 'start',
   textAlign: 'left',
   overflow: 'hidden',
-  display: '-webkit-box',
-  '-webkit-line-clamp': '6',
-  '-webkit-box-orient': 'vertical',
+  display: ['-webkit-box'],
+  ['-webkit-line-clamp']: '6',
+  ['-webkit-box-orient']: 'vertical',
   textOverflow: 'ellipsis',
   minWidth: '10vw',
   maxWidth: '50vw',
@@ -145,8 +133,8 @@ const DescriptionOverflowContainer = styled(Box)(({ theme }) => ({
     margin: 0,
   },
   [theme.breakpoints.down('md')]: {
-    '-webkit-line-clamp': '6',
-    width: '30vw',
+    ['-webkit-line-clamp']: '6',
+    width: '40vw',
   },
 }))
 

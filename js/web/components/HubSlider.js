@@ -15,7 +15,6 @@ import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 const { getImageFromCDN, loader } = imageManager
 const HubSlider = (props) => {
   const { hubs } = props;
-
   const responsiveSettings = [
     {
       breakpoint: 1024,
@@ -88,7 +87,7 @@ const HubSlider = (props) => {
               <HubSlideWrapper key={i}>
                 <HubSlide key={i}>
                   {imageUrl && (
-                    <Link href={`/hubs/${hub.id}`}>
+                    <Link href={`/hubs/${hub.handle}`}>
                       <a>
                         <Image
                           src={getImageFromCDN(imageUrl, 400, new Date(Date.parse(hub.datetime)))}
