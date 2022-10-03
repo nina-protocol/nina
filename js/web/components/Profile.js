@@ -105,6 +105,7 @@ const Profile = ({ profilePubkey }) => {
     if (profilePublishedReleases?.length > 0 && fetched.releases) {
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
       updatedView[viewIndex].visible = true
+      console.log('updatedView', updatedView)
     }
     if (profileCollectionReleases?.length > 0 && fetched.collection) {
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
@@ -189,10 +190,7 @@ const Profile = ({ profilePubkey }) => {
             )}
           </ResponsiveProfileDetailHeaderContainer>
         </ResponsiveProfileHeaderContainer>
-        {profilePublishedReleases?.length > 0 &&
-          profileCollectionReleases?.length > 0 &&
-          profileHubs?.length > 0 &&
-          fetched.user && (
+          {fetched.user && (
             <Box sx={{ py: 1 }}>
               <TabHeader
                 viewHandler={viewHandler}
