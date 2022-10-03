@@ -5,7 +5,7 @@ import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutline
 import { Typography } from '@mui/material'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import { useSnackbar } from 'notistack'
-
+import {Button} from '@mui/material'
 const TabHeader = ({
   isActive,
   profileTabs,
@@ -70,6 +70,13 @@ const TabHeader = ({
                         },
                       }}
                     >
+                      <Button
+                      sx={{color:'black'}}
+                      onClickCapture={() =>
+                          type === 'hubsView'
+                            ? playAllHandler(releaseData)
+                            : playAllHandler(tab.playlist)
+                        }>
                       <PlayCircleOutlineOutlinedIcon
                         onClickCapture={() =>
                           type === 'hubsView'
@@ -78,6 +85,8 @@ const TabHeader = ({
                         }
                         sx={{ pr: 1.5, pl: 0.5 }}
                       />
+
+                      </Button>
                     </Box>
                   )}
                 </ResponsiveTab>

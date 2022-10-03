@@ -263,7 +263,7 @@ const ReusableTableBody = ({ releases, tableType }) => {
                     )
                   } else if (cellName === 'image') {
                     return (
-                      <StyledImageTableCell align="left">
+                      <StyledImageTableCell align="left" key={cellData}>
                         <Box sx={{ width: '50px', textAlign: 'left', pr:'15px' }}>
                           <Image
                             height={'100%'}
@@ -284,12 +284,12 @@ const ReusableTableBody = ({ releases, tableType }) => {
                   } else if (cellName === 'description') {
                     return (
                       <>
-                        <HubDescription description={cellData || null} />
+                        <HubDescription description={cellData || null} key={cellData} />
                       </>
                     )
                   } else if (cellName === 'title') {
                     return (
-                      <StyledTableCell>
+                      <StyledTableCell key={cellData}>
                           <OverflowContainer>
                         <Typography sx={{textDecoration: 'underline'}} noWrap>{cellData}</Typography>
                         </OverflowContainer>

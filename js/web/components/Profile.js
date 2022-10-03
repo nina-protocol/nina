@@ -101,23 +101,21 @@ const Profile = ({ profilePubkey }) => {
   useEffect(() => {
     let viewIndex
     let updatedView = views.slice()
-
-    if (profilePublishedReleases?.length > 0 && fetched.releases) {
+    if (profilePublishedReleases?.length > 0 ) {
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
       updatedView[viewIndex].visible = true
-      console.log('updatedView', updatedView)
     }
-    if (profileCollectionReleases?.length > 0 && fetched.collection) {
+    if (profileCollectionReleases?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
       updatedView[viewIndex].visible = true
     }
 
-    if (profileHubs?.length > 0 && fetched.hubs) {
+    if (profileHubs?.length > 0 ) {
       viewIndex = updatedView.findIndex((view) => view.name === 'hubs')
       updatedView[viewIndex].visible = true
     }
     setViews(updatedView)
-  }, [profilePublishedReleases, profileCollectionReleases, profileHubs])
+  }, [profilePublishedReleases, profileCollectionReleases, profileHubs,])
 
   useEffect(() => {
     if (profilePublishedReleases?.length > 0) {
@@ -323,14 +321,12 @@ const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
 
 const ProfileOverflowContainer = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
-  display: "-webkit-box",
-  "-webkit-line-clamp": '3',
-  "-webkit-box-orient": "vertical",  
+  display: ['-webkit-box'],
+  ['-webkit-line-clamp']: '6',
+  ['-webkit-box-orient']: 'vertical',
   textOverflow: 'ellipsis',
   [theme.breakpoints.down('md')]: {
-
-    "-webkit-line-clamp": '5',
-
+    ["-webkit-line-clamp"]: '4',
   }
 }))
 
