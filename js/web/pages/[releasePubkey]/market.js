@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Release from '../../components/Release'
-import NinaSdk from "@nina-protocol/nina-sdk";
+import NinaSdk from "@nina-protocol/js-sdk";
 
 const ReleaseMarketPage = (props) => {
   const { metadata } = props

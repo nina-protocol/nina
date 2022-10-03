@@ -40,7 +40,6 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
   useEffect(() => {
     if (selectedHubId && userHubs) {
       const selectedHub = userHubs.find((hub) => hub.publicKey === selectedHubId);
-      console.log('userHubs', userHubs)
       if (selectedHub?.userCanAddContent) {
         setCanAddContent(true);
       }
@@ -156,7 +155,6 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
                           (hub) => hub.publicKey && hub.publicKey !== hubPubkey && hub.userCanAddContent
                         )
                         .map((hub) => {
-                          console.log('hub', hub)
                           return (
                             <MenuItem
                               key={hub?.publicKey}
@@ -172,10 +170,6 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
                 )}
               </>
             )}
-            {console.log('inprogress', inProgress)}
-            {console.log('canAddContent', canAddContent)}
-            {console.log('selectedHubId', selectedHubId)}
-            {console.log('userHasHubs', userHasHubs)}
             <Button
               style={{ marginTop: "15px", textTransform: "uppercase" }}
               variant="outlined"

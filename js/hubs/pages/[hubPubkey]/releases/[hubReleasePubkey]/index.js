@@ -2,17 +2,14 @@ import React from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import NotFound from "../../../../components/NotFound";
-import NinaSdk from "@nina-protocol/nina-sdk";
+import NinaSdk from "@nina-protocol/js-sdk";
 
 const Release = dynamic(() => import("../../../../components/Release"));
 
 const ReleasePage = (props) => {
-  console.log('props ', props)
   const { metadata, hub, releasePubkey, hubPubkey } = props;
 
-  console.log('metadata ', metadata)
   if (!metadata) {
-    console.log('NO METADATA', metadata, hub, releasePubkey, hubPubkey);
     return (
       <NotFound hub={hub}/>
     )

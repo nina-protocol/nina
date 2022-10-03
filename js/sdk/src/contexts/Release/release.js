@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext } from 'react'
 import * as anchor from '@project-serum/anchor'
-import NinaSdk from '@nina-protocol/nina-sdk';
+import NinaSdk from '@nina-protocol/js-sdk';
 import Nina from '../Nina'
 import {
   createMintInstructions,
@@ -1440,8 +1440,8 @@ const releaseContextHelper = ({
     })
     allReleasesArray.sort(
       (a, b) =>
-        a.tokenData.releaseDatetime.toNumber() >
-        b.tokenData.releaseDatetime.toNumber()
+        a.tokenData.releaseDatetime >
+        b.tokenData.releaseDatetime
     )
     return allReleasesArray
   }
@@ -1460,8 +1460,8 @@ const releaseContextHelper = ({
     })
     resultArray.sort(
       (a, b) =>
-        a.tokenData.releaseDatetime.toNumber() >
-        b.tokenData.releaseDatetime.toNumber()
+        a.tokenData.releaseDatetime >
+        b.tokenData.releaseDatetime
     )
     return resultArray
   }
@@ -1541,13 +1541,13 @@ const releaseContextHelper = ({
       release.royaltyRecipients.forEach((recipient) => {
         if (recipient.recipientAuthority.toBase58() === userPubkey) {
           royaltyCount += 1
-          const owed = recipient.owed.toNumber()
+          const owed = recipient.owed
           if (owed > 0) {
             royaltyUncollected.push(release)
             royaltyOwed += nativeToUi(owed, release.paymentMint)
           }
           royaltyCollected += nativeToUi(
-            recipient.collected.toNumber(),
+            recipient.collected,
             release.paymentMint
           )
         }
@@ -1585,14 +1585,14 @@ const releaseContextHelper = ({
 
     releases.forEach((release) => {
       if (isUsdc(release.paymentMint)) {
-        salesAmountUsdc += release.saleTotal.toNumber()
-        secondarySalesAmountUsdc += release.exchangeSaleTotal.toNumber()
+        salesAmountUsdc += release.saleTotal
+        secondarySalesAmountUsdc += release.exchangeSaleTotal
       } else if (isSol(release.paymentMint)) {
-        salesAmountSol += release.saleTotal.toNumber()
-        secondarySalesAmountSol += release.exchangeSaleTotal.toNumber()
+        salesAmountSol += release.saleTotal
+        secondarySalesAmountSol += release.exchangeSaleTotal
       }
-      salesCount += release.saleCounter.toNumber()
-      secondarySalesCount += release.exchangeSaleCounter.toNumber()
+      salesCount += release.saleCounter
+      secondarySalesCount += release.exchangeSaleCounter
     })
 
     return {

@@ -138,7 +138,7 @@ const HubPostCreate = ({
       );
     }
   }, [canAddContent, metadataTx, hubData]);
-  console.log('canAddContent', canAddContent)
+
   const handleFormChange = useCallback(
     async (values) => {
       setFormValues({

@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Hub from "../../components/Hub";
 import NotFound from "../../components/NotFound";
-import NinaSdk from "@nina-protocol/nina-sdk"
+import NinaSdk from "@nina-protocol/js-sdk"
 
 const HubPage = (props) => {
   const { hub } = props;

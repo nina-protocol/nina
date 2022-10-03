@@ -1,7 +1,7 @@
 import React from 'react'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
-import NinaSdk from "@nina-protocol/nina-sdk";
+import NinaSdk from "@nina-protocol/js-sdk";
 const Release = dynamic(() => import('../../components/Release'))
 
 const ReleasePage = (props) => {

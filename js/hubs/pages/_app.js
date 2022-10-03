@@ -11,7 +11,7 @@ import { GlowWalletAdapter } from "@solana/wallet-adapter-glow";
 import { SnackbarProvider } from "notistack";
 import Box from "@mui/material/Box";
 import dynamic from "next/dynamic";
-import NinaSdk from '@nina-protocol/nina-sdk'
+import NinaSdk from '@nina-protocol/js-sdk'
 
 NinaSdk.client.init(
   process.env.NINA_API_ENDPOINT,

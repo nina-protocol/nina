@@ -300,16 +300,16 @@ const ninaContextHelper = ({
   const createCollection = async () => {
     if (provider.wallet?.connected) {
       try {
-        const program = await ninaClient.useProgram()
-        const updatedCollection = {}
-        let tokenAccounts =
-          await provider.connection.getParsedTokenAccountsByOwner(
-            provider.wallet.publicKey,
-            { programId: TOKEN_PROGRAM_ID }
+          const program = await ninaClient.useProgram()
+          const updatedCollection = {}
+          let tokenAccounts =
+            await provider.connection.getParsedTokenAccountsByOwner(
+              provider.wallet.publicKey,
+              { programId: TOKEN_PROGRAM_ID }
+            )
+          const walletTokenAccounts = tokenAccounts.value.map(
+            (value) => value.account.data.parsed.info
           )
-        const walletTokenAccounts = tokenAccounts.value.map(
-          (value) => value.account.data.parsed.info
-        )
 
         const releaseAmountMap = {}
         for await (let account of walletTokenAccounts) {

@@ -17,7 +17,7 @@ import { ThemeProvider } from '@mui/material/styles'
 import { NinaTheme } from '../../NinaTheme'
 import Dots from '../components/Dots'
 import Head from "next/head";
-import NinaSdk from '@nina-protocol/nina-sdk'
+import NinaSdk from '@nina-protocol/js-sdk'
 
 NinaSdk.client.init(
   process.env.NINA_API_ENDPOINT,

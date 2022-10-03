@@ -9,7 +9,7 @@ import {
   TOKEN_PROGRAM_ID,
 } from '../../utils/web3'
 import { ninaErrorHandler } from '../../utils/errors'
-import NinaSdk from '@nina-protocol/nina-sdk'
+import NinaSdk from '@nina-protocol/js-sdk'
 
 const ExchangeContext = createContext()
 const ExchangeContextProvider = ({ children }) => {
@@ -231,8 +231,6 @@ const exchangeContextHelper = ({
       const release = new anchor.web3.PublicKey(releasePubkey)
       const releaseAccount = await program.account.release.fetch(release)
       const releaseMint = releaseAccount.releaseMint
-      console.log('releaseMint', releaseMint.toBase58())
-      console.log('releaseAccount', releaseAccount)
 
       if (isSelling) {
         expectedAmount = new anchor.BN(amount)
@@ -245,8 +243,6 @@ const exchangeContextHelper = ({
         initializerAmount = new anchor.BN(amount)
         initializerExpectedMint = releaseMint
       }
-      console.log('initializerSendingMint', initializerSendingMint)
-      console.log('initializerExpectedMint', initializerExpectedMint)
 
       const exchange = anchor.web3.Keypair.generate()
 
@@ -378,7 +374,6 @@ const exchangeContextHelper = ({
 
   const exchangeCancel = async (exchange, releasePubkey) => {
     try {
-      console.log('exchange', exchange)
       const exchangePubkey = new anchor.web3.PublicKey(exchange.publicKey)
       const program = await ninaClient.useProgram()
       exchange = await program.account.exchange.fetch(exchangePubkey)
@@ -391,7 +386,6 @@ const exchangeContextHelper = ({
           anchor.web3.SYSVAR_RENT_PUBKEY,
           exchange.initializerSendingMint
         )
-      console.log('initializerReturnTokenAccount', initializerReturnTokenAccount)
       const request = {
         accounts: {
           initializer: provider.wallet.publicKey,
@@ -426,7 +420,6 @@ const exchangeContextHelper = ({
           .rpc()
       }
       await provider.connection.getParsedTransaction(txid, 'confirmed')
-      console.log('')
       if (exchange.isSelling) {
         addReleaseToCollection(releasePubkey)
       }
@@ -451,7 +444,6 @@ const exchangeContextHelper = ({
 
   const getExchange = async (publicKey, withAccountInfo=false, transactionId) => {
     const { exchange } = await NinaSdk.Exchange.fetch(publicKey, withAccountInfo, transactionId)
-    console.log('exchange', exchange)
     const updatedExchangeState = { ...exchangeState }
     if (exchange.accountData) {
       updatedExchangeState[publicKey] = {
@@ -463,8 +455,6 @@ const exchangeContextHelper = ({
       ...updatedExchangeState[publicKey],
       ...formatExchange(exchange),
     }
-    console.log('updatedExchangeState', updatedExchangeState)
-    console.log('updatedExchangeState[publicKey]', updatedExchangeState[publicKey])
     setExchangeState(updatedExchangeState)
   }
 
@@ -508,8 +498,8 @@ const exchangeContextHelper = ({
           ...updatedExchangeState[exchange.publicKey],
           ...formatExchange(exchange),
         }
-        setExchangeState(updatedExchangeState)
       })
+      setExchangeState(updatedExchangeState)
     } catch (err) {
       console.warn(err)
     }

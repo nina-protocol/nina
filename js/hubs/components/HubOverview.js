@@ -26,7 +26,6 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
   useEffect(() => {
     const handleGetHubFeePending = async () => {
       const hubFee = await getHubFeePending(hubPubkey)
-      console.log('hubFee', hubFee)
       setHubFeePending(hubFee)
     }
     handleGetHubFeePending()
@@ -55,7 +54,6 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
       [];
     const releaseArray = [];
     ids.forEach((id) => {
-      console.log('id', id, releaseState.tokenData[id])
       const recipient = releaseState.tokenData[id].revenueShareRecipients.find(
         (recipient) =>
           recipient.recipientAuthority === hubData.hubSigner

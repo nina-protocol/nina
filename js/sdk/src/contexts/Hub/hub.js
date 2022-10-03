@@ -8,7 +8,7 @@ import {
 import { decodeNonEncryptedByteArray } from '../../utils/encrypt'
 import Release from '../Release'
 import Nina from '../Nina'
-import NinaSdk from '@nina-protocol/nina-sdk';
+import NinaSdk from '@nina-protocol/js-sdk';
 import { shuffle } from '../../utils'
 
 const HubContext = createContext()

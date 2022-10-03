@@ -53,9 +53,12 @@ const ExchangeComponent = (props) => {
   const [updateTime, setUpdateTime] = useState(Date.now())
 
   useEffect(() => {
-    getRelease(releasePubkey)
-    refreshExchange()
-  }, [])
+    const handleGetExchanges = async () => {
+      await getRelease(releasePubkey)
+      await refreshExchange()
+    }
+    handleGetExchanges()
+  }, [wallet.publicKey, releasePubkey])
 
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
@@ -64,6 +67,8 @@ const ExchangeComponent = (props) => {
   }, [releaseState.tokenData[releasePubkey]])
 
   useEffect(() => {
+    console.log('a', filterExchangesForReleaseBuySell(releasePubkey, true))
+    console.log('b', filterExchangesForReleaseBuySell(releasePubkey, false))
     setExchangesBuy(filterExchangesForReleaseBuySell(releasePubkey, true))
     setExchangesSell(filterExchangesForReleaseBuySell(releasePubkey, false))
   }, [exchangeState, releasePubkey])

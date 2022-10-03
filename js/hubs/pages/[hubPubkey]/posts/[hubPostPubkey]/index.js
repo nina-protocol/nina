@@ -1,8 +1,7 @@
 import React from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import axios from "axios";
-import NinaSdk from "@nina-protocol/nina-sdk";
+import NinaSdk from "@nina-protocol/js-sdk";
 import NotFound from "../../../../components/NotFound";
 
 const Post = dynamic(() => import("../../../../components/Post"));

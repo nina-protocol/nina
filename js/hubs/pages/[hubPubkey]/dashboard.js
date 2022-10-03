@@ -1,5 +1,5 @@
 import Dashboard from "../../components/Dashboard";
-import NinaSdk from "@nina-protocol/nina-sdk";
+import NinaSdk from "@nina-protocol/js-sdk";
 
 const DashboardPage = ({ hub }) => {
   return (

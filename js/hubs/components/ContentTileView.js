@@ -147,7 +147,6 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
                           if (!audioPlayerRef.current.src) {
                             audioPlayerRef.current.load()
                           }
-                          console.log('item, track', item, track)
                           updateTrack(item.release, item.release === track.releasePubkey ? !isPlaying : true);
                         }}
                         disableRipple

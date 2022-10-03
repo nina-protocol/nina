@@ -9,7 +9,7 @@ import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub"
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { lightThemeOptions } from "../styles/theme/lightThemeOptions";
 import Head from "next/head";
-import NinaSdk from "@nina-protocol/nina-sdk";
+import NinaSdk from "@nina-protocol/js-sdk";
 
 const Navigation = dynamic(() => import("./Navigation"));
 const AudioPlayer = dynamic(() => import("./AudioPlayer"));
