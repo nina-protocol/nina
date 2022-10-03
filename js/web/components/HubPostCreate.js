@@ -221,7 +221,7 @@ const HubPostCreate = ({
           const uri = 'https://arweave.net/' + metadataResult
           const slug = `${hubData.handle
             .toLowerCase()
-            .replace(' ', '_')}_${Math.round(new Date().getTime() / 100000)}`
+            .replace(' ', '_')}_${Math.round(new Date().getTime() / 1000)}`
 
           let result
           if (metadataJson.reference) {
