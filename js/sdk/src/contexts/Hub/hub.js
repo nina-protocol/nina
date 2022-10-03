@@ -10,6 +10,7 @@ import Release from '../Release'
 import Nina from '../Nina'
 import NinaSdk from '@nina-protocol/js-sdk';
 import { shuffle } from '../../utils'
+import MD5 from "crypto-js/md5";
 
 const HubContext = createContext()
 const HubContextProvider = ({ children }) => {
@@ -650,16 +651,15 @@ const hubContextHelper = ({
       if (referenceRelease) {
         referenceRelease = new anchor.web3.PublicKey(referenceRelease)
       }
-
+      const slugHash = (MD5(slug)).toString().slice(0, 32)
       const [post] = await anchor.web3.PublicKey.findProgramAddress(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode('nina-post')),
           hubPubkey.toBuffer(),
-          Buffer.from(anchor.utils.bytes.utf8.encode(slug)),
+          Buffer.from(anchor.utils.bytes.utf8.encode(slugHash)),
         ],
         program.programId
       )
-
       const [hubPost] = await anchor.web3.PublicKey.findProgramAddress(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-post')),
@@ -668,7 +668,6 @@ const hubContextHelper = ({
         ],
         program.programId
       )
-
       const [hubContent] = await anchor.web3.PublicKey.findProgramAddress(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-content')),
@@ -677,7 +676,6 @@ const hubContextHelper = ({
         ],
         program.programId
       )
-
       const [hubCollaborator] = await anchor.web3.PublicKey.findProgramAddress(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-collaborator')),
@@ -688,7 +686,7 @@ const hubContextHelper = ({
       )
       let txid
       const handle = decodeNonEncryptedByteArray(hub.handle)
-      const params = [handle, slug, uri]
+      const params = [handle, slugHash, uri]
       const request = {
         accounts: {
           author: provider.wallet.publicKey,
@@ -713,8 +711,7 @@ const hubContextHelper = ({
       let referenceReleaseHubRelease
       if (referenceRelease) {
         request.accounts.referenceRelease = referenceRelease
-
-        [referenceReleaseHubRelease] =
+        let [_referenceReleaseHubRelease] =
           await anchor.web3.PublicKey.findProgramAddress(
             [
               Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-release')),
@@ -723,7 +720,8 @@ const hubContextHelper = ({
             ],
             program.programId
           )
-        request.accounts.referenceReleaseHubRelease = referenceReleaseHubRelease
+        request.accounts.referenceReleaseHubRelease = _referenceReleaseHubRelease
+        referenceReleaseHubRelease = _referenceReleaseHubRelease
 
         const [referenceReleaseHubContent] =
           await anchor.web3.PublicKey.findProgramAddress(
@@ -742,8 +740,9 @@ const hubContextHelper = ({
       } else {
         txid = await program.rpc.postInitViaHub(...params, request)
       }
+
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
-      
+
       await NinaSdk.Hub.fetchHubPost(hubPubkey.toBase58(), hubPost.toBase58())
       if (referenceRelease) {
         await NinaSdk.Hub.fetchHubRelease(hubPubkey.toBase58(), referenceReleaseHubRelease.toBase58())

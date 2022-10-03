@@ -18,6 +18,7 @@ const HubsModal = (props) => {
   }, [])
 
   useEffect(() => {
+    console.log('hubs hubs hubs', filterHubsForRelease(releasePubkey))
     setHubs(filterHubsForRelease(releasePubkey))
   }, [hubState, releasePubkey])
 

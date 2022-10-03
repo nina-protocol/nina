@@ -22,7 +22,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const { hubAddRelease } = useContext(Hub.Context)
+  const { hubAddRelease, getHubsForRelease } = useContext(Hub.Context)
   const { checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(Nina.Context)
   const [selectedHubId, setSelectedHubId] = useState()
   const [inProgress, setInProgress] = useState(false)
@@ -48,6 +48,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
     handleClose()
     const result = await hubAddRelease(selectedHubId, releasePubkey)
     if (result?.success) {
+      await getHubsForRelease(releasePubkey)
       enqueueSnackbar(result.msg, {
         variant: 'info',
       })

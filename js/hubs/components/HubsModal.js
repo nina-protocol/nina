@@ -62,10 +62,10 @@ const HubsModal = (props) => {
                     <tr key={i}>
                       <td>
                         <Link
-                          href={`/${entry.handle}`}
-                          className={entry.publishedThroughHub ? 'publishingHub' : ''}      
+                          href={`/${entry?.handle}`}
+                          className={entry?.publishedThroughHub ? 'publishingHub' : ''}      
                         >
-                          {entry.data.displayName}
+                          {entry?.data.displayName}
                         </Link>
                       </td>
                     </tr>
