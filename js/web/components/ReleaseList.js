@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { Helmet } from 'react-helmet'
 import { styled } from '@mui/material/styles'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
@@ -64,12 +63,6 @@ const ReleaseList = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{`Nina: Your Releases(${
-          userPublishedReleases?.length || 0
-        })`}</title>
-        <meta name="description" content={'Your releases on Nina.'} />
-      </Helmet>
       <ScrollablePageWrapper>
         <UserReleaseWrapper>
           {wallet?.connected && userPublishedReleases?.length > 0 && (
