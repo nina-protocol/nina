@@ -104,7 +104,7 @@ const HubDescription = ({ description }) => {
   )
 }
 
-const ReusableTableBody = ({ releases, tableType }) => {
+const ReusableTableBody = ({ items, tableType }) => {
   const {
     updateTrack,
     addTrackToQueue,
@@ -148,51 +148,34 @@ const ReusableTableBody = ({ releases, tableType }) => {
     }
   }
 
-  let rows = releases?.map((data) => {
-    console.log('data', data)
-    const metadata = data?.metadata
-    const properties = data?.metadata?.properties
-    const publicKey = data?.publicKey
-    const json = data?.data
-    const hubHandle = data?.handle
-
+  let rows = items?.map((data) => {
+    const {publicKey} = data
     const playData = {
       publicKey,
     }
-
-    let formattedData = {
-      id: publicKey,
-      link: `/${publicKey}`,
-      image: metadata?.image,
-      date: properties?.date,
-      artist: properties?.artist,
-      title: properties?.title,
-    }
-
-    if (tableType === 'profilePublishedReleases') {
+    let formattedData = {}
+    if (tableType === 'profilePublishedReleases' || tableType === 'profileCollectionReleases') {
       formattedData = {
         ctas: playData,
-        ...formattedData,
+        id: publicKey,
+        link: `/${publicKey}`,
+        image: data?.metadata?.image,
+        date: data?.metadata?.properties?.date,
+        artist: data?.metadata?.properties?.artist,
+        title: data?.metadata?.properties?.title,
       }
     }
 
-    if (tableType === 'profileCollectionReleases') {
-      formattedData = {
-        ctas: playData,
-        ...formattedData,
-      }
-    }
 
     if (tableType === 'profileHubs') {
       formattedData = {
         id: publicKey,
-        link: `/hubs/${hubHandle}`,
+        link: `/hubs/${data.handle}`,
         date: data?.createdAt,
         image: data?.data.image,
         artist: data?.data.displayName,
         description: data?.data.description,
       }
-      console.log('profileHubs: ', formattedData)
     }
 
     if (tableType === 'hubReleases') {
@@ -204,6 +187,7 @@ const ReusableTableBody = ({ releases, tableType }) => {
         artist: data?.properties.artist,
         title: data?.properties.title,
         link: `/${data?.releasePubkey}`,
+        date: data?.metadata?.properties?.date,
       }
     }
 
@@ -213,7 +197,6 @@ const ReusableTableBody = ({ releases, tableType }) => {
         collaborator: truncateAddress(data.collaborator),
       }
     }
-
     return formattedData
   })
 
@@ -318,13 +301,13 @@ const ReusableTableBody = ({ releases, tableType }) => {
   )
 }
 
-const ReusableTable = ({ releases, tableType }) => {
+const ReusableTable = ({ items, tableType }) => {
   return (
     <ResponsiveContainer>
       <ResponsiveTableContainer>
         <Table>
           <ReusableTableHead tableType={tableType} />
-          <ReusableTableBody releases={releases} tableType={tableType} />
+          <ReusableTableBody items={items} tableType={tableType} />
         </Table>
       </ResponsiveTableContainer>
     </ResponsiveContainer>

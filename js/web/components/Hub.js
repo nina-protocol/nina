@@ -37,8 +37,12 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
     { name: 'collaborators', playlist: undefined, visible: true },
   ])
   const hubData = useMemo(() => {
-    setFetched({ ...fetched, info: true})
-    return hubState[hubPubkey]
+    if (hubState[hubPubkey]) {
+      setFetched({ ...fetched, info: true})
+      return hubState[hubPubkey]
+    } else {
+      getHub(hubPubkey)
+    }
   }, [hubState, hubPubkey])
 
   useEffect(() => {
@@ -49,7 +53,6 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
 
   useEffect(() => {
     const [releases] = filterHubContentForHub(hubPubkey)
-    console.log('releases', releases, hubContentState)
     setFetched({ ...fetched, releases: true})
     setHubReleases(releases)
   }, [hubContentState])
@@ -73,8 +76,7 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
 
     viewIndex = updatedView.findIndex((view) => view.name === 'releases')
     updatedView[viewIndex].playlist = releaseData
-    fetched.releases = true
-    setFetched({ ...fetched })
+    setFetched({ ...fetched, release: true })
   }, [releaseState, hubReleases, views])
 
   useEffect(() => {
@@ -172,7 +174,7 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
               {fetched.releases && releaseData && (
                 <ReusableTable
                   tableType={'hubReleases'}
-                  releases={releaseData}
+                  items={releaseData}
                 />
               )}
             </>
@@ -185,7 +187,7 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
               {fetched.collaborators && (
                 <ReusableTable
                   tableType={'hubCollaborators'}
-                  releases={hubCollaborators}
+                  items={hubCollaborators}
                 />
               )}
             </>

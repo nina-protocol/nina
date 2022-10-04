@@ -28,8 +28,7 @@ const ReleaseComponent = ({ metadataSsr }) => {
     metadataSsr || releaseState?.metadata[releasePubkey] || null
   )
   const release = useMemo(() => releaseState.tokenData[releasePubkey], [releaseState, releasePubkey])
-  console.log('release', release)
-  console.log(releaseState)
+
   useEffect(() => {
     if (releaseState.metadata[releasePubkey] && !metadata) {
       setMetadata(releaseState.metadata[releasePubkey])
@@ -73,8 +72,7 @@ const ReleaseComponent = ({ metadataSsr }) => {
   if (!wallet?.connected && router.pathname.includes('releases')) {
     router.push(`/${releasePubkey}`)
   }
-  console.log('releasePubkey', releasePubkey)
-  console.log('metadata', metadata)
+
   return (
     <>
       <ReleaseWrapper>

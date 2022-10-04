@@ -73,7 +73,7 @@ const Profile = ({ profilePubkey }) => {
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
       updatedView[viewIndex].playlist = collected
       fetched.collection = true
-      console.log('hubs: ', hubs)
+
       setProfileHubs(hubs)
       fetched.hubs = true
       setFetched({
@@ -204,7 +204,7 @@ const Profile = ({ profilePubkey }) => {
               {fetched.releases && profilePublishedReleases.length > 0 && (
                 <ReusableTable
                   tableType={'profilePublishedReleases'}
-                  releases={profilePublishedReleases}
+                  items={profilePublishedReleases}
                 />
               )}
             </>
@@ -218,7 +218,7 @@ const Profile = ({ profilePubkey }) => {
               {fetched.collection && profileCollectionReleases.length > 0 && (
                 <ReusableTable
                   tableType={'profileCollectionReleases'}
-                  releases={profileCollectionReleases}
+                  items={profileCollectionReleases}
                 />
               )}
             </>
@@ -231,7 +231,7 @@ const Profile = ({ profilePubkey }) => {
               {fetched.hubs && profileHubs.length > 0 && (
                 <ReusableTable
                   tableType={'profileHubs'}
-                  releases={profileHubs}
+                  items={profileHubs}
                 />
               )}
             </>

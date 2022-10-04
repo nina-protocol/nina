@@ -1281,11 +1281,7 @@ const releaseContextHelper = ({
   const getUserCollectionAndPublished = async (publicKey) => {
     const { collected } = await NinaSdk.Account.fetchCollected(publicKey)
     const { published } = await NinaSdk.Account.fetchPublished(publicKey)
-    console.log('collected', collected)
-    console.log('published', published)
-    console.log('all', [...collected, ...published])
     setReleaseState(updateStateForReleases([...collected, ...published]))
-    console.log('BNINGO')
     return [collected, published]
   }
 
@@ -1300,7 +1296,6 @@ const releaseContextHelper = ({
 
   const updateStateForReleases = (releases) => {
     const updatedReleaseState = {...releaseState}
-    console.log('releases" ', releases)
     releases.forEach((release) => {
       if (release.accountData) {
         updatedReleaseState.tokenData[release.publicKey] = {
@@ -1329,7 +1324,6 @@ const releaseContextHelper = ({
         published: published.map(release => release.publicKey),
         highlights: highlights.map(release => release.publicKey),
       })
-      console.log('releasesRecentState', releasesRecentState.purchased)
     } catch (error) {
       console.warn(error)
     }

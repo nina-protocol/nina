@@ -46,7 +46,6 @@ const ExchangeHistoryModal = (props) => {
             <TableBody>
               {exchangeHistory &&
                 exchangeHistory.map((entry, i) => {
-                  console.log('entry', entry)
                   const seller = entry.isSale ? entry.initializer : entry.completedBy
                   const buyer = entry.isSale ? entry.completedBy : entry.initializer
                   const amount = entry.isSale ? entry.expectedAmount * 1000000 : entry.initializerAmount

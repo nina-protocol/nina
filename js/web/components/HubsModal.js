@@ -6,20 +6,21 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import Link from 'next/link'
 
 const HubsModal = (props) => {
   const { releasePubkey, metadata } = props
-  const { getHubsForRelease, hubState, filterHubsForRelease } = useContext(Hub.Context)
+  const { getHubsForRelease } = useContext(Hub.Context)
   const [open, setOpen] = useState(false)
   const [hubs, setHubs] = useState([])
 
   useEffect(() => {
-    getHubsForRelease(releasePubkey)
-  }, [])
-
-  useEffect(() => {
-    setHubs(filterHubsForRelease(releasePubkey))
-  }, [hubState, releasePubkey])
+    const handleGetHubsForRelease = async (releasePubkey) => {
+      const hubs = await getHubsForRelease(releasePubkey)
+      setHubs(hubs)
+    }
+    handleGetHubsForRelease(releasePubkey)
+  }, [releasePubkey])
 
   return (
     <Box>
@@ -60,12 +61,11 @@ const HubsModal = (props) => {
                   return (
                     <tr key={i}>
                       <td>
-                        <a
-                          href={`/hubs/${entry.id}`}
-                          passHref
+                        <Link
+                          href={`/hubs/${entry?.handle}`}
                         >
-                          {entry.data.displayName}
-                        </a>
+                          {entry?.data.displayName}
+                        </Link>
                       </td>
                     </tr>
                   )
