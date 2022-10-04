@@ -523,6 +523,7 @@ const exchangeContextHelper = ({
   const filterExchangeMatch = (price, isBuy, releasePubkey) => {
     let match = undefined
     let exchanges = filterExchangesForReleaseBuySell(releasePubkey, !isBuy)
+    price = ninaClient.nativeToUi(price, ninaClient.ids.mints.usdc)
     exchanges?.forEach((exchange) => {
       // If the exchanges are on opposite sides of the market
       if (exchange.isSelling === isBuy) {
@@ -536,8 +537,8 @@ const exchangeContextHelper = ({
             } else {
               // If this exchange is lower than previously matched exchange
               if (
-                exchange.expectedAmount <
-                match.expectedAmount
+                Number(exchange.expectedAmount) <
+                Number(match.expectedAmount)
               ) {
                 match = exchange
               }
@@ -545,14 +546,14 @@ const exchangeContextHelper = ({
           }
         } else {
           // If current users sale offer is less than an existing buy
-          if (price <= exchange.initializerAmount) {
+          if (price <= Number(exchange.initializerAmount)) {
             if (!match) {
               match = exchange
             } else {
               // If this exchange is higher than previously matched exchange
               if (
-                exchange.initializerAmount >
-                match.initializerAmount
+                Number(exchange.initializerAmount) >
+                Number(match.initializerAmount)
               ) {
                 match = exchange
               }

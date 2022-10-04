@@ -16,8 +16,6 @@ import {
   decodeNonEncryptedByteArray,
   decryptData,
 } from '../../utils/encrypt'
-// import {c} from '../../../esm/_rollupPluginBabelHelpers-ff7976c2';
-
 const lookupTypes = {
   PUBLISHED_BY: 'published_by',
   REVENUE_SHARE: 'revenue_share',
@@ -1252,19 +1250,10 @@ const releaseContextHelper = ({
 
   */
 
-  const fetchRelease = async (releasePubkey) => {
-    try {
-      getRelease(releasePubkey)
-    } catch (error) {
-      console.warn(error)
-    }
-  }
-
   const getRelease = async (releasePubkey) => {
     console.log('getRelease !!!', releasePubkey)
     try {
       const { release } = await NinaSdk.Release.fetch(releasePubkey, true)
-      console.log('getRelease', release)
       setReleaseState(updateStateForReleases([release]))
     } catch (error) {
       console.warn(error)
