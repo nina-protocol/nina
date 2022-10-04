@@ -13,10 +13,10 @@ import rehypeExternalLinks from 'rehype-external-links'
 
 const { getImageFromCDN, loader } = imageManager
 
-const HubHeader = ({ hubImage, hubName, description, hubUrl, hubDate }) => {
-  const [hubDescription, setHubDescription] = useState()
+const HubHeader = ({ hubData }) => {
+  const [hubDescription, setHubDescription] = useState(undefined)
   useEffect(() => {
-    if (description.includes('<p>')) {
+    if (hubData?.json.description.includes('<p>')) {
       unified()
         .use(rehypeParse, { fragment: true })
         .use(rehypeSanitize)
@@ -28,53 +28,61 @@ const HubHeader = ({ hubImage, hubName, description, hubUrl, hubDate }) => {
           target: false,
           rel: ['nofollow', 'noreferrer'],
         })
-        .process(JSON.parse(description).replaceAll('<p><br></p>', '<br>'))
+        .process(
+          JSON.parse(hubData?.json.description).replaceAll(
+            '<p><br></p>',
+            '<br>'
+          )
+        )
         .then((file) => {
           setHubDescription(file.result)
         })
     } else {
-      setHubDescription(description)
+      setHubDescription(hubData?.json.description)
     }
-  }, [description])
-  const descriptionFilter = (desc) => {
-    return desc?.length > 24 ? `${desc.substring(0, 24)}...` : desc
-  }
-  return (
-    <ResponsiveHubHeader
-      sx={{
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'start',
-        mb: 1,
-      }}
-    >
-      <Box sx={{ width: '100px' }}>
-        <Image
-          height={'100%'}
-          width={'100%'}
-          layout="responsive"
-          src={getImageFromCDN(hubImage, 400, new Date(Date.parse(hubDate)))}
-          alt={hubName}
-          priority={true}
-          loader={loader}
-        />
-      </Box>
+  }, [hubData?.json.description])
 
-      {hubName && (
-        <Link href={hubUrl}>
-          <a>
-            {' '}
-            <Typography sx={{ px: 2 }}>{hubName}</Typography>
-          </a>
-        </Link>
-      )}
-      {description && (
-        <Typography sx={{ pr: 2 }}>
-          {descriptionFilter(hubDescription)}
-        </Typography>
-      )}
-    </ResponsiveHubHeader>
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+      <ResponsiveHubHeader>
+        <Box sx={{ width: '100px' }}>
+          <Link href={`${hubData?.json.externalUrl}`} passHref>
+            <a target="_blank" rel="noreferrer">
+              <Image
+                height={'100%'}
+                width={'100%'}
+                layout="responsive"
+                src={getImageFromCDN(
+                  hubData?.json?.image,
+                  400,
+                  Date.parse(hubData?.createdAt)
+                )}
+                alt={hubData?.json.displayName}
+                priority={true}
+                loader={loader}
+              />
+            </a>
+          </Link>
+        </Box>
+
+        {hubData?.json.displayName && (
+          <Link href={hubData?.json.externalUrl} passHref>
+            <a target="_blank" rel="noreferrer">
+              <Typography sx={{ px: 2 }}>
+                {hubData?.json.displayName}
+              </Typography>
+            </a>
+          </Link>
+        )}
+        {hubData?.json.description && (
+          <>
+            <DescriptionOverflowContainer>
+              {hubDescription}
+            </DescriptionOverflowContainer>
+          </>
+        )}
+      </ResponsiveHubHeader>
+    </Box>
   )
 }
 
@@ -82,14 +90,52 @@ const ResponsiveHubHeader = styled(Box)(({ theme }) => ({
   display: 'flex',
   minHeight: '115px',
   flexDirection: 'row',
-  alignItems: 'center',
+  alignItems: 'start',
   justifyContent: 'start',
-  py: 1,
-  my: 1,
+  mb: 1,
+  justifyContent: 'start',
+  py: 5,
+  px: 1,
 
   [theme.breakpoints.down('md')]: {
     alignItems: 'left',
+    paddingLeft: '15px',
+
+    width: '100vw',
   },
 }))
- 
+const ResponsiveUrlContainer = styled(Box)(({ theme }) => ({
+  paddingBottom: 2,
+  fontSize: '12px',
+  textAlign: 'left',
+  [theme.breakpoints.down('md')]: {
+    paddingLeft: '15px',
+  },
+}))
+
+const DescriptionOverflowContainer = styled(Box)(({ theme }) => ({
+  alignItems: 'start',
+  textAlign: 'left',
+  overflow: 'hidden',
+  display: ['-webkit-box'],
+  ['-webkit-line-clamp']: '6',
+  ['-webkit-box-orient']: 'vertical',
+  textOverflow: 'ellipsis',
+  minWidth: '10vw',
+  maxWidth: '50vw',
+  '& p': {
+    margin: 0,
+  },
+  '& h1': {
+    margin: 0,
+  },
+  '& h2': {
+    margin: 0,
+  },
+  [theme.breakpoints.down('md')]: {
+    ['-webkit-line-clamp']: '6',
+    width: '40vw',
+  },
+}))
+
 export default HubHeader

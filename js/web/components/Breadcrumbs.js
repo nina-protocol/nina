@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import { useWallet } from '@solana/wallet-adapter-react'
+import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
 
 const YourCollectionBreadcrumb = () => {
   const { releaseState, filterReleasesUserCollection } =
@@ -118,6 +119,30 @@ const Breadcrumbs = () => {
               href: '/' + linkPath[0],
             },
           ]
+          break
+        case '/profiles/[profilePubkey]':
+          pathArray = linkPath.map((path, i) => {
+            return {
+              breadcrumb: path !== 'profiles' ? `${truncateAddress(path)}` : path,
+              href: '/' + linkPath.slice(0, i + 1).join('/'),
+            }})
+            break
+        case '/hubs/[hubPubkey]':
+          pathArray = linkPath.map((path, i) => {
+            if (i === 1) {
+              const hub =
+              router.components[`${router.pathname}`].props.pageProps.hub
+              console.log('hub', hub)
+              return {
+                breadcrumb: hub.json.displayName,
+                href: '/' + linkPath.slice(0, i + 1).join('/'),
+              }
+            }
+            return {
+              breadcrumb: path,
+              href: '/' + linkPath.slice(0, i + 1).join('/'),
+            }
+          })
           break
         default:
           pathArray = linkPath.map((path, i) => {
