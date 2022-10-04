@@ -952,7 +952,6 @@ const hubContextHelper = ({
   
       const updatedPostState = { ...postState }
       hub.posts.forEach(post => {
-        console.log('post.publicKey', post.publicKey)
         updatedHubContent[post.accountData.hubPost.publicKey] = {
           ...post.accountData.hubContent,
           ...post.accountData.hubPost,
@@ -989,6 +988,7 @@ const hubContextHelper = ({
       })
       setHubState(updatedHubState)
       setHubCollaboratorsState(updatedHubCollaboratorState)
+      return hubs
     } catch (error) {
       console.warn(error)
     }
@@ -1031,6 +1031,7 @@ const hubContextHelper = ({
   const filterHubContentForHub = (hubPubkey) => {
     const hubReleases = []
     const hubPosts = []
+    console.log('hubpubkey', hubPubkey)
     Object.values(hubContentState).forEach((hubContent) => {
       if (hubContent.hub === hubPubkey) {
         if (hubContent.contentType === 'ninaReleaseV1') {
@@ -1050,6 +1051,7 @@ const hubContextHelper = ({
         hubCollaborators.push(hubCollaborator)
       }
     })
+    
     return hubCollaborators.sort((a, b) => b.datetime - a.datetime)
   }
 

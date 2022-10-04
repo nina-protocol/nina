@@ -26,7 +26,7 @@ const ExchangeListItem = (props) => {
           className={`
           ${classes.exchangeListItemPrice} 
           ${classes.exchangeListItemPrice}--${
-            initializer === wallet.publicKey.toBase58()  ? 'currentUser' : ''
+            initializer === wallet?.publicKey?.toBase58()  ? 'currentUser' : ''
           }
           `}
         >
@@ -60,7 +60,7 @@ const ExchangeListItem = (props) => {
       className={`
       ${classes.exchangeListItem} 
       ${classes.exchangeListItem}--${isSelling ? 'listing' : 'offer'}
-      ${classes.exchangeListItem}--${initializer === wallet.publicKey.toBase58() ? 'currentUser' : ''}
+      ${classes.exchangeListItem}--${initializer === wallet?.publicKey?.toBase58() ? 'currentUser' : ''}
       `}
     >
       {itemData}
@@ -75,7 +75,7 @@ const ExchangeListButton = (props) => {
 
   useEffect(() => {
     if (wallet?.connected) {
-      if (initializer === wallet.publicKey.toBase58()) {
+      if (initializer === wallet?.publicKey?.toBase58()) {
         if (pending) {
           setButtonText('Pending')
         } else {
@@ -87,7 +87,7 @@ const ExchangeListButton = (props) => {
     } else {
       setButtonText(isSelling ? 'Buy' : 'Accept')
     }
-  }, [wallet?.connected, pending, wallet.publicKey, isSelling])
+  }, [wallet?.connected, pending, wallet?.publicKey, isSelling])
 
   if (wallet?.connected && !pending) {
     return (

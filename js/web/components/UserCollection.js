@@ -21,7 +21,7 @@ const ReleaseList = ({ userId }) => {
   const {
     filterReleasesUserCollection,
     releaseState,
-    getUserCollection,
+    getUserCollectionAndPublished,
     filterReleasesList,
   } = useContext(Release.Context)
   const [listView, setListView] = useState(false)
@@ -65,7 +65,7 @@ const ReleaseList = ({ userId }) => {
   }, [userCollectionReleases])
 
   const getOtherUserCollectionHandler = async (userId) => {
-    const collection = await getUserCollection(userId)
+    const collection = await getUserCollectionAndPublished(userId)
     setUserCollectionList(collection)
   }
 

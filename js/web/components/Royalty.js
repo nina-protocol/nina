@@ -36,7 +36,7 @@ const Royalty = (props) => {
       release.royaltyRecipients.forEach((recipient) => {
         if (
           wallet?.connected &&
-          recipient.recipientAuthority.toBase58() ===
+          recipient.recipientAuthority ===
             wallet?.publicKey.toBase58()
         ) {
           setUserIsRecipient(true)
@@ -126,7 +126,7 @@ const Royalty = (props) => {
                     const walletAuthorizedToCollect =
                       wallet?.connected &&
                       wallet?.publicKey.toBase58() ===
-                        recipient?.recipientAuthority.toBase58()
+                        recipient?.recipientAuthority
                         ? true
                         : false
                     const recipientHandle = walletAuthorizedToCollect ? (

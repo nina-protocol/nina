@@ -18,7 +18,6 @@ const HubsModal = (props) => {
   }, [])
 
   useEffect(() => {
-    console.log('hubs hubs hubs', filterHubsForRelease(releasePubkey))
     setHubs(filterHubsForRelease(releasePubkey))
   }, [hubState, releasePubkey])
 
@@ -62,10 +61,8 @@ const HubsModal = (props) => {
                     <tr key={i}>
                       <td>
                         <a
-                          href={entry.data.externalUrl}
+                          href={`/hubs/${entry.id}`}
                           passHref
-                          target="_blank"
-                          rel="noopener noreferrer"      
                         >
                           {entry.data.displayName}
                         </a>

@@ -220,7 +220,6 @@ useEffect(() => {
     }
     setDownloadButtonString('Download')
   }
-
   return (
     <Box>
       <AmountRemaining variant="body2" align="left">
@@ -237,7 +236,7 @@ useEffect(() => {
           {`View Secondary Market (${exchangeTotalBuys + exchangeTotalSells})`}
         </StyledLink>
       </Typography>
-      {/* <CollectorModal releasePubkey={releasePubkey} metadata={metadata} /> */}
+      <CollectorModal releasePubkey={releasePubkey} metadata={metadata} />
       <HubsModal releasePubkey={releasePubkey} metadata={metadata} />
       {wallet?.connected && (
         <StyledUserAmount>
@@ -263,7 +262,7 @@ useEffect(() => {
       {publishedHub && (
         <Typography variant="body2" align="left" paddingBottom="10px">
           <StyledLink
-            href={publishedHub.json.externalUrl}
+            href={`/hubs/${publishedHub.id}`}
             target="_blank"
             rel="noreferrer"
             passHref
@@ -297,9 +296,6 @@ useEffect(() => {
           </Button>
         </form>
       </Box>
-      {userIsRecipient && (
-        <Royalty releasePubkey={releasePubkey} release={release} />
-      )}
       {userIsRecipient && (
         <Royalty releasePubkey={releasePubkey} release={release} />
       )}
