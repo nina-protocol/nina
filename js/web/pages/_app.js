@@ -19,23 +19,17 @@ import Dots from '../components/Dots'
 import Head from "next/head";
 import NinaSdk from '@nina-protocol/js-sdk'
 
-NinaSdk.client.init(
-  process.env.NINA_API_ENDPOINT,
-  process.env.SOLANA_CLUSTER_URL,
-  process.env.NINA_PROGRAM_ID
-)
-
 const NinaWrapper = dynamic(() => import('../components/NinaWrapper'))
 const Layout = dynamic(() => import('../components/Layout'))
 
 function Application({ Component, pageProps }) {
   const [loading, setLoading] = useState(false)
-
+  const [sdkInitialized, setSdkInitialized] = useState(false)
   React.useEffect(() => {
     const start = () => {
       setLoading(true)
     }
-    const end = () => {
+    const end = async () => {
       setLoading(false)
     }
     Router.events.on('routeChangeStart', start)
@@ -46,6 +40,16 @@ function Application({ Component, pageProps }) {
     if (jssStyles) {
       jssStyles.parentElement.removeChild(jssStyles)
     }
+
+    const handleSdkInitialization = async () => {
+      await NinaSdk.client.init(
+        process.env.NINA_API_ENDPOINT,
+        process.env.SOLANA_CLUSTER_URL,
+        process.env.NINA_PROGRAM_ID
+      )      
+      setSdkInitialized(true)
+    }
+    handleSdkInitialization()
 
     return () => {
       Router.events.off('routeChangeStart', start)
@@ -101,7 +105,7 @@ function Application({ Component, pageProps }) {
             <NinaWrapper network={process.env.REACT_APP_CLUSTER}>
               <ThemeProvider theme={NinaTheme}>
                 <Layout>
-                  {loading ? (
+                  {loading || !sdkInitialized ? (
                     <Dots size="80px" />
                   ) : (
                     <Component {...pageProps} />

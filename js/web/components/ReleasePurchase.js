@@ -53,7 +53,6 @@ const ReleasePurchase = (props) => {
 
   useEffect(() => {
     getRelease(releasePubkey)
-
     // const hubForRelease = async (releasePubkey) => {
     //   const result = await getPublishedHubForRelease(releasePubkey)
     //   setPublishedHub(result?.hub)
