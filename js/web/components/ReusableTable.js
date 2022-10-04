@@ -21,6 +21,7 @@ import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import { styled } from '@mui/material'
 import { useSnackbar } from 'notistack'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
+import { c } from '@nina-protocol/nina-internal-sdk/esm/_rollupPluginBabelHelpers-ff7976c2'
 
 const { getImageFromCDN, loader } = imageManager
 
@@ -43,7 +44,7 @@ const ReusableTableHead = ({ tableType }) => {
 
   if (tableType === 'profileHubs') {
     headCells.push({ id: 'image', label: '' })
-    headCells.push({ id: 'artist', label: 'Artist' })
+    headCells.push({ id: 'name', label: 'Name' })
     headCells.push({ id: 'description', label: 'Description' })
   }
 
@@ -148,19 +149,20 @@ const ReusableTableBody = ({ releases, tableType }) => {
   }
 
   let rows = releases?.map((data) => {
+    console.log('data', data)
     const metadata = data?.metadata
     const properties = data?.metadata?.properties
-    const releasePubkey = data?.releasePubkey
-    const json = data?.json
-    const hubPubkey = data?.handle
+    const publicKey = data?.publicKey
+    const json = data?.data
+    const hubHandle = data?.handle
 
     const playData = {
-      releasePubkey,
+      publicKey,
     }
 
     let formattedData = {
-      id: releasePubkey,
-      link: `/${releasePubkey}`,
+      id: publicKey,
+      link: `/${publicKey}`,
       image: metadata?.image,
       date: properties?.date,
       artist: properties?.artist,
@@ -183,23 +185,26 @@ const ReusableTableBody = ({ releases, tableType }) => {
 
     if (tableType === 'profileHubs') {
       formattedData = {
-        id: data?.handle,
-        link: `/hubs/${hubPubkey}`,
+        id: publicKey,
+        link: `/hubs/${hubHandle}`,
         date: data?.createdAt,
-        image: json?.image,
-        artist: json?.displayName,
-        description: json?.description,
+        image: data?.data.image,
+        artist: data?.data.displayName,
+        description: data?.data.description,
       }
+      console.log('profileHubs: ', formattedData)
     }
 
     if (tableType === 'hubReleases') {
       formattedData = {
         ctas: playData,
         ...formattedData,
+        id: data?.releasePubkey,
+        image: data?.image,
+        artist: data?.properties.artist,
+        title: data?.properties.title,
+        link: `/${data?.releasePubkey}`,
       }
-      formattedData.image = data?.image
-      formattedData.artist = data?.properties.artist
-      formattedData.title = data?.properties.title
     }
 
     if (tableType === 'hubCollaborators') {
@@ -215,104 +220,99 @@ const ReusableTableBody = ({ releases, tableType }) => {
   return (
     <TableBody>
       {rows?.map((row, i) => (
-        <>
-          <Link key={row.id} href={row.link} passHref>
-            <TableRow key={i} hover sx={{cursor: 'pointer'}}>
-              {Object.keys(row).map((cellName) => {
-                const cellData = row[cellName]
+        <Link href={row.link} passHref>
+          <TableRow key={row.id} hover sx={{ cursor: 'pointer' }}>
+            {Object.keys(row).map((cellName) => {
+              const cellData = row[cellName]
 
-                if (
-                  cellName !== 'id' &&
-                  cellName !== 'date' &&
-                  cellName !== 'link'
-                ) {
-                  if (cellName === 'ctas') {
-                    return (
-                      <>
-                        <StyledTableCellButtonsContainer align="left">
-                          <Button
-                            sx={{ cursor: 'pointer' }}
-                            id={row.id}
-                            key={row.id}
-                            onClickCapture={(e) =>
-                              handleQueue(e, row.id, row.title)
-                            }
-                          >
-                            <ControlPointIcon sx={{ color: 'black' }} key={i} />
-                          </Button>
-                          <Button
-                            sx={{
-                              cursor: 'pointer',
-                            }}
-                            onClickCapture={(e) => handlePlay(e, row.id)}
-                            id={row.id}
-                          >
-                            {isPlaying && track.releasePubkey === row.id ? (
-                              <PauseCircleOutlineOutlinedIcon
-                                sx={{ color: 'black' }}
-                                id={row.id}
-                              />
-                            ) : (
-                              <PlayCircleOutlineOutlinedIcon
-                                sx={{ color: 'black' }}
-                              />
-                            )}
-                          </Button>
-                        </StyledTableCellButtonsContainer>
-                      </>
-                    )
-                  } else if (cellName === 'image') {
-                    return (
-                      <StyledImageTableCell align="left">
-                        <Box sx={{ width: '50px', textAlign: 'left', pr:'15px' }}>
-                          <Image
-                            height={'100%'}
-                            width={'100%'}
-                            layout="responsive"
-                            src={getImageFromCDN(
-                              row.image,
-                              400,
-                              Date.parse(row.date)
-                            )}
-                            alt={i}
-                            priority={true}
-                            loader={loader}
+              if (
+                cellName !== 'id' &&
+                cellName !== 'date' &&
+                cellName !== 'link'
+              ) {
+                if (cellName === 'ctas') {
+                  return (
+                    <StyledTableCellButtonsContainer align="left"  key={cellName}>
+                      <Button
+                        sx={{ cursor: 'pointer' }}
+                        id={row.id}
+                        onClickCapture={(e) =>
+                          handleQueue(e, row.id, row.title)
+                        }
+                      >
+                        <ControlPointIcon sx={{ color: 'black' }} />
+                      </Button>
+                      <Button
+                        sx={{
+                          cursor: 'pointer',
+                        }}
+                        onClickCapture={(e) => handlePlay(e, row.id)}
+                        id={row.id}
+                      >
+                        {isPlaying && track.id === row.id ? (
+                          <PauseCircleOutlineOutlinedIcon
+                            sx={{ color: 'black' }}
                           />
-                        </Box>
-                      </StyledImageTableCell>
-                    )
-                  } else if (cellName === 'description') {
-                    return (
-                      <>
-                        <HubDescription description={cellData || null} />
-                      </>
-                    )
-                  } else if (cellName === 'title') {
-                    return (
-                      <StyledTableCell>
-                          <OverflowContainer>
-                        <Typography sx={{textDecoration: 'underline'}} noWrap>{cellData}</Typography>
-                        </OverflowContainer>
-                      </StyledTableCell>
-                    )
-                  } 
-                  else {
-                    return (
-                      <>
-                        <StyledTableCell>
-                          <OverflowContainer>
-                            <Typography noWrap>{cellData}</Typography>
-                          </OverflowContainer>
-                        </StyledTableCell>
-                      </>
-                    )
-                  }
+                        ) : (
+                          <PlayCircleOutlineOutlinedIcon
+                            sx={{ color: 'black' }}
+                          />
+                        )}
+                      </Button>
+                    </StyledTableCellButtonsContainer>
+                  )
+                } else if (cellName === 'image') {
+                  return (
+                    <StyledImageTableCell align="left" key={cellName}>
+                      <Box sx={{width:'50px',  textAlign: 'left', pr: '15px' }}>
+                        <Image
+                          height={'100%'}
+                          width={'100%'}
+                          layout="responsive"
+                          src={getImageFromCDN(
+                            row.image,
+                            400,
+                            Date.parse(row.date)
+                          )}
+                          alt={i}
+                          priority={true}
+                          loader={loader}
+                          unoptimized={true}
+                        />
+                      </Box>
+                    </StyledImageTableCell>
+                  )
+                } else if (cellName === 'description') {
+                  return (
+                    <HubDescription
+                      description={cellData || null}
+                      key={cellName}
+                    />
+                  )
+                } else if (cellName === 'title') {
+                  return (
+                    <StyledTableCell key={cellName}>
+                      <OverflowContainer>
+                        <Typography sx={{ textDecoration: 'underline' }} noWrap>
+                          {cellData}
+                        </Typography>
+                      </OverflowContainer>
+                    </StyledTableCell>
+                  )
+                } else {
+                  return (
+                    <StyledTableCell key={cellName}>
+                      <OverflowContainer>
+                        <Typography sx={{paddingLeft: '5px', width: '100vw'}} noWrap>{cellData}</Typography>
+                      </OverflowContainer>
+                    </StyledTableCell>
+                  )
                 }
-              })}
-              <StyledTableCell />
-            </TableRow>
-          </Link>
-        </>
+              }
+            })}
+            <StyledTableCell />
+          </TableRow>
+        </Link>
       ))}
     </TableBody>
   )
@@ -321,19 +321,17 @@ const ReusableTableBody = ({ releases, tableType }) => {
 const ReusableTable = ({ releases, tableType }) => {
   return (
     <ResponsiveContainer>
-      <ResponsiveTableContainer >
+      <ResponsiveTableContainer>
         <Table>
-          
           <ReusableTableHead tableType={tableType} />
           <ReusableTableBody releases={releases} tableType={tableType} />
-          
         </Table>
       </ResponsiveTableContainer>
     </ResponsiveContainer>
   )
 }
 
-const ResponsiveTableContainer = styled(TableCell)(({theme}) => ({
+const ResponsiveTableContainer = styled(TableCell)(({ theme }) => ({
   width: '100vw',
   borderBottom: 'none',
   padding: '0px',
@@ -342,18 +340,17 @@ const ResponsiveTableContainer = styled(TableCell)(({theme}) => ({
     overflowY: 'unset',
     height: '100% !important',
     paddingLeft: 0,
-    paddingRight: 0
-  }
+    paddingRight: 0,
+    paddingBottom: '200px',
+  },
 }))
 
 const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
   padding: '5px',
   textAlign: 'left',
   cursor: 'pointer',
-  // [theme.breakpoints.down('md')]: {
-  //   padding: '0 5px',
-  // },
 }))
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   padding: '5px',
   textAlign: 'left',
@@ -376,7 +373,7 @@ const StyledTableCellButtonsContainer = styled(TableCell)(({ theme }) => ({
   padding: '5px 0',
   textAlign: 'left',
   [theme.breakpoints.down('md')]: {
-    padding: '0px 0px',
+    padding: '0px',
   },
 }))
 
@@ -403,7 +400,7 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
   webkitOverflowScrolling: 'touch',
   overflowY: 'auto',
   overflowX: 'hidden',
-  '&::-webkit-scrollbar': {
+ [ '&::-webkit-scrollbar']: {
     display: 'none',
   },
   [theme.breakpoints.down('md')]: {

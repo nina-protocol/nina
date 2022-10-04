@@ -11,13 +11,14 @@ const HubHeader = dynamic(() => import('./HubHeader'))
 const TabHeader = dynamic(() => import('./TabHeader'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
 
-const HubComponent = ({ hubPubkey }) => {
+const HubComponent = ({ hubHandle, hubPubkey }) => {
   const {
     getHub,
     hubState,
     filterHubContentForHub,
     filterHubCollaboratorsForHub,
     hubContentState,
+    hubCollaboratorsState
   } = useContext(Hub.Context)
 
   const { releaseState } = useContext(Release.Context)
@@ -32,26 +33,32 @@ const HubComponent = ({ hubPubkey }) => {
     collaborators: false,
   })
   const [views, setViews] = useState([
-    { name: 'releases', playlist: undefined, visible: true },
+    { name: 'releases', playlist: undefined, visible: false },
     { name: 'collaborators', playlist: undefined, visible: true },
   ])
-  const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
+  const hubData = useMemo(() => {
+    setFetched({ ...fetched, info: true})
+    return hubState[hubPubkey]
+  }, [hubState, hubPubkey])
 
   useEffect(() => {
     if (hubPubkey) {
       getHub(hubPubkey)
-      fetched.info = true
-      setFetched({ ...fetched })
     }
   }, [hubPubkey])
 
   useEffect(() => {
     const [releases] = filterHubContentForHub(hubPubkey)
-    const collaborators = filterHubCollaboratorsForHub(hubPubkey)
-
+    console.log('releases', releases, hubContentState)
+    setFetched({ ...fetched, releases: true})
     setHubReleases(releases)
-    setHubCollaborators(collaborators)
   }, [hubContentState])
+
+  useEffect(() => {
+    const collaborators = filterHubCollaboratorsForHub(hubPubkey)
+    setFetched({ ...fetched, collaborators: true})
+    setHubCollaborators(collaborators)
+  }, [hubCollaboratorsState])
 
   useEffect(() => {
     let updatedView = views.slice()
@@ -66,6 +73,8 @@ const HubComponent = ({ hubPubkey }) => {
 
     viewIndex = updatedView.findIndex((view) => view.name === 'releases')
     updatedView[viewIndex].playlist = releaseData
+    fetched.releases = true
+    setFetched({ ...fetched })
   }, [releaseState, hubReleases, views])
 
   useEffect(() => {
@@ -77,13 +86,10 @@ const HubComponent = ({ hubPubkey }) => {
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
       updatedView[viewIndex].visible = true
       updatedView[viewIndex].playlist = hubReleases
-      fetched.releases = true
     }
-    if (hubReleases?.length === 0 && fetched.releases) {
+    if (hubReleases?.length === 0 && fetched.releases && hubCollaborators.length > 0) {
+      
       setActiveView(1)
-    }
-    if (hubCollaborators?.length > 0) {
-      fetched.collaborators = true
     }
     setFetched({ ...fetched })
     setViews(updatedView)
@@ -98,25 +104,25 @@ const HubComponent = ({ hubPubkey }) => {
     <>
       <Head>
         <title>{`Nina: ${
-          hubData?.json.displayName ? `${hubData.json.displayName}'s Hub` : ''
+          hubData?.data.displayName ? `${hubData.data.displayName}'s Hub` : ''
         }`}</title>
         <meta
           name="description"
-          content={`${hubData?.json.displayName}'s Hub on Nina.`}
+          content={`${hubData?.data.displayName}'s Hub on Nina.`}
         />
         <meta name="og:type" content="website" />
         <meta
           name="og:title"
           content={`Nina: ${
-            hubData?.json.displayName ? `${hubData.json.displayName}'s Hub` : ''
+            hubData?.data.displayName ? `${hubData.data.displayName}'s Hub` : ''
           }`}
         />
         <meta
           name="og:description"
           content={`${
-            hubData?.json.displayName ? hubData?.json.displayName : ''
+            hubData?.data.displayName ? hubData?.data.displayName : ''
           }: ${
-            hubData?.json.description ? hubData?.json.description : ''
+            hubData?.data.description ? hubData?.data.description : ''
           } \n Published via Nina Hubs.`}
         />
         <meta name="twitter:card" content="summary_large_image" />
@@ -125,19 +131,19 @@ const HubComponent = ({ hubPubkey }) => {
         <meta name="twitter:image:type" content="image/jpg" />
         <meta
           name="twitter:title"
-          content={`${hubData?.json.displayName}'s Hub on Nina`}
+          content={`${hubData?.data.displayName}'s Hub on Nina`}
         />
-        <meta name="twitter:description" content={hubData?.json.description} />
-        <meta name="twitter:image" content={hubData?.json.image} />
-        <meta name="og:image" content={hubData?.json.image} />
+        <meta name="twitter:description" content={hubData?.data.description} />
+        <meta name="twitter:image" content={hubData?.data.image} />
+        <meta name="og:image" content={hubData?.data.image} />
       </Head>
 
-      <ResponsiveHubContainer>
+      <HubContainer>
         <>
           {fetched.info && hubData && <HubHeader hubData={hubData} />}
         </>
         {fetched.info && hubData && (
-          <ResponsiveTabContainer>
+          <HubTabWrapper>
             <TabHeader
               viewHandler={viewHandler}
               isActive={activeView}
@@ -145,18 +151,24 @@ const HubComponent = ({ hubPubkey }) => {
               releaseData={releaseData}
               type={'hubsView'}
             />
-          </ResponsiveTabContainer>
+          </HubTabWrapper>
         )}
-        <ResponsiveHubContentContainer>
+        <>
           {activeView === undefined && (
-            <ResponsiveDotContainer>
+            <>
+            <HubDotWrapper>
               <Box sx={{width: '100%', margin: 'auto'}}>
                 <Dots />
               </Box>
-            </ResponsiveDotContainer>
+            </HubDotWrapper>
+            </>
            )} 
+           
           {activeView === 0 && (
             <>
+             {fetched.releases && !releaseData && (
+                <Box sx={{ my: 1 }}>No releases found in this Hub</Box>
+              )}
               {fetched.releases && releaseData && (
                 <ReusableTable
                   tableType={'hubReleases'}
@@ -178,13 +190,13 @@ const HubComponent = ({ hubPubkey }) => {
               )}
             </>
           )}
-        </ResponsiveHubContentContainer>
-      </ResponsiveHubContainer>
+        </>
+      </HubContainer>
     </>
   )
 }
 
-const ResponsiveHubContainer = styled(Box)(({ theme }) => ({
+const HubContainer = styled(Box)(({ theme }) => ({
   display: 'inline-flex',
   flexDirection: 'column',
   justifyItems: 'center',
@@ -194,8 +206,7 @@ const ResponsiveHubContainer = styled(Box)(({ theme }) => ({
   height: '86vh',
   overflowY: 'hidden',
   margin: '75px auto 0px',
-  webkitOverflowScrolling: 'touch',
-
+  ['-webkit-overflow-scroll']: 'touch',
   [theme.breakpoints.down('md')]: {
     display: 'flex',
     flexDirection: 'column',
@@ -205,37 +216,19 @@ const ResponsiveHubContainer = styled(Box)(({ theme }) => ({
     paddingTop: 0,
     minHeight: '100% !important',
     maxHeight: '80vh',
-    overflow: 'scroll',
+    overflow: 'hidden',
     marginLeft: 0,
   },
 }))
 
-const ResponsiveTabContainer = styled(Box)(({ theme }) => ({
+const HubTabWrapper = styled(Box)(({ theme }) => ({
   py:1,
-
   [theme.breakpoints.down('md')]: {
     marginTop: '0px'
   }
 }))
 
-const ResponsiveHubContentContainer = styled(Box)(({ theme }) => ({
-  minHeight: '60vh',
-  width: theme.maxWidth,
-  webkitOverflowScrolling: 'touch',
-  overflowY: 'auto',
-  '&::-webkit-scrollbar': {
-    display: 'none',
-  },
-  [theme.breakpoints.down('md')]: {
-    width: '100vw',
-    padding: '0px 30px',
-    height: '100vh',
-    overflowY: 'unset',
-    minHeight: '60vh',
-  },
-}))
-
-const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
+const HubDotWrapper = styled(Box)(({ theme }) => ({
   fontSize: '80px',
   display: 'flex',
   height: '100%',

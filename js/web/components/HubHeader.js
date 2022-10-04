@@ -26,7 +26,7 @@ const HubHeader = ({ hubData }) => {
   const wallet = useWallet()
 
   useEffect(() => {
-    if (hubData?.json.description.includes('<p>')) {
+    if (hubData?.data.description.includes('<p>')) {
       unified()
         .use(rehypeParse, { fragment: true })
         .use(rehypeSanitize)
@@ -39,7 +39,7 @@ const HubHeader = ({ hubData }) => {
           rel: ['nofollow', 'noreferrer'],
         })
         .process(
-          JSON.parse(hubData?.json.description).replaceAll(
+          JSON.parse(hubData?.data.description).replaceAll(
             '<p><br></p>',
             '<br>'
           )
@@ -48,9 +48,9 @@ const HubHeader = ({ hubData }) => {
           setHubDescription(file.result)
         })
     } else {
-      setHubDescription(hubData?.json.description)
+      setHubDescription(hubData?.data.description)
     }
-  }, [hubData?.json.description])
+  }, [hubData?.data.description])
 
     const handleSubscribe = async (accountAddress) => {
     const result = await subscriptionSubscribe(accountAddress, hubData.handle)
@@ -69,18 +69,18 @@ const HubHeader = ({ hubData }) => {
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
       <ResponsiveHubHeader>
         <Box sx={{ width: '100px' }}>
-          <Link href={`${hubData?.json.externalUrl}`} passHref>
+          <Link href={`${hubData?.data.externalUrl}`} passHref>
             <a target="_blank" rel="noreferrer">
               <Image
                 height={'100%'}
                 width={'100%'}
                 layout="responsive"
                 src={getImageFromCDN(
-                  hubData?.json?.image,
+                  hubData?.data?.image,
                   400,
                   Date.parse(hubData?.createdAt)
                 )}
-                alt={hubData?.json.displayName}
+                alt={hubData?.data.displayName}
                 priority={true}
                 loader={loader}
               />
@@ -88,16 +88,16 @@ const HubHeader = ({ hubData }) => {
           </Link>
         </Box>
 
-        {hubData?.json.displayName && (
-          <Link href={hubData?.json.externalUrl} passHref>
+        {hubData?.data.displayName && (
+          <Link href={hubData?.data.externalUrl} passHref>
             <a target="_blank" rel="noreferrer">
               <Typography sx={{ px: 2 }}>
-                {hubData?.json.displayName}
+                {hubData?.data.displayName}
               </Typography>
             </a>
           </Link>
         )}
-        {hubData?.json.description && (
+        {hubData?.data.description && (
           <>
             <DescriptionOverflowContainer>
               {hubDescription}
@@ -161,9 +161,9 @@ const DescriptionOverflowContainer = styled(Box)(({ theme }) => ({
   alignItems: 'start',
   textAlign: 'left',
   overflow: 'hidden',
-  display: '-webkit-box',
-  '-webkit-line-clamp': '6',
-  '-webkit-box-orient': 'vertical',
+  display: ['-webkit-box'],
+  ['-webkit-line-clamp']: '6',
+  ['-webkit-box-orient']: 'vertical',
   textOverflow: 'ellipsis',
   minWidth: '10vw',
   maxWidth: '50vw',
@@ -177,8 +177,8 @@ const DescriptionOverflowContainer = styled(Box)(({ theme }) => ({
     margin: 0,
   },
   [theme.breakpoints.down('md')]: {
-    '-webkit-line-clamp': '6',
-    width: '30vw',
+    ['-webkit-line-clamp']: '6',
+    width: '40vw',
   },
 }))
 

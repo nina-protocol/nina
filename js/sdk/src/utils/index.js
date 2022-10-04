@@ -2,6 +2,7 @@ import * as encrypt from './encrypt'
 import * as web3 from './web3'
 import * as imageManager from './imageManager'
 import MD5 from "crypto-js/md5";
+import NinaSdk from "@nina-protocol/js-sdk"
 
 const dateConverter = (date) => {
   var a = new Date(typeof date === 'object' ? date.toNumber() * 1000 : date)

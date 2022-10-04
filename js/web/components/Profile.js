@@ -61,42 +61,27 @@ const Profile = ({ profilePubkey }) => {
 
   useEffect(() => {
     const getUserData = async (profilePubkey) => {
-      await getHubsForUser(profilePubkey)
-      // const [collectionIds, publishedIds] = await getUserCollectionAndPublished(
-      //   profilePubkey
-      // )
-      const collectionIds = await getUserCollectionAndPublished(
+      const hubs = await getHubsForUser(profilePubkey)
+      
+      const [collected, published] = await getUserCollectionAndPublished(
         profilePubkey
       )
-      setProfileCollectionIds(collectionIds)
-    }
 
-    getUserData(profilePubkey)
-    fetched.user = true
-  }, [profilePubkey])
-
-  useEffect(() => {
-    let viewIndex
-    let updatedView = views.slice()
-
-    if (profilePubkey) {
-      const releases = filterReleasesPublishedByUser(profilePubkey)
-      setProfilePublishedReleases(releases)
-
+      setProfileCollectionReleases(collected)
+      setProfilePublishedReleases(published)
+      fetched.user = true
+      
+      let viewIndex
+      let updatedView = views.slice()
+      
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
-      updatedView[viewIndex].playlist = releases
-
+      updatedView[viewIndex].playlist = published
       fetched.releases = true
 
-      setProfileCollectionReleases(filterReleasesList(profileCollectionIds))
-
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
-      updatedView[viewIndex].playlist = filterReleasesList(profileCollectionIds)
-
+      updatedView[viewIndex].playlist = collected
       fetched.collection = true
-
-      const hubs = filterHubsForUser(profilePubkey)
-
+      console.log('hubs: ', hubs)
       setProfileHubs(hubs)
       fetched.hubs = true
       setFetched({
@@ -104,23 +89,22 @@ const Profile = ({ profilePubkey }) => {
       })
     }
 
-    setViews(updatedView)
-  }, [profileCollectionIds, releaseState])
-
+    getUserData(profilePubkey)
+  }, [profilePubkey])
+  
   useEffect(() => {
     let viewIndex
     let updatedView = views.slice()
-
-    if (profilePublishedReleases?.length > 0 && fetched.releases) {
+    if (profilePublishedReleases?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
       updatedView[viewIndex].visible = true
     }
-    if (profileCollectionReleases?.length > 0 && fetched.collection) {
+    if (profileCollectionReleases?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
       updatedView[viewIndex].visible = true
     }
 
-    if (profileHubs?.length > 0 && fetched.hubs) {
+    if (profileHubs?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'hubs')
       updatedView[viewIndex].visible = true
     }
@@ -198,9 +182,9 @@ const Profile = ({ profilePubkey }) => {
         <meta property="og:image" content={`/images/favicon.ico`} />
       </Head>
 
-      <ResponsiveProfileContainer>
-        <ResponsiveProfileHeaderContainer>
-          <ResponsiveProfileDetailHeaderContainer>
+      <ProfileContainer>
+        <ProfileHeaderWrapper>
+          <ProfileHeaderContainer>
             {fetched.user && profilePubkey && (
               <Box sx={{mb:1}} display='flex'>
                 <Typography>{truncateAddress(profilePubkey)}</Typography>
@@ -219,12 +203,12 @@ const Profile = ({ profilePubkey }) => {
                 {`Publishes as ${artistNames?.map((name) => name).join(', ')}`}
               </ProfileOverflowContainer>
             )}
-          </ResponsiveProfileDetailHeaderContainer>
-        </ResponsiveProfileHeaderContainer>
-        {profilePublishedReleases?.length > 0 &&
-          profileCollectionReleases?.length > 0 &&
-          profileHubs?.length > 0 &&
-          fetched.user && (
+          </ProfileHeaderContainer>
+        </ProfileHeaderWrapper>
+        {fetched.user &&
+          fetched.collection &&
+          fetched.releases &&
+          fetched.hubs && (
             <Box sx={{ py: 1 }}>
               <TabHeader
                 viewHandler={viewHandler}
@@ -236,12 +220,13 @@ const Profile = ({ profilePubkey }) => {
 
         <>
           {!activeView === undefined && (
-            <ResponsiveDotContainer>
-              <Box sx={{margin: 'auto'}}>
+            <ProfileDotWrapper>
+              <Box sx={{ margin: 'auto' }}>
                 <Dots />
               </Box>
-            </ResponsiveDotContainer>
+            </ProfileDotWrapper>
           )}
+
           {activeView === 0 && (
             <>
               {fetched.releases && profilePublishedReleases.length === 0 && (
@@ -283,12 +268,12 @@ const Profile = ({ profilePubkey }) => {
             </>
           )}
         </>
-      </ResponsiveProfileContainer>
+      </ProfileContainer>
     </>
   )
 }
 
-const ResponsiveProfileContainer = styled(Box)(({ theme }) => ({
+const ProfileContainer = styled(Box)(({ theme }) => ({
   display: 'inline-flex',
   flexDirection: 'column',
   justifyItems: 'center',
@@ -298,13 +283,13 @@ const ResponsiveProfileContainer = styled(Box)(({ theme }) => ({
   height: '86vh',
   overflowY: 'hidden',
   margin: '75px auto 0px',
-  webkitOverflowScrolling: 'touch',
+  ['-webkit-overflow-scroll']: 'touch',
   [theme.breakpoints.down('md')]: {
     display: 'flex',
     flexDirection: 'column',
     justifyItems: 'center',
     alignItems: 'center',
-    marginTop: '25px', 
+    marginTop: '25px',
     paddingTop: 0,
     minHeight: '100% !important',
     maxHeight: '80vh',
@@ -313,7 +298,7 @@ const ResponsiveProfileContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
-const ResponsiveProfileDetailHeaderContainer = styled(Box)(({ theme }) => ({
+const ProfileHeaderContainer = styled(Box)(({ theme }) => ({
   maxWidth: '100%',
   textAlign: 'left',
   [theme.breakpoints.down('md')]: {
@@ -322,7 +307,7 @@ const ResponsiveProfileDetailHeaderContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
-const ResponsiveProfileHeaderContainer = styled(Box)(({ theme }) => ({
+const ProfileHeaderWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'left',
@@ -341,31 +326,29 @@ const ResponsiveProfileHeaderContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
-const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
+const ProfileOverflowContainer = styled(Box)(({ theme }) => ({
+  overflow: 'hidden',
+  display: ['-webkit-box'],
+  ['-webkit-line-clamp']: '4',
+  ['-webkit-box-orient']: 'vertical',
+  textOverflow: 'ellipsis',
+  [theme.breakpoints.down('md')]: {
+    ['-webkit-line-clamp']: '4',
+  },
+}))
+
+const ProfileDotWrapper = styled(Box)(({ theme }) => ({
   fontSize: '80px',
   display: 'flex',
   width: '100%',
   height: '100%',
-  display: 'flex', 
+  display: 'flex',
   textAlign: 'center',
   [theme.breakpoints.down('md')]: {
     fontSize: '30px',
     left: '50%',
     top: '50%',
   },
-}))
-
-const ProfileOverflowContainer = styled(Box)(({ theme }) => ({
-  overflow: 'hidden',
-  display: "-webkit-box",
-  "-webkit-line-clamp": '3',
-  "-webkit-box-orient": "vertical",  
-  textOverflow: 'ellipsis',
-  [theme.breakpoints.down('md')]: {
-
-    "-webkit-line-clamp": '5',
-
-  }
 }))
 
 export default Profile
