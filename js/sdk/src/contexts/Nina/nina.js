@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react'
+import React, { createContext, useState, useEffect, useMemo } from 'react'
 import * as anchor from '@project-serum/anchor'
 import NinaSdk from '@nina-protocol/js-sdk';
 import axios from 'axios'
@@ -7,6 +7,7 @@ import {
   TOKEN_PROGRAM_ID,
 } from '../../utils/web3'
 import { ninaErrorHandler } from '../../utils/errors'
+import {clone} from 'lodash';
 
 const NinaProgramAction = {
   HUB_ADD_COLLABORATOR: 'HUB_ADD_COLLABORATOR',
@@ -40,6 +41,8 @@ const NinaContext = createContext()
 const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [collection, setCollection] = useState({})
   const [postState, setPostState] = useState({})
+  const [subscriptionState, setSubscriptionState] = useState({})
+  const [userSubscriptions, setUserSubscription] = useState({})
   const [usdcBalance, setUsdcBalance] = useState(0)
   const [solBalance, setSolBalance] = useState(0)
   const [solUsdcBalance, setSolUsdcBalance] = useState(0)
@@ -109,6 +112,13 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     }
   }, [healthCheck])
 
+  const userSubscriptions = useMemo(() => {
+    if (wallet.connected) {
+      return filterSubscriptionsForUser(wallet.publicKey.toBase58());
+    }
+    return undefined;
+  }, [subscriptionState, wallet.connected]);  
+
   const {
     subscriptionSubscribe,
     subscriptionUnsubscribe,
@@ -129,10 +139,14 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     bundlrUpload,
     initBundlr,
     checkIfHasBalanceToCompleteAction,
+    getSubscriptionsForUser,
+    filterSubscriptionsForUser
   } = ninaContextHelper({
     ninaClient,
     postState,
     setPostState,
+    subscriptionState,
+    setSubscriptionState,
     collection,
     setCollection,
     setUsdcBalance,
@@ -158,6 +172,8 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         savePostsToState,
         postState,
         collection,
+        subscriptionState,
+        setSubscriptionState,
         createCollection,
         createCollectionForSingleRelease,
         addReleaseToCollection,
@@ -186,7 +202,9 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         solBalance,
         NinaProgramAction,
         NinaProgramActionCost,
-        checkIfHasBalanceToCompleteAction
+        checkIfHasBalanceToCompleteAction,
+        getSubscriptionsForUser,
+        filterSubscriptionsForUser
       }}
     >
       {children}
@@ -199,6 +217,8 @@ const ninaContextHelper = ({
   postState,
   setPostState,
   collection,
+  subscriptionState,
+  setSubscriptionState,
   setCollection,
   setUsdcBalance,
   setNpcAmountHeld,
@@ -248,6 +268,7 @@ const ninaContextHelper = ({
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
       console.log('Subscription created on chain', subscription.toBase58())
       await getSubcription(subscription.toBase58())
+
       return {
         success: true,
         msg: 'Now Following Account',
@@ -289,23 +310,6 @@ const ninaContextHelper = ({
     }
   }
 
-  const getSubcription = async (subscriptionPubkey) => {
-    try {
-      const program = await ninaClient.useProgram()
-      subscriptionPubkey = new anchor.web3.PublicKey(subscriptionPubkey)
-
-      const subscriptionAccount = await program.account.subscription.fetch(subscriptionPubkey)
-      subscriptionAccount.publicKey = subscriptionPubkey
-      if (subscriptionAccount.error) {
-        throw subscriptionAccount.error
-      } else {
-        return subscriptionAccount
-      }
-    } catch (error) {
-      console.warn(error)
-    }
-  }
-
   //Posts
 
   const savePostsToState = async (posts) => {
@@ -321,6 +325,19 @@ const ninaContextHelper = ({
       }
     })
     setPostState(updatedState)
+  }
+
+  const saveSubscriptionsToState = async (subscriptions) => {
+    let updatedState = { ...subscriptionState }
+    console.log('subscriptions !!!! :>> ', subscriptions);
+    subscriptions.forEach((subscription) => {
+      updatedState = {
+        ...updatedState,
+        [subscription.publicKey]: subscription
+      }
+    })
+    console.log('updatedSubscriptionState :>> ', updatedState);
+    setSubscriptionState(updatedState)
   }
 
   // Collection
@@ -693,6 +710,50 @@ const ninaContextHelper = ({
     return undefined
   }
 
+    /*
+
+  STATE
+
+  */
+
+    const getSubcription = async (subscriptionPubkey) => {
+    try {
+      const {subscription} = await NinaSdk.Subscription.fetch(subscriptionPubkey, false)
+      console.log('subscription in get!', subscription);
+      setSubscriptionState({
+        ...subscriptionState,
+        [subscription.publicKey]: subscription,
+      })
+
+      console.log('subscriptionState :>> ', subscriptionState);
+
+    } catch (error) {
+      console.warn(error)
+    }
+  }
+
+  const getSubscriptionsForUser = async (accountPubkey) => {
+    try{
+      const { subscriptions } = await NinaSdk.Account.fetchSubscriptions(accountPubkey)
+      console.log('subscriptions in get', subscriptions);
+      saveSubscriptionsToState(subscriptions)
+    } catch (error) {
+      console.warn(error)
+    }
+  }
+
+  const filterSubscriptionsForUser = async (accountPubkey) => {
+    const subscriptions = []
+    console.log('subscriptionState :>> ', subscriptionState);
+    Object.values(subscriptionState).forEach((subscription) => {
+      if (subscription.from === accountPubkey || subscription.to === accountPubkey) {
+        subscriptions.push(subscription)
+      }
+    })
+    console.log('subscriptions :>> ', subscriptions);
+    return subscriptions
+  }
+
   return {
     subscriptionSubscribe,
     subscriptionUnsubscribe,
@@ -713,6 +774,8 @@ const ninaContextHelper = ({
     initBundlr,
     savePostsToState,
     checkIfHasBalanceToCompleteAction,
+    getSubscriptionsForUser,
+    filterSubscriptionsForUser,
   }
 }
 

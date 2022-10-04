@@ -11,7 +11,7 @@ const HubsModal = (props) => {
   const { releasePubkey, metadata } = props
   const { getHubsForRelease, hubState, filterHubsForRelease } = useContext(Hub.Context)
   const [open, setOpen] = useState(false)
-  const [hubs, setHubs] = useState([])
+  const [hubs, setHubs] = useState()
 
   useEffect(() => {
     getHubsForRelease(releasePubkey)
@@ -20,6 +20,8 @@ const HubsModal = (props) => {
   useEffect(() => {
     setHubs(filterHubsForRelease(releasePubkey))
   }, [hubState, releasePubkey])
+
+  console.log('hubs !!!!:>> ', hubs);
 
   return (
     <Box>
@@ -55,7 +57,7 @@ const HubsModal = (props) => {
           </Header>
           <CollectorTable>
             <TableBody>
-              {hubs &&
+              {hubs && hubs.length > 0 &&
                 hubs.map((entry, i) => {
                   return (
                     <tr key={i}>
