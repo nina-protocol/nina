@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react'
 import * as anchor from '@project-serum/anchor'
-
+import NinaSdk from '@nina-protocol/js-sdk';
 import axios from 'axios'
 import {
   findOrCreateAssociatedTokenAccount,
@@ -246,6 +246,7 @@ const ninaContextHelper = ({
       }
 
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      console.log('Subscription created on chain', subscription.toBase58())
       await getSubcription(subscription.toBase58())
       return {
         success: true,

@@ -28,9 +28,6 @@ const Profile = ({ profilePubkey }) => {
   const { enqueueSnackbar } = useSnackbar();
   const wallet = useWallet()
 
-
-
-
   const [profilePublishedReleases, setProfilePublishedReleases] =
     useState(undefined)
   const [profileCollectionReleases, setProfileCollectionReleases] =
@@ -65,7 +62,10 @@ const Profile = ({ profilePubkey }) => {
   useEffect(() => {
     const getUserData = async (profilePubkey) => {
       await getHubsForUser(profilePubkey)
-      const [collectionIds, publishedIds] = await getUserCollectionAndPublished(
+      // const [collectionIds, publishedIds] = await getUserCollectionAndPublished(
+      //   profilePubkey
+      // )
+      const collectionIds = await getUserCollectionAndPublished(
         profilePubkey
       )
       setProfileCollectionIds(collectionIds)

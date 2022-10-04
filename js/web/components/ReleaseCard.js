@@ -29,9 +29,6 @@ const ReleaseCard = (props) => {
     useContext(Audio.Context)
   const image = useMemo(() => metadata?.image)
 
-  console.log('release !!!!', release)
-  console.log( 'userHubs', userHubs)
-  
   return (
     <StyledReleaseCard>
       <StyledReleaseInfo>

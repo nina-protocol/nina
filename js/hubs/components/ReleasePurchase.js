@@ -178,7 +178,7 @@ const ReleasePurchase = (props) => {
           </StyledLink>
         </Typography>
       )}
-      <HubsModal releasePubkey={releasePubkey} metadata={metadata}  />
+      {/* <HubsModal releasePubkey={releasePubkey} metadata={metadata}  /> */}
 
       <form onSubmit={handleSubmit} style={{ textAlign: "left", marginBottom: '10px' }}>
         <BuyButton variant="contained" type="submit" disabled={buttonDisabled} >

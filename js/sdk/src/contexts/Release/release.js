@@ -1347,8 +1347,9 @@ const releaseContextHelper = ({
   }
 
   const getUserCollectionAndPublished = async (userId) => {
+    console.log('get user collection & published');
     try {
-      const collection = (await NinaSdk.Account.fetchCollection(userId, true).collected)
+      const collection = (await NinaSdk.Account.fetchCollected(userId, true).collected)
       setReleaseState(updateStateForReleases(collection))
       return collection.map(release => release.publicKey)
     } catch (e) {
@@ -1708,6 +1709,7 @@ const releaseContextHelper = ({
     getReleasesRecent,
     getReleasesAll,
     getReleaseRoyaltiesByUser,
+    getUserCollectionAndPublished,
     filterReleasesUserCollection,
     filterReleasesPublishedByUser,
     filterReleasesRecent,
