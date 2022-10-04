@@ -60,6 +60,13 @@ export const getStaticProps = async (context) => {
   const releasePubkey = context.params.releasePubkey
 
   try {
+    if (!NinaSdk.client.program) {
+      await NinaSdk.client.init(
+        process.env.NINA_API_ENDPOINT,
+        process.env.SOLANA_CLUSTER_URL,
+        process.env.NINA_PROGRAM_ID
+      )      
+    }
     const { release } = await NinaSdk.Release.fetch(releasePubkey)
     return {
       props: {
