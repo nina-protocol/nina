@@ -100,10 +100,11 @@ const autoCompleteUrl = 'https://dev.api.ninaprotocol.com/v1/suggestions'
     console.log('response :>> ', response.data);
     const {artists, releases, hubs} = response.data;
     const dataArr = [response.data]
+    console.log('dataaarrrr',dataArr)
     const responseObject = dataArr.reduce(function(acc, val) {
       for (let key in val) acc[key] = val[key];
       return acc;
-    }, {})
+    }, [])
     console.log('responseObject :>> ', responseObject);
     Object.keys(response.data).forEach(key => {
       fetchedSuggestions.push(response.data[key])
@@ -117,19 +118,17 @@ const autoCompleteUrl = 'https://dev.api.ninaprotocol.com/v1/suggestions'
     fetchedSuggestions[2].forEach(item => {
       fetchedHubs.push(`${item.displayName}`)}
     )
-    console.log('resObj',responseObject)
-    const objVal = Object.values(responseObject)
-    console.log('objVal',objVal)
+   
     // setSuggestions([...fetchedArtists, ...fetchedReleases, ...fetchedHubs])
-    setSuggestions([responseObject])
+    setSuggestions(responseObject)
     console.log(suggestions)
-    setOptions(Object.keys([responseObject]))
+    setOptions(Object.keys(suggestions))
     console.log('options :>> ', options);
     // setOptions([responseObject].map((option, i) => {
     //     return {...option.artists, ...option.releases, ...option.hubs,}
     // }))
-    console.log('suggestiossssssssss', suggestions)
-    console.log('options', options)
+    console.log('suggestiossssssssss', suggestions.artists)
+    console.log('options', Object.keys(suggestions))
   }
   const changeHandler = (e) => {
     e.preventDefault()
@@ -140,18 +139,17 @@ const autoCompleteUrl = 'https://dev.api.ninaprotocol.com/v1/suggestions'
     }
   }
 
-
+  const dummyarr = ['jack', 'jill', 'james', 'jim', 'joe', 'jane']
     return (
     <Box sx={{ height: '60vh', width: '960px' }}>
       <Form onSubmit={(e) => handleSubmit(e)}>
         <SearchInputWrapper>
       <Autocomplete 
       id="nina-search"
-      options={suggestions.map((option) => option)}
-      getOptionLabel={object => object}
-      groupBy={option =>
-        
-        Object.keys(option)}
+      // options={dummyarr}
+      options={suggestions}
+      getOptionLabel={option => option}
+      groupBy={option => Object.keys(option)}
       renderInput={(params) => 
         <TextField
         {...params}
