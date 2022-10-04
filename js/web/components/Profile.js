@@ -18,9 +18,7 @@ const Profile = ({ profilePubkey }) => {
     filterReleasesList,
   } = useContext(Release.Context)
 
-  const { getHubsForUser, filterHubsForUser } = useContext(
-    Hub.Context
-  )
+  const { getHubsForUser, filterHubsForUser } = useContext(Hub.Context)
 
   const [profilePublishedReleases, setProfilePublishedReleases] =
     useState(undefined)
@@ -101,7 +99,7 @@ const Profile = ({ profilePubkey }) => {
   useEffect(() => {
     let viewIndex
     let updatedView = views.slice()
-    if (profilePublishedReleases?.length > 0 ) {
+    if (profilePublishedReleases?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
       updatedView[viewIndex].visible = true
     }
@@ -110,12 +108,12 @@ const Profile = ({ profilePubkey }) => {
       updatedView[viewIndex].visible = true
     }
 
-    if (profileHubs?.length > 0 ) {
+    if (profileHubs?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'hubs')
       updatedView[viewIndex].visible = true
     }
     setViews(updatedView)
-  }, [profilePublishedReleases, profileCollectionReleases, profileHubs,])
+  }, [profilePublishedReleases, profileCollectionReleases, profileHubs])
 
   useEffect(() => {
     if (profilePublishedReleases?.length > 0) {
@@ -177,7 +175,7 @@ const Profile = ({ profilePubkey }) => {
         <ProfileHeaderWrapper>
           <ProfileHeaderContainer>
             {fetched.user && profilePubkey && (
-              <Box sx={{mb:1}}>
+              <Box sx={{ mb: 1 }}>
                 <Typography>{truncateAddress(profilePubkey)}</Typography>
               </Box>
             )}
@@ -188,7 +186,10 @@ const Profile = ({ profilePubkey }) => {
             )}
           </ProfileHeaderContainer>
         </ProfileHeaderWrapper>
-          {fetched.user && fetched.collection && fetched.releases && fetched.hubs && (
+        {fetched.user &&
+          fetched.collection &&
+          fetched.releases &&
+          fetched.hubs && (
             <Box sx={{ py: 1 }}>
               <TabHeader
                 viewHandler={viewHandler}
@@ -198,17 +199,15 @@ const Profile = ({ profilePubkey }) => {
             </Box>
           )}
 
-      <>
-
+        <>
           {!activeView === undefined && (
             <ProfileDotWrapper>
-              <Box sx={{margin: 'auto'}}>
+              <Box sx={{ margin: 'auto' }}>
                 <Dots />
               </Box>
             </ProfileDotWrapper>
           )}
-        
-         
+
           {activeView === 0 && (
             <>
               {fetched.releases && profilePublishedReleases.length === 0 && (
@@ -249,8 +248,7 @@ const Profile = ({ profilePubkey }) => {
               )}
             </>
           )}
-         
-      </>
+        </>
       </ProfileContainer>
     </>
   )
@@ -272,7 +270,7 @@ const ProfileContainer = styled(Box)(({ theme }) => ({
     flexDirection: 'column',
     justifyItems: 'center',
     alignItems: 'center',
-    marginTop: '25px', 
+    marginTop: '25px',
     paddingTop: 0,
     minHeight: '100% !important',
     maxHeight: '80vh',
@@ -312,12 +310,12 @@ const ProfileHeaderWrapper = styled(Box)(({ theme }) => ({
 const ProfileOverflowContainer = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
   display: ['-webkit-box'],
-  ['-webkit-line-clamp']: '6',
+  ['-webkit-line-clamp']: '4',
   ['-webkit-box-orient']: 'vertical',
   textOverflow: 'ellipsis',
   [theme.breakpoints.down('md')]: {
-    ["-webkit-line-clamp"]: '4',
-  }
+    ['-webkit-line-clamp']: '4',
+  },
 }))
 
 const ProfileDotWrapper = styled(Box)(({ theme }) => ({
@@ -325,7 +323,7 @@ const ProfileDotWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   width: '100%',
   height: '100%',
-  display: 'flex', 
+  display: 'flex',
   textAlign: 'center',
   [theme.breakpoints.down('md')]: {
     fontSize: '30px',
@@ -333,6 +331,5 @@ const ProfileDotWrapper = styled(Box)(({ theme }) => ({
     top: '50%',
   },
 }))
-
 
 export default Profile
