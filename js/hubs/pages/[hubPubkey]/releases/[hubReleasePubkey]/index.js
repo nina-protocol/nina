@@ -70,6 +70,13 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async (context) => {
   try {
     if (context.params.hubPubkey && context.params.hubReleasePubkey !== 'undefined') {
+      if (!NinaSdk.client.program) {
+        await NinaSdk.client.init(
+          process.env.NINA_API_ENDPOINT,
+          process.env.SOLANA_CLUSTER_URL,
+          process.env.NINA_PROGRAM_ID
+        )      
+      }
       const {hub, release} = await NinaSdk.Hub.fetchHubRelease(context.params.hubPubkey, context.params.hubReleasePubkey);
       return {  
         props: {

@@ -61,6 +61,13 @@ export const getStaticProps = async (context) => {
   const hubPubkey = context.params.hubPubkey;
   if (hubPubkey && hubPubkey !== 'manifest.json' && hubPubkey !== 'undefined') {
     try {
+      if (!NinaSdk.client.program) {
+        await NinaSdk.client.init(
+          process.env.NINA_API_ENDPOINT,
+          process.env.SOLANA_CLUSTER_URL,
+          process.env.NINA_PROGRAM_ID
+        )      
+      }
       const { hub } = await NinaSdk.Hub.fetch(hubPubkey);
       return {
         props: {
