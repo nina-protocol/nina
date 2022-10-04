@@ -1,5 +1,6 @@
 import Dashboard from "../../components/Dashboard";
 import axios from "axios";
+import Head from "next/head";
 
 const DashboardPage = ({ hubPubkey, hub }) => {
   return (
