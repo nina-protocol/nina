@@ -82,6 +82,7 @@ const ReleaseComponent = ({ metadataSsr }) => {
           <NinaBox columns={'repeat(2, 1fr)'} sx={{ backgroundColor: 'white' }}>
             <ReleaseCard
               metadata={metadata}
+
               preview={false}
               releasePubkey={releasePubkey}
               userHubs={userHubs}

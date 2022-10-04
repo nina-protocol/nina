@@ -28,7 +28,10 @@ const ReleaseCard = (props) => {
   const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
     useContext(Audio.Context)
   const image = useMemo(() => metadata?.image)
-  console.log('release.authority', release?.authority.toBase58())
+
+  console.log('release !!!!', release)
+  console.log( 'userHubs', userHubs)
+  
   return (
     <StyledReleaseCard>
       <StyledReleaseInfo>
@@ -76,7 +79,7 @@ const ReleaseCard = (props) => {
         {metadata && (
           <Fade in={true}>
             <Typography variant="h4" color="white" align="left">
-              <Link href={`/profiles/${release?.authority.toBase58()}`}>
+              <Link href={`/profiles/${release?.authority}`}>
                 <a style={{color:'white'}}>
                   {metadata?.properties?.artist.substring(0, 100) ||
                     metadata?.artist.substring(0, 100)}

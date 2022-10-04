@@ -52,6 +52,7 @@ const ReleasePurchase = (props) => {
   const pending = useMemo(() => releasePurchasePending[releasePubkey], [releasePubkey, releasePurchasePending])
 
   useEffect(() => {
+    console.log('releasePubkey :>> ', releasePubkey); 
     getRelease(releasePubkey)
 
     // const hubForRelease = async (releasePubkey) => {
@@ -66,6 +67,7 @@ useEffect(() => {
 }, [releasePubkey, wallet.connected])
 
   useEffect(() => {
+    console.log('!!!!!', releaseState)
     if (releaseState.tokenData[releasePubkey]) {
       setRelease(releaseState.tokenData[releasePubkey])
     }
