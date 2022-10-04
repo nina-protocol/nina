@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import {
   ConnectionProvider,
   WalletProvider,
@@ -12,12 +12,7 @@ import { SnackbarProvider } from "notistack";
 import Box from "@mui/material/Box";
 import dynamic from "next/dynamic";
 import NinaSdk from '@nina-protocol/js-sdk'
-
-NinaSdk.client.init(
-  process.env.NINA_API_ENDPOINT,
-  process.env.SOLANA_CLUSTER_URL,
-  process.env.NINA_PROGRAM_ID
-)
+import Router from 'next/router'
 
 // Use require instead of import since order matters
 // require('@solana/wallet-adapter-react-ui/styles.css');
@@ -29,29 +24,41 @@ const Layout = dynamic(() => import("../components/Layout"));
 
 const App = ({ Component, pageProps }) => {
   const [loading, setLoading] = useState(false);
+  const [sdkInitialized, setSdkInitialized] = useState(false)
 
-  // useEffect(() => {
-  //   const start = () => {
-  //     setLoading(true);
-  //   };
-  //   const end = () => {
-  //     setLoading(false);
-  //   };
-  //   Router.events.on("routeChangeStart", start);
-  //   Router.events.on("routeChangeComplete", end);
-  //   Router.events.on("routeChangeError", end);
+  useEffect(() => {
+    // const start = () => {
+    //   setLoading(true);
+    // };
+    // const end = () => {
+    //   setLoading(false);
+    // };
+    // Router.events.on("routeChangeStart", start);
+    // Router.events.on("routeChangeComplete", end);
+    // Router.events.on("routeChangeError", end);
 
-  //   const jssStyles = document.querySelector("#jss-server-side");
-  //   if (jssStyles) {
-  //     jssStyles.parentElement.removeChild(jssStyles);
-  //   }
+    // const jssStyles = document.querySelector("#jss-server-side");
+    // if (jssStyles) {
+    //   jssStyles.parentElement.removeChild(jssStyles);
+    // }
 
-  //   return () => {
-  //     Router.events.off("routeChangeStart", start);
-  //     Router.events.off("routeChangeComplete", end);
-  //     Router.events.off("routeChangeError", end);
-  //   };
-  // }, []);
+    const handleSdkInitialization = async () => {
+      await NinaSdk.client.init(
+        process.env.NINA_API_ENDPOINT,
+        process.env.SOLANA_CLUSTER_URL,
+        process.env.NINA_PROGRAM_ID
+      )      
+      setSdkInitialized(true)
+    }
+    handleSdkInitialization()
+
+    // return () => {
+    //   Router.events.off("routeChangeStart", start);
+    //   Router.events.off("routeChangeComplete", end);
+    //   Router.events.off("routeChangeError", end);
+    // };
+
+  }, []);
   // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
   const network =
     process.env.SOLANA_CLUSTER === "mainnet-beta"
@@ -86,15 +93,11 @@ const App = ({ Component, pageProps }) => {
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
             <NinaWrapper network={process.env.SOLANA_CLUSTER}>
-              <Layout>
-                {loading ? (
-                  <Box width="100%" margin="auto">
-                    <Dots size="80px" />
-                  </Box>
-                ) : (
-                  <Component {...pageProps} />
+                {sdkInitialized && (
+                  <Layout>
+                    <Component {...pageProps} />
+                  </Layout>
                 )}
-              </Layout>
             </NinaWrapper>
           </WalletModalProvider>
         </WalletProvider>
