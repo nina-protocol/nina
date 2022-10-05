@@ -1,4 +1,4 @@
-import React, { useMemo, useContext } from "react";
+import React, { useMemo, useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -18,9 +18,18 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
     hubCollaboratorsState,
     filterHubContentForHub,
     filterHubCollaboratorsForHub,
-    hubFeePending,
+    getHubFeePending,
     hubWithdraw,
   } = useContext(Hub.Context);
+  const [hubFeePending, setHubFeePending] = useState(0);
+  
+  useEffect(() => {
+    const handleGetHubFeePending = async () => {
+      const hubFee = await getHubFeePending(hubPubkey)
+      setHubFeePending(hubFee)
+    }
+    handleGetHubFeePending()
+  }, [])
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const hubReleases = useMemo(
     () => filterHubContentForHub(hubPubkey)[0],
@@ -45,9 +54,9 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
       [];
     const releaseArray = [];
     ids.forEach((id) => {
-      const recipient = releaseState.tokenData[id].royaltyRecipients.find(
+      const recipient = releaseState.tokenData[id].revenueShareRecipients.find(
         (recipient) =>
-          recipient.recipientAuthority.toBase58() === hubData.hubSigner
+          recipient.recipientAuthority === hubData.hubSigner
       );
       if (recipient) {
         let hubReleasePubkey = Object.values(hubContentState).find(content =>  content.release === id).hubReleaseId
@@ -69,13 +78,13 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
     releases.forEach((release) => {
       const recipient = releaseState.tokenData[
         release.releasePubkey
-      ].royaltyRecipients.find(
+      ].revenueShareRecipients.find(
         (recipient) =>
-          recipient.recipientAuthority.toBase58() === hubData.hubSigner
+          recipient.recipientAuthority === hubData.hubSigner
       );
       if (recipient) {
-        revenue += recipient.owed.toNumber();
-        revenue += recipient.collected.toNumber();
+        revenue += recipient.owed;
+        revenue += recipient.collected;
       }
     });
     revenue = ninaClient.nativeToUi(revenue, ninaClient.ids.mints.usdc);
@@ -87,7 +96,7 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
       {hubData && (
         <>
           <Typography display="inline" variant="h5">
-            Welcome to {hubData.json.displayName}.
+            Welcome to {hubData.data.displayName}.
           </Typography>
           <Typography display="inline" mt={1} sx={{ margin: "0 10px" }}>
             (You are {isAuthority ? "the Hub authority" : "a collaborator"})

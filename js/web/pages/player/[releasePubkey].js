@@ -7,7 +7,7 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <style>
           html {
-            overflow: auto;
+            overflow: hidden;
           }
           body {
             height: 100%

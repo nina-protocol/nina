@@ -1,13 +1,13 @@
 import React from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import axios from "axios";
+import NinaSdk from "@nina-protocol/js-sdk";
 import NotFound from "../../../../components/NotFound";
 
 const Post = dynamic(() => import("../../../../components/Post"));
 
 const PostPage = (props) => {
-  const { metadata, post, hub, postPubkey, hubPubkey } = props;
+  const { post, hub } = props;
 
   if (!post) {
     return (
@@ -17,41 +17,23 @@ const PostPage = (props) => {
   return (
     <>
       <Head>
-        <title>{`${hub?.json.displayName}: ${post?.postContent.json.title}`}</title>
+        <title>{`${hub?.data.displayName}: ${post?.data.title}`}</title>
         <meta name="og:type" content="website" />
-        {metadata && (
-          <>
+
+        <>
           <meta
             name="description"
-            content={`${metadata?.json.name || post.postContent.json.title}: ${metadata?.json.description || post.postContent.json.body} \n Published on ${hub?.json.displayName}.  Powered by Nina.`}
+            content={`${post.data.title} on ${hub?.data.displayName}`}
           />
           <meta
             name="og:title"
-            content={`${metadata?.json.name} on ${hub.json.displayName}`}
+            content={`${post.data.title} on ${hub?.data.displayName}`}
           />
           <meta
             name="og:description"
-            content={`${metadata?.json.name ? metadata?.json.name + ':' : ''} ${metadata?.json.description || post.postContent.json.body} \n Published on ${hub?.json.displayName}.  Powered by Nina.`}
+            content={`${post.data.title} on ${hub?.data.displayName}`}
           />
-          </>
-        )}
-
-        {!metadata && (
-          <>
-            <meta
-              name="description"
-              content={`${post.postContent.json.title} on ${hub?.json.displayName}`}
-            />
-            <meta
-              name="og:title"
-              content={`${post.postContent.json.title} on ${hub?.json.displayName}`}
-            />
-            <meta
-              name="og:description"
-              content={`${post.postContent.json.title} on ${hub?.json.displayName}`}
-            />
-          </>
-        )}
+        </>
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@ninaprotocol" />
@@ -59,23 +41,23 @@ const PostPage = (props) => {
         <meta name="twitter:image:type" content="image/jpg" />
         <meta
           name="twitter:title"
-          content={`${post.postContent.json.title} on ${hub?.json.displayName}`}
+          content={`${post.data.title} on ${hub?.data.displayName}`}
         />
-        <meta name="twitter:description" content={metadata?.description} />
+        <meta name="twitter:description" content={post.data.body} />
         <meta
           name="twitter:image"
-          content={metadata?.json.image || hub.json.image}
+          content={hub.data.image}
         />
         <meta
           name="og:image"
-          content={metadata?.json.image || hub.json.image}
+          content={hub.data.image}
         />
       </Head>
       <Post
         postDataSsr={post}
-        postPubkey={postPubkey}
+        postPubkey={post.publicKey}
         hub={hub}
-        hubPubkey={hubPubkey}
+        hubPubkey={hub.publicKey}
       />
     </>
   );
@@ -98,49 +80,31 @@ export const getStaticPaths = async () => {
 }
 
 export const getStaticProps = async (context) => {
-  const indexerUrl = process.env.INDEXER_URL;
-  const hubPostPubkey = context.params.hubPostPubkey;
-  let indexerPath = indexerUrl + `/hubPosts/${hubPostPubkey}`;
-
-  let hubPost;
-  let postPubkey;
-  let post;
-  let hub;
-  let hubPubkey;
-  let metadata;
   try {
-    const result = await axios.get(indexerPath);
-    const data = result.data;
-    if (data.hubPost) {
-      metadata = data.metadata || null;
-      hubPost = data.hubPost;
-      post = hubPost.post;
-      postPubkey = hubPost.postId;
-      hub = hubPost.hub;
-      hubPubkey = hubPost.hubId;
+    if (!NinaSdk.client.program) {
+      await NinaSdk.client.init(
+        process.env.NINA_API_ENDPOINT,
+        process.env.SOLANA_CLUSTER_URL,
+        process.env.NINA_PROGRAM_ID
+      )      
     }
+    const { hub, post } = await NinaSdk.Hub.fetchHubPost(context.params.hubPubkey, context.params.hubPostPubkey)
     return {
       props: {
-        metadata,
-        hubPostPubkey,
-        postPubkey,
         post,
         hub,
-        hubPubkey
       },
       revalidate: 10
     };
   } catch (error) {
     console.warn(error);
     try {
-      indexerPath = indexerUrl + `/hubs/${context.params.hubPubkey}`
-      const result = await axios.get(indexerPath);
-      const data = result.data
-  
-      if (data.hub) {
+      const hub = await NinaSdk.Hub.fetchHub(context.params.hubPubkey)
+
+      if (hub) {
         return {
           props: {
-            hub: data.hub
+            hub,
           }
         }
       }

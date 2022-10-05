@@ -132,9 +132,8 @@ const Breadcrumbs = () => {
             if (i === 1) {
               const hub =
               router.components[`${router.pathname}`].props.pageProps.hub
-              console.log('hub', hub)
               return {
-                breadcrumb: hub.json.displayName,
+                breadcrumb: hub?.data?.displayName,
                 href: '/' + linkPath.slice(0, i + 1).join('/'),
               }
             }

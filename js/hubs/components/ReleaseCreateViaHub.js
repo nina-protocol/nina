@@ -25,6 +25,7 @@ import NinaBox from "./NinaBox";
 import MediaDropzones from "./MediaDropzones";
 import Dots from "./Dots";
 import Grid from "@mui/material/Grid";
+import Link from "next/link";
 import {
   createUpload,
   updateUpload,
@@ -204,21 +205,11 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
     setUploadSize((trackSize + artworkSize).toFixed(2));
   }, [track, artwork]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
       if (releaseCreated) {
-        router.push(
-          {
-            pathname: `/${
-              hubData.handle
-            }/releases/${releaseInfo.hubRelease.toBase58()}`,
-            query: {
-              metadata: JSON.stringify(metadata),
-              hub: JSON.stringify(hubData),
-            },
-          },
-          `/${hubData.handle}/releases/${releaseInfo.hubRelease.toBase58()}`
-        );
+        // router.push({pathname: `/${hubData.handle}/releases/${releaseInfo.hubRelease.toBase58()}`});
       } else if (track && artwork) {
         const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.RELEASE_INIT_VIA_HUB);
         if (error) {
@@ -390,7 +381,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                 fullWidth
                 variant="outlined"
                 color="primary"
-                onClick={handleSubmit}
+                onClick={(e) => handleSubmit(e)}
                 disabled={
                   isPublishing ||
                   !formIsValid ||
@@ -407,13 +398,20 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                 {!isPublishing && buttonText}
               </Button>
             )}
+                {releaseCreated && (
+                  <Link
+                    href={`/${hubData.handle}/releases/${releaseInfo.hubRelease.toBase58()}`}
+                  >
+                        {buttonText}
+                  </Link>
+              )}
 
             {!canAddContent && (
               <Button
                 fullWidth
                 variant="outlined"
                 color="primary"
-                onClick={handleSubmit}
+                onClick={(e) => handleSubmit(e)}
                 disabled={
                   isPublishing ||
                   !formIsValid ||
@@ -432,7 +430,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
               <ReleaseCreateConfirm
                 formValues={formValues}
                 formIsValid={formIsValid}
-                handleSubmit={handleSubmit}
+                handleSubmit={(e) => handleSubmit(e)}
                 setFormValuesConfirmed={setFormValuesConfirmed}
               />
             )}

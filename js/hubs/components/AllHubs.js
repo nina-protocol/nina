@@ -9,7 +9,7 @@ import { isMobile } from 'react-device-detect'
 import HubTileView from "./HubTileView";
 
 const AllHubs = () => {
-  const { getHubs, hubState, hubsCount, filterHubsAll } = useContext(Hub.Context);
+  const { getHubs, hubState, filterHubsAll } = useContext(Hub.Context);
   const [pendingFetch, setPendingFetch] = useState(false)
   const [totalCount, setTotalCount] = useState(null)
   const scrollRef = useRef()

@@ -39,7 +39,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
 
   useEffect(() => {
     if (selectedHubId && userHubs) {
-      const selectedHub = userHubs.find((hub) => hub.id === selectedHubId);
+      const selectedHub = userHubs.find((hub) => hub.publicKey === selectedHubId);
       if (selectedHub?.userCanAddContent) {
         setCanAddContent(true);
       }
@@ -132,7 +132,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
                   Add {metadata.name} to{" "}
                   {userHubs.length > 1
                     ? "one of your hubs"
-                    : "your hub: " + userHubs[0]?.json?.displayName}
+                    : "your hub: " + userHubs[0]?.data?.displayName}
                 </Typography>
 
                 {userHubs.length > 1 && (
@@ -152,16 +152,16 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
                     >
                       {userHubs
                         ?.filter(
-                          (hub) => hub.id !== hubPubkey && hub.userCanAddContent
+                          (hub) => hub.publicKey && hub.publicKey !== hubPubkey && hub.userCanAddContent
                         )
                         .map((hub) => {
                           return (
                             <MenuItem
-                              key={hub?.id}
-                              value={hub?.id}
+                              key={hub?.publicKey}
+                              value={hub?.publicKey}
                               sx={{ color: "black" }}
                             >
-                              {hub?.json?.displayName}
+                              {hub?.data?.displayName}
                             </MenuItem>
                           );
                         })}
@@ -170,7 +170,6 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
                 )}
               </>
             )}
-
             <Button
               style={{ marginTop: "15px", textTransform: "uppercase" }}
               variant="outlined"

@@ -53,38 +53,26 @@ const Profile = ({ profilePubkey }) => {
 
   useEffect(() => {
     const getUserData = async (profilePubkey) => {
-      await getHubsForUser(profilePubkey)
-      const [collectionIds, publishedIds] = await getUserCollectionAndPublished(
+      const hubs = await getHubsForUser(profilePubkey)
+      
+      const [collected, published] = await getUserCollectionAndPublished(
         profilePubkey
       )
-      setProfileCollectionIds(collectionIds)
-    }
 
-    getUserData(profilePubkey)
-    fetched.user = true
-  }, [profilePubkey])
-
-  useEffect(() => {
-    let viewIndex
-    let updatedView = views.slice()
-
-    if (profilePubkey) {
-      const releases = filterReleasesPublishedByUser(profilePubkey)
-      setProfilePublishedReleases(releases)
-
+      setProfileCollectionReleases(collected)
+      setProfilePublishedReleases(published)
+      fetched.user = true
+      
+      let viewIndex
+      let updatedView = views.slice()
+      
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
-      updatedView[viewIndex].playlist = releases
-
+      updatedView[viewIndex].playlist = published
       fetched.releases = true
 
-      setProfileCollectionReleases(filterReleasesList(profileCollectionIds))
-
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
-      updatedView[viewIndex].playlist = filterReleasesList(profileCollectionIds)
-
+      updatedView[viewIndex].playlist = collected
       fetched.collection = true
-
-      const hubs = filterHubsForUser(profilePubkey)
 
       setProfileHubs(hubs)
       fetched.hubs = true
@@ -93,9 +81,9 @@ const Profile = ({ profilePubkey }) => {
       })
     }
 
-    setViews(updatedView)
-  }, [profileCollectionIds, releaseState])
-
+    getUserData(profilePubkey)
+  }, [profilePubkey])
+  
   useEffect(() => {
     let viewIndex
     let updatedView = views.slice()
@@ -216,7 +204,7 @@ const Profile = ({ profilePubkey }) => {
               {fetched.releases && profilePublishedReleases.length > 0 && (
                 <ReusableTable
                   tableType={'profilePublishedReleases'}
-                  releases={profilePublishedReleases}
+                  items={profilePublishedReleases}
                 />
               )}
             </>
@@ -230,7 +218,7 @@ const Profile = ({ profilePubkey }) => {
               {fetched.collection && profileCollectionReleases.length > 0 && (
                 <ReusableTable
                   tableType={'profileCollectionReleases'}
-                  releases={profileCollectionReleases}
+                  items={profileCollectionReleases}
                 />
               )}
             </>
@@ -243,7 +231,7 @@ const Profile = ({ profilePubkey }) => {
               {fetched.hubs && profileHubs.length > 0 && (
                 <ReusableTable
                   tableType={'profileHubs'}
-                  releases={profileHubs}
+                  items={profileHubs}
                 />
               )}
             </>

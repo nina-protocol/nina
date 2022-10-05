@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from 'react'
-import Head from 'next/head'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
@@ -19,7 +18,6 @@ const ReleaseList = ({ userId }) => {
   const { enqueueSnackbar } = useSnackbar()
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const {
-    getReleasesInCollection,
     filterReleasesUserCollection,
     releaseState,
     getUserCollectionAndPublished,
@@ -35,17 +33,14 @@ const ReleaseList = ({ userId }) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    userId = userId || wallet.publicKey.toBase58()
     if (userId) {
       getOtherUserCollectionHandler(userId)
-    } else {
-      createCollection()
     }
   }, [])
 
   useEffect(() => {
-    if (wallet?.connected && !userId) {
-      getReleasesInCollection()
-    } else if (!wallet.connected && !userId) {
+    if (!wallet.connected && !userId) {
       setUserCollectionList(undefined)
       setUserCollectionReleases(undefined)
     }
@@ -83,12 +78,6 @@ const ReleaseList = ({ userId }) => {
 
   return (
     <>
-      <Head>
-        <title>{`Nina: ${nameString} Collection(${
-          userCollectionReleases?.length || 0
-        })`}</title>
-        <meta name="description" content={'Your collection on Nina.'} />
-      </Head>
       <ScrollablePageWrapper>
         {userCollectionReleases?.length > 0 && (
           <Wrapper>

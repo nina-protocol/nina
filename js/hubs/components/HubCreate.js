@@ -148,11 +148,11 @@ const HubCreate = ({ update, hubData }) => {
   }, [artworkTx, metadataTx, isPublishing, hubCreated, bundlrBalance]);
 
   useEffect(() => {
-    if (hubData?.json.backgroundColor) {
-      setBackgroundColor(hubData.json.backgroundColor);
+    if (hubData?.data.backgroundColor) {
+      setBackgroundColor(hubData.data.backgroundColor);
     }
-    if (hubData?.json.textColor) {
-      setTextColor(hubData.json.textColor);
+    if (hubData?.data.textColor) {
+      setTextColor(hubData.data.textColor);
     }
   }, [hubData?.json]);
 
@@ -226,7 +226,7 @@ const HubCreate = ({ update, hubData }) => {
           );
           setUploadId(upload);
         } else {
-          metadataJson.image = hubData.json.image;
+          metadataJson.image = hubData.data.image;
           upload = createUpload(
             UploadType.artwork,
             metadataJson.image,
@@ -248,13 +248,13 @@ const HubCreate = ({ update, hubData }) => {
             ...metadataJson,
             displayName: formValues.hubForm.displayName
               ? formValues.hubForm.displayName
-              : hubData.json.displayName,
+              : hubData.data.displayName,
             description: formValues.hubForm.description
               ? formValues.hubForm.description
-              : hubData.json.description,
+              : hubData.data.description,
             externalUrl: formValues.hubForm.externalUrl
               ? formValues.hubForm.externalUrl
-              : hubData.json.externalUrl,
+              : hubData.data.externalUrl,
           };
           if (backgroundColor) {
             metadataJson.backgroundColor = backgroundColor;
@@ -412,6 +412,15 @@ const HubCreate = ({ update, hubData }) => {
         >
           {`${formValues.hubForm.displayName}  has been created!  View Hub.`}
         </Button>
+        <Button
+          fullWidth
+          variant="outlined"
+          color="primary"
+          onClick={() => router.push(`/${formValues.hubForm.handle}/dashboard?action=publishRelease`)}
+          sx={{ height: "54px" }}
+        >
+          {`Publish a release`}
+        </Button>
       </Box>
     );
   }
@@ -447,7 +456,7 @@ const HubCreate = ({ update, hubData }) => {
 
       {update && (
         <Typography gutterBottom>
-          Updating {hubData.json.displayName}
+          Updating {hubData.data.displayName}
         </Typography>
       )}
       {!update && npcAmountHeld > 0 && (
@@ -471,7 +480,7 @@ const HubCreate = ({ update, hubData }) => {
                 setArtwork={setArtwork}
                 values={formValues}
                 type="artwork"
-                currentImageUrl={update ? hubData.json.image : null}
+                currentImageUrl={update ? hubData.data.image : null}
                 update={update}
               />
             </DropzoneWrapper>

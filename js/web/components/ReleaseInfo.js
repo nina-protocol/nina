@@ -83,7 +83,7 @@ const ReleaseInfo = (props) => {
               releasePubkey={releasePubkey}
               amount={releaseState.tokenData[
                 releasePubkey
-              ]?.totalSupply.toNumber()}
+              ]?.totalSupply}
             />
           </Box>
         )}
@@ -100,8 +100,8 @@ const ReleaseInfo = (props) => {
                     {redeemables?.description}
                   </Typography>
                   <Typography variant="body1" gutterBottom>
-                    {redeemables.redeemedCount.toNumber()} /{' '}
-                    {redeemables.redeemedMax.toNumber()} redeemed
+                    {redeemables.redeemedCount} /{' '}
+                    {redeemables.redeemedMax} redeemed
                   </Typography>
                 </CardContent>
               </Card>

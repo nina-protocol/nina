@@ -99,7 +99,7 @@ const HubSlider = (props) => {
           prevArrow={<CustomPrevArrow />}
         >
           {hubs?.map((hub, i) => {
-            const imageUrl = hub?.json?.image;
+            const imageUrl = hub?.data?.image;
             return (
               <HubSlideWrapper key={i}>
                 <HubSlide key={i}>
@@ -120,7 +120,7 @@ const HubSlider = (props) => {
                   }
                   <HubCopy sx={{ display: "flex" }}>
                     <Typography variant="body2">
-                      {hub?.json?.displayName}
+                      {hub?.data?.displayName}
                     </Typography>
                   </HubCopy>
                 </HubSlide>

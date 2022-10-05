@@ -11,13 +11,14 @@ const HubHeader = dynamic(() => import('./HubHeader'))
 const TabHeader = dynamic(() => import('./TabHeader'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
 
-const HubComponent = ({ hubPubkey }) => {
+const HubComponent = ({ hubHandle, hubPubkey }) => {
   const {
     getHub,
     hubState,
     filterHubContentForHub,
     filterHubCollaboratorsForHub,
     hubContentState,
+    hubCollaboratorsState
   } = useContext(Hub.Context)
 
   const { releaseState } = useContext(Release.Context)
@@ -35,23 +36,32 @@ const HubComponent = ({ hubPubkey }) => {
     { name: 'releases', playlist: undefined, visible: false },
     { name: 'collaborators', playlist: undefined, visible: true },
   ])
-  const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
+  const hubData = useMemo(() => {
+    if (hubState[hubPubkey]) {
+      setFetched({ ...fetched, info: true})
+      return hubState[hubPubkey]
+    } else {
+      getHub(hubPubkey)
+    }
+  }, [hubState, hubPubkey])
 
   useEffect(() => {
     if (hubPubkey) {
       getHub(hubPubkey)
-      fetched.info = true
-      setFetched({ ...fetched })
     }
   }, [hubPubkey])
 
   useEffect(() => {
     const [releases] = filterHubContentForHub(hubPubkey)
-    const collaborators = filterHubCollaboratorsForHub(hubPubkey)
-    fetched.collaborators = true
+    setFetched({ ...fetched, releases: true})
     setHubReleases(releases)
-    setHubCollaborators(collaborators)
   }, [hubContentState])
+
+  useEffect(() => {
+    const collaborators = filterHubCollaboratorsForHub(hubPubkey)
+    setFetched({ ...fetched, collaborators: true})
+    setHubCollaborators(collaborators)
+  }, [hubCollaboratorsState])
 
   useEffect(() => {
     let updatedView = views.slice()
@@ -66,8 +76,7 @@ const HubComponent = ({ hubPubkey }) => {
 
     viewIndex = updatedView.findIndex((view) => view.name === 'releases')
     updatedView[viewIndex].playlist = releaseData
-    fetched.releases = true
-    setFetched({ ...fetched })
+    setFetched({ ...fetched, release: true })
   }, [releaseState, hubReleases, views])
 
   useEffect(() => {
@@ -97,25 +106,25 @@ const HubComponent = ({ hubPubkey }) => {
     <>
       <Head>
         <title>{`Nina: ${
-          hubData?.json.displayName ? `${hubData.json.displayName}'s Hub` : ''
+          hubData?.data.displayName ? `${hubData.data.displayName}'s Hub` : ''
         }`}</title>
         <meta
           name="description"
-          content={`${hubData?.json.displayName}'s Hub on Nina.`}
+          content={`${hubData?.data.displayName}'s Hub on Nina.`}
         />
         <meta name="og:type" content="website" />
         <meta
           name="og:title"
           content={`Nina: ${
-            hubData?.json.displayName ? `${hubData.json.displayName}'s Hub` : ''
+            hubData?.data.displayName ? `${hubData.data.displayName}'s Hub` : ''
           }`}
         />
         <meta
           name="og:description"
           content={`${
-            hubData?.json.displayName ? hubData?.json.displayName : ''
+            hubData?.data.displayName ? hubData?.data.displayName : ''
           }: ${
-            hubData?.json.description ? hubData?.json.description : ''
+            hubData?.data.description ? hubData?.data.description : ''
           } \n Published via Nina Hubs.`}
         />
         <meta name="twitter:card" content="summary_large_image" />
@@ -124,11 +133,11 @@ const HubComponent = ({ hubPubkey }) => {
         <meta name="twitter:image:type" content="image/jpg" />
         <meta
           name="twitter:title"
-          content={`${hubData?.json.displayName}'s Hub on Nina`}
+          content={`${hubData?.data.displayName}'s Hub on Nina`}
         />
-        <meta name="twitter:description" content={hubData?.json.description} />
-        <meta name="twitter:image" content={hubData?.json.image} />
-        <meta name="og:image" content={hubData?.json.image} />
+        <meta name="twitter:description" content={hubData?.data.description} />
+        <meta name="twitter:image" content={hubData?.data.image} />
+        <meta name="og:image" content={hubData?.data.image} />
       </Head>
 
       <HubContainer>
@@ -165,7 +174,7 @@ const HubComponent = ({ hubPubkey }) => {
               {fetched.releases && releaseData && (
                 <ReusableTable
                   tableType={'hubReleases'}
-                  releases={releaseData}
+                  items={releaseData}
                 />
               )}
             </>
@@ -178,7 +187,7 @@ const HubComponent = ({ hubPubkey }) => {
               {fetched.collaborators && (
                 <ReusableTable
                   tableType={'hubCollaborators'}
-                  releases={hubCollaborators}
+                  items={hubCollaborators}
                 />
               )}
             </>

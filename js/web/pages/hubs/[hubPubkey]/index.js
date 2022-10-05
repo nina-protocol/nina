@@ -1,14 +1,15 @@
-import axios from 'axios'
 import dynamic from 'next/dynamic'
 import { Box } from '@mui/system'
 import { styled } from '@mui/system'
+import NinaSdk from '@nina-protocol/js-sdk'
+
 const Hub = dynamic(() => import('../../../components/Hub'))
-const HubPage = (props) => {
+const HubPage = ({hub, hubPubkey}) => {
 
   return (
     <ResponsiveHubContainer >
-      <Hub hubPubkey={props.hubPubkey} />
-      </ResponsiveHubContainer>
+      <Hub hubPubkey={hubPubkey} hubHandle={hub.handle} />
+    </ResponsiveHubContainer>
   )
 }
 
@@ -36,20 +37,21 @@ export const getStaticPaths = async () => {
 }
 
 export const getStaticProps = async (context) => {
-  const indexerUrl = process.env.INDEXER_URL
-  const hubPubkey = context.params.hubPubkey
-  const indexerPath = indexerUrl + `/hubs/${hubPubkey}`
-
-  let hub
+  const { hubPubkey } = context.params
   if (hubPubkey && hubPubkey !== 'manifest.json') {
     try {
-      const result = await axios.get(indexerPath)
-      const data = result.data
-      hub = data.hub
+      if (!NinaSdk.client.program) {
+        await NinaSdk.client.init(
+          process.env.NINA_API_ENDPOINT,
+          process.env.SOLANA_CLUSTER_URL,
+          process.env.NINA_PROGRAM_ID
+        )      
+      }
+      const { hub } = await NinaSdk.Hub.fetch(hubPubkey);
       return {
         props: {
           hub,
-          hubPubkey: hub.id,
+          hubPubkey: hub.publicKey,
         },
         revalidate: 10,
       }

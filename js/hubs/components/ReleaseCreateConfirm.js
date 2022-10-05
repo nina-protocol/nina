@@ -34,9 +34,10 @@ const ReleaseCreateConfirm = (props) => {
   const [confirm, setConfirm] = useState();
   const data = formValues.releaseForm;
 
-  const submitAndCloseModal = () => {
+  const submitAndCloseModal = (e) => {
+    e.preventDefault();
     setFormValuesConfirmed(true);
-    handleSubmit();
+    handleSubmit(e);
     handleClose();
   };
 
@@ -127,7 +128,7 @@ const ReleaseCreateConfirm = (props) => {
               color="primary"
               fullWidth
               disabled={!confirm}
-              onClick={submitAndCloseModal}
+              onClick={(e) => submitAndCloseModal(e)}
             >
               Publish Release
             </Button>
