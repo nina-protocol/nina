@@ -176,6 +176,7 @@ const AudioPlayer = () => {
     } else {
       // This means we've reached the end of the playlist
       setPlaying(false)
+      setTrackProgress(0)
     }
   }
 

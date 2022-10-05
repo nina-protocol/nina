@@ -373,9 +373,15 @@ const releaseContextHelper = ({
         metadataProgram
       )
 
+      const nameBuf = Buffer.from((`${artist} - ${title}`).substring(0,32));
+      const nameBufString =  nameBuf.slice(0, 32).toString();
+
+      const symbolBuf = Buffer.from(catalogNumber.substring(0,10));
+      const symbolBufString =  symbolBuf.slice(0, 10).toString();
+
       const metadataData = {
-        name: `${artist} - ${title}`.substring(0, 32),
-        symbol: catalogNumber.substring(0, 10),
+        name: nameBufString,
+        symbol: symbolBufString,
         uri: metadataUri,
         sellerFeeBasisPoints: resalePercentage * 100,
       }
@@ -715,9 +721,15 @@ const releaseContextHelper = ({
         metadataProgram
       )
 
+      const nameBuf = Buffer.from((`${artist} - ${title}`).substring(0,32));
+      const nameBufString =  nameBuf.slice(0, 32).toString();
+
+      const symbolBuf = Buffer.from(catalogNumber.substring(0,10));
+      const symbolBufString =  symbolBuf.slice(0, 10).toString();
+
       const metadataData = {
-        name: `${artist} - ${title}`.substring(0, 32),
-        symbol: catalogNumber.substring(0, 10),
+        name: nameBufString,
+        symbol: symbolBufString,
         uri: metadataUri,
         sellerFeeBasisPoints: resalePercentage * 100,
       }

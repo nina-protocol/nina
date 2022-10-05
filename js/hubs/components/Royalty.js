@@ -103,7 +103,7 @@ const Royalty = (props) => {
         onClick={() => setOpen(true)}
       >
         <Typography variant="body2" align="left">
-          Royalty Info
+          Revenue Share
         </Typography>
       </SettingsButton>
       <StyledModal
@@ -120,7 +120,7 @@ const Royalty = (props) => {
         <Fade in={open}>
           <StyledPaper>
             <Typography align="center" variant="h4" id="transition-modal-title">
-              Royalty Information:
+              Revenue Share Information:
             </Typography>
             <List>
               {release?.royaltyRecipients &&
@@ -182,7 +182,6 @@ const Royalty = (props) => {
                             </Box>
                           }
                         />
-
                         {collectButton}
                       </ListItem>
                     );

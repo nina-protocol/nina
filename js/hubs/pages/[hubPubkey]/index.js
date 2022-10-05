@@ -1,6 +1,5 @@
 import axios from "axios";
 import Head from "next/head";
-import {hrtime} from "process";
 import Hub from "../../components/Hub";
 import NotFound from "../../components/NotFound";
 
@@ -10,6 +9,17 @@ const HubPage = (props) => {
   if (!hub) {
     return (
       <>
+        <Head>
+          <title>Nina Hubs - Not Found</title>
+          <meta name="og:type" content="website" />
+          <meta
+          name="description"
+          content={`Hubs. Powered by Nina.`} />
+          <meta name="og:image" content={hub?.json.image} />    
+          <meta name="twitter:image:type" content="image/png" />
+          <meta name="twitter:image" content="https://hubs.ninaprotocol.com/images/nina-blue.png" />
+          <meta name="og:image" href="https://hubs.ninaprotocol.com/images/nina-blue.png"  />      
+        </Head>
         <NotFound />
       </>
     )
@@ -31,12 +41,12 @@ const HubPage = (props) => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@ninaprotocol" />
         <meta name="twitter:creator" content="@ninaprotcol" />
-        <meta name="twitter:image:type" content="image/jpg" />
+        <meta name="twitter:image:type" content="image/png" />
         <meta name="twitter:title" content={`${hub?.json.displayName}`} />
         <meta name="twitter:description" content={hub?.json.description} />
 
-        <meta name="twitter:image" content={hub?.json.image} />
-        <meta name="og:image" content={hub?.json.image} />      
+        <meta name="twitter:image" content="https://hubs.ninaprotocol.com/images/nina-blue.png" />
+        <meta name="og:image" content="https://hubs.ninaprotocol.com/images/nina-blue.png"  />      
       </Head>
       <Hub hubPubkey={hubPubkey} />
     </>
