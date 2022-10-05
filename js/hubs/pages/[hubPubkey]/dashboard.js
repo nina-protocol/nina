@@ -6,7 +6,7 @@ const DashboardPage = ({ hubPubkey, hub }) => {
   return (
     <>
       <Head>
-        <title>{`Nina Hubs - ${hub?.data.displayName} Dashboard`}</title>
+        <title>{`Nina Hubs - ${hub?.json.displayName} Dashboard`}</title>
         <meta name="og:type" content="website" />
         <meta
           name="description"
