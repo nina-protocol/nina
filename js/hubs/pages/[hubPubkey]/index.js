@@ -9,6 +9,17 @@ const HubPage = (props) => {
   if (!hub) {
     return (
       <>
+        <Head>
+          <title>Nina Hubs - Not Found</title>
+          <meta name="og:type" content="website" />
+          <meta
+          name="description"
+          content={`Hubs. Powered by Nina.`} />
+          <meta name="og:image" content={hub?.json.image} />    
+          <meta name="twitter:image:type" content="image/png" />
+          <meta name="twitter:image" content="https://hubs.ninaprotocol.com/images/nina-blue.png" />
+          <meta name="og:image" href="https://hubs.ninaprotocol.com/images/nina-blue.png"  />      
+        </Head>
         <NotFound />
       </>
     )

@@ -119,7 +119,7 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
           })}
         </StyledButtonGroup>
       )}
-      <TileGrid columnCount={columnCount}>
+      <TileGrid columnCount={columnCount} content={content}>
         {filteredContent?.map((item, i) => {    
           return (
             <React.Fragment key={i}>
@@ -259,7 +259,7 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
   );
 };
 
-const TileGrid = styled(Box)(({ theme, columnCount }) => ({
+const TileGrid = styled(Box)(({ theme, columnCount, content }) => ({
   display: "grid",
   gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
   gridColumnGap: "28px",
@@ -267,7 +267,7 @@ const TileGrid = styled(Box)(({ theme, columnCount }) => ({
   maxWidth: "960px",
   margin: "auto",
   maxHeight: "92vh",
-  overflow: "scroll",
+  overflow: content.length > 6 ? "scroll" : 'hidden',
   marginTop: "1px",
   paddingRight: '4px',
   paddingBottom: "100px",
@@ -408,15 +408,14 @@ const PostTitle = styled(Typography)(({ theme }) => ({
 }));
 
 const StyledAutorenewIcon = styled(AutorenewTwoToneIcon)(({ theme }) => ({
-  position: "absolute",
+  position: "inherit",
   top: "auto",
-  bottom: "5px",
-  right: "5px",
+  bottom: "25px",
+  right: "-5px",
   background: "rgba(255,255,255,0.5)",
   borderRadius: "50%",
   [theme.breakpoints.down("md")]: {
-    bottom: "35px",
-    right: "3px",
+    bottom: "30px",
   },
 }));
 

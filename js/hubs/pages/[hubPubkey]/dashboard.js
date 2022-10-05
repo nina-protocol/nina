@@ -4,9 +4,23 @@ import NinaSdk from "@nina-protocol/js-sdk";
 const DashboardPage = ({ hub }) => {
   return (
     <>
+      <Head>
+        <title>{`Nina Hubs - ${hub?.json.displayName} Dashboard`}</title>
+        <meta name="og:type" content="website" />
+        <meta
+          name="description"
+          content={`Hubs. Powered by Nina.`} />
+        <meta name="og:image" content={hub?.json.image} />    
+        <meta name="twitter:image:type" content="image/png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@ninaprotocol" />
+        <meta name="twitter:creator" content="@ninaprotocol" />
+        <meta name="twitter:image" content="https://hubs.ninaprotocol.com/images/nina-blue.png" />
+        <meta name="og:image" href="https://hubs.ninaprotocol.com/images/nina-blue.png"  />      
+      </Head>
       <Dashboard hubPubkey={hub.publicKey} />
     </>
-  );
+  )
 };
 
 DashboardPage.getInitialProps = async (context) => {

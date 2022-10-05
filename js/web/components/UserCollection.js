@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from 'react'
-import Head from 'next/head'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
@@ -79,12 +78,6 @@ const ReleaseList = ({ userId }) => {
 
   return (
     <>
-      <Head>
-        <title>{`Nina: ${nameString} Collection(${
-          userCollectionReleases?.length || 0
-        })`}</title>
-        <meta name="description" content={'Your collection on Nina.'} />
-      </Head>
       <ScrollablePageWrapper>
         {userCollectionReleases?.length > 0 && (
           <Wrapper>
