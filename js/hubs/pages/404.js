@@ -1,4 +1,5 @@
 import NotFound from "../components/NotFound";
+import Head from "next/head";
 
 const NotFoundPage = (props) => {
   return(
