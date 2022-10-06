@@ -21,7 +21,6 @@ import rehypeExternalLinks from "rehype-external-links";
 import Royalty from './Royalty'
 
 const ReleasePurchase = (props) => {
-  console.log('release purchase props', props)
   const { releasePubkey, metadata, router } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
@@ -52,7 +51,6 @@ const ReleasePurchase = (props) => {
   const pending = useMemo(() => releasePurchasePending[releasePubkey], [releasePubkey, releasePurchasePending])
 
   useEffect(() => {
-    console.log('releasePubkey :>> ', releasePubkey); 
     getRelease(releasePubkey)
     // const hubForRelease = async (releasePubkey) => {
     //   const result = await getPublishedHubForRelease(releasePubkey)
@@ -66,7 +64,6 @@ useEffect(() => {
 }, [releasePubkey, wallet.connected])
 
   useEffect(() => {
-    console.log('!!!!!', releaseState)
     if (releaseState.tokenData[releasePubkey]) {
       setRelease(releaseState.tokenData[releasePubkey])
     }

@@ -1076,7 +1076,6 @@ const hubContextHelper = ({
         })
       }
     })
-    console.log('hubs :>> ', hubs);
     return hubs
   }
 

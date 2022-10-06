@@ -1286,7 +1286,6 @@ const releaseContextHelper = ({
     console.log('published', published)
     console.log('all', [...collected, ...published])
     setReleaseState(updateStateForReleases([...collected, ...published]))
-    console.log('BNINGO')
     return [collected, published]
   }
 
@@ -1301,7 +1300,6 @@ const releaseContextHelper = ({
 
   const updateStateForReleases = (releases) => {
     const updatedReleaseState = {...releaseState}
-    console.log('releases" ', releases)
     releases.forEach((release) => {
       if (release.accountData) {
         updatedReleaseState.tokenData[release.publicKey] = {

@@ -42,7 +42,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [collection, setCollection] = useState({})
   const [postState, setPostState] = useState({})
   const [subscriptionState, setSubscriptionState] = useState({})
-  const [userSubscriptions, setUserSubscription] = useState({})
+  // const [userSubscriptions, setUserSubscription] = useState({})
   const [usdcBalance, setUsdcBalance] = useState(0)
   const [solBalance, setSolBalance] = useState(0)
   const [solUsdcBalance, setSolUsdcBalance] = useState(0)
@@ -112,13 +112,6 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     }
   }, [healthCheck])
 
-  const userSubscriptions = useMemo(() => {
-    if (wallet.connected) {
-      return filterSubscriptionsForUser(wallet.publicKey.toBase58());
-    }
-    return undefined;
-  }, [subscriptionState, wallet.connected]);  
-
   const {
     subscriptionSubscribe,
     subscriptionUnsubscribe,
@@ -164,6 +157,14 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     setSolBalance,
   })
 
+  const userSubscriptions = useMemo(() => {
+    if (provider.wallet?.wallet && provider.wallet.publicKey) {
+      return filterSubscriptionsForUser(provider.wallet.publicKey.toBase58())
+    }
+   return undefined;
+  }, [subscriptionState, provider.wallet?.wallet, provider.wallet.publicKey]); 
+  
+
   return (
     <NinaContext.Provider
       value={{
@@ -204,7 +205,8 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         NinaProgramActionCost,
         checkIfHasBalanceToCompleteAction,
         getSubscriptionsForUser,
-        filterSubscriptionsForUser
+        filterSubscriptionsForUser,
+        userSubscriptions
       }}
     >
       {children}
@@ -267,7 +269,7 @@ const ninaContextHelper = ({
 
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
       console.log('Subscription created on chain', subscription.toBase58())
-      await getSubcription(subscription.toBase58())
+      await getSubscription(subscription.toBase58())
 
       return {
         success: true,
@@ -282,13 +284,17 @@ const ninaContextHelper = ({
   const subscriptionUnsubscribe = async (unsubscribeAccount) => {
     try {
       const program = await ninaClient.useProgram()
-      unsubscribeAccount = new anchor.web3.publicKey(unsubscribeAccount)
+      unsubscribeAccount = new anchor.web3.PublicKey(unsubscribeAccount)
+      console.log('unsubscribeAccount :>> ', unsubscribeAccount);
       const [subscription] = await anchor.web3.PublicKey.findProgramAddress(
-        [Buffer.from(anchor.utils.bytes.utf8.encode('nina-subscription')),
-        provider.wallet.publicKey.toBuffer(),
-        unsubscribeAccount.toBuffer()],
+        [
+          Buffer.from(anchor.utils.bytes.utf8.encode('nina-subscription')),
+          provider.wallet.publicKey.toBuffer(),
+          unsubscribeAccount.toBuffer()
+      ],
         program.programId
       )
+
 
       const txid = await program.rpc.subscriptionUnsubscribe({
         accounts: {
@@ -296,10 +302,16 @@ const ninaContextHelper = ({
           subscription,  
           to: unsubscribeAccount,
           systemProgram: anchor.web3.SystemProgram.programId,
-
         },
       })
+
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      console.log('txid :>> ', txid);
+      console.log('subscription.toBase58() :>> ', subscription.toBase58());
+      await getSubscription(subscription.toBase58(), txid)
+      await getSubscriptionsForUser(provider.wallet.publicKey.toBase58())
+      removeSubScriptionFromState(subscription.toBase58())
+
       return {
         success: true,
         msg: 'Account Unfollowed',
@@ -329,7 +341,6 @@ const ninaContextHelper = ({
 
   const saveSubscriptionsToState = async (subscriptions) => {
     let updatedState = { ...subscriptionState }
-    console.log('subscriptions !!!! :>> ', subscriptions);
     subscriptions.forEach((subscription) => {
       updatedState = {
         ...updatedState,
@@ -338,6 +349,13 @@ const ninaContextHelper = ({
     })
     console.log('updatedSubscriptionState :>> ', updatedState);
     setSubscriptionState(updatedState)
+  }
+
+  const removeSubScriptionFromState = (publicKey) => {
+    let updatedState = { ...subscriptionState }
+    delete updatedState[publicKey]
+    setSubscriptionState(updatedState)
+    console.log('updatedState in remove :>> ', updatedState);
   }
 
   // Collection
@@ -716,9 +734,10 @@ const ninaContextHelper = ({
 
   */
 
-    const getSubcription = async (subscriptionPubkey) => {
-    try {
-      const {subscription} = await NinaSdk.Subscription.fetch(subscriptionPubkey, false)
+    const getSubscription = async (subscriptionPubkey, txid=undefined) => {
+      console.log('getSubscription', subscriptionPubkey, txid)
+      try {
+      const {subscription} = await NinaSdk.Subscription.fetch(subscriptionPubkey, false, txid)
       console.log('subscription in get!', subscription);
       setSubscriptionState({
         ...subscriptionState,
@@ -732,19 +751,18 @@ const ninaContextHelper = ({
     }
   }
 
-  const getSubscriptionsForUser = async (accountPubkey) => {
+  const getSubscriptionsForUser = async (accountPubkey, tx) => {
     try{
-      const { subscriptions } = await NinaSdk.Account.fetchSubscriptions(accountPubkey)
-      console.log('subscriptions in get', subscriptions);
+      const { subscriptions } = await NinaSdk.Account.fetchSubscriptions(accountPubkey, false, tx)
+      console.log('subscriptions in get for user', subscriptions);
       saveSubscriptionsToState(subscriptions)
     } catch (error) {
       console.warn(error)
     }
   }
 
-  const filterSubscriptionsForUser = async (accountPubkey) => {
+  const filterSubscriptionsForUser = (accountPubkey) => {
     const subscriptions = []
-    console.log('subscriptionState :>> ', subscriptionState);
     Object.values(subscriptionState).forEach((subscription) => {
       if (subscription.from === accountPubkey || subscription.to === accountPubkey) {
         subscriptions.push(subscription)

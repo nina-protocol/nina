@@ -149,7 +149,6 @@ const ReusableTableBody = ({ releases, tableType }) => {
   }
 
   let rows = releases?.map((data) => {
-    console.log('data', data)
     const metadata = data?.metadata
     const properties = data?.metadata?.properties
     const publicKey = data?.publicKey
@@ -222,9 +221,8 @@ const ReusableTableBody = ({ releases, tableType }) => {
       {rows?.map((row, i) => (
         <Link href={row.link} passHref>
           <TableRow key={row.id} hover sx={{ cursor: 'pointer' }}>
-            {Object.keys(row).map((cellName) => {
+            {Object.keys(row).map((cellName, i) => {
               const cellData = row[cellName]
-
               if (
                 cellName !== 'id' &&
                 cellName !== 'date' &&
@@ -232,7 +230,7 @@ const ReusableTableBody = ({ releases, tableType }) => {
               ) {
                 if (cellName === 'ctas') {
                   return (
-                    <StyledTableCellButtonsContainer align="left"  key={cellName}>
+                    <StyledTableCellButtonsContainer align="left"  key={i}>
                       <Button
                         sx={{ cursor: 'pointer' }}
                         id={row.id}
