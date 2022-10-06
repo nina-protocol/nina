@@ -9,7 +9,6 @@ import Dots from './Dots'
 
 const Subscribe = (props) => {
   const {accountAddress , hubHandle} = props;
-  console.log('hubHandle :>> ', hubHandle);
   const { subscriptionSubscribe, subscriptionUnsubscribe, userSubscriptions, getSubscriptionsForUser, subscriptionState } = useContext(Nina.Context)
   const [isFollowing, setIsFollowing] = useState(false)
   const [pending, setPending] = useState(false)
@@ -22,10 +21,9 @@ const Subscribe = (props) => {
   useEffect(() => {
     const handleSubscriptions = async (accountAddress) => {
       const subscriptions = await getSubscriptionsForUser(accountAddress)
-      console.log('subscriptions target :>> ', subscriptions);
-      return subscriptions
+      setTargetSubscriptions(subscriptions)
     }
-    setTargetSubscriptions(handleSubscriptions(accountAddress))
+    handleSubscriptions(accountAddress)
   }, [])
 
   useEffect(() => {
@@ -36,11 +34,10 @@ const Subscribe = (props) => {
   }, [userSubscriptions])
 
   useEffect(() => {
-    if (wallet.connected && userSubscriptions) {
-      const checkIfFollowing = userSubscriptions.some(subscription => subscription.to === wallet.publicKey.toBase58())
-      setFollowsYou(checkIfFollowing)
+    if (wallet.connected && targetSubscriptions) {
+      const checkIfFollowsYou = targetSubscriptions?.some(subscription => subscription.to === wallet.publicKey.toBase58())
+      setFollowsYou(checkIfFollowsYou)
     }
-
   }, [targetSubscriptions, wallet.connected])
 
   const handleSubscribe = async (accountAddress, hubHandle) => {
