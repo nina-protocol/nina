@@ -16,8 +16,7 @@ const DashboardPage = ({ hubPubkey, hub }) => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@ninaprotocol" />
         <meta name="twitter:creator" content="@ninaprotocol" />
-        <meta name="twitter:image" content="https://hubs.ninaprotocol.com/images/nina-blue.png" />
-        <meta name="og:image" href="https://hubs.ninaprotocol.com/images/nina-blue.png"  />      
+        <meta name="twitter:image" content={hub?.json.image} />
       </Head>
       <Dashboard hubPubkey={hubPubkey} />
     </>

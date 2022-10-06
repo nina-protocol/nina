@@ -45,8 +45,8 @@ const HubPage = (props) => {
         <meta name="twitter:title" content={`${hub?.json.displayName}`} />
         <meta name="twitter:description" content={hub?.json.description} />
 
-        <meta name="twitter:image" content="https://hubs.ninaprotocol.com/images/nina-blue.png" />
-        <meta name="og:image" content="https://hubs.ninaprotocol.com/images/nina-blue.png"  />      
+        <meta name="twitter:image" content={hub?.json.image} />
+        <meta name="og:image" content={hub?.json.image}  />      
       </Head>
       <Hub hubPubkey={hubPubkey} />
     </>
