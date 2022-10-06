@@ -149,19 +149,11 @@ const HubComponent = ({ hubPubkey }) => {
         <>
           {activeView === undefined && (
             <>
-<<<<<<< HEAD
-            <ResponsiveDotContainer>
-              <Box sx={{width: '100%', margin: 'auto'}}>
-                <Dots />
-              </Box>
-            </ResponsiveDotContainer>
-=======
             <HubDotWrapper>
               <Box sx={{width: '100%', margin: 'auto'}}>
                 <Dots />
               </Box>
             </HubDotWrapper>
->>>>>>> 1bbb3c7049bc0816479c559f96ad187419e1cded
             </>
            )} 
            

@@ -1,75 +1,72 @@
 import NinaSdk from '@nina-protocol/js-sdk'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { styled } from '@mui/material/styles'
 import TextField from '@mui/material/TextField'
 import { Box } from '@mui/system'
 import { Typography } from '@mui/material'
 import { useCallback } from 'react'
-import Autocomplete from '@mui/material/Autocomplete';
 import Dots from './Dots'
 import Link from 'next/link'
 import axios from 'axios'
+import CircularProgress from '@mui/material/CircularProgress'
+import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
+const SearchDropdown = dynamic(() => import('./SearchDropdown'))
+const ReusableTable = dynamic(() => import('./ReusableTable'))
 
 const Search = () => {
-  // const {
-  //     getRootProps,
-  //     getInputLabelProps,
-  //     getInputProps,
-  //     getListboxProps,
-  //     getOptionProps,
-  //     groupedOptions,
-  // } = useAutocomplete({
-  //     id: 'nina-search',
-  //     options: [response],
-  //     getOptionLabel: (option) => option
-  // })
-
-  const [query, setQuery] = useState('')
+  const {query} = useRouter()
+  const [searchQuery, setSearchQuery] = useState('')
   const [response, setResponse] = useState(undefined)
   const [suggestions, setSuggestions] = useState([])
   const [options, setOptions] = useState(undefined)
-  const [artist, setArtist] = useState([])
+  const [loading, setLoading] = useState(false)
   const [fetchedResponse, setFetchedResponse] = useState(undefined)
-  const [allResults, setAllResults] = useState(undefined)
+  const [showDropdown, setShowDropdown] = useState(false)
+  const [autoCompleteResults, setAutocompleteResults] = useState([
+    { name: 'artists', visible: false },
+    { name: 'releases', visible: false },
+    { name: 'hubs', visible: false },
+  ])
+  const ref = useRef()
+
   useEffect(() => {
     NinaSdk.client.init(
       process.env.NINA_API_ENDPOINT,
       process.env.SOLANA_CLUSTER_URL,
       process.env.NINA_PROGRAM_ID
     )
-    console.log('NinaSdk.client', NinaSdk)
   }, [])
 
-  const updateResponse = useCallback(
-    (res) => {
-      console.log('response', response)
-    },
-    [response]
-  )
-const autoCompleteUrl = 'https://dev.api.ninaprotocol.com/v1/suggestions'
   useEffect(() => {
+    const handleDropdown = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) {
+        setShowDropdown(false)
+      }
+    }
+    document.addEventListener('click', handleDropdown)
 
-    // const handleSuggestions = async () => {
-    //   const response =  await NinaestQuery(Sdk.Search.suggquery)
-    //   console.log('response :>> ', response);
-    //   setSuggestions(response)
-    // }
-    // if (query) {
-    //   handleSuggestions()
-    // }
-   
-    const fetchAllResults = async () => {
-      await NinaSdk.Search.withQuery(query).then(setAllResults)
+    return () => {
+      document.removeEventListener('click', handleDropdown)
     }
-    if(!allResults){
-      fetchAllResults()
+  }, [showDropdown, ref])
+
+
+  
+  useEffect(() => {
+    if (searchQuery) {
+      suggestions?.artists.length > 0
+        ? (autoCompleteResults[0].visible = true)
+        : (autoCompleteResults[0].visible = false)
+      suggestions?.releases.length > 0
+        ? (autoCompleteResults[1].visible = true)
+        : (autoCompleteResults[1].visible = false)
+      suggestions?.hubs.length > 0
+        ? (autoCompleteResults[2].visible = true)
+        : (autoCompleteResults[2].visible = false)
+      setAutocompleteResults([...autoCompleteResults])
     }
-    if (query) {
-      
-      handleAutoComplete(query)
-    }
-  //  console.log('suggestions :>> ', suggestions);
-  }, [query, allResults])
+  }, [suggestions])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -77,94 +74,89 @@ const autoCompleteUrl = 'https://dev.api.ninaprotocol.com/v1/suggestions'
     setFetchedResponse(false)
 
     if (e.target.value !== null || e.target.value !== '') {
-      setQuery(e.target.value)
-      await NinaSdk.Search.withQuery(query).then(setResponse)
+      setSearchQuery(e.target.value)
+      await NinaSdk.Search.withsearchQuery(searchQuery).then(setResponse)
       setFetchedResponse(true)
     }
 
-    if (query === '') {
+    if (searchQuery === '') {
       e.preventDefault()
       e.stopPropagation()
       return
     }
-    setQuery('')
-    updateResponse()
+    
+    setSearchQuery('')
     setSuggestions([])
+    setShowDropdown(false)
   }
-  const handleAutoComplete = async (query) => {
-    const fetchedSuggestions = []
-    const fetchedArtists = []
-    const fetchedReleases = []
-    const fetchedHubs = []
-    const response = await axios.post(autoCompleteUrl, {query})
-    console.log('response :>> ', response.data);
-    const {artists, releases, hubs} = response.data;
-    const dataArr = [response.data]
-    console.log('dataaarrrr',dataArr)
-    const responseObject = dataArr.reduce(function(acc, val) {
-      for (let key in val) acc[key] = val[key];
-      return acc;
-    }, [])
-    console.log('responseObject :>> ', responseObject);
-    Object.keys(response.data).forEach(key => {
-      fetchedSuggestions.push(response.data[key])
-    })
-    fetchedSuggestions[0].forEach(item => {
-      fetchedArtists.push(`${item.name}`)}
-    )
-    fetchedSuggestions[1].forEach(item => {
-      fetchedReleases.push(`${item.title}`)}
-    )
-    fetchedSuggestions[2].forEach(item => {
-      fetchedHubs.push(`${item.displayName}`)}
-    )
-   
-    // setSuggestions([...fetchedArtists, ...fetchedReleases, ...fetchedHubs])
-    setSuggestions(responseObject)
-    console.log(suggestions)
-    setOptions(Object.keys(suggestions))
-    console.log('options :>> ', options);
-    // setOptions([responseObject].map((option, i) => {
-    //     return {...option.artists, ...option.releases, ...option.hubs,}
-    // }))
-    console.log('suggestiossssssssss', suggestions.artists)
-    console.log('options', Object.keys(suggestions))
-  }
-  const changeHandler = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setQuery(e.target.value)
-    if (e.keyCody === 13) {
-      setQuery('')
+
+  const autoCompleteUrl = 'https://dev.api.ninaprotocol.com/v1/suggestions'
+
+  const handleAutoComplete = async (searchQuery) => {
+    setLoading(true)
+    const response = await axios.post(autoCompleteUrl, { searchQuery })
+    if (searchQuery) {
+      setSuggestions(response.data)
+    }
+    if (suggestions) {
+      setLoading(false)
     }
   }
 
-  const dummyarr = ['jack', 'jill', 'james', 'jim', 'joe', 'jane']
-    return (
+  const changeHandler = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setSearchQuery(e.target.value)
+    setShowDropdown(true)
+    if (searchQuery) {
+      handleAutoComplete(searchQuery)
+    }
+  }
+  console.log('response', response)
+  return (
     <Box sx={{ height: '60vh', width: '960px' }}>
-      <Form onSubmit={(e) => handleSubmit(e)}>
-        <SearchInputWrapper>
-      <Autocomplete 
-      id="nina-search"
-      // options={dummyarr}
-      options={suggestions}
-      getOptionLabel={option => option}
-      groupBy={option => Object.keys(option)}
-      renderInput={(params) => 
-        <TextField
-        {...params}
-        className="input"
-        fullWidth
-        onChange={(e) => changeHandler(e)}
-        label="Search for anything..."
-        variant="standard"
-        // value={query}
-        autoComplete={'off'}
-      />
-      } 
-      /> 
-        </SearchInputWrapper>
-      </Form>
+      <Box sx={{ position: 'relative' }}>
+        <Form onSubmit={(e) => handleSubmit(e)}>
+          <SearchInputWrapper>
+            <TextField
+              className="search-input"
+              fullWidth
+              id="outlined-basic"
+              label="Search"
+              variant="standard"
+              onChange={(e) => changeHandler(e)}
+              value={searchQuery}
+              autoComplete="off"
+              onClick={() => setShowDropdown(true)}
+            />
+          </SearchInputWrapper>
+        </Form>
+
+        {showDropdown && (
+          <DropdownContainer ref={ref}>
+            {autoCompleteResults.map((result, index) => {
+              if (result.visible) {
+                return (
+                  <ResponsiveSearchResultContainer key={index}>
+                    <SearchDropdown
+                      category={result.name}
+                      searchData={suggestions}
+                      hasResults={result.visible}
+                    />
+                  </ResponsiveSearchResultContainer>
+                )
+              }
+            })}
+
+            {searchQuery?.length > 0 &&
+              suggestions?.artists?.length === 0 &&
+              suggestions?.releases?.length === 0 &&
+              suggestions?.hubs?.length === 0 && (
+                <Typography>No results found</Typography>
+              )}
+          </DropdownContainer>
+        )}
+      </Box>
       <SearchResultsWrapper>
         <ResponsiveSearchResultContainer>
           {fetchedResponse === false && (
@@ -174,49 +166,31 @@ const autoCompleteUrl = 'https://dev.api.ninaprotocol.com/v1/suggestions'
               </Box>
             </ResponsiveDotContainer>
           )}
-          {fetchedResponse === true &&
-            response.artists.length === 0 &&
-            response.releases.length === 0 &&
-            response.hubs.length === 0 && (
-              <>
-                <Typography>No results found</Typography>
-              </>
-            )}
+
           {fetchedResponse && response.artists.length > 0 && (
             <>
-              <Typography sx={{ fontWeight: 'bold' }}>ARTISTS</Typography>
-              {response?.artists.map((artist) => (
-                <Link href={`/profiles/${artist.publicKey}`}>
-                  <a>
-                    <Typography>{artist.name}</Typography>
-                  </a>
-                </Link>
-              ))}
+              <ReusableTable
+                tableType="searchResultArtists"
+                releases={response?.artists}
+              />
             </>
           )}
-        </ResponsiveSearchResultContainer>
-        <ResponsiveSearchResultContainer>
+
           {fetchedResponse && response.releases.length > 0 && (
             <>
-              <Typography sx={{ fontWeight: 'bold' }}>RELEASES</Typography>
-              {response?.releases.map((release) => (
-                <Link href={`/${release.publicKey}`}>
-                  <Typography>
-                    {' '}
-                    <a>{release.title} </a>
-                  </Typography>
-                </Link>
-              ))}
+              <ReusableTable
+                tableType="searchResultReleases"
+                releases={response?.releases}
+              />
             </>
           )}
-        </ResponsiveSearchResultContainer>
-        <ResponsiveSearchResultContainer>
+
           {fetchedResponse && response.hubs.length > 0 && (
             <>
-              <Typography sx={{ fontWeight: 'bold' }}>HUBS</Typography>
-              {response?.hubs.map((hub) => (
-                <Typography>{hub.displayName}</Typography>
-              ))}
+              <ReusableTable
+                tableType={'searchResultHubs'}
+                releases={response?.hubs}
+              />
             </>
           )}
         </ResponsiveSearchResultContainer>
@@ -249,6 +223,15 @@ const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
     left: '47%',
     top: '53%',
   },
+}))
+
+const DropdownContainer = styled(Box)(({ theme }) => ({
+  maxHeight: '60vh',
+  zIndex: '100',
+  position: 'absolute',
+  overflow: 'hidden',
+  textAlign: 'left',
+  backgroundColor: 'rgba(255,255,255,0.9)',
 }))
 
 export default Search

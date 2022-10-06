@@ -54,6 +54,21 @@ const ReusableTableHead = ({ tableType }) => {
     headCells.push({ id: 'title', label: 'Title' })
   }
 
+  if (tableType === 'searchResultArtists') {
+    headCells.push({ id: 'name', label: 'Artists' })
+  }
+
+  if (tableType === 'searchResultReleases') {
+    headCells.push({ id: 'ctas', label: 'Releases' })
+    headCells.push({ id: 'image', label: '' })
+    headCells.push({ id: 'title', label: '' })
+    
+  }
+
+  if (tableType === 'searchResultHubs') {
+    headCells.push({ id: 'image', label: 'Hubs' })
+  }
+
   return (
     <TableHead>
       <TableRow>
@@ -208,7 +223,31 @@ const ReusableTableBody = ({ releases, tableType }) => {
         collaborator: truncateAddress(data.collaborator),
       }
     }
+    if (tableType === 'searchResultArtists'){
+      formattedData = {
+        link: `/profiles/${data?.publicKey}`,
+        collaborator: data.name
+      }
+    }
 
+    if(tableType === 'searchResultReleases'){
+      formattedData= {
+        id: data?.publicKey,
+        // ctas: data?.publicKey,
+        image: data?.image,
+        link: `/${data?.publicKey}`,
+        title: data.title,
+      }
+    }
+    if(tableType === 'searchResultHubs'){
+      formattedData ={
+        // ctas: data?.publicKey,
+        id: data?.publicKey,
+        image: data?.image,
+        link: `/hubs/${data?.handle}`,
+        artist: data.displayName,
+      }
+    }
     return formattedData
   })
 
@@ -330,7 +369,7 @@ const ResponsiveTableContainer = styled(TableCell)(({ theme }) => ({
   width: '100vw',
   borderBottom: 'none',
   padding: '0px',
-  paddingBottom: '100px',
+ 
   [theme.breakpoints.down('md')]: {
     overflowY: 'unset',
     height: '100% !important',
