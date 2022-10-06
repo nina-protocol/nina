@@ -15,8 +15,8 @@ const SearchDropdown = dynamic(() => import('./SearchDropdown'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
 
 const Search = () => {
-  const {query} = useRouter()
-  const [searchQuery, setSearchQuery] = useState('')
+  
+  const [query, setQuery] = useState('')
   const [response, setResponse] = useState(undefined)
   const [suggestions, setSuggestions] = useState([])
   const [options, setOptions] = useState(undefined)
@@ -51,10 +51,8 @@ const Search = () => {
     }
   }, [showDropdown, ref])
 
-
-  
   useEffect(() => {
-    if (searchQuery) {
+    if (query) {
       suggestions?.artists.length > 0
         ? (autoCompleteResults[0].visible = true)
         : (autoCompleteResults[0].visible = false)
@@ -74,28 +72,28 @@ const Search = () => {
     setFetchedResponse(false)
 
     if (e.target.value !== null || e.target.value !== '') {
-      setSearchQuery(e.target.value)
-      await NinaSdk.Search.withsearchQuery(searchQuery).then(setResponse)
+      setQuery(e.target.value)
+      await NinaSdk.Search.withQuery(query).then(setResponse)
       setFetchedResponse(true)
     }
 
-    if (searchQuery === '') {
+    if (query === '') {
       e.preventDefault()
       e.stopPropagation()
       return
     }
     
-    setSearchQuery('')
-    setSuggestions([])
+    // setQuery('')
+    // setSuggestions([])
     setShowDropdown(false)
   }
 
   const autoCompleteUrl = 'https://dev.api.ninaprotocol.com/v1/suggestions'
 
-  const handleAutoComplete = async (searchQuery) => {
+  const handleAutoComplete = async (query) => {
     setLoading(true)
-    const response = await axios.post(autoCompleteUrl, { searchQuery })
-    if (searchQuery) {
+    const response = await axios.post(autoCompleteUrl, { query })
+    if (query) {
       setSuggestions(response.data)
     }
     if (suggestions) {
@@ -106,10 +104,10 @@ const Search = () => {
   const changeHandler = (e) => {
     e.preventDefault()
     e.stopPropagation()
-    setSearchQuery(e.target.value)
+    setQuery(e.target.value)
     setShowDropdown(true)
-    if (searchQuery) {
-      handleAutoComplete(searchQuery)
+    if (query) {
+      handleAutoComplete(query)
     }
   }
   console.log('response', response)
@@ -125,7 +123,7 @@ const Search = () => {
               label="Search"
               variant="standard"
               onChange={(e) => changeHandler(e)}
-              value={searchQuery}
+              value={query}
               autoComplete="off"
               onClick={() => setShowDropdown(true)}
             />
@@ -148,7 +146,7 @@ const Search = () => {
               }
             })}
 
-            {searchQuery?.length > 0 &&
+            {query?.length > 0 &&
               suggestions?.artists?.length === 0 &&
               suggestions?.releases?.length === 0 &&
               suggestions?.hubs?.length === 0 && (
