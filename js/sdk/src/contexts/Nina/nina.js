@@ -273,7 +273,7 @@ const ninaContextHelper = ({
 
       return {
         success: true,
-        msg: 'Now Following Account',
+        msg: 'Now Following',
       }
     } catch (error) {
       console.warn(error)
@@ -285,7 +285,6 @@ const ninaContextHelper = ({
     try {
       const program = await ninaClient.useProgram()
       unsubscribeAccount = new anchor.web3.PublicKey(unsubscribeAccount)
-      console.log('unsubscribeAccount :>> ', unsubscribeAccount);
       const [subscription] = await anchor.web3.PublicKey.findProgramAddress(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode('nina-subscription')),
@@ -294,7 +293,6 @@ const ninaContextHelper = ({
       ],
         program.programId
       )
-
 
       const txid = await program.rpc.subscriptionUnsubscribe({
         accounts: {
@@ -306,15 +304,13 @@ const ninaContextHelper = ({
       })
 
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
-      console.log('txid :>> ', txid);
-      console.log('subscription.toBase58() :>> ', subscription.toBase58());
       await getSubscription(subscription.toBase58(), txid)
       await getSubscriptionsForUser(provider.wallet.publicKey.toBase58())
       removeSubScriptionFromState(subscription.toBase58())
 
       return {
         success: true,
-        msg: 'Account Unfollowed',
+        msg: 'Successfully Unfollowed',
       }
     } catch (error) {
       console.warn(error)
@@ -734,7 +730,7 @@ const ninaContextHelper = ({
 
   */
 
-    const getSubscription = async (subscriptionPubkey, txid=undefined) => {
+  const getSubscription = async (subscriptionPubkey, txid=undefined) => {
       console.log('getSubscription', subscriptionPubkey, txid)
       try {
       const {subscription} = await NinaSdk.Subscription.fetch(subscriptionPubkey, false, txid)
@@ -743,19 +739,17 @@ const ninaContextHelper = ({
         ...subscriptionState,
         [subscription.publicKey]: subscription,
       })
-
-      console.log('subscriptionState :>> ', subscriptionState);
-
     } catch (error) {
       console.warn(error)
     }
   }
 
-  const getSubscriptionsForUser = async (accountPubkey, tx) => {
+  const getSubscriptionsForUser = async (accountPubkey) => {
     try{
-      const { subscriptions } = await NinaSdk.Account.fetchSubscriptions(accountPubkey, false, tx)
+      const { subscriptions } = await NinaSdk.Account.fetchSubscriptions(accountPubkey, false)
       console.log('subscriptions in get for user', subscriptions);
       saveSubscriptionsToState(subscriptions)
+      return subscriptions
     } catch (error) {
       console.warn(error)
     }

@@ -9,6 +9,7 @@ import { styled } from '@mui/system'
 import { Box } from '@mui/system'
 import Button from "@mui/material/Button";
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Subscribe from './Subscribe'
 import { unified } from 'unified'
 import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
@@ -24,6 +25,8 @@ const HubHeader = ({ hubData }) => {
   const { subscriptionSubscribe } = useContext( Nina.Context )
   const { enqueueSnackbar } = useSnackbar();
   const wallet = useWallet()
+
+  console.log('hubData :>> ', hubData);
 
   useEffect(() => {
     if (hubData?.data.description.includes('<p>')) {
@@ -52,19 +55,6 @@ const HubHeader = ({ hubData }) => {
     }
   }, [hubData?.data.description])
 
-    const handleSubscribe = async (accountAddress) => {
-    const result = await subscriptionSubscribe(accountAddress, hubData.handle)
-    if (result.success) {
-        enqueueSnackbar(result.msg, {
-          variant: 'success',
-        })
-      } else {
-        enqueueSnackbar('Error Following Account.', {
-          variant: 'error',
-        })
-      }
-  }
-
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
       <ResponsiveHubHeader>
@@ -88,15 +78,23 @@ const HubHeader = ({ hubData }) => {
           </Link>
         </Box>
 
-        {hubData?.data.displayName && (
-          <Link href={hubData?.data.externalUrl} passHref>
-            <a target="_blank" rel="noreferrer">
-              <Typography sx={{ px: 2 }}>
-                {hubData?.data.displayName}
-              </Typography>
-            </a>
-          </Link>
-        )}
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '90px'}}>
+          {hubData?.data.displayName && (
+            <Link href={hubData?.data.externalUrl} passHref>
+              <a target="_blank" rel="noreferrer">
+                <Typography sx={{ pl: 1 }}>
+                  {hubData?.data.displayName}
+                </Typography>
+              </a>
+            </Link>
+          )}
+          {wallet.connected && (
+            <Subscribe
+              accountAddress={hubData.publicKey}
+              hubHandle={hubData.handle}
+            />
+          )}
+        </Box>
         {hubData?.data.description && (
           <>
             <DescriptionOverflowContainer>
@@ -105,15 +103,7 @@ const HubHeader = ({ hubData }) => {
           </>
         )}
       </ResponsiveHubHeader>
-          
-    {wallet.connected && (
-          <Button 
-            color="primary" 
-            sx={{padding: '0', width: '67px'}} 
-            onClick={() => handleSubscribe(hubData.id)}>
-            Follow Hub
-          </Button>
-        )}
+
       {/* <ResponsiveUrlContainer>
         <Typography sx={{ pb: 2, fontSize: '12px' }}>
           <Link href={hubData?.json.externalUrl}>
