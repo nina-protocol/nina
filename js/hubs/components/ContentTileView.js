@@ -153,7 +153,7 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
                         disableRipple
                       >
                         {isPlaying &&
-                          track.releasePubkey === item.release ? (
+                          track.releasePubkey === item.release && isPlaying ? (
                             <PauseCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
                           ) : (
                             <PlayCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
