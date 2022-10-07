@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material'
 import Link from 'next/link'
-const SearchDropdown = ({ searchData, category, hasResults }) => {
+const SearchDropdown = ({ searchData, category, hasResults, clickHandler }) => {
   let rows
 
   if (category === 'artists') {
@@ -52,8 +52,8 @@ const SearchDropdown = ({ searchData, category, hasResults }) => {
             {category}
           </Typography>
           {rows?.map((row) => (
-            <a key={row?.name}>
-              <Typography>{row?.name}</Typography>
+            <a key={row?.name} onClick={clickHandler}>
+              <Typography id={row?.name}>{row?.name}</Typography>
             </a>
           ))}
         </>

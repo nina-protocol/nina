@@ -16,23 +16,22 @@ const SearchDropdown = dynamic(() => import('./SearchDropdown'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
 
 const Search = (props) => {
-  const { searchResults, searchQuery} = props
-  const [query, setQuery] = useState('')
+  const { searchResults, searchQuery } = props
+  const [query, setQuery] = useState(searchQuery?.q)
   const [response, setResponse] = useState(undefined)
   const [suggestions, setSuggestions] = useState([])
   const [loading, setLoading] = useState(false)
   const [fetchedResponse, setFetchedResponse] = useState(undefined)
   const [showDropdown, setShowDropdown] = useState(false)
+  const [inputFocus, setInputFocus] = useState(false)
   const [autoCompleteResults, setAutocompleteResults] = useState([
     { name: 'artists', visible: false },
     { name: 'releases', visible: false },
     { name: 'hubs', visible: false },
   ])
-
+  console.log('props', props)
   const dropdownRef = useRef()
   const searchInputRef = useRef()
-  // console.log('search',searchQuery)
-  
   useEffect(() => {
     NinaSdk.client.init(
       process.env.NINA_API_ENDPOINT,
@@ -42,12 +41,13 @@ const Search = (props) => {
   }, [])
 
   useEffect(() => {
+    console.log('searchQuery', searchQuery)
+    console.log('searchResults', searchResults)
+
     if (searchQuery) {
-      console.log('searchQuery', searchQuery)
       const query = searchQuery.q
       setQuery(query)
     }
-    console.log('searchResults', searchResults)
     if (searchResults) {
       setResponse(searchResults)
       setFetchedResponse(true)
@@ -56,23 +56,21 @@ const Search = (props) => {
 
   useEffect(() => {
     const handleDropdown = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target) &&
+        !searchInputRef.current.contains(e.target)
+      ) {
         setShowDropdown(false)
       }
     }
+
     document.addEventListener('click', handleDropdown)
 
     return () => {
       document.removeEventListener('click', handleDropdown)
     }
   }, [showDropdown, dropdownRef])
-
-  // const handleInputClick = (currentRef) => {
-  //   if(document.activeElement === currentRef.current) {
-  //     console.log('hhehehehehe')
-  //     setShowDropdown(true)
-  //   }
-  // }
 
   useEffect(() => {
     if (query && setShowDropdown) {
@@ -89,19 +87,18 @@ const Search = (props) => {
     }
   }, [suggestions])
 
-
   const handleSubmit = async (e) => {
     e.preventDefault()
     e.stopPropagation()
     setFetchedResponse(false)
 
-    if (e.target.value !== null || e.target.value !== '') {
-      setQuery(e.target.value)
+    if (e.target.value !== null || e.target.value !== '' || e.target.value !== undefined) {
+      // console.log('4444', e.target.value)
+      // setQuery(e.target.value)
       await NinaSdk.Search.withQuery(query).then(setResponse)
       setFetchedResponse(true)
       window.history.pushState(null, query, `?q=${query}`)
     }
-
     if (query === '') {
       e.preventDefault()
       e.stopPropagation()
@@ -110,13 +107,12 @@ const Search = (props) => {
     setShowDropdown(false)
   }
 
- 
   const autoCompleteUrl = 'https://dev.api.ninaprotocol.com/v1/suggestions'
 
   const handleAutoComplete = async (query) => {
     setLoading(true)
     const response = await axios.post(autoCompleteUrl, { query })
-    if (query) {
+    if (query.length > 0) {
       setSuggestions(response.data)
     }
     if (suggestions) {
@@ -128,11 +124,42 @@ const Search = (props) => {
     e.preventDefault()
     e.stopPropagation()
     const search = e.target.value
+    console.log('searrch', search)
     setQuery(search)
     setShowDropdown(true)
-    console.log('ssssss',query)
     if (query) {
       handleAutoComplete(query)
+    }
+  }
+
+  const handleSuggestionsClick = async (search) => {
+    setFetchedResponse(false)
+    await NinaSdk.Search.withQuery(search).then(setResponse)
+    setFetchedResponse(true)
+    if (fetchedResponse) {
+      setShowDropdown(false)
+      window.history.pushState(null, search, `?q=${search}`)
+    }
+  }
+
+  const suggestionsHandler = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const clickedSuggestion = e.target.innerText
+    if (clickedSuggestion) {
+      setQuery(clickedSuggestion)
+      setShowDropdown(false)
+    }
+
+    handleSuggestionsClick(clickedSuggestion)
+  }
+
+  const handleSearchClick = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setInputFocus(true)
+    if (inputFocus) {
+      setShowDropdown(true)
     }
   }
   return (
@@ -149,7 +176,7 @@ const Search = (props) => {
               onChange={(e) => changeHandler(e)}
               value={query}
               autoComplete="off"
-              onClick={() => setShowDropdown(true)}
+              onFocus={(e) => handleSearchClick(e)}
               ref={searchInputRef}
             />
           </SearchInputWrapper>
@@ -165,6 +192,7 @@ const Search = (props) => {
                       category={result.name}
                       searchData={suggestions}
                       hasResults={result.visible}
+                      clickHandler={(e) => suggestionsHandler(e)}
                     />
                   </ResponsiveSearchResultContainer>
                 )
@@ -216,13 +244,13 @@ const Search = (props) => {
               />
             </>
           )}
-            {query?.length > 0 &&
+          {query?.length > 0 &&
             fetchedResponse &&
-              response?.artists?.length === 0 &&
-              response?.releases?.length === 0 &&
-              response?.hubs?.length === 0 && (
-                <Typography>No results found</Typography>
-              )}
+            response?.artists?.length === 0 &&
+            response?.releases?.length === 0 &&
+            response?.hubs?.length === 0 && (
+              <Typography>No results found</Typography>
+            )}
         </ResponsiveSearchResultContainer>
       </SearchResultsWrapper>
     </Box>
