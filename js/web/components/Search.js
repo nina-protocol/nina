@@ -11,15 +11,15 @@ import axios from 'axios'
 import CircularProgress from '@mui/material/CircularProgress'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
+
 const SearchDropdown = dynamic(() => import('./SearchDropdown'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
 
-const Search = () => {
-  
+const Search = (props) => {
+  const { searchResults, searchQuery} = props
   const [query, setQuery] = useState('')
   const [response, setResponse] = useState(undefined)
   const [suggestions, setSuggestions] = useState([])
-  const [options, setOptions] = useState(undefined)
   const [loading, setLoading] = useState(false)
   const [fetchedResponse, setFetchedResponse] = useState(undefined)
   const [showDropdown, setShowDropdown] = useState(false)
@@ -28,8 +28,11 @@ const Search = () => {
     { name: 'releases', visible: false },
     { name: 'hubs', visible: false },
   ])
-  const ref = useRef()
 
+  const dropdownRef = useRef()
+  const searchInputRef = useRef()
+  // console.log('search',searchQuery)
+  
   useEffect(() => {
     NinaSdk.client.init(
       process.env.NINA_API_ENDPOINT,
@@ -39,8 +42,21 @@ const Search = () => {
   }, [])
 
   useEffect(() => {
+    if (searchQuery) {
+      console.log('searchQuery', searchQuery)
+      const query = searchQuery.q
+      setQuery(query)
+    }
+    console.log('searchResults', searchResults)
+    if (searchResults) {
+      setResponse(searchResults)
+      setFetchedResponse(true)
+    }
+  }, [searchResults, searchQuery])
+
+  useEffect(() => {
     const handleDropdown = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setShowDropdown(false)
       }
     }
@@ -49,22 +65,30 @@ const Search = () => {
     return () => {
       document.removeEventListener('click', handleDropdown)
     }
-  }, [showDropdown, ref])
+  }, [showDropdown, dropdownRef])
+
+  // const handleInputClick = (currentRef) => {
+  //   if(document.activeElement === currentRef.current) {
+  //     console.log('hhehehehehe')
+  //     setShowDropdown(true)
+  //   }
+  // }
 
   useEffect(() => {
-    if (query) {
-      suggestions?.artists.length > 0
+    if (query && setShowDropdown) {
+      suggestions?.artists?.length > 0
         ? (autoCompleteResults[0].visible = true)
         : (autoCompleteResults[0].visible = false)
-      suggestions?.releases.length > 0
+      suggestions?.releases?.length > 0
         ? (autoCompleteResults[1].visible = true)
         : (autoCompleteResults[1].visible = false)
-      suggestions?.hubs.length > 0
+      suggestions?.hubs?.length > 0
         ? (autoCompleteResults[2].visible = true)
         : (autoCompleteResults[2].visible = false)
       setAutocompleteResults([...autoCompleteResults])
     }
   }, [suggestions])
+
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -75,6 +99,7 @@ const Search = () => {
       setQuery(e.target.value)
       await NinaSdk.Search.withQuery(query).then(setResponse)
       setFetchedResponse(true)
+      window.history.pushState(null, query, `?q=${query}`)
     }
 
     if (query === '') {
@@ -82,12 +107,10 @@ const Search = () => {
       e.stopPropagation()
       return
     }
-    
-    // setQuery('')
-    // setSuggestions([])
     setShowDropdown(false)
   }
 
+ 
   const autoCompleteUrl = 'https://dev.api.ninaprotocol.com/v1/suggestions'
 
   const handleAutoComplete = async (query) => {
@@ -104,13 +127,14 @@ const Search = () => {
   const changeHandler = (e) => {
     e.preventDefault()
     e.stopPropagation()
-    setQuery(e.target.value)
+    const search = e.target.value
+    setQuery(search)
     setShowDropdown(true)
+    console.log('ssssss',query)
     if (query) {
       handleAutoComplete(query)
     }
   }
-  console.log('response', response)
   return (
     <Box sx={{ height: '60vh', width: '960px' }}>
       <Box sx={{ position: 'relative' }}>
@@ -126,12 +150,13 @@ const Search = () => {
               value={query}
               autoComplete="off"
               onClick={() => setShowDropdown(true)}
+              ref={searchInputRef}
             />
           </SearchInputWrapper>
         </Form>
 
         {showDropdown && (
-          <DropdownContainer ref={ref}>
+          <DropdownContainer ref={dropdownRef}>
             {autoCompleteResults.map((result, index) => {
               if (result.visible) {
                 return (
@@ -191,6 +216,13 @@ const Search = () => {
               />
             </>
           )}
+            {query?.length > 0 &&
+            fetchedResponse &&
+              response?.artists?.length === 0 &&
+              response?.releases?.length === 0 &&
+              response?.hubs?.length === 0 && (
+                <Typography>No results found</Typography>
+              )}
         </ResponsiveSearchResultContainer>
       </SearchResultsWrapper>
     </Box>

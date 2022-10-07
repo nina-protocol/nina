@@ -44,7 +44,6 @@ const SearchDropdown = ({ searchData, category, hasResults }) => {
       return formattedData
     })
   }
-  console.log('hasResults', hasResults)
   return (
     <>
       {hasResults === true && (
@@ -53,11 +52,9 @@ const SearchDropdown = ({ searchData, category, hasResults }) => {
             {category}
           </Typography>
           {rows?.map((row) => (
-            <Link href={row?.link}>
-              <a key={row?.name}>
-                <Typography>{row?.name}</Typography>
-              </a>
-            </Link>
+            <a key={row?.name}>
+              <Typography>{row?.name}</Typography>
+            </a>
           ))}
         </>
       )}
