@@ -24,6 +24,8 @@ const AudioPlayerContextProvider = ({ children }) => {
     if (playlist[currentIndex() + 1]) {
       setTrack(playlist[currentIndex() + 1])
       setIsPlaying(shouldPlay)
+    } else {
+      setIsPlaying(false)
     }
   }
 

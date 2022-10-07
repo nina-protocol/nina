@@ -31,7 +31,7 @@ const CreateHubPage = () => {
         <meta name="twitter:image" content="https://ninaprotocol.com/images/nina-blue.png" />
         <meta name="og:image" href="https://ninaprotocol.com/images/nina-blue.png" />
       </Head>
-      <HubCreate update={false} />;
+      <HubCreate update={false} />
     </>
   );
 };

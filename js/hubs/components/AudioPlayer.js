@@ -113,6 +113,7 @@ const AudioPlayer = ({ hubPubkey }) => {
       pause();
     }
   }, [isPlaying]);
+
   const hasNext = useMemo(
     () => activeIndexRef.current + 1 < playlist.length,
     [activeIndexRef.current, playlist]
@@ -121,6 +122,7 @@ const AudioPlayer = ({ hubPubkey }) => {
     () => activeIndexRef.current > 0,
     [activeIndexRef.current]
   );
+  
   useEffect(() => {
     if (track && audioInitialized) {
       if (audioPlayerRef.current.src !== track.txid) {
@@ -222,7 +224,7 @@ const AudioPlayer = ({ hubPubkey }) => {
     } else {
       // This means we've reached the end of the playlist
       setTrackProgress(0)
-      setPlaying(false);
+      pause();
     }
   };
  
