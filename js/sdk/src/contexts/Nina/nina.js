@@ -739,7 +739,6 @@ const ninaContextHelper = ({
       console.log('getSubscription', subscriptionPubkey, txid)
       try {
       const {subscription} = await NinaSdk.Subscription.fetch(subscriptionPubkey, false, txid)
-      console.log('subscription in get!', subscription);
       setSubscriptionState({
         ...subscriptionState,
         [subscription.publicKey]: subscription,
@@ -752,7 +751,6 @@ const ninaContextHelper = ({
   const getSubscriptionsForUser = async (accountPubkey) => {
     try{
       const { subscriptions } = await NinaSdk.Account.fetchSubscriptions(accountPubkey, false)
-      console.log('subscriptions in get for user', subscriptions);
       saveSubscriptionsToState(subscriptions)
       return subscriptions
     } catch (error) {

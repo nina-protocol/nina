@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import { isMobile } from 'react-device-detect'
@@ -8,13 +8,47 @@ import Link from "next/link";
 import Image from "next/image";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+
 import Dots from "./Dots";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
+import {set} from "@project-serum/anchor/dist/cjs/utils/features";
 const { getImageFromCDN, loader } = imageManager
 const HubSlider = (props) => {
-  const { hubs } = props;
+  const { getHubs, hubState } = useContext(Hub.Context)
+  const { getSubscriptionsForUser } = useContext(Nina.Context)
+  const [featuredHubPublicKeys, setFeaturedHubPublicKeys] = useState()
+  const [hubs, setHubs] = useState();
+
+  useEffect(() => {
+    getSubscriptionsForUser('getHubs')
+    const handleData = async () => {
+      await getHubs()
+      const response = await getSubscriptionsForUser('7g2euzpRxm2A9kgk4UJ9J5ntUYvodTw4s4m7sL1C8JE')
+      const publicKeys = response.filter((sub) => {
+       return sub.subscriptionType === 'hub'
+      })
+      setFeaturedHubPublicKeys(publicKeys)
+    }
+    handleData()
+  }, []);
+
+  useEffect(() => {
+    if (featuredHubPublicKeys) {
+      const featured = []
+      Object.values(featuredHubPublicKeys).forEach((sub) => {
+        const hub = hubState[sub.to]
+        if (hub) {
+          featured.push(hub)
+        }
+      })
+      setHubs(featured)
+    }
+  },[featuredHubPublicKeys, hubState]);
+
   const responsiveSettings = [
     {
       breakpoint: 1024,
@@ -82,7 +116,7 @@ const HubSlider = (props) => {
           prevArrow={<CustomPrevArrow />}
         >
           {hubs?.map((hub, i) => {
-            const imageUrl = hub?.json?.image;
+            const imageUrl = hub?.data?.image;
             return (
               <HubSlideWrapper key={i}>
                 <HubSlide key={i}>
@@ -102,7 +136,7 @@ const HubSlider = (props) => {
                   )}
                   <HubCopy sx={{ display: "flex" }}>
                     <Typography variant="body2">
-                      {hub?.json?.displayName}
+                      {hub?.data?.displayName}
                     </Typography>
                   </HubCopy>
                 </HubSlide>

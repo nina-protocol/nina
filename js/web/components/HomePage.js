@@ -28,7 +28,7 @@ const HomePage = () => {
   useEffect(() => {
     getSolPrice()
     getReleasesRecent()
-    getHubs(true)
+    // getHubs(true)
   }, [])
 
   useEffect(() => {
