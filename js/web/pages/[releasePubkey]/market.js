@@ -1,9 +1,16 @@
 import Head from 'next/head'
+import dynamic from 'next/dynamic'
 import Release from '../../components/Release'
 import NinaSdk from "@nina-protocol/js-sdk";
+const NotFound = dynamic(() => import('../../components/NotFound'))
 
 const ReleaseMarketPage = (props) => {
   const { metadata } = props
+  if (!metadata) {
+    return (
+      <NotFound />
+    )
+  }
   return (
     <>
       <Head>

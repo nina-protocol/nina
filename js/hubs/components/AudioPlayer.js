@@ -236,6 +236,7 @@ const AudioPlayer = ({ hubPubkey }) => {
       playNext(true);
     } else {
       // This means we've reached the end of the playlist
+      setTrackProgress(0)
       setPlaying(false);
     }
   };

@@ -1,11 +1,11 @@
-import UserCollection from '../../components/UserCollection'
-import Head from 'next/head'
+import NotFound from "../components/NotFound";
+import Head from "next/head";
 
-const UserCollectionPage = () => {
+const NotFoundPage = () => {
   return (
     <>
       <Head>
-        <title>{`Nina Protocol - Your Collection`}</title>
+        <title>Nina Protocol - Not Found</title>
         <meta
           name="description"
           content={"Nina Protocol is a digitally native music ecosystem"}
@@ -13,7 +13,7 @@ const UserCollectionPage = () => {
         <meta name="og:type" content="website" />
         <meta
           name="og:title"
-          content="Nina Protocol"
+          content="Nina Protocol - Not Found<"
         />
         <meta
           name="og:description"
@@ -25,16 +25,16 @@ const UserCollectionPage = () => {
         <meta name="twitter:image:type" content="image/png" />
         <meta
           name="twitter:title"
-          content="Nina Protocol"
+          content="Nina Protocol - Not Found<"
         />
         <meta name="twitter:description" content={"Nina Protocol is a digitally native music ecosystem"} />
 
         <meta name="twitter:image" content="https://ninaprotocol.com/images/nina-blue.png" />
         <meta name="og:image" href="https://ninaprotocol.com/images/nina-blue.png" />
       </Head>
-      <UserCollection />
+      <NotFound />
     </>
-  )
-}
+  );
+};
 
-export default UserCollectionPage
+export default NotFoundPage;

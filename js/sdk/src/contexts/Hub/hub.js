@@ -549,9 +549,6 @@ const hubContextHelper = ({
         },
       })
       await provider.connection.getParsedTransaction(txid, 'finalized')
-      console.log('type', type)
-      console.log('hubContentState', hubContentState)
-      console.log('hubChildPublicKey.toBase58()', hubChildPublicKey.toBase58())
       const toggledContent = Object.values(hubContentState).filter(
         (c) => c.publicKey === hubChildPublicKey.toBase58()
       )[0]
@@ -966,6 +963,7 @@ const hubContextHelper = ({
       setPostState(updatedPostState)
       setHubContentState(updatedHubContent)
       setHubContentFetched(new Set([...hubContentFetched, hubPubkey]))
+      return hub
     } catch (error) {
       console.warn(error)
     }
@@ -1016,6 +1014,7 @@ const hubContextHelper = ({
       })
       setHubState(updatedHubState)
       setHubContentState(updatedHubContent)
+      return hubs
     } catch (error) {
       console.warn(error)
       return undefined
