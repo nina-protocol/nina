@@ -23,7 +23,11 @@ const Profile = ({ profilePubkey }) => {
     filterReleasesList,
   } = useContext(Release.Context)
   const { getHubsForUser, filterHubsForUser } = useContext(Hub.Context)
-  const { subscriptionSubscribe } = useContext( Nina.Context )
+  const {
+    userSubscriptions,
+    getSubscriptionsForUser,
+    subscriptionState,
+  } = useContext(Nina.Context)
 
   const wallet = useWallet()
 
@@ -34,6 +38,10 @@ const Profile = ({ profilePubkey }) => {
   const [profileHubs, setProfileHubs] = useState(undefined)
   const [activeView, setActiveView] = useState(undefined)
   const [profileCollectionIds, setProfileCollectionIds] = useState(undefined)
+  const [profileSubscriptions, setProfileSubscriptions] = useState()
+  const [profileSubscriptionsTo, setProfileSubscriptionsTo] = useState()
+  const [profileSubscriptionsFrom, setProfileSubscriptionsFrom] = useState()
+
   const [fetched, setFetched] = useState({
     user: false,
     releases: false,
@@ -44,6 +52,8 @@ const Profile = ({ profilePubkey }) => {
     { name: 'releases', playlist: undefined, visible: false },
     { name: 'collection', playlist: undefined, visible: false },
     { name: 'hubs', playlist: null, visible: false },
+    { name: 'followers', playlist: null, visible: false },
+    { name: 'following', playlist: null, visible: false },
   ])
 
   const artistNames = useMemo(() => {
@@ -66,8 +76,12 @@ const Profile = ({ profilePubkey }) => {
         profilePubkey
       )
 
+      const subscriptions = await getSubscriptionsForUser(profilePubkey)
+
       setProfileCollectionReleases(collected)
       setProfilePublishedReleases(published)
+      setProfileSubscriptions(subscriptions)
+      
       fetched.user = true
       
       let viewIndex
@@ -89,6 +103,25 @@ const Profile = ({ profilePubkey }) => {
 
     getUserData(profilePubkey)
   }, [profilePubkey])
+
+  useEffect(() => {
+    if (profileSubscriptions){
+      const to = []
+      const from = []
+
+      profileSubscriptions.forEach((sub) => {
+        if (sub.to === profilePubkey) {
+          to.push(sub)
+        } else if (sub.from === profilePubkey) {
+          from.push(sub)
+        }
+      })
+
+      setProfileSubscriptionsTo(to)
+      setProfileSubscriptionsFrom(from)
+
+    }
+  }, [profileSubscriptions])
   
   useEffect(() => {
     let viewIndex
@@ -101,13 +134,20 @@ const Profile = ({ profilePubkey }) => {
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
       updatedView[viewIndex].visible = true
     }
-
     if (profileHubs?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'hubs')
       updatedView[viewIndex].visible = true
     }
+    if (profileSubscriptionsTo?.length > 0) {
+      viewIndex = updatedView.findIndex((view) => view.name === 'followers')
+      updatedView[viewIndex].visible = true
+    }
+    if (profileSubscriptionsFrom?.length > 0) {
+      viewIndex = updatedView.findIndex((view) => view.name === 'following')
+      updatedView[viewIndex].visible = true
+    }
     setViews(updatedView)
-  }, [profilePublishedReleases, profileCollectionReleases, profileHubs])
+  }, [profilePublishedReleases, profileCollectionReleases, profileHubs, profileSubscriptionsTo, profileSubscriptionsFrom])
 
   useEffect(() => {
     if (profilePublishedReleases?.length > 0) {
@@ -193,6 +233,8 @@ const Profile = ({ profilePubkey }) => {
                 viewHandler={viewHandler}
                 isActive={activeView}
                 profileTabs={views}
+                followersCount={profileSubscriptionsTo?.length}
+                followingCount={profileSubscriptionsFrom?.length}
               />
             </Box>
           )}
@@ -242,6 +284,26 @@ const Profile = ({ profilePubkey }) => {
                 <ReusableTable
                   tableType={'profileHubs'}
                   items={profileHubs}
+                />
+              )}
+            </>
+          )}
+          {activeView === 3 && (
+            <>
+              {fetched.hubs && profileHubs.length > 0 && (
+                <ReusableTable
+                  tableType={'followers'}
+                  items={profileSubscriptionsTo}
+                />
+              )}
+            </>
+          )}
+          {activeView === 4 && (
+            <>
+              {fetched.hubs && profileHubs.length > 0 && (
+                <ReusableTable
+                  tableType={'following'}
+                  items={profileSubscriptionsFrom}
                 />
               )}
             </>

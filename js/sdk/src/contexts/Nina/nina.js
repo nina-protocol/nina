@@ -767,7 +767,6 @@ const ninaContextHelper = ({
         subscriptions.push(subscription)
       }
     })
-    console.log('subscriptions :>> ', subscriptions);
     return subscriptions
   }
 

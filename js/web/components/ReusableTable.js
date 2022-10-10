@@ -198,6 +198,22 @@ const ReusableTableBody = ({ items, tableType }) => {
         collaborator: truncateAddress(data.collaborator),
       }
     }
+
+    if (tableType === 'followers') {
+      console.log('follower: ', data);
+      formattedData = {
+        link: `/profiles/${data.from}`,
+        profile: truncateAddress(data.from),
+      }
+    }
+
+    if (tableType === 'following') {
+      console.log('follower: ', data);
+      formattedData = {
+        link: `/profiles/${data.to}`,
+        profile: truncateAddress(data.to),
+      }
+    }
     return formattedData
   })
 
@@ -302,6 +318,7 @@ const ReusableTableBody = ({ items, tableType }) => {
 }
 
 const ReusableTable = ({ items, tableType }) => {
+  console.log('items :>> ', items);
   return (
     <ResponsiveContainer>
       <ResponsiveTableContainer>

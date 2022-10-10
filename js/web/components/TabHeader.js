@@ -12,6 +12,8 @@ const TabHeader = ({
   viewHandler,
   type,
   releaseData,
+  followersCount,
+  followingCount,
 }) => {
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { enqueueSnackbar } = useSnackbar()
@@ -33,7 +35,10 @@ const TabHeader = ({
       }}
     >
       <Box sx={{ display: 'flex', flexDirection: 'row', rowGap: 1, pb: 1 }}>
-        {profileTabs?.map((tab, index) => (
+        {profileTabs?.map((tab, index) => 
+          {
+
+          return(
           <>
             {tab.visible === true && (
               <Box
@@ -58,7 +63,9 @@ const TabHeader = ({
                     }}
                     id={index}
                   >
-                    {tab.name}
+                    {tab.name} 
+                    {tab.name === 'followers' && `(${followersCount})`}
+                    {tab.name === 'following' && `(${followingCount})`}
                   </Typography>
 
                   {tab.playlist && (
@@ -90,7 +97,9 @@ const TabHeader = ({
               </Box>
             )}
           </>
-        ))}
+          )
+          }
+        )}
       </Box>
     </ResponsiveContainer>
   )
