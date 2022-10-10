@@ -14,6 +14,7 @@ import { useRouter } from 'next/router'
 
 const SearchDropdown = dynamic(() => import('./SearchDropdown'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
+const TabHeader = dynamic(() => import('./TabHeader'))
 
 const Search = (props) => {
   const { searchResults, searchQuery } = props
@@ -24,12 +25,24 @@ const Search = (props) => {
   const [fetchedResponse, setFetchedResponse] = useState(undefined)
   const [showDropdown, setShowDropdown] = useState(false)
   const [inputFocus, setInputFocus] = useState(false)
+  const [activeView, setActiveView] = useState(0)
   const [autoCompleteResults, setAutocompleteResults] = useState([
     { name: 'artists', visible: false },
     { name: 'releases', visible: false },
     { name: 'hubs', visible: false },
   ])
-  console.log('props', props)
+  const [searchResultsCategories, setSearchResultsCategories] = useState([
+    { type: 'searchResultArtists', data: response?.artists, fetched: false },
+    { type: 'searchResultReleases', data: response?.releases, fetched: false },
+    { type: 'searchResultHubs', data: response?.hubs, fetched: false },
+  ])
+  const [views, setViews] = useState([
+    { name: 'all', playlist: undefined, visible: true },
+    { name: 'artists', playlist: undefined, visible: false },
+    { name: 'releases', playlist: undefined, visible: false },
+    { name: 'hubs', playlist: null, visible: false },
+  ])
+
   const dropdownRef = useRef()
   const searchInputRef = useRef()
   useEffect(() => {
@@ -55,161 +68,57 @@ const Search = (props) => {
   }, [searchResults, searchQuery])
 
   useEffect(() => {
-    const handleDropdown = (e) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target) &&
-        !searchInputRef.current.contains(e.target)
-      ) {
-        setShowDropdown(false)
-      }
+    let viewIndex
+    let updatedView = views.slice()
+    let resultIndex
+    let updatedSearchResultsCategories = searchResultsCategories.slice()
+    if (response?.artists.length > 0) {
+      viewIndex = updatedView.findIndex((view) => view.name === 'artists')
+      updatedView[viewIndex].visible = true
+      resultIndex = updatedSearchResultsCategories.findIndex(
+        (result) => result.type === 'searchResultArtists'
+      )
+      updatedSearchResultsCategories[resultIndex].fetched = true
     }
-
-    document.addEventListener('click', handleDropdown)
-
-    return () => {
-      document.removeEventListener('click', handleDropdown)
+    if (response?.releases.length > 0) {
+      viewIndex = updatedView.findIndex((view) => view.name === 'releases')
+      updatedView[viewIndex].visible = true
+      resultIndex = updatedSearchResultsCategories.findIndex(
+        (result) => result.type === 'searchResultReleases'
+      )
+      updatedSearchResultsCategories[resultIndex].fetched = true
     }
-  }, [showDropdown, dropdownRef])
-
-  useEffect(() => {
-    if (query && setShowDropdown) {
-      suggestions?.artists?.length > 0
-        ? (autoCompleteResults[0].visible = true)
-        : (autoCompleteResults[0].visible = false)
-      suggestions?.releases?.length > 0
-        ? (autoCompleteResults[1].visible = true)
-        : (autoCompleteResults[1].visible = false)
-      suggestions?.hubs?.length > 0
-        ? (autoCompleteResults[2].visible = true)
-        : (autoCompleteResults[2].visible = false)
-      setAutocompleteResults([...autoCompleteResults])
+    if (response?.hubs.length > 0) {
+      viewIndex = updatedView.findIndex((view) => view.name === 'hubs')
+      updatedView[viewIndex].visible = true
+      resultIndex = updatedSearchResultsCategories.findIndex(
+        (result) => result.type === 'searchResultHubs'
+      )
+      updatedSearchResultsCategories[resultIndex].fetched = true
     }
-  }, [suggestions])
+  }, [response])
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setFetchedResponse(false)
-
-    if (
-      e.target.value !== null ||
-      e.target.value !== '' ||
-      e.target.value !== undefined
-    ) {
-      await NinaSdk.Search.withQuery(query).then(setResponse)
-      setFetchedResponse(true)
-      window.history.pushState(null, query, `?q=${query}`)
-    }
-    if (query === '') {
-      e.preventDefault()
-      e.stopPropagation()
-      return
-    }
-    setShowDropdown(false)
+  const viewHandler = (event) => {
+    const index = parseInt(event.target.id)
+    setActiveView(index)
   }
-
-  const autoCompleteUrl = 'https://dev.api.ninaprotocol.com/v1/suggestions'
-
-  const handleAutoComplete = async (query) => {
-    setLoading(true)
-    const response = await axios.post(autoCompleteUrl, { query })
-    if (query.length > 0) {
-      setSuggestions(response.data)
-    }
-    if (suggestions) {
-      setLoading(false)
-    }
-  }
-
-  const changeHandler = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    const search = e.target.value
-    console.log('searrch', search)
-    setQuery(search)
-    setShowDropdown(true)
-    if (query) {
-      handleAutoComplete(query)
-    }
-  }
-
-  const handleSuggestionsClick = async (search) => {
-    setFetchedResponse(false)
-    await NinaSdk.Search.withQuery(search).then(setResponse)
-    setFetchedResponse(true)
-    if (fetchedResponse) {
-      setShowDropdown(false)
-      window.history.pushState(null, search, `?q=${search}`)
-    }
-  }
-
-  const suggestionsHandler = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    const clickedSuggestion = e.target.innerText
-    if (clickedSuggestion) {
-      setQuery(clickedSuggestion)
-      setShowDropdown(false)
-    }
-
-    handleSuggestionsClick(clickedSuggestion)
-  }
-
-  const handleSearchClick = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setInputFocus(true)
-    if (inputFocus) {
-      setShowDropdown(true)
-    }
-  }
+  console.log('fetch', fetchedResponse)
+  console.log('response?.artists', response?.artists)
+  console.log('response?.artists', response?.releases)
+  console.log('response?.artists', response?.hubs)
+  console.log('searchCategories', searchResultsCategories)
   return (
-    <SearchPageContainer >
+    <SearchPageContainer>
       <SearchInputContainer>
-        <Form onSubmit={(e) => handleSubmit(e)}>
-          <SearchInputWrapper>
-            <TextField
-              className="search-input"
-              fullWidth
-              id="outlined-basic"
-              label="Search"
-              variant="standard"
-              onChange={(e) => changeHandler(e)}
-              value={query}
-              autoComplete="off"
-              onFocus={(e) => handleSearchClick(e)}
-              ref={searchInputRef}
-            />
-          </SearchInputWrapper>
-        </Form>
-
-        {showDropdown && (
-          <DropdownContainer ref={dropdownRef}>
-            {autoCompleteResults.map((result, index) => {
-              if (result.visible) {
-                return (
-                  <ResponsiveSearchResultContainer key={index}>
-                    <SearchDropdown
-                      category={result.name}
-                      searchData={suggestions}
-                      hasResults={result.visible}
-                      clickHandler={(e) => suggestionsHandler(e)}
-                    />
-                  </ResponsiveSearchResultContainer>
-                )
-              }
-            })}
-
-            {query?.length > 0 &&
-              suggestions?.artists?.length === 0 &&
-              suggestions?.releases?.length === 0 &&
-              suggestions?.hubs?.length === 0 && (
-                <Typography>No results found</Typography>
-              )}
-          </DropdownContainer>
-        )}
+        <SearchInputWrapper>
+          <Typography>{`Search results for ${query}`}</Typography>
+        </SearchInputWrapper>
       </SearchInputContainer>
+      <TabHeader
+        isActive={activeView}
+        viewHandler={viewHandler}
+        profileTabs={views}
+      />
       <SearchResultsWrapper>
         <ResponsiveSearchResultContainer>
           {fetchedResponse === false && (
@@ -219,8 +128,32 @@ const Search = (props) => {
               </Box>
             </ResponsiveDotContainer>
           )}
+          {
+            searchResults && (
+              
+          <>
+        
+              <>
+                {searchResultsCategories.map((category, index) => {
+                  if (category.fetched) {
+                    return (
+                      <Box key={index}>
+                        <ReusableTable
+                          data={category.data}
+                          type={category.type}
+                          searchQuery={query}
+                        />
+                      </Box>
+                    )
+                  }
+                })}
+              </>
+          
+          </>
+            )
+          }
 
-          {fetchedResponse && response.artists.length > 0 && (
+          {activeView === 1 && response?.artists.length > 0 && (
             <>
               <ReusableTable
                 tableType="searchResultArtists"
@@ -229,7 +162,7 @@ const Search = (props) => {
             </>
           )}
 
-          {fetchedResponse && response.releases.length > 0 && (
+          {activeView === 2 && response?.releases.length > 0 && (
             <>
               <ReusableTable
                 tableType="searchResultReleases"
@@ -238,7 +171,7 @@ const Search = (props) => {
             </>
           )}
 
-          {fetchedResponse && response.hubs.length > 0 && (
+          { activeView === 3 && response?.hubs.length > 0 && (
             <>
               <ReusableTable
                 tableType={'searchResultHubs'}
@@ -263,8 +196,8 @@ const SearchPageContainer = styled(Box)(({ theme }) => ({
   height: '60vh',
   maxWidth: theme.maxWidth,
   [theme.breakpoints.down('md')]: {
-    height: '80vh'
-  }
+    height: '80vh',
+  },
 }))
 
 const SearchInputContainer = styled(Box)(({ theme }) => ({
@@ -272,7 +205,6 @@ const SearchInputContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     paddingLeft: '10px',
     paddingRight: '10px',
-    
   },
 }))
 const SearchInputWrapper = styled(Box)(({ theme }) => ({
@@ -281,7 +213,6 @@ const SearchInputWrapper = styled(Box)(({ theme }) => ({
 const Form = styled('form')(({ theme }) => ({}))
 const SearchResultsWrapper = styled(Box)(({ theme }) => ({
   textAlign: 'left',
-
 }))
 
 const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
@@ -292,7 +223,6 @@ const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
   padding: '10px 0',
   [theme.breakpoints.down('md')]: {
     paddingBottom: '100px',
-   
   },
 }))
 

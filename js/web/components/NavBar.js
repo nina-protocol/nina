@@ -9,12 +9,13 @@ import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
 import Link from 'next/link'
 import { useWallet } from '@solana/wallet-adapter-react'
+import dynamic from 'next/dynamic'
 import {
   WalletDialogProvider,
   WalletMultiButton,
 } from '@solana/wallet-adapter-material-ui'
 import Breadcrumbs from './Breadcrumbs'
-
+import NavSearch from './NavSearch'
 const NavBar = () => {
   const { healthOk } = useContext(Nina.Context)
   const {getHubsForuser, filterHubsForUser, getHubsForUser, hubState, getHubs } = useContext(Hub.Context)
@@ -73,6 +74,7 @@ const NavBar = () => {
               </a>
           )}
           <NavCtas>
+            <NavSearch />
             {wallet.wallets && (
               <StyledWalletDialogProvider featuredWallets={4}>
                 <StyledWalletButton>
