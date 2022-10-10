@@ -281,7 +281,8 @@ const ProfileContainer = styled(Box)(({ theme }) => ({
     minHeight: '100% !important',
     maxHeight: '80vh',
     overflow: 'hidden',
-    marginLeft: 0,
+    marginLeft: 0,    
+    
   },
 }))
 
@@ -327,7 +328,8 @@ const ProfileOverflowContainer = styled(Box)(({ theme }) => ({
 const ProfileTableContainer = styled(Box)(({ theme }) => ({
   paddingBottom: '100px',
   [theme.breakpoints.down('md')]: {
-    paddingBottom: '200px',
+    paddingBottom: '100px',
+    overflow:'scroll'
   },
 }))
 

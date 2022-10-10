@@ -92,9 +92,11 @@ const Search = (props) => {
     e.stopPropagation()
     setFetchedResponse(false)
 
-    if (e.target.value !== null || e.target.value !== '' || e.target.value !== undefined) {
-      // console.log('4444', e.target.value)
-      // setQuery(e.target.value)
+    if (
+      e.target.value !== null ||
+      e.target.value !== '' ||
+      e.target.value !== undefined
+    ) {
       await NinaSdk.Search.withQuery(query).then(setResponse)
       setFetchedResponse(true)
       window.history.pushState(null, query, `?q=${query}`)
@@ -163,8 +165,8 @@ const Search = (props) => {
     }
   }
   return (
-    <Box sx={{ height: '60vh', width: '960px' }}>
-      <Box sx={{ position: 'relative' }}>
+    <SearchPageContainer >
+      <SearchInputContainer>
         <Form onSubmit={(e) => handleSubmit(e)}>
           <SearchInputWrapper>
             <TextField
@@ -207,7 +209,7 @@ const Search = (props) => {
               )}
           </DropdownContainer>
         )}
-      </Box>
+      </SearchInputContainer>
       <SearchResultsWrapper>
         <ResponsiveSearchResultContainer>
           {fetchedResponse === false && (
@@ -253,23 +255,45 @@ const Search = (props) => {
             )}
         </ResponsiveSearchResultContainer>
       </SearchResultsWrapper>
-    </Box>
+    </SearchPageContainer>
   )
 }
 
+const SearchPageContainer = styled(Box)(({ theme }) => ({
+  height: '60vh',
+  maxWidth: theme.maxWidth,
+  [theme.breakpoints.down('md')]: {
+    height: '80vh'
+  }
+}))
+
+const SearchInputContainer = styled(Box)(({ theme }) => ({
+  position: 'relative',
+  [theme.breakpoints.down('md')]: {
+    paddingLeft: '10px',
+    paddingRight: '10px',
+    
+  },
+}))
 const SearchInputWrapper = styled(Box)(({ theme }) => ({
-  maxWidth: '960px',
+  maxWidth: '100vw',
 }))
 const Form = styled('form')(({ theme }) => ({}))
 const SearchResultsWrapper = styled(Box)(({ theme }) => ({
   textAlign: 'left',
+
 }))
+
 const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
   maxHeight: '60vh',
-  width: '960px',
-  overflow: 'auto',
+  maxWidth: theme.maxWidth,
+  overflowY: 'auto',
   webkitOverflowScrolling: 'touch',
   padding: '10px 0',
+  [theme.breakpoints.down('md')]: {
+    paddingBottom: '100px',
+   
+  },
 }))
 
 const ResponsiveDotContainer = styled(Box)(({ theme }) => ({

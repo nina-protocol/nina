@@ -21,7 +21,6 @@ import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import { styled } from '@mui/material'
 import { useSnackbar } from 'notistack'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
-
 const { getImageFromCDN, loader } = imageManager
 
 const ReusableTableHead = ({ tableType }) => {
@@ -375,7 +374,6 @@ const ResponsiveTableContainer = styled(TableCell)(({ theme }) => ({
     height: '100% !important',
     paddingLeft: 0,
     paddingRight: 0,
-    paddingBottom: '200px',
   },
 }))
 
