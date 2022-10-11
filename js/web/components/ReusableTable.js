@@ -53,6 +53,12 @@ const ReusableTableHead = ({ tableType }) => {
     headCells.push({ id: 'title', label: 'Title' })
   }
 
+  if (tableType === 'allSearchResults'){
+   
+    headCells.push({ id: 'image', label: '' })
+    headCells.push({id: 'name', label: ''})
+  }
+
   if (tableType === 'searchResultArtists') {
     headCells.push({ id: 'name', label: 'Artists' })
   }
@@ -117,7 +123,7 @@ const HubDescription = ({ description }) => {
   )
 }
 
-const ReusableTableBody = ({ releases, tableType }) => {
+const ReusableTableBody = ({ releases, tableType, hasOverflow }) => {
   const {
     updateTrack,
     addTrackToQueue,
@@ -222,6 +228,7 @@ const ReusableTableBody = ({ releases, tableType }) => {
         collaborator: truncateAddress(data.collaborator),
       }
     }
+ 
     if (tableType === 'searchResultArtists'){
       formattedData = {
         link: `/profiles/${data?.publicKey}`,
@@ -351,9 +358,9 @@ const ReusableTableBody = ({ releases, tableType }) => {
   )
 }
 
-const ReusableTable = ({ releases, tableType }) => {
+const ReusableTable = ({ releases, tableType, hasOverflow }) => {
   return (
-    <ResponsiveContainer>
+    <ResponsiveContainer hasOverflow={hasOverflow}>
       <ResponsiveTableContainer>
         <Table>
           <ReusableTableHead tableType={tableType} />
@@ -368,7 +375,7 @@ const ResponsiveTableContainer = styled(TableCell)(({ theme }) => ({
   width: '100vw',
   borderBottom: 'none',
   padding: '0px',
- 
+  
   [theme.breakpoints.down('md')]: {
     overflowY: 'unset',
     height: '100% !important',
@@ -426,11 +433,11 @@ const StyledTableDescriptionContainer = styled(Box)(({ theme }) => ({
   maxWidth: '20vw',
 }))
 
-const ResponsiveContainer = styled(Box)(({ theme }) => ({
+const ResponsiveContainer = styled(Box)(({ theme, hasOverflow }) => ({
   width: theme.maxWidth,
   maxHeight: '80vh',
   webkitOverflowScrolling: 'touch',
-  overflowY: 'auto',
+  overflowY: hasOverflow ? 'auto' : 'unset',
   overflowX: 'hidden',
  [ '&::-webkit-scrollbar']: {
     display: 'none',

@@ -166,6 +166,7 @@ const HubComponent = ({ hubPubkey }) => {
                 <ReusableTable
                   tableType={'hubReleases'}
                   releases={releaseData}
+                  hasOverflow={true}
                 />
               )}
             </>
@@ -179,6 +180,7 @@ const HubComponent = ({ hubPubkey }) => {
                 <ReusableTable
                   tableType={'hubCollaborators'}
                   releases={hubCollaborators}
+                  hasOverflow={true}
                 />
               )}
             </>

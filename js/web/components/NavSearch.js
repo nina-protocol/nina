@@ -11,7 +11,8 @@ const SearchDropdown = dynamic(() => import('./SearchDropdown'))
 
 const NavSearch = () => {
 const router = useRouter()
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState()
+  const [filter, setFilter] = useState()
   const [response, setResponse] = useState(undefined)
   const [suggestions, setSuggestions] = useState([])
   const [loading, setLoading] = useState(false)
@@ -89,9 +90,10 @@ const router = useRouter()
       e.target.value !== '' ||
       e.target.value !== undefined
     ) {
+      
       await NinaSdk.Search.withQuery(query).then(setResponse)
       setFetchedResponse(true)
-      router.push(`/search?q=${query}`)
+      router.push(`/search/?q=${query}`)
     }
     if (query === '') {
       e.preventDefault()
@@ -106,6 +108,7 @@ const router = useRouter()
   const handleAutoComplete = async (query) => {
     setLoading(true)
     const response = await axios.post(autoCompleteUrl, { query })
+    console.log('response', response)
     if (query.length > 0) {
       setSuggestions(response.data)
     }
@@ -126,26 +129,34 @@ const router = useRouter()
     }
   }
 
-  const handleSuggestionsClick = async (search) => {
+  const handleSuggestionsClick = async (search, searchFilter) => {
     setFetchedResponse(false)
     await NinaSdk.Search.withQuery(search).then(setResponse)
-    setFetchedResponse(true)
+    if(response){
+      console.log('responssssssssse', response)
+      setFetchedResponse(true)
+    }
     if (fetchedResponse) {
+    
       setShowDropdown(false)
-      router.push(`/search/?q=${search}`)
+      
+      router.push(`/search/?q=${search}${searchFilter ? `&type=${searchFilter}`: ''}`)
     }
   }
 
   const suggestionsHandler = (e) => {
     e.preventDefault()
     e.stopPropagation()
+    console.log('e.target.id', e.target.id)
     const clickedSuggestion = e.target.innerText
+    const searchFilter = e.target.id
     if (clickedSuggestion) {
+      setFilter(searchFilter)
       setQuery(clickedSuggestion)
       setShowDropdown(false)
     }
 
-    handleSuggestionsClick(clickedSuggestion)
+    handleSuggestionsClick(clickedSuggestion, searchFilter)
   }
 
   const handleSearchClick = (e) => {
@@ -154,6 +165,12 @@ const router = useRouter()
     setInputFocus(true)
     if (inputFocus) {
       setShowDropdown(true)
+    }
+  }
+
+  const arrowHandler = (e) => {
+    if (e.key === 'ArrowDown') {
+      console.log('arrow')
     }
   }
 
@@ -168,6 +185,7 @@ const router = useRouter()
             onFocus={(e) => handleSearchClick(e)}
             ref={searchInputRef}
             placeholder="Search for artists, releases, hubs"
+            type="search"
             />
         </SearchInputWrapper>
       </Form>
@@ -182,6 +200,7 @@ const router = useRouter()
                     searchData={suggestions}
                     hasResults={result.visible}
                     clickHandler={(e) => suggestionsHandler(e)}
+                    onKeyDown={(e) => arrowHandler(e)}
                   />
                 </ResponsiveSearchResultContainer>
               )

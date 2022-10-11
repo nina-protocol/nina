@@ -217,6 +217,7 @@ const Profile = ({ profilePubkey }) => {
                   <ReusableTable
                     tableType={'profilePublishedReleases'}
                     releases={profilePublishedReleases}
+                    hasOverflow={true}
                   />
                 </ProfileTableContainer>
               )}
@@ -233,6 +234,7 @@ const Profile = ({ profilePubkey }) => {
                   <ReusableTable
                     tableType={'profileCollectionReleases'}
                     releases={profileCollectionReleases}
+                    hasOverflow={true}
                   />
                 </ProfileTableContainer>
               )}
@@ -248,6 +250,7 @@ const Profile = ({ profilePubkey }) => {
                   <ReusableTable
                     tableType={'profileHubs'}
                     releases={profileHubs}
+                    hasOverflow={true}
                   />
                 </ProfileTableContainer>
               )}

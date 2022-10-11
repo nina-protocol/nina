@@ -17,34 +17,30 @@ const ReusableTable = dynamic(() => import('./ReusableTable'))
 const TabHeader = dynamic(() => import('./TabHeader'))
 
 const Search = (props) => {
+  const router = useRouter()
+  console.log('router.query', router.query)
   const { searchResults, searchQuery } = props
   const [query, setQuery] = useState(searchQuery?.q)
-  const [response, setResponse] = useState(undefined)
-  const [suggestions, setSuggestions] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [fetchedResponse, setFetchedResponse] = useState(undefined)
-  const [showDropdown, setShowDropdown] = useState(false)
-  const [inputFocus, setInputFocus] = useState(false)
+  const [filter, setFilter] = useState()
+  const [response, setResponse] = useState(searchResults)
+ 
+  const [fetchedResponse, setFetchedResponse] = useState(false)
+
   const [activeView, setActiveView] = useState(0)
-  const [autoCompleteResults, setAutocompleteResults] = useState([
-    { name: 'artists', visible: false },
-    { name: 'releases', visible: false },
-    { name: 'hubs', visible: false },
-  ])
+
   const [searchResultsCategories, setSearchResultsCategories] = useState([
     { type: 'searchResultArtists', data: response?.artists, fetched: false },
     { type: 'searchResultReleases', data: response?.releases, fetched: false },
     { type: 'searchResultHubs', data: response?.hubs, fetched: false },
   ])
   const [views, setViews] = useState([
-    { name: 'all', playlist: undefined, visible: true },
-    { name: 'artists', playlist: undefined, visible: false },
-    { name: 'releases', playlist: undefined, visible: false },
+    { name: 'all', playlist: null, visible: true },
+    { name: 'artists', playlist: null, visible: false },
+    { name: 'releases', playlist: null, visible: false },
     { name: 'hubs', playlist: null, visible: false },
   ])
 
-  const dropdownRef = useRef()
-  const searchInputRef = useRef()
+
   useEffect(() => {
     NinaSdk.client.init(
       process.env.NINA_API_ENDPOINT,
@@ -54,17 +50,19 @@ const Search = (props) => {
   }, [])
 
   useEffect(() => {
-    console.log('searchQuery', searchQuery)
-    console.log('searchResults', searchResults)
+ 
 
     if (searchQuery) {
       const query = searchQuery.q
+      const filter = searchQuery.type
       setQuery(query)
+      setFilter(filter)
+
     }
     if (searchResults) {
       setResponse(searchResults)
       setFetchedResponse(true)
-    }
+      console.log('yes lawd' )    }
   }, [searchResults, searchQuery])
 
   useEffect(() => {
@@ -72,41 +70,71 @@ const Search = (props) => {
     let updatedView = views.slice()
     let resultIndex
     let updatedSearchResultsCategories = searchResultsCategories.slice()
-    if (response?.artists.length > 0) {
+    console.log('updatedView', updatedView)
+    
+    if (fetchedResponse) {
+      const responseLength = [...response?.artists, ...response?.releases, ...response?.hubs].length
+      console.log('responseLength', responseLength)
+      viewIndex = updatedView?.findIndex((view) => view.name === 'all')
+      updatedView[viewIndex].name = `all (${responseLength})`
+      updatedView[viewIndex].visible = true
+      
+    }
+    if (fetchedResponse && response?.artists?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'artists')
+      updatedView[viewIndex].name = `artists (${response?.artists?.length})`
       updatedView[viewIndex].visible = true
       resultIndex = updatedSearchResultsCategories.findIndex(
         (result) => result.type === 'searchResultArtists'
       )
       updatedSearchResultsCategories[resultIndex].fetched = true
     }
-    if (response?.releases.length > 0) {
+    if (fetchedResponse && response?.releases?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
+      updatedView[viewIndex].name = `releases (${response?.releases?.length})`
       updatedView[viewIndex].visible = true
       resultIndex = updatedSearchResultsCategories.findIndex(
         (result) => result.type === 'searchResultReleases'
       )
       updatedSearchResultsCategories[resultIndex].fetched = true
     }
-    if (response?.hubs.length > 0) {
+    if (fetchedResponse && response?.hubs?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'hubs')
+      updatedView[viewIndex].name = `hubs (${response?.hubs?.length})`
       updatedView[viewIndex].visible = true
       resultIndex = updatedSearchResultsCategories.findIndex(
         (result) => result.type === 'searchResultHubs'
       )
-      updatedSearchResultsCategories[resultIndex].fetched = true
+    // now filter everything by type
+
+    // setViews(updatedView)
+      // updatedSearchResultsCategories[resultIndex].fetched = true
     }
-  }, [response])
+  }, [response, views, fetchedResponse])
+
+  useEffect(() => {
+
+    let updatedView
+    let updatedSearchResultsCategories = searchResultsCategories.slice()
+    if (filter) {
+      const filteredResults = searchResultsCategories.find(
+        (result) => result.type === `${filter}`
+      )
+      console.log('filteredResults', filteredResults)
+      updatedSearchResultsCategories = [filteredResults]
+      updatedView = updatedView.filter((view) => view.name === filter)
+    }
+    setViews(updatedView)
+  }, [views, filter])
+
 
   const viewHandler = (event) => {
     const index = parseInt(event.target.id)
+    console.log('fetchedResponsssssssse', fetchedResponse)
+    console.log('response?.artisssssts', response?.artists.length > 0)
     setActiveView(index)
   }
-  console.log('fetch', fetchedResponse)
-  console.log('response?.artists', response?.artists)
-  console.log('response?.artists', response?.releases)
-  console.log('response?.artists', response?.hubs)
-  console.log('searchCategories', searchResultsCategories)
+
   return (
     <SearchPageContainer>
       <SearchInputContainer>
@@ -114,12 +142,16 @@ const Search = (props) => {
           <Typography>{`Search results for ${query}`}</Typography>
         </SearchInputWrapper>
       </SearchInputContainer>
-      <TabHeader
-        isActive={activeView}
-        viewHandler={viewHandler}
-        profileTabs={views}
-      />
-      <SearchResultsWrapper>
+      {fetchedResponse && (
+        <Box sx={{ py: 1 }}>
+          <TabHeader
+            isActive={activeView}
+            viewHandler={viewHandler}
+            profileTabs={views}
+          />
+        </Box>
+      )}
+      <SearchAllResultsWrapper>
         <ResponsiveSearchResultContainer>
           {fetchedResponse === false && (
             <ResponsiveDotContainer>
@@ -128,56 +160,61 @@ const Search = (props) => {
               </Box>
             </ResponsiveDotContainer>
           )}
-          {
-            searchResults && (
-              
-          <>
-        
-              <>
-                {searchResultsCategories.map((category, index) => {
-                  if (category.fetched) {
-                    return (
-                      <Box key={index}>
-                        <ReusableTable
-                          data={category.data}
-                          type={category.type}
-                          searchQuery={query}
-                        />
-                      </Box>
-                    )
-                  }
-                })}
-              </>
-          
-          </>
-            )
-          }
 
-          {activeView === 1 && response?.artists.length > 0 && (
-            <>
+          {fetchedResponse && activeView === 0 && (
+            <AllResultsContainer sx={{ overflow: 'auto' }}>
+              <AllResultsWrapper>
+                <ReusableTable
+                  tableType="searchResultArtists"
+                  releases={response?.artists}
+                  hasOverflow={false}
+                />
+              </AllResultsWrapper>
+              <AllResultsWrapper>
+                <ReusableTable
+                  tableType="searchResultReleases"
+                  releases={response?.releases}
+                  hasOverflow={false}
+                />
+              </AllResultsWrapper>
+              <AllResultsWrapper>
+                <ReusableTable
+                  tableType="searchResultHubs"
+                  releases={response?.hubs}
+                  hasOverflow={false}
+                />
+              </AllResultsWrapper>
+            </AllResultsContainer>
+          )}
+
+          {fetchedResponse && activeView === 1 && response?.artists.length > 0 && (
+            <ResultsWrapper>
               <ReusableTable
                 tableType="searchResultArtists"
                 releases={response?.artists}
+                hasOverflow={true}
               />
-            </>
+            </ResultsWrapper>
           )}
 
-          {activeView === 2 && response?.releases.length > 0 && (
-            <>
+          {fetchedResponse && activeView === 2 && response?.releases.length > 0 && (
+            <ResultsWrapper>
               <ReusableTable
                 tableType="searchResultReleases"
                 releases={response?.releases}
+                hasOverflow={true}
               />
-            </>
+            </ResultsWrapper>
           )}
 
-          { activeView === 3 && response?.hubs.length > 0 && (
-            <>
+          {fetchedResponse && activeView === 3 && response?.hubs.length > 0 && (
+            <ResultsWrapper>
               <ReusableTable
                 tableType={'searchResultHubs'}
                 releases={response?.hubs}
+                hasOverflow={true}
               />
-            </>
+            </ResultsWrapper>
           )}
           {query?.length > 0 &&
             fetchedResponse &&
@@ -187,7 +224,7 @@ const Search = (props) => {
               <Typography>No results found</Typography>
             )}
         </ResponsiveSearchResultContainer>
-      </SearchResultsWrapper>
+      </SearchAllResultsWrapper>
     </SearchPageContainer>
   )
 }
@@ -211,14 +248,16 @@ const SearchInputWrapper = styled(Box)(({ theme }) => ({
   maxWidth: '100vw',
 }))
 const Form = styled('form')(({ theme }) => ({}))
-const SearchResultsWrapper = styled(Box)(({ theme }) => ({
+
+const SearchAllResultsWrapper = styled(Box)(({ theme }) => ({
   textAlign: 'left',
+  overflow: 'auto',
 }))
 
 const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
   maxHeight: '60vh',
   maxWidth: theme.maxWidth,
-  overflowY: 'auto',
+
   webkitOverflowScrolling: 'touch',
   padding: '10px 0',
   [theme.breakpoints.down('md')]: {
@@ -237,13 +276,15 @@ const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
-const DropdownContainer = styled(Box)(({ theme }) => ({
-  maxHeight: '60vh',
-  zIndex: '100',
-  position: 'absolute',
-  overflow: 'hidden',
-  textAlign: 'left',
-  backgroundColor: 'rgba(255,255,255,0.9)',
+const AllResultsContainer = styled(Box)(({ theme }) => ({
+  overflow: 'unset',
 }))
 
+const AllResultsWrapper = styled(Box)(({ theme }) => ({
+  marginBottom: '20px',
+}))
+
+const ResultsWrapper = styled(Box)(({ theme }) => ({
+  overflow: 'visible',
+}))
 export default Search

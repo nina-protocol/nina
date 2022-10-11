@@ -26,13 +26,14 @@ const SearchPage = (props) => {
             process.env.NINA_PROGRAM_ID
           )
         }
-        console.log('NinaSdk', NinaSdk)
+   
         const searchResults = await NinaSdk.Search.withQuery(searchQuery)
-        console.log('searchResults 111111', searchResults )
+    
         return {
           props: {
             searchQuery: query,
             searchResults: searchResults,
+
           },
         }
       } catch (error) {

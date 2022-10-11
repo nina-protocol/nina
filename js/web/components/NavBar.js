@@ -9,7 +9,7 @@ import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
 import Link from 'next/link'
 import { useWallet } from '@solana/wallet-adapter-react'
-import dynamic from 'next/dynamic'
+
 import {
   WalletDialogProvider,
   WalletMultiButton,
