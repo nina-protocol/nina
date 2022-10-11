@@ -1,0 +1,441 @@
+import Image from 'next/image'
+import { useState, useRef, useMemo } from 'react'
+import axios from 'axios'
+import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
+import ScrollablePageWrapper from './ScrollablePageWrapper'
+import Link from 'next/link'
+import { styled } from '@mui/material/styles'
+import Box  from '@mui/material/Box'
+import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
+const { getImageFromCDN, loader } = imageManager
+import CloseIcon from '@mui/icons-material/Close'
+import Typography from '@mui/material/Typography'
+import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
+import debounce from 'lodash.debounce'
+
+const timeSince = (date) => {
+  const seconds = Math.floor((new Date() - date) / 1000)
+  let interval = seconds / 31536000
+  if (interval > 1) {
+    const roundedInterval = Math.floor(interval)
+    return roundedInterval + (roundedInterval === 1 ? ' year' : ' years')
+  }
+  interval = seconds / 2592000
+  if (interval > 1) {
+    const roundedInterval = Math.floor(interval)
+    return roundedInterval + (roundedInterval === 1 ? ' month' : ' months')
+  }
+  interval = seconds / 86400
+  if (interval > 1) {
+    const roundedInterval = Math.floor(interval)
+    return roundedInterval + (roundedInterval === 1 ? ' day' : ' days')
+  }
+  interval = seconds / 3600
+  if (interval > 1) {
+    const roundedInterval = Math.floor(interval)
+    return roundedInterval + (roundedInterval === 1 ? ' hour' : ' hours')
+  }
+  interval = seconds / 60
+  if (interval > 1) {
+    const roundedInterval = Math.floor(interval)
+    return roundedInterval + (roundedInterval === 1 ? ' minute' : ' minutes')
+  }
+  return Math.floor(seconds) + ' seconds'
+}
+
+const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser}) => {
+  const [pendingFetch, setPendingFetch] = useState(false)
+  const scrollRef = useRef()
+
+  const handleScroll = () => {
+    const bottom =
+      scrollRef.current.getBoundingClientRect().bottom - 250 <=
+      window.innerHeight
+    if (
+      bottom &&
+      !pendingFetch &&
+      itemsTotal !== items.length
+    ) {
+      setPendingFetch(true)
+      handleGetFeedForUser()
+    }
+  }
+
+  const feedItems = useMemo(() => {
+    const feedItemComponents = items?.map((item, i) => {
+      switch (item?.type) {
+        case 'HubInitWithCredit':
+          return (
+            <ImageCard>
+              <Link href={`/hubs/${item?.hub?.handle}`} passHref>
+                <Image
+                  height={'100px'}
+                  width={'100px'}
+                  layout="responsive"
+                  src={getImageFromCDN(
+                    item?.hub?.data?.image,
+                    200,
+                    Date.parse(item.datetime)
+                  )}
+                  alt={i}
+                  priority={true}
+                  loader={loader}
+                  unoptimized={true}
+                />
+              </Link>
+              <p>New Hub:</p>
+              <p><Link href={`/hubs/${item?.hub?.handle}`} passHref>{`${item?.hub?.data?.displayName}`}</Link> created by <Link href={`/accounts/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link></p>
+              <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
+            </ImageCard>
+          )
+        case 'ReleaseInitWithCredit':
+          return (
+            <ImageCard>
+              <Link href={`/${item.release.publicKey}`} passHref>
+              <Image
+                height={'100px'}
+                width={'100px'}
+                layout="responsive"
+                src={getImageFromCDN(
+                  item.release.metadata.image,
+                  400,
+                  Date.parse(item.datetime)
+                )}
+                alt={i}
+                priority={true}
+                loader={loader}
+                unoptimized={true}
+              />
+              </Link>
+              <p>New Release:</p>
+              <p><Link href={`/${item.release.publicKey}`} passHref>{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link></p>
+              <p>by <Link href={`/accounts/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link></p>
+              <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
+            </ImageCard>
+          )
+        case 'ReleaseInitViaHub':
+          return (
+            <ImageCard>
+              <Link href={`/${item.release.publicKey}`} passHref>
+              <Image
+                height={'100px'}
+                width={'100px'}
+                layout="responsive"
+                src={getImageFromCDN(
+                  item.release.metadata.image,
+                  400,
+                  Date.parse(item.datetime)
+                )}
+                alt={i}
+                priority={true}
+                loader={loader}
+                unoptimized={true}
+              />
+              </Link>
+              <p>New Release:</p>
+              <p><Link href={`/${item.release.publicKey}`} passHref>{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link> via <Link href={`/hubs/${item?.hub?.handle}`} passHref>{`${item?.hub?.data?.displayName}`}</Link></p>
+              <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
+            </ImageCard>
+          )
+      case 'ReleasePurchase':
+        return (
+          <ImageCard>
+            <Link href={`/${item.release.publicKey}`} passHref>
+            <Image
+              height={'100px'}
+              width={'100px'}
+              layout="responsive"
+              src={getImageFromCDN(
+                item.release.metadata.image,
+                400,
+                Date.parse(item.datetime)
+              )}
+              alt={i}
+              priority={true}
+              loader={loader}
+              unoptimized={true}
+            />
+            </Link>
+            <p>Release Purchased:</p>
+            <p><Link href={`/${item.release.publicKey}`} passHref>{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link></p>
+            <p>by <Link href={`/accounts/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link></p>
+            <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
+          </ImageCard>
+        )
+        case 'ReleasePurchaseViaHub':
+          return (
+            <ImageCard>
+              <Link href={`/${item.release.publicKey}`} passHref>
+              <Image
+                height={'100px'}
+                width={'100px'}
+                layout="responsive"
+                src={getImageFromCDN(
+                  item.release.metadata.image,
+                  400,
+                  Date.parse(item.datetime)
+                )}
+                alt={i}
+                priority={true}
+                loader={loader}
+                unoptimized={true}
+              />
+              </Link>
+              <p>Release Purchased:</p>
+              <p><Link href={`/${item.release.publicKey}`} passHref>{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link></p>
+              <p>by <Link href={`/accounts/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link></p>
+              <p>from <Link href={`/hubs/${item.hub.handle}`} passHref>{`${item.hub.data.displayName}`}</Link></p>
+              <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
+            </ImageCard>
+          )
+    
+        case 'HubAddCollaborator':
+          return (
+            <ImageCard>
+              <Link href={`/hubs/${item?.hub?.handle}`} passHref>
+                <Image
+                  height={'100px'}
+                  width={'100px'}
+                  layout="responsive"
+                  src={getImageFromCDN(
+                    item?.hub?.data.image,
+                    200,
+                    Date.parse(item.datetime)
+                  )}
+                  alt={i}
+                  priority={true}
+                  loader={loader}
+                  unoptimized={true}
+                />
+              </Link>
+              <p><Link href={`/accounts/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link> added as a collaborator to <Link href={`/hubs/${item?.hub?.handle}`} passHref>{`${item?.hub?.data.displayName}`}</Link></p>
+              <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
+            </ImageCard>
+          )
+
+        case 'HubAddRelease':
+          return (
+            <ImageCard>
+              <Link href={`/${item.release.publicKey}`} passHref>
+              <Image
+                height={'100px'}
+                width={'100px'}
+                layout="responsive"
+                src={getImageFromCDN(
+                  item.release.metadata.image,
+                  400,
+                  Date.parse(item.datetime)
+                )}
+                alt={i}
+                priority={true}
+                loader={loader}
+                unoptimized={true}
+              />
+              </Link>
+              <p><Link href={`/${item.release.publicKey}`} passHref>{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link></p>
+              <p>Reposted to <Link href={`/hubs/${item.hub.handle}`} passHref>{`${item.hub.data.displayName}`}</Link></p>
+              <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
+            </ImageCard>
+          )
+        
+        case 'PostInitViaHub':
+          return (
+            <MultiCard>
+              <Box sx={{display: 'flex', width: '100%'}}>
+                <Box sx={{width: '30%'}}>
+                  <Link href={`/hubs/${item?.hub?.handle}`} passHref>
+                    <Image
+                      height={'30px'}
+                      width={'30px'}
+                      layout="responsive"
+                      src={getImageFromCDN(
+                        item?.hub?.data.image,
+                        400,
+                        Date.parse(item.datetime)
+                      )}
+                      alt={i}
+                      priority={true}
+                      loader={loader}
+                      unoptimized={true}
+                    />
+                  </Link>
+                </Box>
+                <Box>
+                  <p>{item.post?.data.title}</p>
+                </Box>
+              </Box>
+              <p>{item.post?.data.body}</p>
+              <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
+            </MultiCard>
+          )
+
+        case 'PostInitViaHubWithReferenceRelease':
+          return (
+            <MultiCard>
+              <Box sx={{display: 'flex', width: '100%'}}>
+                <Box sx={{width: '30%'}}>
+                  <Link href={`/hubs/${item.hub.handle}`} passHref>
+                    <Image
+                      height={'30px'}
+                      width={'30px'}
+                      layout="responsive"
+                      src={getImageFromCDN(
+                        item.release.metadata.image,
+                        400,
+                        Date.parse(item.datetime)
+                      )}
+                      alt={i}
+                      priority={true}
+                      loader={loader}
+                      unoptimized={true}
+                    />
+                  </Link>
+                </Box>
+                <Box>
+                  <p>{item.post?.data.title}</p>
+                </Box>
+              </Box>
+              <p>{item.post?.data.body}</p>
+              <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
+            </MultiCard>
+          )
+      case 'SubscriptionSubscribeAccount':
+          return (
+            <TextCard>
+              <p><Link href={`/accounts/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link> Followed <Link href={`/accounts/${item.toAccount.publicKey}`} passHref>{`${truncateAddress(item.toAccount.publicKey)}`}</Link></p>
+              <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
+            </TextCard>
+          )
+        case 'SubscriptionSubscribeHub':
+          return (
+            <ImageCard>
+              <Link href={`/hubs/${item.toHub.publicKey}`} passHref>
+                <Image
+                  height={'100px'}
+                  width={'100px'}
+                  layout="responsive"
+                  src={getImageFromCDN(
+                    item.toHub.data.image,
+                    400,
+                    Date.parse(item.datetime)
+                  )}
+                  alt={i}
+                  priority={true}
+                  loader={loader}
+                  unoptimized={true}
+                />
+              </Link>
+              <p><Link href={`/accounts/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link> Followed <Link href={`/hubs/${item.toHub.publicKey}`} passHref>{`${item.toHub.data.displayName}`}</Link></p>
+              <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
+            </ImageCard>
+          )
+        
+        default:
+          return <p key={i}>{item?.type}</p>
+      }
+    })
+    return feedItemComponents
+  }, [items]);
+
+  return (
+    <StyledScrollablePageWrapper
+      sx={{overflowY: "scroll", top: 0}}
+      onScroll={debounce(() => handleScroll(), 500)}
+    >
+      <FeedHeader sx={{display: 'flex', width: '100%'}}>
+        <CloseIcon
+          fontSize="medium"
+          onClick={toggleDrawer(false)}
+        />
+        <Typography variant="h4">LATEST</Typography>
+        <PlayCircleOutlineOutlinedIcon
+          fontSize="medium"
+          sx={{ paddingRight: '18px'}} 
+          onClick={playFeed}
+        />
+      </FeedHeader>
+      <FeedWrapper ref={scrollRef}>
+        {feedItems?.map((item, index) => (
+          <>
+            {item}
+          </>
+        ))}
+      </FeedWrapper>
+      {itemsTotal === items.length &&
+        <Typography variant="h4" sx={{textAlign: 'center'}}>No more items</Typography>
+      }
+    </StyledScrollablePageWrapper>
+  )
+}
+
+const FeedHeader = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  top: 0,
+  padding: '10px',
+  marginRight: '20px',
+  background: 'white',
+  zIndex:100,
+  '& .MuiTypography-h4': {
+    top: '50%',
+    fontWeight: 'bold',
+    margin: '0 auto',
+  },  
+}))
+
+const StyledScrollablePageWrapper = styled(ScrollablePageWrapper)(({ theme }) => ({
+  padding:'0px !important',
+}))
+const TextCard = styled(Box)(({ theme }) => ({
+  margin: '8px 0',
+  height: '80px',
+  width: '400px',
+  border: '1px solid',
+}))
+
+const MultiCard = styled(Box)(({ theme }) => ({
+  margin: '8px 0',
+  height: 'auto',
+  maxHeight: '250px',
+  width: '400px',
+  border: '1px solid',
+  '& img': {
+    cursor: 'pointer',
+  }
+}))
+
+const ImageCard =  styled(Box)(({ theme }) => ({
+  margin: '8px 0',
+  minHeight: '300px',
+  maxHeight: '500px',
+  height: 'auto',
+  width: '400px',
+  border: '1px solid',
+  textOverflow: 'ellipsis',
+  overflow: 'hidden',
+  '& img': {
+    cursor: 'pointer',
+  },
+  '& a': {
+    height: '50%',
+    width: '50%',
+  },
+}))
+
+const FeedWrapper = styled(Box)(({ theme }) => ({
+  padding: '18px 18px',
+  height: 'auto',
+  top: 0,
+  minHeight: '75vh',
+  margin: '0 auto',
+  position: 'relative',
+  '& a': {
+    color: theme.palette.blue,
+  },
+  [theme.breakpoints.down('md')]: {
+    padding: '0px 30px',
+    overflowX: 'auto',
+    minHeight: '80vh',
+  },
+}))
+
+export default Feed

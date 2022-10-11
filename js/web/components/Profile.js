@@ -1,6 +1,7 @@
 import { useEffect, useContext, useState, useMemo } from 'react'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
+import axios from 'axios'
 import { Box, Typography } from '@mui/material'
 import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
@@ -9,6 +10,7 @@ import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/trun
 const Dots = dynamic(() => import('./Dots'))
 const TabHeader = dynamic(() => import('./TabHeader'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
+const Feed = dynamic(() => import('./Feed'))
 
 const Profile = ({ profilePubkey }) => {
   const {
@@ -72,7 +74,7 @@ const Profile = ({ profilePubkey }) => {
 
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
       updatedView[viewIndex].playlist = collected
-      fetched.collection = true
+      fetched.collection = true      
 
       setProfileHubs(hubs)
       fetched.hubs = true
@@ -100,6 +102,7 @@ const Profile = ({ profilePubkey }) => {
       viewIndex = updatedView.findIndex((view) => view.name === 'hubs')
       updatedView[viewIndex].visible = true
     }
+
     setViews(updatedView)
   }, [profilePublishedReleases, profileCollectionReleases, profileHubs])
 
