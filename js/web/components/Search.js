@@ -39,7 +39,7 @@ const Search = (props) => {
     { name: 'releases', playlist: null, visible: false },
     { name: 'hubs', playlist: null, visible: false },
   ])
-
+  console.log('views', views)
 
   useEffect(() => {
     NinaSdk.client.init(
@@ -64,10 +64,11 @@ const Search = (props) => {
       setFetchedResponse(true)
       console.log('yes lawd' )    }
   }, [searchResults, searchQuery])
-
+  // console.log('views.slice()', views.slice())
   useEffect(() => {
     let viewIndex
     let updatedView = views.slice()
+
     let resultIndex
     let updatedSearchResultsCategories = searchResultsCategories.slice()
     console.log('updatedView', updatedView)
@@ -107,25 +108,25 @@ const Search = (props) => {
       )
     // now filter everything by type
 
-    // setViews(updatedView)
+    setViews(...updatedView)
       // updatedSearchResultsCategories[resultIndex].fetched = true
     }
   }, [response, views, fetchedResponse])
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    let updatedView
-    let updatedSearchResultsCategories = searchResultsCategories.slice()
-    if (filter) {
-      const filteredResults = searchResultsCategories.find(
-        (result) => result.type === `${filter}`
-      )
-      console.log('filteredResults', filteredResults)
-      updatedSearchResultsCategories = [filteredResults]
-      updatedView = updatedView.filter((view) => view.name === filter)
-    }
-    setViews(updatedView)
-  }, [views, filter])
+  //   let updatedView
+  //   let updatedSearchResultsCategories = searchResultsCategories.slice()
+  //   if (filter) {
+  //     const filteredResults = searchResultsCategories.find(
+  //       (result) => result.type === `${filter}`
+  //     )
+  //     console.log('filteredResults', filteredResults)
+  //     updatedSearchResultsCategories = [filteredResults]
+  //     updatedView = updatedView.filter((view) => view.name === filter)
+  //   }
+  //   setViews(updatedView)
+  // }, [views, filter])
 
 
   const viewHandler = (event) => {
