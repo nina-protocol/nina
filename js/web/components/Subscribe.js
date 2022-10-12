@@ -5,7 +5,7 @@ import Button from '@mui/material/Button'
 import { useSnackbar } from 'notistack'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Dots from './Dots'
-
+import Link from 'next/link'
 
 const Subscribe = (props) => {
   const {accountAddress , hubHandle} = props;
@@ -14,6 +14,7 @@ const Subscribe = (props) => {
   const [pending, setPending] = useState(false)
   const [targetSubscriptions, setTargetSubscriptions] = useState()
   const [followsYou, setFollowsYou] = useState(false)
+  const [isUser, setIsUser] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
 
@@ -34,6 +35,9 @@ const Subscribe = (props) => {
   }, [userSubscriptions])
 
   useEffect(() => {
+    if (wallet.publicKey) {
+      setIsUser(wallet.publicKey.toBase58() === accountAddress)
+    }
     if (wallet.connected && targetSubscriptions) {
       const checkIfFollowsYou = targetSubscriptions?.some(subscription => subscription.to === wallet.publicKey.toBase58())
       setFollowsYou(checkIfFollowsYou)
@@ -79,31 +83,42 @@ const Subscribe = (props) => {
         </Box>
       )}
 
-      {!isFollowing && !pending && (
-        <Button
-          color="primary"
-          sx={{ padding: '0 15px' }}
-          onClick={() => handleSubscribe(accountAddress, hubHandle)}
-        >
-          Follow
-        </Button>
+      {isUser ? (
+        <Box sx={{ padding: '0 15px'}}>
+          <Typography>This is your profile. Click <Link href="/dashboard"><a style={{textDecoration: 'underline'}}>here</a></Link> to see your dashboard</Typography>
+        </Box>
+      )
+      :
+      (
+        <>
+          {!isFollowing && !pending && (
+            <Button
+              color="primary"
+              sx={{ padding: '0 15px' }}
+              onClick={() => handleSubscribe(accountAddress, hubHandle)}
+            >
+              Follow
+            </Button>
+          )}
+
+          {isFollowing && !pending && (
+            <Button
+              color="primary"
+              sx={{ padding: '0 15px' }}
+              onClick={() => handleUnsubscribe(accountAddress)}
+            >
+              Unfollow
+            </Button>
+          )}
+
+          {followsYou && (
+            <Typography variant="body2" sx={{ padding: '0 15px' }}>
+              Follows You
+            </Typography>
+          )}
+        </>
       )}
 
-      {isFollowing && !pending && (
-        <Button
-          color="primary"
-          sx={{ padding: '0 15px' }}
-          onClick={() => handleUnsubscribe(accountAddress)}
-        >
-          Unfollow
-        </Button>
-      )}
-
-      {followsYou && (
-        <Typography variant="body2" sx={{ padding: '0 15px' }}>
-          Follows You
-        </Typography>
-      )}
     </Box>
   )
 }
