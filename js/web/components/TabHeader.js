@@ -7,7 +7,7 @@ import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import { useSnackbar } from 'notistack'
 import {Button} from '@mui/material'
 const TabHeader = ({
-  isActive,
+  activeView,
   profileTabs,
   viewHandler,
   type,
@@ -17,7 +17,6 @@ const TabHeader = ({
 }) => {
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { enqueueSnackbar } = useSnackbar()
-
   const playAllHandler = (playlist) => {
     resetQueueWithPlaylist(
       playlist?.map((release) => release.publicKey)
@@ -34,6 +33,7 @@ const TabHeader = ({
         borderColor: 'divider',
       }}
     >
+
       <Box sx={{ display: 'flex', flexDirection: 'row', rowGap: 1, pb: 1 }}>
         {profileTabs?.map((tab, index) => 
           {
@@ -56,7 +56,7 @@ const TabHeader = ({
                 
                     onClickCapture={viewHandler}
                     sx={{
-                      fontWeight: `${isActive === index ? 'bold' : ''}`,
+                      fontWeight: `${activeView === index ? 'bold' : ''}`,
                       '&:hover': {
                         opacity: 0.5,
                       },

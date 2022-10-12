@@ -68,7 +68,7 @@ const ReusableTableHead = ({ tableType, inDashboard }) => {
             key={headCell.id}
             sx={{ fontWeight: 'bold', borderBottom: 'none' }}
           >
-            <Typography sx={{ fontWeight: 'bold' }}>
+            <Typography sx={{ fontWeight: 'bold', paddingLeft: '5px' }}>
               {headCell.label}
             </Typography>
           </StyledTableHeadCell>
@@ -411,6 +411,7 @@ const StyledTableCellButtonsContainer = styled(TableCell)(({ theme }) => ({
   textAlign: 'left',
   padding: '5px 0',
   textAlign: 'left',
+  minWidth: '100px',
   [theme.breakpoints.down('md')]: {
     padding: '0px',
   },
@@ -418,7 +419,6 @@ const StyledTableCellButtonsContainer = styled(TableCell)(({ theme }) => ({
 
 const OverflowContainer = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
-  // minWidth: '10vw',
   maxWidth: '15vw',
   textAlign: 'left',
   textOverflow: 'ellipsis',

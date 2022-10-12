@@ -3,7 +3,7 @@ import Head from 'next/head'
 import dynamic from 'next/dynamic'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Box, Typography } from '@mui/material'
-import Button from "@mui/material/Button";
+import { useRouter } from 'next/router'
 import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
@@ -16,6 +16,9 @@ const TabHeader = dynamic(() => import('./TabHeader'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
 
 const Profile = ({ profilePubkey, inDashboard=false }) => {
+  const wallet = useWallet()
+  const router = useRouter()
+
   const {
     getUserCollectionAndPublished,
     collectRoyaltyForRelease,
@@ -26,15 +29,13 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
     ninaClient
   } = useContext(Nina.Context)
 
-  const wallet = useWallet()
 
   const [profilePublishedReleases, setProfilePublishedReleases] =
     useState(undefined)
   const [profileCollectionReleases, setProfileCollectionReleases] =
     useState(undefined)
   const [profileHubs, setProfileHubs] = useState(undefined)
-  const [activeView, setActiveView] = useState(0)
-  const [profileCollectionIds, setProfileCollectionIds] = useState(undefined)
+  const [activeView, setActiveView] = useState()
   const [profileSubscriptions, setProfileSubscriptions] = useState()
   const [profileSubscriptionsTo, setProfileSubscriptionsTo] = useState()
   const [profileSubscriptionsFrom, setProfileSubscriptionsFrom] = useState()
@@ -45,6 +46,7 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
     collection: false,
     hubs: false,
   })
+
   const [views, setViews] = useState([
     { name: 'releases', playlist: undefined, visible: false },
     { name: 'collection', playlist: undefined, visible: false },
@@ -67,8 +69,18 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
 
 
   useEffect(() => {
+    console.log('here');
+    console.log();
     getUserData(profilePubkey)
-  }, [profilePubkey, inDashboard])
+  }, [])
+
+  useEffect(() => {
+    if (router.query.view) {
+      const viewIndex = views.findIndex((view) => view.name === router.query.view)
+      console.log('viewIndex :>> ', viewIndex);
+      setActiveView(viewIndex)
+    }
+  }, [router.query.view])
   
 
   useEffect(() => {
@@ -83,10 +95,8 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
           from.push(sub)
         }
       })
-
       setProfileSubscriptionsTo(to)
       setProfileSubscriptionsFrom(from)
-
     }
   }, [profileSubscriptions])
 
@@ -99,7 +109,6 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
       updatedView[viewIndex].visible = true
     }
     if (profileCollectionReleases?.length > 0) {
-      console.log('profileCollectionReleases :>> ', profileCollectionReleases);
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
       updatedView[viewIndex].visible = true
     }
@@ -119,28 +128,31 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
   }, [profilePublishedReleases, profileCollectionReleases, profileHubs, profileSubscriptionsTo, profileSubscriptionsFrom])
 
   useEffect(() => {
-    if (profilePublishedReleases?.length > 0) {
-      setActiveView(0)
-    }
-    if (
-      profilePublishedReleases?.length === 0 &&
-      profileCollectionReleases?.length > 0
-    ) {
-      setActiveView(1)
-    }
-    if (
-      fetched.collection &&
-      fetched.releases &&
-      fetched.hubs &&
-      profilePublishedReleases?.length === 0 &&
-      profileCollectionReleases?.length === 0 &&
-      profileHubs?.length > 0
-    ) {
-      setActiveView(2)
+    if (!router.query) {
+      if (profilePublishedReleases?.length > 0) {
+        setActiveView(0)
+      }
+      if (
+        profilePublishedReleases?.length === 0 &&
+        profileCollectionReleases?.length > 0
+      ) {
+        setActiveView(1)
+      }
+      if (
+        fetched.collection &&
+        fetched.releases &&
+        fetched.hubs &&
+        profilePublishedReleases?.length === 0 &&
+        profileCollectionReleases?.length === 0 &&
+        profileHubs?.length > 0
+      ) {
+        setActiveView(2)
+      }
     }
   }, [profilePublishedReleases, profileCollectionReleases, profileHubs])
 
   const getUserData = async () => {
+    console.log('GETTING USER DATA')
     const hubs = await getHubsForUser(profilePubkey)
 
     const [collected, published] = await getUserCollectionAndPublished(
@@ -199,6 +211,14 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
 
   const viewHandler = (event) => {
     const index = parseInt(event.target.id)
+    console.log('index !! :>> ', index);
+    console.log('views[index] :>> ', views[index]);
+    const activeViewName = views[index].name
+          const path = router.pathname.includes('dashboard')
+            ? '/dashboard'
+            : `/profiles/${profilePubkey}`
+
+    router.push(`${path}?view=${activeViewName}`, undefined, {shallow: true})
     setActiveView(index)
   }
 
@@ -232,6 +252,7 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
       </Head>
 
       <ProfileContainer>
+        <Typography>TEST {activeView}</Typography>
         {!inDashboard && (
           <ProfileHeaderWrapper>
             <ProfileHeaderContainer>
@@ -259,7 +280,7 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
             <Box sx={{ py: 1 }}>
               <TabHeader
                 viewHandler={viewHandler}
-                isActive={activeView}
+                activeView={activeView}
                 profileTabs={views}
                 followersCount={profileSubscriptionsTo?.length}
                 followingCount={profileSubscriptionsFrom?.length}
