@@ -42,7 +42,7 @@ const HomePage = () => {
   }, [hubState])
 
   return (
-    <ScrollablePageWrapper>
+    <ScrollablePageWrapper paddingTop={'210px'}>
       <HomePageContainer overflowX="visible">
         <BlueTypography
           variant="h1"

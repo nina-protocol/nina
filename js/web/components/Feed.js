@@ -84,7 +84,7 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
                 />
               </Link>
               <p>New Hub:</p>
-              <p><Link href={`/hubs/${item?.hub?.handle}`} passHref>{`${item?.hub?.data?.displayName}`}</Link> created by <Link href={`/accounts/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link></p>
+              <p><Link href={`/hubs/${item?.hub?.handle}`} passHref>{`${item?.hub?.data?.displayName}`}</Link> created by <Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link></p>
               <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
             </ImageCard>
           )
@@ -109,7 +109,7 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
               </Link>
               <p>New Release:</p>
               <p><Link href={`/${item.release.publicKey}`} passHref>{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link></p>
-              <p>by <Link href={`/accounts/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link></p>
+              <p>by <Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link></p>
               <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
             </ImageCard>
           )
@@ -158,7 +158,7 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
             </Link>
             <p>Release Purchased:</p>
             <p><Link href={`/${item.release.publicKey}`} passHref>{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link></p>
-            <p>by <Link href={`/accounts/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link></p>
+            <p>by <Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link></p>
             <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
           </ImageCard>
         )
@@ -183,7 +183,7 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
               </Link>
               <p>Release Purchased:</p>
               <p><Link href={`/${item.release.publicKey}`} passHref>{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link></p>
-              <p>by <Link href={`/accounts/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link></p>
+              <p>by <Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link></p>
               <p>from <Link href={`/hubs/${item.hub.handle}`} passHref>{`${item.hub.data.displayName}`}</Link></p>
               <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
             </ImageCard>
@@ -208,7 +208,7 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
                   unoptimized={true}
                 />
               </Link>
-              <p><Link href={`/accounts/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link> added as a collaborator to <Link href={`/hubs/${item?.hub?.handle}`} passHref>{`${item?.hub?.data.displayName}`}</Link></p>
+              <p><Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link> added as a collaborator to <Link href={`/hubs/${item?.hub?.handle}`} passHref>{`${item?.hub?.data.displayName}`}</Link></p>
               <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
             </ImageCard>
           )
@@ -302,7 +302,7 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
       case 'SubscriptionSubscribeAccount':
           return (
             <TextCard>
-              <p><Link href={`/accounts/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link> Followed <Link href={`/accounts/${item.toAccount.publicKey}`} passHref>{`${truncateAddress(item.toAccount.publicKey)}`}</Link></p>
+              <p><Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link> Followed <Link href={`/profiles/${item.toAccount.publicKey}`} passHref>{`${truncateAddress(item.toAccount.publicKey)}`}</Link></p>
               <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
             </TextCard>
           )
@@ -325,7 +325,7 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
                   unoptimized={true}
                 />
               </Link>
-              <p><Link href={`/accounts/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link> Followed <Link href={`/hubs/${item.toHub.publicKey}`} passHref>{`${item.toHub.data.displayName}`}</Link></p>
+              <p><Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link> Followed <Link href={`/hubs/${item.toHub.publicKey}`} passHref>{`${item.toHub.data.displayName}`}</Link></p>
               <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
             </ImageCard>
           )
@@ -361,7 +361,7 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
           </>
         ))}
       </FeedWrapper>
-      {itemsTotal === items.length &&
+      {itemsTotal === items?.length &&
         <Typography variant="h4" sx={{textAlign: 'center'}}>No more items</Typography>
       }
     </StyledScrollablePageWrapper>

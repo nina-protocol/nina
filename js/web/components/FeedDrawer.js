@@ -9,6 +9,7 @@ import Feed from './Feed'
 import axios from 'axios'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
 const FeedDrawer = () => {
   const wallet = useWallet()
@@ -60,15 +61,14 @@ const FeedDrawer = () => {
       {
         <Box key={'right'} sx={{height: '70%', float:'right'}}>
           <StyledMenuButton onClick={toggleDrawer(true)} sx={{top: '100px'}}>
-            <Icon>
-              <img src={'/hamburger.svg'} height={25} width={25} />
-            </Icon>
+            <ArrowBackIosNewIcon />
           </StyledMenuButton>
           <StyledDrawer
             anchor={'right'}
             open={drawerOpen}
             onClose={toggleDrawer(false)}
             BackdropProps={{ invisible: true }}
+            variant={'persistent'}
           >
             <Feed
               items={items}
@@ -84,7 +84,7 @@ const FeedDrawer = () => {
 }
 
 const StyledMenuButton = styled(Button)(({ theme }) => ({
-  padding: '0px !important',
+  padding: '0px 10px 0px 0px !important',
   zIndex: '10',
   '&:hover': {
     backgroundColor: `${theme.palette.transparent} !important`,
@@ -102,6 +102,8 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
     width: 436,
     maxwidth: 436,
     overflowX: 'hidden',
+    border: '1px solid black',
+    borderRight: 'none',
     [theme.breakpoints.down('md')]: {
       width: '100vw',
     },
