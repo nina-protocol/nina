@@ -55,6 +55,7 @@ const router = useRouter()
         !searchInputRef.current.contains(e.target)
       ) {
         setShowDropdown(false)
+        console.log('showDropdown', showDropdown)
       }
     }
 
@@ -67,13 +68,13 @@ const router = useRouter()
 
   useEffect(() => {
     if (query && setShowDropdown) {
-      suggestions?.artists?.length > 0
+      suggestions?.artists?.length
         ? (autoCompleteResults[0].visible = true)
         : (autoCompleteResults[0].visible = false)
-      suggestions?.releases?.length > 0
+      suggestions?.releases?.length
         ? (autoCompleteResults[1].visible = true)
         : (autoCompleteResults[1].visible = false)
-      suggestions?.hubs?.length > 0
+      suggestions?.hubs?.length
         ? (autoCompleteResults[2].visible = true)
         : (autoCompleteResults[2].visible = false)
       setAutocompleteResults([...autoCompleteResults])
@@ -129,25 +130,14 @@ const router = useRouter()
     }
   }
 
-  const handleSuggestionsClick = async (search, searchFilter) => {
-    setFetchedResponse(false)
-    await NinaSdk.Search.withQuery(search).then(setResponse)
-    if(response){
-      console.log('responssssssssse', response)
-      setFetchedResponse(true)
-    }
-    if (fetchedResponse) {
-    
-      setShowDropdown(false)
-      
-      router.push(`/search/?q=${search}${searchFilter ? `&type=${searchFilter}`: ''}`)
-    }
+  const handleSuggestionsClick =  (search, searchFilter) => {
+    setQuery('')
+    router.push(`/search/?q=${search}${searchFilter ? `&type=${searchFilter}`: ''}`)
   }
 
   const suggestionsHandler = (e) => {
     e.preventDefault()
     e.stopPropagation()
-    console.log('e.target.id', e.target.id)
     const clickedSuggestion = e.target.innerText
     const searchFilter = e.target.id
     if (clickedSuggestion) {

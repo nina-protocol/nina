@@ -74,6 +74,19 @@ const ReusableTableHead = ({ tableType }) => {
     headCells.push({ id: 'image', label: 'Hubs' })
   }
 
+  if(tableType === 'filteredSearchResultArtists'){
+    headCells.push({ id: 'name', label: '' })
+  }
+
+  if(tableType === 'filteredSearchResultReleases'){
+    headCells.push({ id: 'ctas', label: '' })
+    headCells.push({ id: 'image', label: '' })
+    headCells.push({ id: 'title', label: '' })
+  }
+  if(tableType === 'filteredSearchResultHubs'){
+    headCells.push({ id: 'image', label: '' })
+  } 
+
   return (
     <TableHead>
       <TableRow>
@@ -229,14 +242,14 @@ const ReusableTableBody = ({ releases, tableType, hasOverflow }) => {
       }
     }
  
-    if (tableType === 'searchResultArtists'){
+    if (tableType === 'searchResultArtists' || tableType === 'filteredSearchResultArtists') {
       formattedData = {
         link: `/profiles/${data?.publicKey}`,
         collaborator: data.name
       }
     }
 
-    if(tableType === 'searchResultReleases'){
+    if(tableType === 'searchResultReleases' || tableType === 'filteredSearchResultReleases'){
       formattedData= {
         id: data?.publicKey,
         // ctas: data?.publicKey,
@@ -245,7 +258,7 @@ const ReusableTableBody = ({ releases, tableType, hasOverflow }) => {
         title: data.title,
       }
     }
-    if(tableType === 'searchResultHubs'){
+    if(tableType === 'searchResultHubs' || tableType === 'filteredSearchResultHubs'){
       formattedData ={
         // ctas: data?.publicKey,
         id: data?.publicKey,
@@ -330,20 +343,22 @@ const ReusableTableBody = ({ releases, tableType, hasOverflow }) => {
                     />
                   )
                 } else if (cellName === 'title') {
+                 
                   return (
                     <StyledTableCell key={cellName}>
                       <OverflowContainer>
                         <Typography sx={{ textDecoration: 'underline' }} noWrap>
-                          {cellData}
+                          { cellData}
                         </Typography>
                       </OverflowContainer>
                     </StyledTableCell>
                   )
                 } else {
+                 
                   return (
                     <StyledTableCell key={cellName}>
                       <OverflowContainer>
-                        <Typography sx={{paddingLeft: '5px', width: '100vw'}}noWrap>{cellData}</Typography>
+                        <Typography sx={{paddingLeft: '5px', width: '100vw'}}noWrap>{cellData }</Typography>
                       </OverflowContainer>
                     </StyledTableCell>
                   )
@@ -360,6 +375,9 @@ const ReusableTableBody = ({ releases, tableType, hasOverflow }) => {
 
 const ReusableTable = ({ releases, tableType, hasOverflow }) => {
   return (
+    <>
+    {
+      releases.length > 0 && (
     <ResponsiveContainer hasOverflow={hasOverflow}>
       <ResponsiveTableContainer>
         <Table>
@@ -368,6 +386,9 @@ const ReusableTable = ({ releases, tableType, hasOverflow }) => {
         </Table>
       </ResponsiveTableContainer>
     </ResponsiveContainer>
+      )
+    }
+    </>
   )
 }
 
@@ -435,7 +456,7 @@ const StyledTableDescriptionContainer = styled(Box)(({ theme }) => ({
 
 const ResponsiveContainer = styled(Box)(({ theme, hasOverflow }) => ({
   width: theme.maxWidth,
-  maxHeight: '80vh',
+  maxHeight: hasOverflow ? '80vh' : 'unset',
   webkitOverflowScrolling: 'touch',
   overflowY: hasOverflow ? 'auto' : 'unset',
   overflowX: 'hidden',

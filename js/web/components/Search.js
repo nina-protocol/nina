@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from 'react'
 import { styled } from '@mui/material/styles'
 import TextField from '@mui/material/TextField'
 import { Box } from '@mui/system'
-import { Typography } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 import { useCallback } from 'react'
 import Dots from './Dots'
 import Link from 'next/link'
@@ -21,25 +21,16 @@ const Search = (props) => {
   console.log('router.query', router.query)
   const { searchResults, searchQuery } = props
   const [query, setQuery] = useState(searchQuery?.q)
-  const [filter, setFilter] = useState()
+  const [searchFilter, setSearchFilter] = useState()
   const [response, setResponse] = useState(searchResults)
- 
+
   const [fetchedResponse, setFetchedResponse] = useState(false)
 
   const [activeView, setActiveView] = useState(0)
-
-  const [searchResultsCategories, setSearchResultsCategories] = useState([
-    { type: 'searchResultArtists', data: response?.artists, fetched: false },
-    { type: 'searchResultReleases', data: response?.releases, fetched: false },
-    { type: 'searchResultHubs', data: response?.hubs, fetched: false },
-  ])
-  const [views, setViews] = useState([
-    { name: 'all', playlist: null, visible: true },
-    { name: 'artists', playlist: null, visible: false },
-    { name: 'releases', playlist: null, visible: false },
-    { name: 'hubs', playlist: null, visible: false },
-  ])
-  console.log('views', views)
+  const [responseLength, setResponseLength] = useState(0)
+  // const [searchResultFilters, setSearchResultFilters] = useState([
+  // 'all','artists','releases','hubs'
+  // ])
 
   useEffect(() => {
     NinaSdk.client.init(
@@ -50,91 +41,33 @@ const Search = (props) => {
   }, [])
 
   useEffect(() => {
- 
-
     if (searchQuery) {
       const query = searchQuery.q
       const filter = searchQuery.type
       setQuery(query)
-      setFilter(filter)
-
+      setSearchFilter(filter)
     }
     if (searchResults) {
       setResponse(searchResults)
       setFetchedResponse(true)
-      console.log('yes lawd' )    }
+    }
+   
   }, [searchResults, searchQuery])
-  // console.log('views.slice()', views.slice())
+
+
   useEffect(() => {
-    let viewIndex
-    let updatedView = views.slice()
-
-    let resultIndex
-    let updatedSearchResultsCategories = searchResultsCategories.slice()
-    console.log('updatedView', updatedView)
-    
-    if (fetchedResponse) {
-      const responseLength = [...response?.artists, ...response?.releases, ...response?.hubs].length
-      console.log('responseLength', responseLength)
-      viewIndex = updatedView?.findIndex((view) => view.name === 'all')
-      updatedView[viewIndex].name = `all (${responseLength})`
-      updatedView[viewIndex].visible = true
-      
+    if(searchFilter === 'artists') {
+      setActiveView(1)
     }
-    if (fetchedResponse && response?.artists?.length > 0) {
-      viewIndex = updatedView.findIndex((view) => view.name === 'artists')
-      updatedView[viewIndex].name = `artists (${response?.artists?.length})`
-      updatedView[viewIndex].visible = true
-      resultIndex = updatedSearchResultsCategories.findIndex(
-        (result) => result.type === 'searchResultArtists'
-      )
-      updatedSearchResultsCategories[resultIndex].fetched = true
+    if(searchFilter === 'releases') {
+      setActiveView(2)
     }
-    if (fetchedResponse && response?.releases?.length > 0) {
-      viewIndex = updatedView.findIndex((view) => view.name === 'releases')
-      updatedView[viewIndex].name = `releases (${response?.releases?.length})`
-      updatedView[viewIndex].visible = true
-      resultIndex = updatedSearchResultsCategories.findIndex(
-        (result) => result.type === 'searchResultReleases'
-      )
-      updatedSearchResultsCategories[resultIndex].fetched = true
-    }
-    if (fetchedResponse && response?.hubs?.length > 0) {
-      viewIndex = updatedView.findIndex((view) => view.name === 'hubs')
-      updatedView[viewIndex].name = `hubs (${response?.hubs?.length})`
-      updatedView[viewIndex].visible = true
-      resultIndex = updatedSearchResultsCategories.findIndex(
-        (result) => result.type === 'searchResultHubs'
-      )
-    // now filter everything by type
+    if(searchFilter === 'hubs') {
+      setActiveView(3)
+    } 
+    console.log('activvvvvv', activeView)
+  }, [searchFilter])
 
-    setViews(...updatedView)
-      // updatedSearchResultsCategories[resultIndex].fetched = true
-    }
-  }, [response, views, fetchedResponse])
-
-  // useEffect(() => {
-
-  //   let updatedView
-  //   let updatedSearchResultsCategories = searchResultsCategories.slice()
-  //   if (filter) {
-  //     const filteredResults = searchResultsCategories.find(
-  //       (result) => result.type === `${filter}`
-  //     )
-  //     console.log('filteredResults', filteredResults)
-  //     updatedSearchResultsCategories = [filteredResults]
-  //     updatedView = updatedView.filter((view) => view.name === filter)
-  //   }
-  //   setViews(updatedView)
-  // }, [views, filter])
-
-
-  const viewHandler = (event) => {
-    const index = parseInt(event.target.id)
-    console.log('fetchedResponsssssssse', fetchedResponse)
-    console.log('response?.artisssssts', response?.artists.length > 0)
-    setActiveView(index)
-  }
 
   return (
     <SearchPageContainer>
@@ -143,15 +76,35 @@ const Search = (props) => {
           <Typography>{`Search results for ${query}`}</Typography>
         </SearchInputWrapper>
       </SearchInputContainer>
-      {fetchedResponse && (
-        <Box sx={{ py: 1 }}>
-          <TabHeader
-            isActive={activeView}
-            viewHandler={viewHandler}
-            profileTabs={views}
-          />
-        </Box>
-      )}
+      <Box sx={{display: 'flex', flexDirection: 'row'}}>
+      <SearchResultFilter
+            // id={index}
+            isClicked={activeView === 0}
+            onClick={() => setActiveView(0)}
+            
+            >
+              {`All (${response?.artists.length + response?.releases.length + response?.hubs.length})`}
+            </SearchResultFilter>
+      {
+        Object.keys(response).map((filter, index) => {
+          console.log('filter', filter)
+          console.log('filtersss', response?.[filter]?.length)
+          
+          return (
+            <SearchResultFilter
+            id={index}
+            isClicked={activeView === (index + 1)}
+            onClick={() => setActiveView(index + 1)}
+            disabled={response?.[filter]?.length === 0}
+            >
+              {`${filter} (${response?.[filter]?.length})`}
+            </SearchResultFilter>
+          )
+        })
+      }
+
+      </Box>
+
       <SearchAllResultsWrapper>
         <ResponsiveSearchResultContainer>
           {fetchedResponse === false && (
@@ -162,56 +115,54 @@ const Search = (props) => {
             </ResponsiveDotContainer>
           )}
 
-          {fetchedResponse && activeView === 0 && (
-            <AllResultsContainer sx={{ overflow: 'auto' }}>
-              <AllResultsWrapper>
+        {
+          activeView === 0 && fetchedResponse && (
+            Object.keys(searchResults).map((key, index) => {
+              const type = key.charAt(0).toUpperCase() + key.slice(1)
+              const data = searchResults[key]
+              console.log('data.type', data)
+              return (
+                <ResultsWrapper>
+
                 <ReusableTable
-                  tableType="searchResultArtists"
-                  releases={response?.artists}
+                  tableType={`searchResult${
+                    type.charAt(0).toUpperCase() + type.slice(1)
+                  }`}
+                  releases={data}
                   hasOverflow={false}
-                />
-              </AllResultsWrapper>
-              <AllResultsWrapper>
-                <ReusableTable
-                  tableType="searchResultReleases"
-                  releases={response?.releases}
-                  hasOverflow={false}
-                />
-              </AllResultsWrapper>
-              <AllResultsWrapper>
-                <ReusableTable
-                  tableType="searchResultHubs"
-                  releases={response?.hubs}
-                  hasOverflow={false}
-                />
-              </AllResultsWrapper>
-            </AllResultsContainer>
-          )}
+                  />
+                  </ResultsWrapper>
+              )
+            })
+          )
+        }
 
           {fetchedResponse && activeView === 1 && response?.artists.length > 0 && (
             <ResultsWrapper>
               <ReusableTable
-                tableType="searchResultArtists"
+                tableType="filteredSearchResultArtists"
                 releases={response?.artists}
                 hasOverflow={true}
               />
             </ResultsWrapper>
           )}
 
-          {fetchedResponse && activeView === 2 && response?.releases.length > 0 && (
-            <ResultsWrapper>
-              <ReusableTable
-                tableType="searchResultReleases"
-                releases={response?.releases}
-                hasOverflow={true}
-              />
-            </ResultsWrapper>
-          )}
+          {fetchedResponse &&
+            activeView === 2 &&
+            response?.releases.length > 0 && (
+              <ResultsWrapper>
+                <ReusableTable
+                  tableType="filteredSearchResultReleases"
+                  releases={response?.releases}
+                  hasOverflow={true}
+                />
+              </ResultsWrapper>
+            )}
 
           {fetchedResponse && activeView === 3 && response?.hubs.length > 0 && (
             <ResultsWrapper>
               <ReusableTable
-                tableType={'searchResultHubs'}
+                tableType={'filteredSearchResultHubs'}
                 releases={response?.hubs}
                 hasOverflow={true}
               />
@@ -232,7 +183,7 @@ const Search = (props) => {
 
 const SearchPageContainer = styled(Box)(({ theme }) => ({
   height: '60vh',
-  maxWidth: theme.maxWidth,
+  width: theme.maxWidth,
   [theme.breakpoints.down('md')]: {
     height: '80vh',
   },
@@ -275,6 +226,17 @@ const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
     left: '47%',
     top: '53%',
   },
+}))
+
+const SearchResultFilter = styled(Button)(({theme, isClicked}) => ({
+  backgroundColor: 'transparent',
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '16px',
+  fontWeight: isClicked ? 'bold' : 'normal',
+  color: '#000',
+  textAlign: 'left',
+  alignItems:'left'
 }))
 
 const AllResultsContainer = styled(Box)(({ theme }) => ({

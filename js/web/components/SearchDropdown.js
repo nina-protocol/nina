@@ -14,7 +14,7 @@ const SearchDropdown = ({ searchData, category, hasResults, clickHandler, onKeyD
       let formattedData = {
         name: artistName,
         link: artistLink,
-        category: 'artist',
+        category: 'artists',
       }
 
       return formattedData
@@ -29,7 +29,7 @@ const SearchDropdown = ({ searchData, category, hasResults, clickHandler, onKeyD
       let formattedData = {
         name: releaseName,
         link: releaseLink,
-        category: 'release',
+        category: 'releases',
       }
 
       return formattedData
@@ -44,7 +44,7 @@ const SearchDropdown = ({ searchData, category, hasResults, clickHandler, onKeyD
       let formattedData = {
         name: hubName,
         link: hubLink,
-        category: 'hub',
+        category: 'hubs',
       }
 
       return formattedData
