@@ -895,6 +895,7 @@ const releaseContextHelper = ({
           new anchor.web3.PublicKey(releasePubkey)
         )
       }
+      release.paymentMint = new anchor.web3.PublicKey(release.paymentMint)
 
       const [authorityTokenAccount, authorityTokenAccountIx] =
         await findOrCreateAssociatedTokenAccount(
@@ -918,6 +919,7 @@ const releaseContextHelper = ({
         },
       }
 
+
       if (authorityTokenAccountIx) {
         request.instructions = [authorityTokenAccountIx]
       }
@@ -925,16 +927,19 @@ const releaseContextHelper = ({
       const txid = await program.rpc.releaseRevenueShareCollect(request)
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
 
-      getRelease(releasePubkey)
+
+      await getRelease(releasePubkey)
       getUsdcBalance()
       return {
         success: true,
         msg: `You collected $${nativeToUi(
-          recipient.owed.toNumber(),
+          recipient.owed,
           release.paymentMint
         )}`,
       }
     } catch (error) {
+      console.log('in error');
+      console.warn(error)
       getUsdcBalance()
       getRelease(releasePubkey)
       return ninaErrorHandler(error)
@@ -1264,7 +1269,6 @@ const releaseContextHelper = ({
   */
 
   const getRelease = async (releasePubkey) => {
-    console.log('getRelease !!!', releasePubkey)
     try {
       const { release } = await NinaSdk.Release.fetch(releasePubkey, true)
       setReleaseState(updateStateForReleases([release]))
@@ -1273,9 +1277,10 @@ const releaseContextHelper = ({
     }
   }
 
-  const getReleasesPublishedByUser = async (publicKey) => {
+  const getReleasesPublishedByUser = async (publicKey, withAccountData=false) => {
     try {
-      const { published } = await NinaSdk.Account.fetchPublished(publicKey)
+      console.log('withAccountData :>> ', withAccountData);
+      const { published } = await NinaSdk.Account.fetchPublished(publicKey, withAccountData)
       setReleaseState(updateStateForReleases(published))
     } catch (error) {
       console.warn(error)
@@ -1291,9 +1296,13 @@ const releaseContextHelper = ({
     }
   }
 
-  const getUserCollectionAndPublished = async (publicKey) => {
+  const getUserCollectionAndPublished = async (
+    publicKey,
+    withAccountData = false
+  ) => {
+    console.log('withAccountData :>> ', withAccountData);
     const { collected } = await NinaSdk.Account.fetchCollected(publicKey)
-    const { published } = await NinaSdk.Account.fetchPublished(publicKey)
+    const { published } = await NinaSdk.Account.fetchPublished(publicKey, withAccountData)
     setReleaseState(updateStateForReleases([...collected, ...published]))
     return [collected, published]
   }

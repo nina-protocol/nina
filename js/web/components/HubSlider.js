@@ -15,17 +15,36 @@ import Dots from "./Dots";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
-import {set} from "@project-serum/anchor/dist/cjs/utils/features";
 const { getImageFromCDN, loader } = imageManager
-const HubSlider = (props) => {
-  const { getHubs, hubState } = useContext(Hub.Context)
+
+const HubSlider = () => {
+  const { getHubs, hubState, featuredHubs, setFeaturedHubs } = useContext(Hub.Context)
   const { getSubscriptionsForUser } = useContext(Nina.Context)
   const [featuredHubPublicKeys, setFeaturedHubPublicKeys] = useState()
-  const [hubs, setHubs] = useState();
+
+  const shuffle = (array) => {
+    let currentIndex = array.length,
+      randomIndex
+
+    // While there remain elements to shuffle.
+    while (currentIndex != 0) {
+      // Pick a remaining element.
+      randomIndex = Math.floor(Math.random() * currentIndex)
+      currentIndex--
+
+      // And swap it with the current element.
+      ;[array[currentIndex], array[randomIndex]] = [
+        array[randomIndex],
+        array[currentIndex],
+      ]
+    }
+
+    return array
+  }
+
 
   useEffect(() => {
-    getSubscriptionsForUser('getHubs')
-    const handleData = async () => {
+    const fetchFeaturedHubs = async () => {
       await getHubs()
       const response = await getSubscriptionsForUser('7g2euzpRxm2A9kgk4UJ9J5ntUYvodTw4s4m7sL1C8JE')
       const publicKeys = response.filter((sub) => {
@@ -33,7 +52,7 @@ const HubSlider = (props) => {
       })
       setFeaturedHubPublicKeys(publicKeys)
     }
-    handleData()
+    fetchFeaturedHubs()
   }, []);
 
   useEffect(() => {
@@ -45,7 +64,7 @@ const HubSlider = (props) => {
           featured.push(hub)
         }
       })
-      setHubs(featured)
+      setFeaturedHubs(shuffle(featured))
     }
   },[featuredHubPublicKeys, hubState]);
 
@@ -87,7 +106,7 @@ const HubSlider = (props) => {
       onClick={onClick}
     />
   );
-  if (!hubs) {
+  if (!featuredHubs) {
     return (
       <Box
         sx={{
@@ -103,7 +122,7 @@ const HubSlider = (props) => {
   }
   return (
     <HubSliderWrapper>
-      {hubs?.length > 0 && (
+      {featuredHubs?.length > 0 && (
         <Slider
           dots={false}
           infinite={true}
@@ -115,7 +134,7 @@ const HubSlider = (props) => {
           nextArrow={<CustomNextArrow />}
           prevArrow={<CustomPrevArrow />}
         >
-          {hubs?.map((hub, i) => {
+          {featuredHubs?.map((hub, i) => {
             const imageUrl = hub?.data?.image;
             return (
               <HubSlideWrapper key={i}>

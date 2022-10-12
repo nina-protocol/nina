@@ -21,7 +21,6 @@ const Subscribe = (props) => {
   useEffect(() => {
     const handleSubscriptions = async (accountAddress) => {
       const subscriptions = await getSubscriptionsForUser(accountAddress)
-      console.log('subscriptions target :>> ', subscriptions);
       setTargetSubscriptions(subscriptions)
     }
     handleSubscriptions(accountAddress)

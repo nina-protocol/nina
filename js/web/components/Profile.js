@@ -15,18 +15,15 @@ const Dots = dynamic(() => import('./Dots'))
 const TabHeader = dynamic(() => import('./TabHeader'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
 
-const Profile = ({ profilePubkey }) => {
+const Profile = ({ profilePubkey, inDashboard=false }) => {
   const {
     getUserCollectionAndPublished,
-    releaseState,
-    filterReleasesPublishedByUser,
-    filterReleasesList,
+    collectRoyaltyForRelease,
   } = useContext(Release.Context)
-  const { getHubsForUser, filterHubsForUser } = useContext(Hub.Context)
+  const { getHubsForUser } = useContext(Hub.Context)
   const {
-    userSubscriptions,
     getSubscriptionsForUser,
-    subscriptionState,
+    ninaClient
   } = useContext(Nina.Context)
 
   const wallet = useWallet()
@@ -36,7 +33,7 @@ const Profile = ({ profilePubkey }) => {
   const [profileCollectionReleases, setProfileCollectionReleases] =
     useState(undefined)
   const [profileHubs, setProfileHubs] = useState(undefined)
-  const [activeView, setActiveView] = useState(undefined)
+  const [activeView, setActiveView] = useState(0)
   const [profileCollectionIds, setProfileCollectionIds] = useState(undefined)
   const [profileSubscriptions, setProfileSubscriptions] = useState()
   const [profileSubscriptionsTo, setProfileSubscriptionsTo] = useState()
@@ -68,41 +65,11 @@ const Profile = ({ profilePubkey }) => {
     }
   }, [profilePublishedReleases])
 
+
   useEffect(() => {
-    const getUserData = async (profilePubkey) => {
-      const hubs = await getHubsForUser(profilePubkey)
-      
-      const [collected, published] = await getUserCollectionAndPublished(
-        profilePubkey
-      )
-
-      const subscriptions = await getSubscriptionsForUser(profilePubkey)
-
-      setProfileCollectionReleases(collected)
-      setProfilePublishedReleases(published)
-      setProfileSubscriptions(subscriptions)
-      
-      fetched.user = true
-      
-      let viewIndex
-      let updatedView = views.slice()
-      
-      viewIndex = updatedView.findIndex((view) => view.name === 'releases')
-      updatedView[viewIndex].playlist = published
-      fetched.releases = true
-
-      viewIndex = updatedView.findIndex((view) => view.name === 'collection')
-      updatedView[viewIndex].playlist = collected
-      fetched.collection = true
-      setProfileHubs(hubs)
-      fetched.hubs = true
-      setFetched({
-        ...fetched,
-      })
-    }
-
     getUserData(profilePubkey)
-  }, [profilePubkey])
+  }, [profilePubkey, inDashboard])
+  
 
   useEffect(() => {
     if (profileSubscriptions){
@@ -122,7 +89,8 @@ const Profile = ({ profilePubkey }) => {
 
     }
   }, [profileSubscriptions])
-  
+
+
   useEffect(() => {
     let viewIndex
     let updatedView = views.slice()
@@ -131,6 +99,7 @@ const Profile = ({ profilePubkey }) => {
       updatedView[viewIndex].visible = true
     }
     if (profileCollectionReleases?.length > 0) {
+      console.log('profileCollectionReleases :>> ', profileCollectionReleases);
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
       updatedView[viewIndex].visible = true
     }
@@ -171,6 +140,63 @@ const Profile = ({ profilePubkey }) => {
     }
   }, [profilePublishedReleases, profileCollectionReleases, profileHubs])
 
+  const getUserData = async () => {
+    const hubs = await getHubsForUser(profilePubkey)
+
+    const [collected, published] = await getUserCollectionAndPublished(
+      profilePubkey,
+      inDashboard
+    )
+
+    if (inDashboard) {
+      published.forEach((release) => {
+        const accountData = release.accountData.release
+        release.recipient = accountData.revenueShareRecipients.find(
+          (recipient) => recipient.recipientAuthority === profilePubkey
+        )
+        release.price = ninaClient.nativeToUiString(
+          accountData.price,
+          accountData.paymentMint
+        )
+        release.remaining = `${accountData.remainingSupply} / ${accountData.totalSupply}`
+        release.collected = ninaClient.nativeToUiString(
+          accountData.totalCollected,
+          accountData.paymentMint
+        )
+        release.collectable = release.recipient.owed > 0
+        release.collectableAmount = ninaClient.nativeToUiString(
+          release.recipient.owed,
+          accountData.paymentMint
+        )
+        release.paymentMint = accountData.paymentMint
+      })
+    }
+
+    const subscriptions = await getSubscriptionsForUser(profilePubkey)
+
+    setProfileCollectionReleases(collected)
+    setProfilePublishedReleases(published)
+    setProfileSubscriptions(subscriptions)
+
+    fetched.user = true
+
+    let viewIndex
+    let updatedView = views.slice()
+
+    viewIndex = updatedView.findIndex((view) => view.name === 'releases')
+    updatedView[viewIndex].playlist = published
+    fetched.releases = true
+
+    viewIndex = updatedView.findIndex((view) => view.name === 'collection')
+    updatedView[viewIndex].playlist = collected
+    fetched.collection = true
+    setProfileHubs(hubs)
+    fetched.hubs = true
+    setFetched({
+      ...fetched,
+    })
+  }
+
   const viewHandler = (event) => {
     const index = parseInt(event.target.id)
     setActiveView(index)
@@ -206,24 +232,26 @@ const Profile = ({ profilePubkey }) => {
       </Head>
 
       <ProfileContainer>
-        <ProfileHeaderWrapper>
-          <ProfileHeaderContainer>
-            {fetched.user && profilePubkey && (
-              <Box sx={{mb:1}} display='flex'>
-                <Typography>{truncateAddress(profilePubkey)}</Typography>
-                
-                {wallet.connected && (
-                  <Subscribe accountAddress={profilePubkey} />
-                )}
-              </Box>
-            )}
-            {fetched.user && artistNames?.length > 0 && (
-              <ProfileOverflowContainer>
-                {`Publishes as ${artistNames?.map((name) => name).join(', ')}`}
-              </ProfileOverflowContainer>
-            )}
-          </ProfileHeaderContainer>
-        </ProfileHeaderWrapper>
+        {!inDashboard && (
+          <ProfileHeaderWrapper>
+            <ProfileHeaderContainer>
+              {fetched.user && profilePubkey && (
+                <Box sx={{mb:1}} display='flex'>
+                  <Typography>{truncateAddress(profilePubkey)}</Typography>
+                  
+                  {wallet.connected && (
+                    <Subscribe accountAddress={profilePubkey} />
+                  )}
+                </Box>
+              )}
+              {fetched.user && artistNames?.length > 0 && (
+                <ProfileOverflowContainer>
+                  {`Publishes as ${artistNames?.map((name) => name).join(', ')}`}
+                </ProfileOverflowContainer>
+              )}
+            </ProfileHeaderContainer>
+          </ProfileHeaderWrapper>
+        )}
         {fetched.user &&
           fetched.collection &&
           fetched.releases &&
@@ -257,6 +285,9 @@ const Profile = ({ profilePubkey }) => {
                 <ReusableTable
                   tableType={'profilePublishedReleases'}
                   items={profilePublishedReleases}
+                  inDashboard={inDashboard}
+                  collectRoyaltyForRelease={collectRoyaltyForRelease}
+                  refreshProfile={getUserData}
                 />
               )}
             </>

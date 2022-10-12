@@ -64,15 +64,14 @@ const TabHeader = ({
                     id={index}
                   >
                     {tab.name} 
-                    {tab.name === 'followers' && `(${followersCount})`}
-                    {tab.name === 'following' && `(${followingCount})`}
+                    {tab.name === 'followers' && ` (${followersCount})`}
+                    {tab.name === 'following' && ` (${followingCount})`}
                   </Typography>
 
                   {tab.playlist && (
                     <ResponsiveCircleOutlineIconContainer
                  
                       sx={{
-                        paddingRight: 1.5,
                          paddingTop: '1px',
                         '&:hover': {
                           opacity: 0.5,
@@ -80,7 +79,7 @@ const TabHeader = ({
                       }}
                     >
                       <PlayCircleOutlineIconButtonWrapper 
-                 
+                      sx={{paddingRight: 0}}
                       onClickCapture={() =>
                           type === 'hubsView'
                             ? playAllHandler(releaseData)
@@ -111,7 +110,9 @@ const ResponsiveTab = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'row',
   textTransform: 'uppercase',
-  minWidth: '100px',
+  // border: '2px solid red',
+  paddingRight: '15px',
+  // minWidth: '100px',
   [theme.breakpoints.down('md')]: {
     paddingLeft: '15px',
   },

@@ -50,6 +50,7 @@ function Application({ Component, pageProps }) {
       setSdkInitialized(true)
     }
     handleSdkInitialization()
+    console.log('NinaSdk.client.endpoint :>> ', NinaSdk.client.cluster);
 
     return () => {
       Router.events.off('routeChangeStart', start)

@@ -25,7 +25,7 @@ const HubContextProvider = ({ children }) => {
   const [addToHubQueue, setAddToHubQueue] = useState(new Set())
   const [hubsCount, setHubsCount] = useState(0)
   const [allHubs, setAllHubs] = useState([])
-  const [featuredHubs, setFeaturedHubs] = useState([])
+  const [featuredHubs, setFeaturedHubs] = useState()
   
   const {
     getHubs,
@@ -111,6 +111,7 @@ const HubContextProvider = ({ children }) => {
         validateHubHandle,
         addToHubQueue,
         featuredHubs,
+        setFeaturedHubs,
         filterFeaturedHubs,
         filterHubsAll,
         hubContentFetched,
@@ -1056,7 +1057,7 @@ const hubContextHelper = ({
 
   const filterFeaturedHubs = () => {
     const featured = []
-    featuredHubs.forEach(hubId => {
+    featuredHubs?.forEach(hubId => {
       const hub = hubState[hubId]
       if (hub) {
         featured.push(hub)

@@ -35,11 +35,11 @@ const HomePage = () => {
     setReleasesRecent(filterReleasesRecent())
   }, [releasesRecentState])
 
-  useEffect(() => {
-    if ((!hubs || hubs.length === 0) & Object.keys(hubState).length > 0) {
-      setHubs(filterFeaturedHubs())
-    }
-  }, [hubState])
+  // useEffect(() => {
+  //   if ((!hubs || hubs.length === 0) & Object.keys(hubState).length > 0) {
+  //     setHubs(filterFeaturedHubs())
+  //   }
+  // }, [hubState])
 
   return (
     <ScrollablePageWrapper>

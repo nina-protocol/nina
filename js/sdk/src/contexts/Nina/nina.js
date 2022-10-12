@@ -344,7 +344,6 @@ const ninaContextHelper = ({
         [subscription.publicKey]: subscription
       }
     })
-    console.log('updatedSubscriptionState :>> ', updatedState);
     setSubscriptionState(updatedState)
   }
 
@@ -352,7 +351,6 @@ const ninaContextHelper = ({
     let updatedState = { ...subscriptionState }
     delete updatedState[publicKey]
     setSubscriptionState(updatedState)
-    console.log('updatedState in remove :>> ', updatedState);
   }
 
   // Collection
