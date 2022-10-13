@@ -183,7 +183,7 @@ const Search = (props) => {
 
 const SearchPageContainer = styled(Box)(({ theme }) => ({
   height: '60vh',
-  width: theme.maxWidth,
+  maxWidth: theme.maxWidth,
   [theme.breakpoints.down('md')]: {
     height: '80vh',
   },

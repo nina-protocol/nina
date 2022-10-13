@@ -6,9 +6,46 @@ const Hub = dynamic(() => import('../../../components/Hub'))
 const HubPage = (props) => {
 
   return (
+    <>
+    <Head>
+        <title>{`Nina: ${
+          hubData?.json.displayName ? `${hubData.json.displayName}'s Hub` : ''
+        }`}</title>
+        <meta
+          name="description"
+          content={`${hubData?.json.displayName}'s Hub on Nina.`}
+        />
+        <meta name="og:type" content="website" />
+        <meta
+          name="og:title"
+          content={`Nina: ${
+            hubData?.json.displayName ? `${hubData.json.displayName}'s Hub` : ''
+          }`}
+        />
+        <meta
+          name="og:description"
+          content={`${
+            hubData?.json.displayName ? hubData?.json.displayName : ''
+          }: ${
+            hubData?.json.description ? hubData?.json.description : ''
+          } \n Published via Nina Hubs.`}
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@ninaprotocol" />
+        <meta name="twitter:creator" content="@ninaprotocol" />
+        <meta name="twitter:image:type" content="image/jpg" />
+        <meta
+          name="twitter:title"
+          content={`${hubData?.json.displayName}'s Hub on Nina`}
+        />
+        <meta name="twitter:description" content={hubData?.json.description} />
+        <meta name="twitter:image" content={hubData?.json.image} />
+        <meta name="og:image" content={hubData?.json.image} />
+      </Head>
     <ResponsiveHubContainer >
       <Hub hubPubkey={props.hubPubkey} />
       </ResponsiveHubContainer>
+    </>
   )
 }
 

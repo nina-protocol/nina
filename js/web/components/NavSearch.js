@@ -218,7 +218,10 @@ const SearchInput = styled('input')(({theme}) => ({
     borderBottom: '1px solid #000000',
     width: '15vw',
     marginRight: '20px',
-    outline: 'none !important'
+    outline: 'none !important',
+    [theme.breakpoints.down('sm')]: {
+      width: '20vw'
+    }
 }))
 const DropdownContainer = styled(Box)(({ theme }) => ({
   maxHeight: '60vh',
