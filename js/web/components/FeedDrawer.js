@@ -47,7 +47,10 @@ const FeedDrawer = () => {
 
   const handleGetFeedForUser = async (refresh=false) => {
     const feed = await getFeedForUser('7g2euzpRxm2A9kgk4UJ9J5ntUYvodTw4s4m7sL1C8JE', refresh ? 0 : items?.length || 0)
-    const updatedFeedItems = feed.feedItems
+    const updatedFeedItems = feed.feedItems.filter(item => {
+      console.log('item.type.includes() !!! :>> ', item.type.includes('Post'));
+      return !item.type.includes('Post')
+    })
     setTotalItems(feed.total)
     if (items && items.length > 0) {
       setItems(items.concat(updatedFeedItems))
@@ -57,9 +60,9 @@ const FeedDrawer = () => {
   }
 
   return (
-    <div>
+    <Box>
       {
-        <Box key={'right'} sx={{height: '70%', float:'right'}}>
+        <Box key={'right'} sx={{ float:'right'}}>
           <StyledMenuButton onClick={toggleDrawer(true)} sx={{top: '100px'}}>
             <ArrowBackIosNewIcon />
           </StyledMenuButton>
@@ -79,7 +82,7 @@ const FeedDrawer = () => {
           </StyledDrawer>
         </Box>
       }
-    </div>
+    </Box>
   )
 }
 
@@ -99,8 +102,8 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
     top: '80px',
 
     height: '80%',
-    width: 436,
-    maxwidth: 436,
+    width: 450,
+    // maxwidth: 436,
     overflowX: 'hidden',
     border: '1px solid black',
     borderRight: 'none',

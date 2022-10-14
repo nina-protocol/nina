@@ -83,9 +83,11 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
                   unoptimized={true}
                 />
               </Link>
-              <p>New Hub:</p>
-              <p><Link href={`/hubs/${item?.hub?.handle}`} passHref>{`${item?.hub?.data?.displayName}`}</Link> created by <Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link></p>
-              <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
+              <CopyWrapper>
+                <Typography my={1}>New Hub:</Typography>
+                <Typography my={1}><Link href={`/hubs/${item?.hub?.handle}`} passHref>{`${item?.hub?.data?.displayName}`}</Link> created by <Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link></Typography>
+                <Typography my={1} fontWeight={600}>{timeSince(Date.parse(item.datetime))} ago</Typography>
+              </CopyWrapper>
             </ImageCard>
           )
         case 'ReleaseInitWithCredit':
@@ -107,10 +109,12 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
                 unoptimized={true}
               />
               </Link>
-              <p>New Release:</p>
-              <p><Link href={`/${item.release.publicKey}`} passHref>{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link></p>
-              <p>by <Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link></p>
-              <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
+              <CopyWrapper>
+                <Typography my={1}>New Release:</Typography>
+                <Typography my={1}><Link href={`/${item.release.publicKey}`} passHref>{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link></Typography>
+                <Typography my={1}>by <Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link></Typography>
+                <Typography my={1} fontWeight={600}>{timeSince(Date.parse(item.datetime))} ago</Typography>
+              </CopyWrapper>
             </ImageCard>
           )
         case 'ReleaseInitViaHub':
@@ -132,21 +136,24 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
                 unoptimized={true}
               />
               </Link>
-              <p>New Release:</p>
-              <p><Link href={`/${item.release.publicKey}`} passHref>{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link> via <Link href={`/hubs/${item?.hub?.handle}`} passHref>{`${item?.hub?.data?.displayName}`}</Link></p>
-              <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
+              <CopyWrapper>
+                <Typography my={1}>New Release:</Typography>
+                <Typography my={1}><Link href={`/${item.release.publicKey}`} passHref>{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link> via <Link href={`/hubs/${item?.hub?.handle}`} passHref>{`${item?.hub?.data?.displayName}`}</Link></Typography>
+                <Typography fontWeight={600}>{timeSince(Date.parse(item.datetime))} ago</Typography>
+              </CopyWrapper>
             </ImageCard>
           )
       case 'ReleasePurchase':
+      case 'ReleasePurchaseViaHub':
         return (
           <ImageCard>
-            <Link href={`/${item.release.publicKey}`} passHref>
+            <Link href={`/${item.release?.publicKey}`} passHref>
             <Image
               height={'100px'}
               width={'100px'}
               layout="responsive"
               src={getImageFromCDN(
-                item.release.metadata.image,
+                item.release?.metadata.image,
                 400,
                 Date.parse(item.datetime)
               )}
@@ -156,39 +163,17 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
               unoptimized={true}
             />
             </Link>
-            <p>Release Purchased:</p>
-            <p><Link href={`/${item.release.publicKey}`} passHref>{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link></p>
-            <p>by <Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link></p>
-            <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
+            <CopyWrapper>
+              <Typography my={1}>Release Purchased:</Typography>
+              <Typography my={1}><Link href={`/${item.release?.publicKey}`} passHref>{`${item.release?.metadata.properties.artist} - ${item.release?.metadata.properties.title}`}</Link></Typography>
+              <Typography my={1}>by <Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link></Typography>
+              {item.type === 'ReleasePurchaseViaHub' && (
+                <Typography my={1}>from <Link href={`/hubs/${item.hub.handle}`} passHref>{`${item.hub.data.displayName}`}</Link></Typography>
+              )} 
+              <Typography fontWeight={600}>{timeSince(Date.parse(item.datetime))} ago</Typography>
+            </CopyWrapper>
           </ImageCard>
         )
-        case 'ReleasePurchaseViaHub':
-          return (
-            <ImageCard>
-              <Link href={`/${item.release.publicKey}`} passHref>
-              <Image
-                height={'100px'}
-                width={'100px'}
-                layout="responsive"
-                src={getImageFromCDN(
-                  item.release.metadata.image,
-                  400,
-                  Date.parse(item.datetime)
-                )}
-                alt={i}
-                priority={true}
-                loader={loader}
-                unoptimized={true}
-              />
-              </Link>
-              <p>Release Purchased:</p>
-              <p><Link href={`/${item.release.publicKey}`} passHref>{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link></p>
-              <p>by <Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link></p>
-              <p>from <Link href={`/hubs/${item.hub.handle}`} passHref>{`${item.hub.data.displayName}`}</Link></p>
-              <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
-            </ImageCard>
-          )
-    
         case 'HubAddCollaborator':
           return (
             <ImageCard>
@@ -208,8 +193,10 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
                   unoptimized={true}
                 />
               </Link>
-              <p><Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link> added as a collaborator to <Link href={`/hubs/${item?.hub?.handle}`} passHref>{`${item?.hub?.data.displayName}`}</Link></p>
-              <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
+              <CopyWrapper>
+                <Typography my={1}><Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link> added as a collaborator to <Link href={`/hubs/${item?.hub?.handle}`} passHref>{`${item?.hub?.data.displayName}`}</Link></Typography>
+                <Typography my={1} fontWeight={600}>{timeSince(Date.parse(item.datetime))} ago</Typography>
+              </CopyWrapper>
             </ImageCard>
           )
 
@@ -232,78 +219,82 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
                 unoptimized={true}
               />
               </Link>
-              <p><Link href={`/${item.release.publicKey}`} passHref>{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link></p>
-              <p>Reposted to <Link href={`/hubs/${item.hub.handle}`} passHref>{`${item.hub.data.displayName}`}</Link></p>
-              <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
+              <CopyWrapper>
+                <Typography my={1}><Link href={`/${item.release.publicKey}`} passHref>{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link></Typography>
+                <Typography my={1}>Reposted to <Link href={`/hubs/${item.hub.handle}`} passHref>{`${item.hub.data.displayName}`}</Link></Typography>
+                <Typography my={1} fontWeight={600}>{timeSince(Date.parse(item.datetime))} ago</Typography>
+              </CopyWrapper>
             </ImageCard>
           )
         
-        case 'PostInitViaHub':
-          return (
-            <MultiCard>
-              <Box sx={{display: 'flex', width: '100%'}}>
-                <Box sx={{width: '30%'}}>
-                  <Link href={`/hubs/${item?.hub?.handle}`} passHref>
-                    <Image
-                      height={'30px'}
-                      width={'30px'}
-                      layout="responsive"
-                      src={getImageFromCDN(
-                        item?.hub?.data.image,
-                        400,
-                        Date.parse(item.datetime)
-                      )}
-                      alt={i}
-                      priority={true}
-                      loader={loader}
-                      unoptimized={true}
-                    />
-                  </Link>
-                </Box>
-                <Box>
-                  <p>{item.post?.data.title}</p>
-                </Box>
-              </Box>
-              <p>{item.post?.data.body}</p>
-              <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
-            </MultiCard>
-          )
+        // case 'PostInitViaHub':
+        //   return (
+        //     <MultiCard>
+        //       <Box sx={{display: 'flex', width: '100%'}}>
+        //         <Box sx={{width: '30%'}}>
+        //           <Link href={`/hubs/${item?.hub?.handle}`} passHref>
+        //             <Image
+        //               height={'30px'}
+        //               width={'30px'}
+        //               layout="responsive"
+        //               src={getImageFromCDN(
+        //                 item?.hub?.data.image,
+        //                 400,
+        //                 Date.parse(item.datetime)
+        //               )}
+        //               alt={i}
+        //               priority={true}
+        //               loader={loader}
+        //               unoptimized={true}
+        //             />
+        //           </Link>
+        //         </Box>
+        //         <Box>
+        //           <p>{item.post?.data.title}</p>
+        //         </Box>
+        //       </Box>
+        //       <p>{item.post?.data.body}</p>
+        //       <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
+        //     </MultiCard>
+        //   )
 
-        case 'PostInitViaHubWithReferenceRelease':
-          return (
-            <MultiCard>
-              <Box sx={{display: 'flex', width: '100%'}}>
-                <Box sx={{width: '30%'}}>
-                  <Link href={`/hubs/${item.hub.handle}`} passHref>
-                    <Image
-                      height={'30px'}
-                      width={'30px'}
-                      layout="responsive"
-                      src={getImageFromCDN(
-                        item.release.metadata.image,
-                        400,
-                        Date.parse(item.datetime)
-                      )}
-                      alt={i}
-                      priority={true}
-                      loader={loader}
-                      unoptimized={true}
-                    />
-                  </Link>
-                </Box>
-                <Box>
-                  <p>{item.post?.data.title}</p>
-                </Box>
-              </Box>
-              <p>{item.post?.data.body}</p>
-              <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
-            </MultiCard>
-          )
+        // case 'PostInitViaHubWithReferenceRelease':
+        //   return (
+        //     <MultiCard>
+        //       <Box sx={{display: 'flex', width: '100%'}}>
+        //         <Box sx={{width: '30%'}}>
+        //           <Link href={`/hubs/${item.hub.handle}`} passHref>
+        //             <Image
+        //               height={'30px'}
+        //               width={'30px'}
+        //               layout="responsive"
+        //               src={getImageFromCDN(
+        //                 item.release.metadata.image,
+        //                 400,
+        //                 Date.parse(item.datetime)
+        //               )}
+        //               alt={i}
+        //               priority={true}
+        //               loader={loader}
+        //               unoptimized={true}
+        //             />
+        //           </Link>
+        //         </Box>
+        //         <Box>
+        //           <p>{item.post?.data.title}</p>
+        //         </Box>
+        //       </Box>
+        //       <p>{item.post?.data.body}</p>
+        //       <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
+        //     </MultiCard>
+        //   )
       case 'SubscriptionSubscribeAccount':
           return (
             <TextCard>
-              <p><Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link> Followed <Link href={`/profiles/${item.toAccount.publicKey}`} passHref>{`${truncateAddress(item.toAccount.publicKey)}`}</Link></p>
-              <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
+              <CopyWrapper>
+                <Typography my={1}><Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link> Followed <Link href={`/profiles/${item.toAccount.publicKey}`} passHref>{`${truncateAddress(item.toAccount.publicKey)}`}</Link></Typography>
+                <Typography my={1} fontWeight={600}>{timeSince(Date.parse(item.datetime))} ago</Typography>
+              </CopyWrapper>
             </TextCard>
           )
         case 'SubscriptionSubscribeHub':
@@ -325,48 +316,78 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
                   unoptimized={true}
                 />
               </Link>
-              <p><Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link> Followed <Link href={`/hubs/${item.toHub.publicKey}`} passHref>{`${item.toHub.data.displayName}`}</Link></p>
-              <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
+              <CopyWrapper>
+                <Typography my={1}><Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link> Followed <Link href={`/hubs/${item.toHub.publicKey}`} passHref>{`${item.toHub.data.displayName}`}</Link></Typography>
+                <Typography my={1} fontWeight={600}>{timeSince(Date.parse(item.datetime))} ago</Typography>
+              </CopyWrapper>
             </ImageCard>
           )
         
         default:
-          return <p key={i}>{item?.type}</p>
+          return <Typography key={i}>{item?.type}</Typography>
       }
     })
     return feedItemComponents
   }, [items]);
 
   return (
-    <StyledScrollablePageWrapper
-      sx={{overflowY: "scroll", top: 0}}
+    <ScrollWrapper
       onScroll={debounce(() => handleScroll(), 500)}
     >
-      <FeedHeader sx={{display: 'flex', width: '100%'}}>
-        <CloseIcon
-          fontSize="medium"
-          onClick={toggleDrawer(false)}
-        />
-        <Typography variant="h4">LATEST</Typography>
-        <PlayCircleOutlineOutlinedIcon
-          fontSize="medium"
-          sx={{ paddingRight: '18px'}} 
-          onClick={playFeed}
-        />
-      </FeedHeader>
-      <FeedWrapper ref={scrollRef}>
-        {feedItems?.map((item, index) => (
-          <>
-            {item}
-          </>
-        ))}
-      </FeedWrapper>
-      {itemsTotal === items?.length &&
-        <Typography variant="h4" sx={{textAlign: 'center'}}>No more items</Typography>
-      }
-    </StyledScrollablePageWrapper>
+      <Box>
+        <FeedHeader sx={{display: 'flex', width: '100%'}}>
+          <CloseIcon
+            fontSize="medium"
+            onClick={toggleDrawer(false)}
+          />
+          <Typography variant="h4">LATEST</Typography>
+          <PlayCircleOutlineOutlinedIcon
+            fontSize="medium"
+            sx={{ paddingRight: '15px'}} 
+            onClick={playFeed}
+          />
+        </FeedHeader>
+        <FeedWrapper ref={scrollRef}>
+          {feedItems && feedItems?.map((item, index) => (
+            <CardWrapper>
+              {item}
+            </CardWrapper>
+          ))}
+        </FeedWrapper>
+        {itemsTotal === items?.length &&
+          <Typography variant="h4" sx={{textAlign: 'center'}}>No more items</Typography>
+        }
+      </Box>
+     </ScrollWrapper>
   )
 }
+
+const ScrollWrapper = styled(Box)(({ theme }) => ({
+  overflowY: 'scroll',
+  overflowX: 'hidden',
+  '&::-webkit-scrollbar': { 
+    display: 'none'  /* Safari and Chrome */
+  },
+  [theme.breakpoints.down('md')]: {
+    width: '100vw',
+    padding: '100px 0px',
+    overflowY: 'scroll',
+  },
+}))
+
+const FeedWrapper = styled(Box)(({ theme }) => ({
+  padding: '18px',
+  marginTop: '30px',
+  minHeight: '75vh',
+  '& a': {
+    color: theme.palette.blue,
+  },
+  [theme.breakpoints.down('md')]: {
+    padding: '0px 30px',
+    overflowX: 'auto',
+    minHeight: '80vh',
+  },
+}))
 
 const FeedHeader = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -382,60 +403,43 @@ const FeedHeader = styled(Box)(({ theme }) => ({
   },  
 }))
 
-const StyledScrollablePageWrapper = styled(ScrollablePageWrapper)(({ theme }) => ({
-  padding:'0px !important',
+const CardWrapper = styled(Box)(({ theme }) => ({
+  width: '100%',
+  margin: '15px 0px',
 }))
+
 const TextCard = styled(Box)(({ theme }) => ({
-  margin: '8px 0',
-  height: '80px',
-  width: '400px',
+  // height: '80px',
   border: '1px solid',
 }))
 
-const MultiCard = styled(Box)(({ theme }) => ({
-  margin: '8px 0',
-  height: 'auto',
-  maxHeight: '250px',
-  width: '400px',
-  border: '1px solid',
-  '& img': {
-    cursor: 'pointer',
-  }
-}))
+// const MultiCard = styled(Box)(({ theme }) => ({
+//   height: 'auto',
+//   maxHeight: '250px',
+//   border: '1px solid',
+//   '& img': {
+//     cursor: 'pointer',
+//   }
+// }))
 
 const ImageCard =  styled(Box)(({ theme }) => ({
-  margin: '8px 0',
   minHeight: '300px',
-  maxHeight: '500px',
+  // maxHeight: '500px',
   height: 'auto',
-  width: '400px',
   border: '1px solid',
   textOverflow: 'ellipsis',
   overflow: 'hidden',
   '& img': {
     cursor: 'pointer',
   },
-  '& a': {
-    height: '50%',
-    width: '50%',
-  },
 }))
 
-const FeedWrapper = styled(Box)(({ theme }) => ({
-  padding: '18px 18px',
-  height: 'auto',
-  top: 0,
-  minHeight: '75vh',
-  margin: '0 auto',
-  position: 'relative',
-  '& a': {
-    color: theme.palette.blue,
-  },
-  [theme.breakpoints.down('md')]: {
-    padding: '0px 30px',
-    overflowX: 'auto',
-    minHeight: '80vh',
-  },
+const CopyWrapper =  styled(Box)(({ theme }) => ({
+  // border: '2px solid red',
+  padding: '0 15px',
+  margin: '5px 0px',
 }))
+
+
 
 export default Feed
