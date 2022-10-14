@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useState, useContext } from 'react'
 import dynamic from 'next/dynamic'
-import Head from 'next/head'
 import { Box, Typography } from '@mui/material'
 import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-
+import Head from 'next/head'
 const Dots = dynamic(() => import('./Dots'))
 const HubHeader = dynamic(() => import('./HubHeader'))
 const TabHeader = dynamic(() => import('./TabHeader'))
@@ -80,8 +79,11 @@ const HubComponent = ({ hubPubkey }) => {
       updatedView[viewIndex].visible = true
       updatedView[viewIndex].playlist = hubReleases
     }
-    if (hubReleases?.length === 0 && fetched.releases && hubCollaborators.length > 0) {
-      
+    if (
+      hubReleases?.length === 0 &&
+      fetched.releases &&
+      hubCollaborators.length > 0
+    ) {
       setActiveView(1)
     }
     setFetched({ ...fetched })
@@ -92,7 +94,52 @@ const HubComponent = ({ hubPubkey }) => {
     const index = parseInt(event.target.id)
     setActiveView(index)
   }
-
+  const renderTables = (activeView) => {
+    switch (activeView) {
+      case undefined:
+        return (
+          <>
+            <HubDotWrapper>
+              <Box sx={{ width: '100%', margin: 'auto' }}>
+                <Dots />
+              </Box>
+            </HubDotWrapper>
+          </>
+        )
+      case 0:
+        return (
+          <>
+            {fetched.releases && !releaseData && (
+              <Box sx={{ my: 1 }}>No releases found in this Hub</Box>
+            )}
+            {fetched.releases && releaseData && (
+              <ReusableTable
+                tableType={'hubReleases'}
+                releases={releaseData}
+                hasOverflow={true}
+              />
+            )}
+          </>
+        )
+      case 1:
+        return (
+          <>
+            {fetched.collaborators && !hubCollaborators && (
+              <Box sx={{ my: 1 }}>No collaborators found in this Hub</Box>
+            )}
+            {fetched.collaborators && (
+              <ReusableTable
+                tableType={'hubCollaborators'}
+                releases={hubCollaborators}
+                hasOverflow={true}
+              />
+            )}
+          </>
+        )
+      default:
+        break
+    }
+  }
   return (
     <>
       <Head>
@@ -132,9 +179,7 @@ const HubComponent = ({ hubPubkey }) => {
       </Head>
 
       <HubContainer>
-        <>
-          {fetched.info && hubData && <HubHeader hubData={hubData} />}
-        </>
+        <>{fetched.info && hubData && <HubHeader hubData={hubData} />}</>
         {fetched.info && hubData && (
           <HubTabWrapper>
             <TabHeader
@@ -146,46 +191,7 @@ const HubComponent = ({ hubPubkey }) => {
             />
           </HubTabWrapper>
         )}
-        <>
-          {activeView === undefined && (
-            <>
-            <HubDotWrapper>
-              <Box sx={{width: '100%', margin: 'auto'}}>
-                <Dots />
-              </Box>
-            </HubDotWrapper>
-            </>
-           )} 
-           
-          {activeView === 0 && (
-            <>
-             {fetched.releases && !releaseData && (
-                <Box sx={{ my: 1 }}>No releases found in this Hub</Box>
-              )}
-              {fetched.releases && releaseData && (
-                <ReusableTable
-                  tableType={'hubReleases'}
-                  releases={releaseData}
-                  hasOverflow={true}
-                />
-              )}
-            </>
-          )}
-          {activeView === 1 && (
-            <>
-              {fetched.collaborators && !hubCollaborators && (
-                <Box sx={{ my: 1 }}>No collaborators found in this Hub</Box>
-              )}
-              {fetched.collaborators && (
-                <ReusableTable
-                  tableType={'hubCollaborators'}
-                  releases={hubCollaborators}
-                  hasOverflow={true}
-                />
-              )}
-            </>
-          )}
-        </>
+        <>{renderTables(activeView)}</>
       </HubContainer>
     </>
   )
@@ -207,7 +213,7 @@ const HubContainer = styled(Box)(({ theme }) => ({
     flexDirection: 'column',
     justifyItems: 'center',
     alignItems: 'center',
-    marginTop: '25px', 
+    marginTop: '25px',
     paddingTop: 0,
     minHeight: '100% !important',
     maxHeight: '80vh',
@@ -217,10 +223,10 @@ const HubContainer = styled(Box)(({ theme }) => ({
 }))
 
 const HubTabWrapper = styled(Box)(({ theme }) => ({
-  py:1,
+  py: 1,
   [theme.breakpoints.down('md')]: {
-    marginTop: '0px'
-  }
+    marginTop: '0px',
+  },
 }))
 
 const HubDotWrapper = styled(Box)(({ theme }) => ({
@@ -233,7 +239,5 @@ const HubDotWrapper = styled(Box)(({ theme }) => ({
     top: '53%',
   },
 }))
-
-
 
 export default HubComponent

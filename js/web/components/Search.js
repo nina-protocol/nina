@@ -51,23 +51,57 @@ const Search = (props) => {
       setResponse(searchResults)
       setFetchedResponse(true)
     }
-   
   }, [searchResults, searchQuery])
 
-
   useEffect(() => {
-    if(searchFilter === 'artists') {
+    if (searchFilter === 'artists') {
       setActiveView(1)
     }
-    if(searchFilter === 'releases') {
+    if (searchFilter === 'releases') {
       setActiveView(2)
     }
-    if(searchFilter === 'hubs') {
+    if (searchFilter === 'hubs') {
       setActiveView(3)
-    } 
+    }
     console.log('activvvvvv', activeView)
   }, [searchFilter])
 
+  const renderTables = (activeView) => {
+    switch (activeView) {
+      case 1:
+        return (
+          <ResultsWrapper>
+            <ReusableTable
+              tableType="filteredSearchResultArtists"
+              releases={response?.artists}
+              hasOverflow={true}
+            />
+          </ResultsWrapper>
+        )
+      case 2:
+        return (
+          <ResultsWrapper>
+            <ReusableTable
+              tableType="filteredSearchResultReleases"
+              releases={response?.releases}
+              hasOverflow={true}
+            />
+          </ResultsWrapper>
+        )
+      case 3:
+        return (
+          <ResultsWrapper>
+            <ReusableTable
+              tableType={'filteredSearchResultHubs'}
+              releases={response?.hubs}
+              hasOverflow={true}
+            />
+          </ResultsWrapper>
+        )
+      default:
+        break
+    }
+  }
 
   return (
     <SearchPageContainer>
@@ -76,33 +110,33 @@ const Search = (props) => {
           <Typography>{`Search results for ${query}`}</Typography>
         </SearchInputWrapper>
       </SearchInputContainer>
-      <Box sx={{display: 'flex', flexDirection: 'row'}}>
-      <SearchResultFilter
-            // id={index}
-            isClicked={activeView === 0}
-            onClick={() => setActiveView(0)}
-            
-            >
-              {`All (${response?.artists.length + response?.releases.length + response?.hubs.length})`}
-            </SearchResultFilter>
-      {
-        Object.keys(response).map((filter, index) => {
+      <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+        <SearchResultFilter
+          // id={index}
+          isClicked={activeView === 0}
+          onClick={() => setActiveView(0)}
+        >
+          {`All (${
+            response?.artists.length +
+            response?.releases.length +
+            response?.hubs.length
+          })`}
+        </SearchResultFilter>
+        {Object.keys(response).map((filter, index) => {
           console.log('filter', filter)
           console.log('filtersss', response?.[filter]?.length)
-          
+
           return (
             <SearchResultFilter
-            id={index}
-            isClicked={activeView === (index + 1)}
-            onClick={() => setActiveView(index + 1)}
-            disabled={response?.[filter]?.length === 0}
+              id={index}
+              isClicked={activeView === index + 1}
+              onClick={() => setActiveView(index + 1)}
+              disabled={response?.[filter]?.length === 0}
             >
               {`${filter} (${response?.[filter]?.length})`}
             </SearchResultFilter>
           )
-        })
-      }
-
+        })}
       </Box>
 
       <SearchAllResultsWrapper>
@@ -114,60 +148,26 @@ const Search = (props) => {
               </Box>
             </ResponsiveDotContainer>
           )}
-
-        {
-          activeView === 0 && fetchedResponse && (
+        
+         {activeView === 0 &&
+            fetchedResponse &&
             Object.keys(searchResults).map((key, index) => {
               const type = key.charAt(0).toUpperCase() + key.slice(1)
               const data = searchResults[key]
               console.log('data.type', data)
               return (
                 <ResultsWrapper>
-
-                <ReusableTable
-                  tableType={`searchResult${
-                    type.charAt(0).toUpperCase() + type.slice(1)
-                  }`}
-                  releases={data}
-                  hasOverflow={false}
+                  <ReusableTable
+                    tableType={`searchResult${
+                      type.charAt(0).toUpperCase() + type.slice(1)
+                    }`}
+                    releases={data}
+                    hasOverflow={false}
                   />
-                  </ResultsWrapper>
+                </ResultsWrapper>
               )
-            })
-          )
-        }
-
-          {fetchedResponse && activeView === 1 && response?.artists.length > 0 && (
-            <ResultsWrapper>
-              <ReusableTable
-                tableType="filteredSearchResultArtists"
-                releases={response?.artists}
-                hasOverflow={true}
-              />
-            </ResultsWrapper>
-          )}
-
-          {fetchedResponse &&
-            activeView === 2 &&
-            response?.releases.length > 0 && (
-              <ResultsWrapper>
-                <ReusableTable
-                  tableType="filteredSearchResultReleases"
-                  releases={response?.releases}
-                  hasOverflow={true}
-                />
-              </ResultsWrapper>
-            )}
-
-          {fetchedResponse && activeView === 3 && response?.hubs.length > 0 && (
-            <ResultsWrapper>
-              <ReusableTable
-                tableType={'filteredSearchResultHubs'}
-                releases={response?.hubs}
-                hasOverflow={true}
-              />
-            </ResultsWrapper>
-          )}
+            })}
+            {fetchedResponse && renderTables(activeView)}
           {query?.length > 0 &&
             fetchedResponse &&
             response?.artists?.length === 0 &&
@@ -228,7 +228,7 @@ const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
-const SearchResultFilter = styled(Button)(({theme, isClicked}) => ({
+const SearchResultFilter = styled(Button)(({ theme, isClicked }) => ({
   backgroundColor: 'transparent',
   border: 'none',
   cursor: 'pointer',
@@ -236,7 +236,12 @@ const SearchResultFilter = styled(Button)(({theme, isClicked}) => ({
   fontWeight: isClicked ? 'bold' : 'normal',
   color: '#000',
   textAlign: 'left',
-  alignItems:'left'
+  alignItems: 'left',
+  display: 'flex',
+  flexDirection: 'row',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '14px',
+  },
 }))
 
 const AllResultsContainer = styled(Box)(({ theme }) => ({
