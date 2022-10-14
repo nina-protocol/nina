@@ -2,6 +2,7 @@ import { useEffect, useContext, useState, useMemo } from 'react'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
 import { useWallet } from '@solana/wallet-adapter-react'
+import axios from 'axios'
 import { Box, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { styled } from '@mui/system'
@@ -14,6 +15,7 @@ import Subscribe from './Subscribe'
 const Dots = dynamic(() => import('./Dots'))
 const TabHeader = dynamic(() => import('./TabHeader'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
+const Feed = dynamic(() => import('./Feed'))
 
 const Profile = ({ profilePubkey, inDashboard=false }) => {
   const wallet = useWallet()
@@ -80,7 +82,6 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
     }
   }, [router.query.view])
   
-
   useEffect(() => {
     if (profileSubscriptions){
       const to = []

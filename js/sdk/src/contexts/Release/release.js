@@ -86,7 +86,8 @@ const ReleaseContextProvider = ({ children }) => {
     initializeReleaseAndMint,
     releaseCreateMetadataJson,
     releaseInitViaHub,
-    validateUniqueMd5Digest
+    validateUniqueMd5Digest,
+    getFeedForUser
   } = releaseContextHelper({
     ninaClient,
     releaseState,
@@ -157,7 +158,8 @@ const ReleaseContextProvider = ({ children }) => {
         releaseCreateMetadataJson,
         releaseInitViaHub,
         releasePurchaseTransactionPending,
-        validateUniqueMd5Digest
+        validateUniqueMd5Digest,
+        getFeedForUser
       }}
     >
       {children}
@@ -1368,6 +1370,18 @@ const releaseContextHelper = ({
     return collectors.map(collector => collector.publicKey)
   }
 
+  const getFeedForUser = async (publicKey, offset) => {
+    const { data } = await axios.get(`${process.env.NINA_API_ENDPOINT}/accounts/7g2euzpRxm2A9kgk4UJ9J5ntUYvodTw4s4m7sL1C8JE/feed?offset=${offset}`)
+    const releases = []
+    data.feedItems.forEach(feedItem => {
+      if (feedItem.release) {
+        releases.push(feedItem.release)
+      }
+    })
+    setReleaseState(updateStateForReleases(releases))
+    return data
+  }
+
   /*
 
   STATE FILTERS
@@ -1734,7 +1748,8 @@ const releaseContextHelper = ({
     getCollectorsForRelease,
     initializeReleaseAndMint,
     releaseCreateMetadataJson,
-    validateUniqueMd5Digest
+    validateUniqueMd5Digest,
+    getFeedForUser
   }
 }
 
