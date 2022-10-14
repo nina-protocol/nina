@@ -141,34 +141,41 @@ const Profile = ({ profilePubkey }) => {
     const index = parseInt(event.target.id)
     setActiveView(index)
   }
+
+  const renderTables = (activeView) => {
+    switch (activeView) {
+      case 0:
+        return (
+          <ReusableTable
+          tableType={'profilePublishedReleases'}
+          releases={profilePublishedReleases}
+          hasOverflow={true}
+          />
+        )
+      case 1:
+        return (
+          <ReusableTable
+          tableType={'profileCollectionReleases'}
+          releases={profileCollectionReleases}
+          hasOverflow={true}
+          />
+        )
+      case 2:
+        return (
+          <ReusableTable
+          tableType={'profileHubs'}
+          releases={profileHubs}
+          hasOverflow={true}
+          />
+        )
+      default:
+        break;
+    }
+  }
+
   return (
     <>
-      <Head>
-        <title>{`Nina: ${profilePubkey}'s Profile`}</title>
-        <meta name="description" content={'Your profile on Nina.'} />
-        <meta name="og:type" content="website" />
-        <meta
-          name="og:title"
-          content={`Nina: ${profilePubkey ? `${profilePubkey}'s Hub` : ''}`}
-        />
-        <meta
-          name="og:description"
-          content={`All releases, Hubs, and collection belonging to ${profilePubkey}`}
-        />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@ninaprotocol" />
-        <meta name="twitter:creator" content="@ninaprotocol" />
-        <meta name="twitter:image:type" content="image/jpg" />
-        <meta name="twitter:title" content={`${profilePubkey} on Nina`} />
-        <meta
-          name="twitter:description"
-          content={`All releases, Hubs, and collection belonging to ${profilePubkey}`}
-        />
-        <meta name="twitter:image" content="/images/favicon.ico" />
-        <meta name="og:image" content={'/images/favicon.ico'} />
-        <meta property="og:title" content="iPhone" />
-        <meta property="og:image" content={`/images/favicon.ico`} />
-      </Head>
+      
 
       <ProfileContainer>
         <ProfileHeaderWrapper>
@@ -207,7 +214,12 @@ const Profile = ({ profilePubkey }) => {
             </ProfileDotWrapper>
           )}
 
-          {activeView === 0 && (
+
+            <ProfileTableContainer>
+              {renderTables(activeView)}
+            </ProfileTableContainer>
+
+          {/* {activeView === 0 && (
             <>
               {fetched.releases && profilePublishedReleases.length === 0 && (
                 <Box>No releases belong to this address</Box>
@@ -255,7 +267,7 @@ const Profile = ({ profilePubkey }) => {
                 </ProfileTableContainer>
               )}
             </>
-          )}
+          )} */}
         </>
       </ProfileContainer>
     </>

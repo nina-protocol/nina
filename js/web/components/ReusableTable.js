@@ -377,7 +377,7 @@ const ReusableTable = ({ releases, tableType, hasOverflow }) => {
   return (
     <>
     {
-      releases.length > 0 && (
+      releases?.length > 0 && (
     <ResponsiveContainer hasOverflow={hasOverflow}>
       <ResponsiveTableContainer>
         <Table>

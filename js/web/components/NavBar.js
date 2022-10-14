@@ -157,7 +157,7 @@ const NavRight = styled('div')(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     position: 'absolute',
     right: 0,
-    top: '10px',
+    top: '15px',
   },
 }))
 

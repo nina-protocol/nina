@@ -7,10 +7,12 @@ import TextField from '@mui/material/TextField'
 import { styled } from '@mui/material/styles'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
+import SearchIcon from '@mui/icons-material/Search';
+
 const SearchDropdown = dynamic(() => import('./SearchDropdown'))
 
 const NavSearch = () => {
-const router = useRouter()
+  const router = useRouter()
   const [query, setQuery] = useState()
   const [filter, setFilter] = useState()
   const [response, setResponse] = useState(undefined)
@@ -91,7 +93,6 @@ const router = useRouter()
       e.target.value !== '' ||
       e.target.value !== undefined
     ) {
-      
       await NinaSdk.Search.withQuery(query).then(setResponse)
       setFetchedResponse(true)
       router.push(`/search/?q=${query}`)
@@ -130,9 +131,11 @@ const router = useRouter()
     }
   }
 
-  const handleSuggestionsClick =  (search, searchFilter) => {
+  const handleSuggestionsClick = (search, searchFilter) => {
     setQuery('')
-    router.push(`/search/?q=${search}${searchFilter ? `&type=${searchFilter}`: ''}`)
+    router.push(
+      `/search/?q=${search}${searchFilter ? `&type=${searchFilter}` : ''}`
+    )
   }
 
   const suggestionsHandler = (e) => {
@@ -157,7 +160,11 @@ const router = useRouter()
       setShowDropdown(true)
     }
   }
-
+  const handleMobileSearchClick = (e) => {
+    e.preventDefault(    )
+    e.stopPropagation()
+    setShowDropdown(true)
+  }
   const arrowHandler = (e) => {
     if (e.key === 'ArrowDown') {
       console.log('arrow')
@@ -165,10 +172,48 @@ const router = useRouter()
   }
 
   return (
-    <Box>
+    <>
+    <DesktopNavSearch 
+    handleSubmit={(e) => handleSubmit(e)}
+    changeHandler={(e) => changeHandler(e)}
+    handleSearchClick={(e) => handleSearchClick(e)}
+    suggestionsHandler={(e) => suggestionsHandler(e)}
+    query={query}
+    suggestions={suggestions}
+    dropdownRef={dropdownRef}
+    searchInputRef={searchInputRef}
+    showDropdown={showDropdown}
+    autoCompleteResults={autoCompleteResults}
+    arrowHandler={(e) => arrowHandler(e)}
+    />
+    <MobileNavSearch 
+    showDropdown={showDropdown}
+    handleSearchClick={(e) => handleMobileSearchClick(e)}
+    />
+    </>
+    
+  )
+}
+
+const DesktopNavSearch = ({
+  handleSubmit,
+  changeHandler,
+  handleSearchClick,
+  suggestionsHandler,
+  query,
+  suggestions,
+  dropdownRef,
+  searchInputRef,
+  showDropdown,
+  autoCompleteResults,
+  arrowHandler,
+  
+}) => {
+  return (
+    <DesktopNavSearchContainer>
       <Form onSubmit={(e) => handleSubmit(e)}>
         <SearchInputWrapper>
-            <SearchInput
+          <SearchInput
             onChange={(e) => changeHandler(e)}
             value={query}
             autoComplete="off"
@@ -176,7 +221,7 @@ const router = useRouter()
             ref={searchInputRef}
             placeholder="Search for artists, releases, hubs"
             type="search"
-            />
+          />
         </SearchInputWrapper>
       </Form>
       {showDropdown && (
@@ -205,31 +250,53 @@ const router = useRouter()
             )}
         </DropdownContainer>
       )}
-    </Box>
+    </DesktopNavSearchContainer>
   )
 }
+
+const MobileNavSearch = ({showDropdown, handleSearchClick}) => {
+  return(
+    <MobileNavSearchContainer>
+      <Box><SearchIcon onClick={handleSearchClick}/></Box>
+      {showDropdown && (
+        <MobileDropdownContainer>
+          <Typography>Search</Typography>
+        </MobileDropdownContainer>
+      )}
+    </MobileNavSearchContainer>
+  )
+}
+
+const DesktopNavSearchContainer = styled(Box)(({ theme }) => ({
+  [theme.breakpoints.down('sm')]: {
+    display: 'none',
+  },
+}))
 
 const SearchInputWrapper = styled(Box)(({ theme }) => ({
   maxWidth: '100vw',
 }))
 const Form = styled('form')(({ theme }) => ({}))
-const SearchInput = styled('input')(({theme}) => ({
-    border: 0,
-    borderBottom: '1px solid #000000',
-    width: '15vw',
-    marginRight: '20px',
-    outline: 'none !important',
-    [theme.breakpoints.down('sm')]: {
-      width: '20vw'
-    }
+const SearchInput = styled('input')(({ theme }) => ({
+  border: 0,
+  borderBottom: '1px solid #000000',
+  width: '15vw',
+  marginRight: '20px',
+  outline: 'none !important',
+  backgroundColor: '#fff',
+  //    background: 'rgba(255,255,255,0.5)',
 }))
 const DropdownContainer = styled(Box)(({ theme }) => ({
   maxHeight: '60vh',
+  width: '15vw',
   zIndex: '100',
   position: 'absolute',
   overflow: 'hidden',
   textAlign: 'left',
-  backgroundColor: 'rgba(255,255,255,0.9)',
+  marginRight: '20px',
+  backgroundColor: '#fff',
+  padding: '0 2px',
+  // backgroundColor: 'rgba(255,255,255,0.8)',
 }))
 
 const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
@@ -238,12 +305,26 @@ const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
   overflowY: 'auto',
   webkitOverflowScrolling: 'touch',
   padding: '10px 0',
-  [theme.breakpoints.down('md')]: {
-    paddingBottom: '100px',
-  },
 }))
-const SearchInputContainer = styled(Box)(({ theme }) => ({
-  position: 'relative',
+
+const MobileNavSearchContainer = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  right: '65px',
+  height: '100%',
+  [theme.breakpoints.up('md')]: {
+    display: 'none',
+  }
+}))
+
+const MobileDropdownContainer = styled(Box)(({ theme }) => ({
+  maxHeight: '60vh',
+  width: '100vw',
+  zIndex: '100',
+  position: 'absolute',
+  overflow: 'hidden',
+  textAlign: 'left',
+  
+  backgroundColor: 'red',
 }))
 
 export default NavSearch
