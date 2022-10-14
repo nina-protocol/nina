@@ -14,6 +14,7 @@ import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutline
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import Audio from "@nina-protocol/nina-internal-sdk/esm/Audio";
 import Button from "@mui/material/Button";
+import { useRouter } from "next/router";
 
 const timeSince = (date) => {
   const seconds = Math.floor((new Date() - date) / 1000)
@@ -47,6 +48,8 @@ const timeSince = (date) => {
 
 const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser}) => {
   const { updateTrack, isPlaying, setIsPlaying, track } = useContext(Audio.Context);
+  const router = useRouter();
+
 
   const [pendingFetch, setPendingFetch] = useState(false)
   const scrollRef = useRef()
@@ -75,20 +78,31 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
     }
   }
 
+  const handleClick = (e, path) => {
+    console.log('path :>> ', path);
+    e.stopPropagation()
+    e.preventDefault()
+    router.push(path)
+
+  }
+  
+
   const feedItems = useMemo(() => {
     const feedItemComponents = items?.map((item, i) => {
       switch (item?.type) {
         case 'HubInitWithCredit':
           return (
             <ImageCard>
-              <Link href={`/hubs/${item?.hub?.handle}`} passHref>
+              <HoverContainer href={`/hubs/${item?.hub?.handle}`}  passHref
+                onClick={(e) => handleClick(e, `/${item.release?.publicKey}`)}
+              >
                 <Image
                   height={'100px'}
                   width={'100px'}
                   layout="responsive"
                   src={getImageFromCDN(
-                    item?.hub?.data?.image,
-                    200,
+                    item.release?.metadata.image,
+                    400,
                     Date.parse(item.datetime)
                   )}
                   alt={i}
@@ -96,7 +110,21 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
                   loader={loader}
                   unoptimized={true}
                 />
-              </Link>
+                <HoverCard>
+                  <CtaWrapper>
+                    <Button
+                      onClick={(e) => {handlePlay(e, item.release.publicKey)}}
+                    >
+                      {isPlaying &&
+                        track.releasePubkey === item.release?.publicKey ? (
+                          <PauseCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
+                        ) : (
+                          <PlayCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
+                        )}
+                    </Button>
+                  </CtaWrapper>
+                </HoverCard>
+              </HoverContainer>
               <CopyWrapper>
                 <Typography my={1}>New Hub:</Typography>
                 <Typography my={1}><Link href={`/hubs/${item?.hub?.handle}`} passHref>{`${item?.hub?.data?.displayName}`}</Link> created by <Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link></Typography>
@@ -107,22 +135,38 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
         case 'ReleaseInitWithCredit':
           return (
             <ImageCard>
-              <Link href={`/${item.release.publicKey}`} passHref>
-              <Image
-                height={'100px'}
-                width={'100px'}
-                layout="responsive"
-                src={getImageFromCDN(
-                  item.release.metadata.image,
-                  400,
-                  Date.parse(item.datetime)
-                )}
-                alt={i}
-                priority={true}
-                loader={loader}
-                unoptimized={true}
-              />
-              </Link>
+              <HoverContainer href={`/${item.release?.publicKey}`} passHref
+                onClick={(e) => handleClick(e, `/${item.release?.publicKey}`)}
+              >
+                <Image
+                  height={'100px'}
+                  width={'100px'}
+                  layout="responsive"
+                  src={getImageFromCDN(
+                    item.release?.metadata.image,
+                    400,
+                    Date.parse(item.datetime)
+                  )}
+                  alt={i}
+                  priority={true}
+                  loader={loader}
+                  unoptimized={true}
+                />
+                <HoverCard>
+                  <CtaWrapper>
+                    <Button
+                      onClick={(e) => {handlePlay(e, item.release.publicKey)}}
+                    >
+                      {isPlaying &&
+                        track.releasePubkey === item.release.publicKey ? (
+                          <PauseCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
+                        ) : (
+                          <PlayCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
+                        )}
+                    </Button>
+                  </CtaWrapper>
+                </HoverCard>
+              </HoverContainer>
               <CopyWrapper>
                 <Typography my={1}>New Release:</Typography>
                 <Typography my={1}><Link href={`/${item.release.publicKey}`} passHref>{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link></Typography>
@@ -134,22 +178,38 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
         case 'ReleaseInitViaHub':
           return (
             <ImageCard>
-              <Link href={`/${item.release.publicKey}`} passHref>
-              <Image
-                height={'100px'}
-                width={'100px'}
-                layout="responsive"
-                src={getImageFromCDN(
-                  item.release.metadata.image,
-                  400,
-                  Date.parse(item.datetime)
-                )}
-                alt={i}
-                priority={true}
-                loader={loader}
-                unoptimized={true}
-              />
-              </Link>
+              <HoverContainer href={`/${item.release?.publicKey}`} passHref
+                onClick={(e) => handleClick(e, `/${item.release?.publicKey}`)}
+              >
+                <Image
+                  height={'100px'}
+                  width={'100px'}
+                  layout="responsive"
+                  src={getImageFromCDN(
+                    item.release?.metadata.image,
+                    400,
+                    Date.parse(item.datetime)
+                  )}
+                  alt={i}
+                  priority={true}
+                  loader={loader}
+                  unoptimized={true}
+                />
+                <HoverCard>
+                  <CtaWrapper>
+                    <Button
+                      onClick={(e) => {handlePlay(e, item.release.publicKey)}}
+                    >
+                      {isPlaying &&
+                        track.releasePubkey === item.release.publicKey ? (
+                          <PauseCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
+                        ) : (
+                          <PlayCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
+                        )}
+                    </Button>
+                  </CtaWrapper>
+                </HoverCard>
+              </HoverContainer>
               <CopyWrapper>
                 <Typography my={1}>New Release:</Typography>
                 <Typography my={1}><Link href={`/${item.release.publicKey}`} passHref>{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link> via <Link href={`/hubs/${item?.hub?.handle}`} passHref>{`${item?.hub?.data?.displayName}`}</Link></Typography>
@@ -161,7 +221,9 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
       case 'ReleasePurchaseViaHub':
         return (
           <ImageCard>
-            <HoverContainer href={`/${item.release?.publicKey}`} passHref>
+            <HoverContainer href={`/${item.release?.publicKey}`} passHref
+              onClick={(e) => handleClick(e, `/${item.release?.publicKey}`)}
+            >
             <Image
               height={'100px'}
               width={'100px'}
@@ -478,6 +540,7 @@ const HoverCard =  styled(Box)(({ theme }) => ({
   width: '100%',
   display: 'flex',
   opacity: 0,
+  cursor: 'pointer',
   '&:hover': {
     opacity: 1,
     backgroundColor: theme.palette.background.default + "c4",
