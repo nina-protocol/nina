@@ -1,24 +1,20 @@
 import NinaSdk from '@nina-protocol/js-sdk'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles'
-import TextField from '@mui/material/TextField'
+
 import { Box } from '@mui/system'
 import { Button, Typography } from '@mui/material'
-import { useCallback } from 'react'
+
 import Dots from './Dots'
-import Link from 'next/link'
-import axios from 'axios'
-import CircularProgress from '@mui/material/CircularProgress'
+
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 
-const SearchDropdown = dynamic(() => import('./SearchDropdown'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
-const TabHeader = dynamic(() => import('./TabHeader'))
 
 const Search = (props) => {
   const router = useRouter()
-  console.log('router.query', router.query)
+
   const { searchResults, searchQuery } = props
   const [query, setQuery] = useState(searchQuery?.q)
   const [searchFilter, setSearchFilter] = useState()
@@ -27,10 +23,6 @@ const Search = (props) => {
   const [fetchedResponse, setFetchedResponse] = useState(false)
 
   const [activeView, setActiveView] = useState(0)
-  const [responseLength, setResponseLength] = useState(0)
-  // const [searchResultFilters, setSearchResultFilters] = useState([
-  // 'all','artists','releases','hubs'
-  // ])
 
   useEffect(() => {
     NinaSdk.client.init(
@@ -63,7 +55,6 @@ const Search = (props) => {
     if (searchFilter === 'hubs') {
       setActiveView(3)
     }
-    console.log('activvvvvv', activeView)
   }, [searchFilter])
 
   const renderTables = (activeView) => {
@@ -122,21 +113,19 @@ const Search = (props) => {
             response?.hubs.length
           })`}
         </SearchResultFilter>
-        {Object.keys(response).map((filter, index) => {
-          console.log('filter', filter)
-          console.log('filtersss', response?.[filter]?.length)
-
-          return (
-            <SearchResultFilter
-              id={index}
-              isClicked={activeView === index + 1}
-              onClick={() => setActiveView(index + 1)}
-              disabled={response?.[filter]?.length === 0}
-            >
-              {`${filter} (${response?.[filter]?.length})`}
-            </SearchResultFilter>
-          )
-        })}
+        {searchResults &&
+          Object.keys(response).map((filter, index) => {
+            return (
+              <SearchResultFilter
+                id={index}
+                isClicked={activeView === index + 1}
+                onClick={() => setActiveView(index + 1)}
+                disabled={response?.[filter]?.length === 0}
+              >
+                {`${filter} (${response?.[filter]?.length})`}
+              </SearchResultFilter>
+            )
+          })}
       </Box>
 
       <SearchAllResultsWrapper>
@@ -148,13 +137,13 @@ const Search = (props) => {
               </Box>
             </ResponsiveDotContainer>
           )}
-        
-         {activeView === 0 &&
+
+          {activeView === 0 &&
             fetchedResponse &&
+            searchResults &&
             Object.keys(searchResults).map((key, index) => {
               const type = key.charAt(0).toUpperCase() + key.slice(1)
               const data = searchResults[key]
-              console.log('data.type', data)
               return (
                 <ResultsWrapper>
                   <ReusableTable
@@ -167,7 +156,7 @@ const Search = (props) => {
                 </ResultsWrapper>
               )
             })}
-            {fetchedResponse && renderTables(activeView)}
+          {fetchedResponse && renderTables(activeView)}
           {query?.length > 0 &&
             fetchedResponse &&
             response?.artists?.length === 0 &&
@@ -183,9 +172,12 @@ const Search = (props) => {
 
 const SearchPageContainer = styled(Box)(({ theme }) => ({
   height: '60vh',
+  minWidth: theme.maxWidth,
   maxWidth: theme.maxWidth,
   [theme.breakpoints.down('md')]: {
+    minWidth: 'unset',
     height: '80vh',
+    paddingTop: '10vh',
   },
 }))
 
@@ -202,17 +194,23 @@ const SearchInputWrapper = styled(Box)(({ theme }) => ({
 const Form = styled('form')(({ theme }) => ({}))
 
 const SearchAllResultsWrapper = styled(Box)(({ theme }) => ({
+  minWidth: theme.maxWidth,
   textAlign: 'left',
   overflow: 'auto',
+  [theme.breakpoints.down('md')]: {
+    minWidth: 'unset',
+  },
 }))
 
 const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
   maxHeight: '60vh',
+  minWidth: theme.maxWidth,
   maxWidth: theme.maxWidth,
 
   webkitOverflowScrolling: 'touch',
   padding: '10px 0',
   [theme.breakpoints.down('md')]: {
+    minWidth: 'unset',
     paddingBottom: '100px',
   },
 }))
@@ -242,14 +240,6 @@ const SearchResultFilter = styled(Button)(({ theme, isClicked }) => ({
   [theme.breakpoints.down('md')]: {
     fontSize: '14px',
   },
-}))
-
-const AllResultsContainer = styled(Box)(({ theme }) => ({
-  overflow: 'unset',
-}))
-
-const AllResultsWrapper = styled(Box)(({ theme }) => ({
-  marginBottom: '20px',
 }))
 
 const ResultsWrapper = styled(Box)(({ theme }) => ({

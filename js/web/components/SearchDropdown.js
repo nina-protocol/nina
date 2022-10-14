@@ -1,9 +1,20 @@
 import { Box, Typography } from '@mui/material'
-import Link from 'next/link'
-import Button from '@mui/material'
+import { useRef, useEffect } from 'react'
 import {styled} from '@mui/system'
-import {Tab} from '@mui/material'
+
 const SearchDropdown = ({ searchData, category, hasResults, clickHandler, onKeyDown }) => {
+  const searchDropdownRef = useRef(null)
+  useEffect(() => {
+    const node = searchDropdownRef.current
+    node.addEventListener('keydown', (e) => {
+      const active = document.activeElement;
+      if(e.keyCode === 40 && active.nextSibling) {
+        active.nextSibling.focus()
+      } if (e.keyCode === 38 && active.previousSibling) {
+        active.previousSibling.focus()
+      }
+    })
+  }, [])
   let rows
 
   if (category === 'artists') {
@@ -53,7 +64,7 @@ const SearchDropdown = ({ searchData, category, hasResults, clickHandler, onKeyD
   return (
     <>
       {hasResults === true && (
-        <>
+        <SearchResultsWrapper id='grid' ref={searchDropdownRef}>
           <Typography sx={{ fontWeight: 'bold', textTransform: 'uppercase' }}>
             {category}
           </Typography>
@@ -64,14 +75,21 @@ const SearchDropdown = ({ searchData, category, hasResults, clickHandler, onKeyD
             </a>
             </Box >
           ))}
-        </>
+        </SearchResultsWrapper>
       )}    
     </>
   )
 }
 
-const SearchDropdownResult= styled('button')(({ theme }) => ({
-  outline: 'none'
+const SearchResultsWrapper = styled(Box)(({theme}) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  '&:focus': {
+    backgroundColor: 'rgba(255,255,255,0.8)',
+    outline: 'none'
+  }
 }))
+
+
 
 export default SearchDropdown

@@ -10,11 +10,12 @@ import { useRouter } from 'next/router'
 import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 const SearchDropdown = dynamic(() => import('./SearchDropdown'))
 
 const NavSearch = () => {
-  const {getReleasesRecent, releasesRecentState, filterReleasesRecent} = useContext(Release.Context)
+  const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
+    useContext(Release.Context)
   const router = useRouter()
   const [query, setQuery] = useState()
   const [filter, setFilter] = useState()
@@ -43,25 +44,11 @@ const NavSearch = () => {
 
   useEffect(() => {
     getReleasesRecent()
-  },[])
+  }, [])
 
   useEffect(() => {
     setReleasesRecent(filterReleasesRecent())
-    console.log('releasesRecent', releasesRecent)
-    
   }, [releasesRecentState])
-
-  //   useEffect(() => {
-
-  //     if (searchQuery) {
-  //       const query = searchQuery.q
-  //       setQuery(query)
-  //     }
-  //     if (searchResults) {
-  //       setResponse(searchResults)
-  //       setFetchedResponse(true)
-  //     }
-  //   }, [searchResults, searchQuery])
 
   useEffect(() => {
     const handleDropdown = (e) => {
@@ -71,7 +58,6 @@ const NavSearch = () => {
         !searchInputRef.current.contains(e.target)
       ) {
         setShowDropdown(false)
-        console.log('showDropdown', showDropdown)
       }
     }
 
@@ -83,7 +69,6 @@ const NavSearch = () => {
   }, [showDropdown, dropdownRef])
 
   useEffect(() => {
-    console.log('suggestions', suggestions)
     if (query && setShowDropdown) {
       suggestions?.artists?.length
         ? (autoCompleteResults[0].visible = true)
@@ -118,6 +103,7 @@ const NavSearch = () => {
       return
     }
     setShowDropdown(false)
+    setShowSearchInput(false)
   }
 
   const autoCompleteUrl = 'https://dev.api.ninaprotocol.com/v1/suggestions'
@@ -125,7 +111,7 @@ const NavSearch = () => {
   const handleAutoComplete = async (query) => {
     setLoading(true)
     const response = await axios.post(autoCompleteUrl, { query })
-    console.log('response', response)
+
     if (query.length > 0) {
       setSuggestions(response.data)
     }
@@ -138,12 +124,12 @@ const NavSearch = () => {
     e.preventDefault()
     e.stopPropagation()
     const search = e.target.value
-    console.log('searrch', search)
+
     setQuery(search)
-    if(query !== ''){
+    if (query !== '') {
       setShowDropdown(true)
     }
-    console.log('showDropdown', showDropdown)
+
     if (query) {
       handleAutoComplete(query)
     }
@@ -165,6 +151,7 @@ const NavSearch = () => {
       setFilter(searchFilter)
       setQuery(clickedSuggestion)
       setShowDropdown(false)
+      setShowSearchInput(false)
     }
 
     handleSuggestionsClick(clickedSuggestion, searchFilter)
@@ -296,12 +283,15 @@ const MobileNavSearch = ({
   return (
     <MobileNavSearchContainer>
       <Box>
-        <SearchIcon onClick={() => setShowSearchInput(true)} />
+        {showSearchInput ? (
+          <CloseIcon onClick={() => setShowSearchInput(false)} />
+        ) : (
+          <SearchIcon onClick={() => setShowSearchInput(true)} />
+        )}
       </Box>
       {showSearchInput && (
         <MobileSearchContainer ref={dropdownRef}>
           <MobileSearchInputWrapper>
-            <CloseIcon onClick={() => setShowSearchInput(false)} />
             <Form onSubmit={(e) => handleSubmit(e)}>
               <SearchInput
                 onChange={(e) => changeHandler(e)}
@@ -318,7 +308,6 @@ const MobileNavSearch = ({
             <MobileDropdownContainer>
               {autoCompleteResults.map((result, index) => {
                 if (result.visible) {
-                  console.log('visible')
                   return (
                     <ResponsiveSearchResultContainer key={index}>
                       <SearchDropdown
@@ -366,7 +355,9 @@ const SearchInput = styled('input')(({ theme }) => ({
   backgroundColor: '#fff',
   //    background: 'rgba(255,255,255,0.5)',
   [theme.breakpoints.down('md')]: {
-    width: '100vw',
+    margin: '15px 0',
+    padding: '2px 0',
+    width: '90vw',
   },
 }))
 const DropdownContainer = styled(Box)(({ theme }) => ({
@@ -404,7 +395,7 @@ const MobileSearchInputWrapper = styled(Box)(({ theme }) => ({
   margin: '0px 10px',
 }))
 const MobileSearchContainer = styled(Box)(({ theme }) => ({
- height: '100vh',
+  height: '100vh',
   width: '95vw',
   zIndex: '100',
   position: 'absolute',
@@ -420,6 +411,6 @@ const MobileDropdownContainer = styled(Box)(({ theme }) => ({
   position: 'absolute',
   background: '#fff',
   textAlign: 'left',
-  padding: '0 10px'
+  padding: '0 10px',
 }))
 export default NavSearch
