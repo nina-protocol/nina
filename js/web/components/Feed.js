@@ -1,8 +1,7 @@
+import React, { useContext } from 'react'
 import Image from 'next/image'
 import { useState, useRef, useMemo } from 'react'
-import axios from 'axios'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
-import ScrollablePageWrapper from './ScrollablePageWrapper'
 import Link from 'next/link'
 import { styled } from '@mui/material/styles'
 import Box  from '@mui/material/Box'
@@ -10,8 +9,11 @@ import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/trun
 const { getImageFromCDN, loader } = imageManager
 import CloseIcon from '@mui/icons-material/Close'
 import Typography from '@mui/material/Typography'
-import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import debounce from 'lodash.debounce'
+import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
+import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
+import Audio from "@nina-protocol/nina-internal-sdk/esm/Audio";
+import Button from "@mui/material/Button";
 
 const timeSince = (date) => {
   const seconds = Math.floor((new Date() - date) / 1000)
@@ -44,6 +46,8 @@ const timeSince = (date) => {
 }
 
 const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser}) => {
+  const { updateTrack, isPlaying, setIsPlaying, track } = useContext(Audio.Context);
+
   const [pendingFetch, setPendingFetch] = useState(false)
   const scrollRef = useRef()
 
@@ -58,6 +62,16 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
     ) {
       setPendingFetch(true)
       handleGetFeedForUser()
+    }
+  }
+
+   const handlePlay = (e, releasePubkey) => {
+    e.stopPropagation()
+    e.preventDefault()
+    if (isPlaying && track.releasePubkey === releasePubkey) {
+      setIsPlaying(false)
+    } else {
+      updateTrack(releasePubkey, true, true)
     }
   }
 
@@ -147,7 +161,7 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
       case 'ReleasePurchaseViaHub':
         return (
           <ImageCard>
-            <Link href={`/${item.release?.publicKey}`} passHref>
+            <HoverContainer href={`/${item.release?.publicKey}`} passHref>
             <Image
               height={'100px'}
               width={'100px'}
@@ -162,7 +176,21 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
               loader={loader}
               unoptimized={true}
             />
-            </Link>
+            <HoverCard>
+              <CtaWrapper>
+                <Button
+                  onClick={(e) => {handlePlay(e, item.release.publicKey)}}
+                >
+                  {isPlaying &&
+                    track.releasePubkey === item.release.publicKey ? (
+                      <PauseCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
+                    ) : (
+                      <PlayCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
+                    )}
+                </Button>
+              </CtaWrapper>
+            </HoverCard>
+            </HoverContainer>
             <CopyWrapper>
               <Typography my={1}>Release Purchased:</Typography>
               <Typography my={1}><Link href={`/${item.release?.publicKey}`} passHref>{`${item.release?.metadata.properties.artist} - ${item.release?.metadata.properties.title}`}</Link></Typography>
@@ -328,7 +356,7 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
       }
     })
     return feedItemComponents
-  }, [items]);
+  }, [items, isPlaying]);
 
   return (
     <ScrollWrapper
@@ -435,10 +463,31 @@ const ImageCard =  styled(Box)(({ theme }) => ({
 }))
 
 const CopyWrapper =  styled(Box)(({ theme }) => ({
-  // border: '2px solid red',
   padding: '0 15px',
   margin: '5px 0px',
 }))
+
+const HoverContainer =  styled(Box)(({ theme }) => ({
+  position: 'relative'
+}))
+
+const HoverCard =  styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  top: 0,
+  height: '100%',
+  width: '100%',
+  display: 'flex',
+  opacity: 0,
+  '&:hover': {
+    opacity: 1,
+    backgroundColor: theme.palette.background.default + "c4",
+  }
+}))
+
+const CtaWrapper =  styled(Box)(({ theme }) => ({
+    margin: 'auto'
+}))
+
 
 
 

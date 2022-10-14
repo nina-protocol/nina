@@ -13,7 +13,7 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
 const FeedDrawer = () => {
   const wallet = useWallet()
-  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(true)
   const [items, setItems] = useState(undefined)
   const [totalItems, setTotalItems] = useState(0)
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
