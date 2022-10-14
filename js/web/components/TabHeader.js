@@ -37,7 +37,6 @@ const TabHeader = ({
       <Box sx={{ display: 'flex', flexDirection: 'row', rowGap: 1, pb: 1 }}>
         {profileTabs?.map((tab, index) => 
           {
-
           return(
           <>
             {tab.visible === true && (

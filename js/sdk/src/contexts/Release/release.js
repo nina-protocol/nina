@@ -1300,7 +1300,6 @@ const releaseContextHelper = ({
     publicKey,
     withAccountData = false
   ) => {
-    console.log('withAccountData :>> ', withAccountData);
     const { collected } = await NinaSdk.Account.fetchCollected(publicKey)
     const { published } = await NinaSdk.Account.fetchPublished(publicKey, withAccountData)
     setReleaseState(updateStateForReleases([...collected, ...published]))

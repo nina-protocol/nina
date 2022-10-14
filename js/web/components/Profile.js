@@ -69,15 +69,13 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
 
 
   useEffect(() => {
-    console.log('here');
-    console.log();
+    console.log(fetched);
     getUserData(profilePubkey)
   }, [])
 
   useEffect(() => {
     if (router.query.view) {
       const viewIndex = views.findIndex((view) => view.name === router.query.view)
-      console.log('viewIndex :>> ', viewIndex);
       setActiveView(viewIndex)
     }
   }, [router.query.view])
@@ -128,7 +126,7 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
   }, [profilePublishedReleases, profileCollectionReleases, profileHubs, profileSubscriptionsTo, profileSubscriptionsFrom])
 
   useEffect(() => {
-    if (!router.query) {
+    if (!router.query.view) {
       if (profilePublishedReleases?.length > 0) {
         setActiveView(0)
       }
@@ -152,7 +150,6 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
   }, [profilePublishedReleases, profileCollectionReleases, profileHubs])
 
   const getUserData = async () => {
-    console.log('GETTING USER DATA')
     const hubs = await getHubsForUser(profilePubkey)
 
     const [collected, published] = await getUserCollectionAndPublished(
@@ -211,48 +208,23 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
 
   const viewHandler = (event) => {
     const index = parseInt(event.target.id)
-    console.log('index !! :>> ', index);
-    console.log('views[index] :>> ', views[index]);
     const activeViewName = views[index].name
-          const path = router.pathname.includes('dashboard')
-            ? '/dashboard'
-            : `/profiles/${profilePubkey}`
+    const path = router.pathname.includes('dashboard')
+      ? 'dashboard'
+      : `profiles/${profilePubkey}`
 
-    router.push(`${path}?view=${activeViewName}`, undefined, {shallow: true})
+    const newUrl = `/${path}?view=${activeViewName}`
+    window.history.replaceState(
+      { ...window.history.state, as: newUrl, url: newUrl },
+      '',
+      newUrl
+    )
     setActiveView(index)
   }
 
   return (
     <>
-      <Head>
-        <title>{`Nina: ${profilePubkey}'s Profile`}</title>
-        <meta name="description" content={'Your profile on Nina.'} />
-        <meta name="og:type" content="website" />
-        <meta
-          name="og:title"
-          content={`Nina: ${profilePubkey ? `${profilePubkey}'s Hub` : ''}`}
-        />
-        <meta
-          name="og:description"
-          content={`All releases, Hubs, and collection belonging to ${profilePubkey}`}
-        />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@ninaprotocol" />
-        <meta name="twitter:creator" content="@ninaprotocol" />
-        <meta name="twitter:image:type" content="image/jpg" />
-        <meta name="twitter:title" content={`${profilePubkey} on Nina`} />
-        <meta
-          name="twitter:description"
-          content={`All releases, Hubs, and collection belonging to ${profilePubkey}`}
-        />
-        <meta name="twitter:image" content="/images/favicon.ico" />
-        <meta name="og:image" content={'/images/favicon.ico'} />
-        <meta property="og:title" content="iPhone" />
-        <meta property="og:image" content={`/images/favicon.ico`} />
-      </Head>
-
-      <ProfileContainer>
-        <Typography>TEST {activeView}</Typography>
+       <ProfileContainer>
         {!inDashboard && (
           <ProfileHeaderWrapper>
             <ProfileHeaderContainer>
