@@ -107,9 +107,7 @@ const ResponsiveTab = styled(Button)(({ theme }) => ({
   flexDirection: 'row',
   textTransform: 'uppercase',
   color: theme.palette.text.primary,
-  // border: '2px solid red',
   paddingRight: '15px',
-  // minWidth: '100px',
   [theme.breakpoints.down('md')]: {
     paddingLeft: '15px',
   },

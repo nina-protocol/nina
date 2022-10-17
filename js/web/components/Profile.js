@@ -41,12 +41,7 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
   const [profileSubscriptionsTo, setProfileSubscriptionsTo] = useState()
   const [profileSubscriptionsFrom, setProfileSubscriptionsFrom] = useState()
 
-  const [fetched, setFetched] = useState({
-    user: false,
-    releases: false,
-    collection: false,
-    hubs: false,
-  })
+  const [fetched, setFetched] = useState(false)
 
   const [views, setViews] = useState([
     { name: 'releases', playlist: undefined, disabled: true },
@@ -126,11 +121,8 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
 
   useEffect(() => {
     if (!router.query.view && !activeView) {
-      console.log('NO VIEW SET!');
-      console.log('views :>> ', views);
       const viewIndex = views.findIndex((view) => !view.disabled)
       setActiveView(viewIndex)
-
     }
   }, [views])
 
@@ -172,23 +164,16 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
     setProfilePublishedReleases(published)
     setProfileSubscriptions(subscriptions)
 
-    fetched.user = true
-
     let viewIndex
     let updatedView = views.slice()
 
     viewIndex = updatedView.findIndex((view) => view.name === 'releases')
     updatedView[viewIndex].playlist = published
-    fetched.releases = true
 
     viewIndex = updatedView.findIndex((view) => view.name === 'collection')
     updatedView[viewIndex].playlist = collected
-    fetched.collection = true
     setProfileHubs(hubs)
-    fetched.hubs = true
-    setFetched({
-      ...fetched,
-    })
+    setFetched(true)
   }
 
   const viewHandler = (event) => {
@@ -212,7 +197,7 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
        <ProfileContainer>
           <ProfileHeaderWrapper>
             <ProfileHeaderContainer>
-              {fetched.user && profilePubkey && (
+              {fetched && profilePubkey && (
                 <Box sx={{mb:1}} display='flex'>
                   <Typography>{truncateAddress(profilePubkey)}</Typography>
                   
@@ -229,10 +214,7 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
             </ProfileHeaderContainer>
           </ProfileHeaderWrapper>
        
-        {fetched.user &&
-          fetched.collection &&
-          fetched.releases &&
-          fetched.hubs && (
+        {fetched && (
             <Box sx={{ py: 1 }}>
               <TabHeader
                 viewHandler={viewHandler}
@@ -245,7 +227,7 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
           )}
 
         <>
-          {!activeView === undefined && (
+          {!fetched && (
             <ProfileDotWrapper>
               <Box sx={{ margin: 'auto' }}>
                 <Dots />
