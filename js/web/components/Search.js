@@ -36,8 +36,7 @@ const Search = (props) => {
     NinaSdk.client.init(
       process.env.NINA_API_ENDPOINT,
       process.env.SOLANA_CLUSTER_URL,
-      process.env.NINA_PROGRAM_ID
-    )
+      process.env.NINA_PROGRAM_ID,    )
   }, [])
 
   useEffect(() => {
@@ -111,7 +110,8 @@ const Search = (props) => {
 
   const handleAutoComplete = async (query) => {
     setLoading(true)
-    const response = await axios.post(process.env.NINA_AUTOCOMPLETE_ENDPOINT, { query })
+
+    const response = await axios.post(`${NinaSdk.client.endpoint}/suggestions`, { query })
     if (query.length > 0) {
       setSuggestions(response.data)
     }
