@@ -101,10 +101,8 @@ const StyledMenuButton = styled(Button)(({ theme }) => ({
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
   '& .MuiPaper-root': {
     top: '80px',
-
     height: '80%',
     width: 450,
-    // maxwidth: 436,
     overflowX: 'hidden',
     border: '1px solid black',
     borderRight: 'none',

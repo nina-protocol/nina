@@ -1302,10 +1302,15 @@ const releaseContextHelper = ({
     publicKey,
     withAccountData = false
   ) => {
-    const { collected } = await NinaSdk.Account.fetchCollected(publicKey)
-    const { published } = await NinaSdk.Account.fetchPublished(publicKey, withAccountData)
-    setReleaseState(updateStateForReleases([...collected, ...published]))
-    return [collected, published]
+    try {
+      const { collected } = await NinaSdk.Account.fetchCollected(publicKey)
+      const { published } = await NinaSdk.Account.fetchPublished(publicKey, withAccountData)
+      setReleaseState(updateStateForReleases([...collected, ...published]))
+      return [collected, published]
+    } catch (error) {
+      console.warn(error)
+      return [[],[]]
+    }
   }
 
   const getReleaseRoyaltiesByUser = async (publicKey) => {

@@ -11,6 +11,7 @@ import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
 import Subscribe from './Subscribe'
+import NewUserProfile from './NewUserProfile'
 
 const Dots = dynamic(() => import('./Dots'))
 const TabHeader = dynamic(() => import('./TabHeader'))
@@ -40,15 +41,16 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
   const [profileSubscriptions, setProfileSubscriptions] = useState()
   const [profileSubscriptionsTo, setProfileSubscriptionsTo] = useState()
   const [profileSubscriptionsFrom, setProfileSubscriptionsFrom] = useState()
+  // const [newUser, setNewUser] = useState(false)
 
   const [fetched, setFetched] = useState(false)
 
   const [views, setViews] = useState([
-    { name: 'releases', playlist: undefined, disabled: true },
-    { name: 'collection', playlist: undefined, disabled: true },
-    { name: 'hubs', playlist: null, disabled: true },
-    { name: 'followers', playlist: null, disabled: true },
-    { name: 'following', playlist: null, disabled: true },
+    { name: 'releases', playlist: undefined, disabled: false },
+    { name: 'collection', playlist: undefined, disabled: false },
+    { name: 'hubs', playlist: null, disabled: false },
+    { name: 'followers', playlist: null, disabled: false },
+    { name: 'following', playlist: null, disabled: false },
   ])
 
   const artistNames = useMemo(() => {
@@ -63,6 +65,12 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
     }
   }, [profilePublishedReleases])
 
+  // const newUser = useMemo(() => {
+  //   if (fetched) {
+  //     const hasData = views.some((view) => view.disabled === false)
+  //     return !hasData
+  //   }
+  // }, [fetched, views])
 
   useEffect(() => {
     getUserData(profilePubkey)
@@ -76,10 +84,9 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
   }, [router.query.view])
   
   useEffect(() => {
+    const to = []
+    const from = []
     if (profileSubscriptions){
-      const to = []
-      const from = []
-
       profileSubscriptions.forEach((sub) => {
         if (sub.to === profilePubkey) {
           to.push(sub)
@@ -96,26 +103,29 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
   useEffect(() => {
     let viewIndex
     let updatedView = views.slice()
-    if (profilePublishedReleases?.length > 0) {
-      viewIndex = updatedView.findIndex((view) => view.name === 'releases')
-      updatedView[viewIndex].disabled = false
+    if (!inDashboard){
+      if (profilePublishedReleases?.length === 0) {
+        viewIndex = updatedView.findIndex((view) => view.name === 'releases')
+        updatedView[viewIndex].disabled = true
+      }
+      if (profileCollectionReleases?.length === 0) {
+        viewIndex = updatedView.findIndex((view) => view.name === 'collection')
+        updatedView[viewIndex].disabled = true
+      }
+      if (profileHubs?.length === 0) {
+        viewIndex = updatedView.findIndex((view) => view.name === 'hubs')
+        updatedView[viewIndex].disabled = true
+      }
+      if (profileSubscriptionsTo?.length === 0) {
+        viewIndex = updatedView.findIndex((view) => view.name === 'followers')
+        updatedView[viewIndex].disabled = false
+      }
+      if (profileSubscriptionsFrom?.length === 0) {
+        viewIndex = updatedView.findIndex((view) => view.name === 'following')
+        updatedView[viewIndex].disabled = false
+      }
     }
-    if (profileCollectionReleases?.length > 0) {
-      viewIndex = updatedView.findIndex((view) => view.name === 'collection')
-      updatedView[viewIndex].disabled = false
-    }
-    if (profileHubs?.length > 0) {
-      viewIndex = updatedView.findIndex((view) => view.name === 'hubs')
-      updatedView[viewIndex].disabled = false
-    }
-    if (profileSubscriptionsTo?.length > 0) {
-      viewIndex = updatedView.findIndex((view) => view.name === 'followers')
-      updatedView[viewIndex].disabled = false
-    }
-    if (profileSubscriptionsFrom?.length > 0) {
-      viewIndex = updatedView.findIndex((view) => view.name === 'following')
-      updatedView[viewIndex].disabled = false
-    }
+
     setViews(updatedView)
   }, [profilePublishedReleases, profileCollectionReleases, profileHubs, profileSubscriptionsTo, profileSubscriptionsFrom])
 
@@ -129,50 +139,54 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
   const getUserData = async () => {
     const hubs = await getHubsForUser(profilePubkey)
 
-    const [collected, published] = await getUserCollectionAndPublished(
-      profilePubkey,
-      inDashboard
-    )
-
-    if (inDashboard) {
-      published?.forEach((release) => {
-        const accountData = release.accountData.release
-        release.recipient = accountData.revenueShareRecipients.find(
-          (recipient) => recipient.recipientAuthority === profilePubkey
-        )
-        release.price = ninaClient.nativeToUiString(
-          accountData.price,
-          accountData.paymentMint
-        )
-        release.remaining = `${accountData.remainingSupply} / ${accountData.totalSupply}`
-        release.collected = ninaClient.nativeToUiString(
-          accountData.totalCollected,
-          accountData.paymentMint
-        )
-        release.collectable = release.recipient.owed > 0
-        release.collectableAmount = ninaClient.nativeToUiString(
-          release.recipient.owed,
-          accountData.paymentMint
-        )
-        release.paymentMint = accountData.paymentMint
-      })
+    try {
+      const [collected, published] = await getUserCollectionAndPublished(
+        profilePubkey,
+        inDashboard
+      )
+  
+      if (inDashboard) {
+        published?.forEach((release) => {
+          const accountData = release.accountData.release
+          release.recipient = accountData.revenueShareRecipients.find(
+            (recipient) => recipient.recipientAuthority === profilePubkey
+          )
+          release.price = ninaClient.nativeToUiString(
+            accountData.price,
+            accountData.paymentMint
+          )
+          release.remaining = `${accountData.remainingSupply} / ${accountData.totalSupply}`
+          release.collected = ninaClient.nativeToUiString(
+            accountData.totalCollected,
+            accountData.paymentMint
+          )
+          release.collectable = release.recipient.owed > 0
+          release.collectableAmount = ninaClient.nativeToUiString(
+            release.recipient.owed,
+            accountData.paymentMint
+          )
+          release.paymentMint = accountData.paymentMint
+        })
+      }
+  
+      const subscriptions = await getSubscriptionsForUser(profilePubkey)
+  
+      setProfileCollectionReleases(collected)
+      setProfilePublishedReleases(published)
+      setProfileSubscriptions(subscriptions)
+  
+      let viewIndex
+      let updatedView = views.slice()
+  
+      viewIndex = updatedView.findIndex((view) => view.name === 'releases')
+      updatedView[viewIndex].playlist = published
+  
+      viewIndex = updatedView.findIndex((view) => view.name === 'collection')
+      updatedView[viewIndex].playlist = collected
+      setProfileHubs(hubs)
+    } catch (err) {
+      console.log(err)
     }
-
-    const subscriptions = await getSubscriptionsForUser(profilePubkey)
-
-    setProfileCollectionReleases(collected)
-    setProfilePublishedReleases(published)
-    setProfileSubscriptions(subscriptions)
-
-    let viewIndex
-    let updatedView = views.slice()
-
-    viewIndex = updatedView.findIndex((view) => view.name === 'releases')
-    updatedView[viewIndex].playlist = published
-
-    viewIndex = updatedView.findIndex((view) => view.name === 'collection')
-    updatedView[viewIndex].playlist = collected
-    setProfileHubs(hubs)
     setFetched(true)
   }
 
@@ -191,6 +205,83 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
     )
     setActiveView(index)
   }
+
+  const renderTables = (activeView, inDashboard) => {
+    switch (activeView) {
+      case 0:
+        return (
+          <>
+            {(inDashboard && profilePublishedReleases?.length === 0) ? (
+              <Typography>Publish CCTA!</Typography>
+            ) : (
+              <ReusableTable
+                tableType={'profilePublishedReleases'}
+                items={profilePublishedReleases}
+                hasOverflow={true}
+              />
+
+            )}
+          </>
+        )
+      case 1:
+        return (
+          <>
+            {(inDashboard && profileCollectionReleases?.length === 0) ? (
+              <Typography>Collect CTA!</Typography>
+            ) : (
+              <ReusableTable
+                tableType={'profileCollectionReleases'}
+                items={profileCollectionReleases}
+                hasOverflow={true}
+              />
+            )}
+          </>
+        )
+      case 2:
+        return (
+          <>
+            {(inDashboard && profileHubs?.length === 0) ? (
+              <Typography>Join a hub CTA!</Typography>
+            ) : ( 
+              <ReusableTable
+                tableType={'profileHubs'}
+                items={profileHubs}
+                hasOverflow={true}
+              />
+            )}
+          </>
+        )
+      case 3: 
+        return (
+          <>
+          {(inDashboard && profileSubscriptionsTo?.length === 0) ? (
+            <Typography>Follow CTA!</Typography>
+          ) : (
+            <ReusableTable
+              tableType={'followers'}
+              items={profileSubscriptionsTo}
+            />
+          )}
+          </>
+        )
+      case 4: 
+        return (
+          <>
+          {(inDashboard && profileSubscriptionsFrom?.length === 0) ? (
+            <Typography>Followers CTA!</Typography>
+            ) : (
+            <ReusableTable
+              tableType={'followers'}
+              items={profileSubscriptionsFrom}
+            />
+          )}
+          </>
+        )
+      default:
+        break
+    }
+  }
+
 
   return (
     <>
@@ -213,8 +304,8 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
               )}
             </ProfileHeaderContainer>
           </ProfileHeaderWrapper>
-       
-        {fetched && (
+
+        {fetched &&  (
             <Box sx={{ py: 1 }}>
               <TabHeader
                 viewHandler={viewHandler}
@@ -235,60 +326,9 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
             </ProfileDotWrapper>
           )}
 
-          {activeView === 0 && (
-            <>
-              {profilePublishedReleases?.length > 0 && (
-                <ReusableTable
-                  tableType={'profilePublishedReleases'}
-                  items={profilePublishedReleases}
-                  inDashboard={inDashboard}
-                  collectRoyaltyForRelease={collectRoyaltyForRelease}
-                  refreshProfile={getUserData}
-                />
-              )}
-            </>
-          )}
-
-          {activeView === 1 && (
-            <>
-              {profileCollectionReleases?.length > 0 && (
-                <ReusableTable
-                  tableType={'profileCollectionReleases'}
-                  items={profileCollectionReleases}
-                />
-              )}
-            </>
-          )}
-          {activeView === 2 && (
-            <>
-              {profileHubs?.length > 0 && (
-                <ReusableTable
-                  tableType={'profileHubs'}
-                  items={profileHubs}
-                />
-              )}
-            </>
-          )}
-          {activeView === 3 && (
-            <>
-              {profileSubscriptionsTo?.length > 0 && (
-                <ReusableTable
-                  tableType={'followers'}
-                  items={profileSubscriptionsTo}
-                />
-              )}
-            </>
-          )}
-          {activeView === 4 && (
-            <>
-              {profileSubscriptionsFrom?.length > 0 && (
-                <ReusableTable
-                  tableType={'following'}
-                  items={profileSubscriptionsFrom}
-                />
-              )}
-            </>
-          )}
+          <ProfileTableContainer>
+            {fetched && renderTables(activeView, inDashboard)}
+          </ProfileTableContainer>
         </>
       </ProfileContainer>
     </>
@@ -356,6 +396,14 @@ const ProfileOverflowContainer = styled(Box)(({ theme }) => ({
   textOverflow: 'ellipsis',
   [theme.breakpoints.down('md')]: {
     ['-webkit-line-clamp']: '4',
+  },
+}))
+
+const ProfileTableContainer = styled(Box)(({ theme }) => ({
+  paddingBottom: '100px',
+  [theme.breakpoints.down('md')]: {
+    paddingBottom: '100px',
+    overflow: 'scroll',
   },
 }))
 

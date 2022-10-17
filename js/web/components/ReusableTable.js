@@ -288,7 +288,6 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
                         onClickCapture={(e) => handlePlay(e, row.id)}
                         id={row.id}
                       >
-                        {console.log('track', track)}
                         {isPlaying && track?.releasePubkey === row.id ? (
                           <PauseCircleOutlineOutlinedIcon
                             sx={{ color: 'black' }}

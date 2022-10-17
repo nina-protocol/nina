@@ -753,6 +753,7 @@ const ninaContextHelper = ({
       return subscriptions
     } catch (error) {
       console.warn(error)
+      return []
     }
   }
 
