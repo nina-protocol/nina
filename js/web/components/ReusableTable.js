@@ -21,6 +21,7 @@ import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import { styled } from '@mui/material'
 import { useSnackbar } from 'notistack'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
+
 const { getImageFromCDN, loader } = imageManager
 
 const ReusableTableHead = ({ tableType }) => {
@@ -116,7 +117,7 @@ const HubDescription = ({ description }) => {
   )
 }
 
-const ReusableTableBody = ({ releases, tableType }) => {
+const ReusableTableBody = ({ items, tableType }) => {
   const {
     updateTrack,
     addTrackToQueue,
@@ -160,48 +161,33 @@ const ReusableTableBody = ({ releases, tableType }) => {
     }
   }
 
-  let rows = releases?.map((data) => {
-    const metadata = data?.metadata
-    const properties = data?.metadata?.properties
-    const releasePubkey = data?.releasePubkey
-    const json = data?.json
-    const hubPubkey = data?.handle
-
+  let rows = items?.map((data) => {
+    const {publicKey} = data
     const playData = {
-      releasePubkey,
+      publicKey,
     }
-
-    let formattedData = {
-      id: releasePubkey,
-      link: `/${releasePubkey}`,
-      image: metadata?.image,
-      date: properties?.date,
-      artist: properties?.artist,
-      title: properties?.title,
-    }
-
-    if (tableType === 'profilePublishedReleases') {
+    let formattedData = {}
+    if (tableType === 'profilePublishedReleases' || tableType === 'profileCollectionReleases') {
       formattedData = {
         ctas: playData,
-        ...formattedData,
+        id: publicKey,
+        link: `/${publicKey}`,
+        image: data?.metadata?.image,
+        date: data?.metadata?.properties?.date,
+        artist: data?.metadata?.properties?.artist,
+        title: data?.metadata?.properties?.title,
       }
     }
 
-    if (tableType === 'profileCollectionReleases') {
-      formattedData = {
-        ctas: playData,
-        ...formattedData,
-      }
-    }
 
     if (tableType === 'profileHubs') {
       formattedData = {
-        id: data?.handle,
-        link: `/hubs/${hubPubkey}`,
+        id: publicKey,
+        link: `/hubs/${data.handle}`,
         date: data?.createdAt,
-        image: json?.image,
-        artist: json?.displayName,
-        description: json?.description,
+        image: data?.data.image,
+        artist: data?.data.displayName,
+        description: data?.data.description,
       }
     }
 
@@ -209,10 +195,13 @@ const ReusableTableBody = ({ releases, tableType }) => {
       formattedData = {
         ctas: playData,
         ...formattedData,
+        id: data?.releasePubkey,
+        image: data?.image,
+        artist: data?.properties.artist,
+        title: data?.properties.title,
+        link: `/${data?.releasePubkey}`,
+        date: data?.metadata?.properties?.date,
       }
-      formattedData.image = data?.image
-      formattedData.artist = data?.properties.artist
-      formattedData.title = data?.properties.title
     }
 
     if (tableType === 'hubCollaborators') {
@@ -283,7 +272,7 @@ const ReusableTableBody = ({ releases, tableType }) => {
                         onClickCapture={(e) => handlePlay(e, row.id)}
                         id={row.id}
                       >
-                        {isPlaying && track.releasePubkey === row.id ? (
+                        {isPlaying && track.id === row.id ? (
                           <PauseCircleOutlineOutlinedIcon
                             sx={{ color: 'black' }}
                           />
@@ -359,13 +348,13 @@ const ReusableTableBody = ({ releases, tableType }) => {
   )
 }
 
-const ReusableTable = ({ releases, tableType }) => {
+const ReusableTable = ({ items, tableType }) => {
   return (
     <ResponsiveContainer>
       <ResponsiveTableContainer>
         <Table>
           <ReusableTableHead tableType={tableType} />
-          <ReusableTableBody releases={releases} tableType={tableType} />
+          <ReusableTableBody items={items} tableType={tableType} />
         </Table>
       </ResponsiveTableContainer>
     </ResponsiveContainer>

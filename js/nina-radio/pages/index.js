@@ -24,8 +24,6 @@ export default function Home() {
   const hasPrevious = useRef(false)
   const hasNext = useRef(false)
   const activeIndexRef = useRef()
-  const [related, setRelated] = useState([])
-  const { getRelatedForRelease, filterRelatedForRelease, releaseState } = useContext(Release.Context)
 
   useEffect(() => {
     playerRef.current = document.querySelector("#audio")
@@ -69,7 +67,6 @@ export default function Home() {
           ]
         });
       }
-      getRelatedReleases()
       activeTrack.current = track
       hasNext.current = (activeIndexRef.current + 1) <= playlist.length
       hasPrevious.current = activeIndexRef.current > 0
@@ -77,12 +74,6 @@ export default function Home() {
       play()
     }
   }, [activeIndex])
-
-  useEffect(() => {
-    const release = playlist[activeIndexRef.current]
-    const related = filterRelatedForRelease(release)
-    setRelated(related.map(release => release.metadata))
-  }, [releaseState])
 
   useEffect(() => {
     getTracks()
@@ -103,12 +94,6 @@ export default function Home() {
         console.warn(`The media session action "${action}" is not supported yet.`);
       }
     }
-  }
-
-  const getRelatedReleases = async () => {
-    setRelated([])
-    const release = playlist[activeIndexRef.current]
-    await getRelatedForRelease(release)
   }
 
   const startTimer = () => {
@@ -241,15 +226,6 @@ export default function Home() {
                   >
                     <Typography>View release</Typography>
                   </a>
-                  {related.length > 1 &&
-                    <a
-                      href={activeTrack.current.external_url + "/related"}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Typography>View {related.length - 1} related {related.length - 1 === 1 ? "release" : "releases"}</Typography>
-                    </a>
-                  }
                   <ClickableTypography onClick={() => shareOnTwitter()}>Share</ClickableTypography>
                 </Links>
               </>

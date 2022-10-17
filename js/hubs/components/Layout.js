@@ -9,6 +9,7 @@ import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub"
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { lightThemeOptions } from "../styles/theme/lightThemeOptions";
 import Head from "next/head";
+import NinaSdk from "@nina-protocol/js-sdk";
 
 const Navigation = dynamic(() => import("./Navigation"));
 const AudioPlayer = dynamic(() => import("./AudioPlayer"));
@@ -16,33 +17,41 @@ const lightTheme = createTheme(lightThemeOptions);
 
 const Layout = ({ children }) => {
   const router = useRouter();
-  const [hubPubkey, setHubPubkey] = useState();
+  const [hubPubkey, setHubPubkey] = useState(undefined);
   const { hubState, getHubPubkeyForHubHandle } = useContext(Hub.Context);
 
   useEffect(() => {
     const getHubPubkey = async (handle) => {
-      const id = await getHubPubkeyForHubHandle(handle);
-      setHubPubkey(id);
+      try {
+        const publicKey = (await NinaSdk.Hub.fetch(handle)).hub.publicKey;
+        setHubPubkey(publicKey);
+      } catch (error) {
+        setHubPubkey(undefined);
+      }
     };
-    getHubPubkey(router.query.hubPubkey);
+    if (router.query.hubPubkey) {
+      getHubPubkey(router.query.hubPubkey);
+    } else {
+      setHubPubkey(undefined);
+    }
   }, [router.query.hubPubkey]);
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
 
   useEffect(() => {
     if ((router.pathname.includes('/[hubPubkey]')) && !router.pathname.includes('/dashboard')) {
-      if (hubData?.json.backgroundColor) {
-        lightTheme.palette.background.default = hubData.json.backgroundColor;
+      if (hubData?.data.backgroundColor) {
+        lightTheme.palette.background.default = hubData.data.backgroundColor;
       } else {
         lightTheme.palette.background.default = "#ffffff";
       }
-      if (hubData?.json.textColor) {
-        lightTheme.palette.text.primary = hubData.json.textColor;
-        lightTheme.palette.primary.main = hubData.json.textColor;
+      if (hubData?.data.textColor) {
+        lightTheme.palette.text.primary = hubData.data.textColor;
+        lightTheme.palette.primary.main = hubData.data.textColor;
         lightTheme.components.MuiTypography.styleOverrides.root.color =
-          hubData.json.textColor;
+          hubData.data.textColor;
         lightTheme.components.MuiCssBaseline.styleOverrides.a.color =
-          hubData.json.textColor;
+          hubData.data.textColor;
       } else {
         lightTheme.palette.text.primary = "#000000";
         lightTheme.palette.primary.main = "#000000";
@@ -61,7 +70,6 @@ const Layout = ({ children }) => {
 
   useEffect(() => {
     if (router.pathname === '/404' && hubState) {
-      console.log('404');
       let hubHandle = router.asPath.split('/')[1]
       hubPubkey = Object.values(hubState).find(hub => hub.handle === hubHandle)?.publicKey
       setHubPubkey(hubPubkey)

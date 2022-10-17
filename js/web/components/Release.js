@@ -19,27 +19,15 @@ const ReleaseComponent = ({ metadataSsr }) => {
   const {
     releaseState,
     getRelease,
-    getRelatedForRelease,
-    filterRelatedForRelease,
   } = useContext(Release.Context)
-  const { getExchangeHistoryForRelease, exchangeState } =
-    useContext(Exchange.Context)
+  const { exchangeState } = useContext(Exchange.Context)
   const { getHubsForUser, filterHubsForUser, hubState } = useContext(Hub.Context)
-  const [relatedReleases, setRelatedReleases] = useState(null)
   const [userHubs, setUserHubs] = useState()
 
   const [metadata, setMetadata] = useState(
     metadataSsr || releaseState?.metadata[releasePubkey] || null
   )
   const release = useMemo(() => releaseState.tokenData[releasePubkey], [releaseState, releasePubkey])
-  console.log('release', release)
-  console.log(releaseState)
-  useEffect(() => {
-    if (releasePubkey) {
-      getRelatedForRelease(releasePubkey)
-      getExchangeHistoryForRelease(releasePubkey)
-    }
-  }, [releasePubkey])
 
   useEffect(() => {
     if (releaseState.metadata[releasePubkey] && !metadata) {
@@ -48,7 +36,6 @@ const ReleaseComponent = ({ metadataSsr }) => {
   }, [releaseState?.metadata[releasePubkey]])
 
   useEffect(() => {
-    setRelatedReleases(filterRelatedForRelease(releasePubkey))
   }, [releaseState])
 
   useEffect(() => {
@@ -104,7 +91,6 @@ const ReleaseComponent = ({ metadataSsr }) => {
                 releasePubkey={releasePubkey}
                 metadata={metadata}
                 router={router}
-                relatedReleases={relatedReleases}
               />
             </ReleaseCtaWrapper>
           </NinaBox>

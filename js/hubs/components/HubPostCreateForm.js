@@ -51,7 +51,7 @@ const HubPostCreateForm = ({
                 variant="standard"
                 label={
                   formatPlaceholder(props.field.name) +
-                  (update ? ` (${hubData.json.title})` : "")
+                  (update ? ` (${hubData.data.title})` : "")
                 }
                 size="small"
                 InputLabelProps={touched.title ? { shrink: true } : ""}

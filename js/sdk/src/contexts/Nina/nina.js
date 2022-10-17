@@ -156,6 +156,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         subscriptionUnsubscribe,
         savePostsToState,
         postState,
+        setPostState,
         collection,
         createCollection,
         createCollectionForSingleRelease,
@@ -299,16 +300,16 @@ const ninaContextHelper = ({
   const createCollection = async () => {
     if (provider.wallet?.connected) {
       try {
-        const program = await ninaClient.useProgram()
-        const updatedCollection = {}
-        let tokenAccounts =
-          await provider.connection.getParsedTokenAccountsByOwner(
-            provider.wallet.publicKey,
-            { programId: TOKEN_PROGRAM_ID }
+          const program = await ninaClient.useProgram()
+          const updatedCollection = {}
+          let tokenAccounts =
+            await provider.connection.getParsedTokenAccountsByOwner(
+              provider.wallet.publicKey,
+              { programId: TOKEN_PROGRAM_ID }
+            )
+          const walletTokenAccounts = tokenAccounts.value.map(
+            (value) => value.account.data.parsed.info
           )
-        const walletTokenAccounts = tokenAccounts.value.map(
-          (value) => value.account.data.parsed.info
-        )
 
         const releaseAmountMap = {}
         for await (let account of walletTokenAccounts) {
@@ -527,8 +528,12 @@ const ninaContextHelper = ({
 
   const bundlrFund = async (fundAmount) => {
     try {
-      if (bundlr && fundAmount) {
+      if (bundlr && fundAmount) {        
+        await getUsdcBalance()
         const value = uiToNative(fundAmount, ids.mints.wsol)
+        if (value - (2 * NinaProgramActionCost[NinaProgramAction.RELEASE_INIT_VIA_HUB]) > solBalance) {
+          throw('Insufficient SOL balance - please deposit a smaller amount or top up your Solana balance')
+        }
         if (!value) return
         await bundlr.fund(value)
         await getBundlrBalance()

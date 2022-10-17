@@ -27,13 +27,13 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
     () =>
       Object.values(hubContentState)
         .sort((a, b) => b.datetime - a.datetime)
-        .filter((c) => c.contentType === "Post" && c.visible),
+        .filter((c) => c.contentType === "post" && c.visible),
     [hubContentState]
   );
   const hubPostsArchived = useMemo(
     () =>
       Object.values(hubContentState).filter(
-        (c) => c.contentType === "Post" && !c.visible
+        (c) => c.contentType === "post" && !c.visible
       ),
     [hubContentState]
   );
@@ -43,7 +43,7 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
         .sort((a, b) => b.datetime - a.datetime)
         .filter(
           (c) =>
-            c.contentType === "NinaReleaseV1" &&
+            c.contentType === "ninaReleaseV1" &&
             c.visible &&
             hubPosts.filter((post) => post.referenceContent === c.publicKey)
               .length === 0 &&
@@ -105,13 +105,13 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
               <ul>
                 {Object.keys(activeHubPosts).map((postPubkey) => {
                   const hubPost = activeHubPosts[postPubkey];
-                  const postContent = postState[hubPost.post].postContent;
+                  const postContent = postState[hubPost.post];
                   return (
                     <DashboardEntry key={hubPost.post}>
                       <Link
                         href={`/${hubData.handle}/posts/${hubPost.publicKey}`}
                       >
-                        {postContent.json.title}
+                        {postContent.data.title}
                       </Link>
                       {canTogglePost(hubPost) && hubPostsShowArchived && (
                         <AddIcon

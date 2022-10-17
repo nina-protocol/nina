@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { Helmet } from 'react-helmet'
 import { styled } from '@mui/material/styles'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
@@ -49,11 +48,11 @@ const ReleaseList = () => {
     let exchangeCount = 0
     let exchangeSalesCount = 0
     userPublishedReleases.forEach((release) => {
-      salesCount += release.tokenData.saleCounter.toNumber()
-      editionCount += release.tokenData.totalSupply.toNumber()
-      revenueCount += release.tokenData.totalCollected.toNumber()
-      exchangeCount += release.tokenData.exchangeSaleCounter.toNumber()
-      exchangeSalesCount += release.tokenData.exchangeSaleTotal.toNumber()
+      salesCount += release.tokenData.saleCounter
+      editionCount += release.tokenData.totalSupply
+      revenueCount += release.tokenData.totalCollected
+      exchangeCount += release.tokenData.exchangeSaleCounter
+      exchangeSalesCount += release.tokenData.exchangeSaleTotal
     })
     setSales(salesCount)
     setEditionTotal(editionCount)
@@ -64,12 +63,6 @@ const ReleaseList = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{`Nina: Your Releases(${
-          userPublishedReleases?.length || 0
-        })`}</title>
-        <meta name="description" content={'Your releases on Nina.'} />
-      </Helmet>
       <ScrollablePageWrapper>
         <UserReleaseWrapper>
           {wallet?.connected && userPublishedReleases?.length > 0 && (

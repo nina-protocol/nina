@@ -18,7 +18,7 @@ const TabHeader = ({
 
   const playAllHandler = (playlist) => {
     resetQueueWithPlaylist(
-      playlist?.map((release) => release.releasePubkey)
+      playlist?.map((release) => release.publicKey)
     ).then(() =>
       enqueueSnackbar(`Releases added to queue`, {
         variant: 'info',
