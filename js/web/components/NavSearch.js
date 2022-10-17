@@ -108,7 +108,7 @@ const NavSearch = () => {
 
   const autoCompleteUrl = 'https://dev.api.ninaprotocol.com/v1/suggestions'
 
-  const handleAutoComplete = async (query) => {
+  const autoCompleteHandler = async (query) => {
     setLoading(true)
     const response = await axios.post(autoCompleteUrl, { query })
 
@@ -131,11 +131,11 @@ const NavSearch = () => {
     }
 
     if (query) {
-      handleAutoComplete(query)
+      autoCompleteHandler(query)
     }
   }
 
-  const handleSuggestionsClick = (search, searchFilter) => {
+  const suggestionsClickHandler = (search, searchFilter) => {
     setQuery('')
     router.push(
       `/search/?q=${search}${searchFilter ? `&type=${searchFilter}` : ''}`
@@ -154,10 +154,10 @@ const NavSearch = () => {
       setShowSearchInput(false)
     }
 
-    handleSuggestionsClick(clickedSuggestion, searchFilter)
+    suggestionsClickHandler(clickedSuggestion, searchFilter)
   }
 
-  const handleSearchClick = (e) => {
+  const handleInputFocus = (e) => {
     e.preventDefault()
     e.stopPropagation()
     setInputFocus(true)
@@ -165,13 +165,13 @@ const NavSearch = () => {
       setShowDropdown(true)
     }
   }
-  const arrowHandler = (e) => {
+  const keyHandler = (e) => {
     const clickedSuggestion = e.target.innerText
     const searchFilter = e.target.id
     if (e.key === 'Enter') {
       setFilter(searchFilter)
       setQuery(clickedSuggestion)
-      handleSuggestionsClick(clickedSuggestion, searchFilter)
+      suggestionsClickHandler(clickedSuggestion, searchFilter)
       setShowDropdown(false)
       setShowSearchInput(false)
     }
@@ -182,7 +182,7 @@ const NavSearch = () => {
       <DesktopNavSearch
         handleSubmit={handleSubmit}
         changeHandler={changeHandler}
-        handleSearchClick={handleSearchClick}
+        handleInputFocus={handleInputFocus}
         suggestionsHandler={suggestionsHandler}
         query={query}
         suggestions={suggestions}
@@ -190,12 +190,12 @@ const NavSearch = () => {
         searchInputRef={searchInputRef}
         showDropdown={showDropdown}
         autoCompleteResults={autoCompleteResults}
-        arrowHandler={(e) => arrowHandler(e)}
+        keyHandler={(e) => keyHandler(e)}
       />
       <MobileNavSearch
         handleSubmit={handleSubmit}
         changeHandler={changeHandler}
-        handleSearchClick={handleSearchClick}
+        handleInputFocus={handleInputFocus}
         suggestionsHandler={suggestionsHandler}
         query={query}
         suggestions={suggestions}
@@ -203,7 +203,7 @@ const NavSearch = () => {
         searchInputRef={searchInputRef}
         showDropdown={showDropdown}
         autoCompleteResults={autoCompleteResults}
-        arrowHandler={(e) => arrowHandler(e)}
+        keyHandler={(e) => keyHandler(e)}
         setShowDropdown={setShowDropdown}
         showSearchInput={showSearchInput}
         setShowSearchInput={setShowSearchInput}
@@ -215,7 +215,7 @@ const NavSearch = () => {
 const DesktopNavSearch = ({
   handleSubmit,
   changeHandler,
-  handleSearchClick,
+  handleInputFocus,
   suggestionsHandler,
   query,
   suggestions,
@@ -223,7 +223,7 @@ const DesktopNavSearch = ({
   searchInputRef,
   showDropdown,
   autoCompleteResults,
-  arrowHandler,
+  keyHandler,
 }) => {
   return (
     <DesktopNavSearchContainer>
@@ -233,7 +233,7 @@ const DesktopNavSearch = ({
             onChange={(e) => changeHandler(e)}
             value={query}
             autoComplete="off"
-            onFocus={(e) => handleSearchClick(e)}
+            onFocus={(e) => handleInputFocus(e)}
             ref={searchInputRef}
             placeholder="Search for artists, releases, hubs"
             type="search"
@@ -251,7 +251,7 @@ const DesktopNavSearch = ({
                     searchData={suggestions}
                     hasResults={result.visible}
                     clickHandler={(e) => suggestionsHandler(e)}
-                    onKeyDown={(e) => arrowHandler(e)}
+                    onKeyDown={(e) => keyHandler(e)}
                   />
                 </ResponsiveSearchResultContainer>
               )
@@ -272,7 +272,7 @@ const DesktopNavSearch = ({
 
 const MobileNavSearch = ({
   showSearchInput,
-  handleSearchClick,
+  handleInputFocus,
   dropdownRef,
   handleSubmit,
   changeHandler,
@@ -284,7 +284,7 @@ const MobileNavSearch = ({
   suggestionsHandler,
   setShowDropdown,
   autoCompleteResults,
-  arrowHandler,
+  keyHandler,
 }) => {
   return (
     <MobileNavSearchContainer>
@@ -303,7 +303,7 @@ const MobileNavSearch = ({
                 onChange={(e) => changeHandler(e)}
                 value={query}
                 autoComplete="off"
-                onFocus={(e) => handleSearchClick(e)}
+                onFocus={(e) => handleInputFocus(e)}
                 ref={searchInputRef}
                 placeholder="Search for artists, releases, hubs"
                 type="search"
@@ -321,7 +321,7 @@ const MobileNavSearch = ({
                         searchData={suggestions}
                         hasResults={result.visible}
                         clickHandler={(e) => suggestionsHandler(e)}
-                        onKeyDown={(e) => arrowHandler(e)}
+                        onKeyDown={(e) => keyHandler(e)}
                       />
                     </ResponsiveSearchResultContainer>
                   )
