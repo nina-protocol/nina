@@ -166,8 +166,14 @@ const NavSearch = () => {
     }
   }
   const arrowHandler = (e) => {
-    if (e.key === 'ArrowDown') {
-      console.log('arrow')
+    const clickedSuggestion = e.target.innerText
+    const searchFilter = e.target.id
+    if (e.key === 'Enter') {
+      setFilter(searchFilter)
+      setQuery(clickedSuggestion)
+      handleSuggestionsClick(clickedSuggestion, searchFilter)
+      setShowDropdown(false)
+      setShowSearchInput(false)
     }
   }
 

@@ -177,7 +177,6 @@ const SearchPageContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     minWidth: 'unset',
     height: '80vh',
-    paddingTop: '10vh',
   },
 }))
 
