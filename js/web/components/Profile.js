@@ -136,7 +136,7 @@ const Profile = ({ profilePubkey }) => {
         return (
           <ReusableTable
             tableType={'profilePublishedReleases'}
-            releases={profilePublishedReleases}
+            items={profilePublishedReleases}
             hasOverflow={true}
           />
         )
@@ -144,7 +144,7 @@ const Profile = ({ profilePubkey }) => {
         return (
           <ReusableTable
             tableType={'profileCollectionReleases'}
-            releases={profileCollectionReleases}
+            items={profileCollectionReleases}
             hasOverflow={true}
           />
         )
@@ -152,7 +152,7 @@ const Profile = ({ profilePubkey }) => {
         return (
           <ReusableTable
             tableType={'profileHubs'}
-            releases={profileHubs}
+            items={profileHubs}
             hasOverflow={true}
           />
         )

@@ -61,7 +61,7 @@ const Search = (props) => {
           <ResultsWrapper>
             <ReusableTable
               tableType="filteredSearchResultArtists"
-              releases={response?.artists}
+              items={response?.artists}
               hasOverflow={true}
             />
           </ResultsWrapper>
@@ -71,7 +71,7 @@ const Search = (props) => {
           <ResultsWrapper>
             <ReusableTable
               tableType="filteredSearchResultReleases"
-              releases={response?.releases}
+              items={response?.releases}
               hasOverflow={true}
             />
           </ResultsWrapper>
@@ -81,7 +81,7 @@ const Search = (props) => {
           <ResultsWrapper>
             <ReusableTable
               tableType={'filteredSearchResultHubs'}
-              releases={response?.hubs}
+              items={response?.hubs}
               hasOverflow={true}
             />
           </ResultsWrapper>
@@ -146,7 +146,7 @@ const Search = (props) => {
                     tableType={`searchResult${
                       type.charAt(0).toUpperCase() + type.slice(1)
                     }`}
-                    releases={data}
+                    items={data}
                     hasOverflow={false}
                   />
                 </ResultsWrapper>

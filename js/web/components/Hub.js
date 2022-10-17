@@ -124,7 +124,7 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
             {fetched.releases && releaseData && (
               <ReusableTable
                 tableType={'hubReleases'}
-                releases={releaseData}
+                items={releaseData}
                 hasOverflow={true}
               />
             )}
@@ -139,7 +139,7 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
             {fetched.collaborators && (
               <ReusableTable
                 tableType={'hubCollaborators'}
-                releases={hubCollaborators}
+                items={hubCollaborators}
                 hasOverflow={true}
               />
             )}

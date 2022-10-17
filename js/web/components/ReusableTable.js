@@ -136,7 +136,7 @@ const HubDescription = ({ description }) => {
   )
 }
 
-const ReusableTableBody = ({ releases, tableType, hasOverflow }) => {
+const ReusableTableBody = ({ items, tableType, hasOverflow }) => {
   const {
     updateTrack,
     addTrackToQueue,
@@ -361,11 +361,11 @@ const ReusableTableBody = ({ releases, tableType, hasOverflow }) => {
   )
 }
 
-const ReusableTable = ({ releases, tableType, hasOverflow }) => {
+const ReusableTable = ({  items, tableType, hasOverflow }) => {
   return (
     <>
     {
-      releases?.length > 0 && (
+      items?.length > 0 && (
     <ResponsiveContainer hasOverflow={hasOverflow}>
       <ResponsiveTableContainer>
         <Table>
