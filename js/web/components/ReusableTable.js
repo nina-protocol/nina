@@ -61,7 +61,6 @@ const ReusableTableHead = ({ tableType }) => {
     headCells.push({ id: 'ctas', label: 'Releases' })
     headCells.push({ id: 'image', label: '' })
     headCells.push({ id: 'title', label: '' })
-    
   }
 
   if (tableType === 'searchResultHubs') {
@@ -222,25 +221,24 @@ const ReusableTableBody = ({ releases, tableType }) => {
         collaborator: truncateAddress(data.collaborator),
       }
     }
-    if (tableType === 'searchResultArtists'){
+    if (tableType === 'searchResultArtists') {
       formattedData = {
         link: `/profiles/${data?.publicKey}`,
-        collaborator: data.name
+        collaborator: data.name,
       }
     }
 
-    if(tableType === 'searchResultReleases'){
-      formattedData= {
+    if (tableType === 'searchResultReleases') {
+      formattedData = {
         id: data?.publicKey,
-        // ctas: data?.publicKey,
+
         image: data?.image,
         link: `/${data?.publicKey}`,
         title: data.title,
       }
     }
-    if(tableType === 'searchResultHubs'){
-      formattedData ={
-        // ctas: data?.publicKey,
+    if (tableType === 'searchResultHubs') {
+      formattedData = {
         id: data?.publicKey,
         image: data?.image,
         link: `/hubs/${data?.handle}`,
@@ -265,7 +263,10 @@ const ReusableTableBody = ({ releases, tableType }) => {
               ) {
                 if (cellName === 'ctas') {
                   return (
-                    <StyledTableCellButtonsContainer align="left"  key={cellName}>
+                    <StyledTableCellButtonsContainer
+                      align="left"
+                      key={cellName}
+                    >
                       <Button
                         sx={{ cursor: 'pointer' }}
                         id={row.id}
@@ -297,7 +298,9 @@ const ReusableTableBody = ({ releases, tableType }) => {
                 } else if (cellName === 'image') {
                   return (
                     <StyledImageTableCell align="left" key={cellName}>
-                      <Box sx={{width:'50px',  textAlign: 'left', pr: '15px' }}>
+                      <Box
+                        sx={{ width: '50px', textAlign: 'left', pr: '15px' }}
+                      >
                         <Image
                           height={'100%'}
                           width={'100%'}
@@ -336,7 +339,12 @@ const ReusableTableBody = ({ releases, tableType }) => {
                   return (
                     <StyledTableCell key={cellName}>
                       <OverflowContainer>
-                        <Typography sx={{paddingLeft: '5px', width: '100vw'}}noWrap>{cellData}</Typography>
+                        <Typography
+                          sx={{ paddingLeft: '5px', width: '100vw' }}
+                          noWrap
+                        >
+                          {cellData}
+                        </Typography>
                       </OverflowContainer>
                     </StyledTableCell>
                   )
@@ -368,7 +376,7 @@ const ResponsiveTableContainer = styled(TableCell)(({ theme }) => ({
   width: '100vw',
   borderBottom: 'none',
   padding: '0px',
- 
+
   [theme.breakpoints.down('md')]: {
     overflowY: 'unset',
     height: '100% !important',
@@ -432,7 +440,7 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
   webkitOverflowScrolling: 'touch',
   overflowY: 'auto',
   overflowX: 'hidden',
- [ '&::-webkit-scrollbar']: {
+  ['&::-webkit-scrollbar']: {
     display: 'none',
   },
   [theme.breakpoints.down('md')]: {
