@@ -3,7 +3,7 @@ import ImgixClient from '@imgix/js-core'
 export const getImageFromCDN = (url, width = 400, date) => {
   let image = url
   const now = new Date()
-  const yesterday = new Date(today)
+  const yesterday = new Date(now)
   yesterday.setDate(yesterday.getDate() - 1)
 
     if (date < yesterday) {
