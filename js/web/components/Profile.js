@@ -53,38 +53,26 @@ const Profile = ({ profilePubkey }) => {
 
   useEffect(() => {
     const getUserData = async (profilePubkey) => {
-      await getHubsForUser(profilePubkey)
-      const [collectionIds, publishedIds] = await getUserCollectionAndPublished(
+      const hubs = await getHubsForUser(profilePubkey)
+
+      const [collected, published] = await getUserCollectionAndPublished(
         profilePubkey
       )
-      setProfileCollectionIds(collectionIds)
-    }
 
-    getUserData(profilePubkey)
-    fetched.user = true
-  }, [profilePubkey])
+      setProfileCollectionReleases(collected)
+      setProfilePublishedReleases(published)
+      fetched.user = true
 
-  useEffect(() => {
-    let viewIndex
-    let updatedView = views.slice()
-
-    if (profilePubkey) {
-      const releases = filterReleasesPublishedByUser(profilePubkey)
-      setProfilePublishedReleases(releases)
+      let viewIndex
+      let updatedView = views.slice()
 
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
-      updatedView[viewIndex].playlist = releases
-
+      updatedView[viewIndex].playlist = published
       fetched.releases = true
 
-      setProfileCollectionReleases(filterReleasesList(profileCollectionIds))
-
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
-      updatedView[viewIndex].playlist = filterReleasesList(profileCollectionIds)
-
+      updatedView[viewIndex].playlist = collected
       fetched.collection = true
-
-      const hubs = filterHubsForUser(profilePubkey)
 
       setProfileHubs(hubs)
       fetched.hubs = true
@@ -93,8 +81,8 @@ const Profile = ({ profilePubkey }) => {
       })
     }
 
-    setViews(updatedView)
-  }, [profileCollectionIds, releaseState])
+    getUserData(profilePubkey)
+  }, [profilePubkey])
 
   useEffect(() => {
     let viewIndex
@@ -147,36 +135,34 @@ const Profile = ({ profilePubkey }) => {
       case 0:
         return (
           <ReusableTable
-          tableType={'profilePublishedReleases'}
-          releases={profilePublishedReleases}
-          hasOverflow={true}
+            tableType={'profilePublishedReleases'}
+            releases={profilePublishedReleases}
+            hasOverflow={true}
           />
         )
       case 1:
         return (
           <ReusableTable
-          tableType={'profileCollectionReleases'}
-          releases={profileCollectionReleases}
-          hasOverflow={true}
+            tableType={'profileCollectionReleases'}
+            releases={profileCollectionReleases}
+            hasOverflow={true}
           />
         )
       case 2:
         return (
           <ReusableTable
-          tableType={'profileHubs'}
-          releases={profileHubs}
-          hasOverflow={true}
+            tableType={'profileHubs'}
+            releases={profileHubs}
+            hasOverflow={true}
           />
         )
       default:
-        break;
+        break
     }
   }
 
   return (
     <>
-      
-
       <ProfileContainer>
         <ProfileHeaderWrapper>
           <ProfileHeaderContainer>
@@ -214,60 +200,9 @@ const Profile = ({ profilePubkey }) => {
             </ProfileDotWrapper>
           )}
 
-
-            <ProfileTableContainer>
-              {renderTables(activeView)}
-            </ProfileTableContainer>
-
-          {/* {activeView === 0 && (
-            <>
-              {fetched.releases && profilePublishedReleases.length === 0 && (
-                <Box>No releases belong to this address</Box>
-              )}
-              {fetched.releases && profilePublishedReleases.length > 0 && (
-                <ProfileTableContainer>
-                  <ReusableTable
-                    tableType={'profilePublishedReleases'}
-                    releases={profilePublishedReleases}
-                    hasOverflow={true}
-                  />
-                </ProfileTableContainer>
-              )}
-            </>
-          )}
-
-          {activeView === 1 && (
-            <>
-              {fetched.collection && profileCollectionReleases.length === 0 && (
-                <Box>No collection found at this address</Box>
-              )}
-              {fetched.collection && profileCollectionReleases.length > 0 && (
-                <ProfileTableContainer>
-                  <ReusableTable
-                    tableType={'profileCollectionReleases'}
-                    releases={profileCollectionReleases}
-                    hasOverflow={true}
-                  />
-                </ProfileTableContainer>
-              )}
-            </>
-          )}
-          {activeView === 2 && (
-            <>
-              {fetched.hubs && profileHubs.length === 0 && (
-                <Box>No Hubs belong to this address</Box>
-              )}
-              {fetched.hubs && profileHubs.length > 0 && (
-                <ProfileTableContainer>
-                  <ReusableTable
-                    tableType={'profileHubs'}
-                    releases={profileHubs}
-                    hasOverflow={true}
-                  />
-                </ProfileTableContainer>
-              )}
-            </>
-          )} */}
+          <ProfileTableContainer>
+            {renderTables(activeView)}
+          </ProfileTableContainer>
         </>
       </ProfileContainer>
     </>
@@ -296,8 +231,7 @@ const ProfileContainer = styled(Box)(({ theme }) => ({
     minHeight: '100% !important',
     maxHeight: '80vh',
     overflow: 'hidden',
-    marginLeft: 0,    
-    
+    marginLeft: 0,
   },
 }))
 
@@ -344,7 +278,7 @@ const ProfileTableContainer = styled(Box)(({ theme }) => ({
   paddingBottom: '100px',
   [theme.breakpoints.down('md')]: {
     paddingBottom: '100px',
-    overflow:'scroll'
+    overflow: 'scroll',
   },
 }))
 

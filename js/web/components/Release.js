@@ -20,8 +20,7 @@ const ReleaseComponent = ({ metadataSsr }) => {
     releaseState,
     getRelease,
   } = useContext(Release.Context)
-  const { getExchangeHistoryForRelease, exchangeState } =
-    useContext(Exchange.Context)
+  const { exchangeState } = useContext(Exchange.Context)
   const { getHubsForUser, filterHubsForUser, hubState } = useContext(Hub.Context)
   const [userHubs, setUserHubs] = useState()
 
@@ -43,7 +42,8 @@ const ReleaseComponent = ({ metadataSsr }) => {
     }
   }, [releaseState?.metadata[releasePubkey]])
 
-  
+  useEffect(() => {
+  }, [releaseState])
 
   useEffect(() => {
     if (wallet.connected) {

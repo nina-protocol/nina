@@ -31,7 +31,7 @@ const BundlrModal = ({ inCreate }) => {
     ninaClient,
     bundlr,
   } = useContext(Nina.Context);
-  const [amount, setAmount] = useState();
+  const [amount, setAmount] = useState(0.01);
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
     [bundlrBalance, bundlrPricePerMb]
@@ -64,7 +64,7 @@ const BundlrModal = ({ inCreate }) => {
       });
       setOpen(false);
     } else {
-      enqueueSnackbar("Account not funded", {
+      enqueueSnackbar(result.msg, {
         variant: "failure",
       });
     }

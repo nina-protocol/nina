@@ -188,7 +188,7 @@ const ReleaseListTable = (props) => {
 
     if (tableType === "userPublished") {
       const recipient = release.recipient;
-      const collectable = recipient.owed.toNumber() > 0;
+      const collectable = recipient.owed > 0;
       const collectButton = (
         <StyledCollectButton
           disabled={!collectable}
@@ -199,7 +199,7 @@ const ReleaseListTable = (props) => {
           {collectable && (
             <span>
               {ninaClient.nativeToUiString(
-                recipient.owed.toNumber(),
+                recipient.owed,
                 tokenData.paymentMint
               )}
             </span>
@@ -208,20 +208,20 @@ const ReleaseListTable = (props) => {
       );
 
       rowData["price"] = `${ninaClient.nativeToUiString(
-        tokenData.price.toNumber(),
+        tokenData.price,
         tokenData.paymentMint
       )}`;
       rowData[
         "remaining"
-      ] = `${tokenData.remainingSupply.toNumber()} / ${tokenData.totalSupply.toNumber()} `;
-      rowData["share"] = `${recipient.percentShare.toNumber() / 10000}%`;
+      ] = `${tokenData.remainingSupply} / ${tokenData.totalSupply} `;
+      rowData["share"] = `${recipient.percentShare / 10000}%`;
       rowData["date"] = `${
-        new Date(tokenData.releaseDatetime.toNumber() * 1000)
+        new Date(tokenData.releaseDatetime)
           .toISOString()
           .split("T")[0]
       }`;
       rowData["collected"] = `${ninaClient.nativeToUiString(
-        recipient.collected.toNumber(),
+        recipient.collected,
         tokenData.paymentMint
       )}`;
       rowData["collect"] = collectButton;

@@ -248,11 +248,11 @@ export default withFormik({
   mapPropsToValues: ({ hubData }) => {
     return {
       handle: "",
-      displayName: `${hubData ? hubData.json.displayName : ""}`,
+      displayName: `${hubData ? hubData.data.displayName : ""}`,
       publishFee: `${hubData ? hubData.publishFee : ""}`,
       referralFee: `${hubData ? hubData.referralFee : ""}`,
-      description: `${hubData ? hubData.json.description : ""}`,
-      externalUrl: `${hubData ? hubData.json.externalUrl : ""}`,
+      description: `${hubData ? hubData.data.descriptionHtml : ""}`,
+      externalUrl: `${hubData ? hubData.data.externalUrl : ""}`,
     };
   },
 })(HubCreateForm);
