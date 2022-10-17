@@ -8,13 +8,10 @@ import { Button, Typography } from '@mui/material'
 import Dots from './Dots'
 
 import dynamic from 'next/dynamic'
-import { useRouter } from 'next/router'
 
 const ReusableTable = dynamic(() => import('./ReusableTable'))
 
 const Search = (props) => {
-  const router = useRouter()
-
   const { searchResults, searchQuery } = props
   const [query, setQuery] = useState(searchQuery?.q)
   const [searchFilter, setSearchFilter] = useState()
@@ -103,7 +100,6 @@ const Search = (props) => {
       </SearchInputContainer>
       <Box sx={{ display: 'flex', flexDirection: 'row' }}>
         <SearchResultFilter
-          // id={index}
           isClicked={activeView === 0}
           onClick={() => setActiveView(0)}
         >

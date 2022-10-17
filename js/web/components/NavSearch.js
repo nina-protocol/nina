@@ -3,26 +3,18 @@ import NinaSdk from '@nina-protocol/js-sdk'
 import axios from 'axios'
 import { Box } from '@mui/system'
 import { Typography } from '@mui/material'
-import TextField from '@mui/material/TextField'
 import { styled } from '@mui/material/styles'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
-import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 const SearchDropdown = dynamic(() => import('./SearchDropdown'))
 
 const NavSearch = () => {
-  const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
-    useContext(Release.Context)
   const router = useRouter()
   const [query, setQuery] = useState()
-  const [filter, setFilter] = useState()
-  const [response, setResponse] = useState(undefined)
+  const [, setResponse] = useState(undefined)
   const [suggestions, setSuggestions] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [fetchedResponse, setFetchedResponse] = useState(undefined)
   const [showDropdown, setShowDropdown] = useState(false)
   const [showSearchInput, setShowSearchInput] = useState(false)
   const [inputFocus, setInputFocus] = useState(false)
@@ -33,7 +25,7 @@ const NavSearch = () => {
   ])
   const dropdownRef = useRef()
   const searchInputRef = useRef()
-  const [releasesRecent, setReleasesRecent] = useState({})
+
   useEffect(() => {
     NinaSdk.client.init(
       process.env.NINA_API_ENDPOINT,
@@ -41,14 +33,6 @@ const NavSearch = () => {
       process.env.NINA_PROGRAM_ID
     )
   }, [])
-
-  useEffect(() => {
-    getReleasesRecent()
-  }, [])
-
-  useEffect(() => {
-    setReleasesRecent(filterReleasesRecent())
-  }, [releasesRecentState])
 
   useEffect(() => {
     const handleDropdown = (e) => {
@@ -86,7 +70,6 @@ const NavSearch = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     e.stopPropagation()
-    setFetchedResponse(false)
 
     if (
       e.target.value !== null ||
@@ -94,7 +77,6 @@ const NavSearch = () => {
       e.target.value !== undefined
     ) {
       await NinaSdk.Search.withQuery(query).then(setResponse)
-      setFetchedResponse(true)
       router.push(`/search/?q=${query}`)
     }
     if (query === '') {
@@ -106,17 +88,13 @@ const NavSearch = () => {
     setShowSearchInput(false)
   }
 
-  
-
   const autoCompleteHandler = async (query) => {
-    setLoading(true)
-    const response = await axios.post(process.env.NINA_AUTOCOMPLETE_ENDPOINT, { query })
-
+    const response = await axios.post(
+      `${NinaSdk.client.endpoint}/suggestions`,
+      { query }
+    )
     if (query.length > 0) {
       setSuggestions(response.data)
-    }
-    if (suggestions) {
-      setLoading(false)
     }
   }
 
@@ -148,7 +126,6 @@ const NavSearch = () => {
     const clickedSuggestion = e.target.innerText
     const searchFilter = e.target.id
     if (clickedSuggestion) {
-      setFilter(searchFilter)
       setQuery(clickedSuggestion)
       setShowDropdown(false)
       setShowSearchInput(false)
@@ -169,7 +146,6 @@ const NavSearch = () => {
     const clickedSuggestion = e.target.innerText
     const searchFilter = e.target.id
     if (e.key === 'Enter') {
-      setFilter(searchFilter)
       setQuery(clickedSuggestion)
       suggestionsClickHandler(clickedSuggestion, searchFilter)
       setShowDropdown(false)
@@ -224,6 +200,7 @@ const DesktopNavSearch = ({
   showDropdown,
   autoCompleteResults,
   keyHandler,
+  releasesRecent,
 }) => {
   return (
     <DesktopNavSearchContainer>
@@ -282,7 +259,7 @@ const MobileNavSearch = ({
   setShowSearchInput,
   showDropdown,
   suggestionsHandler,
-  setShowDropdown,
+  
   autoCompleteResults,
   keyHandler,
 }) => {
@@ -359,7 +336,6 @@ const SearchInput = styled('input')(({ theme }) => ({
   marginRight: '20px',
   outline: 'none !important',
   backgroundColor: '#fff',
-  //    background: 'rgba(255,255,255,0.5)',
   [theme.breakpoints.down('md')]: {
     margin: '15px 0',
     padding: '2px 0',
@@ -376,7 +352,6 @@ const DropdownContainer = styled(Box)(({ theme }) => ({
   marginRight: '20px',
   backgroundColor: '#fff',
   padding: '0 2px',
-  // backgroundColor: 'rgba(255,255,255,0.8)',
 }))
 
 const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({

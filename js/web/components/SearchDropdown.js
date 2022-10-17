@@ -69,8 +69,8 @@ const SearchDropdown = ({ searchData, category, hasResults, clickHandler, onKeyD
             {category}
           </Typography>
           {rows?.map((row, index) => (
-            <Box role="tab" tabIndex={0} onKeyDown={onKeyDown}>
-            <a key={index} onClick={clickHandler}>
+            <Box role="tab" id={row.category} tabIndex={0} onKeyDown={onKeyDown}>
+            <a key={index} id={row.category} onClick={clickHandler}>
               <Typography  id={row.category} >{row?.name}</Typography>
             </a>
             </Box >
