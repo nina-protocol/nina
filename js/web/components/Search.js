@@ -107,11 +107,11 @@ const Search = (props) => {
     setShowDropdown(false)
   }
 
-  const autoCompleteUrl = 'https://dev.api.ninaprotocol.com/v1/suggestions'
+ 
 
   const handleAutoComplete = async (query) => {
     setLoading(true)
-    const response = await axios.post(autoCompleteUrl, { query })
+    const response = await axios.post(process.env.NINA_AUTOCOMPLETE_ENDPOINT, { query })
     if (query.length > 0) {
       setSuggestions(response.data)
     }
