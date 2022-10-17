@@ -41,8 +41,6 @@ const Search = (props) => {
   }, [])
 
   useEffect(() => {
-    console.log('searchQuery', searchQuery)
-    console.log('searchResults', searchResults)
 
     if (searchQuery) {
       const query = searchQuery.q
@@ -134,7 +132,7 @@ const Search = (props) => {
     }
   }
 
-  const handleSuggestionsClick = async (search) => {
+  const handleSuggestion = async (search) => {
     setFetchedResponse(false)
     await NinaSdk.Search.withQuery(search).then(setResponse)
     setFetchedResponse(true)
@@ -144,7 +142,7 @@ const Search = (props) => {
     }
   }
 
-  const suggestionsHandler = (e) => {
+  const handleDropdown = (e) => {
     e.preventDefault()
     e.stopPropagation()
     const clickedSuggestion = e.target.innerText
@@ -153,10 +151,10 @@ const Search = (props) => {
       setShowDropdown(false)
     }
 
-    handleSuggestionsClick(clickedSuggestion)
+    handleSuggestion(clickedSuggestion)
   }
 
-  const handleSearchClick = (e) => {
+  const handleInputFocus = (e) => {
     e.preventDefault()
     e.stopPropagation()
     setInputFocus(true)
@@ -178,7 +176,7 @@ const Search = (props) => {
               onChange={(e) => changeHandler(e)}
               value={query}
               autoComplete="off"
-              onFocus={(e) => handleSearchClick(e)}
+              onFocus={(e) => handleInputFocus(e)}
               ref={searchInputRef}
             />
           </SearchInputWrapper>
@@ -194,7 +192,7 @@ const Search = (props) => {
                       category={result.name}
                       searchData={suggestions}
                       hasResults={result.visible}
-                      clickHandler={(e) => suggestionsHandler(e)}
+                      clickHandler={(e) => handleDropdown(e)}
                     />
                   </ResponsiveSearchResultContainer>
                 )
