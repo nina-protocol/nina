@@ -35,13 +35,12 @@ const TabHeader = ({
     >
 
       <Box sx={{ display: 'flex', flexDirection: 'row', rowGap: 1, pb: 1 }}>
-        {profileTabs?.map((tab, index) => 
-          {
+        {profileTabs?.map((tab, index) => {
+          console.log('tab :>> ', tab);
           return(
-          <>
-            {tab.visible === true && (
+            <>
               <Box
-               key={index}
+                key={index}
                 sx={{
                   cursor: 'pointer',
                   alignItems: 'center',
@@ -50,15 +49,17 @@ const TabHeader = ({
                   textTransform: 'uppercase',
                 }}
               >
-                <ResponsiveTab>
+                <ResponsiveTab
+                  disabled={tab.disabled}
+                >
                   <Typography
                 
                     onClickCapture={viewHandler}
                     sx={{
                       fontWeight: `${activeView === index ? 'bold' : ''}`,
-                      '&:hover': {
-                        opacity: 0.5,
-                      },
+                      // '&:hover': {
+                      //   opacity: 0.5,
+                      // },
                     }}
                     id={index}
                   >
@@ -69,15 +70,13 @@ const TabHeader = ({
 
                   {tab.playlist && (
                     <ResponsiveCircleOutlineIconContainer
-                 
+                      
                       sx={{
-                         paddingTop: '1px',
-                        '&:hover': {
-                          opacity: 0.5,
-                        },
+                          paddingTop: '1px',
                       }}
                     >
-                      <PlayCircleOutlineIconButtonWrapper 
+                      <PlayCircleOutlineIconButtonWrapper
+                      disabled={tab.disabled} 
                       sx={{paddingRight: 0}}
                       onClickCapture={() =>
                           type === 'hubsView'
@@ -93,22 +92,21 @@ const TabHeader = ({
                   )}
                 </ResponsiveTab>
               </Box>
-            )}
-          </>
-          )
-          }
+            </>
+          )}
         )}
       </Box>
     </ResponsiveContainer>
   )
 }
 
-const ResponsiveTab = styled(Box)(({ theme }) => ({
+const ResponsiveTab = styled(Button)(({ theme }) => ({
   cursor: 'pointer',
   alignItems: 'center',
   display: 'flex',
   flexDirection: 'row',
   textTransform: 'uppercase',
+  color: theme.palette.text.primary,
   // border: '2px solid red',
   paddingRight: '15px',
   // minWidth: '100px',

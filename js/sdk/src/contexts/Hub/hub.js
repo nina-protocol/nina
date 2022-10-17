@@ -989,7 +989,9 @@ const hubContextHelper = ({
       setHubCollaboratorsState(updatedHubCollaboratorState)
       return hubs
     } catch (error) {
+      console.log('IN THE ERROR');
       console.warn(error)
+      return []
     }
   }
   
@@ -1018,7 +1020,7 @@ const hubContextHelper = ({
       return hubs
     } catch (error) {
       console.warn(error)
-      return undefined
+      return []
     }
   }
 

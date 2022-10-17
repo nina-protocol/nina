@@ -499,7 +499,6 @@ const CardWrapper = styled(Box)(({ theme }) => ({
 }))
 
 const TextCard = styled(Box)(({ theme }) => ({
-  // height: '80px',
   border: '1px solid',
 }))
 
@@ -526,7 +525,7 @@ const ImageCard =  styled(Box)(({ theme }) => ({
 
 const CopyWrapper =  styled(Box)(({ theme }) => ({
   padding: '0 15px',
-  margin: '5px 0px',
+  margin: '5px 0px 15px',
 }))
 
 const HoverContainer =  styled(Box)(({ theme }) => ({

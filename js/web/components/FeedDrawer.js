@@ -13,19 +13,20 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
 const FeedDrawer = () => {
   const wallet = useWallet()
-  const [drawerOpen, setDrawerOpen] = useState(true)
+  const [drawerOpen, setDrawerOpen] = useState(false)
   const [items, setItems] = useState(undefined)
   const [totalItems, setTotalItems] = useState(0)
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { getFeedForUser } = useContext(Release.Context)
 
   useEffect(() => {
-    handleGetFeedForUser()
-  }, [])
+    if (wallet.connected) {
+      handleGetFeedForUser(wallet.publicKey.toBase58())
+    }
+  }, [wallet.connected])
 
 
   const toggleDrawer = (open) => (event) => {
-    console.log('event', event)
     if (
       event.type === 'keydown' &&
       (event.key === 'Tab' || event.key === 'Shift')
@@ -45,43 +46,43 @@ const FeedDrawer = () => {
     resetQueueWithPlaylist(audioFeedItems)
   }
 
-  const handleGetFeedForUser = async (refresh=false) => {
-    const feed = await getFeedForUser('7g2euzpRxm2A9kgk4UJ9J5ntUYvodTw4s4m7sL1C8JE', refresh ? 0 : items?.length || 0)
-    const updatedFeedItems = feed.feedItems.filter(item => {
-      console.log('item.type.includes() !!! :>> ', item.type.includes('Post'));
-      return !item.type.includes('Post')
-    })
-    setTotalItems(feed.total)
-    if (items && items.length > 0) {
-      setItems(items.concat(updatedFeedItems))
-    } else {
-      setItems(updatedFeedItems)
+  const handleGetFeedForUser = async (publicKey, refresh=false) => {
+    const feed = await getFeedForUser(publicKey, refresh ? 0 : items?.length || 0)
+    console.log('feed :>> ', feed);
+    if (feed){
+      const updatedFeedItems = feed?.feedItems.filter(item => {
+        return !item.type.includes('Post')
+      })
+      setTotalItems(feed.total)
+      if (items && items.length > 0) {
+        setItems(items.concat(updatedFeedItems))
+      } else {
+        setItems(updatedFeedItems)
+      }
     }
   }
 
   return (
     <Box>
-      {
-        <Box key={'right'} sx={{ float:'right'}}>
-          <StyledMenuButton onClick={toggleDrawer(true)} sx={{top: '100px'}}>
-            <ArrowBackIosNewIcon />
-          </StyledMenuButton>
-          <StyledDrawer
-            anchor={'right'}
-            open={drawerOpen}
-            onClose={toggleDrawer(false)}
-            BackdropProps={{ invisible: true }}
-            variant={'persistent'}
-          >
-            <Feed
-              items={items}
-              toggleDrawer={toggleDrawer}
-              playFeed={playFeed}
-              handleGetFeedForUser={handleGetFeedForUser}
-            />
-          </StyledDrawer>
-        </Box>
-      }
+      <Box key={'right'} sx={{ float:'right'}}>
+        <StyledMenuButton onClick={toggleDrawer(true)} sx={{top: '100px'}}>
+          <ArrowBackIosNewIcon />
+        </StyledMenuButton>
+        <StyledDrawer
+          anchor={'right'}
+          open={drawerOpen}
+          onClose={toggleDrawer(false)}
+          BackdropProps={{ invisible: true }}
+          variant={'persistent'}
+        >
+          <Feed
+            items={items}
+            toggleDrawer={toggleDrawer}
+            playFeed={playFeed}
+            handleGetFeedForUser={handleGetFeedForUser}
+          />
+        </StyledDrawer>
+      </Box>
     </Box>
   )
 }

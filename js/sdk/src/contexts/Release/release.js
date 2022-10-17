@@ -1371,15 +1371,19 @@ const releaseContextHelper = ({
   }
 
   const getFeedForUser = async (publicKey, offset) => {
-    const { data } = await axios.get(`${process.env.NINA_API_ENDPOINT}/accounts/7g2euzpRxm2A9kgk4UJ9J5ntUYvodTw4s4m7sL1C8JE/feed?offset=${offset}`)
-    const releases = []
-    data.feedItems.forEach(feedItem => {
-      if (feedItem.release) {
-        releases.push(feedItem.release)
-      }
-    })
-    setReleaseState(updateStateForReleases(releases))
-    return data
+    try {
+      const { data } = await axios.get(`${process.env.NINA_API_ENDPOINT}/accounts/${publicKey}/feed?offset=${offset}`)
+      const releases = []
+      data.feedItems.forEach(feedItem => {
+        if (feedItem.release) {
+          releases.push(feedItem.release)
+        }
+      })
+      setReleaseState(updateStateForReleases(releases))
+      return data
+    } catch (error) {
+      console.warn(error)
+    }
   }
 
   /*

@@ -15,7 +15,6 @@ import Subscribe from './Subscribe'
 const Dots = dynamic(() => import('./Dots'))
 const TabHeader = dynamic(() => import('./TabHeader'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
-const Feed = dynamic(() => import('./Feed'))
 
 const Profile = ({ profilePubkey, inDashboard=false }) => {
   const wallet = useWallet()
@@ -50,11 +49,11 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
   })
 
   const [views, setViews] = useState([
-    { name: 'releases', playlist: undefined, visible: false },
-    { name: 'collection', playlist: undefined, visible: false },
-    { name: 'hubs', playlist: null, visible: false },
-    { name: 'followers', playlist: null, visible: false },
-    { name: 'following', playlist: null, visible: false },
+    { name: 'releases', playlist: undefined, disabled: true },
+    { name: 'collection', playlist: undefined, disabled: true },
+    { name: 'hubs', playlist: null, disabled: true },
+    { name: 'followers', playlist: null, disabled: true },
+    { name: 'following', playlist: null, disabled: true },
   ])
 
   const artistNames = useMemo(() => {
@@ -71,7 +70,6 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
 
 
   useEffect(() => {
-    console.log(fetched);
     getUserData(profilePubkey)
   }, [])
 
@@ -105,50 +103,36 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
     let updatedView = views.slice()
     if (profilePublishedReleases?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
-      updatedView[viewIndex].visible = true
+      updatedView[viewIndex].disabled = false
     }
     if (profileCollectionReleases?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
-      updatedView[viewIndex].visible = true
+      updatedView[viewIndex].disabled = false
     }
     if (profileHubs?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'hubs')
-      updatedView[viewIndex].visible = true
+      updatedView[viewIndex].disabled = false
     }
     if (profileSubscriptionsTo?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'followers')
-      updatedView[viewIndex].visible = true
+      updatedView[viewIndex].disabled = false
     }
     if (profileSubscriptionsFrom?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'following')
-      updatedView[viewIndex].visible = true
+      updatedView[viewIndex].disabled = false
     }
     setViews(updatedView)
   }, [profilePublishedReleases, profileCollectionReleases, profileHubs, profileSubscriptionsTo, profileSubscriptionsFrom])
 
   useEffect(() => {
-    if (!router.query.view) {
-      if (profilePublishedReleases?.length > 0) {
-        setActiveView(0)
-      }
-      if (
-        profilePublishedReleases?.length === 0 &&
-        profileCollectionReleases?.length > 0
-      ) {
-        setActiveView(1)
-      }
-      if (
-        fetched.collection &&
-        fetched.releases &&
-        fetched.hubs &&
-        profilePublishedReleases?.length === 0 &&
-        profileCollectionReleases?.length === 0 &&
-        profileHubs?.length > 0
-      ) {
-        setActiveView(2)
-      }
+    if (!router.query.view && !activeView) {
+      console.log('NO VIEW SET!');
+      console.log('views :>> ', views);
+      const viewIndex = views.findIndex((view) => !view.disabled)
+      setActiveView(viewIndex)
+
     }
-  }, [profilePublishedReleases, profileCollectionReleases, profileHubs])
+  }, [views])
 
   const getUserData = async () => {
     const hubs = await getHubsForUser(profilePubkey)
@@ -159,7 +143,7 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
     )
 
     if (inDashboard) {
-      published.forEach((release) => {
+      published?.forEach((release) => {
         const accountData = release.accountData.release
         release.recipient = accountData.revenueShareRecipients.find(
           (recipient) => recipient.recipientAuthority === profilePubkey
@@ -226,7 +210,6 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
   return (
     <>
        <ProfileContainer>
-        {!inDashboard && (
           <ProfileHeaderWrapper>
             <ProfileHeaderContainer>
               {fetched.user && profilePubkey && (
@@ -245,7 +228,7 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
               )}
             </ProfileHeaderContainer>
           </ProfileHeaderWrapper>
-        )}
+       
         {fetched.user &&
           fetched.collection &&
           fetched.releases &&
@@ -272,10 +255,7 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
 
           {activeView === 0 && (
             <>
-              {fetched.releases && profilePublishedReleases.length === 0 && (
-                <Box>No releases belong to this address</Box>
-              )}
-              {fetched.releases && profilePublishedReleases.length > 0 && (
+              {profilePublishedReleases?.length > 0 && (
                 <ReusableTable
                   tableType={'profilePublishedReleases'}
                   items={profilePublishedReleases}
@@ -289,10 +269,7 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
 
           {activeView === 1 && (
             <>
-              {fetched.collection && profileCollectionReleases.length === 0 && (
-                <Box>No collection found at this address</Box>
-              )}
-              {fetched.collection && profileCollectionReleases.length > 0 && (
+              {profileCollectionReleases?.length > 0 && (
                 <ReusableTable
                   tableType={'profileCollectionReleases'}
                   items={profileCollectionReleases}
@@ -302,10 +279,7 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
           )}
           {activeView === 2 && (
             <>
-              {fetched.hubs && profileHubs.length === 0 && (
-                <Box>No Hubs belong to this address</Box>
-              )}
-              {fetched.hubs && profileHubs.length > 0 && (
+              {profileHubs?.length > 0 && (
                 <ReusableTable
                   tableType={'profileHubs'}
                   items={profileHubs}
@@ -315,7 +289,7 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
           )}
           {activeView === 3 && (
             <>
-              {fetched.hubs && profileHubs.length > 0 && (
+              {profileSubscriptionsTo?.length > 0 && (
                 <ReusableTable
                   tableType={'followers'}
                   items={profileSubscriptionsTo}
@@ -325,7 +299,7 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
           )}
           {activeView === 4 && (
             <>
-              {fetched.hubs && profileHubs.length > 0 && (
+              {profileSubscriptionsFrom?.length > 0 && (
                 <ReusableTable
                   tableType={'following'}
                   items={profileSubscriptionsFrom}
