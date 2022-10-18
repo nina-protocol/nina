@@ -46,10 +46,9 @@ const timeSince = (date) => {
   return Math.floor(seconds) + ' seconds'
 }
 
-const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser}) => {
+const Feed = ({ items, itemsTotal, toggleDrawer, playFeed, handleGetFeedForUser}) => {
   const { updateTrack, isPlaying, setIsPlaying, track } = useContext(Audio.Context);
   const router = useRouter();
-
 
   const [pendingFetch, setPendingFetch] = useState(false)
   const scrollRef = useRef()
@@ -425,7 +424,7 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
       onScroll={debounce(() => handleScroll(), 500)}
     >
       <Box>
-        <FeedHeader sx={{display: 'flex', width: '100%'}}>
+        {/* <FeedHeader sx={{display: 'flex', width: '100%'}}>
           <CloseIcon
             fontSize="medium"
             onClick={toggleDrawer(false)}
@@ -436,7 +435,7 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed,  handleGetFeedForUser
             sx={{ paddingRight: '15px'}} 
             onClick={playFeed}
           />
-        </FeedHeader>
+        </FeedHeader> */}
         <FeedWrapper ref={scrollRef}>
           {feedItems && feedItems?.map((item, index) => (
             <CardWrapper>
@@ -479,19 +478,19 @@ const FeedWrapper = styled(Box)(({ theme }) => ({
   },
 }))
 
-const FeedHeader = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  top: 0,
-  padding: '10px',
-  marginRight: '20px',
-  background: 'white',
-  zIndex:100,
-  '& .MuiTypography-h4': {
-    top: '50%',
-    fontWeight: 'bold',
-    margin: '0 auto',
-  },  
-}))
+// const FeedHeader = styled(Box)(({ theme }) => ({
+//   position: 'absolute',
+//   top: 0,
+//   padding: '10px',
+//   marginRight: '20px',
+//   background: 'white',
+//   zIndex:100,
+//   '& .MuiTypography-h4': {
+//     top: '50%',
+//     fontWeight: 'bold',
+//     margin: '0 auto',
+//   },  
+// }))
 
 const CardWrapper = styled(Box)(({ theme }) => ({
   width: '100%',

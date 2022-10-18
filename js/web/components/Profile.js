@@ -11,7 +11,6 @@ import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
 import Subscribe from './Subscribe'
-import NewUserProfile from './NewUserProfile'
 import NewProfileCtas from './NewProfileCtas'
 
 const Dots = dynamic(() => import('./Dots'))
@@ -79,7 +78,6 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
   }, [router.query.view])
   
   useEffect(() => {
-    console.log('UPDATING SUBS');
     const to = []
     const from = []
     if (profileSubscriptions){
@@ -93,7 +91,6 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
       setProfileSubscriptionsTo(to)
       setProfileSubscriptionsFrom(from)
     }
-    console.log('subscriptionState :>> ', Object.keys(subscriptionState).length);
   }, [profileSubscriptions])
 
   useEffect(() => {
@@ -208,7 +205,6 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
   }
 
   const renderTables = (activeView, inDashboard) => {
-    console.log('RENDER TABLES');
     switch (activeView) {
       case 0:
         return (

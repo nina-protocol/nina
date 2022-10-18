@@ -734,7 +734,6 @@ const ninaContextHelper = ({
   */
 
   const getSubscription = async (subscriptionPubkey, txid=undefined) => {
-      console.log('getSubscription', subscriptionPubkey, txid)
       try {
       const {subscription} = await NinaSdk.Subscription.fetch(subscriptionPubkey, false, txid)
       setSubscriptionState({

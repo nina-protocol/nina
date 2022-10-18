@@ -4,19 +4,22 @@ import { Box, Typography } from '@mui/material'
 import Button from '@mui/material/Button'
 import { useSnackbar } from 'notistack'
 import { useWallet } from '@solana/wallet-adapter-react'
+import { useRouter } from 'next/router'
 import Dots from './Dots'
 import Link from 'next/link'
 
 const Subscribe = (props) => {
   const {accountAddress , hubHandle} = props;
+  const wallet = useWallet()
+  const router = useRouter()
   const { subscriptionSubscribe, subscriptionUnsubscribe, userSubscriptions, getSubscriptionsForUser, subscriptionState } = useContext(Nina.Context)
   const [isFollowing, setIsFollowing] = useState(false)
   const [pending, setPending] = useState(false)
   const [targetSubscriptions, setTargetSubscriptions] = useState()
   const [followsYou, setFollowsYou] = useState(false)
   const [isUser, setIsUser] = useState(false)
+  const [inDashboard, setInDashboard] = useState(router.pathname.includes('/dashboard'))
   const { enqueueSnackbar } = useSnackbar()
-  const wallet = useWallet()
 
 
   useEffect(() => {
@@ -85,7 +88,12 @@ const Subscribe = (props) => {
 
       {isUser ? (
         <Box sx={{ padding: '0 15px'}}>
-          <Typography>This is your profile looks to to other users. Click <Link href="/dashboard"><a style={{textDecoration: 'underline'}}>here</a></Link> to see your dashboard</Typography>
+          {!inDashboard && (
+            <Typography>This is how your profile appears to to other users. Click <Link href="/dashboard"><a style={{textDecoration: 'underline'}}>here</a></Link> to see your dashboard</Typography>
+          )}
+          {inDashboard && (
+            <Typography>Welcome to your dashboard</Typography>
+          )}
         </Box>
       )
       :

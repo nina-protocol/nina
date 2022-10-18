@@ -6,18 +6,26 @@ import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { Icon } from '@material-ui/core'
 import Feed from './Feed'
+import Suggestions from './Suggestions'
 import axios from 'axios'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import CloseIcon from '@mui/icons-material/Close'
+import Typography from '@mui/material/Typography'
+import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
+import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
+
 
 const FeedDrawer = () => {
   const wallet = useWallet()
-  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(true)
   const [items, setItems] = useState(undefined)
   const [totalItems, setTotalItems] = useState(0)
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { getFeedForUser } = useContext(Release.Context)
+  const [activeDrawerTypeIndex, setActiveDrawerTypeIndex] = useState(0)
+  const drawerTypes = ['latest', 'suggestions']
 
   useEffect(() => {
     if (wallet.connected) {
@@ -75,12 +83,38 @@ const FeedDrawer = () => {
           BackdropProps={{ invisible: true }}
           variant={'persistent'}
         >
+        <FeedHeader sx={{display: 'flex', width: '100%'}}>
+          <CloseIcon
+            fontSize="medium"
+            onClick={toggleDrawer(false)}
+          />
+            {drawerTypes.map((drawerType, index) => {
+              return (
+                <DrawerType
+                  key={drawerType}
+                  onClick={() => setActiveDrawerTypeIndex(index)}
+                  className={activeDrawerTypeIndex === index ? 'active' : ''}
+                >
+                  <Typography variant="h4">
+                    {drawerType}
+                  </Typography>
+                </DrawerType>
+              )
+            })}
+          <PlayCircleOutlineOutlinedIcon
+            fontSize="medium"
+            sx={{ paddingRight: '15px'}} 
+            onClick={playFeed}
+          />
+        </FeedHeader>
+        
           <Feed
             items={items}
             toggleDrawer={toggleDrawer}
             playFeed={playFeed}
             handleGetFeedForUser={handleGetFeedForUser}
           />
+          
         </StyledDrawer>
       </Box>
     </Box>
@@ -111,6 +145,28 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
     },
   },
 }))
+
+const FeedHeader = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  top: 0,
+  padding: '10px',
+  marginRight: '20px',
+  background: 'white',
+  zIndex:100,
+  '& .MuiTypography-h4': {
+    top: '50%',
+    fontWeight: 'bold',
+    margin: '0 auto',
+  },  
+}))
+
+const DrawerType = styled(Box)(({ theme }) => ({
+  border: '2px solid red',
+  '&.active': {
+    border: '2px solid blue'
+  }
+}))
+
 
 
 export default FeedDrawer
