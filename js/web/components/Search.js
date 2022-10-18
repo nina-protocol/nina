@@ -56,6 +56,26 @@ const Search = (props) => {
 
   const renderTables = (activeView) => {
     switch (activeView) {
+      case 0:
+        return (
+          <>
+            {Object.keys(searchResults).map((key, index) => {
+                const type = key.charAt(0).toUpperCase() + key.slice(1)
+                const data = searchResults[key]
+                console.log('index', index);
+                return (
+                  <ReusableTable
+                    tableType={`searchResult${
+                      type.charAt(0).toUpperCase() + type.slice(1)
+                    }`}
+                    items={data}
+                    hasOverflow={false}
+                  />
+                )
+              })
+            }
+          </>
+        )
       case 1:
         return (
           <ReusableTable
@@ -127,25 +147,6 @@ const Search = (props) => {
               </Box>
             </ResponsiveDotContainer>
           )}
-
-          {activeView === 0 &&
-            fetchedResponse &&
-            searchResults &&
-            Object.keys(searchResults).map((key, index) => {
-              const type = key.charAt(0).toUpperCase() + key.slice(1)
-              const data = searchResults[key]
-              return (
-                <ResultsWrapper>
-                  <ReusableTable
-                    tableType={`searchResult${
-                      type.charAt(0).toUpperCase() + type.slice(1)
-                    }`}
-                    items={data}
-                    hasOverflow={false}
-                  />
-                </ResultsWrapper>
-              )
-            })}
           {fetchedResponse && (
             <ResultsWrapper>{renderTables(activeView)}</ResultsWrapper>
           )}
