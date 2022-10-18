@@ -12,6 +12,7 @@ import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
 import Subscribe from './Subscribe'
 import NewUserProfile from './NewUserProfile'
+import NewProfileCtas from './NewProfileCtas'
 
 const Dots = dynamic(() => import('./Dots'))
 const TabHeader = dynamic(() => import('./TabHeader'))
@@ -28,6 +29,8 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
   const { getHubsForUser } = useContext(Hub.Context)
   const {
     getSubscriptionsForUser,
+    filterSubscriptionsForUser,
+    subscriptionState,
     ninaClient
   } = useContext(Nina.Context)
 
@@ -41,7 +44,6 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
   const [profileSubscriptions, setProfileSubscriptions] = useState()
   const [profileSubscriptionsTo, setProfileSubscriptionsTo] = useState()
   const [profileSubscriptionsFrom, setProfileSubscriptionsFrom] = useState()
-  // const [newUser, setNewUser] = useState(false)
 
   const [fetched, setFetched] = useState(false)
 
@@ -65,13 +67,6 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
     }
   }, [profilePublishedReleases])
 
-  // const newUser = useMemo(() => {
-  //   if (fetched) {
-  //     const hasData = views.some((view) => view.disabled === false)
-  //     return !hasData
-  //   }
-  // }, [fetched, views])
-
   useEffect(() => {
     getUserData(profilePubkey)
   }, [])
@@ -84,6 +79,7 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
   }, [router.query.view])
   
   useEffect(() => {
+    console.log('UPDATING SUBS');
     const to = []
     const from = []
     if (profileSubscriptions){
@@ -97,7 +93,12 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
       setProfileSubscriptionsTo(to)
       setProfileSubscriptionsFrom(from)
     }
+    console.log('subscriptionState :>> ', Object.keys(subscriptionState).length);
   }, [profileSubscriptions])
+
+  useEffect(() => {
+    setProfileSubscriptions(filterSubscriptionsForUser(profilePubkey))
+  }, [subscriptionState])
 
 
   useEffect(() => {
@@ -207,12 +208,13 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
   }
 
   const renderTables = (activeView, inDashboard) => {
+    console.log('RENDER TABLES');
     switch (activeView) {
       case 0:
         return (
           <>
             {(inDashboard && profilePublishedReleases?.length === 0) ? (
-              <Typography>Publish CCTA!</Typography>
+              <NewProfileCtas activeViewIndex={activeView} />
             ) : (
               <ReusableTable
                 tableType={'profilePublishedReleases'}
@@ -227,7 +229,7 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
         return (
           <>
             {(inDashboard && profileCollectionReleases?.length === 0) ? (
-              <Typography>Collect CTA!</Typography>
+              <NewProfileCtas activeViewIndex={activeView} />
             ) : (
               <ReusableTable
                 tableType={'profileCollectionReleases'}
@@ -240,8 +242,8 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
       case 2:
         return (
           <>
-            {(inDashboard && profileHubs?.length === 0) ? (
-              <Typography>Join a hub CTA!</Typography>
+           {(inDashboard && profileHubs?.length === 0) ? (
+              <NewProfileCtas activeViewIndex={activeView} />
             ) : ( 
               <ReusableTable
                 tableType={'profileHubs'}
@@ -254,27 +256,27 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
       case 3: 
         return (
           <>
-          {(inDashboard && profileSubscriptionsTo?.length === 0) ? (
-            <Typography>Follow CTA!</Typography>
-          ) : (
-            <ReusableTable
-              tableType={'followers'}
-              items={profileSubscriptionsTo}
-            />
-          )}
+            {(inDashboard && profileSubscriptionsTo?.length === 0) ? (
+                <NewProfileCtas activeViewIndex={activeView} />
+            ) : (
+              <ReusableTable
+                tableType={'followers'}
+                items={profileSubscriptionsTo}
+              />
+            )}
           </>
         )
       case 4: 
         return (
           <>
-          {(inDashboard && profileSubscriptionsFrom?.length === 0) ? (
-            <Typography>Followers CTA!</Typography>
-            ) : (
-            <ReusableTable
-              tableType={'followers'}
-              items={profileSubscriptionsFrom}
-            />
-          )}
+            {(inDashboard && profileSubscriptionsFrom?.length === 0) ? (
+                <NewProfileCtas activeViewIndex={activeView} />
+              ) : (
+              <ReusableTable
+                tableType={'following'}
+                items={profileSubscriptionsFrom}
+              />
+            )}
           </>
         )
       default:

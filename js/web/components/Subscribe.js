@@ -85,7 +85,7 @@ const Subscribe = (props) => {
 
       {isUser ? (
         <Box sx={{ padding: '0 15px'}}>
-          <Typography>This is your profile. Click <Link href="/dashboard"><a style={{textDecoration: 'underline'}}>here</a></Link> to see your dashboard</Typography>
+          <Typography>This is your profile looks to to other users. Click <Link href="/dashboard"><a style={{textDecoration: 'underline'}}>here</a></Link> to see your dashboard</Typography>
         </Box>
       )
       :
