@@ -58,7 +58,7 @@ const Profile = ({ profilePubkey }) => {
       const [collected, published] = await getUserCollectionAndPublished(
         profilePubkey
       )
-
+      console.log('collected: ', collected)
       setProfileCollectionReleases(collected)
       setProfilePublishedReleases(published)
       fetched.user = true
@@ -134,27 +134,33 @@ const Profile = ({ profilePubkey }) => {
     switch (activeView) {
       case 0:
         return (
-          <ReusableTable
-            tableType={'profilePublishedReleases'}
-            items={profilePublishedReleases}
-            hasOverflow={true}
-          />
+          <ProfileTableContainer>
+            <ReusableTable
+              tableType={'profilePublishedReleases'}
+              items={profilePublishedReleases}
+              hasOverflow={true}
+            />
+          </ProfileTableContainer>
         )
       case 1:
         return (
-          <ReusableTable
-            tableType={'profileCollectionReleases'}
-            items={profileCollectionReleases}
-            hasOverflow={true}
-          />
+          <ProfileTableContainer>
+            <ReusableTable
+              tableType={'profileCollectionReleases'}
+              items={profileCollectionReleases}
+              hasOverflow={true}
+            />
+          </ProfileTableContainer>
         )
       case 2:
         return (
-          <ReusableTable
-            tableType={'profileHubs'}
-            items={profileHubs}
-            hasOverflow={true}
-          />
+          <ProfileTableContainer>
+            <ReusableTable
+              tableType={'profileHubs'}
+              items={profileHubs}
+              hasOverflow={true}
+            />
+          </ProfileTableContainer>
         )
       default:
         break
@@ -200,9 +206,7 @@ const Profile = ({ profilePubkey }) => {
             </ProfileDotWrapper>
           )}
 
-          <ProfileTableContainer>
-            {renderTables(activeView)}
-          </ProfileTableContainer>
+          <>{renderTables(activeView)}</>
         </>
       </ProfileContainer>
     </>

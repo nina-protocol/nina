@@ -84,8 +84,10 @@ const SearchDropdown = ({ searchData, category, hasResults, clickHandler, onKeyD
 const SearchResultsWrapper = styled(Box)(({theme}) => ({
   display: 'flex',
   flexDirection: 'column',
+  backgroundColor: theme.palette.lightTransparent,
+  padding: '10px 0',
   '&:focus': {
-    backgroundColor: 'rgba(255,255,255,0.8)',
+    backgroundColor: theme.palette.lightTransparent,
     outline: 'none'
   }
 }))

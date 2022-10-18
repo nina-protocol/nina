@@ -58,33 +58,27 @@ const Search = (props) => {
     switch (activeView) {
       case 1:
         return (
-          <ResultsWrapper>
-            <ReusableTable
-              tableType="filteredSearchResultArtists"
-              items={response?.artists}
-              hasOverflow={true}
-            />
-          </ResultsWrapper>
+          <ReusableTable
+            tableType="filteredSearchResultArtists"
+            items={response?.artists}
+            hasOverflow={true}
+          />
         )
       case 2:
         return (
-          <ResultsWrapper>
-            <ReusableTable
-              tableType="filteredSearchResultReleases"
-              items={response?.releases}
-              hasOverflow={true}
-            />
-          </ResultsWrapper>
+          <ReusableTable
+            tableType="filteredSearchResultReleases"
+            items={response?.releases}
+            hasOverflow={true}
+          />
         )
       case 3:
         return (
-          <ResultsWrapper>
-            <ReusableTable
-              tableType={'filteredSearchResultHubs'}
-              items={response?.hubs}
-              hasOverflow={true}
-            />
-          </ResultsWrapper>
+          <ReusableTable
+            tableType={'filteredSearchResultHubs'}
+            items={response?.hubs}
+            hasOverflow={true}
+          />
         )
       default:
         break
@@ -152,7 +146,9 @@ const Search = (props) => {
                 </ResultsWrapper>
               )
             })}
-          {fetchedResponse && renderTables(activeView)}
+          {fetchedResponse && (
+            <ResultsWrapper>{renderTables(activeView)}</ResultsWrapper>
+          )}
           {query?.length > 0 &&
             fetchedResponse &&
             response?.artists?.length === 0 &&
@@ -172,7 +168,7 @@ const SearchPageContainer = styled(Box)(({ theme }) => ({
   maxWidth: theme.maxWidth,
   [theme.breakpoints.down('md')]: {
     minWidth: 'unset',
-    height: '80vh',
+ 
   },
 }))
 

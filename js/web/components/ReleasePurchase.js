@@ -21,7 +21,7 @@ import rehypeExternalLinks from "rehype-external-links";
 import Royalty from './Royalty'
 
 const ReleasePurchase = (props) => {
-  const { releasePubkey, metadata, router, } = props
+  const { releasePubkey, metadata, router } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const {

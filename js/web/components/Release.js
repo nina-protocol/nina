@@ -28,13 +28,7 @@ const ReleaseComponent = ({ metadataSsr }) => {
     metadataSsr || releaseState?.metadata[releasePubkey] || null
   )
   const release = useMemo(() => releaseState.tokenData[releasePubkey], [releaseState, releasePubkey])
-  console.log('release', release)
-  console.log(releaseState)
-  useEffect(() => {
-    if (releasePubkey) {
-      getExchangeHistoryForRelease(releasePubkey)
-    }
-  }, [releasePubkey])
+ 
 
   useEffect(() => {
     if (releaseState.metadata[releasePubkey] && !metadata) {

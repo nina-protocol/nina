@@ -21,6 +21,7 @@ import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import { styled } from '@mui/material'
 import { useSnackbar } from 'notistack'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
+import { useRouter } from 'next/router'
 const { getImageFromCDN, loader } = imageManager
 
 const ReusableTableHead = ({ tableType }) => {
@@ -137,6 +138,7 @@ const HubDescription = ({ description }) => {
 }
 
 const ReusableTableBody = ({ items, tableType, hasOverflow }) => {
+  const router = useRouter()
   const {
     updateTrack,
     addTrackToQueue,
@@ -195,6 +197,7 @@ const ReusableTableBody = ({ items, tableType, hasOverflow }) => {
         date: data?.metadata?.properties?.date,
         artist: data?.metadata?.properties?.artist,
         title: data?.metadata?.properties?.title,
+        authorityPublicKey: data?.publisher,
       }
     }
 
@@ -205,7 +208,7 @@ const ReusableTableBody = ({ items, tableType, hasOverflow }) => {
         link: `/hubs/${data.handle}`,
         date: data?.createdAt,
         image: data?.data.image,
-        artist: data?.data.displayName,
+        hubName: data?.data.displayName,
         description: data?.data.description,
       }
     }
@@ -220,6 +223,7 @@ const ReusableTableBody = ({ items, tableType, hasOverflow }) => {
         title: data?.properties.title,
         link: `/${data?.releasePubkey}`,
         date: data?.metadata?.properties?.date,
+        authorityPublicKey: data?.authority,
       }
     }
 
@@ -255,6 +259,7 @@ const ReusableTableBody = ({ items, tableType, hasOverflow }) => {
         artist: data.displayName,
       }
     }
+    console.log('formattedData', formattedData)
     return formattedData
   })
 
@@ -269,7 +274,8 @@ const ReusableTableBody = ({ items, tableType, hasOverflow }) => {
               if (
                 cellName !== 'id' &&
                 cellName !== 'date' &&
-                cellName !== 'link'
+                cellName !== 'link' &&
+                cellName !== 'authorityPublicKey'
               ) {
                 if (cellName === 'ctas') {
                   return (
@@ -340,6 +346,21 @@ const ReusableTableBody = ({ items, tableType, hasOverflow }) => {
                         </Typography>
                       </OverflowContainer>
                     </StyledTableCell>
+                  )
+                } else if (cellName === 'artist'){
+                  return (
+                
+                    <StyledTableCell key={cellName}>
+                      <OverflowContainer>
+                        <a>
+
+                        <Typography noWrap onClickCapture={() => router.push(`/profiles/${row?.authorityPublicKey}`)}>
+                          { cellData}
+                        </Typography>
+                        </a>
+                      </OverflowContainer>
+                    </StyledTableCell>
+           
                   )
                 } else {
                  

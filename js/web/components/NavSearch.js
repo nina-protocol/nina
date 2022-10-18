@@ -32,6 +32,7 @@ const NavSearch = () => {
       process.env.SOLANA_CLUSTER_URL,
       process.env.NINA_PROGRAM_ID
     )
+    console.log('NinaSdk.client', NinaSdk.client)
   }, [])
 
   useEffect(() => {
@@ -359,7 +360,7 @@ const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
   maxWidth: theme.maxWidth,
   overflowY: 'auto',
   webkitOverflowScrolling: 'touch',
-  padding: '10px 0',
+  
 }))
 
 const MobileNavSearchContainer = styled(Box)(({ theme }) => ({

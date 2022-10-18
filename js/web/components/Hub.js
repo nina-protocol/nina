@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, useContext } from 'react'
 import dynamic from 'next/dynamic'
-import { Box, Typography } from '@mui/material'
+import { Box, } from '@mui/material'
 import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
@@ -68,10 +68,12 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
 
     const data = hubReleases?.map((hubRelease) => {
       const releaseMetadata = releaseState.metadata[hubRelease.release]
+      releaseMetadata.authority = releaseState.tokenData[hubRelease.release].authority
       releaseMetadata.releasePubkey = hubRelease.release
       return releaseMetadata
     })
     setReleaseData(data)
+    console.log('data', data)
 
     viewIndex = updatedView.findIndex((view) => view.name === 'releases')
     updatedView[viewIndex].playlist = releaseData
