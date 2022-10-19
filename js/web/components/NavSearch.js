@@ -38,9 +38,9 @@ const NavSearch = () => {
   useEffect(() => {
     const handleDropdown = (e) => {
       if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target) &&
-        !searchInputRef.current.contains(e.target)
+        dropdownRef?.current &&
+        !dropdownRef?.current?.contains(e.target) &&
+        !searchInputRef?.current?.contains(e.target)
       ) {
         setShowDropdown(false)
       }
@@ -102,6 +102,7 @@ const NavSearch = () => {
   const changeHandler = (e) => {
     e.preventDefault()
     e.stopPropagation()
+    console.log('e.key', e.target.value)
     const search = e.target.value
 
     setQuery(search)
@@ -146,7 +147,11 @@ const NavSearch = () => {
   const keyHandler = (e) => {
     const clickedSuggestion = e.target.innerText
     const searchFilter = e.target.id
+    if (e.key === 'control'){
+      console.log('IT WORKS')
+    }
     if (e.key === 'Enter') {
+      console.log('e.WHAT', e.key)
       setQuery(clickedSuggestion)
       suggestionsClickHandler(clickedSuggestion, searchFilter)
       setShowDropdown(false)

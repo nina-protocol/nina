@@ -105,7 +105,7 @@ const ResponsiveTab = styled(Box)(({ theme }) => ({
   minWidth: '100px',
   paddingRight: '15px',
   [theme.breakpoints.down('md')]: {
-    paddingLeft: '15px',
+    paddingLeft: '6px',
   },
 }))
 
@@ -117,7 +117,7 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
   justifyContent: 'start',
 
   [theme.breakpoints.down('md')]: {
-    width: '100vw',
+    maxWidth: '100vw',
   },
 }))
 

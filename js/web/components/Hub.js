@@ -4,7 +4,6 @@ import { Box, } from '@mui/material'
 import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-import Head from 'next/head'
 const Dots = dynamic(() => import('./Dots'))
 const HubHeader = dynamic(() => import('./HubHeader'))
 const TabHeader = dynamic(() => import('./TabHeader'))
@@ -153,41 +152,6 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
   }
   return (
     <>
-      <Head>
-        <title>{`Nina: ${
-          hubData?.data.displayName ? `${hubData.data.displayName}'s Hub` : ''
-        }`}</title>
-        <meta
-          name="description"
-          content={`${hubData?.data.displayName}'s Hub on Nina.`}
-        />
-        <meta name="og:type" content="website" />
-        <meta
-          name="og:title"
-          content={`Nina: ${
-            hubData?.data.displayName ? `${hubData.data.displayName}'s Hub` : ''
-          }`}
-        />
-        <meta
-          name="og:description"
-          content={`${
-            hubData?.data.displayName ? hubData?.data.displayName : ''
-          }: ${
-            hubData?.data.description ? hubData?.data.description : ''
-          } \n Published via Nina Hubs.`}
-        />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@ninaprotocol" />
-        <meta name="twitter:creator" content="@ninaprotocol" />
-        <meta name="twitter:image:type" content="image/jpg" />
-        <meta
-          name="twitter:title"
-          content={`${hubData?.data.displayName}'s Hub on Nina`}
-        />
-        <meta name="twitter:description" content={hubData?.data.description} />
-        <meta name="twitter:image" content={hubData?.data.image} />
-        <meta name="og:image" content={hubData?.data.image} />
-      </Head>
 
       <HubContainer>
         <>{fetched.info && hubData && <HubHeader hubData={hubData} />}</>

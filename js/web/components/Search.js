@@ -58,7 +58,7 @@ const Search = (props) => {
     switch (activeView) {
       case 0:
         return (
-          <>
+          <SearchAllResultsWrapper>
             {Object.keys(searchResults).map((key, index) => {
                 const type = key.charAt(0).toUpperCase() + key.slice(1)
                 const data = searchResults[key]
@@ -74,31 +74,39 @@ const Search = (props) => {
                 )
               })
             }
-          </>
+          </SearchAllResultsWrapper>
         )
       case 1:
         return (
-          <ReusableTable
-            tableType="filteredSearchResultArtists"
-            items={response?.artists}
-            hasOverflow={true}
-          />
+          <ResultsWrapper>
+            <ReusableTable
+              tableType="filteredSearchResultArtists"
+              items={response?.artists}
+              hasOverflow={true}
+            />
+          </ResultsWrapper>
         )
       case 2:
         return (
-          <ReusableTable
-            tableType="filteredSearchResultReleases"
-            items={response?.releases}
-            hasOverflow={true}
-          />
+          <ResultsWrapper>
+
+            <ReusableTable
+              tableType="filteredSearchResultReleases"
+              items={response?.releases}
+              hasOverflow={true}
+            />
+          </ResultsWrapper>
         )
       case 3:
         return (
+          <ResultsWrapper>
+
           <ReusableTable
             tableType={'filteredSearchResultHubs'}
             items={response?.hubs}
             hasOverflow={true}
-          />
+            />
+            </ResultsWrapper>
         )
       default:
         break
@@ -107,12 +115,13 @@ const Search = (props) => {
 
   return (
     <SearchPageContainer>
-      <SearchInputContainer>
-        <SearchInputWrapper>
+      <SearchHeaderContainer>
+        <SearchHeaderWrapper>
           <Typography>{`Search results for ${query}`}</Typography>
-        </SearchInputWrapper>
-      </SearchInputContainer>
-      <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+        </SearchHeaderWrapper>
+      </SearchHeaderContainer>
+      <>
+      <SearchResultFilterContainer>
         <SearchResultFilter
           isClicked={activeView === 0}
           onClick={() => setActiveView(0)}
@@ -123,6 +132,8 @@ const Search = (props) => {
             response?.hubs.length
           })`}
         </SearchResultFilter>
+
+        
         {searchResults &&
           Object.keys(response).map((filter, index) => {
             return (
@@ -136,10 +147,12 @@ const Search = (props) => {
               </SearchResultFilter>
             )
           })}
-      </Box>
+        
+        </SearchResultFilterContainer>
+      </>
 
-      <SearchAllResultsWrapper>
-        <ResponsiveSearchResultContainer>
+      <>
+        <>
           {fetchedResponse === false && (
             <ResponsiveDotContainer>
               <Box sx={{ width: '100%', paddingTop: '25%', margin: 'auto' }}>
@@ -147,8 +160,9 @@ const Search = (props) => {
               </Box>
             </ResponsiveDotContainer>
           )}
+
           {fetchedResponse && (
-            <ResultsWrapper>{renderTables(activeView)}</ResultsWrapper>
+            <>{renderTables(activeView)}</>
           )}
           {query?.length > 0 &&
             fetchedResponse &&
@@ -157,37 +171,67 @@ const Search = (props) => {
             response?.hubs?.length === 0 && (
               <Typography>No results found</Typography>
             )}
-        </ResponsiveSearchResultContainer>
-      </SearchAllResultsWrapper>
+        </>
+      </>
     </SearchPageContainer>
   )
 }
 
 const SearchPageContainer = styled(Box)(({ theme }) => ({
-  height: '60vh',
+  display: 'inline-flex',
+  flexDirection: 'column',
+  justifyItems: 'center',
+  textAlign: 'center',
   minWidth: theme.maxWidth,
   maxWidth: theme.maxWidth,
+  height: '86vh',
+  overflowY: 'hidden',
+  margin: '75px auto',
   [theme.breakpoints.down('md')]: {
-    minWidth: 'unset',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyItems: 'center',
+    alignItems: 'center',
+    marginTop: '50px',
+    paddingTop: 0,
+    minHeight: '100% !important',
+    maxHeight: '80vh',
+    overflow: 'hidden',
+    marginLeft: 0,
   },
 }))
 
-const SearchInputContainer = styled(Box)(({ theme }) => ({
-  position: 'relative',
+const SearchHeaderContainer = styled(Box)(({ theme }) => ({
+  maxWidth: '100%',
+
   [theme.breakpoints.down('md')]: {
     paddingLeft: '10px',
     paddingRight: '10px',
   },
 }))
-const SearchInputWrapper = styled(Box)(({ theme }) => ({
+const SearchHeaderWrapper = styled(Box)(({ theme }) => ({
+
+  py: 5,
+  pl: 1,
+  pb: 1,
   maxWidth: '100vw',
+  minHeight: '50px',
+  [theme.breakpoints.down('md')]: {
+    width: '100vw',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'no-wrap',
+    height: '25px',
+  },
 }))
 const Form = styled('form')(({ theme }) => ({}))
+
 
 const SearchAllResultsWrapper = styled(Box)(({ theme }) => ({
   minWidth: theme.maxWidth,
   textAlign: 'left',
   overflow: 'auto',
+  paddingBottom: '100px',
   [theme.breakpoints.down('md')]: {
     minWidth: 'unset',
   },
@@ -217,6 +261,14 @@ const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
+const SearchResultFilterContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'row',
+  maxWidth: theme.maxWidth,
+  [theme.breakpoints.down('md')]: {
+  }
+}))
+
 const SearchResultFilter = styled(Button)(({ theme, isClicked }) => ({
   backgroundColor: 'transparent',
   border: 'none',
@@ -229,11 +281,12 @@ const SearchResultFilter = styled(Button)(({ theme, isClicked }) => ({
   display: 'flex',
   flexDirection: 'row',
   [theme.breakpoints.down('md')]: {
-    fontSize: '14px',
+    fontSize: '13px',
   },
 }))
 
 const ResultsWrapper = styled(Box)(({ theme }) => ({
-  overflow: 'visible',
+  overflow: 'auto',
+  paddingBottom: '100px'
 }))
 export default Search
