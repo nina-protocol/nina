@@ -11,8 +11,8 @@ const sentryWebpackPluginOptions = {
   // https://github.com/getsentry/sentry-webpack-plugin#options.
 };
 
-const cluster = "mainnet-beta";
-// const cluster = "devnet";
+// const cluster = "mainnet-beta";
+const cluster = "devnet";
 const IMGIX_URL = cluster === "devnet" 
   ? "nina-dev.imgix.net"
   : "nina.imgix.net"
@@ -73,6 +73,7 @@ const moduleExports = {
       cluster === "devnet"
         ? "https://api-dev.nina.market"
         : "https://api.nina.market",
+    APP_NAME: 'hubs'
   },
   images: {
     deviceSizes: [320, 420, 640, 750, 828, 1080, 1200, 1920, 2048],

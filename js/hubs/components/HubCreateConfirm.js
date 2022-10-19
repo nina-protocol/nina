@@ -83,7 +83,7 @@ const HubCreateConfirm = (props) => {
               Handle: <span style={{paddingLeft: '15px'}}>{formValues.hubForm.handle}</span>
             </Value>
 
-            <Typography sx={{mt: 1}} variant="subtitle1">note: all values other than Handle can be updated at anytime.</Typography>
+            <Typography sx={{mt: 1, color: 'red'}} variant="subtitle1">NOTE: YOUR HANDLE IS PERMAMENT AND CANNOT BE CHANGED.</Typography>
 
             {backgroundColor && (
               <Typography
