@@ -143,6 +143,19 @@ useEffect(() => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    if (!wallet?.connected) {
+      enqueueSnackbar('Please connect your wallet to purchase', {
+        variant: 'error',
+      })
+      trackEvent(
+        'release_purchase_failure_not_connected',
+        'engagement', {
+          publicKey: releasePubkey,
+        }
+      )
+      return
+    }
     let result  
     if (!amountHeld || amountHeld === 0) {
       const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.RELEASE_PURCHASE);
@@ -192,9 +205,6 @@ useEffect(() => {
       : `Sold Out ($${ninaClient
           .nativeToUi(release.price.toNumber(), release.paymentMint)
           .toFixed(2)})`
-
-  const buttonDisabled =
-    wallet?.connected && release.remainingSupply > 0 ? false : true
 
   let pathString = ''
   if (router.pathname.includes('releases')) {
@@ -290,7 +300,6 @@ useEffect(() => {
           <Button
             variant="outlined"
             type="submit"
-            disabled={buttonDisabled}
             fullWidth
           >
             <Typography variant="body2">

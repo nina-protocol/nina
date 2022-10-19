@@ -78,8 +78,21 @@ const ReleasePurchase = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let result;
 
+    if (!wallet?.connected) {
+      enqueueSnackbar('Please connect your wallet to purchase', {
+        variant: 'error',
+      })
+      trackEvent(
+        'release_purchase_failure_not_connected',
+        'engagement', {
+          publicKey: releasePubkey,
+        }
+      )
+      return
+    }
+
+    let result;
     const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.RELEASE_PURCHASE_VIA_HUB);
     if (error) {
       enqueueSnackbar(error.msg, { variant: "failure" });
@@ -127,9 +140,6 @@ const ReleasePurchase = (props) => {
       : `Sold Out ($${ninaClient
           .nativeToUi(release.price.toNumber(), release.paymentMint)
           .toFixed(2)})`;
-
-  const buttonDisabled =
-    wallet?.connected && release.remainingSupply > 0 ? false : true;
 
   const downloadAs = async (url, name) => {
     setDownloadButtonString("Downloading");
@@ -192,7 +202,7 @@ const ReleasePurchase = (props) => {
         <Royalty releasePubkey={releasePubkey} release={release} />
       )}
       <form onSubmit={handleSubmit} style={{ textAlign: "left", marginBottom: '10px', marginTop: '20px' }}>
-        <BuyButton variant="contained" type="submit" disabled={buttonDisabled} >
+        <BuyButton variant="contained" type="submit">
           <Typography variant="body2" align="left">
             {txPending &&
               <Dots msg="preparing transaction" />
