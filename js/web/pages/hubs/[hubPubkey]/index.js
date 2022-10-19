@@ -3,7 +3,6 @@ import { Box } from '@mui/system'
 import { styled } from '@mui/system'
 import NinaSdk from '@nina-protocol/js-sdk'
 import Head from 'next/head'
-import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import { useContext, useMemo, useEffect, useState } from 'react'
 const HubView = dynamic(() => import('../../../components/Hub'))
@@ -31,7 +30,7 @@ const HubPage = ({ hub, hubPubkey }) => {
       getHub(hubPubkey)
     }
   }, [hubPubkey])
-  console.log('this is hub data', hubData)
+  
   return (
     <>
       <Head>

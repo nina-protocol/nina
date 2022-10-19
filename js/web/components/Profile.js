@@ -1,5 +1,4 @@
 import { useEffect, useContext, useState, useMemo } from 'react'
-import Head from 'next/head'
 import dynamic from 'next/dynamic'
 import { Box, Typography } from '@mui/material'
 import { styled } from '@mui/system'
@@ -13,12 +12,10 @@ const ReusableTable = dynamic(() => import('./ReusableTable'))
 const Profile = ({ profilePubkey }) => {
   const {
     getUserCollectionAndPublished,
-    releaseState,
-    filterReleasesPublishedByUser,
-    filterReleasesList,
+  
   } = useContext(Release.Context)
 
-  const { getHubsForUser, filterHubsForUser } = useContext(Hub.Context)
+  const { getHubsForUser,  } = useContext(Hub.Context)
 
   const [profilePublishedReleases, setProfilePublishedReleases] =
     useState(undefined)
@@ -26,7 +23,6 @@ const Profile = ({ profilePubkey }) => {
     useState(undefined)
   const [profileHubs, setProfileHubs] = useState(undefined)
   const [activeView, setActiveView] = useState(undefined)
-  const [profileCollectionIds, setProfileCollectionIds] = useState(undefined)
   const [fetched, setFetched] = useState({
     user: false,
     releases: false,
@@ -58,7 +54,6 @@ const Profile = ({ profilePubkey }) => {
       const [collected, published] = await getUserCollectionAndPublished(
         profilePubkey
       )
-      console.log('collected: ', collected)
       setProfileCollectionReleases(collected)
       setProfilePublishedReleases(published)
       fetched.user = true
