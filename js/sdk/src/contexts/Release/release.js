@@ -432,6 +432,13 @@ const releaseContextHelper = ({
         ...releasePurchaseTransactionPending,
         [releasePubkey]: true,
       })
+      trackEvent(
+        'release_purchase_via_hub',
+        'engagement', {
+          publicKey: releasePubkey,
+          hub: hubPubkey,
+        }
+      )
 
       const program = await ninaClient.useProgram()
       let release = releaseState.tokenData[releasePubkey]
@@ -593,7 +600,7 @@ const releaseContextHelper = ({
       getUsdcBalance()
       addReleaseToCollection(releasePubkey.toBase58())
       await getRelease(releasePubkey)
-
+        
       return {
         success: true,
         msg: 'Release purchased!',
@@ -785,6 +792,13 @@ const releaseContextHelper = ({
   }
 
   const releasePurchase = async (releasePubkey) => {
+    trackEvent(
+      'release_purchase',
+      'engagement', {
+        publicKey: releasePubkey,
+      }
+    )
+
     setReleasePurchaseTransactionPending({
       ...releasePurchaseTransactionPending,
       [releasePubkey]: true,
@@ -893,6 +907,7 @@ const releaseContextHelper = ({
       getUsdcBalance()
       await getRelease(releasePubkey)
       await addReleaseToCollection(releasePubkey)
+
       return {
         success: true,
         msg: 'Release purchased!',

@@ -10,6 +10,7 @@ import Link from 'next/link'
 import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import { trackEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import CollectorModal from './CollectorModal'
 import HubsModal from './HubsModal'
 import Dots from './Dots'
@@ -204,6 +205,13 @@ useEffect(() => {
 
   const downloadAs = async (url, name) => {
     setDownloadButtonString('Downloading')
+
+    trackEvent(
+      'track_download',
+      'engagement', {
+        publicKey: releasePubkey,
+      }
+    )
 
     const response = await axios.get(url, {
       method: 'GET',

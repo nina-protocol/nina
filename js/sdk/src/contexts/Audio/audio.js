@@ -90,7 +90,7 @@ const AudioPlayerContextProvider = ({ children }) => {
     setIsPlaying(shouldPlay)
     if (shouldPlay) {
       trackEvent(
-        'play_track',
+        'track_play',
         'engagement', {
           publicKey: releasePubkey,
         }

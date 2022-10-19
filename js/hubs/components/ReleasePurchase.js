@@ -13,6 +13,7 @@ import Typography from "@mui/material/Typography";
 import { useRouter } from "next/router";
 import Dots from "./Dots";
 import Royalty from "./Royalty";
+import { trackEvent } from "@nina-protocol/nina-internal-sdk/src/utils/event";
 
 const HubsModal = dynamic(() => import("./HubsModal"));
 
@@ -132,6 +133,13 @@ const ReleasePurchase = (props) => {
 
   const downloadAs = async (url, name) => {
     setDownloadButtonString("Downloading");
+
+    trackEvent(
+      'track_download',
+      'engagement', {
+        publicKey: releasePubkey,
+      }
+    )
 
     const response = await axios.get(url, {
       method: "GET",
