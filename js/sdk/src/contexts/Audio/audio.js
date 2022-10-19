@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useRef } from 'react'
 import Nina from '../Nina'
 import Release from '../Release'
+import { trackEvent } from '../../utils/event'
 
 const AudioPlayerContext = createContext()
 const AudioPlayerContextProvider = ({ children }) => {
@@ -87,6 +88,14 @@ const AudioPlayerContextProvider = ({ children }) => {
       setTrack(existingTrack)
     }
     setIsPlaying(shouldPlay)
+    if (shouldPlay) {
+      trackEvent(
+        'play_track',
+        'engagement', {
+          publicKey: releasePubkey,
+        }
+      )
+    }
   }
 
   return (
@@ -225,6 +234,13 @@ const audioPlayerContextHelper = ({
         }
       }
     }
+    trackEvent(
+      'add_track_to_queue',
+      'engagement', {
+        publicKey: releasePubkey,
+      }
+    )
+
   }
 
   const resetQueueWithPlaylist = async (releasePubkeys) => {
