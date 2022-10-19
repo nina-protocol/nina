@@ -188,8 +188,10 @@ const ReleasePurchase = (props) => {
         </Typography>
       )}
       <HubsModal releasePubkey={releasePubkey} metadata={metadata}  />
-
-      <form onSubmit={handleSubmit} style={{ textAlign: "left", marginBottom: '10px' }}>
+      {userIsRecipient && (
+        <Royalty releasePubkey={releasePubkey} release={release} />
+      )}
+      <form onSubmit={handleSubmit} style={{ textAlign: "left", marginBottom: '10px', marginTop: '20px' }}>
         <BuyButton variant="contained" type="submit" disabled={buttonDisabled} >
           <Typography variant="body2" align="left">
             {txPending &&
@@ -228,15 +230,14 @@ const ReleasePurchase = (props) => {
           </Typography>
         </BuyButton>
       )}
-      {userIsRecipient && (
-        <Royalty releasePubkey={releasePubkey} release={release} />
-      )}
     </ReleasePurchaseWrapper>
   );
 };
 
 const BuyButton = styled(Button)(({ theme }) => ({
   "& p": {
+    border: "1px solid black",
+    padding: '4px',
     "&:hover": {
       opacity: "50%",
     },

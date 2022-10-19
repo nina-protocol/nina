@@ -16,7 +16,7 @@ import {
   decryptData,
 } from '../../utils/encrypt'
 import { indexerHasRecord, shuffle } from '../../utils'
-
+import { trackEvent } from '../../utils/event'
 const lookupTypes = {
   PUBLISHED_BY: 'published_by',
   REVENUE_SHARE: 'revenue_share',
@@ -432,6 +432,7 @@ const releaseContextHelper = ({
         ...releasePurchaseTransactionPending,
         [releasePubkey]: true,
       })
+      
       trackEvent(
         'release_purchase_via_hub',
         'engagement', {
