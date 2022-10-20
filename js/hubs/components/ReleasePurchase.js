@@ -87,6 +87,7 @@ const ReleasePurchase = (props) => {
         'release_purchase_failure_not_connected',
         'engagement', {
           publicKey: releasePubkey,
+          hub: hubPubkey,
         }
       )
       return
@@ -148,6 +149,7 @@ const ReleasePurchase = (props) => {
       'track_download',
       'engagement', {
         publicKey: releasePubkey,
+        hub: hubPubkey,
       }
     )
 

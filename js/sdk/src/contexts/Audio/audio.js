@@ -70,7 +70,8 @@ const AudioPlayerContextProvider = ({ children }) => {
   const updateTrack = (
     releasePubkey,
     shouldPlay = false,
-    addToPlaylist = false
+    addToPlaylist = false,
+    hubPublicKey = null
   ) => {
     const existingTrack = playlist.filter(
       (item) => item.releasePubkey === releasePubkey
@@ -89,11 +90,17 @@ const AudioPlayerContextProvider = ({ children }) => {
     }
     setIsPlaying(shouldPlay)
     if (shouldPlay) {
+      const params = {
+        publicKey: releasePubkey,
+      }
+      if (hubPublicKey) {
+        params.hub = hubPublicKey
+      }
+
       logEvent(
         'track_play',
-        'engagement', {
-          publicKey: releasePubkey,
-        }
+        'engagement',
+        params
       )
     }
   }
