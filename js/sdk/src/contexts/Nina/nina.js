@@ -6,7 +6,7 @@ import {
   TOKEN_PROGRAM_ID,
 } from '../../utils/web3'
 import { ninaErrorHandler } from '../../utils/errors'
-import { trackEvent } from '../../utils/event'
+import { logEvent } from '../../utils/event'
 
 const NinaProgramAction = {
   HUB_ADD_COLLABORATOR: 'HUB_ADD_COLLABORATOR',
@@ -55,7 +55,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
 
   useEffect(() => {
     if (provider.wallet?.wallet && provider.wallet.publicKey) {
-      trackEvent(
+      logEvent(
         'wallet_connected',
         'engagement', {
           publicKey: provider.wallet.publicKey.toBase58(),

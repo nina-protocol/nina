@@ -73,7 +73,6 @@ const moduleExports = {
       cluster === "devnet"
         ? "https://api-dev.nina.market"
         : "https://api.nina.market",
-    APP_NAME: 'hubs'
   },
   images: {
     deviceSizes: [320, 420, 640, 750, 828, 1080, 1200, 1920, 2048],

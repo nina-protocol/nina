@@ -74,7 +74,6 @@ const moduleExports = withTM({
       cluster === 'devnet'
         ? 'https://api-dev.nina.market'
         : 'https://api.nina.market',
-    APP_NAME: 'web'
   },
   images: {
     loader: 'imgix',
