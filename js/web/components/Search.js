@@ -62,7 +62,6 @@ const Search = (props) => {
             {Object.keys(searchResults).map((key, index) => {
                 const type = key.charAt(0).toUpperCase() + key.slice(1)
                 const data = searchResults[key]
-                console.log('index', index);
                 return (
                   <ReusableTable
                     tableType={`searchResult${
@@ -234,19 +233,6 @@ const SearchAllResultsWrapper = styled(Box)(({ theme }) => ({
   paddingBottom: '100px',
   [theme.breakpoints.down('md')]: {
     minWidth: 'unset',
-  },
-}))
-
-const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
-  maxHeight: '60vh',
-  minWidth: theme.maxWidth,
-  maxWidth: theme.maxWidth,
-
-  webkitOverflowScrolling: 'touch',
-  padding: '10px 0',
-  [theme.breakpoints.down('md')]: {
-    minWidth: 'unset',
-    paddingBottom: '100px',
   },
 }))
 

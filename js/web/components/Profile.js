@@ -34,11 +34,7 @@ const Profile = ({ profilePubkey }) => {
     { name: 'collection', playlist: undefined, visible: false },
     { name: 'hubs', playlist: null, visible: false },
   ])
-  const [tabs, setTabs] = useState([
-    {name:'releases', visible: false},
-    {name: 'collection', visible: false},
-    {name: 'hubs', visible: false}
-  ])
+
   const artistNames = useMemo(() => {
     if (profilePublishedReleases?.length > 0) {
       return [
@@ -188,26 +184,13 @@ const Profile = ({ profilePubkey }) => {
           fetched.releases &&
           fetched.hubs && (
             <Box sx={{ py: 1 }}>
-              {/* <TabHeader
+              <TabHeader
                 viewHandler={viewHandler}
                 isActive={activeView}
                 profileTabs={views}
-              /> */}
-            {
-              tabs.map((tab, index) => {
-                return (
-                  <ProfileTab
-                  id={index}
-                  isClicked={activeView === index + 1}
-                  onClick={() => setActiveView(index + 1)}
-                  disabled={response?.[filter]?.length === 0}
-                  />
-                )
-              })
-            }
+              />
             </Box>
           )}
-
         <>
           {!activeView === undefined && (
             <ProfileDotWrapper>
@@ -256,21 +239,6 @@ const ProfileHeaderContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     paddingLeft: '10px',
     paddingRight: '10px',
-  },
-}))
-const ProfileTab = styled(Button)(({ theme, isClicked }) => ({
-  backgroundColor: 'transparent',
-  border: 'none',
-  cursor: 'pointer',
-  fontSize: '16px',
-  fontWeight: isClicked ? 'bold' : 'normal',
-  color: '#000',
-  textAlign: 'left',
-  alignItems: 'left',
-  display: 'flex',
-  flexDirection: 'row',
-  [theme.breakpoints.down('md')]: {
-    fontSize: '13px',
   },
 }))
 
