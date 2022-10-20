@@ -249,7 +249,7 @@ const ReleasePurchase = (props) => {
 const BuyButton = styled(Button)(({ theme }) => ({
   "& p": {
     border: `1px solid ${theme.palette.text.primary}`,
-    padding: '4px',
+    padding: '10px',
     "&:hover": {
       opacity: "50%",
     },
