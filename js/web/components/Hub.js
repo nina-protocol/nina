@@ -72,7 +72,6 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
       return releaseMetadata
     })
     setReleaseData(data)
-    console.log('data', data)
 
     viewIndex = updatedView.findIndex((view) => view.name === 'releases')
     updatedView[viewIndex].playlist = releaseData
