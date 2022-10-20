@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useContext } from 'react'
 import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
 import { formatDuration } from "@nina-protocol/nina-internal-sdk/esm/utils";
+import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event';
 import axios from 'axios'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -10,7 +11,6 @@ import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import { styled } from "@mui/material/styles"
 import Dots from '../components/Dots'
-
 export default function Home() {
   const playerRef = useRef()
   const intervalRef = useRef()
@@ -37,6 +37,9 @@ export default function Home() {
   
   useEffect(() => {
     if (Object.keys(tracks).length) {
+      Object.values(tracks).forEach((track, i) => {
+        track.publicKey = Object.keys(tracks)[i]
+      })
       const releases = Object.keys(tracks)
       shuffle(releases)
       setPlaylist(releases)
@@ -172,6 +175,10 @@ export default function Home() {
         setPlaying(true)
         startTimer()
       }      
+      logEvent('track_play',
+        'engagement',{ 
+        publicKey: activeTrack.current.publicKey 
+      })
     } else {
       playerRef.current.pause()
       setPlaying(false)
