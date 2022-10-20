@@ -10,6 +10,7 @@ import Link from 'next/link'
 import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import CollectorModal from './CollectorModal'
 import HubsModal from './HubsModal'
 import Dots from './Dots'
@@ -142,6 +143,19 @@ useEffect(() => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    if (!wallet?.connected) {
+      enqueueSnackbar('Please connect your wallet to purchase', {
+        variant: 'error',
+      })
+      logEvent(
+        'release_purchase_failure_not_connected',
+        'engagement', {
+          publicKey: releasePubkey,
+        }
+      )
+      return
+    }
     let result  
     if (!amountHeld || amountHeld === 0) {
       const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.RELEASE_PURCHASE);
@@ -192,9 +206,6 @@ useEffect(() => {
           .nativeToUi(release.price.toNumber(), release.paymentMint)
           .toFixed(2)})`
 
-  const buttonDisabled =
-    wallet?.connected && release.remainingSupply > 0 ? false : true
-
   let pathString = ''
   if (router.pathname.includes('releases')) {
     pathString = '/releases'
@@ -204,6 +215,13 @@ useEffect(() => {
 
   const downloadAs = async (url, name) => {
     setDownloadButtonString('Downloading')
+
+    logEvent(
+      'track_download',
+      'engagement', {
+        publicKey: releasePubkey,
+      }
+    )
 
     const response = await axios.get(url, {
       method: 'GET',
@@ -282,7 +300,6 @@ useEffect(() => {
           <Button
             variant="outlined"
             type="submit"
-            disabled={buttonDisabled}
             fullWidth
           >
             <Typography variant="body2">

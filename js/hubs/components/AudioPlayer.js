@@ -155,7 +155,7 @@ const AudioPlayer = ({ hubPubkey }) => {
       !activeIndexRef.current &&
       track?.releasePubkey != playlist[0].releasePubkey
     ) {
-      updateTrack(playlist[0].releasePubkey, false);
+      updateTrack(playlist[0].releasePubkey, false, hubPubkey);
     }
   }, [playlist, activeIndexRef.current]);
 
@@ -200,7 +200,7 @@ const AudioPlayer = ({ hubPubkey }) => {
     }
     if (audioPlayerRef.current.paused) {
       if (track) {
-        updateTrack(track.releasePubkey, true);
+        updateTrack(track.releasePubkey, true, hubPubkey);
       }
     } else {
       pause();
@@ -212,7 +212,7 @@ const AudioPlayer = ({ hubPubkey }) => {
     setPlaying(false);
     clearInterval(intervalRef.current);
     if (track) {
-      updateTrack(track.releasePubkey, false);
+      updateTrack(track.releasePubkey, false, hubPubkey);
     }
   };
 

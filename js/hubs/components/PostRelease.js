@@ -133,7 +133,8 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
                     }
                     updateTrack(
                       releasePubkey,
-                      !(isPlaying && track.releasePubkey === releasePubkey)
+                      !(isPlaying && track.releasePubkey === releasePubkey),
+                      hubPubkey
                     );
                   }}
                 >

@@ -16,7 +16,7 @@ import {
   decryptData,
 } from '../../utils/encrypt'
 import { indexerHasRecord, shuffle } from '../../utils'
-
+import { logEvent } from '../../utils/event'
 const lookupTypes = {
   PUBLISHED_BY: 'published_by',
   REVENUE_SHARE: 'revenue_share',
@@ -432,6 +432,14 @@ const releaseContextHelper = ({
         ...releasePurchaseTransactionPending,
         [releasePubkey]: true,
       })
+      
+      logEvent(
+        'release_purchase_via_hub',
+        'engagement', {
+          publicKey: releasePubkey,
+          hub: hubPubkey,
+        }
+      )
 
       const program = await ninaClient.useProgram()
       let release = releaseState.tokenData[releasePubkey]
@@ -593,7 +601,7 @@ const releaseContextHelper = ({
       getUsdcBalance()
       addReleaseToCollection(releasePubkey.toBase58())
       await getRelease(releasePubkey)
-
+        
       return {
         success: true,
         msg: 'Release purchased!',
@@ -785,6 +793,13 @@ const releaseContextHelper = ({
   }
 
   const releasePurchase = async (releasePubkey) => {
+    logEvent(
+      'release_purchase',
+      'engagement', {
+        publicKey: releasePubkey,
+      }
+    )
+
     setReleasePurchaseTransactionPending({
       ...releasePurchaseTransactionPending,
       [releasePubkey]: true,
@@ -893,6 +908,7 @@ const releaseContextHelper = ({
       getUsdcBalance()
       await getRelease(releasePubkey)
       await addReleaseToCollection(releasePubkey)
+
       return {
         success: true,
         msg: 'Release purchased!',

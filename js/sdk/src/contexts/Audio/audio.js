@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useRef } from 'react'
 import Nina from '../Nina'
 import Release from '../Release'
+import { logEvent } from '../../utils/event'
 
 const AudioPlayerContext = createContext()
 const AudioPlayerContextProvider = ({ children }) => {
@@ -69,7 +70,8 @@ const AudioPlayerContextProvider = ({ children }) => {
   const updateTrack = (
     releasePubkey,
     shouldPlay = false,
-    addToPlaylist = false
+    addToPlaylist = false,
+    hubPublicKey = null
   ) => {
     const existingTrack = playlist.filter(
       (item) => item.releasePubkey === releasePubkey
@@ -87,6 +89,20 @@ const AudioPlayerContextProvider = ({ children }) => {
       setTrack(existingTrack)
     }
     setIsPlaying(shouldPlay)
+    if (shouldPlay) {
+      const params = {
+        publicKey: releasePubkey,
+      }
+      if (hubPublicKey) {
+        params.hub = hubPublicKey
+      }
+
+      logEvent(
+        'track_play',
+        'engagement',
+        params
+      )
+    }
   }
 
   return (
@@ -225,6 +241,13 @@ const audioPlayerContextHelper = ({
         }
       }
     }
+    logEvent(
+      'add_track_to_queue',
+      'engagement', {
+        publicKey: releasePubkey,
+      }
+    )
+
   }
 
   const resetQueueWithPlaylist = async (releasePubkeys) => {

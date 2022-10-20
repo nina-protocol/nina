@@ -136,92 +136,96 @@ const HubCreateForm = ({
             </Box>
           )}
         </Field>
-        <Field name="publishFee">
-          {(props) => (
-            <Box>
-              <TextField
-                className="formField"
-                variant="standard"
-                size="small"
-                InputLabelProps={touched.publishFee ? { shrink: true } : ""}
-                type="number"
-                label={
-                  <Box display="flex" alignItems="center">
-                    {formatPlaceholder(props.field.name) + " (%)"}
-                    <IconWithTooltip field={props.field.name} />
-                  </Box>
-                }
-                InputProps={{
-                  inputProps: {
-                    max: 100,
-                    min: 0,
-                  },
-                  onChange: (e) => {
-                    const value = e.target.value
-                      ? parseInt(e.target.value)
-                      : "";
-                    if (value > 100) {
-                      value = 100;
+        {update && (
+          <>
+            <Field name="publishFee">
+              {(props) => (
+                <Box>
+                  <TextField
+                    className="formField"
+                    variant="standard"
+                    size="small"
+                    InputLabelProps={touched.publishFee ? { shrink: true } : ""}
+                    type="number"
+                    label={
+                      <Box display="flex" alignItems="center">
+                        {formatPlaceholder(props.field.name) + " (%)"}
+                        <IconWithTooltip field={props.field.name} />
+                      </Box>
                     }
-                    if (value < 0) {
-                      value = 0;
+                    InputProps={{
+                      inputProps: {
+                        max: 100,
+                        min: 0,
+                      },
+                      onChange: (e) => {
+                        const value = e.target.value
+                          ? parseInt(e.target.value)
+                          : "";
+                        if (value > 100) {
+                          value = 100;
+                        }
+                        if (value < 0) {
+                          value = 0;
+                        }
+                        setFieldValue("publishFee", value);
+                      },
+                    }}
+                    placeholder={
+                      errors.publishFee && touched.publishFee
+                        ? errors.publishFee
+                        : null
                     }
-                    setFieldValue("publishFee", value);
-                  },
-                }}
-                placeholder={
-                  errors.publishFee && touched.publishFee
-                    ? errors.publishFee
-                    : null
-                }
-                {...props.field}
-              />
-            </Box>
-          )}
-        </Field>
-        <Field name="referralFee">
-          {(props) => (
-            <Box>
-              <TextField
-                className="formField"
-                variant="standard"
-                label={
-                  <Box display="flex" alignItems="center">
-                    {formatPlaceholder(props.field.name) + " (%)"}
-                    <IconWithTooltip field={props.field.name} />
-                  </Box>
-                }
-                size="small"
-                InputLabelProps={touched.referralFee ? { shrink: true } : ""}
-                type="number"
-                InputProps={{
-                  inputProps: {
-                    max: 100,
-                    min: 0,
-                  },
-                  onChange: (e) => {
-                    const value = e.target.value
-                      ? parseInt(e.target.value)
-                      : "";
-                    if (value > 100) {
-                      value = 100;
+                    {...props.field}
+                  />
+                </Box>
+              )}
+            </Field>
+            <Field name="referralFee">
+              {(props) => (
+                <Box>
+                  <TextField
+                    className="formField"
+                    variant="standard"
+                    label={
+                      <Box display="flex" alignItems="center">
+                        {formatPlaceholder(props.field.name) + " (%)"}
+                        <IconWithTooltip field={props.field.name} />
+                      </Box>
                     }
-                    if (value < 0) {
-                      value = 0;
+                    size="small"
+                    InputLabelProps={touched.referralFee ? { shrink: true } : ""}
+                    type="number"
+                    InputProps={{
+                      inputProps: {
+                        max: 100,
+                        min: 0,
+                      },
+                      onChange: (e) => {
+                        const value = e.target.value
+                          ? parseInt(e.target.value)
+                          : "";
+                        if (value > 100) {
+                          value = 100;
+                        }
+                        if (value < 0) {
+                          value = 0;
+                        }
+                        setFieldValue("referralFee", value);
+                      },
+                    }}
+                    placeholder={
+                      errors.referralFee && touched.referralFee
+                        ? errors.referralFee
+                        : null
                     }
-                    setFieldValue("referralFee", value);
-                  },
-                }}
-                placeholder={
-                  errors.referralFee && touched.referralFee
-                    ? errors.referralFee
-                    : null
-                }
-                {...props.field}
-              />
-            </Box>
-          )}
-        </Field>
+                    {...props.field}
+                  />
+                </Box>
+              )}
+            </Field>
+          </>
+        )}
 
         <Field name="description">
           {(props) => (
@@ -249,8 +253,8 @@ export default withFormik({
     return {
       handle: "",
       displayName: `${hubData ? hubData.json.displayName : ""}`,
-      publishFee: `${hubData ? hubData.publishFee : ""}`,
-      referralFee: `${hubData ? hubData.referralFee : ""}`,
+      publishFee: `${hubData ? hubData.publishFee : "0"}`,
+      referralFee: `${hubData ? hubData.referralFee : "0"}`,
       description: `${hubData ? hubData.json.description : ""}`,
       externalUrl: `${hubData ? hubData.json.externalUrl : ""}`,
     };
