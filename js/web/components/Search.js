@@ -111,7 +111,7 @@ const Search = (props) => {
         break
     }
   }
-
+console.log('response.releases', response?.releases)
   return (
     <SearchPageContainer>
       <SearchHeaderContainer>

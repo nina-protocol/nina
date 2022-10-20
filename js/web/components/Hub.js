@@ -103,6 +103,8 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
     const index = parseInt(event.target.id)
     setActiveView(index)
   }
+  console.log('hubData', releaseData)
+  console.log('hubReleases', hubReleases)
   const renderTables = (activeView) => {
     switch (activeView) {
       case undefined:
@@ -165,6 +167,13 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
             />
           </HubTabWrapper>
         )}
+            {!activeView === undefined && (
+            <ProfileDotWrapper>
+              <Box sx={{ margin: 'auto' }}>
+                <Dots />
+              </Box>
+            </ProfileDotWrapper>
+          )}
         <>{renderTables(activeView)}</>
       </HubContainer>
     </>

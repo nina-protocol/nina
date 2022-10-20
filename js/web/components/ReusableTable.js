@@ -142,7 +142,7 @@ const ReusableTableBody = ({ items, tableType, hasOverflow }) => {
     track,
     playlist,
   } = useContext(Audio.Context)
-
+  console.log('track', track)
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
   const snackbarHandler = (message) => {
@@ -202,7 +202,7 @@ const ReusableTableBody = ({ items, tableType, hasOverflow }) => {
     if (tableType === 'profileHubs') {
       formattedData = {
         id: publicKey,
-        link: `/hubs/${data.handle}`,
+        link: `/hubs/${data?.handle}`,
         date: data?.createdAt,
         image: data?.data.image,
         hubName: data?.data.displayName,
@@ -249,7 +249,7 @@ const ReusableTableBody = ({ items, tableType, hasOverflow }) => {
 
         image: data?.image,
         link: `/${data?.publicKey}`,
-        searchResultRelease: data.title,
+        searchResultRelease: `${data?.artist} - ${data.title}`,
       }
     }
     if (
@@ -299,7 +299,7 @@ const ReusableTableBody = ({ items, tableType, hasOverflow }) => {
                         onClickCapture={(e) => handlePlay(e, row.id)}
                         id={row.id}
                       >
-                        {isPlaying && track.id === row.id ? (
+                        {isPlaying && track?.id === row.id ? (
                           <PauseCircleOutlineOutlinedIcon
                             sx={{ color: 'black' }}
                           />
@@ -348,7 +348,7 @@ const ReusableTableBody = ({ items, tableType, hasOverflow }) => {
                 return (
                   <Link href={row.link} passHref>
                     <StyledTableCell key={cellName}>
-                      <OverflowContainer>
+                      <OverflowContainer overflowWidth={'20vw'}>
                         <Link href={row.link} passHref>
                           <a>
                             <Typography
@@ -366,7 +366,7 @@ const ReusableTableBody = ({ items, tableType, hasOverflow }) => {
               } else if (cellName === 'artist') {
                 return (
                   <StyledTableCell key={cellName}>
-                    <OverflowContainer>
+                    <OverflowContainer overflowWidth={'20vw'}>
                       <Typography
                         noWrap
                         onClickCapture={() =>
@@ -401,14 +401,16 @@ const ReusableTableBody = ({ items, tableType, hasOverflow }) => {
                 return (
                   <StyledTableCell key={cellName}>
                     <SearchResultOverflowContainer>
+                      <OverflowContainer overflowWidth={'60vw'}>
                       <Typography
                         noWrap
                         onClickCapture={() => router.push(`/${row?.id}`)}
-                      >
+                        >
                         <Link href={row.link} passHref>
                           <a>{cellData}</a>
                         </Link>
                       </Typography>
+                        </OverflowContainer>
                     </SearchResultOverflowContainer>
                   </StyledTableCell>
                 )
@@ -435,7 +437,9 @@ const ReusableTableBody = ({ items, tableType, hasOverflow }) => {
                         sx={{ paddingLeft: '5px', width: '100vw' }}
                         noWrap
                       >
-                        {cellData}
+                           <Link href={row.link} passHref>
+                          <a>{cellData}</a>
+                        </Link>
                       </Typography>
                     </OverflowContainer>
                   </StyledTableCell>
@@ -536,10 +540,10 @@ const SearchResultOverflowContainer = styled(Box)(({ theme }) => ({
     minWidth: '0',
   },
 }))
-const OverflowContainer = styled(Box)(({ theme }) => ({
+const OverflowContainer = styled(Box)(({ theme, overflowWidth }) => ({
   overflow: 'hidden',
 
-  width: '20vw',
+  width: overflowWidth,
   textAlign: 'left',
   textOverflow: 'ellipsis',
   [theme.breakpoints.down('md')]: {
