@@ -168,7 +168,7 @@ const NavCtas = styled('div')(() => ({
 const SearchBarWrapper = styled('div')(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     position: 'absolute',
-    right: '230px',
+    right: '270px',
    
   },
 }))

@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import NinaSdk from '@nina-protocol/js-sdk'
 import {styled} from '@mui/material'
 import {Box} from '@mui/material'
+
 const Search = dynamic(() => import('../../components/Search'))
 
 const SearchPage = (props) => {
@@ -20,7 +21,7 @@ const ResponsiveSearchContainer = styled(Box)(({theme}) => ({
  
   [theme.breakpoints.down('md')]: {
     minHeight:'40vh',
-    padding: '0'
+    padding: '0',
   }
 }))
 

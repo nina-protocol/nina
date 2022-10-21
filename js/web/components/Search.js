@@ -181,8 +181,8 @@ const SearchPageContainer = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   justifyItems: 'center',
   textAlign: 'center',
-  minWidth: theme.maxWidth,
-  maxWidth: theme.maxWidth,
+ 
+  width: theme.maxWidth,
   height: '86vh',
   overflowY: 'hidden',
   margin: '75px auto',
@@ -196,7 +196,7 @@ const SearchPageContainer = styled(Box)(({ theme }) => ({
     minHeight: '100% !important',
     maxHeight: '80vh',
     overflow: 'hidden',
-    marginLeft: 0,
+   
   },
 }))
 
@@ -229,10 +229,12 @@ const Form = styled('form')(({ theme }) => ({}))
 const SearchAllResultsWrapper = styled(Box)(({ theme }) => ({
   minWidth: theme.maxWidth,
   textAlign: 'left',
-  overflow: 'auto',
+  overflowY: 'auto',
   paddingBottom: '100px',
   [theme.breakpoints.down('md')]: {
     minWidth: 'unset',
+
+   
   },
 }))
 
@@ -273,6 +275,9 @@ const SearchResultFilter = styled(Button)(({ theme, isClicked }) => ({
 
 const ResultsWrapper = styled(Box)(({ theme }) => ({
   overflow: 'auto',
-  paddingBottom: '100px'
+  paddingBottom: '100px',
+[theme.breakpoints.down('md')]: {
+ 
+}
 }))
 export default Search

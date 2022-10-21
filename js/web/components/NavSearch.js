@@ -32,7 +32,6 @@ const NavSearch = () => {
       process.env.SOLANA_CLUSTER_URL,
       process.env.NINA_PROGRAM_ID
     )
-    console.log('NinaSdk.client', NinaSdk.client)
   }, [])
 
   useEffect(() => {
@@ -147,11 +146,9 @@ const NavSearch = () => {
   const keyHandler = (e) => {
     const clickedSuggestion = e.target.innerText
     const searchFilter = e.target.id
-    if (e.key === 'control'){
-      console.log('IT WORKS')
-    }
+
     if (e.key === 'Enter') {
-      console.log('e.WHAT', e.key)
+
       setQuery(clickedSuggestion)
       suggestionsClickHandler(clickedSuggestion, searchFilter)
       setShowDropdown(false)
@@ -342,10 +339,13 @@ const SearchInput = styled('input')(({ theme }) => ({
   marginRight: '20px',
   outline: 'none !important',
   backgroundColor: '#fff',
+  outline: 'none',
+  borderRadius: 0,
   [theme.breakpoints.down('md')]: {
     margin: '15px 0',
     padding: '2px 0',
-    width: '90vw',
+    width: '100vw',
+    fontSize: '18px',
   },
 }))
 const DropdownContainer = styled(Box)(({ theme }) => ({
