@@ -2258,10 +2258,10 @@
   resolved "https://registry.yarnpkg.com/@next/swc-win32-x64-msvc/-/swc-win32-x64-msvc-12.1.5.tgz#02f377e4d41eaaacf265e34bab9bacd8efc4a351"
   integrity sha512-/SoXW1Ntpmpw3AXAzfDRaQidnd8kbZ2oSni8u5z0yw6t4RwJvmdZy1eOaAADRThWKV+2oU90++LSnXJIwBRWYQ==
 
-"@nina-protocol/js-sdk@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@nina-protocol/js-sdk/-/js-sdk-0.0.2.tgz#f66586658776b992f3020af48564f6aa28a74f92"
-  integrity sha512-el/e/d2TuYrw4Rhpi0q9T29C9yKxG2xGJr/iNugK3rZv6ApH+7qUVAO8ZYkeDybz2Fu+B/s7RoHZAYJSD1B27g==
+"@nina-protocol/js-sdk@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@nina-protocol/js-sdk/-/js-sdk-0.0.4.tgz#16d2d0ea3cd25e1fc79d8913100a43ca47352fc6"
+  integrity sha512-dgFtXUENm/pYJtQFTpBi0FlJ1YjLtM2tESt6qsgCDdOu1IzqIFsTA19DQZmzKq9GNHmGdzrn6mKmWDGBlTeA1Q==
   dependencies:
     "@project-serum/anchor" "^0.25.0"
     axios "^0.27.2"
