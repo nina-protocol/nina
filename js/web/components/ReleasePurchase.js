@@ -236,7 +236,7 @@ useEffect(() => {
         </StyledLink>
       </Typography>
       <CollectorModal releasePubkey={releasePubkey} metadata={metadata} />
-      {/* <HubsModal releasePubkey={releasePubkey} metadata={metadata} /> */}
+      <HubsModal releasePubkey={releasePubkey} metadata={metadata} />
       {wallet?.connected && (
         <StyledUserAmount>
           {metadata && (

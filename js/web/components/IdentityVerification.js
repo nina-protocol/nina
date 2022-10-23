@@ -6,6 +6,8 @@ import Button from "@mui/material/Button";
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import axios from 'axios';
 import Web3 from "web3";
+import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
+
 
 const IdentityVerification = ({ verifications, profilePublicKey }) => {
   const web3 = new Web3(process.env.ETH_CLUSTER_URL);
@@ -28,8 +30,15 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
     return verifications.find((verification) => verification.type === type)
   }
 
+  const displayNameForValue = (value, type) => {
+    if (type === 'ethereum') {
+      return truncateAddress(value)
+    }
+    return value
+  }
   const displayNameForType = (type) => {
-    return verifications.find((verification) => verification.type === type).displayName
+    const verification = verifications.find((verification) => verification.type === type)
+    return verification.displayName || displayNameForValue(verification.value, type)
   }
   
   const valueForType = (type) => {
