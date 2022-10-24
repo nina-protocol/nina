@@ -131,7 +131,8 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     initBundlr,
     checkIfHasBalanceToCompleteAction,
     getSubscriptionsForUser,
-    filterSubscriptionsForUser
+    filterSubscriptionsForUser,
+    getSubscriptionsForHub
   } = ninaContextHelper({
     ninaClient,
     postState,
@@ -205,7 +206,8 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         checkIfHasBalanceToCompleteAction,
         getSubscriptionsForUser,
         filterSubscriptionsForUser,
-        userSubscriptions
+        userSubscriptions,
+        getSubscriptionsForHub
       }}
     >
       {children}
@@ -754,6 +756,18 @@ const ninaContextHelper = ({
     }
   }
 
+  const getSubscriptionsForHub = async (hubPubkeyOrHandle) => {
+    console.log('HUB SUB SCRIPTIONS');
+    try{
+      const { subscriptions } = await NinaSdk.Hub.fetchSubscriptions(hubPubkeyOrHandle, false)
+      saveSubscriptionsToState(subscriptions)
+      return subscriptions
+    } catch (error) {
+      console.warn(error)
+      return []
+    }
+  }
+
   const filterSubscriptionsForUser = (accountPubkey) => {
     const subscriptions = []
     Object.values(subscriptionState).forEach((subscription) => {
@@ -786,6 +800,7 @@ const ninaContextHelper = ({
     checkIfHasBalanceToCompleteAction,
     getSubscriptionsForUser,
     filterSubscriptionsForUser,
+    getSubscriptionsForHub,
   }
 }
 

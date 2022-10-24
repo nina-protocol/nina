@@ -37,11 +37,11 @@ const FeedDrawer = () => {
     }
   }, [wallet.connected])
 
-  useEffect(() => {
-    if (wallet.connected) {
-      getHubSuggestionsForUser(wallet.publicKey.toBase58())
-    }
-  }, [userSubscriptions])
+  // useEffect(() => {
+  //   if (wallet.connected) {
+  //     getHubSuggestionsForUser(wallet.publicKey.toBase58())
+  //   }
+  // }, [userSubscriptions])
 
 
   const toggleDrawer = (open) => (event) => {
@@ -196,7 +196,7 @@ const FeedHeader = styled(Box)(({ theme }) => ({
   zIndex:100,
   display: 'flex',
   justifyContent: 'space-between',
-  width: '437px',
+  width: '43px',
 }))
 
 const DrawerTypeWrapper = styled(Box)(({ theme }) => ({
