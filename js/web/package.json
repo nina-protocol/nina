@@ -11,7 +11,7 @@
     "@solana/wallet-adapter-material-ui": "0.16.4",
     "@solana/wallet-adapter-react": "0.15.3",
     "@solana/wallet-adapter-react-ui": "0.9.5",
-    "@solana/wallet-adapter-wallets": "0.15.4",
+    "@solana/wallet-adapter-wallets": "0.15.2",
     "@solana/web3.js": "^1.34.0",
     "@typescript-eslint/eslint-plugin": "^5.7.0",
     "@typescript-eslint/parser": "^5.7.0",
