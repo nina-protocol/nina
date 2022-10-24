@@ -2522,6 +2522,13 @@
   dependencies:
     "@solana/wallet-adapter-base" "^0.9.18"
 
+"@solana/wallet-adapter-base@0.9.9":
+  version "0.9.9"
+  resolved "https://registry.yarnpkg.com/@solana/wallet-adapter-base/-/wallet-adapter-base-0.9.9.tgz#110f99bc9eee18af2625fd6170264e4363e25ffd"
+  integrity sha512-Z0zB+36JWRytE2OzMiB2DACRyVwiUdEg2Xy1nPR0rESCTXKI8wQGTb4g6ELjmTTU7+elKqsPE+fhFsJykn76pQ==
+  dependencies:
+    eventemitter3 "^4.0.0"
+
 "@solana/wallet-adapter-base@^0.9.18", "@solana/wallet-adapter-base@^0.9.9":
   version "0.9.18"
   resolved "https://registry.yarnpkg.com/@solana/wallet-adapter-base/-/wallet-adapter-base-0.9.18.tgz#9365304a76977b4446a1167b240d588f2c5448d5"
