@@ -1,5 +1,4 @@
 import { useEffect, useContext, useState, useMemo } from 'react'
-import Head from 'next/head'
 import dynamic from 'next/dynamic'
 import { useWallet } from '@solana/wallet-adapter-react'
 import axios from 'axios'
@@ -17,7 +16,7 @@ const Dots = dynamic(() => import('./Dots'))
 const TabHeader = dynamic(() => import('./TabHeader'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
 
-const Profile = ({ profilePubkey, inDashboard=false }) => {
+const Profile = ({ profilePubkey }) => {
   const wallet = useWallet()
   const router = useRouter()
 
@@ -43,6 +42,7 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
   const [profileSubscriptions, setProfileSubscriptions] = useState()
   const [profileSubscriptionsTo, setProfileSubscriptionsTo] = useState()
   const [profileSubscriptionsFrom, setProfileSubscriptionsFrom] = useState()
+  const [inDashboard, setInDashboard] = useState(false)
 
   const [fetched, setFetched] = useState(false)
 
@@ -69,6 +69,13 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
   useEffect(() => {
     getUserData(profilePubkey)
   }, [])
+
+  useEffect(() => {
+    if (wallet.connected && profilePubkey === wallet.publicKey?.toBase58()) {
+      console.log('in dashboard')
+      setInDashboard(true)
+    }
+  }, [wallet, profilePubkey])
 
   useEffect(() => {
     if (router.query.view) {
@@ -216,6 +223,7 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
                 tableType={'profilePublishedReleases'}
                 items={profilePublishedReleases}
                 hasOverflow={true}
+                inDashboard={inDashboard}
               />
 
             )}
