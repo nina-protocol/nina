@@ -7,7 +7,6 @@ import {
   TOKEN_PROGRAM_ID,
 } from '../../utils/web3'
 import { ninaErrorHandler } from '../../utils/errors'
-import {clone} from 'lodash';
 
 const NinaProgramAction = {
   HUB_ADD_COLLABORATOR: 'HUB_ADD_COLLABORATOR',
@@ -42,7 +41,6 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [collection, setCollection] = useState({})
   const [postState, setPostState] = useState({})
   const [subscriptionState, setSubscriptionState] = useState({})
-  // const [userSubscriptions, setUserSubscription] = useState({})
   const [usdcBalance, setUsdcBalance] = useState(0)
   const [solBalance, setSolBalance] = useState(0)
   const [solUsdcBalance, setSolUsdcBalance] = useState(0)
