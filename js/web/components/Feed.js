@@ -46,7 +46,7 @@ const timeSince = (date) => {
   return Math.floor(seconds) + ' seconds'
 }
 
-const Feed = ({ items, itemsTotal, toggleDrawer, playFeed, handleGetFeedForUser}) => {
+const Feed = ({ items, itemsTotal, toggleDrawer, playFeed, publicKey, handleGetFeedForUser}) => {
   const { updateTrack, isPlaying, setIsPlaying, track } = useContext(Audio.Context);
   const router = useRouter();
 
@@ -63,7 +63,7 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed, handleGetFeedForUser}
       itemsTotal !== items.length
     ) {
       setPendingFetch(true)
-      handleGetFeedForUser()
+      handleGetFeedForUser(publicKey)
     }
   }
 
@@ -78,11 +78,9 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed, handleGetFeedForUser}
   }
 
   const handleClick = (e, path) => {
-    console.log('path :>> ', path);
     e.stopPropagation()
     e.preventDefault()
     router.push(path)
-
   }
   
 
@@ -90,17 +88,18 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed, handleGetFeedForUser}
     const feedItemComponents = items?.map((item, i) => {
       switch (item?.type) {
         case 'HubInitWithCredit':
+          console.log('item !!! :>> ', item);
           return (
             <ImageCard>
               <HoverContainer href={`/hubs/${item?.hub?.handle}`}  passHref
-                onClick={(e) => handleClick(e, `/${item.release?.publicKey}`)}
+                onClick={(e) => handleClick(e, `/${item.hub?.handle}`)}
               >
                 <Image
                   height={'100px'}
                   width={'100px'}
                   layout="responsive"
                   src={getImageFromCDN(
-                    item.release?.metadata.image,
+                    item.hub?.data.image,
                     400,
                     Date.parse(item.datetime)
                   )}
@@ -424,18 +423,6 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed, handleGetFeedForUser}
       onScroll={debounce(() => handleScroll(), 500)}
     >
       <Box>
-        {/* <FeedHeader sx={{display: 'flex', width: '100%'}}>
-          <CloseIcon
-            fontSize="medium"
-            onClick={toggleDrawer(false)}
-          />
-          <Typography variant="h4">LATEST</Typography>
-          <PlayCircleOutlineOutlinedIcon
-            fontSize="medium"
-            sx={{ paddingRight: '15px'}} 
-            onClick={playFeed}
-          />
-        </FeedHeader> */}
         <FeedWrapper ref={scrollRef}>
           {feedItems && feedItems?.map((item, index) => (
             <CardWrapper>
@@ -465,7 +452,7 @@ const ScrollWrapper = styled(Box)(({ theme }) => ({
 }))
 
 const FeedWrapper = styled(Box)(({ theme }) => ({
-  padding: '18px',
+  padding: '15px',
   marginTop: '30px',
   minHeight: '75vh',
   '& a': {
@@ -478,20 +465,6 @@ const FeedWrapper = styled(Box)(({ theme }) => ({
   },
 }))
 
-// const FeedHeader = styled(Box)(({ theme }) => ({
-//   position: 'absolute',
-//   top: 0,
-//   padding: '10px',
-//   marginRight: '20px',
-//   background: 'white',
-//   zIndex:100,
-//   '& .MuiTypography-h4': {
-//     top: '50%',
-//     fontWeight: 'bold',
-//     margin: '0 auto',
-//   },  
-// }))
-
 const CardWrapper = styled(Box)(({ theme }) => ({
   width: '100%',
   margin: '15px 0px',
@@ -501,18 +474,9 @@ const TextCard = styled(Box)(({ theme }) => ({
   border: '1px solid',
 }))
 
-// const MultiCard = styled(Box)(({ theme }) => ({
-//   height: 'auto',
-//   maxHeight: '250px',
-//   border: '1px solid',
-//   '& img': {
-//     cursor: 'pointer',
-//   }
-// }))
 
 const ImageCard =  styled(Box)(({ theme }) => ({
   minHeight: '300px',
-  // maxHeight: '500px',
   height: 'auto',
   border: '1px solid',
   textOverflow: 'ellipsis',

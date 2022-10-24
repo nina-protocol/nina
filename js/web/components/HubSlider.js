@@ -42,7 +42,6 @@ const HubSlider = () => {
     return array
   }
 
-
   useEffect(() => {
     const fetchFeaturedHubs = async () => {
       await getHubs()

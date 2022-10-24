@@ -186,7 +186,7 @@ const Profile = ({ profilePubkey, inDashboard=false }) => {
       console.log(err)
     }
     setFetched(true)
-  }
+  } 
 
   const viewHandler = (event) => {
     const index = parseInt(event.target.id)

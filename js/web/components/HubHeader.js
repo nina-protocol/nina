@@ -22,11 +22,9 @@ const { getImageFromCDN, loader } = imageManager
 
 const HubHeader = ({ hubData }) => {
   const [hubDescription, setHubDescription] = useState(undefined)
-  const { subscriptionSubscribe } = useContext( Nina.Context )
   const { enqueueSnackbar } = useSnackbar();
   const wallet = useWallet()
 
-  console.log('hubData :>> ', hubData);
 
   useEffect(() => {
     if (hubData?.data.description.includes('<p>')) {

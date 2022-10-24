@@ -7,14 +7,10 @@ import { styled } from '@mui/material/styles'
 import Box  from '@mui/material/Box'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
 const { getImageFromCDN, loader } = imageManager
-import CloseIcon from '@mui/icons-material/Close'
 import Typography from '@mui/material/Typography'
-import debounce from 'lodash.debounce'
-import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
-import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
-import Audio from "@nina-protocol/nina-internal-sdk/esm/Audio";
-import Button from "@mui/material/Button";
 import { useRouter } from "next/router";
+import Subscribe from './Subscribe'
+import { useSnackbar } from 'notistack'
 
 const timeSince = (date) => {
   const seconds = Math.floor((new Date() - date) / 1000)
@@ -46,70 +42,96 @@ const timeSince = (date) => {
   return Math.floor(seconds) + ' seconds'
 }
 
-const Suggestions = ({ items, itemsTotal, toggleDrawer, playFeed, handleGetFeedForUser}) => {
-  const { updateTrack, isPlaying, setIsPlaying, track } = useContext(Audio.Context);
+const Suggestions = ({ items, itemsTotal, publicKey }) => {
   const router = useRouter();
 
+  const [followPending, setFollowPending] = useState(false)
   const [pendingFetch, setPendingFetch] = useState(false)
   const scrollRef = useRef()
+  const { enqueueSnackbar } = useSnackbar()
 
-  const handleScroll = () => {
-    const bottom =
-      scrollRef.current.getBoundingClientRect().bottom - 250 <=
-      window.innerHeight
-    if (
-      bottom &&
-      !pendingFetch &&
-      itemsTotal !== items.length
-    ) {
-      setPendingFetch(true)
-      handleGetFeedForUser()
-    }
-  }
-
-   const handlePlay = (e, releasePubkey) => {
-    e.stopPropagation()
-    e.preventDefault()
-    if (isPlaying && track.releasePubkey === releasePubkey) {
-      setIsPlaying(false)
-    } else {
-      updateTrack(releasePubkey, true, true)
-    }
-  }
 
   const handleClick = (e, path) => {
-    console.log('path :>> ', path);
     e.stopPropagation()
     e.preventDefault()
     router.push(path)
-
   }
-  
 
+  const getSuggestionReason = (item) => {
+    let data = {...item}
+    delete data.hub
+    const relevanceCounts = Object.fromEntries(
+      Object.entries(data).sort(([,a],[,b]) => a-b)
+    )
+    const reason = Object.entries(relevanceCounts).pop()
+    const reasonMessage = suggestionCopyFormatter(reason[0], reason[1])
+    return reasonMessage
+  }
+
+
+  const suggestionCopyFormatter = (reason, count) => {  
+    const pluralize = count > 1
+    const suggestions = {
+      collectedCount: `This Hub has ${count} release${pluralize ? 's' : ''} you’ve collected`,
+      publishedCount: `This Hub has ${count} release${pluralize ? 's' : ''} you’ve published`,
+      hubSubscriptionCount: `This Hub is followed by people ${count} you follow`,
+      collectorHubCount: `${count} collector${pluralize ? 's' : ''} of your Releases are part of this Hub`,
+      hubReleaseCount: ` Releases on your Hub are also on this Hub`
+    }
+    if (suggestions[reason]) {
+      return suggestions[reason]
+    }
+  } 
+
+  
   const feedItems = useMemo(() => {
     const feedItemComponents = items?.map((item, i) => {
-      <Typography>{i}</Typography>
+    const hub = item.hub
+    const reason = getSuggestionReason(item)
+      return (
+        <ImageCard>
+          <HoverContainer href={`/hubs/${hub?.handle}`}  passHref
+            onClick={(e) => handleClick(e, `/hubs/${hub?.handle}`)}
+          >
+            <Image
+              height={'100px'}
+              width={'100px'}
+              layout="responsive"
+              src={getImageFromCDN(
+                hub.data?.image,
+                400,
+                Date.parse(hub.datetime)
+              )}
+              alt={i}
+              priority={true}
+              loader={loader}
+              unoptimized={true}
+            />
+            <HoverCard>
+              <CtaWrapper>
+                <Subscribe accountAddress={hub.publicKey} hubHandle={hub.handle}/>
+              </CtaWrapper>
+            </HoverCard>
+          </HoverContainer>
+          <CopyWrapper>
+            <Typography my={1}>
+              <Link href={`/hubs/${hub?.handle}`} passHref>
+                {`${hub.data.displayName}`}</Link> created by <Link href={`/profiles/${hub.authority}`} passHref>{`${truncateAddress(hub?.authority)}`}
+              </Link>
+            </Typography>
+
+            <Typography my={1}>{reason}</Typography>
+
+          </CopyWrapper>
+        </ImageCard>
+      )
     })
     return feedItemComponents
-  }, [items, isPlaying]);
+  }, [items]);
 
   return (
-    <ScrollWrapper
-      onScroll={debounce(() => handleScroll(), 500)}
-    >
+    <ScrollWrapper>
       <Box>
-        <FeedHeader sx={{display: 'flex', width: '100%'}}>
-          <CloseIcon
-            fontSize="medium"
-            onClick={toggleDrawer(false)}
-          />
-          <Typography variant="h4">LATEST</Typography>
-          <PlayCircleOutlineOutlinedIcon
-            fontSize="medium"
-            sx={{ paddingRight: '15px'}} 
-            onClick={playFeed}
-          />
-        </FeedHeader>
         <FeedWrapper ref={scrollRef}>
           {feedItems && feedItems?.map((item, index) => (
             <CardWrapper>
@@ -139,7 +161,7 @@ const ScrollWrapper = styled(Box)(({ theme }) => ({
 }))
 
 const FeedWrapper = styled(Box)(({ theme }) => ({
-  padding: '18px',
+  padding: '15px',
   marginTop: '30px',
   minHeight: '75vh',
   '& a': {
@@ -152,41 +174,13 @@ const FeedWrapper = styled(Box)(({ theme }) => ({
   },
 }))
 
-const FeedHeader = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  top: 0,
-  padding: '10px',
-  marginRight: '20px',
-  background: 'white',
-  zIndex:100,
-  '& .MuiTypography-h4': {
-    top: '50%',
-    fontWeight: 'bold',
-    margin: '0 auto',
-  },  
-}))
-
 const CardWrapper = styled(Box)(({ theme }) => ({
   width: '100%',
   margin: '15px 0px',
 }))
 
-const TextCard = styled(Box)(({ theme }) => ({
-  border: '1px solid',
-}))
-
-// const MultiCard = styled(Box)(({ theme }) => ({
-//   height: 'auto',
-//   maxHeight: '250px',
-//   border: '1px solid',
-//   '& img': {
-//     cursor: 'pointer',
-//   }
-// }))
-
 const ImageCard =  styled(Box)(({ theme }) => ({
   minHeight: '300px',
-  // maxHeight: '500px',
   height: 'auto',
   border: '1px solid',
   textOverflow: 'ellipsis',
@@ -219,11 +213,13 @@ const HoverCard =  styled(Box)(({ theme }) => ({
   }
 }))
 
+
 const CtaWrapper =  styled(Box)(({ theme }) => ({
-    margin: 'auto'
+    margin: 'auto',
+    '& button': {
+      border: '1px solid',
+      borderRadius: '0px',
+    }
 }))
-
-
-
 
 export default Suggestions

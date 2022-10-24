@@ -157,7 +157,6 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
       e.stopPropagation()
       e.preventDefault()
       const result = await collectRoyaltyForRelease(recipient, releasePubkey)
-      console.log('result :>> ', result);
       if (result.success) {
         enqueueSnackbar(result.msg, {
           variant: 'success',

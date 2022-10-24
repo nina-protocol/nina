@@ -9,7 +9,7 @@ import Dots from './Dots'
 import Link from 'next/link'
 
 const Subscribe = (props) => {
-  const {accountAddress , hubHandle} = props;
+  const {accountAddress, hubHandle, inFeed} = props;
   const wallet = useWallet()
   const router = useRouter()
   const { subscriptionSubscribe, subscriptionUnsubscribe, userSubscriptions, getSubscriptionsForUser, subscriptionState } = useContext(Nina.Context)
@@ -79,14 +79,14 @@ const Subscribe = (props) => {
   }
 
   return (
-    <Box display='flex'>
+    <Box display='flex' alignItems={'center'}>
       {pending && (
         <Box sx={{ padding: '0 15px'}}>
           <Dots />
         </Box>
       )}
 
-      {isUser ? (
+      {(false) ? (
         <Box sx={{ padding: '0 15px'}}>
           {!inDashboard && (
             <Typography>This is how your profile appears to to other users. Click <Link href="/dashboard"><a style={{textDecoration: 'underline'}}>here</a></Link> to see your dashboard</Typography>
