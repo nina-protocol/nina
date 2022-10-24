@@ -196,6 +196,7 @@ const Profile = ({ profilePubkey }) => {
   } 
 
   const viewHandler = (event) => {
+    event.stopPropagation()
     const index = parseInt(event.target.id)
     const activeViewName = views[index].name
     const path = router.pathname.includes('dashboard')
