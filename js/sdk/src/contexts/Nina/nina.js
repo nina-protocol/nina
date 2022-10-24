@@ -267,7 +267,6 @@ const ninaContextHelper = ({
       }
 
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
-      console.log('Subscription created on chain', subscription.toBase58())
       await getSubscription(subscription.toBase58())
 
       return {

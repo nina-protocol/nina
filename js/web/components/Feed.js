@@ -88,7 +88,6 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed, publicKey, handleGetF
     const feedItemComponents = items?.map((item, i) => {
       switch (item?.type) {
         case 'HubInitWithCredit':
-          console.log('item !!! :>> ', item);
           return (
             <ImageCard>
               <HoverContainer href={`/hubs/${item?.hub?.handle}`}  passHref
