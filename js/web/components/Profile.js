@@ -1,6 +1,6 @@
 import { useEffect, useContext, useState, useMemo } from 'react'
 import dynamic from 'next/dynamic'
-import { Box, Typography } from '@mui/material'
+import { Box, Typography, Button } from '@mui/material'
 import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
@@ -63,10 +63,12 @@ const Profile = ({ profilePubkey }) => {
 
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
       updatedView[viewIndex].playlist = published
+    
       fetched.releases = true
 
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
       updatedView[viewIndex].playlist = collected
+  
       fetched.collection = true
 
       setProfileHubs(hubs)
@@ -184,11 +186,17 @@ const Profile = ({ profilePubkey }) => {
           fetched.releases &&
           fetched.hubs && (
             <Box sx={{ py: 1 }}>
+      
+
               <TabHeader
                 viewHandler={viewHandler}
                 isActive={activeView}
                 profileTabs={views}
               />
+
+
+       
+
             </Box>
           )}
         <>
@@ -206,6 +214,7 @@ const Profile = ({ profilePubkey }) => {
     </>
   )
 }
+
 
 const ProfileContainer = styled(Box)(({ theme }) => ({
   display: 'inline-flex',
@@ -292,6 +301,44 @@ const ProfileDotWrapper = styled(Box)(({ theme }) => ({
     left: '50%',
     top: '50%',
   },
+}))
+
+
+
+const TabWrapper = styled(Box)(({ theme, isClicked }) => ({
+  backgroundColor: 'transparent',
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '16px',
+  fontWeight: isClicked ? 'bold' : 'normal',
+  color: '#000',
+  textAlign: 'left',
+  alignItems: 'left',
+  display: 'flex',
+  flexDirection: 'row',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '13px',
+  },
+}))
+
+const PlayCircleOutlineIconButtonWrapper = styled(Button)(({ theme }) => ({
+  m:0,
+  color: 'black',
+  px: 1,
+   [theme.breakpoints.down('md')]: {
+    paddingRight: 0.5,
+  },
+}))
+
+const ResponsiveCircleOutlineIconContainer = styled(Box)(({ theme }) => ({
+    paddingRight: 1.5,
+     paddingTop: '1px',
+    '&:hover': {
+      opacity: 0.5,
+    },
+    [theme.breakpoints.down('md')]: {
+      paddingRight: '15px',
+    },
 }))
 
 export default Profile
