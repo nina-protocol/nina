@@ -72,7 +72,6 @@ const Profile = ({ profilePubkey }) => {
 
   useEffect(() => {
     if (wallet.connected && profilePubkey === wallet.publicKey?.toBase58()) {
-      console.log('in dashboard')
       setInDashboard(true)
     }
   }, [wallet, profilePubkey])
@@ -190,7 +189,7 @@ const Profile = ({ profilePubkey }) => {
       updatedView[viewIndex].playlist = collected
       setProfileHubs(hubs)
     } catch (err) {
-      console.log(err)
+      console.warn(err)
     }
     setFetched(true)
   } 
