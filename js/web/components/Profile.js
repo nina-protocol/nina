@@ -215,13 +215,13 @@ const Profile = ({ profilePubkey }) => {
   }
 
   const displayNameForProfile = () => {
-    if (profileVerifications.find((verification) => verification.type === 'soundcloud')) {
+    if (profileVerifications?.find((verification) => verification.type === 'soundcloud')) {
       return profileVerifications.find((verification) => verification.type === 'soundcloud').displayName
-    } else if (profileVerifications.find((verification) => verification.type === 'twitter')) {
+    } else if (profileVerifications?.find((verification) => verification.type === 'twitter')) {
       return profileVerifications.find((verification) => verification.type === 'twitter').displayName
-    } else if (profileVerifications.find((verification) => verification.type === 'instagram')) {
+    } else if (profileVerifications?.find((verification) => verification.type === 'instagram')) {
       return profileVerifications.find((verification) => verification.type === 'instagram').displayName
-    } else if (profileVerifications.find((verification) => verification.type === 'ethereum')) {
+    } else if (profileVerifications?.find((verification) => verification.type === 'ethereum')) {
       return profileVerifications.find((verification) => verification.type === 'ethereum').displayName
     } else {
       return truncateAddress(profilePubkey)
@@ -313,7 +313,9 @@ const Profile = ({ profilePubkey }) => {
             <ProfileHeaderContainer>
               {fetched && profilePubkey && (
                 <Box sx={{mb:1}} display='flex'>
-                  <Typography>{displayNameForProfile()}</Typography>
+                  {/* {profileVerifications && ( */}
+                    <Typography>{displayNameForProfile()}</Typography>
+                  {/* )} */}
                   
                   {wallet.connected && (
                     <Subscribe accountAddress={profilePubkey} />
