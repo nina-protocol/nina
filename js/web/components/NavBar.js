@@ -16,8 +16,8 @@ import {
 import Breadcrumbs from './Breadcrumbs'
 
 const NavBar = () => {
-  const { healthOk } = useContext(Nina.Context)
-  const {getHubsForuser, filterHubsForUser, getHubsForUser, hubState, getHubs } = useContext(Hub.Context)
+  const { healthOk, getSubscriptionsForUser, filterSubscriptionsForUser, subscriptionState } = useContext(Nina.Context)
+  const {filterHubsForUser, getHubsForUser, hubState, getHubs } = useContext(Hub.Context)
   const wallet = useWallet()
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),
@@ -36,6 +36,7 @@ const NavBar = () => {
   useEffect(() => {
     if (wallet.connected) {
       getHubsForUser(wallet.publicKey.toBase58());
+      getSubscriptionsForUser(wallet.publicKey.toBase58());
     }
   }, [wallet.connected]);
 

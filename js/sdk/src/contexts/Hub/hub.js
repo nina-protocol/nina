@@ -25,7 +25,7 @@ const HubContextProvider = ({ children }) => {
   const [addToHubQueue, setAddToHubQueue] = useState(new Set())
   const [hubsCount, setHubsCount] = useState(0)
   const [allHubs, setAllHubs] = useState([])
-  const [featuredHubs, setFeaturedHubs] = useState([])
+  const [featuredHubs, setFeaturedHubs] = useState()
   
   const {
     getHubs,
@@ -111,6 +111,7 @@ const HubContextProvider = ({ children }) => {
         validateHubHandle,
         addToHubQueue,
         featuredHubs,
+        setFeaturedHubs,
         filterFeaturedHubs,
         filterHubsAll,
         hubContentFetched,
@@ -552,6 +553,7 @@ const hubContextHelper = ({
       const toggledContent = Object.values(hubContentState).filter(
         (c) => c.publicKey === hubChildPublicKey.toBase58()
       )[0]
+      console.log('toggledContent', toggledContent)
       toggledContent.visible = !toggledContent.visible
       const hubContentStateCopy = { ...hubContentState }
       hubContentState[toggledContent.publicKey] = toggledContent
@@ -987,7 +989,9 @@ const hubContextHelper = ({
       setHubCollaboratorsState(updatedHubCollaboratorState)
       return hubs
     } catch (error) {
+      console.log('IN THE ERROR');
       console.warn(error)
+      return []
     }
   }
   
@@ -1016,7 +1020,7 @@ const hubContextHelper = ({
       return hubs
     } catch (error) {
       console.warn(error)
-      return undefined
+      return []
     }
   }
 
@@ -1029,6 +1033,7 @@ const hubContextHelper = ({
   const filterHubContentForHub = (hubPubkey) => {
     const hubReleases = []
     const hubPosts = []
+    console.log('hubpubkey', hubPubkey)
     Object.values(hubContentState).forEach((hubContent) => {
       if (hubContent.hub === hubPubkey) {
         if (hubContent.contentType === 'ninaReleaseV1') {
@@ -1054,7 +1059,7 @@ const hubContextHelper = ({
 
   const filterFeaturedHubs = () => {
     const featured = []
-    featuredHubs.forEach(hubId => {
+    featuredHubs?.forEach(hubId => {
       const hub = hubState[hubId]
       if (hub) {
         featured.push(hub)

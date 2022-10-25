@@ -28,7 +28,6 @@ const ReleaseComponent = ({ metadataSsr }) => {
     metadataSsr || releaseState?.metadata[releasePubkey] || null
   )
   const release = useMemo(() => releaseState.tokenData[releasePubkey], [releaseState, releasePubkey])
-
   useEffect(() => {
     if (releaseState.metadata[releasePubkey] && !metadata) {
       setMetadata(releaseState.metadata[releasePubkey])
@@ -80,6 +79,7 @@ const ReleaseComponent = ({ metadataSsr }) => {
           <NinaBox columns={'repeat(2, 1fr)'} sx={{ backgroundColor: 'white' }}>
             <ReleaseCard
               metadata={metadata}
+
               preview={false}
               releasePubkey={releasePubkey}
               userHubs={userHubs}

@@ -9,7 +9,7 @@
   "module": "esm/index.js",
   "default": "esm/index.js",
   "dependencies": {
-    "@bundlr-network/client": "^0.8.0",
+    "@bundlr-network/client": "^0.8.9",
     "@metaplex-foundation/mpl-token-metadata": "^1.2.4",
     "assert": "^2.0.0",
     "axios": "^0.26.0",

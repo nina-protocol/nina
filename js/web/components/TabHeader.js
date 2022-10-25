@@ -7,15 +7,16 @@ import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import { useSnackbar } from 'notistack'
 import {Button} from '@mui/material'
 const TabHeader = ({
-  isActive,
+  activeView,
   profileTabs,
   viewHandler,
   type,
   releaseData,
+  followersCount,
+  followingCount,
 }) => {
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { enqueueSnackbar } = useSnackbar()
-
   const playAllHandler = (playlist) => {
     resetQueueWithPlaylist(
       playlist?.map((release) => release.publicKey)
@@ -32,12 +33,13 @@ const TabHeader = ({
         borderColor: 'divider',
       }}
     >
+
       <Box sx={{ display: 'flex', flexDirection: 'row', rowGap: 1, pb: 1 }}>
-        {profileTabs?.map((tab, index) => (
-          <>
-            {tab.visible === true && (
+        {profileTabs?.map((tab, index) => {
+          return(
+            <>
               <Box
-               key={index}
+                key={index}
                 sx={{
                   cursor: 'pointer',
                   alignItems: 'center',
@@ -46,38 +48,39 @@ const TabHeader = ({
                   textTransform: 'uppercase',
                 }}
               >
-                <ResponsiveTab>
+                <ResponsiveTab
+                  disabled={tab.disabled}
+                  onClick={viewHandler}
+                  id={index}
+                >
                   <Typography
-                
-                    onClickCapture={viewHandler}
                     sx={{
-                      fontWeight: `${isActive === index ? 'bold' : ''}`,
-                      '&:hover': {
-                        opacity: 0.5,
-                      },
+                      fontWeight: `${activeView === index ? 'bold' : ''}`,
                     }}
                     id={index}
                   >
-                    {tab.name}
+                    {tab.name} 
+                    {tab.name === 'followers' && ` (${followersCount})`}
+                    {tab.name === 'following' && ` (${followingCount})`}
                   </Typography>
 
                   {tab.playlist && (
                     <ResponsiveCircleOutlineIconContainer
-                 
+                      
                       sx={{
-                        paddingRight: 1.5,
-                         paddingTop: '1px',
-                        '&:hover': {
-                          opacity: 0.5,
-                        },
+                          paddingTop: '1px',
                       }}
                     >
-                      <PlayCircleOutlineIconButtonWrapper 
-                 
-                      onClickCapture={() =>
-                          type === 'hubsView'
-                            ? playAllHandler(releaseData)
-                            : playAllHandler(tab.playlist)
+                      <PlayCircleOutlineIconButtonWrapper
+                      disabled={tab.disabled} 
+                      sx={{paddingRight: 0}}
+                      onClick={(e) =>{
+                        e.preventDefault()
+                        e.stopPropagation()                      
+                        type === 'hubsView'
+                          ? playAllHandler(releaseData)
+                          : playAllHandler(tab.playlist)
+                      }
                         }
                         >
                       <PlayCircleOutlineOutlinedIcon
@@ -88,21 +91,23 @@ const TabHeader = ({
                   )}
                 </ResponsiveTab>
               </Box>
-            )}
-          </>
-        ))}
+            </>
+          )}
+        )}
       </Box>
     </ResponsiveContainer>
   )
 }
 
-const ResponsiveTab = styled(Box)(({ theme }) => ({
+const ResponsiveTab = styled(Button)(({ theme }) => ({
   cursor: 'pointer',
   alignItems: 'center',
   display: 'flex',
   flexDirection: 'row',
   textTransform: 'uppercase',
-  minWidth: '100px',
+  color: theme.palette.text.primary,
+  paddingRight: '15px',
+  height: '40px',
   [theme.breakpoints.down('md')]: {
     paddingLeft: '15px',
   },
@@ -131,7 +136,11 @@ const PlayCircleOutlineIconButtonWrapper = styled(Button)(({ theme }) => ({
 
 const ResponsiveCircleOutlineIconContainer = styled(Box)(({ theme }) => ({
     paddingRight: 1.5,
-     paddingTop: '1px',
+    paddingLeft: 1.5,
+    paddingTop: '1px',
+    '& button': {
+      padding: '0px',
+    },
     '&:hover': {
       opacity: 0.5,
     },
