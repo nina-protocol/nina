@@ -10,28 +10,38 @@ import Suggestions from './Suggestions'
 import axios from 'axios'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import CloseIcon from '@mui/icons-material/Close'
 import Typography from '@mui/material/Typography'
 import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 
-
 const FeedDrawer = () => {
   const wallet = useWallet()
+  const { userSubscriptions } = useContext(Nina.Context)
+
   const [drawerOpen, setDrawerOpen] = useState(true)
-  const [items, setItems] = useState(undefined)
+  const [feedItems, setFeedItems] = useState(undefined)
+  const [hubSuggestions, setHubSuggestions] = useState(undefined)
   const [totalItems, setTotalItems] = useState(0)
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { getFeedForUser } = useContext(Release.Context)
-  const [activeDrawerTypeIndex, setActiveDrawerTypeIndex] = useState(0)
+  const [activeDrawerTypeIndex, setActiveDrawerTypeIndex] = useState(1)
   const drawerTypes = ['latest', 'suggestions']
 
   useEffect(() => {
     if (wallet.connected) {
       handleGetFeedForUser(wallet.publicKey.toBase58())
+      getHubSuggestionsForUser(wallet.publicKey.toBase58())
     }
   }, [wallet.connected])
+
+  // useEffect(() => {
+  //   if (wallet.connected) {
+  //     getHubSuggestionsForUser(wallet.publicKey.toBase58())
+  //   }
+  // }, [userSubscriptions])
 
 
   const toggleDrawer = (open) => (event) => {
@@ -46,7 +56,7 @@ const FeedDrawer = () => {
 
   const playFeed = () => {
     const audioFeedItems = []
-    items.forEach((item) => {
+    feedItems.forEach((item) => {
       if (item.release) {
         audioFeedItems.push(item.release.publicKey)
       }
@@ -55,69 +65,100 @@ const FeedDrawer = () => {
   }
 
   const handleGetFeedForUser = async (publicKey, refresh=false) => {
-    const feed = await getFeedForUser(publicKey, refresh ? 0 : items?.length || 0)
-    console.log('feed :>> ', feed);
+    const feed = await getFeedForUser(publicKey, refresh ? 0 : feedItems?.length || 0)
     if (feed){
       const updatedFeedItems = feed?.feedItems.filter(item => {
         return !item.type.includes('Post')
       })
       setTotalItems(feed.total)
-      if (items && items.length > 0) {
-        setItems(items.concat(updatedFeedItems))
+      if (feedItems && feedItems.length > 0) {
+        setFeedItems(feedItems.concat(updatedFeedItems))
       } else {
-        setItems(updatedFeedItems)
+        setFeedItems(updatedFeedItems)
       }
     }
   }
 
+  const getHubSuggestionsForUser = async (publicKey) => {
+    const suggestions = []
+    try {
+      const {data} = await axios.get(`${process.env.NINA_API_ENDPOINT}/accounts/${publicKey}/hubSuggestions`)
+      data.suggestions.forEach(suggestion => {
+        suggestions.push(suggestion)
+      })
+      setHubSuggestions(suggestions)
+    } catch (error) {
+      console.warn('error :>> ', error);
+      return []
+    }
+  }
+
+
   return (
-    <Box>
-      <Box key={'right'} sx={{ float:'right'}}>
-        <StyledMenuButton onClick={toggleDrawer(true)} sx={{top: '100px'}}>
-          <ArrowBackIosNewIcon />
-        </StyledMenuButton>
-        <StyledDrawer
-          anchor={'right'}
-          open={drawerOpen}
-          onClose={toggleDrawer(false)}
-          BackdropProps={{ invisible: true }}
-          variant={'persistent'}
-        >
-        <FeedHeader sx={{display: 'flex', width: '100%'}}>
-          <CloseIcon
-            fontSize="medium"
-            onClick={toggleDrawer(false)}
-          />
-            {drawerTypes.map((drawerType, index) => {
-              return (
-                <DrawerType
-                  key={drawerType}
-                  onClick={() => setActiveDrawerTypeIndex(index)}
-                  className={activeDrawerTypeIndex === index ? 'active' : ''}
-                >
-                  <Typography variant="h4">
-                    {drawerType}
-                  </Typography>
-                </DrawerType>
-              )
-            })}
-          <PlayCircleOutlineOutlinedIcon
-            fontSize="medium"
-            sx={{ paddingRight: '15px'}} 
-            onClick={playFeed}
-          />
-        </FeedHeader>
-        
-          <Feed
-            items={items}
-            toggleDrawer={toggleDrawer}
-            playFeed={playFeed}
-            handleGetFeedForUser={handleGetFeedForUser}
-          />
-          
-        </StyledDrawer>
-      </Box>
-    </Box>
+    <>
+      {wallet.connected && (
+          <Box>
+            <Box key={'right'} sx={{ float:'right'}}>
+              <StyledMenuButton onClick={toggleDrawer(true)} sx={{top: '100px'}}>
+                <ArrowBackIosNewIcon />
+              </StyledMenuButton>
+              <StyledDrawer
+                anchor={'right'}
+                open={drawerOpen}
+                onClose={toggleDrawer(false)}
+                BackdropProps={{ invisible: true }}
+                variant={'persistent'}
+              >
+              <FeedHeader>
+                <CloseIcon
+                  fontSize="medium"
+                  onClick={toggleDrawer(false)}
+                />
+                <DrawerTypeWrapper>
+                  {drawerTypes.map((drawerType, index) => {
+                    return (
+                      <DrawerType
+                        key={drawerType}
+                        onClick={() => setActiveDrawerTypeIndex(index)}
+                        className={activeDrawerTypeIndex === index ? 'active' : ''}
+                        variant='h4'
+                      >
+                        {drawerType}
+                      </DrawerType>
+                    )
+                  })}
+                </DrawerTypeWrapper>
+                <PlayCircleOutlineOutlinedIcon
+                  fontSize="medium"
+                  sx={{ paddingRight: '15px'}} 
+                  onClick={playFeed}
+                />
+              </FeedHeader>
+      
+                {activeDrawerTypeIndex === 0 && (
+                  <Feed
+                    items={feedItems}
+                    toggleDrawer={toggleDrawer}
+                    playFeed={playFeed}
+                    handleGetFeedForUser={handleGetFeedForUser}
+                    publicKey={wallet.publicKey.toBase58()}
+                  />
+                )}
+      
+                {activeDrawerTypeIndex === 1 && (
+                  <Suggestions 
+                    items={hubSuggestions}
+                    toggleDrawer={toggleDrawer}
+                    publicKey={wallet.publicKey.toBase58()}
+                  />
+                )}
+              
+                
+              </StyledDrawer>
+            </Box>
+          </Box>
+      )}
+    </>
   )
 }
 
@@ -149,21 +190,26 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
 const FeedHeader = styled(Box)(({ theme }) => ({
   position: 'absolute',
   top: 0,
-  padding: '10px',
+  padding: '10px 15px',
   marginRight: '20px',
   background: 'white',
   zIndex:100,
-  '& .MuiTypography-h4': {
-    top: '50%',
-    fontWeight: 'bold',
-    margin: '0 auto',
-  },  
+  display: 'flex',
+  justifyContent: 'space-between',
+  width: '43px',
 }))
 
-const DrawerType = styled(Box)(({ theme }) => ({
-  border: '2px solid red',
+const DrawerTypeWrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+}))
+
+
+const DrawerType = styled(Typography)(({ theme }) => ({
+  margin: '0 10px',
+  cursor: 'pointer',
+  fontWeight: 'bold',
   '&.active': {
-    border: '2px solid blue'
+    textDecoration: 'underline',
   }
 }))
 

@@ -8,11 +8,10 @@ import { useRouter } from 'next/router'
 import Dots from './Dots'
 import Link from 'next/link'
 
-const Subscribe = (props) => {
-  const {accountAddress , hubHandle} = props;
+const Subscribe = ({accountAddress, hubHandle, inFeed=false, inHub=false}) => {
   const wallet = useWallet()
   const router = useRouter()
-  const { subscriptionSubscribe, subscriptionUnsubscribe, userSubscriptions, getSubscriptionsForUser, subscriptionState } = useContext(Nina.Context)
+  const { subscriptionSubscribe, subscriptionUnsubscribe, userSubscriptions, getSubscriptionsForUser, getSubscriptionsForHub, subscriptionState } = useContext(Nina.Context)
   const [isFollowing, setIsFollowing] = useState(false)
   const [pending, setPending] = useState(false)
   const [targetSubscriptions, setTargetSubscriptions] = useState()
@@ -20,15 +19,6 @@ const Subscribe = (props) => {
   const [isUser, setIsUser] = useState(false)
   const [inDashboard, setInDashboard] = useState(router.pathname.includes('/dashboard'))
   const { enqueueSnackbar } = useSnackbar()
-
-
-  useEffect(() => {
-    const handleSubscriptions = async (accountAddress) => {
-      const subscriptions = await getSubscriptionsForUser(accountAddress)
-      setTargetSubscriptions(subscriptions)
-    }
-    handleSubscriptions(accountAddress)
-  }, [])
 
   useEffect(() => {
     if (userSubscriptions) {
@@ -41,16 +31,15 @@ const Subscribe = (props) => {
     if (wallet.publicKey) {
       setIsUser(wallet.publicKey.toBase58() === accountAddress)
     }
-    if (wallet.connected && targetSubscriptions) {
-      const checkIfFollowsYou = targetSubscriptions?.some(subscription => subscription.to === wallet.publicKey.toBase58())
+    if (wallet.connected && userSubscriptions) {
+      const checkIfFollowsYou = userSubscriptions?.some(subscription => subscription.from === accountAddress)
       setFollowsYou(checkIfFollowsYou)
     }
-  }, [targetSubscriptions, wallet.connected])
+  }, [userSubscriptions, wallet.connected])
 
   const handleSubscribe = async (accountAddress, hubHandle) => {
     setPending(true)
     const result = await subscriptionSubscribe(accountAddress, hubHandle)
-    console.log('result', result)
     if (result.success) {
       enqueueSnackbar(result.msg, {
         variant: 'success',
@@ -79,25 +68,13 @@ const Subscribe = (props) => {
   }
 
   return (
-    <Box display='flex'>
+    <Box display='flex' alignItems={'center'}>
       {pending && (
         <Box sx={{ padding: '0 15px'}}>
           <Dots />
         </Box>
       )}
-
-      {isUser ? (
-        <Box sx={{ padding: '0 15px'}}>
-          {!inDashboard && (
-            <Typography>This is how your profile appears to to other users. Click <Link href="/dashboard"><a style={{textDecoration: 'underline'}}>here</a></Link> to see your dashboard</Typography>
-          )}
-          {inDashboard && (
-            <Typography>Welcome to your dashboard</Typography>
-          )}
-        </Box>
-      )
-      :
-      (
+      {wallet.connected && (
         <>
           {!isFollowing && !pending && (
             <Button

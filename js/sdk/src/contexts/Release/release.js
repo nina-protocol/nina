@@ -940,7 +940,6 @@ const releaseContextHelper = ({
         )}`,
       }
     } catch (error) {
-      console.log('in error');
       console.warn(error)
       getUsdcBalance()
       getRelease(releasePubkey)
@@ -1281,7 +1280,6 @@ const releaseContextHelper = ({
 
   const getReleasesPublishedByUser = async (publicKey, withAccountData=false) => {
     try {
-      console.log('withAccountData :>> ', withAccountData);
       const { published } = await NinaSdk.Account.fetchPublished(publicKey, withAccountData)
       setReleaseState(updateStateForReleases(published))
     } catch (error) {
@@ -1396,6 +1394,7 @@ const releaseContextHelper = ({
   STATE FILTERS
 
   */
+ 
   const filterReleasesUserCollection = () => {
    
     if (!provider.wallet?.connected) {

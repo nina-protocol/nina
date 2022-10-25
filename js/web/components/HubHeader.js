@@ -22,11 +22,9 @@ const { getImageFromCDN, loader } = imageManager
 
 const HubHeader = ({ hubData }) => {
   const [hubDescription, setHubDescription] = useState(undefined)
-  const { subscriptionSubscribe } = useContext( Nina.Context )
   const { enqueueSnackbar } = useSnackbar();
   const wallet = useWallet()
 
-  console.log('hubData :>> ', hubData);
 
   useEffect(() => {
     if (hubData?.data.description.includes('<p>')) {
@@ -88,12 +86,14 @@ const HubHeader = ({ hubData }) => {
               </a>
             </Link>
           )}
-          {wallet.connected && (
+          {/* {wallet.connected && ( */}
             <Subscribe
               accountAddress={hubData.publicKey}
               hubHandle={hubData.handle}
+              inHub={true}
+              inFeed={false}
             />
-          )}
+          {/* )} */}
         </Box>
         {hubData?.data.description && (
           <>

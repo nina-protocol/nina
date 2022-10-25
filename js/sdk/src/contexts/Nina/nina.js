@@ -42,7 +42,6 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [collection, setCollection] = useState({})
   const [postState, setPostState] = useState({})
   const [subscriptionState, setSubscriptionState] = useState({})
-  // const [userSubscriptions, setUserSubscription] = useState({})
   const [usdcBalance, setUsdcBalance] = useState(0)
   const [solBalance, setSolBalance] = useState(0)
   const [solUsdcBalance, setSolUsdcBalance] = useState(0)
@@ -133,7 +132,8 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     initBundlr,
     checkIfHasBalanceToCompleteAction,
     getSubscriptionsForUser,
-    filterSubscriptionsForUser
+    filterSubscriptionsForUser,
+    getSubscriptionsForHub
   } = ninaContextHelper({
     ninaClient,
     postState,
@@ -207,7 +207,8 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         checkIfHasBalanceToCompleteAction,
         getSubscriptionsForUser,
         filterSubscriptionsForUser,
-        userSubscriptions
+        userSubscriptions,
+        getSubscriptionsForHub
       }}
     >
       {children}
@@ -269,7 +270,6 @@ const ninaContextHelper = ({
       }
 
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
-      console.log('Subscription created on chain', subscription.toBase58())
       await getSubscription(subscription.toBase58())
 
       return {
@@ -727,7 +727,8 @@ const ninaContextHelper = ({
     return undefined
   }
 
-    /*
+
+  /*
 
   STATE
 
@@ -748,6 +749,18 @@ const ninaContextHelper = ({
   const getSubscriptionsForUser = async (accountPubkey) => {
     try{
       const { subscriptions } = await NinaSdk.Account.fetchSubscriptions(accountPubkey, false)
+      saveSubscriptionsToState(subscriptions)
+      return subscriptions
+    } catch (error) {
+      console.warn(error)
+      return []
+    }
+  }
+
+  const getSubscriptionsForHub = async (hubPubkeyOrHandle) => {
+    console.log('HUB SUB SCRIPTIONS');
+    try{
+      const { subscriptions } = await NinaSdk.Hub.fetchSubscriptions(hubPubkeyOrHandle, false)
       saveSubscriptionsToState(subscriptions)
       return subscriptions
     } catch (error) {
@@ -788,6 +801,7 @@ const ninaContextHelper = ({
     checkIfHasBalanceToCompleteAction,
     getSubscriptionsForUser,
     filterSubscriptionsForUser,
+    getSubscriptionsForHub,
   }
 }
 

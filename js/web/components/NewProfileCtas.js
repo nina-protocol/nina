@@ -29,7 +29,7 @@ const NewProfileCtas = ({activeViewIndex}) => {
           <>
             <Typography my={1}>You don't have any releases in your collection yet.</Typography>
             <Typography my={1}>
-              Explore some of our favorite Releases {' '}<a href="https://hubs.ninaprotocol.com/ninas-picks" target="_blank">here</a> to start collecting.
+              Explore some of our favorite Releases {' '}<a href="https://hubs.ninaprotocol.com/ninas-picks">here</a> to start collecting.
             </Typography>
           </>
         )
