@@ -157,7 +157,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                     metadata={metadata}
                     hubPubkey={hubPubkey}
                   />
-                )}
+                )} 
               </Box>
             </CtaWrapper>
 
