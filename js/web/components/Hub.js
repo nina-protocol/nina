@@ -23,10 +23,11 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
   } = useContext(Hub.Context)
 
   const { releaseState } = useContext(Release.Context)
-  const { fetchedHubs, setFetchedHubs} = useContext(Nina.Context)
+  const { fetchedHubs, setFetchedHubs, getSubscriptionsForHub, subscriptionState } = useContext(Nina.Context)
   const [hubReleases, setHubReleases] = useState(undefined)
   const [releaseData, setReleaseData] = useState(undefined)
   const [hubCollaborators, setHubCollaborators] = useState(undefined)
+  const [hubSubscriptions, setHubSubscriptions] = useState(undefined)
   const [activeView, setActiveView] = useState(undefined)
   const [fetched, setFetched] = useState({
     info: false,
@@ -46,8 +47,9 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
   }, [fetched, fetchedHubs])
 
   const [views, setViews] = useState([
-    { name: 'releases', playlist: undefined, visible: false },
-    { name: 'collaborators', playlist: undefined, visible: true },
+    { name: 'releases', playlist: undefined, disabled: false },
+    { name: 'collaborators', playlist: undefined, disabled: false },
+    { name: 'followers', playlist: undefined, disabled: true },
   ])
 
   const hubData = useMemo(() => {
@@ -56,14 +58,15 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
       return hubState[hubPubkey]
     } else {
       getHub(hubPubkey)
+      getSubscriptionsForHub(hubPubkey)
     }
   }, [hubState, hubPubkey])
 
-  useEffect(() => {
-    if (hubPubkey) {
-      getHub(hubPubkey)
-    }
-  }, [hubPubkey])
+  // useEffect(() => {
+  //   if (hubPubkey) {
+  //     getHub(hubPubkey)
+  //   }
+  // }, [hubPubkey])
 
   useEffect(() => {
     const [releases] = filterHubContentForHub(hubPubkey)
@@ -96,15 +99,16 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
   useEffect(() => {
     let updatedView = views.slice()
     let viewIndex
+    viewIndex = updatedView.findIndex((view) => view.name === 'releases')
 
     if (hubReleases?.length > 0) {
       setActiveView(0)
-      viewIndex = updatedView.findIndex((view) => view.name === 'releases')
-      updatedView[viewIndex].visible = true
+      updatedView[viewIndex].disabled = false
       updatedView[viewIndex].playlist = hubReleases
+    } else {
+      updatedView[viewIndex].disabled = true
     }
     if (hubReleases?.length === 0 && fetched.releases && hubCollaborators.length > 0) {
-      
       setActiveView(1)
     }
     setFetched({ ...fetched })

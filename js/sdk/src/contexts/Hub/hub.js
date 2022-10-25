@@ -553,7 +553,6 @@ const hubContextHelper = ({
       const toggledContent = Object.values(hubContentState).filter(
         (c) => c.publicKey === hubChildPublicKey.toBase58()
       )[0]
-      console.log('toggledContent', toggledContent)
       toggledContent.visible = !toggledContent.visible
       const hubContentStateCopy = { ...hubContentState }
       hubContentState[toggledContent.publicKey] = toggledContent
@@ -989,7 +988,6 @@ const hubContextHelper = ({
       setHubCollaboratorsState(updatedHubCollaboratorState)
       return hubs
     } catch (error) {
-      console.log('IN THE ERROR');
       console.warn(error)
       return []
     }
