@@ -1,8 +1,10 @@
 import { useEffect, useContext, useState, useMemo } from "react";
 import { useRouter } from "next/router";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { styled } from '@mui/material/styles'
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Typography from '@mui/material/Typography'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import axios from 'axios';
 import Web3 from "web3";
@@ -15,6 +17,9 @@ import {
   verifySoundcloud,
   verifyInstagram,
 } from '../utils/identityVerification';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSoundcloud, faTwitter, faInstagram, faEthereum } from '@fortawesome/free-brands-svg-icons'
+
 
 const IdentityVerification = ({ verifications, profilePublicKey }) => {
   const web3 = new Web3(process.env.ETH_CLUSTER_URL);
@@ -37,6 +42,13 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   const [action, setAction] = useState(undefined);
   const [activeType, setActiveType] = useState(undefined);
   const [activeValue, setActiveValue] = useState(undefined);
+
+  const logos = {
+    soundcloud:<FontAwesomeIcon icon={faSoundcloud} size='1x' />,
+    twitter: <FontAwesomeIcon icon={faTwitter} size='1x' />,
+    instagram: <FontAwesomeIcon icon={faInstagram} size='1x' />,
+    ethereum: <FontAwesomeIcon icon={faEthereum} size='1x' />
+  }
 
   const accountVerifiedForType = (type) => {
     return verifications.find((verification) => verification.type === type)
@@ -62,7 +74,14 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
     if (accountVerifiedForType(type)) {
       return displayNameForType(type)
     } else {
-      return `Verify ${type}`
+      return (
+        <Box display="flex" alignItems="center">
+        {logos[type]}{' '}
+        <Typography ml={1} variant="body2">
+          Connect
+        </Typography>
+        </Box>
+      )
     }
   }
 
@@ -203,9 +222,17 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   }
   return (
     <>
-      <Box>
-        {buttonTypes && buttonTypes.map(buttonType => (<Button onClick={() => handleIdentityButtonAction(buttonType)}>{buttonTextForType(buttonType)}</Button>))}
-      </Box>
+      <CtaWrapper>
+        {buttonTypes && buttonTypes.map(buttonType => {
+          console.log('buttonType :>> ', buttonType);
+          return (
+            <Button onClick={() => handleIdentityButtonAction(buttonType)}>
+                {buttonTextForType(buttonType)}
+            </Button>
+          )
+        }
+        )}
+      </CtaWrapper>
       {activeValue && (
         <Box>
           <IdentityVerificationModal 
@@ -220,5 +247,17 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
     </>
   )
 }
+
+const CtaWrapper = styled(Box)(() => ({
+  '& button': {
+    color: 'black',
+    border: '1px solid black',
+    marginRight: '15px',
+    '& svg': {
+      fontSize: '16px',
+    }
+  },
+}))
+
 
 export default IdentityVerification;

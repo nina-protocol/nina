@@ -312,10 +312,8 @@ const Profile = ({ profilePubkey }) => {
           <ProfileHeaderWrapper>
             <ProfileHeaderContainer>
               {fetched && profilePubkey && (
-                <Box sx={{mb:1}} display='flex'>
-                  {/* {profileVerifications && ( */}
+                <Box sx={{mb:1}} display='flex' alignItems={'center'}>
                     <Typography>{displayNameForProfile()}</Typography>
-                  {/* )} */}
                   
                   {wallet.connected && (
                     <Subscribe accountAddress={profilePubkey} />
