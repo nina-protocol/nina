@@ -49,6 +49,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [bundlrBalance, setBundlrBalance] = useState(0.0)
   const [bundlr, setBundlr] = useState()
   const [bundlrPricePerMb, setBundlrPricePerMb] = useState()
+  const [fetchedHubs, setFetchedHubs] = useState(new Set())
   const bundlrHttpAddress = 'https://node1.bundlr.network'
   const { provider } = ninaClient
 
@@ -180,13 +181,14 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         getSolPrice,
         bundlrUpload,
         initBundlr,
-        savePostsToState,
         bundlr,
         solUsdcBalance,
         solBalance,
         NinaProgramAction,
         NinaProgramActionCost,
-        checkIfHasBalanceToCompleteAction
+        checkIfHasBalanceToCompleteAction,
+        fetchedHubs,
+        setFetchedHubs,
       }}
     >
       {children}
@@ -500,6 +502,7 @@ const ninaContextHelper = ({
           setUsdcBalance(0)
         }
       } catch {
+        console.warn('error getting usdc balance')
       }
     } else {
       setUsdcBalance(0)

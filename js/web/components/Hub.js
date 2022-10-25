@@ -5,6 +5,7 @@ import { Box, Typography } from '@mui/material'
 import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 
 const Dots = dynamic(() => import('./Dots'))
 const HubHeader = dynamic(() => import('./HubHeader'))
@@ -22,7 +23,7 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
   } = useContext(Hub.Context)
 
   const { releaseState } = useContext(Release.Context)
-
+  const { fetchedHubs, setFetchedHubs} = useContext(Nina.Context)
   const [hubReleases, setHubReleases] = useState(undefined)
   const [releaseData, setReleaseData] = useState(undefined)
   const [hubCollaborators, setHubCollaborators] = useState(undefined)
@@ -32,10 +33,23 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
     releases: false,
     collaborators: false,
   })
+
+  const hasData = useMemo(() => {
+    if (fetchedHubs.has(hubPubkey)) {
+      return true
+    }
+    if (fetched.info && fetched.releases && fetched.collaborators) {
+      setFetchedHubs(fetchedHubs.add(hubPubkey))
+      return true
+    }
+    return false
+  }, [fetched, fetchedHubs])
+
   const [views, setViews] = useState([
     { name: 'releases', playlist: undefined, visible: false },
     { name: 'collaborators', playlist: undefined, visible: true },
   ])
+
   const hubData = useMemo(() => {
     if (hubState[hubPubkey]) {
       setFetched({ ...fetched, info: true})
@@ -142,9 +156,9 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
 
       <HubContainer>
         <>
-          {fetched.info && hubData && <HubHeader hubData={hubData} />}
+          {hasData && hubData && <HubHeader hubData={hubData} />}
         </>
-        {fetched.info && hubData && (
+        {hasData && hubData && (
           <HubTabWrapper>
             <TabHeader
               viewHandler={viewHandler}
@@ -168,10 +182,10 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
            
           {activeView === 0 && (
             <>
-             {fetched.releases && !releaseData && (
+             {hasData && !releaseData && (
                 <Box sx={{ my: 1 }}>No releases found in this Hub</Box>
               )}
-              {fetched.releases && releaseData && (
+              {hasData && releaseData && (
                 <ReusableTable
                   tableType={'hubReleases'}
                   items={releaseData}
@@ -181,10 +195,10 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
           )}
           {activeView === 1 && (
             <>
-              {fetched.collaborators && !hubCollaborators && (
+              {hasData && !hubCollaborators && (
                 <Box sx={{ my: 1 }}>No collaborators found in this Hub</Box>
               )}
-              {fetched.collaborators && (
+              {hasData && (
                 <ReusableTable
                   tableType={'hubCollaborators'}
                   items={hubCollaborators}
