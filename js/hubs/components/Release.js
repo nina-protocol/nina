@@ -148,7 +148,8 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                     <PlayCircleOutlineIcon />
                   )}
                 </PlayButton>
-
+                
+            
                 {releasePubkey && metadata && (
                   <AddToHubModal
                     userHubs={userHubs}

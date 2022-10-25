@@ -28,21 +28,14 @@ const HomePage = () => {
   useEffect(() => {
     getSolPrice()
     getReleasesRecent()
-    getHubs(true)
   }, [])
 
   useEffect(() => {
     setReleasesRecent(filterReleasesRecent())
   }, [releasesRecentState])
 
-  useEffect(() => {
-    if ((!hubs || hubs.length === 0) & Object.keys(hubState).length > 0) {
-      setHubs(filterFeaturedHubs())
-    }
-  }, [hubState])
-
   return (
-    <ScrollablePageWrapper>
+    <ScrollablePageWrapper paddingTop={'210px'}>
       <HomePageContainer overflowX="visible">
         <BlueTypography
           variant="h1"

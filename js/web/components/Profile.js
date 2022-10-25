@@ -1,42 +1,57 @@
 import { useEffect, useContext, useState, useMemo } from 'react'
-import Head from 'next/head'
 import dynamic from 'next/dynamic'
+import { useWallet } from '@solana/wallet-adapter-react'
+import axios from 'axios'
 import { Box, Typography } from '@mui/material'
+import { useRouter } from 'next/router'
 import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
+import Subscribe from './Subscribe'
+import NewProfileCtas from './NewProfileCtas'
+
 const Dots = dynamic(() => import('./Dots'))
 const TabHeader = dynamic(() => import('./TabHeader'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
 
 const Profile = ({ profilePubkey }) => {
+  const wallet = useWallet()
+  const router = useRouter()
+
   const {
     getUserCollectionAndPublished,
-    releaseState,
-    filterReleasesPublishedByUser,
-    filterReleasesList,
+    collectRoyaltyForRelease,
   } = useContext(Release.Context)
+  const { getHubsForUser } = useContext(Hub.Context)
+  const {
+    getSubscriptionsForUser,
+    filterSubscriptionsForUser,
+    subscriptionState,
+    ninaClient
+  } = useContext(Nina.Context)
 
-  const { getHubsForUser, filterHubsForUser } = useContext(Hub.Context)
 
   const [profilePublishedReleases, setProfilePublishedReleases] =
     useState(undefined)
   const [profileCollectionReleases, setProfileCollectionReleases] =
     useState(undefined)
   const [profileHubs, setProfileHubs] = useState(undefined)
-  const [activeView, setActiveView] = useState(undefined)
-  const [profileCollectionIds, setProfileCollectionIds] = useState(undefined)
-  const [fetched, setFetched] = useState({
-    user: false,
-    releases: false,
-    collection: false,
-    hubs: false,
-  })
+  const [activeView, setActiveView] = useState()
+  const [profileSubscriptions, setProfileSubscriptions] = useState()
+  const [profileSubscriptionsTo, setProfileSubscriptionsTo] = useState()
+  const [profileSubscriptionsFrom, setProfileSubscriptionsFrom] = useState()
+  const [inDashboard, setInDashboard] = useState(false)
+
+  const [fetched, setFetched] = useState(false)
+
   const [views, setViews] = useState([
-    { name: 'releases', playlist: undefined, visible: false },
-    { name: 'collection', playlist: undefined, visible: false },
-    { name: 'hubs', playlist: null, visible: false },
+    { name: 'releases', playlist: undefined, disabled: false },
+    { name: 'collection', playlist: undefined, disabled: false },
+    { name: 'hubs', playlist: null, disabled: false },
+    { name: 'followers', playlist: null, disabled: false },
+    { name: 'following', playlist: null, disabled: false },
   ])
 
   const artistNames = useMemo(() => {
@@ -52,143 +67,264 @@ const Profile = ({ profilePubkey }) => {
   }, [profilePublishedReleases])
 
   useEffect(() => {
-    const getUserData = async (profilePubkey) => {
-      const hubs = await getHubsForUser(profilePubkey)
-      
-      const [collected, published] = await getUserCollectionAndPublished(
-        profilePubkey
-      )
-
-      setProfileCollectionReleases(collected)
-      setProfilePublishedReleases(published)
-      fetched.user = true
-      
-      let viewIndex
-      let updatedView = views.slice()
-      
-      viewIndex = updatedView.findIndex((view) => view.name === 'releases')
-      updatedView[viewIndex].playlist = published
-      fetched.releases = true
-
-      viewIndex = updatedView.findIndex((view) => view.name === 'collection')
-      updatedView[viewIndex].playlist = collected
-      fetched.collection = true
-
-      setProfileHubs(hubs)
-      fetched.hubs = true
-      setFetched({
-        ...fetched,
-      })
-    }
-
     getUserData(profilePubkey)
-  }, [profilePubkey])
+  }, [])
+
+  useEffect(() => {
+    if (wallet.connected && profilePubkey === wallet.publicKey?.toBase58()) {
+      setInDashboard(true)
+    }
+  }, [wallet, profilePubkey])
+
+  useEffect(() => {
+    if (router.query.view) {
+      const viewIndex = views.findIndex((view) => view.name === router.query.view)
+      setActiveView(viewIndex)
+    }
+  }, [router.query.view])
   
+  useEffect(() => {
+    const to = []
+    const from = []
+    if (profileSubscriptions){
+      profileSubscriptions.forEach((sub) => {
+        if (sub.to === profilePubkey) {
+          to.push(sub)
+        } else if (sub.from === profilePubkey) {
+          from.push(sub)
+        }
+      })
+      setProfileSubscriptionsTo(to)
+      setProfileSubscriptionsFrom(from)
+    }
+  }, [profileSubscriptions])
+
+  useEffect(() => {
+    setProfileSubscriptions(filterSubscriptionsForUser(profilePubkey))
+  }, [subscriptionState])
+
+
   useEffect(() => {
     let viewIndex
     let updatedView = views.slice()
-    if (profilePublishedReleases?.length > 0) {
-      viewIndex = updatedView.findIndex((view) => view.name === 'releases')
-      updatedView[viewIndex].visible = true
-    }
-    if (profileCollectionReleases?.length > 0) {
-      viewIndex = updatedView.findIndex((view) => view.name === 'collection')
-      updatedView[viewIndex].visible = true
+    if (!inDashboard){
+      if (profilePublishedReleases?.length === 0) {
+        viewIndex = updatedView.findIndex((view) => view.name === 'releases')
+        updatedView[viewIndex].disabled = true
+      }
+      if (profileCollectionReleases?.length === 0) {
+        viewIndex = updatedView.findIndex((view) => view.name === 'collection')
+        updatedView[viewIndex].disabled = true
+      }
+      if (profileHubs?.length === 0) {
+        viewIndex = updatedView.findIndex((view) => view.name === 'hubs')
+        updatedView[viewIndex].disabled = true
+      }
+      if (profileSubscriptionsTo?.length === 0) {
+        viewIndex = updatedView.findIndex((view) => view.name === 'followers')
+        updatedView[viewIndex].disabled = false
+      }
+      if (profileSubscriptionsFrom?.length === 0) {
+        viewIndex = updatedView.findIndex((view) => view.name === 'following')
+        updatedView[viewIndex].disabled = false
+      }
     }
 
-    if (profileHubs?.length > 0) {
-      viewIndex = updatedView.findIndex((view) => view.name === 'hubs')
-      updatedView[viewIndex].visible = true
-    }
     setViews(updatedView)
-  }, [profilePublishedReleases, profileCollectionReleases, profileHubs])
+  }, [profilePublishedReleases, profileCollectionReleases, profileHubs, profileSubscriptionsTo, profileSubscriptionsFrom])
 
   useEffect(() => {
-    if (profilePublishedReleases?.length > 0) {
-      setActiveView(0)
+    if (!router.query.view && !activeView) {
+      const viewIndex = views.findIndex((view) => !view.disabled)
+      setActiveView(viewIndex)
     }
-    if (
-      profilePublishedReleases?.length === 0 &&
-      profileCollectionReleases?.length > 0
-    ) {
-      setActiveView(1)
+  }, [views])
+
+  const getUserData = async () => {
+    const hubs = await getHubsForUser(profilePubkey)
+
+    try {
+      const [collected, published] = await getUserCollectionAndPublished(
+        profilePubkey,
+        inDashboard
+      )
+  
+      if (inDashboard) {
+        published?.forEach((release) => {
+          const accountData = release.accountData.release
+          release.recipient = accountData.revenueShareRecipients.find(
+            (recipient) => recipient.recipientAuthority === profilePubkey
+          )
+          release.price = ninaClient.nativeToUiString(
+            accountData.price,
+            accountData.paymentMint
+          )
+          release.remaining = `${accountData.remainingSupply} / ${accountData.totalSupply}`
+          release.collected = ninaClient.nativeToUiString(
+            accountData.totalCollected,
+            accountData.paymentMint
+          )
+          release.collectable = release.recipient.owed > 0
+          release.collectableAmount = ninaClient.nativeToUiString(
+            release.recipient.owed,
+            accountData.paymentMint
+          )
+          release.paymentMint = accountData.paymentMint
+        })
+      }
+  
+      const subscriptions = await getSubscriptionsForUser(profilePubkey)
+  
+      setProfileCollectionReleases(collected)
+      setProfilePublishedReleases(published)
+      setProfileSubscriptions(subscriptions)
+  
+      let viewIndex
+      let updatedView = views.slice()
+  
+      viewIndex = updatedView.findIndex((view) => view.name === 'releases')
+      updatedView[viewIndex].playlist = published
+  
+      viewIndex = updatedView.findIndex((view) => view.name === 'collection')
+      updatedView[viewIndex].playlist = collected
+      setProfileHubs(hubs)
+    } catch (err) {
+      console.warn(err)
     }
-    if (
-      fetched.collection &&
-      fetched.releases &&
-      fetched.hubs &&
-      profilePublishedReleases?.length === 0 &&
-      profileCollectionReleases?.length === 0 &&
-      profileHubs?.length > 0
-    ) {
-      setActiveView(2)
-    }
-  }, [profilePublishedReleases, profileCollectionReleases, profileHubs])
+    setFetched(true)
+  } 
 
   const viewHandler = (event) => {
+    event.stopPropagation()
     const index = parseInt(event.target.id)
+    const activeViewName = views[index].name
+    const path = router.pathname.includes('dashboard')
+      ? 'dashboard'
+      : `profiles/${profilePubkey}`
+
+    const newUrl = `/${path}?view=${activeViewName}`
+    window.history.replaceState(
+      { ...window.history.state, as: newUrl, url: newUrl },
+      '',
+      newUrl
+    )
     setActiveView(index)
   }
 
+  const renderTables = (activeView, inDashboard) => {
+    switch (activeView) {
+      case 0:
+        return (
+          <>
+            {(inDashboard && profilePublishedReleases?.length === 0) ? (
+              <NewProfileCtas activeViewIndex={activeView} />
+            ) : (
+              <ReusableTable
+                tableType={'profilePublishedReleases'}
+                items={profilePublishedReleases}
+                hasOverflow={true}
+                inDashboard={inDashboard}
+              />
+
+            )}
+          </>
+        )
+      case 1:
+        return (
+          <>
+            {(inDashboard && profileCollectionReleases?.length === 0) ? (
+              <NewProfileCtas activeViewIndex={activeView} />
+            ) : (
+              <ReusableTable
+                tableType={'profileCollectionReleases'}
+                items={profileCollectionReleases}
+                hasOverflow={true}
+              />
+            )}
+          </>
+        )
+      case 2:
+        return (
+          <>
+           {(inDashboard && profileHubs?.length === 0) ? (
+              <NewProfileCtas activeViewIndex={activeView} />
+            ) : ( 
+              <ReusableTable
+                tableType={'profileHubs'}
+                items={profileHubs}
+                hasOverflow={true}
+              />
+            )}
+          </>
+        )
+      case 3: 
+        return (
+          <>
+            {(inDashboard && profileSubscriptionsTo?.length === 0) ? (
+                <NewProfileCtas activeViewIndex={activeView} />
+            ) : (
+              <ReusableTable
+                tableType={'followers'}
+                items={profileSubscriptionsTo}
+              />
+            )}
+          </>
+        )
+      case 4: 
+        return (
+          <>
+            {(inDashboard && profileSubscriptionsFrom?.length === 0) ? (
+                <NewProfileCtas activeViewIndex={activeView} />
+              ) : (
+              <ReusableTable
+                tableType={'following'}
+                items={profileSubscriptionsFrom}
+              />
+            )}
+          </>
+        )
+      default:
+        break
+    }
+  }
+
+
   return (
     <>
-      <Head>
-        <title>{`Nina: ${profilePubkey}'s Profile`}</title>
-        <meta name="description" content={'Your profile on Nina.'} />
-        <meta name="og:type" content="website" />
-        <meta
-          name="og:title"
-          content={`Nina: ${profilePubkey ? `${profilePubkey}'s Hub` : ''}`}
-        />
-        <meta
-          name="og:description"
-          content={`All releases, Hubs, and collection belonging to ${profilePubkey}`}
-        />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@ninaprotocol" />
-        <meta name="twitter:creator" content="@ninaprotocol" />
-        <meta name="twitter:image:type" content="image/jpg" />
-        <meta name="twitter:title" content={`${profilePubkey} on Nina`} />
-        <meta
-          name="twitter:description"
-          content={`All releases, Hubs, and collection belonging to ${profilePubkey}`}
-        />
-        <meta name="twitter:image" content="/images/favicon.ico" />
-        <meta name="og:image" content={'/images/favicon.ico'} />
-        <meta property="og:title" content="iPhone" />
-        <meta property="og:image" content={`/images/favicon.ico`} />
-      </Head>
+       <ProfileContainer>
+          <ProfileHeaderWrapper>
+            <ProfileHeaderContainer>
+              {fetched && profilePubkey && (
+                <Box sx={{mb:1}} display='flex'>
+                  <Typography>{truncateAddress(profilePubkey)}</Typography>
+                  
+                  {wallet.connected && (
+                    <Subscribe accountAddress={profilePubkey} />
+                  )}
+                </Box>
+              )}
+              {fetched.user && artistNames?.length > 0 && (
+                <ProfileOverflowContainer>
+                  {`Publishes as ${artistNames?.map((name) => name).join(', ')}`}
+                </ProfileOverflowContainer>
+              )}
+            </ProfileHeaderContainer>
+          </ProfileHeaderWrapper>
 
-      <ProfileContainer>
-        <ProfileHeaderWrapper>
-          <ProfileHeaderContainer>
-            {fetched.user && profilePubkey && (
-              <Box sx={{ mb: 1 }}>
-                <Typography>{truncateAddress(profilePubkey)}</Typography>
-              </Box>
-            )}
-            {fetched.user && artistNames?.length > 0 && (
-              <ProfileOverflowContainer>
-                {`Publishes as ${artistNames?.map((name) => name).join(', ')}`}
-              </ProfileOverflowContainer>
-            )}
-          </ProfileHeaderContainer>
-        </ProfileHeaderWrapper>
-        {fetched.user &&
-          fetched.collection &&
-          fetched.releases &&
-          fetched.hubs && (
+        {fetched &&  (
             <Box sx={{ py: 1 }}>
               <TabHeader
                 viewHandler={viewHandler}
-                isActive={activeView}
+                activeView={activeView}
                 profileTabs={views}
+                followersCount={profileSubscriptionsTo?.length}
+                followingCount={profileSubscriptionsFrom?.length}
               />
             </Box>
           )}
 
         <>
-          {!activeView === undefined && (
+          {!fetched && (
             <ProfileDotWrapper>
               <Box sx={{ margin: 'auto' }}>
                 <Dots />
@@ -196,46 +332,9 @@ const Profile = ({ profilePubkey }) => {
             </ProfileDotWrapper>
           )}
 
-          {activeView === 0 && (
-            <>
-              {fetched.releases && profilePublishedReleases.length === 0 && (
-                <Box>No releases belong to this address</Box>
-              )}
-              {fetched.releases && profilePublishedReleases.length > 0 && (
-                <ReusableTable
-                  tableType={'profilePublishedReleases'}
-                  items={profilePublishedReleases}
-                />
-              )}
-            </>
-          )}
-
-          {activeView === 1 && (
-            <>
-              {fetched.collection && profileCollectionReleases.length === 0 && (
-                <Box>No collection found at this address</Box>
-              )}
-              {fetched.collection && profileCollectionReleases.length > 0 && (
-                <ReusableTable
-                  tableType={'profileCollectionReleases'}
-                  items={profileCollectionReleases}
-                />
-              )}
-            </>
-          )}
-          {activeView === 2 && (
-            <>
-              {fetched.hubs && profileHubs.length === 0 && (
-                <Box>No Hubs belong to this address</Box>
-              )}
-              {fetched.hubs && profileHubs.length > 0 && (
-                <ReusableTable
-                  tableType={'profileHubs'}
-                  items={profileHubs}
-                />
-              )}
-            </>
-          )}
+          <ProfileTableContainer>
+            {fetched && renderTables(activeView, inDashboard)}
+          </ProfileTableContainer>
         </>
       </ProfileContainer>
     </>
@@ -303,6 +402,14 @@ const ProfileOverflowContainer = styled(Box)(({ theme }) => ({
   textOverflow: 'ellipsis',
   [theme.breakpoints.down('md')]: {
     ['-webkit-line-clamp']: '4',
+  },
+}))
+
+const ProfileTableContainer = styled(Box)(({ theme }) => ({
+  paddingBottom: '100px',
+  [theme.breakpoints.down('md')]: {
+    paddingBottom: '100px',
+    overflow: 'scroll',
   },
 }))
 

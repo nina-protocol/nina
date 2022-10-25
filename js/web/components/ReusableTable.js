@@ -21,11 +21,10 @@ import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import { styled } from '@mui/material'
 import { useSnackbar } from 'notistack'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
-import { c } from '@nina-protocol/nina-internal-sdk/esm/_rollupPluginBabelHelpers-ff7976c2'
 
 const { getImageFromCDN, loader } = imageManager
 
-const ReusableTableHead = ({ tableType }) => {
+const ReusableTableHead = ({ tableType, inDashboard }) => {
   let headCells = []
 
   if (tableType === 'profilePublishedReleases') {
@@ -33,6 +32,12 @@ const ReusableTableHead = ({ tableType }) => {
     headCells.push({ id: 'image', label: '' })
     headCells.push({ id: 'artist', label: 'Artist' })
     headCells.push({ id: 'title', label: 'Title' })
+    if (inDashboard) {
+      headCells.push({ id: 'price', label: 'Price' })
+      headCells.push({ id: 'remaining', label: 'Remaining' })
+      headCells.push({ id: 'collected', label: 'Earnings' })
+      headCells.push({ id: 'collect', label: 'Collect' })
+    }
   }
 
   if (tableType === 'profileCollectionReleases') {
@@ -63,7 +68,7 @@ const ReusableTableHead = ({ tableType }) => {
             key={headCell.id}
             sx={{ fontWeight: 'bold', borderBottom: 'none' }}
           >
-            <Typography sx={{ fontWeight: 'bold' }}>
+            <Typography sx={{ fontWeight: 'bold', paddingLeft: '5px' }}>
               {headCell.label}
             </Typography>
           </StyledTableHeadCell>
@@ -104,7 +109,7 @@ const HubDescription = ({ description }) => {
   )
 }
 
-const ReusableTableBody = ({ items, tableType }) => {
+const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRelease, refreshProfile }) => {
   const {
     updateTrack,
     addTrackToQueue,
@@ -148,6 +153,23 @@ const ReusableTableBody = ({ items, tableType }) => {
     }
   }
 
+    const handleCollect = async (e, recipient, releasePubkey) => {
+      e.stopPropagation()
+      e.preventDefault()
+      const result = await collectRoyaltyForRelease(recipient, releasePubkey)
+      if (result.success) {
+        enqueueSnackbar(result.msg, {
+          variant: 'success',
+        })
+        refreshProfile()
+      } else {
+        enqueueSnackbar('Error Collecting Revenue for Release', {
+          variant: 'error',
+        })
+      }
+    }
+
+
   let rows = items?.map((data) => {
     const {publicKey} = data
     const playData = {
@@ -163,6 +185,26 @@ const ReusableTableBody = ({ items, tableType }) => {
         date: data?.metadata?.properties?.date,
         artist: data?.metadata?.properties?.artist,
         title: data?.metadata?.properties?.title,
+      }
+      if (inDashboard) {
+        const collectButton = (
+          <StyledCollectButton
+            disabled={!data.collectable}
+            onClick={(e) => handleCollect(e, data.recipient, publicKey)}
+            className={data.collectable ? 'collectable' : ''}
+          >
+            Collect
+            {data.collectable && (
+              <span>
+                {data.collectableAmount}
+              </span>
+            )}
+          </StyledCollectButton>
+        )
+        formattedData.price = data.price
+        formattedData.remaining = data.remaining
+        formattedData.collected = data.collected
+        formattedData.collect = collectButton     
       }
     }
 
@@ -197,6 +239,20 @@ const ReusableTableBody = ({ items, tableType }) => {
         collaborator: truncateAddress(data.collaborator),
       }
     }
+
+    if (tableType === 'followers') {
+      formattedData = {
+        link: `/profiles/${data.from}`,
+        profile: truncateAddress(data.from),
+      }
+    }
+
+    if (tableType === 'following') {
+      formattedData = {
+        link: `/profiles/${data.to}`,
+        profile: truncateAddress(data.to),
+      }
+    }
     return formattedData
   })
 
@@ -204,10 +260,9 @@ const ReusableTableBody = ({ items, tableType }) => {
     <TableBody>
       {rows?.map((row, i) => (
         <Link href={row.link} passHref>
-          <TableRow key={row.id} hover sx={{ cursor: 'pointer' }}>
-            {Object.keys(row).map((cellName) => {
+          <TableRow key={i} hover sx={{ cursor: 'pointer' }}>
+            {Object.keys(row).map((cellName, i) => {
               const cellData = row[cellName]
-
               if (
                 cellName !== 'id' &&
                 cellName !== 'date' &&
@@ -215,7 +270,7 @@ const ReusableTableBody = ({ items, tableType }) => {
               ) {
                 if (cellName === 'ctas') {
                   return (
-                    <StyledTableCellButtonsContainer align="left"  key={cellName}>
+                    <StyledTableCellButtonsContainer align="left"  key={i}>
                       <Button
                         sx={{ cursor: 'pointer' }}
                         id={row.id}
@@ -232,7 +287,7 @@ const ReusableTableBody = ({ items, tableType }) => {
                         onClickCapture={(e) => handlePlay(e, row.id)}
                         id={row.id}
                       >
-                        {isPlaying && track.id === row.id ? (
+                        {isPlaying && track?.releasePubkey === row.id ? (
                           <PauseCircleOutlineOutlinedIcon
                             sx={{ color: 'black' }}
                           />
@@ -286,7 +341,7 @@ const ReusableTableBody = ({ items, tableType }) => {
                   return (
                     <StyledTableCell key={cellName}>
                       <OverflowContainer>
-                        <Typography sx={{paddingLeft: '5px', width: '100vw'}} noWrap>{cellData}</Typography>
+                        <Typography sx={{paddingLeft: '5px'}} noWrap>{cellData}</Typography>
                       </OverflowContainer>
                     </StyledTableCell>
                   )
@@ -301,21 +356,21 @@ const ReusableTableBody = ({ items, tableType }) => {
   )
 }
 
-const ReusableTable = ({ items, tableType }) => {
+const ReusableTable = ({ items, tableType, inDashboard, collectRoyaltyForRelease, refreshProfile }) => {
   return (
     <ResponsiveContainer>
       <ResponsiveTableContainer>
         <Table>
-          <ReusableTableHead tableType={tableType} />
-          <ReusableTableBody items={items} tableType={tableType} />
+          <ReusableTableHead tableType={tableType} inDashboard={inDashboard} />
+          <ReusableTableBody items={items} tableType={tableType} inDashboard={inDashboard} collectRoyaltyForRelease={collectRoyaltyForRelease} refreshProfile={refreshProfile} />
         </Table>
       </ResponsiveTableContainer>
     </ResponsiveContainer>
   )
 }
 
-const ResponsiveTableContainer = styled(TableCell)(({ theme }) => ({
-  width: '100vw',
+const ResponsiveTableContainer = styled(Box)(({ theme }) => ({
+  // width: '100vw',
   borderBottom: 'none',
   padding: '0px',
   paddingBottom: '100px',
@@ -355,6 +410,7 @@ const StyledTableCellButtonsContainer = styled(TableCell)(({ theme }) => ({
   textAlign: 'left',
   padding: '5px 0',
   textAlign: 'left',
+  minWidth: '100px',
   [theme.breakpoints.down('md')]: {
     padding: '0px',
   },
@@ -362,8 +418,7 @@ const StyledTableCellButtonsContainer = styled(TableCell)(({ theme }) => ({
 
 const OverflowContainer = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
-  minWidth: '10vw',
-  maxWidth: '20vw',
+  maxWidth: '15vw',
   textAlign: 'left',
   textOverflow: 'ellipsis',
   [theme.breakpoints.down('md')]: {
@@ -390,6 +445,21 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
     width: '100vw',
     maxHeight: 'unset',
     overflowY: 'unset',
+  },
+}))
+
+const StyledCollectButton = styled(Button)(({ theme }) => ({
+  color: `${theme.palette.blue} !important`,
+  display: 'flex',
+  flexDirection: 'column',
+  textAlign: 'left',
+  ...theme.helpers.baseFont,
+  '&.Mui-disabled': {
+    color: `${theme.palette.grey.primary} !important`,
+  },
+  '& span': {
+    color: `${theme.palette.grey.primary}`,
+    fontSize: '10px',
   },
 }))
 
