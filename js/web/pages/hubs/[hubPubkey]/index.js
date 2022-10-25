@@ -6,9 +6,6 @@ import NinaSdk from '@nina-protocol/js-sdk'
 const Hub = dynamic(() => import('../../../components/Hub'))
 const HubPage = ({hub, hubPubkey}) => {
 
-  console.log('hub :>> ', hub);
-  console.log('hubPubkey :>> ', hubPubkey);
-
   return (
     <ResponsiveHubContainer >
       <Hub hubPubkey={hubPubkey} hubHandle={hub.handle} />
