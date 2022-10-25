@@ -23,22 +23,27 @@ const Profile = ({ profilePubkey }) => {
   const {
     getUserCollectionAndPublished,
     collectRoyaltyForRelease,
+    fetchedUserProfileReleases,
+    setFetchedUserProfileReleases,
+    filterReleasesUserCollection,
+    filterReleasesPublishedByUser
   } = useContext(Release.Context)
-  const { getHubsForUser } = useContext(Hub.Context)
+  const { getHubsForUser, fetchedHubsForUser, filterHubsForUser } = useContext(Hub.Context)
   const {
     getSubscriptionsForUser,
     filterSubscriptionsForUser,
     subscriptionState,
-    ninaClient
+    ninaClient,
+    fetchedProfiles,
+    setFetchedProfiles,
   } = useContext(Nina.Context)
-
 
   const [profilePublishedReleases, setProfilePublishedReleases] =
     useState(undefined)
   const [profileCollectionReleases, setProfileCollectionReleases] =
     useState(undefined)
   const [profileHubs, setProfileHubs] = useState(undefined)
-  const [activeView, setActiveView] = useState()
+  const [activeView, setActiveView] = useState(0)
   const [profileSubscriptions, setProfileSubscriptions] = useState()
   const [profileSubscriptionsTo, setProfileSubscriptionsTo] = useState()
   const [profileSubscriptionsFrom, setProfileSubscriptionsFrom] = useState()
@@ -53,6 +58,17 @@ const Profile = ({ profilePubkey }) => {
     { name: 'followers', playlist: null, disabled: false },
     { name: 'following', playlist: null, disabled: false },
   ])
+
+  const hasData = useMemo(() => {
+    if (fetchedProfiles.has(profilePubkey)) {
+      return true
+    }
+    if (fetched){
+      setFetchedProfiles(fetchedProfiles.add(profilePubkey))
+      return true
+    }
+    return false
+  }, [fetchedProfiles, fetched, profilePubkey])
 
   const artistNames = useMemo(() => {
     if (profilePublishedReleases?.length > 0) {
@@ -100,11 +116,6 @@ const Profile = ({ profilePubkey }) => {
   }, [profileSubscriptions])
 
   useEffect(() => {
-    setProfileSubscriptions(filterSubscriptionsForUser(profilePubkey))
-  }, [subscriptionState])
-
-
-  useEffect(() => {
     let viewIndex
     let updatedView = views.slice()
     if (!inDashboard){
@@ -140,45 +151,38 @@ const Profile = ({ profilePubkey }) => {
     }
   }, [views])
 
-  const getUserData = async () => {
-    const hubs = await getHubsForUser(profilePubkey)
+  useEffect(() => {
+    if (fetchedUserProfileReleases[profilePubkey]?.collected) {
+      setProfileCollectionReleases(filterReleasesUserCollection(profilePubkey))
+    }
+  }, [fetchedUserProfileReleases, profilePubkey])
 
+  useEffect(() => {
+    if (fetchedUserProfileReleases[profilePubkey]?.published) {
+      setProfilePublishedReleases(filterReleasesPublishedByUser(profilePubkey))
+    }
+  }, [fetchedUserProfileReleases, profilePubkey])
+  
+  useEffect(() => {
+    setProfileSubscriptions(filterSubscriptionsForUser(profilePubkey))
+  }, [subscriptionState])
+
+  useEffect(() => {
+    if (fetchedHubsForUser.has(profilePubkey)) {
+      setProfileHubs(filterHubsForUser(profilePubkey))
+    }
+  }, [fetchedHubsForUser])
+
+  const getUserData = async () => {
     try {
+      await getHubsForUser(profilePubkey)
       const [collected, published] = await getUserCollectionAndPublished(
         profilePubkey,
-        inDashboard
+        true
       )
   
-      if (inDashboard) {
-        published?.forEach((release) => {
-          const accountData = release.accountData.release
-          release.recipient = accountData.revenueShareRecipients.find(
-            (recipient) => recipient.recipientAuthority === profilePubkey
-          )
-          release.price = ninaClient.nativeToUiString(
-            accountData.price,
-            accountData.paymentMint
-          )
-          release.remaining = `${accountData.remainingSupply} / ${accountData.totalSupply}`
-          release.collected = ninaClient.nativeToUiString(
-            accountData.totalCollected,
-            accountData.paymentMint
-          )
-          release.collectable = release.recipient.owed > 0
-          release.collectableAmount = ninaClient.nativeToUiString(
-            release.recipient.owed,
-            accountData.paymentMint
-          )
-          release.paymentMint = accountData.paymentMint
-        })
-      }
-  
-      const subscriptions = await getSubscriptionsForUser(profilePubkey)
-  
-      setProfileCollectionReleases(collected)
-      setProfilePublishedReleases(published)
-      setProfileSubscriptions(subscriptions)
-  
+      await getSubscriptionsForUser(profilePubkey)
+    
       let viewIndex
       let updatedView = views.slice()
   
@@ -187,11 +191,10 @@ const Profile = ({ profilePubkey }) => {
   
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
       updatedView[viewIndex].playlist = collected
-      setProfileHubs(hubs)
+      setFetched(true)
     } catch (err) {
       console.warn(err)
     }
-    setFetched(true)
   } 
 
   const viewHandler = (event) => {
@@ -294,7 +297,7 @@ const Profile = ({ profilePubkey }) => {
        <ProfileContainer>
           <ProfileHeaderWrapper>
             <ProfileHeaderContainer>
-              {fetched && profilePubkey && (
+              {profilePubkey && (
                 <Box sx={{mb:1}} display='flex'>
                   <Typography>{truncateAddress(profilePubkey)}</Typography>
                   
@@ -303,7 +306,7 @@ const Profile = ({ profilePubkey }) => {
                   )}
                 </Box>
               )}
-              {fetched.user && artistNames?.length > 0 && (
+              {hasData && artistNames?.length > 0 && (
                 <ProfileOverflowContainer>
                   {`Publishes as ${artistNames?.map((name) => name).join(', ')}`}
                 </ProfileOverflowContainer>
@@ -311,7 +314,7 @@ const Profile = ({ profilePubkey }) => {
             </ProfileHeaderContainer>
           </ProfileHeaderWrapper>
 
-        {fetched &&  (
+        {hasData &&  (
             <Box sx={{ py: 1 }}>
               <TabHeader
                 viewHandler={viewHandler}
@@ -324,7 +327,7 @@ const Profile = ({ profilePubkey }) => {
           )}
 
         <>
-          {!fetched && (
+          {!hasData && (
             <ProfileDotWrapper>
               <Box sx={{ margin: 'auto' }}>
                 <Dots />
@@ -333,7 +336,7 @@ const Profile = ({ profilePubkey }) => {
           )}
 
           <ProfileTableContainer>
-            {fetched && renderTables(activeView, inDashboard)}
+            {hasData && renderTables(activeView, inDashboard)}
           </ProfileTableContainer>
         </>
       </ProfileContainer>

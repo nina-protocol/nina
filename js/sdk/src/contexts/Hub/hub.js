@@ -26,7 +26,8 @@ const HubContextProvider = ({ children }) => {
   const [hubsCount, setHubsCount] = useState(0)
   const [allHubs, setAllHubs] = useState([])
   const [featuredHubs, setFeaturedHubs] = useState()
-  
+  const [fetchedHubsForUser, setFetchedHubsForUser] = useState(new Set())
+
   const {
     getHubs,
     getHub,
@@ -77,7 +78,9 @@ const HubContextProvider = ({ children }) => {
     hubContentFetched,
     setHubContentFetched,
     releaseState,
-    setReleaseState
+    setReleaseState,
+    fetchedHubsForUser,
+    setFetchedHubsForUser,
   })
 
   return (
@@ -115,6 +118,7 @@ const HubContextProvider = ({ children }) => {
         filterFeaturedHubs,
         filterHubsAll,
         hubContentFetched,
+        fetchedHubsForUser,
       }}
     >
       {children}
@@ -147,7 +151,9 @@ const hubContextHelper = ({
   hubContentFetched,
   setHubContentFetched,
   releaseState,
-  setReleaseState
+  setReleaseState,
+  fetchedHubsForUser,
+  setFetchedHubsForUser,
 }) => {
   const { ids, provider, endpoints } = ninaClient
 
@@ -553,7 +559,6 @@ const hubContextHelper = ({
       const toggledContent = Object.values(hubContentState).filter(
         (c) => c.publicKey === hubChildPublicKey.toBase58()
       )[0]
-      console.log('toggledContent', toggledContent)
       toggledContent.visible = !toggledContent.visible
       const hubContentStateCopy = { ...hubContentState }
       hubContentState[toggledContent.publicKey] = toggledContent
@@ -987,9 +992,9 @@ const hubContextHelper = ({
       })
       setHubState(updatedHubState)
       setHubCollaboratorsState(updatedHubCollaboratorState)
+      setFetchedHubsForUser(new Set([...fetchedHubsForUser, publicKey]))
       return hubs
     } catch (error) {
-      console.log('IN THE ERROR');
       console.warn(error)
       return []
     }
@@ -1033,7 +1038,6 @@ const hubContextHelper = ({
   const filterHubContentForHub = (hubPubkey) => {
     const hubReleases = []
     const hubPosts = []
-    console.log('hubpubkey', hubPubkey)
     Object.values(hubContentState).forEach((hubContent) => {
       if (hubContent.hub === hubPubkey) {
         if (hubContent.contentType === 'ninaReleaseV1') {

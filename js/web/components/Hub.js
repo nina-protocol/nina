@@ -43,7 +43,7 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
       return true
     }
     return false
-  }, [fetched, fetchedHubs])
+  }, [fetched, fetchedHubs, hubPubkey])
 
   const [views, setViews] = useState([
     { name: 'releases', playlist: undefined, visible: false },

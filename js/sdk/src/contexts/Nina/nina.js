@@ -52,6 +52,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [bundlr, setBundlr] = useState()
   const [bundlrPricePerMb, setBundlrPricePerMb] = useState()
   const [fetchedHubs, setFetchedHubs] = useState(new Set())
+  const [fetchedProfiles, setFetchedProfiles] = useState(new Set())
   const bundlrHttpAddress = 'https://node1.bundlr.network'
   const { provider } = ninaClient
 
@@ -206,10 +207,12 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         checkIfHasBalanceToCompleteAction,
         fetchedHubs,
         setFetchedHubs,
+        fetchedProfiles,
+        setFetchedProfiles,
         getSubscriptionsForUser,
         filterSubscriptionsForUser,
         userSubscriptions,
-        getSubscriptionsForHub
+        getSubscriptionsForHub,
       }}
     >
       {children}
@@ -760,7 +763,6 @@ const ninaContextHelper = ({
   }
 
   const getSubscriptionsForHub = async (hubPubkeyOrHandle) => {
-    console.log('HUB SUB SCRIPTIONS');
     try{
       const { subscriptions } = await NinaSdk.Hub.fetchSubscriptions(hubPubkeyOrHandle, false)
       saveSubscriptionsToState(subscriptions)
