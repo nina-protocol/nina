@@ -70,7 +70,7 @@ const HubPage = ({ hub, hubPubkey }) => {
       </Head>
 
       <ResponsiveHubContainer>
-        <HubView hubPubkey={hubPubkey} hubHandle={hub.handle} />
+        <HubView hubPubkey={hubPubkey} />
       </ResponsiveHubContainer>
     </>
   )

@@ -86,7 +86,8 @@ const ReleaseContextProvider = ({ children }) => {
     initializeReleaseAndMint,
     releaseCreateMetadataJson,
     releaseInitViaHub,
-    validateUniqueMd5Digest
+    validateUniqueMd5Digest,
+    getFeedForUser
   } = releaseContextHelper({
     ninaClient,
     releaseState,
@@ -157,7 +158,8 @@ const ReleaseContextProvider = ({ children }) => {
         releaseCreateMetadataJson,
         releaseInitViaHub,
         releasePurchaseTransactionPending,
-        validateUniqueMd5Digest
+        validateUniqueMd5Digest,
+        getFeedForUser
       }}
     >
       {children}
@@ -895,6 +897,7 @@ const releaseContextHelper = ({
           new anchor.web3.PublicKey(releasePubkey)
         )
       }
+      release.paymentMint = new anchor.web3.PublicKey(release.paymentMint)
 
       const [authorityTokenAccount, authorityTokenAccountIx] =
         await findOrCreateAssociatedTokenAccount(
@@ -918,6 +921,7 @@ const releaseContextHelper = ({
         },
       }
 
+
       if (authorityTokenAccountIx) {
         request.instructions = [authorityTokenAccountIx]
       }
@@ -925,16 +929,19 @@ const releaseContextHelper = ({
       const txid = await program.rpc.releaseRevenueShareCollect(request)
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
 
-      getRelease(releasePubkey)
+
+      await getRelease(releasePubkey)
       getUsdcBalance()
       return {
         success: true,
         msg: `You collected $${nativeToUi(
-          recipient.owed.toNumber(),
+          recipient.owed,
           release.paymentMint
         )}`,
       }
     } catch (error) {
+      console.log('in error');
+      console.warn(error)
       getUsdcBalance()
       getRelease(releasePubkey)
       return ninaErrorHandler(error)
@@ -1272,9 +1279,10 @@ const releaseContextHelper = ({
     }
   }
 
-  const getReleasesPublishedByUser = async (publicKey) => {
+  const getReleasesPublishedByUser = async (publicKey, withAccountData=false) => {
     try {
-      const { published } = await NinaSdk.Account.fetchPublished(publicKey)
+      console.log('withAccountData :>> ', withAccountData);
+      const { published } = await NinaSdk.Account.fetchPublished(publicKey, withAccountData)
       setReleaseState(updateStateForReleases(published))
     } catch (error) {
       console.warn(error)
@@ -1290,11 +1298,19 @@ const releaseContextHelper = ({
     }
   }
 
-  const getUserCollectionAndPublished = async (publicKey) => {
-    const { collected } = await NinaSdk.Account.fetchCollected(publicKey)
-    const { published } = await NinaSdk.Account.fetchPublished(publicKey)
-    setReleaseState(updateStateForReleases([...collected, ...published]))
-    return [collected, published]
+  const getUserCollectionAndPublished = async (
+    publicKey,
+    withAccountData = false
+  ) => {
+    try {
+      const { collected } = await NinaSdk.Account.fetchCollected(publicKey)
+      const { published } = await NinaSdk.Account.fetchPublished(publicKey, withAccountData)
+      setReleaseState(updateStateForReleases([...collected, ...published]))
+      return [collected, published]
+    } catch (error) {
+      console.warn(error)
+      return [[],[]]
+    }
   }
 
   const getReleaseRoyaltiesByUser = async (publicKey) => {
@@ -1359,11 +1375,28 @@ const releaseContextHelper = ({
     return collectors.map(collector => collector.publicKey)
   }
 
+  const getFeedForUser = async (publicKey, offset) => {
+    try {
+      const { data } = await axios.get(`${process.env.NINA_API_ENDPOINT}/accounts/${publicKey}/feed?offset=${offset}`)
+      const releases = []
+      data.feedItems.forEach(feedItem => {
+        if (feedItem.release) {
+          releases.push(feedItem.release)
+        }
+      })
+      setReleaseState(updateStateForReleases(releases))
+      return data
+    } catch (error) {
+      console.warn(error)
+    }
+  }
+
   /*
 
   STATE FILTERS
 
   */
+ 
   const filterReleasesUserCollection = () => {
    
     if (!provider.wallet?.connected) {
@@ -1709,6 +1742,7 @@ const releaseContextHelper = ({
     getReleasesRecent,
     getReleasesAll,
     getReleaseRoyaltiesByUser,
+    getUserCollectionAndPublished,
     filterReleasesUserCollection,
     getUserCollectionAndPublished,
     filterReleasesPublishedByUser,
@@ -1724,7 +1758,8 @@ const releaseContextHelper = ({
     getCollectorsForRelease,
     initializeReleaseAndMint,
     releaseCreateMetadataJson,
-    validateUniqueMd5Digest
+    validateUniqueMd5Digest,
+    getFeedForUser
   }
 }
 

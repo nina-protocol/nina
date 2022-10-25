@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import { isMobile } from 'react-device-detect'
@@ -8,13 +8,65 @@ import Link from "next/link";
 import Image from "next/image";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+
 import Dots from "./Dots";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 const { getImageFromCDN, loader } = imageManager
-const HubSlider = (props) => {
-  const { hubs } = props;
+
+const HubSlider = () => {
+  const { getHubs, hubState, featuredHubs, setFeaturedHubs } = useContext(Hub.Context)
+  const { getSubscriptionsForUser } = useContext(Nina.Context)
+  const [featuredHubPublicKeys, setFeaturedHubPublicKeys] = useState()
+
+  const shuffle = (array) => {
+    let currentIndex = array.length,
+      randomIndex
+
+    // While there remain elements to shuffle.
+    while (currentIndex != 0) {
+      // Pick a remaining element.
+      randomIndex = Math.floor(Math.random() * currentIndex)
+      currentIndex--
+
+      // And swap it with the current element.
+      ;[array[currentIndex], array[randomIndex]] = [
+        array[randomIndex],
+        array[currentIndex],
+      ]
+    }
+
+    return array
+  }
+
+  useEffect(() => {
+    const fetchFeaturedHubs = async () => {
+      await getHubs()
+      const response = await getSubscriptionsForUser('7g2euzpRxm2A9kgk4UJ9J5ntUYvodTw4s4m7sL1C8JE')
+      const publicKeys = response.filter((sub) => {
+       return sub.subscriptionType === 'hub'
+      })
+      setFeaturedHubPublicKeys(publicKeys)
+    }
+    fetchFeaturedHubs()
+  }, []);
+
+  useEffect(() => {
+    if (featuredHubPublicKeys) {
+      const featured = []
+      Object.values(featuredHubPublicKeys).forEach((sub) => {
+        const hub = hubState[sub.to]
+        if (hub) {
+          featured.push(hub)
+        }
+      })
+      setFeaturedHubs(shuffle(featured))
+    }
+  },[featuredHubPublicKeys, hubState]);
+
   const responsiveSettings = [
     {
       breakpoint: 1024,
@@ -53,7 +105,7 @@ const HubSlider = (props) => {
       onClick={onClick}
     />
   );
-  if (!hubs) {
+  if (!featuredHubs) {
     return (
       <Box
         sx={{
@@ -69,7 +121,7 @@ const HubSlider = (props) => {
   }
   return (
     <HubSliderWrapper>
-      {hubs?.length > 0 && (
+      {featuredHubs?.length > 0 && (
         <Slider
           dots={false}
           infinite={true}
@@ -81,8 +133,8 @@ const HubSlider = (props) => {
           nextArrow={<CustomNextArrow />}
           prevArrow={<CustomPrevArrow />}
         >
-          {hubs?.map((hub, i) => {
-            const imageUrl = hub?.json?.image;
+          {featuredHubs?.map((hub, i) => {
+            const imageUrl = hub?.data?.image;
             return (
               <HubSlideWrapper key={i}>
                 <HubSlide key={i}>
@@ -102,7 +154,7 @@ const HubSlider = (props) => {
                   )}
                   <HubCopy sx={{ display: "flex" }}>
                     <Typography variant="body2">
-                      {hub?.json?.displayName}
+                      {hub?.data?.displayName}
                     </Typography>
                   </HubCopy>
                 </HubSlide>

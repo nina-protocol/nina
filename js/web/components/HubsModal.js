@@ -56,7 +56,7 @@ const HubsModal = (props) => {
           </Header>
           <CollectorTable>
             <TableBody>
-              {hubs &&
+              {hubs && hubs.length > 0 &&
                 hubs.map((entry, i) => {
                   return (
                     <tr key={i}>

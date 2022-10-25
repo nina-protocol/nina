@@ -4,12 +4,14 @@ import { Box, } from '@mui/material'
 import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+
 const Dots = dynamic(() => import('./Dots'))
 const HubHeader = dynamic(() => import('./HubHeader'))
 const TabHeader = dynamic(() => import('./TabHeader'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
 
-const HubComponent = ({ hubHandle, hubPubkey }) => {
+const HubComponent = ({ hubPubkey }) => {
   const {
     getHub,
     hubState,
@@ -31,8 +33,8 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
     collaborators: false,
   })
   const [views, setViews] = useState([
-    { name: 'releases', playlist: undefined, visible: false },
-    { name: 'collaborators', playlist: undefined, visible: true },
+    { name: 'releases', visible: false },
+    { name: 'collaborators', visible: true },
   ])
   const hubData = useMemo(() => {
     if (hubState[hubPubkey]) {
@@ -71,7 +73,11 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
       releaseMetadata.releasePubkey = hubRelease.release
       return releaseMetadata
     })
-    setReleaseData(data)
+    const sortedPublished = data?.sort((a, b) => {
+      return new Date(b.properties.date) - new Date(a.properties.date)
+    })
+
+    setReleaseData(sortedPublished)
 
     viewIndex = updatedView.findIndex((view) => view.name === 'releases')
     updatedView[viewIndex].playlist = releaseData
@@ -103,8 +109,7 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
     const index = parseInt(event.target.id)
     setActiveView(index)
   }
-  console.log('hubData', releaseData)
-  console.log('hubReleases', hubReleases)
+
   const renderTables = (activeView) => {
     switch (activeView) {
       case undefined:
@@ -160,10 +165,10 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
           <HubTabWrapper>
             <TabHeader
               viewHandler={viewHandler}
-              isActive={activeView}
+              activeView={activeView}
               profileTabs={views}
-              releaseData={releaseData}
-              type={'hubsView'}
+              releaseData={hubReleases}
+              type={'hubView'}
             />
           </HubTabWrapper>
         )}

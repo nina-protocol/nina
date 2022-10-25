@@ -7,23 +7,35 @@ import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import { useSnackbar } from 'notistack'
 import {Button} from '@mui/material'
 const TabHeader = ({
-  isActive,
+  activeView,
   profileTabs,
   viewHandler,
   type,
   releaseData,
+  followersCount,
+  followingCount,
 }) => {
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { enqueueSnackbar } = useSnackbar()
-
   const playAllHandler = (playlist) => {
-    resetQueueWithPlaylist(
-      playlist?.map((release) => release.publicKey)
-    ).then(() =>
-      enqueueSnackbar(`Releases added to queue`, {
-        variant: 'info',
-      })
-    )
+    if (type === 'hubView') {
+      resetQueueWithPlaylist(
+        playlist?.map((release) => release.release)
+      ).then(() =>
+        enqueueSnackbar(`Hub releases added to queue`, {
+          variant: 'info',
+        })
+      )
+    }
+    else {
+      resetQueueWithPlaylist(
+        playlist?.map((release) => release.publicKey)
+      ).then(() =>
+        enqueueSnackbar(`Releases added to queue`, {
+          variant: 'info',
+        })
+      )
+    }
   }
   return (
     <ResponsiveContainer
@@ -32,12 +44,13 @@ const TabHeader = ({
         borderColor: 'divider',
       }}
     >
+
       <Box sx={{ display: 'flex', flexDirection: 'row', rowGap: 1, pb: 1 }}>
-        {profileTabs?.map((tab, index) => (
-          <>
-            {tab.visible === true && (
+        {profileTabs?.map((tab, index) => {
+          return(
+            <>
               <Box
-               key={index}
+                key={index}
                 sx={{
                   cursor: 'pointer',
                   alignItems: 'center',
@@ -46,36 +59,37 @@ const TabHeader = ({
                   textTransform: 'uppercase',
                 }}
               >
-                <ResponsiveTab>
+                <ResponsiveTab
+                  disabled={tab.disabled}
+                >
                   <Typography
                 
                     onClickCapture={viewHandler}
                     sx={{
-                      fontWeight: `${isActive === index ? 'bold' : ''}`,
-                      '&:hover': {
-                        opacity: 0.5,
-                      },
+                      fontWeight: `${activeView === index ? 'bold' : ''}`,
+                      // '&:hover': {
+                      //   opacity: 0.5,
+                      // },
                     }}
                     id={index}
                   >
-                    {tab.name}
+                    {tab.name} 
+                    {tab.name === 'followers' && ` (${followersCount})`}
+                    {tab.name === 'following' && ` (${followingCount})`}
                   </Typography>
 
                   {tab.playlist && (
                     <ResponsiveCircleOutlineIconContainer
-                 
+                      
                       sx={{
-                        paddingRight: 1.5,
-                         paddingTop: '1px',
-                        '&:hover': {
-                          opacity: 0.5,
-                        },
+                          paddingTop: '1px',
                       }}
                     >
-                      <PlayCircleOutlineIconButtonWrapper 
-                 
+                      <PlayCircleOutlineIconButtonWrapper
+                      disabled={tab.disabled} 
+                      sx={{paddingRight: 0}}
                       onClickCapture={() =>
-                          type === 'hubsView'
+                          type === 'hubView'
                             ? playAllHandler(releaseData)
                             : playAllHandler(tab.playlist)
                         }
@@ -88,21 +102,21 @@ const TabHeader = ({
                   )}
                 </ResponsiveTab>
               </Box>
-            )}
-          </>
-        ))}
+            </>
+          )}
+        )}
       </Box>
     </ResponsiveContainer>
   )
 }
 
-const ResponsiveTab = styled(Box)(({ theme }) => ({
+const ResponsiveTab = styled(Button)(({ theme }) => ({
   cursor: 'pointer',
   alignItems: 'center',
   display: 'flex',
   flexDirection: 'row',
   textTransform: 'uppercase',
-  minWidth: '100px',
+  color: theme.palette.text.primary,
   paddingRight: '15px',
   [theme.breakpoints.down('md')]: {
     paddingLeft: '6px',

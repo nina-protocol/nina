@@ -1,20 +1,31 @@
+import { useContext } from 'react'
 import Image from 'next/image'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import Link from 'next/link'
 import { useState, useEffect, createElement, Fragment } from 'react'
+import { useWallet } from '@solana/wallet-adapter-react'
 import { Typography } from '@mui/material'
 import { styled } from '@mui/system'
 import { Box } from '@mui/system'
+import Button from "@mui/material/Button";
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Subscribe from './Subscribe'
 import { unified } from 'unified'
 import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
+import { useSnackbar } from "notistack";
+
 
 const { getImageFromCDN, loader } = imageManager
 
 const HubHeader = ({ hubData }) => {
   const [hubDescription, setHubDescription] = useState(undefined)
+  const { enqueueSnackbar } = useSnackbar();
+  const wallet = useWallet()
+
+
   useEffect(() => {
     if (hubData?.data.description.includes('<p>')) {
       unified()
@@ -65,15 +76,23 @@ const HubHeader = ({ hubData }) => {
           </Link>
         </Box>
 
-        {hubData?.data.displayName && (
-          <Link href={hubData?.data.externalUrl} passHref>
-            <a target="_blank" rel="noreferrer">
-              <Typography sx={{ px: 2 }}>
-                {hubData?.data.displayName}
-              </Typography>
-            </a>
-          </Link>
-        )}
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '90px'}}>
+          {hubData?.data.displayName && (
+            <Link href={hubData?.data.externalUrl} passHref>
+              <a target="_blank" rel="noreferrer">
+                <Typography sx={{ pl: 1 }}>
+                  {hubData?.data.displayName}
+                </Typography>
+              </a>
+            </Link>
+          )}
+          {wallet.connected && (
+            <Subscribe
+              accountAddress={hubData.publicKey}
+              hubHandle={hubData.handle}
+            />
+          )}
+        </Box>
         {hubData?.data.description && (
           <>
             <DescriptionOverflowContainer>
@@ -82,6 +101,19 @@ const HubHeader = ({ hubData }) => {
           </>
         )}
       </ResponsiveHubHeader>
+
+      {/* <ResponsiveUrlContainer>
+        <Typography sx={{ pb: 2, fontSize: '12px' }}>
+          <Link href={hubData?.json.externalUrl}>
+            <a>
+              {`${(hubData?.json.externalUrl).substring(
+                8,
+                hubData?.json.externalUrl.length
+              )}`}
+            </a>
+          </Link>
+        </Typography>
+      </ResponsiveUrlContainer> */}
     </Box>
   )
 }

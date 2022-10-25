@@ -70,6 +70,8 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async (context) => {
   try {
     if (context.params.hubPubkey && context.params.hubReleasePubkey !== 'undefined') {
+<<<<<<< HEAD
+=======
       if (!NinaSdk.client.program) {
         await NinaSdk.client.init(
           process.env.NINA_API_ENDPOINT,
@@ -77,6 +79,7 @@ export const getStaticProps = async (context) => {
           process.env.NINA_PROGRAM_ID
         )      
       }
+>>>>>>> 873b73f8f35920ba42760e61e118955d36f62e72
       const {hub, release} = await NinaSdk.Hub.fetchHubRelease(context.params.hubPubkey, context.params.hubReleasePubkey);
       return {  
         props: {
