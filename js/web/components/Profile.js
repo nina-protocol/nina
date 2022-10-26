@@ -69,6 +69,7 @@ const Profile = ({ profilePubkey }) => {
   }, [profilePublishedReleases])
 
   useEffect(() => {
+    console.log('profilePubkey', getUserData(profilePubkey))
     getUserData(profilePubkey)
   }, [])
 
@@ -183,7 +184,7 @@ const Profile = ({ profilePubkey }) => {
       setProfileCollectionReleases(collected)
       setProfilePublishedReleases(sortedPublished)
       setProfileSubscriptions(subscriptions)
-  
+      console.log('profileCollectionReleases', profileCollectionReleases)
       let viewIndex
       let updatedView = views.slice()
   
