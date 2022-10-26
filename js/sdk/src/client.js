@@ -1,7 +1,7 @@
 import * as anchor from '@project-serum/anchor'
 
 export const NINA_CLIENT_IDS = {
-  'mainnet-beta': {
+  'mainnet': {
     programs: {
       nina: 'ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4',
       metaplex: 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',

@@ -71,7 +71,8 @@ const ReleaseComponent = ({ metadataSsr }) => {
   if (!wallet?.connected && router.pathname.includes('releases')) {
     router.push(`/${releasePubkey}`)
   }
-
+  console.log('releasePubkey', releasePubkey)
+  console.log('metadata', metadata)
   return (
     <>
       <ReleaseWrapper>

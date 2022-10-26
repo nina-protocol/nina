@@ -11,6 +11,7 @@ import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
 import Subscribe from './Subscribe'
 import NewProfileCtas from './NewProfileCtas'
+import IdentityVerification from './IdentityVerification'
 
 const Dots = dynamic(() => import('./Dots'))
 const TabHeader = dynamic(() => import('./TabHeader'))
@@ -47,6 +48,7 @@ const Profile = ({ profilePubkey }) => {
   const [profileSubscriptions, setProfileSubscriptions] = useState()
   const [profileSubscriptionsTo, setProfileSubscriptionsTo] = useState()
   const [profileSubscriptionsFrom, setProfileSubscriptionsFrom] = useState()
+  const [profileVerifications, setProfileVerifications] = useState()
   const [inDashboard, setInDashboard] = useState(false)
 
   const [fetched, setFetched] = useState(false)
@@ -193,7 +195,7 @@ const Profile = ({ profilePubkey }) => {
       updatedView[viewIndex].playlist = collected
       setFetched(true)
     } catch (err) {
-      console.warn(err)
+      console.log(err)
     }
   } 
 
@@ -212,6 +214,20 @@ const Profile = ({ profilePubkey }) => {
       newUrl
     )
     setActiveView(index)
+  }
+
+  const displayNameForProfile = () => {
+    if (profileVerifications?.find((verification) => verification.type === 'soundcloud')) {
+      return profileVerifications.find((verification) => verification.type === 'soundcloud').displayName
+    } else if (profileVerifications?.find((verification) => verification.type === 'twitter')) {
+      return profileVerifications.find((verification) => verification.type === 'twitter').displayName
+    } else if (profileVerifications?.find((verification) => verification.type === 'instagram')) {
+      return profileVerifications.find((verification) => verification.type === 'instagram').displayName
+    } else if (profileVerifications?.find((verification) => verification.type === 'ethereum')) {
+      return profileVerifications.find((verification) => verification.type === 'ethereum').displayName
+    } else {
+      return truncateAddress(profilePubkey)
+    }
   }
 
   const renderTables = (activeView, inDashboard) => {
@@ -307,6 +323,9 @@ const Profile = ({ profilePubkey }) => {
                   
                   {wallet.connected && (
                     <Subscribe accountAddress={profilePubkey} />
+                  )}
+                  {profileVerifications && (
+                    <IdentityVerification verifications={profileVerifications} profilePublicKey={profilePubkey} />
                   )}
                 </Box>
               )}
