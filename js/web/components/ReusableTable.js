@@ -145,6 +145,7 @@ const HubDescription = ({ description }) => {
 }
 
 const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRelease, refreshProfile, dashboardPublicKey }) => {
+  const router = useRouter()
   const {
     updateTrack,
     addTrackToQueue,
@@ -334,6 +335,14 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
       formattedData = {
         link: `/profiles/${data.to}`,
         profile: truncateAddress(data.to),
+      }
+    }
+    if (tableType === 'defaultSearchResult') {
+      formattedData = {
+        id: data?.releasePubkey,
+        image: data?.metadata.image,
+        link: `/${data?.releasePubkey}`,
+        searchResultRelease: `${data?.metadata.properties.artist} - ${data.metadata.properties.title}`,
       }
     }
     return formattedData
