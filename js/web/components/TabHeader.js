@@ -61,15 +61,12 @@ const TabHeader = ({
               >
                 <ResponsiveTab
                   disabled={tab.disabled}
+                  onClick={viewHandler}
+                  id={index}
                 >
                   <Typography
-                
-                    onClickCapture={viewHandler}
                     sx={{
                       fontWeight: `${activeView === index ? 'bold' : ''}`,
-                      // '&:hover': {
-                      //   opacity: 0.5,
-                      // },
                     }}
                     id={index}
                   >
@@ -88,10 +85,13 @@ const TabHeader = ({
                       <PlayCircleOutlineIconButtonWrapper
                       disabled={tab.disabled} 
                       sx={{paddingRight: 0}}
-                      onClickCapture={() =>
-                          type === 'hubView'
-                            ? playAllHandler(releaseData)
-                            : playAllHandler(tab.playlist)
+                      onClick={(e) =>{
+                        e.preventDefault()
+                        e.stopPropagation()                      
+                        type === 'hubsView'
+                          ? playAllHandler(releaseData)
+                          : playAllHandler(tab.playlist)
+                      }
                         }
                         >
                       <PlayCircleOutlineOutlinedIcon
@@ -118,6 +118,7 @@ const ResponsiveTab = styled(Button)(({ theme }) => ({
   textTransform: 'uppercase',
   color: theme.palette.text.primary,
   paddingRight: '15px',
+  height: '40px',
   [theme.breakpoints.down('md')]: {
     paddingLeft: '6px',
   },
@@ -146,7 +147,11 @@ const PlayCircleOutlineIconButtonWrapper = styled(Button)(({ theme }) => ({
 
 const ResponsiveCircleOutlineIconContainer = styled(Box)(({ theme }) => ({
     paddingRight: 1.5,
-     paddingTop: '1px',
+    paddingLeft: 1.5,
+    paddingTop: '1px',
+    '& button': {
+      padding: '0px',
+    },
     '&:hover': {
       opacity: 0.5,
     },

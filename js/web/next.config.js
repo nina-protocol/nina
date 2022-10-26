@@ -78,6 +78,13 @@ const moduleExports = withTM({
     NINA_API_ENDPOINT: process.env.NINA_API_ENDPOINT,
     NINA_PROGRAM_ID: process.env.NINA_PROGRAM_ID,
     SOLANA_CLUSTER_URL: process.env.SOLANA_CLUSTER_URL,
+    SOLANA_CLUSTER: process.env.SOLANA_CLUSTER,
+    NINA_IDENTITY_ENDPOINT: process.env.NINA_IDENTITY_ENDPOINT,
+    ETH_CLUSTER_URL: process.env.ETH_CLUSTER_URL,
+    IDENTITY_REDIRECT_URI: process.env.IDENTITY_REDIRECT_URI,
+    SC_CLIENT_ID: process.env.SC_CLIENT_ID,
+    IG_CLIENT_ID: process.env.IG_CLIENT_ID,
+    TWITTER_AUTH_CLIENT_ID: process.env.TWITTER_AUTH_CLIENT_ID,
   },
   images: {
     loader: 'imgix',

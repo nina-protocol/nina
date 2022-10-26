@@ -67,12 +67,7 @@ function Application({ Component, pageProps }) {
 
   // You can also provide a custom RPC endpoint
   const endpoint = useMemo(() => {
-    if (network === WalletAdapterNetwork.MainnetBeta) {
-      return 'https://nina.rpcpool.com'
-    } else if (network === WalletAdapterNetwork.Devnet) {
-      return 'https://nina.devnet.rpcpool.com'
-    }
-    return clusterApiUrl(network)
+    return process.env.SOLANA_CLUSTER_URL
   }, [network])
 
   const walletOptions = [

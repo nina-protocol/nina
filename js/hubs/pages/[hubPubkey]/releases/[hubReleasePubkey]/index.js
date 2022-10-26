@@ -94,6 +94,13 @@ export const getStaticProps = async (context) => {
   } catch (error) {
     console.warn(error);
     try {
+      if (!NinaSdk.client.program) {
+        await NinaSdk.client.init(
+          process.env.NINA_API_ENDPOINT,
+          process.env.SOLANA_CLUSTER_URL,
+          process.env.NINA_PROGRAM_ID
+        )      
+      }
       const hub = await NinaSdk.Hub.fetch(context.params.hubPubkey);  
       if (hub) {
         return{

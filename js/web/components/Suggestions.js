@@ -109,7 +109,7 @@ const Suggestions = ({ items, itemsTotal, publicKey }) => {
             />
             <HoverCard>
               <CtaWrapper>
-                <Subscribe accountAddress={hub.publicKey} hubHandle={hub.handle}/>
+                <Subscribe accountAddress={hub.publicKey} hubHandle={hub.handle} inFeed={true}/>
               </CtaWrapper>
             </HoverCard>
           </HoverContainer>
