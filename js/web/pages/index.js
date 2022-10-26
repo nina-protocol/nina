@@ -10,15 +10,11 @@ export default function Home() {
 
   useEffect(() => {
     if (wallet.connected) {
-<<<<<<< HEAD
-      router.push('/dashboard')
-=======
       let path = '/dashboard'
       if (router.query.code) {
         path += `?code=${router.query.code}`
       }
       router.push(path)
->>>>>>> 0e623b4001e47f8f58a9274a52aef8fbee756159
     }
   }, [wallet])
   return (
