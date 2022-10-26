@@ -227,6 +227,8 @@ const Profile = ({ profilePubkey }) => {
                 items={profilePublishedReleases}
                 hasOverflow={true}
                 inDashboard={inDashboard}
+                dashboardPublicKey={profilePubkey}
+                collectRoyaltyForRelease={collectRoyaltyForRelease}
               />
 
             )}

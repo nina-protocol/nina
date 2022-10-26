@@ -17,6 +17,7 @@ import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import { styled } from '@mui/material'
 import { useSnackbar } from 'notistack'
@@ -109,7 +110,7 @@ const HubDescription = ({ description }) => {
   )
 }
 
-const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRelease, refreshProfile }) => {
+const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRelease, refreshProfile, dashboardPublicKey }) => {
   const {
     updateTrack,
     addTrackToQueue,
@@ -118,7 +119,8 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
     track,
     playlist,
   } = useContext(Audio.Context)
-
+  const { ninaClient } = useContext(Nina.Context)
+  
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
   const snackbarHandler = (message) => {
@@ -153,57 +155,69 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
     }
   }
 
-    const handleCollect = async (e, recipient, releasePubkey) => {
-      e.stopPropagation()
-      e.preventDefault()
-      const result = await collectRoyaltyForRelease(recipient, releasePubkey)
-      if (result.success) {
-        enqueueSnackbar(result.msg, {
-          variant: 'success',
-        })
-        refreshProfile()
-      } else {
-        enqueueSnackbar('Error Collecting Revenue for Release', {
-          variant: 'error',
-        })
-      }
+  const handleCollect = async (e, recipient, releasePubkey) => {
+    e.stopPropagation()
+    e.preventDefault()
+    console.log('handleCollect', recipient, releasePubkey)
+    const result = await collectRoyaltyForRelease(recipient, releasePubkey)
+    if (result.success) {
+      enqueueSnackbar(result.msg, {
+        variant: 'success',
+      })
+      refreshProfile()
+    } else {
+      enqueueSnackbar('Error Collecting Revenue for Release', {
+        variant: 'error',
+      })
     }
+  }
 
 
   let rows = items?.map((data) => {
-    const {publicKey} = data
+    const {releasePubkey} = data
     const playData = {
-      publicKey,
+      releasePubkey,
     }
     let formattedData = {}
     if (tableType === 'profilePublishedReleases' || tableType === 'profileCollectionReleases') {
       formattedData = {
         ctas: playData,
-        id: publicKey,
-        link: `/${publicKey}`,
+        id: releasePubkey,
+        link: `/${releasePubkey}`,
         image: data?.metadata?.image,
         date: data?.metadata?.properties?.date,
         artist: data?.metadata?.properties?.artist,
         title: data?.metadata?.properties?.title,
       }
       if (inDashboard) {
+        console.log('data', data)
+        console.log('dashboardPublicKey', dashboardPublicKey)
+        const recipient = data.tokenData.revenueShareRecipients.find(
+          (recipient) => recipient.recipientAuthority === dashboardPublicKey
+        )
+        const collectable = recipient.owed > 0
+        const collectableAmount = ninaClient.nativeToUiString(
+          recipient.owed,
+          data.tokenData.paymentMint
+        )
+
         const collectButton = (
           <StyledCollectButton
-            disabled={!data.collectable}
-            onClick={(e) => handleCollect(e, data.recipient, publicKey)}
-            className={data.collectable ? 'collectable' : ''}
+            disabled={!collectable}
+            onClick={(e) => handleCollect(e, recipient, releasePubkey)}
+            className={collectable ? 'collectable' : ''}
           >
             Collect
-            {data.collectable && (
+            {collectable && (
               <span>
-                {data.collectableAmount}
+                {collectableAmount}
               </span>
             )}
           </StyledCollectButton>
         )
-        formattedData.price = data.price
-        formattedData.remaining = data.remaining
-        formattedData.collected = data.collected
+        formattedData.price = ninaClient.nativeToUiString(data.tokenData.price, data.tokenData.paymentMint)
+        formattedData.remaining = `${data.tokenData.remainingSupply} / ${data.tokenData.totalSupply}`
+        formattedData.collected = ninaClient.nativeToUiString(recipient.collected + recipient.owed, data.tokenData.paymentMint)
         formattedData.collect = collectButton     
       }
     }
@@ -356,13 +370,13 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
   )
 }
 
-const ReusableTable = ({ items, tableType, inDashboard, collectRoyaltyForRelease, refreshProfile }) => {
+const ReusableTable = ({ items, tableType, inDashboard, collectRoyaltyForRelease, refreshProfile, dashboardPublicKey }) => {
   return (
     <ResponsiveContainer>
       <ResponsiveTableContainer>
         <Table>
           <ReusableTableHead tableType={tableType} inDashboard={inDashboard} />
-          <ReusableTableBody items={items} tableType={tableType} inDashboard={inDashboard} collectRoyaltyForRelease={collectRoyaltyForRelease} refreshProfile={refreshProfile} />
+          <ReusableTableBody items={items} tableType={tableType} inDashboard={inDashboard} collectRoyaltyForRelease={collectRoyaltyForRelease} refreshProfile={refreshProfile} dashboardPublicKey={dashboardPublicKey} />
         </Table>
       </ResponsiveTableContainer>
     </ResponsiveContainer>
