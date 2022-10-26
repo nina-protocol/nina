@@ -424,7 +424,7 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed, publicKey, handleGetF
       <Box>
         <FeedWrapper ref={scrollRef}>
           {feedItems && feedItems?.map((item, index) => (
-            <CardWrapper>
+            <CardWrapper key={index}>
               {item}
             </CardWrapper>
           ))}

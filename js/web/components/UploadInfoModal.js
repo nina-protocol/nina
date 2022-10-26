@@ -55,6 +55,7 @@ const UploadInfoModal = ({ userHasSeenUpdateMessage }) => {
               <a
                 href="https://bundlr.network/"
                 target="_blank"
+                rel="noreferrer"
                 style={{ textDecoration: 'underline' }}
               >
                 Bundlr
@@ -72,9 +73,9 @@ const UploadInfoModal = ({ userHasSeenUpdateMessage }) => {
             </StyledTypography>
             <StyledTypography>
               0.1 SOL will cover ~{mbPerTenthSol.toFixed(2)} MBs. Any SOL you
-              don't use on this release will be saved in your Upload Account for
+              don&apos;t use on this release will be saved in your Upload Account for
               your next release. You can withdraw from you account at any time
-              by clicking 'Manage Upload Account' on the Upload page.
+              by clicking &apos;Manage Upload Account&apos; on the Upload page.
             </StyledTypography>
             <StyledTypography>
               If you have any questions or need assitance, please reach out to
@@ -82,6 +83,7 @@ const UploadInfoModal = ({ userHasSeenUpdateMessage }) => {
               <a
                 href="https://discord.gg/Uu7U6VKHwj"
                 target="_blank"
+                rel="noreferrer"
                 style={{ textDecoration: 'underline' }}
               >
                 our discord

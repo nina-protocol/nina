@@ -27,7 +27,7 @@ const NewProfileCtas = ({activeViewIndex}) => {
       case 1:
         return (
           <>
-            <Typography my={1}>You don't have any releases in your collection yet.</Typography>
+            <Typography my={1}>You don&apos;t have any releases in your collection yet.</Typography>
             <Typography my={1}>
               Explore some of our favorite Releases {' '}<a href="https://hubs.ninaprotocol.com/ninas-picks">here</a> to start collecting.
             </Typography>

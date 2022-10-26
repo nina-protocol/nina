@@ -223,10 +223,9 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   return (
     <>
       <CtaWrapper>
-        {buttonTypes && buttonTypes.map(buttonType => {
-          console.log('buttonType :>> ', buttonType);
+        {buttonTypes && buttonTypes.map((buttonType, index) => {
           return (
-            <Button onClick={() => handleIdentityButtonAction(buttonType)}>
+            <Button onClick={() => handleIdentityButtonAction(buttonType)} key={index}>
                 {buttonTextForType(buttonType)}
             </Button>
           )

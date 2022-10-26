@@ -89,7 +89,7 @@ const Suggestions = ({ items, itemsTotal, publicKey }) => {
     const hub = item.hub
     const reason = getSuggestionReason(item)
       return (
-        <ImageCard>
+        <ImageCard key={i}>
           <HoverContainer href={`/hubs/${hub?.handle}`}  passHref
             onClick={(e) => handleClick(e, `/hubs/${hub?.handle}`)}
           >
@@ -134,7 +134,7 @@ const Suggestions = ({ items, itemsTotal, publicKey }) => {
       <Box>
         <FeedWrapper ref={scrollRef}>
           {feedItems && feedItems?.map((item, index) => (
-            <CardWrapper>
+            <CardWrapper key={index}>
               {item}
             </CardWrapper>
           ))}

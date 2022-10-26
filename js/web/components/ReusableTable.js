@@ -270,7 +270,7 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
   return (
     <TableBody>
       {rows?.map((row, i) => (
-        <Link href={row.link} passHref>
+        <Link href={row.link} passHref key={i}>
           <TableRow key={i} hover sx={{ cursor: 'pointer' }}>
             {Object.keys(row).map((cellName, i) => {
               const cellData = row[cellName]
