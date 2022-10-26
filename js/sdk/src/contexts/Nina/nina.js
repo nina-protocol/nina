@@ -135,7 +135,8 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     checkIfHasBalanceToCompleteAction,
     getSubscriptionsForUser,
     filterSubscriptionsForUser,
-    getSubscriptionsForHub
+    getSubscriptionsForHub,
+    filterSubscriptionsForHub
   } = ninaContextHelper({
     ninaClient,
     postState,
@@ -214,6 +215,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         filterSubscriptionsForUser,
         userSubscriptions,
         getSubscriptionsForHub,
+        filterSubscriptionsForHub
       }}
     >
       {children}
@@ -784,6 +786,17 @@ const ninaContextHelper = ({
     return subscriptions
   }
 
+  const filterSubscriptionsForHub = (hubPubkey) => {
+    const subscriptions = []
+    Object.values(subscriptionState).forEach((subscription) => {
+      if (subscription.to === hubPubkey) {
+        subscriptions.push(subscription)
+      }
+    })
+    console.log('subscriptions :>> ', subscriptions);
+    return subscriptions
+  }
+
   return {
     subscriptionSubscribe,
     subscriptionUnsubscribe,
@@ -807,6 +820,7 @@ const ninaContextHelper = ({
     getSubscriptionsForUser,
     filterSubscriptionsForUser,
     getSubscriptionsForHub,
+    filterSubscriptionsForHub
   }
 }
 
