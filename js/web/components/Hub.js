@@ -171,12 +171,6 @@ const HubComponent = ({ hubPubkey }) => {
   }
   return (
     <>
-<<<<<<< HEAD
-       <HubContainer>
-        <>
-          {hasData && hubData && <HubHeader hubData={hubData} />}
-        </>
-=======
       <Head>
         <title>{`Nina: ${
           hubData?.data.displayName ? `${hubData.data.displayName}'s Hub` : ''
@@ -215,7 +209,6 @@ const HubComponent = ({ hubPubkey }) => {
 
       <HubContainer>
         <>{hasData && hubData && <HubHeader hubData={hubData} />}</>
->>>>>>> feaeef47f6e22a0eb211f429a9bb28177aa396d9
         {hasData && hubData && (
           <HubTabWrapper>
             <TabHeader

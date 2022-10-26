@@ -18,7 +18,6 @@ const TabHeader = ({
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { enqueueSnackbar } = useSnackbar()
   const playAllHandler = (playlist) => {
-<<<<<<< HEAD
     if (type === 'hubView') {
       resetQueueWithPlaylist(
         playlist?.map((release) => release.release)
@@ -37,14 +36,6 @@ const TabHeader = ({
         })
       )
     }
-=======
-    resetQueueWithPlaylist(playlist?.map((release) => release.publicKey)).then(
-      () =>
-        enqueueSnackbar(`Releases added to queue`, {
-          variant: 'info',
-        })
-    )
->>>>>>> feaeef47f6e22a0eb211f429a9bb28177aa396d9
   }
   return (
     <ResponsiveContainer

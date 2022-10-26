@@ -25,7 +25,6 @@ const HubPage = ({ hub, hubPubkey }) => {
     }
   }, [hubState, hubPubkey])
 
-<<<<<<< HEAD
   useEffect(() => {
     if (hubPubkey) {
       getHub(hubPubkey)
@@ -74,14 +73,6 @@ const HubPage = ({ hub, hubPubkey }) => {
         <HubView hubPubkey={hubPubkey} />
       </ResponsiveHubContainer>
     </>
-=======
-const Hub = dynamic(() => import('../../../components/Hub'))
-const HubPage = ({ hub, hubPubkey }) => {
-  return (
-    <ResponsiveHubContainer>
-      <Hub hubPubkey={hubPubkey} hubHandle={hub.handle} />
-    </ResponsiveHubContainer>
->>>>>>> feaeef47f6e22a0eb211f429a9bb28177aa396d9
   )
 }
 
