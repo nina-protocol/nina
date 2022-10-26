@@ -72,9 +72,7 @@ const NavSearch = () => {
     e.stopPropagation()
 
     if (
-      e.target.value !== null ||
-      e.target.value !== '' ||
-      e.target.value !== undefined
+      query?.length > 0
     ) {
       await NinaSdk.Search.withQuery(query).then(setResponse)
       router.push(`/search/?q=${query}`)

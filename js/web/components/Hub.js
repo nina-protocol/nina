@@ -5,7 +5,7 @@ import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-
+import Head from 'next/head'
 const Dots = dynamic(() => import('./Dots'))
 const HubHeader = dynamic(() => import('./HubHeader'))
 const TabHeader = dynamic(() => import('./TabHeader'))
@@ -26,7 +26,7 @@ const HubComponent = ({ hubPubkey }) => {
   const [hubReleases, setHubReleases] = useState(undefined)
   const [releaseData, setReleaseData] = useState(undefined)
   const [hubCollaborators, setHubCollaborators] = useState(undefined)
-  const [activeView, setActiveView] = useState(undefined)
+  const [activeView, setActiveView] = useState(0)
   const [fetched, setFetched] = useState({
     info: false,
     releases: false,
@@ -213,7 +213,7 @@ const HubComponent = ({ hubPubkey }) => {
           <HubTabWrapper>
             <TabHeader
               viewHandler={viewHandler}
-              isActive={activeView}
+              activeView={activeView}
               profileTabs={views}
               releaseData={releaseData}
               type={'hubsView'}

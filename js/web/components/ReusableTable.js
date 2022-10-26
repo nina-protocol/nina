@@ -348,6 +348,16 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
         searchResultRelease: `${data?.metadata.properties.artist} - ${data.metadata.properties.title}`,
       }
     }
+
+    if(tableType === 'hubHighlights') {
+      formattedData = {
+        id: data?.publicKey,
+        image: data?.data.image,
+        link: `/hubs/${data?.handle}`,
+        searchResultHub: data?.data.displayName,
+      }
+    }
+
     return formattedData
   })
 

@@ -29,7 +29,7 @@ const Search = (props) => {
   const [defaultResponse, setDefaultResponse] = useState({
     artists: [],
     releases: undefined,
-    hubs: [],
+    hubs: undefined,
   })
   const [featuredHubPublicKeys, setFeaturedHubPublicKeys] = useState()
   const [releasesRecent, setReleasesRecent] = useState({})
@@ -39,10 +39,9 @@ const Search = (props) => {
   const [activeView, setActiveView] = useState(0)
 
   const [defaultSearchView, setDefaultSearchView] = useState([
-
-    'artists',
-    'releases',
-    'hubs',
+    { name: 'artists', length: 0 },
+    { name: 'releases', length: 0 },
+    { name: 'hubs', length: 0 },
   ])
 
   useEffect(() => {
@@ -54,47 +53,44 @@ const Search = (props) => {
   }, [])
 
   useEffect(() => {
-    getReleasesRecent()
+    if (!searchQuery) {
+      const fetchFeaturedHubs = async () => {
+        await getHubs()
+        const response = await getSubscriptionsForUser(
+          '7g2euzpRxm2A9kgk4UJ9J5ntUYvodTw4s4m7sL1C8JE'
+        )
+        const publicKeys = response.filter((sub) => {
+          return sub.subscriptionType === 'hub'
+        })
+        setFeaturedHubPublicKeys(publicKeys)
+      }
+      getReleasesRecent()
+      fetchFeaturedHubs()
+    }
   }, [])
 
   useEffect(() => {
-    setReleasesRecent(filterReleasesRecent())
-    console.log('releasesRecent', releasesRecent)
-    if (!searchQuery) {
-      defaultResponse.releases = releasesRecent.highlights
-      console.log('defaultResponse', defaultResponse.releases)
-      setActiveView(3)
-    }
+  
+      setReleasesRecent(filterReleasesRecent())
+      defaultSearchView[1].length = releasesRecentState.highlights.length
+      setActiveView(2)
+
   }, [releasesRecentState])
 
   useEffect(() => {
-    const fetchFeaturedHubs = async () => {
-      await getHubs()
-      const response = await getSubscriptionsForUser(
-        '7g2euzpRxm2A9kgk4UJ9J5ntUYvodTw4s4m7sL1C8JE'
-      )
-      const publicKeys = response.filter((sub) => {
-        return sub.subscriptionType === 'hub'
-      })
-      setFeaturedHubPublicKeys(publicKeys)
-    }
-
-    fetchFeaturedHubs()
-    console.log('featuredHubPublicKeys', featuredHubPublicKeys)
-  }, [])
-
-  useEffect(() => {
-    if (featuredHubPublicKeys) {
-      const featured = []
-      Object.values(featuredHubPublicKeys).forEach((sub) => {
-        const hub = hubState[sub.to]
-        if (hub) {
-          featured.push(hub)
-          console.log('featuredHubs', featured)
-        }
-      })
-      setFeaturedHubs(featured)
-    }
+   
+      if (featuredHubPublicKeys) {
+        const featured = []
+        Object.values(featuredHubPublicKeys).forEach((sub) => {
+          const hub = hubState[sub.to]
+          if (hub) {
+            featured.push(hub)
+          }
+        })
+        setFeaturedHubs(featured)
+        defaultSearchView[2].length = featured.length
+      }
+    
   }, [featuredHubPublicKeys, hubState])
 
   useEffect(() => {
@@ -178,20 +174,30 @@ const Search = (props) => {
   }
 
   const renderDefaultSearchView = (activeView) => {
-    switch(activeView) {
+    console.log('DEFAULT')
+    console.log('defaultResponse', defaultResponse)
+    switch (activeView) {
       case 0:
         return (
           <ReusableTable
-          tableType={'defaultSearchResult'}
-          items={defaultResponse.releases}
-          hasOverflow={true}
-        />
-        )
-        case 2:
-          return (
-            <ReusableTable
             tableType={'defaultSearchResult'}
-            items={defaultResponse.releases}
+            items={releasesRecent.highlights}
+            hasOverflow={true}
+          />
+        )
+      case 2:
+        return (
+          <ReusableTable
+            tableType={'defaultSearchResult'}
+            items={releasesRecent.highlights}
+            hasOverflow={true}
+          />
+        )
+      case 3:
+        return (
+          <ReusableTable
+            tableType={'hubHighlights'}
+            items={featuredHubs}
             hasOverflow={true}
           />
         )
@@ -200,12 +206,13 @@ const Search = (props) => {
     }
   }
 
-  console.log('response.releases', response?.releases)
   return (
     <SearchPageContainer>
       <SearchHeaderContainer>
         <SearchHeaderWrapper>
-         {searchQuery  && <Typography>{`Search results for ${query}`}</Typography>} 
+          {searchQuery && (
+            <Typography>{`Search results for ${query}`}</Typography>
+          )}
         </SearchHeaderWrapper>
       </SearchHeaderContainer>
       <>
@@ -228,7 +235,7 @@ const Search = (props) => {
               return (
                 <SearchResultFilter
                   id={index}
-                  isClicked={ activeView === index + 1}
+                  isClicked={activeView === index + 1}
                   onClick={() => setActiveView(index + 1)}
                   disabled={response?.[filter]?.length === 0}
                 >
@@ -236,30 +243,28 @@ const Search = (props) => {
                 </SearchResultFilter>
               )
             })}
-            {
-              !searchResults && <SearchResultFilter
+          {!searchResults && !searchQuery && (
+            <SearchResultFilter
               isClicked={activeView === 0}
               onClick={() => setActiveView(0)}
-              >
-                All
-              </SearchResultFilter>
-            }
-            {
-              !searchResults && 
-              (
-                defaultSearchView.map((filter, index) => {
-                  return (
-                    <SearchResultFilter
-                    id={index}
-                    isClicked={activeView === index + 1}
-                    onClick={() => setActiveView(index + 1)}
-                    disabled={defaultResponse?.[filter]?.length === 0}>
-                      {filter === 'all' ? `${filter}` : `${filter} (${defaultResponse?.[filter]?.length})`}
-                    </SearchResultFilter>
-                  )
-                })
+            >
+              All
+            </SearchResultFilter>
+          )}
+          {!searchResults &&
+            !searchQuery &&
+            defaultSearchView.map((filter, index) => {
+              return (
+                <SearchResultFilter
+                  id={index}
+                  isClicked={activeView === index + 1}
+                  onClick={() => setActiveView(index + 1)}
+                  disabled={filter.length === 0}
+                >
+        {`${filter.name} (${filter.length})`}
+                </SearchResultFilter>
               )
-            }
+            })}
         </SearchResultFilterContainer>
       </>
 
@@ -274,12 +279,9 @@ const Search = (props) => {
           )}
 
           {fetchedResponse && <>{renderTables(activeView)}</>}
-          {!searchQuery && (
-            <>
-              {renderDefaultSearchView(activeView)}
-  
-            </>
-          )}
+          {!searchQuery && <>
+          {renderDefaultSearchView(activeView)}
+          </>}
 
           {query?.length > 0 &&
             fetchedResponse &&
