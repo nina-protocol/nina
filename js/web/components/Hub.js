@@ -22,7 +22,7 @@ const HubComponent = ({ hubPubkey }) => {
   } = useContext(Hub.Context)
 
   const { releaseState } = useContext(Release.Context)
-
+  const { fetchedHubs, setFetchedHubs} = useContext(Nina.Context)
   const [hubReleases, setHubReleases] = useState(undefined)
   const [releaseData, setReleaseData] = useState(undefined)
   const [hubCollaborators, setHubCollaborators] = useState(undefined)
@@ -32,10 +32,23 @@ const HubComponent = ({ hubPubkey }) => {
     releases: false,
     collaborators: false,
   })
+
+  const hasData = useMemo(() => {
+    if (fetchedHubs.has(hubPubkey)) {
+      return true
+    }
+    if (fetched.info && fetched.releases && fetched.collaborators) {
+      setFetchedHubs(fetchedHubs.add(hubPubkey))
+      return true
+    }
+    return false
+  }, [fetched, fetchedHubs, hubPubkey])
+
   const [views, setViews] = useState([
     { name: 'releases', visible: false },
     { name: 'collaborators', visible: true },
   ])
+
   const hubData = useMemo(() => {
     if (hubState[hubPubkey]) {
       setFetched({ ...fetched, info: true})
@@ -158,28 +171,59 @@ const HubComponent = ({ hubPubkey }) => {
   }
   return (
     <>
-
-      <HubContainer>
-        <>{fetched.info && hubData && <HubHeader hubData={hubData} />}</>
-        {fetched.info && hubData && (
+       <HubContainer>
+        <>
+          {hasData && hubData && <HubHeader hubData={hubData} />}
+        </>
+        {hasData && hubData && (
           <HubTabWrapper>
             <TabHeader
               viewHandler={viewHandler}
-              activeView={activeView}
+              isActive={activeView}
               profileTabs={views}
-              releaseData={hubReleases}
-              type={'hubView'}
+              releaseData={releaseData}
+              type={'hubsView'}
             />
           </HubTabWrapper>
         )}
-            {!activeView === undefined && (
-            <ProfileDotWrapper>
-              <Box sx={{ margin: 'auto' }}>
+        <>
+          {activeView === undefined && (
+            <>
+            <HubDotWrapper>
+              <Box sx={{width: '100%', margin: 'auto'}}>
                 <Dots />
               </Box>
-            </ProfileDotWrapper>
+            </HubDotWrapper>
+            </>
+           )} 
+           
+          {activeView === 0 && (
+            <>
+             {hasData && !releaseData && (
+                <Box sx={{ my: 1 }}>No releases found in this Hub</Box>
+              )}
+              {hasData && releaseData && (
+                <ReusableTable
+                  tableType={'hubReleases'}
+                  items={releaseData}
+                />
+              )}
+            </>
           )}
-        <>{renderTables(activeView)}</>
+          {activeView === 1 && (
+            <>
+              {hasData && !hubCollaborators && (
+                <Box sx={{ my: 1 }}>No collaborators found in this Hub</Box>
+              )}
+              {hasData && (
+                <ReusableTable
+                  tableType={'hubCollaborators'}
+                  items={hubCollaborators}
+                />
+              )}
+            </>
+          )}
+        </>
       </HubContainer>
     </>
   )

@@ -49,7 +49,7 @@ const ReleaseContextProvider = ({ children }) => {
   })
   const [allReleases, setAllReleases] = useState([])
   const [allReleasesCount, setAllReleasesCount] = useState(null)
-
+  const [fetchedUserProfileReleases, setFetchedUserProfileReleases] = useState({})
   const resetSearchResults = () => {
     setSearchResults(searchResultsInitialState)
   }
@@ -114,6 +114,8 @@ const ReleaseContextProvider = ({ children }) => {
     getSolPrice,
     releasePurchaseTransactionPending,
     setReleasePurchaseTransactionPending,
+    fetchedUserProfileReleases,
+    setFetchedUserProfileReleases
   })
 
   return (
@@ -159,7 +161,8 @@ const ReleaseContextProvider = ({ children }) => {
         releaseInitViaHub,
         releasePurchaseTransactionPending,
         validateUniqueMd5Digest,
-        getFeedForUser
+        getFeedForUser,
+        fetchedUserProfileReleases,
       }}
     >
       {children}
@@ -192,6 +195,8 @@ const releaseContextHelper = ({
   getSolPrice,
   releasePurchaseTransactionPending,
   setReleasePurchaseTransactionPending,
+  fetchedUserProfileReleases,
+  setFetchedUserProfileReleases
 }) => {
   const { provider, ids, nativeToUi, uiToNative, isSol, isUsdc, endpoints } =
     ninaClient
@@ -1301,9 +1306,17 @@ const releaseContextHelper = ({
     withAccountData = false
   ) => {
     try {
-      const { collected } = await NinaSdk.Account.fetchCollected(publicKey)
+      const { collected } = await NinaSdk.Account.fetchCollected(publicKey, withAccountData)
       const { published } = await NinaSdk.Account.fetchPublished(publicKey, withAccountData)
       setReleaseState(updateStateForReleases([...collected, ...published]))
+      setFetchedUserProfileReleases({
+        ...fetchedUserProfileReleases,
+        [publicKey]: {
+          collected: collected.map((release) => release.publicKey),
+          published: published.map((release) => release.publicKey)
+        },
+      })
+  
       return [collected, published]
     } catch (error) {
       console.warn(error)
@@ -1395,22 +1408,25 @@ const releaseContextHelper = ({
 
   */
  
-  const filterReleasesUserCollection = () => {
-   
-    if (!provider.wallet?.connected) {
+  const filterReleasesUserCollection = (publicKey=undefined) => {
+    if (!publicKey && !provider.wallet?.connected) {
       return []
     }
-
+    let releasePublicKeys
+    if (publicKey) {
+      releasePublicKeys = fetchedUserProfileReleases[publicKey].collected
+    } else {
+      releasePublicKeys = Object.keys(collection)
+    }
     const releases = []
-    Object.keys(collection).forEach((releasePubkey) => {
-      if (collection[releasePubkey] > 0) {
-        const tokenData = releaseState.tokenData[releasePubkey]
-        const metadata = releaseState.metadata[releasePubkey]
-        if (metadata) {
-          releases.push({ tokenData, metadata, releasePubkey })
-        }
+    releasePublicKeys?.forEach((releasePubkey) => {
+      const tokenData = releaseState.tokenData[releasePubkey]
+      const metadata = releaseState.metadata[releasePubkey]
+      if (metadata) {
+        releases.push({ tokenData, metadata, releasePubkey })
       }
     })
+
     return releases
   }
 
@@ -1493,7 +1509,6 @@ const releaseContextHelper = ({
       userPubkey = provider.wallet?.publicKey.toBase58()
     }
 
-
     const releases = []
     Object.keys(releaseState.tokenData).forEach((releasePubkey) => {
       const tokenData = releaseState.tokenData[releasePubkey]
@@ -1507,7 +1522,7 @@ const releaseContextHelper = ({
         releaseData.releasePubkey = releasePubkey
       }
 
-      tokenData.royaltyRecipients.forEach((recipient) => {
+      tokenData.revenueShareRecipients.forEach((recipient) => {
         if (
           recipient.recipientAuthority === userPubkey &&
           metadata
@@ -1742,7 +1757,6 @@ const releaseContextHelper = ({
     getReleaseRoyaltiesByUser,
     getUserCollectionAndPublished,
     filterReleasesUserCollection,
-    getUserCollectionAndPublished,
     filterReleasesPublishedByUser,
     filterReleasesRecent,
     filterReleasesAll,
