@@ -17,8 +17,15 @@ import {
 import Breadcrumbs from './Breadcrumbs'
 import NavSearch from './NavSearch'
 const NavBar = () => {
-  const { healthOk, getSubscriptionsForUser, filterSubscriptionsForUser, subscriptionState } = useContext(Nina.Context)
-  const {filterHubsForUser, getHubsForUser, hubState, getHubs } = useContext(Hub.Context)
+  const {
+    healthOk,
+    getSubscriptionsForUser,
+    filterSubscriptionsForUser,
+    subscriptionState,
+  } = useContext(Nina.Context)
+  const { filterHubsForUser, getHubsForUser, hubState, getHubs } = useContext(
+    Hub.Context
+  )
   const wallet = useWallet()
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),
@@ -36,8 +43,8 @@ const NavBar = () => {
 
   useEffect(() => {
     if (wallet.connected) {
-      getHubsForUser(wallet.publicKey.toBase58());
-      getSubscriptionsForUser(wallet.publicKey.toBase58());
+      getHubsForUser(wallet.publicKey.toBase58())
+      getSubscriptionsForUser(wallet.publicKey.toBase58())
     }
   }, [wallet.connected])
 
@@ -69,6 +76,10 @@ const NavBar = () => {
                 userHubs.length === 1 ? userHubs[0].handle : ''
               }`}
               target="_blank"
+<<<<<<< HEAD
+=======
+              rel="noreferrer"
+>>>>>>> feaeef47f6e22a0eb211f429a9bb28177aa396d9
               style={{ margin: '0' }}
             >
               <Typography variant="subtitle1" sx={{ mr: '15px' }}>

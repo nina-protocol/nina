@@ -144,8 +144,19 @@ const HubDescription = ({ description }) => {
   )
 }
 
+<<<<<<< HEAD
 const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRelease, refreshProfile, dashboardPublicKey }) => {
   const router = useRouter()
+=======
+const ReusableTableBody = ({
+  items,
+  tableType,
+  inDashboard,
+  collectRoyaltyForRelease,
+  refreshProfile,
+  dashboardPublicKey,
+}) => {
+>>>>>>> feaeef47f6e22a0eb211f429a9bb28177aa396d9
   const {
     updateTrack,
     addTrackToQueue,
@@ -155,7 +166,7 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
     playlist,
   } = useContext(Audio.Context)
   const { ninaClient } = useContext(Nina.Context)
-  
+
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
   const snackbarHandler = (message) => {
@@ -206,14 +217,16 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
     }
   }
 
-
   let rows = items?.map((data) => {
-    const {releasePubkey} = data
+    const { releasePubkey } = data
     const playData = {
       releasePubkey,
     }
     let formattedData = {}
-    if (tableType === 'profilePublishedReleases' || tableType === 'profileCollectionReleases') {
+    if (
+      tableType === 'profilePublishedReleases' ||
+      tableType === 'profileCollectionReleases'
+    ) {
       formattedData = {
         ctas: playData,
         id: releasePubkey,
@@ -240,20 +253,21 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
             className={collectable ? 'collectable' : ''}
           >
             Collect
-            {collectable && (
-              <span>
-                {collectableAmount}
-              </span>
-            )}
+            {collectable && <span>{collectableAmount}</span>}
           </StyledCollectButton>
         )
-        formattedData.price = ninaClient.nativeToUiString(data.tokenData.price, data.tokenData.paymentMint)
+        formattedData.price = ninaClient.nativeToUiString(
+          data.tokenData.price,
+          data.tokenData.paymentMint
+        )
         formattedData.remaining = `${data.tokenData.remainingSupply} / ${data.tokenData.totalSupply}`
-        formattedData.collected = ninaClient.nativeToUiString(recipient.collected + recipient.owed, data.tokenData.paymentMint)
-        formattedData.collect = collectButton     
+        formattedData.collected = ninaClient.nativeToUiString(
+          recipient.collected + recipient.owed,
+          data.tokenData.paymentMint
+        )
+        formattedData.collect = collectButton
       }
     }
-
 
     if (tableType === 'profileHubs') {
       formattedData = {
@@ -351,7 +365,7 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
   return (
     <TableBody>
       {rows?.map((row, i) => (
-        <Link href={row.link} passHref>
+        <Link href={row.link} passHref key={i}>
           <TableRow key={i} hover sx={{ cursor: 'pointer' }}>
             {Object.keys(row).map((cellName, i) => {
               const cellData = row[cellName]
@@ -362,7 +376,7 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
               ) {
                 if (cellName === 'ctas') {
                   return (
-                    <StyledTableCellButtonsContainer align="left"  key={i}>
+                    <StyledTableCellButtonsContainer align="left" key={i}>
                       <Button
                         sx={{ cursor: 'pointer' }}
                         id={row.id}
@@ -394,7 +408,9 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
                 } else if (cellName === 'image') {
                   return (
                     <StyledImageTableCell align="left" key={cellName}>
-                      <Box sx={{width:'50px',  textAlign: 'left', pr: '15px' }}>
+                      <Box
+                        sx={{ width: '50px', textAlign: 'left', pr: '15px' }}
+                      >
                         <Image
                           height={'100%'}
                           width={'100%'}
@@ -499,7 +515,9 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
                   return (
                     <StyledTableCell key={cellName}>
                       <OverflowContainer>
-                        <Typography sx={{paddingLeft: '5px'}} noWrap>{cellData}</Typography>
+                        <Typography sx={{ paddingLeft: '5px' }} noWrap>
+                          {cellData}
+                        </Typography>
                       </OverflowContainer>
                     </StyledTableCell>
                   )
@@ -514,13 +532,27 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
   )
 }
 
-const ReusableTable = ({ items, tableType, inDashboard, collectRoyaltyForRelease, refreshProfile, dashboardPublicKey }) => {
+const ReusableTable = ({
+  items,
+  tableType,
+  inDashboard,
+  collectRoyaltyForRelease,
+  refreshProfile,
+  dashboardPublicKey,
+}) => {
   return (
     <ResponsiveContainer>
       <ResponsiveTableContainer>
         <Table>
           <ReusableTableHead tableType={tableType} inDashboard={inDashboard} />
-          <ReusableTableBody items={items} tableType={tableType} inDashboard={inDashboard} collectRoyaltyForRelease={collectRoyaltyForRelease} refreshProfile={refreshProfile} dashboardPublicKey={dashboardPublicKey} />
+          <ReusableTableBody
+            items={items}
+            tableType={tableType}
+            inDashboard={inDashboard}
+            collectRoyaltyForRelease={collectRoyaltyForRelease}
+            refreshProfile={refreshProfile}
+            dashboardPublicKey={dashboardPublicKey}
+          />
         </Table>
       </ResponsiveTableContainer>
     </ResponsiveContainer>
@@ -597,7 +629,7 @@ const ResponsiveContainer = styled(Box)(({ theme, hasOverflow }) => ({
   webkitOverflowScrolling: 'touch',
   overflowY: hasOverflow ? 'auto' : 'unset',
   overflowX: 'hidden',
- [ '&::-webkit-scrollbar']: {
+  ['&::-webkit-scrollbar']: {
     display: 'none',
   },
   [theme.breakpoints.down('md')]: {

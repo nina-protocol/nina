@@ -18,7 +18,9 @@ const ExchangeListItem = (props) => {
   } = props
   const wallet = useWallet()
   const { ninaClient } = useContext(Nina.Context)
-  const displayPrice = isSelling ? ninaClient.nativeToUiString(amount, release.paymentMint) : `${amount} USDC`
+  const displayPrice = isSelling
+    ? ninaClient.nativeToUiString(amount, release.paymentMint)
+    : `${amount} USDC`
   const itemData = (
     <Root>
       <Typography>
@@ -26,7 +28,7 @@ const ExchangeListItem = (props) => {
           className={`
           ${classes.exchangeListItemPrice} 
           ${classes.exchangeListItemPrice}--${
-            initializer === wallet?.publicKey?.toBase58()  ? 'currentUser' : ''
+            initializer === wallet?.publicKey?.toBase58() ? 'currentUser' : ''
           }
           `}
         >
@@ -60,7 +62,9 @@ const ExchangeListItem = (props) => {
       className={`
       ${classes.exchangeListItem} 
       ${classes.exchangeListItem}--${isSelling ? 'listing' : 'offer'}
-      ${classes.exchangeListItem}--${initializer === wallet?.publicKey?.toBase58() ? 'currentUser' : ''}
+      ${classes.exchangeListItem}--${
+        initializer === wallet?.publicKey?.toBase58() ? 'currentUser' : ''
+      }
       `}
     >
       {itemData}

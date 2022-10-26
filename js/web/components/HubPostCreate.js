@@ -169,12 +169,16 @@ const HubPostCreate = ({
 
   const handleSubmit = async () => {
     try {
-      const error = checkIfHasBalanceToCompleteAction(formValues.postForm.reference ? NinaProgramAction.POST_INIT_VIA_HUB_WITH_REFERENCE_RELEASE : NinaProgramAction.POST_INIT_VIA_HUB);
+      const error = checkIfHasBalanceToCompleteAction(
+        formValues.postForm.reference
+          ? NinaProgramAction.POST_INIT_VIA_HUB_WITH_REFERENCE_RELEASE
+          : NinaProgramAction.POST_INIT_VIA_HUB
+      )
       if (error) {
-        enqueueSnackbar(error.msg, { variant: "failure" });
-        return;
+        enqueueSnackbar(error.msg, { variant: 'failure' })
+        return
       }
-  
+
       setPostCreated(false)
 
       if (update) {

@@ -3,7 +3,11 @@ import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 
 const ScrollablePageWrapper = ({ onScroll, children, paddingTop }) => {
-  return <ScrollablePage onScroll={onScroll} paddingTop={paddingTop}>{children}</ScrollablePage>
+  return (
+    <ScrollablePage onScroll={onScroll} paddingTop={paddingTop}>
+      {children}
+    </ScrollablePage>
+  )
 }
 
 const ScrollablePage = styled(Box)(({ theme, paddingTop }) => ({

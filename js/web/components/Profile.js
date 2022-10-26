@@ -27,9 +27,11 @@ const Profile = ({ profilePubkey }) => {
     fetchedUserProfileReleases,
     setFetchedUserProfileReleases,
     filterReleasesUserCollection,
-    filterReleasesPublishedByUser
+    filterReleasesPublishedByUser,
   } = useContext(Release.Context)
-  const { getHubsForUser, fetchedHubsForUser, filterHubsForUser } = useContext(Hub.Context)
+  const { getHubsForUser, fetchedHubsForUser, filterHubsForUser } = useContext(
+    Hub.Context
+  )
   const {
     getSubscriptionsForUser,
     filterSubscriptionsForUser,
@@ -65,7 +67,7 @@ const Profile = ({ profilePubkey }) => {
     if (fetchedProfiles.has(profilePubkey)) {
       return true
     }
-    if (fetched){
+    if (fetched) {
       setFetchedProfiles(fetchedProfiles.add(profilePubkey))
       return true
     }
@@ -96,15 +98,17 @@ const Profile = ({ profilePubkey }) => {
 
   useEffect(() => {
     if (router.query.view) {
-      const viewIndex = views.findIndex((view) => view.name === router.query.view)
+      const viewIndex = views.findIndex(
+        (view) => view.name === router.query.view
+      )
       setActiveView(viewIndex)
     }
   }, [router.query.view])
-  
+
   useEffect(() => {
     const to = []
     const from = []
-    if (profileSubscriptions){
+    if (profileSubscriptions) {
       profileSubscriptions.forEach((sub) => {
         if (sub.to === profilePubkey) {
           to.push(sub)
@@ -120,7 +124,7 @@ const Profile = ({ profilePubkey }) => {
   useEffect(() => {
     let viewIndex
     let updatedView = views.slice()
-    if (!inDashboard){
+    if (!inDashboard) {
       if (profilePublishedReleases?.length === 0) {
         viewIndex = updatedView.findIndex((view) => view.name === 'releases')
         updatedView[viewIndex].disabled = true
@@ -144,7 +148,13 @@ const Profile = ({ profilePubkey }) => {
     }
 
     setViews(updatedView)
-  }, [profilePublishedReleases, profileCollectionReleases, profileHubs, profileSubscriptionsTo, profileSubscriptionsFrom])
+  }, [
+    profilePublishedReleases,
+    profileCollectionReleases,
+    profileHubs,
+    profileSubscriptionsTo,
+    profileSubscriptionsFrom,
+  ])
 
   useEffect(() => {
     if (!router.query.view && !activeView) {
@@ -164,7 +174,7 @@ const Profile = ({ profilePubkey }) => {
       setProfilePublishedReleases(filterReleasesPublishedByUser(profilePubkey))
     }
   }, [fetchedUserProfileReleases, profilePubkey])
-  
+
   useEffect(() => {
     setProfileSubscriptions(filterSubscriptionsForUser(profilePubkey))
   }, [subscriptionState])
@@ -182,22 +192,22 @@ const Profile = ({ profilePubkey }) => {
         profilePubkey,
         true
       )
-  
+
       await getSubscriptionsForUser(profilePubkey)
-    
+
       let viewIndex
       let updatedView = views.slice()
-  
+
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
       updatedView[viewIndex].playlist = published
-  
+
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
       updatedView[viewIndex].playlist = collected
       setFetched(true)
     } catch (err) {
       console.log(err)
     }
-  } 
+  }
 
   const viewHandler = (event) => {
     event.stopPropagation()
@@ -217,14 +227,38 @@ const Profile = ({ profilePubkey }) => {
   }
 
   const displayNameForProfile = () => {
-    if (profileVerifications?.find((verification) => verification.type === 'soundcloud')) {
-      return profileVerifications.find((verification) => verification.type === 'soundcloud').displayName
-    } else if (profileVerifications?.find((verification) => verification.type === 'twitter')) {
-      return profileVerifications.find((verification) => verification.type === 'twitter').displayName
-    } else if (profileVerifications?.find((verification) => verification.type === 'instagram')) {
-      return profileVerifications.find((verification) => verification.type === 'instagram').displayName
-    } else if (profileVerifications?.find((verification) => verification.type === 'ethereum')) {
-      return profileVerifications.find((verification) => verification.type === 'ethereum').displayName
+    if (
+      profileVerifications?.find(
+        (verification) => verification.type === 'soundcloud'
+      )
+    ) {
+      return profileVerifications.find(
+        (verification) => verification.type === 'soundcloud'
+      ).displayName
+    } else if (
+      profileVerifications?.find(
+        (verification) => verification.type === 'twitter'
+      )
+    ) {
+      return profileVerifications.find(
+        (verification) => verification.type === 'twitter'
+      ).displayName
+    } else if (
+      profileVerifications?.find(
+        (verification) => verification.type === 'instagram'
+      )
+    ) {
+      return profileVerifications.find(
+        (verification) => verification.type === 'instagram'
+      ).displayName
+    } else if (
+      profileVerifications?.find(
+        (verification) => verification.type === 'ethereum'
+      )
+    ) {
+      return profileVerifications.find(
+        (verification) => verification.type === 'ethereum'
+      ).displayName
     } else {
       return truncateAddress(profilePubkey)
     }
@@ -235,7 +269,7 @@ const Profile = ({ profilePubkey }) => {
       case 0:
         return (
           <>
-            {(inDashboard && profilePublishedReleases?.length === 0) ? (
+            {inDashboard && profilePublishedReleases?.length === 0 ? (
               <NewProfileCtas activeViewIndex={activeView} />
             ) : (
               <ReusableTable
@@ -246,16 +280,14 @@ const Profile = ({ profilePubkey }) => {
                 dashboardPublicKey={profilePubkey}
                 collectRoyaltyForRelease={collectRoyaltyForRelease}
                 refreshProfile={getUserData}
-
               />
-
             )}
           </>
         )
       case 1:
         return (
           <>
-            {(inDashboard && profileCollectionReleases?.length === 0) ? (
+            {inDashboard && profileCollectionReleases?.length === 0 ? (
               <NewProfileCtas activeViewIndex={activeView} />
             ) : (
               <ReusableTable
@@ -269,9 +301,9 @@ const Profile = ({ profilePubkey }) => {
       case 2:
         return (
           <>
-           {(inDashboard && profileHubs?.length === 0) ? (
+            {inDashboard && profileHubs?.length === 0 ? (
               <NewProfileCtas activeViewIndex={activeView} />
-            ) : ( 
+            ) : (
               <ReusableTable
                 tableType={'profileHubs'}
                 items={profileHubs}
@@ -280,11 +312,11 @@ const Profile = ({ profilePubkey }) => {
             )}
           </>
         )
-      case 3: 
+      case 3:
         return (
           <>
-            {(inDashboard && profileSubscriptionsTo?.length === 0) ? (
-                <NewProfileCtas activeViewIndex={activeView} />
+            {inDashboard && profileSubscriptionsTo?.length === 0 ? (
+              <NewProfileCtas activeViewIndex={activeView} />
             ) : (
               <ReusableTable
                 tableType={'followers'}
@@ -293,12 +325,12 @@ const Profile = ({ profilePubkey }) => {
             )}
           </>
         )
-      case 4: 
+      case 4:
         return (
           <>
-            {(inDashboard && profileSubscriptionsFrom?.length === 0) ? (
-                <NewProfileCtas activeViewIndex={activeView} />
-              ) : (
+            {inDashboard && profileSubscriptionsFrom?.length === 0 ? (
+              <NewProfileCtas activeViewIndex={activeView} />
+            ) : (
               <ReusableTable
                 tableType={'following'}
                 items={profileSubscriptionsFrom}
@@ -311,43 +343,45 @@ const Profile = ({ profilePubkey }) => {
     }
   }
 
-
   return (
     <>
-       <ProfileContainer>
-          <ProfileHeaderWrapper>
-            <ProfileHeaderContainer>
-              {profilePubkey && (
-                <Box sx={{mb:1}} display='flex'>
-                  <Typography>{truncateAddress(profilePubkey)}</Typography>
-                  
-                  {wallet.connected && (
-                    <Subscribe accountAddress={profilePubkey} />
-                  )}
-                  {profileVerifications && (
-                    <IdentityVerification verifications={profileVerifications} profilePublicKey={profilePubkey} />
-                  )}
-                </Box>
-              )}
-              {hasData && artistNames?.length > 0 && (
-                <ProfileOverflowContainer>
-                  {`Publishes as ${artistNames?.map((name) => name).join(', ')}`}
-                </ProfileOverflowContainer>
-              )}
-            </ProfileHeaderContainer>
-          </ProfileHeaderWrapper>
+      <ProfileContainer>
+        <ProfileHeaderWrapper>
+          <ProfileHeaderContainer>
+            {profilePubkey && (
+              <Box sx={{ mb: 1 }} display="flex">
+                <Typography>{truncateAddress(profilePubkey)}</Typography>
 
-        {hasData &&  (
-            <Box sx={{ py: 1 }}>
-              <TabHeader
-                viewHandler={viewHandler}
-                activeView={activeView}
-                profileTabs={views}
-                followersCount={profileSubscriptionsTo?.length}
-                followingCount={profileSubscriptionsFrom?.length}
-              />
-            </Box>
-          )}
+                {wallet.connected && (
+                  <Subscribe accountAddress={profilePubkey} />
+                )}
+                {profileVerifications && (
+                  <IdentityVerification
+                    verifications={profileVerifications}
+                    profilePublicKey={profilePubkey}
+                  />
+                )}
+              </Box>
+            )}
+            {hasData && artistNames?.length > 0 && (
+              <ProfileOverflowContainer>
+                {`Publishes as ${artistNames?.map((name) => name).join(', ')}`}
+              </ProfileOverflowContainer>
+            )}
+          </ProfileHeaderContainer>
+        </ProfileHeaderWrapper>
+
+        {hasData && (
+          <Box sx={{ py: 1 }}>
+            <TabHeader
+              viewHandler={viewHandler}
+              activeView={activeView}
+              profileTabs={views}
+              followersCount={profileSubscriptionsTo?.length}
+              followingCount={profileSubscriptionsFrom?.length}
+            />
+          </Box>
+        )}
 
         {fetched.info && (
           <Box sx={{ py: 1 }}>

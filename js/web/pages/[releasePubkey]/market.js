@@ -1,15 +1,13 @@
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
 import Release from '../../components/Release'
-import NinaSdk from "@nina-protocol/js-sdk";
+import NinaSdk from '@nina-protocol/js-sdk'
 const NotFound = dynamic(() => import('../../components/NotFound'))
 
 const ReleaseMarketPage = (props) => {
   const { metadata } = props
   if (!metadata) {
-    return (
-      <NotFound />
-    )
+    return <NotFound />
   }
   return (
     <>
@@ -51,10 +49,10 @@ export const getStaticPaths = async () => {
       {
         params: {
           releasePubkey: 'placeholder',
-        }
-      }
+        },
+      },
     ],
-    fallback: 'blocking'
+    fallback: 'blocking',
   }
 }
 
@@ -62,7 +60,7 @@ export const getStaticProps = async (context) => {
   const releasePubkey = context.params.releasePubkey
   try {
     const { release } = await NinaSdk.Release.fetch(releasePubkey)
-    return {  
+    return {
       props: {
         metadata: release.metadata,
         releasePubkey,
@@ -70,7 +68,7 @@ export const getStaticProps = async (context) => {
     }
   } catch (error) {
     console.warn(error)
-    return {props: {}}
+    return { props: {} }
   }
 }
 

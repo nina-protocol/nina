@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext, useRef, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
-import { formatDuration }  from '@nina-protocol/nina-internal-sdk/esm/utils'
-import { imageManager }  from '@nina-protocol/nina-internal-sdk/esm/utils'
+import { formatDuration } from '@nina-protocol/nina-internal-sdk/esm/utils'
+import { imageManager } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import Link from 'next/link'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -229,9 +229,15 @@ const AudioPlayer = () => {
           disableRipple={true}
         >
           {isPlaying ? (
-            <PauseIcon onClickCapture={() => playButtonHandler()} sx={iconStyle} />
+            <PauseIcon
+              onClickCapture={() => playButtonHandler()}
+              sx={iconStyle}
+            />
           ) : (
-            <PlayArrowIcon onClickCapture={() => playButtonHandler()} sx={iconStyle} />
+            <PlayArrowIcon
+              onClickCapture={() => playButtonHandler()}
+              sx={iconStyle}
+            />
           )}
         </IconButton>
         <IconButton

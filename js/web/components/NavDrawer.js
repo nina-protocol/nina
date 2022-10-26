@@ -107,7 +107,7 @@ const NavDrawer = () => {
                     </a>
                   </StyledListItemText>
                 </ListItem>
-              )                
+              )
             case 'releases':
               return (
                 <Link

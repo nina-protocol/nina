@@ -4,17 +4,17 @@ import { useState, useRef, useMemo } from 'react'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import Link from 'next/link'
 import { styled } from '@mui/material/styles'
-import Box  from '@mui/material/Box'
+import Box from '@mui/material/Box'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
 const { getImageFromCDN, loader } = imageManager
 import CloseIcon from '@mui/icons-material/Close'
 import Typography from '@mui/material/Typography'
 import debounce from 'lodash.debounce'
-import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
+import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
-import Audio from "@nina-protocol/nina-internal-sdk/esm/Audio";
-import Button from "@mui/material/Button";
-import { useRouter } from "next/router";
+import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
+import Button from '@mui/material/Button'
+import { useRouter } from 'next/router'
 
 const timeSince = (date) => {
   const seconds = Math.floor((new Date() - date) / 1000)
@@ -46,9 +46,18 @@ const timeSince = (date) => {
   return Math.floor(seconds) + ' seconds'
 }
 
-const Feed = ({ items, itemsTotal, toggleDrawer, playFeed, publicKey, handleGetFeedForUser}) => {
-  const { updateTrack, isPlaying, setIsPlaying, track } = useContext(Audio.Context);
-  const router = useRouter();
+const Feed = ({
+  items,
+  itemsTotal,
+  toggleDrawer,
+  playFeed,
+  publicKey,
+  handleGetFeedForUser,
+}) => {
+  const { updateTrack, isPlaying, setIsPlaying, track } = useContext(
+    Audio.Context
+  )
+  const router = useRouter()
 
   const [pendingFetch, setPendingFetch] = useState(false)
   const scrollRef = useRef()
@@ -57,17 +66,13 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed, publicKey, handleGetF
     const bottom =
       scrollRef.current.getBoundingClientRect().bottom - 250 <=
       window.innerHeight
-    if (
-      bottom &&
-      !pendingFetch &&
-      itemsTotal !== items.length
-    ) {
+    if (bottom && !pendingFetch && itemsTotal !== items.length) {
       setPendingFetch(true)
       handleGetFeedForUser(publicKey)
     }
   }
 
-   const handlePlay = (e, releasePubkey) => {
+  const handlePlay = (e, releasePubkey) => {
     e.stopPropagation()
     e.preventDefault()
     if (isPlaying && track.releasePubkey === releasePubkey) {
@@ -82,7 +87,6 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed, publicKey, handleGetF
     e.preventDefault()
     router.push(path)
   }
-  
 
   const feedItems = useMemo(() => {
     const feedItemComponents = items?.map((item, i) => {
@@ -90,7 +94,9 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed, publicKey, handleGetF
         case 'HubInitWithCredit':
           return (
             <ImageCard>
-              <HoverContainer href={`/hubs/${item?.hub?.handle}`}  passHref
+              <HoverContainer
+                href={`/hubs/${item?.hub?.handle}`}
+                passHref
                 onClick={(e) => handleClick(e, `/${item.hub?.handle}`)}
               >
                 <Image
@@ -110,29 +116,49 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed, publicKey, handleGetF
                 <HoverCard>
                   <CtaWrapper>
                     <Button
-                      onClick={(e) => {handlePlay(e, item.release.publicKey)}}
+                      onClick={(e) => {
+                        handlePlay(e, item.release.publicKey)
+                      }}
                     >
                       {isPlaying &&
-                        track.releasePubkey === item.release?.publicKey ? (
-                          <PauseCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
-                        ) : (
-                          <PlayCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
-                        )}
+                      track.releasePubkey === item.release?.publicKey ? (
+                        <PauseCircleOutlineOutlinedIcon
+                          sx={{ color: 'text.primary' }}
+                        />
+                      ) : (
+                        <PlayCircleOutlineOutlinedIcon
+                          sx={{ color: 'text.primary' }}
+                        />
+                      )}
                     </Button>
                   </CtaWrapper>
                 </HoverCard>
               </HoverContainer>
               <CopyWrapper>
                 <Typography my={1}>New Hub:</Typography>
-                <Typography my={1}><Link href={`/hubs/${item?.hub?.handle}`} passHref>{`${item?.hub?.data?.displayName}`}</Link> created by <Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link></Typography>
-                <Typography my={1} fontWeight={600}>{timeSince(Date.parse(item.datetime))} ago</Typography>
+                <Typography my={1}>
+                  <Link
+                    href={`/hubs/${item?.hub?.handle}`}
+                    passHref
+                  >{`${item?.hub?.data?.displayName}`}</Link>{' '}
+                  created by{' '}
+                  <Link
+                    href={`/profiles/${item.authority.publicKey}`}
+                    passHref
+                  >{`${truncateAddress(item.authority.publicKey)}`}</Link>
+                </Typography>
+                <Typography my={1} fontWeight={600}>
+                  {timeSince(Date.parse(item.datetime))} ago
+                </Typography>
               </CopyWrapper>
             </ImageCard>
           )
         case 'ReleaseInitWithCredit':
           return (
             <ImageCard>
-              <HoverContainer href={`/${item.release?.publicKey}`} passHref
+              <HoverContainer
+                href={`/${item.release?.publicKey}`}
+                passHref
                 onClick={(e) => handleClick(e, `/${item.release?.publicKey}`)}
               >
                 <Image
@@ -152,30 +178,51 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed, publicKey, handleGetF
                 <HoverCard>
                   <CtaWrapper>
                     <Button
-                      onClick={(e) => {handlePlay(e, item.release.publicKey)}}
+                      onClick={(e) => {
+                        handlePlay(e, item.release.publicKey)
+                      }}
                     >
                       {isPlaying &&
-                        track.releasePubkey === item.release.publicKey ? (
-                          <PauseCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
-                        ) : (
-                          <PlayCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
-                        )}
+                      track.releasePubkey === item.release.publicKey ? (
+                        <PauseCircleOutlineOutlinedIcon
+                          sx={{ color: 'text.primary' }}
+                        />
+                      ) : (
+                        <PlayCircleOutlineOutlinedIcon
+                          sx={{ color: 'text.primary' }}
+                        />
+                      )}
                     </Button>
                   </CtaWrapper>
                 </HoverCard>
               </HoverContainer>
               <CopyWrapper>
                 <Typography my={1}>New Release:</Typography>
-                <Typography my={1}><Link href={`/${item.release.publicKey}`} passHref>{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link></Typography>
-                <Typography my={1}>by <Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link></Typography>
-                <Typography my={1} fontWeight={600}>{timeSince(Date.parse(item.datetime))} ago</Typography>
+                <Typography my={1}>
+                  <Link
+                    href={`/${item.release.publicKey}`}
+                    passHref
+                  >{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link>
+                </Typography>
+                <Typography my={1}>
+                  by{' '}
+                  <Link
+                    href={`/profiles/${item.authority.publicKey}`}
+                    passHref
+                  >{`${truncateAddress(item.authority.publicKey)}`}</Link>
+                </Typography>
+                <Typography my={1} fontWeight={600}>
+                  {timeSince(Date.parse(item.datetime))} ago
+                </Typography>
               </CopyWrapper>
             </ImageCard>
           )
         case 'ReleaseInitViaHub':
           return (
             <ImageCard>
-              <HoverContainer href={`/${item.release?.publicKey}`} passHref
+              <HoverContainer
+                href={`/${item.release?.publicKey}`}
+                passHref
                 onClick={(e) => handleClick(e, `/${item.release?.publicKey}`)}
               >
                 <Image
@@ -195,72 +242,117 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed, publicKey, handleGetF
                 <HoverCard>
                   <CtaWrapper>
                     <Button
-                      onClick={(e) => {handlePlay(e, item.release.publicKey)}}
+                      onClick={(e) => {
+                        handlePlay(e, item.release.publicKey)
+                      }}
                     >
                       {isPlaying &&
-                        track.releasePubkey === item.release.publicKey ? (
-                          <PauseCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
-                        ) : (
-                          <PlayCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
-                        )}
+                      track.releasePubkey === item.release.publicKey ? (
+                        <PauseCircleOutlineOutlinedIcon
+                          sx={{ color: 'text.primary' }}
+                        />
+                      ) : (
+                        <PlayCircleOutlineOutlinedIcon
+                          sx={{ color: 'text.primary' }}
+                        />
+                      )}
                     </Button>
                   </CtaWrapper>
                 </HoverCard>
               </HoverContainer>
               <CopyWrapper>
                 <Typography my={1}>New Release:</Typography>
-                <Typography my={1}><Link href={`/${item.release.publicKey}`} passHref>{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link> via <Link href={`/hubs/${item?.hub?.handle}`} passHref>{`${item?.hub?.data?.displayName}`}</Link></Typography>
-                <Typography fontWeight={600}>{timeSince(Date.parse(item.datetime))} ago</Typography>
+                <Typography my={1}>
+                  <Link
+                    href={`/${item.release.publicKey}`}
+                    passHref
+                  >{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link>{' '}
+                  via{' '}
+                  <Link
+                    href={`/hubs/${item?.hub?.handle}`}
+                    passHref
+                  >{`${item?.hub?.data?.displayName}`}</Link>
+                </Typography>
+                <Typography fontWeight={600}>
+                  {timeSince(Date.parse(item.datetime))} ago
+                </Typography>
               </CopyWrapper>
             </ImageCard>
           )
-      case 'ReleasePurchase':
-      case 'ReleasePurchaseViaHub':
-        return (
-          <ImageCard>
-            <HoverContainer href={`/${item.release?.publicKey}`} passHref
-              onClick={(e) => handleClick(e, `/${item.release?.publicKey}`)}
-            >
-            <Image
-              height={'100px'}
-              width={'100px'}
-              layout="responsive"
-              src={getImageFromCDN(
-                item.release?.metadata.image,
-                400,
-                Date.parse(item.datetime)
-              )}
-              alt={i}
-              priority={true}
-              loader={loader}
-              unoptimized={true}
-            />
-            <HoverCard>
-              <CtaWrapper>
-                <Button
-                  onClick={(e) => {handlePlay(e, item.release.publicKey)}}
-                >
-                  {isPlaying &&
-                    track.releasePubkey === item.release.publicKey ? (
-                      <PauseCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
-                    ) : (
-                      <PlayCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
-                    )}
-                </Button>
-              </CtaWrapper>
-            </HoverCard>
-            </HoverContainer>
-            <CopyWrapper>
-              <Typography my={1}>Release Purchased:</Typography>
-              <Typography my={1}><Link href={`/${item.release?.publicKey}`} passHref>{`${item.release?.metadata.properties.artist} - ${item.release?.metadata.properties.title}`}</Link></Typography>
-              <Typography my={1}>by <Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link></Typography>
-              {item.type === 'ReleasePurchaseViaHub' && (
-                <Typography my={1}>from <Link href={`/hubs/${item.hub.handle}`} passHref>{`${item.hub.data.displayName}`}</Link></Typography>
-              )} 
-              <Typography fontWeight={600}>{timeSince(Date.parse(item.datetime))} ago</Typography>
-            </CopyWrapper>
-          </ImageCard>
-        )
+        case 'ReleasePurchase':
+        case 'ReleasePurchaseViaHub':
+          return (
+            <ImageCard>
+              <HoverContainer
+                href={`/${item.release?.publicKey}`}
+                passHref
+                onClick={(e) => handleClick(e, `/${item.release?.publicKey}`)}
+              >
+                <Image
+                  height={'100px'}
+                  width={'100px'}
+                  layout="responsive"
+                  src={getImageFromCDN(
+                    item.release?.metadata.image,
+                    400,
+                    Date.parse(item.datetime)
+                  )}
+                  alt={i}
+                  priority={true}
+                  loader={loader}
+                  unoptimized={true}
+                />
+                <HoverCard>
+                  <CtaWrapper>
+                    <Button
+                      onClick={(e) => {
+                        handlePlay(e, item.release.publicKey)
+                      }}
+                    >
+                      {isPlaying &&
+                      track.releasePubkey === item.release.publicKey ? (
+                        <PauseCircleOutlineOutlinedIcon
+                          sx={{ color: 'text.primary' }}
+                        />
+                      ) : (
+                        <PlayCircleOutlineOutlinedIcon
+                          sx={{ color: 'text.primary' }}
+                        />
+                      )}
+                    </Button>
+                  </CtaWrapper>
+                </HoverCard>
+              </HoverContainer>
+              <CopyWrapper>
+                <Typography my={1}>Release Purchased:</Typography>
+                <Typography my={1}>
+                  <Link
+                    href={`/${item.release?.publicKey}`}
+                    passHref
+                  >{`${item.release?.metadata.properties.artist} - ${item.release?.metadata.properties.title}`}</Link>
+                </Typography>
+                <Typography my={1}>
+                  by{' '}
+                  <Link
+                    href={`/profiles/${item.authority.publicKey}`}
+                    passHref
+                  >{`${truncateAddress(item.authority.publicKey)}`}</Link>
+                </Typography>
+                {item.type === 'ReleasePurchaseViaHub' && (
+                  <Typography my={1}>
+                    from{' '}
+                    <Link
+                      href={`/hubs/${item.hub.handle}`}
+                      passHref
+                    >{`${item.hub.data.displayName}`}</Link>
+                  </Typography>
+                )}
+                <Typography fontWeight={600}>
+                  {timeSince(Date.parse(item.datetime))} ago
+                </Typography>
+              </CopyWrapper>
+            </ImageCard>
+          )
         case 'HubAddCollaborator':
           return (
             <ImageCard>
@@ -281,8 +373,20 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed, publicKey, handleGetF
                 />
               </Link>
               <CopyWrapper>
-                <Typography my={1}><Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link> added as a collaborator to <Link href={`/hubs/${item?.hub?.handle}`} passHref>{`${item?.hub?.data.displayName}`}</Link></Typography>
-                <Typography my={1} fontWeight={600}>{timeSince(Date.parse(item.datetime))} ago</Typography>
+                <Typography my={1}>
+                  <Link
+                    href={`/profiles/${item.authority.publicKey}`}
+                    passHref
+                  >{`${truncateAddress(item.authority.publicKey)}`}</Link>{' '}
+                  added as a collaborator to{' '}
+                  <Link
+                    href={`/hubs/${item?.hub?.handle}`}
+                    passHref
+                  >{`${item?.hub?.data.displayName}`}</Link>
+                </Typography>
+                <Typography my={1} fontWeight={600}>
+                  {timeSince(Date.parse(item.datetime))} ago
+                </Typography>
               </CopyWrapper>
             </ImageCard>
           )
@@ -291,29 +395,42 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed, publicKey, handleGetF
           return (
             <ImageCard>
               <Link href={`/${item.release.publicKey}`} passHref>
-              <Image
-                height={'100px'}
-                width={'100px'}
-                layout="responsive"
-                src={getImageFromCDN(
-                  item.release.metadata.image,
-                  400,
-                  Date.parse(item.datetime)
-                )}
-                alt={i}
-                priority={true}
-                loader={loader}
-                unoptimized={true}
-              />
+                <Image
+                  height={'100px'}
+                  width={'100px'}
+                  layout="responsive"
+                  src={getImageFromCDN(
+                    item.release.metadata.image,
+                    400,
+                    Date.parse(item.datetime)
+                  )}
+                  alt={i}
+                  priority={true}
+                  loader={loader}
+                  unoptimized={true}
+                />
               </Link>
               <CopyWrapper>
-                <Typography my={1}><Link href={`/${item.release.publicKey}`} passHref>{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link></Typography>
-                <Typography my={1}>Reposted to <Link href={`/hubs/${item.hub.handle}`} passHref>{`${item.hub.data.displayName}`}</Link></Typography>
-                <Typography my={1} fontWeight={600}>{timeSince(Date.parse(item.datetime))} ago</Typography>
+                <Typography my={1}>
+                  <Link
+                    href={`/${item.release.publicKey}`}
+                    passHref
+                  >{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link>
+                </Typography>
+                <Typography my={1}>
+                  Reposted to{' '}
+                  <Link
+                    href={`/hubs/${item.hub.handle}`}
+                    passHref
+                  >{`${item.hub.data.displayName}`}</Link>
+                </Typography>
+                <Typography my={1} fontWeight={600}>
+                  {timeSince(Date.parse(item.datetime))} ago
+                </Typography>
               </CopyWrapper>
             </ImageCard>
           )
-        
+
         // case 'PostInitViaHub':
         //   return (
         //     <MultiCard>
@@ -375,12 +492,24 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed, publicKey, handleGetF
         //       <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
         //     </MultiCard>
         //   )
-      case 'SubscriptionSubscribeAccount':
+        case 'SubscriptionSubscribeAccount':
           return (
             <TextCard>
               <CopyWrapper>
-                <Typography my={1}><Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link> Followed <Link href={`/profiles/${item.toAccount.publicKey}`} passHref>{`${truncateAddress(item.toAccount.publicKey)}`}</Link></Typography>
-                <Typography my={1} fontWeight={600}>{timeSince(Date.parse(item.datetime))} ago</Typography>
+                <Typography my={1}>
+                  <Link
+                    href={`/profiles/${item.authority.publicKey}`}
+                    passHref
+                  >{`${truncateAddress(item.authority.publicKey)}`}</Link>{' '}
+                  Followed{' '}
+                  <Link
+                    href={`/profiles/${item.toAccount.publicKey}`}
+                    passHref
+                  >{`${truncateAddress(item.toAccount.publicKey)}`}</Link>
+                </Typography>
+                <Typography my={1} fontWeight={600}>
+                  {timeSince(Date.parse(item.datetime))} ago
+                </Typography>
               </CopyWrapper>
             </TextCard>
           )
@@ -404,44 +533,55 @@ const Feed = ({ items, itemsTotal, toggleDrawer, playFeed, publicKey, handleGetF
                 />
               </Link>
               <CopyWrapper>
-                <Typography my={1}><Link href={`/profiles/${item.authority.publicKey}`} passHref>{`${truncateAddress(item.authority.publicKey)}`}</Link> Followed <Link href={`/hubs/${item.toHub.publicKey}`} passHref>{`${item.toHub.data.displayName}`}</Link></Typography>
-                <Typography my={1} fontWeight={600}>{timeSince(Date.parse(item.datetime))} ago</Typography>
+                <Typography my={1}>
+                  <Link
+                    href={`/profiles/${item.authority.publicKey}`}
+                    passHref
+                  >{`${truncateAddress(item.authority.publicKey)}`}</Link>{' '}
+                  Followed{' '}
+                  <Link
+                    href={`/hubs/${item.toHub.publicKey}`}
+                    passHref
+                  >{`${item.toHub.data.displayName}`}</Link>
+                </Typography>
+                <Typography my={1} fontWeight={600}>
+                  {timeSince(Date.parse(item.datetime))} ago
+                </Typography>
               </CopyWrapper>
             </ImageCard>
           )
-        
+
         default:
           return <Typography key={i}>{item?.type}</Typography>
       }
     })
     return feedItemComponents
-  }, [items, isPlaying]);
+  }, [items, isPlaying])
 
   return (
-    <ScrollWrapper
-      onScroll={debounce(() => handleScroll(), 500)}
-    >
+    <ScrollWrapper onScroll={debounce(() => handleScroll(), 500)}>
       <Box>
         <FeedWrapper ref={scrollRef}>
-          {feedItems && feedItems?.map((item, index) => (
-            <CardWrapper>
-              {item}
-            </CardWrapper>
-          ))}
+          {feedItems &&
+            feedItems?.map((item, index) => (
+              <CardWrapper key={index}>{item}</CardWrapper>
+            ))}
         </FeedWrapper>
-        {itemsTotal === items?.length &&
-          <Typography variant="h4" sx={{textAlign: 'center'}}>No more items</Typography>
-        }
+        {itemsTotal === items?.length && (
+          <Typography variant="h4" sx={{ textAlign: 'center' }}>
+            No more items
+          </Typography>
+        )}
       </Box>
-     </ScrollWrapper>
+    </ScrollWrapper>
   )
 }
 
 const ScrollWrapper = styled(Box)(({ theme }) => ({
   overflowY: 'scroll',
   overflowX: 'hidden',
-  '&::-webkit-scrollbar': { 
-    display: 'none'  /* Safari and Chrome */
+  '&::-webkit-scrollbar': {
+    display: 'none' /* Safari and Chrome */,
   },
   [theme.breakpoints.down('md')]: {
     width: '100vw',
@@ -473,8 +613,7 @@ const TextCard = styled(Box)(({ theme }) => ({
   border: '1px solid',
 }))
 
-
-const ImageCard =  styled(Box)(({ theme }) => ({
+const ImageCard = styled(Box)(({ theme }) => ({
   minHeight: '300px',
   height: 'auto',
   border: '1px solid',
@@ -485,16 +624,16 @@ const ImageCard =  styled(Box)(({ theme }) => ({
   },
 }))
 
-const CopyWrapper =  styled(Box)(({ theme }) => ({
+const CopyWrapper = styled(Box)(({ theme }) => ({
   padding: '0 15px',
   margin: '5px 0px 15px',
 }))
 
-const HoverContainer =  styled(Box)(({ theme }) => ({
-  position: 'relative'
+const HoverContainer = styled(Box)(({ theme }) => ({
+  position: 'relative',
 }))
 
-const HoverCard =  styled(Box)(({ theme }) => ({
+const HoverCard = styled(Box)(({ theme }) => ({
   position: 'absolute',
   top: 0,
   height: '100%',
@@ -504,15 +643,12 @@ const HoverCard =  styled(Box)(({ theme }) => ({
   cursor: 'pointer',
   '&:hover': {
     opacity: 1,
-    backgroundColor: theme.palette.background.default + "c4",
-  }
+    backgroundColor: theme.palette.background.default + 'c4',
+  },
 }))
 
-const CtaWrapper =  styled(Box)(({ theme }) => ({
-    margin: 'auto'
+const CtaWrapper = styled(Box)(({ theme }) => ({
+  margin: 'auto',
 }))
-
-
-
 
 export default Feed

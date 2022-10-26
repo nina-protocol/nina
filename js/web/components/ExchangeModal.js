@@ -22,8 +22,7 @@ const ExchangeModal = (props) => {
   const nativeAmount = isAccept
     ? amount
     : ninaClient.uiToNative(amount, release.paymentMint)
-  const artistFee =
-    (nativeAmount * release.resalePercentage) / 1000000
+  const artistFee = (nativeAmount * release.resalePercentage) / 1000000
   const vaultFee = (nativeAmount * ninaClient.NINA_VAULT_FEE) / 1000000
   const sellerAmount = nativeAmount - artistFee - vaultFee
 

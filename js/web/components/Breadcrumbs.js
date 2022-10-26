@@ -9,8 +9,9 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
 
 const YourCollectionBreadcrumb = () => {
-  const { releaseState, filterReleasesUserCollection } =
-    useContext(Release.Context)
+  const { releaseState, filterReleasesUserCollection } = useContext(
+    Release.Context
+  )
   const wallet = useWallet()
 
   const [userCollectionReleasesCount, setUserCollectionReleasesCount] =
@@ -28,8 +29,9 @@ const YourCollectionBreadcrumb = () => {
 }
 
 const YourReleasesBreadcrumb = () => {
-  const { releaseState, filterReleasesPublishedByUser } =
-    useContext(Release.Context)
+  const { releaseState, filterReleasesPublishedByUser } = useContext(
+    Release.Context
+  )
   const wallet = useWallet()
 
   const [userPublishedReleasesCount, setUserPublishedReleasesCount] =
@@ -123,15 +125,17 @@ const Breadcrumbs = () => {
         case '/profiles/[profilePubkey]':
           pathArray = linkPath.map((path, i) => {
             return {
-              breadcrumb: path !== 'profiles' ? `${truncateAddress(path)}` : path,
+              breadcrumb:
+                path !== 'profiles' ? `${truncateAddress(path)}` : path,
               href: '/' + linkPath.slice(0, i + 1).join('/'),
-            }})
-            break
+            }
+          })
+          break
         case '/hubs/[hubPubkey]':
           pathArray = linkPath.map((path, i) => {
             if (i === 1) {
               const hub =
-              router.components[`${router.pathname}`].props.pageProps.hub
+                router.components[`${router.pathname}`].props.pageProps.hub
               return {
                 breadcrumb: hub?.data?.displayName,
                 href: '/' + linkPath.slice(0, i + 1).join('/'),
@@ -216,8 +220,8 @@ const BreadcrumbsContainer = styled(Box)(({ theme }) => ({
       },
     },
   },
-  '& a':{
-    margin: 0
+  '& a': {
+    margin: 0,
   },
   [theme.breakpoints.down('md')]: {
     display: 'none',

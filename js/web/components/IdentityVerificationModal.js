@@ -8,7 +8,7 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Dots from './Dots'
 
-const IdentityVerificationModal = ({ action, type, value,  open, setOpen}) => {
+const IdentityVerificationModal = ({ action, type, value, open, setOpen }) => {
   console.log('action', action)
   console.log('type', type)
   console.log('value', value)
@@ -20,7 +20,9 @@ const IdentityVerificationModal = ({ action, type, value,  open, setOpen}) => {
   }
 
   const titleForType = (type) => {
-    return `Complete ${type.charAt(0).toUpperCase() + type.slice(1)} Verification for: ${value}`
+    return `Complete ${
+      type.charAt(0).toUpperCase() + type.slice(1)
+    } Verification for: ${value}`
   }
 
   const handleAction = async () => {
@@ -53,12 +55,9 @@ const IdentityVerificationModal = ({ action, type, value,  open, setOpen}) => {
             >
               {titleForType(type)}
             </Typography>
-            <Typography
-              align="center"
-              id="transition-modal-title"
-              gutterBottom
-            >
-              You will need to sign a transaction to complete the verification process
+            <Typography align="center" id="transition-modal-title" gutterBottom>
+              You will need to sign a transaction to complete the verification
+              process
             </Typography>
             <Button
               style={{ marginTop: '15px' }}

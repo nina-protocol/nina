@@ -7,7 +7,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { Typography } from '@mui/material'
 import { styled } from '@mui/system'
 import { Box } from '@mui/system'
-import Button from "@mui/material/Button";
+import Button from '@mui/material/Button'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Subscribe from './Subscribe'
 import { unified } from 'unified'
@@ -15,16 +15,14 @@ import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
-import { useSnackbar } from "notistack";
-
+import { useSnackbar } from 'notistack'
 
 const { getImageFromCDN, loader } = imageManager
 
 const HubHeader = ({ hubData }) => {
   const [hubDescription, setHubDescription] = useState(undefined)
-  const { enqueueSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-
 
   useEffect(() => {
     if (hubData?.data.description.includes('<p>')) {
@@ -76,7 +74,14 @@ const HubHeader = ({ hubData }) => {
           </Link>
         </Box>
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '90px'}}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            width: '90px',
+          }}
+        >
           {hubData?.data.displayName && (
             <Link href={hubData?.data.externalUrl} passHref>
               <a target="_blank" rel="noreferrer">
@@ -87,12 +92,12 @@ const HubHeader = ({ hubData }) => {
             </Link>
           )}
           {/* {wallet.connected && ( */}
-            <Subscribe
-              accountAddress={hubData.publicKey}
-              hubHandle={hubData.handle}
-              inHub={true}
-              inFeed={false}
-            />
+          <Subscribe
+            accountAddress={hubData.publicKey}
+            hubHandle={hubData.handle}
+            inHub={true}
+            inFeed={false}
+          />
           {/* )} */}
         </Box>
         {hubData?.data.description && (

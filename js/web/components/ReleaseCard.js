@@ -76,7 +76,7 @@ const ReleaseCard = (props) => {
           <Fade in={true}>
             <Typography variant="h4" color="white" align="left">
               <Link href={`/profiles/${release?.authority}`}>
-                <a style={{color:'white'}}>
+                <a style={{ color: 'white' }}>
                   {metadata?.properties?.artist.substring(0, 100) ||
                     metadata?.artist.substring(0, 100)}
                 </a>

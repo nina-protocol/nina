@@ -18,11 +18,11 @@ const HubComponent = ({ hubPubkey }) => {
     filterHubContentForHub,
     filterHubCollaboratorsForHub,
     hubContentState,
-    hubCollaboratorsState
+    hubCollaboratorsState,
   } = useContext(Hub.Context)
 
   const { releaseState } = useContext(Release.Context)
-  const { fetchedHubs, setFetchedHubs} = useContext(Nina.Context)
+  const { fetchedHubs, setFetchedHubs } = useContext(Nina.Context)
   const [hubReleases, setHubReleases] = useState(undefined)
   const [releaseData, setReleaseData] = useState(undefined)
   const [hubCollaborators, setHubCollaborators] = useState(undefined)
@@ -51,7 +51,7 @@ const HubComponent = ({ hubPubkey }) => {
 
   const hubData = useMemo(() => {
     if (hubState[hubPubkey]) {
-      setFetched({ ...fetched, info: true})
+      setFetched({ ...fetched, info: true })
       return hubState[hubPubkey]
     } else {
       getHub(hubPubkey)
@@ -66,13 +66,13 @@ const HubComponent = ({ hubPubkey }) => {
 
   useEffect(() => {
     const [releases] = filterHubContentForHub(hubPubkey)
-    setFetched({ ...fetched, releases: true})
+    setFetched({ ...fetched, releases: true })
     setHubReleases(releases)
   }, [hubContentState])
 
   useEffect(() => {
     const collaborators = filterHubCollaboratorsForHub(hubPubkey)
-    setFetched({ ...fetched, collaborators: true})
+    setFetched({ ...fetched, collaborators: true })
     setHubCollaborators(collaborators)
   }, [hubCollaboratorsState])
 
@@ -171,10 +171,51 @@ const HubComponent = ({ hubPubkey }) => {
   }
   return (
     <>
+<<<<<<< HEAD
        <HubContainer>
         <>
           {hasData && hubData && <HubHeader hubData={hubData} />}
         </>
+=======
+      <Head>
+        <title>{`Nina: ${
+          hubData?.data.displayName ? `${hubData.data.displayName}'s Hub` : ''
+        }`}</title>
+        <meta
+          name="description"
+          content={`${hubData?.data.displayName}'s Hub on Nina.`}
+        />
+        <meta name="og:type" content="website" />
+        <meta
+          name="og:title"
+          content={`Nina: ${
+            hubData?.data.displayName ? `${hubData.data.displayName}'s Hub` : ''
+          }`}
+        />
+        <meta
+          name="og:description"
+          content={`${
+            hubData?.data.displayName ? hubData?.data.displayName : ''
+          }: ${
+            hubData?.data.description ? hubData?.data.description : ''
+          } \n Published via Nina Hubs.`}
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@ninaprotocol" />
+        <meta name="twitter:creator" content="@ninaprotocol" />
+        <meta name="twitter:image:type" content="image/jpg" />
+        <meta
+          name="twitter:title"
+          content={`${hubData?.data.displayName}'s Hub on Nina`}
+        />
+        <meta name="twitter:description" content={hubData?.data.description} />
+        <meta name="twitter:image" content={hubData?.data.image} />
+        <meta name="og:image" content={hubData?.data.image} />
+      </Head>
+
+      <HubContainer>
+        <>{hasData && hubData && <HubHeader hubData={hubData} />}</>
+>>>>>>> feaeef47f6e22a0eb211f429a9bb28177aa396d9
         {hasData && hubData && (
           <HubTabWrapper>
             <TabHeader
@@ -189,24 +230,21 @@ const HubComponent = ({ hubPubkey }) => {
         <>
           {activeView === undefined && (
             <>
-            <HubDotWrapper>
-              <Box sx={{width: '100%', margin: 'auto'}}>
-                <Dots />
-              </Box>
-            </HubDotWrapper>
+              <HubDotWrapper>
+                <Box sx={{ width: '100%', margin: 'auto' }}>
+                  <Dots />
+                </Box>
+              </HubDotWrapper>
             </>
-           )} 
-           
+          )}
+
           {activeView === 0 && (
             <>
-             {hasData && !releaseData && (
+              {hasData && !releaseData && (
                 <Box sx={{ my: 1 }}>No releases found in this Hub</Box>
               )}
               {hasData && releaseData && (
-                <ReusableTable
-                  tableType={'hubReleases'}
-                  items={releaseData}
-                />
+                <ReusableTable tableType={'hubReleases'} items={releaseData} />
               )}
             </>
           )}
