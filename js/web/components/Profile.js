@@ -229,6 +229,8 @@ const Profile = ({ profilePubkey }) => {
                 inDashboard={inDashboard}
                 dashboardPublicKey={profilePubkey}
                 collectRoyaltyForRelease={collectRoyaltyForRelease}
+                refreshProfile={getUserData}
+
               />
 
             )}
