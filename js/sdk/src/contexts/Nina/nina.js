@@ -42,6 +42,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [collection, setCollection] = useState({})
   const [postState, setPostState] = useState({})
   const [subscriptionState, setSubscriptionState] = useState({})
+  const [verificationState, setVerificationState] = useState({})
   const [usdcBalance, setUsdcBalance] = useState(0)
   const [solBalance, setSolBalance] = useState(0)
   const [solUsdcBalance, setSolUsdcBalance] = useState(0)
@@ -214,6 +215,8 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         filterSubscriptionsForUser,
         userSubscriptions,
         getSubscriptionsForHub,
+        verificationState,
+        setVerificationState,
       }}
     >
       {children}

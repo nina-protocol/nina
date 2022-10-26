@@ -179,7 +179,7 @@ const ReusableTableBody = ({
   }
 
   let rows = items?.map((data) => {
-    const { releasePubkey } = data
+    const { releasePubkey, publicKey } = data
     const playData = {
       releasePubkey,
     }
@@ -253,7 +253,7 @@ const ReusableTableBody = ({
         date: data?.metadata?.properties?.date,
       }
     }
-
+    console.log('data.collaborator', data.collaborator)
     if (tableType === 'hubCollaborators') {
       formattedData = {
         link: `/profiles/${data.collaborator}`,
