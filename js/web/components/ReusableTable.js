@@ -158,7 +158,6 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
   const handleCollect = async (e, recipient, releasePubkey) => {
     e.stopPropagation()
     e.preventDefault()
-    console.log('handleCollect', recipient, releasePubkey)
     const result = await collectRoyaltyForRelease(recipient, releasePubkey)
     if (result.success) {
       enqueueSnackbar(result.msg, {
@@ -190,8 +189,6 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
         title: data?.metadata?.properties?.title,
       }
       if (inDashboard) {
-        console.log('data', data)
-        console.log('dashboardPublicKey', dashboardPublicKey)
         const recipient = data.tokenData.revenueShareRecipients.find(
           (recipient) => recipient.recipientAuthority === dashboardPublicKey
         )
