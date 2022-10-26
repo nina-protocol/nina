@@ -46,12 +46,7 @@ function Application({ Component, pageProps }) {
         process.env.NINA_API_ENDPOINT,
         process.env.SOLANA_CLUSTER_URL,
         process.env.NINA_PROGRAM_ID
-<<<<<<< HEAD
-      )    
-      console.log('NinaSdk.client !!!', NinaSdk.client.endpoint)
-=======
       )
->>>>>>> feaeef47f6e22a0eb211f429a9bb28177aa396d9
       setSdkInitialized(true)
     }
     handleSdkInitialization()
