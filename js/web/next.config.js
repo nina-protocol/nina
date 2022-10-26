@@ -46,9 +46,6 @@ const moduleExports = withTM({
       '@nina-protocol/nina-internal-sdk': path.resolve(
         '../node_modules/@nina-protocol/nina-internal-sdk'
       ),
-      '@nina-protocol/js-sdk': path.resolve(
-        '../node_modules/@nina-protocol/js-sdk'
-      ),
       react: path.resolve('../node_modules/react'),
       crypto: path.resolve('../node_modules/crypto-browserify'),
       stream: path.resolve('../node_modules/stream-browserify'),

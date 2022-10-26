@@ -85,7 +85,6 @@ const Profile = ({ profilePubkey }) => {
   }, [profilePublishedReleases])
 
   useEffect(() => {
-    console.log('profilePubkey', getUserData(profilePubkey))
     getUserData(profilePubkey)
   }, [])
 
