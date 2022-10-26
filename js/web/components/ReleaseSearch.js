@@ -14,8 +14,9 @@ const ReleaseSearch = () => {
   const [query, setQuery] = useState('')
   const [artists, setArtists] = useState(null)
   const { ninaClient } = useContext(Nina.Context)
-  const { getReleasesBySearch, searchResults, resetSearchResults } =
-    useContext(Release.Context)
+  const { getReleasesBySearch, searchResults, resetSearchResults } = useContext(
+    Release.Context
+  )
   let path = ninaClient.endpoints.api
 
   useEffect(() => {

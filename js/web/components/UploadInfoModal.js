@@ -73,9 +73,10 @@ const UploadInfoModal = ({ userHasSeenUpdateMessage }) => {
             </StyledTypography>
             <StyledTypography>
               0.1 SOL will cover ~{mbPerTenthSol.toFixed(2)} MBs. Any SOL you
-              don&apos;t use on this release will be saved in your Upload Account for
-              your next release. You can withdraw from you account at any time
-              by clicking &apos;Manage Upload Account&apos; on the Upload page.
+              don&apos;t use on this release will be saved in your Upload
+              Account for your next release. You can withdraw from you account
+              at any time by clicking &apos;Manage Upload Account&apos; on the
+              Upload page.
             </StyledTypography>
             <StyledTypography>
               If you have any questions or need assitance, please reach out to

@@ -46,9 +46,15 @@ const ExchangeHistoryModal = (props) => {
             <TableBody>
               {exchangeHistory &&
                 exchangeHistory.map((entry, i) => {
-                  const seller = entry.isSale ? entry.initializer : entry.completedBy
-                  const buyer = entry.isSale ? entry.completedBy : entry.initializer
-                  const amount = entry.isSale ? entry.expectedAmount * 1000000 : entry.initializerAmount
+                  const seller = entry.isSale
+                    ? entry.initializer
+                    : entry.completedBy
+                  const buyer = entry.isSale
+                    ? entry.completedBy
+                    : entry.initializer
+                  const amount = entry.isSale
+                    ? entry.expectedAmount * 1000000
+                    : entry.initializerAmount
                   return (
                     <tr key={i}>
                       <td>{entry.updatedDate}</td>
@@ -65,7 +71,7 @@ const ExchangeHistoryModal = (props) => {
                           target="_blank"
                           rel="noreferrer"
                         >
-                          {seller.slice(0,6)}...{seller.slice(-6)}
+                          {seller.slice(0, 6)}...{seller.slice(-6)}
                         </a>
                       </td>
                       <td>
@@ -75,7 +81,7 @@ const ExchangeHistoryModal = (props) => {
                           target="_blank"
                           rel="noreferrer"
                         >
-                          {buyer.slice(0,6)}...{buyer.slice(-6)}
+                          {buyer.slice(0, 6)}...{buyer.slice(-6)}
                         </a>
                       </td>
                     </tr>

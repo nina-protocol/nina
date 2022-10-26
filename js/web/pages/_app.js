@@ -16,7 +16,7 @@ import { SnackbarProvider } from 'notistack'
 import { ThemeProvider } from '@mui/material/styles'
 import { NinaTheme } from '../../NinaTheme'
 import Dots from '../components/Dots'
-import Head from "next/head";
+import Head from 'next/head'
 import NinaSdk from '@nina-protocol/js-sdk'
 
 const NinaWrapper = dynamic(() => import('../components/NinaWrapper'))
@@ -46,11 +46,11 @@ function Application({ Component, pageProps }) {
         process.env.NINA_API_ENDPOINT,
         process.env.SOLANA_CLUSTER_URL,
         process.env.NINA_PROGRAM_ID
-      )    
+      )
       setSdkInitialized(true)
     }
     handleSdkInitialization()
-    console.log('NinaSdk.client.endpoint :>> ', NinaSdk.client.cluster);
+    console.log('NinaSdk.client.endpoint :>> ', NinaSdk.client.cluster)
 
     return () => {
       Router.events.off('routeChangeStart', start)
@@ -90,11 +90,11 @@ function Application({ Component, pageProps }) {
         vertical: 'top',
         horizontal: 'left',
       }}
-    >     
-    <Head>
-      <meta name="theme-color" content={'#ffffff'} key="theme" />
-     </Head>
-      
+    >
+      <Head>
+        <meta name="theme-color" content={'#ffffff'} key="theme" />
+      </Head>
+
       <ConnectionProvider endpoint={endpoint}>
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>

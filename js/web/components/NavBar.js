@@ -16,8 +16,15 @@ import {
 import Breadcrumbs from './Breadcrumbs'
 
 const NavBar = () => {
-  const { healthOk, getSubscriptionsForUser, filterSubscriptionsForUser, subscriptionState } = useContext(Nina.Context)
-  const {filterHubsForUser, getHubsForUser, hubState, getHubs } = useContext(Hub.Context)
+  const {
+    healthOk,
+    getSubscriptionsForUser,
+    filterSubscriptionsForUser,
+    subscriptionState,
+  } = useContext(Nina.Context)
+  const { filterHubsForUser, getHubsForUser, hubState, getHubs } = useContext(
+    Hub.Context
+  )
   const wallet = useWallet()
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),
@@ -35,17 +42,17 @@ const NavBar = () => {
 
   useEffect(() => {
     if (wallet.connected) {
-      getHubsForUser(wallet.publicKey.toBase58());
-      getSubscriptionsForUser(wallet.publicKey.toBase58());
+      getHubsForUser(wallet.publicKey.toBase58())
+      getSubscriptionsForUser(wallet.publicKey.toBase58())
     }
-  }, [wallet.connected]);
+  }, [wallet.connected])
 
   const userHubs = useMemo(() => {
     if (wallet.connected) {
-      return filterHubsForUser(wallet.publicKey.toBase58());
+      return filterHubsForUser(wallet.publicKey.toBase58())
     }
-    return undefined;
-  }, [hubState, wallet.connected]);
+    return undefined
+  }, [hubState, wallet.connected])
 
   return (
     <Root>
@@ -63,16 +70,18 @@ const NavBar = () => {
       <NavRight>
         <DesktopWalletWrapper>
           {userHubs && (
-              <a 
-                href={`https://hubs.ninaprotocol.com/${userHubs.length === 1 ? userHubs[0].handle : ''  }` }
-                target="_blank"
-                rel="noreferrer"
-                style={{margin: '0'}}
-              >
-                <Typography variant="subtitle1" sx={{mr: '15px'}}>
-                  My Hub{userHubs.length > 1 ? 's' : ''}
-                </Typography>
-              </a>
+            <a
+              href={`https://hubs.ninaprotocol.com/${
+                userHubs.length === 1 ? userHubs[0].handle : ''
+              }`}
+              target="_blank"
+              rel="noreferrer"
+              style={{ margin: '0' }}
+            >
+              <Typography variant="subtitle1" sx={{ mr: '15px' }}>
+                My Hub{userHubs.length > 1 ? 's' : ''}
+              </Typography>
+            </a>
           )}
           <NavCtas>
             {wallet.wallets && (

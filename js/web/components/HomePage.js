@@ -19,7 +19,8 @@ const HomePage = () => {
   const { getHubs, hubState, filterFeaturedHubs } = useContext(Hub.Context)
   const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
     useContext(Release.Context)
-  const { solPrice, NinaProgramAction, NinaProgramActionCost, getSolPrice } = useContext(Nina.Context)
+  const { solPrice, NinaProgramAction, NinaProgramActionCost, getSolPrice } =
+    useContext(Nina.Context)
   const [releasesRecent, setReleasesRecent] = useState({})
   const [hubs, setHubs] = useState(undefined)
 
@@ -45,12 +46,16 @@ const HomePage = () => {
           Nina is a new way to <Link href="/upload">publish</Link>,{' '}
           <Link href="https://radio.ninaprotocol.com">listen to</Link>, and{' '}
           <Link href="/releases">purchase</Link> music. We build tools for
-          artists + fans to create their <a
+          artists + fans to create their{' '}
+          <a
             href="https://hubs.ninaprotocol.com/"
             target="_blank"
             rel="noreferrer"
             passHref
-          >context</a>.{' '}
+          >
+            context
+          </a>
+          .{' '}
         </BlueTypography>
 
         <Box sx={{ padding: { md: '0 40px 140px 40px', xs: '30px 0px' } }}>
@@ -65,7 +70,9 @@ const HomePage = () => {
                 target="_blank"
                 rel="noreferrer"
                 passHref
-              >Hubs</a>
+              >
+                Hubs
+              </a>
             </Typography>
           </Box>
           <HubSlider hubs={hubs} />
@@ -81,7 +88,7 @@ const HomePage = () => {
         <Typography
           variant="h1"
           align="left"
-          sx={{paddingBottom: {md: '30px', xs: '30px'}}}
+          sx={{ paddingBottom: { md: '30px', xs: '30px' } }}
         >
           Music on Nina can be publicly streamed by anyone, while also being
           released in the form of a digital edition as scarce or ubiquitous as
@@ -92,7 +99,7 @@ const HomePage = () => {
         <BlueTypography
           variant="h1"
           align="left"
-          sx={{paddingBottom: {md: '140px', xs: '30px'}}}
+          sx={{ paddingBottom: { md: '140px', xs: '30px' } }}
         >
           More questions? Read our{' '}
           <a
@@ -105,7 +112,6 @@ const HomePage = () => {
           </a>
           .
         </BlueTypography>
-
 
         <Box sx={{ padding: { md: '0 40px 140px 40px', xs: '30px 0px' } }}>
           <Box sx={{ display: 'flex', paddingLeft: { md: '30px', xs: '0' } }}>
@@ -133,7 +139,9 @@ const HomePage = () => {
               </Button>
             </Typography>
           </Box>
-          <RecentlyPublished releases={releasesRecent.highlights?.slice(0, 15) || []} />
+          <RecentlyPublished
+            releases={releasesRecent.highlights?.slice(0, 15) || []}
+          />
         </Box>
 
         <Box sx={{ padding: { md: '0 40px 140px 40px', xs: '30px 0px' } }}>
@@ -177,9 +185,14 @@ const HomePage = () => {
           sx={{ paddingBottom: { md: '140px', xs: '30px' } }}
         >
           Artists receive 100% of their sales. The only fee is a one-time
-          payment (${`${(NinaProgramActionCost[NinaProgramAction.RELEASE_INIT_VIA_HUB] * solPrice).toFixed(2)}`} + $0.005/MB) that covers the storage and
-          transaction costs to the Solana and Arweave networks that Nina is
-          built on. Nina does not take a cut.
+          payment ($
+          {`${(
+            NinaProgramActionCost[NinaProgramAction.RELEASE_INIT_VIA_HUB] *
+            solPrice
+          ).toFixed(2)}`}{' '}
+          + $0.005/MB) that covers the storage and transaction costs to the
+          Solana and Arweave networks that Nina is built on. Nina does not take
+          a cut.
         </Typography>
         <BlueTypography
           variant="h1"

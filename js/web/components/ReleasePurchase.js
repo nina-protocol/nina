@@ -1,4 +1,11 @@
-import React, { useEffect, useState, useMemo, useContext, createElement, Fragment } from 'react'
+import React, {
+  useEffect,
+  useState,
+  useMemo,
+  useContext,
+  createElement,
+  Fragment,
+} from 'react'
 import axios from 'axios'
 import { styled } from '@mui/material/styles'
 import { useWallet } from '@solana/wallet-adapter-react'
@@ -13,11 +20,11 @@ import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import CollectorModal from './CollectorModal'
 import HubsModal from './HubsModal'
 import Dots from './Dots'
-import {unified} from "unified";
-import rehypeParse from "rehype-parse";
-import rehypeReact from "rehype-react";
-import rehypeSanitize from "rehype-sanitize";
-import rehypeExternalLinks from "rehype-external-links";
+import { unified } from 'unified'
+import rehypeParse from 'rehype-parse'
+import rehypeReact from 'rehype-react'
+import rehypeSanitize from 'rehype-sanitize'
+import rehypeExternalLinks from 'rehype-external-links'
 import Royalty from './Royalty'
 
 const ReleasePurchase = (props) => {
@@ -31,7 +38,14 @@ const ReleasePurchase = (props) => {
     releaseState,
     getRelease,
   } = useContext(Release.Context)
-  const { getAmountHeld, collection, ninaClient, usdcBalance, checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(Nina.Context)
+  const {
+    getAmountHeld,
+    collection,
+    ninaClient,
+    usdcBalance,
+    checkIfHasBalanceToCompleteAction,
+    NinaProgramAction,
+  } = useContext(Nina.Context)
   const {
     exchangeState,
     filterExchangesForReleaseBuySell,
@@ -47,8 +61,14 @@ const ReleasePurchase = (props) => {
   const [exchangeTotalSells, setExchangeTotalSells] = useState(0)
   const [publishedHub, setPublishedHub] = useState()
   const [description, setDescription] = useState()
-  const txPending = useMemo(() => releasePurchaseTransactionPending[releasePubkey], [releasePubkey, releasePurchaseTransactionPending])
-  const pending = useMemo(() => releasePurchasePending[releasePubkey], [releasePubkey, releasePurchasePending])
+  const txPending = useMemo(
+    () => releasePurchaseTransactionPending[releasePubkey],
+    [releasePubkey, releasePurchaseTransactionPending]
+  )
+  const pending = useMemo(
+    () => releasePurchasePending[releasePubkey],
+    [releasePubkey, releasePurchasePending]
+  )
 
   useEffect(() => {
     getRelease(releasePubkey)
@@ -59,9 +79,9 @@ const ReleasePurchase = (props) => {
     // hubForRelease(releasePubkey)
   }, [releasePubkey])
 
-useEffect(() => {
-  getExchangesForRelease(releasePubkey)
-}, [releasePubkey, wallet.connected])
+  useEffect(() => {
+    getExchangesForRelease(releasePubkey)
+  }, [releasePubkey, wallet.connected])
 
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
@@ -101,8 +121,7 @@ useEffect(() => {
       release.royaltyRecipients.forEach((recipient) => {
         if (
           wallet?.connected &&
-          recipient.recipientAuthority ===
-            wallet?.publicKey.toBase58()
+          recipient.recipientAuthority === wallet?.publicKey.toBase58()
         ) {
           setUserIsRecipient(true)
         }
@@ -113,7 +132,7 @@ useEffect(() => {
   useEffect(() => {
     if (metadata?.description.includes('<p>')) {
       unified()
-        .use(rehypeParse, {fragment: true})
+        .use(rehypeParse, { fragment: true })
         .use(rehypeSanitize)
         .use(rehypeReact, {
           createElement,
@@ -121,35 +140,38 @@ useEffect(() => {
         })
         .use(rehypeExternalLinks, {
           target: false,
-          rel: ["nofollow", "noreferrer"],
+          rel: ['nofollow', 'noreferrer'],
         })
         .process(
-          JSON.parse(metadata.description).replaceAll(
-            "<p><br></p>",
-            "<br>"
-          )
+          JSON.parse(metadata.description).replaceAll('<p><br></p>', '<br>')
         )
         .then((file) => {
-          setDescription(file.result);
-        });
+          setDescription(file.result)
+        })
     } else {
       setDescription(metadata?.description)
     }
-  }, [metadata?.description]);
+  }, [metadata?.description])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    let result  
+    let result
     if (!amountHeld || amountHeld === 0) {
-      const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.RELEASE_PURCHASE);
+      const error = checkIfHasBalanceToCompleteAction(
+        NinaProgramAction.RELEASE_PURCHASE
+      )
       if (error) {
-        enqueueSnackbar(error.msg, { variant: "failure" });
-        return;
+        enqueueSnackbar(error.msg, { variant: 'failure' })
+        return
       }
     }
 
     if (!release.pending) {
-      if (!ninaClient.isSol(release.paymentMint) && usdcBalance < ninaClient.nativeToUi(release.price, ninaClient.ids.mints.usdc)) {
+      if (
+        !ninaClient.isSol(release.paymentMint) &&
+        usdcBalance <
+          ninaClient.nativeToUi(release.price, ninaClient.ids.mints.usdc)
+      ) {
         enqueueSnackbar('Calculating SOL - USDC Swap...', {
           variant: 'info',
         })
@@ -270,9 +292,7 @@ useEffect(() => {
           </StyledLink>
         </Typography>
       )}
-      <StyledDescription align="left">
-        {description}
-      </StyledDescription>
+      <StyledDescription align="left">{description}</StyledDescription>
       <Box mt={1}>
         <form onSubmit={handleSubmit}>
           <Button
@@ -282,15 +302,9 @@ useEffect(() => {
             fullWidth
           >
             <Typography variant="body2">
-              {txPending &&
-                <Dots msg="preparing transaction" />
-              }
-              {!txPending && pending &&
-                <Dots msg="awaiting wallet approval" />
-              }
-              {!txPending && !pending &&
-                buttonText
-              }
+              {txPending && <Dots msg="preparing transaction" />}
+              {!txPending && pending && <Dots msg="awaiting wallet approval" />}
+              {!txPending && !pending && buttonText}
             </Typography>
           </Button>
         </form>
@@ -357,7 +371,7 @@ const StyledDescription = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
     maxHeight: '152px',
     overflowY: 'scroll',
-    height: '152px'
+    height: '152px',
   },
 }))
 

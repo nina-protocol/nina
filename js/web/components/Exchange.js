@@ -21,7 +21,7 @@ import ExchangeHistoryModal from './ExchangeHistoryModal'
 import ExchangeList from './ExchangeList'
 import ExchangeModal from './ExchangeModal'
 
-const {getImageFromCDN, loader} = imageManager
+const { getImageFromCDN, loader } = imageManager
 
 const ExchangeComponent = (props) => {
   const { releasePubkey, metadata } = props
@@ -29,7 +29,8 @@ const ExchangeComponent = (props) => {
   const wallet = useWallet()
   const connection = useConnection()
   const { enqueueSnackbar } = useSnackbar()
-  const { ninaClient, checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(Nina.Context)
+  const { ninaClient, checkIfHasBalanceToCompleteAction, NinaProgramAction } =
+    useContext(Nina.Context)
   const { releaseState, getRelease } = useContext(Release.Context)
   const {
     exchangeState,
@@ -80,11 +81,13 @@ const ExchangeComponent = (props) => {
   const handleExchangeAction = async (exchange) => {
     let result
     if (exchange.isInit) {
-      const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.EXCHANGE_INIT);
+      const error = checkIfHasBalanceToCompleteAction(
+        NinaProgramAction.EXCHANGE_INIT
+      )
       if (error) {
-        enqueueSnackbar(error.msg, { variant: "failure" });
-        return;
-      }  
+        enqueueSnackbar(error.msg, { variant: 'failure' })
+        return
+      }
       showPendingTransaction('Making an offer...')
       result = await exchangeInit(exchange)
       setExchangeAwaitingConfirm(undefined)
@@ -92,11 +95,13 @@ const ExchangeComponent = (props) => {
       showPendingTransaction('Cancelling offer...')
       result = await exchangeCancel(exchange, releasePubkey)
     } else {
-      const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.EXCHANGE_ACCEPT);
+      const error = checkIfHasBalanceToCompleteAction(
+        NinaProgramAction.EXCHANGE_ACCEPT
+      )
       if (error) {
-        enqueueSnackbar(error.msg, { variant: "failure" });
-        return;
-      }  
+        enqueueSnackbar(error.msg, { variant: 'failure' })
+        return
+      }
       if (exchange.isSelling) {
         showPendingTransaction('Accepting offer...')
         result = await exchangeAccept(exchange, releasePubkey)
@@ -184,7 +189,19 @@ const ExchangeComponent = (props) => {
       <ExchangeWrapper>
         <StyledReleaseInfo>
           <ReleaseImage>
-            {metadata && <Image src={getImageFromCDN(metadata.image, 100, new Date(release.releaseDatetime * 1000))} alt={metadata.name} height={100} width = {100} loader={loader}/>}
+            {metadata && (
+              <Image
+                src={getImageFromCDN(
+                  metadata.image,
+                  100,
+                  new Date(release.releaseDatetime * 1000)
+                )}
+                alt={metadata.name}
+                height={100}
+                width={100}
+                loader={loader}
+              />
+            )}
           </ReleaseImage>
 
           <InfoCopy>

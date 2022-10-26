@@ -11,10 +11,10 @@ import axios from 'axios'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import CloseIcon from '@mui/icons-material/Close'
 import Typography from '@mui/material/Typography'
-import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
+import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 
 const FeedDrawer = () => {
@@ -43,7 +43,6 @@ const FeedDrawer = () => {
   //   }
   // }, [userSubscriptions])
 
-
   const toggleDrawer = (open) => (event) => {
     if (
       event.type === 'keydown' &&
@@ -64,10 +63,13 @@ const FeedDrawer = () => {
     resetQueueWithPlaylist(audioFeedItems)
   }
 
-  const handleGetFeedForUser = async (publicKey, refresh=false) => {
-    const feed = await getFeedForUser(publicKey, refresh ? 0 : feedItems?.length || 0)
-    if (feed){
-      const updatedFeedItems = feed?.feedItems.filter(item => {
+  const handleGetFeedForUser = async (publicKey, refresh = false) => {
+    const feed = await getFeedForUser(
+      publicKey,
+      refresh ? 0 : feedItems?.length || 0
+    )
+    if (feed) {
+      const updatedFeedItems = feed?.feedItems.filter((item) => {
         return !item.type.includes('Post')
       })
       setTotalItems(feed.total)
@@ -82,46 +84,49 @@ const FeedDrawer = () => {
   const getHubSuggestionsForUser = async (publicKey) => {
     const suggestions = []
     try {
-      const {data} = await axios.get(`${process.env.NINA_API_ENDPOINT}/accounts/${publicKey}/hubSuggestions`)
-      data.suggestions.forEach(suggestion => {
+      const { data } = await axios.get(
+        `${process.env.NINA_API_ENDPOINT}/accounts/${publicKey}/hubSuggestions`
+      )
+      data.suggestions.forEach((suggestion) => {
         suggestions.push(suggestion)
       })
       setHubSuggestions(suggestions)
     } catch (error) {
-      console.warn('error :>> ', error);
+      console.warn('error :>> ', error)
       return []
     }
   }
 
-
   return (
     <>
       {wallet.connected && (
-          <Box>
-            <Box key={'right'} sx={{ float:'right'}}>
-              <StyledMenuButton onClick={toggleDrawer(true)} sx={{top: '100px'}}>
-                <ArrowBackIosNewIcon />
-              </StyledMenuButton>
-              <StyledDrawer
-                anchor={'right'}
-                open={drawerOpen}
-                onClose={toggleDrawer(false)}
-                BackdropProps={{ invisible: true }}
-                variant={'persistent'}
-              >
+        <Box>
+          <Box key={'right'} sx={{ float: 'right' }}>
+            <StyledMenuButton
+              onClick={toggleDrawer(true)}
+              sx={{ top: '100px' }}
+            >
+              <ArrowBackIosNewIcon />
+            </StyledMenuButton>
+            <StyledDrawer
+              anchor={'right'}
+              open={drawerOpen}
+              onClose={toggleDrawer(false)}
+              BackdropProps={{ invisible: true }}
+              variant={'persistent'}
+            >
               <FeedHeader>
-                <CloseIcon
-                  fontSize="medium"
-                  onClick={toggleDrawer(false)}
-                />
+                <CloseIcon fontSize="medium" onClick={toggleDrawer(false)} />
                 <DrawerTypeWrapper>
                   {drawerTypes.map((drawerType, index) => {
                     return (
                       <DrawerType
                         key={drawerType}
                         onClick={() => setActiveDrawerTypeIndex(index)}
-                        className={activeDrawerTypeIndex === index ? 'active' : ''}
-                        variant='h4'
+                        className={
+                          activeDrawerTypeIndex === index ? 'active' : ''
+                        }
+                        variant="h4"
                       >
                         {drawerType}
                       </DrawerType>
@@ -130,33 +135,31 @@ const FeedDrawer = () => {
                 </DrawerTypeWrapper>
                 <PlayCircleOutlineOutlinedIcon
                   fontSize="medium"
-                  sx={{ paddingRight: '15px'}} 
+                  sx={{ paddingRight: '15px' }}
                   onClick={playFeed}
                 />
               </FeedHeader>
-      
-                {activeDrawerTypeIndex === 0 && (
-                  <Feed
-                    items={feedItems}
-                    toggleDrawer={toggleDrawer}
-                    playFeed={playFeed}
-                    handleGetFeedForUser={handleGetFeedForUser}
-                    publicKey={wallet.publicKey.toBase58()}
-                  />
-                )}
-      
-                {activeDrawerTypeIndex === 1 && (
-                  <Suggestions 
-                    items={hubSuggestions}
-                    toggleDrawer={toggleDrawer}
-                    publicKey={wallet.publicKey.toBase58()}
-                  />
-                )}
-              
-                
-              </StyledDrawer>
-            </Box>
+
+              {activeDrawerTypeIndex === 0 && (
+                <Feed
+                  items={feedItems}
+                  toggleDrawer={toggleDrawer}
+                  playFeed={playFeed}
+                  handleGetFeedForUser={handleGetFeedForUser}
+                  publicKey={wallet.publicKey.toBase58()}
+                />
+              )}
+
+              {activeDrawerTypeIndex === 1 && (
+                <Suggestions
+                  items={hubSuggestions}
+                  toggleDrawer={toggleDrawer}
+                  publicKey={wallet.publicKey.toBase58()}
+                />
+              )}
+            </StyledDrawer>
           </Box>
+        </Box>
       )}
     </>
   )
@@ -193,7 +196,7 @@ const FeedHeader = styled(Box)(({ theme }) => ({
   padding: '10px 15px',
   marginRight: '20px',
   background: 'white',
-  zIndex:100,
+  zIndex: 100,
   display: 'flex',
   justifyContent: 'space-between',
   width: '43px',
@@ -203,16 +206,13 @@ const DrawerTypeWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
 }))
 
-
 const DrawerType = styled(Typography)(({ theme }) => ({
   margin: '0 10px',
   cursor: 'pointer',
   fontWeight: 'bold',
   '&.active': {
     textDecoration: 'underline',
-  }
+  },
 }))
-
-
 
 export default FeedDrawer

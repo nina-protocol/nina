@@ -61,14 +61,17 @@ const Releases = () => {
       getReleasesAll()
     }
   }
-  
+
   return (
     <>
       <Head>
         <title>{`Nina: All Releases`}</title>
         <meta name="description" content={'Nina: All Releases'} />
       </Head>
-      <ScrollablePageWrapper paddingTop={'210px'} onScroll={debounce(() => handleScroll(), 500)}>
+      <ScrollablePageWrapper
+        paddingTop={'210px'}
+        onScroll={debounce(() => handleScroll(), 500)}
+      >
         <AllReleasesWrapper ref={scrollRef}>
           <StyledReleaseSearch />
           <CollectionHeader

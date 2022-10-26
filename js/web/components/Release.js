@@ -16,26 +16,27 @@ const ReleaseComponent = ({ metadataSsr }) => {
   const releasePubkey = router.query.releasePubkey
 
   const wallet = useWallet()
-  const {
-    releaseState,
-    getRelease,
-  } = useContext(Release.Context)
+  const { releaseState, getRelease } = useContext(Release.Context)
   const { exchangeState } = useContext(Exchange.Context)
-  const { getHubsForUser, filterHubsForUser, hubState } = useContext(Hub.Context)
+  const { getHubsForUser, filterHubsForUser, hubState } = useContext(
+    Hub.Context
+  )
   const [userHubs, setUserHubs] = useState()
 
   const [metadata, setMetadata] = useState(
     metadataSsr || releaseState?.metadata[releasePubkey] || null
   )
-  const release = useMemo(() => releaseState.tokenData[releasePubkey], [releaseState, releasePubkey])
+  const release = useMemo(
+    () => releaseState.tokenData[releasePubkey],
+    [releaseState, releasePubkey]
+  )
   useEffect(() => {
     if (releaseState.metadata[releasePubkey] && !metadata) {
       setMetadata(releaseState.metadata[releasePubkey])
     }
   }, [releaseState?.metadata[releasePubkey]])
 
-  useEffect(() => {
-  }, [releaseState])
+  useEffect(() => {}, [releaseState])
 
   useEffect(() => {
     if (wallet.connected) {
@@ -80,12 +81,10 @@ const ReleaseComponent = ({ metadataSsr }) => {
           <NinaBox columns={'repeat(2, 1fr)'} sx={{ backgroundColor: 'white' }}>
             <ReleaseCard
               metadata={metadata}
-
               preview={false}
               releasePubkey={releasePubkey}
               userHubs={userHubs}
               release={release}
-          
             />
             <ReleaseCtaWrapper>
               <ReleasePurchase

@@ -8,21 +8,37 @@ import { useRouter } from 'next/router'
 import Dots from './Dots'
 import Link from 'next/link'
 
-const Subscribe = ({accountAddress, hubHandle, inFeed=false, inHub=false}) => {
+const Subscribe = ({
+  accountAddress,
+  hubHandle,
+  inFeed = false,
+  inHub = false,
+}) => {
   const wallet = useWallet()
   const router = useRouter()
-  const { subscriptionSubscribe, subscriptionUnsubscribe, userSubscriptions, getSubscriptionsForUser, getSubscriptionsForHub, subscriptionState } = useContext(Nina.Context)
+  const {
+    subscriptionSubscribe,
+    subscriptionUnsubscribe,
+    userSubscriptions,
+    getSubscriptionsForUser,
+    getSubscriptionsForHub,
+    subscriptionState,
+  } = useContext(Nina.Context)
   const [isFollowing, setIsFollowing] = useState(false)
   const [pending, setPending] = useState(false)
   const [targetSubscriptions, setTargetSubscriptions] = useState()
   const [followsYou, setFollowsYou] = useState(false)
   const [isUser, setIsUser] = useState(false)
-  const [inDashboard, setInDashboard] = useState(router.pathname.includes('/dashboard'))
+  const [inDashboard, setInDashboard] = useState(
+    router.pathname.includes('/dashboard')
+  )
   const { enqueueSnackbar } = useSnackbar()
 
   useEffect(() => {
     if (userSubscriptions) {
-      const checkIfFollowing = userSubscriptions.some(subscription => subscription.to === accountAddress)
+      const checkIfFollowing = userSubscriptions.some(
+        (subscription) => subscription.to === accountAddress
+      )
       setIsFollowing(checkIfFollowing)
     }
   }, [userSubscriptions])
@@ -32,7 +48,9 @@ const Subscribe = ({accountAddress, hubHandle, inFeed=false, inHub=false}) => {
       setIsUser(wallet.publicKey.toBase58() === accountAddress)
     }
     if (wallet.connected && userSubscriptions) {
-      const checkIfFollowsYou = userSubscriptions?.some(subscription => subscription.from === accountAddress)
+      const checkIfFollowsYou = userSubscriptions?.some(
+        (subscription) => subscription.from === accountAddress
+      )
       setFollowsYou(checkIfFollowsYou)
     }
   }, [userSubscriptions, wallet.connected])
@@ -68,9 +86,9 @@ const Subscribe = ({accountAddress, hubHandle, inFeed=false, inHub=false}) => {
   }
 
   return (
-    <Box display='flex' alignItems={'center'}>
+    <Box display="flex" alignItems={'center'}>
       {pending && (
-        <Box sx={{ padding: '0 15px'}}>
+        <Box sx={{ padding: '0 15px' }}>
           <Dots />
         </Box>
       )}
@@ -103,7 +121,6 @@ const Subscribe = ({accountAddress, hubHandle, inFeed=false, inHub=false}) => {
           )}
         </>
       )}
-
     </Box>
   )
 }

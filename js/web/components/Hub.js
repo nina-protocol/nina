@@ -19,11 +19,11 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
     filterHubContentForHub,
     filterHubCollaboratorsForHub,
     hubContentState,
-    hubCollaboratorsState
+    hubCollaboratorsState,
   } = useContext(Hub.Context)
 
   const { releaseState } = useContext(Release.Context)
-  const { fetchedHubs, setFetchedHubs} = useContext(Nina.Context)
+  const { fetchedHubs, setFetchedHubs } = useContext(Nina.Context)
   const [hubReleases, setHubReleases] = useState(undefined)
   const [releaseData, setReleaseData] = useState(undefined)
   const [hubCollaborators, setHubCollaborators] = useState(undefined)
@@ -52,7 +52,7 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
 
   const hubData = useMemo(() => {
     if (hubState[hubPubkey]) {
-      setFetched({ ...fetched, info: true})
+      setFetched({ ...fetched, info: true })
       return hubState[hubPubkey]
     } else {
       getHub(hubPubkey)
@@ -67,13 +67,13 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
 
   useEffect(() => {
     const [releases] = filterHubContentForHub(hubPubkey)
-    setFetched({ ...fetched, releases: true})
+    setFetched({ ...fetched, releases: true })
     setHubReleases(releases)
   }, [hubContentState])
 
   useEffect(() => {
     const collaborators = filterHubCollaboratorsForHub(hubPubkey)
-    setFetched({ ...fetched, collaborators: true})
+    setFetched({ ...fetched, collaborators: true })
     setHubCollaborators(collaborators)
   }, [hubCollaboratorsState])
 
@@ -103,8 +103,11 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
       updatedView[viewIndex].visible = true
       updatedView[viewIndex].playlist = hubReleases
     }
-    if (hubReleases?.length === 0 && fetched.releases && hubCollaborators.length > 0) {
-      
+    if (
+      hubReleases?.length === 0 &&
+      fetched.releases &&
+      hubCollaborators.length > 0
+    ) {
       setActiveView(1)
     }
     setFetched({ ...fetched })
@@ -155,9 +158,7 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
       </Head>
 
       <HubContainer>
-        <>
-          {hasData && hubData && <HubHeader hubData={hubData} />}
-        </>
+        <>{hasData && hubData && <HubHeader hubData={hubData} />}</>
         {hasData && hubData && (
           <HubTabWrapper>
             <TabHeader
@@ -172,24 +173,21 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
         <>
           {activeView === undefined && (
             <>
-            <HubDotWrapper>
-              <Box sx={{width: '100%', margin: 'auto'}}>
-                <Dots />
-              </Box>
-            </HubDotWrapper>
+              <HubDotWrapper>
+                <Box sx={{ width: '100%', margin: 'auto' }}>
+                  <Dots />
+                </Box>
+              </HubDotWrapper>
             </>
-           )} 
-           
+          )}
+
           {activeView === 0 && (
             <>
-             {hasData && !releaseData && (
+              {hasData && !releaseData && (
                 <Box sx={{ my: 1 }}>No releases found in this Hub</Box>
               )}
               {hasData && releaseData && (
-                <ReusableTable
-                  tableType={'hubReleases'}
-                  items={releaseData}
-                />
+                <ReusableTable tableType={'hubReleases'} items={releaseData} />
               )}
             </>
           )}
@@ -228,7 +226,7 @@ const HubContainer = styled(Box)(({ theme }) => ({
     flexDirection: 'column',
     justifyItems: 'center',
     alignItems: 'center',
-    marginTop: '25px', 
+    marginTop: '25px',
     paddingTop: 0,
     minHeight: '100% !important',
     maxHeight: '80vh',
@@ -238,10 +236,10 @@ const HubContainer = styled(Box)(({ theme }) => ({
 }))
 
 const HubTabWrapper = styled(Box)(({ theme }) => ({
-  py:1,
+  py: 1,
   [theme.breakpoints.down('md')]: {
-    marginTop: '0px'
-  }
+    marginTop: '0px',
+  },
 }))
 
 const HubDotWrapper = styled(Box)(({ theme }) => ({
@@ -254,7 +252,5 @@ const HubDotWrapper = styled(Box)(({ theme }) => ({
     top: '53%',
   },
 }))
-
-
 
 export default HubComponent

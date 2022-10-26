@@ -49,21 +49,17 @@ const HubsModal = (props) => {
             <Typography fontWeight="700">{`Hubs featuring: ${metadata.properties.artist.substring(
               0,
               100
-            )} - "${metadata.properties.title.substring(
-              0,
-              100
-            )}"`}</Typography>
+            )} - "${metadata.properties.title.substring(0, 100)}"`}</Typography>
           </Header>
           <CollectorTable>
             <TableBody>
-              {hubs && hubs.length > 0 &&
+              {hubs &&
+                hubs.length > 0 &&
                 hubs.map((entry, i) => {
                   return (
                     <tr key={i}>
                       <td>
-                        <Link
-                          href={`/hubs/${entry?.handle}`}
-                        >
+                        <Link href={`/hubs/${entry?.handle}`}>
                           {entry?.data.displayName}
                         </Link>
                       </td>

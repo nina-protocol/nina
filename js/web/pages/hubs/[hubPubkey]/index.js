@@ -4,21 +4,20 @@ import { styled } from '@mui/system'
 import NinaSdk from '@nina-protocol/js-sdk'
 
 const Hub = dynamic(() => import('../../../components/Hub'))
-const HubPage = ({hub, hubPubkey}) => {
-
+const HubPage = ({ hub, hubPubkey }) => {
   return (
-    <ResponsiveHubContainer >
+    <ResponsiveHubContainer>
       <Hub hubPubkey={hubPubkey} hubHandle={hub.handle} />
     </ResponsiveHubContainer>
   )
 }
 
-const ResponsiveHubContainer = styled(Box)(({theme}) => ({
+const ResponsiveHubContainer = styled(Box)(({ theme }) => ({
   width: theme.maxWidth,
- 
+
   [theme.breakpoints.down('md')]: {
-    minHeight:'40vh'
-  }
+    minHeight: '40vh',
+  },
 }))
 
 export default HubPage
@@ -45,9 +44,9 @@ export const getStaticProps = async (context) => {
           process.env.NINA_API_ENDPOINT,
           process.env.SOLANA_CLUSTER_URL,
           process.env.NINA_PROGRAM_ID
-        )      
+        )
       }
-      const { hub } = await NinaSdk.Hub.fetch(hubPubkey);
+      const { hub } = await NinaSdk.Hub.fetch(hubPubkey)
       return {
         props: {
           hub,

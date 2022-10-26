@@ -8,7 +8,7 @@ import React, {
 import * as Yup from 'yup'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-import { getMd5FileHash } from "@nina-protocol/nina-internal-sdk/esm/utils"
+import { getMd5FileHash } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import { useSnackbar } from 'notistack'
 import { styled } from '@mui/material/styles'
 import Button from '@mui/material/Button'
@@ -67,7 +67,7 @@ const ReleaseCreate = () => {
     getNpcAmountHeld,
     npcAmountHeld,
     checkIfHasBalanceToCompleteAction,
-    NinaProgramAction
+    NinaProgramAction,
   } = useContext(Nina.Context)
 
   const [track, setTrack] = useState(undefined)
@@ -93,7 +93,7 @@ const ReleaseCreate = () => {
   const [releaseCreated, setReleaseCreated] = useState(false)
   const [uploadId, setUploadId] = useState()
   const [publishingStepText, setPublishingStepText] = useState()
-  const [md5Digest, setMd5Digest] = useState();
+  const [md5Digest, setMd5Digest] = useState()
 
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
@@ -204,7 +204,6 @@ const ReleaseCreate = () => {
       }
       handleGetMd5FileHash(track)
     }
-
   }, [track])
 
   const handleSubmit = async () => {
@@ -220,22 +219,24 @@ const ReleaseCreate = () => {
           `/${releasePubkey.toBase58()}`
         )
       } else if (track && artwork) {
-        const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.RELEASE_INIT_WITH_CREDIT);
+        const error = checkIfHasBalanceToCompleteAction(
+          NinaProgramAction.RELEASE_INIT_WITH_CREDIT
+        )
         if (error) {
-          enqueueSnackbar(error.msg, { variant: "failure" });
-          return;
+          enqueueSnackbar(error.msg, { variant: 'failure' })
+          return
         }
-    
+
         const hashExists = await validateUniqueMd5Digest(md5Digest)
         if (hashExists) {
           enqueueSnackbar(
             `A release with this track already exists: ${hashExists.json.properties.artist} - ${hashExists.json.properties.title}`,
             {
-              variant: "warn",
+              variant: 'warn',
             }
-          );
+          )
 
-          return 
+          return
         }
         let upload = uploadId
         let artworkResult = artworkTx
@@ -294,7 +295,7 @@ const ReleaseCreate = () => {
                 trackType: track.file.type,
                 artworkType: artwork.file.type,
                 duration: track.meta.duration,
-                md5Digest
+                md5Digest,
               })
               metadataResult = await bundlrUpload(
                 new Blob([JSON.stringify(metadataJson)], {

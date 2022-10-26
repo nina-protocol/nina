@@ -5,7 +5,7 @@ import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutline
 import { Typography } from '@mui/material'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import { useSnackbar } from 'notistack'
-import {Button} from '@mui/material'
+import { Button } from '@mui/material'
 const TabHeader = ({
   activeView,
   profileTabs,
@@ -18,12 +18,11 @@ const TabHeader = ({
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { enqueueSnackbar } = useSnackbar()
   const playAllHandler = (playlist) => {
-    resetQueueWithPlaylist(
-      playlist?.map((release) => release.publicKey)
-    ).then(() =>
-      enqueueSnackbar(`Releases added to queue`, {
-        variant: 'info',
-      })
+    resetQueueWithPlaylist(playlist?.map((release) => release.publicKey)).then(
+      () =>
+        enqueueSnackbar(`Releases added to queue`, {
+          variant: 'info',
+        })
     )
   }
   return (
@@ -33,10 +32,9 @@ const TabHeader = ({
         borderColor: 'divider',
       }}
     >
-
       <Box sx={{ display: 'flex', flexDirection: 'row', rowGap: 1, pb: 1 }}>
         {profileTabs?.map((tab, index) => {
-          return(
+          return (
             <>
               <Box
                 key={index}
@@ -59,41 +57,37 @@ const TabHeader = ({
                     }}
                     id={index}
                   >
-                    {tab.name} 
+                    {tab.name}
                     {tab.name === 'followers' && ` (${followersCount})`}
                     {tab.name === 'following' && ` (${followingCount})`}
                   </Typography>
 
                   {tab.playlist && (
                     <ResponsiveCircleOutlineIconContainer
-                      
                       sx={{
-                          paddingTop: '1px',
+                        paddingTop: '1px',
                       }}
                     >
                       <PlayCircleOutlineIconButtonWrapper
-                      disabled={tab.disabled} 
-                      sx={{paddingRight: 0}}
-                      onClick={(e) =>{
-                        e.preventDefault()
-                        e.stopPropagation()                      
-                        type === 'hubsView'
-                          ? playAllHandler(releaseData)
-                          : playAllHandler(tab.playlist)
-                      }
-                        }
-                        >
-                      <PlayCircleOutlineOutlinedIcon
-                      />
-
+                        disabled={tab.disabled}
+                        sx={{ paddingRight: 0 }}
+                        onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          type === 'hubsView'
+                            ? playAllHandler(releaseData)
+                            : playAllHandler(tab.playlist)
+                        }}
+                      >
+                        <PlayCircleOutlineOutlinedIcon />
                       </PlayCircleOutlineIconButtonWrapper>
                     </ResponsiveCircleOutlineIconContainer>
                   )}
                 </ResponsiveTab>
               </Box>
             </>
-          )}
-        )}
+          )
+        })}
       </Box>
     </ResponsiveContainer>
   )
@@ -126,27 +120,27 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
 }))
 
 const PlayCircleOutlineIconButtonWrapper = styled(Button)(({ theme }) => ({
-  m:0,
+  m: 0,
   color: 'black',
   px: 1,
-   [theme.breakpoints.down('md')]: {
+  [theme.breakpoints.down('md')]: {
     paddingRight: 0.5,
   },
 }))
 
 const ResponsiveCircleOutlineIconContainer = styled(Box)(({ theme }) => ({
-    paddingRight: 1.5,
-    paddingLeft: 1.5,
-    paddingTop: '1px',
-    '& button': {
-      padding: '0px',
-    },
-    '&:hover': {
-      opacity: 0.5,
-    },
-    [theme.breakpoints.down('md')]: {
-      paddingRight: '15px',
-    },
+  paddingRight: 1.5,
+  paddingLeft: 1.5,
+  paddingTop: '1px',
+  '& button': {
+    padding: '0px',
+  },
+  '&:hover': {
+    opacity: 0.5,
+  },
+  [theme.breakpoints.down('md')]: {
+    paddingRight: '15px',
+  },
 }))
 
 export default TabHeader
