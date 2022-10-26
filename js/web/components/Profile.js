@@ -145,8 +145,8 @@ const Profile = ({ profilePubkey }) => {
   const getUserData = async () => {
     try {
       const hubs = await getHubsForUser(profilePubkey)
-      const {verifications} = (await axios.get(`${process.env.NINA_API_ENDPOINT}/accounts/${profilePubkey}/verifications`)).data
-      setProfileVerifications(verifications)
+      // const {verifications} = (await axios.get(`${process.env.NINA_API_ENDPOINT}/accounts/${profilePubkey}/verifications`)).data
+      // setProfileVerifications(verifications)
       const [collected, published] = await getUserCollectionAndPublished(
         profilePubkey,
         inDashboard

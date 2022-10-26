@@ -52,6 +52,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [bundlrBalance, setBundlrBalance] = useState(0.0)
   const [bundlr, setBundlr] = useState()
   const [bundlrPricePerMb, setBundlrPricePerMb] = useState()
+  const [fetchedHubs, setFetchedHubs] = useState(new Set())
   const bundlrHttpAddress = 'https://node1.bundlr.network'
   const { provider } = ninaClient
 
@@ -133,7 +134,8 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     checkIfHasBalanceToCompleteAction,
     getSubscriptionsForUser,
     filterSubscriptionsForUser,
-    getSubscriptionsForHub
+    getSubscriptionsForHub,
+    filterSubscriptionsForHub
   } = ninaContextHelper({
     ninaClient,
     postState,
@@ -198,17 +200,19 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         getSolPrice,
         bundlrUpload,
         initBundlr,
-        savePostsToState,
         bundlr,
         solUsdcBalance,
         solBalance,
         NinaProgramAction,
         NinaProgramActionCost,
         checkIfHasBalanceToCompleteAction,
+        fetchedHubs,
+        setFetchedHubs,
         getSubscriptionsForUser,
         filterSubscriptionsForUser,
         userSubscriptions,
-        getSubscriptionsForHub
+        getSubscriptionsForHub,
+        filterSubscriptionsForHub
       }}
     >
       {children}
@@ -558,6 +562,7 @@ const ninaContextHelper = ({
           setUsdcBalance(0)
         }
       } catch {
+        console.warn('error getting usdc balance')
       }
     } else {
       setUsdcBalance(0)
@@ -758,7 +763,6 @@ const ninaContextHelper = ({
   }
 
   const getSubscriptionsForHub = async (hubPubkeyOrHandle) => {
-    console.log('HUB SUB SCRIPTIONS');
     try{
       const { subscriptions } = await NinaSdk.Hub.fetchSubscriptions(hubPubkeyOrHandle, false)
       saveSubscriptionsToState(subscriptions)
@@ -773,6 +777,16 @@ const ninaContextHelper = ({
     const subscriptions = []
     Object.values(subscriptionState).forEach((subscription) => {
       if (subscription.from === accountPubkey || subscription.to === accountPubkey) {
+        subscriptions.push(subscription)
+      }
+    })
+    return subscriptions
+  }
+
+  const filterSubscriptionsForHub = (hubPubkey) => {
+    const subscriptions = []
+    Object.values(subscriptionState).forEach((subscription) => {
+      if (subscription.to === hubPubkey) {
         subscriptions.push(subscription)
       }
     })
@@ -802,6 +816,7 @@ const ninaContextHelper = ({
     getSubscriptionsForUser,
     filterSubscriptionsForUser,
     getSubscriptionsForHub,
+    filterSubscriptionsForHub
   }
 }
 
