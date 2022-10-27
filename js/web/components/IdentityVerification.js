@@ -125,7 +125,6 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
             )
             if (response.data) {
               setSoundcloudHandle(response.data.username)
-              console.log('reponse.data.username', response.data.username)
               setActiveValue(response.data.username)
               setSoundcloudToken(response.data.token.access_token)
             }

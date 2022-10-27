@@ -141,6 +141,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     displayNameForAccount,
     displayImageForAccount,
     getVerificationsForUser,
+    filterSubscriptionsForHub
   } = ninaContextHelper({
     ninaClient,
     postState,
@@ -226,6 +227,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         displayNameForAccount,
         displayImageForAccount,
         getVerificationsForUser,
+        filterSubscriptionsForHub
       }}
     >
       {children}
@@ -871,6 +873,16 @@ const ninaContextHelper = ({
       [accountPubkey]: verifications,
     })
   }
+  
+  const filterSubscriptionsForHub = (hubPubkey) => {
+    const subscriptions = []
+    Object.values(subscriptionState).forEach((subscription) => {
+      if (subscription.to === hubPubkey) {
+        subscriptions.push(subscription)
+      }
+    })
+    return subscriptions
+  }
 
   return {
     subscriptionSubscribe,
@@ -898,6 +910,7 @@ const ninaContextHelper = ({
     displayNameForAccount,
     displayImageForAccount,
     getVerificationsForUser,
+    filterSubscriptionsForHub
   }
 }
 

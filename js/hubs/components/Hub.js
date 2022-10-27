@@ -87,8 +87,6 @@ const HubComponent = ({hubPubkey}) => {
                 ...releaseState.metadata[hubContentData.release],
               };
               contentArray.push(hubContentData);
-            } else {
-              console.log('hub release is reference: ', hubContentData)
             }
             if (hubContentData.publishedThroughHub === hubPubkey || releaseState.tokenData[hubContentData.release]?.authority === hubData?.authority) {
               types.push('Releases')

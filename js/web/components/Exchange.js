@@ -68,8 +68,6 @@ const ExchangeComponent = (props) => {
   }, [releaseState.tokenData[releasePubkey]])
 
   useEffect(() => {
-    console.log('a', filterExchangesForReleaseBuySell(releasePubkey, true))
-    console.log('b', filterExchangesForReleaseBuySell(releasePubkey, false))
     setExchangesBuy(filterExchangesForReleaseBuySell(releasePubkey, true))
     setExchangesSell(filterExchangesForReleaseBuySell(releasePubkey, false))
   }, [exchangeState, releasePubkey])
