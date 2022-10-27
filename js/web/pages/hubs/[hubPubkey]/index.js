@@ -64,7 +64,7 @@ const HubPage = ({ hub, hubPubkey }) => {
         <meta name="og:image" content={hub?.data.image} />
       </Head>
       <ResponsiveHubContainer>
-        <Hub hubPubkey={hubPubkey} hubHandle={hub.handle} />
+        <HubView hubPubkey={hubPubkey} hubHandle={hub.handle} />
       </ResponsiveHubContainer>
     </>
   )
