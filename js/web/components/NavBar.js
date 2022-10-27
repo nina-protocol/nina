@@ -17,15 +17,8 @@ import {
 import Breadcrumbs from './Breadcrumbs'
 import NavSearch from './NavSearch'
 const NavBar = () => {
-  const {
-    healthOk,
-    getSubscriptionsForUser,
-    filterSubscriptionsForUser,
-    subscriptionState,
-  } = useContext(Nina.Context)
-  const { filterHubsForUser, getHubsForUser, hubState, getHubs } = useContext(
-    Hub.Context
-  )
+  const { healthOk, getSubscriptionsForUser } = useContext(Nina.Context)
+  const { getHubsForUser } = useContext(Hub.Context)
   const wallet = useWallet()
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),
@@ -48,13 +41,6 @@ const NavBar = () => {
     }
   }, [wallet.connected])
 
-  const userHubs = useMemo(() => {
-    if (wallet.connected) {
-      return filterHubsForUser(wallet.publicKey.toBase58())
-    }
-    return undefined
-  }, [hubState, wallet.connected])
-
   return (
     <Root>
       <NavLeft>
@@ -70,20 +56,6 @@ const NavBar = () => {
 
       <NavRight>
         <DesktopWalletWrapper>
-          {userHubs && (
-            <a
-              href={`https://hubs.ninaprotocol.com/${
-                userHubs.length === 1 ? userHubs[0].handle : ''
-              }`}
-              target="_blank"
-              rel="noreferrer"
-              style={{ margin: '0' }}
-            >
-              <Typography variant="subtitle1" sx={{ mr: '15px' }}>
-                My Hub{userHubs.length > 1 ? 's' : ''}
-              </Typography>
-            </a>
-          )}
           <NavCtas>
             <SearchBarWrapper>
               <NavSearch />
