@@ -232,7 +232,7 @@ const ReusableTableBody = ({
 
     if (tableType === 'profileHubs') {
       formattedData = {
-        id: publicKey,
+        id: releasePubkey,
         link: `/hubs/${data.handle}`,
         date: data?.createdAt,
         image: data?.data.image,

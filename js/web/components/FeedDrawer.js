@@ -199,7 +199,7 @@ const FeedHeader = styled(Box)(({ theme }) => ({
   zIndex: 100,
   display: 'flex',
   justifyContent: 'space-between',
-  width: '43px',
+  width: '437px',
 }))
 
 const DrawerTypeWrapper = styled(Box)(({ theme }) => ({
