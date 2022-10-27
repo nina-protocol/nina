@@ -22,7 +22,13 @@ const HubComponent = ({ hubPubkey }) => {
   } = useContext(Hub.Context)
 
   const { releaseState } = useContext(Release.Context)
-  const { fetchedHubs, setFetchedHubs } = useContext(Nina.Context)
+  const {
+    fetchedHubs,
+    setFetchedHubs,
+    getSubscriptionsForHub,
+    subscriptionState,
+    filterSubscriptionsForHub,
+  } = useContext(Nina.Context)
   const [hubReleases, setHubReleases] = useState(undefined)
   const [releaseData, setReleaseData] = useState(undefined)
   const [hubCollaborators, setHubCollaborators] = useState(undefined)
@@ -57,6 +63,7 @@ const HubComponent = ({ hubPubkey }) => {
       return hubState[hubPubkey]
     } else {
       getHub(hubPubkey)
+      getSubscriptionsForHub(hubPubkey)
     }
   }, [hubState, hubPubkey])
 
@@ -65,6 +72,10 @@ const HubComponent = ({ hubPubkey }) => {
       getHub(hubPubkey)
     }
   }, [hubPubkey])
+
+  useEffect(() => {
+    setHubFollowers(filterSubscriptionsForHub(hubPubkey))
+  }, [subscriptionState])
 
   useEffect(() => {
     const [releases] = filterHubContentForHub(hubPubkey)
@@ -107,9 +118,15 @@ const HubComponent = ({ hubPubkey }) => {
     if (hubReleases?.length > 0) {
       setActiveView(0)
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
-      updatedView[viewIndex].visible = true
+      updatedView[viewIndex].disabled = false
       updatedView[viewIndex].playlist = hubReleases
     }
+
+    if (hubCollaborators?.length > 0) {
+      viewIndex = updatedView.findIndex((view) => view.name === 'collaborators')
+      updatedView[viewIndex].disabled = false
+    }
+
     if (
       hubReleases?.length === 0 &&
       fetched.releases &&
@@ -117,9 +134,15 @@ const HubComponent = ({ hubPubkey }) => {
     ) {
       setActiveView(1)
     }
+
+    if (hubFollowers?.length > 0) {
+      viewIndex = updatedView.findIndex((view) => view.name === 'followers')
+      updatedView[viewIndex].disabled = false
+    }
+
     setFetched({ ...fetched })
     setViews(updatedView)
-  }, [hubReleases, hubCollaborators])
+  }, [hubReleases, hubCollaborators, hubFollowers])
 
   const viewHandler = (event) => {
     const index = parseInt(event.target.id)
@@ -174,42 +197,6 @@ const HubComponent = ({ hubPubkey }) => {
   }
   return (
     <>
-      <Head>
-        <title>{`Nina: ${
-          hubData?.data.displayName ? `${hubData.data.displayName}'s Hub` : ''
-        }`}</title>
-        <meta
-          name="description"
-          content={`${hubData?.data.displayName}'s Hub on Nina.`}
-        />
-        <meta name="og:type" content="website" />
-        <meta
-          name="og:title"
-          content={`Nina: ${
-            hubData?.data.displayName ? `${hubData.data.displayName}'s Hub` : ''
-          }`}
-        />
-        <meta
-          name="og:description"
-          content={`${
-            hubData?.data.displayName ? hubData?.data.displayName : ''
-          }: ${
-            hubData?.data.description ? hubData?.data.description : ''
-          } \n Published via Nina Hubs.`}
-        />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@ninaprotocol" />
-        <meta name="twitter:creator" content="@ninaprotocol" />
-        <meta name="twitter:image:type" content="image/jpg" />
-        <meta
-          name="twitter:title"
-          content={`${hubData?.data.displayName}'s Hub on Nina`}
-        />
-        <meta name="twitter:description" content={hubData?.data.description} />
-        <meta name="twitter:image" content={hubData?.data.image} />
-        <meta name="og:image" content={hubData?.data.image} />
-      </Head>
-
       <HubContainer>
         <>{hasData && hubData && <HubHeader hubData={hubData} />}</>
         {hasData && hubData && (
@@ -220,6 +207,7 @@ const HubComponent = ({ hubPubkey }) => {
               profileTabs={views}
               releaseData={releaseData}
               type={'hubsView'}
+              followersCount={hubFollowers?.length}
             />
           </HubTabWrapper>
         )}
@@ -254,6 +242,16 @@ const HubComponent = ({ hubPubkey }) => {
                   tableType={'hubCollaborators'}
                   items={hubCollaborators}
                 />
+              )}
+            </>
+          )}
+          {activeView === 2 && (
+            <>
+              {hasData && !hubCollaborators && (
+                <Box sx={{ my: 1 }}>No followers found in this Hub</Box>
+              )}
+              {hasData && (
+                <ReusableTable tableType={'followers'} items={hubFollowers} />
               )}
             </>
           )}
