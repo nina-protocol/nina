@@ -91,14 +91,14 @@ const HubHeader = ({ hubData }) => {
               </a>
             </Link>
           )}
-          {/* {wallet.connected && ( */}
-          <Subscribe
-            accountAddress={hubData.publicKey}
-            hubHandle={hubData.handle}
-            inHub={true}
-            inFeed={false}
-          />
-          {/* )} */}
+          {wallet.connected && (
+            <Subscribe
+              accountAddress={hubData?.publicKey}
+              hubHandle={hubData?.handle}
+              inHub={true}
+              inFeed={false}
+            />
+          )}
         </Box>
         {hubData?.data.description && (
           <>
