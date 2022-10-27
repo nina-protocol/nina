@@ -173,12 +173,6 @@ const Search = (props) => {
   }
 
   const renderDefaultSearchView = (activeView) => {
-    console.log('DEFAULT')
-    console.log('defaultResponse', defaultResponse)
-    console.log(
-      'defaultSearchView',
-      defaultSearchView.map((item) =>  defaultResponse[item.name])
-    )
     switch (activeView) {
       case 0:
         return (
@@ -312,7 +306,7 @@ const SearchPageContainer = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   justifyItems: 'center',
   textAlign: 'center',
-  paddingTop: '2.75rem',
+  paddingTop: '4rem',
   width: theme.maxWidth,
   height: '84vh',
   overflowY: 'hidden',
@@ -362,6 +356,7 @@ const SearchAllResultsWrapper = styled(Box)(({ theme }) => ({
   minWidth: theme.maxWidth,
   textAlign: 'left',
   overflowY: 'auto',
+  paddingBottom: '100px',
   [theme.breakpoints.down('md')]: {
     paddingBottom: '100px',
     minWidth: 'unset',
@@ -383,6 +378,7 @@ const SearchResultFilterContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'row',
   maxWidth: theme.maxWidth,
+  borderBottom: '1px solid #E5E5E5',
   [theme.breakpoints.down('md')]: {},
 }))
 
@@ -397,6 +393,8 @@ const SearchResultFilter = styled(Button)(({ theme, isClicked }) => ({
   alignItems: 'left',
   display: 'flex',
   flexDirection: 'row',
+  paddingTop: '1rem',
+  paddingBottom: '1rem',
   [theme.breakpoints.down('md')]: {
     fontSize: '13px',
   },
