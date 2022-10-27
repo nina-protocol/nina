@@ -3,9 +3,31 @@ import { Box } from '@mui/system'
 import { styled } from '@mui/system'
 import Head from 'next/head'
 import NinaSdk from '@nina-protocol/js-sdk'
-
-const Hub = dynamic(() => import('../../../components/Hub'))
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import { useContext, useMemo, useEffect, useState } from 'react'
+const HubView = dynamic(() => import('../../../components/Hub'))
 const HubPage = ({ hub, hubPubkey }) => {
+  const { getHub, hubState } = useContext(Hub.Context)
+  const [fetched, setFetched] = useState({
+    info: false,
+    releases: false,
+    collaborators: false,
+  })
+  const hubData = useMemo(() => {
+    if (hubState[hubPubkey]) {
+      setFetched({ ...fetched, info: true })
+      return hubState[hubPubkey]
+    } else {
+      getHub(hubPubkey)
+    }
+  }, [hubState, hubPubkey])
+
+  useEffect(() => {
+    if (hubPubkey) {
+      getHub(hubPubkey)
+    }
+  }, [hubPubkey])
+
   return (
     <>
       <Head>
@@ -42,7 +64,7 @@ const HubPage = ({ hub, hubPubkey }) => {
         <meta name="og:image" content={hub?.data.image} />
       </Head>
       <ResponsiveHubContainer>
-        <Hub hubPubkey={hubPubkey} hubHandle={hub.handle} />
+        <HubView hubPubkey={hubPubkey} hubHandle={hub.handle} />
       </ResponsiveHubContainer>
     </>
   )

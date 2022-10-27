@@ -147,6 +147,14 @@ const Breadcrumbs = () => {
             }
           })
           break
+        case '/search':
+          pathArray = linkPath.map((path, i) => {
+            return {
+              breadcrumb: 'Search',
+              href: '/' + linkPath.slice(0, i + 1).join('/'),
+            }
+          })
+          break
         default:
           pathArray = linkPath.map((path, i) => {
             return {

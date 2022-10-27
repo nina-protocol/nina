@@ -18,12 +18,22 @@ const TabHeader = ({
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { enqueueSnackbar } = useSnackbar()
   const playAllHandler = (playlist) => {
-    resetQueueWithPlaylist(playlist?.map((release) => release.publicKey)).then(
-      () =>
+    if (type === 'hubView') {
+      resetQueueWithPlaylist(playlist?.map((release) => release.release)).then(
+        () =>
+          enqueueSnackbar(`Hub releases added to queue`, {
+            variant: 'info',
+          })
+      )
+    } else {
+      resetQueueWithPlaylist(
+        playlist?.map((release) => release.publicKey)
+      ).then(() =>
         enqueueSnackbar(`Releases added to queue`, {
           variant: 'info',
         })
-    )
+      )
+    }
   }
   return (
     <ResponsiveContainer
@@ -103,7 +113,7 @@ const ResponsiveTab = styled(Button)(({ theme }) => ({
   paddingRight: '15px',
   height: '40px',
   [theme.breakpoints.down('md')]: {
-    paddingLeft: '15px',
+    paddingLeft: '6px',
   },
 }))
 
@@ -115,7 +125,7 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
   justifyContent: 'start',
 
   [theme.breakpoints.down('md')]: {
-    width: '100vw',
+    maxWidth: '100vw',
   },
 }))
 

@@ -22,6 +22,7 @@ import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import { styled } from '@mui/material'
 import { useSnackbar } from 'notistack'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
+import { useRouter } from 'next/router'
 
 const { getImageFromCDN, loader } = imageManager
 
@@ -59,6 +60,39 @@ const ReusableTableHead = ({ tableType, inDashboard }) => {
     headCells.push({ id: 'image', label: '' })
     headCells.push({ id: 'artist', label: 'Artist' })
     headCells.push({ id: 'title', label: 'Title' })
+  }
+
+  if (tableType === 'allSearchResults') {
+    headCells.push({ id: 'image', label: '' })
+    headCells.push({ id: 'name', label: '' })
+  }
+
+  if (tableType === 'searchResultArtists') {
+    headCells.push({ id: 'name', label: 'Artists' })
+  }
+
+  if (tableType === 'searchResultReleases') {
+    headCells.push({ id: 'ctas', label: 'Releases' })
+    headCells.push({ id: 'image', label: '' })
+    headCells.push({ id: 'title', label: '' })
+  }
+
+  if (tableType === 'searchResultHubs') {
+    headCells.push({ id: 'image', label: 'Hubs' })
+  }
+
+  if (tableType === 'filteredSearchResultArtists') {
+    headCells.push({ id: 'searchResultArtist', label: '' })
+  }
+
+  if (tableType === 'filteredSearchResultReleases') {
+    headCells.push({ id: 'ctas', label: '' })
+    headCells.push({ id: 'image', label: '' })
+    headCells.push({ id: 'searchResultRelease', label: '' })
+  }
+  if (tableType === 'filteredSearchResultHubs') {
+    headCells.push({ id: 'image', label: '' })
+    headCells.push({ id: 'searchResultHub', label: '' })
   }
 
   return (
@@ -118,6 +152,7 @@ const ReusableTableBody = ({
   refreshProfile,
   dashboardPublicKey,
 }) => {
+  const router = useRouter()
   const {
     updateTrack,
     addTrackToQueue,
@@ -260,7 +295,46 @@ const ReusableTableBody = ({
         collaborator: truncateAddress(data.collaborator),
       }
     }
+    if (
+      tableType === 'searchResultArtists' ||
+      tableType === 'filteredSearchResultArtists'
+    ) {
+      formattedData = {
+        link: `/profiles/${data?.publicKey}`,
+        searchResultArtist: data.name,
+      }
+    }
+    if (
+      tableType === 'searchResultReleases' ||
+      tableType === 'filteredSearchResultReleases'
+    ) {
+      formattedData = {
+        id: data?.publicKey,
 
+        image: data?.image,
+        link: `/${data?.publicKey}`,
+        searchResultRelease: `${data?.artist} - ${data.title}`,
+      }
+    }
+    if (
+      tableType === 'searchResultHubs' ||
+      tableType === 'filteredSearchResultHubs'
+    ) {
+      formattedData = {
+        id: data?.publicKey,
+        image: data?.image,
+        link: `/hubs/${data?.handle}`,
+        searchResultHub: data.displayName,
+      }
+    }
+    if (tableType === 'following') {
+      formattedData = {
+        id: data?.publicKey,
+        image: data?.image,
+        link: `/profiles/${data.to}`,
+        profile: truncateAddress(data.to),
+      }
+    }
     if (tableType === 'followers') {
       formattedData = {
         link: `/profiles/${data.from}`,
@@ -274,6 +348,29 @@ const ReusableTableBody = ({
         profile: truncateAddress(data.to),
       }
     }
+    if (tableType === 'defaultSearchArtists') {
+      formattedData = {
+        id: data?.publicKey,
+      }
+    }
+    if (tableType === 'defaultSearchReleases') {
+      formattedData = {
+        id: data?.releasePubkey,
+        image: data?.metadata.image,
+        link: `/${data?.releasePubkey}`,
+        searchResultRelease: `${data?.metadata.properties.artist} - ${data.metadata.properties.title}`,
+      }
+    }
+
+    if (tableType === 'defaultSearchHubs') {
+      formattedData = {
+        id: data?.publicKey,
+        image: data?.data.image,
+        link: `/hubs/${data?.handle}`,
+        searchResultHub: data?.data.displayName,
+      }
+    }
+
     return formattedData
   })
 
@@ -360,6 +457,72 @@ const ReusableTableBody = ({
                       </OverflowContainer>
                     </StyledTableCell>
                   )
+                } else if (cellName === 'artist') {
+                  return (
+                    <StyledTableCell key={cellName}>
+                      <OverflowContainer overflowWidth={'20vw'}>
+                        <Typography
+                          noWrap
+                          onClickCapture={() =>
+                            router.push(`/profiles/${row?.authorityPublicKey}`)
+                          }
+                        >
+                          <Link href={row.link} passHref>
+                            <a>{cellData}</a>
+                          </Link>
+                        </Typography>
+                      </OverflowContainer>
+                    </StyledTableCell>
+                  )
+                } else if (cellName === 'searchResultArtist') {
+                  return (
+                    <StyledTableCell key={cellName}>
+                      <SearchResultOverflowContainer>
+                        <Typography
+                          noWrap
+                          onClickCapture={() =>
+                            router.push(`/profiles/${row?.authorityPublicKey}`)
+                          }
+                        >
+                          <Link href={row.link} passHref>
+                            <a>{cellData}</a>
+                          </Link>
+                        </Typography>
+                      </SearchResultOverflowContainer>
+                    </StyledTableCell>
+                  )
+                } else if (cellName === 'searchResultRelease') {
+                  return (
+                    <StyledTableCell key={cellName}>
+                      <SearchResultOverflowContainer>
+                        <OverflowContainer overflowWidth={'60vw'}>
+                          <Typography
+                            noWrap
+                            onClickCapture={() => router.push(`/${row?.id}`)}
+                          >
+                            <Link href={row.link} passHref>
+                              <a>{cellData}</a>
+                            </Link>
+                          </Typography>
+                        </OverflowContainer>
+                      </SearchResultOverflowContainer>
+                    </StyledTableCell>
+                  )
+                } else if (cellName === 'searchResultHub') {
+                  return (
+                    <StyledTableCell key={cellName}>
+                      <SearchResultOverflowContainer>
+                        <Typography
+                          noWrap
+                          onClickCapture={() => router.push(`/hubs/${row?.id}`)}
+                        >
+                          <Link href={row.link} passHref>
+                            <a>{cellData}</a>
+                          </Link>
+                        </Typography>
+                      </SearchResultOverflowContainer>
+                    </StyledTableCell>
+                  )
                 } else {
                   return (
                     <StyledTableCell key={cellName}>
@@ -412,7 +575,7 @@ const ResponsiveTableContainer = styled(Box)(({ theme }) => ({
   // width: '100vw',
   borderBottom: 'none',
   padding: '0px',
-  paddingBottom: '100px',
+
   [theme.breakpoints.down('md')]: {
     overflowY: 'unset',
     height: '100% !important',
@@ -471,11 +634,12 @@ const StyledTableDescriptionContainer = styled(Box)(({ theme }) => ({
   maxWidth: '20vw',
 }))
 
-const ResponsiveContainer = styled(Box)(({ theme }) => ({
+const ResponsiveContainer = styled(Box)(({ theme, hasOverflow }) => ({
   width: theme.maxWidth,
-  maxHeight: '80vh',
+  maxHeight: hasOverflow ? '80vh' : 'unset',
+
   webkitOverflowScrolling: 'touch',
-  overflowY: 'auto',
+  overflowY: hasOverflow ? 'auto' : 'unset',
   overflowX: 'hidden',
   ['&::-webkit-scrollbar']: {
     display: 'none',
@@ -486,7 +650,15 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
     overflowY: 'unset',
   },
 }))
-
+const SearchResultOverflowContainer = styled(Box)(({ theme }) => ({
+  overflow: 'hidden',
+  width: '70vw',
+  textAlign: 'left',
+  textOverflow: 'ellipsis',
+  [theme.breakpoints.down('md')]: {
+    minWidth: '0',
+  },
+}))
 const StyledCollectButton = styled(Button)(({ theme }) => ({
   color: `${theme.palette.blue} !important`,
   display: 'flex',

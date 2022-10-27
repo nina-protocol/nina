@@ -321,6 +321,7 @@ const Profile = ({ profilePubkey }) => {
               <ReusableTable
                 tableType={'followers'}
                 items={profileSubscriptionsTo}
+                hasOverflow={true}
               />
             )}
           </>
@@ -334,6 +335,7 @@ const Profile = ({ profilePubkey }) => {
               <ReusableTable
                 tableType={'following'}
                 items={profileSubscriptionsFrom}
+                hasOverflow={true}
               />
             )}
           </>
@@ -383,6 +385,17 @@ const Profile = ({ profilePubkey }) => {
           </Box>
         )}
 
+        {fetched.info && (
+          <Box sx={{ py: 1 }}>
+            <TabHeader
+              viewHandler={viewHandler}
+              activeView={activeView}
+              profileTabs={tabCategories}
+              followersCount={profileSubscriptionsTo?.length}
+              followingCount={profileSubscriptionsFrom?.length}
+            />
+          </Box>
+        )}
         <>
           {!hasData && (
             <ProfileDotWrapper>
@@ -411,6 +424,7 @@ const ProfileContainer = styled(Box)(({ theme }) => ({
   height: '86vh',
   overflowY: 'hidden',
   margin: '75px auto 0px',
+
   ['-webkit-overflow-scroll']: 'touch',
   [theme.breakpoints.down('md')]: {
     display: 'flex',
@@ -457,7 +471,7 @@ const ProfileHeaderWrapper = styled(Box)(({ theme }) => ({
 const ProfileOverflowContainer = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
   display: ['-webkit-box'],
-  ['-webkit-line-clamp']: '4',
+  ['-webkit-line-clamp']: '5',
   ['-webkit-box-orient']: 'vertical',
   textOverflow: 'ellipsis',
   [theme.breakpoints.down('md')]: {
@@ -467,6 +481,7 @@ const ProfileOverflowContainer = styled(Box)(({ theme }) => ({
 
 const ProfileTableContainer = styled(Box)(({ theme }) => ({
   paddingBottom: '100px',
+  overflowY: 'auto',
   [theme.breakpoints.down('md')]: {
     paddingBottom: '100px',
     overflow: 'scroll',
@@ -480,10 +495,27 @@ const ProfileDotWrapper = styled(Box)(({ theme }) => ({
   height: '100%',
   display: 'flex',
   textAlign: 'center',
+  top: '50%',
   [theme.breakpoints.down('md')]: {
     fontSize: '30px',
     left: '50%',
     top: '50%',
+  },
+}))
+
+const TabWrapper = styled(Box)(({ theme, isClicked }) => ({
+  backgroundColor: 'transparent',
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '16px',
+  fontWeight: isClicked ? 'bold' : 'normal',
+  color: '#000',
+  textAlign: 'left',
+  alignItems: 'left',
+  display: 'flex',
+  flexDirection: 'row',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '13px',
   },
 }))
 

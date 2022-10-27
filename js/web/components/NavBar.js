@@ -9,12 +9,13 @@ import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
 import Link from 'next/link'
 import { useWallet } from '@solana/wallet-adapter-react'
+
 import {
   WalletDialogProvider,
   WalletMultiButton,
 } from '@solana/wallet-adapter-material-ui'
 import Breadcrumbs from './Breadcrumbs'
-
+import NavSearch from './NavSearch'
 const NavBar = () => {
   const {
     healthOk,
@@ -84,6 +85,9 @@ const NavBar = () => {
             </a>
           )}
           <NavCtas>
+            <SearchBarWrapper>
+              <NavSearch />
+            </SearchBarWrapper>
             {wallet.wallets && (
               <StyledWalletDialogProvider featuredWallets={4}>
                 <StyledWalletButton>
@@ -156,7 +160,7 @@ const NavRight = styled('div')(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     position: 'absolute',
     right: 0,
-    top: '10px',
+    top: '15px',
   },
 }))
 
@@ -164,7 +168,12 @@ const NavCtas = styled('div')(() => ({
   display: 'flex',
   alignItems: 'flex-start',
 }))
-
+const SearchBarWrapper = styled('div')(({ theme }) => ({
+  [theme.breakpoints.down('md')]: {
+    position: 'absolute',
+    right: '270px',
+  },
+}))
 const Logo = styled('div')(({ theme }) => ({
   position: 'absolute',
   top: theme.spacing(1),
