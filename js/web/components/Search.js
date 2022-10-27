@@ -27,9 +27,9 @@ const Search = (props) => {
   const [searchFilter, setSearchFilter] = useState()
   const [response, setResponse] = useState(searchResults)
   const [defaultResponse, setDefaultResponse] = useState({
-    artists: [],
-    releases: undefined,
-    hubs: undefined,
+    Artists: undefined,
+    Releases: undefined,
+    Hubs: undefined,
   })
   const [featuredHubPublicKeys, setFeaturedHubPublicKeys] = useState()
   const [releasesRecent, setReleasesRecent] = useState({})
@@ -39,9 +39,9 @@ const Search = (props) => {
   const [activeView, setActiveView] = useState(0)
 
   const [defaultSearchView, setDefaultSearchView] = useState([
-    { name: 'artists', length: 0 },
-    { name: 'releases', length: 0 },
-    { name: 'hubs', length: 0 },
+    { name: 'Artists', length: 0 },
+    { name: 'Releases', length: 0 },
+    { name: 'Hubs', length: 0 },
   ])
 
   useEffect(() => {
@@ -70,27 +70,26 @@ const Search = (props) => {
   }, [])
 
   useEffect(() => {
-  
-      setReleasesRecent(filterReleasesRecent())
-      defaultSearchView[1].length = releasesRecentState.highlights.length
-      setActiveView(2)
-
+    setReleasesRecent(filterReleasesRecent())
+    defaultSearchView[1].length = releasesRecentState.highlights.length
+    defaultResponse.Releases = releasesRecent.highlights
+    setActiveView(2)
   }, [releasesRecentState])
 
   useEffect(() => {
-   
-      if (featuredHubPublicKeys) {
-        const featured = []
-        Object.values(featuredHubPublicKeys).forEach((sub) => {
-          const hub = hubState[sub.to]
-          if (hub) {
-            featured.push(hub)
-          }
-        })
-        setFeaturedHubs(featured)
-        defaultSearchView[2].length = featured.length
-      }
-    
+    if (featuredHubPublicKeys) {
+      const featured = []
+      Object.values(featuredHubPublicKeys).forEach((sub) => {
+        const hub = hubState[sub.to]
+        if (hub) {
+          featured.push(hub)
+        }
+      })
+      setFeaturedHubs(featured)
+      defaultSearchView[2].length = featured.length
+      
+      defaultResponse.Hubs = featured
+    }
   }, [featuredHubPublicKeys, hubState])
 
   useEffect(() => {
@@ -176,19 +175,29 @@ const Search = (props) => {
   const renderDefaultSearchView = (activeView) => {
     console.log('DEFAULT')
     console.log('defaultResponse', defaultResponse)
+    console.log(
+      'defaultSearchView',
+      defaultSearchView.map((item) =>  defaultResponse[item.name])
+    )
     switch (activeView) {
       case 0:
         return (
-          <ReusableTable
-            tableType={'defaultSearchResult'}
-            items={releasesRecent.highlights}
-            hasOverflow={true}
-          />
+          <SearchAllResultsWrapper>
+            {defaultSearchView.map((item, index) => {
+              return (
+                <ReusableTable
+                  tableType={`defaultSearch${item.name}`}
+                  items={defaultResponse[item.name]}
+                  hasOverflow={false}
+                />
+              )
+            })}
+          </SearchAllResultsWrapper>
         )
       case 2:
         return (
           <ReusableTable
-            tableType={'defaultSearchResult'}
+            tableType={'defaultSearchReleases'}
             items={releasesRecent.highlights}
             hasOverflow={true}
           />
@@ -196,7 +205,7 @@ const Search = (props) => {
       case 3:
         return (
           <ReusableTable
-            tableType={'hubHighlights'}
+            tableType={'defaultSearchHubs'}
             items={featuredHubs}
             hasOverflow={true}
           />
@@ -208,13 +217,13 @@ const Search = (props) => {
 
   return (
     <SearchPageContainer>
-      <SearchHeaderContainer>
         <SearchHeaderWrapper>
+      <SearchHeaderContainer>
           {searchQuery && (
             <Typography>{`Search results for ${query}`}</Typography>
           )}
-        </SearchHeaderWrapper>
       </SearchHeaderContainer>
+        </SearchHeaderWrapper>
       <>
         <SearchResultFilterContainer>
           {searchQuery && (
@@ -243,14 +252,18 @@ const Search = (props) => {
                 </SearchResultFilter>
               )
             })}
+
           {!searchResults && !searchQuery && (
             <SearchResultFilter
               isClicked={activeView === 0}
               onClick={() => setActiveView(0)}
             >
-              All
+              {`All (${
+                releasesRecent?.highlights?.length + featuredHubs?.length
+              })`}
             </SearchResultFilter>
           )}
+
           {!searchResults &&
             !searchQuery &&
             defaultSearchView.map((filter, index) => {
@@ -261,7 +274,7 @@ const Search = (props) => {
                   onClick={() => setActiveView(index + 1)}
                   disabled={filter.length === 0}
                 >
-        {`${filter.name} (${filter.length})`}
+                  {`${filter.name} (${filter.length})`}
                 </SearchResultFilter>
               )
             })}
@@ -279,9 +292,7 @@ const Search = (props) => {
           )}
 
           {fetchedResponse && <>{renderTables(activeView)}</>}
-          {!searchQuery && <>
-          {renderDefaultSearchView(activeView)}
-          </>}
+          {!searchQuery && <>{renderDefaultSearchView(activeView)}</>}
 
           {query?.length > 0 &&
             fetchedResponse &&
@@ -301,9 +312,9 @@ const SearchPageContainer = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   justifyItems: 'center',
   textAlign: 'center',
-
+  paddingTop: '2.75rem',
   width: theme.maxWidth,
-  height: '86vh',
+  height: '84vh',
   overflowY: 'hidden',
   margin: '75px auto',
   [theme.breakpoints.down('md')]: {
@@ -321,24 +332,28 @@ const SearchPageContainer = styled(Box)(({ theme }) => ({
 
 const SearchHeaderContainer = styled(Box)(({ theme }) => ({
   maxWidth: '100%',
-
+  textAlign: 'left',
   [theme.breakpoints.down('md')]: {
     paddingLeft: '10px',
     paddingRight: '10px',
   },
 }))
 const SearchHeaderWrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'left',
+  justifyContent: 'start',
   py: 5,
   pl: 1,
   pb: 1,
   maxWidth: '100vw',
-  minHeight: '50px',
+  minHeight: '100px',
   [theme.breakpoints.down('md')]: {
     width: '100vw',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'no-wrap',
-    height: '25px',
+    height: '100px',
   },
 }))
 const Form = styled('form')(({ theme }) => ({}))
@@ -347,8 +362,8 @@ const SearchAllResultsWrapper = styled(Box)(({ theme }) => ({
   minWidth: theme.maxWidth,
   textAlign: 'left',
   overflowY: 'auto',
-  paddingBottom: '100px',
   [theme.breakpoints.down('md')]: {
+    paddingBottom: '100px',
     minWidth: 'unset',
   },
 }))

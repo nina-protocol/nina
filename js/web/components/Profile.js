@@ -321,6 +321,7 @@ const Profile = ({ profilePubkey }) => {
               <ReusableTable
                 tableType={'followers'}
                 items={profileSubscriptionsTo}
+                hasOverflow={true}
               />
             )}
           </>
@@ -334,6 +335,7 @@ const Profile = ({ profilePubkey }) => {
               <ReusableTable
                 tableType={'following'}
                 items={profileSubscriptionsFrom}
+                hasOverflow={true}
               />
             )}
           </>
@@ -479,6 +481,7 @@ const ProfileOverflowContainer = styled(Box)(({ theme }) => ({
 
 const ProfileTableContainer = styled(Box)(({ theme }) => ({
   paddingBottom: '100px',
+  overflowY: 'auto',
   [theme.breakpoints.down('md')]: {
     paddingBottom: '100px',
     overflow: 'scroll',

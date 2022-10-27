@@ -340,7 +340,12 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
         profile: truncateAddress(data.to),
       }
     }
-    if (tableType === 'defaultSearchResult') {
+    if(tableType === 'defaultSearchArtists') {
+      formattedData = {
+        id: data?.publicKey,
+      }
+    }
+    if (tableType === 'defaultSearchReleases') {
       formattedData = {
         id: data?.releasePubkey,
         image: data?.metadata.image,
@@ -349,7 +354,7 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
       }
     }
 
-    if(tableType === 'hubHighlights') {
+    if(tableType === 'defaultSearchHubs') {
       formattedData = {
         id: data?.publicKey,
         image: data?.data.image,
