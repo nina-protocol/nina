@@ -44,7 +44,7 @@ const moduleExports = withTM({
     }
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@nixna-protocol/nina-internal-sdk': path.resolve(
+      '@nina-protocol/nina-internal-sdk': path.resolve(
         '../node_modules/@nina-protocol/nina-internal-sdk'
       ),
       react: path.resolve('../node_modules/react'),
