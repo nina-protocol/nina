@@ -28,6 +28,7 @@ const FeedDrawer = () => {
   const { getFeedForUser } = useContext(Release.Context)
   const [activeDrawerTypeIndex, setActiveDrawerTypeIndex] = useState(0)
   const drawerTypes = ['latest', 'suggestions']
+  const [feedFetched, setFeedFetched] = useState(false)
 
   useEffect(() => {
     if (wallet.connected) {
@@ -71,6 +72,7 @@ const FeedDrawer = () => {
       } else {
         setFeedItems(updatedFeedItems)
       }
+      setFeedFetched(true)
     }
   }
 
@@ -80,6 +82,7 @@ const FeedDrawer = () => {
       const { data } = await axios.get(
         `${process.env.NINA_API_ENDPOINT}/accounts/${publicKey}/hubSuggestions`
       )
+      console.log('data :>> ', data);
       data.suggestions.forEach((suggestion) => {
         suggestions.push(suggestion)
       })
@@ -138,7 +141,8 @@ const FeedDrawer = () => {
                 toggleDrawer={toggleDrawer}
                 playFeed={playFeed}
                 handleGetFeedForUser={handleGetFeedForUser}
-                publicKey={wallet.publicKey.toBase58()}
+                publicKey={wallet?.publicKey?.toBase58()}
+                feedFetched={feedFetched}
               />
             )}
 
@@ -146,7 +150,7 @@ const FeedDrawer = () => {
               <Suggestions
                 items={hubSuggestions}
                 toggleDrawer={toggleDrawer}
-                publicKey={wallet.publicKey.toBase58()}
+                publicKey={wallet?.publicKey?.toBase58()}
               />
             )}
           </StyledDrawer>

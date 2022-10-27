@@ -14,6 +14,7 @@ import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutline
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Button from '@mui/material/Button'
+import Dots from './Dots'
 import { useRouter } from 'next/router'
 
 const timeSince = (date) => {
@@ -53,6 +54,7 @@ const Feed = ({
   playFeed,
   publicKey,
   handleGetFeedForUser,
+  feedFetched
 }) => {
   const { updateTrack, isPlaying, setIsPlaying, track } = useContext(
     Audio.Context
@@ -66,7 +68,7 @@ const Feed = ({
     const bottom =
       scrollRef.current.getBoundingClientRect().bottom - 250 <=
       window.innerHeight
-    if (bottom && !pendingFetch && itemsTotal !== items.length) {
+    if (bottom && !pendingFetch && itemsTotal !== feedItems.length) {
       setPendingFetch(true)
       handleGetFeedForUser(publicKey)
     }
@@ -558,6 +560,14 @@ const Feed = ({
     return feedItemComponents
   }, [items, isPlaying])
 
+  if (!feedFetched) {
+    return (
+      <Box mt={4} height="100%" display="flex" justifyContent='center'>
+        <Dots size='80px'/>
+      </Box>
+    )
+  }
+
   return (
     <ScrollWrapper onScroll={debounce(() => handleScroll(), 500)}>
       <Box>
@@ -567,15 +577,20 @@ const Feed = ({
               <CardWrapper key={index}>{item}</CardWrapper>
             ))
           }
-          {!feedItems && (
+          {publicKey && !feedItems && (
             <Box sx={{display: 'flex', flexDirection:'column', justifyContent: 'center', mt: 5}}>
               <Typography variant="h5" mb={1}>Welcome to Nina.</Typography>
               <Typography variant="h5" mb={1}>Here you will see the latest activity on Nina that is relevant to you.</Typography>
               <Typography variant="h5">Your feed will be created after you follow some Hubs and Accounts or begin creating and collecting Releases.</Typography>
             </Box>
           )}
+          {!publicKey && (
+            <Box sx={{display:  'flex', flexDirection:'column', justifyContent: 'center', mt: 5}}>
+              <Typography variant="h5" mb={1}>Connect your wallet to see the latest activity on Nina relevant to you.</Typography>
+            </Box>
+          )}
         </FeedWrapper>
-        {itemsTotal === items?.length && (
+        {feedItems && (itemsTotal === feedItems?.length) && (
           <Typography variant="h4" sx={{ textAlign: 'center' }}>
             No more items
           </Typography>
