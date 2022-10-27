@@ -68,7 +68,7 @@ const releaseBreadcrumbFormatted = (metadata) => {
 
 const Breadcrumbs = () => {
   const router = useRouter()
-  const { displayNameForAccount } = useContext(Nina.Context)
+  const { displayNameForAccount, verificationState } = useContext(Nina.Context)
   const [breadcrumbs, setBreadcrumbs] = useState(null)
 
   useEffect(() => {
@@ -161,7 +161,7 @@ const Breadcrumbs = () => {
 
       setBreadcrumbs(pathArray)
     }
-  }, [router])
+  }, [router, verificationState])
 
   if (!breadcrumbs) {
     return null

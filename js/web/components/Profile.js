@@ -4,6 +4,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import axios from 'axios'
 import { Box, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
+import Image from 'next/image'
 import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
@@ -43,7 +44,7 @@ const Profile = ({ profilePubkey }) => {
     displayNameForAccount,
     getVerificationsForUser,
     verificationState,
-    displayImageForAccount
+    displayImageForAccount,
   } = useContext(Nina.Context)
 
   const [profilePublishedReleases, setProfilePublishedReleases] =
@@ -56,7 +57,10 @@ const Profile = ({ profilePubkey }) => {
   const [profileSubscriptionsTo, setProfileSubscriptionsTo] = useState()
   const [profileSubscriptionsFrom, setProfileSubscriptionsFrom] = useState()
   const [profileVerifications, setProfileVerifications] = useState()
-  const profileImage = useMemo(() => displayImageForAccount(profilePubkey), [profilePubkey, verificationState])
+  const profileImage = useMemo(
+    () => displayImageForAccount(profilePubkey),
+    [profilePubkey, verificationState]
+  )
   const [inDashboard, setInDashboard] = useState(false)
 
   const [fetched, setFetched] = useState(false)
@@ -323,11 +327,11 @@ const Profile = ({ profilePubkey }) => {
       <ProfileContainer>
         <ProfileHeaderWrapper>
           <ProfileHeaderContainer>
-            <Box display='flex'>
+            <Box display="flex">
               {profilePubkey && (
                 <>
                   <Box>
-                    {profileImage?.includes('https') ? 
+                    {profileImage?.includes('https') ? (
                       <Image
                         height={150}
                         width={150}
@@ -340,12 +344,15 @@ const Profile = ({ profilePubkey }) => {
                         alt={i}
                         priority={true}
                         loader={loader}
-                        /> : 
+                      />
+                    ) : (
                       <img src={profileImage} height={100} width={100} />
-                    }
+                    )}
                   </Box>
                   <Box sx={{ mb: 1 }} display="flex">
-                    <Typography>{displayNameForAccount(profilePubkey)}</Typography>
+                    <Typography>
+                      {displayNameForAccount(profilePubkey)}
+                    </Typography>
 
                     {wallet.connected && (
                       <Subscribe accountAddress={profilePubkey} />

@@ -143,10 +143,9 @@ const Feed = ({
                     passHref
                   >{`${item?.hub?.data?.displayName}`}</Link>{' '}
                   created by{' '}
-                  <Link
-                    href={`/profiles/${item.authority.publicKey}`}
-                    passHref
-                  >{displayNameForAccount(item.authority.publicKey)}</Link>
+                  <Link href={`/profiles/${item.authority.publicKey}`} passHref>
+                    {displayNameForAccount(item.authority.publicKey)}
+                  </Link>
                 </Typography>
                 <Typography my={1} fontWeight={600}>
                   {timeSince(Date.parse(item.datetime))} ago
@@ -207,10 +206,9 @@ const Feed = ({
                 </Typography>
                 <Typography my={1}>
                   by{' '}
-                  <Link
-                    href={`/profiles/${item.authority.publicKey}`}
-                    passHref
-                  >{displayNameForAccount(item.authority.publicKey)}</Link>
+                  <Link href={`/profiles/${item.authority.publicKey}`} passHref>
+                    {displayNameForAccount(item.authority.publicKey)}
+                  </Link>
                 </Typography>
                 <Typography my={1} fontWeight={600}>
                   {timeSince(Date.parse(item.datetime))} ago
@@ -334,10 +332,9 @@ const Feed = ({
                 </Typography>
                 <Typography my={1}>
                   by{' '}
-                  <Link
-                    href={`/profiles/${item.authority.publicKey}`}
-                    passHref
-                  >{displayNameForAccount(item.authority.publicKey)}</Link>
+                  <Link href={`/profiles/${item.authority.publicKey}`} passHref>
+                    {displayNameForAccount(item.authority.publicKey)}
+                  </Link>
                 </Typography>
                 {item.type === 'ReleasePurchaseViaHub' && (
                   <Typography my={1}>
@@ -375,10 +372,9 @@ const Feed = ({
               </Link>
               <CopyWrapper>
                 <Typography my={1}>
-                  <Link
-                    href={`/profiles/${item.authority.publicKey}`}
-                    passHref
-                  >{displayNameForAccount(item.authority.publicKey)}</Link>{' '}
+                  <Link href={`/profiles/${item.authority.publicKey}`} passHref>
+                    {displayNameForAccount(item.authority.publicKey)}
+                  </Link>{' '}
                   added as a collaborator to{' '}
                   <Link
                     href={`/hubs/${item?.hub?.handle}`}
@@ -498,15 +494,13 @@ const Feed = ({
             <TextCard>
               <CopyWrapper>
                 <Typography my={1}>
-                  <Link
-                    href={`/profiles/${item.authority.publicKey}`}
-                    passHref
-                  >{displayNameForAccount(item.authority.publicKey)}</Link>{' '}
+                  <Link href={`/profiles/${item.authority.publicKey}`} passHref>
+                    {displayNameForAccount(item.authority.publicKey)}
+                  </Link>{' '}
                   Followed{' '}
-                  <Link
-                    href={`/profiles/${item.toAccount.publicKey}`}
-                    passHref
-                  >{displayNameForAccount(item.authority.publicKey)}</Link>
+                  <Link href={`/profiles/${item.toAccount.publicKey}`} passHref>
+                    {displayNameForAccount(item.authority.publicKey)}
+                  </Link>
                 </Typography>
                 <Typography my={1} fontWeight={600}>
                   {timeSince(Date.parse(item.datetime))} ago
@@ -535,10 +529,9 @@ const Feed = ({
               </Link>
               <CopyWrapper>
                 <Typography my={1}>
-                  <Link
-                    href={`/profiles/${item.authority.publicKey}`}
-                    passHref
-                  >{displayNameForAccount(item.authority.publicKey)}</Link>{' '}
+                  <Link href={`/profiles/${item.authority.publicKey}`} passHref>
+                    {displayNameForAccount(item.authority.publicKey)}
+                  </Link>{' '}
                   Followed{' '}
                   <Link
                     href={`/hubs/${item.toHub.publicKey}`}

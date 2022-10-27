@@ -126,11 +126,8 @@ const ReusableTableBody = ({
     track,
     playlist,
   } = useContext(Audio.Context)
-  const {
-    ninaClient,
-    displayNameForAccount,
-    displayImageForAccount,
-  } = useContext(Nina.Context)
+  const { ninaClient, displayNameForAccount, displayImageForAccount } =
+    useContext(Nina.Context)
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
@@ -342,7 +339,7 @@ const ReusableTableBody = ({
                       <Box
                         sx={{ width: '50px', textAlign: 'left', pr: '15px' }}
                       >
-                        {row.image.includes('https') ? 
+                        {row.image.includes('https') ? (
                           <Image
                             height={150}
                             width={150}
@@ -355,9 +352,10 @@ const ReusableTableBody = ({
                             alt={i}
                             priority={true}
                             loader={loader}
-                            /> : 
+                          />
+                        ) : (
                           <img src={row.image} height={50} width={50} />
-                        }
+                        )}
                       </Box>
                     </StyledImageTableCell>
                   )
