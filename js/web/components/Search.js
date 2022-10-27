@@ -132,6 +132,7 @@ const Search = (props) => {
                   }`}
                   items={data}
                   hasOverflow={false}
+                  key={index}
                 />
               )
             })}
@@ -183,6 +184,7 @@ const Search = (props) => {
                   tableType={`defaultSearch${item.name}`}
                   items={defaultResponse[item.name]}
                   hasOverflow={false}
+                  key={index}
                 />
               )
             })}
@@ -241,6 +243,7 @@ const Search = (props) => {
                   isClicked={activeView === index + 1}
                   onClick={() => setActiveView(index + 1)}
                   disabled={response?.[filter]?.length === 0}
+                  key={index}
                 >
                   {`${filter} (${response?.[filter]?.length})`}
                 </SearchResultFilter>
@@ -267,6 +270,7 @@ const Search = (props) => {
                   isClicked={activeView === index + 1}
                   onClick={() => setActiveView(index + 1)}
                   disabled={filter.length === 0}
+                  key={index}
                 >
                   {`${filter.name} (${filter.length})`}
                 </SearchResultFilter>

@@ -81,6 +81,7 @@ const SearchDropdown = ({
               id={row.category}
               tabIndex={0}
               onKeyDown={onKeyDown}
+              key={index}
             >
               <a key={index} id={row.category} onClick={clickHandler}>
                 <Typography id={row.category}>{row?.name}</Typography>
