@@ -123,9 +123,8 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
     ) {
       setActiveView(1)
     }
-    console.log('hubFollowers :>> ', hubFollowers);
+
     if (hubFollowers?.length > 0) {
-      console.log('YES');
       viewIndex = updatedView.findIndex((view) => view.name === 'followers')
       updatedView[viewIndex].disabled = false
     }
