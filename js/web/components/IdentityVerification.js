@@ -83,14 +83,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
     if (accountVerifiedForType(type)) {
       return displayNameForType(type)
     } else {
-      return (
-        <Box display="flex" alignItems="center">
-          {logos[type]}{' '}
-          <Typography ml={1} variant="body2">
-            Connect
-          </Typography>
-        </Box>
-      )
+      return 'Connect'
     }
   }
 
@@ -264,7 +257,12 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
                 onClick={() => handleIdentityButtonAction(buttonType)}
                 key={index}
               >
-                {buttonTextForType(buttonType)}
+                <Box display="flex" alignItems="center">
+                  {logos[buttonType]}{' '}
+                  <Typography ml={1} variant="body2">
+                    {buttonTextForType(buttonType)}
+                  </Typography>
+                </Box>
               </Button>
             )
           })}

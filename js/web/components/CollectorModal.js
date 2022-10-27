@@ -13,7 +13,7 @@ import Link from 'next/link'
 const CollectorModal = (props) => {
   const { releasePubkey, metadata } = props
   const wallet = useWallet()
-  const { collection } = useContext(Nina.Context)
+  const { collection, displayNameForAccount } = useContext(Nina.Context)
   const { getCollectorsForRelease } = useContext(Release.Context)
   const [open, setOpen] = useState(false)
   const [collectors, setCollectors] = useState()
@@ -42,7 +42,6 @@ const CollectorModal = (props) => {
         }
       }
     }
-    console.log('collectorsList', collectorsList)
     setCollectors(collectorsList)
   }
   return (
@@ -85,7 +84,7 @@ const CollectorModal = (props) => {
                     <tr key={i}>
                       <td>
                         <Link href={`/profiles/${entry}`} passHref>
-                          {`${entry.slice(0, 4) + '..' + entry.slice(-4)}`}
+                          {displayNameForAccount(entry)}
                         </Link>
                       </td>
                       <td>

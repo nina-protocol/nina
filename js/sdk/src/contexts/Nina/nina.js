@@ -8,6 +8,7 @@ import {
 } from '../../utils/web3'
 import { ninaErrorHandler } from '../../utils/errors'
 import {clone} from 'lodash';
+import { truncateAddress } from '../../utils/truncateAddress';
 
 const NinaProgramAction = {
   HUB_ADD_COLLABORATOR: 'HUB_ADD_COLLABORATOR',
@@ -136,7 +137,10 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     checkIfHasBalanceToCompleteAction,
     getSubscriptionsForUser,
     filterSubscriptionsForUser,
-    getSubscriptionsForHub
+    getSubscriptionsForHub,
+    displayNameForAccount,
+    displayImageForAccount,
+    getVerificationsForUser,
   } = ninaContextHelper({
     ninaClient,
     postState,
@@ -158,6 +162,8 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     setSolUsdcBalance,
     solBalance,
     setSolBalance,
+    verificationState,
+    setVerificationState,
   })
 
   const userSubscriptions = useMemo(() => {
@@ -217,6 +223,9 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         getSubscriptionsForHub,
         verificationState,
         setVerificationState,
+        displayNameForAccount,
+        displayImageForAccount,
+        getVerificationsForUser,
       }}
     >
       {children}
@@ -243,6 +252,8 @@ const ninaContextHelper = ({
   setSolUsdcBalance,
   solBalance,
   setSolBalance,
+  verificationState,
+  setVerificationState,
 }) => {
   const { provider, ids, uiToNative, nativeToUi } = ninaClient
 
@@ -787,6 +798,80 @@ const ninaContextHelper = ({
     return subscriptions
   }
 
+  const displayNameForAccount = (publicKey) => {
+    const verifications = verificationState[publicKey]
+
+    if (verifications) {
+      if (
+        verifications?.find(
+          (verification) => verification.type === 'soundcloud'
+        )
+      ) {
+        return verifications.find(
+          (verification) => verification.type === 'soundcloud'
+        ).displayName
+      } else if (
+        verifications?.find(
+          (verification) => verification.type === 'twitter'
+        )
+      ) {
+        return verifications.find(
+          (verification) => verification.type === 'twitter'
+        ).displayName
+      } else if (
+        verifications?.find(
+          (verification) => verification.type === 'instagram'
+        )
+      ) {
+        return verifications.find(
+          (verification) => verification.type === 'instagram'
+        ).displayName
+      } else if (
+        verifications?.find(
+          (verification) => verification.type === 'ethereum'
+        )
+      ) {
+        return verifications.find(
+          (verification) => verification.type === 'ethereum'
+        ).displayName
+      }
+    } 
+    return truncateAddress(publicKey)
+  }
+  
+  const displayImageForAccount = (publicKey) => {
+    const verifications = verificationState[publicKey]
+
+    if (verifications) {
+      if (
+        verifications?.find(
+          (verification) => verification.type === 'soundcloud'
+        )
+      ) {
+        return verifications.find(
+          (verification) => verification.type === 'soundcloud'
+        ).image
+      } else if (
+        verifications?.find(
+          (verification) => verification.type === 'twitter'
+        )
+      ) {
+        return verifications.find(
+          (verification) => verification.type === 'twitter'
+        ).image
+      } 
+    } 
+    return '/images/nina-gray.png'
+  }
+
+  const getVerificationsForUser = async (accountPubkey) => {
+    const { verifications } = await NinaSdk.Account.fetchVerifications(accountPubkey)
+    setVerificationState({
+      ...verificationState,
+      [accountPubkey]: verifications,
+    })
+  }
+
   return {
     subscriptionSubscribe,
     subscriptionUnsubscribe,
@@ -810,6 +895,9 @@ const ninaContextHelper = ({
     getSubscriptionsForUser,
     filterSubscriptionsForUser,
     getSubscriptionsForHub,
+    displayNameForAccount,
+    displayImageForAccount,
+    getVerificationsForUser,
   }
 }
 

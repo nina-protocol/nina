@@ -5,7 +5,6 @@ import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import Link from 'next/link'
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
-import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
 const { getImageFromCDN, loader } = imageManager
 import CloseIcon from '@mui/icons-material/Close'
 import Typography from '@mui/material/Typography'
@@ -13,6 +12,7 @@ import debounce from 'lodash.debounce'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Button from '@mui/material/Button'
 import { useRouter } from 'next/router'
 
@@ -57,6 +57,7 @@ const Feed = ({
   const { updateTrack, isPlaying, setIsPlaying, track } = useContext(
     Audio.Context
   )
+  const { displayNameForAccount } = useContext(Nina.Context)
   const router = useRouter()
 
   const [pendingFetch, setPendingFetch] = useState(false)
@@ -145,7 +146,7 @@ const Feed = ({
                   <Link
                     href={`/profiles/${item.authority.publicKey}`}
                     passHref
-                  >{`${truncateAddress(item.authority.publicKey)}`}</Link>
+                  >{displayNameForAccount(item.authority.publicKey)}</Link>
                 </Typography>
                 <Typography my={1} fontWeight={600}>
                   {timeSince(Date.parse(item.datetime))} ago
@@ -209,7 +210,7 @@ const Feed = ({
                   <Link
                     href={`/profiles/${item.authority.publicKey}`}
                     passHref
-                  >{`${truncateAddress(item.authority.publicKey)}`}</Link>
+                  >{displayNameForAccount(item.authority.publicKey)}</Link>
                 </Typography>
                 <Typography my={1} fontWeight={600}>
                   {timeSince(Date.parse(item.datetime))} ago
@@ -336,7 +337,7 @@ const Feed = ({
                   <Link
                     href={`/profiles/${item.authority.publicKey}`}
                     passHref
-                  >{`${truncateAddress(item.authority.publicKey)}`}</Link>
+                  >{displayNameForAccount(item.authority.publicKey)}</Link>
                 </Typography>
                 {item.type === 'ReleasePurchaseViaHub' && (
                   <Typography my={1}>
@@ -377,7 +378,7 @@ const Feed = ({
                   <Link
                     href={`/profiles/${item.authority.publicKey}`}
                     passHref
-                  >{`${truncateAddress(item.authority.publicKey)}`}</Link>{' '}
+                  >{displayNameForAccount(item.authority.publicKey)}</Link>{' '}
                   added as a collaborator to{' '}
                   <Link
                     href={`/hubs/${item?.hub?.handle}`}
@@ -500,12 +501,12 @@ const Feed = ({
                   <Link
                     href={`/profiles/${item.authority.publicKey}`}
                     passHref
-                  >{`${truncateAddress(item.authority.publicKey)}`}</Link>{' '}
+                  >{displayNameForAccount(item.authority.publicKey)}</Link>{' '}
                   Followed{' '}
                   <Link
                     href={`/profiles/${item.toAccount.publicKey}`}
                     passHref
-                  >{`${truncateAddress(item.toAccount.publicKey)}`}</Link>
+                  >{displayNameForAccount(item.authority.publicKey)}</Link>
                 </Typography>
                 <Typography my={1} fontWeight={600}>
                   {timeSince(Date.parse(item.datetime))} ago
@@ -537,7 +538,7 @@ const Feed = ({
                   <Link
                     href={`/profiles/${item.authority.publicKey}`}
                     passHref
-                  >{`${truncateAddress(item.authority.publicKey)}`}</Link>{' '}
+                  >{displayNameForAccount(item.authority.publicKey)}</Link>{' '}
                   Followed{' '}
                   <Link
                     href={`/hubs/${item.toHub.publicKey}`}
