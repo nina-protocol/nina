@@ -62,9 +62,14 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
     }
   }, [hubState, hubPubkey])
 
+    useEffect(() => {
+    if (hubPubkey) {
+      getHub(hubPubkey)
+    }
+  }, [hubPubkey])
+
   useEffect(() => {
     setHubFollowers(filterSubscriptionsForHub(hubPubkey))
-    console.log('hubFollowers :>> ', hubFollowers);
   }, [subscriptionState])
 
   useEffect(() => {
