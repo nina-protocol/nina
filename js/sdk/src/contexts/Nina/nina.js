@@ -358,14 +358,28 @@ const ninaContextHelper = ({
   }
 
   const saveSubscriptionsToState = async (subscriptions) => {
-    let updatedState = { ...subscriptionState }
+    let updatedSubscriptionState = { ...subscriptionState }
+    let updatedVerificationState = { ...verificationState }
     subscriptions.forEach((subscription) => {
-      updatedState = {
-        ...updatedState,
+      updatedSubscriptionState = {
+        ...updatedSubscriptionState,
         [subscription.publicKey]: subscription
       }
+
+      updatedVerificationState = {
+        ...updatedVerificationState,
+        [subscription.from.publicKey]: subscription.from.verifications,
+      }
+
+      if (subscription.subscritionType === 'account') {
+        updatedVerificationState = {
+          ...updatedVerificationState,
+          [subscription.to.publicKey]: subscription.to.verifications,
+        }
+      }
     })
-    setSubscriptionState(updatedState)
+    setSubscriptionState(updatedSubscriptionState)
+    setVerificationState(updatedVerificationState)
   }
 
   const removeSubScriptionFromState = (publicKey) => {
@@ -793,7 +807,7 @@ const ninaContextHelper = ({
   const filterSubscriptionsForUser = (accountPubkey) => {
     const subscriptions = []
     Object.values(subscriptionState).forEach((subscription) => {
-      if (subscription.from === accountPubkey || subscription.to === accountPubkey) {
+      if (subscription.from.publicKey === accountPubkey || subscription.to.publicKey === accountPubkey) {
         subscriptions.push(subscription)
       }
     })
@@ -877,7 +891,7 @@ const ninaContextHelper = ({
   const filterSubscriptionsForHub = (hubPubkey) => {
     const subscriptions = []
     Object.values(subscriptionState).forEach((subscription) => {
-      if (subscription.to === hubPubkey) {
+      if (subscription.to.publicKey === hubPubkey) {
         subscriptions.push(subscription)
       }
     })

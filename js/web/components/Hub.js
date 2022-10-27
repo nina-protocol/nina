@@ -196,7 +196,7 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
           )}
           {activeView === 2 && (
             <>
-              {hasData && !hubCollaborators && (
+              {hasData && !hubFollowers && (
                 <Box sx={{ my: 1 }}>No followers found in this Hub</Box>
               )}
               {hasData && (

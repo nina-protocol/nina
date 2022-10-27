@@ -267,9 +267,10 @@ const ReusableTableBody = ({
     }
 
     if (tableType === 'followers') {
+      console.log('data', data)
       formattedData = {
         link: `/profiles/${data.from.publicKey}`,
-        image: displayImageForAccount(data.to.publicKey),
+        image: displayImageForAccount(data.from.publicKey),
         profile: displayNameForAccount(data.from.publicKey),
       }
     }

@@ -116,9 +116,9 @@ const Profile = ({ profilePubkey }) => {
     const from = []
     if (profileSubscriptions) {
       profileSubscriptions.forEach((sub) => {
-        if (sub.to === profilePubkey) {
+        if (sub.to.publicKey === profilePubkey) {
           to.push(sub)
-        } else if (sub.from === profilePubkey) {
+        } else if (sub.from.publicKey === profilePubkey) {
           from.push(sub)
         }
       })
@@ -194,7 +194,6 @@ const Profile = ({ profilePubkey }) => {
   useEffect(() => {
     if (verificationState[profilePubkey]) {
       setProfileVerifications(verificationState[profilePubkey])
-
     }
   }, [verificationState])
 
@@ -324,41 +323,43 @@ const Profile = ({ profilePubkey }) => {
       <ProfileContainer>
         <ProfileHeaderWrapper>
           <ProfileHeaderContainer>
-            {profilePubkey && (
-              <>
-                <Box>
-                  {profileImage?.includes('https') ? 
-                    <Image
-                      height={150}
-                      width={150}
-                      layout="responsive"
-                      src={getImageFromCDN(
-                        profileImage,
-                        400,
-                        Date.parse(row.date)
-                      )}
-                      alt={i}
-                      priority={true}
-                      loader={loader}
-                      /> : 
-                    <img src={profileImage} height={100} width={100} />
-                  }
-                </Box>
-                <Box sx={{ mb: 1 }} display="flex">
-                  <Typography>{displayNameForAccount(profilePubkey)}</Typography>
+            <Box display='flex'>
+              {profilePubkey && (
+                <>
+                  <Box>
+                    {profileImage?.includes('https') ? 
+                      <Image
+                        height={150}
+                        width={150}
+                        layout="responsive"
+                        src={getImageFromCDN(
+                          profileImage,
+                          400,
+                          Date.parse(row.date)
+                        )}
+                        alt={i}
+                        priority={true}
+                        loader={loader}
+                        /> : 
+                      <img src={profileImage} height={100} width={100} />
+                    }
+                  </Box>
+                  <Box sx={{ mb: 1 }} display="flex">
+                    <Typography>{displayNameForAccount(profilePubkey)}</Typography>
 
-                  {wallet.connected && (
-                    <Subscribe accountAddress={profilePubkey} />
-                  )}
-                  {profileVerifications && (
-                    <IdentityVerification
-                      verifications={profileVerifications}
-                      profilePublicKey={profilePubkey}
-                    />
-                  )}
-                </Box>
-              </>
-            )}
+                    {wallet.connected && (
+                      <Subscribe accountAddress={profilePubkey} />
+                    )}
+                    {profileVerifications && (
+                      <IdentityVerification
+                        verifications={profileVerifications}
+                        profilePublicKey={profilePubkey}
+                      />
+                    )}
+                  </Box>
+                </>
+              )}
+            </Box>
             {hasData && artistNames?.length > 0 && (
               <ProfileOverflowContainer>
                 {`Publishes as ${artistNames?.map((name) => name).join(', ')}`}

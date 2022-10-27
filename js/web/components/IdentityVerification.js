@@ -285,7 +285,8 @@ const CtaWrapper = styled(Box)(() => ({
   '& button': {
     color: 'black',
     border: '1px solid black',
-    marginRight: '15px',
+    borderRadius: '0px',
+    margin: '0 8px',
     '& svg': {
       fontSize: '16px',
     },
