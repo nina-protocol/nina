@@ -166,12 +166,16 @@ const Profile = ({ profilePubkey }) => {
   useEffect(() => {
     if (fetchedUserProfileReleases[profilePubkey]?.collected) {
       setProfileCollectionReleases(filterReleasesUserCollection(profilePubkey))
+    } else {
+      setProfileCollectionReleases([])
     }
   }, [fetchedUserProfileReleases, profilePubkey])
 
   useEffect(() => {
     if (fetchedUserProfileReleases[profilePubkey]?.published) {
       setProfilePublishedReleases(filterReleasesPublishedByUser(profilePubkey))
+    } else {
+      setProfilePublishedReleases([])
     }
   }, [fetchedUserProfileReleases, profilePubkey])
 
@@ -182,6 +186,8 @@ const Profile = ({ profilePubkey }) => {
   useEffect(() => {
     if (fetchedHubsForUser.has(profilePubkey)) {
       setProfileHubs(filterHubsForUser(profilePubkey))
+    } else {
+      setProfileHubs([])
     }
   }, [fetchedHubsForUser])
 

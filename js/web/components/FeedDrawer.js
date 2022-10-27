@@ -37,12 +37,6 @@ const FeedDrawer = () => {
     }
   }, [wallet.connected])
 
-  // useEffect(() => {
-  //   if (wallet.connected) {
-  //     getHubSuggestionsForUser(wallet.publicKey.toBase58())
-  //   }
-  // }, [userSubscriptions])
-
   const toggleDrawer = (open) => (event) => {
     if (
       event.type === 'keydown' &&
