@@ -565,7 +565,15 @@ const Feed = ({
           {feedItems &&
             feedItems?.map((item, index) => (
               <CardWrapper key={index}>{item}</CardWrapper>
-            ))}
+            ))
+          }
+          {!feedItems && (
+            <Box sx={{display: 'flex', flexDirection:'column', justifyContent: 'center', mt: 5}}>
+              <Typography variant="h5" mb={1}>Welcome to Nina.</Typography>
+              <Typography variant="h5" mb={1}>Here you will see the latest activity on Nina that is relevant to you.</Typography>
+              <Typography variant="h5">Your feed will be created after you follow some Hubs and Accounts or begin creating and collecting Releases.</Typography>
+            </Box>
+          )}
         </FeedWrapper>
         {itemsTotal === items?.length && (
           <Typography variant="h4" sx={{ textAlign: 'center' }}>
