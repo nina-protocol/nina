@@ -62,8 +62,10 @@ const HubSlider = () => {
     if (featuredHubPublicKeys) {
       const featured = []
       Object.values(featuredHubPublicKeys).forEach((sub) => {
-        const hub = hubState[sub.to]
+        debugger
+        const hub = hubState[sub.to.publicKey]
         if (hub) {
+          console.log('hub', hub)
           featured.push(hub)
         }
       })
