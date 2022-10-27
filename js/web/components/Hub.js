@@ -23,7 +23,13 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
   } = useContext(Hub.Context)
 
   const { releaseState } = useContext(Release.Context)
-  const { fetchedHubs, setFetchedHubs, getSubscriptionsForHub, subscriptionState, filterSubscriptionsForHub } = useContext(Nina.Context)
+  const {
+    fetchedHubs,
+    setFetchedHubs,
+    getSubscriptionsForHub,
+    subscriptionState,
+    filterSubscriptionsForHub,
+  } = useContext(Nina.Context)
   const [hubReleases, setHubReleases] = useState(undefined)
   const [releaseData, setReleaseData] = useState(undefined)
   const [hubCollaborators, setHubCollaborators] = useState(undefined)
@@ -62,7 +68,7 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
     }
   }, [hubState, hubPubkey])
 
-    useEffect(() => {
+  useEffect(() => {
     if (hubPubkey) {
       getHub(hubPubkey)
     }
@@ -194,10 +200,7 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
                 <Box sx={{ my: 1 }}>No followers found in this Hub</Box>
               )}
               {hasData && (
-                <ReusableTable
-                  tableType={'followers'}
-                  items={hubFollowers}
-                />
+                <ReusableTable tableType={'followers'} items={hubFollowers} />
               )}
             </>
           )}

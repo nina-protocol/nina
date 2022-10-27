@@ -6,7 +6,6 @@ import NinaSdk from '@nina-protocol/js-sdk'
 
 const Hub = dynamic(() => import('../../../components/Hub'))
 const HubPage = ({ hub, hubPubkey }) => {
-
   return (
     <>
       <Head>
@@ -26,9 +25,7 @@ const HubPage = ({ hub, hubPubkey }) => {
         />
         <meta
           name="og:description"
-          content={`${
-            hub?.data.displayName ? hub?.data.displayName : ''
-          }: ${
+          content={`${hub?.data.displayName ? hub?.data.displayName : ''}: ${
             hub?.data.description ? hub?.data.description : ''
           } \n Published via Nina Hubs.`}
         />
