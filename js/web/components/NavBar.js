@@ -9,7 +9,7 @@ import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
 import Link from 'next/link'
 import { useWallet } from '@solana/wallet-adapter-react'
-
+import { useRouter } from 'next/router'
 import {
   WalletDialogProvider,
   WalletMultiButton,
@@ -17,6 +17,7 @@ import {
 import Breadcrumbs from './Breadcrumbs'
 import NavSearch from './NavSearch'
 const NavBar = () => {
+  const router = useRouter()
   const {
     healthOk,
     getSubscriptionsForUser,
@@ -47,6 +48,12 @@ const NavBar = () => {
       getSubscriptionsForUser(wallet.publicKey.toBase58())
     }
   }, [wallet.connected])
+
+  useEffect(() => {
+    if (wallet.disconnecting) {
+      router.push("/");
+    }
+  }, [wallet?.disconnecting]);
 
   const userHubs = useMemo(() => {
     if (wallet.connected) {
