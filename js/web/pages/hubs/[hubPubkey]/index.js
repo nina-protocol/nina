@@ -58,13 +58,13 @@ const HubPage = ({ hub, hubPubkey }) => {
         <meta
           name="twitter:title"
           content={`${hub?.data.displayName}'s Hub on Nina`}
-          />
-          <meta name="twitter:description" content={hub?.data.description} />
-          <meta name="twitter:image" content={hub?.data.image} />
-          <meta name="og:image" content={hub?.data.image} />
-        </Head>
-        <ResponsiveHubContainer>
-          <Hub hubPubkey={hubPubkey} hubHandle={hub.handle} />
+        />
+        <meta name="twitter:description" content={hub?.data.description} />
+        <meta name="twitter:image" content={hub?.data.image} />
+        <meta name="og:image" content={hub?.data.image} />
+      </Head>
+      <ResponsiveHubContainer>
+        <Hub hubPubkey={hubPubkey} hubHandle={hub.handle} />
       </ResponsiveHubContainer>
     </>
   )
