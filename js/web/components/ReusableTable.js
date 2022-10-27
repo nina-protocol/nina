@@ -329,14 +329,7 @@ const ReusableTableBody = ({
         searchResultHub: data.displayName,
       }
     }
-    if (tableType === 'following') {
-      formattedData = {
-        id: data?.publicKey,
-        image: data?.image,
-        link: `/profiles/${data.to}`,
-        profile: truncateAddress(data.to),
-      }
-    }
+
     if (tableType === 'followers') {
       formattedData = {
         link: `/profiles/${data.from.publicKey}`,
