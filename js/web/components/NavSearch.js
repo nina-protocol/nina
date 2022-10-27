@@ -97,7 +97,6 @@ const NavSearch = () => {
   const changeHandler = (e) => {
     e.preventDefault()
     e.stopPropagation()
-    console.log('e.key', e.target.value)
     const search = e.target.value
 
     setQuery(search)

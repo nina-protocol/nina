@@ -3,7 +3,6 @@ import { Box } from '@mui/system'
 import { styled } from '@mui/system'
 import Head from 'next/head'
 import NinaSdk from '@nina-protocol/js-sdk'
-import Head from 'next/head'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import { useContext, useMemo, useEffect, useState } from 'react'
 const HubView = dynamic(() => import('../../../components/Hub'))
