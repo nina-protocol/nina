@@ -161,7 +161,8 @@ const ReusableTableBody = ({
     track,
     playlist,
   } = useContext(Audio.Context)
-  const { ninaClient } = useContext(Nina.Context)
+  const { ninaClient, displayNameForAccount, displayImageForAccount } =
+    useContext(Nina.Context)
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
@@ -214,7 +215,7 @@ const ReusableTableBody = ({
   }
 
   let rows = items?.map((data) => {
-    const { releasePubkey } = data
+    const { releasePubkey, publicKey } = data
     const playData = {
       releasePubkey,
     }
@@ -292,7 +293,8 @@ const ReusableTableBody = ({
     if (tableType === 'hubCollaborators') {
       formattedData = {
         link: `/profiles/${data.collaborator}`,
-        collaborator: truncateAddress(data.collaborator),
+        image: displayImageForAccount(data.collaborator),
+        collaborator: displayNameForAccount(data.collaborator),
       }
     }
     if (
@@ -337,15 +339,25 @@ const ReusableTableBody = ({
     }
     if (tableType === 'followers') {
       formattedData = {
-        link: `/profiles/${data.from}`,
-        profile: truncateAddress(data.from),
+        link: `/profiles/${data.from.publicKey}`,
+        image: displayImageForAccount(data.from.publicKey),
+        profile: displayNameForAccount(data.from.publicKey),
       }
     }
 
     if (tableType === 'following') {
-      formattedData = {
-        link: `/profiles/${data.to}`,
-        profile: truncateAddress(data.to),
+      if (data.subscriptionType === 'hub') {
+        formattedData = {
+          link: `/hubs/${data.to.handle}`,
+          image: data.to.data.image,
+          hub: data.to.data.displayName,
+        }
+      } else if (data.subscriptionType === 'account') {
+        formattedData = {
+          link: `/profiles/${data.to.publicKey}`,
+          image: displayImageForAccount(data.to.publicKey),
+          profile: displayNameForAccount(data.to.publicKey),
+        }
       }
     }
     if (tableType === 'defaultSearchArtists') {
@@ -423,20 +435,23 @@ const ReusableTableBody = ({
                       <Box
                         sx={{ width: '50px', textAlign: 'left', pr: '15px' }}
                       >
-                        <Image
-                          height={'100%'}
-                          width={'100%'}
-                          layout="responsive"
-                          src={getImageFromCDN(
-                            row.image,
-                            400,
-                            Date.parse(row.date)
-                          )}
-                          alt={i}
-                          priority={true}
-                          loader={loader}
-                          unoptimized={true}
-                        />
+                        {row.image.includes('https') ? (
+                          <Image
+                            height={150}
+                            width={150}
+                            layout="responsive"
+                            src={getImageFromCDN(
+                              row.image,
+                              400,
+                              Date.parse(row.date)
+                            )}
+                            alt={i}
+                            priority={true}
+                            loader={loader}
+                          />
+                        ) : (
+                          <img src={row.image} height={50} width={50} />
+                        )}
                       </Box>
                     </StyledImageTableCell>
                   )

@@ -83,14 +83,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
     if (accountVerifiedForType(type)) {
       return displayNameForType(type)
     } else {
-      return (
-        <Box display="flex" alignItems="center">
-          {logos[type]}{' '}
-          <Typography ml={1} variant="body2">
-            Connect
-          </Typography>
-        </Box>
-      )
+      return 'Connect'
     }
   }
 
@@ -132,7 +125,6 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
             )
             if (response.data) {
               setSoundcloudHandle(response.data.username)
-              console.log('reponse.data.username', response.data.username)
               setActiveValue(response.data.username)
               setSoundcloudToken(response.data.token.access_token)
             }
@@ -264,7 +256,12 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
                 onClick={() => handleIdentityButtonAction(buttonType)}
                 key={index}
               >
-                {buttonTextForType(buttonType)}
+                <Box display="flex" alignItems="center">
+                  {logos[buttonType]}{' '}
+                  <Typography ml={1} variant="body2">
+                    {buttonTextForType(buttonType)}
+                  </Typography>
+                </Box>
               </Button>
             )
           })}
@@ -288,7 +285,8 @@ const CtaWrapper = styled(Box)(() => ({
   '& button': {
     color: 'black',
     border: '1px solid black',
-    marginRight: '15px',
+    borderRadius: '0px',
+    margin: '0 8px',
     '& svg': {
       fontSize: '16px',
     },

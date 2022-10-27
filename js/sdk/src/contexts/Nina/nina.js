@@ -8,6 +8,7 @@ import {
 } from '../../utils/web3'
 import { ninaErrorHandler } from '../../utils/errors'
 import {clone} from 'lodash';
+import { truncateAddress } from '../../utils/truncateAddress';
 
 const NinaProgramAction = {
   HUB_ADD_COLLABORATOR: 'HUB_ADD_COLLABORATOR',
@@ -42,6 +43,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [collection, setCollection] = useState({})
   const [postState, setPostState] = useState({})
   const [subscriptionState, setSubscriptionState] = useState({})
+  const [verificationState, setVerificationState] = useState({})
   const [usdcBalance, setUsdcBalance] = useState(0)
   const [solBalance, setSolBalance] = useState(0)
   const [solUsdcBalance, setSolUsdcBalance] = useState(0)
@@ -136,6 +138,9 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     getSubscriptionsForUser,
     filterSubscriptionsForUser,
     getSubscriptionsForHub,
+    displayNameForAccount,
+    displayImageForAccount,
+    getVerificationsForUser,
     filterSubscriptionsForHub
   } = ninaContextHelper({
     ninaClient,
@@ -158,6 +163,8 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     setSolUsdcBalance,
     solBalance,
     setSolBalance,
+    verificationState,
+    setVerificationState,
   })
 
   const userSubscriptions = useMemo(() => {
@@ -215,6 +222,11 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         filterSubscriptionsForUser,
         userSubscriptions,
         getSubscriptionsForHub,
+        verificationState,
+        setVerificationState,
+        displayNameForAccount,
+        displayImageForAccount,
+        getVerificationsForUser,
         filterSubscriptionsForHub
       }}
     >
@@ -242,6 +254,8 @@ const ninaContextHelper = ({
   setSolUsdcBalance,
   solBalance,
   setSolBalance,
+  verificationState,
+  setVerificationState,
 }) => {
   const { provider, ids, uiToNative, nativeToUi } = ninaClient
 
@@ -344,14 +358,28 @@ const ninaContextHelper = ({
   }
 
   const saveSubscriptionsToState = async (subscriptions) => {
-    let updatedState = { ...subscriptionState }
+    let updatedSubscriptionState = { ...subscriptionState }
+    let updatedVerificationState = { ...verificationState }
     subscriptions.forEach((subscription) => {
-      updatedState = {
-        ...updatedState,
+      updatedSubscriptionState = {
+        ...updatedSubscriptionState,
         [subscription.publicKey]: subscription
       }
+
+      updatedVerificationState = {
+        ...updatedVerificationState,
+        [subscription.from.publicKey]: subscription.from.verifications,
+      }
+
+      if (subscription.subscritionType === 'account') {
+        updatedVerificationState = {
+          ...updatedVerificationState,
+          [subscription.to.publicKey]: subscription.to.verifications,
+        }
+      }
     })
-    setSubscriptionState(updatedState)
+    setSubscriptionState(updatedSubscriptionState)
+    setVerificationState(updatedVerificationState)
   }
 
   const removeSubScriptionFromState = (publicKey) => {
@@ -779,21 +807,94 @@ const ninaContextHelper = ({
   const filterSubscriptionsForUser = (accountPubkey) => {
     const subscriptions = []
     Object.values(subscriptionState).forEach((subscription) => {
-      if (subscription.from === accountPubkey || subscription.to === accountPubkey) {
+      if (subscription.from.publicKey === accountPubkey || subscription.to.publicKey === accountPubkey) {
         subscriptions.push(subscription)
       }
     })
     return subscriptions
   }
 
+  const displayNameForAccount = (publicKey) => {
+    const verifications = verificationState[publicKey]
+
+    if (verifications) {
+      if (
+        verifications?.find(
+          (verification) => verification.type === 'soundcloud'
+        )
+      ) {
+        return verifications.find(
+          (verification) => verification.type === 'soundcloud'
+        ).displayName
+      } else if (
+        verifications?.find(
+          (verification) => verification.type === 'twitter'
+        )
+      ) {
+        return verifications.find(
+          (verification) => verification.type === 'twitter'
+        ).displayName
+      } else if (
+        verifications?.find(
+          (verification) => verification.type === 'instagram'
+        )
+      ) {
+        return verifications.find(
+          (verification) => verification.type === 'instagram'
+        ).displayName
+      } else if (
+        verifications?.find(
+          (verification) => verification.type === 'ethereum'
+        )
+      ) {
+        return verifications.find(
+          (verification) => verification.type === 'ethereum'
+        ).displayName
+      }
+    } 
+    return truncateAddress(publicKey)
+  }
+  
+  const displayImageForAccount = (publicKey) => {
+    const verifications = verificationState[publicKey]
+
+    if (verifications) {
+      if (
+        verifications?.find(
+          (verification) => verification.type === 'soundcloud'
+        )
+      ) {
+        return verifications.find(
+          (verification) => verification.type === 'soundcloud'
+        ).image
+      } else if (
+        verifications?.find(
+          (verification) => verification.type === 'twitter'
+        )
+      ) {
+        return verifications.find(
+          (verification) => verification.type === 'twitter'
+        ).image
+      } 
+    } 
+    return '/images/nina-gray.png'
+  }
+
+  const getVerificationsForUser = async (accountPubkey) => {
+    const { verifications } = await NinaSdk.Account.fetchVerifications(accountPubkey)
+    setVerificationState({
+      ...verificationState,
+      [accountPubkey]: verifications,
+    })
+  }
+  
   const filterSubscriptionsForHub = (hubPubkey) => {
     const subscriptions = []
     Object.values(subscriptionState).forEach((subscription) => {
-      if (subscription.to === hubPubkey) {
+      if (subscription.to.publicKey === hubPubkey) {
         subscriptions.push(subscription)
       }
     })
-    console.log('subscriptions :>> ', subscriptions);
     return subscriptions
   }
 
@@ -820,6 +921,9 @@ const ninaContextHelper = ({
     getSubscriptionsForUser,
     filterSubscriptionsForUser,
     getSubscriptionsForHub,
+    displayNameForAccount,
+    displayImageForAccount,
+    getVerificationsForUser,
     filterSubscriptionsForHub
   }
 }

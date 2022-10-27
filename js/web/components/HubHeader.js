@@ -58,8 +58,8 @@ const HubHeader = ({ hubData }) => {
           <Link href={`${hubData?.data.externalUrl}`} passHref>
             <a target="_blank" rel="noreferrer">
               <Image
-                height={'100%'}
-                width={'100%'}
+                height={100}
+                width={100}
                 layout="responsive"
                 src={getImageFromCDN(
                   hubData?.data?.image,
@@ -79,7 +79,7 @@ const HubHeader = ({ hubData }) => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'flex-start',
-            width: '90px',
+            width: '200px',
           }}
         >
           {hubData?.data.displayName && (
