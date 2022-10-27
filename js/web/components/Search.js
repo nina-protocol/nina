@@ -87,7 +87,7 @@ const Search = (props) => {
       })
       setFeaturedHubs(featured)
       defaultSearchView[2].length = featured.length
-      
+
       defaultResponse.Hubs = featured
     }
   }, [featuredHubPublicKeys, hubState])
@@ -211,13 +211,13 @@ const Search = (props) => {
 
   return (
     <SearchPageContainer>
-        <SearchHeaderWrapper>
-      <SearchHeaderContainer>
+      <SearchHeaderWrapper>
+        <SearchHeaderContainer>
           {searchQuery && (
             <Typography>{`Search results for ${query}`}</Typography>
           )}
-      </SearchHeaderContainer>
-        </SearchHeaderWrapper>
+        </SearchHeaderContainer>
+      </SearchHeaderWrapper>
       <>
         <SearchResultFilterContainer>
           {searchQuery && (

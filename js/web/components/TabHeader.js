@@ -19,15 +19,13 @@ const TabHeader = ({
   const { enqueueSnackbar } = useSnackbar()
   const playAllHandler = (playlist) => {
     if (type === 'hubView') {
-      resetQueueWithPlaylist(
-        playlist?.map((release) => release.release)
-      ).then(() =>
-        enqueueSnackbar(`Hub releases added to queue`, {
-          variant: 'info',
-        })
+      resetQueueWithPlaylist(playlist?.map((release) => release.release)).then(
+        () =>
+          enqueueSnackbar(`Hub releases added to queue`, {
+            variant: 'info',
+          })
       )
-    }
-    else {
+    } else {
       resetQueueWithPlaylist(
         playlist?.map((release) => release.publicKey)
       ).then(() =>

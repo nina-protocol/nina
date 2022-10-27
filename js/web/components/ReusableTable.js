@@ -144,7 +144,14 @@ const HubDescription = ({ description }) => {
   )
 }
 
-const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRelease, refreshProfile, dashboardPublicKey }) => {
+const ReusableTableBody = ({
+  items,
+  tableType,
+  inDashboard,
+  collectRoyaltyForRelease,
+  refreshProfile,
+  dashboardPublicKey,
+}) => {
   const router = useRouter()
   const {
     updateTrack,
@@ -295,7 +302,8 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
       formattedData = {
         link: `/profiles/${data?.publicKey}`,
         searchResultArtist: data.name,
-    }}
+      }
+    }
     if (
       tableType === 'searchResultReleases' ||
       tableType === 'filteredSearchResultReleases'
@@ -340,7 +348,7 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
         profile: truncateAddress(data.to),
       }
     }
-    if(tableType === 'defaultSearchArtists') {
+    if (tableType === 'defaultSearchArtists') {
       formattedData = {
         id: data?.publicKey,
       }
@@ -354,7 +362,7 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
       }
     }
 
-    if(tableType === 'defaultSearchHubs') {
+    if (tableType === 'defaultSearchHubs') {
       formattedData = {
         id: data?.publicKey,
         image: data?.data.image,
@@ -488,15 +496,15 @@ const ReusableTableBody = ({ items, tableType, inDashboard, collectRoyaltyForRel
                     <StyledTableCell key={cellName}>
                       <SearchResultOverflowContainer>
                         <OverflowContainer overflowWidth={'60vw'}>
-                        <Typography
-                          noWrap
-                          onClickCapture={() => router.push(`/${row?.id}`)}
+                          <Typography
+                            noWrap
+                            onClickCapture={() => router.push(`/${row?.id}`)}
                           >
-                          <Link href={row.link} passHref>
-                            <a>{cellData}</a>
-                          </Link>
-                        </Typography>
-                          </OverflowContainer>
+                            <Link href={row.link} passHref>
+                              <a>{cellData}</a>
+                            </Link>
+                          </Typography>
+                        </OverflowContainer>
                       </SearchResultOverflowContainer>
                     </StyledTableCell>
                   )

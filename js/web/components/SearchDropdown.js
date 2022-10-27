@@ -1,16 +1,23 @@
 import { Box, Typography } from '@mui/material'
 import { useRef, useEffect } from 'react'
-import {styled} from '@mui/system'
+import { styled } from '@mui/system'
 
-const SearchDropdown = ({ searchData, category, hasResults, clickHandler, onKeyDown }) => {
+const SearchDropdown = ({
+  searchData,
+  category,
+  hasResults,
+  clickHandler,
+  onKeyDown,
+}) => {
   const searchDropdownRef = useRef(null)
   useEffect(() => {
     const node = searchDropdownRef.current
     node.addEventListener('keydown', (e) => {
-      const active = document.activeElement;
-      if(e.keyCode === 40 && active.nextSibling) {
+      const active = document.activeElement
+      if (e.keyCode === 40 && active.nextSibling) {
         active.nextSibling.focus()
-      } if (e.keyCode === 38 && active.previousSibling) {
+      }
+      if (e.keyCode === 38 && active.previousSibling) {
         active.previousSibling.focus()
       }
     })
@@ -64,34 +71,37 @@ const SearchDropdown = ({ searchData, category, hasResults, clickHandler, onKeyD
   return (
     <>
       {hasResults === true && (
-        <SearchResultsWrapper id='grid' ref={searchDropdownRef}>
+        <SearchResultsWrapper id="grid" ref={searchDropdownRef}>
           <Typography sx={{ fontWeight: 'bold', textTransform: 'uppercase' }}>
             {category}
           </Typography>
           {rows?.map((row, index) => (
-            <Box role="tab" id={row.category} tabIndex={0} onKeyDown={onKeyDown}>
-            <a key={index} id={row.category} onClick={clickHandler}>
-              <Typography  id={row.category} >{row?.name}</Typography>
-            </a>
-            </Box >
+            <Box
+              role="tab"
+              id={row.category}
+              tabIndex={0}
+              onKeyDown={onKeyDown}
+            >
+              <a key={index} id={row.category} onClick={clickHandler}>
+                <Typography id={row.category}>{row?.name}</Typography>
+              </a>
+            </Box>
           ))}
         </SearchResultsWrapper>
-      )}    
+      )}
     </>
   )
 }
 
-const SearchResultsWrapper = styled(Box)(({theme}) => ({
+const SearchResultsWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   backgroundColor: theme.palette.lightTransparent,
   padding: '10px 0',
   '&:focus': {
     backgroundColor: theme.palette.lightTransparent,
-    outline: 'none'
-  }
+    outline: 'none',
+  },
 }))
-
-
 
 export default SearchDropdown

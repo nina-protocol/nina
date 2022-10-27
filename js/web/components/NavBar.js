@@ -172,7 +172,6 @@ const SearchBarWrapper = styled('div')(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     position: 'absolute',
     right: '270px',
-   
   },
 }))
 const Logo = styled('div')(({ theme }) => ({

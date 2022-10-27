@@ -7,10 +7,7 @@ import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import { useContext, useMemo, useEffect, useState } from 'react'
 const HubView = dynamic(() => import('../../../components/Hub'))
 const HubPage = ({ hub, hubPubkey }) => {
-  const {
-    getHub,
-    hubState,
-  } = useContext(Hub.Context)
+  const { getHub, hubState } = useContext(Hub.Context)
   const [fetched, setFetched] = useState({
     info: false,
     releases: false,
@@ -30,30 +27,28 @@ const HubPage = ({ hub, hubPubkey }) => {
       getHub(hubPubkey)
     }
   }, [hubPubkey])
-  
+
   return (
     <>
       <Head>
         <title>{`Nina: ${
-          hubData?.data.displayName ? `${hubData.data.displayName}'s Hub` : ''
+          hub?.data.displayName ? `${hub.data.displayName}'s Hub` : ''
         }`}</title>
         <meta
           name="description"
-          content={`${hubData?.data.displayName}'s Hub on Nina.`}
+          content={`${hub?.data.displayName}'s Hub on Nina.`}
         />
         <meta name="og:type" content="website" />
         <meta
           name="og:title"
           content={`Nina: ${
-            hubData?.data.displayName ? `${hubData.data.displayName}'s Hub` : ''
+            hub?.data.displayName ? `${hub.data.displayName}'s Hub` : ''
           }`}
         />
         <meta
           name="og:description"
-          content={`${
-            hubData?.data.displayName ? hubData?.data.displayName : ''
-          }: ${
-            hubData?.data.description ? hubData?.data.description : ''
+          content={`${hub?.data.displayName ? hub?.data.displayName : ''}: ${
+            hub?.data.description ? hub?.data.description : ''
           } \n Published via Nina Hubs.`}
         />
         <meta name="twitter:card" content="summary_large_image" />
@@ -62,15 +57,14 @@ const HubPage = ({ hub, hubPubkey }) => {
         <meta name="twitter:image:type" content="image/jpg" />
         <meta
           name="twitter:title"
-          content={`${hubData?.data.displayName}'s Hub on Nina`}
-        />
-        <meta name="twitter:description" content={hubData?.data.description} />
-        <meta name="twitter:image" content={hubData?.data.image} />
-        <meta name="og:image" content={hubData?.data.image} />
-      </Head>
-
-      <ResponsiveHubContainer>
-        <HubView hubPubkey={hubPubkey} />
+          content={`${hub?.data.displayName}'s Hub on Nina`}
+          />
+          <meta name="twitter:description" content={hub?.data.description} />
+          <meta name="twitter:image" content={hub?.data.image} />
+          <meta name="og:image" content={hub?.data.image} />
+        </Head>
+        <ResponsiveHubContainer>
+          <Hub hubPubkey={hubPubkey} hubHandle={hub.handle} />
       </ResponsiveHubContainer>
     </>
   )

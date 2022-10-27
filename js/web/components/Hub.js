@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, useContext } from 'react'
 import dynamic from 'next/dynamic'
-import { Box, } from '@mui/material'
+import { Box } from '@mui/material'
 import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
@@ -26,7 +26,8 @@ const HubComponent = ({ hubPubkey }) => {
   const [hubReleases, setHubReleases] = useState(undefined)
   const [releaseData, setReleaseData] = useState(undefined)
   const [hubCollaborators, setHubCollaborators] = useState(undefined)
-  const [activeView, setActiveView] = useState(0)
+  const [hubFollowers, setHubFollowers] = useState(undefined)
+  const [activeView, setActiveView] = useState(undefined)
   const [fetched, setFetched] = useState({
     info: false,
     releases: false,
@@ -45,8 +46,9 @@ const HubComponent = ({ hubPubkey }) => {
   }, [fetched, fetchedHubs, hubPubkey])
 
   const [views, setViews] = useState([
-    { name: 'releases', visible: false },
-    { name: 'collaborators', visible: true },
+    { name: 'releases', playlist: undefined, disabled: false },
+    { name: 'collaborators', playlist: undefined, disabled: true },
+    { name: 'followers', disabled: true },
   ])
 
   const hubData = useMemo(() => {
@@ -82,7 +84,8 @@ const HubComponent = ({ hubPubkey }) => {
 
     const data = hubReleases?.map((hubRelease) => {
       const releaseMetadata = releaseState.metadata[hubRelease.release]
-      releaseMetadata.authority = releaseState.tokenData[hubRelease.release].authority
+      releaseMetadata.authority =
+        releaseState.tokenData[hubRelease.release].authority
       releaseMetadata.releasePubkey = hubRelease.release
       return releaseMetadata
     })
@@ -262,7 +265,7 @@ const HubComponent = ({ hubPubkey }) => {
 
 const HubContainer = styled(Box)(({ theme }) => ({
   display: 'inline-flex',
-  flexDirection: 'column', 
+  flexDirection: 'column',
   justifyItems: 'center',
   textAlign: 'center',
   minWidth: theme.maxWidth,

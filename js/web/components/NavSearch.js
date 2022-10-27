@@ -71,9 +71,7 @@ const NavSearch = () => {
     e.preventDefault()
     e.stopPropagation()
 
-    if (
-      query?.length > 0
-    ) {
+    if (query?.length > 0) {
       await NinaSdk.Search.withQuery(query).then(setResponse)
       router.push(`/search/?q=${query}`)
     }
@@ -146,7 +144,6 @@ const NavSearch = () => {
     const searchFilter = e.target.id
 
     if (e.key === 'Enter') {
-
       setQuery(clickedSuggestion)
       suggestionsClickHandler(clickedSuggestion, searchFilter)
       setShowDropdown(false)
@@ -260,7 +257,7 @@ const MobileNavSearch = ({
   setShowSearchInput,
   showDropdown,
   suggestionsHandler,
-  
+
   autoCompleteResults,
   keyHandler,
 }) => {
@@ -363,7 +360,6 @@ const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
   maxWidth: theme.maxWidth,
   overflowY: 'auto',
   webkitOverflowScrolling: 'touch',
-  
 }))
 
 const MobileNavSearchContainer = styled(Box)(({ theme }) => ({
