@@ -26,7 +26,6 @@ const Subscribe = ({
   } = useContext(Nina.Context)
   const [isFollowing, setIsFollowing] = useState(false)
   const [pending, setPending] = useState(false)
-  const [targetSubscriptions, setTargetSubscriptions] = useState()
   const [followsYou, setFollowsYou] = useState(false)
   const [isUser, setIsUser] = useState(false)
   const [inDashboard, setInDashboard] = useState(
@@ -97,7 +96,7 @@ const Subscribe = ({
           {!isFollowing && !pending && (
             <Button
               color="primary"
-              sx={{ padding: '0 15px' }}
+              sx={{ padding: `${inFeed ? '0px' : '0 15px'}`}}
               onClick={() => handleSubscribe(accountAddress, hubHandle)}
             >
               Follow

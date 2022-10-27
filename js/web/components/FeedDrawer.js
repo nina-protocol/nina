@@ -26,7 +26,7 @@ const FeedDrawer = () => {
   const [totalItems, setTotalItems] = useState(0)
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { getFeedForUser } = useContext(Release.Context)
-  const [activeDrawerTypeIndex, setActiveDrawerTypeIndex] = useState(0)
+  const [activeDrawerTypeIndex, setActiveDrawerTypeIndex] = useState(1)
   const drawerTypes = ['latest', 'suggestions']
   const [feedFetched, setFeedFetched] = useState(false)
 
@@ -34,8 +34,17 @@ const FeedDrawer = () => {
     if (wallet.connected) {
       handleGetFeedForUser(wallet.publicKey.toBase58())
       getHubSuggestionsForUser(wallet.publicKey.toBase58())
+    } else {
+      getHubSuggestionsForUser()
+      setFeedFetched(true)
     }
   }, [wallet.connected])
+
+  useEffect(() => {
+    if (wallet.disconnecting){
+      setFeedItems(undefined)
+    }
+  }, [wallet?.disconnecting])
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -82,13 +91,11 @@ const FeedDrawer = () => {
       const { data } = await axios.get(
         `${process.env.NINA_API_ENDPOINT}/accounts/${publicKey}/hubSuggestions`
       )
-      console.log('data :>> ', data);
       data.suggestions.forEach((suggestion) => {
         suggestions.push(suggestion)
       })
       setHubSuggestions(suggestions)
     } catch (error) {
-      console.warn('error :>> ', error)
       return []
     }
   }
@@ -146,7 +153,7 @@ const FeedDrawer = () => {
               />
             )}
 
-            {activeDrawerTypeIndex === 1 && (
+            {activeDrawerTypeIndex === 1 && hubSuggestions && (
               <Suggestions
                 items={hubSuggestions}
                 toggleDrawer={toggleDrawer}

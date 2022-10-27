@@ -12,41 +12,8 @@ import { useRouter } from 'next/router'
 import Subscribe from './Subscribe'
 import { useSnackbar } from 'notistack'
 
-const timeSince = (date) => {
-  const seconds = Math.floor((new Date() - date) / 1000)
-  let interval = seconds / 31536000
-  if (interval > 1) {
-    const roundedInterval = Math.floor(interval)
-    return roundedInterval + (roundedInterval === 1 ? ' year' : ' years')
-  }
-  interval = seconds / 2592000
-  if (interval > 1) {
-    const roundedInterval = Math.floor(interval)
-    return roundedInterval + (roundedInterval === 1 ? ' month' : ' months')
-  }
-  interval = seconds / 86400
-  if (interval > 1) {
-    const roundedInterval = Math.floor(interval)
-    return roundedInterval + (roundedInterval === 1 ? ' day' : ' days')
-  }
-  interval = seconds / 3600
-  if (interval > 1) {
-    const roundedInterval = Math.floor(interval)
-    return roundedInterval + (roundedInterval === 1 ? ' hour' : ' hours')
-  }
-  interval = seconds / 60
-  if (interval > 1) {
-    const roundedInterval = Math.floor(interval)
-    return roundedInterval + (roundedInterval === 1 ? ' minute' : ' minutes')
-  }
-  return Math.floor(seconds) + ' seconds'
-}
-
 const Suggestions = ({ items, itemsTotal, publicKey }) => {
   const router = useRouter()
-
-  const [followPending, setFollowPending] = useState(false)
-  const [pendingFetch, setPendingFetch] = useState(false)
   const scrollRef = useRef()
   const { enqueueSnackbar } = useSnackbar()
 
@@ -63,8 +30,11 @@ const Suggestions = ({ items, itemsTotal, publicKey }) => {
       Object.entries(data).sort(([, a], [, b]) => a - b)
     )
     const reason = Object.entries(relevanceCounts).pop()
-    const reasonMessage = suggestionCopyFormatter(reason[0], reason[1])
-    return reasonMessage
+    if (reason) {
+      const reasonMessage = suggestionCopyFormatter(reason[0], reason[1])
+      return reasonMessage
+    }
+    return
   }
 
   const suggestionCopyFormatter = (reason, count) => {
@@ -77,9 +47,9 @@ const Suggestions = ({ items, itemsTotal, publicKey }) => {
         pluralize ? 's' : ''
       } you’ve published`,
       hubSubscriptionCount: `This Hub is followed by people ${count} you follow`,
-      collectorHubCount: `${count} collector${
+      collectorHubCount: `${count} of your collector${
         pluralize ? 's' : ''
-      } of your Releases are part of this Hub`,
+      } are part of this Hub`,
       hubReleaseCount: ` Releases on your Hub are also on this Hub`,
     }
     if (suggestions[reason]) {
@@ -92,36 +62,24 @@ const Suggestions = ({ items, itemsTotal, publicKey }) => {
       const hub = item.hub
       const reason = getSuggestionReason(item)
       return (
-        <ImageCard key={i}>
-          <HoverContainer
-            href={`/hubs/${hub?.handle}`}
-            passHref
-            onClick={(e) => handleClick(e, `/hubs/${hub?.handle}`)}
-          >
+        <SuggestionItem key={i}>
+          <ImageWrapper>
             <Image
-              height={'100px'}
-              width={'100px'}
-              layout="responsive"
+              height={100}
+              width={100}
               src={getImageFromCDN(
                 hub.data?.image,
-                400,
+                100,
                 Date.parse(hub.datetime)
-              )}
-              alt={i}
-              priority={true}
-              loader={loader}
-              unoptimized={true}
-            />
-            <HoverCard>
-              <CtaWrapper>
-                <Subscribe
-                  accountAddress={hub.publicKey}
-                  hubHandle={hub.handle}
-                  inFeed={true}
+                )}
+                alt={i}
+                priority={true}
+                loader={loader}
+                unoptimized={true}
+                onClick={(e) => handleClick(e, `/hubs/${hub?.handle}`)}
                 />
-              </CtaWrapper>
-            </HoverCard>
-          </HoverContainer>
+          </ImageWrapper>
+
           <CopyWrapper>
             <Typography my={1}>
               <Link href={`/hubs/${hub?.handle}`} passHref>
@@ -132,10 +90,17 @@ const Suggestions = ({ items, itemsTotal, publicKey }) => {
                 {`${truncateAddress(hub?.authority)}`}
               </Link>
             </Typography>
+            {publicKey && (
+              <Typography my={1} variant="body1">{reason}</Typography>
+            )}
 
-            <Typography my={1}>{reason}</Typography>
+            <Subscribe
+              accountAddress={hub.publicKey}
+              hubHandle={hub.handle}
+              inFeed={true}
+            />
           </CopyWrapper>
-        </ImageCard>
+        </SuggestionItem>
       )
     })
     return feedItemComponents
@@ -145,6 +110,12 @@ const Suggestions = ({ items, itemsTotal, publicKey }) => {
     <ScrollWrapper>
       <Box>
         <FeedWrapper ref={scrollRef}>
+          {!publicKey && (
+            <Typography my={1} variant="body1">
+              Connect your wallet to begin following hubs.
+            </Typography>
+          )}
+
           {feedItems &&
             feedItems?.map((item, index) => (
               <CardWrapper key={index}>{item}</CardWrapper>
@@ -189,49 +160,31 @@ const FeedWrapper = styled(Box)(({ theme }) => ({
 
 const CardWrapper = styled(Box)(({ theme }) => ({
   width: '100%',
-  margin: '15px 0px',
+  '& p': {
+    marginTop: '0px',
+  }
 }))
 
-const ImageCard = styled(Box)(({ theme }) => ({
-  minHeight: '300px',
-  height: 'auto',
+const SuggestionItem = styled(Box)(({ theme }) => ({
+  height: '100px',
+  padding: '15px 0',
+  margin: '15px 0',
   border: '1px solid',
   textOverflow: 'ellipsis',
   overflow: 'hidden',
+  display: 'flex',
   '& img': {
     cursor: 'pointer',
   },
 }))
 
+const ImageWrapper = styled(Box)(({ theme }) => ({
+
+}))
+
+
 const CopyWrapper = styled(Box)(({ theme }) => ({
   padding: '0 15px',
-  margin: '5px 0px 15px',
-}))
-
-const HoverContainer = styled(Box)(({ theme }) => ({
-  position: 'relative',
-}))
-
-const HoverCard = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  top: 0,
-  height: '100%',
-  width: '100%',
-  display: 'flex',
-  opacity: 0,
-  cursor: 'pointer',
-  '&:hover': {
-    opacity: 1,
-    backgroundColor: theme.palette.background.default + 'c4',
-  },
-}))
-
-const CtaWrapper = styled(Box)(({ theme }) => ({
-  margin: 'auto',
-  '& button': {
-    border: '1px solid',
-    borderRadius: '0px',
-  },
 }))
 
 export default Suggestions
