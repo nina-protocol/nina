@@ -20,7 +20,7 @@ const TabHeader = ({
   const playAllHandler = (playlist) => {
     console.log('playlist', playlist)
     if (type === 'hubView') {
-      resetQueueWithPlaylist(playlist?.map((release) => release.rqeleasePubkey)).then(
+      resetQueueWithPlaylist(playlist?.map((release) => release.releasePubkey)).then(
         () =>
           enqueueSnackbar(`Hub releases added to queue`, {
             variant: 'info',

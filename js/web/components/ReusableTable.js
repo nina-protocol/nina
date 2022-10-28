@@ -297,6 +297,7 @@ const ReusableTableBody = ({
       tableType === 'filteredSearchResultArtists'
     ) {
       formattedData = {
+        id: data?.publicKey,
         link: `/profiles/${data?.publicKey}`,
         searchResultArtist: data.name,
       }
@@ -306,7 +307,6 @@ const ReusableTableBody = ({
     ) {
       formattedData = {
         id: data?.publicKey,
-
         image: data?.image,
         link: `/${data?.publicKey}`,
         searchResultRelease: `${data?.artist} - ${data.title}`,
@@ -470,16 +470,7 @@ const ReusableTableBody = ({
                 return (
                   <StyledTableCell key={cellName}>
                     <SearchResultOverflowContainer>
-                      <Typography
-                        noWrap
-                        onClickCapture={() =>
-                          router.push(`/profiles/${row?.authorityPublicKey}`)
-                        }
-                      >
-                        <Link href={row.link} passHref>
-                          <a>{cellData}</a>
-                        </Link>
-                      </Typography>
+                      <a>{cellData}</a>
                     </SearchResultOverflowContainer>
                   </StyledTableCell>
                 )
@@ -492,9 +483,7 @@ const ReusableTableBody = ({
                           noWrap
                           onClickCapture={() => router.push(`/${row?.id}`)}
                         >
-                          <Link href={row.link} passHref>
-                            <a>{cellData}</a>
-                          </Link>
+                          <a>{cellData}</a>
                         </Typography>
                       </OverflowContainer>
                     </SearchResultOverflowContainer>
@@ -508,9 +497,7 @@ const ReusableTableBody = ({
                         noWrap
                         onClickCapture={() => router.push(`/hubs/${row?.id}`)}
                       >
-                        <Link href={row.link} passHref>
-                          <a>{cellData}</a>
-                        </Link>
+                        <a>{cellData}</a>
                       </Typography>
                     </SearchResultOverflowContainer>
                   </StyledTableCell>
