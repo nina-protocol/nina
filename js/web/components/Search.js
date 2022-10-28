@@ -26,11 +26,11 @@ const Search = (props) => {
     useContext(Release.Context)
   const [searchFilter, setSearchFilter] = useState()
   const [response, setResponse] = useState(searchResults)
-  const [defaultResponse, setDefaultResponse] = useState({
-    Artists: undefined,
-    Releases: undefined,
-    Hubs: undefined,
-  })
+  const [defaultResponse, setDefaultResponse] = useState([
+    { name: 'Artists', data: undefined },
+    { name: 'Releases', data: undefined },
+    { name: 'Hubs', data: undefined },
+  ])
   const [featuredHubPublicKeys, setFeaturedHubPublicKeys] = useState()
   const [releasesRecent, setReleasesRecent] = useState({})
 
@@ -71,9 +71,12 @@ const Search = (props) => {
 
   useEffect(() => {
     setReleasesRecent(filterReleasesRecent())
-    defaultSearchView[1].length = releasesRecentState.highlights.length
-    defaultResponse.Releases = releasesRecent.highlights
-    setActiveView(2)
+
+    defaultSearchView[1].length = releasesRecent?.highlights?.length
+
+    if (!searchQuery) {
+      setActiveView(2)
+    }
   }, [releasesRecentState])
 
   useEffect(() => {
@@ -91,6 +94,33 @@ const Search = (props) => {
       defaultResponse.Hubs = featured
     }
   }, [featuredHubPublicKeys, hubState])
+
+  useEffect(() => {
+    let defaultResponseIndex
+    let defaultResponseCopy = defaultResponse.slice()
+    let defaultSearchViewCopy = defaultSearchView.slice()
+    if (!searchQuery) {
+      if (releasesRecent?.highlights?.length > 0) {
+        defaultResponseIndex = defaultResponseCopy.findIndex(
+          (item) => item.name === 'Releases'
+        )
+        defaultResponseCopy[defaultResponseIndex].data =
+          releasesRecent?.highlights
+        defaultSearchViewCopy[defaultResponseIndex].length =
+          releasesRecent?.highlights?.length
+      }
+      if (featuredHubs?.length > 0) {
+        defaultResponseIndex = defaultResponseCopy.findIndex(
+          (item) => item.name === 'Hubs'
+        )
+        defaultResponseCopy[defaultResponseIndex].data = featuredHubs
+        defaultSearchViewCopy[defaultResponseIndex].length =
+          featuredHubs?.length
+      }
+    }
+    setDefaultResponse(defaultResponseCopy)
+    setDefaultSearchView(defaultSearchViewCopy)
+  }, [releasesRecent, featuredHubs])
 
   useEffect(() => {
     if (searchQuery) {
@@ -179,10 +209,11 @@ const Search = (props) => {
         return (
           <SearchAllResultsWrapper>
             {defaultSearchView.map((item, index) => {
+              const type = item.name
               return (
                 <ReusableTable
-                  tableType={`defaultSearch${item.name}`}
-                  items={defaultResponse[item.name]}
+                  tableType={`defaultSearch${type}`}
+                  items={defaultResponse[index]?.data}
                   hasOverflow={false}
                   key={index}
                 />
@@ -192,19 +223,23 @@ const Search = (props) => {
         )
       case 2:
         return (
-          <ReusableTable
-            tableType={'defaultSearchReleases'}
-            items={releasesRecent.highlights}
-            hasOverflow={true}
-          />
+          <ResultsWrapper>
+            <ReusableTable
+              tableType={'defaultSearchReleases'}
+              items={defaultResponse[1].data}
+              hasOverflow={true}
+            />
+          </ResultsWrapper>
         )
       case 3:
         return (
-          <ReusableTable
-            tableType={'defaultSearchHubs'}
-            items={featuredHubs}
-            hasOverflow={true}
-          />
+          <ResultsWrapper>
+            <ReusableTable
+              tableType={'defaultSearchHubs'}
+              items={defaultResponse[2].data}
+              hasOverflow={true}
+            />
+          </ResultsWrapper>
         )
       default:
         break
@@ -255,9 +290,11 @@ const Search = (props) => {
               isClicked={activeView === 0}
               onClick={() => setActiveView(0)}
             >
-              {`All (${
-                releasesRecent?.highlights?.length + featuredHubs?.length
-              })`}
+              {releasesRecent?.highlights?.length + featuredHubs?.length > 0
+                ? `All (${
+                    releasesRecent?.highlights?.length + featuredHubs?.length
+                  })`
+                : 'All (0)'}
             </SearchResultFilter>
           )}
 
@@ -272,7 +309,9 @@ const Search = (props) => {
                   disabled={filter.length === 0}
                   key={index}
                 >
-                  {`${filter.name} (${filter.length})`}
+                  {filter.length > 0
+                    ? `${filter.name} (${filter.length})`
+                    : `${filter.name} (0)`}
                 </SearchResultFilter>
               )
             })}
@@ -314,7 +353,10 @@ const SearchPageContainer = styled(Box)(({ theme }) => ({
   width: theme.maxWidth,
   height: '84vh',
   overflowY: 'hidden',
-  margin: '75px auto',
+  marginBottom: '65px',
+  marginLeft: 'auto',
+  marginRight: 'auto',
+
   [theme.breakpoints.down('md')]: {
     display: 'flex',
     flexDirection: 'column',
