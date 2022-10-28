@@ -11,7 +11,9 @@ import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
-
+import { OutlinedInput, Select } from "@mui/material";
+import { FormControl } from "@material-ui/core";
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 
 const style = {
   position: "absolute",
@@ -25,7 +27,8 @@ const style = {
 };
 
 const ReleaseCreateConfirm = (props) => {
-  const { formIsValid, formValues, handleSubmit, setFormValuesConfirmed } =
+
+  const { formIsValid, formValues, handleSubmit, setFormValuesConfirmed, profileHubs } =
     props;
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -115,9 +118,28 @@ const ReleaseCreateConfirm = (props) => {
             <Value className="description" sx={{mt: 1, flexDirection: 'column' , mb: 1}}>
               Description: <span style={{marginTop: '8px', paddingLeft: '0'}}>{description}</span>
             </Value>
+            
+            <FormControl sx={{mt: 1, mb: 1}}>
+            <Select
+            multiple
+            displayEmpty
+            value={profileHubs}
+            onChange={handleChange}
+            input={<OutlinedInput />}
+            renderValue={(selected) => {
+              if (selected.length === 0) {
+                return <em>None</em>;
+              }
+
+              return selected.join(", ");
+            }}
+            MenuProps={MenuProps}
+            inputProps={{ "aria-label": "Without label" }}
+            />
+            </FormControl>
             <Typography variant="subtitle1" mt={1} sx={{ color: "red" }}>
               ONCE PUBLISHED, YOUR RELEASE INFORMATION WILL BE PERMANENT AND YOU
-              WILL NOT BE ABLE TO EDIT IT.
+              WILL NOT BE ABLE TO EDIT IT. hahahahahahah
             </Typography>
             <Value>
               <FormControlLabel sx={{ mt: 1, mb: 1, paddingLeft: '10px' }} control={<Checkbox onChange={handleChangeCheckbox} />} label="Confirm" />

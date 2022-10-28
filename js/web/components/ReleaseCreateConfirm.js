@@ -11,6 +11,10 @@ import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
+import { InputLabel, MenuItem, OutlinedInput } from "@mui/material";
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 
 const style = {
   position: 'absolute',
@@ -22,9 +26,18 @@ const style = {
   boxShadow: 24,
   p: 4,
 }
-
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 const ReleaseCreateConfirm = (props) => {
-  const { formIsValid, formValues, handleSubmit, setFormValuesConfirmed } =
+  const { formIsValid, formValues, handleSubmit, setFormValuesConfirmed, profileHubs, selectedHub, setSelectedHub, handleChange, hubOptions } =
     props
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
@@ -62,6 +75,7 @@ const ReleaseCreateConfirm = (props) => {
   const handleChangeCheckbox = (e) => {
     setConfirm(e.target.checked)
   }
+
 
   return (
     <div>
@@ -114,6 +128,27 @@ const ReleaseCreateConfirm = (props) => {
                 {description}
               </span>
             </Value>
+            <FormControl sx={{mt: 1, mb: 1, width:300}}>
+              <InputLabel id="demo-multiple-checkbox-label">Select Hub</InputLabel>
+            <Select
+            value={selectedHub.name}
+            onChange={handleChange}
+            input={<OutlinedInput label="Name" />}
+            MenuProps={MenuProps}
+            inputProps={{ "aria-label": "Without label" }}
+            id={selectedHub.id}
+            >
+              {profileHubs?.map((hub) => (
+                <MenuItem
+                key={hub?.handle}
+                value={`${hub?.data.displayName} ee`}
+                id={hub?.publicKey}
+                >
+                  {hub?.data?.displayName}
+                  </MenuItem>
+              ))}
+            </Select>
+            </FormControl>
             <Typography variant="subtitle1" mt={1} sx={{ color: 'red' }}>
               ONCE PUBLISHED, YOUR RELEASE INFORMATION WILL BE PERMANENT AND YOU
               WILL NOT BE ABLE TO EDIT IT.

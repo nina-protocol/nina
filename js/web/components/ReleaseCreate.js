@@ -8,6 +8,7 @@ import React, {
 import * as Yup from 'yup'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import { getMd5FileHash } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import { useSnackbar } from 'notistack'
 import { styled } from '@mui/material/styles'
@@ -70,6 +71,10 @@ const ReleaseCreate = () => {
     NinaProgramAction,
   } = useContext(Nina.Context)
 
+  const { getHubsForUser, fetchedHubsForUser, filterHubsForUser } = useContext(
+    Hub.Context
+  )
+
   const [track, setTrack] = useState(undefined)
   const [artwork, setArtwork] = useState()
   const [uploadSize, setUploadSize] = useState()
@@ -94,7 +99,12 @@ const ReleaseCreate = () => {
   const [uploadId, setUploadId] = useState()
   const [publishingStepText, setPublishingStepText] = useState()
   const [md5Digest, setMd5Digest] = useState()
-
+  const [profileHubs, setProfileHubs] = useState()
+  const [hubOptions, setHubOptions] = useState()
+  const [selectedHub, setSelectedHub] = useState({
+    name:undefined,
+    pubkey: undefined,
+  })
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
     [bundlrBalance, bundlrPricePerMb]
@@ -113,6 +123,41 @@ const ReleaseCreate = () => {
   useEffect(async () => {
     getNpcAmountHeld()
   }, [wallet?.connected])
+
+
+  useEffect(() => {
+    let publicKey
+    if (wallet.connected) {
+    publicKey = wallet.publicKey.toBase58()
+    getUserHubs(publicKey)
+    console.log('got hubs for context')
+    }
+
+    
+  }, [wallet?.connected])
+
+  useEffect(() => {
+    if (wallet.connected) {
+      let publicKey = wallet?.publicKey?.toBase58()
+      if (fetchedHubsForUser.has(publicKey)){
+        setProfileHubs(filterHubsForUser(publicKey))
+        console.log('got hubs for user')
+       const hubArr = profileHubs?.map(hub => hub?.data?.displayName)
+       console.log('hubArr', hubArr)
+      }
+      console.log('profileHubs', profileHubs)
+    }
+  },[fetchedHubsForUser])
+
+  const getUserHubs = async (publicKey) => {
+    try {
+      await getHubsForUser(publicKey)
+    } catch {
+      enqueueSnackbar('Error fetching hubs for user', {
+        variant: 'error',
+      })
+    }
+  }
 
   useEffect(() => {
     if (isPublishing) {
@@ -364,7 +409,13 @@ const ReleaseCreate = () => {
       setAudioProgress(progress)
     }
   }
-
+  const handleHubSelect = (e) => {
+    console.log('e....', e.target.value)
+    const { target: { value, id } } = e
+    setSelectedHub({...selectedHub, name: value, pubkey: id})
+    console.log(selectedHub)
+    console.log('id', id)
+  }
   return (
     <Grid item md={12}>
       {!wallet.connected && (
@@ -478,6 +529,11 @@ const ReleaseCreate = () => {
                   setFormValuesConfirmed={setFormValuesConfirmed}
                   artwork={artwork}
                   track={track}
+                  profileHubs={profileHubs}
+                  setSelectedHub={setSelectedHub}
+                  selectedHub={selectedHub}
+                  handleChange={(e) => handleHubSelect(e)}
+             
                 />
               )}
 
