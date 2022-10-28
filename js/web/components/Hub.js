@@ -1,18 +1,16 @@
 import { useEffect, useMemo, useState, useContext } from 'react'
 import dynamic from 'next/dynamic'
-import Head from 'next/head'
-import { Box, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-
 const Dots = dynamic(() => import('./Dots'))
 const HubHeader = dynamic(() => import('./HubHeader'))
 const TabHeader = dynamic(() => import('./TabHeader'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
 
-const HubComponent = ({ hubHandle, hubPubkey }) => {
+const HubComponent = ({ hubPubkey }) => {
   const {
     getHub,
     hubState,
@@ -23,7 +21,13 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
   } = useContext(Hub.Context)
 
   const { releaseState } = useContext(Release.Context)
-  const { fetchedHubs, setFetchedHubs, getSubscriptionsForHub, subscriptionState, filterSubscriptionsForHub } = useContext(Nina.Context)
+  const {
+    fetchedHubs,
+    setFetchedHubs,
+    getSubscriptionsForHub,
+    subscriptionState,
+    filterSubscriptionsForHub,
+  } = useContext(Nina.Context)
   const [hubReleases, setHubReleases] = useState(undefined)
   const [releaseData, setReleaseData] = useState(undefined)
   const [hubCollaborators, setHubCollaborators] = useState(undefined)
@@ -62,7 +66,7 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
     }
   }, [hubState, hubPubkey])
 
-    useEffect(() => {
+  useEffect(() => {
     if (hubPubkey) {
       getHub(hubPubkey)
     }
@@ -90,10 +94,16 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
 
     const data = hubReleases?.map((hubRelease) => {
       const releaseMetadata = releaseState.metadata[hubRelease.release]
+      releaseMetadata.authority =
+        releaseState.tokenData[hubRelease.release].authority
       releaseMetadata.releasePubkey = hubRelease.release
       return releaseMetadata
     })
-    setReleaseData(data)
+    const sortedPublished = data?.sort((a, b) => {
+      return new Date(b.properties.date) - new Date(a.properties.date)
+    })
+
+    setReleaseData(sortedPublished)
 
     viewIndex = updatedView.findIndex((view) => view.name === 'releases')
     updatedView[viewIndex].playlist = releaseData
@@ -138,6 +148,52 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
     setActiveView(index)
   }
 
+  const renderTables = (activeView) => {
+    switch (activeView) {
+      case undefined:
+        return (
+          <>
+            <HubDotWrapper>
+              <Box sx={{ width: '100%', margin: 'auto' }}>
+                <Dots />
+              </Box>
+            </HubDotWrapper>
+          </>
+        )
+      case 0:
+        return (
+          <>
+            {fetched.releases && !releaseData && (
+              <Box sx={{ my: 1 }}>No releases found in this Hub</Box>
+            )}
+            {fetched.releases && releaseData && (
+              <ReusableTable
+                tableType={'hubReleases'}
+                items={releaseData}
+                hasOverflow={true}
+              />
+            )}
+          </>
+        )
+      case 1:
+        return (
+          <>
+            {fetched.collaborators && !hubCollaborators && (
+              <Box sx={{ my: 1 }}>No collaborators found in this Hub</Box>
+            )}
+            {fetched.collaborators && (
+              <ReusableTable
+                tableType={'hubCollaborators'}
+                items={hubCollaborators}
+                hasOverflow={true}
+              />
+            )}
+          </>
+        )
+      default:
+        break
+    }
+  }
   return (
     <>
       <HubContainer>
@@ -146,10 +202,10 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
           <HubTabWrapper>
             <TabHeader
               viewHandler={viewHandler}
-              isActive={activeView}
+              activeView={activeView}
               profileTabs={views}
               releaseData={releaseData}
-              type={'hubsView'}
+              type={'hubView'}
               followersCount={hubFollowers?.length}
             />
           </HubTabWrapper>
@@ -190,14 +246,11 @@ const HubComponent = ({ hubHandle, hubPubkey }) => {
           )}
           {activeView === 2 && (
             <>
-              {hasData && !hubCollaborators && (
+              {hasData && !hubFollowers && (
                 <Box sx={{ my: 1 }}>No followers found in this Hub</Box>
               )}
               {hasData && (
-                <ReusableTable
-                  tableType={'followers'}
-                  items={hubFollowers}
-                />
+                <ReusableTable tableType={'followers'} items={hubFollowers} />
               )}
             </>
           )}

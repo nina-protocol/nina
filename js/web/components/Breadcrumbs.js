@@ -5,6 +5,7 @@ import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
 
@@ -67,6 +68,7 @@ const releaseBreadcrumbFormatted = (metadata) => {
 
 const Breadcrumbs = () => {
   const router = useRouter()
+  const { displayNameForAccount, verificationState } = useContext(Nina.Context)
   const [breadcrumbs, setBreadcrumbs] = useState(null)
 
   useEffect(() => {
@@ -126,7 +128,7 @@ const Breadcrumbs = () => {
           pathArray = linkPath.map((path, i) => {
             return {
               breadcrumb:
-                path !== 'profiles' ? `${truncateAddress(path)}` : path,
+                path !== 'profiles' ? `${displayNameForAccount(path)}` : path,
               href: '/' + linkPath.slice(0, i + 1).join('/'),
             }
           })
@@ -147,6 +149,14 @@ const Breadcrumbs = () => {
             }
           })
           break
+        case '/search':
+          pathArray = linkPath.map((path, i) => {
+            return {
+              breadcrumb: 'Search',
+              href: '/' + linkPath.slice(0, i + 1).join('/'),
+            }
+          })
+          break
         default:
           pathArray = linkPath.map((path, i) => {
             return {
@@ -159,7 +169,7 @@ const Breadcrumbs = () => {
 
       setBreadcrumbs(pathArray)
     }
-  }, [router])
+  }, [router, verificationState])
 
   if (!breadcrumbs) {
     return null

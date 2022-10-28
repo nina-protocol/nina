@@ -9,22 +9,16 @@ import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
 import Link from 'next/link'
 import { useWallet } from '@solana/wallet-adapter-react'
+
 import {
   WalletDialogProvider,
   WalletMultiButton,
 } from '@solana/wallet-adapter-material-ui'
 import Breadcrumbs from './Breadcrumbs'
-
+import NavSearch from './NavSearch'
 const NavBar = () => {
-  const {
-    healthOk,
-    getSubscriptionsForUser,
-    filterSubscriptionsForUser,
-    subscriptionState,
-  } = useContext(Nina.Context)
-  const { filterHubsForUser, getHubsForUser, hubState, getHubs } = useContext(
-    Hub.Context
-  )
+  const { healthOk, getSubscriptionsForUser } = useContext(Nina.Context)
+  const { getHubsForUser } = useContext(Hub.Context)
   const wallet = useWallet()
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),
@@ -47,13 +41,6 @@ const NavBar = () => {
     }
   }, [wallet.connected])
 
-  const userHubs = useMemo(() => {
-    if (wallet.connected) {
-      return filterHubsForUser(wallet.publicKey.toBase58())
-    }
-    return undefined
-  }, [hubState, wallet.connected])
-
   return (
     <Root>
       <NavLeft>
@@ -69,21 +56,10 @@ const NavBar = () => {
 
       <NavRight>
         <DesktopWalletWrapper>
-          {userHubs && (
-            <a
-              href={`https://hubs.ninaprotocol.com/${
-                userHubs.length === 1 ? userHubs[0].handle : ''
-              }`}
-              target="_blank"
-              rel="noreferrer"
-              style={{ margin: '0' }}
-            >
-              <Typography variant="subtitle1" sx={{ mr: '15px' }}>
-                My Hub{userHubs.length > 1 ? 's' : ''}
-              </Typography>
-            </a>
-          )}
           <NavCtas>
+            <SearchBarWrapper>
+              <NavSearch />
+            </SearchBarWrapper>
             {wallet.wallets && (
               <StyledWalletDialogProvider featuredWallets={4}>
                 <StyledWalletButton>
@@ -156,7 +132,7 @@ const NavRight = styled('div')(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     position: 'absolute',
     right: 0,
-    top: '10px',
+    top: '15px',
   },
 }))
 
@@ -164,7 +140,12 @@ const NavCtas = styled('div')(() => ({
   display: 'flex',
   alignItems: 'flex-start',
 }))
-
+const SearchBarWrapper = styled('div')(({ theme }) => ({
+  [theme.breakpoints.down('md')]: {
+    position: 'absolute',
+    right: '270px',
+  },
+}))
 const Logo = styled('div')(({ theme }) => ({
   position: 'absolute',
   top: theme.spacing(1),

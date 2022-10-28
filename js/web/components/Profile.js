@@ -4,14 +4,16 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import axios from 'axios'
 import { Box, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
+import Image from 'next/image'
 import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
+import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import Subscribe from './Subscribe'
 import NewProfileCtas from './NewProfileCtas'
 import IdentityVerification from './IdentityVerification'
+const { getImageFromCDN, loader } = imageManager
 
 const Dots = dynamic(() => import('./Dots'))
 const TabHeader = dynamic(() => import('./TabHeader'))
@@ -39,6 +41,10 @@ const Profile = ({ profilePubkey }) => {
     ninaClient,
     fetchedProfiles,
     setFetchedProfiles,
+    displayNameForAccount,
+    getVerificationsForUser,
+    verificationState,
+    displayImageForAccount,
   } = useContext(Nina.Context)
 
   const [profilePublishedReleases, setProfilePublishedReleases] =
@@ -51,6 +57,10 @@ const Profile = ({ profilePubkey }) => {
   const [profileSubscriptionsTo, setProfileSubscriptionsTo] = useState()
   const [profileSubscriptionsFrom, setProfileSubscriptionsFrom] = useState()
   const [profileVerifications, setProfileVerifications] = useState()
+  const profileImage = useMemo(
+    () => displayImageForAccount(profilePubkey),
+    [profilePubkey, verificationState]
+  )
   const [inDashboard, setInDashboard] = useState(false)
 
   const [fetched, setFetched] = useState(false)
@@ -68,7 +78,7 @@ const Profile = ({ profilePubkey }) => {
       return true
     }
     if (fetched) {
-      setFetchedProfiles(fetchedProfiles.add(profilePubkey))
+      setFetchedProfiles(new Set([...fetchedProfiles, profilePubkey]))
       return true
     }
     return false
@@ -110,9 +120,9 @@ const Profile = ({ profilePubkey }) => {
     const from = []
     if (profileSubscriptions) {
       profileSubscriptions.forEach((sub) => {
-        if (sub.to === profilePubkey) {
+        if (sub.to.publicKey === profilePubkey) {
           to.push(sub)
-        } else if (sub.from === profilePubkey) {
+        } else if (sub.from.publicKey === profilePubkey) {
           from.push(sub)
         }
       })
@@ -191,6 +201,12 @@ const Profile = ({ profilePubkey }) => {
     }
   }, [fetchedHubsForUser])
 
+  useEffect(() => {
+    if (verificationState[profilePubkey]) {
+      setProfileVerifications(verificationState[profilePubkey])
+    }
+  }, [verificationState])
+
   const getUserData = async () => {
     try {
       await getHubsForUser(profilePubkey)
@@ -200,6 +216,7 @@ const Profile = ({ profilePubkey }) => {
       )
 
       await getSubscriptionsForUser(profilePubkey)
+      await getVerificationsForUser(profilePubkey)
 
       let viewIndex
       let updatedView = views.slice()
@@ -230,44 +247,6 @@ const Profile = ({ profilePubkey }) => {
       newUrl
     )
     setActiveView(index)
-  }
-
-  const displayNameForProfile = () => {
-    if (
-      profileVerifications?.find(
-        (verification) => verification.type === 'soundcloud'
-      )
-    ) {
-      return profileVerifications.find(
-        (verification) => verification.type === 'soundcloud'
-      ).displayName
-    } else if (
-      profileVerifications?.find(
-        (verification) => verification.type === 'twitter'
-      )
-    ) {
-      return profileVerifications.find(
-        (verification) => verification.type === 'twitter'
-      ).displayName
-    } else if (
-      profileVerifications?.find(
-        (verification) => verification.type === 'instagram'
-      )
-    ) {
-      return profileVerifications.find(
-        (verification) => verification.type === 'instagram'
-      ).displayName
-    } else if (
-      profileVerifications?.find(
-        (verification) => verification.type === 'ethereum'
-      )
-    ) {
-      return profileVerifications.find(
-        (verification) => verification.type === 'ethereum'
-      ).displayName
-    } else {
-      return truncateAddress(profilePubkey)
-    }
   }
 
   const renderTables = (activeView, inDashboard) => {
@@ -327,6 +306,7 @@ const Profile = ({ profilePubkey }) => {
               <ReusableTable
                 tableType={'followers'}
                 items={profileSubscriptionsTo}
+                hasOverflow={true}
               />
             )}
           </>
@@ -340,6 +320,7 @@ const Profile = ({ profilePubkey }) => {
               <ReusableTable
                 tableType={'following'}
                 items={profileSubscriptionsFrom}
+                hasOverflow={true}
               />
             )}
           </>
@@ -354,21 +335,46 @@ const Profile = ({ profilePubkey }) => {
       <ProfileContainer>
         <ProfileHeaderWrapper>
           <ProfileHeaderContainer>
-            {profilePubkey && (
-              <Box sx={{ mb: 1 }} display="flex">
-                <Typography>{truncateAddress(profilePubkey)}</Typography>
+            <Box display="flex">
+              {profilePubkey && (
+                <>
+                  <Box>
+                    {profileImage?.includes('https') ? (
+                      <Image
+                        height={150}
+                        width={150}
+                        layout="responsive"
+                        src={getImageFromCDN(
+                          profileImage,
+                          400,
+                          Date.parse(row.date)
+                        )}
+                        alt={i}
+                        priority={true}
+                        loader={loader}
+                      />
+                    ) : (
+                      <img src={profileImage} height={100} width={100} />
+                    )}
+                  </Box>
+                  <Box sx={{ mb: 1 }} display="flex">
+                    <Typography>
+                      {displayNameForAccount(profilePubkey)}
+                    </Typography>
 
-                {wallet.connected && (
-                  <Subscribe accountAddress={profilePubkey} />
-                )}
-                {profileVerifications && (
-                  <IdentityVerification
-                    verifications={profileVerifications}
-                    profilePublicKey={profilePubkey}
-                  />
-                )}
-              </Box>
-            )}
+                    {wallet.connected && (
+                      <Subscribe accountAddress={profilePubkey} />
+                    )}
+                    {profileVerifications && (
+                      <IdentityVerification
+                        verifications={profileVerifications}
+                        profilePublicKey={profilePubkey}
+                      />
+                    )}
+                  </Box>
+                </>
+              )}
+            </Box>
             {hasData && artistNames?.length > 0 && (
               <ProfileOverflowContainer>
                 {`Publishes as ${artistNames?.map((name) => name).join(', ')}`}
@@ -389,6 +395,17 @@ const Profile = ({ profilePubkey }) => {
           </Box>
         )}
 
+        {fetched.info && (
+          <Box sx={{ py: 1 }}>
+            <TabHeader
+              viewHandler={viewHandler}
+              activeView={activeView}
+              profileTabs={tabCategories}
+              followersCount={profileSubscriptionsTo?.length}
+              followingCount={profileSubscriptionsFrom?.length}
+            />
+          </Box>
+        )}
         <>
           {!hasData && (
             <ProfileDotWrapper>
@@ -417,6 +434,7 @@ const ProfileContainer = styled(Box)(({ theme }) => ({
   height: '86vh',
   overflowY: 'hidden',
   margin: '75px auto 0px',
+
   ['-webkit-overflow-scroll']: 'touch',
   [theme.breakpoints.down('md')]: {
     display: 'flex',
@@ -463,7 +481,7 @@ const ProfileHeaderWrapper = styled(Box)(({ theme }) => ({
 const ProfileOverflowContainer = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
   display: ['-webkit-box'],
-  ['-webkit-line-clamp']: '4',
+  ['-webkit-line-clamp']: '5',
   ['-webkit-box-orient']: 'vertical',
   textOverflow: 'ellipsis',
   [theme.breakpoints.down('md')]: {
@@ -473,6 +491,7 @@ const ProfileOverflowContainer = styled(Box)(({ theme }) => ({
 
 const ProfileTableContainer = styled(Box)(({ theme }) => ({
   paddingBottom: '100px',
+  overflowY: 'auto',
   [theme.breakpoints.down('md')]: {
     paddingBottom: '100px',
     overflow: 'scroll',
@@ -486,10 +505,27 @@ const ProfileDotWrapper = styled(Box)(({ theme }) => ({
   height: '100%',
   display: 'flex',
   textAlign: 'center',
+  top: '50%',
   [theme.breakpoints.down('md')]: {
     fontSize: '30px',
     left: '50%',
     top: '50%',
+  },
+}))
+
+const TabWrapper = styled(Box)(({ theme, isClicked }) => ({
+  backgroundColor: 'transparent',
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '16px',
+  fontWeight: isClicked ? 'bold' : 'normal',
+  color: '#000',
+  textAlign: 'left',
+  alignItems: 'left',
+  display: 'flex',
+  flexDirection: 'row',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '13px',
   },
 }))
 

@@ -3,10 +3,8 @@ import { Box } from '@mui/system'
 import { styled } from '@mui/system'
 import Head from 'next/head'
 import NinaSdk from '@nina-protocol/js-sdk'
-
-const Hub = dynamic(() => import('../../../components/Hub'))
+const HubView = dynamic(() => import('../../../components/Hub'))
 const HubPage = ({ hub, hubPubkey }) => {
-
   return (
     <>
       <Head>
@@ -26,9 +24,7 @@ const HubPage = ({ hub, hubPubkey }) => {
         />
         <meta
           name="og:description"
-          content={`${
-            hub?.data.displayName ? hub?.data.displayName : ''
-          }: ${
+          content={`${hub?.data.displayName ? hub?.data.displayName : ''}: ${
             hub?.data.description ? hub?.data.description : ''
           } \n Published via Nina Hubs.`}
         />
@@ -45,7 +41,7 @@ const HubPage = ({ hub, hubPubkey }) => {
         <meta name="og:image" content={hub?.data.image} />
       </Head>
       <ResponsiveHubContainer>
-        <Hub hubPubkey={hubPubkey} hubHandle={hub.handle} />
+        <HubView hubPubkey={hubPubkey} hubHandle={hub.handle} />
       </ResponsiveHubContainer>
     </>
   )
