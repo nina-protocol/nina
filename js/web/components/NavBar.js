@@ -49,11 +49,6 @@ const NavBar = () => {
     }
   }, [wallet.connected])
 
-  useEffect(() => {
-    if (wallet.disconnecting) {
-      router.push("/");
-    }
-  }, [wallet?.disconnecting]);
 
   const userHubs = useMemo(() => {
     if (wallet.connected) {
