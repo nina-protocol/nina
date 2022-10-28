@@ -66,11 +66,11 @@ const Profile = ({ profilePubkey }) => {
   const [fetched, setFetched] = useState(false)
 
   const [views, setViews] = useState([
-    { name: 'releases', playlist: undefined, disabled: false },
-    { name: 'collection', playlist: undefined, disabled: false },
-    { name: 'hubs', playlist: null, disabled: false },
-    { name: 'followers', playlist: null, disabled: false },
-    { name: 'following', playlist: null, disabled: false },
+    { name: 'releases', playlist: undefined, disabled: true, count: 0 },
+    { name: 'collection', playlist: undefined, disabled: true, count: 0 },
+    { name: 'hubs', playlist: null, disabled: true, count: 0 },
+    { name: 'followers', playlist: null, disabled: true, count: 0 },
+    { name: 'following', playlist: null, disabled: true, count: 0 },
   ])
 
   const hasData = useMemo(() => {
@@ -135,25 +135,30 @@ const Profile = ({ profilePubkey }) => {
     let viewIndex
     let updatedView = views.slice()
     if (!inDashboard) {
-      if (profilePublishedReleases?.length === 0) {
+      if (profilePublishedReleases?.length > 0) {
         viewIndex = updatedView.findIndex((view) => view.name === 'releases')
-        updatedView[viewIndex].disabled = true
+        updatedView[viewIndex].disabled = false
+        updatedView[viewIndex].count = profilePublishedReleases.length
       }
-      if (profileCollectionReleases?.length === 0) {
+      if (profileCollectionReleases?.length > 0) {
         viewIndex = updatedView.findIndex((view) => view.name === 'collection')
-        updatedView[viewIndex].disabled = true
+        updatedView[viewIndex].disabled = false
+        updatedView[viewIndex].count = profileCollectionReleases.length
       }
-      if (profileHubs?.length === 0) {
+      if (profileHubs?.length > 0) {
         viewIndex = updatedView.findIndex((view) => view.name === 'hubs')
-        updatedView[viewIndex].disabled = true
+        updatedView[viewIndex].disabled = false
+        updatedView[viewIndex].count = profileHubs.length
       }
-      if (profileSubscriptionsTo?.length === 0) {
+      if (profileSubscriptionsTo?.length > 0) {
         viewIndex = updatedView.findIndex((view) => view.name === 'followers')
         updatedView[viewIndex].disabled = false
+        updatedView[viewIndex].count = profileSubscriptionsTo.length
       }
-      if (profileSubscriptionsFrom?.length === 0) {
+      if (profileSubscriptionsFrom?.length > 0) {
         viewIndex = updatedView.findIndex((view) => view.name === 'following')
         updatedView[viewIndex].disabled = false
+        updatedView[viewIndex].count = profileSubscriptionsFrom.length
       }
     }
 
@@ -357,7 +362,7 @@ const Profile = ({ profilePubkey }) => {
                       <img src={profileImage} height={100} width={100} />
                     )}
                   </Box>
-                  <Box sx={{ mb: 1 }} display="flex">
+                  <Box sx={{ mb: 1, ml: 1 }} display="flex">
                     <Typography>
                       {displayNameForAccount(profilePubkey)}
                     </Typography>
@@ -389,8 +394,6 @@ const Profile = ({ profilePubkey }) => {
               viewHandler={viewHandler}
               activeView={activeView}
               profileTabs={views}
-              followersCount={profileSubscriptionsTo?.length}
-              followingCount={profileSubscriptionsFrom?.length}
             />
           </Box>
         )}
@@ -401,8 +404,6 @@ const Profile = ({ profilePubkey }) => {
               viewHandler={viewHandler}
               activeView={activeView}
               profileTabs={tabCategories}
-              followersCount={profileSubscriptionsTo?.length}
-              followingCount={profileSubscriptionsFrom?.length}
             />
           </Box>
         )}
@@ -468,7 +469,6 @@ const ProfileHeaderWrapper = styled(Box)(({ theme }) => ({
   pl: 1,
   pb: 1,
   maxWidth: '100vw',
-  minHeight: '100px',
   [theme.breakpoints.down('md')]: {
     width: '100vw',
     overflow: 'hidden',
@@ -484,6 +484,7 @@ const ProfileOverflowContainer = styled(Box)(({ theme }) => ({
   ['-webkit-line-clamp']: '5',
   ['-webkit-box-orient']: 'vertical',
   textOverflow: 'ellipsis',
+  paddingTop: '5px',
   [theme.breakpoints.down('md')]: {
     ['-webkit-line-clamp']: '4',
   },
@@ -513,20 +514,5 @@ const ProfileDotWrapper = styled(Box)(({ theme }) => ({
   },
 }))
 
-const TabWrapper = styled(Box)(({ theme, isClicked }) => ({
-  backgroundColor: 'transparent',
-  border: 'none',
-  cursor: 'pointer',
-  fontSize: '16px',
-  fontWeight: isClicked ? 'bold' : 'normal',
-  color: '#000',
-  textAlign: 'left',
-  alignItems: 'left',
-  display: 'flex',
-  flexDirection: 'row',
-  [theme.breakpoints.down('md')]: {
-    fontSize: '13px',
-  },
-}))
 
 export default Profile

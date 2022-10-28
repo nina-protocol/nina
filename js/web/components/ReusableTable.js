@@ -552,7 +552,6 @@ const ReusableTable = ({
 }
 
 const ResponsiveTableContainer = styled(Box)(({ theme }) => ({
-  // width: '100vw',
   borderBottom: 'none',
   padding: '0px',
 
@@ -621,6 +620,7 @@ const ResponsiveContainer = styled(Box)(({ theme, hasOverflow }) => ({
   webkitOverflowScrolling: 'touch',
   overflowY: hasOverflow ? 'auto' : 'unset',
   overflowX: 'hidden',
+  minHeight: '60vh',
   ['&::-webkit-scrollbar']: {
     display: 'none',
   },

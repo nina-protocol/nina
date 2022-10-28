@@ -12,8 +12,6 @@ const TabHeader = ({
   viewHandler,
   type,
   releaseData,
-  followersCount,
-  followingCount,
 }) => {
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { enqueueSnackbar } = useSnackbar()
@@ -37,20 +35,14 @@ const TabHeader = ({
     }
   }
   return (
-    <ResponsiveContainer
-      sx={{
-        borderBottom: 1,
-        borderColor: 'divider',
-      }}
-    >
+    <ResponsiveContainer>
       <Box sx={{ display: 'flex', flexDirection: 'row', rowGap: 1, pb: 1 }}>
         {profileTabs?.map((tab, index) => {
           return (
             <>
-              <Box
+              <ResponsiveTabWrapper
                 key={index}
                 sx={{
-                  cursor: 'pointer',
                   alignItems: 'center',
                   display: 'flex',
                   flexDirection: 'row',
@@ -61,6 +53,7 @@ const TabHeader = ({
                   disabled={tab.disabled}
                   onClick={viewHandler}
                   id={index}
+                  className={index === 0 ? 'first' : ''}
                 >
                   <Typography
                     sx={{
@@ -69,19 +62,13 @@ const TabHeader = ({
                     id={index}
                   >
                     {tab.name}
-                    {tab.name === 'followers' && ` (${followersCount})`}
-                    {tab.name === 'following' && ` (${followingCount})`}
+                    {` (${tab.count})`}
                   </Typography>
 
                   {tab.playlist && (
-                    <ResponsiveCircleOutlineIconContainer
-                      sx={{
-                        paddingTop: '1px',
-                      }}
-                    >
+                    <ResponsiveCircleOutlineIconContainer>
                       <PlayCircleOutlineIconButtonWrapper
                         disabled={tab.disabled}
-                        sx={{ paddingRight: 0 }}
                         onClick={(e) => {
                           e.preventDefault()
                           e.stopPropagation()
@@ -95,7 +82,7 @@ const TabHeader = ({
                     </ResponsiveCircleOutlineIconContainer>
                   )}
                 </ResponsiveTab>
-              </Box>
+              </ResponsiveTabWrapper>
             </>
           )
         })}
@@ -103,6 +90,14 @@ const TabHeader = ({
     </ResponsiveContainer>
   )
 }
+
+const ResponsiveTabWrapper = styled(Box)(({ theme }) => ({
+   '&:nth-child(1)': {
+     '& button': {
+       paddingLeft: '0px',
+    }
+  },
+}))
 
 const ResponsiveTab = styled(Button)(({ theme }) => ({
   cursor: 'pointer',
@@ -113,6 +108,9 @@ const ResponsiveTab = styled(Button)(({ theme }) => ({
   color: theme.palette.text.primary,
   paddingRight: '15px',
   height: '40px',
+  '&:disabled': {
+    cursor: 'default !important',
+  },
   [theme.breakpoints.down('md')]: {
     paddingLeft: '6px',
   },
@@ -124,7 +122,9 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
   flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'start',
-
+  paddingTop: '0px',
+  borderBottom: 1,
+  borderColor: 'divider',
   [theme.breakpoints.down('md')]: {
     maxWidth: '100vw',
   },
@@ -133,7 +133,7 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
 const PlayCircleOutlineIconButtonWrapper = styled(Button)(({ theme }) => ({
   m: 0,
   color: 'black',
-  px: 1,
+  paddingRight: 0,
   [theme.breakpoints.down('md')]: {
     paddingRight: 0.5,
   },
@@ -141,7 +141,7 @@ const PlayCircleOutlineIconButtonWrapper = styled(Button)(({ theme }) => ({
 
 const ResponsiveCircleOutlineIconContainer = styled(Box)(({ theme }) => ({
   paddingRight: 1.5,
-  paddingLeft: 1.5,
+  paddingLeft: '5px',
   paddingTop: '1px',
   '& button': {
     padding: '0px',
