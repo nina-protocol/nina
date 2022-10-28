@@ -13,6 +13,7 @@ const Subscribe = ({
   hubHandle,
   inFeed = false,
   inHub = false,
+  removeSuggestion
 }) => {
   const wallet = useWallet()
   const router = useRouter()
@@ -36,7 +37,7 @@ const Subscribe = ({
   useEffect(() => {
     if (userSubscriptions) {
       const checkIfFollowing = userSubscriptions.some(
-        (subscription) => subscription.to === accountAddress
+        (subscription) => subscription.to.publicKey === accountAddress
       )
       setIsFollowing(checkIfFollowing)
     }
@@ -69,6 +70,9 @@ const Subscribe = ({
         variant: 'error',
       })
     }
+    if (inFeed){
+      removeSuggestion(accountAddress)
+    }
     setPending(false)
   }
 
@@ -97,7 +101,7 @@ const Subscribe = ({
           <Dots />
         </Box>
       )}
-      {wallet.connected && (
+      {wallet.connected && (wallet.publicKey.toBase58() !== accountAddress) && (
         <>
           {!isFollowing && !pending && (
             <Button

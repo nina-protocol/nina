@@ -12,7 +12,7 @@ import { useRouter } from 'next/router'
 import Subscribe from './Subscribe'
 import { useSnackbar } from 'notistack'
 
-const Suggestions = ({ items, itemsTotal, publicKey }) => {
+const Suggestions = ({ items, itemsTotal, publicKey, setHubSuggestions }) => {
   const router = useRouter()
   const scrollRef = useRef()
   const { enqueueSnackbar } = useSnackbar()
@@ -57,6 +57,12 @@ const Suggestions = ({ items, itemsTotal, publicKey }) => {
     }
   }
 
+  const removeSuggestion = (publicKey) => {
+    setHubSuggestions((prev) => {
+      return prev.filter((suggestion) => suggestion.hub.publicKey !== publicKey)
+    })
+  }
+
   const feedItems = useMemo(() => {
     const feedItemComponents = items?.map((item, i) => {
       const hub = item.hub
@@ -72,12 +78,12 @@ const Suggestions = ({ items, itemsTotal, publicKey }) => {
                 100,
                 Date.parse(hub.datetime)
                 )}
-                alt={i}
-                priority={true}
-                loader={loader}
-                unoptimized={true}
-                onClick={(e) => handleClick(e, `/hubs/${hub?.handle}`)}
-                />
+              alt={i}
+              priority={true}
+              loader={loader}
+              unoptimized={true}
+              onClick={(e) => handleClick(e, `/hubs/${hub?.handle}`)}
+              />
           </ImageWrapper>
 
           <CopyWrapper>
@@ -98,6 +104,7 @@ const Suggestions = ({ items, itemsTotal, publicKey }) => {
               accountAddress={hub.publicKey}
               hubHandle={hub.handle}
               inFeed={true}
+              removeSuggestion={removeSuggestion}
             />
           </CopyWrapper>
         </SuggestionItem>

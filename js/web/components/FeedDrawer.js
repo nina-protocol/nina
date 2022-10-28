@@ -156,6 +156,7 @@ const FeedDrawer = () => {
             {activeDrawerTypeIndex === 1 && hubSuggestions && (
               <Suggestions
                 items={hubSuggestions}
+                setHubSuggestions={setHubSuggestions}
                 toggleDrawer={toggleDrawer}
                 publicKey={wallet?.publicKey?.toBase58()}
               />

@@ -362,13 +362,15 @@ const Profile = ({ profilePubkey }) => {
                       <img src={profileImage} height={100} width={100} />
                     )}
                   </Box>
-                  <Box sx={{ mb: 1, ml: 1 }} display="flex">
+                  <Box sx={{ mb: 1, ml: 1 }} display="flex" alignItems={'start'}>
                     <Typography>
                       {displayNameForAccount(profilePubkey)}
                     </Typography>
 
                     {wallet.connected && (
-                      <Subscribe accountAddress={profilePubkey} />
+                      // <Box sx={{pt: '10px'}}>
+                        <Subscribe accountAddress={profilePubkey} />
+                      // </Box>
                     )}
                     {profileVerifications && (
                       <IdentityVerification
