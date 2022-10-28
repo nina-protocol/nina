@@ -23,10 +23,10 @@ const FeedDrawer = () => {
   const [drawerOpen, setDrawerOpen] = useState(true)
   const [feedItems, setFeedItems] = useState(undefined)
   const [hubSuggestions, setHubSuggestions] = useState(undefined)
-  const [totalItems, setTotalItems] = useState(0)
+  const [itemsTotal, setItemsTotal] = useState(0)
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { getFeedForUser } = useContext(Release.Context)
-  const [activeDrawerTypeIndex, setActiveDrawerTypeIndex] = useState(1)
+  const [activeDrawerTypeIndex, setActiveDrawerTypeIndex] = useState(0)
   const drawerTypes = ['latest', 'suggestions']
   const [feedFetched, setFeedFetched] = useState(false)
 
@@ -72,10 +72,18 @@ const FeedDrawer = () => {
       refresh ? 0 : feedItems?.length || 0
     )
     if (feed) {
-      const updatedFeedItems = feed?.feedItems.filter((item) => {
+      let updatedFeedItems = feed?.feedItems.filter((item) => {
         return !item.type.includes('Post')
       })
-      setTotalItems(feed.total)
+      if (feedItems) {
+        updatedFeedItems = updatedFeedItems.filter(item => {
+          return !feedItems.find(feedItem => feedItem.release?.publicKey === item.release?.publicKey)
+        })
+      }
+
+      // Subtracting postCount to handle refetch logic while posts are not surfaced
+      const postCount = feed.feedItems.map(item => item.type === 'Post').length
+      setItemsTotal(feed.total - postCount)
       if (feedItems && feedItems.length > 0) {
         setFeedItems(feedItems.concat(updatedFeedItems))
       } else {
@@ -145,6 +153,7 @@ const FeedDrawer = () => {
             {activeDrawerTypeIndex === 0 && (
               <Feed
                 items={feedItems}
+                itemsTotal={itemsTotal}
                 toggleDrawer={toggleDrawer}
                 playFeed={playFeed}
                 handleGetFeedForUser={handleGetFeedForUser}

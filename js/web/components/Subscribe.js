@@ -65,13 +65,13 @@ const Subscribe = ({
       enqueueSnackbar(result.msg, {
         variant: 'success',
       })
+      if (inFeed){
+        removeSuggestion(accountAddress)
+      }
     } else {
       enqueueSnackbar('Error Following Account.', {
         variant: 'error',
       })
-    }
-    if (inFeed){
-      removeSuggestion(accountAddress)
     }
     setPending(false)
   }

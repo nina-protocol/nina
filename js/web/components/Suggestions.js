@@ -23,39 +23,39 @@ const Suggestions = ({ items, itemsTotal, publicKey, setHubSuggestions }) => {
     router.push(path)
   }
 
-  const getSuggestionReason = (item) => {
-    let data = { ...item }
-    delete data.hub
-    const relevanceCounts = Object.fromEntries(
-      Object.entries(data).sort(([, a], [, b]) => a - b)
-    )
-    const reason = Object.entries(relevanceCounts).pop()
-    if (reason) {
-      const reasonMessage = suggestionCopyFormatter(reason[0], reason[1])
-      return reasonMessage
-    }
-    return
-  }
+  // const getSuggestionReason = (item) => {
+  //   let data = { ...item }
+  //   delete data.hub
+  //   const relevanceCounts = Object.fromEntries(
+  //     Object.entries(data).sort(([, a], [, b]) => a - b)
+  //   )
+  //   const reason = Object.entries(relevanceCounts).pop()
+  //   if (reason) {
+  //     const reasonMessage = suggestionCopyFormatter(reason[0], reason[1])
+  //     return reasonMessage
+  //   }
+  //   return
+  // }
 
-  const suggestionCopyFormatter = (reason, count) => {
-    const pluralize = count > 1
-    const suggestions = {
-      collectedCount: `This Hub has ${count} release${
-        pluralize ? 's' : ''
-      } you’ve collected`,
-      publishedCount: `This Hub has ${count} release${
-        pluralize ? 's' : ''
-      } you’ve published`,
-      hubSubscriptionCount: `This Hub is followed by people ${count} you follow`,
-      collectorHubCount: `${count} of your collector${
-        pluralize ? 's' : ''
-      } are part of this Hub`,
-      hubReleaseCount: ` Releases on your Hub are also on this Hub`,
-    }
-    if (suggestions[reason]) {
-      return suggestions[reason]
-    }
-  }
+  // const suggestionCopyFormatter = (reason, count) => {
+  //   const pluralize = count > 1
+  //   const suggestions = {
+  //     collectedCount: `This Hub has ${count} release${
+  //       pluralize ? 's' : ''
+  //     } you’ve collected`,
+  //     publishedCount: `This Hub has ${count} release${
+  //       pluralize ? 's' : ''
+  //     } you’ve published`,
+  //     hubSubscriptionCount: `This Hub is followed by people ${count} you follow`,
+  //     collectorHubCount: `${count} of your collector${
+  //       pluralize ? 's' : ''
+  //     } are part of this Hub`,
+  //     hubReleaseCount: ` Releases on your Hub are also on this Hub`,
+  //   }
+  //   if (suggestions[reason]) {
+  //     return suggestions[reason]
+  //   }
+  // }
 
   const removeSuggestion = (publicKey) => {
     setHubSuggestions((prev) => {
@@ -66,7 +66,6 @@ const Suggestions = ({ items, itemsTotal, publicKey, setHubSuggestions }) => {
   const feedItems = useMemo(() => {
     const feedItemComponents = items?.map((item, i) => {
       const hub = item.hub
-      const reason = getSuggestionReason(item)
       return (
         <SuggestionItem key={i}>
           <ImageWrapper>
@@ -90,16 +89,9 @@ const Suggestions = ({ items, itemsTotal, publicKey, setHubSuggestions }) => {
             <Typography my={1}>
               <Link href={`/hubs/${hub?.handle}`} passHref>
                 {`${hub.data.displayName}`}
-              </Link>{' '}
-              created by{' '}
-              <Link href={`/profiles/${hub.authority}`} passHref>
-                {`${truncateAddress(hub?.authority)}`}
               </Link>
             </Typography>
-            {publicKey && (
-              <Typography my={1} variant="body1">{reason}</Typography>
-            )}
-
+    
             <Subscribe
               accountAddress={hub.publicKey}
               hubHandle={hub.handle}
@@ -192,6 +184,9 @@ const ImageWrapper = styled(Box)(({ theme }) => ({
 
 const CopyWrapper = styled(Box)(({ theme }) => ({
   padding: '0 15px',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
 }))
 
 export default Suggestions

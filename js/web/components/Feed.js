@@ -50,7 +50,6 @@ const timeSince = (date) => {
 const Feed = ({
   items,
   itemsTotal,
-  toggleDrawer,
   playFeed,
   publicKey,
   handleGetFeedForUser,
@@ -65,13 +64,14 @@ const Feed = ({
   const [pendingFetch, setPendingFetch] = useState(false)
   const scrollRef = useRef()
 
-  const handleScroll = () => {
+  const handleScroll = async () => {
     const bottom =
       scrollRef.current.getBoundingClientRect().bottom - 250 <=
       window.innerHeight
     if (bottom && !pendingFetch && itemsTotal !== feedItems.length) {
       setPendingFetch(true)
-      handleGetFeedForUser(publicKey)
+      await handleGetFeedForUser(publicKey)
+      setPendingFetch(false)
     }
   }
 
@@ -116,26 +116,7 @@ const Feed = ({
                   loader={loader}
                   unoptimized={true}
                 />
-                <HoverCard>
-                  <CtaWrapper>
-                    <Button
-                      onClick={(e) => {
-                        handlePlay(e, item.release.publicKey)
-                      }}
-                    >
-                      {isPlaying &&
-                      track.releasePubkey === item.release?.publicKey ? (
-                        <PauseCircleOutlineOutlinedIcon
-                          sx={{ color: 'text.primary' }}
-                        />
-                      ) : (
-                        <PlayCircleOutlineOutlinedIcon
-                          sx={{ color: 'text.primary' }}
-                        />
-                      )}
-                    </Button>
-                  </CtaWrapper>
-                </HoverCard>
+            
               </HoverContainer>
               <CopyWrapper>
                 <Typography my={1}>New Hub:</Typography>
@@ -511,9 +492,10 @@ const Feed = ({
             </TextCard>
           )
         case 'SubscriptionSubscribeHub':
+          console.log('item >> ', item)
           return (
             <ImageCard>
-              <Link href={`/hubs/${item.toHub.publicKey}`} passHref>
+              <Link href={`/hubs/${item.toHub.handle}`} passHref>
                 <Image
                   height={'100px'}
                   width={'100px'}
@@ -552,6 +534,7 @@ const Feed = ({
       }
     })
     return feedItemComponents
+
   }, [items, isPlaying])
 
   if (!feedFetched) {
@@ -564,32 +547,39 @@ const Feed = ({
 
   return (
     <ScrollWrapper onScroll={debounce(() => handleScroll(), 500)}>
-      <Box>
-        <FeedWrapper ref={scrollRef}>
-          {feedItems &&
-            feedItems?.map((item, index) => (
-              <CardWrapper key={index}>{item}</CardWrapper>
-            ))
-          }
-          {publicKey && !feedItems && (
-            <Box sx={{display: 'flex', flexDirection:'column', justifyContent: 'center', mt: 5}}>
-              <Typography variant="h5" mb={1}>Welcome to Nina.</Typography>
-              <Typography variant="h5" mb={1}>Here you will see the latest activity on Nina that is relevant to you.</Typography>
-              <Typography variant="h5">Your feed will be created after you follow some Hubs and Accounts or begin creating and collecting Releases.</Typography>
+      {feedFetched && (
+        <Box>
+          <FeedWrapper ref={scrollRef}>
+            {feedItems &&
+              feedItems?.map((item, index) => (
+                <CardWrapper key={index}>{item}</CardWrapper>
+              ))
+            }
+            {publicKey && !feedItems && (
+              <Box sx={{display: 'flex', flexDirection:'column', justifyContent: 'center', mt: 5}}>
+                <Typography variant="h5" mb={1}>Welcome to Nina.</Typography>
+                <Typography variant="h5" mb={1}>Here you will see the latest activity on Nina that is relevant to you.</Typography>
+                <Typography variant="h5">Your feed will be created after you follow some Hubs and Accounts or begin creating and collecting Releases.</Typography>
+              </Box>
+            )}
+            {!publicKey && (
+              <Box sx={{display:  'flex', flexDirection:'column', justifyContent: 'center', mt: 5}}>
+                <Typography variant="h5" mb={1}>Connect your wallet to see the latest activity on Nina relevant to you.</Typography>
+              </Box>
+            )}
+          </FeedWrapper>
+          {feedItems && pendingFetch && (
+            <Box>
+              <Dots size='80px'/>
             </Box>
           )}
-          {!publicKey && (
-            <Box sx={{display:  'flex', flexDirection:'column', justifyContent: 'center', mt: 5}}>
-              <Typography variant="h5" mb={1}>Connect your wallet to see the latest activity on Nina relevant to you.</Typography>
-            </Box>
+          {feedItems && (itemsTotal >= feedItems?.length) && (
+            <Typography variant="h4" sx={{ textAlign: 'center' }} paddingBottom='40px'>
+              No more items
+            </Typography>
           )}
-        </FeedWrapper>
-        {feedItems && (itemsTotal === feedItems?.length) && (
-          <Typography variant="h4" sx={{ textAlign: 'center' }}>
-            No more items
-          </Typography>
-        )}
-      </Box>
+        </Box>
+      )}
     </ScrollWrapper>
   )
 }
