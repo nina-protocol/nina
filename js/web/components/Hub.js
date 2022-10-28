@@ -205,7 +205,7 @@ const HubComponent = ({ hubPubkey }) => {
               activeView={activeView}
               profileTabs={views}
               releaseData={releaseData}
-              type={'hubsView'}
+              type={'hubView'}
               followersCount={hubFollowers?.length}
             />
           </HubTabWrapper>

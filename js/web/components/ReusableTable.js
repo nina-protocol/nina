@@ -264,6 +264,7 @@ const ReusableTableBody = ({
         )
         formattedData.collect = collectButton
       }
+      formattedData.authorityPublicKey = data.tokenData.authority
     } else if (tableType === 'profileHubs') {
       formattedData = {
         id: releasePubkey,
@@ -283,6 +284,7 @@ const ReusableTableBody = ({
         title: data?.properties.title,
         link: `/${data?.releasePubkey}`,
         date: data?.metadata?.properties?.date,
+        authorityPublicKey: data?.authority,
       }
     } else if (tableType === 'hubCollaborators') {
       formattedData = {
@@ -358,7 +360,6 @@ const ReusableTableBody = ({
         searchResultHub: data?.data.displayName,
       }
     }
-    console.log('formattedData', formattedData)
     return formattedData
   })
 
@@ -376,9 +377,9 @@ const ReusableTableBody = ({
             if (
               cellName !== 'id' &&
               cellName !== 'date' &&
-              cellName !== 'link'
+              cellName !== 'link' &&
+              cellName !== 'authorityPublicKey'
             ) {
-              console.log('row.link', row.link)
               if (cellName === 'ctas') {
                 return (
                   <StyledTableCellButtonsContainer align="left" key={i}>
@@ -455,13 +456,12 @@ const ReusableTableBody = ({
                     <OverflowContainer overflowWidth={'20vw'}>
                       <Typography
                         noWrap
-                        onClickCapture={() =>
+                        sx={{ hover: 'pointer'}}
+                        onClickCapture={() =>{
                           router.push(`/profiles/${row?.authorityPublicKey}`)
-                        }
+                        }}
                       >
-                        <Link href={row.link} passHref>
-                          <a>{cellData}</a>
-                        </Link>
+                        {cellData}
                       </Typography>
                     </OverflowContainer>
                   </StyledTableCell>
