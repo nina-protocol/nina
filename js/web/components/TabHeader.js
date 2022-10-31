@@ -18,11 +18,12 @@ const TabHeader = ({
   const playAllHandler = (playlist) => {
     console.log('playlist', playlist)
     if (type === 'hubView') {
-      resetQueueWithPlaylist(playlist?.map((release) => release.releasePubkey)).then(
-        () =>
-          enqueueSnackbar(`Hub releases added to queue`, {
-            variant: 'info',
-          })
+      resetQueueWithPlaylist(
+        playlist?.map((release) => release.releasePubkey)
+      ).then(() =>
+        enqueueSnackbar(`Hub releases added to queue`, {
+          variant: 'info',
+        })
       )
     } else {
       resetQueueWithPlaylist(
@@ -92,10 +93,10 @@ const TabHeader = ({
 }
 
 const ResponsiveTabWrapper = styled(Box)(({ theme }) => ({
-   '&:nth-of-type(1)': {
-     '& button': {
-       paddingLeft: '0px',
-    }
+  '&:nth-of-type(1)': {
+    '& button': {
+      paddingLeft: '0px',
+    },
   },
 }))
 

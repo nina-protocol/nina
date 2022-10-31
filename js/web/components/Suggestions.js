@@ -12,7 +12,13 @@ import { useRouter } from 'next/router'
 import Subscribe from './Subscribe'
 import { useSnackbar } from 'notistack'
 
-const Suggestions = ({ items, hubSuggestions, itemsTotal, publicKey, setHubSuggestions }) => {
+const Suggestions = ({
+  items,
+  hubSuggestions,
+  itemsTotal,
+  publicKey,
+  setHubSuggestions,
+}) => {
   const router = useRouter()
   const scrollRef = useRef()
   const { enqueueSnackbar } = useSnackbar()
@@ -58,7 +64,7 @@ const Suggestions = ({ items, hubSuggestions, itemsTotal, publicKey, setHubSugge
   // }
 
   const feedItems = useMemo(() => {
-    console.log('UPDATING');
+    console.log('UPDATING')
     const feedItemComponents = items?.map((item, i) => {
       const hub = item.hub
       return (
@@ -71,13 +77,13 @@ const Suggestions = ({ items, hubSuggestions, itemsTotal, publicKey, setHubSugge
                 hub.data?.image,
                 100,
                 Date.parse(hub.datetime)
-                )}
+              )}
               alt={i}
               priority={true}
               loader={loader}
               unoptimized={true}
               onClick={(e) => handleClick(e, `/hubs/${hub?.handle}`)}
-              />
+            />
           </ImageWrapper>
 
           <CopyWrapper>
@@ -86,7 +92,7 @@ const Suggestions = ({ items, hubSuggestions, itemsTotal, publicKey, setHubSugge
                 {`${hub.data.displayName}`}
               </Link>
             </Typography>
-    
+
             <Subscribe
               accountAddress={hub.publicKey}
               hubHandle={hub.handle}
@@ -155,7 +161,7 @@ const CardWrapper = styled(Box)(({ theme }) => ({
   width: '100%',
   '& p': {
     marginTop: '0px',
-  }
+  },
 }))
 
 const SuggestionItem = styled(Box)(({ theme }) => ({
@@ -171,10 +177,7 @@ const SuggestionItem = styled(Box)(({ theme }) => ({
   },
 }))
 
-const ImageWrapper = styled(Box)(({ theme }) => ({
-
-}))
-
+const ImageWrapper = styled(Box)(({ theme }) => ({}))
 
 const CopyWrapper = styled(Box)(({ theme }) => ({
   padding: '0 15px',

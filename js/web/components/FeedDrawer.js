@@ -36,14 +36,14 @@ const FeedDrawer = () => {
         await handleGetFeedForUser(wallet.publicKey.toBase58())
         await getHubSuggestionsForUser(wallet.publicKey.toBase58())
       } else {
-       await getHubSuggestionsForUser()
+        await getHubSuggestionsForUser()
       }
     }
     handleInitialFetch()
   }, [wallet.connected])
 
   useEffect(() => {
-    if (wallet.disconnecting){
+    if (wallet.disconnecting) {
       setFeedItems(undefined)
     }
   }, [wallet?.disconnecting])
@@ -78,13 +78,18 @@ const FeedDrawer = () => {
         return !item.type.includes('Post')
       })
       if (feedItems) {
-        updatedFeedItems = updatedFeedItems.filter(item => {
-          return !feedItems.find(feedItem => feedItem.release?.publicKey === item.release?.publicKey)
+        updatedFeedItems = updatedFeedItems.filter((item) => {
+          return !feedItems.find(
+            (feedItem) =>
+              feedItem.release?.publicKey === item.release?.publicKey
+          )
         })
       }
 
       // Subtracting postCount to handle refetch logic while posts are not surfaced
-      const postCount = feed.feedItems.map(item => item.type === 'Post').length
+      const postCount = feed.feedItems.map(
+        (item) => item.type === 'Post'
+      ).length
       setItemsTotal(feed.total - postCount)
       if (feedItems && feedItems.length > 0) {
         setFeedItems(feedItems.concat(updatedFeedItems))
@@ -114,11 +119,7 @@ const FeedDrawer = () => {
     <>
       <Box>
         <Box key={'right'} sx={{ float: 'right' }}>
-          <StyledMenuButton
-            onClick={toggleDrawer(true)}
-            sx={{ top: '100px' }}
-            >
-
+          <StyledMenuButton onClick={toggleDrawer(true)} sx={{ top: '100px' }}>
             <ArrowBackIosNewIcon />
           </StyledMenuButton>
           <StyledDrawer
@@ -129,7 +130,6 @@ const FeedDrawer = () => {
             variant={'persistent'}
           >
             <FeedHeader>
-
               <CloseIcon fontSize="medium" onClick={toggleDrawer(false)} />
               <DrawerTypeWrapper>
                 {drawerTypes.map((drawerType, index) => {

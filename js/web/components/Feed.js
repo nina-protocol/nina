@@ -53,7 +53,7 @@ const Feed = ({
   playFeed,
   publicKey,
   handleGetFeedForUser,
-  feedFetched
+  feedFetched,
 }) => {
   const { updateTrack, isPlaying, setIsPlaying, track } = useContext(
     Audio.Context
@@ -116,17 +116,14 @@ const Feed = ({
                   loader={loader}
                   unoptimized={true}
                 />
-            
               </HoverContainer>
               <CopyWrapper>
-                <Typography my={1}>New Hub:{' '}
-                  <Link
-                    href={`/hubs/${item?.hub?.handle}`}
-                    passHref
-                  >
+                <Typography my={1}>
+                  New Hub:{' '}
+                  <Link href={`/hubs/${item?.hub?.handle}`} passHref>
                     {`${item?.hub?.data?.displayName}`}
-                  </Link>
-                  {' '}created by{' '}
+                  </Link>{' '}
+                  created by{' '}
                   <Link href={`/profiles/${item.authority.publicKey}`} passHref>
                     {displayNameForAccount(item.authority.publicKey)}
                   </Link>
@@ -182,15 +179,12 @@ const Feed = ({
                 </HoverCard>
               </HoverContainer>
               <CopyWrapper>
-                <Typography my={1}>New Release:{' '}
-                  <Link
-                    href={`/${item.release.publicKey}`}
-                    passHref
-                  >
+                <Typography my={1}>
+                  New Release:{' '}
+                  <Link href={`/${item.release.publicKey}`} passHref>
                     {`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}
-                  </Link>
-
-                  {' '}by{' '}
+                  </Link>{' '}
+                  by{' '}
                   <Link href={`/profiles/${item.authority.publicKey}`} passHref>
                     {displayNameForAccount(item.authority.publicKey)}
                   </Link>
@@ -246,18 +240,13 @@ const Feed = ({
                 </HoverCard>
               </HoverContainer>
               <CopyWrapper>
-                <Typography my={1}>New Release:{' '}
-                  <Link
-                    href={`/${item.release.publicKey}`}
-                    passHref
-                  >
+                <Typography my={1}>
+                  New Release:{' '}
+                  <Link href={`/${item.release.publicKey}`} passHref>
                     {`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}
                   </Link>{' '}
                   via{' '}
-                  <Link
-                    href={`/hubs/${item?.hub?.handle}`}
-                    passHref
-                  >
+                  <Link href={`/hubs/${item?.hub?.handle}`} passHref>
                     {`${item?.hub?.data?.displayName}`}
                   </Link>
                 </Typography>
@@ -312,28 +301,24 @@ const Feed = ({
                 </HoverCard>
               </HoverContainer>
               <CopyWrapper>
-                <Typography my={1}>Purchase:{' '}                  
-                  <Link
-                    href={`/${item.release?.publicKey}`}
-                    passHref
-                  >
+                <Typography my={1}>
+                  Purchase:{' '}
+                  <Link href={`/${item.release?.publicKey}`} passHref>
                     {`${item.release?.metadata.properties.artist} - ${item.release?.metadata.properties.title}`}
-                  </Link>
-                   {' '}by{' '}
+                  </Link>{' '}
+                  by{' '}
                   <Link href={`/profiles/${item.authority.publicKey}`} passHref>
                     {displayNameForAccount(item.authority.publicKey)}
                   </Link>
-                  
-                {item.type === 'ReleasePurchaseViaHub' && (
-                  <>
-                    {' '}from{' '}
-                    <Link
-                      href={`/hubs/${item.hub.handle}`}
-                      passHref
-                    >{`${item.hub.data.displayName}`}
-                  </Link>
-                  </>
-                )}
+                  {item.type === 'ReleasePurchaseViaHub' && (
+                    <>
+                      {' '}
+                      from{' '}
+                      <Link href={`/hubs/${item.hub.handle}`} passHref>
+                        {`${item.hub.data.displayName}`}
+                      </Link>
+                    </>
+                  )}
                 </Typography>
 
                 <Typography fontWeight={600}>
@@ -424,14 +409,10 @@ const Feed = ({
               </HoverContainer>
               <CopyWrapper>
                 <Typography my={1}>
-                  <Link
-                    href={`/${item.release.publicKey}`}
-                    passHref
-                  >
+                  <Link href={`/${item.release.publicKey}`} passHref>
                     {`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}
-                  </Link>
-
-                  {' '}reposted to{' '}
+                  </Link>{' '}
+                  reposted to{' '}
                   <Link
                     href={`/hubs/${item.hub.handle}`}
                     passHref
@@ -568,14 +549,12 @@ const Feed = ({
     })
 
     return feedItemComponents || []
-
   }, [items, isPlaying])
-
 
   if (!feedFetched) {
     return (
-      <Box mt={4} height="100%" display="flex" justifyContent='center'>
-        <Dots size='80px'/>
+      <Box mt={4} height="100%" display="flex" justifyContent="center">
+        <Dots size="80px" />
       </Box>
     )
   }
@@ -588,28 +567,56 @@ const Feed = ({
             {feedItems &&
               feedItems?.map((item, index) => (
                 <CardWrapper key={index}>{item}</CardWrapper>
-              ))
-            }
+              ))}
             {publicKey && feedItems.length === 0 && (
-              <Box sx={{display: 'flex', flexDirection:'column', justifyContent: 'center', mt: 5}}>
-                <Typography variant="h5" mb={1}>Welcome to Nina.</Typography>
-                <Typography variant="h5" mb={1}>Here you will see the latest activity on Nina that is relevant to you.</Typography>
-                <Typography variant="h5">Your feed will be created after you follow some Hubs and Accounts or begin creating and collecting Releases.</Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  mt: 5,
+                }}
+              >
+                <Typography variant="h5" mb={1}>
+                  Welcome to Nina.
+                </Typography>
+                <Typography variant="h5" mb={1}>
+                  Here you will see the latest activity on Nina that is relevant
+                  to you.
+                </Typography>
+                <Typography variant="h5">
+                  Your feed will be created after you follow some Hubs and
+                  Accounts or begin creating and collecting Releases.
+                </Typography>
               </Box>
             )}
             {!publicKey && (
-              <Box sx={{display:  'flex', flexDirection:'column', justifyContent: 'center', mt: 5}}>
-                <Typography variant="h5" mb={1}>Connect your wallet to see the latest activity on Nina relevant to you.</Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  mt: 5,
+                }}
+              >
+                <Typography variant="h5" mb={1}>
+                  Connect your wallet to see the latest activity on Nina
+                  relevant to you.
+                </Typography>
               </Box>
             )}
           </FeedWrapper>
           {feedItems && pendingFetch && (
             <Box>
-              <Dots size='80px'/>
+              <Dots size="80px" />
             </Box>
           )}
-          {feedItems && (itemsTotal >= feedItems?.length) && (
-            <Typography variant="h4" sx={{ textAlign: 'center' }} paddingBottom='40px'>
+          {feedItems && itemsTotal >= feedItems?.length && (
+            <Typography
+              variant="h4"
+              sx={{ textAlign: 'center' }}
+              paddingBottom="40px"
+            >
               No more items
             </Typography>
           )}

@@ -362,14 +362,18 @@ const Profile = ({ profilePubkey }) => {
                       <img src={profileImage} height={100} width={100} />
                     )}
                   </Box>
-                  <Box sx={{ mb: 1, ml: 1 }} display="flex" alignItems={'start'}>
+                  <Box
+                    sx={{ mb: 1, ml: 1 }}
+                    display="flex"
+                    alignItems={'start'}
+                  >
                     <Typography>
                       {displayNameForAccount(profilePubkey)}
                     </Typography>
 
                     {wallet.connected && (
                       // <Box sx={{pt: '10px'}}>
-                        <Subscribe accountAddress={profilePubkey} />
+                      <Subscribe accountAddress={profilePubkey} />
                       // </Box>
                     )}
                     {profileVerifications && (
@@ -515,6 +519,5 @@ const ProfileDotWrapper = styled(Box)(({ theme }) => ({
     top: '50%',
   },
 }))
-
 
 export default Profile

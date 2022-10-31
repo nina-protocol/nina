@@ -16,18 +16,16 @@ const Subscribe = ({
 }) => {
   const wallet = useWallet()
   const router = useRouter()
-  const {
-    subscriptionSubscribe,
-    subscriptionUnsubscribe,
-    userSubscriptions,
-  } = useContext(Nina.Context)
+  const { subscriptionSubscribe, subscriptionUnsubscribe, userSubscriptions } =
+    useContext(Nina.Context)
   // const [isFollowing, setIsFollowing] = useState(false)
   const [pending, setPending] = useState(false)
   const [followsYou, setFollowsYou] = useState(false)
   const isFollowing = useMemo(() => {
     return userSubscriptions?.some(
-        (subscription) => subscription.to.publicKey === accountAddress
-      )}, [userSubscriptions, accountAddress])
+      (subscription) => subscription.to.publicKey === accountAddress
+    )
+  }, [userSubscriptions, accountAddress])
 
   const { enqueueSnackbar } = useSnackbar()
 
@@ -75,7 +73,7 @@ const Subscribe = ({
     }
     setPending(false)
   }
-  
+
   return (
     <Box display="flex" alignItems={'center'}>
       {pending && (
@@ -83,12 +81,12 @@ const Subscribe = ({
           <Dots />
         </Box>
       )}
-      {wallet.connected && (wallet.publicKey.toBase58() !== accountAddress) && (
+      {wallet.connected && wallet.publicKey.toBase58() !== accountAddress && (
         <>
           {!isFollowing && !pending && (
             <Button
               color="primary"
-              sx={{ padding: `${inFeed ? '0px' : '0 15px'}`}}
+              sx={{ padding: `${inFeed ? '0px' : '0 15px'}` }}
               onClick={(e) => handleSubscribe(e, accountAddress, hubHandle)}
             >
               Follow
@@ -98,7 +96,7 @@ const Subscribe = ({
           {isFollowing && !pending && (
             <Button
               color="primary"
-              sx={{ padding: `${inFeed ? '0px' : '0 15px'}`}}
+              sx={{ padding: `${inFeed ? '0px' : '0 15px'}` }}
               onClick={(e) => handleUnsubscribe(e, accountAddress)}
             >
               Unfollow
