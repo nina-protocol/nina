@@ -559,7 +559,6 @@ const ReusableTable = ({
 const ResponsiveTableContainer = styled(Box)(({ theme }) => ({
   borderBottom: 'none',
   padding: '0px',
-
   [theme.breakpoints.down('md')]: {
     overflowY: 'unset',
     height: '100% !important',
@@ -621,11 +620,11 @@ const StyledTableDescriptionContainer = styled(Box)(({ theme }) => ({
 const ResponsiveContainer = styled(Box)(
   ({ theme, hasOverflow, minHeightOverride }) => ({
     width: theme.maxWidth,
-    maxHeight: hasOverflow ? '80vh' : 'unset',
-    webkitOverflowScrolling: 'touch',
+    // maxHeight: hasOverflow ? 'unset' : 'unset',
+    // webkitOverflowScrolling: 'touch',
     overflowY: hasOverflow ? 'auto' : 'unset',
     overflowX: 'hidden',
-    minHeight: minHeightOverride ? 'unset' : '46vh',
+    // minHeight: minHeightOverride ? 'unset' : '46vh',
     ['&::-webkit-scrollbar']: {
       display: 'none',
     },
@@ -636,6 +635,7 @@ const ResponsiveContainer = styled(Box)(
     },
   })
 )
+
 const SearchResultOverflowContainer = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
   width: '70vw',
