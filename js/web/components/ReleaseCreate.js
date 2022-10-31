@@ -55,6 +55,7 @@ const ReleaseCreate = () => {
     releaseCreateMetadataJson,
     releaseCreate,
     validateUniqueMd5Digest,
+    releaseInitViaHub,
   } = useContext(Release.Context)
   const router = useRouter()
   const {
@@ -101,10 +102,7 @@ const ReleaseCreate = () => {
   const [md5Digest, setMd5Digest] = useState()
   const [profileHubs, setProfileHubs] = useState()
   const [hubOptions, setHubOptions] = useState()
-  const [selectedHub, setSelectedHub] = useState({
-    name:undefined,
-    pubkey: undefined,
-  })
+  const [selectedHub, setSelectedHub] = useState()
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
     [bundlrBalance, bundlrPricePerMb]
@@ -124,30 +122,26 @@ const ReleaseCreate = () => {
     getNpcAmountHeld()
   }, [wallet?.connected])
 
-
   useEffect(() => {
     let publicKey
     if (wallet.connected) {
-    publicKey = wallet.publicKey.toBase58()
-    getUserHubs(publicKey)
-    console.log('got hubs for context')
+      publicKey = wallet.publicKey.toBase58()
+      getUserHubs(publicKey)
     }
-
-    
   }, [wallet?.connected])
 
   useEffect(() => {
     if (wallet.connected) {
       let publicKey = wallet?.publicKey?.toBase58()
-      if (fetchedHubsForUser.has(publicKey)){
-        setProfileHubs(filterHubsForUser(publicKey))
-        console.log('got hubs for user')
-       const hubArr = profileHubs?.map(hub => hub?.data?.displayName)
-       console.log('hubArr', hubArr)
+      if (fetchedHubsForUser.has(publicKey)) {
+        const hubs = filterHubsForUser(publicKey)
+        const sortedHubs = hubs?.sort((a, b) => {
+          return a?.data?.displayName?.localeCompare(b?.data?.displayName)
+        })
+        setProfileHubs(sortedHubs)
       }
-      console.log('profileHubs', profileHubs)
     }
-  },[fetchedHubsForUser])
+  }, [fetchedHubsForUser])
 
   const getUserHubs = async (publicKey) => {
     try {
@@ -367,17 +361,29 @@ const ReleaseCreate = () => {
                   variant: 'info',
                 }
               )
-
-              const result = await releaseCreate({
-                ...formValues.releaseForm,
-                release: info.release,
-                releaseBump: info.releaseBump,
-                releaseMint: info.releaseMint,
-                metadataUri: `https://arweave.net/${metadataResult}`,
-                release: info.release,
-                releaseBump: info.releaseBump,
-                releaseMint: info.releaseMint,
-              })
+              let result
+              console.log('selectedHub', selectedHub, info.releaseMint)
+              if (selectedHub && selectedHub !== '') {
+                result = await releaseInitViaHub({
+                  ...formValues.releaseForm,
+                  hubPubkey: selectedHub,
+                  release: info.release,
+                  releaseBump: info.releaseBump,
+                  releaseMint: info.releaseMint,
+                  metadataUri: `https://arweave.net/${metadataResult}`,
+                })
+              } else {
+                result = await releaseCreate({
+                  ...formValues.releaseForm,
+                  release: info.release,
+                  releaseBump: info.releaseBump,
+                  releaseMint: info.releaseMint,
+                  metadataUri: `https://arweave.net/${metadataResult}`,
+                  release: info.release,
+                  releaseBump: info.releaseBump,
+                  releaseMint: info.releaseMint,
+                })
+              }
 
               if (result.success) {
                 enqueueSnackbar('Release Created!', {
@@ -398,6 +404,7 @@ const ReleaseCreate = () => {
         }
       }
     } catch (error) {
+      console.warn('Release Create handleSubmit error:', error)
       setIsPublishing(false)
     }
   }
@@ -410,11 +417,10 @@ const ReleaseCreate = () => {
     }
   }
   const handleHubSelect = (e) => {
-    console.log('e....', e.target.value)
-    const { target: { value, id } } = e
-    setSelectedHub({...selectedHub, name: value, pubkey: id})
-    console.log(selectedHub)
-    console.log('id', id)
+    const {
+      target: { value },
+    } = e
+    setSelectedHub(value)
   }
   return (
     <Grid item md={12}>
@@ -533,7 +539,6 @@ const ReleaseCreate = () => {
                   setSelectedHub={setSelectedHub}
                   selectedHub={selectedHub}
                   handleChange={(e) => handleHubSelect(e)}
-             
                 />
               )}
 

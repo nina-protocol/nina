@@ -48,40 +48,40 @@ const ReleasePage = (props) => {
 
 export default ReleasePage
 
-export const getStaticPaths = async () => {
-  return {
-    paths: [
-      {
-        params: {
-          releasePubkey: 'placeholder',
-        },
-      },
-    ],
-    fallback: 'blocking',
-  }
-}
+// export const getStaticPaths = async () => {
+//   return {
+//     paths: [
+//       {
+//         params: {
+//           releasePubkey: 'placeholder',
+//         },
+//       },
+//     ],
+//     fallback: 'blocking',
+//   }
+// }
 
-export const getStaticProps = async (context) => {
-  const releasePubkey = context.params.releasePubkey
+// export const getStaticProps = async (context) => {
+//   const releasePubkey = context.params.releasePubkey
 
-  try {
-    if (!NinaSdk.client.program) {
-      await NinaSdk.client.init(
-        process.env.NINA_API_ENDPOINT,
-        process.env.SOLANA_CLUSTER_URL,
-        process.env.NINA_PROGRAM_ID
-      )
-    }
-    const { release } = await NinaSdk.Release.fetch(releasePubkey)
-    return {
-      props: {
-        metadata: release.metadata,
-        releasePubkey,
-      },
-      revalidate: 10,
-    }
-  } catch (error) {
-    console.warn(error)
-    return { props: {} }
-  }
-}
+//   try {
+//     if (!NinaSdk.client.program) {
+//       await NinaSdk.client.init(
+//         process.env.NINA_API_ENDPOINT,
+//         process.env.SOLANA_CLUSTER_URL,
+//         process.env.NINA_PROGRAM_ID
+//       )
+//     }
+//     const { release } = await NinaSdk.Release.fetch(releasePubkey)
+//     return {
+//       props: {
+//         metadata: release.metadata,
+//         releasePubkey,
+//       },
+//       revalidate: 10,
+//     }
+//   } catch (error) {
+//     console.warn(error)
+//     return { props: {} }
+//   }
+// }
