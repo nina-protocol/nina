@@ -151,6 +151,7 @@ const ReusableTableBody = ({
   collectRoyaltyForRelease,
   refreshProfile,
   dashboardPublicKey,
+  isActiveView
 }) => {
   const router = useRouter()
   const {
@@ -423,20 +424,20 @@ const ReusableTableBody = ({
                       <Box
                         sx={{ width: '50px', textAlign: 'left', pr: '15px' }}
                       >
-                        <Image
-                          height={'100%'}
-                          width={'100%'}
-                          layout="responsive"
-                          src={getImageFromCDN(
-                            row.image,
-                            400,
-                            Date.parse(row.date)
-                          )}
-                          alt={i}
-                          priority={true}
-                          loader={loader}
-                          unoptimized={true}
-                        />
+                        {isActiveView && (
+                          <Image
+                            height={50}
+                            width={50}
+                            layout="responsive"
+                            src={getImageFromCDN(
+                              row.image,
+                              100,
+                              Date.parse(row.date)
+                            )}
+                            alt={i}
+                            loader={loader}
+                          />
+                        )}
                       </Box>
                     </StyledImageTableCell>
                   )
@@ -551,6 +552,7 @@ const ReusableTable = ({
   collectRoyaltyForRelease,
   refreshProfile,
   dashboardPublicKey,
+  isActiveView
 }) => {
   return (
     <ResponsiveContainer>
@@ -564,6 +566,7 @@ const ReusableTable = ({
             collectRoyaltyForRelease={collectRoyaltyForRelease}
             refreshProfile={refreshProfile}
             dashboardPublicKey={dashboardPublicKey}
+            isActiveView={isActiveView}
           />
         </Table>
       </ResponsiveTableContainer>
@@ -572,7 +575,6 @@ const ReusableTable = ({
 }
 
 const ResponsiveTableContainer = styled(Box)(({ theme }) => ({
-  // width: '100vw',
   borderBottom: 'none',
   padding: '0px',
 
@@ -595,6 +597,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   padding: '5px',
   textAlign: 'left',
   height: '50px',
+  width: '15vw',
   [theme.breakpoints.down('md')]: {
     padding: '5px',
   },
@@ -620,7 +623,7 @@ const StyledTableCellButtonsContainer = styled(TableCell)(({ theme }) => ({
 
 const OverflowContainer = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
-  maxWidth: '15vw',
+  width: '15vw',
   textAlign: 'left',
   textOverflow: 'ellipsis',
   [theme.breakpoints.down('md')]: {

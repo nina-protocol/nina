@@ -280,6 +280,7 @@ const Profile = ({ profilePubkey }) => {
                 dashboardPublicKey={profilePubkey}
                 collectRoyaltyForRelease={collectRoyaltyForRelease}
                 refreshProfile={getUserData}
+                isActiveView={activeView === 0}
               />
             )}
           </>
@@ -294,6 +295,7 @@ const Profile = ({ profilePubkey }) => {
                 tableType={'profileCollectionReleases'}
                 items={profileCollectionReleases}
                 hasOverflow={true}
+                isActiveView={activeView === 1}
               />
             )}
           </>
@@ -308,6 +310,7 @@ const Profile = ({ profilePubkey }) => {
                 tableType={'profileHubs'}
                 items={profileHubs}
                 hasOverflow={true}
+                isActiveView={activeView === 2}
               />
             )}
           </>
