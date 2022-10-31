@@ -69,6 +69,9 @@ const FeedDrawer = () => {
   }
 
   const handleGetFeedForUser = async (publicKey, refresh = false) => {
+    if (refresh) {
+      setFeedFetched(false)
+    }
     const feed = await getFeedForUser(
       publicKey,
       refresh ? 0 : feedItems?.length || 0
@@ -77,14 +80,6 @@ const FeedDrawer = () => {
       let updatedFeedItems = feed?.feedItems.filter((item) => {
         return !item.type.includes('Post')
       })
-      if (feedItems) {
-        updatedFeedItems = updatedFeedItems.filter((item) => {
-          return !feedItems.find(
-            (feedItem) =>
-              feedItem.release?.publicKey === item.release?.publicKey
-          )
-        })
-      }
 
       // Subtracting postCount to handle refetch logic while posts are not surfaced
       const postCount = feed.feedItems.map(
@@ -147,11 +142,23 @@ const FeedDrawer = () => {
                   )
                 })}
               </DrawerTypeWrapper>
-              <PlayCircleOutlineOutlinedIcon
-                fontSize="medium"
-                sx={{ paddingRight: '15px' }}
-                onClick={playFeed}
-              />
+              {activeDrawerTypeIndex === 0 && (
+                <Box display='flex' alignItems="center">
+                  <Typography variant="subtitle1" mr='5px' sx={{cursor:'pointer'}}
+                    onClick={() => handleGetFeedForUser(wallet.publicKey.toBase58(), true)}
+                  >
+                    refresh
+                  </Typography>
+                    <PlayCircleOutlineOutlinedIcon
+                      fontSize="medium"
+                      sx={{ paddingRight: '15px' }}
+                      onClick={playFeed}
+                    />
+                </Box>
+              )}
+              {activeDrawerTypeIndex !== 0 && (
+                <Box></Box>
+              )}
             </FeedHeader>
 
             {activeDrawerTypeIndex === 0 && (
