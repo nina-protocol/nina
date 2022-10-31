@@ -1,4 +1,4 @@
-import { useEffect, useContext, useState, useMemo } from 'react'
+import { useEffect, useContext, useState, useMemo, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import { useWallet } from '@solana/wallet-adapter-react'
 import axios from 'axios'
@@ -22,6 +22,7 @@ const ReusableTable = dynamic(() => import('./ReusableTable'))
 const Profile = ({ profilePubkey }) => {
   const wallet = useWallet()
   const router = useRouter()
+  const tableContainerRef = useRef(null)
 
   const {
     getUserCollectionAndPublished,
@@ -250,6 +251,7 @@ const Profile = ({ profilePubkey }) => {
       newUrl
     )
     setActiveView(index)
+    tableContainerRef.current.scrollTo(0, 0)
   }
 
   const renderTables = (activeView, inDashboard) => {
@@ -418,7 +420,7 @@ const Profile = ({ profilePubkey }) => {
             </ProfileDotWrapper>
           )}
 
-          <ProfileTableContainer>
+          <ProfileTableContainer ref={tableContainerRef}>
             {hasData && renderTables(activeView, inDashboard)}
           </ProfileTableContainer>
         </>

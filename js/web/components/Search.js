@@ -162,6 +162,7 @@ const Search = (props) => {
                   }`}
                   items={data}
                   hasOverflow={false}
+                  minHeightOverride={true}
                   key={index}
                 />
               )
