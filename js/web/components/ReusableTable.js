@@ -531,9 +531,10 @@ const ReusableTable = ({
   collectRoyaltyForRelease,
   refreshProfile,
   dashboardPublicKey,
+  hasOverflow
 }) => {
   return (
-    <ResponsiveContainer>
+    <ResponsiveContainer hasOverflow={hasOverflow}>
       <ResponsiveTableContainer>
         <Table>
           <ReusableTableHead tableType={tableType} inDashboard={inDashboard} />
@@ -613,14 +614,14 @@ const StyledTableDescriptionContainer = styled(Box)(({ theme }) => ({
   maxWidth: '20vw',
 }))
 
-const ResponsiveContainer = styled(Box)(({ theme, hasOverflow }) => ({
+const ResponsiveContainer = styled(Box)(({ theme, hasOverflow }) => (
+  {
   width: theme.maxWidth,
   maxHeight: hasOverflow ? '80vh' : 'unset',
-
   webkitOverflowScrolling: 'touch',
   overflowY: hasOverflow ? 'auto' : 'unset',
   overflowX: 'hidden',
-  minHeight: '60vh',
+  minHeight: '46vh',
   ['&::-webkit-scrollbar']: {
     display: 'none',
   },

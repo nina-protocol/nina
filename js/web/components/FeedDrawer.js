@@ -111,7 +111,7 @@ const FeedDrawer = () => {
   }
 
   return (
-    <>
+    <> 
       <Box>
         <Box key={'right'} sx={{ float: 'right' }}>
           <StyledMenuButton onClick={toggleDrawer(true)} sx={{ top: '100px' }}>
