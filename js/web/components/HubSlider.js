@@ -48,11 +48,14 @@ const HubSlider = () => {
     const fetchFeaturedHubs = async () => {
       await getHubs()
       const response = await getSubscriptionsForUser(
-        '7g2euzpRxm2A9kgk4UJ9J5ntUYvodTw4s4m7sL1C8JE'
+        'HesfTj24Eatwy8vvra5UdhX1xJWLeqRM7QdDwjX1xmmk'
       )
-      const publicKeys = response.filter((sub) => {
-        return sub.subscriptionType === 'hub'
-      })
+      const publicKeys = response
+        .filter((sub) => {
+          return sub.subscriptionType === 'hub'
+        })
+        .map((sub) => sub.to.publicKey)
+      console.log('publicKeys', publicKeys)
       setFeaturedHubPublicKeys(publicKeys)
     }
     fetchFeaturedHubs()
@@ -62,7 +65,7 @@ const HubSlider = () => {
     if (featuredHubPublicKeys) {
       const featured = []
       Object.values(featuredHubPublicKeys).forEach((sub) => {
-        const hub = hubState[sub.to]
+        const hub = hubState[sub]
         if (hub) {
           featured.push(hub)
         }

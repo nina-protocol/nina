@@ -362,7 +362,6 @@ const ReleaseCreate = () => {
                 }
               )
               let result
-              console.log('selectedHub', selectedHub, info.releaseMint)
               if (selectedHub && selectedHub !== '') {
                 result = await releaseInitViaHub({
                   ...formValues.releaseForm,

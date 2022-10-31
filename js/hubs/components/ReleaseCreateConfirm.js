@@ -118,28 +118,10 @@ const ReleaseCreateConfirm = (props) => {
             <Value className="description" sx={{mt: 1, flexDirection: 'column' , mb: 1}}>
               Description: <span style={{marginTop: '8px', paddingLeft: '0'}}>{description}</span>
             </Value>
-            
-            <FormControl sx={{mt: 1, mb: 1}}>
-            <Select
-            multiple
-            displayEmpty
-            value={profileHubs}
-            onChange={handleChange}
-            input={<OutlinedInput />}
-            renderValue={(selected) => {
-              if (selected.length === 0) {
-                return <em>None</em>;
-              }
-
-              return selected.join(", ");
-            }}
-            MenuProps={MenuProps}
-            inputProps={{ "aria-label": "Without label" }}
-            />
-            </FormControl>
+           
             <Typography variant="subtitle1" mt={1} sx={{ color: "red" }}>
               ONCE PUBLISHED, YOUR RELEASE INFORMATION WILL BE PERMANENT AND YOU
-              WILL NOT BE ABLE TO EDIT IT. hahahahahahah
+              WILL NOT BE ABLE TO EDIT IT.
             </Typography>
             <Value>
               <FormControlLabel sx={{ mt: 1, mb: 1, paddingLeft: '10px' }} control={<Checkbox onChange={handleChangeCheckbox} />} label="Confirm" />

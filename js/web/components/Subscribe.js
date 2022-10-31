@@ -16,37 +16,19 @@ const Subscribe = ({
 }) => {
   const wallet = useWallet()
   const router = useRouter()
-  const {
-    subscriptionSubscribe,
-    subscriptionUnsubscribe,
-    userSubscriptions,
-    getSubscriptionsForUser,
-    getSubscriptionsForHub,
-    subscriptionState,
-  } = useContext(Nina.Context)
-  const [isFollowing, setIsFollowing] = useState(false)
+  const { subscriptionSubscribe, subscriptionUnsubscribe, userSubscriptions } =
+    useContext(Nina.Context)
   const [pending, setPending] = useState(false)
-  const [targetSubscriptions, setTargetSubscriptions] = useState()
   const [followsYou, setFollowsYou] = useState(false)
-  const [isUser, setIsUser] = useState(false)
-  const [inDashboard, setInDashboard] = useState(
-    router.pathname.includes('/dashboard')
-  )
+  const isFollowing = useMemo(() => {
+    return userSubscriptions?.some(
+      (subscription) => subscription.to.publicKey === accountAddress
+    )
+  }, [userSubscriptions, accountAddress])
+
   const { enqueueSnackbar } = useSnackbar()
 
   useEffect(() => {
-    if (userSubscriptions) {
-      const checkIfFollowing = userSubscriptions.some(
-        (subscription) => subscription.to === accountAddress
-      )
-      setIsFollowing(checkIfFollowing)
-    }
-  }, [userSubscriptions])
-
-  useEffect(() => {
-    if (wallet.publicKey) {
-      setIsUser(wallet.publicKey.toBase58() === accountAddress)
-    }
     if (wallet.connected && userSubscriptions) {
       const checkIfFollowsYou = userSubscriptions?.some(
         (subscription) => subscription.from === accountAddress
@@ -55,7 +37,10 @@ const Subscribe = ({
     }
   }, [userSubscriptions, wallet.connected])
 
-  const handleSubscribe = async (accountAddress, hubHandle) => {
+  const handleSubscribe = async (e, accountAddress, hubHandle) => {
+    e.preventDefault()
+    e.stopPropagation()
+
     setPending(true)
     const result = await subscriptionSubscribe(accountAddress, hubHandle)
     if (result.success) {
@@ -70,7 +55,10 @@ const Subscribe = ({
     setPending(false)
   }
 
-  const handleUnsubscribe = async (accountAddress) => {
+  const handleUnsubscribe = async (e, accountAddress) => {
+    e.preventDefault()
+    e.stopPropagation()
+
     setPending(true)
     const result = await subscriptionUnsubscribe(accountAddress)
     if (result.success) {
@@ -92,13 +80,13 @@ const Subscribe = ({
           <Dots />
         </Box>
       )}
-      {wallet.connected && (
+      {wallet.connected && wallet.publicKey.toBase58() !== accountAddress && (
         <>
           {!isFollowing && !pending && (
             <Button
               color="primary"
-              sx={{ padding: '0 15px' }}
-              onClick={() => handleSubscribe(accountAddress, hubHandle)}
+              sx={{ padding: `${inFeed ? '0px' : '0 15px'}` }}
+              onClick={(e) => handleSubscribe(e, accountAddress, hubHandle)}
             >
               Follow
             </Button>
@@ -107,8 +95,8 @@ const Subscribe = ({
           {isFollowing && !pending && (
             <Button
               color="primary"
-              sx={{ padding: '0 15px' }}
-              onClick={() => handleUnsubscribe(accountAddress)}
+              sx={{ padding: `${inFeed ? '0px' : '0 15px'}` }}
+              onClick={(e) => handleUnsubscribe(e, accountAddress)}
             >
               Unfollow
             </Button>
