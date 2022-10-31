@@ -77,7 +77,7 @@ const HubHeader = ({ hubData }) => {
           {hubData?.data.displayName && (
             <Link href={hubData?.data.externalUrl} passHref>
               <a target="_blank" rel="noreferrer">
-              <Typography sx={{ padding: '0 15px' }} noWrap>
+                <Typography sx={{ padding: '0 15px' }} noWrap>
                   {hubData?.data.displayName}
                 </Typography>
               </a>
