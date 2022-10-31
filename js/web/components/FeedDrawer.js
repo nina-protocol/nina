@@ -24,7 +24,7 @@ const FeedDrawer = () => {
   const [feedItems, setFeedItems] = useState(undefined)
   const [hubSuggestions, setHubSuggestions] = useState(undefined)
   const [itemsTotal, setItemsTotal] = useState(0)
-  const { resetQueueWithPlaylist } = useContext(Audio.Context)
+  const { resetQueueWithPlaylist, isPlaying, setIsPlaying } = useContext(Audio.Context)
   const { getFeedForUser } = useContext(Release.Context)
   const [activeDrawerTypeIndex, setActiveDrawerTypeIndex] = useState(0)
   const [feedFetched, setFeedFetched] = useState(false)
@@ -142,22 +142,27 @@ const FeedDrawer = () => {
                   )
                 })}
               </DrawerTypeWrapper>
-              {activeDrawerTypeIndex === 0 && (
+              {activeDrawerTypeIndex === 0 && wallet?.connected && (
                 <Box display='flex' alignItems="center">
                   <Typography variant="subtitle1" mr='5px' sx={{cursor:'pointer'}}
                     onClick={() => handleGetFeedForUser(wallet.publicKey.toBase58(), true)}
                   >
                     refresh
                   </Typography>
+                  {!isPlaying && (
                     <PlayCircleOutlineOutlinedIcon
                       fontSize="medium"
                       sx={{ paddingRight: '15px' }}
                       onClick={playFeed}
                     />
+                  )}
+                  {isPlaying && (
+                    <PauseCircleOutlineOutlinedIcon
+                     sx={{ paddingRight: '15px' }}
+                     onClick={() => setIsPlaying(false)}
+                    />
+                  )}
                 </Box>
-              )}
-              {activeDrawerTypeIndex !== 0 && (
-                <Box></Box>
               )}
             </FeedHeader>
 
@@ -227,6 +232,10 @@ const FeedHeader = styled(Box)(({ theme }) => ({
 
 const DrawerTypeWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
+  position: 'absolute',
+  left: '50%',
+  top: '50%',
+  transform: 'translate(-50%, -50%)',
 }))
 
 const DrawerType = styled(Typography)(({ theme }) => ({
