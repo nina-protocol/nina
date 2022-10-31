@@ -372,9 +372,7 @@ const Profile = ({ profilePubkey }) => {
                     </Typography>
 
                     {wallet.connected && (
-                      // <Box sx={{pt: '10px'}}>
                       <Subscribe accountAddress={profilePubkey} />
-                      // </Box>
                     )}
                     {profileVerifications && (
                       <IdentityVerification

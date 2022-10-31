@@ -14,10 +14,8 @@ import { useSnackbar } from 'notistack'
 
 const Suggestions = ({
   items,
-  hubSuggestions,
   itemsTotal,
   publicKey,
-  setHubSuggestions,
 }) => {
   const router = useRouter()
   const scrollRef = useRef()
@@ -29,42 +27,7 @@ const Suggestions = ({
     router.push(path)
   }
 
-  // const getSuggestionReason = (item) => {
-  //   let data = { ...item }
-  //   delete data.hub
-  //   const relevanceCounts = Object.fromEntries(
-  //     Object.entries(data).sort(([, a], [, b]) => a - b)
-  //   )
-  //   const reason = Object.entries(relevanceCounts).pop()
-  //   if (reason) {
-  //     const reasonMessage = suggestionCopyFormatter(reason[0], reason[1])
-  //     return reasonMessage
-  //   }
-  //   return
-  // }
-
-  // const suggestionCopyFormatter = (reason, count) => {
-  //   const pluralize = count > 1
-  //   const suggestions = {
-  //     collectedCount: `This Hub has ${count} release${
-  //       pluralize ? 's' : ''
-  //     } you’ve collected`,
-  //     publishedCount: `This Hub has ${count} release${
-  //       pluralize ? 's' : ''
-  //     } you’ve published`,
-  //     hubSubscriptionCount: `This Hub is followed by people ${count} you follow`,
-  //     collectorHubCount: `${count} of your collector${
-  //       pluralize ? 's' : ''
-  //     } are part of this Hub`,
-  //     hubReleaseCount: ` Releases on your Hub are also on this Hub`,
-  //   }
-  //   if (suggestions[reason]) {
-  //     return suggestions[reason]
-  //   }
-  // }
-
   const feedItems = useMemo(() => {
-    console.log('UPDATING')
     const feedItemComponents = items?.map((item, i) => {
       const hub = item.hub
       return (

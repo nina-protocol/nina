@@ -18,7 +18,6 @@ const Subscribe = ({
   const router = useRouter()
   const { subscriptionSubscribe, subscriptionUnsubscribe, userSubscriptions } =
     useContext(Nina.Context)
-  // const [isFollowing, setIsFollowing] = useState(false)
   const [pending, setPending] = useState(false)
   const [followsYou, setFollowsYou] = useState(false)
   const isFollowing = useMemo(() => {
