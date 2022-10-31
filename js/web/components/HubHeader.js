@@ -67,6 +67,7 @@ const HubHeader = ({ hubData }) => {
                   Date.parse(hubData?.createdAt)
                 )}
                 alt={hubData?.data.displayName}
+                priority={true}
                 loader={loader}
               />
             </a>

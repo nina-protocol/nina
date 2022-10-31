@@ -421,7 +421,7 @@ const ReusableTableBody = ({
                           layout="responsive"
                           src={getImageFromCDN(
                             row.image,
-                            400,
+                            100,
                             Date.parse(row.date)
                           )}
                           alt={i}
