@@ -531,9 +531,14 @@ const ReusableTable = ({
   collectRoyaltyForRelease,
   refreshProfile,
   dashboardPublicKey,
+  hasOverflow,
+  minHeightOverride = false,
 }) => {
   return (
-    <ResponsiveContainer>
+    <ResponsiveContainer
+      hasOverflow={hasOverflow}
+      minHeightOverride={minHeightOverride}
+    >
       <ResponsiveTableContainer>
         <Table>
           <ReusableTableHead tableType={tableType} inDashboard={inDashboard} />
@@ -554,7 +559,6 @@ const ReusableTable = ({
 const ResponsiveTableContainer = styled(Box)(({ theme }) => ({
   borderBottom: 'none',
   padding: '0px',
-
   [theme.breakpoints.down('md')]: {
     overflowY: 'unset',
     height: '100% !important',
@@ -613,23 +617,25 @@ const StyledTableDescriptionContainer = styled(Box)(({ theme }) => ({
   maxWidth: '20vw',
 }))
 
-const ResponsiveContainer = styled(Box)(({ theme, hasOverflow }) => ({
-  width: theme.maxWidth,
-  maxHeight: hasOverflow ? '80vh' : 'unset',
+const ResponsiveContainer = styled(Box)(
+  ({ theme, hasOverflow, minHeightOverride }) => ({
+    width: theme.maxWidth,
+    // maxHeight: hasOverflow ? 'auto' : 'unset',
+    // webkitOverflowScrolling: 'touch',
+    // minHeight: minHeightOverride ? 'unset' : '46vh',
+    // overflowY: hasOverflow ? 'auto' : 'auto',
+    overflowX: 'hidden',
+    ['&::-webkit-scrollbar']: {
+      display: 'none',
+    },
+    [theme.breakpoints.down('md')]: { 
+      width: '100vw',
+      maxHeight: 'unset',
+      overflowY: 'unset',
+    },
+  })
+)
 
-  webkitOverflowScrolling: 'touch',
-  overflowY: hasOverflow ? 'auto' : 'unset',
-  overflowX: 'hidden',
-  minHeight: '60vh',
-  ['&::-webkit-scrollbar']: {
-    display: 'none',
-  },
-  [theme.breakpoints.down('md')]: {
-    width: '100vw',
-    maxHeight: 'unset',
-    overflowY: 'unset',
-  },
-}))
 const SearchResultOverflowContainer = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
   width: '70vw',
