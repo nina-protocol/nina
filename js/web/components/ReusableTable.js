@@ -620,15 +620,15 @@ const StyledTableDescriptionContainer = styled(Box)(({ theme }) => ({
 const ResponsiveContainer = styled(Box)(
   ({ theme, hasOverflow, minHeightOverride }) => ({
     width: theme.maxWidth,
-    // maxHeight: hasOverflow ? 'unset' : 'unset',
+    // maxHeight: hasOverflow ? 'auto' : 'unset',
     // webkitOverflowScrolling: 'touch',
-    overflowY: hasOverflow ? 'auto' : 'unset',
-    overflowX: 'hidden',
     // minHeight: minHeightOverride ? 'unset' : '46vh',
+    // overflowY: hasOverflow ? 'auto' : 'auto',
+    overflowX: 'hidden',
     ['&::-webkit-scrollbar']: {
       display: 'none',
     },
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('md')]: { 
       width: '100vw',
       maxHeight: 'unset',
       overflowY: 'unset',
