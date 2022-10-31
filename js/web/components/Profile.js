@@ -491,11 +491,8 @@ const ProfileTableContainer = styled(Box)(({ theme }) => ({
 const ProfileDotWrapper = styled(Box)(({ theme }) => ({
   fontSize: '80px',
   display: 'flex',
-  width: '100%',
   height: '100%',
-  display: 'flex',
-  textAlign: 'center',
-  top: '50%',
+  justifyContent: 'center',
   [theme.breakpoints.down('md')]: {
     fontSize: '30px',
     left: '50%',

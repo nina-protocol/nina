@@ -151,16 +151,6 @@ const HubComponent = ({ hubPubkey }) => {
 
   const renderTables = (activeView) => {
     switch (activeView) {
-      case undefined:
-        return (
-          <>
-            <HubDotWrapper>
-              <Box sx={{ width: '100%', margin: 'auto' }}>
-                <Dots />
-              </Box>
-            </HubDotWrapper>
-          </>
-        )
       case 0:
         return (
           <>
@@ -220,6 +210,7 @@ const HubComponent = ({ hubPubkey }) => {
             />
           </HubTabWrapper>
         )}
+        {!hubData && ( <HubDotWrapper><Dots /></HubDotWrapper>)}
         <HubsTableContainer>{renderTables(activeView)}</HubsTableContainer>
       </HubContainer>
     </>
@@ -271,7 +262,7 @@ const HubDotWrapper = styled(Box)(({ theme }) => ({
   fontSize: '80px',
   display: 'flex',
   height: '100%',
-  top: '50%',
+  justifyContent: 'center',
   [theme.breakpoints.down('md')]: {
     fontSize: '30px',
     left: '47%',
