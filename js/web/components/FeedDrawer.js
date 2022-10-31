@@ -24,11 +24,7 @@ const FeedDrawer = () => {
   const [feedItems, setFeedItems] = useState(undefined)
   const [hubSuggestions, setHubSuggestions] = useState(undefined)
   const [itemsTotal, setItemsTotal] = useState(0)
-<<<<<<< HEAD
   const { resetQueueWithPlaylist, isPlaying, setIsPlaying } = useContext(Audio.Context)
-=======
-  const { resetQueueWithPlaylist } = useContext(Audio.Context)
->>>>>>> aab93e997034957cb42d2110103a8a593d14955a
   const { getFeedForUser } = useContext(Release.Context)
   const [activeDrawerTypeIndex, setActiveDrawerTypeIndex] = useState(0)
   const [feedFetched, setFeedFetched] = useState(false)
@@ -84,17 +80,6 @@ const FeedDrawer = () => {
       let updatedFeedItems = feed?.feedItems.filter((item) => {
         return !item.type.includes('Post')
       })
-<<<<<<< HEAD
-=======
-      if (feedItems) {
-        updatedFeedItems = updatedFeedItems.filter((item) => {
-          return !feedItems.find(
-            (feedItem) =>
-              feedItem.release?.publicKey === item.release?.publicKey
-          )
-        })
-      }
->>>>>>> aab93e997034957cb42d2110103a8a593d14955a
 
       // Subtracting postCount to handle refetch logic while posts are not surfaced
       const postCount = feed.feedItems.map(
@@ -126,11 +111,7 @@ const FeedDrawer = () => {
   }
 
   return (
-<<<<<<< HEAD
     <> 
-=======
-    <>
->>>>>>> aab93e997034957cb42d2110103a8a593d14955a
       <Box>
         <Box key={'right'} sx={{ float: 'right' }}>
           <StyledMenuButton onClick={toggleDrawer(true)} sx={{ top: '100px' }}>
