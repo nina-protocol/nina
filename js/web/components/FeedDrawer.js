@@ -20,28 +20,33 @@ import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutli
 const FeedDrawer = () => {
   const wallet = useWallet()
   const { userSubscriptions } = useContext(Nina.Context)
-
   const [drawerOpen, setDrawerOpen] = useState(true)
   const [feedItems, setFeedItems] = useState(undefined)
   const [hubSuggestions, setHubSuggestions] = useState(undefined)
-  const [totalItems, setTotalItems] = useState(0)
+  const [itemsTotal, setItemsTotal] = useState(0)
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { getFeedForUser } = useContext(Release.Context)
-  const [activeDrawerTypeIndex, setActiveDrawerTypeIndex] = useState(1)
+  const [activeDrawerTypeIndex, setActiveDrawerTypeIndex] = useState(0)
+  const [feedFetched, setFeedFetched] = useState(false)
   const drawerTypes = ['latest', 'suggestions']
 
   useEffect(() => {
-    if (wallet.connected) {
-      handleGetFeedForUser(wallet.publicKey.toBase58())
-      getHubSuggestionsForUser(wallet.publicKey.toBase58())
+    const handleInitialFetch = async () => {
+      if (wallet.connected) {
+        await handleGetFeedForUser(wallet.publicKey.toBase58())
+        await getHubSuggestionsForUser(wallet.publicKey.toBase58())
+      } else {
+        await getHubSuggestionsForUser()
+      }
     }
+    handleInitialFetch()
   }, [wallet.connected])
 
-  // useEffect(() => {
-  //   if (wallet.connected) {
-  //     getHubSuggestionsForUser(wallet.publicKey.toBase58())
-  //   }
-  // }, [userSubscriptions])
+  useEffect(() => {
+    if (wallet.disconnecting) {
+      setFeedItems(undefined)
+    }
+  }, [wallet?.disconnecting])
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -69,16 +74,30 @@ const FeedDrawer = () => {
       refresh ? 0 : feedItems?.length || 0
     )
     if (feed) {
-      const updatedFeedItems = feed?.feedItems.filter((item) => {
+      let updatedFeedItems = feed?.feedItems.filter((item) => {
         return !item.type.includes('Post')
       })
-      setTotalItems(feed.total)
+      if (feedItems) {
+        updatedFeedItems = updatedFeedItems.filter((item) => {
+          return !feedItems.find(
+            (feedItem) =>
+              feedItem.release?.publicKey === item.release?.publicKey
+          )
+        })
+      }
+
+      // Subtracting postCount to handle refetch logic while posts are not surfaced
+      const postCount = feed.feedItems.map(
+        (item) => item.type === 'Post'
+      ).length
+      setItemsTotal(feed.total - postCount)
       if (feedItems && feedItems.length > 0) {
         setFeedItems(feedItems.concat(updatedFeedItems))
       } else {
         setFeedItems(updatedFeedItems)
       }
     }
+    setFeedFetched(true)
   }
 
   const getHubSuggestionsForUser = async (publicKey) => {
@@ -92,75 +111,72 @@ const FeedDrawer = () => {
       })
       setHubSuggestions(suggestions)
     } catch (error) {
-      console.warn('error :>> ', error)
       return []
     }
   }
 
   return (
     <>
-      {wallet.connected && (
-        <Box>
-          <Box key={'right'} sx={{ float: 'right' }}>
-            <StyledMenuButton
-              onClick={toggleDrawer(true)}
-              sx={{ top: '100px' }}
-            >
-              <ArrowBackIosNewIcon />
-            </StyledMenuButton>
-            <StyledDrawer
-              anchor={'right'}
-              open={drawerOpen}
-              onClose={toggleDrawer(false)}
-              BackdropProps={{ invisible: true }}
-              variant={'persistent'}
-            >
-              <FeedHeader>
-                <CloseIcon fontSize="medium" onClick={toggleDrawer(false)} />
-                <DrawerTypeWrapper>
-                  {drawerTypes.map((drawerType, index) => {
-                    return (
-                      <DrawerType
-                        key={drawerType}
-                        onClick={() => setActiveDrawerTypeIndex(index)}
-                        className={
-                          activeDrawerTypeIndex === index ? 'active' : ''
-                        }
-                        variant="h4"
-                      >
-                        {drawerType}
-                      </DrawerType>
-                    )
-                  })}
-                </DrawerTypeWrapper>
-                <PlayCircleOutlineOutlinedIcon
-                  fontSize="medium"
-                  sx={{ paddingRight: '15px' }}
-                  onClick={playFeed}
-                />
-              </FeedHeader>
+      <Box>
+        <Box key={'right'} sx={{ float: 'right' }}>
+          <StyledMenuButton onClick={toggleDrawer(true)} sx={{ top: '100px' }}>
+            <ArrowBackIosNewIcon />
+          </StyledMenuButton>
+          <StyledDrawer
+            anchor={'right'}
+            open={drawerOpen}
+            onClose={toggleDrawer(false)}
+            BackdropProps={{ invisible: true }}
+            variant={'persistent'}
+          >
+            <FeedHeader>
+              <CloseIcon fontSize="medium" onClick={toggleDrawer(false)} />
+              <DrawerTypeWrapper>
+                {drawerTypes.map((drawerType, index) => {
+                  return (
+                    <DrawerType
+                      key={drawerType}
+                      onClick={() => setActiveDrawerTypeIndex(index)}
+                      className={
+                        activeDrawerTypeIndex === index ? 'active' : ''
+                      }
+                      variant="h4"
+                    >
+                      {drawerType}
+                    </DrawerType>
+                  )
+                })}
+              </DrawerTypeWrapper>
+              <PlayCircleOutlineOutlinedIcon
+                fontSize="medium"
+                sx={{ paddingRight: '15px' }}
+                onClick={playFeed}
+              />
+            </FeedHeader>
 
-              {activeDrawerTypeIndex === 0 && (
-                <Feed
-                  items={feedItems}
-                  toggleDrawer={toggleDrawer}
-                  playFeed={playFeed}
-                  handleGetFeedForUser={handleGetFeedForUser}
-                  publicKey={wallet.publicKey.toBase58()}
-                />
-              )}
+            {activeDrawerTypeIndex === 0 && (
+              <Feed
+                items={feedItems}
+                itemsTotal={itemsTotal}
+                toggleDrawer={toggleDrawer}
+                playFeed={playFeed}
+                handleGetFeedForUser={handleGetFeedForUser}
+                publicKey={wallet?.publicKey?.toBase58()}
+                feedFetched={feedFetched}
+              />
+            )}
 
-              {activeDrawerTypeIndex === 1 && (
-                <Suggestions
-                  items={hubSuggestions}
-                  toggleDrawer={toggleDrawer}
-                  publicKey={wallet.publicKey.toBase58()}
-                />
-              )}
-            </StyledDrawer>
-          </Box>
+            {activeDrawerTypeIndex === 1 && hubSuggestions && (
+              <Suggestions
+                items={hubSuggestions}
+                setHubSuggestions={setHubSuggestions}
+                toggleDrawer={toggleDrawer}
+                publicKey={wallet?.publicKey?.toBase58()}
+              />
+            )}
+          </StyledDrawer>
         </Box>
-      )}
+      </Box>
     </>
   )
 }

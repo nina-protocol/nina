@@ -456,8 +456,8 @@ const ReusableTableBody = ({
                     <OverflowContainer overflowWidth={'20vw'}>
                       <Typography
                         noWrap
-                        sx={{ hover: 'pointer'}}
-                        onClickCapture={() =>{
+                        sx={{ hover: 'pointer' }}
+                        onClickCapture={() => {
                           router.push(`/profiles/${row?.authorityPublicKey}`)
                         }}
                       >
