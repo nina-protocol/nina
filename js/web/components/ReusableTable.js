@@ -532,10 +532,13 @@ const ReusableTable = ({
   refreshProfile,
   dashboardPublicKey,
   hasOverflow,
-  minHeightOverride = false
+  minHeightOverride = false,
 }) => {
   return (
-    <ResponsiveContainer hasOverflow={hasOverflow} minHeightOverride={minHeightOverride}>
+    <ResponsiveContainer
+      hasOverflow={hasOverflow}
+      minHeightOverride={minHeightOverride}
+    >
       <ResponsiveTableContainer>
         <Table>
           <ReusableTableHead tableType={tableType} inDashboard={inDashboard} />
@@ -615,23 +618,24 @@ const StyledTableDescriptionContainer = styled(Box)(({ theme }) => ({
   maxWidth: '20vw',
 }))
 
-const ResponsiveContainer = styled(Box)(({ theme, hasOverflow, minHeightOverride }) => (
-  {
-  width: theme.maxWidth,
-  maxHeight: hasOverflow ? '80vh' : 'unset',
-  webkitOverflowScrolling: 'touch',
-  overflowY: hasOverflow ? 'auto' : 'unset',
-  overflowX: 'hidden',
-  minHeight: minHeightOverride ? 'unset' : '46vh',
-  ['&::-webkit-scrollbar']: {
-    display: 'none',
-  },
-  [theme.breakpoints.down('md')]: {
-    width: '100vw',
-    maxHeight: 'unset',
-    overflowY: 'unset',
-  },
-}))
+const ResponsiveContainer = styled(Box)(
+  ({ theme, hasOverflow, minHeightOverride }) => ({
+    width: theme.maxWidth,
+    maxHeight: hasOverflow ? '80vh' : 'unset',
+    webkitOverflowScrolling: 'touch',
+    overflowY: hasOverflow ? 'auto' : 'unset',
+    overflowX: 'hidden',
+    minHeight: minHeightOverride ? 'unset' : '46vh',
+    ['&::-webkit-scrollbar']: {
+      display: 'none',
+    },
+    [theme.breakpoints.down('md')]: {
+      width: '100vw',
+      maxHeight: 'unset',
+      overflowY: 'unset',
+    },
+  })
+)
 const SearchResultOverflowContainer = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
   width: '70vw',

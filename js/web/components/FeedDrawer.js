@@ -109,7 +109,7 @@ const FeedDrawer = () => {
   }
 
   return (
-    <> 
+    <>
       <Box>
         <Box key={'right'} sx={{ float: 'right' }}>
           <StyledMenuButton onClick={toggleDrawer(true)} sx={{ top: '100px' }}>
@@ -141,18 +141,22 @@ const FeedDrawer = () => {
                 })}
               </DrawerTypeWrapper>
               {activeDrawerTypeIndex === 0 && wallet?.connected && (
-                <Box display='flex' alignItems="center">
-                  <Typography variant="subtitle1" mr='5px' sx={{cursor:'pointer'}}
-                    onClick={() => handleGetFeedForUser(wallet.publicKey.toBase58(), true)}
+                <Box display="flex" alignItems="center">
+                  <Typography
+                    variant="subtitle1"
+                    mr="5px"
+                    sx={{ cursor: 'pointer' }}
+                    onClick={() =>
+                      handleGetFeedForUser(wallet.publicKey.toBase58(), true)
+                    }
                   >
                     refresh
                   </Typography>
-                    <PlayCircleOutlineOutlinedIcon
-                      fontSize="medium"
-                      sx={{ paddingRight: '15px' }}
-                      onClick={playFeed}
-                    />
-     
+                  <PlayCircleOutlineOutlinedIcon
+                    fontSize="medium"
+                    sx={{ paddingRight: '15px' }}
+                    onClick={playFeed}
+                  />
                 </Box>
               )}
             </FeedHeader>
