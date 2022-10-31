@@ -74,18 +74,11 @@ const HubHeader = ({ hubData }) => {
           </Link>
         </Box>
 
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-            width: '200px',
-          }}
-        >
+        <DisplayName>
           {hubData?.data.displayName && (
             <Link href={hubData?.data.externalUrl} passHref>
               <a target="_blank" rel="noreferrer">
-                <Typography sx={{ pl: 1 }}>
+                <Typography sx={{ padding: '0 15px' }} noWrap>
                   {hubData?.data.displayName}
                 </Typography>
               </a>
@@ -99,7 +92,7 @@ const HubHeader = ({ hubData }) => {
               inFeed={false}
             />
           )}
-        </Box>
+        </DisplayName>
         {hubData?.data.description && (
           <>
             <DescriptionOverflowContainer>
@@ -143,12 +136,19 @@ const ResponsiveHubHeader = styled(Box)(({ theme }) => ({
     width: '100vw',
   },
 }))
-const ResponsiveUrlContainer = styled(Box)(({ theme }) => ({
-  paddingBottom: 2,
-  fontSize: '12px',
+const DisplayName = styled(Box)(({ theme }) => ({
+  width: '20vw',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'start',
   textAlign: 'left',
+  textOverflow: 'ellipsis',
+  overflow: 'hidden',
+  display: ['-webkit-box'],
+  ['-webkit-line-clamp']: '1',
+  ['-webkit-box-orient']: 'vertical',
   [theme.breakpoints.down('md')]: {
-    paddingLeft: '15px',
+    maxWidth: '90px',
   },
 }))
 
