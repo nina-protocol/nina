@@ -164,7 +164,6 @@ const HubComponent = ({ hubPubkey }) => {
       case 0:
         return (
           <>
-       
             {hasData && releaseData && (
               <ReusableTable
                 tableType={'hubReleases'}
@@ -192,9 +191,13 @@ const HubComponent = ({ hubPubkey }) => {
       case 2:
         return (
           <>
-          {hasData && (
-                <ReusableTable tableType={'followers'} items={hubFollowers} hasOverflow={true}/>
-              )}
+            {hasData && (
+              <ReusableTable
+                tableType={'followers'}
+                items={hubFollowers}
+                hasOverflow={true}
+              />
+            )}
           </>
         )
       default:
@@ -217,9 +220,7 @@ const HubComponent = ({ hubPubkey }) => {
             />
           </HubTabWrapper>
         )}
-        <HubsTableContainer>
-         {renderTables(activeView)}
-        </HubsTableContainer>
+        <HubsTableContainer>{renderTables(activeView)}</HubsTableContainer>
       </HubContainer>
     </>
   )

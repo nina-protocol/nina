@@ -103,7 +103,7 @@ const ReusableTableHead = ({ tableType, inDashboard }) => {
             key={headCell.id}
             sx={{ fontWeight: 'bold', borderBottom: 'none' }}
           >
-            <Typography sx={{ fontWeight: 'bold',  }}>
+            <Typography sx={{ fontWeight: 'bold' }}>
               {headCell.label}
             </Typography>
           </StyledTableHeadCell>
