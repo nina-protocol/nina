@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useContext } from 'react'
+import { useEffect, useMemo, useState, useContext, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import { Box } from '@mui/material'
 import { styled } from '@mui/system'
@@ -11,6 +11,8 @@ const TabHeader = dynamic(() => import('./TabHeader'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
 
 const HubComponent = ({ hubPubkey }) => {
+  const tableContainerRef = useRef(null)
+
   const {
     getHub,
     hubState,
@@ -149,6 +151,7 @@ const HubComponent = ({ hubPubkey }) => {
   const viewHandler = (event) => {
     const index = parseInt(event.target.id)
     setActiveView(index)
+    tableContainerRef.current.scrollTo(0, 0)
   }
 
   const renderTables = (activeView) => {
@@ -215,6 +218,7 @@ const HubComponent = ({ hubPubkey }) => {
             />
           </HubTabWrapper>
         )}
+
         {!hasData && (
           <HubDotWrapper>
             <Box sx={{ width: '100%', margin: 'auto' }}>
@@ -222,7 +226,7 @@ const HubComponent = ({ hubPubkey }) => {
             </Box>
           </HubDotWrapper>
         )}
-        <HubsTableContainer>{renderTables(activeView)}</HubsTableContainer>
+        <HubsTableContainer ref={tableContainerRef}>{renderTables(activeView)}</HubsTableContainer>
       </HubContainer>
     </>
   )
