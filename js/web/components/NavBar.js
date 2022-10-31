@@ -9,7 +9,7 @@ import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
 import Link from 'next/link'
 import { useWallet } from '@solana/wallet-adapter-react'
-
+import { useRouter } from 'next/router'
 import {
   WalletDialogProvider,
   WalletMultiButton,
@@ -17,8 +17,18 @@ import {
 import Breadcrumbs from './Breadcrumbs'
 import NavSearch from './NavSearch'
 const NavBar = () => {
-  const { healthOk, getSubscriptionsForUser } = useContext(Nina.Context)
-  const { getHubsForUser } = useContext(Hub.Context)
+
+  const router = useRouter()
+  const {
+    healthOk,
+    getSubscriptionsForUser,
+    filterSubscriptionsForUser,
+    subscriptionState,
+  } = useContext(Nina.Context)
+  const { filterHubsForUser, getHubsForUser, hubState, getHubs } = useContext(
+    Hub.Context
+  )
+
   const wallet = useWallet()
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),
@@ -40,6 +50,13 @@ const NavBar = () => {
       getSubscriptionsForUser(wallet.publicKey.toBase58())
     }
   }, [wallet.connected])
+
+  const userHubs = useMemo(() => {
+    if (wallet.connected) {
+      return filterHubsForUser(wallet.publicKey.toBase58())
+    }
+    return undefined
+  }, [hubState, wallet.connected])
 
   return (
     <Root>
