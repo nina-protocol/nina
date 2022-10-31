@@ -17,6 +17,7 @@ import {
 import Breadcrumbs from './Breadcrumbs'
 import NavSearch from './NavSearch'
 const NavBar = () => {
+
   const router = useRouter()
   const {
     healthOk,
@@ -27,6 +28,7 @@ const NavBar = () => {
   const { filterHubsForUser, getHubsForUser, hubState, getHubs } = useContext(
     Hub.Context
   )
+
   const wallet = useWallet()
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),
@@ -49,6 +51,11 @@ const NavBar = () => {
     }
   }, [wallet.connected])
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 8828b4c14abbeea7d9328aa28b542b9d03209422
   const userHubs = useMemo(() => {
     if (wallet.connected) {
       return filterHubsForUser(wallet.publicKey.toBase58())
@@ -71,20 +78,6 @@ const NavBar = () => {
 
       <NavRight>
         <DesktopWalletWrapper>
-          {userHubs && (
-            <a
-              href={`https://hubs.ninaprotocol.com/${
-                userHubs.length === 1 ? userHubs[0].handle : ''
-              }`}
-              target="_blank"
-              rel="noreferrer"
-              style={{ margin: '0' }}
-            >
-              <Typography variant="subtitle1" sx={{ mr: '15px' }}>
-                My Hub{userHubs.length > 1 ? 's' : ''}
-              </Typography>
-            </a>
-          )}
           <NavCtas>
             <SearchBarWrapper>
               <NavSearch />

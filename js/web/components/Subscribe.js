@@ -55,7 +55,10 @@ const Subscribe = ({
     }
   }, [userSubscriptions, wallet.connected])
 
-  const handleSubscribe = async (accountAddress, hubHandle) => {
+  const handleSubscribe = async (e, accountAddress, hubHandle) => {
+    e.preventDefault()
+    e.stopPropagation()
+
     setPending(true)
     const result = await subscriptionSubscribe(accountAddress, hubHandle)
     if (result.success) {
@@ -70,7 +73,10 @@ const Subscribe = ({
     setPending(false)
   }
 
-  const handleUnsubscribe = async (accountAddress) => {
+  const handleUnsubscribe = async (e, accountAddress) => {
+    e.preventDefault()
+    e.stopPropagation()
+
     setPending(true)
     const result = await subscriptionUnsubscribe(accountAddress)
     if (result.success) {
@@ -98,7 +104,7 @@ const Subscribe = ({
             <Button
               color="primary"
               sx={{ padding: '0 15px' }}
-              onClick={() => handleSubscribe(accountAddress, hubHandle)}
+              onClick={(e) => handleSubscribe(e, accountAddress, hubHandle)}
             >
               Follow
             </Button>
@@ -108,7 +114,7 @@ const Subscribe = ({
             <Button
               color="primary"
               sx={{ padding: '0 15px' }}
-              onClick={() => handleUnsubscribe(accountAddress)}
+              onClick={(e) => handleUnsubscribe(e, accountAddress)}
             >
               Unfollow
             </Button>

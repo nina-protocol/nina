@@ -9,10 +9,6 @@ import Typography from '@mui/material/Typography'
 import Dots from './Dots'
 
 const IdentityVerificationModal = ({ action, type, value, open, setOpen }) => {
-  console.log('action', action)
-  console.log('type', type)
-  console.log('value', value)
-  console.log('open', open)
   const [inProgress, setInProgress] = useState(false)
 
   const handleClose = () => {
