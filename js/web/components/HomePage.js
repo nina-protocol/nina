@@ -13,7 +13,8 @@ import RecentlyPublished from './RecentlyPublished'
 import Link from 'next/link'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 import HubSlider from './HubSlider'
-
+import dynamic from 'next/dynamic'
+const EmailCaptureModal = dynamic(() => import('./EmailCaptureModal'))
 const HomePage = () => {
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { getHubs, hubState, filterFeaturedHubs } = useContext(Hub.Context)
@@ -38,6 +39,7 @@ const HomePage = () => {
   return (
     <ScrollablePageWrapper paddingTop={'210px'}>
       <HomePageContainer overflowX="visible">
+        <EmailCaptureModal />
         <BlueTypography
           variant="h1"
           align="left"

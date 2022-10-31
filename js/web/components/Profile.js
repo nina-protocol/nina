@@ -480,7 +480,6 @@ const ProfileHeaderWrapper = styled(Box)(({ theme }) => ({
     textOverflow: 'ellipsis',
     whiteSpace: 'no-wrap',
     height: '100px',
-    // padding: '0px 10px 0px 10px',
   },
 }))
 
