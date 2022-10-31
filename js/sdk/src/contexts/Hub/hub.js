@@ -16,7 +16,7 @@ const HubContext = createContext()
 const HubContextProvider = ({ children }) => {
   const { releaseState, setReleaseState, getRelease } =
     useContext(Release.Context)
-  const { ninaClient, savePostsToState, postState, setPostState } = useContext(Nina.Context)
+  const { ninaClient, savePostsToState, postState, setPostState, verificationState, setVerificationState } = useContext(Nina.Context)
   const [hubState, setHubState] = useState({})
   const [hubCollaboratorsState, setHubCollaboratorsState] = useState({})
   const [hubContentState, setHubContentState] = useState({})
@@ -81,6 +81,8 @@ const HubContextProvider = ({ children }) => {
     setReleaseState,
     fetchedHubsForUser,
     setFetchedHubsForUser,
+    verificationState,
+    setVerificationState,
   })
 
   return (
@@ -154,6 +156,8 @@ const hubContextHelper = ({
   setReleaseState,
   fetchedHubsForUser,
   setFetchedHubsForUser,
+  verificationState,
+  setVerificationState,
 }) => {
   const { ids, provider, endpoints } = ninaClient
 
@@ -927,13 +931,16 @@ const hubContextHelper = ({
       setHubState(updatedHubState)
   
       const updatedHubCollaboratorState = { ...hubCollaboratorsState }
+      const updatedVerificationState = { ...verificationState }
       hub.collaborators.forEach(collaborator => {
+        updatedVerificationState[collaborator.publicKey] = collaborator.verifications
         updatedHubCollaboratorState[collaborator.accountData.collaborator.publicKey] = {
           ...collaborator.accountData.collaborator
         }
       })
       setHubCollaboratorsState(updatedHubCollaboratorState)
-      
+      setVerificationState(updatedVerificationState)
+
       const updatedHubContent = { ...hubContentState }
       const updatedReleaseState = { ...releaseState }
       hub.releases.forEach(release => {

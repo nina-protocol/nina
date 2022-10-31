@@ -5,7 +5,6 @@ import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-import Head from 'next/head'
 const Dots = dynamic(() => import('./Dots'))
 const HubHeader = dynamic(() => import('./HubHeader'))
 const TabHeader = dynamic(() => import('./TabHeader'))
@@ -52,9 +51,9 @@ const HubComponent = ({ hubPubkey }) => {
   }, [fetched, fetchedHubs, hubPubkey])
 
   const [views, setViews] = useState([
-    { name: 'releases', playlist: undefined, disabled: false },
-    { name: 'collaborators', playlist: undefined, disabled: true },
-    { name: 'followers', disabled: true },
+    { name: 'releases', playlist: undefined, disabled: true, count: 0 },
+    { name: 'collaborators', playlist: undefined, disabled: true, count: 0 },
+    { name: 'followers', disabled: true, count: 0 },
   ])
 
   const hubData = useMemo(() => {
@@ -119,12 +118,14 @@ const HubComponent = ({ hubPubkey }) => {
       setActiveView(0)
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
       updatedView[viewIndex].disabled = false
+      updatedView[viewIndex].count = hubReleases.length
       updatedView[viewIndex].playlist = hubReleases
     }
 
     if (hubCollaborators?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'collaborators')
       updatedView[viewIndex].disabled = false
+      updatedView[viewIndex].count = hubCollaborators.length
     }
 
     if (
@@ -138,6 +139,7 @@ const HubComponent = ({ hubPubkey }) => {
     if (hubFollowers?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'followers')
       updatedView[viewIndex].disabled = false
+      updatedView[viewIndex].count = hubFollowers.length
     }
 
     setFetched({ ...fetched })
@@ -212,7 +214,7 @@ const HubComponent = ({ hubPubkey }) => {
               activeView={activeView}
               profileTabs={views}
               releaseData={releaseData}
-              type={'hubsView'}
+              type={'hubView'}
               followersCount={hubFollowers?.length}
             />
           </HubTabWrapper>
