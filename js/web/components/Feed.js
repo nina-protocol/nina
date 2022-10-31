@@ -16,6 +16,7 @@ import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Button from '@mui/material/Button'
 import Dots from './Dots'
 import { useRouter } from 'next/router'
+import { Wallet } from '@project-serum/anchor'
 
 const timeSince = (date) => {
   const seconds = Math.floor((new Date() - date) / 1000)
@@ -100,7 +101,7 @@ const Feed = ({
               <HoverContainer
                 href={`/hubs/${item?.hub?.handle}`}
                 passHref
-                onClick={(e) => handleClick(e, `/${item.hub?.handle}`)}
+                onClick={(e) => handleClick(e, `/hubs/${item.hub?.handle}`)}
               >
                 <Image
                   height={'100px'}
@@ -551,7 +552,7 @@ const Feed = ({
     return feedItemComponents || []
   }, [items, isPlaying])
 
-  if (!feedFetched) {
+  if (publicKey && !feedFetched) {
     return (
       <Box mt={4} height="100%" display="flex" justifyContent="center">
         <Dots size="80px" />

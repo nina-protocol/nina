@@ -12,11 +12,7 @@ import { useRouter } from 'next/router'
 import Subscribe from './Subscribe'
 import { useSnackbar } from 'notistack'
 
-const Suggestions = ({
-  items,
-  itemsTotal,
-  publicKey,
-}) => {
+const Suggestions = ({ items, itemsTotal, publicKey }) => {
   const router = useRouter()
   const scrollRef = useRef()
   const { enqueueSnackbar } = useSnackbar()

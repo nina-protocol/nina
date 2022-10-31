@@ -52,7 +52,7 @@ const Profile = ({ profilePubkey }) => {
   const [profileCollectionReleases, setProfileCollectionReleases] =
     useState(undefined)
   const [profileHubs, setProfileHubs] = useState(undefined)
-  const [activeView, setActiveView] = useState(0)
+  const [activeView, setActiveView] = useState(undefined)
   const [profileSubscriptions, setProfileSubscriptions] = useState()
   const [profileSubscriptionsTo, setProfileSubscriptionsTo] = useState()
   const [profileSubscriptionsFrom, setProfileSubscriptionsFrom] = useState()
@@ -134,32 +134,30 @@ const Profile = ({ profilePubkey }) => {
   useEffect(() => {
     let viewIndex
     let updatedView = views.slice()
-    if (!inDashboard) {
-      if (profilePublishedReleases?.length > 0) {
-        viewIndex = updatedView.findIndex((view) => view.name === 'releases')
-        updatedView[viewIndex].disabled = false
-        updatedView[viewIndex].count = profilePublishedReleases.length
-      }
-      if (profileCollectionReleases?.length > 0) {
-        viewIndex = updatedView.findIndex((view) => view.name === 'collection')
-        updatedView[viewIndex].disabled = false
-        updatedView[viewIndex].count = profileCollectionReleases.length
-      }
-      if (profileHubs?.length > 0) {
-        viewIndex = updatedView.findIndex((view) => view.name === 'hubs')
-        updatedView[viewIndex].disabled = false
-        updatedView[viewIndex].count = profileHubs.length
-      }
-      if (profileSubscriptionsTo?.length > 0) {
-        viewIndex = updatedView.findIndex((view) => view.name === 'followers')
-        updatedView[viewIndex].disabled = false
-        updatedView[viewIndex].count = profileSubscriptionsTo.length
-      }
-      if (profileSubscriptionsFrom?.length > 0) {
-        viewIndex = updatedView.findIndex((view) => view.name === 'following')
-        updatedView[viewIndex].disabled = false
-        updatedView[viewIndex].count = profileSubscriptionsFrom.length
-      }
+    if (profilePublishedReleases?.length > 0) {
+      viewIndex = updatedView.findIndex((view) => view.name === 'releases')
+      updatedView[viewIndex].disabled = false
+      updatedView[viewIndex].count = profilePublishedReleases.length
+    }
+    if (profileCollectionReleases?.length > 0) {
+      viewIndex = updatedView.findIndex((view) => view.name === 'collection')
+      updatedView[viewIndex].disabled = false
+      updatedView[viewIndex].count = profileCollectionReleases.length
+    }
+    if (profileHubs?.length > 0) {
+      viewIndex = updatedView.findIndex((view) => view.name === 'hubs')
+      updatedView[viewIndex].disabled = false
+      updatedView[viewIndex].count = profileHubs.length
+    }
+    if (profileSubscriptionsTo?.length > 0) {
+      viewIndex = updatedView.findIndex((view) => view.name === 'followers')
+      updatedView[viewIndex].disabled = false
+      updatedView[viewIndex].count = profileSubscriptionsTo.length
+    }
+    if (profileSubscriptionsFrom?.length > 0) {
+      viewIndex = updatedView.findIndex((view) => view.name === 'following')
+      updatedView[viewIndex].disabled = false
+      updatedView[viewIndex].count = profileSubscriptionsFrom.length
     }
 
     setViews(updatedView)
@@ -172,7 +170,7 @@ const Profile = ({ profilePubkey }) => {
   ])
 
   useEffect(() => {
-    if (!router.query.view && !activeView) {
+    if (!router.query.view) {
       const viewIndex = views.findIndex((view) => !view.disabled)
       setActiveView(viewIndex)
     }
