@@ -51,11 +51,6 @@ const NavBar = () => {
     }
   }, [wallet.connected])
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 8828b4c14abbeea7d9328aa28b542b9d03209422
   const userHubs = useMemo(() => {
     if (wallet.connected) {
       return filterHubsForUser(wallet.publicKey.toBase58())
