@@ -252,20 +252,17 @@ const releaseContextHelper = ({
       const paymentMint = new anchor.web3.PublicKey(
         isUsdc ? ids.mints.usdc : ids.mints.wsol
       )
-
       const [releaseSigner, releaseSignerBump] =
         await anchor.web3.PublicKey.findProgramAddress(
           [release.toBuffer()],
           program.programId
         )
-
       const releaseMintIx = await createMintInstructions(
         provider,
         provider.wallet.publicKey,
         releaseMint.publicKey,
         0
       )
-
       const [authorityTokenAccount, authorityTokenAccountIx] =
         await findOrCreateAssociatedTokenAccount(
           provider.connection,
@@ -275,7 +272,7 @@ const releaseContextHelper = ({
           anchor.web3.SYSVAR_RENT_PUBKEY,
           paymentMint
         )
-
+          
       const [royaltyTokenAccount, royaltyTokenAccountIx] =
         await findOrCreateAssociatedTokenAccount(
           provider.connection,

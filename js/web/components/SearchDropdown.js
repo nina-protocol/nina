@@ -40,12 +40,13 @@ const SearchDropdown = ({
   }
 
   if (category === 'releases') {
+    console.log(searchData)
     rows = searchData?.releases?.map((data) => {
       const releaseName = data?.title
       const releaseLink = `/${data?.publicKey}`
-
+      const artistName = data?.artist
       let formattedData = {
-        name: releaseName,
+        name: `${artistName} - ${releaseName}`,
         link: releaseLink,
         category: 'releases',
       }
