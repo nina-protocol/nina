@@ -92,7 +92,7 @@ const TabHeader = ({
 }
 
 const ResponsiveTabWrapper = styled(Box)(({ theme }) => ({
-   '&:nth-child(1)': {
+   '&:nth-of-type(1)': {
      '& button': {
        paddingLeft: '0px',
     }

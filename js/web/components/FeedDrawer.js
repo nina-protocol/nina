@@ -27,17 +27,19 @@ const FeedDrawer = () => {
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { getFeedForUser } = useContext(Release.Context)
   const [activeDrawerTypeIndex, setActiveDrawerTypeIndex] = useState(0)
-  const drawerTypes = ['latest', 'suggestions']
   const [feedFetched, setFeedFetched] = useState(false)
+  const drawerTypes = ['latest', 'suggestions']
 
   useEffect(() => {
-    if (wallet.connected) {
-      handleGetFeedForUser(wallet.publicKey.toBase58())
-      getHubSuggestionsForUser(wallet.publicKey.toBase58())
-    } else {
-      getHubSuggestionsForUser()
-      setFeedFetched(true)
+    const handleInitialFetch = async () => {
+      if (wallet.connected) {
+        await handleGetFeedForUser(wallet.publicKey.toBase58())
+        await getHubSuggestionsForUser(wallet.publicKey.toBase58())
+      } else {
+       await getHubSuggestionsForUser()
+      }
     }
+    handleInitialFetch()
   }, [wallet.connected])
 
   useEffect(() => {
@@ -89,8 +91,8 @@ const FeedDrawer = () => {
       } else {
         setFeedItems(updatedFeedItems)
       }
-      setFeedFetched(true)
     }
+    setFeedFetched(true)
   }
 
   const getHubSuggestionsForUser = async (publicKey) => {
@@ -115,7 +117,8 @@ const FeedDrawer = () => {
           <StyledMenuButton
             onClick={toggleDrawer(true)}
             sx={{ top: '100px' }}
-          >
+            >
+
             <ArrowBackIosNewIcon />
           </StyledMenuButton>
           <StyledDrawer
@@ -126,6 +129,7 @@ const FeedDrawer = () => {
             variant={'persistent'}
           >
             <FeedHeader>
+
               <CloseIcon fontSize="medium" onClick={toggleDrawer(false)} />
               <DrawerTypeWrapper>
                 {drawerTypes.map((drawerType, index) => {

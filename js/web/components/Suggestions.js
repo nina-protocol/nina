@@ -12,7 +12,7 @@ import { useRouter } from 'next/router'
 import Subscribe from './Subscribe'
 import { useSnackbar } from 'notistack'
 
-const Suggestions = ({ items, itemsTotal, publicKey, setHubSuggestions }) => {
+const Suggestions = ({ items, hubSuggestions, itemsTotal, publicKey, setHubSuggestions }) => {
   const router = useRouter()
   const scrollRef = useRef()
   const { enqueueSnackbar } = useSnackbar()
@@ -57,13 +57,8 @@ const Suggestions = ({ items, itemsTotal, publicKey, setHubSuggestions }) => {
   //   }
   // }
 
-  const removeSuggestion = (publicKey) => {
-    setHubSuggestions((prev) => {
-      return prev.filter((suggestion) => suggestion.hub.publicKey !== publicKey)
-    })
-  }
-
   const feedItems = useMemo(() => {
+    console.log('UPDATING');
     const feedItemComponents = items?.map((item, i) => {
       const hub = item.hub
       return (
@@ -96,7 +91,6 @@ const Suggestions = ({ items, itemsTotal, publicKey, setHubSuggestions }) => {
               accountAddress={hub.publicKey}
               hubHandle={hub.handle}
               inFeed={true}
-              removeSuggestion={removeSuggestion}
             />
           </CopyWrapper>
         </SuggestionItem>
@@ -166,7 +160,7 @@ const CardWrapper = styled(Box)(({ theme }) => ({
 
 const SuggestionItem = styled(Box)(({ theme }) => ({
   height: '100px',
-  padding: '15px 0',
+  padding: '15px',
   margin: '15px 0',
   border: '1px solid',
   textOverflow: 'ellipsis',

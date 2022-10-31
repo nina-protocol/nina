@@ -13,7 +13,6 @@ const Subscribe = ({
   hubHandle,
   inFeed = false,
   inHub = false,
-  removeSuggestion
 }) => {
   const wallet = useWallet()
   const router = useRouter()
@@ -21,32 +20,18 @@ const Subscribe = ({
     subscriptionSubscribe,
     subscriptionUnsubscribe,
     userSubscriptions,
-    getSubscriptionsForUser,
-    getSubscriptionsForHub,
-    subscriptionState,
   } = useContext(Nina.Context)
-  const [isFollowing, setIsFollowing] = useState(false)
+  // const [isFollowing, setIsFollowing] = useState(false)
   const [pending, setPending] = useState(false)
   const [followsYou, setFollowsYou] = useState(false)
-  const [isUser, setIsUser] = useState(false)
-  const [inDashboard, setInDashboard] = useState(
-    router.pathname.includes('/dashboard')
-  )
+  const isFollowing = useMemo(() => {
+    return userSubscriptions?.some(
+        (subscription) => subscription.to.publicKey === accountAddress
+      )}, [userSubscriptions, accountAddress])
+
   const { enqueueSnackbar } = useSnackbar()
 
   useEffect(() => {
-    if (userSubscriptions) {
-      const checkIfFollowing = userSubscriptions.some(
-        (subscription) => subscription.to.publicKey === accountAddress
-      )
-      setIsFollowing(checkIfFollowing)
-    }
-  }, [userSubscriptions])
-
-  useEffect(() => {
-    if (wallet.publicKey) {
-      setIsUser(wallet.publicKey.toBase58() === accountAddress)
-    }
     if (wallet.connected && userSubscriptions) {
       const checkIfFollowsYou = userSubscriptions?.some(
         (subscription) => subscription.from === accountAddress
@@ -65,9 +50,6 @@ const Subscribe = ({
       enqueueSnackbar(result.msg, {
         variant: 'success',
       })
-      if (inFeed){
-        removeSuggestion(accountAddress)
-      }
     } else {
       enqueueSnackbar('Error Following Account.', {
         variant: 'error',
@@ -93,7 +75,7 @@ const Subscribe = ({
     }
     setPending(false)
   }
-
+  
   return (
     <Box display="flex" alignItems={'center'}>
       {pending && (
@@ -116,7 +98,7 @@ const Subscribe = ({
           {isFollowing && !pending && (
             <Button
               color="primary"
-              sx={{ padding: '0 15px' }}
+              sx={{ padding: `${inFeed ? '0px' : '0 15px'}`}}
               onClick={(e) => handleUnsubscribe(e, accountAddress)}
             >
               Unfollow

@@ -119,17 +119,19 @@ const Feed = ({
             
               </HoverContainer>
               <CopyWrapper>
-                <Typography my={1}>New Hub:</Typography>
-                <Typography my={1}>
+                <Typography my={1}>New Hub:{' '}
                   <Link
                     href={`/hubs/${item?.hub?.handle}`}
                     passHref
-                  >{`${item?.hub?.data?.displayName}`}</Link>{' '}
-                  created by{' '}
+                  >
+                    {`${item?.hub?.data?.displayName}`}
+                  </Link>
+                  {' '}created by{' '}
                   <Link href={`/profiles/${item.authority.publicKey}`} passHref>
                     {displayNameForAccount(item.authority.publicKey)}
                   </Link>
                 </Typography>
+
                 <Typography my={1} fontWeight={600}>
                   {timeSince(Date.parse(item.datetime))} ago
                 </Typography>
@@ -180,19 +182,20 @@ const Feed = ({
                 </HoverCard>
               </HoverContainer>
               <CopyWrapper>
-                <Typography my={1}>New Release:</Typography>
-                <Typography my={1}>
+                <Typography my={1}>New Release:{' '}
                   <Link
                     href={`/${item.release.publicKey}`}
                     passHref
-                  >{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link>
-                </Typography>
-                <Typography my={1}>
-                  by{' '}
+                  >
+                    {`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}
+                  </Link>
+
+                  {' '}by{' '}
                   <Link href={`/profiles/${item.authority.publicKey}`} passHref>
                     {displayNameForAccount(item.authority.publicKey)}
                   </Link>
                 </Typography>
+
                 <Typography my={1} fontWeight={600}>
                   {timeSince(Date.parse(item.datetime))} ago
                 </Typography>
@@ -243,17 +246,20 @@ const Feed = ({
                 </HoverCard>
               </HoverContainer>
               <CopyWrapper>
-                <Typography my={1}>New Release:</Typography>
-                <Typography my={1}>
+                <Typography my={1}>New Release:{' '}
                   <Link
                     href={`/${item.release.publicKey}`}
                     passHref
-                  >{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link>{' '}
+                  >
+                    {`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}
+                  </Link>{' '}
                   via{' '}
                   <Link
                     href={`/hubs/${item?.hub?.handle}`}
                     passHref
-                  >{`${item?.hub?.data?.displayName}`}</Link>
+                  >
+                    {`${item?.hub?.data?.displayName}`}
+                  </Link>
                 </Typography>
                 <Typography fontWeight={600}>
                   {timeSince(Date.parse(item.datetime))} ago
@@ -306,28 +312,30 @@ const Feed = ({
                 </HoverCard>
               </HoverContainer>
               <CopyWrapper>
-                <Typography my={1}>Release Purchased:</Typography>
-                <Typography my={1}>
+                <Typography my={1}>Purchase:{' '}                  
                   <Link
                     href={`/${item.release?.publicKey}`}
                     passHref
-                  >{`${item.release?.metadata.properties.artist} - ${item.release?.metadata.properties.title}`}</Link>
-                </Typography>
-                <Typography my={1}>
-                  by{' '}
+                  >
+                    {`${item.release?.metadata.properties.artist} - ${item.release?.metadata.properties.title}`}
+                  </Link>
+                   {' '}by{' '}
                   <Link href={`/profiles/${item.authority.publicKey}`} passHref>
                     {displayNameForAccount(item.authority.publicKey)}
                   </Link>
-                </Typography>
+                  
                 {item.type === 'ReleasePurchaseViaHub' && (
-                  <Typography my={1}>
-                    from{' '}
+                  <>
+                    {' '}from{' '}
                     <Link
                       href={`/hubs/${item.hub.handle}`}
                       passHref
-                    >{`${item.hub.data.displayName}`}</Link>
-                  </Typography>
+                    >{`${item.hub.data.displayName}`}
+                  </Link>
+                  </>
                 )}
+                </Typography>
+
                 <Typography fontWeight={600}>
                   {timeSince(Date.parse(item.datetime))} ago
                 </Typography>
@@ -374,13 +382,17 @@ const Feed = ({
         case 'HubAddRelease':
           return (
             <ImageCard>
-              <Link href={`/${item.release.publicKey}`} passHref>
+              <HoverContainer
+                href={`/${item.release?.publicKey}`}
+                passHref
+                onClick={(e) => handleClick(e, `/${item.release?.publicKey}`)}
+              >
                 <Image
                   height={'100px'}
                   width={'100px'}
                   layout="responsive"
                   src={getImageFromCDN(
-                    item.release.metadata.image,
+                    item.release?.metadata.image,
                     400,
                     Date.parse(item.datetime)
                   )}
@@ -389,21 +401,43 @@ const Feed = ({
                   loader={loader}
                   unoptimized={true}
                 />
-              </Link>
+                <HoverCard>
+                  <CtaWrapper>
+                    <Button
+                      onClick={(e) => {
+                        handlePlay(e, item.release.publicKey)
+                      }}
+                    >
+                      {isPlaying &&
+                      track.releasePubkey === item.release.publicKey ? (
+                        <PauseCircleOutlineOutlinedIcon
+                          sx={{ color: 'text.primary' }}
+                        />
+                      ) : (
+                        <PlayCircleOutlineOutlinedIcon
+                          sx={{ color: 'text.primary' }}
+                        />
+                      )}
+                    </Button>
+                  </CtaWrapper>
+                </HoverCard>
+              </HoverContainer>
               <CopyWrapper>
                 <Typography my={1}>
                   <Link
                     href={`/${item.release.publicKey}`}
                     passHref
-                  >{`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}</Link>
-                </Typography>
-                <Typography my={1}>
-                  Reposted to{' '}
+                  >
+                    {`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}
+                  </Link>
+
+                  {' '}reposted to{' '}
                   <Link
                     href={`/hubs/${item.hub.handle}`}
                     passHref
                   >{`${item.hub.data.displayName}`}</Link>
                 </Typography>
+
                 <Typography my={1} fontWeight={600}>
                   {timeSince(Date.parse(item.datetime))} ago
                 </Typography>
@@ -480,7 +514,7 @@ const Feed = ({
                   <Link href={`/profiles/${item.authority.publicKey}`} passHref>
                     {displayNameForAccount(item.authority.publicKey)}
                   </Link>{' '}
-                  Followed{' '}
+                  followed{' '}
                   <Link href={`/profiles/${item.toAccount.publicKey}`} passHref>
                     {displayNameForAccount(item.authority.publicKey)}
                   </Link>
@@ -492,7 +526,6 @@ const Feed = ({
             </TextCard>
           )
         case 'SubscriptionSubscribeHub':
-          console.log('item >> ', item)
           return (
             <ImageCard>
               <Link href={`/hubs/${item.toHub.handle}`} passHref>
@@ -516,7 +549,7 @@ const Feed = ({
                   <Link href={`/profiles/${item.authority.publicKey}`} passHref>
                     {displayNameForAccount(item.authority.publicKey)}
                   </Link>{' '}
-                  Followed{' '}
+                  followed{' '}
                   <Link
                     href={`/hubs/${item.toHub.publicKey}`}
                     passHref
@@ -533,9 +566,11 @@ const Feed = ({
           return <Typography key={i}>{item?.type}</Typography>
       }
     })
-    return feedItemComponents
+
+    return feedItemComponents || []
 
   }, [items, isPlaying])
+
 
   if (!feedFetched) {
     return (
@@ -547,7 +582,7 @@ const Feed = ({
 
   return (
     <ScrollWrapper onScroll={debounce(() => handleScroll(), 500)}>
-      {feedFetched && (
+      {feedItems && (
         <Box>
           <FeedWrapper ref={scrollRef}>
             {feedItems &&
@@ -555,7 +590,7 @@ const Feed = ({
                 <CardWrapper key={index}>{item}</CardWrapper>
               ))
             }
-            {publicKey && !feedItems && (
+            {publicKey && feedItems.length === 0 && (
               <Box sx={{display: 'flex', flexDirection:'column', justifyContent: 'center', mt: 5}}>
                 <Typography variant="h5" mb={1}>Welcome to Nina.</Typography>
                 <Typography variant="h5" mb={1}>Here you will see the latest activity on Nina that is relevant to you.</Typography>
