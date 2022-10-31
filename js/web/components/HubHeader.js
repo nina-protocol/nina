@@ -57,8 +57,8 @@ const HubHeader = ({ hubData }) => {
           <Link href={`${hubData?.data.externalUrl}`} passHref>
             <a target="_blank" rel="noreferrer">
               <Image
-                height={'100%'}
-                width={'100%'}
+                height={100}
+                width={100}
                 layout="responsive"
                 src={getImageFromCDN(
                   hubData?.data?.image,
@@ -66,39 +66,33 @@ const HubHeader = ({ hubData }) => {
                   Date.parse(hubData?.createdAt)
                 )}
                 alt={hubData?.data.displayName}
-                priority={true}
                 loader={loader}
               />
             </a>
           </Link>
         </Box>
 
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-            width: '90px',
-          }}
-        >
+        <DisplayName>
           {hubData?.data.displayName && (
             <Link href={hubData?.data.externalUrl} passHref>
               <a target="_blank" rel="noreferrer">
-                <Typography sx={{ pl: 1 }}>
+                <Typography sx={{ padding: '0 15px' }} noWrap>
                   {hubData?.data.displayName}
                 </Typography>
               </a>
             </Link>
           )}
           {/* {wallet.connected && ( */}
-          <Subscribe
-            accountAddress={hubData.publicKey}
-            hubHandle={hubData.handle}
-            inHub={true}
-            inFeed={false}
-          />
+          <Box>
+            <Subscribe
+              accountAddress={hubData.publicKey}
+              hubHandle={hubData.handle}
+              inHub={true}
+              inFeed={false}
+            />
+          </Box>
           {/* )} */}
-        </Box>
+        </DisplayName>
         {hubData?.data.description && (
           <>
             <DescriptionOverflowContainer>
@@ -152,6 +146,22 @@ const DescriptionOverflowContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     ['-webkit-line-clamp']: '6',
     width: '40vw',
+  },
+}))
+
+const DisplayName = styled(Box)(({ theme }) => ({
+  width: '20vw',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'start',
+  textAlign: 'left',
+  textOverflow: 'ellipsis',
+  overflow: 'hidden',
+  display: ['-webkit-box'],
+  ['-webkit-line-clamp']: '1',
+  ['-webkit-box-orient']: 'vertical',
+  [theme.breakpoints.down('md')]: {
+    maxWidth: '90px',
   },
 }))
 

@@ -151,7 +151,7 @@ const ReusableTableBody = ({
   collectRoyaltyForRelease,
   refreshProfile,
   dashboardPublicKey,
-  isActiveView
+  isActiveView,
 }) => {
   const router = useRouter()
   const {
@@ -552,7 +552,7 @@ const ReusableTable = ({
   collectRoyaltyForRelease,
   refreshProfile,
   dashboardPublicKey,
-  isActiveView
+  isActiveView,
 }) => {
   return (
     <ResponsiveContainer>

@@ -154,6 +154,9 @@ const HubComponent = ({ hubPubkey }) => {
       case 0:
         return (
           <>
+            {fetched.releases && !releaseData && (
+              <Box sx={{ my: 1 }}>No releases found in this Hub</Box>
+            )}
             {hasData && releaseData && (
               <ReusableTable
                 tableType={'hubReleases'}
@@ -167,9 +170,6 @@ const HubComponent = ({ hubPubkey }) => {
       case 1:
         return (
           <>
-            {fetched.collaborators && !hubCollaborators && (
-              <Box sx={{ my: 1 }}>No collaborators found in this Hub</Box>
-            )}
             {hasData && (
               <ReusableTable
                 tableType={'hubCollaborators'}
@@ -211,7 +211,11 @@ const HubComponent = ({ hubPubkey }) => {
             />
           </HubTabWrapper>
         )}
-        {!hubData && ( <HubDotWrapper><Dots /></HubDotWrapper>)}
+        {!hubData && (
+          <HubDotWrapper>
+            <Dots />
+          </HubDotWrapper>
+        )}
         <HubsTableContainer>{renderTables(activeView)}</HubsTableContainer>
       </HubContainer>
     </>
