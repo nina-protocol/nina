@@ -159,6 +159,7 @@ const HubComponent = ({ hubPubkey }) => {
                 tableType={'hubReleases'}
                 items={releaseData}
                 hasOverflow={true}
+                isActiveView={activeView === 0}
               />
             )}
           </>
