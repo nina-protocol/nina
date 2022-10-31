@@ -15,16 +15,14 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import CloseIcon from '@mui/icons-material/Close'
 import Typography from '@mui/material/Typography'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
-import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 
 const FeedDrawer = () => {
   const wallet = useWallet()
-  const { userSubscriptions } = useContext(Nina.Context)
   const [drawerOpen, setDrawerOpen] = useState(true)
   const [feedItems, setFeedItems] = useState(undefined)
   const [hubSuggestions, setHubSuggestions] = useState(undefined)
   const [itemsTotal, setItemsTotal] = useState(0)
-  const { resetQueueWithPlaylist, isPlaying, setIsPlaying } = useContext(Audio.Context)
+  const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { getFeedForUser } = useContext(Release.Context)
   const [activeDrawerTypeIndex, setActiveDrawerTypeIndex] = useState(0)
   const [feedFetched, setFeedFetched] = useState(false)
@@ -149,19 +147,12 @@ const FeedDrawer = () => {
                   >
                     refresh
                   </Typography>
-                  {!isPlaying && (
                     <PlayCircleOutlineOutlinedIcon
                       fontSize="medium"
                       sx={{ paddingRight: '15px' }}
                       onClick={playFeed}
                     />
-                  )}
-                  {isPlaying && (
-                    <PauseCircleOutlineOutlinedIcon
-                     sx={{ paddingRight: '15px' }}
-                     onClick={() => setIsPlaying(false)}
-                    />
-                  )}
+     
                 </Box>
               )}
             </FeedHeader>
