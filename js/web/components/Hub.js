@@ -164,10 +164,8 @@ const HubComponent = ({ hubPubkey }) => {
       case 0:
         return (
           <>
-            {fetched.releases && !releaseData && (
-              <Box sx={{ my: 1 }}>No releases found in this Hub</Box>
-            )}
-            {fetched.releases && releaseData && (
+       
+            {hasData && releaseData && (
               <ReusableTable
                 tableType={'hubReleases'}
                 items={releaseData}
@@ -182,13 +180,21 @@ const HubComponent = ({ hubPubkey }) => {
             {fetched.collaborators && !hubCollaborators && (
               <Box sx={{ my: 1 }}>No collaborators found in this Hub</Box>
             )}
-            {fetched.collaborators && (
+            {hasData && (
               <ReusableTable
                 tableType={'hubCollaborators'}
                 items={hubCollaborators}
                 hasOverflow={true}
               />
             )}
+          </>
+        )
+      case 2:
+        return (
+          <>
+          {hasData && (
+                <ReusableTable tableType={'followers'} items={hubFollowers} hasOverflow={true}/>
+              )}
           </>
         )
       default:
@@ -211,51 +217,9 @@ const HubComponent = ({ hubPubkey }) => {
             />
           </HubTabWrapper>
         )}
-        <>
-          {activeView === undefined && (
-            <>
-              <HubDotWrapper>
-                <Box sx={{ width: '100%', margin: 'auto' }}>
-                  <Dots />
-                </Box>
-              </HubDotWrapper>
-            </>
-          )}
-
-          {activeView === 0 && (
-            <>
-              {hasData && !releaseData && (
-                <Box sx={{ my: 1 }}>No releases found in this Hub</Box>
-              )}
-              {hasData && releaseData && (
-                <ReusableTable tableType={'hubReleases'} items={releaseData} />
-              )}
-            </>
-          )}
-          {activeView === 1 && (
-            <>
-              {hasData && !hubCollaborators && (
-                <Box sx={{ my: 1 }}>No collaborators found in this Hub</Box>
-              )}
-              {hasData && (
-                <ReusableTable
-                  tableType={'hubCollaborators'}
-                  items={hubCollaborators}
-                />
-              )}
-            </>
-          )}
-          {activeView === 2 && (
-            <>
-              {hasData && !hubCollaborators && (
-                <Box sx={{ my: 1 }}>No followers found in this Hub</Box>
-              )}
-              {hasData && (
-                <ReusableTable tableType={'followers'} items={hubFollowers} />
-              )}
-            </>
-          )}
-        </>
+        <HubsTableContainer>
+         {renderTables(activeView)}
+        </HubsTableContainer>
       </HubContainer>
     </>
   )
@@ -290,6 +254,15 @@ const HubTabWrapper = styled(Box)(({ theme }) => ({
   py: 1,
   [theme.breakpoints.down('md')]: {
     marginTop: '0px',
+  },
+}))
+
+const HubsTableContainer = styled(Box)(({ theme }) => ({
+  paddingBottom: '100px',
+  overflowY: 'auto',
+  [theme.breakpoints.down('md')]: {
+    paddingBottom: '100px',
+    overflow: 'scroll',
   },
 }))
 
