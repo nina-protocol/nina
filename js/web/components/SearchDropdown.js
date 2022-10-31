@@ -49,7 +49,6 @@ const SearchDropdown = ({
         name: `${artistName} - ${releaseName}`,
         link: releaseLink,
         category: 'releases',
-        
       }
 
       return formattedData

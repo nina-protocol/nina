@@ -11,9 +11,9 @@ import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
-import { InputLabel, MenuItem, OutlinedInput } from "@mui/material";
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import { InputLabel, MenuItem, OutlinedInput } from '@mui/material'
+import FormControl from '@mui/material/FormControl'
+import Select from '@mui/material/Select'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 
 const style = {
@@ -26,8 +26,8 @@ const style = {
   boxShadow: 24,
   p: 4,
 }
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
+const ITEM_HEIGHT = 48
+const ITEM_PADDING_TOP = 8
 const MenuProps = {
   PaperProps: {
     style: {
@@ -35,10 +35,17 @@ const MenuProps = {
       width: 250,
     },
   },
-};
+}
 const ReleaseCreateConfirm = (props) => {
-  const { formIsValid, formValues, handleSubmit, setFormValuesConfirmed, profileHubs, selectedHub, handleChange,  } =
-    props
+  const {
+    formIsValid,
+    formValues,
+    handleSubmit,
+    setFormValuesConfirmed,
+    profileHubs,
+    selectedHub,
+    handleChange,
+  } = props
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
@@ -75,7 +82,6 @@ const ReleaseCreateConfirm = (props) => {
   const handleChangeCheckbox = (e) => {
     setConfirm(e.target.checked)
   }
-
 
   return (
     <div>
@@ -128,32 +134,31 @@ const ReleaseCreateConfirm = (props) => {
                 {description}
               </span>
             </Value>
-            <FormControl sx={{mt: 1, mb: 1, width:'100%'}}>
-              <InputLabel id="demo-multiple-checkbox-label">Select Hub</InputLabel>
-            <Select
-            value={selectedHub}
-            onChange={handleChange}
-            input={<OutlinedInput label="Name" />}
-            MenuProps={MenuProps}
-            inputProps={{ "aria-label": "Without label" }}
-            >
-              {profileHubs?.map((hub) => (
-                <MenuItem
-                key={hub?.handle}
-                value={`${hub?.publicKey}`}
-                id={hub?.publicKey}
-                name={hub?.data.displayName}
-                >
-                  {hub?.data?.displayName}
-                  </MenuItem>
-              ))}
-              <MenuItem
-              value={''}
-              name={'None'}
+            <FormControl sx={{ mt: 1, mb: 1, width: '100%' }}>
+              <InputLabel id="demo-multiple-checkbox-label">
+                Select Hub
+              </InputLabel>
+              <Select
+                value={selectedHub}
+                onChange={handleChange}
+                input={<OutlinedInput label="Name" />}
+                MenuProps={MenuProps}
+                inputProps={{ 'aria-label': 'Without label' }}
               >
-              {'None (Not Recommended)'}
-              </MenuItem>
-            </Select>
+                {profileHubs?.map((hub) => (
+                  <MenuItem
+                    key={hub?.handle}
+                    value={`${hub?.publicKey}`}
+                    id={hub?.publicKey}
+                    name={hub?.data.displayName}
+                  >
+                    {hub?.data?.displayName}
+                  </MenuItem>
+                ))}
+                <MenuItem value={''} name={'None'}>
+                  {'None (Not Recommended)'}
+                </MenuItem>
+              </Select>
             </FormControl>
             <Typography variant="subtitle1" mt={1} sx={{ color: 'red' }}>
               ONCE PUBLISHED, YOUR RELEASE INFORMATION WILL BE PERMANENT AND YOU

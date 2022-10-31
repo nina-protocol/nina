@@ -21,8 +21,6 @@ const { getImageFromCDN, loader } = imageManager
 
 const HubHeader = ({ hubData }) => {
   const [hubDescription, setHubDescription] = useState(undefined)
-  const { enqueueSnackbar } = useSnackbar()
-  const wallet = useWallet()
 
   useEffect(() => {
     if (hubData?.data.description.includes('<p>')) {
@@ -40,7 +38,8 @@ const HubHeader = ({ hubData }) => {
         .process(
           JSON.parse(hubData?.data.description).replaceAll(
             '<p><br></p>',
-            '<br>'
+            '<br>',
+            '<b><br></b>'
           )
         )
         .then((file) => {
@@ -108,19 +107,6 @@ const HubHeader = ({ hubData }) => {
           </>
         )}
       </ResponsiveHubHeader>
-
-      {/* <ResponsiveUrlContainer>
-        <Typography sx={{ pb: 2, fontSize: '12px' }}>
-          <Link href={hubData?.json.externalUrl}>
-            <a>
-              {`${(hubData?.json.externalUrl).substring(
-                8,
-                hubData?.json.externalUrl.length
-              )}`}
-            </a>
-          </Link>
-        </Typography>
-      </ResponsiveUrlContainer> */}
     </Box>
   )
 }
@@ -141,14 +127,6 @@ const ResponsiveHubHeader = styled(Box)(({ theme }) => ({
     paddingLeft: '15px',
 
     width: '100vw',
-  },
-}))
-const ResponsiveUrlContainer = styled(Box)(({ theme }) => ({
-  paddingBottom: 2,
-  fontSize: '12px',
-  textAlign: 'left',
-  [theme.breakpoints.down('md')]: {
-    paddingLeft: '15px',
   },
 }))
 
