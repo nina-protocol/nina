@@ -151,6 +151,7 @@ const ReusableTableBody = ({
   collectRoyaltyForRelease,
   refreshProfile,
   dashboardPublicKey,
+  isActiveView,
 }) => {
   const router = useRouter()
   const {
@@ -413,18 +414,17 @@ const ReusableTableBody = ({
                 return (
                   <StyledImageTableCell align="left" key={cellName}>
                     <Box sx={{ width: '50px', textAlign: 'left', pr: '15px' }}>
-                      {row.image.includes('https') ? (
+                      {row.image.includes('https') && isActiveView ? (
                         <Image
-                          height={150}
-                          width={150}
+                          height={50}
+                          width={50}
                           layout="responsive"
                           src={getImageFromCDN(
                             row.image,
-                            400,
+                            100,
                             Date.parse(row.date)
                           )}
                           alt={i}
-                          priority={true}
                           loader={loader}
                         />
                       ) : (
@@ -461,7 +461,7 @@ const ReusableTableBody = ({
                           router.push(`/profiles/${row?.authorityPublicKey}`)
                         }}
                       >
-                        {cellData}
+                        <a>{cellData}</a>
                       </Typography>
                     </OverflowContainer>
                   </StyledTableCell>
@@ -531,9 +531,15 @@ const ReusableTable = ({
   collectRoyaltyForRelease,
   refreshProfile,
   dashboardPublicKey,
+  isActiveView,
+  hasOverflow,
+  minHeightOverride = false,
 }) => {
   return (
-    <ResponsiveContainer>
+    <ResponsiveContainer
+      hasOverflow={hasOverflow}
+      minHeightOverride={minHeightOverride}
+    >
       <ResponsiveTableContainer>
         <Table>
           <ReusableTableHead tableType={tableType} inDashboard={inDashboard} />
@@ -544,6 +550,7 @@ const ReusableTable = ({
             collectRoyaltyForRelease={collectRoyaltyForRelease}
             refreshProfile={refreshProfile}
             dashboardPublicKey={dashboardPublicKey}
+            isActiveView={isActiveView}
           />
         </Table>
       </ResponsiveTableContainer>
@@ -554,7 +561,6 @@ const ReusableTable = ({
 const ResponsiveTableContainer = styled(Box)(({ theme }) => ({
   borderBottom: 'none',
   padding: '0px',
-
   [theme.breakpoints.down('md')]: {
     overflowY: 'unset',
     height: '100% !important',
@@ -613,23 +619,25 @@ const StyledTableDescriptionContainer = styled(Box)(({ theme }) => ({
   maxWidth: '20vw',
 }))
 
-const ResponsiveContainer = styled(Box)(({ theme, hasOverflow }) => ({
-  width: theme.maxWidth,
-  maxHeight: hasOverflow ? '80vh' : 'unset',
+const ResponsiveContainer = styled(Box)(
+  ({ theme, hasOverflow, minHeightOverride }) => ({
+    width: theme.maxWidth,
+    // maxHeight: hasOverflow ? 'auto' : 'unset',
+    // webkitOverflowScrolling: 'touch',
+    // minHeight: minHeightOverride ? 'unset' : '46vh',
+    // overflowY: hasOverflow ? 'auto' : 'auto',
+    overflowX: 'hidden',
+    ['&::-webkit-scrollbar']: {
+      display: 'none',
+    },
+    [theme.breakpoints.down('md')]: { 
+      width: '100vw',
+      maxHeight: 'unset',
+      overflowY: 'unset',
+    },
+  })
+)
 
-  webkitOverflowScrolling: 'touch',
-  overflowY: hasOverflow ? 'auto' : 'unset',
-  overflowX: 'hidden',
-  minHeight: '60vh',
-  ['&::-webkit-scrollbar']: {
-    display: 'none',
-  },
-  [theme.breakpoints.down('md')]: {
-    width: '100vw',
-    maxHeight: 'unset',
-    overflowY: 'unset',
-  },
-}))
 const SearchResultOverflowContainer = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
   width: '70vw',

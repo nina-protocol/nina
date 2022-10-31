@@ -17,7 +17,6 @@ import {
 import Breadcrumbs from './Breadcrumbs'
 import NavSearch from './NavSearch'
 const NavBar = () => {
-
   const router = useRouter()
   const {
     healthOk,

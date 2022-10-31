@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useContext } from 'react'
+import { useEffect, useMemo, useState, useContext, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import { Box } from '@mui/material'
 import { styled } from '@mui/system'
@@ -11,6 +11,8 @@ const TabHeader = dynamic(() => import('./TabHeader'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
 
 const HubComponent = ({ hubPubkey }) => {
+  const tableContainerRef = useRef(null)
+
   const {
     getHub,
     hubState,
@@ -149,20 +151,11 @@ const HubComponent = ({ hubPubkey }) => {
   const viewHandler = (event) => {
     const index = parseInt(event.target.id)
     setActiveView(index)
+    tableContainerRef.current.scrollTo(0, 0)
   }
 
   const renderTables = (activeView) => {
     switch (activeView) {
-      case undefined:
-        return (
-          <>
-            <HubDotWrapper>
-              <Box sx={{ width: '100%', margin: 'auto' }}>
-                <Dots />
-              </Box>
-            </HubDotWrapper>
-          </>
-        )
       case 0:
         return (
           <>
@@ -171,6 +164,7 @@ const HubComponent = ({ hubPubkey }) => {
                 tableType={'hubReleases'}
                 items={releaseData}
                 hasOverflow={true}
+                isActiveView={activeView === 0}
               />
             )}
           </>
@@ -186,6 +180,7 @@ const HubComponent = ({ hubPubkey }) => {
                 tableType={'hubCollaborators'}
                 items={hubCollaborators}
                 hasOverflow={true}
+                isActiveView={activeView === 1}
               />
             )}
           </>
@@ -198,6 +193,7 @@ const HubComponent = ({ hubPubkey }) => {
                 tableType={'followers'}
                 items={hubFollowers}
                 hasOverflow={true}
+                isActiveView={activeView === 2}
               />
             )}
           </>
@@ -222,7 +218,15 @@ const HubComponent = ({ hubPubkey }) => {
             />
           </HubTabWrapper>
         )}
-        <HubsTableContainer>{renderTables(activeView)}</HubsTableContainer>
+
+        {!hasData && (
+          <HubDotWrapper>
+            <Box sx={{ width: '100%', margin: 'auto' }}>
+              <Dots />
+            </Box>
+          </HubDotWrapper>
+        )}
+        <HubsTableContainer ref={tableContainerRef}>{renderTables(activeView)}</HubsTableContainer>
       </HubContainer>
     </>
   )
@@ -273,6 +277,7 @@ const HubDotWrapper = styled(Box)(({ theme }) => ({
   fontSize: '80px',
   display: 'flex',
   height: '100%',
+  justifyContent: 'center',
   [theme.breakpoints.down('md')]: {
     fontSize: '30px',
     left: '47%',
