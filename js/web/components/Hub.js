@@ -153,16 +153,6 @@ const HubComponent = ({ hubPubkey }) => {
 
   const renderTables = (activeView) => {
     switch (activeView) {
-      case undefined:
-        return (
-          <>
-            <HubDotWrapper>
-              <Box sx={{ width: '100%', margin: 'auto' }}>
-                <Dots />
-              </Box>
-            </HubDotWrapper>
-          </>
-        )
       case 0:
         return (
           <>
@@ -171,6 +161,7 @@ const HubComponent = ({ hubPubkey }) => {
                 tableType={'hubReleases'}
                 items={releaseData}
                 hasOverflow={true}
+                isActiveView={activeView === 0}
               />
             )}
           </>
@@ -186,6 +177,7 @@ const HubComponent = ({ hubPubkey }) => {
                 tableType={'hubCollaborators'}
                 items={hubCollaborators}
                 hasOverflow={true}
+                isActiveView={activeView === 1}
               />
             )}
           </>
@@ -198,6 +190,7 @@ const HubComponent = ({ hubPubkey }) => {
                 tableType={'followers'}
                 items={hubFollowers}
                 hasOverflow={true}
+                isActiveView={activeView === 2}
               />
             )}
           </>
@@ -221,6 +214,13 @@ const HubComponent = ({ hubPubkey }) => {
               followersCount={hubFollowers?.length}
             />
           </HubTabWrapper>
+        )}
+        {!hasData && (
+          <HubDotWrapper>
+            <Box sx={{ width: '100%', margin: 'auto' }}>
+              <Dots />
+            </Box>
+          </HubDotWrapper>
         )}
         <HubsTableContainer>{renderTables(activeView)}</HubsTableContainer>
       </HubContainer>
@@ -273,6 +273,7 @@ const HubDotWrapper = styled(Box)(({ theme }) => ({
   fontSize: '80px',
   display: 'flex',
   height: '100%',
+  justifyContent: 'center',
   [theme.breakpoints.down('md')]: {
     fontSize: '30px',
     left: '47%',

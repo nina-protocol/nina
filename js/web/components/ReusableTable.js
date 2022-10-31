@@ -151,6 +151,7 @@ const ReusableTableBody = ({
   collectRoyaltyForRelease,
   refreshProfile,
   dashboardPublicKey,
+  isActiveView,
 }) => {
   const router = useRouter()
   const {
@@ -413,10 +414,10 @@ const ReusableTableBody = ({
                 return (
                   <StyledImageTableCell align="left" key={cellName}>
                     <Box sx={{ width: '50px', textAlign: 'left', pr: '15px' }}>
-                      {row.image.includes('https') ? (
+                      {row.image.includes('https') && isActiveView ? (
                         <Image
-                          height={150}
-                          width={150}
+                          height={50}
+                          width={50}
                           layout="responsive"
                           src={getImageFromCDN(
                             row.image,
@@ -424,7 +425,6 @@ const ReusableTableBody = ({
                             Date.parse(row.date)
                           )}
                           alt={i}
-                          priority={true}
                           loader={loader}
                         />
                       ) : (
@@ -461,7 +461,7 @@ const ReusableTableBody = ({
                           router.push(`/profiles/${row?.authorityPublicKey}`)
                         }}
                       >
-                        {cellData}
+                        <a>{cellData}</a>
                       </Typography>
                     </OverflowContainer>
                   </StyledTableCell>
@@ -531,6 +531,7 @@ const ReusableTable = ({
   collectRoyaltyForRelease,
   refreshProfile,
   dashboardPublicKey,
+  isActiveView,
 }) => {
   return (
     <ResponsiveContainer>
@@ -544,6 +545,7 @@ const ReusableTable = ({
             collectRoyaltyForRelease={collectRoyaltyForRelease}
             refreshProfile={refreshProfile}
             dashboardPublicKey={dashboardPublicKey}
+            isActiveView={isActiveView}
           />
         </Table>
       </ResponsiveTableContainer>
