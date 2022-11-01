@@ -1,13 +1,16 @@
+import React from "react";
 import { useState, useEffect, useContext, createElement, Fragment } from 'react'
+import "react-virtualized/styles.css";
+import _ from "lodash";
 import Image from 'next/image'
 import Link from 'next/link'
 import { Box } from '@mui/system'
 import { Button, Typography } from '@mui/material'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
+// import Table from '@mui/material/Table'
+// import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
+// import TableRow from '@mui/material/TableRow'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
@@ -23,10 +26,39 @@ import { styled } from '@mui/material'
 import { useSnackbar } from 'notistack'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
 import { useRouter } from 'next/router'
-
+import "react-virtualized/styles.css";
+import { Column, Table, SortDirection, AutoSizer } from "react-virtualized";
 const { getImageFromCDN, loader } = imageManager
 
-const ReusableTableHead = ({ tableType, inDashboard }) => {
+
+
+// Table data as a array of objects
+
+
+const ReusableTable = ({ 
+  items,
+  tableType,
+  inDashboard,
+  collectRoyaltyForRelease,
+  refreshProfile,
+  dashboardPublicKey,
+  isActiveView,
+}) => {
+  const router = useRouter()
+  const {
+    updateTrack,
+    addTrackToQueue,
+    isPlaying,
+    setIsPlaying,
+    track,
+    playlist,
+  } = useContext(Audio.Context)
+  const { ninaClient, displayNameForAccount, displayImageForAccount } =
+    useContext(Nina.Context)
+
+console.log('tableType :>> ', tableType);
+
+//Header Setup
   let headCells = []
 
   if (tableType === 'profilePublishedReleases') {
@@ -95,127 +127,8 @@ const ReusableTableHead = ({ tableType, inDashboard }) => {
     headCells.push({ id: 'searchResultHub', label: '' })
   }
 
-  return (
-    <TableHead>
-      <TableRow>
-        {headCells?.map((headCell, i) => (
-          <StyledTableHeadCell
-            key={headCell.id}
-            sx={{ fontWeight: 'bold', borderBottom: 'none' }}
-          >
-            <Typography sx={{ fontWeight: 'bold' }}>
-              {headCell.label}
-            </Typography>
-          </StyledTableHeadCell>
-        ))}
-      </TableRow>
-    </TableHead>
-  )
-}
-const HubDescription = ({ description }) => {
-  const [hubDescription, setHubDescription] = useState()
-  useEffect(() => {
-    if (description?.includes('<p>')) {
-      unified()
-        .use(rehypeParse, { fragment: true })
-        .use(rehypeSanitize)
-        .use(rehypeReact, {
-          createElement,
-          Fragment,
-        })
-        .use(rehypeExternalLinks, {
-          target: false,
-          rel: ['nofollow', 'noreferrer'],
-        })
-        .process(JSON.parse(description).replaceAll('<p><br></p>', '<br>'))
-        .then((file) => {
-          setHubDescription(file.result)
-        })
-    } else {
-      setHubDescription(description)
-    }
-  }, [description])
-  return (
-    <StyledTableCell align="left">
-      <StyledTableDescriptionContainer>
-        <Typography noWrap>{hubDescription}</Typography>
-      </StyledTableDescriptionContainer>
-    </StyledTableCell>
-  )
-}
-
-const ReusableTableBody = ({
-  items,
-  tableType,
-  inDashboard,
-  collectRoyaltyForRelease,
-  refreshProfile,
-  dashboardPublicKey,
-  isActiveView,
-}) => {
-  const router = useRouter()
-  const {
-    updateTrack,
-    addTrackToQueue,
-    isPlaying,
-    setIsPlaying,
-    track,
-    playlist,
-  } = useContext(Audio.Context)
-  const { ninaClient, displayNameForAccount, displayImageForAccount } =
-    useContext(Nina.Context)
-
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
-
-  const snackbarHandler = (message) => {
-    const snackbarMessage = enqueueSnackbar(message, {
-      persistent: 'true',
-      variant: 'info',
-    })
-    setTimeout(() => closeSnackbar(snackbarMessage), 3000)
-  }
-
-  const handlePlay = (e, releasePubkey) => {
-    e.stopPropagation()
-    e.preventDefault()
-    if (isPlaying && track.releasePubkey === releasePubkey) {
-      setIsPlaying(false)
-    } else {
-      updateTrack(releasePubkey, true, true)
-    }
-  }
-
-  const handleQueue = (e, releasePubkey, title) => {
-    e.stopPropagation()
-    e.preventDefault()
-    const isAlreadyQueued = playlist.some((entry) => entry.title === title)
-    const filteredTrackName =
-      title?.length > 12 ? `${title.substring(0, 12)}...` : title
-    if (releasePubkey && !isAlreadyQueued) {
-      addTrackToQueue(releasePubkey)
-      snackbarHandler(`${filteredTrackName} successfully added to queue`)
-    } else {
-      snackbarHandler(`${filteredTrackName} already added to queue`)
-    }
-  }
-
-  const handleCollect = async (e, recipient, releasePubkey) => {
-    e.stopPropagation()
-    e.preventDefault()
-    const result = await collectRoyaltyForRelease(recipient, releasePubkey)
-    if (result.success) {
-      enqueueSnackbar(result.msg, {
-        variant: 'success',
-      })
-      refreshProfile()
-    } else {
-      enqueueSnackbar('Error Collecting Revenue for Release', {
-        variant: 'error',
-      })
-    }
-  }
-
-  let rows = items?.map((data) => {
+ //Data Setup
+   let rows = items?.map((data) => {
     const { releasePubkey, publicKey } = data
     const playData = {
       releasePubkey,
@@ -364,217 +277,181 @@ const ReusableTableBody = ({
     return formattedData
   })
 
+    const snackbarHandler = (message) => {
+    const snackbarMessage = enqueueSnackbar(message, {
+      persistent: 'true',
+      variant: 'info',
+    })
+    setTimeout(() => closeSnackbar(snackbarMessage), 3000)
+  }
+
+  const handlePlay = (e, releasePubkey) => {
+    e.stopPropagation()
+    e.preventDefault()
+    if (isPlaying && track.releasePubkey === releasePubkey) {
+      setIsPlaying(false)
+    } else {
+      updateTrack(releasePubkey, true, true)
+    }
+  }
+
+  const handleQueue = (e, releasePubkey, title) => {
+    e.stopPropagation()
+    e.preventDefault()
+    const isAlreadyQueued = playlist.some((entry) => entry.title === title)
+    const filteredTrackName =
+      title?.length > 12 ? `${title.substring(0, 12)}...` : title
+    if (releasePubkey && !isAlreadyQueued) {
+      addTrackToQueue(releasePubkey)
+      snackbarHandler(`${filteredTrackName} successfully added to queue`)
+    } else {
+      snackbarHandler(`${filteredTrackName} already added to queue`)
+    }
+  }
+
+  const handleCollect = async (e, recipient, releasePubkey) => {
+    e.stopPropagation()
+    e.preventDefault()
+    const result = await collectRoyaltyForRelease(recipient, releasePubkey)
+    if (result.success) {
+      enqueueSnackbar(result.msg, {
+        variant: 'success',
+      })
+      refreshProfile()
+    } else {
+      enqueueSnackbar('Error Collecting Revenue for Release', {
+        variant: 'error',
+      })
+    }
+  }
+
+  function rowRenderer({key, index, style}) {
+    console.log("ROW RENDERER", key, index, style);
+
   return (
-    <TableBody>
-      {rows?.map((row, i) => (
-        <TableRow
-          key={i}
-          hover
-          sx={{ cursor: 'pointer' }}
-          onClick={() => router.push(row.link)}
-        >
-          {Object.keys(row).map((cellName, i) => {
-            const cellData = row[cellName]
-            if (
-              cellName !== 'id' &&
-              cellName !== 'date' &&
-              cellName !== 'link' &&
-              cellName !== 'authorityPublicKey'
-            ) {
-              if (cellName === 'ctas') {
-                return (
-                  <StyledTableCellButtonsContainer align="left" key={i}>
-                    <Button
-                      sx={{ cursor: 'pointer' }}
-                      id={row.id}
-                      onClickCapture={(e) => handleQueue(e, row.id, row.title)}
-                    >
-                      <ControlPointIcon sx={{ color: 'black' }} />
-                    </Button>
-                    <Button
-                      sx={{
-                        cursor: 'pointer',
-                      }}
-                      onClickCapture={(e) => handlePlay(e, row.id)}
-                      id={row.id}
-                    >
-                      {isPlaying && track?.releasePubkey === row.id ? (
-                        <PauseCircleOutlineOutlinedIcon
-                          sx={{ color: 'black' }}
-                        />
-                      ) : (
-                        <PlayCircleOutlineOutlinedIcon
-                          sx={{ color: 'black' }}
-                        />
-                      )}
-                    </Button>
-                  </StyledTableCellButtonsContainer>
-                )
-              } else if (cellName === 'image') {
-                return (
-                  <StyledImageTableCell align="left" key={cellName}>
-                    <Box sx={{ width: '50px', textAlign: 'left', pr: '15px' }}>
-                      {row.image.includes('https') && isActiveView ? (
-                        <Image
-                          height={50}
-                          width={50}
-                          layout="responsive"
-                          src={getImageFromCDN(
-                            row.image,
-                            100,
-                            Date.parse(row.date)
-                          )}
-                          alt={i}
-                          loader={loader}
-                        />
-                      ) : (
-                        <img src={row.image} height={50} width={50} />
-                      )}
-                    </Box>
-                  </StyledImageTableCell>
-                )
-              } else if (cellName === 'description') {
-                return (
-                  <HubDescription
-                    description={cellData || null}
-                    key={cellName}
+    <div key={key} style={style}>
+      {/* {rows[index]} */}
+      {index}
+    </div>
+  );
+}
+
+const cellRenderer = ({cellData, rowIndex, dataKey, rowData}) => {
+  console.log('cellData :>> ', cellData);
+  console.log('dataKey :>> ', dataKey);
+  console.log('index :>> ', rowIndex);
+  console.log('rowDat :>> ', rowData);
+  const exclude = ['id', 'link', 'ctas', 'collect']
+
+  switch (dataKey) {
+    case 'ctas':
+      return (
+        <StyledTableCellButtonsContainer align="left" key={rowIndex}>
+          <Button
+            sx={{ cursor: 'pointer' }}
+            id={cellData.releasePubkey}
+            onClickCapture={(e) => handleQueue(e, cellData.releasePubkey, rowData.title)}
+          >
+            <ControlPointIcon sx={{ color: 'black' }} />
+          </Button>
+          <Button
+            sx={{
+              cursor: 'pointer',
+            }}
+            onClickCapture={(e) => handlePlay(e, cellData.releasePubkey)}
+            id={cellData.releasePubkey}
+          >
+            {isPlaying && track?.releasePubkey === cellData.releasePubkey ? (
+              <PauseCircleOutlineOutlinedIcon
+                sx={{ color: 'black' }}
+              />
+            ) : (
+              <PlayCircleOutlineOutlinedIcon
+                sx={{ color: 'black' }}
+              />
+            )}
+          </Button>
+        </StyledTableCellButtonsContainer>
+      )
+    case 'image':
+    return (
+        <StyledImageTableCell align="left" >
+              <Box sx={{ width: '50px', textAlign: 'left', pr: '15px' }}>
+                {cellData.includes('https') ? (
+                  <Image
+                    height={50}
+                    width={50}
+                    layout="responsive"
+                    src={getImageFromCDN(
+                      cellData,
+                      100,
+                      Date.parse(rowData.date)
+                    )}
+                    alt={rowIndex}
+                    loader={loader}
                   />
-                )
-              } else if (cellName === 'title') {
+                ) : (
+                  <img src={cellData} height={50} width={50} />
+                )}
+              </Box>
+          </StyledImageTableCell>
+       ) 
+    default:
+      if (!exclude.includes(dataKey)) {
+        return (
+        <StyledTableCell>
+          {cellData}
+        </StyledTableCell>
+        )
+      }
+      break;
+  }
+  }
+
+
+    return (
+      <div style={{ height: 400 }}>
+        <AutoSizer>
+          {({ height, width }) => (
+            <Table
+              width={width}
+              height={height}
+              headerHeight={20}
+              rowHeight={50}
+              overscanRowCount={50}
+              // sort={this._sort}
+              // sortBy={this.state.sortBy}
+              // sortDirection={this.state.sortDirection}
+              rowCount={rows.length}
+              rowGetter={({ index }) => {
+                console.log('rows[index] :>> ', rows[index]);
+                return rows[index]
+              }}
+              onRowClick={({ rowData }) => {
+                console.log('rowData :>> ', rowData)
+                router.push(rowData.link)
+              }}
+
+            >
+              {headCells.map(({id, ...other}, index) => {
+                const headCell = headCells[index];
                 return (
-                  <StyledTableCell key={cellName}>
-                    <OverflowContainer>
-                      <Typography sx={{ textDecoration: 'underline' }} noWrap>
-                        {cellData}
-                      </Typography>
-                    </OverflowContainer>
-                  </StyledTableCell>
+                  <Column
+                    key={index}
+                    dataKey={headCell.id}
+                    headerRenderer={() => headCell.label}
+                    cellRenderer={(cellData) => cellRenderer(cellData, index)}
+                  >
+                    {headCell.label}
+                  </Column>
                 )
-              } else if (cellName === 'artist') {
-                return (
-                  <StyledTableCell key={cellName}>
-                    <OverflowContainer overflowWidth={'20vw'}>
-                      <Typography
-                        noWrap
-                        sx={{ hover: 'pointer' }}
-                        onClickCapture={() => {
-                          router.push(`/profiles/${row?.authorityPublicKey}`)
-                        }}
-                      >
-                        <a>{cellData}</a>
-                      </Typography>
-                    </OverflowContainer>
-                  </StyledTableCell>
-                )
-              } else if (cellName === 'searchResultArtist') {
-                return (
-                  <StyledTableCell key={cellName}>
-                    <SearchResultOverflowContainer>
-                      <a>{cellData}</a>
-                    </SearchResultOverflowContainer>
-                  </StyledTableCell>
-                )
-              } else if (cellName === 'searchResultRelease') {
-                return (
-                  <StyledTableCell key={cellName}>
-                    <SearchResultOverflowContainer>
-                      <OverflowContainer overflowWidth={'60vw'}>
-                        <Typography
-                          noWrap
-                          onClickCapture={() => router.push(`/${row?.id}`)}
-                        >
-                          <a>{cellData}</a>
-                        </Typography>
-                      </OverflowContainer>
-                    </SearchResultOverflowContainer>
-                  </StyledTableCell>
-                )
-              } else if (cellName === 'searchResultHub') {
-                return (
-                  <StyledTableCell key={cellName}>
-                    <SearchResultOverflowContainer>
-                      <Typography
-                        noWrap
-                        onClickCapture={() => router.push(`/hubs/${row?.id}`)}
-                      >
-                        <a>{cellData}</a>
-                      </Typography>
-                    </SearchResultOverflowContainer>
-                  </StyledTableCell>
-                )
-              } else {
-                return (
-                  <StyledTableCell key={cellName}>
-                    <OverflowContainer>
-                      <Typography sx={{ paddingLeft: '5px' }} noWrap>
-                        <Link href={row.link} passHref>
-                          <a>{cellData}</a>
-                        </Link>
-                      </Typography>
-                    </OverflowContainer>
-                  </StyledTableCell>
-                )
-              }
-            }
-          })}
-          <StyledTableCell />
-        </TableRow>
-      ))}
-    </TableBody>
-  )
+              })}
+            </Table>
+          )}
+        </AutoSizer>
+      </div>
+    );
 }
-
-const ReusableTable = ({
-  items,
-  tableType,
-  inDashboard,
-  collectRoyaltyForRelease,
-  refreshProfile,
-  dashboardPublicKey,
-  isActiveView,
-  hasOverflow,
-  minHeightOverride = false,
-}) => {
-  return (
-    <ResponsiveContainer
-      hasOverflow={hasOverflow}
-      minHeightOverride={minHeightOverride}
-    >
-      <ResponsiveTableContainer>
-        <Table>
-          <ReusableTableHead tableType={tableType} inDashboard={inDashboard} />
-          <ReusableTableBody
-            items={items}
-            tableType={tableType}
-            inDashboard={inDashboard}
-            collectRoyaltyForRelease={collectRoyaltyForRelease}
-            refreshProfile={refreshProfile}
-            dashboardPublicKey={dashboardPublicKey}
-            isActiveView={isActiveView}
-          />
-        </Table>
-      </ResponsiveTableContainer>
-    </ResponsiveContainer>
-  )
-}
-
-const ResponsiveTableContainer = styled(Box)(({ theme }) => ({
-  borderBottom: 'none',
-  padding: '0px',
-  [theme.breakpoints.down('md')]: {
-    overflowY: 'unset',
-    height: '100% !important',
-    paddingLeft: 0,
-    paddingRight: 0,
-    paddingBottom: '200px',
-  },
-}))
-
-const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
-  padding: '5px',
-  textAlign: 'left',
-  cursor: 'pointer',
-}))
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   padding: '5px',
@@ -584,14 +461,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     padding: '5px',
   },
 }))
-const StyledImageTableCell = styled(TableCell)(({ theme }) => ({
-  width: '50px',
-  textAlign: 'left',
-  padding: '5px 0',
-  [theme.breakpoints.down('md')]: {
-    padding: '0 5px',
-  },
-}))
+
 const StyledTableCellButtonsContainer = styled(TableCell)(({ theme }) => ({
   width: '100px',
   textAlign: 'left',
@@ -603,50 +473,16 @@ const StyledTableCellButtonsContainer = styled(TableCell)(({ theme }) => ({
   },
 }))
 
-const OverflowContainer = styled(Box)(({ theme }) => ({
-  overflow: 'hidden',
-  maxWidth: '15vw',
+const StyledImageTableCell = styled(TableCell)(({ theme }) => ({
+  width: '50px',
   textAlign: 'left',
-  textOverflow: 'ellipsis',
+  padding: '5px 0',
   [theme.breakpoints.down('md')]: {
-    minWidth: '0',
+    padding: '0 5px',
   },
 }))
 
-const StyledTableDescriptionContainer = styled(Box)(({ theme }) => ({
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  maxWidth: '20vw',
-}))
 
-const ResponsiveContainer = styled(Box)(
-  ({ theme, hasOverflow, minHeightOverride }) => ({
-    width: theme.maxWidth,
-    // maxHeight: hasOverflow ? 'auto' : 'unset',
-    // webkitOverflowScrolling: 'touch',
-    // minHeight: minHeightOverride ? 'unset' : '46vh',
-    // overflowY: hasOverflow ? 'auto' : 'auto',
-    overflowX: 'hidden',
-    ['&::-webkit-scrollbar']: {
-      display: 'none',
-    },
-    [theme.breakpoints.down('md')]: { 
-      width: '100vw',
-      maxHeight: 'unset',
-      overflowY: 'unset',
-    },
-  })
-)
-
-const SearchResultOverflowContainer = styled(Box)(({ theme }) => ({
-  overflow: 'hidden',
-  width: '70vw',
-  textAlign: 'left',
-  textOverflow: 'ellipsis',
-  [theme.breakpoints.down('md')]: {
-    minWidth: '0',
-  },
-}))
 const StyledCollectButton = styled(Button)(({ theme }) => ({
   color: `${theme.palette.blue} !important`,
   display: 'flex',
@@ -662,4 +498,5 @@ const StyledCollectButton = styled(Button)(({ theme }) => ({
   },
 }))
 
-export default ReusableTable
+
+export default ReusableTable;

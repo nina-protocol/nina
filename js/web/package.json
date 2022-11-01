@@ -51,6 +51,7 @@
     "react-slick": "^0.28.1",
     "react-swipeable-views": "^0.14.0",
     "react-tabs": "^3.2.3",
+    "react-virtualized": "^9.22.3",
     "sharp": "^0.29.3",
     "slick-carousel": "^1.8.1",
     "stream-browserify": "^3.0.0",
