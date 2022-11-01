@@ -3,11 +3,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Box } from '@mui/system'
 import { Button, Typography } from '@mui/material'
-// import Table from '@mui/material/Table'
-// import TableBody from '@mui/material/TableBody'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
-// import TableRow from '@mui/material/TableRow'
+import TableRow from '@mui/material/TableRow'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
@@ -24,7 +24,6 @@ import { useSnackbar } from 'notistack'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
 import { useRouter } from 'next/router'
 import "react-virtualized/styles.css";
-import { Column, Table, SortDirection, AutoSizer } from "react-virtualized";
 
 
 
