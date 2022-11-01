@@ -411,7 +411,7 @@ const cellRenderer = ({cellData, rowIndex, dataKey, rowData}) => {
 
     return (
       <div style={{ height: 400 }}>
-        <AutoSizer>
+        <AutoSizer style={{overFlow: 'none'}}>
           {({ height, width }) => (
             <Table
               width={width}
