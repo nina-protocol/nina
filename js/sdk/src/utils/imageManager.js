@@ -14,8 +14,9 @@ export const getImageFromCDN = (url, width = 400, date) => {
       fm: 'webp',
     })
   }
-
-  return image
+  image.concat(`?auto=compress,format`)
+  console.log('image !! :>> ', image);
+  return image 
 }
 
 export const loader = ({ src, width }) => {
@@ -24,5 +25,6 @@ export const loader = ({ src, width }) => {
     let fixedURL = src.replace(`&s=${url.searchParams.get('s')}`, '')
     return (fixedURL += `&s=${url.searchParams.get('s')}`)
   }
+
   return url
 }
