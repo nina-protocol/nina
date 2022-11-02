@@ -6,9 +6,9 @@ import { styled } from '@mui/material/styles'
 import * as Yup from 'yup'
 import EmailCaptureForm from './EmailCaptureForm'
 import { Box } from '@mui/material'
+import Link from 'next/link'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-
 const style = {
   position: 'absolute',
   top: '50%',
@@ -78,20 +78,18 @@ const EmailCapture = ({size}) => {
     <div>
       {size === 'large' && (
         <BlueTypography
-          onClick={handleOpen}
           variant="h1"
-          sx={{ padding: { md: '0 165px 140px', xs: '30px 0px' } }}
         >
-          Apply for access to the Nina for Artists Beta
+          <a onClick={handleOpen}>Apply</a> for a Hub {connected ? '' : 'or connect your wallet'} to get started.
         </BlueTypography>
       )}
       {size === 'medium' && (
         <BlueTypography
           onClick={handleOpen}
           variant="h3"
-          sx={{ padding: { md: '10px 0 ', xs: '0px 0px' }, border: '1px solid #2D81FF', width: '100%', textAlign: 'center' }}
+          sx={{ color: '#2D81FF', padding: { md: '10px 0 ', xs: '0px 0px' }, border: '1px solid #2D81FF', width: '100%', textAlign: 'center' }}
         >
-          Please fill out this form to apply
+          Please fill out this form to apply for a Hub
         </BlueTypography>
       )}
       {size === 'small' && (
@@ -135,7 +133,7 @@ const EmailCapture = ({size}) => {
 }
 
 const BlueTypography = styled(Typography)(({ theme }) => ({
-  color: theme.palette.blue,
+  '& a': {color: theme.palette.blue},
   'cursor': 'pointer'
 }))
 
