@@ -452,14 +452,15 @@ const ReusableTableBody = ({
                 )
               } else if (cellName === 'artist') {
                 return (
-                  <StyledTableCell
-                    key={cellName}
-                    onClickCapture={() => {
-                      router.push(`/profiles/${row?.authorityPublicKey}`)
-                    }}
-                  >
+                  <StyledTableCell key={cellName}>
                     <OverflowContainer overflowWidth={'20vw'}>
-                      <Typography noWrap sx={{ hover: 'pointer' }}>
+                      <Typography
+                        noWrap
+                        sx={{ hover: 'pointer' }}
+                        onClickCapture={() => {
+                          router.push(`/profiles/${row?.authorityPublicKey}`)
+                        }}
+                      >
                         <a>{cellData}</a>
                       </Typography>
                     </OverflowContainer>
@@ -491,7 +492,7 @@ const ReusableTableBody = ({
                     </SearchResultOverflowContainer>
                   </StyledTableCell>
                 )
-              } else if (cellName === 'searchResultHub'){
+              } else if (cellName === 'searchResultHub') {
                 return (
                   <StyledTableCell
                     key={cellName}
