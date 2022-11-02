@@ -393,23 +393,13 @@ const Profile = ({ profilePubkey }) => {
         </ProfileHeaderWrapper>
 
         {hasData && (
-          <Box sx={{ py: 1 }}>
+          <TabWrapper>
             <TabHeader
               viewHandler={viewHandler}
               activeView={activeView}
               profileTabs={views}
             />
-          </Box>
-        )}
-
-        {fetched.info && (
-          <Box sx={{ py: 1 }}>
-            <TabHeader
-              viewHandler={viewHandler}
-              activeView={activeView}
-              profileTabs={tabCategories}
-            />
-          </Box>
+          </TabWrapper>
         )}
         <>
           {!hasData && (
@@ -475,10 +465,10 @@ const ProfileHeaderWrapper = styled(Box)(({ theme }) => ({
   maxWidth: '100vw',
   [theme.breakpoints.down('md')]: {
     width: '100vw',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'no-wrap',
-    height: '100px',
+
+    height: '100%',
+    paddingBottom: '10px',
+    borderBottom: '1px solid #E5E5E5',
   },
 }))
 
@@ -500,6 +490,7 @@ const ProfileTableContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     paddingBottom: '100px',
     overflow: 'scroll',
+    height: '100%',
   },
 }))
 
@@ -517,5 +508,10 @@ const ProfileDotWrapper = styled(Box)(({ theme }) => ({
     top: '50%',
   },
 }))
-
+const TabWrapper = styled(Box)(({ theme }) => ({
+  py: 1,
+  [theme.breakpoints.down('md')]: {
+    borderBottom: '1px solid #E5E5E5',
+  },
+}))
 export default Profile

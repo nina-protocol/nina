@@ -37,7 +37,16 @@ const TabHeader = ({
   }
   return (
     <ResponsiveContainer>
-      <Box sx={{ display: 'flex', flexDirection: 'row', rowGap: 1, pb: 1 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          overflowX: 'scroll',
+          justifyContent: 'center',
+          pb: 1,
+          rowGap: 1,
+        }}
+      >
         {profileTabs?.map((tab, index) => {
           return (
             <>
@@ -56,15 +65,14 @@ const TabHeader = ({
                   id={index}
                   className={index === 0 ? 'first' : ''}
                 >
-                  <Typography
+                  <ResponsiveTabTypography
                     sx={{
                       fontWeight: `${activeView === index ? 'bold' : ''}`,
                     }}
                     id={index}
                   >
-                    {tab.name}
-                    {` (${tab.count})`}
-                  </Typography>
+                    {`${tab.name} (${tab.count})`}
+                  </ResponsiveTabTypography>
 
                   {tab.playlist && (
                     <ResponsiveCircleOutlineIconContainer>
@@ -105,6 +113,7 @@ const ResponsiveTab = styled(Button)(({ theme }) => ({
   alignItems: 'center',
   display: 'flex',
   flexDirection: 'row',
+
   textTransform: 'uppercase',
   color: theme.palette.text.primary,
   paddingRight: '15px',
@@ -112,8 +121,13 @@ const ResponsiveTab = styled(Button)(({ theme }) => ({
   '&:disabled': {
     cursor: 'default !important',
   },
+
+  [theme.breakpoints.down('md')]: {},
+}))
+
+const ResponsiveTabTypography = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
-    paddingLeft: '6px',
+    fontSize: '11.5px !important',
   },
 }))
 
@@ -136,7 +150,7 @@ const PlayCircleOutlineIconButtonWrapper = styled(Button)(({ theme }) => ({
   color: 'black',
   paddingRight: 0,
   [theme.breakpoints.down('md')]: {
-    paddingRight: 0.5,
+    paddingRight: '3px',
   },
 }))
 
@@ -151,7 +165,7 @@ const ResponsiveCircleOutlineIconContainer = styled(Box)(({ theme }) => ({
     opacity: 0.5,
   },
   [theme.breakpoints.down('md')]: {
-    paddingRight: '15px',
+    paddingRight: '3px',
   },
 }))
 
