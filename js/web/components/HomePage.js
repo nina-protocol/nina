@@ -199,7 +199,7 @@ const HomePage = () => {
           align="center"
           sx={{ paddingBottom: { md: '140px', xs: '30px' } }}
         >
-          <EmailCapture />
+          <EmailCapture size="large" />
         </Box>
       </HomePageContainer>
     </ScrollablePageWrapper>

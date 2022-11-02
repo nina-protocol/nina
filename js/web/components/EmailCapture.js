@@ -31,7 +31,7 @@ const EmailCaptureSchema = Yup.object().shape({
   type: Yup.string(),
 })
 
-const EmailCapture = (props) => {
+const EmailCapture = ({size}) => {
   const { publicKey, connected } = useWallet()
   const { submitEmailRequest } = useContext(Nina.Context)
   const [open, setOpen] = useState(false)
@@ -76,13 +76,32 @@ const EmailCapture = (props) => {
 
   return (
     <div>
-      <BlueTypography
-        onClick={handleOpen}
-        variant="h1"
-        sx={{ padding: { md: '0 165px 140px', xs: '30px 0px' } }}
-      >
-        Sign up
-      </BlueTypography>
+      {size === 'large' && (
+        <BlueTypography
+          onClick={handleOpen}
+          variant="h1"
+          sx={{ padding: { md: '0 165px 140px', xs: '30px 0px' } }}
+        >
+          Sign Up
+        </BlueTypography>
+      )}
+      {size === 'medium' && (
+        <BlueTypography
+          onClick={handleOpen}
+          variant="h3"
+          sx={{ padding: { md: '10px 0 ', xs: '0px 0px' }, border: '1px solid #2D81FF', width: '100%', textAlign: 'center' }}
+        >
+          Please fill out this form to apply
+        </BlueTypography>
+      )}
+      {size === 'small' && (
+        <BlueTypography
+          onClick={handleOpen}
+          sx={{ padding: { md: '2px', xs: '0px 0px' }, border: '1px solid #2D81FF', width: '100%', textAlign: 'center' }}
+        >
+          Sign Up
+        </BlueTypography>
+      )}
       <Modal
         open={open}
         onClose={handleClose}

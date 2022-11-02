@@ -34,6 +34,7 @@ import {
   UploadType,
   uploadHasItemForType,
 } from '../utils/uploadManager'
+import EmailCapture from './EmailCapture'
 const BundlrModal = dynamic(() => import('./BundlrModal'))
 
 const ReleaseCreateSchema = Yup.object().shape({
@@ -433,31 +434,12 @@ const ReleaseCreate = () => {
         <Box style={{ display: 'flex' }}>
           <NpcMessage>
             <Typography variant="h3">
-              Currently, Nina Publishing Credits (NPCs) are required to access
-              the publishing flow.
+              Nina is currently in a closed beta for uploading releases.
             </Typography>
-            <Typography variant="h3">
-              1 NPC allows the publishing of 1 Release.
-            </Typography>
-            <Typography variant="h3">
-              If you don’t have a Solana wallet, please set one up at{' '}
-              <Link target="_blank" rel="noreferrer" href="https://phantom.app">
-                phantom.app
-              </Link>
-              .
-            </Typography>
-            <Typography variant="h3">
-              Please fill out{' '}
-              <Link
-                target="_blank"
-                rel="noreferrer"
-                href="https://docs.google.com/forms/d/e/1FAIpQLSdj13RKQcw9GXv3A5U4ebJhzJjjfxzxuCtB092X4mkHm5XX0w/viewform"
-              >
-                this form
-              </Link>{' '}
-              and we will notify you when your credits have been distributed.
-            </Typography>
-
+            <br />
+            <EmailCapture size="medium" /> 
+            <br />
+            <br />
             <Typography variant="h3">
               Check our <Link href="/faq">FAQ</Link> or hit us at{' '}
               <Link
