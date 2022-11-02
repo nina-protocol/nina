@@ -260,13 +260,14 @@ const MobileNavSearch = ({
   autoCompleteResults,
   keyHandler,
 }) => {
+  const router = useRouter()
   return (
     <MobileNavSearchContainer>
       <Box>
         {showSearchInput ? (
           <CloseIcon onClick={() => setShowSearchInput(false)} />
         ) : (
-          <SearchIcon onClick={() => setShowSearchInput(true)} />
+          <SearchIcon onClick={() => router.push('/search')} />
         )}
       </Box>
       {showSearchInput && (

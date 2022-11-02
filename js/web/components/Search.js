@@ -1,6 +1,8 @@
 import NinaSdk from '@nina-protocol/js-sdk'
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState, useContext, useRef } from 'react'
 import { styled } from '@mui/material/styles'
+import axios from 'axios'
+import { useRouter } from 'next/router'
 
 import { Box } from '@mui/system'
 import { Button, Typography } from '@mui/material'
@@ -13,9 +15,11 @@ import Dots from './Dots'
 import dynamic from 'next/dynamic'
 import { release } from 'os'
 
+const SearchDropdown = dynamic(() => import('./SearchDropdown'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
 
 const Search = (props) => {
+  const router = useRouter()
   const { searchResults, searchQuery } = props
   const [query, setQuery] = useState(searchQuery?.q)
   const { getHubs, hubState, featuredHubs, setFeaturedHubs } = useContext(
@@ -24,6 +28,10 @@ const Search = (props) => {
   const { getSubscriptionsForUser } = useContext(Nina.Context)
   const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
     useContext(Release.Context)
+
+  const dropdownRef = useRef()
+  const searchInputRef = useRef()
+
   const [searchFilter, setSearchFilter] = useState()
   const [response, setResponse] = useState(searchResults)
   const [defaultResponse, setDefaultResponse] = useState([
@@ -42,6 +50,15 @@ const Search = (props) => {
     { name: 'Artists', length: 0 },
     { name: 'Releases', length: 0 },
     { name: 'Hubs', length: 0 },
+  ])
+  const [suggestions, setSuggestions] = useState([])
+  const [showDropdown, setShowDropdown] = useState(false)
+  const [showSearchInput, setShowSearchInput] = useState(false)
+  const [inputFocus, setInputFocus] = useState(false)
+  const [autoCompleteResults, setAutocompleteResults] = useState([
+    { name: 'artists', visible: false },
+    { name: 'releases', visible: false },
+    { name: 'hubs', visible: false },
   ])
 
   useEffect(() => {
@@ -147,6 +164,122 @@ const Search = (props) => {
     }
   }, [searchFilter])
 
+  useEffect(() => {
+    const handleDropdown = (e) => {
+      if (
+        dropdownRef?.current &&
+        !dropdownRef?.current?.contains(e.target) &&
+        !searchInputRef?.current?.contains(e.target)
+      ) {
+        setShowDropdown(false)
+      }
+    }
+
+    document.addEventListener('click', handleDropdown)
+
+    return () => {
+      document.removeEventListener('click', handleDropdown)
+    }
+  }, [showDropdown, dropdownRef])
+
+  useEffect(() => {
+    if (query && setShowDropdown) {
+      suggestions?.artists?.length
+        ? (autoCompleteResults[0].visible = true)
+        : (autoCompleteResults[0].visible = false)
+      suggestions?.releases?.length
+        ? (autoCompleteResults[1].visible = true)
+        : (autoCompleteResults[1].visible = false)
+      suggestions?.hubs?.length
+        ? (autoCompleteResults[2].visible = true)
+        : (autoCompleteResults[2].visible = false)
+      setAutocompleteResults([...autoCompleteResults])
+    }
+  }, [suggestions])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (query?.length > 0) {
+      await NinaSdk.Search.withQuery(query).then(setResponse)
+      router.push(`/search/?q=${query}`)
+    }
+    if (query === '') {
+      e.preventDefault()
+      e.stopPropagation()
+      return
+    }
+    setShowDropdown(false)
+    setShowSearchInput(false)
+  }
+
+  const autoCompleteHandler = async (query) => {
+    const response = await axios.post(
+      `${NinaSdk.client.endpoint}/suggestions`,
+      { query }
+    )
+    if (query.length > 0) {
+      setSuggestions(response.data)
+    }
+  }
+
+  const changeHandler = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const search = e.target.value
+
+    setQuery(search)
+    if (query !== '') {
+      setShowDropdown(true)
+    }
+
+    if (query) {
+      autoCompleteHandler(query)
+    }
+  }
+
+  const suggestionsClickHandler = (search, searchFilter) => {
+    setQuery('')
+    
+    router.push(
+      `/search/?q=${search}${searchFilter ? `&type=${searchFilter}` : ''}`
+    )
+  }
+
+  const suggestionsHandler = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const clickedSuggestion = e.target.getAttribute('data-value')
+    const searchFilter = e.target.id
+    if (clickedSuggestion) {
+      setQuery(clickedSuggestion)
+      setShowDropdown(false)
+      setShowSearchInput(false)
+    }
+    suggestionsClickHandler(clickedSuggestion, searchFilter)
+  }
+
+  const handleInputFocus = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setInputFocus(true)
+    if (inputFocus && query) {
+      setShowDropdown(true)
+    }
+  }
+  const keyHandler = (e) => {
+    const clickedSuggestion = e.target.innerText
+    const searchFilter = e.target.id
+
+    if (e.key === 'Enter') {
+      setQuery(clickedSuggestion)
+      suggestionsClickHandler(clickedSuggestion, searchFilter)
+      setShowDropdown(false)
+      setShowSearchInput(false)
+    }
+  }
+
   const renderTables = (activeView) => {
     switch (activeView) {
       case 0:
@@ -249,10 +382,53 @@ const Search = (props) => {
 
   return (
     <SearchPageContainer>
+      <DesktopNavSearchContainer>
+      <Form 
+      onSubmit={(e) => handleSubmit(e)}
+      >
+        <SearchInputWrapper>
+          <SearchInput
+            onChange={(e) => changeHandler(e)}
+            value={query}
+            autoComplete="off"
+            onFocus={(e) => handleInputFocus(e)}
+            ref={searchInputRef}
+            placeholder="Search for artists, releases, hubs"
+            type="search"
+          />
+        </SearchInputWrapper>
+      </Form>
+      {showDropdown && (
+        <DropdownContainer ref={dropdownRef}>
+          {autoCompleteResults.map((result, index) => {
+            if (result.visible) {
+              return (
+                <ResponsiveSearchResultContainer key={index}>
+                  <SearchDropdown
+                    category={result.name}
+                    searchData={suggestions}
+                    hasResults={result.visible}
+                    clickHandler={(e) => suggestionsHandler(e)}
+                    onKeyDown={(e) => keyHandler(e)}
+                  />
+                </ResponsiveSearchResultContainer>
+              )
+            }
+          })}
+
+          {query?.length > 0 &&
+            suggestions?.artists?.length === 0 &&
+            suggestions?.releases?.length === 0 &&
+            suggestions?.hubs?.length === 0 && (
+              <Typography>No results found</Typography>
+            )}
+        </DropdownContainer>
+      )}
+    </DesktopNavSearchContainer>
       <SearchHeaderWrapper>
         <SearchHeaderContainer>
           {searchQuery && (
-            <Typography>{`Search results for ${query}`}</Typography>
+            <Typography>{`Search results for ${searchQuery.q}`}</Typography>
           )}
         </SearchHeaderContainer>
       </SearchHeaderWrapper>
@@ -370,13 +546,67 @@ const SearchPageContainer = styled(Box)(({ theme }) => ({
     overflow: 'hidden',
   },
 }))
+const DropdownContainer = styled(Box)(({ theme }) => ({
+  maxHeight: '60vh',
+  width: '75vw',
+  zIndex: '100',
+  position: 'absolute',
+  overflow: 'hidden',
+  textAlign: 'left',
+  marginLeft: '12%',
+  backgroundColor: '#fff',
+  padding: '0 2px',
+
+}))
+const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
+  maxHeight: '60vh',
+  maxWidth: theme.maxWidth,
+  overflowY: 'auto',
+  webkitOverflowScrolling: 'touch',
+  width: '100vw'
+}))
+const DesktopNavSearchContainer = styled(Box)(({ theme }) => ({
+  // [theme.breakpoints.down('sm')]: {
+  //   display: 'none',
+  // },
+}))
+const SearchInputWrapper = styled(Box)(({ theme }) => ({
+
+  display: 'none',
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  [theme.breakpoints.down('md')]: {
+    display: 'flex',
+    width: '75%',
+  }
+}))
+const SearchInput = styled('input')(({ theme }) => ({
+  border: 0,
+  borderBottom: '1px solid #000000',
+  width: '15vw',
+  marginRight: '20px',
+  outline: 'none !important',
+  background: 'transparent',
+  outline: 'none',
+  borderRadius: 0,
+  display: 'none',
+  [theme.breakpoints.down('md')]: {
+   marginTop: '15px',
+    padding: '2px 0',
+    width: '100vw',
+    fontSize: '18px',
+    display: 'flex'
+  },
+}))
+
 
 const SearchHeaderContainer = styled(Box)(({ theme }) => ({
   maxWidth: '100%',
   textAlign: 'left',
   [theme.breakpoints.down('md')]: {
-    paddingLeft: '10px',
-    paddingRight: '10px',
+    marginTop: '20px',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
 }))
 const SearchHeaderWrapper = styled(Box)(({ theme }) => ({
@@ -410,6 +640,30 @@ const SearchAllResultsWrapper = styled(Box)(({ theme }) => ({
   },
 }))
 
+const MobileSearchInputWrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'row',
+  margin: '0px 10px',
+}))
+const MobileSearchContainer = styled(Box)(({ theme }) => ({
+  height: '100vh',
+  width: '95vw',
+  zIndex: '100',
+  position: 'absolute',
+  overflow: 'hidden',
+  textAlign: 'left',
+  left: '-50px',
+}))
+const MobileDropdownContainer = styled(Box)(({ theme }) => ({
+  height: '100vh',
+  width: '95vw',
+  zIndex: '100',
+  display: 'block',
+  position: 'absolute',
+  background: '#fff',
+  textAlign: 'left',
+  padding: '0 10px',
+}))
 const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
   fontSize: '80px',
   display: 'flex',
@@ -450,6 +704,8 @@ const SearchResultFilter = styled(Button)(({ theme, isClicked }) => ({
 const ResultsWrapper = styled(Box)(({ theme }) => ({
   overflow: 'auto',
   paddingBottom: '100px',
-  [theme.breakpoints.down('md')]: {},
+  [theme.breakpoints.down('md')]: {
+    paddingBottom: '100px',
+  },
 }))
 export default Search
