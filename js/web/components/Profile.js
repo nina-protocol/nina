@@ -461,6 +461,7 @@ const ProfileHeaderContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     paddingLeft: '10px',
     paddingRight: '10px',
+    height: '100%',
   },
 }))
 
@@ -475,10 +476,9 @@ const ProfileHeaderWrapper = styled(Box)(({ theme }) => ({
   maxWidth: '100vw',
   [theme.breakpoints.down('md')]: {
     width: '100vw',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'no-wrap',
-    height: '100px',
+    height: '100%',
+    paddingBottom: '10px',
+    borderBottom: '1px solid #E5E5E5',
   },
 }))
 
