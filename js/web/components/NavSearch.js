@@ -364,7 +364,7 @@ const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
 
 const MobileNavSearchContainer = styled(Box)(({ theme }) => ({
   position: 'absolute',
-  right: '65px',
+  right: '0px',
   height: '100%',
   [theme.breakpoints.up('md')]: {
     display: 'none',

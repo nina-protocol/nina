@@ -566,7 +566,6 @@ const ResponsiveTableContainer = styled(Box)(({ theme }) => ({
     height: '100% !important',
     paddingLeft: 0,
     paddingRight: 0,
-    
   },
 }))
 
@@ -630,7 +629,7 @@ const ResponsiveContainer = styled(Box)(
     ['&::-webkit-scrollbar']: {
       display: 'none',
     },
-    [theme.breakpoints.down('md')]: { 
+    [theme.breakpoints.down('md')]: {
       width: '100vw',
       maxHeight: 'unset',
       overflowY: 'unset',

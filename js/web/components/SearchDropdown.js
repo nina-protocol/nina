@@ -41,7 +41,6 @@ const SearchDropdown = ({
   }
 
   if (category === 'releases') {
-    console.log(searchData)
     rows = searchData?.releases?.map((data) => {
       const releaseName = data?.title
       const releaseLink = `/${data?.publicKey}`
@@ -88,7 +87,9 @@ const SearchDropdown = ({
               key={index}
             >
               <a key={index} id={row.category} onClick={clickHandler}>
-                <Typography id={row.category} data-value={row?.name}>{row?.displayName}</Typography>
+                <Typography id={row.category} data-value={row?.name}>
+                  {row?.displayName}
+                </Typography>
               </a>
             </Box>
           ))}
