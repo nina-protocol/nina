@@ -452,15 +452,14 @@ const ReusableTableBody = ({
                 )
               } else if (cellName === 'artist') {
                 return (
-                  <StyledTableCell key={cellName}>
+                  <StyledTableCell
+                    key={cellName}
+                    onClickCapture={() => {
+                      router.push(`/profiles/${row?.authorityPublicKey}`)
+                    }}
+                  >
                     <OverflowContainer overflowWidth={'20vw'}>
-                      <Typography
-                        noWrap
-                        sx={{ hover: 'pointer' }}
-                        onClickCapture={() => {
-                          router.push(`/profiles/${row?.authorityPublicKey}`)
-                        }}
-                      >
+                      <Typography noWrap sx={{ hover: 'pointer' }}>
                         <a>{cellData}</a>
                       </Typography>
                     </OverflowContainer>
@@ -468,7 +467,10 @@ const ReusableTableBody = ({
                 )
               } else if (cellName === 'searchResultArtist') {
                 return (
-                  <StyledTableCell key={cellName}>
+                  <StyledTableCell
+                    key={cellName}
+                    onClickCapture={() => router.push(`/profiles/${row?.id}`)}
+                  >
                     <SearchResultOverflowContainer>
                       <a>{cellData}</a>
                     </SearchResultOverflowContainer>
@@ -476,27 +478,27 @@ const ReusableTableBody = ({
                 )
               } else if (cellName === 'searchResultRelease') {
                 return (
-                  <StyledTableCell key={cellName}>
+                  <StyledTableCell
+                    key={cellName}
+                    onClickCapture={() => router.push(`/${row?.id}`)}
+                  >
                     <SearchResultOverflowContainer>
                       <OverflowContainer overflowWidth={'60vw'}>
-                        <Typography
-                          noWrap
-                          onClickCapture={() => router.push(`/${row?.id}`)}
-                        >
+                        <Typography noWrap>
                           <a>{cellData}</a>
                         </Typography>
                       </OverflowContainer>
                     </SearchResultOverflowContainer>
                   </StyledTableCell>
                 )
-              } else if (cellName === 'searchResultHub') {
+              } else if (cellName === 'searchResultHub'){
                 return (
-                  <StyledTableCell key={cellName}>
+                  <StyledTableCell
+                    key={cellName}
+                    onClickCapture={() => router.push(`${row?.link}`)}
+                  >
                     <SearchResultOverflowContainer>
-                      <Typography
-                        noWrap
-                        onClickCapture={() => router.push(`/hubs/${row?.id}`)}
-                      >
+                      <Typography noWrap>
                         <a>{cellData}</a>
                       </Typography>
                     </SearchResultOverflowContainer>
@@ -630,7 +632,7 @@ const ResponsiveContainer = styled(Box)(
     ['&::-webkit-scrollbar']: {
       display: 'none',
     },
-    [theme.breakpoints.down('md')]: { 
+    [theme.breakpoints.down('md')]: {
       width: '100vw',
       maxHeight: 'unset',
       overflowY: 'unset',
