@@ -1,10 +1,14 @@
 const anchor = require('@project-serum/anchor')
-const {
-  NameRegistryState,
-  getNameAccountKey,
-  getHashedName,
+import {
   createNameRegistry,
-} = require('@bonfida/spl-name-service')
+  getHashedName,
+  getNameAccountKey,
+  NameRegistryState,
+  createInstruction,
+  updateInstruction,
+  Numberu32, 
+  Numberu64
+} from '@bonfida/spl-name-service';
 const { deserializeUnchecked, serialize } = require('borsh')
 const Web3 = require('web3')
 const axios = require('axios')
