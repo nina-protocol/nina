@@ -619,7 +619,6 @@ const StyledTableDescriptionContainer = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   maxWidth: '20vw',
-  [theme.breakpoints.down('md')]: {},
 }))
 
 const ResponsiveContainer = styled(Box)(
