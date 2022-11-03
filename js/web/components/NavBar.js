@@ -16,6 +16,8 @@ import {
 } from '@solana/wallet-adapter-material-ui'
 import Breadcrumbs from './Breadcrumbs'
 import NavSearch from './NavSearch'
+import EmailCapture from './EmailCapture'
+
 const NavBar = () => {
   const router = useRouter()
   const {
@@ -76,6 +78,22 @@ const NavBar = () => {
             <SearchBarWrapper>
               <NavSearch />
             </SearchBarWrapper>
+            <UploadWrapper>
+              {!wallet.connected ? (
+                <EmailCapture size="small" />
+              ) : (
+                <BlueTypography
+                  sx={{
+                    padding: { md: '2px', xs: '0px 0px' },
+                    border: '1px solid #2D81FF',
+                    width: '100%',
+                    textAlign: 'center',
+                  }}
+                >
+                  <Link href="/upload">Upload</Link>
+                </BlueTypography>
+              )}
+            </UploadWrapper>
             {wallet.wallets && (
               <StyledWalletDialogProvider featuredWallets={4}>
                 <StyledWalletButton>
@@ -162,6 +180,10 @@ const SearchBarWrapper = styled('div')(({ theme }) => ({
     right: '270px',
   },
 }))
+const UploadWrapper = styled('div')(({ theme }) => ({
+  marginRight: theme.spacing(1),
+}))
+
 const Logo = styled('div')(({ theme }) => ({
   position: 'absolute',
   top: theme.spacing(1),
@@ -253,7 +275,7 @@ const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
   backgroundColor: `${theme.palette.transparent} !important`,
   boxShadow: 'none !important',
   paddingTop: '0 !important',
-
+  marginTop: '2px',
   '& img': {
     display: 'none',
   },
@@ -271,7 +293,7 @@ const ConnectionDot = styled('span')(({ theme }) => ({
   backgroundColor: theme.palette.red,
   borderRadius: '50%',
   display: 'inline-block',
-  marginTop: '2px',
+  marginTop: '4px',
   '&.connected-healthy': {
     backgroundColor: theme.palette.green,
   },
@@ -281,6 +303,11 @@ const ConnectionDot = styled('span')(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     marginRight: '15px',
   },
+}))
+
+const BlueTypography = styled(Typography)(({ theme }) => ({
+  '& a': { color: theme.palette.blue },
+  cursor: 'pointer',
 }))
 
 export default withFormik({

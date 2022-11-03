@@ -24,7 +24,7 @@ import NinaBox from "./NinaBox";
 import HubImageDropzone from "./HubImageDropzone";
 import Dots from "./Dots";
 import BundlrModal from "./BundlrModal";
-import Link from "next/link";
+import EmailCapture from "./EmailCapture";
 
 const ColorModal = dynamic(() => import("./ColorModal"));
 
@@ -438,19 +438,11 @@ const HubCreate = ({ update, hubData }) => {
           <BlueTypography
             variant="h1"
             align="left"
-            sx={{ padding: { md: "0px 150pxx", xs: "30px 0px" } }}
+            sx={{ padding: { md: "0px 0px", xs: "30px 0px" }, mb: 4, }}
           >
-            You do not have any credits to create a Hub. Please{` `}
-            <Link
-              href="https://docs.google.com/forms/d/e/1FAIpQLScSdwCMqUz6VGqhkO6xdfUxu1pzdZEdsGoXL9TGDYIGa9t2ig/viewform"
-              target="_blank"
-              rel="noreferrer"
-              passHref
-            >
-              apply
-            </Link>{" "}
-            here to get started.
+            You do not have any credits to create a Hub.
           </BlueTypography>
+          <EmailCapture size="medium" /> 
         </Box>
       )}
 
