@@ -630,7 +630,7 @@ const ResponsiveContainer = styled(Box)(
     ['&::-webkit-scrollbar']: {
       display: 'none',
     },
-    [theme.breakpoints.down('md')]: { 
+    [theme.breakpoints.down('md')]: {
       width: '100vw',
       maxHeight: 'unset',
       overflowY: 'unset',

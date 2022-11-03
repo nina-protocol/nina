@@ -3,7 +3,7 @@ import ImgixClient from '@imgix/js-core'
 export const getImageFromCDN = (url, width = 400, date) => {
   let image = url
   const now = new Date()
-  if ((now - date) / 1000 > 120) {
+  if (!date || ((now - date) / 1000 > 120)) {
     const client = new ImgixClient({
       domain: process.env.IMGIX_URL,
       secureURLToken: process.env.NEXT_PUBLIC_IMGIX_TOKEN,
@@ -15,7 +15,6 @@ export const getImageFromCDN = (url, width = 400, date) => {
     })
   }
   image.concat(`?auto=compress,format`)
-  console.log('image !! :>> ', image);
   return image 
 }
 

@@ -344,17 +344,11 @@ const Profile = ({ profilePubkey }) => {
               {profilePubkey && (
                 <>
                   <Box>
-                    {profileImage?.includes('https') ? (
+                    {profileImage && profileImage?.includes('https') ? (
                       <Image
-                        height={150}
-                        width={150}
-                        layout="responsive"
-                        src={getImageFromCDN(
-                          profileImage,
-                          400,
-                          Date.parse(row.date)
-                        )}
-                        alt={i}
+                        height={100}
+                        width={100}
+                        src={getImageFromCDN(profileImage, 400)}
                         priority={true}
                         loader={loader}
                       />
