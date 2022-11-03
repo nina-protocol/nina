@@ -53,7 +53,9 @@ const EmailCaptureForm = ({
                 size="small"
                 InputLabelProps={touched.soundcloud ? { shrink: true } : ''}
                 placeholder={
-                  errors.soundcloud && touched.soundcloud ? errors.soundcloud : null
+                  errors.soundcloud && touched.soundcloud
+                    ? errors.soundcloud
+                    : null
                 }
                 {...props.field}
               />
@@ -87,7 +89,9 @@ const EmailCaptureForm = ({
                 size="small"
                 InputLabelProps={touched.instagram ? { shrink: true } : ''}
                 placeholder={
-                  errors.instagram && touched.instagram ? errors.instagram : null
+                  errors.instagram && touched.instagram
+                    ? errors.instagram
+                    : null
                 }
                 {...props.field}
               />
@@ -97,16 +101,32 @@ const EmailCaptureForm = ({
         <Box sx={{ mt: 2 }}>
           <FormLabel>I want to use Nina as:</FormLabel>
           <RadioGroup
-            sx={{ mt: 1}}
+            sx={{ mt: 1 }}
             defaultValue="artist"
             name="type"
             onChange={(e) => setFieldValue('type', e.target.value)}
             row
           >
-            <FormControlLabel value="artist" control={<Radio />} label="An Artist" />
-            <FormControlLabel value="label" control={<Radio />} label="A Label" />
-            <FormControlLabel value="writer" control={<Radio />} label="A Writer" />
-            <FormControlLabel value="curator" control={<Radio />} label="A Curator" />
+            <FormControlLabel
+              value="artist"
+              control={<Radio />}
+              label="An Artist"
+            />
+            <FormControlLabel
+              value="label"
+              control={<Radio />}
+              label="A Label"
+            />
+            <FormControlLabel
+              value="writer"
+              control={<Radio />}
+              label="A Writer"
+            />
+            <FormControlLabel
+              value="curator"
+              control={<Radio />}
+              label="A Curator"
+            />
             <FormControlLabel value="other" control={<Radio />} label="Other" />
           </RadioGroup>
         </Box>
@@ -153,7 +173,7 @@ export default withFormik({
       twitter: '',
       instagram: '',
       wallet: undefined,
-      type: 'artist'
+      type: 'artist',
     }
   },
 })(EmailCaptureForm)

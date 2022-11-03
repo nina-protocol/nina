@@ -31,7 +31,7 @@ const EmailCaptureSchema = Yup.object().shape({
   type: Yup.string(),
 })
 
-const EmailCapture = ({size}) => {
+const EmailCapture = ({ size }) => {
   const { publicKey, connected } = useWallet()
   const { submitEmailRequest } = useContext(Nina.Context)
   const [open, setOpen] = useState(false)
@@ -42,7 +42,7 @@ const EmailCapture = ({size}) => {
 
   useEffect(() => {
     if (connected) {
-      setFormValues({ ...formValues, wallet: publicKey.toString()} )
+      setFormValues({ ...formValues, wallet: publicKey.toString() })
     }
   }, [connected, publicKey])
 
@@ -89,7 +89,12 @@ const EmailCapture = ({size}) => {
         <BlueTypography
           onClick={handleOpen}
           variant="h3"
-          sx={{ padding: { md: '10px 0 ', xs: '0px 0px' }, border: '1px solid #2D81FF', width: '100%', textAlign: 'center' }}
+          sx={{
+            padding: { md: '10px 0 ', xs: '0px 0px' },
+            border: '1px solid #2D81FF',
+            width: '100%',
+            textAlign: 'center',
+          }}
         >
           Please fill out this form to apply
         </BlueTypography>
@@ -97,7 +102,12 @@ const EmailCapture = ({size}) => {
       {size === 'small' && (
         <BlueTypography
           onClick={handleOpen}
-          sx={{ padding: { md: '2px', xs: '0px 0px' }, border: '1px solid #2D81FF', width: '100%', textAlign: 'center' }}
+          sx={{
+            padding: { md: '2px', xs: '0px 0px' },
+            border: '1px solid #2D81FF',
+            width: '100%',
+            textAlign: 'center',
+          }}
         >
           Sign Up
         </BlueTypography>
@@ -109,8 +119,9 @@ const EmailCapture = ({size}) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography variant="h4" sx={{mb: 2}}>
-            Nina is currently in closed beta.<br />  
+          <Typography variant="h4" sx={{ mb: 2 }}>
+            Nina is currently in closed beta.
+            <br />
             Please apply below.
           </Typography>
           <EmailCaptureForm
@@ -123,7 +134,7 @@ const EmailCapture = ({size}) => {
             color="primary"
             fullWidth
             onClick={submitAndCloseModal}
-            sx={{width: '400px', mt: 2}}
+            sx={{ width: '400px', mt: 2 }}
             disabled={!formIsValid}
           >
             Submit
@@ -136,7 +147,7 @@ const EmailCapture = ({size}) => {
 
 const BlueTypography = styled(Typography)(({ theme }) => ({
   color: theme.palette.blue,
-  'cursor': 'pointer'
+  cursor: 'pointer',
 }))
 
 export default EmailCapture

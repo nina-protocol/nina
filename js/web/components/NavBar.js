@@ -83,10 +83,15 @@ const NavBar = () => {
                 <EmailCapture size="small" />
               ) : (
                 <BlueTypography
-                  sx={{ padding: { md: '2px', xs: '0px 0px' }, border: '1px solid #2D81FF', width: '100%', textAlign: 'center' }}
+                  sx={{
+                    padding: { md: '2px', xs: '0px 0px' },
+                    border: '1px solid #2D81FF',
+                    width: '100%',
+                    textAlign: 'center',
+                  }}
                 >
                   <Link href="/upload">Upload</Link>
-                </BlueTypography>      
+                </BlueTypography>
               )}
             </UploadWrapper>
             {wallet.wallets && (
@@ -301,8 +306,8 @@ const ConnectionDot = styled('span')(({ theme }) => ({
 }))
 
 const BlueTypography = styled(Typography)(({ theme }) => ({
-  "& a": {color: theme.palette.blue},
-  'cursor': 'pointer'
+  '& a': { color: theme.palette.blue },
+  cursor: 'pointer',
 }))
 
 export default withFormik({

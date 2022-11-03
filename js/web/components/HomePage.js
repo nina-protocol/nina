@@ -195,10 +195,7 @@ const HomePage = () => {
           Solana and Arweave networks that Nina is built on. Nina does not take
           a cut.
         </Typography>
-        <Box
-          align="center"
-          sx={{ paddingBottom: { md: '140px', xs: '30px' } }}
-        >
+        <Box align="center" sx={{ paddingBottom: { md: '140px', xs: '30px' } }}>
           <EmailCapture size="large" />
         </Box>
       </HomePageContainer>

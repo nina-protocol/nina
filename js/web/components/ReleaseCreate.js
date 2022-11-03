@@ -437,7 +437,7 @@ const ReleaseCreate = () => {
               Nina is currently in a closed beta for uploading releases.
             </Typography>
             <br />
-            <EmailCapture size="medium" /> 
+            <EmailCapture size="medium" />
             <br />
             <br />
             <Typography variant="h3">
