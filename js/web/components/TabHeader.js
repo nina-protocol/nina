@@ -36,7 +36,9 @@ const TabHeader = ({
     }
   }
   const truncateCount = (count) => {
-    return count.length > 3 ? `${count.slice(0, 1)}...` : count
+    let countString = count.toString()
+    let countDigits = countString.replace(/[^0-9]/g, '').length
+    return countDigits > 2 ? `${countString.substring(0, 3)}...` : countString
   }
   return (
     <ResponsiveContainer>
@@ -45,7 +47,6 @@ const TabHeader = ({
           display: 'flex',
           flexDirection: 'row',
           overflowX: 'scroll',
-
           pb: 1,
         }}
       >
@@ -62,10 +63,13 @@ const TabHeader = ({
                   <Typography
                     sx={{
                       fontWeight: `${activeView === index ? 'bold' : ''}`,
+                      display: 'flex',
+                      flexDirection: 'row',
+                      marginRight: '6px',
                       width: '100%',
-                      p: 0,
                     }}
                     id={index}
+                    noWrap
                   >
                     {`${tab.name} (${truncateCount(tab.count)})`}
                   </Typography>
@@ -101,18 +105,6 @@ const ResponsiveTabWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'row',
   textTransform: 'uppercase',
-  '&:nth-of-type(1)': {
-    '& button': {
-      paddingLeft: '0px',
-    },
-  },
-  [theme.breakpoints.down('md')]: {
-    '&:nth-of-type(1)': {
-      '& button': {
-        paddingLeft: '6px',
-      },
-    },
-  },
 }))
 
 const ResponsiveTab = styled(Button)(({ theme }) => ({
@@ -127,7 +119,9 @@ const ResponsiveTab = styled(Button)(({ theme }) => ({
     cursor: 'default !important',
   },
   [theme.breakpoints.down('md')]: {
-    width: '50vw',
+    maxWidth: '50vw',
+    justifyContent: 'left',
+    
   },
 }))
 
@@ -152,6 +146,8 @@ const PlayCircleOutlineIconButtonWrapper = styled(Button)(({ theme }) => ({
   m: 0,
   color: 'black',
   paddingRight: 0,
+  paddingLeft: 0,
+  
 }))
 
 export default TabHeader
