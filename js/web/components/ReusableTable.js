@@ -478,7 +478,7 @@ const ReusableTableBody = ({
                 return (
                   <SearchResultTableCell key={cellName}>
                     <SearchResultOverflowContainer>
-                      <SearchResultOverflowContainer >
+                      <SearchResultOverflowContainer>
                         <Typography
                           noWrap
                           onClickCapture={() => router.push(`/${row?.id}`)}
@@ -608,7 +608,6 @@ const SearchResultTableCell = styled(TableCell)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     padding: '5px',
     width: '100vw',
-
   },
 }))
 const OverflowContainer = styled(Box)(({ theme }) => ({
@@ -653,7 +652,7 @@ const SearchResultOverflowContainer = styled(Box)(({ theme }) => ({
   textOverflow: 'ellipsis',
   [theme.breakpoints.down('md')]: {
     minWidth: '0',
-    width: '80vw'
+    width: '80vw',
   },
 }))
 const StyledCollectButton = styled(Button)(({ theme }) => ({

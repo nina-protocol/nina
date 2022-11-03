@@ -228,7 +228,6 @@ const DesktopNavSearch = ({
   )
 }
 
-
 const DesktopNavSearchContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     display: 'none',
@@ -253,7 +252,7 @@ const SearchInput = styled('input')(({ theme }) => ({
     padding: '2px 0',
     width: '100vw',
     fontSize: '18px',
-    display: 'none'
+    display: 'none',
   },
 }))
 const DropdownContainer = styled(Box)(({ theme }) => ({
@@ -266,7 +265,6 @@ const DropdownContainer = styled(Box)(({ theme }) => ({
   marginRight: '20px',
   backgroundColor: '#fff',
   padding: '0 2px',
-
 }))
 
 const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
@@ -274,7 +272,6 @@ const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
   maxWidth: theme.maxWidth,
   overflowY: 'auto',
   webkitOverflowScrolling: 'touch',
-
 }))
 
 export default NavSearch

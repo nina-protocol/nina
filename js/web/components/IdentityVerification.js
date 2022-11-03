@@ -207,9 +207,11 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
       case 'instagram':
         await verifyInstagram(
           provider,
+          instagramUserId,
           instagramHandle,
           publicKey,
-          signTransaction
+          signTransaction,
+          instagramToken
         )
         break
       case 'ethereum':
@@ -229,7 +231,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
         break
       case 'instagram':
         router.push(
-          `https://api.instagram.com/oauth/authorize?client_id=${process.env.IG_CLIENT_ID}&redirect_uri=${process.env.IDENTITY_REDIRECT_URI}&scope=user_profile,user_media&response_type=code`
+          `https://api.instagram.com/oauth/authorize?client_id=${process.env.IG_CLIENT_ID}&redirect_uri=${process.env.IDENTITY_REDIRECT_URI}/&scope=user_profile,user_media&response_type=code`
         )
         break
       case 'twitter':

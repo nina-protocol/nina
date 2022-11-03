@@ -9,6 +9,7 @@ import {
 import { ninaErrorHandler } from '../../utils/errors'
 import {clone} from 'lodash';
 import { truncateAddress } from '../../utils/truncateAddress';
+import Airtable from 'airtable';
 
 const NinaProgramAction = {
   HUB_ADD_COLLABORATOR: 'HUB_ADD_COLLABORATOR',
@@ -141,7 +142,8 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     displayNameForAccount,
     displayImageForAccount,
     getVerificationsForUser,
-    filterSubscriptionsForHub
+    filterSubscriptionsForHub,
+    submitEmailRequest,
   } = ninaContextHelper({
     ninaClient,
     postState,
@@ -227,7 +229,8 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         displayNameForAccount,
         displayImageForAccount,
         getVerificationsForUser,
-        filterSubscriptionsForHub
+        filterSubscriptionsForHub,
+        submitEmailRequest,
       }}
     >
       {children}
@@ -898,6 +901,35 @@ const ninaContextHelper = ({
     return subscriptions
   }
 
+  const submitEmailRequest = async ({email, soundcloud, twitter, instagram, wallet, type}) => {
+    try {
+      var base = new Airtable({apiKey: process.env.AIRTABLE_API_KEY}).base('appm1DgEVpMWUjeJ8');
+
+      base('Requests').create([
+        {
+          "fields": {
+            email,
+            soundcloud,
+            twitter,
+            instagram,
+            wallet,
+            type
+          }
+        }
+      ], function(err, records) {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        records.forEach(function (record) {
+          console.log('Email request submitted: ', record.getId());
+        });
+      });
+    } catch (error) {
+      console.warn('email request error: ', error)
+    }
+  }
+
   return {
     subscriptionSubscribe,
     subscriptionUnsubscribe,
@@ -924,7 +956,8 @@ const ninaContextHelper = ({
     displayNameForAccount,
     displayImageForAccount,
     getVerificationsForUser,
-    filterSubscriptionsForHub
+    filterSubscriptionsForHub,
+    submitEmailRequest,
   }
 }
 
