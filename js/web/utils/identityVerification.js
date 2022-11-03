@@ -28,6 +28,9 @@ const NAME_PROGRAM_ID = new anchor.web3.PublicKey(
   'namesLPneVptA9Z5rqUDD9tMTWEJwofgaYwp8cawRkX'
 )
 
+const LAMPORTS_FOR_REVERSE_REGISTRY = 1433760
+const LAMPORTS_FOR_NAME_ACCOUNT = 6657718
+
 const web3 = new Web3(process.env.ETH_CLUSTER_URL)
 
 class ReverseEthAddressRegistryState {
