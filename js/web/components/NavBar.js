@@ -197,6 +197,9 @@ const SearchBarWrapper = styled('div')(({ theme }) => ({
 }))
 const UploadWrapper = styled('div')(({ theme }) => ({
   marginRight: theme.spacing(1),
+  [theme.breakpoints.down('md')]: {
+    display: 'none',
+  },
 }))
 
 const Logo = styled('div')(({ theme }) => ({
