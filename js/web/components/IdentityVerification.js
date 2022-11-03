@@ -207,9 +207,11 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
       case 'instagram':
         await verifyInstagram(
           provider,
+          instagramUserId,
           instagramHandle,
           publicKey,
-          signTransaction
+          signTransaction,
+          router.query.code,
         )
         break
       case 'ethereum':
