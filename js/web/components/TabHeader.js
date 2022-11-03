@@ -121,7 +121,6 @@ const ResponsiveTab = styled(Button)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     maxWidth: '50vw',
     justifyContent: 'left',
-    
   },
 }))
 
@@ -147,7 +146,6 @@ const PlayCircleOutlineIconButtonWrapper = styled(Button)(({ theme }) => ({
   color: 'black',
   paddingRight: 0,
   paddingLeft: 0,
-  
 }))
 
 export default TabHeader
