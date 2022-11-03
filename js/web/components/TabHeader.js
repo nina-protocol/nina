@@ -143,7 +143,7 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
   borderColor: 'divider',
   [theme.breakpoints.down('md')]: {
     maxWidth: '100vw',
-    borderBottom: theme.borderBottom,
+    borderBottom: `1px solid ${theme.palette.borderBottom}`,
     paddingLeft: '6px',
     height: '100%',
   },

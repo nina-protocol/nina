@@ -132,7 +132,7 @@ const ResponsiveHubHeader = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     alignItems: 'left',
     paddingLeft: '15px',
-
+    borderBottom: `1px solid ${theme.palette.borderBottom}`,
     width: '100vw',
   },
 }))
