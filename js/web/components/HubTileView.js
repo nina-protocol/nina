@@ -1,6 +1,6 @@
 import React from 'react'
 import { styled } from '@mui/material/styles'
-import { imageManager } from "@nina-protocol/nina-internal-sdk/src/utils";
+import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import { isMobile } from 'react-device-detect'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
@@ -34,8 +34,7 @@ const HubTileView = (props) => {
                     e.stopPropagation()
                     handleClick(hub.handle)
                   }}
-                >
-                </CardCta>
+                ></CardCta>
                 {hub.data.image && (
                   <Image
                     width={100}
@@ -48,16 +47,18 @@ const HubTileView = (props) => {
                       zIndex: '1',
                     }}
                     loader={loader}
-                    src={getImageFromCDN(hub.data.image, 400, new Date(Date.parse(hub.datetime)))}
+                    src={getImageFromCDN(
+                      hub.data.image,
+                      400,
+                      new Date(Date.parse(hub.datetime))
+                    )}
                     priority={!isMobile}
                     alt={hub.handle}
                   />
                 )}
               </HoverCard>
               <Box sx={{ padding: '10px 0 0' }}>
-                <HubName>
-                  {hub.data.displayName}
-                </HubName>
+                <HubName>{hub.data.displayName}</HubName>
               </Box>
             </Tile>
           )
