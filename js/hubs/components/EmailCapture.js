@@ -6,9 +6,10 @@ import { styled } from '@mui/material/styles'
 import * as Yup from 'yup'
 import EmailCaptureForm from './EmailCaptureForm'
 import { Box } from '@mui/material'
-import Link from 'next/link'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import { useSnackbar } from 'notistack'
+
 const style = {
   position: 'absolute',
   top: '50%',
@@ -31,6 +32,7 @@ const EmailCaptureSchema = Yup.object().shape({
 
 const EmailCapture = ({size}) => {
   const { publicKey, connected } = useWallet()
+  const { enqueueSnackbar } = useSnackbar()
   const { submitEmailRequest } = useContext(Nina.Context)
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
@@ -52,6 +54,7 @@ const EmailCapture = ({size}) => {
   const handleSubmit = async () => {
     if (formIsValid) {
       submitEmailRequest(formValues)
+      enqueueSnackbar('Application Submitted!', { variant: 'success' })
     }
   }
 

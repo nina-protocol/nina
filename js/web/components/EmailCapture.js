@@ -8,6 +8,7 @@ import EmailCaptureForm from './EmailCaptureForm'
 import { Box } from '@mui/material'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import { useSnackbar } from 'notistack'
 
 const style = {
   position: 'absolute',
@@ -52,6 +53,7 @@ const EmailCapture = ({ size }) => {
   const handleSubmit = async () => {
     if (formIsValid) {
       submitEmailRequest(formValues)
+      enqueueSnackbar('Application Submitted!', { variant: 'success' })
     }
   }
 
