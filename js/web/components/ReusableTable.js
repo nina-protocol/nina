@@ -564,8 +564,9 @@ const ResponsiveTableContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     overflowY: 'unset',
     height: '100% !important',
-    paddingLeft: 0,
+    paddingLeft: '5px',
     paddingRight: 0,
+    overflowX: 'scroll',
   },
 }))
 

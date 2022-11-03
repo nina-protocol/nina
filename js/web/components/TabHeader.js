@@ -35,6 +35,9 @@ const TabHeader = ({
       )
     }
   }
+  const truncateCount = (count) => {
+    return count.length > 3 ? `${count.slice(0, 1)}...` : count
+  }
   return (
     <ResponsiveContainer>
       <Box
@@ -42,22 +45,14 @@ const TabHeader = ({
           display: 'flex',
           flexDirection: 'row',
           overflowX: 'scroll',
-          rowGap: 1,
+
           pb: 1,
         }}
       >
         {profileTabs?.map((tab, index) => {
           return (
             <>
-              <ResponsiveTabWrapper
-                key={index}
-                sx={{
-                  alignItems: 'center',
-                  display: 'flex',
-                  flexDirection: 'row',
-                  textTransform: 'uppercase',
-                }}
-              >
+              <ResponsiveTabWrapper key={index} sx={{}}>
                 <ResponsiveTab
                   disabled={tab.disabled}
                   onClick={viewHandler}
@@ -67,28 +62,29 @@ const TabHeader = ({
                   <Typography
                     sx={{
                       fontWeight: `${activeView === index ? 'bold' : ''}`,
+                      width: '100%',
+                      p: 0,
                     }}
                     id={index}
                   >
-                    {tab.name}
-                    {` (${tab.count})`}
+                    {`${tab.name} (${truncateCount(tab.count)})`}
                   </Typography>
 
                   {tab.playlist && (
-                    <ResponsiveCircleOutlineIconContainer>
-                      <PlayCircleOutlineIconButtonWrapper
-                        disabled={tab.disabled}
-                        onClick={(e) => {
-                          e.preventDefault()
-                          e.stopPropagation()
-                          type === 'hubView'
-                            ? playAllHandler(releaseData)
-                            : playAllHandler(tab.playlist)
-                        }}
-                      >
-                        <PlayCircleOutlineOutlinedIcon />
-                      </PlayCircleOutlineIconButtonWrapper>
-                    </ResponsiveCircleOutlineIconContainer>
+                    <PlayCircleOutlineIconButtonWrapper
+                      disabled={tab.disabled}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        type === 'hubView'
+                          ? playAllHandler(releaseData)
+                          : playAllHandler(tab.playlist)
+                      }}
+                    >
+                      <PlayCircleOutlineOutlinedIcon
+                        sx={{ p: '0 !important', m: '0 !important' }}
+                      />
+                    </PlayCircleOutlineIconButtonWrapper>
                   )}
                 </ResponsiveTab>
               </ResponsiveTabWrapper>
@@ -101,6 +97,10 @@ const TabHeader = ({
 }
 
 const ResponsiveTabWrapper = styled(Box)(({ theme }) => ({
+  alignItems: 'center',
+  display: 'flex',
+  flexDirection: 'row',
+  textTransform: 'uppercase',
   '&:nth-of-type(1)': {
     '& button': {
       paddingLeft: '0px',
@@ -122,13 +122,12 @@ const ResponsiveTab = styled(Button)(({ theme }) => ({
   flexDirection: 'row',
   textTransform: 'uppercase',
   color: theme.palette.text.primary,
-  paddingRight: '15px',
   height: '40px',
   '&:disabled': {
     cursor: 'default !important',
   },
   [theme.breakpoints.down('md')]: {
-    paddingLeft: '6px',
+    width: '50vw',
   },
 }))
 
@@ -153,24 +152,6 @@ const PlayCircleOutlineIconButtonWrapper = styled(Button)(({ theme }) => ({
   m: 0,
   color: 'black',
   paddingRight: 0,
-  [theme.breakpoints.down('md')]: {
-    paddingRight: 0.5,
-  },
-}))
-
-const ResponsiveCircleOutlineIconContainer = styled(Box)(({ theme }) => ({
-  paddingRight: 1.5,
-  paddingLeft: '5px',
-  paddingTop: '1px',
-  '& button': {
-    padding: '0px',
-  },
-  '&:hover': {
-    opacity: 0.5,
-  },
-  [theme.breakpoints.down('md')]: {
-    paddingRight: '15px',
-  },
 }))
 
 export default TabHeader
