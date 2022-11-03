@@ -97,7 +97,7 @@ class ReverseEthAddressRegistryState {
 
     const createIx = createInstruction(
       NAME_PROGRAM_ID,
-      SystemProgram.programId,
+      anchor.web3.SystemProgram.programId,
       reverseRegistryKey,
       publicKey,
       publicKey,
@@ -180,7 +180,7 @@ class ReverseSoundcloudRegistryState {
 
     const createIx = createInstruction(
       NAME_PROGRAM_ID,
-      SystemProgram.programId,
+      anchor.web3.SystemProgram.programId,
       reverseRegistryKey,
       publicKey,
       publicKey,
@@ -263,7 +263,7 @@ class ReverseTwitterRegistryState {
 
     const createIx = createInstruction(
       NAME_PROGRAM_ID,
-      SystemProgram.programId,
+      anchor.web3.SystemProgram.programId,
       reverseRegistryKey,
       publicKey,
       publicKey,
@@ -346,7 +346,7 @@ class ReverseInstagramRegistryState {
 
     const createIx = createInstruction(
       NAME_PROGRAM_ID,
-      SystemProgram.programId,
+      anchor.web3.SystemProgram.programId,
       reverseRegistryKey,
       publicKey,
       publicKey,
