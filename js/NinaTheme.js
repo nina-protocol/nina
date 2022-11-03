@@ -44,7 +44,6 @@ export const NinaTheme = createTheme({
     red: colors.red,
     green: colors.green,
     yellow: colors.yellow,
-    borderBottom: colors.borderBottom,
     grey: {
       primary: colors.grey,
     },

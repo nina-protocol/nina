@@ -478,7 +478,7 @@ const ProfileHeaderWrapper = styled(Box)(({ theme }) => ({
     width: '100vw',
     height: '100%',
     paddingBottom: '10px',
-    borderBottom: `1px solid ${theme.palette.borderBottom}`,
+    borderBottom: `1px solid ${theme.palette.greyLight}`,
   },
 }))
 
