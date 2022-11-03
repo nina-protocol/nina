@@ -19,8 +19,6 @@ const style = {
   boxShadow: 24,
   p: 4,
 }
-const ITEM_HEIGHT = 48
-const ITEM_PADDING_TOP = 8
 
 const EmailCaptureSchema = Yup.object().shape({
   email: Yup.string().email().required('Email is Required'),
@@ -52,15 +50,8 @@ const EmailCapture = ({size}) => {
   }
 
   const handleSubmit = async () => {
-    console.log('submit')
-    console.log('formValues', formValues)
-    console.log('EmailCaptureSchema', EmailCaptureSchema)
-    const isValid = await EmailCaptureSchema.isValid(formValues)
-
-    if (isValid) {
+    if (formIsValid) {
       submitEmailRequest(formValues)
-    } else {
-      console.log('invalid')
     }
   }
 
@@ -80,7 +71,7 @@ const EmailCapture = ({size}) => {
         <BlueTypography
           variant="h1"
         >
-          <a onClick={handleOpen}>Apply</a> for a Hub {connected ? '' : 'or connect your wallet'} to get started.
+          <a onClick={handleOpen}>Sign up</a> for a Hub {connected ? '' : 'or connect your wallet'} to get started.
         </BlueTypography>
       )}
       {size === 'medium' && (
@@ -89,7 +80,7 @@ const EmailCapture = ({size}) => {
           variant="h3"
           sx={{ color: '#2D81FF', padding: { md: '10px 0 ', xs: '0px 0px' }, border: '1px solid #2D81FF', width: '100%', textAlign: 'center' }}
         >
-          Please fill out this form to apply for a Hub
+          Please fill out this form to sign up for a Hub
         </BlueTypography>
       )}
       {size === 'small' && (
@@ -109,7 +100,7 @@ const EmailCapture = ({size}) => {
         <Box sx={style}>
           <Typography variant="h4" sx={{mb: 2}}>
             Nina is currently in closed beta.<br />  
-            Please apply below.
+            Please sign up below.
           </Typography>
           <EmailCaptureForm
             onChange={handleFormChange}

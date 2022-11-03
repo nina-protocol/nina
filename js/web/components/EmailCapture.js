@@ -19,8 +19,6 @@ const style = {
   boxShadow: 24,
   p: 4,
 }
-const ITEM_HEIGHT = 48
-const ITEM_PADDING_TOP = 8
 
 const EmailCaptureSchema = Yup.object().shape({
   email: Yup.string().email().required('Email is Required'),
@@ -52,15 +50,8 @@ const EmailCapture = ({ size }) => {
   }
 
   const handleSubmit = async () => {
-    console.log('submit')
-    console.log('formValues', formValues)
-    console.log('EmailCaptureSchema', EmailCaptureSchema)
-    const isValid = await EmailCaptureSchema.isValid(formValues)
-
-    if (isValid) {
+    if (formIsValid) {
       submitEmailRequest(formValues)
-    } else {
-      console.log('invalid')
     }
   }
 
@@ -122,7 +113,7 @@ const EmailCapture = ({ size }) => {
           <Typography variant="h4" sx={{ mb: 2 }}>
             Nina is currently in closed beta.
             <br />
-            Please apply below.
+            Please sign up below.
           </Typography>
           <EmailCaptureForm
             onChange={handleFormChange}

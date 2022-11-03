@@ -438,14 +438,11 @@ const HubCreate = ({ update, hubData }) => {
           <BlueTypography
             variant="h1"
             align="left"
-            sx={{ padding: { md: "0px 150pxx", xs: "30px 0px" } }}
+            sx={{ padding: { md: "0px 0px", xs: "30px 0px" }, mb: 4, }}
           >
             You do not have any credits to create a Hub.
           </BlueTypography>
-          <br />
           <EmailCapture size="medium" /> 
-          <br />
-          <br />
         </Box>
       )}
 
