@@ -16,11 +16,8 @@ import {
 } from '@solana/wallet-adapter-material-ui'
 import Breadcrumbs from './Breadcrumbs'
 import NavSearch from './NavSearch'
-<<<<<<< HEAD
 import SearchIcon from '@mui/icons-material/Search'
-=======
 import EmailCapture from './EmailCapture'
->>>>>>> f254914d88df76625ac8f8256ae600b26fb9b850
 
 const NavBar = () => {
   const router = useRouter()
