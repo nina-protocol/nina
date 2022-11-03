@@ -530,7 +530,7 @@ const verifyInstagram = async (
   instagramHandle,
   publicKey,
   signTransaction,
-  code,
+  token,
 ) => {
   try {
     // Create Name Account Registry
@@ -567,7 +567,7 @@ const verifyInstagram = async (
       userId: instagramUserId,
       tx: tx.serialize({ verifySignatures: false }).toString('base64'),
       publicKey: publicKey.toBase58(),
-      code
+      token,
     })
     return true
   } catch (error) {

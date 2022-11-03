@@ -211,7 +211,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
           instagramHandle,
           publicKey,
           signTransaction,
-          router.query.code,
+          instagramToken,
         )
         break
       case 'ethereum':
