@@ -241,7 +241,7 @@ const Search = (props) => {
 
   const suggestionsClickHandler = (search, searchFilter) => {
     setQuery('')
-
+    
     router.push(
       `/search/?q=${search}${searchFilter ? `&type=${searchFilter}` : ''}`
     )
@@ -383,46 +383,48 @@ const Search = (props) => {
   return (
     <SearchPageContainer>
       <DesktopNavSearchContainer>
-        <Form onSubmit={(e) => handleSubmit(e)}>
-          <SearchInputWrapper>
-            <SearchInput
-              onChange={(e) => changeHandler(e)}
-              value={query}
-              autoComplete="off"
-              onFocus={(e) => handleInputFocus(e)}
-              ref={searchInputRef}
-              placeholder="Search for artists, releases, hubs"
-              type="search"
-            />
-          </SearchInputWrapper>
-        </Form>
-        {showDropdown && (
-          <DropdownContainer ref={dropdownRef}>
-            {autoCompleteResults.map((result, index) => {
-              if (result.visible) {
-                return (
-                  <ResponsiveSearchResultContainer key={index}>
-                    <SearchDropdown
-                      category={result.name}
-                      searchData={suggestions}
-                      hasResults={result.visible}
-                      clickHandler={(e) => suggestionsHandler(e)}
-                      onKeyDown={(e) => keyHandler(e)}
-                    />
-                  </ResponsiveSearchResultContainer>
-                )
-              }
-            })}
+      <Form 
+      onSubmit={(e) => handleSubmit(e)}
+      >
+        <SearchInputWrapper>
+          <SearchInput
+            onChange={(e) => changeHandler(e)}
+            value={query}
+            autoComplete="off"
+            onFocus={(e) => handleInputFocus(e)}
+            ref={searchInputRef}
+            placeholder="Search for artists, releases, hubs"
+            type="search"
+          />
+        </SearchInputWrapper>
+      </Form>
+      {showDropdown && (
+        <DropdownContainer ref={dropdownRef}>
+          {autoCompleteResults.map((result, index) => {
+            if (result.visible) {
+              return (
+                <ResponsiveSearchResultContainer key={index}>
+                  <SearchDropdown
+                    category={result.name}
+                    searchData={suggestions}
+                    hasResults={result.visible}
+                    clickHandler={(e) => suggestionsHandler(e)}
+                    onKeyDown={(e) => keyHandler(e)}
+                  />
+                </ResponsiveSearchResultContainer>
+              )
+            }
+          })}
 
-            {query?.length > 0 &&
-              suggestions?.artists?.length === 0 &&
-              suggestions?.releases?.length === 0 &&
-              suggestions?.hubs?.length === 0 && (
-                <Typography>No results found</Typography>
-              )}
-          </DropdownContainer>
-        )}
-      </DesktopNavSearchContainer>
+          {query?.length > 0 &&
+            suggestions?.artists?.length === 0 &&
+            suggestions?.releases?.length === 0 &&
+            suggestions?.hubs?.length === 0 && (
+              <Typography>No results found</Typography>
+            )}
+        </DropdownContainer>
+      )}
+    </DesktopNavSearchContainer>
       <SearchHeaderWrapper>
         <SearchHeaderContainer>
           {searchQuery && (
@@ -493,7 +495,7 @@ const Search = (props) => {
         </SearchResultFilterContainer>
       </>
 
-      <>
+      
         <>
           {!fetchedResponse && searchQuery && (
             <ResponsiveDotContainer>
@@ -514,7 +516,7 @@ const Search = (props) => {
               <Typography>No results found</Typography>
             )}
         </>
-      </>
+      
     </SearchPageContainer>
   )
 }
@@ -526,7 +528,7 @@ const SearchPageContainer = styled(Box)(({ theme }) => ({
   textAlign: 'center',
   paddingTop: '4rem',
   width: theme.maxWidth,
-  height: '84vh',
+  height: '79vh',
   overflowY: 'hidden',
   marginBottom: '65px',
   marginLeft: 'auto',
@@ -540,7 +542,7 @@ const SearchPageContainer = styled(Box)(({ theme }) => ({
     marginTop: '50px',
     paddingTop: 0,
     minHeight: '100% !important',
-    maxHeight: '80vh',
+    maxHeight: '60vh',
     overflow: 'hidden',
   },
 }))
@@ -554,27 +556,27 @@ const DropdownContainer = styled(Box)(({ theme }) => ({
   marginLeft: '12%',
   backgroundColor: '#fff',
   padding: '0 2px',
+
 }))
 const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
   maxHeight: '60vh',
   maxWidth: theme.maxWidth,
   overflowY: 'auto',
   webkitOverflowScrolling: 'touch',
-  width: '100vw',
+  width: '100vw'
 }))
 const DesktopNavSearchContainer = styled(Box)(({ theme }) => ({
-  // [theme.breakpoints.down('sm')]: {
-  //   display: 'none',
-  // },
+
 }))
 const SearchInputWrapper = styled(Box)(({ theme }) => ({
+
   display: 'none',
   marginLeft: 'auto',
   marginRight: 'auto',
   [theme.breakpoints.down('md')]: {
     display: 'flex',
     width: '75%',
-  },
+  }
 }))
 const SearchInput = styled('input')(({ theme }) => ({
   border: 0,
@@ -587,13 +589,14 @@ const SearchInput = styled('input')(({ theme }) => ({
   borderRadius: 0,
   display: 'none',
   [theme.breakpoints.down('md')]: {
-    marginTop: '15px',
+   marginTop: '15px',
     padding: '2px 0',
     width: '100vw',
     fontSize: '18px',
-    display: 'flex',
+    display: 'flex'
   },
 }))
+
 
 const SearchHeaderContainer = styled(Box)(({ theme }) => ({
   maxWidth: '100%',
