@@ -586,6 +586,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   padding: '5px',
   textAlign: 'left',
   height: '50px',
+  width: '15vw',
   [theme.breakpoints.down('md')]: {
     padding: '5px',
   },
@@ -616,6 +617,7 @@ const OverflowContainer = styled(Box)(({ theme }) => ({
   textOverflow: 'ellipsis',
   [theme.breakpoints.down('md')]: {
     minWidth: '0',
+    maxWidth: '20vw',
   },
 }))
 
