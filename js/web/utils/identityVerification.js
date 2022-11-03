@@ -6,9 +6,9 @@ import {
   NameRegistryState,
   createInstruction,
   updateInstruction,
-  Numberu32, 
-  Numberu64
-} from '@bonfida/spl-name-service';
+  Numberu32,
+  Numberu64,
+} from '@bonfida/spl-name-service'
 const { deserializeUnchecked, serialize } = require('borsh')
 const Web3 = require('web3')
 const axios = require('axios')
