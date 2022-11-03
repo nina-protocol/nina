@@ -36,9 +36,7 @@ const TabHeader = ({
     }
   }
   const truncateCount = (count) => {
-    let countString = count.toString()
-    let countDigits = countString.replace(/[^0-9]/g, '').length
-    return countDigits > 2 ? `${countString.substring(0, 3)}...` : countString
+    return count.length > 99 ? (count = '99+') : count
   }
   return (
     <ResponsiveContainer>
