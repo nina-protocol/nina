@@ -413,7 +413,7 @@ const verifyEthereum = async (
     await signTransaction(tx)
 
     // Send Transaction To Server To Verify Signatures
-    const response = await axios.post(`${process.env.API_URL}/eth`, {
+    const response = await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/eth`, {
       ethAddress,
       ethSignature: signature,
       tx: tx.serialize({ verifySignatures: false }).toString('base64'),
@@ -460,7 +460,7 @@ const verifySoundcloud = async (
     await signTransaction(tx)
     console.log('tx: ', tx)
     // Send Transaction To Server To Verify Signatures
-    const response = await axios.post(`${process.env.API_URL}/sc/register`, {
+    const response = await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/sc/register`, {
       handle: soundcloudHandle,
       token: soundcloudToken,
       tx: tx.serialize({ verifySignatures: false }).toString('base64'),
@@ -511,7 +511,7 @@ const verifyTwitter = async (
     await signTransaction(tx)
 
     // Send Transaction To Server To Verify Signatures
-    const response = await axios.post(`${process.env.API_URL}/tw/register`, {
+    const response = await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/tw/register`, {
       handle: twitterHandle,
       token: twitterToken,
       tx: tx.serialize({ verifySignatures: false }).toString('base64'),
@@ -561,7 +561,7 @@ const verifyInstagram = async (
     await signTransaction(tx)
 
     // Send Transaction To Server To Verify Signatures
-    const response = await axios.post(`${process.env.API_URL}/ig/register`, {
+    const response = await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/ig/register`, {
       handle: instagramHandle,
       userId: instagramUserId,
       tx: tx.serialize({ verifySignatures: false }).toString('base64'),
