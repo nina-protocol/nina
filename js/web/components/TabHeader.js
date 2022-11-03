@@ -37,7 +37,15 @@ const TabHeader = ({
   }
   return (
     <ResponsiveContainer>
-      <Box sx={{ display: 'flex', flexDirection: 'row', overflowX: 'scroll', rowGap: 1, pb: 1 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          overflowX: 'scroll',
+          rowGap: 1,
+          pb: 1,
+        }}
+      >
         {profileTabs?.map((tab, index) => {
           return (
             <>
@@ -104,7 +112,7 @@ const ResponsiveTabWrapper = styled(Box)(({ theme }) => ({
         paddingLeft: '6px',
       },
     },
-  }
+  },
 }))
 
 const ResponsiveTab = styled(Button)(({ theme }) => ({

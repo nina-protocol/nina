@@ -226,7 +226,9 @@ const HubComponent = ({ hubPubkey }) => {
             </Box>
           </HubDotWrapper>
         )}
-        <HubsTableContainer ref={tableContainerRef}>{renderTables(activeView)}</HubsTableContainer>
+        <HubsTableContainer ref={tableContainerRef}>
+          {renderTables(activeView)}
+        </HubsTableContainer>
       </HubContainer>
     </>
   )

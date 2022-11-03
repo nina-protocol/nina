@@ -1,6 +1,6 @@
 import Profile from './Profile'
 import { Box } from '@mui/material'
-import {styled} from '@mui/system'
+import { styled } from '@mui/system'
 const Dashboard = (props) => {
   const { publicKey } = props
   return (
