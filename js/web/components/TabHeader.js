@@ -95,9 +95,16 @@ const TabHeader = ({
 const ResponsiveTabWrapper = styled(Box)(({ theme }) => ({
   '&:nth-of-type(1)': {
     '& button': {
-      // paddingLeft: '0px',
+      paddingLeft: '0px',
     },
   },
+  [theme.breakpoints.down('md')]: {
+    '&:nth-of-type(1)': {
+      '& button': {
+        paddingLeft: '6px',
+      },
+    },
+  }
 }))
 
 const ResponsiveTab = styled(Button)(({ theme }) => ({
@@ -128,6 +135,7 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
   borderColor: 'divider',
   [theme.breakpoints.down('md')]: {
     maxWidth: '100vw',
+    borderBottom: '1px solid #E5E5E5',
   },
 }))
 
