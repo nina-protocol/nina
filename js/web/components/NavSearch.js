@@ -165,22 +165,6 @@ const NavSearch = () => {
         autoCompleteResults={autoCompleteResults}
         keyHandler={(e) => keyHandler(e)}
       />
-      <MobileNavSearch
-        handleSubmit={handleSubmit}
-        changeHandler={changeHandler}
-        handleInputFocus={handleInputFocus}
-        suggestionsHandler={suggestionsHandler}
-        query={query}
-        suggestions={suggestions}
-        dropdownRef={dropdownRef}
-        searchInputRef={searchInputRef}
-        showDropdown={showDropdown}
-        autoCompleteResults={autoCompleteResults}
-        keyHandler={(e) => keyHandler(e)}
-        setShowDropdown={setShowDropdown}
-        showSearchInput={showSearchInput}
-        setShowSearchInput={setShowSearchInput}
-      />
     </>
   )
 }
@@ -244,81 +228,9 @@ const DesktopNavSearch = ({
   )
 }
 
-const MobileNavSearch = ({
-  showSearchInput,
-  handleInputFocus,
-  dropdownRef,
-  handleSubmit,
-  changeHandler,
-  query,
-  searchInputRef,
-  suggestions,
-  setShowSearchInput,
-  showDropdown,
-  suggestionsHandler,
-
-  autoCompleteResults,
-  keyHandler,
-}) => {
-  const router = useRouter()
-  return (
-    <MobileNavSearchContainer>
-      <Box>
-        {showSearchInput ? (
-          <CloseIcon onClick={() => setShowSearchInput(false)} />
-        ) : (
-          <SearchIcon onClick={() => router.push('/search')} />
-        )}
-      </Box>
-      {showSearchInput && (
-        <MobileSearchContainer ref={dropdownRef}>
-          <MobileSearchInputWrapper>
-            <Form onSubmit={(e) => handleSubmit(e)}>
-              <SearchInput
-                onChange={(e) => changeHandler(e)}
-                value={query}
-                autoComplete="off"
-                onFocus={(e) => handleInputFocus(e)}
-                ref={searchInputRef}
-                placeholder="Search for artists, releases, hubs"
-                type="search"
-              />
-            </Form>
-          </MobileSearchInputWrapper>
-          {showDropdown && (
-            <MobileDropdownContainer>
-              {autoCompleteResults.map((result, index) => {
-                if (result.visible) {
-                  return (
-                    <ResponsiveSearchResultContainer key={index}>
-                      <SearchDropdown
-                        category={result.name}
-                        searchData={suggestions}
-                        hasResults={result.visible}
-                        clickHandler={(e) => suggestionsHandler(e)}
-                        onKeyDown={(e) => keyHandler(e)}
-                      />
-                    </ResponsiveSearchResultContainer>
-                  )
-                }
-              })}
-
-              {query?.length > 0 &&
-                suggestions?.artists?.length === 0 &&
-                suggestions?.releases?.length === 0 &&
-                suggestions?.hubs?.length === 0 && (
-                  <Typography>No results found</Typography>
-                )}
-            </MobileDropdownContainer>
-          )}
-        </MobileSearchContainer>
-      )}
-    </MobileNavSearchContainer>
-  )
-}
 
 const DesktopNavSearchContainer = styled(Box)(({ theme }) => ({
-  [theme.breakpoints.down('sm')]: {
+  [theme.breakpoints.down('md')]: {
     display: 'none',
   },
 }))
@@ -341,6 +253,7 @@ const SearchInput = styled('input')(({ theme }) => ({
     padding: '2px 0',
     width: '100vw',
     fontSize: '18px',
+    display: 'none'
   },
 }))
 const DropdownContainer = styled(Box)(({ theme }) => ({
@@ -353,6 +266,7 @@ const DropdownContainer = styled(Box)(({ theme }) => ({
   marginRight: '20px',
   backgroundColor: '#fff',
   padding: '0 2px',
+
 }))
 
 const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
@@ -360,38 +274,7 @@ const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
   maxWidth: theme.maxWidth,
   overflowY: 'auto',
   webkitOverflowScrolling: 'touch',
+
 }))
 
-const MobileNavSearchContainer = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  right: '0px',
-  height: '100%',
-  [theme.breakpoints.up('md')]: {
-    display: 'none',
-  },
-}))
-const MobileSearchInputWrapper = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'row',
-  margin: '0px 10px',
-}))
-const MobileSearchContainer = styled(Box)(({ theme }) => ({
-  height: '100vh',
-  width: '95vw',
-  zIndex: '100',
-  position: 'absolute',
-  overflow: 'hidden',
-  textAlign: 'left',
-  left: '-50px',
-}))
-const MobileDropdownContainer = styled(Box)(({ theme }) => ({
-  height: '100vh',
-  width: '95vw',
-  zIndex: '100',
-  display: 'block',
-  position: 'absolute',
-  background: '#fff',
-  textAlign: 'left',
-  padding: '0 10px',
-}))
 export default NavSearch
