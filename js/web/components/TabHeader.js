@@ -145,6 +145,7 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
     maxWidth: '100vw',
     borderBottom: theme.borderBottom,
     paddingLeft: '6px',
+    height: '100%',
   },
 }))
 

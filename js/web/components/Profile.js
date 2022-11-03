@@ -500,6 +500,7 @@ const ProfileTableContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     paddingBottom: '100px',
     overflow: 'scroll',
+    height: '100%',
   },
 }))
 
