@@ -20,7 +20,6 @@ const colors = {
   blueTrans: 'rgba(45, 129, 255, 0.19)',
   pink: '#FF54A6',
   yellow: '#ffe100',
-  borderBottom: '#E3E3E3'
 }
 
 export const NinaTheme = createTheme({
