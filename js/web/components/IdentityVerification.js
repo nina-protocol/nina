@@ -207,6 +207,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
       case 'instagram':
         await verifyInstagram(
           provider,
+          instagramUserId,
           instagramHandle,
           publicKey,
           signTransaction

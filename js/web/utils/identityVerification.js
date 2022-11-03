@@ -1,5 +1,5 @@
 const anchor = require('@project-serum/anchor')
-import {
+const {
   createNameRegistry,
   getHashedName,
   getNameAccountKey,
@@ -8,7 +8,7 @@ import {
   updateInstruction,
   Numberu32, 
   Numberu64
-} from '@bonfida/spl-name-service';
+} = require('@bonfida/spl-name-service');
 const { deserializeUnchecked, serialize } = require('borsh')
 const Web3 = require('web3')
 const axios = require('axios')
@@ -50,6 +50,7 @@ class ReverseEthAddressRegistryState {
       },
     ],
   ])
+  
   constructor(obj) {
     this.ethAddressRegistryKey = obj.ethAddressRegistryKey
     this.ethAddress = obj.ethAddress
@@ -465,8 +466,10 @@ const verifySoundcloud = async (
       tx: tx.serialize({ verifySignatures: false }).toString('base64'),
       publicKey: publicKey.toBase58(),
     })
+    return true
   } catch (error) {
     console.log('error: ', error)
+    return false
   }
 }
 
@@ -514,19 +517,16 @@ const verifyTwitter = async (
       tx: tx.serialize({ verifySignatures: false }).toString('base64'),
       publicKey: publicKey.toBase58(),
     })
-    enqueueSnackbar(`Successfully verified Twitter account: ${twitterHandle}`, {
-      variant: 'success',
-    })
+    return true
   } catch (error) {
     console.log('error: ', error)
-    enqueueSnackbar(`Unable to verify Twitter Account`, {
-      variant: 'error',
-    })
+    return false
   }
 }
 
 const verifyInstagram = async (
   provider,
+  instagramUserId,
   instagramHandle,
   publicKey,
   signTransaction
@@ -567,17 +567,11 @@ const verifyInstagram = async (
       tx: tx.serialize({ verifySignatures: false }).toString('base64'),
       publicKey: publicKey.toBase58(),
     })
-    enqueueSnackbar(
-      `Successfully verified Instagram account: ${instagramHandle}`,
-      {
-        variant: 'success',
-      }
-    )
+    return true
   } catch (error) {
     console.log('error: ', error)
-    enqueueSnackbar(`Unable to verify Instagram Account`, {
-      variant: 'error',
-    })
+    return false
+
   }
 }
 
