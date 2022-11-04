@@ -136,7 +136,7 @@ const BlueTypography = styled(Typography)(({ theme }) => ({
 const SmallCta = styled(Typography)(({ theme }) => ({
   color: theme.palette.blue,
   cursor: 'pointer',
-  padding: '10px 0',
+  padding: '2px 0',
   border: '1px solid #2D81FF',
   width: '100%',
   textAlign: 'center',
