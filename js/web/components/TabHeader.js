@@ -35,9 +35,7 @@ const TabHeader = ({
       )
     }
   }
-  const truncateCount = (count) => {
-    return count.length > 99 ? (count = '99+') : count
-  }
+
   return (
     <ResponsiveContainer>
       <Box
@@ -58,10 +56,16 @@ const TabHeader = ({
                   id={index}
                   className={index === 0 ? 'first' : ''}
                 >
-              
-                    <DesktopTab sx={{fontWeight: `${activeView === index ? 'bold' : ''}`}} id={index}>{`${tab.name} (${tab.count})`}</DesktopTab>
-                    <MobileTab sx={{fontWeight: `${activeView === index ? 'bold' : ''}`}} id={index}>{`${tab.name} (${tab.count > 99 ? '99+' : tab.count})`}</MobileTab>
-           
+                  <DesktopTab
+                    sx={{ fontWeight: `${activeView === index ? 'bold' : ''}` }}
+                    id={index}
+                  >{`${tab.name} (${tab.count})`}</DesktopTab>
+                  <MobileTab
+                    sx={{ fontWeight: `${activeView === index ? 'bold' : ''}` }}
+                    id={index}
+                  >{`${tab.name} (${
+                    tab.count > 99 ? '99+' : tab.count
+                  })`}</MobileTab>
 
                   {tab.playlist && (
                     <PlayCircleOutlineIconButtonWrapper
@@ -136,16 +140,18 @@ const DesktopTab = styled(Typography)(({ theme }) => ({
   width: '100%',
   [theme.breakpoints.down('md')]: {
     display: 'none',
-  }
+  },
 }))
 const MobileTab = styled(Typography)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'row',
   marginRight: '6px',
   width: '100%',
+  overflow: 'hidden',
+  whiteSpace: 'nowrap',
   [theme.breakpoints.up('md')]: {
     display: 'none',
-  }
+  },
 }))
 
 const PlayCircleOutlineIconButtonWrapper = styled(Button)(({ theme }) => ({

@@ -99,10 +99,7 @@ const ReusableTableHead = ({ tableType, inDashboard }) => {
     <TableHead>
       <TableRow>
         {headCells?.map((headCell, i) => (
-          <StyledTableHeadCell
-            key={headCell.id}
-            sx={{ fontWeight: 'bold', borderBottom: 'none' }}
-          >
+          <StyledTableHeadCell key={headCell.id}>
             <Typography sx={{ fontWeight: 'bold' }}>
               {headCell.label}
             </Typography>
@@ -506,7 +503,7 @@ const ReusableTableBody = ({
                 return (
                   <StyledTableCell key={cellName}>
                     <OverflowContainer>
-                      <Typography sx={{ paddingLeft: '5px' }} noWrap>
+                      <Typography noWrap>
                         <Link href={row.link} passHref>
                           <a>{cellData}</a>
                         </Link>
@@ -574,8 +571,11 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
   padding: '5px',
   textAlign: 'left',
   cursor: 'pointer',
+  fontWeight: 'bold',
+  borderBottom: 'none',
   [theme.breakpoints.down('md')]: {
-    padding: '5px 0',
+    padding: '0px',
+    paddingRight: '10px',
   },
 }))
 
@@ -584,8 +584,10 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   textAlign: 'left',
   height: '50px',
   width: '15vw',
+
   [theme.breakpoints.down('md')]: {
     width: '30vw',
+    paddingRight: '10px',
   },
 }))
 const StyledImageTableCell = styled(TableCell)(({ theme }) => ({
