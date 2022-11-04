@@ -576,6 +576,7 @@ const Feed = ({
                   flexDirection: 'column',
                   justifyContent: 'center',
                   mt: 5,
+                  textAlign: 'left',
                 }}
               >
                 <Typography variant="h5" mb={1}>
