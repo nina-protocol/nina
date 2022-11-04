@@ -212,7 +212,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
           instagramHandle,
           publicKey,
           signTransaction,
-          instagramToken,
+          instagramToken
         )
         break
       case 'ethereum':
