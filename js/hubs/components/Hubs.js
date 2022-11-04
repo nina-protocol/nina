@@ -88,13 +88,11 @@ const Hubs = () => {
                 <Link href="/all">Hubs </Link>
                 are a new way to publish, share, and discuss music.
               </BlueTypography>
-              <BlueTypography
-                variant="h1"
-                align="left"
-                sx={{ padding: { md: "0 165px 40px", xs: "30px 0px" }, display: "inline-block" }}
+              
+              <Box
               >
                 <EmailCapture size="large" />{" "}
-              </BlueTypography>
+              </Box>
 
               <Box sx={{ display: 'flex', paddingLeft: { md: '30px', xs: '0' }}}>
                 <Typography

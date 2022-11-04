@@ -15,7 +15,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: { xs: '90vw', md: 400 },
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
@@ -31,6 +31,7 @@ const EmailCaptureSchema = Yup.object().shape({
 })
 
 const EmailCapture = ({ size }) => {
+  const { enqueueSnackbar } = useSnackbar()
   const { publicKey, connected } = useWallet()
   const { submitEmailRequest } = useContext(Nina.Context)
   const [open, setOpen] = useState(false)
@@ -92,19 +93,7 @@ const EmailCapture = ({ size }) => {
           Please fill out this form to apply
         </BlueTypography>
       )}
-      {size === 'small' && (
-        <BlueTypography
-          onClick={handleOpen}
-          sx={{
-            padding: { md: '2px', xs: '0px 0px' },
-            border: '1px solid #2D81FF',
-            width: '100%',
-            textAlign: 'center',
-          }}
-        >
-          Sign Up
-        </BlueTypography>
-      )}
+      {size === 'small' && <SmallCta onClick={handleOpen}>Sign Up</SmallCta>}
       <Modal
         open={open}
         onClose={handleClose}
@@ -112,9 +101,10 @@ const EmailCapture = ({ size }) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography variant="h4" sx={{ mb: 2 }}>
+          <Typography variant="h4">
             Nina is currently in closed beta.
-            <br />
+          </Typography>
+          <Typography variant="h4" sx={{ mb: 2 }}>
             Please sign up below.
           </Typography>
           <EmailCaptureForm
@@ -127,7 +117,7 @@ const EmailCapture = ({ size }) => {
             color="primary"
             fullWidth
             onClick={submitAndCloseModal}
-            sx={{ width: '400px', mt: 2 }}
+            sx={{ width: '100%', mt: 2 }}
             disabled={!formIsValid}
           >
             Submit
@@ -141,6 +131,22 @@ const EmailCapture = ({ size }) => {
 const BlueTypography = styled(Typography)(({ theme }) => ({
   color: theme.palette.blue,
   cursor: 'pointer',
+}))
+
+const SmallCta = styled(Typography)(({ theme }) => ({
+  color: theme.palette.blue,
+  cursor: 'pointer',
+  padding: '2px 0',
+  border: '1px solid #2D81FF',
+  width: '100%',
+  textAlign: 'center',
+  [theme.breakpoints.down('md')]: {
+    position: 'absolute',
+    top: '75%',
+    right: '15px',
+    padding: '5px 0px',
+    width: '95px',
+  },
 }))
 
 export default EmailCapture
