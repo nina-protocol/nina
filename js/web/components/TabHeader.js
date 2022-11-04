@@ -35,52 +35,53 @@ const TabHeader = ({
       )
     }
   }
+
   return (
     <ResponsiveContainer>
-      <Box sx={{ display: 'flex', flexDirection: 'row', rowGap: 1, pb: 1 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          overflowX: 'scroll',
+          pb: 1,
+        }}
+      >
         {profileTabs?.map((tab, index) => {
           return (
             <>
-              <ResponsiveTabWrapper
-                key={index}
-                sx={{
-                  alignItems: 'center',
-                  display: 'flex',
-                  flexDirection: 'row',
-                  textTransform: 'uppercase',
-                }}
-              >
+              <ResponsiveTabWrapper key={index} sx={{}}>
                 <ResponsiveTab
                   disabled={tab.disabled}
                   onClick={viewHandler}
                   id={index}
                   className={index === 0 ? 'first' : ''}
                 >
-                  <Typography
-                    sx={{
-                      fontWeight: `${activeView === index ? 'bold' : ''}`,
-                    }}
+                  <DesktopTab
+                    sx={{ fontWeight: `${activeView === index ? 'bold' : ''}` }}
                     id={index}
-                  >
-                    {tab.name}
-                    {` (${tab.count})`}
-                  </Typography>
+                  >{`${tab.name} (${tab.count})`}</DesktopTab>
+                  <MobileTab
+                    sx={{ fontWeight: `${activeView === index ? 'bold' : ''}` }}
+                    id={index}
+                  >{`${tab.name} (${
+                    tab.count > 99 ? '99+' : tab.count
+                  })`}</MobileTab>
 
                   {tab.playlist && (
-                    <ResponsiveCircleOutlineIconContainer>
-                      <PlayCircleOutlineIconButtonWrapper
-                        disabled={tab.disabled}
-                        onClick={(e) => {
-                          e.preventDefault()
-                          e.stopPropagation()
-                          type === 'hubView'
-                            ? playAllHandler(releaseData)
-                            : playAllHandler(tab.playlist)
-                        }}
-                      >
-                        <PlayCircleOutlineOutlinedIcon />
-                      </PlayCircleOutlineIconButtonWrapper>
-                    </ResponsiveCircleOutlineIconContainer>
+                    <PlayCircleOutlineIconButtonWrapper
+                      disabled={tab.disabled}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        type === 'hubView'
+                          ? playAllHandler(releaseData)
+                          : playAllHandler(tab.playlist)
+                      }}
+                    >
+                      <PlayCircleOutlineOutlinedIcon
+                        sx={{ p: '0 !important', m: '0 !important' }}
+                      />
+                    </PlayCircleOutlineIconButtonWrapper>
                   )}
                 </ResponsiveTab>
               </ResponsiveTabWrapper>
@@ -93,11 +94,10 @@ const TabHeader = ({
 }
 
 const ResponsiveTabWrapper = styled(Box)(({ theme }) => ({
-  '&:nth-of-type(1)': {
-    '& button': {
-      paddingLeft: '0px',
-    },
-  },
+  alignItems: 'center',
+  display: 'flex',
+  flexDirection: 'row',
+  textTransform: 'uppercase',
 }))
 
 const ResponsiveTab = styled(Button)(({ theme }) => ({
@@ -107,13 +107,13 @@ const ResponsiveTab = styled(Button)(({ theme }) => ({
   flexDirection: 'row',
   textTransform: 'uppercase',
   color: theme.palette.text.primary,
-  paddingRight: '15px',
   height: '40px',
   '&:disabled': {
     cursor: 'default !important',
   },
   [theme.breakpoints.down('md')]: {
-    paddingLeft: '6px',
+    maxWidth: '50vw',
+    justifyContent: 'left',
   },
 }))
 
@@ -128,6 +128,29 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
   borderColor: 'divider',
   [theme.breakpoints.down('md')]: {
     maxWidth: '100vw',
+    borderBottom: `1px solid ${theme.palette.greyLight}`,
+    paddingLeft: '6px',
+    height: '100%',
+  },
+}))
+const DesktopTab = styled(Typography)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'row',
+  marginRight: '6px',
+  width: '100%',
+  [theme.breakpoints.down('md')]: {
+    display: 'none',
+  },
+}))
+const MobileTab = styled(Typography)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'row',
+  marginRight: '6px',
+  width: '100%',
+  overflow: 'hidden',
+  whiteSpace: 'nowrap',
+  [theme.breakpoints.up('md')]: {
+    display: 'none',
   },
 }))
 
@@ -135,24 +158,7 @@ const PlayCircleOutlineIconButtonWrapper = styled(Button)(({ theme }) => ({
   m: 0,
   color: 'black',
   paddingRight: 0,
-  [theme.breakpoints.down('md')]: {
-    paddingRight: 0.5,
-  },
-}))
-
-const ResponsiveCircleOutlineIconContainer = styled(Box)(({ theme }) => ({
-  paddingRight: 1.5,
-  paddingLeft: '5px',
-  paddingTop: '1px',
-  '& button': {
-    padding: '0px',
-  },
-  '&:hover': {
-    opacity: 0.5,
-  },
-  [theme.breakpoints.down('md')]: {
-    paddingRight: '15px',
-  },
+  paddingLeft: 0,
 }))
 
 export default TabHeader
