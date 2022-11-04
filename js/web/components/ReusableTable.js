@@ -468,30 +468,30 @@ const ReusableTableBody = ({
                 )
               } else if (cellName === 'searchResultArtist') {
                 return (
-                  <StyledTableCell key={cellName}>
+                  <SearchResultTableCell key={cellName}>
                     <SearchResultOverflowContainer>
                       <a>{cellData}</a>
                     </SearchResultOverflowContainer>
-                  </StyledTableCell>
+                  </SearchResultTableCell>
                 )
               } else if (cellName === 'searchResultRelease') {
                 return (
-                  <StyledTableCell key={cellName}>
+                  <SearchResultTableCell key={cellName}>
                     <SearchResultOverflowContainer>
-                      <OverflowContainer overflowWidth={'60vw'}>
+                      <SearchResultOverflowContainer>
                         <Typography
                           noWrap
                           onClickCapture={() => router.push(`/${row?.id}`)}
                         >
                           <a>{cellData}</a>
                         </Typography>
-                      </OverflowContainer>
+                      </SearchResultOverflowContainer>
                     </SearchResultOverflowContainer>
-                  </StyledTableCell>
+                  </SearchResultTableCell>
                 )
               } else if (cellName === 'searchResultHub') {
                 return (
-                  <StyledTableCell key={cellName}>
+                  <SearchResultTableCell key={cellName}>
                     <SearchResultOverflowContainer>
                       <Typography
                         noWrap
@@ -500,7 +500,7 @@ const ReusableTableBody = ({
                         <a>{cellData}</a>
                       </Typography>
                     </SearchResultOverflowContainer>
-                  </StyledTableCell>
+                  </SearchResultTableCell>
                 )
               } else {
                 return (
@@ -566,7 +566,6 @@ const ResponsiveTableContainer = styled(Box)(({ theme }) => ({
     height: '100% !important',
     paddingLeft: 0,
     paddingRight: 0,
-    paddingBottom: '200px',
   },
 }))
 
@@ -602,7 +601,15 @@ const StyledTableCellButtonsContainer = styled(TableCell)(({ theme }) => ({
     padding: '0px',
   },
 }))
-
+const SearchResultTableCell = styled(TableCell)(({ theme }) => ({
+  padding: '5px',
+  textAlign: 'left',
+  height: '50px',
+  [theme.breakpoints.down('md')]: {
+    padding: '5px',
+    width: '100vw',
+  },
+}))
 const OverflowContainer = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
   maxWidth: '15vw',
@@ -645,6 +652,7 @@ const SearchResultOverflowContainer = styled(Box)(({ theme }) => ({
   textOverflow: 'ellipsis',
   [theme.breakpoints.down('md')]: {
     minWidth: '0',
+    width: '80vw',
   },
 }))
 const StyledCollectButton = styled(Button)(({ theme }) => ({

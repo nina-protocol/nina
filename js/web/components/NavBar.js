@@ -16,6 +16,7 @@ import {
 } from '@solana/wallet-adapter-material-ui'
 import Breadcrumbs from './Breadcrumbs'
 import NavSearch from './NavSearch'
+import SearchIcon from '@mui/icons-material/Search'
 import EmailCapture from './EmailCapture'
 
 const NavBar = () => {
@@ -64,6 +65,11 @@ const NavBar = () => {
       <NavLeft>
         <NavDrawer />
         <Breadcrumbs />
+        <SearchIconWrapper>
+          <Link href="/search">
+            <SearchIcon />
+          </Link>
+        </SearchIconWrapper>
       </NavLeft>
 
       <Logo>
@@ -156,6 +162,13 @@ const NavLeft = styled('div')(({ theme }) => ({
   paddingLeft: theme.spacing(1),
 }))
 
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+  marginLeft: '15px',
+  [theme.breakpoints.up('md')]: {
+    display: 'none',
+  },
+}))
+
 const NavRight = styled('div')(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -173,15 +186,20 @@ const NavRight = styled('div')(({ theme }) => ({
 const NavCtas = styled('div')(() => ({
   display: 'flex',
   alignItems: 'flex-start',
+  flexWrap: 'wrap',
 }))
 const SearchBarWrapper = styled('div')(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     position: 'absolute',
     right: '270px',
+    display: 'none',
   },
 }))
 const UploadWrapper = styled('div')(({ theme }) => ({
   marginRight: theme.spacing(1),
+  [theme.breakpoints.down('md')]: {
+    display: 'none',
+  },
 }))
 
 const Logo = styled('div')(({ theme }) => ({
