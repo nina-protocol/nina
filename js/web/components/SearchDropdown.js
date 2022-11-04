@@ -30,6 +30,7 @@ const SearchDropdown = ({
       const artistLink = `/profiles/${data?.publicKey}`
 
       let formattedData = {
+        displayName: artistName,
         name: artistName,
         link: artistLink,
         category: 'artists',
@@ -40,13 +41,13 @@ const SearchDropdown = ({
   }
 
   if (category === 'releases') {
-    console.log(searchData)
     rows = searchData?.releases?.map((data) => {
       const releaseName = data?.title
       const releaseLink = `/${data?.publicKey}`
       const artistName = data?.artist
       let formattedData = {
-        name: `${artistName} - ${releaseName}`,
+        displayName: `${artistName} - ${releaseName}`,
+        name: releaseName,
         link: releaseLink,
         category: 'releases',
       }
@@ -61,6 +62,7 @@ const SearchDropdown = ({
       const hubLink = `/hubs/${data?.handle}`
 
       let formattedData = {
+        displayName: hubName,
         name: hubName,
         link: hubLink,
         category: 'hubs',
@@ -85,7 +87,9 @@ const SearchDropdown = ({
               key={index}
             >
               <a key={index} id={row.category} onClick={clickHandler}>
-                <Typography id={row.category}>{row?.name}</Typography>
+                <Typography id={row.category} data-value={row?.name}>
+                  {row?.displayName}
+                </Typography>
               </a>
             </Box>
           ))}
