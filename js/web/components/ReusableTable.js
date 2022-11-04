@@ -568,19 +568,19 @@ const ResponsiveTableContainer = styled(Box)(({ theme }) => ({
 }))
 
 const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
-  padding: '5px',
+  padding: '5px 0px',
   textAlign: 'left',
   cursor: 'pointer',
   fontWeight: 'bold',
   borderBottom: 'none',
   [theme.breakpoints.down('md')]: {
     padding: '0px',
-    paddingRight: '10px',
+    paddingRight: '5px',
   },
 }))
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  padding: '5px 0',
+  padding: '5px 0px',
   textAlign: 'left',
   height: '50px',
   width: '15vw',
@@ -593,13 +593,12 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 const StyledImageTableCell = styled(TableCell)(({ theme }) => ({
   width: '50px',
   textAlign: 'left',
-  padding: '5px 0',
-  [theme.breakpoints.down('md')]: {},
+  padding: '5px',
 }))
 const StyledTableCellButtonsContainer = styled(TableCell)(({ theme }) => ({
   width: '100px',
   textAlign: 'left',
-  padding: '5px 0',
+  padding: '5px 0px',
   textAlign: 'left',
   minWidth: '100px',
   [theme.breakpoints.down('md')]: {
