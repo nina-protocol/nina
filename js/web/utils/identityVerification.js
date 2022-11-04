@@ -482,6 +482,7 @@ const verifySoundcloud = async (
 const verifyTwitter = async (
   provider,
   twitterHandle,
+  twitterToken,
   publicKey,
   signTransaction
 ) => {

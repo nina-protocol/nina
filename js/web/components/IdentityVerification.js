@@ -203,7 +203,13 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
         )
         break
       case 'twitter':
-        await verifyTwitter(provider, twitterHandle, publicKey, signTransaction)
+        await verifyTwitter(
+          provider,
+          twitterHandle,
+          twitterToken,
+          publicKey,
+          signTransaction
+        )
         break
       case 'instagram':
         await verifyInstagram(
