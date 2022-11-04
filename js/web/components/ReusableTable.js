@@ -566,10 +566,7 @@ const ResponsiveTableContainer = styled(Box)(({ theme }) => ({
     height: '100% !important',
     paddingLeft: '5px',
     paddingRight: 0,
-<<<<<<< HEAD
     overflowX: 'scroll',
-=======
->>>>>>> 1b181db3b23839b5777332ad52bbb2e748462d3a
   },
 }))
 
