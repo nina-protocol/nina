@@ -6,10 +6,8 @@ import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import { isMobile } from 'react-device-detect'
-import ReleaseListTable from './ReleaseListTable'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 import ReleaseTileList from './ReleaseTileList'
-import ReleaseSearch from './ReleaseSearch'
 import Dots from './Dots'
 
 const Releases = () => {
@@ -73,7 +71,6 @@ const Releases = () => {
         onScroll={debounce(() => handleScroll(), 500)}
       >
         <AllReleasesWrapper ref={scrollRef}>
-          <StyledReleaseSearch />
           <CollectionHeader
             onClick={handleViewChange}
             listView={listView}
@@ -83,29 +80,15 @@ const Releases = () => {
             {listView ? 'Cover View' : 'List View'}
           </CollectionHeader>
 
-          {listView && (
-            <ReleaseListTable
-              releases={
-                searchResults.releases.length > 0
-                  ? searchResults.releases
-                  : filterReleasesAll()
-              }
-              tableType="allReleases"
-              key="releases"
-            />
-          )}
-
-          {!listView && (
-            <ReleaseTileList
-              releases={
-                searchResults.pending || searchResults.searched
-                  ? searchResults.releases
-                  : isMobile
-                  ? filterReleasesAll().reverse()
-                  : filterReleasesAll()
-              }
-            />
-          )}
+          <ReleaseTileList
+            releases={
+              searchResults.pending || searchResults.searched
+                ? searchResults.releases
+                : isMobile
+                ? filterReleasesAll().reverse()
+                : filterReleasesAll()
+            }
+          />
           {pendingFetch && (
             <StyledDots>
               <Dots size="80px" />
@@ -121,10 +104,6 @@ const StyledDots = styled(Box)(() => ({
   marginTop: '40px',
 }))
 
-const StyledReleaseSearch = styled(ReleaseSearch)(() => ({
-  position: 'absolute',
-  top: '0',
-}))
 const CollectionHeader = styled(Typography)(() => ({
   maxWidth: '100%',
   margin: '0 auto',
