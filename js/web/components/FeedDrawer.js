@@ -15,10 +15,11 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import CloseIcon from '@mui/icons-material/Close'
 import Typography from '@mui/material/Typography'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
+import { isMobile } from 'react-device-detect'
 
 const FeedDrawer = () => {
   const wallet = useWallet()
-  const [drawerOpen, setDrawerOpen] = useState(true)
+  const [drawerOpen, setDrawerOpen] = useState(!isMobile)
   const [feedItems, setFeedItems] = useState(undefined)
   const [hubSuggestions, setHubSuggestions] = useState(undefined)
   const [itemsTotal, setItemsTotal] = useState(0)
@@ -27,6 +28,8 @@ const FeedDrawer = () => {
   const [activeDrawerTypeIndex, setActiveDrawerTypeIndex] = useState(0)
   const [feedFetched, setFeedFetched] = useState(false)
   const drawerTypes = ['latest', 'suggestions']
+
+  console.log('isMobile :>> ', isMobile)
 
   useEffect(() => {
     const handleInitialFetch = async () => {
@@ -208,7 +211,7 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
     border: '1px solid black',
     borderRight: 'none',
     [theme.breakpoints.down('md')]: {
-      width: '100vw',
+      width: '90vw',
     },
   },
 }))
@@ -223,6 +226,9 @@ const FeedHeader = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'space-between',
   width: '437px',
+  [theme.breakpoints.down('md')]: {
+    width: '88vw',
+  },
 }))
 
 const DrawerTypeWrapper = styled(Box)(({ theme }) => ({

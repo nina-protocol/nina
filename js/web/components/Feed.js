@@ -612,7 +612,7 @@ const Feed = ({
               <Dots size="80px" />
             </Box>
           )}
-          {feedItems && itemsTotal >= feedItems?.length && (
+          {feedItems && itemsTotal >= feedItems?.length && !pendingFetch && (
             <Typography
               variant="h4"
               sx={{ textAlign: 'center' }}
@@ -634,8 +634,8 @@ const ScrollWrapper = styled(Box)(({ theme }) => ({
     display: 'none' /* Safari and Chrome */,
   },
   [theme.breakpoints.down('md')]: {
-    width: '100vw',
-    padding: '100px 0px',
+    width: '100%',
+    padding: '30px 0px',
     overflowY: 'scroll',
   },
 }))
