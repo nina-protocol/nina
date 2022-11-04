@@ -141,7 +141,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
               setInstagramToken(response.data.token)
               setInstagramUserId(response.data.userId)
             }
-            console.log('response', response.data)
+            console.log('response', response)
           } else if (codeSource === 'twitter') {
             const response = await axios.post(
               `${process.env.NINA_IDENTITY_ENDPOINT}/tw/user`,
@@ -212,7 +212,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
           instagramHandle,
           publicKey,
           signTransaction,
-          instagramToken
+          instagramToken,
         )
         break
       case 'ethereum':
@@ -232,7 +232,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
         break
       case 'instagram':
         router.push(
-          `https://api.instagram.com/oauth/authorize?client_id=${process.env.IG_CLIENT_ID}&redirect_uri=${process.env.IDENTITY_REDIRECT_URI}/&scope=user_profile&response_type=code`
+          `https://api.instagram.com/oauth/authorize?client_id=${process.env.IG_CLIENT_ID}&redirect_uri=${process.env.IDENTITY_REDIRECT_URI}/&scope=user_profile,user_media&response_type=code`
         )
         break
       case 'twitter':
