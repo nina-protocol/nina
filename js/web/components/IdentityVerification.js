@@ -218,11 +218,11 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
           instagramHandle,
           publicKey,
           signTransaction,
-          instagramToken,
+          instagramToken
         )
         break
       case 'ethereum':
-        await verifyEthAddress(provider, ethAddress, publicKey, signTransaction)
+        await verifyEthereum(provider, ethAddress, publicKey, signTransaction)
         break
     }
   }
