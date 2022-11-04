@@ -58,19 +58,10 @@ const TabHeader = ({
                   id={index}
                   className={index === 0 ? 'first' : ''}
                 >
-                  <Typography
-                    sx={{
-                      fontWeight: `${activeView === index ? 'bold' : ''}`,
-                      display: 'flex',
-                      flexDirection: 'row',
-                      marginRight: '6px',
-                      width: '100%',
-                    }}
-                    id={index}
-                    noWrap
-                  >
-                    {`${tab.name} (${truncateCount(tab.count)})`}
-                  </Typography>
+              
+                    <DesktopTab sx={{fontWeight: `${activeView === index ? 'bold' : ''}`}} id={index}>{`${tab.name} (${tab.count})`}</DesktopTab>
+                    <MobileTab sx={{fontWeight: `${activeView === index ? 'bold' : ''}`}} id={index}>{`${tab.name} (${tab.count > 99 ? '99+' : tab.count})`}</MobileTab>
+           
 
                   {tab.playlist && (
                     <PlayCircleOutlineIconButtonWrapper
@@ -137,6 +128,24 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
     paddingLeft: '6px',
     height: '100%',
   },
+}))
+const DesktopTab = styled(Typography)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'row',
+  marginRight: '6px',
+  width: '100%',
+  [theme.breakpoints.down('md')]: {
+    display: 'none',
+  }
+}))
+const MobileTab = styled(Typography)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'row',
+  marginRight: '6px',
+  width: '100%',
+  [theme.breakpoints.up('md')]: {
+    display: 'none',
+  }
 }))
 
 const PlayCircleOutlineIconButtonWrapper = styled(Button)(({ theme }) => ({
