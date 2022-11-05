@@ -81,9 +81,14 @@ const HomePage = () => {
         <Typography
           variant="h1"
           align="left"
-          sx={{ paddingTop: { md: '40px', sx: '30px'}, paddingBottom: { md: '40px', xs: '30px' } }}
+          sx={{
+            paddingTop: { md: '40px', sx: '30px' },
+            paddingBottom: { md: '40px', xs: '30px' },
+          }}
         >
-          On Nina, music is stored publically and permanently.  Artists receive 100% of their sales. Our tools help you create and support context around music.
+          On Nina, music is stored publically and permanently. Artists receive
+          100% of their sales. Our tools help you create and support context
+          around music.
         </Typography>
 
         <Box sx={{ padding: { md: '80px 40px 140px 40px', xs: '30px 0px' } }}>
@@ -93,24 +98,21 @@ const HomePage = () => {
               align="left"
               className={classes.sectionHeader}
             >
-              <Link href="/hubs">
-                Hubs
-              </Link>
+              <Link href="/hubs">Hubs</Link>
             </Typography>
           </Box>
           <HubSlider hubs={hubs} />
         </Box>
         <Box align="center" sx={{ paddingBottom: { md: '140px', xs: '30px' } }}>
-          <BlueTypography
-            variant="h1"
-            align="center"
-          >
-            <a 
+          <BlueTypography variant="h1" align="center">
+            <a
               href="https://www.notion.so/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612"
               target="_blank"
-              rel="noreferrer">
-                Learn More
-            </a> or <EmailCapture size="large" />
+              rel="noreferrer"
+            >
+              Learn More
+            </a>{' '}
+            or <EmailCapture size="large" />
           </BlueTypography>
         </Box>
       </HomePageContainer>
@@ -149,8 +151,8 @@ const HomePageContainer = styled('div')(({ theme }) => ({
 }))
 
 const BlueTypography = styled(Typography)(({ theme }) => ({
-  '& div': {color: theme.palette.blue},
-  '& a': {color: theme.palette.blue},
+  '& div': { color: theme.palette.blue },
+  '& a': { color: theme.palette.blue },
 }))
 
 export default HomePage
