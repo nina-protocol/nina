@@ -19,7 +19,7 @@ const style = {
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
-}
+} 
 
 const EmailCaptureSchema = Yup.object().shape({
   email: Yup.string().email().required('Email is Required'),
@@ -74,7 +74,7 @@ const EmailCapture = ({size}) => {
         <BlueTypography
           onClick={handleOpen}
           variant="h1"
-          sx={{padding: {md: '0 165px 140px', xs: '30px 0px'}}}
+          sx={{padding: {md: '0 165px 40px', xs: '30px 0px'}, textAlign: 'left'}}
         >
           Apply for access to the Nina for Artists Beta
         </BlueTypography>
