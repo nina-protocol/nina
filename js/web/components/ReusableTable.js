@@ -99,10 +99,7 @@ const ReusableTableHead = ({ tableType, inDashboard }) => {
     <TableHead>
       <TableRow>
         {headCells?.map((headCell, i) => (
-          <StyledTableHeadCell
-            key={headCell.id}
-            sx={{ fontWeight: 'bold', borderBottom: 'none' }}
-          >
+          <StyledTableHeadCell key={headCell.id}>
             <Typography sx={{ fontWeight: 'bold' }}>
               {headCell.label}
             </Typography>
@@ -506,7 +503,7 @@ const ReusableTableBody = ({
                 return (
                   <StyledTableCell key={cellName}>
                     <OverflowContainer>
-                      <Typography sx={{ paddingLeft: '5px' }} noWrap>
+                      <Typography noWrap>
                         <Link href={row.link} passHref>
                           <a>{cellData}</a>
                         </Link>
@@ -564,37 +561,44 @@ const ResponsiveTableContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     overflowY: 'unset',
     height: '100% !important',
-    paddingLeft: 0,
+    paddingLeft: '5px',
     paddingRight: 0,
+    overflowX: 'scroll',
   },
 }))
 
 const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
-  padding: '5px',
+  padding: '5px 0px',
   textAlign: 'left',
   cursor: 'pointer',
+  fontWeight: 'bold',
+  borderBottom: 'none',
+  [theme.breakpoints.down('md')]: {
+    padding: '0px',
+    paddingRight: '5px',
+  },
 }))
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  padding: '5px',
+  padding: '5px 0px',
   textAlign: 'left',
   height: '50px',
+  width: '15vw',
+
   [theme.breakpoints.down('md')]: {
-    padding: '5px',
+    width: '30vw',
+    paddingRight: '10px',
   },
 }))
 const StyledImageTableCell = styled(TableCell)(({ theme }) => ({
   width: '50px',
   textAlign: 'left',
-  padding: '5px 0',
-  [theme.breakpoints.down('md')]: {
-    padding: '0 5px',
-  },
+  padding: '5px',
 }))
 const StyledTableCellButtonsContainer = styled(TableCell)(({ theme }) => ({
   width: '100px',
   textAlign: 'left',
-  padding: '5px 0',
+  padding: '5px 0px',
   textAlign: 'left',
   minWidth: '100px',
   [theme.breakpoints.down('md')]: {
@@ -617,6 +621,7 @@ const OverflowContainer = styled(Box)(({ theme }) => ({
   textOverflow: 'ellipsis',
   [theme.breakpoints.down('md')]: {
     minWidth: '0',
+    maxWidth: '20vw',
   },
 }))
 
