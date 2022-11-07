@@ -82,7 +82,8 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
           unarchived at any time.
         </Typography>
         <Typography fontStyle="italic" gutterBottom>
-          NOTE:  THIS DOES NOT DELETE THE RELEASE, IT WILL STILL BE VISIBLE ON NINAPROTOCOL.COM.
+          NOTE: THIS DOES NOT DELETE THE RELEASE, IT WILL STILL BE VISIBLE ON
+          NINAPROTOCOL.COM.
         </Typography>
         <Typography fontStyle="italic">
           A asterisk ( * ) next to a release indicates that it was published

@@ -16,6 +16,7 @@ import {
   decodeNonEncryptedByteArray,
   decryptData,
 } from '../../utils/encrypt'
+import { logEvent } from '../../utils/event'
 import { publicKey } from '@project-serum/anchor/dist/cjs/utils';
 const lookupTypes = {
   PUBLISHED_BY: 'published_by',
@@ -370,6 +371,13 @@ const releaseContextHelper = ({
         uri: metadataUri,
         sellerFeeBasisPoints: resalePercentage * 100,
       }
+      logEvent(
+        'release_init__via_hub_initiated',
+        'engagement', {
+          publicKey: release.toBase58(),
+          wallet: provider.wallet.publicKey.toBase58(),
+        }
+      )
 
       const txid = await program.rpc.releaseInitViaHub(
         config,
@@ -402,10 +410,26 @@ const releaseContextHelper = ({
         }
       )
       await provider.connection.getParsedTransaction(txid, 'confirmed')
-      // await NinaSdk.Hub.fetchHubRelease(hubPubkey.toBase58(), hubRelease.toBase58())
+      await NinaSdk.Hub.fetchHubRelease(hubPubkey.toBase58(), hubRelease.toBase58())
+
+      logEvent(
+        'release_init_via_hub_success',
+        'engagement', {
+          publicKey: release.toBase58(),
+          wallet: provider.wallet.publicKey.toBase58(),
+        }
+      )
 
       return { success: true }
     } catch (error) {
+      logEvent(
+        'release_init_via_hub_failure',
+        'engagement', {
+          publicKey: release.toBase58(),
+          wallet: provider.wallet.publicKey.toBase58(),
+        }
+      )
+
       return ninaErrorHandler(error)
     }
   }
@@ -416,6 +440,15 @@ const releaseContextHelper = ({
         ...releasePurchaseTransactionPending,
         [releasePubkey]: true,
       })
+      
+      logEvent(
+        'release_purchase_via_hub_initiated',
+        'engagement', {
+          publicKey: releasePubkey,
+          hub: hubPubkey,
+          wallet: provider.wallet.publicKey.toBase58(),
+        }
+      )
 
       const program = await ninaClient.useProgram()
       releasePubkey = new anchor.web3.PublicKey(releasePubkey)
@@ -574,6 +607,15 @@ const releaseContextHelper = ({
       await getRelease(releasePubkey.toBase58())
       addReleaseToCollection(releasePubkey.toBase58())
 
+      logEvent(
+        'release_purchase_via_hub_success',
+        'engagement', {
+          publicKey: releasePubkey.toBase58(),
+          hub: hubPubkey.toBase58(),
+          wallet: provider.wallet.publicKey.toBase58(),
+        }
+      )
+
       return {
         success: true,
         msg: 'Release purchased!',
@@ -589,6 +631,14 @@ const releaseContextHelper = ({
         ...releasePurchaseTransactionPending,
         [releasePubkey.toBase58()]: false,
       })
+      logEvent(
+        'release_purchase_via_hub_failure',
+        'engagement', {
+          publicKey: releasePubkey.toBase58(),
+          hub: hubPubkey.toBase58(),
+          wallet: provider.wallet.publicKey.toBase58(),
+        }
+      )
       return ninaErrorHandler(error)
     }
   }
@@ -719,6 +769,14 @@ const releaseContextHelper = ({
         signer: releaseSignerBump,
       }
 
+      logEvent(
+        'release_init_initiated',
+        'engagement', {
+          publicKey: release.toBase58(),
+          wallet: provider.wallet.publicKey.toBase58(),
+        }
+      )
+
       const txid = await program.rpc.releaseInitWithCredit(
         config,
         bumps,
@@ -753,17 +811,42 @@ const releaseContextHelper = ({
         pending: false,
         completed: true,
       })
+
+      logEvent(
+        'release_init_success',
+        'engagement', {
+          publicKey: release.toBase58(),
+          wallet: provider.wallet.publicKey.toBase58(),
+        }
+      )
+
       return { success: true }
     } catch (error) {
       setPressingState({
         pending: false,
         completed: false,
       })
+
+      logEvent(
+        'release_init_failure',
+        'engagement', {
+          publicKey: release.toBase58(),
+          wallet: provider.wallet.publicKey.toBase58(),
+        }
+      )
       return ninaErrorHandler(error)
     }
   }
 
   const releasePurchase = async (releasePubkey) => {
+    logEvent(
+      'release_purchase_initiated',
+      'engagement', {
+        publicKey: releasePubkey,
+        wallet: provider.wallet.publicKey.toBase58(),
+      }
+    )
+
     setReleasePurchaseTransactionPending({
       ...releasePurchaseTransactionPending,
       [releasePubkey]: true,
@@ -867,6 +950,15 @@ const releaseContextHelper = ({
       getUsdcBalance()
       await getRelease(releasePubkey)
       await addReleaseToCollection(releasePubkey)
+
+      logEvent(
+        'release_purchase_success',
+        'engagement', {
+          publicKey: releasePubkey.toBase58(),
+          wallet: provider.wallet.publicKey.toBase58(),
+        }
+      )
+  
       return {
         success: true,
         msg: 'Release purchased!',
@@ -882,6 +974,15 @@ const releaseContextHelper = ({
         ...releasePurchaseTransactionPending,
         [releasePubkey]: false,
       })
+
+      logEvent(
+        'release_purchase_failure',
+        'engagement', {
+          publicKey: releasePubkey.toBase58(),
+          wallet: provider.wallet.publicKey.toBase58(),
+        }
+      )
+
       return ninaErrorHandler(error)
     }
   }

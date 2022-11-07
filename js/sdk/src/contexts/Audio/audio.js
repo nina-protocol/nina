@@ -1,10 +1,11 @@
 import React, { createContext, useState, useContext, useRef } from 'react'
 import Nina from '../Nina'
 import Release from '../Release'
+import { logEvent } from '../../utils/event'
 
 const AudioPlayerContext = createContext()
 const AudioPlayerContextProvider = ({ children }) => {
-  const { collection, shouldRemainInCollectionAfterSale } =
+  const { collection, shouldRemainInCollectionAfterSale, ninaClient } =
     useContext(Nina.Context)
   const { releaseState } = useContext(Release.Context)
   const [track, setTrack] = useState(null)
@@ -24,6 +25,8 @@ const AudioPlayerContextProvider = ({ children }) => {
     if (playlist[currentIndex() + 1]) {
       setTrack(playlist[currentIndex() + 1])
       setIsPlaying(shouldPlay)
+    } else {
+      setIsPlaying(false)
     }
   }
 
@@ -67,7 +70,8 @@ const AudioPlayerContextProvider = ({ children }) => {
   const updateTrack = (
     releasePubkey,
     shouldPlay = false,
-    addToPlaylist = false
+    addToPlaylist = false,
+    hubPublicKey = null
   ) => {
     const existingTrack = playlist.filter(
       (item) => item.releasePubkey === releasePubkey
@@ -85,6 +89,24 @@ const AudioPlayerContextProvider = ({ children }) => {
       setTrack(existingTrack)
     }
     setIsPlaying(shouldPlay)
+    if (shouldPlay) {
+      const params = {
+        publicKey: releasePubkey,
+      }
+      if (hubPublicKey) {
+        params.hub = hubPublicKey
+      }
+
+      if (ninaClient.provider.wallet?.connected) {
+        params.wallet = ninaClient.provider.wallet.publicKey.toBase58()
+      }
+
+      logEvent(
+        'track_play',
+        'engagement',
+        params
+      )
+    }
   }
 
   return (
@@ -223,6 +245,18 @@ const audioPlayerContextHelper = ({
         }
       }
     }
+    const params = {
+      publicKey: releasePubkey
+    }
+    if (ninaClient.provider.wallet?.connected) {
+      params.wallet = ninaClient.provider.wallet.publicKey.toBase58()
+    }
+    logEvent(
+      'add_track_to_queue',
+      'engagement',
+      params
+    )
+
   }
 
   const resetQueueWithPlaylist = async (releasePubkeys) => {

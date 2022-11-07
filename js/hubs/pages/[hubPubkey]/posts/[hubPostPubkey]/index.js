@@ -10,9 +10,7 @@ const PostPage = (props) => {
   const { post, hub } = props;
 
   if (!post) {
-    return (
-      <NotFound hub={hub} />
-    )
+    return <NotFound hub={hub} />;
   }
   return (
     <>
@@ -70,14 +68,14 @@ export const getStaticPaths = async () => {
     paths: [
       {
         params: {
-          hubPubkey: 'placeholder',
-          hubPostPubkey: "placeholder"
-        }
-      }
+          hubPubkey: "placeholder",
+          hubPostPubkey: "placeholder",
+        },
+      },
     ],
-    fallback: 'blocking'
-  }
-}
+    fallback: "blocking",
+  };
+};
 
 export const getStaticProps = async (context) => {
   try {
@@ -94,7 +92,7 @@ export const getStaticProps = async (context) => {
         post,
         hub,
       },
-      revalidate: 10
+      revalidate: 10,
     };
   } catch (error) {
     console.warn(error);
@@ -112,6 +110,5 @@ export const getStaticProps = async (context) => {
       console.warn(error);
     }
   }
-  return {props: {}};
+  return { props: {} };
 };
-

@@ -81,14 +81,14 @@ class MyDocument extends Document {
             defer
             src="https://www.googletagmanager.com/gtag/js?id=G-VDD58V1D22"
           />
-          {process.env.REACT_APP_CLUSTER === 'mainnet-beta' && (
+          {process.env.REACT_APP_CLUSTER === "mainnet-beta" && (
             <script
               dangerouslySetInnerHTML={{
                 __html: `
                   window.dataLayer = window.dataLayer || [];
                   function gtag(){dataLayer.push(arguments);}
                   gtag('js', new Date());
-                  gtag('config', 'G-VDD58V1D22', { page_path: window.location.pathname });
+                  gtag('config', 'G-VDD58V1D22', { page_path: window.location.pathname, app_name: 'hubs' });
                 `,
               }}
             />
