@@ -19,9 +19,11 @@ const Layout = ({ children }) => {
           disableGutters
           className={classes.mainContainer}
         >
-          <FeedDrawer />
           <NavBar />
-          <main className={classes.bodyContainer}>{children}</main>
+          <main className={classes.bodyContainer}>
+            <FeedDrawer />
+            {children}
+          </main>
           <AudioPlayer />
         </Container>
       </Root>

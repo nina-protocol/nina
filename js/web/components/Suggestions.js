@@ -96,8 +96,8 @@ const ScrollWrapper = styled(Box)(({ theme }) => ({
     display: 'none' /* Safari and Chrome */,
   },
   [theme.breakpoints.down('md')]: {
-    width: '100vw',
-    padding: '100px 0px',
+    width: '90vw',
+    padding: '30px 0px',
     overflowY: 'scroll',
   },
 }))

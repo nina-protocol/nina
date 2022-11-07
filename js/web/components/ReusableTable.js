@@ -99,10 +99,7 @@ const ReusableTableHead = ({ tableType, inDashboard }) => {
     <TableHead>
       <TableRow>
         {headCells?.map((headCell, i) => (
-          <StyledTableHeadCell
-            key={headCell.id}
-            sx={{ fontWeight: 'bold', borderBottom: 'none' }}
-          >
+          <StyledTableHeadCell key={headCell.id}>
             <Typography sx={{ fontWeight: 'bold' }}>
               {headCell.label}
             </Typography>
@@ -468,7 +465,7 @@ const ReusableTableBody = ({
                 )
               } else if (cellName === 'searchResultArtist') {
                 return (
-                  <StyledTableCell key={cellName}>
+                  <SearchResultTableCell key={cellName}>
                     <SearchResultOverflowContainer>
                       <a
                         onClickCapture={() =>
@@ -478,41 +475,41 @@ const ReusableTableBody = ({
                         {cellData}
                       </a>
                     </SearchResultOverflowContainer>
-                  </StyledTableCell>
+                  </SearchResultTableCell>
                 )
               } else if (cellName === 'searchResultRelease') {
                 return (
-                  <StyledTableCell
-                    key={cellName}
-                    onClickCapture={() => router.push(`/${row?.id}`)}
-                  >
+                  <SearchResultTableCell key={cellName}>
                     <SearchResultOverflowContainer>
-                      <OverflowContainer overflowWidth={'60vw'}>
-                        <Typography noWrap>
+                      <SearchResultOverflowContainer>
+                        <Typography
+                          noWrap
+                          onClickCapture={() => router.push(`/${row?.id}`)}
+                        >
                           <a>{cellData}</a>
                         </Typography>
-                      </OverflowContainer>
+                      </SearchResultOverflowContainer>
                     </SearchResultOverflowContainer>
-                  </StyledTableCell>
+                  </SearchResultTableCell>
                 )
               } else if (cellName === 'searchResultHub') {
                 return (
-                  <StyledTableCell
-                    key={cellName}
-                    onClickCapture={() => router.push(`${row?.link}`)}
-                  >
+                  <SearchResultTableCell key={cellName}>
                     <SearchResultOverflowContainer>
-                      <Typography noWrap>
+                      <Typography
+                        noWrap
+                        onClickCapture={() => router.push(`${row?.link}`)}
+                      >
                         <a>{cellData}</a>
                       </Typography>
                     </SearchResultOverflowContainer>
-                  </StyledTableCell>
+                  </SearchResultTableCell>
                 )
               } else {
                 return (
                   <StyledTableCell key={cellName}>
                     <OverflowContainer>
-                      <Typography sx={{ paddingLeft: '5px' }} noWrap>
+                      <Typography noWrap>
                         <Link href={row.link} passHref>
                           <a>{cellData}</a>
                         </Link>
@@ -570,46 +567,58 @@ const ResponsiveTableContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     overflowY: 'unset',
     height: '100% !important',
-    paddingLeft: 0,
+    paddingLeft: '5px',
     paddingRight: 0,
-    paddingBottom: '200px',
+    overflowX: 'scroll',
   },
 }))
 
 const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
-  padding: '5px',
+  padding: '5px 0px',
   textAlign: 'left',
   cursor: 'pointer',
+  fontWeight: 'bold',
+  borderBottom: 'none',
+  [theme.breakpoints.down('md')]: {
+    padding: '0px',
+    paddingRight: '5px',
+  },
 }))
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  padding: '5px',
+  padding: '5px 0px',
   textAlign: 'left',
   height: '50px',
   width: '15vw',
   [theme.breakpoints.down('md')]: {
-    padding: '5px',
+    width: '30vw',
+    paddingRight: '10px',
   },
 }))
 const StyledImageTableCell = styled(TableCell)(({ theme }) => ({
   width: '50px',
   textAlign: 'left',
-  padding: '5px 0',
-  [theme.breakpoints.down('md')]: {
-    padding: '0 5px',
-  },
+  padding: '5px',
 }))
 const StyledTableCellButtonsContainer = styled(TableCell)(({ theme }) => ({
   width: '100px',
   textAlign: 'left',
-  padding: '5px 0',
+  padding: '5px 0px',
   textAlign: 'left',
   minWidth: '100px',
   [theme.breakpoints.down('md')]: {
     padding: '0px',
   },
 }))
-
+const SearchResultTableCell = styled(TableCell)(({ theme }) => ({
+  padding: '5px',
+  textAlign: 'left',
+  height: '50px',
+  [theme.breakpoints.down('md')]: {
+    padding: '5px',
+    width: '100vw',
+  },
+}))
 const OverflowContainer = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
   maxWidth: '15vw',
@@ -653,6 +662,7 @@ const SearchResultOverflowContainer = styled(Box)(({ theme }) => ({
   textOverflow: 'ellipsis',
   [theme.breakpoints.down('md')]: {
     minWidth: '0',
+    width: '80vw',
   },
 }))
 const StyledCollectButton = styled(Button)(({ theme }) => ({

@@ -165,22 +165,6 @@ const NavSearch = () => {
         autoCompleteResults={autoCompleteResults}
         keyHandler={(e) => keyHandler(e)}
       />
-      <MobileNavSearch
-        handleSubmit={handleSubmit}
-        changeHandler={changeHandler}
-        handleInputFocus={handleInputFocus}
-        suggestionsHandler={suggestionsHandler}
-        query={query}
-        suggestions={suggestions}
-        dropdownRef={dropdownRef}
-        searchInputRef={searchInputRef}
-        showDropdown={showDropdown}
-        autoCompleteResults={autoCompleteResults}
-        keyHandler={(e) => keyHandler(e)}
-        setShowDropdown={setShowDropdown}
-        showSearchInput={showSearchInput}
-        setShowSearchInput={setShowSearchInput}
-      />
     </>
   )
 }
@@ -244,80 +228,8 @@ const DesktopNavSearch = ({
   )
 }
 
-const MobileNavSearch = ({
-  showSearchInput,
-  handleInputFocus,
-  dropdownRef,
-  handleSubmit,
-  changeHandler,
-  query,
-  searchInputRef,
-  suggestions,
-  setShowSearchInput,
-  showDropdown,
-  suggestionsHandler,
-
-  autoCompleteResults,
-  keyHandler,
-}) => {
-  return (
-    <MobileNavSearchContainer>
-      <Box>
-        {showSearchInput ? (
-          <CloseIcon onClick={() => setShowSearchInput(false)} />
-        ) : (
-          <SearchIcon onClick={() => setShowSearchInput(true)} />
-        )}
-      </Box>
-      {showSearchInput && (
-        <MobileSearchContainer ref={dropdownRef}>
-          <MobileSearchInputWrapper>
-            <Form onSubmit={(e) => handleSubmit(e)}>
-              <SearchInput
-                onChange={(e) => changeHandler(e)}
-                value={query}
-                autoComplete="off"
-                onFocus={(e) => handleInputFocus(e)}
-                ref={searchInputRef}
-                placeholder="Search for artists, releases, hubs"
-                type="search"
-              />
-            </Form>
-          </MobileSearchInputWrapper>
-          {showDropdown && (
-            <MobileDropdownContainer>
-              {autoCompleteResults.map((result, index) => {
-                if (result.visible) {
-                  return (
-                    <ResponsiveSearchResultContainer key={index}>
-                      <SearchDropdown
-                        category={result.name}
-                        searchData={suggestions}
-                        hasResults={result.visible}
-                        clickHandler={(e) => suggestionsHandler(e)}
-                        onKeyDown={(e) => keyHandler(e)}
-                      />
-                    </ResponsiveSearchResultContainer>
-                  )
-                }
-              })}
-
-              {query?.length > 0 &&
-                suggestions?.artists?.length === 0 &&
-                suggestions?.releases?.length === 0 &&
-                suggestions?.hubs?.length === 0 && (
-                  <Typography>No results found</Typography>
-                )}
-            </MobileDropdownContainer>
-          )}
-        </MobileSearchContainer>
-      )}
-    </MobileNavSearchContainer>
-  )
-}
-
 const DesktopNavSearchContainer = styled(Box)(({ theme }) => ({
-  [theme.breakpoints.down('sm')]: {
+  [theme.breakpoints.down('md')]: {
     display: 'none',
   },
 }))
@@ -332,7 +244,7 @@ const SearchInput = styled('input')(({ theme }) => ({
   width: '15vw',
   marginRight: '20px',
   outline: 'none !important',
-  background: 'transparent',
+
   outline: 'none',
   borderRadius: 0,
   [theme.breakpoints.down('md')]: {
@@ -340,6 +252,7 @@ const SearchInput = styled('input')(({ theme }) => ({
     padding: '2px 0',
     width: '100vw',
     fontSize: '18px',
+    display: 'none',
   },
 }))
 const DropdownContainer = styled(Box)(({ theme }) => ({
@@ -361,36 +274,4 @@ const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
   webkitOverflowScrolling: 'touch',
 }))
 
-const MobileNavSearchContainer = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  right: '65px',
-  height: '100%',
-  [theme.breakpoints.up('md')]: {
-    display: 'none',
-  },
-}))
-const MobileSearchInputWrapper = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'row',
-  margin: '0px 10px',
-}))
-const MobileSearchContainer = styled(Box)(({ theme }) => ({
-  height: '100vh',
-  width: '95vw',
-  zIndex: '100',
-  position: 'absolute',
-  overflow: 'hidden',
-  textAlign: 'left',
-  left: '-50px',
-}))
-const MobileDropdownContainer = styled(Box)(({ theme }) => ({
-  height: '100vh',
-  width: '95vw',
-  zIndex: '100',
-  display: 'block',
-  position: 'absolute',
-  background: '#fff',
-  textAlign: 'left',
-  padding: '0 10px',
-}))
 export default NavSearch
