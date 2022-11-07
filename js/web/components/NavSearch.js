@@ -81,7 +81,7 @@ const NavSearch = () => {
       return
     }
     setShowDropdown(false)
-    setShowSearchInput(false)
+    setQuery('')
   }
 
   const autoCompleteHandler = async (query) => {
@@ -116,20 +116,6 @@ const NavSearch = () => {
     )
   }
 
-  const suggestionsHandler = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    const clickedSuggestion = e.target.innerText
-    const searchFilter = e.target.id
-    if (clickedSuggestion) {
-      setQuery(clickedSuggestion)
-      setShowDropdown(false)
-      setShowSearchInput(false)
-    }
-
-    suggestionsClickHandler(clickedSuggestion, searchFilter)
-  }
-
   const handleInputFocus = (e) => {
     e.preventDefault()
     e.stopPropagation()
@@ -139,14 +125,13 @@ const NavSearch = () => {
     }
   }
   const keyHandler = (e) => {
-    const clickedSuggestion = e.target.innerText
-    const searchFilter = e.target.id
-
+    e.preventDefault()
+    e.stopPropagation()
     if (e.key === 'Enter') {
-      setQuery(clickedSuggestion)
-      suggestionsClickHandler(clickedSuggestion, searchFilter)
-      setShowDropdown(false)
-      setShowSearchInput(false)
+      // setQuery(clickedSuggestion)
+      // suggestionsClickHandler(clickedSuggestion, searchFilter)
+      // setShowDropdown(false)
+      setQuery('')
     }
   }
 
@@ -156,7 +141,6 @@ const NavSearch = () => {
         handleSubmit={handleSubmit}
         changeHandler={changeHandler}
         handleInputFocus={handleInputFocus}
-        suggestionsHandler={suggestionsHandler}
         query={query}
         suggestions={suggestions}
         dropdownRef={dropdownRef}
@@ -164,6 +148,8 @@ const NavSearch = () => {
         showDropdown={showDropdown}
         autoCompleteResults={autoCompleteResults}
         keyHandler={(e) => keyHandler(e)}
+        setShowDropdown={setShowDropdown}
+        setQuery={setQuery}
       />
     </>
   )
@@ -173,15 +159,16 @@ const DesktopNavSearch = ({
   handleSubmit,
   changeHandler,
   handleInputFocus,
-  suggestionsHandler,
+
   query,
   suggestions,
   dropdownRef,
   searchInputRef,
   showDropdown,
+  setShowDropdown,
+  setQuery,
   autoCompleteResults,
   keyHandler,
-  releasesRecent,
 }) => {
   return (
     <DesktopNavSearchContainer>
@@ -208,8 +195,9 @@ const DesktopNavSearch = ({
                     category={result.name}
                     searchData={suggestions}
                     hasResults={result.visible}
-                    clickHandler={(e) => suggestionsHandler(e)}
                     onKeyDown={(e) => keyHandler(e)}
+                    setShowDropdown={setShowDropdown}
+                    setQuery={setQuery}
                   />
                 </ResponsiveSearchResultContainer>
               )

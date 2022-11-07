@@ -1,14 +1,17 @@
 import { Box, Typography } from '@mui/material'
 import { useRef, useEffect } from 'react'
 import { styled } from '@mui/system'
-
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 const SearchDropdown = ({
   searchData,
   category,
   hasResults,
-  clickHandler,
   onKeyDown,
+  setShowDropdown,
+  setQuery,
 }) => {
+  const router = useRouter()
   const searchDropdownRef = useRef(null)
   useEffect(() => {
     const node = searchDropdownRef.current
@@ -71,6 +74,18 @@ const SearchDropdown = ({
       return formattedData
     })
   }
+  const suggestionsHandler = (e, link) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const clickedSuggestion = e.target.innerText
+
+    if (clickedSuggestion) {
+      setShowDropdown(false)
+      setQuery('')
+      router.push(link)
+    }
+  }
   return (
     <>
       {hasResults === true && (
@@ -86,11 +101,17 @@ const SearchDropdown = ({
               onKeyDown={onKeyDown}
               key={index}
             >
-              <a key={index} id={row.category} onClick={clickHandler}>
-                <Typography id={row.category} data-value={row?.name}>
-                  {row?.displayName}
-                </Typography>
-              </a>
+              <Link href={row?.link} passHref>
+                <a
+                  key={index}
+                  id={row.category}
+                  onClick={(e) => suggestionsHandler(e, row?.link)}
+                >
+                  <Typography id={row.category} data-value={row?.name}>
+                    {row?.displayName}
+                  </Typography>
+                </a>
+              </Link>
             </Box>
           ))}
         </SearchResultsWrapper>
