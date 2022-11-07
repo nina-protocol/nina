@@ -57,7 +57,6 @@ const UploadInfoModal = ({ userHasSeenUpdateMessage }) => {
                 target="_blank"
                 rel="noreferrer"
                 style={{ textDecoration: 'underline' }}
-                rel="noreferrer"
               >
                 Bundlr
               </a>{' '}
@@ -87,7 +86,6 @@ const UploadInfoModal = ({ userHasSeenUpdateMessage }) => {
                 target="_blank"
                 rel="noreferrer"
                 style={{ textDecoration: 'underline' }}
-                rel="noreferrer"
               >
                 our discord
               </a>

@@ -5,7 +5,7 @@ import { logEvent } from '../../utils/event'
 
 const AudioPlayerContext = createContext()
 const AudioPlayerContextProvider = ({ children }) => {
-  const { collection, shouldRemainInCollectionAfterSale } =
+  const { collection, shouldRemainInCollectionAfterSale, ninaClient } =
     useContext(Nina.Context)
   const { releaseState } = useContext(Release.Context)
   const [track, setTrack] = useState(null)
@@ -95,6 +95,10 @@ const AudioPlayerContextProvider = ({ children }) => {
       }
       if (hubPublicKey) {
         params.hub = hubPublicKey
+      }
+
+      if (ninaClient.provider.wallet?.connected) {
+        params.wallet = ninaClient.provider.wallet.publicKey.toBase58()
       }
 
       logEvent(
@@ -241,11 +245,16 @@ const audioPlayerContextHelper = ({
         }
       }
     }
+    const params = {
+      publicKey: releasePubkey
+    }
+    if (ninaClient.provider.wallet?.connected) {
+      params.wallet = ninaClient.provider.wallet.publicKey.toBase58()
+    }
     logEvent(
       'add_track_to_queue',
-      'engagement', {
-        publicKey: releasePubkey,
-      }
+      'engagement',
+      params
     )
 
   }

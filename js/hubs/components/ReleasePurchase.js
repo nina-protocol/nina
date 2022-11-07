@@ -159,6 +159,7 @@ const ReleasePurchase = (props) => {
     logEvent("track_download", "engagement", {
       publicKey: releasePubkey,
       hub: hubPubkey,
+      wallet: wallet?.publicKey?.toBase58(),
     });
 
     const response = await axios.get(url, {
