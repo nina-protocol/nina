@@ -99,7 +99,7 @@ const Royalty = (props) => {
         type="submit"
         onClick={() => setOpen(true)}
         fullWidth
-        sx={{mt:1}}
+        sx={{ mt: 1 }}
       >
         <Typography variant="body2">Revenue Share Info</Typography>
       </Button>

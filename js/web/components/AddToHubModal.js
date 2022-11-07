@@ -23,7 +23,9 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const { hubAddRelease } = useContext(Hub.Context)
-  const { checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(Nina.Context)
+  const { checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(
+    Nina.Context
+  )
   const [selectedHubId, setSelectedHubId] = useState()
   const [inProgress, setInProgress] = useState(false)
   const userHasHubs = useMemo(() => userHubs?.length > 0, [userHubs])
@@ -35,10 +37,12 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
   }, [userHubs])
 
   const handleRepost = async (e) => {
-    const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.HUB_ADD_RELEASE);
+    const error = checkIfHasBalanceToCompleteAction(
+      NinaProgramAction.HUB_ADD_RELEASE
+    )
     if (error) {
-      enqueueSnackbar(error.msg, { variant: "failure" });
-      return;
+      enqueueSnackbar(error.msg, { variant: 'failure' })
+      return
     }
 
     setInProgress(true)

@@ -160,14 +160,13 @@ const ReleaseSettings = (props) => {
         </ReleaseInfo>
 
         <Box mt={1}>
-
-          <Box display='flex' alignItems='center'>
+          <Box display="flex" alignItems="center">
             <Royalty releasePubkey={releasePubkey} release={release} />
 
             <Button
               variant="outlined"
               fullWidth
-              sx={{maxWidth: '50%'}}
+              sx={{ maxWidth: '50%' }}
               onClick={() =>
                 window.open(
                   `https://twitter.com/intent/tweet?text=${`${displayValues.artist} - "${displayValues.title}" on Nina%0A`}&url=ninaprotocol.com/${releasePubkey}`,
@@ -178,7 +177,6 @@ const ReleaseSettings = (props) => {
             >
               <Typography variant="body2">Share to Twitter</Typography>
             </Button>
-
           </Box>
           {inCreateFlow && (
             <Button

@@ -15,7 +15,6 @@ import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
 
-
 const BundlrModal = ({ inCreate, displaySmall }) => {
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()

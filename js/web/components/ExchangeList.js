@@ -6,7 +6,6 @@ import Box from '@mui/material/Box'
 import ExchangeListItem from './ExchangeListItem'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 
-
 const ExchangeList = (props) => {
   let { list, onExchangeButtonAction, release, metadata, isBuy } = props
   const { solPrice } = useContext(Nina.Context)

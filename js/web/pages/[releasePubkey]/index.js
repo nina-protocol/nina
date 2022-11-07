@@ -8,9 +8,7 @@ const ReleasePage = (props) => {
   const { metadata } = props
 
   if (!metadata) {
-    return (
-      <NotFound />
-    )
+    return <NotFound />
   }
   return (
     <>
@@ -55,10 +53,10 @@ export const getStaticPaths = async () => {
       {
         params: {
           releasePubkey: 'placeholder',
-        }
-      }
+        },
+      },
     ],
-    fallback: 'blocking'
+    fallback: 'blocking',
   }
 }
 
@@ -80,11 +78,10 @@ export const getStaticProps = async (context) => {
         metadata: metadataJson[releasePubkey] || null,
         releasePubkey,
       },
-      revalidate: 10
+      revalidate: 10,
     }
   } catch (error) {
-    console.warn(error);
+    console.warn(error)
   }
-  return {props: {}}
+  return { props: {} }
 }
-

@@ -9,8 +9,8 @@ import Image from 'next/image'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 import Dots from './Dots'
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import 'slick-carousel/slick/slick.css'
+import 'slick-carousel/slick/slick-theme.css'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 const { getImageFromCDN, loader } = imageManager
 
@@ -93,7 +93,13 @@ const RecentlyPublished = (props) => {
                   <Link href={`/${release.releasePubkey}`}>
                     <a>
                       <Image
-                        src={getImageFromCDN(imageUrl, 400, new Date(release.tokenData.releaseDatetime.toNumber() * 1000))}
+                        src={getImageFromCDN(
+                          imageUrl,
+                          400,
+                          new Date(
+                            release.tokenData.releaseDatetime.toNumber() * 1000
+                          )
+                        )}
                         loader={loader}
                         height={100}
                         width={100}

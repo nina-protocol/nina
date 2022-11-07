@@ -8,8 +8,9 @@ import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import { useWallet } from '@solana/wallet-adapter-react'
 
 const YourCollectionBreadcrumb = () => {
-  const { releaseState, filterReleasesUserCollection } =
-    useContext(Release.Context)
+  const { releaseState, filterReleasesUserCollection } = useContext(
+    Release.Context
+  )
   const wallet = useWallet()
 
   const [userCollectionReleasesCount, setUserCollectionReleasesCount] =
@@ -27,8 +28,9 @@ const YourCollectionBreadcrumb = () => {
 }
 
 const YourReleasesBreadcrumb = () => {
-  const { releaseState, filterReleasesPublishedByUser } =
-    useContext(Release.Context)
+  const { releaseState, filterReleasesPublishedByUser } = useContext(
+    Release.Context
+  )
   const wallet = useWallet()
 
   const [userPublishedReleasesCount, setUserPublishedReleasesCount] =
@@ -183,8 +185,8 @@ const BreadcrumbsContainer = styled(Box)(({ theme }) => ({
       },
     },
   },
-  '& a':{
-    margin: 0
+  '& a': {
+    margin: 0,
   },
   [theme.breakpoints.down('md')]: {
     display: 'none',

@@ -3,13 +3,10 @@ import dynamic from 'next/dynamic'
 import ReleaseRelated from '../../components/ReleaseRelated'
 const NotFound = dynamic(() => import('../../components/NotFound'))
 
-
 const Related = (props) => {
   const { metadata } = props
   if (!metadata) {
-    return (
-      <NotFound />
-    )
+    return <NotFound />
   }
   return (
     <>

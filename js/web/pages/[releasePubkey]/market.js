@@ -3,13 +3,10 @@ import dynamic from 'next/dynamic'
 import Release from '../../components/Release'
 const NotFound = dynamic(() => import('../../components/NotFound'))
 
-
 const ReleaseMarketPage = (props) => {
   const { metadata } = props
   if (!metadata) {
-    return (
-      <NotFound />
-    )
+    return <NotFound />
   }
   return (
     <>

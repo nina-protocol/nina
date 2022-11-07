@@ -9,7 +9,6 @@ import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
 import Dots from './Dots'
 
-
 const BuySellForm = (props) => {
   const { onSubmit, isBuy, release, amount, setAmount } = props
 

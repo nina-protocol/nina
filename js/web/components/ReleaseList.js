@@ -9,7 +9,6 @@ import ReleaseListTable from './ReleaseListTable'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 import Link from 'next/link'
 
-
 const ReleaseList = () => {
   const {
     getReleasesPublishedByUser,
@@ -93,7 +92,9 @@ const ReleaseList = () => {
                     target="_blank"
                     rel="noreferrer"
                     passHref
-                  >How do I withdraw my USDC?</Link>
+                  >
+                    How do I withdraw my USDC?
+                  </Link>
                 </ReleaseStats>
               )}
               <ReleaseListTable

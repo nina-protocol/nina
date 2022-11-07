@@ -23,9 +23,12 @@ const ReleaseComponent = ({ metadataSsr }) => {
     getRelatedForRelease,
     filterRelatedForRelease,
   } = useContext(Release.Context)
-  const { getExchangeHistoryForRelease, exchangeState } =
-    useContext(Exchange.Context)
-  const { getHubsForUser, filterHubsForUser, hubState } = useContext(Hub.Context)
+  const { getExchangeHistoryForRelease, exchangeState } = useContext(
+    Exchange.Context
+  )
+  const { getHubsForUser, filterHubsForUser, hubState } = useContext(
+    Hub.Context
+  )
   const [relatedReleases, setRelatedReleases] = useState(null)
   const [userHubs, setUserHubs] = useState()
 

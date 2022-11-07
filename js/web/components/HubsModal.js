@@ -49,10 +49,7 @@ const HubsModal = (props) => {
             <Typography fontWeight="700">{`Hubs featuring: ${metadata.properties.artist.substring(
               0,
               100
-            )} - "${metadata.properties.title.substring(
-              0,
-              100
-            )}"`}</Typography>
+            )} - "${metadata.properties.title.substring(0, 100)}"`}</Typography>
           </Header>
           <CollectorTable>
             <TableBody>
@@ -65,7 +62,7 @@ const HubsModal = (props) => {
                           href={entry.json.externalUrl}
                           passHref
                           target="_blank"
-                          rel="noopener noreferrer"      
+                          rel="noopener noreferrer"
                         >
                           {entry.json.displayName}
                         </a>

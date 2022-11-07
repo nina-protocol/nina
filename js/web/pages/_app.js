@@ -16,7 +16,7 @@ import { SnackbarProvider } from 'notistack'
 import { ThemeProvider } from '@mui/material/styles'
 import { NinaTheme } from '../../NinaTheme'
 import Dots from '../components/Dots'
-import Head from "next/head";
+import Head from 'next/head'
 
 const NinaWrapper = dynamic(() => import('../components/NinaWrapper'))
 const Layout = dynamic(() => import('../components/Layout'))
@@ -83,11 +83,11 @@ function Application({ Component, pageProps }) {
         vertical: 'top',
         horizontal: 'left',
       }}
-    >     
-    <Head>
-      <meta name="theme-color" content={'#ffffff'} key="theme" />
-     </Head>
-      
+    >
+      <Head>
+        <meta name="theme-color" content={'#ffffff'} key="theme" />
+      </Head>
+
       <ConnectionProvider endpoint={endpoint}>
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>

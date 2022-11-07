@@ -96,7 +96,11 @@ const ReleaseCard = (props) => {
             height={350}
             width={350}
             layout="responsive"
-            src={getImageFromCDN(image, 400, new Date(Date.parse(metadata.properties.date)))}
+            src={getImageFromCDN(
+              image,
+              400,
+              new Date(Date.parse(metadata.properties.date))
+            )}
             alt={metadata?.name}
             priority={true}
             loader={loader}
@@ -113,7 +117,7 @@ const StyledReleaseCard = styled(Box)(() => ({
   margin: 'auto',
   display: 'flex',
   flexDirection: 'column',
-  justifyContent: 'center'
+  justifyContent: 'center',
 }))
 
 const CtaWrapper = styled(Box)(() => ({
