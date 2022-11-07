@@ -505,7 +505,19 @@ const ReusableTableBody = ({
                     </SearchResultOverflowContainer>
                   </SearchResultTableCell>
                 )
+              } else if (cellName === 'price' || cellName === 'remaining') {
+                console.log('cellName :>> ', cellName);
+                return (
+                  <StyledTableCell key={cellName}>
+                    <LineBreakContainer>
+                      <Typography >
+                          {cellData}
+                      </Typography>
+                    </LineBreakContainer>
+                  </StyledTableCell>
+                )
               } else {
+                console.log('cellName :>> ', cellName);
                 return (
                   <StyledTableCell key={cellName}>
                     <OverflowContainer>
@@ -624,6 +636,16 @@ const OverflowContainer = styled(Box)(({ theme }) => ({
   maxWidth: '15vw',
   textAlign: 'left',
   textOverflow: 'ellipsis',
+  [theme.breakpoints.down('md')]: {
+    minWidth: '0',
+    maxWidth: '20vw',
+  },
+}))
+const LineBreakContainer = styled(Box)(({ theme }) => ({
+  overflow: 'hidden',
+  maxWidth: '100px',
+  textAlign: 'left',
+  whiteSpace: 'wrap',
   [theme.breakpoints.down('md')]: {
     minWidth: '0',
     maxWidth: '20vw',
