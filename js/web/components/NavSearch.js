@@ -244,7 +244,7 @@ const SearchInput = styled('input')(({ theme }) => ({
   width: '15vw',
   marginRight: '20px',
   outline: 'none !important',
-  background: 'transparent',
+
   outline: 'none',
   borderRadius: 0,
   [theme.breakpoints.down('md')]: {
