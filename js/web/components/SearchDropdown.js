@@ -1,7 +1,6 @@
 import { Box, Typography } from '@mui/material'
 import { useRef, useEffect } from 'react'
 import { styled } from '@mui/system'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 const SearchDropdown = ({
   searchData,
@@ -101,17 +100,15 @@ const SearchDropdown = ({
               onKeyDown={onKeyDown}
               key={index}
             >
-              <Link href={row?.link} passHref>
-                <a
-                  key={index}
-                  id={row.category}
-                  onClick={(e) => suggestionsHandler(e, row?.link)}
-                >
-                  <Typography id={row.category} data-value={row?.name}>
-                    {row?.displayName}
-                  </Typography>
-                </a>
-              </Link>
+              <a
+                key={index}
+                id={row.category}
+                onClick={(e) => suggestionsHandler(e, row?.link)}
+              >
+                <Typography id={row.category} data-value={row?.name}>
+                  {row?.displayName}
+                </Typography>
+              </a>
             </Box>
           ))}
         </SearchResultsWrapper>
