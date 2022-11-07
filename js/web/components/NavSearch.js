@@ -6,8 +6,6 @@ import { Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import SearchIcon from '@mui/icons-material/Search'
-import CloseIcon from '@mui/icons-material/Close'
 const SearchDropdown = dynamic(() => import('./SearchDropdown'))
 
 const NavSearch = () => {
@@ -81,7 +79,7 @@ const NavSearch = () => {
       return
     }
     setShowDropdown(false)
-    setShowSearchInput(false)
+    setQuery('')
   }
 
   const autoCompleteHandler = async (query) => {
@@ -109,27 +107,6 @@ const NavSearch = () => {
     }
   }
 
-  const suggestionsClickHandler = (search, searchFilter) => {
-    setQuery('')
-    router.push(
-      `/search/?q=${search}${searchFilter ? `&type=${searchFilter}` : ''}`
-    )
-  }
-
-  const suggestionsHandler = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    const clickedSuggestion = e.target.innerText
-    const searchFilter = e.target.id
-    if (clickedSuggestion) {
-      setQuery(clickedSuggestion)
-      setShowDropdown(false)
-      setShowSearchInput(false)
-    }
-
-    suggestionsClickHandler(clickedSuggestion, searchFilter)
-  }
-
   const handleInputFocus = (e) => {
     e.preventDefault()
     e.stopPropagation()
@@ -139,14 +116,11 @@ const NavSearch = () => {
     }
   }
   const keyHandler = (e) => {
-    const clickedSuggestion = e.target.innerText
-    const searchFilter = e.target.id
-
+    e.preventDefault()
+    e.stopPropagation()
     if (e.key === 'Enter') {
-      setQuery(clickedSuggestion)
-      suggestionsClickHandler(clickedSuggestion, searchFilter)
-      setShowDropdown(false)
-      setShowSearchInput(false)
+      setQuery('')
+      handleSubmit(e)
     }
   }
 
@@ -156,7 +130,6 @@ const NavSearch = () => {
         handleSubmit={handleSubmit}
         changeHandler={changeHandler}
         handleInputFocus={handleInputFocus}
-        suggestionsHandler={suggestionsHandler}
         query={query}
         suggestions={suggestions}
         dropdownRef={dropdownRef}
@@ -164,6 +137,8 @@ const NavSearch = () => {
         showDropdown={showDropdown}
         autoCompleteResults={autoCompleteResults}
         keyHandler={(e) => keyHandler(e)}
+        setShowDropdown={setShowDropdown}
+        setQuery={setQuery}
       />
     </>
   )
@@ -173,19 +148,19 @@ const DesktopNavSearch = ({
   handleSubmit,
   changeHandler,
   handleInputFocus,
-  suggestionsHandler,
   query,
   suggestions,
   dropdownRef,
   searchInputRef,
   showDropdown,
+  setShowDropdown,
+  setQuery,
   autoCompleteResults,
   keyHandler,
-  releasesRecent,
 }) => {
   return (
-    <DesktopNavSearchContainer>
-      <Form onSubmit={(e) => handleSubmit(e)}>
+    <NavSearchContainer>
+      <form onSubmit={(e) => handleSubmit(e)}>
         <SearchInputWrapper>
           <SearchInput
             onChange={(e) => changeHandler(e)}
@@ -197,7 +172,7 @@ const DesktopNavSearch = ({
             type="search"
           />
         </SearchInputWrapper>
-      </Form>
+      </form>
       {showDropdown && (
         <DropdownContainer ref={dropdownRef}>
           {autoCompleteResults.map((result, index) => {
@@ -208,8 +183,9 @@ const DesktopNavSearch = ({
                     category={result.name}
                     searchData={suggestions}
                     hasResults={result.visible}
-                    clickHandler={(e) => suggestionsHandler(e)}
                     onKeyDown={(e) => keyHandler(e)}
+                    setShowDropdown={setShowDropdown}
+                    setQuery={setQuery}
                   />
                 </ResponsiveSearchResultContainer>
               )
@@ -224,11 +200,11 @@ const DesktopNavSearch = ({
             )}
         </DropdownContainer>
       )}
-    </DesktopNavSearchContainer>
+    </NavSearchContainer>
   )
 }
 
-const DesktopNavSearchContainer = styled(Box)(({ theme }) => ({
+const NavSearchContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     display: 'none',
   },
@@ -237,15 +213,13 @@ const DesktopNavSearchContainer = styled(Box)(({ theme }) => ({
 const SearchInputWrapper = styled(Box)(({ theme }) => ({
   maxWidth: '100vw',
 }))
-const Form = styled('form')(({ theme }) => ({}))
 const SearchInput = styled('input')(({ theme }) => ({
   border: 0,
   borderBottom: '1px solid #000000',
   width: '15vw',
   marginRight: '20px',
   outline: 'none !important',
-
-  outline: 'none',
+  padding: '2px 0px',
   borderRadius: 0,
   [theme.breakpoints.down('md')]: {
     margin: '15px 0',

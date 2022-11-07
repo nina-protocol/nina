@@ -21,7 +21,6 @@ import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import { styled } from '@mui/material'
 import { useSnackbar } from 'notistack'
-import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
 import { useRouter } from 'next/router'
 
 const { getImageFromCDN, loader } = imageManager
@@ -451,14 +450,14 @@ const ReusableTableBody = ({
                 return (
                   <StyledTableCell key={cellName}>
                     <OverflowContainer overflowWidth={'20vw'}>
-                      <Typography noWrap sx={{ hover: 'pointer' }}>
-                        <a
-                          onClickCapture={() => {
-                            router.push(`/profiles/${row?.authorityPublicKey}`)
-                          }}
-                        >
-                          {cellData}
-                        </a>
+                      <Typography
+                        noWrap
+                        sx={{ hover: 'pointer' }}
+                        onClickCapture={() => {
+                          router.push(`/profiles/${row?.authorityPublicKey}`)
+                        }}
+                      >
+                        <a>{cellData}</a>
                       </Typography>
                     </OverflowContainer>
                   </StyledTableCell>
@@ -467,13 +466,7 @@ const ReusableTableBody = ({
                 return (
                   <SearchResultTableCell key={cellName}>
                     <SearchResultOverflowContainer>
-                      <a
-                        onClickCapture={() =>
-                          router.push(`/profiles/${row?.id}`)
-                        }
-                      >
-                        {cellData}
-                      </a>
+                      <a>{cellData}</a>
                     </SearchResultOverflowContainer>
                   </SearchResultTableCell>
                 )
@@ -498,7 +491,7 @@ const ReusableTableBody = ({
                     <SearchResultOverflowContainer>
                       <Typography
                         noWrap
-                        onClickCapture={() => router.push(`${row?.link}`)}
+                        onClickCapture={() => router.push(`/hubs/${row?.id}`)}
                       >
                         <a>{cellData}</a>
                       </Typography>
@@ -545,7 +538,12 @@ const ReusableTable = ({
     >
       <ResponsiveTableContainer>
         <Table>
-          <ReusableTableHead tableType={tableType} inDashboard={inDashboard} />
+          {items.length > 0 && (
+            <ReusableTableHead
+              tableType={tableType}
+              inDashboard={inDashboard}
+            />
+          )}
           <ReusableTableBody
             items={items}
             tableType={tableType}

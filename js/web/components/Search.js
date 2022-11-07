@@ -13,7 +13,6 @@ import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Dots from './Dots'
 
 import dynamic from 'next/dynamic'
-import { release } from 'os'
 
 const SearchDropdown = dynamic(() => import('./SearchDropdown'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
@@ -379,7 +378,12 @@ const Search = (props) => {
         break
     }
   }
-
+  const searchFilterHandler = (e, searchIndex, searchFilter) => {
+    e.preventDefault()
+    e.stopPropagation()
+    history.pushState(null, '', `/search?q=${query}&type=${searchFilter}`)
+    setActiveView(searchIndex)
+  }
   return (
     <SearchPageContainer>
       <DesktopNavSearchContainer>
@@ -451,7 +455,7 @@ const Search = (props) => {
                 <SearchResultFilter
                   id={index}
                   isClicked={activeView === index + 1}
-                  onClick={() => setActiveView(index + 1)}
+                  onClick={(e) => searchFilterHandler(e, index + 1, filter)}
                   disabled={response?.[filter]?.length === 0}
                   key={index}
                 >
@@ -463,7 +467,7 @@ const Search = (props) => {
           {!searchResults && !searchQuery && (
             <SearchResultFilter
               isClicked={activeView === 0}
-              onClick={() => setActiveView(0)}
+              onClick={(e) => searchFilterHandler(e, 0, 'all')}
             >
               {releasesRecent?.highlights?.length + featuredHubs?.length > 0
                 ? `All (${
@@ -510,7 +514,7 @@ const Search = (props) => {
           response?.artists?.length === 0 &&
           response?.releases?.length === 0 &&
           response?.hubs?.length === 0 && (
-            <Typography>No results found</Typography>
+            <Typography sx={{ marginTop: '20px' }}>No results found</Typography>
           )}
       </>
     </SearchPageContainer>
@@ -580,6 +584,7 @@ const SearchInput = styled('input')(({ theme }) => ({
   outline: 'none',
   borderRadius: 0,
   display: 'none',
+  padding: '15px',
   [theme.breakpoints.down('md')]: {
     marginTop: '15px',
     padding: '2px 0',
