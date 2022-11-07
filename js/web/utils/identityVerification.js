@@ -12,6 +12,7 @@ const {
 const { deserializeUnchecked, serialize } = require('borsh')
 const Web3 = require('web3')
 const axios = require('axios')
+const { logEvent } = require ('@nina-protocol/nina-internal-sdk/src/utils/event');
 
 const NINA_ID = new anchor.web3.PublicKey(
   'idHukURpSwMbvcRER9pN97tBSsH4pdLSUhnHYwHftd5'
@@ -377,12 +378,18 @@ const verifyEthereum = async (
   signTransaction
 ) => {
   try {
+    logEvent(
+      'connection_eth_initiated',
+      'engagement', {
+        ethAddress,
+        wallet: provider.wallet.publicKey.toBase58()
+      }
+    )
     // Sign An Ethereum Message Containing the Solana Public Key
     const signature = await window.ethereum.request({
       method: 'personal_sign',
       params: [ethAddress, web3.utils.sha3(publicKey.toBase58())],
     })
-    console.log(signature)
 
     // Create Name Account Registry
     const ix = await createNameRegistry(
@@ -422,8 +429,24 @@ const verifyEthereum = async (
         solPublicKey: publicKey.toBase58(),
       }
     )
+    logEvent(
+      'connection_eth_success',
+      'engagement', {
+        ethAddress,
+        wallet: provider.wallet.publicKey.toBase58()
+      }
+    )
+    return true
   } catch (error) {
     console.log('error: ', error)
+    logEvent(
+      'connection_eth_failure',
+      'engagement', {
+        ethAddress,
+        wallet: provider.wallet.publicKey.toBase58()
+      }
+    )
+    return false
   }
 }
 
@@ -431,9 +454,18 @@ const verifySoundcloud = async (
   provider,
   soundcloudHandle,
   publicKey,
-  signTransaction
+  signTransaction,
+  soundcloudToken,
 ) => {
   try {
+    logEvent(
+      'connection_sc_initiated',
+      'engagement', {
+        soundcloudHandle,
+        wallet: provider.wallet.publicKey.toBase58()
+      }
+    )
+
     // Create Name Account Registry
     const ix = await createNameRegistry(
       provider.connection,
@@ -461,7 +493,6 @@ const verifySoundcloud = async (
     })
     tx.add(ix, createIx, reverseRegistryIx)
     await signTransaction(tx)
-    console.log('tx: ', tx)
     // Send Transaction To Server To Verify Signatures
     const response = await axios.post(
       `${process.env.NINA_IDENTITY_ENDPOINT}/sc/register`,
@@ -472,9 +503,25 @@ const verifySoundcloud = async (
         publicKey: publicKey.toBase58(),
       }
     )
+    logEvent(
+      'connection_sc_success',
+      'engagement', {
+        soundcloudHandle,
+        wallet: provider.wallet.publicKey.toBase58()
+      }
+    )
+
     return true
   } catch (error) {
     console.log('error: ', error)
+    logEvent(
+      'connection_sc_failure',
+      'engagement', {
+        soundcloudHandle,
+        wallet: provider.wallet.publicKey.toBase58()
+      }
+    )
+
     return false
   }
 }
@@ -487,6 +534,14 @@ const verifyTwitter = async (
   signTransaction
 ) => {
   try {
+    logEvent(
+      'connection_tw_initiated',
+      'engagement', {
+        twitterHandle,
+        wallet: provider.wallet.publicKey.toBase58()
+      }
+    )
+
     // Create Name Account Registry
     const ix = await createNameRegistry(
       provider.connection,
@@ -498,16 +553,12 @@ const verifyTwitter = async (
       NINA_ID,
       NINA_ID_TW_TLD
     )
-    console.log('ix: ', ix)
-    console.log('twitterHandle: ', twitterHandle)
     // Create Reverse Lookup Account Registry
     const [createIx, reverseRegistryIx] =
       await ReverseTwitterRegistryState.createLookupInstructions(
         twitterHandle,
         publicKey
       )
-    console.log('createIx: ', createIx)
-    console.log('reverseRegistryIx: ', reverseRegistryIx)
     // Build and Sign Transaction
     const tx = new anchor.web3.Transaction({
       recentBlockhash: (await provider.connection.getLatestBlockhash())
@@ -527,9 +578,25 @@ const verifyTwitter = async (
         publicKey: publicKey.toBase58(),
       }
     )
+    logEvent(
+      'connection_tw_success',
+      'engagement', {
+        twitterHandle,
+        wallet: provider.wallet.publicKey.toBase58()
+      }
+    )
+
     return true
   } catch (error) {
     console.log('error: ', error)
+    logEvent(
+      'connection_tw_failure',
+      'engagement', {
+        twitterHandle,
+        wallet: provider.wallet.publicKey.toBase58()
+      }
+    )
+
     return false
   }
 }
@@ -543,6 +610,14 @@ const verifyInstagram = async (
   token
 ) => {
   try {
+    logEvent(
+      'connection_ig_initiated',
+      'engagement', {
+        instagramHandle,
+        wallet: provider.wallet.publicKey.toBase58()
+      }
+    )
+
     // Create Name Account Registry
     const ix = await createNameRegistry(
       provider.connection,
@@ -582,9 +657,25 @@ const verifyInstagram = async (
         token,
       }
     )
+    logEvent(
+      'connection_ig_success',
+      'engagement', {
+        instagramHandle,
+        wallet: provider.wallet.publicKey.toBase58()
+      }
+    )
+
     return true
   } catch (error) {
     console.log('error: ', error)
+    logEvent(
+      'connection_ig_failure',
+      'engagement', {
+        instagramHandle,
+        wallet: provider.wallet.publicKey.toBase58()
+      }
+    )
+
     return false
   }
 }

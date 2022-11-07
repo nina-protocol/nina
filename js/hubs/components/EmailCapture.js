@@ -10,7 +10,6 @@ import {useWallet} from '@solana/wallet-adapter-react'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import {useSnackbar} from 'notistack'
 
-
 const style = {
   position: 'absolute',
   top: '50%',
@@ -20,7 +19,7 @@ const style = {
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
-}
+} 
 
 const EmailCaptureSchema = Yup.object().shape({
   email: Yup.string().email().required('Email is Required'),
@@ -32,7 +31,7 @@ const EmailCaptureSchema = Yup.object().shape({
 })
 
 const EmailCapture = ({size}) => {
-  const {enqueueSnackbar} = useSnackbar();
+  const {enqueueSnackbar} = useSnackbar()
   const {publicKey, connected} = useWallet()
   const {submitEmailRequest} = useContext(Nina.Context)
   const [open, setOpen] = useState(false)
@@ -94,13 +93,7 @@ const EmailCapture = ({size}) => {
           Please fill out this form to apply
         </BlueTypography>
       )}
-      {size === 'small' && (
-        <SmallCta
-          onClick={handleOpen}
-        >
-          Sign Up
-        </SmallCta>
-      )}
+      {size === 'small' && <SmallCta onClick={handleOpen}>Sign Up</SmallCta>}
       <Modal
         open={open}
         onClose={handleClose}
@@ -108,7 +101,7 @@ const EmailCapture = ({size}) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography variant="h4" >
+          <Typography variant="h4">
             Nina is currently in closed beta.
           </Typography>
           <Typography variant="h4" sx={{mb: 2}}>
@@ -152,9 +145,8 @@ const SmallCta = styled(Typography)(({theme}) => ({
     top: '75%',
     right: '15px',
     padding: '5px 0px',
-    width: '95px'
+    width: '95px',
   },
 }))
-
 
 export default EmailCapture

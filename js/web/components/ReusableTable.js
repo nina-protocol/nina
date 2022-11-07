@@ -21,7 +21,6 @@ import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import { styled } from '@mui/material'
 import { useSnackbar } from 'notistack'
-import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
 import { useRouter } from 'next/router'
 
 const { getImageFromCDN, loader } = imageManager
@@ -539,7 +538,12 @@ const ReusableTable = ({
     >
       <ResponsiveTableContainer>
         <Table>
-          <ReusableTableHead tableType={tableType} inDashboard={inDashboard} />
+          {items.length > 0 && (
+            <ReusableTableHead
+              tableType={tableType}
+              inDashboard={inDashboard}
+            />
+          )}
           <ReusableTableBody
             items={items}
             tableType={tableType}
@@ -584,7 +588,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   textAlign: 'left',
   height: '50px',
   width: '15vw',
-
   [theme.breakpoints.down('md')]: {
     width: '30vw',
     paddingRight: '10px',

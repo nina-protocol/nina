@@ -19,23 +19,28 @@ import {
 } from "../styles/theme/lightThemeOptions.js";
 
 const Hubs = () => {
-  const { getHubsForUser, hubState, filterHubsForUser, getHubs, filterFeaturedHubs } =
-    useContext(Hub.Context);
+  const {
+    getHubsForUser,
+    hubState,
+    filterHubsForUser,
+    getHubs,
+    filterFeaturedHubs,
+  } = useContext(Hub.Context);
   const { npcAmountHeld } = useContext(Nina.Context);
-  const [hubs, setHubs] = useState()
+  const [hubs, setHubs] = useState();
   const wallet = useWallet();
 
   useEffect(() => {
     if (!hubs) {
-      getHubs(true)
+      getHubs(true);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     if ((!hubs || hubs.length === 0) && Object.keys(hubState).length > 0) {
-      setHubs(filterFeaturedHubs())
+      setHubs(filterFeaturedHubs());
     }
-  }, [hubState])
+  }, [hubState]);
 
   useEffect(() => {
     if (wallet.connected) {
@@ -94,18 +99,20 @@ const Hubs = () => {
                 <EmailCapture size="large" />{" "}
               </Box>
 
-              <Box sx={{ display: 'flex', paddingLeft: { md: '30px', xs: '0' }}}>
+              <Box
+                sx={{ display: "flex", paddingLeft: { md: "30px", xs: "0" } }}
+              >
                 <Typography
                   variant="body1"
                   align="left"
                   className={classes.sectionHeader}
                 >
-                  <Link href='/all' sx={{textDecoration: 'none'}}>
+                  <Link href="/all" sx={{ textDecoration: "none" }}>
                     Featured Hubs
                   </Link>
                 </Typography>
               </Box>
-              
+
               <HubSlider hubs={hubs} />
 
               <Box sx={{mt: '40px'}}>
@@ -121,7 +128,6 @@ const Hubs = () => {
                 .
               </BlueTypography>
               </Box>
-
             </>
           )}
           {wallet.connected && (
@@ -143,7 +149,7 @@ const Hubs = () => {
                       align="left"
                       className={classes.sectionHeader}
                     >
-                      <Link href='/all' sx={{textDecoration: 'none'}}>
+                      <Link href="/all" sx={{ textDecoration: "none" }}>
                         Featured Hubs
                       </Link>
                     </Typography>
@@ -153,9 +159,7 @@ const Hubs = () => {
               )}
               {userHubs?.length === 0 && npcAmountHeld > 0 && (
                 <DashboardContent item md={12}>
-                  <StyledLink
-                    href="/create"
-                  >
+                  <StyledLink href="/create">
                     <Button
                       color="primary"
                       variant="outlined"
@@ -165,21 +169,18 @@ const Hubs = () => {
                       Create a Hub
                     </Button>
                   </StyledLink>
-                  <StyledLink
-                    href="/all"
-                  >
+                  <StyledLink href="/all">
                     <Button
                       color="primary"
                       variant="outlined"
                       fullWidth
                       type="submit"
-                      sx={{mt: '15px'}}
+                      sx={{ mt: "15px" }}
                     >
                       Browse All Hubs
                     </Button>
                   </StyledLink>
                 </DashboardContent>
-
               )}
               {userHubs?.length > 0 && (
                 <DashboardWrapper
@@ -205,14 +206,13 @@ const Hubs = () => {
                           Apply For More Hubs
                         </Button>
                       </StyledLink>
-                      <StyledLink
-                      href="/all">
+                      <StyledLink href="/all">
                         <Button
                           color="primary"
                           variant="outlined"
                           fullWidth
                           type="submit"
-                          sx={{mt: '15px'}}
+                          sx={{ mt: "15px" }}
                         >
                           Browse All Hubs
                         </Button>
@@ -221,9 +221,7 @@ const Hubs = () => {
                   )}
                   {npcAmountHeld > 0 && (
                     <DashboardContent item md={6}>
-                      <StyledLink
-                        href="/create"
-                      >
+                      <StyledLink href="/create">
                         <Button
                           color="primary"
                           variant="outlined"
@@ -233,15 +231,13 @@ const Hubs = () => {
                           Create a Hub
                         </Button>
                       </StyledLink>
-                      <StyledLink
-                        href="/all"
-                      >
+                      <StyledLink href="/all">
                         <Button
                           color="primary"
                           variant="outlined"
                           fullWidth
                           type="submit"
-                          sx={{mt: '15px'}}
+                          sx={{ mt: "15px" }}
                         >
                           Browse All Hubs
                         </Button>
@@ -251,7 +247,8 @@ const Hubs = () => {
                   <DashboardContent item md={6}>
                     <>
                       <DashboardHeader style={{ fontWeight: 600 }}>
-                        You have {userHubs.length} {userHubs.length > 1 ? 'Hubs' : 'Hub'}
+                        You have {userHubs.length}{" "}
+                        {userHubs.length > 1 ? "Hubs" : "Hub"}
                       </DashboardHeader>
                       <ul style={{ height: "500px", overflowY: "scroll" }}>
                         {userHubs.filter(hub => hub.publicKey).map((hub) => {
@@ -298,10 +295,10 @@ const HubsContainer = styled("div")(({ theme }) => ({
   overflowX: "visible",
   [theme.breakpoints.down("md")]: {
     width: "80vw",
-    overflowY: 'hidden',
-    marginTop: '6vh',
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    overflowY: "hidden",
+    marginTop: "6vh",
+    marginLeft: "auto",
+    marginRight: "auto",
   },
   [`& .${classes.sectionHeader}`]: {
     fontWeight: "700 !important",

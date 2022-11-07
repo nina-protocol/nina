@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid";
 import CssBaseline from "@mui/material/CssBaseline";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub"
+import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { lightThemeOptions } from "../styles/theme/lightThemeOptions";
 import Head from "next/head";
@@ -55,9 +55,9 @@ const Layout = ({ children }) => {
       } else {
         lightTheme.palette.text.primary = "#000000";
         lightTheme.palette.primary.main = "#000000";
-        lightTheme.components.MuiTypography.styleOverrides.root.color = "#000000";
+        lightTheme.components.MuiTypography.styleOverrides.root.color =
+          "#000000";
         lightTheme.components.MuiCssBaseline.styleOverrides.a.color = "#000000";
-  
       }
     } else {
       lightTheme.palette.background.default = "#ffffff";
@@ -74,8 +74,7 @@ const Layout = ({ children }) => {
       hubPubkey = Object.values(hubState).find(hub => hub.handle === hubHandle)?.publicKey
       setHubPubkey(hubPubkey)
     }
-  }, [router.pathname, hubState])
-
+  }, [router.pathname, hubState]);
 
   if (children.props.isEmbed) {
     return <main className={classes.bodyContainer}>{children}</main>;
@@ -83,18 +82,22 @@ const Layout = ({ children }) => {
 
   let topSpace = "125px";
 
-  if (router.pathname.includes("/releases")  ) {
+  if (router.pathname.includes("/releases")) {
     topSpace = "80px";
   }
-  
-  if (router.pathname === '/' || router.pathname.includes("/create")) {
+
+  if (router.pathname === "/" || router.pathname.includes("/create")) {
     topSpace = "45px";
   }
 
   return (
     <ThemeProvider theme={lightTheme}>
       <Head>
-        <meta name="theme-color" content={lightTheme.palette.background.default} key="theme" />
+        <meta
+          name="theme-color"
+          content={lightTheme.palette.background.default}
+          key="theme"
+        />
       </Head>
       <Root>
         <CssBaseline>
@@ -167,7 +170,7 @@ const Root = styled("div")(({ theme }) => ({
     background: theme.palette.background.default,
     [theme.breakpoints.down("md")]: {
       overflowY: "scroll",
-      height: '100vh',
+      height: "100vh",
       "&::-webkit-scrollbar": {
         display: "none !important",
       },
@@ -181,8 +184,8 @@ const AudioPlayerWrapper = styled("div")(({ theme }) => ({
   left: 0,
   paddingLeft: "8px",
   textAlign: "left",
-  width: '30vw',
-  paddingBottom: '0',
+  width: "30vw",
+  paddingBottom: "0",
   [theme.breakpoints.down("md")]: {
     paddingLeft: "0px",
   },

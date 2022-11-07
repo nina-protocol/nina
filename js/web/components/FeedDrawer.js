@@ -29,8 +29,6 @@ const FeedDrawer = () => {
   const [feedFetched, setFeedFetched] = useState(false)
   const drawerTypes = ['latest', 'suggestions']
 
-  console.log('isMobile :>> ', isMobile)
-
   useEffect(() => {
     const handleInitialFetch = async () => {
       if (wallet.connected) {
@@ -194,6 +192,10 @@ const FeedDrawer = () => {
 const StyledMenuButton = styled(Button)(({ theme }) => ({
   padding: '0px 10px 0px 0px !important',
   zIndex: '10',
+  position: 'absolute',
+  width: '30px',
+  top: '90px',
+  right: '0px',
   '&:hover': {
     backgroundColor: `${theme.palette.transparent} !important`,
   },
@@ -203,6 +205,7 @@ const StyledMenuButton = styled(Button)(({ theme }) => ({
 }))
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
+  overflow: 'hidden',
   '& .MuiPaper-root': {
     top: '80px',
     height: '80%',
@@ -212,6 +215,7 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
     borderRight: 'none',
     [theme.breakpoints.down('md')]: {
       width: '90vw',
+      maxWidth: '450px',
     },
   },
 }))
@@ -228,6 +232,7 @@ const FeedHeader = styled(Box)(({ theme }) => ({
   width: '437px',
   [theme.breakpoints.down('md')]: {
     width: '88vw',
+    maxWidth: '437px',
   },
 }))
 

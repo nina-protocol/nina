@@ -2,7 +2,7 @@ import NotFound from "../components/NotFound";
 import Head from "next/head";
 
 const NotFoundPage = (props) => {
-  return(
+  return (
     <>
       <Head>
         <title>Nina Hubs - Not Found</title>
@@ -37,4 +37,3 @@ const NotFoundPage = (props) => {
 };
 
 export default NotFoundPage;
-

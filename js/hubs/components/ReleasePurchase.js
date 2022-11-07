@@ -13,6 +13,7 @@ import Typography from "@mui/material/Typography";
 import { useRouter } from "next/router";
 import Dots from "./Dots";
 import Royalty from "./Royalty";
+import { logEvent } from "@nina-protocol/nina-internal-sdk/src/utils/event";
 
 const HubsModal = dynamic(() => import("./HubsModal"));
 
@@ -29,15 +30,28 @@ const ReleasePurchase = (props) => {
     releasePurchaseTransactionPending,
     releaseState,
   } = useContext(Release.Context);
-  const { hubState } = useContext(Hub.Context)
-  const { getAmountHeld, collection, usdcBalance, ninaClient, checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(Nina.Context);
+  const { hubState } = useContext(Hub.Context);
+  const {
+    getAmountHeld,
+    collection,
+    usdcBalance,
+    ninaClient,
+    checkIfHasBalanceToCompleteAction,
+    NinaProgramAction,
+  } = useContext(Nina.Context);
   const [release, setRelease] = useState(undefined);
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey]);
   const [downloadButtonString, setDownloadButtonString] = useState("Download");
   const [userIsRecipient, setUserIsRecipient] = useState(false);
   const [publishedHub, setPublishedHub] = useState();
-  const txPending = useMemo(() => releasePurchaseTransactionPending[releasePubkey], [releasePubkey, releasePurchaseTransactionPending])
-  const pending = useMemo(() => releasePurchasePending[releasePubkey], [releasePubkey, releasePurchasePending])
+  const txPending = useMemo(
+    () => releasePurchaseTransactionPending[releasePubkey],
+    [releasePubkey, releasePurchaseTransactionPending]
+  );
+  const pending = useMemo(
+    () => releasePurchasePending[releasePubkey],
+    [releasePubkey, releasePurchasePending]
+  );
 
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
@@ -76,9 +90,22 @@ const ReleasePurchase = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let result;
 
-    const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.RELEASE_PURCHASE_VIA_HUB);
+    if (!wallet?.connected) {
+      enqueueSnackbar("Please connect your wallet to purchase", {
+        variant: "error",
+      });
+      logEvent("release_purchase_failure_not_connected", "engagement", {
+        publicKey: releasePubkey,
+        hub: hubPubkey,
+      });
+      return;
+    }
+
+    let result;
+    const error = checkIfHasBalanceToCompleteAction(
+      NinaProgramAction.RELEASE_PURCHASE_VIA_HUB
+    );
     if (error) {
       enqueueSnackbar(error.msg, { variant: "failure" });
       return;
@@ -126,11 +153,14 @@ const ReleasePurchase = (props) => {
           .nativeToUi(release.price, release.paymentMint)
           .toFixed(2)})`;
 
-  const buttonDisabled =
-    wallet?.connected && release.remainingSupply > 0 ? false : true;
-
   const downloadAs = async (url, name) => {
     setDownloadButtonString("Downloading");
+
+    logEvent("track_download", "engagement", {
+      publicKey: releasePubkey,
+      hub: hubPubkey,
+      wallet: wallet?.publicKey?.toBase58(),
+    });
 
     const response = await axios.get(url, {
       method: "GET",
@@ -171,27 +201,24 @@ const ReleasePurchase = (props) => {
       )}
       {publishedHub && publishedHub.id !== hubPubkey && (
         <Typography variant="body2" align="left" paddingBottom="10px">
-          <StyledLink
-            href={`/${publishedHub.handle}`}
-          >
+          <StyledLink href={`/${publishedHub.handle}`}>
             {`Published via ${publishedHub.json.displayName}`}
           </StyledLink>
         </Typography>
       )}
-      {/* <HubsModal releasePubkey={releasePubkey} metadata={metadata}  /> */}
-
-      <form onSubmit={handleSubmit} style={{ textAlign: "left", marginBottom: '10px' }}>
-        <BuyButton variant="contained" type="submit" disabled={buttonDisabled} >
+      <HubsModal releasePubkey={releasePubkey} metadata={metadata} />
+      {userIsRecipient && (
+        <Royalty releasePubkey={releasePubkey} release={release} />
+      )}
+      <form
+        onSubmit={handleSubmit}
+        style={{ textAlign: "left", marginBottom: "10px", marginTop: "20px" }}
+      >
+        <BuyButton variant="contained" type="submit">
           <Typography variant="body2" align="left">
-            {txPending &&
-              <Dots msg="preparing transaction" />
-            }
-            {!txPending && pending &&
-              <Dots msg="awaiting wallet approval" />
-            }
-            {!txPending && !pending &&
-              buttonText
-            }
+            {txPending && <Dots msg="preparing transaction" />}
+            {!txPending && pending && <Dots msg="awaiting wallet approval" />}
+            {!txPending && !pending && buttonText}
           </Typography>
         </BuyButton>
       </form>
@@ -219,15 +246,14 @@ const ReleasePurchase = (props) => {
           </Typography>
         </BuyButton>
       )}
-      {userIsRecipient && (
-        <Royalty releasePubkey={releasePubkey} release={release} />
-      )}
     </ReleasePurchaseWrapper>
   );
 };
 
 const BuyButton = styled(Button)(({ theme }) => ({
   "& p": {
+    border: `1px solid ${theme.palette.text.primary}`,
+    padding: "10px",
     "&:hover": {
       opacity: "50%",
     },

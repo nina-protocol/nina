@@ -253,13 +253,17 @@ const ReleaseListTable = (props) => {
                 .slice()
                 .sort(getComparator(order, orderBy))
                 .map((row) => {
-                  const release = releases.filter(r => r.releasePubkey === row.id)[0]
+                  const release = releases.filter(
+                    (r) => r.releasePubkey === row.id
+                  )[0];
                   return (
                     <TableRow
                       hover
                       tabIndex={-1}
                       key={row.id}
-                      onClick={(e) => handleClick(e, release.hubReleasePubkey, hubData.handle)}
+                      onClick={(e) =>
+                        handleClick(e, release.hubReleasePubkey, hubData.handle)
+                      }
                     >
                       {Object.keys(row).map((cellName) => {
                         const cellData = row[cellName];

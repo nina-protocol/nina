@@ -16,7 +16,8 @@ import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Button from '@mui/material/Button'
 import Dots from './Dots'
 import { useRouter } from 'next/router'
-import { Wallet } from '@project-serum/anchor'
+import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
+import { useWallet } from '@solana/wallet-adapter-react'
 
 const timeSince = (date) => {
   const seconds = Math.floor((new Date() - date) / 1000)
@@ -82,13 +83,25 @@ const Feed = ({
     if (isPlaying && track.releasePubkey === releasePubkey) {
       setIsPlaying(false)
     } else {
+      logEvent('navigator_play',
+      'engagement', {
+        wallet: wallet.publicKey?.toBase58(),
+        release: releasePubkey,
+      })
+
       updateTrack(releasePubkey, true, true)
     }
   }
 
-  const handleClick = (e, path) => {
+  const handleClick = (e, path, type) => {
     e.stopPropagation()
     e.preventDefault()
+    logEvent('navigator_interaction',
+      'engagement', {
+        type,
+        wallet: wallet.publicKey?.toBase58(),
+        path,
+      })
     router.push(path)
   }
 
@@ -101,7 +114,7 @@ const Feed = ({
               <HoverContainer
                 href={`/hubs/${item?.hub?.handle}`}
                 passHref
-                onClick={(e) => handleClick(e, `/hubs/${item.hub?.handle}`)}
+                onClick={(e) => handleClick(e, `/hubs/${item.hub?.handle}`, item?.type)}
               >
                 <Image
                   height={'100px'}
@@ -142,7 +155,7 @@ const Feed = ({
               <HoverContainer
                 href={`/${item.release?.publicKey}`}
                 passHref
-                onClick={(e) => handleClick(e, `/${item.release?.publicKey}`)}
+                onClick={(e) => handleClick(e, `/${item.release?.publicKey}`, item?.type)}
               >
                 <Image
                   height={'100px'}
@@ -203,7 +216,7 @@ const Feed = ({
               <HoverContainer
                 href={`/${item.release?.publicKey}`}
                 passHref
-                onClick={(e) => handleClick(e, `/${item.release?.publicKey}`)}
+                onClick={(e) => handleClick(e, `/${item.release?.publicKey}`, item?.type)}
               >
                 <Image
                   height={'100px'}
@@ -264,7 +277,7 @@ const Feed = ({
               <HoverContainer
                 href={`/${item.release?.publicKey}`}
                 passHref
-                onClick={(e) => handleClick(e, `/${item.release?.publicKey}`)}
+                onClick={(e) => handleClick(e, `/${item.release?.publicKey}`, item?.type)}
               >
                 <Image
                   height={'100px'}
@@ -371,7 +384,7 @@ const Feed = ({
               <HoverContainer
                 href={`/${item.release?.publicKey}`}
                 passHref
-                onClick={(e) => handleClick(e, `/${item.release?.publicKey}`)}
+                onClick={(e) => handleClick(e, `/${item.release?.publicKey}`, item?.type)}
               >
                 <Image
                   height={'100px'}
@@ -576,6 +589,7 @@ const Feed = ({
                   flexDirection: 'column',
                   justifyContent: 'center',
                   mt: 5,
+                  textAlign: 'left',
                 }}
               >
                 <Typography variant="h5" mb={1}>

@@ -7,7 +7,7 @@ import {
   TOKEN_PROGRAM_ID,
 } from '../../utils/web3'
 import { ninaErrorHandler } from '../../utils/errors'
-import {clone} from 'lodash';
+import { logEvent } from '../../utils/event'
 import { truncateAddress } from '../../utils/truncateAddress';
 import Airtable from 'airtable';
 
@@ -62,6 +62,12 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
 
   useEffect(() => {
     if (provider.wallet?.wallet && provider.wallet.publicKey) {
+      logEvent(
+        'wallet_connected',
+        'engagement', {
+          publicKey: provider.wallet.publicKey.toBase58(),
+        }
+      )
       getNpcAmountHeld()
       getUsdcBalance()
       if (releasePubkey) {
@@ -266,6 +272,14 @@ const ninaContextHelper = ({
 
   const subscriptionSubscribe = async (subscribeToAccount, hubHandle) => {
     try {
+      logEvent(
+        `subscription_subscribe_${hubHandle ? 'hub' : 'account'}_initiated`,
+        'engagement', {
+          to: subscribeToAccount,
+          wallet: provider.wallet.publicKey.toBase58()
+        }
+      )
+
       const program = await ninaClient.useProgram()      
       subscribeToAccount = new anchor.web3.PublicKey(subscribeToAccount)
       const [subscription] = await anchor.web3.PublicKey.findProgramAddress(
@@ -295,6 +309,13 @@ const ninaContextHelper = ({
 
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
       await getSubscription(subscription.toBase58())
+      logEvent(
+        `subscription_subscribe_${hubHandle ? 'hub' : 'account'}_success`,
+        'engagement', {
+          to: subscribeToAccount,
+          wallet: provider.wallet.publicKey.toBase58()
+        }
+      )
 
       return {
         success: true,
@@ -302,6 +323,15 @@ const ninaContextHelper = ({
       }
     } catch (error) {
       console.warn(error)
+      
+      logEvent(
+        `subscription_subscribe_${hubHandle ? 'hub' : 'account'}_failure`,
+        'engagement', {
+          to: subscribeToAccount,
+          wallet: provider.wallet.publicKey.toBase58()
+        }
+      )
+
       return ninaErrorHandler(error)
     }
   }

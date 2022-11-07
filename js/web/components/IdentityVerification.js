@@ -9,6 +9,7 @@ import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import axios from 'axios'
 import Web3 from 'web3'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
+import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import { useSnackbar } from 'notistack'
 import IdentityVerificationModal from './IdentityVerificationModal'
 import {
@@ -28,7 +29,6 @@ import {
 const IdentityVerification = ({ verifications, profilePublicKey }) => {
   const web3 = new Web3(process.env.ETH_CLUSTER_URL)
   const enqueueSnackbar = useSnackbar()
-
   const router = useRouter()
   const { publicKey, signTransaction } = useWallet()
   const { ninaClient } = useContext(Nina.Context)
@@ -170,19 +170,34 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
 
   const handleIdentityButtonAction = async (type) => {
     if (accountVerifiedForType(type)) {
+      const value = valueForType(type)
+
+      const params = {
+        type,
+        value,
+      }
+      if (publicKey) {
+        params.wallet = publicKey.toBase58()
+      }
+      
+      logEvent('connection_action',
+        'engagement', 
+        params
+      )
+
       switch (type) {
         case 'twitter':
-          window.open(`https://twitter.com/${valueForType(type)}`, '_blank')
+          window.open(`https://twitter.com/${value}`, '_blank')
           break
         case 'instagram':
-          window.open(`https://instagram.com/${valueForType(type)}`, '_blank')
+          window.open(`https://instagram.com/${value}`, '_blank')
           break
         case 'soundcloud':
-          window.open(`https://soundcloud.com/${valueForType(type)}`, '_blank')
+          window.open(`https://soundcloud.com/${value}`, '_blank')
           break
         case 'ethereum':
           window.open(
-            `https://etherscan.io/address/${valueForType(type)}`,
+            `https://etherscan.io/address/${value}`,
             '_blank'
           )
           break
@@ -199,7 +214,8 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
           provider,
           soundcloudHandle,
           publicKey,
-          signTransaction
+          signTransaction,
+          soundcloudToken
         )
         break
       case 'twitter':
