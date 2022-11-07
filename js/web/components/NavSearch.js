@@ -184,7 +184,7 @@ const DesktopNavSearch = ({
   releasesRecent,
 }) => {
   return (
-    <DesktopNavSearchContainer>
+    <NavSearchContainer>
       <form onSubmit={(e) => handleSubmit(e)}>
         <SearchInputWrapper>
           <SearchInput
@@ -224,11 +224,11 @@ const DesktopNavSearch = ({
             )}
         </DropdownContainer>
       )}
-    </DesktopNavSearchContainer>
+    </NavSearchContainer>
   )
 }
 
-const DesktopNavSearchContainer = styled(Box)(({ theme }) => ({
+const NavSearchContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     display: 'none',
   },

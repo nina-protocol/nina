@@ -582,7 +582,6 @@ const SearchInput = styled('input')(({ theme }) => ({
   borderRadius: 0,
   display: 'none',
   padding: '15px',
-  border: '2px solid red !important',
   [theme.breakpoints.down('md')]: {
     marginTop: '15px',
     padding: '2px 0',
