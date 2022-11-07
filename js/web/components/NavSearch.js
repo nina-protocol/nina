@@ -6,8 +6,6 @@ import { Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import SearchIcon from '@mui/icons-material/Search'
-import CloseIcon from '@mui/icons-material/Close'
 const SearchDropdown = dynamic(() => import('./SearchDropdown'))
 
 const NavSearch = () => {
@@ -109,13 +107,6 @@ const NavSearch = () => {
     }
   }
 
-  const suggestionsClickHandler = (search, searchFilter) => {
-    setQuery('')
-    router.push(
-      `/search/?q=${search}${searchFilter ? `&type=${searchFilter}` : ''}`
-    )
-  }
-
   const handleInputFocus = (e) => {
     e.preventDefault()
     e.stopPropagation()
@@ -128,10 +119,8 @@ const NavSearch = () => {
     e.preventDefault()
     e.stopPropagation()
     if (e.key === 'Enter') {
-      // setQuery(clickedSuggestion)
-      // suggestionsClickHandler(clickedSuggestion, searchFilter)
-      // setShowDropdown(false)
       setQuery('')
+      handleSubmit(e)
     }
   }
 
@@ -159,7 +148,6 @@ const DesktopNavSearch = ({
   handleSubmit,
   changeHandler,
   handleInputFocus,
-
   query,
   suggestions,
   dropdownRef,

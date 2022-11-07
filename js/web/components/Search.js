@@ -514,7 +514,7 @@ const Search = (props) => {
           response?.artists?.length === 0 &&
           response?.releases?.length === 0 &&
           response?.hubs?.length === 0 && (
-            <Typography>No results found</Typography>
+            <Typography sx={{ marginTop: '20px' }}>No results found</Typography>
           )}
       </>
     </SearchPageContainer>
