@@ -4,14 +4,13 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { styled } from "@mui/material/styles";
-import FormControlLabel from "@mui/material/FormControlLabel"
-import Checkbox from "@mui/material/Checkbox"
-import {unified} from "unified";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import { unified } from "unified";
 import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
-
 
 const style = {
   position: "absolute",
@@ -41,33 +40,28 @@ const ReleaseCreateConfirm = (props) => {
   };
 
   useEffect(() => {
-      if (data.description) {
-        unified()
-          .use(rehypeParse, {fragment: true})
-          .use(rehypeSanitize)
-          .use(rehypeReact, {
-            createElement,
-            Fragment,
-          })
-          .use(rehypeExternalLinks, {
-            target: false,
-            rel: ["nofollow", "noreferrer"],
-          })
-          .process(
-            JSON.parse(data.description).replaceAll(
-              "<p><br></p>",
-              "<br>"
-            )
-          )
-          .then((file) => {
-            setDescription(file.result);
-          });
-      }
+    if (data.description) {
+      unified()
+        .use(rehypeParse, { fragment: true })
+        .use(rehypeSanitize)
+        .use(rehypeReact, {
+          createElement,
+          Fragment,
+        })
+        .use(rehypeExternalLinks, {
+          target: false,
+          rel: ["nofollow", "noreferrer"],
+        })
+        .process(JSON.parse(data.description).replaceAll("<p><br></p>", "<br>"))
+        .then((file) => {
+          setDescription(file.result);
+        });
+    }
   }, [data.description]);
 
   const handleChangeCheckbox = (e) => {
-    setConfirm(e.target.checked)
-  }
+    setConfirm(e.target.checked);
+  };
 
   return (
     <div>
@@ -98,7 +92,7 @@ const ReleaseCreateConfirm = (props) => {
             <Value sx={{ mt: 1 }}>
               Title: <span>{data.title}</span>
             </Value>
-        
+
             <Value sx={{ mt: 1 }}>
               Catalog Number:<span>{data.catalogNumber}</span>
             </Value>
@@ -111,15 +105,25 @@ const ReleaseCreateConfirm = (props) => {
             <Value sx={{ mt: 1, mb: 1 }}>
               Resale Percentage: <span>{data.resalePercentage}%</span>
             </Value>
-            <Value className="description" sx={{mt: 1, flexDirection: 'column' , mb: 1}}>
-              Description: <span style={{marginTop: '8px', paddingLeft: '0'}}>{description}</span>
+            <Value
+              className="description"
+              sx={{ mt: 1, flexDirection: "column", mb: 1 }}
+            >
+              Description:{" "}
+              <span style={{ marginTop: "8px", paddingLeft: "0" }}>
+                {description}
+              </span>
             </Value>
             <Typography variant="subtitle1" mt={1} sx={{ color: "red" }}>
               ONCE PUBLISHED, YOUR RELEASE INFORMATION WILL BE PERMANENT AND YOU
               WILL NOT BE ABLE TO EDIT IT.
             </Typography>
             <Value>
-              <FormControlLabel sx={{ mt: 1, mb: 1, paddingLeft: '10px' }} control={<Checkbox onChange={handleChangeCheckbox} />} label="Confirm" />
+              <FormControlLabel
+                sx={{ mt: 1, mb: 1, paddingLeft: "10px" }}
+                control={<Checkbox onChange={handleChangeCheckbox} />}
+                label="Confirm"
+              />
             </Value>
 
             <Button

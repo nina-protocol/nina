@@ -21,7 +21,9 @@ import Dots from "./Dots";
 const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
   const [open, setOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
-  const { checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(Nina.Context);
+  const { checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(
+    Nina.Context
+  );
   const { hubAddRelease } = useContext(Hub.Context);
   const [selectedHubId, setSelectedHubId] = useState();
   const [inProgress, setInProgress] = useState(false);
@@ -47,12 +49,14 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
   }, [selectedHubId, userHubs]);
 
   const handleRepost = async (e) => {
-    const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.HUB_ADD_RELEASE);
+    const error = checkIfHasBalanceToCompleteAction(
+      NinaProgramAction.HUB_ADD_RELEASE
+    );
     if (error) {
       enqueueSnackbar(error.msg, { variant: "failure" });
       return;
     }
-    
+
     setInProgress(true);
     enqueueSnackbar("Adding Release to Hub", {
       variant: "info",

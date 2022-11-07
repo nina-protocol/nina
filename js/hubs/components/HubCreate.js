@@ -69,7 +69,7 @@ const HubCreate = ({ update, hubData }) => {
     getNpcAmountHeld,
     npcAmountHeld,
     checkIfHasBalanceToCompleteAction,
-    NinaProgramAction
+    NinaProgramAction,
   } = useContext(Nina.Context);
 
   const [artwork, setArtwork] = useState();
@@ -165,12 +165,12 @@ const HubCreate = ({ update, hubData }) => {
     },
     [formValues]
   );
-  
+
   useEffect(() => {
     if (update) {
       //double check that this works
       setFormIsValid(true);
-      setFormValuesConfirmed(true)
+      setFormValuesConfirmed(true);
       return;
     }
     if (artwork) {
@@ -196,7 +196,9 @@ const HubCreate = ({ update, hubData }) => {
 
   const handleSubmit = async () => {
     try {
-      const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.HUB_INIT_WITH_CREDIT);
+      const error = checkIfHasBalanceToCompleteAction(
+        NinaProgramAction.HUB_INIT_WITH_CREDIT
+      );
       if (error) {
         enqueueSnackbar(error.msg, { variant: "failure" });
         return;
@@ -267,7 +269,7 @@ const HubCreate = ({ update, hubData }) => {
             new Blob([JSON.stringify(metadataJson)], {
               type: "application/json",
             })
-          )
+          );
           setMetadataTx(metadataResult);
           updateUpload(upload, UploadType.metadataJson, metadataResult);
         }
@@ -354,7 +356,7 @@ const HubCreate = ({ update, hubData }) => {
                 new Blob([JSON.stringify(metadataJson)], {
                   type: "application/json",
                 })
-              )
+              );
               setMetadataTx(metadataResult);
               updateUpload(upload, UploadType.metadataJson, metadataResult);
             }
@@ -416,7 +418,11 @@ const HubCreate = ({ update, hubData }) => {
           fullWidth
           variant="outlined"
           color="primary"
-          onClick={() => router.push(`/${formValues.hubForm.handle}/dashboard?action=publishRelease`)}
+          onClick={() =>
+            router.push(
+              `/${formValues.hubForm.handle}/dashboard?action=publishRelease`
+            )
+          }
           sx={{ height: "54px" }}
         >
           {`Publish a release`}
@@ -426,7 +432,7 @@ const HubCreate = ({ update, hubData }) => {
   }
 
   return (
-    <StyledGrid item md={12} >
+    <StyledGrid item md={12}>
       {!wallet.connected && (
         <ConnectMessage variant="body" gutterBottom>
           Please connect your wallet to create a hub
@@ -531,25 +537,27 @@ const HubCreate = ({ update, hubData }) => {
           <CreateCta>
             {bundlrBalance === 0 && <BundlrModal inCreate={true} />}
 
-            {bundlrBalance > 0 && formValuesConfirmed && (update || isPublishing ) && (
-              <Button
-                fullWidth
-                variant="outlined"
-                color="primary"
-                onClick={handleSubmit}
-                disabled={
-                  isPublishing ||
-                  !formIsValid ||
-                  bundlrBalance === 0 ||
-                  mbs < uploadSize ||
-                  artwork?.meta.status === "uploading"
-                }
-                sx={{ height: "54px" }}
-              >
-                {isPublishing && <Dots msg={publishingStepText} />}
-                {!isPublishing && buttonText} 
-              </Button>
-            )}
+            {bundlrBalance > 0 &&
+              formValuesConfirmed &&
+              (update || isPublishing) && (
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  color="primary"
+                  onClick={handleSubmit}
+                  disabled={
+                    isPublishing ||
+                    !formIsValid ||
+                    bundlrBalance === 0 ||
+                    mbs < uploadSize ||
+                    artwork?.meta.status === "uploading"
+                  }
+                  sx={{ height: "54px" }}
+                >
+                  {isPublishing && <Dots msg={publishingStepText} />}
+                  {!isPublishing && buttonText}
+                </Button>
+              )}
 
             {bundlrBalance > 0 && !formValuesConfirmed && (
               <HubCreateConfirm
@@ -598,11 +606,11 @@ const HubCreate = ({ update, hubData }) => {
 };
 
 const StyledGrid = styled(Grid)(() => ({
-  paddingTop: '20px',
-  maxHeight: '90vh',
-  overflowY: 'scroll',
-  justifyContent: 'center',
-  alignItems: 'center'
+  paddingTop: "20px",
+  maxHeight: "90vh",
+  overflowY: "scroll",
+  justifyContent: "center",
+  alignItems: "center",
 }));
 
 const ConnectMessage = styled(Typography)(() => ({

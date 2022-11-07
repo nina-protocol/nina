@@ -12,7 +12,7 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { useWallet } from "@solana/wallet-adapter-react";
-import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina"
+import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
 import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
 
 const RoyaltyRecipientForm = dynamic(() => import("./RoyaltyRecipientForm"));

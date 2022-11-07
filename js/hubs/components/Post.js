@@ -35,14 +35,15 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
   const [metadata, setMetadata] = useState();
 
   const { postState } = useContext(Nina.Context);
-  const { getHub, hubState, hubContentState, getHubPost } =
-    useContext(Hub.Context);
+  const { getHub, hubState, hubContentState, getHubPost } = useContext(
+    Hub.Context
+  );
   const { getRelease, releaseState } = useContext(Release.Context);
 
   useEffect(() => {
     getHub(hubPubkey);
   }, [hubPubkey]);
-  
+
   useEffect(() => {
     if (hubPostPubkey && !postState[postPubkey]) {
       getHubPost(hubPostPubkey, hubPubkey);
@@ -144,7 +145,7 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
               {postData.postContent.json.title}
             </Typography>
             <Typography align="left">{postContent}</Typography>
-            <Divider sx={{mt: 1}}/>
+            <Divider sx={{ mt: 1 }} />
             <Typography align="left" sx={{ marginTop: "20px" }}>
               Published by:{" "}
               <a

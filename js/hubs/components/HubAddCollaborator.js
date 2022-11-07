@@ -50,11 +50,13 @@ const HubAddCollaborator = (props) => {
         canAddCollaborator,
         allowance,
       } = values;
-      const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.HUB_ADD_COLLABORATOR);
+      const error = checkIfHasBalanceToCompleteAction(
+        NinaProgramAction.HUB_ADD_COLLABORATOR
+      );
       if (error) {
         enqueueSnackbar(error.msg, { variant: "failure" });
         return;
-      }  
+      }
       const result = await hubAddCollaborator(
         collaboratorPubkey,
         hubPubkey,

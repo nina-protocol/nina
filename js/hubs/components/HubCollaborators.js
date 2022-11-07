@@ -23,8 +23,9 @@ const HubCollaborators = ({
   canAddCollaborators,
 }) => {
   const wallet = useWallet();
-  const { hubRemoveCollaborator, hubCollaboratorsState } =
-    useContext(Hub.Context);
+  const { hubRemoveCollaborator, hubCollaboratorsState } = useContext(
+    Hub.Context
+  );
   const [activeSelection, setActiveSelection] = useState(undefined);
   const hubCollaborators = useMemo(
     () =>
@@ -92,8 +93,8 @@ const HubCollaborators = ({
               them unlimited actions. This can be updated at any time.
             </Note>
             <Typography mt={2}>
-              Select a Collaborator&apos;s publicKey from the right to edit their
-              permissions
+              Select a Collaborator&apos;s publicKey from the right to edit
+              their permissions
             </Typography>
           </>
         </Wrapper>

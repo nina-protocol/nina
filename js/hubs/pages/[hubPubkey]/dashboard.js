@@ -8,10 +8,8 @@ const DashboardPage = ({ hubPubkey, hub }) => {
       <Head>
         <title>{`Nina Hubs - ${hub?.json.displayName} Dashboard`}</title>
         <meta name="og:type" content="website" />
-        <meta
-          name="description"
-          content={`Hubs. Powered by Nina.`} />
-        <meta name="og:image" content={hub?.json.image} />    
+        <meta name="description" content={`Hubs. Powered by Nina.`} />
+        <meta name="og:image" content={hub?.json.image} />
         <meta name="twitter:image:type" content="image/png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@ninaprotocol" />
@@ -20,7 +18,7 @@ const DashboardPage = ({ hubPubkey, hub }) => {
       </Head>
       <Dashboard hubPubkey={hubPubkey} />
     </>
-  )
+  );
 };
 
 DashboardPage.getInitialProps = async (context) => {

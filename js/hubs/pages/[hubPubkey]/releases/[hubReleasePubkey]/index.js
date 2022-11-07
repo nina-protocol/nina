@@ -9,11 +9,8 @@ const Release = dynamic(() => import("../../../../components/Release"));
 const ReleasePage = (props) => {
   const { metadata, hub, releasePubkey, hubPubkey } = props;
 
-
   if (!metadata) {
-    return (
-      <NotFound hub={hub}/>
-    )
+    return <NotFound hub={hub} />;
   }
   return (
     <>
@@ -59,14 +56,16 @@ export default ReleasePage;
 export const getStaticPaths = async () => {
   return {
     paths: [
-      {params: {
-        hubPubkey: 'placeholder',
-        hubReleasePubkey: "placeholder"
-      }}
+      {
+        params: {
+          hubPubkey: "placeholder",
+          hubReleasePubkey: "placeholder",
+        },
+      },
     ],
-    fallback: 'blocking'
-  }
-}
+    fallback: "blocking",
+  };
+};
 
 export const getStaticProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL;
@@ -95,28 +94,27 @@ export const getStaticProps = async (context) => {
         releasePubkey,
         metadata,
         hubPubkey,
-        hub
+        hub,
       },
-      revalidate: 10
-    } 
+      revalidate: 10,
+    };
   } catch (error) {
     console.warn(error);
     try {
-      indexerPath = indexerUrl + `/hubs/${context.params.hubPubkey}`
+      indexerPath = indexerUrl + `/hubs/${context.params.hubPubkey}`;
       const result = await axios.get(indexerPath);
-      const data = result.data
-  
+      const data = result.data;
+
       if (data.hub) {
-        return{
-          props:{
-            hub: data.hub
-          }
-        }
+        return {
+          props: {
+            hub: data.hub,
+          },
+        };
       }
     } catch (error) {
       console.warn(error);
     }
   }
-  return {props: {}}
+  return { props: {} };
 };
-

@@ -9,7 +9,7 @@ import * as Yup from "yup";
 import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
 import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
 import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
-import { getMd5FileHash } from "@nina-protocol/nina-internal-sdk/esm/utils"
+import { getMd5FileHash } from "@nina-protocol/nina-internal-sdk/esm/utils";
 import { useSnackbar } from "notistack";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -52,7 +52,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
     releaseState,
     initializeReleaseAndMint,
     releaseCreateMetadataJson,
-    validateUniqueMd5Digest
+    validateUniqueMd5Digest,
   } = useContext(Release.Context);
   const { hubState } = useContext(Hub.Context);
   const router = useRouter();
@@ -190,13 +190,12 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
   useEffect(() => {
     if (track) {
       const handleGetMd5FileHash = async (track) => {
-        const hash = await getMd5FileHash(track.file)
-        setMd5Digest(hash)
-      }
-      handleGetMd5FileHash(track)
+        const hash = await getMd5FileHash(track.file);
+        setMd5Digest(hash);
+      };
+      handleGetMd5FileHash(track);
     }
-
-  }, [track])
+  }, [track]);
 
   useEffect(() => {
     const trackSize = track ? track.meta.size / 1000000 : 0;
@@ -220,13 +219,15 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
           `/${hubData.handle}/releases/${releaseInfo.hubRelease.toBase58()}`
         );
       } else if (track && artwork) {
-        const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.RELEASE_INIT_VIA_HUB);
+        const error = checkIfHasBalanceToCompleteAction(
+          NinaProgramAction.RELEASE_INIT_VIA_HUB
+        );
         if (error) {
           enqueueSnackbar(error.msg, { variant: "failure" });
           return;
         }
-  
-        const hashExists = await validateUniqueMd5Digest(md5Digest)
+
+        const hashExists = await validateUniqueMd5Digest(md5Digest);
         if (hashExists) {
           enqueueSnackbar(
             `A release with this track already exists: ${hashExists.json.properties.artist} - ${hashExists.json.properties.title}`,
@@ -235,7 +236,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
             }
           );
 
-          return 
+          return;
         }
 
         let upload = uploadId;
@@ -292,13 +293,13 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                 trackType: track.file.type,
                 artworkType: artwork.file.type,
                 duration: track.meta.duration,
-                md5Digest
+                md5Digest,
               });
               metadataResult = await bundlrUpload(
-                  new Blob([JSON.stringify(metadataJson)], {
-                    type: "application/json",
-                  })
-                );
+                new Blob([JSON.stringify(metadataJson)], {
+                  type: "application/json",
+                })
+              );
               setMetadata(metadataJson);
               setMetadataTx(metadataResult);
               updateUpload(
@@ -458,7 +459,11 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                 </BundlrBalanceInfo>
               )}
               {uploadSize > 0 && (
-                <Typography variant="subtitle1" align="right" sx={{mt: '5px'}}>
+                <Typography
+                  variant="subtitle1"
+                  align="right"
+                  sx={{ mt: "5px" }}
+                >
                   Upload Size: {uploadSize} MB | Cost: $
                   {(uploadSize * (bundlrUsdBalance / mbs)).toFixed(2)}
                 </Typography>

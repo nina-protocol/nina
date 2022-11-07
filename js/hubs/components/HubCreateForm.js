@@ -6,7 +6,7 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
 import HelpIcon from "@mui/icons-material/Help";
-import Quill from './Quill'
+import Quill from "./Quill";
 
 const HubCreateForm = ({
   field,
@@ -71,7 +71,6 @@ const HubCreateForm = ({
 
   return (
     <Root>
-
       <Form style={{ padding: "15px 15px" }}>
         {!update && (
           <Field name="handle">
@@ -194,7 +193,9 @@ const HubCreateForm = ({
                       </Box>
                     }
                     size="small"
-                    InputLabelProps={touched.referralFee ? { shrink: true } : ""}
+                    InputLabelProps={
+                      touched.referralFee ? { shrink: true } : ""
+                    }
                     type="number"
                     InputProps={{
                       inputProps: {
@@ -229,8 +230,8 @@ const HubCreateForm = ({
 
         <Field name="description">
           {(props) => (
-            <Box sx={{mb: '8px'}}>
-              <Quill props={props} update={update} type={'hub'}/>
+            <Box sx={{ mb: "8px" }}>
+              <Quill props={props} update={update} type={"hub"} />
             </Box>
           )}
         </Field>

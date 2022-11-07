@@ -10,9 +10,7 @@ const PostPage = (props) => {
   const { metadata, post, hub, postPubkey, hubPubkey } = props;
 
   if (!post) {
-    return (
-      <NotFound hub={hub} />
-    )
+    return <NotFound hub={hub} />;
   }
   return (
     <>
@@ -21,18 +19,26 @@ const PostPage = (props) => {
         <meta name="og:type" content="website" />
         {metadata && (
           <>
-          <meta
-            name="description"
-            content={`${metadata?.json.name || post.postContent.json.title}: ${metadata?.json.description || post.postContent.json.body} \n Published on ${hub?.json.displayName}.  Powered by Nina.`}
-          />
-          <meta
-            name="og:title"
-            content={`${metadata?.json.name} on ${hub.json.displayName}`}
-          />
-          <meta
-            name="og:description"
-            content={`${metadata?.json.name ? metadata?.json.name + ':' : ''} ${metadata?.json.description || post.postContent.json.body} \n Published on ${hub?.json.displayName}.  Powered by Nina.`}
-          />
+            <meta
+              name="description"
+              content={`${
+                metadata?.json.name || post.postContent.json.title
+              }: ${
+                metadata?.json.description || post.postContent.json.body
+              } \n Published on ${hub?.json.displayName}.  Powered by Nina.`}
+            />
+            <meta
+              name="og:title"
+              content={`${metadata?.json.name} on ${hub.json.displayName}`}
+            />
+            <meta
+              name="og:description"
+              content={`${
+                metadata?.json.name ? metadata?.json.name + ":" : ""
+              } ${
+                metadata?.json.description || post.postContent.json.body
+              } \n Published on ${hub?.json.displayName}.  Powered by Nina.`}
+            />
           </>
         )}
 
@@ -88,14 +94,14 @@ export const getStaticPaths = async () => {
     paths: [
       {
         params: {
-          hubPubkey: 'placeholder',
-          hubPostPubkey: "placeholder"
-        }
-      }
+          hubPubkey: "placeholder",
+          hubPostPubkey: "placeholder",
+        },
+      },
     ],
-    fallback: 'blocking'
-  }
-}
+    fallback: "blocking",
+  };
+};
 
 export const getStaticProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL;
@@ -126,28 +132,27 @@ export const getStaticProps = async (context) => {
         postPubkey,
         post,
         hub,
-        hubPubkey
+        hubPubkey,
       },
-      revalidate: 10
+      revalidate: 10,
     };
   } catch (error) {
     console.warn(error);
     try {
-      indexerPath = indexerUrl + `/hubs/${context.params.hubPubkey}`
+      indexerPath = indexerUrl + `/hubs/${context.params.hubPubkey}`;
       const result = await axios.get(indexerPath);
-      const data = result.data
-  
+      const data = result.data;
+
       if (data.hub) {
         return {
           props: {
-            hub: data.hub
-          }
-        }
+            hub: data.hub,
+          },
+        };
       }
     } catch (error) {
       console.warn(error);
     }
   }
-  return {props: {}};
+  return { props: {} };
 };
-

@@ -7,11 +7,10 @@ import Box from "@mui/material/Box";
 import makeStyles from "@mui/styles/makeStyles";
 import { styled } from "@mui/material/styles";
 import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
-import { imageManager } from '@nina-protocol/nina-internal-sdk/esm/utils'
+import { imageManager } from "@nina-protocol/nina-internal-sdk/esm/utils";
 import IconButton from "@mui/material/IconButton";
 import Drawer from "@mui/material/Drawer";
 import MenuIcon from "@mui/icons-material/Menu";
-
 
 import {
   WalletDialogProvider,
@@ -20,17 +19,17 @@ import {
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 import Image from "next/image";
-const { getImageFromCDN, loader } = imageManager
+const { getImageFromCDN, loader } = imageManager;
 
 const navData = [
   {
     label: "+ Publish",
-    href: "/dashboard?action=publishRelease"
+    href: "/dashboard?action=publishRelease",
   },
   {
     label: "Dashboard",
     href: "/dashboard",
-  }
+  },
 ];
 const mobileNavData = [
   {
@@ -56,15 +55,19 @@ const mobileNavData = [
 ];
 
 const Navigation = ({ hubPubkey }) => {
-  const { toolbar, drawerContainer } =
-    useStyles();
+  const { toolbar, drawerContainer } = useStyles();
   const wallet = useWallet();
 
   const [mobileView, setMobileView] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const { hubState, hubCollaboratorsState, filterHubCollaboratorsForHub, getHubsForUser, filterHubsForUser } =
-    useContext(Hub.Context);
+  const {
+    hubState,
+    hubCollaboratorsState,
+    filterHubCollaboratorsForHub,
+    getHubsForUser,
+    filterHubsForUser,
+  } = useContext(Hub.Context);
   const hubCollaborators = useMemo(
     () => filterHubCollaboratorsForHub(hubPubkey),
     [hubCollaboratorsState, hubPubkey]
@@ -84,7 +87,6 @@ const Navigation = ({ hubPubkey }) => {
     }
     return undefined;
   }, [hubState, wallet.connected]);
-
 
   useEffect(() => {
     const setResponsiveness = () => {
@@ -145,7 +147,11 @@ const Navigation = ({ hubPubkey }) => {
             {hubData && (
               <Image
                 loader={loader}
-                src={getImageFromCDN(hubData.json.image, 100, new Date(Date.parse(hubData.datetime)))}
+                src={getImageFromCDN(
+                  hubData.json.image,
+                  100,
+                  new Date(Date.parse(hubData.datetime))
+                )}
                 height="50"
                 width="50"
                 alt="hub-logo"
@@ -161,16 +167,17 @@ const Navigation = ({ hubPubkey }) => {
           </LogoLinkWrapper>
         </Link>
         <CtaWrapper>
-
           {userHubs?.length > 0 && (
             <a
-              href={`https://hubs.ninaprotocol.com/${userHubs.length === 1 ? userHubs[0].handle : ''}`}
+              href={`https://hubs.ninaprotocol.com/${
+                userHubs.length === 1 ? userHubs[0].handle : ""
+              }`}
               target="_blank"
               rel="noreferrer"
-              style={{textDecoration: 'none'}}
+              style={{ textDecoration: "none" }}
             >
-              <Typography variant="body1" sx={{mr: '15px'}}>
-                My Hub{userHubs.length > 1 ? 's' : ''}
+              <Typography variant="body1" sx={{ mr: "15px" }}>
+                My Hub{userHubs.length > 1 ? "s" : ""}
               </Typography>
             </a>
           )}
@@ -421,7 +428,7 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
   },
   "@media (max-width: 900px)": {
     paddingLeft: 0,
-    paddingBottom: '8px',
+    paddingBottom: "8px",
     position: "fixed",
   },
 }));

@@ -12,17 +12,21 @@ const HubPage = (props) => {
         <Head>
           <title>Nina Hubs - Not Found</title>
           <meta name="og:type" content="website" />
-          <meta
-          name="description"
-          content={`Hubs. Powered by Nina.`} />
-          <meta name="og:image" content={hub?.json.image} />    
+          <meta name="description" content={`Hubs. Powered by Nina.`} />
+          <meta name="og:image" content={hub?.json.image} />
           <meta name="twitter:image:type" content="image/png" />
-          <meta name="twitter:image" content="https://hubs.ninaprotocol.com/images/nina-blue.png" />
-          <meta name="og:image" href="https://hubs.ninaprotocol.com/images/nina-blue.png"  />      
+          <meta
+            name="twitter:image"
+            content="https://hubs.ninaprotocol.com/images/nina-blue.png"
+          />
+          <meta
+            name="og:image"
+            href="https://hubs.ninaprotocol.com/images/nina-blue.png"
+          />
         </Head>
         <NotFound />
       </>
-    )
+    );
   }
   return (
     <>
@@ -46,7 +50,7 @@ const HubPage = (props) => {
         <meta name="twitter:description" content={hub?.json.description} />
 
         <meta name="twitter:image" content={hub?.json.image} />
-        <meta name="og:image" content={hub?.json.image}  />      
+        <meta name="og:image" content={hub?.json.image} />
       </Head>
       <Hub hubPubkey={hubPubkey} />
     </>
@@ -60,36 +64,36 @@ export const getStaticPaths = async () => {
     paths: [
       {
         params: {
-          hubPubkey: 'placeholder',
-        }
-      }
+          hubPubkey: "placeholder",
+        },
+      },
     ],
-    fallback: 'blocking'
-  }
-}
+    fallback: "blocking",
+  };
+};
 
 export const getStaticProps = async (context) => {
   const indexerUrl = process.env.INDEXER_URL;
   const hubPubkey = context.params.hubPubkey;
   const indexerPath = indexerUrl + `/hubs/${hubPubkey}`;
-  
+
   let hub;
-  if (hubPubkey && hubPubkey !== 'manifest.json') {
+  if (hubPubkey && hubPubkey !== "manifest.json") {
     try {
       const result = await axios.get(indexerPath);
       const data = result.data;
       hub = data.hub;
-  
+
       return {
         props: {
           hub,
           hubPubkey: hub.id,
         },
-        revalidate: 10
+        revalidate: 10,
       };
     } catch (error) {
       console.warn(error);
     }
   }
-  return {props:{}};
+  return { props: {} };
 };

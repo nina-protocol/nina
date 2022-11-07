@@ -5,20 +5,21 @@ import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
 import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
 import { imageManager } from "@nina-protocol/nina-internal-sdk/esm/utils";
 import Image from "next/image";
-import { isMobile } from 'react-device-detect'
+import { isMobile } from "react-device-detect";
 import { useRouter } from "next/router";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
-import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
+import PauseCircleOutlineOutlinedIcon from "@mui/icons-material/PauseCircleOutlineOutlined";
 import Button from "@mui/material/Button";
 import AutorenewTwoToneIcon from "@mui/icons-material/AutorenewTwoTone";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-const { getImageFromCDN, loader } = imageManager
+const { getImageFromCDN, loader } = imageManager;
 
 const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
-  const { updateTrack, setInitialized, audioPlayerRef, isPlaying, track } = useContext(Audio.Context);
+  const { updateTrack, setInitialized, audioPlayerRef, isPlaying, track } =
+    useContext(Audio.Context);
   const { hubState } = useContext(Hub.Context);
   const { releaseState } = useContext(Release.Context);
   const [columnCount, setColumnCount] = useState(3);
@@ -27,15 +28,18 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
 
   const [displayType, setDisplayType] = useState("all");
   const [filteredContent, setFilteredContent] = useState([]);
-  const content = useMemo(() => contentData.content, [contentData, hubPubkey])
-  const contentTypes = useMemo(() => contentData.contentTypes, [contentData, hubPubkey])
+  const content = useMemo(() => contentData.content, [contentData, hubPubkey]);
+  const contentTypes = useMemo(
+    () => contentData.contentTypes,
+    [contentData, hubPubkey]
+  );
 
   useEffect(() => {
     let filtered;
     switch (displayType) {
       case "all":
-        filtered = content.filter((item) => item.hub === hubPubkey)
-        console.log('filtered: ', filtered)
+        filtered = content.filter((item) => item.hub === hubPubkey);
+        console.log("filtered: ", filtered);
         setFilteredContent(filtered);
         break;
       case "releases":
@@ -43,8 +47,9 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
           return (
             item.contentType === "NinaReleaseV1" &&
             (item.publishedThroughHub === true ||
-              releaseState.tokenData[item.release]?.authority.toBase58() === hubData?.authority
-          ));
+              releaseState.tokenData[item.release]?.authority.toBase58() ===
+                hubData?.authority)
+          );
         });
         setFilteredContent(filtered);
         break;
@@ -54,7 +59,8 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
           return (
             item.contentType === "NinaReleaseV1" &&
             item.publishedThroughHub === false &&
-            releaseState.tokenData[item.release]?.authority.toBase58() !== hubData?.authority
+            releaseState.tokenData[item.release]?.authority.toBase58() !==
+              hubData?.authority
           );
         });
         setFilteredContent(filtered);
@@ -62,7 +68,10 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
 
       case "textposts":
         filtered = content.filter((item) => {
-          return item.contentType === "Post" || item.contentType === "PostWithRelease";
+          return (
+            item.contentType === "Post" ||
+            item.contentType === "PostWithRelease"
+          );
         });
         setFilteredContent(filtered);
         break;
@@ -95,7 +104,7 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
   };
 
   return (
-    <Box position="relative" sx={{mr: {md: '15px', xs: '0px'}}}>
+    <Box position="relative" sx={{ mr: { md: "15px", xs: "0px" } }}>
       {contentTypes.length >= 2 && (
         <StyledButtonGroup
           exclusive
@@ -121,7 +130,7 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
         </StyledButtonGroup>
       )}
       <TileGrid columnCount={columnCount} content={content}>
-        {filteredContent?.map((item, i) => {    
+        {filteredContent?.map((item, i) => {
           return (
             <React.Fragment key={i}>
               {item?.contentType === "NinaReleaseV1" && (
@@ -144,20 +153,31 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
                       <Button
                         onClick={(e) => {
                           e.stopPropagation();
-                          setInitialized(true)
+                          setInitialized(true);
                           if (!audioPlayerRef.current.src) {
-                            audioPlayerRef.current.load()
+                            audioPlayerRef.current.load();
                           }
-                          updateTrack(item.release, item.release === track.releasePubkey ? !isPlaying : true, hubPubkey);
+                          updateTrack(
+                            item.release,
+                            item.release === track.releasePubkey
+                              ? !isPlaying
+                              : true,
+                            hubPubkey
+                          );
                         }}
                         disableRipple
                       >
                         {isPlaying &&
-                          track.releasePubkey === item.release && isPlaying ? (
-                            <PauseCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
-                          ) : (
-                            <PlayCircleOutlineOutlinedIcon sx={{ color: "text.primary" }} />
-                          )}
+                        track.releasePubkey === item.release &&
+                        isPlaying ? (
+                          <PauseCircleOutlineOutlinedIcon
+                            sx={{ color: "text.primary" }}
+                          />
+                        ) : (
+                          <PlayCircleOutlineOutlinedIcon
+                            sx={{ color: "text.primary" }}
+                          />
+                        )}
                       </Button>
                       <ContentName
                         sx={{ color: "text.primary", padding: "0 15px" }}
@@ -171,15 +191,26 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
                         width={100}
                         height={100}
                         layout="responsive"
-                        src={getImageFromCDN(item.image, 400, new Date(releaseState.tokenData[item.release].releaseDatetime.toNumber() * 1000))}
+                        src={getImageFromCDN(
+                          item.image,
+                          400,
+                          new Date(
+                            releaseState.tokenData[
+                              item.release
+                            ].releaseDatetime.toNumber() * 1000
+                          )
+                        )}
                         release={item}
                         priority={true}
                       />
                     )}
                   </HoverCard>
-                  {!item.publishedThroughHub && releaseState.tokenData[item.release]?.authority.toBase58() !== hubData?.authority && (
-                    <StyledAutorenewIcon fontSize="small" />
-                  )}
+                  {!item.publishedThroughHub &&
+                    releaseState.tokenData[
+                      item.release
+                    ]?.authority.toBase58() !== hubData?.authority && (
+                      <StyledAutorenewIcon fontSize="small" />
+                    )}
                 </Tile>
               )}
 
@@ -187,9 +218,11 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
                 <PostTile
                   className={"tile postTile"}
                   key={i}
-                  onClick={() => router.push(`/${hubHandle}/posts/${item.hubPostPublicKey}`)}
+                  onClick={() =>
+                    router.push(`/${hubHandle}/posts/${item.hubPostPublicKey}`)
+                  }
                 >
-                  <PostInfo sx={{ padding: "10px 0 0" }} className={'postInfo'}>
+                  <PostInfo sx={{ padding: "10px 0 0" }} className={"postInfo"}>
                     <PostTitle
                       variant="h2"
                       sx={{ color: "text.primary", textTransform: "uppercase" }}
@@ -211,7 +244,7 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
               {item?.contentType === "PostWithRelease" && (
                 <Tile className={"tile"} key={i}>
                   <HoverCard
-                  className="hoverBorder"
+                    className="hoverBorder"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleClick(
@@ -230,7 +263,9 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
                           }}
                         >
                           {item.postContent.json.title.substring(0, 100)}
-                          {item.postContent.json.title.length > 100 ? "..." : ""}
+                          {item.postContent.json.title.length > 100
+                            ? "..."
+                            : ""}
                         </Typography>
                         <Typography sx={{ color: "text.primary" }}>
                           published: {formattedDate(item.createdAt)}
@@ -244,7 +279,10 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
                         width={100}
                         height={100}
                         layout="fill"
-                        src={getImageFromCDN(item.releaseMetadata?.image, isMobile ? 100 : 400)}
+                        src={getImageFromCDN(
+                          item.releaseMetadata?.image,
+                          isMobile ? 100 : 400
+                        )}
                         release={item.referenceContent}
                         priority={true}
                       />
@@ -268,9 +306,9 @@ const TileGrid = styled(Box)(({ theme, columnCount, content }) => ({
   maxWidth: "960px",
   margin: "auto",
   maxHeight: "92vh",
-  overflow: content.length > 6 ? "scroll" : 'hidden',
+  overflow: content.length > 6 ? "scroll" : "hidden",
   marginTop: "1px",
-  paddingRight: '4px',
+  paddingRight: "4px",
   paddingBottom: "100px",
   "&::-webkit-scrollbar": {
     display: "none",
@@ -297,8 +335,8 @@ const Tile = styled(Box)(({ theme }) => ({
   maxHeight: "300px",
   width: "100%",
   position: "relative",
-  boxSizing: 'content-box',
-  '&.postTile': {
+  boxSizing: "content-box",
+  "&.postTile": {
     border: `2px solid ${theme.palette.text.primary}`,
   },
   [theme.breakpoints.down("md")]: {
@@ -320,19 +358,18 @@ const PostTile = styled(Box)(({ theme }) => ({
   height: "0",
   paddingBottom: "calc(100% - 0px)",
   boxSizing: "border-box",
-  '& .postInfo': {
-    height: '98%',
+  "& .postInfo": {
+    height: "98%",
     [theme.breakpoints.down("md")]: {
-      height: '95%'
-    }
+      height: "95%",
+    },
   },
-  '& .hoverCard': {
-    boxSizing: 'border-box'
+  "& .hoverCard": {
+    boxSizing: "border-box",
   },
   [theme.breakpoints.down("md")]: {
     maxHeight: "272px",
     boxSizing: "border-box",
-
   },
 }));
 
@@ -341,20 +378,20 @@ const HoverCard = styled(Box)(({ theme }) => ({
   width: "100%",
   height: "0",
   paddingBottom: "100%",
-  boxSizing: 'content-box',
+  boxSizing: "content-box",
   border: `2px solid ${theme.palette.transparent}`,
   zIndex: 0,
   [theme.breakpoints.up("md")]: {
-    '&.hoverBorder': {
+    "&.hoverBorder": {
       "&:hover": {
         border: `2px solid ${theme.palette.text.primary}`,
       },
     },
   },
   [theme.breakpoints.down("md")]: {
-    boxSizing: 'inherit',
+    boxSizing: "inherit",
     minHeight: "144px",
-    cursor: 'pointer'
+    cursor: "pointer",
   },
 }));
 
@@ -430,9 +467,9 @@ const StyledButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
     "&:hover": {
       backgroundColor: theme.palette.transparent,
     },
-    '&:not(.Mui-selected)': {
+    "&:not(.Mui-selected)": {
       color: theme.palette.text.primary,
-      opacity: 0.5
+      opacity: 0.5,
     },
   },
   "& .Mui-selected ": {
@@ -443,6 +480,5 @@ const StyledButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
     position: "unset",
   },
 }));
-
 
 export default ContentTileView;

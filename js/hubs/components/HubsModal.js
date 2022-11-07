@@ -1,28 +1,28 @@
-import React, { useState, useContext, useEffect } from 'react'
-import { styled } from '@mui/material/styles'
-import Modal from '@mui/material/Modal'
-import Backdrop from '@mui/material/Backdrop'
-import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import Paper from '@mui/material/Paper'
-import Link from 'next/link'
+import React, { useState, useContext, useEffect } from "react";
+import { styled } from "@mui/material/styles";
+import Modal from "@mui/material/Modal";
+import Backdrop from "@mui/material/Backdrop";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import Link from "next/link";
 import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
 
 const HubsModal = (props) => {
-  const { releasePubkey, metadata } = props
-  const { getHubsForRelease } = useContext(Release.Context)
-  const [open, setOpen] = useState(false)
-  const [hubs, setHubs] = useState([])
-  
+  const { releasePubkey, metadata } = props;
+  const { getHubsForRelease } = useContext(Release.Context);
+  const [open, setOpen] = useState(false);
+  const [hubs, setHubs] = useState([]);
+
   useEffect(() => {
-    handleGetHubsForRelease(releasePubkey)
-  }, [])
+    handleGetHubsForRelease(releasePubkey);
+  }, []);
 
   const handleGetHubsForRelease = async (releasePubkey) => {
-    const hubsList = await getHubsForRelease(releasePubkey)
+    const hubsList = await getHubsForRelease(releasePubkey);
 
-    setHubs(hubsList)
-  }
+    setHubs(hubsList);
+  };
 
   return (
     <Box>
@@ -32,7 +32,7 @@ const HubsModal = (props) => {
         align="left"
         paddingBottom="10px"
       >
-        {`View Hubs ${hubs ? `(${hubs.length})` : ''}`}
+        {`View Hubs ${hubs ? `(${hubs.length})` : ""}`}
       </Cta>
       <StyledModal
         aria-labelledby="transition-modal-title"
@@ -51,10 +51,7 @@ const HubsModal = (props) => {
             <Typography fontWeight="700">{`Hubs featuring: ${metadata.properties.artist.substring(
               0,
               100
-            )} - "${metadata.properties.title.substring(
-              0,
-              100
-            )}"`}</Typography>
+            )} - "${metadata.properties.title.substring(0, 100)}"`}</Typography>
           </Header>
           <CollectorTable>
             <TableBody>
@@ -65,23 +62,25 @@ const HubsModal = (props) => {
                       <td>
                         <Link
                           href={`/${entry.handle}`}
-                          className={entry.publishedThroughHub ? 'publishingHub' : ''}      
+                          className={
+                            entry.publishedThroughHub ? "publishingHub" : ""
+                          }
                         >
                           {entry.json.displayName}
                         </Link>
                       </td>
                     </tr>
-                  )
+                  );
                 })}
             </TableBody>
           </CollectorTable>
         </StyledPaper>
       </StyledModal>
     </Box>
-  )
-}
+  );
+};
 
-const PREFIX = 'ExchangeHistoryModal'
+const PREFIX = "ExchangeHistoryModal";
 
 const classes = {
   exchangeHistoryCta: `${PREFIX}-exchangeHistoryCta`,
@@ -90,69 +89,69 @@ const classes = {
   header: `${PREFIX}-header`,
   historyTable: `${PREFIX}-historyTable`,
   historyTableBody: `${PREFIX}-historyTableBody`,
-}
+};
 
 const Cta = styled(Typography)(({ theme }) => ({
-  cursor: 'pointer',
-  width: 'min-content',
-  whiteSpace: 'nowrap',
-  ':hover': {
+  cursor: "pointer",
+  width: "min-content",
+  whiteSpace: "nowrap",
+  ":hover": {
     opacity: 0.5,
   },
-}))
+}));
 
 const StyledModal = styled(Modal)(() => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  'a:hover': {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  "a:hover": {
     opacity: 0.5,
   },
-}))
+}));
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   boxShadow: theme.shadows[5],
   padding: theme.spacing(6, 4),
   ...theme.gradient,
-  zIndex: '10',
-}))
+  zIndex: "10",
+}));
 
 const Header = styled(Typography)(({ theme }) => ({
-  fontSize: '26px',
-  textAlign: 'center',
-  display: 'flex',
-  flexDirection: 'column',
-  fontWeight: '700',
-  lineHeight: '29.9px',
+  fontSize: "26px",
+  textAlign: "center",
+  display: "flex",
+  flexDirection: "column",
+  fontWeight: "700",
+  lineHeight: "29.9px",
   color: theme.palette.text.primary,
-}))
+}));
 
-const CollectorTable = styled('table')(({ theme }) => ({
+const CollectorTable = styled("table")(({ theme }) => ({
   padding: `${theme.spacing(1, 1)}`,
-  display: 'block',
-  maxHeight: '50vh',
-  overflowY: 'scroll',
+  display: "block",
+  maxHeight: "50vh",
+  overflowY: "scroll",
   color: theme.palette.text.primary,
-  [theme.breakpoints.down('md')]: {
-    width: '80vw',
+  [theme.breakpoints.down("md")]: {
+    width: "80vw",
   },
-  '& th': {
-    textTransform: 'uppercase',
+  "& th": {
+    textTransform: "uppercase",
   },
-}))
+}));
 
-const TableBody = styled('tbody')(({ theme }) => ({
-  '& td': {
-    '& ': {
+const TableBody = styled("tbody")(({ theme }) => ({
+  "& td": {
+    "& ": {
       padding: `${theme.spacing(0, 2)}`,
     },
-    '& a': {
+    "& a": {
       color: `${theme.palette.text.primary}`,
-      whiteSpace: 'nowrap',
-      textDecoration: 'none'
+      whiteSpace: "nowrap",
+      textDecoration: "none",
     },
   },
-}))
+}));
 
-export default HubsModal
+export default HubsModal;
