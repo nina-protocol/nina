@@ -185,7 +185,7 @@ const DesktopNavSearch = ({
 }) => {
   return (
     <DesktopNavSearchContainer>
-      <Form onSubmit={(e) => handleSubmit(e)}>
+      <form onSubmit={(e) => handleSubmit(e)}>
         <SearchInputWrapper>
           <SearchInput
             onChange={(e) => changeHandler(e)}
@@ -197,7 +197,7 @@ const DesktopNavSearch = ({
             type="search"
           />
         </SearchInputWrapper>
-      </Form>
+      </form>
       {showDropdown && (
         <DropdownContainer ref={dropdownRef}>
           {autoCompleteResults.map((result, index) => {
@@ -237,15 +237,13 @@ const DesktopNavSearchContainer = styled(Box)(({ theme }) => ({
 const SearchInputWrapper = styled(Box)(({ theme }) => ({
   maxWidth: '100vw',
 }))
-const Form = styled('form')(({ theme }) => ({}))
 const SearchInput = styled('input')(({ theme }) => ({
   border: 0,
   borderBottom: '1px solid #000000',
   width: '15vw',
   marginRight: '20px',
   outline: 'none !important',
-
-  outline: 'none',
+  padding: '2px 0px',
   borderRadius: 0,
   [theme.breakpoints.down('md')]: {
     margin: '15px 0',

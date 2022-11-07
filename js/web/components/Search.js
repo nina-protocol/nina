@@ -393,6 +393,7 @@ const Search = (props) => {
               ref={searchInputRef}
               placeholder="Search for artists, releases, hubs"
               type="search"
+              sx={{border: '2px sold ire'}}
             />
           </SearchInputWrapper>
         </Form>
@@ -580,6 +581,8 @@ const SearchInput = styled('input')(({ theme }) => ({
   outline: 'none',
   borderRadius: 0,
   display: 'none',
+  padding: '15px',
+  border: '2px solid red !important',
   [theme.breakpoints.down('md')]: {
     marginTop: '15px',
     padding: '2px 0',
