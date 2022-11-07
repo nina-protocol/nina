@@ -393,7 +393,7 @@ const Search = (props) => {
               ref={searchInputRef}
               placeholder="Search for artists, releases, hubs"
               type="search"
-              sx={{border: '2px sold ire'}}
+              sx={{ border: '2px sold ire' }}
             />
           </SearchInputWrapper>
         </Form>
