@@ -215,6 +215,7 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
     borderRight: 'none',
     [theme.breakpoints.down('md')]: {
       width: '90vw',
+      maxWidth: '450px',
     },
   },
 }))
@@ -231,6 +232,7 @@ const FeedHeader = styled(Box)(({ theme }) => ({
   width: '437px',
   [theme.breakpoints.down('md')]: {
     width: '88vw',
+    maxWidth: '437px',
   },
 }))
 
