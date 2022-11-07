@@ -16,7 +16,6 @@ const { getImageFromCDN, loader } = imageManager
 
 const RecentlyPublished = (props) => {
   const { releases } = props
-
   const responsiveSettings = [
     {
       breakpoint: 1024,
@@ -96,9 +95,7 @@ const RecentlyPublished = (props) => {
                         src={getImageFromCDN(
                           imageUrl,
                           400,
-                          new Date(
-                            release.tokenData.releaseDatetime.toNumber() * 1000
-                          )
+                          new Date(release.tokenData.releaseDatetime)
                         )}
                         loader={loader}
                         height={100}

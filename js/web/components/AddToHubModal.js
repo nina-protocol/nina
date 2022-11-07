@@ -22,7 +22,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const { hubAddRelease } = useContext(Hub.Context)
+  const { hubAddRelease, getHubsForRelease } = useContext(Hub.Context)
   const { checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(
     Nina.Context
   )
@@ -52,6 +52,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
     handleClose()
     const result = await hubAddRelease(selectedHubId, releasePubkey)
     if (result?.success) {
+      await getHubsForRelease(releasePubkey)
       enqueueSnackbar(result.msg, {
         variant: 'info',
       })
@@ -124,7 +125,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
                   Add {metadata.name} to{' '}
                   {userHubs.length > 1
                     ? 'one of your hubs'
-                    : 'your hub: ' + userHubs[0]?.json.displayName}
+                    : 'your hub: ' + userHubs[0]?.data.displayName}
                 </Typography>
 
                 {userHubs.length > 1 && (
@@ -148,8 +149,11 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
                         ?.filter((hub) => hub.userCanAddContent)
                         .map((hub) => {
                           return (
-                            <MenuItem key={hub?.id} value={hub?.id}>
-                              {hub?.json.displayName}
+                            <MenuItem
+                              key={hub?.publicKey}
+                              value={hub?.publicKey}
+                            >
+                              {hub?.data?.displayName}
                             </MenuItem>
                           )
                         })}

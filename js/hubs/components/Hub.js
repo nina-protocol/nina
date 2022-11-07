@@ -43,11 +43,11 @@ const HubComponent = ({ hubPubkey }) => {
   const { releaseState } = useContext(Release.Context);
   const [contentData, setContentData] = useState({
     content: [],
-    contentTypes: [],
-  });
-  const [hubReleases, setHubReleases] = useState([]);
-  const [hubPosts, setHubPosts] = useState([]);
-
+    contentTypes: []
+  })
+  const [hubReleases, setHubReleases] = useState(undefined)
+  const [hubPosts, setHubPosts] = useState(undefined)
+  
   useEffect(() => {
     getHub(hubPubkey);
     setContentData({
@@ -59,83 +59,81 @@ const HubComponent = ({ hubPubkey }) => {
   }, [hubPubkey]);
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
+
   useEffect(() => {
     const [releases, posts] = filterHubContentForHub(hubPubkey);
     setHubReleases(releases);
     setHubPosts(posts);
   }, [hubContentState]);
+
   const [description, setDescription] = useState();
   const hubCollaborators = useMemo(
     () => filterHubCollaboratorsForHub(hubPubkey) || [],
     [hubCollaboratorsState, hubPubkey]
   );
 
-  useEffect(() => {}, [hubContentFetched]);
-
   useEffect(() => {
-    const contentArray = [];
-    const types = [];
-    const hubContent = [...hubReleases, ...hubPosts];
-    hubContent.forEach((hubContentData) => {
-      if (hubContentData.hub === hubPubkey) {
-        if (
-          hubContentData.contentType === "NinaReleaseV1" &&
-          releaseState.metadata[hubContentData.release] &&
-          hubContentData.visible
-        ) {
-          const hubReleaseIsReference =
-            hubContent.filter(
-              (c) =>
-                c.referenceHubContent === hubContentData.release && c.visible
-            ).length > 0;
-          if (!hubReleaseIsReference) {
+    if (hubReleases && hubPosts) {
+      const contentArray = [];
+      const types = []
+      const hubContent = [...hubReleases, ...hubPosts];
+      hubContent.forEach((hubContentData) => {
+        if (hubContentData.hub === hubPubkey) {     
+          if (
+            hubContentData.contentType === "ninaReleaseV1" &&
+            releaseState.metadata[hubContentData.release] &&
+            hubContentData.visible
+          ) {
+            const hubReleaseIsReference =
+              hubContent.filter(
+                (c) => c.referenceContent === hubContentData.release && c.visible
+              ).length > 0;
+            if (!hubReleaseIsReference) {
+              hubContentData = {
+                ...hubContentData,
+                ...releaseState.metadata[hubContentData.release],
+              };
+              contentArray.push(hubContentData);
+            }
+            if (hubContentData.publishedThroughHub === hubPubkey || releaseState.tokenData[hubContentData.release]?.authority === hubData?.authority) {
+              types.push('Releases')
+            } else {
+              types.push('Reposts')
+            }
+          } else if (
+            hubContentData.contentType === "post" &&
+            postState[hubContentData.post] &&
+            hubContentData.visible
+          ) {
             hubContentData = {
               ...hubContentData,
-              ...releaseState.metadata[hubContentData.release],
+              ...postState[hubContentData.post],
+              hubPostPublicKey: hubContentData.publicKey,
             };
+            if (hubContentData.referenceContent !== undefined) {
+              hubContentData.releaseMetadata =
+                releaseState.metadata[hubContentData.referenceContent];
+              hubContentData.contentType = "postWithRelease";
+            }
+            types.push('Text Posts')
             contentArray.push(hubContentData);
           }
-          if (
-            hubContentData.publishedThroughHub ||
-            releaseState.tokenData[
-              hubContentData.release
-            ]?.authority.toBase58() === hubData?.authority
-          ) {
-            types.push("Releases");
-          } else {
-            types.push("Reposts");
-          }
-        } else if (
-          hubContentData.contentType === "Post" &&
-          postState[hubContentData.post] &&
-          hubContentData.visible
-        ) {
-          hubContentData = {
-            ...hubContentData,
-            ...postState[hubContentData.post],
-            hubPostPublicKey: hubContentData.publicKey,
-          };
-          if (hubContentData.referenceHubContent !== null) {
-            hubContentData.releaseMetadata =
-              releaseState.metadata[hubContentData.referenceHubContent];
-            hubContentData.contentType = "PostWithRelease";
-          }
-          types.push("Text Posts");
-          contentArray.push(hubContentData);
         }
-      }
-    });
-    const uniqueTypes = [...new Set(types)];
-    setContentData({
-      content: contentArray.sort(
-        (a, b) => new Date(b.datetime) - new Date(a.datetime)
-      ),
-      contentTypes: uniqueTypes,
-    });
+      });
+      const uniqueTypes = [...new Set(types)]
+      setContentData(
+        {      
+          content: contentArray.sort(
+            (a, b) => new Date(b.datetime) - new Date(a.datetime)
+          ),
+          contentTypes: uniqueTypes
+        }
+      );
+    }
   }, [hubReleases, hubPosts]);
 
   useEffect(() => {
-    if (hubData?.json.description.includes("<p>")) {
+    if (hubData?.data?.descriptionHtml?.includes('<p>')) {
       unified()
         .use(rehypeParse, { fragment: true })
         .use(rehypeSanitize)
@@ -148,17 +146,20 @@ const HubComponent = ({ hubPubkey }) => {
           rel: ["nofollow", "noreferrer"],
         })
         .process(
-          JSON.parse(hubData.json.description).replaceAll("<p><br></p>", "<br>")
+          JSON.parse(hubData.data.descriptionHtml).replaceAll(
+            "<p><br></p>",
+            "<br>"
+          )
         )
         .then((file) => {
           setDescription(file.result);
         });
     } else {
-      setDescription(hubData?.json.description);
+      setDescription(hubData?.data?.descriptionHtml || hubData?.data?.description);
     }
-  }, [hubData?.json.description]);
+  }, [hubData?.data?.descriptionHtml, hubData?.data?.description]);
 
-  if (!hubState[hubPubkey]?.json) {
+  if (!hubState[hubPubkey]?.data) {
     return null;
   }
   if (!hubData) {
@@ -170,16 +171,16 @@ const HubComponent = ({ hubPubkey }) => {
   }
   return (
     <>
-      <Grid item md={4} sx={{ padding: { md: "15px", xs: "40px 15px 15px" } }}>
-        {hubData.json.description.length > 0 && (
-          <DescriptionWrapper
-            sx={{ padding: { md: "15px", xs: "40px 0 0" }, width: "100%" }}
-          >
-            <Typography align="left" sx={{ color: "text.primary" }}>
-              {description}
-            </Typography>
-          </DescriptionWrapper>
-        )}
+      <Grid item md={4} sx={{padding: {md: "15px", xs: "40px 15px 15px"}}}>
+          {hubData.data.description.length > 0 && (
+            <DescriptionWrapper
+              sx={{padding: {md: "15px", xs: "40px 0 0"}, width: '100%'}}
+            >
+              <Typography align="left" sx={{color: "text.primary"}}>
+                {description}
+              </Typography>
+            </DescriptionWrapper>
+          )}
       </Grid>
 
       <ContentViewWrapper item md={8} height="100%">

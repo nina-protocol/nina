@@ -1,7 +1,22 @@
+import React, { useEffect } from 'react'
 import Homepage from '../components/HomePage'
 import Head from 'next/head'
+import { useWallet } from '@solana/wallet-adapter-react'
+import { useRouter } from 'next/router'
 
 export default function Home() {
+  const wallet = useWallet()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (wallet.connected) {
+      let path = '/dashboard'
+      if (router.query.code) {
+        path += `?code=${router.query.code}`
+      }
+      router.push(path)
+    }
+  }, [wallet])
   return (
     <>
       <Head>

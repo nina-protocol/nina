@@ -242,6 +242,7 @@ export default withFormik({
       amount: 10,
       retailPrice: undefined,
       resalePercentage: 10,
+      hubPubKey: undefined,
     }
   },
 })(ReleaseCreateForm)

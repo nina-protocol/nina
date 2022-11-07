@@ -9,21 +9,28 @@ import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
 import Link from 'next/link'
 import { useWallet } from '@solana/wallet-adapter-react'
+import { useRouter } from 'next/router'
 import {
   WalletDialogProvider,
   WalletMultiButton,
 } from '@solana/wallet-adapter-material-ui'
 import Breadcrumbs from './Breadcrumbs'
+import NavSearch from './NavSearch'
+import SearchIcon from '@mui/icons-material/Search'
+import EmailCapture from './EmailCapture'
 
 const NavBar = () => {
-  const { healthOk } = useContext(Nina.Context)
+  const router = useRouter()
   const {
-    getHubsForuser,
-    filterHubsForUser,
-    getHubsForUser,
-    hubState,
-    getHubs,
-  } = useContext(Hub.Context)
+    healthOk,
+    getSubscriptionsForUser,
+    filterSubscriptionsForUser,
+    subscriptionState,
+  } = useContext(Nina.Context)
+  const { filterHubsForUser, getHubsForUser, hubState, getHubs } = useContext(
+    Hub.Context
+  )
+
   const wallet = useWallet()
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),
@@ -42,6 +49,7 @@ const NavBar = () => {
   useEffect(() => {
     if (wallet.connected) {
       getHubsForUser(wallet.publicKey.toBase58())
+      getSubscriptionsForUser(wallet.publicKey.toBase58())
     }
   }, [wallet.connected])
 
@@ -57,6 +65,11 @@ const NavBar = () => {
       <NavLeft>
         <NavDrawer />
         <Breadcrumbs />
+        <SearchIconWrapper>
+          <Link href="/search">
+            <SearchIcon />
+          </Link>
+        </SearchIconWrapper>
       </NavLeft>
 
       <Logo>
@@ -67,21 +80,26 @@ const NavBar = () => {
 
       <NavRight>
         <DesktopWalletWrapper>
-          {userHubs && (
-            <a
-              href={`https://hubs.ninaprotocol.com/${
-                userHubs.length === 1 ? userHubs[0].handle : ''
-              }`}
-              target="_blank"
-              style={{ margin: '0' }}
-              rel="noreferrer"
-            >
-              <Typography variant="subtitle1" sx={{ mr: '15px' }}>
-                My Hub{userHubs.length > 1 ? 's' : ''}
-              </Typography>
-            </a>
-          )}
           <NavCtas>
+            <SearchBarWrapper>
+              <NavSearch />
+            </SearchBarWrapper>
+            <UploadWrapper>
+              {!wallet.connected ? (
+                <EmailCapture size="small" />
+              ) : (
+                <BlueTypography
+                  sx={{
+                    padding: { md: '2px', xs: '0px 0px' },
+                    border: '1px solid #2D81FF',
+                    width: '100%',
+                    textAlign: 'center',
+                  }}
+                >
+                  <Link href="/upload">Upload</Link>
+                </BlueTypography>
+              )}
+            </UploadWrapper>
             {wallet.wallets && (
               <StyledWalletDialogProvider featuredWallets={4}>
                 <StyledWalletButton>
@@ -144,6 +162,13 @@ const NavLeft = styled('div')(({ theme }) => ({
   paddingLeft: theme.spacing(1),
 }))
 
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+  marginLeft: '15px',
+  [theme.breakpoints.up('md')]: {
+    display: 'none',
+  },
+}))
+
 const NavRight = styled('div')(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -154,13 +179,27 @@ const NavRight = styled('div')(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     position: 'absolute',
     right: 0,
-    top: '10px',
+    top: '15px',
   },
 }))
 
 const NavCtas = styled('div')(() => ({
   display: 'flex',
   alignItems: 'flex-start',
+  flexWrap: 'wrap',
+}))
+const SearchBarWrapper = styled('div')(({ theme }) => ({
+  [theme.breakpoints.down('md')]: {
+    position: 'absolute',
+    right: '270px',
+    display: 'none',
+  },
+}))
+const UploadWrapper = styled('div')(({ theme }) => ({
+  marginRight: theme.spacing(1),
+  [theme.breakpoints.down('md')]: {
+    display: 'none',
+  },
 }))
 
 const Logo = styled('div')(({ theme }) => ({
@@ -254,7 +293,7 @@ const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
   backgroundColor: `${theme.palette.transparent} !important`,
   boxShadow: 'none !important',
   paddingTop: '0 !important',
-
+  marginTop: '2px',
   '& img': {
     display: 'none',
   },
@@ -272,7 +311,7 @@ const ConnectionDot = styled('span')(({ theme }) => ({
   backgroundColor: theme.palette.red,
   borderRadius: '50%',
   display: 'inline-block',
-  marginTop: '2px',
+  marginTop: '4px',
   '&.connected-healthy': {
     backgroundColor: theme.palette.green,
   },
@@ -282,6 +321,11 @@ const ConnectionDot = styled('span')(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     marginRight: '15px',
   },
+}))
+
+const BlueTypography = styled(Typography)(({ theme }) => ({
+  '& a': { color: theme.palette.blue },
+  cursor: 'pointer',
 }))
 
 export default withFormik({

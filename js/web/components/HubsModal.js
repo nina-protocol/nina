@@ -5,22 +5,22 @@ import Backdrop from '@mui/material/Backdrop'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
-import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import Link from 'next/link'
 
 const HubsModal = (props) => {
   const { releasePubkey, metadata } = props
-  const { getHubsForRelease } = useContext(Release.Context)
+  const { getHubsForRelease } = useContext(Hub.Context)
   const [open, setOpen] = useState(false)
   const [hubs, setHubs] = useState([])
+
   useEffect(() => {
+    const handleGetHubsForRelease = async (releasePubkey) => {
+      const hubs = await getHubsForRelease(releasePubkey)
+      setHubs(hubs)
+    }
     handleGetHubsForRelease(releasePubkey)
-  }, [])
-
-  const handleGetHubsForRelease = async (releasePubkey) => {
-    const hubsList = await getHubsForRelease(releasePubkey)
-
-    setHubs(hubsList)
-  }
+  }, [releasePubkey])
 
   return (
     <Box>
@@ -54,18 +54,14 @@ const HubsModal = (props) => {
           <CollectorTable>
             <TableBody>
               {hubs &&
+                hubs.length > 0 &&
                 hubs.map((entry, i) => {
                   return (
                     <tr key={i}>
                       <td>
-                        <a
-                          href={entry.json.externalUrl}
-                          passHref
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {entry.json.displayName}
-                        </a>
+                        <Link href={`/hubs/${entry?.handle}`}>
+                          {entry?.data.displayName}
+                        </Link>
                       </td>
                     </tr>
                   )

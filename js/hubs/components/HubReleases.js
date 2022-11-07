@@ -28,7 +28,7 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
       Object.values(hubContent)
         .filter(
           (c) =>
-            c.contentType === "NinaReleaseV1" &&
+            c.contentType === "ninaReleaseV1" &&
             c.visible &&
             c.hub === hubPubkey
         )
@@ -39,7 +39,7 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
   const hubReleasesArchived = useMemo(
     () =>
       Object.values(hubContent).filter(
-        (c) => c.contentType === "NinaReleaseV1" && !c.visible
+        (c) => c.contentType === "ninaReleaseV1" && !c.visible
       ),
     [hubContent]
   );

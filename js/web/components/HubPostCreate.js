@@ -50,7 +50,7 @@ const HubPostCreate = ({
 }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const { postInitViaHub, hubState } = useContext(Hub.Context)
+  const { postInitViaHub, hubState, getHub } = useContext(Hub.Context)
   const hubData = useMemo(
     () => hubState[hubPubkey || selectedHubId],
     [hubState, hubPubkey, selectedHubId]
@@ -130,7 +130,7 @@ const HubPostCreate = ({
     } else {
       setButtonText(
         preloadedRelease
-          ? `Create Post on ${hubData?.json.displayName}`
+          ? `Create Post on ${hubData?.data.displayName}`
           : `You do not have permission to create posts`
       )
     }
@@ -222,14 +222,12 @@ const HubPostCreate = ({
             formValues.postForm
           )
           setUploadId(upload)
-
           const uri = 'https://arweave.net/' + metadataResult
           const slug = `${hubData.handle
             .toLowerCase()
             .replace(' ', '_')}_${Math.round(new Date().getTime() / 1000)}`
 
           let result
-
           if (metadataJson.reference) {
             result = await postInitViaHub(
               hubPubkey || selectedHubId,
@@ -242,6 +240,7 @@ const HubPostCreate = ({
           }
 
           if (result?.success) {
+            await getHubsForRelease(metadataJson.reference)
             enqueueSnackbar(result.msg, {
               variant: 'info',
             })

@@ -94,7 +94,7 @@ const ReleaseSettings = (props) => {
           <ReleaseStat variant="body1" component="p">
             <ReleaseStatLeft variant="subtitle1">Amount</ReleaseStatLeft>
             <ReleaseStatRight variant="subtitle1">
-              {release?.totalSupply.toNumber()}
+              {release?.totalSupply}
             </ReleaseStatRight>
           </ReleaseStat>
 
@@ -102,7 +102,7 @@ const ReleaseSettings = (props) => {
             <ReleaseStatLeft variant="subtitle1">Cost USD</ReleaseStatLeft>
             <ReleaseStatRight variant="subtitle1">
               {ninaClient.nativeToUiString(
-                release?.price.toNumber(),
+                release?.price,
                 release?.paymentMint,
                 false,
                 false
@@ -114,7 +114,7 @@ const ReleaseSettings = (props) => {
             <ReleaseStatLeft variant="subtitle1">Resale %</ReleaseStatLeft>
             <ReleaseStatRight variant="subtitle1">
               {' '}
-              {release?.resalePercentage.toNumber() / 10000}%
+              {release?.resalePercentage / 10000}%
             </ReleaseStatRight>
           </ReleaseStat>
           {!inCreateFlow && (
@@ -124,7 +124,7 @@ const ReleaseSettings = (props) => {
                   Primary Sales
                 </ReleaseStatLeft>
                 <ReleaseStatRight variant="subtitle1">
-                  {release?.saleCounter.toNumber()}
+                  {release?.saleCounter}
                 </ReleaseStatRight>
               </ReleaseStat>
               <ReleaseStat variant="body1" component="p">
@@ -132,7 +132,7 @@ const ReleaseSettings = (props) => {
                   Secondary Sales
                 </ReleaseStatLeft>
                 <ReleaseStatRight variant="subtitle1">
-                  {release?.exchangeSaleCounter.toNumber()}
+                  {release?.exchangeSaleCounter}
                 </ReleaseStatRight>
               </ReleaseStat>
               <ReleaseStat variant="body1" component="p">
@@ -141,7 +141,7 @@ const ReleaseSettings = (props) => {
                 </ReleaseStatLeft>
                 <ReleaseStatRight variant="subtitle1">
                   {ninaClient.nativeToUiString(
-                    release?.totalCollected.toNumber(),
+                    release?.totalCollected,
                     release?.paymentMint
                   )}
                 </ReleaseStatRight>

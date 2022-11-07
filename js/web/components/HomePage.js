@@ -13,6 +13,7 @@ import RecentlyPublished from './RecentlyPublished'
 import Link from 'next/link'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 import HubSlider from './HubSlider'
+import EmailCapture from './EmailCapture'
 
 const HomePage = () => {
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
@@ -29,21 +30,14 @@ const HomePage = () => {
   useEffect(() => {
     getSolPrice()
     getReleasesRecent()
-    getHubs(true)
   }, [])
 
   useEffect(() => {
     setReleasesRecent(filterReleasesRecent())
   }, [releasesRecentState])
 
-  useEffect(() => {
-    if ((!hubs || hubs.length === 0) & (Object.keys(hubState).length > 0)) {
-      setHubs(filterFeaturedHubs())
-    }
-  }, [hubState])
-
   return (
-    <ScrollablePageWrapper>
+    <ScrollablePageWrapper paddingTop={'210px'}>
       <HomePageContainer overflowX="visible">
         <BlueTypography
           variant="h1"
@@ -201,13 +195,9 @@ const HomePage = () => {
           Solana and Arweave networks that Nina is built on. Nina does not take
           a cut.
         </Typography>
-        <BlueTypography
-          variant="h1"
-          align="center"
-          sx={{ paddingBottom: { md: '140px', xs: '30px' } }}
-        >
-          <Link href="/releases">Start exploring.</Link>
-        </BlueTypography>
+        <Box align="center" sx={{ paddingBottom: { md: '140px', xs: '30px' } }}>
+          <EmailCapture size="large" />
+        </Box>
       </HomePageContainer>
     </ScrollablePageWrapper>
   )

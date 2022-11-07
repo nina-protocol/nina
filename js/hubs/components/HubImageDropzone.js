@@ -10,21 +10,21 @@ import Image from "next/image";
 
 const HubImageDropzone = ({ type, setArtwork, currentImageUrl, update }) => {
   const handleChangeStatus = ({ meta, file, restart, remove }, status) => {
-    if (meta.status === "error_validation") {
-      const height = meta.height;
-      const width = meta.width;
-      const size = meta.size / 1000000;
-      if (height !== width) {
-        alert(
-          `your image's dimensions are ${height} x ${width}... \nPlease upload a square image`
-        );
-      } else {
-        alert(
-          `your image is ${size} mb... \nPlease upload an image smaller than 8 mb`
-        );
-      }
-
-      remove();
+    if (meta.status === 'error_validation') {
+      const height = meta.height
+      const width = meta.width
+      const size = meta.size / 1000000
+        if (height !== width) {
+          alert(
+            `your image's dimensions are ${height} x ${width}... \nPlease upload a square image`
+          )
+        } else {
+          alert(
+            `your image is ${size} mb... \nPlease upload an image smaller than 8 mb`
+          )
+        }
+      
+      remove()
     }
     if (type === "artwork") {
       if (status === "removed") {
@@ -39,19 +39,19 @@ const HubImageDropzone = ({ type, setArtwork, currentImageUrl, update }) => {
   };
 
   const validateImage = (fileWithMeta) => {
-    const height = fileWithMeta.meta.height;
-    const width = fileWithMeta.meta.width;
-    const size = fileWithMeta.file.size / 1000000;
+    const height = fileWithMeta.meta.height
+    const width = fileWithMeta.meta.width
+    const size = fileWithMeta.file.size / 1000000
 
     if (height !== width) {
-      return true;
+      return true
     }
 
     if (size > 8) {
-      return true;
+      return true
     }
-    return false;
-  };
+    return false
+  }
 
   const inputLayout = (type) => {
     return (

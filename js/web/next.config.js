@@ -24,8 +24,7 @@ const sentryWebpackPluginOptions = {
   // https://github.com/getsentry/sentry-webpack-plugin#options.
 }
 
-const cluster = 'mainnet-beta'
-// const cluster = 'devnet'
+const cluster = process.env.SOLANA_CLUSTER
 const IMGIX_URL = cluster === 'devnet' ? 'nina-dev.imgix.net' : 'nina.imgix.net'
 const NEXT_PUBLIC_IMGIX_TOKEN =
   cluster === 'devnet'
@@ -71,10 +70,17 @@ const moduleExports = withTM({
     IMGIX_URL,
     NEXT_PUBLIC_IMGIX_TOKEN,
     REACT_APP_CLUSTER: cluster,
-    INDEXER_URL:
-      cluster === 'devnet'
-        ? 'https://api-dev.nina.market'
-        : 'https://api.nina.market',
+    NINA_API_ENDPOINT: process.env.NINA_API_ENDPOINT,
+    NINA_PROGRAM_ID: process.env.NINA_PROGRAM_ID,
+    SOLANA_CLUSTER_URL: process.env.SOLANA_CLUSTER_URL,
+    SOLANA_CLUSTER: process.env.SOLANA_CLUSTER,
+    NINA_IDENTITY_ENDPOINT: process.env.NINA_IDENTITY_ENDPOINT,
+    ETH_CLUSTER_URL: process.env.ETH_CLUSTER_URL,
+    IDENTITY_REDIRECT_URI: process.env.IDENTITY_REDIRECT_URI,
+    SC_CLIENT_ID: process.env.SC_CLIENT_ID,
+    IG_CLIENT_ID: process.env.IG_CLIENT_ID,
+    TWITTER_AUTH_CLIENT_ID: process.env.TWITTER_AUTH_CLIENT_ID,
+    AIRTABLE_API_KEY: process.env.AIRTABLE_API_KEY,
   },
   images: {
     loader: 'imgix',

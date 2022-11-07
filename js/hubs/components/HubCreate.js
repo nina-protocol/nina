@@ -24,7 +24,7 @@ import NinaBox from "./NinaBox";
 import HubImageDropzone from "./HubImageDropzone";
 import Dots from "./Dots";
 import BundlrModal from "./BundlrModal";
-import Link from "next/link";
+import EmailCapture from "./EmailCapture";
 
 const ColorModal = dynamic(() => import("./ColorModal"));
 
@@ -148,11 +148,11 @@ const HubCreate = ({ update, hubData }) => {
   }, [artworkTx, metadataTx, isPublishing, hubCreated, bundlrBalance]);
 
   useEffect(() => {
-    if (hubData?.json.backgroundColor) {
-      setBackgroundColor(hubData.json.backgroundColor);
+    if (hubData?.data.backgroundColor) {
+      setBackgroundColor(hubData.data.backgroundColor);
     }
-    if (hubData?.json.textColor) {
-      setTextColor(hubData.json.textColor);
+    if (hubData?.data.textColor) {
+      setTextColor(hubData.data.textColor);
     }
   }, [hubData?.json]);
 
@@ -228,7 +228,7 @@ const HubCreate = ({ update, hubData }) => {
           );
           setUploadId(upload);
         } else {
-          metadataJson.image = hubData.json.image;
+          metadataJson.image = hubData.data.image;
           upload = createUpload(
             UploadType.artwork,
             metadataJson.image,
@@ -250,13 +250,13 @@ const HubCreate = ({ update, hubData }) => {
             ...metadataJson,
             displayName: formValues.hubForm.displayName
               ? formValues.hubForm.displayName
-              : hubData.json.displayName,
+              : hubData.data.displayName,
             description: formValues.hubForm.description
               ? formValues.hubForm.description
-              : hubData.json.description,
+              : hubData.data.description,
             externalUrl: formValues.hubForm.externalUrl
               ? formValues.hubForm.externalUrl
-              : hubData.json.externalUrl,
+              : hubData.data.externalUrl,
           };
           if (backgroundColor) {
             metadataJson.backgroundColor = backgroundColor;
@@ -444,25 +444,17 @@ const HubCreate = ({ update, hubData }) => {
           <BlueTypography
             variant="h1"
             align="left"
-            sx={{ padding: { md: "0px 150pxx", xs: "30px 0px" } }}
+            sx={{ padding: { md: "0px 0px", xs: "30px 0px" }, mb: 4, }}
           >
-            You do not have any credits to create a Hub. Please{` `}
-            <Link
-              href="https://docs.google.com/forms/d/e/1FAIpQLScSdwCMqUz6VGqhkO6xdfUxu1pzdZEdsGoXL9TGDYIGa9t2ig/viewform"
-              target="_blank"
-              rel="noreferrer"
-              passHref
-            >
-              apply
-            </Link>{" "}
-            here to get started.
+            You do not have any credits to create a Hub.
           </BlueTypography>
+          <EmailCapture size="medium" /> 
         </Box>
       )}
 
       {update && (
         <Typography gutterBottom>
-          Updating {hubData.json.displayName}
+          Updating {hubData.data.displayName}
         </Typography>
       )}
       {!update && npcAmountHeld > 0 && (
@@ -486,7 +478,7 @@ const HubCreate = ({ update, hubData }) => {
                 setArtwork={setArtwork}
                 values={formValues}
                 type="artwork"
-                currentImageUrl={update ? hubData.json.image : null}
+                currentImageUrl={update ? hubData.data.image : null}
                 update={update}
               />
             </DropzoneWrapper>

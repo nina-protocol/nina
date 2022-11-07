@@ -55,6 +55,7 @@ const UploadInfoModal = ({ userHasSeenUpdateMessage }) => {
               <a
                 href="https://bundlr.network/"
                 target="_blank"
+                rel="noreferrer"
                 style={{ textDecoration: 'underline' }}
                 rel="noreferrer"
               >
@@ -84,6 +85,7 @@ const UploadInfoModal = ({ userHasSeenUpdateMessage }) => {
               <a
                 href="https://discord.gg/Uu7U6VKHwj"
                 target="_blank"
+                rel="noreferrer"
                 style={{ textDecoration: 'underline' }}
                 rel="noreferrer"
               >
@@ -96,7 +98,7 @@ const UploadInfoModal = ({ userHasSeenUpdateMessage }) => {
               style={{ marginTop: '15px' }}
               color="primary"
               variant="outlined"
-              onClick={handleClose}
+              onClick={handleClose} 
             >
               <Typography>Got it!</Typography>
             </Button>

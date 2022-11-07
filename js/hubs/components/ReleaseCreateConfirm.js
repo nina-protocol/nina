@@ -24,7 +24,8 @@ const style = {
 };
 
 const ReleaseCreateConfirm = (props) => {
-  const { formIsValid, formValues, handleSubmit, setFormValuesConfirmed } =
+
+  const { formIsValid, formValues, handleSubmit, setFormValuesConfirmed, profileHubs } =
     props;
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -33,9 +34,10 @@ const ReleaseCreateConfirm = (props) => {
   const [confirm, setConfirm] = useState();
   const data = formValues.releaseForm;
 
-  const submitAndCloseModal = () => {
+  const submitAndCloseModal = (e) => {
+    e.preventDefault();
     setFormValuesConfirmed(true);
-    handleSubmit();
+    handleSubmit(e);
     handleClose();
   };
 
@@ -114,6 +116,7 @@ const ReleaseCreateConfirm = (props) => {
                 {description}
               </span>
             </Value>
+           
             <Typography variant="subtitle1" mt={1} sx={{ color: "red" }}>
               ONCE PUBLISHED, YOUR RELEASE INFORMATION WILL BE PERMANENT AND YOU
               WILL NOT BE ABLE TO EDIT IT.
@@ -131,7 +134,7 @@ const ReleaseCreateConfirm = (props) => {
               color="primary"
               fullWidth
               disabled={!confirm}
-              onClick={submitAndCloseModal}
+              onClick={(e) => submitAndCloseModal(e)}
             >
               Publish Release
             </Button>

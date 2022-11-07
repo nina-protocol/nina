@@ -38,7 +38,7 @@ const Related = (props) => {
         <meta name="og:image" content={metadata.image} />
       </Head>
       <ReleaseRelated {...props} />
-    </>
+    </> 
   )
 }
 

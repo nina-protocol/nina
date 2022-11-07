@@ -8,6 +8,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { styled } from "@mui/material/styles";
 import { useWallet } from "@solana/wallet-adapter-react";
+import EmailCapture from "./EmailCapture";
 
 import HubSlider from "./HubSlider";
 import {
@@ -92,30 +93,11 @@ const Hubs = () => {
                 <Link href="/all">Hubs </Link>
                 are a new way to publish, share, and discuss music.
               </BlueTypography>
-              <BlueTypography
-                variant="h1"
-                align="left"
-                sx={{ padding: { md: "0 165px 40px", xs: "30px 0px" } }}
+              
+              <Box
               >
-                <Link
-                  href="https://docs.google.com/forms/d/e/1FAIpQLScSdwCMqUz6VGqhkO6xdfUxu1pzdZEdsGoXL9TGDYIGa9t2ig/viewform"
-                  target="_blank"
-                  rel="noreferrer"
-                  passHref
-                >
-                  Apply
-                </Link>{" "}
-                for a Hub or connect your wallet to get started.{"  "}
-                <Link
-                  href="https://www.notion.so/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612#c7abd525851545a199e06ecd14a16a15"
-                  target="_blank"
-                  rel="noreferrer"
-                  passHref
-                >
-                  Learn More
-                </Link>
-                .
-              </BlueTypography>
+                <EmailCapture size="large" />{" "}
+              </Box>
 
               <Box
                 sx={{ display: "flex", paddingLeft: { md: "30px", xs: "0" } }}
@@ -133,10 +115,18 @@ const Hubs = () => {
 
               <HubSlider hubs={hubs} />
 
-              <Box sx={{ mt: "40px" }}>
-                <BlueTypography variant="h1">
-                  <Link href="/all">Start Exploring.</Link>
-                </BlueTypography>
+              <Box sx={{mt: '40px'}}>
+              <BlueTypography variant="h1">
+              <Link
+                  href="https://www.notion.so/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612#c7abd525851545a199e06ecd14a16a15"
+                  target="_blank"
+                  rel="noreferrer"
+                  passHref
+                >
+                Learn More
+                </Link>
+                .
+              </BlueTypography>
               </Box>
             </>
           )}
@@ -149,23 +139,11 @@ const Hubs = () => {
                     align="left"
                     sx={{ padding: { md: "0 165px 40px", xs: "30px 0px" } }}
                   >
-                    You do not have any credits to create a Hub. Please{` `}
-                    <Link
-                      href="https://docs.google.com/forms/d/e/1FAIpQLScSdwCMqUz6VGqhkO6xdfUxu1pzdZEdsGoXL9TGDYIGa9t2ig/viewform"
-                      target="_blank"
-                      rel="noreferrer"
-                      passHref
-                    >
-                      apply
-                    </Link>{" "}
-                    here to get started.
+                    You do not have any credits to create a Hub. <br /><br />
+                  <EmailCapture size="large" />
                   </BlueTypography>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      paddingLeft: { md: "30px", xs: "0" },
-                    }}
-                  >
+                  <br />
+                  <Box sx={{ display: 'flex', paddingLeft: { md: '30px', xs: '0' } }}>
                     <Typography
                       variant="body1"
                       align="left"
@@ -177,11 +155,6 @@ const Hubs = () => {
                     </Typography>
                   </Box>
                   <HubSlider hubs={hubs} />
-                  <Box sx={{ mt: "40px" }} display="flex">
-                    <BlueTypography variant="h1" margin="auto">
-                      <Link href="/all">Start Exploring.</Link>
-                    </BlueTypography>
-                  </Box>
                 </DashboardContent>
               )}
               {userHubs?.length === 0 && npcAmountHeld > 0 && (
@@ -278,17 +251,15 @@ const Hubs = () => {
                         {userHubs.length > 1 ? "Hubs" : "Hub"}
                       </DashboardHeader>
                       <ul style={{ height: "500px", overflowY: "scroll" }}>
-                        {userHubs
-                          .filter((hub) => hub.id)
-                          .map((hub) => {
-                            return (
-                              <DashboardEntry key={hub.id}>
-                                <Link href={`/${hub.handle}`}>
-                                  {hub?.json?.displayName}
-                                </Link>
-                              </DashboardEntry>
-                            );
-                          })}
+                        {userHubs.filter(hub => hub.publicKey).map((hub) => {
+                          return (
+                            <DashboardEntry key={hub.publicKey}>
+                              <Link href={`/${hub.handle}`}>
+                                {hub?.data?.displayName}
+                              </Link>
+                            </DashboardEntry>
+                          );
+                        })}
                       </ul>
                     </>
                   </DashboardContent>

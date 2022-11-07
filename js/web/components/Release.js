@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect, useMemo } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
@@ -11,47 +11,32 @@ import NinaBox from './NinaBox'
 import ReleaseCard from './ReleaseCard'
 import ReleasePurchase from './ReleasePurchase'
 import ExchangeComponent from './Exchange'
-
 const ReleaseComponent = ({ metadataSsr }) => {
   const router = useRouter()
   const releasePubkey = router.query.releasePubkey
 
   const wallet = useWallet()
-  const {
-    releaseState,
-    getRelease,
-    getRelatedForRelease,
-    filterRelatedForRelease,
-  } = useContext(Release.Context)
-  const { getExchangeHistoryForRelease, exchangeState } = useContext(
-    Exchange.Context
-  )
+  const { releaseState, getRelease } = useContext(Release.Context)
+  const { exchangeState } = useContext(Exchange.Context)
   const { getHubsForUser, filterHubsForUser, hubState } = useContext(
     Hub.Context
   )
-  const [relatedReleases, setRelatedReleases] = useState(null)
   const [userHubs, setUserHubs] = useState()
 
   const [metadata, setMetadata] = useState(
     metadataSsr || releaseState?.metadata[releasePubkey] || null
   )
-
-  useEffect(() => {
-    if (releasePubkey) {
-      getRelatedForRelease(releasePubkey)
-      getExchangeHistoryForRelease(releasePubkey)
-    }
-  }, [releasePubkey])
-
+  const release = useMemo(
+    () => releaseState.tokenData[releasePubkey],
+    [releaseState, releasePubkey]
+  )
   useEffect(() => {
     if (releaseState.metadata[releasePubkey] && !metadata) {
       setMetadata(releaseState.metadata[releasePubkey])
     }
   }, [releaseState?.metadata[releasePubkey]])
 
-  useEffect(() => {
-    setRelatedReleases(filterRelatedForRelease(releasePubkey))
-  }, [releaseState])
+  useEffect(() => {}, [releaseState])
 
   useEffect(() => {
     if (wallet.connected) {
@@ -98,13 +83,13 @@ const ReleaseComponent = ({ metadataSsr }) => {
               preview={false}
               releasePubkey={releasePubkey}
               userHubs={userHubs}
+              release={release}
             />
             <ReleaseCtaWrapper>
               <ReleasePurchase
                 releasePubkey={releasePubkey}
                 metadata={metadata}
                 router={router}
-                relatedReleases={relatedReleases}
               />
             </ReleaseCtaWrapper>
           </NinaBox>

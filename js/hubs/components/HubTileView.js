@@ -34,8 +34,9 @@ const HubTileView = (props) => {
                     e.stopPropagation();
                     handleClick(hub.handle);
                   }}
-                ></CardCta>
-                {hub.json.image && (
+                >
+                </CardCta>
+                {hub.data.image && (
                   <Image
                     width={100}
                     height={100}
@@ -47,18 +48,16 @@ const HubTileView = (props) => {
                       zIndex: "1",
                     }}
                     loader={loader}
-                    src={getImageFromCDN(
-                      hub.json.image,
-                      400,
-                      new Date(Date.parse(hub.datetime))
-                    )}
+                    src={getImageFromCDN(hub.data.image, 400, new Date(Date.parse(hub.datetime)))}
                     priority={!isMobile}
                     alt={hub.handle}
                   />
                 )}
               </HoverCard>
-              <Box sx={{ padding: "10px 0 0" }}>
-                <HubName>{hub.json.displayName}</HubName>
+              <Box sx={{ padding: '10px 0 0' }}>
+                <HubName>
+                  {hub.data.displayName}
+                </HubName>
               </Box>
             </Tile>
           );

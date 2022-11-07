@@ -133,7 +133,7 @@ const HubPostCreate = ({
     } else {
       setButtonText(
         preloadedRelease
-          ? `Create Post on ${hubData?.json.displayName}`
+          ? `Create Post on ${hubData?.data.displayName}`
           : `You do not have permission to create posts`
       );
     }

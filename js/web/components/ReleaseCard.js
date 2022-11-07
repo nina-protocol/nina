@@ -12,10 +12,19 @@ import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Image from 'next/image'
 
 import AddToHubModal from './AddToHubModal.js'
+import Link from 'next/link'
 const { getImageFromCDN, loader } = imageManager
 
 const ReleaseCard = (props) => {
-  const { artwork, metadata, preview, releasePubkey, userHubs } = props
+  const {
+    artwork,
+    metadata,
+    preview,
+    publicKey,
+    releasePubkey,
+    userHubs,
+    release,
+  } = props
   const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
     useContext(Audio.Context)
   const image = useMemo(() => metadata?.image)
@@ -66,8 +75,12 @@ const ReleaseCard = (props) => {
         {metadata && (
           <Fade in={true}>
             <Typography variant="h4" color="white" align="left">
-              {metadata?.properties?.artist.substring(0, 100) ||
-                metadata?.artist.substring(0, 100)}
+              <Link href={`/profiles/${release?.authority}`}>
+                <a style={{ color: 'white' }}>
+                  {metadata?.properties?.artist.substring(0, 100) ||
+                    metadata?.artist.substring(0, 100)}
+                </a>
+              </Link>
               ,{' '}
               <i>
                 {metadata?.properties?.title.substring(0, 100) ||
