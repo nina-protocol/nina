@@ -451,14 +451,14 @@ const ReusableTableBody = ({
                 return (
                   <StyledTableCell key={cellName}>
                     <OverflowContainer overflowWidth={'20vw'}>
-                      <Typography
-                        noWrap
-                        sx={{ hover: 'pointer' }}
-                        onClickCapture={() => {
-                          router.push(`/profiles/${row?.authorityPublicKey}`)
-                        }}
-                      >
-                        <a>{cellData}</a>
+                      <Typography noWrap sx={{ hover: 'pointer' }}>
+                        <a
+                          onClickCapture={() => {
+                            router.push(`/profiles/${row?.authorityPublicKey}`)
+                          }}
+                        >
+                          {cellData}
+                        </a>
                       </Typography>
                     </OverflowContainer>
                   </StyledTableCell>
@@ -467,7 +467,13 @@ const ReusableTableBody = ({
                 return (
                   <SearchResultTableCell key={cellName}>
                     <SearchResultOverflowContainer>
-                      <a>{cellData}</a>
+                      <a
+                        onClickCapture={() =>
+                          router.push(`/profiles/${row?.id}`)
+                        }
+                      >
+                        {cellData}
+                      </a>
                     </SearchResultOverflowContainer>
                   </SearchResultTableCell>
                 )
@@ -492,7 +498,7 @@ const ReusableTableBody = ({
                     <SearchResultOverflowContainer>
                       <Typography
                         noWrap
-                        onClickCapture={() => router.push(`/hubs/${row?.id}`)}
+                        onClickCapture={() => router.push(`${row?.link}`)}
                       >
                         <a>{cellData}</a>
                       </Typography>
@@ -584,7 +590,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   textAlign: 'left',
   height: '50px',
   width: '15vw',
-
   [theme.breakpoints.down('md')]: {
     width: '30vw',
     paddingRight: '10px',
