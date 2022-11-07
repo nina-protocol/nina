@@ -48,10 +48,10 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   const [activeValue, setActiveValue] = useState(undefined)
 
   const logos = {
-    soundcloud: <FontAwesomeIcon icon={faSoundcloud} size="1x" />,
-    twitter: <FontAwesomeIcon icon={faTwitter} size="1x" />,
-    instagram: <FontAwesomeIcon icon={faInstagram} size="1x" />,
-    ethereum: <FontAwesomeIcon icon={faEthereum} size="1x" />,
+    soundcloud: <FontAwesomeIcon icon={faSoundcloud} size="1x" style={{height: '16px'}} />,
+    twitter: <FontAwesomeIcon icon={faTwitter} size="1x" style={{height: '16px'}} />,
+    instagram: <FontAwesomeIcon icon={faInstagram} size="1x" style={{height: '16px'}} />,
+    ethereum: <FontAwesomeIcon icon={faEthereum} size="1x" style={{height: '16px'}} />,
   }
 
   const accountVerifiedForType = (type) => {
@@ -90,7 +90,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   const buttonTypes = useMemo(() => {
     const buttonArray = []
     if (publicKey?.toBase58() === profilePublicKey) {
-      buttonArray.push('soundcloud', 'twitter', 'instagram', 'ethereum')
+      buttonArray.push('soundcloud', 'twitter', 'ethereum')
     } else {
       verifications.forEach((verification) => {
         if (verification.type === 'soundcloud') {
