@@ -506,18 +506,16 @@ const ReusableTableBody = ({
                   </SearchResultTableCell>
                 )
               } else if (cellName === 'price' || cellName === 'remaining') {
-                console.log('cellName :>> ', cellName);
+                console.log('cellName :>> ', cellName)
                 return (
                   <StyledTableCell key={cellName}>
                     <LineBreakContainer>
-                      <Typography >
-                          {cellData}
-                      </Typography>
+                      <Typography>{cellData}</Typography>
                     </LineBreakContainer>
                   </StyledTableCell>
                 )
               } else {
-                console.log('cellName :>> ', cellName);
+                console.log('cellName :>> ', cellName)
                 return (
                   <StyledTableCell key={cellName}>
                     <OverflowContainer>

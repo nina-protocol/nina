@@ -48,10 +48,26 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   const [activeValue, setActiveValue] = useState(undefined)
 
   const logos = {
-    soundcloud: <FontAwesomeIcon icon={faSoundcloud} size="1x" style={{height: '16px'}} />,
-    twitter: <FontAwesomeIcon icon={faTwitter} size="1x" style={{height: '16px'}} />,
-    instagram: <FontAwesomeIcon icon={faInstagram} size="1x" style={{height: '16px'}} />,
-    ethereum: <FontAwesomeIcon icon={faEthereum} size="1x" style={{height: '16px'}} />,
+    soundcloud: (
+      <FontAwesomeIcon
+        icon={faSoundcloud}
+        size="1x"
+        style={{ height: '16px' }}
+      />
+    ),
+    twitter: (
+      <FontAwesomeIcon icon={faTwitter} size="1x" style={{ height: '16px' }} />
+    ),
+    instagram: (
+      <FontAwesomeIcon
+        icon={faInstagram}
+        size="1x"
+        style={{ height: '16px' }}
+      />
+    ),
+    ethereum: (
+      <FontAwesomeIcon icon={faEthereum} size="1x" style={{ height: '16px' }} />
+    ),
   }
 
   const accountVerifiedForType = (type) => {
