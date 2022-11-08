@@ -152,9 +152,6 @@ const Search = (props) => {
   }, [searchResults, searchQuery])
 
   useEffect(() => {
-    if (searchFilter === 'all') {
-      setActiveView(0)
-    }
     if (searchFilter === 'artists') {
       setActiveView(1)
     }
@@ -163,6 +160,8 @@ const Search = (props) => {
     }
     if (searchFilter === 'hubs') {
       setActiveView(3)
+    } else {
+      setActiveView(0)
     }
   }, [searchFilter])
 
@@ -239,14 +238,6 @@ const Search = (props) => {
     }
   }
 
-  const suggestionsClickHandler = (search, searchFilter) => {
-    setQuery('')
-
-    router.push(
-      `/search/?q=${search}${searchFilter ? `&type=${searchFilter}` : ''}`
-    )
-  }
-
   const handleInputFocus = (e) => {
     e.preventDefault()
     e.stopPropagation()
@@ -255,22 +246,13 @@ const Search = (props) => {
       setShowDropdown(true)
     }
   }
-  const keyHandler = (e) => {
-    const clickedSuggestion = e.target.innerText
-    const searchFilter = e.target.id
-
-    if (e.key === 'Enter') {
-      setQuery(clickedSuggestion)
-      suggestionsClickHandler(clickedSuggestion, searchFilter)
-      setShowDropdown(false)
-      setShowSearchInput(false)
-    }
-  }
 
   const searchFilterHandler = (e, searchIndex, searchFilter) => {
     e.preventDefault()
     e.stopPropagation()
-    const newUrl = `/search/?q=${query}&type=${searchFilter}`
+    const newUrl = `/search/?q=${query}${
+      searchFilter ? `&type=${searchFilter}` : ''
+    }`
     window.history.replaceState(
       { ...window.history.state, as: newUrl, url: newUrl },
       '',
@@ -405,7 +387,6 @@ const Search = (props) => {
                       category={result.name}
                       searchData={suggestions}
                       hasResults={result.visible}
-                      onKeyDown={(e) => keyHandler(e)}
                       setQuery={setQuery}
                       setShowDropdown={setShowDropdown}
                     />
@@ -435,7 +416,7 @@ const Search = (props) => {
           {searchQuery && (
             <SearchResultFilter
               isClicked={activeView === 0}
-              onClick={(e) => searchFilterHandler(e, 0, 'all')}
+              onClick={(e) => searchFilterHandler(e, 0)}
             >
               {`All (${
                 response?.artists?.length +
