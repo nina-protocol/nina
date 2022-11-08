@@ -375,7 +375,7 @@ const Profile = ({ profilePubkey }) => {
                     )}
                   </Box>
                   <Box
-                    sx={{ mb: 1, ml: 1 }}
+                    sx={{ mb: 1, ml: 1, flexDirection: {xs: 'column', md: 'row'} }}
                     display="flex"
                     alignItems={'start'}
                   >
@@ -488,7 +488,7 @@ const ProfileHeaderWrapper = styled(Box)(({ theme }) => ({
   maxWidth: '100vw',
   [theme.breakpoints.down('md')]: {
     width: '100vw',
-    height: '100%',
+    // height: '100%',
     paddingBottom: '10px',
     borderBottom: `1px solid ${theme.palette.greyLight}`,
   },

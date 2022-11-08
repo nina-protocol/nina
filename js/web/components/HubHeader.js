@@ -1,4 +1,3 @@
-import { useContext } from 'react'
 import Image from 'next/image'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import Link from 'next/link'
@@ -7,8 +6,6 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { Typography } from '@mui/material'
 import { styled } from '@mui/system'
 import { Box } from '@mui/system'
-import Button from '@mui/material/Button'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Subscribe from './Subscribe'
 import { unified } from 'unified'
 import rehypeParse from 'rehype-parse'
@@ -21,7 +18,6 @@ const { getImageFromCDN, loader } = imageManager
 
 const HubHeader = ({ hubData }) => {
   const [hubDescription, setHubDescription] = useState(undefined)
-  const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
 
   useEffect(() => {
@@ -52,9 +48,9 @@ const HubHeader = ({ hubData }) => {
   }, [hubData?.data.description])
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+    <Wrapper sx={{  }}>
       <ResponsiveHubHeader>
-        <Box sx={{ width: '100px' }}>
+        <Box sx={{ width: '100px', minWidth: '100px' }}>
           <Link href={`${hubData?.data.externalUrl}`} passHref>
             <a target="_blank" rel="noreferrer">
               <Image
@@ -74,49 +70,45 @@ const HubHeader = ({ hubData }) => {
           </Link>
         </Box>
 
-        <DisplayName>
-          {hubData?.data.displayName && (
-            <Link href={hubData?.data.externalUrl} passHref>
-              <a target="_blank" rel="noreferrer">
-                <Typography sx={{ padding: '0 15px' }} noWrap>
-                  {hubData?.data.displayName}
-                </Typography>
-              </a>
-            </Link>
+        <CopyWrapper>
+          <DisplayName>
+            {hubData?.data.displayName && (
+              <Link href={hubData?.data.externalUrl} passHref >
+                <a target="_blank" rel="noreferrer" >
+                  <Typography sx={{ padding: '0 15px' }} noWrap>
+                    {hubData?.data.displayName}
+                  </Typography>
+                </a>
+              </Link>
+            )}
+            {wallet.connected && (
+              <Subscribe
+                accountAddress={hubData?.publicKey}
+                hubHandle={hubData?.handle}
+                inHub={true}
+                inFeed={false}
+              />
+            )}
+          </DisplayName>
+          {hubData?.data.description && (
+              <DescriptionOverflowContainer>
+                {hubDescription}
+              </DescriptionOverflowContainer>
           )}
-          {wallet.connected && (
-            <Subscribe
-              accountAddress={hubData?.publicKey}
-              hubHandle={hubData?.handle}
-              inHub={true}
-              inFeed={false}
-            />
-          )}
-        </DisplayName>
-        {hubData?.data.description && (
-          <>
-            <DescriptionOverflowContainer>
-              {hubDescription}
-            </DescriptionOverflowContainer>
-          </>
-        )}
+        </CopyWrapper>
       </ResponsiveHubHeader>
 
-      {/* <ResponsiveUrlContainer>
-        <Typography sx={{ pb: 2, fontSize: '12px' }}>
-          <Link href={hubData?.json.externalUrl}>
-            <a>
-              {`${(hubData?.json.externalUrl).substring(
-                8,
-                hubData?.json.externalUrl.length
-              )}`}
-            </a>
-          </Link>
-        </Typography>
-      </ResponsiveUrlContainer> */}
-    </Box>
+    </Wrapper>
   )
 }
+
+const Wrapper = styled(Box)(({theme}) => ({
+  display: 'flex', 
+  flexDirection: 'column',
+  [theme.breakpoints.down('md')]: {
+    marginBottom: '10px'
+  }
+}))
 
 const ResponsiveHubHeader = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -128,14 +120,17 @@ const ResponsiveHubHeader = styled(Box)(({ theme }) => ({
   justifyContent: 'start',
   py: 5,
   px: 1,
-
+  '& img': {
+    width: '100px',
+  },
   [theme.breakpoints.down('md')]: {
     alignItems: 'left',
     paddingLeft: '15px',
-    borderBottom: `1px solid ${theme.palette.greyLight}`,
+    // borderBottom: `1px solid ${theme.palette.greyLight}`,
     width: '100vw',
   },
 }))
+
 const DisplayName = styled(Box)(({ theme }) => ({
   width: '20vw',
   display: 'flex',
@@ -148,7 +143,16 @@ const DisplayName = styled(Box)(({ theme }) => ({
   ['-webkit-line-clamp']: '1',
   ['-webkit-box-orient']: 'vertical',
   [theme.breakpoints.down('md')]: {
-    maxWidth: '90px',
+    // maxWidth: '90px',
+    width: 'auto',
+  },
+}))
+
+const CopyWrapper = styled(Box)(({theme}) => ({
+  display: 'flex',
+  [theme.breakpoints.down('md')]: {
+    flexDirection: 'column',
+    width: '80%',
   },
 }))
 
@@ -161,7 +165,6 @@ const DescriptionOverflowContainer = styled(Box)(({ theme }) => ({
   ['-webkit-box-orient']: 'vertical',
   textOverflow: 'ellipsis',
   minWidth: '10vw',
-  maxWidth: '50vw',
   '& p': {
     margin: 0,
   },
@@ -172,8 +175,9 @@ const DescriptionOverflowContainer = styled(Box)(({ theme }) => ({
     margin: 0,
   },
   [theme.breakpoints.down('md')]: {
-    ['-webkit-line-clamp']: '6',
-    width: '40vw',
+    ['-webkit-line-clamp']: '4',
+    maxWidth: 'unset',
+    padding: '0 15px',
   },
 }))
 
