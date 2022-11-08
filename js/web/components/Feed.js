@@ -105,7 +105,7 @@ const Feed = ({
         path,
       })
     router.push(path)
-    
+
     if (isMobile) {
       toggleDrawer(false)
     }
@@ -599,15 +599,13 @@ const Feed = ({
                 }}
               >
                 <Typography variant="h5" mb={1}>
-                  Welcome to Nina.
+                  Welcome to the Nina Navigator.
                 </Typography>
-                <Typography variant="h5" mb={1}>
-                  Here you will see the latest activity on Nina that is relevant
-                  to you.
+                <Typography variant="h4" mb={1}>
+                  Here you will see recent activity and recommendations based on your Releases, Collection, and who you Follow.
                 </Typography>
-                <Typography variant="h5">
-                  Your feed will be created after you follow some Hubs and
-                  Accounts or begin creating and collecting Releases.
+                <Typography variant="h4">
+                  Switch to the 'SUGGESTIONS' tab to start following some Hubs.
                 </Typography>
               </Box>
             )}
