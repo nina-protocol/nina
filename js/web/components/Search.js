@@ -390,7 +390,7 @@ const Search = (props) => {
             {autoCompleteResults.map((result, index) => {
               if (result.visible) {
                 return (
-                  <ResponsiveSearchResultContainer key={index}>
+                  <DropdownWrapper key={index}>
                     <SearchDropdown
                       category={result.name}
                       searchData={suggestions}
@@ -399,7 +399,7 @@ const Search = (props) => {
                       setQuery={setQuery}
                       setShowDropdown={setShowDropdown}
                     />
-                  </ResponsiveSearchResultContainer>
+                  </DropdownWrapper>
                 )
               }
             })}
@@ -542,13 +542,18 @@ const DropdownContainer = styled(Box)(({ theme }) => ({
   marginLeft: '12%',
   backgroundColor: theme.palette.offWhite,
   padding: '0 2px',
+  [theme.breakpoints.up('md')]: {
+    display: 'none',
+  },
 }))
-const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
-  maxHeight: '60vh',
-  maxWidth: theme.maxWidth,
-  overflowY: 'auto',
+const DropdownWrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'row',
+  flexWrap: 'wrap',
   webkitOverflowScrolling: 'touch',
-  width: '100vw',
+  [theme.breakpoints.up('md')]: {
+    display: 'none',
+  },
 }))
 const SearchContainer = styled(Box)(({ theme }) => ({}))
 const SearchInputWrapper = styled(Box)(({ theme }) => ({
@@ -608,18 +613,6 @@ const SearchHeaderContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
-const SearchAllResultsWrapper = styled(Box)(({ theme }) => ({
-  minWidth: theme.maxWidth,
-  textAlign: 'left',
-  overflowY: 'auto',
-  paddingBottom: '100px',
-  [theme.breakpoints.down('md')]: {
-    paddingBottom: '100px',
-    minWidth: 'unset',
-    overflowX: 'unset',
-  },
-}))
-
 const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
   fontSize: '80px',
   display: 'flex',
@@ -657,11 +650,25 @@ const SearchResultFilter = styled(Button)(({ theme, isClicked }) => ({
   },
 }))
 
+const SearchAllResultsWrapper = styled(Box)(({ theme }) => ({
+  minWidth: theme.maxWidth,
+  textAlign: 'left',
+  overflowY: 'auto',
+  paddingBottom: '100px',
+  [theme.breakpoints.down('md')]: {
+    paddingBottom: '200px',
+    minWidth: 'unset',
+    overflowX: 'unset',
+    minHeight: '40vh',
+  },
+}))
+
 const ResultsWrapper = styled(Box)(({ theme }) => ({
   overflow: 'auto',
   paddingBottom: '100px',
   [theme.breakpoints.down('md')]: {
-    paddingBottom: '100px',
+    paddingBottom: '200px',
+    minHeight: '40vh',
   },
 }))
 export default Search
