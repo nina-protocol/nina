@@ -241,10 +241,7 @@ const Profile = ({ profilePubkey }) => {
         profilePubkey,
         true
       )
-
-      console.log('collected :>> ', collected)
-      console.log('published :>> ', published)
-
+      
       await getSubscriptionsForUser(profilePubkey)
       await getVerificationsForUser(profilePubkey)
 
