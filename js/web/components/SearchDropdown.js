@@ -28,8 +28,18 @@ const SearchDropdown = ({
 
   if (category === 'artists') {
     rows = searchData?.artists?.map((data) => {
-      const artistName = data?.name
-      const artistLink = `/profiles/${data?.publicKey}`
+      let artistName = data?.name
+      if (data?.publishesAs.length > 1) {
+        let publishesAsString
+        if (data?.publishesAs.length > 5) {
+          publishesAsString = data?.publishesAs.slice(0, 5).join(', ') + '...'
+        } else {
+          publishesAsString = data?.publishesAs.join(', ')
+        }
+        artistName = `${artistName} (Publishes as: ${publishesAsString})`
+      }
+
+      const artistLink = `/profiles/${data?.account.publicKey}`
 
       let formattedData = {
         displayName: artistName,
@@ -99,6 +109,7 @@ const SearchDropdown = ({
               tabIndex={0}
               onKeyDown={onKeyDown}
               key={index}
+              sx={{ borderBottom: '1px solid #E5E5E5', py: '4px' }}
             >
               <a
                 key={index}
@@ -120,10 +131,8 @@ const SearchDropdown = ({
 const SearchResultsWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
-  backgroundColor: theme.palette.lightTransparent,
-  padding: '10px 0',
+  padding: '10px 5px',
   '&:focus': {
-    backgroundColor: theme.palette.lightTransparent,
     outline: 'none',
   },
 }))

@@ -210,7 +210,7 @@ const Search = (props) => {
       return
     }
     setShowDropdown(false)
-    setShowSearchInput(false)
+   setQuery('')
   }
 
   const autoCompleteHandler = async (query) => {
@@ -218,9 +218,7 @@ const Search = (props) => {
       `${NinaSdk.client.endpoint}/suggestions`,
       { query }
     )
-    if (query.length > 0) {
       setSuggestions(response.data)
-    }
   }
 
   const changeHandler = (e) => {
@@ -229,12 +227,12 @@ const Search = (props) => {
     const search = e.target.value
 
     setQuery(search)
-    if (query !== '') {
-      setShowDropdown(true)
-    }
+    setShowDropdown(search !== '')
 
-    if (query) {
-      autoCompleteHandler(query)
+    if (search !== '') {
+      autoCompleteHandler(search)
+    } else {
+      setSuggestions([])
     }
   }
 
@@ -244,19 +242,6 @@ const Search = (props) => {
     router.push(
       `/search/?q=${search}${searchFilter ? `&type=${searchFilter}` : ''}`
     )
-  }
-
-  const suggestionsHandler = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    const clickedSuggestion = e.target.getAttribute('data-value')
-    const searchFilter = e.target.id
-    if (clickedSuggestion) {
-      setQuery(clickedSuggestion)
-      setShowDropdown(false)
-      setShowSearchInput(false)
-    }
-    suggestionsClickHandler(clickedSuggestion, searchFilter)
   }
 
   const handleInputFocus = (e) => {
@@ -410,8 +395,9 @@ const Search = (props) => {
                       category={result.name}
                       searchData={suggestions}
                       hasResults={result.visible}
-                      clickHandler={(e) => suggestionsHandler(e)}
                       onKeyDown={(e) => keyHandler(e)}
+                      setQuery={setQuery}
+                      setShowDropdown={setShowDropdown}
                     />
                   </ResponsiveSearchResultContainer>
                 )

@@ -87,9 +87,7 @@ const NavSearch = () => {
       `${NinaSdk.client.endpoint}/suggestions`,
       { query }
     )
-    if (query.length > 0) {
-      setSuggestions(response.data)
-    }
+    setSuggestions(response.data)
   }
 
   const changeHandler = (e) => {
@@ -98,12 +96,12 @@ const NavSearch = () => {
     const search = e.target.value
 
     setQuery(search)
-    if (query !== '') {
-      setShowDropdown(true)
-    }
+    setShowDropdown(search !== '')
 
-    if (query) {
-      autoCompleteHandler(query)
+    if (search !== '') {
+      autoCompleteHandler(search)
+    } else {
+      setSuggestions([])
     }
   }
 
@@ -234,16 +232,17 @@ const DropdownContainer = styled(Box)(({ theme }) => ({
   width: '15vw',
   zIndex: '100',
   position: 'absolute',
-  overflow: 'hidden',
+  overflowY: 'scroll',
   textAlign: 'left',
   marginRight: '20px',
-  backgroundColor: '#fff',
-  padding: '0 2px',
+  backgroundColor: theme.palette.offWhite,
+  padding: '0',
+  "&::-webkit-scrollbar": {
+    display: "none !important",
+  },
 }))
 
 const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
-  maxHeight: '60vh',
-  maxWidth: theme.maxWidth,
   overflowY: 'auto',
   webkitOverflowScrolling: 'touch',
 }))

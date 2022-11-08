@@ -293,10 +293,21 @@ const ReusableTableBody = ({
       tableType === 'searchResultArtists' ||
       tableType === 'filteredSearchResultArtists'
     ) {
+      let artistName = data?.name
+      if (data?.publishesAs.length > 1) {
+        let publishesAsString
+        if (data?.publishesAs.length > 5) {
+          publishesAsString = data?.publishesAs.slice(0, 5).join(', ') + '...'
+        } else {
+          publishesAsString = data?.publishesAs.join(', ')
+        }
+        artistName = `${artistName} (Publishes as: ${publishesAsString})`
+      }
+
       formattedData = {
         id: data?.publicKey,
-        link: `/profiles/${data?.publicKey}`,
-        searchResultArtist: data.name,
+        link: `/profiles/${data?.account.publicKey}`,
+        searchResultArtist: artistName,
       }
     } else if (
       tableType === 'searchResultReleases' ||
@@ -538,7 +549,7 @@ const ReusableTable = ({
     >
       <ResponsiveTableContainer>
         <Table>
-          {items.length > 0 && (
+          {items?.length > 0 && (
             <ReusableTableHead
               tableType={tableType}
               inDashboard={inDashboard}
