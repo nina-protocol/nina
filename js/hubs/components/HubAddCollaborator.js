@@ -16,6 +16,9 @@ const HubAddCollaborator = (props) => {
   const { hubPubkey, canAddCollaborators } = props;
   const { enqueueSnackbar } = useSnackbar();
   const { hubAddCollaborator } = useContext(Hub.Context);
+  const {checkIfHasBalanceToCompleteAction, NinaProgramAction} = useContext(
+    Nina.Context
+  );
   const [unlimitedAllowance, setUnlimitAllowance] = useState(false);
 
   // const IconWithTooltip = () => {
