@@ -20,6 +20,7 @@ const colors = {
   blueTrans: 'rgba(45, 129, 255, 0.19)',
   pink: '#FF54A6',
   yellow: '#ffe100',
+  offWhite: '#faf9f9',
 }
 
 export const NinaTheme = createTheme({
@@ -47,6 +48,7 @@ export const NinaTheme = createTheme({
       primary: colors.grey,
     },
     greyLight: colors.greyLight,
+    offWhite: colors.offWhite,
   },
   gradient: {
     background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(143,175,223,1) 0%, rgb(35,99,196) 100%)`,
