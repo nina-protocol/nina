@@ -237,8 +237,8 @@ const DropdownContainer = styled(Box)(({ theme }) => ({
   marginRight: '20px',
   backgroundColor: theme.palette.offWhite,
   padding: '0',
-  "&::-webkit-scrollbar": {
-    display: "none !important",
+  '&::-webkit-scrollbar': {
+    display: 'none !important',
   },
 }))
 
