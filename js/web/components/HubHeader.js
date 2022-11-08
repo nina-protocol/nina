@@ -48,7 +48,7 @@ const HubHeader = ({ hubData }) => {
   }, [hubData?.data.description])
 
   return (
-    <Wrapper sx={{}}>
+    <Wrapper>
       <ResponsiveHubHeader>
         <Box sx={{ width: '100px', minWidth: '100px' }}>
           <Link href={`${hubData?.data.externalUrl}`} passHref>
@@ -125,7 +125,6 @@ const ResponsiveHubHeader = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     alignItems: 'left',
     paddingLeft: '15px',
-    // borderBottom: `1px solid ${theme.palette.greyLight}`,
     width: '100vw',
   },
 }))
@@ -142,7 +141,6 @@ const DisplayName = styled(Box)(({ theme }) => ({
   ['-webkit-line-clamp']: '1',
   ['-webkit-box-orient']: 'vertical',
   [theme.breakpoints.down('md')]: {
-    // maxWidth: '90px',
     width: 'auto',
   },
 }))
