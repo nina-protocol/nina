@@ -17,6 +17,7 @@ import Link from 'next/link'
 import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import CollectorModal from './CollectorModal'
 import HubsModal from './HubsModal'
 import Dots from './Dots'
@@ -155,6 +156,16 @@ const ReleasePurchase = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    if (!wallet?.connected) {
+      enqueueSnackbar('Please connect your wallet to purchase', {
+        variant: 'error',
+      })
+      logEvent('release_purchase_failure_not_connected', 'engagement', {
+        publicKey: releasePubkey,
+      })
+      return
+    }
     let result
     if (!amountHeld || amountHeld === 0) {
       const error = checkIfHasBalanceToCompleteAction(
@@ -211,9 +222,6 @@ const ReleasePurchase = (props) => {
           .nativeToUi(release.price, release.paymentMint)
           .toFixed(2)})`
 
-  const buttonDisabled =
-    wallet?.connected && release.remainingSupply > 0 ? false : true
-
   let pathString = ''
   if (router.pathname.includes('releases')) {
     pathString = '/releases'
@@ -223,6 +231,10 @@ const ReleasePurchase = (props) => {
 
   const downloadAs = async (url, name) => {
     setDownloadButtonString('Downloading')
+
+    logEvent('track_download', 'engagement', {
+      publicKey: releasePubkey,
+    })
 
     const response = await axios.get(url, {
       method: 'GET',
@@ -295,12 +307,7 @@ const ReleasePurchase = (props) => {
       <StyledDescription align="left">{description}</StyledDescription>
       <Box mt={1}>
         <form onSubmit={handleSubmit}>
-          <Button
-            variant="outlined"
-            type="submit"
-            disabled={buttonDisabled}
-            fullWidth
-          >
+          <Button variant="outlined" type="submit" fullWidth>
             <Typography variant="body2">
               {txPending && <Dots msg="preparing transaction" />}
               {!txPending && pending && <Dots msg="awaiting wallet approval" />}

@@ -11,6 +11,7 @@ import Nina from '../Nina'
 import NinaSdk from '@nina-protocol/js-sdk';
 import { shuffle } from '../../utils'
 import MD5 from "crypto-js/md5";
+import { logEvent } from '../../utils/event'
 
 const HubContext = createContext()
 const HubContextProvider = ({ children }) => {
@@ -178,6 +179,13 @@ const hubContextHelper = ({
         program.programId
       )
 
+      logEvent('hub_init_with_credit_initiated',
+        "engagement", {
+          hub: hub.toBase58(),
+          wallet: provider.wallet.publicKey.toBase58(),
+        }
+      )
+
       const [hubSigner, hubSignerBump] =
         await anchor.web3.PublicKey.findProgramAddress(
           [
@@ -245,12 +253,26 @@ const hubContextHelper = ({
       await provider.connection.getParsedConfirmedTransaction(txid, 'finalized')
       await getHub(hub)
 
+      logEvent('hub_init_with_credit_success',
+        "engagement", {
+          hub: hub.toBase58(),
+          wallet: provider.wallet.publicKey.toBase58(),
+        }
+      )
+
       return {
         success: true,
         msg: 'Hub Created',
         hubPubkey: hub,
       }
     } catch (error) {
+      logEvent('hub_init_with_credit_success_failure',
+      "engagement", {
+        hub: hub.toBase58(),
+        wallet: provider.wallet.publicKey.toBase58(),
+      }
+    )
+
       return ninaErrorHandler(error)
     }
   }
@@ -411,6 +433,15 @@ const hubContextHelper = ({
 
   const hubAddRelease = async (hubPubkey, releasePubkey, fromHub) => {
     try {
+      logEvent(
+        'hub_add_release_initiated',
+        'engagement', {
+          release: releasePubkey,
+          hub: hubPubkey,
+          wallet: provider.wallet.publicKey.toBase58()
+        }
+      )
+  
       let queue = new Set(addToHubQueue)
       queue.add(releasePubkey)
       setAddToHubQueue(queue)
@@ -473,6 +504,15 @@ const hubContextHelper = ({
       queue = new Set(addToHubQueue)
       queue.delete(releasePubkey.toBase58())
       setAddToHubQueue(queue)
+      logEvent(
+        'hub_add_release_initiated',
+        'engagement', {
+          release: releasePubkey.toBase58(),
+          hub: hubPubkey.toBase58(),
+          wallet: provider.wallet.publicKey.toBase58()
+        }
+      )
+
       return {
         success: true,
         msg: 'Release Added to Hub',

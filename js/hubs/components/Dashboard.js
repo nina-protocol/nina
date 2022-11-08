@@ -62,7 +62,8 @@ const Dashboard = ({ hubPubkey }) => {
     if (
       hubCollaboratorForWallet &&
       hubCollaboratorForWallet.canAddContent &&
-      (hubCollaboratorForWallet.allowance > 0 || hubCollaboratorForWallet.allowance === -1)
+      (hubCollaboratorForWallet.allowance > 0 ||
+        hubCollaboratorForWallet.allowance === -1)
     ) {
       return true;
     }

@@ -1,5 +1,5 @@
 const path = require("path");
-const { withSentryConfig } = require('@sentry/nextjs');
+const { withSentryConfig } = require("@sentry/nextjs");
 const sentryWebpackPluginOptions = {
   // Additional config options for the Sentry Webpack plugin. Keep in mind that
   // the following options are set automatically, and overriding them is not
@@ -67,10 +67,10 @@ const moduleExports = {
   },
   images: {
     deviceSizes: [320, 420, 640, 750, 828, 1080, 1200, 1920, 2048],
-    loader: 'imgix',
+    loader: "imgix",
     path: `https://${IMGIX_URL}/`,
     domains: ["www.arweave.net", "arweave.net", IMGIX_URL],
   },
 };
 
-module.exports = withSentryConfig(moduleExports, sentryWebpackPluginOptions)
+module.exports = withSentryConfig(moduleExports, sentryWebpackPluginOptions);

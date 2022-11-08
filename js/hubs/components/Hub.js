@@ -1,9 +1,16 @@
-import React, {useState, useContext, useEffect, useMemo, createElement, Fragment} from "react";
+import React, {
+  useState,
+  useContext,
+  useEffect,
+  useMemo,
+  createElement,
+  Fragment,
+} from "react";
 import dynamic from "next/dynamic";
 import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
-import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina"
-import Release from "@nina-protocol/nina-internal-sdk/esm/Release"
-import {styled} from "@mui/material/styles";
+import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
+import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
+import { styled } from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -12,14 +19,14 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter } from "next/router";
 import Dots from "./Dots";
 
-import {unified} from "unified";
+import { unified } from "unified";
 import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
 const ContentTileView = dynamic(() => import("./ContentTileView"));
 
-const HubComponent = ({hubPubkey}) => {
+const HubComponent = ({ hubPubkey }) => {
   const wallet = useWallet();
   const router = useRouter();
   const {
@@ -30,10 +37,10 @@ const HubComponent = ({hubPubkey}) => {
     filterHubCollaboratorsForHub,
     filterHubContentForHub,
     hubContentFetched,
-    hubContentState
+    hubContentState,
   } = useContext(Hub.Context);
-  const {postState} = useContext(Nina.Context);
-  const {releaseState} = useContext(Release.Context);
+  const { postState } = useContext(Nina.Context);
+  const { releaseState } = useContext(Release.Context);
   const [contentData, setContentData] = useState({
     content: [],
     contentTypes: []
@@ -45,18 +52,18 @@ const HubComponent = ({hubPubkey}) => {
     getHub(hubPubkey);
     setContentData({
       content: [],
-      contentTypes: []
-    })
-    setHubReleases([])
-    setHubPosts([])
+      contentTypes: [],
+    });
+    setHubReleases([]);
+    setHubPosts([]);
   }, [hubPubkey]);
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
 
   useEffect(() => {
-    const [releases, posts] = filterHubContentForHub(hubPubkey)
-    setHubReleases(releases)
-    setHubPosts(posts)
+    const [releases, posts] = filterHubContentForHub(hubPubkey);
+    setHubReleases(releases);
+    setHubPosts(posts);
   }, [hubContentState]);
 
   const [description, setDescription] = useState();
@@ -128,7 +135,7 @@ const HubComponent = ({hubPubkey}) => {
   useEffect(() => {
     if (hubData?.data?.descriptionHtml?.includes('<p>')) {
       unified()
-        .use(rehypeParse, {fragment: true})
+        .use(rehypeParse, { fragment: true })
         .use(rehypeSanitize)
         .use(rehypeReact, {
           createElement,
@@ -182,22 +189,29 @@ const HubComponent = ({hubPubkey}) => {
             <Dots size="80px" />
           </Box>
         )}
-        {hubContentFetched.has(hubPubkey) && contentData.content?.length > 0 && (
-          <ContentTileView
-            contentData={contentData}
-            hubPubkey={hubPubkey}
-            hubHandle={hubData.handle}
-          />
-        )}
+        {hubContentFetched.has(hubPubkey) &&
+          contentData.content?.length > 0 && (
+            <ContentTileView
+              contentData={contentData}
+              hubPubkey={hubPubkey}
+              hubHandle={hubData.handle}
+            />
+          )}
         {hubContentFetched.has(hubPubkey) && contentData.content?.length === 0 && (
           <>
             <Typography>Nothing has been published to this Hub yet</Typography>
-            {hubCollaborators.map((collaborator) => collaborator.collaborator).includes(wallet?.publicKey?.toBase58()) && (
+            {hubCollaborators
+              .map((collaborator) => collaborator.collaborator)
+              .includes(wallet?.publicKey?.toBase58()) && (
               <Button
                 fullWidth
                 variant="outlined"
                 color="primary"
-                onClick={() => router.push(`/${hubData.handle}/dashboard?action=publishRelease`)}
+                onClick={() =>
+                  router.push(
+                    `/${hubData.handle}/dashboard?action=publishRelease`
+                  )
+                }
                 sx={{ height: "56px", width: "25%", marginTop: "20px" }}
               >
                 {`Publish a release`}
@@ -210,21 +224,20 @@ const HubComponent = ({hubPubkey}) => {
   );
 };
 
-
-const ContentViewWrapper = styled(Grid)(({theme}) => ({
+const ContentViewWrapper = styled(Grid)(({ theme }) => ({
   [theme.breakpoints.down("md")]: {
     width: "100%",
     padding: "15px",
   },
 }));
 
-const DescriptionWrapper = styled(Grid)(({theme}) => ({
+const DescriptionWrapper = styled(Grid)(({ theme }) => ({
   padding: " 0px 15px",
   maxHeight: "68vh",
   overflowX: "hidden",
   overflowY: "scroll",
-  'h1' :{
-    lineHeight: '32px',
+  h1: {
+    lineHeight: "32px",
   },
   "&::-webkit-scrollbar": {
     display: "none",
@@ -233,13 +246,13 @@ const DescriptionWrapper = styled(Grid)(({theme}) => ({
     maxHeight: "unset",
     padding: "100px 15px 50px",
   },
-  'p, a': {
-    padding: '0 0 8px',
-    margin: '0'
+  "p, a": {
+    padding: "0 0 8px",
+    margin: "0",
   },
-  'a': {
-    textDecoration: 'underline'
-  }
+  a: {
+    textDecoration: "underline",
+  },
 }));
 
 export default HubComponent;

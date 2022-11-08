@@ -22,7 +22,7 @@ const HubPage = (props) => {
         </Head>
         <NotFound />
       </>
-    )
+    );
   }
   return (
     <>
@@ -60,13 +60,13 @@ export const getStaticPaths = async () => {
     paths: [
       {
         params: {
-          hubPubkey: 'placeholder',
-        }
-      }
+          hubPubkey: "placeholder",
+        },
+      },
     ],
-    fallback: 'blocking'
-  }
-}
+    fallback: "blocking",
+  };
+};
 
 export const getStaticProps = async (context) => {
   const hubPubkey = context.params.hubPubkey;
@@ -84,11 +84,11 @@ export const getStaticProps = async (context) => {
         props: {
           hub,
         },
-        revalidate: 10
+        revalidate: 10,
       };
     } catch (error) {
       console.warn(error);
     }
   }
-  return {props:{}};
+  return { props: {} };
 };

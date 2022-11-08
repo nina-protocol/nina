@@ -239,7 +239,7 @@ export default withFormik({
       title: '',
       description: '',
       catalogNumber: '',
-      amount: undefined,
+      amount: 10,
       retailPrice: undefined,
       resalePercentage: 10,
       hubPubKey: undefined,

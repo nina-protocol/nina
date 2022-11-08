@@ -17,10 +17,11 @@ import {
 
 const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
   const wallet = useWallet();
-  const { hubContentToggleVisibility, hubContentState, hubState } =
-    useContext(Hub.Context);
+  const { hubContentToggleVisibility, hubContentState, hubState } = useContext(
+    Hub.Context
+  );
   const { postState } = useContext(Nina.Context);
-    
+
   const hubData = useMemo(() => hubState[hubPubkey], [hubState]);
   const { enqueueSnackbar } = useSnackbar();
   const hubPosts = useMemo(

@@ -8,8 +8,7 @@ import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { HexColorPicker, HexColorInput } from "react-colorful";
-import {Input} from '@mui/material';
-
+import { Input } from "@mui/material";
 
 const ColorModal = ({
   backgroundColor,
@@ -71,13 +70,9 @@ const ColorModal = ({
                   onChange={setBackgroundColor}
                   style={{ paddingBottom: "15px" }}
                 />
-         
 
-                <StyledInputWrapper >
-                  <Typography
-                    mt={1}
-                    mr={1}
-                  >
+                <StyledInputWrapper>
+                  <Typography mt={1} mr={1}>
                     Background:{" "}
                   </Typography>
                   <HexColorInput
@@ -86,16 +81,15 @@ const ColorModal = ({
                     prefix={true}
                   />
 
-                  <Box style={{
-                    width: '10px',
-                    height: '15px',
-                    marginLeft: '8px',
-                    borderRight: `15px solid ${backgroundColor || '#ffffff'}`,
-                  }} 
+                  <Box
+                    style={{
+                      width: "10px",
+                      height: "15px",
+                      marginLeft: "8px",
+                      borderRight: `15px solid ${backgroundColor || "#ffffff"}`,
+                    }}
                   />
                 </StyledInputWrapper>
-
-
               </Box>
 
               <Box>
@@ -104,15 +98,11 @@ const ColorModal = ({
                 <HexColorPicker
                   color={textColor ? textColor : "#000000"}
                   onChange={setTextColor}
-                  style={{paddingBottom: "15px"}}
-
+                  style={{ paddingBottom: "15px" }}
                 />
-                
-                <StyledInputWrapper >
-                  <Typography
-                    mt={1}
-                    mr={1}
-                  >
+
+                <StyledInputWrapper>
+                  <Typography mt={1} mr={1}>
                     Text:{" "}
                   </Typography>
                   <HexColorInput
@@ -120,15 +110,15 @@ const ColorModal = ({
                     onChange={setTextColor}
                   />
 
-                  <Box style={{
-                    width: '10px',
-                    height: '15px',
-                    marginLeft: '8px',
-                    borderRight: `15px solid ${textColor || '#000000'}`,
-                  }}
+                  <Box
+                    style={{
+                      width: "10px",
+                      height: "15px",
+                      marginLeft: "8px",
+                      borderRight: `15px solid ${textColor || "#000000"}`,
+                    }}
                   />
                 </StyledInputWrapper>
-
               </Box>
             </Box>
 
@@ -194,18 +184,17 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 const StyledInputWrapper = styled(Box)(() => ({
   display: "flex",
   alignItems: "flex-end",
-  justifyContent: 'flex-start',
-  width: '200px',
-  '& p': {
-    marginTop: '0px'
+  justifyContent: "flex-start",
+  width: "200px",
+  "& p": {
+    marginTop: "0px",
   },
-  '& input': {
-    width: '80px',
-    border: 'none',
-    borderBottom: '2px solid black',
-    outline: 'none !important'
-  }
+  "& input": {
+    width: "80px",
+    border: "none",
+    borderBottom: "2px solid black",
+    outline: "none !important",
+  },
 }));
-
 
 export default ColorModal;
