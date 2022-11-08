@@ -152,16 +152,17 @@ const Search = (props) => {
   }, [searchResults, searchQuery])
 
   useEffect(() => {
-    if (searchFilter === 'artists') {
-      setActiveView(1)
-    }
-    if (searchFilter === 'releases') {
-      setActiveView(2)
-    }
-    if (searchFilter === 'hubs') {
-      setActiveView(3)
-    } else {
-      setActiveView(0)
+    switch(searchFilter) {
+      case 'artists':
+        return setActiveView(1)
+      case 'releases':
+        return setActiveView(2)
+      case 'hubs':
+        return setActiveView(3)
+      case !searchFilter:
+        return setActiveView(0)
+      default:
+        break
     }
   }, [searchFilter])
 
@@ -260,6 +261,7 @@ const Search = (props) => {
     )
     setActiveView(searchIndex)
   }
+
 
   const renderTables = (activeView) => {
     switch (activeView) {
