@@ -5,7 +5,7 @@ import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { Icon } from '@material-ui/core'
-import Navigator from './Navigator'
+import Feed from './Feed'
 import Suggestions from './Suggestions'
 import axios from 'axios'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
@@ -163,7 +163,7 @@ const FeedDrawer = () => {
             </FeedHeader>
 
             {activeDrawerTypeIndex === 0 && (
-              <Navigator
+              <Feed
                 items={feedItems}
                 itemsTotal={itemsTotal}
                 toggleDrawer={toggleDrawer}
