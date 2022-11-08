@@ -16,7 +16,7 @@ const TabHeader = ({
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { enqueueSnackbar } = useSnackbar()
   const playAllHandler = (playlist) => {
-    let sortedPlaylist;
+    let sortedPlaylist
     if (type === 'hubView') {
       sortedPlaylist = playlist.sort((a, b) => {
         return new Date(b.datetime) - new Date(a.datetime)
