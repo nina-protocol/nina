@@ -20,7 +20,7 @@ const ReusableTable = dynamic(() => import('./ReusableTable'))
 const Search = (props) => {
   const router = useRouter()
   const { searchResults, searchQuery } = props
-  const [query, setQuery] = useState(searchQuery?.q)
+  const [query, setQuery] = useState()
   const { getHubs, hubState, featuredHubs, setFeaturedHubs } = useContext(
     Hub.Context
   )
@@ -152,6 +152,9 @@ const Search = (props) => {
   }, [searchResults, searchQuery])
 
   useEffect(() => {
+    if (searchFilter === 'all') {
+      setActiveView(0)
+    }
     if (searchFilter === 'artists') {
       setActiveView(1)
     }
@@ -264,6 +267,18 @@ const Search = (props) => {
     }
   }
 
+  const searchFilterHandler = (e, searchIndex, searchFilter) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const newUrl = `/search/?q=${query}&type=${searchFilter}`
+    window.history.replaceState(
+      { ...window.history.state, as: newUrl, url: newUrl },
+      '',
+      newUrl
+    )
+    setActiveView(searchIndex)
+  }
+
   const renderTables = (activeView) => {
     switch (activeView) {
       case 0:
@@ -363,12 +378,7 @@ const Search = (props) => {
         break
     }
   }
-  const searchFilterHandler = (e, searchIndex, searchFilter) => {
-    e.preventDefault()
-    e.stopPropagation()
-    history.pushState(null, '', `/search?q=${query}&type=${searchFilter}`)
-    setActiveView(searchIndex)
-  }
+
   return (
     <SearchPageContainer>
       <SearchContainer>
@@ -425,7 +435,7 @@ const Search = (props) => {
           {searchQuery && (
             <SearchResultFilter
               isClicked={activeView === 0}
-              onClick={() => setActiveView(0)}
+              onClick={(e) => searchFilterHandler(e, 0, 'all')}
             >
               {`All (${
                 response?.artists?.length +
