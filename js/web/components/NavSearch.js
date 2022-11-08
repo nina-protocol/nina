@@ -176,7 +176,7 @@ const DesktopNavSearch = ({
           {autoCompleteResults.map((result, index) => {
             if (result.visible) {
               return (
-                <ResponsiveSearchResultContainer key={index}>
+                <DropdownWrapper key={index}>
                   <SearchDropdown
                     category={result.name}
                     searchData={suggestions}
@@ -185,7 +185,7 @@ const DesktopNavSearch = ({
                     setShowDropdown={setShowDropdown}
                     setQuery={setQuery}
                   />
-                </ResponsiveSearchResultContainer>
+                </DropdownWrapper>
               )
             }
           })}
@@ -242,7 +242,7 @@ const DropdownContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
-const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
+const DropdownWrapper = styled(Box)(({ theme }) => ({
   overflowY: 'auto',
   webkitOverflowScrolling: 'touch',
 }))

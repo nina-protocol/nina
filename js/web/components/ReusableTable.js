@@ -477,7 +477,12 @@ const ReusableTableBody = ({
                 return (
                   <SearchResultTableCell key={cellName}>
                     <SearchResultOverflowContainer>
-                      <a>{cellData}</a>
+                      <Typography
+                        noWrap
+                        onClickCapture={() => router.push(row?.link)}
+                      >
+                        <a>{cellData}</a>
+                      </Typography>
                     </SearchResultOverflowContainer>
                   </SearchResultTableCell>
                 )
@@ -547,7 +552,7 @@ const ReusableTable = ({
       hasOverflow={hasOverflow}
       minHeightOverride={minHeightOverride}
     >
-      <ResponsiveTableContainer>
+      <ResponsiveTableContainer inDashboard={inDashboard}>
         <Table>
           {items?.length > 0 && (
             <ReusableTableHead
@@ -570,7 +575,7 @@ const ReusableTable = ({
   )
 }
 
-const ResponsiveTableContainer = styled(Box)(({ theme }) => ({
+const ResponsiveTableContainer = styled(Box)(({ theme, inDashboard }) => ({
   borderBottom: 'none',
   padding: '0px',
   [theme.breakpoints.down('md')]: {
@@ -578,7 +583,7 @@ const ResponsiveTableContainer = styled(Box)(({ theme }) => ({
     height: '100% !important',
     paddingLeft: '5px',
     paddingRight: 0,
-    overflowX: 'scroll',
+    overflowX: inDashboard ? 'scroll' : '',
   },
 }))
 
@@ -626,6 +631,7 @@ const SearchResultTableCell = styled(TableCell)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     padding: '5px',
     width: '100vw',
+    fontSize: '16px',
   },
 }))
 const OverflowContainer = styled(Box)(({ theme }) => ({

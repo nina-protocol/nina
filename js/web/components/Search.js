@@ -20,7 +20,7 @@ const ReusableTable = dynamic(() => import('./ReusableTable'))
 const Search = (props) => {
   const router = useRouter()
   const { searchResults, searchQuery } = props
-  const [query, setQuery] = useState(searchQuery?.q)
+  const [query, setQuery] = useState()
   const { getHubs, hubState, featuredHubs, setFeaturedHubs } = useContext(
     Hub.Context
   )
@@ -152,14 +152,17 @@ const Search = (props) => {
   }, [searchResults, searchQuery])
 
   useEffect(() => {
-    if (searchFilter === 'artists') {
-      setActiveView(1)
-    }
-    if (searchFilter === 'releases') {
-      setActiveView(2)
-    }
-    if (searchFilter === 'hubs') {
-      setActiveView(3)
+    switch(searchFilter) {
+      case 'artists':
+        return setActiveView(1)
+      case 'releases':
+        return setActiveView(2)
+      case 'hubs':
+        return setActiveView(3)
+      case !searchFilter:
+        return setActiveView(0)
+      default:
+        break
     }
   }, [searchFilter])
 
@@ -236,14 +239,6 @@ const Search = (props) => {
     }
   }
 
-  const suggestionsClickHandler = (search, searchFilter) => {
-    setQuery('')
-
-    router.push(
-      `/search/?q=${search}${searchFilter ? `&type=${searchFilter}` : ''}`
-    )
-  }
-
   const handleInputFocus = (e) => {
     e.preventDefault()
     e.stopPropagation()
@@ -252,17 +247,21 @@ const Search = (props) => {
       setShowDropdown(true)
     }
   }
-  const keyHandler = (e) => {
-    const clickedSuggestion = e.target.innerText
-    const searchFilter = e.target.id
 
-    if (e.key === 'Enter') {
-      setQuery(clickedSuggestion)
-      suggestionsClickHandler(clickedSuggestion, searchFilter)
-      setShowDropdown(false)
-      setShowSearchInput(false)
-    }
+  const searchFilterHandler = (e, searchIndex, searchFilter) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const newUrl = `/search/?q=${query}${
+      searchFilter ? `&type=${searchFilter}` : ''
+    }`
+    window.history.replaceState(
+      { ...window.history.state, as: newUrl, url: newUrl },
+      '',
+      newUrl
+    )
+    setActiveView(searchIndex)
   }
+
 
   const renderTables = (activeView) => {
     switch (activeView) {
@@ -363,16 +362,11 @@ const Search = (props) => {
         break
     }
   }
-  const searchFilterHandler = (e, searchIndex, searchFilter) => {
-    e.preventDefault()
-    e.stopPropagation()
-    history.pushState(null, '', `/search?q=${query}&type=${searchFilter}`)
-    setActiveView(searchIndex)
-  }
+
   return (
     <SearchPageContainer>
-      <DesktopNavSearchContainer>
-        <Form onSubmit={(e) => handleSubmit(e)}>
+      <SearchContainer>
+        <form onSubmit={(e) => handleSubmit(e)}>
           <SearchInputWrapper>
             <SearchInput
               onChange={(e) => changeHandler(e)}
@@ -384,22 +378,21 @@ const Search = (props) => {
               type="search"
             />
           </SearchInputWrapper>
-        </Form>
+        </form>
         {showDropdown && (
           <DropdownContainer ref={dropdownRef}>
             {autoCompleteResults.map((result, index) => {
               if (result.visible) {
                 return (
-                  <ResponsiveSearchResultContainer key={index}>
+                  <DropdownWrapper key={index}>
                     <SearchDropdown
                       category={result.name}
                       searchData={suggestions}
                       hasResults={result.visible}
-                      onKeyDown={(e) => keyHandler(e)}
                       setQuery={setQuery}
                       setShowDropdown={setShowDropdown}
                     />
-                  </ResponsiveSearchResultContainer>
+                  </DropdownWrapper>
                 )
               }
             })}
@@ -412,20 +405,20 @@ const Search = (props) => {
               )}
           </DropdownContainer>
         )}
-      </DesktopNavSearchContainer>
-      <SearchHeaderWrapper>
-        <SearchHeaderContainer>
+      </SearchContainer>
+      <SearchHeaderContainer>
+        <SearchHeaderWrapper>
           {searchQuery && (
             <Typography>{`Search results for ${searchQuery.q}`}</Typography>
           )}
-        </SearchHeaderContainer>
-      </SearchHeaderWrapper>
+        </SearchHeaderWrapper>
+      </SearchHeaderContainer>
       <>
         <SearchResultFilterContainer>
           {searchQuery && (
             <SearchResultFilter
               isClicked={activeView === 0}
-              onClick={() => setActiveView(0)}
+              onClick={(e) => searchFilterHandler(e, 0)}
             >
               {`All (${
                 response?.artists?.length +
@@ -537,20 +530,25 @@ const DropdownContainer = styled(Box)(({ theme }) => ({
   width: '75vw',
   zIndex: '100',
   position: 'absolute',
-  overflow: 'hidden',
+  overflowY: 'scroll',
   textAlign: 'left',
   marginLeft: '12%',
-  backgroundColor: '#fff',
+  backgroundColor: theme.palette.offWhite,
   padding: '0 2px',
+  [theme.breakpoints.up('md')]: {
+    display: 'none',
+  },
 }))
-const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
-  maxHeight: '60vh',
-  maxWidth: theme.maxWidth,
-  overflowY: 'auto',
+const DropdownWrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'row',
+  flexWrap: 'wrap',
   webkitOverflowScrolling: 'touch',
-  width: '100vw',
+  [theme.breakpoints.up('md')]: {
+    display: 'none',
+  },
 }))
-const DesktopNavSearchContainer = styled(Box)(({ theme }) => ({}))
+const SearchContainer = styled(Box)(({ theme }) => ({}))
 const SearchInputWrapper = styled(Box)(({ theme }) => ({
   display: 'none',
   marginLeft: 'auto',
@@ -561,26 +559,24 @@ const SearchInputWrapper = styled(Box)(({ theme }) => ({
   },
 }))
 const SearchInput = styled('input')(({ theme }) => ({
-  border: 0,
-  borderBottom: '1px solid #000000',
-  width: '15vw',
-  marginRight: '20px',
-  outline: 'none !important',
-  background: 'transparent',
-  outline: 'none',
-  borderRadius: 0,
-  display: 'none',
-  padding: '15px',
   [theme.breakpoints.down('md')]: {
+    border: 0,
+    borderBottom: '1px solid #000',
+    outline: 'none !important',
+    background: 'transparent',
+    outline: 'none',
+    borderRadius: 0,
+    display: 'none',
     marginTop: '15px',
     padding: '2px 0',
     width: '100vw',
+    maxWidth: theme.maxWidth,
     fontSize: '18px',
     display: 'flex',
   },
 }))
 
-const SearchHeaderContainer = styled(Box)(({ theme }) => ({
+const SearchHeaderWrapper = styled(Box)(({ theme }) => ({
   maxWidth: '100%',
   textAlign: 'left',
   [theme.breakpoints.down('md')]: {
@@ -589,7 +585,7 @@ const SearchHeaderContainer = styled(Box)(({ theme }) => ({
     marginRight: 'auto',
   },
 }))
-const SearchHeaderWrapper = styled(Box)(({ theme }) => ({
+const SearchHeaderContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'left',
@@ -604,46 +600,12 @@ const SearchHeaderWrapper = styled(Box)(({ theme }) => ({
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'no-wrap',
-    height: '100px',
-  },
-}))
-const Form = styled('form')(({ theme }) => ({}))
-
-const SearchAllResultsWrapper = styled(Box)(({ theme }) => ({
-  minWidth: theme.maxWidth,
-  textAlign: 'left',
-  overflowY: 'auto',
-  paddingBottom: '100px',
-  [theme.breakpoints.down('md')]: {
-    paddingBottom: '100px',
-    minWidth: 'unset',
+    minHeight: '50px',
+    height: '75px',
+    paddingTop: '10px',
   },
 }))
 
-const MobileSearchInputWrapper = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'row',
-  margin: '0px 10px',
-}))
-const MobileSearchContainer = styled(Box)(({ theme }) => ({
-  height: '100vh',
-  width: '95vw',
-  zIndex: '100',
-  position: 'absolute',
-  overflow: 'hidden',
-  textAlign: 'left',
-  left: '-50px',
-}))
-const MobileDropdownContainer = styled(Box)(({ theme }) => ({
-  height: '100vh',
-  width: '95vw',
-  zIndex: '100',
-  display: 'block',
-  position: 'absolute',
-  background: '#fff',
-  textAlign: 'left',
-  padding: '0 10px',
-}))
 const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
   fontSize: '80px',
   display: 'flex',
@@ -681,11 +643,25 @@ const SearchResultFilter = styled(Button)(({ theme, isClicked }) => ({
   },
 }))
 
+const SearchAllResultsWrapper = styled(Box)(({ theme }) => ({
+  minWidth: theme.maxWidth,
+  textAlign: 'left',
+  overflowY: 'auto',
+  paddingBottom: '100px',
+  [theme.breakpoints.down('md')]: {
+    paddingBottom: '200px',
+    minWidth: 'unset',
+    overflowX: 'unset',
+    minHeight: '40vh',
+  },
+}))
+
 const ResultsWrapper = styled(Box)(({ theme }) => ({
   overflow: 'auto',
   paddingBottom: '100px',
   [theme.breakpoints.down('md')]: {
-    paddingBottom: '100px',
+    paddingBottom: '200px',
+    minHeight: '40vh',
   },
 }))
 export default Search
