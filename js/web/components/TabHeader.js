@@ -124,7 +124,7 @@ const ResponsiveTab = styled(Button)(({ theme }) => ({
 }))
 
 const ResponsiveContainer = styled(Box)(({ theme }) => ({
-  minWidth: '50vw',
+  width: '100%',
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
