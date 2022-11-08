@@ -49,7 +49,7 @@ const timeSince = (date) => {
   return Math.floor(seconds) + ' seconds'
 }
 
-const Feed = ({
+const Navigator = ({
   items,
   itemsTotal,
   playFeed,
@@ -723,4 +723,4 @@ const CtaWrapper = styled(Box)(({ theme }) => ({
   margin: 'auto',
 }))
 
-export default Feed
+export default Navigator
