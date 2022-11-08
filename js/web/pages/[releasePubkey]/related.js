@@ -20,7 +20,6 @@ export const getServerSideProps = async (context) => {
       )
     }
     const { release } = await NinaSdk.Release.fetch(releasePubkey)
-    console.log
     return {
       props: {
         publisher: release.publisher,
