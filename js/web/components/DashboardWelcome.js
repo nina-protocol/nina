@@ -38,9 +38,6 @@ function DashboardWelcome({ userHasSeenUpdateMessage }) {
               Welcome to your Dashboard
             </Typography>
             <Typography variant="body1" gutterBottom>
-              This is your homebase on Nina.
-            </Typography>
-            <Typography variant="body1" gutterBottom>
               Here you can view your Releases, Collection, Hubs, Followers, and
               accounts you Follow.
             </Typography>
@@ -56,11 +53,10 @@ function DashboardWelcome({ userHasSeenUpdateMessage }) {
             <Typography variant="body1" gutterBottom>
               Clicking any of the Connect buttons at the top of your Dashboard
               will allow you to connect your existing Soundcloud, Twitter, or
-              ENS accounts to Nina.
+              Ethereum accounts to Nina.
             </Typography>
             <Typography variant="body1" gutterBottom>
-              Connected accounts will display their respective usernames
-              anywhere your wallet address if currently shown.
+              Connected accounts will import your username, profile picture, and bio from their respecitve platforms.
             </Typography>
 
             <Divider sx={{ margin: '15px 0' }} />
@@ -72,11 +68,11 @@ function DashboardWelcome({ userHasSeenUpdateMessage }) {
               Follow
             </Typography>
             <Typography variant="body1" gutterBottom>
-              You can now follow profiles or Hubs that you like.
+              You can now follow profiles and Hubs to stay up to date on their activity on Nina.
             </Typography>
             <Typography variant="body1" gutterBottom>
               Following will populate the Navigator (the drawer on the right)
-              with content relevant to you.
+              with relevant Release and Hub activity.
             </Typography>
             <Button
               variant="outlined"
