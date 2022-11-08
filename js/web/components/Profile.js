@@ -241,7 +241,7 @@ const Profile = ({ profilePubkey }) => {
         profilePubkey,
         true
       )
-      
+
       await getSubscriptionsForUser(profilePubkey)
       await getVerificationsForUser(profilePubkey)
 

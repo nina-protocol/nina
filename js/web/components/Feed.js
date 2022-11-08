@@ -62,6 +62,7 @@ const Feed = ({
   )
   const { displayNameForAccount } = useContext(Nina.Context)
   const router = useRouter()
+  const wallet = useWallet()
 
   const [pendingFetch, setPendingFetch] = useState(false)
   const scrollRef = useRef()
