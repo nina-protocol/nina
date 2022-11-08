@@ -16,16 +16,23 @@ const TabHeader = ({
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { enqueueSnackbar } = useSnackbar()
   const playAllHandler = (playlist) => {
+    let sortedPlaylist
     console.log('playlist', playlist)
     if (type === 'hubView') {
+      sortedPlaylist = playlist.sort((a, b) => {
+        return new Date(b.datetime) - new Date(a.datetime)
+      })
       resetQueueWithPlaylist(
-        playlist?.map((release) => release.releasePubkey)
+        sortedPlaylist?.map((release) => release.releasePubkey)
       ).then(() =>
         enqueueSnackbar(`Hub releases added to queue`, {
           variant: 'info',
         })
       )
     } else {
+      sortedPlaylist = playlist.sort((a, b) => {
+        return new Date(b.datetime) - new Date(a.datetime)
+      })
       resetQueueWithPlaylist(
         playlist?.map((release) => release.publicKey)
       ).then(() =>
