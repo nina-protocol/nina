@@ -309,7 +309,7 @@ const CtaWrapper = styled(Box)(({theme}) => ({
     [theme.breakpoints.down('md')]: {
       border: 'none',
       margin: '0px',
-      padding: '10px 0px',
+      padding: '10px 10px 10px 0px',
       '& p': {
         display: 'none'
       },
