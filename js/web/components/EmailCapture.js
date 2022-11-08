@@ -69,14 +69,14 @@ const EmailCapture = ({ size }) => {
   )
 
   return (
-    <div>
+    <>
       {size === 'large' && (
         <BlueTypography
           onClick={handleOpen}
           variant="h1"
-          sx={{ padding: { md: '0 165px 140px', xs: '30px 0px' } }}
+          sx={{ display: 'inline' }}
         >
-          Apply for access to the Nina for Artists Beta
+          Sign Up
         </BlueTypography>
       )}
       {size === 'medium' && (
@@ -124,7 +124,7 @@ const EmailCapture = ({ size }) => {
           </Button>
         </Box>
       </Modal>
-    </div>
+    </>
   )
 }
 
