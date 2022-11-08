@@ -914,11 +914,16 @@ const ninaContextHelper = ({
   }
 
   const getVerificationsForUser = async (accountPubkey) => {
-    const { verifications } = await NinaSdk.Account.fetchVerifications(accountPubkey)
-    setVerificationState({
-      ...verificationState,
-      [accountPubkey]: verifications,
-    })
+    try {
+      const { verifications } = await NinaSdk.Account.fetchVerifications(accountPubkey)
+      setVerificationState({
+        ...verificationState,
+        [accountPubkey]: verifications,
+      })
+    } catch (error) {
+      console.warn(error)
+      return []
+    }
   }
   
   const filterSubscriptionsForHub = (hubPubkey) => {

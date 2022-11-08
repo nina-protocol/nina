@@ -82,7 +82,7 @@ const Profile = ({ profilePubkey }) => {
       setFetchedProfiles(new Set([...fetchedProfiles, profilePubkey]))
       return true
     }
-    return false
+    // return false
   }, [fetchedProfiles, fetched, profilePubkey])
 
   const artistNames = useMemo(() => {
@@ -160,6 +160,11 @@ const Profile = ({ profilePubkey }) => {
       updatedView[viewIndex].disabled = false
       updatedView[viewIndex].count = profileSubscriptionsFrom.length
     }
+    if (inDashboard) {
+      updatedView.forEach((view) => {
+        view.disabled = false
+      })
+    }
 
     setViews(updatedView)
   }, [
@@ -236,7 +241,7 @@ const Profile = ({ profilePubkey }) => {
         profilePubkey,
         true
       )
-
+      
       await getSubscriptionsForUser(profilePubkey)
       await getVerificationsForUser(profilePubkey)
 
@@ -248,6 +253,7 @@ const Profile = ({ profilePubkey }) => {
 
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
       updatedView[viewIndex].playlist = collected
+      console.log('HERE')
       setFetched(true)
     } catch (err) {
       console.log(err)

@@ -152,7 +152,7 @@ const Search = (props) => {
   }, [searchResults, searchQuery])
 
   useEffect(() => {
-    switch(searchFilter) {
+    switch (searchFilter) {
       case 'artists':
         return setActiveView(1)
       case 'releases':
@@ -261,7 +261,6 @@ const Search = (props) => {
     )
     setActiveView(searchIndex)
   }
-
 
   const renderTables = (activeView) => {
     switch (activeView) {
