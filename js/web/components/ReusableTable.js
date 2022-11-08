@@ -547,7 +547,7 @@ const ReusableTable = ({
       hasOverflow={hasOverflow}
       minHeightOverride={minHeightOverride}
     >
-      <ResponsiveTableContainer>
+      <ResponsiveTableContainer inDashboard={inDashboard}>
         <Table>
           {items?.length > 0 && (
             <ReusableTableHead
@@ -570,7 +570,7 @@ const ReusableTable = ({
   )
 }
 
-const ResponsiveTableContainer = styled(Box)(({ theme }) => ({
+const ResponsiveTableContainer = styled(Box)(({ theme, inDashboard }) => ({
   borderBottom: 'none',
   padding: '0px',
   [theme.breakpoints.down('md')]: {
@@ -578,7 +578,7 @@ const ResponsiveTableContainer = styled(Box)(({ theme }) => ({
     height: '100% !important',
     paddingLeft: '5px',
     paddingRight: 0,
-    overflowX: 'scroll',
+    overflowX: inDashboard ? 'scroll' : '',
   },
 }))
 

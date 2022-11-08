@@ -210,7 +210,7 @@ const Search = (props) => {
       return
     }
     setShowDropdown(false)
-   setQuery('')
+    setQuery('')
   }
 
   const autoCompleteHandler = async (query) => {
@@ -218,7 +218,7 @@ const Search = (props) => {
       `${NinaSdk.client.endpoint}/suggestions`,
       { query }
     )
-      setSuggestions(response.data)
+    setSuggestions(response.data)
   }
 
   const changeHandler = (e) => {
@@ -371,8 +371,8 @@ const Search = (props) => {
   }
   return (
     <SearchPageContainer>
-      <DesktopNavSearchContainer>
-        <Form onSubmit={(e) => handleSubmit(e)}>
+      <SearchContainer>
+        <form onSubmit={(e) => handleSubmit(e)}>
           <SearchInputWrapper>
             <SearchInput
               onChange={(e) => changeHandler(e)}
@@ -384,7 +384,7 @@ const Search = (props) => {
               type="search"
             />
           </SearchInputWrapper>
-        </Form>
+        </form>
         {showDropdown && (
           <DropdownContainer ref={dropdownRef}>
             {autoCompleteResults.map((result, index) => {
@@ -412,14 +412,14 @@ const Search = (props) => {
               )}
           </DropdownContainer>
         )}
-      </DesktopNavSearchContainer>
-      <SearchHeaderWrapper>
-        <SearchHeaderContainer>
+      </SearchContainer>
+      <SearchHeaderContainer>
+        <SearchHeaderWrapper>
           {searchQuery && (
             <Typography>{`Search results for ${searchQuery.q}`}</Typography>
           )}
-        </SearchHeaderContainer>
-      </SearchHeaderWrapper>
+        </SearchHeaderWrapper>
+      </SearchHeaderContainer>
       <>
         <SearchResultFilterContainer>
           {searchQuery && (
@@ -537,10 +537,10 @@ const DropdownContainer = styled(Box)(({ theme }) => ({
   width: '75vw',
   zIndex: '100',
   position: 'absolute',
-  overflow: 'hidden',
+  overflowY: 'scroll',
   textAlign: 'left',
   marginLeft: '12%',
-  backgroundColor: '#fff',
+  backgroundColor: theme.palette.offWhite,
   padding: '0 2px',
 }))
 const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
@@ -550,7 +550,7 @@ const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
   webkitOverflowScrolling: 'touch',
   width: '100vw',
 }))
-const DesktopNavSearchContainer = styled(Box)(({ theme }) => ({}))
+const SearchContainer = styled(Box)(({ theme }) => ({}))
 const SearchInputWrapper = styled(Box)(({ theme }) => ({
   display: 'none',
   marginLeft: 'auto',
@@ -561,26 +561,24 @@ const SearchInputWrapper = styled(Box)(({ theme }) => ({
   },
 }))
 const SearchInput = styled('input')(({ theme }) => ({
-  border: 0,
-  borderBottom: '1px solid #000000',
-  width: '15vw',
-  marginRight: '20px',
-  outline: 'none !important',
-  background: 'transparent',
-  outline: 'none',
-  borderRadius: 0,
-  display: 'none',
-  padding: '15px',
   [theme.breakpoints.down('md')]: {
+    border: 0,
+    borderBottom: '1px solid #000',
+    outline: 'none !important',
+    background: 'transparent',
+    outline: 'none',
+    borderRadius: 0,
+    display: 'none',
     marginTop: '15px',
     padding: '2px 0',
     width: '100vw',
+    maxWidth: theme.maxWidth,
     fontSize: '18px',
     display: 'flex',
   },
 }))
 
-const SearchHeaderContainer = styled(Box)(({ theme }) => ({
+const SearchHeaderWrapper = styled(Box)(({ theme }) => ({
   maxWidth: '100%',
   textAlign: 'left',
   [theme.breakpoints.down('md')]: {
@@ -589,7 +587,7 @@ const SearchHeaderContainer = styled(Box)(({ theme }) => ({
     marginRight: 'auto',
   },
 }))
-const SearchHeaderWrapper = styled(Box)(({ theme }) => ({
+const SearchHeaderContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'left',
@@ -604,10 +602,11 @@ const SearchHeaderWrapper = styled(Box)(({ theme }) => ({
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'no-wrap',
-    height: '100px',
+    minHeight: '50px',
+    height: '75px',
+    paddingTop: '10px',
   },
 }))
-const Form = styled('form')(({ theme }) => ({}))
 
 const SearchAllResultsWrapper = styled(Box)(({ theme }) => ({
   minWidth: theme.maxWidth,
@@ -617,33 +616,10 @@ const SearchAllResultsWrapper = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     paddingBottom: '100px',
     minWidth: 'unset',
+    overflowX: 'unset',
   },
 }))
 
-const MobileSearchInputWrapper = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'row',
-  margin: '0px 10px',
-}))
-const MobileSearchContainer = styled(Box)(({ theme }) => ({
-  height: '100vh',
-  width: '95vw',
-  zIndex: '100',
-  position: 'absolute',
-  overflow: 'hidden',
-  textAlign: 'left',
-  left: '-50px',
-}))
-const MobileDropdownContainer = styled(Box)(({ theme }) => ({
-  height: '100vh',
-  width: '95vw',
-  zIndex: '100',
-  display: 'block',
-  position: 'absolute',
-  background: '#fff',
-  textAlign: 'left',
-  padding: '0 10px',
-}))
 const ResponsiveDotContainer = styled(Box)(({ theme }) => ({
   fontSize: '80px',
   display: 'flex',

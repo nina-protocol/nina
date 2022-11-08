@@ -83,8 +83,7 @@ const Feed = ({
     if (isPlaying && track.releasePubkey === releasePubkey) {
       setIsPlaying(false)
     } else {
-      logEvent('navigator_play',
-      'engagement', {
+      logEvent('navigator_play', 'engagement', {
         wallet: wallet.publicKey?.toBase58(),
         release: releasePubkey,
       })
@@ -96,12 +95,11 @@ const Feed = ({
   const handleClick = (e, path, type) => {
     e.stopPropagation()
     e.preventDefault()
-    logEvent('navigator_interaction',
-      'engagement', {
-        type,
-        wallet: wallet.publicKey?.toBase58(),
-        path,
-      })
+    logEvent('navigator_interaction', 'engagement', {
+      type,
+      wallet: wallet.publicKey?.toBase58(),
+      path,
+    })
     router.push(path)
   }
 
@@ -114,7 +112,9 @@ const Feed = ({
               <HoverContainer
                 href={`/hubs/${item?.hub?.handle}`}
                 passHref
-                onClick={(e) => handleClick(e, `/hubs/${item.hub?.handle}`, item?.type)}
+                onClick={(e) =>
+                  handleClick(e, `/hubs/${item.hub?.handle}`, item?.type)
+                }
               >
                 <Image
                   height={'100px'}
@@ -155,7 +155,9 @@ const Feed = ({
               <HoverContainer
                 href={`/${item.release?.publicKey}`}
                 passHref
-                onClick={(e) => handleClick(e, `/${item.release?.publicKey}`, item?.type)}
+                onClick={(e) =>
+                  handleClick(e, `/${item.release?.publicKey}`, item?.type)
+                }
               >
                 <Image
                   height={'100px'}
@@ -216,7 +218,9 @@ const Feed = ({
               <HoverContainer
                 href={`/${item.release?.publicKey}`}
                 passHref
-                onClick={(e) => handleClick(e, `/${item.release?.publicKey}`, item?.type)}
+                onClick={(e) =>
+                  handleClick(e, `/${item.release?.publicKey}`, item?.type)
+                }
               >
                 <Image
                   height={'100px'}
@@ -277,7 +281,9 @@ const Feed = ({
               <HoverContainer
                 href={`/${item.release?.publicKey}`}
                 passHref
-                onClick={(e) => handleClick(e, `/${item.release?.publicKey}`, item?.type)}
+                onClick={(e) =>
+                  handleClick(e, `/${item.release?.publicKey}`, item?.type)
+                }
               >
                 <Image
                   height={'100px'}
@@ -384,7 +390,9 @@ const Feed = ({
               <HoverContainer
                 href={`/${item.release?.publicKey}`}
                 passHref
-                onClick={(e) => handleClick(e, `/${item.release?.publicKey}`, item?.type)}
+                onClick={(e) =>
+                  handleClick(e, `/${item.release?.publicKey}`, item?.type)
+                }
               >
                 <Image
                   height={'100px'}
