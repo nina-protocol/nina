@@ -514,12 +514,10 @@ const ReusableTableBody = ({
                     </LineBreakContainer>
                   </StyledTableCell>
                 )
-              } else if (cellName === 'collect'){
+              } else if (cellName === 'collect') {
                 return (
                   <StyledTableCell key={cellName}>
-                    <CollectContainer>
-                          {cellData}
-                    </CollectContainer>
+                    <CollectContainer>{cellData}</CollectContainer>
                   </StyledTableCell>
                 )
               } else {

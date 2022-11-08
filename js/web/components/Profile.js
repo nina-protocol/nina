@@ -491,8 +491,8 @@ const ProfileOverflowContainer = styled(Box)(({ theme }) => ({
 const ProfileTableContainer = styled(Box)(({ theme }) => ({
   paddingBottom: '100px',
   overflowY: 'auto',
-  "&::-webkit-scrollbar": {
-    display: "none !important",
+  '&::-webkit-scrollbar': {
+    display: 'none !important',
   },
   [theme.breakpoints.down('md')]: {
     paddingBottom: '200px',
