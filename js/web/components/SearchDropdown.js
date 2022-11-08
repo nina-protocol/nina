@@ -103,7 +103,7 @@ const SearchDropdown = ({
             {category}
           </Typography>
           {rows?.map((row, index) => (
-            <Box
+            <SearchResult
               role="tab"
               id={row.category}
               tabIndex={0}
@@ -120,7 +120,7 @@ const SearchDropdown = ({
                   {row?.displayName}
                 </Typography>
               </a>
-            </Box>
+            </SearchResult>
           ))}
         </SearchResultsWrapper>
       )}
@@ -137,4 +137,15 @@ const SearchResultsWrapper = styled(Box)(({ theme }) => ({
   },
 }))
 
+const SearchResult = styled(Box)(({ theme }) => ({
+  borderBottom: '1px solid #E5E5E5',
+  py: '4px',
+  [theme.breakpoints.down('md')]: {
+    width: '70vw',
+    overflowX: 'hidden',
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+}))
 export default SearchDropdown
