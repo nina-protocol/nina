@@ -178,16 +178,34 @@ const Profile = ({ profilePubkey }) => {
   }, [views])
 
   useEffect(() => {
+    let filteredCollection
     if (fetchedUserProfileReleases[profilePubkey]?.collected) {
-      setProfileCollectionReleases(filterReleasesUserCollection(profilePubkey))
+      filteredCollection = filterReleasesUserCollection(profilePubkey)?.sort(
+        (a, b) => {
+          return (
+            new Date(b.metadata.properties.date) -
+            new Date(a.metadata.properties.date)
+          )
+        }
+      )
+      setProfileCollectionReleases(filteredCollection)
     } else {
       setProfileCollectionReleases([])
     }
   }, [fetchedUserProfileReleases, profilePubkey])
 
   useEffect(() => {
+    let filteredReleases
     if (fetchedUserProfileReleases[profilePubkey]?.published) {
-      setProfilePublishedReleases(filterReleasesPublishedByUser(profilePubkey))
+      filteredReleases = filterReleasesPublishedByUser(profilePubkey)?.sort(
+        (a, b) => {
+          return (
+            new Date(b.metadata.properties.date) -
+            new Date(a.metadata.properties.date)
+          )
+        }
+      )
+      setProfilePublishedReleases(filteredReleases)
     } else {
       setProfilePublishedReleases([])
     }
