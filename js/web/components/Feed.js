@@ -18,6 +18,7 @@ import Dots from './Dots'
 import { useRouter } from 'next/router'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import { useWallet } from '@solana/wallet-adapter-react'
+import { isMobile } from 'react-device-detect'
 
 const timeSince = (date) => {
   const seconds = Math.floor((new Date() - date) / 1000)
@@ -56,13 +57,14 @@ const Feed = ({
   publicKey,
   handleGetFeedForUser,
   feedFetched,
+  toggleDrawer,
 }) => {
   const { updateTrack, isPlaying, setIsPlaying, track } = useContext(
     Audio.Context
   )
   const { displayNameForAccount } = useContext(Nina.Context)
   const router = useRouter()
-
+  const wallet = useWallet()
   const [pendingFetch, setPendingFetch] = useState(false)
   const scrollRef = useRef()
 
@@ -103,6 +105,10 @@ const Feed = ({
         path,
       })
     router.push(path)
+    
+    if (isMobile) {
+      toggleDrawer(false)
+    }
   }
 
   const feedItems = useMemo(() => {
