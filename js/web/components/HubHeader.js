@@ -48,7 +48,7 @@ const HubHeader = ({ hubData }) => {
   }, [hubData?.data.description])
 
   return (
-    <Wrapper sx={{  }}>
+    <Wrapper sx={{}}>
       <ResponsiveHubHeader>
         <Box sx={{ width: '100px', minWidth: '100px' }}>
           <Link href={`${hubData?.data.externalUrl}`} passHref>
@@ -73,8 +73,8 @@ const HubHeader = ({ hubData }) => {
         <CopyWrapper>
           <DisplayName>
             {hubData?.data.displayName && (
-              <Link href={hubData?.data.externalUrl} passHref >
-                <a target="_blank" rel="noreferrer" >
+              <Link href={hubData?.data.externalUrl} passHref>
+                <a target="_blank" rel="noreferrer">
                   <Typography sx={{ padding: '0 15px' }} noWrap>
                     {hubData?.data.displayName}
                   </Typography>
@@ -91,23 +91,22 @@ const HubHeader = ({ hubData }) => {
             )}
           </DisplayName>
           {hubData?.data.description && (
-              <DescriptionOverflowContainer>
-                {hubDescription}
-              </DescriptionOverflowContainer>
+            <DescriptionOverflowContainer>
+              {hubDescription}
+            </DescriptionOverflowContainer>
           )}
         </CopyWrapper>
       </ResponsiveHubHeader>
-
     </Wrapper>
   )
 }
 
-const Wrapper = styled(Box)(({theme}) => ({
-  display: 'flex', 
+const Wrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
   flexDirection: 'column',
   [theme.breakpoints.down('md')]: {
-    marginBottom: '10px'
-  }
+    marginBottom: '10px',
+  },
 }))
 
 const ResponsiveHubHeader = styled(Box)(({ theme }) => ({
@@ -148,7 +147,7 @@ const DisplayName = styled(Box)(({ theme }) => ({
   },
 }))
 
-const CopyWrapper = styled(Box)(({theme}) => ({
+const CopyWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   [theme.breakpoints.down('md')]: {
     flexDirection: 'column',

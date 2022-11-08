@@ -300,7 +300,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   )
 }
 
-const CtaWrapper = styled(Box)(({theme}) => ({
+const CtaWrapper = styled(Box)(({ theme }) => ({
   '& button': {
     color: 'black',
     border: '1px solid black',
@@ -311,14 +311,14 @@ const CtaWrapper = styled(Box)(({theme}) => ({
       margin: '0px',
       padding: '10px 10px 10px 0px',
       '& p': {
-        display: 'none'
+        display: 'none',
       },
     },
     '& svg': {
       fontSize: '16px',
       [theme.breakpoints.down('md')]: {
         fontSize: '20px',
-      }
+      },
     },
   },
 }))

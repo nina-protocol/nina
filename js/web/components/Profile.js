@@ -375,7 +375,11 @@ const Profile = ({ profilePubkey }) => {
                     )}
                   </Box>
                   <Box
-                    sx={{ mb: 1, ml: 1, flexDirection: {xs: 'column', md: 'row'} }}
+                    sx={{
+                      mb: 1,
+                      ml: 1,
+                      flexDirection: { xs: 'column', md: 'row' },
+                    }}
                     display="flex"
                     alignItems={'start'}
                   >
