@@ -434,7 +434,7 @@ const ProfileContainer = styled(Box)(({ theme }) => ({
   overflowY: 'hidden',
   margin: '75px auto 0px',
 
-  ['-webkit-overflow-scroll']: 'touch',
+  // ['-webkit-overflow-scroll']: 'touch',
   [theme.breakpoints.down('md')]: {
     display: 'flex',
     flexDirection: 'column',
@@ -491,6 +491,9 @@ const ProfileOverflowContainer = styled(Box)(({ theme }) => ({
 const ProfileTableContainer = styled(Box)(({ theme }) => ({
   paddingBottom: '100px',
   overflowY: 'auto',
+  "&::-webkit-scrollbar": {
+    display: "none !important",
+  },
   [theme.breakpoints.down('md')]: {
     paddingBottom: '200px',
     overflow: 'scroll',

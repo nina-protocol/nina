@@ -514,8 +514,15 @@ const ReusableTableBody = ({
                     </LineBreakContainer>
                   </StyledTableCell>
                 )
+              } else if (cellName === 'collect'){
+                return (
+                  <StyledTableCell key={cellName}>
+                    <CollectContainer>
+                          {cellData}
+                    </CollectContainer>
+                  </StyledTableCell>
+                )
               } else {
-                console.log('cellName :>> ', cellName)
                 return (
                   <StyledTableCell key={cellName}>
                     <OverflowContainer>
@@ -530,7 +537,6 @@ const ReusableTableBody = ({
               }
             }
           })}
-          <StyledTableCell />
         </TableRow>
       ))}
     </TableBody>
@@ -584,7 +590,7 @@ const ResponsiveTableContainer = styled(Box)(({ theme }) => ({
 }))
 
 const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
-  padding: '5px 0px',
+  padding: '5px 5px',
   textAlign: 'left',
   cursor: 'pointer',
   fontWeight: 'bold',
@@ -596,7 +602,7 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
 }))
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  padding: '5px 0px',
+  padding: '5px 5px',
   textAlign: 'left',
   height: '50px',
   width: '15vw',
@@ -631,6 +637,20 @@ const SearchResultTableCell = styled(TableCell)(({ theme }) => ({
 }))
 const OverflowContainer = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
+  maxWidth: '14vw',
+  textAlign: 'left',
+  textOverflow: 'ellipsis',
+  [theme.breakpoints.down('md')]: {
+    minWidth: '0',
+    maxWidth: '20vw',
+  },
+  [theme.breakpoints.up('xl')]: {
+    maxWidth: '10vw',
+  },
+}))
+
+const CollectContainer = styled(Box)(({ theme }) => ({
+  overflow: 'hidden',
   maxWidth: '15vw',
   textAlign: 'left',
   textOverflow: 'ellipsis',
@@ -639,11 +659,15 @@ const OverflowContainer = styled(Box)(({ theme }) => ({
     maxWidth: '20vw',
   },
 }))
+
 const LineBreakContainer = styled(Box)(({ theme }) => ({
-  overflow: 'hidden',
-  maxWidth: '100px',
-  textAlign: 'left',
-  whiteSpace: 'wrap',
+  '& p': {
+    overflow: 'hidden',
+    maxWidth: '100px',
+    textAlign: 'left',
+    whiteSpace: 'wrap',
+    textOverflow: 'ellipsis',
+  },
   [theme.breakpoints.down('md')]: {
     minWidth: '0',
     maxWidth: '20vw',
