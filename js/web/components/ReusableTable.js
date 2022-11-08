@@ -585,6 +585,9 @@ const ResponsiveTableContainer = styled(Box)(({ theme, inDashboard }) => ({
     paddingRight: 0,
     overflowX: inDashboard ? 'scroll' : '',
   },
+  [theme.breakpoints.down('sm')]: {
+    paddingTop: '10px',
+  },
 }))
 
 const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
@@ -596,6 +599,9 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     padding: '0px',
     paddingRight: '5px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    paddingTop: '10px',
   },
 }))
 

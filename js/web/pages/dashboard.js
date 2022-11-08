@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import Dashboard from '../components/Dashboard'
+import { Box } from '@mui/system'
+
 import Head from 'next/head'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useRouter } from 'next/router'
+import { styled } from '@mui/system'
+import dynamic from 'next/dynamic'
+const Dashboard = dynamic(() => import('../components/Dashboard'))
 
-export default function DashboardPage() {
+const DashboardPage = () => {
   const [publicKey, setPublicKey] = useState()
   const wallet = useWallet()
   const router = useRouter()
@@ -50,7 +54,18 @@ export default function DashboardPage() {
           href="https://ninaprotocol.com/images/nina-blue.png"
         />
       </Head>
-      {publicKey && <Dashboard publicKey={publicKey} />}
+      {publicKey && (
+        <DashboardPageContainer>
+          <Dashboard publicKey={publicKey} />
+        </DashboardPageContainer>
+      )}
     </>
   )
 }
+const DashboardPageContainer = styled(Box)(({ theme }) => ({
+  width: theme.maxWidth,
+  [theme.breakpoints.down('md')]: {
+    minHeight: '40vh',
+  },
+}))
+export default DashboardPage

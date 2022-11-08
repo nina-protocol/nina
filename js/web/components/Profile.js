@@ -178,34 +178,16 @@ const Profile = ({ profilePubkey }) => {
   }, [views])
 
   useEffect(() => {
-    let filteredCollection
     if (fetchedUserProfileReleases[profilePubkey]?.collected) {
-      filteredCollection = filterReleasesUserCollection(profilePubkey)?.sort(
-        (a, b) => {
-          return (
-            new Date(b.metadata.properties.date) -
-            new Date(a.metadata.properties.date)
-          )
-        }
-      )
-      setProfileCollectionReleases(filteredCollection)
+      setProfileCollectionReleases(filterReleasesUserCollection(profilePubkey))
     } else {
       setProfileCollectionReleases([])
     }
   }, [fetchedUserProfileReleases, profilePubkey])
 
   useEffect(() => {
-    let filteredReleases
     if (fetchedUserProfileReleases[profilePubkey]?.published) {
-      filteredReleases = filterReleasesPublishedByUser(profilePubkey)?.sort(
-        (a, b) => {
-          return (
-            new Date(b.metadata.properties.date) -
-            new Date(a.metadata.properties.date)
-          )
-        }
-      )
-      setProfilePublishedReleases(filteredReleases)
+      setProfilePublishedReleases(filterReleasesPublishedByUser(profilePubkey))
     } else {
       setProfilePublishedReleases([])
     }
@@ -405,7 +387,7 @@ const Profile = ({ profilePubkey }) => {
         </ProfileHeaderWrapper>
 
         {hasData && (
-          <Box sx={{ py: 1 }}>
+          <Box>
             <TabHeader
               viewHandler={viewHandler}
               activeView={activeView}
@@ -415,7 +397,7 @@ const Profile = ({ profilePubkey }) => {
         )}
 
         {fetched.info && (
-          <Box sx={{ py: 1 }}>
+          <Box>
             <TabHeader
               viewHandler={viewHandler}
               activeView={activeView}
@@ -486,7 +468,7 @@ const ProfileHeaderWrapper = styled(Box)(({ theme }) => ({
   pl: 1,
   pb: 1,
   maxWidth: '100vw',
-  [theme.breakpoints.down('md')]: {
+  [theme.breakpoints.down('sm')]: {
     width: '100vw',
     height: '100%',
     paddingBottom: '10px',
@@ -513,6 +495,7 @@ const ProfileTableContainer = styled(Box)(({ theme }) => ({
     paddingBottom: '200px',
     overflow: 'scroll',
     height: '100%',
+    margin: '10px 0',
   },
 }))
 
