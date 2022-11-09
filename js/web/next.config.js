@@ -81,6 +81,7 @@ const moduleExports = withTM({
     IG_CLIENT_ID: process.env.IG_CLIENT_ID,
     TWITTER_AUTH_CLIENT_ID: process.env.TWITTER_AUTH_CLIENT_ID,
     AIRTABLE_API_KEY: process.env.AIRTABLE_API_KEY,
+    NINA_HUBS_URL: process.env.NINA_HUBS_URL,
   },
   images: {
     loader: 'imgix',
