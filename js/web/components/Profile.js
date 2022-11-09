@@ -223,7 +223,7 @@ const Profile = ({ profilePubkey }) => {
         profilePubkey,
         true
       )
-      
+
       await getSubscriptionsForUser(profilePubkey)
       await getVerificationsForUser(profilePubkey)
 
@@ -444,7 +444,6 @@ const ProfileContainer = styled(Box)(({ theme }) => ({
   overflowY: 'hidden',
   margin: '75px auto 0px',
 
-  // ['-webkit-overflow-scroll']: 'touch',
   [theme.breakpoints.down('md')]: {
     display: 'flex',
     flexDirection: 'column',
@@ -480,9 +479,7 @@ const ProfileHeaderWrapper = styled(Box)(({ theme }) => ({
   maxWidth: '100vw',
   [theme.breakpoints.down('sm')]: {
     width: '100vw',
-    // height: '100%',
     paddingBottom: '10px',
-    borderBottom: `1px solid ${theme.palette.greyLight}`,
   },
 }))
 

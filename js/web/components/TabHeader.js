@@ -137,7 +137,6 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
     width: '100vw',
   },
   [theme.breakpoints.down('sm')]: {
-    // borderBottom: `1px solid ${theme.palette.greyLight}`,
     paddingLeft: '6px',
     height: '100%',
   },
