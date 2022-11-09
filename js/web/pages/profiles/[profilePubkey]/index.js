@@ -35,19 +35,18 @@ const ProfilePage = (props) => {
         <meta property="og:image" content={`/images/favicon.ico`} />
       </Head>
 
-      <ResponsiveProfileContainer>
+      <ProfilePageContainer>
         <Profile profilePubkey={profilePubkey} />
-      </ResponsiveProfileContainer>
+      </ProfilePageContainer>
     </>
   )
 }
 
-const ResponsiveProfileContainer = styled(Box)(({ theme }) => ({
+const ProfilePageContainer = styled(Box)(({ theme }) => ({
   width: theme.maxWidth,
 
   [theme.breakpoints.down('md')]: {
     minHeight: '40vh',
-    padding: '0',
   },
 }))
 
