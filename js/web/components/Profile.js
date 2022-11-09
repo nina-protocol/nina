@@ -82,7 +82,7 @@ const Profile = ({ profilePubkey }) => {
       setFetchedProfiles(new Set([...fetchedProfiles, profilePubkey]))
       return true
     }
-    return false
+    // return false
   }, [fetchedProfiles, fetched, profilePubkey])
 
   const artistNames = useMemo(() => {
@@ -160,6 +160,11 @@ const Profile = ({ profilePubkey }) => {
       updatedView[viewIndex].disabled = false
       updatedView[viewIndex].count = profileSubscriptionsFrom.length
     }
+    if (inDashboard) {
+      updatedView.forEach((view) => {
+        view.disabled = false
+      })
+    }
 
     setViews(updatedView)
   }, [
@@ -236,7 +241,7 @@ const Profile = ({ profilePubkey }) => {
         profilePubkey,
         true
       )
-
+      
       await getSubscriptionsForUser(profilePubkey)
       await getVerificationsForUser(profilePubkey)
 
@@ -248,6 +253,7 @@ const Profile = ({ profilePubkey }) => {
 
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
       updatedView[viewIndex].playlist = collected
+      console.log('HERE')
       setFetched(true)
     } catch (err) {
       console.log(err)
@@ -375,7 +381,11 @@ const Profile = ({ profilePubkey }) => {
                     )}
                   </Box>
                   <Box
-                    sx={{ mb: 1, ml: 1 }}
+                    sx={{
+                      mb: 1,
+                      ml: 1,
+                      flexDirection: { xs: 'column', md: 'row' },
+                    }}
                     display="flex"
                     alignItems={'start'}
                   >
@@ -452,7 +462,7 @@ const ProfileContainer = styled(Box)(({ theme }) => ({
   overflowY: 'hidden',
   margin: '75px auto 0px',
 
-  ['-webkit-overflow-scroll']: 'touch',
+  // ['-webkit-overflow-scroll']: 'touch',
   [theme.breakpoints.down('md')]: {
     display: 'flex',
     flexDirection: 'column',
@@ -488,7 +498,7 @@ const ProfileHeaderWrapper = styled(Box)(({ theme }) => ({
   maxWidth: '100vw',
   [theme.breakpoints.down('md')]: {
     width: '100vw',
-    height: '100%',
+    // height: '100%',
     paddingBottom: '10px',
     borderBottom: `1px solid ${theme.palette.greyLight}`,
   },
@@ -509,6 +519,9 @@ const ProfileOverflowContainer = styled(Box)(({ theme }) => ({
 const ProfileTableContainer = styled(Box)(({ theme }) => ({
   paddingBottom: '100px',
   overflowY: 'auto',
+  '&::-webkit-scrollbar': {
+    display: 'none !important',
+  },
   [theme.breakpoints.down('md')]: {
     paddingBottom: '200px',
     overflow: 'scroll',
