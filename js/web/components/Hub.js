@@ -261,7 +261,6 @@ const HubContainer = styled(Box)(({ theme }) => ({
 
 const HubTabWrapper = styled(Box)(({ theme }) => ({
   paddingTop: 1,
-  [theme.breakpoints.down('sm')]: {},
 }))
 
 const HubsTableContainer = styled(Box)(({ theme }) => ({

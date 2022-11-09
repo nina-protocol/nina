@@ -65,7 +65,6 @@ const DashboardPageContainer = styled(Box)(({ theme }) => ({
   width: theme.maxWidth,
   [theme.breakpoints.down('md')]: {
     minHeight: '40vh',
-   
   },
 }))
 export default DashboardPage
