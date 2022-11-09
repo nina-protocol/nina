@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Box } from '@mui/system'
-
 import Head from 'next/head'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useRouter } from 'next/router'
@@ -66,6 +65,7 @@ const DashboardPageContainer = styled(Box)(({ theme }) => ({
   width: theme.maxWidth,
   [theme.breakpoints.down('md')]: {
     minHeight: '40vh',
+   
   },
 }))
 export default DashboardPage

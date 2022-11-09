@@ -127,9 +127,6 @@ const ResponsiveHubHeader = styled(Box)(({ theme }) => ({
     paddingLeft: '15px',
     width: '100vw',
   },
-  [theme.breakpoints.down('sm')]: {
-    // borderBottom: `1px solid ${theme.palette.greyLight}`,
-  },
 }))
 
 const DisplayName = styled(Box)(({ theme }) => ({
