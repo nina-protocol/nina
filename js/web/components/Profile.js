@@ -322,6 +322,7 @@ const Profile = ({ profilePubkey }) => {
                 tableType={'profileHubs'}
                 items={profileHubs}
                 hasOverflow={true}
+                inDashboard={inDashboard}
               />
             )}
           </>
