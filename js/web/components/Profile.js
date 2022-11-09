@@ -188,8 +188,8 @@ const Profile = ({ profilePubkey }) => {
       filteredCollection = filterReleasesUserCollection(profilePubkey)?.sort(
         (a, b) => {
           return (
-            new Date(b.metadata.properties.date) -
-            new Date(a.metadata.properties.date)
+            new Date(b.metadata.properties.releaseDate) -
+            new Date(a.metadata.properties.releaseDate)
           )
         }
       )
@@ -241,7 +241,7 @@ const Profile = ({ profilePubkey }) => {
         profilePubkey,
         true
       )
-      
+
       await getSubscriptionsForUser(profilePubkey)
       await getVerificationsForUser(profilePubkey)
 
@@ -415,7 +415,7 @@ const Profile = ({ profilePubkey }) => {
         </ProfileHeaderWrapper>
 
         {hasData && (
-          <Box sx={{ py: 1 }}>
+          <Box>
             <TabHeader
               viewHandler={viewHandler}
               activeView={activeView}
@@ -425,7 +425,7 @@ const Profile = ({ profilePubkey }) => {
         )}
 
         {fetched.info && (
-          <Box sx={{ py: 1 }}>
+          <Box>
             <TabHeader
               viewHandler={viewHandler}
               activeView={activeView}
@@ -462,7 +462,6 @@ const ProfileContainer = styled(Box)(({ theme }) => ({
   overflowY: 'hidden',
   margin: '75px auto 0px',
 
-  // ['-webkit-overflow-scroll']: 'touch',
   [theme.breakpoints.down('md')]: {
     display: 'flex',
     flexDirection: 'column',
@@ -496,11 +495,9 @@ const ProfileHeaderWrapper = styled(Box)(({ theme }) => ({
   pl: 1,
   pb: 1,
   maxWidth: '100vw',
-  [theme.breakpoints.down('md')]: {
+  [theme.breakpoints.down('sm')]: {
     width: '100vw',
-    // height: '100%',
     paddingBottom: '10px',
-    borderBottom: `1px solid ${theme.palette.greyLight}`,
   },
 }))
 
@@ -526,6 +523,7 @@ const ProfileTableContainer = styled(Box)(({ theme }) => ({
     paddingBottom: '200px',
     overflow: 'scroll',
     height: '100%',
+    margin: '10px 0',
   },
 }))
 
