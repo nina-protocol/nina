@@ -514,6 +514,20 @@ const ReusableTableBody = ({
                     </SearchResultOverflowContainer>
                   </SearchResultTableCell>
                 )
+              } else if (cellName === 'price' || cellName === 'remaining') {
+                return (
+                  <StyledTableCell key={cellName}>
+                    <LineBreakContainer>
+                      <Typography>{cellData}</Typography>
+                    </LineBreakContainer>
+                  </StyledTableCell>
+                )
+              } else if (cellName === 'collect') {
+                return (
+                  <StyledTableCell key={cellName}>
+                    <CollectContainer>{cellData}</CollectContainer>
+                  </StyledTableCell>
+                )
               } else {
                 return (
                   <StyledTableCell key={cellName}>
@@ -529,7 +543,6 @@ const ReusableTableBody = ({
               }
             }
           })}
-          <StyledTableCell />
         </TableRow>
       ))}
     </TableBody>
@@ -591,7 +604,7 @@ const ResponsiveTableContainer = styled(Box)(({ theme, inDashboard }) => ({
 }))
 
 const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
-  padding: '5px 0px',
+  padding: '5px 5px',
   textAlign: 'left',
   cursor: 'pointer',
   fontWeight: 'bold',
@@ -606,7 +619,7 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
 }))
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  padding: '5px 0px',
+  padding: '5px 5px',
   textAlign: 'left',
   height: '50px',
   width: '15vw',
@@ -642,9 +655,37 @@ const SearchResultTableCell = styled(TableCell)(({ theme }) => ({
 }))
 const OverflowContainer = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
+  maxWidth: '14vw',
+  textAlign: 'left',
+  textOverflow: 'ellipsis',
+  [theme.breakpoints.down('md')]: {
+    minWidth: '0',
+    maxWidth: '20vw',
+  },
+  [theme.breakpoints.up('xl')]: {
+    maxWidth: '10vw',
+  },
+}))
+
+const CollectContainer = styled(Box)(({ theme }) => ({
+  overflow: 'hidden',
   maxWidth: '15vw',
   textAlign: 'left',
   textOverflow: 'ellipsis',
+  [theme.breakpoints.down('md')]: {
+    minWidth: '0',
+    maxWidth: '20vw',
+  },
+}))
+
+const LineBreakContainer = styled(Box)(({ theme }) => ({
+  '& p': {
+    overflow: 'hidden',
+    maxWidth: '100px',
+    textAlign: 'left',
+    whiteSpace: 'wrap',
+    textOverflow: 'ellipsis',
+  },
   [theme.breakpoints.down('md')]: {
     minWidth: '0',
     maxWidth: '20vw',
