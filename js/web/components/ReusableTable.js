@@ -541,7 +541,7 @@ const ReusableTableBody = ({
                     <CollectContainer>
                       <Link href={`${row?.hubDashboard}`} passHref>
                         <a target="_blank" rel="noreferrer">
-                          VIEW DASHBOARD
+                          VIEW HUB DASHBOARD
                         </a>
                       </Link>
                     </CollectContainer>
@@ -654,7 +654,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }))
 const HubTableCell = styled(TableCell)(({ theme }) => ({
-  width: '6vw',
+  width: '8vw',
 }))
 const StyledImageTableCell = styled(TableCell)(({ theme }) => ({
   width: '50px',
