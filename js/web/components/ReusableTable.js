@@ -266,7 +266,6 @@ const ReusableTableBody = ({
         formattedData.collect = collectButton
       }
       formattedData.authorityPublicKey = data.tokenData.authority
-    
     } else if (tableType === 'profileHubs') {
       formattedData = {
         id: releasePubkey,
@@ -277,10 +276,8 @@ const ReusableTableBody = ({
         description: data?.data.description,
       }
       if (inDashboard) {
-      
-          formattedData.hubDashboard = `${process.env.NINA_HUBS_URL}/${data.handle}/dashboard`,
-          formattedData.hubExternal = `${process.env.NINA_HUBS_URL}/${data.handle}`
-        
+        ;(formattedData.hubDashboard = `${process.env.NINA_HUBS_URL}/${data.handle}/dashboard`),
+          (formattedData.hubExternal = `${process.env.NINA_HUBS_URL}/${data.handle}`)
       }
     } else if (tableType === 'hubReleases') {
       formattedData = {
@@ -542,25 +539,27 @@ const ReusableTableBody = ({
                 return (
                   <HubTableCell key={cellName}>
                     <CollectContainer>
-                    <Link href={`${row?.hubDashboard}`} passHref>
-                    <a target="_blank" rel="noreferrer">VIEW DASHBOARD</a>
-                    </Link>
+                      <Link href={`${row?.hubDashboard}`} passHref>
+                        <a target="_blank" rel="noreferrer">
+                          VIEW DASHBOARD
+                        </a>
+                      </Link>
                     </CollectContainer>
                   </HubTableCell>
                 )
-              }
-              else if (cellName === 'hubExternal'){
+              } else if (cellName === 'hubExternal') {
                 return (
                   <HubTableCell key={cellName}>
                     <CollectContainer>
-                    <Link href={`${row?.hubExternal}`} passHref>
-                    <a target="_blank" rel="noreferrer">VIEW HUB</a>
-                    </Link>
+                      <Link href={`${row?.hubExternal}`} passHref>
+                        <a target="_blank" rel="noreferrer">
+                          VIEW HUB
+                        </a>
+                      </Link>
                     </CollectContainer>
                   </HubTableCell>
                 )
-              }
-              else {
+              } else {
                 return (
                   <StyledTableCell key={cellName}>
                     <OverflowContainer>
@@ -655,7 +654,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }))
 const HubTableCell = styled(TableCell)(({ theme }) => ({
-  width: '6vw'
+  width: '6vw',
 }))
 const StyledImageTableCell = styled(TableCell)(({ theme }) => ({
   width: '50px',
