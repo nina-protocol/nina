@@ -212,9 +212,12 @@ const LinkTypography = styled(Typography)(() => ({
   },
 }));
 
-const HubPublishedContainer = styled(Box)(() => ({
-  margin: "20px 0",
+const HubPublishedContainer = styled(Box)(({theme}) => ({
+  margin: "20px 0 100px 0",
   border: "1px solid black",
+  [theme.breakpoints.down("md")]: {
+    margin: '20px 0 0 0'
+  }
 }));
 
 const Overview = styled(Box)(() => ({
