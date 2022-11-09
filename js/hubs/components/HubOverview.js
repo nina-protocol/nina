@@ -169,7 +169,7 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
               />
             </HubPublishedContainer>
           )}
-          <Typography sx={{ fontWeight: "700 !important" }}>
+          <Typography sx={{ fontWeight: "700 !important", }}>
             TOTAL SALES: {hubSales}
           </Typography>
         </>
@@ -213,15 +213,17 @@ const LinkTypography = styled(Typography)(() => ({
 }));
 
 const HubPublishedContainer = styled(Box)(({theme}) => ({
-  margin: "20px 0 100px 0",
+  margin: "20px 0",
   border: "1px solid black",
+  height: '60%',
+  overflowY: "scroll",
   [theme.breakpoints.down("md")]: {
     margin: '20px 0 0 0'
   }
 }));
 
 const Overview = styled(Box)(() => ({
-  margin: "auto",
+  margin:"auto",
   height: "100%",
   textAlign: "left",
   minWidth: "740px",
