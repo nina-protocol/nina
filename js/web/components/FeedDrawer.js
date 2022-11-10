@@ -248,6 +248,7 @@ const DrawerType = styled(Typography)(({ theme }) => ({
   margin: '0 10px',
   cursor: 'pointer',
   fontWeight: 'bold',
+  textTransform: 'uppercase',
   '&.active': {
     textDecoration: 'underline',
   },
