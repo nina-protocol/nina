@@ -32,8 +32,8 @@ const Royalty = (props) => {
   const { collectRoyaltyForRelease } = useContext(Release.Context)
 
   useEffect(() => {
-    if (release?.royaltyRecipients) {
-      release.royaltyRecipients.forEach((recipient) => {
+    if (release?.revenueShareRecipients) {
+      release.revenueShareRecipients.forEach((recipient) => {
         if (
           wallet?.connected &&
           recipient.recipientAuthority === wallet?.publicKey.toBase58()
@@ -45,7 +45,7 @@ const Royalty = (props) => {
         }
       })
     }
-  }, [release?.royaltyRecipients, wallet?.connected])
+  }, [release?.revenueShareRecipients, wallet?.connected])
 
   const toggleForm = () => {
     if (!formShown) {
@@ -119,8 +119,8 @@ const Royalty = (props) => {
               Revenue Share Information:
             </Typography>
             <List>
-              {release?.royaltyRecipients &&
-                release.royaltyRecipients.map((recipient, i) => {
+              {release?.revenueShareRecipients &&
+                release.revenueShareRecipients.map((recipient, i) => {
                   if (recipient.percentShare > 0) {
                     const walletAuthorizedToCollect =
                       wallet?.connected &&

@@ -280,7 +280,10 @@ const hubContextHelper = ({
   const hubUpdateConfig = async (hubPubkey, uri, publishFee, referralFee) => {
     const hub = hubState[hubPubkey]
     const program = await ninaClient.useProgram()
-
+    console.log('hub', hub)
+    console.log('hubPubkey', hubPubkey)
+    console.log('publishFee', publishFee)
+    console.log('referralFee', referralFee)
     try {
       const txid = await program.rpc.hubUpdateConfig(
         uri,

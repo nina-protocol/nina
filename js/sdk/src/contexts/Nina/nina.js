@@ -603,6 +603,7 @@ const ninaContextHelper = ({
         let solUsdcBalanceResult = await provider.connection.getBalance(
           provider.wallet.publicKey
         )
+     
         setSolUsdcBalance((ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) * solPrice.data.data.price).toFixed(2))
         setSolBalance(solUsdcBalanceResult)
         let [usdcTokenAccountPubkey] = await findOrCreateAssociatedTokenAccount(

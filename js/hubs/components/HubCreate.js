@@ -72,9 +72,11 @@ const HubCreate = ({ update, hubData }) => {
     NinaProgramAction,
   } = useContext(Nina.Context);
 
+  console.log('hubData --->', hubData)
+
   const [artwork, setArtwork] = useState();
   const [uploadSize, setUploadSize] = useState();
-  const [hubPubkey, setHubPubkey] = useState(hubData?.id || undefined);
+  const [hubPubkey, setHubPubkey] = useState(hubData?.publicKey || undefined);
   const [buttonText, setButtonText] = useState(
     update ? "Update Hub" : "Create Hub"
   );
@@ -195,14 +197,18 @@ const HubCreate = ({ update, hubData }) => {
   };
 
   const handleSubmit = async () => {
+  
     try {
-      const error = checkIfHasBalanceToCompleteAction(
-        NinaProgramAction.HUB_INIT_WITH_CREDIT
-      );
-      if (error) {
-        enqueueSnackbar(error.msg, { variant: "failure" });
-        return;
-      }
+   
+      // const error = checkIfHasBalanceToCompleteAction(
+      //   NinaProgramAction.HUB_INIT_WITH_CREDIT
+      // );
+      // if (error) {
+      //   console.log('error', error)
+      //   enqueueSnackbar(error.msg, { variant: "failure" });
+      //   return;
+      // }
+     
       if (update) {
         let upload = uploadId;
         const metadataJson = {};
@@ -265,6 +271,7 @@ const HubCreate = ({ update, hubData }) => {
             metadataJson.textColor = textColor;
           }
 
+
           metadataResult = await bundlrUpload(
             new Blob([JSON.stringify(metadataJson)], {
               type: "application/json",
@@ -304,6 +311,13 @@ const HubCreate = ({ update, hubData }) => {
           }
         }
       } else {
+        const error = checkIfHasBalanceToCompleteAction(
+          NinaProgramAction.HUB_INIT_WITH_CREDIT
+        );
+        if (error) {
+          enqueueSnackbar(error.msg, { variant: "failure" });
+          return;
+        }
         if (artwork && (await validateHubHandle(formValues.hubForm.handle))) {
           let upload = uploadId;
           let artworkResult = artworkTx;
@@ -369,7 +383,7 @@ const HubCreate = ({ update, hubData }) => {
               });
 
               const hubParams = {
-                handle: formValues.hubForm.handle,
+                handle: `${update ? hubData?.handle :formValues.hubForm.handle}`,
                 publishFee: formValues.hubForm.publishFee,
                 referralFee: formValues.hubForm.referralFee,
                 uri: `https://arweave.net/${metadataResult}`,
@@ -430,7 +444,6 @@ const HubCreate = ({ update, hubData }) => {
       </Box>
     );
   }
-
   return (
     <StyledGrid item md={12}>
       {!wallet.connected && (
