@@ -99,7 +99,7 @@ const Feed = ({
     e.preventDefault()
     logEvent('navigator_interaction', 'engagement', {
       type,
-      wallet: wallet.publicKey?.toBase58(),
+      wallet: wallet?.publicKey?.toBase58(),
       path,
     })
     router.push(path)
