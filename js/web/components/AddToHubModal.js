@@ -125,7 +125,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
                   Add {metadata.name} to{' '}
                   {userHubs.length > 1
                     ? 'one of your hubs'
-                    : 'your hub: ' + userHubs[0]?.data.displayName}
+                    : 'your hub: ' + userHubs[0]?.data?.displayName}
                 </Typography>
 
                 {userHubs.length > 1 && (
