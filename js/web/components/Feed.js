@@ -341,7 +341,7 @@ const Feed = ({
                       {' '}
                       from{' '}
                       <Link href={`/hubs/${item.hub.handle}`} passHref>
-                        {`${item.hub.data.displayName}`}
+                        {`${item?.hub?.data?.displayName}`}
                       </Link>
                     </>
                   )}
@@ -381,7 +381,7 @@ const Feed = ({
                   <Link
                     href={`/hubs/${item?.hub?.handle}`}
                     passHref
-                  >{`${item?.hub?.data.displayName}`}</Link>
+                  >{`${item?.hub?.data?.displayName}`}</Link>
                 </Typography>
                 <Typography my={1} fontWeight={600}>
                   {timeSince(Date.parse(item.datetime))} ago
@@ -444,7 +444,7 @@ const Feed = ({
                   <Link
                     href={`/hubs/${item.hub.handle}`}
                     passHref
-                  >{`${item.hub.data.displayName}`}</Link>
+                  >{`${item?.hub?.data?.displayName}`}</Link>
                 </Typography>
 
                 <Typography my={1} fontWeight={600}>
@@ -562,7 +562,7 @@ const Feed = ({
                   <Link
                     href={`/hubs/${item.toHub.publicKey}`}
                     passHref
-                  >{`${item.toHub.data.displayName}`}</Link>
+                  >{`${item?.toHub?.data?.displayName}`}</Link>
                 </Typography>
                 <Typography my={1} fontWeight={600}>
                   {timeSince(Date.parse(item.datetime))} ago
