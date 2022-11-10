@@ -334,7 +334,7 @@ const ninaContextHelper = ({
 
       return ninaErrorHandler(error)
     }
-  }
+  }  
 
   const subscriptionUnsubscribe = async (unsubscribeAccount) => {
     try {
@@ -348,7 +348,6 @@ const ninaContextHelper = ({
       ],
         program.programId
       )
-
       const txid = await program.rpc.subscriptionUnsubscribe({
         accounts: {
           from: provider.wallet.publicKey,
