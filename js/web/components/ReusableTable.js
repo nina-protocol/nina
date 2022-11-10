@@ -52,6 +52,10 @@ const ReusableTableHead = ({ tableType, inDashboard }) => {
     headCells.push({ id: 'image', label: '' })
     headCells.push({ id: 'name', label: 'Name' })
     headCells.push({ id: 'description', label: 'Description' })
+    if (inDashboard) {
+      headCells.push({ id: 'hubLink', label: '' })
+      headCells.push({ id: 'hubDashboard', label: '' })
+    }
   }
 
   if (tableType === 'hubReleases') {
@@ -271,6 +275,10 @@ const ReusableTableBody = ({
         hubName: data?.data.displayName,
         description: data?.data.description,
       }
+      if (inDashboard) {
+        ;(formattedData.hubDashboard = `${process.env.NINA_HUBS_URL}/${data.handle}/dashboard`),
+          (formattedData.hubExternal = `${process.env.NINA_HUBS_URL}/${data.handle}`)
+      }
     } else if (tableType === 'hubReleases') {
       formattedData = {
         ctas: playData,
@@ -303,7 +311,6 @@ const ReusableTableBody = ({
         }
         artistName = `${artistName} (Publishes as: ${publishesAsString})`
       }
-
       formattedData = {
         id: data?.publicKey,
         link: `/profiles/${data?.account.publicKey}`,
@@ -477,7 +484,12 @@ const ReusableTableBody = ({
                 return (
                   <SearchResultTableCell key={cellName}>
                     <SearchResultOverflowContainer>
-                      <a>{cellData}</a>
+                      <Typography
+                        noWrap
+                        onClickCapture={() => router.push(row?.link)}
+                      >
+                        <a>{cellData}</a>
+                      </Typography>
                     </SearchResultOverflowContainer>
                   </SearchResultTableCell>
                 )
@@ -509,6 +521,44 @@ const ReusableTableBody = ({
                     </SearchResultOverflowContainer>
                   </SearchResultTableCell>
                 )
+              } else if (cellName === 'price' || cellName === 'remaining') {
+                return (
+                  <StyledTableCell key={cellName}>
+                    <LineBreakContainer>
+                      <Typography>{cellData}</Typography>
+                    </LineBreakContainer>
+                  </StyledTableCell>
+                )
+              } else if (cellName === 'collect') {
+                return (
+                  <StyledTableCell key={cellName}>
+                    <CollectContainer>{cellData}</CollectContainer>
+                  </StyledTableCell>
+                )
+              } else if (cellName === 'hubDashboard') {
+                return (
+                  <HubTableCell key={cellName}>
+                    <CollectContainer>
+                      <Link href={`${row?.hubDashboard}`} passHref>
+                        <a target="_blank" rel="noreferrer">
+                          VIEW HUB DASHBOARD
+                        </a>
+                      </Link>
+                    </CollectContainer>
+                  </HubTableCell>
+                )
+              } else if (cellName === 'hubExternal') {
+                return (
+                  <HubTableCell key={cellName}>
+                    <CollectContainer>
+                      <Link href={`${row?.hubExternal}`} passHref>
+                        <a target="_blank" rel="noreferrer">
+                          VIEW HUB
+                        </a>
+                      </Link>
+                    </CollectContainer>
+                  </HubTableCell>
+                )
               } else {
                 return (
                   <StyledTableCell key={cellName}>
@@ -524,7 +574,6 @@ const ReusableTableBody = ({
               }
             }
           })}
-          <StyledTableCell />
         </TableRow>
       ))}
     </TableBody>
@@ -547,7 +596,7 @@ const ReusableTable = ({
       hasOverflow={hasOverflow}
       minHeightOverride={minHeightOverride}
     >
-      <ResponsiveTableContainer>
+      <ResponsiveTableContainer inDashboard={inDashboard}>
         <Table>
           {items?.length > 0 && (
             <ReusableTableHead
@@ -570,7 +619,7 @@ const ReusableTable = ({
   )
 }
 
-const ResponsiveTableContainer = styled(Box)(({ theme }) => ({
+const ResponsiveTableContainer = styled(Box)(({ theme, inDashboard }) => ({
   borderBottom: 'none',
   padding: '0px',
   [theme.breakpoints.down('md')]: {
@@ -578,12 +627,15 @@ const ResponsiveTableContainer = styled(Box)(({ theme }) => ({
     height: '100% !important',
     paddingLeft: '5px',
     paddingRight: 0,
-    overflowX: 'scroll',
+    overflowX: inDashboard ? 'scroll' : '',
+  },
+  [theme.breakpoints.down('sm')]: {
+    paddingTop: '10px',
   },
 }))
 
 const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
-  padding: '5px 0px',
+  padding: '5px 5px',
   textAlign: 'left',
   cursor: 'pointer',
   fontWeight: 'bold',
@@ -592,10 +644,13 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
     padding: '0px',
     paddingRight: '5px',
   },
+  [theme.breakpoints.down('sm')]: {
+    paddingTop: '10px',
+  },
 }))
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  padding: '5px 0px',
+  padding: '5px 5px',
   textAlign: 'left',
   height: '50px',
   width: '15vw',
@@ -603,6 +658,9 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     width: '30vw',
     paddingRight: '10px',
   },
+}))
+const HubTableCell = styled(TableCell)(({ theme }) => ({
+  width: '8vw',
 }))
 const StyledImageTableCell = styled(TableCell)(({ theme }) => ({
   width: '50px',
@@ -626,13 +684,42 @@ const SearchResultTableCell = styled(TableCell)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     padding: '5px',
     width: '100vw',
+    fontSize: '16px',
   },
 }))
 const OverflowContainer = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
+  maxWidth: '14vw',
+  textAlign: 'left',
+  textOverflow: 'ellipsis',
+  [theme.breakpoints.down('md')]: {
+    minWidth: '0',
+    maxWidth: '20vw',
+  },
+  [theme.breakpoints.up('xl')]: {
+    maxWidth: '10vw',
+  },
+}))
+
+const CollectContainer = styled(Box)(({ theme }) => ({
+  overflow: 'hidden',
   maxWidth: '15vw',
   textAlign: 'left',
   textOverflow: 'ellipsis',
+  [theme.breakpoints.down('md')]: {
+    minWidth: '0',
+    maxWidth: '20vw',
+  },
+}))
+
+const LineBreakContainer = styled(Box)(({ theme }) => ({
+  '& p': {
+    overflow: 'hidden',
+    maxWidth: '100px',
+    textAlign: 'left',
+    whiteSpace: 'wrap',
+    textOverflow: 'ellipsis',
+  },
   [theme.breakpoints.down('md')]: {
     minWidth: '0',
     maxWidth: '20vw',

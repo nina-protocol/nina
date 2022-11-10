@@ -334,7 +334,7 @@ const ninaContextHelper = ({
 
       return ninaErrorHandler(error)
     }
-  }
+  }  
 
   const subscriptionUnsubscribe = async (unsubscribeAccount) => {
     try {
@@ -348,7 +348,6 @@ const ninaContextHelper = ({
       ],
         program.programId
       )
-
       const txid = await program.rpc.subscriptionUnsubscribe({
         accounts: {
           from: provider.wallet.publicKey,
@@ -914,11 +913,16 @@ const ninaContextHelper = ({
   }
 
   const getVerificationsForUser = async (accountPubkey) => {
-    const { verifications } = await NinaSdk.Account.fetchVerifications(accountPubkey)
-    setVerificationState({
-      ...verificationState,
-      [accountPubkey]: verifications,
-    })
+    try {
+      const { verifications } = await NinaSdk.Account.fetchVerifications(accountPubkey)
+      setVerificationState({
+        ...verificationState,
+        [accountPubkey]: verifications,
+      })
+    } catch (error) {
+      console.warn(error)
+      return []
+    }
   }
   
   const filterSubscriptionsForHub = (hubPubkey) => {

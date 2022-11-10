@@ -40,14 +40,14 @@ const HubPage = ({ hub, hubPubkey }) => {
         <meta name="twitter:image" content={hub?.data.image} />
         <meta name="og:image" content={hub?.data.image} />
       </Head>
-      <ResponsiveHubContainer>
+      <HubPageContainer>
         <HubView hubPubkey={hubPubkey} hubHandle={hub.handle} />
-      </ResponsiveHubContainer>
+      </HubPageContainer>
     </>
   )
 }
 
-const ResponsiveHubContainer = styled(Box)(({ theme }) => ({
+const HubPageContainer = styled(Box)(({ theme }) => ({
   width: theme.maxWidth,
 
   [theme.breakpoints.down('md')]: {
