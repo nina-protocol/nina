@@ -179,11 +179,8 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
       if (publicKey) {
         params.wallet = publicKey.toBase58()
       }
-      
-      logEvent('connection_action',
-        'engagement', 
-        params
-      )
+
+      logEvent('connection_action', 'engagement', params)
 
       switch (type) {
         case 'twitter':
@@ -196,10 +193,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
           window.open(`https://soundcloud.com/${value}`, '_blank')
           break
         case 'ethereum':
-          window.open(
-            `https://etherscan.io/address/${value}`,
-            '_blank'
-          )
+          window.open(`https://etherscan.io/address/${value}`, '_blank')
           break
       }
     } else {

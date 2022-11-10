@@ -28,6 +28,7 @@ export const getServerSideProps = async (context) => {
   } catch (error) {
     console.warn(error)
     return { props: {} }
-  }}
+  }
+}
 
 export default Related

@@ -56,7 +56,8 @@ function DashboardWelcome({ userHasSeenUpdateMessage }) {
               Ethereum accounts to Nina.
             </Typography>
             <Typography variant="body1" gutterBottom>
-              Connected accounts will import your username, profile picture, and bio from their respecitve platforms.
+              Connected accounts will import your username, profile picture, and
+              bio from their respecitve platforms.
             </Typography>
 
             <Divider sx={{ margin: '15px 0' }} />
@@ -68,7 +69,8 @@ function DashboardWelcome({ userHasSeenUpdateMessage }) {
               Follow
             </Typography>
             <Typography variant="body1" gutterBottom>
-              You can now follow profiles and Hubs to stay up to date on their activity on Nina.
+              You can now follow profiles and Hubs to stay up to date on their
+              activity on Nina.
             </Typography>
             <Typography variant="body1" gutterBottom>
               Following will populate the Navigator (the drawer on the right)

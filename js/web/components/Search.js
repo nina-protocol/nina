@@ -210,7 +210,7 @@ const Search = (props) => {
       return
     }
     setShowDropdown(false)
-   setQuery('')
+    setQuery('')
   }
 
   const autoCompleteHandler = async (query) => {
@@ -218,7 +218,7 @@ const Search = (props) => {
       `${NinaSdk.client.endpoint}/suggestions`,
       { query }
     )
-      setSuggestions(response.data)
+    setSuggestions(response.data)
   }
 
   const changeHandler = (e) => {
