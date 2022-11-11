@@ -978,6 +978,7 @@ const hubContextHelper = ({
           ...collaborator.accountData.collaborator
         }
       })
+      console.log('updatedHubCollaboratorState!!!! :>> ', updatedHubCollaboratorState);
       setHubCollaboratorsState(updatedHubCollaboratorState)
       setVerificationState(updatedVerificationState)
 
@@ -1025,11 +1026,21 @@ const hubContextHelper = ({
 
   const getHubsForUser = async (publicKey) => {
     try {
+      debugger
       const { hubs } = await NinaSdk.Account.fetchHubs(publicKey, true)
       const updatedHubCollaboratorState = { ...hubCollaboratorsState }
       const updatedHubState = { ...hubState }
       hubs.forEach(hub => {
-        updatedHubCollaboratorState[hub.accountData.collaborator.publicKey] = hub.accountData.collaborator
+        // updatedHubCollaboratorState[hub.accountData.collaborator.publicKey] = hub.accountData.collaborator
+       console.log('hub :>> ', hub);
+        hub.accountData.collaborators.forEach(collaborator => {
+          console.log('collaborator :>> ', collaborator);
+          updatedVerificationState[collaborator.publicKey] = collaborator.verifications
+          updatedHubCollaboratorState[collaborator.accountData.collaborator.publicKey] = {
+            ...collaborator.accountData.collaborator
+          }
+        })
+       
         const hubAccountData = hub.accountData.hub
         delete hub.accountData
         updatedHubState[hub.publicKey] = {

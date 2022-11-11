@@ -18,6 +18,7 @@ import Dots from './Dots'
 import { useRouter } from 'next/router'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import { useWallet } from '@solana/wallet-adapter-react'
+import { isMobile } from 'react-device-detect'
 
 const timeSince = (date) => {
   const seconds = Math.floor((new Date() - date) / 1000)
@@ -56,6 +57,7 @@ const Feed = ({
   publicKey,
   handleGetFeedForUser,
   feedFetched,
+  toggleDrawer,
 }) => {
   const { updateTrack, isPlaying, setIsPlaying, track } = useContext(
     Audio.Context
@@ -63,7 +65,6 @@ const Feed = ({
   const { displayNameForAccount } = useContext(Nina.Context)
   const router = useRouter()
   const wallet = useWallet()
-
   const [pendingFetch, setPendingFetch] = useState(false)
   const scrollRef = useRef()
 
@@ -98,10 +99,14 @@ const Feed = ({
     e.preventDefault()
     logEvent('navigator_interaction', 'engagement', {
       type,
-      wallet: wallet.publicKey?.toBase58(),
+      wallet: wallet?.publicKey?.toBase58(),
       path,
     })
     router.push(path)
+
+    if (isMobile) {
+      toggleDrawer(false)
+    }
   }
 
   const feedItems = useMemo(() => {
@@ -336,7 +341,7 @@ const Feed = ({
                       {' '}
                       from{' '}
                       <Link href={`/hubs/${item.hub.handle}`} passHref>
-                        {`${item.hub.data.displayName}`}
+                        {`${item?.hub?.data?.displayName}`}
                       </Link>
                     </>
                   )}
@@ -376,7 +381,7 @@ const Feed = ({
                   <Link
                     href={`/hubs/${item?.hub?.handle}`}
                     passHref
-                  >{`${item?.hub?.data.displayName}`}</Link>
+                  >{`${item?.hub?.data?.displayName}`}</Link>
                 </Typography>
                 <Typography my={1} fontWeight={600}>
                   {timeSince(Date.parse(item.datetime))} ago
@@ -439,7 +444,7 @@ const Feed = ({
                   <Link
                     href={`/hubs/${item.hub.handle}`}
                     passHref
-                  >{`${item.hub.data.displayName}`}</Link>
+                  >{`${item?.hub?.data?.displayName}`}</Link>
                 </Typography>
 
                 <Typography my={1} fontWeight={600}>
@@ -557,7 +562,7 @@ const Feed = ({
                   <Link
                     href={`/hubs/${item.toHub.publicKey}`}
                     passHref
-                  >{`${item.toHub.data.displayName}`}</Link>
+                  >{`${item?.toHub?.data?.displayName}`}</Link>
                 </Typography>
                 <Typography my={1} fontWeight={600}>
                   {timeSince(Date.parse(item.datetime))} ago
@@ -602,15 +607,15 @@ const Feed = ({
                 }}
               >
                 <Typography variant="h5" mb={1}>
-                  Welcome to Nina.
+                  Welcome to the Nina Navigator.
                 </Typography>
-                <Typography variant="h5" mb={1}>
-                  Here you will see the latest activity on Nina that is relevant
-                  to you.
+                <Typography variant="h4" mb={1}>
+                  Here you will see recent activity and recommendations based on
+                  your Releases, Collection, and who you Follow.
                 </Typography>
-                <Typography variant="h5">
-                  Your feed will be created after you follow some Hubs and
-                  Accounts or begin creating and collecting Releases.
+                <Typography variant="h4">
+                  Switch to the &apos;SUGGESTIONS&apos; tab to start following
+                  some Hubs.
                 </Typography>
               </Box>
             )}

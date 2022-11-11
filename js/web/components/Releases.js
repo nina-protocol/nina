@@ -45,7 +45,7 @@ const Releases = ({ type }) => {
         <title>{`Nina: ${titleString}`}</title>
         <meta name="description" content={`Nina: ${titleString}`} />
       </Head>
-      <ScrollablePageWrapper>
+      <ScrollablePageWrapper paddingTop={'180px'}>
         <ReleasesWrapper>
           <CollectionHeader listView={listView}>
             <Typography variant="body1" fontWeight="700">

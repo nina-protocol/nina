@@ -27,14 +27,32 @@ const HubCollaborators = ({
     Hub.Context
   );
   const [activeSelection, setActiveSelection] = useState(undefined);
+  // const [hubCollaborators, setHubCollaborators] = useState(undefined);
+  // console.log('hubPubkey :>> ', hubPubkey);
+
+  //   useEffect(() => {
+  //       if (hubCollaboratorsState) {
+  //           setHubCollaborators(
+  //             Object.values(hubCollaboratorsState)
+  //             .filter(collaborator => collaborator.hub === hubPubkey)
+  //           );
+  //       }
+  //   }, [hubCollaboratorsState])
+
   const hubCollaborators = useMemo(
-    () =>
-      Object.values(hubCollaboratorsState)
-        .filter((c) => c.hub === hubPubkey)
-        .sort((a, b) => b.datetime - a.datetime),
+    () => {
+      console.log('hubCollaboratorState :>> ', hubCollaboratorsState);
+      return(
+        Object.values(hubCollaboratorsState)
+          .filter((c) => c.hub === hubPubkey)
+          .sort((a, b) => b.datetime - a.datetime)
+
+      )
+    },
     [hubCollaboratorsState]
   );
 
+  
   const { enqueueSnackbar } = useSnackbar();
 
   const handleActiveSelection = (e) => {
