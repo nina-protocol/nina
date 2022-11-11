@@ -596,7 +596,7 @@ const ninaContextHelper = ({
 
   const getUsdcBalance = async () => {
     if (provider.wallet?.connected && provider.wallet?.publicKey) {
-      try {
+      try {    
         const solPrice =  await axios.get(
           `https://price.jup.ag/v1/price?id=SOL`
         )
@@ -787,8 +787,9 @@ const ninaContextHelper = ({
       return
     }
   }
+  const checkIfHasBalanceToCompleteAction = async (action) => {
 
-  const checkIfHasBalanceToCompleteAction = (action) => {
+    await getUsdcBalance()
     if (ninaClient.uiToNative(NinaProgramActionCost[action], ninaClient.ids.mints.wsol) > solBalance) {
       const error = new Error(`You do not have enough SOL to send the transaction: ${action}.  You need at least ${NinaProgramActionCost[action]} SOL.`)
       return ninaErrorHandler(error)

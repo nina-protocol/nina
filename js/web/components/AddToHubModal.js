@@ -23,9 +23,11 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const { hubAddRelease, getHubsForRelease } = useContext(Hub.Context)
-  const { checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(
-    Nina.Context
-  )
+  const {
+    checkIfHasBalanceToCompleteAction,
+    NinaProgramAction,
+    getUsdcBalance,
+  } = useContext(Nina.Context)
   const [selectedHubId, setSelectedHubId] = useState()
   const [inProgress, setInProgress] = useState(false)
   const userHasHubs = useMemo(() => userHubs?.length > 0, [userHubs])
@@ -34,6 +36,8 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
     if (userHubs?.length === 1) {
       setSelectedHubId(userHubs[0]?.id)
     }
+    getUsdcBalance()
+    console.log('userHubs', userHubs)
   }, [userHubs])
 
   const handleRepost = async (e) => {
@@ -184,6 +188,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
               setParentOpen={handleClose}
               userHasHubs={userHasHubs}
             />
+            <Button onClick={() => console.log(userHubs)}>CLICK</Button>
           </StyledPaper>
         </Fade>
       </StyledModal>

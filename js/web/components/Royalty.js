@@ -14,7 +14,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import RoyaltyRecipientForm from './RoyaltyRecipientForm'
-
+import Link from 'next/link'
 const Royalty = (props) => {
   const { release, releasePubkey } = props
 
@@ -131,12 +131,12 @@ const Royalty = (props) => {
                     const recipientHandle = walletAuthorizedToCollect ? (
                       'Your Revenue Share:'
                     ) : (
-                      <a
-                        href={`https://explorer.solana.com/address/${recipient.recipientAuthority}`}
-                        rel="noopener"
+                      <Link
+                        href={`/profiles/${recipient.recipientAuthority}`}
+                        passHref
                       >
-                        {`Collaborator ${i}`}
-                      </a>
+                        <a rel="noopener">{`Collaborator ${i}`}</a>
+                      </Link>
                     )
                     const percentShare = `percent share: ${
                       walletAuthorizedToCollect
