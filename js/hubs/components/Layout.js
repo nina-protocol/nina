@@ -11,7 +11,7 @@ import { lightThemeOptions } from "../styles/theme/lightThemeOptions";
 import Head from "next/head";
 import NinaSdk from "@nina-protocol/js-sdk";
 
-const Navigation = dynamic(() => import("./Navigation"));
+const NavBar = dynamic(() => import("./NavBar"));
 const AudioPlayer = dynamic(() => import("./AudioPlayer"));
 const lightTheme = createTheme(lightThemeOptions);
 
@@ -107,7 +107,7 @@ const Layout = ({ children }) => {
             className={classes.mainContainer}
           >
             <main className={classes.bodyContainer}>
-              <Navigation hubPubkey={hubPubkey} />
+              <NavBar hubPubkey={hubPubkey} />
               <Grid
                 container
                 columns={{ xs: 12, sm: 12, md: 12 }}

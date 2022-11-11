@@ -60,6 +60,7 @@ const Subscribe = ({
     e.stopPropagation()
 
     setPending(true)
+
     const result = await subscriptionUnsubscribe(accountAddress)
     if (result.success) {
       enqueueSnackbar(result.msg, {

@@ -49,7 +49,7 @@ const TabHeader = ({
           display: 'flex',
           flexDirection: 'row',
           overflowX: 'scroll',
-          pb: 1,
+          py: 1,
         }}
       >
         {profileTabs?.map((tab, index) => {
@@ -117,6 +117,7 @@ const ResponsiveTab = styled(Button)(({ theme }) => ({
   '&:disabled': {
     cursor: 'default !important',
   },
+
   [theme.breakpoints.down('md')]: {
     maxWidth: '50vw',
     justifyContent: 'left',
@@ -124,7 +125,7 @@ const ResponsiveTab = styled(Button)(({ theme }) => ({
 }))
 
 const ResponsiveContainer = styled(Box)(({ theme }) => ({
-  minWidth: '50vw',
+  width: '100%',
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
@@ -133,8 +134,9 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
   borderBottom: 1,
   borderColor: 'divider',
   [theme.breakpoints.down('md')]: {
-    maxWidth: '100vw',
-    borderBottom: `1px solid ${theme.palette.greyLight}`,
+    width: '100vw',
+  },
+  [theme.breakpoints.down('sm')]: {
     paddingLeft: '6px',
     height: '100%',
   },
