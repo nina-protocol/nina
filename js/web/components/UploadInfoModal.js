@@ -24,16 +24,6 @@ const UploadInfoModal = ({ userHasSeenUpdateMessage }) => {
 
   return (
     <Root>
-      <Button
-        variant="contained"
-        color="primary"
-        type="submit"
-        onClick={() => setOpen(true)}
-        sx={{ height: '22px', width: '28px', m: 0 }}
-      >
-        <AutorenewIcon sx={{ color: 'white' }} />
-      </Button>
-
       <StyledModal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"

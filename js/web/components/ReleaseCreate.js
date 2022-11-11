@@ -433,11 +433,11 @@ const ReleaseCreate = () => {
       {wallet?.connected && npcAmountHeld < 1 && (
         <Box style={{ display: 'flex' }}>
           <NpcMessage>
-            <Typography variant="h3" style={{ mb: 2 }}>
+            <Typography variant="h3" sx={{ mb: 1 }}>
               Nina is currently in a closed beta for uploading releases.
             </Typography>
             <EmailCapture size="medium" />
-            <Typography variant="h3" style={{ mt: 4 }}>
+            <Typography variant="h3" sx={{ mt: 1 }}>
               Check our <Link href="/faq">FAQ</Link> or hit us at{' '}
               <Link
                 target="_blank"

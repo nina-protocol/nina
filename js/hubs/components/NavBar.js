@@ -54,7 +54,7 @@ const mobileNavData = [
   },
 ];
 
-const Navigation = ({ hubPubkey }) => {
+const NavBar = ({ hubPubkey }) => {
   const { toolbar, drawerContainer } = useStyles();
   const wallet = useWallet();
 
@@ -277,7 +277,7 @@ const Navigation = ({ hubPubkey }) => {
   return <StyledAppBar>{displayDesktop()}</StyledAppBar>;
 };
 
-export default Navigation;
+export default NavBar;
 const MenuItemContent = styled("span")(({ theme }) => ({
   color: theme.palette.text.primary,
   paddingRight: "15px",
