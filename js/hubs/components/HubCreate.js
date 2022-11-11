@@ -200,14 +200,6 @@ const HubCreate = ({ update, hubData }) => {
   
     try {
    
-      // const error = checkIfHasBalanceToCompleteAction(
-      //   NinaProgramAction.HUB_INIT_WITH_CREDIT
-      // );
-      // if (error) {
-      //   console.log('error', error)
-      //   enqueueSnackbar(error.msg, { variant: "failure" });
-      //   return;
-      // }
      
       if (update) {
         let upload = uploadId;
