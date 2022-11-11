@@ -37,7 +37,6 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
       setSelectedHubId(userHubs[0]?.id)
     }
     getUsdcBalance()
-    console.log('userHubs', userHubs)
   }, [userHubs])
 
   const handleRepost = async (e) => {
@@ -188,7 +187,6 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
               setParentOpen={handleClose}
               userHasHubs={userHasHubs}
             />
-            <Button onClick={() => console.log(userHubs)}>CLICK</Button>
           </StyledPaper>
         </Fade>
       </StyledModal>

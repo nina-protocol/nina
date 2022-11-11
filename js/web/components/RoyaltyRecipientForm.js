@@ -55,7 +55,6 @@ const RoyaltyRecipientForm = (props) => {
             values,
             releasePubkey
           )
-          console.log('result', result)
           enqueueSnackbar(result.success ? result.msg : 'Transfer Cancelled', {
             variant: result.success ? 'success' : 'warn',
           })

@@ -1051,9 +1051,7 @@ const releaseContextHelper = ({
   }
 
   const addRoyaltyRecipient = async (release, updateData, releasePubkey) => {
-    console.log('lolool')
-    console.log('releasePubkey', releasePubkey)
-    console.log('updateData', updateData)
+  
 
     const program = await ninaClient.useProgram()
     const releasePublicKey = new anchor.web3.PublicKey(releasePubkey)
@@ -1061,20 +1059,13 @@ const releaseContextHelper = ({
       if (!release) {
         release = await program.account.release.fetch(releasePublicKey)
       }
-      console.log('release', release)
+      
 
       const recipientPublicKey = new anchor.web3.PublicKey(
         updateData.recipientAddress
       )
-      console.log('recipientPublicKey', recipientPublicKey)
+      
       const updateAmount = updateData.percentShare * 10000
-
-        console.log( provider.connection,
-          provider.wallet.publicKey,
-          recipientPublicKey,
-          anchor.web3.SystemProgram.programId,
-          anchor.web3.SYSVAR_RENT_PUBKEY,
-          release.paymentMint)
 
       let [newRoyaltyRecipientTokenAccount, newRoyaltyRecipientTokenAccountIx] =
         await findOrCreateAssociatedTokenAccount(
@@ -1086,8 +1077,7 @@ const releaseContextHelper = ({
           new anchor.web3.PublicKey(release.paymentMint)
         )
 
-          console.log('111111')
-          console.log('111111')
+      
 
       let [authorityTokenAccount, authorityTokenAccountIx] =
         await findOrCreateAssociatedTokenAccount(
@@ -1099,7 +1089,7 @@ const releaseContextHelper = ({
           new anchor.web3.PublicKey(release.paymentMint)
         )
 
-        console.log('222222')
+   
 
       const request = {
         accounts: {
@@ -1128,7 +1118,6 @@ const releaseContextHelper = ({
         new anchor.BN(updateAmount),
         request
       )
-      console.log('txid', txid)
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
 
       getRelease(releasePubkey)
