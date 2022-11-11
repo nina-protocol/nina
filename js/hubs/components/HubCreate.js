@@ -72,8 +72,6 @@ const HubCreate = ({ update, hubData }) => {
     NinaProgramAction,
   } = useContext(Nina.Context);
 
-  console.log('hubData --->', hubData)
-
   const [artwork, setArtwork] = useState();
   const [uploadSize, setUploadSize] = useState();
   const [hubPubkey, setHubPubkey] = useState(hubData?.publicKey || undefined);
