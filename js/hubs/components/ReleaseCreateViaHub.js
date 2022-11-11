@@ -462,17 +462,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                   {(uploadSize * (bundlrUsdBalance / mbs)).toFixed(2)}
                 </Typography>
               )}
-              <Button 
-              onClick={ () => {
-              const error = checkIfHasBalanceToCompleteAction(
-                  NinaProgramAction.RELEASE_INIT_VIA_HUB
-                )
-                console.log('down low')
-              }
-              }
-              >
-                Im IAN
-              </Button>
+        
             </Box>
           </CreateCta>
         </NinaBox>
