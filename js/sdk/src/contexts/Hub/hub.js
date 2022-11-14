@@ -12,6 +12,7 @@ import NinaSdk from '@nina-protocol/js-sdk';
 import { shuffle } from '../../utils'
 import MD5 from "crypto-js/md5";
 import { logEvent } from '../../utils/event'
+const axios = require('axios')
 
 const HubContext = createContext()
 const HubContextProvider = ({ children }) => {
@@ -359,6 +360,7 @@ const hubContextHelper = ({
       )
 
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await axios.get(endpoints.api + `/hubs/${hubPubkey}/collaborators/${hubCollaborator.toBase58()}`)
       await getHub(hubPubkey)
 
       return {
@@ -550,7 +552,7 @@ const hubContextHelper = ({
         },
       })
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
-
+      await axios.get(endpoints.api + `/hubs/${hubPubkey}/collaborators/${hubCollaborator.toBase58()}`)
       await getHub(hubPubkey)
 
       return {
@@ -936,7 +938,7 @@ const hubContextHelper = ({
     try {
       const updatedAllHubs = [...allHubs]
       const  { hubs } = await NinaSdk.Hub.fetchAll({offset:allHubs.length, limit:25}, true)
-
+      console.log('hubs', hubs)
       const updatedHubState = {...hubState}
       hubs.forEach(hub => {
         updatedAllHubs.push(hub.publicKey)
@@ -961,6 +963,7 @@ const hubContextHelper = ({
   const getHub = async (hubPubkey) => {
     try {
       const hub = await NinaSdk.Hub.fetch(hubPubkey, true)
+      console.log('hub 111111:>> ', hub);
       
       const updatedHubState = { ...hubState }
       const hubData = hub.hub.accountData
@@ -970,7 +973,7 @@ const hubContextHelper = ({
       }
       setHubState(updatedHubState)
   
-      const updatedHubCollaboratorState = { ...hubCollaboratorsState }
+      const updatedHubCollaboratorState = { }
       const updatedVerificationState = { ...verificationState }
       hub.collaborators.forEach(collaborator => {
         updatedVerificationState[collaborator.publicKey] = collaborator.verifications
@@ -979,7 +982,7 @@ const hubContextHelper = ({
         }
       })
       console.log('updatedHubCollaboratorState!!!! :>> ', updatedHubCollaboratorState);
-      setHubCollaboratorsState(updatedHubCollaboratorState)
+      setHubCollaboratorsState(prevState => ({ ...prevState, ...updatedHubCollaboratorState}))
       setVerificationState(updatedVerificationState)
 
       const updatedHubContent = { ...hubContentState }
@@ -1026,20 +1029,15 @@ const hubContextHelper = ({
 
   const getHubsForUser = async (publicKey) => {
     try {
-      debugger
       const { hubs } = await NinaSdk.Account.fetchHubs(publicKey, true)
-      const updatedHubCollaboratorState = { ...hubCollaboratorsState }
+      const updatedHubCollaboratorState = { }
       const updatedHubState = { ...hubState }
       hubs.forEach(hub => {
-        // updatedHubCollaboratorState[hub.accountData.collaborator.publicKey] = hub.accountData.collaborator
-       console.log('hub :>> ', hub);
-        hub.accountData.collaborators.forEach(collaborator => {
-          console.log('collaborator :>> ', collaborator);
-          updatedVerificationState[collaborator.publicKey] = collaborator.verifications
-          updatedHubCollaboratorState[collaborator.accountData.collaborator.publicKey] = {
-            ...collaborator.accountData.collaborator
-          }
-        })
+        updatedHubCollaboratorState[hub.accountData.collaborator.publicKey] = hub.accountData.collaborator
+       console.log('hub !!:>> ', hub);
+       console.log('hub.accountData :>> ', hub.accountData);
+       console.log('updatedHubCollaboratorState :>> ', updatedHubCollaboratorState);
+
        
         const hubAccountData = hub.accountData.hub
         delete hub.accountData
@@ -1049,7 +1047,12 @@ const hubContextHelper = ({
         }
       })
       setHubState(updatedHubState)
-      setHubCollaboratorsState(updatedHubCollaboratorState)
+      setHubCollaboratorsState(prevState =>(
+        {
+          ...prevState,
+          ...updatedHubCollaboratorState
+        }
+      ))
       setFetchedHubsForUser(new Set([...fetchedHubsForUser, publicKey]))
       return hubs
     } catch (error) {

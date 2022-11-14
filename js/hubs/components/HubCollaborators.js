@@ -41,12 +41,13 @@ const HubCollaborators = ({
 
   const hubCollaborators = useMemo(
     () => {
-      console.log('hubCollaboratorState :>> ', hubCollaboratorsState);
+      console.log('Object.keys(hubCollaboratorsState).length :>> ', Object.keys(hubCollaboratorsState).length);
+      Object.keys(hubCollaboratorsState).length
+      console.log('hubCollaboratorState in memo :>> ', hubCollaboratorsState);
       return(
         Object.values(hubCollaboratorsState)
           .filter((c) => c.hub === hubPubkey)
           .sort((a, b) => b.datetime - a.datetime)
-
       )
     },
     [hubCollaboratorsState]
