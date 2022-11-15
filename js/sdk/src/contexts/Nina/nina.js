@@ -361,7 +361,6 @@ const ninaContextHelper = ({
 
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
       await getSubscription(subscription.toBase58(), txid)
-      console.log('hubHandle :>> ', hubHandle); 
       if (hubHandle) {
         await getSubscriptionsForHub(hubHandle)
       } else {

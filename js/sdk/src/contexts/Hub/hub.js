@@ -1034,13 +1034,6 @@ const hubContextHelper = ({
       const updatedHubState = { ...hubState }
       hubs.forEach(hub => {
         updatedHubCollaboratorState[hub.accountData.collaborator.publicKey] = hub.accountData.collaborator
-        // hub.accountData.collaborators.forEach(collaborator => {
-        //   console.log('collaborator :>> ', collaborator);
-        //   updatedVerificationState[collaborator.publicKey] = collaborator.verifications
-        //   updatedHubCollaboratorState[collaborator.accountData.collaborator.publicKey] = {
-        //     ...collaborator.accountData.collaborator
-        //   }
-        // })
        
         const hubAccountData = hub.accountData.hub
         delete hub.accountData

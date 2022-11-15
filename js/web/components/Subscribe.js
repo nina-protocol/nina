@@ -59,7 +59,6 @@ const Subscribe = ({
     e.preventDefault()
     e.stopPropagation()
 
-    console.log('hubHandle :>> ', hubHandle);
     setPending(true)
 
     const result = await subscriptionUnsubscribe(accountAddress, hubHandle)
