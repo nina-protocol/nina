@@ -253,7 +253,6 @@ const Profile = ({ profilePubkey }) => {
 
       viewIndex = updatedView.findIndex((view) => view.name === 'collection')
       updatedView[viewIndex].playlist = collected
-      console.log('HERE')
       setFetched(true)
     } catch (err) {
       console.log(err)

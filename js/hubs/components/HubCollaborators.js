@@ -40,18 +40,6 @@ const HubCollaborators = ({
         }
     }, [hubCollaboratorsState])
 
-  // const hubCollaborators = useMemo(
-  //   () => {
-  //     console.log('Object.keys(hubCollaboratorsState).length in memo:>> ', Object.keys(hubCollaboratorsState).length);
-  //     console.log('hubCollaboratorState in memo :>> ', hubCollaboratorsState);
-  //     return(
-  //       Object.values(hubCollaboratorsState)
-  //         .filter((c) => c.hub === hubPubkey)
-  //         .sort((a, b) => b.datetime - a.datetime)
-  //     )
-  //   },
-  //   [hubCollaboratorsState]
-  // );
 
     const handleActiveSelection = (e) => {
     const selectedHubCollaborator = hubCollaborators.find(

@@ -27,9 +27,6 @@ const NavBar = () => {
     filterSubscriptionsForUser,
     subscriptionState,
   } = useContext(Nina.Context)
-  const { filterHubsForUser, getHubsForUser, hubState, getHubs } = useContext(
-    Hub.Context
-  )
 
   const wallet = useWallet()
   const base58 = useMemo(
@@ -48,17 +45,9 @@ const NavBar = () => {
 
   useEffect(() => {
     if (wallet.connected) {
-      // getHubsForUser(wallet.publicKey.toBase58())
       getSubscriptionsForUser(wallet.publicKey.toBase58())
     }
   }, [wallet.connected])
-
-  const userHubs = useMemo(() => {
-    if (wallet.connected) {
-      return filterHubsForUser(wallet.publicKey.toBase58())
-    }
-    return undefined
-  }, [hubState, wallet.connected])
 
   return (
     <Root>

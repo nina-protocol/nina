@@ -317,6 +317,7 @@ const hubContextHelper = ({
     allowance = 1
   ) => {
     try {
+
       const hub = hubState[hubPubkey]
       const program = await ninaClient.useProgram()
       collaboratorPubkey = new anchor.web3.PublicKey(collaboratorPubkey)
@@ -360,9 +361,7 @@ const hubContextHelper = ({
       )
 
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
-      console.log('hubCollaborator.toBase58() :>> ', hubCollaborator.toBase58());
       const result = await axios.get(endpoints.api + `/hubs/${hubPubkey}/collaborators/${hubCollaborator.toBase58()}`)
-      console.log('result :>> ', result);
       await getHub(hubPubkey)
 
       return {
@@ -557,9 +556,9 @@ const hubContextHelper = ({
       await axios.get(endpoints.api + `/hubs/${hubPubkey}/collaborators/${hubCollaborator.toBase58()}`)
       await getHub(hubPubkey)
 
-      // const hubCollaboratorsStateCopy = {...hubCollaboratorsState}
-      // delete hubCollaboratorsStateCopy[hubCollaborator]
-      // setHubCollaboratorsState(hubCollaboratorsStateCopy)
+      const hubCollaboratorsStateCopy = {...hubCollaboratorsState}
+      delete hubCollaboratorsStateCopy[hubCollaborator]
+      setHubCollaboratorsState(hubCollaboratorsStateCopy)
 
       return {
         success: true,
@@ -944,7 +943,6 @@ const hubContextHelper = ({
     try {
       const updatedAllHubs = [...allHubs]
       const  { hubs } = await NinaSdk.Hub.fetchAll({offset:allHubs.length, limit:25}, true)
-      console.log('hubs', hubs)
       const updatedHubState = {...hubState}
       hubs.forEach(hub => {
         updatedAllHubs.push(hub.publicKey)
@@ -969,7 +967,6 @@ const hubContextHelper = ({
   const getHub = async (hubPubkey) => {
     try {
       const hub = await NinaSdk.Hub.fetch(hubPubkey, true)
-      console.log('hub 111111:>> ', hub);
       
       const updatedHubState = { ...hubState }
       const hubData = hub.hub.accountData
@@ -987,12 +984,8 @@ const hubContextHelper = ({
           ...collaborator.accountData.collaborator
         }
       })
-      console.log('updatedHubCollaboratorState in getHub!!!! :>> ', updatedHubCollaboratorState);
-      console.log('hub.collaborators.length :>> ', hub.collaborators.length);
-  
-      console.log('updatedHubCollaboratorState length in getHub!!!! :>> ', Object.keys(updatedHubCollaboratorState).length);
-      // setHubCollaboratorsState(prevState => ({ ...prevState, ...updatedHubCollaboratorState}))
-      setHubCollaboratorsState(updatedHubCollaboratorState)
+
+      setHubCollaboratorsState(prevState => ({ ...prevState, ...updatedHubCollaboratorState}))
       setVerificationState(updatedVerificationState)
 
       const updatedHubContent = { ...hubContentState }
