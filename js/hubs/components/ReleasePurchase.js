@@ -103,7 +103,7 @@ const ReleasePurchase = (props) => {
     }
 
     let result;
-    const error = checkIfHasBalanceToCompleteAction(
+    const error = await checkIfHasBalanceToCompleteAction(
       NinaProgramAction.RELEASE_PURCHASE_VIA_HUB
     );
     if (error) {
@@ -216,8 +216,8 @@ const ReleasePurchase = (props) => {
       >
         <BuyButton variant="contained" type="submit">
           <Typography variant="body2" align="left">
-            {txPending && <Dots msg="preparing transaction" />}
-            {!txPending && pending && <Dots msg="awaiting wallet approval" />}
+            {txPending && <Dots msg="Preparing transaction" />}
+            {!txPending && pending && <Dots msg="Awaiting wallet approval" />}
             {!txPending && !pending && buttonText}
           </Typography>
         </BuyButton>

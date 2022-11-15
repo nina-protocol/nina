@@ -149,7 +149,10 @@ const audioPlayerContextHelper = ({
   currentIndex,
   setTrack,
   track,
+  ninaClient
 }) => {
+  //  const { collection, shouldRemainInCollectionAfterSale, ninaClient } =
+  //   useContext(Nina.Context)
   const reorderPlaylist = (updatedPlaylist) => {
     setPlaylist([...updatedPlaylist])
     if (updatedPlaylist.length === 0) {

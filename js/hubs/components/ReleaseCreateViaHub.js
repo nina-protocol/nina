@@ -423,7 +423,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
               </Button>
             )}
 
-            {!formValuesConfirmed && canAddContent && (
+            {bundlrBalance > 0 && !formValuesConfirmed && canAddContent && (
               <ReleaseCreateConfirm
                 formValues={formValues}
                 formIsValid={formIsValid}

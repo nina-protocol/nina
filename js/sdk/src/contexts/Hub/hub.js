@@ -280,10 +280,6 @@ const hubContextHelper = ({
   const hubUpdateConfig = async (hubPubkey, uri, publishFee, referralFee) => {
     const hub = hubState[hubPubkey]
     const program = await ninaClient.useProgram()
-    console.log('hub', hub)
-    console.log('hubPubkey', hubPubkey)
-    console.log('publishFee', publishFee)
-    console.log('referralFee', referralFee)
     try {
       const txid = await program.rpc.hubUpdateConfig(
         uri,
@@ -448,6 +444,7 @@ const hubContextHelper = ({
       let queue = new Set(addToHubQueue)
       queue.add(releasePubkey)
       setAddToHubQueue(queue)
+    
       const hub = hubState[hubPubkey]
       const program = await ninaClient.useProgram()
       hubPubkey = new anchor.web3.PublicKey(hubPubkey)
@@ -500,6 +497,8 @@ const hubContextHelper = ({
           },
         ]
       }
+
+
       const txid = await program.rpc.hubAddRelease(hub.handle, request)
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
       await NinaSdk.Hub.fetchHubRelease(hubPubkey.toBase58(), hubRelease.toBase58())
@@ -1043,6 +1042,7 @@ const hubContextHelper = ({
       setHubState(updatedHubState)
       setHubCollaboratorsState(updatedHubCollaboratorState)
       setFetchedHubsForUser(new Set([...fetchedHubsForUser, publicKey]))
+
       return hubs
     } catch (error) {
       console.warn(error)
@@ -1053,7 +1053,7 @@ const hubContextHelper = ({
   const getHubsForRelease = async (releasePubkey) => {
     try {
       const { hubs } = await NinaSdk.Release.fetchHubs(releasePubkey, true)
-      const updatedHubState = { ...hubState }
+      const updatedHubState = {  }
       const updatedHubContent = { ...hubContentState }
       hubs.forEach(hub => {
         const accountData = {...hub.accountData}
@@ -1070,7 +1070,7 @@ const hubContextHelper = ({
           hubReleaseId: accountData.hubRelease.publicKey,
         }
       })
-      setHubState(updatedHubState)
+      setHubState(prevState => ({...prevState, ...updatedHubState}))
       setHubContentState(updatedHubContent)
       return hubs
     } catch (error) {
@@ -1126,9 +1126,10 @@ const hubContextHelper = ({
     const hubs = []
     Object.values(hubCollaboratorsState).forEach((hubCollaborator) => {
       if (hubCollaborator.collaborator === publicKey) {
+        
         hubs.push({
           ...hubState[hubCollaborator.hub],
-          userCanAddContent: hubCollaborator.canAddContent,
+          // ...userCanAddContent: hubCollaborator.canAddContent,
         })
       }
     })
