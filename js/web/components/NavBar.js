@@ -48,7 +48,7 @@ const NavBar = () => {
 
   useEffect(() => {
     if (wallet.connected) {
-      getHubsForUser(wallet.publicKey.toBase58())
+      // getHubsForUser(wallet.publicKey.toBase58())
       getSubscriptionsForUser(wallet.publicKey.toBase58())
     }
   }, [wallet.connected])

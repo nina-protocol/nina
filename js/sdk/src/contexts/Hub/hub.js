@@ -360,7 +360,9 @@ const hubContextHelper = ({
       )
 
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
-      await axios.get(endpoints.api + `/hubs/${hubPubkey}/collaborators/${hubCollaborator.toBase58()}`)
+      console.log('hubCollaborator.toBase58() :>> ', hubCollaborator.toBase58());
+      const result = await axios.get(endpoints.api + `/hubs/${hubPubkey}/collaborators/${hubCollaborator.toBase58()}`)
+      console.log('result :>> ', result);
       await getHub(hubPubkey)
 
       return {
@@ -554,6 +556,10 @@ const hubContextHelper = ({
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
       await axios.get(endpoints.api + `/hubs/${hubPubkey}/collaborators/${hubCollaborator.toBase58()}`)
       await getHub(hubPubkey)
+
+      // const hubCollaboratorsStateCopy = {...hubCollaboratorsState}
+      // delete hubCollaboratorsStateCopy[hubCollaborator]
+      // setHubCollaboratorsState(hubCollaboratorsStateCopy)
 
       return {
         success: true,
@@ -973,7 +979,7 @@ const hubContextHelper = ({
       }
       setHubState(updatedHubState)
   
-      const updatedHubCollaboratorState = { }
+      const updatedHubCollaboratorState = { ...hubCollaboratorsState }
       const updatedVerificationState = { ...verificationState }
       hub.collaborators.forEach(collaborator => {
         updatedVerificationState[collaborator.publicKey] = collaborator.verifications
@@ -981,8 +987,12 @@ const hubContextHelper = ({
           ...collaborator.accountData.collaborator
         }
       })
-      console.log('updatedHubCollaboratorState!!!! :>> ', updatedHubCollaboratorState);
-      setHubCollaboratorsState(prevState => ({ ...prevState, ...updatedHubCollaboratorState}))
+      console.log('updatedHubCollaboratorState in getHub!!!! :>> ', updatedHubCollaboratorState);
+      console.log('hub.collaborators.length :>> ', hub.collaborators.length);
+  
+      console.log('updatedHubCollaboratorState length in getHub!!!! :>> ', Object.keys(updatedHubCollaboratorState).length);
+      // setHubCollaboratorsState(prevState => ({ ...prevState, ...updatedHubCollaboratorState}))
+      setHubCollaboratorsState(updatedHubCollaboratorState)
       setVerificationState(updatedVerificationState)
 
       const updatedHubContent = { ...hubContentState }
@@ -1034,10 +1044,6 @@ const hubContextHelper = ({
       const updatedHubState = { ...hubState }
       hubs.forEach(hub => {
         updatedHubCollaboratorState[hub.accountData.collaborator.publicKey] = hub.accountData.collaborator
-       console.log('hub !!:>> ', hub);
-       console.log('hub.accountData :>> ', hub.accountData);
-       console.log('updatedHubCollaboratorState :>> ', updatedHubCollaboratorState);
-
        
         const hubAccountData = hub.accountData.hub
         delete hub.accountData

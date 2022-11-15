@@ -22,41 +22,38 @@ const HubCollaborators = ({
   authority,
   canAddCollaborators,
 }) => {
+  const {enqueueSnackbar} = useSnackbar();
   const wallet = useWallet();
   const { hubRemoveCollaborator, hubCollaboratorsState } = useContext(
     Hub.Context
   );
   const [activeSelection, setActiveSelection] = useState(undefined);
-  // const [hubCollaborators, setHubCollaborators] = useState(undefined);
-  // console.log('hubPubkey :>> ', hubPubkey);
+  const [hubCollaborators, setHubCollaborators] = useState(undefined);
+  const [pending, setPending] = useState(false);  
 
-  //   useEffect(() => {
-  //       if (hubCollaboratorsState) {
-  //           setHubCollaborators(
-  //             Object.values(hubCollaboratorsState)
-  //             .filter(collaborator => collaborator.hub === hubPubkey)
-  //           );
-  //       }
-  //   }, [hubCollaboratorsState])
+    useEffect(() => {
+        if (hubCollaboratorsState) {
+            setHubCollaborators(
+              Object.values(hubCollaboratorsState)
+              .filter(collaborator => collaborator.hub === hubPubkey)
+            );
+        }
+    }, [hubCollaboratorsState])
 
-  const hubCollaborators = useMemo(
-    () => {
-      console.log('Object.keys(hubCollaboratorsState).length :>> ', Object.keys(hubCollaboratorsState).length);
-      Object.keys(hubCollaboratorsState).length
-      console.log('hubCollaboratorState in memo :>> ', hubCollaboratorsState);
-      return(
-        Object.values(hubCollaboratorsState)
-          .filter((c) => c.hub === hubPubkey)
-          .sort((a, b) => b.datetime - a.datetime)
-      )
-    },
-    [hubCollaboratorsState]
-  );
+  // const hubCollaborators = useMemo(
+  //   () => {
+  //     console.log('Object.keys(hubCollaboratorsState).length in memo:>> ', Object.keys(hubCollaboratorsState).length);
+  //     console.log('hubCollaboratorState in memo :>> ', hubCollaboratorsState);
+  //     return(
+  //       Object.values(hubCollaboratorsState)
+  //         .filter((c) => c.hub === hubPubkey)
+  //         .sort((a, b) => b.datetime - a.datetime)
+  //     )
+  //   },
+  //   [hubCollaboratorsState]
+  // );
 
-  
-  const { enqueueSnackbar } = useSnackbar();
-
-  const handleActiveSelection = (e) => {
+    const handleActiveSelection = (e) => {
     const selectedHubCollaborator = hubCollaborators.find(
       (collaborator) =>
         collaborator.publicKey === e.target.getAttribute("data-index")
@@ -73,6 +70,7 @@ const HubCollaborators = ({
 
   const handleRemoveCollaborator = async (e, hubPubkey, collaboratorPubkey) => {
     e.stopPropagation();
+    setPending(true)
     const result = await hubRemoveCollaborator(hubPubkey, collaboratorPubkey);
     if (result?.success) {
       enqueueSnackbar(result.msg, {
@@ -83,6 +81,7 @@ const HubCollaborators = ({
         variant: "failure",
       });
     }
+    setPending(false)
   };
 
   useEffect(() => {
@@ -103,6 +102,8 @@ const HubCollaborators = ({
           <HubAddCollaborator
             hubPubkey={hubPubkey}
             canAddCollaborators={canAddCollaborators}
+            pending={pending}
+            setPending={setPending}
           />
           <>
             <Note>
