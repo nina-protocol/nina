@@ -72,7 +72,6 @@ const HubCreate = ({ update, hubData }) => {
     NinaProgramAction,
   } = useContext(Nina.Context);
 
-
   const [artwork, setArtwork] = useState();
   const [uploadSize, setUploadSize] = useState();
   const [hubPubkey, setHubPubkey] = useState(hubData?.publicKey || undefined);
@@ -196,14 +195,8 @@ const HubCreate = ({ update, hubData }) => {
   };
 
   const handleSubmit = async () => {
-  
     try {
-   
-     
       if (update) {
-        let upload = uploadId;
-        const metadataJson = {};
-        let metadataResult = metadataTx;
         const error = await checkIfHasBalanceToCompleteAction(
           NinaProgramAction.HUB_UPDATE
         );
@@ -211,6 +204,9 @@ const HubCreate = ({ update, hubData }) => {
           enqueueSnackbar(error.msg, { variant: "failure" });
           return;
         }
+        let upload = uploadId;
+        const metadataJson = {};
+        let metadataResult = metadataTx;
         if (artwork) {
           let artworkResult = artworkTx;
           setIsPublishing(true);
@@ -267,7 +263,6 @@ const HubCreate = ({ update, hubData }) => {
           if (textColor) {
             metadataJson.textColor = textColor;
           }
-
 
           metadataResult = await bundlrUpload(
             new Blob([JSON.stringify(metadataJson)], {
@@ -380,7 +375,9 @@ const HubCreate = ({ update, hubData }) => {
               });
 
               const hubParams = {
-                handle: `${update ? hubData?.handle :formValues.hubForm.handle}`,
+                handle: `${
+                  update ? hubData?.handle : formValues.hubForm.handle
+                }`,
                 publishFee: formValues.hubForm.publishFee,
                 referralFee: formValues.hubForm.referralFee,
                 uri: `https://arweave.net/${metadataResult}`,
@@ -454,11 +451,11 @@ const HubCreate = ({ update, hubData }) => {
           <BlueTypography
             variant="h1"
             align="left"
-            sx={{ padding: { md: "0px 0px", xs: "30px 0px" }, mb: 4, }}
+            sx={{ padding: { md: "0px 0px", xs: "30px 0px" }, mb: 4 }}
           >
             You do not have any credits to create a Hub.
           </BlueTypography>
-          <EmailCapture size="medium" /> 
+          <EmailCapture size="medium" />
         </Box>
       )}
 
