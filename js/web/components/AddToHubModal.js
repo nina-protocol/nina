@@ -48,19 +48,14 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
       canAddHubs?.some((h2) => h1.publicKey !== h2.publicKey)
     )
     setFilteredHubs(hubsWithPermission)
-    console.log('filteredHubsssss', filteredHubs)
   }, [userHubs])
 
   const handleRepost = async (e) => {
-    console.log('first')
     const error = await checkIfHasBalanceToCompleteAction(
       NinaProgramAction.HUB_ADD_RELEASE
     )
-    console.log('error', error)
 
-    console.log('NinaProgramAction', NinaProgramAction)
     if (error) {
-      console.log('error reposting bc of error', error)
       enqueueSnackbar(error.msg, { variant: 'failure' })
       return
     }
