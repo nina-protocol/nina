@@ -247,11 +247,8 @@ const ReleaseCreate = () => {
   }, [track])
 
   const handleSubmit = async () => {
-    console.log('hitty')
     try {
-      console.log('try')
       if (releaseCreated) {
-        console.log('release created', releaseCreated)
         router.push(
           {
             pathname: `/${releasePubkey.toBase58()}`,
@@ -262,20 +259,16 @@ const ReleaseCreate = () => {
           `/${releasePubkey.toBase58()}`
         )
       } else if (track && artwork) {
-        console.log('track and artwork', `${track} ${artwork}`)
         const error = await checkIfHasBalanceToCompleteAction(
           NinaProgramAction.RELEASE_INIT_WITH_CREDIT
         )
-        console.log(error)
         if (error) {
-          console.log('error???', error)
           enqueueSnackbar(error.msg, { variant: 'failure' })
           return
         }
 
         const hashExists = await validateUniqueMd5Digest(md5Digest)
         if (hashExists) {
-          console.log('hash exists', hashExists)
           enqueueSnackbar(
             `A release with this track already exists: ${hashExists.json.properties.artist} - ${hashExists.json.properties.title}`,
             {
@@ -286,11 +279,8 @@ const ReleaseCreate = () => {
           return
         }
         let upload = uploadId
-        console.log('upload', upload)
         let artworkResult = artworkTx
-        console.log('artworkResult', artworkResult)
         if (!uploadId) {
-          console.log('there is no upload id but im workin on it')
           setIsPublishing(true)
           enqueueSnackbar(
             'Uploading artwork to Arweave.  Please confirm in wallet.',
@@ -299,14 +289,12 @@ const ReleaseCreate = () => {
             }
           )
           artworkResult = await bundlrUpload(artwork.file)
-          console.log('artwork result', artworkResult)
           setArtworkTx(artworkResult)
           upload = createUpload(
             UploadType.artwork,
             artworkResult,
             formValues.releaseForm
           )
-          console.log('upload', upload)
           setUploadId(upload)
         }
         if (uploadHasItemForType(upload, UploadType.artwork) || artworkResult) {
@@ -356,7 +344,6 @@ const ReleaseCreate = () => {
               )
 
               setMetadata(metadataJson)
-              console.log('metadataJson', metadataJson)
               setMetadataTx(metadataResult)
               updateUpload(
                 upload,
@@ -377,7 +364,6 @@ const ReleaseCreate = () => {
               )
               let result
               if (selectedHub && selectedHub !== '') {
-                console.log('a hub was selected', selectedHub)
                 result = await releaseInitViaHub({
                   ...formValues.releaseForm,
                   hubPubkey: selectedHub,
@@ -386,7 +372,6 @@ const ReleaseCreate = () => {
                   releaseMint: info.releaseMint,
                   metadataUri: `https://arweave.net/${metadataResult}`,
                 })
-                console.log('result from selected hub', result)
               } else {
                 result = await releaseCreate({
                   ...formValues.releaseForm,
@@ -398,7 +383,6 @@ const ReleaseCreate = () => {
                   releaseBump: info.releaseBump,
                   releaseMint: info.releaseMint,
                 })
-                console.log('release create result', result)
               }
 
               if (result.success) {

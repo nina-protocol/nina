@@ -38,12 +38,6 @@ const ReleaseComponent = ({ metadataSsr }) => {
 
   useEffect(() => {}, [releaseState])
 
-  // useEffect(() => {
-  //   if (wallet.connected) {
-  //     getHubsForUser(wallet.publicKey.toBase58())
-  //   }
-  // }, [])
-
   useEffect(() => {
     const fetchHubs = async () => {
       const hubs = await getHubsForUser(wallet.publicKey.toBase58())
@@ -54,13 +48,6 @@ const ReleaseComponent = ({ metadataSsr }) => {
       fetchHubs()
     }
   }, [])
-
-  // useEffect(() => {
-  //   if (wallet.connected && hubState) {
-  //     setUserHubs(filterHubsForUser(wallet.publicKey.toBase58()))
-  //     console.log('are these userHubs', userHubs)
-  //   }
-  // }, [wallet.connected, hubState])
 
   useEffect(() => {
     setUserHubs(null)

@@ -68,7 +68,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
     getSolPrice,
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
-    getUsdcBalance
+    getUsdcBalance,
   } = useContext(Nina.Context);
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const [track, setTrack] = useState(undefined);
@@ -105,7 +105,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
 
   useEffect(() => {
     refreshBundlr();
-    getUsdcBalance()
+    getUsdcBalance();
   }, []);
 
   const refreshBundlr = () => {
@@ -209,9 +209,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (releaseCreated) {
-      //  router.push({pathname: `/${hubData.handle}/releases/${releaseInfo.hubRelease.toBase58()}`});
-      } else if (track && artwork) {
+      if (track && artwork) {
         const error = await checkIfHasBalanceToCompleteAction(
           NinaProgramAction.RELEASE_INIT_VIA_HUB
         );
@@ -393,7 +391,13 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                   artwork?.meta.status === "uploading" ||
                   (track?.meta.status === "uploading" && !releaseCreated)
                 }
-                href={`${releaseCreated ? `/${hubData.handle}/releases/${releaseInfo.hubRelease.toBase58()}` : ""}`}
+                href={`${
+                  releaseCreated
+                    ? `/${
+                        hubData.handle
+                      }/releases/${releaseInfo.hubRelease.toBase58()}`
+                    : ""
+                }`}
                 sx={{ height: "54px" }}
               >
                 {isPublishing && !releaseCreated && (
@@ -462,7 +466,6 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                   {(uploadSize * (bundlrUsdBalance / mbs)).toFixed(2)}
                 </Typography>
               )}
-        
             </Box>
           </CreateCta>
         </NinaBox>

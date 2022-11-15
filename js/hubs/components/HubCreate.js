@@ -72,6 +72,7 @@ const HubCreate = ({ update, hubData }) => {
     NinaProgramAction,
   } = useContext(Nina.Context);
 
+
   const [artwork, setArtwork] = useState();
   const [uploadSize, setUploadSize] = useState();
   const [hubPubkey, setHubPubkey] = useState(hubData?.publicKey || undefined);
@@ -203,7 +204,13 @@ const HubCreate = ({ update, hubData }) => {
         let upload = uploadId;
         const metadataJson = {};
         let metadataResult = metadataTx;
-
+        const error = await checkIfHasBalanceToCompleteAction(
+          NinaProgramAction.HUB_UPDATE
+        );
+        if (error) {
+          enqueueSnackbar(error.msg, { variant: "failure" });
+          return;
+        }
         if (artwork) {
           let artworkResult = artworkTx;
           setIsPublishing(true);
@@ -301,7 +308,7 @@ const HubCreate = ({ update, hubData }) => {
           }
         }
       } else {
-        const error = checkIfHasBalanceToCompleteAction(
+        const error = await checkIfHasBalanceToCompleteAction(
           NinaProgramAction.HUB_INIT_WITH_CREDIT
         );
         if (error) {
