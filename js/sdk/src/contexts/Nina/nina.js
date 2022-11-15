@@ -338,7 +338,7 @@ const ninaContextHelper = ({
     }
   }  
 
-  const subscriptionUnsubscribe = async (unsubscribeAccount) => {
+  const subscriptionUnsubscribe = async (unsubscribeAccount, hubHandle) => {
     try {
       const program = await ninaClient.useProgram()
       unsubscribeAccount = new anchor.web3.PublicKey(unsubscribeAccount)
@@ -361,7 +361,12 @@ const ninaContextHelper = ({
 
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
       await getSubscription(subscription.toBase58(), txid)
-      await getSubscriptionsForUser(provider.wallet.publicKey.toBase58())
+      console.log('hubHandle :>> ', hubHandle); 
+      if (hubHandle) {
+        await getSubscriptionsForHub(hubHandle)
+      } else {
+        await getSubscriptionsForUser(provider.wallet.publicKey.toBase58())
+      }
       removeSubScriptionFromState(subscription.toBase58())
 
       return {
