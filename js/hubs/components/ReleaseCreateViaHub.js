@@ -68,6 +68,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
     getSolPrice,
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
+    getUsdcBalance,
   } = useContext(Nina.Context);
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const [track, setTrack] = useState(undefined);
@@ -104,6 +105,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
 
   useEffect(() => {
     refreshBundlr();
+    getUsdcBalance();
   }, []);
 
   const refreshBundlr = () => {
@@ -207,10 +209,8 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (releaseCreated) {
-        // router.push({pathname: `/${hubData.handle}/releases/${releaseInfo.hubRelease.toBase58()}`});
-      } else if (track && artwork) {
-        const error = checkIfHasBalanceToCompleteAction(
+      if (track && artwork) {
+        const error = await checkIfHasBalanceToCompleteAction(
           NinaProgramAction.RELEASE_INIT_VIA_HUB
         );
         if (error) {
@@ -391,6 +391,13 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                   artwork?.meta.status === "uploading" ||
                   (track?.meta.status === "uploading" && !releaseCreated)
                 }
+                href={`${
+                  releaseCreated
+                    ? `/${
+                        hubData.handle
+                      }/releases/${releaseInfo.hubRelease.toBase58()}`
+                    : ""
+                }`}
                 sx={{ height: "54px" }}
               >
                 {isPublishing && !releaseCreated && (
@@ -399,13 +406,6 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                 {!isPublishing && buttonText}
               </Button>
             )}
-                {releaseCreated && (
-                  <Link
-                    href={`/${hubData.handle}/releases/${releaseInfo.hubRelease.toBase58()}`}
-                  >
-                        {buttonText}
-                  </Link>
-              )}
 
             {!canAddContent && (
               <Button
@@ -427,7 +427,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
               </Button>
             )}
 
-            {!formValuesConfirmed && canAddContent && (
+            {bundlrBalance > 0 && !formValuesConfirmed && canAddContent && (
               <ReleaseCreateConfirm
                 formValues={formValues}
                 formIsValid={formIsValid}

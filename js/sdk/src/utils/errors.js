@@ -1,6 +1,5 @@
 export const ninaErrorHandler = (error, errorString) => {
   console.warn(error)
-
   let msg
   if (
     error.toString().includes('0x1') ||

@@ -22,24 +22,39 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const { hubAddRelease, getHubsForRelease } = useContext(Hub.Context)
-  const { checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(
-    Nina.Context
-  )
+  const { hubAddRelease, getHubsForRelease, hubCollaboratorsState } =
+    useContext(Hub.Context)
+  const {
+    checkIfHasBalanceToCompleteAction,
+    NinaProgramAction,
+    getUsdcBalance,
+  } = useContext(Nina.Context)
   const [selectedHubId, setSelectedHubId] = useState()
   const [inProgress, setInProgress] = useState(false)
+  const [filteredHubs, setFilteredHubs] = useState()
   const userHasHubs = useMemo(() => userHubs?.length > 0, [userHubs])
 
   useEffect(() => {
     if (userHubs?.length === 1) {
-      setSelectedHubId(userHubs[0]?.id)
+      setSelectedHubId(userHubs[0]?.publicKey)
     }
+
+    const canAddHubs = Object.values(hubCollaboratorsState).filter(
+      (collaborator) => {
+        return collaborator.canAddContent
+      }
+    )
+    const hubsWithPermission = userHubs?.filter((h1) =>
+      canAddHubs?.some((h2) => h1.publicKey !== h2.publicKey)
+    )
+    setFilteredHubs(hubsWithPermission)
   }, [userHubs])
 
   const handleRepost = async (e) => {
-    const error = checkIfHasBalanceToCompleteAction(
+    const error = await checkIfHasBalanceToCompleteAction(
       NinaProgramAction.HUB_ADD_RELEASE
     )
+
     if (error) {
       enqueueSnackbar(error.msg, { variant: 'failure' })
       return
@@ -123,12 +138,12 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
                   gutterBottom
                 >
                   Add {metadata.name} to{' '}
-                  {userHubs.length > 1
+                  {userHubs?.length > 1
                     ? 'one of your hubs'
-                    : 'your hub: ' + userHubs[0]?.data.displayName}
+                    : 'your hub: ' + userHubs[0]?.data?.displayName}
                 </Typography>
 
-                {userHubs.length > 1 && (
+                {filteredHubs?.length > 1 && (
                   <FormControl sx={{ mt: 1 }}>
                     <InputLabel disabled value="">
                       Select a hub to add to
@@ -141,22 +156,17 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
                       label="Select hub"
                       fullWidth
                       variant="standard"
-                      onChange={(e, userHubs) => {
+                      onChange={(e, filteredHubs) => {
                         setSelectedHubId(e.target.value)
                       }}
                     >
-                      {userHubs
-                        ?.filter((hub) => hub.userCanAddContent)
-                        .map((hub) => {
-                          return (
-                            <MenuItem
-                              key={hub?.publicKey}
-                              value={hub?.publicKey}
-                            >
-                              {hub?.data?.displayName}
-                            </MenuItem>
-                          )
-                        })}
+                      {filteredHubs?.map((hub) => {
+                        return (
+                          <MenuItem key={hub?.publicKey} value={hub?.publicKey}>
+                            {hub?.data?.displayName}
+                          </MenuItem>
+                        )
+                      })}
                     </Select>
                   </FormControl>
                 )}
@@ -168,7 +178,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
               color="primary"
               variant="outlined"
               disabled={inProgress || !selectedHubId || !userHasHubs}
-              onClick={handleRepost}
+              onClick={(e) => handleRepost(e)}
             >
               <Typography>
                 {!inProgress && 'Repost'}

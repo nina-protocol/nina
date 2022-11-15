@@ -118,8 +118,8 @@ const ReleasePurchase = (props) => {
   }, [exchangeState])
 
   useEffect(() => {
-    if (release?.royaltyRecipients) {
-      release.royaltyRecipients.forEach((recipient) => {
+    if (release?.revenueShareRecipients) {
+      release.revenueShareRecipients.forEach((recipient) => {
         if (
           wallet?.connected &&
           recipient.recipientAuthority === wallet?.publicKey.toBase58()
@@ -128,7 +128,7 @@ const ReleasePurchase = (props) => {
         }
       })
     }
-  }, [release?.royaltyRecipients, wallet?.connected])
+  }, [release?.revenueShareRecipients, wallet?.connected])
 
   useEffect(() => {
     if (metadata?.description.includes('<p>')) {

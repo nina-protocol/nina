@@ -11,8 +11,14 @@ import Typography from '@mui/material/Typography'
 import { useRouter } from 'next/router'
 import Subscribe from './Subscribe'
 import { useSnackbar } from 'notistack'
+import { isMobile } from 'react-device-detect'
 
-const Suggestions = ({ items, itemsTotal, publicKey }) => {
+const Suggestions = ({
+  items,
+  itemsTotal,
+  publicKey,
+  toggleDrawer
+}) => {
   const router = useRouter()
   const scrollRef = useRef()
   const { enqueueSnackbar } = useSnackbar()
@@ -21,6 +27,10 @@ const Suggestions = ({ items, itemsTotal, publicKey }) => {
     e.stopPropagation()
     e.preventDefault()
     router.push(path)
+
+    if (isMobile) {
+      toggleDrawer(false)
+    }
   }
 
   const feedItems = useMemo(() => {

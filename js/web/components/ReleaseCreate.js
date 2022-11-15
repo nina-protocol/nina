@@ -259,7 +259,7 @@ const ReleaseCreate = () => {
           `/${releasePubkey.toBase58()}`
         )
       } else if (track && artwork) {
-        const error = checkIfHasBalanceToCompleteAction(
+        const error = await checkIfHasBalanceToCompleteAction(
           NinaProgramAction.RELEASE_INIT_WITH_CREDIT
         )
         if (error) {
@@ -433,11 +433,11 @@ const ReleaseCreate = () => {
       {wallet?.connected && npcAmountHeld < 1 && (
         <Box style={{ display: 'flex' }}>
           <NpcMessage>
-            <Typography variant="h3" style={{ mb: 2 }}>
+            <Typography variant="h3" sx={{ mb: 1 }}>
               Nina is currently in a closed beta for uploading releases.
             </Typography>
             <EmailCapture size="medium" />
-            <Typography variant="h3" style={{ mt: 4 }}>
+            <Typography variant="h3" sx={{ mt: 1 }}>
               Check our <Link href="/faq">FAQ</Link> or hit us at{' '}
               <Link
                 target="_blank"
@@ -481,28 +481,31 @@ const ReleaseCreate = () => {
             </CreateFormWrapper>
 
             <CreateCta>
-              {bundlrBalance === 0 && <BundlrModal inCreate={true} />}
-              {bundlrBalance > 0 && formValuesConfirmed && (
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleSubmit}
-                  disabled={
-                    isPublishing ||
-                    !formIsValid ||
-                    bundlrBalance === 0 ||
-                    mbs < uploadSize ||
-                    artwork?.meta.status === 'uploading' ||
-                    (track?.meta.status === 'uploading' && !releaseCreated)
-                  }
-                  sx={{ height: '54px' }}
-                >
-                  {isPublishing && !releaseCreated && (
-                    <Dots msg={publishingStepText} />
-                  )}
-                  {!isPublishing && buttonText}
-                </Button>
+              {bundlrBalance === 0 ? (
+                <BundlrModal inCreate={true} />
+              ) : (
+                formValuesConfirmed && (
+                  <Button
+                    fullWidth
+                    variant="outlined"
+                    color="primary"
+                    onClick={handleSubmit}
+                    disabled={
+                      isPublishing ||
+                      !formIsValid ||
+                      bundlrBalance === 0 ||
+                      mbs < uploadSize ||
+                      artwork?.meta.status === 'uploading' ||
+                      (track?.meta.status === 'uploading' && !releaseCreated)
+                    }
+                    sx={{ height: '54px' }}
+                  >
+                    {isPublishing && !releaseCreated && (
+                      <Dots msg={publishingStepText} />
+                    )}
+                    {!isPublishing && buttonText}
+                  </Button>
+                )
               )}
 
               {bundlrBalance > 0 && !formValuesConfirmed && (

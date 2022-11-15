@@ -34,8 +34,8 @@ const Royalty = (props) => {
   const { ninaClient } = useContext(Nina.Context);
 
   useEffect(() => {
-    if (release?.royaltyRecipients) {
-      release.royaltyRecipients.forEach((recipient) => {
+    if (release?.revenueShareRecipients) {
+      release.revenueShareRecipients.forEach((recipient) => {
         const recipientPubkey = recipient.recipientAuthority;
         if (
           wallet?.connected &&
@@ -48,7 +48,7 @@ const Royalty = (props) => {
         }
       });
     }
-  }, [release?.royaltyRecipients, wallet?.connected, wallet?.publicKey]);
+  }, [release?.revenueShareRecipients, wallet?.connected, wallet?.publicKey]);
 
   const toggleForm = () => {
     if (!formShown) {
@@ -101,6 +101,7 @@ const Royalty = (props) => {
         color="primary"
         type="submit"
         onClick={() => setOpen(true)}
+        sx={{ mt: 1 }}
       >
         <Typography variant="body2" align="left">
           Revenue Share
@@ -123,8 +124,8 @@ const Royalty = (props) => {
               Revenue Share Information:
             </Typography>
             <List>
-              {release?.royaltyRecipients &&
-                release.royaltyRecipients.map((recipient, i) => {
+              {release?.revenueShareRecipients &&
+                release.revenueShareRecipients.map((recipient, i) => {
                   if (recipient.percentShare > 0) {
                     const walletAuthorizedToCollect =
                       wallet?.connected &&
@@ -204,6 +205,8 @@ const classes = {
 
 const SettingsButton = styled(Button)(({ theme }) => ({
   "& p": {
+    border: `1px solid ${theme.palette.text.primary}`,
+    padding: "10px",
     "&:hover": {
       opacity: "50%",
     },
@@ -211,11 +214,11 @@ const SettingsButton = styled(Button)(({ theme }) => ({
 }));
 
 const Root = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  // justifyContent: 'center',
-  width: "100%",
-
+  textAlign: "left",
+  [theme.breakpoints.down("md")]: {
+    marginTop: "20px",
+    marginBottom: "40px",
+  },
   [`& .${classes.recipientData}`]: {
     color: `${theme.palette.greyLight}`,
     "& a": {

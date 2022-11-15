@@ -130,7 +130,7 @@ const ResponsiveHubHeader = styled(Box)(({ theme }) => ({
 }))
 
 const DisplayName = styled(Box)(({ theme }) => ({
-  width: '20vw',
+  width: '15vw',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'start',
@@ -171,10 +171,12 @@ const DescriptionOverflowContainer = styled(Box)(({ theme }) => ({
   '& h2': {
     margin: 0,
   },
+  width: '100%',
   [theme.breakpoints.down('md')]: {
     ['-webkit-line-clamp']: '4',
     maxWidth: 'unset',
     padding: '0 15px',
+    width: '70vw',
   },
 }))
 
