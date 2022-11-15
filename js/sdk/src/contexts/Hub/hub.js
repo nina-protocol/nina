@@ -1129,7 +1129,6 @@ const hubContextHelper = ({
         
         hubs.push({
           ...hubState[hubCollaborator.hub],
-          // ...userCanAddContent: hubCollaborator.canAddContent,
         })
       }
     })
