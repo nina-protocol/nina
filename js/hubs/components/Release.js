@@ -40,7 +40,6 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
     Hub.Context
   );
 
-  const [release, setRelease] = useState(undefined)
   const [metadata, setMetadata] = useState(metadataSsr || null);
   const [description, setDescription] = useState();
   const [userHubs, setUserHubs] = useState();
