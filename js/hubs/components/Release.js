@@ -99,11 +99,6 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
       setDescription(metadata?.description);
     }
   }, [metadata?.description]);
-  useEffect(() => {
-    if(releaseState.tokenData[releasePubkey]){
-      setRelease(releaseState.tokenData[releasePubkey])
-    }
-  }, [releaseState.tokenData[releasePubkey]])
 
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]?.revenueShareRecipients) {
@@ -116,7 +111,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
         }
       })
     }
-  }, [release?.revenueShareRecipients, wallet?.connected])
+  }, [releaseState.tokenData[releasePubkey], wallet?.connected])
 
   return (
     <>
@@ -203,7 +198,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
               />
               {
                 userIsRecipient && (
-                  <Royalty release={release} releasePubkey={releasePubkey}/>
+                  <Royalty release={releaseState.tokenData[releasePubkey]} releasePubkey={releasePubkey}/>
                 )
               }
             </Box>
