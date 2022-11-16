@@ -855,7 +855,6 @@ const ninaContextHelper = ({
 
   const displayNameForAccount = (publicKey) => {
     const verifications = verificationState[publicKey]
-
     if (verifications) {
       if (
         verifications?.find(
@@ -888,7 +887,7 @@ const ninaContextHelper = ({
       ) {
         return verifications.find(
           (verification) => verification.type === 'ethereum'
-        ).displayName
+        ).displayName || truncateAddress(publicKey)
       }
     } 
     return truncateAddress(publicKey)
