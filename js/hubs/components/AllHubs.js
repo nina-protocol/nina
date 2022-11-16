@@ -10,9 +10,9 @@ import HubTileView from "./HubTileView";
 
 const AllHubs = () => {
   const { getHubs, hubState, filterHubsAll } = useContext(Hub.Context);
-  const [pendingFetch, setPendingFetch] = useState(false)
-  const [totalCount, setTotalCount] = useState(null)
-  const scrollRef = useRef()
+  const [pendingFetch, setPendingFetch] = useState(false);
+  const [totalCount, setTotalCount] = useState(null);
+  const scrollRef = useRef();
 
   useEffect(() => {
     getHubs();

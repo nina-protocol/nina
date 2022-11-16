@@ -93,9 +93,8 @@ const Hubs = () => {
                 <Link href="/all">Hubs </Link>
                 are a new way to publish, share, and discuss music.
               </BlueTypography>
-              
-              <Box
-              >
+
+              <Box>
                 <EmailCapture size="large" />{" "}
               </Box>
 
@@ -115,18 +114,18 @@ const Hubs = () => {
 
               <HubSlider hubs={hubs} />
 
-              <Box sx={{mt: '40px'}}>
-              <BlueTypography variant="h1">
-              <Link
-                  href="https://www.notion.so/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612#c7abd525851545a199e06ecd14a16a15"
-                  target="_blank"
-                  rel="noreferrer"
-                  passHref
-                >
-                Learn More
-                </Link>
-                .
-              </BlueTypography>
+              <Box sx={{ mt: "40px" }}>
+                <BlueTypography variant="h1">
+                  <Link
+                    href="https://www.notion.so/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612#c7abd525851545a199e06ecd14a16a15"
+                    target="_blank"
+                    rel="noreferrer"
+                    passHref
+                  >
+                    Learn More
+                  </Link>
+                  .
+                </BlueTypography>
               </Box>
             </>
           )}
@@ -139,11 +138,17 @@ const Hubs = () => {
                     align="left"
                     sx={{ padding: { md: "0 165px 40px", xs: "30px 0px" } }}
                   >
-                    You do not have any credits to create a Hub. <br /><br />
-                  <EmailCapture size="large" />
+                    You do not have any credits to create a Hub. <br />
+                    <br />
+                    <EmailCapture size="large" />
                   </BlueTypography>
                   <br />
-                  <Box sx={{ display: 'flex', paddingLeft: { md: '30px', xs: '0' } }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      paddingLeft: { md: "30px", xs: "0" },
+                    }}
+                  >
                     <Typography
                       variant="body1"
                       align="left"
@@ -251,15 +256,17 @@ const Hubs = () => {
                         {userHubs.length > 1 ? "Hubs" : "Hub"}
                       </DashboardHeader>
                       <ul style={{ height: "500px", overflowY: "scroll" }}>
-                        {userHubs.filter(hub => hub.publicKey).map((hub) => {
-                          return (
-                            <DashboardEntry key={hub.publicKey}>
-                              <Link href={`/${hub.handle}`}>
-                                {hub?.data?.displayName}
-                              </Link>
-                            </DashboardEntry>
-                          );
-                        })}
+                        {userHubs
+                          .filter((hub) => hub.publicKey)
+                          .map((hub) => {
+                            return (
+                              <DashboardEntry key={hub.publicKey}>
+                                <Link href={`/${hub.handle}`}>
+                                  {hub?.data?.displayName}
+                                </Link>
+                              </DashboardEntry>
+                            );
+                          })}
                       </ul>
                     </>
                   </DashboardContent>

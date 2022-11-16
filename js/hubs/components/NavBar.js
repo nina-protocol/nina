@@ -87,7 +87,7 @@ const NavBar = ({ hubPubkey }) => {
     }
     return undefined;
   }, [hubState]);
-  
+
   useEffect(() => {
     const setResponsiveness = () => {
       return window.innerWidth < 900
@@ -147,7 +147,11 @@ const NavBar = ({ hubPubkey }) => {
             {hubData && (
               <Image
                 loader={loader}
-                src={getImageFromCDN(hubData.data.image, 100, new Date(Date.parse(hubData.datetime)))}
+                src={getImageFromCDN(
+                  hubData.data.image,
+                  100,
+                  new Date(Date.parse(hubData.datetime))
+                )}
                 height="50"
                 width="50"
                 alt="hub-logo"

@@ -12,10 +12,12 @@ const sentryWebpackPluginOptions = {
 };
 
 const cluster = process.env.SOLANA_CLUSTER;
-const IMGIX_URL = cluster === "devnet" 
-  ? "nina-dev.imgix.net"
-  : "nina.imgix.net"
-const NEXT_PUBLIC_IMGIX_TOKEN = cluster === "devnet" ? process.env.NEXT_PUBLIC_IMGIX_TOKEN_DEV : process.env.NEXT_PUBLIC_IMGIX_TOKEN
+const IMGIX_URL =
+  cluster === "devnet" ? "nina-dev.imgix.net" : "nina.imgix.net";
+const NEXT_PUBLIC_IMGIX_TOKEN =
+  cluster === "devnet"
+    ? process.env.NEXT_PUBLIC_IMGIX_TOKEN_DEV
+    : process.env.NEXT_PUBLIC_IMGIX_TOKEN;
 /** @type {import('next').NextConfig} */
 const moduleExports = {
   reactStrictMode: true,

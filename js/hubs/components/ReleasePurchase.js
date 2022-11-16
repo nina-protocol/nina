@@ -78,8 +78,7 @@ const ReleasePurchase = (props) => {
       release.royaltyRecipients.forEach((recipient) => {
         if (
           wallet?.connected &&
-          recipient.recipientAuthority ===
-            wallet?.publicKey.toBase58() &&
+          recipient.recipientAuthority === wallet?.publicKey.toBase58() &&
           recipient.percentShare / 10000 > 0
         ) {
           setUserIsRecipient(true);
@@ -111,9 +110,17 @@ const ReleasePurchase = (props) => {
       return;
     }
     if (!release.pending) {
-      let releasePriceUi = ninaClient.nativeToUi(release.price, ninaClient.ids.mints.usdc)
-      let convertAmount = releasePriceUi + (releasePriceUi * hubState[hubPubkey].referralFee / 100)
-      if (!ninaClient.isSol(release.releaseMint) && usdcBalance < convertAmount) {
+      let releasePriceUi = ninaClient.nativeToUi(
+        release.price,
+        ninaClient.ids.mints.usdc
+      );
+      let convertAmount =
+        releasePriceUi +
+        (releasePriceUi * hubState[hubPubkey].referralFee) / 100;
+      if (
+        !ninaClient.isSol(release.releaseMint) &&
+        usdcBalance < convertAmount
+      ) {
         enqueueSnackbar("Calculating SOL - USDC Swap...", {
           variant: "info",
         });
@@ -212,7 +219,11 @@ const ReleasePurchase = (props) => {
       )}
       <form
         onSubmit={handleSubmit}
-        style={{ textAlign: "left", marginBottom: "10px", marginTop: {md: "0px", lg: "20px"} }}
+        style={{
+          textAlign: "left",
+          marginBottom: "10px",
+          marginTop: { md: "0px", lg: "20px" },
+        }}
       >
         <BuyButton variant="contained" type="submit">
           <Typography variant="body2" align="left">
@@ -261,10 +272,7 @@ const BuyButton = styled(Button)(({ theme }) => ({
 }));
 const ReleasePurchaseWrapper = styled(Box)(({ theme }) => ({
   textAlign: "left",
-  [theme.breakpoints.down("md")]: {
-   
-    
-  },
+  [theme.breakpoints.down("md")]: {},
 }));
 const AmountRemaining = styled(Typography)(({ theme }) => ({
   paddingBottom: "10px",

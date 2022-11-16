@@ -43,7 +43,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const [metadata, setMetadata] = useState(metadataSsr || null);
   const [description, setDescription] = useState();
   const [userHubs, setUserHubs] = useState();
-  const [userIsRecipient, setUserIsRecipient] = useState(false)
+  const [userIsRecipient, setUserIsRecipient] = useState(false);
 
   useEffect(() => {
     if (hubPubkey && !hubState[hubPubkey]) {
@@ -101,16 +101,18 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
 
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]?.revenueShareRecipients) {
-      releaseState.tokenData[releasePubkey]?.revenueShareRecipients.forEach((recipient) => {
-        if (
-          wallet?.connected &&
-          recipient.recipientAuthority === wallet?.publicKey.toBase58()
-        ) {
-          setUserIsRecipient(true)
+      releaseState.tokenData[releasePubkey]?.revenueShareRecipients.forEach(
+        (recipient) => {
+          if (
+            wallet?.connected &&
+            recipient.recipientAuthority === wallet?.publicKey.toBase58()
+          ) {
+            setUserIsRecipient(true);
+          }
         }
-      })
+      );
     }
-  }, [releaseState.tokenData[releasePubkey], wallet?.connected])
+  }, [releaseState.tokenData[releasePubkey], wallet?.connected]);
 
   return (
     <>
@@ -176,8 +178,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                     <PlayCircleOutlineIcon />
                   )}
                 </PlayButton>
-                
-            
+
                 {releasePubkey && metadata && (
                   <AddToHubModal
                     userHubs={userHubs}
@@ -185,21 +186,27 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                     metadata={metadata}
                     hubPubkey={hubPubkey}
                   />
-                )} 
+                )}
               </Box>
             </CtaWrapper>
 
-            <Box sx={{ marginTop: { md: "0px", xs: "30px" }, marginBottom: '15px' }}>
+            <Box
+              sx={{
+                marginTop: { md: "0px", xs: "30px" },
+                marginBottom: "15px",
+              }}
+            >
               <ReleasePurchase
                 releasePubkey={releasePubkey}
                 metadata={metadata}
                 hubPubkey={hubPubkey}
               />
-              {
-                userIsRecipient && (
-                  <Royalty release={releaseState.tokenData[releasePubkey]} releasePubkey={releasePubkey}/>
-                )
-              }
+              {userIsRecipient && (
+                <Royalty
+                  release={releaseState.tokenData[releasePubkey]}
+                  releasePubkey={releasePubkey}
+                />
+              )}
             </Box>
 
             <StyledDescription align="left">{description}</StyledDescription>
@@ -253,7 +260,7 @@ const PlayButton = styled(Button)(({ theme }) => ({
 const StyledDescription = styled(Typography)(({ theme }) => ({
   fontSize: "18px !important",
   lineHeight: "20.7px !important",
-  marginTop: '15px',
+  marginTop: "15px",
   "&::-webkit-scrollbar": {
     display: "none",
   },

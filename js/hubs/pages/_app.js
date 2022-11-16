@@ -11,8 +11,8 @@ import { GlowWalletAdapter } from "@solana/wallet-adapter-glow";
 import { SnackbarProvider } from "notistack";
 import Box from "@mui/material/Box";
 import dynamic from "next/dynamic";
-import NinaSdk from '@nina-protocol/js-sdk'
-import Router from 'next/router'
+import NinaSdk from "@nina-protocol/js-sdk";
+import Router from "next/router";
 
 // Use require instead of import since order matters
 // require('@solana/wallet-adapter-react-ui/styles.css');
@@ -24,7 +24,7 @@ const Layout = dynamic(() => import("../components/Layout"));
 
 const App = ({ Component, pageProps }) => {
   const [loading, setLoading] = useState(false);
-  const [sdkInitialized, setSdkInitialized] = useState(false)
+  const [sdkInitialized, setSdkInitialized] = useState(false);
 
   useEffect(() => {
     // const start = () => {
@@ -47,17 +47,16 @@ const App = ({ Component, pageProps }) => {
         process.env.NINA_API_ENDPOINT,
         process.env.SOLANA_CLUSTER_URL,
         process.env.NINA_PROGRAM_ID
-      )      
-      setSdkInitialized(true)
-    }
-    handleSdkInitialization()
+      );
+      setSdkInitialized(true);
+    };
+    handleSdkInitialization();
 
     // return () => {
     //   Router.events.off("routeChangeStart", start);
     //   Router.events.off("routeChangeComplete", end);
     //   Router.events.off("routeChangeError", end);
     // };
-
   }, []);
   // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
   const network =

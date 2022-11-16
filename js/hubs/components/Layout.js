@@ -39,7 +39,10 @@ const Layout = ({ children }) => {
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
 
   useEffect(() => {
-    if ((router.pathname.includes('/[hubPubkey]')) && !router.pathname.includes('/dashboard')) {
+    if (
+      router.pathname.includes("/[hubPubkey]") &&
+      !router.pathname.includes("/dashboard")
+    ) {
       if (hubData?.data.backgroundColor) {
         lightTheme.palette.background.default = hubData.data.backgroundColor;
       } else {
@@ -69,10 +72,12 @@ const Layout = ({ children }) => {
   }, [hubData, router]);
 
   useEffect(() => {
-    if (router.pathname === '/404' && hubState) {
-      let hubHandle = router.asPath.split('/')[1]
-      hubPubkey = Object.values(hubState).find(hub => hub.handle === hubHandle)?.publicKey
-      setHubPubkey(hubPubkey)
+    if (router.pathname === "/404" && hubState) {
+      let hubHandle = router.asPath.split("/")[1];
+      hubPubkey = Object.values(hubState).find(
+        (hub) => hub.handle === hubHandle
+      )?.publicKey;
+      setHubPubkey(hubPubkey);
     }
   }, [router.pathname, hubState]);
 

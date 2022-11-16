@@ -22,14 +22,14 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
     hubWithdraw,
   } = useContext(Hub.Context);
   const [hubFeePending, setHubFeePending] = useState(0);
-  
+
   useEffect(() => {
     const handleGetHubFeePending = async () => {
-      const hubFee = await getHubFeePending(hubPubkey)
-      setHubFeePending(hubFee)
-    }
-    handleGetHubFeePending()
-  }, [])
+      const hubFee = await getHubFeePending(hubPubkey);
+      setHubFeePending(hubFee);
+    };
+    handleGetHubFeePending();
+  }, []);
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const hubReleases = useMemo(
     () => filterHubContentForHub(hubPubkey)[0],
@@ -47,7 +47,7 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
         .reduce((prev, curr) => prev + curr, 0),
     [hubReleases]
   );
-    
+
   const releases = useMemo(() => {
     const ids =
       filterHubContentForHub(hubPubkey)[0].map((content) => content.release) ||
@@ -55,8 +55,7 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
     const releaseArray = [];
     ids.forEach((id) => {
       const recipient = releaseState.tokenData[id].revenueShareRecipients.find(
-        (recipient) =>
-          recipient.recipientAuthority === hubData.hubSigner
+        (recipient) => recipient.recipientAuthority === hubData.hubSigner
       );
       if (recipient) {
         let hubReleasePubkey = Object.values(hubContentState).find(
@@ -81,8 +80,7 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
       const recipient = releaseState.tokenData[
         release.releasePubkey
       ].revenueShareRecipients.find(
-        (recipient) =>
-          recipient.recipientAuthority === hubData.hubSigner
+        (recipient) => recipient.recipientAuthority === hubData.hubSigner
       );
       if (recipient) {
         revenue += recipient.owed;
@@ -169,7 +167,7 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
               />
             </HubPublishedContainer>
           )}
-          <Typography sx={{ fontWeight: "700 !important", }}>
+          <Typography sx={{ fontWeight: "700 !important" }}>
             TOTAL SALES: {hubSales}
           </Typography>
         </>
@@ -212,18 +210,18 @@ const LinkTypography = styled(Typography)(() => ({
   },
 }));
 
-const HubPublishedContainer = styled(Box)(({theme}) => ({
+const HubPublishedContainer = styled(Box)(({ theme }) => ({
   margin: "20px 0",
   border: "1px solid black",
-  height: '60%',
+  height: "60%",
   overflowY: "scroll",
   [theme.breakpoints.down("md")]: {
-    margin: '20px 0 0 0'
-  }
+    margin: "20px 0 0 0",
+  },
 }));
 
 const Overview = styled(Box)(() => ({
-  margin:"auto",
+  margin: "auto",
   height: "100%",
   textAlign: "left",
   minWidth: "740px",

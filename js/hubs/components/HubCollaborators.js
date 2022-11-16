@@ -22,26 +22,26 @@ const HubCollaborators = ({
   authority,
   canAddCollaborators,
 }) => {
-  const {enqueueSnackbar} = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   const wallet = useWallet();
   const { hubRemoveCollaborator, hubCollaboratorsState } = useContext(
     Hub.Context
   );
   const [activeSelection, setActiveSelection] = useState(undefined);
   const [hubCollaborators, setHubCollaborators] = useState(undefined);
-  const [pending, setPending] = useState(false);  
+  const [pending, setPending] = useState(false);
 
-    useEffect(() => {
-        if (hubCollaboratorsState) {
-            setHubCollaborators(
-              Object.values(hubCollaboratorsState)
-              .filter(collaborator => collaborator.hub === hubPubkey)
-            );
-        }
-    }, [hubCollaboratorsState])
+  useEffect(() => {
+    if (hubCollaboratorsState) {
+      setHubCollaborators(
+        Object.values(hubCollaboratorsState).filter(
+          (collaborator) => collaborator.hub === hubPubkey
+        )
+      );
+    }
+  }, [hubCollaboratorsState]);
 
-
-    const handleActiveSelection = (e) => {
+  const handleActiveSelection = (e) => {
     const selectedHubCollaborator = hubCollaborators.find(
       (collaborator) =>
         collaborator.publicKey === e.target.getAttribute("data-index")
@@ -58,7 +58,7 @@ const HubCollaborators = ({
 
   const handleRemoveCollaborator = async (e, hubPubkey, collaboratorPubkey) => {
     e.stopPropagation();
-    setPending(true)
+    setPending(true);
     const result = await hubRemoveCollaborator(hubPubkey, collaboratorPubkey);
     if (result?.success) {
       enqueueSnackbar(result.msg, {
@@ -69,7 +69,7 @@ const HubCollaborators = ({
         variant: "failure",
       });
     }
-    setPending(false)
+    setPending(false);
   };
 
   useEffect(() => {

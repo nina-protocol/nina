@@ -38,7 +38,7 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
     let filtered;
     switch (displayType) {
       case "all":
-        filtered = content.filter((item) => item.hub === hubPubkey)
+        filtered = content.filter((item) => item.hub === hubPubkey);
         setFilteredContent(filtered);
         break;
       case "releases":
@@ -46,8 +46,9 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
           return (
             item.contentType === "ninaReleaseV1" &&
             (item.publishedThroughHub === hubPubkey ||
-              releaseState.tokenData[item.release]?.authority === hubData?.authority
-          ));
+              releaseState.tokenData[item.release]?.authority ===
+                hubData?.authority)
+          );
         });
         setFilteredContent(filtered);
         break;
@@ -57,7 +58,8 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
           return (
             item.contentType === "ninaReleaseV1" &&
             item.publishedThroughHub !== hubPubkey &&
-            releaseState.tokenData[item.release]?.authority !== hubData?.authority
+            releaseState.tokenData[item.release]?.authority !==
+              hubData?.authority
           );
         });
         setFilteredContent(filtered);
@@ -65,7 +67,10 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
 
       case "textposts":
         filtered = content.filter((item) => {
-          return item.contentType === "post" || item.contentType === "postWithRelease";
+          return (
+            item.contentType === "post" ||
+            item.contentType === "postWithRelease"
+          );
         });
         setFilteredContent(filtered);
         break;
@@ -124,7 +129,7 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
         </StyledButtonGroup>
       )}
       <TileGrid columnCount={columnCount} content={content}>
-        {filteredContent?.map((item, i) => {    
+        {filteredContent?.map((item, i) => {
           return (
             <React.Fragment key={i}>
               {item?.contentType === "ninaReleaseV1" && (
@@ -161,8 +166,7 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
                         }}
                         disableRipple
                       >
-                        {isPlaying &&
-                        track.releasePubkey === item.release ? (
+                        {isPlaying && track.releasePubkey === item.release ? (
                           <PauseCircleOutlineOutlinedIcon
                             sx={{ color: "text.primary" }}
                           />
@@ -184,15 +188,25 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
                         width={100}
                         height={100}
                         layout="responsive"
-                        src={getImageFromCDN(item.image, 400, new Date(releaseState.tokenData[item.release]?.releaseDatetime))}
+                        src={getImageFromCDN(
+                          item.image,
+                          400,
+                          new Date(
+                            releaseState.tokenData[
+                              item.release
+                            ]?.releaseDatetime
+                          )
+                        )}
                         release={item}
                         priority={true}
                       />
                     )}
                   </HoverCard>
-                  {item.publishedThroughHub !== hubPubkey && releaseState.tokenData[item.release]?.authority !== hubData?.authority && (
-                    <StyledAutorenewIcon fontSize="small" />
-                  )}
+                  {item.publishedThroughHub !== hubPubkey &&
+                    releaseState.tokenData[item.release]?.authority !==
+                      hubData?.authority && (
+                      <StyledAutorenewIcon fontSize="small" />
+                    )}
                 </Tile>
               )}
 
@@ -226,15 +240,12 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
               {item?.contentType === "postWithRelease" && (
                 <Tile className={"tile"} key={i}>
                   <HoverCard
-                  className="hoverBorder"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleClick(
-                      item.referenceContent,
-                      item.hubPostPublicKey
-                      );
+                    className="hoverBorder"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleClick(item.referenceContent, item.hubPostPublicKey);
                     }}
-                    >
+                  >
                     <CardCta>
                       <PostInfo sx={{ padding: "10px 0 0" }}>
                         <Typography
@@ -243,7 +254,7 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
                             color: "text.primary",
                             textTransform: "uppercase",
                           }}
-                          >
+                        >
                           {item.data.title.substring(0, 100)}
                           {item.data.title.length > 100 ? "..." : ""}
                         </Typography>
@@ -259,7 +270,11 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
                         width={100}
                         height={100}
                         layout="fill"
-                        src={getImageFromCDN(item.releaseMetadata.image, isMobile ? 100 : 400, item.datetime)}
+                        src={getImageFromCDN(
+                          item.releaseMetadata.image,
+                          isMobile ? 100 : 400,
+                          item.datetime
+                        )}
                         release={item.referenceContent}
                         priority={true}
                       />
@@ -283,7 +298,7 @@ const TileGrid = styled(Box)(({ theme, columnCount, content }) => ({
   maxWidth: "960px",
   margin: "auto",
   maxHeight: "92vh",
-  overflow: content.length > 6 ? "scroll" : 'hidden',
+  overflow: content.length > 6 ? "scroll" : "hidden",
   marginTop: "1px",
   paddingRight: "4px",
   paddingBottom: "100px",

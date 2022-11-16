@@ -17,11 +17,13 @@ const HubAddCollaborator = (props) => {
   const { hubPubkey, canAddCollaborators, pending, setPending } = props;
   const { enqueueSnackbar } = useSnackbar();
   const { hubAddCollaborator } = useContext(Hub.Context);
-  const {checkIfHasBalanceToCompleteAction, NinaProgramAction} = useContext(
+  const { checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(
     Nina.Context
   );
   const [unlimitedAllowance, setUnlimitAllowance] = useState(false);
-  const buttonText =  canAddCollaborators ? "Add Collaborator" : "You Do Not Have Permission To Add Collaborators"
+  const buttonText = canAddCollaborators
+    ? "Add Collaborator"
+    : "You Do Not Have Permission To Add Collaborators";
 
   const toggleAllowance = (formik) => {
     if (unlimitedAllowance) {
@@ -47,16 +49,16 @@ const HubAddCollaborator = (props) => {
         canAddContent,
         canAddCollaborator,
         allowance,
-        setPending
+        setPending,
       } = values;
       setPending(true);
       const error = checkIfHasBalanceToCompleteAction(
         NinaProgramAction.HUB_ADD_COLLABORATOR
-        );
-        if (error) {
-          enqueueSnackbar(error.msg, { variant: "failure" });
-          return;
-        }
+      );
+      if (error) {
+        enqueueSnackbar(error.msg, { variant: "failure" });
+        return;
+      }
       const result = await hubAddCollaborator(
         collaboratorPubkey,
         hubPubkey,
