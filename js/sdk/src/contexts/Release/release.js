@@ -1500,7 +1500,6 @@ const releaseContextHelper = ({
       if (collector.verifications.length > 0) {
         updatedVerificationState[collector.publicKey] = collector.verifications
       }
-      console.log('updatedVerificationState :>> ', updatedVerificationState);
       setVerificationState(prevState => ({...prevState, ...updatedVerificationState}))
      return collector.publicKey
     })
