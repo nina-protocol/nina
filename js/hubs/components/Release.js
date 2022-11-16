@@ -23,6 +23,7 @@ import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
+import Royalty from "./Royalty";
 const { getImageFromCDN, loader } = imageManager;
 
 const Button = dynamic(() => import("@mui/material/Button"));
@@ -42,7 +43,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const [metadata, setMetadata] = useState(metadataSsr || null);
   const [description, setDescription] = useState();
   const [userHubs, setUserHubs] = useState();
-
+  const [release, setRelease] = useState();
   useEffect(() => {
     if (hubPubkey && !hubState[hubPubkey]) {
       getHub(hubPubkey);
@@ -54,7 +55,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
       getRelease(releasePubkey);
     }
   }, [releasePubkey]);
-
+  
   useEffect(() => {
     if (releaseState.metadata[releasePubkey]) {
       setMetadata(releaseState.metadata[releasePubkey]);
@@ -96,7 +97,11 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
       setDescription(metadata?.description);
     }
   }, [metadata?.description]);
-
+  useEffect(() => {
+    if(releaseState.tokenData[releasePubkey]){
+      setRelease(releaseState.tokenData[releasePubkey])
+    }
+  }, [releaseState.tokenData[releasePubkey]])
   return (
     <>
       <StyledGrid
@@ -180,6 +185,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                 metadata={metadata}
                 hubPubkey={hubPubkey}
               />
+              <Royalty release={release} releasePubkey={releasePubkey}/>
             </Box>
 
             <StyledDescription align="left">{description}</StyledDescription>

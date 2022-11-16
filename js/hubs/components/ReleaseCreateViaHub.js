@@ -68,6 +68,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
     getSolPrice,
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
+    getUsdcBalance,
   } = useContext(Nina.Context);
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const [track, setTrack] = useState(undefined);
@@ -104,6 +105,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
 
   useEffect(() => {
     refreshBundlr();
+    getUsdcBalance();
   }, []);
 
   const refreshBundlr = () => {
@@ -391,6 +393,13 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                   artwork?.meta.status === "uploading" ||
                   (track?.meta.status === "uploading" && !releaseCreated)
                 }
+                href={`${
+                  releaseCreated
+                    ? `/${
+                        hubData.handle
+                      }/releases/${releaseInfo.hubRelease.toBase58()}`
+                    : ""
+                }`}
                 sx={{ height: "54px" }}
               >
                 {isPublishing && !releaseCreated && (
@@ -419,7 +428,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
               </Button>
             )}
 
-            {!formValuesConfirmed && canAddContent && (
+            {bundlrBalance > 0 && !formValuesConfirmed && canAddContent && (
               <ReleaseCreateConfirm
                 formValues={formValues}
                 formIsValid={formIsValid}

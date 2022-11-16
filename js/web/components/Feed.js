@@ -327,7 +327,7 @@ const Feed = ({
                 </HoverCard>
               </HoverContainer>
               <CopyWrapper>
-                <Typography my={1}>
+                <Typography my={1} align="left">
                   Purchase:{' '}
                   <Link href={`/${item.release?.publicKey}`} passHref>
                     {`${item.release?.metadata.properties.artist} - ${item.release?.metadata.properties.title}`}

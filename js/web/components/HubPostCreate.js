@@ -50,7 +50,9 @@ const HubPostCreate = ({
 }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const { postInitViaHub, hubState, getHub } = useContext(Hub.Context)
+  const { postInitViaHub, hubState, getHub, getHubsForRelease } = useContext(
+    Hub.Context
+  )
   const hubData = useMemo(
     () => hubState[hubPubkey || selectedHubId],
     [hubState, hubPubkey, selectedHubId]
@@ -169,7 +171,7 @@ const HubPostCreate = ({
 
   const handleSubmit = async () => {
     try {
-      const error = checkIfHasBalanceToCompleteAction(
+      const error = await checkIfHasBalanceToCompleteAction(
         formValues.postForm.reference
           ? NinaProgramAction.POST_INIT_VIA_HUB_WITH_REFERENCE_RELEASE
           : NinaProgramAction.POST_INIT_VIA_HUB

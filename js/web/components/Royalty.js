@@ -14,7 +14,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import RoyaltyRecipientForm from './RoyaltyRecipientForm'
-
+import Link from 'next/link'
 const Royalty = (props) => {
   const { release, releasePubkey } = props
 
@@ -32,8 +32,8 @@ const Royalty = (props) => {
   const { collectRoyaltyForRelease } = useContext(Release.Context)
 
   useEffect(() => {
-    if (release?.royaltyRecipients) {
-      release.royaltyRecipients.forEach((recipient) => {
+    if (release?.revenueShareRecipients) {
+      release.revenueShareRecipients.forEach((recipient) => {
         if (
           wallet?.connected &&
           recipient.recipientAuthority === wallet?.publicKey.toBase58()
@@ -45,7 +45,7 @@ const Royalty = (props) => {
         }
       })
     }
-  }, [release?.royaltyRecipients, wallet?.connected])
+  }, [release?.revenueShareRecipients, wallet?.connected])
 
   const toggleForm = () => {
     if (!formShown) {
@@ -119,8 +119,8 @@ const Royalty = (props) => {
               Revenue Share Information:
             </Typography>
             <List>
-              {release?.royaltyRecipients &&
-                release.royaltyRecipients.map((recipient, i) => {
+              {release?.revenueShareRecipients &&
+                release.revenueShareRecipients.map((recipient, i) => {
                   if (recipient.percentShare > 0) {
                     const walletAuthorizedToCollect =
                       wallet?.connected &&
@@ -131,12 +131,12 @@ const Royalty = (props) => {
                     const recipientHandle = walletAuthorizedToCollect ? (
                       'Your Revenue Share:'
                     ) : (
-                      <a
-                        href={`https://explorer.solana.com/address/${recipient.recipientAuthority}`}
-                        rel="noopener"
+                      <Link
+                        href={`/profiles/${recipient.recipientAuthority}`}
+                        passHref
                       >
-                        {`Collaborator ${i}`}
-                      </a>
+                        <a rel="noopener">{`Collaborator ${i}`}</a>
+                      </Link>
                     )
                     const percentShare = `percent share: ${
                       walletAuthorizedToCollect

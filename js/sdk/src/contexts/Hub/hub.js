@@ -12,6 +12,7 @@ import NinaSdk from '@nina-protocol/js-sdk';
 import { shuffle } from '../../utils'
 import MD5 from "crypto-js/md5";
 import { logEvent } from '../../utils/event'
+const axios = require('axios')
 
 const HubContext = createContext()
 const HubContextProvider = ({ children }) => {
@@ -280,7 +281,6 @@ const hubContextHelper = ({
   const hubUpdateConfig = async (hubPubkey, uri, publishFee, referralFee) => {
     const hub = hubState[hubPubkey]
     const program = await ninaClient.useProgram()
-
     try {
       const txid = await program.rpc.hubUpdateConfig(
         uri,
@@ -316,6 +316,7 @@ const hubContextHelper = ({
     allowance = 1
   ) => {
     try {
+
       const hub = hubState[hubPubkey]
       const program = await ninaClient.useProgram()
       collaboratorPubkey = new anchor.web3.PublicKey(collaboratorPubkey)
@@ -359,6 +360,7 @@ const hubContextHelper = ({
       )
 
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      const result = await axios.get(endpoints.api + `/hubs/${hubPubkey}/collaborators/${hubCollaborator.toBase58()}`)
       await getHub(hubPubkey)
 
       return {
@@ -445,6 +447,7 @@ const hubContextHelper = ({
       let queue = new Set(addToHubQueue)
       queue.add(releasePubkey)
       setAddToHubQueue(queue)
+    
       const hub = hubState[hubPubkey]
       const program = await ninaClient.useProgram()
       hubPubkey = new anchor.web3.PublicKey(hubPubkey)
@@ -497,6 +500,8 @@ const hubContextHelper = ({
           },
         ]
       }
+
+
       const txid = await program.rpc.hubAddRelease(hub.handle, request)
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
       await NinaSdk.Hub.fetchHubRelease(hubPubkey.toBase58(), hubRelease.toBase58())
@@ -550,8 +555,12 @@ const hubContextHelper = ({
         },
       })
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
-
+      await axios.get(endpoints.api + `/hubs/${hubPubkey}/collaborators/${hubCollaborator.toBase58()}`)
       await getHub(hubPubkey)
+
+      const hubCollaboratorsStateCopy = {...hubCollaboratorsState}
+      delete hubCollaboratorsStateCopy[hubCollaborator]
+      setHubCollaboratorsState(hubCollaboratorsStateCopy)
 
       return {
         success: true,
@@ -936,7 +945,6 @@ const hubContextHelper = ({
     try {
       const updatedAllHubs = [...allHubs]
       const  { hubs } = await NinaSdk.Hub.fetchAll({offset:allHubs.length, limit:25}, true)
-
       const updatedHubState = {...hubState}
       hubs.forEach(hub => {
         updatedAllHubs.push(hub.publicKey)
@@ -978,8 +986,8 @@ const hubContextHelper = ({
           ...collaborator.accountData.collaborator
         }
       })
-      console.log('updatedHubCollaboratorState!!!! :>> ', updatedHubCollaboratorState);
-      setHubCollaboratorsState(updatedHubCollaboratorState)
+
+      setHubCollaboratorsState(prevState => ({ ...prevState, ...updatedHubCollaboratorState}))
       setVerificationState(updatedVerificationState)
 
       const updatedHubContent = { ...hubContentState }
@@ -1026,20 +1034,11 @@ const hubContextHelper = ({
 
   const getHubsForUser = async (publicKey) => {
     try {
-      debugger
       const { hubs } = await NinaSdk.Account.fetchHubs(publicKey, true)
-      const updatedHubCollaboratorState = { ...hubCollaboratorsState }
+      const updatedHubCollaboratorState = { }
       const updatedHubState = { ...hubState }
       hubs.forEach(hub => {
-        // updatedHubCollaboratorState[hub.accountData.collaborator.publicKey] = hub.accountData.collaborator
-       console.log('hub :>> ', hub);
-        hub.accountData.collaborators.forEach(collaborator => {
-          console.log('collaborator :>> ', collaborator);
-          updatedVerificationState[collaborator.publicKey] = collaborator.verifications
-          updatedHubCollaboratorState[collaborator.accountData.collaborator.publicKey] = {
-            ...collaborator.accountData.collaborator
-          }
-        })
+        updatedHubCollaboratorState[hub.accountData.collaborator.publicKey] = hub.accountData.collaborator
        
         const hubAccountData = hub.accountData.hub
         delete hub.accountData
@@ -1049,8 +1048,14 @@ const hubContextHelper = ({
         }
       })
       setHubState(updatedHubState)
-      setHubCollaboratorsState(updatedHubCollaboratorState)
+      setHubCollaboratorsState(prevState =>(
+        {
+          ...prevState,
+          ...updatedHubCollaboratorState
+        }
+      ))
       setFetchedHubsForUser(new Set([...fetchedHubsForUser, publicKey]))
+
       return hubs
     } catch (error) {
       console.warn(error)
@@ -1061,7 +1066,7 @@ const hubContextHelper = ({
   const getHubsForRelease = async (releasePubkey) => {
     try {
       const { hubs } = await NinaSdk.Release.fetchHubs(releasePubkey, true)
-      const updatedHubState = { ...hubState }
+      const updatedHubState = {  }
       const updatedHubContent = { ...hubContentState }
       hubs.forEach(hub => {
         const accountData = {...hub.accountData}
@@ -1078,7 +1083,7 @@ const hubContextHelper = ({
           hubReleaseId: accountData.hubRelease.publicKey,
         }
       })
-      setHubState(updatedHubState)
+      setHubState(prevState => ({...prevState, ...updatedHubState}))
       setHubContentState(updatedHubContent)
       return hubs
     } catch (error) {
@@ -1134,9 +1139,9 @@ const hubContextHelper = ({
     const hubs = []
     Object.values(hubCollaboratorsState).forEach((hubCollaborator) => {
       if (hubCollaborator.collaborator === publicKey) {
+        
         hubs.push({
           ...hubState[hubCollaborator.hub],
-          userCanAddContent: hubCollaborator.canAddContent,
         })
       }
     })
