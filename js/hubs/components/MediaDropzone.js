@@ -85,7 +85,7 @@ const MediaDropzone = ({ type, setArtwork, setTrack, disabled }) => {
       return true;
     }
 
-    if (size > 3) {
+    if (size > 8) {
       return true;
     }
     return false;
@@ -93,7 +93,7 @@ const MediaDropzone = ({ type, setArtwork, setTrack, disabled }) => {
 
   const validateTrack = (fileWithMeta) => {
     const size = fileWithMeta.file.size / 1000000;
-    if (size > 110) {
+    if (size > 150) {
       return true;
     }
     if (fileWithMeta.file.type !== "audio/mpeg") {

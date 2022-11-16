@@ -116,7 +116,7 @@ const HubSlider = (props) => {
                           src={getImageFromCDN(
                             imageUrl,
                             400,
-                            new Date(Date.parse(hub.datetime))
+                            new Date(hub.datetime)
                           )}
                           height={100}
                           width={100}

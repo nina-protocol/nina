@@ -209,8 +209,10 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (track && artwork) {
-        const error = await checkIfHasBalanceToCompleteAction(
+      if (releaseCreated) {
+        router.push({pathname: `/${hubData.handle}/releases/${releaseInfo.hubRelease.toBase58()}`});
+      } else if (track && artwork) {
+        const error = checkIfHasBalanceToCompleteAction(
           NinaProgramAction.RELEASE_INIT_VIA_HUB
         );
         if (error) {
@@ -406,7 +408,6 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                 {!isPublishing && buttonText}
               </Button>
             )}
-
             {!canAddContent && (
               <Button
                 fullWidth
