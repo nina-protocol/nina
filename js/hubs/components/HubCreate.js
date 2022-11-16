@@ -625,6 +625,7 @@ const CreateFormWrapper = styled(Box)(({ theme }) => ({
   flexDirection: "column",
   gridColumn: "1/3",
   border: `1px solid ${theme.palette.grey.primary}`,
+  maxWidth: '506px'
 }));
 
 const CreateCta = styled(Box)(({ theme }) => ({

@@ -138,10 +138,10 @@ const HubComponent = ({ hubPubkey }) => {
       setActiveView(1)
     }
 
-    if (hubFollowers?.length > 0) {
+    if (hubFollowers) {
       viewIndex = updatedView.findIndex((view) => view.name === 'followers')
-      updatedView[viewIndex].disabled = false
       updatedView[viewIndex].count = hubFollowers.length
+      updatedView[viewIndex].disabled = hubFollowers.length === 0
     }
 
     setFetched({ ...fetched })
@@ -214,7 +214,6 @@ const HubComponent = ({ hubPubkey }) => {
               profileTabs={views}
               releaseData={releaseData}
               type={'hubView'}
-              followersCount={hubFollowers?.length}
             />
           </HubTabWrapper>
         )}
