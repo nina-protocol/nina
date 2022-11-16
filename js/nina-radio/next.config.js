@@ -33,9 +33,17 @@ module.exports = withTM({
     return config;
   },
   env: {
-    REACT_APP_CLUSTER: "mainnet",
+    IMGIX_URL: process.env.IMGIX_URL,
+    NEXT_PUBLIC_IMGIX_TOKEN: process.env.NEXT_PUBLIC_IMGIX_TOKEN,
+    NINA_API_ENDPOINT: process.env.NINA_API_ENDPOINT,
+    NINA_PROGRAM_ID: process.env.NINA_PROGRAM_ID,
+    SOLANA_CLUSTER_URL: process.env.SOLANA_CLUSTER_URL,
+    SOLANA_CLUSTER: process.env.SOLANA_CLUSTER,
   },
   images: {
-    domains: ["www.arweave.net"],
+    deviceSizes: [320, 420, 640, 750, 828, 1080, 1200, 1920, 2048],
+    loader: "imgix",
+    path: `${process.env.IMGIX_URL}/`,
+    domains: ["www.arweave.net", "arweave.net", process.env.IMGIX_URL],
   },
 });
