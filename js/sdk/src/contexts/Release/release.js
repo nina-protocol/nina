@@ -1516,7 +1516,6 @@ const releaseContextHelper = ({
           releases.push(feedItem.release)
         }
         if (feedItem.authority.verifications.length > 0) {
-          console.log('feedItem.authority :>> ', feedItem.authority);
           updatedVerificationState[feedItem.authority.publicKey] = feedItem.authority.verifications
         }
       })
