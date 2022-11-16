@@ -13,12 +13,7 @@ import Subscribe from './Subscribe'
 import { useSnackbar } from 'notistack'
 import { isMobile } from 'react-device-detect'
 
-const Suggestions = ({
-  items,
-  itemsTotal,
-  publicKey,
-  toggleDrawer
-}) => {
+const Suggestions = ({ items, itemsTotal, publicKey, toggleDrawer }) => {
   const router = useRouter()
   const scrollRef = useRef()
   const { enqueueSnackbar } = useSnackbar()

@@ -47,7 +47,7 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
         .reduce((prev, curr) => prev + curr, 0),
     [hubReleases]
   );
-
+    
   const releases = useMemo(() => {
     const ids =
       filterHubContentForHub(hubPubkey)[0].map((content) => content.release) ||

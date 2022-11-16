@@ -68,15 +68,9 @@ const Royalty = (props) => {
     return (
       <>
         {userIsRecipient && (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={toggleForm}
-            stlye={{ fontSize: "14px !important" }}
-            fullWidth
-          >
+          <ToggleButton onClick={toggleForm} fullWidth>
             {formToggleText}
-          </Button>
+          </ToggleButton>
         )}
         {formShown && (
           <RoyaltyRecipientForm
@@ -159,13 +153,11 @@ const Royalty = (props) => {
 
                     const collectButton = walletAuthorizedToCollect &&
                       recipient.owed > 0 && (
-                        <Button
+                        <CollectButton
                           onClick={() => handleCollectRoyalty(recipient)}
-                          variant="contained"
-                          color="primary"
                         >
                           Collect
-                        </Button>
+                        </CollectButton>
                       );
 
                     return (
@@ -202,7 +194,17 @@ const PREFIX = "Royalty";
 const classes = {
   recipientData: `${PREFIX}-recipientData`,
 };
-
+const CollectButton = styled(Button)(({ theme }) => ({
+  color: theme.palette.text.primary,
+  borderRadius: "0px",
+  border: `1px solid ${theme.palette.text.primary}`,
+}));
+const ToggleButton = styled(Button)(({ theme }) => ({
+  color: theme.palette.text.primary,
+  fontSize: "14px !important",
+  padding: 0,
+  marginTop: 5,
+}));
 const SettingsButton = styled(Button)(({ theme }) => ({
   "& p": {
     border: `1px solid ${theme.palette.text.primary}`,
@@ -215,10 +217,8 @@ const SettingsButton = styled(Button)(({ theme }) => ({
 
 const Root = styled("div")(({ theme }) => ({
   textAlign: "left",
-  [theme.breakpoints.down("md")]: {
-    marginTop: "20px",
-    marginBottom: "40px",
-  },
+  color: "black",
+  [theme.breakpoints.down("md")]: {},
   [`& .${classes.recipientData}`]: {
     color: `${theme.palette.greyLight}`,
     "& a": {
@@ -234,7 +234,7 @@ const StyledModal = styled(Modal)(() => ({
 }));
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper,
+  backgroundColor: theme.palette.background.default,
   border: "2px solid #000",
   boxShadow: theme.shadows[5],
   padding: theme.spacing(2, 4, 3),

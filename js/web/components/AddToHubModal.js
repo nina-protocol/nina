@@ -38,7 +38,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
     if (userHubs?.length === 1) {
       setSelectedHubId(userHubs[0]?.publicKey)
     }
-
+    console.log(canAddHubs)
     const canAddHubs = Object.values(hubCollaboratorsState).filter(
       (collaborator) => {
         return collaborator.canAddContent
@@ -48,6 +48,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
       canAddHubs?.some((h2) => h1.publicKey !== h2.publicKey)
     )
     setFilteredHubs(hubsWithPermission)
+    console.log(hubsWithPermission)
   }, [userHubs])
 
   const handleRepost = async (e) => {

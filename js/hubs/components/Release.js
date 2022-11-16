@@ -179,7 +179,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
               </Box>
             </CtaWrapper>
 
-            <Box sx={{ marginTop: { md: "0px", xs: "30px" } }}>
+            <Box sx={{ marginTop: { md: "0px", xs: "30px" }, marginBottom: '30px' }}>
               <ReleasePurchase
                 releasePubkey={releasePubkey}
                 metadata={metadata}
