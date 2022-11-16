@@ -32,6 +32,8 @@ const ReleaseContextProvider = ({ children }) => {
     usdcBalance,
     removeReleaseFromCollection,
     getSolPrice,
+    verficationState,
+    setVerificationState,
   } = useContext(Nina.Context)
   const [releasePurchasePending, setReleasePurchasePending] = useState({})
   const [releasePurchaseTransactionPending, setReleasePurchaseTransactionPending] = useState({})
@@ -116,7 +118,9 @@ const ReleaseContextProvider = ({ children }) => {
     releasePurchaseTransactionPending,
     setReleasePurchaseTransactionPending,
     fetchedUserProfileReleases,
-    setFetchedUserProfileReleases
+    setFetchedUserProfileReleases,
+    verficationState,
+    setVerificationState,
   })
 
   return (
@@ -197,7 +201,9 @@ const releaseContextHelper = ({
   releasePurchaseTransactionPending,
   setReleasePurchaseTransactionPending,
   fetchedUserProfileReleases,
-  setFetchedUserProfileReleases
+  setFetchedUserProfileReleases,
+  verificationState,
+  setVerificationState
 }) => {
   const { provider, ids, nativeToUi, uiToNative, isSol, isUsdc, endpoints } =
     ninaClient
@@ -1489,18 +1495,33 @@ const releaseContextHelper = ({
 
   const getCollectorsForRelease = async (releasePubkey) => {
     const { collectors } = await NinaSdk.Release.fetchCollectors(releasePubkey)
-    return collectors.map(collector => collector.publicKey)
+    const updatedVerificationState = {...verificationState}
+    return collectors.map(collector => {
+      if (collector.verifications.length > 0) {
+        updatedVerificationState[collector.publicKey] = collector.verifications
+      }
+      console.log('updatedVerificationState :>> ', updatedVerificationState);
+      setVerificationState(prevState => ({...prevState, ...updatedVerificationState}))
+     return collector.publicKey
+    })
   }
 
   const getFeedForUser = async (publicKey, offset) => {
     try {
       const { data } = await axios.get(`${process.env.NINA_API_ENDPOINT}/accounts/${publicKey}/feed?offset=${offset}`)
       const releases = []
+      const updatedVerificationState = {...verificationState}
+
       data.feedItems.forEach(feedItem => {
         if (feedItem.release) {
           releases.push(feedItem.release)
         }
+        if (feedItem.authority.verifications.length > 0) {
+          console.log('feedItem.authority :>> ', feedItem.authority);
+          updatedVerificationState[feedItem.authority.publicKey] = feedItem.authority.verifications
+        }
       })
+      setVerificationState(prevState => ({...prevState, ...updatedVerificationState}))
       setReleaseState(updateStateForReleases(releases))
       return data
     } catch (error) {
