@@ -229,7 +229,7 @@ const HubCreateForm = ({
 
         <Field name="description">
           {(props) => (
-            <Box sx={{ mb: "8px" }}>
+            <Box sx={{ mb: "8px",}}>
               <Quill props={props} update={update} type={"hub"} />
             </Box>
           )}

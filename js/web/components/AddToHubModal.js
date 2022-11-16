@@ -38,7 +38,6 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
     if (userHubs?.length === 1) {
       setSelectedHubId(userHubs[0]?.publicKey)
     }
-
     const canAddHubs = Object.values(hubCollaboratorsState).filter(
       (collaborator) => {
         return collaborator.canAddContent

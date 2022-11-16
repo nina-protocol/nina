@@ -212,7 +212,7 @@ const ReleasePurchase = (props) => {
       )}
       <form
         onSubmit={handleSubmit}
-        style={{ textAlign: "left", marginBottom: "10px", marginTop: "20px" }}
+        style={{ textAlign: "left", marginBottom: "10px", marginTop: {md: "0px", lg: "20px"} }}
       >
         <BuyButton variant="contained" type="submit">
           <Typography variant="body2" align="left">
@@ -262,8 +262,8 @@ const BuyButton = styled(Button)(({ theme }) => ({
 const ReleasePurchaseWrapper = styled(Box)(({ theme }) => ({
   textAlign: "left",
   [theme.breakpoints.down("md")]: {
-    marginTop: "20px",
-    marginBottom: "40px",
+   
+    
   },
 }));
 const AmountRemaining = styled(Typography)(({ theme }) => ({

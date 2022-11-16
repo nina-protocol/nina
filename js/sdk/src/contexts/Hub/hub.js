@@ -614,6 +614,7 @@ const hubContextHelper = ({
       )[0]
       toggledContent.visible = !toggledContent.visible
       const hubContentStateCopy = { ...hubContentState }
+    
       hubContentState[toggledContent.publicKey] = toggledContent
       setHubContentState(hubContentStateCopy)
       return {
@@ -1101,6 +1102,7 @@ const hubContextHelper = ({
   const filterHubContentForHub = (hubPubkey) => {
     const hubReleases = []
     const hubPosts = []
+    console.log('hubContentState', hubContentState)
     Object.values(hubContentState).forEach((hubContent) => {
       if (hubContent.hub === hubPubkey) {
         if (hubContent.contentType === 'ninaReleaseV1') {
