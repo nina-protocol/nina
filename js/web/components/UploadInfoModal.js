@@ -86,7 +86,7 @@ const UploadInfoModal = ({ userHasSeenUpdateMessage }) => {
               style={{ marginTop: '15px' }}
               color="primary"
               variant="outlined"
-              onClick={handleClose}
+              onClick={handleClose} 
             >
               <Typography>Got it!</Typography>
             </Button>
