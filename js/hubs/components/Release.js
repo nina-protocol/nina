@@ -23,9 +23,9 @@ import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
-import Royalty from "./Royalty";
 const { getImageFromCDN, loader } = imageManager;
 
+const Royalty = dynamic(() => import("./Royalty"));
 const Button = dynamic(() => import("@mui/material/Button"));
 const ReleasePurchase = dynamic(() => import("./ReleasePurchase"));
 const AddToHubModal = dynamic(() => import("./AddToHubModal"));
@@ -57,12 +57,6 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
       getRelease(releasePubkey);
     }
   }, [releasePubkey]);
-
-  useEffect(() => {
-    if (releaseState.tokenData[releasePubkey]) {
-      setRelease(releaseState.tokenData[releasePubkey])
-    }
-  }, [releaseState.tokenData[releasePubkey]])
 
   useEffect(() => {
     if (releaseState.metadata[releasePubkey]) {
@@ -112,8 +106,8 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   }, [releaseState.tokenData[releasePubkey]])
 
   useEffect(() => {
-    if (release?.revenueShareRecipients) {
-      release.revenueShareRecipients.forEach((recipient) => {
+    if (releaseState.tokenData[releasePubkey]?.revenueShareRecipients) {
+      releaseState.tokenData[releasePubkey]?.revenueShareRecipients.forEach((recipient) => {
         if (
           wallet?.connected &&
           recipient.recipientAuthority === wallet?.publicKey.toBase58()
