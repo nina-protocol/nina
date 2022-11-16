@@ -23,9 +23,9 @@ import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
-import Royalty from "./Royalty";
 const { getImageFromCDN, loader } = imageManager;
 
+const Royalty = dynamic(() => import("./Royalty"));
 const Button = dynamic(() => import("@mui/material/Button"));
 const ReleasePurchase = dynamic(() => import("./ReleasePurchase"));
 const AddToHubModal = dynamic(() => import("./AddToHubModal"));
@@ -43,7 +43,8 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const [metadata, setMetadata] = useState(metadataSsr || null);
   const [description, setDescription] = useState();
   const [userHubs, setUserHubs] = useState();
-  const [release, setRelease] = useState();
+  const [userIsRecipient, setUserIsRecipient] = useState(false)
+
   useEffect(() => {
     if (hubPubkey && !hubState[hubPubkey]) {
       getHub(hubPubkey);
@@ -55,7 +56,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
       getRelease(releasePubkey);
     }
   }, [releasePubkey]);
-  
+
   useEffect(() => {
     if (releaseState.metadata[releasePubkey]) {
       setMetadata(releaseState.metadata[releasePubkey]);
@@ -97,11 +98,20 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
       setDescription(metadata?.description);
     }
   }, [metadata?.description]);
+
   useEffect(() => {
-    if(releaseState.tokenData[releasePubkey]){
-      setRelease(releaseState.tokenData[releasePubkey])
+    if (releaseState.tokenData[releasePubkey]?.revenueShareRecipients) {
+      releaseState.tokenData[releasePubkey]?.revenueShareRecipients.forEach((recipient) => {
+        if (
+          wallet?.connected &&
+          recipient.recipientAuthority === wallet?.publicKey.toBase58()
+        ) {
+          setUserIsRecipient(true)
+        }
+      })
     }
-  }, [releaseState.tokenData[releasePubkey]])
+  }, [releaseState.tokenData[releasePubkey], wallet?.connected])
+
   return (
     <>
       <StyledGrid
@@ -179,13 +189,17 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
               </Box>
             </CtaWrapper>
 
-            <Box sx={{ marginTop: { md: "0px", xs: "30px" } }}>
+            <Box sx={{ marginTop: { md: "0px", xs: "30px" }, marginBottom: '15px' }}>
               <ReleasePurchase
                 releasePubkey={releasePubkey}
                 metadata={metadata}
                 hubPubkey={hubPubkey}
               />
-              <Royalty release={release} releasePubkey={releasePubkey}/>
+              {
+                userIsRecipient && (
+                  <Royalty release={releaseState.tokenData[releasePubkey]} releasePubkey={releasePubkey}/>
+                )
+              }
             </Box>
 
             <StyledDescription align="left">{description}</StyledDescription>
@@ -239,6 +253,7 @@ const PlayButton = styled(Button)(({ theme }) => ({
 const StyledDescription = styled(Typography)(({ theme }) => ({
   fontSize: "18px !important",
   lineHeight: "20.7px !important",
+  marginTop: '15px',
   "&::-webkit-scrollbar": {
     display: "none",
   },
