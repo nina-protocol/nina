@@ -55,13 +55,13 @@ const Subscribe = ({
     setPending(false)
   }
 
-  const handleUnsubscribe = async (e, accountAddress) => {
+  const handleUnsubscribe = async (e, accountAddress, hubHandle) => {
     e.preventDefault()
     e.stopPropagation()
 
     setPending(true)
 
-    const result = await subscriptionUnsubscribe(accountAddress)
+    const result = await subscriptionUnsubscribe(accountAddress, hubHandle)
     if (result.success) {
       enqueueSnackbar(result.msg, {
         variant: 'success',
@@ -97,7 +97,7 @@ const Subscribe = ({
             <Button
               color="primary"
               sx={{ padding: `${inFeed ? '0px' : '0 15px'}` }}
-              onClick={(e) => handleUnsubscribe(e, accountAddress)}
+              onClick={(e) => handleUnsubscribe(e, accountAddress, hubHandle)}
             >
               Unfollow
             </Button>
