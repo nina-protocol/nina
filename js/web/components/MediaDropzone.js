@@ -94,7 +94,7 @@ const MediaDropzone = ({ type, setArtwork, setTrack, handleProgress }) => {
 
   const validateTrack = (fileWithMeta) => {
     const size = fileWithMeta.file.size / 1000000
-    if (size > 120) {
+    if (size > 150) {
       return true
     }
     if (fileWithMeta.file.type !== 'audio/mpeg') {

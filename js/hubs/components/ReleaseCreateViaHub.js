@@ -208,7 +208,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
     e.preventDefault();
     try {
       if (releaseCreated) {
-        // router.push({pathname: `/${hubData.handle}/releases/${releaseInfo.hubRelease.toBase58()}`});
+        router.push({pathname: `/${hubData.handle}/releases/${releaseInfo.hubRelease.toBase58()}`});
       } else if (track && artwork) {
         const error = checkIfHasBalanceToCompleteAction(
           NinaProgramAction.RELEASE_INIT_VIA_HUB
@@ -399,14 +399,6 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                 {!isPublishing && buttonText}
               </Button>
             )}
-                {releaseCreated && (
-                  <Link
-                    href={`/${hubData.handle}/releases/${releaseInfo.hubRelease.toBase58()}`}
-                  >
-                        {buttonText}
-                  </Link>
-              )}
-
             {!canAddContent && (
               <Button
                 fullWidth
