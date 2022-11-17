@@ -168,7 +168,7 @@ const ReleasePurchase = (props) => {
     }
     let result
     if (!amountHeld || amountHeld === 0) {
-      const error = checkIfHasBalanceToCompleteAction(
+      const error = await checkIfHasBalanceToCompleteAction(
         NinaProgramAction.RELEASE_PURCHASE
       )
       if (error) {

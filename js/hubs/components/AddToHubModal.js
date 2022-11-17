@@ -51,7 +51,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
   }, [selectedHubId, userHubs]);
 
   const handleRepost = async (e) => {
-    const error = checkIfHasBalanceToCompleteAction(
+    const error = await checkIfHasBalanceToCompleteAction(
       NinaProgramAction.HUB_ADD_RELEASE
     );
     if (error) {
