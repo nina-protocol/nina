@@ -2,6 +2,7 @@ import dynamic from 'next/dynamic'
 import { Box } from '@mui/material'
 import { styled } from '@mui/system'
 import Head from 'next/head'
+import NinaSdk from '@nina-protocol/js-sdk'
 const Profile = dynamic(() => import('../../../components/Profile'))
 
 const ProfilePage = (props) => {
