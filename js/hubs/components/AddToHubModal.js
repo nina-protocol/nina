@@ -21,12 +21,14 @@ import Dots from "./Dots";
 const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
   const [open, setOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+  const { hubAddRelease, getHubsForRelease, hubCollaboratorsState } =
+    useContext(Hub.Context)
   const { checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(
     Nina.Context
   );
-  const { hubAddRelease } = useContext(Hub.Context);
   const [selectedHubId, setSelectedHubId] = useState();
   const [inProgress, setInProgress] = useState(false);
+  const [filteredHubs, setFilteredHubs] = useState()
   const [canAddContent, setCanAddContent] = useState(false);
   const userHasHubs = useMemo(
     () => userHubs && userHubs.length > 0,
@@ -35,20 +37,18 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
 
   useEffect(() => {
     if (userHubs?.length === 1) {
-      setSelectedHubId(userHubs[0]?.id);
+      setSelectedHubId(userHubs[0]?.publicKey)
     }
-  }, [userHubs]);
-
-  useEffect(() => {
-    if (selectedHubId && userHubs) {
-      const selectedHub = userHubs.find(
-        (hub) => hub.publicKey === selectedHubId
-      );
-      if (selectedHub?.userCanAddContent) {
-        setCanAddContent(true);
+    const canAddHubs = Object.values(hubCollaboratorsState).filter(
+      (collaborator) => {
+        return collaborator.canAddContent
       }
-    }
-  }, [selectedHubId, userHubs]);
+    )
+    const hubsWithPermission = userHubs?.filter((h1) =>
+      canAddHubs?.some((h2) => h1.publicKey !== h2.publicKey)
+    )
+    setFilteredHubs(hubsWithPermission)
+  }, [userHubs])
 
   const handleRepost = async (e) => {
     const error = await checkIfHasBalanceToCompleteAction(
@@ -65,8 +65,9 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
     });
 
     handleClose();
-    const result = await hubAddRelease(selectedHubId, releasePubkey, hubPubkey);
+    const result = await hubAddRelease(selectedHubId, releasePubkey);
     if (result?.success) {
+      await getHubsForRelease(releasePubkey)
       enqueueSnackbar(result.msg, {
         variant: "info",
       });
@@ -152,28 +153,17 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
                       label="Select hub"
                       fullWidth
                       variant="standard"
-                      onChange={(e, userHubs) => {
+                      onChange={(e, filteredHubs) => {
                         setSelectedHubId(e.target.value);
                       }}
                     >
-                      {userHubs
-                        ?.filter(
-                          (hub) =>
-                            hub.publicKey &&
-                            hub.publicKey !== hubPubkey &&
-                            hub.userCanAddContent
+                     {filteredHubs?.map((hub) => {
+                        return (
+                          <MenuItem key={hub?.publicKey} value={hub?.publicKey}>
+                            {hub?.data?.displayName}
+                          </MenuItem>
                         )
-                        .map((hub) => {
-                          return (
-                            <MenuItem
-                              key={hub?.publicKey}
-                              value={hub?.publicKey}
-                              sx={{ color: "black" }}
-                            >
-                              {hub?.data?.displayName}
-                            </MenuItem>
-                          );
-                        })}
+                      })}
                     </Select>
                   </FormControl>
                 )}
@@ -183,9 +173,9 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
               style={{ marginTop: "15px", textTransform: "uppercase" }}
               variant="outlined"
               disabled={
-                inProgress || !selectedHubId || !userHasHubs || !canAddContent
+                inProgress || !selectedHubId || !userHasHubs
               }
-              onClick={handleRepost}
+              onClick={(e) => handleRepost(e)}
             >
               {!inProgress && "Repost release to your hub"}
               {inProgress && (

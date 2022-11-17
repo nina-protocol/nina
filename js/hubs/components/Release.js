@@ -70,8 +70,13 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   }, [wallet.connect, hubState[hubPubkey]]);
 
   useEffect(() => {
+    const fetchHubs = async () => {
+      const hubs = await getHubsForUser(wallet.publicKey.toBase58());
+      setUserHubs(hubs);
+    }
     if (wallet.connected && hubState) {
-      setUserHubs(filterHubsForUser(wallet.publicKey.toBase58()));
+     
+     fetchHubs()
     }
   }, [hubState]);
 
