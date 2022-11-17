@@ -52,7 +52,11 @@ const HubAddCollaborator = (props) => {
         setPending,
       } = values;
       setPending(true);
+<<<<<<< HEAD
       const error = await checkIfHasBalanceToCompleteAction(
+=======
+      const error = checkIfHasBalanceToCompleteAction(
+>>>>>>> 429ddd04cc49e25e790c93ebafd53980b5091c63
         NinaProgramAction.HUB_ADD_COLLABORATOR
       );
       if (error) {
