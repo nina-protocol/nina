@@ -58,15 +58,28 @@ const PostPage = (props) => {
 export default PostPage;
 
 export const getStaticPaths = async () => {
+  if (!NinaSdk.client.program) {
+    await NinaSdk.client.init(
+      process.env.NINA_API_ENDPOINT,
+      process.env.SOLANA_CLUSTER_URL,
+      process.env.NINA_PROGRAM_ID
+    );
+  }
+  const paths = []
+  const { hubs } = await NinaSdk.Hub.fetchAll({limit: 1000})
+  for await (const hub of hubs) {
+    const { posts } = await NinaSdk.Hub.fetchPosts(hub.publicKey)
+    posts.forEach(post => {
+      paths.push({
+        params: { hubPubkey: hub.publicKey, hubPostPubkey: post.hubPostPublicKey }
+      })
+      paths.push({
+        params: { hubPubkey: hub.handle, hubPostPubkey: post.hubPostPublicKey }
+      })
+    })
+  }
   return {
-    paths: [
-      {
-        params: {
-          hubPubkey: "placeholder",
-          hubPostPubkey: "placeholder",
-        },
-      },
-    ],
+    paths,
     fallback: "blocking",
   };
 };

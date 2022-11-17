@@ -67,14 +67,16 @@ export const getStaticPaths = async () => {
       process.env.NINA_PROGRAM_ID
     );
   }
+  const paths = []
   const { hubs } = await NinaSdk.Hub.fetchAll({limit: 1000})
-  console.log('hubs', hubs)
-  const publicKeyPaths = hubs.map((hub) => ({
-    params: { hubPubkey: hub.publicKey },
-  }));
-  const handlePaths = hubs.map((hub) => ({
-    params: { hubPubkey: hub.handle },
-  }));
+  hubs.forEach((hub) => {
+    paths.push({
+      params: { hubPubkey: hub.publicKey },
+    })
+    paths.push({
+      params: { hubPubkey: hub.handle },
+    })
+  });
   return {
     paths: [...handlePaths, ...publicKeyPaths],
     fallback: "blocking",

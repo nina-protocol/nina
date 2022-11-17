@@ -54,15 +54,28 @@ const ReleasePage = (props) => {
 export default ReleasePage;
 
 export const getStaticPaths = async () => {
+  if (!NinaSdk.client.program) {
+    await NinaSdk.client.init(
+      process.env.NINA_API_ENDPOINT,
+      process.env.SOLANA_CLUSTER_URL,
+      process.env.NINA_PROGRAM_ID
+    );
+  }
+  const paths = []
+  const { hubs } = await NinaSdk.Hub.fetchAll({limit: 1000})
+  for await (const hub of hubs) {
+    const { releases } = await NinaSdk.Hub.fetchReleases(hub.publicKey)
+    releases.forEach(release => {
+      paths.push({
+        params: { hubPubkey: hub.publicKey, hubReleasePubkey: release.hubReleasePublicKey }
+      })
+      paths.push({
+        params: { hubPubkey: hub.handle, hubReleasePubkey: release.hubReleasePublicKey }
+      })
+    })
+  }
   return {
-    paths: [
-      {
-        params: {
-          hubPubkey: "placeholder",
-          hubReleasePubkey: "placeholder",
-        },
-      },
-    ],
+    paths,
     fallback: "blocking",
   };
 };
