@@ -8,7 +8,8 @@ import React, {
 import * as Yup from 'yup'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-import { getMd5FileHash } from "@nina-protocol/nina-internal-sdk/esm/utils"
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import { getMd5FileHash } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import { useSnackbar } from 'notistack'
 import { styled } from '@mui/material/styles'
 import Button from '@mui/material/Button'
@@ -33,6 +34,7 @@ import {
   UploadType,
   uploadHasItemForType,
 } from '../utils/uploadManager'
+import EmailCapture from './EmailCapture'
 const BundlrModal = dynamic(() => import('./BundlrModal'))
 
 const ReleaseCreateSchema = Yup.object().shape({
@@ -54,6 +56,7 @@ const ReleaseCreate = () => {
     releaseCreateMetadataJson,
     releaseCreate,
     validateUniqueMd5Digest,
+    releaseInitViaHub,
   } = useContext(Release.Context)
   const router = useRouter()
   const {
@@ -67,8 +70,12 @@ const ReleaseCreate = () => {
     getNpcAmountHeld,
     npcAmountHeld,
     checkIfHasBalanceToCompleteAction,
-    NinaProgramAction
+    NinaProgramAction,
   } = useContext(Nina.Context)
+
+  const { getHubsForUser, fetchedHubsForUser, filterHubsForUser } = useContext(
+    Hub.Context
+  )
 
   const [track, setTrack] = useState(undefined)
   const [artwork, setArtwork] = useState()
@@ -93,8 +100,10 @@ const ReleaseCreate = () => {
   const [releaseCreated, setReleaseCreated] = useState(false)
   const [uploadId, setUploadId] = useState()
   const [publishingStepText, setPublishingStepText] = useState()
-  const [md5Digest, setMd5Digest] = useState();
-
+  const [md5Digest, setMd5Digest] = useState()
+  const [profileHubs, setProfileHubs] = useState()
+  const [hubOptions, setHubOptions] = useState()
+  const [selectedHub, setSelectedHub] = useState()
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
     [bundlrBalance, bundlrPricePerMb]
@@ -113,6 +122,37 @@ const ReleaseCreate = () => {
   useEffect(async () => {
     getNpcAmountHeld()
   }, [wallet?.connected])
+
+  useEffect(() => {
+    let publicKey
+    if (wallet.connected) {
+      publicKey = wallet.publicKey.toBase58()
+      getUserHubs(publicKey)
+    }
+  }, [wallet?.connected])
+
+  useEffect(() => {
+    if (wallet.connected) {
+      let publicKey = wallet?.publicKey?.toBase58()
+      if (fetchedHubsForUser.has(publicKey)) {
+        const hubs = filterHubsForUser(publicKey)
+        const sortedHubs = hubs?.sort((a, b) => {
+          return a?.data?.displayName?.localeCompare(b?.data?.displayName)
+        })
+        setProfileHubs(sortedHubs)
+      }
+    }
+  }, [fetchedHubsForUser])
+
+  const getUserHubs = async (publicKey) => {
+    try {
+      await getHubsForUser(publicKey)
+    } catch {
+      enqueueSnackbar('Error fetching hubs for user', {
+        variant: 'error',
+      })
+    }
+  }
 
   useEffect(() => {
     if (isPublishing) {
@@ -204,7 +244,6 @@ const ReleaseCreate = () => {
       }
       handleGetMd5FileHash(track)
     }
-
   }, [track])
 
   const handleSubmit = async () => {
@@ -220,22 +259,24 @@ const ReleaseCreate = () => {
           `/${releasePubkey.toBase58()}`
         )
       } else if (track && artwork) {
-        const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.RELEASE_INIT_WITH_CREDIT);
+        const error = await checkIfHasBalanceToCompleteAction(
+          NinaProgramAction.RELEASE_INIT_WITH_CREDIT
+        )
         if (error) {
-          enqueueSnackbar(error.msg, { variant: "failure" });
-          return;
+          enqueueSnackbar(error.msg, { variant: 'failure' })
+          return
         }
-    
+
         const hashExists = await validateUniqueMd5Digest(md5Digest)
         if (hashExists) {
           enqueueSnackbar(
             `A release with this track already exists: ${hashExists.json.properties.artist} - ${hashExists.json.properties.title}`,
             {
-              variant: "warn",
+              variant: 'warn',
             }
-          );
+          )
 
-          return 
+          return
         }
         let upload = uploadId
         let artworkResult = artworkTx
@@ -294,7 +335,7 @@ const ReleaseCreate = () => {
                 trackType: track.file.type,
                 artworkType: artwork.file.type,
                 duration: track.meta.duration,
-                md5Digest
+                md5Digest,
               })
               metadataResult = await bundlrUpload(
                 new Blob([JSON.stringify(metadataJson)], {
@@ -321,17 +362,28 @@ const ReleaseCreate = () => {
                   variant: 'info',
                 }
               )
-
-              const result = await releaseCreate({
-                ...formValues.releaseForm,
-                release: info.release,
-                releaseBump: info.releaseBump,
-                releaseMint: info.releaseMint,
-                metadataUri: `https://arweave.net/${metadataResult}`,
-                release: info.release,
-                releaseBump: info.releaseBump,
-                releaseMint: info.releaseMint,
-              })
+              let result
+              if (selectedHub && selectedHub !== '') {
+                result = await releaseInitViaHub({
+                  ...formValues.releaseForm,
+                  hubPubkey: selectedHub,
+                  release: info.release,
+                  releaseBump: info.releaseBump,
+                  releaseMint: info.releaseMint,
+                  metadataUri: `https://arweave.net/${metadataResult}`,
+                })
+              } else {
+                result = await releaseCreate({
+                  ...formValues.releaseForm,
+                  release: info.release,
+                  releaseBump: info.releaseBump,
+                  releaseMint: info.releaseMint,
+                  metadataUri: `https://arweave.net/${metadataResult}`,
+                  release: info.release,
+                  releaseBump: info.releaseBump,
+                  releaseMint: info.releaseMint,
+                })
+              }
 
               if (result.success) {
                 enqueueSnackbar('Release Created!', {
@@ -352,6 +404,7 @@ const ReleaseCreate = () => {
         }
       }
     } catch (error) {
+      console.warn('Release Create handleSubmit error:', error)
       setIsPublishing(false)
     }
   }
@@ -363,7 +416,12 @@ const ReleaseCreate = () => {
       setAudioProgress(progress)
     }
   }
-
+  const handleHubSelect = (e) => {
+    const {
+      target: { value },
+    } = e
+    setSelectedHub(value)
+  }
   return (
     <Grid item md={12}>
       {!wallet.connected && (
@@ -375,33 +433,11 @@ const ReleaseCreate = () => {
       {wallet?.connected && npcAmountHeld < 1 && (
         <Box style={{ display: 'flex' }}>
           <NpcMessage>
-            <Typography variant="h3">
-              Currently, Nina Publishing Credits (NPCs) are required to access
-              the publishing flow.
+            <Typography variant="h3" sx={{ mb: 1 }}>
+              Nina is currently in a closed beta for uploading releases.
             </Typography>
-            <Typography variant="h3">
-              1 NPC allows the publishing of 1 Release.
-            </Typography>
-            <Typography variant="h3">
-              If you don’t have a Solana wallet, please set one up at{' '}
-              <Link target="_blank" rel="noreferrer" href="https://phantom.app">
-                phantom.app
-              </Link>
-              .
-            </Typography>
-            <Typography variant="h3">
-              Please fill out{' '}
-              <Link
-                target="_blank"
-                rel="noreferrer"
-                href="https://docs.google.com/forms/d/e/1FAIpQLSdj13RKQcw9GXv3A5U4ebJhzJjjfxzxuCtB092X4mkHm5XX0w/viewform"
-              >
-                this form
-              </Link>{' '}
-              and we will notify you when your credits have been distributed.
-            </Typography>
-
-            <Typography variant="h3">
+            <EmailCapture size="medium" />
+            <Typography variant="h3" sx={{ mt: 1 }}>
               Check our <Link href="/faq">FAQ</Link> or hit us at{' '}
               <Link
                 target="_blank"
@@ -445,28 +481,31 @@ const ReleaseCreate = () => {
             </CreateFormWrapper>
 
             <CreateCta>
-              {bundlrBalance === 0 && <BundlrModal inCreate={true} />}
-              {bundlrBalance > 0 && formValuesConfirmed && (
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleSubmit}
-                  disabled={
-                    isPublishing ||
-                    !formIsValid ||
-                    bundlrBalance === 0 ||
-                    mbs < uploadSize ||
-                    artwork?.meta.status === 'uploading' ||
-                    (track?.meta.status === 'uploading' && !releaseCreated)
-                  }
-                  sx={{ height: '54px' }}
-                >
-                  {isPublishing && !releaseCreated && (
-                    <Dots msg={publishingStepText} />
-                  )}
-                  {!isPublishing && buttonText}
-                </Button>
+              {bundlrBalance === 0 ? (
+                <BundlrModal inCreate={true} />
+              ) : (
+                formValuesConfirmed && (
+                  <Button
+                    fullWidth
+                    variant="outlined"
+                    color="primary"
+                    onClick={handleSubmit}
+                    disabled={
+                      isPublishing ||
+                      !formIsValid ||
+                      bundlrBalance === 0 ||
+                      mbs < uploadSize ||
+                      artwork?.meta.status === 'uploading' ||
+                      (track?.meta.status === 'uploading' && !releaseCreated)
+                    }
+                    sx={{ height: '54px' }}
+                  >
+                    {isPublishing && !releaseCreated && (
+                      <Dots msg={publishingStepText} />
+                    )}
+                    {!isPublishing && buttonText}
+                  </Button>
+                )
               )}
 
               {bundlrBalance > 0 && !formValuesConfirmed && (
@@ -477,6 +516,10 @@ const ReleaseCreate = () => {
                   setFormValuesConfirmed={setFormValuesConfirmed}
                   artwork={artwork}
                   track={track}
+                  profileHubs={profileHubs}
+                  setSelectedHub={setSelectedHub}
+                  selectedHub={selectedHub}
+                  handleChange={(e) => handleHubSelect(e)}
                 />
               )}
 

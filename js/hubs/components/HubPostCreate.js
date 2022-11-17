@@ -133,7 +133,7 @@ const HubPostCreate = ({
     } else {
       setButtonText(
         preloadedRelease
-          ? `Create Post on ${hubData?.json.displayName}`
+          ? `Create Post on ${hubData?.data.displayName}`
           : `You do not have permission to create posts`
       );
     }
@@ -165,8 +165,13 @@ const HubPostCreate = ({
 
   const handleSubmit = async () => {
     try {
-      const referenceRelease = formValues.postForm.reference || preloadedRelease
-      const error = checkIfHasBalanceToCompleteAction(referenceRelease ? NinaProgramAction.POST_INIT_VIA_HUB_WITH_REFERENCE_RELEASE : NinaProgramAction.POST_INIT_VIA_HUB);
+      const referenceRelease =
+        formValues.postForm.reference || preloadedRelease;
+      const error = await checkIfHasBalanceToCompleteAction(
+        referenceRelease
+          ? NinaProgramAction.POST_INIT_VIA_HUB_WITH_REFERENCE_RELEASE
+          : NinaProgramAction.POST_INIT_VIA_HUB
+      );
       if (error) {
         enqueueSnackbar(error.msg, { variant: "failure" });
         return;
@@ -199,7 +204,7 @@ const HubPostCreate = ({
             new Blob([JSON.stringify(metadataJson)], {
               type: "application/json",
             })
-          )
+          );
 
           setMetadataTx(metadataResult);
 

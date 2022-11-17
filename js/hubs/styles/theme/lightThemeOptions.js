@@ -178,52 +178,52 @@ const lightThemeOptions = {
           backgroundColor: `${colors.black} !important`,
         },
         root: {
-          '& .MuiSlider-thumb': {
+          "& .MuiSlider-thumb": {
             color: colors.black,
             backgroundColor: `${colors.black} !important`,
-            width: '14px',
-            height: '11px',
-            boxShadow: 'none !important',
-            '&:hover': {
-              boxShadow: 'none',
+            width: "14px",
+            height: "11px",
+            boxShadow: "none !important",
+            "&:hover": {
+              boxShadow: "none",
             },
-            '& .Mui-focusVisible': {
-              boxShadow: 'none',
+            "& .Mui-focusVisible": {
+              boxShadow: "none",
             },
           },
-          '& .MuiSlider-track': {
+          "& .MuiSlider-track": {
             color: colors.black,
             backgroundColor: `${colors.black} !important`,
-            height: '1px',
-            border: 'none',
+            height: "1px",
+            border: "none",
           },
-          '& .MuiSlider-rail': {
+          "& .MuiSlider-rail": {
             color: colors.black,
             backgroundColor: `${colors.black} !important`,
-            height: '1px',
+            height: "1px",
           },
         },
         root: {
-          '& .MuiSlider-thumb': {
+          "& .MuiSlider-thumb": {
             color: colors.black,
-            width: '14px',
-            height: '11px',
-            boxShadow: 'none !important',
-            '&:hover': {
-              boxShadow: 'none',
+            width: "14px",
+            height: "11px",
+            boxShadow: "none !important",
+            "&:hover": {
+              boxShadow: "none",
             },
-            '& .Mui-focusVisible': {
-              boxShadow: 'none',
+            "& .Mui-focusVisible": {
+              boxShadow: "none",
             },
           },
-          '& .MuiSlider-track': {
+          "& .MuiSlider-track": {
             color: colors.black,
-            height: '1px',
-            border: 'none',
+            height: "1px",
+            border: "none",
           },
-          '& .MuiSlider-rail': {
+          "& .MuiSlider-rail": {
             color: colors.black,
-            height: '1px',
+            height: "1px",
           },
         },
       },
@@ -252,14 +252,15 @@ const lightThemeOptions = {
             opacity: "50% !important",
           },
         },
-        'a, p, h1, h2, h3, h4, h4, h5, h6, figure, blockquote, dl, dd': {
-          margin: '8px 0'
+        "a, p, h1, h2, h3, h4, h4, h5, h6, figure, blockquote, dl, dd": {
+          margin: "8px 0",
         },
-        '.ql-toolbar': { // QL classes are for overriding Quill components
-          textAlign: 'left'
+        ".ql-toolbar": {
+          // QL classes are for overriding Quill components
+          textAlign: "left",
         },
-        '.ql-bubble a::before, a::after': {
-          display: 'none'      
+        ".ql-bubble a::before, a::after": {
+          display: "none",
         },
         ".formField": {
           marginBottom: "8px !important",

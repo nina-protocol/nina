@@ -6,7 +6,7 @@ import TextField from '@mui/material/TextField'
 import Slider from '@mui/material/Slider'
 import Box from '@mui/material/Box'
 import Fade from '@mui/material/Fade'
-import {formatPlaceholder} from '@nina-protocol/nina-internal-sdk/esm/utils'
+import { formatPlaceholder } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import Quill from './Quill'
 
 const ReleaseCreateForm = ({
@@ -180,12 +180,11 @@ const ReleaseCreateForm = ({
 
             <Field name="description">
               {(props) => (
-                <Box sx={{borderBottom: '1px solid grey'}}>
+                <Box sx={{ borderBottom: '1px solid grey' }}>
                   <Quill props={props} type={'release'} update={false} />
                 </Box>
               )}
             </Field>
-
           </Box>
         </Box>
       </Form>
@@ -226,7 +225,7 @@ const Warning = styled(Typography)(({ theme }) => ({
   opacity: '85%',
   top: '-5%',
   left: '122%',
-  width: '220px'
+  width: '220px',
 }))
 
 export default withFormik({
@@ -243,6 +242,7 @@ export default withFormik({
       amount: 10,
       retailPrice: undefined,
       resalePercentage: 10,
+      hubPubKey: undefined,
     }
   },
 })(ReleaseCreateForm)

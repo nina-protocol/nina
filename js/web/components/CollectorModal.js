@@ -13,7 +13,7 @@ import Link from 'next/link'
 const CollectorModal = (props) => {
   const { releasePubkey, metadata } = props
   const wallet = useWallet()
-  const { collection } = useContext(Nina.Context)
+  const { collection, displayNameForAccount } = useContext(Nina.Context)
   const { getCollectorsForRelease } = useContext(Release.Context)
   const [open, setOpen] = useState(false)
   const [collectors, setCollectors] = useState()
@@ -44,7 +44,6 @@ const CollectorModal = (props) => {
     }
     setCollectors(collectorsList)
   }
-
   return (
     <Box>
       <Cta
@@ -84,12 +83,12 @@ const CollectorModal = (props) => {
                   return (
                     <tr key={i}>
                       <td>
-                        <Link href={`/collection/${entry}`} passHref>
-                          {`${entry.slice(0, 4) + '..' + entry.slice(-4)}`}
+                        <Link href={`/profiles/${entry}`} passHref>
+                          {displayNameForAccount(entry)}
                         </Link>
                       </td>
                       <td>
-                        <Link href={`/collection/${entry}`} passHref>
+                        <Link href={`/profiles/${entry}`} passHref>
                           View Collection
                         </Link>
                       </td>

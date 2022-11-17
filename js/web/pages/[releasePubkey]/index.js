@@ -1,6 +1,7 @@
 import React from 'react'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
+import NinaSdk from '@nina-protocol/js-sdk'
 const Release = dynamic(() => import('../../components/Release'))
 const NotFound = dynamic(() => import('../../components/NotFound'))
 
@@ -8,9 +9,7 @@ const ReleasePage = (props) => {
   const { metadata } = props
 
   if (!metadata) {
-    return (
-      <NotFound />
-    )
+    return <NotFound />
   }
   return (
     <>
@@ -55,10 +54,10 @@ export const getStaticPaths = async () => {
       {
         params: {
           releasePubkey: 'placeholder',
-        }
-      }
+        },
+      },
     ],
-    fallback: 'blocking'
+    fallback: 'blocking',
   }
 }
 
@@ -66,25 +65,23 @@ export const getStaticProps = async (context) => {
   const releasePubkey = context.params.releasePubkey
 
   try {
-    const metadataResult = await fetch(
-      `${process.env.INDEXER_URL}/metadata/bulk`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ids: [releasePubkey] }),
-      }
-    )
-    const metadataJson = await metadataResult.json()
+    if (!NinaSdk.client.program) {
+      await NinaSdk.client.init(
+        process.env.NINA_API_ENDPOINT,
+        process.env.SOLANA_CLUSTER_URL,
+        process.env.NINA_PROGRAM_ID
+      )
+    }
+    const { release } = await NinaSdk.Release.fetch(releasePubkey)
     return {
       props: {
-        metadata: metadataJson[releasePubkey] || null,
+        metadata: release.metadata,
         releasePubkey,
       },
-      revalidate: 10
+      revalidate: 10,
     }
   } catch (error) {
-    console.warn(error);
+    console.warn(error)
+    return { props: {} }
   }
-  return {props: {}}
 }
-

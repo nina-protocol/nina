@@ -9,7 +9,7 @@ import * as Yup from "yup";
 import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
 import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
 import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
-import { getMd5FileHash } from "@nina-protocol/nina-internal-sdk/esm/utils"
+import { getMd5FileHash } from "@nina-protocol/nina-internal-sdk/esm/utils";
 import { useSnackbar } from "notistack";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -25,6 +25,7 @@ import NinaBox from "./NinaBox";
 import MediaDropzones from "./MediaDropzones";
 import Dots from "./Dots";
 import Grid from "@mui/material/Grid";
+import Link from "next/link";
 import {
   createUpload,
   updateUpload,
@@ -52,7 +53,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
     releaseState,
     initializeReleaseAndMint,
     releaseCreateMetadataJson,
-    validateUniqueMd5Digest
+    validateUniqueMd5Digest,
   } = useContext(Release.Context);
   const { hubState } = useContext(Hub.Context);
   const router = useRouter();
@@ -67,6 +68,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
     getSolPrice,
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
+    getUsdcBalance,
   } = useContext(Nina.Context);
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const [track, setTrack] = useState(undefined);
@@ -103,6 +105,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
 
   useEffect(() => {
     refreshBundlr();
+    getUsdcBalance();
   }, []);
 
   const refreshBundlr = () => {
@@ -190,13 +193,12 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
   useEffect(() => {
     if (track) {
       const handleGetMd5FileHash = async (track) => {
-        const hash = await getMd5FileHash(track.file)
-        setMd5Digest(hash)
-      }
-      handleGetMd5FileHash(track)
+        const hash = await getMd5FileHash(track.file);
+        setMd5Digest(hash);
+      };
+      handleGetMd5FileHash(track);
     }
-
-  }, [track])
+  }, [track]);
 
   useEffect(() => {
     const trackSize = track ? track.meta.size / 1000000 : 0;
@@ -204,29 +206,25 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
     setUploadSize((trackSize + artworkSize).toFixed(2));
   }, [track, artwork]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
       if (releaseCreated) {
-        router.push(
-          {
-            pathname: `/${
-              hubData.handle
-            }/releases/${releaseInfo.hubRelease.toBase58()}`,
-            query: {
-              metadata: JSON.stringify(metadata),
-              hub: JSON.stringify(hubData),
-            },
-          },
-          `/${hubData.handle}/releases/${releaseInfo.hubRelease.toBase58()}`
-        );
+        router.push({
+          pathname: `/${
+            hubData.handle
+          }/releases/${releaseInfo.hubRelease.toBase58()}`,
+        });
       } else if (track && artwork) {
-        const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.RELEASE_INIT_VIA_HUB);
+        const error = await checkIfHasBalanceToCompleteAction(
+          NinaProgramAction.RELEASE_INIT_VIA_HUB
+        );
         if (error) {
           enqueueSnackbar(error.msg, { variant: "failure" });
           return;
         }
-  
-        const hashExists = await validateUniqueMd5Digest(md5Digest)
+
+        const hashExists = await validateUniqueMd5Digest(md5Digest);
         if (hashExists) {
           enqueueSnackbar(
             `A release with this track already exists: ${hashExists.json.properties.artist} - ${hashExists.json.properties.title}`,
@@ -235,7 +233,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
             }
           );
 
-          return 
+          return;
         }
 
         let upload = uploadId;
@@ -292,13 +290,13 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                 trackType: track.file.type,
                 artworkType: artwork.file.type,
                 duration: track.meta.duration,
-                md5Digest
+                md5Digest,
               });
               metadataResult = await bundlrUpload(
-                  new Blob([JSON.stringify(metadataJson)], {
-                    type: "application/json",
-                  })
-                );
+                new Blob([JSON.stringify(metadataJson)], {
+                  type: "application/json",
+                })
+              );
               setMetadata(metadataJson);
               setMetadataTx(metadataResult);
               updateUpload(
@@ -390,7 +388,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                 fullWidth
                 variant="outlined"
                 color="primary"
-                onClick={handleSubmit}
+                onClick={(e) => handleSubmit(e)}
                 disabled={
                   isPublishing ||
                   !formIsValid ||
@@ -399,6 +397,13 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                   artwork?.meta.status === "uploading" ||
                   (track?.meta.status === "uploading" && !releaseCreated)
                 }
+                href={`${
+                  releaseCreated
+                    ? `/${
+                        hubData.handle
+                      }/releases/${releaseInfo.hubRelease.toBase58()}`
+                    : ""
+                }`}
                 sx={{ height: "54px" }}
               >
                 {isPublishing && !releaseCreated && (
@@ -407,13 +412,12 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                 {!isPublishing && buttonText}
               </Button>
             )}
-
             {!canAddContent && (
               <Button
                 fullWidth
                 variant="outlined"
                 color="primary"
-                onClick={handleSubmit}
+                onClick={(e) => handleSubmit(e)}
                 disabled={
                   isPublishing ||
                   !formIsValid ||
@@ -428,11 +432,11 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
               </Button>
             )}
 
-            {!formValuesConfirmed && canAddContent && (
+            {bundlrBalance > 0 && !formValuesConfirmed && canAddContent && (
               <ReleaseCreateConfirm
                 formValues={formValues}
                 formIsValid={formIsValid}
-                handleSubmit={handleSubmit}
+                handleSubmit={(e) => handleSubmit(e)}
                 setFormValuesConfirmed={setFormValuesConfirmed}
               />
             )}
@@ -458,7 +462,11 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                 </BundlrBalanceInfo>
               )}
               {uploadSize > 0 && (
-                <Typography variant="subtitle1" align="right" sx={{mt: '5px'}}>
+                <Typography
+                  variant="subtitle1"
+                  align="right"
+                  sx={{ mt: "5px" }}
+                >
                   Upload Size: {uploadSize} MB | Cost: $
                   {(uploadSize * (bundlrUsdBalance / mbs)).toFixed(2)}
                 </Typography>

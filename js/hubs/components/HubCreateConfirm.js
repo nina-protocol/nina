@@ -1,4 +1,4 @@
-import {useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -52,6 +52,9 @@ const HubCreateConfirm = (props) => {
     } else if (update && !isAuthority) {
       setButtonText("You do not have permission to update Hub Info");
     }
+    return () => {
+      setButtonText("Create Hub");
+    };
   }, [update, isAuthority]);
 
   return (
@@ -80,10 +83,15 @@ const HubCreateConfirm = (props) => {
           </Typography>
           <Box sx={{ mt: 1 }}>
             <Value sx={{ mt: 1 }}>
-              Handle: <span style={{paddingLeft: '15px'}}>{formValues.hubForm.handle}</span>
+              Handle:{" "}
+              <span style={{ paddingLeft: "15px" }}>
+                {formValues.hubForm.handle}
+              </span>
             </Value>
 
-            <Typography sx={{mt: 1, color: 'red'}} variant="subtitle1">NOTE: YOUR HANDLE IS PERMAMENT AND CANNOT BE CHANGED.</Typography>
+            <Typography sx={{ mt: 1, color: "red" }} variant="subtitle1">
+              NOTE: YOUR HANDLE IS PERMAMENT AND CANNOT BE CHANGED.
+            </Typography>
 
             {backgroundColor && (
               <Typography

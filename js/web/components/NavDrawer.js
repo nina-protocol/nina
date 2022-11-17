@@ -18,11 +18,9 @@ import CloseIcon from '@mui/icons-material/Close'
 import Image from 'next/image'
 
 const linksConnected = [
-  'home',
+  'dashboard',
   'all Releases',
   'hubs',
-  'collection',
-  'releases',
   'upload',
   'faq',
   'dev',
@@ -78,20 +76,6 @@ const NavDrawer = () => {
       <StyledList disablePadding>
         {links.map((link) => {
           switch (link) {
-            case 'collection':
-              return (
-                <Link
-                  className={`${classes.drawerLink}`}
-                  href={`/${link}`}
-                  activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
-                  key={link}
-                  passHref
-                >
-                  <ListItem button key={link}>
-                    <StyledListItemText primary={`your ${link}`} />
-                  </ListItem>
-                </Link>
-              )
             case 'dev':
               return (
                 <ListItem button key={link}>
@@ -107,20 +91,6 @@ const NavDrawer = () => {
                     </a>
                   </StyledListItemText>
                 </ListItem>
-              )                
-            case 'releases':
-              return (
-                <Link
-                  className={`${classes.drawerLink}`}
-                  href={`/releases/user`}
-                  activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
-                  key={link}
-                  passHref
-                >
-                  <ListItem button key={link}>
-                    <StyledListItemText primary={`your ${link}`} />
-                  </ListItem>
-                </Link>
               )
             case 'the soft lp':
               return (
@@ -175,7 +145,7 @@ const NavDrawer = () => {
                 <Link
                   className={`${classes.drawerLink}`}
                   href={`/releases`}
-                  activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
+                  activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active`}
                   key={link}
                   passHref
                 >
@@ -186,19 +156,17 @@ const NavDrawer = () => {
               )
             case 'hubs':
               return (
-                <ListItem button key={link}>
-                  <StyledListItemText>
-                    <a
-                      href="https://hubs.ninaprotocol.com/"
-                      target="_blank"
-                      rel="noreferrer"
-                      className={`${classes.drawerLink}`}
-                      passHref
-                    >
-                      Hubs
-                    </a>
-                  </StyledListItemText>
-                </ListItem>
+                <Link
+                  className={`${classes.drawerLink}`}
+                  href={`/hubs`}
+                  activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active`}
+                  key={link}
+                  passHref
+                >
+                  <ListItem button key={link}>
+                    <StyledListItemText primary="Hubs" />
+                  </ListItem>
+                </Link>
               )
 
             default:

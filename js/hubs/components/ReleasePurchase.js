@@ -29,17 +29,29 @@ const ReleasePurchase = (props) => {
     releasePurchasePending,
     releasePurchaseTransactionPending,
     releaseState,
-    getPublishedHubForRelease,
   } = useContext(Release.Context);
-  const { hubState } = useContext(Hub.Context)
-  const { getAmountHeld, collection, usdcBalance, ninaClient, checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(Nina.Context);
+  const { hubState } = useContext(Hub.Context);
+  const {
+    getAmountHeld,
+    collection,
+    usdcBalance,
+    ninaClient,
+    checkIfHasBalanceToCompleteAction,
+    NinaProgramAction,
+  } = useContext(Nina.Context);
   const [release, setRelease] = useState(undefined);
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey]);
   const [downloadButtonString, setDownloadButtonString] = useState("Download");
   const [userIsRecipient, setUserIsRecipient] = useState(false);
   const [publishedHub, setPublishedHub] = useState();
-  const txPending = useMemo(() => releasePurchaseTransactionPending[releasePubkey], [releasePubkey, releasePurchaseTransactionPending])
-  const pending = useMemo(() => releasePurchasePending[releasePubkey], [releasePubkey, releasePurchasePending])
+  const txPending = useMemo(
+    () => releasePurchaseTransactionPending[releasePubkey],
+    [releasePubkey, releasePurchaseTransactionPending]
+  );
+  const pending = useMemo(
+    () => releasePurchasePending[releasePubkey],
+    [releasePubkey, releasePurchasePending]
+  );
 
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
@@ -54,11 +66,11 @@ const ReleasePurchase = (props) => {
   useEffect(() => {
     getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey);
 
-    const hubForRelease = async (releasePubkey) => {
-      const result = await getPublishedHubForRelease(releasePubkey);
-      setPublishedHub(result?.hub);
-    };
-    hubForRelease(releasePubkey);
+    // const hubForRelease = async (releasePubkey) => {
+    //   const result = await getPublishedHubForRelease(releasePubkey);
+    //   setPublishedHub(result?.hub);
+    // };
+    // hubForRelease(releasePubkey);
   }, [releasePubkey, releaseState.releaseMintMap]);
 
   useEffect(() => {
@@ -66,9 +78,8 @@ const ReleasePurchase = (props) => {
       release.royaltyRecipients.forEach((recipient) => {
         if (
           wallet?.connected &&
-          recipient.recipientAuthority.toBase58() ===
-            wallet?.publicKey.toBase58() &&
-          recipient.percentShare.toNumber() / 10000 > 0
+          recipient.recipientAuthority === wallet?.publicKey.toBase58() &&
+          recipient.percentShare / 10000 > 0
         ) {
           setUserIsRecipient(true);
         }
@@ -80,29 +91,36 @@ const ReleasePurchase = (props) => {
     e.preventDefault();
 
     if (!wallet?.connected) {
-      enqueueSnackbar('Please connect your wallet to purchase', {
-        variant: 'error',
-      })
-      logEvent(
-        'release_purchase_failure_not_connected',
-        'engagement', {
-          publicKey: releasePubkey,
-          hub: hubPubkey,
-        }
-      )
-      return
+      enqueueSnackbar("Please connect your wallet to purchase", {
+        variant: "error",
+      });
+      logEvent("release_purchase_failure_not_connected", "engagement", {
+        publicKey: releasePubkey,
+        hub: hubPubkey,
+      });
+      return;
     }
 
     let result;
-    const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.RELEASE_PURCHASE_VIA_HUB);
+    const error = await checkIfHasBalanceToCompleteAction(
+      NinaProgramAction.RELEASE_PURCHASE_VIA_HUB
+    );
     if (error) {
       enqueueSnackbar(error.msg, { variant: "failure" });
       return;
     }
     if (!release.pending) {
-      let releasePriceUi = ninaClient.nativeToUi(release.price.toNumber(), ninaClient.ids.mints.usdc)
-      let convertAmount = releasePriceUi + (releasePriceUi * hubState[hubPubkey].referralFee / 100)
-      if (!ninaClient.isSol(release.releaseMint) && usdcBalance < convertAmount) {
+      let releasePriceUi = ninaClient.nativeToUi(
+        release.price,
+        ninaClient.ids.mints.usdc
+      );
+      let convertAmount =
+        releasePriceUi +
+        (releasePriceUi * hubState[hubPubkey].referralFee) / 100;
+      if (
+        !ninaClient.isSol(release.releaseMint) &&
+        usdcBalance < convertAmount
+      ) {
         enqueueSnackbar("Calculating SOL - USDC Swap...", {
           variant: "info",
         });
@@ -135,23 +153,21 @@ const ReleasePurchase = (props) => {
   const buttonText =
     release.remainingSupply > 0
       ? `Buy $${ninaClient.nativeToUiString(
-          release.price.toNumber(),
+          release.price,
           release.paymentMint
         )}`
       : `Sold Out ($${ninaClient
-          .nativeToUi(release.price.toNumber(), release.paymentMint)
+          .nativeToUi(release.price, release.paymentMint)
           .toFixed(2)})`;
 
   const downloadAs = async (url, name) => {
     setDownloadButtonString("Downloading");
 
-    logEvent(
-      'track_download',
-      'engagement', {
-        publicKey: releasePubkey,
-        hub: hubPubkey,
-      }
-    )
+    logEvent("track_download", "engagement", {
+      publicKey: releasePubkey,
+      hub: hubPubkey,
+      wallet: wallet?.publicKey?.toBase58(),
+    });
 
     const response = await axios.get(url, {
       method: "GET",
@@ -174,12 +190,12 @@ const ReleasePurchase = (props) => {
   return (
     <ReleasePurchaseWrapper mt={1}>
       <AmountRemaining variant="body2" align="left">
-        Remaining: <span>{release.remainingSupply.toNumber()} </span> /{" "}
-        {release.totalSupply.toNumber()}
+        Remaining: <span>{release.remainingSupply} </span> /{" "}
+        {release.totalSupply}
       </AmountRemaining>
 
       <Typography variant="body2" align="left" paddingBottom="10px">
-        Artist Resale: {release.resalePercentage.toNumber() / 10000}%
+        Artist Resale: {release.resalePercentage / 10000}%
       </Typography>
       {wallet?.connected && amountHeld > 0 && (
         <StyledUserAmount>
@@ -192,29 +208,28 @@ const ReleasePurchase = (props) => {
       )}
       {publishedHub && publishedHub.id !== hubPubkey && (
         <Typography variant="body2" align="left" paddingBottom="10px">
-          <StyledLink
-            href={`/${publishedHub.handle}`}
-          >
+          <StyledLink href={`/${publishedHub.handle}`}>
             {`Published via ${publishedHub.json.displayName}`}
           </StyledLink>
         </Typography>
       )}
-      <HubsModal releasePubkey={releasePubkey} metadata={metadata}  />
+      <HubsModal releasePubkey={releasePubkey} metadata={metadata} />
       {userIsRecipient && (
         <Royalty releasePubkey={releasePubkey} release={release} />
       )}
-      <form onSubmit={handleSubmit} style={{ textAlign: "left", marginBottom: '10px', marginTop: '20px' }}>
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          textAlign: "left",
+          marginBottom: "10px",
+          marginTop: { md: "0px", lg: "20px" },
+        }}
+      >
         <BuyButton variant="contained" type="submit">
           <Typography variant="body2" align="left">
-            {txPending &&
-              <Dots msg="preparing transaction" />
-            }
-            {!txPending && pending &&
-              <Dots msg="awaiting wallet approval" />
-            }
-            {!txPending && !pending &&
-              buttonText
-            }
+            {txPending && <Dots msg="Preparing transaction" />}
+            {!txPending && pending && <Dots msg="Awaiting wallet approval" />}
+            {!txPending && !pending && buttonText}
           </Typography>
         </BuyButton>
       </form>
@@ -249,7 +264,7 @@ const ReleasePurchase = (props) => {
 const BuyButton = styled(Button)(({ theme }) => ({
   "& p": {
     border: `1px solid ${theme.palette.text.primary}`,
-    padding: '10px',
+    padding: "10px",
     "&:hover": {
       opacity: "50%",
     },
@@ -257,10 +272,7 @@ const BuyButton = styled(Button)(({ theme }) => ({
 }));
 const ReleasePurchaseWrapper = styled(Box)(({ theme }) => ({
   textAlign: "left",
-  [theme.breakpoints.down("md")]: {
-    marginTop: "20px",
-    marginBottom: "40px",
-  },
+  [theme.breakpoints.down("md")]: {},
 }));
 const AmountRemaining = styled(Typography)(({ theme }) => ({
   paddingBottom: "10px",

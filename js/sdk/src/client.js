@@ -1,7 +1,7 @@
 import * as anchor from '@project-serum/anchor'
 
 export const NINA_CLIENT_IDS = {
-  'mainnet-beta': {
+  'mainnet': {
     programs: {
       nina: 'ninaN2tm9vUkxoanvGcNApEeWiidLMM2TdBX8HoJuL4',
       metaplex: 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
@@ -52,7 +52,7 @@ const NinaClient = function (provider, network) {
   obj.endpoints = {
     arweave: obj.ENDPOINT_ARWEAVE,
     pressingPlant: 'https://pressingplant-dev.nina.market',
-    api: process.env.INDEXER_URL,
+    api: process.env.NINA_API_ENDPOINT,
   }
   obj.decimalsForMint = (mint) => {
     switch (typeof mint === 'string' ? mint : mint.toBase58()) {
@@ -98,7 +98,10 @@ const NinaClient = function (provider, network) {
     return Math.round(amount * Math.pow(10, obj.decimalsForMint(mint)))
   }
   obj.isSol = (mint) => {
-    return mint.toBase58() === obj.ids.mints.wsol
+    if (typeof mint !== 'string') {
+      return mint.toBase58() === obj.ids.mints.wsol
+    }
+    return mint === obj.ids.mints.wsol
   }
   return obj
 }

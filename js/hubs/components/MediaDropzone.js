@@ -14,8 +14,8 @@ const MediaDropzone = ({ type, setArtwork, setTrack, disabled }) => {
       const width = meta.width;
       const size = meta.size / 1000000;
       if (file.type.includes("audio")) {
-        if (file.type !== 'audio/mpeg') {
-          alert(`Your track is not an MP3. \nPlease upload an MP3.`)
+        if (file.type !== "audio/mpeg") {
+          alert(`Your track is not an MP3. \nPlease upload an MP3.`);
         } else {
           alert(
             `your track is ${size} mb... \nPlease upload a smaller than 110 mb`
@@ -85,7 +85,7 @@ const MediaDropzone = ({ type, setArtwork, setTrack, disabled }) => {
       return true;
     }
 
-    if (size > 3) {
+    if (size > 8) {
       return true;
     }
     return false;
@@ -93,11 +93,11 @@ const MediaDropzone = ({ type, setArtwork, setTrack, disabled }) => {
 
   const validateTrack = (fileWithMeta) => {
     const size = fileWithMeta.file.size / 1000000;
-    if (size > 110) {
+    if (size > 150) {
       return true;
     }
-    if (fileWithMeta.file.type !== 'audio/mpeg') {
-      return true
+    if (fileWithMeta.file.type !== "audio/mpeg") {
+      return true;
     }
     return false;
   };

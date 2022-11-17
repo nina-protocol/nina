@@ -20,7 +20,9 @@ const HubAddRelease = (props) => {
       release: "",
     },
     onSubmit: async (values, { resetForm }) => {
-      const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.HUB_ADD_RELEASE);
+      const error = await checkIfHasBalanceToCompleteAction(
+        NinaProgramAction.HUB_ADD_RELEASE
+      );
       if (error) {
         enqueueSnackbar(error.msg, { variant: "failure" });
         return;
