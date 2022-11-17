@@ -9,22 +9,21 @@ import { styled } from "@mui/material/styles";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { DashboardHeader } from "../styles/theme/lightThemeOptions.js";
+import Dots from "./Dots.js";
 
 import { useFormik } from "formik";
 
 const HubAddCollaborator = (props) => {
-  const { hubPubkey, canAddCollaborators } = props;
+  const { hubPubkey, canAddCollaborators, pending, setPending } = props;
   const { enqueueSnackbar } = useSnackbar();
   const { hubAddCollaborator } = useContext(Hub.Context);
+  const { checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(
+    Nina.Context
+  );
   const [unlimitedAllowance, setUnlimitAllowance] = useState(false);
-
-  // const IconWithTooltip = () => {
-  //   return (
-  //     <Tooltip title={`Allowance sets the amount of actions a collaborator can execute, like publishing releases or creating posts`}>
-  //       <HelpIcon sx={{fontSize: '16px !important', marginLeft: '5px'}} />
-  //     </Tooltip>
-  //   )
-  // }
+  const buttonText = canAddCollaborators
+    ? "Add Collaborator"
+    : "You Do Not Have Permission To Add Collaborators";
 
   const toggleAllowance = (formik) => {
     if (unlimitedAllowance) {
@@ -40,8 +39,9 @@ const HubAddCollaborator = (props) => {
     initialValues: {
       collaboratorPubkey: "",
       canAddContent: true,
-      canAddCollaborator: true,
+      canAddCollaborator: false,
       allowance: 3,
+      setPending,
     },
     onSubmit: async (values, { resetForm }) => {
       const {
@@ -49,7 +49,9 @@ const HubAddCollaborator = (props) => {
         canAddContent,
         canAddCollaborator,
         allowance,
+        setPending,
       } = values;
+      setPending(true);
       const error = checkIfHasBalanceToCompleteAction(
         NinaProgramAction.HUB_ADD_COLLABORATOR
       );
@@ -73,6 +75,7 @@ const HubAddCollaborator = (props) => {
           variant: "failure",
         });
       }
+      setPending(false);
       resetForm();
     },
   });
@@ -171,11 +174,9 @@ const HubAddCollaborator = (props) => {
           variant="outlined"
           fullWidth
           type="submit"
-          disabled={!canAddCollaborators}
+          disabled={!canAddCollaborators || pending}
         >
-          {canAddCollaborators
-            ? "Add Collaborator"
-            : "You Do Not Have Permission To Add Collaborators"}
+          {pending ? <Dots /> : buttonText}
         </Button>
       </form>
     </Root>

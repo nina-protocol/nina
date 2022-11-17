@@ -69,14 +69,14 @@ const EmailCapture = ({ size }) => {
   )
 
   return (
-    <div>
+    <>
       {size === 'large' && (
         <BlueTypography
           onClick={handleOpen}
           variant="h1"
-          sx={{ padding: { md: '0 165px 140px', xs: '30px 0px' } }}
+          sx={{ display: 'inline' }}
         >
-          Apply for access to the Nina for Artists Beta
+          Sign Up
         </BlueTypography>
       )}
       {size === 'medium' && (
@@ -124,7 +124,7 @@ const EmailCapture = ({ size }) => {
           </Button>
         </Box>
       </Modal>
-    </div>
+    </>
   )
 }
 
@@ -136,7 +136,7 @@ const BlueTypography = styled(Typography)(({ theme }) => ({
 const SmallCta = styled(Typography)(({ theme }) => ({
   color: theme.palette.blue,
   cursor: 'pointer',
-  padding: '2px 0',
+  padding: '2px',
   border: '1px solid #2D81FF',
   width: '100%',
   textAlign: 'center',

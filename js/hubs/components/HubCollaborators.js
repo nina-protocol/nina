@@ -22,20 +22,24 @@ const HubCollaborators = ({
   authority,
   canAddCollaborators,
 }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const wallet = useWallet();
   const { hubRemoveCollaborator, hubCollaboratorsState } = useContext(
     Hub.Context
   );
   const [activeSelection, setActiveSelection] = useState(undefined);
-  const hubCollaborators = useMemo(
-    () =>
-      Object.values(hubCollaboratorsState)
-        .filter((c) => c.hub === hubPubkey)
-        .sort((a, b) => b.datetime - a.datetime),
-    [hubCollaboratorsState]
-  );
+  const [hubCollaborators, setHubCollaborators] = useState(undefined);
+  const [pending, setPending] = useState(false);
 
-  const { enqueueSnackbar } = useSnackbar();
+  useEffect(() => {
+    if (hubCollaboratorsState) {
+      setHubCollaborators(
+        Object.values(hubCollaboratorsState).filter(
+          (collaborator) => collaborator.hub === hubPubkey
+        )
+      );
+    }
+  }, [hubCollaboratorsState]);
 
   const handleActiveSelection = (e) => {
     const selectedHubCollaborator = hubCollaborators.find(
@@ -54,6 +58,7 @@ const HubCollaborators = ({
 
   const handleRemoveCollaborator = async (e, hubPubkey, collaboratorPubkey) => {
     e.stopPropagation();
+    setPending(true);
     const result = await hubRemoveCollaborator(hubPubkey, collaboratorPubkey);
     if (result?.success) {
       enqueueSnackbar(result.msg, {
@@ -64,6 +69,7 @@ const HubCollaborators = ({
         variant: "failure",
       });
     }
+    setPending(false);
   };
 
   useEffect(() => {
@@ -84,6 +90,8 @@ const HubCollaborators = ({
           <HubAddCollaborator
             hubPubkey={hubPubkey}
             canAddCollaborators={canAddCollaborators}
+            pending={pending}
+            setPending={setPending}
           />
           <>
             <Note>

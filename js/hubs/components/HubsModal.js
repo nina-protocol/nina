@@ -1,26 +1,27 @@
-import React, { useState, useContext, useEffect } from 'react'
-import { styled } from '@mui/material/styles'
-import Modal from '@mui/material/Modal'
-import Backdrop from '@mui/material/Backdrop'
-import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import Paper from '@mui/material/Paper'
-import Link from 'next/link'
+import React, { useState, useContext, useEffect } from "react";
+import { styled } from "@mui/material/styles";
+import Modal from "@mui/material/Modal";
+import Backdrop from "@mui/material/Backdrop";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import Link from "next/link";
 import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
 
 const HubsModal = (props) => {
-  const { releasePubkey, metadata } = props
-  const { getHubsForRelease, hubContentState, filterHubsForRelease } = useContext(Hub.Context)
-  const [open, setOpen] = useState(false)
-  const [hubs, setHubs] = useState([])
-  
-  useEffect(() => {
-    getHubsForRelease(releasePubkey)
-  }, [])
+  const { releasePubkey, metadata } = props;
+  const { getHubsForRelease, hubContentState, filterHubsForRelease } =
+    useContext(Hub.Context);
+  const [open, setOpen] = useState(false);
+  const [hubs, setHubs] = useState([]);
 
   useEffect(() => {
-    setHubs(filterHubsForRelease(releasePubkey))
-  }, [hubContentState])
+    getHubsForRelease(releasePubkey);
+  }, []);
+
+  useEffect(() => {
+    setHubs(filterHubsForRelease(releasePubkey));
+  }, [hubContentState]);
 
   return (
     <Box>
@@ -60,7 +61,9 @@ const HubsModal = (props) => {
                       <td>
                         <Link
                           href={`/${entry?.handle}`}
-                          className={entry?.publishedThroughHub ? 'publishingHub' : ''}      
+                          className={
+                            entry?.publishedThroughHub ? "publishingHub" : ""
+                          }
                         >
                           {entry?.data.displayName}
                         </Link>

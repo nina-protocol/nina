@@ -25,7 +25,6 @@ const HubCreateForm = ({
       onChange(values);
     }
   }, [values]);
-
   const IconWithTooltip = ({ field }) => {
     let copy;
     if (field === "publishFee") {
@@ -252,12 +251,12 @@ export default withFormik({
   },
   mapPropsToValues: ({ hubData }) => {
     return {
-      handle: "",
-      displayName: `${hubData ? hubData.json.displayName : ""}`,
-      publishFee: `${hubData ? hubData.publishFee : "0"}`,
-      referralFee: `${hubData ? hubData.referralFee : "0"}`,
-      description: `${hubData ? hubData.json.description : ""}`,
-      externalUrl: `${hubData ? hubData.json.externalUrl : ""}`,
+      handle: `${hubData ? hubData.handle : ""}`,
+      displayName: `${hubData ? hubData.data.displayName : ""}`,
+      publishFee: `${hubData ? hubData.publishFee / 10000 : "0"}`,
+      referralFee: `${hubData ? hubData.referralFee / 10000 : "0"}`,
+      description: `${hubData ? hubData.data.description : ""}`,
+      externalUrl: `${hubData ? hubData.data.externalUrl : ""}`,
     };
   },
 })(HubCreateForm);

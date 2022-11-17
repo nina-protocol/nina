@@ -41,7 +41,9 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
 
   useEffect(() => {
     if (selectedHubId && userHubs) {
-      const selectedHub = userHubs.find((hub) => hub.publicKey === selectedHubId);
+      const selectedHub = userHubs.find(
+        (hub) => hub.publicKey === selectedHubId
+      );
       if (selectedHub?.userCanAddContent) {
         setCanAddContent(true);
       }
@@ -156,7 +158,10 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
                     >
                       {userHubs
                         ?.filter(
-                          (hub) => hub.publicKey && hub.publicKey !== hubPubkey && hub.userCanAddContent
+                          (hub) =>
+                            hub.publicKey &&
+                            hub.publicKey !== hubPubkey &&
+                            hub.userCanAddContent
                         )
                         .map((hub) => {
                           return (

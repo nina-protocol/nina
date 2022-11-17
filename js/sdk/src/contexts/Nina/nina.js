@@ -15,6 +15,7 @@ const NinaProgramAction = {
   HUB_ADD_COLLABORATOR: 'HUB_ADD_COLLABORATOR',
   HUB_ADD_RELEASE: 'HUB_ADD_RELEASE',
   HUB_INIT_WITH_CREDIT: 'HUB_INIT_WITH_CREDIT',
+  HUB_UPDATE: 'HUB_UPDATE',
   POST_INIT_VIA_HUB_WITH_REFERENCE_RELEASE: 'POST_INIT_VIA_HUB_WITH_REFERENCE_RELEASE',
   POST_INIT_VIA_HUB: 'POST_INIT_VIA_HUB',
   RELEASE_INIT_VIA_HUB: 'RELEASE_INIT_VIA_HUB',
@@ -29,6 +30,7 @@ const NinaProgramActionCost = {
   HUB_ADD_COLLABORATOR: 0.001919,
   HUB_ADD_RELEASE: 0.00368684,
   HUB_INIT_WITH_CREDIT: 0.00923396,
+  HUB_UPDATE: 0.000005,
   POST_INIT_VIA_HUB_WITH_REFERENCE_RELEASE: 0.01140548,
   POST_INIT_VIA_HUB: 0.00772364,
   RELEASE_INIT_VIA_HUB: 0.02212192,
@@ -334,9 +336,9 @@ const ninaContextHelper = ({
 
       return ninaErrorHandler(error)
     }
-  }
+  }  
 
-  const subscriptionUnsubscribe = async (unsubscribeAccount) => {
+  const subscriptionUnsubscribe = async (unsubscribeAccount, hubHandle) => {
     try {
       const program = await ninaClient.useProgram()
       unsubscribeAccount = new anchor.web3.PublicKey(unsubscribeAccount)
@@ -348,7 +350,6 @@ const ninaContextHelper = ({
       ],
         program.programId
       )
-
       const txid = await program.rpc.subscriptionUnsubscribe({
         accounts: {
           from: provider.wallet.publicKey,
@@ -360,7 +361,11 @@ const ninaContextHelper = ({
 
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
       await getSubscription(subscription.toBase58(), txid)
-      await getSubscriptionsForUser(provider.wallet.publicKey.toBase58())
+      if (hubHandle) {
+        await getSubscriptionsForHub(hubHandle)
+      } else {
+        await getSubscriptionsForUser(provider.wallet.publicKey.toBase58())
+      }
       removeSubScriptionFromState(subscription.toBase58())
 
       return {
@@ -604,6 +609,7 @@ const ninaContextHelper = ({
         let solUsdcBalanceResult = await provider.connection.getBalance(
           provider.wallet.publicKey
         )
+     
         setSolUsdcBalance((ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) * solPrice.data.data.price).toFixed(2))
         setSolBalance(solUsdcBalanceResult)
         let [usdcTokenAccountPubkey] = await findOrCreateAssociatedTokenAccount(
@@ -613,14 +619,14 @@ const ninaContextHelper = ({
           anchor.web3.SystemProgram.programId,
           anchor.web3.SYSVAR_RENT_PUBKEY,
           new anchor.web3.PublicKey(ids.mints.usdc)
-        )
-
-        if (usdcTokenAccountPubkey) {
+          )
+          if (usdcTokenAccountPubkey) {
+         
           let usdcTokenAccount =
             await provider.connection.getTokenAccountBalance(
               usdcTokenAccountPubkey
             )
-          setUsdcBalance(usdcTokenAccount.value.uiAmount.toFixed(2))
+            setUsdcBalance(usdcTokenAccount.value.uiAmount.toFixed(2))
           return
         } else {
           setUsdcBalance(0)
@@ -787,8 +793,8 @@ const ninaContextHelper = ({
       return
     }
   }
-
-  const checkIfHasBalanceToCompleteAction = (action) => {
+  const checkIfHasBalanceToCompleteAction = async (action) => {
+    await getUsdcBalance()
     if (ninaClient.uiToNative(NinaProgramActionCost[action], ninaClient.ids.mints.wsol) > solBalance) {
       const error = new Error(`You do not have enough SOL to send the transaction: ${action}.  You need at least ${NinaProgramActionCost[action]} SOL.`)
       return ninaErrorHandler(error)
@@ -849,7 +855,6 @@ const ninaContextHelper = ({
 
   const displayNameForAccount = (publicKey) => {
     const verifications = verificationState[publicKey]
-
     if (verifications) {
       if (
         verifications?.find(
@@ -882,7 +887,7 @@ const ninaContextHelper = ({
       ) {
         return verifications.find(
           (verification) => verification.type === 'ethereum'
-        ).displayName
+        ).displayName || truncateAddress(publicKey)
       }
     } 
     return truncateAddress(publicKey)
@@ -914,11 +919,16 @@ const ninaContextHelper = ({
   }
 
   const getVerificationsForUser = async (accountPubkey) => {
-    const { verifications } = await NinaSdk.Account.fetchVerifications(accountPubkey)
-    setVerificationState({
-      ...verificationState,
-      [accountPubkey]: verifications,
-    })
+    try {
+      const { verifications } = await NinaSdk.Account.fetchVerifications(accountPubkey)
+      setVerificationState({
+        ...verificationState,
+        [accountPubkey]: verifications,
+      })
+    } catch (error) {
+      console.warn(error)
+      return []
+    }
   }
   
   const filterSubscriptionsForHub = (hubPubkey) => {

@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Hub from "../../components/Hub";
 import NotFound from "../../components/NotFound";
-import NinaSdk from "@nina-protocol/js-sdk"
+import NinaSdk from "@nina-protocol/js-sdk";
 
 const HubPage = (props) => {
   const { hub } = props;
@@ -12,13 +12,17 @@ const HubPage = (props) => {
         <Head>
           <title>Nina Hubs - Not Found</title>
           <meta name="og:type" content="website" />
-          <meta
-          name="description"
-          content={`Hubs. Powered by Nina.`} />
-          <meta name="og:image" content={hub?.json.image} />    
+          <meta name="description" content={`Hubs. Powered by Nina.`} />
+          <meta name="og:image" content={hub?.json.image} />
           <meta name="twitter:image:type" content="image/png" />
-          <meta name="twitter:image" content="https://hubs.ninaprotocol.com/images/nina-blue.png" />
-          <meta name="og:image" href="https://hubs.ninaprotocol.com/images/nina-blue.png"  />      
+          <meta
+            name="twitter:image"
+            content="https://hubs.ninaprotocol.com/images/nina-blue.png"
+          />
+          <meta
+            name="og:image"
+            href="https://hubs.ninaprotocol.com/images/nina-blue.png"
+          />
         </Head>
         <NotFound />
       </>
@@ -46,7 +50,7 @@ const HubPage = (props) => {
         <meta name="twitter:description" content={hub?.data.description} />
 
         <meta name="twitter:image" content={hub?.data.image} />
-        <meta name="og:image" content={hub?.data.image} />      
+        <meta name="og:image" content={hub?.data.image} />
       </Head>
       <Hub hubPubkey={hub.publicKey} />
     </>
@@ -70,14 +74,14 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (context) => {
   const hubPubkey = context.params.hubPubkey;
-  if (hubPubkey && hubPubkey !== 'manifest.json' && hubPubkey !== 'undefined') {
+  if (hubPubkey && hubPubkey !== "manifest.json" && hubPubkey !== "undefined") {
     try {
       if (!NinaSdk.client.program) {
         await NinaSdk.client.init(
           process.env.NINA_API_ENDPOINT,
           process.env.SOLANA_CLUSTER_URL,
           process.env.NINA_PROGRAM_ID
-        )      
+        );
       }
       const { hub } = await NinaSdk.Hub.fetch(hubPubkey);
       return {

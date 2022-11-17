@@ -82,7 +82,7 @@ const Profile = ({ profilePubkey }) => {
       setFetchedProfiles(new Set([...fetchedProfiles, profilePubkey]))
       return true
     }
-    return false
+    // return false
   }, [fetchedProfiles, fetched, profilePubkey])
 
   const artistNames = useMemo(() => {
@@ -160,6 +160,11 @@ const Profile = ({ profilePubkey }) => {
       updatedView[viewIndex].disabled = false
       updatedView[viewIndex].count = profileSubscriptionsFrom.length
     }
+    if (inDashboard) {
+      updatedView.forEach((view) => {
+        view.disabled = false
+      })
+    }
 
     setViews(updatedView)
   }, [
@@ -178,16 +183,34 @@ const Profile = ({ profilePubkey }) => {
   }, [views])
 
   useEffect(() => {
+    let filteredCollection
     if (fetchedUserProfileReleases[profilePubkey]?.collected) {
-      setProfileCollectionReleases(filterReleasesUserCollection(profilePubkey))
+      filteredCollection = filterReleasesUserCollection(profilePubkey)?.sort(
+        (a, b) => {
+          return (
+            new Date(b.metadata.properties.releaseDate) -
+            new Date(a.metadata.properties.releaseDate)
+          )
+        }
+      )
+      setProfileCollectionReleases(filteredCollection)
     } else {
       setProfileCollectionReleases([])
     }
   }, [fetchedUserProfileReleases, profilePubkey])
 
   useEffect(() => {
+    let filteredReleases
     if (fetchedUserProfileReleases[profilePubkey]?.published) {
-      setProfilePublishedReleases(filterReleasesPublishedByUser(profilePubkey))
+      filteredReleases = filterReleasesPublishedByUser(profilePubkey)?.sort(
+        (a, b) => {
+          return (
+            new Date(b.metadata.properties.date) -
+            new Date(a.metadata.properties.date)
+          )
+        }
+      )
+      setProfilePublishedReleases(filteredReleases)
     } else {
       setProfilePublishedReleases([])
     }
@@ -298,6 +321,7 @@ const Profile = ({ profilePubkey }) => {
                 tableType={'profileHubs'}
                 items={profileHubs}
                 hasOverflow={true}
+                inDashboard={inDashboard}
               />
             )}
           </>
@@ -357,7 +381,11 @@ const Profile = ({ profilePubkey }) => {
                     )}
                   </Box>
                   <Box
-                    sx={{ mb: 1, ml: 1 }}
+                    sx={{
+                      mb: 1,
+                      ml: 1,
+                      flexDirection: { xs: 'column', md: 'row' },
+                    }}
                     display="flex"
                     alignItems={'start'}
                   >
@@ -387,7 +415,7 @@ const Profile = ({ profilePubkey }) => {
         </ProfileHeaderWrapper>
 
         {hasData && (
-          <Box sx={{ py: 1 }}>
+          <Box>
             <TabHeader
               viewHandler={viewHandler}
               activeView={activeView}
@@ -397,7 +425,7 @@ const Profile = ({ profilePubkey }) => {
         )}
 
         {fetched.info && (
-          <Box sx={{ py: 1 }}>
+          <Box>
             <TabHeader
               viewHandler={viewHandler}
               activeView={activeView}
@@ -434,7 +462,6 @@ const ProfileContainer = styled(Box)(({ theme }) => ({
   overflowY: 'hidden',
   margin: '75px auto 0px',
 
-  ['-webkit-overflow-scroll']: 'touch',
   [theme.breakpoints.down('md')]: {
     display: 'flex',
     flexDirection: 'column',
@@ -468,11 +495,9 @@ const ProfileHeaderWrapper = styled(Box)(({ theme }) => ({
   pl: 1,
   pb: 1,
   maxWidth: '100vw',
-  [theme.breakpoints.down('md')]: {
+  [theme.breakpoints.down('sm')]: {
     width: '100vw',
-    height: '100%',
     paddingBottom: '10px',
-    borderBottom: `1px solid ${theme.palette.greyLight}`,
   },
 }))
 
@@ -491,10 +516,14 @@ const ProfileOverflowContainer = styled(Box)(({ theme }) => ({
 const ProfileTableContainer = styled(Box)(({ theme }) => ({
   paddingBottom: '100px',
   overflowY: 'auto',
+  '&::-webkit-scrollbar': {
+    display: 'none !important',
+  },
   [theme.breakpoints.down('md')]: {
     paddingBottom: '200px',
     overflow: 'scroll',
     height: '100%',
+    margin: '10px 0',
   },
 }))
 

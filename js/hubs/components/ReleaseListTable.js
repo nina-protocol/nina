@@ -216,9 +216,7 @@ const ReleaseListTable = (props) => {
       ] = `${tokenData.remainingSupply} / ${tokenData.totalSupply} `;
       rowData["share"] = `${recipient.percentShare / 10000}%`;
       rowData["date"] = `${
-        new Date(tokenData.releaseDatetime)
-          .toISOString()
-          .split("T")[0]
+        new Date(tokenData.releaseDatetime).toISOString().split("T")[0]
       }`;
       rowData["collected"] = `${ninaClient.nativeToUiString(
         recipient.collected,

@@ -74,7 +74,7 @@ const HubCreate = ({ update, hubData }) => {
 
   const [artwork, setArtwork] = useState();
   const [uploadSize, setUploadSize] = useState();
-  const [hubPubkey, setHubPubkey] = useState(hubData?.id || undefined);
+  const [hubPubkey, setHubPubkey] = useState(hubData?.publicKey || undefined);
   const [buttonText, setButtonText] = useState(
     update ? "Update Hub" : "Create Hub"
   );
@@ -196,18 +196,17 @@ const HubCreate = ({ update, hubData }) => {
 
   const handleSubmit = async () => {
     try {
-      const error = checkIfHasBalanceToCompleteAction(
-        NinaProgramAction.HUB_INIT_WITH_CREDIT
-      );
-      if (error) {
-        enqueueSnackbar(error.msg, { variant: "failure" });
-        return;
-      }
       if (update) {
+        const error = await checkIfHasBalanceToCompleteAction(
+          NinaProgramAction.HUB_UPDATE
+        );
+        if (error) {
+          enqueueSnackbar(error.msg, { variant: "failure" });
+          return;
+        }
         let upload = uploadId;
         const metadataJson = {};
         let metadataResult = metadataTx;
-
         if (artwork) {
           let artworkResult = artworkTx;
           setIsPublishing(true);
@@ -304,6 +303,13 @@ const HubCreate = ({ update, hubData }) => {
           }
         }
       } else {
+        const error = await checkIfHasBalanceToCompleteAction(
+          NinaProgramAction.HUB_INIT_WITH_CREDIT
+        );
+        if (error) {
+          enqueueSnackbar(error.msg, { variant: "failure" });
+          return;
+        }
         if (artwork && (await validateHubHandle(formValues.hubForm.handle))) {
           let upload = uploadId;
           let artworkResult = artworkTx;
@@ -369,7 +375,9 @@ const HubCreate = ({ update, hubData }) => {
               });
 
               const hubParams = {
-                handle: formValues.hubForm.handle,
+                handle: `${
+                  update ? hubData?.handle : formValues.hubForm.handle
+                }`,
                 publishFee: formValues.hubForm.publishFee,
                 referralFee: formValues.hubForm.referralFee,
                 uri: `https://arweave.net/${metadataResult}`,
@@ -430,7 +438,6 @@ const HubCreate = ({ update, hubData }) => {
       </Box>
     );
   }
-
   return (
     <StyledGrid item md={12}>
       {!wallet.connected && (
@@ -444,11 +451,11 @@ const HubCreate = ({ update, hubData }) => {
           <BlueTypography
             variant="h1"
             align="left"
-            sx={{ padding: { md: "0px 0px", xs: "30px 0px" }, mb: 4, }}
+            sx={{ padding: { md: "0px 0px", xs: "30px 0px" }, mb: 4 }}
           >
             You do not have any credits to create a Hub.
           </BlueTypography>
-          <EmailCapture size="medium" /> 
+          <EmailCapture size="medium" />
         </Box>
       )}
 
@@ -618,6 +625,7 @@ const CreateFormWrapper = styled(Box)(({ theme }) => ({
   flexDirection: "column",
   gridColumn: "1/3",
   border: `1px solid ${theme.palette.grey.primary}`,
+  maxWidth: "506px",
 }));
 
 const CreateCta = styled(Box)(({ theme }) => ({

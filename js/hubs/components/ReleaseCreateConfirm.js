@@ -24,9 +24,13 @@ const style = {
 };
 
 const ReleaseCreateConfirm = (props) => {
-
-  const { formIsValid, formValues, handleSubmit, setFormValuesConfirmed, profileHubs } =
-    props;
+  const {
+    formIsValid,
+    formValues,
+    handleSubmit,
+    setFormValuesConfirmed,
+    profileHubs,
+  } = props;
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -116,7 +120,7 @@ const ReleaseCreateConfirm = (props) => {
                 {description}
               </span>
             </Value>
-           
+
             <Typography variant="subtitle1" mt={1} sx={{ color: "red" }}>
               ONCE PUBLISHED, YOUR RELEASE INFORMATION WILL BE PERMANENT AND YOU
               WILL NOT BE ABLE TO EDIT IT.

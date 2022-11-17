@@ -42,14 +42,8 @@ const PostPage = (props) => {
           content={`${post.data.title} on ${hub?.data.displayName}`}
         />
         <meta name="twitter:description" content={post.data.body} />
-        <meta
-          name="twitter:image"
-          content={hub.data.image}
-        />
-        <meta
-          name="og:image"
-          content={hub.data.image}
-        />
+        <meta name="twitter:image" content={hub.data.image} />
+        <meta name="og:image" content={hub.data.image} />
       </Head>
       <Post
         postDataSsr={post}
@@ -84,9 +78,12 @@ export const getStaticProps = async (context) => {
         process.env.NINA_API_ENDPOINT,
         process.env.SOLANA_CLUSTER_URL,
         process.env.NINA_PROGRAM_ID
-      )      
+      );
     }
-    const { hub, post } = await NinaSdk.Hub.fetchHubPost(context.params.hubPubkey, context.params.hubPostPubkey)
+    const { hub, post } = await NinaSdk.Hub.fetchHubPost(
+      context.params.hubPubkey,
+      context.params.hubPostPubkey
+    );
     return {
       props: {
         post,
@@ -97,14 +94,14 @@ export const getStaticProps = async (context) => {
   } catch (error) {
     console.warn(error);
     try {
-      const hub = await NinaSdk.Hub.fetchHub(context.params.hubPubkey)
+      const hub = await NinaSdk.Hub.fetchHub(context.params.hubPubkey);
 
       if (hub) {
         return {
           props: {
             hub,
-          }
-        }
+          },
+        };
       }
     } catch (error) {
       console.warn(error);

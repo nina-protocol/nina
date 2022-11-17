@@ -12,8 +12,8 @@ const AudioPlayerContextProvider = ({ children }) => {
   const [playlist, setPlaylist] = useState([])
   const [isPlaying, setIsPlaying] = useState(false)
   const [initialized, setInitialized] = useState(false)
-  const audioPlayerRef = useRef();
-  
+  const audioPlayerRef = useRef()
+
   const playPrev = (shouldPlay = false) => {
     if (playlist[currentIndex() - 1]) {
       setTrack(playlist[currentIndex() - 1])
@@ -149,6 +149,7 @@ const audioPlayerContextHelper = ({
   currentIndex,
   setTrack,
   track,
+  ninaClient,
 }) => {
   const reorderPlaylist = (updatedPlaylist) => {
     setPlaylist([...updatedPlaylist])
@@ -246,7 +247,7 @@ const audioPlayerContextHelper = ({
       }
     }
     const params = {
-      publicKey: releasePubkey
+      publicKey: releasePubkey,
     }
     if (ninaClient.provider.wallet?.connected) {
       params.wallet = ninaClient.provider.wallet.publicKey.toBase58()
@@ -301,5 +302,5 @@ const audioPlayerContextHelper = ({
 
 export default {
   Context: AudioPlayerContext,
-  Provider: AudioPlayerContextProvider
+  Provider: AudioPlayerContextProvider,
 }

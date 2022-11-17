@@ -22,14 +22,14 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
     hubWithdraw,
   } = useContext(Hub.Context);
   const [hubFeePending, setHubFeePending] = useState(0);
-  
+
   useEffect(() => {
     const handleGetHubFeePending = async () => {
-      const hubFee = await getHubFeePending(hubPubkey)
-      setHubFeePending(hubFee)
-    }
-    handleGetHubFeePending()
-  }, [])
+      const hubFee = await getHubFeePending(hubPubkey);
+      setHubFeePending(hubFee);
+    };
+    handleGetHubFeePending();
+  }, []);
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const hubReleases = useMemo(
     () => filterHubContentForHub(hubPubkey)[0],
@@ -55,8 +55,7 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
     const releaseArray = [];
     ids.forEach((id) => {
       const recipient = releaseState.tokenData[id].revenueShareRecipients.find(
-        (recipient) =>
-          recipient.recipientAuthority === hubData.hubSigner
+        (recipient) => recipient.recipientAuthority === hubData.hubSigner
       );
       if (recipient) {
         let hubReleasePubkey = Object.values(hubContentState).find(
@@ -81,8 +80,7 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
       const recipient = releaseState.tokenData[
         release.releasePubkey
       ].revenueShareRecipients.find(
-        (recipient) =>
-          recipient.recipientAuthority === hubData.hubSigner
+        (recipient) => recipient.recipientAuthority === hubData.hubSigner
       );
       if (recipient) {
         revenue += recipient.owed;
@@ -212,9 +210,14 @@ const LinkTypography = styled(Typography)(() => ({
   },
 }));
 
-const HubPublishedContainer = styled(Box)(() => ({
+const HubPublishedContainer = styled(Box)(({ theme }) => ({
   margin: "20px 0",
   border: "1px solid black",
+  height: "60%",
+  overflowY: "scroll",
+  [theme.breakpoints.down("md")]: {
+    margin: "20px 0 0 0",
+  },
 }));
 
 const Overview = styled(Box)(() => ({

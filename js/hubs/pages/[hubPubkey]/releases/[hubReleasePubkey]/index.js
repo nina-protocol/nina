@@ -69,16 +69,22 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (context) => {
   try {
-    if (context.params.hubPubkey && context.params.hubReleasePubkey !== 'undefined') {
+    if (
+      context.params.hubPubkey &&
+      context.params.hubReleasePubkey !== "undefined"
+    ) {
       if (!NinaSdk.client.program) {
         await NinaSdk.client.init(
           process.env.NINA_API_ENDPOINT,
           process.env.SOLANA_CLUSTER_URL,
           process.env.NINA_PROGRAM_ID
-        )      
+        );
       }
-      const {hub, release} = await NinaSdk.Hub.fetchHubRelease(context.params.hubPubkey, context.params.hubReleasePubkey);
-      return {  
+      const { hub, release } = await NinaSdk.Hub.fetchHubRelease(
+        context.params.hubPubkey,
+        context.params.hubReleasePubkey
+      );
+      return {
         props: {
           releasePubkey: release.publicKey,
           metadata: release.metadata,
@@ -86,7 +92,7 @@ export const getStaticProps = async (context) => {
           hub,
         },
         revalidate: 10,
-      } 
+      };
     }
   } catch (error) {
     console.warn(error);
@@ -96,19 +102,19 @@ export const getStaticProps = async (context) => {
           process.env.NINA_API_ENDPOINT,
           process.env.SOLANA_CLUSTER_URL,
           process.env.NINA_PROGRAM_ID
-        )      
+        );
       }
-      const hub = await NinaSdk.Hub.fetch(context.params.hubPubkey);  
+      const hub = await NinaSdk.Hub.fetch(context.params.hubPubkey);
       if (hub) {
-        return{
-          props:{
+        return {
+          props: {
             hub,
-          }
-        }
+          },
+        };
       }
     } catch (error) {
       console.warn(error);
     }
-    return {props: {}}
+    return { props: {} };
   }
 };

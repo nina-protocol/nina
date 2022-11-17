@@ -6,8 +6,6 @@ import { Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import SearchIcon from '@mui/icons-material/Search'
-import CloseIcon from '@mui/icons-material/Close'
 const SearchDropdown = dynamic(() => import('./SearchDropdown'))
 
 const NavSearch = () => {
@@ -81,7 +79,7 @@ const NavSearch = () => {
       return
     }
     setShowDropdown(false)
-    setShowSearchInput(false)
+    setQuery('')
   }
 
   const autoCompleteHandler = async (query) => {
@@ -89,9 +87,7 @@ const NavSearch = () => {
       `${NinaSdk.client.endpoint}/suggestions`,
       { query }
     )
-    if (query.length > 0) {
-      setSuggestions(response.data)
-    }
+    setSuggestions(response.data)
   }
 
   const changeHandler = (e) => {
@@ -100,34 +96,13 @@ const NavSearch = () => {
     const search = e.target.value
 
     setQuery(search)
-    if (query !== '') {
-      setShowDropdown(true)
+    setShowDropdown(search !== '')
+
+    if (search !== '') {
+      autoCompleteHandler(search)
+    } else {
+      setSuggestions([])
     }
-
-    if (query) {
-      autoCompleteHandler(query)
-    }
-  }
-
-  const suggestionsClickHandler = (search, searchFilter) => {
-    setQuery('')
-    router.push(
-      `/search/?q=${search}${searchFilter ? `&type=${searchFilter}` : ''}`
-    )
-  }
-
-  const suggestionsHandler = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    const clickedSuggestion = e.target.innerText
-    const searchFilter = e.target.id
-    if (clickedSuggestion) {
-      setQuery(clickedSuggestion)
-      setShowDropdown(false)
-      setShowSearchInput(false)
-    }
-
-    suggestionsClickHandler(clickedSuggestion, searchFilter)
   }
 
   const handleInputFocus = (e) => {
@@ -139,14 +114,11 @@ const NavSearch = () => {
     }
   }
   const keyHandler = (e) => {
-    const clickedSuggestion = e.target.innerText
-    const searchFilter = e.target.id
-
+    e.preventDefault()
+    e.stopPropagation()
     if (e.key === 'Enter') {
-      setQuery(clickedSuggestion)
-      suggestionsClickHandler(clickedSuggestion, searchFilter)
-      setShowDropdown(false)
-      setShowSearchInput(false)
+      setQuery('')
+      handleSubmit(e)
     }
   }
 
@@ -156,7 +128,6 @@ const NavSearch = () => {
         handleSubmit={handleSubmit}
         changeHandler={changeHandler}
         handleInputFocus={handleInputFocus}
-        suggestionsHandler={suggestionsHandler}
         query={query}
         suggestions={suggestions}
         dropdownRef={dropdownRef}
@@ -164,6 +135,8 @@ const NavSearch = () => {
         showDropdown={showDropdown}
         autoCompleteResults={autoCompleteResults}
         keyHandler={(e) => keyHandler(e)}
+        setShowDropdown={setShowDropdown}
+        setQuery={setQuery}
       />
     </>
   )
@@ -173,19 +146,19 @@ const DesktopNavSearch = ({
   handleSubmit,
   changeHandler,
   handleInputFocus,
-  suggestionsHandler,
   query,
   suggestions,
   dropdownRef,
   searchInputRef,
   showDropdown,
+  setShowDropdown,
+  setQuery,
   autoCompleteResults,
   keyHandler,
-  releasesRecent,
 }) => {
   return (
-    <DesktopNavSearchContainer>
-      <Form onSubmit={(e) => handleSubmit(e)}>
+    <NavSearchContainer>
+      <form onSubmit={(e) => handleSubmit(e)}>
         <SearchInputWrapper>
           <SearchInput
             onChange={(e) => changeHandler(e)}
@@ -197,21 +170,22 @@ const DesktopNavSearch = ({
             type="search"
           />
         </SearchInputWrapper>
-      </Form>
+      </form>
       {showDropdown && (
         <DropdownContainer ref={dropdownRef}>
           {autoCompleteResults.map((result, index) => {
             if (result.visible) {
               return (
-                <ResponsiveSearchResultContainer key={index}>
+                <DropdownWrapper key={index}>
                   <SearchDropdown
                     category={result.name}
                     searchData={suggestions}
                     hasResults={result.visible}
-                    clickHandler={(e) => suggestionsHandler(e)}
                     onKeyDown={(e) => keyHandler(e)}
+                    setShowDropdown={setShowDropdown}
+                    setQuery={setQuery}
                   />
-                </ResponsiveSearchResultContainer>
+                </DropdownWrapper>
               )
             }
           })}
@@ -224,11 +198,11 @@ const DesktopNavSearch = ({
             )}
         </DropdownContainer>
       )}
-    </DesktopNavSearchContainer>
+    </NavSearchContainer>
   )
 }
 
-const DesktopNavSearchContainer = styled(Box)(({ theme }) => ({
+const NavSearchContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     display: 'none',
   },
@@ -237,15 +211,13 @@ const DesktopNavSearchContainer = styled(Box)(({ theme }) => ({
 const SearchInputWrapper = styled(Box)(({ theme }) => ({
   maxWidth: '100vw',
 }))
-const Form = styled('form')(({ theme }) => ({}))
 const SearchInput = styled('input')(({ theme }) => ({
   border: 0,
   borderBottom: '1px solid #000000',
   width: '15vw',
   marginRight: '20px',
   outline: 'none !important',
-
-  outline: 'none',
+  padding: '2px 0px',
   borderRadius: 0,
   [theme.breakpoints.down('md')]: {
     margin: '15px 0',
@@ -260,16 +232,17 @@ const DropdownContainer = styled(Box)(({ theme }) => ({
   width: '15vw',
   zIndex: '100',
   position: 'absolute',
-  overflow: 'hidden',
+  overflowY: 'scroll',
   textAlign: 'left',
   marginRight: '20px',
-  backgroundColor: '#fff',
-  padding: '0 2px',
+  backgroundColor: theme.palette.offWhite,
+  padding: '0',
+  '&::-webkit-scrollbar': {
+    display: 'none !important',
+  },
 }))
 
-const ResponsiveSearchResultContainer = styled(Box)(({ theme }) => ({
-  maxHeight: '60vh',
-  maxWidth: theme.maxWidth,
+const DropdownWrapper = styled(Box)(({ theme }) => ({
   overflowY: 'auto',
   webkitOverflowScrolling: 'touch',
 }))

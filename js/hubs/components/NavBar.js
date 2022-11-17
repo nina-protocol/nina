@@ -54,7 +54,7 @@ const mobileNavData = [
   },
 ];
 
-const Navigation = ({ hubPubkey }) => {
+const NavBar = ({ hubPubkey }) => {
   const { toolbar, drawerContainer } = useStyles();
   const wallet = useWallet();
 
@@ -87,7 +87,7 @@ const Navigation = ({ hubPubkey }) => {
     }
     return undefined;
   }, [hubState]);
-  
+
   useEffect(() => {
     const setResponsiveness = () => {
       return window.innerWidth < 900
@@ -147,7 +147,11 @@ const Navigation = ({ hubPubkey }) => {
             {hubData && (
               <Image
                 loader={loader}
-                src={getImageFromCDN(hubData.data.image, 100, new Date(Date.parse(hubData.datetime)))}
+                src={getImageFromCDN(
+                  hubData.data.image,
+                  100,
+                  new Date(Date.parse(hubData.datetime))
+                )}
                 height="50"
                 width="50"
                 alt="hub-logo"
@@ -163,21 +167,6 @@ const Navigation = ({ hubPubkey }) => {
           </LogoLinkWrapper>
         </Link>
         <CtaWrapper>
-          {userHubs?.length > 0 && (
-            <a
-              href={`https://hubs.ninaprotocol.com/${
-                userHubs.length === 1 ? userHubs[0].handle : ""
-              }`}
-              target="_blank"
-              rel="noreferrer"
-              style={{ textDecoration: "none" }}
-            >
-              <Typography variant="body1" sx={{ mr: "15px" }}>
-                My Hub{userHubs.length > 1 ? "s" : ""}
-              </Typography>
-            </a>
-          )}
-
           {!mobileView && canAddContent && getMenuButtons(hubData?.handle)}
           <WalletWrapper id="wallet-wrapper">
             <NavCtas>
@@ -277,7 +266,7 @@ const Navigation = ({ hubPubkey }) => {
   return <StyledAppBar>{displayDesktop()}</StyledAppBar>;
 };
 
-export default Navigation;
+export default NavBar;
 const MenuItemContent = styled("span")(({ theme }) => ({
   color: theme.palette.text.primary,
   paddingRight: "15px",

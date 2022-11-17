@@ -1,4 +1,11 @@
-import React, { useEffect, useState, useRef, useContext, useMemo, useCallback } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useContext,
+  useMemo,
+  useCallback,
+} from "react";
 import Audio from "@nina-protocol/nina-internal-sdk/esm/Audio";
 import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
 import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
@@ -31,15 +38,15 @@ const AudioPlayer = ({ hubPubkey }) => {
     setInitialized,
     audioPlayerRef,
   } = audio;
-  const [duration, setDuration] = useState(0)
-  const audioInitialized = useMemo(() => initialized, [initialized])
-  const [hubReleases, setHubReleases] = useState(undefined)
-  const [hubPosts, setHubPosts] = useState(undefined)
+  const [duration, setDuration] = useState(0);
+  const audioInitialized = useMemo(() => initialized, [initialized]);
+  const [hubReleases, setHubReleases] = useState(undefined);
+  const [hubPosts, setHubPosts] = useState(undefined);
 
   useEffect(() => {
-    const [releases, posts] = filterHubContentForHub(hubPubkey)
-    setHubReleases(releases)
-    setHubPosts(posts)
+    const [releases, posts] = filterHubContentForHub(hubPubkey);
+    setHubReleases(releases);
+    setHubPosts(posts);
   }, [hubContentState]);
 
   useEffect(() => {
@@ -55,33 +62,33 @@ const AudioPlayer = ({ hubPubkey }) => {
           contentItem = releaseState.metadata[hubRelease.release];
           contentItem.contentType = hubRelease.contentType;
           contentItem.publicKey = hubRelease.release;
-          contentItem.hubReleaseId = hubRelease.hubReleaseId
-          contentItem.hubHandle = hubState[hubRelease.hub].handle
+          contentItem.hubReleaseId = hubRelease.hubReleaseId;
+          contentItem.hubHandle = hubState[hubRelease.hub].handle;
           contentItem.datetime = hubRelease.datetime;
           trackObject[hubRelease.release] = contentItem;
-        } 
+        }
       });
     }
     if (hubPosts) {
-      hubPosts.forEach(hubPost => {
+      hubPosts.forEach((hubPost) => {
         let contentItem;
         if (
-          hubPost.contentType === 'post' &&
+          hubPost.contentType === "post" &&
           hubPost.referenceContent !== undefined &&
           hubPost.visible
         ) {
           contentItem = releaseState.metadata[hubPost.referenceContent];
           if (contentItem) {
             contentItem.contentType = hubPost.contentType;
-            contentItem.hubHandle = hubState[hubPost.hub].handle
-            contentItem.hubPostPubkey = hubPost.publicKey
+            contentItem.hubHandle = hubState[hubPost.hub].handle;
+            contentItem.hubPostPubkey = hubPost.publicKey;
             contentItem.datetime = hubPost.datetime;
             trackObject[hubPost.release] = contentItem;
           }
         }
-      })
+      });
     }
-    setTracks(trackObject)
+    setTracks(trackObject);
   }, [hubReleases, hubPosts]);
 
   const activeTrack = useRef();

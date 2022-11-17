@@ -1,14 +1,16 @@
 import { Box, Typography } from '@mui/material'
 import { useRef, useEffect } from 'react'
 import { styled } from '@mui/system'
-
+import { useRouter } from 'next/router'
 const SearchDropdown = ({
   searchData,
   category,
   hasResults,
-  clickHandler,
   onKeyDown,
+  setShowDropdown,
+  setQuery,
 }) => {
+  const router = useRouter()
   const searchDropdownRef = useRef(null)
   useEffect(() => {
     const node = searchDropdownRef.current
@@ -26,8 +28,18 @@ const SearchDropdown = ({
 
   if (category === 'artists') {
     rows = searchData?.artists?.map((data) => {
-      const artistName = data?.name
-      const artistLink = `/profiles/${data?.publicKey}`
+      let artistName = data?.name
+      if (data?.publishesAs.length > 1) {
+        let publishesAsString
+        if (data?.publishesAs.length > 5) {
+          publishesAsString = data?.publishesAs.slice(0, 5).join(', ') + '...'
+        } else {
+          publishesAsString = data?.publishesAs.join(', ')
+        }
+        artistName = `${artistName} (Publishes as: ${publishesAsString})`
+      }
+
+      const artistLink = `/profiles/${data?.account.publicKey}`
 
       let formattedData = {
         displayName: artistName,
@@ -71,6 +83,18 @@ const SearchDropdown = ({
       return formattedData
     })
   }
+  const suggestionsHandler = (e, link) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const clickedSuggestion = e.target.innerText
+
+    if (clickedSuggestion) {
+      setShowDropdown(false)
+      setQuery('')
+      router.push(link)
+    }
+  }
   return (
     <>
       {hasResults === true && (
@@ -79,19 +103,24 @@ const SearchDropdown = ({
             {category}
           </Typography>
           {rows?.map((row, index) => (
-            <Box
+            <SearchResult
               role="tab"
               id={row.category}
               tabIndex={0}
               onKeyDown={onKeyDown}
               key={index}
+              sx={{ borderBottom: '1px solid #E5E5E5', py: '4px' }}
             >
-              <a key={index} id={row.category} onClick={clickHandler}>
+              <a
+                key={index}
+                id={row.category}
+                onClick={(e) => suggestionsHandler(e, row?.link)}
+              >
                 <Typography id={row.category} data-value={row?.name}>
                   {row?.displayName}
                 </Typography>
               </a>
-            </Box>
+            </SearchResult>
           ))}
         </SearchResultsWrapper>
       )}
@@ -102,12 +131,21 @@ const SearchDropdown = ({
 const SearchResultsWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
-  backgroundColor: theme.palette.lightTransparent,
-  padding: '10px 0',
+  padding: '10px 5px',
   '&:focus': {
-    backgroundColor: theme.palette.lightTransparent,
     outline: 'none',
   },
 }))
 
+const SearchResult = styled(Box)(({ theme }) => ({
+  borderBottom: '1px solid #E5E5E5',
+  py: '4px',
+  [theme.breakpoints.down('md')]: {
+    width: '70vw',
+    overflowX: 'hidden',
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+}))
 export default SearchDropdown

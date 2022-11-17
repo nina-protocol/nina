@@ -48,10 +48,26 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   const [activeValue, setActiveValue] = useState(undefined)
 
   const logos = {
-    soundcloud: <FontAwesomeIcon icon={faSoundcloud} size="1x" />,
-    twitter: <FontAwesomeIcon icon={faTwitter} size="1x" />,
-    instagram: <FontAwesomeIcon icon={faInstagram} size="1x" />,
-    ethereum: <FontAwesomeIcon icon={faEthereum} size="1x" />,
+    soundcloud: (
+      <FontAwesomeIcon
+        icon={faSoundcloud}
+        size="1x"
+        style={{ height: '16px' }}
+      />
+    ),
+    twitter: (
+      <FontAwesomeIcon icon={faTwitter} size="1x" style={{ height: '16px' }} />
+    ),
+    instagram: (
+      <FontAwesomeIcon
+        icon={faInstagram}
+        size="1x"
+        style={{ height: '16px' }}
+      />
+    ),
+    ethereum: (
+      <FontAwesomeIcon icon={faEthereum} size="1x" style={{ height: '16px' }} />
+    ),
   }
 
   const accountVerifiedForType = (type) => {
@@ -90,7 +106,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   const buttonTypes = useMemo(() => {
     const buttonArray = []
     if (publicKey?.toBase58() === profilePublicKey) {
-      buttonArray.push('soundcloud', 'twitter', 'instagram', 'ethereum')
+      buttonArray.push('soundcloud', 'twitter', 'ethereum')
     } else {
       verifications.forEach((verification) => {
         if (verification.type === 'soundcloud') {
@@ -179,11 +195,8 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
       if (publicKey) {
         params.wallet = publicKey.toBase58()
       }
-      
-      logEvent('connection_action',
-        'engagement', 
-        params
-      )
+
+      logEvent('connection_action', 'engagement', params)
 
       switch (type) {
         case 'twitter':
@@ -196,10 +209,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
           window.open(`https://soundcloud.com/${value}`, '_blank')
           break
         case 'ethereum':
-          window.open(
-            `https://etherscan.io/address/${value}`,
-            '_blank'
-          )
+          window.open(`https://etherscan.io/address/${value}`, '_blank')
           break
       }
     } else {
@@ -306,14 +316,25 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   )
 }
 
-const CtaWrapper = styled(Box)(() => ({
+const CtaWrapper = styled(Box)(({ theme }) => ({
   '& button': {
     color: 'black',
     border: '1px solid black',
     borderRadius: '0px',
     margin: '0 8px',
+    [theme.breakpoints.down('md')]: {
+      border: 'none',
+      margin: '0px',
+      padding: '10px 10px 10px 0px',
+      '& p': {
+        display: 'none',
+      },
+    },
     '& svg': {
       fontSize: '16px',
+      [theme.breakpoints.down('md')]: {
+        fontSize: '20px',
+      },
     },
   },
 }))

@@ -11,7 +11,7 @@ import { lightThemeOptions } from "../styles/theme/lightThemeOptions";
 import Head from "next/head";
 import NinaSdk from "@nina-protocol/js-sdk";
 
-const Navigation = dynamic(() => import("./Navigation"));
+const NavBar = dynamic(() => import("./NavBar"));
 const AudioPlayer = dynamic(() => import("./AudioPlayer"));
 const lightTheme = createTheme(lightThemeOptions);
 
@@ -39,7 +39,10 @@ const Layout = ({ children }) => {
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
 
   useEffect(() => {
-    if ((router.pathname.includes('/[hubPubkey]')) && !router.pathname.includes('/dashboard')) {
+    if (
+      router.pathname.includes("/[hubPubkey]") &&
+      !router.pathname.includes("/dashboard")
+    ) {
       if (hubData?.data.backgroundColor) {
         lightTheme.palette.background.default = hubData.data.backgroundColor;
       } else {
@@ -69,10 +72,12 @@ const Layout = ({ children }) => {
   }, [hubData, router]);
 
   useEffect(() => {
-    if (router.pathname === '/404' && hubState) {
-      let hubHandle = router.asPath.split('/')[1]
-      hubPubkey = Object.values(hubState).find(hub => hub.handle === hubHandle)?.publicKey
-      setHubPubkey(hubPubkey)
+    if (router.pathname === "/404" && hubState) {
+      let hubHandle = router.asPath.split("/")[1];
+      hubPubkey = Object.values(hubState).find(
+        (hub) => hub.handle === hubHandle
+      )?.publicKey;
+      setHubPubkey(hubPubkey);
     }
   }, [router.pathname, hubState]);
 
@@ -107,7 +112,7 @@ const Layout = ({ children }) => {
             className={classes.mainContainer}
           >
             <main className={classes.bodyContainer}>
-              <Navigation hubPubkey={hubPubkey} />
+              <NavBar hubPubkey={hubPubkey} />
               <Grid
                 container
                 columns={{ xs: 12, sm: 12, md: 12 }}

@@ -147,7 +147,8 @@ const QuillWrapper = styled(Box)(({ theme, type }) => ({
   "& .ql-editor": {
     padding: type === "release" ? "0px" : "",
     maxHeight: type === "release" ? "100px" : "unset",
-    overflowY: "scroll",
+    overflow: "auto",
+    maxWidth: "476px",
   },
 }));
 

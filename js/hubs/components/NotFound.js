@@ -50,15 +50,18 @@ const NotFound = (props) => {
         <Link href="/all">Explore all Hubs</Link>
       </Typography>
 
-      {((router.query.hubPostPubkey || router.query.hubReleasePubkey ) && (hub || hubData) ) && (
-        <>
-          <Typography variant='h2' align="left" sx={{mt: '15px'}}>
-            <Link href={`/${router.query.hubPubkey}`}>
-              {`Explore ${hub?.data.displayName || hubData?.data.displayName}`}
-            </Link>
-          </Typography>
-        </>
-      )}
+      {(router.query.hubPostPubkey || router.query.hubReleasePubkey) &&
+        (hub || hubData) && (
+          <>
+            <Typography variant="h2" align="left" sx={{ mt: "15px" }}>
+              <Link href={`/${router.query.hubPubkey}`}>
+                {`Explore ${
+                  hub?.data.displayName || hubData?.data.displayName
+                }`}
+              </Link>
+            </Typography>
+          </>
+        )}
     </StyledBox>
   );
 };

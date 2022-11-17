@@ -34,8 +34,8 @@ const Royalty = (props) => {
   const { ninaClient } = useContext(Nina.Context);
 
   useEffect(() => {
-    if (release?.royaltyRecipients) {
-      release.royaltyRecipients.forEach((recipient) => {
+    if (release?.revenueShareRecipients) {
+      release.revenueShareRecipients.forEach((recipient) => {
         const recipientPubkey = recipient.recipientAuthority;
         if (
           wallet?.connected &&
@@ -48,7 +48,7 @@ const Royalty = (props) => {
         }
       });
     }
-  }, [release?.royaltyRecipients, wallet?.connected, wallet?.publicKey]);
+  }, [release?.revenueShareRecipients, wallet?.connected, wallet?.publicKey]);
 
   const toggleForm = () => {
     if (!formShown) {
@@ -68,15 +68,9 @@ const Royalty = (props) => {
     return (
       <>
         {userIsRecipient && (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={toggleForm}
-            stlye={{ fontSize: "14px !important" }}
-            fullWidth
-          >
+          <ToggleButton onClick={toggleForm} fullWidth>
             {formToggleText}
-          </Button>
+          </ToggleButton>
         )}
         {formShown && (
           <RoyaltyRecipientForm
@@ -101,6 +95,7 @@ const Royalty = (props) => {
         color="primary"
         type="submit"
         onClick={() => setOpen(true)}
+        sx={{ mt: 1 }}
       >
         <Typography variant="body2" align="left">
           Revenue Share
@@ -123,8 +118,8 @@ const Royalty = (props) => {
               Revenue Share Information:
             </Typography>
             <List>
-              {release?.royaltyRecipients &&
-                release.royaltyRecipients.map((recipient, i) => {
+              {release?.revenueShareRecipients &&
+                release.revenueShareRecipients.map((recipient, i) => {
                   if (recipient.percentShare > 0) {
                     const walletAuthorizedToCollect =
                       wallet?.connected &&
@@ -158,13 +153,11 @@ const Royalty = (props) => {
 
                     const collectButton = walletAuthorizedToCollect &&
                       recipient.owed > 0 && (
-                        <Button
+                        <CollectButton
                           onClick={() => handleCollectRoyalty(recipient)}
-                          variant="contained"
-                          color="primary"
                         >
                           Collect
-                        </Button>
+                        </CollectButton>
                       );
 
                     return (
@@ -201,9 +194,21 @@ const PREFIX = "Royalty";
 const classes = {
   recipientData: `${PREFIX}-recipientData`,
 };
-
+const CollectButton = styled(Button)(({ theme }) => ({
+  color: theme.palette.text.primary,
+  borderRadius: "0px",
+  border: `1px solid ${theme.palette.text.primary}`,
+}));
+const ToggleButton = styled(Button)(({ theme }) => ({
+  color: theme.palette.text.primary,
+  fontSize: "14px !important",
+  padding: 0,
+  marginTop: 5,
+}));
 const SettingsButton = styled(Button)(({ theme }) => ({
   "& p": {
+    border: `1px solid ${theme.palette.text.primary}`,
+    padding: "10px",
     "&:hover": {
       opacity: "50%",
     },
@@ -211,11 +216,9 @@ const SettingsButton = styled(Button)(({ theme }) => ({
 }));
 
 const Root = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  // justifyContent: 'center',
-  width: "100%",
-
+  textAlign: "left",
+  color: "black",
+  [theme.breakpoints.down("md")]: {},
   [`& .${classes.recipientData}`]: {
     color: `${theme.palette.greyLight}`,
     "& a": {
@@ -231,7 +234,7 @@ const StyledModal = styled(Modal)(() => ({
 }));
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper,
+  backgroundColor: theme.palette.background.default,
   border: "2px solid #000",
   boxShadow: theme.shadows[5],
   padding: theme.spacing(2, 4, 3),

@@ -52,6 +52,9 @@ const HubCreateConfirm = (props) => {
     } else if (update && !isAuthority) {
       setButtonText("You do not have permission to update Hub Info");
     }
+    return () => {
+      setButtonText("Create Hub");
+    };
   }, [update, isAuthority]);
 
   return (

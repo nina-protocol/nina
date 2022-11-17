@@ -215,6 +215,7 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
     borderRight: 'none',
     [theme.breakpoints.down('md')]: {
       width: '90vw',
+      maxWidth: '450px',
     },
   },
 }))
@@ -231,6 +232,7 @@ const FeedHeader = styled(Box)(({ theme }) => ({
   width: '437px',
   [theme.breakpoints.down('md')]: {
     width: '88vw',
+    maxWidth: '437px',
   },
 }))
 
@@ -246,6 +248,7 @@ const DrawerType = styled(Typography)(({ theme }) => ({
   margin: '0 10px',
   cursor: 'pointer',
   fontWeight: 'bold',
+  textTransform: 'uppercase',
   '&.active': {
     textDecoration: 'underline',
   },
