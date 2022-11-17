@@ -67,12 +67,13 @@ export const getStaticPaths = async () => {
       process.env.NINA_PROGRAM_ID
     );
   }
-  const hubs = await NinaSdk.Hub.fetchAll({limit: 1000})
+  const { hubs } = await NinaSdk.Hub.fetchAll({limit: 1000})
+  console.log('hubs', hubs)
   const publicKeyPaths = hubs.map((hub) => ({
     params: { hubPubkey: hub.publicKey },
   }));
   const handlePaths = hubs.map((hub) => ({
-    params: { handle: hub.handle },
+    params: { hubPubkey: hub.handle },
   }));
   return {
     paths: [...handlePaths, ...publicKeyPaths],
@@ -96,7 +97,7 @@ export const getStaticProps = async (context) => {
         props: {
           hub,
         },
-        revalidate: 10,
+        revalidate: 1000,
       };
     } catch (error) {
       console.warn(error);
