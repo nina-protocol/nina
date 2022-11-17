@@ -6,6 +6,7 @@ import { Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
+import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
 const SearchDropdown = dynamic(() => import('./SearchDropdown'))
 
 const NavSearch = () => {
@@ -25,11 +26,7 @@ const NavSearch = () => {
   const searchInputRef = useRef()
 
   useEffect(() => {
-    NinaSdk.client.init(
-      process.env.NINA_API_ENDPOINT,
-      process.env.SOLANA_CLUSTER_URL,
-      process.env.NINA_PROGRAM_ID
-    )
+    initSdkIfNeeded()
   }, [])
 
   useEffect(() => {
