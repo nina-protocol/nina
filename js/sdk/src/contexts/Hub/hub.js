@@ -296,6 +296,7 @@ const hubContextHelper = ({
       )
 
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await axios.get(`${process.env.NINA_API_ENDPOINT}/hubs/${hubPubkey}/tx/${txid}`)
       await getHub(hubPubkey)
 
       return {
