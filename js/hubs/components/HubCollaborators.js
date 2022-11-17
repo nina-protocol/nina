@@ -162,6 +162,8 @@ const HubCollaborators = ({
                   activeSelection={activeSelection}
                   canAddCollaborators={canAddCollaborators}
                   setActiveSelection={setActiveSelection}
+                  pending={pending}
+                  setPending={setPending}
                 />
               </>
             )}
