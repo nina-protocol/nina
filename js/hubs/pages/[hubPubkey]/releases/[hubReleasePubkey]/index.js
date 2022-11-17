@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import NotFound from "../../../../components/NotFound";
 import NinaSdk from "@nina-protocol/js-sdk";
-
+import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
 const Release = dynamic(() => import("../../../../components/Release"));
 
 const ReleasePage = (props) => {
@@ -54,13 +54,7 @@ const ReleasePage = (props) => {
 export default ReleasePage;
 
 export const getStaticPaths = async () => {
-  if (!NinaSdk.client.program) {
-    await NinaSdk.client.init(
-      process.env.NINA_API_ENDPOINT,
-      process.env.SOLANA_CLUSTER_URL,
-      process.env.NINA_PROGRAM_ID
-    );
-  }
+  await initSdkIfNeeded()
   const paths = []
   const { hubs } = await NinaSdk.Hub.fetchAll({limit: 1000})
   for await (const hub of hubs) {
@@ -86,13 +80,7 @@ export const getStaticProps = async (context) => {
       context.params.hubPubkey &&
       context.params.hubReleasePubkey !== "undefined"
     ) {
-      if (!NinaSdk.client.program) {
-        await NinaSdk.client.init(
-          process.env.NINA_API_ENDPOINT,
-          process.env.SOLANA_CLUSTER_URL,
-          process.env.NINA_PROGRAM_ID
-        );
-      }
+      await initSdkIfNeeded()
       const { hub, release } = await NinaSdk.Hub.fetchHubRelease(
         context.params.hubPubkey,
         context.params.hubReleasePubkey
@@ -110,13 +98,7 @@ export const getStaticProps = async (context) => {
   } catch (error) {
     console.warn(error);
     try {
-      if (!NinaSdk.client.program) {
-        await NinaSdk.client.init(
-          process.env.NINA_API_ENDPOINT,
-          process.env.SOLANA_CLUSTER_URL,
-          process.env.NINA_PROGRAM_ID
-        );
-      }
+      await initSdkIfNeeded()
       const hub = await NinaSdk.Hub.fetch(context.params.hubPubkey);
       if (hub) {
         return {

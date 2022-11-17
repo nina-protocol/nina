@@ -60,13 +60,7 @@ const HubPage = (props) => {
 export default HubPage;
 
 export const getStaticPaths = async () => {
-  if (!NinaSdk.client.program) {
-    await NinaSdk.client.init(
-      process.env.NINA_API_ENDPOINT,
-      process.env.SOLANA_CLUSTER_URL,
-      process.env.NINA_PROGRAM_ID
-    );
-  }
+  await initSdkIfNeeded()
   const paths = []
   const { hubs } = await NinaSdk.Hub.fetchAll({limit: 1000})
   hubs.forEach((hub) => {
@@ -87,13 +81,7 @@ export const getStaticProps = async (context) => {
   const hubPubkey = context.params.hubPubkey;
   if (hubPubkey && hubPubkey !== "manifest.json" && hubPubkey !== "undefined") {
     try {
-      if (!NinaSdk.client.program) {
-        await NinaSdk.client.init(
-          process.env.NINA_API_ENDPOINT,
-          process.env.SOLANA_CLUSTER_URL,
-          process.env.NINA_PROGRAM_ID
-        );
-      }
+      await initSdkIfNeeded()
       const { hub } = await NinaSdk.Hub.fetch(hubPubkey);
       return {
         props: {

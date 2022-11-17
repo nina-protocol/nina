@@ -2,6 +2,7 @@ import Head from 'next/head'
 import dynamic from 'next/dynamic'
 import Release from '../../components/Release'
 import NinaSdk from '@nina-protocol/js-sdk'
+import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
 const NotFound = dynamic(() => import('../../components/NotFound'))
 
 const ReleaseMarketPage = (props) => {
@@ -44,14 +45,7 @@ const ReleaseMarketPage = (props) => {
 }
 
 export const getStaticPaths = async () => {
-  if (!NinaSdk.client.program) {
-    await NinaSdk.client.init(
-      process.env.NINA_API_ENDPOINT,
-      process.env.SOLANA_CLUSTER_URL,
-      process.env.NINA_PROGRAM_ID
-    )
-  }
-
+  await initSdkIfNeeded()
   const paths = []
   const { releases } = await NinaSdk.Release.fetchAll({limit: 2000})
   releases.forEach((release) => {
@@ -71,6 +65,7 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async (context) => {
   const releasePubkey = context.params.releasePubkey
   try {
+    await initSdkIfNeeded()
     const { release } = await NinaSdk.Release.fetch(releasePubkey)
     return {
       props: {

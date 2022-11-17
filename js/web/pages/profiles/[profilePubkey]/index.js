@@ -3,6 +3,7 @@ import { Box } from '@mui/material'
 import { styled } from '@mui/system'
 import Head from 'next/head'
 import NinaSdk from '@nina-protocol/js-sdk'
+import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
 const Profile = dynamic(() => import('../../../components/Profile'))
 
 const ProfilePage = (props) => {
@@ -54,13 +55,7 @@ const ProfilePageContainer = styled(Box)(({ theme }) => ({
 export default ProfilePage
 
 export const getStaticPaths = async () => {
-  if (!NinaSdk.client.program) {
-    await NinaSdk.client.init(
-      process.env.NINA_API_ENDPOINT,
-      process.env.SOLANA_CLUSTER_URL,
-      process.env.NINA_PROGRAM_ID
-    );
-  }
+  await initSdkIfNeeded()
   const paths = []
   const { accounts } = await NinaSdk.Account.fetchAll({ limit: 5000 })
   accounts.forEach((account) => {

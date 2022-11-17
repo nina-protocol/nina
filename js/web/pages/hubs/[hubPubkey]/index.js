@@ -3,7 +3,9 @@ import { Box } from '@mui/system'
 import { styled } from '@mui/system'
 import Head from 'next/head'
 import NinaSdk from '@nina-protocol/js-sdk'
+import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
 const HubView = dynamic(() => import('../../../components/Hub'))
+
 const HubPage = ({ hub, hubPubkey }) => {
   return (
     <>
@@ -58,13 +60,7 @@ const HubPageContainer = styled(Box)(({ theme }) => ({
 export default HubPage
 
 export const getStaticPaths = async () => {
-  if (!NinaSdk.client.program) {
-    await NinaSdk.client.init(
-      process.env.NINA_API_ENDPOINT,
-      process.env.SOLANA_CLUSTER_URL,
-      process.env.NINA_PROGRAM_ID
-    );
-  }
+  await initSdkIfNeeded()
   const paths = []
   const { hubs } = await NinaSdk.Hub.fetchAll({limit: 1000})
   hubs.forEach((hub) => {
@@ -85,13 +81,7 @@ export const getStaticProps = async (context) => {
   const { hubPubkey } = context.params
   if (hubPubkey && hubPubkey !== 'manifest.json') {
     try {
-      if (!NinaSdk.client.program) {
-        await NinaSdk.client.init(
-          process.env.NINA_API_ENDPOINT,
-          process.env.SOLANA_CLUSTER_URL,
-          process.env.NINA_PROGRAM_ID
-        )
-      }
+      await initSdkIfNeeded()
       const { hub } = await NinaSdk.Hub.fetch(hubPubkey)
       return {
         props: {

@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import NinaSdk from "@nina-protocol/js-sdk";
 import NotFound from "../../../../components/NotFound";
-
+import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
 const Post = dynamic(() => import("../../../../components/Post"));
 
 const PostPage = (props) => {
@@ -58,13 +58,7 @@ const PostPage = (props) => {
 export default PostPage;
 
 export const getStaticPaths = async () => {
-  if (!NinaSdk.client.program) {
-    await NinaSdk.client.init(
-      process.env.NINA_API_ENDPOINT,
-      process.env.SOLANA_CLUSTER_URL,
-      process.env.NINA_PROGRAM_ID
-    );
-  }
+  await initSdkIfNeeded()
   const paths = []
   const { hubs } = await NinaSdk.Hub.fetchAll({limit: 1000})
   for await (const hub of hubs) {
@@ -86,13 +80,7 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (context) => {
   try {
-    if (!NinaSdk.client.program) {
-      await NinaSdk.client.init(
-        process.env.NINA_API_ENDPOINT,
-        process.env.SOLANA_CLUSTER_URL,
-        process.env.NINA_PROGRAM_ID
-      );
-    }
+    await initSdkIfNeeded()
     const { hub, post } = await NinaSdk.Hub.fetchHubPost(
       context.params.hubPubkey,
       context.params.hubPostPubkey

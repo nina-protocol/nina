@@ -12,11 +12,11 @@
   "scripts": {
     "sdk": "yarn workspace @nina-protocol/nina-internal-sdk",
     "nina-radio": "yarn workspace nina-radio",
-    "nina-radio:build": "yarn nina-radio build",
+    "nina-radio:build": "USE_KEY=true yarn nina-radio build",
     "web": "yarn workspace web",
-    "web:build": "yarn web build",
+    "web:build": "USE_KEY=true yarn web build",
     "hubs": "yarn workspace @nina-protocol/nina-hubs",
-    "hubs:build": "yarn hubs build"
+    "hubs:build": "USE_KEY=true yarn hubs build"
   },
   "dependencies": {
     "@emotion/cache": "^11.7.1",
@@ -30,7 +30,7 @@
     "@mui/icons-material": "^5.4.1",
     "@mui/material": "^5.6.3",
     "@mui/styles": "^5.6.2",
-    "@nina-protocol/js-sdk": "^0.0.8",
+    "@nina-protocol/js-sdk": "^0.0.12",
     "@nina-protocol/nina-internal-sdk": "0.0.35",
     "@sentry/nextjs": "^7.8.0",
     "airtable": "^0.11.5",
