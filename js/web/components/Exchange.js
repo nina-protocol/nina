@@ -79,7 +79,7 @@ const ExchangeComponent = (props) => {
   const handleExchangeAction = async (exchange) => {
     let result
     if (exchange.isInit) {
-      const error = checkIfHasBalanceToCompleteAction(
+      const error = await checkIfHasBalanceToCompleteAction(
         NinaProgramAction.EXCHANGE_INIT
       )
       if (error) {
@@ -93,7 +93,7 @@ const ExchangeComponent = (props) => {
       showPendingTransaction('Cancelling offer...')
       result = await exchangeCancel(exchange, releasePubkey)
     } else {
-      const error = checkIfHasBalanceToCompleteAction(
+      const error = await checkIfHasBalanceToCompleteAction(
         NinaProgramAction.EXCHANGE_ACCEPT
       )
       if (error) {

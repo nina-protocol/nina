@@ -26,9 +26,9 @@ const ExchangeModal = (props) => {
   const vaultFee = (nativeAmount * ninaClient.NINA_VAULT_FEE) / 1000000
   const sellerAmount = nativeAmount - artistFee - vaultFee
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     setPendingConfirm(true)
-    onSubmit(e, false)
+    await onSubmit(e, false)
   }
 
   return (
