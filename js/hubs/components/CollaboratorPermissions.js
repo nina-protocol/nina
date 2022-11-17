@@ -13,13 +13,14 @@ import { useFormik } from "formik";
 import { DashboardHeader } from "../styles/theme/lightThemeOptions.js";
 
 const CollaboratorPermissions = (props) => {
-  const { hubPubkey, activeSelection, isAuthority, setActiveSelection, pending, setPending } = props;
+  const { hubPubkey, activeSelection, isAuthority, setActiveSelection,  } = props;
   const { enqueueSnackbar } = useSnackbar();
   const { hubUpdateCollaboratorPermission } = useContext(Hub.Context);
+  const [pending, setPending] = useState(false);
   const buttonText = isAuthority
     ? "Update Permissions"
     : "You Do Not Have Permission To Add Artists"
-    
+
   const [unlimitedAllowance, setUnlimitAllowance] = useState(
     activeSelection.allowance === -1
   );
@@ -41,7 +42,7 @@ const CollaboratorPermissions = (props) => {
       canAddCollaborator: activeSelection.canAddCollaborator,
       allowance: activeSelection.allowance,
       hubPubkey,
-      setPending
+      
     },
     onSubmit: async (values, { resetForm }) => {
       const {
@@ -50,7 +51,7 @@ const CollaboratorPermissions = (props) => {
         canAddContent,
         canAddCollaborator,
         allowance,
-        setPending
+        
       } = values;
       setPending(true);
       const result = await hubUpdateCollaboratorPermission(

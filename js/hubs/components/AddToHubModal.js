@@ -73,7 +73,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
     });
 
     handleClose();
-    const result = await hubAddRelease(selectedHubId, releasePubkey);
+    const result = await hubAddRelease(selectedHubId, releasePubkey, hubPubkey);
     if (result?.success) {
       await getHubsForRelease(releasePubkey);
       enqueueSnackbar(result.msg, {
