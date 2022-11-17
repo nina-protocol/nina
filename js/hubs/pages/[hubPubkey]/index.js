@@ -78,7 +78,7 @@ export const getStaticPaths = async () => {
     })
   });
   return {
-    paths: [...handlePaths, ...publicKeyPaths],
+    paths,
     fallback: "blocking",
   };
 };
