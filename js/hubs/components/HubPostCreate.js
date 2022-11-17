@@ -167,7 +167,7 @@ const HubPostCreate = ({
     try {
       const referenceRelease =
         formValues.postForm.reference || preloadedRelease;
-      const error = checkIfHasBalanceToCompleteAction(
+      const error = await checkIfHasBalanceToCompleteAction(
         referenceRelease
           ? NinaProgramAction.POST_INIT_VIA_HUB_WITH_REFERENCE_RELEASE
           : NinaProgramAction.POST_INIT_VIA_HUB

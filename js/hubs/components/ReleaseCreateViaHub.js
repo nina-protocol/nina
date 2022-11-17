@@ -216,7 +216,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
           }/releases/${releaseInfo.hubRelease.toBase58()}`,
         });
       } else if (track && artwork) {
-        const error = checkIfHasBalanceToCompleteAction(
+        const error = await checkIfHasBalanceToCompleteAction(
           NinaProgramAction.RELEASE_INIT_VIA_HUB
         );
         if (error) {
