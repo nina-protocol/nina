@@ -13,7 +13,7 @@ import { useFormik } from "formik";
 import { DashboardHeader } from "../styles/theme/lightThemeOptions.js";
 
 const CollaboratorPermissions = (props) => {
-  const { hubPubkey, activeSelection, isAuthority, setActiveSelection,  } = props;
+  const { hubPubkey, activeSelection, isAuthority, setActiveSelection } = props;
   const { enqueueSnackbar } = useSnackbar();
   const { hubUpdateCollaboratorPermission } = useContext(Hub.Context);
   const [pending, setPending] = useState(false);
