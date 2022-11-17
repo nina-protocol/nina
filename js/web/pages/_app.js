@@ -18,6 +18,7 @@ import { NinaTheme } from '../../NinaTheme'
 import Dots from '../components/Dots'
 import Head from 'next/head'
 import NinaSdk from '@nina-protocol/js-sdk'
+import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
 
 const NinaWrapper = dynamic(() => import('../components/NinaWrapper'))
 const Layout = dynamic(() => import('../components/Layout'))
@@ -42,11 +43,7 @@ function Application({ Component, pageProps }) {
     }
 
     const handleSdkInitialization = async () => {
-      await NinaSdk.client.init(
-        process.env.NINA_API_ENDPOINT,
-        process.env.SOLANA_CLUSTER_URL,
-        process.env.NINA_PROGRAM_ID
-      )
+      await initSdkIfNeeded()
       setSdkInitialized(true)
     }
     handleSdkInitialization()

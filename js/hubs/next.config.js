@@ -66,6 +66,7 @@ const moduleExports = {
     SOLANA_CLUSTER_URL: process.env.SOLANA_CLUSTER_URL,
     SOLANA_CLUSTER: process.env.SOLANA_CLUSTER,
     AIRTABLE_API_KEY: process.env.AIRTABLE_API_KEY,
+    NINA_API_KEY: process.env.NINA_API_KEY,
   },
   images: {
     deviceSizes: [320, 420, 640, 750, 828, 1080, 1200, 1920, 2048],

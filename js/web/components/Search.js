@@ -11,6 +11,7 @@ import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 
 import Dots from './Dots'
+import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
 
 import dynamic from 'next/dynamic'
 
@@ -61,11 +62,7 @@ const Search = (props) => {
   ])
 
   useEffect(() => {
-    NinaSdk.client.init(
-      process.env.NINA_API_ENDPOINT,
-      process.env.SOLANA_CLUSTER_URL,
-      process.env.NINA_PROGRAM_ID
-    )
+    initSdkIfNeeded()
   }, [])
 
   useEffect(() => {

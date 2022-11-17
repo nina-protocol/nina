@@ -2168,6 +2168,14 @@
     jsbi "^3.1.5"
     sha.js "^2.4.11"
 
+"@nina-protocol/js-sdk@^0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@nina-protocol/js-sdk/-/js-sdk-0.0.12.tgz#571e9b187b57677545d749e8d92db342e57acba8"
+  integrity sha512-KfcHgRcR4t+vyJf8x8aLEhc18zBUUeancOkJRqLGWg8Gk5k5WUM3Ka0PRiw/bDbZLgcN+qeqzosaX/GCzxUPGg==
+  dependencies:
+    "@project-serum/anchor" "^0.25.0"
+    axios "^0.27.2"
+
 "@nina-protocol/js-sdk@^0.0.8":
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/@nina-protocol/js-sdk/-/js-sdk-0.0.8.tgz#ad8ac467b05675715eaeee2438def3a4cc01efed"

@@ -23,7 +23,7 @@ const DashboardPage = () => {
   return (
     <>
       <Head>
-        <title>Nina Protocol</title>
+        <title>Nina Protocol - Dashboard</title>
         <meta
           name="description"
           content={'Nina Protocol is a digitally native music ecosystem'}

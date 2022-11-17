@@ -2,6 +2,8 @@ import dynamic from 'next/dynamic'
 import { Box } from '@mui/material'
 import { styled } from '@mui/system'
 import Head from 'next/head'
+import NinaSdk from '@nina-protocol/js-sdk'
+import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
 const Profile = dynamic(() => import('../../../components/Profile'))
 
 const ProfilePage = (props) => {
@@ -53,14 +55,19 @@ const ProfilePageContainer = styled(Box)(({ theme }) => ({
 export default ProfilePage
 
 export const getStaticPaths = async () => {
-  return {
-    paths: [
-      {
-        params: {
-          profilePubkey: 'placeholder',
-        },
+  await initSdkIfNeeded()
+  const paths = []
+  const { accounts } = await NinaSdk.Account.fetchAll({ limit: 5000 })
+  accounts.forEach((account) => {
+    paths.push({
+      params: {
+        profilePubkey: account.publicKey,
       },
-    ],
+    })
+  })
+
+  return {
+    paths,
     fallback: 'blocking',
   }
 }
@@ -71,5 +78,6 @@ export const getStaticProps = async (context) => {
     props: {
       profilePubkey: profilePubkey,
     },
+    revalidate: 1000,
   }
 }

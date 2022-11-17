@@ -2,6 +2,7 @@ import React from 'react'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import NinaSdk from '@nina-protocol/js-sdk'
+import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
 const Release = dynamic(() => import('../../components/Release'))
 const NotFound = dynamic(() => import('../../components/NotFound'))
 
@@ -49,14 +50,19 @@ const ReleasePage = (props) => {
 export default ReleasePage
 
 export const getStaticPaths = async () => {
-  return {
-    paths: [
-      {
-        params: {
-          releasePubkey: 'placeholder',
-        },
+  await initSdkIfNeeded()
+  const paths = []
+  const { releases } = await NinaSdk.Release.fetchAll({limit: 2000})
+  releases.forEach((release) => {
+    paths.push({
+      params: {
+        releasePubkey: release.publicKey,
       },
-    ],
+    })
+  })
+
+  return {
+    paths,
     fallback: 'blocking',
   }
 }
@@ -65,20 +71,14 @@ export const getStaticProps = async (context) => {
   const releasePubkey = context.params.releasePubkey
 
   try {
-    if (!NinaSdk.client.program) {
-      await NinaSdk.client.init(
-        process.env.NINA_API_ENDPOINT,
-        process.env.SOLANA_CLUSTER_URL,
-        process.env.NINA_PROGRAM_ID
-      )
-    }
+    await initSdkIfNeeded()
     const { release } = await NinaSdk.Release.fetch(releasePubkey)
     return {
       props: {
         metadata: release.metadata,
         releasePubkey,
       },
-      revalidate: 10,
+      revalidate: 1000,
     }
   } catch (error) {
     console.warn(error)

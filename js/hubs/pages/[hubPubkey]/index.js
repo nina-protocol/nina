@@ -2,7 +2,7 @@ import Head from "next/head";
 import Hub from "../../components/Hub";
 import NotFound from "../../components/NotFound";
 import NinaSdk from "@nina-protocol/js-sdk";
-
+import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
 const HubPage = (props) => {
   const { hub } = props;
 
@@ -60,14 +60,19 @@ const HubPage = (props) => {
 export default HubPage;
 
 export const getStaticPaths = async () => {
+  await initSdkIfNeeded()
+  const paths = []
+  const { hubs } = await NinaSdk.Hub.fetchAll({limit: 1000})
+  hubs.forEach((hub) => {
+    paths.push({
+      params: { hubPubkey: hub.publicKey },
+    })
+    paths.push({
+      params: { hubPubkey: hub.handle },
+    })
+  });
   return {
-    paths: [
-      {
-        params: {
-          hubPubkey: "placeholder",
-        },
-      },
-    ],
+    paths,
     fallback: "blocking",
   };
 };
@@ -76,19 +81,13 @@ export const getStaticProps = async (context) => {
   const hubPubkey = context.params.hubPubkey;
   if (hubPubkey && hubPubkey !== "manifest.json" && hubPubkey !== "undefined") {
     try {
-      if (!NinaSdk.client.program) {
-        await NinaSdk.client.init(
-          process.env.NINA_API_ENDPOINT,
-          process.env.SOLANA_CLUSTER_URL,
-          process.env.NINA_PROGRAM_ID
-        );
-      }
+      await initSdkIfNeeded()
       const { hub } = await NinaSdk.Hub.fetch(hubPubkey);
       return {
         props: {
           hub,
         },
-        revalidate: 10,
+        revalidate: 1000,
       };
     } catch (error) {
       console.warn(error);
