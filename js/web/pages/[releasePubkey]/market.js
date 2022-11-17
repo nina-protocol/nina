@@ -44,16 +44,23 @@ const ReleaseMarketPage = (props) => {
 }
 
 export const getStaticPaths = async () => {
-  return {
-    paths: [
-      {
-        params: {
-          releasePubkey: 'placeholder',
-        },
-      },
-    ],
-    fallback: 'blocking',
+  if (!NinaSdk.client.program) {
+    await NinaSdk.client.init(
+      process.env.NINA_API_ENDPOINT,
+      process.env.SOLANA_CLUSTER_URL,
+      process.env.NINA_PROGRAM_ID
+    )
   }
+
+  const paths = []
+  const { releases } = await NinaSdk.Release.fetchAll({limit: 2000})
+  releases.forEach((release) => {
+    paths.push({
+      params: {
+        releasePubkey: release.publicKey,
+      },
+    })
+  })
 }
 
 export const getStaticProps = async (context) => {
@@ -65,6 +72,7 @@ export const getStaticProps = async (context) => {
         metadata: release.metadata,
         releasePubkey,
       },
+      revalidate: 1000,
     }
   } catch (error) {
     console.warn(error)

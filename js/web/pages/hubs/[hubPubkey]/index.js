@@ -58,17 +58,28 @@ const HubPageContainer = styled(Box)(({ theme }) => ({
 export default HubPage
 
 export const getStaticPaths = async () => {
-  return {
-    paths: [
-      {
-        params: {
-          hubPubkey: 'placeholder',
-        },
-      },
-    ],
-    fallback: 'blocking',
+  if (!NinaSdk.client.program) {
+    await NinaSdk.client.init(
+      process.env.NINA_API_ENDPOINT,
+      process.env.SOLANA_CLUSTER_URL,
+      process.env.NINA_PROGRAM_ID
+    );
   }
-}
+  const paths = []
+  const { hubs } = await NinaSdk.Hub.fetchAll({limit: 1000})
+  hubs.forEach((hub) => {
+    paths.push({
+      params: { hubPubkey: hub.publicKey },
+    })
+    paths.push({
+      params: { hubPubkey: hub.handle },
+    })
+  });
+  return {
+    paths,
+    fallback: "blocking",
+  };
+};
 
 export const getStaticProps = async (context) => {
   const { hubPubkey } = context.params
@@ -87,7 +98,7 @@ export const getStaticProps = async (context) => {
           hub,
           hubPubkey: hub.publicKey,
         },
-        revalidate: 10,
+        revalidate: 1000,
       }
     } catch (error) {
       console.warn(error)

@@ -53,14 +53,25 @@ const ProfilePageContainer = styled(Box)(({ theme }) => ({
 export default ProfilePage
 
 export const getStaticPaths = async () => {
-  return {
-    paths: [
-      {
-        params: {
-          profilePubkey: 'placeholder',
-        },
+  if (!NinaSdk.client.program) {
+    await NinaSdk.client.init(
+      process.env.NINA_API_ENDPOINT,
+      process.env.SOLANA_CLUSTER_URL,
+      process.env.NINA_PROGRAM_ID
+    );
+  }
+  const paths = []
+  const { accounts } = await NinaSdk.Account.fetchAll({ limit: 5000 })
+  accounts.forEach((account) => {
+    paths.push({
+      params: {
+        profilePubkey: account.publicKey,
       },
-    ],
+    })
+  })
+
+  return {
+    paths,
     fallback: 'blocking',
   }
 }
@@ -71,5 +82,6 @@ export const getStaticProps = async (context) => {
     props: {
       profilePubkey: profilePubkey,
     },
+    revalidate: 1000,
   }
 }
