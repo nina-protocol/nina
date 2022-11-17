@@ -60,14 +60,22 @@ const HubPage = (props) => {
 export default HubPage;
 
 export const getStaticPaths = async () => {
+  if (!NinaSdk.client.program) {
+    await NinaSdk.client.init(
+      process.env.NINA_API_ENDPOINT,
+      process.env.SOLANA_CLUSTER_URL,
+      process.env.NINA_PROGRAM_ID
+    );
+  }
+  const hubs = await NinaSdk.Hub.fetchAll({limit: 1000})
+  const publicKeyPaths = hubs.map((hub) => ({
+    params: { hubPubkey: hub.publicKey },
+  }));
+  const handlePaths = hubs.map((hub) => ({
+    params: { handle: hub.handle },
+  }));
   return {
-    paths: [
-      {
-        params: {
-          hubPubkey: "placeholder",
-        },
-      },
-    ],
+    paths: [...handlePaths, ...publicKeyPaths],
     fallback: "blocking",
   };
 };
