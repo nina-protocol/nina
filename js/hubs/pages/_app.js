@@ -9,11 +9,8 @@ import { PhantomWalletAdapter } from "@solana/wallet-adapter-phantom";
 import { SolflareWalletAdapter } from "@solana/wallet-adapter-solflare";
 import { GlowWalletAdapter } from "@solana/wallet-adapter-glow";
 import { SnackbarProvider } from "notistack";
-import Box from "@mui/material/Box";
 import dynamic from "next/dynamic";
-import NinaSdk from "@nina-protocol/js-sdk";
-import Router from "next/router";
-
+import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
 // Use require instead of import since order matters
 // require('@solana/wallet-adapter-react-ui/styles.css');
 // require('../styles/globals.css');
@@ -43,11 +40,7 @@ const App = ({ Component, pageProps }) => {
     // }
 
     const handleSdkInitialization = async () => {
-      await NinaSdk.client.init(
-        process.env.NINA_API_ENDPOINT,
-        process.env.SOLANA_CLUSTER_URL,
-        process.env.NINA_PROGRAM_ID
-      );
+      await initSdkIfNeeded();
       setSdkInitialized(true);
     };
     handleSdkInitialization();

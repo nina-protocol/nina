@@ -1,6 +1,7 @@
 import Dashboard from "../../components/Dashboard";
 import NinaSdk from "@nina-protocol/js-sdk";
 import Head from "next/head";
+import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
 
 const DashboardPage = ({ hub }) => {
   return (
@@ -30,13 +31,7 @@ const DashboardPage = ({ hub }) => {
 
 DashboardPage.getInitialProps = async (context) => {
   try {
-    if (!NinaSdk.client.program) {
-      await NinaSdk.client.init(
-        process.env.NINA_API_ENDPOINT,
-        process.env.SOLANA_CLUSTER_URL,
-        process.env.NINA_PROGRAM_ID
-      );
-    }
+    await initSdkIfNeeded()
     const { hub } = await NinaSdk.Hub.fetch(context.query.hubPubkey);
     return {
       hub,
