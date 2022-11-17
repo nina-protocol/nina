@@ -29,7 +29,6 @@ const HubContextProvider = ({ children }) => {
   const [allHubs, setAllHubs] = useState([])
   const [featuredHubs, setFeaturedHubs] = useState()
   const [fetchedHubsForUser, setFetchedHubsForUser] = useState(new Set())
-
   const {
     getHubs,
     getHub,
@@ -1102,7 +1101,6 @@ const hubContextHelper = ({
   const filterHubContentForHub = (hubPubkey) => {
     const hubReleases = []
     const hubPosts = []
-    console.log('hubContentState', hubContentState)
     Object.values(hubContentState).forEach((hubContent) => {
       if (hubContent.hub === hubPubkey) {
         if (hubContent.contentType === 'ninaReleaseV1') {
