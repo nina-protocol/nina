@@ -11,7 +11,7 @@ const ScrollablePage = styled(Box)(({ theme }) => ({
   padding: "0",
   overflowY: "scroll",
   overflowX: "hidden",
-  height: '101vh',
+  height: "101vh",
   paddingBottom: "160px",
   "&::-webkit-scrollbar": {
     display: "none !important",

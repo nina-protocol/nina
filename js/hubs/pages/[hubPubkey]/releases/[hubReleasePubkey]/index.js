@@ -1,19 +1,16 @@
 import React from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import axios from "axios";
 import NotFound from "../../../../components/NotFound";
-
+import NinaSdk from "@nina-protocol/js-sdk";
+import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
 const Release = dynamic(() => import("../../../../components/Release"));
 
 const ReleasePage = (props) => {
   const { metadata, hub, releasePubkey, hubPubkey } = props;
 
-
   if (!metadata) {
-    return (
-      <NotFound hub={hub}/>
-    )
+    return <NotFound hub={hub} />;
   }
   return (
     <>
@@ -30,7 +27,7 @@ const ReleasePage = (props) => {
         />
         <meta
           name="og:description"
-          content={`${metadata?.properties.artist} - "${metadata?.properties.title}": ${metadata?.description} \n Published on ${hub?.json.displayName} \nPowered by Nina.`}
+          content={`${metadata?.properties.artist} - "${metadata?.properties.title}": ${metadata?.description} \n Published on ${hub?.data.displayName} \nPowered by Nina.`}
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@ninaprotocol" />
@@ -38,7 +35,7 @@ const ReleasePage = (props) => {
         <meta name="twitter:image:type" content="image/jpg" />
         <meta
           name="twitter:title"
-          content={`${metadata?.properties.artist} - "${metadata?.properties.title}" on ${hub?.json.displayName}`}
+          content={`${metadata?.properties.artist} - "${metadata?.properties.title}" on ${hub?.data.displayName}`}
         />
         <meta name="twitter:description" content={metadata?.description} />
 
@@ -57,66 +54,62 @@ const ReleasePage = (props) => {
 export default ReleasePage;
 
 export const getStaticPaths = async () => {
-  return {
-    paths: [
-      {params: {
-        hubPubkey: 'placeholder',
-        hubReleasePubkey: "placeholder"
-      }}
-    ],
-    fallback: 'blocking'
+  await initSdkIfNeeded()
+  const paths = []
+  const { hubs } = await NinaSdk.Hub.fetchAll({limit: 1000})
+  for await (const hub of hubs) {
+    const { releases } = await NinaSdk.Hub.fetchReleases(hub.publicKey)
+    releases.forEach(release => {
+      paths.push({
+        params: { hubPubkey: hub.publicKey, hubReleasePubkey: release.hubReleasePublicKey }
+      })
+      paths.push({
+        params: { hubPubkey: hub.handle, hubReleasePubkey: release.hubReleasePublicKey }
+      })
+    })
   }
-}
+  return {
+    paths,
+    fallback: "blocking",
+  };
+};
 
 export const getStaticProps = async (context) => {
-  const indexerUrl = process.env.INDEXER_URL;
-  const hubReleasePubkey = context.params.hubReleasePubkey;
-  let indexerPath = indexerUrl + `/hubReleases/${hubReleasePubkey}`;
-
-  let hubRelease;
-  let release;
-  let hub;
-  let releasePubkey;
-  let metadata;
-  let hubPubkey;
   try {
-    const result = await axios.get(indexerPath);
-    const data = result.data;
-    if (data.hubRelease) {
-      hubRelease = data.hubRelease;
-      release = hubRelease.release;
-      metadata = release.metadataAccount.json;
-      releasePubkey = hubRelease.releaseId;
-      hub = hubRelease.hub;
-      hubPubkey = hubRelease.hubId;
+    if (
+      context.params.hubPubkey &&
+      context.params.hubReleasePubkey !== "undefined"
+    ) {
+      await initSdkIfNeeded()
+      const { hub, release } = await NinaSdk.Hub.fetchHubRelease(
+        context.params.hubPubkey,
+        context.params.hubReleasePubkey
+      );
+      return {
+        props: {
+          releasePubkey: release.publicKey,
+          metadata: release.metadata,
+          hubPubkey: hub.publicKey,
+          hub,
+        },
+        revalidate: 1000,
+      };
     }
-    return {
-      props: {
-        releasePubkey,
-        metadata,
-        hubPubkey,
-        hub
-      },
-      revalidate: 10
-    } 
   } catch (error) {
     console.warn(error);
     try {
-      indexerPath = indexerUrl + `/hubs/${context.params.hubPubkey}`
-      const result = await axios.get(indexerPath);
-      const data = result.data
-  
-      if (data.hub) {
-        return{
-          props:{
-            hub: data.hub
-          }
-        }
+      await initSdkIfNeeded()
+      const hub = await NinaSdk.Hub.fetch(context.params.hubPubkey);
+      if (hub) {
+        return {
+          props: {
+            hub,
+          },
+        };
       }
     } catch (error) {
       console.warn(error);
     }
+    return { props: {} };
   }
-  return {props: {}}
 };
-

@@ -7,6 +7,7 @@ import Box from "@mui/material/Box";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { styled } from "@mui/material/styles";
+import Dots from "./Dots.js";
 
 import { useFormik } from "formik";
 import { DashboardHeader } from "../styles/theme/lightThemeOptions.js";
@@ -15,6 +16,11 @@ const CollaboratorPermissions = (props) => {
   const { hubPubkey, activeSelection, isAuthority, setActiveSelection } = props;
   const { enqueueSnackbar } = useSnackbar();
   const { hubUpdateCollaboratorPermission } = useContext(Hub.Context);
+  const [pending, setPending] = useState(false);
+  const buttonText = isAuthority
+    ? "Update Permissions"
+    : "You Do Not Have Permission To Add Artists"
+
   const [unlimitedAllowance, setUnlimitAllowance] = useState(
     activeSelection.allowance === -1
   );
@@ -36,6 +42,7 @@ const CollaboratorPermissions = (props) => {
       canAddCollaborator: activeSelection.canAddCollaborator,
       allowance: activeSelection.allowance,
       hubPubkey,
+      
     },
     onSubmit: async (values, { resetForm }) => {
       const {
@@ -44,7 +51,9 @@ const CollaboratorPermissions = (props) => {
         canAddContent,
         canAddCollaborator,
         allowance,
+        
       } = values;
+      setPending(true);
       const result = await hubUpdateCollaboratorPermission(
         collaboratorPubkey,
         hubPubkey,
@@ -59,10 +68,11 @@ const CollaboratorPermissions = (props) => {
         });
         resetForm();
       } else {
-        enqueueSnackbar("Artist Not Added", {
+        enqueueSnackbar("Permissions Not Updated", {
           variant: "failure",
         });
       }
+      setPending(false)
     },
     enableReinitialize: true,
   });
@@ -155,11 +165,10 @@ const CollaboratorPermissions = (props) => {
             variant="outlined"
             fullWidth
             type="submit"
-            disabled={!isAuthority}
+            disabled={!isAuthority || pending}
           >
-            {isAuthority
-              ? "Update Permissions"
-              : "You Do Not Have Permission To Add Artists"}
+           
+              {pending  ? <Dots />  : buttonText}
           </Button>
           <Button
             style={{ marginTop: "15px" }}

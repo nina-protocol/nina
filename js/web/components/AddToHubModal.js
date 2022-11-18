@@ -22,23 +22,45 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const { hubAddRelease } = useContext(Hub.Context)
-  const { checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(Nina.Context)
+  const { hubAddRelease, getHubsForRelease, hubCollaboratorsState } =
+    useContext(Hub.Context)
+  const { checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(
+    Nina.Context
+  )
   const [selectedHubId, setSelectedHubId] = useState()
   const [inProgress, setInProgress] = useState(false)
+  const [filteredHubs, setFilteredHubs] = useState()
   const userHasHubs = useMemo(() => userHubs?.length > 0, [userHubs])
 
   useEffect(() => {
     if (userHubs?.length === 1) {
-      setSelectedHubId(userHubs[0]?.id)
+      setSelectedHubId(userHubs[0]?.publicKey)
     }
+    const userHubCollaborations = Object.values(hubCollaboratorsState).filter(
+      (collaborator) => {
+        console.log(collaborator)
+        return (
+          collaborator.canAddContent === true &&
+          collaborator.collaborator === wallet.publicKey.toBase58()
+        )
+      }
+    )
+    const hubsWithPermission = userHubs?.filter((hub) => {
+      return userHubCollaborations.some(
+        (collaborator) => hub.publicKey === collaborator.hub
+      )
+    })
+    setFilteredHubs(hubsWithPermission)
   }, [userHubs])
 
   const handleRepost = async (e) => {
-    const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.HUB_ADD_RELEASE);
+    const error = await checkIfHasBalanceToCompleteAction(
+      NinaProgramAction.HUB_ADD_RELEASE
+    )
+
     if (error) {
-      enqueueSnackbar(error.msg, { variant: "failure" });
-      return;
+      enqueueSnackbar(error.msg, { variant: 'failure' })
+      return
     }
 
     setInProgress(true)
@@ -48,6 +70,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
     handleClose()
     const result = await hubAddRelease(selectedHubId, releasePubkey)
     if (result?.success) {
+      await getHubsForRelease(releasePubkey)
       enqueueSnackbar(result.msg, {
         variant: 'info',
       })
@@ -118,12 +141,12 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
                   gutterBottom
                 >
                   Add {metadata.name} to{' '}
-                  {userHubs.length > 1
+                  {userHubs?.length > 1
                     ? 'one of your hubs'
-                    : 'your hub: ' + userHubs[0]?.json.displayName}
+                    : 'your hub: ' + userHubs[0]?.data?.displayName}
                 </Typography>
 
-                {userHubs.length > 1 && (
+                {filteredHubs?.length > 1 && (
                   <FormControl sx={{ mt: 1 }}>
                     <InputLabel disabled value="">
                       Select a hub to add to
@@ -136,19 +159,17 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
                       label="Select hub"
                       fullWidth
                       variant="standard"
-                      onChange={(e, userHubs) => {
+                      onChange={(e, filteredHubs) => {
                         setSelectedHubId(e.target.value)
                       }}
                     >
-                      {userHubs
-                        ?.filter((hub) => hub.userCanAddContent)
-                        .map((hub) => {
-                          return (
-                            <MenuItem key={hub?.id} value={hub?.id}>
-                              {hub?.json.displayName}
-                            </MenuItem>
-                          )
-                        })}
+                      {filteredHubs?.map((hub) => {
+                        return (
+                          <MenuItem key={hub?.publicKey} value={hub?.publicKey}>
+                            {hub?.data?.displayName}
+                          </MenuItem>
+                        )
+                      })}
                     </Select>
                   </FormControl>
                 )}
@@ -160,7 +181,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
               color="primary"
               variant="outlined"
               disabled={inProgress || !selectedHubId || !userHasHubs}
-              onClick={handleRepost}
+              onClick={(e) => handleRepost(e)}
             >
               <Typography>
                 {!inProgress && 'Repost'}

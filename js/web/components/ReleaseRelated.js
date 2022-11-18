@@ -12,7 +12,6 @@ import ReleaseListTable from './ReleaseListTable'
 import ReleaseTileList from './ReleaseTileList'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 
-
 const ReleaseRelated = ({ releasePubkey }) => {
   const { getRelatedForRelease, filterRelatedForRelease, releaseState } =
     useContext(Release.Context)

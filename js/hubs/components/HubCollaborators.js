@@ -22,19 +22,24 @@ const HubCollaborators = ({
   authority,
   canAddCollaborators,
 }) => {
-  const wallet = useWallet();
-  const { hubRemoveCollaborator, hubCollaboratorsState } =
-    useContext(Hub.Context);
-  const [activeSelection, setActiveSelection] = useState(undefined);
-  const hubCollaborators = useMemo(
-    () =>
-      Object.values(hubCollaboratorsState)
-        .filter((c) => c.hub === hubPubkey)
-        .sort((a, b) => b.datetime - a.datetime),
-    [hubCollaboratorsState]
-  );
-
   const { enqueueSnackbar } = useSnackbar();
+  const wallet = useWallet();
+  const { hubRemoveCollaborator, hubCollaboratorsState } = useContext(
+    Hub.Context
+  );
+  const [activeSelection, setActiveSelection] = useState(undefined);
+  const [hubCollaborators, setHubCollaborators] = useState(undefined);
+  const [pending, setPending] = useState(false);
+
+  useEffect(() => {
+    if (hubCollaboratorsState) {
+      setHubCollaborators(
+        Object.values(hubCollaboratorsState).filter(
+          (collaborator) => collaborator.hub === hubPubkey
+        )
+      );
+    }
+  }, [hubCollaboratorsState]);
 
   const handleActiveSelection = (e) => {
     const selectedHubCollaborator = hubCollaborators.find(
@@ -53,6 +58,7 @@ const HubCollaborators = ({
 
   const handleRemoveCollaborator = async (e, hubPubkey, collaboratorPubkey) => {
     e.stopPropagation();
+    setPending(true);
     const result = await hubRemoveCollaborator(hubPubkey, collaboratorPubkey);
     if (result?.success) {
       enqueueSnackbar(result.msg, {
@@ -63,6 +69,7 @@ const HubCollaborators = ({
         variant: "failure",
       });
     }
+    setPending(false);
   };
 
   useEffect(() => {
@@ -83,6 +90,8 @@ const HubCollaborators = ({
           <HubAddCollaborator
             hubPubkey={hubPubkey}
             canAddCollaborators={canAddCollaborators}
+            pending={pending}
+            setPending={setPending}
           />
           <>
             <Note>
@@ -92,8 +101,8 @@ const HubCollaborators = ({
               them unlimited actions. This can be updated at any time.
             </Note>
             <Typography mt={2}>
-              Select a Collaborator&apos;s publicKey from the right to edit their
-              permissions
+              Select a Collaborator&apos;s publicKey from the right to edit
+              their permissions
             </Typography>
           </>
         </Wrapper>
@@ -153,6 +162,7 @@ const HubCollaborators = ({
                   activeSelection={activeSelection}
                   canAddCollaborators={canAddCollaborators}
                   setActiveSelection={setActiveSelection}
+              
                 />
               </>
             )}

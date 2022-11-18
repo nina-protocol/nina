@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import { useSnackbar } from 'notistack'
 import { Formik, Field, Form } from 'formik'
@@ -9,13 +9,16 @@ import TextField from '@mui/material/TextField'
 import Slider from '@mui/material/Slider'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import { formatPlaceholder } from '@nina-protocol/nina-internal-sdk/esm/utils'
-
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 const RoyaltyRecipientForm = (props) => {
+  const { getUsdcBalance } = useContext(Nina.Context)
   const { release, userShare, setUserDisplayShare, releasePubkey, toggleForm } =
     props
   const { enqueueSnackbar } = useSnackbar()
   const { addRoyaltyRecipient } = useContext(Release.Context)
-
+  useEffect(() => {
+    getUsdcBalance()
+  }, [])
   const handleDisplayPercent = (value) => {
     const sending = parseInt(value)
     setUserDisplayShare(userShare - sending)

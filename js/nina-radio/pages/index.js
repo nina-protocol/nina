@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef, useContext } from 'react'
-import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
 import { formatDuration } from "@nina-protocol/nina-internal-sdk/esm/utils";
-import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event';
-import axios from 'axios'
+import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
+import { getImageFromCDN, loader } from '@nina-protocol/nina-internal-sdk/src/utils/imageManager';
 import Head from 'next/head'
 import Image from 'next/image'
 import Box from '@mui/material/Box'
@@ -11,6 +10,8 @@ import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import { styled } from "@mui/material/styles"
 import Dots from '../components/Dots'
+import Nina from '@nina-protocol/js-sdk'
+
 export default function Home() {
   const playerRef = useRef()
   const intervalRef = useRef()
@@ -24,17 +25,20 @@ export default function Home() {
   const hasPrevious = useRef(false)
   const hasNext = useRef(false)
   const activeIndexRef = useRef()
-  const [related, setRelated] = useState([])
-  const { getRelatedForRelease, filterRelatedForRelease, releaseState } = useContext(Release.Context)
 
   useEffect(() => {
     playerRef.current = document.querySelector("#audio")
+    Nina.client.init(
+      process.env.NINA_API_ENDPOINT,
+      process.env.SOLANA_CLUSTER_URL,
+      process.env.NINA_PROGRAM_ID
+    );
     setupMediaSession()
     return () => {
       clearInterval(intervalRef.current)
     }
   }, [])
-  
+    
   useEffect(() => {
     if (Object.keys(tracks).length) {
       Object.values(tracks).forEach((track, i) => {
@@ -72,7 +76,6 @@ export default function Home() {
           ]
         });
       }
-      getRelatedReleases()
       activeTrack.current = track
       hasNext.current = (activeIndexRef.current + 1) <= playlist.length
       hasPrevious.current = activeIndexRef.current > 0
@@ -80,12 +83,6 @@ export default function Home() {
       play()
     }
   }, [activeIndex])
-
-  useEffect(() => {
-    const release = playlist[activeIndexRef.current]
-    const related = filterRelatedForRelease(release)
-    setRelated(related.map(release => release.metadata))
-  }, [releaseState])
 
   useEffect(() => {
     getTracks()
@@ -108,12 +105,6 @@ export default function Home() {
     }
   }
 
-  const getRelatedReleases = async () => {
-    setRelated([])
-    const release = playlist[activeIndexRef.current]
-    await getRelatedForRelease(release)
-  }
-
   const startTimer = () => {
     // Clear any timers already running
     clearInterval(intervalRef.current);
@@ -130,18 +121,19 @@ export default function Home() {
   const getTracks = async () => {
     setTracks({})
     activeIndexRef.current = undefined
-    let url = "https://api.nina.market/metadata"
 
-    if (isRecent) {
-      url += "?filter=recent"
-    }
+    const limit = isRecent ? 25 : 2000
+    let { releases } = await Nina.Release.fetchAll({ limit })
+    const metadataDict = {}
+    releases.forEach((release) => {
+      metadataDict[release.publicKey] = release.metadata
+    })
 
-    const response = await axios.get(url, {
-      method: "GET",
-    });
-    
-    if (response?.data) {
-      setTracks(response.data)
+    if (metadataDict) {
+      playerRef.current.pause()
+      setTracks(metadataDict)
+      activeIndexRef.current = 0
+      setActiveIndex(0)
     }
   }
 
@@ -197,8 +189,7 @@ export default function Home() {
   const DynamicFooter = ({playlist, isRecent}) => (
     <Box>
       <Typography>{`Nina Radio is a randomized selection of releases published through the Nina Protocol.`}</Typography><span>{"  "}</span>
-      <Typography >{`You are currently listening to a selection of ${isRecent ? ` ${playlist.length} releases published in the last 7 days` : ` all ${playlist.length} releases`}.`}</Typography>
-      <ClickableTypography onClick={() => setIsRecent(!isRecent)}>{`Switch to ${isRecent ? "All" : "Recent"} releases instead?`}</ClickableTypography>
+      <Typography >{`You are currently listening to a selection of ${isRecent ? ` the last ${playlist.length} releases published` : ` all ${playlist.length} releases`}.`}</Typography>
       <a
         href="https://ninaprotocol.com"
         target="_blank"
@@ -239,7 +230,7 @@ export default function Home() {
                 >
                   {activeTrack.current.properties.title}
                 </Typography>
-                <Typography>{`${formatDuration(trackProgress)} / ${formatDuration(activeTrack.current.properties.files[0].duration)}`}</Typography>
+                <Typography>{`${formatDuration(trackProgress)} / ${formatDuration(playerRef.current.duration || '00:00')}`}</Typography>
                 <Links>
                   <a
                     href={activeTrack.current.external_url}
@@ -248,15 +239,6 @@ export default function Home() {
                   >
                     <Typography>View release</Typography>
                   </a>
-                  {related.length > 1 &&
-                    <a
-                      href={activeTrack.current.external_url + "/related"}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Typography>View {related.length - 1} related {related.length - 1 === 1 ? "release" : "releases"}</Typography>
-                    </a>
-                  }
                   <ClickableTypography onClick={() => shareOnTwitter()}>Share</ClickableTypography>
                 </Links>
               </>
@@ -266,7 +248,8 @@ export default function Home() {
             {activeTrack?.current &&
               <Artwork>
                 <Image
-                  src={activeTrack.current.image}
+                loader={loader}
+                  src={getImageFromCDN(activeTrack.current.image, 1000)}
                   alt={activeTrack.current.name}
                   width="100%"
                   height="100%"

@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@nina-protocol/js-sdk": "^0.0.8",
     "axios": "^0.24.0",
     "next-transpile-modules": "^9.0.0",
     "react": "17.0.2",

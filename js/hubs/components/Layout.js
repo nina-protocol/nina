@@ -5,50 +5,62 @@ import Grid from "@mui/material/Grid";
 import CssBaseline from "@mui/material/CssBaseline";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub"
+import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { lightThemeOptions } from "../styles/theme/lightThemeOptions";
 import Head from "next/head";
+import NinaSdk from "@nina-protocol/js-sdk";
 
-const Navigation = dynamic(() => import("./Navigation"));
+const NavBar = dynamic(() => import("./NavBar"));
 const AudioPlayer = dynamic(() => import("./AudioPlayer"));
 const lightTheme = createTheme(lightThemeOptions);
 
 const Layout = ({ children }) => {
   const router = useRouter();
-  const [hubPubkey, setHubPubkey] = useState();
+  const [hubPubkey, setHubPubkey] = useState(undefined);
   const { hubState, getHubPubkeyForHubHandle } = useContext(Hub.Context);
 
   useEffect(() => {
     const getHubPubkey = async (handle) => {
-      const id = await getHubPubkeyForHubHandle(handle);
-      setHubPubkey(id);
+      try {
+        const publicKey = (await NinaSdk.Hub.fetch(handle)).hub.publicKey;
+        setHubPubkey(publicKey);
+      } catch (error) {
+        setHubPubkey(undefined);
+      }
     };
-    getHubPubkey(router.query.hubPubkey);
+    if (router.query.hubPubkey) {
+      getHubPubkey(router.query.hubPubkey);
+    } else {
+      setHubPubkey(undefined);
+    }
   }, [router.query.hubPubkey]);
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
 
   useEffect(() => {
-    if ((router.pathname.includes('/[hubPubkey]')) && !router.pathname.includes('/dashboard')) {
-      if (hubData?.json.backgroundColor) {
-        lightTheme.palette.background.default = hubData.json.backgroundColor;
+    if (
+      router.pathname.includes("/[hubPubkey]") &&
+      !router.pathname.includes("/dashboard")
+    ) {
+      if (hubData?.data.backgroundColor) {
+        lightTheme.palette.background.default = hubData.data.backgroundColor;
       } else {
         lightTheme.palette.background.default = "#ffffff";
       }
-      if (hubData?.json.textColor) {
-        lightTheme.palette.text.primary = hubData.json.textColor;
-        lightTheme.palette.primary.main = hubData.json.textColor;
+      if (hubData?.data.textColor) {
+        lightTheme.palette.text.primary = hubData.data.textColor;
+        lightTheme.palette.primary.main = hubData.data.textColor;
         lightTheme.components.MuiTypography.styleOverrides.root.color =
-          hubData.json.textColor;
+          hubData.data.textColor;
         lightTheme.components.MuiCssBaseline.styleOverrides.a.color =
-          hubData.json.textColor;
+          hubData.data.textColor;
       } else {
         lightTheme.palette.text.primary = "#000000";
         lightTheme.palette.primary.main = "#000000";
-        lightTheme.components.MuiTypography.styleOverrides.root.color = "#000000";
+        lightTheme.components.MuiTypography.styleOverrides.root.color =
+          "#000000";
         lightTheme.components.MuiCssBaseline.styleOverrides.a.color = "#000000";
-  
       }
     } else {
       lightTheme.palette.background.default = "#ffffff";
@@ -60,14 +72,14 @@ const Layout = ({ children }) => {
   }, [hubData, router]);
 
   useEffect(() => {
-    if (router.pathname === '/404' && hubState) {
-      console.log('404');
-      let hubHandle = router.asPath.split('/')[1]
-      hubPubkey = Object.values(hubState).find(hub => hub.handle === hubHandle)?.publicKey
-      setHubPubkey(hubPubkey)
+    if (router.pathname === "/404" && hubState) {
+      let hubHandle = router.asPath.split("/")[1];
+      hubPubkey = Object.values(hubState).find(
+        (hub) => hub.handle === hubHandle
+      )?.publicKey;
+      setHubPubkey(hubPubkey);
     }
-  }, [router.pathname, hubState])
-
+  }, [router.pathname, hubState]);
 
   if (children.props.isEmbed) {
     return <main className={classes.bodyContainer}>{children}</main>;
@@ -75,18 +87,22 @@ const Layout = ({ children }) => {
 
   let topSpace = "125px";
 
-  if (router.pathname.includes("/releases")  ) {
+  if (router.pathname.includes("/releases")) {
     topSpace = "80px";
   }
-  
-  if (router.pathname === '/' || router.pathname.includes("/create")) {
+
+  if (router.pathname === "/" || router.pathname.includes("/create")) {
     topSpace = "45px";
   }
 
   return (
     <ThemeProvider theme={lightTheme}>
       <Head>
-        <meta name="theme-color" content={lightTheme.palette.background.default} key="theme" />
+        <meta
+          name="theme-color"
+          content={lightTheme.palette.background.default}
+          key="theme"
+        />
       </Head>
       <Root>
         <CssBaseline>
@@ -96,7 +112,7 @@ const Layout = ({ children }) => {
             className={classes.mainContainer}
           >
             <main className={classes.bodyContainer}>
-              <Navigation hubPubkey={hubPubkey} />
+              <NavBar hubPubkey={hubPubkey} />
               <Grid
                 container
                 columns={{ xs: 12, sm: 12, md: 12 }}
@@ -159,7 +175,7 @@ const Root = styled("div")(({ theme }) => ({
     background: theme.palette.background.default,
     [theme.breakpoints.down("md")]: {
       overflowY: "scroll",
-      height: '100vh',
+      height: "100vh",
       "&::-webkit-scrollbar": {
         display: "none !important",
       },
@@ -173,8 +189,8 @@ const AudioPlayerWrapper = styled("div")(({ theme }) => ({
   left: 0,
   paddingLeft: "8px",
   textAlign: "left",
-  width: '30vw',
-  paddingBottom: '0',
+  width: "30vw",
+  paddingBottom: "0",
   [theme.breakpoints.down("md")]: {
     paddingLeft: "0px",
   },

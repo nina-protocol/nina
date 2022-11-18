@@ -8,6 +8,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { styled } from "@mui/material/styles";
 import { useWallet } from "@solana/wallet-adapter-react";
+import EmailCapture from "./EmailCapture";
 
 import HubSlider from "./HubSlider";
 import {
@@ -18,23 +19,28 @@ import {
 } from "../styles/theme/lightThemeOptions.js";
 
 const Hubs = () => {
-  const { getHubsForUser, hubState, filterHubsForUser, getHubs, filterFeaturedHubs } =
-    useContext(Hub.Context);
+  const {
+    getHubsForUser,
+    hubState,
+    filterHubsForUser,
+    getHubs,
+    filterFeaturedHubs,
+  } = useContext(Hub.Context);
   const { npcAmountHeld } = useContext(Nina.Context);
-  const [hubs, setHubs] = useState()
+  const [hubs, setHubs] = useState();
   const wallet = useWallet();
 
   useEffect(() => {
     if (!hubs) {
-      getHubs(true)
+      getHubs(true);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     if ((!hubs || hubs.length === 0) && Object.keys(hubState).length > 0) {
-      setHubs(filterFeaturedHubs())
+      setHubs(filterFeaturedHubs());
     }
-  }, [hubState])
+  }, [hubState]);
 
   useEffect(() => {
     if (wallet.connected) {
@@ -87,53 +93,40 @@ const Hubs = () => {
                 <Link href="/all">Hubs </Link>
                 are a new way to publish, share, and discuss music.
               </BlueTypography>
-              <BlueTypography
-                variant="h1"
-                align="left"
-                sx={{ padding: { md: "0 165px 40px", xs: "30px 0px" } }}
-              >
-                <Link
-                  href="https://docs.google.com/forms/d/e/1FAIpQLScSdwCMqUz6VGqhkO6xdfUxu1pzdZEdsGoXL9TGDYIGa9t2ig/viewform"
-                  target="_blank"
-                  rel="noreferrer"
-                  passHref
-                >
-                  Apply
-                </Link>{" "}
-                for a Hub or connect your wallet to get started.{"  "}             
-                <Link
-                  href="https://www.notion.so/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612#c7abd525851545a199e06ecd14a16a15"
-                  target="_blank"
-                  rel="noreferrer"
-                  passHref
-                >
-                Learn More
-                </Link>
-                .
-              </BlueTypography>
 
-              <Box sx={{ display: 'flex', paddingLeft: { md: '30px', xs: '0' }}}>
+              <Box>
+                <EmailCapture size="large" />{" "}
+              </Box>
+
+              <Box
+                sx={{ display: "flex", paddingLeft: { md: "30px", xs: "0" } }}
+              >
                 <Typography
                   variant="body1"
                   align="left"
                   className={classes.sectionHeader}
                 >
-                  <Link href='/all' sx={{textDecoration: 'none'}}>
+                  <Link href="/all" sx={{ textDecoration: "none" }}>
                     Featured Hubs
                   </Link>
                 </Typography>
               </Box>
-              
+
               <HubSlider hubs={hubs} />
 
-              <Box sx={{mt: '40px'}}>
-              <BlueTypography variant="h1">
-                <Link href="/all">
-                  Start Exploring.
-                </Link>
-              </BlueTypography>
+              <Box sx={{ mt: "40px" }}>
+                <BlueTypography variant="h1">
+                  <Link
+                    href="https://www.notion.so/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612#c7abd525851545a199e06ecd14a16a15"
+                    target="_blank"
+                    rel="noreferrer"
+                    passHref
+                  >
+                    Learn More
+                  </Link>
+                  .
+                </BlueTypography>
               </Box>
-
             </>
           )}
           {wallet.connected && (
@@ -145,43 +138,33 @@ const Hubs = () => {
                     align="left"
                     sx={{ padding: { md: "0 165px 40px", xs: "30px 0px" } }}
                   >
-                    You do not have any credits to create a Hub. Please{` `}
-                    <Link
-                      href="https://docs.google.com/forms/d/e/1FAIpQLScSdwCMqUz6VGqhkO6xdfUxu1pzdZEdsGoXL9TGDYIGa9t2ig/viewform"
-                      target="_blank"
-                      rel="noreferrer"
-                      passHref
-                    >
-apply
-                    </Link>{" "}
-                    here to get started.
+                    You do not have any credits to create a Hub. <br />
+                    <br />
+                    <EmailCapture size="large" />
                   </BlueTypography>
-                  <Box sx={{ display: 'flex', paddingLeft: { md: '30px', xs: '0' } }}>
+                  <br />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      paddingLeft: { md: "30px", xs: "0" },
+                    }}
+                  >
                     <Typography
                       variant="body1"
                       align="left"
                       className={classes.sectionHeader}
                     >
-                      <Link href='/all' sx={{textDecoration: 'none'}}>
+                      <Link href="/all" sx={{ textDecoration: "none" }}>
                         Featured Hubs
                       </Link>
                     </Typography>
                   </Box>
                   <HubSlider hubs={hubs} />
-                  <Box sx={{mt: '40px'}} display="flex">
-                    <BlueTypography variant="h1" margin="auto">
-                      <Link href="/all">
-                        Start Exploring.
-                      </Link>
-                    </BlueTypography>
-                  </Box>
                 </DashboardContent>
               )}
               {userHubs?.length === 0 && npcAmountHeld > 0 && (
                 <DashboardContent item md={12}>
-                  <StyledLink
-                    href="/create"
-                  >
+                  <StyledLink href="/create">
                     <Button
                       color="primary"
                       variant="outlined"
@@ -191,21 +174,18 @@ apply
                       Create a Hub
                     </Button>
                   </StyledLink>
-                  <StyledLink
-                    href="/all"
-                  >
+                  <StyledLink href="/all">
                     <Button
                       color="primary"
                       variant="outlined"
                       fullWidth
                       type="submit"
-                      sx={{mt: '15px'}}
+                      sx={{ mt: "15px" }}
                     >
                       Browse All Hubs
                     </Button>
                   </StyledLink>
                 </DashboardContent>
-
               )}
               {userHubs?.length > 0 && (
                 <DashboardWrapper
@@ -231,14 +211,13 @@ apply
                           Apply For More Hubs
                         </Button>
                       </StyledLink>
-                      <StyledLink
-                      href="/all">
+                      <StyledLink href="/all">
                         <Button
                           color="primary"
                           variant="outlined"
                           fullWidth
                           type="submit"
-                          sx={{mt: '15px'}}
+                          sx={{ mt: "15px" }}
                         >
                           Browse All Hubs
                         </Button>
@@ -247,9 +226,7 @@ apply
                   )}
                   {npcAmountHeld > 0 && (
                     <DashboardContent item md={6}>
-                      <StyledLink
-                        href="/create"
-                      >
+                      <StyledLink href="/create">
                         <Button
                           color="primary"
                           variant="outlined"
@@ -259,15 +236,13 @@ apply
                           Create a Hub
                         </Button>
                       </StyledLink>
-                      <StyledLink
-                        href="/all"
-                      >
+                      <StyledLink href="/all">
                         <Button
                           color="primary"
                           variant="outlined"
                           fullWidth
                           type="submit"
-                          sx={{mt: '15px'}}
+                          sx={{ mt: "15px" }}
                         >
                           Browse All Hubs
                         </Button>
@@ -277,18 +252,21 @@ apply
                   <DashboardContent item md={6}>
                     <>
                       <DashboardHeader style={{ fontWeight: 600 }}>
-                        You have {userHubs.length} {userHubs.length > 1 ? 'Hubs' : 'Hub'}
+                        You have {userHubs.length}{" "}
+                        {userHubs.length > 1 ? "Hubs" : "Hub"}
                       </DashboardHeader>
                       <ul style={{ height: "500px", overflowY: "scroll" }}>
-                        {userHubs.filter(hub => hub.id).map((hub) => {
-                          return (
-                            <DashboardEntry key={hub.id}>
-                              <Link href={`/${hub.handle}`}>
-                                {hub?.json?.displayName}
-                              </Link>
-                            </DashboardEntry>
-                          );
-                        })}
+                        {userHubs
+                          .filter((hub) => hub.publicKey)
+                          .map((hub) => {
+                            return (
+                              <DashboardEntry key={hub.publicKey}>
+                                <Link href={`/${hub.handle}`}>
+                                  {hub?.data?.displayName}
+                                </Link>
+                              </DashboardEntry>
+                            );
+                          })}
                       </ul>
                     </>
                   </DashboardContent>
@@ -324,10 +302,10 @@ const HubsContainer = styled("div")(({ theme }) => ({
   overflowX: "visible",
   [theme.breakpoints.down("md")]: {
     width: "80vw",
-    overflowY: 'hidden',
-    marginTop: '6vh',
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    overflowY: "hidden",
+    marginTop: "6vh",
+    marginLeft: "auto",
+    marginRight: "auto",
   },
   [`& .${classes.sectionHeader}`]: {
     fontWeight: "700 !important",

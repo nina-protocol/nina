@@ -11,7 +11,7 @@ const withTM = require('next-transpile-modules')([
   '@solana/wallet-adapter-sollet',
 ]) // pass the modules you would like to see transpiled
 
-const { withSentryConfig } = require('@sentry/nextjs');
+const { withSentryConfig } = require('@sentry/nextjs')
 const sentryWebpackPluginOptions = {
   // Additional config options for the Sentry Webpack plugin. Keep in mind that
   // the following options are set automatically, and overriding them is not
@@ -22,14 +22,14 @@ const sentryWebpackPluginOptions = {
   silent: true, // Suppresses all logs
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options.
-};
+}
 
-const cluster = 'mainnet-beta'
-// const cluster = 'devnet'
-const IMGIX_URL = cluster === "devnet" 
-  ? "nina-dev.imgix.net"
-  : "nina.imgix.net"
-const NEXT_PUBLIC_IMGIX_TOKEN = cluster === "devnet" ? process.env.NEXT_PUBLIC_IMGIX_TOKEN_DEV : process.env.NEXT_PUBLIC_IMGIX_TOKEN
+const cluster = process.env.SOLANA_CLUSTER
+const IMGIX_URL = cluster === 'devnet' ? 'nina-dev.imgix.net' : 'nina.imgix.net'
+const NEXT_PUBLIC_IMGIX_TOKEN =
+  cluster === 'devnet'
+    ? process.env.NEXT_PUBLIC_IMGIX_TOKEN_DEV
+    : process.env.NEXT_PUBLIC_IMGIX_TOKEN
 const moduleExports = withTM({
   distDir: './build',
   webpack5: true,
@@ -70,17 +70,26 @@ const moduleExports = withTM({
     IMGIX_URL,
     NEXT_PUBLIC_IMGIX_TOKEN,
     REACT_APP_CLUSTER: cluster,
-    INDEXER_URL:
-      cluster === 'devnet'
-        ? 'https://api-dev.nina.market'
-        : 'https://api.nina.market',
+    NINA_API_ENDPOINT: process.env.NINA_API_ENDPOINT,
+    NINA_PROGRAM_ID: process.env.NINA_PROGRAM_ID,
+    SOLANA_CLUSTER_URL: process.env.SOLANA_CLUSTER_URL,
+    SOLANA_CLUSTER: process.env.SOLANA_CLUSTER,
+    NINA_IDENTITY_ENDPOINT: process.env.NINA_IDENTITY_ENDPOINT,
+    ETH_CLUSTER_URL: process.env.ETH_CLUSTER_URL,
+    IDENTITY_REDIRECT_URI: process.env.IDENTITY_REDIRECT_URI,
+    SC_CLIENT_ID: process.env.SC_CLIENT_ID,
+    IG_CLIENT_ID: process.env.IG_CLIENT_ID,
+    TWITTER_AUTH_CLIENT_ID: process.env.TWITTER_AUTH_CLIENT_ID,
+    AIRTABLE_API_KEY: process.env.AIRTABLE_API_KEY,
+    NINA_HUBS_URL: process.env.NINA_HUBS_URL,
+    NINA_API_KEY: process.env.NINA_API_KEY,
   },
   images: {
     loader: 'imgix',
     path: `https://${IMGIX_URL}/`,
-    domains: ["www.arweave.net", "arweave.net", IMGIX_URL],
+    domains: ['www.arweave.net', 'arweave.net', IMGIX_URL],
     deviceSizes: [320, 420, 640, 750, 828, 1080, 1200, 1920, 2048],
   },
 })
 
-module.exports = withSentryConfig(moduleExports, sentryWebpackPluginOptions);
+module.exports = withSentryConfig(moduleExports, sentryWebpackPluginOptions)

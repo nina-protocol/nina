@@ -13,12 +13,14 @@ const colors = {
   greyLight: '#E3E3E3',
   grey: 'rgba(0, 0, 0, 0.2)',
   transparent: '#ffffff00',
+  lightTransparent: 'rgba(255,255,255,0.8)',
   overlay: '#574a4ac4',
   black: '#000000',
   blue: '#2D81FF',
   blueTrans: 'rgba(45, 129, 255, 0.19)',
   pink: '#FF54A6',
   yellow: '#ffe100',
+  offWhite: '#faf9f9',
 }
 
 export const NinaTheme = createTheme({
@@ -33,6 +35,7 @@ export const NinaTheme = createTheme({
       primary: colors.black,
     },
     transparent: colors.transparent,
+    lightTransparent: colors.lightTransparent,
     overlay: colors.overlay,
     blue: colors.blue,
     black: colors.black,
@@ -45,6 +48,7 @@ export const NinaTheme = createTheme({
       primary: colors.grey,
     },
     greyLight: colors.greyLight,
+    offWhite: colors.offWhite,
   },
   gradient: {
     background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(143,175,223,1) 0%, rgb(35,99,196) 100%)`,
@@ -104,6 +108,7 @@ export const NinaTheme = createTheme({
   //   },
   // },
   spacing: 15,
+  maxWidth:'960px',
   helpers: {
     grid: {
       display: 'grid',

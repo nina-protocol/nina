@@ -28,7 +28,7 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
       Object.values(hubContent)
         .filter(
           (c) =>
-            c.contentType === "NinaReleaseV1" &&
+            c.contentType === "ninaReleaseV1" &&
             c.visible &&
             c.hub === hubPubkey
         )
@@ -39,7 +39,7 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
   const hubReleasesArchived = useMemo(
     () =>
       Object.values(hubContent).filter(
-        (c) => c.contentType === "NinaReleaseV1" && !c.visible
+        (c) => c.contentType === "ninaReleaseV1" && !c.visible
       ),
     [hubContent]
   );
@@ -82,7 +82,8 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
           unarchived at any time.
         </Typography>
         <Typography fontStyle="italic" gutterBottom>
-          NOTE:  THIS DOES NOT DELETE THE RELEASE, IT WILL STILL BE VISIBLE ON NINAPROTOCOL.COM.
+          NOTE: THIS DOES NOT DELETE THE RELEASE, IT WILL STILL BE VISIBLE ON
+          NINAPROTOCOL.COM.
         </Typography>
         <Typography fontStyle="italic">
           A asterisk ( * ) next to a release indicates that it was published

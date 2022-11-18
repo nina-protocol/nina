@@ -9,7 +9,6 @@ import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
 import Dots from './Dots'
 
-
 const BuySellForm = (props) => {
   const { onSubmit, isBuy, release, amount, setAmount } = props
 
@@ -21,8 +20,8 @@ const BuySellForm = (props) => {
   const [sellPending, setSellPending] = useState(false)
 
   useEffect(() => {
-    setPending(exchangeInitPending[release.publicKey.toBase58()])
-  }, [exchangeInitPending[release.publicKey.toBase58()]])
+    setPending(exchangeInitPending[release.publicKey])
+  }, [exchangeInitPending[release.publicKey]])
 
   useEffect(() => {
     if (pending && exchangeInitPending.isSelling) {
