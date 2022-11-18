@@ -11,9 +11,13 @@ import ListItemText from '@mui/material/ListItemText'
 import Link from 'next/link'
 import { Icon } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDiscord } from '@fortawesome/free-brands-svg-icons'
-import { faTwitter } from '@fortawesome/free-brands-svg-icons'
-import { faInstagramSquare } from '@fortawesome/free-brands-svg-icons'
+import {
+  faSoundcloud,
+  faTwitter,
+  faInstagramSquare,
+  faDiscord,
+} from '@fortawesome/free-brands-svg-icons'
+
 import CloseIcon from '@mui/icons-material/Close'
 import Image from 'next/image'
 
@@ -25,6 +29,7 @@ const linksConnected = [
   'faq',
   'dev',
   'radio',
+  'nina night',
   'the soft lp',
 ]
 
@@ -36,6 +41,7 @@ const linksNotConnected = [
   'faq',
   'dev',
   'radio',
+  'nina night',
   'the soft lp',
 ]
 
@@ -168,7 +174,23 @@ const NavDrawer = () => {
                   </ListItem>
                 </Link>
               )
-
+            case 'nina night':
+              return (
+                <ListItem button key={link}>
+                  <StyledListItemText>
+                    <a
+                      href="https://nights.ninaprotocol.com"
+                      target="_blank"
+                      rel="noreferrer"
+                      className={`${classes.drawerLink}`}
+                      passHref
+                    >
+                      Nina Night
+                    </a>
+                  </StyledListItemText>
+                </ListItem>
+              )
+  
             default:
               return (
                 <Link
@@ -231,6 +253,13 @@ const NavDrawer = () => {
                   rel="noreferrer"
                 >
                   <FontAwesomeIcon icon={faInstagramSquare} />
+                </a>
+                <a
+                  href="https://www.soundcloud.com/ninaprotocol/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <FontAwesomeIcon icon={faSoundcloud} />
                 </a>
               </Box>
 
