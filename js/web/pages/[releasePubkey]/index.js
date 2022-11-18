@@ -50,7 +50,7 @@ const ReleasePage = (props) => {
 export default ReleasePage
 
 export const getStaticPaths = async () => {
-  await initSdkIfNeeded()
+  await initSdkIfNeeded(true)
   const paths = []
   const { releases } = await NinaSdk.Release.fetchAll({ limit: 2000 })
   releases.forEach((release) => {
