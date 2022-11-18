@@ -63,17 +63,16 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
     }
   }, [releaseState, metadata, releasePubkey]);
 
-  useEffect(() => {
-    if (wallet.connected && hubState[hubPubkey] && !userHubs) {
-      getHubsForUser(wallet.publicKey.toBase58());
-    }
-  }, [wallet.connect, hubState[hubPubkey]]);
 
   useEffect(() => {
-    if (wallet.connected && hubState) {
-      setUserHubs(filterHubsForUser(wallet.publicKey.toBase58()));
+    const fetchHubs = async () => {
+      const hubs = await getHubsForUser(wallet.publicKey.toBase58());
+      setUserHubs(hubs);
     }
-  }, [hubState]);
+    if (wallet.connected && hubState && !userHubs) {
+     fetchHubs()
+    }
+  }, [wallet?.connected, hubState]);
 
   useEffect(() => {
     if (metadata?.description.includes("<p>")) {

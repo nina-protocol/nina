@@ -162,6 +162,7 @@ const HubCollaborators = ({
                   activeSelection={activeSelection}
                   canAddCollaborators={canAddCollaborators}
                   setActiveSelection={setActiveSelection}
+              
                 />
               </>
             )}

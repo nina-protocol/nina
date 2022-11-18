@@ -44,10 +44,10 @@ const ReleaseComponent = ({ metadataSsr }) => {
 
       setUserHubs(hubs)
     }
-    if (wallet.connected) {
+    if (wallet.connected && hubState && !userHubs) {
       fetchHubs()
     }
-  }, [])
+  }, [wallet?.connected, hubState])
 
   useEffect(() => {
     setUserHubs(null)
