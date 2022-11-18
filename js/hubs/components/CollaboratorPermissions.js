@@ -68,7 +68,7 @@ const CollaboratorPermissions = (props) => {
         });
         resetForm();
       } else {
-        enqueueSnackbar("Artist Not Added", {
+        enqueueSnackbar("Permissions Not Updated", {
           variant: "failure",
         });
       }
