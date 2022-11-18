@@ -24,11 +24,9 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
   const wallet = useWallet()
   const { hubAddRelease, getHubsForRelease, hubCollaboratorsState } =
     useContext(Hub.Context)
-  const {
-    checkIfHasBalanceToCompleteAction,
-    NinaProgramAction,
-    getUsdcBalance,
-  } = useContext(Nina.Context)
+  const { checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(
+    Nina.Context
+  )
   const [selectedHubId, setSelectedHubId] = useState()
   const [inProgress, setInProgress] = useState(false)
   const [filteredHubs, setFilteredHubs] = useState()
@@ -38,14 +36,20 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
     if (userHubs?.length === 1) {
       setSelectedHubId(userHubs[0]?.publicKey)
     }
-    const canAddHubs = Object.values(hubCollaboratorsState).filter(
+    const userHubCollaborations = Object.values(hubCollaboratorsState).filter(
       (collaborator) => {
-        return collaborator.canAddContent
+        console.log(collaborator)
+        return (
+          collaborator.canAddContent === true &&
+          collaborator.collaborator === wallet.publicKey.toBase58()
+        )
       }
     )
-    const hubsWithPermission = userHubs?.filter((h1) =>
-      canAddHubs?.some((h2) => h1.publicKey !== h2.publicKey)
-    )
+    const hubsWithPermission = userHubs?.filter((hub) => {
+      return userHubCollaborations.some(
+        (collaborator) => hub.publicKey === collaborator.hub
+      )
+    })
     setFilteredHubs(hubsWithPermission)
   }, [userHubs])
 
