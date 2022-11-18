@@ -114,6 +114,7 @@ const ReleaseCreateConfirm = (props) => {
           <Typography variant="h4">
             Please double check the following information before publishing your
             release:
+            {selectedHub?.publicKey}
           </Typography>
           <Box>
             <Value sx={{ mt: 1 }}>
