@@ -140,6 +140,7 @@ const ReleaseCreate = () => {
           return a?.data?.displayName?.localeCompare(b?.data?.displayName)
         })
         setProfileHubs(sortedHubs)
+        setSelectedHub(sortedHubs[0].publicKey)
       }
     }
   }, [fetchedHubsForUser])
