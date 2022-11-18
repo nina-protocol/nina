@@ -2,7 +2,7 @@ import React from 'react'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import NinaSdk from '@nina-protocol/js-sdk'
-import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
+import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
 const Release = dynamic(() => import('../../components/Release'))
 const NotFound = dynamic(() => import('../../components/NotFound'))
 
@@ -52,7 +52,7 @@ export default ReleasePage
 export const getStaticPaths = async () => {
   await initSdkIfNeeded()
   const paths = []
-  const { releases } = await NinaSdk.Release.fetchAll({limit: 2000})
+  const { releases } = await NinaSdk.Release.fetchAll({ limit: 2000 })
   releases.forEach((release) => {
     paths.push({
       params: {

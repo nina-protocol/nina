@@ -47,7 +47,7 @@ const ReleaseMarketPage = (props) => {
 export const getStaticPaths = async () => {
   await initSdkIfNeeded()
   const paths = []
-  const { releases } = await NinaSdk.Release.fetchAll({limit: 2000})
+  const { releases } = await NinaSdk.Release.fetchAll({ limit: 2000 })
   releases.forEach((release) => {
     paths.push({
       params: {
@@ -55,7 +55,7 @@ export const getStaticPaths = async () => {
       },
     })
   })
-  
+
   return {
     paths,
     fallback: 'blocking',

@@ -47,7 +47,7 @@ const RoyaltyRecipientForm = (props) => {
           percentShare: 20,
         }}
         onSubmit={async (values, { resetForm, initialValues }) => {
-          enqueueSnackbar('Transferring Royalty...', {
+          enqueueSnackbar('Transferring Revenue Share...', {
             variant: 'info',
           })
           const result = await addRoyaltyRecipient(

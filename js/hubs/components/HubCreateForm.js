@@ -255,7 +255,7 @@ export default withFormik({
       displayName: `${hubData ? hubData.data.displayName : ""}`,
       publishFee: `${hubData ? hubData.publishFee / 10000 : "0"}`,
       referralFee: `${hubData ? hubData.referralFee / 10000 : "0"}`,
-      description: `${hubData ? hubData.data.description : ""}`,
+      description: `${hubData ? hubData.data.descriptionHtml : ""}`,
       externalUrl: `${hubData ? hubData.data.externalUrl : ""}`,
     };
   },

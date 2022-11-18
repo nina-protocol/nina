@@ -47,6 +47,7 @@ const ReleaseCreateConfirm = (props) => {
     handleChange,
   } = props
   const [open, setOpen] = useState(false)
+  const [sortedHubs, setSortedHubs] = useState([])
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
   const [description, setDescription] = useState()
@@ -79,6 +80,15 @@ const ReleaseCreateConfirm = (props) => {
     }
   }, [data.description])
 
+  useEffect(() => {
+    if (profileHubs) {
+      const sortedHubs = profileHubs.sort((a, b) => {
+        return a.datetime < b.datetime
+      })
+      setSortedHubs(sortedHubs)
+    }
+  }, [profileHubs])
+
   const handleChangeCheckbox = (e) => {
     setConfirm(e.target.checked)
   }
@@ -104,6 +114,7 @@ const ReleaseCreateConfirm = (props) => {
           <Typography variant="h4">
             Please double check the following information before publishing your
             release:
+            {selectedHub?.publicKey}
           </Typography>
           <Box>
             <Value sx={{ mt: 1 }}>
@@ -145,7 +156,7 @@ const ReleaseCreateConfirm = (props) => {
                 MenuProps={MenuProps}
                 inputProps={{ 'aria-label': 'Without label' }}
               >
-                {profileHubs?.map((hub) => (
+                {sortedHubs?.map((hub) => (
                   <MenuItem
                     key={hub?.handle}
                     value={`${hub?.publicKey}`}

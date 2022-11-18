@@ -6,7 +6,7 @@ import { Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
+import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
 const SearchDropdown = dynamic(() => import('./SearchDropdown'))
 
 const NavSearch = () => {
