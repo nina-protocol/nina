@@ -1,9 +1,10 @@
 import React from 'react'
 import { Box, Typography } from '@mui/material'
+import Button from '@mui/material/Button'
 import { styled } from '@mui/system'
 import Link from 'next/link'
 
-const NewProfileCtas = ({ activeViewIndex }) => {
+const NewProfileCtas = ({ activeViewIndex, profilePubkey }) => {
   const renderCtas = (activeViewIndex) => {
     switch (activeViewIndex) {
       case 0:
@@ -53,7 +54,22 @@ const NewProfileCtas = ({ activeViewIndex }) => {
             <Typography my={1}>
               No one has followed your account yet.
             </Typography>
-            <Typography>Share your profile to twitter</Typography>
+            <Typography
+              style={{
+                textDecoration: 'underline',
+                cursor: 'pointer',
+              }}
+              onClick={() =>
+                window.open(
+                  `https://twitter.com/intent/tweet?text=${`Check out my profile on Nina%0A`}&url=ninaprotocol.com/${profilePubkey}`,
+                  null,
+                  'status=no,location=no,toolbar=no,menubar=no,height=500,width=500'
+                )
+              }
+              variant=" "
+            >
+              Share your profile to Twitter.
+            </Typography>
           </>
         )
       case 4:

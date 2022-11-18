@@ -277,13 +277,16 @@ const Profile = ({ profilePubkey }) => {
     tableContainerRef.current.scrollTo(0, 0)
   }
 
-  const renderTables = (activeView, inDashboard) => {
+  const renderTables = (activeView, inDashboard, profilePublicKey) => {
     switch (activeView) {
       case 0:
         return (
           <>
             {inDashboard && profilePublishedReleases?.length === 0 ? (
-              <NewProfileCtas activeViewIndex={activeView} />
+              <NewProfileCtas
+                activeViewIndex={activeView}
+                profilePubkey={profilePubkey}
+              />
             ) : (
               <ReusableTable
                 tableType={'profilePublishedReleases'}
@@ -301,7 +304,10 @@ const Profile = ({ profilePubkey }) => {
         return (
           <>
             {inDashboard && profileCollectionReleases?.length === 0 ? (
-              <NewProfileCtas activeViewIndex={activeView} />
+              <NewProfileCtas
+                activeViewIndex={activeView}
+                profilePubkey={profilePubkey}
+              />
             ) : (
               <ReusableTable
                 tableType={'profileCollectionReleases'}
@@ -315,7 +321,10 @@ const Profile = ({ profilePubkey }) => {
         return (
           <>
             {inDashboard && profileHubs?.length === 0 ? (
-              <NewProfileCtas activeViewIndex={activeView} />
+              <NewProfileCtas
+                activeViewIndex={activeView}
+                profilePubkey={profilePubkey}
+              />
             ) : (
               <ReusableTable
                 tableType={'profileHubs'}
@@ -330,7 +339,10 @@ const Profile = ({ profilePubkey }) => {
         return (
           <>
             {inDashboard && profileSubscriptionsTo?.length === 0 ? (
-              <NewProfileCtas activeViewIndex={activeView} />
+              <NewProfileCtas
+                activeViewIndex={activeView}
+                profilePubkey={profilePubkey}
+              />
             ) : (
               <ReusableTable
                 tableType={'followers'}
@@ -344,7 +356,10 @@ const Profile = ({ profilePubkey }) => {
         return (
           <>
             {inDashboard && profileSubscriptionsFrom?.length === 0 ? (
-              <NewProfileCtas activeViewIndex={activeView} />
+              <NewProfileCtas
+                activeViewIndex={activeView}
+                profilePubkey={profilePubkey}
+              />
             ) : (
               <ReusableTable
                 tableType={'following'}
