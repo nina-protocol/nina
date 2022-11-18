@@ -71,7 +71,7 @@ export const getStaticProps = async (context) => {
   const releasePubkey = context.params.releasePubkey
 
   try {
-    await initSdkIfNeeded()
+    await initSdkIfNeeded(true)
     const { release } = await NinaSdk.Release.fetch(releasePubkey)
     return {
       props: {
