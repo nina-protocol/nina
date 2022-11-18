@@ -62,7 +62,7 @@ export default HubPage
 export const getStaticPaths = async () => {
   await initSdkIfNeeded()
   const paths = []
-  const { hubs } = await NinaSdk.Hub.fetchAll({limit: 1000})
+  const { hubs } = await NinaSdk.Hub.fetchAll({ limit: 1000 })
   hubs.forEach((hub) => {
     paths.push({
       params: { hubPubkey: hub.publicKey },
@@ -70,12 +70,12 @@ export const getStaticPaths = async () => {
     paths.push({
       params: { hubPubkey: hub.handle },
     })
-  });
+  })
   return {
     paths,
-    fallback: "blocking",
-  };
-};
+    fallback: 'blocking',
+  }
+}
 
 export const getStaticProps = async (context) => {
   const { hubPubkey } = context.params
