@@ -436,7 +436,6 @@ const ReusableTableBody = ({
                           src={getImageFromCDN(
                             row.image,
                             100,
-                            Date.parse(row.date)
                           )}
                           alt={i}
                           loader={loader}
