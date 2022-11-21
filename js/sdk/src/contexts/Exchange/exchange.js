@@ -18,6 +18,7 @@ const ExchangeContextProvider = ({ children }) => {
     removeReleaseFromCollection,
     getUsdcBalance,
     ninaClient,
+    setVerificationState,
   } = useContext(Nina.Context)
   const { getRelease } = useContext(Release.Context)
   const { removeTrackFromPlaylist } = useContext(Audio.Context)
@@ -48,6 +49,7 @@ const ExchangeContextProvider = ({ children }) => {
     removeTrackFromPlaylist,
     getRelease,
     getUsdcBalance,
+    setVerificationState
   })
 
   return (
@@ -83,6 +85,7 @@ const exchangeContextHelper = ({
   removeReleaseFromCollection,
   getRelease,
   getUsdcBalance,
+  setVerificationState,
 }) => {
   const { provider } = ninaClient
 
@@ -485,6 +488,7 @@ const exchangeContextHelper = ({
     try {
       const { exchanges } = await NinaSdk.Release.fetchExchanges(publicKey, withAccountData)
       const updatedExchangeState = {...exchangeState}
+      const updatedVerificationState = {}
       exchanges.forEach((exchange) => {  
         if (exchange.accountData) {
           updatedExchangeState[exchange.publicKey] = {
@@ -498,7 +502,19 @@ const exchangeContextHelper = ({
           ...updatedExchangeState[exchange.publicKey],
           ...formatExchange(exchange),
         }
+
+        if (exchange.initializer.verifications) {
+          updatedVerificationState[exchange.initializer.publicKey] = exchange.initializer.verifications
+        }
+
+        if (exchange.completedBy?.verifications) {
+          updatedVerificationState[exchange.completedBy.publicKey] = exchange.completedBy?.verifications
+        }
       })
+      setVerificationState(prevState => ({
+        ...prevState,
+        ...updatedVerificationState,
+      }))
       setExchangeState(updatedExchangeState)
     } catch (err) {
       console.warn(err)
