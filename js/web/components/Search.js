@@ -212,7 +212,11 @@ const Search = (props) => {
     setShowDropdown(false)
     setQuery('')
   }
-
+  const handleKeydown = (e) => {
+    if (e.key === 'Enter') {
+      handleSubmit(e)
+    }
+  }
   const autoCompleteHandler = async (query) => {
     const response = await axios.post(
       `${NinaSdk.client.endpoint}/suggestions`,
@@ -372,6 +376,7 @@ const Search = (props) => {
               ref={searchInputRef}
               placeholder="Search for artists, releases, hubs"
               type="search"
+              onKeyDown={(e) => handleKeydown(e)}
             />
           </SearchInputWrapper>
         </form>
