@@ -245,7 +245,6 @@ const Feed = ({
                   <CtaWrapper>
                     <Button
                       onClick={(e) => {
-                        console.log('item :>> ', item)
                         handlePlay(e, item.release.publicKey)
                       }}
                     >
