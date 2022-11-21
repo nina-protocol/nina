@@ -243,7 +243,7 @@ const DrawerTypeWrapper = styled(Box)(({ theme }) => ({
   top: '50%',
   transform: 'translate(-50%, -50%)',
   [theme.breakpoints.down('md')]: {
-    left: '44%'
+    left: '44%',
   },
 }))
 

@@ -433,10 +433,7 @@ const ReusableTableBody = ({
                           height={50}
                           width={50}
                           layout="responsive"
-                          src={getImageFromCDN(
-                            row.image,
-                            100,
-                          )}
+                          src={getImageFromCDN(row.image, 100)}
                           alt={i}
                           loader={loader}
                         />
