@@ -214,6 +214,7 @@ const Search = (props) => {
   }
   const handleKeydown = (e) => {
     if (e.key === 'Enter') {
+      console.log('hello')
       handleSubmit(e)
     }
   }
@@ -375,6 +376,7 @@ const Search = (props) => {
               onFocus={(e) => handleInputFocus(e)}
               ref={searchInputRef}
               placeholder="Search for artists, releases, hubs"
+              onKeyDown={(e) => handleKeydown(e)}
             />
           </SearchInputWrapper>
         </form>
