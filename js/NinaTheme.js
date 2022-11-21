@@ -334,6 +334,7 @@ export const NinaTheme = createTheme({
             fontSize: '10px',
             padding: '0 16px',
             fontSize: '10px !important',
+            backgroundColor: `${colors.white}`,
             '&:hover': {
               backgroundColor: `${colors.white}`,
               color: `${colors.blue}`,

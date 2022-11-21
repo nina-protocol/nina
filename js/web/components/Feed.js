@@ -89,7 +89,6 @@ const Feed = ({
         wallet: wallet.publicKey?.toBase58(),
         release: releasePubkey,
       })
-
       updateTrack(releasePubkey, true, true)
     }
   }
@@ -577,7 +576,7 @@ const Feed = ({
     })
 
     return feedItemComponents || []
-  }, [items, isPlaying])
+  }, [items, isPlaying, track])
 
   if (publicKey && !feedFetched) {
     return (

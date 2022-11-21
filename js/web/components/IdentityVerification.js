@@ -157,7 +157,6 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
               setInstagramToken(response.data.token)
               setInstagramUserId(response.data.userId)
             }
-            console.log('response', response)
           } else if (codeSource === 'twitter') {
             const response = await axios.post(
               `${process.env.NINA_IDENTITY_ENDPOINT}/tw/user`,
