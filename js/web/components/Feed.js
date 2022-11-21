@@ -80,16 +80,19 @@ const Feed = ({
   }
 
   const handlePlay = (e, releasePubkey) => {
+    console.log('releasePubkey :>> ', releasePubkey);
+    console.log('track.releasePubkey :>> ', track?.releasePubkey);
     e.stopPropagation()
     e.preventDefault()
     if (isPlaying && track.releasePubkey === releasePubkey) {
+      console.log('SETTING FALSE');
       setIsPlaying(false)
     } else {
       logEvent('navigator_play', 'engagement', {
         wallet: wallet.publicKey?.toBase58(),
         release: releasePubkey,
       })
-
+      console.log('isPlaying :>> ', isPlaying);
       updateTrack(releasePubkey, true, true)
     }
   }
@@ -186,8 +189,8 @@ const Feed = ({
                         handlePlay(e, item.release.publicKey)
                       }}
                     >
-                      {isPlaying &&
-                      track.releasePubkey === item.release.publicKey ? (
+                      {(isPlaying &&
+                      track.releasePubkey === item.release.publicKey) ? (
                         <PauseCircleOutlineOutlinedIcon
                           sx={{ color: 'text.primary' }}
                         />

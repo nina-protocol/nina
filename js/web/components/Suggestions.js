@@ -51,7 +51,7 @@ const Suggestions = ({ items, itemsTotal, publicKey, toggleDrawer }) => {
           </ImageWrapper>
 
           <CopyWrapper>
-            <Typography my={1}>
+            <Typography my={1} align="left">
               <Link href={`/hubs/${hub?.handle}`} passHref>
                 {`${hub.data.displayName}`}
               </Link>

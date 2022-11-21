@@ -234,8 +234,7 @@ const StyledWalletDialogProvider = styled(WalletDialogProvider)(
         fontSize: '16px !important',
         fontWeight: '700 !important',
         '& h2': {
-          backgroundColor: `${theme.palette.transparent} !important`,
-          border: '2px solid red',
+          backgroundColor: `${theme.palette.white} !important`,
         },
         '& .MuiButtonBase-root': {
           display: 'none',
