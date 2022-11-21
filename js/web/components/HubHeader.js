@@ -75,10 +75,9 @@ const HubHeader = ({ hubData }) => {
             {hubData?.data.displayName && (
               <Link href={hubData?.data.externalUrl} passHref>
                 <a target="_blank" rel="noreferrer">
-                  <Typography sx={{ padding: '0 15px' }} >
+                  <Typography sx={{ padding: '0 15px' }}>
                     {hubData?.data.displayName}
                   </Typography>
-          
                 </a>
               </Link>
             )}
@@ -142,12 +141,12 @@ const DisplayName = styled(Box)(({ theme }) => ({
     display: ['-webkit-box'],
     ['-webkit-line-clamp']: '2',
     ['-webkit-box-orient']: 'vertical',
-    marginBottom: '10px'
+    marginBottom: '10px',
   },
   [theme.breakpoints.down('md')]: {
     width: 'auto',
     '& a': {
-      marginBottom: '0px'
+      marginBottom: '0px',
     },
   },
 }))

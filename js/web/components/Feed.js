@@ -185,8 +185,8 @@ const Feed = ({
                         handlePlay(e, item.release.publicKey)
                       }}
                     >
-                      {(isPlaying &&
-                      track.releasePubkey === item.release.publicKey) ? (
+                      {isPlaying &&
+                      track.releasePubkey === item.release.publicKey ? (
                         <PauseCircleOutlineOutlinedIcon
                           sx={{ color: 'text.primary' }}
                         />
@@ -245,7 +245,7 @@ const Feed = ({
                   <CtaWrapper>
                     <Button
                       onClick={(e) => {
-                        console.log('item :>> ', item);
+                        console.log('item :>> ', item)
                         handlePlay(e, item.release.publicKey)
                       }}
                     >
