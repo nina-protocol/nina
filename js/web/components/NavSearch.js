@@ -244,6 +244,7 @@ const DropdownContainer = styled(Box)(({ theme }) => ({
   padding: '0',
   border: `1px solid ${theme.palette.black}`,
   borderTop: 'none',
+  boxSizing: 'border-box',
   '&::-webkit-scrollbar': {
     display: 'none !important',
   },

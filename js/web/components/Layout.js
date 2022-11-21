@@ -4,7 +4,6 @@ import CssBaseline from '@mui/material/CssBaseline'
 
 import AudioPlayer from './AudioPlayer'
 import NavBar from './NavBar'
-import FeedDrawer from './FeedDrawer'
 
 const Layout = ({ children }) => {
   if (children.props.isEmbed) {
