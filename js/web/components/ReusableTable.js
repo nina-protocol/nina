@@ -452,17 +452,17 @@ const ReusableTableBody = ({
                 )
               } else if (cellName === 'title') {
                 return (
-                  <StyledTableCell key={cellName}>
+                  <StyledProfileTableCell key={cellName} type={"profile"}>
                     <OverflowContainer>
                       <Typography sx={{ textDecoration: 'underline' }} noWrap>
                         {cellData}
                       </Typography>
                     </OverflowContainer>
-                  </StyledTableCell>
+                  </StyledProfileTableCell>
                 )
               } else if (cellName === 'artist') {
                 return (
-                  <StyledTableCell key={cellName}>
+                  <StyledProfileTableCell key={cellName} type={"profile"}>
                     <OverflowContainer overflowWidth={'20vw'}>
                       <Typography
                         noWrap
@@ -474,7 +474,7 @@ const ReusableTableBody = ({
                         <a>{cellData}</a>
                       </Typography>
                     </OverflowContainer>
-                  </StyledTableCell>
+                  </StyledProfileTableCell>
                 )
               } else if (cellName === 'searchResultArtist') {
                 return (
@@ -630,7 +630,7 @@ const ResponsiveTableContainer = styled(Box)(({ theme, inDashboard }) => ({
   },
 }))
 
-const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
+const StyledTableHeadCell = styled(TableCell)(({ theme, }) => ({
   padding: '5px 5px',
   textAlign: 'left',
   cursor: 'pointer',
@@ -645,11 +645,21 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
   },
 }))
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
+const StyledTableCell = styled(TableCell)(({ theme, type }) => ({
   padding: '5px 5px',
   textAlign: 'left',
   height: '50px',
-  width: '15vw',
+  width: '61vw',
+  [theme.breakpoints.down('md')]: {
+    width: '30vw',
+    paddingRight: '10px',
+  },
+}))
+const StyledProfileTableCell = styled(TableCell)(({ theme }) => ({
+  padding: '5px 5px',
+  textAlign: 'left',
+  height: '50px',
+  width: '26vw',
   [theme.breakpoints.down('md')]: {
     width: '30vw',
     paddingRight: '10px',
@@ -659,7 +669,6 @@ const HubTableCell = styled(TableCell)(({ theme }) => ({
   width: '8vw',
 }))
 const StyledImageTableCell = styled(TableCell)(({ theme }) => ({
-  width: '50px',
   textAlign: 'left',
   padding: '5px',
 }))
