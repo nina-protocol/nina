@@ -142,9 +142,13 @@ const DisplayName = styled(Box)(({ theme }) => ({
     display: ['-webkit-box'],
     ['-webkit-line-clamp']: '2',
     ['-webkit-box-orient']: 'vertical',
+    marginBottom: '10px'
   },
   [theme.breakpoints.down('md')]: {
     width: 'auto',
+    '& a': {
+      marginBottom: '0px'
+    },
   },
 }))
 
