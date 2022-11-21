@@ -20,10 +20,7 @@ const Layout = ({ children }) => {
           className={classes.mainContainer}
         >
           <NavBar />
-          <main className={classes.bodyContainer}>
-            <FeedDrawer />
-            {children}
-          </main>
+          <main className={classes.bodyContainer}>{children}</main>
           <AudioPlayer />
         </Container>
       </Root>

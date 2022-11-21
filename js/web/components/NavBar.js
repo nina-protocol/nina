@@ -18,6 +18,7 @@ import Breadcrumbs from './Breadcrumbs'
 import NavSearch from './NavSearch'
 import SearchIcon from '@mui/icons-material/Search'
 import EmailCapture from './EmailCapture'
+import FeedDrawer from './FeedDrawer'
 
 const NavBar = () => {
   const router = useRouter()
@@ -120,6 +121,7 @@ const NavBar = () => {
           </NavCtas>
         </DesktopWalletWrapper>
       </NavRight>
+      <FeedDrawer />
     </Root>
   )
 }
