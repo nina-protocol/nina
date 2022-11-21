@@ -388,7 +388,7 @@ const Feed = ({
               </CopyWrapper>
             </ImageCard>
           )
-
+        case 'PostInitViaHubWithReferenceRelease':
         case 'HubAddRelease':
           return (
             <ImageCard>
