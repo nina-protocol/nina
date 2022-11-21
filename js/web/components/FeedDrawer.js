@@ -41,7 +41,6 @@ const FeedDrawer = () => {
   }, [wallet?.disconnecting])
 
   useEffect(() => {
-    console.log('subscriptionState Changed', subscriptionState)
     if (wallet.connected) {
       handleFetch(true)
     }
