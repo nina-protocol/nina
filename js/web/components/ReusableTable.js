@@ -428,7 +428,7 @@ const ReusableTableBody = ({
                 return (
                   <StyledImageTableCell align="left" key={cellName}>
                     <Box sx={{ width: '50px', textAlign: 'left', pr: '15px' }}>
-                      {row.image.includes('https') && isActiveView ? (
+                      {row.image.includes('https') ? (
                         <Image
                           height={50}
                           width={50}
@@ -436,7 +436,6 @@ const ReusableTableBody = ({
                           src={getImageFromCDN(
                             row.image,
                             100,
-                            Date.parse(row.date)
                           )}
                           alt={i}
                           loader={loader}

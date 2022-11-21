@@ -33,25 +33,27 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
   const userHasHubs = useMemo(() => userHubs?.length > 0, [userHubs])
 
   useEffect(() => {
-    if (userHubs?.length === 1) {
-      setSelectedHubId(userHubs[0]?.publicKey)
-    }
-    const userHubCollaborations = Object.values(hubCollaboratorsState).filter(
-      (collaborator) => {
-        console.log(collaborator)
-        return (
-          collaborator.canAddContent === true &&
-          collaborator.collaborator === wallet.publicKey.toBase58()
-        )
+    if (wallet.connected) {
+      if (userHubs?.length === 1) {
+        setSelectedHubId(userHubs[0]?.publicKey)
       }
-    )
-    const hubsWithPermission = userHubs?.filter((hub) => {
-      return userHubCollaborations.some(
-        (collaborator) => hub.publicKey === collaborator.hub
+      const userHubCollaborations = Object.values(hubCollaboratorsState).filter(
+        (collaborator) => {
+          console.log(collaborator)
+          return (
+            collaborator.canAddContent === true &&
+            collaborator.collaborator === wallet.publicKey.toBase58()
+          )
+        }
       )
-    })
-    setFilteredHubs(hubsWithPermission)
-  }, [userHubs])
+      const hubsWithPermission = userHubs?.filter((hub) => {
+        return userHubCollaborations.some(
+          (collaborator) => hub.publicKey === collaborator.hub
+        )
+      })
+      setFilteredHubs(hubsWithPermission)
+    }
+  }, [wallet?.connected, userHubs])
 
   const handleRepost = async (e) => {
     const error = await checkIfHasBalanceToCompleteAction(

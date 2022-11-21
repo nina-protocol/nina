@@ -60,7 +60,7 @@ const HubPageContainer = styled(Box)(({ theme }) => ({
 export default HubPage
 
 export const getStaticPaths = async () => {
-  await initSdkIfNeeded()
+  await initSdkIfNeeded(true)
   const paths = []
   const { hubs } = await NinaSdk.Hub.fetchAll({ limit: 1000 })
   hubs.forEach((hub) => {
@@ -81,7 +81,7 @@ export const getStaticProps = async (context) => {
   const { hubPubkey } = context.params
   if (hubPubkey && hubPubkey !== 'manifest.json') {
     try {
-      await initSdkIfNeeded()
+      await initSdkIfNeeded(true)
       const { hub } = await NinaSdk.Hub.fetch(hubPubkey)
       return {
         props: {
