@@ -54,7 +54,7 @@ const ReleasePage = (props) => {
 export default ReleasePage;
 
 export const getStaticPaths = async () => {
-  await initSdkIfNeeded()
+  await initSdkIfNeeded(true)
   const paths = []
   const { hubs } = await NinaSdk.Hub.fetchAll({limit: 1000})
   for await (const hub of hubs) {
@@ -80,7 +80,7 @@ export const getStaticProps = async (context) => {
       context.params.hubPubkey &&
       context.params.hubReleasePubkey !== "undefined"
     ) {
-      await initSdkIfNeeded()
+      await initSdkIfNeeded(true)
       const { hub, release } = await NinaSdk.Hub.fetchHubRelease(
         context.params.hubPubkey,
         context.params.hubReleasePubkey
