@@ -28,7 +28,9 @@ const ExchangeListItem = (props) => {
           className={`
           ${classes.exchangeListItemPrice} 
           ${classes.exchangeListItemPrice}--${
-            initializer.publicKey === wallet?.publicKey?.toBase58() ? 'currentUser' : ''
+            initializer.publicKey === wallet?.publicKey?.toBase58()
+              ? 'currentUser'
+              : ''
           }
           `}
         >
@@ -63,7 +65,9 @@ const ExchangeListItem = (props) => {
       ${classes.exchangeListItem} 
       ${classes.exchangeListItem}--${isSelling ? 'listing' : 'offer'}
       ${classes.exchangeListItem}--${
-        initializer.publicKey === wallet?.publicKey?.toBase58() ? 'currentUser' : ''
+        initializer.publicKey === wallet?.publicKey?.toBase58()
+          ? 'currentUser'
+          : ''
       }
       `}
     >

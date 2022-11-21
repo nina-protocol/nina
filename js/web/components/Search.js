@@ -53,7 +53,6 @@ const Search = (props) => {
   ])
   const [suggestions, setSuggestions] = useState([])
   const [showDropdown, setShowDropdown] = useState(false)
-  const [showSearchInput, setShowSearchInput] = useState(false)
   const [inputFocus, setInputFocus] = useState(false)
   const [autoCompleteResults, setAutocompleteResults] = useState([
     { name: 'artists', visible: false },
