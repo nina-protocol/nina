@@ -371,7 +371,6 @@ const Search = (props) => {
               onFocus={(e) => handleInputFocus(e)}
               ref={searchInputRef}
               placeholder="Search for artists, releases, hubs"
-              type="search"
             />
           </SearchInputWrapper>
         </form>

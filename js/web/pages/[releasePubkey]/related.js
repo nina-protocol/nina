@@ -1,6 +1,8 @@
 import NinaSdk from '@nina-protocol/js-sdk'
 const { useRouter } = require('next/router')
-const { initSdkIfNeeded } = require('@nina-protocol/nina-internal-sdk/src/utils/sdkInit')
+const {
+  initSdkIfNeeded,
+} = require('@nina-protocol/nina-internal-sdk/src/utils/sdkInit')
 
 const Related = (props) => {
   const { publisher } = props
