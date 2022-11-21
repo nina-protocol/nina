@@ -378,7 +378,7 @@ const releaseContextHelper = ({
         sellerFeeBasisPoints: resalePercentage * 100,
       }
       logEvent(
-        'release_init__via_hub_initiated',
+        'release_init_via_hub_initiated',
         'engagement', {
           publicKey: release.toBase58(),
           wallet: provider.wallet.publicKey.toBase58(),
@@ -960,7 +960,7 @@ const releaseContextHelper = ({
       logEvent(
         'release_purchase_success',
         'engagement', {
-          publicKey: releasePubkey.toBase58(),
+          publicKey: releasePubkey,
           wallet: provider.wallet.publicKey.toBase58(),
         }
       )
@@ -984,7 +984,7 @@ const releaseContextHelper = ({
       logEvent(
         'release_purchase_failure',
         'engagement', {
-          publicKey: releasePubkey.toBase58(),
+          publicKey: releasePubkey,
           wallet: provider.wallet.publicKey.toBase58(),
         }
       )
@@ -1057,8 +1057,6 @@ const releaseContextHelper = ({
   }
 
   const addRoyaltyRecipient = async (release, updateData, releasePubkey) => {
-  
-
     const program = await ninaClient.useProgram()
     const releasePublicKey = new anchor.web3.PublicKey(releasePubkey)
     try {
