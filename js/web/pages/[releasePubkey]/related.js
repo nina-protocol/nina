@@ -1,5 +1,6 @@
 import NinaSdk from '@nina-protocol/js-sdk'
 const { useRouter } = require('next/router')
+const { initSdkIfNeeded } = require('@nina-protocol/nina-internal-sdk/src/utils/sdkInit')
 
 const Related = (props) => {
   const { publisher } = props
@@ -12,13 +13,7 @@ export const getServerSideProps = async (context) => {
   const releasePubkey = context.params.releasePubkey
 
   try {
-    if (!NinaSdk.client.program) {
-      await NinaSdk.client.init(
-        process.env.NINA_API_ENDPOINT,
-        process.env.SOLANA_CLUSTER_URL,
-        process.env.NINA_PROGRAM_ID
-      )
-    }
+    await initSdkIfNeeded(true)
     const { release } = await NinaSdk.Release.fetch(releasePubkey)
     return {
       props: {

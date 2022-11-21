@@ -31,7 +31,7 @@ const DashboardPage = ({ hub }) => {
 
 DashboardPage.getInitialProps = async (context) => {
   try {
-    await initSdkIfNeeded()
+    await initSdkIfNeeded(true)
     const { hub } = await NinaSdk.Hub.fetch(context.query.hubPubkey);
     return {
       hub,
