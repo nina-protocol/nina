@@ -213,7 +213,6 @@ const Search = (props) => {
   }
   const handleKeydown = (e) => {
     if (e.key === 'Enter') {
-      console.log('hello')
       handleSubmit(e)
     }
   }
