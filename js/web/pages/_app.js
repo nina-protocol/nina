@@ -8,7 +8,7 @@ import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
 import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare'
 import { GlowWalletAdapter } from '@solana/wallet-adapter-glow'
-import { SolletWalletAdapter } from '@solana/wallet-adapter-sollet'
+import {BackpackWalletAdapter} from '@solana/wallet-adapter-backpack'
 import { clusterApiUrl } from '@solana/web3.js'
 import dynamic from 'next/dynamic'
 import Router from 'next/router'
@@ -66,10 +66,10 @@ function Application({ Component, pageProps }) {
   }, [network])
 
   const walletOptions = [
+    new BackpackWalletAdapter({ network }),
     new PhantomWalletAdapter({ network }),
     new SolflareWalletAdapter({ network }),
     new GlowWalletAdapter({ network }),
-    new SolletWalletAdapter({ network }),
   ]
 
   // if (!isMobile) {

@@ -159,6 +159,7 @@ const HubSlider = () => {
                           width={100}
                           layout="responsive"
                           priority={!isMobile}
+                          alt={hub?.data?.displayName}
                         />
                       </a>
                     </Link>
