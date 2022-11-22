@@ -32,6 +32,7 @@
     "@fontsource/roboto": "^4.5.3",
     "@next/bundle-analyzer": "^12.1.2",
     "@project-serum/anchor": "^0.25.0",
+    "@solana/wallet-adapter-backpack": "^0.1.9",
     "@solana/wallet-adapter-base": "^0.9.9",
     "@solana/wallet-adapter-material-ui": "^0.16.9",
     "@solana/wallet-adapter-react": "^0.15.8",
