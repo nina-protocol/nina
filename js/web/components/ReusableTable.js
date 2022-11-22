@@ -649,7 +649,7 @@ const StyledTableCell = styled(TableCell)(({ theme, type }) => ({
   padding: '5px 5px',
   textAlign: 'left',
   height: '50px',
-  width: '61vw',
+  width: '585px',
   [theme.breakpoints.down('md')]: {
     width: '30vw',
     paddingRight: '10px',
@@ -659,7 +659,7 @@ const StyledProfileTableCell = styled(TableCell)(({ theme }) => ({
   padding: '5px 5px',
   textAlign: 'left',
   height: '50px',
-  width: '26vw',
+  width: '585px',
   [theme.breakpoints.down('md')]: {
     width: '30vw',
     paddingRight: '10px',
@@ -671,6 +671,7 @@ const HubTableCell = styled(TableCell)(({ theme }) => ({
 const StyledImageTableCell = styled(TableCell)(({ theme }) => ({
   textAlign: 'left',
   padding: '5px',
+  width: '50px',
 }))
 const StyledTableCellButtonsContainer = styled(TableCell)(({ theme }) => ({
   width: '100px',
