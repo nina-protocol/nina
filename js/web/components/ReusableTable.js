@@ -694,7 +694,7 @@ const SearchResultTableCell = styled(TableCell)(({ theme }) => ({
 }))
 const OverflowContainer = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
-  maxWidth: '14vw',
+  maxWidth: '26vw',
   textAlign: 'left',
   textOverflow: 'ellipsis',
   [theme.breakpoints.down('md')]: {
