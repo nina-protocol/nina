@@ -639,15 +639,18 @@ const Feed = ({
               <Dots size="80px" />
             </Box>
           )}
-          {wallet?.connected && feedItems?.length > 0 && itemsTotal >= feedItems?.length && !pendingFetch && (
-            <Typography
-              variant="h4"
-              sx={{ textAlign: 'center' }}
-              paddingBottom="40px"
-            >
-              No more items
-            </Typography>
-          )}
+          {wallet?.connected &&
+            feedItems?.length > 0 &&
+            itemsTotal >= feedItems?.length &&
+            !pendingFetch && (
+              <Typography
+                variant="h4"
+                sx={{ textAlign: 'center' }}
+                paddingBottom="40px"
+              >
+                No more items
+              </Typography>
+            )}
         </Box>
       )}
     </ScrollWrapper>
