@@ -46,7 +46,7 @@ const FeedDrawer = () => {
     }
   }, [subscriptionState])
 
-  const handleFetch = async (refresh=false) => {
+  const handleFetch = async (refresh = false) => {
     if (wallet.connected) {
       await handleGetFeedForUser(wallet.publicKey.toBase58(), refresh)
       await getHubSuggestionsForUser(wallet.publicKey.toBase58())
@@ -54,7 +54,6 @@ const FeedDrawer = () => {
       await getHubSuggestionsForUser()
     }
   }
-
 
   const toggleDrawer = (open) => (event) => {
     if (

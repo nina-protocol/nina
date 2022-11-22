@@ -631,7 +631,7 @@ const ninaContextHelper = ({
         } else {
           setUsdcBalance(0)
         }
-      } catch {
+      } catch (e) {
         console.warn('error getting usdc balance')
       }
     } else {
@@ -704,7 +704,7 @@ const ninaContextHelper = ({
       if (!bundlrInstance) {
         bundlrInstance = bundlr
       }
-      const bundlrBalanceRequest = await bundlrInstance.getLoadedBalance()
+      const bundlrBalanceRequest = await bundlrInstance?.getLoadedBalance()
       setBundlrBalance(nativeToUi(bundlrBalanceRequest, ids.mints.wsol))
     } catch (error) {
       console.warn('Unable to get Bundlr Balance: ', error)
@@ -716,7 +716,8 @@ const ninaContextHelper = ({
       if (!bundlrInstance) {
         bundlrInstance = bundlr
       }
-      const price = await bundlrInstance.getPrice(1000000)
+      
+      const price = await bundlrInstance?.getPrice(1000000)
       setBundlrPricePerMb(nativeToUi(price, ids.mints.wsol))
     } catch (error) {
       return ninaErrorHandler(error)
@@ -781,7 +782,8 @@ const ninaContextHelper = ({
           bundlrHttpAddress,
           'solana',
           provider.wallet.wallet.adapter,
-          { timeout: 1000000000000000 }
+          { providerUrl: process.env.SOLANA_CLUSTER_URL_BUNDLR,
+            timeout: 1000000000000000 }
         )
         await bundlrInstance.ready()
         setBundlr(bundlrInstance)

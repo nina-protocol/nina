@@ -101,7 +101,6 @@ const EmailCapture = ({ size }) => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-
         <Box sx={style}>
           <CloseIconWrapper onClick={handleClose}>
             <CloseIcon />
