@@ -23,25 +23,10 @@ const Hubs = () => {
     getHubsForUser,
     hubState,
     filterHubsForUser,
-    getHubs,
-    filterFeaturedHubs,
   } = useContext(Hub.Context);
   const { npcAmountHeld } = useContext(Nina.Context);
-  const [hubs, setHubs] = useState();
   const wallet = useWallet();
-
-  useEffect(() => {
-    if (!hubs) {
-      getHubs(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if ((!hubs || hubs.length === 0) && Object.keys(hubState).length > 0) {
-      setHubs(filterFeaturedHubs());
-    }
-  }, [hubState]);
-
+  
   useEffect(() => {
     if (wallet.connected) {
       getHubsForUser(wallet.publicKey.toBase58());
@@ -108,7 +93,7 @@ const Hubs = () => {
                 </Typography>
               </Box>
 
-              <HubSlider hubs={hubs} />
+              <HubSlider />
               <Box align="center" sx={{ paddingBottom: { md: '40px', xs: '30px' }, paddingTop: { md: '80px', xs: '30px' } }}>
                 <BlueTypography variant="h1" align="center">
                   <a
@@ -154,7 +139,7 @@ const Hubs = () => {
                       </Link>
                     </Typography>
                   </Box>
-                  <HubSlider hubs={hubs} />
+                  <HubSlider />
                 </DashboardContent>
               )}
               {userHubs?.length === 0 && npcAmountHeld > 0 && (

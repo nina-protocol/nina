@@ -48,7 +48,7 @@ const HubSlider = () => {
     const fetchFeaturedHubs = async () => {
       await getHubs()
       const response = await getSubscriptionsForUser(
-        'HesfTj24Eatwy8vvra5UdhX1xJWLeqRM7QdDwjX1xmmk'
+        '7zoKqAehBR7oWMFpmWr2ebrhMvqL6oBsHdRcL2N3cmnU'
       )
       const publicKeys = response
         .filter((sub) => {
