@@ -655,6 +655,7 @@ const StyledTableCell = styled(TableCell)(({ theme, type }) => ({
     paddingRight: '10px',
   },
 }))
+
 const StyledProfileTableCell = styled(TableCell)(({ theme }) => ({
   padding: '5px 5px',
   textAlign: 'left',
@@ -694,7 +695,7 @@ const SearchResultTableCell = styled(TableCell)(({ theme }) => ({
 }))
 const OverflowContainer = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
-  maxWidth: '14vw',
+  maxWidth: '360px',
   textAlign: 'left',
   textOverflow: 'ellipsis',
   [theme.breakpoints.down('md')]: {

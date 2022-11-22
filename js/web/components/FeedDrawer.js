@@ -46,7 +46,7 @@ const FeedDrawer = () => {
     }
   }, [subscriptionState])
 
-  const handleFetch = async (refresh=false) => {
+  const handleFetch = async (refresh = false) => {
     if (wallet.connected) {
       await handleGetFeedForUser(wallet.publicKey.toBase58(), refresh)
       await getHubSuggestionsForUser(wallet.publicKey.toBase58())
@@ -54,7 +54,6 @@ const FeedDrawer = () => {
       await getHubSuggestionsForUser()
     }
   }
-
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -214,6 +213,7 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
     overflowX: 'hidden',
     border: '1px solid black',
     borderRight: 'none',
+    zIndex: '10',
     [theme.breakpoints.down('md')]: {
       width: '90vw',
       maxWidth: '450px',

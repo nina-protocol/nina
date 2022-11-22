@@ -241,7 +241,7 @@ const Profile = ({ profilePubkey }) => {
 
       await getSubscriptionsForUser(profilePubkey)
       await getVerificationsForUser(profilePubkey)
-
+        
       let viewIndex
       let updatedView = views.slice()
 
@@ -387,6 +387,9 @@ const Profile = ({ profilePubkey }) => {
                         src={getImageFromCDN(profileImage, 400)}
                         priority={true}
                         loader={loader}
+                        alt={`${displayImageForAccount(
+                          profilePubkey
+                        )} profile image`}
                       />
                     ) : (
                       <img src={profileImage} height={100} width={100} />

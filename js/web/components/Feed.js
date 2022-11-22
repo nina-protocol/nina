@@ -639,15 +639,18 @@ const Feed = ({
               <Dots size="80px" />
             </Box>
           )}
-          {feedItems && itemsTotal >= feedItems?.length && !pendingFetch && (
-            <Typography
-              variant="h4"
-              sx={{ textAlign: 'center' }}
-              paddingBottom="40px"
-            >
-              No more items
-            </Typography>
-          )}
+          {wallet?.connected &&
+            feedItems?.length > 0 &&
+            itemsTotal >= feedItems?.length &&
+            !pendingFetch && (
+              <Typography
+                variant="h4"
+                sx={{ textAlign: 'center' }}
+                paddingBottom="40px"
+              >
+                No more items
+              </Typography>
+            )}
         </Box>
       )}
     </ScrollWrapper>
@@ -670,7 +673,7 @@ const ScrollWrapper = styled(Box)(({ theme }) => ({
 const FeedWrapper = styled(Box)(({ theme }) => ({
   padding: '15px',
   marginTop: '30px',
-  minHeight: '75vh',
+  // minHeight: '75vh',
   '& a': {
     color: theme.palette.blue,
   },

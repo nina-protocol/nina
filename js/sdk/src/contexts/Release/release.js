@@ -1420,16 +1420,18 @@ const releaseContextHelper = ({
     try {
       const { collected } = await NinaSdk.Account.fetchCollected(publicKey, withAccountData)
       const { published } = await NinaSdk.Account.fetchPublished(publicKey, withAccountData)
-      setReleaseState(updateStateForReleases([...collected, ...published]))
+      const { revenueShares } = await NinaSdk.Account.fetchRevenueShares(publicKey, withAccountData)
+      setReleaseState(updateStateForReleases([...collected, ...published, ...revenueShares]))
+      const publishedAndRevenueShares = [...published, ...revenueShares]
       setFetchedUserProfileReleases({
         ...fetchedUserProfileReleases,
         [publicKey]: {
           collected: collected.map((release) => release.publicKey),
-          published: published.map((release) => release.publicKey)
+          published: publishedAndRevenueShares.map((release) => release.publicKey)
         },
       })
   
-      return [collected, published]
+      return [collected, publishedAndRevenueShares]
     } catch (error) {
       console.warn(error)
       return [[],[]]

@@ -118,11 +118,11 @@ const Hubs = () => {
                     align="left"
                     sx={{ padding: { md: "0 165px 40px", xs: "30px 0px" } }}
                   >
-                    You do not have any credits to create a Hub. <br />
-                    <br />
-                    <EmailCapture size="large" />
+                    You do not have any credits to create a Hub. 
                   </BlueTypography>
-                  <br />
+                  
+                  <EmailCapture size="large" />
+                  
                   <Box
                     sx={{
                       display: "flex",
