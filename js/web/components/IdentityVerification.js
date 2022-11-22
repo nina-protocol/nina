@@ -16,6 +16,7 @@ import {
   verifyEthereum,
   verifyTwitter,
   deleteTwitterVerification,
+  deleteEthereumVerification,
   verifySoundcloud,
   verifyInstagram,
 } from '../utils/identityVerification'
@@ -200,14 +201,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
 
       switch (type) {
         case 'twitter':
-          console.log('twitterHandle', twitterHandle)
-          await deleteTwitterVerification(
-            provider,
-            valueForType(type),
-            publicKey,
-            signTransaction,
-            sendTransaction
-          )
+          window.open(`https://twitter.com/${value}`, '_blank')
           break
         case 'instagram':
           window.open(`https://instagram.com/${value}`, '_blank')
