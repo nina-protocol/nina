@@ -452,7 +452,7 @@ const ReusableTableBody = ({
                 )
               } else if (cellName === 'title') {
                 return (
-                  <StyledProfileTableCell key={cellName} type={"profile"}>
+                  <StyledProfileTableCell key={cellName} type={'profile'}>
                     <OverflowContainer>
                       <Typography sx={{ textDecoration: 'underline' }} noWrap>
                         {cellData}
@@ -462,7 +462,7 @@ const ReusableTableBody = ({
                 )
               } else if (cellName === 'artist') {
                 return (
-                  <StyledProfileTableCell key={cellName} type={"profile"}>
+                  <StyledProfileTableCell key={cellName} type={'profile'}>
                     <OverflowContainer overflowWidth={'20vw'}>
                       <Typography
                         noWrap
@@ -630,7 +630,7 @@ const ResponsiveTableContainer = styled(Box)(({ theme, inDashboard }) => ({
   },
 }))
 
-const StyledTableHeadCell = styled(TableCell)(({ theme, }) => ({
+const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
   padding: '5px 5px',
   textAlign: 'left',
   cursor: 'pointer',
