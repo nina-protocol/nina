@@ -66,10 +66,10 @@ function Application({ Component, pageProps }) {
   }, [network])
 
   const walletOptions = [
-    new BackpackWalletAdapter({ network }),
     new PhantomWalletAdapter({ network }),
     new SolflareWalletAdapter({ network }),
     new GlowWalletAdapter({ network }),
+    new BackpackWalletAdapter({ network }),
   ]
 
   // if (!isMobile) {

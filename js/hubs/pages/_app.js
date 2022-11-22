@@ -67,10 +67,10 @@ const App = ({ Component, pageProps }) => {
   // of wallets that your users connect to will be loaded
   const wallets = useMemo(
     () => [
-      new BackpackWalletAdapter({network}),
       new PhantomWalletAdapter(),
       new SolflareWalletAdapter({ network }),
       new GlowWalletAdapter({ network }),
+      new BackpackWalletAdapter({network}),
     ],
     [network]
   );
