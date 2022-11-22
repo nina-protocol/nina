@@ -129,61 +129,62 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   }, [publicKey, verifications])
 
   useEffect(() => {
-    if (router.query.code) {
-      const getHandle = async () => {
-        try {
-          const codeSource = localStorage.getItem('codeSource')
-          setActiveType(codeSource)
-          if (codeSource === 'soundcloud') {
-            const response = await axios.post(
-              `${process.env.NINA_IDENTITY_ENDPOINT}/sc/user`,
-              {
-                code: router.query.code,
-              }
-            )
-            if (response.data) {
-              setSoundcloudHandle(response.data.username)
-              setActiveValue(response.data.username)
-              setSoundcloudToken(response.data.token.access_token)
+    const codeSource = localStorage.getItem('codeSource')
+    const getHandle = async () => {
+      try {
+        setActiveType(codeSource)
+        if (codeSource === 'soundcloud') {
+          const response = await axios.post(
+            `${process.env.NINA_IDENTITY_ENDPOINT}/sc/user`,
+            {
+              code: router.query.code,
             }
-          } else if (codeSource === 'instagram') {
-            const response = await axios.post(
-              `${process.env.NINA_IDENTITY_ENDPOINT}/ig/user`,
-              {
-                code: router.query.code,
-              }
-            )
-            if (response.data) {
-              setInstagramHandle(response.data.username)
-              setActiveValue(response.data.username)
-              setInstagramToken(response.data.token)
-              setInstagramUserId(response.data.userId)
-            }
-          } else if (codeSource === 'twitter') {
-            const response = await axios.post(
-              `${process.env.NINA_IDENTITY_ENDPOINT}/tw/user`,
-              {
-                code: router.query.code,
-              }
-            )
-            if (response.data) {
-              setTwitterHandle(response.data.username)
-              setActiveValue(response.data.username)
-              setTwitterToken(response.data.token)
-            }
-          } else if (codeSource === 'ethereum') {
-            setActiveValue(ethAddress)
+          )
+          if (response.data) {
+            setSoundcloudHandle(response.data.username)
+            setActiveValue(response.data.username)
+            setSoundcloudToken(response.data.token.access_token)
           }
-        } catch (error) {
-          console.warn(error)
-          setActiveValue(undefined)
+        } else if (codeSource === 'instagram') {
+          const response = await axios.post(
+            `${process.env.NINA_IDENTITY_ENDPOINT}/ig/user`,
+            {
+              code: router.query.code,
+            }
+          )
+          if (response.data) {
+            setInstagramHandle(response.data.username)
+            setActiveValue(response.data.username)
+            setInstagramToken(response.data.token)
+            setInstagramUserId(response.data.userId)
+          }
+        } else if (codeSource === 'twitter') {
+          const response = await axios.post(
+            `${process.env.NINA_IDENTITY_ENDPOINT}/tw/user`,
+            {
+              code: router.query.code,
+            }
+          )
+          if (response.data) {
+            setTwitterHandle(response.data.username)
+            setActiveValue(response.data.username)
+            setTwitterToken(response.data.token)
+          }
         }
+      } catch (error) {
+        console.warn(error)
+        setActiveValue(undefined)
       }
-
-      getHandle()
-      setOpen(true)
     }
-  }, [router.query.code])
+    
+    if (router.query.code) {
+      getHandle()
+    } else if (ethAddress) {
+      setActiveValue(ethAddress)
+    }
+    setOpen(true)
+    
+  }, [router.query.code, ethAddress])
 
   const handleIdentityButtonAction = async (type) => {
     if (accountVerifiedForType(type)) {
@@ -283,6 +284,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
         var accounts = await window.ethereum.request({
           method: 'eth_requestAccounts',
         })
+        setEthAddress(undefined)
         setEthAddress(accounts[0])
         break
     }
