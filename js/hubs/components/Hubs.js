@@ -139,8 +139,9 @@ const Hubs = () => {
                     sx={{ padding: { md: "0 165px 40px", xs: "30px 0px" } }}
                   >
                     You do not have any credits to create a Hub. 
-                    <EmailCapture size="large" />
                   </BlueTypography>
+                  
+                  <EmailCapture size="large" />
                   
                   <Box
                     sx={{
