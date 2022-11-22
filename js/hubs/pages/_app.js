@@ -8,6 +8,7 @@ import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import { PhantomWalletAdapter } from "@solana/wallet-adapter-phantom";
 import { SolflareWalletAdapter } from "@solana/wallet-adapter-solflare";
 import { GlowWalletAdapter } from "@solana/wallet-adapter-glow";
+import {BackpackWalletAdapter} from '@solana/wallet-adapter-backpack'
 import { SnackbarProvider } from "notistack";
 import dynamic from "next/dynamic";
 import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
@@ -66,6 +67,7 @@ const App = ({ Component, pageProps }) => {
   // of wallets that your users connect to will be loaded
   const wallets = useMemo(
     () => [
+      new BackpackWalletAdapter({network}),
       new PhantomWalletAdapter(),
       new SolflareWalletAdapter({ network }),
       new GlowWalletAdapter({ network }),
