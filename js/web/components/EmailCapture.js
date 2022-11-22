@@ -9,6 +9,7 @@ import { Box } from '@mui/material'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { useSnackbar } from 'notistack'
+import CloseIcon from '@mui/icons-material/Close'
 
 const style = {
   position: 'absolute',
@@ -100,7 +101,12 @@ const EmailCapture = ({ size }) => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
+
         <Box sx={style}>
+          <CloseIconWrapper onClick={handleClose}>
+            <CloseIcon />
+          </CloseIconWrapper>
+
           <Typography variant="h4">
             Nina is currently in closed beta.
           </Typography>
@@ -131,6 +137,15 @@ const EmailCapture = ({ size }) => {
 const BlueTypography = styled(Typography)(({ theme }) => ({
   color: theme.palette.blue,
   cursor: 'pointer',
+}))
+
+const CloseIconWrapper = styled(Box)(({ theme }) => ({
+  display: 'none',
+  [theme.breakpoints.down('md')]: {
+    position: 'absolute',
+    top: '15px',
+    display: 'block',
+  },
 }))
 
 const SmallCta = styled(Typography)(({ theme }) => ({
