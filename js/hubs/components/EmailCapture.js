@@ -74,7 +74,7 @@ const EmailCapture = ({ size }) => {
         <BlueTypography
           onClick={handleOpen}
           variant="h1"
-          sx={{ display: 'inline' }}
+          sx={{ display: "inline" }}
         >
           Sign Up
         </BlueTypography>

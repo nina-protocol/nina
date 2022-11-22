@@ -583,21 +583,20 @@ const deleteTwitterVerification = async (
   sendTransaction
 ) => {
   try {
-
-    const hashedTwitterHandle = await getHashedName(twitterHandle);
+    const hashedTwitterHandle = await getHashedName(twitterHandle)
     const twitterHandleRegistryKey = await getNameAccountKey(
       hashedTwitterHandle,
       NINA_ID,
       NINA_ID_TW_TLD
-    );
-  
-    const hashedVerifiedPubkey = await getHashedName(publicKey.toString());
+    )
+
+    const hashedVerifiedPubkey = await getHashedName(publicKey.toString())
     const reverseRegistryKey = await getNameAccountKey(
       hashedVerifiedPubkey,
       NINA_ID,
       NINA_ID_TW_TLD
-    );
-  
+    )
+
     const instructions = [
       // Delete the user facing registry
       deleteInstruction(
@@ -613,8 +612,8 @@ const deleteTwitterVerification = async (
         publicKey,
         publicKey
       ),
-    ];
-    console.log('instructinos: ', instructions);
+    ]
+    console.log('instructinos: ', instructions)
     // Build and Sign Transaction
     const tx = new anchor.web3.Transaction({
       recentBlockhash: (await provider.connection.getLatestBlockhash())
@@ -647,21 +646,20 @@ const deleteEthereumVerification = async (
   sendTransaction
 ) => {
   try {
-
-    const hashedEthAddress = await getHashedName(ethAddress);
+    const hashedEthAddress = await getHashedName(ethAddress)
     const ethAddressRegistryKey = await getNameAccountKey(
       hashedEthAddress,
       NINA_ID,
       NINA_ID_ETH_TLD
-    );
-  
-    const hashedVerifiedPubkey = await getHashedName(publicKey.toString());
+    )
+
+    const hashedVerifiedPubkey = await getHashedName(publicKey.toString())
     const reverseRegistryKey = await getNameAccountKey(
       hashedVerifiedPubkey,
       NINA_ID,
       NINA_ID_ETH_TLD
-    );
-  
+    )
+
     const instructions = [
       // Delete the user facing registry
       deleteInstruction(
@@ -677,8 +675,8 @@ const deleteEthereumVerification = async (
         publicKey,
         publicKey
       ),
-    ];
-    console.log('instructinos: ', instructions);
+    ]
+    console.log('instructinos: ', instructions)
     // Build and Sign Transaction
     const tx = new anchor.web3.Transaction({
       recentBlockhash: (await provider.connection.getLatestBlockhash())

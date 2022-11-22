@@ -58,19 +58,22 @@ const PostPage = (props) => {
 export default PostPage;
 
 export const getStaticPaths = async () => {
-  await initSdkIfNeeded(true)
-  const paths = []
-  const { hubs } = await NinaSdk.Hub.fetchAll({limit: 1000})
+  await initSdkIfNeeded(true);
+  const paths = [];
+  const { hubs } = await NinaSdk.Hub.fetchAll({ limit: 1000 });
   for await (const hub of hubs) {
-    const { posts } = await NinaSdk.Hub.fetchPosts(hub.publicKey)
-    posts.forEach(post => {
+    const { posts } = await NinaSdk.Hub.fetchPosts(hub.publicKey);
+    posts.forEach((post) => {
       paths.push({
-        params: { hubPubkey: hub.publicKey, hubPostPubkey: post.hubPostPublicKey }
-      })
+        params: {
+          hubPubkey: hub.publicKey,
+          hubPostPubkey: post.hubPostPublicKey,
+        },
+      });
       paths.push({
-        params: { hubPubkey: hub.handle, hubPostPubkey: post.hubPostPublicKey }
-      })
-    })
+        params: { hubPubkey: hub.handle, hubPostPubkey: post.hubPostPublicKey },
+      });
+    });
   }
   return {
     paths,
@@ -80,7 +83,7 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (context) => {
   try {
-    await initSdkIfNeeded(true)
+    await initSdkIfNeeded(true);
     const { hub, post } = await NinaSdk.Hub.fetchHubPost(
       context.params.hubPubkey,
       context.params.hubPostPubkey

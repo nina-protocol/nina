@@ -109,7 +109,9 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
     const buttonArray = []
     if (publicKey?.toBase58() === profilePublicKey) {
       buttonArray.push('twitter', 'ethereum')
-      if (publicKey.toBase58() === '7zoKqAehBR7oWMFpmWr2ebrhMvqL6oBsHdRcL2N3cmnU') {
+      if (
+        publicKey.toBase58() === '7zoKqAehBR7oWMFpmWr2ebrhMvqL6oBsHdRcL2N3cmnU'
+      ) {
         buttonArray.push('soundcloud')
       }
     } else {
@@ -179,14 +181,13 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
         setActiveValue(undefined)
       }
     }
-    
+
     if (router.query.code) {
       getHandle()
     } else if (ethAddress) {
       setActiveValue(ethAddress)
     }
     setOpen(true)
-    
   }, [router.query.code, ethAddress])
 
   const handleIdentityButtonAction = async (type) => {
@@ -240,7 +241,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
           twitterHandle,
           twitterToken,
           publicKey,
-          signTransaction,
+          signTransaction
         )
         await getVerificationsForUser(profilePublicKey)
         break
@@ -260,7 +261,6 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
         await getVerificationsForUser(profilePublicKey)
         break
     }
-    
   }
 
   const handleConnectAccount = async (type) => {

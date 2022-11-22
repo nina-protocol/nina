@@ -19,14 +19,12 @@ import {
 } from "../styles/theme/lightThemeOptions.js";
 
 const Hubs = () => {
-  const {
-    getHubsForUser,
-    hubState,
-    filterHubsForUser,
-  } = useContext(Hub.Context);
+  const { getHubsForUser, hubState, filterHubsForUser } = useContext(
+    Hub.Context
+  );
   const { npcAmountHeld } = useContext(Nina.Context);
   const wallet = useWallet();
-  
+
   useEffect(() => {
     if (wallet.connected) {
       getHubsForUser(wallet.publicKey.toBase58());
@@ -94,7 +92,13 @@ const Hubs = () => {
               </Box>
 
               <HubSlider />
-              <Box align="center" sx={{ paddingBottom: { md: '40px', xs: '30px' }, paddingTop: { md: '80px', xs: '30px' } }}>
+              <Box
+                align="center"
+                sx={{
+                  paddingBottom: { md: "40px", xs: "30px" },
+                  paddingTop: { md: "80px", xs: "30px" },
+                }}
+              >
                 <BlueTypography variant="h1" align="center">
                   <a
                     href="https://www.notion.so/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612#c7abd525851545a199e06ecd14a16a15"
@@ -103,7 +107,7 @@ const Hubs = () => {
                     passHref
                   >
                     Learn More
-                  </a>{' '}
+                  </a>{" "}
                   or <EmailCapture size="large" />
                 </BlueTypography>
               </Box>
@@ -118,11 +122,11 @@ const Hubs = () => {
                     align="left"
                     sx={{ padding: { md: "0 165px 40px", xs: "30px 0px" } }}
                   >
-                    You do not have any credits to create a Hub. 
+                    You do not have any credits to create a Hub.
                   </BlueTypography>
-                  
+
                   <EmailCapture size="large" />
-                  
+
                   <Box
                     sx={{
                       display: "flex",
