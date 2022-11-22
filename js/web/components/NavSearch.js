@@ -214,8 +214,16 @@ const SearchInput = styled('input')(({ theme }) => ({
   width: '15vw',
   marginRight: '20px',
   outline: 'none !important',
-  padding: '2px 0px',
+  padding: '4px',
   borderRadius: 0,
+  boxSizing: 'border-box',
+  border: `1px solid ${theme.palette.transparent}`,
+  '&:focus': {
+    border: `1px solid ${theme.palette.black}`,
+  },
+  '&::placeholder': {
+    overflow: 'visible',
+  },
   [theme.breakpoints.down('md')]: {
     margin: '15px 0',
     padding: '2px 0',
@@ -234,6 +242,9 @@ const DropdownContainer = styled(Box)(({ theme }) => ({
   marginRight: '20px',
   backgroundColor: theme.palette.offWhite,
   padding: '0',
+  border: `1px solid ${theme.palette.black}`,
+  borderTop: 'none',
+  boxSizing: 'border-box',
   '&::-webkit-scrollbar': {
     display: 'none !important',
   },
