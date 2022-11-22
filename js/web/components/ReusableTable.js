@@ -649,7 +649,7 @@ const StyledTableCell = styled(TableCell)(({ theme, type }) => ({
   padding: '5px 5px',
   textAlign: 'left',
   height: '50px',
-  width: '585px',
+  width: '61vw',
   [theme.breakpoints.down('md')]: {
     width: '30vw',
     paddingRight: '10px',
@@ -659,7 +659,7 @@ const StyledProfileTableCell = styled(TableCell)(({ theme }) => ({
   padding: '5px 5px',
   textAlign: 'left',
   height: '50px',
-  width: '585px',
+  width: '26vw',
   [theme.breakpoints.down('md')]: {
     width: '30vw',
     paddingRight: '10px',
