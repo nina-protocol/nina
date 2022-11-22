@@ -59,22 +59,14 @@ const ExchangeHistoryModal = (props) => {
                   return (
                     <tr key={i}>
                       <td>{new Date(entry.updatedAt).toLocaleString()}</td>
+                      <td>{amount} USDC</td>
                       <td>
-                        {amount} USDC
-                      </td>
-                      <td>
-                        <Link
-                          className="link"
-                          href={`/profiles/${seller}`}
-                        >
+                        <Link className="link" href={`/profiles/${seller}`}>
                           {displayNameForAccount(seller)}
                         </Link>
                       </td>
                       <td>
-                        <Link
-                          className="link"
-                          href={`/profiles/${buyer}`}
-                        >
+                        <Link className="link" href={`/profiles/${buyer}`}>
                           {displayNameForAccount(buyer)}
                         </Link>
                       </td>

@@ -1,7 +1,6 @@
 import { useEffect, useContext, useState, useMemo, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import { useWallet } from '@solana/wallet-adapter-react'
-import axios from 'axios'
 import { Box, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
@@ -10,14 +9,14 @@ import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
-import Subscribe from './Subscribe'
-import NewProfileCtas from './NewProfileCtas'
 import IdentityVerification from './IdentityVerification'
 const { getImageFromCDN, loader } = imageManager
 
 const Dots = dynamic(() => import('./Dots'))
 const TabHeader = dynamic(() => import('./TabHeader'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
+const Subscribe = dynamic(() => import('./Subscribe'))
+const NewProfileCtas = dynamic(() => import('./NewProfileCtas'))
 
 const Profile = ({ profilePubkey }) => {
   const wallet = useWallet()
@@ -28,7 +27,6 @@ const Profile = ({ profilePubkey }) => {
     getUserCollectionAndPublished,
     collectRoyaltyForRelease,
     fetchedUserProfileReleases,
-    setFetchedUserProfileReleases,
     filterReleasesUserCollection,
     filterReleasesPublishedByUser,
   } = useContext(Release.Context)
@@ -39,7 +37,6 @@ const Profile = ({ profilePubkey }) => {
     getSubscriptionsForUser,
     filterSubscriptionsForUser,
     subscriptionState,
-    ninaClient,
     fetchedProfiles,
     setFetchedProfiles,
     displayNameForAccount,
@@ -188,8 +185,8 @@ const Profile = ({ profilePubkey }) => {
       filteredCollection = filterReleasesUserCollection(profilePubkey)?.sort(
         (a, b) => {
           return (
-            new Date(b.metadata.properties.releaseDate) -
-            new Date(a.metadata.properties.releaseDate)
+            new Date(b.metadata.properties.date) -
+            new Date(a.metadata.properties.date)
           )
         }
       )

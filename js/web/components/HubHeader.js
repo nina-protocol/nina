@@ -75,7 +75,7 @@ const HubHeader = ({ hubData }) => {
             {hubData?.data.displayName && (
               <Link href={hubData?.data.externalUrl} passHref>
                 <a target="_blank" rel="noreferrer">
-                  <Typography sx={{ padding: '0 15px' }} noWrap>
+                  <Typography sx={{ padding: '0 15px' }}>
                     {hubData?.data.displayName}
                   </Typography>
                 </a>
@@ -130,18 +130,24 @@ const ResponsiveHubHeader = styled(Box)(({ theme }) => ({
 }))
 
 const DisplayName = styled(Box)(({ theme }) => ({
-  width: '15vw',
+  maxWidth: '275px',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'start',
   textAlign: 'left',
   textOverflow: 'ellipsis',
-  overflow: 'hidden',
-  display: ['-webkit-box'],
-  ['-webkit-line-clamp']: '1',
-  ['-webkit-box-orient']: 'vertical',
+  '& a': {
+    overflow: 'hidden',
+    display: ['-webkit-box'],
+    ['-webkit-line-clamp']: '2',
+    ['-webkit-box-orient']: 'vertical',
+    marginBottom: '10px',
+  },
   [theme.breakpoints.down('md')]: {
     width: 'auto',
+    '& a': {
+      marginBottom: '0px',
+    },
   },
 }))
 
@@ -176,7 +182,7 @@ const DescriptionOverflowContainer = styled(Box)(({ theme }) => ({
     ['-webkit-line-clamp']: '4',
     maxWidth: 'unset',
     padding: '0 15px',
-    width: '70vw',
+    width: '68vw',
   },
 }))
 

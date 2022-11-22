@@ -25,20 +25,13 @@ const FeedDrawer = () => {
   const [itemsTotal, setItemsTotal] = useState(0)
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { getFeedForUser } = useContext(Release.Context)
+  const { subscriptionState } = useContext(Nina.Context)
   const [activeDrawerTypeIndex, setActiveDrawerTypeIndex] = useState(0)
   const [feedFetched, setFeedFetched] = useState(false)
   const drawerTypes = ['latest', 'suggestions']
 
   useEffect(() => {
-    const handleInitialFetch = async () => {
-      if (wallet.connected) {
-        await handleGetFeedForUser(wallet.publicKey.toBase58())
-        await getHubSuggestionsForUser(wallet.publicKey.toBase58())
-      } else {
-        await getHubSuggestionsForUser()
-      }
-    }
-    handleInitialFetch()
+    handleFetch()
   }, [wallet.connected])
 
   useEffect(() => {
@@ -46,6 +39,22 @@ const FeedDrawer = () => {
       setFeedItems(undefined)
     }
   }, [wallet?.disconnecting])
+
+  useEffect(() => {
+    if (wallet.connected) {
+      handleFetch(true)
+    }
+  }, [subscriptionState])
+
+  const handleFetch = async (refresh=false) => {
+    if (wallet.connected) {
+      await handleGetFeedForUser(wallet.publicKey.toBase58(), refresh)
+      await getHubSuggestionsForUser(wallet.publicKey.toBase58())
+    } else {
+      await getHubSuggestionsForUser()
+    }
+  }
+
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -76,19 +85,11 @@ const FeedDrawer = () => {
       refresh ? 0 : feedItems?.length || 0
     )
     if (feed) {
-      let updatedFeedItems = feed?.feedItems.filter((item) => {
-        return !item.type.includes('Post')
-      })
-
-      // Subtracting postCount to handle refetch logic while posts are not surfaced
-      const postCount = feed.feedItems.map(
-        (item) => item.type === 'Post'
-      ).length
-      setItemsTotal(feed.total - postCount)
+      setItemsTotal(feed.total)
       if (feedItems && feedItems.length > 0) {
-        setFeedItems(feedItems.concat(updatedFeedItems))
+        setFeedItems(feedItems.concat(feed?.feedItems))
       } else {
-        setFeedItems(updatedFeedItems)
+        setFeedItems(feed?.feedItems)
       }
     }
     setFeedFetched(true)

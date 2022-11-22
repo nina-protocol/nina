@@ -89,7 +89,6 @@ const Feed = ({
         wallet: wallet.publicKey?.toBase58(),
         release: releasePubkey,
       })
-
       updateTrack(releasePubkey, true, true)
     }
   }
@@ -389,7 +388,7 @@ const Feed = ({
               </CopyWrapper>
             </ImageCard>
           )
-
+        case 'PostInitViaHubWithReferenceRelease':
         case 'HubAddRelease':
           return (
             <ImageCard>
@@ -577,7 +576,7 @@ const Feed = ({
     })
 
     return feedItemComponents || []
-  }, [items, isPlaying])
+  }, [items, isPlaying, track])
 
   if (publicKey && !feedFetched) {
     return (
