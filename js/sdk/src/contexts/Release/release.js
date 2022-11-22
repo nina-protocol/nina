@@ -610,6 +610,7 @@ const releaseContextHelper = ({
         [releasePubkey.toBase58()]: false,
       })
       getUsdcBalance()
+      await axios.get(`${process.env.NINA_API_ENDPOINT}/accounts/${provider.wallet.publicKey.toBase58()}/collected?txId=${txid}`)
       await getRelease(releasePubkey.toBase58())
       addReleaseToCollection(releasePubkey.toBase58())
 
@@ -954,6 +955,7 @@ const releaseContextHelper = ({
         [releasePubkey]: false,
       })
       getUsdcBalance()
+      await axios.get(`${process.env.NINA_API_ENDPOINT}/accounts/${provider.wallet.publicKey.toBase58()}/collected?txId=${txid}`)
       await getRelease(releasePubkey)
       await addReleaseToCollection(releasePubkey)
 

@@ -15,6 +15,7 @@ import IdentityVerificationModal from './IdentityVerificationModal'
 import {
   verifyEthereum,
   verifyTwitter,
+  deleteTwitterVerification,
   verifySoundcloud,
   verifyInstagram,
 } from '../utils/identityVerification'
@@ -30,8 +31,8 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   const web3 = new Web3(process.env.ETH_CLUSTER_URL)
   const enqueueSnackbar = useSnackbar()
   const router = useRouter()
-  const { publicKey, signTransaction } = useWallet()
-  const { ninaClient } = useContext(Nina.Context)
+  const { publicKey, signTransaction, sendTransaction } = useWallet()
+  const { ninaClient, getVerificationsForUser } = useContext(Nina.Context)
   const { provider } = ninaClient
 
   const [open, setOpen] = useState(false)
@@ -199,7 +200,14 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
 
       switch (type) {
         case 'twitter':
-          window.open(`https://twitter.com/${value}`, '_blank')
+          console.log('twitterHandle', twitterHandle)
+          await deleteTwitterVerification(
+            provider,
+            valueForType(type),
+            publicKey,
+            signTransaction,
+            sendTransaction
+          )
           break
         case 'instagram':
           window.open(`https://instagram.com/${value}`, '_blank')
@@ -226,6 +234,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
           signTransaction,
           soundcloudToken
         )
+        await getVerificationsForUser(profilePublicKey)
         break
       case 'twitter':
         await verifyTwitter(
@@ -233,8 +242,9 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
           twitterHandle,
           twitterToken,
           publicKey,
-          signTransaction
+          signTransaction,
         )
+        await getVerificationsForUser(profilePublicKey)
         break
       case 'instagram':
         await verifyInstagram(
@@ -245,11 +255,14 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
           signTransaction,
           instagramToken
         )
+        await getVerificationsForUser(profilePublicKey)
         break
       case 'ethereum':
         await verifyEthereum(provider, ethAddress, publicKey, signTransaction)
+        await getVerificationsForUser(profilePublicKey)
         break
     }
+    
   }
 
   const handleConnectAccount = async (type) => {

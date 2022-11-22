@@ -65,7 +65,7 @@ const IdentityVerificationModal = ({ action, type, value, open, setOpen }) => {
               <Typography>
                 {!inProgress && 'Verify'}
                 {inProgress && (
-                  <Dots msg={'Please approve transaction in wallet'} />
+                  <Dots msg={'Verification Transaction Pending... Please wait'} />
                 )}
               </Typography>
             </Button>

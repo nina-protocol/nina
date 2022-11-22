@@ -5,6 +5,7 @@ const {
   getNameAccountKey,
   NameRegistryState,
   createInstruction,
+  deleteInstruction,
   updateInstruction,
   Numberu32,
   Numberu64,
@@ -574,6 +575,70 @@ const verifyTwitter = async (
   }
 }
 
+const deleteTwitterVerification = async (
+  provider,
+  twitterHandle,
+  publicKey,
+  signTransaction,
+  sendTransaction
+) => {
+  try {
+
+    const hashedTwitterHandle = await getHashedName(twitterHandle);
+    const twitterHandleRegistryKey = await getNameAccountKey(
+      hashedTwitterHandle,
+      NINA_ID,
+      NINA_ID_TW_TLD
+    );
+  
+    const hashedVerifiedPubkey = await getHashedName(publicKey.toString());
+    const reverseRegistryKey = await getNameAccountKey(
+      hashedVerifiedPubkey,
+      NINA_ID,
+      NINA_ID_TW_TLD
+    );
+  
+    const instructions = [
+      // Delete the user facing registry
+      deleteInstruction(
+        NAME_PROGRAM_ID,
+        twitterHandleRegistryKey,
+        publicKey,
+        publicKey
+      ),
+      // Delete the reverse registry
+      deleteInstruction(
+        NAME_PROGRAM_ID,
+        reverseRegistryKey,
+        publicKey,
+        publicKey
+      ),
+    ];
+    console.log('instructinos: ', instructions);
+    // Build and Sign Transaction
+    const tx = new anchor.web3.Transaction({
+      recentBlockhash: (await provider.connection.getLatestBlockhash())
+        .blockhash,
+      feePayer: publicKey,
+    })
+    tx.add(...instructions)
+    await signTransaction(tx)
+    await sendTransaction(tx, provider.connection)
+    // const response = await axios.post(
+    //   `${process.env.NINA_IDENTITY_ENDPOINT}/tw/unregister`,
+    //   {
+    //     tx: tx.serialize({ verifySignatures: false }).toString('base64'),
+    //   }
+    // )
+
+    return true
+  } catch (error) {
+    console.log('error: ', error)
+
+    return false
+  }
+}
+
 const verifyInstagram = async (
   provider,
   instagramUserId,
@@ -649,4 +714,5 @@ module.exports = {
   verifyInstagram,
   verifySoundcloud,
   verifyEthereum,
+  deleteTwitterVerification,
 }

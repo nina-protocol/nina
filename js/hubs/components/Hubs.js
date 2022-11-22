@@ -88,15 +88,11 @@ const Hubs = () => {
               <BlueTypography
                 variant="h1"
                 align="left"
-                sx={{ padding: { md: "0 165px 40px", xs: "0px 0px 10px" } }}
+                sx={{ padding: { md: "40px 165px", xs: "0px 0px 10px" } }}
               >
                 <Link href="/all">Hubs </Link>
                 are a new way to publish, share, and discuss music.
               </BlueTypography>
-
-              <Box>
-                <EmailCapture size="large" />{" "}
-              </Box>
 
               <Box
                 sx={{ display: "flex", paddingLeft: { md: "30px", xs: "0" } }}
@@ -113,18 +109,17 @@ const Hubs = () => {
               </Box>
 
               <HubSlider hubs={hubs} />
-
-              <Box sx={{ mt: "40px" }}>
-                <BlueTypography variant="h1">
-                  <Link
+              <Box align="center" sx={{ paddingBottom: { md: '40px', xs: '30px' }, paddingTop: { md: '80px', xs: '30px' } }}>
+                <BlueTypography variant="h1" align="center">
+                  <a
                     href="https://www.notion.so/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612#c7abd525851545a199e06ecd14a16a15"
                     target="_blank"
                     rel="noreferrer"
                     passHref
                   >
                     Learn More
-                  </Link>
-                  .
+                  </a>{' '}
+                  or <EmailCapture size="large" />
                 </BlueTypography>
               </Box>
             </>
