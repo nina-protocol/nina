@@ -631,7 +631,7 @@ const ninaContextHelper = ({
         } else {
           setUsdcBalance(0)
         }
-      } catch () {
+      } catch {
         console.warn('error getting usdc balance')
       }
     } else {
