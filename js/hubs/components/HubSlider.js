@@ -55,7 +55,6 @@ const HubSlider = () => {
           return sub.subscriptionType === "hub";
         })
         .map((sub) => sub.to.publicKey);
-      console.log("publicKeys", publicKeys);
       setFeaturedHubPublicKeys(publicKeys);
     };
     fetchFeaturedHubs();
