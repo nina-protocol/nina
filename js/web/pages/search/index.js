@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic'
 import NinaSdk from '@nina-protocol/js-sdk'
 import { styled } from '@mui/material'
 import { Box } from '@mui/material'
-
+import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
 const Search = dynamic(() => import('../../components/Search'))
 
 const SearchPage = (props) => {
@@ -29,16 +29,8 @@ export const getServerSideProps = async ({ query }) => {
 
   if (searchQuery) {
     try {
-      if (!NinaSdk.client.provider) {
-        NinaSdk.client.init(
-          process.env.NINA_API_ENDPOINT,
-          process.env.SOLANA_CLUSTER_URL,
-          process.env.NINA_PROGRAM_ID
-        )
-      }
-
+      await initSdkIfNeeded(true)
       const searchResults = await NinaSdk.Search.withQuery(searchQuery)
-
       return {
         props: {
           searchQuery: query,
