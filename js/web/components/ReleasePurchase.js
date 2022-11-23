@@ -131,7 +131,7 @@ const ReleasePurchase = (props) => {
   }, [release?.revenueShareRecipients, wallet?.connected])
 
   useEffect(() => {
-    if (metadata?.description.includes('<p>')) {
+    if (metadata?.descriptionHtml.includes('<p>')) {
       unified()
         .use(rehypeParse, { fragment: true })
         .use(rehypeSanitize)
@@ -144,7 +144,7 @@ const ReleasePurchase = (props) => {
           rel: ['nofollow', 'noreferrer'],
         })
         .process(
-          JSON.parse(metadata.description).replaceAll('<p><br></p>', '<br>')
+          JSON.parse(metadata.descriptionHtml).replaceAll('<p><br></p>', '<br>')
         )
         .then((file) => {
           setDescription(file.result)
@@ -295,12 +295,12 @@ const ReleasePurchase = (props) => {
       {publishedHub && (
         <Typography variant="body2" align="left" paddingBottom="10px">
           <StyledLink
-            href={`/hubs/${publishedHub.id}`}
+            href={`/hubs/${publishedHub.publicKey}`}
             target="_blank"
             rel="noreferrer"
             passHref
           >
-            {`Published via ${publishedHub.json.displayName}`}
+            {`Published via ${publishedHub.data.displayName}`}
           </StyledLink>
         </Typography>
       )}
