@@ -416,7 +416,6 @@ const ninaContextHelper = ({
         }
       }
     })
-    console.log('updatedVerificationState :>> ', updatedVerificationState);
     setSubscriptionState(prevState => ({...prevState, ...updatedSubscriptionState}))
     setVerificationState(prevState => ({...prevState, ...updatedVerificationState}))
   }
