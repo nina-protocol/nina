@@ -416,8 +416,8 @@ const ninaContextHelper = ({
         }
       }
     })
-    setSubscriptionState(updatedSubscriptionState)
-    setVerificationState(updatedVerificationState)
+    setSubscriptionState(prevState => ({...prevState, ...updatedSubscriptionState}))
+    setVerificationState(prevState => ({ ...prevState, ...updatedVerificationState}))
   }
 
   const removeSubScriptionFromState = (publicKey) => {
@@ -921,10 +921,10 @@ const ninaContextHelper = ({
   const getVerificationsForUser = async (accountPubkey) => {
     try {
       const { verifications } = await NinaSdk.Account.fetchVerifications(accountPubkey)
-      setVerificationState({
-        ...verificationState,
+      setVerificationState(prevState => ({
+        ...prevState,
         [accountPubkey]: verifications,
-      })
+      }))
     } catch (error) {
       console.warn(error)
       return []
