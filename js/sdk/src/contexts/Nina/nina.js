@@ -928,7 +928,7 @@ const ninaContextHelper = ({
           ...prevState,
           [accountPubkey]: verifications,
         }
-      )
+      ))
     } catch (error) {
       console.warn(error)
       return []
