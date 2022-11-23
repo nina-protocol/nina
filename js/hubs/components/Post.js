@@ -35,14 +35,15 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
   const [metadata, setMetadata] = useState();
 
   const { postState } = useContext(Nina.Context);
-  const { getHub, hubState, hubContentState, getHubPost } =
-    useContext(Hub.Context);
+  const { getHub, hubState, hubContentState, getHubPost } = useContext(
+    Hub.Context
+  );
   const { getRelease, releaseState } = useContext(Release.Context);
 
   useEffect(() => {
     getHub(hubPubkey);
   }, [hubPubkey]);
-  
+
   useEffect(() => {
     if (hubPostPubkey && !postState[postPubkey]) {
       getHubPost(hubPostPubkey, hubPubkey);
@@ -61,9 +62,9 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
         (content) => content.post === postPubkey
       );
       setMetadata(metadata);
-      if (metadata?.referenceHubContent && !referenceReleasePubkey) {
-        setReferenceReleasePubkey(metadata.referenceHubContent);
-        getRelease(metadata.referenceHubContent);
+      if (metadata?.referenceContent && !referenceReleasePubkey) {
+        setReferenceReleasePubkey(metadata.referenceContent);
+        getRelease(metadata.referenceContent);
       }
     }
   }, [hubContentState, postPubkey]);
@@ -77,7 +78,7 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
   }, [releaseState, referenceReleasePubkey]);
 
   useEffect(() => {
-    if (postState[postPubkey]?.postContent.json.body) {
+    if (postState[postPubkey]?.data.bodyHtml) {
       unified()
         .use(rehypeParse, { fragment: true })
         .use(rehypeSanitize)
@@ -90,7 +91,7 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
           rel: ["nofollow", "noreferrer"],
         })
         .process(
-          JSON.parse(postState[postPubkey].postContent.json.body).replaceAll(
+          JSON.parse(postState[postPubkey].data.bodyHtml).replaceAll(
             "<p><br></p>",
             "<br>"
           )
@@ -141,26 +142,26 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
         {postData && (
           <PostWrapper>
             <Typography variant="h4" fontWeight="600" align="left">
-              {postData.postContent.json.title}
+              {postData.data.title}
             </Typography>
             <Typography align="left">{postContent}</Typography>
-            <Divider sx={{mt: 1}}/>
+            <Divider sx={{ mt: 1 }} />
             <Typography align="left" sx={{ marginTop: "20px" }}>
               Published by:{" "}
               <a
-                href={`https://ninaprotocol.com/collection/${postData.author}`}
+                href={`https://ninaprotocol.com/collection/${postData.publisher}`}
                 target="_blank"
                 rel="noreferrer"
               >
-                {postData.author}
+                {postData.publisher}
               </a>{" "}
               at{" "}
               <a
-                href={`https://explorer.solana.com/account/${postData.id}`}
+                href={`https://explorer.solana.com/account/${postData.publicKey}`}
                 target="_blank"
                 rel="noreferrer"
               >
-                {formattedDate(postData.createdAt)}
+                {formattedDate(postData.datetime)}
               </a>
             </Typography>
           </PostWrapper>

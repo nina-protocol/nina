@@ -6,10 +6,11 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Link from 'next/link'
 
 const ExchangeHistoryModal = (props) => {
-  const { release, exchangeHistory } = props
-  const { ninaClient } = useContext(Nina.Context)
+  const { exchangeHistory } = props
+  const { displayNameForAccount } = useContext(Nina.Context)
   const [open, setOpen] = useState(false)
 
   return (
@@ -46,36 +47,28 @@ const ExchangeHistoryModal = (props) => {
             <TableBody>
               {exchangeHistory &&
                 exchangeHistory.map((entry, i) => {
+                  const seller = entry.isSale
+                    ? entry.initializer.publicKey
+                    : entry.completedBy.publicKey
+                  const buyer = entry.isSale
+                    ? entry.completedBy.publicKey
+                    : entry.initializer.publicKey
+                  const amount = entry.isSale
+                    ? entry.expectedAmount
+                    : entry.initializerAmount
                   return (
                     <tr key={i}>
-                      <td>{entry.dateFormatted}</td>
+                      <td>{new Date(entry.updatedAt).toLocaleString()}</td>
+                      <td>{amount} USDC</td>
                       <td>
-                        {ninaClient.nativeToUiString(
-                          entry.price.toNumber(),
-                          release.paymentMint
-                        )}
+                        <Link className="link" href={`/profiles/${seller}`}>
+                          {displayNameForAccount(seller)}
+                        </Link>
                       </td>
                       <td>
-                        <a
-                          className="link"
-                          href={`https://solscan.io/account/${entry.seller.toBase58()}`}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          ...
-                          {entry.seller.toBase58().slice(-6)}
-                        </a>
-                      </td>
-                      <td>
-                        <a
-                          className="link"
-                          href={`https://solscan.io/account/${entry.buyer.toBase58()}`}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          ...
-                          {entry.buyer.toBase58().slice(-6)}
-                        </a>
+                        <Link className="link" href={`/profiles/${buyer}`}>
+                          {displayNameForAccount(buyer)}
+                        </Link>
                       </td>
                     </tr>
                   )

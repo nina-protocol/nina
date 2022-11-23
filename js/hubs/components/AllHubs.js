@@ -4,27 +4,27 @@ import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import ScrollablePageWrapper from "./ScrollablePageWrapper";
 import Head from "next/head";
-import debounce from 'lodash.debounce'
-import { isMobile } from 'react-device-detect'
+import debounce from "lodash.debounce";
+import { isMobile } from "react-device-detect";
 import HubTileView from "./HubTileView";
 
 const AllHubs = () => {
-  const { getHubs, hubState, hubsCount, filterHubsAll } = useContext(Hub.Context);
-  const [pendingFetch, setPendingFetch] = useState(false)
-  const [totalCount, setTotalCount] = useState(null)
-  const scrollRef = useRef()
+  const { getHubs, hubState, filterHubsAll } = useContext(Hub.Context);
+  const [pendingFetch, setPendingFetch] = useState(false);
+  const [totalCount, setTotalCount] = useState(null);
+  const scrollRef = useRef();
 
   useEffect(() => {
     getHubs();
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   const hubs = useMemo(() => {
     if (Object.values(hubState).length > 0) {
-      setPendingFetch(false)
+      setPendingFetch(false);
     }
     return Object.values(hubState);
   }, [hubState]);
@@ -32,26 +32,33 @@ const AllHubs = () => {
   const handleScroll = () => {
     const bottom =
       scrollRef.current.getBoundingClientRect().bottom - 250 <=
-      window.innerHeight
-    if (
-      bottom &&
-      !pendingFetch &&
-      totalCount !== hubs.length
-    ) {
-      setPendingFetch(true)
-      getHubs()
+      window.innerHeight;
+    if (bottom && !pendingFetch && totalCount !== hubs.length) {
+      setPendingFetch(true);
+      getHubs();
     }
-  }
+  };
 
   return (
     <>
       <Head>
         <title>{`Nina Hubs: All`}</title>
-        <meta name="description" content={'Nina Hubs: All'} />
+        <meta name="description" content={"Nina Hubs: All"} />
       </Head>
-      <ScrollablePageWrapper onScroll={debounce(() => handleScroll(), 500)} sx={{overflowY: "scroll"}}>
+      <ScrollablePageWrapper
+        onScroll={debounce(() => handleScroll(), 500)}
+        sx={{ overflowY: "scroll" }}
+      >
         <AllHubsWrapper ref={scrollRef}>
-          <HubTileView hubs={hubs.length > 0 ? (isMobile ? filterHubsAll().reverse() : filterHubsAll()) : []} />
+          <HubTileView
+            hubs={
+              hubs.length > 0
+                ? isMobile
+                  ? filterHubsAll().reverse()
+                  : filterHubsAll()
+                : []
+            }
+          />
         </AllHubsWrapper>
       </ScrollablePageWrapper>
     </>
@@ -59,21 +66,20 @@ const AllHubs = () => {
 };
 
 const AllHubsWrapper = styled(Box)(({ theme }) => ({
-  maxWidth: '960px',
-  height: 'auto',
-  minHeight: '75vh',
-  margin: '0 15px 0 auto',
-  position: 'relative',
-  '& a': {
+  maxWidth: "960px",
+  height: "auto",
+  minHeight: "75vh",
+  margin: "0 15px 0 auto",
+  position: "relative",
+  "& a": {
     color: theme.palette.blue,
   },
-  [theme.breakpoints.down('md')]: {
-    padding: '0px 30px',
-    overflowX: 'auto',
-    minHeight: '80vh',
-    margin: '0 auto',
+  [theme.breakpoints.down("md")]: {
+    padding: "0px 30px",
+    overflowX: "auto",
+    minHeight: "80vh",
+    margin: "0 auto",
   },
 }));
-
 
 export default AllHubs;

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
-import {formatPlaceholder} from "@nina-protocol/nina-internal-sdk/esm/utils";
+import { formatPlaceholder } from "@nina-protocol/nina-internal-sdk/esm/utils";
 import { withFormik, Form, Field } from "formik";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
@@ -9,7 +9,7 @@ import Box from "@mui/material/Box";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import Quill from './Quill'
+import Quill from "./Quill";
 
 const HubPostCreateForm = ({
   field,
@@ -51,7 +51,7 @@ const HubPostCreateForm = ({
                 variant="standard"
                 label={
                   formatPlaceholder(props.field.name) +
-                  (update ? ` (${hubData.json.title})` : "")
+                  (update ? ` (${hubData.data.title})` : "")
                 }
                 size="small"
                 InputLabelProps={touched.title ? { shrink: true } : ""}
@@ -67,7 +67,7 @@ const HubPostCreateForm = ({
         <Field name="body">
           {(props) => (
             <Box>
-              <Quill props={props} type={'post'} postCreated={postCreated} />
+              <Quill props={props} type={"post"} postCreated={postCreated} />
             </Box>
           )}
         </Field>

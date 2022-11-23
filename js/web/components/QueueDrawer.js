@@ -8,8 +8,7 @@ import Typography from '@mui/material/Typography'
 import QueueList from './QueueList'
 
 const QueueDrawer = (props) => {
-  const { track, playlist, currentIndex } =
-    useContext(Audio.Context)
+  const { track, playlist, currentIndex } = useContext(Audio.Context)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [nextInfo, setNextInfo] = useState()

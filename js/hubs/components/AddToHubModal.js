@@ -14,6 +14,7 @@ import AutorenewIcon from "@mui/icons-material/Autorenew";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import HubPostCreate from "./HubPostCreate";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 import { useSnackbar } from "notistack";
 import Dots from "./Dots";
@@ -21,10 +22,16 @@ import Dots from "./Dots";
 const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
   const [open, setOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
-  const { checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(Nina.Context);
-  const { hubAddRelease } = useContext(Hub.Context);
+  const wallet = useWallet();
+
+  const { hubAddRelease, getHubsForRelease, hubCollaboratorsState } =
+    useContext(Hub.Context);
+  const { checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(
+    Nina.Context
+  );
   const [selectedHubId, setSelectedHubId] = useState();
   const [inProgress, setInProgress] = useState(false);
+  const [filteredHubs, setFilteredHubs] = useState();
   const [canAddContent, setCanAddContent] = useState(false);
   const userHasHubs = useMemo(
     () => userHubs && userHubs.length > 0,
@@ -32,27 +39,36 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
   );
 
   useEffect(() => {
-    if (userHubs?.length === 1) {
-      setSelectedHubId(userHubs[0]?.id);
-    }
-  }, [userHubs]);
-
-  useEffect(() => {
-    if (selectedHubId && userHubs) {
-      const selectedHub = userHubs.find((hub) => hub.id === selectedHubId);
-      if (selectedHub?.userCanAddContent) {
-        setCanAddContent(true);
+    if (wallet.connected) {
+      if (userHubs?.length === 1) {
+        setSelectedHubId(userHubs[0]?.publicKey);
       }
+      const userHubCollaborations = Object.values(hubCollaboratorsState).filter(
+        (collaborator) => {
+          return (
+            collaborator.canAddContent === true &&
+            collaborator.collaborator === wallet.publicKey.toBase58()
+          );
+        }
+      );
+      const hubsWithPermission = userHubs?.filter((hub) => {
+        return userHubCollaborations.some(
+          (collaborator) => hub.publicKey === collaborator.hub
+        );
+      });
+      setFilteredHubs(hubsWithPermission);
     }
-  }, [selectedHubId, userHubs]);
+  }, [wallet?.connected, userHubs]);
 
   const handleRepost = async (e) => {
-    const error = checkIfHasBalanceToCompleteAction(NinaProgramAction.HUB_ADD_RELEASE);
+    const error = await checkIfHasBalanceToCompleteAction(
+      NinaProgramAction.HUB_ADD_RELEASE
+    );
     if (error) {
       enqueueSnackbar(error.msg, { variant: "failure" });
       return;
     }
-    
+
     setInProgress(true);
     enqueueSnackbar("Adding Release to Hub", {
       variant: "info",
@@ -61,6 +77,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
     handleClose();
     const result = await hubAddRelease(selectedHubId, releasePubkey, hubPubkey);
     if (result?.success) {
+      await getHubsForRelease(releasePubkey);
       enqueueSnackbar(result.msg, {
         variant: "info",
       });
@@ -132,7 +149,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
                   Add {metadata.name} to{" "}
                   {userHubs.length > 1
                     ? "one of your hubs"
-                    : "your hub: " + userHubs[0]?.json?.displayName}
+                    : "your hub: " + userHubs[0]?.data?.displayName}
                 </Typography>
 
                 {userHubs.length > 1 && (
@@ -146,38 +163,27 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
                       label="Select hub"
                       fullWidth
                       variant="standard"
-                      onChange={(e, userHubs) => {
+                      onChange={(e, filteredHubs) => {
                         setSelectedHubId(e.target.value);
                       }}
                     >
-                      {userHubs
-                        ?.filter(
-                          (hub) => hub.id !== hubPubkey && hub.userCanAddContent
-                        )
-                        .map((hub) => {
-                          return (
-                            <MenuItem
-                              key={hub?.id}
-                              value={hub?.id}
-                              sx={{ color: "black" }}
-                            >
-                              {hub?.json?.displayName}
-                            </MenuItem>
-                          );
-                        })}
+                      {filteredHubs?.map((hub) => {
+                        return (
+                          <MenuItem key={hub?.publicKey} value={hub?.publicKey}>
+                            {hub?.data?.displayName}
+                          </MenuItem>
+                        );
+                      })}
                     </Select>
                   </FormControl>
                 )}
               </>
             )}
-
             <Button
               style={{ marginTop: "15px", textTransform: "uppercase" }}
               variant="outlined"
-              disabled={
-                inProgress || !selectedHubId || !userHasHubs || !canAddContent
-              }
-              onClick={handleRepost}
+              disabled={inProgress || !selectedHubId || !userHasHubs}
+              onClick={(e) => handleRepost(e)}
             >
               {!inProgress && "Repost release to your hub"}
               {inProgress && (

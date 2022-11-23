@@ -6,7 +6,7 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
 import HelpIcon from "@mui/icons-material/Help";
-import Quill from './Quill'
+import Quill from "./Quill";
 
 const HubCreateForm = ({
   field,
@@ -25,7 +25,6 @@ const HubCreateForm = ({
       onChange(values);
     }
   }, [values]);
-
   const IconWithTooltip = ({ field }) => {
     let copy;
     if (field === "publishFee") {
@@ -71,7 +70,6 @@ const HubCreateForm = ({
 
   return (
     <Root>
-
       <Form style={{ padding: "15px 15px" }}>
         {!update && (
           <Field name="handle">
@@ -194,7 +192,9 @@ const HubCreateForm = ({
                       </Box>
                     }
                     size="small"
-                    InputLabelProps={touched.referralFee ? { shrink: true } : ""}
+                    InputLabelProps={
+                      touched.referralFee ? { shrink: true } : ""
+                    }
                     type="number"
                     InputProps={{
                       inputProps: {
@@ -229,8 +229,8 @@ const HubCreateForm = ({
 
         <Field name="description">
           {(props) => (
-            <Box sx={{mb: '8px'}}>
-              <Quill props={props} update={update} type={'hub'}/>
+            <Box sx={{ mb: "8px" }}>
+              <Quill props={props} update={update} type={"hub"} />
             </Box>
           )}
         </Field>
@@ -251,12 +251,12 @@ export default withFormik({
   },
   mapPropsToValues: ({ hubData }) => {
     return {
-      handle: "",
-      displayName: `${hubData ? hubData.json.displayName : ""}`,
-      publishFee: `${hubData ? hubData.publishFee : "0"}`,
-      referralFee: `${hubData ? hubData.referralFee : "0"}`,
-      description: `${hubData ? hubData.json.description : ""}`,
-      externalUrl: `${hubData ? hubData.json.externalUrl : ""}`,
+      handle: `${hubData ? hubData.handle : ""}`,
+      displayName: `${hubData ? hubData.data.displayName : ""}`,
+      publishFee: `${hubData ? hubData.publishFee / 10000 : "0"}`,
+      referralFee: `${hubData ? hubData.referralFee / 10000 : "0"}`,
+      description: `${hubData ? hubData.data.descriptionHtml : ""}`,
+      externalUrl: `${hubData ? hubData.data.externalUrl : ""}`,
     };
   },
 })(HubCreateForm);

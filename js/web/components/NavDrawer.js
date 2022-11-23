@@ -11,22 +11,25 @@ import ListItemText from '@mui/material/ListItemText'
 import Link from 'next/link'
 import { Icon } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDiscord } from '@fortawesome/free-brands-svg-icons'
-import { faTwitter } from '@fortawesome/free-brands-svg-icons'
-import { faInstagramSquare } from '@fortawesome/free-brands-svg-icons'
+import {
+  faSoundcloud,
+  faTwitter,
+  faInstagramSquare,
+  faDiscord,
+} from '@fortawesome/free-brands-svg-icons'
+
 import CloseIcon from '@mui/icons-material/Close'
 import Image from 'next/image'
 
 const linksConnected = [
-  'home',
+  'dashboard',
   'all Releases',
   'hubs',
-  'collection',
-  'releases',
   'upload',
   'faq',
   'dev',
   'radio',
+  'nina night',
   'the soft lp',
 ]
 
@@ -38,6 +41,7 @@ const linksNotConnected = [
   'faq',
   'dev',
   'radio',
+  'nina night',
   'the soft lp',
 ]
 
@@ -78,20 +82,6 @@ const NavDrawer = () => {
       <StyledList disablePadding>
         {links.map((link) => {
           switch (link) {
-            case 'collection':
-              return (
-                <Link
-                  className={`${classes.drawerLink}`}
-                  href={`/${link}`}
-                  activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
-                  key={link}
-                  passHref
-                >
-                  <ListItem button key={link}>
-                    <StyledListItemText primary={`your ${link}`} />
-                  </ListItem>
-                </Link>
-              )
             case 'dev':
               return (
                 <ListItem button key={link}>
@@ -107,20 +97,6 @@ const NavDrawer = () => {
                     </a>
                   </StyledListItemText>
                 </ListItem>
-              )                
-            case 'releases':
-              return (
-                <Link
-                  className={`${classes.drawerLink}`}
-                  href={`/releases/user`}
-                  activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
-                  key={link}
-                  passHref
-                >
-                  <ListItem button key={link}>
-                    <StyledListItemText primary={`your ${link}`} />
-                  </ListItem>
-                </Link>
               )
             case 'the soft lp':
               return (
@@ -175,7 +151,7 @@ const NavDrawer = () => {
                 <Link
                   className={`${classes.drawerLink}`}
                   href={`/releases`}
-                  activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active  `}
+                  activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active`}
                   key={link}
                   passHref
                 >
@@ -186,16 +162,30 @@ const NavDrawer = () => {
               )
             case 'hubs':
               return (
+                <Link
+                  className={`${classes.drawerLink}`}
+                  href={`/hubs`}
+                  activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active`}
+                  key={link}
+                  passHref
+                >
+                  <ListItem button key={link}>
+                    <StyledListItemText primary="Hubs" />
+                  </ListItem>
+                </Link>
+              )
+            case 'nina night':
+              return (
                 <ListItem button key={link}>
                   <StyledListItemText>
                     <a
-                      href="https://hubs.ninaprotocol.com/"
+                      href="https://nights.ninaprotocol.com"
                       target="_blank"
                       rel="noreferrer"
                       className={`${classes.drawerLink}`}
                       passHref
                     >
-                      Hubs
+                      Nina Night
                     </a>
                   </StyledListItemText>
                 </ListItem>
@@ -263,6 +253,13 @@ const NavDrawer = () => {
                   rel="noreferrer"
                 >
                   <FontAwesomeIcon icon={faInstagramSquare} />
+                </a>
+                <a
+                  href="https://www.soundcloud.com/ninaprotocol/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <FontAwesomeIcon icon={faSoundcloud} />
                 </a>
               </Box>
 
