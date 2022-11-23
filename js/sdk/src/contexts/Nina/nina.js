@@ -860,19 +860,19 @@ const ninaContextHelper = ({
     if (verifications) {
       if (
         verifications?.find(
-          (verification) => verification.type === 'soundcloud'
+          (verification) => verification.type === 'twitter'
         )
       ) {
         return verifications.find(
-          (verification) => verification.type === 'soundcloud'
+          (verification) => verification.type === 'twitter'
         ).displayName
       } else if (
         verifications?.find(
-          (verification) => verification.type === 'twitter'
+          (verification) => verification.type === 'soundcloud'
         )
       ) {
         return verifications.find(
-          (verification) => verification.type === 'twitter'
+          (verification) => verification.type === 'soundcloud'
         ).displayName
       } else if (
         verifications?.find(
@@ -901,19 +901,19 @@ const ninaContextHelper = ({
     if (verifications) {
       if (
         verifications?.find(
-          (verification) => verification.type === 'soundcloud'
+          (verification) => verification.type === 'twitter'
         )
       ) {
         return verifications.find(
-          (verification) => verification.type === 'soundcloud'
+          (verification) => verification.type === 'twitter'
         ).image
       } else if (
         verifications?.find(
-          (verification) => verification.type === 'twitter'
+          (verification) => verification.type === 'soundcloud'
         )
       ) {
         return verifications.find(
-          (verification) => verification.type === 'twitter'
+          (verification) => verification.type === 'soundcloud'
         ).image
       } 
     } 
