@@ -416,6 +416,7 @@ const ninaContextHelper = ({
         }
       }
     })
+    console.log('updatedVerificationState :>> ', updatedVerificationState);
     setSubscriptionState(prevState => ({...prevState, ...updatedSubscriptionState}))
     setVerificationState(prevState => ({...prevState, ...updatedVerificationState}))
   }
@@ -838,6 +839,7 @@ const ninaContextHelper = ({
     try{
       const { subscriptions } = await NinaSdk.Hub.fetchSubscriptions(hubPubkeyOrHandle, false)
       saveSubscriptionsToState(subscriptions)
+      console.log('subscriptions :>> ', subscriptions);
       return subscriptions
     } catch (error) {
       console.warn(error)
@@ -857,6 +859,7 @@ const ninaContextHelper = ({
 
   const displayNameForAccount = (publicKey) => {
     const verifications = verificationState[publicKey]
+    console.log('verifications :>> ', verifications);
     if (verifications) {
       if (
         verifications?.find(
@@ -922,6 +925,7 @@ const ninaContextHelper = ({
 
   const getVerificationsForUser = async (accountPubkey) => {
     try {
+      console.log('USER FERIFICATION FUNCTIOn');
       const { verifications } = await NinaSdk.Account.fetchVerifications(accountPubkey)
       setVerificationState(prevState => (
         {

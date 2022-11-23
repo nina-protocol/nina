@@ -29,6 +29,7 @@ const HubComponent = ({ hubPubkey }) => {
     getSubscriptionsForHub,
     subscriptionState,
     filterSubscriptionsForHub,
+    verificationState
   } = useContext(Nina.Context)
   const [hubReleases, setHubReleases] = useState(undefined)
   const [releaseData, setReleaseData] = useState(undefined)
@@ -60,9 +61,11 @@ const HubComponent = ({ hubPubkey }) => {
 
   const hubData = useMemo(() => {
     if (hubState[hubPubkey]) {
+      console.log('here');
       setFetched({ ...fetched, info: true })
       return hubState[hubPubkey]
     } else {
+      console.log('there');
       getHub(hubPubkey)
       getSubscriptionsForHub(hubPubkey)
     }
@@ -76,6 +79,7 @@ const HubComponent = ({ hubPubkey }) => {
 
   useEffect(() => {
     setHubFollowers(filterSubscriptionsForHub(hubPubkey))
+
   }, [subscriptionState])
 
   useEffect(() => {
