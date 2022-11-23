@@ -76,7 +76,6 @@ const HubComponent = ({ hubPubkey }) => {
 
   useEffect(() => {
     setHubFollowers(filterSubscriptionsForHub(hubPubkey))
-
   }, [subscriptionState])
 
   useEffect(() => {
