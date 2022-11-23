@@ -337,7 +337,6 @@ const ReusableTableBody = ({
         searchResultHub: data.displayName,
       }
     } else if (tableType === 'followers') {
-      console.log('displayNameForAccount(data.from.publicKey)', displayNameForAccount(data.from.publicKey))
       formattedData = {
         link: `/profiles/${data.from.publicKey}`,
         image: displayImageForAccount(data.from.publicKey),
