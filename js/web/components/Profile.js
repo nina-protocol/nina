@@ -114,19 +114,30 @@ const Profile = ({ profilePubkey }) => {
   }, [router.query.view])
 
   useEffect(() => {
-    const to = []
-    const from = []
-    if (profileSubscriptions) {
-      profileSubscriptions.forEach((sub) => {
+    const handleSubscriptions = async (profileSubscriptions) => {
+      const to = []
+      const from = []
+      profileSubscriptions.forEach(async (sub) => {
         if (sub.to.publicKey === profilePubkey) {
           to.push(sub)
+          if (!verificationState[sub.from.publicKey]) {
+            await getVerificationsForUser(sub.from.publicKey)
+          }
         } else if (sub.from.publicKey === profilePubkey) {
           from.push(sub)
+          if (!verificationState[sub.to.publicKey]) {
+            await getVerificationsForUser(sub.to.publicKey)
+          }
         }
       })
       setProfileSubscriptionsTo(to)
       setProfileSubscriptionsFrom(from)
     }
+
+    if (profileSubscriptions) {
+      handleSubscriptions(profileSubscriptions)
+    }
+
   }, [profileSubscriptions])
 
   useEffect(() => {
