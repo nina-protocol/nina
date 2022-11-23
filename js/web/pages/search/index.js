@@ -29,16 +29,8 @@ export const getServerSideProps = async ({ query }) => {
 
   if (searchQuery) {
     try {
-      if (!NinaSdk.client.provider) {
-        NinaSdk.client.init(
-          process.env.NINA_API_ENDPOINT,
-          process.env.SOLANA_CLUSTER_URL,
-          process.env.NINA_PROGRAM_ID
-        )
-      }
-
+      await initSdkIfNeeded(true)
       const searchResults = await NinaSdk.Search.withQuery(searchQuery)
-
       return {
         props: {
           searchQuery: query,
