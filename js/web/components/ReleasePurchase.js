@@ -131,7 +131,7 @@ const ReleasePurchase = (props) => {
   }, [release?.revenueShareRecipients, wallet?.connected])
 
   useEffect(() => {
-    if (metadata?.descriptionHtml.includes('<p>')) {
+    if (metadata?.descriptionHtml?.includes('<p>')) {
       unified()
         .use(rehypeParse, { fragment: true })
         .use(rehypeSanitize)
