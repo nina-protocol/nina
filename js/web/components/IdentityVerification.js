@@ -108,12 +108,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   const buttonTypes = useMemo(() => {
     const buttonArray = []
     if (publicKey?.toBase58() === profilePublicKey) {
-      buttonArray.push('twitter', 'ethereum')
-      if (
-        publicKey.toBase58() === '7zoKqAehBR7oWMFpmWr2ebrhMvqL6oBsHdRcL2N3cmnU'
-      ) {
-        buttonArray.push('soundcloud')
-      }
+      buttonArray.push('soundcloud', 'twitter', 'ethereum')
     } else {
       verifications.forEach((verification) => {
         if (verification.type === 'soundcloud') {
