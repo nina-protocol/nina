@@ -23,8 +23,7 @@ const Layout = ({ children, loading }) => {
   useEffect(() => {
     const getHubPubkey = async (handle) => {
       try {
-        const publicKey = (await NinaSdk.Hub.fetch(handle)).hub.publicKey;
-        setHubPubkey(publicKey);
+        setHubPubkey(handle);
       } catch (error) {
         setHubPubkey(undefined);
       }

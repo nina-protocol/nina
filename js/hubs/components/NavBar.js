@@ -19,6 +19,7 @@ import {
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 import Image from "next/image";
+import NinaSdk from "@nina-protocol/js-sdk";
 const { getImageFromCDN, loader } = imageManager;
 
 const navData = [
@@ -57,7 +58,7 @@ const mobileNavData = [
 const NavBar = ({ hubPubkey }) => {
   const { toolbar, drawerContainer } = useStyles();
   const wallet = useWallet();
-
+  const [hubData, setHubData] = useState(null);
   const [mobileView, setMobileView] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -72,10 +73,14 @@ const NavBar = ({ hubPubkey }) => {
     [hubCollaboratorsState, hubPubkey]
   );
 
-  const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
-
   useEffect(() => {
-    getHub(hubPubkey);
+    const fetchHub = async () => {
+      const { hub } = await NinaSdk.Hub.fetch(hubPubkey);
+      setHubData(hub);
+    }
+    if (hubPubkey) {
+      fetchHub()
+    }
   }, [hubPubkey]);
 
   useEffect(() => {
@@ -134,20 +139,20 @@ const NavBar = ({ hubPubkey }) => {
 
         <Link href={`/${hubData?.handle || ""}`} passHref>
           <LogoLinkWrapper>
-            {hubData && (
+            {hubData?.data && (
               <Image
                 loader={loader}
                 src={getImageFromCDN(
-                  hubData.data.image,
+                  hubData?.data?.image,
                   100,
-                  new Date(Date.parse(hubData.datetime))
+                  new Date(Date.parse(hubData?.datetime))
                 )}
                 height="50"
                 width="50"
                 alt="hub-logo"
               />
             )}
-            {hubPubkey ? (
+            {hubData?.data ? (
               <Typography style={{ marginLeft: "15px" }}>
                 {hubData?.data.displayName}
               </Typography>
