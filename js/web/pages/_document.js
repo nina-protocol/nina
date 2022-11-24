@@ -44,11 +44,22 @@ class MyDocument extends Document {
   }
 
   render() {
+    console.log('this.props: ', this.props.pageProps)
     return (
       <Html>
         <Head>
           <meta name="Content-Type" content="text/html; charset=UTF-8" />
           <meta name="theme-color" content="#000000" />
+          {this.props.pageProps?.metatags?.forEach((data) => {
+            console.log('data', data)
+            return (
+              <meta
+                name={data.property}
+                content={data.content}
+                key={data.property}
+              />
+            )
+          })}
           <link rel="icon" href="/images/favicon.ico" />
           <link rel="apple-touch-icon" href="/images/logo192.png" />
           <link rel="manifest" href="/manifest.json" />

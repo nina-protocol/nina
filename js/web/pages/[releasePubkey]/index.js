@@ -34,7 +34,7 @@ export const getStaticPaths = async () => {
 
   return {
     paths,
-    fallback: 'blocking',
+    fallback: 'true',
   }
 }
 
@@ -48,7 +48,7 @@ export const getStaticProps = async (context) => {
       props: {
         metadata: release.metadata,
         releasePubkey,
-        openGraphData: [
+        metatags: [
           {
             property: 'og:title',
             content: `${release.metadata?.properties.artist} - "${release.metadata?.properties.title}" on Nina`,

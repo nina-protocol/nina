@@ -89,18 +89,7 @@ function Application({ Component, pageProps }) {
       }}
     >
       <Head>
-        <>
-          <meta name="theme-color" content={'#ffffff'} key="theme" />
-          {openGraphData?.forEach((data) => {
-            return (
-              <meta
-                name={data.property}
-                content={data.content}
-                key={data.property}
-              />
-            )
-          })}
-        </>
+        <meta name="theme-color" content={'#ffffff'} key="theme" />
       </Head>
 
       <ConnectionProvider endpoint={endpoint}>
