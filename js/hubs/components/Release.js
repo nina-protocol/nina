@@ -74,7 +74,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   }, [wallet?.connected, hubState]);
 
   useEffect(() => {
-    if (metadata?.description.includes("<p>")) {
+    if (metadata?.descriptionHtml?.includes("<p>")) {
       unified()
         .use(rehypeParse, { fragment: true })
         .use(rehypeSanitize)
