@@ -102,11 +102,11 @@ function Application({ Component, pageProps }) {
             <NinaWrapper network={process.env.REACT_APP_CLUSTER}>
               <ThemeProvider theme={NinaTheme}>
                 <Layout>
-                  {loading || !sdkInitialized ? (
+                  {/* {loading || !sdkInitialized ? (
                     <Dots size="80px" />
-                  ) : (
+                  ) : ( */}
                     <Component {...pageProps} />
-                  )}
+                  {/* )} */}
                 </Layout>
               </ThemeProvider>
             </NinaWrapper>
