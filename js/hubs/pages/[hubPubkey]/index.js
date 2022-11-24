@@ -3,8 +3,10 @@ import Hub from "../../components/Hub";
 import NotFound from "../../components/NotFound";
 import NinaSdk from "@nina-protocol/js-sdk";
 import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
+import Dots from "../../components/Dots";
+
 const HubPage = (props) => {
-  const { hub } = props;
+  const { hub, loading } = props;
 
   if (!hub) {
     return (
@@ -52,7 +54,7 @@ const HubPage = (props) => {
         <meta name="twitter:image" content={hub?.data.image} />
         <meta name="og:image" content={hub?.data.image} />
       </Head>
-      <Hub hubPubkey={hub.publicKey} />
+      {loading ? <Dots size="80px" /> : <Hub hubPubkey={hub.publicKey} />}
     </>
   );
 };
@@ -73,7 +75,7 @@ export const getStaticPaths = async () => {
   });
   return {
     paths,
-    fallback: "blocking",
+    fallback: true,
   };
 };
 

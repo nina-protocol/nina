@@ -65,8 +65,7 @@ const NavBar = ({ hubPubkey }) => {
     hubState,
     hubCollaboratorsState,
     filterHubCollaboratorsForHub,
-    getHubsForUser,
-    filterHubsForUser,
+    getHub,
   } = useContext(Hub.Context);
   const hubCollaborators = useMemo(
     () => filterHubCollaboratorsForHub(hubPubkey),
@@ -76,17 +75,8 @@ const NavBar = ({ hubPubkey }) => {
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
 
   useEffect(() => {
-    if (wallet.connected) {
-      getHubsForUser(wallet.publicKey.toBase58());
-    }
-  }, [wallet.connected]);
-
-  const userHubs = useMemo(() => {
-    if (wallet.connected) {
-      return filterHubsForUser(wallet.publicKey.toBase58());
-    }
-    return undefined;
-  }, [hubState]);
+    getHub(hubPubkey);
+  }, [hubPubkey]);
 
   useEffect(() => {
     const setResponsiveness = () => {

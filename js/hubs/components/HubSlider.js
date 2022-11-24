@@ -46,7 +46,6 @@ const HubSlider = () => {
 
   useEffect(() => {
     const fetchFeaturedHubs = async () => {
-      await getHubs();
       const response = await getSubscriptionsForUser(
         "7zoKqAehBR7oWMFpmWr2ebrhMvqL6oBsHdRcL2N3cmnU"
       );
@@ -56,6 +55,7 @@ const HubSlider = () => {
         })
         .map((sub) => sub.to.publicKey);
       setFeaturedHubPublicKeys(publicKeys);
+      await getHubs({ limit: 100 });
     };
     fetchFeaturedHubs();
   }, []);

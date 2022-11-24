@@ -4,10 +4,11 @@ import Head from "next/head";
 import NinaSdk from "@nina-protocol/js-sdk";
 import NotFound from "../../../../components/NotFound";
 import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
+import Dots from "../../../../components/Dots";
 const Post = dynamic(() => import("../../../../components/Post"));
 
 const PostPage = (props) => {
-  const { post, hub } = props;
+  const { post, hub, loading } = props;
 
   if (!post) {
     return <NotFound hub={hub} />;
@@ -45,12 +46,16 @@ const PostPage = (props) => {
         <meta name="twitter:image" content={hub.data.image} />
         <meta name="og:image" content={hub.data.image} />
       </Head>
-      <Post
-        postDataSsr={post}
-        postPubkey={post.publicKey}
-        hub={hub}
-        hubPubkey={hub.publicKey}
-      />
+      {loading ? (
+        <Dots size="80px" />
+      ) : (
+        <Post
+          postDataSsr={post}
+          postPubkey={post.publicKey}
+          hub={hub}
+          hubPubkey={hub.publicKey}
+        />
+      )}
     </>
   );
 };
@@ -77,7 +82,7 @@ export const getStaticPaths = async () => {
   }
   return {
     paths,
-    fallback: "blocking",
+    fallback: true,
   };
 };
 

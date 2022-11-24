@@ -125,7 +125,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
         }
       })
     }
-    
+
     return buttonArray
   }, [publicKey, verifications])
 
