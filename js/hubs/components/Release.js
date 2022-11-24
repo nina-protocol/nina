@@ -23,6 +23,7 @@ import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
+import Head from "next/head";
 const { getImageFromCDN, loader } = imageManager;
 
 const Royalty = dynamic(() => import("./Royalty"));
@@ -114,6 +115,34 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
 
   return (
     <>
+          <Head>
+        <title>{`${metadata?.properties.artist} - "${metadata?.properties.title}"`}</title>
+        <meta
+          name="description"
+          content={`${metadata?.properties.artist} - "${metadata?.properties.title}": ${metadata?.description} \n  Powered by Nina.`}
+        />
+        <meta name="og:type" content="website" />
+        <meta
+          name="og:title"
+          content={`${metadata?.properties.artist} - "${metadata?.properties.title}"`}
+        />
+        <meta
+          name="og:description"
+          content={`${metadata?.properties.artist} - "${metadata?.properties.title}": ${metadata?.description} \n Published on ${hub?.data.displayName} \nPowered by Nina.`}
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@ninaprotocol" />
+        <meta name="twitter:creator" content="@ninaprotcol" />
+        <meta name="twitter:image:type" content="image/jpg" />
+        <meta
+          name="twitter:title"
+          content={`${metadata?.properties.artist} - "${metadata?.properties.title}" on ${hub?.data.displayName}`}
+        />
+        <meta name="twitter:description" content={metadata?.description} />
+
+        <meta name="twitter:image" content={metadata?.image} />
+        <meta name="og:image" content={metadata?.image} />
+      </Head>
       <StyledGrid
         item
         md={6}
