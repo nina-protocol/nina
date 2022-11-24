@@ -4,10 +4,16 @@ import Head from "next/head";
 import NinaSdk from "@nina-protocol/js-sdk";
 import NotFound from "../../../../components/NotFound";
 import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
+import { useRouter } from "next/router";
 const Post = dynamic(() => import("../../../../components/Post"));
 
 const PostPage = (props) => {
   const { post, hub } = props;
+  const { isFallback } = useRouter()
+
+  if (isFallback) {
+    return <></>
+  }
 
   if (!post) {
     return <NotFound hub={hub} />;
@@ -77,7 +83,7 @@ export const getStaticPaths = async () => {
   }
   return {
     paths,
-    fallback: "blocking",
+    fallback: true,
   };
 };
 

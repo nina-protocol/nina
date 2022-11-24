@@ -4,19 +4,26 @@ import { styled } from '@mui/system'
 import Head from 'next/head'
 import NinaSdk from '@nina-protocol/js-sdk'
 import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
+import { useRouter } from 'next/router'
 const Profile = dynamic(() => import('../../../components/Profile'))
 
 const ProfilePage = (props) => {
   const { profilePubkey } = props
+  const { isFallback } = useRouter()
+
+  if (isFallback) {
+    return <></>
+  }
+
   return (
     <>
       <Head>
         <title>{`Nina: ${profilePubkey}'s Profile`}</title>
-        <meta name="description" content={'Your profile on Nina.'} />
+        <meta name="description" content={`All releases, Hubs, and collection belonging to ${profilePubkey}`} />
         <meta name="og:type" content="website" />
         <meta
           name="og:title"
-          content={`Nina: ${profilePubkey ? `${profilePubkey}'s Hub` : ''}`}
+          content={`Nina: ${profilePubkey ? `${profilePubkey}'s Profile` : ''}`}
         />
         <meta
           name="og:description"
@@ -68,7 +75,7 @@ export const getStaticPaths = async () => {
 
   return {
     paths,
-    fallback: 'blocking',
+    fallback: true,
   }
 }
 

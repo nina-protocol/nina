@@ -4,11 +4,17 @@ import Head from "next/head";
 import NotFound from "../../../../components/NotFound";
 import NinaSdk from "@nina-protocol/js-sdk";
 import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
+import { useRouter } from "next/router";
 const Release = dynamic(() => import("../../../../components/Release"));
 
 const ReleasePage = (props) => {
   const { metadata, hub, releasePubkey, hubPubkey } = props;
-  console.log('metadata', metadata);
+  const { isFallback } = useRouter()
+
+  if (isFallback) {
+    return <></>
+  }
+
   if (!metadata) {
     return <NotFound hub={hub} />;
   }
@@ -76,7 +82,7 @@ export const getStaticPaths = async () => {
   }
   return {
     paths,
-    fallback: "blocking",
+    fallback: true,
   };
 };
 

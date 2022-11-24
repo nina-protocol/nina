@@ -3,8 +3,15 @@ import Hub from "../../components/Hub";
 import NotFound from "../../components/NotFound";
 import NinaSdk from "@nina-protocol/js-sdk";
 import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
+import { useRouter } from "next/router";
+
 const HubPage = (props) => {
   const { hub } = props;
+  const { isFallback } = useRouter()
+
+  if (isFallback) {
+    return <></>
+  }
 
   if (!hub) {
     return (
@@ -73,7 +80,7 @@ export const getStaticPaths = async () => {
   });
   return {
     paths,
-    fallback: "blocking",
+    fallback: true,
   };
 };
 

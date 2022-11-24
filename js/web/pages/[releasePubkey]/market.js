@@ -3,10 +3,17 @@ import dynamic from 'next/dynamic'
 import Release from '../../components/Release'
 import NinaSdk from '@nina-protocol/js-sdk'
 import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
+import { useRouter } from 'next/router'
 const NotFound = dynamic(() => import('../../components/NotFound'))
 
 const ReleaseMarketPage = (props) => {
   const { metadata } = props
+  const { isFallback } = useRouter()
+
+  if (isFallback) {
+    return <></>
+  }
+
   if (!metadata) {
     return <NotFound />
   }
@@ -58,7 +65,7 @@ export const getStaticPaths = async () => {
 
   return {
     paths,
-    fallback: 'blocking',
+    fallback: true,
   }
 }
 

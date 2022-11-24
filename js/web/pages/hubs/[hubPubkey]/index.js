@@ -4,9 +4,16 @@ import { styled } from '@mui/system'
 import Head from 'next/head'
 import NinaSdk from '@nina-protocol/js-sdk'
 import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
+import { useRouter } from 'next/router'
 const HubView = dynamic(() => import('../../../components/Hub'))
 
 const HubPage = ({ hub, hubPubkey }) => {
+  const { isFallback } = useRouter()
+
+  if (isFallback) {
+    return <></>
+  }
+
   return (
     <>
       <Head>
@@ -73,7 +80,7 @@ export const getStaticPaths = async () => {
   })
   return {
     paths,
-    fallback: 'blocking',
+    fallback: true,
   }
 }
 
