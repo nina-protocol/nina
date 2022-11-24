@@ -96,6 +96,7 @@ function Application({ Component, pageProps }) {
               <meta
                 name={data.property}
                 content={data.content}
+                key={data.property}
               />
             )
           })}
