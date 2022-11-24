@@ -4,16 +4,11 @@ import Head from "next/head";
 import NotFound from "../../../../components/NotFound";
 import NinaSdk from "@nina-protocol/js-sdk";
 import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
-import { useRouter } from "next/router";
+import Dots from '../../../../components/Dots'
 const Release = dynamic(() => import("../../../../components/Release"));
 
 const ReleasePage = (props) => {
-  const { metadata, hub, releasePubkey, hubPubkey } = props;
-  const { isFallback } = useRouter()
-
-  if (isFallback) {
-    return <></>
-  }
+  const { metadata, hub, releasePubkey, hubPubkey, loading } = props;
 
   if (!metadata) {
     return <NotFound hub={hub} />;
@@ -48,11 +43,15 @@ const ReleasePage = (props) => {
         <meta name="twitter:image" content={metadata?.image} />
         <meta name="og:image" content={metadata?.image} />
       </Head>
-      <Release
-        metadataSsr={metadata}
-        releasePubkey={releasePubkey}
-        hubPubkey={hubPubkey}
-      />
+      {loading ? (
+        <Dots size="80px" />
+      ) : (
+        <Release
+          metadataSsr={metadata}
+          releasePubkey={releasePubkey}
+          hubPubkey={hubPubkey}
+        />
+      )}
     </>
   );
 };

@@ -1,7 +1,8 @@
 import Hubs from "../components/Hubs";
 import Head from "next/head";
+import Dots from '../components/Dots'
 
-export default function Home() {
+export default function Home({loading}) {
   return (
     <>
       <Head>
@@ -50,7 +51,11 @@ export default function Home() {
           href="https://ninaprotocol.com/images/nina-blue.png"
         />
       </Head>
-      <Hubs />
+      {loading ? (
+        <Dots size="80px" />
+      ) : (
+        <Hubs />
+      )}
     </>
   );
 }

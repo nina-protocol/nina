@@ -82,48 +82,6 @@ export const getStaticProps = async (context) => {
       props: {
         metadata: release.metadata,
         releasePubkey,
-        openGraphData: [
-          {
-            property: 'og:title',
-            content: `${release.metadata?.properties.artist} - "${release.metadata?.properties.title}" on Nina`,
-          },
-          {
-            property: 'og:description',
-            content: `${release.metadata?.properties.artist} - "${release.metadata?.properties.title}": ${release.metadata?.description} \n Published on Nina.`,
-          },
-          {
-            property: 'og:image',
-            content: release.metadata?.image,
-          },
-          {
-            property: 'twitter:card',
-            content: 'summary_large_image',
-          },
-          {
-            property: 'twitter:site',
-            content: '@ninaprotocol',
-          },
-          {
-            property: 'twitter:creator',
-            content: '@ninaprotocol',
-          },
-          {
-            property: 'twitter:image:type',
-            content: 'image/jpg',
-          },
-          {
-            property: 'twitter:title',
-            content: `${release.metadata?.properties.artist} - "${release.metadata?.properties.title}" on Nina`,
-          },
-          {
-            property: 'twitter:description',
-            content: release.metadata?.description,
-          },
-          {
-            property: 'twitter:image',
-            content: release.metadata?.image,
-          },
-        ],
       },
       revalidate: 1000,
     }

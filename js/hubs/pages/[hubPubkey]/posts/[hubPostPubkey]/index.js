@@ -4,16 +4,11 @@ import Head from "next/head";
 import NinaSdk from "@nina-protocol/js-sdk";
 import NotFound from "../../../../components/NotFound";
 import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
-import { useRouter } from "next/router";
+import Dots from '../../../../components/Dots'
 const Post = dynamic(() => import("../../../../components/Post"));
 
 const PostPage = (props) => {
-  const { post, hub } = props;
-  const { isFallback } = useRouter()
-
-  if (isFallback) {
-    return <></>
-  }
+  const { post, hub, loading } = props;
 
   if (!post) {
     return <NotFound hub={hub} />;
@@ -51,12 +46,16 @@ const PostPage = (props) => {
         <meta name="twitter:image" content={hub.data.image} />
         <meta name="og:image" content={hub.data.image} />
       </Head>
-      <Post
+      {loading ? (
+        <Dots size="80px" />
+      ) : (
+        <Post
         postDataSsr={post}
         postPubkey={post.publicKey}
         hub={hub}
         hubPubkey={hub.publicKey}
       />
+      )}
     </>
   );
 };

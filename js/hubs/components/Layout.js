@@ -15,7 +15,7 @@ const NavBar = dynamic(() => import("./NavBar"));
 const AudioPlayer = dynamic(() => import("./AudioPlayer"));
 const lightTheme = createTheme(lightThemeOptions);
 
-const Layout = ({ children }) => {
+const Layout = ({ children, loading }) => {
   const router = useRouter();
   const [hubPubkey, setHubPubkey] = useState(undefined);
   const { hubState, getHubPubkeyForHubHandle } = useContext(Hub.Context);
@@ -112,7 +112,7 @@ const Layout = ({ children }) => {
             className={classes.mainContainer}
           >
             <main className={classes.bodyContainer}>
-              <NavBar hubPubkey={hubPubkey} />
+              <NavBar hubPubkey={hubPubkey} loading={loading} />
               <Grid
                 container
                 columns={{ xs: 12, sm: 12, md: 12 }}

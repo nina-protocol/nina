@@ -4,16 +4,10 @@ import { styled } from '@mui/system'
 import Head from 'next/head'
 import NinaSdk from '@nina-protocol/js-sdk'
 import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
-import { useRouter } from 'next/router'
+import Dots from '../../../components/Dots'
 const HubView = dynamic(() => import('../../../components/Hub'))
 
-const HubPage = ({ hub, hubPubkey }) => {
-  const { isFallback } = useRouter()
-
-  if (isFallback) {
-    return <></>
-  }
-
+const HubPage = ({ hub, hubPubkey, loading }) => {
   return (
     <>
       <Head>
@@ -49,9 +43,13 @@ const HubPage = ({ hub, hubPubkey }) => {
         <meta name="twitter:image" content={hub?.data.image} />
         <meta name="og:image" content={hub?.data.image} />
       </Head>
-      <HubPageContainer>
-        <HubView hubPubkey={hubPubkey} hubHandle={hub.handle} />
-      </HubPageContainer>
+      {loading ? (
+        <Dots size="80px" />
+      ) : (
+        <HubPageContainer>
+          <HubView hubPubkey={hubPubkey} hubHandle={hub.handle} />
+        </HubPageContainer>
+      )}
     </>
   )
 }

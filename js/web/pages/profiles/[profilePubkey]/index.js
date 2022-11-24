@@ -4,16 +4,11 @@ import { styled } from '@mui/system'
 import Head from 'next/head'
 import NinaSdk from '@nina-protocol/js-sdk'
 import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
-import { useRouter } from 'next/router'
+import Dots from '../../../components/Dots'
 const Profile = dynamic(() => import('../../../components/Profile'))
 
 const ProfilePage = (props) => {
-  const { profilePubkey } = props
-  const { isFallback } = useRouter()
-
-  if (isFallback) {
-    return <></>
-  }
+  const { profilePubkey, loading } = props
 
   return (
     <>
@@ -43,10 +38,13 @@ const ProfilePage = (props) => {
         <meta property="og:title" content="iPhone" />
         <meta property="og:image" content={`/images/favicon.ico`} />
       </Head>
-
-      <ProfilePageContainer>
-        <Profile profilePubkey={profilePubkey} />
-      </ProfilePageContainer>
+      {loading ? (
+        <Dots size="80px" />
+      ) : (
+        <ProfilePageContainer>
+          <Profile profilePubkey={profilePubkey} />
+        </ProfilePageContainer>
+      )}
     </>
   )
 }

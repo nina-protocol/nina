@@ -87,11 +87,9 @@ const App = ({ Component, pageProps }) => {
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
             <NinaWrapper network={process.env.SOLANA_CLUSTER}>
-              {sdkInitialized && (
-                <Layout>
-                  <Component {...pageProps} />
-                </Layout>
-              )}
+              <Layout loading={!sdkInitialized}>
+                <Component {...pageProps} loading={!sdkInitialized} />
+              </Layout>
             </NinaWrapper>
           </WalletModalProvider>
         </WalletProvider>

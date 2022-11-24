@@ -3,15 +3,10 @@ import Hub from "../../components/Hub";
 import NotFound from "../../components/NotFound";
 import NinaSdk from "@nina-protocol/js-sdk";
 import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
-import { useRouter } from "next/router";
+import Dots from '../../components/Dots'
 
 const HubPage = (props) => {
-  const { hub } = props;
-  const { isFallback } = useRouter()
-
-  if (isFallback) {
-    return <></>
-  }
+  const { hub, loading } = props;
 
   if (!hub) {
     return (
@@ -59,7 +54,11 @@ const HubPage = (props) => {
         <meta name="twitter:image" content={hub?.data.image} />
         <meta name="og:image" content={hub?.data.image} />
       </Head>
-      <Hub hubPubkey={hub.publicKey} />
+      {loading ? (
+        <Dots size="80px"/>
+      ) : (
+        <Hub hubPubkey={hub.publicKey} />
+      )}
     </>
   );
 };

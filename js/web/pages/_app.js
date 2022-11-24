@@ -88,12 +88,7 @@ function Application({ Component, pageProps }) {
       }}
     >
       <Head>
-        <>
-          <meta name="theme-color" content={'#ffffff'} key="theme" />
-          {pageProps?.metaTags?.forEach(tag => (
-            <meta {...tag} />
-          ))}
-        </>
+        <meta name="theme-color" content={'#ffffff'} key="theme" />
       </Head>
 
       <ConnectionProvider endpoint={endpoint}>
@@ -102,11 +97,7 @@ function Application({ Component, pageProps }) {
             <NinaWrapper network={process.env.REACT_APP_CLUSTER}>
               <ThemeProvider theme={NinaTheme}>
                 <Layout>
-                  {/* {loading || !sdkInitialized ? (
-                    <Dots size="80px" />
-                  ) : ( */}
-                    <Component {...pageProps} />
-                  {/* )} */}
+                  <Component {...pageProps} loading={loading || !sdkInitialized} />
                 </Layout>
               </ThemeProvider>
             </NinaWrapper>
