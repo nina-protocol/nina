@@ -31,7 +31,7 @@ const Button = dynamic(() => import("@mui/material/Button"));
 const ReleasePurchase = dynamic(() => import("./ReleasePurchase"));
 const AddToHubModal = dynamic(() => import("./AddToHubModal"));
 
-const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
+const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey, hubSsr }) => {
   const wallet = useWallet();
 
   const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } =
@@ -115,20 +115,20 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
 
   return (
     <>
-          <Head>
-        <title>{`${metadata?.properties.artist} - "${metadata?.properties.title}"`}</title>
+      <Head>
+        <title>{`${metadataSsr?.properties.artist} - "${metadataSsr?.properties.title}"`}</title>
         <meta
           name="description"
-          content={`${metadata?.properties.artist} - "${metadata?.properties.title}": ${metadata?.description} \n  Powered by Nina.`}
+          content={`${metadataSsr?.properties.artist} - "${metadataSsr?.properties.title}": ${metadataSsr?.description} \n  Powered by Nina.`}
         />
         <meta name="og:type" content="website" />
         <meta
           name="og:title"
-          content={`${metadata?.properties.artist} - "${metadata?.properties.title}"`}
+          content={`${metadataSsr?.properties.artist} - "${metadataSsr?.properties.title}"`}
         />
         <meta
           name="og:description"
-          content={`${metadata?.properties.artist} - "${metadata?.properties.title}": ${metadata?.description} \n Published on ${hub?.data.displayName} \nPowered by Nina.`}
+          content={`${metadataSsr?.properties.artist} - "${metadataSsr?.properties.title}": ${metadataSsr?.description} \n Published on ${hubSsr?.data.displayName} \nPowered by Nina.`}
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@ninaprotocol" />
@@ -136,12 +136,12 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
         <meta name="twitter:image:type" content="image/jpg" />
         <meta
           name="twitter:title"
-          content={`${metadata?.properties.artist} - "${metadata?.properties.title}" on ${hub?.data.displayName}`}
+          content={`${metadataSsr?.properties.artist} - "${metadataSsr?.properties.title}" on ${hubSsr?.data.displayName}`}
         />
-        <meta name="twitter:description" content={metadata?.description} />
+        <meta name="twitter:description" content={metadataSsr?.description} />
 
-        <meta name="twitter:image" content={metadata?.image} />
-        <meta name="og:image" content={metadata?.image} />
+        <meta name="twitter:image" content={metadataSsr?.image} />
+        <meta name="og:image" content={metadataSsr?.image} />
       </Head>
       <StyledGrid
         item
