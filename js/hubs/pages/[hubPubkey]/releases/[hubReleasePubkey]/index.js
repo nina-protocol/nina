@@ -4,7 +4,7 @@ import Head from "next/head";
 import NotFound from "../../../../components/NotFound";
 import NinaSdk from "@nina-protocol/js-sdk";
 import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
-import Dots from '../../../../components/Dots'
+import Dots from "../../../../components/Dots";
 const Release = dynamic(() => import("../../../../components/Release"));
 
 const ReleasePage = (props) => {

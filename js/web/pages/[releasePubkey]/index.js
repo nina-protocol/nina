@@ -43,11 +43,7 @@ const ReleasePage = (props) => {
         <meta name="twitter:image" content={metadata?.image} />
         <meta name="og:image" content={metadata?.image} />
       </Head>
-      {loading ? (
-        <Dots size="80px" />
-      ) : (
-        <Release metadataSsr={metadata} />
-      )}
+      {loading ? <Dots size="80px" /> : <Release metadataSsr={metadata} />}
     </>
   )
 }

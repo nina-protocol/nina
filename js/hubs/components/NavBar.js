@@ -54,7 +54,7 @@ const mobileNavData = [
   },
 ];
 
-const NavBar = ({ hubPubkey, }) => {
+const NavBar = ({ hubPubkey }) => {
   const { toolbar, drawerContainer } = useStyles();
   const wallet = useWallet();
 

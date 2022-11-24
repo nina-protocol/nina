@@ -25,11 +25,7 @@ const DashboardPage = ({ hub, loading }) => {
           href="https://hubs.ninaprotocol.com/images/nina-blue.png"
         />
       </Head>
-      {loading ? (
-        <Dots size="80px" />
-      ) : (
-        <Dashboard hubPubkey={hub.publicKey} />
-      )}
+      {loading ? <Dots size="80px" /> : <Dashboard hubPubkey={hub.publicKey} />}
     </>
   );
 };

@@ -55,7 +55,7 @@ const HubSlider = () => {
         })
         .map((sub) => sub.to.publicKey);
       setFeaturedHubPublicKeys(publicKeys);
-      await getHubs({limit: 100});
+      await getHubs({ limit: 100 });
     };
     fetchFeaturedHubs();
   }, []);

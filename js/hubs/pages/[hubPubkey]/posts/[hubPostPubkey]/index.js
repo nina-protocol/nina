@@ -4,7 +4,7 @@ import Head from "next/head";
 import NinaSdk from "@nina-protocol/js-sdk";
 import NotFound from "../../../../components/NotFound";
 import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
-import Dots from '../../../../components/Dots'
+import Dots from "../../../../components/Dots";
 const Post = dynamic(() => import("../../../../components/Post"));
 
 const PostPage = (props) => {
@@ -50,11 +50,11 @@ const PostPage = (props) => {
         <Dots size="80px" />
       ) : (
         <Post
-        postDataSsr={post}
-        postPubkey={post.publicKey}
-        hub={hub}
-        hubPubkey={hub.publicKey}
-      />
+          postDataSsr={post}
+          postPubkey={post.publicKey}
+          hub={hub}
+          hubPubkey={hub.publicKey}
+        />
       )}
     </>
   );

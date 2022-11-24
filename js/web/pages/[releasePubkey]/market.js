@@ -41,11 +41,7 @@ const ReleaseMarketPage = (props) => {
         <meta name="twitter:image" content={metadata?.image} />
         <meta name="og:image" content={metadata?.image} />
       </Head>
-      {loading ? (
-        <Dots size="80px" />
-      ) : (
-        <Release {...props} />
-      )}
+      {loading ? <Dots size="80px" /> : <Release {...props} />}
     </>
   )
 }

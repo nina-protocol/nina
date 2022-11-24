@@ -14,7 +14,10 @@ const ProfilePage = (props) => {
     <>
       <Head>
         <title>{`Nina: ${profilePubkey}'s Profile`}</title>
-        <meta name="description" content={`All releases, Hubs, and collection belonging to ${profilePubkey}`} />
+        <meta
+          name="description"
+          content={`All releases, Hubs, and collection belonging to ${profilePubkey}`}
+        />
         <meta name="og:type" content="website" />
         <meta
           name="og:title"
