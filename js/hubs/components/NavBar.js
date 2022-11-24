@@ -76,13 +76,11 @@ const NavBar = ({ hubPubkey }) => {
   useEffect(() => {
     const fetchHub = async () => {
       const { hub } = await NinaSdk.Hub.fetch(hubPubkey);
-      console.log('hub', hub)
       setHubData(hub);
     }
     if (hubPubkey) {
       fetchHub()
     }
-    console.log('hubPubkey', hubPubkey)
   }, [hubPubkey]);
 
   useEffect(() => {
@@ -126,7 +124,7 @@ const NavBar = ({ hubPubkey }) => {
     }
     return false;
   }, [hubCollaborators, hubData, wallet]);
-  console.log('hubData', hubData)
+
   const displayDesktop = () => {
     return (
       <Toolbar
