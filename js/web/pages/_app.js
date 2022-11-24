@@ -91,7 +91,7 @@ function Application({ Component, pageProps }) {
       <Head>
         <>
           <meta name="theme-color" content={'#ffffff'} key="theme" />
-          {openGraphData.forEach((data) => {
+          {openGraphData?.forEach((data) => {
             return (
               <meta
                 name={data.property}
