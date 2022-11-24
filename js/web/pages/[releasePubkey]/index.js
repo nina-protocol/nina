@@ -2,8 +2,8 @@ import React from 'react'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import NinaSdk from '@nina-protocol/js-sdk'
-import { useRouter } from 'next/router'
 import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
+import { useRouter } from 'next/router'
 const Release = dynamic(() => import('../../components/Release'))
 const NotFound = dynamic(() => import('../../components/NotFound'))
 
@@ -14,7 +14,7 @@ const ReleasePage = (props) => {
   if (isFallback) {
     return <></>
   }
-  
+
   if (!metadata) {
     return <NotFound />
   }

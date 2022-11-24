@@ -24,7 +24,6 @@ const NinaWrapper = dynamic(() => import('../components/NinaWrapper'))
 const Layout = dynamic(() => import('../components/Layout'))
 
 function Application({ Component, pageProps }) {
-  const { openGraphData } = pageProps
   const [loading, setLoading] = useState(false)
   const [sdkInitialized, setSdkInitialized] = useState(false)
   React.useEffect(() => {
@@ -89,7 +88,12 @@ function Application({ Component, pageProps }) {
       }}
     >
       <Head>
-        <meta name="theme-color" content={'#ffffff'} key="theme" />
+        <>
+          <meta name="theme-color" content={'#ffffff'} key="theme" />
+          {pageProps?.metaTags?.forEach(tag => (
+            <meta {...tag} />
+          ))}
+        </>
       </Head>
 
       <ConnectionProvider endpoint={endpoint}>
