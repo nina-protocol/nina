@@ -8,7 +8,7 @@ const Release = dynamic(() => import("../../../../components/Release"));
 
 const ReleasePage = (props) => {
   const { metadata, hub, releasePubkey, hubPubkey } = props;
-
+  console.log('metadata', metadata);
   if (!metadata) {
     return <NotFound hub={hub} />;
   }
