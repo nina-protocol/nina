@@ -55,7 +55,7 @@ const ProfilePageContainer = styled(Box)(({ theme }) => ({
 export default ProfilePage
 
 export const getStaticPaths = async () => {
-  await initSdkIfNeeded()
+  await initSdkIfNeeded(true)
   const paths = []
   const { accounts } = await NinaSdk.Account.fetchAll({ limit: 5000 })
   accounts.forEach((account) => {
