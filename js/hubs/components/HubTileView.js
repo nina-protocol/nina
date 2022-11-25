@@ -50,7 +50,6 @@ const HubTileView = (props) => {
                     src={getImageFromCDN(
                       hub.data.image,
                       400,
-                      new Date(Date.parse(hub.datetime))
                     )}
                     priority={!isMobile}
                     alt={hub.handle}

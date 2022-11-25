@@ -15,7 +15,7 @@ import ScrollablePageWrapper from './ScrollablePageWrapper'
 import HubSlider from './HubSlider'
 import EmailCapture from './EmailCapture'
 
-const HomePage = () => {
+const HomePage = ({ loading }) => {
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { getHubs, hubState, filterFeaturedHubs } = useContext(Hub.Context)
   const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
@@ -29,8 +29,10 @@ const HomePage = () => {
 
   useEffect(() => {
     getSolPrice()
-    getReleasesRecent()
-  }, [])
+    if (!loading) {
+      getReleasesRecent()
+    }
+  }, [loading])
 
   useEffect(() => {
     setReleasesRecent(filterReleasesRecent())
@@ -101,7 +103,7 @@ const HomePage = () => {
               <Link href="/hubs">Hubs</Link>
             </Typography>
           </Box>
-          <HubSlider hubs={hubs} />
+          <HubSlider hubs={hubs} loading={loading} />
         </Box>
         <Box align="center" sx={{ paddingBottom: { md: '140px', xs: '30px' } }}>
           <BlueTypography variant="h1" align="center">
