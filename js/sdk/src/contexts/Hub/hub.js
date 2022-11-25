@@ -989,7 +989,7 @@ const hubContextHelper = ({
       })
 
       setHubCollaboratorsState(prevState => ({ ...prevState, ...updatedHubCollaboratorState}))
-      setVerificationState(updatedVerificationState)
+      setVerificationState(prevState => ({...prevState, ...updatedVerificationState}))
 
       const updatedHubContent = { ...hubContentState }
       const updatedReleaseState = { ...releaseState }
