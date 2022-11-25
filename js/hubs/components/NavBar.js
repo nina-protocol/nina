@@ -145,7 +145,6 @@ const NavBar = ({ hubPubkey }) => {
                 src={getImageFromCDN(
                   hubData?.data?.image,
                   100,
-                  new Date(Date.parse(hubData?.datetime))
                 )}
                 height="50"
                 width="50"

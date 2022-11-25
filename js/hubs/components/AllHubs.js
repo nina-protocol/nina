@@ -23,7 +23,6 @@ const AllHubs = ({loading}) => {
 
   useEffect(() => {
     if (!loading) {
-      console.log('getHubs')
       getHubs();
     }
   }, [loading]);
