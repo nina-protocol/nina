@@ -71,6 +71,7 @@ const HubComponent = ({ hubPubkey }) => {
   useEffect(() => {
     if (hubPubkey) {
       getHub(hubPubkey)
+      getSubscriptionsForHub(hubPubkey)
     }
   }, [hubPubkey])
 
