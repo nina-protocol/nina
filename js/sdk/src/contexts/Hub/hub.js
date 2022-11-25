@@ -12,6 +12,7 @@ import NinaSdk from '@nina-protocol/js-sdk';
 import { shuffle } from '../../utils'
 import MD5 from "crypto-js/md5";
 import { logEvent } from '../../utils/event'
+import { initSdkIfNeeded } from '../../utils/sdkInit'
 const axios = require('axios')
 
 const HubContext = createContext()
@@ -945,6 +946,7 @@ const hubContextHelper = ({
   const getHubs = async (featured = false) => {
     try {
       const updatedAllHubs = [...allHubs]
+      await initSdkIfNeeded()
       const  { hubs } = await NinaSdk.Hub.fetchAll({offset:allHubs.length, limit:25}, true)
       const updatedHubState = {...hubState}
       hubs.forEach(hub => {
@@ -969,6 +971,7 @@ const hubContextHelper = ({
 
   const getHub = async (hubPubkey) => {
     try {
+      await initSdkIfNeeded()
       const hub = await NinaSdk.Hub.fetch(hubPubkey, true)
       
       const updatedHubState = { ...hubState }
@@ -1035,6 +1038,7 @@ const hubContextHelper = ({
 
   const getHubsForUser = async (publicKey) => {
     try {
+      await initSdkIfNeeded()
       const { hubs } = await NinaSdk.Account.fetchHubs(publicKey, true)
       const updatedHubCollaboratorState = { }
       const updatedHubState = { ...hubState }
@@ -1066,6 +1070,7 @@ const hubContextHelper = ({
   
   const getHubsForRelease = async (releasePubkey) => {
     try {
+      await initSdkIfNeeded()
       const { hubs } = await NinaSdk.Release.fetchHubs(releasePubkey, true)
       const updatedHubState = {  }
       const updatedHubContent = { ...hubContentState }
@@ -1166,6 +1171,7 @@ const hubContextHelper = ({
           (hub) => hub.handle === handle
         )[0]
         if (!hub) {
+          await initSdkIfNeeded()
           hub = await NinaSdk.Hub.fetch(handle)
         }
         return hub?.publicKey
@@ -1209,6 +1215,7 @@ const hubContextHelper = ({
 
   const validateHubHandle = async (handle) => {
     try {
+      await initSdkIfNeeded()
       const hub = await NinaSdk.Hub.fetch(handle)
       if (hub) {
         alert(

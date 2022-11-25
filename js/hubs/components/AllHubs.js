@@ -8,19 +8,25 @@ import debounce from "lodash.debounce";
 import { isMobile } from "react-device-detect";
 import HubTileView from "./HubTileView";
 
-const AllHubs = () => {
+const AllHubs = ({loading}) => {
   const { getHubs, hubState, filterHubsAll } = useContext(Hub.Context);
   const [pendingFetch, setPendingFetch] = useState(false);
   const [totalCount, setTotalCount] = useState(null);
   const scrollRef = useRef();
 
   useEffect(() => {
-    getHubs();
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      console.log('getHubs')
+      getHubs();
+    }
+  }, [loading]);
 
   const hubs = useMemo(() => {
     if (Object.values(hubState).length > 0) {
@@ -30,12 +36,14 @@ const AllHubs = () => {
   }, [hubState]);
 
   const handleScroll = () => {
-    const bottom =
-      scrollRef.current.getBoundingClientRect().bottom - 250 <=
-      window.innerHeight;
-    if (bottom && !pendingFetch && totalCount !== hubs.length) {
-      setPendingFetch(true);
-      getHubs();
+    if (!loading) {
+      const bottom =
+        scrollRef.current.getBoundingClientRect().bottom - 250 <=
+        window.innerHeight;
+      if (bottom && !pendingFetch && totalCount !== hubs.length && !loading) {
+        setPendingFetch(true);
+        getHubs();
+      }
     }
   };
 
