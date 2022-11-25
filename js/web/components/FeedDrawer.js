@@ -42,7 +42,8 @@ const FeedDrawer = () => {
 
   useEffect(() => {
     if (wallet.connected) {
-      handleFetch(true)
+      // commented out to prevent feed flickering
+      // handleFetch(true)
     }
   }, [subscriptionState])
 

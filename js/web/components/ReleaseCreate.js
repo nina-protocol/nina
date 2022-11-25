@@ -141,6 +141,7 @@ const ReleaseCreate = () => {
         })
         setProfileHubs(sortedHubs)
         setSelectedHub(sortedHubs[0]?.publicKey)
+        console.log('sortedHubs', sortedHubs)
       }
     }
   }, [fetchedHubsForUser])
@@ -423,6 +424,7 @@ const ReleaseCreate = () => {
     } = e
     setSelectedHub(value)
   }
+
   return (
     <Grid item md={12}>
       {!wallet.connected && (
@@ -431,7 +433,7 @@ const ReleaseCreate = () => {
         </ConnectMessage>
       )}
 
-      {wallet?.connected && npcAmountHeld < 1 && (
+      {wallet?.connected && npcAmountHeld < 1 && profileHubs && profileHubs?.length === 0 && (
         <Box style={{ display: 'flex' }}>
           <NpcMessage>
             <Typography variant="h3" sx={{ mb: 1 }}>
@@ -452,7 +454,7 @@ const ReleaseCreate = () => {
           </NpcMessage>
         </Box>
       )}
-      {wallet?.connected && npcAmountHeld > 0 && (
+      {wallet?.connected && (npcAmountHeld > 0 || profileHubs?.length > 0) && (
         <>
           <UploadInfoModal
             userHasSeenUpdateMessage={localStorage.getItem(
