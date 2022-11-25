@@ -914,7 +914,7 @@ const ninaContextHelper = ({
       ) {
         return verifications.find(
           (verification) => verification.type === 'soundcloud'
-        ).image
+        ).image || '/images/nina-gray.png'
       } 
     } 
     return '/images/nina-gray.png'
