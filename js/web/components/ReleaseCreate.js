@@ -424,7 +424,9 @@ const ReleaseCreate = () => {
     } = e
     setSelectedHub(value)
   }
-
+  console.log('wallet?.connected && npcAmountHeld < 1 && (!profileHubs && profileHubs?.length === 0)', wallet?.connected && npcAmountHeld === 0 && (!profileHubs ||  profileHubs?.length === 0))
+  console.log('npcAmountHeld', npcAmountHeld)
+  console.log('profileHubs', profileHubs)
   return (
     <Grid item md={12}>
       {!wallet.connected && (
@@ -433,7 +435,7 @@ const ReleaseCreate = () => {
         </ConnectMessage>
       )}
 
-      {wallet?.connected && npcAmountHeld < 1 && profileHubs && profileHubs?.length === 0 && (
+      {wallet?.connected && npcAmountHeld === 0 && (!profileHubs || profileHubs?.length === 0) && (
         <Box style={{ display: 'flex' }}>
           <NpcMessage>
             <Typography variant="h3" sx={{ mb: 1 }}>
@@ -454,7 +456,7 @@ const ReleaseCreate = () => {
           </NpcMessage>
         </Box>
       )}
-      {wallet?.connected && (npcAmountHeld > 0 || profileHubs?.length > 0) && (
+      {wallet?.connected && (npcAmountHeld >= 1 || profileHubs?.length > 0) && (
         <>
           <UploadInfoModal
             userHasSeenUpdateMessage={localStorage.getItem(

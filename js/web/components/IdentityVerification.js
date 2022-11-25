@@ -30,10 +30,10 @@ import {
 
 const IdentityVerification = ({ verifications, profilePublicKey }) => {
   const web3 = new Web3(process.env.ETH_CLUSTER_URL)
-  const enqueueSnackbar = useSnackbar()
+  const { enqueueSnackbar } = useSnackbar()
   const router = useRouter()
   const { publicKey, signTransaction, sendTransaction } = useWallet()
-  const { ninaClient, getVerificationsForUser } = useContext(Nina.Context)
+  const { ninaClient, getVerificationsForUser, NinaProgramAction, checkIfHasBalanceToCompleteAction } = useContext(Nina.Context)
   const { provider } = ninaClient
 
   const [open, setOpen] = useState(false)
@@ -260,6 +260,12 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   }
 
   const handleConnectAccount = async (type) => {
+    const error = await checkIfHasBalanceToCompleteAction(NinaProgramAction.CONNECTION_CREATE)
+    if (error) {
+      enqueueSnackbar(error.msg)
+      return
+    }
+
     localStorage.setItem('codeSource', type)
 
     switch (type) {
@@ -280,10 +286,10 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
         break
 
       case 'ethereum':
+        setEthAddress(undefined)
         var accounts = await window.ethereum.request({
           method: 'eth_requestAccounts',
         })
-        setEthAddress(undefined)
         setEthAddress(accounts[0])
         break
     }
