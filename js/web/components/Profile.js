@@ -227,7 +227,7 @@ const Profile = ({ profilePubkey }) => {
 
   useEffect(() => {
     if (verificationState[profilePubkey]) {
-      setProfileVerifications(verificationState[profilePubkey])
+      setProfileVerifications(verificationState[profilePubkey] || [])
     }
   }, [verificationState])
 
