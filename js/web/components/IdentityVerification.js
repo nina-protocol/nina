@@ -280,10 +280,10 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
         break
 
       case 'ethereum':
+        setEthAddress(undefined)
         var accounts = await window.ethereum.request({
           method: 'eth_requestAccounts',
         })
-        setEthAddress(undefined)
         setEthAddress(accounts[0])
         break
     }
