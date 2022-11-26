@@ -24,6 +24,10 @@ const NinaProgramAction = {
   RELEASE_PURCHASE_VIA_HUB: 'RELEASE_PURCHASE_VIA_HUB',
   EXCHANGE_INIT : 'EXCHANGE_INIT',
   EXCHANGE_ACCEPT: 'EXCHANGE_ACCEPT',
+  CONNECTION_CREATE: 'CONNECTION_CREATE',
+  SUBSCRIPTION_SUBSCRIBE_HUB: 'SUBSCRIPTION_SUBSCRIBE_HUB',
+  SUBSCRIPTION_SUBSCRIBE_ACCOUNT: 'SUBSCRIPTION_SUBSCRIBE_ACCOUNT',
+
 }
 
 const NinaProgramActionCost = {
@@ -39,6 +43,9 @@ const NinaProgramActionCost = {
   RELEASE_PURCHASE_VIA_HUB: 0.00204428,
   EXCHANGE_INIT: 0.0051256,
   EXCHANGE_ACCEPT: 0.00377536,
+  CONNECTION_CREATE: 0.009535238,
+  SUBSCRIPTION_SUBSCRIBE_HUB: 0.00173804,
+  SUBSCRIPTION_SUBSCRIBE_ACCOUNT: 0.00168236,
 }
 
 const NinaContext = createContext()
@@ -914,7 +921,7 @@ const ninaContextHelper = ({
       ) {
         return verifications.find(
           (verification) => verification.type === 'soundcloud'
-        ).image
+        ).image || '/images/nina-gray.png'
       } 
     } 
     return '/images/nina-gray.png'
@@ -931,7 +938,12 @@ const ninaContextHelper = ({
       ))
     } catch (error) {
       console.warn(error)
-      return []
+      setVerificationState(prevState => (
+        {
+          ...prevState,
+          [accountPubkey]: [],
+        }
+      ))
     }
   }
   
