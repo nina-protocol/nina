@@ -18,6 +18,7 @@ import {
 } from '../../utils/encrypt'
 import { logEvent } from '../../utils/event'
 import { publicKey } from '@project-serum/anchor/dist/cjs/utils';
+import { initSdkIfNeeded } from '../../utils/sdkInit';
 const lookupTypes = {
   PUBLISHED_BY: 'published_by',
   REVENUE_SHARE: 'revenue_share',
@@ -1466,6 +1467,7 @@ const releaseContextHelper = ({
 
   const getReleasesRecent = async () => {
     try {
+      await initSdkIfNeeded()
       const highlightsHubPubkey = process.env.REACT_APP_CLUSTER === 'devnet' ? '4xHeZW8BK8HeCinoDLsGiGwtYsjQ9zBb71m5vdDa5ceS' : '4QECgzp8hjknK3pvPEMoXATywcsNnH4MU49tVvDWLgKg'
       const published = (await NinaSdk.Release.fetchAll({limit: 25}, true)).releases
       const highlights = (await NinaSdk.Hub.fetchReleases(highlightsHubPubkey, true)).releases
