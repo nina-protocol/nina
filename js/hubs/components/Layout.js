@@ -10,7 +10,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { lightThemeOptions } from "../styles/theme/lightThemeOptions";
 import Head from "next/head";
 import NinaSdk from "@nina-protocol/js-sdk";
-import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
+import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
 
 const NavBar = dynamic(() => import("./NavBar"));
 const AudioPlayer = dynamic(() => import("./AudioPlayer"));
@@ -24,7 +24,7 @@ const Layout = ({ children, loading }) => {
   useEffect(() => {
     const getHubPubkey = async (handle) => {
       try {
-        await initSdkIfNeeded()
+        await initSdkIfNeeded();
         const publicKey = (await NinaSdk.Hub.fetch(handle)).hub.publicKey;
         setHubPubkey(publicKey);
       } catch (error) {

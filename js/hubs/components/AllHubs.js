@@ -8,7 +8,7 @@ import debounce from "lodash.debounce";
 import { isMobile } from "react-device-detect";
 import HubTileView from "./HubTileView";
 
-const AllHubs = ({loading}) => {
+const AllHubs = ({ loading }) => {
   const { getHubs, hubState, filterHubsAll } = useContext(Hub.Context);
   const [pendingFetch, setPendingFetch] = useState(false);
   const [totalCount, setTotalCount] = useState(null);

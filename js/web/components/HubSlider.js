@@ -17,10 +17,8 @@ import 'slick-carousel/slick/slick-theme.css'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 const { getImageFromCDN, loader } = imageManager
 
-const HubSlider = ({loading}) => {
-  const { featuredHubs, setFeaturedHubs } = useContext(
-    Hub.Context
-  )
+const HubSlider = ({ loading }) => {
+  const { featuredHubs, setFeaturedHubs } = useContext(Hub.Context)
   const { getSubscriptionsForUser } = useContext(Nina.Context)
 
   useEffect(() => {
@@ -34,7 +32,6 @@ const HubSlider = ({loading}) => {
         })
         .map((sub) => sub.to)
       setFeaturedHubs(_.shuffle(hubs))
-
     }
     if (!loading) {
       fetchFeaturedHubs()

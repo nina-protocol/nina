@@ -18,9 +18,7 @@ import { imageManager } from "@nina-protocol/nina-internal-sdk/src/utils";
 const { getImageFromCDN, loader } = imageManager;
 
 const HubSlider = () => {
-  const { featuredHubs, setFeaturedHubs } = useContext(
-    Hub.Context
-  );
+  const { featuredHubs, setFeaturedHubs } = useContext(Hub.Context);
   const { getSubscriptionsForUser } = useContext(Nina.Context);
 
   useEffect(() => {

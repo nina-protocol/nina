@@ -33,7 +33,12 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   const { enqueueSnackbar } = useSnackbar()
   const router = useRouter()
   const { publicKey, signTransaction, sendTransaction } = useWallet()
-  const { ninaClient, getVerificationsForUser, NinaProgramAction, checkIfHasBalanceToCompleteAction } = useContext(Nina.Context)
+  const {
+    ninaClient,
+    getVerificationsForUser,
+    NinaProgramAction,
+    checkIfHasBalanceToCompleteAction,
+  } = useContext(Nina.Context)
   const { provider } = ninaClient
 
   const [open, setOpen] = useState(false)
@@ -260,7 +265,9 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   }
 
   const handleConnectAccount = async (type) => {
-    const error = await checkIfHasBalanceToCompleteAction(NinaProgramAction.CONNECTION_CREATE)
+    const error = await checkIfHasBalanceToCompleteAction(
+      NinaProgramAction.CONNECTION_CREATE
+    )
     if (error) {
       enqueueSnackbar(error.msg)
       return
