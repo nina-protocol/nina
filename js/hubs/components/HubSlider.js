@@ -10,7 +10,7 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
 import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
-
+import _ from "lodash";
 import Dots from "./Dots";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -18,60 +18,25 @@ import { imageManager } from "@nina-protocol/nina-internal-sdk/src/utils";
 const { getImageFromCDN, loader } = imageManager;
 
 const HubSlider = () => {
-  const { getHubs, hubState, featuredHubs, setFeaturedHubs } = useContext(
+  const { featuredHubs, setFeaturedHubs } = useContext(
     Hub.Context
   );
   const { getSubscriptionsForUser } = useContext(Nina.Context);
-  const [featuredHubPublicKeys, setFeaturedHubPublicKeys] = useState();
-
-  const shuffle = (array) => {
-    let currentIndex = array.length,
-      randomIndex;
-
-    // While there remain elements to shuffle.
-    while (currentIndex != 0) {
-      // Pick a remaining element.
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-
-      // And swap it with the current element.
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex],
-        array[currentIndex],
-      ];
-    }
-
-    return array;
-  };
 
   useEffect(() => {
     const fetchFeaturedHubs = async () => {
       const response = await getSubscriptionsForUser(
         "7zoKqAehBR7oWMFpmWr2ebrhMvqL6oBsHdRcL2N3cmnU"
       );
-      const publicKeys = response
+      const hubs = response
         .filter((sub) => {
           return sub.subscriptionType === "hub";
         })
-        .map((sub) => sub.to.publicKey);
-      setFeaturedHubPublicKeys(publicKeys);
-      await getHubs({ limit: 100 });
+        .map((sub) => sub.to);
+      setFeaturedHubs(_.shuffle(hubs));
     };
     fetchFeaturedHubs();
   }, []);
-
-  useEffect(() => {
-    if (featuredHubPublicKeys) {
-      const featured = [];
-      Object.values(featuredHubPublicKeys).forEach((sub) => {
-        const hub = hubState[sub];
-        if (hub) {
-          featured.push(hub);
-        }
-      });
-      setFeaturedHubs(shuffle(featured));
-    }
-  }, [featuredHubPublicKeys, hubState]);
 
   const responsiveSettings = [
     {
