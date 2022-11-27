@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext } from 'react'
 import * as anchor from '@project-serum/anchor'
 import NinaSdk from '@nina-protocol/js-sdk';
+import _ from 'lodash'
 import Nina from '../Nina'
 import {
   createMintInstructions,
@@ -1467,18 +1468,20 @@ const releaseContextHelper = ({
 
   const getReleasesRecent = async () => {
     try {
-      await initSdkIfNeeded()
-      const highlightsHubPubkey = process.env.REACT_APP_CLUSTER === 'devnet' ? '4xHeZW8BK8HeCinoDLsGiGwtYsjQ9zBb71m5vdDa5ceS' : '4QECgzp8hjknK3pvPEMoXATywcsNnH4MU49tVvDWLgKg'
-      const published = (await NinaSdk.Release.fetchAll({limit: 25}, true)).releases
-      const highlights = (await NinaSdk.Hub.fetchReleases(highlightsHubPubkey, true)).releases
-
-      const allReleases = [...published, ...highlights]
-      setAllReleasesCount(published.total)
-      setReleaseState(updateStateForReleases(allReleases))
-      setReleasesRecentState({
-        published: published.map(release => release.publicKey),
-        highlights: highlights.map(release => release.publicKey),
-      })
+      if (!releasesRecentState.highlights || releasesRecentState.highlights.length === 0) {
+        await initSdkIfNeeded()
+        const highlightsHubPubkey = process.env.REACT_APP_CLUSTER === 'devnet' ? '4xHeZW8BK8HeCinoDLsGiGwtYsjQ9zBb71m5vdDa5ceS' : '4QECgzp8hjknK3pvPEMoXATywcsNnH4MU49tVvDWLgKg'
+        const published = (await NinaSdk.Release.fetchAll({limit: 25}, true)).releases
+        const highlights = (await NinaSdk.Hub.fetchReleases(highlightsHubPubkey, true)).releases
+  
+        const allReleases = [...published, ...highlights]
+        setAllReleasesCount(published.total)
+        setReleaseState(updateStateForReleases(allReleases))
+        setReleasesRecentState({
+          published: published.map(release => release.publicKey),
+          highlights: _.shuffle(highlights.map(release => release.publicKey)),
+        })
+      }
     } catch (error) {
       console.warn(error)
     }
