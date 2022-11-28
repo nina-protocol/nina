@@ -238,9 +238,9 @@ const ReusableTableBody = ({
         const recipient = data.tokenData.revenueShareRecipients.find(
           (recipient) => recipient.recipientAuthority === dashboardPublicKey
         )
-        const collectable = recipient.owed > 0
+        const collectable = recipient?.owed > 0
         const collectableAmount = ninaClient.nativeToUiString(
-          recipient.owed,
+          recipient?.owed || 0,
           data.tokenData.paymentMint
         )
 

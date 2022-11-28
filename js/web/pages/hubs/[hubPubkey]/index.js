@@ -43,11 +43,11 @@ const HubPage = ({ hub, hubPubkey, loading }) => {
         <meta name="twitter:image" content={hub?.data.image} />
         <meta name="og:image" content={hub?.data.image} />
       </Head>
-      {loading ? (
+      {loading && hub ? (
         <Dots size="80px" />
       ) : (
         <HubPageContainer>
-          <HubView hubPubkey={hubPubkey} hubHandle={hub.handle} />
+          <HubView hubPubkey={hubPubkey} hubHandle={hub?.handle} />
         </HubPageContainer>
       )}
     </>
