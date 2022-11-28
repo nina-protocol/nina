@@ -141,7 +141,6 @@ const ReleaseCreate = () => {
         })
         setProfileHubs(sortedHubs)
         setSelectedHub(sortedHubs[0]?.publicKey)
-        console.log('sortedHubs', sortedHubs)
       }
     }
   }, [fetchedHubsForUser])
@@ -424,14 +423,6 @@ const ReleaseCreate = () => {
     } = e
     setSelectedHub(value)
   }
-  console.log(
-    'wallet?.connected && npcAmountHeld < 1 && (!profileHubs && profileHubs?.length === 0)',
-    wallet?.connected &&
-      npcAmountHeld === 0 &&
-      (!profileHubs || profileHubs?.length === 0)
-  )
-  console.log('npcAmountHeld', npcAmountHeld)
-  console.log('profileHubs', profileHubs)
   return (
     <Grid item md={12}>
       {!wallet.connected && (

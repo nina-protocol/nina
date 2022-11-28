@@ -833,7 +833,6 @@ const ninaContextHelper = ({
   const getSubscriptionsForUser = async (accountPubkey) => {
     try{
       const { subscriptions } = await NinaSdk.Account.fetchSubscriptions(accountPubkey, false)
-      console.log('subscriptions: ', subscriptions)
       saveSubscriptionsToState(subscriptions)
       return subscriptions
     } catch (error) {
