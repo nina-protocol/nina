@@ -41,7 +41,7 @@ const PostCreateSchema = Yup.object().shape({
 const HubPostCreate = ({
   update,
   hubPubkey,
-  canAddContent,
+  // canAddContent,
   hubReleasesToReference,
   preloadedRelease = undefined,
   setParentOpen,
@@ -53,10 +53,10 @@ const HubPostCreate = ({
   const wallet = useWallet();
   const { postInitViaHub, hubState } = useContext(Hub.Context);
   const {
+    initBundlr,
     bundlrUpload,
     bundlrBalance,
     getBundlrBalance,
-    bundlrFund,
     bundlrWithdraw,
     getBundlrPricePerMb,
     bundlrPricePerMb,
@@ -99,14 +99,15 @@ const HubPostCreate = ({
     refreshBundlr();
   }, []);
 
-  const refreshBundlr = () => {
-    getBundlrPricePerMb();
-    getBundlrBalance();
-    getSolPrice();
+  const refreshBundlr = async () => {
+    await initBundlr()
+    await getBundlrPricePerMb();
+    await getBundlrBalance();
+    await getSolPrice();
   };
 
   useEffect(() => {
-    if (canAddContent) {
+    if (isPublishing) {
       if (!update) {
         if (!metadataTx) {
           setPublishingStepText(
@@ -134,7 +135,7 @@ const HubPostCreate = ({
       setButtonText(
         preloadedRelease
           ? `Create Post on ${hubData?.data.displayName}`
-          : `You do not have permission to create posts`
+          : `Create Post`
       );
     }
   }, [canAddContent, metadataTx, hubData]);
@@ -256,6 +257,11 @@ const HubPostCreate = ({
       }
     }
   };
+
+
+  console.log('formIsValid :>> ', formIsValid);
+  console.log(' mbs < uploadSize :>> ',  mbs < uploadSize);
+  console.log(' canAddContent :>> ',  canAddContent);
 
   return (
     <Root>

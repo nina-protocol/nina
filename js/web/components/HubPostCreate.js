@@ -41,7 +41,6 @@ const PostCreateSchema = Yup.object().shape({
 const HubPostCreate = ({
   update,
   hubPubkey,
-  canAddContent,
   hubReleasesToReference,
   preloadedRelease,
   selectedHubId,
@@ -58,6 +57,7 @@ const HubPostCreate = ({
     [hubState, hubPubkey, selectedHubId]
   )
   const {
+    initBundlr,
     bundlrUpload,
     bundlrBalance,
     getBundlrBalance,
@@ -98,14 +98,15 @@ const HubPostCreate = ({
     refreshBundlr()
   }, [])
 
-  const refreshBundlr = () => {
-    getBundlrPricePerMb()
-    getBundlrBalance()
-    getSolPrice()
+  const refreshBundlr = async () => {
+    await initBundlr()
+    await getBundlrPricePerMb()
+    await getBundlrBalance()
+    await getSolPrice()
   }
 
   useEffect(() => {
-    if (canAddContent) {
+    if (isPublishing) {
       if (!update) {
         if (!metadataTx) {
           setPublishingStepText(
@@ -133,7 +134,7 @@ const HubPostCreate = ({
       setButtonText(
         preloadedRelease
           ? `Create Post on ${hubData?.data.displayName}`
-          : `You do not have permission to create posts`
+          : `Create Post`
       )
     }
   }, [
@@ -141,7 +142,6 @@ const HubPostCreate = ({
     isPublishing,
     postCreated,
     bundlrBalance,
-    canAddContent,
     hubData,
   ])
 
@@ -268,6 +268,8 @@ const HubPostCreate = ({
     }
   }
 
+  console.log('bundlrBalance :>> ', bundlrBalance);
+
   return (
     <Root>
       <CreateCtaButton
@@ -320,7 +322,7 @@ const HubPostCreate = ({
                         disabled={
                           isPublishing ||
                           !formIsValid ||
-                          (!preloadedRelease && !canAddContent) ||
+                          (!preloadedRelease) ||
                           bundlrBalance === 0 ||
                           mbs < uploadSize
                         }

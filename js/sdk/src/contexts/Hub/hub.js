@@ -1052,7 +1052,7 @@ const hubContextHelper = ({
           ...hubAccountData,
         }
       })
-      setHubState(updatedHubState)
+      setHubState(prevState => ({...prevState, ...updatedHubState}))
       setHubCollaboratorsState(prevState =>(
         {
           ...prevState,
@@ -1060,7 +1060,6 @@ const hubContextHelper = ({
         }
       ))
       setFetchedHubsForUser(new Set([...fetchedHubsForUser, publicKey]))
-
       return hubs
     } catch (error) {
       console.warn(error)
