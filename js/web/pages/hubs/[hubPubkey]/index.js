@@ -47,7 +47,7 @@ const HubPage = ({ hub, hubPubkey, loading }) => {
         <Dots size="80px" />
       ) : (
         <HubPageContainer>
-          <HubView hubPubkey={hubPubkey} hubHandle={hub.handle} />
+          <HubView hubPubkey={hubPubkey} />
         </HubPageContainer>
       )}
     </>
@@ -93,7 +93,7 @@ export const getStaticProps = async (context) => {
           hub,
           hubPubkey: hub.publicKey,
         },
-        revalidate: 1000,
+        revalidate: 10,
       }
     } catch (error) {
       console.warn(error)

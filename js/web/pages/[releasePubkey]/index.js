@@ -79,7 +79,7 @@ export const getStaticProps = async (context) => {
         metadata: release.metadata,
         releasePubkey,
       },
-      revalidate: 1000,
+      revalidate: 10,
     }
   } catch (error) {
     console.warn(error)

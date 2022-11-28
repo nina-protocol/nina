@@ -77,9 +77,9 @@ const NavBar = ({ hubPubkey }) => {
     const fetchHub = async () => {
       const { hub } = await NinaSdk.Hub.fetch(hubPubkey);
       setHubData(hub);
-    }
+    };
     if (hubPubkey) {
-      fetchHub()
+      fetchHub();
     }
   }, [hubPubkey]);
 
@@ -142,10 +142,7 @@ const NavBar = ({ hubPubkey }) => {
             {hubData?.data && (
               <Image
                 loader={loader}
-                src={getImageFromCDN(
-                  hubData?.data?.image,
-                  100,
-                )}
+                src={getImageFromCDN(hubData?.data?.image, 100)}
                 height="50"
                 width="50"
                 alt="hub-logo"

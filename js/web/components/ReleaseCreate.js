@@ -141,7 +141,6 @@ const ReleaseCreate = () => {
         })
         setProfileHubs(sortedHubs)
         setSelectedHub(sortedHubs[0]?.publicKey)
-        console.log('sortedHubs', sortedHubs)
       }
     }
   }, [fetchedHubsForUser])
@@ -424,9 +423,6 @@ const ReleaseCreate = () => {
     } = e
     setSelectedHub(value)
   }
-  console.log('wallet?.connected && npcAmountHeld < 1 && (!profileHubs && profileHubs?.length === 0)', wallet?.connected && npcAmountHeld === 0 && (!profileHubs ||  profileHubs?.length === 0))
-  console.log('npcAmountHeld', npcAmountHeld)
-  console.log('profileHubs', profileHubs)
   return (
     <Grid item md={12}>
       {!wallet.connected && (
@@ -435,27 +431,29 @@ const ReleaseCreate = () => {
         </ConnectMessage>
       )}
 
-      {wallet?.connected && npcAmountHeld === 0 && (!profileHubs || profileHubs?.length === 0) && (
-        <Box style={{ display: 'flex' }}>
-          <NpcMessage>
-            <Typography variant="h3" sx={{ mb: 1 }}>
-              Nina is currently in a closed beta for uploading releases.
-            </Typography>
-            <EmailCapture size="medium" />
-            <Typography variant="h3" sx={{ mt: 1 }}>
-              Check our <Link href="/faq">FAQ</Link> or hit us at{' '}
-              <Link
-                target="_blank"
-                rel="noreferrer"
-                href="href=mailto:artists@ninaprotocol.com"
-              >
-                artists@ninaprotocol.com
-              </Link>{' '}
-              with any questions.
-            </Typography>
-          </NpcMessage>
-        </Box>
-      )}
+      {wallet?.connected &&
+        npcAmountHeld === 0 &&
+        (!profileHubs || profileHubs?.length === 0) && (
+          <Box style={{ display: 'flex' }}>
+            <NpcMessage>
+              <Typography variant="h3" sx={{ mb: 1 }}>
+                Nina is currently in a closed beta for uploading releases.
+              </Typography>
+              <EmailCapture size="medium" />
+              <Typography variant="h3" sx={{ mt: 1 }}>
+                Check our <Link href="/faq">FAQ</Link> or hit us at{' '}
+                <Link
+                  target="_blank"
+                  rel="noreferrer"
+                  href="href=mailto:artists@ninaprotocol.com"
+                >
+                  artists@ninaprotocol.com
+                </Link>{' '}
+                with any questions.
+              </Typography>
+            </NpcMessage>
+          </Box>
+        )}
       {wallet?.connected && (npcAmountHeld >= 1 || profileHubs?.length > 0) && (
         <>
           <UploadInfoModal
