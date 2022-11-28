@@ -14,7 +14,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import RoyaltyRecipientForm from './RoyaltyRecipientForm'
-
+import Link from 'next/link'
 const Royalty = (props) => {
   const { release, releasePubkey } = props
 
@@ -32,21 +32,20 @@ const Royalty = (props) => {
   const { collectRoyaltyForRelease } = useContext(Release.Context)
 
   useEffect(() => {
-    if (release?.royaltyRecipients) {
-      release.royaltyRecipients.forEach((recipient) => {
+    if (release?.revenueShareRecipients) {
+      release.revenueShareRecipients.forEach((recipient) => {
         if (
           wallet?.connected &&
-          recipient.recipientAuthority.toBase58() ===
-            wallet?.publicKey.toBase58()
+          recipient.recipientAuthority === wallet?.publicKey.toBase58()
         ) {
           setUserIsRecipient(true)
           setUserRecipientData(recipient)
-          setUserShare(recipient.percentShare.toNumber() / 10000)
-          setUserDisplayShare(recipient.percentShare.toNumber() / 10000)
+          setUserShare(recipient.percentShare / 10000)
+          setUserDisplayShare(recipient.percentShare / 10000)
         }
       })
     }
-  }, [release?.royaltyRecipients, wallet?.connected])
+  }, [release?.revenueShareRecipients, wallet?.connected])
 
   const toggleForm = () => {
     if (!formShown) {
@@ -99,7 +98,7 @@ const Royalty = (props) => {
         type="submit"
         onClick={() => setOpen(true)}
         fullWidth
-        sx={{mt:1}}
+        sx={{ mt: 1 }}
       >
         <Typography variant="body2">Revenue Share Info</Typography>
       </Button>
@@ -120,41 +119,41 @@ const Royalty = (props) => {
               Revenue Share Information:
             </Typography>
             <List>
-              {release?.royaltyRecipients &&
-                release.royaltyRecipients.map((recipient, i) => {
-                  if (recipient.percentShare.toNumber() > 0) {
+              {release?.revenueShareRecipients &&
+                release.revenueShareRecipients.map((recipient, i) => {
+                  if (recipient.percentShare > 0) {
                     const walletAuthorizedToCollect =
                       wallet?.connected &&
                       wallet?.publicKey.toBase58() ===
-                        recipient?.recipientAuthority.toBase58()
+                        recipient?.recipientAuthority
                         ? true
                         : false
                     const recipientHandle = walletAuthorizedToCollect ? (
                       'Your Revenue Share:'
                     ) : (
-                      <a
-                        href={`https://explorer.solana.com/address/${recipient.recipientAuthority.toBase58()}`}
-                        rel="noopener"
+                      <Link
+                        href={`/profiles/${recipient.recipientAuthority}`}
+                        passHref
                       >
-                        {`Collaborator ${i}`}
-                      </a>
+                        <a rel="noopener">{`Collaborator ${i}`}</a>
+                      </Link>
                     )
                     const percentShare = `percent share: ${
                       walletAuthorizedToCollect
                         ? userDisplayShare
-                        : recipient.percentShare.toNumber() / 10000
+                        : recipient.percentShare / 10000
                     }%`
 
                     const owed =
-                      walletAuthorizedToCollect && recipient.owed.toNumber() > 0
+                      walletAuthorizedToCollect && recipient.owed > 0
                         ? `owed: ${ninaClient.nativeToUiString(
-                            recipient.owed.toNumber(),
+                            recipient.owed,
                             release.paymentMint
                           )}`
                         : ''
 
                     const collectButton = walletAuthorizedToCollect &&
-                      recipient.owed.toNumber() > 0 && (
+                      recipient.owed > 0 && (
                         <Button
                           onClick={() => handleCollectRoyalty(recipient)}
                           variant="contained"

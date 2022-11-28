@@ -13,13 +13,15 @@ import RecentlyPublished from './RecentlyPublished'
 import Link from 'next/link'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 import HubSlider from './HubSlider'
+import EmailCapture from './EmailCapture'
 
-const HomePage = () => {
+const HomePage = ({ loading }) => {
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { getHubs, hubState, filterFeaturedHubs } = useContext(Hub.Context)
   const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
     useContext(Release.Context)
-  const { solPrice, NinaProgramAction, NinaProgramActionCost, getSolPrice } = useContext(Nina.Context)
+  const { solPrice, NinaProgramAction, NinaProgramActionCost, getSolPrice } =
+    useContext(Nina.Context)
   const [releasesRecent, setReleasesRecent] = useState({})
   const [hubs, setHubs] = useState(undefined)
 
@@ -27,94 +29,27 @@ const HomePage = () => {
 
   useEffect(() => {
     getSolPrice()
-    getReleasesRecent()
-    getHubs(true)
-  }, [])
+    if (!loading) {
+      getReleasesRecent()
+    }
+  }, [loading])
 
   useEffect(() => {
     setReleasesRecent(filterReleasesRecent())
   }, [releasesRecentState])
 
-  useEffect(() => {
-    if ((!hubs || hubs.length === 0) & Object.keys(hubState).length > 0) {
-      setHubs(filterFeaturedHubs())
-    }
-  }, [hubState])
-
   return (
-    <ScrollablePageWrapper>
+    <ScrollablePageWrapper paddingTop={'180px'}>
       <HomePageContainer overflowX="visible">
         <BlueTypography
           variant="h1"
           align="left"
-          sx={{ padding: { md: '0 165px 140px', xs: '30px 0px' } }}
+          sx={{ padding: { md: '0 165px 100px', xs: '30px 0px' } }}
         >
-          Nina is a new way to <Link href="/upload">publish</Link>,{' '}
-          <Link href="https://radio.ninaprotocol.com">listen to</Link>, and{' '}
-          <Link href="/releases">purchase</Link> music. We build tools for
-          artists + fans to create their <a
-            href="https://hubs.ninaprotocol.com/"
-            target="_blank"
-            rel="noreferrer"
-            passHref
-          >context</a>.{' '}
+          Welcome to Nina, <div>a digitally native music ecosystem.</div>
         </BlueTypography>
 
-        <Box sx={{ padding: { md: '0 40px 140px 40px', xs: '30px 0px' } }}>
-          <Box sx={{ display: 'flex', paddingLeft: { md: '30px', xs: '0' } }}>
-            <Typography
-              variant="body1"
-              align="left"
-              className={classes.sectionHeader}
-            >
-              <a
-                href="https://hubs.ninaprotocol.com/"
-                target="_blank"
-                rel="noreferrer"
-                passHref
-              >Hubs</a>
-            </Typography>
-          </Box>
-          <HubSlider hubs={hubs} />
-        </Box>
-
-        <Typography
-          variant="body1"
-          align="left"
-          className={classes.sectionHeader}
-        >
-          How it works
-        </Typography>
-        <Typography
-          variant="h1"
-          align="left"
-          sx={{paddingBottom: {md: '30px', xs: '30px'}}}
-        >
-          Music on Nina can be publicly streamed by anyone, while also being
-          released in the form of a digital edition as scarce or ubiquitous as
-          the artist desires. You can use Nina to simply host your music, to
-          sell digital editions, or to build out a patronage mechanism by
-          providing unique content + experiences to paying supporters.
-        </Typography>
-        <BlueTypography
-          variant="h1"
-          align="left"
-          sx={{paddingBottom: {md: '140px', xs: '30px'}}}
-        >
-          More questions? Read our{' '}
-          <a
-            href="https://nina-protocol.notion.site/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612"
-            target="_blank"
-            rel="noreferrer"
-            passHref
-          >
-            FAQ
-          </a>
-          .
-        </BlueTypography>
-
-
-        <Box sx={{ padding: { md: '0 40px 140px 40px', xs: '30px 0px' } }}>
+        <Box sx={{ padding: { md: '0 40px 80px 40px', xs: '30px 0px' } }}>
           <Box sx={{ display: 'flex', paddingLeft: { md: '30px', xs: '0' } }}>
             <Typography
               variant="body1"
@@ -140,61 +75,48 @@ const HomePage = () => {
               </Button>
             </Typography>
           </Box>
-          <RecentlyPublished releases={releasesRecent.highlights?.slice(0, 15) || []} />
+          <RecentlyPublished
+            releases={releasesRecent.highlights?.slice(0, 15) || []}
+          />
         </Box>
 
-        <Box sx={{ padding: { md: '0 40px 140px 40px', xs: '30px 0px' } }}>
+        <Typography
+          variant="h1"
+          align="left"
+          sx={{
+            paddingTop: { md: '40px', sx: '30px' },
+            paddingBottom: { md: '40px', xs: '30px' },
+          }}
+        >
+          On Nina, music is stored publically and permanently. Artists receive
+          100% of their sales. Our tools help you create and support context
+          around music.
+        </Typography>
+
+        <Box sx={{ padding: { md: '80px 40px 140px 40px', xs: '30px 0px' } }}>
           <Box sx={{ display: 'flex', paddingLeft: { md: '30px', xs: '0' } }}>
             <Typography
               variant="body1"
               align="left"
               className={classes.sectionHeader}
             >
-              <Link href="/releases/new">New Releases</Link>
-              <Button
-                sx={{ padding: '6px 8px' }}
-                onClick={() =>
-                  resetQueueWithPlaylist(
-                    releasesRecent.published.map(
-                      (release) => release.releasePubkey
-                    )
-                  ).then(() => {
-                    enqueueSnackbar('Now Playing: New Releases', {
-                      variant: 'info',
-                    })
-                  })
-                }
-              >
-                <PlayCircleOutlineOutlinedIcon sx={{ color: 'black' }} />
-              </Button>
+              <Link href="/hubs">Hubs</Link>
             </Typography>
           </Box>
-          <RecentlyPublished releases={releasesRecent.published || []} />
+          <HubSlider hubs={hubs} loading={loading} />
         </Box>
-        <Typography
-          variant="body1"
-          align="left"
-          className={classes.sectionHeader}
-        >
-          Our product is the Nina protocol, not your music.
-        </Typography>
-        <Typography
-          variant="h1"
-          align="left"
-          sx={{ paddingBottom: { md: '140px', xs: '30px' } }}
-        >
-          Artists receive 100% of their sales. The only fee is a one-time
-          payment (${`${(NinaProgramActionCost[NinaProgramAction.RELEASE_INIT_VIA_HUB] * solPrice).toFixed(2)}`} + $0.005/MB) that covers the storage and
-          transaction costs to the Solana and Arweave networks that Nina is
-          built on. Nina does not take a cut.
-        </Typography>
-        <BlueTypography
-          variant="h1"
-          align="center"
-          sx={{ paddingBottom: { md: '140px', xs: '30px' } }}
-        >
-          <Link href="/releases">Start exploring.</Link>
-        </BlueTypography>
+        <Box align="center" sx={{ paddingBottom: { md: '140px', xs: '30px' } }}>
+          <BlueTypography variant="h1" align="center">
+            <a
+              href="https://www.notion.so/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Learn More
+            </a>{' '}
+            or <EmailCapture size="large" />
+          </BlueTypography>
+        </Box>
       </HomePageContainer>
     </ScrollablePageWrapper>
   )
@@ -231,6 +153,7 @@ const HomePageContainer = styled('div')(({ theme }) => ({
 }))
 
 const BlueTypography = styled(Typography)(({ theme }) => ({
+  '& div': { color: theme.palette.blue },
   '& a': { color: theme.palette.blue },
 }))
 

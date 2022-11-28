@@ -83,7 +83,7 @@ class MyDocument extends Document {
             defer
             src="https://www.googletagmanager.com/gtag/js?id=G-VDD58V1D22"
           />
-          {process.env.REACT_APP_CLUSTER === 'mainnet-beta' && (
+          {process.env.SOLANA_CLUSTER === 'mainnet' && (
             <script
               dangerouslySetInnerHTML={{
                 __html: `

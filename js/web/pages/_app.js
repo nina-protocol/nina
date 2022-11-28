@@ -8,7 +8,7 @@ import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
 import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare'
 import { GlowWalletAdapter } from '@solana/wallet-adapter-glow'
-import { SolletWalletAdapter } from '@solana/wallet-adapter-sollet'
+import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 import { clusterApiUrl } from '@solana/web3.js'
 import dynamic from 'next/dynamic'
 import Router from 'next/router'
@@ -16,19 +16,21 @@ import { SnackbarProvider } from 'notistack'
 import { ThemeProvider } from '@mui/material/styles'
 import { NinaTheme } from '../../NinaTheme'
 import Dots from '../components/Dots'
-import Head from "next/head";
+import Head from 'next/head'
+import NinaSdk from '@nina-protocol/js-sdk'
+import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
 
 const NinaWrapper = dynamic(() => import('../components/NinaWrapper'))
 const Layout = dynamic(() => import('../components/Layout'))
 
 function Application({ Component, pageProps }) {
   const [loading, setLoading] = useState(false)
-
+  const [sdkInitialized, setSdkInitialized] = useState(false)
   React.useEffect(() => {
     const start = () => {
       setLoading(true)
     }
-    const end = () => {
+    const end = async () => {
       setLoading(false)
     }
     Router.events.on('routeChangeStart', start)
@@ -39,6 +41,12 @@ function Application({ Component, pageProps }) {
     if (jssStyles) {
       jssStyles.parentElement.removeChild(jssStyles)
     }
+
+    const handleSdkInitialization = async () => {
+      await initSdkIfNeeded()
+      setSdkInitialized(true)
+    }
+    handleSdkInitialization()
 
     return () => {
       Router.events.off('routeChangeStart', start)
@@ -54,19 +62,14 @@ function Application({ Component, pageProps }) {
 
   // You can also provide a custom RPC endpoint
   const endpoint = useMemo(() => {
-    if (network === WalletAdapterNetwork.MainnetBeta) {
-      return 'https://nina.rpcpool.com'
-    } else if (network === WalletAdapterNetwork.Devnet) {
-      return 'https://nina.devnet.rpcpool.com'
-    }
-    return clusterApiUrl(network)
+    return process.env.SOLANA_CLUSTER_URL
   }, [network])
 
   const walletOptions = [
     new PhantomWalletAdapter({ network }),
     new SolflareWalletAdapter({ network }),
     new GlowWalletAdapter({ network }),
-    new SolletWalletAdapter({ network }),
+    new BackpackWalletAdapter({ network }),
   ]
 
   // if (!isMobile) {
@@ -83,22 +86,21 @@ function Application({ Component, pageProps }) {
         vertical: 'top',
         horizontal: 'left',
       }}
-    >     
-    <Head>
-      <meta name="theme-color" content={'#ffffff'} key="theme" />
-     </Head>
-      
+    >
+      <Head>
+        <meta name="theme-color" content={'#ffffff'} key="theme" />
+      </Head>
+
       <ConnectionProvider endpoint={endpoint}>
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
             <NinaWrapper network={process.env.REACT_APP_CLUSTER}>
               <ThemeProvider theme={NinaTheme}>
                 <Layout>
-                  {loading ? (
-                    <Dots size="80px" />
-                  ) : (
-                    <Component {...pageProps} />
-                  )}
+                  <Component
+                    {...pageProps}
+                    loading={loading || !sdkInitialized}
+                  />
                 </Layout>
               </ThemeProvider>
             </NinaWrapper>

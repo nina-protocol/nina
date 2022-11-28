@@ -18,10 +18,9 @@ const ReleaseList = ({ userId }) => {
   const { enqueueSnackbar } = useSnackbar()
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const {
-    getReleasesInCollection,
     filterReleasesUserCollection,
     releaseState,
-    getUserCollection,
+    getUserCollectionAndPublished,
     filterReleasesList,
   } = useContext(Release.Context)
   const [listView, setListView] = useState(false)
@@ -34,17 +33,14 @@ const ReleaseList = ({ userId }) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    userId = userId || wallet.publicKey.toBase58()
     if (userId) {
       getOtherUserCollectionHandler(userId)
-    } else {
-      createCollection()
     }
   }, [])
 
   useEffect(() => {
-    if (wallet?.connected && !userId) {
-      getReleasesInCollection()
-    } else if (!wallet.connected && !userId) {
+    if (!wallet.connected && !userId) {
       setUserCollectionList(undefined)
       setUserCollectionReleases(undefined)
     }
@@ -68,7 +64,7 @@ const ReleaseList = ({ userId }) => {
   }, [userCollectionReleases])
 
   const getOtherUserCollectionHandler = async (userId) => {
-    const collection = await getUserCollection(userId)
+    const collection = await getUserCollectionAndPublished(userId)
     setUserCollectionList(collection)
   }
 

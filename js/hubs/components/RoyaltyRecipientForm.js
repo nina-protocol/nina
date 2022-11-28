@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 
-import {formatPlaceholder} from "@nina-protocol/nina-internal-sdk/esm/utils"
+import { formatPlaceholder } from "@nina-protocol/nina-internal-sdk/esm/utils";
 import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
 
 const RoyaltyRecipientForm = (props) => {
@@ -66,30 +66,25 @@ const RoyaltyRecipientForm = (props) => {
               <Field name="recipientAddress">
                 {({ field }) => (
                   <>
-                    <TextField
+                    <StyledTextField
                       className={classes.formField}
                       placeholder={formatPlaceholder(field.name)}
                       label={formatPlaceholder(field.name)}
-                      variant="standard"
                       {...field}
                     />
                   </>
                 )}
               </Field>
 
-              <Typography
-                id="discrete-slider-custom"
-                align="left"
-                style={{ color: "rgba(0, 0, 0, 0.54)" }}
-              >
+              <Typography id="discrete-slider-custom" align="left">
                 Percent Share:
               </Typography>
               <Box className={classes.royaltyPercentageWrapper}>
-                <Slider
+                <StyledSlider
                   defaultValue={20}
                   getAriaValueText={valuetext}
                   aria-labelledby="percent"
-                  // valueLabelDisplay="auto"
+                  valueLabelDisplay="auto"
                   className={`${classes.formField} ${classes.formSlider}`}
                   step={1}
                   min={0}
@@ -106,14 +101,9 @@ const RoyaltyRecipientForm = (props) => {
               </Box>
 
               <Box mt={3}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                >
+                <TransferRoyaltyButton type="submit" fullWidth>
                   Transfer Royalty
-                </Button>
+                </TransferRoyaltyButton>
               </Box>
             </Form>
           </Box>
@@ -134,19 +124,57 @@ const classes = {
   formError: `${PREFIX}-formError`,
 };
 
+const StyledSlider = styled(Slider)(({ theme }) => ({
+  color: `${theme.palette.text.primary} !important`,
+  "& .MuiSlider-thumb": {
+    backgroundColor: `${theme.palette.text.primary} !important`,
+  },
+  "& .MuiSlider-rail": {
+    color: `${theme.palette.text.primary} !important`,
+    backgroundColor: `${theme.palette.text.primary} !important`,
+  },
+  "& .MuiSlider-track": {
+    color: `${theme.palette.text.primary} !important`,
+    backgroundColor: `${theme.palette.text.primary} !important`,
+  },
+  "& .MuiSlider-markLabel": {
+    color: `${theme.palette.text.primary} !important`,
+  },
+}));
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  color: `${theme.palette.text.primary} !important`,
+  outline: "none",
+  borderColor: `${theme.palette.text.primary} !important`,
+  "& .MuiInputLabel-root": {
+    color: `${theme.palette.text.primary} !important`,
+  },
+  "& .MuiOutlinedInput-notchedOutline": {
+    borderColor: `${theme.palette.text.primary} !important`,
+  },
+}));
+const TransferRoyaltyButton = styled(Button)(({ theme }) => ({
+  color: theme.palette.text.primary,
+  borderRadius: "0px",
+  border: `1px solid ${theme.palette.text.primary}`,
+}));
 const Root = styled("div")(({ theme }) => ({
+  color: theme.palette.text.primary,
   [`& .${classes.redeemableForm}`]: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
     padding: "0 1rem",
+
     overflowY: "auto",
   },
 
   [`& .${classes.formField}`]: {
     margin: "0.75rem 0em",
     width: "100%",
+    color: theme.palette.text.primary,
+    stroke: theme.palette.text.primary,
+    backgroundColor: theme.palette.background.default,
     textTransform: "capitalize",
     "& :placeholder": {
       textTransform: "capitalize",
@@ -156,6 +184,7 @@ const Root = styled("div")(({ theme }) => ({
   [`& .${classes.formSelect}`]: {
     padding: "18.5px 14px",
     boxSizing: "border-box",
+    color: theme.palette.text.primary,
     borderColor: "rgba(0, 0, 0, 0.23)",
     color: "rgba(0, 0, 0, 0.5)",
     "& $option": {
@@ -178,6 +207,7 @@ const Root = styled("div")(({ theme }) => ({
     display: "flex",
     justifyContent: "space-inbetween",
     alignItems: "center",
+    color: `${theme.palette.text.primary} !important`,
   },
 
   [`& .${classes.formError}`]: {

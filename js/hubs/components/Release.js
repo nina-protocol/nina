@@ -1,9 +1,15 @@
-import React, { useState, useContext, useEffect, createElement, Fragment } from "react";
+import React, {
+  useState,
+  useContext,
+  useEffect,
+  createElement,
+  Fragment,
+} from "react";
 import dynamic from "next/dynamic";
 import Audio from "@nina-protocol/nina-internal-sdk/esm/Audio";
 import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
 import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
-import { imageManager } from "@nina-protocol/nina-internal-sdk/esm/utils"
+import { imageManager } from "@nina-protocol/nina-internal-sdk/esm/utils";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
@@ -12,13 +18,14 @@ import Typography from "@mui/material/Typography";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import { useWallet } from "@solana/wallet-adapter-react";
-import {unified} from "unified";
+import { unified } from "unified";
 import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
-const { getImageFromCDN, loader } = imageManager
+const { getImageFromCDN, loader } = imageManager;
 
+const Royalty = dynamic(() => import("./Royalty"));
 const Button = dynamic(() => import("@mui/material/Button"));
 const ReleasePurchase = dynamic(() => import("./ReleasePurchase"));
 const AddToHubModal = dynamic(() => import("./AddToHubModal"));
@@ -26,14 +33,17 @@ const AddToHubModal = dynamic(() => import("./AddToHubModal"));
 const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const wallet = useWallet();
 
-  const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } = useContext(Audio.Context);
+  const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } =
+    useContext(Audio.Context);
   const { releaseState, getRelease } = useContext(Release.Context);
-  const { getHub, hubState, getHubsForUser, filterHubsForUser } =
-    useContext(Hub.Context);
+  const { getHub, hubState, getHubsForUser, filterHubsForUser } = useContext(
+    Hub.Context
+  );
 
   const [metadata, setMetadata] = useState(metadataSsr || null);
   const [description, setDescription] = useState();
   const [userHubs, setUserHubs] = useState();
+  const [userIsRecipient, setUserIsRecipient] = useState(false);
 
   useEffect(() => {
     if (hubPubkey && !hubState[hubPubkey]) {
@@ -54,21 +64,19 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   }, [releaseState, metadata, releasePubkey]);
 
   useEffect(() => {
-    if (wallet.connected && hubState[hubPubkey] && !userHubs) {
-      getHubsForUser(wallet.publicKey.toBase58());
+    const fetchHubs = async () => {
+      const hubs = await getHubsForUser(wallet.publicKey.toBase58());
+      setUserHubs(hubs);
+    };
+    if (wallet.connected && hubState && !userHubs) {
+      fetchHubs();
     }
-  }, [wallet.connect, hubState[hubPubkey]]);
+  }, [wallet?.connected, hubState]);
 
   useEffect(() => {
-    if (wallet.connected && hubState) {
-      setUserHubs(filterHubsForUser(wallet.publicKey.toBase58()));
-    }
-  }, [hubState]);
-
-  useEffect(() => {
-    if (metadata?.description.includes('<p>')) {
+    if (metadata?.descriptionHtml?.includes("<p>")) {
       unified()
-        .use(rehypeParse, {fragment: true})
+        .use(rehypeParse, { fragment: true })
         .use(rehypeSanitize)
         .use(rehypeReact, {
           createElement,
@@ -79,18 +87,30 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
           rel: ["nofollow", "noreferrer"],
         })
         .process(
-          JSON.parse(metadata.description).replaceAll(
-            "<p><br></p>",
-            "<br>"
-          )
+          JSON.parse(metadata.descriptionHtml).replaceAll("<p><br></p>", "<br>")
         )
         .then((file) => {
           setDescription(file.result);
         });
     } else {
-      setDescription(metadata?.description)
+      setDescription(metadata?.description);
     }
   }, [metadata?.description]);
+
+  useEffect(() => {
+    if (releaseState.tokenData[releasePubkey]?.revenueShareRecipients) {
+      releaseState.tokenData[releasePubkey]?.revenueShareRecipients.forEach(
+        (recipient) => {
+          if (
+            wallet?.connected &&
+            recipient.recipientAuthority === wallet?.publicKey.toBase58()
+          ) {
+            setUserIsRecipient(true);
+          }
+        }
+      );
+    }
+  }, [releaseState.tokenData[releasePubkey], wallet?.connected]);
 
   return (
     <>
@@ -107,7 +127,11 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
           <>
             <MobileImageWrapper>
               <Image
-                src={getImageFromCDN(metadata.image, 1200, new Date(Date.parse(metadata.properties.date)))}
+                src={getImageFromCDN(
+                  metadata.image,
+                  1200,
+                  new Date(Date.parse(metadata.properties.date))
+                )}
                 loader={loader}
                 layout="responsive"
                 objectFit="contain"
@@ -127,14 +151,17 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                 {metadata.properties.artist} - {metadata.properties.title}
               </Typography>
 
-              <Box display="flex" sx={{ mt: "15px", mb: {md: "15px", xs: '0px'} }}>
+              <Box
+                display="flex"
+                sx={{ mt: "15px", mb: { md: "15px", xs: "0px" } }}
+              >
                 <PlayButton
                   sx={{ height: "22px", width: "28px", m: 0, paddingLeft: 0 }}
                   onClickCapture={(e) => {
                     e.stopPropagation();
-                    setInitialized(true)
+                    setInitialized(true);
                     if (!audioPlayerRef.current.src) {
-                      audioPlayerRef.current.load()
+                      audioPlayerRef.current.load();
                     }
                     updateTrack(
                       releasePubkey,
@@ -161,17 +188,26 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
               </Box>
             </CtaWrapper>
 
-            <Box sx={{ marginTop: { md: "0px", xs: "30px" } }}>
+            <Box
+              sx={{
+                marginTop: { md: "0px", xs: "30px" },
+                marginBottom: "15px",
+              }}
+            >
               <ReleasePurchase
                 releasePubkey={releasePubkey}
                 metadata={metadata}
                 hubPubkey={hubPubkey}
               />
+              {userIsRecipient && (
+                <Royalty
+                  release={releaseState.tokenData[releasePubkey]}
+                  releasePubkey={releasePubkey}
+                />
+              )}
             </Box>
 
-            <StyledDescription align="left">
-              {description}
-            </StyledDescription>
+            <StyledDescription align="left">{description}</StyledDescription>
           </>
         )}
       </StyledGrid>
@@ -180,7 +216,11 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
         {metadata && metadata.image && (
           <ImageContainer>
             <Image
-              src={getImageFromCDN(metadata.image, 1200, new Date(Date.parse(metadata.properties.date)))}
+              src={getImageFromCDN(
+                metadata.image,
+                1200,
+                new Date(Date.parse(metadata.properties.date))
+              )}
               loader={loader}
               layout="responsive"
               objectFit="contain"
@@ -197,9 +237,9 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
 };
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
-  [theme.breakpoints.down('md')]: {
-    '&:-webkit-scrollbar': {
-      display: 'none !important'
+  [theme.breakpoints.down("md")]: {
+    "&:-webkit-scrollbar": {
+      display: "none !important",
     },
   },
 }));
@@ -216,18 +256,19 @@ const PlayButton = styled(Button)(({ theme }) => ({
 }));
 
 const StyledDescription = styled(Typography)(({ theme }) => ({
-  fontSize: '18px !important',
-  lineHeight: '20.7px !important',
-  '&::-webkit-scrollbar': {
-    display: 'none',
+  fontSize: "18px !important",
+  lineHeight: "20.7px !important",
+  marginTop: "15px",
+  "&::-webkit-scrollbar": {
+    display: "none",
   },
   [theme.breakpoints.up("md")]: {
     maxHeight: "275px",
     overflowY: "scroll",
-    height: '275px'
+    height: "275px",
   },
   [theme.breakpoints.down("md")]: {
-    paddingBottom: '40px'
+    paddingBottom: "40px",
   },
 }));
 
