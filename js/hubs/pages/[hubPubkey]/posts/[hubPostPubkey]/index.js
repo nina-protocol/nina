@@ -98,7 +98,7 @@ export const getStaticProps = async (context) => {
         post,
         hub,
       },
-      revalidate: 1000,
+      revalidate: 10,
     };
   } catch (error) {
     console.warn(error);

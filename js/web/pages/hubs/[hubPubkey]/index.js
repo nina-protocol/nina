@@ -93,7 +93,7 @@ export const getStaticProps = async (context) => {
           hub,
           hubPubkey: hub.publicKey,
         },
-        revalidate: 1000,
+        revalidate: 10,
       }
     } catch (error) {
       console.warn(error)

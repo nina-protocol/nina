@@ -86,6 +86,6 @@ export const getStaticProps = async (context) => {
     props: {
       profilePubkey: profilePubkey,
     },
-    revalidate: 1000,
+    revalidate: 10,
   }
 }
