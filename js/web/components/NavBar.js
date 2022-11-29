@@ -56,8 +56,8 @@ const NavBar = () => {
         <NavDrawer />
         <Breadcrumbs />
         <SearchIconWrapper>
-          <Link href="/search">
-            <SearchIcon />
+          <Link href="/search" passHref>
+            <SearchIcon onClick={() => router.push('/search')} />
           </Link>
         </SearchIconWrapper>
       </NavLeft>
