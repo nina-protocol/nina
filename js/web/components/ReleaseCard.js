@@ -104,7 +104,7 @@ const ReleaseCard = (props) => {
             priority={true}
           />
         )}
-        {!preview && metadata && (
+        {!preview && metadata && release && (
           <Image
             height={350}
             width={350}
@@ -112,7 +112,7 @@ const ReleaseCard = (props) => {
             src={getImageFromCDN(
               image,
               400,
-              new Date(Date.parse(metadata.properties.date))
+              new Date(release.releaseDatetime)
             )}
             alt={metadata?.name}
             priority={true}

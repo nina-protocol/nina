@@ -122,12 +122,12 @@ const Feed = ({
                 }
               >
                 <Image
-                  height={'100px'}
-                  width={'100px'}
+                  height={'400px'}
+                  width={'400px'}
                   layout="responsive"
                   src={getImageFromCDN(
                     item.hub?.data.image,
-                    400,
+                    600,
                     Date.parse(item.datetime)
                   )}
                   alt={i}
@@ -165,12 +165,12 @@ const Feed = ({
                 }
               >
                 <Image
-                  height={'100px'}
-                  width={'100px'}
+                  height={'400px'}
+                  width={'400px'}
                   layout="responsive"
                   src={getImageFromCDN(
                     item.release?.metadata.image,
-                    400,
+                    600,
                     Date.parse(item.datetime)
                   )}
                   alt={i}
@@ -228,12 +228,12 @@ const Feed = ({
                 }
               >
                 <Image
-                  height={'100px'}
-                  width={'100px'}
+                  height={'400px'}
+                  width={'400px'}
                   layout="responsive"
                   src={getImageFromCDN(
                     item.release?.metadata.image,
-                    400,
+                    600,
                     Date.parse(item.datetime)
                   )}
                   alt={i}
@@ -291,12 +291,12 @@ const Feed = ({
                 }
               >
                 <Image
-                  height={'100px'}
-                  width={'100px'}
+                  height={'400px'}
+                  width={'400px'}
                   layout="responsive"
                   src={getImageFromCDN(
                     item.release?.metadata.image,
-                    400,
+                    600,
                     Date.parse(item.datetime)
                   )}
                   alt={i}
@@ -357,12 +357,12 @@ const Feed = ({
             <ImageCard>
               <Link href={`/hubs/${item?.hub?.handle}`} passHref>
                 <Image
-                  height={'100px'}
-                  width={'100px'}
+                  height={'400px'}
+                  width={'400px'}
                   layout="responsive"
                   src={getImageFromCDN(
                     item?.hub?.data.image,
-                    200,
+                    600,
                     Date.parse(item.datetime)
                   )}
                   alt={i}
@@ -400,12 +400,12 @@ const Feed = ({
                 }
               >
                 <Image
-                  height={'100px'}
-                  width={'100px'}
+                  height={'400px'}
+                  width={'400px'}
                   layout="responsive"
                   src={getImageFromCDN(
                     item.release?.metadata.image,
-                    400,
+                    600,
                     Date.parse(item.datetime)
                   )}
                   alt={i}
@@ -538,12 +538,12 @@ const Feed = ({
             <ImageCard>
               <Link href={`/hubs/${item.toHub.handle}`} passHref>
                 <Image
-                  height={'100px'}
-                  width={'100px'}
+                  height={'400px'}
+                  width={'400px'}
                   layout="responsive"
                   src={getImageFromCDN(
                     item.toHub.data.image,
-                    400,
+                    600,
                     Date.parse(item.datetime)
                   )}
                   alt={i}

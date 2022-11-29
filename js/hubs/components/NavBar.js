@@ -136,13 +136,16 @@ const NavBar = ({ hubPubkey }) => {
         }}
       >
         {mobileView && canAddContent && displayMobile()}
-
         <Link href={`/${hubData?.handle || ""}`} passHref>
           <LogoLinkWrapper>
             {hubData?.data && (
               <Image
                 loader={loader}
-                src={getImageFromCDN(hubData?.data?.image, 100)}
+                src={getImageFromCDN(
+                  hubData?.data?.image,
+                  100,
+                  new Date(hubData.datetime)
+                )}
                 height="50"
                 width="50"
                 alt="hub-logo"
