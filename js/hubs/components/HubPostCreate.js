@@ -137,7 +137,7 @@ const HubPostCreate = ({
           : `Create Post`
       );
     }
-  }, [canAddContent, metadataTx, hubData]);
+  }, [metadataTx, hubData]);
 
   const handleFormChange = useCallback(
     async (values) => {
@@ -308,7 +308,6 @@ const HubPostCreate = ({
                         disabled={
                           isPublishing ||
                           !formIsValid ||
-                          !canAddContent ||
                           bundlrBalance === 0 ||
                           mbs < uploadSize
                         }
