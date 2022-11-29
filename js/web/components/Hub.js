@@ -93,6 +93,15 @@ const HubComponent = ({ hubPubkey }) => {
   }, [hubCollaboratorsState])
 
   useEffect(() => {
+    if (router.query.view) {
+      const viewIndex = views.findIndex(
+        (view) => view.name === router.query.view
+      )
+      setActiveView(viewIndex)
+    }
+  }, [router.query.view])
+
+  useEffect(() => {
     let updatedView = views.slice()
     let viewIndex
 
@@ -119,7 +128,6 @@ const HubComponent = ({ hubPubkey }) => {
     let viewIndex
 
     if (hubReleases?.length > 0) {
-      setActiveView(0)
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
       updatedView[viewIndex].disabled = false
       updatedView[viewIndex].count = hubReleases.length
@@ -156,15 +164,6 @@ const HubComponent = ({ hubPubkey }) => {
       setActiveView(viewIndex)
     }
   }, [views])
-
-  useEffect(() => {
-    if (router.query.view) {
-      const viewIndex = views.findIndex(
-        (view) => view.name === router.query.view
-      )
-      setActiveView(viewIndex)
-    }
-  }, [router.query.view])
 
   const viewHandler = (event) => {
     event.stopPropagation()
