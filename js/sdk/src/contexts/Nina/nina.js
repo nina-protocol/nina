@@ -626,7 +626,6 @@ const ninaContextHelper = ({
         if (solUsdcBalanceResult < 10000000) {
           console.log('setting low :>> ', solUsdcBalanceResult);
           setLowSolBalance(true)
-          console.log('lowSolBalance in context :>> ', lowSolBalance);
         }
         
         let [usdcTokenAccountPubkey] = await findOrCreateAssociatedTokenAccount(
