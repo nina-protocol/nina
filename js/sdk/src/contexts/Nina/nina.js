@@ -56,6 +56,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [verificationState, setVerificationState] = useState({})
   const [usdcBalance, setUsdcBalance] = useState(0)
   const [solBalance, setSolBalance] = useState(0)
+  const [lowSolBalance, setLowSolBalance] = useState(false)
   const [solUsdcBalance, setSolUsdcBalance] = useState(0)
   const [npcAmountHeld, setNpcAmountHeld] = useState(0)
   const [solPrice, setSolPrice] = useState(0)
@@ -182,6 +183,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     setSolBalance,
     verificationState,
     setVerificationState,
+    setLowSolBalance
   })
 
   const userSubscriptions = useMemo(() => {
@@ -246,6 +248,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         getVerificationsForUser,
         filterSubscriptionsForHub,
         submitEmailRequest,
+        lowSolBalance
       }}
     >
       {children}
@@ -274,6 +277,7 @@ const ninaContextHelper = ({
   setSolBalance,
   verificationState,
   setVerificationState,
+  setLowSolBalance
 }) => {
   const { provider, ids, uiToNative, nativeToUi } = ninaClient
 
@@ -619,6 +623,12 @@ const ninaContextHelper = ({
      
         setSolUsdcBalance((ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) * solPrice.data.data.price).toFixed(2))
         setSolBalance(solUsdcBalanceResult)
+        if (solUsdcBalanceResult < 10000000) {
+          console.log('setting low :>> ', solUsdcBalanceResult);
+          setLowSolBalance(true)
+          console.log('lowSolBalance in context :>> ', lowSolBalance);
+        }
+        
         let [usdcTokenAccountPubkey] = await findOrCreateAssociatedTokenAccount(
           provider.connection,
           provider.wallet.publicKey,

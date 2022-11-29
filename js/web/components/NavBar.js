@@ -19,6 +19,7 @@ import NavSearch from './NavSearch'
 import SearchIcon from '@mui/icons-material/Search'
 import EmailCapture from './EmailCapture'
 import FeedDrawer from './FeedDrawer'
+import LowBalanceModal from './LowBalanceModal'
 
 const NavBar = () => {
   const router = useRouter()
@@ -27,8 +28,9 @@ const NavBar = () => {
     getSubscriptionsForUser,
     filterSubscriptionsForUser,
     subscriptionState,
+    lowSolBalance,
+    getUsdcBalance
   } = useContext(Nina.Context)
-
   const wallet = useWallet()
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),
@@ -47,8 +49,10 @@ const NavBar = () => {
   useEffect(() => {
     if (wallet.connected) {
       getSubscriptionsForUser(wallet.publicKey.toBase58())
+      getUsdcBalance()
     }
   }, [wallet.connected])
+
 
   return (
     <Root>
@@ -67,10 +71,14 @@ const NavBar = () => {
           <Typography variant="h4">NINA</Typography>
         </Link>
       </Logo>
+      
 
       <NavRight>
         <DesktopWalletWrapper>
           <NavCtas>
+            <Box>
+              <LowBalanceModal />
+            </Box>
             <SearchBarWrapper>
               <NavSearch />
             </SearchBarWrapper>
