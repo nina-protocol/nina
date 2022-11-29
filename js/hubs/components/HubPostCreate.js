@@ -41,7 +41,6 @@ const PostCreateSchema = Yup.object().shape({
 const HubPostCreate = ({
   update,
   hubPubkey,
-  // canAddContent,
   hubReleasesToReference,
   preloadedRelease = undefined,
   setParentOpen,
@@ -100,7 +99,7 @@ const HubPostCreate = ({
   }, []);
 
   const refreshBundlr = async () => {
-    await initBundlr()
+    await initBundlr();
     await getBundlrPricePerMb();
     await getBundlrBalance();
     await getSolPrice();
@@ -257,11 +256,6 @@ const HubPostCreate = ({
       }
     }
   };
-
-
-  console.log('formIsValid :>> ', formIsValid);
-  console.log(' mbs < uploadSize :>> ',  mbs < uploadSize);
-  console.log(' canAddContent :>> ',  canAddContent);
 
   return (
     <Root>

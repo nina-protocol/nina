@@ -137,13 +137,7 @@ const HubPostCreate = ({
           : `Create Post`
       )
     }
-  }, [
-    metadataTx,
-    isPublishing,
-    postCreated,
-    bundlrBalance,
-    hubData,
-  ])
+  }, [metadataTx, isPublishing, postCreated, bundlrBalance, hubData])
 
   const handleFormChange = useCallback(
     async (values) => {
@@ -268,8 +262,6 @@ const HubPostCreate = ({
     }
   }
 
-  console.log('bundlrBalance :>> ', bundlrBalance);
-
   return (
     <Root>
       <CreateCtaButton
@@ -322,7 +314,7 @@ const HubPostCreate = ({
                         disabled={
                           isPublishing ||
                           !formIsValid ||
-                          (!preloadedRelease) ||
+                          !preloadedRelease ||
                           bundlrBalance === 0 ||
                           mbs < uploadSize
                         }

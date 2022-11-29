@@ -712,7 +712,6 @@ const ninaContextHelper = ({
         bundlrInstance = bundlr
       }
       const bundlrBalanceRequest = await bundlrInstance?.getLoadedBalance()
-      console.log('bundlrBalanceRequest :>> ', bundlrBalanceRequest);
       setBundlrBalance(nativeToUi(bundlrBalanceRequest, ids.mints.wsol))
     } catch (error) {
       console.warn('Unable to get Bundlr Balance: ', error)
