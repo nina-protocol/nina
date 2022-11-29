@@ -170,7 +170,8 @@ const HubComponent = ({ hubPubkey }) => {
     event.stopPropagation()
     const index = parseInt(event.target.id)
     const activeViewName = views[index].name
-    const newUrl = `/hubs/${hubPubkey}?view=${activeViewName}`
+    const hubHandle = hubState[hubPubkey]?.handle
+    const newUrl = `/hubs/${hubHandle}?view=${activeViewName}`
     window.history.replaceState(
       {
         ...window.history.state,
