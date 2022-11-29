@@ -872,7 +872,7 @@ const ninaContextHelper = ({
       ) {
         return verifications.find(
           (verification) => verification.type === 'twitter'
-        ).displayName
+        ).displayName || truncateAddress(publicKey)
       } else if (
         verifications?.find(
           (verification) => verification.type === 'soundcloud'
@@ -880,7 +880,7 @@ const ninaContextHelper = ({
       ) {
         return verifications.find(
           (verification) => verification.type === 'soundcloud'
-        ).displayName
+        ).displayName || truncateAddress(publicKey)
       } else if (
         verifications?.find(
           (verification) => verification.type === 'instagram'
@@ -888,7 +888,7 @@ const ninaContextHelper = ({
       ) {
         return verifications.find(
           (verification) => verification.type === 'instagram'
-        ).displayName
+        ).displayName || truncateAddress(publicKey)
       } else if (
         verifications?.find(
           (verification) => verification.type === 'ethereum'
