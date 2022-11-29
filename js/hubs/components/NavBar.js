@@ -107,7 +107,6 @@ const NavBar = ({ hubPubkey }) => {
 
   useEffect(() => {
     if (wallet.connected) {
-      console.log('getiching');
       getHubsForUser(wallet.publicKey.toBase58());
     }
   },[wallet.connected])
