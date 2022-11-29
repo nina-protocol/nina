@@ -39,7 +39,6 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
       }
       const userHubCollaborations = Object.values(hubCollaboratorsState).filter(
         (collaborator) => {
-          console.log(collaborator)
           return (
             collaborator.canAddContent === true &&
             collaborator.collaborator === wallet.publicKey.toBase58()

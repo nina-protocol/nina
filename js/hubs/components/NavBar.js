@@ -67,6 +67,7 @@ const NavBar = ({ hubPubkey }) => {
     hubCollaboratorsState,
     filterHubCollaboratorsForHub,
     getHub,
+    getHubsForUser
   } = useContext(Hub.Context);
   const hubCollaborators = useMemo(
     () => filterHubCollaboratorsForHub(hubPubkey),
@@ -104,6 +105,12 @@ const NavBar = ({ hubPubkey }) => {
     [wallet?.publicKey]
   );
 
+  useEffect(() => {
+    if (wallet.connected) {
+      getHubsForUser(wallet.publicKey.toBase58());
+    }
+  },[wallet.connected])
+
   const walletDisplay = useMemo(() => {
     if (!wallet || !base58) return null;
     return base58.slice(0, 4) + ".." + base58.slice(-4);
@@ -136,13 +143,16 @@ const NavBar = ({ hubPubkey }) => {
         }}
       >
         {mobileView && canAddContent && displayMobile()}
-
         <Link href={`/${hubData?.handle || ""}`} passHref>
           <LogoLinkWrapper>
             {hubData?.data && (
               <Image
                 loader={loader}
-                src={getImageFromCDN(hubData?.data?.image, 100)}
+                src={getImageFromCDN(
+                  hubData?.data?.image,
+                  100,
+                  new Date(hubData.datetime)
+                )}
                 height="50"
                 width="50"
                 alt="hub-logo"
