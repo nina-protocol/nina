@@ -48,8 +48,7 @@ const LowBalanceModal = () => {
     const getUserData = async () => {
     await getUserBalances()
       if (lowSolBalance) {
-        // const [_, published] = await getUserCollectionAndPublished(wallet.publicKey.toBase58(), true)
-        const published = await filterReleasesPublishedByUser(wallet.publicKey.toBase58())
+        const [_, published] = await getUserCollectionAndPublished(wallet.publicKey.toBase58(), true)
         console.log('published :>> ', published);
         setUserPublishedReleases(published)
       }
@@ -57,7 +56,7 @@ const LowBalanceModal = () => {
     if (wallet.connected) {
       getUserData()
     }
-  }, [releaseState])
+  }, [lowSolBalance])
   
   useEffect(() => {
     if (lowSolBalance && (usdcBalance > 0 || collectableBalance > 0)) {
@@ -69,9 +68,7 @@ const LowBalanceModal = () => {
     if (userPublishedReleases) {
       let total = 0
       userPublishedReleases?.forEach((release) => {
-        console.log('release :>> ', release);
-        // const recipient = release.accountData.release.revenueShareRecipients.find(recipient => recipient.recipientAuthority === wallet.publicKey.toBase58())
-        const recipient = release.recipient
+        const recipient = release.accountData.release.revenueShareRecipients.find(recipient => recipient.recipientAuthority === wallet.publicKey.toBase58())
         total = total + recipient.owed
         return recipient.owed
       })

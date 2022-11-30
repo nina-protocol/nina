@@ -1391,7 +1391,13 @@ const releaseContextHelper = ({
   const getRelease = async (releasePubkey) => {
     try {
       const { release } = await NinaSdk.Release.fetch(releasePubkey, true)
-      setReleaseState(updateStateForReleases([release]))
+      const newState = updateStateForReleases([release])
+      setReleaseState(prevState => ({
+        ...prevState,
+        tokenData: {...prevState.tokenData, ...newState.tokenData},
+        metadata: {...prevState.metadata, ...newState.metadata},
+        releaseMintMap: {...prevState.releaseMintMap, ...newState.releaseMintMap},
+      }))
     } catch (error) {
       console.warn(error)
     }
@@ -1400,7 +1406,13 @@ const releaseContextHelper = ({
   const getReleasesPublishedByUser = async (publicKey, withAccountData=false) => {
     try {
       const { published } = await NinaSdk.Account.fetchPublished(publicKey, withAccountData)
-      setReleaseState(updateStateForReleases(published))
+      const newState = updateStateForReleases(published)
+      setReleaseState(prevState => ({
+        ...prevState,
+        tokenData: {...prevState.tokenData, ...newState.tokenData},
+        metadata: {...prevState.metadata, ...newState.metadata},
+        releaseMintMap: {...prevState.releaseMintMap, ...newState.releaseMintMap},
+      }))
     } catch (error) {
       console.warn(error)
     }
@@ -1409,7 +1421,13 @@ const releaseContextHelper = ({
   const getReleasesCollectedByUser = async (publicKey) => {
     try {
       const { collected } = await NinaSdk.Account.fetchCollected(publicKey)
-      setReleaseState(updateStateForReleases(collected))
+      const newState = updateStateForReleases(collected)
+      setReleaseState(prevState => ({
+        ...prevState,
+        tokenData: {...prevState.tokenData, ...newState.tokenData},
+        metadata: {...prevState.metadata, ...newState.metadata},
+        releaseMintMap: {...prevState.releaseMintMap, ...newState.releaseMintMap},
+      }))
     } catch (error) {
       console.warn(error)
     }
@@ -1423,8 +1441,17 @@ const releaseContextHelper = ({
       const { collected } = await NinaSdk.Account.fetchCollected(publicKey, withAccountData)
       const { published } = await NinaSdk.Account.fetchPublished(publicKey, withAccountData)
       const { revenueShares } = await NinaSdk.Account.fetchRevenueShares(publicKey, withAccountData)
-      setReleaseState(updateStateForReleases([...collected, ...published, ...revenueShares]))
-      const publishedAndRevenueShares = [...published, ...revenueShares]
+      const newState = updateStateForReleases([...collected, ...published, ...revenueShares])
+      setReleaseState(prevState => ({
+        ...prevState,
+        tokenData: {...prevState.tokenData, ...newState.tokenData},
+        metadata: {...prevState.metadata, ...newState.metadata},
+        releaseMintMap: {...prevState.releaseMintMap, ...newState.releaseMintMap},
+      }))
+
+      const publishedAndRevenueShares = [...published, ...revenueShares].filter((value, index, self) => {
+       return self.findIndex(value2 => (value2.publicKey === value.publicKey)) === index
+      })
       setFetchedUserProfileReleases({
         ...fetchedUserProfileReleases,
         [publicKey]: {
@@ -1443,14 +1470,20 @@ const releaseContextHelper = ({
   const getReleaseRoyaltiesByUser = async (publicKey) => {
     try {
       const { revenueShares } = await NinaSdk.Account.fetchRevenueShares(publicKey, true)
-      setReleaseState(updateStateForReleases(revenueShares))
+      const newState = updateStateForReleases(revenueShares)
+      setReleaseState(prevState => ({
+        ...prevState,
+        tokenData: {...prevState.tokenData, ...newState.tokenData},
+        metadata: {...prevState.metadata, ...newState.metadata},
+        releaseMintMap: {...prevState.releaseMintMap, ...newState.releaseMintMap},
+      }))
     } catch (error) {
       console.warn(error)
     }
   }
 
   const updateStateForReleases = (releases) => {
-    const updatedReleaseState = {...releaseState}
+    const updatedReleaseState = { tokenData: {}, metadata: {}, releaseMintMap: {} }
     releases.forEach((release) => {
       if (release.accountData) {
         updatedReleaseState.tokenData[release.publicKey] = {
@@ -1476,7 +1509,13 @@ const releaseContextHelper = ({
   
         const allReleases = [...published, ...highlights]
         setAllReleasesCount(published.total)
-        setReleaseState(updateStateForReleases(allReleases))
+        const newState = updateStateForReleases(allReleases)
+        setReleaseState(prevState => ({
+          ...prevState,
+          tokenData: {...prevState.tokenData, ...newState.tokenData},
+          metadata: {...prevState.metadata, ...newState.metadata},
+          releaseMintMap: {...prevState.releaseMintMap, ...newState.releaseMintMap},
+        }))
         setReleasesRecentState({
           published: published.map(release => release.publicKey),
           highlights: _.shuffle(highlights.map(release => release.publicKey)),
@@ -1492,7 +1531,13 @@ const releaseContextHelper = ({
       const all = [...allReleases]
       const releases = (await NinaSdk.Release.fetchAll({limit: 25, offset: allReleases.length}, true)).releases
       all.push(...releases.map(release => release.publicKey))
-      setReleaseState(updateStateForReleases(releases))
+      const newState = updateStateForReleases(releases)
+      setReleaseState(prevState => ({
+        ...prevState,
+        tokenData: {...prevState.tokenData, ...newState.tokenData},
+        metadata: {...prevState.metadata, ...newState.metadata},
+        releaseMintMap: {...prevState.releaseMintMap, ...newState.releaseMintMap},
+      }))
       setAllReleasesCount(releases.total)
       setAllReleases(all)
     } catch (error) {
@@ -1527,7 +1572,14 @@ const releaseContextHelper = ({
         }
       })
       setVerificationState(prevState => ({...prevState, ...updatedVerificationState}))
-      setReleaseState(updateStateForReleases(releases))
+      const newState = updateStateForReleases(releases)
+      setReleaseState(prevState => ({
+        ...prevState,
+        tokenData: {...prevState.tokenData, ...newState.tokenData},
+        metadata: {...prevState.metadata, ...newState.metadata},
+        releaseMintMap: {...prevState.releaseMintMap, ...newState.releaseMintMap},
+      }))
+      
       return data
     } catch (error) {
       console.warn(error)
