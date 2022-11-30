@@ -123,7 +123,7 @@ const ReleaseContextProvider = ({ children }) => {
     setFetchedUserProfileReleases,
     verficationState,
     setVerificationState,
-  })
+  }) 
 
   return (
     <ReleaseContext.Provider
