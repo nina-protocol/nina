@@ -33,7 +33,6 @@ const LowBalanceModal = () => {
   const {
     getUserCollectionAndPublished,
     releaseState,
-    filterReleasesPublishedByUser,
   } = useContext(Release.Context)
   const [showBalanceWarning, setShowBalanceWarning] = useState(false)
   const [amount, setAmount] = useState()
@@ -45,19 +44,19 @@ const LowBalanceModal = () => {
   const {ids, nativeToUi} = ninaClient
 
   useEffect(() => {
+    console.log('lowSolBalance :>> ', lowSolBalance);
     const getUserData = async () => {
     await getUserBalances()
       if (lowSolBalance) {
-        // const [_, published] = await getUserCollectionAndPublished(wallet.publicKey.toBase58(), true)
-        const published = await filterReleasesPublishedByUser(wallet.publicKey.toBase58())
-        console.log('published :>> ', published);
+        const [_, published] = await getUserCollectionAndPublished(wallet.publicKey.toBase58(), true)
         setUserPublishedReleases(published)
+        console.log('published :>> ', published);
       }
     }          
     if (wallet.connected) {
       getUserData()
     }
-  }, [releaseState])
+  }, [lowSolBalance])
   
   useEffect(() => {
     if (lowSolBalance && (usdcBalance > 0 || collectableBalance > 0)) {
@@ -69,9 +68,10 @@ const LowBalanceModal = () => {
     if (userPublishedReleases) {
       let total = 0
       userPublishedReleases?.forEach((release) => {
-        console.log('release :>> ', release);
-        // const recipient = release.accountData.release.revenueShareRecipients.find(recipient => recipient.recipientAuthority === wallet.publicKey.toBase58())
-        const recipient = release.recipient
+        const recipient = release.accountData.release.revenueShareRecipients.find(recipient => recipient.recipientAuthority === wallet.publicKey.toBase58())
+       console.log('release :>> ', release);
+       console.log('recipient :>> ', recipient);
+       console.log('recipient.owed :>> ', recipient.owed);
         total = total + recipient.owed
         return recipient.owed
       })
@@ -176,7 +176,10 @@ const LowBalanceModal = () => {
                     variant="body1"
                     gutterBottom
                   >
-                    You have a collectable balance of ${collectableBalance} USDC that can be collected through your dashboard.
+                    You have a collectable balance of ${collectableBalance} USDC that can be collected through your{' '} 
+                    <a target="__blank" rel="noreferrer" href={`https://www.ninaprotocol.com/profiles/${wallet.publicKey.toBase58()}`}>
+                      dashboard.
+                    </a>
                   </Typography>
                 )}
                 
@@ -243,6 +246,8 @@ const StyledModalToggle = styled(Typography)(({theme}) => ({
   padding: '2px 4px',
   marginRight: '15px',
   cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
 }))
 
 const StyledModal = styled(Modal)(() => ({

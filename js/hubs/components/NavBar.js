@@ -11,6 +11,7 @@ import { imageManager } from "@nina-protocol/nina-internal-sdk/esm/utils";
 import IconButton from "@mui/material/IconButton";
 import Drawer from "@mui/material/Drawer";
 import MenuIcon from "@mui/icons-material/Menu";
+import LowBalanceModal from "./LowBalanceModal";
 
 import {
   WalletDialogProvider,
@@ -161,6 +162,7 @@ const NavBar = ({ hubPubkey }) => {
           </LogoLinkWrapper>
         </Link>
         <CtaWrapper>
+          <LowBalanceModal />
           {!mobileView && canAddContent && getMenuButtons(hubData?.handle)}
           <WalletWrapper id="wallet-wrapper">
             <NavCtas>

@@ -628,7 +628,7 @@ const ninaContextHelper = ({
      
         setSolUsdcBalance((ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) * solPrice.data.data.price).toFixed(2))
         setSolBalance(solUsdcBalanceResult)
-        if (solUsdcBalanceResult < 50000000) { // change back to 10000000 before merge
+        if (solUsdcBalanceResult < 100000000000000000000) { // change back to 10000000 before merge
           console.log('setting low :>> ', solUsdcBalanceResult);
           setLowSolBalance(true)
         }
