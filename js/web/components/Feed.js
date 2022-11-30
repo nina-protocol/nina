@@ -514,64 +514,64 @@ const Feed = ({
         //       <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
         //     </MultiCard>
         //   )
-        case 'SubscriptionSubscribeAccount':
-          return (
-            <TextCard>
-              <CopyWrapper>
-                <Typography my={1}>
-                  <Link href={`/profiles/${item.authority.publicKey}`} passHref>
-                    {displayNameForAccount(item.authority.publicKey)}
-                  </Link>{' '}
-                  followed{' '}
-                  <Link href={`/profiles/${item.toAccount.publicKey}`} passHref>
-                    {displayNameForAccount(item.authority.publicKey)}
-                  </Link>
-                </Typography>
-                <Typography my={1} fontWeight={600}>
-                  {timeSince(Date.parse(item.datetime))} ago
-                </Typography>
-              </CopyWrapper>
-            </TextCard>
-          )
-        case 'SubscriptionSubscribeHub':
-          return (
-            <ImageCard>
-              <Link href={`/hubs/${item.toHub.handle}`} passHref>
-                <Image
-                  height={'400px'}
-                  width={'400px'}
-                  layout="responsive"
-                  src={getImageFromCDN(
-                    item.toHub.data.image,
-                    600,
-                    Date.parse(item.datetime)
-                  )}
-                  alt={i}
-                  priority={true}
-                  loader={loader}
-                  unoptimized={true}
-                />
-              </Link>
-              <CopyWrapper>
-                <Typography my={1}>
-                  <Link href={`/profiles/${item.authority.publicKey}`} passHref>
-                    {displayNameForAccount(item.authority.publicKey)}
-                  </Link>{' '}
-                  followed{' '}
-                  <Link
-                    href={`/hubs/${item.toHub.publicKey}`}
-                    passHref
-                  >{`${item?.toHub?.data?.displayName}`}</Link>
-                </Typography>
-                <Typography my={1} fontWeight={600}>
-                  {timeSince(Date.parse(item.datetime))} ago
-                </Typography>
-              </CopyWrapper>
-            </ImageCard>
-          )
+        // case 'SubscriptionSubscribeAccount':
+        //   return (
+        //     <TextCard>
+        //       <CopyWrapper>
+        //         <Typography my={1}>
+        //           <Link href={`/profiles/${item.authority.publicKey}`} passHref>
+        //             {displayNameForAccount(item.authority.publicKey)}
+        //           </Link>{' '}
+        //           followed{' '}
+        //           <Link href={`/profiles/${item.toAccount.publicKey}`} passHref>
+        //             {displayNameForAccount(item.authority.publicKey)}
+        //           </Link>
+        //         </Typography>
+        //         <Typography my={1} fontWeight={600}>
+        //           {timeSince(Date.parse(item.datetime))} ago
+        //         </Typography>
+        //       </CopyWrapper>
+        //     </TextCard>
+        //   )
+        // case 'SubscriptionSubscribeHub':
+        //   return (
+        //     <ImageCard>
+        //       <Link href={`/hubs/${item.toHub.handle}`} passHref>
+        //         <Image
+        //           height={'400px'}
+        //           width={'400px'}
+        //           layout="responsive"
+        //           src={getImageFromCDN(
+        //             item.toHub.data.image,
+        //             600,
+        //             Date.parse(item.datetime)
+        //           )}
+        //           alt={i}
+        //           priority={true}
+        //           loader={loader}
+        //           unoptimized={true}
+        //         />
+        //       </Link>
+        //       <CopyWrapper>
+        //         <Typography my={1}>
+        //           <Link href={`/profiles/${item.authority.publicKey}`} passHref>
+        //             {displayNameForAccount(item.authority.publicKey)}
+        //           </Link>{' '}
+        //           followed{' '}
+        //           <Link
+        //             href={`/hubs/${item.toHub.publicKey}`}
+        //             passHref
+        //           >{`${item?.toHub?.data?.displayName}`}</Link>
+        //         </Typography>
+        //         <Typography my={1} fontWeight={600}>
+        //           {timeSince(Date.parse(item.datetime))} ago
+        //         </Typography>
+        //       </CopyWrapper>
+        //     </ImageCard>
+        //   )
 
         default:
-          return <Typography key={i}>{item?.type}</Typography>
+          return null
       }
     })
 

@@ -411,8 +411,8 @@ const ninaContextHelper = ({
   }
 
   const saveSubscriptionsToState = async (subscriptions) => {
-    let updatedSubscriptionState = { ...subscriptionState }
-    let updatedVerificationState = { ...verificationState }
+    let updatedSubscriptionState = { }
+    let updatedVerificationState = { }
     subscriptions.forEach((subscription) => {
       updatedSubscriptionState = {
         ...updatedSubscriptionState,
@@ -424,7 +424,7 @@ const ninaContextHelper = ({
         [subscription.from.publicKey]: subscription.from.verifications,
       }
 
-      if (subscription.subscritionType === 'account') {
+      if (subscription.subscriptionType === 'account') {
         updatedVerificationState = {
           ...updatedVerificationState,
           [subscription.to.publicKey]: subscription.to.verifications,
