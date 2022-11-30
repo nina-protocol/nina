@@ -11,13 +11,13 @@ import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import { formatPlaceholder } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 const RoyaltyRecipientForm = (props) => {
-  const { getUsdcBalance } = useContext(Nina.Context)
+  const { getUserBalances } = useContext(Nina.Context)
   const { release, userShare, setUserDisplayShare, releasePubkey, toggleForm } =
     props
   const { enqueueSnackbar } = useSnackbar()
   const { addRoyaltyRecipient } = useContext(Release.Context)
   useEffect(() => {
-    getUsdcBalance()
+    getUserBalances()
   }, [])
   const handleDisplayPercent = (value) => {
     const sending = parseInt(value)

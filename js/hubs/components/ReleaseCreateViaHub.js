@@ -68,7 +68,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
     getSolPrice,
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
-    getUsdcBalance,
+    getUserBalances,
   } = useContext(Nina.Context);
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const [track, setTrack] = useState(undefined);
@@ -105,7 +105,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
 
   useEffect(() => {
     refreshBundlr();
-    getUsdcBalance();
+    getUserBalances();
   }, []);
 
   const refreshBundlr = () => {

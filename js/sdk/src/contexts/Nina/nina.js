@@ -79,7 +79,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         }
       )
       getNpcAmountHeld()
-      getUsdcBalance()
+      getUserBalances()
       if (releasePubkey) {
         createCollectionForSingleRelease(releasePubkey)
       } else {
@@ -142,7 +142,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     removeReleaseFromCollection,
     shouldRemainInCollectionAfterSale,
     getAmountHeld,
-    getUsdcBalance,
+    getUserBalances,
     getNpcAmountHeld,
     bundlrFund,
     bundlrWithdraw,
@@ -160,6 +160,8 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     getVerificationsForUser,
     filterSubscriptionsForHub,
     submitEmailRequest,
+    getUsdcToSolSwapData,
+    swapUsdcToSol
   } = ninaContextHelper({
     ninaClient,
     postState,
@@ -211,7 +213,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         removeReleaseFromCollection,
         shouldRemainInCollectionAfterSale,
         getAmountHeld,
-        getUsdcBalance,
+        getUserBalances,
         usdcBalance,
         getNpcAmountHeld,
         npcAmountHeld,
@@ -248,7 +250,9 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         getVerificationsForUser,
         filterSubscriptionsForHub,
         submitEmailRequest,
-        lowSolBalance
+        lowSolBalance,
+        getUsdcToSolSwapData,
+        swapUsdcToSol
       }}
     >
       {children}
@@ -611,7 +615,8 @@ const ninaContextHelper = ({
     return 0
   }
 
-  const getUsdcBalance = async () => {
+  const getUserBalances = async () => { 
+
     if (provider.wallet?.connected && provider.wallet?.publicKey) {
       try {
         const solPrice =  await axios.get(
@@ -623,7 +628,7 @@ const ninaContextHelper = ({
      
         setSolUsdcBalance((ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) * solPrice.data.data.price).toFixed(2))
         setSolBalance(solUsdcBalanceResult)
-        if (solUsdcBalanceResult < 10000000) {
+        if (solUsdcBalanceResult < 50000000) { // change back to 10000000 before merge
           console.log('setting low :>> ', solUsdcBalanceResult);
           setLowSolBalance(true)
         }
@@ -652,7 +657,7 @@ const ninaContextHelper = ({
       }
     } else {
       setUsdcBalance(0)
-      setSolUsdcBalance(0)
+      setSolUsdcBalance(0) 
     }
   }
 
@@ -678,7 +683,7 @@ const ninaContextHelper = ({
   const bundlrFund = async (fundAmount) => {
     try {
       if (bundlr && fundAmount) {        
-        await getUsdcBalance()
+        await getUserBalances()
         const value = uiToNative(fundAmount, ids.mints.wsol)
         if (value - (2 * NinaProgramActionCost[NinaProgramAction.RELEASE_INIT_VIA_HUB]) > solBalance) {
           throw('Insufficient SOL balance - please deposit a smaller amount or top up your Solana balance')
@@ -812,7 +817,7 @@ const ninaContextHelper = ({
     }
   }
   const checkIfHasBalanceToCompleteAction = async (action) => {
-    await getUsdcBalance()
+    await getUserBalances()
     if (ninaClient.uiToNative(NinaProgramActionCost[action], ninaClient.ids.mints.wsol) > solBalance) {
       const error = new Error(`You do not have enough SOL to send the transaction: ${action}.  You need at least ${NinaProgramActionCost[action]} SOL.`)
       return ninaErrorHandler(error)
@@ -820,6 +825,42 @@ const ninaContextHelper = ({
     return undefined
   }
 
+  const getUsdcToSolSwapData = async (amount) => {
+    const {data} = await axios.get(
+      `https://quote-api.jup.ag/v3/quote?inputMint=${ids.mints.usdc}&outputMint=${ids.mints.wsol}&amount=${amount * 1000000}&slippageBps=50`
+    )
+    return data
+  }
+
+  const swapUsdcToSol = async (routes) => {
+    try {
+      logEvent(
+        'usdc_sol_swap',
+        'engagement', {
+          publicKey: provider.wallet.publicKey.toBase58(),
+        }
+      )
+      const transactions = await axios.post('https://quote-api.jup.ag/v3/swap', {
+        // route from /quote api
+        route: routes[0],
+        // user public key to be used for the swap
+        userPublicKey: provider.wallet.publicKey.toBase58(),
+        // auto wrap and unwrap SOL. default is true
+      })
+  
+      for await (let tx of Object.values(transactions.data)) {
+        const transaction = anchor.web3.Transaction.from(Buffer.from(tx, 'base64'))
+        const txid = await provider.wallet.sendTransaction(transaction, provider.connection)
+        await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      }
+      return {
+        success: true,
+        msg: 'Swap successful'
+      }
+    } catch (error) {
+      return ninaErrorHandler(error)
+    }
+  }
 
   /*
 
@@ -1004,7 +1045,7 @@ const ninaContextHelper = ({
     removeReleaseFromCollection,
     shouldRemainInCollectionAfterSale,
     getAmountHeld,
-    getUsdcBalance,
+    getUserBalances,
     getNpcAmountHeld,
     bundlrFund,
     bundlrWithdraw,
@@ -1023,6 +1064,8 @@ const ninaContextHelper = ({
     getVerificationsForUser,
     filterSubscriptionsForHub,
     submitEmailRequest,
+    getUsdcToSolSwapData,
+    swapUsdcToSol
   }
 }
 

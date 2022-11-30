@@ -30,7 +30,7 @@ const ReleaseContextProvider = ({ children }) => {
     ninaClient,
     addReleaseToCollection,
     collection,
-    getUsdcBalance,
+    getUserBalances,
     usdcBalance,
     removeReleaseFromCollection,
     getSolPrice,
@@ -102,7 +102,7 @@ const ReleaseContextProvider = ({ children }) => {
     releasePurchasePending,
     setReleasePurchasePending,
     usdcBalance,
-    getUsdcBalance,
+    getUserBalances,
     addReleaseToCollection,
     encryptData,
     searchResults,
@@ -187,7 +187,7 @@ const releaseContextHelper = ({
   setReleasePurchasePending,
   addReleaseToCollection,
   usdcBalance,
-  getUsdcBalance,
+  getUserBalances,
   encryptData,
   collection,
   redeemableState,
@@ -611,7 +611,7 @@ const releaseContextHelper = ({
         ...releasePurchasePending,
         [releasePubkey.toBase58()]: false,
       })
-      getUsdcBalance()
+      getUserBalances()
       await axios.get(`${process.env.NINA_API_ENDPOINT}/accounts/${provider.wallet.publicKey.toBase58()}/collected?txId=${txid}`)
       await getRelease(releasePubkey.toBase58())
       addReleaseToCollection(releasePubkey.toBase58())
@@ -630,7 +630,7 @@ const releaseContextHelper = ({
         msg: 'Release purchased!',
       }
     } catch (error) {
-      getUsdcBalance()
+      getUserBalances()
       getRelease(releasePubkey.toBase58())
       setReleasePurchasePending({
         ...releasePurchasePending,
@@ -956,7 +956,7 @@ const releaseContextHelper = ({
         ...releasePurchasePending,
         [releasePubkey]: false,
       })
-      getUsdcBalance()
+      getUserBalances()
       await axios.get(`${process.env.NINA_API_ENDPOINT}/accounts/${provider.wallet.publicKey.toBase58()}/collected?txId=${txid}`)
       await getRelease(releasePubkey)
       await addReleaseToCollection(releasePubkey)
@@ -974,7 +974,7 @@ const releaseContextHelper = ({
         msg: 'Release purchased!',
       }
     } catch (error) {
-      getUsdcBalance()
+      getUserBalances()
       getRelease(releasePubkey)
       setReleasePurchasePending({
         ...releasePurchasePending,
@@ -1044,7 +1044,7 @@ const releaseContextHelper = ({
 
 
       await getRelease(releasePubkey)
-      getUsdcBalance()
+      getUserBalances()
       return {
         success: true,
         msg: `You collected $${nativeToUi(
@@ -1054,7 +1054,7 @@ const releaseContextHelper = ({
       }
     } catch (error) {
       console.warn(error)
-      getUsdcBalance()
+      getUserBalances()
       getRelease(releasePubkey)
       return ninaErrorHandler(error)
     }
@@ -1129,7 +1129,7 @@ const releaseContextHelper = ({
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
 
       getRelease(releasePubkey)
-      getUsdcBalance()
+      getUserBalances()
 
       return {
         success: true,
@@ -1137,7 +1137,7 @@ const releaseContextHelper = ({
       }
     } catch (error) {
       getRelease(releasePubkey)
-      getUsdcBalance()
+      getUserBalances()
       return ninaErrorHandler(error)
     }
   }

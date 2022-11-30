@@ -16,7 +16,7 @@ const ExchangeContextProvider = ({ children }) => {
   const {
     addReleaseToCollection,
     removeReleaseFromCollection,
-    getUsdcBalance,
+    getUserBalances,
     ninaClient,
     setVerificationState,
   } = useContext(Nina.Context)
@@ -48,7 +48,7 @@ const ExchangeContextProvider = ({ children }) => {
     removeReleaseFromCollection,
     removeTrackFromPlaylist,
     getRelease,
-    getUsdcBalance,
+    getUserBalances,
     setVerificationState
   })
 
@@ -84,7 +84,7 @@ const exchangeContextHelper = ({
   addReleaseToCollection,
   removeReleaseFromCollection,
   getRelease,
-  getUsdcBalance,
+  getUserBalances,
   setVerificationState,
 }) => {
   const { provider } = ninaClient
@@ -205,7 +205,7 @@ const exchangeContextHelper = ({
           exchange.releaseMint
         )
       }
-      await getUsdcBalance()
+      await getUserBalances()
       await getExchange(exchange.publicKey, false, txid)
 
       return {
@@ -356,7 +356,7 @@ const exchangeContextHelper = ({
         removeReleaseFromCollection(releasePubkey, releaseMint.toBase58())
       }
 
-      await getUsdcBalance()
+      await getUserBalances()
       await getExchange(exchange.publicKey.toBase58(), true, txid)
 
       return {
@@ -427,7 +427,7 @@ const exchangeContextHelper = ({
         addReleaseToCollection(releasePubkey)
       }
 
-      await getUsdcBalance()
+      await getUserBalances()
       await getExchange(exchangePubkey.toBase58(), false, txid)
       return {
         success: true,

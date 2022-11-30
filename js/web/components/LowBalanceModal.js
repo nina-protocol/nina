@@ -19,33 +19,29 @@ import {useWallet} from '@solana/wallet-adapter-react'
 import * as anchor from '@project-serum/anchor'
 
 
-const LowBalanceModal = ({ inCreate, displaySmall }) => {
-
+const LowBalanceModal = () => {
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const {
     solPrice,
     getSolPrice,
-    initBundlr,
     lowSolBalance,
     usdcBalance,
-    getUsdcBalance,
-    ninaClient
+    getUserBalances,
+    ninaClient,
+    getUsdcToSolSwapData,
+    swapUsdcToSol,
   } = useContext(Nina.Context)
-  const {provider} = ninaClient
-  const wallet = useWallet()
-
   const [showBalanceWarning, setShowBalanceWarning] = useState(false)
   const [amount, setAmount] = useState()
   const [inProgress, setInProgress] = useState(false)
   const [routes, setRoutes] = useState()
-  const [buttonText, setButtonText] = useState('Swap')
+  const [buttonText, setButtonText] = useState('Enter Swap Amount')
   useEffect(() => {
-    getUsdcBalance()
+    getUserBalances()
   }, [])
   
   useEffect(() => {
-    console.log('usdcBalance :>> ', usdcBalance);
     if (lowSolBalance && usdcBalance > 0) {
       setShowBalanceWarning(true)
     }
@@ -53,9 +49,9 @@ const LowBalanceModal = ({ inCreate, displaySmall }) => {
 
   useEffect(() => {
     const getSwapData = async () => {
-      const {data} =  await axios.get(
-          `https://quote-api.jup.ag/v3/quote?inputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&outputMint=So11111111111111111111111111111111111111112&amount=${amount * 1000000}&slippageBps=50`
-        )
+      console.log('amount :>> ', amount);
+      console.log('usdcBalance :>> ', typeof (usdcBalance * 1));
+      const data = await getUsdcToSolSwapData(amount)
       console.log('data :>> ', data);
       setRoutes(data.data)
       return data
@@ -71,41 +67,28 @@ const LowBalanceModal = ({ inCreate, displaySmall }) => {
     if (routes) {
       console.log('routes :>> ', routes);
       const outAmount = routes[0].outAmount / 1000000000
-      setButtonText(`Swap ${amount} USDC for ${outAmount} SOL`)
+      if (amount > (usdcBalance * 1)) {
+        setButtonText('Insufficient balance')
+      } else {
+        setButtonText(`Swap ${amount} USDC for ${outAmount} SOL`)
+      }
     }
   }, [routes])
 
   const handleSwap = async () => {
     setInProgress(true)
-    const transactions = await axios.post('https://quote-api.jup.ag/v3/swap', {
-         // route from /quote api
-          route: routes[0],
-          // user public key to be used for the swap
-          userPublicKey: wallet.publicKey.toBase58(),
-          // auto wrap and unwrap SOL. default is true
+    const result = await swapUsdcToSol(routes)
+    if (result?.success) {
+      enqueueSnackbar(result.msg, {
+        variant: 'info',
       })
-
-    for await (let tx of Object.values(transactions.data)){
-      const transaction = anchor.web3.Transaction.from(Buffer.from(tx, 'base64'))
-      console.log('transaction :>> ', transaction);
-      const txid = await wallet.sendTransaction(transaction, provider.connection)
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
-      console.log('result :>> ', result);
-      console.log(`https://solscan.io/tx/${txid}`)
+      setOpen(false)
+    } else {
+      enqueueSnackbar('Swap Unsuccesful', {
+        variant: 'failure',
+      })
     }
-
-  
-    // if (result?.success) {
-    //   enqueueSnackbar(result.msg, {
-    //     variant: 'info',
-    //   })
-    //   setOpen(false)
-    // } else {
-    //   enqueueSnackbar('Account not funded', {
-    //     variant: 'failure',
-    //   })
-    // }
-    setAmount('')
+    setAmount()
     setInProgress(false)
   }
 
@@ -143,6 +126,20 @@ const LowBalanceModal = ({ inCreate, displaySmall }) => {
                 >
                   Convert USDC to SOL
                 </Typography>
+                <Typography
+                  align="left"
+                  variant="body1"
+                  gutterBottom
+                >
+                  Your Solana balance is below 0.01 which may cause transactions to fail.
+                </Typography>
+                <Typography
+                  align="left"
+                  variant="body1"
+                  gutterBottom
+                >
+                  You have a balance of {usdcBalance} USDC. You can use the swap below to convert some USDC to Sol.
+                </Typography>
                 
                 <StyledInputWrapper>
                   <StyledTextField
@@ -152,7 +149,9 @@ const LowBalanceModal = ({ inCreate, displaySmall }) => {
                   max
                   onChange={(e) => {
                     console.log('e.target.value :>> ', e.target.value);
-                    setAmount(e.target.value)
+                    if (e.target.value >= 0) {
+                      setAmount(e.target.value)
+                    }
                   }}
                   label={
                       `Swap Amount (USDC to SOL):` 
@@ -164,6 +163,10 @@ const LowBalanceModal = ({ inCreate, displaySmall }) => {
                         </InputAdornment>
                       ),
                     }}
+                    inputProps={{
+                      min: 0,
+                      max:10
+                    }}
                   />
                 </StyledInputWrapper>
                 <Button
@@ -173,8 +176,13 @@ const LowBalanceModal = ({ inCreate, displaySmall }) => {
                     width: '100%',
                     mt: 1
                   }}
+                  disabled={
+                    !amount || 
+                    inProgress ||
+                    (amount > (usdcBalance * 1))
+                  }
                 >
-                  {buttonText}
+                  {inProgress ? <Dots size={'63px'}/> : buttonText}
                 </Button>
       
               </StyledPaper>

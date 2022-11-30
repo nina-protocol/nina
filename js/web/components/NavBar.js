@@ -29,7 +29,7 @@ const NavBar = () => {
     filterSubscriptionsForUser,
     subscriptionState,
     lowSolBalance,
-    getUsdcBalance
+    getUserBalances
   } = useContext(Nina.Context)
   const wallet = useWallet()
   const base58 = useMemo(
@@ -49,7 +49,7 @@ const NavBar = () => {
   useEffect(() => {
     if (wallet.connected) {
       getSubscriptionsForUser(wallet.publicKey.toBase58())
-      getUsdcBalance()
+      getUserBalances()
     }
   }, [wallet.connected])
 
