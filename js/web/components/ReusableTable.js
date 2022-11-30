@@ -23,46 +23,30 @@ import { styled } from '@mui/material'
 import { useSnackbar } from 'notistack'
 import { useRouter } from 'next/router'
 import { orderBy } from 'lodash'
+import dynamic from 'next/dynamic'
+import { useWallet } from '@solana/wallet-adapter-react'
 
 const { getImageFromCDN, loader } = imageManager
+
+const Subscribe = dynamic(() => import('./Subscribe'))
 
 const descendingComparator = (a, b, orderBy) => {
   switch (orderBy) {
     case 'artist':
     case 'title':
-      a = a[orderBy].toLowerCase()
-      b = b[orderBy].toLowerCase()
+      a = a[orderBy]?.toLowerCase()
+      b = b[orderBy]?.toLowerCase()
       break
 
-    case 'date':
-      if (b[orderBy] < a[orderBy]) {
+    case 'releaseDate':
+      if (new Date(b.releaseDate) < new Date(a.releaseDate)) {
         return -1
       }
-      if (b[orderBy] > a[orderBy]) {
+      if (new Date(b.releaseDate) > new Date(a.releaseDate)) {
         return 1
       }
-      break
-
-    case 'collect':
-      a =
-        parseFloat(
-          a[orderBy].props.children[1]?.props?.children?.replace(/[^\d.-]/g, '')
-        ) || 0
-      b =
-        parseFloat(
-          b[orderBy].props.children[1]?.props?.children?.replace(/[^\d.-]/g, '')
-        ) || 0
-      break
-
-    case 'remaining':
-      a = parseFloat(a[orderBy].substring(0, a[orderBy].indexOf('/')))
-      b = parseFloat(b[orderBy].substring(0, b[orderBy].indexOf('/')))
 
       break
-
-    case 'price':
-    case 'collected':
-    case 'share':
     default:
       a = parseFloat(a[orderBy]?.replace(/[^\d.-]/g, ''))
       b = parseFloat(b[orderBy]?.replace(/[^\d.-]/g, ''))
@@ -79,7 +63,7 @@ const descendingComparator = (a, b, orderBy) => {
 }
 
 const ReusableTableHead = (props) => {
-  const { tableType, inDashboard, onRequestSort } = props
+  const { tableType, inDashboard, onRequestSort, order } = props
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property)
   }
@@ -109,7 +93,7 @@ const ReusableTableHead = (props) => {
 
   if (tableType === 'profileHubs') {
     headCells.push({ id: 'image', label: '' })
-    headCells.push({ id: 'name', label: 'Name' })
+    headCells.push({ id: 'hubName', label: 'Name' })
     headCells.push({ id: 'description', label: 'Description' })
     if (inDashboard) {
       headCells.push({ id: 'hubLink', label: '' })
@@ -163,11 +147,14 @@ const ReusableTableHead = (props) => {
     <TableHead>
       <TableRow>
         {headCells?.map((headCell, i) => (
-          <StyledTableHeadCell key={headCell.id}>
-            {headCell.id === 'artist' || headCell.id === 'title' ? (
+          <StyledTableHeadCell key={headCell.id} sx={{ cursor: 'default' }}>
+            {headCell.id === 'artist' ||
+            headCell.id === 'title' ||
+            headCell.id === 'releaseDate' ||
+            headCell.id === 'hubName' ? (
               <TableSortLabel
                 active={orderBy === headCell.id}
-                direction={orderBy === headCell.id ? order : 'asc'}
+                direction={order}
                 onClick={createSortHandler(headCell.id)}
                 disabled={
                   headCell.id === 'ctas' ||
@@ -224,6 +211,7 @@ const HubDescription = ({ description }) => {
 }
 
 const ReusableTableBody = (props) => {
+  const wallet = useWallet()
   const {
     items,
     tableType,
@@ -234,6 +222,7 @@ const ReusableTableBody = (props) => {
     isActiveView,
     order,
     orderBy,
+    profilePubkey,
   } = props
   const router = useRouter()
   const {
@@ -309,6 +298,9 @@ const ReusableTableBody = (props) => {
       releasePubkey,
     }
     let formattedData = {}
+    const formattedDate = new Date(
+      data.metadata?.properties?.date
+    ).toLocaleDateString()
     if (
       tableType === 'profilePublishedReleases' ||
       tableType === 'profileCollectionReleases'
@@ -321,9 +313,7 @@ const ReusableTableBody = (props) => {
         date: data?.metadata?.properties?.date,
         artist: data?.metadata?.properties?.artist,
         title: data?.metadata?.properties?.title,
-        releaseDate: `${new Date(
-          data?.metadata?.properties?.date
-        ).toLocaleDateString()}`,
+        releaseDate: formattedDate,
       }
       if (inDashboard) {
         const recipient = data.tokenData.revenueShareRecipients.find(
@@ -371,6 +361,9 @@ const ReusableTableBody = (props) => {
           (formattedData.hubExternal = `${process.env.NINA_HUBS_URL}/${data.handle}`)
       }
     } else if (tableType === 'hubReleases') {
+      const formattedDate = new Date(
+        data?.properties?.date
+      ).toLocaleDateString()
       formattedData = {
         ctas: playData,
         ...formattedData,
@@ -379,7 +372,8 @@ const ReusableTableBody = (props) => {
         artist: data?.properties.artist,
         title: data?.properties.title,
         link: `/${data?.releasePubkey}`,
-        date: data?.metadata?.properties?.date,
+        date: data?.properties?.date,
+        releaseDate: formattedDate,
         authorityPublicKey: data?.authority,
       }
     } else if (tableType === 'hubCollaborators') {
@@ -432,6 +426,8 @@ const ReusableTableBody = (props) => {
         link: `/profiles/${data.from.publicKey}`,
         image: displayImageForAccount(data.from.publicKey),
         profile: displayNameForAccount(data.from.publicKey),
+        subscribe: true,
+        publicKey: data.from.publicKey,
       }
     } else if (tableType === 'following') {
       if (data.subscriptionType === 'hub') {
@@ -439,12 +435,16 @@ const ReusableTableBody = (props) => {
           link: `/hubs/${data.to.handle}`,
           image: data.to.data.image,
           hub: data.to.data.displayName,
+          subscribe: true,
+          publicKey: data.to.publicKey,
         }
       } else if (data.subscriptionType === 'account') {
         formattedData = {
           link: `/profiles/${data.to.publicKey}`,
           image: displayImageForAccount(data.to.publicKey),
           profile: displayNameForAccount(data.to.publicKey),
+          subscribe: true,
+          publicKey: data.to.publicKey,
         }
       }
     } else if (tableType === 'defaultSearchArtists') {
@@ -487,7 +487,8 @@ const ReusableTableBody = (props) => {
                 cellName !== 'id' &&
                 cellName !== 'date' &&
                 cellName !== 'link' &&
-                cellName !== 'authorityPublicKey'
+                cellName !== 'authorityPublicKey' &&
+                cellName !== 'publicKey'
               ) {
                 if (cellName === 'ctas') {
                   return (
@@ -666,6 +667,16 @@ const ReusableTableBody = (props) => {
                       </CollectContainer>
                     </HubTableCell>
                   )
+                } else if (
+                  cellName === 'subscribe' &&
+                  row?.subscribe &&
+                  wallet.connected
+                ) {
+                  return (
+                    <StyledTableCell key={cellName}>
+                      <Subscribe accountAddress={row.publicKey} />
+                    </StyledTableCell>
+                  )
                 } else {
                   return (
                     <StyledTableCell key={cellName}>
@@ -698,13 +709,13 @@ const ReusableTable = ({
   hasOverflow,
   minHeightOverride = false,
 }) => {
-  const [order, setOrder] = useState('')
+  const [order, setOrder] = useState('desc')
   const [orderBy, setOrderBy] = useState('')
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc'
+
     setOrder(isAsc ? 'desc' : 'asc')
     setOrderBy(property)
-    console.log('order', order)
   }
   return (
     <ResponsiveContainer
@@ -718,6 +729,7 @@ const ReusableTable = ({
               tableType={tableType}
               inDashboard={inDashboard}
               onRequestSort={handleRequestSort}
+              order={order}
             />
           )}
           <ReusableTableBody
