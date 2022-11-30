@@ -749,10 +749,10 @@ const ninaContextHelper = ({
   const getSolPrice = async () => {
     try {
       const priceResult = await axios.get(
-        `https://price.jup.ag/v1/price?id=SOL`
+        `https://price.jup.ag/v3/price?ids=SOL`
       )
-      setSolPrice(priceResult.data.data.price)
-      return priceResult.data.data.price
+      setSolPrice(priceResult.data.data.SOL.price)
+      return priceResult.data.data.SOL.price
     } catch (error) {
       return ninaErrorHandler(error)
     }

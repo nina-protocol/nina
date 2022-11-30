@@ -545,19 +545,14 @@ const releaseContextHelper = ({
       let releasePriceUi = ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)
       let convertAmount = releasePriceUi + (releasePriceUi * hub.referralFee.toNumber() / 1000000)
       if (!isSol(release.paymentMint) && usdcBalance < convertAmount) {
-        const additionalComputeBudgetInstruction = anchor.web3.ComputeBudgetProgram.requestUnits({
-          units: 400000,
-          additionalFee: 0,
-        });
-        instructions.push(additionalComputeBudgetInstruction)
         convertAmount -= usdcBalance
         const { data } = await axios.get(
-          `https://quote-api.jup.ag/v1/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative((convertAmount + (convertAmount * .01)) / solPrice, ids.mints.wsol)}&slippage=1.0&onlyDirectRoutes=true`
+          `https://quote-api.jup.ag/v3/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative((convertAmount + (convertAmount * .01)) / solPrice, ids.mints.wsol)}&slippageBps=1&onlyDirectRoutes=true`
         )
         let transactionInstructions
         for await (let d of data.data) {
           const transactions = await axios.post(
-            'https://quote-api.jup.ag/v1/swap', {
+            'https://quote-api.jup.ag/v3/swap', {
             route: d,
             userPublicKey: provider.wallet.publicKey.toBase58(),
           })
@@ -905,27 +900,24 @@ const releaseContextHelper = ({
       }
       const instructions = []
       if (!isSol(release.paymentMint) && usdcBalance < ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)) {
-        const additionalComputeBudgetInstruction = anchor.web3.ComputeBudgetProgram.requestUnits({
-          units: 400000,
-          additionalFee: 0,
-        });
-        instructions.push(additionalComputeBudgetInstruction)
         const solPrice = await getSolPrice()
         const releaseUiPrice = ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc) - usdcBalance
         const { data } = await axios.get(
-          `https://quote-api.jup.ag/v1/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative((releaseUiPrice + (releaseUiPrice * .01)) / solPrice, ids.mints.wsol)}&slippage=1.0&onlyDirectRoutes=true`
+          `https://quote-api.jup.ag/v3/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative((releaseUiPrice + (releaseUiPrice * .01)) / solPrice, ids.mints.wsol)}&slippageBps=1&onlyDirectRoutes=true`
         )
         const transactions = await axios.post(
-          'https://quote-api.jup.ag/v1/swap', {
+          'https://quote-api.jup.ag/v3/swap', {
           route: data.data[0],
           userPublicKey: provider.wallet.publicKey.toBase58(),
         })
+        console.log('transactions :>> ', transactions);
         instructions.push(...anchor.web3.Transaction.from(Buffer.from(transactions.data.swapTransaction, 'base64')).instructions)
       }
-
+      
       if (receiverReleaseTokenAccountIx) {
         instructions.push(receiverReleaseTokenAccountIx)
       }
+      console.log('instructions :>> ', instructions);
 
       if (instructions.length > 0) {
         request.instructions = instructions
