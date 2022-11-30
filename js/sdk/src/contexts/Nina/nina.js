@@ -620,14 +620,15 @@ const ninaContextHelper = ({
     if (provider.wallet?.connected && provider.wallet?.publicKey) {
       try {
         const solPrice =  await axios.get(
-          `https://price.jup.ag/v1/price?id=SOL`
+          `https://price.jup.ag/v3/price?ids=SOL`
         )
+
         let solUsdcBalanceResult = await provider.connection.getBalance(
           provider.wallet.publicKey
         )
      
-        setSolUsdcBalance((ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) * solPrice.data.data.price).toFixed(2))
-        setSolBalance(solUsdcBalanceResult)
+        setSolUsdcBalance((ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) * solPrice.data.data.SOL.price).toFixed(2))
+                setSolBalance(solUsdcBalanceResult)
         if (solUsdcBalanceResult < 100000000000000000000) { // change back to 10000000 before merge
           console.log('setting low :>> ', solUsdcBalanceResult);
           setLowSolBalance(true)
