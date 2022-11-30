@@ -12,7 +12,7 @@ import TextField from '@mui/material/TextField'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import { useSnackbar } from 'notistack'
-import {useWallet} from '@solana/wallet-adapter-react'
+import { useWallet } from '@solana/wallet-adapter-react'
 
 import Dots from './Dots'
 
@@ -41,23 +41,26 @@ const LowBalanceModal = () => {
   const [routes, setRoutes] = useState()
   const [buttonText, setButtonText] = useState('Enter Swap Amount')
   const [userPublishedReleases, setUserPublishedReleases] = useState()
-  const [collectableBalance, setCollectableBalance] = useState(0) 
-  const {ids, nativeToUi} = ninaClient
+  const [collectableBalance, setCollectableBalance] = useState(0)
+  const { ids, nativeToUi } = ninaClient
 
   useEffect(() => {
     const getUserData = async () => {
-    await getUserBalances()
+      await getUserBalances()
       if (lowSolBalance) {
-        const [_, published] = await getUserCollectionAndPublished(wallet.publicKey.toBase58(), true)
-        console.log('published :>> ', published);
+        const [_, published] = await getUserCollectionAndPublished(
+          wallet.publicKey.toBase58(),
+          true
+        )
+        console.log('published :>> ', published)
         setUserPublishedReleases(published)
       }
-    }          
+    }
     if (wallet.connected) {
       getUserData()
     }
   }, [lowSolBalance])
-  
+
   useEffect(() => {
     if (lowSolBalance && (usdcBalance > 0 || collectableBalance > 0)) {
       setShowBalanceWarning(true)
@@ -68,11 +71,15 @@ const LowBalanceModal = () => {
     if (userPublishedReleases) {
       let total = 0
       userPublishedReleases?.forEach((release) => {
-        const recipient = release.accountData.release.revenueShareRecipients.find(recipient => recipient.recipientAuthority === wallet.publicKey.toBase58())
+        const recipient =
+          release.accountData.release.revenueShareRecipients.find(
+            (recipient) =>
+              recipient.recipientAuthority === wallet.publicKey.toBase58()
+          )
         total = total + recipient.owed
         return recipient.owed
       })
-      setCollectableBalance((nativeToUi(total, ids.mints.usdc).toFixed(2)))
+      setCollectableBalance(nativeToUi(total, ids.mints.usdc).toFixed(2))
     }
   }, [userPublishedReleases])
 
@@ -92,7 +99,7 @@ const LowBalanceModal = () => {
   useEffect(() => {
     if (routes) {
       const outAmount = routes[0].outAmount / 1000000000
-      if (amount > (usdcBalance * 1)) {
+      if (amount > usdcBalance * 1) {
         setButtonText('Insufficient balance')
       } else {
         setButtonText(`Swap ${amount} USDC for ${outAmount} SOL`)
@@ -121,15 +128,15 @@ const LowBalanceModal = () => {
     <>
       {showBalanceWarning && (
         <Root>
-            <StyledModalToggle
-              align={'right'}
-              variant="body1"
-              textTransform={'none'}
-              onClick={() => setOpen(true)}
-            >
-              Low Balance
-            </StyledModalToggle>
-    
+          <StyledModalToggle
+            align={'right'}
+            variant="body1"
+            textTransform={'none'}
+            onClick={() => setOpen(true)}
+          >
+            Low Balance
+          </StyledModalToggle>
+
           <StyledModal
             aria-labelledby="transition-modal-title"
             aria-describedby="transition-modal-description"
@@ -151,57 +158,51 @@ const LowBalanceModal = () => {
                 >
                   Convert USDC to SOL
                 </Typography>
-                <Typography
-                  align="left"
-                  variant="body1"
-                  gutterBottom
-                >
-                  Your Solana balance is below 0.01 which may cause transactions to fail.
+                <Typography align="left" variant="body1" gutterBottom>
+                  Your Solana balance is below 0.01 which may cause transactions
+                  to fail.
                 </Typography>
                 {usdcBalance && (
-                  <Typography
-                    align="left"
-                    variant="body1"
-                    gutterBottom
-                  >
-                    Your wallet has a balance of ${usdcBalance} USDC. You can use the swap below to convert some USDC to Sol.
+                  <Typography align="left" variant="body1" gutterBottom>
+                    Your wallet has a balance of ${usdcBalance} USDC. You can
+                    use the swap below to convert some USDC to Sol.
                   </Typography>
                 )}
                 {collectableBalance > 0 && (
-                  <Typography
-                    align="left"
-                    variant="body1"
-                    gutterBottom
-                  >
-                    You have a collectable balance of ${collectableBalance} USDC that can be collected through your dashboard.
+                  <Typography align="left" variant="body1" gutterBottom>
+                    You have a collectable balance of ${collectableBalance} USDC
+                    that can be collected through your{' '}
+                    <a
+                      style={{ textDecoration: 'underline' }}
+                      href={`/profiles/${wallet.publicKey.toBase58()}`}
+                    >
+                      dashboard
+                    </a>
+                    .
                   </Typography>
                 )}
-                
+
                 <StyledInputWrapper>
                   <StyledTextField
-                  variant='standard'
-                  value={amount}
-                  type="number"
-                  max
-                  onChange={(e) => {
-                    console.log('e.target.value :>> ', e.target.value);
-                    if (e.target.value >= 0) {
-                      setAmount(e.target.value)
-                    }
-                  }}
-                  label={
-                      `Swap Amount (USDC to SOL):` 
-                    }
+                    variant="standard"
+                    value={amount}
+                    type="number"
+                    max
+                    onChange={(e) => {
+                      console.log('e.target.value :>> ', e.target.value)
+                      if (e.target.value >= 0) {
+                        setAmount(e.target.value)
+                      }
+                    }}
+                    label={`Swap Amount (USDC to SOL):`}
                     InputProps={{
                       endAdornment: (
-                        <InputAdornment position="start">
-                          USDC
-                        </InputAdornment>
+                        <InputAdornment position="start">USDC</InputAdornment>
                       ),
                     }}
                     inputProps={{
                       min: 0,
-                      max:10
+                      max: 10,
                     }}
                   />
                 </StyledInputWrapper>
@@ -210,17 +211,12 @@ const LowBalanceModal = () => {
                   variant="outlined"
                   sx={{
                     width: '100%',
-                    mt: 1
+                    mt: 1,
                   }}
-                  disabled={
-                    !amount || 
-                    inProgress ||
-                    (amount > (usdcBalance * 1))
-                  }
+                  disabled={!amount || inProgress || amount > usdcBalance * 1}
                 >
-                  {inProgress ? <Dots size={'63px'}/> : buttonText}
+                  {inProgress ? <Dots size={'63px'} /> : buttonText}
                 </Button>
-      
               </StyledPaper>
             </Fade>
           </StyledModal>
@@ -234,7 +230,7 @@ const Root = styled('div')(({ theme }) => ({
   display: 'flex',
 }))
 
-const StyledModalToggle = styled(Typography)(({theme}) => ({
+const StyledModalToggle = styled(Typography)(({ theme }) => ({
   color: theme.palette.red,
   outline: `1px solid ${theme.palette.red}`,
   padding: '2px 4px',
@@ -247,7 +243,6 @@ const StyledModal = styled(Modal)(() => ({
   alignItems: 'center',
   justifyContent: 'center',
 }))
-
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -263,8 +258,8 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 const StyledTextField = styled(TextField)(() => ({
   '& input': {
     textAlign: 'right',
-    paddingRight: '5px'
-  }
+    paddingRight: '5px',
+  },
 }))
 
 const StyledInputWrapper = styled(Box)(() => ({

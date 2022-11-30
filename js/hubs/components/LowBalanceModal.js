@@ -1,25 +1,25 @@
-import React, { useState, useEffect, useContext, useMemo } from 'react'
-import { styled } from '@mui/material/styles'
-import Box from '@mui/material/Box'
-import Paper from '@mui/material/Paper'
-import Modal from '@mui/material/Modal'
-import Backdrop from '@mui/material/Backdrop'
-import Fade from '@mui/material/Fade'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
-import InputAdornment from '@mui/material/InputAdornment'
-import TextField from '@mui/material/TextField'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-import { useSnackbar } from 'notistack'
-import {useWallet} from '@solana/wallet-adapter-react'
+import React, { useState, useEffect, useContext, useMemo } from "react";
+import { styled } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Modal from "@mui/material/Modal";
+import Backdrop from "@mui/material/Backdrop";
+import Fade from "@mui/material/Fade";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import InputAdornment from "@mui/material/InputAdornment";
+import TextField from "@mui/material/TextField";
+import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
+import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
+import { useSnackbar } from "notistack";
+import { useWallet } from "@solana/wallet-adapter-react";
 
-import Dots from './Dots'
+import Dots from "./Dots";
 
 const LowBalanceModal = () => {
-  const [open, setOpen] = useState(false)
-  const { enqueueSnackbar } = useSnackbar()
-  const wallet = useWallet()
+  const [open, setOpen] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
+  const wallet = useWallet();
   const {
     solPrice,
     getSolPrice,
@@ -29,110 +29,116 @@ const LowBalanceModal = () => {
     ninaClient,
     getUsdcToSolSwapData,
     swapUsdcToSol,
-  } = useContext(Nina.Context)
-  const {
-    getUserCollectionAndPublished,
-    releaseState,
-  } = useContext(Release.Context)
-  const [showBalanceWarning, setShowBalanceWarning] = useState(false)
-  const [amount, setAmount] = useState()
-  const [inProgress, setInProgress] = useState(false)
-  const [routes, setRoutes] = useState()
-  const [buttonText, setButtonText] = useState('Enter Swap Amount')
-  const [userPublishedReleases, setUserPublishedReleases] = useState()
-  const [collectableBalance, setCollectableBalance] = useState(0) 
-  const {ids, nativeToUi} = ninaClient
+  } = useContext(Nina.Context);
+  const { getUserCollectionAndPublished, releaseState } = useContext(
+    Release.Context
+  );
+  const [showBalanceWarning, setShowBalanceWarning] = useState(false);
+  const [amount, setAmount] = useState();
+  const [inProgress, setInProgress] = useState(false);
+  const [routes, setRoutes] = useState();
+  const [buttonText, setButtonText] = useState("Enter Swap Amount");
+  const [userPublishedReleases, setUserPublishedReleases] = useState();
+  const [collectableBalance, setCollectableBalance] = useState(0);
+  const { ids, nativeToUi } = ninaClient;
 
   useEffect(() => {
-    console.log('lowSolBalance :>> ', lowSolBalance);
+    console.log("lowSolBalance :>> ", lowSolBalance);
     const getUserData = async () => {
-    await getUserBalances()
+      await getUserBalances();
       if (lowSolBalance) {
-        const [_, published] = await getUserCollectionAndPublished(wallet.publicKey.toBase58(), true)
-        setUserPublishedReleases(published)
-        console.log('published :>> ', published);
+        const [_, published] = await getUserCollectionAndPublished(
+          wallet.publicKey.toBase58(),
+          true
+        );
+        setUserPublishedReleases(published);
+        console.log("published :>> ", published);
       }
-    }          
+    };
     if (wallet.connected) {
-      getUserData()
+      getUserData();
     }
-  }, [lowSolBalance])
-  
+  }, [lowSolBalance]);
+
   useEffect(() => {
     if (lowSolBalance && (usdcBalance > 0 || collectableBalance > 0)) {
-      setShowBalanceWarning(true)
+      setShowBalanceWarning(true);
     }
-  }, [lowSolBalance, usdcBalance])
+  }, [lowSolBalance, usdcBalance]);
 
   useEffect(() => {
     if (userPublishedReleases) {
-      let total = 0
+      let total = 0;
       userPublishedReleases?.forEach((release) => {
-        const recipient = release.accountData.release.revenueShareRecipients.find(recipient => recipient.recipientAuthority === wallet.publicKey.toBase58())
-       console.log('release :>> ', release);
-       console.log('recipient :>> ', recipient);
-       console.log('recipient.owed :>> ', recipient.owed);
-        total = total + recipient.owed
-        return recipient.owed
-      })
-      setCollectableBalance((nativeToUi(total, ids.mints.usdc).toFixed(2)))
+        const recipient =
+          release.accountData.release.revenueShareRecipients.find(
+            (recipient) =>
+              recipient.recipientAuthority === wallet.publicKey.toBase58()
+          );
+        console.log("release :>> ", release);
+        console.log("recipient :>> ", recipient);
+        console.log("recipient.owed :>> ", recipient.owed);
+        total = total + recipient.owed;
+        return recipient.owed;
+      });
+      setCollectableBalance(nativeToUi(total, ids.mints.usdc).toFixed(2));
     }
-  }, [userPublishedReleases])
+  }, [userPublishedReleases]);
 
   useEffect(() => {
     const getSwapData = async () => {
-      const data = await getUsdcToSolSwapData(amount)
-      setRoutes(data.data)
-      return data
-    }
+      const data = await getUsdcToSolSwapData(amount);
+      setRoutes(data.data);
+      return data;
+    };
 
     if (amount > 0) {
-      getSwapData()
+      getSwapData();
     }
-  }, [amount])
+  }, [amount]);
 
   //MOVE TO NINA CONTEXT
   useEffect(() => {
     if (routes) {
-      const outAmount = routes[0].outAmount / 1000000000
-      if (amount > (usdcBalance * 1)) {
-        setButtonText('Insufficient balance')
+      const outAmount = routes[0].outAmount / 1000000000;
+      if (amount > usdcBalance * 1) {
+        setButtonText("Insufficient balance");
       } else {
-        setButtonText(`Swap ${amount} USDC for ${outAmount} SOL`)
+        setButtonText(`Swap ${amount} USDC for ${outAmount} SOL`);
       }
     }
-  }, [routes])
+  }, [routes]);
 
   const handleSwap = async () => {
-    setInProgress(true)
-    const result = await swapUsdcToSol(routes)
+    setInProgress(true);
+    const result = await swapUsdcToSol(routes);
     if (result?.success) {
       enqueueSnackbar(result.msg, {
-        variant: 'info',
-      })
-      setOpen(false)
+        variant: "info",
+      });
+      setOpen(false);
     } else {
-      enqueueSnackbar('Swap Unsuccesful', {
-        variant: 'failure',
-      })
+      enqueueSnackbar("Swap Unsuccesful", {
+        variant: "failure",
+      });
     }
-    setAmount()
-    setInProgress(false)
-  }
+    setAmount();
+    setInProgress(false);
+  };
 
   return (
     <>
       {showBalanceWarning && (
         <Root>
-            <StyledModalToggle
-              align={'right'}
-              variant="body1"
-              textTransform={'none'}
-              onClick={() => setOpen(true)}
-            >
-              Low Balance
-            </StyledModalToggle>
-    
+          <StyledModalToggle
+            align={"right"}
+            variant="body1"
+            textTransform={"none"}
+            onClick={() => setOpen(true)}
+          >
+            Low Balance
+          </StyledModalToggle>
+
           <StyledModal
             aria-labelledby="transition-modal-title"
             aria-describedby="transition-modal-description"
@@ -154,60 +160,52 @@ const LowBalanceModal = () => {
                 >
                   Convert USDC to SOL
                 </Typography>
-                <Typography
-                  align="left"
-                  variant="body1"
-                  gutterBottom
-                >
-                  Your Solana balance is below 0.01 which may cause transactions to fail.
+                <Typography align="left" variant="body1" gutterBottom>
+                  Your Solana balance is below 0.01 which may cause transactions
+                  to fail.
                 </Typography>
                 {usdcBalance && (
-                  <Typography
-                    align="left"
-                    variant="body1"
-                    gutterBottom
-                  >
-                    Your wallet has a balance of ${usdcBalance} USDC. You can use the swap below to convert some USDC to Sol.
+                  <Typography align="left" variant="body1" gutterBottom>
+                    Your wallet has a balance of ${usdcBalance} USDC. You can
+                    use the swap below to convert some USDC to Sol.
                   </Typography>
                 )}
                 {collectableBalance > 0 && (
-                  <Typography
-                    align="left"
-                    variant="body1"
-                    gutterBottom
-                  >
-                    You have a collectable balance of ${collectableBalance} USDC that can be collected through your{' '} 
-                    <a target="__blank" rel="noreferrer" href={`https://www.ninaprotocol.com/profiles/${wallet.publicKey.toBase58()}`}>
-                      dashboard.
+                  <Typography align="left" variant="body1" gutterBottom>
+                    You have a collectable balance of ${collectableBalance} USDC
+                    that can be collected through your{" "}
+                    <a
+                      target="__blank"
+                      rel="noreferrer"
+                      href={`https://www.ninaprotocol.com/profiles/${wallet.publicKey.toBase58()}`}
+                    >
+                      dashboard
                     </a>
+                    .
                   </Typography>
                 )}
-                
+
                 <StyledInputWrapper>
                   <StyledTextField
-                  variant='standard'
-                  value={amount}
-                  type="number"
-                  max
-                  onChange={(e) => {
-                    console.log('e.target.value :>> ', e.target.value);
-                    if (e.target.value >= 0) {
-                      setAmount(e.target.value)
-                    }
-                  }}
-                  label={
-                      `Swap Amount (USDC to SOL):` 
-                    }
+                    variant="standard"
+                    value={amount}
+                    type="number"
+                    max
+                    onChange={(e) => {
+                      console.log("e.target.value :>> ", e.target.value);
+                      if (e.target.value >= 0) {
+                        setAmount(e.target.value);
+                      }
+                    }}
+                    label={`Swap Amount (USDC to SOL):`}
                     InputProps={{
                       endAdornment: (
-                        <InputAdornment position="start">
-                          USDC
-                        </InputAdornment>
+                        <InputAdornment position="start">USDC</InputAdornment>
                       ),
                     }}
                     inputProps={{
                       min: 0,
-                      max:10
+                      max: 10,
                     }}
                   />
                 </StyledInputWrapper>
@@ -215,69 +213,63 @@ const LowBalanceModal = () => {
                   onClick={() => handleSwap(amount)}
                   variant="outlined"
                   sx={{
-                    width: '100%',
-                    mt: 1
+                    width: "100%",
+                    mt: 1,
                   }}
-                  disabled={
-                    !amount || 
-                    inProgress ||
-                    (amount > (usdcBalance * 1))
-                  }
+                  disabled={!amount || inProgress || amount > usdcBalance * 1}
                 >
-                  {inProgress ? <Dots size={'63px'}/> : buttonText}
+                  {inProgress ? <Dots size={"63px"} /> : buttonText}
                 </Button>
-      
               </StyledPaper>
             </Fade>
           </StyledModal>
         </Root>
       )}
     </>
-  )
-}
+  );
+};
 
-const Root = styled('div')(({ theme }) => ({
-  display: 'flex',
-}))
+const Root = styled("div")(({ theme }) => ({
+  display: "flex",
+}));
 
-const StyledModalToggle = styled(Typography)(({theme}) => ({
+const StyledModalToggle = styled(Typography)(({ theme }) => ({
   color: theme.palette.red,
   outline: `1px solid ${theme.palette.red}`,
-  padding: '2px 4px',
-  marginRight: '15px',
-  cursor: 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-}))
+  padding: "2px 4px",
+  marginRight: "15px",
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+}));
 
 const StyledModal = styled(Modal)(() => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}))
-
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}));
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
-  border: '2px solid #000',
+  border: "2px solid #000",
   boxShadow: theme.shadows[5],
   padding: theme.spacing(2, 4, 3),
-  width: '40vw',
-  maxHeight: '90vh',
-  overflowY: 'auto',
-  zIndex: '10',
-}))
+  width: "40vw",
+  maxHeight: "90vh",
+  overflowY: "auto",
+  zIndex: "10",
+}));
 
 const StyledTextField = styled(TextField)(() => ({
-  '& input': {
-    textAlign: 'right',
-    paddingRight: '5px'
-  }
-}))
+  "& input": {
+    textAlign: "right",
+    paddingRight: "5px",
+  },
+}));
 
 const StyledInputWrapper = styled(Box)(() => ({
-  display: 'flex',
-  flexDirection: 'column',
-}))
+  display: "flex",
+  flexDirection: "column",
+}));
 
-export default LowBalanceModal
+export default LowBalanceModal;

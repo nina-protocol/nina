@@ -29,7 +29,7 @@ const NavBar = () => {
     filterSubscriptionsForUser,
     subscriptionState,
     lowSolBalance,
-    getUserBalances
+    getUserBalances,
   } = useContext(Nina.Context)
   const wallet = useWallet()
   const base58 = useMemo(
@@ -53,7 +53,6 @@ const NavBar = () => {
     }
   }, [wallet.connected])
 
-
   return (
     <Root>
       <NavLeft>
@@ -71,7 +70,6 @@ const NavBar = () => {
           <Typography variant="h4">NINA</Typography>
         </Link>
       </Logo>
-      
 
       <NavRight>
         <DesktopWalletWrapper>
