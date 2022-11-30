@@ -32,8 +32,6 @@ const LowBalanceModal = () => {
   } = useContext(Nina.Context)
   const {
     getUserCollectionAndPublished,
-    releaseState,
-    filterReleasesPublishedByUser,
   } = useContext(Release.Context)
   const [showBalanceWarning, setShowBalanceWarning] = useState(false)
   const [amount, setAmount] = useState()
@@ -52,7 +50,6 @@ const LowBalanceModal = () => {
           wallet.publicKey.toBase58(),
           true
         )
-        console.log('published :>> ', published)
         setUserPublishedReleases(published)
       }
     }
@@ -114,6 +111,7 @@ const LowBalanceModal = () => {
       enqueueSnackbar(result.msg, {
         variant: 'info',
       })
+      await getUserBalances()
       setOpen(false)
     } else {
       enqueueSnackbar('Swap Unsuccesful', {

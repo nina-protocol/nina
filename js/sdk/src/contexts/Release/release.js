@@ -910,14 +910,12 @@ const releaseContextHelper = ({
           route: data.data[0],
           userPublicKey: provider.wallet.publicKey.toBase58(),
         })
-        console.log('transactions :>> ', transactions);
         instructions.push(...anchor.web3.Transaction.from(Buffer.from(transactions.data.swapTransaction, 'base64')).instructions)
       }
       
       if (receiverReleaseTokenAccountIx) {
         instructions.push(receiverReleaseTokenAccountIx)
       }
-      console.log('instructions :>> ', instructions);
 
       if (instructions.length > 0) {
         request.instructions = instructions

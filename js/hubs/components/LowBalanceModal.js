@@ -43,7 +43,6 @@ const LowBalanceModal = () => {
   const { ids, nativeToUi } = ninaClient;
 
   useEffect(() => {
-    console.log("lowSolBalance :>> ", lowSolBalance);
     const getUserData = async () => {
       await getUserBalances();
       if (lowSolBalance) {
@@ -52,7 +51,6 @@ const LowBalanceModal = () => {
           true
         );
         setUserPublishedReleases(published);
-        console.log("published :>> ", published);
       }
     };
     if (wallet.connected) {
@@ -75,9 +73,6 @@ const LowBalanceModal = () => {
             (recipient) =>
               recipient.recipientAuthority === wallet.publicKey.toBase58()
           );
-        console.log("release :>> ", release);
-        console.log("recipient :>> ", recipient);
-        console.log("recipient.owed :>> ", recipient.owed);
         total = total + recipient.owed;
         return recipient.owed;
       });
@@ -116,6 +111,7 @@ const LowBalanceModal = () => {
       enqueueSnackbar(result.msg, {
         variant: "info",
       });
+      await getUserBalances()
       setOpen(false);
     } else {
       enqueueSnackbar("Swap Unsuccesful", {
@@ -192,7 +188,6 @@ const LowBalanceModal = () => {
                     type="number"
                     max
                     onChange={(e) => {
-                      console.log("e.target.value :>> ", e.target.value);
                       if (e.target.value >= 0) {
                         setAmount(e.target.value);
                       }
@@ -218,7 +213,7 @@ const LowBalanceModal = () => {
                   }}
                   disabled={!amount || inProgress || amount > usdcBalance * 1}
                 >
-                  {inProgress ? <Dots size={"63px"} /> : buttonText}
+                  {inProgress ? <Dots size={"60px"} /> : buttonText}
                 </Button>
               </StyledPaper>
             </Fade>
