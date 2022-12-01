@@ -63,7 +63,6 @@ const descendingComparator = (a, b, orderBy) => {
 }
 
 const ReusableTableHead = (props) => {
-  console.log('hello this will be removed soon')
   const { tableType, inDashboard, onRequestSort, order } = props
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property)
@@ -349,6 +348,7 @@ const ReusableTableBody = (props) => {
       }
       formattedData.authorityPublicKey = data.tokenData.authority
     } else if (tableType === 'profileHubs') {
+      console.log('data', data)
       formattedData = {
         id: releasePubkey,
         link: `/hubs/${data.handle}`,
@@ -356,6 +356,9 @@ const ReusableTableBody = (props) => {
         image: data?.data.image,
         hubName: data?.data.displayName,
         description: data?.data.description,
+        publicKey: data?.publicKey,
+        subscribe: true,
+        handle: data?.handle,
       }
       if (inDashboard) {
         ;(formattedData.hubDashboard = `${process.env.NINA_HUBS_URL}/${data.handle}/dashboard`),
@@ -382,6 +385,8 @@ const ReusableTableBody = (props) => {
         link: `/profiles/${data.collaborator}`,
         image: displayImageForAccount(data.collaborator),
         collaborator: displayNameForAccount(data.collaborator),
+        subscribe: true,
+        publicKey: data.collaborator,
       }
     } else if (
       tableType === 'searchResultArtists' ||
@@ -437,6 +442,7 @@ const ReusableTableBody = (props) => {
           image: data.to.data.image,
           hub: data.to.data.displayName,
           subscribe: true,
+          handle: data.to.handle,
           publicKey: data.to.publicKey,
         }
       } else if (data.subscriptionType === 'account') {
@@ -489,7 +495,8 @@ const ReusableTableBody = (props) => {
                 cellName !== 'date' &&
                 cellName !== 'link' &&
                 cellName !== 'authorityPublicKey' &&
-                cellName !== 'publicKey'
+                cellName !== 'publicKey' &&
+                cellName !== 'handle'
               ) {
                 if (cellName === 'ctas') {
                   return (
@@ -675,7 +682,10 @@ const ReusableTableBody = (props) => {
                 ) {
                   return (
                     <StyledTableCell key={cellName}>
-                      <Subscribe accountAddress={row.publicKey} />
+                      <Subscribe
+                        accountAddress={row.publicKey}
+                        hubHandle={row?.handle}
+                      />
                     </StyledTableCell>
                   )
                 } else {
@@ -829,7 +839,7 @@ const SearchResultTableCell = styled(TableCell)(({ theme }) => ({
 }))
 const OverflowContainer = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
-  maxWidth: '14vw',
+  maxWidth: '20vw',
   textAlign: 'left',
   textOverflow: 'ellipsis',
   [theme.breakpoints.down('md')]: {
@@ -869,7 +879,7 @@ const LineBreakContainer = styled(Box)(({ theme }) => ({
 const StyledTableDescriptionContainer = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
   textOverflow: 'ellipsis',
-  maxWidth: '20vw',
+  maxWidth: '25vw',
 }))
 
 const ResponsiveContainer = styled(Box)(

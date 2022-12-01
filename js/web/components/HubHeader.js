@@ -130,7 +130,7 @@ const ResponsiveHubHeader = styled(Box)(({ theme }) => ({
 }))
 
 const DisplayName = styled(Box)(({ theme }) => ({
-  maxWidth: '275px',
+  width: '200px',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'start',
