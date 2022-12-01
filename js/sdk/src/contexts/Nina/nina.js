@@ -24,6 +24,10 @@ const NinaProgramAction = {
   RELEASE_PURCHASE_VIA_HUB: 'RELEASE_PURCHASE_VIA_HUB',
   EXCHANGE_INIT : 'EXCHANGE_INIT',
   EXCHANGE_ACCEPT: 'EXCHANGE_ACCEPT',
+  CONNECTION_CREATE: 'CONNECTION_CREATE',
+  SUBSCRIPTION_SUBSCRIBE_HUB: 'SUBSCRIPTION_SUBSCRIBE_HUB',
+  SUBSCRIPTION_SUBSCRIBE_ACCOUNT: 'SUBSCRIPTION_SUBSCRIBE_ACCOUNT',
+
 }
 
 const NinaProgramActionCost = {
@@ -39,6 +43,9 @@ const NinaProgramActionCost = {
   RELEASE_PURCHASE_VIA_HUB: 0.00204428,
   EXCHANGE_INIT: 0.0051256,
   EXCHANGE_ACCEPT: 0.00377536,
+  CONNECTION_CREATE: 0.009535238,
+  SUBSCRIPTION_SUBSCRIBE_HUB: 0.00173804,
+  SUBSCRIPTION_SUBSCRIBE_ACCOUNT: 0.00168236,
 }
 
 const NinaContext = createContext()
@@ -396,8 +403,8 @@ const ninaContextHelper = ({
   }
 
   const saveSubscriptionsToState = async (subscriptions) => {
-    let updatedSubscriptionState = { ...subscriptionState }
-    let updatedVerificationState = { ...verificationState }
+    let updatedSubscriptionState = { }
+    let updatedVerificationState = { }
     subscriptions.forEach((subscription) => {
       updatedSubscriptionState = {
         ...updatedSubscriptionState,
@@ -409,15 +416,15 @@ const ninaContextHelper = ({
         [subscription.from.publicKey]: subscription.from.verifications,
       }
 
-      if (subscription.subscritionType === 'account') {
+      if (subscription.subscriptionType === 'account') {
         updatedVerificationState = {
           ...updatedVerificationState,
           [subscription.to.publicKey]: subscription.to.verifications,
         }
       }
     })
-    setSubscriptionState(updatedSubscriptionState)
-    setVerificationState(updatedVerificationState)
+    setSubscriptionState(prevState => ({...prevState, ...updatedSubscriptionState}))
+    setVerificationState(prevState => ({...prevState, ...updatedVerificationState}))
   }
 
   const removeSubScriptionFromState = (publicKey) => {
@@ -704,7 +711,7 @@ const ninaContextHelper = ({
       if (!bundlrInstance) {
         bundlrInstance = bundlr
       }
-      const bundlrBalanceRequest = await bundlrInstance.getLoadedBalance()
+      const bundlrBalanceRequest = await bundlrInstance?.getLoadedBalance()
       setBundlrBalance(nativeToUi(bundlrBalanceRequest, ids.mints.wsol))
     } catch (error) {
       console.warn('Unable to get Bundlr Balance: ', error)
@@ -716,7 +723,8 @@ const ninaContextHelper = ({
       if (!bundlrInstance) {
         bundlrInstance = bundlr
       }
-      const price = await bundlrInstance.getPrice(1000000)
+      
+      const price = await bundlrInstance?.getPrice(1000000)
       setBundlrPricePerMb(nativeToUi(price, ids.mints.wsol))
     } catch (error) {
       return ninaErrorHandler(error)
@@ -781,7 +789,8 @@ const ninaContextHelper = ({
           bundlrHttpAddress,
           'solana',
           provider.wallet.wallet.adapter,
-          { timeout: 1000000000000000 }
+          { providerUrl: process.env.SOLANA_CLUSTER_URL_BUNDLR,
+            timeout: 1000000000000000 }
         )
         await bundlrInstance.ready()
         setBundlr(bundlrInstance)
@@ -858,19 +867,19 @@ const ninaContextHelper = ({
     if (verifications) {
       if (
         verifications?.find(
-          (verification) => verification.type === 'soundcloud'
+          (verification) => verification.type === 'twitter'
         )
       ) {
         return verifications.find(
-          (verification) => verification.type === 'soundcloud'
+          (verification) => verification.type === 'twitter'
         ).displayName
       } else if (
         verifications?.find(
-          (verification) => verification.type === 'twitter'
+          (verification) => verification.type === 'soundcloud'
         )
       ) {
         return verifications.find(
-          (verification) => verification.type === 'twitter'
+          (verification) => verification.type === 'soundcloud'
         ).displayName
       } else if (
         verifications?.find(
@@ -899,20 +908,20 @@ const ninaContextHelper = ({
     if (verifications) {
       if (
         verifications?.find(
-          (verification) => verification.type === 'soundcloud'
+          (verification) => verification.type === 'twitter'
         )
       ) {
         return verifications.find(
-          (verification) => verification.type === 'soundcloud'
+          (verification) => verification.type === 'twitter'
         ).image
       } else if (
         verifications?.find(
-          (verification) => verification.type === 'twitter'
+          (verification) => verification.type === 'soundcloud'
         )
       ) {
         return verifications.find(
-          (verification) => verification.type === 'twitter'
-        ).image
+          (verification) => verification.type === 'soundcloud'
+        ).image || '/images/nina-gray.png'
       } 
     } 
     return '/images/nina-gray.png'
@@ -921,13 +930,20 @@ const ninaContextHelper = ({
   const getVerificationsForUser = async (accountPubkey) => {
     try {
       const { verifications } = await NinaSdk.Account.fetchVerifications(accountPubkey)
-      setVerificationState({
-        ...verificationState,
-        [accountPubkey]: verifications,
-      })
+      setVerificationState(prevState => (
+        {
+          ...prevState,
+          [accountPubkey]: verifications,
+        }
+      ))
     } catch (error) {
       console.warn(error)
-      return []
+      setVerificationState(prevState => (
+        {
+          ...prevState,
+          [accountPubkey]: [],
+        }
+      ))
     }
   }
   

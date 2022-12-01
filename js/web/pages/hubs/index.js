@@ -34,7 +34,7 @@ const AllHubsPage = () => {
           href="https://ninaprotocol.com/images/nina-blue.png"
         />
       </Head>
-      <Hubs />;
+      <Hubs />
     </>
   )
 }

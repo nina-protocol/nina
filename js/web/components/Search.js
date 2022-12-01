@@ -201,7 +201,7 @@ const Search = (props) => {
 
     if (query?.length > 0) {
       await NinaSdk.Search.withQuery(query).then(setResponse)
-      router.push(`/search?q=${query}`)
+      router.push(`/search/?q=${query}`)
     }
     if (query === '') {
       e.preventDefault()
@@ -251,7 +251,7 @@ const Search = (props) => {
   const searchFilterHandler = (e, searchIndex, searchFilter) => {
     e.preventDefault()
     e.stopPropagation()
-    const newUrl = `/search?q=${query}${
+    const newUrl = `/search/?q=${query}${
       searchFilter ? `&type=${searchFilter}` : ''
     }`
     window.history.replaceState(

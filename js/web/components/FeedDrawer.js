@@ -42,7 +42,8 @@ const FeedDrawer = () => {
 
   useEffect(() => {
     if (wallet.connected) {
-      handleFetch(true)
+      // commented out to prevent feed flickering
+      // handleFetch(true)
     }
   }, [subscriptionState])
 
@@ -213,6 +214,7 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
     overflowX: 'hidden',
     border: '1px solid black',
     borderRight: 'none',
+    zIndex: '10',
     [theme.breakpoints.down('md')]: {
       width: '90vw',
       maxWidth: '450px',

@@ -15,6 +15,8 @@ import IdentityVerificationModal from './IdentityVerificationModal'
 import {
   verifyEthereum,
   verifyTwitter,
+  deleteTwitterVerification,
+  deleteEthereumVerification,
   verifySoundcloud,
   verifyInstagram,
 } from '../utils/identityVerification'
@@ -28,10 +30,15 @@ import {
 
 const IdentityVerification = ({ verifications, profilePublicKey }) => {
   const web3 = new Web3(process.env.ETH_CLUSTER_URL)
-  const enqueueSnackbar = useSnackbar()
+  const { enqueueSnackbar } = useSnackbar()
   const router = useRouter()
-  const { publicKey, signTransaction } = useWallet()
-  const { ninaClient } = useContext(Nina.Context)
+  const { publicKey, signTransaction, sendTransaction } = useWallet()
+  const {
+    ninaClient,
+    getVerificationsForUser,
+    NinaProgramAction,
+    checkIfHasBalanceToCompleteAction,
+  } = useContext(Nina.Context)
   const { provider } = ninaClient
 
   const [open, setOpen] = useState(false)
@@ -106,14 +113,14 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   const buttonTypes = useMemo(() => {
     const buttonArray = []
     if (publicKey?.toBase58() === profilePublicKey) {
-      buttonArray.push('soundcloud', 'twitter', 'ethereum')
+      buttonArray.push('twitter', 'soundcloud', 'ethereum')
     } else {
       verifications.forEach((verification) => {
-        if (verification.type === 'soundcloud') {
-          buttonArray.push('soundcloud')
-        }
         if (verification.type === 'twitter') {
           buttonArray.push('twitter')
+        }
+        if (verification.type === 'soundcloud') {
+          buttonArray.push('soundcloud')
         }
         if (verification.type === 'instagram') {
           buttonArray.push('instagram')
@@ -127,61 +134,61 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   }, [publicKey, verifications])
 
   useEffect(() => {
-    if (router.query.code) {
-      const getHandle = async () => {
-        try {
-          const codeSource = localStorage.getItem('codeSource')
-          setActiveType(codeSource)
-          if (codeSource === 'soundcloud') {
-            const response = await axios.post(
-              `${process.env.NINA_IDENTITY_ENDPOINT}/sc/user`,
-              {
-                code: router.query.code,
-              }
-            )
-            if (response.data) {
-              setSoundcloudHandle(response.data.username)
-              setActiveValue(response.data.username)
-              setSoundcloudToken(response.data.token.access_token)
+    const codeSource = localStorage.getItem('codeSource')
+    const getHandle = async () => {
+      try {
+        setActiveType(codeSource)
+        if (codeSource === 'soundcloud') {
+          const response = await axios.post(
+            `${process.env.NINA_IDENTITY_ENDPOINT}/sc/user`,
+            {
+              code: router.query.code,
             }
-          } else if (codeSource === 'instagram') {
-            const response = await axios.post(
-              `${process.env.NINA_IDENTITY_ENDPOINT}/ig/user`,
-              {
-                code: router.query.code,
-              }
-            )
-            if (response.data) {
-              setInstagramHandle(response.data.username)
-              setActiveValue(response.data.username)
-              setInstagramToken(response.data.token)
-              setInstagramUserId(response.data.userId)
-            }
-          } else if (codeSource === 'twitter') {
-            const response = await axios.post(
-              `${process.env.NINA_IDENTITY_ENDPOINT}/tw/user`,
-              {
-                code: router.query.code,
-              }
-            )
-            if (response.data) {
-              setTwitterHandle(response.data.username)
-              setActiveValue(response.data.username)
-              setTwitterToken(response.data.token)
-            }
-          } else if (codeSource === 'ethereum') {
-            setActiveValue(ethAddress)
+          )
+          if (response.data) {
+            setSoundcloudHandle(response.data.username)
+            setActiveValue(response.data.username)
+            setSoundcloudToken(response.data.token.access_token)
           }
-        } catch (error) {
-          console.warn(error)
-          setActiveValue(undefined)
+        } else if (codeSource === 'instagram') {
+          const response = await axios.post(
+            `${process.env.NINA_IDENTITY_ENDPOINT}/ig/user`,
+            {
+              code: router.query.code,
+            }
+          )
+          if (response.data) {
+            setInstagramHandle(response.data.username)
+            setActiveValue(response.data.username)
+            setInstagramToken(response.data.token)
+            setInstagramUserId(response.data.userId)
+          }
+        } else if (codeSource === 'twitter') {
+          const response = await axios.post(
+            `${process.env.NINA_IDENTITY_ENDPOINT}/tw/user`,
+            {
+              code: router.query.code,
+            }
+          )
+          if (response.data) {
+            setTwitterHandle(response.data.username)
+            setActiveValue(response.data.username)
+            setTwitterToken(response.data.token)
+          }
         }
+      } catch (error) {
+        console.warn(error)
+        setActiveValue(undefined)
       }
-
-      getHandle()
-      setOpen(true)
     }
-  }, [router.query.code])
+
+    if (router.query.code) {
+      getHandle()
+    } else if (ethAddress) {
+      setActiveValue(ethAddress)
+    }
+    setOpen(true)
+  }, [router.query.code, ethAddress])
 
   const handleIdentityButtonAction = async (type) => {
     if (accountVerifiedForType(type)) {
@@ -226,6 +233,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
           signTransaction,
           soundcloudToken
         )
+        await getVerificationsForUser(profilePublicKey)
         break
       case 'twitter':
         await verifyTwitter(
@@ -235,6 +243,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
           publicKey,
           signTransaction
         )
+        await getVerificationsForUser(profilePublicKey)
         break
       case 'instagram':
         await verifyInstagram(
@@ -245,14 +254,24 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
           signTransaction,
           instagramToken
         )
+        await getVerificationsForUser(profilePublicKey)
         break
       case 'ethereum':
         await verifyEthereum(provider, ethAddress, publicKey, signTransaction)
+        await getVerificationsForUser(profilePublicKey)
         break
     }
   }
 
   const handleConnectAccount = async (type) => {
+    const error = await checkIfHasBalanceToCompleteAction(
+      NinaProgramAction.CONNECTION_CREATE
+    )
+    if (error) {
+      enqueueSnackbar(error.msg)
+      return
+    }
+
     localStorage.setItem('codeSource', type)
 
     switch (type) {
@@ -273,6 +292,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
         break
 
       case 'ethereum':
+        setEthAddress(undefined)
         var accounts = await window.ethereum.request({
           method: 'eth_requestAccounts',
         })

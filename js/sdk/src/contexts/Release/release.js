@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext } from 'react'
 import * as anchor from '@project-serum/anchor'
 import NinaSdk from '@nina-protocol/js-sdk';
+import _ from 'lodash'
 import Nina from '../Nina'
 import {
   createMintInstructions,
@@ -18,6 +19,7 @@ import {
 } from '../../utils/encrypt'
 import { logEvent } from '../../utils/event'
 import { publicKey } from '@project-serum/anchor/dist/cjs/utils';
+import { initSdkIfNeeded } from '../../utils/sdkInit';
 const lookupTypes = {
   PUBLISHED_BY: 'published_by',
   REVENUE_SHARE: 'revenue_share',
@@ -610,6 +612,7 @@ const releaseContextHelper = ({
         [releasePubkey.toBase58()]: false,
       })
       getUsdcBalance()
+      await axios.get(`${process.env.NINA_API_ENDPOINT}/accounts/${provider.wallet.publicKey.toBase58()}/collected?txId=${txid}`)
       await getRelease(releasePubkey.toBase58())
       addReleaseToCollection(releasePubkey.toBase58())
 
@@ -954,6 +957,7 @@ const releaseContextHelper = ({
         [releasePubkey]: false,
       })
       getUsdcBalance()
+      await axios.get(`${process.env.NINA_API_ENDPOINT}/accounts/${provider.wallet.publicKey.toBase58()}/collected?txId=${txid}`)
       await getRelease(releasePubkey)
       await addReleaseToCollection(releasePubkey)
 
@@ -1418,16 +1422,18 @@ const releaseContextHelper = ({
     try {
       const { collected } = await NinaSdk.Account.fetchCollected(publicKey, withAccountData)
       const { published } = await NinaSdk.Account.fetchPublished(publicKey, withAccountData)
-      setReleaseState(updateStateForReleases([...collected, ...published]))
+      const { revenueShares } = await NinaSdk.Account.fetchRevenueShares(publicKey, withAccountData)
+      setReleaseState(updateStateForReleases([...collected, ...published, ...revenueShares]))
+      const publishedAndRevenueShares = [...published, ...revenueShares]
       setFetchedUserProfileReleases({
         ...fetchedUserProfileReleases,
         [publicKey]: {
           collected: collected.map((release) => release.publicKey),
-          published: published.map((release) => release.publicKey)
+          published: publishedAndRevenueShares.map((release) => release.publicKey)
         },
       })
   
-      return [collected, published]
+      return [collected, publishedAndRevenueShares]
     } catch (error) {
       console.warn(error)
       return [[],[]]
@@ -1462,17 +1468,20 @@ const releaseContextHelper = ({
 
   const getReleasesRecent = async () => {
     try {
-      const highlightsHubPubkey = process.env.REACT_APP_CLUSTER === 'devnet' ? '4xHeZW8BK8HeCinoDLsGiGwtYsjQ9zBb71m5vdDa5ceS' : '4QECgzp8hjknK3pvPEMoXATywcsNnH4MU49tVvDWLgKg'
-      const published = (await NinaSdk.Release.fetchAll({limit: 25}, true)).releases
-      const highlights = (await NinaSdk.Hub.fetchReleases(highlightsHubPubkey, true)).releases
-
-      const allReleases = [...published, ...highlights]
-      setAllReleasesCount(published.total)
-      setReleaseState(updateStateForReleases(allReleases))
-      setReleasesRecentState({
-        published: published.map(release => release.publicKey),
-        highlights: highlights.map(release => release.publicKey),
-      })
+      if (!releasesRecentState.highlights || releasesRecentState.highlights.length === 0) {
+        await initSdkIfNeeded()
+        const highlightsHubPubkey = process.env.REACT_APP_CLUSTER === 'devnet' ? '4xHeZW8BK8HeCinoDLsGiGwtYsjQ9zBb71m5vdDa5ceS' : '4QECgzp8hjknK3pvPEMoXATywcsNnH4MU49tVvDWLgKg'
+        const published = (await NinaSdk.Release.fetchAll({limit: 25}, true)).releases
+        const highlights = (await NinaSdk.Hub.fetchReleases(highlightsHubPubkey, true)).releases
+  
+        const allReleases = [...published, ...highlights]
+        setAllReleasesCount(published.total)
+        setReleaseState(updateStateForReleases(allReleases))
+        setReleasesRecentState({
+          published: published.map(release => release.publicKey),
+          highlights: _.shuffle(highlights.map(release => release.publicKey)),
+        })
+      }
     } catch (error) {
       console.warn(error)
     }

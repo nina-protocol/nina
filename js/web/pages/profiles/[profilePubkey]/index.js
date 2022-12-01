@@ -4,19 +4,24 @@ import { styled } from '@mui/system'
 import Head from 'next/head'
 import NinaSdk from '@nina-protocol/js-sdk'
 import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
+import Dots from '../../../components/Dots'
 const Profile = dynamic(() => import('../../../components/Profile'))
 
 const ProfilePage = (props) => {
-  const { profilePubkey } = props
+  const { profilePubkey, loading } = props
+
   return (
     <>
       <Head>
         <title>{`Nina: ${profilePubkey}'s Profile`}</title>
-        <meta name="description" content={'Your profile on Nina.'} />
+        <meta
+          name="description"
+          content={`All releases, Hubs, and collection belonging to ${profilePubkey}`}
+        />
         <meta name="og:type" content="website" />
         <meta
           name="og:title"
-          content={`Nina: ${profilePubkey ? `${profilePubkey}'s Hub` : ''}`}
+          content={`Nina: ${profilePubkey ? `${profilePubkey}'s Profile` : ''}`}
         />
         <meta
           name="og:description"
@@ -36,10 +41,13 @@ const ProfilePage = (props) => {
         <meta property="og:title" content="iPhone" />
         <meta property="og:image" content={`/images/favicon.ico`} />
       </Head>
-
-      <ProfilePageContainer>
-        <Profile profilePubkey={profilePubkey} />
-      </ProfilePageContainer>
+      {loading ? (
+        <Dots size="80px" />
+      ) : (
+        <ProfilePageContainer>
+          <Profile profilePubkey={profilePubkey} />
+        </ProfilePageContainer>
+      )}
     </>
   )
 }
@@ -55,7 +63,7 @@ const ProfilePageContainer = styled(Box)(({ theme }) => ({
 export default ProfilePage
 
 export const getStaticPaths = async () => {
-  await initSdkIfNeeded()
+  await initSdkIfNeeded(true)
   const paths = []
   const { accounts } = await NinaSdk.Account.fetchAll({ limit: 5000 })
   accounts.forEach((account) => {
@@ -68,7 +76,7 @@ export const getStaticPaths = async () => {
 
   return {
     paths,
-    fallback: 'blocking',
+    fallback: true,
   }
 }
 
@@ -78,6 +86,6 @@ export const getStaticProps = async (context) => {
     props: {
       profilePubkey: profilePubkey,
     },
-    revalidate: 1000,
+    revalidate: 10,
   }
 }

@@ -1,41 +1,40 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
-import { imageManager } from "@nina-protocol/nina-internal-sdk/esm/utils";
 import Box from "@mui/material/Box";
 import { isMobile } from "react-device-detect";
+import Slider from "react-slick";
 import Typography from "@mui/material/Typography";
 import Link from "next/link";
 import Image from "next/image";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
+import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
+import _ from "lodash";
 import Dots from "./Dots";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import dynamic from "next/dynamic";
+import { imageManager } from "@nina-protocol/nina-internal-sdk/src/utils";
 const { getImageFromCDN, loader } = imageManager;
 
-const Slider = dynamic(() => import("react-slick"), {
-  ssr: false,
-  loading: () => (
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        minHeight: "250px",
-      }}
-    >
-      <Dots size="80px" />
-    </Box>
-  ),
-});
-const NavigateNextIcon = dynamic(() =>
-  import("@mui/icons-material/NavigateNext")
-);
-const NavigateBeforeIcon = dynamic(() =>
-  import("@mui/icons-material/NavigateBefore")
-);
+const HubSlider = () => {
+  const { featuredHubs, setFeaturedHubs } = useContext(Hub.Context);
+  const { getSubscriptionsForUser } = useContext(Nina.Context);
 
-const HubSlider = (props) => {
-  const { hubs } = props;
+  useEffect(() => {
+    const fetchFeaturedHubs = async () => {
+      const response = await getSubscriptionsForUser(
+        "7zoKqAehBR7oWMFpmWr2ebrhMvqL6oBsHdRcL2N3cmnU"
+      );
+      const hubs = response
+        .filter((sub) => {
+          return sub.subscriptionType === "hub";
+        })
+        .map((sub) => sub.to);
+      setFeaturedHubs(_.shuffle(hubs));
+    };
+    fetchFeaturedHubs();
+  }, []);
 
   const responsiveSettings = [
     {
@@ -75,7 +74,7 @@ const HubSlider = (props) => {
       onClick={onClick}
     />
   );
-  if (hubs?.length === 0) {
+  if (!featuredHubs) {
     return (
       <Box
         sx={{
@@ -91,7 +90,7 @@ const HubSlider = (props) => {
   }
   return (
     <HubSliderWrapper>
-      {hubs?.length > 0 && (
+      {featuredHubs?.length > 0 && (
         <Slider
           dots={false}
           infinite={true}
@@ -103,7 +102,7 @@ const HubSlider = (props) => {
           nextArrow={<CustomNextArrow />}
           prevArrow={<CustomPrevArrow />}
         >
-          {hubs?.map((hub, i) => {
+          {featuredHubs?.map((hub, i) => {
             const imageUrl = hub?.data?.image;
             return (
               <HubSlideWrapper key={i}>
@@ -112,17 +111,16 @@ const HubSlider = (props) => {
                     <Link href={`/${hub.handle}`}>
                       <a>
                         <Image
-                          loader={loader}
                           src={getImageFromCDN(
                             imageUrl,
                             400,
                             new Date(hub.datetime)
                           )}
+                          loader={loader}
                           height={100}
                           width={100}
                           layout="responsive"
                           priority={!isMobile}
-                          alt={`${hub.handle}`}
                         />
                       </a>
                     </Link>

@@ -19,6 +19,7 @@ import {
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 import Image from "next/image";
+import NinaSdk from "@nina-protocol/js-sdk";
 const { getImageFromCDN, loader } = imageManager;
 
 const navData = [
@@ -57,7 +58,7 @@ const mobileNavData = [
 const NavBar = ({ hubPubkey }) => {
   const { toolbar, drawerContainer } = useStyles();
   const wallet = useWallet();
-
+  const [hubData, setHubData] = useState(null);
   const [mobileView, setMobileView] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -65,28 +66,23 @@ const NavBar = ({ hubPubkey }) => {
     hubState,
     hubCollaboratorsState,
     filterHubCollaboratorsForHub,
-    getHubsForUser,
-    filterHubsForUser,
+    getHub,
+    getHubsForUser
   } = useContext(Hub.Context);
   const hubCollaborators = useMemo(
     () => filterHubCollaboratorsForHub(hubPubkey),
     [hubCollaboratorsState, hubPubkey]
   );
 
-  const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
-
   useEffect(() => {
-    if (wallet.connected) {
-      getHubsForUser(wallet.publicKey.toBase58());
+    const fetchHub = async () => {
+      const { hub } = await NinaSdk.Hub.fetch(hubPubkey);
+      setHubData(hub);
+    };
+    if (hubPubkey) {
+      fetchHub();
     }
-  }, [wallet.connected]);
-
-  const userHubs = useMemo(() => {
-    if (wallet.connected) {
-      return filterHubsForUser(wallet.publicKey.toBase58());
-    }
-    return undefined;
-  }, [hubState]);
+  }, [hubPubkey]);
 
   useEffect(() => {
     const setResponsiveness = () => {
@@ -108,6 +104,12 @@ const NavBar = ({ hubPubkey }) => {
     () => wallet?.publicKey?.toBase58(),
     [wallet?.publicKey]
   );
+
+  useEffect(() => {
+    if (wallet.connected) {
+      getHubsForUser(wallet.publicKey.toBase58());
+    }
+  },[wallet.connected])
 
   const walletDisplay = useMemo(() => {
     if (!wallet || !base58) return null;
@@ -141,23 +143,22 @@ const NavBar = ({ hubPubkey }) => {
         }}
       >
         {mobileView && canAddContent && displayMobile()}
-
         <Link href={`/${hubData?.handle || ""}`} passHref>
           <LogoLinkWrapper>
-            {hubData && (
+            {hubData?.data && (
               <Image
                 loader={loader}
                 src={getImageFromCDN(
-                  hubData.data.image,
+                  hubData?.data?.image,
                   100,
-                  new Date(Date.parse(hubData.datetime))
+                  new Date(hubData.datetime)
                 )}
                 height="50"
                 width="50"
                 alt="hub-logo"
               />
             )}
-            {hubPubkey ? (
+            {hubData?.data ? (
               <Typography style={{ marginLeft: "15px" }}>
                 {hubData?.data.displayName}
               </Typography>

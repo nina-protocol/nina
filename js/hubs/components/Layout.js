@@ -10,19 +10,21 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { lightThemeOptions } from "../styles/theme/lightThemeOptions";
 import Head from "next/head";
 import NinaSdk from "@nina-protocol/js-sdk";
+import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
 
 const NavBar = dynamic(() => import("./NavBar"));
 const AudioPlayer = dynamic(() => import("./AudioPlayer"));
 const lightTheme = createTheme(lightThemeOptions);
 
-const Layout = ({ children }) => {
+const Layout = ({ children, loading }) => {
   const router = useRouter();
   const [hubPubkey, setHubPubkey] = useState(undefined);
-  const { hubState, getHubPubkeyForHubHandle } = useContext(Hub.Context);
+  const { hubState, getHub } = useContext(Hub.Context);
 
   useEffect(() => {
     const getHubPubkey = async (handle) => {
       try {
+        await initSdkIfNeeded();
         const publicKey = (await NinaSdk.Hub.fetch(handle)).hub.publicKey;
         setHubPubkey(publicKey);
       } catch (error) {
@@ -35,6 +37,12 @@ const Layout = ({ children }) => {
       setHubPubkey(undefined);
     }
   }, [router.query.hubPubkey]);
+
+  useEffect(() => {
+    if (hubPubkey) {
+      getHub(hubPubkey);
+    }
+  }, [hubPubkey]);
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
 
@@ -112,7 +120,7 @@ const Layout = ({ children }) => {
             className={classes.mainContainer}
           >
             <main className={classes.bodyContainer}>
-              <NavBar hubPubkey={hubPubkey} />
+              <NavBar hubPubkey={hubPubkey} loading={loading} />
               <Grid
                 container
                 columns={{ xs: 12, sm: 12, md: 12 }}

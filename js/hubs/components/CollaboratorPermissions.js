@@ -19,7 +19,7 @@ const CollaboratorPermissions = (props) => {
   const [pending, setPending] = useState(false);
   const buttonText = isAuthority
     ? "Update Permissions"
-    : "You Do Not Have Permission To Add Artists"
+    : "You Do Not Have Permission To Add Artists";
 
   const [unlimitedAllowance, setUnlimitAllowance] = useState(
     activeSelection.allowance === -1
@@ -72,7 +72,7 @@ const CollaboratorPermissions = (props) => {
           variant: "failure",
         });
       }
-      setPending(false)
+      setPending(false);
     },
     enableReinitialize: true,
   });
@@ -167,8 +167,7 @@ const CollaboratorPermissions = (props) => {
             type="submit"
             disabled={!isAuthority || pending}
           >
-           
-              {pending  ? <Dots />  : buttonText}
+            {pending ? <Dots /> : buttonText}
           </Button>
           <Button
             style={{ marginTop: "15px" }}

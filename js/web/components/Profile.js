@@ -227,7 +227,7 @@ const Profile = ({ profilePubkey }) => {
 
   useEffect(() => {
     if (verificationState[profilePubkey]) {
-      setProfileVerifications(verificationState[profilePubkey])
+      setProfileVerifications(verificationState[profilePubkey] || [])
     }
   }, [verificationState])
 
@@ -387,6 +387,9 @@ const Profile = ({ profilePubkey }) => {
                         src={getImageFromCDN(profileImage, 400)}
                         priority={true}
                         loader={loader}
+                        alt={`${displayImageForAccount(
+                          profilePubkey
+                        )} profile image`}
                       />
                     ) : (
                       <img src={profileImage} height={100} width={100} />

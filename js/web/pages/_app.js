@@ -8,7 +8,7 @@ import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
 import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare'
 import { GlowWalletAdapter } from '@solana/wallet-adapter-glow'
-import { SolletWalletAdapter } from '@solana/wallet-adapter-sollet'
+import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 import { clusterApiUrl } from '@solana/web3.js'
 import dynamic from 'next/dynamic'
 import Router from 'next/router'
@@ -69,7 +69,7 @@ function Application({ Component, pageProps }) {
     new PhantomWalletAdapter({ network }),
     new SolflareWalletAdapter({ network }),
     new GlowWalletAdapter({ network }),
-    new SolletWalletAdapter({ network }),
+    new BackpackWalletAdapter({ network }),
   ]
 
   // if (!isMobile) {
@@ -97,11 +97,10 @@ function Application({ Component, pageProps }) {
             <NinaWrapper network={process.env.REACT_APP_CLUSTER}>
               <ThemeProvider theme={NinaTheme}>
                 <Layout>
-                  {loading || !sdkInitialized ? (
-                    <Dots size="80px" />
-                  ) : (
-                    <Component {...pageProps} />
-                  )}
+                  <Component
+                    {...pageProps}
+                    loading={loading || !sdkInitialized}
+                  />
                 </Layout>
               </ThemeProvider>
             </NinaWrapper>

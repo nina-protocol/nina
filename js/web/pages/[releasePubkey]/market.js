@@ -3,10 +3,12 @@ import dynamic from 'next/dynamic'
 import Release from '../../components/Release'
 import NinaSdk from '@nina-protocol/js-sdk'
 import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
+import Dots from '../../components/Dots'
 const NotFound = dynamic(() => import('../../components/NotFound'))
 
 const ReleaseMarketPage = (props) => {
-  const { metadata } = props
+  const { metadata, loading } = props
+
   if (!metadata) {
     return <NotFound />
   }
@@ -39,7 +41,7 @@ const ReleaseMarketPage = (props) => {
         <meta name="twitter:image" content={metadata?.image} />
         <meta name="og:image" content={metadata?.image} />
       </Head>
-      <Release {...props} />
+      {loading ? <Dots size="80px" /> : <Release {...props} />}
     </>
   )
 }
@@ -58,7 +60,7 @@ export const getStaticPaths = async () => {
 
   return {
     paths,
-    fallback: 'blocking',
+    fallback: true,
   }
 }
 
@@ -72,7 +74,7 @@ export const getStaticProps = async (context) => {
         metadata: release.metadata,
         releasePubkey,
       },
-      revalidate: 1000,
+      revalidate: 10,
     }
   } catch (error) {
     console.warn(error)

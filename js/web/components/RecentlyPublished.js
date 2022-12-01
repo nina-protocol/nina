@@ -102,6 +102,7 @@ const RecentlyPublished = (props) => {
                         width={100}
                         layout="responsive"
                         priority={!isMobile}
+                        alt={`${release.metadata.properties.artist} - ${release.metadata.properties.title}`}
                       />
                     </a>
                   </Link>

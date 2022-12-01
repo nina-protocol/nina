@@ -44,7 +44,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const [description, setDescription] = useState();
   const [userHubs, setUserHubs] = useState();
   const [userIsRecipient, setUserIsRecipient] = useState(false);
-
+  const [release, setRelease] = useState();
   useEffect(() => {
     if (hubPubkey && !hubState[hubPubkey]) {
       getHub(hubPubkey);
@@ -60,22 +60,22 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   useEffect(() => {
     if (releaseState.metadata[releasePubkey]) {
       setMetadata(releaseState.metadata[releasePubkey]);
+      setRelease(releaseState.tokenData[releasePubkey]);
     }
   }, [releaseState, metadata, releasePubkey]);
-
 
   useEffect(() => {
     const fetchHubs = async () => {
       const hubs = await getHubsForUser(wallet.publicKey.toBase58());
       setUserHubs(hubs);
-    }
+    };
     if (wallet.connected && hubState && !userHubs) {
-     fetchHubs()
+      fetchHubs();
     }
   }, [wallet?.connected, hubState]);
 
   useEffect(() => {
-    if (metadata?.description.includes("<p>")) {
+    if (metadata?.descriptionHtml?.includes("<p>")) {
       unified()
         .use(rehypeParse, { fragment: true })
         .use(rehypeSanitize)
@@ -88,7 +88,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
           rel: ["nofollow", "noreferrer"],
         })
         .process(
-          JSON.parse(metadata.description).replaceAll("<p><br></p>", "<br>")
+          JSON.parse(metadata.descriptionHtml).replaceAll("<p><br></p>", "<br>")
         )
         .then((file) => {
           setDescription(file.result);
@@ -113,7 +113,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
     }
   }, [releaseState.tokenData[releasePubkey], wallet?.connected]);
 
-  return (
+  return (  
     <>
       <StyledGrid
         item
@@ -124,14 +124,14 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
           padding: { md: "0 15px", xs: "75px 15px" },
         }}
       >
-        {metadata && metadata.image && (
+        {release && metadata && metadata.image && (
           <>
             <MobileImageWrapper>
               <Image
                 src={getImageFromCDN(
                   metadata.image,
                   1200,
-                  new Date(Date.parse(metadata.properties.date))
+                  new Date(release.releaseDatetime)
                 )}
                 loader={loader}
                 layout="responsive"
@@ -214,13 +214,13 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
       </StyledGrid>
 
       <DesktopImageGridItem item md={6}>
-        {metadata && metadata.image && (
+        {release && metadata && metadata.image && (
           <ImageContainer>
             <Image
               src={getImageFromCDN(
                 metadata.image,
                 1200,
-                new Date(Date.parse(metadata.properties.date))
+                new Date(release.releaseDatetime)
               )}
               loader={loader}
               layout="responsive"

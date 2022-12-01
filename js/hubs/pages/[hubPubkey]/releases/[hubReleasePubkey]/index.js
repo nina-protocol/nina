@@ -4,10 +4,11 @@ import Head from "next/head";
 import NotFound from "../../../../components/NotFound";
 import NinaSdk from "@nina-protocol/js-sdk";
 import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
+import Dots from "../../../../components/Dots";
 const Release = dynamic(() => import("../../../../components/Release"));
 
 const ReleasePage = (props) => {
-  const { metadata, hub, releasePubkey, hubPubkey } = props;
+  const { metadata, hub, releasePubkey, hubPubkey, loading } = props;
 
   if (!metadata) {
     return <NotFound hub={hub} />;
@@ -42,11 +43,15 @@ const ReleasePage = (props) => {
         <meta name="twitter:image" content={metadata?.image} />
         <meta name="og:image" content={metadata?.image} />
       </Head>
-      <Release
-        metadataSsr={metadata}
-        releasePubkey={releasePubkey}
-        hubPubkey={hubPubkey}
-      />
+      {loading ? (
+        <Dots size="80px" />
+      ) : (
+        <Release
+          metadataSsr={metadata}
+          releasePubkey={releasePubkey}
+          hubPubkey={hubPubkey}
+        />
+      )}
     </>
   );
 };
@@ -54,23 +59,29 @@ const ReleasePage = (props) => {
 export default ReleasePage;
 
 export const getStaticPaths = async () => {
-  await initSdkIfNeeded(true)
-  const paths = []
-  const { hubs } = await NinaSdk.Hub.fetchAll({limit: 1000})
+  await initSdkIfNeeded(true);
+  const paths = [];
+  const { hubs } = await NinaSdk.Hub.fetchAll({ limit: 1000 });
   for await (const hub of hubs) {
-    const { releases } = await NinaSdk.Hub.fetchReleases(hub.publicKey)
-    releases.forEach(release => {
+    const { releases } = await NinaSdk.Hub.fetchReleases(hub.publicKey);
+    releases.forEach((release) => {
       paths.push({
-        params: { hubPubkey: hub.publicKey, hubReleasePubkey: release.hubReleasePublicKey }
-      })
+        params: {
+          hubPubkey: hub.publicKey,
+          hubReleasePubkey: release.hubReleasePublicKey,
+        },
+      });
       paths.push({
-        params: { hubPubkey: hub.handle, hubReleasePubkey: release.hubReleasePublicKey }
-      })
-    })
+        params: {
+          hubPubkey: hub.handle,
+          hubReleasePubkey: release.hubReleasePublicKey,
+        },
+      });
+    });
   }
   return {
     paths,
-    fallback: "blocking",
+    fallback: true,
   };
 };
 
@@ -80,7 +91,7 @@ export const getStaticProps = async (context) => {
       context.params.hubPubkey &&
       context.params.hubReleasePubkey !== "undefined"
     ) {
-      await initSdkIfNeeded(true)
+      await initSdkIfNeeded(true);
       const { hub, release } = await NinaSdk.Hub.fetchHubRelease(
         context.params.hubPubkey,
         context.params.hubReleasePubkey
@@ -92,13 +103,13 @@ export const getStaticProps = async (context) => {
           hubPubkey: hub.publicKey,
           hub,
         },
-        revalidate: 1000,
+        revalidate: 10,
       };
     }
   } catch (error) {
     console.warn(error);
     try {
-      await initSdkIfNeeded()
+      await initSdkIfNeeded();
       const hub = await NinaSdk.Hub.fetch(context.params.hubPubkey);
       if (hub) {
         return {

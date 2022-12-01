@@ -191,7 +191,7 @@ const ExchangeComponent = (props) => {
                 src={getImageFromCDN(
                   metadata.image,
                   100,
-                  new Date(release.releaseDatetime * 1000)
+                  new Date(release.releaseDatetime)
                 )}
                 alt={metadata.name}
                 height={100}

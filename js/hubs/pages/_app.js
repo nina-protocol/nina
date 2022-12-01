@@ -8,6 +8,7 @@ import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import { PhantomWalletAdapter } from "@solana/wallet-adapter-phantom";
 import { SolflareWalletAdapter } from "@solana/wallet-adapter-solflare";
 import { GlowWalletAdapter } from "@solana/wallet-adapter-glow";
+import { BackpackWalletAdapter } from "@solana/wallet-adapter-backpack";
 import { SnackbarProvider } from "notistack";
 import dynamic from "next/dynamic";
 import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
@@ -69,6 +70,7 @@ const App = ({ Component, pageProps }) => {
       new PhantomWalletAdapter(),
       new SolflareWalletAdapter({ network }),
       new GlowWalletAdapter({ network }),
+      new BackpackWalletAdapter({ network }),
     ],
     [network]
   );
@@ -85,11 +87,9 @@ const App = ({ Component, pageProps }) => {
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
             <NinaWrapper network={process.env.SOLANA_CLUSTER}>
-              {sdkInitialized && (
-                <Layout>
-                  <Component {...pageProps} />
-                </Layout>
-              )}
+              <Layout loading={!sdkInitialized}>
+                <Component {...pageProps} loading={!sdkInitialized} />
+              </Layout>
             </NinaWrapper>
           </WalletModalProvider>
         </WalletProvider>

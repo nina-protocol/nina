@@ -4,9 +4,10 @@ import { styled } from '@mui/system'
 import Head from 'next/head'
 import NinaSdk from '@nina-protocol/js-sdk'
 import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
+import Dots from '../../../components/Dots'
 const HubView = dynamic(() => import('../../../components/Hub'))
 
-const HubPage = ({ hub, hubPubkey }) => {
+const HubPage = ({ hub, hubPubkey, loading }) => {
   return (
     <>
       <Head>
@@ -42,9 +43,13 @@ const HubPage = ({ hub, hubPubkey }) => {
         <meta name="twitter:image" content={hub?.data.image} />
         <meta name="og:image" content={hub?.data.image} />
       </Head>
-      <HubPageContainer>
-        <HubView hubPubkey={hubPubkey} hubHandle={hub.handle} />
-      </HubPageContainer>
+      {loading ? (
+        <Dots size="80px" />
+      ) : (
+        <HubPageContainer>
+          <HubView hubPubkey={hubPubkey} />
+        </HubPageContainer>
+      )}
     </>
   )
 }
@@ -73,7 +78,7 @@ export const getStaticPaths = async () => {
   })
   return {
     paths,
-    fallback: 'blocking',
+    fallback: true,
   }
 }
 
@@ -88,7 +93,7 @@ export const getStaticProps = async (context) => {
           hub,
           hubPubkey: hub.publicKey,
         },
-        revalidate: 1000,
+        revalidate: 10,
       }
     } catch (error) {
       console.warn(error)

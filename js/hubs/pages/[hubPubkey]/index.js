@@ -3,8 +3,10 @@ import Hub from "../../components/Hub";
 import NotFound from "../../components/NotFound";
 import NinaSdk from "@nina-protocol/js-sdk";
 import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
+import Dots from "../../components/Dots";
+
 const HubPage = (props) => {
-  const { hub } = props;
+  const { hub, loading } = props;
 
   if (!hub) {
     return (
@@ -52,7 +54,7 @@ const HubPage = (props) => {
         <meta name="twitter:image" content={hub?.data.image} />
         <meta name="og:image" content={hub?.data.image} />
       </Head>
-      <Hub hubPubkey={hub.publicKey} />
+      {loading ? <Dots size="80px" /> : <Hub hubPubkey={hub.publicKey} />}
     </>
   );
 };
@@ -60,20 +62,20 @@ const HubPage = (props) => {
 export default HubPage;
 
 export const getStaticPaths = async () => {
-  await initSdkIfNeeded(true)
-  const paths = []
-  const { hubs } = await NinaSdk.Hub.fetchAll({limit: 1000})
+  await initSdkIfNeeded(true);
+  const paths = [];
+  const { hubs } = await NinaSdk.Hub.fetchAll({ limit: 1000 });
   hubs.forEach((hub) => {
     paths.push({
       params: { hubPubkey: hub.publicKey },
-    })
+    });
     paths.push({
       params: { hubPubkey: hub.handle },
-    })
+    });
   });
   return {
     paths,
-    fallback: "blocking",
+    fallback: true,
   };
 };
 
@@ -81,13 +83,13 @@ export const getStaticProps = async (context) => {
   const hubPubkey = context.params.hubPubkey;
   if (hubPubkey && hubPubkey !== "manifest.json" && hubPubkey !== "undefined") {
     try {
-      await initSdkIfNeeded(true)
+      await initSdkIfNeeded(true);
       const { hub } = await NinaSdk.Hub.fetch(hubPubkey);
       return {
         props: {
           hub,
         },
-        revalidate: 1000,
+        revalidate: 10,
       };
     } catch (error) {
       console.warn(error);

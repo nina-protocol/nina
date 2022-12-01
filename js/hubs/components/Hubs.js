@@ -19,28 +19,11 @@ import {
 } from "../styles/theme/lightThemeOptions.js";
 
 const Hubs = () => {
-  const {
-    getHubsForUser,
-    hubState,
-    filterHubsForUser,
-    getHubs,
-    filterFeaturedHubs,
-  } = useContext(Hub.Context);
+  const { getHubsForUser, hubState, filterHubsForUser, hubCollaboratorsState } = useContext(
+    Hub.Context
+  );
   const { npcAmountHeld } = useContext(Nina.Context);
-  const [hubs, setHubs] = useState();
   const wallet = useWallet();
-
-  useEffect(() => {
-    if (!hubs) {
-      getHubs(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if ((!hubs || hubs.length === 0) && Object.keys(hubState).length > 0) {
-      setHubs(filterFeaturedHubs());
-    }
-  }, [hubState]);
 
   useEffect(() => {
     if (wallet.connected) {
@@ -53,30 +36,10 @@ const Hubs = () => {
       return filterHubsForUser(wallet.publicKey.toBase58());
     }
     return [];
-  }, [hubState, wallet.connected]);
+  }, [hubState, wallet.connected, hubCollaboratorsState]);
 
   return (
     <>
-      <Head>
-        <link
-          rel="stylesheet"
-          type="text/css"
-          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
-          media="print"
-        />
-        <link
-          rel="stylesheet"
-          type="text/css"
-          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
-          media="print"
-        />
-        <title>{`Nina Hubs`}</title>
-        <meta
-          name="description"
-          content={`Hubs are a new way to publish, share, and discuss music. Apply for a Hub or connect your wallet to get started.`}
-        />
-        <meta name="og:type" content="website" />
-      </Head>
       <HubsContainer>
         <Box
           sx={{
@@ -88,15 +51,11 @@ const Hubs = () => {
               <BlueTypography
                 variant="h1"
                 align="left"
-                sx={{ padding: { md: "0 165px 40px", xs: "0px 0px 10px" } }}
+                sx={{ padding: { md: "40px 165px", xs: "0px 0px 10px" } }}
               >
                 <Link href="/all">Hubs </Link>
                 are a new way to publish, share, and discuss music.
               </BlueTypography>
-
-              <Box>
-                <EmailCapture size="large" />{" "}
-              </Box>
 
               <Box
                 sx={{ display: "flex", paddingLeft: { md: "30px", xs: "0" } }}
@@ -112,19 +71,24 @@ const Hubs = () => {
                 </Typography>
               </Box>
 
-              <HubSlider hubs={hubs} />
-
-              <Box sx={{ mt: "40px" }}>
-                <BlueTypography variant="h1">
-                  <Link
+              <HubSlider />
+              <Box
+                align="center"
+                sx={{
+                  paddingBottom: { md: "40px", xs: "30px" },
+                  paddingTop: { md: "80px", xs: "30px" },
+                }}
+              >
+                <BlueTypography variant="h1" align="center">
+                  <a
                     href="https://www.notion.so/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612#c7abd525851545a199e06ecd14a16a15"
                     target="_blank"
                     rel="noreferrer"
                     passHref
                   >
                     Learn More
-                  </Link>
-                  .
+                  </a>{" "}
+                  or <EmailCapture size="large" />
                 </BlueTypography>
               </Box>
             </>
@@ -138,11 +102,10 @@ const Hubs = () => {
                     align="left"
                     sx={{ padding: { md: "0 165px 40px", xs: "30px 0px" } }}
                   >
-                    You do not have any credits to create a Hub. <br />
-                    <br />
-                    <EmailCapture size="large" />
+                    You do not have any credits to create a Hub.{'  '}
+                    <EmailCapture size="large" />.
                   </BlueTypography>
-                  <br />
+
                   <Box
                     sx={{
                       display: "flex",
@@ -159,7 +122,7 @@ const Hubs = () => {
                       </Link>
                     </Typography>
                   </Box>
-                  <HubSlider hubs={hubs} />
+                  <HubSlider />
                 </DashboardContent>
               )}
               {userHubs?.length === 0 && npcAmountHeld > 0 && (
