@@ -63,6 +63,7 @@ const descendingComparator = (a, b, orderBy) => {
 }
 
 const ReusableTableHead = (props) => {
+  console.log('hello this will be removed soon')
   const { tableType, inDashboard, onRequestSort, order } = props
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property)
