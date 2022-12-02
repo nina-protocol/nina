@@ -8,7 +8,6 @@ const Search = dynamic(() => import('../../components/Search'))
 
 const SearchPage = (props) => {
   const { searchQuery, searchResults } = props
-
   return (
     <>
       <Head>
