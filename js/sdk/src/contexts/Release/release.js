@@ -1551,7 +1551,7 @@ const releaseContextHelper = ({
     try {
       const { data } = await axios.get(`${process.env.NINA_API_ENDPOINT}/accounts/${publicKey}/feed?offset=${offset}`)
       const releases = []
-      const updatedVerificationState = {...verificationState}
+      const updatedVerificationState = {}
 
       data.feedItems.forEach(feedItem => {
         if (feedItem.release) {
@@ -1559,6 +1559,9 @@ const releaseContextHelper = ({
         }
         if (feedItem.authority.verifications.length > 0) {
           updatedVerificationState[feedItem.authority.publicKey] = feedItem.authority.verifications
+        }
+        if (feedItem.toAccount?.verifications?.length > 0) {
+          updatedVerificationState[feedItem.toAccount.publicKey] = feedItem.toAccount.verifications
         }
       })
       setVerificationState(prevState => ({...prevState, ...updatedVerificationState}))
