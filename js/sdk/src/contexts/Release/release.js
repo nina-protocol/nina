@@ -30,7 +30,7 @@ const ReleaseContextProvider = ({ children }) => {
     ninaClient,
     addReleaseToCollection,
     collection,
-    getUsdcBalance,
+    getUserBalances,
     usdcBalance,
     removeReleaseFromCollection,
     getSolPrice,
@@ -102,7 +102,7 @@ const ReleaseContextProvider = ({ children }) => {
     releasePurchasePending,
     setReleasePurchasePending,
     usdcBalance,
-    getUsdcBalance,
+    getUserBalances,
     addReleaseToCollection,
     encryptData,
     searchResults,
@@ -123,7 +123,7 @@ const ReleaseContextProvider = ({ children }) => {
     setFetchedUserProfileReleases,
     verficationState,
     setVerificationState,
-  })
+  }) 
 
   return (
     <ReleaseContext.Provider
@@ -187,7 +187,7 @@ const releaseContextHelper = ({
   setReleasePurchasePending,
   addReleaseToCollection,
   usdcBalance,
-  getUsdcBalance,
+  getUserBalances,
   encryptData,
   collection,
   redeemableState,
@@ -545,19 +545,14 @@ const releaseContextHelper = ({
       let releasePriceUi = ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)
       let convertAmount = releasePriceUi + (releasePriceUi * hub.referralFee.toNumber() / 1000000)
       if (!isSol(release.paymentMint) && usdcBalance < convertAmount) {
-        const additionalComputeBudgetInstruction = anchor.web3.ComputeBudgetProgram.requestUnits({
-          units: 400000,
-          additionalFee: 0,
-        });
-        instructions.push(additionalComputeBudgetInstruction)
         convertAmount -= usdcBalance
         const { data } = await axios.get(
-          `https://quote-api.jup.ag/v1/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative((convertAmount + (convertAmount * .01)) / solPrice, ids.mints.wsol)}&slippage=1.0&onlyDirectRoutes=true`
+          `https://quote-api.jup.ag/v3/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative((convertAmount + (convertAmount * .01)) / solPrice, ids.mints.wsol)}&slippageBps=1&onlyDirectRoutes=true`
         )
         let transactionInstructions
         for await (let d of data.data) {
           const transactions = await axios.post(
-            'https://quote-api.jup.ag/v1/swap', {
+            'https://quote-api.jup.ag/v3/swap', {
             route: d,
             userPublicKey: provider.wallet.publicKey.toBase58(),
           })
@@ -611,7 +606,7 @@ const releaseContextHelper = ({
         ...releasePurchasePending,
         [releasePubkey.toBase58()]: false,
       })
-      getUsdcBalance()
+      getUserBalances()
       await axios.get(`${process.env.NINA_API_ENDPOINT}/accounts/${provider.wallet.publicKey.toBase58()}/collected?txId=${txid}`)
       await getRelease(releasePubkey.toBase58())
       addReleaseToCollection(releasePubkey.toBase58())
@@ -630,7 +625,7 @@ const releaseContextHelper = ({
         msg: 'Release purchased!',
       }
     } catch (error) {
-      getUsdcBalance()
+      getUserBalances()
       getRelease(releasePubkey.toBase58())
       setReleasePurchasePending({
         ...releasePurchasePending,
@@ -905,24 +900,19 @@ const releaseContextHelper = ({
       }
       const instructions = []
       if (!isSol(release.paymentMint) && usdcBalance < ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)) {
-        const additionalComputeBudgetInstruction = anchor.web3.ComputeBudgetProgram.requestUnits({
-          units: 400000,
-          additionalFee: 0,
-        });
-        instructions.push(additionalComputeBudgetInstruction)
         const solPrice = await getSolPrice()
         const releaseUiPrice = ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc) - usdcBalance
         const { data } = await axios.get(
-          `https://quote-api.jup.ag/v1/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative((releaseUiPrice + (releaseUiPrice * .01)) / solPrice, ids.mints.wsol)}&slippage=1.0&onlyDirectRoutes=true`
+          `https://quote-api.jup.ag/v3/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative((releaseUiPrice + (releaseUiPrice * .01)) / solPrice, ids.mints.wsol)}&slippageBps=1&onlyDirectRoutes=true`
         )
         const transactions = await axios.post(
-          'https://quote-api.jup.ag/v1/swap', {
+          'https://quote-api.jup.ag/v3/swap', {
           route: data.data[0],
           userPublicKey: provider.wallet.publicKey.toBase58(),
         })
         instructions.push(...anchor.web3.Transaction.from(Buffer.from(transactions.data.swapTransaction, 'base64')).instructions)
       }
-
+      
       if (receiverReleaseTokenAccountIx) {
         instructions.push(receiverReleaseTokenAccountIx)
       }
@@ -956,7 +946,7 @@ const releaseContextHelper = ({
         ...releasePurchasePending,
         [releasePubkey]: false,
       })
-      getUsdcBalance()
+      getUserBalances()
       await axios.get(`${process.env.NINA_API_ENDPOINT}/accounts/${provider.wallet.publicKey.toBase58()}/collected?txId=${txid}`)
       await getRelease(releasePubkey)
       await addReleaseToCollection(releasePubkey)
@@ -974,7 +964,7 @@ const releaseContextHelper = ({
         msg: 'Release purchased!',
       }
     } catch (error) {
-      getUsdcBalance()
+      getUserBalances()
       getRelease(releasePubkey)
       setReleasePurchasePending({
         ...releasePurchasePending,
@@ -1044,7 +1034,7 @@ const releaseContextHelper = ({
 
 
       await getRelease(releasePubkey)
-      getUsdcBalance()
+      getUserBalances()
       return {
         success: true,
         msg: `You collected $${nativeToUi(
@@ -1054,7 +1044,7 @@ const releaseContextHelper = ({
       }
     } catch (error) {
       console.warn(error)
-      getUsdcBalance()
+      getUserBalances()
       getRelease(releasePubkey)
       return ninaErrorHandler(error)
     }
@@ -1129,7 +1119,7 @@ const releaseContextHelper = ({
       await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
 
       getRelease(releasePubkey)
-      getUsdcBalance()
+      getUserBalances()
 
       return {
         success: true,
@@ -1137,7 +1127,7 @@ const releaseContextHelper = ({
       }
     } catch (error) {
       getRelease(releasePubkey)
-      getUsdcBalance()
+      getUserBalances()
       return ninaErrorHandler(error)
     }
   }
@@ -1391,7 +1381,13 @@ const releaseContextHelper = ({
   const getRelease = async (releasePubkey) => {
     try {
       const { release } = await NinaSdk.Release.fetch(releasePubkey, true)
-      setReleaseState(updateStateForReleases([release]))
+      const newState = updateStateForReleases([release])
+      setReleaseState(prevState => ({
+        ...prevState,
+        tokenData: {...prevState.tokenData, ...newState.tokenData},
+        metadata: {...prevState.metadata, ...newState.metadata},
+        releaseMintMap: {...prevState.releaseMintMap, ...newState.releaseMintMap},
+      }))
     } catch (error) {
       console.warn(error)
     }
@@ -1400,7 +1396,13 @@ const releaseContextHelper = ({
   const getReleasesPublishedByUser = async (publicKey, withAccountData=false) => {
     try {
       const { published } = await NinaSdk.Account.fetchPublished(publicKey, withAccountData)
-      setReleaseState(updateStateForReleases(published))
+      const newState = updateStateForReleases(published)
+      setReleaseState(prevState => ({
+        ...prevState,
+        tokenData: {...prevState.tokenData, ...newState.tokenData},
+        metadata: {...prevState.metadata, ...newState.metadata},
+        releaseMintMap: {...prevState.releaseMintMap, ...newState.releaseMintMap},
+      }))
     } catch (error) {
       console.warn(error)
     }
@@ -1409,7 +1411,13 @@ const releaseContextHelper = ({
   const getReleasesCollectedByUser = async (publicKey) => {
     try {
       const { collected } = await NinaSdk.Account.fetchCollected(publicKey)
-      setReleaseState(updateStateForReleases(collected))
+      const newState = updateStateForReleases(collected)
+      setReleaseState(prevState => ({
+        ...prevState,
+        tokenData: {...prevState.tokenData, ...newState.tokenData},
+        metadata: {...prevState.metadata, ...newState.metadata},
+        releaseMintMap: {...prevState.releaseMintMap, ...newState.releaseMintMap},
+      }))
     } catch (error) {
       console.warn(error)
     }
@@ -1423,8 +1431,17 @@ const releaseContextHelper = ({
       const { collected } = await NinaSdk.Account.fetchCollected(publicKey, withAccountData)
       const { published } = await NinaSdk.Account.fetchPublished(publicKey, withAccountData)
       const { revenueShares } = await NinaSdk.Account.fetchRevenueShares(publicKey, withAccountData)
-      setReleaseState(updateStateForReleases([...collected, ...published, ...revenueShares]))
-      const publishedAndRevenueShares = [...published, ...revenueShares]
+      const newState = updateStateForReleases([...collected, ...published, ...revenueShares])
+      setReleaseState(prevState => ({
+        ...prevState,
+        tokenData: {...prevState.tokenData, ...newState.tokenData},
+        metadata: {...prevState.metadata, ...newState.metadata},
+        releaseMintMap: {...prevState.releaseMintMap, ...newState.releaseMintMap},
+      }))
+
+      const publishedAndRevenueShares = [...published, ...revenueShares].filter((value, index, self) => {
+       return self.findIndex(value2 => (value2.publicKey === value.publicKey)) === index
+      })
       setFetchedUserProfileReleases({
         ...fetchedUserProfileReleases,
         [publicKey]: {
@@ -1443,14 +1460,20 @@ const releaseContextHelper = ({
   const getReleaseRoyaltiesByUser = async (publicKey) => {
     try {
       const { revenueShares } = await NinaSdk.Account.fetchRevenueShares(publicKey, true)
-      setReleaseState(updateStateForReleases(revenueShares))
+      const newState = updateStateForReleases(revenueShares)
+      setReleaseState(prevState => ({
+        ...prevState,
+        tokenData: {...prevState.tokenData, ...newState.tokenData},
+        metadata: {...prevState.metadata, ...newState.metadata},
+        releaseMintMap: {...prevState.releaseMintMap, ...newState.releaseMintMap},
+      }))
     } catch (error) {
       console.warn(error)
     }
   }
 
   const updateStateForReleases = (releases) => {
-    const updatedReleaseState = {...releaseState}
+    const updatedReleaseState = { tokenData: {}, metadata: {}, releaseMintMap: {} }
     releases.forEach((release) => {
       if (release.accountData) {
         updatedReleaseState.tokenData[release.publicKey] = {
@@ -1476,7 +1499,13 @@ const releaseContextHelper = ({
   
         const allReleases = [...published, ...highlights]
         setAllReleasesCount(published.total)
-        setReleaseState(updateStateForReleases(allReleases))
+        const newState = updateStateForReleases(allReleases)
+        setReleaseState(prevState => ({
+          ...prevState,
+          tokenData: {...prevState.tokenData, ...newState.tokenData},
+          metadata: {...prevState.metadata, ...newState.metadata},
+          releaseMintMap: {...prevState.releaseMintMap, ...newState.releaseMintMap},
+        }))
         setReleasesRecentState({
           published: published.map(release => release.publicKey),
           highlights: _.shuffle(highlights.map(release => release.publicKey)),
@@ -1492,7 +1521,13 @@ const releaseContextHelper = ({
       const all = [...allReleases]
       const releases = (await NinaSdk.Release.fetchAll({limit: 25, offset: allReleases.length}, true)).releases
       all.push(...releases.map(release => release.publicKey))
-      setReleaseState(updateStateForReleases(releases))
+      const newState = updateStateForReleases(releases)
+      setReleaseState(prevState => ({
+        ...prevState,
+        tokenData: {...prevState.tokenData, ...newState.tokenData},
+        metadata: {...prevState.metadata, ...newState.metadata},
+        releaseMintMap: {...prevState.releaseMintMap, ...newState.releaseMintMap},
+      }))
       setAllReleasesCount(releases.total)
       setAllReleases(all)
     } catch (error) {
@@ -1530,7 +1565,14 @@ const releaseContextHelper = ({
         }
       })
       setVerificationState(prevState => ({...prevState, ...updatedVerificationState}))
-      setReleaseState(updateStateForReleases(releases))
+      const newState = updateStateForReleases(releases)
+      setReleaseState(prevState => ({
+        ...prevState,
+        tokenData: {...prevState.tokenData, ...newState.tokenData},
+        metadata: {...prevState.metadata, ...newState.metadata},
+        releaseMintMap: {...prevState.releaseMintMap, ...newState.releaseMintMap},
+      }))
+      
       return data
     } catch (error) {
       console.warn(error)

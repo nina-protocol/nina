@@ -590,7 +590,7 @@ const Feed = ({
           )
 
         default:
-          return <Typography key={i}>{item?.type}</Typography>
+          return null
       }
     })
 

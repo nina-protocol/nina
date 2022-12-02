@@ -113,7 +113,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
     }
   }, [releaseState.tokenData[releasePubkey], wallet?.connected]);
 
-  return (  
+  return (
     <>
       <StyledGrid
         item
