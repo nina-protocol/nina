@@ -311,7 +311,7 @@ impl Release {
                 Some(creators),
                 metadata_data.seller_fee_basis_points,
                 true,
-                false,
+                true,
                 None,
                 None
             ),
