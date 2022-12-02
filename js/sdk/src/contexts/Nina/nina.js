@@ -161,7 +161,6 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     filterSubscriptionsForHub,
     submitEmailRequest,
     getUsdcToSolSwapData,
-    swapUsdcToSol
   } = ninaContextHelper({
     ninaClient,
     postState,
@@ -252,7 +251,6 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         submitEmailRequest,
         lowSolBalance,
         getUsdcToSolSwapData,
-        swapUsdcToSol
       }}
     >
       {children}
@@ -832,36 +830,6 @@ const ninaContextHelper = ({
     return data
   }
 
-  const swapUsdcToSol = async (routes) => {
-    try {
-      logEvent(
-        'usdc_sol_swap',
-        'engagement', {
-          publicKey: provider.wallet.publicKey.toBase58(),
-        }
-      )
-      const transactions = await axios.post('https://quote-api.jup.ag/v3/swap', {
-        // route from /quote api
-        route: routes[0],
-        // user public key to be used for the swap
-        userPublicKey: provider.wallet.publicKey.toBase58(),
-        // auto wrap and unwrap SOL. default is true
-      })
-  
-      for await (let tx of Object.values(transactions.data)) {
-        const transaction = anchor.web3.Transaction.from(Buffer.from(tx, 'base64'))
-        const txid = await provider.wallet.sendTransaction(transaction, provider.connection)
-        await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
-      }
-      return {
-        success: true,
-        msg: 'Swap successful'
-      }
-    } catch (error) {
-      return ninaErrorHandler(error)
-    }
-  }
-
   /*
 
   STATE
@@ -1065,7 +1033,6 @@ const ninaContextHelper = ({
     filterSubscriptionsForHub,
     submitEmailRequest,
     getUsdcToSolSwapData,
-    swapUsdcToSol
   }
 }
 

@@ -19,7 +19,6 @@ import NavSearch from './NavSearch'
 import SearchIcon from '@mui/icons-material/Search'
 import EmailCapture from './EmailCapture'
 import FeedDrawer from './FeedDrawer'
-import LowBalanceModal from './LowBalanceModal'
 
 const NavBar = () => {
   const router = useRouter()
@@ -74,9 +73,6 @@ const NavBar = () => {
       <NavRight>
         <DesktopWalletWrapper>
           <NavCtas>
-            <Box>
-              <LowBalanceModal />
-            </Box>
             <SearchBarWrapper>
               <NavSearch />
             </SearchBarWrapper>
