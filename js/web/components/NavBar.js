@@ -27,7 +27,6 @@ const NavBar = () => {
     getSubscriptionsForUser,
     filterSubscriptionsForUser,
     subscriptionState,
-    lowSolBalance,
     getUserBalances,
   } = useContext(Nina.Context)
   const wallet = useWallet()

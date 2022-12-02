@@ -251,6 +251,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         submitEmailRequest,
         lowSolBalance,
         getUsdcToSolSwapData,
+        swapUsdcToSol
       }}
     >
       {children}
