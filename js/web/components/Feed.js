@@ -62,7 +62,9 @@ const Feed = ({
   const { updateTrack, isPlaying, setIsPlaying, track } = useContext(
     Audio.Context
   )
-  const { displayNameForAccount, displayImageForAccount } = useContext(Nina.Context)
+  const { displayNameForAccount, displayImageForAccount } = useContext(
+    Nina.Context
+  )
   const router = useRouter()
   const wallet = useWallet()
   const [pendingFetch, setPendingFetch] = useState(false)
@@ -218,7 +220,6 @@ const Feed = ({
             </ImageCard>
           )
         case 'ReleaseInitViaHub':
-          console.log('item', item)
           return (
             <ImageCard>
               <HoverContainer
@@ -516,20 +517,16 @@ const Feed = ({
         //     </MultiCard>
         //   )
         case 'SubscriptionSubscribeAccount':
-          const image = displayImageForAccount(item.toAccount.publicKey) 
+          const image = displayImageForAccount(item.toAccount.publicKey)
           return (
             <ImageCard>
-               <Link href={`/profiles/${item.toAccount.publicKey}`} passHref>
+              <Link href={`/profiles/${item.toAccount.publicKey}`} passHref>
                 {image && image.includes('https') ? (
                   <Image
                     height={'400px'}
                     width={'400px'}
                     layout="responsive"
-                    src={getImageFromCDN(
-                      image,
-                      600,
-                      Date.parse(item.datetime)
-                    )}
+                    src={getImageFromCDN(image, 600, Date.parse(item.datetime))}
                     alt={i}
                     priority={true}
                     loader={loader}

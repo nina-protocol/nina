@@ -241,7 +241,7 @@ const Profile = ({ profilePubkey }) => {
 
       await getSubscriptionsForUser(profilePubkey)
       await getVerificationsForUser(profilePubkey)
-        
+
       let viewIndex
       let updatedView = views.slice()
 
