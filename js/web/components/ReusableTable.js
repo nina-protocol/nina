@@ -123,7 +123,6 @@ const ReusableTableHead = (props) => {
     headCells.push({ id: 'image', label: '' })
     headCells.push({ id: 'name', label: '' })
   }
-  3
 
   if (tableType === 'searchResultHubs') {
     headCells.push({ id: 'image', label: 'Hubs' })
@@ -319,7 +318,7 @@ const ReusableTableBody = (props) => {
         const recipient = data.tokenData.revenueShareRecipients.find(
           (recipient) => recipient.recipientAuthority === dashboardPublicKey
         )
-        const collectable = recipient.owed > 0
+        const collectable = recipient?.owed > 0
         const collectableAmount = ninaClient.nativeToUiString(
           recipient.owed,
           data.tokenData.paymentMint
@@ -348,7 +347,6 @@ const ReusableTableBody = (props) => {
       }
       formattedData.authorityPublicKey = data.tokenData.authority
     } else if (tableType === 'profileHubs') {
-      console.log('data', data)
       formattedData = {
         id: releasePubkey,
         link: `/hubs/${data.handle}`,
@@ -839,7 +837,7 @@ const SearchResultTableCell = styled(TableCell)(({ theme }) => ({
 }))
 const OverflowContainer = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
-  maxWidth: '20vw',
+  maxWidth: '360px',
   textAlign: 'left',
   textOverflow: 'ellipsis',
   [theme.breakpoints.down('md')]: {
