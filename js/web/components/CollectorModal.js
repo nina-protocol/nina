@@ -45,7 +45,7 @@ const CollectorModal = (props) => {
     setCollectors(collectorsList)
   }
   return (
-    <Box>
+    <Box >
       <Cta
         onClick={() => setOpen(true)}
         variant="body2"
