@@ -9,7 +9,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Link from 'next/link'
-
+import { Button } from '@mui/material'
 const CollectorModal = (props) => {
   const { releasePubkey, metadata } = props
   const wallet = useWallet()
@@ -45,14 +45,16 @@ const CollectorModal = (props) => {
     setCollectors(collectorsList)
   }
   return (
-    <Box>
+    <>
+    {collectors?.length > 0 ? (
+      <Box>
       <Cta
         onClick={() => setOpen(true)}
         variant="body2"
         align="left"
         paddingBottom="10px"
       >
-        {`View Collectors ${collectors ? `(${collectors.length})` : ''}`}
+        {`View Collectors ${collectors ? `(${collectors?.length})` : ''}`}
       </Cta>
       <StyledModal
         aria-labelledby="transition-modal-title"
@@ -105,6 +107,20 @@ const CollectorModal = (props) => {
         </StyledPaper>
       </StyledModal>
     </Box>
+    ) : (
+      
+      <Box>
+        <Typography
+           variant="body2"
+           align="left"
+           paddingBottom="10px"
+           cursor="default"
+           >
+            Collectors (0)
+           </Typography>
+      </Box>)}
+    </>
+    
   )
 }
 
@@ -119,7 +135,7 @@ const classes = {
   historyTableBody: `${PREFIX}-historyTableBody`,
 }
 
-const Cta = styled(Typography)(({ theme }) => ({
+const Cta = styled(Button)(({ theme }) => ({
   cursor: 'pointer',
   '& span': {
     color: `${theme.palette.blue}`,

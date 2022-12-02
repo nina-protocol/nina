@@ -23,54 +23,67 @@ const HubsModal = (props) => {
   }, [releasePubkey])
 
   return (
-    <Box>
-      <Cta
-        onClick={() => setOpen(true)}
-        variant="body2"
-        align="left"
-        paddingBottom="10px"
-      >
-        {`View Hubs ${hubs ? `(${hubs.length})` : ''}`}
-      </Cta>
-      <StyledModal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        className={classes.modal}
-        open={open}
-        onClose={() => setOpen(false)}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <StyledPaper>
-          <Header>
-            <Typography fontWeight="700">{`Hubs featuring: ${metadata.properties.artist.substring(
-              0,
-              100
-            )} - "${metadata.properties.title.substring(0, 100)}"`}</Typography>
-          </Header>
-          <CollectorTable>
-            <TableBody>
-              {hubs &&
-                hubs.length > 0 &&
-                hubs.map((entry, i) => {
-                  return (
-                    <tr key={i}>
-                      <td>
-                        <Link href={`/hubs/${entry?.handle}`}>
-                          {entry?.data.displayName}
-                        </Link>
-                      </td>
-                    </tr>
-                  )
-                })}
-            </TableBody>
-          </CollectorTable>
-        </StyledPaper>
-      </StyledModal>
-    </Box>
+    <>
+      {hubs.length > 0 ? (
+        <Box>
+          <Cta
+            onClick={() => setOpen(true)}
+            variant="body2"
+            align="left"
+            paddingBottom="10px"
+          >
+            {`View Hubs ${hubs ? `(${hubs.length})` : ''}`}
+          </Cta>
+          <StyledModal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            className={classes.modal}
+            open={open}
+            onClose={() => setOpen(false)}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 500,
+            }}
+          >
+            <StyledPaper>
+              <Header>
+                <Typography fontWeight="700">{`Hubs featuring: ${metadata.properties.artist.substring(
+                  0,
+                  100
+                )} - "${metadata.properties.title.substring(
+                  0,
+                  100
+                )}"`}</Typography>
+              </Header>
+              <CollectorTable>
+                <TableBody>
+                  {hubs &&
+                    hubs.length > 0 &&
+                    hubs.map((entry, i) => {
+                      return (
+                        <tr key={i}>
+                          <td>
+                            <Link href={`/hubs/${entry?.handle}`}>
+                              {entry?.data.displayName}
+                            </Link>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                </TableBody>
+              </CollectorTable>
+            </StyledPaper>
+          </StyledModal>
+        </Box>
+      ) : (
+        <Box>
+          <Cta variant="body2" align="left" paddingBottom="10px">
+            No Hubs
+          </Cta>
+        </Box>
+      )}
+    </>
   )
 }
 

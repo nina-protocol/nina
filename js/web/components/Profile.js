@@ -177,8 +177,22 @@ const Profile = ({ profilePubkey }) => {
       const viewIndex = views.findIndex((view) => !view.disabled)
       setActiveView(viewIndex)
     }
+    if (inDashboard && profileCollectionReleases?.length > 0) {
+      setActiveView(0)
+    }
+    if (inDashboard && profilePublishedReleases?.length === 0) {
+      setActiveView(1)
+    }
+    if (
+      inDashboard &&
+      profilePublishedReleases?.length === 0 &&
+      profileCollectionReleases?.length === 0 &&
+      profileHubs.length > 0
+    ) {
+      setActiveView(2)
+    }
   }, [views])
-
+  
   useEffect(() => {
     let filteredCollection
     if (fetchedUserProfileReleases[profilePubkey]?.collected) {
