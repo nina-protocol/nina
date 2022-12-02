@@ -10,6 +10,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { useSnackbar } from 'notistack'
 import CloseIcon from '@mui/icons-material/Close'
+import { logEvent } from "@nina-protocol/nina-internal-sdk/src/utils/event";
 
 const style = {
   position: 'absolute',
@@ -42,6 +43,10 @@ const EmailCapture = ({ size }) => {
   const [formIsValid, setFormIsValid] = useState(false)
 
   useEffect(() => {
+    logEvent("email_request_initiated", "engagement");  
+  }, [])
+
+  useEffect(() => {
     if (connected) {
       setFormValues({ ...formValues, wallet: publicKey.toString() })
     }
@@ -54,8 +59,18 @@ const EmailCapture = ({ size }) => {
 
   const handleSubmit = async () => {
     if (formIsValid) {
-      submitEmailRequest(formValues)
-      enqueueSnackbar('Application Submitted!', { variant: 'success' })
+      try {
+        submitEmailRequest(formValues)
+        logEvent("email_request_success", "engagement", {
+          email: formValues.email,
+        });  
+        enqueueSnackbar('Application Submitted!', { variant: 'success' })
+      } catch (error) {
+        console.warn('email form error', error)
+        logEvent("email_request_success", "engagement", {
+          email: formValues.email,
+        });  
+      }
     }
   }
 
