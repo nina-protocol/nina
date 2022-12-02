@@ -4,7 +4,6 @@ import { styled } from '@mui/material'
 import { Box } from '@mui/material'
 import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
 import Head from 'next/head'
-
 const Search = dynamic(() => import('../../components/Search'))
 
 const SearchPage = (props) => {
