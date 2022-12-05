@@ -1,7 +1,9 @@
 use anchor_lang::prelude::*;
+use anchor_spl::token::Mint;
+use solana_program::program_option::COption;
+use crate::state::*;
 
 #[derive(Accounts)]
-
 pub struct ReleaseCloseEdition<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
@@ -27,9 +29,9 @@ pub struct ReleaseCloseEdition<'info> {
 }
 
 pub fn handler(ctx: Context<ReleaseCloseEdition>) -> Result<()> {
-    let release = ctx.accounts.release.load()?;
+    let mut release = ctx.accounts.release.load_mut()?;
     release.total_supply = release.sale_counter;
     release.remaining_supply = 0;
-    
+
     Ok(())
 }

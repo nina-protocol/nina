@@ -6,6 +6,8 @@ pub mod release_revenue_share_collect;
 pub mod release_revenue_share_collect_via_hub;
 pub mod release_revenue_share_transfer;
 pub mod release_airdrop;
+pub mod release_update_metadata;
+pub mod release_close_edition;
 
 pub mod redeemable_init;
 pub mod redeemable_update_config;
@@ -37,6 +39,7 @@ pub mod subscription_subscribe_account;
 pub mod subscription_subscribe_hub;
 pub mod subscription_unsubscribe;
 
+
 pub use release_init_with_credit::*;
 pub use release_init_via_hub::*;
 pub use release_purchase::*;
@@ -45,6 +48,8 @@ pub use release_revenue_share_collect::*;
 pub use release_revenue_share_collect_via_hub::*;
 pub use release_revenue_share_transfer::*;
 pub use release_airdrop::*;
+pub use release_update_metadata::*;
+pub use release_close_edition::*;
 
 pub use redeemable_init::*;
 pub use redeemable_update_config::*;

@@ -4,8 +4,8 @@ use anchor_lang::solana_program::{
 };
 use mpl_token_metadata::{
     self,
-    state::{Creator},
-    instruction::{create_metadata_accounts_v2},
+    state::{Creator, DataV2},
+    instruction::{create_metadata_accounts_v2, update_metadata_accounts_v2},
 };
 use anchor_spl::token::{self, TokenAccount, MintTo, Transfer, Token, Mint, SetAuthority};
 use spl_token::instruction::{close_account};
@@ -336,13 +336,6 @@ impl Release {
         metadata_data: ReleaseMetadataData,
         bumps: ReleaseBumps,
     ) -> Result<()> {
-        let creators: Vec<Creator> =
-        vec![Creator {
-            address: *release_signer.to_account_info().key,
-            verified: true,
-            share: 100,
-        }];
-
         let metadata_infos = vec![
             metadata.clone(),
             release_mint.to_account_info().clone(),
@@ -410,7 +403,7 @@ impl Release {
 
         release.price = config.price;
         release.total_supply = config.amount_total_supply;
-        release.remaining_supply = config.amount_total_supply
+        release.remaining_supply = config.amount_total_supply;
         release.resale_percentage = config.resale_percentage;
         release.release_datetime = config.release_datetime;
 

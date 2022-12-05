@@ -1,10 +1,12 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, TokenAccount, Mint, Token, Burn};
+use solana_program::program_option::COption;
+use mpl_token_metadata::state::DataV2;
 
 use crate::state::*;
 
 #[derive(Accounts)]
-pub struct <'info> {
+pub struct ReleaseUpdateMetadata<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
     #[account(
@@ -35,7 +37,6 @@ pub struct <'info> {
     pub metadata_program: AccountInfo<'info>,
     pub system_program: Program<'info, System>,
     pub rent: Sysvar<'info, Rent>,
-
 }
 
 pub fn handler(
@@ -47,7 +48,7 @@ pub fn handler(
         ctx.accounts.release_signer.to_account_info().clone(),
         ctx.accounts.metadata.to_account_info().clone(),
         ctx.accounts.release_mint.clone(),
-        ctx.accounts.payer.clone(),
+        ctx.accounts.authority.clone(),
         ctx.accounts.metadata_program.to_account_info().clone(),
         ctx.accounts.token_program.clone(),
         ctx.accounts.system_program.clone(),
