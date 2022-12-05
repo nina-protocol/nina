@@ -1,148 +1,179 @@
-import React, {Component} from "react";
-import {Quill} from "react-quill";
-import MagicUrl from "quill-magic-url";
-import dynamic from "next/dynamic";
-const ReactQuill = dynamic(() => import('react-quill'), {ssr: false});
+import React, {useEffect, useState, createElement, Fragment, useRef, useMemo} from 'react'
+import ReactQuill from 'react-quill';
+import dynamic from 'next/dynamic';
+import {styled} from "@mui/material/styles";
+
+const QuillNoSSRWrapper = dynamic(
+  async () => {
+    const {default: RQ} = await import('react-quill');
+    // eslint-disable-next-line react/display-name
+    return ({forwardedRef, ...props}) => <RQ ref={forwardedRef} {...props} />;
+  },
+  {ssr: false}
+);
+import Box from "@mui/material/Box";
+
+// import {MagicUrl} from 'quill-magic-url'
+const {Quill} = ReactQuill
+
+import "quill/dist/quill.snow.css";
+import "quill/dist/quill.bubble.css";
+
+import {unified} from 'unified'
+import rehypeParse from 'rehype-parse'
+import rehypeReact from 'rehype-react'
+import rehypeSanitize from 'rehype-sanitize'
+import rehypeExternalLinks from 'rehype-external-links'
+import MagicUrl from 'quill-magic-url';
+
+const QuillEditor = ({formikProps, type, update}) => {
+  const quillRef = useRef(null)
+
+  const theme = type === "release" ? "bubble" : "snow";
+  // const [valuePlaced, setValuePlaced] = useState(false);
 
 
-// import ImageUploader from "quill-image-uploader";
+  useEffect(() => {
+      if (Quill) {
+        const MagicUrl = require("quill-magic-url").default; // Install with 'yarn add quill-magic-url'
+        Quill.register("modules/magicUrl", MagicUrl);
+        console.log('MagicUrl :>> ', MagicUrl);
+        var Link = Quill.import("formats/link");
+        var builtInFunc = Link.sanitize;
+        Link.sanitize = function customSanitizeLinkInput(linkValueInput) {
+          var val = linkValueInput;
 
-Quill.register("modules/magicUrl", MagicUrl);
-// Quill.register("modules/imageUploader", ImageUploader);
+          // do nothing, since this implies user's already using a custom protocol
+          if (/^\w+:/.test(val));
+          else if (!/^https?:/.test(val)) val = "http://" + val;
 
-// --- link stuff begin ---
-const SnowTheme = Quill.import("themes/snow");
-const Delta = Quill.import("delta");
+          return builtInFunc.call(this, val); // retain the built-in logic
+        };
+      }
+  }, [Quill])
 
-/**
- * Extended snow theme for custom 'link tooltip'
- */
-class ExtendSnowTheme extends SnowTheme {
-  constructor(quill, options) {
-    super(quill, options);
-    // flag that ensure only create/add our custom elements once
-    this.tooltipModified = false;
-    // listener for adding our custom input for link 'text'
-    quill.on("selection-change", (range) => {
-      if (this.tooltipModified) return;
-      // mark flag
-      this.tooltipModified = true;
-      let tooltip = quill.theme.tooltip;
-      let newText; // link text
-      let index; // link start index
-      let length; // link text length
-      let linkValue; // link href value
+  let toolbarValues;
+  let height;
+  switch (type) {
+    case "release":
+      toolbarValues = false;
+      height = "100px";
+      break;
+    case "hub":
+      toolbarValues = [
+        [{header: [1, 2, 3, 4, 5, false]}],
+        ["bold", "italic", "underline", "strike"],
+        [{script: "sub"}, {script: "super"}],
+        ["link"],
+      ];
+      height = "110px";
+      break;
+    case "post":
+      toolbarValues = [
+        [{header: [1, 2, 3, 4, 5, false]}],
+        ["bold", "italic", "underline", "strike"],
+        [{script: "sub"}, {script: "super"}],
+        ["link"],
+      ];
+      height = "300px";
+      break;
 
-      // custom save link text funtion
-      const save = () => {
-        let delta = new Delta()
-          .retain(index)
-          .delete(length)
-          .insert(newText, {link: linkValue});
-        quill.updateContents(delta);
-      };
-
-      // create input element
-      const input = document.createElement("input");
-      input.type = "text";
-      input.placeholder = "link text";
-      input.addEventListener("input", (e) => {
-        newText = e.target.value;
-      });
-      input.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-          save();
-          tooltip.root.classList.add("ql-hidden");
-        }
-      });
-
-      // create input label
-      const label = document.createElement("span");
-      label.textContent = "Enter text: ";
-
-      // modify tooltip root to replace psuedo elements
-      const textInputContainer = document.createElement("div");
-      textInputContainer.classList.add("link-text-container");
-      textInputContainer.append(label, input);
-      tooltip.root.insertBefore(textInputContainer, tooltip.root.firstChild);
-      const linkInputLabel = document.createElement("span");
-      linkInputLabel.textContent = "Enter link: ";
-      tooltip.root.insertBefore(linkInputLabel, tooltip.textbox);
-
-      // Modify original link textbox
-      const textbox = tooltip.textbox;
-      textbox.placeholder = "www.google.com";
-      const setLinkValue = (e) => {
-        linkValue = e.target.value;
-      };
-      // quill auto focus this textbox by default, so this ensure we get the value
-      textbox.addEventListener("focus", setLinkValue);
-      // if user update link, need to update value
-      textbox.addEventListener("input", setLinkValue);
-
-      // Hack 'ql-action' button
-      const actionBtn = tooltip.root.querySelector(".ql-action");
-      actionBtn.addEventListener("click", () => {
-        if (tooltip.root.classList.contains("ql-hidden")) {
-          save();
-          return;
-        }
-        if (tooltip.root.classList.contains("ql-editing")) {
-          index = tooltip.linkRange.index;
-          length = tooltip.linkRange.length;
-          // set default newText in case user does not change it
-          newText = quill.getText(index, length);
-          // now it's time to get and change link text input value
-          input.value = newText;
-        }
-      });
-    });
+    default:
+      break;
   }
+  const modules = useMemo(() => ({
+      toolbar: toolbarValues,
+      clipboard: {
+        matchVisual: false,
+      },
+      magicUrl: true
+  }), [])
+
+  // useEffect(() => {
+  //   if (update && formikProps.field.value.includes("<p>")) {
+  //     unified()
+  //       .use(rehypeParse, {fragment: true})
+  //       .use(rehypeSanitize)
+  //       .use(rehypeReact, {
+  //         createElement,
+  //         Fragment,
+  //       })
+  //       .use(rehypeExternalLinks, {
+  //         target: false,
+  //         rel: ["nofollow", "noreferrer"],
+  //       })
+  //       .process(
+  //         JSON.parse(formikProps.field.value).replaceAll("<p><br></p>", "<br>")
+  //       )
+  //       .then((file) => {
+  //         console.log('file :>> ', file);
+  //         setInitialValue(file.value)
+  //         console.log('Quill :>> ', QuillNoSSRWrapper);          
+  //       });
+  //   }
+  // }, [update]);
+
+  const initialValue = useMemo(() => {
+    if (update && formikProps.field.value.includes("<p>")) {
+      unified()
+        .use(rehypeParse, {fragment: true})
+        .use(rehypeSanitize)
+        .use(rehypeReact, {
+          createElement,
+          Fragment,
+        })
+        .use(rehypeExternalLinks, {
+          target: false,
+          rel: ["nofollow", "noreferrer"],
+        })
+        .process(
+          JSON.parse(formikProps.field.value).replaceAll("<p><br></p>", "<br>")
+        )
+        .then((file) => {
+          console.log('file :>> ', file);
+          console.log('Quill :>> ', QuillNoSSRWrapper);
+          return file.value
+        });
+    }
+  }, [update])
+
+
+
+  const removeQuotesFromStartAndEndOfString = (string) => {
+    return string.substring(1, string.length - 1).substring(-1, string.length - 1);
+  }
+
+  const handleChange = (content, delta, source, editor) => {
+    formikProps.form.setFieldValue(
+      formikProps.field.name,
+      JSON.stringify(content)
+    )
+    setInitialValue(content)
+  }
+  return (
+    <QuillWrapper type={type}>
+      <Box style={{height}}>
+        <QuillNoSSRWrapper
+        forwardedRef={quillRef} 
+        theme={theme}
+        modules={modules}
+        onChange={handleChange}
+        // defaultValue={removeQuotesFromStartAndEndOfString(initialValue) || null}
+        // defaultValue={initialValue}
+        value={initialValue}
+        ></QuillNoSSRWrapper>
+      </Box>
+
+    </QuillWrapper>
+  );
 }
 
-Quill.register("themes/snow", ExtendSnowTheme);
-
-// --- link stuff end ---
-
-class QuillEditor extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      text: ""
-    };
-  }
-
-  modules = {
-    magicUrl: true
-  };
-
-  formats = [
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "blockquote",
-    "list",
-    "bullet",
-    "indent",
-    "link",
-    "image",
-    "imageBlot" // #5 Optinal if using custom formats
-  ];
-
-  render() {
-    return (
-      <ReactQuill
-        theme="snow"
-        modules={this.modules}
-        formats={this.formats}
-        value={this.state.text}
-      >
-        <div className="my-editing-area" />
-      </ReactQuill>
-    );
-  }
-}
-
-export default QuillEditor;
+const QuillWrapper = styled(Box)(({theme, type}) => ({
+  "& .ql-editor": {
+    padding: type === "release" ? "0px" : "",
+    maxHeight: type === "release" ? "100px" : "unset",
+    overflow: "auto",
+    maxWidth: "476px",
+  },
+}));
+export default QuillEditor

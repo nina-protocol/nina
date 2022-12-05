@@ -232,7 +232,7 @@ const HubCreateForm = ({
         <Field name="description">
           {(props) => (
             <Box sx={{ mb: "8px" }}>
-              <QuillEditor props={props} update={update} type={"hub"} />
+              <QuillEditor formikProps={props} update={update} type={"hub"} />
             </Box>
           )}
         </Field>

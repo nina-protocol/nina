@@ -9987,7 +9987,7 @@ quill-delta@^4.0.1:
     lodash.clonedeep "^4.5.0"
     lodash.isequal "^4.5.0"
 
-quill-magic-url@^4.1.4:
+quill-magic-url@^4.1.4, quill-magic-url@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/quill-magic-url/-/quill-magic-url-4.2.0.tgz#61d5b98c19c0345e744c75e0faf40cb87c2bfdd4"
   integrity sha512-u1tHwsQjrTczhECNtXK5EUkWwAMb8raLpsU3llqiLu344kPlA9ldoenHvY3XW+yI+2IZ9WgKgRmcy+cKGN3gnQ==

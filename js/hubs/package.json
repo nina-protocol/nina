@@ -46,7 +46,7 @@
     "luxon": "^2.3.0",
     "path-browserify": "^1.0.1",
     "quill": "^1.3.7",
-    "quill-magic-url": "^4.1.4",
+    "quill-magic-url": "^4.2.0",
     "react-beautiful-dnd": "^13.1.0",
     "react-colorful": "^5.5.1",
     "react-device-detect": "^2.1.2",
