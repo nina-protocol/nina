@@ -42,6 +42,7 @@ const CollaboratorPermissions = (props) => {
       canAddCollaborator: activeSelection.canAddCollaborator,
       allowance: activeSelection.allowance,
       hubPubkey,
+      
     },
     onSubmit: async (values, { resetForm }) => {
       const {
@@ -50,6 +51,7 @@ const CollaboratorPermissions = (props) => {
         canAddContent,
         canAddCollaborator,
         allowance,
+        
       } = values;
       setPending(true);
       const result = await hubUpdateCollaboratorPermission(

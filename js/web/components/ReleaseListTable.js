@@ -58,8 +58,8 @@ const descendingComparator = (a, b, orderBy) => {
     case 'collected':
     case 'share':
     default:
-      a = parseFloat(a[orderBy].replace(/[^\d.-]/g, ''))
-      b = parseFloat(b[orderBy].replace(/[^\d.-]/g, ''))
+      a = parseFloat(a[orderBy]?.replace(/[^\d.-]/g, ''))
+      b = parseFloat(b[orderBy]?.replace(/[^\d.-]/g, ''))
       break
   }
 
