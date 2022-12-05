@@ -274,9 +274,29 @@ const ReleasePurchase = (props) => {
       {wallet?.connected && (
         <StyledUserAmount>
           {metadata && (
-            <Typography variant="body2" align="left" gutterBottom>
-              You have: {amountHeld || 0} {metadata.symbol}
-            </Typography>
+            <>
+              <Typography
+                variant="body2"
+                align="left"
+                gutterBottom
+                paddingBottom={'5px'}
+                cursor="default"
+              >
+                {`Catalog no. ${metadata.symbol}`}
+              </Typography>
+              <Typography
+                variant="body2"
+                align="left"
+                gutterBottom
+                cursor="default"
+              >
+                {amountHeld > 0
+                  ? `You own ${
+                      amountHeld > 1 ? `${amountHeld} editions of` : ''
+                    } this release`
+                  : `You do not own this release`}
+              </Typography>
+            </>
           )}
           {amountPendingSales > 0 ? (
             <Typography variant="body2" align="left" gutterBottom>

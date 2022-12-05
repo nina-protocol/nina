@@ -108,13 +108,8 @@ const CollectorModal = (props) => {
           </StyledModal>
         </Box>
       ) : (
-        <Box>
-          <Typography
-            variant="body2"
-            align="left"
-            paddingBottom="10px"
-            cursor="default"
-          >
+        <Box sx={{ cursor: 'default' }}>
+          <Typography variant="body2" align="left" paddingBottom="10px">
             Collectors (0)
           </Typography>
         </Box>
@@ -134,7 +129,7 @@ const classes = {
   historyTableBody: `${PREFIX}-historyTableBody`,
 }
 
-const Cta = styled(Button)(({ theme }) => ({
+const Cta = styled(Typography)(({ theme }) => ({
   cursor: 'pointer',
   '& span': {
     color: `${theme.palette.blue}`,

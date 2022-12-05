@@ -77,7 +77,7 @@ const HubsModal = (props) => {
           </StyledModal>
         </Box>
       ) : (
-        <Box>
+        <Box sx={{ cursor: 'pointer' }}>
           <Cta variant="body2" align="left" paddingBottom="10px">
             No Hubs
           </Cta>

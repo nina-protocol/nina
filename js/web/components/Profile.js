@@ -149,12 +149,12 @@ const Profile = ({ profilePubkey }) => {
     if (profileSubscriptionsTo?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'followers')
       updatedView[viewIndex].disabled = false
-      updatedView[viewIndex].count = profileSubscriptionsTo.length
+      updatedView[viewIndex].count = profileSubscriptionsTo?.length
     }
     if (profileSubscriptionsFrom?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'following')
       updatedView[viewIndex].disabled = false
-      updatedView[viewIndex].count = profileSubscriptionsFrom.length
+      updatedView[viewIndex].count = profileSubscriptionsFrom?.length
     }
     if (inDashboard) {
       updatedView.forEach((view) => {
