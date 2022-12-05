@@ -110,7 +110,7 @@ const Profile = ({ profilePubkey }) => {
       )
       setActiveView(viewIndex)
     }
-  }, [router.query.view])
+  }, [router])
 
   useEffect(() => {
     const to = []
@@ -172,7 +172,7 @@ const Profile = ({ profilePubkey }) => {
   ])
 
   useEffect(() => {
-    if (!router.query.view) {
+    if (!router.query.view && !inDashboard) {
       const viewIndex = views.findIndex((view) => !view.disabled)
       setActiveView(viewIndex)
     }
@@ -190,7 +190,7 @@ const Profile = ({ profilePubkey }) => {
     ) {
       setActiveView(2)
     }
-  }, [views])
+  }, [views, router])
 
   useEffect(() => {
     let filteredCollection
@@ -278,6 +278,8 @@ const Profile = ({ profilePubkey }) => {
       console.log(err)
     }
   }
+
+  console.log('router', router)
 
   const viewHandler = (event) => {
     event.stopPropagation()

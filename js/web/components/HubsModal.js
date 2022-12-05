@@ -24,7 +24,7 @@ const HubsModal = (props) => {
 
   return (
     <>
-      {hubs.length > 0 ? (
+      {hubs.length > 0 && (
         <Box>
           <Cta
             onClick={() => setOpen(true)}
@@ -75,12 +75,6 @@ const HubsModal = (props) => {
               </CollectorTable>
             </StyledPaper>
           </StyledModal>
-        </Box>
-      ) : (
-        <Box sx={{ cursor: 'pointer' }}>
-          <Cta variant="body2" align="left" paddingBottom="10px">
-            No Hubs
-          </Cta>
         </Box>
       )}
     </>

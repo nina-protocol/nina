@@ -290,11 +290,10 @@ const ReleasePurchase = (props) => {
                 gutterBottom
                 cursor="default"
               >
-                {amountHeld > 0
-                  ? `You own ${
-                      amountHeld > 1 ? `${amountHeld} editions of` : ''
-                    } this release`
-                  : `You do not own this release`}
+                {amountHeld > 0 &&
+                  `You own ${
+                    amountHeld > 1 ? `${amountHeld} editions of` : ''
+                  } this release`}
               </Typography>
             </>
           )}
