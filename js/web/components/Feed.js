@@ -62,7 +62,9 @@ const Feed = ({
   const { updateTrack, isPlaying, setIsPlaying, track } = useContext(
     Audio.Context
   )
-  const { displayNameForAccount } = useContext(Nina.Context)
+  const { displayNameForAccount, displayImageForAccount } = useContext(
+    Nina.Context
+  )
   const router = useRouter()
   const wallet = useWallet()
   const [pendingFetch, setPendingFetch] = useState(false)
@@ -514,61 +516,78 @@ const Feed = ({
         //       <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
         //     </MultiCard>
         //   )
-        // case 'SubscriptionSubscribeAccount':
-        //   return (
-        //     <TextCard>
-        //       <CopyWrapper>
-        //         <Typography my={1}>
-        //           <Link href={`/profiles/${item.authority.publicKey}`} passHref>
-        //             {displayNameForAccount(item.authority.publicKey)}
-        //           </Link>{' '}
-        //           followed{' '}
-        //           <Link href={`/profiles/${item.toAccount.publicKey}`} passHref>
-        //             {displayNameForAccount(item.authority.publicKey)}
-        //           </Link>
-        //         </Typography>
-        //         <Typography my={1} fontWeight={600}>
-        //           {timeSince(Date.parse(item.datetime))} ago
-        //         </Typography>
-        //       </CopyWrapper>
-        //     </TextCard>
-        //   )
-        // case 'SubscriptionSubscribeHub':
-        //   return (
-        //     <ImageCard>
-        //       <Link href={`/hubs/${item.toHub.handle}`} passHref>
-        //         <Image
-        //           height={'400px'}
-        //           width={'400px'}
-        //           layout="responsive"
-        //           src={getImageFromCDN(
-        //             item.toHub.data.image,
-        //             600,
-        //             Date.parse(item.datetime)
-        //           )}
-        //           alt={i}
-        //           priority={true}
-        //           loader={loader}
-        //           unoptimized={true}
-        //         />
-        //       </Link>
-        //       <CopyWrapper>
-        //         <Typography my={1}>
-        //           <Link href={`/profiles/${item.authority.publicKey}`} passHref>
-        //             {displayNameForAccount(item.authority.publicKey)}
-        //           </Link>{' '}
-        //           followed{' '}
-        //           <Link
-        //             href={`/hubs/${item.toHub.publicKey}`}
-        //             passHref
-        //           >{`${item?.toHub?.data?.displayName}`}</Link>
-        //         </Typography>
-        //         <Typography my={1} fontWeight={600}>
-        //           {timeSince(Date.parse(item.datetime))} ago
-        //         </Typography>
-        //       </CopyWrapper>
-        //     </ImageCard>
-        //   )
+        case 'SubscriptionSubscribeAccount':
+          const image = displayImageForAccount(item.toAccount.publicKey)
+          return (
+            <ImageCard>
+              <Link href={`/profiles/${item.toAccount.publicKey}`} passHref>
+                {image && image.includes('https') ? (
+                  <Image
+                    height={'400px'}
+                    width={'400px'}
+                    layout="responsive"
+                    src={getImageFromCDN(image, 600, Date.parse(item.datetime))}
+                    alt={i}
+                    priority={true}
+                    loader={loader}
+                    unoptimized={true}
+                  />
+                ) : (
+                  <img src={image} height={418} width={418} />
+                )}
+              </Link>
+              <CopyWrapper>
+                <Typography my={1}>
+                  <Link href={`/profiles/${item.authority.publicKey}`} passHref>
+                    {displayNameForAccount(item.authority.publicKey)}
+                  </Link>{' '}
+                  followed{' '}
+                  <Link href={`/profiles/${item.toAccount.publicKey}`} passHref>
+                    {displayNameForAccount(item.toAccount.publicKey)}
+                  </Link>
+                </Typography>
+                <Typography my={1} fontWeight={600}>
+                  {timeSince(Date.parse(item.datetime))} ago
+                </Typography>
+              </CopyWrapper>
+            </ImageCard>
+          )
+        case 'SubscriptionSubscribeHub':
+          return (
+            <ImageCard>
+              <Link href={`/hubs/${item.toHub.handle}`} passHref>
+                <Image
+                  height={'400px'}
+                  width={'400px'}
+                  layout="responsive"
+                  src={getImageFromCDN(
+                    item.toHub.data.image,
+                    600,
+                    Date.parse(item.datetime)
+                  )}
+                  alt={i}
+                  priority={true}
+                  loader={loader}
+                  unoptimized={true}
+                />
+              </Link>
+              <CopyWrapper>
+                <Typography my={1}>
+                  <Link href={`/profiles/${item.authority.publicKey}`} passHref>
+                    {displayNameForAccount(item.authority.publicKey)}
+                  </Link>{' '}
+                  followed{' '}
+                  <Link
+                    href={`/hubs/${item.toHub.publicKey}`}
+                    passHref
+                  >{`${item?.toHub?.data?.displayName}`}</Link>
+                </Typography>
+                <Typography my={1} fontWeight={600}>
+                  {timeSince(Date.parse(item.datetime))} ago
+                </Typography>
+              </CopyWrapper>
+            </ImageCard>
+          )
 
         default:
           return null
