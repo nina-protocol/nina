@@ -7,6 +7,8 @@ import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
 import HelpIcon from "@mui/icons-material/Help";
 import Quill from "./Quill";
+import dynamic from "next/dynamic";
+const QuillEditor = dynamic(() => import("./QuillEditor"), { ssr: false });
 
 const HubCreateForm = ({
   field,
@@ -230,7 +232,7 @@ const HubCreateForm = ({
         <Field name="description">
           {(props) => (
             <Box sx={{ mb: "8px" }}>
-              <Quill props={props} update={update} type={"hub"} />
+              <QuillEditor props={props} update={update} type={"hub"} />
             </Box>
           )}
         </Field>
