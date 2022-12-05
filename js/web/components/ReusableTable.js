@@ -679,12 +679,12 @@ const ReusableTableBody = (props) => {
                   wallet.connected
                 ) {
                   return (
-                    <StyledTableCell key={cellName}>
+                    <TableCell key={cellName} sx={{ padding: '0 30px' }}>
                       <Subscribe
                         accountAddress={row.publicKey}
                         hubHandle={row?.handle}
                       />
-                    </StyledTableCell>
+                    </TableCell>
                   )
                 } else {
                   return (
