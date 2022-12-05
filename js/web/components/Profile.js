@@ -22,7 +22,6 @@ const Profile = ({ profilePubkey }) => {
   const wallet = useWallet()
   const router = useRouter()
   const tableContainerRef = useRef(null)
-
   const {
     getUserCollectionAndPublished,
     collectRoyaltyForRelease,
@@ -192,7 +191,7 @@ const Profile = ({ profilePubkey }) => {
       setActiveView(2)
     }
   }, [views])
-  
+
   useEffect(() => {
     let filteredCollection
     if (fetchedUserProfileReleases[profilePubkey]?.collected) {
@@ -245,6 +244,16 @@ const Profile = ({ profilePubkey }) => {
     }
   }, [verificationState])
 
+  useEffect(() => {
+    const urlView = window.location.search.substring(
+      6,
+      window.location.search.length
+    )
+    if (window.location.search) {
+      const viewIndex = views.findIndex((view) => view.name === urlView)
+      setActiveView(viewIndex)
+    }
+  }, [views])
   const getUserData = async () => {
     try {
       await getHubsForUser(profilePubkey)
