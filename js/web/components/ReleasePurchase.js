@@ -18,6 +18,7 @@ import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
+import { encodeBase64 } from 'tweetnacl-util';
 import CollectorModal from './CollectorModal'
 import HubsModal from './HubsModal'
 import Dots from './Dots'
@@ -53,6 +54,8 @@ const ReleasePurchase = (props) => {
     getExchangesForRelease,
   } = useContext(Exchange.Context)
   const [release, setRelease] = useState(undefined)
+  const [gate, setGate] = useState(undefined)
+  const [file, setFile] = useState(undefined)
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
   const [amountPendingBuys, setAmountPendingBuys] = useState(0)
   const [amountPendingSales, setAmountPendingSales] = useState(0)
@@ -71,8 +74,17 @@ const ReleasePurchase = (props) => {
     [releasePubkey, releasePurchasePending]
   )
 
+
+  const getGate = async () => {
+    const { gates } = (await axios.get(`${process.env.NINA_API_ENDPOINT}/releases/${releasePubkey}/gates`)).data
+    if (gates.length > 0) {
+      setGate(gates[0])
+    }
+  }
+
   useEffect(() => {
     getRelease(releasePubkey)
+    getGate()
     // const hubForRelease = async (releasePubkey) => {
     //   const result = await getPublishedHubForRelease(releasePubkey)
     //   setPublishedHub(result?.hub)
@@ -253,6 +265,97 @@ const ReleasePurchase = (props) => {
     }
     setDownloadButtonString('Download')
   }
+
+  const handleUnlockGate = async () => {
+    try {
+      const message = new TextEncoder().encode(releasePubkey);
+      const messageBase64 = encodeBase64(message);
+      const signature = await wallet.signMessage(message);
+      const signatureBase64 = encodeBase64(signature);
+      const result = await axios.get(`${process.env.NINA_GATE_URL}/gate/${gate.id}?message=${encodeURIComponent(messageBase64)}&publicKey=${encodeURIComponent(wallet.publicKey.toBase58())}&signature=${encodeURIComponent(signatureBase64)}`)
+      
+      const response = await axios.get(result.data.url, {
+        method: "GET",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/octet-stream",
+        },
+        responseType: "blob",
+      });
+
+      if (response?.data) {
+        const a = document.createElement("a");
+        const url = window.URL.createObjectURL(response.data);
+        a.href = url;
+        a.download = release.gate.fileName;
+        a.click();
+      }  
+    } catch (error) {
+      console.log('error: ', error)
+      // setResponse(error.response.data);
+    }
+  }
+
+  const handleFileUpload = async () => {
+    try {
+      const FILE_CHUNK_SIZE = 10_000_000
+
+      const message = new TextEncoder().encode(releasePubkey);
+      const messageBase64 = encodeBase64(message);
+      const signature = await wallet.signMessage(message);
+      const signatureBase64 = encodeBase64(signature);
+
+      const response = await axios.post(`${process.env.NINA_GATE_URL}/gate`, {
+        fileSize: file.size,
+        fileName: file.name,
+        publicKey: wallet.publicKey.toBase58(),
+        message: messageBase64,
+        signature: signatureBase64,
+        release: releasePubkey,
+      })
+      console.log('response: ', response.data)
+      const {
+        urls,
+        UploadId
+      } = response.data;
+      console.log('urls: ', urls)
+      const uploader = axios.create()
+      delete uploader.defaults.headers.put['Content-Type']
+
+      const keys = Object.keys(urls)
+      const promises = []
+    
+      for (const indexStr of keys) {
+        const index = parseInt(indexStr)
+        const start = index * FILE_CHUNK_SIZE
+        const end = (index + 1) * FILE_CHUNK_SIZE
+        const blob = index < keys.length
+          ? file.slice(start, end)
+          : file.slice(start)
+    
+        promises.push(axios.put(urls[index], blob))
+      }
+    
+      const resParts = await Promise.all(promises)
+      const result = resParts.map((part, index) => ({
+        ETag: part.headers.etag,
+        PartNumber: index + 1
+      }))
+      console.log('result: ', result)
+
+      const completeResponse = await axios.post(`${process.env.NINA_GATE_URL}/gate/finalize`, {
+        UploadId,
+        releasePublicKey: releasePubkey,
+        fileName: file.name,
+        fileSize: file.size,
+        parts: result
+      })
+      getGate()
+      console.log('completeResponse: ', completeResponse.data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
   return (
     <Box>
       <AmountRemaining variant="body2" align="left">
@@ -316,6 +419,17 @@ const ReleasePurchase = (props) => {
           </Button>
         </form>
       </Box>
+      {!gate && wallet?.publicKey?.toBase58() === release.authority && (
+        <>
+          <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+          {file && (
+            <button onClick={handleFileUpload}>Add Gate</button>
+          )}
+        </>
+      )}
+      {gate && (
+        <button onClick={() => handleUnlockGate()}>Unlock Gate</button>
+      )}
       {userIsRecipient && (
         <Royalty releasePubkey={releasePubkey} release={release} />
       )}
