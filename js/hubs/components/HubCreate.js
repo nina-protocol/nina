@@ -257,12 +257,14 @@ const HubCreate = ({ update, hubData }) => {
               ? formValues.hubForm.externalUrl
               : hubData.data.externalUrl,
           };
+
           if (backgroundColor) {
             metadataJson.backgroundColor = backgroundColor;
           }
           if (textColor) {
             metadataJson.textColor = textColor;
           }
+          console.log('metadataJson.hubform.description :>> ', metadataJson.description);
 
           metadataResult = await bundlrUpload(
             new Blob([JSON.stringify(metadataJson)], {

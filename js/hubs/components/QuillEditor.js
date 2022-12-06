@@ -1,5 +1,6 @@
 import React, {useEffect, useState, createElement, Fragment, useRef, useMemo} from 'react'
 import ReactQuill from 'react-quill';
+import {stripQuotesIfNeeded} from "@nina-protocol/nina-internal-sdk/esm/utils";
 import dynamic from 'next/dynamic';
 import {styled} from "@mui/material/styles";
 
@@ -13,7 +14,6 @@ const QuillNoSSRWrapper = dynamic(
 );
 import Box from "@mui/material/Box";
 
-// import {MagicUrl} from 'quill-magic-url'
 const {Quill} = ReactQuill
 
 import "quill/dist/quill.snow.css";
@@ -24,14 +24,13 @@ import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
-import MagicUrl from 'quill-magic-url';
 
 const QuillEditor = ({formikProps, type, update}) => {
   const quillRef = useRef(null)
 
   const theme = type === "release" ? "bubble" : "snow";
   // const [valuePlaced, setValuePlaced] = useState(false);
-
+  const [initialValue, setInitialValue] = useState()
 
   useEffect(() => {
       if (Quill) {
@@ -89,66 +88,53 @@ const QuillEditor = ({formikProps, type, update}) => {
       magicUrl: true
   }), [])
 
-  // useEffect(() => {
-  //   if (update && formikProps.field.value.includes("<p>")) {
-  //     unified()
-  //       .use(rehypeParse, {fragment: true})
-  //       .use(rehypeSanitize)
-  //       .use(rehypeReact, {
-  //         createElement,
-  //         Fragment,
-  //       })
-  //       .use(rehypeExternalLinks, {
-  //         target: false,
-  //         rel: ["nofollow", "noreferrer"],
-  //       })
-  //       .process(
-  //         JSON.parse(formikProps.field.value).replaceAll("<p><br></p>", "<br>")
-  //       )
-  //       .then((file) => {
-  //         console.log('file :>> ', file);
-  //         setInitialValue(file.value)
-  //         console.log('Quill :>> ', QuillNoSSRWrapper);          
-  //       });
-  //   }
-  // }, [update]);
-
-  const initialValue = useMemo(() => {
+  useEffect(() => {
+    console.log('in here again');
     if (update && formikProps.field.value.includes("<p>")) {
-      unified()
-        .use(rehypeParse, {fragment: true})
-        .use(rehypeSanitize)
-        .use(rehypeReact, {
-          createElement,
-          Fragment,
-        })
-        .use(rehypeExternalLinks, {
-          target: false,
-          rel: ["nofollow", "noreferrer"],
-        })
-        .process(
-          JSON.parse(formikProps.field.value).replaceAll("<p><br></p>", "<br>")
-        )
-        .then((file) => {
-          console.log('file :>> ', file);
-          console.log('Quill :>> ', QuillNoSSRWrapper);
-          return file.value
-        });
+      console.log('formikProps.field.value :>> ', formikProps.field.value);
+      // unified()
+      //   .use(rehypeParse, {fragment: true})
+      //   .use(rehypeSanitize)
+      //   .use(rehypeReact, {
+      //     createElement,
+      //     Fragment,
+      //   })
+      //   .use(rehypeExternalLinks, {
+      //     target: false,
+      //     rel: ["nofollow", "noreferrer"],
+      //   })
+      //   .process(
+      //     // JSON.parse(formikProps.field.value.replaceAll("<p><br></p>", "<br></br>"))
+      //     JSON.parse(formikProps.field.value)
+      //   )
+      //   .then((file) => {
+      //     console.log('file :>> ', file);
+      //     setInitialValue(file.value)
+      //   });
+      //     setInitialValue(file.value)
     }
-  }, [update])
+  }, [update]);
 
 
 
-  const removeQuotesFromStartAndEndOfString = (string) => {
-    return string.substring(1, string.length - 1).substring(-1, string.length - 1);
-  }
+  // const removeQuotesFromStartAndEndOfString = (string) => {
+  //   return string.substring(1, string.length - 1).substring(-1, string.length - 1);
+  // }
+
+  // const stripQuotesIfNeeded = (str) => {
+  //   return str.replace(/^"(.*)"$/, '$1');
+  // }
 
   const handleChange = (content, delta, source, editor) => {
-    formikProps.form.setFieldValue(
-      formikProps.field.name,
-      JSON.stringify(content)
-    )
-    setInitialValue(content)
+    // formikProps.form.setFieldValue(
+    //   formikProps.field.name,
+    //   JSON.stringify(content)
+    // )
+    console.log('content before replace:>> ', content);
+    content = content.replaceAll("<p><br></p>", "<br></br>")
+    formikProps.form.setFieldValue(formikProps.field.name, content)
+    console.log('content :>> ', content);
+    // setInitialValue(content)
   }
   return (
     <QuillWrapper type={type}>
@@ -159,9 +145,12 @@ const QuillEditor = ({formikProps, type, update}) => {
         modules={modules}
         onChange={handleChange}
         // defaultValue={removeQuotesFromStartAndEndOfString(initialValue) || null}
-        // defaultValue={initialValue}
-        value={initialValue}
-        ></QuillNoSSRWrapper>
+        // defaultValue={'test'}
+        // value={formikProps.field.value}
+          defaultValue={stripQuotesIfNeeded(formikProps.field.value)}
+        >
+
+        </QuillNoSSRWrapper>
       </Box>
 
     </QuillWrapper>
