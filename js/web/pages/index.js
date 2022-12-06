@@ -16,7 +16,7 @@ export default function Home() {
       }
       router.push(path)
     }
-  }, [wallet, router])
+  }, [wallet])
   return (
     <>
       <Head>

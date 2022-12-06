@@ -5,7 +5,6 @@ import { useRouter } from 'next/router'
 export default function Profiles() {
   const wallet = useWallet()
   const router = useRouter()
-  debugger
 
   useEffect(() => {
     let path
@@ -15,6 +14,6 @@ export default function Profiles() {
       path = '/'
     }
     router.push(path)
-  }, [wallet, router])
+  }, [wallet])
   return <></>
 }
