@@ -9,11 +9,8 @@ export default function Home() {
   const router = useRouter()
 
   useEffect(() => {
-    let path
     if (wallet.connected) {
-      console.log('routerrrrr', router.query.view)
-      path =
-        '/dashboard' + (router.query.view ? `?view=${router.query.view}` : '')
+      let path = '/dashboard'
       if (router.query.code) {
         path += `?code=${router.query.code}`
       }

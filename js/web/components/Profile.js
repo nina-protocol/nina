@@ -101,16 +101,7 @@ const Profile = ({ profilePubkey }) => {
     if (wallet.connected && profilePubkey === wallet.publicKey?.toBase58()) {
       setInDashboard(true)
     }
-  }, [wallet, profilePubkey])
-
-  useEffect(() => {
-    if (router.query.view) {
-      const viewIndex = views.findIndex(
-        (view) => view.name === router.query.view
-      )
-      setActiveView(viewIndex)
-    }
-  }, [router])
+  }, [wallet, profilePubkey, router])
 
   useEffect(() => {
     const to = []
@@ -175,6 +166,13 @@ const Profile = ({ profilePubkey }) => {
     if (!router.query.view && !inDashboard) {
       const viewIndex = views.findIndex((view) => !view.disabled)
       setActiveView(viewIndex)
+    }
+    if (router.query.view) {
+      const viewIndex = views.findIndex(
+        (view) => view.name === router.query.view
+      )
+      setActiveView(viewIndex)
+      return
     }
     if (inDashboard && profileCollectionReleases?.length > 0) {
       setActiveView(0)
@@ -244,16 +242,6 @@ const Profile = ({ profilePubkey }) => {
     }
   }, [verificationState])
 
-  useEffect(() => {
-    const urlView = window.location.search.substring(
-      6,
-      window.location.search.length
-    )
-    if (window.location.search) {
-      const viewIndex = views.findIndex((view) => view.name === urlView)
-      setActiveView(viewIndex)
-    }
-  }, [views])
   const getUserData = async () => {
     try {
       await getHubsForUser(profilePubkey)
@@ -278,8 +266,6 @@ const Profile = ({ profilePubkey }) => {
       console.log(err)
     }
   }
-
-  console.log('router', router)
 
   const viewHandler = (event) => {
     event.stopPropagation()
