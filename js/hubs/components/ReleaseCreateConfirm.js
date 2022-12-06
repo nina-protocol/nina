@@ -47,6 +47,7 @@ const ReleaseCreateConfirm = (props) => {
 
   useEffect(() => {
     if (data.description) {
+      console.log('data.description :>> ', data.description);
       unified()
         .use(rehypeParse, { fragment: true })
         .use(rehypeSanitize)
@@ -58,11 +59,12 @@ const ReleaseCreateConfirm = (props) => {
           target: false,
           rel: ["nofollow", "noreferrer"],
         })
-        .process(JSON.parse(data.description).replaceAll("<p><br></p>", "<br>"))
+        .process(data.description.replaceAll("<p><br></p>", "<br>"))
         .then((file) => {
           setDescription(file.result);
         });
     }
+    setDescription(data.description)
   }, [data.description]);
 
   const handleChangeCheckbox = (e) => {

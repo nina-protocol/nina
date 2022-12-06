@@ -98,8 +98,7 @@ const getMd5FileHash = (file) => {
 }
 
 const stripQuotesIfNeeded = (str) => {
-  console.log('str :>> ', str);
-  // return str.replace(/^"(.*)"$/, '$1');
+  return str.replace(/^"(.*)"$/, '$1');
   return str
 }
 

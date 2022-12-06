@@ -8,6 +8,8 @@ import Slider from "@mui/material/Slider";
 import Box from "@mui/material/Box";
 import Fade from "@mui/material/Fade";
 import Quill from "./Quill";
+import dynamic from "next/dynamic";
+const QuillEditor = dynamic(() => import("./QuillEditor"), {ssr: false});
 
 const ReleaseCreateForm = ({
   field,
@@ -176,7 +178,7 @@ const ReleaseCreateForm = ({
           <Field name="description">
             {(props) => (
               <Box sx={{ borderBottom: "1px solid grey" }}>
-                <Quill props={props} type={"release"} update={false} />
+                <QuillEditor formikProps={props} type={"release"} update={false} />
               </Box>
             )}
           </Field>

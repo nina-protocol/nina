@@ -75,7 +75,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   }, [wallet?.connected, hubState]);
 
   useEffect(() => {
-    if (metadata?.descriptionHtml?.includes("<p>")) {
+    if (metadata?.descriptionHtml) {
       unified()
         .use(rehypeParse, { fragment: true })
         .use(rehypeSanitize)
@@ -88,7 +88,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
           rel: ["nofollow", "noreferrer"],
         })
         .process(
-          JSON.parse(metadata.descriptionHtml).replaceAll("<p><br></p>", "<br>")
+          parseChecker(metadata.descriptionHtml)
         )
         .then((file) => {
           setDescription(file.result);
@@ -112,6 +112,15 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
       );
     }
   }, [releaseState.tokenData[releasePubkey], wallet?.connected]);
+
+  const parseChecker = (data) => {
+    try {
+      return JSON.parse(data)
+    } catch (error) {
+      return data
+    }
+  }
+
 
   return (
     <>

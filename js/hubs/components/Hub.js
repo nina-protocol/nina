@@ -139,16 +139,16 @@ const HubComponent = ({ hubPubkey }) => {
 
   const parseChecker = (data) => {
     try {
+      console.log('here');
       return JSON.parse(data)
     } catch (error) {
+      console.log('there');
       return data
     }
   }
 
   useEffect(() => {
-    if (hubData?.data?.descriptionHtml?.includes("<p>")) {
-      console.log('hubData?.data?.descriptionHtml :>> ', hubData?.data?.descriptionHtml);
-      
+    if (hubData?.data?.descriptionHtml) {
       unified()
         .use(rehypeParse, { fragment: true })
         .use(rehypeSanitize)

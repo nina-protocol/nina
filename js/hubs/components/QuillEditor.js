@@ -3,6 +3,7 @@ import ReactQuill from 'react-quill';
 import {stripQuotesIfNeeded} from "@nina-protocol/nina-internal-sdk/esm/utils";
 import dynamic from 'next/dynamic';
 import {styled} from "@mui/material/styles";
+import InputLabel from "@mui/material/InputLabel";
 
 const QuillNoSSRWrapper = dynamic(
   async () => {
@@ -27,30 +28,8 @@ import rehypeExternalLinks from 'rehype-external-links'
 
 const QuillEditor = ({formikProps, type, update}) => {
   const quillRef = useRef(null)
-
   const theme = type === "release" ? "bubble" : "snow";
-  // const [valuePlaced, setValuePlaced] = useState(false);
   const [initialValue, setInitialValue] = useState()
-
-  useEffect(() => {
-      if (Quill) {
-        const MagicUrl = require("quill-magic-url").default; // Install with 'yarn add quill-magic-url'
-        Quill.register("modules/magicUrl", MagicUrl);
-        console.log('MagicUrl :>> ', MagicUrl);
-        var Link = Quill.import("formats/link");
-        var builtInFunc = Link.sanitize;
-        Link.sanitize = function customSanitizeLinkInput(linkValueInput) {
-          var val = linkValueInput;
-
-          // do nothing, since this implies user's already using a custom protocol
-          if (/^\w+:/.test(val));
-          else if (!/^https?:/.test(val)) val = "http://" + val;
-
-          return builtInFunc.call(this, val); // retain the built-in logic
-        };
-      }
-  }, [Quill])
-
   let toolbarValues;
   let height;
   switch (type) {
@@ -81,78 +60,54 @@ const QuillEditor = ({formikProps, type, update}) => {
       break;
   }
   const modules = useMemo(() => ({
-      toolbar: toolbarValues,
-      clipboard: {
-        matchVisual: false,
-      },
-      magicUrl: true
+    toolbar: toolbarValues,
+    clipboard: {
+      matchVisual: false,
+    },
+    magicUrl: true
   }), [])
 
   useEffect(() => {
-    console.log('in here again');
-    if (update && formikProps.field.value.includes("<p>")) {
-      console.log('formikProps.field.value :>> ', formikProps.field.value);
-      // unified()
-      //   .use(rehypeParse, {fragment: true})
-      //   .use(rehypeSanitize)
-      //   .use(rehypeReact, {
-      //     createElement,
-      //     Fragment,
-      //   })
-      //   .use(rehypeExternalLinks, {
-      //     target: false,
-      //     rel: ["nofollow", "noreferrer"],
-      //   })
-      //   .process(
-      //     // JSON.parse(formikProps.field.value.replaceAll("<p><br></p>", "<br></br>"))
-      //     JSON.parse(formikProps.field.value)
-      //   )
-      //   .then((file) => {
-      //     console.log('file :>> ', file);
-      //     setInitialValue(file.value)
-      //   });
-      //     setInitialValue(file.value)
-    }
-  }, [update]);
+      if (Quill) {
+        const MagicUrl = require("quill-magic-url").default; // Install with 'yarn add quill-magic-url'
+        Quill.register("modules/magicUrl", MagicUrl);
+        var Link = Quill.import("formats/link");
+        var builtInFunc = Link.sanitize;
+        Link.sanitize = function customSanitizeLinkInput(linkValueInput) {
+          var val = linkValueInput;
+
+          // do nothing, since this implies user's already using a custom protocol
+          if (/^\w+:/.test(val));
+          else if (!/^https?:/.test(val)) val = "http://" + val;
+
+          return builtInFunc.call(this, val); // retain the built-in logic
+        };
+      }
+  }, [Quill])
 
 
-
-  // const removeQuotesFromStartAndEndOfString = (string) => {
-  //   return string.substring(1, string.length - 1).substring(-1, string.length - 1);
-  // }
-
-  // const stripQuotesIfNeeded = (str) => {
-  //   return str.replace(/^"(.*)"$/, '$1');
-  // }
 
   const handleChange = (content, delta, source, editor) => {
-    // formikProps.form.setFieldValue(
-    //   formikProps.field.name,
-    //   JSON.stringify(content)
-    // )
     console.log('content before replace:>> ', content);
-    content = content.replaceAll("<p><br></p>", "<br></br>")
+    content = content.replaceAll("<p><br></p>", "<br>")
     formikProps.form.setFieldValue(formikProps.field.name, content)
     console.log('content :>> ', content);
-    // setInitialValue(content)
   }
   return (
     <QuillWrapper type={type}>
-      <Box style={{height}}>
+      {type !== "post" && (
+        <InputLabel align="left" shrink={formikProps.field.value ? true : ""}>
+          DESCRIPTION
+        </InputLabel>
+      )}
         <QuillNoSSRWrapper
         forwardedRef={quillRef} 
         theme={theme}
         modules={modules}
         onChange={handleChange}
-        // defaultValue={removeQuotesFromStartAndEndOfString(initialValue) || null}
-        // defaultValue={'test'}
-        // value={formikProps.field.value}
-          defaultValue={stripQuotesIfNeeded(formikProps.field.value)}
+        defaultValue={stripQuotesIfNeeded(formikProps.field.value)}
         >
-
         </QuillNoSSRWrapper>
-      </Box>
-
     </QuillWrapper>
   );
 }
@@ -160,9 +115,11 @@ const QuillEditor = ({formikProps, type, update}) => {
 const QuillWrapper = styled(Box)(({theme, type}) => ({
   "& .ql-editor": {
     padding: type === "release" ? "0px" : "",
-    maxHeight: type === "release" ? "100px" : "unset",
+    maxHeight: type === "release" ? "100px" : "100px",
+    height: type === "release" ? "100px" : "100px",
     overflow: "auto",
     maxWidth: "476px",
   },
 }));
+
 export default QuillEditor
