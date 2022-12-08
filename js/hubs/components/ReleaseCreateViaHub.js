@@ -141,7 +141,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
       } else if (artworkTx && trackTx && !metadataTx) {
         setButtonText("Restart 3/4: Upload Metadata.");
       } else if (artworkTx && trackTx && metadataTx && !releaseCreated) {
-        setButtonText("Restart 4/4: Finalize Release");
+        setButtonText('There may have been an error creating this release. Please wait 30 seconds and check for the release in your dashboard before retrying')
       } else if (mbs < uploadSize) {
         setButtonText(
           `Release requires more storage than available in your bundlr account, please top up`
@@ -395,7 +395,8 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                   bundlrBalance === 0 ||
                   mbs < uploadSize ||
                   artwork?.meta.status === "uploading" ||
-                  (track?.meta.status === "uploading" && !releaseCreated)
+                  (track?.meta.status === "uploading" && !releaseCreated) ||
+                  (artworkTx && trackTx && metadataTx && !releaseCreated)
                 }
                 href={`${
                   releaseCreated
