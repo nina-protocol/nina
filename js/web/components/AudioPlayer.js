@@ -192,7 +192,6 @@ const AudioPlayer = () => {
     height: '60px',
     cursor: 'pointer',
   }
-
   return (
     <StyledAudioPlayer>
       <audio id="audio" style={{ width: '100%' }}>
@@ -254,7 +253,13 @@ const AudioPlayer = () => {
       <ProgressContainer>
         {track && (
           <ArtistInfo align="left" variant="subtitle1">
-            {track.artist}, <i>{track.title}</i>
+            <Link href={`/hubs/${track.hub}`} passHref>
+              <ReleaseArtist>{track.artist}, </ReleaseArtist>
+            </Link>
+
+            <Link href={`/${track.releasePubkey}`} passHref>
+              <ReleaseTitle>{track.title}</ReleaseTitle>
+            </Link>
           </ArtistInfo>
         )}
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -335,6 +340,15 @@ const StyledAudioPlayer = styled(Box)(({ theme }) => ({
 const AlbumArt = styled('a')(() => ({
   width: '60px',
   height: '60px',
+}))
+
+const ReleaseArtist = styled('a')(() => ({
+  cursor: 'pointer',
+}))
+
+const ReleaseTitle = styled('a')(() => ({
+  fontStyle: 'italic',
+  cursor: 'pointer',
 }))
 
 const ArtistInfo = styled(Typography)(({ theme }) => ({

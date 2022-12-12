@@ -83,23 +83,6 @@ const SearchDropdown = ({
     })
   }
 
-  if (category === 'accounts') {
-    rows = searchData?.artists?.map((data) => {
-      let artistName = data?.name
-
-      const artistLink = `/profiles/${data?.account.publicKey}`
-
-      let formattedData = {
-        displayName: artistName,
-        name: artistName,
-        link: artistLink,
-        category: 'accounts',
-      }
-
-      return formattedData
-    })
-  }
-
   const suggestionsHandler = (e, link) => {
     e.preventDefault()
     e.stopPropagation()

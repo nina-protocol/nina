@@ -320,7 +320,7 @@ const ReusableTableBody = (props) => {
         )
         const collectable = recipient?.owed > 0
         const collectableAmount = ninaClient.nativeToUiString(
-          recipient.owed,
+          recipient?.owed,
           data.tokenData.paymentMint
         )
 
@@ -340,7 +340,7 @@ const ReusableTableBody = (props) => {
         )
         formattedData.remaining = `${data.tokenData.remainingSupply} / ${data.tokenData.totalSupply}`
         formattedData.collected = ninaClient.nativeToUiString(
-          recipient.collected + recipient.owed,
+          recipient?.collected + recipient?.owed,
           data.tokenData.paymentMint
         )
         formattedData.collect = collectButton

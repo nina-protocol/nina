@@ -261,7 +261,7 @@ const AudioPlayer = ({ hubPubkey }) => {
       audioPlayerRef.current.currentTime = newValue;
     }
   };
-
+  console.log('track', track)
   return (
     <Player>
       {track && (
@@ -285,6 +285,9 @@ const AudioPlayer = ({ hubPubkey }) => {
               <Box>
                 <Typography>
                   Now Playing:{" "}
+                  <Link href={`/profiles/`}>
+                  {`${track.artist} -`} {" "}
+                  </Link>
                   <Link
                     href={`/${track.hubHandle}/${
                       track.hubPostPubkey ? "posts" : "releases"
@@ -294,7 +297,7 @@ const AudioPlayer = ({ hubPubkey }) => {
                         : track.hubReleaseId
                     }`}
                   >
-                    {`${track.artist} - ${track.title}`}
+                   {`${track.title}`}
                   </Link>
                 </Typography>
                 <Typography>{`${formatDuration(
