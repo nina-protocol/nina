@@ -25,7 +25,6 @@ const SearchDropdown = ({
     })
   }, [])
   let rows
-
   if (category === 'artists') {
     rows = searchData?.artists?.map((data) => {
       let artistName = data?.name
@@ -83,6 +82,24 @@ const SearchDropdown = ({
       return formattedData
     })
   }
+
+  if (category === 'accounts') {
+    rows = searchData?.artists?.map((data) => {
+      let artistName = data?.name
+
+      const artistLink = `/profiles/${data?.account.publicKey}`
+
+      let formattedData = {
+        displayName: artistName,
+        name: artistName,
+        link: artistLink,
+        category: 'accounts',
+      }
+
+      return formattedData
+    })
+  }
+
   const suggestionsHandler = (e, link) => {
     e.preventDefault()
     e.stopPropagation()

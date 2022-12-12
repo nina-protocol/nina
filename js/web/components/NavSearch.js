@@ -18,9 +18,9 @@ const NavSearch = () => {
   const [showSearchInput, setShowSearchInput] = useState(false)
   const [inputFocus, setInputFocus] = useState(false)
   const [autoCompleteResults, setAutocompleteResults] = useState([
-    { name: 'artists', visible: false },
     { name: 'releases', visible: false },
     { name: 'hubs', visible: false },
+    { name: 'accounts', visible: false },
   ])
   const dropdownRef = useRef()
   const searchInputRef = useRef()
