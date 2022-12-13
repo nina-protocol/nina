@@ -9,7 +9,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Link from 'next/link'
-
+import { Button } from '@mui/material'
 const CollectorModal = (props) => {
   const { releasePubkey, metadata } = props
   const wallet = useWallet()
@@ -45,66 +45,76 @@ const CollectorModal = (props) => {
     setCollectors(collectorsList)
   }
   return (
-    <Box>
-      <Cta
-        onClick={() => setOpen(true)}
-        variant="body2"
-        align="left"
-        paddingBottom="10px"
-      >
-        {`View Collectors ${collectors ? `(${collectors.length})` : ''}`}
-      </Cta>
-      <StyledModal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        className={classes.modal}
-        open={open}
-        onClose={() => setOpen(false)}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <StyledPaper>
-          <Header>
-            <Typography fontWeight="700">{`${metadata.properties.artist.substring(
-              0,
-              100
-            )} - "${metadata.properties.title.substring(
-              0,
-              100
-            )}" Collectors`}</Typography>
-          </Header>
-          <CollectorTable>
-            <TableBody>
-              {collectors &&
-                collectors.map((entry, i) => {
-                  return (
-                    <tr key={i}>
-                      <td>
-                        <Link href={`/profiles/${entry}`} passHref>
-                          {displayNameForAccount(entry)}
-                        </Link>
-                      </td>
-                      <td>
-                        <Link href={`/profiles/${entry}`} passHref>
-                          View Collection
-                        </Link>
-                      </td>
-                      {/* <td>
+    <>
+      {collectors?.length > 0 ? (
+        <Box>
+          <Cta
+            onClick={() => setOpen(true)}
+            variant="body2"
+            align="left"
+            paddingBottom="10px"
+          >
+            {`View Collectors ${collectors ? `(${collectors?.length})` : ''}`}
+          </Cta>
+          <StyledModal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            className={classes.modal}
+            open={open}
+            onClose={() => setOpen(false)}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 500,
+            }}
+          >
+            <StyledPaper>
+              <Header>
+                <Typography fontWeight="700">{`${metadata.properties.artist.substring(
+                  0,
+                  100
+                )} - "${metadata.properties.title.substring(
+                  0,
+                  100
+                )}" Collectors`}</Typography>
+              </Header>
+              <CollectorTable>
+                <TableBody>
+                  {collectors &&
+                    collectors.map((entry, i) => {
+                      return (
+                        <tr key={i}>
+                          <td>
+                            <Link href={`/profiles/${entry}`} passHref>
+                              {displayNameForAccount(entry)}
+                            </Link>
+                          </td>
+                          <td>
+                            <Link href={`/profiles/${entry}`} passHref>
+                              View Collection
+                            </Link>
+                          </td>
+                          {/* <td>
                         <a href={`https://solscan.io/account/${entry}`} target="_blank" rel="noreferrer" passHref>
                           View on Explorer
                         </a>
                       </td> */}
-                    </tr>
-                  )
-                })}
-            </TableBody>
-          </CollectorTable>
-        </StyledPaper>
-      </StyledModal>
-    </Box>
+                        </tr>
+                      )
+                    })}
+                </TableBody>
+              </CollectorTable>
+            </StyledPaper>
+          </StyledModal>
+        </Box>
+      ) : (
+        <Box sx={{ cursor: 'default' }}>
+          <Typography variant="body2" align="left" paddingBottom="10px">
+            Collectors (0)
+          </Typography>
+        </Box>
+      )}
+    </>
   )
 }
 

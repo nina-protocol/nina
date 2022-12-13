@@ -99,7 +99,7 @@ const HubComponent = ({ hubPubkey }) => {
       )
       setActiveView(viewIndex)
     }
-  }, [router.query.view])
+  }, [views, router])
 
   useEffect(() => {
     let updatedView = views.slice()
