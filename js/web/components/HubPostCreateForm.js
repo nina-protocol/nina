@@ -9,8 +9,8 @@ import Box from '@mui/material/Box'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
-import dynamic from "next/dynamic";
-const QuillEditor = dynamic(() => import("./QuillEditor"), {ssr: false});
+import dynamic from 'next/dynamic'
+const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
 
 const HubPostCreateForm = ({
   field,
@@ -131,7 +131,7 @@ export default withFormik({
   mapPropsToValues: () => {
     return {
       title: '',
-      body: "",
+      body: '',
       reference: '',
     }
   },

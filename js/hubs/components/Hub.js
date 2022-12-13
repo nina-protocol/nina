@@ -10,7 +10,7 @@ import dynamic from "next/dynamic";
 import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
 import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
 import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
-import {parseChecker} from "@nina-protocol/nina-internal-sdk/esm/utils";
+import { parseChecker } from "@nina-protocol/nina-internal-sdk/esm/utils";
 
 import { styled } from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
@@ -150,9 +150,7 @@ const HubComponent = ({ hubPubkey }) => {
           target: false,
           rel: ["nofollow", "noreferrer"],
         })
-        .process(
-          parseChecker(hubData.data.descriptionHtml)
-        )
+        .process(parseChecker(hubData.data.descriptionHtml))
         .then((file) => {
           setDescription(file.result);
         });

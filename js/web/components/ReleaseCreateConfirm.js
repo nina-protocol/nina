@@ -14,7 +14,7 @@ import rehypeExternalLinks from 'rehype-external-links'
 import { InputLabel, MenuItem, OutlinedInput } from '@mui/material'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
-import {parseChecker} from "@nina-protocol/nina-internal-sdk/esm/utils";
+import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 
 const style = {
   position: 'absolute',
@@ -73,9 +73,7 @@ const ReleaseCreateConfirm = (props) => {
           target: false,
           rel: ['nofollow', 'noreferrer'],
         })
-        .process(
-          parseChecker(data.description)
-          )
+        .process(parseChecker(data.description))
         .then((file) => {
           setDescription(file.result)
         })

@@ -13,8 +13,7 @@ import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 import { useSnackbar } from 'notistack'
-import {parseChecker} from "@nina-protocol/nina-internal-sdk/esm/utils";
-
+import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 
 const { getImageFromCDN, loader } = imageManager
 

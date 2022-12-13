@@ -27,7 +27,7 @@ import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 import Royalty from './Royalty'
-import {parseChecker} from "@nina-protocol/nina-internal-sdk/esm/utils";
+import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 
 const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, router } = props
@@ -144,9 +144,7 @@ const ReleasePurchase = (props) => {
           target: false,
           rel: ['nofollow', 'noreferrer'],
         })
-        .process(
-          parseChecker(metadata.descriptionHtml)
-        )
+        .process(parseChecker(metadata.descriptionHtml))
         .then((file) => {
           setDescription(file.result)
         })

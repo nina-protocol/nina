@@ -63,7 +63,7 @@ const ReleaseCreateConfirm = (props) => {
           setDescription(file.result);
         });
     }
-    setDescription(data.description)
+    setDescription(data.description);
   }, [data.description]);
 
   const handleChangeCheckbox = (e) => {
