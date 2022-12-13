@@ -13,6 +13,8 @@ import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 import { useSnackbar } from 'notistack'
+import {parseChecker} from "@nina-protocol/nina-internal-sdk/esm/utils";
+
 
 const { getImageFromCDN, loader } = imageManager
 
@@ -21,31 +23,9 @@ const HubHeader = ({ hubData }) => {
   const wallet = useWallet()
 
   useEffect(() => {
-    if (hubData?.data.description.includes('<p>')) {
-      unified()
-        .use(rehypeParse, { fragment: true })
-        .use(rehypeSanitize)
-        .use(rehypeReact, {
-          createElement,
-          Fragment,
-        })
-        .use(rehypeExternalLinks, {
-          target: false,
-          rel: ['nofollow', 'noreferrer'],
-        })
-        .process(
-          JSON.parse(hubData?.data.description).replaceAll(
-            '<p><br></p>',
-            '<br>'
-          )
-        )
-        .then((file) => {
-          setHubDescription(file.result)
-        })
-    } else {
-      setHubDescription(hubData?.data.description)
-    }
-  }, [hubData?.data.description])
+    console.log('hubData :>> ', hubData.data);
+    setHubDescription(hubData?.data.description)
+  }, [hubData?.data])
 
   return (
     <Wrapper>

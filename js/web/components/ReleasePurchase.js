@@ -27,6 +27,7 @@ import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 import Royalty from './Royalty'
+import {parseChecker} from "@nina-protocol/nina-internal-sdk/esm/utils";
 
 const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, router } = props
@@ -131,7 +132,7 @@ const ReleasePurchase = (props) => {
   }, [release?.revenueShareRecipients, wallet?.connected])
 
   useEffect(() => {
-    if (metadata?.descriptionHtml?.includes('<p>')) {
+    if (metadata?.descriptionHtml) {
       unified()
         .use(rehypeParse, { fragment: true })
         .use(rehypeSanitize)
@@ -144,7 +145,7 @@ const ReleasePurchase = (props) => {
           rel: ['nofollow', 'noreferrer'],
         })
         .process(
-          JSON.parse(metadata.descriptionHtml).replaceAll('<p><br></p>', '<br>')
+          parseChecker(metadata.descriptionHtml)
         )
         .then((file) => {
           setDescription(file.result)

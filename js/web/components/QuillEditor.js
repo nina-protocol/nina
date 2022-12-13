@@ -23,6 +23,7 @@ import "quill/dist/quill.bubble.css";
 const QuillEditor = ({formikProps, type, update}) => {
   const quillRef = useRef(null)
   const theme = type === "release" ? "bubble" : "snow";
+  const [initialValue, setInitialValue] = useState()
   let toolbarValues;
   let height;
   switch (type) {
@@ -61,21 +62,21 @@ const QuillEditor = ({formikProps, type, update}) => {
   }), [])
 
   useEffect(() => {
-      if (Quill) {
-        const MagicUrl = require("quill-magic-url").default; // Install with 'yarn add quill-magic-url'
-        Quill.register("modules/magicUrl", MagicUrl);
-        var Link = Quill.import("formats/link");
-        var builtInFunc = Link.sanitize;
-        Link.sanitize = function customSanitizeLinkInput(linkValueInput) {
-          var val = linkValueInput;
+    if (Quill) {
+      const MagicUrl = require("quill-magic-url").default; // Install with 'yarn add quill-magic-url'
+      Quill.register("modules/magicUrl", MagicUrl);
+      var Link = Quill.import("formats/link");
+      var builtInFunc = Link.sanitize;
+      Link.sanitize = function customSanitizeLinkInput(linkValueInput) {
+        var val = linkValueInput;
 
-          // do nothing, since this implies user's already using a custom protocol
-          if (/^\w+:/.test(val));
-          else if (!/^https?:/.test(val)) val = "http://" + val;
+        // do nothing, since this implies user's already using a custom protocol
+        if (/^\w+:/.test(val));
+        else if (!/^https?:/.test(val)) val = "http://" + val;
 
-          return builtInFunc.call(this, val); // retain the built-in logic
-        };
-      }
+        return builtInFunc.call(this, val); // retain the built-in logic
+      };
+    }
   }, [Quill])
 
 
@@ -93,14 +94,14 @@ const QuillEditor = ({formikProps, type, update}) => {
           DESCRIPTION
         </InputLabel>
       )}
-        <QuillNoSSRWrapper
-        forwardedRef={quillRef} 
+      <QuillNoSSRWrapper
+        forwardedRef={quillRef}
         theme={theme}
         modules={modules}
         onChange={handleChange}
         defaultValue={stripQuotesIfNeeded(formikProps.field.value)}
-        >
-        </QuillNoSSRWrapper>
+      >
+      </QuillNoSSRWrapper>
     </QuillWrapper>
   );
 }

@@ -7,7 +7,6 @@ import TextField from "@mui/material/TextField";
 import Slider from "@mui/material/Slider";
 import Box from "@mui/material/Box";
 import Fade from "@mui/material/Fade";
-import Quill from "./Quill";
 import dynamic from "next/dynamic";
 const QuillEditor = dynamic(() => import("./QuillEditor"), {ssr: false});
 

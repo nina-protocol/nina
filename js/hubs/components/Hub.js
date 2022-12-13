@@ -10,7 +10,7 @@ import dynamic from "next/dynamic";
 import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
 import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
 import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
-import {stripQuotesIfNeeded} from "@nina-protocol/nina-internal-sdk/esm/utils";
+import {parseChecker} from "@nina-protocol/nina-internal-sdk/esm/utils";
 
 import { styled } from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
@@ -136,16 +136,6 @@ const HubComponent = ({ hubPubkey }) => {
       });
     }
   }, [hubReleases, hubPosts]);
-
-  const parseChecker = (data) => {
-    try {
-      console.log('here');
-      return JSON.parse(data)
-    } catch (error) {
-      console.log('there');
-      return data
-    }
-  }
 
   useEffect(() => {
     if (hubData?.data?.descriptionHtml) {

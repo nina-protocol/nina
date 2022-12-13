@@ -99,9 +99,15 @@ const getMd5FileHash = (file) => {
 
 const stripQuotesIfNeeded = (str) => {
   return str.replace(/^"(.*)"$/, '$1');
-  return str
 }
 
+const parseChecker = (data) => {
+  try {
+    return JSON.parse(data)
+  } catch (error) {
+    return data
+  }
+}
 
 export {
   arrayMove,
@@ -114,5 +120,6 @@ export {
   web3,
   shuffle,
   getMd5FileHash,
-  stripQuotesIfNeeded
+  stripQuotesIfNeeded,
+  parseChecker
 }

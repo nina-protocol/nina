@@ -6,7 +6,6 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
 import HelpIcon from "@mui/icons-material/Help";
-import Quill from "./Quill";
 import dynamic from "next/dynamic";
 const QuillEditor = dynamic(() => import("./QuillEditor"), { ssr: false });
 

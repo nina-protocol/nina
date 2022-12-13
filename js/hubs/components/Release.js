@@ -24,6 +24,7 @@ import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
 const { getImageFromCDN, loader } = imageManager;
+import {parseChecker} from "@nina-protocol/nina-internal-sdk/esm/utils";
 
 const Royalty = dynamic(() => import("./Royalty"));
 const Button = dynamic(() => import("@mui/material/Button"));
@@ -112,15 +113,6 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
       );
     }
   }, [releaseState.tokenData[releasePubkey], wallet?.connected]);
-
-  const parseChecker = (data) => {
-    try {
-      return JSON.parse(data)
-    } catch (error) {
-      return data
-    }
-  }
-
 
   return (
     <>
