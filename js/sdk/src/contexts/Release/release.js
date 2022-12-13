@@ -1905,11 +1905,11 @@ const releaseContextHelper = ({
       if (process.env.SOLANA_CLUSTER === 'devnet') {
         return false
       }
-      let path = endpoints.api + `/metadata/validateHash/${hash}`
+      let path = endpoints.api + `/hash/${hash}`
       const response = await fetch(path)
-      const metadata = await response.json()
-      if (metadata) {
-        return metadata
+      const { release } = await response.json()
+      if (release) {
+        return release
       } else {
         return false
       }
@@ -1917,7 +1917,6 @@ const releaseContextHelper = ({
       console.warn(error)
     }
   }
-
 
   return {
     releaseInitViaHub,
