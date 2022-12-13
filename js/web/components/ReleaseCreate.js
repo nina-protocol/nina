@@ -268,10 +268,10 @@ const ReleaseCreate = () => {
           return
         }
 
-        const hashExists = await validateUniqueMd5Digest(md5Digest)
-        if (hashExists) {
+        const release = await validateUniqueMd5Digest(md5Digest)
+        if (release) {
           enqueueSnackbar(
-            `A release with this track already exists: ${hashExists.json.properties.artist} - ${hashExists.json.properties.title}`,
+            `A release with this audio file already exists: ${release.metadata.properties.artist} - ${release.metadata.properties.title}`,
             {
               variant: 'warn',
             }
