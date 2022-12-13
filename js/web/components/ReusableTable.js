@@ -179,7 +179,6 @@ const ReusableTableHead = (props) => {
   )
 }
 const HubDescription = ({ description }) => {
-  console.log('description :>> ', description);
   const [hubDescription, setHubDescription] = useState()
   useEffect(() => {
     if (description?.includes('<p>')) {

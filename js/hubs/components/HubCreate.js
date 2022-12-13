@@ -264,7 +264,6 @@ const HubCreate = ({ update, hubData }) => {
           if (textColor) {
             metadataJson.textColor = textColor;
           }
-          console.log('metadataJson.hubform.description :>> ', metadataJson.description);
 
           metadataResult = await bundlrUpload(
             new Blob([JSON.stringify(metadataJson)], {

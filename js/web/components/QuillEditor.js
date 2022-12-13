@@ -82,10 +82,8 @@ const QuillEditor = ({formikProps, type, update}) => {
 
 
   const handleChange = (content, delta, source, editor) => {
-    console.log('content before replace:>> ', content);
     content = content.replaceAll("<p><br></p>", "<br>")
     formikProps.form.setFieldValue(formikProps.field.name, content)
-    console.log('content :>> ', content);
   }
   return (
     <QuillWrapper type={type} height={height}>

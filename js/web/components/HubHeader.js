@@ -23,7 +23,6 @@ const HubHeader = ({ hubData }) => {
   const wallet = useWallet()
 
   useEffect(() => {
-    console.log('hubData :>> ', hubData.data);
     setHubDescription(hubData?.data.description)
   }, [hubData?.data])
 

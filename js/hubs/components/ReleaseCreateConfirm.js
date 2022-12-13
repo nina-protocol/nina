@@ -47,7 +47,6 @@ const ReleaseCreateConfirm = (props) => {
 
   useEffect(() => {
     if (data.description) {
-      console.log('data.description :>> ', data.description);
       unified()
         .use(rehypeParse, { fragment: true })
         .use(rehypeSanitize)
