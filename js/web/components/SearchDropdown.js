@@ -83,6 +83,19 @@ const SearchDropdown = ({
     })
   }
 
+  if (category === 'accounts') {
+    rows = searchData?.accounts?.map((data) => {
+      const accountName = data?.displayName || data?.publicKey
+      const accountKey = data?.publicKey
+      const accountLink = `/profiles/${accountKey}`
+      let formattedData = {
+        displayName: accountName,
+        link: accountLink,
+      }
+      return formattedData
+    })
+  }
+
   const suggestionsHandler = (e, link) => {
     e.preventDefault()
     e.stopPropagation()

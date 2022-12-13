@@ -18,9 +18,10 @@ const NavSearch = () => {
   const [showSearchInput, setShowSearchInput] = useState(false)
   const [inputFocus, setInputFocus] = useState(false)
   const [autoCompleteResults, setAutocompleteResults] = useState([
-    { name: 'artists', visible: false },
+    // { name: 'artists', visible: false },
     { name: 'releases', visible: false },
     { name: 'hubs', visible: false },
+    { name: 'accounts', visible: false },
   ])
   const dropdownRef = useRef()
   const searchInputRef = useRef()
@@ -49,13 +50,16 @@ const NavSearch = () => {
 
   useEffect(() => {
     if (query && setShowDropdown) {
-      suggestions?.artists?.length
+      // suggestions?.artists?.length
+      //   ? (autoCompleteResults[0].visible = true)
+      //   : (autoCompleteResults[0].visible = false)
+      suggestions?.releases?.length
         ? (autoCompleteResults[0].visible = true)
         : (autoCompleteResults[0].visible = false)
-      suggestions?.releases?.length
+      suggestions?.hubs?.length
         ? (autoCompleteResults[1].visible = true)
         : (autoCompleteResults[1].visible = false)
-      suggestions?.hubs?.length
+      suggestions?.accounts?.length
         ? (autoCompleteResults[2].visible = true)
         : (autoCompleteResults[2].visible = false)
       setAutocompleteResults([...autoCompleteResults])
@@ -188,9 +192,10 @@ const DesktopNavSearch = ({
           })}
 
           {query?.length > 0 &&
-            suggestions?.artists?.length === 0 &&
+            // suggestions?.artists?.length === 0 &&
             suggestions?.releases?.length === 0 &&
-            suggestions?.hubs?.length === 0 && (
+            suggestions?.hubs?.length === 0 &&
+            suggestions?.accounts?.length === 0 && (
               <Typography>No results found</Typography>
             )}
         </DropdownContainer>

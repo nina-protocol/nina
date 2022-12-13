@@ -113,10 +113,13 @@ const ReusableTableHead = (props) => {
     headCells.push({ id: 'image', label: '' })
     headCells.push({ id: 'name', label: '' })
   }
-
-  if (tableType === 'searchResultArtists') {
-    headCells.push({ id: 'name', label: 'Artists' })
+  if (tableType === 'searchResultAccounts') {
+    headCells.push({ id: 'image', label: 'Accounts' })
+    headCells.push({ id: 'searchResultAccount', label: '' })
   }
+  // if (tableType === 'searchResultArtists') {
+  //   headCells.push({ id: 'name', label: 'Artists' })
+  // }
 
   if (tableType === 'searchResultReleases') {
     headCells.push({ id: 'ctas', label: 'Releases' })
@@ -140,6 +143,11 @@ const ReusableTableHead = (props) => {
   if (tableType === 'filteredSearchResultHubs') {
     headCells.push({ id: 'image', label: '' })
     headCells.push({ id: 'searchResultHub', label: '' })
+  }
+
+  if (tableType === 'filteredSearchResultAccounts') {
+    headCells.push({ id: 'image', label: '' }),
+      headCells.push({ id: 'searchResultAccount', label: '' })
   }
 
   return (
@@ -387,25 +395,37 @@ const ReusableTableBody = (props) => {
         publicKey: data.collaborator,
       }
     } else if (
-      tableType === 'searchResultArtists' ||
-      tableType === 'filteredSearchResultArtists'
+      tableType === 'searchResultAccounts' ||
+      tableType === 'filteredSearchResultAccounts'
     ) {
-      let artistName = data?.name
-      if (data?.publishesAs.length > 1) {
-        let publishesAsString
-        if (data?.publishesAs.length > 5) {
-          publishesAsString = data?.publishesAs.slice(0, 5).join(', ') + '...'
-        } else {
-          publishesAsString = data?.publishesAs.join(', ')
-        }
-        artistName = `${artistName} (Publishes as: ${publishesAsString})`
-      }
       formattedData = {
+        image: data?.image ? data?.image : '/images/nina-gray.png',
         id: data?.publicKey,
-        link: `/profiles/${data?.account.publicKey}`,
-        searchResultArtist: artistName,
+        displayName: data?.displayName ? data?.displayName : data?.value,
+        link: `/profiles/${data?.account}`,
       }
-    } else if (
+    }
+    // else if (
+    //   tableType === 'searchResultArtists' ||
+    //   tableType === 'filteredSearchResultArtists'
+    // ) {
+    //   let artistName = data?.name
+    //   if (data?.publishesAs.length > 1) {
+    //     let publishesAsString
+    //     if (data?.publishesAs.length > 5) {
+    //       publishesAsString = data?.publishesAs.slice(0, 5).join(', ') + '...'
+    //     } else {
+    //       publishesAsString = data?.publishesAs.join(', ')
+    //     }
+    //     artistName = `${artistName} (Publishes as: ${publishesAsString})`
+    //   }
+    //   formattedData = {
+    //     id: data?.publicKey,
+    //     link: `/profiles/${data?.account.publicKey}`,
+    //     searchResultArtist: artistName,
+    //   }
+    // }
+    else if (
       tableType === 'searchResultReleases' ||
       tableType === 'filteredSearchResultReleases'
     ) {
@@ -561,6 +581,25 @@ const ReusableTableBody = (props) => {
                       <OverflowContainer>
                         <Typography sx={{ textDecoration: 'underline' }} noWrap>
                           {cellData}
+                        </Typography>
+                      </OverflowContainer>
+                    </StyledProfileTableCell>
+                  )
+                } else if (cellName === 'searchResultAccount') {
+                  return (
+                    <StyledProfileTableCell key={cellName} type={'profile'}>
+                      <OverflowContainer overflowWidth={'20vw'}>
+                        <Typography
+                          noWrap
+                          sx={{ hover: 'pointer', maxWidth: '20vw' }}
+                        >
+                          <a
+                            onClickCapture={() => {
+                              router.push(`/profiles/${row?.publicKey}`)
+                            }}
+                          >
+                            {cellData}
+                          </a>
                         </Typography>
                       </OverflowContainer>
                     </StyledProfileTableCell>
