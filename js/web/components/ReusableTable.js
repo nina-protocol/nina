@@ -117,9 +117,6 @@ const ReusableTableHead = (props) => {
     headCells.push({ id: 'image', label: 'Accounts' })
     headCells.push({ id: 'searchResultAccount', label: '' })
   }
-  // if (tableType === 'searchResultArtists') {
-  //   headCells.push({ id: 'name', label: 'Artists' })
-  // }
 
   if (tableType === 'searchResultReleases') {
     headCells.push({ id: 'ctas', label: 'Releases' })
@@ -129,10 +126,6 @@ const ReusableTableHead = (props) => {
 
   if (tableType === 'searchResultHubs') {
     headCells.push({ id: 'image', label: 'Hubs' })
-  }
-
-  if (tableType === 'filteredSearchResultArtists') {
-    headCells.push({ id: 'searchResultArtist', label: '' })
   }
 
   if (tableType === 'filteredSearchResultReleases') {
@@ -404,28 +397,7 @@ const ReusableTableBody = (props) => {
         displayName: data?.displayName ? data?.displayName : data?.value,
         link: `/profiles/${data?.account}`,
       }
-    }
-    // else if (
-    //   tableType === 'searchResultArtists' ||
-    //   tableType === 'filteredSearchResultArtists'
-    // ) {
-    //   let artistName = data?.name
-    //   if (data?.publishesAs.length > 1) {
-    //     let publishesAsString
-    //     if (data?.publishesAs.length > 5) {
-    //       publishesAsString = data?.publishesAs.slice(0, 5).join(', ') + '...'
-    //     } else {
-    //       publishesAsString = data?.publishesAs.join(', ')
-    //     }
-    //     artistName = `${artistName} (Publishes as: ${publishesAsString})`
-    //   }
-    //   formattedData = {
-    //     id: data?.publicKey,
-    //     link: `/profiles/${data?.account.publicKey}`,
-    //     searchResultArtist: artistName,
-    //   }
-    // }
-    else if (
+    } else if (
       tableType === 'searchResultReleases' ||
       tableType === 'filteredSearchResultReleases'
     ) {
@@ -471,10 +443,6 @@ const ReusableTableBody = (props) => {
           subscribe: true,
           publicKey: data.to.publicKey,
         }
-      }
-    } else if (tableType === 'defaultSearchArtists') {
-      formattedData = {
-        id: data?.publicKey,
       }
     } else if (tableType === 'defaultSearchReleases') {
       formattedData = {

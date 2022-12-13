@@ -35,9 +35,9 @@ const Search = (props) => {
   const [searchFilter, setSearchFilter] = useState()
   const [response, setResponse] = useState(searchResults)
   const [defaultResponse, setDefaultResponse] = useState([
+    { name: 'Accounts', data: undefined },
     { name: 'Releases', data: undefined },
     { name: 'Hubs', data: undefined },
-    { name: 'Accounts', data: undefined },
   ])
   const [featuredHubPublicKeys, setFeaturedHubPublicKeys] = useState()
   const [releasesRecent, setReleasesRecent] = useState({})
@@ -47,19 +47,17 @@ const Search = (props) => {
   const [activeView, setActiveView] = useState(0)
 
   const [defaultSearchView, setDefaultSearchView] = useState([
-    // { name: 'Artists', length: 0 },
+    { name: 'Accounts', length: 0 },
     { name: 'Releases', length: 0 },
     { name: 'Hubs', length: 0 },
-    { name: 'Accounts', length: 0 },
   ])
   const [suggestions, setSuggestions] = useState([])
   const [showDropdown, setShowDropdown] = useState(false)
   const [inputFocus, setInputFocus] = useState(false)
   const [autoCompleteResults, setAutocompleteResults] = useState([
-    // { name: 'artists', visible: false },
+    { name: 'accounts', visible: false },
     { name: 'releases', visible: false },
     { name: 'hubs', visible: false },
-    { name: 'accounts', visible: false },
   ])
 
   useEffect(() => {
@@ -86,10 +84,10 @@ const Search = (props) => {
   useEffect(() => {
     setReleasesRecent(filterReleasesRecent())
 
-    defaultSearchView[0].length = releasesRecent?.highlights?.length
+    defaultSearchView[1].length = releasesRecent?.highlights?.length
 
     if (!searchQuery) {
-      setActiveView(1)
+      setActiveView(2)
     }
   }, [releasesRecentState])
 
@@ -265,7 +263,6 @@ const Search = (props) => {
   }
 
   const renderTables = (activeView) => {
-    console.log('response.accounts', response)
     switch (activeView) {
       case 0:
         return (
@@ -288,23 +285,12 @@ const Search = (props) => {
             })}
           </SearchAllResultsWrapper>
         )
-
       case 1:
         return (
           <ResultsWrapper>
             <ReusableTable
               tableType="filteredSearchResultAccounts"
               items={response?.accounts}
-              hasOverflow={true}
-            />
-          </ResultsWrapper>
-        )
-      case 2:
-        return (
-          <ResultsWrapper>
-            <ReusableTable
-              tableType={'filteredSearchResultHubs'}
-              items={response?.hubs}
               hasOverflow={true}
             />
           </ResultsWrapper>
@@ -319,6 +305,7 @@ const Search = (props) => {
             />
           </ResultsWrapper>
         )
+
       case 4:
         return (
           <ResultsWrapper>
@@ -329,6 +316,7 @@ const Search = (props) => {
             />
           </ResultsWrapper>
         )
+
       default:
         break
     }
@@ -341,8 +329,6 @@ const Search = (props) => {
           <SearchAllResultsWrapper>
             {defaultSearchView.map((item, index) => {
               const type = item.name
-              console.log('tito', type)
-              console.log('defaultResponse', defaultResponse)
               return (
                 <ReusableTable
                   tableType={`defaultSearch${type}`}
@@ -354,22 +340,22 @@ const Search = (props) => {
             })}
           </SearchAllResultsWrapper>
         )
-      case 1:
-        return (
-          <ResultsWrapper>
-            <ReusableTable
-              tableType={'defaultSearchReleases'}
-              items={defaultResponse[0].data}
-              hasOverflow={true}
-            />
-          </ResultsWrapper>
-        )
       case 2:
         return (
           <ResultsWrapper>
             <ReusableTable
-              tableType={'defaultSearchHubs'}
+              tableType={'defaultSearchReleases'}
               items={defaultResponse[1].data}
+              hasOverflow={true}
+            />
+          </ResultsWrapper>
+        )
+      case 3:
+        return (
+          <ResultsWrapper>
+            <ReusableTable
+              tableType={'defaultSearchHubs'}
+              items={defaultResponse[2].data}
               hasOverflow={true}
             />
           </ResultsWrapper>
@@ -477,7 +463,6 @@ const Search = (props) => {
           {!searchResults &&
             !searchQuery &&
             defaultSearchView.map((filter, index) => {
-              console.log(filter)
               return (
                 <SearchResultFilter
                   id={index}
