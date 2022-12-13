@@ -81,7 +81,8 @@ const HubComponent = ({ hubPubkey }) => {
   }, [subscriptionState])
 
   useEffect(() => {
-    const [releases] = filterHubContentForHub(hubPubkey)
+    let [releases] = filterHubContentForHub(hubPubkey)
+    releases = releases.filter(release => release.visible === true)
     setFetched({ ...fetched, releases: true })
     setHubReleases(releases)
   }, [hubContentState])
