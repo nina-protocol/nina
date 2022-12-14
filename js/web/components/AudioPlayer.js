@@ -81,10 +81,6 @@ const AudioPlayer = () => {
     [activeIndexRef.current]
   )
 
-  const findTokenAuthority = useMemo(() => {
-    setAuthority(releaseState?.tokenData[track?.releasePubkey]?.authority)
-  }, [track])
-
   useEffect(() => {
     const initialized = activeIndexRef.current >= 0
     if (track) {
