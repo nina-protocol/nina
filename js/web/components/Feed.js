@@ -517,7 +517,6 @@ const Feed = ({
         //     </MultiCard>
         //   )
         case 'SubscriptionSubscribeAccount':
-          console.log('item :>> ', item)
           const image = displayImageForAccount(item.toAccount?.publicKey)
           return (
             <ImageCard>
@@ -539,7 +538,7 @@ const Feed = ({
               </Link>
               <CopyWrapper>
                 <Typography my={1}>
-                  <Link href={`/profiles/${item.authoritY?.publicKey}`} passHref>
+                  <Link href={`/profiles/${item.authority?.publicKey}`} passHref>
                     {displayNameForAccount(item.authority?.publicKey)}
                   </Link>{' '}
                   followed{' '}
