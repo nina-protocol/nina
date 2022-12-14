@@ -43,8 +43,10 @@ const EmailCapture = ({ size }) => {
   const [formIsValid, setFormIsValid] = useState(false)
 
   useEffect(() => {
-    logEvent("email_request_initiated", "engagement");  
-  }, [])
+    if (open) {
+      logEvent('email_request_initiated', 'engagement')
+    }
+  }, [open])
 
   useEffect(() => {
     if (connected) {
