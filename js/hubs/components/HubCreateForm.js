@@ -21,6 +21,7 @@ const HubCreateForm = ({
   hubData,
   handleBlur,
 }) => {
+
   useEffect(() => {
     if (onChange) {
       onChange(values);
@@ -228,9 +229,9 @@ const HubCreateForm = ({
           </>
         )}
 
-        <Field name="description">
+        <Field name="description" >
           {(props) => (
-            <Box sx={{ mb: "8px" }}>
+            <Box sx={{ mb: "8px", height: '175px'}}>
               <QuillEditor formikProps={props} update={update} type={"hub"} />
             </Box>
           )}
@@ -256,7 +257,7 @@ export default withFormik({
       displayName: `${hubData ? hubData.data.displayName : ""}`,
       publishFee: `${hubData ? hubData.publishFee / 10000 : "0"}`,
       referralFee: `${hubData ? hubData.referralFee / 10000 : "0"}`,
-      description: `${hubData ? hubData.data.descriptionHtml : ""}`,
+      description: `${hubData?.data?.descriptionHtml ? hubData.data.descriptionHtml : ""}`,
       externalUrl: `${hubData ? hubData.data.externalUrl : ""}`,
     };
   },
