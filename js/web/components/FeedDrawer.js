@@ -21,6 +21,7 @@ const FeedDrawer = () => {
   const wallet = useWallet()
   const [drawerOpen, setDrawerOpen] = useState(!isMobile)
   const [feedItems, setFeedItems] = useState(undefined)
+  const [defaultFeedItems, setDefaultFeedItems] = useState(undefined)
   const [hubSuggestions, setHubSuggestions] = useState(undefined)
   const [itemsTotal, setItemsTotal] = useState(0)
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
@@ -53,6 +54,7 @@ const FeedDrawer = () => {
       await getHubSuggestionsForUser(wallet.publicKey.toBase58())
     } else {
       await getHubSuggestionsForUser()
+      await getDefaultFeedItems()
     }
   }
 
@@ -84,6 +86,7 @@ const FeedDrawer = () => {
       publicKey,
       refresh ? 0 : feedItems?.length || 0
     )
+
     if (feed) {
       setItemsTotal(feed.total)
       if (feedItems && feedItems.length > 0) {
@@ -108,6 +111,16 @@ const FeedDrawer = () => {
     } catch (error) {
       return []
     }
+  }
+
+  const getDefaultFeedItems = async (refresh = false) => {
+    const defaultPubkey = '7zoKqAehBR7oWMFpmWr2ebrhMvqL6oBsHdRcL2N3cmnU'
+    const defaultFeed = await getFeedForUser(
+      defaultPubkey,
+      refresh ? 0 : feedItems?.length || 0
+    )
+    console.log('feed', defaultFeed.feedItems)
+    // setDefaultFeedItems(feed?.feedItems)
   }
 
   return (
@@ -172,6 +185,7 @@ const FeedDrawer = () => {
                 handleGetFeedForUser={handleGetFeedForUser}
                 publicKey={wallet?.publicKey?.toBase58()}
                 feedFetched={feedFetched}
+                defaultFeedItems={defaultFeedItems}
               />
             )}
 

@@ -58,6 +58,7 @@ const Feed = ({
   handleGetFeedForUser,
   feedFetched,
   toggleDrawer,
+  defaultFeedItems,
 }) => {
   const { updateTrack, isPlaying, setIsPlaying, track } = useContext(
     Audio.Context
@@ -204,7 +205,7 @@ const Feed = ({
               <CopyWrapper>
                 <Typography my={1}>
                   New Release:{' '}
-                  <Link href={`/${item.release.publicKey}`} passHref>
+                  <Link href={`/${item?.release?.publicKey}`} passHref>
                     {`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}
                   </Link>{' '}
                   by{' '}
@@ -220,6 +221,8 @@ const Feed = ({
             </ImageCard>
           )
         case 'ReleaseInitViaHub':
+          console.log('item pubkey', item?.release?.publicKey)
+          console.log('item', item)
           return (
             <ImageCard>
               <HoverContainer
@@ -267,8 +270,8 @@ const Feed = ({
               <CopyWrapper>
                 <Typography my={1}>
                   New Release:{' '}
-                  <Link href={`/${item.release.publicKey}`} passHref>
-                    {`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}
+                  <Link href={`/${item?.release?.publicKey}`} passHref>
+                    {`${item?.release?.metadata?.properties?.artist} - ${item?.release?.metadata?.properties?.title}`}
                   </Link>{' '}
                   via{' '}
                   <Link href={`/hubs/${item?.hub?.handle}`} passHref>
@@ -604,7 +607,6 @@ const Feed = ({
       </Box>
     )
   }
-
   return (
     <ScrollWrapper onScroll={debounce(() => handleScroll(), 500)}>
       {feedItems && (
@@ -650,6 +652,10 @@ const Feed = ({
                   Connect your wallet to see the latest activity on Nina
                   relevant to you.
                 </Typography>
+                {defaultFeedItems &&
+                  defaultFeedItems?.map((item, index) => (
+                    <CardWrapper key={index}>{item}</CardWrapper>
+                  ))}
               </Box>
             )}
           </FeedWrapper>
