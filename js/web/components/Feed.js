@@ -517,10 +517,10 @@ const Feed = ({
         //     </MultiCard>
         //   )
         case 'SubscriptionSubscribeAccount':
-          const image = displayImageForAccount(item.toAccount.publicKey)
+          const image = displayImageForAccount(item.toAccount?.publicKey)
           return (
             <ImageCard>
-              <Link href={`/profiles/${item.toAccount.publicKey}`} passHref>
+              {/* <Link href={`/profiles/${item.toAccount.publicKey}`} passHref>
                 {image && image.includes('https') ? (
                   <Image
                     height={'400px'}
@@ -549,7 +549,7 @@ const Feed = ({
                 <Typography my={1} fontWeight={600}>
                   {timeSince(Date.parse(item.datetime))} ago
                 </Typography>
-              </CopyWrapper>
+              </CopyWrapper> */}
             </ImageCard>
           )
         case 'SubscriptionSubscribeHub':

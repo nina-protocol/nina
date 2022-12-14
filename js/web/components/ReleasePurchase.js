@@ -28,9 +28,11 @@ import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 import Royalty from './Royalty'
+import CreateGateModal from './CreateGateModal'
 
 const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, router } = props
+  console.log('metadata :>> ', metadata);
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const {
@@ -55,7 +57,7 @@ const ReleasePurchase = (props) => {
   } = useContext(Exchange.Context)
   const [release, setRelease] = useState(undefined)
   const [gate, setGate] = useState(undefined)
-  const [file, setFile] = useState(undefined)
+  // const [file, setFile] = useState(undefined)
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
   const [amountPendingBuys, setAmountPendingBuys] = useState(0)
   const [amountPendingSales, setAmountPendingSales] = useState(0)
@@ -290,72 +292,73 @@ const ReleasePurchase = (props) => {
         a.download = release.gate.fileName;
         a.click();
       }  
-    } catch (error) {
+    } catch (error) { 
       console.log('error: ', error)
       // setResponse(error.response.data);
     }
   }
 
-  const handleFileUpload = async () => {
-    try {
-      const FILE_CHUNK_SIZE = 10_000_000
+  // const handleFileUpload = async () => {
+  //   console.log('process.env.NINA_GATE_URL :>> ', process.env.NINA_GATE_URL);
+  //   try {
+  //     const FILE_CHUNK_SIZE = 10_000_000
 
-      const message = new TextEncoder().encode(releasePubkey);
-      const messageBase64 = encodeBase64(message);
-      const signature = await wallet.signMessage(message);
-      const signatureBase64 = encodeBase64(signature);
+  //     const message = new TextEncoder().encode(releasePubkey);
+  //     const messageBase64 = encodeBase64(message);
+  //     const signature = await wallet.signMessage(message);
+  //     const signatureBase64 = encodeBase64(signature);
 
-      const response = await axios.post(`${process.env.NINA_GATE_URL}/gate`, {
-        fileSize: file.size,
-        fileName: file.name,
-        publicKey: wallet.publicKey.toBase58(),
-        message: messageBase64,
-        signature: signatureBase64,
-        release: releasePubkey,
-      })
-      console.log('response: ', response.data)
-      const {
-        urls,
-        UploadId
-      } = response.data;
-      console.log('urls: ', urls)
-      const uploader = axios.create()
-      delete uploader.defaults.headers.put['Content-Type']
+  //     const response = await axios.post(`${process.env.NINA_GATE_URL}/gate`, {
+  //       fileSize: file.size,
+  //       fileName: file.name,
+  //       publicKey: wallet.publicKey.toBase58(),
+  //       message: messageBase64,
+  //       signature: signatureBase64,
+  //       release: releasePubkey,
+  //     })
+  //     console.log('response: ', response.data)
+  //     const {
+  //       urls,
+  //       UploadId
+  //     } = response.data;
+  //     console.log('urls: ', urls)
+  //     const uploader = axios.create()
+  //     delete uploader.defaults.headers.put['Content-Type']
 
-      const keys = Object.keys(urls)
-      const promises = []
+  //     const keys = Object.keys(urls)
+  //     const promises = []
     
-      for (const indexStr of keys) {
-        const index = parseInt(indexStr)
-        const start = index * FILE_CHUNK_SIZE
-        const end = (index + 1) * FILE_CHUNK_SIZE
-        const blob = index < keys.length
-          ? file.slice(start, end)
-          : file.slice(start)
+  //     for (const indexStr of keys) {
+  //       const index = parseInt(indexStr)
+  //       const start = index * FILE_CHUNK_SIZE
+  //       const end = (index + 1) * FILE_CHUNK_SIZE
+  //       const blob = index < keys.length
+  //         ? file.slice(start, end)
+  //         : file.slice(start)
     
-        promises.push(axios.put(urls[index], blob))
-      }
+  //       promises.push(axios.put(urls[index], blob))
+  //     }
     
-      const resParts = await Promise.all(promises)
-      const result = resParts.map((part, index) => ({
-        ETag: part.headers.etag,
-        PartNumber: index + 1
-      }))
-      console.log('result: ', result)
+  //     const resParts = await Promise.all(promises)
+  //     const result = resParts.map((part, index) => ({
+  //       ETag: part.headers.etag,
+  //       PartNumber: index + 1
+  //     }))
+  //     console.log('result: ', result)
 
-      const completeResponse = await axios.post(`${process.env.NINA_GATE_URL}/gate/finalize`, {
-        UploadId,
-        releasePublicKey: releasePubkey,
-        fileName: file.name,
-        fileSize: file.size,
-        parts: result
-      })
-      getGate()
-      console.log('completeResponse: ', completeResponse.data)
-    } catch (err) {
-      console.log(err)
-    }
-  }
+  //     const completeResponse = await axios.post(`${process.env.NINA_GATE_URL}/gate/finalize`, {
+  //       UploadId,
+  //       releasePublicKey: releasePubkey,
+  //       fileName: file.name,
+  //       fileSize: file.size,
+  //       parts: result
+  //     })
+  //     getGate()
+  //     console.log('completeResponse: ', completeResponse.data)
+  //   } catch (err) {
+  //     console.log(err)
+  //   }
+  // }
   return (
     <Box>
       <AmountRemaining variant="body2" align="left">
@@ -421,10 +424,7 @@ const ReleasePurchase = (props) => {
       </Box>
       {!gate && wallet?.publicKey?.toBase58() === release.authority && (
         <>
-          <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-          {file && (
-            <button onClick={handleFileUpload}>Add Gate</button>
-          )}
+          <CreateGateModal releasePubkey={releasePubkey} getGate={getGate} metadata={metadata} />
         </>
       )}
       {gate && (
