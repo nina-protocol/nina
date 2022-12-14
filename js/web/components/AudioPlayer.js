@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useRef, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import { formatDuration } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import Link from 'next/link'
@@ -28,13 +29,14 @@ const AudioPlayer = () => {
     isPlaying,
     currentIndex,
   } = audio
-
+  const { releaseState } = useContext(Release.Context)
   const activeTrack = useRef()
   const playerRef = useRef()
   const intervalRef = useRef()
   const activeIndexRef = useRef(0)
   const [playing, setPlaying] = useState(false)
   const [trackProgress, setTrackProgress] = useState(0.0)
+  const [authority, setAuthority] = useState()
   const [duration, setDuration] = useState(0)
   useEffect(() => {
     playerRef.current = document.querySelector('#audio')
@@ -78,6 +80,10 @@ const AudioPlayer = () => {
     () => activeIndexRef.current > 0,
     [activeIndexRef.current]
   )
+
+  const findTokenAuthority = useMemo(() => {
+    setAuthority(releaseState?.tokenData[track?.releasePubkey]?.authority)
+  }, [track])
 
   useEffect(() => {
     const initialized = activeIndexRef.current >= 0
@@ -131,6 +137,11 @@ const AudioPlayer = () => {
     }, [300])
   }
 
+  useEffect(() => {
+    if (track) {
+      setAuthority(releaseState?.tokenData[track?.releasePubkey]?.authority)
+    }
+  }, [authority, track])
   const previous = () => {
     if (hasPrevious) {
       setTrackProgress(0)
@@ -253,7 +264,7 @@ const AudioPlayer = () => {
       <ProgressContainer>
         {track && (
           <ArtistInfo align="left" variant="subtitle1">
-            <Link href={`/hubs/${track.hub}`} passHref>
+            <Link href={`/profiles/${authority}`} passHref>
               <ReleaseArtist>{track.artist}, </ReleaseArtist>
             </Link>
 

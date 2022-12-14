@@ -204,8 +204,8 @@ const Feed = ({
               <CopyWrapper>
                 <Typography my={1}>
                   New Release:{' '}
-                  <Link href={`/${item.release.publicKey}`} passHref>
-                    {`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}
+                  <Link href={`/${item?.release?.publicKey}`} passHref>
+                    {`${item?.release?.metadata?.properties?.artist} - ${item?.release?.metadata?.properties?.title}`}
                   </Link>{' '}
                   by{' '}
                   <Link href={`/profiles/${item.authority.publicKey}`} passHref>
@@ -251,7 +251,7 @@ const Feed = ({
                       }}
                     >
                       {isPlaying &&
-                      track.releasePubkey === item.release.publicKey ? (
+                      track.releasePubkey === item?.release?.publicKey ? (
                         <PauseCircleOutlineOutlinedIcon
                           sx={{ color: 'text.primary' }}
                         />
@@ -267,8 +267,8 @@ const Feed = ({
               <CopyWrapper>
                 <Typography my={1}>
                   New Release:{' '}
-                  <Link href={`/${item.release.publicKey}`} passHref>
-                    {`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}
+                  <Link href={`/${item?.release?.publicKey}`} passHref>
+                    {`${item?.release?.metadata?.properties?.artist} - ${item?.release?.metadata?.properties?.title}`}
                   </Link>{' '}
                   via{' '}
                   <Link href={`/hubs/${item?.hub?.handle}`} passHref>
