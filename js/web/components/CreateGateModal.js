@@ -110,8 +110,7 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
         onClick={() => setOpen(true)}
         sx={{ height: '55px', width: '100%', mt: 1 }}
       >
-        <Typography variant='body1'>
-
+        <Typography variant='body2'>
           Create a Gate for this Release
         </Typography>
       </Button>
@@ -131,7 +130,7 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
           <StyledPaper>
 
             <Typography variant='h5' sx={{ mb: 2 }}>
-              Select a file or zip to be gated behind &rdquo{metadata.name}&rdquo
+              Select a file or zip to be gated behind &apos;{metadata.name}&apos;
             </Typography>
 
           <Button
@@ -143,7 +142,7 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
 
 
             {file && (
-              <Button sx={{mt:1}} onClick={handleFileUpload}>
+              <Button variant="outlined" sx={{mt:1}} onClick={handleFileUpload}>
                 {!inProgress ? 'Create Gate' : <Dots size="50px" />}
               </Button>
             )}

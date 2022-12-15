@@ -25,7 +25,6 @@ import HubPostCreate from './HubPostCreate'
 import {display} from '@mui/system'
 
 const CreateGateModal = ({ gate, releasePubkey, amountHeld }) => {
-  console.log('amountHeld :>> ', amountHeld);
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
@@ -39,12 +38,15 @@ const CreateGateModal = ({ gate, releasePubkey, amountHeld }) => {
 
   const handleUnlockGate = async () => {
     try {
+      console.log('gate :>> ', gate);
       console.log('releasePubkey :>> ', releasePubkey);
       const message = new TextEncoder().encode(releasePubkey);
       const messageBase64 = encodeBase64(message);
       const signature = await wallet.signMessage(message);
       const signatureBase64 = encodeBase64(signature);
       const result = await axios.get(`${process.env.NINA_GATE_URL}/gate/${gate.id}?message=${encodeURIComponent(messageBase64)}&publicKey=${encodeURIComponent(wallet.publicKey.toBase58())}&signature=${encodeURIComponent(signatureBase64)}`)
+
+      console.log('result :>> ', result);
 
       const response = await axios.get(result.data.url, {
         method: "GET",
@@ -97,7 +99,7 @@ const CreateGateModal = ({ gate, releasePubkey, amountHeld }) => {
             {amountHeld > 0 && (
               <>
                 <Typography variant='h5' sx={{ mb: 2 }}>
-                  You are downloading &rdquo{gate.fileName}&rdquo
+                  You are downloading &apos;{gate.fileName}&apos;
                 </Typography>
 
                 <Button variant='outlined' sx={{mt: 1}} onClick={handleUnlockGate}>
