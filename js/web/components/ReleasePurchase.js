@@ -349,9 +349,9 @@ const ReleasePurchase = (props) => {
         </Typography>
       )}
       <StyledDescription align="left">{description}</StyledDescription>
-      {gate && (
+      {/* {gate && (
         <UnlockGateModal gate={gate} releasePubkey={releasePubkey} amountHeld={amountHeld} />
-      )}
+      )} */}
       <Box mt={1}>
         <form onSubmit={handleSubmit}>
           <Button variant="outlined" type="submit" fullWidth>
@@ -363,16 +363,19 @@ const ReleasePurchase = (props) => {
           </Button>
         </form>
       </Box>
+      {gate && (
+        <UnlockGateModal gate={gate} releasePubkey={releasePubkey} amountHeld={amountHeld} />
+      )}
       {!gate && wallet?.publicKey?.toBase58() === release.authority && (
         <>
           <CreateGateModal releasePubkey={releasePubkey} getGate={getGate} metadata={metadata} />
         </>
       )}
   
-      {userIsRecipient && (
+      {/* {userIsRecipient && (
         <Royalty releasePubkey={releasePubkey} release={release} />
-      )}
-      {amountHeld > 0 && (
+      )} */}
+      {/* {amountHeld > 0 && (
         <Button
           variant="outlined"
           fullWidth
@@ -395,7 +398,7 @@ const ReleasePurchase = (props) => {
             )}
           </Typography>
         </Button>
-      )}
+      )} */}
     </Box>
   )
 }
