@@ -549,7 +549,7 @@ const Feed = ({
                 <Typography my={1} fontWeight={600}>
                   {timeSince(Date.parse(item.datetime))} ago
                 </Typography>
-              </CopyWrapper> */}
+              </CopyWrapper> 
             </ImageCard>
           )
         case 'SubscriptionSubscribeHub':

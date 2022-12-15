@@ -109,19 +109,23 @@ const ReleasePurchase = (props) => {
   }, [releaseState.tokenData[releasePubkey]])
 
   useEffect(() => {
-    setAmountHeld(collection[releasePubkey])
+    setAmountHeld(collection[releasePubkey] || 0)
   }, [collection[releasePubkey]])
 
+  // useEffect(() => {
+  //   const handleGetAmountHeld = async () => {
+  //     const amountHeld = await getAmountHeld(
+  //       releaseState.releaseMintMap[releasePubkey],
+  //       releasePubkey
+  //     )
+  //     console.log('amountHeld !!:>> ', amountHeld);
+  //     setAmountHeld(amountHeld)
+  //   }
+  // handleGetAmountHeld()
+  // }, [releasePubkey])
+
   useEffect(() => {
-    const handleGetAmountHeld = async () => {
-      const amountHeld = await getAmountHeld(
-        releaseState.releaseMintMap[releasePubkey],
-        releasePubkey
-      )
-      console.log('amountHeld :>> ', amountHeld);
-      setAmountHeld(amountHeld)
-    }
-  handleGetAmountHeld()
+    getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
   }, [releasePubkey])
 
   useEffect(() => {
@@ -345,6 +349,9 @@ const ReleasePurchase = (props) => {
         </Typography>
       )}
       <StyledDescription align="left">{description}</StyledDescription>
+      {gate && (
+        <UnlockGateModal gate={gate} releasePubkey={releasePubkey} amountHeld={amountHeld} />
+      )}
       <Box mt={1}>
         <form onSubmit={handleSubmit}>
           <Button variant="outlined" type="submit" fullWidth>
@@ -361,9 +368,7 @@ const ReleasePurchase = (props) => {
           <CreateGateModal releasePubkey={releasePubkey} getGate={getGate} metadata={metadata} />
         </>
       )}
-      {gate && (
-        <UnlockGateModal gate={gate} releasePubkey={releasePubkey} amountHeld={amountHeld} />
-      )}
+  
       {userIsRecipient && (
         <Royalty releasePubkey={releasePubkey} release={release} />
       )}

@@ -25,14 +25,13 @@ import HubPostCreate from './HubPostCreate'
 import {display} from '@mui/system'
 
 const CreateGateModal = ({ gate, releasePubkey, amountHeld }) => {
+  console.log('amountHeld :>> ', amountHeld);
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
 
   const [inProgress, setInProgress] = useState(false)
   const [file, setFile] = useState(undefined)
-
-  console.log('gate :>> ', gate);
 
   const handleClose = () => {
     setOpen(false)
@@ -70,7 +69,6 @@ const CreateGateModal = ({ gate, releasePubkey, amountHeld }) => {
   }
 
 
-  console.log('amountHeld :>> ', amountHeld);
   return (
     <Root>
       <Button
@@ -99,7 +97,7 @@ const CreateGateModal = ({ gate, releasePubkey, amountHeld }) => {
             {amountHeld > 0 && (
               <>
                 <Typography variant='h5' sx={{ mb: 2 }}>
-                  You are downloading "{gate.fileName}"
+                  You are downloading &rdquo{gate.fileName}&rdquo
                 </Typography>
 
                 <Button variant='outlined' sx={{mt: 1}} onClick={handleUnlockGate}>

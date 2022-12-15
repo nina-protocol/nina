@@ -131,7 +131,7 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
           <StyledPaper>
 
             <Typography variant='h5' sx={{ mb: 2 }}>
-              Select a file or zip to be gated behind "{metadata.name}"
+              Select a file or zip to be gated behind &rdquo{metadata.name}&rdquo
             </Typography>
 
           <Button
