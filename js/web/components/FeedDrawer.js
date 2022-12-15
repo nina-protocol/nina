@@ -119,7 +119,6 @@ const FeedDrawer = () => {
       defaultPubkey,
       refresh ? 0 : feedItems?.length || 0
     )
-    // console.log('feed', defaultFeed.feedItems)
     setDefaultFeedItems(defaultFeed?.feedItems)
   }
 
