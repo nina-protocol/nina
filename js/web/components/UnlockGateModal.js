@@ -15,6 +15,8 @@ import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 import {encodeBase64} from 'tweetnacl-util';
 import axios from 'axios'
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import LockIcon from '@mui/icons-material/Lock';
 
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useSnackbar } from 'notistack'
@@ -22,85 +24,53 @@ import Dots from './Dots'
 import HubPostCreate from './HubPostCreate'
 import {display} from '@mui/system'
 
-const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
+const CreateGateModal = ({ gate, releasePubkey, amountHeld }) => {
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const { checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(
-    Nina.Context
-  )
+
   const [inProgress, setInProgress] = useState(false)
   const [file, setFile] = useState(undefined)
-  console.log('file :>> ', file);
+
+  console.log('gate :>> ', gate);
 
   const handleClose = () => {
     setOpen(false)
   }
 
-  const handleFileUpload = async () => {
-    setInProgress(true)
-    console.log('process.env.NINA_GATE_URL :>> ', process.env.NINA_GATE_URL);
+  const handleUnlockGate = async () => {
     try {
-      const FILE_CHUNK_SIZE = 10_000_000
-
+      console.log('releasePubkey :>> ', releasePubkey);
       const message = new TextEncoder().encode(releasePubkey);
       const messageBase64 = encodeBase64(message);
       const signature = await wallet.signMessage(message);
       const signatureBase64 = encodeBase64(signature);
+      const result = await axios.get(`${process.env.NINA_GATE_URL}/gate/${gate.id}?message=${encodeURIComponent(messageBase64)}&publicKey=${encodeURIComponent(wallet.publicKey.toBase58())}&signature=${encodeURIComponent(signatureBase64)}`)
 
-      const response = await axios.post(`${process.env.NINA_GATE_URL}/gate`, {
-        fileSize: file.size,
-        fileName: file.name,
-        publicKey: wallet.publicKey.toBase58(),
-        message: messageBase64,
-        signature: signatureBase64,
-        release: releasePubkey,
-      })
-      console.log('response: ', response.data)
-      const {
-        urls,
-        UploadId
-      } = response.data;
-      console.log('urls: ', urls)
-      const uploader = axios.create()
-      delete uploader.defaults.headers.put['Content-Type']
+      const response = await axios.get(result.data.url, {
+        method: "GET",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/octet-stream",
+        },
+        responseType: "blob",
+      });
 
-      const keys = Object.keys(urls)
-      const promises = []
-
-      for (const indexStr of keys) {
-        const index = parseInt(indexStr)
-        const start = index * FILE_CHUNK_SIZE
-        const end = (index + 1) * FILE_CHUNK_SIZE
-        const blob = index < keys.length
-          ? file.slice(start, end)
-          : file.slice(start)
-
-        promises.push(axios.put(urls[index], blob))
+      if (response?.data) {
+        const a = document.createElement("a");
+        const url = window.URL.createObjectURL(response.data);
+        a.href = url;
+        a.download = release.gate.fileName;
+        a.click();
       }
-
-      const resParts = await Promise.all(promises)
-      const result = resParts.map((part, index) => ({
-        ETag: part.headers.etag,
-        PartNumber: index + 1
-      }))
-      console.log('result: ', result)
-
-      const completeResponse = await axios.post(`${process.env.NINA_GATE_URL}/gate/finalize`, {
-        UploadId,
-        releasePublicKey: releasePubkey,
-        fileName: file.name,
-        fileSize: file.size,
-        parts: result
-      })
-      getGate()
-      console.log('completeResponse: ', completeResponse.data)
-    } catch (err) {
-      console.log(err)
+    } catch (error) {
+      console.log('error: ', error)
+      // setResponse(error.response.data);
     }
-    setInProgress(false)
   }
 
+
+  console.log('amountHeld :>> ', amountHeld);
   return (
     <Root>
       <Button
@@ -109,11 +79,8 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
         type="submit"
         onClick={() => setOpen(true)}
         sx={{ height: '55px', width: '100%', mt: 1 }}
-      >
-        <Typography variant='body1'>
-
-          Create a Gate for this Release
-        </Typography>
+      > {amountHeld > 0 ? <LockOpenIcon /> : <LockIcon />}
+       
       </Button>
 
       <StyledModal
@@ -129,25 +96,29 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
       >
         <Fade in={open}>
           <StyledPaper>
-
-            <Typography variant='h5' sx={{ mb: 2 }}>
-              Select a file or zip to be gated behind "{metadata.name}"
+            <Typography>
+              test
             </Typography>
 
-          <Button
-            component="label"
-          >
-            {!file ? 'Choose File' : file.name}
-            <input type="file" onChange={(e) => setFile(e.target.files[0])} style={{display: 'none'}}/>
-          </Button>
+            {amountHeld > 0 && (
+              <>
+                <Typography variant='h5' sx={{ mb: 2 }}>
+                  You are downloading {gate.fileName}
+                </Typography>
 
-
-            {file && (
-              <Button sx={{mt:1}} onClick={handleFileUpload}>
-                {!inProgress ? 'Create Gate' : <Dots size="50px" />}
-              </Button>
+                <Button variant='contained' sx={{mt: 1}} onClick={handleUnlockGate}>
+                  {!inProgress ? 'Access' : <Dots size="50px" />}
+                </Button>
+              </>
             )}
 
+            {amountHeld === 0 && (
+              <>
+                <Typography variant='h5' sx={{ mb: 2 }}>
+                  There is additional content associated with this release that is only available to owners.
+                </Typography>
+              </>
+            )}
 
           </StyledPaper>
         </Fade>
