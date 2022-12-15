@@ -917,7 +917,7 @@ const ninaContextHelper = ({
         ).displayName || truncateAddress(publicKey)
       }
     } 
-    return truncateAddress(publicKey)
+    return publicKey ? truncateAddress(publicKey) : 'Unknown'
   }
   
   const displayImageForAccount = (publicKey) => {

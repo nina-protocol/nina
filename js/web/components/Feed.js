@@ -520,7 +520,11 @@ const Feed = ({
           const image = displayImageForAccount(item.toAccount?.publicKey)
           return (
             <ImageCard>
+<<<<<<< HEAD
               {/* <Link href={`/profiles/${item.toAccount.publicKey}`} passHref>
+=======
+              <Link href={`/profiles/${item.toAccount?.publicKey}`} passHref>
+>>>>>>> 24c666c4e7bf79797b200c5e7e3abef627365c68
                 {image && image.includes('https') ? (
                   <Image
                     height={'400px'}
@@ -538,12 +542,12 @@ const Feed = ({
               </Link>
               <CopyWrapper>
                 <Typography my={1}>
-                  <Link href={`/profiles/${item.authority.publicKey}`} passHref>
-                    {displayNameForAccount(item.authority.publicKey)}
+                  <Link href={`/profiles/${item.authority?.publicKey}`} passHref>
+                    {displayNameForAccount(item.authority?.publicKey)}
                   </Link>{' '}
                   followed{' '}
-                  <Link href={`/profiles/${item.toAccount.publicKey}`} passHref>
-                    {displayNameForAccount(item.toAccount.publicKey)}
+                  <Link href={`/profiles/${item.toAccount?.publicKey}`} passHref>
+                    {displayNameForAccount(item.toAccount?.publicKey)}
                   </Link>
                 </Typography>
                 <Typography my={1} fontWeight={600}>
@@ -573,8 +577,8 @@ const Feed = ({
               </Link>
               <CopyWrapper>
                 <Typography my={1}>
-                  <Link href={`/profiles/${item.authority.publicKey}`} passHref>
-                    {displayNameForAccount(item.authority.publicKey)}
+                  <Link href={`/profiles/${item.authority?.publicKey}`} passHref>
+                    {displayNameForAccount(item.authority?.publicKey)}
                   </Link>{' '}
                   followed{' '}
                   <Link

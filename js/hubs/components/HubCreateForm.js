@@ -6,7 +6,8 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
 import HelpIcon from "@mui/icons-material/Help";
-import Quill from "./Quill";
+import dynamic from "next/dynamic";
+const QuillEditor = dynamic(() => import("./QuillEditor"), { ssr: false });
 
 const HubCreateForm = ({
   field,
@@ -20,6 +21,7 @@ const HubCreateForm = ({
   hubData,
   handleBlur,
 }) => {
+
   useEffect(() => {
     if (onChange) {
       onChange(values);
@@ -227,10 +229,10 @@ const HubCreateForm = ({
           </>
         )}
 
-        <Field name="description">
+        <Field name="description" >
           {(props) => (
-            <Box sx={{ mb: "8px" }}>
-              <Quill props={props} update={update} type={"hub"} />
+            <Box sx={{ mb: "8px", height: '175px'}}>
+              <QuillEditor formikProps={props} update={update} type={"hub"} />
             </Box>
           )}
         </Field>
@@ -255,7 +257,7 @@ export default withFormik({
       displayName: `${hubData ? hubData.data.displayName : ""}`,
       publishFee: `${hubData ? hubData.publishFee / 10000 : "0"}`,
       referralFee: `${hubData ? hubData.referralFee / 10000 : "0"}`,
-      description: `${hubData ? hubData.data.descriptionHtml : ""}`,
+      description: `${hubData?.data?.descriptionHtml ? hubData.data.descriptionHtml : ""}`,
       externalUrl: `${hubData ? hubData.data.externalUrl : ""}`,
     };
   },

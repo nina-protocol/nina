@@ -30,6 +30,7 @@ import rehypeExternalLinks from 'rehype-external-links'
 import Royalty from './Royalty'
 import CreateGateModal from './CreateGateModal'
 import UnlockGateModal from './UnlockGateModal'
+import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 
 const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, router } = props
@@ -144,7 +145,7 @@ const ReleasePurchase = (props) => {
   }, [release?.revenueShareRecipients, wallet?.connected])
 
   useEffect(() => {
-    if (metadata?.descriptionHtml?.includes('<p>')) {
+    if (metadata?.descriptionHtml) {
       unified()
         .use(rehypeParse, { fragment: true })
         .use(rehypeSanitize)
@@ -156,9 +157,7 @@ const ReleasePurchase = (props) => {
           target: false,
           rel: ['nofollow', 'noreferrer'],
         })
-        .process(
-          JSON.parse(metadata.descriptionHtml).replaceAll('<p><br></p>', '<br>')
-        )
+        .process(parseChecker(metadata.descriptionHtml))
         .then((file) => {
           setDescription(file.result)
         })
@@ -288,9 +287,28 @@ const ReleasePurchase = (props) => {
       {wallet?.connected && (
         <StyledUserAmount>
           {metadata && (
-            <Typography variant="body2" align="left" gutterBottom>
-              You have: {amountHeld || 0} {metadata.symbol}
-            </Typography>
+            <>
+              <Typography
+                variant="body2"
+                align="left"
+                gutterBottom
+                paddingBottom={'5px'}
+                cursor="default"
+              >
+                {`Catalog no. ${metadata.symbol}`}
+              </Typography>
+              <Typography
+                variant="body2"
+                align="left"
+                gutterBottom
+                cursor="default"
+              >
+                {amountHeld > 0 &&
+                  `You own ${
+                    amountHeld > 1 ? `${amountHeld} editions of` : ''
+                  } this release`}
+              </Typography>
+            </>
           )}
           {amountPendingSales > 0 ? (
             <Typography variant="body2" align="left" gutterBottom>

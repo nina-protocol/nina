@@ -20,6 +20,7 @@ import rehypeParse from "rehype-parse";
 import rehypeReact from "rehype-react";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
+import { parseChecker } from "@nina-protocol/nina-internal-sdk/esm/utils";
 
 import Typography from "@mui/material/Typography";
 const PostRelease = dynamic(() => import("./PostRelease"));
@@ -90,12 +91,7 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
           target: false,
           rel: ["nofollow", "noreferrer"],
         })
-        .process(
-          JSON.parse(postState[postPubkey].data.bodyHtml).replaceAll(
-            "<p><br></p>",
-            "<br>"
-          )
-        )
+        .process(parseChecker(postState[postPubkey].data.bodyHtml))
         .then((file) => {
           setPostContent(file.result);
         });
