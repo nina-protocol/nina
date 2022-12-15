@@ -96,17 +96,13 @@ const CreateGateModal = ({ gate, releasePubkey, amountHeld }) => {
       >
         <Fade in={open}>
           <StyledPaper>
-            <Typography>
-              test
-            </Typography>
-
             {amountHeld > 0 && (
               <>
                 <Typography variant='h5' sx={{ mb: 2 }}>
-                  You are downloading {gate.fileName}
+                  You are downloading "{gate.fileName}"
                 </Typography>
 
-                <Button variant='contained' sx={{mt: 1}} onClick={handleUnlockGate}>
+                <Button variant='outlined' sx={{mt: 1}} onClick={handleUnlockGate}>
                   {!inProgress ? 'Access' : <Dots size="50px" />}
                 </Button>
               </>
@@ -116,6 +112,9 @@ const CreateGateModal = ({ gate, releasePubkey, amountHeld }) => {
               <>
                 <Typography variant='h5' sx={{ mb: 2 }}>
                   There is additional content associated with this release that is only available to owners.
+                </Typography>
+                <Typography variant='h5' sx={{ mb: 2 }}>
+                  Purchase this release to unlock the additional content.
                 </Typography>
               </>
             )}
