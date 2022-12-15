@@ -119,8 +119,8 @@ const FeedDrawer = () => {
       defaultPubkey,
       refresh ? 0 : feedItems?.length || 0
     )
-    console.log('feed', defaultFeed.feedItems)
-    // setDefaultFeedItems(feed?.feedItems)
+    // console.log('feed', defaultFeed.feedItems)
+    setDefaultFeedItems(defaultFeed?.feedItems)
   }
 
   return (
@@ -185,7 +185,7 @@ const FeedDrawer = () => {
                 handleGetFeedForUser={handleGetFeedForUser}
                 publicKey={wallet?.publicKey?.toBase58()}
                 feedFetched={feedFetched}
-                defaultFeedItems={defaultFeedItems}
+                defaultItems={defaultFeedItems}
               />
             )}
 
