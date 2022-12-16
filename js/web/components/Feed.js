@@ -111,8 +111,8 @@ const Feed = ({
     }
   }
 
-  const feedItems = useMemo(() => {
-    const feedItemComponents = items?.map((item, i) => {
+  const feedItems = useMemo((fetchedFeedItems) => {
+    const feedItemComponents = fetchedFeedItems?.map((item, i) => {
       switch (item?.type) {
         case 'HubInitWithCredit':
           return (
@@ -520,10 +520,10 @@ const Feed = ({
         //     </MultiCard>
         //   )
         case 'SubscriptionSubscribeAccount':
-          const image = displayImageForAccount(item.toAccount.publicKey)
+          const image = displayImageForAccount(item.toAccount?.publicKey)
           return (
             <ImageCard>
-              <Link href={`/profiles/${item.toAccount.publicKey}`} passHref>
+              <Link href={`/profiles/${item.toAccount?.publicKey}`} passHref>
                 {image && image.includes('https') ? (
                   <Image
                     height={'400px'}
@@ -541,12 +541,12 @@ const Feed = ({
               </Link>
               <CopyWrapper>
                 <Typography my={1}>
-                  <Link href={`/profiles/${item.authority.publicKey}`} passHref>
-                    {displayNameForAccount(item.authority.publicKey)}
+                  <Link href={`/profiles/${item.authority?.publicKey}`} passHref>
+                    {displayNameForAccount(item.authority?.publicKey)}
                   </Link>{' '}
                   followed{' '}
-                  <Link href={`/profiles/${item.toAccount.publicKey}`} passHref>
-                    {displayNameForAccount(item.toAccount.publicKey)}
+                  <Link href={`/profiles/${item.toAccount?.publicKey}`} passHref>
+                    {displayNameForAccount(item.toAccount?.publicKey)}
                   </Link>
                 </Typography>
                 <Typography my={1} fontWeight={600}>
@@ -576,8 +576,8 @@ const Feed = ({
               </Link>
               <CopyWrapper>
                 <Typography my={1}>
-                  <Link href={`/profiles/${item.authority.publicKey}`} passHref>
-                    {displayNameForAccount(item.authority.publicKey)}
+                  <Link href={`/profiles/${item.authority?.publicKey}`} passHref>
+                    {displayNameForAccount(item.authority?.publicKey)}
                   </Link>{' '}
                   followed{' '}
                   <Link
@@ -598,497 +598,9 @@ const Feed = ({
     })
 
     return feedItemComponents || []
-  }, [items, isPlaying, track])
+  }, [fetchedFeedItems, isPlaying, track])
 
-  const defaultFeedItems = useMemo(() => {
-    console.log(defaultItems)
-    const defaultFeedItemComponents = defaultItems?.map((item, i) => {
-      switch (item?.type) {
-        case 'HubInitWithCredit':
-          return (
-            <ImageCard>
-              <HoverContainer
-                href={`/hubs/${item?.hub?.handle}`}
-                passHref
-                onClick={(e) =>
-                  handleClick(e, `/hubs/${item.hub?.handle}`, item?.type)
-                }
-              >
-                <Image
-                  height={'400px'}
-                  width={'400px'}
-                  layout="responsive"
-                  src={getImageFromCDN(
-                    item.hub?.data.image,
-                    600,
-                    Date.parse(item.datetime)
-                  )}
-                  alt={i}
-                  priority={true}
-                  loader={loader}
-                  unoptimized={true}
-                />
-              </HoverContainer>
-              <CopyWrapper>
-                <Typography my={1}>
-                  New Hub:{' '}
-                  <Link href={`/hubs/${item?.hub?.handle}`} passHref>
-                    {`${item?.hub?.data?.displayName}`}
-                  </Link>{' '}
-                  created by{' '}
-                  <Link href={`/profiles/${item.authority.publicKey}`} passHref>
-                    {displayNameForAccount(item.authority.publicKey)}
-                  </Link>
-                </Typography>
-
-                <Typography my={1} fontWeight={600}>
-                  {timeSince(Date.parse(item.datetime))} ago
-                </Typography>
-              </CopyWrapper>
-            </ImageCard>
-          )
-        case 'ReleaseInitWithCredit':
-          return (
-            <ImageCard>
-              <HoverContainer
-                href={`/${item.release?.publicKey}`}
-                passHref
-                onClick={(e) =>
-                  handleClick(e, `/${item.release?.publicKey}`, item?.type)
-                }
-              >
-                <Image
-                  height={'400px'}
-                  width={'400px'}
-                  layout="responsive"
-                  src={getImageFromCDN(
-                    item.release?.metadata.image,
-                    600,
-                    Date.parse(item.datetime)
-                  )}
-                  alt={i}
-                  priority={true}
-                  loader={loader}
-                  unoptimized={true}
-                />
-                <HoverCard>
-                  <CtaWrapper>
-                    <Button
-                      onClick={(e) => {
-                        handlePlay(e, item.release.publicKey)
-                      }}
-                    >
-                      {isPlaying &&
-                      track.releasePubkey === item.release.publicKey ? (
-                        <PauseCircleOutlineOutlinedIcon
-                          sx={{ color: 'text.primary' }}
-                        />
-                      ) : (
-                        <PlayCircleOutlineOutlinedIcon
-                          sx={{ color: 'text.primary' }}
-                        />
-                      )}
-                    </Button>
-                  </CtaWrapper>
-                </HoverCard>
-              </HoverContainer>
-              <CopyWrapper>
-                <Typography my={1}>
-                  New Release:{' '}
-                  <Link href={`/${item?.release?.publicKey}`} passHref>
-                    {`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}
-                  </Link>{' '}
-                  by{' '}
-                  <Link href={`/profiles/${item.authority.publicKey}`} passHref>
-                    {displayNameForAccount(item.authority.publicKey)}
-                  </Link>
-                </Typography>
-
-                <Typography my={1} fontWeight={600}>
-                  {timeSince(Date.parse(item.datetime))} ago
-                </Typography>
-              </CopyWrapper>
-            </ImageCard>
-          )
-        case 'ReleaseInitViaHub':
-          console.log('item pubkey', item?.release?.publicKey)
-          console.log('item', item)
-          return (
-            <ImageCard>
-              <HoverContainer
-                href={`/${item.release?.publicKey}`}
-                passHref
-                onClick={(e) =>
-                  handleClick(e, `/${item.release?.publicKey}`, item?.type)
-                }
-              >
-                <Image
-                  height={'400px'}
-                  width={'400px'}
-                  layout="responsive"
-                  src={getImageFromCDN(
-                    item.release?.metadata.image,
-                    600,
-                    Date.parse(item.datetime)
-                  )}
-                  alt={i}
-                  priority={true}
-                  loader={loader}
-                  unoptimized={true}
-                />
-                <HoverCard>
-                  <CtaWrapper>
-                    <Button
-                      onClick={(e) => {
-                        handlePlay(e, item.release.publicKey)
-                      }}
-                    >
-                      {isPlaying &&
-                      track.releasePubkey === item.release.publicKey ? (
-                        <PauseCircleOutlineOutlinedIcon
-                          sx={{ color: 'text.primary' }}
-                        />
-                      ) : (
-                        <PlayCircleOutlineOutlinedIcon
-                          sx={{ color: 'text.primary' }}
-                        />
-                      )}
-                    </Button>
-                  </CtaWrapper>
-                </HoverCard>
-              </HoverContainer>
-              <CopyWrapper>
-                <Typography my={1}>
-                  New Release:{' '}
-                  <Link href={`/${item?.release?.publicKey}`} passHref>
-                    {`${item?.release?.metadata?.properties?.artist} - ${item?.release?.metadata?.properties?.title}`}
-                  </Link>{' '}
-                  via{' '}
-                  <Link href={`/hubs/${item?.hub?.handle}`} passHref>
-                    {`${item?.hub?.data?.displayName}`}
-                  </Link>
-                </Typography>
-                <Typography fontWeight={600}>
-                  {timeSince(Date.parse(item.datetime))} ago
-                </Typography>
-              </CopyWrapper>
-            </ImageCard>
-          )
-        case 'ReleasePurchase':
-        case 'ReleasePurchaseViaHub':
-          return (
-            <ImageCard>
-              <HoverContainer
-                href={`/${item.release?.publicKey}`}
-                passHref
-                onClick={(e) =>
-                  handleClick(e, `/${item.release?.publicKey}`, item?.type)
-                }
-              >
-                <Image
-                  height={'400px'}
-                  width={'400px'}
-                  layout="responsive"
-                  src={getImageFromCDN(
-                    item.release?.metadata.image,
-                    600,
-                    Date.parse(item.datetime)
-                  )}
-                  alt={i}
-                  priority={true}
-                  loader={loader}
-                  unoptimized={true}
-                />
-                <HoverCard>
-                  <CtaWrapper>
-                    <Button
-                      onClick={(e) => {
-                        handlePlay(e, item.release.publicKey)
-                      }}
-                    >
-                      {isPlaying &&
-                      track.releasePubkey === item.release.publicKey ? (
-                        <PauseCircleOutlineOutlinedIcon
-                          sx={{ color: 'text.primary' }}
-                        />
-                      ) : (
-                        <PlayCircleOutlineOutlinedIcon
-                          sx={{ color: 'text.primary' }}
-                        />
-                      )}
-                    </Button>
-                  </CtaWrapper>
-                </HoverCard>
-              </HoverContainer>
-              <CopyWrapper>
-                <Typography my={1} align="left">
-                  Purchase:{' '}
-                  <Link href={`/${item.release?.publicKey}`} passHref>
-                    {`${item.release?.metadata.properties.artist} - ${item.release?.metadata.properties.title}`}
-                  </Link>{' '}
-                  by{' '}
-                  <Link href={`/profiles/${item.authority.publicKey}`} passHref>
-                    {displayNameForAccount(item.authority.publicKey)}
-                  </Link>
-                  {item.type === 'ReleasePurchaseViaHub' && (
-                    <>
-                      {' '}
-                      from{' '}
-                      <Link href={`/hubs/${item.hub.handle}`} passHref>
-                        {`${item?.hub?.data?.displayName}`}
-                      </Link>
-                    </>
-                  )}
-                </Typography>
-
-                <Typography fontWeight={600}>
-                  {timeSince(Date.parse(item.datetime))} ago
-                </Typography>
-              </CopyWrapper>
-            </ImageCard>
-          )
-        case 'HubAddCollaborator':
-          return (
-            <ImageCard>
-              <Link href={`/hubs/${item?.hub?.handle}`} passHref>
-                <Image
-                  height={'400px'}
-                  width={'400px'}
-                  layout="responsive"
-                  src={getImageFromCDN(
-                    item?.hub?.data.image,
-                    600,
-                    Date.parse(item.datetime)
-                  )}
-                  alt={i}
-                  priority={true}
-                  loader={loader}
-                  unoptimized={true}
-                />
-              </Link>
-              <CopyWrapper>
-                <Typography my={1}>
-                  <Link href={`/profiles/${item.authority.publicKey}`} passHref>
-                    {displayNameForAccount(item.authority.publicKey)}
-                  </Link>{' '}
-                  added as a collaborator to{' '}
-                  <Link
-                    href={`/hubs/${item?.hub?.handle}`}
-                    passHref
-                  >{`${item?.hub?.data?.displayName}`}</Link>
-                </Typography>
-                <Typography my={1} fontWeight={600}>
-                  {timeSince(Date.parse(item.datetime))} ago
-                </Typography>
-              </CopyWrapper>
-            </ImageCard>
-          )
-        case 'PostInitViaHubWithReferenceRelease':
-        case 'HubAddRelease':
-          return (
-            <ImageCard>
-              <HoverContainer
-                href={`/${item.release?.publicKey}`}
-                passHref
-                onClick={(e) =>
-                  handleClick(e, `/${item.release?.publicKey}`, item?.type)
-                }
-              >
-                <Image
-                  height={'400px'}
-                  width={'400px'}
-                  layout="responsive"
-                  src={getImageFromCDN(
-                    item.release?.metadata.image,
-                    600,
-                    Date.parse(item.datetime)
-                  )}
-                  alt={i}
-                  priority={true}
-                  loader={loader}
-                  unoptimized={true}
-                />
-                <HoverCard>
-                  <CtaWrapper>
-                    <Button
-                      onClick={(e) => {
-                        handlePlay(e, item.release.publicKey)
-                      }}
-                    >
-                      {isPlaying &&
-                      track.releasePubkey === item.release.publicKey ? (
-                        <PauseCircleOutlineOutlinedIcon
-                          sx={{ color: 'text.primary' }}
-                        />
-                      ) : (
-                        <PlayCircleOutlineOutlinedIcon
-                          sx={{ color: 'text.primary' }}
-                        />
-                      )}
-                    </Button>
-                  </CtaWrapper>
-                </HoverCard>
-              </HoverContainer>
-              <CopyWrapper>
-                <Typography my={1}>
-                  <Link href={`/${item.release.publicKey}`} passHref>
-                    {`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}
-                  </Link>{' '}
-                  reposted to{' '}
-                  <Link
-                    href={`/hubs/${item.hub.handle}`}
-                    passHref
-                  >{`${item?.hub?.data?.displayName}`}</Link>
-                </Typography>
-
-                <Typography my={1} fontWeight={600}>
-                  {timeSince(Date.parse(item.datetime))} ago
-                </Typography>
-              </CopyWrapper>
-            </ImageCard>
-          )
-
-        // case 'PostInitViaHub':
-        //   return (
-        //     <MultiCard>
-        //       <Box sx={{display: 'flex', width: '100%'}}>
-        //         <Box sx={{width: '30%'}}>
-        //           <Link href={`/hubs/${item?.hub?.handle}`} passHref>
-        //             <Image
-        //               height={'30px'}
-        //               width={'30px'}
-        //               layout="responsive"
-        //               src={getImageFromCDN(
-        //                 item?.hub?.data.image,
-        //                 400,
-        //                 Date.parse(item.datetime)
-        //               )}
-        //               alt={i}
-        //               priority={true}
-        //               loader={loader}
-        //               unoptimized={true}
-        //             />
-        //           </Link>
-        //         </Box>
-        //         <Box>
-        //           <p>{item.post?.data.title}</p>
-        //         </Box>
-        //       </Box>
-        //       <p>{item.post?.data.body}</p>
-        //       <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
-        //     </MultiCard>
-        //   )
-
-        // case 'PostInitViaHubWithReferenceRelease':
-        //   return (
-        //     <MultiCard>
-        //       <Box sx={{display: 'flex', width: '100%'}}>
-        //         <Box sx={{width: '30%'}}>
-        //           <Link href={`/hubs/${item.hub.handle}`} passHref>
-        //             <Image
-        //               height={'30px'}
-        //               width={'30px'}
-        //               layout="responsive"
-        //               src={getImageFromCDN(
-        //                 item.release.metadata.image,
-        //                 400,
-        //                 Date.parse(item.datetime)
-        //               )}
-        //               alt={i}
-        //               priority={true}
-        //               loader={loader}
-        //               unoptimized={true}
-        //             />
-        //           </Link>
-        //         </Box>
-        //         <Box>
-        //           <p>{item.post?.data.title}</p>
-        //         </Box>
-        //       </Box>
-        //       <p>{item.post?.data.body}</p>
-        //       <h4>{timeSince(Date.parse(item.datetime))} ago</h4>
-        //     </MultiCard>
-        //   )
-        case 'SubscriptionSubscribeAccount':
-          const image = displayImageForAccount(item.toAccount.publicKey)
-          return (
-            <ImageCard>
-              <Link href={`/profiles/${item.toAccount.publicKey}`} passHref>
-                {image && image.includes('https') ? (
-                  <Image
-                    height={'400px'}
-                    width={'400px'}
-                    layout="responsive"
-                    src={getImageFromCDN(image, 600, Date.parse(item.datetime))}
-                    alt={i}
-                    priority={true}
-                    loader={loader}
-                    unoptimized={true}
-                  />
-                ) : (
-                  <img src={image} height={418} width={418} />
-                )}
-              </Link>
-              <CopyWrapper>
-                <Typography my={1}>
-                  <Link href={`/profiles/${item.authority.publicKey}`} passHref>
-                    {displayNameForAccount(item.authority.publicKey)}
-                  </Link>{' '}
-                  followed{' '}
-                  <Link href={`/profiles/${item.toAccount.publicKey}`} passHref>
-                    {displayNameForAccount(item.toAccount.publicKey)}
-                  </Link>
-                </Typography>
-                <Typography my={1} fontWeight={600}>
-                  {timeSince(Date.parse(item.datetime))} ago
-                </Typography>
-              </CopyWrapper>
-            </ImageCard>
-          )
-        case 'SubscriptionSubscribeHub':
-          return (
-            <ImageCard>
-              <Link href={`/hubs/${item.toHub.handle}`} passHref>
-                <Image
-                  height={'400px'}
-                  width={'400px'}
-                  layout="responsive"
-                  src={getImageFromCDN(
-                    item.toHub.data.image,
-                    600,
-                    Date.parse(item.datetime)
-                  )}
-                  alt={i}
-                  priority={true}
-                  loader={loader}
-                  unoptimized={true}
-                />
-              </Link>
-              <CopyWrapper>
-                <Typography my={1}>
-                  <Link href={`/profiles/${item.authority.publicKey}`} passHref>
-                    {displayNameForAccount(item.authority.publicKey)}
-                  </Link>{' '}
-                  followed{' '}
-                  <Link
-                    href={`/hubs/${item.toHub.publicKey}`}
-                    passHref
-                  >{`${item?.toHub?.data?.displayName}`}</Link>
-                </Typography>
-                <Typography my={1} fontWeight={600}>
-                  {timeSince(Date.parse(item.datetime))} ago
-                </Typography>
-              </CopyWrapper>
-            </ImageCard>
-          )
-
-        default:
-          return null
-      }
-    })
-
-    return defaultFeedItemComponents || []
-  }, [defaultItems, isPlaying, track])
+  
 
   if (publicKey && !feedFetched) {
     return (
@@ -1099,14 +611,14 @@ const Feed = ({
   }
   return (
     <ScrollWrapper onScroll={debounce(() => handleScroll(), 500)}>
-      {feedItems && (
+      {feedItems(items) && (
         <Box>
           <FeedWrapper ref={scrollRef}>
-            {feedItems &&
-              feedItems?.map((item, index) => (
+            {feedItems(items) &&
+              feedItems(items)?.map((item, index) => (
                 <CardWrapper key={index}>{item}</CardWrapper>
               ))}
-            {publicKey && feedItems.length === 0 && (
+            {publicKey && feedItems(items).length === 0 && (
               <Box
                 sx={{
                   display: 'flex',
@@ -1130,14 +642,14 @@ const Feed = ({
               </Box>
             )}
           </FeedWrapper>
-          {feedItems && pendingFetch && (
+          {feedItems(items) && pendingFetch && (
             <Box>
               <Dots size="80px" />
             </Box>
           )}
           {wallet?.connected &&
-            feedItems?.length > 0 &&
-            itemsTotal >= feedItems?.length &&
+            feedItems(items)?.length > 0 &&
+            itemsTotal >= feedItems(items)?.length &&
             !pendingFetch && (
               <Typography
                 variant="h4"
@@ -1149,7 +661,7 @@ const Feed = ({
             )}
         </Box>
       )}
-      {defaultFeedItems && !publicKey && (
+      {feedItems(defaultItems) && !publicKey && (
         <FeedWrapper ref={scrollRef}>
           <Box
             sx={{
@@ -1162,7 +674,7 @@ const Feed = ({
               Connect your wallet to see the latest activity on Nina relevant to
               you.
             </Typography>
-            {defaultFeedItems?.map((item, index) => (
+            {feedItems(defaultItems)?.map((item, index) => (
               <CardWrapper key={index}>{item}</CardWrapper>
             ))}
           </Box>
