@@ -21,7 +21,7 @@ const FeedDrawer = () => {
   const wallet = useWallet()
   const [drawerOpen, setDrawerOpen] = useState(!isMobile)
   const [feedItems, setFeedItems] = useState(undefined)
-  const [defaultFeedItems, setDefaultFeedItems] = useState(undefined)
+  const [defaultItems, setDefaultItems] = useState(undefined)
   const [hubSuggestions, setHubSuggestions] = useState(undefined)
   const [itemsTotal, setItemsTotal] = useState(0)
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
@@ -49,12 +49,15 @@ const FeedDrawer = () => {
   }, [subscriptionState])
 
   const handleFetch = async (refresh = false) => {
-    if (wallet.connected) {
-      await handleGetFeedForUser(wallet.publicKey.toBase58(), refresh)
-      await getHubSuggestionsForUser(wallet.publicKey.toBase58())
+    let publicKey
+    if (wallet.connected && wallet.publicKey.toBase58()) {
+      publicKey = wallet.publicKey.toBase58()
+      await handleGetFeedForUser(publicKey, refresh)
+      await getHubSuggestionsForUser(publicKey)
     } else {
+      publicKey = '7zoKqAehBR7oWMFpmWr2ebrhMvqL6oBsHdRcL2N3cmnU'
       await getHubSuggestionsForUser()
-      await getDefaultFeedItems()
+      await handleGetDefaultFeed(publicKey)
     }
   }
 
@@ -86,7 +89,6 @@ const FeedDrawer = () => {
       publicKey,
       refresh ? 0 : feedItems?.length || 0
     )
-
     if (feed) {
       setItemsTotal(feed.total)
       if (feedItems && feedItems.length > 0) {
@@ -96,6 +98,11 @@ const FeedDrawer = () => {
       }
     }
     setFeedFetched(true)
+  }
+
+  const handleGetDefaultFeed = async (publicKey) => {
+    const defaultFeed = await getFeedForUser(publicKey, feedItems?.length || 0)
+    setDefaultItems(defaultFeed?.feedItems)
   }
 
   const getHubSuggestionsForUser = async (publicKey) => {
@@ -111,15 +118,6 @@ const FeedDrawer = () => {
     } catch (error) {
       return []
     }
-  }
-
-  const getDefaultFeedItems = async (refresh = false) => {
-    const defaultPubkey = '7zoKqAehBR7oWMFpmWr2ebrhMvqL6oBsHdRcL2N3cmnU'
-    const defaultFeed = await getFeedForUser(
-      defaultPubkey,
-      refresh ? 0 : feedItems?.length || 0
-    )
-    setDefaultFeedItems(defaultFeed?.feedItems)
   }
 
   return (
@@ -184,7 +182,7 @@ const FeedDrawer = () => {
                 handleGetFeedForUser={handleGetFeedForUser}
                 publicKey={wallet?.publicKey?.toBase58()}
                 feedFetched={feedFetched}
-                defaultItems={defaultFeedItems}
+                defaultItems={defaultItems}
               />
             )}
 

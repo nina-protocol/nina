@@ -111,7 +111,8 @@ const Feed = ({
     }
   }
 
-  const feedItems = useMemo((fetchedFeedItems) => {
+  const feedItems = useMemo(() => {
+    const fetchedFeedItems = items?.length > 0 ? items : defaultItems
     const feedItemComponents = fetchedFeedItems?.map((item, i) => {
       switch (item?.type) {
         case 'HubInitWithCredit':
@@ -221,8 +222,6 @@ const Feed = ({
             </ImageCard>
           )
         case 'ReleaseInitViaHub':
-          console.log('item pubkey', item?.release?.publicKey)
-          console.log('item', item)
           return (
             <ImageCard>
               <HoverContainer
@@ -541,11 +540,17 @@ const Feed = ({
               </Link>
               <CopyWrapper>
                 <Typography my={1}>
-                  <Link href={`/profiles/${item.authority?.publicKey}`} passHref>
+                  <Link
+                    href={`/profiles/${item.authority?.publicKey}`}
+                    passHref
+                  >
                     {displayNameForAccount(item.authority?.publicKey)}
                   </Link>{' '}
                   followed{' '}
-                  <Link href={`/profiles/${item.toAccount?.publicKey}`} passHref>
+                  <Link
+                    href={`/profiles/${item.toAccount?.publicKey}`}
+                    passHref
+                  >
                     {displayNameForAccount(item.toAccount?.publicKey)}
                   </Link>
                 </Typography>
@@ -576,7 +581,10 @@ const Feed = ({
               </Link>
               <CopyWrapper>
                 <Typography my={1}>
-                  <Link href={`/profiles/${item.authority?.publicKey}`} passHref>
+                  <Link
+                    href={`/profiles/${item.authority?.publicKey}`}
+                    passHref
+                  >
                     {displayNameForAccount(item.authority?.publicKey)}
                   </Link>{' '}
                   followed{' '}
@@ -598,9 +606,7 @@ const Feed = ({
     })
 
     return feedItemComponents || []
-  }, [fetchedFeedItems, isPlaying, track])
-
-  
+  }, [items, isPlaying, track])
 
   if (publicKey && !feedFetched) {
     return (
@@ -611,14 +617,15 @@ const Feed = ({
   }
   return (
     <ScrollWrapper onScroll={debounce(() => handleScroll(), 500)}>
-      {feedItems(items) && (
+      {feedItems && (
         <Box>
           <FeedWrapper ref={scrollRef}>
-            {feedItems(items) &&
-              feedItems(items)?.map((item, index) => (
+            {feedItems &&
+              wallet?.connected &&
+              feedItems?.map((item, index) => (
                 <CardWrapper key={index}>{item}</CardWrapper>
               ))}
-            {publicKey && feedItems(items).length === 0 && (
+            {publicKey && feedItems.length === 0 && (
               <Box
                 sx={{
                   display: 'flex',
@@ -642,14 +649,14 @@ const Feed = ({
               </Box>
             )}
           </FeedWrapper>
-          {feedItems(items) && pendingFetch && (
+          {feedItems && pendingFetch && (
             <Box>
               <Dots size="80px" />
             </Box>
           )}
           {wallet?.connected &&
-            feedItems(items)?.length > 0 &&
-            itemsTotal >= feedItems(items)?.length &&
+            feedItems?.length > 0 &&
+            itemsTotal >= feedItems?.length &&
             !pendingFetch && (
               <Typography
                 variant="h4"
@@ -661,7 +668,7 @@ const Feed = ({
             )}
         </Box>
       )}
-      {feedItems(defaultItems) && !publicKey && (
+      {feedItems && wallet?.connected === false && (
         <FeedWrapper ref={scrollRef}>
           <Box
             sx={{
@@ -674,7 +681,7 @@ const Feed = ({
               Connect your wallet to see the latest activity on Nina relevant to
               you.
             </Typography>
-            {feedItems(defaultItems)?.map((item, index) => (
+            {feedItems?.map((item, index) => (
               <CardWrapper key={index}>{item}</CardWrapper>
             ))}
           </Box>

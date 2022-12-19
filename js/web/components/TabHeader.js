@@ -73,7 +73,7 @@ const TabHeader = ({
                     tab.count > 99 ? '99+' : tab.count
                   })`}</MobileTab>
 
-                  {tab.playlist && (
+                  {tab.playlist?.length > 0 && (
                     <PlayCircleOutlineIconButtonWrapper
                       disabled={tab.disabled}
                       onClick={(e) => {
