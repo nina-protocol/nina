@@ -58,7 +58,6 @@ const Feed = ({
   handleGetFeedForUser,
   feedFetched,
   toggleDrawer,
-  defaultItems,
 }) => {
   const { updateTrack, isPlaying, setIsPlaying, track } = useContext(
     Audio.Context
@@ -112,8 +111,7 @@ const Feed = ({
   }
 
   const feedItems = useMemo(() => {
-    const fetchedFeedItems = items ? items : defaultItems
-    const feedItemComponents = fetchedFeedItems?.map((item, i) => {
+    const feedItemComponents = items?.map((item, i) => {
       switch (item?.type) {
         case 'HubInitWithCredit':
           return (
@@ -606,7 +604,7 @@ const Feed = ({
     })
 
     return feedItemComponents || []
-  }, [items, defaultItems, isPlaying, track])
+  }, [items, isPlaying, track])
 
   if (publicKey && !feedFetched) {
     return (
