@@ -58,6 +58,7 @@ const Feed = ({
   handleGetFeedForUser,
   feedFetched,
   toggleDrawer,
+  defaultItems,
 }) => {
   const { updateTrack, isPlaying, setIsPlaying, track } = useContext(
     Audio.Context
@@ -111,7 +112,8 @@ const Feed = ({
   }
 
   const feedItems = useMemo(() => {
-    const feedItemComponents = items?.map((item, i) => {
+    const fetchedFeedItems = items?.length > 0 ? items : defaultItems
+    const feedItemComponents = fetchedFeedItems?.map((item, i) => {
       switch (item?.type) {
         case 'HubInitWithCredit':
           return (
@@ -204,7 +206,7 @@ const Feed = ({
               <CopyWrapper>
                 <Typography my={1}>
                   New Release:{' '}
-                  <Link href={`/${item.release.publicKey}`} passHref>
+                  <Link href={`/${item?.release?.publicKey}`} passHref>
                     {`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}
                   </Link>{' '}
                   by{' '}
@@ -267,8 +269,8 @@ const Feed = ({
               <CopyWrapper>
                 <Typography my={1}>
                   New Release:{' '}
-                  <Link href={`/${item.release.publicKey}`} passHref>
-                    {`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}
+                  <Link href={`/${item?.release?.publicKey}`} passHref>
+                    {`${item?.release?.metadata?.properties?.artist} - ${item?.release?.metadata?.properties?.title}`}
                   </Link>{' '}
                   via{' '}
                   <Link href={`/hubs/${item?.hub?.handle}`} passHref>
@@ -613,13 +615,13 @@ const Feed = ({
       </Box>
     )
   }
-
   return (
     <ScrollWrapper onScroll={debounce(() => handleScroll(), 500)}>
       {feedItems && (
         <Box>
           <FeedWrapper ref={scrollRef}>
             {feedItems &&
+              wallet?.connected &&
               feedItems?.map((item, index) => (
                 <CardWrapper key={index}>{item}</CardWrapper>
               ))}
@@ -646,21 +648,6 @@ const Feed = ({
                 </Typography>
               </Box>
             )}
-            {!publicKey && (
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  mt: 5,
-                }}
-              >
-                <Typography variant="h5" mb={1}>
-                  Connect your wallet to see the latest activity on Nina
-                  relevant to you.
-                </Typography>
-              </Box>
-            )}
           </FeedWrapper>
           {feedItems && pendingFetch && (
             <Box>
@@ -680,6 +667,25 @@ const Feed = ({
               </Typography>
             )}
         </Box>
+      )}
+      {feedItems && wallet?.connected === false && (
+        <FeedWrapper ref={scrollRef}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography variant="h5" mb={1}>
+              Connect your wallet to see the latest activity on Nina relevant to
+              you.
+            </Typography>
+            {feedItems?.map((item, index) => (
+              <CardWrapper key={index}>{item}</CardWrapper>
+            ))}
+          </Box>
+        </FeedWrapper>
       )}
     </ScrollWrapper>
   )
