@@ -58,6 +58,7 @@ const Feed = ({
   handleGetFeedForUser,
   feedFetched,
   toggleDrawer,
+  defaultItems,
 }) => {
   const { updateTrack, isPlaying, setIsPlaying, track } = useContext(
     Audio.Context
@@ -111,7 +112,8 @@ const Feed = ({
   }
 
   const feedItems = useMemo(() => {
-    const feedItemComponents = items?.map((item, i) => {
+    const fetchedFeedItems = items?.length > 0 ? items : defaultItems
+    const feedItemComponents = fetchedFeedItems?.map((item, i) => {
       switch (item?.type) {
         case 'HubInitWithCredit':
           return (
@@ -517,7 +519,7 @@ const Feed = ({
         //     </MultiCard>
         //   )
         case 'SubscriptionSubscribeAccount':
-          const image = displayImageForAccount(item.toAccount?.publicKey)
+          const image = displayImageForAccount(item?.toAccount?.publicKey)
           return (
             <ImageCard>
               <Link href={`/profiles/${item.toAccount?.publicKey}`} passHref>
@@ -613,7 +615,6 @@ const Feed = ({
       </Box>
     )
   }
-  console.log('iiitems', items)
   return (
     <ScrollWrapper onScroll={debounce(() => handleScroll(), 500)}>
       {feedItems && 
