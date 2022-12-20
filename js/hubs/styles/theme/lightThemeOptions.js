@@ -259,6 +259,9 @@ const lightThemeOptions = {
           // QL classes are for overriding Quill components
           textAlign: "left",
         },
+        ".ql-editor": {
+          minHeight: "100px",
+        },
         ".ql-bubble a::before, a::after": {
           display: "none",
         },
