@@ -33,7 +33,7 @@ const FeedDrawer = () => {
 
   useEffect(() => {
     handleFetch()
-  }, [wallet.connected])
+  }, [])
 
   useEffect(() => {
     if (wallet.disconnecting) {
@@ -100,14 +100,19 @@ const FeedDrawer = () => {
     setFeedFetched(true)
   }
 
-  const handleGetDefaultFeed = async (publicKey) => {
+  const handleGetDefaultFeed = async (publicKey,) => {
+  
     const defaultFeed = await getFeedForUser(publicKey, feedItems?.length || 0)
-    setDefaultItems(defaultFeed?.feedItems)
+    if (defaultFeed) {
+    setDefaultItems(defaultFeed.feedItems)
+    }
+  
   }
 
   const getHubSuggestionsForUser = async (publicKey) => {
     const suggestions = []
     try {
+   
       const { data } = await axios.get(
         `${process.env.NINA_API_ENDPOINT}/accounts/${publicKey}/hubSuggestions`
       )

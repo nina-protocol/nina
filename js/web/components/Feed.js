@@ -112,7 +112,7 @@ const Feed = ({
   }
 
   const feedItems = useMemo(() => {
-    const fetchedFeedItems = items?.length > 0 ? items : defaultItems
+    const fetchedFeedItems = items ? items : defaultItems
     const feedItemComponents = fetchedFeedItems?.map((item, i) => {
       switch (item?.type) {
         case 'HubInitWithCredit':
@@ -606,7 +606,7 @@ const Feed = ({
     })
 
     return feedItemComponents || []
-  }, [items, isPlaying, track])
+  }, [items, defaultItems, isPlaying, track])
 
   if (publicKey && !feedFetched) {
     return (
@@ -615,23 +615,22 @@ const Feed = ({
       </Box>
     )
   }
+  console.log('iiitems', items)
   return (
     <ScrollWrapper onScroll={debounce(() => handleScroll(), 500)}>
-      {feedItems && (
+      {feedItems && 
+      wallet?.connected &&
+      (
         <Box>
           <FeedWrapper ref={scrollRef}>
-            {feedItems &&
-              wallet?.connected &&
-              feedItems?.map((item, index) => (
-                <CardWrapper key={index}>{item}</CardWrapper>
-              ))}
-            {publicKey && feedItems.length === 0 && (
+            {!items && (
               <Box
                 sx={{
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'center',
                   mt: 5,
+                  mb: 5,
                   textAlign: 'left',
                 }}
               >
@@ -648,6 +647,10 @@ const Feed = ({
                 </Typography>
               </Box>
             )}
+             {
+              feedItems?.map((item, index) => (
+                <CardWrapper key={index}>{item}</CardWrapper>
+              ))}
           </FeedWrapper>
           {feedItems && pendingFetch && (
             <Box>
