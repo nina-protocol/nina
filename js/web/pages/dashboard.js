@@ -13,13 +13,13 @@ const DashboardPage = () => {
   const router = useRouter()
 
   useEffect(() => {
-    if (!wallet.connected) {
-      router.push('/')
-    }
     if (wallet.connected) {
       setPublicKey(wallet.publicKey.toBase58())
     }
-  }, [wallet])
+    if (wallet.disconnecting) {
+      router.push('/')
+    }
+  }, [wallet, publicKey])
   return (
     <>
       <Head>

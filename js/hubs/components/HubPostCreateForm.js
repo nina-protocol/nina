@@ -9,7 +9,8 @@ import Box from "@mui/material/Box";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import Quill from "./Quill";
+import dynamic from "next/dynamic";
+const QuillEditor = dynamic(() => import("./QuillEditor"), { ssr: false });
 
 const HubPostCreateForm = ({
   field,
@@ -67,7 +68,11 @@ const HubPostCreateForm = ({
         <Field name="body">
           {(props) => (
             <Box>
-              <Quill props={props} type={"post"} postCreated={postCreated} />
+              <QuillEditor
+                formikProps={props}
+                type={"post"}
+                postCreated={postCreated}
+              />
             </Box>
           )}
         </Field>
@@ -75,7 +80,7 @@ const HubPostCreateForm = ({
         {!preloadedRelease && (
           <Field name="reference">
             {(props) => (
-              <FormControl fullWidth>
+              <FormControl fullWidth style={{ marginTop: "50px" }}>
                 <Select
                   className="formField"
                   value={props.field.value}
@@ -105,7 +110,7 @@ const HubPostCreateForm = ({
         )}
 
         {preloadedRelease && (
-          <Typography mt={1}>
+          <Typography mt={3}>
             <i>{releaseState.metadata[preloadedRelease].name}</i> will be
             associated with this post
           </Typography>
@@ -128,7 +133,7 @@ export default withFormik({
   mapPropsToValues: () => {
     return {
       title: "",
-      body: null,
+      body: "",
       reference: "",
     };
   },

@@ -28,9 +28,13 @@ import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 import Royalty from './Royalty'
+import CreateGateModal from './CreateGateModal'
+import UnlockGateModal from './UnlockGateModal'
+import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 
 const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, router } = props
+  console.log('metadata :>> ', metadata);
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const {
@@ -55,7 +59,7 @@ const ReleasePurchase = (props) => {
   } = useContext(Exchange.Context)
   const [release, setRelease] = useState(undefined)
   const [gate, setGate] = useState(undefined)
-  const [file, setFile] = useState(undefined)
+  // const [file, setFile] = useState(undefined)
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
   const [amountPendingBuys, setAmountPendingBuys] = useState(0)
   const [amountPendingSales, setAmountPendingSales] = useState(0)
@@ -78,6 +82,7 @@ const ReleasePurchase = (props) => {
   const getGate = async () => {
     const { gates } = (await axios.get(`${process.env.NINA_API_ENDPOINT}/releases/${releasePubkey}/gates`)).data
     if (gates.length > 0) {
+      console.log('gates :>> ', gates);
       setGate(gates[0])
     }
   }
@@ -85,6 +90,7 @@ const ReleasePurchase = (props) => {
   useEffect(() => {
     getRelease(releasePubkey)
     getGate()
+    console.log('gate :>> ', gate);
     // const hubForRelease = async (releasePubkey) => {
     //   const result = await getPublishedHubForRelease(releasePubkey)
     //   setPublishedHub(result?.hub)
@@ -103,12 +109,20 @@ const ReleasePurchase = (props) => {
   }, [releaseState.tokenData[releasePubkey]])
 
   useEffect(() => {
-    getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
-  }, [])
-
-  useEffect(() => {
-    setAmountHeld(collection[releasePubkey])
+    setAmountHeld(collection[releasePubkey] || 0)
   }, [collection[releasePubkey]])
+
+  // useEffect(() => {
+  //   const handleGetAmountHeld = async () => {
+  //     const amountHeld = await getAmountHeld(
+  //       releaseState.releaseMintMap[releasePubkey],
+  //       releasePubkey
+  //     )
+  //     console.log('amountHeld !!:>> ', amountHeld);
+  //     setAmountHeld(amountHeld)
+  //   }
+  // handleGetAmountHeld()
+  // }, [releasePubkey])
 
   useEffect(() => {
     getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
@@ -143,7 +157,7 @@ const ReleasePurchase = (props) => {
   }, [release?.revenueShareRecipients, wallet?.connected])
 
   useEffect(() => {
-    if (metadata?.descriptionHtml?.includes('<p>')) {
+    if (metadata?.descriptionHtml) {
       unified()
         .use(rehypeParse, { fragment: true })
         .use(rehypeSanitize)
@@ -155,9 +169,7 @@ const ReleasePurchase = (props) => {
           target: false,
           rel: ['nofollow', 'noreferrer'],
         })
-        .process(
-          JSON.parse(metadata.descriptionHtml).replaceAll('<p><br></p>', '<br>')
-        )
+        .process(parseChecker(metadata.descriptionHtml))
         .then((file) => {
           setDescription(file.result)
         })
@@ -266,96 +278,6 @@ const ReleasePurchase = (props) => {
     setDownloadButtonString('Download')
   }
 
-  const handleUnlockGate = async () => {
-    try {
-      const message = new TextEncoder().encode(releasePubkey);
-      const messageBase64 = encodeBase64(message);
-      const signature = await wallet.signMessage(message);
-      const signatureBase64 = encodeBase64(signature);
-      const result = await axios.get(`${process.env.NINA_GATE_URL}/gate/${gate.id}?message=${encodeURIComponent(messageBase64)}&publicKey=${encodeURIComponent(wallet.publicKey.toBase58())}&signature=${encodeURIComponent(signatureBase64)}`)
-      
-      const response = await axios.get(result.data.url, {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/octet-stream",
-        },
-        responseType: "blob",
-      });
-
-      if (response?.data) {
-        const a = document.createElement("a");
-        const url = window.URL.createObjectURL(response.data);
-        a.href = url;
-        a.download = release.gate.fileName;
-        a.click();
-      }  
-    } catch (error) {
-      console.log('error: ', error)
-      // setResponse(error.response.data);
-    }
-  }
-
-  const handleFileUpload = async () => {
-    try {
-      const FILE_CHUNK_SIZE = 10_000_000
-
-      const message = new TextEncoder().encode(releasePubkey);
-      const messageBase64 = encodeBase64(message);
-      const signature = await wallet.signMessage(message);
-      const signatureBase64 = encodeBase64(signature);
-
-      const response = await axios.post(`${process.env.NINA_GATE_URL}/gate`, {
-        fileSize: file.size,
-        fileName: file.name,
-        publicKey: wallet.publicKey.toBase58(),
-        message: messageBase64,
-        signature: signatureBase64,
-        release: releasePubkey,
-      })
-      console.log('response: ', response.data)
-      const {
-        urls,
-        UploadId
-      } = response.data;
-      console.log('urls: ', urls)
-      const uploader = axios.create()
-      delete uploader.defaults.headers.put['Content-Type']
-
-      const keys = Object.keys(urls)
-      const promises = []
-    
-      for (const indexStr of keys) {
-        const index = parseInt(indexStr)
-        const start = index * FILE_CHUNK_SIZE
-        const end = (index + 1) * FILE_CHUNK_SIZE
-        const blob = index < keys.length
-          ? file.slice(start, end)
-          : file.slice(start)
-    
-        promises.push(axios.put(urls[index], blob))
-      }
-    
-      const resParts = await Promise.all(promises)
-      const result = resParts.map((part, index) => ({
-        ETag: part.headers.etag,
-        PartNumber: index + 1
-      }))
-      console.log('result: ', result)
-
-      const completeResponse = await axios.post(`${process.env.NINA_GATE_URL}/gate/finalize`, {
-        UploadId,
-        releasePublicKey: releasePubkey,
-        fileName: file.name,
-        fileSize: file.size,
-        parts: result
-      })
-      getGate()
-      console.log('completeResponse: ', completeResponse.data)
-    } catch (err) {
-      console.log(err)
-    }
-  }
   return (
     <Box>
       <AmountRemaining variant="body2" align="left">
@@ -377,9 +299,28 @@ const ReleasePurchase = (props) => {
       {wallet?.connected && (
         <StyledUserAmount>
           {metadata && (
-            <Typography variant="body2" align="left" gutterBottom>
-              You have: {amountHeld || 0} {metadata.symbol}
-            </Typography>
+            <>
+              <Typography
+                variant="body2"
+                align="left"
+                gutterBottom
+                paddingBottom={'5px'}
+                cursor="default"
+              >
+                {`Catalog no. ${metadata.symbol}`}
+              </Typography>
+              <Typography
+                variant="body2"
+                align="left"
+                gutterBottom
+                cursor="default"
+              >
+                {amountHeld > 0 &&
+                  `You own ${
+                    amountHeld > 1 ? `${amountHeld} editions of` : ''
+                  } this release`}
+              </Typography>
+            </>
           )}
           {amountPendingSales > 0 ? (
             <Typography variant="body2" align="left" gutterBottom>
@@ -408,6 +349,9 @@ const ReleasePurchase = (props) => {
         </Typography>
       )}
       <StyledDescription align="left">{description}</StyledDescription>
+      {/* {gate && (
+        <UnlockGateModal gate={gate} releasePubkey={releasePubkey} amountHeld={amountHeld} />
+      )} */}
       <Box mt={1}>
         <form onSubmit={handleSubmit}>
           <Button variant="outlined" type="submit" fullWidth>
@@ -419,21 +363,19 @@ const ReleasePurchase = (props) => {
           </Button>
         </form>
       </Box>
+      {gate && (
+        <UnlockGateModal gate={gate} releasePubkey={releasePubkey} amountHeld={amountHeld} />
+      )}
       {!gate && wallet?.publicKey?.toBase58() === release.authority && (
         <>
-          <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-          {file && (
-            <button onClick={handleFileUpload}>Add Gate</button>
-          )}
+          <CreateGateModal releasePubkey={releasePubkey} getGate={getGate} metadata={metadata} />
         </>
       )}
-      {gate && (
-        <button onClick={() => handleUnlockGate()}>Unlock Gate</button>
-      )}
-      {userIsRecipient && (
+  
+      {/* {userIsRecipient && (
         <Royalty releasePubkey={releasePubkey} release={release} />
-      )}
-      {amountHeld > 0 && (
+      )} */}
+      {/* {amountHeld > 0 && (
         <Button
           variant="outlined"
           fullWidth
@@ -456,7 +398,7 @@ const ReleasePurchase = (props) => {
             )}
           </Typography>
         </Button>
-      )}
+      )} */}
     </Box>
   )
 }

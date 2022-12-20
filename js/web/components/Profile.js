@@ -22,7 +22,6 @@ const Profile = ({ profilePubkey }) => {
   const wallet = useWallet()
   const router = useRouter()
   const tableContainerRef = useRef(null)
-
   const {
     getUserCollectionAndPublished,
     collectRoyaltyForRelease,
@@ -102,16 +101,7 @@ const Profile = ({ profilePubkey }) => {
     if (wallet.connected && profilePubkey === wallet.publicKey?.toBase58()) {
       setInDashboard(true)
     }
-  }, [wallet, profilePubkey])
-
-  useEffect(() => {
-    if (router.query.view) {
-      const viewIndex = views.findIndex(
-        (view) => view.name === router.query.view
-      )
-      setActiveView(viewIndex)
-    }
-  }, [router.query.view])
+  }, [wallet, profilePubkey, router])
 
   useEffect(() => {
     const to = []
@@ -150,12 +140,12 @@ const Profile = ({ profilePubkey }) => {
     if (profileSubscriptionsTo?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'followers')
       updatedView[viewIndex].disabled = false
-      updatedView[viewIndex].count = profileSubscriptionsTo.length
+      updatedView[viewIndex].count = profileSubscriptionsTo?.length
     }
     if (profileSubscriptionsFrom?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'following')
       updatedView[viewIndex].disabled = false
-      updatedView[viewIndex].count = profileSubscriptionsFrom.length
+      updatedView[viewIndex].count = profileSubscriptionsFrom?.length
     }
     if (inDashboard) {
       updatedView.forEach((view) => {
@@ -173,11 +163,32 @@ const Profile = ({ profilePubkey }) => {
   ])
 
   useEffect(() => {
-    if (!router.query.view) {
+    if (!router.query.view && !inDashboard) {
       const viewIndex = views.findIndex((view) => !view.disabled)
       setActiveView(viewIndex)
     }
-  }, [views])
+    if (router.query.view) {
+      const viewIndex = views.findIndex(
+        (view) => view.name === router.query.view
+      )
+      setActiveView(viewIndex)
+      return
+    }
+    if (inDashboard && profileCollectionReleases?.length > 0) {
+      setActiveView(0)
+    }
+    if (inDashboard && profilePublishedReleases?.length === 0) {
+      setActiveView(1)
+    }
+    if (
+      inDashboard &&
+      profilePublishedReleases?.length === 0 &&
+      profileCollectionReleases?.length === 0 &&
+      profileHubs.length > 0
+    ) {
+      setActiveView(2)
+    }
+  }, [views, router])
 
   useEffect(() => {
     let filteredCollection
