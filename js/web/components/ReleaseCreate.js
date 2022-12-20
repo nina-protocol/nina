@@ -104,6 +104,8 @@ const ReleaseCreate = () => {
   const [profileHubs, setProfileHubs] = useState()
   const [hubOptions, setHubOptions] = useState()
   const [selectedHub, setSelectedHub] = useState()
+  const [processingProgress, setProcessingProgress] = useState()
+  
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
     [bundlrBalance, bundlrPricePerMb]
@@ -240,7 +242,7 @@ const ReleaseCreate = () => {
   useEffect(() => {
     if (track) {
       const handleGetMd5FileHash = async (track) => {
-        const hash = await getMd5FileHash(track.file)
+        const hash = await getMd5FileHash(track.file, (progress) => setProcessingProgress(progress))
         setMd5Digest(hash)
       }
       handleGetMd5FileHash(track)
@@ -259,7 +261,7 @@ const ReleaseCreate = () => {
           },
           `/${releasePubkey.toBase58()}`
         )
-      } else if (track && artwork) {
+      } else if (track && artwork && md5Digest) {
         const error = await checkIfHasBalanceToCompleteAction(
           NinaProgramAction.RELEASE_INIT_WITH_CREDIT
         )
@@ -423,6 +425,7 @@ const ReleaseCreate = () => {
     } = e
     setSelectedHub(value)
   }
+
   return (
     <Grid item md={12}>
       {!wallet.connected && (
@@ -471,6 +474,7 @@ const ReleaseCreate = () => {
                 track={track}
                 disabled={isPublishing || releaseCreated}
                 handleProgress={handleProgress}
+                processingProgress={processingProgress}
               />
             </Box>
 
@@ -515,7 +519,7 @@ const ReleaseCreate = () => {
               {bundlrBalance > 0 && !formValuesConfirmed && (
                 <ReleaseCreateConfirm
                   formValues={formValues}
-                  formIsValid={formIsValid}
+                  formIsValid={formIsValid && processingProgress === 1}
                   handleSubmit={handleSubmit}
                   setFormValuesConfirmed={setFormValuesConfirmed}
                   artwork={artwork}

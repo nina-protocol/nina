@@ -93,6 +93,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
   const [uploadId, setUploadId] = useState();
   const [publishingStepText, setPublishingStepText] = useState();
   const [md5Digest, setMd5Digest] = useState();
+  const [processingProgress, setProcessingProgress] = useState()
 
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
@@ -193,7 +194,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
   useEffect(() => {
     if (track) {
       const handleGetMd5FileHash = async (track) => {
-        const hash = await getMd5FileHash(track.file);
+        const hash = await getMd5FileHash(track.file, (progress) => setProcessingProgress(progress));
         setMd5Digest(hash);
       };
       handleGetMd5FileHash(track);
@@ -215,7 +216,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
             hubData.handle
           }/releases/${releaseInfo.hubRelease.toBase58()}`,
         });
-      } else if (track && artwork) {
+      } else if (track && artwork && md5Digest) {
         const error = await checkIfHasBalanceToCompleteAction(
           NinaProgramAction.RELEASE_INIT_VIA_HUB
         );
@@ -369,6 +370,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
               releasePubkey={releasePubkey}
               track={track}
               disabled={isPublishing || releaseCreated}
+              processingProgress={processingProgress}
             />
           </Box>
 
@@ -436,7 +438,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
             {bundlrBalance > 0 && !formValuesConfirmed && canAddContent && (
               <ReleaseCreateConfirm
                 formValues={formValues}
-                formIsValid={formIsValid}
+                formIsValid={formIsValid && processingProgress === 1}
                 handleSubmit={(e) => handleSubmit(e)}
                 setFormValuesConfirmed={setFormValuesConfirmed}
               />
