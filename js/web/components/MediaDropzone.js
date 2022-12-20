@@ -18,7 +18,7 @@ const MediaDropzone = ({ type, setArtwork, setTrack, handleProgress, processingP
           alert(`Your track is not an MP3. \nPlease upload an MP3.`)
         } else {
           alert(
-            `Your track is ${size} mb... \nPlease upload a file smaller than 120 mb`
+            `Your track is ${size} mb... \nPlease upload a file smaller than 500 MBs`
           )
         }
       } else {
@@ -28,7 +28,7 @@ const MediaDropzone = ({ type, setArtwork, setTrack, handleProgress, processingP
           )
         } else {
           alert(
-            `your image is ${size} mb... \nPlease upload an image smaller than 8 mb`
+            `your image is ${size} mb... \nPlease upload an image smaller than 8 MBs`
           )
         }
       }
