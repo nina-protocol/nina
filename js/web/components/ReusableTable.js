@@ -320,7 +320,7 @@ const ReusableTableBody = (props) => {
         )
         const collectable = recipient?.owed > 0
         const collectableAmount = ninaClient.nativeToUiString(
-          recipient.owed,
+          recipient?.owed,
           data.tokenData.paymentMint
         )
 
@@ -340,7 +340,7 @@ const ReusableTableBody = (props) => {
         )
         formattedData.remaining = `${data.tokenData.remainingSupply} / ${data.tokenData.totalSupply}`
         formattedData.collected = ninaClient.nativeToUiString(
-          recipient.collected + recipient.owed,
+          recipient?.collected + recipient.owed,
           data.tokenData.paymentMint
         )
         formattedData.collect = collectButton
@@ -558,7 +558,7 @@ const ReusableTableBody = (props) => {
                 } else if (cellName === 'title') {
                   return (
                     <StyledProfileTableCell key={cellName} type={'profile'}>
-                      <OverflowContainer>
+                      <OverflowContainer inDashboard={inDashboard}>
                         <Typography sx={{ textDecoration: 'underline' }} noWrap>
                           {cellData}
                         </Typography>
@@ -568,7 +568,10 @@ const ReusableTableBody = (props) => {
                 } else if (cellName === 'artist') {
                   return (
                     <StyledProfileTableCell key={cellName} type={'profile'}>
-                      <OverflowContainer overflowWidth={'20vw'}>
+                      <OverflowContainer
+                        overflowWidth={'20vw'}
+                        inDashboard={inDashboard}
+                      >
                         <Typography
                           noWrap
                           sx={{ hover: 'pointer', maxWidth: '20vw' }}
@@ -835,9 +838,9 @@ const SearchResultTableCell = styled(TableCell)(({ theme }) => ({
     fontSize: '16px',
   },
 }))
-const OverflowContainer = styled(Box)(({ theme }) => ({
+const OverflowContainer = styled(Box)(({ theme, inDashboard }) => ({
   overflow: 'hidden',
-  maxWidth: '360px',
+  maxWidth: inDashboard ? '170px' : '360px',
   textAlign: 'left',
   textOverflow: 'ellipsis',
   [theme.breakpoints.down('md')]: {
