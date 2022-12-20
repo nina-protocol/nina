@@ -26,7 +26,7 @@ const style = {
   boxShadow: 24,
   p: 4,
   maxHeight: '100vh',
-  overflowY: 'scroll'
+  overflowY: 'scroll',
 }
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -143,7 +143,13 @@ const ReleaseCreateConfirm = (props) => {
               sx={{ mt: 1, flexDirection: 'column', mb: 1 }}
             >
               Description:{' '}
-              <span style={{ marginTop: '8px', paddingLeft: '0', maxHeight: '80px' }}>
+              <span
+                style={{
+                  marginTop: '8px',
+                  paddingLeft: '0',
+                  maxHeight: '80px',
+                }}
+              >
                 {description}
               </span>
             </Value>

@@ -95,20 +95,20 @@ const QuillEditor = ({ formikProps, type, update }) => {
   }
   return (
     <>
-    {type !== 'post' && (
-      <InputLabel align="left" shrink={formikProps.field.value ? true : ''}>
-        DESCRIPTION
-      </InputLabel>
-    )}
-    <QuillWrapper type={type} height={height}>
-      <QuillNoSSRWrapper
-        forwardedRef={quillRef}
-        theme={theme}
-        modules={modules}
-        onChange={handleChange}
-        defaultValue={stripQuotesIfNeeded(formikProps.field.value)}
-      ></QuillNoSSRWrapper>
-    </QuillWrapper>
+      {type !== 'post' && (
+        <InputLabel align="left" shrink={formikProps.field.value ? true : ''}>
+          DESCRIPTION
+        </InputLabel>
+      )}
+      <QuillWrapper type={type} height={height}>
+        <QuillNoSSRWrapper
+          forwardedRef={quillRef}
+          theme={theme}
+          modules={modules}
+          onChange={handleChange}
+          defaultValue={stripQuotesIfNeeded(formikProps.field.value)}
+        ></QuillNoSSRWrapper>
+      </QuillWrapper>
     </>
   )
 }
