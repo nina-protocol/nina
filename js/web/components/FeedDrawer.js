@@ -55,7 +55,7 @@ const FeedDrawer = () => {
       await handleGetFeedForUser(publicKey, refresh)
       await getHubSuggestionsForUser(publicKey)
     } else {
-      publicKey = '7zoKqAehBR7oWMFpmWr2ebrhMvqL6oBsHdRcL2N3cmnU'
+      publicKey = process.env.NINA_SUBSCRIPTION_PUBKEY
       await getHubSuggestionsForUser()
       await handleGetDefaultFeed(publicKey)
     }
