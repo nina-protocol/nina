@@ -48,6 +48,9 @@ const NinaProgramActionCost = {
   SUBSCRIPTION_SUBSCRIBE_ACCOUNT: 0.00168236,
 }
 
+const MAX_AUDIO_FILE_UPLOAD_SIZE = 500
+const MAX_IMAGE_FILE_UPLOAD_SIZE = 10
+
 const NinaContext = createContext()
 const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [collection, setCollection] = useState({})
@@ -251,6 +254,8 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         submitEmailRequest,
         lowSolBalance,
         getUsdcToSolSwapData,
+        MAX_AUDIO_FILE_UPLOAD_SIZE,
+        MAX_IMAGE_FILE_UPLOAD_SIZE,
       }}
     >
       {children}

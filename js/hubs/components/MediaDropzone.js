@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from 'react'
 import "react-dropzone-uploader/dist/styles.css";
 import Dropzone from "react-dropzone-uploader";
 import Typography from "@mui/material/Typography";
@@ -6,8 +6,14 @@ import Box from "@mui/material/Box";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import Image from "next/image";
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 
 const MediaDropzone = ({ type, setArtwork, setTrack, disabled, processingProgress }) => {
+  const {
+    MAX_AUDIO_FILE_UPLOAD_SIZE,
+    MAX_IMAGE_FILE_UPLOAD_SIZE
+  } = useContext(Nina.Context)
+
   const handleChangeStatus = ({ meta, file, remove }, status) => {
     if (meta.status === "error_validation") {
       const height = meta.height;
@@ -15,10 +21,10 @@ const MediaDropzone = ({ type, setArtwork, setTrack, disabled, processingProgres
       const size = meta.size / 1000000;
       if (file.type.includes("audio")) {
         if (file.type !== "audio/mpeg") {
-          alert(`Your track is not an MP3. \nPlease upload an MP3.`);
+          alert(`Your track is not an MP3. \nPlease upload an MP3.`)
         } else {
           alert(
-            `your track is ${size} mb... \nPlease upload a smaller than 500 MBs`
+            `Your track is ${size} mb... \nPlease upload a file smaller than ${MAX_AUDIO_FILE_UPLOAD_SIZE} MBs`
           );
         }
       } else {
@@ -28,7 +34,7 @@ const MediaDropzone = ({ type, setArtwork, setTrack, disabled, processingProgres
           );
         } else {
           alert(
-            `your image is ${size} mb... \nPlease upload an image smaller than 3 MBs`
+            `your image is ${size} mb... \nPlease upload an image smaller than ${MAX_IMAGE_FILE_UPLOAD_SIZE} MBs`
           );
         }
       }
@@ -85,7 +91,7 @@ const MediaDropzone = ({ type, setArtwork, setTrack, disabled, processingProgres
       return true;
     }
 
-    if (size > 8) {
+    if (size > MAX_IMAGE_FILE_UPLOAD_SIZE) {
       return true;
     }
     return false;
@@ -93,7 +99,7 @@ const MediaDropzone = ({ type, setArtwork, setTrack, disabled, processingProgres
 
   const validateTrack = (fileWithMeta) => {
     const size = fileWithMeta.file.size / 1000000;
-    if (size > 500) {
+    if (size > MAX_AUDIO_FILE_UPLOAD_SIZE) {
       return true;
     }
     if (fileWithMeta.file.type !== "audio/mpeg") {
