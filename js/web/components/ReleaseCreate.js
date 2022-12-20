@@ -105,6 +105,7 @@ const ReleaseCreate = () => {
   const [hubOptions, setHubOptions] = useState()
   const [selectedHub, setSelectedHub] = useState()
   const [processingProgress, setProcessingProgress] = useState()
+  
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
     [bundlrBalance, bundlrPricePerMb]

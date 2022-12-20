@@ -7,7 +7,7 @@ import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import Image from "next/image";
 
-const MediaDropzone = ({ type, setArtwork, setTrack, disabled }) => {
+const MediaDropzone = ({ type, setArtwork, setTrack, disabled, processingProgress }) => {
   const handleChangeStatus = ({ meta, file, remove }, status) => {
     if (meta.status === "error_validation") {
       const height = meta.height;
@@ -93,7 +93,7 @@ const MediaDropzone = ({ type, setArtwork, setTrack, disabled }) => {
 
   const validateTrack = (fileWithMeta) => {
     const size = fileWithMeta.file.size / 1000000;
-    if (size > 150) {
+    if (size > 500) {
       return true;
     }
     if (fileWithMeta.file.type !== "audio/mpeg") {
@@ -130,6 +130,9 @@ const MediaDropzone = ({ type, setArtwork, setTrack, disabled }) => {
             </Typography>
             <Typography align="left" variant="subtitle1">
               {minutes}:{seconds}
+            </Typography>
+            <Typography align="left" variant="subtitle1">
+              {processingProgress === 1 ? 'Processed' : 'Processing'}: {(processingProgress * 100).toFixed(2)}%
             </Typography>
           </Box>
         </Box>
