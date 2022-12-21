@@ -617,21 +617,17 @@ const Feed = ({
   }
   return (
     <ScrollWrapper onScroll={debounce(() => handleScroll(), 500)}>
-      {feedItems && (
+      {feedItems && wallet?.connected && (
         <Box>
           <FeedWrapper ref={scrollRef}>
-            {feedItems &&
-              wallet?.connected &&
-              feedItems?.map((item, index) => (
-                <CardWrapper key={index}>{item}</CardWrapper>
-              ))}
-            {publicKey && feedItems.length === 0 && (
+            {!items && (
               <Box
                 sx={{
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'center',
                   mt: 5,
+                  mb: 5,
                   textAlign: 'left',
                 }}
               >
@@ -648,6 +644,9 @@ const Feed = ({
                 </Typography>
               </Box>
             )}
+            {feedItems?.map((item, index) => (
+              <CardWrapper key={index}>{item}</CardWrapper>
+            ))}
           </FeedWrapper>
           {feedItems && pendingFetch && (
             <Box>
