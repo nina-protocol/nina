@@ -7,11 +7,14 @@ import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { useRouter } from 'next/router'
 const Dots = dynamic(() => import('./Dots'))
-const HubHeader = dynamic(() => import('./HubHeader'))
-const TabHeader = dynamic(() => import('./TabHeader'))
-const ReusableTable = dynamic(() => import('./ReusableTable'))
 
 const HubComponent = ({ hubPubkey }) => {
+  const TabHeader = useMemo(() => dynamic(() => import('./TabHeader')), [])
+  const ReusableTable = useMemo(
+    () => dynamic(() => import('./ReusableTable')),
+    []
+  )
+  const HubHeader = useMemo(() => dynamic(() => import('./HubHeader')), [])
   const tableContainerRef = useRef(null)
   const router = useRouter()
   const {

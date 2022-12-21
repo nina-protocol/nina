@@ -13,12 +13,16 @@ import IdentityVerification from './IdentityVerification'
 const { getImageFromCDN, loader } = imageManager
 
 const Dots = dynamic(() => import('./Dots'))
-const TabHeader = dynamic(() => import('./TabHeader'))
-const ReusableTable = dynamic(() => import('./ReusableTable'))
-const Subscribe = dynamic(() => import('./Subscribe'))
 const NewProfileCtas = dynamic(() => import('./NewProfileCtas'))
 
 const Profile = ({ profilePubkey }) => {
+  const TabHeader = useMemo(() => dynamic(() => import('./TabHeader')), [])
+  const ReusableTable = useMemo(
+    () => dynamic(() => import('./ReusableTable')),
+    []
+  )
+  const Subscribe = useMemo(() => dynamic(() => import('./Subscribe')), [])
+
   const wallet = useWallet()
   const router = useRouter()
   const tableContainerRef = useRef(null)
