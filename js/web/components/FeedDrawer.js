@@ -10,7 +10,6 @@ import Suggestions from './Suggestions'
 import axios from 'axios'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import CloseIcon from '@mui/icons-material/Close'
 import Typography from '@mui/material/Typography'
@@ -21,45 +20,25 @@ const FeedDrawer = () => {
   const wallet = useWallet()
   const [drawerOpen, setDrawerOpen] = useState(!isMobile)
   const [feedItems, setFeedItems] = useState(undefined)
-  const [defaultItems, setDefaultItems] = useState(undefined)
   const [hubSuggestions, setHubSuggestions] = useState(undefined)
   const [itemsTotal, setItemsTotal] = useState(0)
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { getFeedForUser } = useContext(Release.Context)
-  const { subscriptionState } = useContext(Nina.Context)
   const [activeDrawerTypeIndex, setActiveDrawerTypeIndex] = useState(0)
   const [feedFetched, setFeedFetched] = useState(false)
   const drawerTypes = ['latest', 'suggestions']
 
   useEffect(() => {
-    handleFetch()
-  }, [])
-
-  useEffect(() => {
-    if (wallet.disconnecting) {
-      setFeedItems(undefined)
-    }
-  }, [wallet?.disconnecting])
-
-  useEffect(() => {
-    if (wallet.connected) {
-      // commented out to prevent feed flickering
-      // handleFetch(true)
-    }
-  }, [subscriptionState])
-
-  const handleFetch = async (refresh = false) => {
-    let publicKey
-    if (wallet.connected && wallet.publicKey.toBase58()) {
-      publicKey = wallet.publicKey.toBase58()
+    const handleFetch = async (refresh = false) => {
+      let publicKey = wallet?.publicKey?.toBase58() || process.env.NINA_SUBSCRIPTION_PUBKEY
       await handleGetFeedForUser(publicKey, refresh)
       await getHubSuggestionsForUser(publicKey)
-    } else {
-      publicKey = process.env.NINA_SUBSCRIPTION_PUBKEY
-      await getHubSuggestionsForUser()
-      await handleGetDefaultFeed(publicKey)
     }
-  }
+
+    if (wallet && !wallet.connecting) {
+      handleFetch(true)
+    }
+  }, [wallet.connecting, wallet.publicKey])
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -91,22 +70,13 @@ const FeedDrawer = () => {
     )
     if (feed) {
       setItemsTotal(feed.total)
-      if (feedItems && feedItems.length > 0) {
+      if (feedItems && feedItems.length > 0 && !refresh) {
         setFeedItems(feedItems.concat(feed?.feedItems))
       } else {
         setFeedItems(feed?.feedItems)
       }
     }
     setFeedFetched(true)
-  }
-
-  const handleGetDefaultFeed = async (publicKey,) => {
-  
-    const defaultFeed = await getFeedForUser(publicKey, feedItems?.length || 0)
-    if (defaultFeed) {
-    setDefaultItems(defaultFeed.feedItems)
-    }
-  
   }
 
   const getHubSuggestionsForUser = async (publicKey) => {
@@ -187,7 +157,6 @@ const FeedDrawer = () => {
                 handleGetFeedForUser={handleGetFeedForUser}
                 publicKey={wallet?.publicKey?.toBase58()}
                 feedFetched={feedFetched}
-                defaultItems={defaultItems}
               />
             )}
 
