@@ -265,11 +265,12 @@ const Profile = ({ profilePubkey }) => {
       : `profiles/${profilePubkey}`
 
     const newUrl = `/${path}?view=${activeViewName}`
-    window.history.replaceState(
-      { ...window.history.state, as: newUrl, url: newUrl },
-      '',
-      newUrl
-    )
+    // window.history.replaceState(
+    //   { ...window.history.state, as: newUrl, url: newUrl },
+    //   '',
+    //   newUrl
+    // )
+    router.push(newUrl, newUrl, { shallow: true })
     setActiveView(index)
     tableContainerRef.current.scrollTo(0, 0)
   }
