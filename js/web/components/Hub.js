@@ -82,7 +82,7 @@ const HubComponent = ({ hubPubkey }) => {
 
   useEffect(() => {
     let [releases] = filterHubContentForHub(hubPubkey)
-    releases = releases.filter(release => release.visible === true)
+    releases = releases.filter((release) => release.visible === true)
     setFetched({ ...fetched, releases: true })
     setHubReleases(releases)
   }, [hubContentState])
@@ -172,15 +172,6 @@ const HubComponent = ({ hubPubkey }) => {
     const activeViewName = views[index].name
     const hubHandle = hubState[hubPubkey]?.handle
     const newUrl = `/hubs/${hubHandle}?view=${activeViewName}`
-    // window.history.replaceState(
-    //   {
-    //     ...window.history.state,
-    //     as: newUrl,
-    //     url: newUrl,
-    //   },
-    //   '',
-    //   newUrl
-    // )
     router.push(newUrl, newUrl, { shallow: true })
     setActiveView(index)
     tableContainerRef.current.scrollTo(0, 0)

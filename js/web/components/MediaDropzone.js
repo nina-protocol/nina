@@ -8,11 +8,16 @@ import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined'
 import Image from 'next/image'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 
-const MediaDropzone = ({ type, setArtwork, setTrack, handleProgress, processingProgress }) => {
-  const {
-    MAX_AUDIO_FILE_UPLOAD_SIZE,
-    MAX_IMAGE_FILE_UPLOAD_SIZE
-  } = useContext(Nina.Context)
+const MediaDropzone = ({
+  type,
+  setArtwork,
+  setTrack,
+  handleProgress,
+  processingProgress,
+}) => {
+  const { MAX_AUDIO_FILE_UPLOAD_SIZE, MAX_IMAGE_FILE_UPLOAD_SIZE } = useContext(
+    Nina.Context
+  )
 
   const handleChangeStatus = ({ file, meta, restart, remove }, status) => {
     if (meta.status === 'error_validation') {
@@ -141,7 +146,8 @@ const MediaDropzone = ({ type, setArtwork, setTrack, handleProgress, processingP
               {minutes}:{seconds}
             </Typography>
             <Typography align="left" variant="subtitle1">
-              {processingProgress === 1 ? 'Processed' : 'Processing'}: {(processingProgress * 100).toFixed(2)}%
+              {processingProgress === 1 ? 'Processed' : 'Processing'}:{' '}
+              {(processingProgress * 100).toFixed(2)}%
             </Typography>
           </Box>
         </Box>

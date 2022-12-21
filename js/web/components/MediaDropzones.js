@@ -11,7 +11,7 @@ const MediaDropzones = ({
   track,
   setTrack,
   handleProgress,
-  processingProgress
+  processingProgress,
 }) => {
   const [metadata, setMetadata] = useState({})
 
