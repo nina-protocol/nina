@@ -88,7 +88,7 @@ const HomePage = ({ loading }) => {
             paddingBottom: { md: '40px', xs: '30px' },
           }}
         >
-          On Nina, music is stored publically and permanently. Artists receive
+          On Nina, music is stored publicly and permanently. Artists receive
           100% of their sales. Our tools help you create and support context
           around music.
         </Typography>

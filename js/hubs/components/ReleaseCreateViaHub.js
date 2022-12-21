@@ -68,7 +68,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
     getSolPrice,
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
-    getUsdcBalance,
+    getUserBalances,
   } = useContext(Nina.Context);
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
   const [track, setTrack] = useState(undefined);
@@ -93,6 +93,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
   const [uploadId, setUploadId] = useState();
   const [publishingStepText, setPublishingStepText] = useState();
   const [md5Digest, setMd5Digest] = useState();
+  const [processingProgress, setProcessingProgress] = useState()
 
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
@@ -105,7 +106,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
 
   useEffect(() => {
     refreshBundlr();
-    getUsdcBalance();
+    getUserBalances();
   }, []);
 
   const refreshBundlr = () => {
@@ -141,7 +142,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
       } else if (artworkTx && trackTx && !metadataTx) {
         setButtonText("Restart 3/4: Upload Metadata.");
       } else if (artworkTx && trackTx && metadataTx && !releaseCreated) {
-        setButtonText("Restart 4/4: Finalize Release");
+        setButtonText('There may have been an error creating this release. Please wait 30 seconds and check for the release in your dashboard before retrying')
       } else if (mbs < uploadSize) {
         setButtonText(
           `Release requires more storage than available in your bundlr account, please top up`
@@ -193,7 +194,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
   useEffect(() => {
     if (track) {
       const handleGetMd5FileHash = async (track) => {
-        const hash = await getMd5FileHash(track.file);
+        const hash = await getMd5FileHash(track.file, (progress) => setProcessingProgress(progress));
         setMd5Digest(hash);
       };
       handleGetMd5FileHash(track);
@@ -215,7 +216,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
             hubData.handle
           }/releases/${releaseInfo.hubRelease.toBase58()}`,
         });
-      } else if (track && artwork) {
+      } else if (track && artwork && md5Digest) {
         const error = await checkIfHasBalanceToCompleteAction(
           NinaProgramAction.RELEASE_INIT_VIA_HUB
         );
@@ -224,10 +225,10 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
           return;
         }
 
-        const hashExists = await validateUniqueMd5Digest(md5Digest);
-        if (hashExists) {
+        const release = await validateUniqueMd5Digest(md5Digest);
+        if (release) {
           enqueueSnackbar(
-            `A release with this track already exists: ${hashExists.json.properties.artist} - ${hashExists.json.properties.title}`,
+            `A release with this audio file already exists: ${release.metadata.properties.artist} - ${release.metadata.properties.title}`,
             {
               variant: "warn",
             }
@@ -369,6 +370,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
               releasePubkey={releasePubkey}
               track={track}
               disabled={isPublishing || releaseCreated}
+              processingProgress={processingProgress}
             />
           </Box>
 
@@ -395,7 +397,8 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
                   bundlrBalance === 0 ||
                   mbs < uploadSize ||
                   artwork?.meta.status === "uploading" ||
-                  (track?.meta.status === "uploading" && !releaseCreated)
+                  (track?.meta.status === "uploading" && !releaseCreated) ||
+                  (artworkTx && trackTx && metadataTx && !releaseCreated)
                 }
                 href={`${
                   releaseCreated
@@ -435,7 +438,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
             {bundlrBalance > 0 && !formValuesConfirmed && canAddContent && (
               <ReleaseCreateConfirm
                 formValues={formValues}
-                formIsValid={formIsValid}
+                formIsValid={formIsValid && processingProgress === 1}
                 handleSubmit={(e) => handleSubmit(e)}
                 setFormValuesConfirmed={setFormValuesConfirmed}
               />

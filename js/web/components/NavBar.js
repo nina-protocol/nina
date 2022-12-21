@@ -27,8 +27,8 @@ const NavBar = () => {
     getSubscriptionsForUser,
     filterSubscriptionsForUser,
     subscriptionState,
+    getUserBalances,
   } = useContext(Nina.Context)
-
   const wallet = useWallet()
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),
@@ -47,6 +47,7 @@ const NavBar = () => {
   useEffect(() => {
     if (wallet.connected) {
       getSubscriptionsForUser(wallet.publicKey.toBase58())
+      getUserBalances()
     }
   }, [wallet.connected])
 
@@ -56,8 +57,8 @@ const NavBar = () => {
         <NavDrawer />
         <Breadcrumbs />
         <SearchIconWrapper>
-          <Link href="/search">
-            <SearchIcon />
+          <Link href="/search" passHref>
+            <SearchIcon onClick={() => router.push('/search')} />
           </Link>
         </SearchIconWrapper>
       </NavLeft>

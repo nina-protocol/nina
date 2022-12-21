@@ -5,6 +5,7 @@ import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import { useRouter } from 'next/router'
 const Dots = dynamic(() => import('./Dots'))
 const HubHeader = dynamic(() => import('./HubHeader'))
 const TabHeader = dynamic(() => import('./TabHeader'))
@@ -12,7 +13,7 @@ const ReusableTable = dynamic(() => import('./ReusableTable'))
 
 const HubComponent = ({ hubPubkey }) => {
   const tableContainerRef = useRef(null)
-
+  const router = useRouter()
   const {
     getHub,
     hubState,
@@ -80,7 +81,8 @@ const HubComponent = ({ hubPubkey }) => {
   }, [subscriptionState])
 
   useEffect(() => {
-    const [releases] = filterHubContentForHub(hubPubkey)
+    let [releases] = filterHubContentForHub(hubPubkey)
+    releases = releases.filter(release => release.visible === true)
     setFetched({ ...fetched, releases: true })
     setHubReleases(releases)
   }, [hubContentState])
@@ -90,6 +92,15 @@ const HubComponent = ({ hubPubkey }) => {
     setFetched({ ...fetched, collaborators: true })
     setHubCollaborators(collaborators)
   }, [hubCollaboratorsState])
+
+  useEffect(() => {
+    if (router.query.view) {
+      const viewIndex = views.findIndex(
+        (view) => view.name === router.query.view
+      )
+      setActiveView(viewIndex)
+    }
+  }, [router.query.view])
 
   useEffect(() => {
     let updatedView = views.slice()
@@ -118,7 +129,6 @@ const HubComponent = ({ hubPubkey }) => {
     let viewIndex
 
     if (hubReleases?.length > 0) {
-      setActiveView(0)
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
       updatedView[viewIndex].disabled = false
       updatedView[viewIndex].count = hubReleases.length
@@ -149,8 +159,28 @@ const HubComponent = ({ hubPubkey }) => {
     setViews(updatedView)
   }, [hubReleases, hubCollaborators, hubFollowers])
 
+  useEffect(() => {
+    if (!router.query.view) {
+      const viewIndex = views.findIndex((view) => !view.disabled)
+      setActiveView(viewIndex)
+    }
+  }, [views])
+
   const viewHandler = (event) => {
+    event.stopPropagation()
     const index = parseInt(event.target.id)
+    const activeViewName = views[index].name
+    const hubHandle = hubState[hubPubkey]?.handle
+    const newUrl = `/hubs/${hubHandle}?view=${activeViewName}`
+    window.history.replaceState(
+      {
+        ...window.history.state,
+        as: newUrl,
+        url: newUrl,
+      },
+      '',
+      newUrl
+    )
     setActiveView(index)
     tableContainerRef.current.scrollTo(0, 0)
   }

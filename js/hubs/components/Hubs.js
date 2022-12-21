@@ -19,9 +19,8 @@ import {
 } from "../styles/theme/lightThemeOptions.js";
 
 const Hubs = () => {
-  const { getHubsForUser, hubState, filterHubsForUser, hubCollaboratorsState } = useContext(
-    Hub.Context
-  );
+  const { getHubsForUser, hubState, filterHubsForUser, hubCollaboratorsState } =
+    useContext(Hub.Context);
   const { npcAmountHeld } = useContext(Nina.Context);
   const wallet = useWallet();
 
@@ -102,7 +101,7 @@ const Hubs = () => {
                     align="left"
                     sx={{ padding: { md: "0 165px 40px", xs: "30px 0px" } }}
                   >
-                    You do not have any credits to create a Hub.{'  '}
+                    You do not have any credits to create a Hub.{"  "}
                     <EmailCapture size="large" />.
                   </BlueTypography>
 

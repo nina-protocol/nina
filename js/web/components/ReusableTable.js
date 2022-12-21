@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, createElement, Fragment } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Box } from '@mui/system'
-import { Button, Typography } from '@mui/material'
+import { Button, TableSortLabel, Typography } from '@mui/material'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -22,10 +22,51 @@ import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import { styled } from '@mui/material'
 import { useSnackbar } from 'notistack'
 import { useRouter } from 'next/router'
+import { orderBy } from 'lodash'
+import dynamic from 'next/dynamic'
+import { useWallet } from '@solana/wallet-adapter-react'
 
 const { getImageFromCDN, loader } = imageManager
 
-const ReusableTableHead = ({ tableType, inDashboard }) => {
+const Subscribe = dynamic(() => import('./Subscribe'))
+
+const descendingComparator = (a, b, orderBy) => {
+  switch (orderBy) {
+    case 'artist':
+    case 'title':
+      a = a[orderBy]?.toLowerCase()
+      b = b[orderBy]?.toLowerCase()
+      break
+
+    case 'releaseDate':
+      if (new Date(b.releaseDate) < new Date(a.releaseDate)) {
+        return -1
+      }
+      if (new Date(b.releaseDate) > new Date(a.releaseDate)) {
+        return 1
+      }
+
+      break
+    default:
+      a = parseFloat(a[orderBy]?.replace(/[^\d.-]/g, ''))
+      b = parseFloat(b[orderBy]?.replace(/[^\d.-]/g, ''))
+      break
+  }
+
+  if (b < a) {
+    return -1
+  }
+  if (b > a) {
+    return 1
+  }
+  return 0
+}
+
+const ReusableTableHead = (props) => {
+  const { tableType, inDashboard, onRequestSort, order } = props
+  const createSortHandler = (property) => (event) => {
+    onRequestSort(event, property)
+  }
   let headCells = []
 
   if (tableType === 'profilePublishedReleases') {
@@ -33,6 +74,7 @@ const ReusableTableHead = ({ tableType, inDashboard }) => {
     headCells.push({ id: 'image', label: '' })
     headCells.push({ id: 'artist', label: 'Artist' })
     headCells.push({ id: 'title', label: 'Title' })
+    headCells.push({ id: 'releaseDate', label: 'Release Date' })
     if (inDashboard) {
       headCells.push({ id: 'price', label: 'Price' })
       headCells.push({ id: 'remaining', label: 'Remaining' })
@@ -46,11 +88,12 @@ const ReusableTableHead = ({ tableType, inDashboard }) => {
     headCells.push({ id: 'image', label: '' })
     headCells.push({ id: 'artist', label: 'Artist' })
     headCells.push({ id: 'title', label: 'Title' })
+    headCells.push({ id: 'releaseDate', label: 'Release Date' })
   }
 
   if (tableType === 'profileHubs') {
     headCells.push({ id: 'image', label: '' })
-    headCells.push({ id: 'name', label: 'Name' })
+    headCells.push({ id: 'hubName', label: 'Name' })
     headCells.push({ id: 'description', label: 'Description' })
     if (inDashboard) {
       headCells.push({ id: 'hubLink', label: '' })
@@ -63,6 +106,7 @@ const ReusableTableHead = ({ tableType, inDashboard }) => {
     headCells.push({ id: 'image', label: '' })
     headCells.push({ id: 'artist', label: 'Artist' })
     headCells.push({ id: 'title', label: 'Title' })
+    headCells.push({ id: 'releaseDate', label: 'Release Date' })
   }
 
   if (tableType === 'allSearchResults') {
@@ -77,7 +121,7 @@ const ReusableTableHead = ({ tableType, inDashboard }) => {
   if (tableType === 'searchResultReleases') {
     headCells.push({ id: 'ctas', label: 'Releases' })
     headCells.push({ id: 'image', label: '' })
-    headCells.push({ id: 'title', label: '' })
+    headCells.push({ id: 'name', label: '' })
   }
 
   if (tableType === 'searchResultHubs') {
@@ -102,10 +146,31 @@ const ReusableTableHead = ({ tableType, inDashboard }) => {
     <TableHead>
       <TableRow>
         {headCells?.map((headCell, i) => (
-          <StyledTableHeadCell key={headCell.id}>
-            <Typography sx={{ fontWeight: 'bold' }}>
-              {headCell.label}
-            </Typography>
+          <StyledTableHeadCell key={headCell.id} sx={{ cursor: 'default' }}>
+            {headCell.id === 'artist' ||
+            headCell.id === 'title' ||
+            headCell.id === 'releaseDate' ||
+            headCell.id === 'hubName' ? (
+              <TableSortLabel
+                active={orderBy === headCell.id}
+                direction={order}
+                onClick={createSortHandler(headCell.id)}
+                disabled={
+                  headCell.id === 'ctas' ||
+                  headCell.id === 'hubLink' ||
+                  headCell.id === 'hubDashboard'
+                }
+                sx={{ '& svg': { fontSize: '14px' } }}
+              >
+                <Typography sx={{ fontWeight: 'bold' }}>
+                  {headCell.label}
+                </Typography>
+              </TableSortLabel>
+            ) : (
+              <Typography sx={{ fontWeight: 'bold' }}>
+                {headCell.label}
+              </Typography>
+            )}
           </StyledTableHeadCell>
         ))}
       </TableRow>
@@ -144,15 +209,20 @@ const HubDescription = ({ description }) => {
   )
 }
 
-const ReusableTableBody = ({
-  items,
-  tableType,
-  inDashboard,
-  collectRoyaltyForRelease,
-  refreshProfile,
-  dashboardPublicKey,
-  isActiveView,
-}) => {
+const ReusableTableBody = (props) => {
+  const wallet = useWallet()
+  const {
+    items,
+    tableType,
+    inDashboard,
+    collectRoyaltyForRelease,
+    refreshProfile,
+    dashboardPublicKey,
+    isActiveView,
+    order,
+    orderBy,
+    profilePubkey,
+  } = props
   const router = useRouter()
   const {
     updateTrack,
@@ -215,12 +285,21 @@ const ReusableTableBody = ({
     }
   }
 
+  const getComparator = (order, orderBy, type) => {
+    return order === 'desc'
+      ? (a, b) => descendingComparator(a, b, orderBy)
+      : (a, b) => -descendingComparator(a, b, orderBy)
+  }
+
   let rows = items?.map((data) => {
     const { releasePubkey, publicKey } = data
     const playData = {
       releasePubkey,
     }
     let formattedData = {}
+    const formattedDate = new Date(
+      data.metadata?.properties?.date
+    ).toLocaleDateString()
     if (
       tableType === 'profilePublishedReleases' ||
       tableType === 'profileCollectionReleases'
@@ -233,6 +312,7 @@ const ReusableTableBody = ({
         date: data?.metadata?.properties?.date,
         artist: data?.metadata?.properties?.artist,
         title: data?.metadata?.properties?.title,
+        releaseDate: formattedDate,
       }
       if (inDashboard) {
         const recipient = data.tokenData.revenueShareRecipients.find(
@@ -240,7 +320,7 @@ const ReusableTableBody = ({
         )
         const collectable = recipient?.owed > 0
         const collectableAmount = ninaClient.nativeToUiString(
-          recipient?.owed || 0,
+          recipient.owed,
           data.tokenData.paymentMint
         )
 
@@ -274,12 +354,18 @@ const ReusableTableBody = ({
         image: data?.data.image,
         hubName: data?.data.displayName,
         description: data?.data.description,
+        publicKey: data?.publicKey,
+        subscribe: true,
+        handle: data?.handle,
       }
       if (inDashboard) {
         ;(formattedData.hubDashboard = `${process.env.NINA_HUBS_URL}/${data.handle}/dashboard`),
           (formattedData.hubExternal = `${process.env.NINA_HUBS_URL}/${data.handle}`)
       }
     } else if (tableType === 'hubReleases') {
+      const formattedDate = new Date(
+        data?.properties?.date
+      ).toLocaleDateString()
       formattedData = {
         ctas: playData,
         ...formattedData,
@@ -288,7 +374,8 @@ const ReusableTableBody = ({
         artist: data?.properties.artist,
         title: data?.properties.title,
         link: `/${data?.releasePubkey}`,
-        date: data?.metadata?.properties?.date,
+        date: data?.properties?.date,
+        releaseDate: formattedDate,
         authorityPublicKey: data?.authority,
       }
     } else if (tableType === 'hubCollaborators') {
@@ -296,6 +383,8 @@ const ReusableTableBody = ({
         link: `/profiles/${data.collaborator}`,
         image: displayImageForAccount(data.collaborator),
         collaborator: displayNameForAccount(data.collaborator),
+        subscribe: true,
+        publicKey: data.collaborator,
       }
     } else if (
       tableType === 'searchResultArtists' ||
@@ -341,6 +430,8 @@ const ReusableTableBody = ({
         link: `/profiles/${data.from.publicKey}`,
         image: displayImageForAccount(data.from.publicKey),
         profile: displayNameForAccount(data.from.publicKey),
+        subscribe: true,
+        publicKey: data.from.publicKey,
       }
     } else if (tableType === 'following') {
       if (data.subscriptionType === 'hub') {
@@ -348,12 +439,17 @@ const ReusableTableBody = ({
           link: `/hubs/${data.to.handle}`,
           image: data.to.data.image,
           hub: data.to.data.displayName,
+          subscribe: true,
+          handle: data.to.handle,
+          publicKey: data.to.publicKey,
         }
       } else if (data.subscriptionType === 'account') {
         formattedData = {
           link: `/profiles/${data.to.publicKey}`,
           image: displayImageForAccount(data.to.publicKey),
           profile: displayNameForAccount(data.to.publicKey),
+          subscribe: true,
+          publicKey: data.to.publicKey,
         }
       }
     } else if (tableType === 'defaultSearchArtists') {
@@ -380,198 +476,233 @@ const ReusableTableBody = ({
 
   return (
     <TableBody>
-      {rows?.map((row, i) => (
-        <TableRow
-          key={i}
-          hover
-          sx={{ cursor: 'pointer' }}
-          onClick={() => router.push(row.link)}
-        >
-          {Object.keys(row).map((cellName, i) => {
-            const cellData = row[cellName]
-            if (
-              cellName !== 'id' &&
-              cellName !== 'date' &&
-              cellName !== 'link' &&
-              cellName !== 'authorityPublicKey'
-            ) {
-              if (cellName === 'ctas') {
-                return (
-                  <StyledTableCellButtonsContainer align="left" key={i}>
-                    <Button
-                      sx={{ cursor: 'pointer' }}
-                      id={row.id}
-                      onClickCapture={(e) => handleQueue(e, row.id, row.title)}
-                    >
-                      <ControlPointIcon sx={{ color: 'black' }} />
-                    </Button>
-                    <Button
-                      sx={{
-                        cursor: 'pointer',
-                      }}
-                      onClickCapture={(e) => handlePlay(e, row.id)}
-                      id={row.id}
-                    >
-                      {isPlaying && track?.releasePubkey === row.id ? (
-                        <PauseCircleOutlineOutlinedIcon
-                          sx={{ color: 'black' }}
-                        />
-                      ) : (
-                        <PlayCircleOutlineOutlinedIcon
-                          sx={{ color: 'black' }}
-                        />
-                      )}
-                    </Button>
-                  </StyledTableCellButtonsContainer>
-                )
-              } else if (cellName === 'image') {
-                return (
-                  <StyledImageTableCell align="left" key={cellName}>
-                    <Box sx={{ width: '50px', textAlign: 'left', pr: '15px' }}>
-                      {row.image.includes('https') ? (
-                        <Image
-                          height={50}
-                          width={50}
-                          layout="responsive"
-                          src={getImageFromCDN(row.image, 100)}
-                          alt={i}
-                          loader={loader}
-                        />
-                      ) : (
-                        <img src={row.image} height={50} width={50} />
-                      )}
-                    </Box>
-                  </StyledImageTableCell>
-                )
-              } else if (cellName === 'description') {
-                return (
-                  <HubDescription
-                    description={cellData || null}
-                    key={cellName}
-                  />
-                )
-              } else if (cellName === 'title') {
-                return (
-                  <StyledProfileTableCell key={cellName} type={'profile'}>
-                    <OverflowContainer>
-                      <Typography sx={{ textDecoration: 'underline' }} noWrap>
-                        {cellData}
-                      </Typography>
-                    </OverflowContainer>
-                  </StyledProfileTableCell>
-                )
-              } else if (cellName === 'artist') {
-                return (
-                  <StyledProfileTableCell key={cellName} type={'profile'}>
-                    <OverflowContainer overflowWidth={'20vw'}>
-                      <Typography
-                        noWrap
-                        sx={{ hover: 'pointer' }}
-                        onClickCapture={() => {
-                          router.push(`/profiles/${row?.authorityPublicKey}`)
+      {rows
+        ?.slice()
+        .sort(getComparator(order, orderBy))
+        .map((row, i) => (
+          <TableRow
+            key={i}
+            hover
+            sx={{ cursor: 'pointer' }}
+            onClick={() => router.push(row.link)}
+          >
+            {Object.keys(row).map((cellName, i) => {
+              const cellData = row[cellName]
+              if (
+                cellName !== 'id' &&
+                cellName !== 'date' &&
+                cellName !== 'link' &&
+                cellName !== 'authorityPublicKey' &&
+                cellName !== 'publicKey' &&
+                cellName !== 'handle'
+              ) {
+                if (cellName === 'ctas') {
+                  return (
+                    <StyledTableCellButtonsContainer align="left" key={i}>
+                      <Button
+                        sx={{ cursor: 'pointer' }}
+                        id={row.id}
+                        onClickCapture={(e) =>
+                          handleQueue(e, row.id, row.title)
+                        }
+                      >
+                        <ControlPointIcon sx={{ color: 'black' }} />
+                      </Button>
+                      <Button
+                        sx={{
+                          cursor: 'pointer',
                         }}
+                        onClickCapture={(e) => handlePlay(e, row.id)}
+                        id={row.id}
                       >
-                        <a>{cellData}</a>
-                      </Typography>
-                    </OverflowContainer>
-                  </StyledProfileTableCell>
-                )
-              } else if (cellName === 'searchResultArtist') {
-                return (
-                  <SearchResultTableCell key={cellName}>
-                    <SearchResultOverflowContainer>
-                      <Typography
-                        noWrap
-                        onClickCapture={() => router.push(row?.link)}
+                        {isPlaying && track?.releasePubkey === row.id ? (
+                          <PauseCircleOutlineOutlinedIcon
+                            sx={{ color: 'black' }}
+                          />
+                        ) : (
+                          <PlayCircleOutlineOutlinedIcon
+                            sx={{ color: 'black' }}
+                          />
+                        )}
+                      </Button>
+                    </StyledTableCellButtonsContainer>
+                  )
+                } else if (cellName === 'image') {
+                  return (
+                    <StyledImageTableCell align="left" key={cellName}>
+                      <Box
+                        sx={{ width: '50px', textAlign: 'left', pr: '15px' }}
                       >
-                        <a>{cellData}</a>
-                      </Typography>
-                    </SearchResultOverflowContainer>
-                  </SearchResultTableCell>
-                )
-              } else if (cellName === 'searchResultRelease') {
-                return (
-                  <SearchResultTableCell key={cellName}>
-                    <SearchResultOverflowContainer>
+                        {row.image.includes('https') ? (
+                          <Image
+                            height={50}
+                            width={50}
+                            layout="responsive"
+                            src={getImageFromCDN(row.image, 100)}
+                            alt={i}
+                            loader={loader}
+                          />
+                        ) : (
+                          <img src={row.image} height={50} width={50} />
+                        )}
+                      </Box>
+                    </StyledImageTableCell>
+                  )
+                } else if (cellName === 'description') {
+                  return (
+                    <HubDescription
+                      description={cellData || null}
+                      key={cellName}
+                    />
+                  )
+                } else if (cellName === 'title') {
+                  return (
+                    <StyledProfileTableCell key={cellName} type={'profile'}>
+                      <OverflowContainer>
+                        <Typography sx={{ textDecoration: 'underline' }} noWrap>
+                          {cellData}
+                        </Typography>
+                      </OverflowContainer>
+                    </StyledProfileTableCell>
+                  )
+                } else if (cellName === 'artist') {
+                  return (
+                    <StyledProfileTableCell key={cellName} type={'profile'}>
+                      <OverflowContainer overflowWidth={'20vw'}>
+                        <Typography
+                          noWrap
+                          sx={{ hover: 'pointer', maxWidth: '20vw' }}
+                        >
+                          <a
+                            onClickCapture={() => {
+                              router.push(
+                                `/profiles/${row?.authorityPublicKey}`
+                              )
+                            }}
+                          >
+                            {cellData}
+                          </a>
+                        </Typography>
+                      </OverflowContainer>
+                    </StyledProfileTableCell>
+                  )
+                } else if (cellName === 'searchResultArtist') {
+                  return (
+                    <SearchResultTableCell key={cellName}>
                       <SearchResultOverflowContainer>
                         <Typography
                           noWrap
-                          onClickCapture={() => router.push(`/${row?.id}`)}
+                          onClickCapture={() => router.push(row?.link)}
                         >
                           <a>{cellData}</a>
                         </Typography>
                       </SearchResultOverflowContainer>
-                    </SearchResultOverflowContainer>
-                  </SearchResultTableCell>
-                )
-              } else if (cellName === 'searchResultHub') {
-                return (
-                  <SearchResultTableCell key={cellName}>
-                    <SearchResultOverflowContainer>
-                      <Typography
-                        noWrap
-                        onClickCapture={() => router.push(`/hubs/${row?.id}`)}
-                      >
-                        <a>{cellData}</a>
-                      </Typography>
-                    </SearchResultOverflowContainer>
-                  </SearchResultTableCell>
-                )
-              } else if (cellName === 'price' || cellName === 'remaining') {
-                return (
-                  <StyledTableCell key={cellName}>
-                    <LineBreakContainer>
-                      <Typography>{cellData}</Typography>
-                    </LineBreakContainer>
-                  </StyledTableCell>
-                )
-              } else if (cellName === 'collect') {
-                return (
-                  <StyledTableCell key={cellName}>
-                    <CollectContainer>{cellData}</CollectContainer>
-                  </StyledTableCell>
-                )
-              } else if (cellName === 'hubDashboard') {
-                return (
-                  <HubTableCell key={cellName}>
-                    <CollectContainer>
-                      <Link href={`${row?.hubDashboard}`} passHref>
-                        <a target="_blank" rel="noreferrer">
-                          VIEW HUB DASHBOARD
-                        </a>
-                      </Link>
-                    </CollectContainer>
-                  </HubTableCell>
-                )
-              } else if (cellName === 'hubExternal') {
-                return (
-                  <HubTableCell key={cellName}>
-                    <CollectContainer>
-                      <Link href={`${row?.hubExternal}`} passHref>
-                        <a target="_blank" rel="noreferrer">
-                          VIEW HUB
-                        </a>
-                      </Link>
-                    </CollectContainer>
-                  </HubTableCell>
-                )
-              } else {
-                return (
-                  <StyledTableCell key={cellName}>
-                    <OverflowContainer>
-                      <Typography noWrap>
-                        <Link href={row.link} passHref>
+                    </SearchResultTableCell>
+                  )
+                } else if (cellName === 'searchResultRelease') {
+                  return (
+                    <SearchResultTableCell key={cellName}>
+                      <SearchResultOverflowContainer>
+                        <SearchResultOverflowContainer>
+                          <Typography
+                            noWrap
+                            onClickCapture={() => router.push(`/${row?.id}`)}
+                          >
+                            <a>{cellData}</a>
+                          </Typography>
+                        </SearchResultOverflowContainer>
+                      </SearchResultOverflowContainer>
+                    </SearchResultTableCell>
+                  )
+                } else if (cellName === 'searchResultHub') {
+                  return (
+                    <SearchResultTableCell key={cellName}>
+                      <SearchResultOverflowContainer>
+                        <Typography
+                          noWrap
+                          onClickCapture={() => router.push(`/hubs/${row?.id}`)}
+                        >
                           <a>{cellData}</a>
+                        </Typography>
+                      </SearchResultOverflowContainer>
+                    </SearchResultTableCell>
+                  )
+                } else if (cellName === 'price' || cellName === 'remaining') {
+                  return (
+                    <StyledTableCell key={cellName}>
+                      <LineBreakContainer>
+                        <Typography>{cellData}</Typography>
+                      </LineBreakContainer>
+                    </StyledTableCell>
+                  )
+                } else if (cellName === 'collect') {
+                  return (
+                    <StyledTableCell key={cellName}>
+                      <CollectContainer>{cellData}</CollectContainer>
+                    </StyledTableCell>
+                  )
+                } else if (cellName === 'hubDashboard') {
+                  return (
+                    <HubTableCell key={cellName}>
+                      <CollectContainer>
+                        <Link href={`${row?.hubDashboard}`} passHref>
+                          <a target="_blank" rel="noreferrer">
+                            VIEW HUB DASHBOARD
+                          </a>
                         </Link>
-                      </Typography>
-                    </OverflowContainer>
-                  </StyledTableCell>
-                )
+                      </CollectContainer>
+                    </HubTableCell>
+                  )
+                } else if (cellName === 'hubExternal') {
+                  return (
+                    <HubTableCell key={cellName}>
+                      <CollectContainer>
+                        <Link href={`${row?.hubExternal}`} passHref>
+                          <a target="_blank" rel="noreferrer">
+                            VIEW HUB
+                          </a>
+                        </Link>
+                      </CollectContainer>
+                    </HubTableCell>
+                  )
+                } else if (cellName === 'releaseDate') {
+                  return (
+                    <HubTableCell key={cellName}>
+                      <CollectContainer>
+                        <Typography>{cellData}</Typography>
+                      </CollectContainer>
+                    </HubTableCell>
+                  )
+                } else if (
+                  cellName === 'subscribe' &&
+                  row?.subscribe &&
+                  wallet.connected
+                ) {
+                  return (
+                    <TableCell key={cellName} sx={{ padding: '0 30px' }}>
+                      <Subscribe
+                        accountAddress={row.publicKey}
+                        hubHandle={row?.handle}
+                      />
+                    </TableCell>
+                  )
+                } else {
+                  return (
+                    <StyledTableCell key={cellName}>
+                      <OverflowContainer>
+                        <Typography noWrap>
+                          <Link href={row.link} passHref>
+                            <a>{cellData}</a>
+                          </Link>
+                        </Typography>
+                      </OverflowContainer>
+                    </StyledTableCell>
+                  )
+                }
               }
-            }
-          })}
-        </TableRow>
-      ))}
+            })}
+          </TableRow>
+        ))}
     </TableBody>
   )
 }
@@ -587,6 +718,14 @@ const ReusableTable = ({
   hasOverflow,
   minHeightOverride = false,
 }) => {
+  const [order, setOrder] = useState('desc')
+  const [orderBy, setOrderBy] = useState('')
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === 'asc'
+
+    setOrder(isAsc ? 'desc' : 'asc')
+    setOrderBy(property)
+  }
   return (
     <ResponsiveContainer
       hasOverflow={hasOverflow}
@@ -598,6 +737,8 @@ const ReusableTable = ({
             <ReusableTableHead
               tableType={tableType}
               inDashboard={inDashboard}
+              onRequestSort={handleRequestSort}
+              order={order}
             />
           )}
           <ReusableTableBody
@@ -608,6 +749,8 @@ const ReusableTable = ({
             refreshProfile={refreshProfile}
             dashboardPublicKey={dashboardPublicKey}
             isActiveView={isActiveView}
+            order={order}
+            orderBy={orderBy}
           />
         </Table>
       </ResponsiveTableContainer>
@@ -655,7 +798,6 @@ const StyledTableCell = styled(TableCell)(({ theme, type }) => ({
     paddingRight: '10px',
   },
 }))
-
 const StyledProfileTableCell = styled(TableCell)(({ theme }) => ({
   padding: '5px 5px',
   textAlign: 'left',
@@ -735,7 +877,7 @@ const LineBreakContainer = styled(Box)(({ theme }) => ({
 const StyledTableDescriptionContainer = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
   textOverflow: 'ellipsis',
-  maxWidth: '20vw',
+  maxWidth: '25vw',
 }))
 
 const ResponsiveContainer = styled(Box)(

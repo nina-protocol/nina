@@ -48,6 +48,9 @@ const NinaProgramActionCost = {
   SUBSCRIPTION_SUBSCRIBE_ACCOUNT: 0.00168236,
 }
 
+const MAX_AUDIO_FILE_UPLOAD_SIZE = 500
+const MAX_IMAGE_FILE_UPLOAD_SIZE = 10
+
 const NinaContext = createContext()
 const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [collection, setCollection] = useState({})
@@ -56,6 +59,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [verificationState, setVerificationState] = useState({})
   const [usdcBalance, setUsdcBalance] = useState(0)
   const [solBalance, setSolBalance] = useState(0)
+  const [lowSolBalance, setLowSolBalance] = useState(false)
   const [solUsdcBalance, setSolUsdcBalance] = useState(0)
   const [npcAmountHeld, setNpcAmountHeld] = useState(0)
   const [solPrice, setSolPrice] = useState(0)
@@ -78,7 +82,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         }
       )
       getNpcAmountHeld()
-      getUsdcBalance()
+      getUserBalances()
       if (releasePubkey) {
         createCollectionForSingleRelease(releasePubkey)
       } else {
@@ -141,7 +145,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     removeReleaseFromCollection,
     shouldRemainInCollectionAfterSale,
     getAmountHeld,
-    getUsdcBalance,
+    getUserBalances,
     getNpcAmountHeld,
     bundlrFund,
     bundlrWithdraw,
@@ -159,6 +163,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     getVerificationsForUser,
     filterSubscriptionsForHub,
     submitEmailRequest,
+    getUsdcToSolSwapData,
   } = ninaContextHelper({
     ninaClient,
     postState,
@@ -182,6 +187,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     setSolBalance,
     verificationState,
     setVerificationState,
+    setLowSolBalance
   })
 
   const userSubscriptions = useMemo(() => {
@@ -209,7 +215,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         removeReleaseFromCollection,
         shouldRemainInCollectionAfterSale,
         getAmountHeld,
-        getUsdcBalance,
+        getUserBalances,
         usdcBalance,
         getNpcAmountHeld,
         npcAmountHeld,
@@ -246,6 +252,10 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         getVerificationsForUser,
         filterSubscriptionsForHub,
         submitEmailRequest,
+        lowSolBalance,
+        getUsdcToSolSwapData,
+        MAX_AUDIO_FILE_UPLOAD_SIZE,
+        MAX_IMAGE_FILE_UPLOAD_SIZE,
       }}
     >
       {children}
@@ -274,6 +284,7 @@ const ninaContextHelper = ({
   setSolBalance,
   verificationState,
   setVerificationState,
+  setLowSolBalance
 }) => {
   const { provider, ids, uiToNative, nativeToUi } = ninaClient
 
@@ -403,8 +414,8 @@ const ninaContextHelper = ({
   }
 
   const saveSubscriptionsToState = async (subscriptions) => {
-    let updatedSubscriptionState = { ...subscriptionState }
-    let updatedVerificationState = { ...verificationState }
+    let updatedSubscriptionState = { }
+    let updatedVerificationState = { }
     subscriptions.forEach((subscription) => {
       updatedSubscriptionState = {
         ...updatedSubscriptionState,
@@ -416,7 +427,7 @@ const ninaContextHelper = ({
         [subscription.from.publicKey]: subscription.from.verifications,
       }
 
-      if (subscription.subscritionType === 'account') {
+      if (subscription.subscriptionType === 'account') {
         updatedVerificationState = {
           ...updatedVerificationState,
           [subscription.to.publicKey]: subscription.to.verifications,
@@ -607,18 +618,24 @@ const ninaContextHelper = ({
     return 0
   }
 
-  const getUsdcBalance = async () => {
+  const getUserBalances = async () => { 
+
     if (provider.wallet?.connected && provider.wallet?.publicKey) {
       try {
         const solPrice =  await axios.get(
-          `https://price.jup.ag/v1/price?id=SOL`
+          `https://price.jup.ag/v3/price?ids=SOL`
         )
+
         let solUsdcBalanceResult = await provider.connection.getBalance(
           provider.wallet.publicKey
         )
      
-        setSolUsdcBalance((ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) * solPrice.data.data.price).toFixed(2))
+        setSolUsdcBalance((ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) * solPrice.data.data.SOL.price).toFixed(2))
         setSolBalance(solUsdcBalanceResult)
+        if (solUsdcBalanceResult < 10000000) { 
+          setLowSolBalance(true)
+        }
+        
         let [usdcTokenAccountPubkey] = await findOrCreateAssociatedTokenAccount(
           provider.connection,
           provider.wallet.publicKey,
@@ -643,7 +660,7 @@ const ninaContextHelper = ({
       }
     } else {
       setUsdcBalance(0)
-      setSolUsdcBalance(0)
+      setSolUsdcBalance(0) 
     }
   }
 
@@ -669,7 +686,7 @@ const ninaContextHelper = ({
   const bundlrFund = async (fundAmount) => {
     try {
       if (bundlr && fundAmount) {        
-        await getUsdcBalance()
+        await getUserBalances()
         const value = uiToNative(fundAmount, ids.mints.wsol)
         if (value - (2 * NinaProgramActionCost[NinaProgramAction.RELEASE_INIT_VIA_HUB]) > solBalance) {
           throw('Insufficient SOL balance - please deposit a smaller amount or top up your Solana balance')
@@ -734,10 +751,10 @@ const ninaContextHelper = ({
   const getSolPrice = async () => {
     try {
       const priceResult = await axios.get(
-        `https://price.jup.ag/v1/price?id=SOL`
+        `https://price.jup.ag/v3/price?ids=SOL`
       )
-      setSolPrice(priceResult.data.data.price)
-      return priceResult.data.data.price
+      setSolPrice(priceResult.data.data.SOL.price)
+      return priceResult.data.data.SOL.price
     } catch (error) {
       return ninaErrorHandler(error)
     }
@@ -803,7 +820,7 @@ const ninaContextHelper = ({
     }
   }
   const checkIfHasBalanceToCompleteAction = async (action) => {
-    await getUsdcBalance()
+    await getUserBalances()
     if (ninaClient.uiToNative(NinaProgramActionCost[action], ninaClient.ids.mints.wsol) > solBalance) {
       const error = new Error(`You do not have enough SOL to send the transaction: ${action}.  You need at least ${NinaProgramActionCost[action]} SOL.`)
       return ninaErrorHandler(error)
@@ -811,6 +828,12 @@ const ninaContextHelper = ({
     return undefined
   }
 
+  const getUsdcToSolSwapData = async (amount) => {
+    const {data} = await axios.get(
+      `https://quote-api.jup.ag/v3/quote?inputMint=${ids.mints.usdc}&outputMint=${ids.mints.wsol}&amount=${amount * 1000000}&slippageBps=50`
+    )
+    return data
+  }
 
   /*
 
@@ -872,7 +895,7 @@ const ninaContextHelper = ({
       ) {
         return verifications.find(
           (verification) => verification.type === 'twitter'
-        ).displayName
+        ).displayName || truncateAddress(publicKey)
       } else if (
         verifications?.find(
           (verification) => verification.type === 'soundcloud'
@@ -880,7 +903,7 @@ const ninaContextHelper = ({
       ) {
         return verifications.find(
           (verification) => verification.type === 'soundcloud'
-        ).displayName
+        ).displayName || truncateAddress(publicKey)
       } else if (
         verifications?.find(
           (verification) => verification.type === 'instagram'
@@ -888,7 +911,7 @@ const ninaContextHelper = ({
       ) {
         return verifications.find(
           (verification) => verification.type === 'instagram'
-        ).displayName
+        ).displayName || truncateAddress(publicKey)
       } else if (
         verifications?.find(
           (verification) => verification.type === 'ethereum'
@@ -995,7 +1018,7 @@ const ninaContextHelper = ({
     removeReleaseFromCollection,
     shouldRemainInCollectionAfterSale,
     getAmountHeld,
-    getUsdcBalance,
+    getUserBalances,
     getNpcAmountHeld,
     bundlrFund,
     bundlrWithdraw,
@@ -1014,6 +1037,7 @@ const ninaContextHelper = ({
     getVerificationsForUser,
     filterSubscriptionsForHub,
     submitEmailRequest,
+    getUsdcToSolSwapData,
   }
 }
 

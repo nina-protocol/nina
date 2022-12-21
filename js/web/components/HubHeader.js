@@ -183,7 +183,7 @@ const DescriptionOverflowContainer = styled(Box)(({ theme }) => ({
     ['-webkit-line-clamp']: '4',
     maxWidth: 'unset',
     padding: '0 15px',
-    width: '68vw',
+    width: '60vw',
   },
 }))
 

@@ -62,7 +62,9 @@ const Feed = ({
   const { updateTrack, isPlaying, setIsPlaying, track } = useContext(
     Audio.Context
   )
-  const { displayNameForAccount } = useContext(Nina.Context)
+  const { displayNameForAccount, displayImageForAccount } = useContext(
+    Nina.Context
+  )
   const router = useRouter()
   const wallet = useWallet()
   const [pendingFetch, setPendingFetch] = useState(false)
@@ -515,8 +517,25 @@ const Feed = ({
         //     </MultiCard>
         //   )
         case 'SubscriptionSubscribeAccount':
+          const image = displayImageForAccount(item.toAccount.publicKey)
           return (
-            <TextCard>
+            <ImageCard>
+              <Link href={`/profiles/${item.toAccount.publicKey}`} passHref>
+                {image && image.includes('https') ? (
+                  <Image
+                    height={'400px'}
+                    width={'400px'}
+                    layout="responsive"
+                    src={getImageFromCDN(image, 600, Date.parse(item.datetime))}
+                    alt={i}
+                    priority={true}
+                    loader={loader}
+                    unoptimized={true}
+                  />
+                ) : (
+                  <img src={image} height={418} width={418} />
+                )}
+              </Link>
               <CopyWrapper>
                 <Typography my={1}>
                   <Link href={`/profiles/${item.authority.publicKey}`} passHref>
@@ -524,14 +543,14 @@ const Feed = ({
                   </Link>{' '}
                   followed{' '}
                   <Link href={`/profiles/${item.toAccount.publicKey}`} passHref>
-                    {displayNameForAccount(item.authority.publicKey)}
+                    {displayNameForAccount(item.toAccount.publicKey)}
                   </Link>
                 </Typography>
                 <Typography my={1} fontWeight={600}>
                   {timeSince(Date.parse(item.datetime))} ago
                 </Typography>
               </CopyWrapper>
-            </TextCard>
+            </ImageCard>
           )
         case 'SubscriptionSubscribeHub':
           return (
@@ -571,7 +590,7 @@ const Feed = ({
           )
 
         default:
-          return <Typography key={i}>{item?.type}</Typography>
+          return null
       }
     })
 
