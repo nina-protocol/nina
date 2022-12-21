@@ -172,7 +172,6 @@ const Profile = ({ profilePubkey }) => {
     profileHubs,
     profileSubscriptionsTo,
     profileSubscriptionsFrom,
-    router.query.view,
   ])
 
   useEffect(() => {
