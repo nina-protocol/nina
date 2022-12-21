@@ -1550,7 +1550,6 @@ const releaseContextHelper = ({
   const getFeedForUser = async (publicKey, offset) => {
     try {
       const { data } = await axios.get(`${process.env.NINA_API_ENDPOINT}/accounts/${publicKey}/feed?offset=${offset}`)
-      console.log('feed', data)
       const releases = []
       const updatedVerificationState = {}
 

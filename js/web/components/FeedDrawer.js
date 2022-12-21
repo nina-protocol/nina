@@ -30,7 +30,8 @@ const FeedDrawer = () => {
 
   useEffect(() => {
     const handleFetch = async (refresh = false) => {
-      let publicKey = wallet?.publicKey?.toBase58() || process.env.NINA_SUBSCRIPTION_PUBKEY
+      let publicKey =
+        wallet?.publicKey?.toBase58() || process.env.NINA_SUBSCRIPTION_PUBKEY
       await handleGetFeedForUser(publicKey, refresh)
       await getHubSuggestionsForUser(publicKey)
     }
@@ -82,7 +83,6 @@ const FeedDrawer = () => {
   const getHubSuggestionsForUser = async (publicKey) => {
     const suggestions = []
     try {
-   
       const { data } = await axios.get(
         `${process.env.NINA_API_ENDPOINT}/accounts/${publicKey}/hubSuggestions`
       )
