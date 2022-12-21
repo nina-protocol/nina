@@ -29,7 +29,7 @@ const BundlrModal = ({ inCreate, displaySmall }) => {
     getSolPrice,
     initBundlr,
   } = useContext(Nina.Context)
-  const [amount, setAmount] = useState()
+  const [amount, setAmount] = useState(0.05)
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
     [bundlrBalance, bundlrPricePerMb]
