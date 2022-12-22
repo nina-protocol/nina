@@ -40,13 +40,14 @@ const HubComponent = ({ hubPubkey }) => {
     info: false,
     releases: false,
     collaborators: false,
+    followers: false,
   })
 
   const hasData = useMemo(() => {
     if (fetchedHubs.has(hubPubkey)) {
       return true
     }
-    if (fetched.info && fetched.releases && fetched.collaborators) {
+    if (fetched.info && fetched.releases && fetched.collaborators && fetched.followers) {
       setFetchedHubs(fetchedHubs.add(hubPubkey))
       return true
     }
@@ -78,6 +79,8 @@ const HubComponent = ({ hubPubkey }) => {
 
   useEffect(() => {
     setHubFollowers(filterSubscriptionsForHub(hubPubkey))
+    setFetched({ ...fetched, followers: true })
+
   }, [subscriptionState])
 
   useEffect(() => {
@@ -101,13 +104,19 @@ const HubComponent = ({ hubPubkey }) => {
         )
         setActiveView(viewIndex)
       }
-  
-      if (!router.query.view) {
-        const viewIndex = views.findIndex((view) => !view.disabled)
-        setActiveView(viewIndex)
+      if (
+        !router.query.view &&
+        fetched.releases &&
+        fetched.collaborators && 
+        fetched.followers
+      ) {
+        const viewIndex = views.findIndex((view) => {
+          return !view.disabled
+        })
+        setActiveView(viewIndex === -1 ? undefined : viewIndex)
       }
     }
-  }, [router.query])
+  }, [router.query, fetched, views])
 
   useEffect(() => {
     let updatedView = views.slice()
@@ -128,43 +137,39 @@ const HubComponent = ({ hubPubkey }) => {
 
     viewIndex = updatedView.findIndex((view) => view.name === 'releases')
     updatedView[viewIndex].playlist = releaseData
-    setFetched({ ...fetched, release: true })
-  }, [releaseState, hubReleases, views])
+    // setFetched({ ...fetched, releases: true })
+  }, [releaseState, hubReleases])
 
   useEffect(() => {
-    let updatedView = views.slice()
-    let viewIndex
-
-    if (hubReleases?.length > 0) {
-      viewIndex = updatedView.findIndex((view) => view.name === 'releases')
-      updatedView[viewIndex].disabled = false
-      updatedView[viewIndex].count = hubReleases.length
-      updatedView[viewIndex].playlist = hubReleases
-    }
-
-    if (hubCollaborators?.length > 0) {
-      viewIndex = updatedView.findIndex((view) => view.name === 'collaborators')
-      updatedView[viewIndex].disabled = false
-      updatedView[viewIndex].count = hubCollaborators.length
-    }
-
     if (
-      hubReleases?.length === 0 &&
       fetched.releases &&
-      hubCollaborators.length > 0
+      fetched.collaborators &&
+      fetched.followers
     ) {
-      setActiveView(1)
-    }
-
-    if (hubFollowers) {
-      viewIndex = updatedView.findIndex((view) => view.name === 'followers')
-      updatedView[viewIndex].count = hubFollowers.length
-      updatedView[viewIndex].disabled = hubFollowers.length === 0
-    }
-
-    setFetched({ ...fetched })
-    setViews(updatedView)
-  }, [hubReleases, hubCollaborators, hubFollowers])
+        let updatedView = views.slice()
+    
+        if (hubReleases?.length > 0) {
+          let viewIndex = updatedView.findIndex((view) => view.name === 'releases')
+          updatedView[viewIndex].disabled = false
+          updatedView[viewIndex].count = hubReleases.length
+          updatedView[viewIndex].playlist = hubReleases
+        }
+    
+        if (hubCollaborators?.length > 0) {
+          let viewIndex = updatedView.findIndex((view) => view.name === 'collaborators')
+          updatedView[viewIndex].disabled = false
+          updatedView[viewIndex].count = hubCollaborators.length
+        }
+    
+        if (hubFollowers) {
+          let viewIndex = updatedView.findIndex((view) => view.name === 'followers')
+          updatedView[viewIndex].count = hubFollowers.length
+          updatedView[viewIndex].disabled = hubFollowers.length === 0
+        }
+    
+        setViews(updatedView)    
+      }
+  }, [fetched, hubReleases, hubCollaborators, hubFollowers])
 
 
 

@@ -106,6 +106,8 @@ const Profile = ({ profilePubkey }) => {
 
   useEffect(() => {
     console.log('router.query.view :>> ', router.query.view);
+    console.log('activeView :>> ', activeView);
+    console.log('views :>> ', views)
     if (!activeView) {
       if (router.query.view) {
         const viewIndex = views.findIndex(
@@ -113,13 +115,12 @@ const Profile = ({ profilePubkey }) => {
         )
         setActiveView(viewIndex)
       }
-  
-      if (!router.query.view) {
+      if (!router.query.view && fetched) {
         const viewIndex = views.findIndex((view) => !view.disabled)
-        setActiveView(viewIndex)
+        setActiveView(viewIndex === -1 ? undefined : viewIndex)
       }
     }
-  }, [router.query, views])
+  }, [router.query, views, fetched])
 
   useEffect(() => {
     const to = []
@@ -170,7 +171,7 @@ const Profile = ({ profilePubkey }) => {
         view.disabled = false
       })
     }
-
+    console.log('updatedView :>> ', updatedView)
     setViews(updatedView)
   }, [
     profilePublishedReleases,
