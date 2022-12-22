@@ -400,6 +400,119 @@ describe('Release', async () => {
 
   let bumps
   let metadata
+  it('Should Not Initialize Release For Sale in USDC with Publishing Credit if authority payer mismatch', async () => {
+
+    await mintToAccount(
+      provider,
+      npcMint,
+      publishingCreditTokenAccount,
+      new anchor.BN(50),
+      provider.wallet.publicKey,
+    );
+
+    const paymentMint = usdcMint;
+    releaseMint = anchor.web3.Keypair.generate();
+    const releaseMintIx = await createMintInstructions(
+      provider,
+      provider.wallet.publicKey,
+      releaseMint.publicKey,
+      0,
+    );
+
+    const [_release, releaseBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-release")),
+        releaseMint.publicKey.toBuffer(),
+      ],
+      nina.programId,
+    );
+    release = _release;
+
+    const [_releaseSigner, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [release.toBuffer()],
+      nina.programId,
+    );
+    releaseSigner = _releaseSigner;
+
+    let [_royaltyTokenAccount, royaltyTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+      provider,
+      releaseSigner,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      paymentMint,
+    );
+    royaltyTokenAccount = _royaltyTokenAccount;
+
+    const authorityPublishingCreditTokenAccountBefore = await getTokenAccount(
+      provider,
+      publishingCreditTokenAccount,
+    );
+
+    const config = {
+      amountTotalSupply: new anchor.BN(1000),
+      amountToArtistTokenAccount: new anchor.BN(0),
+      amountToVaultTokenAccount: new anchor.BN(0),
+      resalePercentage: new anchor.BN(200000),
+      price: new anchor.BN(releasePrice),
+      releaseDatetime: new anchor.BN((Date.now() / 1000) - 5),
+    };
+
+    bumps = {
+      release: releaseBump,
+      signer: releaseSignerBump,
+    }
+
+    const [_metadata] = await anchor.web3.PublicKey.findProgramAddress(
+      [Buffer.from('metadata'), metadataProgram.toBuffer(), releaseMint.publicKey.toBuffer()],
+      metadataProgram,
+    );
+    metadata = _metadata;
+
+    const metadataData = {
+      name: `Nina with the Nina`,
+      symbol: `NINA`,
+      uri: `https://arweave.net`,
+      sellerFeeBasisPoints: 2000,
+    }
+    await assert.rejects(
+      async () => {
+        await nina.rpc.releaseInitWithCredit(
+          config,
+          bumps,
+          metadataData, {
+            accounts: {
+              release,
+              releaseSigner,
+              releaseMint: releaseMint.publicKey,
+              payer: user1.publicKey,
+              authority: provider.wallet.publicKey,
+              authorityTokenAccount: usdcTokenAccount,
+              authorityPublishingCreditTokenAccount: publishingCreditTokenAccount,
+              publishingCreditMint: npcMint,
+              paymentMint,
+              royaltyTokenAccount,
+              metadata,
+              metadataProgram,
+              systemProgram: anchor.web3.SystemProgram.programId,
+              tokenProgram: TOKEN_PROGRAM_ID,
+              rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+            },
+            signers: [user1, releaseMint],
+            instructions: [
+              ...releaseMintIx,
+              royaltyTokenAccountIx,
+            ],
+          }
+        );
+      }, (err) => {
+        console.log('err', err.error);
+        assert.equal(err.error.errorCode.number, 2003);
+        assert.equal(err.error.errorMessage, "A raw constraint was violated");
+        return true;
+      }
+    );
+  });
+
   it('Initialize Release For Sale in USDC with Publishing Credit', async () => {
 
     await mintToAccount(
@@ -4398,7 +4511,7 @@ describe('Hub', async () => {
     assert.equal(encrypt.decode(hubAfter.uri), uri)
   })
 
-  it ('should not update hub publish fee if too high', async () => {
+  it ('should not update hub referral fee if too high', async () => {
     await assert.rejects(
       async () => {
         const uri = 'https://arweave.net/jsdlkfj4j3kl4j3lkj43l3kjflksjd'

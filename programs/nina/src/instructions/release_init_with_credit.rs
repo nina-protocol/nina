@@ -23,9 +23,16 @@ pub struct ReleaseInitializeWithCredit<'info> {
     pub release_mint: Box<Account<'info, Mint>>,
     #[account(mut)]
     pub payer: Signer<'info>,
-    /// CHECK: the payer is usually the authority, though they can set someone else as authority
-    /// This is safe because we don't care who the payer sets as authority.
-    #[account(mut)]
+    /// CHECK: originally we would allow delegated payment for a release
+    /// anyone could publish a release on behalf of someone else
+    /// but we now require the authority == payer
+    /// in order to prevent someone from publishing a release on behalf of someone else
+    /// without their express approval.
+    /// Originally desired behavior will require more checks for approval
+    #[account(
+        mut,
+        constraint = payer.key() == authority.key(),
+    )]
     pub authority: UncheckedAccount<'info>,
     #[account(
         constraint = authority_token_account.owner == authority.key(),
