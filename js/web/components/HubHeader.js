@@ -21,7 +21,7 @@ const HubHeader = ({ hubData }) => {
   const wallet = useWallet()
 
   useEffect(() => {
-    if (hubData?.data.description.includes('<p>')) {
+    if (hubData?.data?.description.includes('<p>')) {
       unified()
         .use(rehypeParse, { fragment: true })
         .use(rehypeSanitize)
@@ -45,13 +45,13 @@ const HubHeader = ({ hubData }) => {
     } else {
       setHubDescription(hubData?.data.description)
     }
-  }, [hubData?.data.description])
+  }, [hubData?.data?.description])
 
   return (
     <Wrapper>
       <ResponsiveHubHeader>
         <Box sx={{ width: '100px', minWidth: '100px' }}>
-          <Link href={`${hubData?.data.externalUrl}`} passHref>
+          <Link href={`${hubData?.data?.externalUrl}`} passHref>
             <a target="_blank" rel="noreferrer">
               <Image
                 height={100}
@@ -62,7 +62,7 @@ const HubHeader = ({ hubData }) => {
                   400,
                   Date.parse(hubData?.createdAt)
                 )}
-                alt={hubData?.data.displayName}
+                alt={hubData?.data?.displayName}
                 priority={true}
                 loader={loader}
               />
@@ -72,11 +72,11 @@ const HubHeader = ({ hubData }) => {
 
         <CopyWrapper>
           <DisplayName>
-            {hubData?.data.displayName && (
-              <Link href={hubData?.data.externalUrl} passHref>
+            {hubData?.data?.displayName && (
+              <Link href={hubData?.data?.externalUrl} passHref>
                 <a target="_blank" rel="noreferrer">
                   <Typography sx={{ padding: '0 15px' }}>
-                    {hubData?.data.displayName}
+                    {hubData?.data?.displayName}
                   </Typography>
                 </a>
               </Link>
@@ -90,7 +90,7 @@ const HubHeader = ({ hubData }) => {
               />
             )}
           </DisplayName>
-          {hubData?.data.description && (
+          {hubData?.data?.description && (
             <DescriptionOverflowContainer>
               {hubDescription}
             </DescriptionOverflowContainer>

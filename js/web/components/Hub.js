@@ -36,7 +36,7 @@ const HubComponent = ({ hubPubkey }) => {
   const [releaseData, setReleaseData] = useState(undefined)
   const [hubCollaborators, setHubCollaborators] = useState(undefined)
   const [hubFollowers, setHubFollowers] = useState(undefined)
-  const [activeView, setActiveView] = useState(undefined)
+  const [activeView, setActiveView] = useState(0)
   const [fetched, setFetched] = useState(false)
 
   const [views, setViews] = useState([
@@ -56,20 +56,45 @@ const HubComponent = ({ hubPubkey }) => {
     return false
   }, [fetched, fetchedHubs, hubPubkey])
 
-  const hubData = useMemo(() => {
-    if (hubPubkey) {
-      getHub(hubPubkey)
-      getSubscriptionsForHub(hubPubkey)
-    }
-    if (hubState[hubPubkey]) {
-      setFetched(true)
-      return hubState[hubPubkey]
-    }
-  }, [hubState, hubPubkey])
-
   useEffect(() => {
     getHubData(hubPubkey)
-  }, [hubPubkey, ])
+  }, [hubPubkey, hubState])
+
+  useEffect(() => {
+    let [releases] = filterHubContentForHub(hubPubkey)
+    releases = releases.filter((release) => release.visible === true)
+    setHubReleases(releases)
+  }, [hubContentState])
+
+  useEffect(() => {
+    setHubFollowers(filterSubscriptionsForHub(hubPubkey))
+  }, [subscriptionState])
+
+  useEffect(() => {
+    const collaborators = filterHubCollaboratorsForHub(hubPubkey)
+    setHubCollaborators(collaborators)
+  }, [hubCollaboratorsState])
+
+  useEffect(() => {
+    let updatedView = views.slice()
+    let viewIndex
+
+    const data = hubReleases?.map((hubRelease) => {
+      const releaseMetadata = releaseState.metadata[hubRelease.release]
+      releaseMetadata.authority =
+        releaseState.tokenData[hubRelease.release].authority
+      releaseMetadata.releasePubkey = hubRelease.release
+      return releaseMetadata
+    })
+    const sortedPublished = data?.sort((a, b) => {
+      return new Date(b.properties.date) - new Date(a.properties.date)
+    })
+
+    setReleaseData(sortedPublished)
+
+    viewIndex = updatedView.findIndex((view) => view.name === 'releases')
+    updatedView[viewIndex].playlist = releaseData
+  }, [releaseState, hubReleases])
 
   useEffect(() => {
     if (!activeView) {
@@ -81,12 +106,11 @@ const HubComponent = ({ hubPubkey }) => {
       }
       if (!router.query.view && fetched) {
         const viewIndex =
-          hubReleases?.length > 0
+          hubReleases.length > 0
             ? views.findIndex((view) => {
                 return !view.disabled
               })
             : 0
-
         setActiveView(viewIndex === -1 ? undefined : viewIndex)
       }
     }
@@ -125,44 +149,21 @@ const HubComponent = ({ hubPubkey }) => {
     }
   }, [fetched, hubReleases, hubCollaborators, hubFollowers])
 
-  const getHubData = (hubPubkey) => {
-    if (fetched) {
-      let updatedView = views.slice()
-      let viewIndex
-
-      if (releaseState) {
-        const data = hubReleases?.map((hubRelease) => {
-          const releaseMetadata = releaseState.metadata[hubRelease.release]
-          releaseMetadata.authority =
-            releaseState.tokenData[hubRelease.release].authority
-          releaseMetadata.releasePubkey = hubRelease.release
-          return releaseMetadata
-        })
-
-        const sortedPublished = data?.sort((a, b) => {
-          return new Date(b.properties.date) - new Date(a.properties.date)
-        })
-        setReleaseData(sortedPublished)
-        viewIndex = updatedView.findIndex((view) => view.name === 'releases')
-        updatedView[viewIndex].playlist = releaseData
+  const getHubData = async (hubPubkey) => {
+    if (!fetched) {
+      try {
+        if (hubPubkey) {
+          await getHub(hubPubkey)
+          await getSubscriptionsForHub(hubPubkey)
+        }
+        setFetched(true)
+      } catch (err) {
+        console.log(err)
       }
-
-      if (hubContentState) {
-        let [releases] = filterHubContentForHub(hubPubkey)
-        releases = releases.filter((release) => release.visible === true)
-        setHubReleases(releases)
-      }
-
-      if (hubCollaboratorsState) {
-        const collaborators = filterHubCollaboratorsForHub(hubPubkey)
-        setHubCollaborators(collaborators)
-      }
-
-      if (subscriptionState) {
-        setHubFollowers(filterSubscriptionsForHub(hubPubkey))
-      }
-
+    }
+    if (hubState[hubPubkey]) {
       setFetched(true)
+      return hubState[hubPubkey]
     }
   }
 
@@ -233,9 +234,9 @@ const HubComponent = ({ hubPubkey }) => {
   return (
     <>
       <HubContainer>
-        <>{hasData && hubData && <HubHeader hubData={hubData} />}</>
+        <>{hasData && <HubHeader hubData={hubState[hubPubkey]} />}</>
 
-        {hasData && hubData && (
+        {hasData && (
           <HubTabWrapper>
             <TabHeader
               viewHandler={viewHandler}
