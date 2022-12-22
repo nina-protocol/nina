@@ -1495,7 +1495,7 @@ const releaseContextHelper = ({
         await initSdkIfNeeded()
         const highlightsHubPubkey = process.env.REACT_APP_CLUSTER === 'devnet' ? '4xHeZW8BK8HeCinoDLsGiGwtYsjQ9zBb71m5vdDa5ceS' : '4QECgzp8hjknK3pvPEMoXATywcsNnH4MU49tVvDWLgKg'
         const published = (await NinaSdk.Release.fetchAll({limit: 25}, true)).releases
-        const highlights = (await NinaSdk.Hub.fetchReleases(highlightsHubPubkey, true)).releases
+        let highlights = (await NinaSdk.Hub.fetchReleases(highlightsHubPubkey, true)).releases
   
         const allReleases = [...published, ...highlights]
         setAllReleasesCount(published.total)
@@ -1506,9 +1506,11 @@ const releaseContextHelper = ({
           metadata: {...prevState.metadata, ...newState.metadata},
           releaseMintMap: {...prevState.releaseMintMap, ...newState.releaseMintMap},
         }))
+
+        highlights = highlights.sort((a, b) => b.accountData.release.releaseDatetime - a.accountData.release.releaseDatetime)
         setReleasesRecentState({
           published: published.map(release => release.publicKey),
-          highlights: _.shuffle(highlights.map(release => release.publicKey)),
+          highlights: highlights.map(release => release.publicKey),
         })
       }
     } catch (error) {

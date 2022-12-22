@@ -105,14 +105,19 @@ const Profile = ({ profilePubkey }) => {
   }, [wallet, profilePubkey])
 
   useEffect(() => {
-    if (router.query.view) {
-      const viewIndex = views.findIndex(
-        (view) => view.name === router.query.view
-      )
-
-      setActiveView(viewIndex)
+    if (!activeView) {
+      if (router.query.view) {
+        const viewIndex = views.findIndex(
+          (view) => view.name === router.query.view
+        )
+        setActiveView(viewIndex)
+      }
+      if (!router.query.view && fetched) {
+        const viewIndex = views.findIndex((view) => !view.disabled)
+        setActiveView(viewIndex === -1 ? undefined : viewIndex)
+      }
     }
-  }, [router.query.view])
+  }, [router.query, views, fetched])
 
   useEffect(() => {
     const to = []
@@ -133,7 +138,6 @@ const Profile = ({ profilePubkey }) => {
   useEffect(() => {
     let viewIndex
     let updatedView = views.slice()
-
     if (profilePublishedReleases?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'releases')
       updatedView[viewIndex].disabled = false
@@ -159,12 +163,12 @@ const Profile = ({ profilePubkey }) => {
       updatedView[viewIndex].disabled = false
       updatedView[viewIndex].count = profileSubscriptionsFrom.length
     }
-
     if (inDashboard) {
       updatedView.forEach((view) => {
         view.disabled = false
       })
     }
+    console.log('updatedView :>> ', updatedView)
     setViews(updatedView)
   }, [
     profilePublishedReleases,
@@ -174,13 +178,7 @@ const Profile = ({ profilePubkey }) => {
     profileSubscriptionsFrom,
   ])
 
-  useEffect(() => {
-    if (!router.query.view) {
-      const viewIndex = views.findIndex((view) => !view.disabled)
-      setActiveView(viewIndex)
-    }
-  }, [views, router.query.view])
-
+ 
   useEffect(() => {
     let filteredCollection
     if (fetchedUserProfileReleases[profilePubkey]?.collected) {
@@ -267,8 +265,11 @@ const Profile = ({ profilePubkey }) => {
       : `profiles/${profilePubkey}`
 
     const newUrl = `/${path}?view=${activeViewName}`
-
-    router.push(newUrl, newUrl, { shallow: true })
+    window.history.replaceState(
+      { ...window.history.state, as: newUrl, url: newUrl },
+      '',
+      newUrl
+    )
     setActiveView(index)
     tableContainerRef.current.scrollTo(0, 0)
   }
