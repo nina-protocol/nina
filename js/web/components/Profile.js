@@ -176,7 +176,6 @@ const Profile = ({ profilePubkey }) => {
     profileSubscriptionsFrom,
   ])
 
- 
   useEffect(() => {
     let filteredCollection
     if (fetchedUserProfileReleases[profilePubkey]?.collected) {
