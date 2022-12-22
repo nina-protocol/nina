@@ -105,9 +105,6 @@ const Profile = ({ profilePubkey }) => {
   }, [wallet, profilePubkey])
 
   useEffect(() => {
-    console.log('router.query.view :>> ', router.query.view);
-    console.log('activeView :>> ', activeView);
-    console.log('views :>> ', views)
     if (!activeView) {
       if (router.query.view) {
         const viewIndex = views.findIndex(

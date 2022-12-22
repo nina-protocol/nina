@@ -80,7 +80,6 @@ const HubComponent = ({ hubPubkey }) => {
   useEffect(() => {
     setHubFollowers(filterSubscriptionsForHub(hubPubkey))
     setFetched({ ...fetched, followers: true })
-
   }, [subscriptionState])
 
   useEffect(() => {
@@ -175,6 +174,7 @@ const HubComponent = ({ hubPubkey }) => {
 
   const viewHandler = (event) => {
     event.stopPropagation()
+    event.preventDefault()
     const index = parseInt(event.target.id)
     const activeViewName = views[index].name
     const hubHandle = hubState[hubPubkey]?.handle
@@ -299,6 +299,9 @@ const HubTabWrapper = styled(Box)(({ theme }) => ({
 const HubsTableContainer = styled(Box)(({ theme }) => ({
   paddingBottom: '100px',
   overflowY: 'auto',
+  '&::-webkit-scrollbar': {
+    display: 'none',
+  },
   [theme.breakpoints.down('md')]: {
     paddingBottom: '100px',
     overflow: 'scroll',
