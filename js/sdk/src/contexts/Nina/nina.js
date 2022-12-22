@@ -103,38 +103,6 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     }
   }, [provider.wallet.wallet, provider.wallet.publicKey])
 
-  let timer = undefined
-  const healthCheck = async () => {
-    const timeSinceLastCheck = (Date.now() - healthTimestamp) / 1000
-    if (timeSinceLastCheck > 30) {
-      try {
-        setHealthTimestamp(Date.now())
-        const performance = await provider.connection._rpcRequest(
-          'getRecentPerformanceSamples',
-          [5]
-        )
-        let status = false
-        performance.result.forEach((sample) => {
-          status = sample.numTransactions / sample.samplePeriodSecs > 1000
-        })
-        setHealthOk(status)
-      } catch (error) {
-        console.warn(error)
-      }
-    }
-  }
-
-  useEffect(() => {
-    if (!timer) {
-      healthCheck()
-      timer = setInterval(() => healthCheck(), 60000)
-    }
-    return () => {
-      clearInterval(timer)
-      timer = null
-    }
-  }, [healthCheck])
-
   const {
     subscriptionSubscribe,
     subscriptionUnsubscribe,
