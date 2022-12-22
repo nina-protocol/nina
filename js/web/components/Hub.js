@@ -40,13 +40,14 @@ const HubComponent = ({ hubPubkey }) => {
     info: false,
     releases: false,
     collaborators: false,
+    followers: false,
   })
 
   const hasData = useMemo(() => {
     if (fetchedHubs.has(hubPubkey)) {
       return true
     }
-    if (fetched.info && fetched.releases && fetched.collaborators) {
+    if (fetched.info && fetched.releases && fetched.collaborators && fetched.followers) {
       setFetchedHubs(fetchedHubs.add(hubPubkey))
       return true
     }
@@ -78,10 +79,12 @@ const HubComponent = ({ hubPubkey }) => {
 
   useEffect(() => {
     setHubFollowers(filterSubscriptionsForHub(hubPubkey))
+    setFetched({ ...fetched, followers: true })
   }, [subscriptionState])
 
   useEffect(() => {
-    const [releases] = filterHubContentForHub(hubPubkey)
+    let [releases] = filterHubContentForHub(hubPubkey)
+    releases = releases.filter((release) => release.visible === true)
     setFetched({ ...fetched, releases: true })
     setHubReleases(releases)
   }, [hubContentState])
@@ -93,13 +96,26 @@ const HubComponent = ({ hubPubkey }) => {
   }, [hubCollaboratorsState])
 
   useEffect(() => {
-    if (router.query.view) {
-      const viewIndex = views.findIndex(
-        (view) => view.name === router.query.view
-      )
-      setActiveView(viewIndex)
+    if (!activeView) {
+      if (router.query.view) {
+        const viewIndex = views.findIndex(
+          (view) => view.name === router.query.view
+        )
+        setActiveView(viewIndex)
+      }
+      if (
+        !router.query.view &&
+        fetched.releases &&
+        fetched.collaborators && 
+        fetched.followers
+      ) {
+        const viewIndex = views.findIndex((view) => {
+          return !view.disabled
+        })
+        setActiveView(viewIndex === -1 ? undefined : viewIndex)
+      }
     }
-  }, [views, router])
+  }, [router.query, fetched, views])
 
   useEffect(() => {
     let updatedView = views.slice()
@@ -120,66 +136,54 @@ const HubComponent = ({ hubPubkey }) => {
 
     viewIndex = updatedView.findIndex((view) => view.name === 'releases')
     updatedView[viewIndex].playlist = releaseData
-    setFetched({ ...fetched, release: true })
-  }, [releaseState, hubReleases, views])
+    // setFetched({ ...fetched, releases: true })
+  }, [releaseState, hubReleases])
 
   useEffect(() => {
-    let updatedView = views.slice()
-    let viewIndex
-
-    if (hubReleases?.length > 0) {
-      viewIndex = updatedView.findIndex((view) => view.name === 'releases')
-      updatedView[viewIndex].disabled = false
-      updatedView[viewIndex].count = hubReleases.length
-      updatedView[viewIndex].playlist = hubReleases
-    }
-
-    if (hubCollaborators?.length > 0) {
-      viewIndex = updatedView.findIndex((view) => view.name === 'collaborators')
-      updatedView[viewIndex].disabled = false
-      updatedView[viewIndex].count = hubCollaborators.length
-    }
-
     if (
-      hubReleases?.length === 0 &&
       fetched.releases &&
-      hubCollaborators.length > 0
+      fetched.collaborators &&
+      fetched.followers
     ) {
-      setActiveView(1)
-    }
+        let updatedView = views.slice()
+    
+        if (hubReleases?.length > 0) {
+          let viewIndex = updatedView.findIndex((view) => view.name === 'releases')
+          updatedView[viewIndex].disabled = false
+          updatedView[viewIndex].count = hubReleases.length
+          updatedView[viewIndex].playlist = hubReleases
+        }
+    
+        if (hubCollaborators?.length > 0) {
+          let viewIndex = updatedView.findIndex((view) => view.name === 'collaborators')
+          updatedView[viewIndex].disabled = false
+          updatedView[viewIndex].count = hubCollaborators.length
+        }
+    
+        if (hubFollowers) {
+          let viewIndex = updatedView.findIndex((view) => view.name === 'followers')
+          updatedView[viewIndex].count = hubFollowers.length
+          updatedView[viewIndex].disabled = hubFollowers.length === 0
+        }
+    
+        setViews(updatedView)    
+      }
+  }, [fetched, hubReleases, hubCollaborators, hubFollowers])
 
-    if (hubFollowers) {
-      viewIndex = updatedView.findIndex((view) => view.name === 'followers')
-      updatedView[viewIndex].count = hubFollowers.length
-      updatedView[viewIndex].disabled = hubFollowers.length === 0
-    }
 
-    setFetched({ ...fetched })
-    setViews(updatedView)
-  }, [hubReleases, hubCollaborators, hubFollowers])
-
-  useEffect(() => {
-    if (!router.query.view) {
-      const viewIndex = views.findIndex((view) => !view.disabled)
-      setActiveView(viewIndex)
-    }
-  }, [views])
 
   const viewHandler = (event) => {
     event.stopPropagation()
+    event.preventDefault()
     const index = parseInt(event.target.id)
     const activeViewName = views[index].name
     const hubHandle = hubState[hubPubkey]?.handle
     const newUrl = `/hubs/${hubHandle}?view=${activeViewName}`
     window.history.replaceState(
-      {
-        ...window.history.state,
-        as: newUrl,
-        url: newUrl,
-      },
-      '',
-      newUrl
-    )
+          { ...window.history.state, as: newUrl, url: newUrl },
+          '',
+          newUrl
+        )
     setActiveView(index)
     tableContainerRef.current.scrollTo(0, 0)
   }
@@ -295,6 +299,9 @@ const HubTabWrapper = styled(Box)(({ theme }) => ({
 const HubsTableContainer = styled(Box)(({ theme }) => ({
   paddingBottom: '100px',
   overflowY: 'auto',
+  '&::-webkit-scrollbar': {
+    display: 'none',
+  },
   [theme.breakpoints.down('md')]: {
     paddingBottom: '100px',
     overflow: 'scroll',

@@ -48,6 +48,9 @@ const NinaProgramActionCost = {
   SUBSCRIPTION_SUBSCRIBE_ACCOUNT: 0.00168236,
 }
 
+const MAX_AUDIO_FILE_UPLOAD_SIZE = 500
+const MAX_IMAGE_FILE_UPLOAD_SIZE = 10
+
 const NinaContext = createContext()
 const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [collection, setCollection] = useState({})
@@ -99,38 +102,6 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
       setBundlrBalance(0.0)
     }
   }, [provider.wallet.wallet, provider.wallet.publicKey])
-
-  let timer = undefined
-  const healthCheck = async () => {
-    const timeSinceLastCheck = (Date.now() - healthTimestamp) / 1000
-    if (timeSinceLastCheck > 30) {
-      try {
-        setHealthTimestamp(Date.now())
-        const performance = await provider.connection._rpcRequest(
-          'getRecentPerformanceSamples',
-          [5]
-        )
-        let status = false
-        performance.result.forEach((sample) => {
-          status = sample.numTransactions / sample.samplePeriodSecs > 1000
-        })
-        setHealthOk(status)
-      } catch (error) {
-        console.warn(error)
-      }
-    }
-  }
-
-  useEffect(() => {
-    if (!timer) {
-      healthCheck()
-      timer = setInterval(() => healthCheck(), 60000)
-    }
-    return () => {
-      clearInterval(timer)
-      timer = null
-    }
-  }, [healthCheck])
 
   const {
     subscriptionSubscribe,
@@ -251,6 +222,8 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         submitEmailRequest,
         lowSolBalance,
         getUsdcToSolSwapData,
+        MAX_AUDIO_FILE_UPLOAD_SIZE,
+        MAX_IMAGE_FILE_UPLOAD_SIZE,
       }}
     >
       {children}

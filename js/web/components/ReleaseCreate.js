@@ -104,6 +104,8 @@ const ReleaseCreate = () => {
   const [profileHubs, setProfileHubs] = useState()
   const [hubOptions, setHubOptions] = useState()
   const [selectedHub, setSelectedHub] = useState()
+  const [processingProgress, setProcessingProgress] = useState()
+
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
     [bundlrBalance, bundlrPricePerMb]
@@ -182,7 +184,9 @@ const ReleaseCreate = () => {
       } else if (artworkTx && trackTx && !metadataTx) {
         setButtonText('Restart 3/4: Upload Metadata.')
       } else if (artworkTx && trackTx && metadataTx && !releaseCreated) {
-        setButtonText('Restart 4/4: Finalize Release')
+        setButtonText(
+          'There may have been an error creating this release. Please wait 30 seconds and check for the release in your profile before retrying'
+        )
       } else if (mbs < uploadSize) {
         setButtonText(
           `Release requires more storage than available in your bundlr account, please top up`
@@ -240,7 +244,9 @@ const ReleaseCreate = () => {
   useEffect(() => {
     if (track) {
       const handleGetMd5FileHash = async (track) => {
-        const hash = await getMd5FileHash(track.file)
+        const hash = await getMd5FileHash(track.file, (progress) =>
+          setProcessingProgress(progress)
+        )
         setMd5Digest(hash)
       }
       handleGetMd5FileHash(track)
@@ -259,7 +265,7 @@ const ReleaseCreate = () => {
           },
           `/${releasePubkey.toBase58()}`
         )
-      } else if (track && artwork) {
+      } else if (track && artwork && md5Digest) {
         const error = await checkIfHasBalanceToCompleteAction(
           NinaProgramAction.RELEASE_INIT_WITH_CREDIT
         )
@@ -268,10 +274,10 @@ const ReleaseCreate = () => {
           return
         }
 
-        const hashExists = await validateUniqueMd5Digest(md5Digest)
-        if (hashExists) {
+        const release = await validateUniqueMd5Digest(md5Digest)
+        if (release) {
           enqueueSnackbar(
-            `A release with this track already exists: ${hashExists.json.properties.artist} - ${hashExists.json.properties.title}`,
+            `A release with this audio file already exists: ${release.metadata.properties.artist} - ${release.metadata.properties.title}`,
             {
               variant: 'warn',
             }
@@ -423,6 +429,7 @@ const ReleaseCreate = () => {
     } = e
     setSelectedHub(value)
   }
+
   return (
     <Grid item md={12}>
       {!wallet.connected && (
@@ -471,6 +478,7 @@ const ReleaseCreate = () => {
                 track={track}
                 disabled={isPublishing || releaseCreated}
                 handleProgress={handleProgress}
+                processingProgress={processingProgress}
               />
             </Box>
 
@@ -499,7 +507,8 @@ const ReleaseCreate = () => {
                       bundlrBalance === 0 ||
                       mbs < uploadSize ||
                       artwork?.meta.status === 'uploading' ||
-                      (track?.meta.status === 'uploading' && !releaseCreated)
+                      (track?.meta.status === 'uploading' && !releaseCreated) ||
+                      (artworkTx && trackTx && metadataTx && !releaseCreated)
                     }
                     sx={{ height: '54px' }}
                   >
@@ -514,7 +523,7 @@ const ReleaseCreate = () => {
               {bundlrBalance > 0 && !formValuesConfirmed && (
                 <ReleaseCreateConfirm
                   formValues={formValues}
-                  formIsValid={formIsValid}
+                  formIsValid={formIsValid && processingProgress === 1}
                   handleSubmit={handleSubmit}
                   setFormValuesConfirmed={setFormValuesConfirmed}
                   artwork={artwork}

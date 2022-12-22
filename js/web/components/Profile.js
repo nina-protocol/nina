@@ -101,7 +101,22 @@ const Profile = ({ profilePubkey }) => {
     if (wallet.connected && profilePubkey === wallet.publicKey?.toBase58()) {
       setInDashboard(true)
     }
-  }, [wallet, profilePubkey, router])
+  }, [wallet, profilePubkey])
+
+  useEffect(() => {
+    if (!activeView) {
+      if (router.query.view) {
+        const viewIndex = views.findIndex(
+          (view) => view.name === router.query.view
+        )
+        setActiveView(viewIndex)
+      }
+      if (!router.query.view && fetched) {
+        const viewIndex = views.findIndex((view) => !view.disabled)
+        setActiveView(viewIndex === -1 ? undefined : viewIndex)
+      }
+    }
+  }, [router.query, views, fetched])
 
   useEffect(() => {
     const to = []
@@ -152,7 +167,7 @@ const Profile = ({ profilePubkey }) => {
         view.disabled = false
       })
     }
-
+    console.log('updatedView :>> ', updatedView)
     setViews(updatedView)
   }, [
     profilePublishedReleases,
@@ -162,34 +177,7 @@ const Profile = ({ profilePubkey }) => {
     profileSubscriptionsFrom,
   ])
 
-  useEffect(() => {
-    if (!router.query.view && !inDashboard) {
-      const viewIndex = views.findIndex((view) => !view.disabled)
-      setActiveView(viewIndex)
-    }
-    if (router.query.view) {
-      const viewIndex = views.findIndex(
-        (view) => view.name === router.query.view
-      )
-      setActiveView(viewIndex)
-      return
-    }
-    if (inDashboard && profileCollectionReleases?.length > 0) {
-      setActiveView(0)
-    }
-    if (inDashboard && profilePublishedReleases?.length === 0) {
-      setActiveView(1)
-    }
-    if (
-      inDashboard &&
-      profilePublishedReleases?.length === 0 &&
-      profileCollectionReleases?.length === 0 &&
-      profileHubs.length > 0
-    ) {
-      setActiveView(2)
-    }
-  }, [views, router])
-
+ 
   useEffect(() => {
     let filteredCollection
     if (fetchedUserProfileReleases[profilePubkey]?.collected) {

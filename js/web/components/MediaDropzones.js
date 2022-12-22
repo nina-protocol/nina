@@ -11,6 +11,7 @@ const MediaDropzones = ({
   track,
   setTrack,
   handleProgress,
+  processingProgress,
 }) => {
   const [metadata, setMetadata] = useState({})
 
@@ -33,6 +34,7 @@ const MediaDropzones = ({
         track={track}
         setTrack={setTrack}
         handleProgress={handleProgress}
+        processingProgress={processingProgress}
       />
       <label htmlFor="artwork"></label>
       <MediaDropzone

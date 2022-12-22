@@ -1,7 +1,7 @@
 import * as encrypt from './encrypt'
 import * as web3 from './web3'
 import * as imageManager from './imageManager'
-import MD5 from "crypto-js/md5";
+import CryptoJS from "crypto-js";
 import NinaSdk from "@nina-protocol/js-sdk"
 
 const dateConverter = (date) => {
@@ -82,18 +82,55 @@ const shuffle = (array) => {
   return array;
 }
 
+const readChunked = (file, chunkCallback, endCallback) => {
+  const chunkSize = 1024 * 1024 * 10 // 10MB
+  const fileSize = file.size
+  let offset = 0
 
-const getMd5FileHash = (file) => {
+  let reader = new FileReader()
+  reader.onload = () => {
+    if (reader.error) {
+      console.warn(reader.error)
+      endCallback(reader.error || {})
+      return
+    }
+    offset += reader.result.length
+    chunkCallback(reader.result, offset, fileSize)
+    if (offset >= fileSize) {
+      endCallback()
+      return
+    }
+    readNext()
+  }
+
+  reader.onerror = (err) => {
+    console.warn(err)
+    endCallback(err || {})
+  }
+
+  const readNext = () => {
+    const slice = file.slice(offset, offset + chunkSize)
+    reader.readAsBinaryString(slice)
+  }
+  readNext()
+}
+
+const getMd5FileHash = async (file, progress) => {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-  
-    reader.onload = (e => {
-      const hash = MD5(e.target.result)
-      resolve(hash.toString())
+    let md5 = CryptoJS.algo.MD5.create();
+    readChunked(file, (chunk, offset, total) => {
+      md5 = md5.update(CryptoJS.enc.Latin1.parse(chunk));
+      if (progress) {
+        progress(offset / total)
+      }
+    }, (err) => {
+      if (err) {
+        reject(err)
+      } else {
+        const hash = md5.finalize();
+        resolve(hash.toString())
+      }
     })
-    reader.onerror = (e => reject(e))
-    reader.onabort = (e => reject(e))
-    reader.readAsBinaryString(file)
   })
 }
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
 import Typography from '@mui/material/Typography'
@@ -6,8 +6,19 @@ import Box from '@mui/material/Box'
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined'
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined'
 import Image from 'next/image'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 
-const MediaDropzone = ({ type, setArtwork, setTrack, handleProgress }) => {
+const MediaDropzone = ({
+  type,
+  setArtwork,
+  setTrack,
+  handleProgress,
+  processingProgress,
+}) => {
+  const { MAX_AUDIO_FILE_UPLOAD_SIZE, MAX_IMAGE_FILE_UPLOAD_SIZE } = useContext(
+    Nina.Context
+  )
+
   const handleChangeStatus = ({ file, meta, restart, remove }, status) => {
     if (meta.status === 'error_validation') {
       const height = meta.height
@@ -18,7 +29,7 @@ const MediaDropzone = ({ type, setArtwork, setTrack, handleProgress }) => {
           alert(`Your track is not an MP3. \nPlease upload an MP3.`)
         } else {
           alert(
-            `Your track is ${size} mb... \nPlease upload a file smaller than 120 mb`
+            `Your track is ${size} mb... \nPlease upload a file smaller than ${MAX_AUDIO_FILE_UPLOAD_SIZE} MBs`
           )
         }
       } else {
@@ -28,7 +39,7 @@ const MediaDropzone = ({ type, setArtwork, setTrack, handleProgress }) => {
           )
         } else {
           alert(
-            `your image is ${size} mb... \nPlease upload an image smaller than 8 mb`
+            `your image is ${size} mb... \nPlease upload an image smaller than ${MAX_IMAGE_FILE_UPLOAD_SIZE} MBs`
           )
         }
       }
@@ -86,7 +97,7 @@ const MediaDropzone = ({ type, setArtwork, setTrack, handleProgress }) => {
       return true
     }
 
-    if (size > 8) {
+    if (size > MAX_IMAGE_FILE_UPLOAD_SIZE) {
       return true
     }
     return false
@@ -94,7 +105,7 @@ const MediaDropzone = ({ type, setArtwork, setTrack, handleProgress }) => {
 
   const validateTrack = (fileWithMeta) => {
     const size = fileWithMeta.file.size / 1000000
-    if (size > 150) {
+    if (size > MAX_AUDIO_FILE_UPLOAD_SIZE) {
       return true
     }
     if (fileWithMeta.file.type !== 'audio/mpeg') {
@@ -133,6 +144,10 @@ const MediaDropzone = ({ type, setArtwork, setTrack, handleProgress }) => {
             </Typography>
             <Typography align="left" variant="subtitle1">
               {minutes}:{seconds}
+            </Typography>
+            <Typography align="left" variant="subtitle1">
+              {processingProgress === 1 ? 'Processed' : 'Processing'}:{' '}
+              {(processingProgress * 100).toFixed(2)}%
             </Typography>
           </Box>
         </Box>
