@@ -164,7 +164,7 @@ const HubComponent = ({ hubPubkey }) => {
       const viewIndex = views.findIndex((view) => !view.disabled)
       setActiveView(viewIndex)
     }
-  }, [views])
+  }, [router.query])
 
   const viewHandler = (event) => {
     event.stopPropagation()
@@ -172,7 +172,11 @@ const HubComponent = ({ hubPubkey }) => {
     const activeViewName = views[index].name
     const hubHandle = hubState[hubPubkey]?.handle
     const newUrl = `/hubs/${hubHandle}?view=${activeViewName}`
-    router.push(newUrl, newUrl, { shallow: true })
+    window.history.replaceState(
+          { ...window.history.state, as: newUrl, url: newUrl },
+          '',
+          newUrl
+        )
     setActiveView(index)
     tableContainerRef.current.scrollTo(0, 0)
   }
