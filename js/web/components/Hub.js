@@ -40,6 +40,7 @@ const HubComponent = ({ hubPubkey }) => {
     info: false,
     releases: false,
     collaborators: false,
+    followers: false,
   })
 
   const hasData = useMemo(() => {
@@ -78,6 +79,7 @@ const HubComponent = ({ hubPubkey }) => {
 
   useEffect(() => {
     setHubFollowers(filterSubscriptionsForHub(hubPubkey))
+      setFetched({ ...fetched, followers: true })
   }, [subscriptionState])
 
   useEffect(() => {
@@ -102,12 +104,15 @@ const HubComponent = ({ hubPubkey }) => {
         setActiveView(viewIndex)
       }
   
-      if (!router.query.view) {
+      if (!router.query.view && fetched.releases && fetched.collaborators && fetched.followers) {
+        console.log('fetched :>> ', fetched);
+        console.log('views :>> ', views);
         const viewIndex = views.findIndex((view) => !view.disabled)
+        console.log('viewIndex :>> ', viewIndex);
         setActiveView(viewIndex)
       }
     }
-  }, [router.query])
+  }, [router.query, fetched])
 
   useEffect(() => {
     let updatedView = views.slice()
@@ -128,7 +133,7 @@ const HubComponent = ({ hubPubkey }) => {
 
     viewIndex = updatedView.findIndex((view) => view.name === 'releases')
     updatedView[viewIndex].playlist = releaseData
-    setFetched({ ...fetched, release: true })
+    // setFetched({ ...fetched, releases: true })
   }, [releaseState, hubReleases, views])
 
   useEffect(() => {
@@ -148,28 +153,20 @@ const HubComponent = ({ hubPubkey }) => {
       updatedView[viewIndex].count = hubCollaborators.length
     }
 
-    if (
-      hubReleases?.length === 0 &&
-      fetched.releases &&
-      hubCollaborators.length > 0
-    ) {
-      setActiveView(1)
-    }
-
     if (hubFollowers) {
       viewIndex = updatedView.findIndex((view) => view.name === 'followers')
       updatedView[viewIndex].count = hubFollowers.length
       updatedView[viewIndex].disabled = hubFollowers.length === 0
     }
 
-    setFetched({ ...fetched })
-    setViews(updatedView)
-  }, [hubReleases, hubCollaborators, hubFollowers])
-
-
+    if (fetched.releases && fetched.collaborators && fetched.followers) {
+      setViews(updatedView)
+    }
+  }, [hubReleases, hubCollaborators, hubFollowers, fetched])
 
   const viewHandler = (event) => {
     event.stopPropagation()
+    event.preventDefault()
     const index = parseInt(event.target.id)
     const activeViewName = views[index].name
     const hubHandle = hubState[hubPubkey]?.handle
@@ -294,6 +291,9 @@ const HubTabWrapper = styled(Box)(({ theme }) => ({
 const HubsTableContainer = styled(Box)(({ theme }) => ({
   paddingBottom: '100px',
   overflowY: 'auto',
+  '&::-webkit-scrollbar': {
+    display: 'none',
+  },
   [theme.breakpoints.down('md')]: {
     paddingBottom: '100px',
     overflow: 'scroll',

@@ -105,8 +105,7 @@ const Profile = ({ profilePubkey }) => {
   }, [wallet, profilePubkey])
 
   useEffect(() => {
-    console.log('router.query.view :>> ', router.query.view);
-    if (!activeView) {
+    if (!activeView || activeView === -1) {
       if (router.query.view) {
         const viewIndex = views.findIndex(
           (view) => view.name === router.query.view
@@ -114,12 +113,14 @@ const Profile = ({ profilePubkey }) => {
         setActiveView(viewIndex)
       }
   
-      if (!router.query.view) {
-        const viewIndex = views.findIndex((view) => !view.disabled)
+      if (!router.query.view && fetched) {
+        const viewIndex = views.findIndex((view) => {
+         return  !view.disabled
+        })
         setActiveView(viewIndex)
       }
     }
-  }, [router.query, views])
+  }, [router.query, views, fetched])
 
   useEffect(() => {
     const to = []
