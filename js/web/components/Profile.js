@@ -73,7 +73,6 @@ const Profile = ({ profilePubkey }) => {
     [profilePubkey, verificationState]
   )
 
-  // refactor this
   const hasData = useMemo(() => {
     if (fetchedProfiles.has(profilePubkey)) {
       return true

@@ -44,7 +44,7 @@ const HubComponent = ({ hubPubkey }) => {
     { name: 'collaborators', playlist: undefined, disabled: true, count: 0 },
     { name: 'followers', disabled: true, count: 0 },
   ])
-  // refactor this
+
   const hasData = useMemo(() => {
     if (fetchedHubs.has(hubPubkey)) {
       return true
@@ -69,7 +69,7 @@ const HubComponent = ({ hubPubkey }) => {
 
   useEffect(() => {
     getHubData(hubPubkey)
-  }, [hubPubkey, hubCollaboratorsState, hubContentState, subscriptionState])
+  }, [hubPubkey, ])
 
   useEffect(() => {
     if (!activeView) {
