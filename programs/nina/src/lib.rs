@@ -73,7 +73,21 @@ pub mod nina {
     ) -> Result<()> {
         instructions::release_airdrop::handler(ctx)
     }
-    
+
+    pub fn release_update_metadata(
+        ctx: Context<ReleaseUpdateMetadata>,
+        bumps: ReleaseBumps,
+        metadata_data:ReleaseMetadataData,
+    ) -> Result <()> {
+        instructions::release_update_metadata::handler(ctx, bumps, metadata_data)
+    }
+
+    pub fn release_close_edition(
+        ctx: Context<ReleaseCloseEdition>,
+    ) -> Result<()> {
+        instructions::release_close_edition::handler(ctx)
+    }
+
     pub fn redeemable_init(
         ctx: Context<RedeemableInitialize>,
         config: RedeemableConfig,

@@ -3,7 +3,7 @@
 const anchor = require("@project-serum/anchor");
 const serumCmn = require("@project-serum/common");
 const TokenInstructions = require("@project-serum/serum").TokenInstructions;
-const { Token, TOKEN_PROGRAM_ID } = require("@solana/spl-token");
+const { getMinimumBalanceForRentExemptAccount, createInitializeAccountInstruction, TOKEN_PROGRAM_ID } = require("@solana/spl-token");
 
 const WRAPPED_SOL_MINT_PUBLIC_KEY = new anchor.web3.PublicKey(
   'So11111111111111111111111111111111111111112'
@@ -260,7 +260,7 @@ const wrapSol = async(
     anchor.web3.SystemProgram.createAccount({
       fromPubkey: payer.publicKey,
       newAccountPubkey: wrappedSolAccount.publicKey,
-      lamports: await Token.getMinBalanceRentForExemptAccount(
+      lamports: await getMinimumBalanceForRentExemptAccount(
         provider.connection
       ),
       space: 165,
@@ -278,11 +278,11 @@ const wrapSol = async(
   );
   // Initialize the account.
   instructions.push(
-    Token.createInitAccountInstruction(
-      TOKEN_PROGRAM_ID,
-      WRAPPED_SOL_MINT_PUBLIC_KEY,
+    createInitializeAccountInstruction(
       wrappedSolAccount.publicKey,
-      payer.publicKey
+      WRAPPED_SOL_MINT_PUBLIC_KEY,
+      payer.publicKey,
+      TOKEN_PROGRAM_ID,
     )
   );
   return { instructions, signers };
