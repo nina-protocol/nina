@@ -55,10 +55,7 @@ const Profile = ({ profilePubkey }) => {
   const [profileSubscriptionsTo, setProfileSubscriptionsTo] = useState()
   const [profileSubscriptionsFrom, setProfileSubscriptionsFrom] = useState()
   const [profileVerifications, setProfileVerifications] = useState()
-  const profileImage = useMemo(
-    () => displayImageForAccount(profilePubkey),
-    [profilePubkey, verificationState]
-  )
+
   const [inDashboard, setInDashboard] = useState(false)
 
   const [fetched, setFetched] = useState(false)
@@ -71,6 +68,12 @@ const Profile = ({ profilePubkey }) => {
     { name: 'following', playlist: null, disabled: true, count: 0 },
   ])
 
+  const profileImage = useMemo(
+    () => displayImageForAccount(profilePubkey),
+    [profilePubkey, verificationState]
+  )
+
+  // refactor this
   const hasData = useMemo(() => {
     if (fetchedProfiles.has(profilePubkey)) {
       return true
@@ -96,7 +99,7 @@ const Profile = ({ profilePubkey }) => {
 
   useEffect(() => {
     getUserData(profilePubkey)
-  }, [])
+  }, [profilePubkey])
 
   useEffect(() => {
     if (wallet.connected && profilePubkey === wallet.publicKey?.toBase58()) {
@@ -168,7 +171,6 @@ const Profile = ({ profilePubkey }) => {
         view.disabled = false
       })
     }
-    console.log('updatedView :>> ', updatedView)
     setViews(updatedView)
   }, [
     profilePublishedReleases,
@@ -178,18 +180,19 @@ const Profile = ({ profilePubkey }) => {
     profileSubscriptionsFrom,
   ])
 
- 
   useEffect(() => {
     let filteredCollection
     if (fetchedUserProfileReleases[profilePubkey]?.collected) {
-      filteredCollection = filterReleasesUserCollection(profilePubkey)?.sort(
-        (a, b) => {
-          return (
-            new Date(b.metadata.properties.date) -
-            new Date(a.metadata.properties.date)
-          )
-        }
-      )
+      filteredCollection = filterReleasesUserCollection(profilePubkey)
+      // ?.sort(
+      //   (a, b) => {
+      //     console.log(a, b)
+      //     return (
+      //       new Date(b.metadata.properties.date) -
+      //       new Date(a.metadata.properties.date)
+      //     )
+      //   }
+      // )
       setProfileCollectionReleases(filteredCollection)
     } else {
       setProfileCollectionReleases([])
