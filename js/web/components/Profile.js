@@ -105,13 +105,21 @@ const Profile = ({ profilePubkey }) => {
   }, [wallet, profilePubkey])
 
   useEffect(() => {
+    console.log('router.query.view :>> ', router.query.view);
     if (router.query.view) {
       const viewIndex = views.findIndex(
         (view) => view.name === router.query.view
       )
       setActiveView(viewIndex)
     }
-  }, [router.query.view])
+
+    if (!router.query.view) {
+      console.log('here');
+      const viewIndex = views.findIndex((view) => !view.disabled)
+      console.log('viewIndex :>> ', viewIndex);
+      setActiveView(viewIndex)
+    }
+  }, [router.query, views])
 
   useEffect(() => {
     const to = []
@@ -172,13 +180,7 @@ const Profile = ({ profilePubkey }) => {
     profileSubscriptionsFrom,
   ])
 
-  useEffect(() => {
-    if (!router.query.view) {
-      const viewIndex = views.findIndex((view) => !view.disabled)
-      setActiveView(viewIndex)
-    }
-  }, [router.query])
-
+ 
   useEffect(() => {
     let filteredCollection
     if (fetchedUserProfileReleases[profilePubkey]?.collected) {

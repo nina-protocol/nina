@@ -100,7 +100,12 @@ const HubComponent = ({ hubPubkey }) => {
       )
       setActiveView(viewIndex)
     }
-  }, [router.query.view])
+
+    if (!router.query.view) {
+      const viewIndex = views.findIndex((view) => !view.disabled)
+      setActiveView(viewIndex)
+    }
+  }, [router.query])
 
   useEffect(() => {
     let updatedView = views.slice()
@@ -159,12 +164,7 @@ const HubComponent = ({ hubPubkey }) => {
     setViews(updatedView)
   }, [hubReleases, hubCollaborators, hubFollowers])
 
-  useEffect(() => {
-    if (!router.query.view) {
-      const viewIndex = views.findIndex((view) => !view.disabled)
-      setActiveView(viewIndex)
-    }
-  }, [router.query])
+
 
   const viewHandler = (event) => {
     event.stopPropagation()
