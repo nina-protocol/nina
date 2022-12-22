@@ -167,7 +167,6 @@ const Profile = ({ profilePubkey }) => {
         view.disabled = false
       })
     }
-    console.log('updatedView :>> ', updatedView)
     setViews(updatedView)
   }, [
     profilePublishedReleases,
