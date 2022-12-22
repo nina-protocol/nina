@@ -53,7 +53,7 @@ const HubComponent = ({ hubPubkey }) => {
       setFetchedHubs(fetchedHubs.add(hubPubkey))
       return true
     }
-    return false
+    // return false
   }, [fetched, fetchedHubs, hubPubkey])
 
   useEffect(() => {
@@ -124,7 +124,7 @@ const HubComponent = ({ hubPubkey }) => {
         let viewIndex = updatedView.findIndex(
           (view) => view.name === 'releases'
         )
-        updatedView[viewIndex].disabled = false
+        updatedView[viewIndex].disabled = hubReleases.length === 0
         updatedView[viewIndex].count = hubReleases.length
         updatedView[viewIndex].playlist = hubReleases
       }
@@ -133,7 +133,7 @@ const HubComponent = ({ hubPubkey }) => {
         let viewIndex = updatedView.findIndex(
           (view) => view.name === 'collaborators'
         )
-        updatedView[viewIndex].disabled = false
+        updatedView[viewIndex].disabled = hubCollaborators.length === 0
         updatedView[viewIndex].count = hubCollaborators.length
       }
 
