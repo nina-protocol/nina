@@ -263,6 +263,7 @@ const Profile = ({ profilePubkey }) => {
   }
 
   const viewHandler = (event) => {
+    event.preventDefault()
     event.stopPropagation()
     const index = parseInt(event.target.id)
     const activeViewName = views[index].name
@@ -270,9 +271,9 @@ const Profile = ({ profilePubkey }) => {
       ? 'dashboard'
       : `profiles/${profilePubkey}`
 
-    const newUrl = `/${path}?view=${activeViewName}`
-
-    router.push(newUrl, newUrl, { shallow: true })
+    const newUrl = `/?view=${activeViewName}`
+      router.push('/', path + newUrl, { shallow: true })
+ 
     setActiveView(index)
     tableContainerRef.current.scrollTo(0, 0)
   }
@@ -468,7 +469,9 @@ const Profile = ({ profilePubkey }) => {
     </>
   )
 }
-
+export const getServerSideProps = async (context) => {
+  
+}
 const ProfileContainer = styled(Box)(({ theme }) => ({
   display: 'inline-flex',
   flexDirection: 'column',
