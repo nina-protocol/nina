@@ -94,16 +94,18 @@ const HubComponent = ({ hubPubkey }) => {
   }, [hubCollaboratorsState])
 
   useEffect(() => {
-    if (router.query.view) {
-      const viewIndex = views.findIndex(
-        (view) => view.name === router.query.view
-      )
-      setActiveView(viewIndex)
-    }
-
-    if (!router.query.view) {
-      const viewIndex = views.findIndex((view) => !view.disabled)
-      setActiveView(viewIndex)
+    if (!activeView) {
+      if (router.query.view) {
+        const viewIndex = views.findIndex(
+          (view) => view.name === router.query.view
+        )
+        setActiveView(viewIndex)
+      }
+  
+      if (!router.query.view) {
+        const viewIndex = views.findIndex((view) => !view.disabled)
+        setActiveView(viewIndex)
+      }
     }
   }, [router.query])
 
