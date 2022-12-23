@@ -10,6 +10,8 @@ import dynamic from "next/dynamic";
 import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
 import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
 import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
+import { parseChecker } from "@nina-protocol/nina-internal-sdk/esm/utils";
+
 import { styled } from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -136,7 +138,7 @@ const HubComponent = ({ hubPubkey }) => {
   }, [hubReleases, hubPosts]);
 
   useEffect(() => {
-    if (hubData?.data?.descriptionHtml?.includes("<p>")) {
+    if (hubData?.data?.descriptionHtml) {
       unified()
         .use(rehypeParse, { fragment: true })
         .use(rehypeSanitize)
@@ -148,12 +150,7 @@ const HubComponent = ({ hubPubkey }) => {
           target: false,
           rel: ["nofollow", "noreferrer"],
         })
-        .process(
-          JSON.parse(hubData.data.descriptionHtml).replaceAll(
-            "<p><br></p>",
-            "<br>"
-          )
-        )
+        .process(parseChecker(hubData.data.descriptionHtml))
         .then((file) => {
           setDescription(file.result);
         });

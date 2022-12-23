@@ -22,7 +22,6 @@ const Profile = ({ profilePubkey }) => {
   const wallet = useWallet()
   const router = useRouter()
   const tableContainerRef = useRef(null)
-
   const {
     getUserCollectionAndPublished,
     collectRoyaltyForRelease,
@@ -156,19 +155,18 @@ const Profile = ({ profilePubkey }) => {
     if (profileSubscriptionsTo?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'followers')
       updatedView[viewIndex].disabled = false
-      updatedView[viewIndex].count = profileSubscriptionsTo.length
+      updatedView[viewIndex].count = profileSubscriptionsTo?.length
     }
     if (profileSubscriptionsFrom?.length > 0) {
       viewIndex = updatedView.findIndex((view) => view.name === 'following')
       updatedView[viewIndex].disabled = false
-      updatedView[viewIndex].count = profileSubscriptionsFrom.length
+      updatedView[viewIndex].count = profileSubscriptionsFrom?.length
     }
     if (inDashboard) {
       updatedView.forEach((view) => {
         view.disabled = false
       })
     }
-    console.log('updatedView :>> ', updatedView)
     setViews(updatedView)
   }, [
     profilePublishedReleases,
@@ -178,7 +176,6 @@ const Profile = ({ profilePubkey }) => {
     profileSubscriptionsFrom,
   ])
 
- 
   useEffect(() => {
     let filteredCollection
     if (fetchedUserProfileReleases[profilePubkey]?.collected) {

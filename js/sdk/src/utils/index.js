@@ -134,6 +134,18 @@ const getMd5FileHash = async (file, progress) => {
   })
 }
 
+const stripQuotesIfNeeded = (str) => {
+  return str.replace(/^"(.*)"$/, '$1');
+}
+
+const parseChecker = (data) => {
+  try {
+    return JSON.parse(data)
+  } catch (error) {
+    return data
+  }
+}
+
 export {
   arrayMove,
   dateConverter,
@@ -144,5 +156,7 @@ export {
   encrypt,
   web3,
   shuffle,
-  getMd5FileHash
+  getMd5FileHash,
+  stripQuotesIfNeeded,
+  parseChecker
 }

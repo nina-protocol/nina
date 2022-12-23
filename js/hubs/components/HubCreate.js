@@ -257,6 +257,7 @@ const HubCreate = ({ update, hubData }) => {
               ? formValues.hubForm.externalUrl
               : hubData.data.externalUrl,
           };
+
           if (backgroundColor) {
             metadataJson.backgroundColor = backgroundColor;
           }

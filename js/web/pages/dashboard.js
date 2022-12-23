@@ -19,7 +19,7 @@ const DashboardPage = () => {
     if (wallet.connected) {
       setPublicKey(wallet.publicKey.toBase58())
     }
-  }, [wallet])
+  }, [wallet, publicKey])
   return (
     <>
       <Head>

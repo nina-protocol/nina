@@ -280,6 +280,7 @@ const audioPlayerContextHelper = ({
         artist: releaseMetadata.properties.artist,
         title: releaseMetadata.properties.title,
         txid: releaseMetadata.properties.files[0].uri,
+        hub: releaseMetadata.publishedThroughHub,
         releasePubkey,
         cover: releaseMetadata.image,
         duration: releaseMetadata.properties.files[0].duration,
