@@ -69,6 +69,15 @@ const FeedDrawer = () => {
       publicKey,
       refresh ? 0 : feedItems?.length || 0
     )
+    
+    feed.feedItems = feed.feedItems.filter((item) => {
+      if (item.type !== 'ReleaseInitViaHub') {
+        return item
+      } else if (item.release !== undefined) {
+        return item
+      }
+    })
+    
     if (feed) {
       setItemsTotal(feed.total)
       if (feedItems && feedItems.length > 0 && !refresh) {
