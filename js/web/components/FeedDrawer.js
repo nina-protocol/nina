@@ -70,15 +70,18 @@ const FeedDrawer = () => {
       refresh ? 0 : feedItems?.length || 0
     )
     
-    feed.feedItems = feed.feedItems.filter((item) => {
-      if (item.type !== 'ReleaseInitViaHub') {
-        return item
-      } else if (item.release !== undefined) {
-        return item
-      }
-    })
+ 
     
     if (feed) {
+
+      feed.feedItems = feed.feedItems.filter((item) => {
+        if (item.type !== 'ReleaseInitViaHub') {
+          return item
+        } else if (item.release !== undefined) {
+          return item
+        }
+      })
+
       setItemsTotal(feed.total)
       if (feedItems && feedItems.length > 0 && !refresh) {
         setFeedItems(feedItems.concat(feed?.feedItems))
