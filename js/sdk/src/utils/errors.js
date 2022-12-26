@@ -1,8 +1,4 @@
 export const ninaErrorHandler = (error, errorString) => {
-  console.log('error', error.toString())
-  console.log('error.msg', error.msg)
-  console.log('error.code', error.code)
-  console.log('errorString', errorString)
   console.warn(error)
   let msg
   if (
