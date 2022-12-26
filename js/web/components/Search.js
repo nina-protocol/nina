@@ -182,15 +182,15 @@ const Search = (props) => {
 
   useEffect(() => {
     if (query && setShowDropdown) {
+      suggestions?.accounts?.length
+        ? (autoCompleteResults[2].visible = true)
+        : (autoCompleteResults[2].visible = false)
       suggestions?.releases?.length
         ? (autoCompleteResults[0].visible = true)
         : (autoCompleteResults[0].visible = false)
       suggestions?.hubs?.length
         ? (autoCompleteResults[1].visible = true)
         : (autoCompleteResults[1].visible = false)
-      suggestions?.accounts?.length
-        ? (autoCompleteResults[2].visible = true)
-        : (autoCompleteResults[2].visible = false)
       setAutocompleteResults([...autoCompleteResults])
     }
   }, [suggestions])
