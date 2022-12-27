@@ -25,28 +25,15 @@ const SearchDropdown = ({
     })
   }, [])
   let rows
-  if (category === 'artists') {
-    rows = searchData?.artists?.map((data) => {
-      let artistName = data?.name
-      if (data?.publishesAs.length > 1) {
-        let publishesAsString
-        if (data?.publishesAs.length > 5) {
-          publishesAsString = data?.publishesAs.slice(0, 5).join(', ') + '...'
-        } else {
-          publishesAsString = data?.publishesAs.join(', ')
-        }
-        artistName = `${artistName} (Publishes as: ${publishesAsString})`
-      }
-
-      const artistLink = `/profiles/${data?.account.publicKey}`
-
+  if (category === 'accounts') {
+    rows = searchData?.accounts?.map((data) => {
+      const accountName = data?.displayName || data?.value || data?.account
+      const accountKey = data?.account
+      const accountLink = `/profiles/${accountKey}`
       let formattedData = {
-        displayName: artistName,
-        name: artistName,
-        link: artistLink,
-        category: 'artists',
+        displayName: accountName,
+        link: accountLink,
       }
-
       return formattedData
     })
   }
@@ -79,19 +66,6 @@ const SearchDropdown = ({
         category: 'hubs',
       }
 
-      return formattedData
-    })
-  }
-
-  if (category === 'accounts') {
-    rows = searchData?.accounts?.map((data) => {
-      const accountName = data?.displayName || data?.publicKey
-      const accountKey = data?.publicKey
-      const accountLink = `/profiles/${accountKey}`
-      let formattedData = {
-        displayName: accountName,
-        link: accountLink,
-      }
       return formattedData
     })
   }
