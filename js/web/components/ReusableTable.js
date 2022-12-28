@@ -906,6 +906,7 @@ const ResponsiveContainer = styled(Box)(
       width: '100vw',
       maxHeight: 'unset',
       overflowY: 'unset',
+      overflowX: 'scroll',
     },
   })
 )
