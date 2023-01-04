@@ -69,11 +69,8 @@ const FeedDrawer = () => {
       publicKey,
       refresh ? 0 : feedItems?.length || 0
     )
-    
- 
-    
-    if (feed) {
 
+    if (feed) {
       feed.feedItems = feed.feedItems.filter((item) => {
         if (item.type !== 'ReleaseInitViaHub') {
           return item

@@ -48,7 +48,7 @@ const TabHeader = ({
         sx={{
           display: 'flex',
           flexDirection: 'row',
-          overflowX: {sm: 'scroll', md: 'hidden'},
+          overflowX: { sm: 'scroll', md: 'hidden' },
           py: 1,
         }}
       >
