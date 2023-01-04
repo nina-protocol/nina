@@ -139,6 +139,7 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
     paddingLeft: '6px',
     height: '100%',
+    overflowX: 'auto',
   },
 }))
 const DesktopTab = styled(Typography)(({ theme }) => ({
