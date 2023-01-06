@@ -1,4 +1,11 @@
-import { useEffect, useMemo, useState,useCallback, useContext, useRef } from 'react'
+import {
+  useEffect,
+  useMemo,
+  useState,
+  useCallback,
+  useContext,
+  useRef,
+} from 'react'
 import dynamic from 'next/dynamic'
 import { Box } from '@mui/material'
 import { styled } from '@mui/system'
@@ -58,7 +65,7 @@ const HubComponent = ({ hubPubkey }) => {
 
   useEffect(() => {
     getHubData(hubPubkey)
-  }, [hubPubkey, ])
+  }, [hubPubkey])
 
   useEffect(() => {
     let [releases] = filterHubContentForHub(hubPubkey)
@@ -105,10 +112,9 @@ const HubComponent = ({ hubPubkey }) => {
         setActiveView(viewIndex)
       }
       if (!router.query.view && fetched) {
-        const viewIndex =
-            views.findIndex((view) => {
-                return !view.disabled
-              })
+        const viewIndex = views.findIndex((view) => {
+          return !view.disabled
+        })
         setActiveView(viewIndex === -1 ? undefined : viewIndex)
       }
     }
@@ -147,19 +153,23 @@ const HubComponent = ({ hubPubkey }) => {
     }
   }, [fetched, hubReleases, hubCollaborators, hubFollowers])
 
-  const getHubData = useCallback(async (hubPubkey) => {
-    if (!fetched) {
-      if (hubPubkey){
-        await getHub(hubPubkey)
-        if (hubState) {
-          await getSubscriptionsForHub(hubPubkey)
+  const getHubData = useCallback(
+    async (hubPubkey) => {
+      if (!fetched) {
+        if (hubPubkey) {
+          await getHub(hubPubkey)
+          if (hubState) {
+            await getSubscriptionsForHub(hubPubkey)
+          }
+          setFetched(true)
         }
+      }
+      if (hubState[hubPubkey]) {
         setFetched(true)
-      }}
-    if (hubState[hubPubkey]) {
-      setFetched(true)
-    }
-  },[hubState])
+      }
+    },
+    [hubState]
+  )
 
   const viewHandler = (event) => {
     event.stopPropagation()
