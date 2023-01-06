@@ -3,6 +3,7 @@ import * as web3 from './web3'
 import * as imageManager from './imageManager'
 import CryptoJS from "crypto-js";
 import NinaSdk from "@nina-protocol/js-sdk"
+import promiseRetry from 'promise-retry';
 
 const dateConverter = (date) => {
   var a = new Date(typeof date === 'object' ? date.toNumber() * 1000 : date)
@@ -146,11 +147,40 @@ const parseChecker = (data) => {
   }
 }
 
+const getConfirmTransaction = async (txid, connection) => {
+  const res = await promiseRetry(
+    async (retry, attempt) => {
+      let txResult = await connection.getTransaction(txid, {
+        commitment: 'confirmed',
+      })
+
+      if (!txResult) {
+        const error = new Error('Transaction was not confirmed')
+        error.txid = txid
+
+        retry(error)
+        return
+      }
+      return txResult
+    },
+    {
+      retries: 40,
+      minTimeout: 500,
+      maxTimeout: 1000,
+    }
+  )
+  if (res.meta.err) {
+    throw new Error('Transaction failed')
+  }
+  return txid
+}
+
 export {
   arrayMove,
   dateConverter,
   formatDuration,
   formatPlaceholder,
+  getConfirmTransaction,
   imageManager,
   sleep,
   encrypt,

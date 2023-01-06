@@ -24,6 +24,7 @@
     "lodash": "^4.17.21",
     "notistack": "^1.0.6",
     "process": "^0.11.10",
+    "promise-retry": "^2.0.1",
     "querystring": "^0.2.1"
   },
   "sideEffects": false,
