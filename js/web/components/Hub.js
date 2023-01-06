@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useContext, useRef } from 'react'
+import { useEffect, useMemo, useState,useCallback, useContext, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import { Box } from '@mui/material'
 import { styled } from '@mui/system'
@@ -36,7 +36,7 @@ const HubComponent = ({ hubPubkey }) => {
   const [releaseData, setReleaseData] = useState(undefined)
   const [hubCollaborators, setHubCollaborators] = useState(undefined)
   const [hubFollowers, setHubFollowers] = useState(undefined)
-  const [activeView, setActiveView] = useState(0)
+  const [activeView, setActiveView] = useState(undefined)
   const [fetched, setFetched] = useState(false)
 
   const [views, setViews] = useState([
@@ -54,11 +54,11 @@ const HubComponent = ({ hubPubkey }) => {
       return true
     }
     // return false
-  }, [fetched, fetchedHubs, hubPubkey])
+  }, [fetchedHubs, hubPubkey, fetched])
 
   useEffect(() => {
     getHubData(hubPubkey)
-  }, [hubPubkey, hubState])
+  }, [hubPubkey, ])
 
   useEffect(() => {
     let [releases] = filterHubContentForHub(hubPubkey)
@@ -106,11 +106,9 @@ const HubComponent = ({ hubPubkey }) => {
       }
       if (!router.query.view && fetched) {
         const viewIndex =
-          hubReleases.length > 0
-            ? views.findIndex((view) => {
+            views.findIndex((view) => {
                 return !view.disabled
               })
-            : 0
         setActiveView(viewIndex === -1 ? undefined : viewIndex)
       }
     }
@@ -149,23 +147,19 @@ const HubComponent = ({ hubPubkey }) => {
     }
   }, [fetched, hubReleases, hubCollaborators, hubFollowers])
 
-  const getHubData = async (hubPubkey) => {
+  const getHubData = useCallback(async (hubPubkey) => {
     if (!fetched) {
-      try {
-        if (hubPubkey) {
-          await getHub(hubPubkey)
+      if (hubPubkey){
+        await getHub(hubPubkey)
+        if (hubState) {
           await getSubscriptionsForHub(hubPubkey)
         }
         setFetched(true)
-      } catch (err) {
-        console.log(err)
-      }
-    }
+      }}
     if (hubState[hubPubkey]) {
       setFetched(true)
-      return hubState[hubPubkey]
     }
-  }
+  },[hubState])
 
   const viewHandler = (event) => {
     event.stopPropagation()
