@@ -1,8 +1,7 @@
 name: Lint and Format Check on Pull Request
 
 on:
-  pull_request:
-    types: [opened]
+  - push
 
 jobs:
   lint-and-format:
