@@ -24,6 +24,7 @@ const lookupTypes = {
   PUBLISHED_BY: 'published_by',
   REVENUE_SHARE: 'revenue_share',
 }
+const PRIORITY_SWAP_FEE = 1000
 const ReleaseContext = createContext()
 const ReleaseContextProvider = ({ children }) => {
   const {
@@ -588,7 +589,7 @@ const releaseContextHelper = ({
         }
         const addPriorityFee =
           anchor.web3.ComputeBudgetProgram.setComputeUnitPrice({
-            microLamports: 500,
+            microLamports: PRIORITY_SWAP_FEE,
           })
         instructions.push(addPriorityFee, ...transactionInstructions)
       }
@@ -934,7 +935,7 @@ const releaseContextHelper = ({
         )
         const addPriorityFee =
           anchor.web3.ComputeBudgetProgram.setComputeUnitPrice({
-            microLamports: 500,
+            microLamports: PRIORITY_SWAP_FEE,
           })
         instructions.push(
           addPriorityFee,
