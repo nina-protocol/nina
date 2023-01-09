@@ -7,13 +7,6 @@ import { Typography } from '@mui/material'
 import { styled } from '@mui/system'
 import { Box } from '@mui/system'
 import Subscribe from './Subscribe'
-import { unified } from 'unified'
-import rehypeParse from 'rehype-parse'
-import rehypeReact from 'rehype-react'
-import rehypeSanitize from 'rehype-sanitize'
-import rehypeExternalLinks from 'rehype-external-links'
-import { useSnackbar } from 'notistack'
-import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 
 const { getImageFromCDN, loader } = imageManager
 
@@ -29,7 +22,7 @@ const HubHeader = ({ hubData }) => {
     <Wrapper>
       <ResponsiveHubHeader>
         <Box sx={{ width: '100px', minWidth: '100px' }}>
-          <Link href={`${hubData?.data.externalUrl}`} passHref>
+          <Link href={`${hubData?.data?.externalUrl}`} passHref>
             <a target="_blank" rel="noreferrer">
               <Image
                 height={100}
@@ -40,7 +33,7 @@ const HubHeader = ({ hubData }) => {
                   400,
                   Date.parse(hubData?.createdAt)
                 )}
-                alt={hubData?.data.displayName}
+                alt={hubData?.data?.displayName}
                 priority={true}
                 loader={loader}
               />
@@ -50,11 +43,11 @@ const HubHeader = ({ hubData }) => {
 
         <CopyWrapper>
           <DisplayName>
-            {hubData?.data.displayName && (
-              <Link href={hubData?.data.externalUrl} passHref>
+            {hubData?.data?.displayName && (
+              <Link href={hubData?.data?.externalUrl} passHref>
                 <a target="_blank" rel="noreferrer">
                   <Typography sx={{ padding: '0 15px' }}>
-                    {hubData?.data.displayName}
+                    {hubData?.data?.displayName}
                   </Typography>
                 </a>
               </Link>
@@ -68,7 +61,7 @@ const HubHeader = ({ hubData }) => {
               />
             )}
           </DisplayName>
-          {hubData?.data.description && (
+          {hubData?.data?.description && (
             <DescriptionOverflowContainer>
               {hubDescription}
             </DescriptionOverflowContainer>
