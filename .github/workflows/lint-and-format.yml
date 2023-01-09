@@ -5,7 +5,7 @@ on:
     types: [opened]
 
 jobs:
-  hubs:
+  lint-and-format:
     name: Run Lint and Format on /hubs, /sdk, and /web
     runs-on: ubuntu-latest
     defaults:
