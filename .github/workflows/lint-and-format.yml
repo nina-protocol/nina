@@ -2,7 +2,7 @@ name: Lint and Format Check on Pull Request
 
 on:
   pull_request:
-  types: [opened]
+    types: [opened]
 
 jobs:
   hubs:
@@ -25,6 +25,7 @@ jobs:
 
       # Run ESLint + Prettier
       - uses: check-lint-format
+
   sdk:
     name: Run Lint and Format on /sdk
     runs-on: ubuntu-latest
@@ -45,6 +46,7 @@ jobs:
 
       # Run ESLint + Prettier
       - uses: check-lint-format
+      
   web:
     name: Run Lint and Format on /web
     runs-on: ubuntu-latest
