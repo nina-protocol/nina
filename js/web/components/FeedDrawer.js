@@ -18,7 +18,7 @@ import { isMobile } from 'react-device-detect'
 
 const FeedDrawer = () => {
   const wallet = useWallet()
-  const [drawerOpen, setDrawerOpen] = useState(!isMobile)
+  const [drawerOpen, setDrawerOpen] = useState(false)
   const [feedItems, setFeedItems] = useState(undefined)
   const [hubSuggestions, setHubSuggestions] = useState(undefined)
   const [itemsTotal, setItemsTotal] = useState(0)
