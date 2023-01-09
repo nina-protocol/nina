@@ -5,12 +5,12 @@ on:
     types: [opened]
 
 jobs:
-  hubs:
-    name: Run Lint and Format on /hubs
+  lint-and-format:
+    name: Run Lint and Format on /hubs, /sdk, and /web
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: hubs
+        working-directory: js
     steps:
       # Check out the repository
       - uses: actions/checkout@v1
@@ -23,47 +23,9 @@ jobs:
       # Install your dependencies
       - run: npm ci
 
-      # Run ESLint + Prettier
-      - uses: check-lint-format
-
-  sdk:
-    name: Run Lint and Format on /sdk
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: sdk
-    steps:
-      # Check out the repository
-      - uses: actions/checkout@v1
-
-      # Install Node.js
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 16
-
-      # Install your dependencies
-      - run: npm ci
-
-      # Run ESLint + Prettier
-      - uses: check-lint-format
-      
-  web:
-    name: Run Lint and Format on /web
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: web
-    steps:
-      # Check out the repository
-      - uses: actions/checkout@v1
-
-      # Install Node.js
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 16
-
-      # Install your dependencies
-      - run: npm ci
-
-      # Run ESLint + Prettier
-      - uses: check-lint-format
+      # Run ESLint + Prettier on /hubs
+      - uses: yarn hubs check-lint-format
+      # Run ESLint + Prettier on /sdk
+      - uses: yarn sdk check-lint-format
+      # Run ESLint + Prettier on /web
+      - uses: yarn web check-lint-format
