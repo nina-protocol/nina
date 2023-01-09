@@ -1,0 +1,67 @@
+name: Lint and Format Check on Pull Request
+
+on:
+  pull_request:
+  types: [opened]
+
+jobs:
+  hubs:
+    name: Run Lint and Format on /hubs
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: hubs
+    steps:
+      # Check out the repository
+      - uses: actions/checkout@v1
+
+      # Install Node.js
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      # Install your dependencies
+      - run: npm ci
+
+      # Run ESLint + Prettier
+      - uses: check-lint-format
+  sdk:
+    name: Run Lint and Format on /sdk
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: sdk
+    steps:
+      # Check out the repository
+      - uses: actions/checkout@v1
+
+      # Install Node.js
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      # Install your dependencies
+      - run: npm ci
+
+      # Run ESLint + Prettier
+      - uses: check-lint-format
+  web:
+    name: Run Lint and Format on /web
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      # Check out the repository
+      - uses: actions/checkout@v1
+
+      # Install Node.js
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      # Install your dependencies
+      - run: npm ci
+
+      # Run ESLint + Prettier
+      - uses: check-lint-format
