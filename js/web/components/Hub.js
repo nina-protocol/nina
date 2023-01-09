@@ -60,7 +60,6 @@ const HubComponent = ({ hubPubkey }) => {
       setFetchedHubs(fetchedHubs.add(hubPubkey))
       return true
     }
-    // return false
   }, [fetchedHubs, hubPubkey, fetched])
 
   useEffect(() => {
