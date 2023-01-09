@@ -10,6 +10,7 @@ import { ninaErrorHandler } from '../../utils/errors'
 import { logEvent } from '../../utils/event'
 import { truncateAddress } from '../../utils/truncateAddress';
 import Airtable from 'airtable';
+import { getConfirmTransaction } from '../../utils';
 
 const NinaProgramAction = {
   HUB_ADD_COLLABORATOR: 'HUB_ADD_COLLABORATOR',
@@ -102,38 +103,6 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
       setBundlrBalance(0.0)
     }
   }, [provider.wallet.wallet, provider.wallet.publicKey])
-
-  let timer = undefined
-  const healthCheck = async () => {
-    const timeSinceLastCheck = (Date.now() - healthTimestamp) / 1000
-    if (timeSinceLastCheck > 30) {
-      try {
-        setHealthTimestamp(Date.now())
-        const performance = await provider.connection._rpcRequest(
-          'getRecentPerformanceSamples',
-          [5]
-        )
-        let status = false
-        performance.result.forEach((sample) => {
-          status = sample.numTransactions / sample.samplePeriodSecs > 1000
-        })
-        setHealthOk(status)
-      } catch (error) {
-        console.warn(error)
-      }
-    }
-  }
-
-  useEffect(() => {
-    if (!timer) {
-      healthCheck()
-      timer = setInterval(() => healthCheck(), 60000)
-    }
-    return () => {
-      clearInterval(timer)
-      timer = null
-    }
-  }, [healthCheck])
 
   const {
     subscriptionSubscribe,
@@ -327,7 +296,7 @@ const ninaContextHelper = ({
         txid = await program.rpc.subscriptionSubscribeAccount(request)
       }
 
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await getConfirmTransaction(txid, provider.connection)
       await getSubscription(subscription.toBase58())
       logEvent(
         `subscription_subscribe_${hubHandle ? 'hub' : 'account'}_success`,
@@ -376,8 +345,7 @@ const ninaContextHelper = ({
           systemProgram: anchor.web3.SystemProgram.programId,
         },
       })
-
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await getConfirmTransaction(txid, provider.connection)
       await getSubscription(subscription.toBase58(), txid)
       if (hubHandle) {
         await getSubscriptionsForHub(hubHandle)
@@ -922,7 +890,7 @@ const ninaContextHelper = ({
         ).displayName || truncateAddress(publicKey)
       }
     } 
-    return truncateAddress(publicKey)
+    return publicKey ? truncateAddress(publicKey) : 'Unknown'
   }
   
   const displayImageForAccount = (publicKey) => {

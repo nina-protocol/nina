@@ -35,7 +35,7 @@ const Search = (props) => {
   const [searchFilter, setSearchFilter] = useState()
   const [response, setResponse] = useState(searchResults)
   const [defaultResponse, setDefaultResponse] = useState([
-    { name: 'Artists', data: undefined },
+    { name: 'Accounts', data: undefined },
     { name: 'Releases', data: undefined },
     { name: 'Hubs', data: undefined },
   ])
@@ -47,7 +47,7 @@ const Search = (props) => {
   const [activeView, setActiveView] = useState(0)
 
   const [defaultSearchView, setDefaultSearchView] = useState([
-    { name: 'Artists', length: 0 },
+    { name: 'Accounts', length: 0 },
     { name: 'Releases', length: 0 },
     { name: 'Hubs', length: 0 },
   ])
@@ -55,7 +55,7 @@ const Search = (props) => {
   const [showDropdown, setShowDropdown] = useState(false)
   const [inputFocus, setInputFocus] = useState(false)
   const [autoCompleteResults, setAutocompleteResults] = useState([
-    { name: 'artists', visible: false },
+    { name: 'accounts', visible: false },
     { name: 'releases', visible: false },
     { name: 'hubs', visible: false },
   ])
@@ -149,11 +149,11 @@ const Search = (props) => {
 
   useEffect(() => {
     switch (searchFilter) {
-      case 'artists':
-        return setActiveView(1)
       case 'releases':
-        return setActiveView(2)
+        return setActiveView(1)
       case 'hubs':
+        return setActiveView(2)
+      case 'accounts':
         return setActiveView(3)
       case !searchFilter:
         return setActiveView(0)
@@ -182,15 +182,15 @@ const Search = (props) => {
 
   useEffect(() => {
     if (query && setShowDropdown) {
-      suggestions?.artists?.length
-        ? (autoCompleteResults[0].visible = true)
-        : (autoCompleteResults[0].visible = false)
-      suggestions?.releases?.length
-        ? (autoCompleteResults[1].visible = true)
-        : (autoCompleteResults[1].visible = false)
-      suggestions?.hubs?.length
+      suggestions?.accounts?.length
         ? (autoCompleteResults[2].visible = true)
         : (autoCompleteResults[2].visible = false)
+      suggestions?.releases?.length
+        ? (autoCompleteResults[0].visible = true)
+        : (autoCompleteResults[0].visible = false)
+      suggestions?.hubs?.length
+        ? (autoCompleteResults[1].visible = true)
+        : (autoCompleteResults[1].visible = false)
       setAutocompleteResults([...autoCompleteResults])
     }
   }, [suggestions])
@@ -270,6 +270,7 @@ const Search = (props) => {
             {Object.keys(searchResults).map((key, index) => {
               const type = key.charAt(0).toUpperCase() + key.slice(1)
               const data = searchResults[key]
+
               return (
                 <ReusableTable
                   tableType={`searchResult${
@@ -288,13 +289,13 @@ const Search = (props) => {
         return (
           <ResultsWrapper>
             <ReusableTable
-              tableType="filteredSearchResultArtists"
-              items={response?.artists}
+              tableType="filteredSearchResultAccounts"
+              items={response?.accounts}
               hasOverflow={true}
             />
           </ResultsWrapper>
         )
-      case 2:
+      case 3:
         return (
           <ResultsWrapper>
             <ReusableTable
@@ -304,7 +305,8 @@ const Search = (props) => {
             />
           </ResultsWrapper>
         )
-      case 3:
+
+      case 4:
         return (
           <ResultsWrapper>
             <ReusableTable
@@ -314,6 +316,7 @@ const Search = (props) => {
             />
           </ResultsWrapper>
         )
+
       default:
         break
     }
@@ -420,7 +423,7 @@ const Search = (props) => {
               onClick={(e) => searchFilterHandler(e, 0)}
             >
               {`All (${
-                response?.artists?.length +
+                response?.accounts?.length +
                 response?.releases?.length +
                 response?.hubs?.length
               })`}
@@ -428,18 +431,20 @@ const Search = (props) => {
           )}
 
           {searchResults &&
-            Object.keys(response).map((filter, index) => {
-              return (
-                <SearchResultFilter
-                  id={index}
-                  isClicked={activeView === index + 1}
-                  onClick={(e) => searchFilterHandler(e, index + 1, filter)}
-                  disabled={response?.[filter]?.length === 0}
-                  key={index}
-                >
-                  {`${filter} (${response?.[filter]?.length})`}
-                </SearchResultFilter>
-              )
+            Object?.keys(response).map((filter, index) => {
+              if (filter !== 'artists') {
+                return (
+                  <SearchResultFilter
+                    id={index}
+                    isClicked={activeView === index + 1}
+                    onClick={(e) => searchFilterHandler(e, index + 1, filter)}
+                    disabled={response?.[filter]?.length === 0}
+                    key={index}
+                  >
+                    {`${filter} (${response?.[filter]?.length})`}
+                  </SearchResultFilter>
+                )
+              }
             })}
 
           {!searchResults && !searchQuery && (
@@ -489,9 +494,9 @@ const Search = (props) => {
 
         {query?.length > 0 &&
           fetchedResponse &&
-          response?.artists?.length === 0 &&
           response?.releases?.length === 0 &&
-          response?.hubs?.length === 0 && (
+          response?.hubs?.length === 0 &&
+          response?.accounts?.length === 0 && (
             <Typography sx={{ marginTop: '20px' }}>No results found</Typography>
           )}
       </>

@@ -9,7 +9,7 @@ import { decodeNonEncryptedByteArray } from '../../utils/encrypt'
 import Release from '../Release'
 import Nina from '../Nina'
 import NinaSdk from '@nina-protocol/js-sdk';
-import { shuffle } from '../../utils'
+import { getConfirmTransaction, shuffle } from '../../utils'
 import MD5 from "crypto-js/md5";
 import { logEvent } from '../../utils/event'
 import { initSdkIfNeeded } from '../../utils/sdkInit'
@@ -251,7 +251,7 @@ const hubContextHelper = ({
         .preInstructions([usdcVaultIx, wrappedSolVaultIx])
         .rpc()
 
-      await provider.connection.getParsedConfirmedTransaction(txid, 'finalized')
+      await getConfirmTransaction(txid, provider.connection)
       await getHub(hub)
 
       logEvent('hub_init_with_credit_success',
@@ -295,7 +295,7 @@ const hubContextHelper = ({
         }
       )
 
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await getConfirmTransaction(txid, provider.connection)
       await axios.get(`${process.env.NINA_API_ENDPOINT}/hubs/${hubPubkey}/tx/${txid}`)
       await getHub(hubPubkey)
 
@@ -360,7 +360,7 @@ const hubContextHelper = ({
         }
       )
 
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await getConfirmTransaction(txid, provider.connection)
       const result = await axios.get(endpoints.api + `/hubs/${hubPubkey}/collaborators/${hubCollaborator.toBase58()}`)
       await getHub(hubPubkey)
 
@@ -422,7 +422,7 @@ const hubContextHelper = ({
           },
         }
       )
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await getConfirmTransaction(txid, provider.connection)
       await getHub(hubPubkey)
 
       return {
@@ -504,7 +504,7 @@ const hubContextHelper = ({
 
 
       const txid = await program.rpc.hubAddRelease(hub.handle, request)
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await getConfirmTransaction(txid, provider.connection)
       await NinaSdk.Hub.fetchHubRelease(hubPubkey.toBase58(), hubRelease.toBase58())
       await getHubsForRelease(releasePubkey.toBase58())
       queue = new Set(addToHubQueue)
@@ -555,7 +555,7 @@ const hubContextHelper = ({
           systemProgram: anchor.web3.SystemProgram.programId,
         },
       })
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await getConfirmTransaction(txid, provider.connection)
       await axios.get(endpoints.api + `/hubs/${hubPubkey}/collaborators/${hubCollaborator.toBase58()}`)
       await getHub(hubPubkey)
 
@@ -683,7 +683,7 @@ const hubContextHelper = ({
           },
         }
       )
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await getConfirmTransaction(txid, provider.connection)
 
       await getHub(hubPubkey)
       return {
@@ -799,7 +799,7 @@ const hubContextHelper = ({
         txid = await program.rpc.postInitViaHub(...params, request)
       }
 
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await getConfirmTransaction(txid, provider.connection)
 
       await NinaSdk.Hub.fetchHubPost(hubPubkey.toBase58(), hubPost.toBase58())
       if (referenceRelease) {
@@ -865,7 +865,7 @@ const hubContextHelper = ({
         }
       )
 
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await getConfirmTransaction(txid, provider.connection)
       await getHub(hubPubkey)
 
       return {
@@ -926,7 +926,7 @@ const hubContextHelper = ({
         decodeNonEncryptedByteArray(hub.handle),
         request
       )
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await getConfirmTransaction(txid, provider.connection)
 
       getRelease(releasePubkey.toBase58())
       getHub(hubPubkey.toBase58())

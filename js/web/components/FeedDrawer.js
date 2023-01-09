@@ -10,7 +10,6 @@ import Suggestions from './Suggestions'
 import axios from 'axios'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import CloseIcon from '@mui/icons-material/Close'
 import Typography from '@mui/material/Typography'
@@ -25,36 +24,22 @@ const FeedDrawer = () => {
   const [itemsTotal, setItemsTotal] = useState(0)
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { getFeedForUser } = useContext(Release.Context)
-  const { subscriptionState } = useContext(Nina.Context)
   const [activeDrawerTypeIndex, setActiveDrawerTypeIndex] = useState(0)
   const [feedFetched, setFeedFetched] = useState(false)
   const drawerTypes = ['latest', 'suggestions']
 
   useEffect(() => {
-    handleFetch()
-  }, [wallet.connected])
-
-  useEffect(() => {
-    if (wallet.disconnecting) {
-      setFeedItems(undefined)
+    const handleFetch = async (refresh = false) => {
+      let publicKey =
+        wallet?.publicKey?.toBase58() || process.env.NINA_SUBSCRIPTION_PUBKEY
+      await handleGetFeedForUser(publicKey, refresh)
+      await getHubSuggestionsForUser(publicKey)
     }
-  }, [wallet?.disconnecting])
 
-  useEffect(() => {
-    if (wallet.connected) {
-      // commented out to prevent feed flickering
-      // handleFetch(true)
+    if (wallet && !wallet.connecting) {
+      handleFetch(true)
     }
-  }, [subscriptionState])
-
-  const handleFetch = async (refresh = false) => {
-    if (wallet.connected) {
-      await handleGetFeedForUser(wallet.publicKey.toBase58(), refresh)
-      await getHubSuggestionsForUser(wallet.publicKey.toBase58())
-    } else {
-      await getHubSuggestionsForUser()
-    }
-  }
+  }, [wallet.connecting, wallet.publicKey])
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -84,9 +69,18 @@ const FeedDrawer = () => {
       publicKey,
       refresh ? 0 : feedItems?.length || 0
     )
+
     if (feed) {
+      feed.feedItems = feed.feedItems.filter((item) => {
+        if (item.type !== 'ReleaseInitViaHub') {
+          return item
+        } else if (item.release !== undefined) {
+          return item
+        }
+      })
+
       setItemsTotal(feed.total)
-      if (feedItems && feedItems.length > 0) {
+      if (feedItems && feedItems.length > 0 && !refresh) {
         setFeedItems(feedItems.concat(feed?.feedItems))
       } else {
         setFeedItems(feed?.feedItems)

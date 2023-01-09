@@ -14,7 +14,7 @@ import rehypeExternalLinks from 'rehype-external-links'
 import { InputLabel, MenuItem, OutlinedInput } from '@mui/material'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
-import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 
 const style = {
   position: 'absolute',
@@ -25,6 +25,8 @@ const style = {
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
+  maxHeight: '100vh',
+  overflowY: 'scroll',
 }
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -73,7 +75,7 @@ const ReleaseCreateConfirm = (props) => {
           target: false,
           rel: ['nofollow', 'noreferrer'],
         })
-        .process(JSON.parse(data.description).replaceAll('<p><br></p>', '<br>'))
+        .process(parseChecker(data.description))
         .then((file) => {
           setDescription(file.result)
         })
@@ -141,7 +143,13 @@ const ReleaseCreateConfirm = (props) => {
               sx={{ mt: 1, flexDirection: 'column', mb: 1 }}
             >
               Description:{' '}
-              <span style={{ marginTop: '8px', paddingLeft: '0' }}>
+              <span
+                style={{
+                  marginTop: '8px',
+                  paddingLeft: '0',
+                  maxHeight: '80px',
+                }}
+              >
                 {description}
               </span>
             </Value>
