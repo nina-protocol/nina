@@ -10,10 +10,7 @@ import {
 } from '../../utils/web3'
 import axios from 'axios'
 import { ninaErrorHandler } from '../../utils/errors'
-import {
-  encryptData,
-  decodeNonEncryptedByteArray,
-} from '../../utils/encrypt'
+import { encryptData, decodeNonEncryptedByteArray } from '../../utils/encrypt'
 import { logEvent } from '../../utils/event'
 import { initSdkIfNeeded } from '../../utils/sdkInit'
 import { getConfirmTransaction } from '../../utils'
@@ -216,7 +213,7 @@ const releaseContextHelper = ({
       )
     let hubRelease
     if (hubPubkey) {
-      [hubRelease] = await anchor.web3.PublicKey.findProgramAddress(
+      ;[hubRelease] = await anchor.web3.PublicKey.findProgramAddress(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-release')),
           new anchor.web3.PublicKey(hubPubkey).toBuffer(),
@@ -865,15 +862,14 @@ const releaseContextHelper = ({
     })
 
     try {
-      let [payerTokenAccount] =
-        await findOrCreateAssociatedTokenAccount(
-          provider.connection,
-          provider.wallet.publicKey,
-          provider.wallet.publicKey,
-          anchor.web3.SystemProgram.programId,
-          anchor.web3.SYSVAR_RENT_PUBKEY,
-          release.paymentMint
-        )
+      let [payerTokenAccount] = await findOrCreateAssociatedTokenAccount(
+        provider.connection,
+        provider.wallet.publicKey,
+        provider.wallet.publicKey,
+        anchor.web3.SystemProgram.programId,
+        anchor.web3.SYSVAR_RENT_PUBKEY,
+        release.paymentMint
+      )
 
       let [receiverReleaseTokenAccount, receiverReleaseTokenAccountIx] =
         await findOrCreateAssociatedTokenAccount(

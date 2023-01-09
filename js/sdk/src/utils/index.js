@@ -19,8 +19,7 @@ const dateConverter = (date) => {
   var sec = a.getSeconds().toLocaleString('en-US', {
     minimumIntegerDigits: 2,
   })
-  var time =
-    year + ' ' + month + '/' + day + ' ' + hour + ':' + min + ':' + sec
+  var time = year + ' ' + month + '/' + day + ' ' + hour + ':' + min + ':' + sec
   return time
 }
 

@@ -638,14 +638,13 @@ const hubContextHelper = ({
       hubPubkey = new anchor.web3.PublicKey(hubPubkey)
       const USDC_MINT = new anchor.web3.PublicKey(ids.mints.usdc)
 
-      const [hubSigner] =
-        await anchor.web3.PublicKey.findProgramAddress(
-          [
-            Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-signer')),
-            hubPubkey.toBuffer(),
-          ],
-          program.programId
-        )
+      const [hubSigner] = await anchor.web3.PublicKey.findProgramAddress(
+        [
+          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-signer')),
+          hubPubkey.toBuffer(),
+        ],
+        program.programId
+      )
       let [withdrawTarget] = await findOrCreateAssociatedTokenAccount(
         provider.connection,
         provider.wallet.publicKey,
