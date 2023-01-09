@@ -18,14 +18,9 @@ import {
   decryptData,
 } from '../../utils/encrypt'
 import { logEvent } from '../../utils/event'
-<<<<<<< HEAD
 import { publicKey } from '@project-serum/anchor/dist/cjs/utils';
 import { initSdkIfNeeded } from '../../utils/sdkInit';
 import { getConfirmTransaction } from '../../utils';
-=======
-import { publicKey } from '@project-serum/anchor/dist/cjs/utils'
-import { initSdkIfNeeded } from '../../utils/sdkInit'
->>>>>>> e3d263fcbe731ed934df04a8e4eead2e1118aad6
 const lookupTypes = {
   PUBLISHED_BY: 'published_by',
   REVENUE_SHARE: 'revenue_share',
