@@ -10,6 +10,7 @@ import { ninaErrorHandler } from '../../utils/errors'
 import { logEvent } from '../../utils/event'
 import { truncateAddress } from '../../utils/truncateAddress';
 import Airtable from 'airtable';
+import { getConfirmTransaction } from '../../utils';
 
 const NinaProgramAction = {
   HUB_ADD_COLLABORATOR: 'HUB_ADD_COLLABORATOR',
@@ -295,7 +296,7 @@ const ninaContextHelper = ({
         txid = await program.rpc.subscriptionSubscribeAccount(request)
       }
 
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await getConfirmTransaction(txid, provider.connection)
       await getSubscription(subscription.toBase58())
       logEvent(
         `subscription_subscribe_${hubHandle ? 'hub' : 'account'}_success`,
@@ -344,8 +345,7 @@ const ninaContextHelper = ({
           systemProgram: anchor.web3.SystemProgram.programId,
         },
       })
-
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await getConfirmTransaction(txid, provider.connection)
       await getSubscription(subscription.toBase58(), txid)
       if (hubHandle) {
         await getSubscriptionsForHub(hubHandle)
