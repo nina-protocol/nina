@@ -14,8 +14,8 @@ jobs:
       # Check out the repository
       - uses: actions/checkout@v1
 
-      # Install your dependencies
-      - run: npm ci
+      # Install dependencies
+      - run: yarn
 
       # Run ESLint + Prettier on /hubs
       - run: yarn hubs check-lint-format
