@@ -24,8 +24,8 @@ jobs:
       - run: npm ci
 
       # Run ESLint + Prettier on /hubs
-      - uses: yarn hubs check-lint-format
+      - run: yarn hubs check-lint-format
       # Run ESLint + Prettier on /sdk
-      - uses: yarn sdk check-lint-format
+      - run: yarn sdk check-lint-format
       # Run ESLint + Prettier on /web
-      - uses: yarn web check-lint-format
+      - run: yarn web check-lint-format
