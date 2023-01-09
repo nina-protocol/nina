@@ -1,8 +1,7 @@
 name: Lint and Format Check on Pull Request
 
 on:
-  pull_request:
-    types: [opened]
+  - pull_request
 
 jobs:
   lint-and-format:
@@ -15,13 +14,8 @@ jobs:
       # Check out the repository
       - uses: actions/checkout@v1
 
-      # Install Node.js
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 16
-
-      # Install your dependencies
-      - run: npm ci
+      # Install dependencies
+      - run: yarn
 
       # Run ESLint + Prettier on /hubs
       - run: yarn hubs check-lint-format
