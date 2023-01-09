@@ -18,8 +18,14 @@ import {
   decryptData,
 } from '../../utils/encrypt'
 import { logEvent } from '../../utils/event'
+<<<<<<< HEAD
+import { publicKey } from '@project-serum/anchor/dist/cjs/utils';
+import { initSdkIfNeeded } from '../../utils/sdkInit';
+import { getConfirmTransaction } from '../../utils';
+=======
 import { publicKey } from '@project-serum/anchor/dist/cjs/utils'
 import { initSdkIfNeeded } from '../../utils/sdkInit'
+>>>>>>> e3d263fcbe731ed934df04a8e4eead2e1118aad6
 const lookupTypes = {
   PUBLISHED_BY: 'published_by',
   REVENUE_SHARE: 'revenue_share',
@@ -420,16 +426,16 @@ const releaseContextHelper = ({
           instructions,
         }
       )
-      await provider.connection.getParsedTransaction(txid, 'confirmed')
-      await NinaSdk.Hub.fetchHubRelease(
-        hubPubkey.toBase58(),
-        hubRelease.toBase58()
-      )
+      await getConfirmTransaction(txid, provider.connection)
+      await NinaSdk.Hub.fetchHubRelease(hubPubkey.toBase58(), hubRelease.toBase58())
 
-      logEvent('release_init_via_hub_success', 'engagement', {
-        publicKey: release.toBase58(),
-        wallet: provider.wallet.publicKey.toBase58(),
-      })
+      logEvent(
+        'release_init_via_hub_success',
+        'engagement', {
+          publicKey: release.toBase58(),
+          wallet: provider.wallet.publicKey.toBase58(),
+        }
+      )
 
       return { success: true }
     } catch (error) {
@@ -626,7 +632,7 @@ const releaseContextHelper = ({
         decodeNonEncryptedByteArray(hub.handle),
         request
       )
-      await provider.connection.getParsedTransaction(txid, 'confirmed')
+      await getConfirmTransaction(txid, provider.connection)
       setReleasePurchasePending({
         ...releasePurchasePending,
         [releasePubkey.toBase58()]: false,
@@ -827,7 +833,7 @@ const releaseContextHelper = ({
           instructions,
         }
       )
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await getConfirmTransaction(txid, provider.connection)
       await getRelease(release)
 
       setPressingState({
@@ -972,7 +978,7 @@ const releaseContextHelper = ({
       })
 
       const txid = await program.rpc.releasePurchase(release.price, request)
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await getConfirmTransaction(txid, provider.connection)
 
       setReleasePurchasePending({
         ...releasePurchasePending,
@@ -1059,7 +1065,7 @@ const releaseContextHelper = ({
       }
 
       const txid = await program.rpc.releaseRevenueShareCollect(request)
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await getConfirmTransaction(txid, provider.connection)
 
       await getRelease(releasePubkey)
       getUserBalances()
@@ -1139,7 +1145,7 @@ const releaseContextHelper = ({
         new anchor.BN(updateAmount),
         request
       )
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await getConfirmTransaction(txid, provider.connection)
 
       getRelease(releasePubkey)
       getUserBalances()
@@ -1222,7 +1228,7 @@ const releaseContextHelper = ({
         signers: [redeemedTokenMint],
         instructions: [...redeemedTokenMintIx],
       })
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await getConfirmTransaction(txid, provider.connection)
 
       getRelease(releasePubkey)
       getRedeemablesForRelease(releasePubkey)
@@ -1314,7 +1320,7 @@ const releaseContextHelper = ({
         iv,
         request
       )
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await getConfirmTransaction(txid, provider.connection)
 
       removeReleaseFromCollection(
         releasePubkey,
@@ -1374,7 +1380,7 @@ const releaseContextHelper = ({
           },
         }
       )
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await getConfirmTransaction(txid, provider.connection)
 
       getRedemptionRecordsForRelease(redemptionRecordAccount.release.toBase58())
       return {
