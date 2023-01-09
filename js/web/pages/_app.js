@@ -71,7 +71,7 @@ function Application({ Component, pageProps }) {
     new GlowWalletAdapter({ network }),
     new BackpackWalletAdapter({ network }),
   ]
-
+  console.log('arbitrary log')
   // if (!isMobile) {
   //   walletOptions.push(
   //     new SolletWalletAdapter({ network }),
