@@ -585,6 +585,17 @@ const ninaContextHelper = ({
     }
     return 0
   }
+  const getSolBalance = async () => {
+    let solUsdcBalanceResult = await provider.connection.getBalance(
+      provider.wallet.publicKey
+    )
+ 
+    setSolBalance(solUsdcBalanceResult)
+    if (solUsdcBalanceResult < 10000000) { 
+      setLowSolBalance(true)
+    }
+    return solUsdcBalanceResult
+  }
 
   const getUserBalances = async () => { 
 
@@ -594,15 +605,8 @@ const ninaContextHelper = ({
           `https://price.jup.ag/v3/price?ids=SOL`
         )
 
-        let solUsdcBalanceResult = await provider.connection.getBalance(
-          provider.wallet.publicKey
-        )
-     
+        const solUsdcBalanceResult = await getSolBalance()
         setSolUsdcBalance((ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) * solPrice.data.data.SOL.price).toFixed(2))
-        setSolBalance(solUsdcBalanceResult)
-        if (solUsdcBalanceResult < 10000000) { 
-          setLowSolBalance(true)
-        }
         
         let [usdcTokenAccountPubkey] = await findOrCreateAssociatedTokenAccount(
           provider.connection,
@@ -788,8 +792,8 @@ const ninaContextHelper = ({
     }
   }
   const checkIfHasBalanceToCompleteAction = async (action) => {
-    await getUserBalances()
-    if (ninaClient.uiToNative(NinaProgramActionCost[action], ninaClient.ids.mints.wsol) > solBalance) {
+    const solUsdcBalanceResult = await getSolBalance()
+    if (ninaClient.uiToNative(NinaProgramActionCost[action], ninaClient.ids.mints.wsol) > solUsdcBalanceResult) {
       const error = new Error(`You do not have enough SOL to send the transaction: ${action}.  You need at least ${NinaProgramActionCost[action]} SOL.`)
       return ninaErrorHandler(error)
     }
