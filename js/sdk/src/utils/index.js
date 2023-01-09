@@ -1,16 +1,15 @@
 import * as encrypt from './encrypt'
 import * as web3 from './web3'
 import * as imageManager from './imageManager'
-import CryptoJS from "crypto-js";
-import NinaSdk from "@nina-protocol/js-sdk"
-import promiseRetry from 'promise-retry';
+import CryptoJS from 'crypto-js'
+import promiseRetry from 'promise-retry'
 
 const dateConverter = (date) => {
   var a = new Date(typeof date === 'object' ? date.toNumber() * 1000 : date)
   var months = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
   var year = a.getFullYear()
   var month = months[a.getMonth()]
-  var date = a.getDate()
+  var day = a.getDate()
   var hour = a.getHours().toLocaleString('en-US', {
     minimumIntegerDigits: 2,
   })
@@ -21,7 +20,7 @@ const dateConverter = (date) => {
     minimumIntegerDigits: 2,
   })
   var time =
-    year + ' ' + month + '/' + date + ' ' + hour + ':' + min + ':' + sec
+    year + ' ' + month + '/' + day + ' ' + hour + ':' + min + ':' + sec
   return time
 }
 
@@ -33,7 +32,7 @@ const arrayMove = (arr, old_index, new_index) => {
     }
   }
   arr.splice(new_index, 0, arr.splice(old_index, 1)[0])
-}       
+}
 
 const formatPlaceholder = (placeholder) => {
   return placeholder
@@ -66,21 +65,23 @@ const sleep = (ms) => {
 }
 
 const shuffle = (array) => {
-  let currentIndex = array.length,  randomIndex;
+  let currentIndex = array.length,
+    randomIndex
 
   // While there remain elements to shuffle.
   while (currentIndex != 0) {
-
     // Pick a remaining element.
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
+    randomIndex = Math.floor(Math.random() * currentIndex)
+    currentIndex--
 
     // And swap it with the current element.
-    [array[currentIndex], array[randomIndex]] = [
-      array[randomIndex], array[currentIndex]];
+    ;[array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ]
   }
 
-  return array;
+  return array
 }
 
 const readChunked = (file, chunkCallback, endCallback) => {
@@ -118,25 +119,29 @@ const readChunked = (file, chunkCallback, endCallback) => {
 
 const getMd5FileHash = async (file, progress) => {
   return new Promise((resolve, reject) => {
-    let md5 = CryptoJS.algo.MD5.create();
-    readChunked(file, (chunk, offset, total) => {
-      md5 = md5.update(CryptoJS.enc.Latin1.parse(chunk));
-      if (progress) {
-        progress(offset / total)
+    let md5 = CryptoJS.algo.MD5.create()
+    readChunked(
+      file,
+      (chunk, offset, total) => {
+        md5 = md5.update(CryptoJS.enc.Latin1.parse(chunk))
+        if (progress) {
+          progress(offset / total)
+        }
+      },
+      (err) => {
+        if (err) {
+          reject(err)
+        } else {
+          const hash = md5.finalize()
+          resolve(hash.toString())
+        }
       }
-    }, (err) => {
-      if (err) {
-        reject(err)
-      } else {
-        const hash = md5.finalize();
-        resolve(hash.toString())
-      }
-    })
+    )
   })
 }
 
 const stripQuotesIfNeeded = (str) => {
-  return str.replace(/^"(.*)"$/, '$1');
+  return str.replace(/^"(.*)"$/, '$1')
 }
 
 const parseChecker = (data) => {
@@ -149,7 +154,7 @@ const parseChecker = (data) => {
 
 const getConfirmTransaction = async (txid, connection) => {
   const res = await promiseRetry(
-    async (retry, attempt) => {
+    async (retry) => {
       let txResult = await connection.getTransaction(txid, {
         commitment: 'confirmed',
       })
@@ -188,5 +193,5 @@ export {
   shuffle,
   getMd5FileHash,
   stripQuotesIfNeeded,
-  parseChecker
+  parseChecker,
 }

@@ -1,5 +1,5 @@
-import HubCreate from "../components/HubCreate";
-import Head from "next/head";
+import HubCreate from '../components/HubCreate'
+import Head from 'next/head'
 
 const CreateHubPage = () => {
   return (
@@ -8,13 +8,13 @@ const CreateHubPage = () => {
         <title>Nina Hubs - Create</title>
         <meta
           name="description"
-          content={"Nina Protocol is a digitally native music ecosystem"}
+          content={'Nina Protocol is a digitally native music ecosystem'}
         />
         <meta name="og:type" content="website" />
         <meta name="og:title" content="Nina Hubs - Create" />
         <meta
           name="og:description"
-          content={"Nina Protocol is a digitally native music ecosystem"}
+          content={'Nina Protocol is a digitally native music ecosystem'}
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@ninaprotocol" />
@@ -23,7 +23,7 @@ const CreateHubPage = () => {
         <meta name="twitter:title" content="Nina Hubs - Create" />
         <meta
           name="twitter:description"
-          content={"Nina Protocol is a digitally native music ecosystem"}
+          content={'Nina Protocol is a digitally native music ecosystem'}
         />
         <meta
           name="twitter:image"
@@ -36,7 +36,7 @@ const CreateHubPage = () => {
       </Head>
       <HubCreate update={false} />
     </>
-  );
-};
+  )
+}
 
-export default CreateHubPage;
+export default CreateHubPage

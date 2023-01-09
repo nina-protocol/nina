@@ -1,5 +1,5 @@
-import AllHubs from "../components/AllHubs";
-import Head from "next/head";
+import AllHubs from '../components/AllHubs'
+import Head from 'next/head'
 
 const AllHubsPage = () => {
   return (
@@ -8,13 +8,13 @@ const AllHubsPage = () => {
         <title>Nina Hubs - All Hubs</title>
         <meta
           name="description"
-          content={"Nina Protocol is a digitally native music ecosystem"}
+          content={'Nina Protocol is a digitally native music ecosystem'}
         />
         <meta name="og:type" content="website" />
         <meta name="og:title" content="Nina Hubs - All Hubs" />
         <meta
           name="og:description"
-          content={"Nina Protocol is a digitally native music ecosystem"}
+          content={'Nina Protocol is a digitally native music ecosystem'}
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@ninaprotocol" />
@@ -23,7 +23,7 @@ const AllHubsPage = () => {
         <meta name="twitter:title" content="Nina Hubs - All Hubs" />
         <meta
           name="twitter:description"
-          content={"Nina Protocol is a digitally native music ecosystem"}
+          content={'Nina Protocol is a digitally native music ecosystem'}
         />
         <meta
           name="twitter:image"
@@ -36,7 +36,7 @@ const AllHubsPage = () => {
       </Head>
       <AllHubs />;
     </>
-  );
-};
+  )
+}
 
-export default AllHubsPage;
+export default AllHubsPage
