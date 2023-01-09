@@ -24,7 +24,7 @@ const lookupTypes = {
   PUBLISHED_BY: 'published_by',
   REVENUE_SHARE: 'revenue_share',
 }
-const PRIORITY_SWAP_FEE = 1000
+const PRIORITY_SWAP_FEE = 5000
 const ReleaseContext = createContext()
 const ReleaseContextProvider = ({ children }) => {
   const {
@@ -551,7 +551,7 @@ const releaseContextHelper = ({
           `https://quote-api.jup.ag/v3/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative(
             (convertAmount + convertAmount * 0.01) / solPrice,
             ids.mints.wsol
-          )}&slippageBps=1&onlyDirectRoutes=true`
+          )}&slippageBps=2&onlyDirectRoutes=true`
         )
         let transactionInstructions
 
@@ -924,7 +924,7 @@ const releaseContextHelper = ({
           `https://quote-api.jup.ag/v3/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative(
             (releaseUiPrice + releaseUiPrice * 0.01) / solPrice,
             ids.mints.wsol
-          )}&slippageBps=1&onlyDirectRoutes=true`
+          )}&slippageBps=2&onlyDirectRoutes=true`
         )
         const transactions = await axios.post(
           'https://quote-api.jup.ag/v3/swap',
