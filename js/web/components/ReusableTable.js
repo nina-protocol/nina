@@ -707,6 +707,7 @@ const ReusableTableBody = (props) => {
                           </Link>
                         </Typography>
                       </OverflowContainer>
+                      {row?.hub && <HubTag>HUB</HubTag>}
                     </StyledTableCell>
                   )
                 }
@@ -804,6 +805,9 @@ const StyledTableCell = styled(TableCell)(({ theme, type }) => ({
   textAlign: 'left',
   height: '50px',
   width: '61vw',
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
   [theme.breakpoints.down('md')]: {
     width: '30vw',
     paddingRight: '10px',
@@ -851,6 +855,7 @@ const OverflowContainer = styled(Box)(({ theme, inDashboard }) => ({
   maxWidth: inDashboard ? '170px' : '360px',
   textAlign: 'left',
   textOverflow: 'ellipsis',
+
   [theme.breakpoints.down('md')]: {
     minWidth: '0',
     maxWidth: '20vw',
@@ -935,5 +940,10 @@ const StyledCollectButton = styled(Button)(({ theme }) => ({
     fontSize: '10px',
   },
 }))
-
+const HubTag = styled(Typography)(({ theme }) => ({
+  color: `${theme.palette.blue} !important`,
+  cursor: 'default',
+  padding: '0px 10px',
+  fontSize: '10px !important',
+}))
 export default ReusableTable
