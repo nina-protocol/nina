@@ -80,7 +80,6 @@ const Profile = ({ profilePubkey }) => {
       setFetchedProfiles(new Set([...fetchedProfiles, profilePubkey]))
       return true
     }
-    // return false
   }, [fetchedProfiles, fetched, profilePubkey])
 
   const artistNames = useMemo(() => {
@@ -182,15 +181,6 @@ const Profile = ({ profilePubkey }) => {
     let filteredCollection
     if (fetchedUserProfileReleases[profilePubkey]?.collected) {
       filteredCollection = filterReleasesUserCollection(profilePubkey)
-      // ?.sort(
-      //   (a, b) => {
-      //     console.log(a, b)
-      //     return (
-      //       new Date(b.metadata.properties.date) -
-      //       new Date(a.metadata.properties.date)
-      //     )
-      //   }
-      // )
       setProfileCollectionReleases(filteredCollection)
     } else {
       setProfileCollectionReleases([])
