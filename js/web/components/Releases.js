@@ -25,6 +25,7 @@ const Releases = ({ type }) => {
 
   useEffect(() => {
     getReleasesRecent()
+ 
   }, [])
 
   useEffect(() => {
@@ -33,6 +34,7 @@ const Releases = ({ type }) => {
     } else {
       setReleases(filterReleasesRecent().highlights)
     }
+    
   }, [releasesRecentState])
 
   const handleViewChange = () => {

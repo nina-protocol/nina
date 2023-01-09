@@ -24,6 +24,7 @@ const Releases = () => {
   useEffect(() => {
     getReleasesAll()
     window.addEventListener('scroll', handleScroll)
+       console.log('releases', allReleases)
     return () => {
       window.removeEventListener('scroll', handleScroll)
     }

@@ -25,7 +25,7 @@ const ReleaseTileList = (props) => {
       pathname: `/${releasePubkey}`,
     })
   }
-
+  console.log('releases from tile list', releases)
   return (
     <Box>
       <TileGrid>
