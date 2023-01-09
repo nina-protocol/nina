@@ -54,7 +54,7 @@ const Releases = () => {
       getReleasesAll()
     }
   }
-
+  
   return (
     <>
       <Head>

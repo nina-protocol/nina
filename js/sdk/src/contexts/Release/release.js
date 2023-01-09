@@ -1607,6 +1607,7 @@ const releaseContextHelper = ({
   }
 
   const getReleasesAll = async () => {
+    console.log('allss',allReleases)
     try {
       const all = [...allReleases]
       const releases = (

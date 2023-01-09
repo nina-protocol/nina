@@ -1,19 +1,13 @@
 import Image from 'next/image'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import Link from 'next/link'
-import { useState, useEffect, createElement, Fragment } from 'react'
+import { useState, useEffect, } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Typography } from '@mui/material'
 import { styled } from '@mui/system'
 import { Box } from '@mui/system'
 import Subscribe from './Subscribe'
-import { unified } from 'unified'
-import rehypeParse from 'rehype-parse'
-import rehypeReact from 'rehype-react'
-import rehypeSanitize from 'rehype-sanitize'
-import rehypeExternalLinks from 'rehype-external-links'
-import { useSnackbar } from 'notistack'
-import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
+
 
 const { getImageFromCDN, loader } = imageManager
 
