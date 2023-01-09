@@ -1607,28 +1607,36 @@ const releaseContextHelper = ({
   }
 
   const getReleasesAll = async () => {
-    console.log('allss',allReleases)
+    console.log('all qqq',allReleases)
     try {
       const all = [...allReleases]
+      console.log('is that all qqq',all)
+
       const releases = (
         await NinaSdk.Release.fetchAll(
           { limit: 25, offset: allReleases.length },
           true
         )
       ).releases
-      all.push(...releases.map((release) => release.publicKey))
-      const newState = updateStateForReleases(releases)
-      setReleaseState((prevState) => ({
-        ...prevState,
-        tokenData: { ...prevState.tokenData, ...newState.tokenData },
-        metadata: { ...prevState.metadata, ...newState.metadata },
-        releaseMintMap: {
-          ...prevState.releaseMintMap,
-          ...newState.releaseMintMap,
-        },
-      }))
-      setAllReleasesCount(releases.total)
-      setAllReleases(all)
+ 
+        all.push(...releases.map((release) => release.publicKey))
+      
+        const newState = updateStateForReleases(releases)
+        console.log('new state lol', newState)
+        setReleaseState((prevState) => ({
+          ...prevState,
+          tokenData: { ...prevState.tokenData, ...newState.tokenData },
+          metadata: { ...prevState.metadata, ...newState.metadata },
+          releaseMintMap: {
+            ...prevState.releaseMintMap,
+            ...newState.releaseMintMap,
+          },
+        }))
+        console.log('releases yes', releases)
+        setAllReleasesCount(releases.total)
+        setAllReleases(all)
+
+      console.log('after we set all releases qqq', allReleases)
     } catch (error) {
       console.warn(error)
     }
