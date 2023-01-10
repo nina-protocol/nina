@@ -697,6 +697,21 @@ const ReusableTableBody = (props) => {
                       />
                     </TableCell>
                   )
+                } else if (cellName === 'hub') {
+                  return (
+                    <StyledTableCell key={cellName}>
+                      <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                        <OverflowContainer>
+                          <Typography noWrap>
+                            <Link href={row.link} passHref>
+                              <a>{row?.hub}</a>
+                            </Link>
+                          </Typography>
+                        </OverflowContainer>
+                        {row?.hub && <HubTag>HUB</HubTag>}
+                      </Box>
+                    </StyledTableCell>
+                  )
                 } else {
                   return (
                     <StyledTableCell key={cellName}>
@@ -707,7 +722,6 @@ const ReusableTableBody = (props) => {
                           </Link>
                         </Typography>
                       </OverflowContainer>
-                      {row?.hub && <HubTag>HUB</HubTag>}
                     </StyledTableCell>
                   )
                 }
@@ -805,8 +819,7 @@ const StyledTableCell = styled(TableCell)(({ theme, type }) => ({
   textAlign: 'left',
   height: '50px',
   width: '61vw',
-  display: 'flex',
-  flexDirection: 'row',
+
   alignItems: 'center',
   [theme.breakpoints.down('md')]: {
     width: '30vw',
@@ -855,7 +868,6 @@ const OverflowContainer = styled(Box)(({ theme, inDashboard }) => ({
   maxWidth: inDashboard ? '170px' : '360px',
   textAlign: 'left',
   textOverflow: 'ellipsis',
-
   [theme.breakpoints.down('md')]: {
     minWidth: '0',
     maxWidth: '20vw',
