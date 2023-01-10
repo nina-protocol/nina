@@ -25,7 +25,6 @@ import { useRouter } from 'next/router'
 import { orderBy } from 'lodash'
 import dynamic from 'next/dynamic'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 
 const { getImageFromCDN, loader } = imageManager
 
@@ -220,10 +219,8 @@ const ReusableTableBody = (props) => {
     collectRoyaltyForRelease,
     refreshProfile,
     dashboardPublicKey,
-    isActiveView,
     order,
     orderBy,
-    profilePubkey,
   } = props
   const router = useRouter()
   const {
@@ -699,18 +696,18 @@ const ReusableTableBody = (props) => {
                   )
                 } else if (cellName === 'hub') {
                   return (
-                    <StyledTableCell key={cellName}>
-                      <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                        <OverflowContainer>
-                          <Typography noWrap>
-                            <Link href={row.link} passHref>
-                              <a>{row?.hub}</a>
-                            </Link>
-                          </Typography>
-                        </OverflowContainer>
+                  <StyledTableCell key={cellName}>
+                    <Box sx={{display: 'flex', flexDirection: 'row'}}>
+                    <OverflowContainer>
+                      <Typography noWrap>
+                        <Link href={row.link} passHref>
+                          <a>{row?.hub}</a>
+                        </Link>
+                      </Typography>
+                    </OverflowContainer>
                         {row?.hub && <HubTag>HUB</HubTag>}
-                      </Box>
-                    </StyledTableCell>
+                    </Box>
+                  </StyledTableCell>
                   )
                 } else {
                   return (
