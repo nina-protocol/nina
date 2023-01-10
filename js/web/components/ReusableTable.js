@@ -25,7 +25,6 @@ import { useRouter } from 'next/router'
 import { orderBy } from 'lodash'
 import dynamic from 'next/dynamic'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 
 const { getImageFromCDN, loader } = imageManager
 
@@ -220,10 +219,8 @@ const ReusableTableBody = (props) => {
     collectRoyaltyForRelease,
     refreshProfile,
     dashboardPublicKey,
-    isActiveView,
     order,
     orderBy,
-    profilePubkey,
   } = props
   const router = useRouter()
   const {
@@ -697,6 +694,21 @@ const ReusableTableBody = (props) => {
                       />
                     </TableCell>
                   )
+                } else if (cellName === 'hub') {
+                  return (
+                  <StyledTableCell key={cellName}>
+                    <Box sx={{display: 'flex', flexDirection: 'row'}}>
+                    <OverflowContainer>
+                      <Typography noWrap>
+                        <Link href={row.link} passHref>
+                          <a>{row?.hub}</a>
+                        </Link>
+                      </Typography>
+                    </OverflowContainer>
+                        {row?.hub && <HubTag>HUB</HubTag>}
+                    </Box>
+                  </StyledTableCell>
+                  )
                 } else {
                   return (
                     <StyledTableCell key={cellName}>
@@ -804,6 +816,8 @@ const StyledTableCell = styled(TableCell)(({ theme, type }) => ({
   textAlign: 'left',
   height: '50px',
   width: '61vw',
+
+  alignItems: 'center',
   [theme.breakpoints.down('md')]: {
     width: '30vw',
     paddingRight: '10px',
@@ -935,5 +949,10 @@ const StyledCollectButton = styled(Button)(({ theme }) => ({
     fontSize: '10px',
   },
 }))
-
+const HubTag = styled(Typography)(({ theme }) => ({
+  color: `${theme.palette.blue} !important`,
+  cursor: 'default',
+  padding: '0px 10px',
+  fontSize: '10px !important',
+}))
 export default ReusableTable
