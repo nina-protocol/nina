@@ -18,7 +18,7 @@ jobs:
       - run: yarn
 
       # Run ESLint + Prettier on /hubs
-      - run: yarn hubs check-lint-format
+      - run: yarn check-lint-format
       # Run ESLint + Prettier on /sdk
       - run: yarn sdk check-lint-format
       # Run ESLint + Prettier on /web
