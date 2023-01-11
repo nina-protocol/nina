@@ -24,7 +24,7 @@ const HubSlider = ({ loading }) => {
   useEffect(() => {
     const fetchFeaturedHubs = async () => {
       const response = await getSubscriptionsForUser(
-        '7zoKqAehBR7oWMFpmWr2ebrhMvqL6oBsHdRcL2N3cmnU'
+        process.env.NINA_SUBSCRIPTION_PUBKEY
       )
       const hubs = response
         .filter((sub) => {

@@ -12,6 +12,7 @@ const {
   newAccount,
   wrapSol,
 } = require("./utils");
+const metadataProgram = new anchor.web3.PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s')
 
 let nina = anchor.workspace.Nina;
 let provider = anchor.AnchorProvider.env();
@@ -397,6 +398,121 @@ describe('Release', async () => {
     );
   });
 
+  let bumps
+  let metadata
+  it('Should Not Initialize Release For Sale in USDC with Publishing Credit if authority payer mismatch', async () => {
+
+    await mintToAccount(
+      provider,
+      npcMint,
+      publishingCreditTokenAccount,
+      new anchor.BN(50),
+      provider.wallet.publicKey,
+    );
+
+    const paymentMint = usdcMint;
+    releaseMint = anchor.web3.Keypair.generate();
+    const releaseMintIx = await createMintInstructions(
+      provider,
+      provider.wallet.publicKey,
+      releaseMint.publicKey,
+      0,
+    );
+
+    const [_release, releaseBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-release")),
+        releaseMint.publicKey.toBuffer(),
+      ],
+      nina.programId,
+    );
+    release = _release;
+
+    const [_releaseSigner, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [release.toBuffer()],
+      nina.programId,
+    );
+    releaseSigner = _releaseSigner;
+
+    let [_royaltyTokenAccount, royaltyTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+      provider,
+      releaseSigner,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      paymentMint,
+    );
+    royaltyTokenAccount = _royaltyTokenAccount;
+
+    const authorityPublishingCreditTokenAccountBefore = await getTokenAccount(
+      provider,
+      publishingCreditTokenAccount,
+    );
+
+    const config = {
+      amountTotalSupply: new anchor.BN(1000),
+      amountToArtistTokenAccount: new anchor.BN(0),
+      amountToVaultTokenAccount: new anchor.BN(0),
+      resalePercentage: new anchor.BN(200000),
+      price: new anchor.BN(releasePrice),
+      releaseDatetime: new anchor.BN((Date.now() / 1000) - 5),
+    };
+
+    bumps = {
+      release: releaseBump,
+      signer: releaseSignerBump,
+    }
+
+    const [_metadata] = await anchor.web3.PublicKey.findProgramAddress(
+      [Buffer.from('metadata'), metadataProgram.toBuffer(), releaseMint.publicKey.toBuffer()],
+      metadataProgram,
+    );
+    metadata = _metadata;
+
+    const metadataData = {
+      name: `Nina with the Nina`,
+      symbol: `NINA`,
+      uri: `https://arweave.net`,
+      sellerFeeBasisPoints: 2000,
+    }
+    await assert.rejects(
+      async () => {
+        await nina.rpc.releaseInitWithCredit(
+          config,
+          bumps,
+          metadataData, {
+            accounts: {
+              release,
+              releaseSigner,
+              releaseMint: releaseMint.publicKey,
+              payer: user1.publicKey,
+              authority: provider.wallet.publicKey,
+              authorityTokenAccount: usdcTokenAccount,
+              authorityPublishingCreditTokenAccount: publishingCreditTokenAccount,
+              publishingCreditMint: npcMint,
+              paymentMint,
+              royaltyTokenAccount,
+              metadata,
+              metadataProgram,
+              systemProgram: anchor.web3.SystemProgram.programId,
+              tokenProgram: TOKEN_PROGRAM_ID,
+              rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+            },
+            signers: [user1, releaseMint],
+            instructions: [
+              ...releaseMintIx,
+              royaltyTokenAccountIx,
+            ],
+          }
+        );
+      }, (err) => {
+        console.log('err', err.error);
+        assert.equal(err.error.errorCode.number, 2003);
+        assert.equal(err.error.errorMessage, "A raw constraint was violated");
+        return true;
+      }
+    );
+  });
+
   it('Initialize Release For Sale in USDC with Publishing Credit', async () => {
 
     await mintToAccount(
@@ -454,15 +570,16 @@ describe('Release', async () => {
       releaseDatetime: new anchor.BN((Date.now() / 1000) - 5),
     };
 
-    const bumps = {
+    bumps = {
       release: releaseBump,
       signer: releaseSignerBump,
     }
-    const metadataProgram = new anchor.web3.PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s')
-    const [metadata] = await anchor.web3.PublicKey.findProgramAddress(
+
+    const [_metadata] = await anchor.web3.PublicKey.findProgramAddress(
       [Buffer.from('metadata'), metadataProgram.toBuffer(), releaseMint.publicKey.toBuffer()],
       metadataProgram,
     );
+    metadata = _metadata;
 
     const metadataData = {
       name: `Nina with the Nina`,
@@ -510,8 +627,70 @@ describe('Release', async () => {
       publishingCreditTokenAccount,
     );
     assert.equal(authorityPublishingCreditTokenAccountBefore.amount.toNumber() - 1, authorityPublishingCreditTokenAccountAfter.amount.toNumber())
-
   });
+
+  it('Should update the metadata', async () => {
+    const metadataData = {
+      name: `Nina2`,
+      symbol: `NINA2`,
+      uri: `https://arweave.net/nina2`,
+      sellerFeeBasisPoints: 2000,
+    }
+
+    await nina.rpc.releaseUpdateMetadata(
+      bumps,
+      metadataData, {
+        accounts: {
+          authority: provider.wallet.publicKey,
+          release,
+          releaseSigner,
+          releaseMint:releaseMint.publicKey,
+          metadata,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          metadataProgram,
+          systemProgram: anchor.web3.SystemProgram.programId,
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        }
+      }
+    );
+  })
+
+  it('Should not update the metadata, if not the authority', async () => {
+    const metadataData = {
+      name: `Nina2-bad`,
+      symbol: `NINA2`,
+      uri: `https://arweave.net/nina2`,
+      sellerFeeBasisPoints: 2000,
+    }
+
+    await assert.rejects(
+      async () => {
+        await nina.rpc.releaseUpdateMetadata(
+          bumps,
+          metadataData, {
+            accounts: {
+              authority: user1.publicKey,
+              release,
+              releaseSigner,
+              releaseMint:releaseMint.publicKey,
+              metadata,
+              tokenProgram: TOKEN_PROGRAM_ID,
+              metadataProgram,
+              systemProgram: anchor.web3.SystemProgram.programId,
+              rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+            },
+            signers: [user1]
+          }
+        );
+      },
+      (err) => {
+        console.log('err', err);
+        assert.equal(err.error.errorCode.number, 2003);
+        assert.equal(err.error.errorMessage, "A raw constraint was violated");
+        return true;
+      }
+    );
+  })
 
   it('Initialize Release For Sale in wSOL', async () => {
     const paymentMint = wrappedSolMint;
@@ -987,7 +1166,7 @@ describe('Release', async () => {
       }
     );
 
-    const createGenerator = function*() {
+    const createGenerator = async function*() {
       let i = 0;
       while(i < 5) {
         yield await Promise.resolve(i++);
@@ -1015,6 +1194,176 @@ describe('Release', async () => {
             }
           );
         }
+      },
+      (err) => {
+        assert.equal(err.error.errorCode.number, 6006);
+        assert.equal(err.error.errorMessage, "Sold out");
+        return true;
+      }
+    );
+  });
+
+  it('Creates and Mints an open edition, closes the edition, and can no longer mint', async () => {
+    const paymentMint = usdcMint;
+    const releaseMintSellOut = anchor.web3.Keypair.generate();
+    const releaseMintIx = await createMintInstructions(
+      provider,
+      provider.wallet.publicKey,
+      releaseMintSellOut.publicKey,
+      0,
+    );
+
+    const [_releaseSellOut, releaseBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-release")),
+        releaseMintSellOut.publicKey.toBuffer(),
+      ],
+      nina.programId,
+    );
+      releaseSellOut = _releaseSellOut
+    const [releaseSignerSellOut, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [releaseSellOut.toBuffer()],
+      nina.programId,
+    );
+
+    let [royaltyTokenAccountSellOut, royaltyTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+      provider,
+      releaseSignerSellOut,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      paymentMint,
+    );
+
+    let [receiverReleaseTokenAccountSellOut, receiverReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+      provider,
+      user1.publicKey,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      releaseMintSellOut.publicKey,
+    );
+
+    const releasePriceSellout = new anchor.BN(100);
+    const config = {
+      amountTotalSupply: new anchor.BN("18446744073709551615"),
+      amountToArtistTokenAccount: new anchor.BN(0),
+      amountToVaultTokenAccount: new anchor.BN(0),
+      resalePercentage: new anchor.BN(200000),
+      price: releasePriceSellout,
+      releaseDatetime: new anchor.BN((Date.now() / 1000) - 5),
+    };
+
+    const metadataProgram = new anchor.web3.PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s')
+    const [metadata] = await anchor.web3.PublicKey.findProgramAddress(
+      [Buffer.from('metadata'), metadataProgram.toBuffer(), releaseMintSellOut.publicKey.toBuffer()],
+      metadataProgram,
+    );
+
+    const metadataData = {
+      name: `Nina with the Nina`,
+      symbol: `NINA`,
+      uri: `https://arweave.net`,
+      sellerFeeBasisPoints: 2000,
+    }
+
+    const bumps = {
+      release: releaseBump,
+      signer: releaseSignerBump,
+    }
+
+    await nina.rpc.releaseInitWithCredit(
+      config,
+      bumps,
+      metadataData, {
+        accounts: {
+          release: releaseSellOut,
+          releaseSigner: releaseSignerSellOut,
+          releaseMint: releaseMintSellOut.publicKey,
+          payer: provider.wallet.publicKey,
+          authority: provider.wallet.publicKey,
+          authorityTokenAccount: usdcTokenAccount,
+          authorityPublishingCreditTokenAccount: publishingCreditTokenAccount,
+          publishingCreditMint: npcMint,
+          paymentMint,
+          royaltyTokenAccount: royaltyTokenAccountSellOut,
+          metadata,
+          metadataProgram,
+          systemProgram: anchor.web3.SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        },
+        signers: [releaseMintSellOut],
+        instructions: [
+          ...releaseMintIx,
+          royaltyTokenAccountIx,
+          receiverReleaseTokenAccountIx,
+        ],
+      }
+    );
+
+    const releaseAfter = await nina.account.release.fetch(releaseSellOut);
+    assert.ok(releaseAfter.totalSupply.toString() === "18446744073709551615");
+
+    const createGenerator = async function*() {
+      let i = 0;
+      while(i < 15) {
+        yield await Promise.resolve(i++);
+      }
+    }
+    const generator = createGenerator();
+    let i = 0;
+    for await (let item of generator) {
+      i++
+      await nina.rpc.releasePurchase(
+        releasePriceSellout, {
+          accounts: {
+            release: releaseSellOut,
+            releaseSigner: releaseSignerSellOut,
+            payer: user1.publicKey,
+            payerTokenAccount: user1UsdcTokenAccount,
+            receiver: user1.publicKey,
+            receiverReleaseTokenAccount: receiverReleaseTokenAccountSellOut,
+            royaltyTokenAccount: royaltyTokenAccountSellOut,
+            releaseMint: releaseMintSellOut.publicKey,
+            tokenProgram: TOKEN_PROGRAM_ID,
+          },
+          signers: [user1],
+        }
+      );
+    }
+
+    const releaseAfterPurchase = await nina.account.release.fetch(releaseSellOut);
+    assert.ok(releaseAfterPurchase.totalSupply.toString() === "18446744073709551615");
+
+    await nina.rpc.releaseCloseEdition({
+      accounts: {
+        authority: provider.wallet.publicKey,
+        release: releaseSellOut,
+        releaseSigner: releaseSignerSellOut,
+        releaseMint: releaseMintSellOut.publicKey,
+      }
+    })
+
+    const releaseAfterClose = await nina.account.release.fetch(releaseSellOut);
+    assert.ok(releaseAfterClose.totalSupply.toNumber() === 15);
+
+    await assert.rejects(
+      async () => {
+        await nina.rpc.releasePurchase(
+          releasePriceSellout, {
+            accounts: {
+              release: releaseSellOut,
+              releaseSigner: releaseSignerSellOut,
+              payer: user1.publicKey,
+              payerTokenAccount: user1UsdcTokenAccount,
+              receiver: user1.publicKey,
+              receiverReleaseTokenAccount: receiverReleaseTokenAccountSellOut,
+              royaltyTokenAccount: royaltyTokenAccountSellOut,
+              releaseMint: releaseMintSellOut.publicKey,
+              tokenProgram: TOKEN_PROGRAM_ID,
+            },
+            signers: [user1],
+          }
+        );
       },
       (err) => {
         assert.equal(err.error.errorCode.number, 6006);
@@ -4162,7 +4511,7 @@ describe('Hub', async () => {
     assert.equal(encrypt.decode(hubAfter.uri), uri)
   })
 
-  it ('should not update hub publish fee if too high', async () => {
+  it ('should not update hub referral fee if too high', async () => {
     await assert.rejects(
       async () => {
         const uri = 'https://arweave.net/jsdlkfj4j3kl4j3lkj43l3kjflksjd'

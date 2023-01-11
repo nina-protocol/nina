@@ -36,7 +36,7 @@ const QuillEditor = ({ formikProps, type, update }) => {
   switch (type) {
     case 'release':
       toolbarValues = false
-      height = '100px'
+      height = '110px'
       break
     case 'hub':
       toolbarValues = [
@@ -94,28 +94,30 @@ const QuillEditor = ({ formikProps, type, update }) => {
     formikProps.form.setFieldValue(formikProps.field.name, content)
   }
   return (
-    <QuillWrapper type={type} height={height}>
+    <>
       {type !== 'post' && (
         <InputLabel align="left" shrink={formikProps.field.value ? true : ''}>
           DESCRIPTION
         </InputLabel>
       )}
-      <QuillNoSSRWrapper
-        forwardedRef={quillRef}
-        theme={theme}
-        modules={modules}
-        onChange={handleChange}
-        defaultValue={stripQuotesIfNeeded(formikProps.field.value)}
-      ></QuillNoSSRWrapper>
-    </QuillWrapper>
+      <QuillWrapper type={type} height={height}>
+        <QuillNoSSRWrapper
+          forwardedRef={quillRef}
+          theme={theme}
+          modules={modules}
+          onChange={handleChange}
+          defaultValue={stripQuotesIfNeeded(formikProps.field.value)}
+        ></QuillNoSSRWrapper>
+      </QuillWrapper>
+    </>
   )
 }
 
 const QuillWrapper = styled(Box)(({ theme, type, height }) => ({
   '& .ql-editor': {
     padding: type === 'release' ? '0px' : '',
-    maxHeight: type === 'release' ? '100px' : height,
-    height: type === 'release' ? '100px' : height,
+    maxHeight: height,
+    height: height,
     overflow: 'auto',
     maxWidth: '476px',
   },

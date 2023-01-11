@@ -54,10 +54,7 @@ const Profile = ({ profilePubkey }) => {
   const [profileSubscriptionsTo, setProfileSubscriptionsTo] = useState()
   const [profileSubscriptionsFrom, setProfileSubscriptionsFrom] = useState()
   const [profileVerifications, setProfileVerifications] = useState()
-  const profileImage = useMemo(
-    () => displayImageForAccount(profilePubkey),
-    [profilePubkey, verificationState]
-  )
+
   const [inDashboard, setInDashboard] = useState(false)
 
   const [fetched, setFetched] = useState(false)
@@ -70,6 +67,11 @@ const Profile = ({ profilePubkey }) => {
     { name: 'following', playlist: null, disabled: true, count: 0 },
   ])
 
+  const profileImage = useMemo(
+    () => displayImageForAccount(profilePubkey),
+    [profilePubkey, verificationState]
+  )
+
   const hasData = useMemo(() => {
     if (fetchedProfiles.has(profilePubkey)) {
       return true
@@ -78,7 +80,6 @@ const Profile = ({ profilePubkey }) => {
       setFetchedProfiles(new Set([...fetchedProfiles, profilePubkey]))
       return true
     }
-    // return false
   }, [fetchedProfiles, fetched, profilePubkey])
 
   const artistNames = useMemo(() => {
@@ -95,13 +96,28 @@ const Profile = ({ profilePubkey }) => {
 
   useEffect(() => {
     getUserData(profilePubkey)
-  }, [])
+  }, [profilePubkey])
 
   useEffect(() => {
     if (wallet.connected && profilePubkey === wallet.publicKey?.toBase58()) {
       setInDashboard(true)
     }
-  }, [wallet, profilePubkey, router])
+  }, [wallet, profilePubkey])
+
+  useEffect(() => {
+    if (!activeView) {
+      if (router.query.view) {
+        const viewIndex = views.findIndex(
+          (view) => view.name === router.query.view
+        )
+        setActiveView(viewIndex)
+      }
+      if (!router.query.view && fetched) {
+        const viewIndex = views.findIndex((view) => !view.disabled)
+        setActiveView(viewIndex === -1 ? undefined : viewIndex)
+      }
+    }
+  }, [router.query, views, fetched])
 
   useEffect(() => {
     const to = []
@@ -152,7 +168,6 @@ const Profile = ({ profilePubkey }) => {
         view.disabled = false
       })
     }
-
     setViews(updatedView)
   }, [
     profilePublishedReleases,
@@ -161,34 +176,6 @@ const Profile = ({ profilePubkey }) => {
     profileSubscriptionsTo,
     profileSubscriptionsFrom,
   ])
-
-  useEffect(() => {
-    if (!router.query.view && !inDashboard) {
-      const viewIndex = views.findIndex((view) => !view.disabled)
-      setActiveView(viewIndex)
-    }
-    if (router.query.view) {
-      const viewIndex = views.findIndex(
-        (view) => view.name === router.query.view
-      )
-      setActiveView(viewIndex)
-      return
-    }
-    if (inDashboard && profileCollectionReleases?.length > 0) {
-      setActiveView(0)
-    }
-    if (inDashboard && profilePublishedReleases?.length === 0) {
-      setActiveView(1)
-    }
-    if (
-      inDashboard &&
-      profilePublishedReleases?.length === 0 &&
-      profileCollectionReleases?.length === 0 &&
-      profileHubs.length > 0
-    ) {
-      setActiveView(2)
-    }
-  }, [views, router])
 
   useEffect(() => {
     let filteredCollection

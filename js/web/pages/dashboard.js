@@ -16,9 +16,6 @@ const DashboardPage = () => {
     if (wallet.connected) {
       setPublicKey(wallet.publicKey.toBase58())
     }
-    if (wallet.disconnecting) {
-      router.push('/')
-    }
   }, [wallet, publicKey])
   return (
     <>

@@ -4,8 +4,8 @@ use anchor_lang::solana_program::{
 };
 use mpl_token_metadata::{
     self,
-    state::{Creator},
-    instruction::{create_metadata_accounts_v2},
+    state::{Creator, DataV2},
+    instruction::{create_metadata_accounts_v2, update_metadata_accounts_v2},
 };
 use anchor_spl::token::{self, TokenAccount, MintTo, Transfer, Token, Mint, SetAuthority};
 use spl_token::instruction::{close_account};
@@ -311,7 +311,63 @@ impl Release {
                 Some(creators),
                 metadata_data.seller_fee_basis_points,
                 true,
-                false,
+                true,
+                None,
+                None
+            ),
+            metadata_infos.as_slice(),
+            &[seeds],
+        )?;
+    
+        Ok(())
+    }
+    
+    #[inline(never)]
+    pub fn update_metadata_handler<'info>(
+        release_signer: AccountInfo<'info>,
+        metadata: AccountInfo<'info>,
+        release_mint: Box<Account<'info, Mint>>,
+        authority: Signer<'info>,
+        metadata_program: AccountInfo<'info>,
+        token_program: Program<'info, Token>,
+        system_program: Program<'info, System>,
+        rent: Sysvar<'info, Rent>,
+        release: AccountLoader<'info, Release>,
+        metadata_data: ReleaseMetadataData,
+        bumps: ReleaseBumps,
+    ) -> Result<()> {
+        let metadata_infos = vec![
+            metadata.clone(),
+            release_mint.to_account_info().clone(),
+            release_signer.clone(),
+            authority.to_account_info().clone(),
+            metadata_program.clone(),
+            token_program.to_account_info().clone(),
+            system_program.to_account_info().clone(),
+            rent.to_account_info().clone(),
+            release.to_account_info().clone(),
+        ];
+
+        let seeds = &[
+            release.to_account_info().key.as_ref(),
+            &[bumps.signer],
+        ];
+    
+        invoke_signed(
+            &update_metadata_accounts_v2(
+                metadata_program.key(),
+                metadata.key(),
+                release_signer.key(),
+                None,
+                Some(DataV2 {
+                    name: metadata_data.name,
+                    symbol: metadata_data.symbol,
+                    uri: metadata_data.uri.clone(),
+                    seller_fee_basis_points: metadata_data.seller_fee_basis_points,
+                    creators: None,
+                    collection: None,
+                    uses: None
+                }),
                 None,
                 None
             ),
@@ -336,40 +392,6 @@ impl Release {
         config: ReleaseConfig,
         bumps: ReleaseBumps,
     ) -> Result<()> {
-        // Hard code fee that publishers pay in their release to the NinaVault
-        let vault_fee_percentage = 0;
-
-        // Expand math to calculate vault fee avoiding floats
-        let mut vault_fee = u64::from(config.amount_total_supply)
-            .checked_mul(1000000)
-            .unwrap()
-            .checked_mul(vault_fee_percentage)
-            .unwrap()
-            .checked_div(1000000)
-            .unwrap();
-
-        // Releases are not fractional and the fee rounds up all fractions to ensure at least 1 release is paid as fee
-        if vault_fee % 1000000 > 0 {
-            vault_fee = u64::from(vault_fee)
-                .checked_add(1000000)
-                .unwrap();
-        }
-
-        // Unexpand math
-        vault_fee = u64::from(vault_fee)
-            .checked_div(1000000)
-            .unwrap();
-        
-        if vault_fee != config.amount_to_vault_token_account {
-            return Err(error!(ErrorCode::InvalidVaultFee));
-        }
-        let amount_minted = config.amount_to_artist_token_account
-            .checked_add(config.amount_to_vault_token_account)
-            .unwrap();
-        if amount_minted > config.amount_total_supply {
-            return Err(error!(ErrorCode::InvalidAmountMintToArtist));
-        }
-
         let mut release = release_loader.load_init()?;
         release.authority = *authority.to_account_info().key;
         release.payer = *payer.to_account_info().key;
@@ -381,11 +403,7 @@ impl Release {
 
         release.price = config.price;
         release.total_supply = config.amount_total_supply;
-        release.remaining_supply = config.amount_total_supply
-            .checked_sub(config.amount_to_artist_token_account)
-            .unwrap()
-            .checked_sub(config.amount_to_vault_token_account)
-            .unwrap();
+        release.remaining_supply = config.amount_total_supply;
         release.resale_percentage = config.resale_percentage;
         release.release_datetime = config.release_datetime;
 

@@ -10,6 +10,7 @@ import { ninaErrorHandler } from '../../utils/errors'
 import { logEvent } from '../../utils/event'
 import { truncateAddress } from '../../utils/truncateAddress';
 import Airtable from 'airtable';
+import { getConfirmTransaction } from '../../utils';
 
 const NinaProgramAction = {
   HUB_ADD_COLLABORATOR: 'HUB_ADD_COLLABORATOR',
@@ -47,6 +48,9 @@ const NinaProgramActionCost = {
   SUBSCRIPTION_SUBSCRIBE_HUB: 0.00173804,
   SUBSCRIPTION_SUBSCRIBE_ACCOUNT: 0.00168236,
 }
+
+const MAX_AUDIO_FILE_UPLOAD_SIZE = 500
+const MAX_IMAGE_FILE_UPLOAD_SIZE = 10
 
 const NinaContext = createContext()
 const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
@@ -99,38 +103,6 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
       setBundlrBalance(0.0)
     }
   }, [provider.wallet.wallet, provider.wallet.publicKey])
-
-  let timer = undefined
-  const healthCheck = async () => {
-    const timeSinceLastCheck = (Date.now() - healthTimestamp) / 1000
-    if (timeSinceLastCheck > 30) {
-      try {
-        setHealthTimestamp(Date.now())
-        const performance = await provider.connection._rpcRequest(
-          'getRecentPerformanceSamples',
-          [5]
-        )
-        let status = false
-        performance.result.forEach((sample) => {
-          status = sample.numTransactions / sample.samplePeriodSecs > 1000
-        })
-        setHealthOk(status)
-      } catch (error) {
-        console.warn(error)
-      }
-    }
-  }
-
-  useEffect(() => {
-    if (!timer) {
-      healthCheck()
-      timer = setInterval(() => healthCheck(), 60000)
-    }
-    return () => {
-      clearInterval(timer)
-      timer = null
-    }
-  }, [healthCheck])
 
   const {
     subscriptionSubscribe,
@@ -251,6 +223,8 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         submitEmailRequest,
         lowSolBalance,
         getUsdcToSolSwapData,
+        MAX_AUDIO_FILE_UPLOAD_SIZE,
+        MAX_IMAGE_FILE_UPLOAD_SIZE,
       }}
     >
       {children}
@@ -322,7 +296,7 @@ const ninaContextHelper = ({
         txid = await program.rpc.subscriptionSubscribeAccount(request)
       }
 
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await getConfirmTransaction(txid, provider.connection)
       await getSubscription(subscription.toBase58())
       logEvent(
         `subscription_subscribe_${hubHandle ? 'hub' : 'account'}_success`,
@@ -371,8 +345,7 @@ const ninaContextHelper = ({
           systemProgram: anchor.web3.SystemProgram.programId,
         },
       })
-
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      await getConfirmTransaction(txid, provider.connection)
       await getSubscription(subscription.toBase58(), txid)
       if (hubHandle) {
         await getSubscriptionsForHub(hubHandle)
@@ -612,6 +585,17 @@ const ninaContextHelper = ({
     }
     return 0
   }
+  const getSolBalance = async () => {
+    let solUsdcBalanceResult = await provider.connection.getBalance(
+      provider.wallet.publicKey
+    )
+ 
+    setSolBalance(solUsdcBalanceResult)
+    if (solUsdcBalanceResult < 10000000) { 
+      setLowSolBalance(true)
+    }
+    return solUsdcBalanceResult
+  }
 
   const getUserBalances = async () => { 
 
@@ -621,15 +605,8 @@ const ninaContextHelper = ({
           `https://price.jup.ag/v3/price?ids=SOL`
         )
 
-        let solUsdcBalanceResult = await provider.connection.getBalance(
-          provider.wallet.publicKey
-        )
-     
+        const solUsdcBalanceResult = await getSolBalance()
         setSolUsdcBalance((ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) * solPrice.data.data.SOL.price).toFixed(2))
-        setSolBalance(solUsdcBalanceResult)
-        if (solUsdcBalanceResult < 10000000) { 
-          setLowSolBalance(true)
-        }
         
         let [usdcTokenAccountPubkey] = await findOrCreateAssociatedTokenAccount(
           provider.connection,
@@ -815,8 +792,8 @@ const ninaContextHelper = ({
     }
   }
   const checkIfHasBalanceToCompleteAction = async (action) => {
-    await getUserBalances()
-    if (ninaClient.uiToNative(NinaProgramActionCost[action], ninaClient.ids.mints.wsol) > solBalance) {
+    const solUsdcBalanceResult = await getSolBalance()
+    if (ninaClient.uiToNative(NinaProgramActionCost[action], ninaClient.ids.mints.wsol) > solUsdcBalanceResult) {
       const error = new Error(`You do not have enough SOL to send the transaction: ${action}.  You need at least ${NinaProgramActionCost[action]} SOL.`)
       return ninaErrorHandler(error)
     }

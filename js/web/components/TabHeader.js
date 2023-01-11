@@ -48,7 +48,7 @@ const TabHeader = ({
         sx={{
           display: 'flex',
           flexDirection: 'row',
-          overflowX: 'scroll',
+          overflowX: { sm: 'scroll', md: 'hidden' },
           py: 1,
         }}
       >
@@ -73,7 +73,7 @@ const TabHeader = ({
                     tab.count > 99 ? '99+' : tab.count
                   })`}</MobileTab>
 
-                  {tab.playlist && (
+                  {tab.playlist?.length > 0 && (
                     <PlayCircleOutlineIconButtonWrapper
                       disabled={tab.disabled}
                       onClick={(e) => {
@@ -139,6 +139,7 @@ const ResponsiveContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
     paddingLeft: '6px',
     height: '100%',
+    overflowX: 'auto',
   },
 }))
 const DesktopTab = styled(Typography)(({ theme }) => ({

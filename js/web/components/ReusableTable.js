@@ -114,9 +114,9 @@ const ReusableTableHead = (props) => {
     headCells.push({ id: 'image', label: '' })
     headCells.push({ id: 'name', label: '' })
   }
-
-  if (tableType === 'searchResultArtists') {
-    headCells.push({ id: 'name', label: 'Artists' })
+  if (tableType === 'searchResultAccounts') {
+    headCells.push({ id: 'image', label: 'Accounts' })
+    headCells.push({ id: 'searchResultAccount', label: '' })
   }
 
   if (tableType === 'searchResultReleases') {
@@ -129,10 +129,6 @@ const ReusableTableHead = (props) => {
     headCells.push({ id: 'image', label: 'Hubs' })
   }
 
-  if (tableType === 'filteredSearchResultArtists') {
-    headCells.push({ id: 'searchResultArtist', label: '' })
-  }
-
   if (tableType === 'filteredSearchResultReleases') {
     headCells.push({ id: 'ctas', label: '' })
     headCells.push({ id: 'image', label: '' })
@@ -141,6 +137,11 @@ const ReusableTableHead = (props) => {
   if (tableType === 'filteredSearchResultHubs') {
     headCells.push({ id: 'image', label: '' })
     headCells.push({ id: 'searchResultHub', label: '' })
+  }
+
+  if (tableType === 'filteredSearchResultAccounts') {
+    headCells.push({ id: 'image', label: '' }),
+      headCells.push({ id: 'searchResultAccount', label: '' })
   }
 
   return (
@@ -219,10 +220,8 @@ const ReusableTableBody = (props) => {
     collectRoyaltyForRelease,
     refreshProfile,
     dashboardPublicKey,
-    isActiveView,
     order,
     orderBy,
-    profilePubkey,
   } = props
   const router = useRouter()
   const {
@@ -321,7 +320,7 @@ const ReusableTableBody = (props) => {
         )
         const collectable = recipient?.owed > 0
         const collectableAmount = ninaClient.nativeToUiString(
-          recipient.owed,
+          recipient?.owed,
           data.tokenData.paymentMint
         )
 
@@ -341,7 +340,7 @@ const ReusableTableBody = (props) => {
         )
         formattedData.remaining = `${data.tokenData.remainingSupply} / ${data.tokenData.totalSupply}`
         formattedData.collected = ninaClient.nativeToUiString(
-          recipient.collected + recipient.owed,
+          recipient?.collected + recipient?.owed,
           data.tokenData.paymentMint
         )
         formattedData.collect = collectButton
@@ -388,23 +387,14 @@ const ReusableTableBody = (props) => {
         publicKey: data.collaborator,
       }
     } else if (
-      tableType === 'searchResultArtists' ||
-      tableType === 'filteredSearchResultArtists'
+      tableType === 'searchResultAccounts' ||
+      tableType === 'filteredSearchResultAccounts'
     ) {
-      let artistName = data?.name
-      if (data?.publishesAs.length > 1) {
-        let publishesAsString
-        if (data?.publishesAs.length > 5) {
-          publishesAsString = data?.publishesAs.slice(0, 5).join(', ') + '...'
-        } else {
-          publishesAsString = data?.publishesAs.join(', ')
-        }
-        artistName = `${artistName} (Publishes as: ${publishesAsString})`
-      }
       formattedData = {
+        image: data?.image ? data?.image : '/images/nina-gray.png',
         id: data?.publicKey,
-        link: `/profiles/${data?.account.publicKey}`,
-        searchResultArtist: artistName,
+        displayName: data?.displayName ? data?.displayName : data?.value,
+        link: `/profiles/${data?.account}`,
       }
     } else if (
       tableType === 'searchResultReleases' ||
@@ -452,10 +442,6 @@ const ReusableTableBody = (props) => {
           subscribe: true,
           publicKey: data.to.publicKey,
         }
-      }
-    } else if (tableType === 'defaultSearchArtists') {
-      formattedData = {
-        id: data?.publicKey,
       }
     } else if (tableType === 'defaultSearchReleases') {
       formattedData = {
@@ -559,9 +545,28 @@ const ReusableTableBody = (props) => {
                 } else if (cellName === 'title') {
                   return (
                     <StyledProfileTableCell key={cellName} type={'profile'}>
-                      <OverflowContainer>
+                      <OverflowContainer inDashboard={inDashboard}>
                         <Typography sx={{ textDecoration: 'underline' }} noWrap>
                           {cellData}
+                        </Typography>
+                      </OverflowContainer>
+                    </StyledProfileTableCell>
+                  )
+                } else if (cellName === 'searchResultAccount') {
+                  return (
+                    <StyledProfileTableCell key={cellName} type={'profile'}>
+                      <OverflowContainer overflowWidth={'20vw'}>
+                        <Typography
+                          noWrap
+                          sx={{ hover: 'pointer', maxWidth: '20vw' }}
+                        >
+                          <a
+                            onClickCapture={() => {
+                              router.push(`/profiles/${row?.publicKey}`)
+                            }}
+                          >
+                            {cellData}
+                          </a>
                         </Typography>
                       </OverflowContainer>
                     </StyledProfileTableCell>
@@ -569,7 +574,10 @@ const ReusableTableBody = (props) => {
                 } else if (cellName === 'artist') {
                   return (
                     <StyledProfileTableCell key={cellName} type={'profile'}>
-                      <OverflowContainer overflowWidth={'20vw'}>
+                      <OverflowContainer
+                        overflowWidth={'20vw'}
+                        inDashboard={inDashboard}
+                      >
                         <Typography
                           noWrap
                           sx={{ hover: 'pointer', maxWidth: '20vw' }}
@@ -687,6 +695,21 @@ const ReusableTableBody = (props) => {
                       />
                     </TableCell>
                   )
+                } else if (cellName === 'hub') {
+                  return (
+                    <StyledTableCell key={cellName}>
+                      <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                        <OverflowContainer>
+                          <Typography noWrap>
+                            <Link href={row.link} passHref>
+                              <a>{row?.hub}</a>
+                            </Link>
+                          </Typography>
+                        </OverflowContainer>
+                        {row?.hub && <HubTag>HUB</HubTag>}
+                      </Box>
+                    </StyledTableCell>
+                  )
                 } else {
                   return (
                     <StyledTableCell key={cellName}>
@@ -794,6 +817,8 @@ const StyledTableCell = styled(TableCell)(({ theme, type }) => ({
   textAlign: 'left',
   height: '50px',
   width: '61vw',
+
+  alignItems: 'center',
   [theme.breakpoints.down('md')]: {
     width: '30vw',
     paddingRight: '10px',
@@ -836,9 +861,9 @@ const SearchResultTableCell = styled(TableCell)(({ theme }) => ({
     fontSize: '16px',
   },
 }))
-const OverflowContainer = styled(Box)(({ theme }) => ({
+const OverflowContainer = styled(Box)(({ theme, inDashboard }) => ({
   overflow: 'hidden',
-  maxWidth: '360px',
+  maxWidth: inDashboard ? '170px' : '360px',
   textAlign: 'left',
   textOverflow: 'ellipsis',
   [theme.breakpoints.down('md')]: {
@@ -896,6 +921,7 @@ const ResponsiveContainer = styled(Box)(
       width: '100vw',
       maxHeight: 'unset',
       overflowY: 'unset',
+      overflowX: 'scroll',
     },
   })
 )
@@ -924,5 +950,10 @@ const StyledCollectButton = styled(Button)(({ theme }) => ({
     fontSize: '10px',
   },
 }))
-
+const HubTag = styled(Typography)(({ theme }) => ({
+  color: `${theme.palette.blue} !important`,
+  cursor: 'default',
+  padding: '0px 10px',
+  fontSize: '10px !important',
+}))
 export default ReusableTable

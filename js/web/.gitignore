@@ -41,4 +41,8 @@ yarn-error.log*
 .sentryclirc
 
 .env
+<<<<<<< HEAD
 .env.*
+=======
+.env.*
+>>>>>>> 6e80670663f09b7a47793655ac6b509007ce6589
