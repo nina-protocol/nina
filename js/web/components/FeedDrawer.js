@@ -14,7 +14,8 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import CloseIcon from '@mui/icons-material/Close'
 import Typography from '@mui/material/Typography'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
-import { isMobile } from 'react-device-detect'
+import Notifications from './Notifications'
+
 
 const FeedDrawer = () => {
   const wallet = useWallet()
@@ -106,6 +107,7 @@ const FeedDrawer = () => {
 
   return (
     <>
+    <Notifications />
       <Box>
         <Box key={'right'} sx={{ float: 'right' }}>
           <StyledMenuButton onClick={toggleDrawer(true)} sx={{ top: '100px' }}>
