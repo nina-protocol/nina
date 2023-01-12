@@ -73,6 +73,7 @@ const ReleaseContextProvider = ({ children }) => {
   const {
     releaseCreate,
     releasePurchase,
+    closeRelease,
     collectRoyaltyForRelease,
     addRoyaltyRecipient,
     getRelease,
@@ -138,6 +139,7 @@ const ReleaseContextProvider = ({ children }) => {
         pressingState,
         resetPressingState,
         releaseCreate,
+        closeRelease,
         releasePurchase,
         releasePurchasePending,
         releaseState,
@@ -856,6 +858,33 @@ const releaseContextHelper = ({
       return ninaErrorHandler(error)
     }
   }
+
+  const closeRelease = async (releasePubkey) => {
+    const program = await ninaClient.useProgram()
+    const release = await program.account.release.fetch(
+      new anchor.web3.PublicKey(releasePubkey)
+    )
+    try {
+      const txid = await program.rpc.releaseCloseEdition({
+        accounts: {
+          authority: provider.wallet.publicKey,
+          release: new anchor.web3.PublicKey(releasePubkey),
+          releaseSigner: release.releaseSigner,
+          releaseMint: release.releaseMint,
+        },
+      })
+      await getConfirmTransaction(txid, provider.connection)
+      await getRelease(releasePubkey)
+
+      return {
+        success: true,
+        msg: 'Release closed',
+      }
+    } catch(error){
+      return ninaErrorHandler(error)
+    }
+  }
+
 
   const releasePurchase = async (releasePubkey) => {
     logEvent('release_purchase_initiated', 'engagement', {
@@ -1607,27 +1636,35 @@ const releaseContextHelper = ({
   }
 
   const getReleasesAll = async () => {
+
     try {
       const all = [...allReleases]
+
+
       const releases = (
         await NinaSdk.Release.fetchAll(
           { limit: 25, offset: allReleases.length },
           true
         )
       ).releases
-      all.push(...releases.map((release) => release.publicKey))
-      const newState = updateStateForReleases(releases)
-      setReleaseState((prevState) => ({
-        ...prevState,
-        tokenData: { ...prevState.tokenData, ...newState.tokenData },
-        metadata: { ...prevState.metadata, ...newState.metadata },
-        releaseMintMap: {
-          ...prevState.releaseMintMap,
-          ...newState.releaseMintMap,
-        },
-      }))
-      setAllReleasesCount(releases.total)
-      setAllReleases(all)
+ 
+        all.push(...releases.map((release) => release.publicKey))
+      
+        const newState = updateStateForReleases(releases)
+  
+        setReleaseState((prevState) => ({
+          ...prevState,
+          tokenData: { ...prevState.tokenData, ...newState.tokenData },
+          metadata: { ...prevState.metadata, ...newState.metadata },
+          releaseMintMap: {
+            ...prevState.releaseMintMap,
+            ...newState.releaseMintMap,
+          },
+        }))
+ 
+        setAllReleasesCount(releases.total)
+        setAllReleases(all)
+
     } catch (error) {
       console.warn(error)
     }
@@ -2024,6 +2061,7 @@ const releaseContextHelper = ({
     releasePurchaseViaHub,
     addRoyaltyRecipient,
     releaseCreate,
+    closeRelease,
     releasePurchase,
     collectRoyaltyForRelease,
     getRelease,

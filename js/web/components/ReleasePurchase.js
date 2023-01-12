@@ -28,7 +28,9 @@ import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 import Royalty from './Royalty'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
-
+import dynamic from 'next/dynamic'
+// import CloseRelease from './CloseRelease'
+const CloseRelease = dynamic(() => import('./CloseRelease'))
 const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, router } = props
   const { enqueueSnackbar } = useSnackbar()
@@ -39,6 +41,7 @@ const ReleasePurchase = (props) => {
     releasePurchaseTransactionPending,
     releaseState,
     getRelease,
+    closeRelease,
   } = useContext(Release.Context)
   const {
     getAmountHeld,
@@ -63,6 +66,8 @@ const ReleasePurchase = (props) => {
   const [exchangeTotalSells, setExchangeTotalSells] = useState(0)
   const [publishedHub, setPublishedHub] = useState()
   const [description, setDescription] = useState()
+  const [showCloseReleaseModal, setShowCloseReleaseModal] = useState(false)
+  const [pendingTx, setPendingTx] = useState(false)
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
     [releasePubkey, releasePurchaseTransactionPending]
@@ -88,6 +93,7 @@ const ReleasePurchase = (props) => {
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
       setRelease(releaseState.tokenData[releasePubkey])
+      console.log('release', release)
     }
   }, [releaseState.tokenData[releasePubkey]])
 
@@ -197,10 +203,28 @@ const ReleasePurchase = (props) => {
     }
   }
 
+  const handleCloseRelease = async (e, releasePubkey) => {
+    console.log('clicked close release')
+    e.preventDefault()
+    setPendingTx(true)
+    const result = await closeRelease(releasePubkey)
+
+    if (result) {
+      console.log('success', result)
+      showCompletedTransaction(result)
+      setPendingTx(false)
+      setShowCloseReleaseModal(false)
+    }
+  }
+
   const showCompletedTransaction = (result) => {
     enqueueSnackbar(result.msg, {
       variant: result.success ? 'success' : 'warn',
     })
+  }
+
+  const toggleCloseReleaseForm = () => {
+    setShowCloseReleaseModal(!showCloseReleaseModal)
   }
 
   if (!release) {
@@ -335,7 +359,30 @@ const ReleasePurchase = (props) => {
         </form>
       </Box>
       {userIsRecipient && (
-        <Royalty releasePubkey={releasePubkey} release={release} />
+        <>
+          <Royalty releasePubkey={releasePubkey} release={release} />
+          <Button
+            variant="outlined"
+            color="primary"
+            fullWidth
+            sx={{ marginTop: '15px !important' }}
+            onClick={() => toggleCloseReleaseForm()}
+            disabled={release.remainingSupply === 0}
+          >
+            <Typography variant="body2" sx={{ color: 'red' }}>
+              Close Release
+            </Typography>
+          </Button>
+          {showCloseReleaseModal && (
+            <CloseRelease
+              handleCloseRelease={(e) => handleCloseRelease(e, releasePubkey)}
+              open={showCloseReleaseModal}
+              setOpen={setShowCloseReleaseModal}
+              pendingTx={pendingTx}
+              release={release}
+            />
+          )}
+        </>
       )}
       {amountHeld > 0 && (
         <Button
