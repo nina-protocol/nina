@@ -44,7 +44,7 @@ const HubPostCreateForm = ({
   return (
     <Root>
       {update && <Typography>Updating {hubData.name}</Typography>}
-      <Form style={{ padding: '0 15px', height: '100%' }}>
+      <Form style={{ padding: '0 15px', height: '100%', width: '200px' }}>
         <Field name="title">
           {(props) => (
             <Box mb={1}>
