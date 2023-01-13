@@ -180,7 +180,14 @@ const Profile = ({ profilePubkey }) => {
   useEffect(() => {
     let filteredCollection
     if (fetchedUserProfileReleases[profilePubkey]?.collected) {
-      filteredCollection = filterReleasesUserCollection(profilePubkey)
+      filteredCollection = filterReleasesUserCollection(profilePubkey)?.sort(
+        (a, b) => {
+          return (
+            new Date(b.metadata.properties.date) -
+            new Date(a.metadata.properties.date)
+          )
+        }
+      )
       setProfileCollectionReleases(filteredCollection)
     } else {
       setProfileCollectionReleases([])
