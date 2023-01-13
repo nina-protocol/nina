@@ -35,7 +35,8 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
 
   const [metadata, setMetadata] = useState();
 
-  const {postState, displayNameForAccount, getVerificationsForUser } = useContext(Nina.Context);
+  const { postState, displayNameForAccount, getVerificationsForUser } =
+    useContext(Nina.Context);
   const { getHub, hubState, hubContentState, getHubPost } = useContext(
     Hub.Context
   );
@@ -46,9 +47,9 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
   }, [hubPubkey]);
 
   useEffect(() => {
-    console.log('postData.publisher :>> ', postData.publisher);
+    console.log("postData.publisher :>> ", postData.publisher);
     getVerificationsForUser(postData?.publisher);
-  }, [postData])
+  }, [postData]);
 
   useEffect(() => {
     if (hubPostPubkey && !postState[postPubkey]) {

@@ -93,7 +93,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
   const [uploadId, setUploadId] = useState();
   const [publishingStepText, setPublishingStepText] = useState();
   const [md5Digest, setMd5Digest] = useState();
-  const [processingProgress, setProcessingProgress] = useState()
+  const [processingProgress, setProcessingProgress] = useState();
 
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
@@ -142,7 +142,9 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
       } else if (artworkTx && trackTx && !metadataTx) {
         setButtonText("Restart 3/4: Upload Metadata.");
       } else if (artworkTx && trackTx && metadataTx && !releaseCreated) {
-        setButtonText('There may have been an error creating this release. Please wait 30 seconds and check for the release in your dashboard before retrying')
+        setButtonText(
+          "There may have been an error creating this release. Please wait 30 seconds and check for the release in your dashboard before retrying"
+        );
       } else if (mbs < uploadSize) {
         setButtonText(
           `Release requires more storage than available in your bundlr account, please top up`
@@ -194,7 +196,9 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
   useEffect(() => {
     if (track) {
       const handleGetMd5FileHash = async (track) => {
-        const hash = await getMd5FileHash(track.file, (progress) => setProcessingProgress(progress));
+        const hash = await getMd5FileHash(track.file, (progress) =>
+          setProcessingProgress(progress)
+        );
         setMd5Digest(hash);
       };
       handleGetMd5FileHash(track);
