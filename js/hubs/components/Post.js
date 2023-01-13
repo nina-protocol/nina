@@ -47,7 +47,6 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
   }, [hubPubkey]);
 
   useEffect(() => {
-    console.log("postData.publisher :>> ", postData.publisher);
     getVerificationsForUser(postData?.publisher);
   }, [postData]);
 
