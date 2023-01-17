@@ -28,6 +28,17 @@ const ReleaseCard = (props) => {
   const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
     useContext(Audio.Context)
   const image = useMemo(() => metadata?.image)
+  const title = useMemo(() => {
+      if (
+        metadata.properties.title.length > 37 &&
+        metadata.properties.title.indexOf(' ') === -1
+      ){
+        return metadata.properties.title.substring(0, 37) + '...'
+      }
+      return metadata.properties.title
+    } , [metadata.properties.title]
+  )
+
   return (
     <StyledReleaseCard>
       <StyledReleaseInfo>
@@ -83,8 +94,7 @@ const ReleaseCard = (props) => {
               </Link>
               ,{' '}
               <i>
-                {metadata?.properties?.title.substring(0, 100) ||
-                  metadata?.title.substring(0, 100)}
+                {title}
               </i>
             </Typography>
           </Fade>
