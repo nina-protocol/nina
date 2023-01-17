@@ -30,10 +30,10 @@ const ReleaseCard = (props) => {
   const image = useMemo(() => metadata?.image)
   const title = useMemo(() => {
       if (
-        metadata.properties.title.length > 37 &&
+        metadata.properties.title.length > 20 &&
         metadata.properties.title.indexOf(' ') === -1
       ){
-        return metadata.properties.title.substring(0, 37) + '...'
+        return metadata.properties.title.substring(0, 20) + '...'
       }
       return metadata.properties.title
     } , [metadata.properties.title]
