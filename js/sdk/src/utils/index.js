@@ -147,8 +147,6 @@ const parseChecker = (data) => {
   }
 }
 
-<<<<<<< HEAD
-=======
 const getConfirmTransaction = async (txid, connection) => {
   const res = await promiseRetry(
     async (retry, attempt) => {
@@ -177,7 +175,6 @@ const getConfirmTransaction = async (txid, connection) => {
   return txid
 }
 
->>>>>>> 6e80670663f09b7a47793655ac6b509007ce6589
 export {
   arrayMove,
   dateConverter,

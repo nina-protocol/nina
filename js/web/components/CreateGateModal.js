@@ -31,7 +31,7 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
   )
   const [inProgress, setInProgress] = useState(false)
   const [file, setFile] = useState(undefined)
-  console.log('file :>> ', file);
+  // console.log('file :>> ', file);
 
   const handleClose = () => {
     setOpen(false)
@@ -93,10 +93,17 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
         fileSize: file.size,
         parts: result
       })
-      getGate()
+      
+      await getGate()
       console.log('completeResponse: ', completeResponse.data)
+      enqueueSnackbar(result.msg, {
+        variant: "info",
+      });
     } catch (err) {
       console.log(err)
+      enqueueSnackbar("Withdrawl not completed", {
+        variant: "failure",
+      });
     }
     setInProgress(false)
   }
@@ -129,12 +136,16 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
         <Fade in={open}>
           <StyledPaper>
 
+            <Typography variant='h5' sx={{ mb: 1 }}>
+              Select a file or zip to be gated behind: 
+            </Typography>
             <Typography variant='h5' sx={{ mb: 2 }}>
-              Select a file or zip to be gated behind &apos;{metadata.name}&apos;
+               &apos;{metadata.name}&apos;
             </Typography>
 
           <Button
             component="label"
+            variant="outlined"
           >
             {!file ? 'Choose File' : file.name}
             <input type="file" onChange={(e) => setFile(e.target.files[0])} style={{display: 'none'}}/>

@@ -82,7 +82,6 @@ const ReleasePurchase = (props) => {
   const getGate = async () => {
     const { gates } = (await axios.get(`${process.env.NINA_API_ENDPOINT}/releases/${releasePubkey}/gates`)).data
     if (gates.length > 0) {
-      console.log('gates :>> ', gates);
       setGate(gates[0])
     }
   }

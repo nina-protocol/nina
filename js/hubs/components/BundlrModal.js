@@ -81,7 +81,7 @@ const BundlrModal = ({ inCreate }) => {
       });
       setOpen(false);
     } else {
-      enqueueSnackbar("Withdrawl not completed", {
+      enqueueSnackbar("Gate Not Created", {
         variant: "failure",
       });
     }

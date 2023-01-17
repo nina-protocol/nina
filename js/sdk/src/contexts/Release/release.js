@@ -2003,17 +2003,10 @@ const releaseContextHelper = ({
 
   const validateUniqueMd5Digest = async (hash) => {
     try {
-<<<<<<< HEAD
-      // if (process.env.SOLANA_CLUSTER === 'devnet') {
-      //   return false
-      // }
-      let path = endpoints.api + `/validate/${hash}`
-=======
       if (process.env.SOLANA_CLUSTER === 'devnet') {
         return false
       }
       let path = endpoints.api + `/hash/${hash}`
->>>>>>> 6e80670663f09b7a47793655ac6b509007ce6589
       const response = await fetch(path)
       const { release } = await response.json()
       if (release) {
