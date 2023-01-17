@@ -8,7 +8,7 @@ import EmailCaptureForm from './EmailCaptureForm'
 import { Box } from '@mui/material'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Nina from '../contexts/Nina'
-// import { useSnackbar } from 'notistack'
+import { useSnackbar } from 'notistack'
 import CloseIcon from '@mui/icons-material/Close'
 import { logEvent } from '../utils/event'
 
@@ -59,7 +59,8 @@ const EmailCaptureSchema = Yup.object().shape(
 )
 
 const EmailCapture = ({ size }) => {
-  // const { enqueueSnackbar } = useSnackbar()
+  const { enqueueSnackbar } = useSnackbar()
+  console.log('useSnackbar',useSnackbar())
   const { publicKey, connected } = useWallet()
   const { submitEmailRequest } = useContext(Nina.Context)
   const [open, setOpen] = useState(false)
@@ -92,7 +93,7 @@ const EmailCapture = ({ size }) => {
         logEvent('email_request_success', 'engagement', {
           email: formValues.email,
         })
-        // enqueueSnackbar('Application Submitted!', { variant: 'success' })
+        enqueueSnackbar('Application Submitted!', { variant: 'success' })
       } catch (error) {
         console.warn('email form error', error)
         logEvent('email_request_success', 'engagement', {
