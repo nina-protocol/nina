@@ -17,7 +17,7 @@ import {
 import Breadcrumbs from './Breadcrumbs'
 import NavSearch from './NavSearch'
 import SearchIcon from '@mui/icons-material/Search'
-import EmailCaptureModal from './EmailCaptureModal'
+import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
 import FeedDrawer from './FeedDrawer'
 
 const NavBar = () => {
@@ -77,7 +77,7 @@ const NavBar = () => {
             </SearchBarWrapper>
             <UploadWrapper>
               {!wallet.connected ? (
-                <EmailCaptureModal size="small" />
+                <EmailCapture size="small" />
               ) : (
                 <BlueTypography
                   sx={{

@@ -13,8 +13,7 @@ import RecentlyPublished from './RecentlyPublished'
 import Link from 'next/link'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 import HubSlider from './HubSlider'
-import EmailCaptureModal from './EmailCaptureModal'
-// import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
+import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
 
 const HomePage = ({ loading }) => {
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
@@ -115,7 +114,7 @@ const HomePage = ({ loading }) => {
             >
               Learn More
             </a>{' '}
-            or <EmailCaptureModal size="large" />
+            or <EmailCapture size="large" />
           </BlueTypography>
         </Box>
       </HomePageContainer>
