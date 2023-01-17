@@ -18,9 +18,9 @@ import {
   decryptData,
 } from '../../utils/encrypt'
 import { logEvent } from '../../utils/event'
-import { publicKey } from '@project-serum/anchor/dist/cjs/utils';
-import { initSdkIfNeeded } from '../../utils/sdkInit';
-import { getConfirmTransaction } from '../../utils';
+import { publicKey } from '@project-serum/anchor/dist/cjs/utils'
+import { initSdkIfNeeded } from '../../utils/sdkInit'
+import { getConfirmTransaction } from '../../utils'
 const lookupTypes = {
   PUBLISHED_BY: 'published_by',
   REVENUE_SHARE: 'revenue_share',
@@ -229,7 +229,7 @@ const releaseContextHelper = ({
       )
     let hubRelease
     if (hubPubkey) {
-      [hubRelease] = await anchor.web3.PublicKey.findProgramAddress(
+      ;[hubRelease] = await anchor.web3.PublicKey.findProgramAddress(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-release')),
           new anchor.web3.PublicKey(hubPubkey).toBuffer(),
@@ -422,15 +422,15 @@ const releaseContextHelper = ({
         }
       )
       await getConfirmTransaction(txid, provider.connection)
-      await NinaSdk.Hub.fetchHubRelease(hubPubkey.toBase58(), hubRelease.toBase58())
-
-      logEvent(
-        'release_init_via_hub_success',
-        'engagement', {
-          publicKey: release.toBase58(),
-          wallet: provider.wallet.publicKey.toBase58(),
-        }
+      await NinaSdk.Hub.fetchHubRelease(
+        hubPubkey.toBase58(),
+        hubRelease.toBase58()
       )
+
+      logEvent('release_init_via_hub_success', 'engagement', {
+        publicKey: release.toBase58(),
+        wallet: provider.wallet.publicKey.toBase58(),
+      })
 
       return { success: true }
     } catch (error) {

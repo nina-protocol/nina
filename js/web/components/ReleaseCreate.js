@@ -34,7 +34,7 @@ import {
   UploadType,
   uploadHasItemForType,
 } from '../utils/uploadManager'
-import EmailCapture from './EmailCapture'
+import EmailCaptureModal from './EmailCaptureModal'
 const BundlrModal = dynamic(() => import('./BundlrModal'))
 
 const ReleaseCreateSchema = Yup.object().shape({
@@ -446,7 +446,7 @@ const ReleaseCreate = () => {
               <Typography variant="h3" sx={{ mb: 1 }}>
                 Nina is currently in a closed beta for uploading releases.
               </Typography>
-              <EmailCapture size="medium" />
+              <EmailCaptureModal size="medium" />
               <Typography variant="h3" sx={{ mt: 1 }}>
                 Check our <Link href="/faq">FAQ</Link> or hit us at{' '}
                 <Link

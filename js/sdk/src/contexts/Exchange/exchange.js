@@ -49,7 +49,7 @@ const ExchangeContextProvider = ({ children }) => {
     removeTrackFromPlaylist,
     getRelease,
     getUserBalances,
-    setVerificationState
+    setVerificationState,
   })
 
   return (
@@ -142,7 +142,8 @@ const exchangeContextHelper = ({
           initializerExpectedTokenAccount,
           takerExpectedTokenAccount,
           takerSendingTokenAccount,
-          exchangeEscrowTokenAccount: exchangeAccount.exchangeEscrowTokenAccount,
+          exchangeEscrowTokenAccount:
+            exchangeAccount.exchangeEscrowTokenAccount,
           exchangeSigner: exchangeAccount.exchangeSigner,
           taker: provider.wallet.publicKey,
           exchange: new anchor.web3.PublicKey(exchange.publicKey),
@@ -200,10 +201,7 @@ const exchangeContextHelper = ({
       if (exchange.isSelling) {
         addReleaseToCollection(releasePubkey)
       } else {
-        removeReleaseFromCollection(
-          releasePubkey,
-          exchange.releaseMint
-        )
+        removeReleaseFromCollection(releasePubkey, exchange.releaseMint)
       }
       await getUserBalances()
       await getExchange(exchange.publicKey, false, txid)
@@ -445,8 +443,16 @@ const exchangeContextHelper = ({
 
   */
 
-  const getExchange = async (publicKey, withAccountInfo=false, transactionId) => {
-    const { exchange } = await NinaSdk.Exchange.fetch(publicKey, withAccountInfo, transactionId)
+  const getExchange = async (
+    publicKey,
+    withAccountInfo = false,
+    transactionId
+  ) => {
+    const { exchange } = await NinaSdk.Exchange.fetch(
+      publicKey,
+      withAccountInfo,
+      transactionId
+    )
     const updatedExchangeState = { ...exchangeState }
     if (exchange.accountData) {
       updatedExchangeState[publicKey] = {
@@ -461,15 +467,18 @@ const exchangeContextHelper = ({
     setExchangeState(updatedExchangeState)
   }
 
-  const getExchangesForUser = async (publicKey, withAccountData=false) => {
+  const getExchangesForUser = async (publicKey, withAccountData = false) => {
     try {
-      const { exchanges } = await NinaSdk.Account.fetchExchanges(publicKey, withAccountData)
-      const updatedExchangeState = {...exchangeState}
+      const { exchanges } = await NinaSdk.Account.fetchExchanges(
+        publicKey,
+        withAccountData
+      )
+      const updatedExchangeState = { ...exchangeState }
       exchanges.forEach((exchange) => {
         if (exchange.accountData) {
           updatedExchangeState[exchange.publicKey] = {
             ...updatedExchangeState[exchange.publicKey],
-            ...exchange.accountData
+            ...exchange.accountData,
           }
           delete exchange.accountData
         }
@@ -484,16 +493,19 @@ const exchangeContextHelper = ({
     }
   }
 
-  const getExchangesForRelease = async (publicKey, withAccountData=false) => {
+  const getExchangesForRelease = async (publicKey, withAccountData = false) => {
     try {
-      const { exchanges } = await NinaSdk.Release.fetchExchanges(publicKey, withAccountData)
-      const updatedExchangeState = {...exchangeState}
+      const { exchanges } = await NinaSdk.Release.fetchExchanges(
+        publicKey,
+        withAccountData
+      )
+      const updatedExchangeState = { ...exchangeState }
       const updatedVerificationState = {}
-      exchanges.forEach((exchange) => {  
+      exchanges.forEach((exchange) => {
         if (exchange.accountData) {
           updatedExchangeState[exchange.publicKey] = {
             ...updatedExchangeState[exchange.publicKey],
-            ...exchange.accountData
+            ...exchange.accountData,
           }
           delete exchange.accountData
         }
@@ -504,14 +516,16 @@ const exchangeContextHelper = ({
         }
 
         if (exchange.initializer.verifications) {
-          updatedVerificationState[exchange.initializer.publicKey] = exchange.initializer.verifications
+          updatedVerificationState[exchange.initializer.publicKey] =
+            exchange.initializer.verifications
         }
 
         if (exchange.completedBy?.verifications) {
-          updatedVerificationState[exchange.completedBy.publicKey] = exchange.completedBy?.verifications
+          updatedVerificationState[exchange.completedBy.publicKey] =
+            exchange.completedBy?.verifications
         }
       })
-      setVerificationState(prevState => ({
+      setVerificationState((prevState) => ({
         ...prevState,
         ...updatedVerificationState,
       }))
@@ -525,14 +539,13 @@ const exchangeContextHelper = ({
     const exchangeItem = {
       ...exchange,
       isCurrentUser:
-        exchange.initializer ===
-        provider.wallet?.publicKey?.toBase58(),
+        exchange.initializer === provider.wallet?.publicKey?.toBase58(),
     }
     exchangeItem.amount = exchange.isSale
       ? exchange.expectedAmount * 1000000
       : exchange.initializerAmount
     exchangeItem.isSelling = exchange.isSale
-    
+
     return exchangeItem
   }
 
@@ -553,8 +566,7 @@ const exchangeContextHelper = ({
             } else {
               // If this exchange is lower than previously matched exchange
               if (
-                Number(exchange.expectedAmount) <
-                Number(match.expectedAmount)
+                Number(exchange.expectedAmount) < Number(match.expectedAmount)
               ) {
                 match = exchange
               }
@@ -628,7 +640,7 @@ const exchangeContextHelper = ({
     })
     return exchanges
   }
-  
+
   const filterExchangesForReleaseBuySell = (
     releasePubkey,
     isBuy,
@@ -641,25 +653,18 @@ const exchangeContextHelper = ({
       }
 
       exchanges = exchanges.filter(
-        (e) =>
-          e.initializer === provider.wallet?.publicKey.toBase58()
+        (e) => e.initializer === provider.wallet?.publicKey.toBase58()
       )
     }
 
     if (isBuy) {
       return exchanges
         .filter((e) => !e.isSelling && !e.cancelled && !e.completedBy)
-        .sort(
-          (e1, e2) =>
-            e1.initializerAmount - e2.initializerAmount
-        )
+        .sort((e1, e2) => e1.initializerAmount - e2.initializerAmount)
     } else {
       return exchanges
         .filter((e) => e.isSelling && !e.cancelled && !e.completedBy)
-        .sort(
-          (e1, e2) =>
-            e1.expectedAmount - e2.expectedAmount
-        )
+        .sort((e1, e2) => e1.expectedAmount - e2.expectedAmount)
     }
   }
 

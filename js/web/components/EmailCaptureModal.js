@@ -1,17 +1,14 @@
 import React, { useState, useCallback, useEffect, useContext } from 'react'
-import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import Modal from '@mui/material/Modal'
 import { styled } from '@mui/material/styles'
 import * as Yup from 'yup'
-import EmailCaptureForm from './EmailCaptureForm'
+// import EmailCaptureForm from './EmailCaptureForm'
 import { Box } from '@mui/material'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { useSnackbar } from 'notistack'
-import CloseIcon from '@mui/icons-material/Close'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
-
+import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
 const style = {
   position: 'absolute',
   top: '50%',
@@ -22,17 +19,43 @@ const style = {
   boxShadow: 24,
   p: 4,
 }
+const requiredString =
+  'At least one of Soundcloud, Twitter, or Instagram is required'
 
-const EmailCaptureSchema = Yup.object().shape({
-  email: Yup.string().email().required('Email is Required'),
-  soundcloud: Yup.string(),
-  twitter: Yup.string(),
-  instagram: Yup.string(),
-  wallet: Yup.string(),
-  type: Yup.string(),
-})
+const EmailCaptureSchema = Yup.object().shape(
+  {
+    email: Yup.string().email().required('Email is Required'),
+    soundcloud: Yup.string().test(
+      'oneOfRequired',
+      requiredString,
+      (value, context) => {
+        const { twitter, instagram } = context.parent
+        return value || twitter || instagram
+      }
+    ),
+    twitter: Yup.string().test(
+      'oneOfRequired',
+      requiredString,
+      (value, context) => {
+        const { soundcloud, instagram } = context.parent
+        return value || soundcloud || instagram
+      }
+    ),
+    instagram: Yup.string().test(
+      'oneOfRequired',
+      requiredString,
+      (value, context) => {
+        const { soundcloud, twitter } = context.parent
+        return value || soundcloud || twitter
+      }
+    ),
+    wallet: Yup.string(),
+    type: Yup.string(),
+  },
+  [['soundcloud', 'twitter', 'instagram']]
+)
 
-const EmailCapture = ({ size }) => {
+const EmailCaptureModal = ({ size }) => {
   const { enqueueSnackbar } = useSnackbar()
   const { publicKey, connected } = useWallet()
   const { submitEmailRequest } = useContext(Nina.Context)
@@ -79,7 +102,9 @@ const EmailCapture = ({ size }) => {
   const handleFormChange = useCallback(
     async (values) => {
       const newValues = { ...formValues, ...values }
+      console.log('newValues', newValues)
       const isValid = await EmailCaptureSchema.isValid(newValues)
+      console.log('isValid', isValid)
       setFormIsValid(isValid)
       setFormValues(newValues)
     },
@@ -88,64 +113,17 @@ const EmailCapture = ({ size }) => {
 
   return (
     <>
-      {size === 'large' && (
-        <BlueTypography
-          onClick={handleOpen}
-          variant="h1"
-          sx={{ display: 'inline' }}
-        >
-          Sign Up
-        </BlueTypography>
-      )}
-      {size === 'medium' && (
-        <BlueTypography
-          onClick={handleOpen}
-          variant="h3"
-          sx={{
-            padding: { md: '10px 0 ', xs: '0px 0px' },
-            border: '1px solid #2D81FF',
-            width: '100%',
-            textAlign: 'center',
-          }}
-        >
-          Please fill out this form to apply
-        </BlueTypography>
-      )}
-      {size === 'small' && <SmallCta onClick={handleOpen}>Sign Up</SmallCta>}
-      <Modal
+      <EmailCapture
+        size={size}
+        onClick={handleOpen}
         open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <CloseIconWrapper onClick={handleClose}>
-            <CloseIcon />
-          </CloseIconWrapper>
-
-          <Typography variant="h4">
-            Nina is currently in closed beta.
-          </Typography>
-          <Typography variant="h4" sx={{ mb: 2 }}>
-            Please sign up below.
-          </Typography>
-          <EmailCaptureForm
-            onChange={handleFormChange}
-            values={formValues}
-            EmailCaptureSchema={EmailCaptureSchema}
-          />
-          <Button
-            variant="outlined"
-            color="primary"
-            fullWidth
-            onClick={submitAndCloseModal}
-            sx={{ width: '100%', mt: 2 }}
-            disabled={!formIsValid}
-          >
-            Submit
-          </Button>
-        </Box>
-      </Modal>
+        handleOpen={handleOpen}
+        handleClose={handleClose}
+        handleFormChange={handleFormChange}
+        formValues={formValues}
+        submitAndCloseModal={submitAndCloseModal}
+        formIsValid={formIsValid}
+      />
     </>
   )
 }
@@ -180,4 +158,4 @@ const SmallCta = styled(Typography)(({ theme }) => ({
   },
 }))
 
-export default EmailCapture
+export default EmailCaptureModal

@@ -22,12 +22,33 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-
+const requiredString = "At least one of Soundcloud, Twitter, or Instagram is required"
 const EmailCaptureSchema = Yup.object().shape({
   email: Yup.string().email().required("Email is Required"),
-  soundcloud: Yup.string(),
-  twitter: Yup.string(),
-  instagram: Yup.string(),
+  soundcloud: Yup.string().test(
+    "oneOfRequired",
+    requiredString,
+    (value, context) => {
+      const { twitter, instagram } = context.parent;
+      return value || twitter || instagram;
+    }
+  ),
+  twitter: Yup.string().test(
+    "oneOfRequired",
+    requiredString,
+    (value, context) => {
+      const { soundcloud, instagram } = context.parent;
+      return value || soundcloud || instagram;
+    }
+  ),
+  instagram: Yup.string().test(
+    "oneOfRequired",
+    requiredString,
+    (value, context) => {
+      const { soundcloud, twitter } = context.parent;
+      return value || soundcloud || twitter;
+    }
+  ),
   wallet: Yup.string(),
   type: Yup.string(),
 });
