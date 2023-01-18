@@ -60,7 +60,6 @@ const EmailCaptureSchema = Yup.object().shape(
 
 const EmailCapture = ({ size }) => {
   const { enqueueSnackbar } = useSnackbar()
-  console.log('useSnackbar',useSnackbar())
   const { publicKey, connected } = useWallet()
   const { submitEmailRequest } = useContext(Nina.Context)
   const [open, setOpen] = useState(false)
