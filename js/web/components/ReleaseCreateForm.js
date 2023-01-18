@@ -154,7 +154,7 @@ const ReleaseCreateForm = ({
                     }
                     if (edition === 'unlimited') {
                       
-                      setFieldValue('amount', 10000)
+                      setFieldValue('amount', 'ထ')
                     }
                   },
                 }}
