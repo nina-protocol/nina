@@ -94,7 +94,7 @@ const ReleaseTileList = (props) => {
                     src={getImageFromCDN(
                       release.metadata.image,
                       400,
-                      new Date(release.releaseDatetime)
+                      new Date(release.tokenData.releaseDatetime)
                     )}
                     priority={!isMobile}
                     loader={loader}
