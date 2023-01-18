@@ -214,6 +214,7 @@ const ReleaseCreate = () => {
         ...formValues,
         releaseForm: values,
       })
+      console.log('formValues', formValues)
     },
     [formValues]
   )

@@ -36,6 +36,11 @@ const ReleaseCreateForm = ({
     return `${value}%`
   }
 
+  const handleEditionChange = (event) => {
+    console.log(event?.target?.value)
+    setEdition(event?.target?.value)
+  }
+
   return (
     <Root>
       <Form>
@@ -114,14 +119,14 @@ const ReleaseCreateForm = ({
                 value="limited"
                 control={<Radio />}
                 label="Limited"
-                onClick={() => setEdition('limited')}
+                onClick={(event) => handleEditionChange(event)}
                 sx={{ marginLeft: '1px', marginRight: '5px'}}
               />
               <FormControlLabel
                 value="unlimited"
                 control={<Radio />}
                 label="Unlimited"
-                onClick={() => setEdition('unlimited')}
+                onClick={(event) => handleEditionChange(event)}
                 
               />
             </RadioGroup>
@@ -142,11 +147,14 @@ const ReleaseCreateForm = ({
                 }
                 InputProps={{
                   onChange: (event) => {
-                    if (edition === 'limited'){
+                    console.log(edition)
+                    if (edition === 'limited') {
                       let whole = parseInt(event.target.value)
                       setFieldValue('amount', whole)
-                    } else {
-                      setFieldValue('amount', 0)
+                    }
+                    if (edition === 'unlimited') {
+                      
+                      setFieldValue('amount', 10000)
                     }
                   },
                 }}
