@@ -17,6 +17,7 @@ import {
   decodeNonEncryptedByteArray,
   decryptData,
 } from '../../utils/encrypt'
+import { swap } from '../../utils/swap'
 import { logEvent } from '../../utils/event'
 import { publicKey } from '@project-serum/anchor/dist/cjs/utils';
 import { initSdkIfNeeded } from '../../utils/sdkInit';
@@ -25,7 +26,7 @@ const lookupTypes = {
   PUBLISHED_BY: 'published_by',
   REVENUE_SHARE: 'revenue_share',
 }
-const PRIORITY_SWAP_FEE = 5000
+const PRIORITY_SWAP_FEE = 7500
 const ReleaseContext = createContext()
 const ReleaseContextProvider = ({ children }) => {
   const {
@@ -912,6 +913,7 @@ const releaseContextHelper = ({
         },
       }
       const instructions = []
+      let tx
       if (
         !isSol(release.paymentMint) &&
         usdcBalance <
@@ -921,38 +923,76 @@ const releaseContextHelper = ({
         const releaseUiPrice =
           ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc) -
           usdcBalance
-        const { data } = await axios.get(
-          `https://quote-api.jup.ag/v3/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative(
-            (releaseUiPrice + releaseUiPrice * 0.01) / solPrice,
-            ids.mints.wsol
-          )}&slippageBps=2&onlyDirectRoutes=true`
-        )
-        const transactions = await axios.post(
-          'https://quote-api.jup.ag/v3/swap',
-          {
-            route: data.data[0],
-            userPublicKey: provider.wallet.publicKey.toBase58(),
-          }
-        )
+        console.log('release.price.toNumber()', release.price.toNumber())
+        tx = await swap(provider.connection, provider.wallet, release.price.toNumber())
+        console.log('swapInstructions', tx)
+        // const { data } = await axios.get(
+        //   `https://quote-api.jup.ag/v3/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative(
+        //     (releaseUiPrice + releaseUiPrice * 0.01) / solPrice,
+        //     ids.mints.wsol
+        //   )}&slippageBps=2&onlyDirectRoutes=true`
+        // )
+        // const transactions = await axios.post(
+        //   'https://quote-api.jup.ag/v3/swap',
+        //   {
+        //     route: data.data[0],
+        //     userPublicKey: provider.wallet.publicKey.toBase58(),
+        //   }
+        // )
+
         const addPriorityFee =
           anchor.web3.ComputeBudgetProgram.setComputeUnitPrice({
             microLamports: PRIORITY_SWAP_FEE,
           })
-        instructions.push(
-          addPriorityFee,
-          ...anchor.web3.Transaction.from(
-            Buffer.from(transactions.data.swapTransaction, 'base64')
-          ).instructions
-        )
+          tx.prependInstruction({
+            instructions: [addPriorityFee],
+            cleanupInstructions: [],
+            signers: [],
+          })
+        // swapInstructions.forEach((instruction) => {
+        //   console.log('instruction', instruction)
+        //   if (instruction.signers.length > 0) {
+        //     if (request.signers) {
+        //       request.signers.push(...instruction.signers)
+        //     } else {
+        //       request.signers = instruction.signers
+        //     }
+        //   }
+
+        //   if (instruction.instructions.length > 0) {
+        //     instruction.instructions.forEach(i => {
+        //       i.keys.forEach(k => {
+        //         // console.log('k', k.toBase58())
+        //         console.log('i', k.pubkey.toBase58())
+        //       })
+        //     })
+        //     instructions.push(...instruction.instructions)
+        //   }
+        //   if (instruction.cleanupInstructions.length > 0) {
+        //     instruction.instructions.forEach(i => {
+        //       i.keys.forEach(k => {
+        //         // console.log('k', k.toBase58())
+        //         console.log('c', k.pubkey.toBase58())
+        //       })
+        //     })
+
+        //     instructions.push(...instruction.cleanupInstructions)
+        //   }
+        // })
       }
 
       if (receiverReleaseTokenAccountIx) {
-        instructions.push(receiverReleaseTokenAccountIx)
+        tx.addInstruction({
+          instructions: [receiverReleaseTokenAccountIx],
+          cleanupInstructions: [],
+          signers: [],
+        })
+        // instructions.push(receiverReleaseTokenAccountIx)
       }
 
-      if (instructions.length > 0) {
-        request.instructions = instructions
-      }
+      // if (instructions.length > 0) {
+      //   request.instructions = instructions
+      // }
 
       if (isSol(release.paymentMint)) {
         const { instructions, signers } = await wrapSol(
@@ -971,8 +1011,22 @@ const releaseContextHelper = ({
         ...releasePurchaseTransactionPending,
         [releasePubkey]: false,
       })
-
-      const txid = await program.rpc.releasePurchase(release.price, request)
+      console.log('request', request)
+      // Object.keys(request.accounts).forEach((key) => {
+      //   console.log('key', key)
+      //   console.log('request.accounts[key]', request.accounts[key].toBase58())
+      // })
+      const purchaseIx = await program.instruction.releasePurchase(release.price, request)
+      console.log('purchaseIx', purchaseIx)
+      // const txid = await program.rpc.releasePurchase(release.price, request)
+      tx.addInstruction({
+        instructions: [purchaseIx],
+        cleanupInstructions: [],
+        signers: [],
+      })
+      console.log('tx', tx)
+      const txid = await tx.buildAndExecute()
+      console.log('txid', txid)
       await getConfirmTransaction(txid, provider.connection)
 
       setReleasePurchasePending({
