@@ -8,11 +8,6 @@ import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-import AutorenewIcon from '@mui/icons-material/Autorenew'
-import FormControl from '@mui/material/FormControl'
-import InputLabel from '@mui/material/InputLabel'
 import {encodeBase64} from 'tweetnacl-util';
 import axios from 'axios'
 import LockOpenIcon from '@mui/icons-material/LockOpen';
@@ -21,8 +16,6 @@ import LockIcon from '@mui/icons-material/Lock';
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
-import HubPostCreate from './HubPostCreate'
-import {display} from '@mui/system'
 
 const CreateGateModal = ({ gate, releasePubkey, amountHeld }) => {
   const [open, setOpen] = useState(false)
@@ -38,15 +31,11 @@ const CreateGateModal = ({ gate, releasePubkey, amountHeld }) => {
 
   const handleUnlockGate = async () => {
     try {
-      console.log('gate :>> ', gate);
-      console.log('releasePubkey :>> ', releasePubkey);
       const message = new TextEncoder().encode(releasePubkey);
       const messageBase64 = encodeBase64(message);
       const signature = await wallet.signMessage(message);
       const signatureBase64 = encodeBase64(signature);
       const result = await axios.get(`${process.env.NINA_GATE_URL}/gate/${gate.id}?message=${encodeURIComponent(messageBase64)}&publicKey=${encodeURIComponent(wallet.publicKey.toBase58())}&signature=${encodeURIComponent(signatureBase64)}`)
-
-      console.log('result :>> ', result);
 
       const response = await axios.get(result.data.url, {
         method: "GET",
