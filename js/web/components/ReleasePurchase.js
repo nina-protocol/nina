@@ -204,7 +204,6 @@ const ReleasePurchase = (props) => {
   }
 
   const handleCloseRelease = async (e, releasePubkey) => {
-    console.log('clicked close release')
     e.preventDefault()
     setPendingTx(true)
     const result = await closeRelease(releasePubkey)
@@ -369,7 +368,7 @@ const ReleasePurchase = (props) => {
             onClick={() => toggleCloseReleaseForm()}
             disabled={release.remainingSupply === 0}
           >
-            <Typography variant="body2" sx={{ color: 'red' }}>
+            <Typography variant="body2" sx={{ color: release.remainingSupply === 0 ? '' : 'red' }}>
               Close Release
             </Typography>
           </Button>
