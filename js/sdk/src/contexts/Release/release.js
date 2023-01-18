@@ -881,7 +881,6 @@ const releaseContextHelper = ({
         msg: 'Release closed',
       }
     } catch(error){
-      console.log('error',error)
       return ninaErrorHandler(error)
     }
   }
