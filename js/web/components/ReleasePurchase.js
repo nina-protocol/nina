@@ -368,7 +368,10 @@ const ReleasePurchase = (props) => {
             onClick={() => toggleCloseReleaseForm()}
             disabled={release.remainingSupply === 0}
           >
-            <Typography variant="body2" sx={{ color: release.remainingSupply === 0 ? '' : 'red' }}>
+            <Typography
+              variant="body2"
+              sx={{ color: release.remainingSupply === 0 ? '' : 'red' }}
+            >
               Close Release
             </Typography>
           </Button>
