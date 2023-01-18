@@ -34,7 +34,6 @@ import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 
 const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, router } = props
-  console.log('metadata :>> ', metadata);
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const {
@@ -80,7 +79,7 @@ const ReleasePurchase = (props) => {
 
 
   const getGate = async () => {
-    const { gates } = (await axios.get(`${process.env.NINA_API_ENDPOINT}/releases/${releasePubkey}/gates`)).data
+    const {gates} = (await axios.get(`${process.env.NINA_GATE_URL}/releases/${releasePubkey}/gates`)).data
     if (gates.length > 0) {
       setGate(gates[0])
     }

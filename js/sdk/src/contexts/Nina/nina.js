@@ -602,8 +602,9 @@ const ninaContextHelper = ({
     if (provider.wallet?.connected && provider.wallet?.publicKey) {
       try {
         const solPrice =  await axios.get(
-          `https://price.jup.ag/v3/price?ids=SOL`
+          `https://price.jup.ag/v4/price?ids=SOL`
         )
+        console.log('solPrice :>> ', solPrice);
 
         const solUsdcBalanceResult = await getSolBalance()
         setSolUsdcBalance((ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) * solPrice.data.data.SOL.price).toFixed(2))
@@ -723,7 +724,7 @@ const ninaContextHelper = ({
   const getSolPrice = async () => {
     try {
       const priceResult = await axios.get(
-        `https://price.jup.ag/v3/price?ids=SOL`
+        `https://price.jup.ag/v4/price?ids=SOL`
       )
       setSolPrice(priceResult.data.data.SOL.price)
       return priceResult.data.data.SOL.price
