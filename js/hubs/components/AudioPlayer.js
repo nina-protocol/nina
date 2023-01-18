@@ -101,8 +101,8 @@ const AudioPlayer = ({ hubPubkey }) => {
     audioPlayerRef.current = document.querySelector("#audio");
     audioPlayerRef.current.addEventListener('error', (e) => {
       if (e.target.error.code === e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED) {
-        if (playerRef.current.src.includes('arweave.net')) {
-          playerRef.current.src = activeTrack.current.txid.replace(
+        if (audioPlayerRef.current.src.includes('arweave.net')) {
+          audioPlayerRef.current.src = activeTrack.current.txid.replace(
             'arweave.net',
             'ar-io.net'
           )
