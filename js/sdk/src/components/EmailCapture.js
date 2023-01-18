@@ -88,7 +88,7 @@ const EmailCapture = ({ size }) => {
   const handleSubmit = async () => {
     if (formIsValid) {
       try {
-        submitEmailRequest(formValues)
+        await submitEmailRequest(formValues)
         logEvent('email_request_success', 'engagement', {
           email: formValues.email,
         })

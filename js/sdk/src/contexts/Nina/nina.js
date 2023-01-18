@@ -1006,7 +1006,6 @@ const ninaContextHelper = ({
       var base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
         'appm1DgEVpMWUjeJ8'
       )
-
       base('Requests').create(
         [
           {
