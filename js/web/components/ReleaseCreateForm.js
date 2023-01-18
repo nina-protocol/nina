@@ -12,6 +12,7 @@ import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormControl from '@mui/material/FormControl'
+import FormLabel from '@mui/material/FormLabel'
 import InputLabel from '@mui/material/InputLabel'
 const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
 
@@ -102,16 +103,30 @@ const ReleaseCreateForm = ({
             </Box>
           )}
         </Field>
-          <Box className={classes.fieldInputWrapper} sx={{display: 'flex', alignItems: 'left'}}>
-          <FormControl>
-          <RadioGroup row aria-labelledby='amount' defaultValue={edition}>
-            <FormControlLabel value="limited" control={<Radio />} label="Limited" onClick={() => setEdition('limited')}/>
-            <FormControlLabel value="unlimited" control={<Radio />} label="Unlimited" onClick={() => setEdition('unlimited')}/>
-          </RadioGroup>
-
+        <Box
+          className={classes.fieldInputWrapper}
+          sx={{ display: 'flex', alignItems: 'left', textAlign: 'center' }}
+        >
+          <FormControl sx={{ flexDirection: 'row' }}>
+            <RadioGroup row aria-labelledby="amount" defaultValue={edition}>
+              <FormLabel sx={{ marginTop: '10px' }}>EDITION TYPE</FormLabel>{' '}
+              <FormControlLabel
+                value="limited"
+                control={<Radio />}
+                label="Limited"
+                onClick={() => setEdition('limited')}
+                sx={{ marginLeft: '1px', marginRight: '5px'}}
+              />
+              <FormControlLabel
+                value="unlimited"
+                control={<Radio />}
+                label="Unlimited"
+                onClick={() => setEdition('unlimited')}
+                
+              />
+            </RadioGroup>
           </FormControl>
-
-          </Box>
+        </Box>
         <Field name="amount">
           {({ field }) => (
             <Box className={classes.fieldInputWrapper} align={'left'}>
@@ -127,8 +142,12 @@ const ReleaseCreateForm = ({
                 }
                 InputProps={{
                   onChange: (event) => {
-                    let whole = parseInt(event.target.value)
-                    setFieldValue('amount', whole)
+                    if (edition === 'limited'){
+                      let whole = parseInt(event.target.value)
+                      setFieldValue('amount', whole)
+                    } else {
+                      setFieldValue('amount', 0)
+                    }
                   },
                 }}
                 disabled={edition === 'unlimited' ? true : false}
