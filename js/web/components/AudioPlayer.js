@@ -40,7 +40,18 @@ const AudioPlayer = () => {
   const [duration, setDuration] = useState(0)
   useEffect(() => {
     playerRef.current = document.querySelector('#audio')
-
+    playerRef.current.addEventListener('error', (e) => {
+      if (e.target.error.code === e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED) {
+        if (playerRef.current.src.includes('arweave.net')) {
+          playerRef.current.src = activeTrack.current.txid.replace(
+            'arweave.net',
+            'ar-io.net'
+          )
+          play()
+        }
+      }
+    })
+    
     const actionHandlers = [
       ['play', () => play()],
       ['pause', () => play()],
