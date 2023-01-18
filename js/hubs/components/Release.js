@@ -25,7 +25,8 @@ import rehypeSanitize from "rehype-sanitize";
 import rehypeExternalLinks from "rehype-external-links";
 const { getImageFromCDN, loader } = imageManager;
 import { parseChecker } from "@nina-protocol/nina-internal-sdk/esm/utils";
-
+import { useSnackbar } from "notistack";
+const CloseRelease = dynamic(() => import("./CloseRelease"));
 const Royalty = dynamic(() => import("./Royalty"));
 const Button = dynamic(() => import("@mui/material/Button"));
 const ReleasePurchase = dynamic(() => import("./ReleasePurchase"));
@@ -33,10 +34,12 @@ const AddToHubModal = dynamic(() => import("./AddToHubModal"));
 
 const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const wallet = useWallet();
-
+  const { enqueueSnackbar } = useSnackbar();
   const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } =
     useContext(Audio.Context);
-  const { releaseState, getRelease } = useContext(Release.Context);
+  const { releaseState, getRelease, closeRelease } = useContext(
+    Release.Context
+  );
   const { getHub, hubState, getHubsForUser, filterHubsForUser } = useContext(
     Hub.Context
   );
@@ -46,6 +49,9 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const [userHubs, setUserHubs] = useState();
   const [userIsRecipient, setUserIsRecipient] = useState(false);
   const [release, setRelease] = useState();
+  const [showCloseReleaseModal, setShowCloseReleaseModal] = useState(false);
+  const [pendingTx, setPendingTx] = useState(false);
+
   useEffect(() => {
     if (hubPubkey && !hubState[hubPubkey]) {
       getHub(hubPubkey);
@@ -111,6 +117,29 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
       );
     }
   }, [releaseState.tokenData[releasePubkey], wallet?.connected]);
+
+  const handleCloseRelease = async (e, releasePubkey) => {
+    e.preventDefault();
+    setPendingTx(true);
+    const result = await closeRelease(releasePubkey);
+
+    if (result) {
+      console.log("success", result);
+      showCompletedTransaction(result);
+      setPendingTx(false);
+      setShowCloseReleaseModal(false);
+    }
+  };
+
+  const showCompletedTransaction = (result) => {
+    enqueueSnackbar(result.msg, {
+      variant: result.success ? "success" : "warn",
+    });
+  };
+
+  const toggleCloseReleaseForm = () => {
+    setShowCloseReleaseModal(!showCloseReleaseModal);
+  };
 
   return (
     <>
@@ -200,10 +229,40 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                 hubPubkey={hubPubkey}
               />
               {userIsRecipient && (
-                <Royalty
-                  release={releaseState.tokenData[releasePubkey]}
-                  releasePubkey={releasePubkey}
-                />
+                <Box sx={{ textAlign: "left" }}>
+                  <Royalty
+                    release={releaseState.tokenData[releasePubkey]}
+                    releasePubkey={releasePubkey}
+                  />
+                  <Button
+                    variant="outlined"
+                    sx={{ padding: "12px !important", marginTop: 2 }}
+                    onClick={() => toggleCloseReleaseForm()}
+                    disabled={release.remainingSupply === 0}
+                  >
+                    <Typography
+                      variant="body2"
+                      align="left"
+                      sx={{
+                        color: release.remainingSupply === 0 ? "" : "red",
+                        padding: 0,
+                      }}
+                    >
+                      Close Release
+                    </Typography>
+                  </Button>
+                  {showCloseReleaseModal && (
+                    <CloseRelease
+                      handleCloseRelease={(e) =>
+                        handleCloseRelease(e, releasePubkey)
+                      }
+                      open={showCloseReleaseModal}
+                      setOpen={setShowCloseReleaseModal}
+                      pendingTx={pendingTx}
+                      release={release}
+                    />
+                  )}
+                </Box>
               )}
             </Box>
 
