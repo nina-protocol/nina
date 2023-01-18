@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import { withFormik, Form, Field } from 'formik'
 import Typography from '@mui/material/Typography'
@@ -8,6 +8,10 @@ import Box from '@mui/material/Box'
 import Fade from '@mui/material/Fade'
 import { formatPlaceholder } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import dynamic from 'next/dynamic'
+import Radio from '@mui/material/Radio'
+import RadioGroup from '@mui/material/RadioGroup'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
 
@@ -20,6 +24,7 @@ const ReleaseCreateForm = ({
   touched,
   setFieldValue,
 }) => {
+  const [edition, setEdition] = useState('limited')
   useEffect(() => {
     if (onChange) {
       onChange(values)
@@ -97,10 +102,19 @@ const ReleaseCreateForm = ({
             </Box>
           )}
         </Field>
+          <Box className={classes.fieldInputWrapper} sx={{display: 'flex', alignItems: 'left'}}>
+          <FormControl>
+          <RadioGroup row aria-labelledby='amount' defaultValue={edition}>
+            <FormControlLabel value="limited" control={<Radio />} label="Limited" onClick={() => setEdition('limited')}/>
+            <FormControlLabel value="unlimited" control={<Radio />} label="Unlimited" onClick={() => setEdition('unlimited')}/>
+          </RadioGroup>
 
+          </FormControl>
+
+          </Box>
         <Field name="amount">
           {({ field }) => (
-            <Box className={classes.fieldInputWrapper}>
+            <Box className={classes.fieldInputWrapper} align={'left'}>
               <TextField
                 className={`${classes.formField}`}
                 variant="standard"
@@ -117,6 +131,7 @@ const ReleaseCreateForm = ({
                     setFieldValue('amount', whole)
                   },
                 }}
+                disabled={edition === 'unlimited' ? true : false}
                 {...field}
               />
             </Box>

@@ -48,7 +48,6 @@ const ReleaseCreateSchema = Yup.object().shape({
 })
 
 const ReleaseCreate = () => {
-  console.log('init')
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const {
