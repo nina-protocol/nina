@@ -96,7 +96,7 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
       
       await getGate()
       console.log('completeResponse: ', completeResponse.data)
-      enqueueSnackbar(result.msg, {
+      enqueueSnackbar('Gate Created', {
         variant: "info",
       });
     } catch (err) {

@@ -61,12 +61,18 @@ const CreateGateModal = ({ gate, releasePubkey, amountHeld }) => {
         const a = document.createElement("a");
         const url = window.URL.createObjectURL(response.data);
         a.href = url;
-        a.download = release.gate.fileName;
+        a.download = gate.fileName;
         a.click();
+        setOpen(false);
+        enqueueSnackbar(`${gate.fileName} downloaded`, {
+          variant: "info",
+        });
       }
     } catch (error) {
       console.log('error: ', error)
-      // setResponse(error.response.data);
+      enqueueSnackbar(`Error Accessing File`, {
+        variant: "failure",
+      });
     }
   }
 
