@@ -99,7 +99,7 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
       })
     } catch (err) {
       console.log(err)
-      enqueueSnackbar('Withdrawl not completed', {
+      enqueueSnackbar('Gate Not Created', {
         variant: 'failure',
       })
     }

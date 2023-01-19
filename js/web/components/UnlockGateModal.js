@@ -62,7 +62,7 @@ const CreateGateModal = ({ gate, releasePubkey, amountHeld }) => {
         a.download = gate.fileName
         a.click()
         setOpen(false)
-        enqueueSnackbar(`${gate.fileName} downloaded`, {
+        enqueueSnackbar(`${gate.fileName} Downloaded`, {
           variant: 'info',
         })
       }
