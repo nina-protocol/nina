@@ -13,6 +13,7 @@ import MenuItem from '@mui/material/MenuItem'
 import AutorenewIcon from '@mui/icons-material/Autorenew'
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
+import CloseIcon from '@mui/icons-material/Close';
 import {encodeBase64} from 'tweetnacl-util';
 import axios from 'axios'
 
@@ -31,15 +32,14 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
   )
   const [inProgress, setInProgress] = useState(false)
   const [file, setFile] = useState(undefined)
-  // console.log('file :>> ', file);
 
   const handleClose = () => {
     setOpen(false)
+    setFile(undefined)
   }
 
   const handleFileUpload = async () => {
     setInProgress(true)
-    console.log('process.env.NINA_GATE_URL :>> ', process.env.NINA_GATE_URL);
     try {
       const FILE_CHUNK_SIZE = 10_000_000
 
@@ -56,7 +56,7 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
         signature: signatureBase64,
         release: releasePubkey,
       })
-      console.log('response: ', response.data)
+
       const {
         urls,
         UploadId
@@ -84,7 +84,6 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
         ETag: part.headers.etag,
         PartNumber: index + 1
       }))
-      console.log('result: ', result)
 
       const completeResponse = await axios.post(`${process.env.NINA_GATE_URL}/gate/finalize`, {
         UploadId,
@@ -135,6 +134,8 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
       >
         <Fade in={open}>
           <StyledPaper>
+
+            <StyledCloseIcon onClick={() => handleClose()} />
 
             <Typography variant='h5' sx={{ mb: 1 }}>
               Select a file or zip to be gated behind: 
@@ -189,11 +190,19 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   zIndex: '10',
   display: 'flex',
   flexDirection: 'column',
+  position: 'relative',
   [theme.breakpoints.down('md')]: {
     width: 'unset',
     margin: '15px',
     padding: theme.spacing(2),
   },
 }))
+
+const StyledCloseIcon = styled(CloseIcon)(({theme}) => ({
+  position: 'absolute', 
+  right: theme.spacing(1),
+  top: theme.spacing(2),
+}))
+
 
 export default CreateGateModal

@@ -12,6 +12,7 @@ import {encodeBase64} from 'tweetnacl-util';
 import axios from 'axios'
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import LockIcon from '@mui/icons-material/Lock';
+import CloseIcon from '@mui/icons-material/Close';
 
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useSnackbar } from 'notistack'
@@ -91,6 +92,7 @@ const CreateGateModal = ({ gate, releasePubkey, amountHeld }) => {
       >
         <Fade in={open}>
           <StyledPaper>
+            <StyledCloseIcon onClick={() => handleClose()} />
             {amountHeld > 0 && (
               <>
                 <Typography variant='h5' sx={{ mb: 2 }}>
@@ -98,7 +100,7 @@ const CreateGateModal = ({ gate, releasePubkey, amountHeld }) => {
                 </Typography>
 
                 <Button variant='outlined' sx={{mt: 1}} onClick={handleUnlockGate}>
-                  {!inProgress ? 'Access' : <Dots size="50px" />}
+                  {!inProgress ? 'Download' : <Dots size="50px" />}
                 </Button>
               </>
             )}
@@ -144,11 +146,18 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   zIndex: '10',
   display: 'flex',
   flexDirection: 'column',
+  position: 'relative',
   [theme.breakpoints.down('md')]: {
     width: 'unset',
     margin: '15px',
     padding: theme.spacing(2),
   },
+}))
+
+const StyledCloseIcon = styled(CloseIcon)(({theme}) => ({
+  position: 'absolute',
+  right: theme.spacing(1),
+  top: theme.spacing(1),
 }))
 
 export default CreateGateModal
