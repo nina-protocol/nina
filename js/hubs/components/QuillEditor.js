@@ -5,59 +5,59 @@ import React, {
   Fragment,
   useRef,
   useMemo,
-} from "react";
-import ReactQuill from "react-quill";
-import { stripQuotesIfNeeded } from "@nina-protocol/nina-internal-sdk/esm/utils";
-import dynamic from "next/dynamic";
-import { styled } from "@mui/material/styles";
-import InputLabel from "@mui/material/InputLabel";
+} from 'react'
+import ReactQuill from 'react-quill'
+import { stripQuotesIfNeeded } from '@nina-protocol/nina-internal-sdk/esm/utils'
+import dynamic from 'next/dynamic'
+import { styled } from '@mui/material/styles'
+import InputLabel from '@mui/material/InputLabel'
 
 const QuillNoSSRWrapper = dynamic(
   async () => {
-    const { default: RQ } = await import("react-quill");
+    const { default: RQ } = await import('react-quill')
     // eslint-disable-next-line react/display-name
-    return ({ forwardedRef, ...props }) => <RQ ref={forwardedRef} {...props} />;
+    return ({ forwardedRef, ...props }) => <RQ ref={forwardedRef} {...props} />
   },
   { ssr: false }
-);
-import Box from "@mui/material/Box";
+)
+import Box from '@mui/material/Box'
 
-const { Quill } = ReactQuill;
+const { Quill } = ReactQuill
 
-import "quill/dist/quill.snow.css";
-import "quill/dist/quill.bubble.css";
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 
 const QuillEditor = ({ formikProps, type, update }) => {
-  const quillRef = useRef(null);
-  const theme = type === "release" ? "bubble" : "snow";
-  let toolbarValues;
-  let height;
+  const quillRef = useRef(null)
+  const theme = type === 'release' ? 'bubble' : 'snow'
+  let toolbarValues
+  let height
   switch (type) {
-    case "release":
-      toolbarValues = false;
-      height = "110px";
-      break;
-    case "hub":
+    case 'release':
+      toolbarValues = false
+      height = '110px'
+      break
+    case 'hub':
       toolbarValues = [
         [{ header: [1, 2, 3, 4, 5, false] }],
-        ["bold", "italic", "underline", "strike"],
-        [{ script: "sub" }, { script: "super" }],
-        ["link"],
-      ];
-      height = "110px";
-      break;
-    case "post":
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ script: 'sub' }, { script: 'super' }],
+        ['link'],
+      ]
+      height = '110px'
+      break
+    case 'post':
       toolbarValues = [
         [{ header: [1, 2, 3, 4, 5, false] }],
-        ["bold", "italic", "underline", "strike"],
-        [{ script: "sub" }, { script: "super" }],
-        ["link"],
-      ];
-      height = "300px";
-      break;
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ script: 'sub' }, { script: 'super' }],
+        ['link'],
+      ]
+      height = '300px'
+      break
 
     default:
-      break;
+      break
   }
   const modules = useMemo(
     () => ({
@@ -68,34 +68,34 @@ const QuillEditor = ({ formikProps, type, update }) => {
       magicUrl: true,
     }),
     []
-  );
+  )
 
   useEffect(() => {
     if (Quill) {
-      const MagicUrl = require("quill-magic-url").default; // Install with 'yarn add quill-magic-url'
-      Quill.register("modules/magicUrl", MagicUrl);
-      var Link = Quill.import("formats/link");
-      var builtInFunc = Link.sanitize;
+      const MagicUrl = require('quill-magic-url').default // Install with 'yarn add quill-magic-url'
+      Quill.register('modules/magicUrl', MagicUrl)
+      var Link = Quill.import('formats/link')
+      var builtInFunc = Link.sanitize
       Link.sanitize = function customSanitizeLinkInput(linkValueInput) {
-        var val = linkValueInput;
+        var val = linkValueInput
 
         // do nothing, since this implies user's already using a custom protocol
         if (/^\w+:/.test(val));
-        else if (!/^https?:/.test(val)) val = "http://" + val;
+        else if (!/^https?:/.test(val)) val = 'http://' + val
 
-        return builtInFunc.call(this, val); // retain the built-in logic
-      };
+        return builtInFunc.call(this, val) // retain the built-in logic
+      }
     }
-  }, [Quill]);
+  }, [Quill])
 
   const handleChange = (content, delta, source, editor) => {
-    content = content.replaceAll("<p><br></p>", "<br>");
-    formikProps.form.setFieldValue(formikProps.field.name, content);
-  };
+    content = content.replaceAll('<p><br></p>', '<br>')
+    formikProps.form.setFieldValue(formikProps.field.name, content)
+  }
   return (
     <>
-      {type !== "post" && (
-        <InputLabel align="left" shrink={formikProps.field.value ? true : ""}>
+      {type !== 'post' && (
+        <InputLabel align="left" shrink={formikProps.field.value ? true : ''}>
           DESCRIPTION
         </InputLabel>
       )}
@@ -109,17 +109,17 @@ const QuillEditor = ({ formikProps, type, update }) => {
         ></QuillNoSSRWrapper>
       </QuillWrapper>
     </>
-  );
-};
+  )
+}
 
 const QuillWrapper = styled(Box)(({ theme, type, height }) => ({
-  "& .ql-editor": {
-    padding: type === "release" ? "0px" : "",
+  '& .ql-editor': {
+    padding: type === 'release' ? '0px' : '',
     maxHeight: height,
     height: height,
-    overflow: "auto",
-    width: "100%",
+    overflow: 'auto',
+    width: '100%',
   },
-}));
+}))
 
-export default QuillEditor;
+export default QuillEditor

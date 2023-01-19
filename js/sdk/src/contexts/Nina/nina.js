@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useMemo } from 'react'
 import * as anchor from '@project-serum/anchor'
-import NinaSdk from '@nina-protocol/js-sdk';
+import NinaSdk from '@nina-protocol/js-sdk'
 import axios from 'axios'
 import {
   findOrCreateAssociatedTokenAccount,
@@ -8,27 +8,27 @@ import {
 } from '../../utils/web3'
 import { ninaErrorHandler } from '../../utils/errors'
 import { logEvent } from '../../utils/event'
-import { truncateAddress } from '../../utils/truncateAddress';
-import Airtable from 'airtable';
-import { getConfirmTransaction } from '../../utils';
+import { truncateAddress } from '../../utils/truncateAddress'
+import Airtable from 'airtable'
+import { getConfirmTransaction } from '../../utils'
 
 const NinaProgramAction = {
   HUB_ADD_COLLABORATOR: 'HUB_ADD_COLLABORATOR',
   HUB_ADD_RELEASE: 'HUB_ADD_RELEASE',
   HUB_INIT_WITH_CREDIT: 'HUB_INIT_WITH_CREDIT',
   HUB_UPDATE: 'HUB_UPDATE',
-  POST_INIT_VIA_HUB_WITH_REFERENCE_RELEASE: 'POST_INIT_VIA_HUB_WITH_REFERENCE_RELEASE',
+  POST_INIT_VIA_HUB_WITH_REFERENCE_RELEASE:
+    'POST_INIT_VIA_HUB_WITH_REFERENCE_RELEASE',
   POST_INIT_VIA_HUB: 'POST_INIT_VIA_HUB',
   RELEASE_INIT_VIA_HUB: 'RELEASE_INIT_VIA_HUB',
   RELEASE_INIT_WITH_CREDIT: 'RELEASE_INIT_WITH_CREDIT',
   RELEASE_PURCHASE: 'RELEASE_PURCHASE',
   RELEASE_PURCHASE_VIA_HUB: 'RELEASE_PURCHASE_VIA_HUB',
-  EXCHANGE_INIT : 'EXCHANGE_INIT',
+  EXCHANGE_INIT: 'EXCHANGE_INIT',
   EXCHANGE_ACCEPT: 'EXCHANGE_ACCEPT',
   CONNECTION_CREATE: 'CONNECTION_CREATE',
   SUBSCRIPTION_SUBSCRIBE_HUB: 'SUBSCRIPTION_SUBSCRIBE_HUB',
   SUBSCRIPTION_SUBSCRIBE_ACCOUNT: 'SUBSCRIPTION_SUBSCRIBE_ACCOUNT',
-
 }
 
 const NinaProgramActionCost = {
@@ -64,8 +64,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [solUsdcBalance, setSolUsdcBalance] = useState(0)
   const [npcAmountHeld, setNpcAmountHeld] = useState(0)
   const [solPrice, setSolPrice] = useState(0)
-  const [healthOk, setHealthOk] = useState(true)
-  const [healthTimestamp, setHealthTimestamp] = useState(0)
+  const [healthOk] = useState(true)
   const [bundlrBalance, setBundlrBalance] = useState(0.0)
   const [bundlr, setBundlr] = useState()
   const [bundlrPricePerMb, setBundlrPricePerMb] = useState()
@@ -76,12 +75,9 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
 
   useEffect(() => {
     if (provider.wallet?.wallet && provider.wallet.publicKey) {
-      logEvent(
-        'wallet_connected',
-        'engagement', {
-          publicKey: provider.wallet.publicKey.toBase58(),
-        }
-      )
+      logEvent('wallet_connected', 'engagement', {
+        publicKey: provider.wallet.publicKey.toBase58(),
+      })
       getNpcAmountHeld()
       getUserBalances()
       if (releasePubkey) {
@@ -156,16 +152,15 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     setSolBalance,
     verificationState,
     setVerificationState,
-    setLowSolBalance
+    setLowSolBalance,
   })
 
   const userSubscriptions = useMemo(() => {
     if (provider.wallet?.wallet && provider.wallet.publicKey) {
       return filterSubscriptionsForUser(provider.wallet.publicKey.toBase58())
     }
-   return undefined;
-  }, [subscriptionState, provider.wallet?.wallet, provider.wallet.publicKey]); 
-  
+    return undefined
+  }, [subscriptionState, provider.wallet?.wallet, provider.wallet.publicKey])
 
   return (
     <NinaContext.Provider
@@ -253,7 +248,7 @@ const ninaContextHelper = ({
   setSolBalance,
   verificationState,
   setVerificationState,
-  setLowSolBalance
+  setLowSolBalance,
 }) => {
   const { provider, ids, uiToNative, nativeToUi } = ninaClient
 
@@ -263,19 +258,20 @@ const ninaContextHelper = ({
     try {
       logEvent(
         `subscription_subscribe_${hubHandle ? 'hub' : 'account'}_initiated`,
-        'engagement', {
+        'engagement',
+        {
           to: subscribeToAccount,
-          wallet: provider.wallet.publicKey.toBase58()
+          wallet: provider.wallet.publicKey.toBase58(),
         }
       )
 
-      const program = await ninaClient.useProgram()      
+      const program = await ninaClient.useProgram()
       subscribeToAccount = new anchor.web3.PublicKey(subscribeToAccount)
       const [subscription] = await anchor.web3.PublicKey.findProgramAddress(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode('nina-subscription')),
           provider.wallet.publicKey.toBuffer(),
-          subscribeToAccount.toBuffer()
+          subscribeToAccount.toBuffer(),
         ],
         program.programId
       )
@@ -300,9 +296,10 @@ const ninaContextHelper = ({
       await getSubscription(subscription.toBase58())
       logEvent(
         `subscription_subscribe_${hubHandle ? 'hub' : 'account'}_success`,
-        'engagement', {
+        'engagement',
+        {
           to: subscribeToAccount,
-          wallet: provider.wallet.publicKey.toBase58()
+          wallet: provider.wallet.publicKey.toBase58(),
         }
       )
 
@@ -312,18 +309,19 @@ const ninaContextHelper = ({
       }
     } catch (error) {
       console.warn(error)
-      
+
       logEvent(
         `subscription_subscribe_${hubHandle ? 'hub' : 'account'}_failure`,
-        'engagement', {
+        'engagement',
+        {
           to: subscribeToAccount,
-          wallet: provider.wallet.publicKey.toBase58()
+          wallet: provider.wallet.publicKey.toBase58(),
         }
       )
 
       return ninaErrorHandler(error)
     }
-  }  
+  }
 
   const subscriptionUnsubscribe = async (unsubscribeAccount, hubHandle) => {
     try {
@@ -333,14 +331,14 @@ const ninaContextHelper = ({
         [
           Buffer.from(anchor.utils.bytes.utf8.encode('nina-subscription')),
           provider.wallet.publicKey.toBuffer(),
-          unsubscribeAccount.toBuffer()
-      ],
+          unsubscribeAccount.toBuffer(),
+        ],
         program.programId
       )
       const txid = await program.rpc.subscriptionUnsubscribe({
         accounts: {
           from: provider.wallet.publicKey,
-          subscription,  
+          subscription,
           to: unsubscribeAccount,
           systemProgram: anchor.web3.SystemProgram.programId,
         },
@@ -382,12 +380,12 @@ const ninaContextHelper = ({
   }
 
   const saveSubscriptionsToState = async (subscriptions) => {
-    let updatedSubscriptionState = { }
-    let updatedVerificationState = { }
+    let updatedSubscriptionState = {}
+    let updatedVerificationState = {}
     subscriptions.forEach((subscription) => {
       updatedSubscriptionState = {
         ...updatedSubscriptionState,
-        [subscription.publicKey]: subscription
+        [subscription.publicKey]: subscription,
       }
 
       updatedVerificationState = {
@@ -402,8 +400,14 @@ const ninaContextHelper = ({
         }
       }
     })
-    setSubscriptionState(prevState => ({...prevState, ...updatedSubscriptionState}))
-    setVerificationState(prevState => ({...prevState, ...updatedVerificationState}))
+    setSubscriptionState((prevState) => ({
+      ...prevState,
+      ...updatedSubscriptionState,
+    }))
+    setVerificationState((prevState) => ({
+      ...prevState,
+      ...updatedVerificationState,
+    }))
   }
 
   const removeSubScriptionFromState = (publicKey) => {
@@ -417,23 +421,27 @@ const ninaContextHelper = ({
   const createCollection = async () => {
     if (provider.wallet?.connected) {
       try {
-          const program = await ninaClient.useProgram()
-          const updatedCollection = {}
-          let tokenAccounts =
-            await provider.connection.getParsedTokenAccountsByOwner(
-              provider.wallet.publicKey,
-              { programId: TOKEN_PROGRAM_ID }
-            )
-          const walletTokenAccounts = tokenAccounts.value.map(
-            (value) => value.account.data.parsed.info
+        const program = await ninaClient.useProgram()
+        const updatedCollection = {}
+        let tokenAccounts =
+          await provider.connection.getParsedTokenAccountsByOwner(
+            provider.wallet.publicKey,
+            { programId: TOKEN_PROGRAM_ID }
           )
+        const walletTokenAccounts = tokenAccounts.value.map(
+          (value) => value.account.data.parsed.info
+        )
 
         const releaseAmountMap = {}
         for await (let account of walletTokenAccounts) {
           const mint = new anchor.web3.PublicKey(account.mint)
           const balance = account.tokenAmount.uiAmount
 
-          if (account.mint !== ids.mints.usdc && balance > 0 && balance % 1 === 0) {
+          if (
+            account.mint !== ids.mints.usdc &&
+            balance > 0 &&
+            balance % 1 === 0
+          ) {
             const [release] = await anchor.web3.PublicKey.findProgramAddress(
               [
                 Buffer.from(anchor.utils.bytes.utf8.encode('nina-release')),
@@ -561,7 +569,7 @@ const ninaContextHelper = ({
     ) {
       setCollection({
         ...collection,
-        [releasePubkey]:  
+        [releasePubkey]:
           account[0].account.data.parsed.info.tokenAmount.uiAmount,
       })
       return true
@@ -589,24 +597,28 @@ const ninaContextHelper = ({
     let solUsdcBalanceResult = await provider.connection.getBalance(
       provider.wallet.publicKey
     )
- 
+
     setSolBalance(solUsdcBalanceResult)
-    if (solUsdcBalanceResult < 10000000) { 
+    if (solUsdcBalanceResult < 10000000) {
       setLowSolBalance(true)
     }
     return solUsdcBalanceResult
   }
 
-  const getUserBalances = async () => { 
-
+  const getUserBalances = async () => {
     if (provider.wallet?.connected && provider.wallet?.publicKey) {
       try {
-        const solPrice =  await axios.get(
+        const solPrice = await axios.get(
           `https://price.jup.ag/v4/price?ids=SOL`
         )
         const solUsdcBalanceResult = await getSolBalance()
-        setSolUsdcBalance((ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) * solPrice.data.data.SOL.price).toFixed(2))
-        
+        setSolUsdcBalance(
+          (
+            ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) *
+            solPrice.data.data.SOL.price
+          ).toFixed(2)
+        )
+
         let [usdcTokenAccountPubkey] = await findOrCreateAssociatedTokenAccount(
           provider.connection,
           provider.wallet.publicKey,
@@ -614,25 +626,23 @@ const ninaContextHelper = ({
           anchor.web3.SystemProgram.programId,
           anchor.web3.SYSVAR_RENT_PUBKEY,
           new anchor.web3.PublicKey(ids.mints.usdc)
-          )
-          if (usdcTokenAccountPubkey) {
-         
+        )
+        if (usdcTokenAccountPubkey) {
           let usdcTokenAccount =
             await provider.connection.getTokenAccountBalance(
               usdcTokenAccountPubkey
             )
-            setUsdcBalance(usdcTokenAccount.value.uiAmount.toFixed(2))
+          setUsdcBalance(usdcTokenAccount.value.uiAmount.toFixed(2))
           return
         } else {
           setUsdcBalance(0)
         }
       } catch (error) {
-        console.log('error: ', error)
         console.warn('error getting usdc balance')
       }
     } else {
       setUsdcBalance(0)
-      setSolUsdcBalance(0) 
+      setSolUsdcBalance(0)
     }
   }
 
@@ -657,11 +667,15 @@ const ninaContextHelper = ({
 
   const bundlrFund = async (fundAmount) => {
     try {
-      if (bundlr && fundAmount) {        
+      if (bundlr && fundAmount) {
         await getUserBalances()
         const value = uiToNative(fundAmount, ids.mints.wsol)
-        if (value - (2 * NinaProgramActionCost[NinaProgramAction.RELEASE_INIT_VIA_HUB]) > solBalance) {
-          throw('Insufficient SOL balance - please deposit a smaller amount or top up your Solana balance')
+        if (
+          value -
+            2 * NinaProgramActionCost[NinaProgramAction.RELEASE_INIT_VIA_HUB] >
+          solBalance
+        ) {
+          throw 'Insufficient SOL balance - please deposit a smaller amount or top up your Solana balance'
         }
         if (!value) return
         await bundlr.fund(value)
@@ -712,7 +726,7 @@ const ninaContextHelper = ({
       if (!bundlrInstance) {
         bundlrInstance = bundlr
       }
-      
+
       const price = await bundlrInstance?.getPrice(1000000)
       setBundlrPricePerMb(nativeToUi(price, ids.mints.wsol))
     } catch (error) {
@@ -735,25 +749,29 @@ const ninaContextHelper = ({
   const bundlrUpload = async (file) => {
     try {
       return new Promise((resolve, reject) => {
-        const uploader = bundlr.uploader.chunkedUploader;
-        uploader.on("chunkUpload", (chunkInfo) => {
-          console.log(`Uploaded Chunk number ${chunkInfo.id}, offset of ${chunkInfo.offset}, size ${chunkInfo.size} Bytes, with a total of ${chunkInfo.totalUploaded} bytes uploaded.`);
-        });
-        uploader.on("chunkError", (e) => {
-          console.error(`Error uploading chunk number ${e.id} - ${e.res.statusText}`);
-        });
-        uploader.on("done", (finishRes) => {
-          console.log(`Upload completed with ID ${JSON.stringify(finishRes)}`);
-        });   
+        const uploader = bundlr.uploader.chunkedUploader
+        uploader.on('chunkUpload', (chunkInfo) => {
+          console.warn(
+            `Uploaded Chunk number ${chunkInfo.id}, offset of ${chunkInfo.offset}, size ${chunkInfo.size} Bytes, with a total of ${chunkInfo.totalUploaded} bytes uploaded.`
+          )
+        })
+        uploader.on('chunkError', (e) => {
+          console.error(
+            `Error uploading chunk number ${e.id} - ${e.res.statusText}`
+          )
+        })
+        uploader.on('done', (finishRes) => {
+          console.warn(`Upload completed with ID ${JSON.stringify(finishRes)}`)
+        })
         const reader = new FileReader()
         reader.onload = async () => {
           const data = reader.result
           let txId
           try {
             const tx = bundlr.createTransaction(data, {
-              tags: [{ name: 'Content-Type', value: file.type }]
+              tags: [{ name: 'Content-Type', value: file.type }],
             })
-            await tx.sign();
+            await tx.sign()
             txId = (await uploader.uploadTransaction(tx)).data.id
           } catch (error) {
             ninaErrorHandler(error)
@@ -778,8 +796,10 @@ const ninaContextHelper = ({
           bundlrHttpAddress,
           'solana',
           provider.wallet.wallet.adapter,
-          { providerUrl: process.env.SOLANA_CLUSTER_URL_BUNDLR,
-            timeout: 1000000000000000 }
+          {
+            providerUrl: process.env.SOLANA_CLUSTER_URL_BUNDLR,
+            timeout: 1000000000000000,
+          }
         )
         await bundlrInstance.ready()
         setBundlr(bundlrInstance)
@@ -793,16 +813,25 @@ const ninaContextHelper = ({
   }
   const checkIfHasBalanceToCompleteAction = async (action) => {
     const solUsdcBalanceResult = await getSolBalance()
-    if (ninaClient.uiToNative(NinaProgramActionCost[action], ninaClient.ids.mints.wsol) > solUsdcBalanceResult) {
-      const error = new Error(`You do not have enough SOL to send the transaction: ${action}.  You need at least ${NinaProgramActionCost[action]} SOL.`)
+    if (
+      ninaClient.uiToNative(
+        NinaProgramActionCost[action],
+        ninaClient.ids.mints.wsol
+      ) > solUsdcBalanceResult
+    ) {
+      const error = new Error(
+        `You do not have enough SOL to send the transaction: ${action}.  You need at least ${NinaProgramActionCost[action]} SOL.`
+      )
       return ninaErrorHandler(error)
     }
     return undefined
   }
 
   const getUsdcToSolSwapData = async (amount) => {
-    const {data} = await axios.get(
-      `https://quote-api.jup.ag/v3/quote?inputMint=${ids.mints.usdc}&outputMint=${ids.mints.wsol}&amount=${amount * 1000000}&slippageBps=50`
+    const { data } = await axios.get(
+      `https://quote-api.jup.ag/v3/quote?inputMint=${
+        ids.mints.usdc
+      }&outputMint=${ids.mints.wsol}&amount=${amount * 1000000}&slippageBps=50`
     )
     return data
   }
@@ -813,9 +842,13 @@ const ninaContextHelper = ({
 
   */
 
-  const getSubscription = async (subscriptionPubkey, txid=undefined) => {
-      try {
-      const {subscription} = await NinaSdk.Subscription.fetch(subscriptionPubkey, false, txid)
+  const getSubscription = async (subscriptionPubkey, txid = undefined) => {
+    try {
+      const { subscription } = await NinaSdk.Subscription.fetch(
+        subscriptionPubkey,
+        false,
+        txid
+      )
       setSubscriptionState({
         ...subscriptionState,
         [subscription.publicKey]: subscription,
@@ -826,8 +859,11 @@ const ninaContextHelper = ({
   }
 
   const getSubscriptionsForUser = async (accountPubkey) => {
-    try{
-      const { subscriptions } = await NinaSdk.Account.fetchSubscriptions(accountPubkey, false)
+    try {
+      const { subscriptions } = await NinaSdk.Account.fetchSubscriptions(
+        accountPubkey,
+        false
+      )
       saveSubscriptionsToState(subscriptions)
       return subscriptions
     } catch (error) {
@@ -837,8 +873,11 @@ const ninaContextHelper = ({
   }
 
   const getSubscriptionsForHub = async (hubPubkeyOrHandle) => {
-    try{
-      const { subscriptions } = await NinaSdk.Hub.fetchSubscriptions(hubPubkeyOrHandle, false)
+    try {
+      const { subscriptions } = await NinaSdk.Hub.fetchSubscriptions(
+        hubPubkeyOrHandle,
+        false
+      )
       saveSubscriptionsToState(subscriptions)
       return subscriptions
     } catch (error) {
@@ -850,7 +889,10 @@ const ninaContextHelper = ({
   const filterSubscriptionsForUser = (accountPubkey) => {
     const subscriptions = []
     Object.values(subscriptionState).forEach((subscription) => {
-      if (subscription.from.publicKey === accountPubkey || subscription.to.publicKey === accountPubkey) {
+      if (
+        subscription.from.publicKey === accountPubkey ||
+        subscription.to.publicKey === accountPubkey
+      ) {
         subscriptions.push(subscription)
       }
     })
@@ -861,50 +903,48 @@ const ninaContextHelper = ({
     const verifications = verificationState[publicKey]
     if (verifications) {
       if (
-        verifications?.find(
-          (verification) => verification.type === 'twitter'
-        )
+        verifications?.find((verification) => verification.type === 'twitter')
       ) {
-        return verifications.find(
-          (verification) => verification.type === 'twitter'
-        ).displayName || truncateAddress(publicKey)
+        return (
+          verifications.find((verification) => verification.type === 'twitter')
+            .displayName || truncateAddress(publicKey)
+        )
       } else if (
         verifications?.find(
           (verification) => verification.type === 'soundcloud'
         )
       ) {
-        return verifications.find(
-          (verification) => verification.type === 'soundcloud'
-        ).displayName || truncateAddress(publicKey)
-      } else if (
-        verifications?.find(
-          (verification) => verification.type === 'instagram'
+        return (
+          verifications.find(
+            (verification) => verification.type === 'soundcloud'
+          ).displayName || truncateAddress(publicKey)
         )
-      ) {
-        return verifications.find(
-          (verification) => verification.type === 'instagram'
-        ).displayName || truncateAddress(publicKey)
       } else if (
-        verifications?.find(
-          (verification) => verification.type === 'ethereum'
-        )
+        verifications?.find((verification) => verification.type === 'instagram')
       ) {
-        return verifications.find(
-          (verification) => verification.type === 'ethereum'
-        ).displayName || truncateAddress(publicKey)
+        return (
+          verifications.find(
+            (verification) => verification.type === 'instagram'
+          ).displayName || truncateAddress(publicKey)
+        )
+      } else if (
+        verifications?.find((verification) => verification.type === 'ethereum')
+      ) {
+        return (
+          verifications.find((verification) => verification.type === 'ethereum')
+            .displayName || truncateAddress(publicKey)
+        )
       }
-    } 
+    }
     return publicKey ? truncateAddress(publicKey) : 'Unknown'
   }
-  
+
   const displayImageForAccount = (publicKey) => {
     const verifications = verificationState[publicKey]
 
     if (verifications) {
       if (
-        verifications?.find(
-          (verification) => verification.type === 'twitter'
-        )
+        verifications?.find((verification) => verification.type === 'twitter')
       ) {
         return verifications.find(
           (verification) => verification.type === 'twitter'
@@ -914,34 +954,34 @@ const ninaContextHelper = ({
           (verification) => verification.type === 'soundcloud'
         )
       ) {
-        return verifications.find(
-          (verification) => verification.type === 'soundcloud'
-        ).image || '/images/nina-gray.png'
-      } 
-    } 
+        return (
+          verifications.find(
+            (verification) => verification.type === 'soundcloud'
+          ).image || '/images/nina-gray.png'
+        )
+      }
+    }
     return '/images/nina-gray.png'
   }
 
   const getVerificationsForUser = async (accountPubkey) => {
     try {
-      const { verifications } = await NinaSdk.Account.fetchVerifications(accountPubkey)
-      setVerificationState(prevState => (
-        {
-          ...prevState,
-          [accountPubkey]: verifications,
-        }
-      ))
+      const { verifications } = await NinaSdk.Account.fetchVerifications(
+        accountPubkey
+      )
+      setVerificationState((prevState) => ({
+        ...prevState,
+        [accountPubkey]: verifications,
+      }))
     } catch (error) {
       console.warn(error)
-      setVerificationState(prevState => (
-        {
-          ...prevState,
-          [accountPubkey]: [],
-        }
-      ))
+      setVerificationState((prevState) => ({
+        ...prevState,
+        [accountPubkey]: [],
+      }))
     }
   }
-  
+
   const filterSubscriptionsForHub = (hubPubkey) => {
     const subscriptions = []
     Object.values(subscriptionState).forEach((subscription) => {
@@ -952,30 +992,42 @@ const ninaContextHelper = ({
     return subscriptions
   }
 
-  const submitEmailRequest = async ({email, soundcloud, twitter, instagram, wallet, type}) => {
+  const submitEmailRequest = async ({
+    email,
+    soundcloud,
+    twitter,
+    instagram,
+    wallet,
+    type,
+  }) => {
     try {
-      var base = new Airtable({apiKey: process.env.AIRTABLE_API_KEY}).base('appm1DgEVpMWUjeJ8');
+      var base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
+        'appm1DgEVpMWUjeJ8'
+      )
 
-      base('Requests').create([
-        {
-          "fields": {
-            email,
-            soundcloud,
-            twitter,
-            instagram,
-            wallet,
-            type
+      base('Requests').create(
+        [
+          {
+            fields: {
+              email,
+              soundcloud,
+              twitter,
+              instagram,
+              wallet,
+              type,
+            },
+          },
+        ],
+        function (err, records) {
+          if (err) {
+            console.error(err)
+            return
           }
+          records.forEach(function (record) {
+            console.warn('Email request submitted: ', record.getId())
+          })
         }
-      ], function(err, records) {
-        if (err) {
-          console.error(err);
-          return;
-        }
-        records.forEach(function (record) {
-          console.log('Email request submitted: ', record.getId());
-        });
-      });
+      )
     } catch (error) {
       console.warn('email request error: ', error)
     }
@@ -1015,5 +1067,5 @@ const ninaContextHelper = ({
 
 export default {
   Context: NinaContext,
-  Provider: NinaContextProvider
+  Provider: NinaContextProvider,
 }

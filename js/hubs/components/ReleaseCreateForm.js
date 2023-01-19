@@ -1,14 +1,14 @@
-import React, { useEffect } from "react";
-import { styled } from "@mui/material/styles";
-import { formatPlaceholder } from "@nina-protocol/nina-internal-sdk/esm/utils";
-import { withFormik, Form, Field } from "formik";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
-import Slider from "@mui/material/Slider";
-import Box from "@mui/material/Box";
-import Fade from "@mui/material/Fade";
-import dynamic from "next/dynamic";
-const QuillEditor = dynamic(() => import("./QuillEditor"), { ssr: false });
+import React, { useEffect } from 'react'
+import { styled } from '@mui/material/styles'
+import { formatPlaceholder } from '@nina-protocol/nina-internal-sdk/esm/utils'
+import { withFormik, Form, Field } from 'formik'
+import Typography from '@mui/material/Typography'
+import TextField from '@mui/material/TextField'
+import Slider from '@mui/material/Slider'
+import Box from '@mui/material/Box'
+import Fade from '@mui/material/Fade'
+import dynamic from 'next/dynamic'
+const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
 
 const ReleaseCreateForm = ({
   field,
@@ -22,13 +22,13 @@ const ReleaseCreateForm = ({
 }) => {
   useEffect(() => {
     if (onChange) {
-      onChange(values);
+      onChange(values)
     }
-  }, [values]);
+  }, [values])
 
   const valuetext = (value) => {
-    return `${value}%`;
-  };
+    return `${value}%`
+  }
 
   return (
     <Root>
@@ -41,7 +41,7 @@ const ReleaseCreateForm = ({
                 variant="standard"
                 label={formatPlaceholder(props.field.name)}
                 size="small"
-                InputLabelProps={touched.artist ? { shrink: true } : ""}
+                InputLabelProps={touched.artist ? { shrink: true } : ''}
                 placeholder={
                   errors.artist && touched.artist ? errors.artist : null
                 }
@@ -60,7 +60,7 @@ const ReleaseCreateForm = ({
                 variant="standard"
                 label={formatPlaceholder(props.field.name)}
                 size="small"
-                InputLabelProps={touched.title ? { shrink: true } : ""}
+                InputLabelProps={touched.title ? { shrink: true } : ''}
                 placeholder={
                   errors.title && touched.title ? errors.title : null
                 }
@@ -79,7 +79,7 @@ const ReleaseCreateForm = ({
                 variant="standard"
                 label={formatPlaceholder(field.name)}
                 size="small"
-                InputLabelProps={touched.catalogNumber ? { shrink: true } : ""}
+                InputLabelProps={touched.catalogNumber ? { shrink: true } : ''}
                 placeholder={
                   errors.catalogNumber && touched.catalogNumber
                     ? errors.catalogNumber
@@ -89,9 +89,9 @@ const ReleaseCreateForm = ({
                 InputProps={{
                   onChange: (event) => {
                     let sanitized = event.target.value
-                      .replace(/\s/g, "")
-                      .toUpperCase();
-                    setFieldValue("catalogNumber", sanitized);
+                      .replace(/\s/g, '')
+                      .toUpperCase()
+                    setFieldValue('catalogNumber', sanitized)
                   },
                 }}
                 disabled={disabled}
@@ -109,7 +109,7 @@ const ReleaseCreateForm = ({
                 variant="standard"
                 label={formatPlaceholder(field.name)}
                 size="small"
-                InputLabelProps={touched.amount ? { shrink: true } : ""}
+                InputLabelProps={touched.amount ? { shrink: true } : ''}
                 placeholder={
                   errors.amount && touched.amount ? errors.amount : null
                 }
@@ -129,7 +129,7 @@ const ReleaseCreateForm = ({
                 variant="standard"
                 label={`${formatPlaceholder(field.name)} ($)`}
                 size="small"
-                InputLabelProps={touched.retailPrice ? { shrink: true } : ""}
+                InputLabelProps={touched.retailPrice ? { shrink: true } : ''}
                 placeholder={
                   errors.retailPrice && touched.retailPrice
                     ? errors.retailPrice
@@ -148,9 +148,9 @@ const ReleaseCreateForm = ({
             id="discrete-slider-custom"
             align="left"
             sx={{
-              color: "rgba(0, 0, 0, 0.6) !important",
-              fontSize: "12px",
-              marginTop: "8px !important",
+              color: 'rgba(0, 0, 0, 0.6) !important',
+              fontSize: '12px',
+              marginTop: '8px !important',
             }}
           >
             RESALE PERCENTAGE: {values.resalePercentage}%
@@ -166,7 +166,7 @@ const ReleaseCreateForm = ({
               max={100}
               name="resalePercentage"
               onChange={(event, value) => {
-                setFieldValue("resalePercentage", value);
+                setFieldValue('resalePercentage', value)
               }}
               disabled={disabled}
               {...field}
@@ -176,10 +176,10 @@ const ReleaseCreateForm = ({
 
           <Field name="description">
             {(props) => (
-              <Box sx={{ borderBottom: "1px solid grey" }}>
+              <Box sx={{ borderBottom: '1px solid grey' }}>
                 <QuillEditor
                   formikProps={props}
-                  type={"release"}
+                  type={'release'}
                   update={false}
                 />
               </Box>
@@ -195,60 +195,60 @@ const ReleaseCreateForm = ({
         </Box>
       </Form>
     </Root>
-  );
-};
-const PREFIX = "ReleaseCreateForm";
+  )
+}
+const PREFIX = 'ReleaseCreateForm'
 
 const classes = {
   fieldInputWrapper: `${PREFIX}-fieldInputWrapper`,
   formField: `${PREFIX}-formField`,
-};
+}
 
-const Root = styled("div")(({ theme }) => ({
-  margin: "auto",
-  width: "300px",
+const Root = styled('div')(({ theme }) => ({
+  margin: 'auto',
+  width: '300px',
   [`& .${classes.fieldInputWrapper}`]: {
-    position: "relative",
+    position: 'relative',
   },
   [`& .${classes.formField}`]: {
     ...theme.helpers.baseFont,
-    marginBottom: "8px",
-    width: "100%",
+    marginBottom: '8px',
+    width: '100%',
     // textTransform: "capitalize",
-    position: "relative",
-    "& input": {
-      textAlign: "left",
-      "&::placeholder": {
+    position: 'relative',
+    '& input': {
+      textAlign: 'left',
+      '&::placeholder': {
         color: theme.palette.red,
       },
     },
   },
-}));
+}))
 
 const Warning = styled(Typography)(({ theme }) => ({
-  position: "absolute",
-  textTransform: "none !important",
+  position: 'absolute',
+  textTransform: 'none !important',
   color: theme.palette.red,
-  opacity: "85%",
-  top: "-5%",
-  left: "122%",
-  width: "220px",
-}));
+  opacity: '85%',
+  top: '-5%',
+  left: '122%',
+  width: '220px',
+}))
 
 export default withFormik({
   enableReinitialize: true,
   validationSchema: (props) => {
-    return props.ReleaseCreateSchema;
+    return props.ReleaseCreateSchema
   },
   mapPropsToValues: () => {
     return {
-      artist: "",
-      title: "",
-      description: "",
-      catalogNumber: "",
+      artist: '',
+      title: '',
+      description: '',
+      catalogNumber: '',
       amount: 10,
       retailPrice: undefined,
       resalePercentage: 10,
-    };
+    }
   },
-})(ReleaseCreateForm);
+})(ReleaseCreateForm)
