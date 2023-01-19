@@ -9,14 +9,11 @@ import {
 } from '../../utils/web3'
 import axios from 'axios'
 import { ninaErrorHandler } from '../../utils/errors'
-import {
-  encryptData,
-  decodeNonEncryptedByteArray,
-} from '../../utils/encrypt'
+import { encryptData, decodeNonEncryptedByteArray } from '../../utils/encrypt'
 import releasePurchaseHelper from '../../utils/releasePurchaseHelper'
 import { logEvent } from '../../utils/event'
-import { initSdkIfNeeded } from '../../utils/sdkInit';
-import { getConfirmTransaction } from '../../utils';
+import { initSdkIfNeeded } from '../../utils/sdkInit'
+import { getConfirmTransaction } from '../../utils'
 
 const ReleaseContext = createContext()
 const ReleaseContextProvider = ({ children }) => {
@@ -193,7 +190,6 @@ const releaseContextHelper = ({
   allReleases,
   setAllReleases,
   setAllReleasesCount,
-  getSolPrice,
   releasePurchaseTransactionPending,
   setReleasePurchaseTransactionPending,
   fetchedUserProfileReleases,
@@ -461,7 +457,7 @@ const releaseContextHelper = ({
         ...releasePurchaseTransactionPending,
         [releasePubkey]: false,
       })
-      
+
       await getConfirmTransaction(txid, provider.connection)
 
       setReleasePurchasePending({
@@ -507,7 +503,7 @@ const releaseContextHelper = ({
       return ninaErrorHandler(error)
     }
   }
-  
+
   const releaseCreate = async ({
     retailPrice,
     amount,

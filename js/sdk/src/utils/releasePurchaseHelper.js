@@ -6,28 +6,44 @@ import {
   AccountFetcher,
   swapQuoteByOutputToken,
 } from '@orca-so/whirlpools-sdk'
-import { Percentage } from "@orca-so/common-sdk";
+import { Percentage } from '@orca-so/common-sdk'
 import {
   findOrCreateAssociatedTokenAccount,
   wrapSol,
   TOKEN_PROGRAM_ID,
 } from './web3'
-import {
-  decodeNonEncryptedByteArray,
-} from './encrypt'
+import { decodeNonEncryptedByteArray } from './encrypt'
 
 const PRIORITY_SWAP_FEE = 7500
-const WHIRLPOOL_PROGRAM_ID = new anchor.web3.PublicKey('whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc')
-const SOL_USDC_WHIRLPOOL = new anchor.web3.PublicKey('HJPjoWUrhoZzkNfRpHuieeFk9WcZWjwy6PBjZ81ngndJ')
+const WHIRLPOOL_PROGRAM_ID = new anchor.web3.PublicKey(
+  'whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc'
+)
+const SOL_USDC_WHIRLPOOL = new anchor.web3.PublicKey(
+  'HJPjoWUrhoZzkNfRpHuieeFk9WcZWjwy6PBjZ81ngndJ'
+)
 
 const requiresSwap = (release, price, usdcBalance, ninaClient) => {
-  return !ninaClient.isSol(release.paymentMint) && 
-    usdcBalance < ninaClient.nativeToUi(price.toNumber(), ninaClient.ids.mints.usdc)
+  return (
+    !ninaClient.isSol(release.paymentMint) &&
+    usdcBalance <
+      ninaClient.nativeToUi(price.toNumber(), ninaClient.ids.mints.usdc)
+  )
 }
 
-const releasePurchaseWithOrcaSwap = async (release, price, provider, ninaClient, instructions, request, hub) => {
-  console.log('provider', provider)
-  const context = WhirlpoolContext.from(provider.connection, provider.wallet, WHIRLPOOL_PROGRAM_ID)
+const releasePurchaseWithOrcaSwap = async (
+  release,
+  price,
+  provider,
+  ninaClient,
+  instructions,
+  request,
+  hub
+) => {
+  const context = WhirlpoolContext.from(
+    provider.connection,
+    provider.wallet,
+    WHIRLPOOL_PROGRAM_ID
+  )
   const fetcher = new AccountFetcher(context.provider.connection)
 
   const whirlpoolClient = buildWhirlpoolClient(context)
@@ -56,11 +72,12 @@ const releasePurchaseWithOrcaSwap = async (release, price, provider, ninaClient,
 
   const tx = await whirlpool.swap(inputTokenQuote)
 
-  const addPriorityFeeIx =
-    anchor.web3.ComputeBudgetProgram.setComputeUnitPrice({
+  const addPriorityFeeIx = anchor.web3.ComputeBudgetProgram.setComputeUnitPrice(
+    {
       microLamports: PRIORITY_SWAP_FEE,
-    })
-  
+    }
+  )
+
   tx.prependInstruction({
     instructions: [addPriorityFeeIx],
     cleanupInstructions: [],
@@ -70,9 +87,16 @@ const releasePurchaseWithOrcaSwap = async (release, price, provider, ninaClient,
   const program = await ninaClient.useProgram()
   let purchaseIx
   if (hub) {
-    purchaseIx = await program.instruction.releasePurchaseViaHub(release.price, decodeNonEncryptedByteArray(hub.handle), request)
+    purchaseIx = await program.instruction.releasePurchaseViaHub(
+      release.price,
+      decodeNonEncryptedByteArray(hub.handle),
+      request
+    )
   } else {
-    purchaseIx = await program.instruction.releasePurchase(release.price, request)
+    purchaseIx = await program.instruction.releasePurchase(
+      release.price,
+      request
+    )
   }
 
   instructions.push({
@@ -86,23 +110,26 @@ const releasePurchaseWithOrcaSwap = async (release, price, provider, ninaClient,
   return await tx.buildAndExecute()
 }
 
-const releasePurchaseHelper = async (releasePubkey, provider, ninaClient, usdcBalance, hubPubkey=null) => {
+const releasePurchaseHelper = async (
+  releasePubkey,
+  provider,
+  ninaClient,
+  usdcBalance,
+  hubPubkey = null
+) => {
   let hub
   releasePubkey = new anchor.web3.PublicKey(releasePubkey)
   const program = await ninaClient.useProgram()
-  const release = await program.account.release.fetch(
-    releasePubkey
-  )
+  const release = await program.account.release.fetch(releasePubkey)
 
-  let [payerTokenAccount, payerTokenAccountIx] =
-    await findOrCreateAssociatedTokenAccount(
-      provider.connection,
-      provider.wallet.publicKey,
-      provider.wallet.publicKey,
-      anchor.web3.SystemProgram.programId,
-      anchor.web3.SYSVAR_RENT_PUBKEY,
-      release.paymentMint
-    )
+  let [payerTokenAccount] = await findOrCreateAssociatedTokenAccount(
+    provider.connection,
+    provider.wallet.publicKey,
+    provider.wallet.publicKey,
+    anchor.web3.SystemProgram.programId,
+    anchor.web3.SYSVAR_RENT_PUBKEY,
+    release.paymentMint
+  )
 
   let [receiverReleaseTokenAccount, receiverReleaseTokenAccountIx] =
     await findOrCreateAssociatedTokenAccount(
@@ -127,7 +154,7 @@ const releasePurchaseHelper = async (releasePubkey, provider, ninaClient, usdcBa
       tokenProgram: TOKEN_PROGRAM_ID,
     },
   }
-  
+
   if (hubPubkey) {
     hubPubkey = new anchor.web3.PublicKey(hubPubkey)
     hub = await program.account.hub.fetch(hubPubkey)
@@ -183,7 +210,7 @@ const releasePurchaseHelper = async (releasePubkey, provider, ninaClient, usdcBa
       signers: [],
     })
   }
-  
+
   let price = release.price
   if (hub) {
     let releasePriceUi = ninaClient.nativeToUi(
@@ -191,15 +218,23 @@ const releasePurchaseHelper = async (releasePubkey, provider, ninaClient, usdcBa
       ninaClient.ids.mints.usdc
     )
 
-    let convertAmount = releasePriceUi + (releasePriceUi * hub.referralFee.toNumber()) / 1000000
-    price = new anchor.BN(ninaClient.uiToNative(
-      convertAmount,
-      ninaClient.ids.mints.usdc
-    ))
+    let convertAmount =
+      releasePriceUi + (releasePriceUi * hub.referralFee.toNumber()) / 1000000
+    price = new anchor.BN(
+      ninaClient.uiToNative(convertAmount, ninaClient.ids.mints.usdc)
+    )
   }
 
   if (requiresSwap(release, price, usdcBalance, ninaClient)) {
-    return releasePurchaseWithOrcaSwap(release, price, provider, ninaClient, instructions, request, hub)
+    return releasePurchaseWithOrcaSwap(
+      release,
+      price,
+      provider,
+      ninaClient,
+      instructions,
+      request,
+      hub
+    )
   } else {
     if (instructions.length > 0) {
       request.instructions = instructions.reduce((acc, curr) => {
@@ -220,8 +255,12 @@ const releasePurchaseHelper = async (releasePubkey, provider, ninaClient, usdcBa
       request.signers = signers
       request.accounts.payerTokenAccount = signers[0].publicKey
     }
-    if (hubHandle) {
-      return await program.rpc.releasePurchaseViaHub(release.price, decodeNonEncryptedByteArray(hub.handle), request)
+    if (hub) {
+      return await program.rpc.releasePurchaseViaHub(
+        release.price,
+        decodeNonEncryptedByteArray(hub.handle),
+        request
+      )
     } else {
       return await program.rpc.releasePurchase(release.price, request)
     }

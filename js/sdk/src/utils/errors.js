@@ -37,7 +37,6 @@ export const ninaErrorHandler = (error, errorString) => {
   } else if (errorString) {
     msg = errorString
   }
-  console.log('error', error, errorString, error.msg, error.toString())
 
   if (msg) {
     return {
