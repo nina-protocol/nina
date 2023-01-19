@@ -146,18 +146,13 @@ const hubContextHelper = ({
   setHubCollaboratorsState,
   hubContentState,
   setHubContentState,
-  setHubFeePending,
   postState,
   setPostState,
-  initialLoad,
-  setInitialLoad,
   getRelease,
   addToHubQueue,
   setAddToHubQueue,
   allHubs,
   setAllHubs,
-  hubsCount,
-  setHubsCount,
   featuredHubs,
   setFeaturedHubs,
   hubContentFetched,
@@ -272,7 +267,6 @@ const hubContextHelper = ({
       }
     } catch (error) {
       logEvent('hub_init_with_credit_success_failure', 'engagement', {
-        hub: hub.toBase58(),
         wallet: provider.wallet.publicKey.toBase58(),
       })
 
@@ -364,7 +358,7 @@ const hubContextHelper = ({
       )
 
       await getConfirmTransaction(txid, provider.connection)
-      const result = await axios.get(
+      await axios.get(
         endpoints.api +
           `/hubs/${hubPubkey}/collaborators/${hubCollaborator.toBase58()}`
       )
@@ -644,14 +638,13 @@ const hubContextHelper = ({
       hubPubkey = new anchor.web3.PublicKey(hubPubkey)
       const USDC_MINT = new anchor.web3.PublicKey(ids.mints.usdc)
 
-      const [hubSigner, hubSignerBump] =
-        await anchor.web3.PublicKey.findProgramAddress(
-          [
-            Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-signer')),
-            hubPubkey.toBuffer(),
-          ],
-          program.programId
-        )
+      const [hubSigner] = await anchor.web3.PublicKey.findProgramAddress(
+        [
+          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-signer')),
+          hubPubkey.toBuffer(),
+        ],
+        program.programId
+      )
       let [withdrawTarget] = await findOrCreateAssociatedTokenAccount(
         provider.connection,
         provider.wallet.publicKey,

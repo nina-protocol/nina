@@ -64,8 +64,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [solUsdcBalance, setSolUsdcBalance] = useState(0)
   const [npcAmountHeld, setNpcAmountHeld] = useState(0)
   const [solPrice, setSolPrice] = useState(0)
-  const [healthOk, setHealthOk] = useState(true)
-  const [healthTimestamp, setHealthTimestamp] = useState(0)
+  const [healthOk] = useState(true)
   const [bundlrBalance, setBundlrBalance] = useState(0.0)
   const [bundlr, setBundlr] = useState()
   const [bundlrPricePerMb, setBundlrPricePerMb] = useState()
@@ -610,7 +609,7 @@ const ninaContextHelper = ({
     if (provider.wallet?.connected && provider.wallet?.publicKey) {
       try {
         const solPrice = await axios.get(
-          `https://price.jup.ag/v3/price?ids=SOL`
+          `https://price.jup.ag/v4/price?ids=SOL`
         )
         const solUsdcBalanceResult = await getSolBalance()
         setSolUsdcBalance(
@@ -639,7 +638,6 @@ const ninaContextHelper = ({
           setUsdcBalance(0)
         }
       } catch (error) {
-        console.log('error: ', error)
         console.warn('error getting usdc balance')
       }
     } else {
@@ -753,7 +751,7 @@ const ninaContextHelper = ({
       return new Promise((resolve, reject) => {
         const uploader = bundlr.uploader.chunkedUploader
         uploader.on('chunkUpload', (chunkInfo) => {
-          console.log(
+          console.warn(
             `Uploaded Chunk number ${chunkInfo.id}, offset of ${chunkInfo.offset}, size ${chunkInfo.size} Bytes, with a total of ${chunkInfo.totalUploaded} bytes uploaded.`
           )
         })
@@ -763,7 +761,7 @@ const ninaContextHelper = ({
           )
         })
         uploader.on('done', (finishRes) => {
-          console.log(`Upload completed with ID ${JSON.stringify(finishRes)}`)
+          console.warn(`Upload completed with ID ${JSON.stringify(finishRes)}`)
         })
         const reader = new FileReader()
         reader.onload = async () => {
@@ -1025,7 +1023,7 @@ const ninaContextHelper = ({
             return
           }
           records.forEach(function (record) {
-            console.log('Email request submitted: ', record.getId())
+            console.warn('Email request submitted: ', record.getId())
           })
         }
       )

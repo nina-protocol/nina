@@ -2,7 +2,6 @@ import * as encrypt from './encrypt'
 import * as web3 from './web3'
 import * as imageManager from './imageManager'
 import CryptoJS from 'crypto-js'
-import NinaSdk from '@nina-protocol/js-sdk'
 import promiseRetry from 'promise-retry'
 
 const dateConverter = (date) => {
@@ -10,7 +9,7 @@ const dateConverter = (date) => {
   var months = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
   var year = a.getFullYear()
   var month = months[a.getMonth()]
-  var date = a.getDate()
+  var day = a.getDate()
   var hour = a.getHours().toLocaleString('en-US', {
     minimumIntegerDigits: 2,
   })
@@ -20,8 +19,7 @@ const dateConverter = (date) => {
   var sec = a.getSeconds().toLocaleString('en-US', {
     minimumIntegerDigits: 2,
   })
-  var time =
-    year + ' ' + month + '/' + date + ' ' + hour + ':' + min + ':' + sec
+  var time = year + ' ' + month + '/' + day + ' ' + hour + ':' + min + ':' + sec
   return time
 }
 
@@ -155,7 +153,7 @@ const parseChecker = (data) => {
 
 const getConfirmTransaction = async (txid, connection) => {
   const res = await promiseRetry(
-    async (retry, attempt) => {
+    async (retry) => {
       let txResult = await connection.getTransaction(txid, {
         commitment: 'confirmed',
       })

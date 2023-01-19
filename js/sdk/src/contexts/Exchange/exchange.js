@@ -29,7 +29,6 @@ const ExchangeContextProvider = ({ children }) => {
     exchangeAccept,
     exchangeCancel,
     exchangeInit,
-    getExchange,
     getExchangesForUser,
     getExchangesForRelease,
     filterExchangesForUser,
@@ -83,7 +82,6 @@ const exchangeContextHelper = ({
   setExchangeInitPending,
   addReleaseToCollection,
   removeReleaseFromCollection,
-  getRelease,
   getUserBalances,
   setVerificationState,
 }) => {

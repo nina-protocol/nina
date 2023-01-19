@@ -63,7 +63,6 @@ const AudioPlayerContextProvider = ({ children }) => {
     setIsPlaying,
     setTrack,
     currentIndex,
-    setTrack,
     track,
   })
 
@@ -112,7 +111,6 @@ const AudioPlayerContextProvider = ({ children }) => {
         updateTrack,
         playNext,
         playPrev,
-        updateTrack,
         playlist,
         reorderPlaylist,
         removeTrackFromPlaylist,
@@ -142,7 +140,6 @@ const audioPlayerContextHelper = ({
   collection,
   shouldRemainInCollectionAfterSale,
   setIsPlaying,
-  currentIndex,
   setTrack,
   track,
   ninaClient,

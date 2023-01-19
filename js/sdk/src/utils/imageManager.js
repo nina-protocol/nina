@@ -18,6 +18,7 @@ export const getImageFromCDN = (url, width = 400, date) => {
   return image
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const loader = ({ src, width }) => {
   const url = new URL(src)
   if (src.includes('&s=')) {
