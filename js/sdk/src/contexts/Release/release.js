@@ -229,7 +229,7 @@ const releaseContextHelper = ({
       )
     let hubRelease
     if (hubPubkey) {
-      [hubRelease] = await anchor.web3.PublicKey.findProgramAddress(
+      ;[hubRelease] = await anchor.web3.PublicKey.findProgramAddress(
         [
           Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-release')),
           new anchor.web3.PublicKey(hubPubkey).toBuffer(),
