@@ -17,7 +17,7 @@ import {
   decodeNonEncryptedByteArray,
   decryptData,
 } from '../../utils/encrypt'
-import { swap } from '../../utils/swap'
+import releasePurchaseHelper from '../../utils/releasePurchaseHelper'
 import { logEvent } from '../../utils/event'
 import { publicKey } from '@project-serum/anchor/dist/cjs/utils';
 import { initSdkIfNeeded } from '../../utils/sdkInit';
@@ -26,7 +26,7 @@ const lookupTypes = {
   PUBLISHED_BY: 'published_by',
   REVENUE_SHARE: 'revenue_share',
 }
-const PRIORITY_SWAP_FEE = 7500
+
 const ReleaseContext = createContext()
 const ReleaseContextProvider = ({ children }) => {
   const {
@@ -868,10 +868,6 @@ const releaseContextHelper = ({
       ...releasePurchaseTransactionPending,
       [releasePubkey]: true,
     })
-    const program = await ninaClient.useProgram()
-    const release = await program.account.release.fetch(
-      new anchor.web3.PublicKey(releasePubkey)
-    )
 
     setReleasePurchasePending({
       ...releasePurchasePending,
@@ -879,154 +875,18 @@ const releaseContextHelper = ({
     })
 
     try {
-      let [payerTokenAccount, payerTokenAccountIx] =
-        await findOrCreateAssociatedTokenAccount(
-          provider.connection,
-          provider.wallet.publicKey,
-          provider.wallet.publicKey,
-          anchor.web3.SystemProgram.programId,
-          anchor.web3.SYSVAR_RENT_PUBKEY,
-          release.paymentMint
-        )
 
-      let [receiverReleaseTokenAccount, receiverReleaseTokenAccountIx] =
-        await findOrCreateAssociatedTokenAccount(
-          provider.connection,
-          provider.wallet.publicKey,
-          provider.wallet.publicKey,
-          anchor.web3.SystemProgram.programId,
-          anchor.web3.SYSVAR_RENT_PUBKEY,
-          release.releaseMint
-        )
+      const txid = await releasePurchaseHelper(
+        releasePubkey,
+        provider,
+        ninaClient,
+        usdcBalance
+      )
 
-      const request = {
-        accounts: {
-          release: new anchor.web3.PublicKey(releasePubkey),
-          releaseSigner: release.releaseSigner,
-          payer: provider.wallet.publicKey,
-          payerTokenAccount,
-          receiver: provider.wallet.publicKey,
-          receiverReleaseTokenAccount,
-          royaltyTokenAccount: release.royaltyTokenAccount,
-          releaseMint: release.releaseMint,
-          tokenProgram: TOKEN_PROGRAM_ID,
-        },
-      }
-      const instructions = []
-      let tx
-      if (
-        !isSol(release.paymentMint) &&
-        usdcBalance <
-          ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)
-      ) {
-        const solPrice = await getSolPrice()
-        const releaseUiPrice =
-          ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc) -
-          usdcBalance
-        console.log('release.price.toNumber()', release.price.toNumber())
-        tx = await swap(provider.connection, provider.wallet, release.price.toNumber())
-        console.log('swapInstructions', tx)
-        // const { data } = await axios.get(
-        //   `https://quote-api.jup.ag/v3/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative(
-        //     (releaseUiPrice + releaseUiPrice * 0.01) / solPrice,
-        //     ids.mints.wsol
-        //   )}&slippageBps=2&onlyDirectRoutes=true`
-        // )
-        // const transactions = await axios.post(
-        //   'https://quote-api.jup.ag/v3/swap',
-        //   {
-        //     route: data.data[0],
-        //     userPublicKey: provider.wallet.publicKey.toBase58(),
-        //   }
-        // )
-
-        const addPriorityFee =
-          anchor.web3.ComputeBudgetProgram.setComputeUnitPrice({
-            microLamports: PRIORITY_SWAP_FEE,
-          })
-          tx.prependInstruction({
-            instructions: [addPriorityFee],
-            cleanupInstructions: [],
-            signers: [],
-          })
-        // swapInstructions.forEach((instruction) => {
-        //   console.log('instruction', instruction)
-        //   if (instruction.signers.length > 0) {
-        //     if (request.signers) {
-        //       request.signers.push(...instruction.signers)
-        //     } else {
-        //       request.signers = instruction.signers
-        //     }
-        //   }
-
-        //   if (instruction.instructions.length > 0) {
-        //     instruction.instructions.forEach(i => {
-        //       i.keys.forEach(k => {
-        //         // console.log('k', k.toBase58())
-        //         console.log('i', k.pubkey.toBase58())
-        //       })
-        //     })
-        //     instructions.push(...instruction.instructions)
-        //   }
-        //   if (instruction.cleanupInstructions.length > 0) {
-        //     instruction.instructions.forEach(i => {
-        //       i.keys.forEach(k => {
-        //         // console.log('k', k.toBase58())
-        //         console.log('c', k.pubkey.toBase58())
-        //       })
-        //     })
-
-        //     instructions.push(...instruction.cleanupInstructions)
-        //   }
-        // })
-      }
-
-      if (receiverReleaseTokenAccountIx) {
-        tx.addInstruction({
-          instructions: [receiverReleaseTokenAccountIx],
-          cleanupInstructions: [],
-          signers: [],
-        })
-        // instructions.push(receiverReleaseTokenAccountIx)
-      }
-
-      // if (instructions.length > 0) {
-      //   request.instructions = instructions
-      // }
-
-      if (isSol(release.paymentMint)) {
-        const { instructions, signers } = await wrapSol(
-          provider,
-          new anchor.BN(release.price)
-        )
-        if (!request.instructions) {
-          request.instructions = [...instructions]
-        } else {
-          request.instructions.push(...instructions)
-        }
-        request.signers = signers
-        request.accounts.payerTokenAccount = signers[0].publicKey
-      }
       setReleasePurchaseTransactionPending({
         ...releasePurchaseTransactionPending,
         [releasePubkey]: false,
       })
-      console.log('request', request)
-      // Object.keys(request.accounts).forEach((key) => {
-      //   console.log('key', key)
-      //   console.log('request.accounts[key]', request.accounts[key].toBase58())
-      // })
-      const purchaseIx = await program.instruction.releasePurchase(release.price, request)
-      // console.log('purchaseIx', purchaseIx)
-      // const txid = await program.rpc.releasePurchase(release.price, request)
-      tx.addInstruction({
-        instructions: [purchaseIx],
-        cleanupInstructions: [],
-        signers: [],
-      })
-      console.log('tx', tx)
-      const txid = await tx.buildAndExecute()
-      console.log('txid', txid)
       await getConfirmTransaction(txid, provider.connection)
 
       setReleasePurchasePending({
@@ -1058,6 +918,7 @@ const releaseContextHelper = ({
         ...releasePurchasePending,
         [releasePubkey]: false,
       })
+
       setReleasePurchaseTransactionPending({
         ...releasePurchaseTransactionPending,
         [releasePubkey]: false,
@@ -1450,6 +1311,10 @@ const releaseContextHelper = ({
     }
   }
 
+  const isSwap = (release, ninaClient) => {
+    return !isSol(release.paymentMint) && 
+      usdcBalance < ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)
+  }
   /*
     
   RELEASE PROGRAM LOOKUPS
