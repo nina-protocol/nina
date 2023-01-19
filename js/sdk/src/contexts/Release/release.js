@@ -1017,7 +1017,7 @@ const releaseContextHelper = ({
       //   console.log('request.accounts[key]', request.accounts[key].toBase58())
       // })
       const purchaseIx = await program.instruction.releasePurchase(release.price, request)
-      console.log('purchaseIx', purchaseIx)
+      // console.log('purchaseIx', purchaseIx)
       // const txid = await program.rpc.releasePurchase(release.price, request)
       tx.addInstruction({
         instructions: [purchaseIx],
