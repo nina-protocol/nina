@@ -28,6 +28,18 @@ export default function Home() {
 
   useEffect(() => {
     playerRef.current = document.querySelector("#audio")
+    playerRef.current.addEventListener('error', (e) => {
+      if (e.target.error.code === e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED) {
+        if (playerRef.current.src.includes('arweave.net')) {
+          playerRef.current.src = activeTrack.current.txid.replace(
+            'arweave.net',
+            'ar-io.net'
+          )
+          play()
+        }
+      }
+    })
+
     Nina.client.init(
       process.env.NINA_API_ENDPOINT,
       process.env.SOLANA_CLUSTER_URL,

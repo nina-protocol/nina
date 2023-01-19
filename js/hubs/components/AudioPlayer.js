@@ -98,7 +98,18 @@ const AudioPlayer = ({ hubPubkey }) => {
   const [trackProgress, setTrackProgress] = useState(0.0)
 
   useEffect(() => {
-    audioPlayerRef.current = document.querySelector('#audio')
+    audioPlayerRef.current = document.querySelector("#audio");
+    audioPlayerRef.current.addEventListener('error', (e) => {
+      if (e.target.error.code === e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED) {
+        if (audioPlayerRef.current.src.includes('arweave.net')) {
+          audioPlayerRef.current.src = activeTrack.current.txid.replace(
+            'arweave.net',
+            'ar-io.net'
+          )
+          play()
+        }
+      }
+    })
 
     const actionHandlers = [
       ['play', () => play()],

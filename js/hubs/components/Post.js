@@ -35,7 +35,8 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
 
   const [metadata, setMetadata] = useState()
 
-  const { postState } = useContext(Nina.Context)
+  const { postState, displayNameForAccount, getVerificationsForUser } =
+    useContext(Nina.Context);
   const { getHub, hubState, hubContentState, getHubPost } = useContext(
     Hub.Context
   )
@@ -44,6 +45,10 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
   useEffect(() => {
     getHub(hubPubkey)
   }, [hubPubkey])
+
+  useEffect(() => {
+    getVerificationsForUser(postData?.publisher);
+  }, [postData]);
 
   useEffect(() => {
     if (hubPostPubkey && !postState[postPubkey]) {
@@ -143,13 +148,19 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
             <Typography align="left" sx={{ marginTop: '20px' }}>
               Published by:{' '}
               <a
-                href={`https://ninaprotocol.com/collection/${postData.publisher}`}
+                href={`https://ninaprotocol.com/profiles/${postData.publisher}`}
                 target="_blank"
                 rel="noreferrer"
               >
+<<<<<<< HEAD
                 {postData.publisher}
               </a>{' '}
               at{' '}
+=======
+                {displayNameForAccount(postData.publisher)}
+              </a>{" "}
+              at{" "}
+>>>>>>> da61ab1a01f18afb3d2beb353b39bb838b913391
               <a
                 href={`https://explorer.solana.com/account/${postData.publicKey}`}
                 target="_blank"

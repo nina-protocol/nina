@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useContext } from 'react'
 import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
@@ -7,6 +8,17 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined'
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined'
 import Image from 'next/image'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+=======
+import React, { useContext } from "react";
+import "react-dropzone-uploader/dist/styles.css";
+import Dropzone from "react-dropzone-uploader";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
+import Image from "next/image";
+import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
+>>>>>>> da61ab1a01f18afb3d2beb353b39bb838b913391
 
 const MediaDropzone = ({
   type,
@@ -17,6 +29,7 @@ const MediaDropzone = ({
 }) => {
   const { MAX_AUDIO_FILE_UPLOAD_SIZE, MAX_IMAGE_FILE_UPLOAD_SIZE } = useContext(
     Nina.Context
+<<<<<<< HEAD
   )
 
   const handleChangeStatus = ({ meta, file, remove }, status) => {
@@ -27,6 +40,18 @@ const MediaDropzone = ({
       if (file.type.includes('audio')) {
         if (file.type !== 'audio/mpeg') {
           alert(`Your track is not an MP3. \nPlease upload an MP3.`)
+=======
+  );
+
+  const handleChangeStatus = ({ meta, file, remove }, status) => {
+    if (meta.status === "error_validation") {
+      const height = meta.height;
+      const width = meta.width;
+      const size = meta.size / 1000000;
+      if (file.type.includes("audio")) {
+        if (file.type !== "audio/mpeg") {
+          alert(`Your track is not an MP3. \nPlease upload an MP3.`);
+>>>>>>> da61ab1a01f18afb3d2beb353b39bb838b913391
         } else {
           alert(
             `Your track is ${size} mb... \nPlease upload a file smaller than ${MAX_AUDIO_FILE_UPLOAD_SIZE} MBs`
@@ -143,7 +168,7 @@ const MediaDropzone = ({
               {minutes}:{seconds}
             </Typography>
             <Typography align="left" variant="subtitle1">
-              {processingProgress === 1 ? 'Processed' : 'Processing'}:{' '}
+              {processingProgress === 1 ? "Processed" : "Processing"}:{" "}
               {(processingProgress * 100).toFixed(2)}%
             </Typography>
           </Box>
