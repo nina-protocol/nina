@@ -4,27 +4,27 @@ import React, {
   useEffect,
   useMemo,
   useCallback,
-} from "react";
-import * as Yup from "yup";
-import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
-import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
-import { useSnackbar } from "notistack";
-import { styled } from "@mui/material/styles";
-import Button from "@mui/material/Button";
-import LinearProgress from "@mui/material/LinearProgress";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import { useWallet } from "@solana/wallet-adapter-react";
-import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
-import HubCreateForm from "./HubCreateForm";
-import HubCreateConfirm from "./HubCreateConfirm";
-import NinaBox from "./NinaBox";
-import HubImageDropzone from "./HubImageDropzone";
-import Dots from "./Dots";
-import BundlrModal from "./BundlrModal";
-import EmailCapture from "@nina-protocol/nina-internal-sdk/esm/EmailCapture";
+} from 'react'
+import * as Yup from 'yup'
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import { useSnackbar } from 'notistack'
+import { styled } from '@mui/material/styles'
+import Button from '@mui/material/Button'
+import LinearProgress from '@mui/material/LinearProgress'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import { useWallet } from '@solana/wallet-adapter-react'
+import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
+import HubCreateForm from './HubCreateForm'
+import HubCreateConfirm from './HubCreateConfirm'
+import NinaBox from './NinaBox'
+import HubImageDropzone from './HubImageDropzone'
+import Dots from './Dots'
+import BundlrModal from './BundlrModal'
+import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
 
 const ColorModal = dynamic(() => import('./ColorModal'))
 

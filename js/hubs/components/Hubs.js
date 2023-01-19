@@ -1,14 +1,14 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
-import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import Head from "next/head";
-import Link from "next/link";
-import { styled } from "@mui/material/styles";
-import { useWallet } from "@solana/wallet-adapter-react";
-import EmailCapture from "@nina-protocol/nina-internal-sdk/esm/EmailCapture";
+import React, { useContext, useEffect, useMemo, useState } from 'react'
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import Head from 'next/head'
+import Link from 'next/link'
+import { styled } from '@mui/material/styles'
+import { useWallet } from '@solana/wallet-adapter-react'
+import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
 
 import HubSlider from './HubSlider'
 import {
