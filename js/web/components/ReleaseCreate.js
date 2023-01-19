@@ -210,12 +210,14 @@ const ReleaseCreate = () => {
 
   const handleFormChange = useCallback(
     async (values) => {
+          console.log('form values', formValues.releaseForm)
       setFormValues({
         ...formValues,
         releaseForm: values,
       })
     },
     [formValues]
+
   )
 
   useEffect(() => {
