@@ -1,39 +1,39 @@
-import { useContext, useState } from "react";
-import { useSnackbar } from "notistack";
-import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import { styled } from "@mui/material/styles";
-import Dots from "./Dots.js";
+import { useContext, useState } from 'react'
+import { useSnackbar } from 'notistack'
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Box from '@mui/material/Box'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
+import { styled } from '@mui/material/styles'
+import Dots from './Dots.js'
 
-import { useFormik } from "formik";
-import { DashboardHeader } from "../styles/theme/lightThemeOptions.js";
+import { useFormik } from 'formik'
+import { DashboardHeader } from '../styles/theme/lightThemeOptions.js'
 
 const CollaboratorPermissions = (props) => {
-  const { hubPubkey, activeSelection, isAuthority, setActiveSelection } = props;
-  const { enqueueSnackbar } = useSnackbar();
-  const { hubUpdateCollaboratorPermission } = useContext(Hub.Context);
-  const [pending, setPending] = useState(false);
+  const { hubPubkey, activeSelection, isAuthority, setActiveSelection } = props
+  const { enqueueSnackbar } = useSnackbar()
+  const { hubUpdateCollaboratorPermission } = useContext(Hub.Context)
+  const [pending, setPending] = useState(false)
   const buttonText = isAuthority
-    ? "Update Permissions"
-    : "You Do Not Have Permission To Add Artists";
+    ? 'Update Permissions'
+    : 'You Do Not Have Permission To Add Artists'
 
   const [unlimitedAllowance, setUnlimitAllowance] = useState(
     activeSelection.allowance === -1
-  );
+  )
 
   const toggleAllowance = (formik) => {
     if (unlimitedAllowance) {
-      setUnlimitAllowance(false);
-      formik.setFieldValue("allowance", 3);
+      setUnlimitAllowance(false)
+      formik.setFieldValue('allowance', 3)
     } else {
-      setUnlimitAllowance(true);
-      formik.setFieldValue("allowance", -1);
+      setUnlimitAllowance(true)
+      formik.setFieldValue('allowance', -1)
     }
-  };
+  }
 
   const formik = useFormik({
     initialValues: {
@@ -50,30 +50,30 @@ const CollaboratorPermissions = (props) => {
         canAddContent,
         canAddCollaborator,
         allowance,
-      } = values;
-      setPending(true);
+      } = values
+      setPending(true)
       const result = await hubUpdateCollaboratorPermission(
         collaboratorPubkey,
         hubPubkey,
         canAddContent,
         canAddCollaborator,
         allowance
-      );
+      )
 
       if (result.success) {
         enqueueSnackbar(result.msg, {
-          variant: "info",
-        });
-        resetForm();
+          variant: 'info',
+        })
+        resetForm()
       } else {
-        enqueueSnackbar("Permissions Not Updated", {
-          variant: "failure",
-        });
+        enqueueSnackbar('Permissions Not Updated', {
+          variant: 'failure',
+        })
       }
-      setPending(false);
+      setPending(false)
     },
     enableReinitialize: true,
-  });
+  })
 
   return (
     <Root mt={2}>
@@ -86,7 +86,7 @@ const CollaboratorPermissions = (props) => {
       {activeSelection && (
         <form
           onSubmit={formik.handleSubmit}
-          style={{ display: "flex", flexDirection: "column", width: "100%" }}
+          style={{ display: 'flex', flexDirection: 'column', width: '100%' }}
         >
           <TextField
             fullWidth
@@ -99,13 +99,13 @@ const CollaboratorPermissions = (props) => {
             disabled={true}
           />
           <Box
-            display={"flex"}
+            display={'flex'}
             alignItems="flex-end"
-            justifyContent={"flex-start"}
-            sx={{ margin: " 15px 0px 0", padding: "0" }}
+            justifyContent={'flex-start'}
+            sx={{ margin: ' 15px 0px 0', padding: '0' }}
           >
             <FormControlLabel
-              sx={{ margin: "0", padding: "0" }}
+              sx={{ margin: '0', padding: '0' }}
               control={
                 <Checkbox
                   checked={formik.values.canAddContent}
@@ -117,7 +117,7 @@ const CollaboratorPermissions = (props) => {
               label="Can Add Content"
             />
             <FormControlLabel
-              sx={{ margin: "0", paddingLeft: "15px" }}
+              sx={{ margin: '0', paddingLeft: '15px' }}
               control={
                 <Checkbox
                   checked={formik.values.canAddCollaborator}
@@ -137,15 +137,15 @@ const CollaboratorPermissions = (props) => {
                 type="number"
                 InputProps={{ inputProps: { min: 0 } }}
                 variant="standard"
-                style={{ width: "100px", marginLeft: "15px", fontSize: "13px" }}
-                value={unlimitedAllowance ? "" : formik.values.allowance}
+                style={{ width: '100px', marginLeft: '15px', fontSize: '13px' }}
+                value={unlimitedAllowance ? '' : formik.values.allowance}
                 onChange={formik.handleChange}
                 disabled={unlimitedAllowance}
               />
             </Box>
 
             <FormControlLabel
-              sx={{ margin: "0", paddingLeft: "15px" }}
+              sx={{ margin: '0', paddingLeft: '15px' }}
               control={
                 <Checkbox
                   value={formik.values.canAddCollaborator}
@@ -159,7 +159,7 @@ const CollaboratorPermissions = (props) => {
             />
           </Box>
           <Button
-            style={{ marginTop: "15px" }}
+            style={{ marginTop: '15px' }}
             variant="outlined"
             fullWidth
             type="submit"
@@ -168,11 +168,11 @@ const CollaboratorPermissions = (props) => {
             {pending ? <Dots /> : buttonText}
           </Button>
           <Button
-            style={{ marginTop: "15px" }}
+            style={{ marginTop: '15px' }}
             variant="outlined"
             fullWidth
             onClick={() => {
-              setActiveSelection(null);
+              setActiveSelection(null)
             }}
           >
             Cancel
@@ -180,15 +180,15 @@ const CollaboratorPermissions = (props) => {
         </form>
       )}
     </Root>
-  );
-};
+  )
+}
 
 const Root = styled(Box)(({ theme }) => ({
   // whiteSpace: 'nowrap',
-  "& .MuiFormControlLabel-label": {
-    fontSize: "13px !important",
-    whiteSpace: "nowrap",
+  '& .MuiFormControlLabel-label': {
+    fontSize: '13px !important',
+    whiteSpace: 'nowrap',
   },
-}));
+}))
 
-export default CollaboratorPermissions;
+export default CollaboratorPermissions

@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
-import { styled } from "@mui/material/styles";
-import { withFormik, Form, Field } from "formik";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import FormLabel from "@mui/material/FormLabel";
-import RadioGroup from "@mui/material/RadioGroup";
-import Radio from "@mui/material/Radio";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import { formatPlaceholder } from "@nina-protocol/nina-internal-sdk/esm/utils";
+import React, { useEffect } from 'react'
+import { styled } from '@mui/material/styles'
+import { withFormik, Form, Field } from 'formik'
+import TextField from '@mui/material/TextField'
+import Box from '@mui/material/Box'
+import FormLabel from '@mui/material/FormLabel'
+import RadioGroup from '@mui/material/RadioGroup'
+import Radio from '@mui/material/Radio'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import { formatPlaceholder } from '@nina-protocol/nina-internal-sdk/esm/utils'
 
 const EmailCaptureForm = ({
   values,
@@ -18,9 +18,9 @@ const EmailCaptureForm = ({
 }) => {
   useEffect(() => {
     if (onChange) {
-      onChange(values);
+      onChange(values)
     }
-  }, [values]);
+  }, [values])
 
   return (
     <Root>
@@ -33,7 +33,7 @@ const EmailCaptureForm = ({
                 variant="standard"
                 label={formatPlaceholder(props.field.name)}
                 size="small"
-                InputLabelProps={touched.email ? { shrink: true } : ""}
+                InputLabelProps={touched.email ? { shrink: true } : ''}
                 placeholder={
                   errors.email && touched.email ? errors.email : null
                 }
@@ -51,7 +51,7 @@ const EmailCaptureForm = ({
                 variant="standard"
                 label={formatPlaceholder(props.field.name)}
                 size="small"
-                InputLabelProps={touched.soundcloud ? { shrink: true } : ""}
+                InputLabelProps={touched.soundcloud ? { shrink: true } : ''}
                 placeholder={
                   errors.soundcloud && touched.soundcloud
                     ? errors.soundcloud
@@ -70,7 +70,7 @@ const EmailCaptureForm = ({
                 variant="standard"
                 label={formatPlaceholder(props.field.name)}
                 size="small"
-                InputLabelProps={touched.twitter ? { shrink: true } : ""}
+                InputLabelProps={touched.twitter ? { shrink: true } : ''}
                 placeholder={
                   errors.twitter && touched.twitter ? errors.twitter : null
                 }
@@ -87,7 +87,7 @@ const EmailCaptureForm = ({
                 variant="standard"
                 label={formatPlaceholder(props.field.name)}
                 size="small"
-                InputLabelProps={touched.instagram ? { shrink: true } : ""}
+                InputLabelProps={touched.instagram ? { shrink: true } : ''}
                 placeholder={
                   errors.instagram && touched.instagram
                     ? errors.instagram
@@ -104,7 +104,7 @@ const EmailCaptureForm = ({
             sx={{ mt: 1 }}
             defaultValue="artist"
             name="type"
-            onChange={(e) => setFieldValue("type", e.target.value)}
+            onChange={(e) => setFieldValue('type', e.target.value)}
             row
           >
             <FormControlLabel
@@ -132,48 +132,48 @@ const EmailCaptureForm = ({
         </Box>
       </Form>
     </Root>
-  );
-};
-const PREFIX = "EmailCaptureForm";
+  )
+}
+const PREFIX = 'EmailCaptureForm'
 
 const classes = {
   fieldInputWrapper: `${PREFIX}-fieldInputWrapper`,
   formField: `${PREFIX}-formField`,
-};
+}
 
-const Root = styled("div")(({ theme }) => ({
-  margin: "auto",
-  width: "300px",
+const Root = styled('div')(({ theme }) => ({
+  margin: 'auto',
+  width: '300px',
   [`& .${classes.fieldInputWrapper}`]: {
-    position: "relative",
+    position: 'relative',
   },
   [`& .${classes.formField}`]: {
     ...theme.helpers.baseFont,
-    marginBottom: "8px",
-    width: "100%",
-    position: "relative",
-    "& input": {
-      textAlign: "left",
-      "&::placeholder": {
+    marginBottom: '8px',
+    width: '100%',
+    position: 'relative',
+    '& input': {
+      textAlign: 'left',
+      '&::placeholder': {
         color: theme.palette.red,
       },
     },
   },
-}));
+}))
 
 export default withFormik({
   enableReinitialize: true,
   validationSchema: (props) => {
-    return props.EmailCaptureSchema;
+    return props.EmailCaptureSchema
   },
   mapPropsToValues: () => {
     return {
-      email: "",
-      soundcloud: "",
-      twitter: "",
-      instagram: "",
+      email: '',
+      soundcloud: '',
+      twitter: '',
+      instagram: '',
       wallet: undefined,
-      type: "artist",
-    };
+      type: 'artist',
+    }
   },
-})(EmailCaptureForm);
+})(EmailCaptureForm)

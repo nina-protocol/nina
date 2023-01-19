@@ -73,7 +73,7 @@
     "lint:fix": "yarn lint -- --fix",
     "format": "prettier -l .",
     "format:fix": "prettier -w .",
-    "check-all": "yarn lint && yarn format"
+    "check-lint-format": "yarn lint && yarn format"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^12.0.7",

@@ -1,8 +1,8 @@
-import Dashboard from "../../components/Dashboard";
-import NinaSdk from "@nina-protocol/js-sdk";
-import Head from "next/head";
-import { initSdkIfNeeded } from "@nina-protocol/nina-internal-sdk/src/utils/sdkInit";
-import Dots from "../../components/Dots";
+import Dashboard from '../../components/Dashboard'
+import NinaSdk from '@nina-protocol/js-sdk'
+import Head from 'next/head'
+import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
+import Dots from '../../components/Dots'
 
 const DashboardPage = ({ hub, loading }) => {
   return (
@@ -27,19 +27,19 @@ const DashboardPage = ({ hub, loading }) => {
       </Head>
       {loading ? <Dots size="80px" /> : <Dashboard hubPubkey={hub.publicKey} />}
     </>
-  );
-};
+  )
+}
 
 DashboardPage.getInitialProps = async (context) => {
   try {
-    await initSdkIfNeeded(true);
-    const { hub } = await NinaSdk.Hub.fetch(context.query.hubPubkey);
+    await initSdkIfNeeded(true)
+    const { hub } = await NinaSdk.Hub.fetch(context.query.hubPubkey)
     return {
       hub,
-    };
+    }
   } catch (error) {
-    console.warn(error);
-    return {};
+    console.warn(error)
+    return {}
   }
-};
-export default DashboardPage;
+}
+export default DashboardPage

@@ -63,7 +63,6 @@ const AudioPlayerContextProvider = ({ children }) => {
     setIsPlaying,
     setTrack,
     currentIndex,
-    setTrack,
     track,
   })
 
@@ -101,11 +100,7 @@ const AudioPlayerContextProvider = ({ children }) => {
         params.wallet = ninaClient.provider.wallet.publicKey.toBase58()
       }
 
-      logEvent(
-        'track_play',
-        'engagement',
-        params
-      )
+      logEvent('track_play', 'engagement', params)
     }
   }
 
@@ -116,7 +111,6 @@ const AudioPlayerContextProvider = ({ children }) => {
         updateTrack,
         playNext,
         playPrev,
-        updateTrack,
         playlist,
         reorderPlaylist,
         removeTrackFromPlaylist,
@@ -146,7 +140,6 @@ const audioPlayerContextHelper = ({
   collection,
   shouldRemainInCollectionAfterSale,
   setIsPlaying,
-  currentIndex,
   setTrack,
   track,
   ninaClient,
@@ -252,12 +245,7 @@ const audioPlayerContextHelper = ({
     if (ninaClient.provider.wallet?.connected) {
       params.wallet = ninaClient.provider.wallet.publicKey.toBase58()
     }
-    logEvent(
-      'add_track_to_queue',
-      'engagement',
-      params
-    )
-
+    logEvent('add_track_to_queue', 'engagement', params)
   }
 
   const resetQueueWithPlaylist = async (releasePubkeys) => {
