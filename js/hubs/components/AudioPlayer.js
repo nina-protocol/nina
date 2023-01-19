@@ -99,17 +99,17 @@ const AudioPlayer = ({ hubPubkey }) => {
 
   useEffect(() => {
     audioPlayerRef.current = document.querySelector("#audio");
-    audioPlayerRef.current.addEventListener('error', (e) => {
+    audioPlayerRef.current.addEventListener("error", (e) => {
       if (e.target.error.code === e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED) {
-        if (audioPlayerRef.current.src.includes('arweave.net')) {
+        if (audioPlayerRef.current.src.includes("arweave.net")) {
           audioPlayerRef.current.src = activeTrack.current.txid.replace(
-            'arweave.net',
-            'ar-io.net'
-          )
-          play()
+            "arweave.net",
+            "ar-io.net"
+          );
+          play();
         }
       }
-    })
+    });
 
     const actionHandlers = [
       ["play", () => play()],

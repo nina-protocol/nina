@@ -24,7 +24,7 @@ import NinaBox from "./NinaBox";
 import HubImageDropzone from "./HubImageDropzone";
 import Dots from "./Dots";
 import BundlrModal from "./BundlrModal";
-import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
+import EmailCapture from "@nina-protocol/nina-internal-sdk/esm/EmailCapture";
 
 const ColorModal = dynamic(() => import("./ColorModal"));
 
