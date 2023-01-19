@@ -1,68 +1,68 @@
-import React, { useState, useEffect, useContext } from "react";
-import dynamic from "next/dynamic";
-import { styled } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
-import Modal from "@mui/material/Modal";
-import Backdrop from "@mui/material/Backdrop";
-import Fade from "@mui/material/Fade";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import { useWallet } from "@solana/wallet-adapter-react";
-import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
-import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
+import React, { useState, useEffect, useContext } from 'react'
+import dynamic from 'next/dynamic'
+import { styled } from '@mui/material/styles'
+import Box from '@mui/material/Box'
+import Paper from '@mui/material/Paper'
+import Modal from '@mui/material/Modal'
+import Backdrop from '@mui/material/Backdrop'
+import Fade from '@mui/material/Fade'
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
+import { useWallet } from '@solana/wallet-adapter-react'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 
-const RoyaltyRecipientForm = dynamic(() => import("./RoyaltyRecipientForm"));
+const RoyaltyRecipientForm = dynamic(() => import('./RoyaltyRecipientForm'))
 
 const Royalty = (props) => {
-  const { release, releasePubkey } = props;
+  const { release, releasePubkey } = props
 
-  const wallet = useWallet();
-  const [open, setOpen] = useState(false);
-  const [formShown, setFormShown] = useState(false);
-  const [userIsRecipient, setUserIsRecipient] = useState(false);
-  const [userRecipientData, setUserRecipientData] = useState(undefined);
-  const [userShare, setUserShare] = useState(undefined);
-  const [userDisplayShare, setUserDisplayShare] = useState(undefined);
+  const wallet = useWallet()
+  const [open, setOpen] = useState(false)
+  const [formShown, setFormShown] = useState(false)
+  const [userIsRecipient, setUserIsRecipient] = useState(false)
+  const [userRecipientData, setUserRecipientData] = useState(undefined)
+  const [userShare, setUserShare] = useState(undefined)
+  const [userDisplayShare, setUserDisplayShare] = useState(undefined)
   const [formToggleText, setFormToggleText] = useState(
-    "Add Revenue Split Recipient"
-  );
-  const { collectRoyaltyForRelease } = useContext(Release.Context);
-  const { ninaClient } = useContext(Nina.Context);
+    'Add Revenue Split Recipient'
+  )
+  const { collectRoyaltyForRelease } = useContext(Release.Context)
+  const { ninaClient } = useContext(Nina.Context)
 
   useEffect(() => {
     if (release?.revenueShareRecipients) {
       release.revenueShareRecipients.forEach((recipient) => {
-        const recipientPubkey = recipient.recipientAuthority;
+        const recipientPubkey = recipient.recipientAuthority
         if (
           wallet?.connected &&
           recipientPubkey === wallet?.publicKey.toBase58()
         ) {
-          setUserIsRecipient(true);
-          setUserRecipientData(recipient);
-          setUserShare(recipient.percentShare / 10000);
-          setUserDisplayShare(recipient.percentShare / 10000);
+          setUserIsRecipient(true)
+          setUserRecipientData(recipient)
+          setUserShare(recipient.percentShare / 10000)
+          setUserDisplayShare(recipient.percentShare / 10000)
         }
-      });
+      })
     }
-  }, [release?.revenueShareRecipients, wallet?.connected, wallet?.publicKey]);
+  }, [release?.revenueShareRecipients, wallet?.connected, wallet?.publicKey])
 
   const toggleForm = () => {
     if (!formShown) {
-      setFormShown(true);
-      setFormToggleText("Cancel");
+      setFormShown(true)
+      setFormToggleText('Cancel')
     } else {
-      setFormShown(false);
-      setFormToggleText("Add Revenue Split Recipient");
+      setFormShown(false)
+      setFormToggleText('Add Revenue Split Recipient')
     }
-  };
+  }
 
   const handleCollectRoyalty = (recipient) => {
-    collectRoyaltyForRelease(recipient, releasePubkey);
-  };
+    collectRoyaltyForRelease(recipient, releasePubkey)
+  }
 
   const userIsRecipientUI = () => {
     return (
@@ -85,8 +85,8 @@ const Royalty = (props) => {
           />
         )}
       </>
-    );
-  };
+    )
+  }
 
   return (
     <Root>
@@ -126,9 +126,9 @@ const Royalty = (props) => {
                       wallet?.publicKey.toBase58() ===
                         recipient?.recipientAuthority
                         ? true
-                        : false;
+                        : false
                     const recipientHandle = walletAuthorizedToCollect ? (
-                      "Your Royalties:"
+                      'Your Royalties:'
                     ) : (
                       <a
                         href={`https://explorer.solana.com/address/${recipient.recipientAuthority}`}
@@ -136,12 +136,12 @@ const Royalty = (props) => {
                       >
                         {`Collaborator ${i}`}
                       </a>
-                    );
+                    )
                     const percentShare = `percent share: ${
                       walletAuthorizedToCollect
                         ? userDisplayShare
                         : recipient.percentShare / 10000
-                    }%`;
+                    }%`
 
                     const owed =
                       walletAuthorizedToCollect && recipient.owed > 0
@@ -149,7 +149,7 @@ const Royalty = (props) => {
                             recipient.owed,
                             release.paymentMint
                           )}`
-                        : "";
+                        : ''
 
                     const collectButton = walletAuthorizedToCollect &&
                       recipient.owed > 0 && (
@@ -158,7 +158,7 @@ const Royalty = (props) => {
                         >
                           Collect
                         </CollectButton>
-                      );
+                      )
 
                     return (
                       <ListItem key={i} divider alignItems="center">
@@ -177,7 +177,7 @@ const Royalty = (props) => {
                         />
                         {collectButton}
                       </ListItem>
-                    );
+                    )
                   }
                 })}
             </List>
@@ -186,62 +186,62 @@ const Royalty = (props) => {
         </Fade>
       </StyledModal>
     </Root>
-  );
-};
+  )
+}
 
-const PREFIX = "Royalty";
+const PREFIX = 'Royalty'
 
 const classes = {
   recipientData: `${PREFIX}-recipientData`,
-};
+}
 const CollectButton = styled(Button)(({ theme }) => ({
   color: theme.palette.text.primary,
-  borderRadius: "0px",
+  borderRadius: '0px',
   border: `1px solid ${theme.palette.text.primary}`,
-}));
+}))
 const ToggleButton = styled(Button)(({ theme }) => ({
   color: theme.palette.text.primary,
-  fontSize: "14px !important",
+  fontSize: '14px !important',
   padding: 0,
   marginTop: 5,
-}));
+}))
 const SettingsButton = styled(Button)(({ theme }) => ({
-  "& p": {
+  '& p': {
     border: `1px solid ${theme.palette.text.primary}`,
-    padding: "10px",
-    "&:hover": {
-      opacity: "50%",
+    padding: '10px',
+    '&:hover': {
+      opacity: '50%',
     },
   },
-}));
+}))
 
-const Root = styled("div")(({ theme }) => ({
-  textAlign: "left",
-  color: "black",
-  [theme.breakpoints.down("md")]: {},
+const Root = styled('div')(({ theme }) => ({
+  textAlign: 'left',
+  color: 'black',
+  [theme.breakpoints.down('md')]: {},
   [`& .${classes.recipientData}`]: {
     color: `${theme.palette.greyLight}`,
-    "& a": {
+    '& a': {
       color: `${theme.palette.purple}`,
     },
   },
-}));
+}))
 
 const StyledModal = styled(Modal)(() => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}))
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
-  border: "2px solid #000",
+  border: '2px solid #000',
   boxShadow: theme.shadows[5],
   padding: theme.spacing(2, 4, 3),
-  width: "40vw",
-  maxHeight: "90vh",
-  overflowY: "auto",
-  zIndex: "10",
-}));
+  width: '40vw',
+  maxHeight: '90vh',
+  overflowY: 'auto',
+  zIndex: '10',
+}))
 
-export default Royalty;
+export default Royalty

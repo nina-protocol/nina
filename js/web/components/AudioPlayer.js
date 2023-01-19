@@ -51,7 +51,7 @@ const AudioPlayer = () => {
         }
       }
     })
-    
+
     const actionHandlers = [
       ['play', () => play()],
       ['pause', () => play()],
