@@ -1,140 +1,140 @@
-import React, { useState, useContext, useMemo, useEffect } from "react";
-import { useWallet } from "@solana/wallet-adapter-react";
-import Typography from "@mui/material/Typography";
-import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
-import { styled } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import { useSnackbar } from "notistack";
-import { useRouter } from "next/router";
-import Grid from "@mui/material/Grid";
-import ReleaseCreateViaHub from "./ReleaseCreateViaHub";
-import HubOverview from "./HubOverview";
-import HubCreate from "./HubCreate";
-import BundlrModal from "./BundlrModal";
-import HubPosts from "./HubPosts";
-import HubCollaborators from "./HubCollaborators";
-import HubReleases from "./HubReleases";
+import React, { useState, useContext, useMemo, useEffect } from 'react'
+import { useWallet } from '@solana/wallet-adapter-react'
+import Typography from '@mui/material/Typography'
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import { styled } from '@mui/material/styles'
+import Box from '@mui/material/Box'
+import { useSnackbar } from 'notistack'
+import { useRouter } from 'next/router'
+import Grid from '@mui/material/Grid'
+import ReleaseCreateViaHub from './ReleaseCreateViaHub'
+import HubOverview from './HubOverview'
+import HubCreate from './HubCreate'
+import BundlrModal from './BundlrModal'
+import HubPosts from './HubPosts'
+import HubCollaborators from './HubCollaborators'
+import HubReleases from './HubReleases'
 
 // const {toTitleCase} = nina.utils;
 
 const toTitleCase = (text) => {
   // Add to sdk
-  return text.replace(/([A-Z])/g, " $1").replace(/^./, function (str) {
-    return str.toUpperCase();
-  });
-};
+  return text.replace(/([A-Z])/g, ' $1').replace(/^./, function (str) {
+    return str.toUpperCase()
+  })
+}
 
 const Dashboard = ({ hubPubkey }) => {
-  const wallet = useWallet();
-  const router = useRouter();
+  const wallet = useWallet()
+  const router = useRouter()
   const { getHub, hubState, hubCollaboratorsState, hubContentState } =
-    useContext(Hub.Context);
+    useContext(Hub.Context)
 
   const actions = [
-    "hubOverview",
-    "releases",
-    "posts",
-    "collaborators",
-    "updateHubInfo",
-    "publishRelease",
-  ];
+    'hubOverview',
+    'releases',
+    'posts',
+    'collaborators',
+    'updateHubInfo',
+    'publishRelease',
+  ]
 
-  const { enqueueSnackbar } = useSnackbar();
-  const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
+  const { enqueueSnackbar } = useSnackbar()
+  const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
   const hubCollaborators = useMemo(
     () => hubCollaboratorsState,
     [hubCollaboratorsState]
-  );
-  const hubContent = useMemo(() => hubContentState, [hubContentState]);
+  )
+  const hubContent = useMemo(() => hubContentState, [hubContentState])
   const isAuthority = useMemo(
     () =>
       wallet?.publicKey && wallet?.publicKey?.toBase58() === hubData?.authority,
     [hubData, wallet]
-  );
+  )
   const [activeAction, setActiveAction] = useState(
-    router.query.action ? `${actions.indexOf(router.query.action)}` : "0"
-  );
+    router.query.action ? `${actions.indexOf(router.query.action)}` : '0'
+  )
   const canAddContent = useMemo(() => {
     const hubCollaboratorForWallet = Object.values(hubCollaborators)?.filter(
       (hubCollaborator) =>
         hubCollaborator.collaborator === wallet?.publicKey?.toBase58()
-    )[0];
+    )[0]
     if (
       hubCollaboratorForWallet &&
       hubCollaboratorForWallet.canAddContent &&
       (hubCollaboratorForWallet.allowance > 0 ||
         hubCollaboratorForWallet.allowance === -1)
     ) {
-      return true;
+      return true
     }
     if (wallet?.publicKey?.toBase58() === hubData?.authority) {
-      return true;
+      return true
     }
-    return false;
-  }, [hubCollaborators, hubData, wallet]);
+    return false
+  }, [hubCollaborators, hubData, wallet])
 
   const canAddCollaborators = useMemo(() => {
     const hubCollaboratorForWallet = Object.values(hubCollaborators)?.filter(
       (hubCollaborator) =>
         hubCollaborator.collaborator === wallet?.publicKey?.toBase58()
-    )[0];
+    )[0]
 
     if (
       hubCollaboratorForWallet &&
       hubCollaboratorForWallet.canAddCollaborator &&
       hubCollaboratorForWallet.allowance > 0
     ) {
-      return true;
+      return true
     }
     if (wallet?.publicKey?.toBase58() === hubData?.authority) {
-      return true;
+      return true
     }
-    return false;
-  }, [hubCollaborators, hubData, wallet]);
+    return false
+  }, [hubCollaborators, hubData, wallet])
 
   useEffect(() => {
     if (hubPubkey) {
-      getHub(hubPubkey);
+      getHub(hubPubkey)
     }
-  }, [hubPubkey]);
+  }, [hubPubkey])
 
   useEffect(() => {
     if (router.query.action) {
-      const index = actions.indexOf(router.query.action);
-      setActiveAction(index.toString());
+      const index = actions.indexOf(router.query.action)
+      setActiveAction(index.toString())
     } else {
-      setActiveAction("0");
+      setActiveAction('0')
     }
-  }, [router.query.action]);
+  }, [router.query.action])
 
   useEffect(() => {
     if (wallet.disconnecting) {
-      router.push("/");
+      router.push('/')
     }
-  }, [wallet?.disconnecting]);
+  }, [wallet?.disconnecting])
 
   const handleSelectAction = (e) => {
-    const index = e.target.getAttribute("data-index");
-    if (index !== "0") {
-      const actionParam = actions[index];
-      router.push(`/${hubData.handle}/dashboard?action=` + actionParam);
+    const index = e.target.getAttribute('data-index')
+    if (index !== '0') {
+      const actionParam = actions[index]
+      router.push(`/${hubData.handle}/dashboard?action=` + actionParam)
     } else {
-      router.push(`/${hubData.handle}/dashboard`);
+      router.push(`/${hubData.handle}/dashboard`)
     }
-    setActiveAction(index);
-  };
+    setActiveAction(index)
+  }
 
   const renderAction = (activeAction) => {
     switch (activeAction) {
-      case "0":
+      case '0':
         return (
           <HubOverview
             hubPubkey={hubPubkey}
             hubContent={hubContent}
             isAuthority={isAuthority}
           />
-        );
-      case "1":
+        )
+      case '1':
         return (
           <HubReleases
             type="releases"
@@ -143,8 +143,8 @@ const Dashboard = ({ hubPubkey }) => {
             isAuthority={isAuthority}
             canAddContent={canAddContent}
           />
-        );
-      case "2":
+        )
+      case '2':
         return (
           <HubPosts
             hubPubkey={hubPubkey}
@@ -152,8 +152,8 @@ const Dashboard = ({ hubPubkey }) => {
             hubData={hubData}
             canAddContent={canAddContent}
           />
-        );
-      case "3":
+        )
+      case '3':
         return (
           <HubCollaborators
             hubPubkey={hubPubkey}
@@ -161,22 +161,22 @@ const Dashboard = ({ hubPubkey }) => {
             authority={hubData?.authority}
             canAddCollaborators={canAddCollaborators}
           />
-        );
-      case "4":
+        )
+      case '4':
         return (
           <HubCreate update={true} hubPubkey={hubPubkey} hubData={hubData} />
-        );
-      case "5":
+        )
+      case '5':
         return (
           <ReleaseCreateViaHub
             canAddContent={canAddContent}
             hubPubkey={hubPubkey}
           />
-        );
+        )
       default:
-        break;
+        break
     }
-  };
+  }
 
   return (
     <>
@@ -186,10 +186,10 @@ const Dashboard = ({ hubPubkey }) => {
             <ActionsList>
               {actions.map((action, i) => {
                 switch (action) {
-                  case "publishRelease":
-                    return;
+                  case 'publishRelease':
+                    return
 
-                  case "updateHubInfo":
+                  case 'updateHubInfo':
                     return isAuthority ? (
                       <li key={i} data-index={i}>
                         <Typography
@@ -200,8 +200,8 @@ const Dashboard = ({ hubPubkey }) => {
                         </Typography>
                       </li>
                     ) : (
-                      ""
-                    );
+                      ''
+                    )
 
                   default:
                     return (
@@ -213,7 +213,7 @@ const Dashboard = ({ hubPubkey }) => {
                           {toTitleCase(action)}
                         </Typography>
                       </li>
-                    );
+                    )
                 }
               })}
               <li>
@@ -227,7 +227,7 @@ const Dashboard = ({ hubPubkey }) => {
             md={12}
             xs={12}
             height="100%"
-            sx={{ width: { xs: "100%" } }}
+            sx={{ width: { xs: '100%' } }}
           >
             <ActionWrapper activeAction={activeAction}>
               {renderAction(activeAction)}
@@ -236,40 +236,40 @@ const Dashboard = ({ hubPubkey }) => {
         </>
       )}
     </>
-  );
-};
+  )
+}
 
 const ActionWrapper = styled(Box)(({ theme }) => ({
-  height: "100%",
-  maxHeight: "100%",
-  width: "100%",
-  display: "flex",
+  height: '100%',
+  maxHeight: '100%',
+  width: '100%',
+  display: 'flex',
   alignItems: `flex-start`,
-  padding: "0px 15px 15px",
-  overflowY: "scroll",
-  [theme.breakpoints.down("md")]: {
-    padding: "0",
+  padding: '0px 15px 15px',
+  overflowY: 'scroll',
+  [theme.breakpoints.down('md')]: {
+    padding: '0',
   },
-}));
+}))
 
-const ActionsList = styled("ul")(({ theme }) => ({
-  textAlign: "left",
-  marginTop: "0px",
-  paddingLeft: "15px",
-  listStyle: "none",
-  position: "absolute",
-  left: "0",
-  [theme.breakpoints.down("md")]: {
-    display: "none",
+const ActionsList = styled('ul')(({ theme }) => ({
+  textAlign: 'left',
+  marginTop: '0px',
+  paddingLeft: '15px',
+  listStyle: 'none',
+  position: 'absolute',
+  left: '0',
+  [theme.breakpoints.down('md')]: {
+    display: 'none',
   },
-  "& li": {
-    cursor: "pointer",
-    width: "min-content",
-    whiteSpace: "nowrap",
-    "&:hover": {
-      opacity: "50%",
+  '& li': {
+    cursor: 'pointer',
+    width: 'min-content',
+    whiteSpace: 'nowrap',
+    '&:hover': {
+      opacity: '50%',
     },
   },
-}));
+}))
 
-export default Dashboard;
+export default Dashboard

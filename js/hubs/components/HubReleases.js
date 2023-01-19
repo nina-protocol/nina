@@ -1,76 +1,76 @@
-import React, { useMemo, useContext, useState } from "react";
-import Button from "@mui/material/Button";
-import Link from "next/link";
-import { useWallet } from "@solana/wallet-adapter-react";
-import AddIcon from "@mui/icons-material/Add";
-import CloseIcon from "@mui/icons-material/Close";
-import Typography from "@mui/material/Typography";
-import Grid from "@mui/material/Grid";
-import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
-import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
-import { useSnackbar } from "notistack";
-import { styled } from "@mui/material/styles";
+import React, { useMemo, useContext, useState } from 'react'
+import Button from '@mui/material/Button'
+import Link from 'next/link'
+import { useWallet } from '@solana/wallet-adapter-react'
+import AddIcon from '@mui/icons-material/Add'
+import CloseIcon from '@mui/icons-material/Close'
+import Typography from '@mui/material/Typography'
+import Grid from '@mui/material/Grid'
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import { useSnackbar } from 'notistack'
+import { styled } from '@mui/material/styles'
 import {
   DashboardWrapper,
   DashboardContent,
   DashboardHeader,
   DashboardEntry,
-} from "../styles/theme/lightThemeOptions.js";
+} from '../styles/theme/lightThemeOptions.js'
 
 const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
-  const wallet = useWallet();
-  const { hubContentToggleVisibility, hubState } = useContext(Hub.Context);
-  const { releaseState } = useContext(Release.Context);
-  const hubData = useMemo(() => hubState[hubPubkey], [hubState]);
-  const { enqueueSnackbar } = useSnackbar();
+  const wallet = useWallet()
+  const { hubContentToggleVisibility, hubState } = useContext(Hub.Context)
+  const { releaseState } = useContext(Release.Context)
+  const hubData = useMemo(() => hubState[hubPubkey], [hubState])
+  const { enqueueSnackbar } = useSnackbar()
   const hubReleases = useMemo(
     () =>
       Object.values(hubContent)
         .filter(
           (c) =>
-            c.contentType === "ninaReleaseV1" &&
+            c.contentType === 'ninaReleaseV1' &&
             c.visible &&
             c.hub === hubPubkey
         )
         .sort((a, b) => b.datetime - a.datetime),
     [hubContent]
-  );
+  )
 
   const hubReleasesArchived = useMemo(
     () =>
       Object.values(hubContent).filter(
-        (c) => c.contentType === "ninaReleaseV1" && !c.visible
+        (c) => c.contentType === 'ninaReleaseV1' && !c.visible
       ),
     [hubContent]
-  );
-  const [hubReleasesShowArchived, sethubReleasesShowArchived] = useState(false);
+  )
+  const [hubReleasesShowArchived, sethubReleasesShowArchived] = useState(false)
   const activeHubReleases = useMemo(
     () => (hubReleasesShowArchived ? hubReleasesArchived : hubReleases),
     [hubReleasesShowArchived, hubReleases, hubReleasesArchived]
-  );
+  )
 
   const canToggleRelease = (releasePubkey) => {
-    const release = releaseState.tokenData[releasePubkey];
+    const release = releaseState.tokenData[releasePubkey]
     if (release.authority == wallet?.publicKey?.toBase58() || isAuthority) {
-      return true;
+      return true
     }
-    return false;
-  };
+    return false
+  }
 
   const handleToggleRelease = async (hubPubkey, releasePubkey) => {
     const result = await hubContentToggleVisibility(
       hubPubkey,
       releasePubkey,
-      "Release"
-    );
+      'Release'
+    )
     enqueueSnackbar(result.msg, {
-      variant: result.success ? "info" : "failure",
-    });
-  };
+      variant: result.success ? 'info' : 'failure',
+    })
+  }
 
   return (
     <DashboardWrapper md={9} columnSpacing={2} columnGap={2}>
-      <Grid item md={6} sx={{ display: { xs: "none", md: "block" } }}>
+      <Grid item md={6} sx={{ display: { xs: 'none', md: 'block' } }}>
         <Link href={`/${hubData.handle}/dashboard?action=publishRelease`}>
           <CreateCta variant="outlined" fullWidth>
             Publish a new release
@@ -94,22 +94,22 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
         {activeHubReleases && (
           <>
             <DashboardHeader style={{ fontWeight: 600 }}>
-              There are {Object.keys(activeHubReleases).length}{" "}
-              {hubReleasesShowArchived ? "archived" : ""} releases associated
+              There are {Object.keys(activeHubReleases).length}{' '}
+              {hubReleasesShowArchived ? 'archived' : ''} releases associated
               with this hub:
             </DashboardHeader>
             <ul>
               {Object.keys(activeHubReleases).map((releasePubkey) => {
-                const hubRelease = activeHubReleases[releasePubkey];
+                const hubRelease = activeHubReleases[releasePubkey]
                 return (
                   <DashboardEntry key={hubRelease.release}>
                     <Link
                       href={`/${hubData.handle}/releases/${hubRelease.publicKey}`}
                     >
-                      {`${hubRelease.publishedThroughHub ? "*" : ""}${
+                      {`${hubRelease.publishedThroughHub ? '*' : ''}${
                         releaseState.metadata[hubRelease.release]?.name
                       } (${hubRelease.sales} ${
-                        hubRelease.sales === 1 ? "sale" : "sales"
+                        hubRelease.sales === 1 ? 'sale' : 'sales'
                       })`}
                     </Link>
                     {canToggleRelease(hubRelease.release) &&
@@ -129,7 +129,7 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
                         ></CloseIcon>
                       )}
                   </DashboardEntry>
-                );
+                )
               })}
 
               {Object.keys(hubReleasesArchived).length > 0 && (
@@ -137,34 +137,34 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
                   onClick={() =>
                     sethubReleasesShowArchived(!hubReleasesShowArchived)
                   }
-                  sx={{ paddingLeft: "0" }}
+                  sx={{ paddingLeft: '0' }}
                 >
-                  View{" "}
+                  View{' '}
                   {
                     Object.keys(
                       !hubReleasesShowArchived
                         ? hubReleasesArchived
                         : hubReleases
                     ).length
-                  }{" "}
-                  {!hubReleasesShowArchived ? "Archived" : ""} Releases
+                  }{' '}
+                  {!hubReleasesShowArchived ? 'Archived' : ''} Releases
                 </Button>
               )}
             </ul>
           </>
         )}
 
-        <Typography sx={{ display: { xs: "block", md: "none" } }}>
+        <Typography sx={{ display: { xs: 'block', md: 'none' } }}>
           Please visit your hub on desktop to add releases
         </Typography>
       </DashboardContent>
     </DashboardWrapper>
-  );
-};
+  )
+}
 
 const CreateCta = styled(Button)(() => ({
-  display: "flex",
-  margin: "0px auto 40px !important",
-}));
+  display: 'flex',
+  margin: '0px auto 40px !important',
+}))
 
-export default HubReleases;
+export default HubReleases

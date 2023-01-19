@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import MediaDropzone from "./MediaDropzone.js";
-import { styled } from "@mui/material/styles";
-import Box from "@mui/material/Box";
+import React, { useState, useEffect } from 'react'
+import MediaDropzone from './MediaDropzone.js'
+import { styled } from '@mui/material/styles'
+import Box from '@mui/material/Box'
 
 const MediaDropzones = ({
   values,
@@ -14,7 +14,7 @@ const MediaDropzones = ({
   disabled,
   processingProgress,
 }) => {
-  const [metadata, setMetadata] = useState({});
+  const [metadata, setMetadata] = useState({})
 
   useEffect(() => {
     setMetadata({
@@ -24,8 +24,8 @@ const MediaDropzones = ({
       catalogNumber: values.releaseForm?.catalogNumber,
       duration: track ? track.meta?.duration : 0,
       resalePercentage: values.releaseForm.resalePercentage * 100,
-    });
-  }, [values, track]);
+    })
+  }, [values, track])
 
   return (
     <StyledDropZones>
@@ -50,11 +50,11 @@ const MediaDropzones = ({
         disabled={disabled}
       />
     </StyledDropZones>
-  );
-};
+  )
+}
 
 const StyledDropZones = styled(Box)(() => ({
-  height: "100%",
-}));
+  height: '100%',
+}))
 
-export default MediaDropzones;
+export default MediaDropzones

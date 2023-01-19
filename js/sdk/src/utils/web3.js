@@ -20,35 +20,32 @@ export async function createMintInstructions(
   decimals
 ) {
   const tokenProgram = anchor.Spl.token(provider)
-  const systemProgram = anchor.Native.system(provider);
+  const systemProgram = anchor.Native.system(provider)
   const mintSize = tokenProgram.coder.accounts.size(
     tokenProgram.idl.accounts[0]
-  );
+  )
 
   const mintRentExemption =
-    await provider.connection.getMinimumBalanceForRentExemption(mintSize);
+    await provider.connection.getMinimumBalanceForRentExemption(mintSize)
 
   let instructions = [
     await systemProgram.methods
-    .createAccount(
-      new anchor.BN(mintRentExemption),
-      new anchor.BN(mintSize),
-      tokenProgram.programId
-    )
-    .accounts({
-      from: authority,
-      to: mint,
-    })
-    .instruction(),
-    await tokenProgram.methods.initializeMint(
-      decimals,
-      authority,
-      null
-    )
-    .accounts({
-      mint
-    })
-    .instruction()
+      .createAccount(
+        new anchor.BN(mintRentExemption),
+        new anchor.BN(mintSize),
+        tokenProgram.programId
+      )
+      .accounts({
+        from: authority,
+        to: mint,
+      })
+      .instruction(),
+    await tokenProgram.methods
+      .initializeMint(decimals, authority, null)
+      .accounts({
+        mint,
+      })
+      .instruction(),
   ]
 
   return instructions
@@ -245,14 +242,15 @@ export const wrapSol = async (provider, amount) => {
   const instructions = []
   // Create new, rent exempt account.
   instructions.push(
-    anchor.Spl.token(provider).methods.initializeAccount()
-    .accounts({
-      account: wrappedSolAccount.publicKey,
-      mint: WRAPPED_SOL_MINT_ID,
-      authority: provider.wallet.publicKey,
-      rent: anchor.web3.SYSVAR_RENT_PUBKEY
-    })
-    .instruction()
+    anchor.Spl.token(provider)
+      .methods.initializeAccount()
+      .accounts({
+        account: wrappedSolAccount.publicKey,
+        mint: WRAPPED_SOL_MINT_ID,
+        authority: provider.wallet.publicKey,
+        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+      })
+      .instruction()
   )
   // Transfer lamports. These will be converted to an SPL balance by the
   // token program.
