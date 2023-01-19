@@ -29,15 +29,14 @@ const ReleaseCard = (props) => {
     useContext(Audio.Context)
   const image = useMemo(() => metadata?.image)
   const title = useMemo(() => {
-      if (
-        metadata.properties.title.length > 20 &&
-        metadata.properties.title.indexOf(' ') === -1
-      ){
-        return metadata.properties.title.substring(0, 20) + '...'
-      }
-      return metadata.properties.title
-    } , [metadata.properties.title]
-  )
+    if (
+      metadata.properties.title.length > 20 &&
+      metadata.properties.title.indexOf(' ') === -1
+    ) {
+      return metadata.properties.title.substring(0, 20) + '...'
+    }
+    return metadata.properties.title
+  }, [metadata.properties.title])
 
   return (
     <StyledReleaseCard>
@@ -92,10 +91,7 @@ const ReleaseCard = (props) => {
                     metadata?.artist.substring(0, 100)}
                 </a>
               </Link>
-              ,{' '}
-              <i>
-                {title}
-              </i>
+              , <i>{title}</i>
             </Typography>
           </Fade>
         )}

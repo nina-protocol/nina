@@ -1,6 +1,6 @@
-import Hubs from "../components/Hubs";
-import Head from "next/head";
-import Dots from "../components/Dots";
+import Hubs from '../components/Hubs'
+import Head from 'next/head'
+import Dots from '../components/Dots'
 
 export default function Home({ loading }) {
   return (
@@ -20,7 +20,7 @@ export default function Home({ loading }) {
         <meta
           name="description"
           content={
-            "Hubs are a new way to publish, share, and discuss music.  Powered By Nina."
+            'Hubs are a new way to publish, share, and discuss music.  Powered By Nina.'
           }
         />
         <meta name="og:type" content="website" />
@@ -28,7 +28,7 @@ export default function Home({ loading }) {
         <meta
           name="og:description"
           content={
-            "Hubs are a new way to publish, share, and discuss music.  Powered By Nina."
+            'Hubs are a new way to publish, share, and discuss music.  Powered By Nina.'
           }
         />
         <meta name="twitter:card" content="summary_large_image" />
@@ -39,7 +39,7 @@ export default function Home({ loading }) {
         <meta
           name="twitter:description"
           content={
-            "Hubs are a new way to publish, share, and discuss music.  Powered By Nina."
+            'Hubs are a new way to publish, share, and discuss music.  Powered By Nina.'
           }
         />
         <meta
@@ -53,5 +53,5 @@ export default function Home({ loading }) {
       </Head>
       {loading ? <Dots size="80px" /> : <Hubs />}
     </>
-  );
+  )
 }
