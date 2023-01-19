@@ -18,7 +18,7 @@ import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
-import { encodeBase64 } from 'tweetnacl-util';
+import { encodeBase64 } from 'tweetnacl-util'
 import CollectorModal from './CollectorModal'
 import HubsModal from './HubsModal'
 import Dots from './Dots'
@@ -77,9 +77,12 @@ const ReleasePurchase = (props) => {
     [releasePubkey, releasePurchasePending]
   )
 
-
   const getGate = async () => {
-    const {gates} = (await axios.get(`${process.env.NINA_GATE_URL}/releases/${releasePubkey}/gates`)).data
+    const { gates } = (
+      await axios.get(
+        `${process.env.NINA_GATE_URL}/releases/${releasePubkey}/gates`
+      )
+    ).data
     if (gates.length > 0) {
       setGate(gates[0])
     }
@@ -88,7 +91,7 @@ const ReleasePurchase = (props) => {
   useEffect(() => {
     getRelease(releasePubkey)
     getGate()
-    console.log('gate :>> ', gate);
+    console.log('gate :>> ', gate)
     // const hubForRelease = async (releasePubkey) => {
     //   const result = await getPublishedHubForRelease(releasePubkey)
     //   setPublishedHub(result?.hub)
@@ -362,14 +365,22 @@ const ReleasePurchase = (props) => {
         </form>
       </Box>
       {gate && (
-        <UnlockGateModal gate={gate} releasePubkey={releasePubkey} amountHeld={amountHeld} />
+        <UnlockGateModal
+          gate={gate}
+          releasePubkey={releasePubkey}
+          amountHeld={amountHeld}
+        />
       )}
       {!gate && wallet?.publicKey?.toBase58() === release.authority && (
         <>
-          <CreateGateModal releasePubkey={releasePubkey} getGate={getGate} metadata={metadata} />
+          <CreateGateModal
+            releasePubkey={releasePubkey}
+            getGate={getGate}
+            metadata={metadata}
+          />
         </>
       )}
-  
+
       {/* {userIsRecipient && (
         <Royalty releasePubkey={releasePubkey} release={release} />
       )} */}
