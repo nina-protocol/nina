@@ -1,99 +1,96 @@
-import React, { useState, useEffect, useContext, useMemo } from "react";
-import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
-import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
-import { styled } from "@mui/material/styles";
-import Paper from "@mui/material/Paper";
-import Modal from "@mui/material/Modal";
-import Backdrop from "@mui/material/Backdrop";
-import Fade from "@mui/material/Fade";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import AutorenewIcon from "@mui/icons-material/Autorenew";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import HubPostCreate from "./HubPostCreate";
-import { useWallet } from "@solana/wallet-adapter-react";
+import React, { useState, useEffect, useContext, useMemo } from 'react'
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import { styled } from '@mui/material/styles'
+import Paper from '@mui/material/Paper'
+import Modal from '@mui/material/Modal'
+import Backdrop from '@mui/material/Backdrop'
+import Fade from '@mui/material/Fade'
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import AutorenewIcon from '@mui/icons-material/Autorenew'
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import HubPostCreate from './HubPostCreate'
+import { useWallet } from '@solana/wallet-adapter-react'
 
-import { useSnackbar } from "notistack";
-import Dots from "./Dots";
+import { useSnackbar } from 'notistack'
+import Dots from './Dots'
 
 const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
-  const [open, setOpen] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
-  const wallet = useWallet();
+  const [open, setOpen] = useState(false)
+  const { enqueueSnackbar } = useSnackbar()
+  const wallet = useWallet()
 
   const { hubAddRelease, getHubsForRelease, hubCollaboratorsState } =
-    useContext(Hub.Context);
+    useContext(Hub.Context)
   const { checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(
     Nina.Context
-  );
-  const [selectedHubId, setSelectedHubId] = useState();
-  const [inProgress, setInProgress] = useState(false);
-  const [filteredHubs, setFilteredHubs] = useState();
-  const [canAddContent, setCanAddContent] = useState(false);
-  const userHasHubs = useMemo(
-    () => userHubs && userHubs.length > 0,
-    [userHubs]
-  );
+  )
+  const [selectedHubId, setSelectedHubId] = useState()
+  const [inProgress, setInProgress] = useState(false)
+  const [filteredHubs, setFilteredHubs] = useState()
+  const [canAddContent, setCanAddContent] = useState(false)
+  const userHasHubs = useMemo(() => userHubs && userHubs.length > 0, [userHubs])
 
   useEffect(() => {
     if (wallet.connected) {
       if (userHubs?.length === 1) {
-        setSelectedHubId(userHubs[0]?.publicKey);
+        setSelectedHubId(userHubs[0]?.publicKey)
       }
       const userHubCollaborations = Object.values(hubCollaboratorsState).filter(
         (collaborator) => {
           return (
             collaborator.canAddContent === true &&
             collaborator.collaborator === wallet.publicKey.toBase58()
-          );
+          )
         }
-      );
+      )
       const hubsWithPermission = userHubs?.filter((hub) => {
         return userHubCollaborations.some(
           (collaborator) => hub.publicKey === collaborator.hub
-        );
-      });
-      setFilteredHubs(hubsWithPermission);
+        )
+      })
+      setFilteredHubs(hubsWithPermission)
     }
-  }, [wallet?.connected, userHubs]);
+  }, [wallet?.connected, userHubs])
 
   const handleRepost = async (e) => {
     const error = await checkIfHasBalanceToCompleteAction(
       NinaProgramAction.HUB_ADD_RELEASE
-    );
+    )
     if (error) {
-      enqueueSnackbar(error.msg, { variant: "failure" });
-      return;
+      enqueueSnackbar(error.msg, { variant: 'failure' })
+      return
     }
 
-    setInProgress(true);
-    enqueueSnackbar("Adding Release to Hub", {
-      variant: "info",
-    });
+    setInProgress(true)
+    enqueueSnackbar('Adding Release to Hub', {
+      variant: 'info',
+    })
 
-    handleClose();
-    const result = await hubAddRelease(selectedHubId, releasePubkey, hubPubkey);
+    handleClose()
+    const result = await hubAddRelease(selectedHubId, releasePubkey, hubPubkey)
     if (result?.success) {
-      await getHubsForRelease(releasePubkey);
+      await getHubsForRelease(releasePubkey)
       enqueueSnackbar(result.msg, {
-        variant: "info",
-      });
+        variant: 'info',
+      })
     } else {
-      enqueueSnackbar("Release not added to hub", {
-        variant: "failure",
-      });
+      enqueueSnackbar('Release not added to hub', {
+        variant: 'failure',
+      })
     }
-    setInProgress(false);
-    handleClose();
-  };
+    setInProgress(false)
+    handleClose()
+  }
 
   const handleClose = () => {
-    setOpen(false);
-    setSelectedHubId(null);
-  };
+    setOpen(false)
+    setSelectedHubId(null)
+  }
 
   return (
     <Root>
@@ -102,7 +99,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
         color="primary"
         type="submit"
         onClick={() => setOpen(true)}
-        sx={{ height: "22px", width: "28px", m: 0 }}
+        sx={{ height: '22px', width: '28px', m: 0 }}
       >
         <AutorenewIcon />
       </ModalToggle>
@@ -130,7 +127,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
                     href="https://docs.google.com/forms/d/1JOgbVh-5SbA4mCwSWAiSolPCAHCjx6baSiJGh0J7N1g"
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{ color: "black" }}
+                    style={{ color: 'black' }}
                   >
                     Click here to get started setting up your hub.
                   </a>
@@ -144,12 +141,12 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
                   variant="h4"
                   id="transition-modal-title"
                   gutterBottom
-                  color={"black"}
+                  color={'black'}
                 >
-                  Add {metadata.name} to{" "}
+                  Add {metadata.name} to{' '}
                   {userHubs.length > 1
-                    ? "one of your hubs"
-                    : "your hub: " + userHubs[0]?.data?.displayName}
+                    ? 'one of your hubs'
+                    : 'your hub: ' + userHubs[0]?.data?.displayName}
                 </Typography>
 
                 {userHubs.length > 1 && (
@@ -164,7 +161,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
                       fullWidth
                       variant="standard"
                       onChange={(e, filteredHubs) => {
-                        setSelectedHubId(e.target.value);
+                        setSelectedHubId(e.target.value)
                       }}
                     >
                       {filteredHubs?.map((hub) => {
@@ -172,7 +169,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
                           <MenuItem key={hub?.publicKey} value={hub?.publicKey}>
                             {hub?.data?.displayName}
                           </MenuItem>
-                        );
+                        )
                       })}
                     </Select>
                   </FormControl>
@@ -180,14 +177,14 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
               </>
             )}
             <Button
-              style={{ marginTop: "15px", textTransform: "uppercase" }}
+              style={{ marginTop: '15px', textTransform: 'uppercase' }}
               variant="outlined"
               disabled={inProgress || !selectedHubId || !userHasHubs}
               onClick={(e) => handleRepost(e)}
             >
-              {!inProgress && "Repost release to your hub"}
+              {!inProgress && 'Repost release to your hub'}
               {inProgress && (
-                <Dots msg={"Please approve transaction in wallet"} />
+                <Dots msg={'Please approve transaction in wallet'} />
               )}
             </Button>
 
@@ -205,45 +202,45 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
         </Fade>
       </StyledModal>
     </Root>
-  );
-};
+  )
+}
 
-const Root = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  width: "100%",
-}));
+const Root = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  width: '100%',
+}))
 
 const ModalToggle = styled(Button)(({ theme }) => ({
   color: `${theme.palette.text.primary} !important`,
-  ":disabled": {
-    color: theme.palette.text.primary + "a0",
+  ':disabled': {
+    color: theme.palette.text.primary + 'a0',
   },
-  "&:hover": {
-    opacity: "50%",
+  '&:hover': {
+    opacity: '50%',
     backgroundColor: `${theme.palette.transparent} !important`,
   },
-}));
+}))
 
 const StyledModal = styled(Modal)(() => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}))
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
-  border: "2px solid #000",
+  border: '2px solid #000',
   boxShadow: theme.shadows[5],
   // padding: theme.spacing(2, 4, 3),
   padding: `30px 60px 45px`,
-  width: "40vw",
-  maxHeight: "90vh",
-  overflowY: "auto",
-  zIndex: "10",
-  display: "flex",
-  flexDirection: "column",
-  minWidth: "600px",
-}));
+  width: '40vw',
+  maxHeight: '90vh',
+  overflowY: 'auto',
+  zIndex: '10',
+  display: 'flex',
+  flexDirection: 'column',
+  minWidth: '600px',
+}))
 
-export default AddToHubModal;
+export default AddToHubModal

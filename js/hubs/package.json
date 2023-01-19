@@ -24,9 +24,11 @@
     "dev": "next dev",
     "build": "yarn clean && next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint ./ --ignore-path ../../.gitignore",
+    "lint:fix": "yarn lint -- --fix",
     "format": "prettier -l .",
-    "format:fix": "prettier -w ."
+    "format:fix": "prettier -w .",
+    "check-lint-format": "yarn lint && yarn format"
   },
   "dependencies": {
     "@fontsource/roboto": "^4.5.3",

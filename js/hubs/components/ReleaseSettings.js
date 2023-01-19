@@ -1,33 +1,31 @@
-import { useState, useEffect, useContext } from "react";
-import { styled } from "@mui/material/styles";
-import dynamic from "next/dynamic";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Link from "next/link";
-import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
-import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
-const Royalty = dynamic(() => import("./Royalty.js"));
+import { useState, useEffect, useContext } from 'react'
+import { styled } from '@mui/material/styles'
+import dynamic from 'next/dynamic'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
+import Link from 'next/link'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+const Royalty = dynamic(() => import('./Royalty.js'))
 
 const ReleaseSettings = (props) => {
-  const { releasePubkey, tempMetadata, inCreateFlow } = props;
-  const { ninaClient } = useContext(Nina.Context);
-  const { releaseState } = useContext(Release.Context);
-  const [release, setRelease] = useState(releaseState.tokenData[releasePubkey]);
-  const [metadata, setMetadata] = useState(
-    releaseState.metadata[releasePubkey]
-  );
-  const [displayValues, setDisplayValues] = useState({});
+  const { releasePubkey, tempMetadata, inCreateFlow } = props
+  const { ninaClient } = useContext(Nina.Context)
+  const { releaseState } = useContext(Release.Context)
+  const [release, setRelease] = useState(releaseState.tokenData[releasePubkey])
+  const [metadata, setMetadata] = useState(releaseState.metadata[releasePubkey])
+  const [displayValues, setDisplayValues] = useState({})
 
   useEffect(() => {
-    setMetadata(releaseState.metadata[releasePubkey]);
-  }, [releaseState.metadata[releasePubkey]]);
+    setMetadata(releaseState.metadata[releasePubkey])
+  }, [releaseState.metadata[releasePubkey]])
 
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
-      setRelease(releaseState.tokenData[releasePubkey]);
+      setRelease(releaseState.tokenData[releasePubkey])
     }
-  }, [releaseState.tokenData[releasePubkey]]);
+  }, [releaseState.tokenData[releasePubkey]])
 
   useEffect(() => {
     if (metadata) {
@@ -36,19 +34,19 @@ const ReleaseSettings = (props) => {
         title: metadata.properties.title,
         description: metadata.description,
         catalogNumber: metadata.symbol,
-      });
+      })
     } else {
       setDisplayValues({
         artist: tempMetadata?.artist,
         title: tempMetadata?.title,
         description: tempMetadata?.description,
         catalogNumber: tempMetadata?.catalogNumber,
-      });
+      })
     }
-  }, [tempMetadata, metadata]);
+  }, [tempMetadata, metadata])
 
   if (!release) {
-    return null;
+    return null
   }
   return (
     <StyledBox>
@@ -58,12 +56,12 @@ const ReleaseSettings = (props) => {
             Confirm Release Info
           </Typography>
         )}
-        <ReleaseInfo className={inCreateFlow ? "inCreateFlow" : ""}>
+        <ReleaseInfo className={inCreateFlow ? 'inCreateFlow' : ''}>
           <ReleaseStat variant="body1" component="p">
             <ReleaseStatLeft variant="subtitle1">Catalog No.</ReleaseStatLeft>
             <ReleaseStatRight variant="subtitle1">
-              {" "}
-              {displayValues.catalogNumber}{" "}
+              {' '}
+              {displayValues.catalogNumber}{' '}
             </ReleaseStatRight>
           </ReleaseStat>
 
@@ -89,7 +87,7 @@ const ReleaseSettings = (props) => {
           <ReleaseStat variant="body1" component="p">
             <ReleaseStatLeft variant="subtitle1">Resale %</ReleaseStatLeft>
             <ReleaseStatRight variant="subtitle1">
-              {" "}
+              {' '}
               {release?.resalePercentage / 10000}%
             </ReleaseStatRight>
           </ReleaseStat>
@@ -128,7 +126,7 @@ const ReleaseSettings = (props) => {
             <Typography
               variant="body1"
               component="p"
-              sx={{ marginTop: "10px !important" }}
+              sx={{ marginTop: '10px !important' }}
             >
               {displayValues.description}
             </Typography>
@@ -140,12 +138,12 @@ const ReleaseSettings = (props) => {
 
           <SettingsButton
             variant="contained"
-            sx={{ margin: "15px 0!important" }}
+            sx={{ margin: '15px 0!important' }}
             onClick={() =>
               window.open(
                 `https://twitter.com/intent/tweet?text=${`${displayValues.artist} - "${displayValues.title}" on Nina%0A`}&url=ninaprotocol.com/${releasePubkey}`,
                 null,
-                "status=no,location=no,toolbar=no,menubar=no,height=500,width=500"
+                'status=no,location=no,toolbar=no,menubar=no,height=500,width=500'
               )
             }
           >
@@ -156,13 +154,13 @@ const ReleaseSettings = (props) => {
               variant="contained"
               color="primary"
               disabled={!metadata}
-              sx={{ marginTop: "10px !important" }}
+              sx={{ marginTop: '10px !important' }}
             >
               <Link href={`/${releasePubkey}`} passHref>
                 <Typography variant="body2">
                   {metadata
-                    ? "View Release"
-                    : "Your release is currently being finalized..."}
+                    ? 'View Release'
+                    : 'Your release is currently being finalized...'}
                 </Typography>
               </Link>
             </Button>
@@ -170,52 +168,52 @@ const ReleaseSettings = (props) => {
         </Box>
       </ReleaseInfoWrapper>
     </StyledBox>
-  );
-};
+  )
+}
 const SettingsButton = styled(Button)(({ theme }) => ({
-  "& p": {
-    "&:hover": {
-      opacity: "50%",
+  '& p': {
+    '&:hover': {
+      opacity: '50%',
     },
   },
-}));
+}))
 
 const StyledBox = styled(Box)(() => ({
-  height: "100%",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "space-between",
-}));
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+}))
 
 const ReleaseInfoWrapper = styled(Box)(() => ({
-  width: "100%",
-  margin: "auto",
-  textAlign: "left",
-}));
+  width: '100%',
+  margin: 'auto',
+  textAlign: 'left',
+}))
 
 const ReleaseInfo = styled(Box)(({ theme }) => ({
   marginBottom: theme.spacing(1),
-  "& .inCreateFlow": {
+  '& .inCreateFlow': {
     border: `1px solid ${theme.palette.grey.primary}`,
-    padding: "20px",
+    padding: '20px',
   },
-}));
+}))
 
 const ReleaseStatRight = styled(Typography)(() => ({
-  fontWeight: "bold",
-}));
+  fontWeight: 'bold',
+}))
 
 const ReleaseStatLeft = styled(Typography)(() => ({
-  width: "140px",
-}));
+  width: '140px',
+}))
 
 const ReleaseStat = styled(Typography)(() => ({
-  display: "flex",
-  "& span": {
-    width: "75px",
+  display: 'flex',
+  '& span': {
+    width: '75px',
   },
-  "& strong": {
-    paddingLeft: "15px",
+  '& strong': {
+    paddingLeft: '15px',
   },
-}));
-export default ReleaseSettings;
+}))
+export default ReleaseSettings

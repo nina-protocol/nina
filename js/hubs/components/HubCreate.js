@@ -4,29 +4,29 @@ import React, {
   useEffect,
   useMemo,
   useCallback,
-} from "react";
-import * as Yup from "yup";
-import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
-import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
-import { useSnackbar } from "notistack";
-import { styled } from "@mui/material/styles";
-import Button from "@mui/material/Button";
-import LinearProgress from "@mui/material/LinearProgress";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import { useWallet } from "@solana/wallet-adapter-react";
-import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
-import HubCreateForm from "./HubCreateForm";
-import HubCreateConfirm from "./HubCreateConfirm";
-import NinaBox from "./NinaBox";
-import HubImageDropzone from "./HubImageDropzone";
-import Dots from "./Dots";
-import BundlrModal from "./BundlrModal";
-import EmailCapture from "./EmailCapture";
+} from 'react'
+import * as Yup from 'yup'
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import { useSnackbar } from 'notistack'
+import { styled } from '@mui/material/styles'
+import Button from '@mui/material/Button'
+import LinearProgress from '@mui/material/LinearProgress'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import { useWallet } from '@solana/wallet-adapter-react'
+import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
+import HubCreateForm from './HubCreateForm'
+import HubCreateConfirm from './HubCreateConfirm'
+import NinaBox from './NinaBox'
+import HubImageDropzone from './HubImageDropzone'
+import Dots from './Dots'
+import BundlrModal from './BundlrModal'
+import EmailCapture from './EmailCapture'
 
-const ColorModal = dynamic(() => import("./ColorModal"));
+const ColorModal = dynamic(() => import('./ColorModal'))
 
 import {
   createUpload,
@@ -34,27 +34,27 @@ import {
   removeUpload,
   UploadType,
   uploadHasItemForType,
-} from "../utils/uploadManager";
+} from '../utils/uploadManager'
 
 const HubCreateSchema = Yup.object().shape({
-  handle: Yup.string().required("Hub Handle is Required"),
-  displayName: Yup.string().required("Display Name is Required"),
-  publishFee: Yup.number().required("Publish Fee is Required"),
-  referralFee: Yup.number().required("Referral Fee is Required"),
+  handle: Yup.string().required('Hub Handle is Required'),
+  displayName: Yup.string().required('Display Name is Required'),
+  publishFee: Yup.number().required('Publish Fee is Required'),
+  referralFee: Yup.number().required('Referral Fee is Required'),
   description: Yup.string(),
-});
+})
 
 const HubCreate = ({ update, hubData }) => {
-  const { enqueueSnackbar } = useSnackbar();
-  const wallet = useWallet();
+  const { enqueueSnackbar } = useSnackbar()
+  const wallet = useWallet()
   const {
     hubInitWithCredit,
     hubState,
     hubUpdateConfig,
     getHubs,
     validateHubHandle,
-  } = useContext(Hub.Context);
-  const router = useRouter();
+  } = useContext(Hub.Context)
+  const router = useRouter()
   const {
     healthOk,
     bundlrUpload,
@@ -70,180 +70,180 @@ const HubCreate = ({ update, hubData }) => {
     npcAmountHeld,
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
-  } = useContext(Nina.Context);
+  } = useContext(Nina.Context)
 
-  const [artwork, setArtwork] = useState();
-  const [uploadSize, setUploadSize] = useState();
-  const [hubPubkey, setHubPubkey] = useState(hubData?.publicKey || undefined);
+  const [artwork, setArtwork] = useState()
+  const [uploadSize, setUploadSize] = useState()
+  const [hubPubkey, setHubPubkey] = useState(hubData?.publicKey || undefined)
   const [buttonText, setButtonText] = useState(
-    update ? "Update Hub" : "Create Hub"
-  );
-  const [pending, setPending] = useState(false);
-  const [formIsValid, setFormIsValid] = useState(false);
+    update ? 'Update Hub' : 'Create Hub'
+  )
+  const [pending, setPending] = useState(false)
+  const [formIsValid, setFormIsValid] = useState(false)
   const [formValues, setFormValues] = useState({
     hubForm: {},
-  });
-  const [backgroundColor, setBackgroundColor] = useState();
-  const [textColor, setTextColor] = useState();
-  const [formValuesConfirmed, setFormValuesConfirmed] = useState(false);
-  const [isPublishing, setIsPublishing] = useState(false);
-  const [hubInfo, setHubInfo] = useState();
-  const [artworkTx, setArtworkTx] = useState();
-  const [metadataTx, setMetadataTx] = useState();
-  const [hubCreated, setHubCreated] = useState(false);
-  const [hubUpdated, setHubUpdated] = useState(false);
-  const [uploadId, setUploadId] = useState();
-  const [hubHandleValid, setHubHandleValid] = useState(false);
-  const [publishingStepText, setPublishingStepText] = useState();
+  })
+  const [backgroundColor, setBackgroundColor] = useState()
+  const [textColor, setTextColor] = useState()
+  const [formValuesConfirmed, setFormValuesConfirmed] = useState(false)
+  const [isPublishing, setIsPublishing] = useState(false)
+  const [hubInfo, setHubInfo] = useState()
+  const [artworkTx, setArtworkTx] = useState()
+  const [metadataTx, setMetadataTx] = useState()
+  const [hubCreated, setHubCreated] = useState(false)
+  const [hubUpdated, setHubUpdated] = useState(false)
+  const [uploadId, setUploadId] = useState()
+  const [hubHandleValid, setHubHandleValid] = useState(false)
+  const [publishingStepText, setPublishingStepText] = useState()
 
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
     [bundlrBalance, bundlrPricePerMb]
-  );
+  )
   const bundlrUsdBalance = useMemo(
     () => bundlrBalance * solPrice,
     [bundlrBalance, solPrice]
-  );
+  )
 
   useEffect(() => {
-    refreshBundlr();
-  }, []);
+    refreshBundlr()
+  }, [])
 
   const refreshBundlr = () => {
-    getBundlrPricePerMb();
-    getBundlrBalance();
-    getSolPrice();
-  };
+    getBundlrPricePerMb()
+    getBundlrBalance()
+    getSolPrice()
+  }
 
   useEffect(() => {
-    getNpcAmountHeld();
-  }, [wallet?.connected]);
+    getNpcAmountHeld()
+  }, [wallet?.connected])
 
   useEffect(() => {
     if (isPublishing) {
       if (!artworkTx) {
         setPublishingStepText(
-          "1/3 Uploading Artwork.  Please confirm in wallet and do not close this window."
-        );
+          '1/3 Uploading Artwork.  Please confirm in wallet and do not close this window.'
+        )
       } else if (!metadataTx) {
         setPublishingStepText(
-          "2/3 Uploading Metadata.  Please confirm in wallet and do not close this window."
-        );
+          '2/3 Uploading Metadata.  Please confirm in wallet and do not close this window.'
+        )
       } else {
         setPublishingStepText(
-          "3/3 Finalizing Hub.  Please confirm in wallet and do not close this window."
-        );
+          '3/3 Finalizing Hub.  Please confirm in wallet and do not close this window.'
+        )
       }
     } else {
       if (artworkTx && !metadataTx) {
-        setButtonText("Restart 2/3: Upload Metadata.");
+        setButtonText('Restart 2/3: Upload Metadata.')
       } else if (artworkTx && metadataTx && !hubCreated) {
-        setButtonText("Restart 3/3: Finalize Hub");
+        setButtonText('Restart 3/3: Finalize Hub')
       } else if (mbs < uploadSize) {
         setButtonText(
           `Upload requires more storage than available in your bundlr account, please top up`
-        );
+        )
       }
     }
-  }, [artworkTx, metadataTx, isPublishing, hubCreated, bundlrBalance]);
+  }, [artworkTx, metadataTx, isPublishing, hubCreated, bundlrBalance])
 
   useEffect(() => {
     if (hubData?.data.backgroundColor) {
-      setBackgroundColor(hubData.data.backgroundColor);
+      setBackgroundColor(hubData.data.backgroundColor)
     }
     if (hubData?.data.textColor) {
-      setTextColor(hubData.data.textColor);
+      setTextColor(hubData.data.textColor)
     }
-  }, [hubData?.json]);
+  }, [hubData?.json])
 
   const handleFormChange = useCallback(
     async (values) => {
       setFormValues({
         ...formValues,
         hubForm: values,
-      });
+      })
     },
     [formValues]
-  );
+  )
 
   useEffect(() => {
     if (update) {
       //double check that this works
-      setFormIsValid(true);
-      setFormValuesConfirmed(true);
-      return;
+      setFormIsValid(true)
+      setFormValuesConfirmed(true)
+      return
     }
     if (artwork) {
       const valid = async () => {
         const isValid = await HubCreateSchema.isValid(formValues.hubForm, {
           abortEarly: true,
-        });
-        setFormIsValid(isValid);
-      };
-      valid();
+        })
+        setFormIsValid(isValid)
+      }
+      valid()
     }
-  }, [formValues, artwork]);
+  }, [formValues, artwork])
 
   useEffect(() => {
-    const artworkSize = artwork ? artwork.meta.size / 1000000 : 0;
-    setUploadSize(artworkSize.toFixed(2));
-  }, [artwork]);
+    const artworkSize = artwork ? artwork.meta.size / 1000000 : 0
+    setUploadSize(artworkSize.toFixed(2))
+  }, [artwork])
 
   const colorReset = () => {
-    setBackgroundColor();
-    setTextColor();
-  };
+    setBackgroundColor()
+    setTextColor()
+  }
 
   const handleSubmit = async () => {
     try {
       if (update) {
         const error = await checkIfHasBalanceToCompleteAction(
           NinaProgramAction.HUB_UPDATE
-        );
+        )
         if (error) {
-          enqueueSnackbar(error.msg, { variant: "failure" });
-          return;
+          enqueueSnackbar(error.msg, { variant: 'failure' })
+          return
         }
-        let upload = uploadId;
-        const metadataJson = {};
-        let metadataResult = metadataTx;
+        let upload = uploadId
+        const metadataJson = {}
+        let metadataResult = metadataTx
         if (artwork) {
-          let artworkResult = artworkTx;
-          setIsPublishing(true);
+          let artworkResult = artworkTx
+          setIsPublishing(true)
           enqueueSnackbar(
-            "Uploading artwork to Arweave.  Please confirm in wallet.",
+            'Uploading artwork to Arweave.  Please confirm in wallet.',
             {
-              variant: "info",
+              variant: 'info',
             }
-          );
-          artworkResult = await bundlrUpload(artwork.file);
-          setArtworkTx(artworkResult);
-          metadataJson.image = `https://arweave.net/${artworkResult}`;
+          )
+          artworkResult = await bundlrUpload(artwork.file)
+          setArtworkTx(artworkResult)
+          metadataJson.image = `https://arweave.net/${artworkResult}`
 
           upload = createUpload(
             UploadType.artwork,
             artworkResult,
             formValues.hubForm
-          );
-          setUploadId(upload);
+          )
+          setUploadId(upload)
         } else {
-          metadataJson.image = hubData.data.image;
+          metadataJson.image = hubData.data.image
           upload = createUpload(
             UploadType.artwork,
             metadataJson.image,
             formValues.hubForm
-          );
-          setUploadId(upload);
+          )
+          setUploadId(upload)
         }
 
         if (!uploadHasItemForType(upload, UploadType.metadataJson)) {
-          setIsPublishing(true);
+          setIsPublishing(true)
           enqueueSnackbar(
-            "Uploading Hub Info to Arweave.  Please confirm in wallet.",
+            'Uploading Hub Info to Arweave.  Please confirm in wallet.',
             {
-              variant: "info",
+              variant: 'info',
             }
-          );
+          )
 
           metadataJson = {
             ...metadataJson,
@@ -256,124 +256,124 @@ const HubCreate = ({ update, hubData }) => {
             externalUrl: formValues.hubForm.externalUrl
               ? formValues.hubForm.externalUrl
               : hubData.data.externalUrl,
-          };
+          }
 
           if (backgroundColor) {
-            metadataJson.backgroundColor = backgroundColor;
+            metadataJson.backgroundColor = backgroundColor
           }
           if (textColor) {
-            metadataJson.textColor = textColor;
+            metadataJson.textColor = textColor
           }
 
           metadataResult = await bundlrUpload(
             new Blob([JSON.stringify(metadataJson)], {
-              type: "application/json",
+              type: 'application/json',
             })
-          );
-          setMetadataTx(metadataResult);
-          updateUpload(upload, UploadType.metadataJson, metadataResult);
+          )
+          setMetadataTx(metadataResult)
+          updateUpload(upload, UploadType.metadataJson, metadataResult)
         }
 
         if (
           uploadHasItemForType(upload, UploadType.metadataJson) ||
           metadataResult
         ) {
-          setIsPublishing(true);
-          enqueueSnackbar("Finalizing Hub.  Please confirm in wallet.", {
-            variant: "info",
-          });
+          setIsPublishing(true)
+          enqueueSnackbar('Finalizing Hub.  Please confirm in wallet.', {
+            variant: 'info',
+          })
 
           const result = await hubUpdateConfig(
             hubPubkey,
             `https://arweave.net/${metadataResult}`,
             formValues.hubForm.publishFee,
             formValues.hubForm.referralFee
-          );
+          )
 
           if (result?.success) {
-            enqueueSnackbar("Hub Updated!", {
-              variant: "success",
-            });
+            enqueueSnackbar('Hub Updated!', {
+              variant: 'success',
+            })
 
-            removeUpload(upload);
-            setIsPublishing(false);
+            removeUpload(upload)
+            setIsPublishing(false)
           } else {
             enqueueSnackbar(result.msg, {
-              variant: "error",
-            });
+              variant: 'error',
+            })
           }
         }
       } else {
         const error = await checkIfHasBalanceToCompleteAction(
           NinaProgramAction.HUB_INIT_WITH_CREDIT
-        );
+        )
         if (error) {
-          enqueueSnackbar(error.msg, { variant: "failure" });
-          return;
+          enqueueSnackbar(error.msg, { variant: 'failure' })
+          return
         }
         if (artwork && (await validateHubHandle(formValues.hubForm.handle))) {
-          let upload = uploadId;
-          let artworkResult = artworkTx;
+          let upload = uploadId
+          let artworkResult = artworkTx
           if (!uploadId) {
-            setIsPublishing(true);
+            setIsPublishing(true)
             enqueueSnackbar(
-              "Uploading Hub Image to Arweave.  Please confirm in wallet.",
+              'Uploading Hub Image to Arweave.  Please confirm in wallet.',
               {
-                variant: "info",
+                variant: 'info',
               }
-            );
-            artworkResult = await bundlrUpload(artwork.file);
-            setArtworkTx(artworkResult);
+            )
+            artworkResult = await bundlrUpload(artwork.file)
+            setArtworkTx(artworkResult)
             upload = createUpload(
               UploadType.artwork,
               artworkResult,
               formValues.hubForm
-            );
-            setUploadId(upload);
+            )
+            setUploadId(upload)
           }
           if (
             uploadHasItemForType(upload, UploadType.artwork) ||
             artworkResult
           ) {
-            let metadataResult = metadataTx;
+            let metadataResult = metadataTx
 
             if (!uploadHasItemForType(upload, UploadType.metadataJson)) {
               enqueueSnackbar(
-                "Uploading Hub Info to Arweave.  Please confirm in wallet.",
+                'Uploading Hub Info to Arweave.  Please confirm in wallet.',
                 {
-                  variant: "info",
+                  variant: 'info',
                 }
-              );
+              )
 
               const metadataJson = {
                 displayName: formValues.hubForm.displayName,
                 description: formValues.hubForm.description,
                 externalUrl: `https://hubs.ninaprotocol.com/${formValues.hubForm.handle}`,
                 image: `https://arweave.net/${artworkResult}`,
-              };
+              }
 
               if (backgroundColor) {
-                metadataJson.backgroundColor = backgroundColor;
+                metadataJson.backgroundColor = backgroundColor
               }
               if (textColor) {
-                metadataJson.textColor = textColor;
+                metadataJson.textColor = textColor
               }
 
               metadataResult = await bundlrUpload(
                 new Blob([JSON.stringify(metadataJson)], {
-                  type: "application/json",
+                  type: 'application/json',
                 })
-              );
-              setMetadataTx(metadataResult);
-              updateUpload(upload, UploadType.metadataJson, metadataResult);
+              )
+              setMetadataTx(metadataResult)
+              updateUpload(upload, UploadType.metadataJson, metadataResult)
             }
             if (
               uploadHasItemForType(upload, UploadType.metadataJson) ||
               metadataResult
             ) {
-              enqueueSnackbar("Finalizing Hub.  Please confirm in wallet.", {
-                variant: "info",
-              });
+              enqueueSnackbar('Finalizing Hub.  Please confirm in wallet.', {
+                variant: 'info',
+              })
 
               const hubParams = {
                 handle: `${
@@ -382,34 +382,34 @@ const HubCreate = ({ update, hubData }) => {
                 publishFee: formValues.hubForm.publishFee,
                 referralFee: formValues.hubForm.referralFee,
                 uri: `https://arweave.net/${metadataResult}`,
-              };
+              }
 
-              const result = await hubInitWithCredit(hubParams);
+              const result = await hubInitWithCredit(hubParams)
               if (result?.success) {
-                enqueueSnackbar("Hub Created!", {
-                  variant: "success",
-                });
+                enqueueSnackbar('Hub Created!', {
+                  variant: 'success',
+                })
 
-                removeUpload(upload);
-                setIsPublishing(false);
-                setHubCreated(true);
-                setHubPubkey(result.hubPubkey);
+                removeUpload(upload)
+                setIsPublishing(false)
+                setHubCreated(true)
+                setHubPubkey(result.hubPubkey)
               } else {
-                enqueueSnackbar("Hub Not Created", {
-                  variant: "error",
-                });
+                enqueueSnackbar('Hub Not Created', {
+                  variant: 'error',
+                })
               }
             }
           }
         } else {
-          setFormValuesConfirmed(false);
+          setFormValuesConfirmed(false)
         }
       }
     } catch (error) {
-      setIsPublishing(false);
-      console.warn(error);
+      setIsPublishing(false)
+      console.warn(error)
     }
-  };
+  }
 
   if (hubCreated) {
     return (
@@ -419,12 +419,12 @@ const HubCreate = ({ update, hubData }) => {
           variant="outlined"
           color="primary"
           onClick={() => router.push(`/${formValues.hubForm.handle}`)}
-          sx={{ height: "54px" }}
+          sx={{ height: '54px' }}
         >
           {`${formValues.hubForm.displayName}  has been created!  View Hub.`}
         </Button>
       </Box>
-    );
+    )
   }
   return (
     <StyledGrid item md={12}>
@@ -439,7 +439,7 @@ const HubCreate = ({ update, hubData }) => {
           <BlueTypography
             variant="h1"
             align="left"
-            sx={{ padding: { md: "0px 0px", xs: "30px 0px" }, mb: 4 }}
+            sx={{ padding: { md: '0px 0px', xs: '30px 0px' }, mb: 4 }}
           >
             You do not have any credits to create a Hub.
           </BlueTypography>
@@ -492,7 +492,7 @@ const HubCreate = ({ update, hubData }) => {
                   mt={1}
                   style={{
                     borderLeft: `15px solid ${backgroundColor}`,
-                    paddingLeft: "10px",
+                    paddingLeft: '10px',
                   }}
                 >
                   BackgroundColor: {backgroundColor}
@@ -502,7 +502,7 @@ const HubCreate = ({ update, hubData }) => {
                 <Typography
                   style={{
                     borderLeft: `15px solid ${textColor}`,
-                    paddingLeft: "10px",
+                    paddingLeft: '10px',
                   }}
                 >
                   TextColor: {textColor}
@@ -537,9 +537,9 @@ const HubCreate = ({ update, hubData }) => {
                     !formIsValid ||
                     bundlrBalance === 0 ||
                     mbs < uploadSize ||
-                    artwork?.meta.status === "uploading"
+                    artwork?.meta.status === 'uploading'
                   }
-                  sx={{ height: "54px" }}
+                  sx={{ height: '54px' }}
                 >
                   {isPublishing && <Dots msg={publishingStepText} />}
                   {!isPublishing && buttonText}
@@ -589,68 +589,68 @@ const HubCreate = ({ update, hubData }) => {
         </NinaBox>
       )}
     </StyledGrid>
-  );
-};
+  )
+}
 
 const StyledGrid = styled(Grid)(() => ({
-  paddingTop: "20px",
-  maxHeight: "90vh",
-  overflowY: "scroll",
-  justifyContent: "center",
-  alignItems: "center",
-}));
+  paddingTop: '20px',
+  maxHeight: '90vh',
+  overflowY: 'scroll',
+  justifyContent: 'center',
+  alignItems: 'center',
+}))
 
 const ConnectMessage = styled(Typography)(() => ({
-  gridColumn: "1/3",
-  paddingTop: "30px",
-}));
+  gridColumn: '1/3',
+  paddingTop: '30px',
+}))
 
 const CreateFormWrapper = styled(Box)(({ theme }) => ({
-  width: "100%",
-  minHeight: "476px",
-  margin: "0px auto ",
-  display: "flex",
-  flexDirection: "column",
-  gridColumn: "1/3",
+  width: '100%',
+  minHeight: '476px',
+  margin: '0px auto ',
+  display: 'flex',
+  flexDirection: 'column',
+  gridColumn: '1/3',
   border: `1px solid ${theme.palette.grey.primary}`,
-  maxWidth: "506px",
-}));
+  maxWidth: '506px',
+}))
 
 const CreateCta = styled(Box)(({ theme }) => ({
-  gridColumn: "1/3",
-  width: "100%",
-  position: "relative",
-  "& .MuiButton-root": {
+  gridColumn: '1/3',
+  width: '100%',
+  position: 'relative',
+  '& .MuiButton-root': {
     ...theme.helpers.baseFont,
   },
-}));
+}))
 
 const DropzoneWrapper = styled(Box)(({ theme }) => ({
-  width: "100%",
-  padding: "0 15px",
-}));
+  width: '100%',
+  padding: '0 15px',
+}))
 
 const BundlrBalanceInfo = styled(Typography)(({ theme }) => ({
-  whiteSpace: "nowrap",
-  margin: "5px 0",
-}));
+  whiteSpace: 'nowrap',
+  margin: '5px 0',
+}))
 
 const ColorWrapper = styled(Box)(({ theme }) => ({
-  textAlign: "left",
-  padding: "5px 15px 15px",
-}));
+  textAlign: 'left',
+  padding: '5px 15px 15px',
+}))
 
 const Warning = styled(Typography)(({ theme }) => ({
-  textTransform: "none !important",
+  textTransform: 'none !important',
   color: theme.palette.red,
-  opacity: "85%",
-}));
+  opacity: '85%',
+}))
 
 const BlueTypography = styled(Typography)(({ theme }) => ({
-  "& a": {
+  '& a': {
     color: theme.palette.blue,
-    textDecoration: "none",
+    textDecoration: 'none',
   },
-}));
+}))
 
-export default HubCreate;
+export default HubCreate
