@@ -117,8 +117,8 @@ const QuillWrapper = styled(Box)(({ theme, type, height }) => ({
     padding: type === 'release' ? '0px' : '',
     maxHeight: height,
     height: height,
-    overflow: "auto",
-    width: "100%",
+    overflow: 'auto',
+    width: '100%',
   },
 }))
 

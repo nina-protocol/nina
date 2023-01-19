@@ -44,9 +44,9 @@ const EmailCapture = ({ size }) => {
 
   useEffect(() => {
     if (open) {
-      logEvent("email_request_initiated", "engagement");
+      logEvent('email_request_initiated', 'engagement')
     }
-  }, [open]);
+  }, [open])
 
   useEffect(() => {
     if (connected) {

@@ -608,7 +608,7 @@ const ninaContextHelper = ({
   const getUserBalances = async () => {
     if (provider.wallet?.connected && provider.wallet?.publicKey) {
       try {
-        const solPrice =  await axios.get(
+        const solPrice = await axios.get(
           `https://price.jup.ag/v4/price?ids=SOL`
         )
         const solUsdcBalanceResult = await getSolBalance()
@@ -638,7 +638,6 @@ const ninaContextHelper = ({
           setUsdcBalance(0)
         }
       } catch (error) {
-        console.log('error: ', error)
         console.warn('error getting usdc balance')
       }
     } else {

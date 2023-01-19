@@ -81,19 +81,19 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
   const [formIsValid, setFormIsValid] = useState(false)
   const [formValues, setFormValues] = useState({
     releaseForm: {},
-  });
-  const [formValuesConfirmed, setFormValuesConfirmed] = useState(false);
-  const [isPublishing, setIsPublishing] = useState(false);
-  const [releaseInfo, setReleaseInfo] = useState();
-  const [artworkTx, setArtworkTx] = useState();
-  const [trackTx, setTrackTx] = useState();
-  const [metadata, setMetadata] = useState();
-  const [metadataTx, setMetadataTx] = useState();
-  const [releaseCreated, setReleaseCreated] = useState(false);
-  const [uploadId, setUploadId] = useState();
-  const [publishingStepText, setPublishingStepText] = useState();
-  const [md5Digest, setMd5Digest] = useState();
-  const [processingProgress, setProcessingProgress] = useState();
+  })
+  const [formValuesConfirmed, setFormValuesConfirmed] = useState(false)
+  const [isPublishing, setIsPublishing] = useState(false)
+  const [releaseInfo, setReleaseInfo] = useState()
+  const [artworkTx, setArtworkTx] = useState()
+  const [trackTx, setTrackTx] = useState()
+  const [metadata, setMetadata] = useState()
+  const [metadataTx, setMetadataTx] = useState()
+  const [releaseCreated, setReleaseCreated] = useState(false)
+  const [uploadId, setUploadId] = useState()
+  const [publishingStepText, setPublishingStepText] = useState()
+  const [md5Digest, setMd5Digest] = useState()
+  const [processingProgress, setProcessingProgress] = useState()
 
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
@@ -198,10 +198,10 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
       const handleGetMd5FileHash = async (track) => {
         const hash = await getMd5FileHash(track.file, (progress) =>
           setProcessingProgress(progress)
-        );
-        setMd5Digest(hash);
-      };
-      handleGetMd5FileHash(track);
+        )
+        setMd5Digest(hash)
+      }
+      handleGetMd5FileHash(track)
     }
   }, [track])
 
