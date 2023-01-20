@@ -192,14 +192,11 @@ const releasePurchaseHelper = async (
       release.paymentMint
     )
 
-    request.accounts = {
-      ...request.accounts,
-      hub: hubPubkey,
-      hubRelease,
-      hubContent,
-      hubSigner,
-      hubWallet,
-    }
+    request.accounts.hub = hubPubkey
+    request.accounts.hubRelease = hubRelease
+    request.accounts.hubContent = hubContent
+    request.accounts.hubSigner = hubSigner
+    request.accounts.hubWallet = hubWallet
   }
 
   const instructions = []
@@ -212,7 +209,7 @@ const releasePurchaseHelper = async (
   }
 
   let price = release.price
-  if (hub) {
+  if (hub && hub.referralFee.toNumber() > 0) {
     let releasePriceUi = ninaClient.nativeToUi(
       release.price.toNumber(),
       ninaClient.ids.mints.usdc
@@ -226,6 +223,14 @@ const releasePurchaseHelper = async (
   }
 
   if (requiresSwap(release, price, usdcBalance, ninaClient)) {
+    if (receiverReleaseTokenAccountIx) {
+      instructions.push({
+        instructions: [receiverReleaseTokenAccountIx],
+        cleanupInstructions: [],
+        signers: [],
+      })
+    }
+  
     return releasePurchaseWithOrcaSwap(
       release,
       price,
@@ -237,24 +242,25 @@ const releasePurchaseHelper = async (
     )
   } else {
     if (instructions.length > 0) {
-      request.instructions = instructions.reduce((acc, curr) => {
-        return acc.push(...curr.instructions)
-      }, [])
+      const formattedInstructions = []
+      instructions.forEach((instruction) => {
+        formattedInstructions.push(...instruction.instructions)
+      })
+      request.instructions = formattedInstructions
     }
-
     if (ninaClient.isSol(release.paymentMint)) {
       const { instructions, signers } = await wrapSol(
         provider,
         new anchor.BN(release.price)
-      )
-      if (!request.instructions) {
-        request.instructions = [...instructions]
-      } else {
-        request.instructions.push(...instructions)
+        )
+        if (!request.instructions) {
+          request.instructions = [...instructions]
+        } else {
+          request.instructions.push(...instructions)
+        }
+        request.signers = signers
+        request.accounts.payerTokenAccount = signers[0].publicKey
       }
-      request.signers = signers
-      request.accounts.payerTokenAccount = signers[0].publicKey
-    }
     if (hub) {
       return await program.rpc.releasePurchaseViaHub(
         release.price,
