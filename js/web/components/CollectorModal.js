@@ -90,7 +90,10 @@ const CollectorModal = (props) => {
                             </Link>
                           </td>
                           <td>
-                            <Link href={`/profiles/${entry}`} passHref>
+                            <Link
+                              href={`/profiles/${entry}?view=collection`}
+                              passHref
+                            >
                               View Collection
                             </Link>
                           </td>
