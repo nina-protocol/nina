@@ -53,7 +53,7 @@ const releasePurchaseWithOrcaSwap = async (
   const outputTokenQuote = await swapQuoteByOutputToken(
     whirlpool,
     whirlpoolData.tokenMintB,
-    price,
+    new anchor.BN(price.toNumber() + price.toNumber() * 0.005),
     Percentage.fromFraction(1, 1000),
     context.program.programId,
     fetcher,
@@ -83,7 +83,9 @@ const releasePurchaseWithOrcaSwap = async (
     cleanupInstructions: [],
     signers: [],
   })
-
+  if (instructions) {
+    tx.addInstructions(instructions)
+  }
   const program = await ninaClient.useProgram()
   let purchaseIx
   if (hub) {
@@ -99,13 +101,11 @@ const releasePurchaseWithOrcaSwap = async (
     )
   }
 
-  instructions.push({
+  tx.addInstruction({
     instructions: [purchaseIx],
     cleanupInstructions: [],
     signers: [],
   })
-
-  tx.addInstructions(instructions)
 
   return await tx.buildAndExecute()
 }
@@ -192,14 +192,11 @@ const releasePurchaseHelper = async (
       release.paymentMint
     )
 
-    request.accounts = {
-      ...request.accounts,
-      hub: hubPubkey,
-      hubRelease,
-      hubContent,
-      hubSigner,
-      hubWallet,
-    }
+    request.accounts.hub = hubPubkey
+    request.accounts.hubRelease = hubRelease
+    request.accounts.hubContent = hubContent
+    request.accounts.hubSigner = hubSigner
+    request.accounts.hubWallet = hubWallet
   }
 
   const instructions = []
@@ -212,7 +209,7 @@ const releasePurchaseHelper = async (
   }
 
   let price = release.price
-  if (hub) {
+  if (hub && hub.referralFee.toNumber() > 0) {
     let releasePriceUi = ninaClient.nativeToUi(
       release.price.toNumber(),
       ninaClient.ids.mints.usdc
@@ -237,11 +234,12 @@ const releasePurchaseHelper = async (
     )
   } else {
     if (instructions.length > 0) {
-      request.instructions = instructions.reduce((acc, curr) => {
-        return acc.push(...curr.instructions)
-      }, [])
+      const formattedInstructions = []
+      instructions.forEach((instruction) => {
+        formattedInstructions.push(...instruction.instructions)
+      })
+      request.instructions = formattedInstructions
     }
-
     if (ninaClient.isSol(release.paymentMint)) {
       const { instructions, signers } = await wrapSol(
         provider,
