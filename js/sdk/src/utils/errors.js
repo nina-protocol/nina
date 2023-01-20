@@ -44,7 +44,6 @@ export const ninaErrorHandler = (error, errorString) => {
       msg,
     }
   }
-
   return {
     success: false,
     msg: `${error.toString()}`,
