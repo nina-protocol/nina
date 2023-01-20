@@ -25,29 +25,27 @@ const ReleaseCreateForm = ({
   touched,
   setFieldValue,
 }) => {
-  const [edition, setEdition] = useState('limited')
-  const editionRef = useRef(edition)
-  const [inputValue, setInputValue] = useState(10)
+  const [isOpen, setIsOpen] = useState(false)
+  const editionRef = useRef(isOpen)
+  const [inputValue, setInputValue] = useState(undefined)
   useEffect(() => {
     if (onChange) {
       onChange(values)
     }
   }, [values])
 
-  useEffect(() => {
-    if (edition === 'limited') {
-      setFieldValue('amount',inputValue)
-    }
-  }, [edition, inputValue])
 
     useEffect(() => {
-      if (edition === 'unlimited') {
+      if (isOpen) {
+        const infin = '\u221e'
         setFieldValue('isOpen', true)
+        setInputValue(infin)
+        setFieldValue('amount', infin)
       }
-      if (edition === 'limited') {
+      if (!isOpen) {
         setFieldValue('isOpen', false)
       }
-    }, [edition, inputValue])
+    }, [isOpen, ])
 
   const valuetext = (value) => {
     return `${value}%`
@@ -56,12 +54,10 @@ const ReleaseCreateForm = ({
   const handleEditionChange = (event) => {
     editionRef.current = event.target.value
     if (editionRef.current === 'unlimited') {
-      setEdition('unlimited')
-      // setInputValue('Unlimited')
+      setIsOpen(true)
     }
     if (editionRef.current === 'limited') {
-      setEdition('limited')
-      // setInputValue(event.target.value)
+      setIsOpen(false)
     }
   }
 
@@ -149,14 +145,14 @@ const ReleaseCreateForm = ({
                 label="Limited"
                 onClick={(event) => handleEditionChange(event)}
                 sx={{ marginLeft: '1px', marginRight: '5px' }}
-                checked={edition === 'limited'}
+                checked={!isOpen}
               />
               <FormControlLabel
                 value="unlimited"
                 control={<Radio />}
                 label="Unlimited"
                 onClick={(event) => handleEditionChange(event)}
-                checked={edition === 'unlimited'}
+                checked={isOpen}
               />
             </RadioGroup>
           </FormControl>
@@ -164,12 +160,13 @@ const ReleaseCreateForm = ({
         <Field name="amount">
           {({ field }) => (
             <Box className={classes.fieldInputWrapper} align={'left'}>
+              
               <TextField
                 className={`${classes.formField}`}
                 variant="standard"
                 label={formatPlaceholder('Edition Size')}
                 size="small"
-                type="number"
+                type={isOpen ? 'text' : 'number'}
                 InputLabelProps={touched.amount ? { shrink: true } : ''}
                 placeholder={
                   errors.amount && touched.amount ? errors.amount : null
@@ -177,21 +174,20 @@ const ReleaseCreateForm = ({
                 InputProps={{
                   onChange: (event) => {
                     setInputValue(event.target.value)
-                    if (edition === 'limited') {
+                    if (!isOpen) {
                       let whole = parseInt(event.target.value)
                       setFieldValue('amount', whole)
                       setFieldValue('isOpen', false)
                     }
-                    if (edition === 'unlimited') {
+                    if (isOpen) {
                       setFieldValue('isOpen', true)
+                      setFieldValue('amount', 'Open')
                     }
                   },
                 }}
-                disabled={edition === 'unlimited'}
-                // value={inputValue}
+                disabled={isOpen}
                 {...field}
               />
-              {values.isOpen ? 'yes' : 'no '}
             </Box>
           )}
         </Field>
@@ -318,7 +314,7 @@ export default withFormik({
       title: '',
       description: '',
       catalogNumber: '',
-      amount: 10,
+      amount: '10',
       retailPrice: undefined,
       resalePercentage: 10,
       hubPubKey: undefined,

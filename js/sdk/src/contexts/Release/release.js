@@ -358,7 +358,14 @@ const releaseContextHelper = ({
         instructions.push(authorityTokenAccountIx)
       }
 
-      const editionAmount = isOpen ? parseInt(MAX_INT) : amount
+      const editionAmount = isOpen ? MAX_INT : amount
+      // const editionAmount = isOpen ? parseInt(MAX_INT) : amount
+      console.log('editionAmount', editionAmount)
+      console.log('parseInt(MAX_INT) ', parseInt(MAX_INT) )
+      console.log('new anchor.BN(editionAmount) ', new anchor.BN(editionAmount) )
+
+      debugger
+      
       const config = {
         amountTotalSupply: new anchor.BN(editionAmount),
         amountToArtistTokenAccount: new anchor.BN(0),

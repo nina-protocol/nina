@@ -42,7 +42,7 @@ const ReleasePurchase = (props) => {
     releaseState,
     getRelease,
     closeRelease,
-    // getCollectorsForRelease,
+     getCollectorsForRelease,
   } = useContext(Release.Context)
   const {
     getAmountHeld,
@@ -69,7 +69,7 @@ const ReleasePurchase = (props) => {
   const [description, setDescription] = useState()
   const [showCloseReleaseModal, setShowCloseReleaseModal] = useState(false)
   const [pendingTx, setPendingTx] = useState(false)
-  // const [collectors, setCollectors] = useState()
+  const [collectors, setCollectors] = useState()
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
     [releasePubkey, releasePurchaseTransactionPending]
@@ -86,7 +86,6 @@ const ReleasePurchase = (props) => {
     //   setPublishedHub(result?.hub)
     // }
     // hubForRelease(releasePubkey)
-    console.log('release',release)
   }, [releasePubkey])
 
   useEffect(() => {
@@ -163,33 +162,33 @@ const ReleasePurchase = (props) => {
     }
   }, [metadata?.description])
 
-  // useEffect(() => {
-  //   handleGetCollectorsForRelease(releasePubkey)
-  // }, [collection])
+  useEffect(() => {
+    handleGetCollectorsForRelease(releasePubkey)
+  }, [collection])
 
-  // const handleGetCollectorsForRelease = async (releasePubkey) => {
-  //   const collectorsList = await getCollectorsForRelease(releasePubkey)
+  const handleGetCollectorsForRelease = async (releasePubkey) => {
+    const collectorsList = await getCollectorsForRelease(releasePubkey)
 
-  //   if (wallet?.publicKey) {
-  //     const walletPublicKey = wallet.publicKey.toBase58()
-  //     if (
-  //       collection[releasePubkey] > 0 &&
-  //       !collectorsList.includes(walletPublicKey)
-  //     ) {
-  //       collectorsList.push(walletPublicKey)
-  //     } else if (
-  //       collectorsList.includes(walletPublicKey) &&
-  //       collection[releasePubkey] <= 0
-  //     ) {
-  //       const index = collectorsList.indexOf(walletPublicKey)
-  //       if (index > -1) {
-  //         collectorsList.splice(index, 1)
-  //       }
-  //     }
-  //   }
+    if (wallet?.publicKey) {
+      const walletPublicKey = wallet.publicKey.toBase58()
+      if (
+        collection[releasePubkey] > 0 &&
+        !collectorsList.includes(walletPublicKey)
+      ) {
+        collectorsList.push(walletPublicKey)
+      } else if (
+        collectorsList.includes(walletPublicKey) &&
+        collection[releasePubkey] <= 0
+      ) {
+        const index = collectorsList.indexOf(walletPublicKey)
+        if (index > -1) {
+          collectorsList.splice(index, 1)
+        }
+      }
+    }
 
-  //    setCollectors(collectorsList)
-  // }
+     setCollectors(collectorsList)
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -310,17 +309,16 @@ const ReleasePurchase = (props) => {
   return (
     <Box>
       <AmountRemaining variant="body2" align="left">
-        {/* {release.editionType === 'open' ? (
+        {release.editionType === 'open' ? (
           <span>
-            Open Edition: {`${collectors.length ? collectors.length : 0} Sold`}
+            Open Edition: {`${collectors?.length ? collectors?.length : 0} Sold`}
           </span>
         ): (
           <>
           Remaining:{' '}
         <span>{release.remainingSupply} </span> / {release.totalSupply}
           </>
-        )} */}
-        <span>{release.remainingSupply}</span>
+        )}
       </AmountRemaining>
 
       <Typography variant="body2" align="left" paddingBottom="10px">

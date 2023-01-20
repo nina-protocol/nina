@@ -42,7 +42,7 @@ const ReleaseCreateSchema = Yup.object().shape({
   title: Yup.string().required('Title is Required'),
   description: Yup.string(),
   catalogNumber: Yup.string().required('Catalog Number is Required'),
-  amount: Yup.number().required('Edition Size is Required'),
+  amount: Yup.string().required('Edition Size is Required'),
   retailPrice: Yup.number().required('Price is Required'),
   resalePercentage: Yup.number().required('Resale Percent Amount is Required'),
 })
