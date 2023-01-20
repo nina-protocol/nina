@@ -1,4 +1,5 @@
 import React, { useContext, useMemo, useState, useEffect } from 'react'
+import { configureScope } from '@sentry/nextjs'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
@@ -48,6 +49,10 @@ const NavBar = () => {
     if (wallet.connected) {
       getSubscriptionsForUser(wallet.publicKey.toBase58())
       getUserBalances()
+
+      configureScope((scope) => {
+        scope.setTag('wallet', wallet.publicKey.toBase58())
+      })
     }
   }, [wallet.connected])
 
