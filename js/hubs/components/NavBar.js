@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useContext } from 'react'
+import {configureScope} from '@sentry/nextjs';
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
@@ -108,6 +109,9 @@ const NavBar = ({ hubPubkey }) => {
   useEffect(() => {
     if (wallet.connected) {
       getHubsForUser(wallet.publicKey.toBase58())
+      configureScope(scope => {
+        scope.setTag('wallet', wallet.publicKey.toBase58());
+      });      
     }
   }, [wallet.connected])
 
