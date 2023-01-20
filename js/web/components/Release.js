@@ -51,6 +51,7 @@ const ReleaseComponent = ({ metadataSsr }) => {
 
   useEffect(() => {
     setUserHubs(null)
+    console.log('qqq', release)
   }, [wallet?.disconnecting])
 
   if (metadata && Object.keys(metadata).length === 0) {

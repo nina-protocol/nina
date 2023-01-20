@@ -26,7 +26,7 @@ const lookupTypes = {
   REVENUE_SHARE: 'revenue_share',
 }
 
-const maxInt = '18446744073709551615'
+const MAX_INT = '18446744073709551615'
 const PRIORITY_SWAP_FEE = 5000
 const ReleaseContext = createContext()
 const ReleaseContextProvider = ({ children }) => {
@@ -266,10 +266,10 @@ const releaseContextHelper = ({
     releaseMint,
     isOpen,
   }) => {
+        console.log('------')
+        console.log('is open  qqq', isOpen)
+        console.log('------')
     try {
-      console.log('isOpen qqq', isOpen)
-      console.log('maxInt qqq', maxInt)
-      console.log('typeof amount', typeof amount)
       const program = await ninaClient.useProgram()
       hubPubkey = new anchor.web3.PublicKey(hubPubkey)
       const hub = await program.account.hub.fetch(hubPubkey)
@@ -358,15 +358,15 @@ const releaseContextHelper = ({
         instructions.push(authorityTokenAccountIx)
       }
 
+      const editionAmount = isOpen ? parseInt(MAX_INT) : amount
       const config = {
-        amountTotalSupply: new anchor.BN(isOpen ? parseInt(maxInt) : amount),
+        amountTotalSupply: new anchor.BN(editionAmount),
         amountToArtistTokenAccount: new anchor.BN(0),
         amountToVaultTokenAccount: new anchor.BN(0),
         resalePercentage: new anchor.BN(resalePercentage * 10000),
         price: new anchor.BN(uiToNative(retailPrice, paymentMint)),
         releaseDatetime: new anchor.BN(Date.now() / 1000),
       }
-
       const bumps = {
         release: releaseBump,
         signer: releaseSignerBump,
@@ -693,9 +693,7 @@ const releaseContextHelper = ({
     releaseMint,
     isOpen
   }) => {
-    console.log('------')
-    console.log('is open  qqq', isOpen)
-    console.log('------')
+
     setPressingState({
       ...pressingState,
       pending: true,
@@ -773,7 +771,7 @@ const releaseContextHelper = ({
       }
       let now = new Date()
       const config = {
-        amountTotalSupply: new anchor.BN(isOpen ? parseInt(maxInt) : amount),
+        amountTotalSupply: new anchor.BN(isOpen ? parseInt(MAX_INT) : amount),
         amountToArtistTokenAccount: new anchor.BN(0),
         amountToVaultTokenAccount: new anchor.BN(0),
         resalePercentage: new anchor.BN(resalePercentage * 10000),

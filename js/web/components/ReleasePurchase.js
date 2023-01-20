@@ -11,7 +11,7 @@ import { styled } from '@mui/material/styles'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
-import { useSnackbar } from 'notistack'
+import {useSnackbar} from 'notistack'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
 import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
@@ -42,6 +42,7 @@ const ReleasePurchase = (props) => {
     releaseState,
     getRelease,
     closeRelease,
+    // getCollectorsForRelease,
   } = useContext(Release.Context)
   const {
     getAmountHeld,
@@ -68,6 +69,7 @@ const ReleasePurchase = (props) => {
   const [description, setDescription] = useState()
   const [showCloseReleaseModal, setShowCloseReleaseModal] = useState(false)
   const [pendingTx, setPendingTx] = useState(false)
+  // const [collectors, setCollectors] = useState()
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
     [releasePubkey, releasePurchaseTransactionPending]
@@ -111,7 +113,7 @@ const ReleasePurchase = (props) => {
   }, [releasePubkey])
 
   useEffect(() => {
-         console.log('release', release)
+     
     setAmountPendingBuys(
       filterExchangesForReleaseBuySell(releasePubkey, true, true).length
     )
@@ -160,6 +162,34 @@ const ReleasePurchase = (props) => {
       setDescription(metadata?.description)
     }
   }, [metadata?.description])
+
+  // useEffect(() => {
+  //   handleGetCollectorsForRelease(releasePubkey)
+  // }, [collection])
+
+  // const handleGetCollectorsForRelease = async (releasePubkey) => {
+  //   const collectorsList = await getCollectorsForRelease(releasePubkey)
+
+  //   if (wallet?.publicKey) {
+  //     const walletPublicKey = wallet.publicKey.toBase58()
+  //     if (
+  //       collection[releasePubkey] > 0 &&
+  //       !collectorsList.includes(walletPublicKey)
+  //     ) {
+  //       collectorsList.push(walletPublicKey)
+  //     } else if (
+  //       collectorsList.includes(walletPublicKey) &&
+  //       collection[releasePubkey] <= 0
+  //     ) {
+  //       const index = collectorsList.indexOf(walletPublicKey)
+  //       if (index > -1) {
+  //         collectorsList.splice(index, 1)
+  //       }
+  //     }
+  //   }
+
+  //    setCollectors(collectorsList)
+  // }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -237,7 +267,7 @@ const ReleasePurchase = (props) => {
   }
 
   const buttonText =
-    release.remainingSupply > 0
+    (release.remainingSupply > 0 || release.editionType === 'open')
       ? `Buy $${ninaClient.nativeToUiString(
           release.price,
           release.paymentMint
@@ -245,7 +275,7 @@ const ReleasePurchase = (props) => {
       : `Sold Out ($${ninaClient
           .nativeToUi(release.price, release.paymentMint)
           .toFixed(2)})`
-
+    
   let pathString = ''
   if (router.pathname.includes('releases')) {
     pathString = '/releases'
@@ -280,8 +310,17 @@ const ReleasePurchase = (props) => {
   return (
     <Box>
       <AmountRemaining variant="body2" align="left">
-        Remaining: <span>{release.remainingSupply} </span> /{' '}
-        {release.totalSupply}
+        {/* {release.editionType === 'open' ? (
+          <span>
+            Open Edition: {`${collectors.length ? collectors.length : 0} Sold`}
+          </span>
+        ): (
+          <>
+          Remaining:{' '}
+        <span>{release.remainingSupply} </span> / {release.totalSupply}
+          </>
+        )} */}
+        <span>{release.remainingSupply}</span>
       </AmountRemaining>
 
       <Typography variant="body2" align="left" paddingBottom="10px">
