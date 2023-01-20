@@ -84,6 +84,7 @@ const ReleasePurchase = (props) => {
     //   setPublishedHub(result?.hub)
     // }
     // hubForRelease(releasePubkey)
+    console.log('release',release)
   }, [releasePubkey])
 
   useEffect(() => {
@@ -93,7 +94,7 @@ const ReleasePurchase = (props) => {
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
       setRelease(releaseState.tokenData[releasePubkey])
-      console.log('release', release)
+ 
     }
   }, [releaseState.tokenData[releasePubkey]])
 
@@ -110,6 +111,7 @@ const ReleasePurchase = (props) => {
   }, [releasePubkey])
 
   useEffect(() => {
+         console.log('release', release)
     setAmountPendingBuys(
       filterExchangesForReleaseBuySell(releasePubkey, true, true).length
     )

@@ -13,7 +13,6 @@ import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormControl from '@mui/material/FormControl'
 import FormLabel from '@mui/material/FormLabel'
-import { maxInt } from '@nina-protocol/nina-internal-sdk/src/utils/maxInt'
 import InputLabel from '@mui/material/InputLabel'
 const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
 
@@ -35,6 +34,21 @@ const ReleaseCreateForm = ({
     }
   }, [values])
 
+  useEffect(() => {
+    if (edition === 'limited') {
+      setFieldValue('amount',inputValue)
+    }
+  }, [edition, inputValue])
+
+    useEffect(() => {
+      if (edition === 'unlimited') {
+        setFieldValue('isOpen', true)
+      }
+      if (edition === 'limited') {
+        setFieldValue('isOpen', false)
+      }
+    }, [edition, inputValue])
+
   const valuetext = (value) => {
     return `${value}%`
   }
@@ -42,16 +56,13 @@ const ReleaseCreateForm = ({
   const handleEditionChange = (event) => {
     editionRef.current = event.target.value
     if (editionRef.current === 'unlimited') {
-        setEdition('unlimited')
+      setEdition('unlimited')
+      // setInputValue('Unlimited')
     }
     if (editionRef.current === 'limited') {
-        setEdition('limited')
+      setEdition('limited')
+      // setInputValue(event.target.value)
     }
-    // setEdition(event?.target?.value)
-    console.log('editionRef.current', editionRef)
-    // if (edition === 'unlimited') {
-    //   setFieldValue('amount', parseInt(maxInt))
-    // }
   }
 
   return (
@@ -126,7 +137,11 @@ const ReleaseCreateForm = ({
           sx={{ display: 'flex', alignItems: 'left', textAlign: 'center' }}
         >
           <FormControl sx={{ flexDirection: 'row' }}>
-            <RadioGroup row aria-labelledby="amount" defaultValue={editionRef.current}>
+            <RadioGroup
+              row
+              aria-labelledby="amount"
+              defaultValue={editionRef.current}
+            >
               <FormLabel sx={{ marginTop: '10px' }}>EDITION TYPE</FormLabel>{' '}
               <FormControlLabel
                 value="limited"
@@ -134,12 +149,14 @@ const ReleaseCreateForm = ({
                 label="Limited"
                 onClick={(event) => handleEditionChange(event)}
                 sx={{ marginLeft: '1px', marginRight: '5px' }}
+                checked={edition === 'limited'}
               />
               <FormControlLabel
                 value="unlimited"
                 control={<Radio />}
                 label="Unlimited"
                 onClick={(event) => handleEditionChange(event)}
+                checked={edition === 'unlimited'}
               />
             </RadioGroup>
           </FormControl>
@@ -159,21 +176,22 @@ const ReleaseCreateForm = ({
                 }
                 InputProps={{
                   onChange: (event) => {
-                    setInputValue(parseInt(event.target.value))
-                    console.log('inputValue', parseInt(inputValue))
-                    console.log('from input props editionRef.current', editionRef.current)
+                    setInputValue(event.target.value)
                     if (edition === 'limited') {
                       let whole = parseInt(event.target.value)
                       setFieldValue('amount', whole)
+                      setFieldValue('isOpen', false)
                     }
                     if (edition === 'unlimited') {
-                      setFieldValue('amount', parseInt(maxInt))
+                      setFieldValue('isOpen', true)
                     }
                   },
                 }}
                 disabled={edition === 'unlimited'}
+                // value={inputValue}
                 {...field}
               />
+              {values.isOpen ? 'yes' : 'no '}
             </Box>
           )}
         </Field>
@@ -304,6 +322,7 @@ export default withFormik({
       retailPrice: undefined,
       resalePercentage: 10,
       hubPubKey: undefined,
+      isOpen: false
     }
   },
 })(ReleaseCreateForm)

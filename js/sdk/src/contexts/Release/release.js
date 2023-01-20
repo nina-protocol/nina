@@ -25,6 +25,8 @@ const lookupTypes = {
   PUBLISHED_BY: 'published_by',
   REVENUE_SHARE: 'revenue_share',
 }
+
+const maxInt = '18446744073709551615'
 const PRIORITY_SWAP_FEE = 5000
 const ReleaseContext = createContext()
 const ReleaseContextProvider = ({ children }) => {
@@ -262,8 +264,12 @@ const releaseContextHelper = ({
     release,
     releaseBump,
     releaseMint,
+    isOpen,
   }) => {
     try {
+      console.log('isOpen qqq', isOpen)
+      console.log('maxInt qqq', maxInt)
+      console.log('typeof amount', typeof amount)
       const program = await ninaClient.useProgram()
       hubPubkey = new anchor.web3.PublicKey(hubPubkey)
       const hub = await program.account.hub.fetch(hubPubkey)
@@ -353,7 +359,7 @@ const releaseContextHelper = ({
       }
 
       const config = {
-        amountTotalSupply: new anchor.BN(amount),
+        amountTotalSupply: new anchor.BN(isOpen ? parseInt(maxInt) : amount),
         amountToArtistTokenAccount: new anchor.BN(0),
         amountToVaultTokenAccount: new anchor.BN(0),
         resalePercentage: new anchor.BN(resalePercentage * 10000),
@@ -424,15 +430,15 @@ const releaseContextHelper = ({
         }
       )
       await getConfirmTransaction(txid, provider.connection)
-      await NinaSdk.Hub.fetchHubRelease(hubPubkey.toBase58(), hubRelease.toBase58())
-
-      logEvent(
-        'release_init_via_hub_success',
-        'engagement', {
-          publicKey: release.toBase58(),
-          wallet: provider.wallet.publicKey.toBase58(),
-        }
+      await NinaSdk.Hub.fetchHubRelease(
+        hubPubkey.toBase58(),
+        hubRelease.toBase58()
       )
+
+      logEvent('release_init_via_hub_success', 'engagement', {
+        publicKey: release.toBase58(),
+        wallet: provider.wallet.publicKey.toBase58(),
+      })
 
       return { success: true }
     } catch (error) {
@@ -685,7 +691,11 @@ const releaseContextHelper = ({
     release,
     releaseBump,
     releaseMint,
+    isOpen
   }) => {
+    console.log('------')
+    console.log('is open  qqq', isOpen)
+    console.log('------')
     setPressingState({
       ...pressingState,
       pending: true,
@@ -763,7 +773,7 @@ const releaseContextHelper = ({
       }
       let now = new Date()
       const config = {
-        amountTotalSupply: new anchor.BN(amount),
+        amountTotalSupply: new anchor.BN(isOpen ? parseInt(maxInt) : amount),
         amountToArtistTokenAccount: new anchor.BN(0),
         amountToVaultTokenAccount: new anchor.BN(0),
         resalePercentage: new anchor.BN(resalePercentage * 10000),
