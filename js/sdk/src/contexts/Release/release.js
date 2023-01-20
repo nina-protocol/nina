@@ -266,9 +266,6 @@ const releaseContextHelper = ({
     releaseMint,
     isOpen,
   }) => {
-        console.log('------')
-        console.log('is open  qqq', isOpen)
-        console.log('------')
     try {
       const program = await ninaClient.useProgram()
       hubPubkey = new anchor.web3.PublicKey(hubPubkey)
@@ -359,12 +356,6 @@ const releaseContextHelper = ({
       }
 
       const editionAmount = isOpen ? MAX_INT : amount
-      // const editionAmount = isOpen ? parseInt(MAX_INT) : amount
-      console.log('editionAmount', editionAmount)
-      console.log('parseInt(MAX_INT) ', parseInt(MAX_INT) )
-      console.log('new anchor.BN(editionAmount) ', new anchor.BN(editionAmount) )
-
-      debugger
       
       const config = {
         amountTotalSupply: new anchor.BN(editionAmount),
@@ -777,8 +768,9 @@ const releaseContextHelper = ({
         instructions.push(authorityPublishingCreditTokenAccountIx)
       }
       let now = new Date()
+      const editionAmount = isOpen ? parseInt(MAX_INT) : amount
       const config = {
-        amountTotalSupply: new anchor.BN(isOpen ? parseInt(MAX_INT) : amount),
+        amountTotalSupply: new anchor.BN(editionAmount),
         amountToArtistTokenAccount: new anchor.BN(0),
         amountToVaultTokenAccount: new anchor.BN(0),
         resalePercentage: new anchor.BN(resalePercentage * 10000),
