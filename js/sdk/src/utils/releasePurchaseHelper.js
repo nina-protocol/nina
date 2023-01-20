@@ -53,7 +53,7 @@ const releasePurchaseWithOrcaSwap = async (
   const outputTokenQuote = await swapQuoteByOutputToken(
     whirlpool,
     whirlpoolData.tokenMintB,
-    new anchor.BN(price.toNumber() + (price.toNumber() * .005)),
+    new anchor.BN(price.toNumber() + price.toNumber() * 0.005),
     Percentage.fromFraction(1, 1000),
     context.program.programId,
     fetcher,
@@ -222,7 +222,7 @@ const releasePurchaseHelper = async (
     )
   }
 
-  if (requiresSwap(release, price, usdcBalance, ninaClient)) {  
+  if (requiresSwap(release, price, usdcBalance, ninaClient)) {
     return releasePurchaseWithOrcaSwap(
       release,
       price,
@@ -244,15 +244,15 @@ const releasePurchaseHelper = async (
       const { instructions, signers } = await wrapSol(
         provider,
         new anchor.BN(release.price)
-        )
-        if (!request.instructions) {
-          request.instructions = [...instructions]
-        } else {
-          request.instructions.push(...instructions)
-        }
-        request.signers = signers
-        request.accounts.payerTokenAccount = signers[0].publicKey
+      )
+      if (!request.instructions) {
+        request.instructions = [...instructions]
+      } else {
+        request.instructions.push(...instructions)
       }
+      request.signers = signers
+      request.accounts.payerTokenAccount = signers[0].publicKey
+    }
     if (hub) {
       return await program.rpc.releasePurchaseViaHub(
         release.price,
