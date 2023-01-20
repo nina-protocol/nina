@@ -32,8 +32,8 @@ const ReleaseTileList = (props) => {
         {releases.map((release, i) => {
           if (
             (release.metadata.properties.title.length > 20 &&
-            release.metadata.properties.title.indexOf(' ') === -1 )
-            || release.metadata.properties.title.length > 250
+              release.metadata.properties.title.indexOf(' ') === -1) ||
+            release.metadata.properties.title.length > 250
           ) {
             release.metadata.properties.title =
               release.metadata.properties.title.substring(0, 20) + '...'
