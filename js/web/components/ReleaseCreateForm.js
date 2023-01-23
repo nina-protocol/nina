@@ -35,10 +35,10 @@ const ReleaseCreateForm = ({
 
   useEffect(() => {
     if (isOpen) {
-      const infin = '\u221e'
+      const infinityUnicode = '\u221e'
       setFieldValue('isOpen', true)
-      setInputValue(infin)
-      setFieldValue('amount', infin)
+      setInputValue(infinityUnicode)
+      setFieldValue('amount', infinityUnicode)
     }
     if (!isOpen) {
       setFieldValue('isOpen', false)
@@ -131,7 +131,12 @@ const ReleaseCreateForm = ({
           sx={{ display: 'flex', alignItems: 'left', textAlign: 'center' }}
         >
           <FormControl sx={{ flexDirection: 'row' }}>
-            <FormLabel sx={{ marginTop: '10px', color: 'gray'}} focused={false}>EDITION TYPE</FormLabel>{' '}
+            <FormLabel
+              sx={{ marginTop: '10px', color: 'gray' }}
+              focused={false}
+            >
+              EDITION TYPE
+            </FormLabel>{' '}
             <RadioGroup
               row
               aria-labelledby="amount"
@@ -185,6 +190,9 @@ const ReleaseCreateForm = ({
                   },
                 }}
                 disabled={isOpen}
+                sx={{
+                  fontSize: inputValue === '\u221e' ? '24px !important' : '',
+                }}
                 {...field}
               />
             </Box>
@@ -318,10 +326,10 @@ const Warning = styled(Typography)(({ theme }) => ({
 
 const StyledRadioGroup = styled(RadioGroup)(({ theme }) => ({
   '& .MuiRadio-root': {
-    '&:hover':{
+    '&:hover': {
       backgroundColor: 'transparent',
-    }
-  }
+    },
+  },
 }))
 export default withFormik({
   enableReinitialize: true,

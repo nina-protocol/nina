@@ -228,7 +228,11 @@ const ReleasePurchase = (props) => {
           marginTop: { md: '0px', lg: '20px' },
         }}
       >
-        <BuyButton variant="contained" type="submit">
+        <BuyButton
+          variant="contained"
+          type="submit"
+          disabled={release.remainingSupply > 0 ? false : true}
+        >
           <Typography variant="body2" align="left">
             {txPending && <Dots msg="Preparing transaction" />}
             {!txPending && pending && <Dots msg="Awaiting wallet approval" />}

@@ -4,53 +4,51 @@ import React, {
   useEffect,
   createElement,
   Fragment,
-} from "react";
-import dynamic from "next/dynamic";
-import Audio from "@nina-protocol/nina-internal-sdk/esm/Audio";
-import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
-import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
-import { imageManager } from "@nina-protocol/nina-internal-sdk/esm/utils";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import { styled } from "@mui/material/styles";
-import Image from "next/image";
-import Typography from "@mui/material/Typography";
-import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
-import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { unified } from "unified";
-import rehypeParse from "rehype-parse";
-import rehypeReact from "rehype-react";
-import rehypeSanitize from "rehype-sanitize";
-import rehypeExternalLinks from "rehype-external-links";
-const { getImageFromCDN, loader } = imageManager;
-import { parseChecker } from "@nina-protocol/nina-internal-sdk/esm/utils";
-import { useSnackbar } from "notistack";
-const CloseRelease = dynamic(() => import("./CloseRelease"));
-const Royalty = dynamic(() => import("./Royalty"));
-const Button = dynamic(() => import("@mui/material/Button"));
-const ReleasePurchase = dynamic(() => import("./ReleasePurchase"));
-const AddToHubModal = dynamic(() => import("./AddToHubModal"));
+} from 'react'
+import dynamic from 'next/dynamic'
+import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import { imageManager } from '@nina-protocol/nina-internal-sdk/esm/utils'
+import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
+import { styled } from '@mui/material/styles'
+import Image from 'next/image'
+import Typography from '@mui/material/Typography'
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
+import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline'
+import { useWallet } from '@solana/wallet-adapter-react'
+import { unified } from 'unified'
+import rehypeParse from 'rehype-parse'
+import rehypeReact from 'rehype-react'
+import rehypeSanitize from 'rehype-sanitize'
+import rehypeExternalLinks from 'rehype-external-links'
+const { getImageFromCDN, loader } = imageManager
+import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
+import { useSnackbar } from 'notistack'
+const CloseRelease = dynamic(() => import('./CloseRelease'))
+const Royalty = dynamic(() => import('./Royalty'))
+const Button = dynamic(() => import('@mui/material/Button'))
+const ReleasePurchase = dynamic(() => import('./ReleasePurchase'))
+const AddToHubModal = dynamic(() => import('./AddToHubModal'))
 
 const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
-  const wallet = useWallet();
-  const { enqueueSnackbar } = useSnackbar();
+  const wallet = useWallet()
+  const { enqueueSnackbar } = useSnackbar()
   const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } =
-    useContext(Audio.Context);
-  const { releaseState, getRelease, closeRelease } = useContext(
-    Release.Context
-  );
+    useContext(Audio.Context)
+  const { releaseState, getRelease, closeRelease } = useContext(Release.Context)
   const { getHub, hubState, getHubsForUser, filterHubsForUser } = useContext(
     Hub.Context
   )
 
-  const [metadata, setMetadata] = useState(metadataSsr || null);
-  const [description, setDescription] = useState();
-  const [userHubs, setUserHubs] = useState();
-  const [userIsRecipient, setUserIsRecipient] = useState(false);
-  const [release, setRelease] = useState();
-  const [showCloseReleaseModal, setShowCloseReleaseModal] = useState(false);
-  const [pendingTx, setPendingTx] = useState(false);
+  const [metadata, setMetadata] = useState(metadataSsr || null)
+  const [description, setDescription] = useState()
+  const [userHubs, setUserHubs] = useState()
+  const [userIsRecipient, setUserIsRecipient] = useState(false)
+  const [release, setRelease] = useState()
+  const [showCloseReleaseModal, setShowCloseReleaseModal] = useState(false)
+  const [pendingTx, setPendingTx] = useState(false)
 
   useEffect(() => {
     if (hubPubkey && !hubState[hubPubkey]) {
@@ -119,27 +117,27 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   }, [releaseState.tokenData[releasePubkey], wallet?.connected])
 
   const handleCloseRelease = async (e, releasePubkey) => {
-    e.preventDefault();
-    setPendingTx(true);
-    const result = await closeRelease(releasePubkey);
+    e.preventDefault()
+    setPendingTx(true)
+    const result = await closeRelease(releasePubkey)
 
     if (result) {
-      console.log("success", result);
-      showCompletedTransaction(result);
-      setPendingTx(false);
-      setShowCloseReleaseModal(false);
+      console.log('success', result)
+      showCompletedTransaction(result)
+      setPendingTx(false)
+      setShowCloseReleaseModal(false)
     }
-  };
+  }
 
   const showCompletedTransaction = (result) => {
     enqueueSnackbar(result.msg, {
-      variant: result.success ? "success" : "warn",
-    });
-  };
+      variant: result.success ? 'success' : 'warn',
+    })
+  }
 
   const toggleCloseReleaseForm = () => {
-    setShowCloseReleaseModal(!showCloseReleaseModal);
-  };
+    setShowCloseReleaseModal(!showCloseReleaseModal)
+  }
 
   return (
     <>
@@ -229,28 +227,30 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                 hubPubkey={hubPubkey}
               />
               {userIsRecipient && (
-                <Box sx={{ textAlign: "left" }}>
+                <Box sx={{ textAlign: 'left' }}>
                   <Royalty
                     release={releaseState.tokenData[releasePubkey]}
                     releasePubkey={releasePubkey}
                   />
-                  <Button
-                    variant="outlined"
-                    sx={{ padding: "12px !important", marginTop: 2 }}
-                    onClick={() => toggleCloseReleaseForm()}
-                    disabled={release.remainingSupply === 0}
-                  >
-                    <Typography
-                      variant="body2"
-                      align="left"
-                      sx={{
-                        color: release.remainingSupply === 0 ? "grey": "red",
-                        padding: 0,
-                      }}
+                  {release.remainingSupply > 0 && (
+                    <Button
+                      variant="outlined"
+                      sx={{ padding: '12px !important', marginTop: 2 }}
+                      onClick={() => toggleCloseReleaseForm()}
+                      disabled={release.remainingSupply === 0}
                     >
-                      Close Release
-                    </Typography>
-                  </Button>
+                      <Typography
+                        variant="body2"
+                        align="left"
+                        sx={{
+                          color: release.remainingSupply === 0 ? 'grey' : 'red',
+                          padding: 0,
+                        }}
+                      >
+                        Close Release
+                      </Typography>
+                    </Button>
+                  )}
                   {showCloseReleaseModal && (
                     <CloseRelease
                       handleCloseRelease={(e) =>

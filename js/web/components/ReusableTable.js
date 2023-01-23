@@ -289,6 +289,7 @@ const ReusableTableBody = (props) => {
       ? (a, b) => descendingComparator(a, b, orderBy)
       : (a, b) => -descendingComparator(a, b, orderBy)
   }
+  const infinityUnicode = '\u221e'
 
   let rows = items?.map((data) => {
     const { releasePubkey, publicKey } = data
@@ -337,7 +338,10 @@ const ReusableTableBody = (props) => {
           data.tokenData.price,
           data.tokenData.paymentMint
         )
-        formattedData.remaining = `${data.tokenData.remainingSupply} / ${data.tokenData.totalSupply}`
+        formattedData.remaining =
+          data.tokenData.remainingSupply < 0
+            ? infinityUnicode
+            : `${data.tokenData.remainingSupply} / ${data.tokenData.totalSupply}`
         formattedData.collected = ninaClient.nativeToUiString(
           recipient?.collected + recipient?.owed,
           data.tokenData.paymentMint
@@ -457,9 +461,9 @@ const ReusableTableBody = (props) => {
         searchResultHub: data?.data.displayName,
       }
     }
+    console.log('formatted data', formattedData)
     return formattedData
   })
-
   return (
     <TableBody>
       {rows
@@ -639,7 +643,16 @@ const ReusableTableBody = (props) => {
                   return (
                     <StyledTableCell key={cellName}>
                       <LineBreakContainer>
-                        <Typography>{cellData}</Typography>
+                        <Typography
+                          sx={{
+                            fontSize:
+                              cellData === infinityUnicode
+                                ? '22px !important'
+                                : '',
+                          }}
+                        >
+                          {cellData}
+                        </Typography>
                       </LineBreakContainer>
                     </StyledTableCell>
                   )

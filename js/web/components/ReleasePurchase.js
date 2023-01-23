@@ -386,7 +386,12 @@ const ReleasePurchase = (props) => {
       <StyledDescription align="left">{description}</StyledDescription>
       <Box mt={1}>
         <form onSubmit={handleSubmit}>
-          <Button variant="outlined" type="submit" fullWidth>
+          <Button
+            variant="outlined"
+            type="submit"
+            fullWidth
+            disabled={release.remainingSupply > 0 ? false : true}
+          >
             <Typography variant="body2">
               {txPending && <Dots msg="preparing transaction" />}
               {!txPending && pending && <Dots msg="awaiting wallet approval" />}
@@ -398,21 +403,23 @@ const ReleasePurchase = (props) => {
       {userIsRecipient && (
         <>
           <Royalty releasePubkey={releasePubkey} release={release} />
-          <Button
-            variant="outlined"
-            color="primary"
-            fullWidth
-            sx={{ marginTop: '15px !important' }}
-            onClick={() => toggleCloseReleaseForm()}
-            disabled={release.remainingSupply === 0}
-          >
-            <Typography
-              variant="body2"
-              sx={{ color: release.remainingSupply === 0 ? '' : 'red' }}
+          {release.remainingSupply > 0 && (
+            <Button
+              variant="outlined"
+              color="primary"
+              fullWidth
+              sx={{ marginTop: '15px !important' }}
+              onClick={() => toggleCloseReleaseForm()}
+              disabled={release.remainingSupply === 0}
             >
-              Close Release
-            </Typography>
-          </Button>
+              <Typography
+                variant="body2"
+                sx={{ color: release.remainingSupply === 0 ? '' : 'red' }}
+              >
+                Close Release
+              </Typography>
+            </Button>
+          )}
           {showCloseReleaseModal && (
             <CloseRelease
               handleCloseRelease={(e) => handleCloseRelease(e, releasePubkey)}
