@@ -64,8 +64,7 @@ const AudioPlayer = ({ hubPubkey=undefined, children }) => {
   }, [])
 
   useEffect(() => {
-    const initialized = activeIndexRef.current >= 0
-    if (isPlaying && initialized) {
+    if (isPlaying && audioInitialized) {
       play()
     } else {
       pause()
@@ -84,9 +83,9 @@ const AudioPlayer = ({ hubPubkey=undefined, children }) => {
   useEffect(() => {
     if (track && audioInitialized) {
       if (audioPlayerRef.current.src !== track.txid) {
-        activeIndexRef.current = playlist.indexOf(track)
         activeTrack.current = track
         audioPlayerRef.current.src = track.txid
+        activeIndexRef.current = playlist.indexOf(track)
       }
       if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
@@ -150,11 +149,11 @@ const AudioPlayer = ({ hubPubkey=undefined, children }) => {
 
   const play = () => {
     if (audioPlayerRef.current.paused) {
-      audioPlayerRef.current.play()
+      if (audioPlayerRef.current.src) {
+        audioPlayerRef.current.play()
+      }
       setPlaying(true)
       startTimer()
-    } else {
-      // pause()
     }
   }
 
@@ -201,7 +200,7 @@ const AudioPlayer = ({ hubPubkey=undefined, children }) => {
 
   return (
     <div>
-      <audio id="audio" style={{ width: '100%' }}>
+      <audio id="audio" style={{ width: '100%' }} preload="none">
         <source src={track?.txid + '?ext=mp3'} type="audio/mp3" />
       </audio>
       {children({
