@@ -33,18 +33,17 @@ const ReleaseCreateForm = ({
     }
   }, [values])
 
-
-    useEffect(() => {
-      if (isOpen) {
-        const infin = '\u221e'
-        setFieldValue('isOpen', true)
-        setInputValue(infin)
-        setFieldValue('amount', infin)
-      }
-      if (!isOpen) {
-        setFieldValue('isOpen', false)
-      }
-    }, [isOpen, ])
+  useEffect(() => {
+    if (isOpen) {
+      const infin = '\u221e'
+      setFieldValue('isOpen', true)
+      setInputValue(infin)
+      setFieldValue('amount', infin)
+    }
+    if (!isOpen) {
+      setFieldValue('isOpen', false)
+    }
+  }, [isOpen])
 
   const valuetext = (value) => {
     return `${value}%`
@@ -159,7 +158,6 @@ const ReleaseCreateForm = ({
         <Field name="amount">
           {({ field }) => (
             <Box className={classes.fieldInputWrapper} align={'left'}>
-              
               <TextField
                 className={`${classes.formField}`}
                 variant="standard"
@@ -250,7 +248,7 @@ const ReleaseCreateForm = ({
 
             <Field name="description">
               {(props) => (
-                <Box sx={{ borderBottom: '1px solid grey',height: '14vh'  }}>
+                <Box sx={{ borderBottom: '1px solid grey', height: '14vh' }}>
                   <QuillEditor
                     formikProps={props}
                     type={'release'}
@@ -317,7 +315,7 @@ export default withFormik({
       retailPrice: undefined,
       resalePercentage: 10,
       hubPubKey: undefined,
-      isOpen: false
+      isOpen: false,
     }
   },
 })(ReleaseCreateForm)

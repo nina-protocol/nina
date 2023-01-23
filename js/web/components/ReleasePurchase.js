@@ -11,7 +11,7 @@ import { styled } from '@mui/material/styles'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
-import {useSnackbar} from 'notistack'
+import { useSnackbar } from 'notistack'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
 import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
@@ -42,7 +42,7 @@ const ReleasePurchase = (props) => {
     releaseState,
     getRelease,
     closeRelease,
-     getCollectorsForRelease,
+    getCollectorsForRelease,
   } = useContext(Release.Context)
   const {
     getAmountHeld,
@@ -95,7 +95,6 @@ const ReleasePurchase = (props) => {
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
       setRelease(releaseState.tokenData[releasePubkey])
- 
     }
   }, [releaseState.tokenData[releasePubkey]])
 
@@ -112,7 +111,6 @@ const ReleasePurchase = (props) => {
   }, [releasePubkey])
 
   useEffect(() => {
-     
     setAmountPendingBuys(
       filterExchangesForReleaseBuySell(releasePubkey, true, true).length
     )
@@ -187,7 +185,7 @@ const ReleasePurchase = (props) => {
       }
     }
 
-     setCollectors(collectorsList)
+    setCollectors(collectorsList)
   }
 
   const handleSubmit = async (e) => {
@@ -266,7 +264,7 @@ const ReleasePurchase = (props) => {
   }
 
   const buttonText =
-    (release.remainingSupply > 0 || release.editionType === 'open')
+    release.remainingSupply > 0 || release.editionType === 'open'
       ? `Buy $${ninaClient.nativeToUiString(
           release.price,
           release.paymentMint
@@ -274,7 +272,7 @@ const ReleasePurchase = (props) => {
       : `Sold Out ($${ninaClient
           .nativeToUi(release.price, release.paymentMint)
           .toFixed(2)})`
-    
+
   let pathString = ''
   if (router.pathname.includes('releases')) {
     pathString = '/releases'
@@ -311,12 +309,13 @@ const ReleasePurchase = (props) => {
       <AmountRemaining variant="body2" align="left">
         {release.editionType === 'open' ? (
           <span>
-            Open Edition: {`${collectors?.length ? collectors?.length : 0} Sold`}
+            Open Edition:{' '}
+            {`${collectors?.length ? collectors?.length : 0} Sold`}
           </span>
-        ): (
+        ) : (
           <>
-          Remaining:{' '}
-        <span>{release.remainingSupply} </span> / {release.totalSupply}
+            Remaining: <span>{release.remainingSupply} </span> /{' '}
+            {release.totalSupply}
           </>
         )}
       </AmountRemaining>
