@@ -1,27 +1,27 @@
-import { useState, useEffect, createElement, Fragment } from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
-import { styled } from "@mui/material/styles";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import { unified } from "unified";
-import rehypeParse from "rehype-parse";
-import rehypeReact from "rehype-react";
-import rehypeSanitize from "rehype-sanitize";
-import rehypeExternalLinks from "rehype-external-links";
+import { useState, useEffect, createElement, Fragment } from 'react'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
+import Modal from '@mui/material/Modal'
+import { styled } from '@mui/material/styles'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
+import { unified } from 'unified'
+import rehypeParse from 'rehype-parse'
+import rehypeReact from 'rehype-react'
+import rehypeSanitize from 'rehype-sanitize'
+import rehypeExternalLinks from 'rehype-external-links'
 
 const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
   width: 400,
-  bgcolor: "background.paper",
+  bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
-};
+}
 
 const ReleaseCreateConfirm = (props) => {
   const {
@@ -30,20 +30,20 @@ const ReleaseCreateConfirm = (props) => {
     handleSubmit,
     setFormValuesConfirmed,
     profileHubs,
-  } = props;
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const [description, setDescription] = useState();
-  const [confirm, setConfirm] = useState();
-  const data = formValues.releaseForm;
+  } = props
+  const [open, setOpen] = useState(false)
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
+  const [description, setDescription] = useState()
+  const [confirm, setConfirm] = useState()
+  const data = formValues.releaseForm
 
   const submitAndCloseModal = (e) => {
-    e.preventDefault();
-    setFormValuesConfirmed(true);
-    handleSubmit(e);
-    handleClose();
-  };
+    e.preventDefault()
+    setFormValuesConfirmed(true)
+    handleSubmit(e)
+    handleClose()
+  }
 
   useEffect(() => {
     if (data.description) {
@@ -56,19 +56,19 @@ const ReleaseCreateConfirm = (props) => {
         })
         .use(rehypeExternalLinks, {
           target: false,
-          rel: ["nofollow", "noreferrer"],
+          rel: ['nofollow', 'noreferrer'],
         })
-        .process(data.description.replaceAll("<p><br></p>", "<br>"))
+        .process(data.description.replaceAll('<p><br></p>', '<br>'))
         .then((file) => {
-          setDescription(file.result);
-        });
+          setDescription(file.result)
+        })
     }
-    setDescription(data.description);
-  }, [data.description]);
+    setDescription(data.description)
+  }, [data.description])
 
   const handleChangeCheckbox = (e) => {
-    setConfirm(e.target.checked);
-  };
+    setConfirm(e.target.checked)
+  }
 
   return (
     <div>
@@ -114,21 +114,21 @@ const ReleaseCreateConfirm = (props) => {
             </Value>
             <Value
               className="description"
-              sx={{ mt: 1, flexDirection: "column", mb: 1 }}
+              sx={{ mt: 1, flexDirection: 'column', mb: 1 }}
             >
-              Description:{" "}
-              <span style={{ marginTop: "8px", paddingLeft: "0" }}>
+              Description:{' '}
+              <span style={{ marginTop: '8px', paddingLeft: '0' }}>
                 {description}
               </span>
             </Value>
 
-            <Typography variant="subtitle1" mt={1} sx={{ color: "red" }}>
+            <Typography variant="subtitle1" mt={1} sx={{ color: 'red' }}>
               ONCE PUBLISHED, YOUR RELEASE INFORMATION WILL BE PERMANENT AND YOU
               WILL NOT BE ABLE TO EDIT IT.
             </Typography>
             <Value>
               <FormControlLabel
-                sx={{ mt: 1, mb: 1, paddingLeft: "10px" }}
+                sx={{ mt: 1, mb: 1, paddingLeft: '10px' }}
                 control={<Checkbox onChange={handleChangeCheckbox} />}
                 label="Confirm"
               />
@@ -149,7 +149,7 @@ const ReleaseCreateConfirm = (props) => {
               color="primary"
               fullWidth
               onClick={handleClose}
-              sx={{ marginTop: "15px !important" }}
+              sx={{ marginTop: '15px !important' }}
             >
               Close and Edit
             </Button>
@@ -157,24 +157,24 @@ const ReleaseCreateConfirm = (props) => {
         </Box>
       </Modal>
     </div>
-  );
-};
+  )
+}
 
 const Value = styled(Typography)(({ theme }) => ({
-  display: "flex",
-  justifyContent: "space-between",
-  "& span": {
-    textAlign: "right",
+  display: 'flex',
+  justifyContent: 'space-between',
+  '& span': {
+    textAlign: 'right',
   },
 
-  "&.description": {
-    "& span": {
+  '&.description': {
+    '& span': {
       paddingLeft: theme.spacing(1),
-      textAlign: "left",
-      maxHeight: "150px",
-      overflowY: "scroll",
+      textAlign: 'left',
+      maxHeight: '150px',
+      overflowY: 'scroll',
     },
   },
-}));
+}))
 
-export default ReleaseCreateConfirm;
+export default ReleaseCreateConfirm

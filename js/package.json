@@ -16,7 +16,8 @@
     "web": "yarn workspace web",
     "web:build": "USE_KEY=true yarn web build",
     "hubs": "yarn workspace @nina-protocol/nina-hubs",
-    "hubs:build": "USE_KEY=true yarn hubs build"
+    "hubs:build": "USE_KEY=true yarn hubs build",
+    "check-lint-format": "yarn hubs check-lint-format && yarn sdk check-lint-format && yarn web check-lint-format"
   },
   "dependencies": {
     "@emotion/cache": "^11.7.1",
@@ -46,6 +47,7 @@
     "react-animated-ellipsis": "^1.0.0",
     "react-dom": "^17.0.2",
     "styled-components": "^5.3.5",
+    "yup": "^0.32.11",
     "zlib": "^1.0.5",
     "zlib-browserify": "^0.0.3"
   },

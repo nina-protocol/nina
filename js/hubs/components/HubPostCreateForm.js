@@ -1,16 +1,16 @@
-import React, { useContext, useEffect } from "react";
-import { styled } from "@mui/material/styles";
-import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
-import { formatPlaceholder } from "@nina-protocol/nina-internal-sdk/esm/utils";
-import { withFormik, Form, Field } from "formik";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import dynamic from "next/dynamic";
-const QuillEditor = dynamic(() => import("./QuillEditor"), { ssr: false });
+import React, { useContext, useEffect } from 'react'
+import { styled } from '@mui/material/styles'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import { formatPlaceholder } from '@nina-protocol/nina-internal-sdk/esm/utils'
+import { withFormik, Form, Field } from 'formik'
+import Typography from '@mui/material/Typography'
+import TextField from '@mui/material/TextField'
+import Box from '@mui/material/Box'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import dynamic from 'next/dynamic'
+const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
 
 const HubPostCreateForm = ({
   field,
@@ -27,23 +27,23 @@ const HubPostCreateForm = ({
   hubReleasesToReference,
   preloadedRelease,
 }) => {
-  const { releaseState } = useContext(Release.Context);
+  const { releaseState } = useContext(Release.Context)
 
   useEffect(() => {
     if (onChange) {
-      onChange(values);
+      onChange(values)
     }
-  }, [values]);
+  }, [values])
 
   useEffect(() => {
     if (postCreated) {
-      resetForm();
+      resetForm()
     }
-  }, [postCreated]);
+  }, [postCreated])
 
   return (
     <Root>
-      <Form style={{ padding: "0 15px", height: "100%" }}>
+      <Form style={{ padding: '0 15px', height: '100%' }}>
         <Field name="title">
           {(props) => (
             <Box>
@@ -52,10 +52,10 @@ const HubPostCreateForm = ({
                 variant="standard"
                 label={
                   formatPlaceholder(props.field.name) +
-                  (update ? ` (${hubData.data.title})` : "")
+                  (update ? ` (${hubData.data.title})` : '')
                 }
                 size="small"
-                InputLabelProps={touched.title ? { shrink: true } : ""}
+                InputLabelProps={touched.title ? { shrink: true } : ''}
                 placeholder={
                   errors.title && touched.title ? errors.title : null
                 }
@@ -70,7 +70,7 @@ const HubPostCreateForm = ({
             <Box>
               <QuillEditor
                 formikProps={props}
-                type={"post"}
+                type={'post'}
                 postCreated={postCreated}
               />
             </Box>
@@ -80,14 +80,14 @@ const HubPostCreateForm = ({
         {!preloadedRelease && (
           <Field name="reference">
             {(props) => (
-              <FormControl fullWidth style={{ marginTop: "50px" }}>
+              <FormControl fullWidth style={{ marginTop: '50px' }}>
                 <Select
                   className="formField"
                   value={props.field.value}
                   placeholder="Release Reference"
                   displayEmpty
                   onChange={(e) => {
-                    props.form.setFieldValue("reference", e.target.value);
+                    props.form.setFieldValue('reference', e.target.value)
                   }}
                 >
                   <MenuItem disabled value="">
@@ -101,7 +101,7 @@ const HubPostCreateForm = ({
                       >
                         {releaseState.metadata[hubRelease.release]?.name}
                       </MenuItem>
-                    );
+                    )
                   })}
                 </Select>
               </FormControl>
@@ -117,24 +117,24 @@ const HubPostCreateForm = ({
         )}
       </Form>
     </Root>
-  );
-};
+  )
+}
 
-const Root = styled("div")(({ theme }) => ({
-  width: "100%",
-  height: "100%",
-}));
+const Root = styled('div')(({ theme }) => ({
+  width: '100%',
+  height: '100%',
+}))
 
 export default withFormik({
   enableReinitialize: true,
   validationSchema: (props) => {
-    return props.PostCreateSchema;
+    return props.PostCreateSchema
   },
   mapPropsToValues: () => {
     return {
-      title: "",
-      body: "",
-      reference: "",
-    };
+      title: '',
+      body: '',
+      reference: '',
+    }
   },
-})(HubPostCreateForm);
+})(HubPostCreateForm)

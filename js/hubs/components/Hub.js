@@ -5,32 +5,32 @@ import React, {
   useMemo,
   createElement,
   Fragment,
-} from "react";
-import dynamic from "next/dynamic";
-import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
-import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
-import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
-import { parseChecker } from "@nina-protocol/nina-internal-sdk/esm/utils";
+} from 'react'
+import dynamic from 'next/dynamic'
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 
-import { styled } from "@mui/material/styles";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { useRouter } from "next/router";
-import Dots from "./Dots";
+import { styled } from '@mui/material/styles'
+import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import { useWallet } from '@solana/wallet-adapter-react'
+import { useRouter } from 'next/router'
+import Dots from './Dots'
 
-import { unified } from "unified";
-import rehypeParse from "rehype-parse";
-import rehypeReact from "rehype-react";
-import rehypeSanitize from "rehype-sanitize";
-import rehypeExternalLinks from "rehype-external-links";
-const ContentTileView = dynamic(() => import("./ContentTileView"));
+import { unified } from 'unified'
+import rehypeParse from 'rehype-parse'
+import rehypeReact from 'rehype-react'
+import rehypeSanitize from 'rehype-sanitize'
+import rehypeExternalLinks from 'rehype-external-links'
+const ContentTileView = dynamic(() => import('./ContentTileView'))
 
 const HubComponent = ({ hubPubkey }) => {
-  const wallet = useWallet();
-  const router = useRouter();
+  const wallet = useWallet()
+  const router = useRouter()
   const {
     hubState,
     hubCollaboratorsState,
@@ -40,49 +40,49 @@ const HubComponent = ({ hubPubkey }) => {
     filterHubContentForHub,
     hubContentFetched,
     hubContentState,
-  } = useContext(Hub.Context);
-  const { postState } = useContext(Nina.Context);
-  const { releaseState } = useContext(Release.Context);
+  } = useContext(Hub.Context)
+  const { postState } = useContext(Nina.Context)
+  const { releaseState } = useContext(Release.Context)
   const [contentData, setContentData] = useState({
     content: [],
     contentTypes: [],
-  });
-  const [hubReleases, setHubReleases] = useState(undefined);
-  const [hubPosts, setHubPosts] = useState(undefined);
+  })
+  const [hubReleases, setHubReleases] = useState(undefined)
+  const [hubPosts, setHubPosts] = useState(undefined)
 
   useEffect(() => {
-    getHub(hubPubkey);
+    getHub(hubPubkey)
     setContentData({
       content: [],
       contentTypes: [],
-    });
-    setHubReleases([]);
-    setHubPosts([]);
-  }, [hubPubkey]);
+    })
+    setHubReleases([])
+    setHubPosts([])
+  }, [hubPubkey])
 
-  const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey]);
+  const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
 
   useEffect(() => {
-    const [releases, posts] = filterHubContentForHub(hubPubkey);
-    setHubReleases(releases);
-    setHubPosts(posts);
-  }, [hubContentState]);
+    const [releases, posts] = filterHubContentForHub(hubPubkey)
+    setHubReleases(releases)
+    setHubPosts(posts)
+  }, [hubContentState])
 
-  const [description, setDescription] = useState();
+  const [description, setDescription] = useState()
   const hubCollaborators = useMemo(
     () => filterHubCollaboratorsForHub(hubPubkey) || [],
     [hubCollaboratorsState, hubPubkey]
-  );
+  )
 
   useEffect(() => {
     if (hubReleases && hubPosts) {
-      const contentArray = [];
-      const types = [];
-      const hubContent = [...hubReleases, ...hubPosts];
+      const contentArray = []
+      const types = []
+      const hubContent = [...hubReleases, ...hubPosts]
       hubContent.forEach((hubContentData) => {
         if (hubContentData.hub === hubPubkey) {
           if (
-            hubContentData.contentType === "ninaReleaseV1" &&
+            hubContentData.contentType === 'ninaReleaseV1' &&
             releaseState.metadata[hubContentData.release] &&
             hubContentData.visible
           ) {
@@ -90,25 +90,25 @@ const HubComponent = ({ hubPubkey }) => {
               hubContent.filter(
                 (c) =>
                   c.referenceContent === hubContentData.release && c.visible
-              ).length > 0;
+              ).length > 0
             if (!hubReleaseIsReference) {
               hubContentData = {
                 ...hubContentData,
                 ...releaseState.metadata[hubContentData.release],
-              };
-              contentArray.push(hubContentData);
+              }
+              contentArray.push(hubContentData)
             }
             if (
               hubContentData.publishedThroughHub === hubPubkey ||
               releaseState.tokenData[hubContentData.release]?.authority ===
                 hubData?.authority
             ) {
-              types.push("Releases");
+              types.push('Releases')
             } else {
-              types.push("Reposts");
+              types.push('Reposts')
             }
           } else if (
-            hubContentData.contentType === "post" &&
+            hubContentData.contentType === 'post' &&
             postState[hubContentData.post] &&
             hubContentData.visible
           ) {
@@ -116,26 +116,26 @@ const HubComponent = ({ hubPubkey }) => {
               ...hubContentData,
               ...postState[hubContentData.post],
               hubPostPublicKey: hubContentData.publicKey,
-            };
+            }
             if (hubContentData.referenceContent !== undefined) {
               hubContentData.releaseMetadata =
-                releaseState.metadata[hubContentData.referenceContent];
-              hubContentData.contentType = "postWithRelease";
+                releaseState.metadata[hubContentData.referenceContent]
+              hubContentData.contentType = 'postWithRelease'
             }
-            types.push("Text Posts");
-            contentArray.push(hubContentData);
+            types.push('Text Posts')
+            contentArray.push(hubContentData)
           }
         }
-      });
-      const uniqueTypes = [...new Set(types)];
+      })
+      const uniqueTypes = [...new Set(types)]
       setContentData({
         content: contentArray.sort(
           (a, b) => new Date(b.datetime) - new Date(a.datetime)
         ),
         contentTypes: uniqueTypes,
-      });
+      })
     }
-  }, [hubReleases, hubPosts]);
+  }, [hubReleases, hubPosts])
 
   useEffect(() => {
     if (hubData?.data?.descriptionHtml) {
@@ -148,37 +148,37 @@ const HubComponent = ({ hubPubkey }) => {
         })
         .use(rehypeExternalLinks, {
           target: false,
-          rel: ["nofollow", "noreferrer"],
+          rel: ['nofollow', 'noreferrer'],
         })
         .process(parseChecker(hubData.data.descriptionHtml))
         .then((file) => {
-          setDescription(file.result);
-        });
+          setDescription(file.result)
+        })
     } else {
       setDescription(
         hubData?.data?.descriptionHtml || hubData?.data?.description
-      );
+      )
     }
-  }, [hubData?.data?.descriptionHtml, hubData?.data?.description]);
+  }, [hubData?.data?.descriptionHtml, hubData?.data?.description])
 
   if (!hubState[hubPubkey]?.data) {
-    return null;
+    return null
   }
   if (!hubData) {
     return (
       <Box margin="auto">
         <Dots size="80px" />
       </Box>
-    );
+    )
   }
   return (
     <>
-      <Grid item md={4} sx={{ padding: { md: "15px", xs: "40px 15px 15px" } }}>
+      <Grid item md={4} sx={{ padding: { md: '15px', xs: '40px 15px 15px' } }}>
         {hubData.data.description.length > 0 && (
           <DescriptionWrapper
-            sx={{ padding: { md: "15px", xs: "40px 0 0" }, width: "100%" }}
+            sx={{ padding: { md: '15px', xs: '40px 0 0' }, width: '100%' }}
           >
-            <Typography align="left" sx={{ color: "text.primary" }}>
+            <Typography align="left" sx={{ color: 'text.primary' }}>
               {description}
             </Typography>
           </DescriptionWrapper>
@@ -214,7 +214,7 @@ const HubComponent = ({ hubPubkey }) => {
                     `/${hubData.handle}/dashboard?action=publishRelease`
                   )
                 }
-                sx={{ height: "56px", width: "25%", marginTop: "20px" }}
+                sx={{ height: '56px', width: '25%', marginTop: '20px' }}
               >
                 {`Publish a release`}
               </Button>
@@ -223,38 +223,38 @@ const HubComponent = ({ hubPubkey }) => {
         )}
       </ContentViewWrapper>
     </>
-  );
-};
+  )
+}
 
 const ContentViewWrapper = styled(Grid)(({ theme }) => ({
-  [theme.breakpoints.down("md")]: {
-    width: "100%",
-    padding: "15px",
+  [theme.breakpoints.down('md')]: {
+    width: '100%',
+    padding: '15px',
   },
-}));
+}))
 
 const DescriptionWrapper = styled(Grid)(({ theme }) => ({
-  padding: " 0px 15px",
-  maxHeight: "68vh",
-  overflowX: "hidden",
-  overflowY: "scroll",
+  padding: ' 0px 15px',
+  maxHeight: '68vh',
+  overflowX: 'hidden',
+  overflowY: 'scroll',
   h1: {
-    lineHeight: "32px",
+    lineHeight: '32px',
   },
-  "&::-webkit-scrollbar": {
-    display: "none",
+  '&::-webkit-scrollbar': {
+    display: 'none',
   },
-  [theme.breakpoints.down("md")]: {
-    maxHeight: "unset",
-    padding: "100px 15px 50px",
+  [theme.breakpoints.down('md')]: {
+    maxHeight: 'unset',
+    padding: '100px 15px 50px',
   },
-  "p, a": {
-    padding: "0 0 8px",
-    margin: "0",
+  'p, a': {
+    padding: '0 0 8px',
+    margin: '0',
   },
   a: {
-    textDecoration: "underline",
+    textDecoration: 'underline',
   },
-}));
+}))
 
-export default HubComponent;
+export default HubComponent

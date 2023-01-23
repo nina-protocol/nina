@@ -30,6 +30,15 @@ const ReleaseTileList = (props) => {
     <Box>
       <TileGrid>
         {releases.map((release, i) => {
+          if (
+            (release.metadata.properties.title.length > 20 &&
+              release.metadata.properties.title.indexOf(' ') === -1) ||
+            release.metadata.properties.title.length > 250
+          ) {
+            release.metadata.properties.title =
+              release.metadata.properties.title.substring(0, 20) + '...'
+          }
+
           return (
             <Tile key={i}>
               <HoverCard
@@ -88,7 +97,7 @@ const ReleaseTileList = (props) => {
                     src={getImageFromCDN(
                       release.metadata.image,
                       400,
-                      new Date(release.releaseDatetime)
+                      new Date(release.tokenData.releaseDatetime)
                     )}
                     priority={!isMobile}
                     loader={loader}
@@ -97,7 +106,8 @@ const ReleaseTileList = (props) => {
               </HoverCard>
               <Box sx={{ padding: '10px 0 0' }}>
                 <ReleaseName>
-                  {release.metadata.name.substring(0, 100)}
+                  {release.metadata.properties.artist} -{' '}
+                  {release.metadata.properties.title}
                 </ReleaseName>
               </Box>
             </Tile>

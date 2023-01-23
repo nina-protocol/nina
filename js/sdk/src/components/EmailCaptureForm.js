@@ -7,7 +7,7 @@ import FormLabel from '@mui/material/FormLabel'
 import RadioGroup from '@mui/material/RadioGroup'
 import Radio from '@mui/material/Radio'
 import FormControlLabel from '@mui/material/FormControlLabel'
-import { formatPlaceholder } from '@nina-protocol/nina-internal-sdk/esm/utils'
+import { formatPlaceholder } from '../utils/index.js'
 
 const EmailCaptureForm = ({
   values,

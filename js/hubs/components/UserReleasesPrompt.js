@@ -1,21 +1,21 @@
-import React, { useState, useEffect, useContext, useMemo } from "react";
-import Hub from "@nina-protocol/nina-internal-sdk/esm/contexts/Hub/Hub";
-import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
-import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
-import { styled } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
-import Modal from "@mui/material/Modal";
-import Backdrop from "@mui/material/Backdrop";
-import Fade from "@mui/material/Fade";
-import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
-import Image from "next/image";
-import Typography from "@mui/material/Typography";
+import React, { useState, useEffect, useContext, useMemo } from 'react'
+import Hub from '@nina-protocol/nina-internal-sdk/esm/contexts/Hub/Hub'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import { styled } from '@mui/material/styles'
+import Box from '@mui/material/Box'
+import Paper from '@mui/material/Paper'
+import Modal from '@mui/material/Modal'
+import Backdrop from '@mui/material/Backdrop'
+import Fade from '@mui/material/Fade'
+import Button from '@mui/material/Button'
+import Grid from '@mui/material/Grid'
+import Image from 'next/image'
+import Typography from '@mui/material/Typography'
 
-import { useSnackbar } from "notistack";
-import Dots from "./Dots";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useSnackbar } from 'notistack'
+import Dots from './Dots'
+import { useWallet } from '@solana/wallet-adapter-react'
 
 const UserReleasesPrompt = ({
   userHubs,
@@ -24,74 +24,71 @@ const UserReleasesPrompt = ({
   hubPubkey,
   hubReleases,
 }) => {
-  const [open, setOpen] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
-  const wallet = useWallet();
+  const [open, setOpen] = useState(false)
+  const { enqueueSnackbar } = useSnackbar()
+  const wallet = useWallet()
 
   const {
     releaseState,
     getReleasesPublishedByUser,
     filterReleasesPublishedByUser,
-  } = useContext(Release.Context);
-  const { hubAddRelease, getHub, addToHubQueue } = useContext(Hub.Context);
-  const { collection } = useContext(Nina.Context);
-  const [selectedHubId, setSelectedHubId] = useState();
-  const [inProgress, setInProgress] = useState(false);
-  const [canAddContent, setCanAddContent] = useState(false);
-  const [userPublishedReleases, setUserPublishedReleases] = useState([]);
-  const [unpostedUserReleases, setUnpostedUserReleases] = useState();
+  } = useContext(Release.Context)
+  const { hubAddRelease, getHub, addToHubQueue } = useContext(Hub.Context)
+  const { collection } = useContext(Nina.Context)
+  const [selectedHubId, setSelectedHubId] = useState()
+  const [inProgress, setInProgress] = useState(false)
+  const [canAddContent, setCanAddContent] = useState(false)
+  const [userPublishedReleases, setUserPublishedReleases] = useState([])
+  const [unpostedUserReleases, setUnpostedUserReleases] = useState()
 
-  const userHasHubs = useMemo(
-    () => userHubs && userHubs.length > 0,
-    [userHubs]
-  );
+  const userHasHubs = useMemo(() => userHubs && userHubs.length > 0, [userHubs])
 
   useEffect(() => {
     if (wallet?.connected) {
-      getReleasesPublishedByUser(wallet.publicKey);
+      getReleasesPublishedByUser(wallet.publicKey)
     }
-  }, [wallet?.connected]);
+  }, [wallet?.connected])
 
   useEffect(() => {
     if (wallet?.connected) {
-      setUnpostedUserReleases(filterUnpostedReleases(hubReleases));
+      setUnpostedUserReleases(filterUnpostedReleases(hubReleases))
     }
-  }, [releaseState, collection, hubReleases]);
+  }, [releaseState, collection, hubReleases])
 
   const filterUnpostedReleases = (hubReleases) => {
-    let unposted;
+    let unposted
     if (hubReleases.length > 0) {
-      const userPostedReleases = filterReleasesPublishedByUser();
+      const userPostedReleases = filterReleasesPublishedByUser()
       unposted = userPostedReleases.filter((release) => {
         if (!hubReleases?.find((hr) => hr.release === release.releasePubkey)) {
-          return release;
+          return release
         }
-      });
+      })
     } else {
-      unposted = filterReleasesPublishedByUser();
+      unposted = filterReleasesPublishedByUser()
     }
-    return unposted;
-  };
+    return unposted
+  }
 
   const handleRepost = async (release) => {
     enqueueSnackbar(`Adding ${release.metadata.name} to Hub`, {
-      variant: "info",
-    });
-    const result = await hubAddRelease(hubPubkey, release.releasePubkey);
+      variant: 'info',
+    })
+    const result = await hubAddRelease(hubPubkey, release.releasePubkey)
     if (result?.success) {
       enqueueSnackbar(result.msg, {
-        variant: "info",
-      });
-      getHub(hubPubkey);
+        variant: 'info',
+      })
+      getHub(hubPubkey)
     } else {
-      enqueueSnackbar("Release not added to hub", {
-        variant: "failure",
-      });
+      enqueueSnackbar('Release not added to hub', {
+        variant: 'failure',
+      })
     }
-  };
+  }
 
   if (!unpostedUserReleases) {
-    return <></>;
+    return <></>
   }
 
   return (
@@ -101,7 +98,7 @@ const UserReleasesPrompt = ({
         color="primary"
         type="submit"
         onClick={() => setOpen(true)}
-        sx={{ height: "22px", width: "28px", m: 0 }}
+        sx={{ height: '22px', width: '28px', m: 0 }}
         fullWidth
       >
         Click to add your existing releases to your hub
@@ -137,8 +134,8 @@ const UserReleasesPrompt = ({
                       onClick={() => handleRepost(release)}
                       sx={{
                         opacity: addToHubQueue.has(release.releasePubkey)
-                          ? "50%"
-                          : "",
+                          ? '50%'
+                          : '',
                       }}
                     />
                     {addToHubQueue.has(release.releasePubkey) && (
@@ -147,70 +144,70 @@ const UserReleasesPrompt = ({
                       </PendingBox>
                     )}
                   </Grid>
-                );
+                )
               })}
             </Grid>
           </StyledPaper>
         </Fade>
       </StyledModal>
     </Root>
-  );
-};
+  )
+}
 
-const Root = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  width: "100%",
-  padding: "0 15px",
-}));
+const Root = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  width: '100%',
+  padding: '0 15px',
+}))
 
 const ModalToggle = styled(Button)(({ theme }) => ({
   color: `${theme.palette.text.primary} !important`,
-  width: "100% !important",
-  border: "2px solid red",
-  ":disabled": {
-    color: theme.palette.text.primary + "a0",
+  width: '100% !important',
+  border: '2px solid red',
+  ':disabled': {
+    color: theme.palette.text.primary + 'a0',
   },
-  "&:hover": {
-    opacity: "50%",
+  '&:hover': {
+    opacity: '50%',
     backgroundColor: `${theme.palette.transparent} !important`,
   },
-}));
+}))
 
 const StyledModal = styled(Modal)(() => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}))
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
-  border: "2px solid #000",
+  border: '2px solid #000',
   boxShadow: theme.shadows[5],
   padding: `30px 60px 45px`,
-  width: "40vw",
-  maxHeight: "90vh",
-  overflowY: "auto",
-  zIndex: "10",
-  display: "flex",
-  flexDirection: "column",
-  minWidth: "600px",
-}));
+  width: '40vw',
+  maxHeight: '90vh',
+  overflowY: 'auto',
+  zIndex: '10',
+  display: 'flex',
+  flexDirection: 'column',
+  minWidth: '600px',
+}))
 
 const ReleaseImage = styled(Image)(({ theme }) => ({
-  "&:hover": {
-    opacity: "50%",
+  '&:hover': {
+    opacity: '50%',
   },
-}));
+}))
 
 const PendingBox = styled(Box)(({ theme }) => ({
-  position: "absolute",
-  top: "0",
-  width: "100%",
-  height: "100%",
-  display: "flex",
-  justifyContent: "center",
+  position: 'absolute',
+  top: '0',
+  width: '100%',
+  height: '100%',
+  display: 'flex',
+  justifyContent: 'center',
   background: ``,
-}));
+}))
 
-export default UserReleasesPrompt;
+export default UserReleasesPrompt

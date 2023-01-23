@@ -1,37 +1,37 @@
-import React, { useState, useContext, useEffect, useMemo } from "react";
-import axios from "axios";
-import { styled } from "@mui/material/styles";
-import Hub from "@nina-protocol/nina-internal-sdk/esm/Hub";
-import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
-import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
-import { useWallet } from "@solana/wallet-adapter-react";
-import Button from "@mui/material/Button";
-import Link from "next/link";
-import Box from "@mui/material/Box";
-import { useSnackbar } from "notistack";
-import Typography from "@mui/material/Typography";
-import { useRouter } from "next/router";
-import Dots from "./Dots";
-import Royalty from "./Royalty";
-import { logEvent } from "@nina-protocol/nina-internal-sdk/src/utils/event";
+import React, { useState, useContext, useEffect, useMemo } from 'react'
+import axios from 'axios'
+import { styled } from '@mui/material/styles'
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import { useWallet } from '@solana/wallet-adapter-react'
+import Button from '@mui/material/Button'
+import Link from 'next/link'
+import Box from '@mui/material/Box'
+import { useSnackbar } from 'notistack'
+import Typography from '@mui/material/Typography'
+import { useRouter } from 'next/router'
+import Dots from './Dots'
+import Royalty from './Royalty'
+import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 
 const CloseRelease = dynamic(() => import("./CloseRelease"));
 const HubsModal = dynamic(() => import("./HubsModal"));
 
-import dynamic from "next/dynamic";
+import dynamic from 'next/dynamic'
 
 const ReleasePurchase = (props) => {
-  const { releasePubkey, metadata, inPost, hubPubkey } = props;
-  const { enqueueSnackbar } = useSnackbar();
-  const wallet = useWallet();
-  const router = useRouter();
+  const { releasePubkey, metadata, inPost, hubPubkey } = props
+  const { enqueueSnackbar } = useSnackbar()
+  const wallet = useWallet()
+  const router = useRouter()
   const {
     releasePurchaseViaHub,
     releasePurchasePending,
     releasePurchaseTransactionPending,
     releaseState,
-  } = useContext(Release.Context);
-  const { hubState } = useContext(Hub.Context);
+  } = useContext(Release.Context)
+  const { hubState } = useContext(Hub.Context)
   const {
     getAmountHeld,
     collection,
@@ -39,40 +39,40 @@ const ReleasePurchase = (props) => {
     ninaClient,
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
-  } = useContext(Nina.Context);
-  const [release, setRelease] = useState(undefined);
-  const [amountHeld, setAmountHeld] = useState(collection[releasePubkey]);
-  const [downloadButtonString, setDownloadButtonString] = useState("Download");
-  const [userIsRecipient, setUserIsRecipient] = useState(false);
-  const [publishedHub, setPublishedHub] = useState();
+  } = useContext(Nina.Context)
+  const [release, setRelease] = useState(undefined)
+  const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
+  const [downloadButtonString, setDownloadButtonString] = useState('Download')
+  const [userIsRecipient, setUserIsRecipient] = useState(false)
+  const [publishedHub, setPublishedHub] = useState()
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
     [releasePubkey, releasePurchaseTransactionPending]
-  );
+  )
   const pending = useMemo(
     () => releasePurchasePending[releasePubkey],
     [releasePubkey, releasePurchasePending]
-  );
+  )
 
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
-      setRelease(releaseState.tokenData[releasePubkey]);
+      setRelease(releaseState.tokenData[releasePubkey])
     }
-  }, [releaseState]);
+  }, [releaseState])
 
   useEffect(() => {
-    setAmountHeld(collection[releasePubkey]);
-  }, [collection, releasePubkey]);
+    setAmountHeld(collection[releasePubkey])
+  }, [collection, releasePubkey])
 
   useEffect(() => {
-    getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey);
+    getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
 
     // const hubForRelease = async (releasePubkey) => {
     //   const result = await getPublishedHubForRelease(releasePubkey);
     //   setPublishedHub(result?.hub);
     // };
     // hubForRelease(releasePubkey);
-  }, [releasePubkey, releaseState.releaseMintMap]);
+  }, [releasePubkey, releaseState.releaseMintMap])
 
   useEffect(() => {
     if (release?.royaltyRecipients) {
@@ -82,73 +82,73 @@ const ReleasePurchase = (props) => {
           recipient.recipientAuthority === wallet?.publicKey.toBase58() &&
           recipient.percentShare / 10000 > 0
         ) {
-          setUserIsRecipient(true);
+          setUserIsRecipient(true)
         }
-      });
+      })
     }
-  }, [release?.royaltyRecipients, wallet?.connected, wallet?.publicKey]);
+  }, [release?.royaltyRecipients, wallet?.connected, wallet?.publicKey])
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!wallet?.connected) {
-      enqueueSnackbar("Please connect your wallet to purchase", {
-        variant: "error",
-      });
-      logEvent("release_purchase_failure_not_connected", "engagement", {
+      enqueueSnackbar('Please connect your wallet to purchase', {
+        variant: 'error',
+      })
+      logEvent('release_purchase_failure_not_connected', 'engagement', {
         publicKey: releasePubkey,
         hub: hubPubkey,
-      });
-      return;
+      })
+      return
     }
 
-    let result;
+    let result
     const error = await checkIfHasBalanceToCompleteAction(
       NinaProgramAction.RELEASE_PURCHASE_VIA_HUB
-    );
+    )
     if (error) {
-      enqueueSnackbar(error.msg, { variant: "failure" });
-      return;
+      enqueueSnackbar(error.msg, { variant: 'failure' })
+      return
     }
     if (!release.pending) {
       let releasePriceUi = ninaClient.nativeToUi(
         release.price,
         ninaClient.ids.mints.usdc
-      );
+      )
       let convertAmount =
         releasePriceUi +
-        (releasePriceUi * hubState[hubPubkey].referralFee) / 100;
+        (releasePriceUi * hubState[hubPubkey].referralFee) / 100
       if (
         !ninaClient.isSol(release.releaseMint) &&
         usdcBalance < convertAmount
       ) {
-        enqueueSnackbar("Calculating SOL - USDC Swap...", {
-          variant: "info",
-        });
+        enqueueSnackbar('Calculating SOL - USDC Swap...', {
+          variant: 'info',
+        })
       } else {
-        enqueueSnackbar("Preparing transaction...", {
-          variant: "info",
-        });
+        enqueueSnackbar('Preparing transaction...', {
+          variant: 'info',
+        })
       }
-      result = await releasePurchaseViaHub(releasePubkey, hubPubkey);
+      result = await releasePurchaseViaHub(releasePubkey, hubPubkey)
       if (result) {
-        showCompletedTransaction(result);
+        showCompletedTransaction(result)
       }
     }
-  };
+  }
 
   const showCompletedTransaction = (result) => {
     enqueueSnackbar(result.msg, {
-      variant: result.success ? "success" : "warn",
-    });
-  };
+      variant: result.success ? 'success' : 'warn',
+    })
+  }
 
   if (!release) {
     return (
       <>
         <Dots color="inherit" />
       </>
-    );
+    )
   }
 
   const buttonText =
@@ -159,39 +159,39 @@ const ReleasePurchase = (props) => {
         )}`
       : `Sold Out ($${ninaClient
           .nativeToUi(release.price, release.paymentMint)
-          .toFixed(2)})`;
+          .toFixed(2)})`
 
   const downloadAs = async (url, name) => {
-    setDownloadButtonString("Downloading");
+    setDownloadButtonString('Downloading')
 
-    logEvent("track_download", "engagement", {
+    logEvent('track_download', 'engagement', {
       publicKey: releasePubkey,
       hub: hubPubkey,
       wallet: wallet?.publicKey?.toBase58(),
-    });
+    })
 
     const response = await axios.get(url, {
-      method: "GET",
-      mode: "cors",
+      method: 'GET',
+      mode: 'cors',
       headers: {
-        "Content-Type": "application/octet-stream",
+        'Content-Type': 'application/octet-stream',
       },
-      responseType: "blob",
-    });
+      responseType: 'blob',
+    })
     if (response?.data) {
-      const a = document.createElement("a");
-      const url = window.URL.createObjectURL(response.data);
-      a.href = url;
-      a.download = name;
-      a.click();
+      const a = document.createElement('a')
+      const url = window.URL.createObjectURL(response.data)
+      a.href = url
+      a.download = name
+      a.click()
     }
-    setDownloadButtonString("Download");
-  };
+    setDownloadButtonString('Download')
+  }
 
   return (
     <ReleasePurchaseWrapper mt={1}>
       <AmountRemaining variant="body2" align="left">
-        Remaining: <span>{release.remainingSupply} </span> /{" "}
+        Remaining: <span>{release.remainingSupply} </span> /{' '}
         {release.totalSupply}
       </AmountRemaining>
 
@@ -223,9 +223,9 @@ const ReleasePurchase = (props) => {
       <form
         onSubmit={handleSubmit}
         style={{
-          textAlign: "left",
-          marginBottom: "10px",
-          marginTop: { md: "0px", lg: "20px" },
+          textAlign: 'left',
+          marginBottom: '10px',
+          marginTop: { md: '0px', lg: '20px' },
         }}
       >
         <BuyButton variant="contained" type="submit">
@@ -240,20 +240,20 @@ const ReleasePurchase = (props) => {
       {amountHeld > 0 && (
         <BuyButton
           variant="contained"
-          sx={{ marginBottom: "10px !important" }}
+          sx={{ marginBottom: '10px !important' }}
           onClick={(e) => {
-            e.stopPropagation();
+            e.stopPropagation()
             downloadAs(
               metadata.properties.files[0].uri,
               `${metadata.name
-                .replace(/[^a-z0-9]/gi, "_")
+                .replace(/[^a-z0-9]/gi, '_')
                 .toLowerCase()}___nina.mp3`
-            );
+            )
           }}
         >
           <Typography variant="body2" align="left">
-            {downloadButtonString === "Download" ? (
-              "Download"
+            {downloadButtonString === 'Download' ? (
+              'Download'
             ) : (
               <Dots msg={downloadButtonString} />
             )}
@@ -261,42 +261,42 @@ const ReleasePurchase = (props) => {
         </BuyButton>
       )}
     </ReleasePurchaseWrapper>
-  );
-};
+  )
+}
 
 const BuyButton = styled(Button)(({ theme }) => ({
-  "& p": {
+  '& p': {
     border: `1px solid ${theme.palette.text.primary}`,
-    padding: "10px",
-    "&:hover": {
-      opacity: "50%",
+    padding: '10px',
+    '&:hover': {
+      opacity: '50%',
     },
   },
-}));
+}))
 const ReleasePurchaseWrapper = styled(Box)(({ theme }) => ({
-  textAlign: "left",
-  [theme.breakpoints.down("md")]: {},
-}));
+  textAlign: 'left',
+  [theme.breakpoints.down('md')]: {},
+}))
 const AmountRemaining = styled(Typography)(({ theme }) => ({
-  paddingBottom: "10px",
-  "& span": {
+  paddingBottom: '10px',
+  '& span': {
     color: theme.palette.text.primary,
   },
-}));
+}))
 
 const StyledUserAmount = styled(Box)(({ theme }) => ({
   color: theme.palette.black,
   ...theme.helpers.baseFont,
-  paddingBottom: "10px",
-  display: "flex",
-  flexDirection: "column",
-}));
+  paddingBottom: '10px',
+  display: 'flex',
+  flexDirection: 'column',
+}))
 const StyledLink = styled(Link)(() => ({
-  "&:hover": {
-    cursor: "pointer",
-    opacity: "0.5 !import",
+  '&:hover': {
+    cursor: 'pointer',
+    opacity: '0.5 !import',
   },
-  textDecoration: "none",
-}));
+  textDecoration: 'none',
+}))
 
-export default ReleasePurchase;
+export default ReleasePurchase

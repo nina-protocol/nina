@@ -42,7 +42,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   );
   const { getHub, hubState, getHubsForUser, filterHubsForUser } = useContext(
     Hub.Context
-  );
+  )
 
   const [metadata, setMetadata] = useState(metadataSsr || null);
   const [description, setDescription] = useState();
@@ -54,32 +54,32 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
 
   useEffect(() => {
     if (hubPubkey && !hubState[hubPubkey]) {
-      getHub(hubPubkey);
+      getHub(hubPubkey)
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
     if (releasePubkey) {
-      getRelease(releasePubkey);
+      getRelease(releasePubkey)
     }
-  }, [releasePubkey]);
+  }, [releasePubkey])
 
   useEffect(() => {
     if (releaseState.metadata[releasePubkey]) {
-      setMetadata(releaseState.metadata[releasePubkey]);
-      setRelease(releaseState.tokenData[releasePubkey]);
+      setMetadata(releaseState.metadata[releasePubkey])
+      setRelease(releaseState.tokenData[releasePubkey])
     }
-  }, [releaseState, metadata, releasePubkey]);
+  }, [releaseState, metadata, releasePubkey])
 
   useEffect(() => {
     const fetchHubs = async () => {
-      const hubs = await getHubsForUser(wallet.publicKey.toBase58());
-      setUserHubs(hubs);
-    };
-    if (wallet.connected && hubState && !userHubs) {
-      fetchHubs();
+      const hubs = await getHubsForUser(wallet.publicKey.toBase58())
+      setUserHubs(hubs)
     }
-  }, [wallet?.connected, hubState]);
+    if (wallet.connected && hubState && !userHubs) {
+      fetchHubs()
+    }
+  }, [wallet?.connected, hubState])
 
   useEffect(() => {
     if (metadata?.descriptionHtml) {
@@ -92,16 +92,16 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
         })
         .use(rehypeExternalLinks, {
           target: false,
-          rel: ["nofollow", "noreferrer"],
+          rel: ['nofollow', 'noreferrer'],
         })
         .process(parseChecker(metadata.descriptionHtml))
         .then((file) => {
-          setDescription(file.result);
-        });
+          setDescription(file.result)
+        })
     } else {
-      setDescription(metadata?.description);
+      setDescription(metadata?.description)
     }
-  }, [metadata?.description]);
+  }, [metadata?.description])
 
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]?.revenueShareRecipients) {
@@ -111,12 +111,12 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
             wallet?.connected &&
             recipient.recipientAuthority === wallet?.publicKey.toBase58()
           ) {
-            setUserIsRecipient(true);
+            setUserIsRecipient(true)
           }
         }
-      );
+      )
     }
-  }, [releaseState.tokenData[releasePubkey], wallet?.connected]);
+  }, [releaseState.tokenData[releasePubkey], wallet?.connected])
 
   const handleCloseRelease = async (e, releasePubkey) => {
     e.preventDefault();
@@ -148,8 +148,8 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
         md={6}
         xs={12}
         sx={{
-          margin: { md: "0px auto auto", xs: "0px" },
-          padding: { md: "0 15px", xs: "75px 15px" },
+          margin: { md: '0px auto auto', xs: '0px' },
+          padding: { md: '0 15px', xs: '75px 15px' },
         }}
       >
         {release && metadata && metadata.image && (
@@ -164,10 +164,10 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                 loader={loader}
                 layout="responsive"
                 objectFit="contain"
-                objectPosition={"center"}
+                objectPosition={'center'}
                 height={100}
                 width={100}
-                alt={metadata.description || "album art"}
+                alt={metadata.description || 'album art'}
               />
             </MobileImageWrapper>
 
@@ -175,28 +175,28 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
               <Typography
                 variant="h3"
                 align="left"
-                sx={{ color: "text.primary", mr: 1 }}
+                sx={{ color: 'text.primary', mr: 1 }}
               >
                 {metadata.properties.artist} - {metadata.properties.title}
               </Typography>
 
               <Box
                 display="flex"
-                sx={{ mt: "15px", mb: { md: "15px", xs: "0px" } }}
+                sx={{ mt: '15px', mb: { md: '15px', xs: '0px' } }}
               >
                 <PlayButton
-                  sx={{ height: "22px", width: "28px", m: 0, paddingLeft: 0 }}
+                  sx={{ height: '22px', width: '28px', m: 0, paddingLeft: 0 }}
                   onClickCapture={(e) => {
-                    e.stopPropagation();
-                    setInitialized(true);
+                    e.stopPropagation()
+                    setInitialized(true)
                     if (!audioPlayerRef.current.src) {
-                      audioPlayerRef.current.load();
+                      audioPlayerRef.current.load()
                     }
                     updateTrack(
                       releasePubkey,
                       !(isPlaying && track.releasePubkey === releasePubkey),
                       hubPubkey
-                    );
+                    )
                   }}
                 >
                   {isPlaying && track.releasePubkey === releasePubkey ? (
@@ -219,8 +219,8 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
 
             <Box
               sx={{
-                marginTop: { md: "0px", xs: "30px" },
-                marginBottom: "15px",
+                marginTop: { md: '0px', xs: '30px' },
+                marginBottom: '15px',
               }}
             >
               <ReleasePurchase
@@ -285,78 +285,78 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
               objectFit="contain"
               height="100"
               width="100"
-              objectPosition={"right bottom"}
-              alt={metadata.description || "album art"}
+              objectPosition={'right bottom'}
+              alt={metadata.description || 'album art'}
             />
           </ImageContainer>
         )}
       </DesktopImageGridItem>
     </>
-  );
-};
+  )
+}
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
-  [theme.breakpoints.down("md")]: {
-    "&:-webkit-scrollbar": {
-      display: "none !important",
+  [theme.breakpoints.down('md')]: {
+    '&:-webkit-scrollbar': {
+      display: 'none !important',
     },
   },
-}));
+}))
 
 const PlayButton = styled(Button)(({ theme }) => ({
   color: `${theme.palette.text.primary} !important`,
-  ":disabled": {
-    color: theme.palette.text.primary + "a0",
+  ':disabled': {
+    color: theme.palette.text.primary + 'a0',
   },
-  "&:hover": {
-    opacity: "50%",
+  '&:hover': {
+    opacity: '50%',
     backgroundColor: `${theme.palette.transparent} !important`,
   },
-}));
+}))
 
 const StyledDescription = styled(Typography)(({ theme }) => ({
-  fontSize: "18px !important",
-  lineHeight: "20.7px !important",
-  marginTop: "15px",
-  "&::-webkit-scrollbar": {
-    display: "none",
+  fontSize: '18px !important',
+  lineHeight: '20.7px !important',
+  marginTop: '15px',
+  '&::-webkit-scrollbar': {
+    display: 'none',
   },
-  [theme.breakpoints.up("md")]: {
-    maxHeight: "275px",
-    overflowY: "scroll",
-    height: "275px",
+  [theme.breakpoints.up('md')]: {
+    maxHeight: '275px',
+    overflowY: 'scroll',
+    height: '275px',
   },
-  [theme.breakpoints.down("md")]: {
-    paddingBottom: "40px",
+  [theme.breakpoints.down('md')]: {
+    paddingBottom: '40px',
   },
-}));
+}))
 
 const DesktopImageGridItem = styled(Grid)(({ theme }) => ({
-  display: "flex",
-  alignItems: "flex-end",
-  [theme.breakpoints.down("md")]: {
-    display: "none",
+  display: 'flex',
+  alignItems: 'flex-end',
+  [theme.breakpoints.down('md')]: {
+    display: 'none',
   },
-}));
+}))
 
 const MobileImageWrapper = styled(Grid)(({ theme }) => ({
-  display: "none",
-  [theme.breakpoints.down("md")]: {
-    display: "block",
-    padding: "30px 0 0",
+  display: 'none',
+  [theme.breakpoints.down('md')]: {
+    display: 'block',
+    padding: '30px 0 0',
   },
-}));
+}))
 
 const ImageContainer = styled(Box)(() => ({
-  width: "100%",
-}));
+  width: '100%',
+}))
 
 const CtaWrapper = styled(Box)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  [theme.breakpoints.down("md")]: {
-    marginTop: "15px",
+  display: 'flex',
+  flexDirection: 'column',
+  [theme.breakpoints.down('md')]: {
+    marginTop: '15px',
   },
-}));
+}))
 
-export default ReleaseComponent;
+export default ReleaseComponent
