@@ -15,8 +15,8 @@ import Dots from './Dots'
 import Royalty from './Royalty'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 
-const CloseRelease = dynamic(() => import("./CloseRelease"));
-const HubsModal = dynamic(() => import("./HubsModal"));
+const CloseRelease = dynamic(() => import('./CloseRelease'))
+const HubsModal = dynamic(() => import('./HubsModal'))
 
 import dynamic from 'next/dynamic'
 

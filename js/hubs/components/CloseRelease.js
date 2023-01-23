@@ -1,16 +1,16 @@
-import React from "react";
-import { styled } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import Fade from "@mui/material/Fade";
-import Modal from "@mui/material/Modal";
-import Paper from "@mui/material/Paper";
-import Backdrop from "@mui/material/Backdrop";
-import Dots from "./Dots";
+import React from 'react'
+import { styled } from '@mui/material/styles'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import Fade from '@mui/material/Fade'
+import Modal from '@mui/material/Modal'
+import Paper from '@mui/material/Paper'
+import Backdrop from '@mui/material/Backdrop'
+import Dots from './Dots'
 
 const CloseRelease = (props) => {
-  const { handleCloseRelease, open, setOpen, pendingTx, release } = props;
+  const { handleCloseRelease, open, setOpen, pendingTx, release } = props
   return (
     <>
       <Root>
@@ -31,7 +31,7 @@ const CloseRelease = (props) => {
                 align="center"
                 variant="h5"
                 id="transition-modal-title"
-                sx={{ color: "black !important" }}
+                sx={{ color: 'black !important' }}
               >
                 Are you sure you want to close this release?
               </Typography>
@@ -39,7 +39,7 @@ const CloseRelease = (props) => {
                 align="center"
                 variant="body1"
                 id="transition-modal-description"
-                sx={{ marginTop: "15px !important", color: "black !important" }}
+                sx={{ marginTop: '15px !important', color: 'black !important' }}
               >
                 {`The release will no longer be available for primary sale and it will exist as an edition of ${release.saleCounter}.`}
               </Typography>
@@ -47,7 +47,7 @@ const CloseRelease = (props) => {
                 align="center"
                 variant="body1"
                 id="transition-modal-description"
-                sx={{ marginTop: "15px !important", color: "red" }}
+                sx={{ marginTop: '15px !important', color: 'red' }}
               >
                 This action is permanent and cannot be undone.
               </Typography>
@@ -58,13 +58,13 @@ const CloseRelease = (props) => {
                 color="primary"
                 type="submit"
                 fullWidth
-                sx={{ marginTop: "15px !important" }}
+                sx={{ marginTop: '15px !important' }}
               >
-                <Typography variant="body2" sx={{ color: "red" }}>
+                <Typography variant="body2" sx={{ color: 'red' }}>
                   {pendingTx && (
-                    <Dots msg={"Closing release, please confirm in wallet "} />
+                    <Dots msg={'Closing release, please confirm in wallet '} />
                   )}
-                  {!pendingTx && "Close Release"}
+                  {!pendingTx && 'Close Release'}
                 </Typography>
               </Button>
             </StyledPaper>
@@ -72,31 +72,31 @@ const CloseRelease = (props) => {
         </StyledModal>
       </Root>
     </>
-  );
-};
+  )
+}
 
 const Root = styled(Box)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  width: "100%",
-}));
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '100%',
+}))
 
 const StyledModal = styled(Modal)(() => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}))
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
-  border: "2px solid #000",
+  border: '2px solid #000',
   boxShadow: theme.shadows[5],
   padding: theme.spacing(2, 4, 3),
-  width: "40vw",
-  maxHeight: "90vh",
-  overflowY: "auto",
-  zIndex: "10",
-}));
+  width: '40vw',
+  maxHeight: '90vh',
+  overflowY: 'auto',
+  zIndex: '10',
+}))
 
-export default CloseRelease;
+export default CloseRelease

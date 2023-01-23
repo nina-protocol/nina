@@ -39,11 +39,11 @@ const ReleaseCreateSchema = Yup.object().shape({
   artist: Yup.string().required('Artist Name is Required'),
   title: Yup.string().required('Title is Required'),
   description: Yup.string(),
-  catalogNumber: Yup.string().required("Catalog Number is Required"),
-  amount: Yup.string().required("Edition Amount is Required"),
-  retailPrice: Yup.number().required("Sale Price is Required"),
-  resalePercentage: Yup.number().required("Resale Percent Amount is Required"),
-});
+  catalogNumber: Yup.string().required('Catalog Number is Required'),
+  amount: Yup.string().required('Edition Amount is Required'),
+  retailPrice: Yup.number().required('Sale Price is Required'),
+  resalePercentage: Yup.number().required('Resale Percent Amount is Required'),
+})
 
 const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
   const { enqueueSnackbar } = useSnackbar()
@@ -81,19 +81,19 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
   const [formIsValid, setFormIsValid] = useState(false)
   const [formValues, setFormValues] = useState({
     releaseForm: {},
-  });
-  const [formValuesConfirmed, setFormValuesConfirmed] = useState(false);
-  const [isPublishing, setIsPublishing] = useState(false);
-  const [releaseInfo, setReleaseInfo] = useState();
-  const [artworkTx, setArtworkTx] = useState();
-  const [trackTx, setTrackTx] = useState();
-  const [metadata, setMetadata] = useState();
-  const [metadataTx, setMetadataTx] = useState();
-  const [releaseCreated, setReleaseCreated] = useState(false);
-  const [uploadId, setUploadId] = useState();
-  const [publishingStepText, setPublishingStepText] = useState();
-  const [md5Digest, setMd5Digest] = useState();
-  const [processingProgress, setProcessingProgress] = useState();
+  })
+  const [formValuesConfirmed, setFormValuesConfirmed] = useState(false)
+  const [isPublishing, setIsPublishing] = useState(false)
+  const [releaseInfo, setReleaseInfo] = useState()
+  const [artworkTx, setArtworkTx] = useState()
+  const [trackTx, setTrackTx] = useState()
+  const [metadata, setMetadata] = useState()
+  const [metadataTx, setMetadataTx] = useState()
+  const [releaseCreated, setReleaseCreated] = useState(false)
+  const [uploadId, setUploadId] = useState()
+  const [publishingStepText, setPublishingStepText] = useState()
+  const [md5Digest, setMd5Digest] = useState()
+  const [processingProgress, setProcessingProgress] = useState()
 
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
@@ -143,8 +143,8 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
         setButtonText('Restart 3/4: Upload Metadata.')
       } else if (artworkTx && trackTx && metadataTx && !releaseCreated) {
         setButtonText(
-          "There may have been an error creating this release. Please wait 30 seconds and check for the release in your dashboard before retrying"
-        );
+          'There may have been an error creating this release. Please wait 30 seconds and check for the release in your dashboard before retrying'
+        )
       } else if (mbs < uploadSize) {
         setButtonText(
           `Release requires more storage than available in your bundlr account, please top up`
@@ -198,10 +198,10 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
       const handleGetMd5FileHash = async (track) => {
         const hash = await getMd5FileHash(track.file, (progress) =>
           setProcessingProgress(progress)
-        );
-        setMd5Digest(hash);
-      };
-      handleGetMd5FileHash(track);
+        )
+        setMd5Digest(hash)
+      }
+      handleGetMd5FileHash(track)
     }
   }, [track])
 

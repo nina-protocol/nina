@@ -1,19 +1,19 @@
-import React, { useEffect, useRef, useState } from "react";
-import { styled } from "@mui/material/styles";
-import { formatPlaceholder } from "@nina-protocol/nina-internal-sdk/esm/utils";
-import { withFormik, Form, Field } from "formik";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
-import Slider from "@mui/material/Slider";
-import Box from "@mui/material/Box";
-import Fade from "@mui/material/Fade";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-import dynamic from "next/dynamic";
-const QuillEditor = dynamic(() => import("./QuillEditor"), { ssr: false });
+import React, { useEffect, useRef, useState } from 'react'
+import { styled } from '@mui/material/styles'
+import { formatPlaceholder } from '@nina-protocol/nina-internal-sdk/esm/utils'
+import { withFormik, Form, Field } from 'formik'
+import Typography from '@mui/material/Typography'
+import TextField from '@mui/material/TextField'
+import Slider from '@mui/material/Slider'
+import Box from '@mui/material/Box'
+import Fade from '@mui/material/Fade'
+import Radio from '@mui/material/Radio'
+import RadioGroup from '@mui/material/RadioGroup'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import FormControl from '@mui/material/FormControl'
+import FormLabel from '@mui/material/FormLabel'
+import dynamic from 'next/dynamic'
+const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
 
 const ReleaseCreateForm = ({
   field,
@@ -25,9 +25,9 @@ const ReleaseCreateForm = ({
   setFieldValue,
   disabled,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const editionRef = useRef(isOpen);
-  const [inputValue, setInputValue] = useState(undefined);
+  const [isOpen, setIsOpen] = useState(false)
+  const editionRef = useRef(isOpen)
+  const [inputValue, setInputValue] = useState(undefined)
   useEffect(() => {
     if (onChange) {
       onChange(values)
@@ -36,29 +36,29 @@ const ReleaseCreateForm = ({
 
   useEffect(() => {
     if (isOpen) {
-      const infin = "\u221e";
-      setFieldValue("isOpen", true);
-      setInputValue(infin);
-      setFieldValue("amount", infin);
+      const infin = '\u221e'
+      setFieldValue('isOpen', true)
+      setInputValue(infin)
+      setFieldValue('amount', infin)
     }
     if (!isOpen) {
-      setFieldValue("isOpen", false);
+      setFieldValue('isOpen', false)
     }
-  }, [isOpen]);
+  }, [isOpen])
 
   const valuetext = (value) => {
     return `${value}%`
   }
 
   const handleEditionChange = (event) => {
-    editionRef.current = event.target.value;
-    if (editionRef.current === "unlimited") {
-      setIsOpen(true);
+    editionRef.current = event.target.value
+    if (editionRef.current === 'unlimited') {
+      setIsOpen(true)
     }
-    if (editionRef.current === "limited") {
-      setIsOpen(false);
+    if (editionRef.current === 'limited') {
+      setIsOpen(false)
     }
-  };
+  }
 
   return (
     <Root>
@@ -132,10 +132,10 @@ const ReleaseCreateForm = ({
         </Field>
         <Box
           className={classes.fieldInputWrapper}
-          sx={{ display: "flex", alignItems: "left", textAlign: "center" }}
+          sx={{ display: 'flex', alignItems: 'left', textAlign: 'center' }}
         >
-          <FormControl sx={{ flexDirection: "row" }}>
-            <FormLabel sx={{ marginTop: "10px" }}>EDITION TYPE</FormLabel>{" "}
+          <FormControl sx={{ flexDirection: 'row' }}>
+            <FormLabel sx={{ marginTop: '10px' }}>EDITION TYPE</FormLabel>{' '}
             <RadioGroup
               row
               aria-labelledby="amount"
@@ -143,15 +143,15 @@ const ReleaseCreateForm = ({
             >
               <FormControlLabel
                 value="limited"
-                control={<FormRadio/>}
+                control={<FormRadio />}
                 label="Limited"
                 onClick={(event) => handleEditionChange(event)}
-                sx={{ marginLeft: "1px", marginRight: "5px" }}
+                sx={{ marginLeft: '1px', marginRight: '5px' }}
                 checked={!isOpen}
               />
               <FormControlLabel
                 value="unlimited"
-                control={<FormRadio/>}
+                control={<FormRadio />}
                 label="Unlimited"
                 onClick={(event) => handleEditionChange(event)}
                 checked={isOpen}
@@ -161,28 +161,28 @@ const ReleaseCreateForm = ({
         </Box>
         <Field name="amount">
           {({ field }) => (
-            <Box className={classes.fieldInputWrapper} align={"left"}>
+            <Box className={classes.fieldInputWrapper} align={'left'}>
               <TextField
                 className="formField"
                 variant="standard"
-                label={formatPlaceholder("Edition Size")}
+                label={formatPlaceholder('Edition Size')}
                 size="small"
-                type={isOpen ? "text" : "number"}
-                InputLabelProps={touched.amount ? { shrink: true } : ""}
+                type={isOpen ? 'text' : 'number'}
+                InputLabelProps={touched.amount ? { shrink: true } : ''}
                 placeholder={
                   errors.amount && touched.amount ? errors.amount : null
                 }
                 InputProps={{
                   onChange: (event) => {
-                    setInputValue(event.target.value);
+                    setInputValue(event.target.value)
                     if (!isOpen) {
-                      let whole = parseInt(event.target.value);
-                      setFieldValue("amount", whole);
-                      setFieldValue("isOpen", false);
+                      let whole = parseInt(event.target.value)
+                      setFieldValue('amount', whole)
+                      setFieldValue('isOpen', false)
                     }
                     if (isOpen) {
-                      setFieldValue("isOpen", true);
-                      setFieldValue("amount", "Open");
+                      setFieldValue('isOpen', true)
+                      setFieldValue('amount', 'Open')
                     }
                   },
                 }}
@@ -248,7 +248,7 @@ const ReleaseCreateForm = ({
 
           <Field name="description">
             {(props) => (
-              <Box sx={{ borderBottom: "1px solid grey", height: "14vh" }}>
+              <Box sx={{ borderBottom: '1px solid grey', height: '14vh' }}>
                 <QuillEditor
                   formikProps={props}
                   type={'release'}
@@ -267,24 +267,24 @@ const ReleaseCreateForm = ({
         </Box>
       </Form>
     </Root>
-  );
-};
+  )
+}
 
 const FormRadio = (props) => {
   return (
     <Radio
       disableRipple
       sx={{
-        "&&:hover": {
-          backgroundColor: "transparent",
+        '&&:hover': {
+          backgroundColor: 'transparent',
         },
       }}
       {...props}
     />
-  );
+  )
 }
 
-const PREFIX = "ReleaseCreateForm";
+const PREFIX = 'ReleaseCreateForm'
 
 const classes = {
   fieldInputWrapper: `${PREFIX}-fieldInputWrapper`,
@@ -329,14 +329,14 @@ export default withFormik({
   },
   mapPropsToValues: () => {
     return {
-      artist: "",
-      title: "",
-      description: "",
-      catalogNumber: "",
-      amount: "10",
+      artist: '',
+      title: '',
+      description: '',
+      catalogNumber: '',
+      amount: '10',
       retailPrice: undefined,
       resalePercentage: 10,
       isOpen: false,
-    };
+    }
   },
 })(ReleaseCreateForm)
