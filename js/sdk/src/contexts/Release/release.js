@@ -340,7 +340,7 @@ const releaseContextHelper = ({
       }
 
       const editionAmount = isOpen ? MAX_INT : amount
-      
+
       const config = {
         amountTotalSupply: new anchor.BN(editionAmount),
         amountToArtistTokenAccount: new anchor.BN(0),
@@ -522,9 +522,8 @@ const releaseContextHelper = ({
     release,
     releaseBump,
     releaseMint,
-    isOpen
+    isOpen,
   }) => {
-
     setPressingState({
       ...pressingState,
       pending: true,
@@ -720,11 +719,10 @@ const releaseContextHelper = ({
         success: true,
         msg: 'Release closed',
       }
-    } catch(error){
+    } catch (error) {
       return ninaErrorHandler(error)
     }
   }
-
 
   const releasePurchase = async (releasePubkey) => {
     logEvent('release_purchase_initiated', 'engagement', {
@@ -1149,10 +1147,8 @@ const releaseContextHelper = ({
   }
 
   const getReleasesAll = async () => {
-
     try {
       const all = [...allReleases]
-
 
       const releases = (
         await NinaSdk.Release.fetchAll(
@@ -1160,24 +1156,23 @@ const releaseContextHelper = ({
           true
         )
       ).releases
- 
-        all.push(...releases.map((release) => release.publicKey))
-      
-        const newState = updateStateForReleases(releases)
-  
-        setReleaseState((prevState) => ({
-          ...prevState,
-          tokenData: { ...prevState.tokenData, ...newState.tokenData },
-          metadata: { ...prevState.metadata, ...newState.metadata },
-          releaseMintMap: {
-            ...prevState.releaseMintMap,
-            ...newState.releaseMintMap,
-          },
-        }))
- 
-        setAllReleasesCount(releases.total)
-        setAllReleases(all)
 
+      all.push(...releases.map((release) => release.publicKey))
+
+      const newState = updateStateForReleases(releases)
+
+      setReleaseState((prevState) => ({
+        ...prevState,
+        tokenData: { ...prevState.tokenData, ...newState.tokenData },
+        metadata: { ...prevState.metadata, ...newState.metadata },
+        releaseMintMap: {
+          ...prevState.releaseMintMap,
+          ...newState.releaseMintMap,
+        },
+      }))
+
+      setAllReleasesCount(releases.total)
+      setAllReleases(all)
     } catch (error) {
       console.warn(error)
     }
