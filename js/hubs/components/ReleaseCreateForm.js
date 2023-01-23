@@ -164,7 +164,7 @@ const ReleaseCreateForm = ({
               <TextField
                 className="formField"
                 variant="standard"
-                label={formatPlaceholder(field.name)}
+                label={formatPlaceholder('Edition Size')}
                 size="small"
                 type={isOpen ? "text" : "number"}
                 InputLabelProps={touched.amount ? { shrink: true } : ""}
@@ -185,8 +185,8 @@ const ReleaseCreateForm = ({
                     }
                   },
                 }}
-                {...field}
                 disabled={isOpen}
+                {...field}
               />
             </Box>
           )}
