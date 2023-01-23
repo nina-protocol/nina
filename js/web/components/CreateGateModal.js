@@ -38,6 +38,12 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
     setFile(undefined)
   }
 
+  // const sanitizeAndSetFile = (file) => {
+  //   file.name = file.name.replace(' ', '_')
+  //   console.log('file :>> ', file);
+  //   setFile(file)
+  // }
+
   const handleFileUpload = async () => {
     setInProgress(true)
     try {
@@ -47,10 +53,11 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
       const messageBase64 = encodeBase64(message)
       const signature = await wallet.signMessage(message)
       const signatureBase64 = encodeBase64(signature)
+      const sanitizedFileName = file.name.replace(' ', '_')
 
       const response = await axios.post(`${process.env.NINA_GATE_URL}/gate`, {
         fileSize: file.size,
-        fileName: file.name,
+        fileName: sanitizedFileName,
         publicKey: wallet.publicKey.toBase58(),
         message: messageBase64,
         signature: signatureBase64,
@@ -86,7 +93,7 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
         {
           UploadId,
           releasePublicKey: releasePubkey,
-          fileName: file.name,
+          fileName: sanitizedFileName,
           fileSize: file.size,
           parts: result,
         }
