@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
 import { formatPlaceholder } from "@nina-protocol/nina-internal-sdk/esm/utils";
 import { withFormik, Form, Field } from "formik";
@@ -7,6 +7,11 @@ import TextField from "@mui/material/TextField";
 import Slider from "@mui/material/Slider";
 import Box from "@mui/material/Box";
 import Fade from "@mui/material/Fade";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 import dynamic from "next/dynamic";
 const QuillEditor = dynamic(() => import("./QuillEditor"), { ssr: false });
 
@@ -20,16 +25,40 @@ const ReleaseCreateForm = ({
   setFieldValue,
   disabled,
 }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const editionRef = useRef(isOpen);
+    const [inputValue, setInputValue] = useState(undefined);
   useEffect(() => {
     if (onChange) {
       onChange(values);
     }
   }, [values]);
 
+    useEffect(() => {
+      if (isOpen) {
+        const infin = "\u221e";
+        setFieldValue("isOpen", true);
+        setInputValue(infin);
+        setFieldValue("amount", infin);
+      }
+      if (!isOpen) {
+        setFieldValue("isOpen", false);
+      }
+    }, [isOpen]);
+
   const valuetext = (value) => {
     return `${value}%`;
   };
 
+  const handleEditionChange = (event) => {
+    editionRef.current = event.target.value;
+    if (editionRef.current === "unlimited") {
+      setIsOpen(true);
+    }
+    if (editionRef.current === "limited") {
+      setIsOpen(false);
+    }
+  };
   return (
     <Root>
       <Form>
@@ -100,22 +129,64 @@ const ReleaseCreateForm = ({
             </Box>
           )}
         </Field>
-
+        <Box
+          className={classes.fieldInputWrapper}
+          sx={{ display: "flex", alignItems: "left", textAlign: "center" }}
+        >
+          <FormControl sx={{ flexDirection: "row" }}>
+            <RadioGroup
+              row
+              aria-labelledby="amount"
+              defaultValue={editionRef.current}
+            >
+              <FormLabel sx={{ marginTop: "10px" }}>EDITION TYPE</FormLabel>{" "}
+              <FormControlLabel
+                value="limited"
+                control={<Radio />}
+                label="Limited"
+                onClick={(event) => handleEditionChange(event)}
+                sx={{ marginLeft: "1px", marginRight: "5px" }}
+                checked={!isOpen}
+              />
+              <FormControlLabel
+                value="unlimited"
+                control={<Radio />}
+                label="Unlimited"
+                onClick={(event) => handleEditionChange(event)}
+                checked={isOpen}
+              />
+            </RadioGroup>
+          </FormControl>
+        </Box>
         <Field name="amount">
           {({ field }) => (
-            <Box>
+            <Box className={classes.fieldInputWrapper} align={"left"}>
               <TextField
                 className="formField"
                 variant="standard"
                 label={formatPlaceholder(field.name)}
                 size="small"
+                type={isOpen ? "text" : "number"}
                 InputLabelProps={touched.amount ? { shrink: true } : ""}
                 placeholder={
                   errors.amount && touched.amount ? errors.amount : null
                 }
-                type="number"
+                InputProps={{
+                  onChange: (event) => {
+                    setInputValue(event.target.value);
+                    if (!isOpen) {
+                      let whole = parseInt(event.target.value);
+                      setFieldValue("amount", whole);
+                      setFieldValue("isOpen", false);
+                    }
+                    if (isOpen) {
+                      setFieldValue("isOpen", true);
+                      setFieldValue("amount", "Open");
+                    }
+                  },
+                }}
                 {...field}
-                disabled={disabled}
+                disabled={isOpen}
               />
             </Box>
           )}
@@ -246,9 +317,10 @@ export default withFormik({
       title: "",
       description: "",
       catalogNumber: "",
-      amount: 10,
+      amount: '10',
       retailPrice: undefined,
       resalePercentage: 10,
+      isOpen: false
     };
   },
 })(ReleaseCreateForm);
