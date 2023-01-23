@@ -244,7 +244,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                       variant="body2"
                       align="left"
                       sx={{
-                        color: release.remainingSupply === 0 ? "" : "red",
+                        color: release.remainingSupply === 0 ? "grey": "red",
                         padding: 0,
                       }}
                     >

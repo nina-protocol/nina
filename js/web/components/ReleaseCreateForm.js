@@ -131,7 +131,8 @@ const ReleaseCreateForm = ({
           sx={{ display: 'flex', alignItems: 'left', textAlign: 'center' }}
         >
           <FormControl sx={{ flexDirection: 'row' }}>
-            <RadioGroup
+            <StyledRadioGroup
+              disableRipple
               row
               aria-labelledby="amount"
               defaultValue={editionRef.current}
@@ -139,6 +140,7 @@ const ReleaseCreateForm = ({
               <FormLabel sx={{ marginTop: '10px' }}>EDITION TYPE</FormLabel>{' '}
               <FormControlLabel
                 value="limited"
+                disableRipple
                 control={<Radio />}
                 label="Limited"
                 onClick={(event) => handleEditionChange(event)}
@@ -147,12 +149,13 @@ const ReleaseCreateForm = ({
               />
               <FormControlLabel
                 value="unlimited"
+                disableRipple
                 control={<Radio />}
                 label="Unlimited"
                 onClick={(event) => handleEditionChange(event)}
                 checked={isOpen}
               />
-            </RadioGroup>
+            </StyledRadioGroup>
           </FormControl>
         </Box>
         <Field name="amount">
@@ -300,6 +303,13 @@ const Warning = styled(Typography)(({ theme }) => ({
   width: '220px',
 }))
 
+const StyledRadioGroup = styled(RadioGroup)(({ theme }) => ({
+  '& .MuiRadio-root': {
+    '&:hover':{
+      backgroundColor: 'transparent',
+    }
+  }
+}))
 export default withFormik({
   enableReinitialize: true,
   validationSchema: (props) => {
