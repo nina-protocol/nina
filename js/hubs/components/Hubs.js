@@ -8,7 +8,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { styled } from '@mui/material/styles'
 import { useWallet } from '@solana/wallet-adapter-react'
-import EmailCapture from './EmailCapture'
+import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
 
 import HubSlider from './HubSlider'
 import {

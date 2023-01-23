@@ -28,6 +28,8 @@ export default [
       Release: 'src/contexts/Release/index.js',
       client: 'src/client.js',
       utils: 'src/utils/index.js',
+      EmailCapture: 'src/components/EmailCapture.js',
+      EmailCaptureForm: 'src/components/EmailCaptureForm.js',
     },
     output: [
       {

@@ -18,7 +18,7 @@ import {
 import Breadcrumbs from './Breadcrumbs'
 import NavSearch from './NavSearch'
 import SearchIcon from '@mui/icons-material/Search'
-import EmailCapture from './EmailCapture'
+import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
 import FeedDrawer from './FeedDrawer'
 
 const NavBar = () => {

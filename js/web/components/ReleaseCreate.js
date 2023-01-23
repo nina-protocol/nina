@@ -34,7 +34,7 @@ import {
   UploadType,
   uploadHasItemForType,
 } from '../utils/uploadManager'
-import EmailCapture from './EmailCapture'
+import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
 const BundlrModal = dynamic(() => import('./BundlrModal'))
 
 const ReleaseCreateSchema = Yup.object().shape({
