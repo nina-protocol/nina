@@ -64,6 +64,7 @@ const AudioPlayerContextProvider = ({ children }) => {
     setTrack,
     currentIndex,
     track,
+    setInitialized,
   })
 
   const updateTrack = (
@@ -72,6 +73,7 @@ const AudioPlayerContextProvider = ({ children }) => {
     addToPlaylist = false,
     hubPublicKey = null
   ) => {
+    setInitialized(true)
     const existingTrack = playlist.filter(
       (item) => item.releasePubkey === releasePubkey
     )[0]
@@ -143,6 +145,7 @@ const audioPlayerContextHelper = ({
   setTrack,
   track,
   ninaClient,
+  setInitialized,
 }) => {
   const reorderPlaylist = (updatedPlaylist) => {
     setPlaylist([...updatedPlaylist])
@@ -249,6 +252,7 @@ const audioPlayerContextHelper = ({
   }
 
   const resetQueueWithPlaylist = async (releasePubkeys) => {
+    setInitialized(true)
     setPlaylist([])
     const newPlaylist = []
     releasePubkeys.forEach((releasePubkey) => {

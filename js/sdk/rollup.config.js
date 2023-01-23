@@ -30,6 +30,7 @@ export default [
       utils: 'src/utils/index.js',
       EmailCapture: 'src/components/EmailCapture.js',
       EmailCaptureForm: 'src/components/EmailCaptureForm.js',
+      AudioPlayer: 'src/components/AudioPlayer.js',
     },
     output: [
       {

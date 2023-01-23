@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useContext, useRef, useMemo } from 'react'
+import React from 'react'
 import { styled } from '@mui/material/styles'
-import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
-import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import { formatDuration } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/esm/utils'
+import AudioPlayer from '@nina-protocol/nina-internal-sdk/esm/AudioPlayer'
 import Link from 'next/link'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -18,192 +17,7 @@ import Image from 'next/image'
 import QueueDrawer from './QueueDrawer'
 
 const { getImageFromCDN, loader } = imageManager
-const AudioPlayer = () => {
-  const audio = useContext(Audio.Context)
-  const {
-    track,
-    playNext,
-    playPrev,
-    updateTrack,
-    playlist,
-    isPlaying,
-    currentIndex,
-  } = audio
-  const { releaseState } = useContext(Release.Context)
-  const activeTrack = useRef()
-  const playerRef = useRef()
-  const intervalRef = useRef()
-  const activeIndexRef = useRef(0)
-  const [playing, setPlaying] = useState(false)
-  const [trackProgress, setTrackProgress] = useState(0.0)
-  const [authority, setAuthority] = useState()
-  const [duration, setDuration] = useState(0)
-  useEffect(() => {
-    playerRef.current = document.querySelector('#audio')
-    playerRef.current.addEventListener('error', (e) => {
-      if (e.target.error.code === e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED) {
-        if (playerRef.current.src.includes('arweave.net')) {
-          playerRef.current.src = activeTrack.current.txid.replace(
-            'arweave.net',
-            'ar-io.net'
-          )
-          play()
-        }
-      }
-    })
-
-    const actionHandlers = [
-      ['play', () => play()],
-      ['pause', () => play()],
-      ['previoustrack', () => previous()],
-      ['nexttrack', () => next()],
-    ]
-
-    for (const [action, handler] of actionHandlers) {
-      try {
-        navigator.mediaSession.setActionHandler(action, handler)
-      } catch (error) {
-        console.warn(
-          `The media session action "${action}" is not supported yet.`
-        )
-      }
-    }
-
-    return () => {
-      clearInterval(intervalRef.current)
-    }
-  }, [])
-
-  useEffect(() => {
-    const initialized = activeIndexRef.current >= 0
-    if (isPlaying && initialized) {
-      play()
-    } else {
-      pause()
-    }
-  }, [isPlaying])
-
-  const hasNext = useMemo(
-    () => activeIndexRef.current + 1 < playlist.length,
-    [activeIndexRef.current, playlist]
-  )
-  const hasPrevious = useMemo(
-    () => activeIndexRef.current > 0,
-    [activeIndexRef.current]
-  )
-
-  useEffect(() => {
-    const initialized = activeIndexRef.current >= 0
-    if (track) {
-      activeIndexRef.current = playlist.indexOf(track)
-      activeTrack.current = track
-      playerRef.current.src = track.txid
-      if ('mediaSession' in navigator) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: activeTrack.current.title,
-          artist: activeTrack.current.artist,
-          artwork: [
-            {
-              src: activeTrack.current.cover,
-              sizes: '512x512',
-              type: 'image/jpeg',
-            },
-          ],
-        })
-      }
-    }
-    if (initialized && isPlaying) {
-      play()
-    }
-  }, [track])
-
-  useEffect(() => {
-    if (
-      playlist.length > 0 &&
-      !activeIndexRef.current &&
-      track?.releasePubkey != playlist[0].releasePubkey
-    ) {
-      updateTrack(playlist[0].releasePubkey, false)
-    }
-  }, [playlist, activeIndexRef.current])
-
-  const startTimer = () => {
-    // Clear any timers already running
-    clearInterval(intervalRef.current)
-    intervalRef.current = setInterval(() => {
-      if (
-        playerRef.current.currentTime > 0 &&
-        playerRef.current.currentTime < playerRef.current.duration &&
-        !playerRef.current.paused
-      ) {
-        setDuration(playerRef.current.duration)
-        setTrackProgress(Math.ceil(playerRef.current.currentTime))
-      } else if (playerRef.current.currentTime >= playerRef.current.duration) {
-        next()
-      }
-    }, [300])
-  }
-
-  useEffect(() => {
-    if (track) {
-      setAuthority(releaseState?.tokenData[track?.releasePubkey]?.authority)
-    }
-  }, [authority, track])
-  const previous = () => {
-    if (hasPrevious) {
-      setTrackProgress(0)
-      activeIndexRef.current = activeIndexRef.current - 1
-      playPrev(true)
-    }
-  }
-
-  const play = () => {
-    if (playerRef.current.paused) {
-      playerRef.current.play()
-      setPlaying(true)
-      startTimer()
-    } else {
-      // pause()
-    }
-  }
-
-  const playButtonHandler = () => {
-    if (playerRef.current.paused) {
-      if (track) {
-        updateTrack(track.releasePubkey, true)
-      }
-    } else {
-      pause()
-    }
-  }
-
-  const pause = () => {
-    playerRef.current.pause()
-    setPlaying(false)
-    clearInterval(intervalRef.current)
-    if (track) {
-      updateTrack(track.releasePubkey, false)
-    }
-  }
-
-  const next = () => {
-    if (hasNext) {
-      setTrackProgress(0)
-      activeIndexRef.current = activeIndexRef.current + 1
-      playNext(true)
-    } else {
-      // This means we've reached the end of the playlist
-      setTrackProgress(0)
-      pause()
-    }
-  }
-
-  const seek = (newValue) => {
-    if (playerRef.current) {
-      setTrackProgress(newValue)
-      playerRef.current.currentTime = newValue
-    }
-  }
+const WebAudioPlayer = () => {
 
   const iconStyle = {
     width: '60px',
@@ -211,133 +25,144 @@ const AudioPlayer = () => {
     cursor: 'pointer',
   }
   return (
-    <StyledAudioPlayer>
-      <audio id="audio" style={{ width: '100%' }}>
-        <source src={track?.txid + '?ext=mp3'} type="audio/mp3" />
-      </audio>
+    <AudioPlayer>
+      {({
+        track,
+        playButtonHandler,
+        previous,
+        next,
+        seek,
+        authority,
+        trackProgress,
+        duration,
+        hasNext,
+        hasPrevious,
+        isPlaying,
+        playlist
+      }) => (
+        <StyledAudioPlayer>
+          <Box width="60px">
+            {track && (
+              <Link href={`/${track.releasePubkey}`} passHref>
+                <AlbumArt>
+                  <Image
+                    src={getImageFromCDN(track.cover, 100)}
+                    loader={loader}
+                    height="60px"
+                    width="60px"
+                    layout="responsive"
+                  />
+                </AlbumArt>
+              </Link>
+            )}
+          </Box>
 
-      <Box width="60px">
-        {track && (
-          <Link href={`/${track.releasePubkey}`} passHref>
-            <AlbumArt>
-              <Image
-                src={getImageFromCDN(track.cover, 100)}
-                loader={loader}
-                height="60px"
-                width="60px"
-                layout="responsive"
+          <Controls>
+            <IconButton
+              disabled={!hasPrevious}
+              disableFocusRipple={true}
+              disableRipple={true}
+            >
+              <SkipPreviousIcon onClick={() => previous()} sx={iconStyle} />
+            </IconButton>
+            <IconButton
+              disabled={playlist.length === 0}
+              disableFocusRipple={true}
+              disableRipple={true}
+            >
+              {isPlaying ? (
+                <PauseIcon
+                  onClickCapture={() => playButtonHandler()}
+                  sx={iconStyle}
+                />
+              ) : (
+                <PlayArrowIcon
+                  onClickCapture={() => playButtonHandler()}
+                  sx={iconStyle}
+                />
+              )}
+            </IconButton>
+            <IconButton
+              disabled={!hasNext}
+              disableFocusRipple={true}
+              disableRipple={true}
+            >
+              <SkipNextIcon onClick={() => next()} sx={iconStyle} />
+            </IconButton>
+          </Controls>
+
+          <ProgressContainer>
+            {track && (
+              <ArtistInfo align="left" variant="subtitle1">
+                <Link href={`/profiles/${authority}`} passHref>
+                  <ReleaseArtist>{track.artist}, </ReleaseArtist>
+                </Link>
+
+                <Link href={`/${track.releasePubkey}`} passHref>
+                  <ReleaseTitle>{track.title}</ReleaseTitle>
+                </Link>
+              </ArtistInfo>
+            )}
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Slider
+                value={track ? trackProgress : 0}
+                onChange={(e, newValue) => seek(newValue)}
+                aria-labelledby="continuous-slider"
+                min={0}
+                max={track?.duration || duration}
               />
-            </AlbumArt>
-          </Link>
-        )}
-      </Box>
 
-      <Controls>
-        <IconButton
-          disabled={!currentIndex()}
-          disableFocusRipple={true}
-          disableRipple={true}
-        >
-          <SkipPreviousIcon onClick={() => previous()} sx={iconStyle} />
-        </IconButton>
-        <IconButton
-          disabled={playlist.length === 0}
-          disableFocusRipple={true}
-          disableRipple={true}
-        >
-          {isPlaying ? (
-            <PauseIcon
-              onClickCapture={() => playButtonHandler()}
-              sx={iconStyle}
-            />
-          ) : (
-            <PlayArrowIcon
-              onClickCapture={() => playButtonHandler()}
-              sx={iconStyle}
-            />
-          )}
-        </IconButton>
-        <IconButton
-          disabled={
-            currentIndex() + 1 === playlist.length || playlist.length <= 1
-          }
-          disableFocusRipple={true}
-          disableRipple={true}
-        >
-          <SkipNextIcon onClick={() => next()} sx={iconStyle} />
-        </IconButton>
-      </Controls>
-
-      <ProgressContainer>
-        {track && (
-          <ArtistInfo align="left" variant="subtitle1">
-            <Link href={`/profiles/${authority}`} passHref>
-              <ReleaseArtist>{track.artist}, </ReleaseArtist>
-            </Link>
-
-            <Link href={`/${track.releasePubkey}`} passHref>
-              <ReleaseTitle>{track.title}</ReleaseTitle>
-            </Link>
-          </ArtistInfo>
-        )}
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Slider
-            value={track ? trackProgress : 0}
-            onChange={(e, newValue) => seek(newValue)}
-            aria-labelledby="continuous-slider"
-            min={0}
-            max={track?.duration || duration}
-          />
+              <Typography
+                sx={{ padding: '0 10px', display: { xs: 'block', md: 'none' } }}
+                variant="subtitle1"
+              >
+                {formatDuration(trackProgress) || '00:00'}
+              </Typography>
+            </Box>
+          </ProgressContainer>
 
           <Typography
-            sx={{ padding: '0 10px', display: { xs: 'block', md: 'none' } }}
+            sx={{ padding: '0 30px', display: { xs: 'none', md: 'block' } }}
             variant="subtitle1"
           >
             {formatDuration(trackProgress) || '00:00'}
           </Typography>
-        </Box>
-      </ProgressContainer>
 
-      <Typography
-        sx={{ padding: '0 30px', display: { xs: 'none', md: 'block' } }}
-        variant="subtitle1"
-      >
-        {formatDuration(trackProgress) || '00:00'}
-      </Typography>
+          {track && (
+            <LinkWrapper>
+              <Link
+                href={`/${track.releasePubkey}`}
+                style={{ marginRight: '30px' }}
+                passHref
+              >
+                <a>
+                  <Typography variant="subtitle1" sx={{ padding: '0' }}>
+                    View Info
+                  </Typography>
+                </a>
+              </Link>
 
-      {track && (
-        <LinkWrapper>
-          <Link
-            href={`/${track.releasePubkey}`}
-            style={{ marginRight: '30px' }}
-            passHref
-          >
-            <a>
-              <Typography variant="subtitle1" sx={{ padding: '0' }}>
-                View Info
-              </Typography>
-            </a>
-          </Link>
-
-          <Button
-            onClick={() =>
-              window.open(
-                `https://twitter.com/intent/tweet?text=${`${track.artist} - "${track.title}" on Nina`}&url=ninaprotocol.com/${
-                  track.releasePubkey
-                }`,
-                null,
-                'status=no,location=no,toolbar=no,menubar=no,height=500,width=500'
-              )
-            }
-            disableFocusRipple={true}
-            disableRipple={true}
-          >
-            <Image src={'/shareArrow.svg'} width="15px" height="15px" />
-          </Button>
-        </LinkWrapper>
+              <Button
+                onClick={() =>
+                  window.open(
+                    `https://twitter.com/intent/tweet?text=${`${track.artist} - "${track.title}" on Nina`}&url=ninaprotocol.com/${
+                      track.releasePubkey
+                    }`,
+                    null,
+                    'status=no,location=no,toolbar=no,menubar=no,height=500,width=500'
+                  )
+                }
+                disableFocusRipple={true}
+                disableRipple={true}
+              >
+                <Image src={'/shareArrow.svg'} width="15px" height="15px" />
+              </Button>
+            </LinkWrapper>
+          )}
+          <QueueDrawer />
+        </StyledAudioPlayer>
       )}
-      <QueueDrawer />
-    </StyledAudioPlayer>
+    </AudioPlayer>
   )
 }
 
@@ -436,4 +261,4 @@ const LinkWrapper = styled(Box)(({ theme }) => ({
   },
 }))
 
-export default AudioPlayer
+export default WebAudioPlayer

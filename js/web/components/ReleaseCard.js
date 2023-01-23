@@ -25,7 +25,7 @@ const ReleaseCard = (props) => {
     userHubs,
     release,
   } = props
-  const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
+  const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track, setInitialized } =
     useContext(Audio.Context)
   const image = useMemo(() => metadata?.image)
   const title = useMemo(() => {
@@ -46,6 +46,7 @@ const ReleaseCard = (props) => {
             <Box>
               <Button
                 onClickCapture={() => {
+                  setInitialized(true)
                   if (isPlaying && track.releasePubkey === releasePubkey) {
                     setIsPlaying(false)
                   } else {

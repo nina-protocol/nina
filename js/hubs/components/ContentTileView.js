@@ -18,7 +18,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 const { getImageFromCDN, loader } = imageManager
 
 const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
-  const { updateTrack, setInitialized, audioPlayerRef, isPlaying, track } =
+  const { updateTrack, audioPlayerRef, isPlaying, track } =
     useContext(Audio.Context)
   const { hubState } = useContext(Hub.Context)
   const { releaseState } = useContext(Release.Context)
@@ -152,7 +152,6 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
                       <Button
                         onClick={(e) => {
                           e.stopPropagation()
-                          setInitialized(true)
                           if (!audioPlayerRef.current.src) {
                             audioPlayerRef.current.load()
                           }
