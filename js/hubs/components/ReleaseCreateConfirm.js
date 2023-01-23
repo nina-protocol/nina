@@ -104,7 +104,7 @@ const ReleaseCreateConfirm = (props) => {
               Catalog Number:<span>{data.catalogNumber}</span>
             </Value>
             <Value sx={{ mt: 1 }}>
-              Amount: <span>{data.amount}</span>
+              Amount: <span>{data.isOpen ? "Unlimited" : data.amount}</span>
             </Value>
             <Value sx={{ mt: 1 }}>
               Retail Price:<span>${data.retailPrice}</span>

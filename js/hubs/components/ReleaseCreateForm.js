@@ -247,7 +247,7 @@ const ReleaseCreateForm = ({
 
           <Field name="description">
             {(props) => (
-              <Box sx={{ borderBottom: "1px solid grey" }}>
+              <Box sx={{ borderBottom: "1px solid grey", height: '14vh' }}>
                 <QuillEditor
                   formikProps={props}
                   type={"release"}

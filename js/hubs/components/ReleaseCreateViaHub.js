@@ -40,7 +40,7 @@ const ReleaseCreateSchema = Yup.object().shape({
   title: Yup.string().required("Title is Required"),
   description: Yup.string(),
   catalogNumber: Yup.string().required("Catalog Number is Required"),
-  amount: Yup.number().required("Edition Amount is Required"),
+  amount: Yup.string().required("Edition Amount is Required"),
   retailPrice: Yup.number().required("Sale Price is Required"),
   resalePercentage: Yup.number().required("Resale Percent Amount is Required"),
 });
@@ -178,6 +178,8 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
 
   useEffect(() => {
     if (track && artwork) {
+      console.log( 'releaseCreateSchema', ReleaseCreateSchema
+      )
       const valid = async () => {
         const isValid = await ReleaseCreateSchema.isValid(
           formValues.releaseForm,
@@ -191,6 +193,8 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
     } else {
       setFormIsValid(false);
     }
+    console.log("formValues", formValues.releaseForm)
+    console.log("formIsValid", formIsValid)
   }, [formValues, track, artwork]);
 
   useEffect(() => {

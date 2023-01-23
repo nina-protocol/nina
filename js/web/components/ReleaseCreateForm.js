@@ -13,7 +13,6 @@ import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormControl from '@mui/material/FormControl'
 import FormLabel from '@mui/material/FormLabel'
-import InputLabel from '@mui/material/InputLabel'
 const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
 
 const ReleaseCreateForm = ({
@@ -22,8 +21,8 @@ const ReleaseCreateForm = ({
   values,
   onChange,
   errors,
-  touched,
   setFieldValue,
+  touched,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const editionRef = useRef(isOpen)
@@ -251,7 +250,7 @@ const ReleaseCreateForm = ({
 
             <Field name="description">
               {(props) => (
-                <Box sx={{ borderBottom: '1px solid grey' }}>
+                <Box sx={{ borderBottom: '1px solid grey',height: '14vh'  }}>
                   <QuillEditor
                     formikProps={props}
                     type={'release'}
