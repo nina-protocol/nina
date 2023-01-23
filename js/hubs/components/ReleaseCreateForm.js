@@ -25,26 +25,26 @@ const ReleaseCreateForm = ({
   setFieldValue,
   disabled,
 }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const editionRef = useRef(isOpen);
-    const [inputValue, setInputValue] = useState(undefined);
+  const [isOpen, setIsOpen] = useState(false);
+  const editionRef = useRef(isOpen);
+  const [inputValue, setInputValue] = useState(undefined);
   useEffect(() => {
     if (onChange) {
       onChange(values);
     }
   }, [values]);
 
-    useEffect(() => {
-      if (isOpen) {
-        const infin = "\u221e";
-        setFieldValue("isOpen", true);
-        setInputValue(infin);
-        setFieldValue("amount", infin);
-      }
-      if (!isOpen) {
-        setFieldValue("isOpen", false);
-      }
-    }, [isOpen]);
+  useEffect(() => {
+    if (isOpen) {
+      const infin = "\u221e";
+      setFieldValue("isOpen", true);
+      setInputValue(infin);
+      setFieldValue("amount", infin);
+    }
+    if (!isOpen) {
+      setFieldValue("isOpen", false);
+    }
+  }, [isOpen]);
 
   const valuetext = (value) => {
     return `${value}%`;
@@ -164,7 +164,7 @@ const ReleaseCreateForm = ({
               <TextField
                 className="formField"
                 variant="standard"
-                label={formatPlaceholder('Edition Size')}
+                label={formatPlaceholder("Edition Size")}
                 size="small"
                 type={isOpen ? "text" : "number"}
                 InputLabelProps={touched.amount ? { shrink: true } : ""}
@@ -247,7 +247,7 @@ const ReleaseCreateForm = ({
 
           <Field name="description">
             {(props) => (
-              <Box sx={{ borderBottom: "1px solid grey", height: '14vh' }}>
+              <Box sx={{ borderBottom: "1px solid grey", height: "14vh" }}>
                 <QuillEditor
                   formikProps={props}
                   type={"release"}
@@ -317,10 +317,10 @@ export default withFormik({
       title: "",
       description: "",
       catalogNumber: "",
-      amount: '10',
+      amount: "10",
       retailPrice: undefined,
       resalePercentage: 10,
-      isOpen: false
+      isOpen: false,
     };
   },
 })(ReleaseCreateForm);

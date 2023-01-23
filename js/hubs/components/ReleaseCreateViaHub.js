@@ -178,8 +178,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
 
   useEffect(() => {
     if (track && artwork) {
-      console.log( 'releaseCreateSchema', ReleaseCreateSchema
-      )
+      console.log("releaseCreateSchema", ReleaseCreateSchema);
       const valid = async () => {
         const isValid = await ReleaseCreateSchema.isValid(
           formValues.releaseForm,
@@ -193,8 +192,8 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
     } else {
       setFormIsValid(false);
     }
-    console.log("formValues", formValues.releaseForm)
-    console.log("formIsValid", formIsValid)
+    console.log("formValues", formValues.releaseForm);
+    console.log("formIsValid", formIsValid);
   }, [formValues, track, artwork]);
 
   useEffect(() => {
