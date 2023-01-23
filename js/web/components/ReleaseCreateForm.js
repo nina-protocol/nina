@@ -131,17 +131,16 @@ const ReleaseCreateForm = ({
           sx={{ display: 'flex', alignItems: 'left', textAlign: 'center' }}
         >
           <FormControl sx={{ flexDirection: 'row' }}>
-            <StyledRadioGroup
-              disableRipple
+            <FormLabel sx={{ marginTop: '10px', color: 'gray'}} focused={false}>EDITION TYPE</FormLabel>{' '}
+            <RadioGroup
               row
               aria-labelledby="amount"
               defaultValue={editionRef.current}
             >
-              <FormLabel sx={{ marginTop: '10px' }}>EDITION TYPE</FormLabel>{' '}
               <FormControlLabel
                 value="limited"
                 disableRipple
-                control={<Radio />}
+                control={<FormRadio />}
                 label="Limited"
                 onClick={(event) => handleEditionChange(event)}
                 sx={{ marginLeft: '1px', marginRight: '5px' }}
@@ -150,12 +149,12 @@ const ReleaseCreateForm = ({
               <FormControlLabel
                 value="unlimited"
                 disableRipple
-                control={<Radio />}
+                control={<FormRadio />}
                 label="Unlimited"
                 onClick={(event) => handleEditionChange(event)}
                 checked={isOpen}
               />
-            </StyledRadioGroup>
+            </RadioGroup>
           </FormControl>
         </Box>
         <Field name="amount">
@@ -264,6 +263,20 @@ const ReleaseCreateForm = ({
         </Box>
       </Form>
     </Root>
+  )
+}
+
+const FormRadio = (props) => {
+  return (
+    <Radio
+      disableRipple
+      sx={{
+        '&&:hover': {
+          backgroundColor: 'transparent',
+        },
+      }}
+      {...props}
+    />
   )
 }
 const PREFIX = 'ReleaseCreateForm'
