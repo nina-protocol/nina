@@ -50,6 +50,9 @@ const ReleaseCreateSchema = Yup.object().shape({
   resalePercentage: Yup.number().required('Resale Percent Amount is Required'),
 })
 
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+
 const ReleaseCreate = () => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
@@ -497,7 +500,7 @@ const ReleaseCreate = () => {
               onChange={handleFormChange}
               values={formValues.releaseForm}
               ReleaseCreateSchema={ReleaseCreateSchema}
-              
+              disabled={isPublishing}
               />
             </CreateFormWrapper>
 

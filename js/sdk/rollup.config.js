@@ -30,7 +30,8 @@ export default [
       utils: 'src/utils/index.js',
       EmailCapture: 'src/components/EmailCapture.js',
       EmailCaptureForm: 'src/components/EmailCaptureForm.js',
-      ReleaseCreateForm: 'src/components/ReleaseCreateForm.js'
+      ReleaseCreateForm: 'src/components/ReleaseCreateForm.js',
+      QuillEditor: 'src/components/QuillEditor.js'
     },
     output: [
       {

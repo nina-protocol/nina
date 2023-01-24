@@ -7,13 +7,13 @@ import Slider from '@mui/material/Slider'
 import Box from '@mui/material/Box'
 import Fade from '@mui/material/Fade'
 import { formatPlaceholder } from '@nina-protocol/nina-internal-sdk/esm/utils'
-// import dynamic from 'next/dynamic'
+import dynamic from 'next/dynamic'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormControl from '@mui/material/FormControl'
 import FormLabel from '@mui/material/FormLabel'
-// const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
+const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
 
 const ReleaseCreateForm = (
     {
@@ -265,7 +265,7 @@ const ReleaseCreateForm = (
             </Fade>
 
             <Field name="description">
-              {/* {(props) => (
+              {(props) => (
                 <Box sx={{ borderBottom: '1px solid grey', height: '14vh' }}>
                   <QuillEditor
                     formikProps={props}
@@ -273,7 +273,7 @@ const ReleaseCreateForm = (
                     update={false}
                   />
                 </Box>
-              )} */}
+              )}
             </Field>
           </Box>
         </Box>
@@ -352,5 +352,3 @@ export default withFormik({
     }
   },
 })(ReleaseCreateForm)
-
-// export default {ReleaseCreateForm}

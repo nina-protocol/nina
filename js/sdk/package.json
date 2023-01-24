@@ -30,6 +30,9 @@
     "process": "^0.11.10",
     "promise-retry": "^2.0.1",
     "querystring": "^0.2.1",
+    "quill": "^1.3.7",
+    "quill-magic-url": "^4.2.0",
+    "react-quill": "^2.0.0",
     "yup": "^0.32.11"
   },
   "sideEffects": false,
