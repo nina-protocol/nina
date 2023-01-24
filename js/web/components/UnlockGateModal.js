@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useContext, useMemo } from 'react'
-import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
@@ -29,9 +27,6 @@ const CreateGateModal = ({ gate, releasePubkey, amountHeld }) => {
   const handleClose = () => {
     setOpen(false)
   }
-
-
-  console.log('gate :>> ', gate);
 
   const handleUnlockGate = async () => {
     try {
@@ -70,7 +65,7 @@ const CreateGateModal = ({ gate, releasePubkey, amountHeld }) => {
         })
       }
     } catch (error) {
-      console.log('error: ', error)
+      console.warn('error: ', error)
       enqueueSnackbar(`Error Accessing File`, {
         variant: 'failure',
       })
@@ -111,7 +106,7 @@ const CreateGateModal = ({ gate, releasePubkey, amountHeld }) => {
                 </Typography>
 
                 <Typography variant="body1" sx={{ mb: 1 }}>
-                 Description:
+                  Description:
                 </Typography>
 
                 <Typography variant="body1" sx={{ mb: 2 }}>

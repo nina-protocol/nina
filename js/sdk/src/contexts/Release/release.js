@@ -964,11 +964,7 @@ const releaseContextHelper = ({
         [releasePubkey]: false,
       })
       await getUserBalances()
-      console.log('process.env.NINA_API_ENDPOINT :>> ', process.env.NINA_API_ENDPOINT);
-      console.log('process.env.NINA_API_ENDPOINT :>> ', process.env.NINA_API_ENDPOINT);
-      console.log('process.env.NINA_API_ENDPOINT :>> ', process.env.NINA_API_ENDPOINT);
-      console.log('process.env.NINA_API_ENDPOINT :>> ', process.env.NINA_API_ENDPOINT);
-      console.log('process.env.NINA_API_ENDPOINT :>> ', process.env.NINA_API_ENDPOINT);
+
       await axios.get(
         `${
           process.env.NINA_API_ENDPOINT

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext, useMemo } from 'react'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
@@ -10,7 +9,7 @@ import Typography from '@mui/material/Typography'
 import CloseIcon from '@mui/icons-material/Close'
 import { encodeBase64 } from 'tweetnacl-util'
 import axios from 'axios'
-import TextField from '@mui/material/TextField';
+import TextField from '@mui/material/TextField'
 
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useSnackbar } from 'notistack'
@@ -20,9 +19,6 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const { checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(
-    Nina.Context
-  )
   const [inProgress, setInProgress] = useState(false)
   const [file, setFile] = useState(undefined)
   const [description, setDescription] = useState(undefined)
@@ -53,7 +49,7 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
       })
 
       const { urls, UploadId } = response.data
-      console.log('urls: ', urls)
+
       const uploader = axios.create()
       delete uploader.defaults.headers.put['Content-Type']
 
@@ -76,7 +72,7 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
         PartNumber: index + 1,
       }))
 
-      console.log('description :>> ', description);
+      console.log('description :>> ', description)
 
       const completeResponse = await axios.post(
         `${process.env.NINA_GATE_URL}/gate/finalize`,
@@ -86,7 +82,7 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
           fileName: sanitizedFileName,
           fileSize: file.size,
           parts: result,
-          description
+          description,
         }
       )
 
@@ -134,19 +130,15 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
             <Typography variant="h5" sx={{ mb: 1 }}>
               Select a file or zip to be gated behind:
             </Typography>
-            <Typography variant="h5" >
-              &apos;{metadata.name}&apos;
-            </Typography>
-
+            <Typography variant="h5">&apos;{metadata.name}&apos;</Typography>
 
             <TextField
               id="standard-multiline-static"
               label="Description"
               variant="standard"
-              sx={{mt: 2, mb: 2}}
+              sx={{ mt: 2, mb: 2 }}
               onChange={(e) => setDescription(e.target.value)}
             />
-
 
             <Button component="label" variant="outlined">
               {!file ? 'Choose File' : file.name}
@@ -157,14 +149,14 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
               />
             </Button>
 
-              <Button
-                variant="outlined"
-                sx={{ mt: 1 }}
-                onClick={handleFileUpload}
-                disabled={!file || !description}
-              >
-                {!inProgress ? 'Create Gate' : <Dots size="50px" />}
-              </Button>
+            <Button
+              variant="outlined"
+              sx={{ mt: 1 }}
+              onClick={handleFileUpload}
+              disabled={!file || !description}
+            >
+              {!inProgress ? 'Create Gate' : <Dots size="50px" />}
+            </Button>
           </StyledPaper>
         </Fade>
       </StyledModal>
