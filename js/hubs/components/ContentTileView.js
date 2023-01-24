@@ -18,8 +18,9 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 const { getImageFromCDN, loader } = imageManager
 
 const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
-  const { updateTrack, audioPlayerRef, isPlaying, track } =
-    useContext(Audio.Context)
+  const { updateTrack, audioPlayerRef, isPlaying, track } = useContext(
+    Audio.Context
+  )
   const { hubState } = useContext(Hub.Context)
   const { releaseState } = useContext(Release.Context)
   const [columnCount, setColumnCount] = useState(3)

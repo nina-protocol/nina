@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useRef, useMemo } from 'react'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 
-const AudioPlayer = ({ hubPubkey=undefined, children }) => {
+const AudioPlayer = ({ hubPubkey = undefined, children }) => {
   const audio = useContext(Audio.Context)
   const { releaseState } = useContext(Release.Context)
 
@@ -16,7 +16,7 @@ const AudioPlayer = ({ hubPubkey=undefined, children }) => {
     initialized,
     setInitialized,
     audioPlayerRef,
-    activeIndexRef
+    activeIndexRef,
   } = audio
 
   const activeTrack = useRef()
@@ -40,14 +40,14 @@ const AudioPlayer = ({ hubPubkey=undefined, children }) => {
         }
       }
     })
-    audioPlayerRef.current.addEventListener('play', function() {
-      navigator.mediaSession.playbackState = 'playing';
-    });
-    
-    audioPlayerRef.current.addEventListener('pause', function() {
-      navigator.mediaSession.playbackState = 'paused';
-    });
-    
+    audioPlayerRef.current.addEventListener('play', function () {
+      navigator.mediaSession.playbackState = 'playing'
+    })
+
+    audioPlayerRef.current.addEventListener('pause', function () {
+      navigator.mediaSession.playbackState = 'paused'
+    })
+
     return () => {
       clearInterval(intervalRef.current)
     }
@@ -111,7 +111,9 @@ const AudioPlayer = ({ hubPubkey=undefined, children }) => {
         setDuration(audioPlayerRef.current.duration)
         setTrackProgress(Math.ceil(audioPlayerRef.current.currentTime))
         updatePositionState()
-      } else if (audioPlayerRef.current.currentTime >= audioPlayerRef.current.duration) {
+      } else if (
+        audioPlayerRef.current.currentTime >= audioPlayerRef.current.duration
+      ) {
         next()
       }
     }, [300])
@@ -212,11 +214,11 @@ const AudioPlayer = ({ hubPubkey=undefined, children }) => {
       navigator.mediaSession.setPositionState({
         duration: audioPlayerRef.current.duration,
         playbackRate: audioPlayerRef.current.playbackRate,
-        position: audioPlayerRef.current.currentTime
-      });
+        position: audioPlayerRef.current.currentTime,
+      })
     }
   }
-  
+
   return (
     <div>
       <audio id="audio" style={{ width: '100%' }} preload="none">
@@ -234,8 +236,7 @@ const AudioPlayer = ({ hubPubkey=undefined, children }) => {
         playing,
         hasNext,
         hasPrevious,
-        playing,
-        playlist
+        playlist,
       })}
     </div>
   )

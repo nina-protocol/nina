@@ -1,8 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useContext,
-} from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
@@ -21,7 +17,9 @@ const HubAudioPlayer = ({ hubPubkey }) => {
   const { hubContentState, filterHubContentForHub, hubState } = useContext(
     Hub.Context
   )
-  const { createPlaylistFromTracksHubs, updateTrack} = useContext(Audio.Context)
+  const { createPlaylistFromTracksHubs, updateTrack } = useContext(
+    Audio.Context
+  )
   const [hubReleases, setHubReleases] = useState(undefined)
   const [hubPosts, setHubPosts] = useState(undefined)
 
@@ -157,7 +155,11 @@ const HubAudioPlayer = ({ hubPubkey }) => {
 
           <Typography sx={{ pb: '5px', whiteSpace: 'nowrap' }}>
             <Link href={`/all`}>Hubs.</Link>{' '}
-            <a href={`https://ninaprotocol.com/`} target="_blank" rel="noreferrer">
+            <a
+              href={`https://ninaprotocol.com/`}
+              target="_blank"
+              rel="noreferrer"
+            >
               Powered by Nina.
             </a>
           </Typography>

@@ -1,4 +1,10 @@
-import React, { createContext, useState, useContext, useRef, useEffect } from 'react'
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useRef,
+  useEffect,
+} from 'react'
 import Nina from '../Nina'
 import Release from '../Release'
 import { logEvent } from '../../utils/event'
@@ -214,7 +220,7 @@ const audioPlayerContextHelper = ({
     })
     console.log('tracks', tracks)
     console.log('playlistEntries', playlistEntries, playlist)
-    setPlaylist(prevState => [...prevState, ...playlistEntries])
+    setPlaylist((prevState) => [...prevState, ...playlistEntries])
   }
 
   const addTrackToQueue = (releasePubkey) => {

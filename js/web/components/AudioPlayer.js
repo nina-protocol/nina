@@ -18,7 +18,6 @@ import QueueDrawer from './QueueDrawer'
 
 const { getImageFromCDN, loader } = imageManager
 const WebAudioPlayer = () => {
-
   const iconStyle = {
     width: '60px',
     height: '60px',
@@ -38,7 +37,7 @@ const WebAudioPlayer = () => {
         hasNext,
         hasPrevious,
         playing,
-        playlist
+        playlist,
       }) => (
         <StyledAudioPlayer>
           <Box width="60px">

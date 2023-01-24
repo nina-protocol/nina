@@ -34,8 +34,9 @@ const AddToHubModal = dynamic(() => import('./AddToHubModal'))
 const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const wallet = useWallet()
 
-  const { updateTrack, track, isPlaying, audioPlayerRef } =
-    useContext(Audio.Context)
+  const { updateTrack, track, isPlaying, audioPlayerRef } = useContext(
+    Audio.Context
+  )
   const { releaseState, getRelease } = useContext(Release.Context)
   const { getHub, hubState, getHubsForUser, filterHubsForUser } = useContext(
     Hub.Context
