@@ -13,6 +13,8 @@ import Typography from '@mui/material/Typography'
 import { useRouter } from 'next/router'
 import Dots from './Dots'
 import Royalty from './Royalty'
+import CreateGateModal from '@nina-protocol/nina-internal-sdk/esm/CreateGateModal'
+import UnlockGateModal from '@nina-protocol/nina-internal-sdk/esm/UnlockGateModal'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 
 const HubsModal = dynamic(() => import('./HubsModal'))
@@ -29,6 +31,7 @@ const ReleasePurchase = (props) => {
     releasePurchasePending,
     releasePurchaseTransactionPending,
     releaseState,
+    fetchGatesForRelease
   } = useContext(Release.Context)
   const { hubState } = useContext(Hub.Context)
   const {
@@ -44,6 +47,8 @@ const ReleasePurchase = (props) => {
   const [downloadButtonString, setDownloadButtonString] = useState('Download')
   const [userIsRecipient, setUserIsRecipient] = useState(false)
   const [publishedHub, setPublishedHub] = useState()
+  const [gate, setGate] = useState(undefined)
+
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
     [releasePubkey, releasePurchaseTransactionPending]
@@ -53,6 +58,17 @@ const ReleasePurchase = (props) => {
     [releasePubkey, releasePurchasePending]
   )
 
+  const handleFetchGates = async () => {
+    const gates = await fetchGatesForRelease(releasePubkey)
+    if (gates.length > 0) {
+      setGate(gates[0])
+    }
+  }
+
+  useEffect(() => {
+    handleFetchGates(releasePubkey)
+  }, [releasePubkey])
+
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
       setRelease(releaseState.tokenData[releasePubkey])
@@ -60,8 +76,8 @@ const ReleasePurchase = (props) => {
   }, [releaseState])
 
   useEffect(() => {
-    setAmountHeld(collection[releasePubkey])
-  }, [collection, releasePubkey])
+    setAmountHeld(collection[releasePubkey] || 0)
+  }, [collection[releasePubkey]])
 
   useEffect(() => {
     getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
@@ -234,10 +250,31 @@ const ReleasePurchase = (props) => {
         </BuyButton>
       </form>
 
+      <Box sx={{
+        maxWidth: '135px',
+      }}>
+        {gate && (
+          <UnlockGateModal
+            gate={gate}
+            releasePubkey={releasePubkey}
+            amountHeld={amountHeld}
+          />
+        )}
+        {!gate && wallet?.publicKey?.toBase58() === release.authority && (
+          <>
+            <CreateGateModal
+              releasePubkey={releasePubkey}
+              handleFetchGates={handleFetchGates}
+              metadata={metadata}
+            />
+          </>
+        )}
+      </Box>
+
       {amountHeld > 0 && (
         <BuyButton
           variant="contained"
-          sx={{ marginBottom: '10px !important' }}
+          sx={{ marginBottom: '10px !important', mt: 1 }}
           onClick={(e) => {
             e.stopPropagation()
             downloadAs(

@@ -16,7 +16,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
 
-const CreateGateModal = ({ gate, releasePubkey, amountHeld }) => {
+const UnlockGateModal = ({ gate, releasePubkey, amountHeld }) => {
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
@@ -178,4 +178,4 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
   top: theme.spacing(1),
 }))
 
-export default CreateGateModal
+export default UnlockGateModal

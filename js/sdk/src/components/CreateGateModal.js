@@ -29,8 +29,13 @@ const CreateGateModal = ({handleFetchGates, metadata, releasePubkey}) => {
     setFile(undefined)
   }
 
+  console.log('releasePubkey :>> ', releasePubkey);
+  console.log('process.env.NINA_GATE_URL :>> ', process.env.NINA_GATE_URL);
+
   const handleFileUpload = async () => {
     setInProgress(true)
+    console.log('releasePubkey :>> ', releasePubkey);
+    console.log('process.env.NINA_GATE_URL :>> ', process.env.NINA_GATE_URL);
     try {
       const FILE_CHUNK_SIZE = 10_000_000
 
