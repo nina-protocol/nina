@@ -5,16 +5,16 @@ import Nina from '../Nina'
 import {
   createMintInstructions,
   findOrCreateAssociatedTokenAccount,
-  wrapSol,
   TOKEN_PROGRAM_ID,
 } from '../../utils/web3'
 import axios from 'axios'
 import { ninaErrorHandler } from '../../utils/errors'
 import { encryptData, decodeNonEncryptedByteArray } from '../../utils/encrypt'
+import releasePurchaseHelper from '../../utils/releasePurchaseHelper'
 import { logEvent } from '../../utils/event'
 import { initSdkIfNeeded } from '../../utils/sdkInit'
 import { getConfirmTransaction } from '../../utils'
-const PRIORITY_SWAP_FEE = 5000
+
 const ReleaseContext = createContext()
 const ReleaseContextProvider = ({ children }) => {
   const {
@@ -190,7 +190,6 @@ const releaseContextHelper = ({
   allReleases,
   setAllReleases,
   setAllReleasesCount,
-  getSolPrice,
   releasePurchaseTransactionPending,
   setReleasePurchaseTransactionPending,
   fetchedUserProfileReleases,
@@ -441,194 +440,43 @@ const releaseContextHelper = ({
         wallet: provider.wallet.publicKey.toBase58(),
       })
 
-      const program = await ninaClient.useProgram()
-      releasePubkey = new anchor.web3.PublicKey(releasePubkey)
-      hubPubkey = new anchor.web3.PublicKey(hubPubkey)
-      const release = await program.account.release.fetch(releasePubkey)
-
       setReleasePurchasePending({
         ...releasePurchasePending,
-        [releasePubkey.toBase58()]: true,
+        [releasePubkey]: true,
       })
 
-      let [payerTokenAccount] = await findOrCreateAssociatedTokenAccount(
-        provider.connection,
-        provider.wallet.publicKey,
-        provider.wallet.publicKey,
-        anchor.web3.SystemProgram.programId,
-        anchor.web3.SYSVAR_RENT_PUBKEY,
-        release.paymentMint
+      const txid = await releasePurchaseHelper(
+        releasePubkey,
+        provider,
+        ninaClient,
+        usdcBalance,
+        hubPubkey
       )
 
-      let [receiverReleaseTokenAccount, receiverReleaseTokenAccountIx] =
-        await findOrCreateAssociatedTokenAccount(
-          provider.connection,
-          provider.wallet.publicKey,
-          provider.wallet.publicKey,
-          anchor.web3.SystemProgram.programId,
-          anchor.web3.SYSVAR_RENT_PUBKEY,
-          release.releaseMint
-        )
-
-      const hub = await program.account.hub.fetch(hubPubkey)
-      const [hubRelease] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-release')),
-          hubPubkey.toBuffer(),
-          releasePubkey.toBuffer(),
-        ],
-        program.programId
-      )
-      const [hubContent] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-content')),
-          hubPubkey.toBuffer(),
-          releasePubkey.toBuffer(),
-        ],
-        program.programId
-      )
-
-      const [hubSigner] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-signer')),
-          hubPubkey.toBuffer(),
-        ],
-        program.programId
-      )
-
-      let [hubWallet] = await findOrCreateAssociatedTokenAccount(
-        provider.connection,
-        provider.wallet.publicKey,
-        hubSigner,
-        anchor.web3.SystemProgram.programId,
-        anchor.web3.SYSVAR_RENT_PUBKEY,
-        release.paymentMint
-      )
-      const request = {
-        accounts: {
-          payer: provider.wallet.publicKey,
-          receiver: provider.wallet.publicKey,
-          release: releasePubkey,
-          releaseSigner: release.releaseSigner,
-          payerTokenAccount,
-          receiverReleaseTokenAccount,
-          royaltyTokenAccount: release.royaltyTokenAccount,
-          releaseMint: release.releaseMint,
-          hub: hubPubkey,
-          hubRelease,
-          hubContent,
-          hubSigner,
-          hubWallet,
-          tokenProgram: ids.programs.token,
-        },
-      }
-
-      const instructions = []
-      const solPrice = await getSolPrice()
-      let releasePriceUi = ninaClient.nativeToUi(
-        release.price.toNumber(),
-        ids.mints.usdc
-      )
-      let convertAmount =
-        releasePriceUi + (releasePriceUi * hub.referralFee.toNumber()) / 1000000
-      if (!isSol(release.paymentMint) && usdcBalance < convertAmount) {
-        convertAmount -= usdcBalance
-        const { data } = await axios.get(
-          `https://quote-api.jup.ag/v3/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative(
-            (convertAmount + convertAmount * 0.01) / solPrice,
-            ids.mints.wsol
-          )}&slippageBps=2&onlyDirectRoutes=true`
-        )
-        let transactionInstructions
-
-        for await (let d of data.data) {
-          const transactions = await axios.post(
-            'https://quote-api.jup.ag/v3/swap',
-            {
-              route: d,
-              userPublicKey: provider.wallet.publicKey.toBase58(),
-            }
-          )
-
-          if (!transactionInstructions) {
-            transactionInstructions = anchor.web3.Transaction.from(
-              Buffer.from(transactions.data.swapTransaction, 'base64')
-            ).instructions
-          } else {
-            const tx = anchor.web3.Transaction.from(
-              Buffer.from(transactions.data.swapTransaction, 'base64')
-            )
-            let accountCount = tx.instructions.reduce(
-              (count, ix) => (count += ix.keys.length),
-              0
-            )
-            if (
-              accountCount <
-              transactionInstructions.reduce(
-                (count, ix) => (count += ix.keys.length),
-                0
-              )
-            ) {
-              transactionInstructions = tx.instructions
-            }
-          }
-        }
-        const addPriorityFee =
-          anchor.web3.ComputeBudgetProgram.setComputeUnitPrice({
-            microLamports: PRIORITY_SWAP_FEE,
-          })
-        instructions.push(addPriorityFee, ...transactionInstructions)
-      }
-      if (receiverReleaseTokenAccountIx) {
-        instructions.push(receiverReleaseTokenAccountIx)
-      }
-
-      if (instructions.length > 0) {
-        request.instructions = instructions
-      }
-      if (isSol(release.paymentMint)) {
-        const { instructions, signers } = await wrapSol(
-          provider,
-          new anchor.BN(
-            release.price.toNumber() +
-              (release.price.toNumber() * hub.referralFee.toNumber()) /
-                1000000000
-          )
-        )
-        if (!request.instructions) {
-          request.instructions = [...instructions]
-        } else {
-          request.instructions.push(...instructions)
-        }
-        request.signers = signers
-        request.accounts.payerTokenAccount = signers[0].publicKey
-      }
       setReleasePurchaseTransactionPending({
         ...releasePurchaseTransactionPending,
-        [releasePubkey.toBase58()]: false,
+        [releasePubkey]: false,
       })
-      const txid = await program.rpc.releasePurchaseViaHub(
-        release.price,
-        decodeNonEncryptedByteArray(hub.handle),
-        request
-      )
+
       await getConfirmTransaction(txid, provider.connection)
+
       setReleasePurchasePending({
         ...releasePurchasePending,
-        [releasePubkey.toBase58()]: false,
+        [releasePubkey]: false,
       })
+
       getUserBalances()
       await axios.get(
         `${
           process.env.NINA_API_ENDPOINT
         }/accounts/${provider.wallet.publicKey.toBase58()}/collected?txId=${txid}`
       )
-      await getRelease(releasePubkey.toBase58())
-      addReleaseToCollection(releasePubkey.toBase58())
+      await getRelease(releasePubkey)
+      addReleaseToCollection(releasePubkey)
 
       logEvent('release_purchase_via_hub_success', 'engagement', {
-        publicKey: releasePubkey.toBase58(),
-        hub: hubPubkey.toBase58(),
+        publicKey: releasePubkey,
+        hub: hubPubkey,
         wallet: provider.wallet.publicKey.toBase58(),
       })
 
@@ -638,18 +486,18 @@ const releaseContextHelper = ({
       }
     } catch (error) {
       getUserBalances()
-      getRelease(releasePubkey.toBase58())
+      getRelease(releasePubkey)
       setReleasePurchasePending({
         ...releasePurchasePending,
-        [releasePubkey.toBase58()]: false,
+        [releasePubkey]: false,
       })
       setReleasePurchaseTransactionPending({
         ...releasePurchaseTransactionPending,
-        [releasePubkey.toBase58()]: false,
+        [releasePubkey]: false,
       })
       logEvent('release_purchase_via_hub_failure', 'engagement', {
-        publicKey: releasePubkey.toBase58(),
-        hub: hubPubkey.toBase58(),
+        publicKey: releasePubkey,
+        hub: hubPubkey,
         wallet: provider.wallet.publicKey.toBase58(),
       })
       return ninaErrorHandler(error)
@@ -852,10 +700,6 @@ const releaseContextHelper = ({
       ...releasePurchaseTransactionPending,
       [releasePubkey]: true,
     })
-    const program = await ninaClient.useProgram()
-    const release = await program.account.release.fetch(
-      new anchor.web3.PublicKey(releasePubkey)
-    )
 
     setReleasePurchasePending({
       ...releasePurchasePending,
@@ -863,100 +707,17 @@ const releaseContextHelper = ({
     })
 
     try {
-      let [payerTokenAccount] = await findOrCreateAssociatedTokenAccount(
-        provider.connection,
-        provider.wallet.publicKey,
-        provider.wallet.publicKey,
-        anchor.web3.SystemProgram.programId,
-        anchor.web3.SYSVAR_RENT_PUBKEY,
-        release.paymentMint
+      const txid = await releasePurchaseHelper(
+        releasePubkey,
+        provider,
+        ninaClient,
+        usdcBalance
       )
 
-      let [receiverReleaseTokenAccount, receiverReleaseTokenAccountIx] =
-        await findOrCreateAssociatedTokenAccount(
-          provider.connection,
-          provider.wallet.publicKey,
-          provider.wallet.publicKey,
-          anchor.web3.SystemProgram.programId,
-          anchor.web3.SYSVAR_RENT_PUBKEY,
-          release.releaseMint
-        )
-
-      const request = {
-        accounts: {
-          release: new anchor.web3.PublicKey(releasePubkey),
-          releaseSigner: release.releaseSigner,
-          payer: provider.wallet.publicKey,
-          payerTokenAccount,
-          receiver: provider.wallet.publicKey,
-          receiverReleaseTokenAccount,
-          royaltyTokenAccount: release.royaltyTokenAccount,
-          releaseMint: release.releaseMint,
-          tokenProgram: TOKEN_PROGRAM_ID,
-        },
-      }
-      const instructions = []
-      if (
-        !isSol(release.paymentMint) &&
-        usdcBalance <
-          ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc)
-      ) {
-        const solPrice = await getSolPrice()
-        const releaseUiPrice =
-          ninaClient.nativeToUi(release.price.toNumber(), ids.mints.usdc) -
-          usdcBalance
-        const { data } = await axios.get(
-          `https://quote-api.jup.ag/v3/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=${ninaClient.uiToNative(
-            (releaseUiPrice + releaseUiPrice * 0.01) / solPrice,
-            ids.mints.wsol
-          )}&slippageBps=2&onlyDirectRoutes=true`
-        )
-        const transactions = await axios.post(
-          'https://quote-api.jup.ag/v3/swap',
-          {
-            route: data.data[0],
-            userPublicKey: provider.wallet.publicKey.toBase58(),
-          }
-        )
-        const addPriorityFee =
-          anchor.web3.ComputeBudgetProgram.setComputeUnitPrice({
-            microLamports: PRIORITY_SWAP_FEE,
-          })
-        instructions.push(
-          addPriorityFee,
-          ...anchor.web3.Transaction.from(
-            Buffer.from(transactions.data.swapTransaction, 'base64')
-          ).instructions
-        )
-      }
-
-      if (receiverReleaseTokenAccountIx) {
-        instructions.push(receiverReleaseTokenAccountIx)
-      }
-
-      if (instructions.length > 0) {
-        request.instructions = instructions
-      }
-
-      if (isSol(release.paymentMint)) {
-        const { instructions, signers } = await wrapSol(
-          provider,
-          new anchor.BN(release.price)
-        )
-        if (!request.instructions) {
-          request.instructions = [...instructions]
-        } else {
-          request.instructions.push(...instructions)
-        }
-        request.signers = signers
-        request.accounts.payerTokenAccount = signers[0].publicKey
-      }
       setReleasePurchaseTransactionPending({
         ...releasePurchaseTransactionPending,
         [releasePubkey]: false,
       })
-
-      const txid = await program.rpc.releasePurchase(release.price, request)
       await getConfirmTransaction(txid, provider.connection)
 
       setReleasePurchasePending({
@@ -989,6 +750,7 @@ const releaseContextHelper = ({
         ...releasePurchasePending,
         [releasePubkey]: false,
       })
+
       setReleasePurchaseTransactionPending({
         ...releasePurchaseTransactionPending,
         [releasePubkey]: false,

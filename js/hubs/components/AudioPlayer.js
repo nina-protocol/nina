@@ -1,45 +1,25 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  useContext,
-  useMemo,
-  useCallback,
-} from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import { formatDuration } from '@nina-protocol/nina-internal-sdk/esm/utils'
+import AudioPlayer from '@nina-protocol/nina-internal-sdk/esm/AudioPlayer'
 import { styled } from '@mui/material/styles'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Slider from '@mui/material/Slider'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 
-const AudioPlayer = ({ hubPubkey }) => {
-  const router = useRouter()
+const HubAudioPlayer = ({ hubPubkey }) => {
   const [tracks, setTracks] = useState([])
   const { releaseState } = useContext(Release.Context)
   const { hubContentState, filterHubContentForHub, hubState } = useContext(
     Hub.Context
   )
-  const audio = useContext(Audio.Context)
-  const {
-    track,
-    playNext,
-    playPrev,
-    updateTrack,
-    playlist,
-    createPlaylistFromTracksHubs,
-    isPlaying,
-    initialized,
-    setInitialized,
-    audioPlayerRef,
-  } = audio
-  const [duration, setDuration] = useState(0)
-  const audioInitialized = useMemo(() => initialized, [initialized])
+  const { createPlaylistFromTracksHubs, updateTrack } = useContext(
+    Audio.Context
+  )
   const [hubReleases, setHubReleases] = useState(undefined)
   const [hubPosts, setHubPosts] = useState(undefined)
 
@@ -91,256 +71,100 @@ const AudioPlayer = ({ hubPubkey }) => {
     setTracks(trackObject)
   }, [hubReleases, hubPosts])
 
-  const activeTrack = useRef()
-  const intervalRef = useRef()
-  const activeIndexRef = useRef(0)
-  const [playing, setPlaying] = useState(false)
-  const [trackProgress, setTrackProgress] = useState(0.0)
-
-  useEffect(() => {
-    audioPlayerRef.current = document.querySelector('#audio')
-    audioPlayerRef.current.addEventListener('error', (e) => {
-      if (e.target.error.code === e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED) {
-        if (audioPlayerRef.current.src.includes('arweave.net')) {
-          audioPlayerRef.current.src = activeTrack.current.txid.replace(
-            'arweave.net',
-            'ar-io.net'
-          )
-          play()
-        }
-      }
-    })
-
-    const actionHandlers = [
-      ['play', () => play()],
-      ['pause', () => play()],
-      ['previoustrack', () => previous()],
-      ['nexttrack', () => next()],
-    ]
-
-    for (const [action, handler] of actionHandlers) {
-      try {
-        navigator.mediaSession.setActionHandler(action, handler)
-      } catch (error) {
-        console.warn(
-          `The media session action "${action}" is not supported yet.`
-        )
-      }
-    }
-
-    return () => {
-      clearInterval(intervalRef.current)
-    }
-  }, [])
-
   useEffect(() => {
     if (Object.values(tracks).length > 0) {
       const trackValues = Object.values(tracks).sort(
         (a, b) => new Date(b.datetime) - new Date(a.datetime)
       )
       createPlaylistFromTracksHubs(trackValues)
+      updateTrack(trackValues[0].publicKey, false, true)
     }
   }, [tracks])
 
-  useEffect(() => {
-    if (isPlaying && audioInitialized) {
-      play()
-    } else {
-      pause()
-    }
-  }, [isPlaying])
-
-  const hasNext = useMemo(
-    () => activeIndexRef.current + 1 < playlist.length,
-    [activeIndexRef.current, playlist]
-  )
-  const hasPrevious = useMemo(
-    () => activeIndexRef.current > 0,
-    [activeIndexRef.current]
-  )
-
-  useEffect(() => {
-    if (track && audioInitialized) {
-      if (audioPlayerRef.current.src !== track.txid) {
-        activeIndexRef.current = playlist.indexOf(track)
-        activeTrack.current = track
-        audioPlayerRef.current.src = track.txid
-      }
-      if ('mediaSession' in navigator) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: activeTrack.current.title,
-          artist: activeTrack.current.artist,
-          artwork: [
-            {
-              src: activeTrack.current.cover,
-              sizes: '512x512',
-              type: 'image/jpeg',
-            },
-          ],
-        })
-      }
-    }
-    if (audioInitialized && isPlaying) {
-      play()
-    }
-  }, [track, audioInitialized])
-
-  useEffect(() => {
-    if (
-      playlist.length > 0 &&
-      !activeIndexRef.current &&
-      track?.releasePubkey != playlist[0].releasePubkey
-    ) {
-      updateTrack(playlist[0].releasePubkey, false, hubPubkey)
-    }
-  }, [playlist, activeIndexRef.current])
-
-  const startTimer = () => {
-    // Clear any timers already running
-    clearInterval(intervalRef.current)
-    intervalRef.current = setInterval(() => {
-      if (
-        audioPlayerRef.current.currentTime > 0 &&
-        audioPlayerRef.current.currentTime < audioPlayerRef.current.duration &&
-        !audioPlayerRef.current.paused
-      ) {
-        setDuration(audioPlayerRef.current.duration)
-        setTrackProgress(Math.ceil(audioPlayerRef.current.currentTime))
-      } else if (
-        audioPlayerRef.current.currentTime >= audioPlayerRef.current.duration
-      ) {
-        next()
-      }
-    }, [300])
-  }
-
-  const previous = () => {
-    if (hasPrevious) {
-      setTrackProgress(0)
-      activeIndexRef.current = activeIndexRef.current - 1
-      playPrev(true)
-    }
-  }
-
-  const play = () => {
-    if (audioPlayerRef.current.paused) {
-      audioPlayerRef.current.play()
-      setPlaying(true)
-      startTimer()
-    } else {
-      // pause()
-    }
-  }
-
-  const playButtonHandler = () => {
-    if (!initialized) {
-      setInitialized(true)
-    }
-    if (audioPlayerRef.current.paused) {
-      if (track) {
-        updateTrack(track.releasePubkey, true, hubPubkey)
-      }
-    } else {
-      pause()
-    }
-  }
-
-  const pause = () => {
-    audioPlayerRef.current.pause()
-    setPlaying(false)
-    clearInterval(intervalRef.current)
-    if (track) {
-      updateTrack(track.releasePubkey, false, hubPubkey)
-    }
-  }
-
-  const next = () => {
-    if (hasNext) {
-      setTrackProgress(0)
-      activeIndexRef.current = activeIndexRef.current + 1
-      playNext(true)
-    } else {
-      // This means we've reached the end of the playlist
-      setTrackProgress(0)
-      pause()
-    }
-  }
-
-  const seek = (newValue) => {
-    if (audioPlayerRef.current) {
-      setTrackProgress(newValue)
-      audioPlayerRef.current.currentTime = newValue
-    }
-  }
-
   return (
-    <Player>
-      {track && (
-        <>
-          <Controls>
-            <Button onClick={() => previous()} disabled={!hasPrevious}>
-              Previous
-            </Button>
-            <span>{` | `}</span>
-            <Button
-              onClickCapture={() => playButtonHandler()}
-              disabled={!track}
+    <AudioPlayer>
+      {({
+        track,
+        playButtonHandler,
+        previous,
+        next,
+        seek,
+        trackProgress,
+        duration,
+        hasNext,
+        hasPrevious,
+        playing,
+      }) => (
+        <Player>
+          {track && (
+            <>
+              <Controls>
+                <Button onClick={() => previous()} disabled={!hasPrevious}>
+                  Previous
+                </Button>
+                <span>{` | `}</span>
+                <Button
+                  onClickCapture={() => playButtonHandler()}
+                  disabled={!track}
+                >
+                  {playing ? 'Pause' : 'Play'}
+                </Button>
+                <span>{` | `}</span>
+                <Button onClick={() => next()} disabled={!hasNext}>
+                  Next
+                </Button>
+                {track && (
+                  <Box>
+                    <Typography>
+                      Now Playing:{' '}
+                      <Link
+                        href={`/${track.hubHandle}/${
+                          track.hubPostPubkey ? 'posts' : 'releases'
+                        }/${
+                          track.hubPostPubkey
+                            ? track.hubPostPubkey
+                            : track.hubReleaseId
+                        }`}
+                      >
+                        {`${track.artist} - ${track.title}`}
+                      </Link>
+                    </Typography>
+                    <Typography>{`${formatDuration(
+                      trackProgress
+                    )} / ${formatDuration(
+                      track?.duration || duration
+                    )}`}</Typography>
+                  </Box>
+                )}
+              </Controls>
+
+              <ProgressContainer>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Slider
+                    value={track ? trackProgress : 0}
+                    onChange={(e, newValue) => seek(newValue)}
+                    aria-labelledby="continuous-slider"
+                    min={0}
+                    max={track?.duration || duration}
+                  />
+                </Box>
+              </ProgressContainer>
+            </>
+          )}
+
+          <Typography sx={{ pb: '5px', whiteSpace: 'nowrap' }}>
+            <Link href={`/all`}>Hubs.</Link>{' '}
+            <a
+              href={`https://ninaprotocol.com/`}
+              target="_blank"
+              rel="noreferrer"
             >
-              {playing ? 'Pause' : 'Play'}
-            </Button>
-            <span>{` | `}</span>
-            <Button onClick={() => next()} disabled={!hasNext}>
-              Next
-            </Button>
-            {track && (
-              <Box>
-                <Typography>
-                  Now Playing:{' '}
-                  <Link
-                    href={`/${track.hubHandle}/${
-                      track.hubPostPubkey ? 'posts' : 'releases'
-                    }/${
-                      track.hubPostPubkey
-                        ? track.hubPostPubkey
-                        : track.hubReleaseId
-                    }`}
-                  >
-                    {`${track.artist} - ${track.title}`}
-                  </Link>
-                </Typography>
-                <Typography>{`${formatDuration(
-                  trackProgress
-                )} / ${formatDuration(
-                  track?.duration || duration
-                )}`}</Typography>
-              </Box>
-            )}
-          </Controls>
-
-          <ProgressContainer>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Slider
-                value={track ? trackProgress : 0}
-                onChange={(e, newValue) => seek(newValue)}
-                aria-labelledby="continuous-slider"
-                min={0}
-                max={track?.duration || duration}
-              />
-            </Box>
-          </ProgressContainer>
-        </>
+              Powered by Nina.
+            </a>
+          </Typography>
+        </Player>
       )}
-
-      <audio id="audio" style={{ width: '100%' }}>
-        <source type="audio/mp3" />
-      </audio>
-      <Typography sx={{ pb: '5px', whiteSpace: 'nowrap' }}>
-        <Link href={`/all`}>Hubs.</Link>{' '}
-        <a href={`https://ninaprotocol.com/`} target="_blank" rel="noreferrer">
-          Powered by Nina.
-        </a>
-      </Typography>
-    </Player>
+    </AudioPlayer>
   )
 }
 
@@ -426,4 +250,4 @@ const ProgressContainer = styled(Box)(({ theme }) => ({
   },
 }))
 
-export default AudioPlayer
+export default HubAudioPlayer
