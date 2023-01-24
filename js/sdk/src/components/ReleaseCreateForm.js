@@ -7,15 +7,16 @@ import Slider from '@mui/material/Slider'
 import Box from '@mui/material/Box'
 import Fade from '@mui/material/Fade'
 import { formatPlaceholder } from '@nina-protocol/nina-internal-sdk/esm/utils'
-import dynamic from 'next/dynamic'
+// import dynamic from 'next/dynamic'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormControl from '@mui/material/FormControl'
 import FormLabel from '@mui/material/FormLabel'
-const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
+// const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
 
-const ReleaseCreateForm = ({
+const ReleaseCreateForm = (
+    {
   field,
   form,
   values,
@@ -23,11 +24,14 @@ const ReleaseCreateForm = ({
   errors,
   setFieldValue,
   touched,
-}) => {
+//   disabled,
+}
+) => {
   const [isOpen, setIsOpen] = useState(false)
-  const editionRef = useRef(isOpen)
   const [inputValue, setInputValue] = useState(undefined)
+  const editionRef = useRef(isOpen)
   const infinityUnicode = '\u221e'
+
   useEffect(() => {
     if (onChange) {
       onChange(values)
@@ -36,9 +40,10 @@ const ReleaseCreateForm = ({
 
   useEffect(() => {
     if (isOpen) {
+      const infin = '\u221e'
       setFieldValue('isOpen', true)
-      setInputValue(infinityUnicode)
-      setFieldValue('amount', infinityUnicode)
+      setInputValue(infin)
+      setFieldValue('amount', infin)
     }
     if (!isOpen) {
       setFieldValue('isOpen', false)
@@ -260,7 +265,7 @@ const ReleaseCreateForm = ({
             </Fade>
 
             <Field name="description">
-              {(props) => (
+              {/* {(props) => (
                 <Box sx={{ borderBottom: '1px solid grey', height: '14vh' }}>
                   <QuillEditor
                     formikProps={props}
@@ -268,7 +273,7 @@ const ReleaseCreateForm = ({
                     update={false}
                   />
                 </Box>
-              )}
+              )} */}
             </Field>
           </Box>
         </Box>
@@ -347,3 +352,5 @@ export default withFormik({
     }
   },
 })(ReleaseCreateForm)
+
+// export default {ReleaseCreateForm}

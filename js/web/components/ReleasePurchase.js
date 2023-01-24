@@ -308,10 +308,14 @@ const ReleasePurchase = (props) => {
     <Box>
       <AmountRemaining variant="body2" align="left">
         {release.editionType === 'open' ? (
-          <span>
+          <Typography
+            variant="body2"
+            align="left"
+            sx={{ color: '#black !important' }}
+          >
             Open Edition:{' '}
             {`${collectors?.length ? collectors?.length : 0} Sold`}
-          </span>
+          </Typography>
         ) : (
           <>
             Remaining: <span>{release.remainingSupply} </span> /{' '}

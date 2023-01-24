@@ -30,6 +30,7 @@ const ReleasePurchase = (props) => {
     releasePurchasePending,
     releasePurchaseTransactionPending,
     releaseState,
+    getCollectorsForRelease,
   } = useContext(Release.Context)
   const { hubState } = useContext(Hub.Context)
   const {
@@ -45,6 +46,7 @@ const ReleasePurchase = (props) => {
   const [downloadButtonString, setDownloadButtonString] = useState('Download')
   const [userIsRecipient, setUserIsRecipient] = useState(false)
   const [publishedHub, setPublishedHub] = useState()
+  const [collectors, setCollectors] = useState()
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
     [releasePubkey, releasePurchaseTransactionPending]
@@ -87,6 +89,33 @@ const ReleasePurchase = (props) => {
       })
     }
   }, [release?.royaltyRecipients, wallet?.connected, wallet?.publicKey])
+
+  useEffect(() => {
+    handleGetCollectorsForRelease(releasePubkey)
+  }, [collection])
+
+  const handleGetCollectorsForRelease = async (releasePubkey) => {
+    const collectorsList = await getCollectorsForRelease(releasePubkey)
+
+    if (wallet?.publicKey) {
+      const walletPublicKey = wallet.publicKey.toBase58()
+      if (
+        collection[releasePubkey] > 0 &&
+        !collectorsList.includes(walletPublicKey)
+      ) {
+        collectorsList.push(walletPublicKey)
+      } else if (
+        collectorsList.includes(walletPublicKey) &&
+        collection[releasePubkey] <= 0
+      ) {
+        const index = collectorsList.indexOf(walletPublicKey)
+        if (index > -1) {
+          collectorsList.splice(index, 1)
+        }
+      }
+    }
+    setCollectors(collectorsList)
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -191,8 +220,17 @@ const ReleasePurchase = (props) => {
   return (
     <ReleasePurchaseWrapper mt={1}>
       <AmountRemaining variant="body2" align="left">
-        Remaining: <span>{release.remainingSupply} </span> /{' '}
-        {release.totalSupply}
+        {release.editionType === 'open' ? (
+          <Typography variant="body2" align="left">
+            Open Edition:{' '}
+            {`${collectors?.length ? collectors?.length : 0} Sold`}
+          </Typography>
+        ) : (
+          <>
+            Remaining: <span>{release.remainingSupply} </span> /{' '}
+            {release.totalSupply}
+          </>
+        )}
       </AmountRemaining>
 
       <Typography variant="body2" align="left" paddingBottom="10px">

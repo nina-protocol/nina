@@ -186,6 +186,12 @@ const ReleaseCreateForm = ({
                     }
                   },
                 }}
+                sx={{
+                  '.MuiInputBase-input': {
+                    fontSize:
+                      inputValue === infinityUnicode ? '22px !important' : '',
+                  },
+                }}
                 disabled={isOpen}
                 {...field}
               />
@@ -274,6 +280,7 @@ const FormRadio = (props) => {
   return (
     <Radio
       disableRipple
+      color="default"
       sx={{
         '&&:hover': {
           backgroundColor: 'transparent',

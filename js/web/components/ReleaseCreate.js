@@ -19,7 +19,8 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useRouter } from 'next/router'
-import ReleaseCreateForm from './ReleaseCreateForm'
+// import ReleaseCreateForm from './ReleaseCreateForm'
+import ReleaseCreateForm from '@nina-protocol/nina-internal-sdk/esm/ReleaseCreateForm'
 import ReleaseCreateConfirm from './ReleaseCreateConfirm'
 import NinaBox from './NinaBox'
 import MediaDropzones from './MediaDropzones'
@@ -36,7 +37,9 @@ import {
 } from '../utils/uploadManager'
 import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
 const BundlrModal = dynamic(() => import('./BundlrModal'))
-
+// const ReleaseCreateForm = dynamic(() =>
+//   import('@nina-protocol/nina-internal-sdk/esm/EmailCapture')
+// )
 const ReleaseCreateSchema = Yup.object().shape({
   artist: Yup.string().required('Artist is Required'),
   title: Yup.string().required('Title is Required'),
@@ -468,6 +471,7 @@ const ReleaseCreate = () => {
               'nina-upload-update-message'
             )}
           />
+         
           <NinaBox columns="350px 400px" gridColumnGap="10px">
             <Box sx={{ width: '100%' }}>
               <MediaDropzones
@@ -483,11 +487,17 @@ const ReleaseCreate = () => {
             </Box>
 
             <CreateFormWrapper>
-              <ReleaseCreateForm
+              {/* <ReleaseCreateForm
                 onChange={handleFormChange}
                 values={formValues.releaseForm}
                 ReleaseCreateSchema={ReleaseCreateSchema}
                 disabled={isPublishing}
+              /> */}
+              <ReleaseCreateForm
+              onChange={handleFormChange}
+              values={formValues.releaseForm}
+              ReleaseCreateSchema={ReleaseCreateSchema}
+              
               />
             </CreateFormWrapper>
 
