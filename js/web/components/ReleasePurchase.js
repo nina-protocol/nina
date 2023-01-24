@@ -18,7 +18,6 @@ import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
-import { encodeBase64 } from 'tweetnacl-util'
 import CollectorModal from './CollectorModal'
 import HubsModal from './HubsModal'
 import Dots from './Dots'
@@ -27,9 +26,8 @@ import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
-import Royalty from './Royalty'
-import CreateGateModal from './CreateGateModal'
-import UnlockGateModal from './UnlockGateModal'
+import CreateGateModal from '@nina-protocol/nina-internal-sdk/esm/CreateGateModal'
+import UnlockGateModal from '@nina-protocol/nina-internal-sdk/esm/UnlockGateModal'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 
 const ReleasePurchase = (props) => {
@@ -58,7 +56,6 @@ const ReleasePurchase = (props) => {
   } = useContext(Exchange.Context)
   const [release, setRelease] = useState(undefined)
   const [gate, setGate] = useState(undefined)
-  // const [file, setFile] = useState(undefined)
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
   const [amountPendingBuys, setAmountPendingBuys] = useState(0)
   const [amountPendingSales, setAmountPendingSales] = useState(0)

@@ -28,9 +28,12 @@ export default [
       Release: 'src/contexts/Release/index.js',
       client: 'src/client.js',
       utils: 'src/utils/index.js',
-      EmailCapture: 'src/components/EmailCapture.js',
-      EmailCaptureForm: 'src/components/EmailCaptureForm.js',
       AudioPlayer: 'src/components/AudioPlayer.js',
+      CreateGateModal: 'src/components/CreateGateModal.js',
+      EmailCapture: 'src/components/EmailCapture.js',
+      Dots: 'src/components/Dots.js',
+      EmailCaptureForm: 'src/components/EmailCaptureForm.js',
+      UnlockGateModal: 'src/components/UnlockGateModal.js',
     },
     output: [
       {

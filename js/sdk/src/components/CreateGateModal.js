@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext, useMemo } from 'react'
-import { styled } from '@mui/material/styles'
+import React, {useState, useEffect, useContext, useMemo} from 'react'
+import {styled} from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
@@ -7,22 +7,22 @@ import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import CloseIcon from '@mui/icons-material/Close'
-import { encodeBase64 } from 'tweetnacl-util'
+import {encodeBase64} from 'tweetnacl-util'
 import axios from 'axios'
 import TextField from '@mui/material/TextField'
 
-import { useWallet } from '@solana/wallet-adapter-react'
-import { useSnackbar } from 'notistack'
+import {useWallet} from '@solana/wallet-adapter-react'
+import {useSnackbar} from 'notistack'
 import Dots from './Dots'
 
-const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
+const CreateGateModal = ({getGate, metadata, releasePubkey}) => {
   const [open, setOpen] = useState(false)
-  const { enqueueSnackbar } = useSnackbar()
+  const {enqueueSnackbar} = useSnackbar()
   const wallet = useWallet()
   const [inProgress, setInProgress] = useState(false)
   const [file, setFile] = useState(undefined)
   const [description, setDescription] = useState(undefined)
-
+   
   const handleClose = () => {
     setOpen(false)
     setFile(undefined)
@@ -48,7 +48,7 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
         release: releasePubkey,
       })
 
-      const { urls, UploadId } = response.data
+      const {urls, UploadId} = response.data
 
       const uploader = axios.create()
       delete uploader.defaults.headers.put['Content-Type']
@@ -107,7 +107,7 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
         color="primary"
         type="submit"
         onClick={() => setOpen(true)}
-        sx={{ height: '55px', width: '100%', mt: 1 }}
+        sx={{height: '55px', width: '100%', mt: 1}}
       >
         <Typography variant="body2">Create a Gate for this Release</Typography>
       </Button>
@@ -127,7 +127,7 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
           <StyledPaper>
             <StyledCloseIcon onClick={() => handleClose()} />
 
-            <Typography variant="h5" sx={{ mb: 1 }}>
+            <Typography variant="h5" sx={{mb: 1}}>
               Select a file or zip to be gated behind:
             </Typography>
             <Typography variant="h5">&apos;{metadata.name}&apos;</Typography>
@@ -136,7 +136,7 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
               id="standard-multiline-static"
               label="Description"
               variant="standard"
-              sx={{ mt: 2, mb: 2 }}
+              sx={{mt: 2, mb: 2}}
               onChange={(e) => setDescription(e.target.value)}
             />
 
@@ -145,13 +145,13 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
               <input
                 type="file"
                 onChange={(e) => setFile(e.target.files[0])}
-                style={{ display: 'none' }}
+                style={{display: 'none'}}
               />
             </Button>
 
             <Button
               variant="outlined"
-              sx={{ mt: 1 }}
+              sx={{mt: 1}}
               onClick={handleFileUpload}
               disabled={!file || !description}
             >
@@ -164,7 +164,7 @@ const CreateGateModal = ({ getGate, metadata, releasePubkey }) => {
   )
 }
 
-const Root = styled('div')(({ theme }) => ({
+const Root = styled('div')(({theme}) => ({
   display: 'flex',
   alignItems: 'center',
   width: '100%',
@@ -176,7 +176,7 @@ const StyledModal = styled(Modal)(() => ({
   justifyContent: 'center',
 }))
 
-const StyledPaper = styled(Paper)(({ theme }) => ({
+const StyledPaper = styled(Paper)(({theme}) => ({
   backgroundColor: theme.palette.background.paper,
   border: '2px solid #000',
   boxShadow: theme.shadows[5],
@@ -195,7 +195,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   },
 }))
 
-const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
+const StyledCloseIcon = styled(CloseIcon)(({theme}) => ({
   position: 'absolute',
   right: theme.spacing(1),
   top: theme.spacing(2),
