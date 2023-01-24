@@ -21,8 +21,7 @@ const HubAudioPlayer = ({ hubPubkey }) => {
   const { hubContentState, filterHubContentForHub, hubState } = useContext(
     Hub.Context
   )
-  const audio = useContext(Audio.Context)
-  const { createPlaylistFromTracksHubs} = audio
+  const { createPlaylistFromTracksHubs, updateTrack} = useContext(Audio.Context)
   const [hubReleases, setHubReleases] = useState(undefined)
   const [hubPosts, setHubPosts] = useState(undefined)
 
@@ -79,7 +78,9 @@ const HubAudioPlayer = ({ hubPubkey }) => {
       const trackValues = Object.values(tracks).sort(
         (a, b) => new Date(b.datetime) - new Date(a.datetime)
       )
+      console.log('trackValues', trackValues)
       createPlaylistFromTracksHubs(trackValues)
+      updateTrack(trackValues[0].publicKey, false, true)
     }
   }, [tracks])
 
@@ -95,7 +96,7 @@ const HubAudioPlayer = ({ hubPubkey }) => {
         duration,
         hasNext,
         hasPrevious,
-        isPlaying,
+        playing,
       }) => (
         <Player>
           {track && (
@@ -109,7 +110,7 @@ const HubAudioPlayer = ({ hubPubkey }) => {
                   onClickCapture={() => playButtonHandler()}
                   disabled={!track}
                 >
-                  {isPlaying ? 'Pause' : 'Play'}
+                  {playing ? 'Pause' : 'Play'}
                 </Button>
                 <span>{` | `}</span>
                 <Button onClick={() => next()} disabled={!hasNext}>

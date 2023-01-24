@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useRef } from 'react'
+import React, { createContext, useState, useContext, useRef, useEffect } from 'react'
 import Nina from '../Nina'
 import Release from '../Release'
 import { logEvent } from '../../utils/event'
@@ -13,28 +13,27 @@ const AudioPlayerContextProvider = ({ children }) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [initialized, setInitialized] = useState(false)
   const audioPlayerRef = useRef()
-  const activeIndexRef = useRef(0)
+  const activeIndexRef = useRef()
 
   const playPrev = (shouldPlay = false) => {
-    if (playlist[currentIndex() - 1]) {
-      setTrack(playlist[currentIndex() - 1])
+    if (playlist[activeIndexRef.current - 1]) {
+      setTrack(playlist[activeIndexRef.current - 1])
       setIsPlaying(shouldPlay)
     }
   }
 
   const playNext = (shouldPlay = false) => {
-    if (playlist[currentIndex() + 1]) {
-      activeIndexRef.current = playlist.indexOf(track)
-      setTrack(playlist[currentIndex() + 1])
+    if (playlist[activeIndexRef.current + 1]) {
+      setTrack(playlist[activeIndexRef.current + 1])
       setIsPlaying(shouldPlay)
     } else {
       setIsPlaying(false)
     }
   }
 
-  const currentIndex = () => {
-    return activeIndexRef.current || 0
-  }
+  useEffect(() => {
+    activeIndexRef.current = playlist.indexOf(track) || 0
+  }, [track])
 
   const {
     reorderPlaylist,
@@ -53,7 +52,7 @@ const AudioPlayerContextProvider = ({ children }) => {
     shouldRemainInCollectionAfterSale,
     setIsPlaying,
     setTrack,
-    currentIndex,
+    activeIndexRef,
     track,
     setInitialized,
   })
@@ -77,7 +76,7 @@ const AudioPlayerContextProvider = ({ children }) => {
       updatedPlaylist.push(item)
       setPlaylist(updatedPlaylist)
       setTrack(item)
-    } else if (existingTrack) {
+    } else {
       setTrack(existingTrack)
     }
     setIsPlaying(shouldPlay)
@@ -111,7 +110,6 @@ const AudioPlayerContextProvider = ({ children }) => {
         removeTrackFromQueue,
         isPlaying,
         setIsPlaying,
-        currentIndex,
         resetQueueWithPlaylist,
         createPlaylistFromTracks,
         createPlaylistFromTracksHubs,
@@ -214,7 +212,9 @@ const audioPlayerContextHelper = ({
         }
       }
     })
-    setPlaylist([...playlist, ...playlistEntries])
+    console.log('tracks', tracks)
+    console.log('playlistEntries', playlistEntries, playlist)
+    setPlaylist(prevState => [...prevState, ...playlistEntries])
   }
 
   const addTrackToQueue = (releasePubkey) => {

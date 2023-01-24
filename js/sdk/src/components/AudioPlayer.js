@@ -40,23 +40,14 @@ const AudioPlayer = ({ hubPubkey=undefined, children }) => {
         }
       }
     })
-
-    const actionHandlers = [
-      ['play', play],
-      ['pause', pause],
-      ['nexttrack', () => next()],
-    ]
-
-    for (const [action, handler] of actionHandlers) {
-      try {
-        navigator.mediaSession.setActionHandler(action, handler)
-      } catch (error) {
-        console.warn(
-          `The media session action "${action}" is not supported yet.`
-        )
-      }
-    }
-
+    audioPlayerRef.current.addEventListener('play', function() {
+      navigator.mediaSession.playbackState = 'playing';
+    });
+    
+    audioPlayerRef.current.addEventListener('pause', function() {
+      navigator.mediaSession.playbackState = 'paused';
+    });
+    
     return () => {
       clearInterval(intervalRef.current)
     }
@@ -81,19 +72,7 @@ const AudioPlayer = ({ hubPubkey=undefined, children }) => {
 
   useEffect(() => {
     if (track && audioInitialized) {
-      if ('mediaSession' in navigator) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: track.title,
-          artist: track.artist,
-          artwork: [
-            {
-              src: track.cover,
-              sizes: '512x512',
-              type: 'image/jpeg',
-            },
-          ],
-        })
-      }
+      updateMediaSession()
       if (audioPlayerRef.current.src !== track.txid) {
         activeTrack.current = track
         audioPlayerRef.current.src = track.txid
@@ -131,6 +110,7 @@ const AudioPlayer = ({ hubPubkey=undefined, children }) => {
       ) {
         setDuration(audioPlayerRef.current.duration)
         setTrackProgress(Math.ceil(audioPlayerRef.current.currentTime))
+        updatePositionState()
       } else if (audioPlayerRef.current.currentTime >= audioPlayerRef.current.duration) {
         next()
       }
@@ -140,13 +120,11 @@ const AudioPlayer = ({ hubPubkey=undefined, children }) => {
   const previous = () => {
     if (hasPrevious) {
       setTrackProgress(0)
-      // activeIndexRef.current = activeIndexRef.current - 1
       playPrev(true)
     }
   }
 
   const play = () => {
-    console.log('play called')
     if (audioPlayerRef.current.paused) {
       if (audioPlayerRef.current.src) {
         audioPlayerRef.current.play()
@@ -157,7 +135,6 @@ const AudioPlayer = ({ hubPubkey=undefined, children }) => {
   }
 
   const pause = () => {
-    console.log('pause')
     audioPlayerRef.current.pause()
     setPlaying(false)
     clearInterval(intervalRef.current)
@@ -167,10 +144,8 @@ const AudioPlayer = ({ hubPubkey=undefined, children }) => {
   }
 
   const next = () => {
-    console.log('next', activeIndexRef)
     if (hasNext) {
       setTrackProgress(0)
-      // activeIndexRef.current = activeIndexRef.current + 1
       playNext(true)
     } else {
       // This means we've reached the end of the playlist
@@ -199,6 +174,49 @@ const AudioPlayer = ({ hubPubkey=undefined, children }) => {
     }
   }
 
+  const updateMediaSession = () => {
+    const actionHandlers = [
+      ['play', play],
+      ['pause', pause],
+      ['nexttrack', next],
+      ['previoustrack', previous],
+    ]
+
+    for (const [action, handler] of actionHandlers) {
+      try {
+        navigator.mediaSession.setActionHandler(action, handler)
+      } catch (error) {
+        console.warn(
+          `The media session action "${action}" is not supported yet.`
+        )
+      }
+    }
+
+    if (track && 'mediaSession' in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: track.title,
+        artist: track.artist,
+        artwork: [
+          {
+            src: track.cover,
+            sizes: '512x512',
+            type: 'image/jpeg',
+          },
+        ],
+      })
+    }
+  }
+
+  function updatePositionState() {
+    if ('setPositionState' in navigator.mediaSession) {
+      navigator.mediaSession.setPositionState({
+        duration: audioPlayerRef.current.duration,
+        playbackRate: audioPlayerRef.current.playbackRate,
+        position: audioPlayerRef.current.currentTime
+      });
+    }
+  }
+  
   return (
     <div>
       <audio id="audio" style={{ width: '100%' }} preload="none">
