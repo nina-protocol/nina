@@ -30,6 +30,9 @@ const CreateGateModal = ({ gate, releasePubkey, amountHeld }) => {
     setOpen(false)
   }
 
+
+  console.log('gate :>> ', gate);
+
   const handleUnlockGate = async () => {
     try {
       const message = new TextEncoder().encode(releasePubkey)
@@ -105,6 +108,14 @@ const CreateGateModal = ({ gate, releasePubkey, amountHeld }) => {
               <>
                 <Typography variant="h5" sx={{ mb: 2 }}>
                   You are downloading &apos;{gate.fileName}&apos;
+                </Typography>
+
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                 Description:
+                </Typography>
+
+                <Typography variant="body1" sx={{ mb: 2 }}>
+                  {gate.description}
                 </Typography>
 
                 <Button
