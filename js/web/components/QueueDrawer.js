@@ -8,21 +8,21 @@ import Typography from '@mui/material/Typography'
 import QueueList from './QueueList'
 
 const QueueDrawer = (props) => {
-  const { track, playlist, currentIndex } = useContext(Audio.Context)
+  const { track, playlist, activeIndexRef } = useContext(Audio.Context)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [nextInfo, setNextInfo] = useState()
 
   useEffect(() => {
     if (playlist.length > 0) {
-      let index = currentIndex()
+      let index = activeIndexRef.current
       if (index === undefined) {
         setNextInfo(playlist[1])
       } else {
         setNextInfo(playlist[index + 1])
       }
     }
-  }, [track, playlist])
+  }, [track, playlist, activeIndexRef.current])
 
   const toggleDrawer = (open) => (event) => {
     if (

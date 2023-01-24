@@ -41,7 +41,7 @@
     ],
     "react/destructuring-assignment": 2,
     "no-console": [
-      1,
+      2,
       {
         "allow": ["warn", "error"]
       }

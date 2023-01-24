@@ -34,8 +34,9 @@ const AddToHubModal = dynamic(() => import('./AddToHubModal'))
 const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const wallet = useWallet()
 
-  const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } =
-    useContext(Audio.Context)
+  const { updateTrack, track, isPlaying, audioPlayerRef } = useContext(
+    Audio.Context
+  )
   const { releaseState, getRelease } = useContext(Release.Context)
   const { getHub, hubState, getHubsForUser, filterHubsForUser } = useContext(
     Hub.Context
@@ -159,7 +160,6 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                   sx={{ height: '22px', width: '28px', m: 0, paddingLeft: 0 }}
                   onClickCapture={(e) => {
                     e.stopPropagation()
-                    setInitialized(true)
                     if (!audioPlayerRef.current.src) {
                       audioPlayerRef.current.load()
                     }

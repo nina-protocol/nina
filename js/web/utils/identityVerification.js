@@ -433,7 +433,7 @@ const verifyEthereum = async (
     })
     return true
   } catch (error) {
-    console.log('error: ', error)
+    console.warn('error: ', error)
     logEvent('connection_eth_failure', 'engagement', {
       ethAddress,
       wallet: provider.wallet.publicKey.toBase58(),
@@ -499,7 +499,7 @@ const verifySoundcloud = async (
 
     return true
   } catch (error) {
-    console.log('error: ', error)
+    console.warn('error: ', error)
     logEvent('connection_sc_failure', 'engagement', {
       soundcloudHandle,
       wallet: provider.wallet.publicKey.toBase58(),
@@ -565,7 +565,7 @@ const verifyTwitter = async (
 
     return true
   } catch (error) {
-    console.log('error: ', error)
+    console.warn('error: ', error)
     logEvent('connection_tw_failure', 'engagement', {
       twitterHandle,
       wallet: provider.wallet.publicKey.toBase58(),
@@ -613,7 +613,6 @@ const deleteTwitterVerification = async (
         publicKey
       ),
     ]
-    console.log('instructinos: ', instructions)
     // Build and Sign Transaction
     const tx = new anchor.web3.Transaction({
       recentBlockhash: (await provider.connection.getLatestBlockhash())
@@ -632,7 +631,7 @@ const deleteTwitterVerification = async (
 
     return true
   } catch (error) {
-    console.log('error: ', error)
+    console.warn('error: ', error)
 
     return false
   }
@@ -676,7 +675,6 @@ const deleteEthereumVerification = async (
         publicKey
       ),
     ]
-    console.log('instructinos: ', instructions)
     // Build and Sign Transaction
     const tx = new anchor.web3.Transaction({
       recentBlockhash: (await provider.connection.getLatestBlockhash())
@@ -695,8 +693,7 @@ const deleteEthereumVerification = async (
 
     return true
   } catch (error) {
-    console.log('error: ', error)
-
+    console.warn('error: ', error)
     return false
   }
 }
@@ -761,7 +758,7 @@ const verifyInstagram = async (
 
     return true
   } catch (error) {
-    console.log('error: ', error)
+    console.warn('error: ', error)
     logEvent('connection_ig_failure', 'engagement', {
       instagramHandle,
       wallet: provider.wallet.publicKey.toBase58(),

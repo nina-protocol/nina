@@ -9,3 +9,4 @@ export { default as Release } from './contexts/Release'
 
 export { default as EmailCapture } from './components/EmailCapture'
 export { default as EmailCaptureForm } from './components/EmailCaptureForm'
+export { default as AudioPlayer } from './components/AudioPlayer'
