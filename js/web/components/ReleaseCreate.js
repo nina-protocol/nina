@@ -37,9 +37,6 @@ import {
 } from '../utils/uploadManager'
 import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
 const BundlrModal = dynamic(() => import('./BundlrModal'))
-// const ReleaseCreateForm = dynamic(() =>
-//   import('@nina-protocol/nina-internal-sdk/esm/EmailCapture')
-// )
 const ReleaseCreateSchema = Yup.object().shape({
   artist: Yup.string().required('Artist is Required'),
   title: Yup.string().required('Title is Required'),
@@ -490,12 +487,6 @@ const ReleaseCreate = () => {
             </Box>
 
             <CreateFormWrapper>
-              {/* <ReleaseCreateForm
-                onChange={handleFormChange}
-                values={formValues.releaseForm}
-                ReleaseCreateSchema={ReleaseCreateSchema}
-                disabled={isPublishing}
-              /> */}
               <ReleaseCreateForm
               onChange={handleFormChange}
               values={formValues.releaseForm}

@@ -1,8 +1,5 @@
 import React, {
   useEffect,
-  useState,
-  createElement,
-  Fragment,
   useRef,
   useMemo,
 } from 'react'
@@ -24,10 +21,7 @@ import Box from '@mui/material/Box'
 
 const { Quill } = ReactQuill
 
-// import 'quill/dist/quill.snow.css'
-// import 'quill/dist/quill.bubble.css'
-
-const QuillEditor = ({ formikProps, type, update }) => {
+const QuillEditor = ({ formikProps, type }) => {
   const quillRef = useRef(null)
   const theme = type === 'release' ? 'bubble' : 'snow'
   let toolbarValues
@@ -88,7 +82,7 @@ const QuillEditor = ({ formikProps, type, update }) => {
     }
   }, [Quill])
 
-  const handleChange = (content, delta, source, editor) => {
+  const handleChange = (content) => {
     content = content.replaceAll('<p><br></p>', '<br>')
     formikProps.form.setFieldValue(formikProps.field.name, content)
   }
@@ -112,7 +106,7 @@ const QuillEditor = ({ formikProps, type, update }) => {
   )
 }
 
-const QuillWrapper = styled(Box)(({ theme, type, height }) => ({
+const QuillWrapper = styled(Box)(({ type, height }) => ({
   '& .ql-editor': {
     padding: type === 'release' ? '0px' : '',
     maxHeight: height,
