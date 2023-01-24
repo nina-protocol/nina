@@ -1,3 +1,11 @@
 {
-  "extends": "next"
+  "extends": "next",
+  "rules": {
+    "no-console": [
+      2,
+      {
+        "allow": ["warn", "error"]
+      }
+    ]
+  }
 }

@@ -76,7 +76,6 @@ const HubAudioPlayer = ({ hubPubkey }) => {
       const trackValues = Object.values(tracks).sort(
         (a, b) => new Date(b.datetime) - new Date(a.datetime)
       )
-      console.log('trackValues', trackValues)
       createPlaylistFromTracksHubs(trackValues)
       updateTrack(trackValues[0].publicKey, false, true)
     }

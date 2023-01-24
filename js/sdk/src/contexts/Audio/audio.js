@@ -218,8 +218,6 @@ const audioPlayerContextHelper = ({
         }
       }
     })
-    console.log('tracks', tracks)
-    console.log('playlistEntries', playlistEntries, playlist)
     setPlaylist((prevState) => [...prevState, ...playlistEntries])
   }
 
