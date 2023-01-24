@@ -20,6 +20,7 @@ import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import CollectorModal from './CollectorModal'
 import HubsModal from './HubsModal'
+import Royalty from './Royalty'
 import Dots from './Dots'
 import { unified } from 'unified'
 import rehypeParse from 'rehype-parse'
@@ -40,6 +41,7 @@ const ReleasePurchase = (props) => {
     releasePurchaseTransactionPending,
     releaseState,
     getRelease,
+    fetchGatesForRelease,
   } = useContext(Release.Context)
   const {
     getAmountHeld,
@@ -74,12 +76,8 @@ const ReleasePurchase = (props) => {
     [releasePubkey, releasePurchasePending]
   )
 
-  const getGate = async () => {
-    const { gates } = (
-      await axios.get(
-        `${process.env.NINA_GATE_URL}/releases/${releasePubkey}/gates`
-      )
-    ).data
+  const handleFetchGates = async () => {
+    const gates = await fetchGatesForRelease(releasePubkey)
     if (gates.length > 0) {
       setGate(gates[0])
     }
@@ -87,7 +85,7 @@ const ReleasePurchase = (props) => {
 
   useEffect(() => {
     getRelease(releasePubkey)
-    getGate()
+    handleFetchGates(releasePubkey)
     // const hubForRelease = async (releasePubkey) => {
     //   const result = await getPublishedHubForRelease(releasePubkey)
     //   setPublishedHub(result?.hub)
@@ -346,9 +344,6 @@ const ReleasePurchase = (props) => {
         </Typography>
       )}
       <StyledDescription align="left">{description}</StyledDescription>
-      {/* {gate && (
-        <UnlockGateModal gate={gate} releasePubkey={releasePubkey} amountHeld={amountHeld} />
-      )} */}
       <Box mt={1}>
         <form onSubmit={handleSubmit}>
           <Button variant="outlined" type="submit" fullWidth>
@@ -371,16 +366,16 @@ const ReleasePurchase = (props) => {
         <>
           <CreateGateModal
             releasePubkey={releasePubkey}
-            getGate={getGate}
+            handleFetchGates={handleFetchGates}
             metadata={metadata}
           />
         </>
       )}
 
-      {/* {userIsRecipient && (
+      {userIsRecipient && (
         <Royalty releasePubkey={releasePubkey} release={release} />
-      )} */}
-      {/* {amountHeld > 0 && (
+      )}
+      {amountHeld > 0 && (
         <Button
           variant="outlined"
           fullWidth
@@ -403,7 +398,7 @@ const ReleasePurchase = (props) => {
             )}
           </Typography>
         </Button>
-      )} */}
+      )}
     </Box>
   )
 }
