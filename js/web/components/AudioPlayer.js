@@ -37,7 +37,7 @@ const WebAudioPlayer = () => {
         duration,
         hasNext,
         hasPrevious,
-        isPlaying,
+        playing,
         playlist
       }) => (
         <StyledAudioPlayer>
@@ -70,7 +70,7 @@ const WebAudioPlayer = () => {
               disableFocusRipple={true}
               disableRipple={true}
             >
-              {isPlaying ? (
+              {playing ? (
                 <PauseIcon
                   onClickCapture={() => playButtonHandler()}
                   sx={iconStyle}

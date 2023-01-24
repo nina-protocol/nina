@@ -13,6 +13,7 @@ const AudioPlayerContextProvider = ({ children }) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [initialized, setInitialized] = useState(false)
   const audioPlayerRef = useRef()
+  const activeIndexRef = useRef(0)
 
   const playPrev = (shouldPlay = false) => {
     if (playlist[currentIndex() - 1]) {
@@ -23,6 +24,7 @@ const AudioPlayerContextProvider = ({ children }) => {
 
   const playNext = (shouldPlay = false) => {
     if (playlist[currentIndex() + 1]) {
+      activeIndexRef.current = playlist.indexOf(track)
       setTrack(playlist[currentIndex() + 1])
       setIsPlaying(shouldPlay)
     } else {
@@ -31,18 +33,7 @@ const AudioPlayerContextProvider = ({ children }) => {
   }
 
   const currentIndex = () => {
-    let index = undefined
-    if (playlist.length > 0) {
-      playlist.forEach((item, i) => {
-        if (item.releasePubkey === track?.releasePubkey) {
-          index = i
-          return
-        }
-      })
-    } else {
-      index = 0
-    }
-    return index
+    return activeIndexRef.current || 0
   }
 
   const {
@@ -127,6 +118,7 @@ const AudioPlayerContextProvider = ({ children }) => {
         initialized,
         setInitialized,
         audioPlayerRef,
+        activeIndexRef,
       }}
     >
       {children}

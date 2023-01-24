@@ -16,11 +16,11 @@ const AudioPlayer = ({ hubPubkey=undefined, children }) => {
     initialized,
     setInitialized,
     audioPlayerRef,
+    activeIndexRef
   } = audio
 
   const activeTrack = useRef()
   const intervalRef = useRef()
-  const activeIndexRef = useRef(0)
   const [playing, setPlaying] = useState(false)
   const [trackProgress, setTrackProgress] = useState(0.0)
   const [duration, setDuration] = useState(0)
@@ -42,9 +42,8 @@ const AudioPlayer = ({ hubPubkey=undefined, children }) => {
     })
 
     const actionHandlers = [
-      ['play', () => play()],
-      ['pause', () => pause()],
-      ['previoustrack', () => previous()],
+      ['play', play],
+      ['pause', pause],
       ['nexttrack', () => next()],
     ]
 
@@ -82,23 +81,22 @@ const AudioPlayer = ({ hubPubkey=undefined, children }) => {
 
   useEffect(() => {
     if (track && audioInitialized) {
-      if (audioPlayerRef.current.src !== track.txid) {
-        activeTrack.current = track
-        audioPlayerRef.current.src = track.txid
-        activeIndexRef.current = playlist.indexOf(track)
-      }
       if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
-          title: activeTrack.current.title,
-          artist: activeTrack.current.artist,
+          title: track.title,
+          artist: track.artist,
           artwork: [
             {
-              src: activeTrack.current.cover,
+              src: track.cover,
               sizes: '512x512',
               type: 'image/jpeg',
             },
           ],
         })
+      }
+      if (audioPlayerRef.current.src !== track.txid) {
+        activeTrack.current = track
+        audioPlayerRef.current.src = track.txid
       }
     }
     if (audioInitialized && isPlaying) {
@@ -142,12 +140,13 @@ const AudioPlayer = ({ hubPubkey=undefined, children }) => {
   const previous = () => {
     if (hasPrevious) {
       setTrackProgress(0)
-      activeIndexRef.current = activeIndexRef.current - 1
+      // activeIndexRef.current = activeIndexRef.current - 1
       playPrev(true)
     }
   }
 
   const play = () => {
+    console.log('play called')
     if (audioPlayerRef.current.paused) {
       if (audioPlayerRef.current.src) {
         audioPlayerRef.current.play()
@@ -158,6 +157,7 @@ const AudioPlayer = ({ hubPubkey=undefined, children }) => {
   }
 
   const pause = () => {
+    console.log('pause')
     audioPlayerRef.current.pause()
     setPlaying(false)
     clearInterval(intervalRef.current)
@@ -167,9 +167,10 @@ const AudioPlayer = ({ hubPubkey=undefined, children }) => {
   }
 
   const next = () => {
+    console.log('next', activeIndexRef)
     if (hasNext) {
       setTrackProgress(0)
-      activeIndexRef.current = activeIndexRef.current + 1
+      // activeIndexRef.current = activeIndexRef.current + 1
       playNext(true)
     } else {
       // This means we've reached the end of the playlist
@@ -215,7 +216,7 @@ const AudioPlayer = ({ hubPubkey=undefined, children }) => {
         playing,
         hasNext,
         hasPrevious,
-        isPlaying,
+        playing,
         playlist
       })}
     </div>
