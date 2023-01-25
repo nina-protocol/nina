@@ -14,9 +14,9 @@ import TextField from '@mui/material/TextField'
 import {useWallet} from '@solana/wallet-adapter-react'
 import {useSnackbar} from 'notistack'
 import Dots from './Dots'
-import release from '../contexts/Release/release'
+// import release from '../contexts/Release/release'
 
-const CreateGateModal = ({handleFetchGates, metadata, releasePubkey}) => {
+const GateCreateModal = ({handleFetchGates, metadata, releasePubkey}) => {
   const [open, setOpen] = useState(false)
   const {enqueueSnackbar} = useSnackbar()
   const wallet = useWallet()
@@ -29,13 +29,8 @@ const CreateGateModal = ({handleFetchGates, metadata, releasePubkey}) => {
     setFile(undefined)
   }
 
-  console.log('releasePubkey :>> ', releasePubkey);
-  console.log('process.env.NINA_GATE_URL :>> ', process.env.NINA_GATE_URL);
-
   const handleFileUpload = async () => {
     setInProgress(true)
-    console.log('releasePubkey :>> ', releasePubkey);
-    console.log('process.env.NINA_GATE_URL :>> ', process.env.NINA_GATE_URL);
     try {
       const FILE_CHUNK_SIZE = 10_000_000
 
@@ -78,8 +73,6 @@ const CreateGateModal = ({handleFetchGates, metadata, releasePubkey}) => {
         PartNumber: index + 1,
       }))
 
-      console.log('description :>> ', description)
-
       const completeResponse = await axios.post(
         `${process.env.NINA_GATE_URL}/gate/finalize`,
         {
@@ -93,7 +86,7 @@ const CreateGateModal = ({handleFetchGates, metadata, releasePubkey}) => {
       )
 
       await handleFetchGates(releasePubkey)
-      console.log('completeResponse: ', completeResponse.data)
+      handleClose()
       enqueueSnackbar('Gate Created', {
         variant: 'info',
       })
@@ -207,4 +200,4 @@ const StyledCloseIcon = styled(CloseIcon)(({theme}) => ({
   top: theme.spacing(2),
 }))
 
-export default CreateGateModal
+export default GateCreateModal

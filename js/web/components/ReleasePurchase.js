@@ -27,8 +27,9 @@ import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
-import CreateGateModal from '@nina-protocol/nina-internal-sdk/esm/CreateGateModal'
-import UnlockGateModal from '@nina-protocol/nina-internal-sdk/esm/UnlockGateModal'
+// import GateCreateModal from '@nina-protocol/nina-internal-sdk/esm/CreateGateModal'
+// import GateUnlockModal from '@nina-protocol/nina-internal-sdk/esm/UnlockGateModal'
+import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 
 const ReleasePurchase = (props) => {
@@ -41,7 +42,6 @@ const ReleasePurchase = (props) => {
     releasePurchaseTransactionPending,
     releaseState,
     getRelease,
-    fetchGatesForRelease,
   } = useContext(Release.Context)
   const {
     getAmountHeld,
@@ -57,7 +57,6 @@ const ReleasePurchase = (props) => {
     getExchangesForRelease,
   } = useContext(Exchange.Context)
   const [release, setRelease] = useState(undefined)
-  const [gate, setGate] = useState(undefined)
   const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
   const [amountPendingBuys, setAmountPendingBuys] = useState(0)
   const [amountPendingSales, setAmountPendingSales] = useState(0)
@@ -75,23 +74,34 @@ const ReleasePurchase = (props) => {
     () => releasePurchasePending[releasePubkey],
     [releasePubkey, releasePurchasePending]
   )
+  const isAuthority = useMemo(
+    () => {
+      if (wallet.connected) {
+        return release?.authority === wallet?.publicKey.toBase58()
+      }
+    },
+    [release, wallet.connected]
+  )
 
-  const handleFetchGates = async () => {
-    const gates = await fetchGatesForRelease(releasePubkey)
-    if (gates.length > 0) {
-      setGate(gates[0])
-    }
-  }
+
+  // const handleFetchGates = async () => {
+  //   const gates = await fetchGatesForRelease(releasePubkey)
+  //   if (gates.length > 0) {
+  //     setGates(gates[0])
+  //   }
+  // }
 
   useEffect(() => {
     getRelease(releasePubkey)
-    handleFetchGates(releasePubkey)
+    // handleFetchGates(releasePubkey)
     // const hubForRelease = async (releasePubkey) => {
     //   const result = await getPublishedHubForRelease(releasePubkey)
     //   setPublishedHub(result?.hub)
     // }
     // hubForRelease(releasePubkey)
   }, [releasePubkey])
+
+
 
   useEffect(() => {
     getExchangesForRelease(releasePubkey)
@@ -355,27 +365,36 @@ const ReleasePurchase = (props) => {
           </Button>
         </form>
       </Box>
-      {gate && (
-        <UnlockGateModal
-          gate={gate}
+
+      <Gates 
+        release={release} 
+        metadata={metadata}
+        releasePubkey={releasePubkey} 
+        isAuthority={isAuthority} 
+        amountHeld={amountHeld}
+      />
+      {/* {gates && (
+        <GateUnlockModal
+          gates={gates}
           releasePubkey={releasePubkey}
           amountHeld={amountHeld}
         />
-      )}
-      {!gate && wallet?.publicKey?.toBase58() === release.authority && (
+      )} */}
+
+      {/* {gates && isAuthority && (
         <>
-          <CreateGateModal
+          <GateManageModal
             releasePubkey={releasePubkey}
             handleFetchGates={handleFetchGates}
             metadata={metadata}
           />
         </>
-      )}
+      )} */}
 
       {userIsRecipient && (
         <Royalty releasePubkey={releasePubkey} release={release} />
       )}
-      {amountHeld > 0 && (
+      {!isAuthority && amountHeld > 0 && (
         <Button
           variant="outlined"
           fullWidth

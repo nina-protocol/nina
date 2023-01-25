@@ -29,11 +29,12 @@ export default [
       client: 'src/client.js',
       utils: 'src/utils/index.js',
       AudioPlayer: 'src/components/AudioPlayer.js',
-      CreateGateModal: 'src/components/CreateGateModal.js',
-      EmailCapture: 'src/components/EmailCapture.js',
       Dots: 'src/components/Dots.js',
+      EmailCapture: 'src/components/EmailCapture.js',
       EmailCaptureForm: 'src/components/EmailCaptureForm.js',
-      UnlockGateModal: 'src/components/UnlockGateModal.js',
+      Gates: 'src/components/Gates.js',
+      // GateCreateModal: 'src/components/GateCreateModal.js',
+      // GateUnlockModal: 'src/components/GateUnlockModal.js',
     },
     output: [
       {

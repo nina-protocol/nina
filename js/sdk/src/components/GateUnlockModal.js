@@ -1,24 +1,24 @@
-import React, { useState, useEffect, useContext, useMemo } from 'react'
-import { styled } from '@mui/material/styles'
+import React, {useState, useEffect, useContext, useMemo} from 'react'
+import {styled} from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import { encodeBase64 } from 'tweetnacl-util'
+import {encodeBase64} from 'tweetnacl-util'
 import axios from 'axios'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
 import LockIcon from '@mui/icons-material/Lock'
 import CloseIcon from '@mui/icons-material/Close'
 
-import { useWallet } from '@solana/wallet-adapter-react'
-import { useSnackbar } from 'notistack'
+import {useWallet} from '@solana/wallet-adapter-react'
+import {useSnackbar} from 'notistack'
 import Dots from './Dots'
 
-const UnlockGateModal = ({ gate, releasePubkey, amountHeld }) => {
+const UnlockGateModal = ({gate, releasePubkey, amountHeld}) => {
   const [open, setOpen] = useState(false)
-  const { enqueueSnackbar } = useSnackbar()
+  const {enqueueSnackbar} = useSnackbar()
   const wallet = useWallet()
 
   const [inProgress, setInProgress] = useState(false)
@@ -35,8 +35,7 @@ const UnlockGateModal = ({ gate, releasePubkey, amountHeld }) => {
       const signature = await wallet.signMessage(message)
       const signatureBase64 = encodeBase64(signature)
       const result = await axios.get(
-        `${process.env.NINA_GATE_URL}/gate/${
-          gate.id
+        `${process.env.NINA_GATE_URL}/gate/${gate.id
         }?message=${encodeURIComponent(
           messageBase64
         )}&publicKey=${encodeURIComponent(
@@ -79,7 +78,7 @@ const UnlockGateModal = ({ gate, releasePubkey, amountHeld }) => {
         color="primary"
         type="submit"
         onClick={() => setOpen(true)}
-        sx={{ height: '55px', width: '100%', mt: 1 }}
+        sx={{height: '55px', width: '100%', mt: 1}}
       >
         {' '}
         {amountHeld > 0 ? <LockOpenIcon /> : <LockIcon />}
@@ -101,21 +100,21 @@ const UnlockGateModal = ({ gate, releasePubkey, amountHeld }) => {
             <StyledCloseIcon onClick={() => handleClose()} />
             {amountHeld > 0 && (
               <>
-                <Typography variant="h5" sx={{ mb: 2 }}>
+                <Typography variant="h5" sx={{mb: 2}}>
                   You are downloading &apos;{gate.fileName}&apos;
                 </Typography>
 
-                <Typography variant="body1" sx={{ mb: 1 }}>
+                <Typography variant="body1" sx={{mb: 1}}>
                   Description:
                 </Typography>
 
-                <Typography variant="body1" sx={{ mb: 2 }}>
+                <Typography variant="body1" sx={{mb: 2}}>
                   {gate.description}
                 </Typography>
 
                 <Button
                   variant="outlined"
-                  sx={{ mt: 1 }}
+                  sx={{mt: 1}}
                   onClick={handleUnlockGate}
                 >
                   {!inProgress ? 'Download' : <Dots size="50px" />}
@@ -125,11 +124,11 @@ const UnlockGateModal = ({ gate, releasePubkey, amountHeld }) => {
 
             {amountHeld === 0 && (
               <>
-                <Typography variant="h5" sx={{ mb: 2 }}>
+                <Typography variant="h5" sx={{mb: 2}}>
                   There is additional content associated with this release that
                   is only available to owners.
                 </Typography>
-                <Typography variant="h5" sx={{ mb: 2 }}>
+                <Typography variant="h5" sx={{mb: 2}}>
                   Purchase this release to unlock the additional content.
                 </Typography>
               </>
@@ -141,7 +140,7 @@ const UnlockGateModal = ({ gate, releasePubkey, amountHeld }) => {
   )
 }
 
-const Root = styled('div')(({ theme }) => ({
+const Root = styled('div')(({theme}) => ({
   display: 'flex',
   alignItems: 'center',
   width: '100%',
@@ -153,7 +152,7 @@ const StyledModal = styled(Modal)(() => ({
   justifyContent: 'center',
 }))
 
-const StyledPaper = styled(Paper)(({ theme }) => ({
+const StyledPaper = styled(Paper)(({theme}) => ({
   backgroundColor: theme.palette.background.paper,
   border: '2px solid #000',
   boxShadow: theme.shadows[5],
@@ -172,7 +171,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   },
 }))
 
-const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
+const StyledCloseIcon = styled(CloseIcon)(({theme}) => ({
   position: 'absolute',
   right: theme.spacing(1),
   top: theme.spacing(1),
