@@ -19,7 +19,8 @@ import Dots from '../components/Dots'
 import Head from 'next/head'
 import NinaSdk from '@nina-protocol/js-sdk'
 import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
-
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 const NinaWrapper = dynamic(() => import('../components/NinaWrapper'))
 const Layout = dynamic(() => import('../components/Layout'))
 

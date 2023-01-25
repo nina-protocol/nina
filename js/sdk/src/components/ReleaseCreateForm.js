@@ -24,7 +24,7 @@ const ReleaseCreateForm = (
   errors,
   setFieldValue,
   touched,
-//   disabled,
+  disabled,
 }
 ) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -79,6 +79,7 @@ const ReleaseCreateForm = (
                 placeholder={
                   errors.artist && touched.artist ? errors.artist : null
                 }
+                disabled={disabled}
                 {...props.field}
               />
             </Box>
@@ -97,6 +98,7 @@ const ReleaseCreateForm = (
                 placeholder={
                   errors.title && touched.title ? errors.title : null
                 }
+                disabled={disabled}
                 {...props.field}
               />
             </Box>
@@ -126,6 +128,7 @@ const ReleaseCreateForm = (
                     setFieldValue('catalogNumber', sanitized)
                   },
                 }}
+                disabled={disabled}
                 {...field}
               />
             </Box>
@@ -155,6 +158,7 @@ const ReleaseCreateForm = (
                 onClick={(event) => handleEditionChange(event)}
                 sx={{ marginLeft: '1px', marginRight: '5px' }}
                 checked={!isOpen}
+                disabled={disabled}
               />
               <FormControlLabel
                 value="unlimited"
@@ -163,6 +167,7 @@ const ReleaseCreateForm = (
                 label="Unlimited"
                 onClick={(event) => handleEditionChange(event)}
                 checked={isOpen}
+                disabled={disabled}
               />
             </RadioGroup>
           </FormControl>
@@ -200,7 +205,7 @@ const ReleaseCreateForm = (
                       inputValue === infinityUnicode ? '22px !important' : '',
                   },
                 }}
-                disabled={isOpen}
+                disabled={isOpen || disabled}
                 {...field}
               />
             </Box>
@@ -222,6 +227,7 @@ const ReleaseCreateForm = (
                     : null
                 }
                 type="number"
+                disabled={disabled}
                 {...field}
               />
             </Box>
@@ -254,6 +260,7 @@ const ReleaseCreateForm = (
               onChange={(event, value) => {
                 setFieldValue('resalePercentage', value)
               }}
+              disabled={disabled}
               {...field}
               {...form}
             />

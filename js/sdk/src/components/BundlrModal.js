@@ -11,11 +11,11 @@ import InputAdornment from '@mui/material/InputAdornment'
 import TextField from '@mui/material/TextField'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Nina from '../contexts/Nina'
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
 
-const BundlrModal = ({ inCreate }) => {
+const BundlrModal = ({ inCreate, displaySmall }) => {
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const {
@@ -28,8 +28,6 @@ const BundlrModal = ({ inCreate }) => {
     solPrice,
     getSolPrice,
     initBundlr,
-    ninaClient,
-    bundlr,
   } = useContext(Nina.Context)
   const [amount, setAmount] = useState(0.05)
   const mbs = useMemo(
@@ -48,12 +46,10 @@ const BundlrModal = ({ inCreate }) => {
   }, [])
 
   useEffect(() => {
-    if (bundlr) {
-      getBundlrPricePerMb()
-      getBundlrBalance()
-      getSolPrice()
-    }
-  }, [bundlr])
+    getBundlrPricePerMb()
+    getBundlrBalance()
+    getSolPrice()
+  }, [getBundlrBalance, getBundlrPricePerMb, getSolPrice])
 
   const handleFund = async (fundAmount) => {
     setInProgress(true)
@@ -64,7 +60,7 @@ const BundlrModal = ({ inCreate }) => {
       })
       setOpen(false)
     } else {
-      enqueueSnackbar(result.msg, {
+      enqueueSnackbar('Account not funded', {
         variant: 'failure',
       })
     }
@@ -94,15 +90,29 @@ const BundlrModal = ({ inCreate }) => {
   }
 
   return (
-    <Root>
-      {!inCreate && (
+    <Root displaySmall={displaySmall}>
+      {!inCreate && displaySmall && (
+        <StyledSmallToggle
+          align={'right'}
+          variant="subtitle1"
+          textTransform={'none'}
+          onClick={() => setOpen(true)}
+        >
+          Manage Upload Account
+        </StyledSmallToggle>
+      )}
+      {!inCreate && !displaySmall && (
         <Button
           variant="contained"
           color="primary"
           type="submit"
           onClick={() => setOpen(true)}
         >
-          <Typography align="left" textTransform={'none'}>
+          <Typography
+            align={'right'}
+            variant="subtitle1"
+            textTransform={'none'}
+          >
             Manage Upload Account
           </Typography>
         </Button>
@@ -116,7 +126,10 @@ const BundlrModal = ({ inCreate }) => {
           onClick={() => setOpen(true)}
           sx={{ height: '54px' }}
         >
-          <Typography align="left" textTransform={'none'}>
+          <Typography
+            align={displaySmall ? 'right' : 'left'}
+            textTransform={'none'}
+          >
             Click here to fund your Upload Account and start publishing
           </Typography>
         </Button>
@@ -223,22 +236,25 @@ const BundlrModal = ({ inCreate }) => {
   )
 }
 
-const PREFIX = 'Royalty'
-
-const classes = {
-  recipientData: `${PREFIX}-recipientData`,
-}
-
-const Root = styled('div')(({ theme }) => ({
+const Root = styled('div')(({ displaySmall }) => ({
   display: 'flex',
-  alignItems: 'center',
-  width: '100%',
+  alignItems: displaySmall ? 'right' : 'center',
+  width: displaySmall ? '' : '100%',
 }))
 
 const StyledModal = styled(Modal)(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+}))
+
+const StyledSmallToggle = styled(Typography)(() => ({
+  cursor: 'pointer',
+  margin: '5px 0',
+  textDecoration: 'underline',
+  '&:hover': {
+    opacity: '50%',
+  },
 }))
 
 const StyledPaper = styled(Paper)(({ theme }) => ({

@@ -6,27 +6,26 @@ import React, {
   useCallback,
 } from 'react'
 import * as Yup from 'yup'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
-import { getMd5FileHash } from '@nina-protocol/nina-internal-sdk/esm/utils'
+import Nina from '../contexts/Nina'
+import Release from '../contexts/Release'
+import Hub from '../contexts/Hub'
+import { getMd5FileHash } from '../utils'
 import { useSnackbar } from 'notistack'
 import { styled } from '@mui/material/styles'
 import Button from '@mui/material/Button'
-import dynamic from 'next/dynamic'
 import LinearProgress from '@mui/material/LinearProgress'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
 import { useWallet } from '@solana/wallet-adapter-react'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import ReleaseCreateForm from '@nina-protocol/nina-internal-sdk/esm/ReleaseCreateForm'
+import Link from 'next/link'
+import ReleaseCreateForm from './ReleaseCreateForm'
 import ReleaseCreateConfirm from './ReleaseCreateConfirm'
 import NinaBox from './NinaBox'
-import MediaDropzones from './MediaDropzones'
-import UploadInfoModal from './UploadInfoModal'
 import Dots from './Dots'
-import Grid from '@mui/material/Grid'
-import Link from 'next/link'
+import MediaDropzones from './MediaDropzones'
 import {
   createUpload,
   updateUpload,
@@ -34,22 +33,23 @@ import {
   UploadType,
   uploadHasItemForType,
 } from '../utils/uploadManager'
-import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
-const BundlrModal = dynamic(() => import('./BundlrModal'))
+const UploadInfoModal = dynamic(() => import('./UploadInfoModal'), {
+  ssr: false,
+})
+const EmailCapture = dynamic(() => import('./EmailCapture'), { ssr: false })
+const BundlrModal = dynamic(() => import('./BundlrModal'), { ssr: false })
+
 const ReleaseCreateSchema = Yup.object().shape({
-  artist: Yup.string().required('Artist is Required'),
-  title: Yup.string().required('Title is Required'),
+  artist: Yup.string().required('Artist is required'),
+  title: Yup.string().required('Title is required'),
   description: Yup.string(),
-  catalogNumber: Yup.string().required('Catalog Number is Required'),
-  amount: Yup.string().required('Edition Size is Required'),
-  retailPrice: Yup.number().required('Price is Required'),
-  resalePercentage: Yup.number().required('Resale Percent Amount is Required'),
+  catalogNumber: Yup.string().required('Catalog Number is required'),
+  editionSize: Yup.number().required('Edition Size is required'),
+  retauilPrice: Yup.number().required('Retail Price is required'),
+  resalePercentage: Yup.number().required('Resale Percentage is required'),
 })
 
-import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
-
-const ReleaseCreate = () => {
+const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const {
@@ -73,19 +73,18 @@ const ReleaseCreate = () => {
     npcAmountHeld,
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
+    getUserBalances,
   } = useContext(Nina.Context)
 
-  const { getHubsForUser, fetchedHubsForUser, filterHubsForUser } = useContext(
-    Hub.Context
-  )
-
+  const { getHubsForUser, fetchedHubsForUser, filterHubsForUser, hubState } =
+    useContext(Hub.Context)
   const [track, setTrack] = useState(undefined)
   const [artwork, setArtwork] = useState()
   const [uploadSize, setUploadSize] = useState()
   const [releasePubkey, setReleasePubkey] = useState(undefined)
-  const [release, setRelease] = useState(undefined)
+  const [, setRelease] = useState(undefined)
   const [buttonText, setButtonText] = useState('Publish Release')
-  const [pending, setPending] = useState(false)
+  const [pending, ] = useState(false)
   const [formIsValid, setFormIsValid] = useState(false)
   const [formValues, setFormValues] = useState({
     releaseForm: {},
@@ -99,14 +98,15 @@ const ReleaseCreate = () => {
   const [trackTx, setTrackTx] = useState()
   const [metadata, setMetadata] = useState()
   const [metadataTx, setMetadataTx] = useState()
-  const [releaseCreated, setReleaseCreated] = useState(false)
+  const [releaseCreated, setReleaseCreated] = useState()
   const [uploadId, setUploadId] = useState()
   const [publishingStepText, setPublishingStepText] = useState()
   const [md5Digest, setMd5Digest] = useState()
   const [profileHubs, setProfileHubs] = useState()
-  const [hubOptions, setHubOptions] = useState()
   const [selectedHub, setSelectedHub] = useState()
   const [processingProgress, setProcessingProgress] = useState()
+
+  const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
 
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
@@ -117,15 +117,57 @@ const ReleaseCreate = () => {
     [bundlrBalance, solPrice]
   )
 
-  const refreshBundlr = () => {
-    getBundlrPricePerMb()
-    getBundlrBalance()
-    getSolPrice()
-  }
+  useEffect(() => {
+    console.log('THIS CAME FROM COMPONENT')
+    refreshBundlr()
+    getUserBalances()
+  }, [])
 
   useEffect(async () => {
+    // check if hub authority is set
     getNpcAmountHeld()
   }, [wallet?.connected])
+
+  useEffect(() => {
+    if (releasePubkey && releaseState.tokenData[releasePubkey]) {
+      setRelease(releaseState.tokenData[releasePubkey])
+    }
+  }, [releaseState.tokenData[releasePubkey]])
+
+  useEffect(() => {
+    if (track && artwork) {
+      const valid = async () => {
+        const isValid = await ReleaseCreateSchema.isValid(
+          formValues.releaseForm,
+          {
+            abortEarly: true,
+          }
+        )
+        setFormIsValid(isValid)
+      }
+      valid()
+    } else {
+      setFormIsValid(false)
+    }
+  }, [formValues, track, artwork])
+
+  useEffect(() => {
+    const trackSize = track ? track.meta.size / 1000000 : 0
+    const artworkSize = artwork ? artwork.meta.size / 1000000 : 0
+    setUploadSize((trackSize + artworkSize).toFixed(2))
+  }, [track, artwork])
+
+  useEffect(() => {
+    if (track) {
+      const handleGetMd5FileHash = async (track) => {
+        const hash = await getMd5FileHash(track.file, (progress) =>
+          setProcessingProgress(progress)
+        )
+        setMd5Digest(hash)
+      }
+      handleGetMd5FileHash(track)
+    }
+  }, [track])
 
   useEffect(() => {
     let publicKey
@@ -135,29 +177,19 @@ const ReleaseCreate = () => {
     }
   }, [wallet?.connected])
 
-  useEffect(() => {
-    if (wallet.connected) {
-      let publicKey = wallet?.publicKey?.toBase58()
-      if (fetchedHubsForUser.has(publicKey)) {
-        const hubs = filterHubsForUser(publicKey)
-        const sortedHubs = hubs?.sort((a, b) => {
-          return a?.data?.displayName?.localeCompare(b?.data?.displayName)
-        })
-        setProfileHubs(sortedHubs)
-        setSelectedHub(sortedHubs[0]?.publicKey)
+    useEffect(() => {
+      if (wallet.connected) {
+        let publicKey = wallet?.publicKey?.toBase58()
+        if (fetchedHubsForUser.has(publicKey)) {
+          const hubs = filterHubsForUser(publicKey)
+          const sortedHubs = hubs?.sort((a, b) => {
+            return a?.data?.displayName?.localeCompare(b?.data?.displayName)
+          })
+          setProfileHubs(sortedHubs)
+          setSelectedHub(sortedHubs[0]?.publicKey)
+        }
       }
-    }
-  }, [fetchedHubsForUser])
-
-  const getUserHubs = async (publicKey) => {
-    try {
-      await getHubsForUser(publicKey)
-    } catch {
-      enqueueSnackbar('Error fetching hubs for user', {
-        variant: 'error',
-      })
-    }
-  }
+    }, [fetchedHubsForUser])
 
   useEffect(() => {
     if (isPublishing) {
@@ -204,12 +236,6 @@ const ReleaseCreate = () => {
     bundlrBalance,
   ])
 
-  useEffect(() => {
-    if (releasePubkey && releaseState.tokenData[releasePubkey]) {
-      setRelease(releaseState.tokenData[releasePubkey])
-    }
-  }, [releaseState.tokenData[releasePubkey]])
-
   const handleFormChange = useCallback(
     async (values) => {
       setFormValues({
@@ -220,44 +246,10 @@ const ReleaseCreate = () => {
     [formValues]
   )
 
-  useEffect(() => {
-    if (track && artwork) {
-      const valid = async () => {
-        const isValid = await ReleaseCreateSchema.isValid(
-          formValues.releaseForm,
-          {
-            abortEarly: true,
-          }
-        )
-        setFormIsValid(isValid)
-      }
-      valid()
-    } else {
-      setFormIsValid(false)
-    }
-  }, [formValues, track, artwork])
-
-  useEffect(() => {
-    const trackSize = track ? track.meta.size / 1000000 : 0
-    const artworkSize = artwork ? artwork.meta.size / 1000000 : 0
-    setUploadSize((trackSize + artworkSize).toFixed(2))
-  }, [track, artwork])
-
-  useEffect(() => {
-    if (track) {
-      const handleGetMd5FileHash = async (track) => {
-        const hash = await getMd5FileHash(track.file, (progress) =>
-          setProcessingProgress(progress)
-        )
-        setMd5Digest(hash)
-      }
-      handleGetMd5FileHash(track)
-    }
-  }, [track])
-
   const handleSubmit = async () => {
     try {
       if (releaseCreated) {
+        // if not in hub
         router.push(
           {
             pathname: `/${releasePubkey.toBase58()}`,
@@ -267,6 +259,13 @@ const ReleaseCreate = () => {
           },
           `/${releasePubkey.toBase58()}`
         )
+
+        // if in hub
+        // router.push({
+        //   pathname: `/${
+        //     hubData.handle
+        //   }/releases/${releaseInfo.hubRelease.toBase58()}`,
+        // })
       } else if (track && artwork && md5Digest) {
         const error = await checkIfHasBalanceToCompleteAction(
           NinaProgramAction.RELEASE_INIT_WITH_CREDIT
@@ -372,6 +371,18 @@ const ReleaseCreate = () => {
                 }
               )
               let result
+
+              // if in hub
+              //    const result = await releaseInitViaHub({
+              //      hubPubkey,
+              //      ...formValues.releaseForm,
+              //      release: info.release,
+              //      releaseBump: info.releaseBump,
+              //      releaseMint: info.releaseMint,
+              //      metadataUri: `https://arweave.net/${metadataResult}`,
+              //    })
+
+              // if not in hub
               if (selectedHub && selectedHub !== '') {
                 result = await releaseInitViaHub({
                   ...formValues.releaseForm,
@@ -388,9 +399,6 @@ const ReleaseCreate = () => {
                   releaseBump: info.releaseBump,
                   releaseMint: info.releaseMint,
                   metadataUri: `https://arweave.net/${metadataResult}`,
-                  release: info.release,
-                  releaseBump: info.releaseBump,
-                  releaseMint: info.releaseMint,
                 })
               }
 
@@ -410,12 +418,20 @@ const ReleaseCreate = () => {
               }
             }
           }
+        } else {
+          console.warn('didnt mean condition')
         }
       }
     } catch (error) {
       console.warn('Release Create handleSubmit error:', error)
       setIsPublishing(false)
     }
+  }
+
+  const refreshBundlr = () => {
+    getBundlrBalance()
+    getBundlrPricePerMb()
+    getSolPrice()
   }
 
   const handleProgress = (progress, isImage) => {
@@ -432,6 +448,16 @@ const ReleaseCreate = () => {
     setSelectedHub(value)
   }
 
+  const getUserHubs = async (publicKey) => {
+    try {
+      await getHubsForUser(publicKey)
+    } catch {
+      enqueueSnackbar('Error fetching hubs for user', {
+        variant: 'error',
+      })
+    }
+  }
+
   return (
     <Grid item md={12}>
       {!wallet.connected && (
@@ -439,7 +465,7 @@ const ReleaseCreate = () => {
           Please connect your wallet to start publishing
         </ConnectMessage>
       )}
-
+      {/* IS NOT IN HUB */}
       {wallet?.connected &&
         npcAmountHeld === 0 &&
         (!profileHubs || profileHubs?.length === 0) && (
@@ -463,6 +489,7 @@ const ReleaseCreate = () => {
             </NpcMessage>
           </Box>
         )}
+      {/* || in hub */}
       {wallet?.connected && (npcAmountHeld >= 1 || profileHubs?.length > 0) && (
         <>
           <UploadInfoModal
@@ -470,7 +497,6 @@ const ReleaseCreate = () => {
               'nina-upload-update-message'
             )}
           />
-         
           <NinaBox columns="350px 400px" gridColumnGap="10px">
             <Box sx={{ width: '100%' }}>
               <MediaDropzones
@@ -484,16 +510,14 @@ const ReleaseCreate = () => {
                 processingProgress={processingProgress}
               />
             </Box>
-
             <CreateFormWrapper>
               <ReleaseCreateForm
-              onChange={handleFormChange}
-              values={formValues.releaseForm}
-              ReleaseCreateSchema={ReleaseCreateSchema}
-              disabled={isPublishing || releaseCreated}
+                onChange={handleFormChange}
+                values={formValues.releaseForm}
+                ReleaseCreateSchema={ReleaseCreateSchema}
+                disabled={isPublishing || releaseCreated}
               />
             </CreateFormWrapper>
-
             <CreateCta>
               {bundlrBalance === 0 ? (
                 <BundlrModal inCreate={true} />
@@ -503,7 +527,7 @@ const ReleaseCreate = () => {
                     fullWidth
                     variant="outlined"
                     color="primary"
-                    onClick={handleSubmit}
+                    onClick={(e) => handleSubmit(e)}
                     disabled={
                       isPublishing ||
                       !formIsValid ||
@@ -513,6 +537,13 @@ const ReleaseCreate = () => {
                       (track?.meta.status === 'uploading' && !releaseCreated) ||
                       (artworkTx && trackTx && metadataTx && !releaseCreated)
                     }
+                    href={`${
+                      releaseCreated
+                        ? `/${
+                            hubData.handle
+                          }/releases/${releaseInfo.hubRelease.toBase58()}`
+                        : `/${releasePubkey.toBase58()}`
+                    }`}
                     sx={{ height: '54px' }}
                   >
                     {isPublishing && !releaseCreated && (
@@ -522,12 +553,30 @@ const ReleaseCreate = () => {
                   </Button>
                 )
               )}
-
+              {!canAddContent && (
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  color="primary"
+                  onClick={(e) => handleSubmit(e)}
+                  disabled={
+                    isPublishing ||
+                    !formIsValid ||
+                    bundlrBalance === 0 ||
+                    mbs < uploadSize ||
+                    artwork?.meta.status === 'uploading' ||
+                    (track?.meta.status === 'uploading' && !releaseCreated)
+                  }
+                  sx={{ height: '54px' }}
+                >
+                  You do not have allowance or permission to create releases.
+                </Button>
+              )}
               {bundlrBalance > 0 && !formValuesConfirmed && (
                 <ReleaseCreateConfirm
                   formValues={formValues}
                   formIsValid={formIsValid && processingProgress === 1}
-                  handleSubmit={handleSubmit}
+                  handleSubmit={(e) => handleSubmit(e)}
                   setFormValuesConfirmed={setFormValuesConfirmed}
                   artwork={artwork}
                   track={track}
@@ -544,7 +593,6 @@ const ReleaseCreate = () => {
                   value={audioProgress || imageProgress}
                 />
               )}
-
               <Box display="flex" justifyContent="space-between">
                 {bundlrBalance > 0 && (
                   <BundlrBalanceInfo variant="subtitle1" align="left">
@@ -598,7 +646,7 @@ const CreateCta = styled(Box)(({ theme }) => ({
   },
 }))
 
-const BundlrBalanceInfo = styled(Typography)(({ theme }) => ({
+const BundlrBalanceInfo = styled(Typography)(() => ({
   whiteSpace: 'nowrap',
   margin: '5px 0',
 }))

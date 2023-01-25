@@ -1,4 +1,4 @@
-import ReleaseCreate from '../components/ReleaseCreate'
+import ReleaseCreate from '@nina-protocol/nina-internal-sdk/esm/ReleaseCreate'
 import Head from 'next/head'
 
 const ReleaseCreatePage = () => {

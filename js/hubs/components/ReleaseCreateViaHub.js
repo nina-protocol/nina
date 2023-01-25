@@ -19,7 +19,7 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useRouter } from 'next/router'
-import ReleaseCreateForm from './ReleaseCreateForm'
+import ReleaseCreateForm from '@nina-protocol/nina-internal-sdk/esm/ReleaseCreateForm'
 import ReleaseCreateConfirm from './ReleaseCreateConfirm'
 import NinaBox from './NinaBox'
 import MediaDropzones from './MediaDropzones'
@@ -44,6 +44,9 @@ const ReleaseCreateSchema = Yup.object().shape({
   retailPrice: Yup.number().required('Sale Price is Required'),
   resalePercentage: Yup.number().required('Resale Percent Amount is Required'),
 })
+
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 
 const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
   const { enqueueSnackbar } = useSnackbar()
@@ -383,7 +386,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
               onChange={handleFormChange}
               values={formValues.releaseForm}
               ReleaseCreateSchema={ReleaseCreateSchema}
-              disabled={isPublishing}
+              disabled={isPublishing || releaseCreated}
             />
           </CreateFormWrapper>
 

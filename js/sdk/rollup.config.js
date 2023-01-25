@@ -31,7 +31,15 @@ export default [
       EmailCapture: 'src/components/EmailCapture.js',
       EmailCaptureForm: 'src/components/EmailCaptureForm.js',
       ReleaseCreateForm: 'src/components/ReleaseCreateForm.js',
-      QuillEditor: 'src/components/QuillEditor.js'
+      ReleaseCreateConfirm: 'src/components/ReleaseCreateConfirm.js',
+      ReleaseCreate: 'src/components/ReleaseCreate.js',
+      NinaBox: 'src/components/NinaBox.js',
+      QuillEditor: 'src/components/QuillEditor.js',
+      MediaDropzone: 'src/components/MediaDropzone.js',
+      MediaDropzones: 'src/components/MediaDropzones.js',
+      UploadInfoModal: 'src/components/UploadInfoModal.js',
+      Dots: 'src/components/Dots.js',
+      BundlrModal: 'src/components/BundlrModal.js',
     },
     output: [
       {
