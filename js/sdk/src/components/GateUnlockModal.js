@@ -15,61 +15,85 @@ import CloseIcon from '@mui/icons-material/Close'
 import {useWallet} from '@solana/wallet-adapter-react'
 import {useSnackbar} from 'notistack'
 import Dots from './Dots'
+import Box from '@mui/material/Box';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import DeleteIcon from '@mui/icons-material/Delete';
+import DownloadIcon from '@mui/icons-material/Download';
+import IconButton from '@mui/material/IconButton';
 
-const UnlockGateModal = ({gate, releasePubkey, amountHeld}) => {
+
+const GateUnlockModal = ({gates, releasePubkey, amountHeld, unlockGate}) => {
   const [open, setOpen] = useState(false)
   const {enqueueSnackbar} = useSnackbar()
   const wallet = useWallet()
 
   const [inProgress, setInProgress] = useState(false)
+  const [activeIndex, setActiveIndex] = useState()
   const [file, setFile] = useState(undefined)
 
   const handleClose = () => {
     setOpen(false)
   }
 
-  const handleUnlockGate = async () => {
+  const handleUnlockGate = async (gate, index) => {
+    setInProgress(true)
+    setActiveIndex(index)
+    console.log('gate :>> ', gate);
     try {
-      const message = new TextEncoder().encode(releasePubkey)
-      const messageBase64 = encodeBase64(message)
-      const signature = await wallet.signMessage(message)
-      const signatureBase64 = encodeBase64(signature)
-      const result = await axios.get(
-        `${process.env.NINA_GATE_URL}/gate/${gate.id
-        }?message=${encodeURIComponent(
-          messageBase64
-        )}&publicKey=${encodeURIComponent(
-          wallet.publicKey.toBase58()
-        )}&signature=${encodeURIComponent(signatureBase64)}`
-      )
-
-      const response = await axios.get(result.data.url, {
-        method: 'GET',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/octet-stream',
-        },
-        responseType: 'blob',
-      })
-
-      if (response?.data) {
-        const a = document.createElement('a')
-        const url = window.URL.createObjectURL(response.data)
-        a.href = url
-        a.download = gate.fileName
-        a.click()
-        setOpen(false)
-        enqueueSnackbar(`${gate.fileName} Downloaded`, {
-          variant: 'info',
-        })
-      }
+      await unlockGate(gate)
     } catch (error) {
-      console.warn('error: ', error)
-      enqueueSnackbar(`Error Accessing File`, {
-        variant: 'failure',
-      })
+      console.warn(error)
     }
+    setInProgress(true)
+    setActiveIndex(index)
   }
+
+  // const handleUnlockGate = async () => {
+  //   try {
+  //     const message = new TextEncoder().encode(releasePubkey)
+  //     const messageBase64 = encodeBase64(message)
+  //     const signature = await wallet.signMessage(message)
+  //     const signatureBase64 = encodeBase64(signature)
+  //     const result = await axios.get(
+  //       `${process.env.NINA_GATE_URL}/gate/${gate.id
+  //       }?message=${encodeURIComponent(
+  //         messageBase64
+  //       )}&publicKey=${encodeURIComponent(
+  //         wallet.publicKey.toBase58()
+  //       )}&signature=${encodeURIComponent(signatureBase64)}`
+  //     )
+
+  //     const response = await axios.get(result.data.url, {
+  //       method: 'GET',
+  //       mode: 'cors',
+  //       headers: {
+  //         'Content-Type': 'application/octet-stream',
+  //       },
+  //       responseType: 'blob',
+  //     })
+
+  //     if (response?.data) {
+  //       const a = document.createElement('a')
+  //       const url = window.URL.createObjectURL(response.data)
+  //       a.href = url
+  //       a.download = gate.fileName
+  //       a.click()
+  //       setOpen(false)
+  //       enqueueSnackbar(`${gate.fileName} Downloaded`, {
+  //         variant: 'info',
+  //       })
+  //     }
+  //   } catch (error) {
+  //     console.warn('error: ', error)
+  //     enqueueSnackbar(`Error Accessing File`, {
+  //       variant: 'failure',
+  //     })
+  //   }
+  // }
 
   return (
     <Root>
@@ -100,25 +124,36 @@ const UnlockGateModal = ({gate, releasePubkey, amountHeld}) => {
             <StyledCloseIcon onClick={() => handleClose()} />
             {amountHeld > 0 && (
               <>
-                <Typography variant="h5" sx={{mb: 2}}>
-                  You are downloading &apos;{gate.fileName}&apos;
-                </Typography>
+                <List>
+                  {gates.map((gate, index) => {
+                    console.log('gate :>> ', gate);
+                    const fileSize = (gate.fileSize / (1024 * 1024)).toFixed(2)
+                    return (
+                      <ListItem
+                        disableGutters
 
-                <Typography variant="body1" sx={{mb: 1}}>
-                  Description:
-                </Typography>
+                        secondaryAction={
+                          <Box>
+                            <IconButton aria-label="delete"
+                              disabled={inProgress && activeIndex === index}
+                              onClick={() => {
+                                handleUnlockGate(gate, index)
+                              }}
+                            >
+                              {inProgress && activeIndex === index ? <Dots /> : <DownloadIcon />}
+                            </IconButton>
+                          </Box>
+                        }
+                      >
+                        <ListItemButton>
+                          <ListItemText primary={`${gate.fileName} (${fileSize} mb)`} />
+                        </ListItemButton>
+                      </ListItem>
+                    )
+                  }
 
-                <Typography variant="body1" sx={{mb: 2}}>
-                  {gate.description}
-                </Typography>
-
-                <Button
-                  variant="outlined"
-                  sx={{mt: 1}}
-                  onClick={handleUnlockGate}
-                >
-                  {!inProgress ? 'Download' : <Dots size="50px" />}
-                </Button>
+                  )}
+                </List>
               </>
             )}
 
@@ -177,4 +212,4 @@ const StyledCloseIcon = styled(CloseIcon)(({theme}) => ({
   top: theme.spacing(1),
 }))
 
-export default UnlockGateModal
+export default GateUnlockModal

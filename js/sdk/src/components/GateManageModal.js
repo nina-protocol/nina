@@ -16,6 +16,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import DeleteIcon from '@mui/icons-material/Delete';
+import DownloadIcon from '@mui/icons-material/Download';
 import IconButton from '@mui/material/IconButton';
 
 import GateCreateModal from './GateCreateModal'
@@ -26,27 +27,22 @@ import {useSnackbar} from 'notistack'
 import Dots from './Dots'
 
 const GateManageModal = ({handleFetchGates, metadata, releasePubkey, gates}) => {
-  const [open, setOpen] = useState(false)
   const {enqueueSnackbar} = useSnackbar()
   const wallet = useWallet()
+  const [open, setOpen] = useState(false)
   const [inProgress, setInProgress] = useState(false)
   const [activeIndex, setActiveIndex] = useState()
-  const [file, setFile] = useState(undefined)
-  const [description, setDescription] = useState(undefined)
    
   const handleClose = () => {
     setOpen(false)
     setFile(undefined)
   }
 
-  console.log('gates :>> ', gates);
 
   const handleDeleteGate = async (gate, index) => {
     setInProgress(true)
     setActiveIndex(index)
     try {
-      console.log('releasePubkey :>> ', releasePubkey);
-      console.log('gate :>> ', gate);
       const message = new TextEncoder().encode(releasePubkey)
       const messageBase64 = encodeBase64(message)
       const signature = await wallet.signMessage(message)
@@ -123,19 +119,32 @@ const GateManageModal = ({handleFetchGates, metadata, releasePubkey, gates}) => 
                       disableGutters
 
                       secondaryAction={
-                        <IconButton aria-label="delete"
-                          disabled={inProgress && activeIndex === index}
-                          onClick={() => {
-                            handleDeleteGate(gate, index)
-                          }}
-                        >
-                          {
-                          inProgress && activeIndex === index ?
-                            <Dots />
-                          :
-                            <DeleteIcon />
-                          }
-                        </IconButton>
+                        <Box>
+                          <IconButton aria-label="delete"
+                            disabled={inProgress && activeIndex === index}
+                            onClick={() => {
+                              alert('download')
+                            }}
+                          >
+                           <DownloadIcon />    
+                          </IconButton>
+
+
+                          <IconButton aria-label="delete"
+                            disabled={inProgress && activeIndex === index}
+                            onClick={() => {
+                              handleDeleteGate(gate, index)
+                            }}
+                          >
+                            {
+                            inProgress && activeIndex === index ?
+                              <Dots />
+                            :
+                              <DeleteIcon />
+                            }
+                          </IconButton>
+
+                        </Box>
                       }
                     >
                       <ListItemButton>
