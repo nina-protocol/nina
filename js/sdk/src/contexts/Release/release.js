@@ -27,6 +27,7 @@ const ReleaseContextProvider = ({ children }) => {
     getSolPrice,
     verficationState,
     setVerificationState,
+    solBalance,
   } = useContext(Nina.Context)
   const [releasePurchasePending, setReleasePurchasePending] = useState({})
   const [
@@ -119,6 +120,7 @@ const ReleaseContextProvider = ({ children }) => {
     setFetchedUserProfileReleases,
     verficationState,
     setVerificationState,
+    solBalance,
   })
 
   return (
@@ -196,6 +198,7 @@ const releaseContextHelper = ({
   setFetchedUserProfileReleases,
   verificationState,
   setVerificationState,
+  solBalance,
 }) => {
   const { provider, ids, nativeToUi, uiToNative, isSol, isUsdc, endpoints } =
     ninaClient
@@ -421,6 +424,7 @@ const releaseContextHelper = ({
       logEvent('release_init_via_hub_failure', 'engagement', {
         publicKey: release.toBase58(),
         wallet: provider.wallet.publicKey.toBase58(),
+        solBalance,
       })
 
       return ninaErrorHandler(error)
@@ -499,6 +503,7 @@ const releaseContextHelper = ({
         publicKey: releasePubkey,
         hub: hubPubkey,
         wallet: provider.wallet.publicKey.toBase58(),
+        solBalance,
       })
       return ninaErrorHandler(error)
     }
@@ -685,6 +690,7 @@ const releaseContextHelper = ({
       logEvent('release_init_failure', 'engagement', {
         publicKey: release.toBase58(),
         wallet: provider.wallet.publicKey.toBase58(),
+        solBalance,
       })
       return ninaErrorHandler(error)
     }
@@ -758,6 +764,7 @@ const releaseContextHelper = ({
       logEvent('release_purchase_failure', 'engagement', {
         publicKey: releasePubkey,
         wallet: provider.wallet.publicKey.toBase58(),
+        solBalance,
       })
 
       return ninaErrorHandler(error)
