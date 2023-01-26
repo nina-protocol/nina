@@ -1,4 +1,6 @@
 import React from 'react'
+import NinaSdk from '@nina-protocol/js-sdk'
+import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
 
 const ReleaseEmbedPage = ({ host, metadata }) => {
   const player = `
@@ -155,18 +157,12 @@ const ReleaseEmbedPage = ({ host, metadata }) => {
 
 export const getServerSideProps = async (context) => {
   const releasePubkey = context.params.releasePubkey
-  const metadataResult = await fetch(
-    `${process.env.INDEXER_URL}/metadata/bulk`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ids: [releasePubkey] }),
-    }
-  )
-  const metadataJson = await metadataResult.json()
+  await initSdkIfNeeded(true)
+
+  const { release } = await NinaSdk.Release.fetch(releasePubkey)
   return {
     props: {
-      metadata: metadataJson[releasePubkey],
+      metadata: release.metadata,
       releasePubkey,
       isEmbed: true,
       host: context.req.headers.host,
