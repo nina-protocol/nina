@@ -24,7 +24,11 @@ const Gates = ({ release, gate, isAuthority, releasePubkey, amountHeld, metadata
 
     const handleFetchGates = async () => {
     const gates = await fetchGatesForRelease(releasePubkey)
-    setGates(gates)
+    if (gates.length > 0){
+      setGates(gates)
+    } else {
+      setGates(undefined)
+    }
     console.log('gates :>> ', gates);
   }
 
@@ -75,14 +79,15 @@ const Gates = ({ release, gate, isAuthority, releasePubkey, amountHeld, metadata
   return (
     <Root>
       {gates && (
-        <GateUnlockModal
-          gates={gates}
-          releasePubkey={releasePubkey}
-          amountHeld={amountHeld}
-          unlockGate={unlockGate}
-        />
+        <>
+          <GateUnlockModal
+            gates={gates}
+            releasePubkey={releasePubkey}
+            amountHeld={amountHeld}
+            unlockGate={unlockGate}
+          />
+        </>
       )}
-
       {!gates && isAuthority && (
         <>
           <GateCreateModal
@@ -93,6 +98,7 @@ const Gates = ({ release, gate, isAuthority, releasePubkey, amountHeld, metadata
           />
         </>
       )}
+
       {gates && isAuthority && (
         <>
           <GateManageModal
