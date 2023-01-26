@@ -73,14 +73,11 @@ const ReleasePurchase = (props) => {
     [releasePubkey, releasePurchasePending]
   )
 
-  const isAuthority = useMemo(
-    () => {
-      if (wallet.connected) {
-        return release?.authority === wallet?.publicKey.toBase58()
-      }
-    },
-    [release, wallet.connected]
-  )
+  const isAuthority = useMemo(() => {
+    if (wallet.connected) {
+      return release?.authority === wallet?.publicKey.toBase58()
+    }
+  }, [release, wallet.connected])
 
   useEffect(() => {
     getRelease(releasePubkey)
@@ -91,8 +88,6 @@ const ReleasePurchase = (props) => {
     // }
     // hubForRelease(releasePubkey)
   }, [releasePubkey])
-
-
 
   useEffect(() => {
     getExchangesForRelease(releasePubkey)
@@ -357,11 +352,11 @@ const ReleasePurchase = (props) => {
         </form>
       </Box>
 
-      <Gates 
-        release={release} 
+      <Gates
+        release={release}
         metadata={metadata}
-        releasePubkey={releasePubkey} 
-        isAuthority={isAuthority} 
+        releasePubkey={releasePubkey}
+        isAuthority={isAuthority}
         amountHeld={amountHeld}
       />
 
