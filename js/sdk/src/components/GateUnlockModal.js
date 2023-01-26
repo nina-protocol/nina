@@ -42,58 +42,15 @@ const GateUnlockModal = ({gates, releasePubkey, amountHeld, unlockGate}) => {
   const handleUnlockGate = async (gate, index) => {
     setInProgress(true)
     setActiveIndex(index)
-    console.log('gate :>> ', gate);
     try {
       await unlockGate(gate)
+      setOpen(false)
     } catch (error) {
       console.warn(error)
     }
-    setInProgress(true)
-    setActiveIndex(index)
+    setInProgress(false)
+    setActiveIndex()
   }
-
-  // const handleUnlockGate = async () => {
-  //   try {
-  //     const message = new TextEncoder().encode(releasePubkey)
-  //     const messageBase64 = encodeBase64(message)
-  //     const signature = await wallet.signMessage(message)
-  //     const signatureBase64 = encodeBase64(signature)
-  //     const result = await axios.get(
-  //       `${process.env.NINA_GATE_URL}/gate/${gate.id
-  //       }?message=${encodeURIComponent(
-  //         messageBase64
-  //       )}&publicKey=${encodeURIComponent(
-  //         wallet.publicKey.toBase58()
-  //       )}&signature=${encodeURIComponent(signatureBase64)}`
-  //     )
-
-  //     const response = await axios.get(result.data.url, {
-  //       method: 'GET',
-  //       mode: 'cors',
-  //       headers: {
-  //         'Content-Type': 'application/octet-stream',
-  //       },
-  //       responseType: 'blob',
-  //     })
-
-  //     if (response?.data) {
-  //       const a = document.createElement('a')
-  //       const url = window.URL.createObjectURL(response.data)
-  //       a.href = url
-  //       a.download = gate.fileName
-  //       a.click()
-  //       setOpen(false)
-  //       enqueueSnackbar(`${gate.fileName} Downloaded`, {
-  //         variant: 'info',
-  //       })
-  //     }
-  //   } catch (error) {
-  //     console.warn('error: ', error)
-  //     enqueueSnackbar(`Error Accessing File`, {
-  //       variant: 'failure',
-  //     })
-  //   }
-  // }
 
   return (
     <Root>
@@ -122,16 +79,19 @@ const GateUnlockModal = ({gates, releasePubkey, amountHeld, unlockGate}) => {
         <Fade in={open}>
           <StyledPaper>
             <StyledCloseIcon onClick={() => handleClose()} />
+
+            <Typography variant="h5" sx={{mb: 1}}>
+              Here are the files that owning this release will gives you access to:
+            </Typography>
+
             {amountHeld > 0 && (
               <>
                 <List>
                   {gates.map((gate, index) => {
-                    console.log('gate :>> ', gate);
                     const fileSize = (gate.fileSize / (1024 * 1024)).toFixed(2)
                     return (
                       <ListItem
                         disableGutters
-
                         secondaryAction={
                           <Box>
                             <IconButton aria-label="delete"

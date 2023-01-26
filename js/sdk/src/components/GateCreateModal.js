@@ -14,9 +14,8 @@ import TextField from '@mui/material/TextField'
 import {useWallet} from '@solana/wallet-adapter-react'
 import {useSnackbar} from 'notistack'
 import Dots from './Dots'
-// import release from '../contexts/Release/release'
 
-const GateCreateModal = ({handleFetchGates, metadata, releasePubkey}) => {
+const GateCreateModal = ({handleFetchGates, metadata, releasePubkey, gates}) => {
   const [open, setOpen] = useState(false)
   const {enqueueSnackbar} = useSnackbar()
   const wallet = useWallet()
@@ -108,7 +107,9 @@ const GateCreateModal = ({handleFetchGates, metadata, releasePubkey}) => {
         onClick={() => setOpen(true)}
         sx={{height: '55px', width: '100%', mt: 1}}
       >
-        <Typography variant="body2">Create a Gate for this Release</Typography>
+        <Typography variant="body2">
+         {`Create ${gates?.length > 0 ? 'another' : 'a'} Gate for this Release`}
+          </Typography>
       </Button>
 
       <StyledModal

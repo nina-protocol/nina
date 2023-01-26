@@ -25,23 +25,40 @@ import Divider from '@mui/material/Divider';
 import {useWallet} from '@solana/wallet-adapter-react'
 import {useSnackbar} from 'notistack'
 import Dots from './Dots'
+import {maxHeight} from '@material-ui/system'
 
-const GateManageModal = ({handleFetchGates, metadata, releasePubkey, gates}) => {
+const GateManageModal = ({handleFetchGates, metadata, releasePubkey, gates, unlockGate}) => {
   const {enqueueSnackbar} = useSnackbar()
   const wallet = useWallet()
+  const [file, setFile] = useState(undefined)
   const [open, setOpen] = useState(false)
   const [inProgress, setInProgress] = useState(false)
   const [activeIndex, setActiveIndex] = useState()
+  const [action, setAction] = useState(undefined)
    
   const handleClose = () => {
     setOpen(false)
     setFile(undefined)
   }
 
+  const handleUnlockGate = async (gate, index) => {
+    setInProgress(true)
+    setActiveIndex(index)
+    setAction('unlock')
+    try {
+      await unlockGate(gate)
+      setOpen(false)
+    } catch (error) {
+      console.warn(error)
+    }
+    setInProgress(false)
+    setActiveIndex()
+  }
 
   const handleDeleteGate = async (gate, index) => {
     setInProgress(true)
     setActiveIndex(index)
+    setAction('delete')
     try {
       const message = new TextEncoder().encode(releasePubkey)
       const messageBase64 = encodeBase64(message)
@@ -60,7 +77,6 @@ const GateManageModal = ({handleFetchGates, metadata, releasePubkey, gates}) => 
       enqueueSnackbar('Gate Deleted', {
         variant: 'info',
       })
-      console.log('result :>> ', result);
     } 
     catch (error) {
       enqueueSnackbar('Gate Not Deleted', {
@@ -107,55 +123,68 @@ const GateManageModal = ({handleFetchGates, metadata, releasePubkey, gates}) => 
                   releasePubkey={releasePubkey}
                   handleFetchGates={handleFetchGates}
                   metadata={metadata}
+                  gates={gates}
                 />
-              <Typography variant="body1" sx={{my: 1}}>
-                Existing Gates:
-              </Typography>
-              <List>
-                {gates.map((gate, index) => {
-                  const fileSize = (gate.fileSize / (1024 * 1024)).toFixed(2)
-                  return(
-                    <ListItem 
-                      disableGutters
 
-                      secondaryAction={
-                        <Box>
-                          <IconButton aria-label="delete"
-                            disabled={inProgress && activeIndex === index}
-                            onClick={() => {
-                              alert('download')
-                            }}
-                          >
-                           <DownloadIcon />    
-                          </IconButton>
+              {gates.length > 0 && (
+                <Typography variant="body1" sx={{my: 1}}>
+                  Existing Gates:
+                </Typography>
+              )}
+
+              <GateWrapper>
+                <List>
+                  {gates.map((gate, index) => {
+                    const fileSize = (gate.fileSize / (1024 * 1024)).toFixed(2)
+                    return(
+                      <ListItem 
+                        disableGutters
+
+                        secondaryAction={
+                          <Box>
+                            <IconButton aria-label="delete"
+                              disabled={inProgress && activeIndex === index}
+                              onClick={() => {
+                                handleUnlockGate(gate, index)
+                              }}
+                            >
+                              {
+                                inProgress && activeIndex === index && action === 'unlock' ? 
+                                  <Dots />
+                                  :
+                                  <DownloadIcon />
+                              }
+                            </IconButton>
 
 
-                          <IconButton aria-label="delete"
-                            disabled={inProgress && activeIndex === index}
-                            onClick={() => {
-                              handleDeleteGate(gate, index)
-                            }}
-                          >
-                            {
-                            inProgress && activeIndex === index ?
-                              <Dots />
-                            :
-                              <DeleteIcon />
-                            }
-                          </IconButton>
+                            <IconButton aria-label="delete"
+                              disabled={inProgress && activeIndex === index}
+                              onClick={() => {
+                                handleDeleteGate(gate, index)
+                              }}
+                            >
+                              {
+                              inProgress && activeIndex === index && action === 'delete'?
+                                <Dots />
+                              :
+                                <DeleteIcon />
+                              }
+                            </IconButton>
 
-                        </Box>
-                      }
-                    >
-                      <ListItemButton>
-                        <ListItemText primary={`${gate.fileName} (${fileSize} mb)`} />
-                      </ListItemButton>
-                    </ListItem>
-                  )
-                }
-                  
-                )}
-              </List>
+                          </Box>
+                        }
+                      >
+                        <ListItemButton>
+                          <ListItemText primary={`${gate.fileName} (${fileSize} mb)`} />
+                        </ListItemButton>
+                      </ListItem>
+                    )
+                  }
+                    
+                  )}
+                </List>
+
+              </GateWrapper>
             </Box>
           </StyledPaper>
         </Fade>
@@ -175,6 +204,14 @@ const StyledModal = styled(Modal)(() => ({
   alignItems: 'center',
   justifyContent: 'center',
 }))
+
+const GateWrapper = styled(Box)(() => ({
+  // border: '2px solid red',
+  maxHeight: '400px',
+  overflowY: 'auto',
+}))
+
+
 
 const StyledPaper = styled(Paper)(({theme}) => ({
   backgroundColor: theme.palette.background.paper,

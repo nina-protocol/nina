@@ -27,8 +27,6 @@ import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
-// import GateCreateModal from '@nina-protocol/nina-internal-sdk/esm/CreateGateModal'
-// import GateUnlockModal from '@nina-protocol/nina-internal-sdk/esm/UnlockGateModal'
 import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 
@@ -74,6 +72,7 @@ const ReleasePurchase = (props) => {
     () => releasePurchasePending[releasePubkey],
     [releasePubkey, releasePurchasePending]
   )
+
   const isAuthority = useMemo(
     () => {
       if (wallet.connected) {
@@ -82,14 +81,6 @@ const ReleasePurchase = (props) => {
     },
     [release, wallet.connected]
   )
-
-
-  // const handleFetchGates = async () => {
-  //   const gates = await fetchGatesForRelease(releasePubkey)
-  //   if (gates.length > 0) {
-  //     setGates(gates[0])
-  //   }
-  // }
 
   useEffect(() => {
     getRelease(releasePubkey)
@@ -373,23 +364,6 @@ const ReleasePurchase = (props) => {
         isAuthority={isAuthority} 
         amountHeld={amountHeld}
       />
-      {/* {gates && (
-        <GateUnlockModal
-          gates={gates}
-          releasePubkey={releasePubkey}
-          amountHeld={amountHeld}
-        />
-      )} */}
-
-      {/* {gates && isAuthority && (
-        <>
-          <GateManageModal
-            releasePubkey={releasePubkey}
-            handleFetchGates={handleFetchGates}
-            metadata={metadata}
-          />
-        </>
-      )} */}
 
       {userIsRecipient && (
         <Royalty releasePubkey={releasePubkey} release={release} />

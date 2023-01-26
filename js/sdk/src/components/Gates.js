@@ -1,23 +1,12 @@
 import React, { useState, useEffect, useContext, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
-import Paper from '@mui/material/Paper'
-import Modal from '@mui/material/Modal'
-import Backdrop from '@mui/material/Backdrop'
-import Fade from '@mui/material/Fade'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
 import { encodeBase64 } from 'tweetnacl-util'
 import axios from 'axios'
-import LockOpenIcon from '@mui/icons-material/LockOpen'
-import LockIcon from '@mui/icons-material/Lock'
-import CloseIcon from '@mui/icons-material/Close'
-import GateCreateModal from './GateCreateModal'
-import GateManageModal from './GateManageModal'
-import GateUnlockModal from './GateUnlockModal'
 import Release from '../contexts/Release'
 import {useSnackbar} from 'notistack'
-
-// import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import GateCreateModal from './GateCreateModal'
+import GateUnlockModal from './GateUnlockModal'
+import GateManageModal from './GateManageModal'
 
 import { useWallet } from '@solana/wallet-adapter-react'
 import Dots from './Dots'
@@ -35,9 +24,8 @@ const Gates = ({ release, gate, isAuthority, releasePubkey, amountHeld, metadata
 
     const handleFetchGates = async () => {
     const gates = await fetchGatesForRelease(releasePubkey)
-    if (gates.length > 0) {
-      setGates(gates)
-    }
+    setGates(gates)
+    console.log('gates :>> ', gates);
   }
 
   const unlockGate = async (gate) => {
@@ -45,9 +33,7 @@ const Gates = ({ release, gate, isAuthority, releasePubkey, amountHeld, metadata
 
     try {
       const message = new TextEncoder().encode(releasePubkey)
-      console.log('message :>> ', message);
       const messageBase64 = encodeBase64(message)
-      console.log('messageBase64 :>> ', messageBase64);
       const signature = await wallet.signMessage(message)
       const signatureBase64 = encodeBase64(signature)
       const result = await axios.get(
@@ -67,14 +53,13 @@ const Gates = ({ release, gate, isAuthority, releasePubkey, amountHeld, metadata
         },
         responseType: 'blob',
       })
-
+      
       if (response?.data) {
         const a = document.createElement('a')
         const url = window.URL.createObjectURL(response.data)
         a.href = url
         a.download = gate.fileName
         a.click()
-        setOpen(false)
         enqueueSnackbar(`${gate.fileName} Downloaded`, {
           variant: 'info',
         })
@@ -104,6 +89,7 @@ const Gates = ({ release, gate, isAuthority, releasePubkey, amountHeld, metadata
             releasePubkey={releasePubkey}
             handleFetchGates={handleFetchGates}
             metadata={metadata}
+            gates={gates}
           />
         </>
       )}
@@ -114,6 +100,7 @@ const Gates = ({ release, gate, isAuthority, releasePubkey, amountHeld, metadata
             releasePubkey={releasePubkey}
             handleFetchGates={handleFetchGates}
             metadata={metadata}
+            unlockGate={unlockGate}
           />
         </>
       )}

@@ -13,9 +13,8 @@ import Typography from '@mui/material/Typography'
 import { useRouter } from 'next/router'
 import Dots from './Dots'
 import Royalty from './Royalty'
-import CreateGateModal from '@nina-protocol/nina-internal-sdk/esm/CreateGateModal'
-import UnlockGateModal from '@nina-protocol/nina-internal-sdk/esm/UnlockGateModal'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
+import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 
 const HubsModal = dynamic(() => import('./HubsModal'))
 
@@ -58,16 +57,14 @@ const ReleasePurchase = (props) => {
     [releasePubkey, releasePurchasePending]
   )
 
-  const handleFetchGates = async () => {
-    const gates = await fetchGatesForRelease(releasePubkey)
-    if (gates.length > 0) {
-      setGate(gates[0])
-    }
-  }
-
-  useEffect(() => {
-    handleFetchGates(releasePubkey)
-  }, [releasePubkey])
+  const isAuthority = useMemo(
+    () => {
+      if (wallet.connected) {
+        return release?.authority === wallet?.publicKey.toBase58()
+      }
+    },
+    [release, wallet.connected]
+  )
 
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
@@ -253,22 +250,13 @@ const ReleasePurchase = (props) => {
       <Box sx={{
         maxWidth: '135px',
       }}>
-        {gate && (
-          <UnlockGateModal
-            gate={gate}
-            releasePubkey={releasePubkey}
-            amountHeld={amountHeld}
-          />
-        )}
-        {!gate && wallet?.publicKey?.toBase58() === release.authority && (
-          <>
-            <CreateGateModal
-              releasePubkey={releasePubkey}
-              handleFetchGates={handleFetchGates}
-              metadata={metadata}
-            />
-          </>
-        )}
+        <Gates
+          release={release}
+          metadata={metadata}
+          releasePubkey={releasePubkey}
+          isAuthority={isAuthority}
+          amountHeld={amountHeld}
+        />
       </Box>
 
       {amountHeld > 0 && (
