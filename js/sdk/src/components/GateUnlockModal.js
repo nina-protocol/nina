@@ -80,12 +80,12 @@ const GateUnlockModal = ({gates, releasePubkey, amountHeld, unlockGate}) => {
           <StyledPaper>
             <StyledCloseIcon onClick={() => handleClose()} />
 
-            <Typography variant="h5" sx={{mb: 1}}>
-              Here are the files that owning this release will gives you access to:
-            </Typography>
 
             {amountHeld > 0 && (
               <>
+              <Typography variant="h5" sx={{mb: 1}}>
+                Here are the files that owning this release will gives you access to:
+              </Typography>
                 <List>
                   {gates.map((gate, index) => {
                     const fileSize = (gate.fileSize / (1024 * 1024)).toFixed(2)
@@ -124,7 +124,10 @@ const GateUnlockModal = ({gates, releasePubkey, amountHeld, unlockGate}) => {
                   is only available to owners.
                 </Typography>
                 <Typography variant="h5" sx={{mb: 2}}>
-                  Purchase this release to unlock the additional content.
+                  {gates.length > 1 ? 
+                  `Purchase this release to access ${gates.length} files.` :
+                 ` Purchase this release to access additional content.`
+                  }
                 </Typography>
               </>
             )}
