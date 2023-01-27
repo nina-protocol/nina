@@ -352,6 +352,10 @@ const ReleasePurchase = (props) => {
         </form>
       </Box>
 
+    <Box
+    sx={{
+      mt: 1
+    }}>
       <Gates
         release={release}
         metadata={metadata}
@@ -359,6 +363,8 @@ const ReleasePurchase = (props) => {
         isAuthority={isAuthority}
         amountHeld={amountHeld}
       />
+    </Box>
+
 
       {userIsRecipient && (
         <Royalty releasePubkey={releasePubkey} release={release} />
