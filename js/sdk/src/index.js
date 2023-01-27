@@ -1,5 +1,4 @@
 export * as utils from './utils'
-export * as styles from './styles'
 
 export { default as client } from './client'
 export { default as Audio } from './contexts/Audio'
@@ -19,4 +18,4 @@ export { default as MediaDropzone } from './components/MediaDropzone'
 export { default as MediaDropzones } from './components/MediaDropzones'
 export { default as UploadInfoModal } from './components/UploadInfoModal'
 export { default as Dots } from './components/Dots'
-export {default as BundlrModal} from './components/BundlrModal'
+export { default as BundlrModal } from './components/BundlrModal'

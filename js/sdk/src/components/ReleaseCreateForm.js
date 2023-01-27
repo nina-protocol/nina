@@ -16,8 +16,7 @@ import FormLabel from '@mui/material/FormLabel'
 // import QuillEditor from './QuillEditor'
 const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
 
-const ReleaseCreateForm = (
-    {
+const ReleaseCreateForm = ({
   field,
   form,
   values,
@@ -26,8 +25,7 @@ const ReleaseCreateForm = (
   setFieldValue,
   touched,
   disabled,
-}
-) => {
+}) => {
   const [isOpen, setIsOpen] = useState(false)
   const [inputValue, setInputValue] = useState(undefined)
   const editionRef = useRef(isOpen)

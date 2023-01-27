@@ -48,7 +48,7 @@ const ReleaseCreateConfirm = (props) => {
     profileHubs,
     selectedHub,
     handleChange,
-    hubPubkey
+    hubPubkey,
   } = props
   const [open, setOpen] = useState(false)
   const [sortedHubs, setSortedHubs] = useState([])
@@ -157,34 +157,34 @@ const ReleaseCreateConfirm = (props) => {
                 {description}
               </span>
             </Value>
-              {!hubPubkey && (
-            <FormControl sx={{ mt: 1, mb: 1, width: '100%' }}>
-              <InputLabel id="demo-multiple-checkbox-label">
-                Select Hub
-              </InputLabel>
-              <Select
-                value={selectedHub}
-                onChange={handleChange}
-                input={<OutlinedInput label="Name" />}
-                MenuProps={MenuProps}
-                inputProps={{ 'aria-label': 'Without label' }}
-              >
-                {sortedHubs?.map((hub) => (
-                  <MenuItem
-                    key={hub?.handle}
-                    value={`${hub?.publicKey}`}
-                    id={hub?.publicKey}
-                    name={hub?.data.displayName}
-                  >
-                    {hub?.data?.displayName}
+            {!hubPubkey && (
+              <FormControl sx={{ mt: 1, mb: 1, width: '100%' }}>
+                <InputLabel id="demo-multiple-checkbox-label">
+                  Select Hub
+                </InputLabel>
+                <Select
+                  value={selectedHub}
+                  onChange={handleChange}
+                  input={<OutlinedInput label="Name" />}
+                  MenuProps={MenuProps}
+                  inputProps={{ 'aria-label': 'Without label' }}
+                >
+                  {sortedHubs?.map((hub) => (
+                    <MenuItem
+                      key={hub?.handle}
+                      value={`${hub?.publicKey}`}
+                      id={hub?.publicKey}
+                      name={hub?.data.displayName}
+                    >
+                      {hub?.data?.displayName}
+                    </MenuItem>
+                  ))}
+                  <MenuItem value={''} name={'None'}>
+                    {'None (Not Recommended)'}
                   </MenuItem>
-                ))}
-                <MenuItem value={''} name={'None'}>
-                  {'None (Not Recommended)'}
-                </MenuItem>
-              </Select>
-            </FormControl>
-              )}
+                </Select>
+              </FormControl>
+            )}
             <Typography variant="subtitle1" mt={1} sx={{ color: 'red' }}>
               ONCE PUBLISHED, YOUR RELEASE INFORMATION WILL BE PERMANENT AND YOU
               WILL NOT BE ABLE TO EDIT IT.

@@ -17,9 +17,8 @@ const MediaDropzone = ({
   const { MAX_AUDIO_FILE_UPLOAD_SIZE, MAX_IMAGE_FILE_UPLOAD_SIZE } = useContext(
     Nina.Context
   )
-  console.log('media dropzone')
+
   const handleChangeStatus = ({ meta, file, remove }, status) => {
-    console.log('track from dropzone', file, meta, status, 'type: ', type)
     if (meta.status === 'error_validation') {
       const height = meta.height
       const width = meta.width
