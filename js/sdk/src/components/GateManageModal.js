@@ -179,7 +179,7 @@ const GateManageModal = ({
                           </Box>
                         }
                       >
-                        <ListItemButton>
+                        <ListItemButton disableGutters>
                           <ListItemText
                             primary={`${gate.fileName} (${fileSize} mb)`}
                           />

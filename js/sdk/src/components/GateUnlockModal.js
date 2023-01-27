@@ -70,56 +70,53 @@ const GateUnlockModal = ({ gates, amountHeld, unlockGate }) => {
           <StyledPaper>
             <StyledCloseIcon onClick={() => handleClose()} />
 
-            {amountHeld > 0 && (
-              <>
-                <Typography variant="h5" sx={{ mb: 1 }}>
-                  Here are the files that owning this release will gives you
-                  access to:
-                </Typography>
-                <List>
-                  {gates.map((gate, index) => {
-                    const fileSize = (gate.fileSize / (1024 * 1024)).toFixed(2)
-                    return (
-                      <ListItem
-                        disableGutters
-                        key={index}
-                        secondaryAction={
-                          <Box>
-                            <IconButton
-                              aria-label="delete"
-                              disabled={inProgress && activeIndex === index}
-                              onClick={() => {
-                                handleUnlockGate(gate, index)
-                              }}
-                            >
-                              {inProgress && activeIndex === index ? (
-                                <Dots />
-                              ) : (
-                                <DownloadIcon />
-                              )}
-                            </IconButton>
-                          </Box>
-                        }
-                      >
-                        <ListItemButton>
-                          <ListItemText
-                            primary={`${gate.fileName} (${fileSize} mb)`}
-                          />
-                        </ListItemButton>
-                      </ListItem>
-                    )
-                  })}
-                </List>
-              </>
-            )}
+            <>
+              <Typography variant="h5" sx={{ mb: 1 }}>
+                Here are the files that owning this release gives you access to:
+              </Typography>
+              <List>
+                {gates.map((gate, index) => {
+                  const fileSize = (gate.fileSize / (1024 * 1024)).toFixed(2)
+                  return (
+                    <ListItem
+                      disableGutters
+                      key={index}
+                      secondaryAction={
+                        <Box>
+                          <IconButton
+                            aria-label="delete"
+                            disabled={
+                              amountHeld === 0 ||
+                              (inProgress && activeIndex === index)
+                            }
+                            onClick={() => {
+                              handleUnlockGate(gate, index)
+                            }}
+                          >
+                            {inProgress && activeIndex === index ? (
+                              <Dots />
+                            ) : (
+                              <DownloadIcon />
+                            )}
+                          </IconButton>
+                        </Box>
+                      }
+                    >
+                      <ListItemButton disableGutters>
+                        <ListItemText
+                          primary={`${gate.fileName} (${fileSize} mb)`}
+                          secondary={gate.description}
+                        />
+                      </ListItemButton>
+                    </ListItem>
+                  )
+                })}
+              </List>
+            </>
 
             {amountHeld === 0 && (
               <>
-                <Typography variant="h5" sx={{ mb: 2 }}>
-                  There is additional content associated with this release that
-                  is only available to owners.
-                </Typography>
-                <Typography variant="h5" sx={{ mb: 2 }}>
+                <Typography variant="body1" sx={{ mb: 2 }}>
                   {gates.length > 1
                     ? `Purchase this release to access ${gates.length} files.`
                     : ` Purchase this release to access additional content.`}
