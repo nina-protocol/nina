@@ -181,7 +181,7 @@ const ReleasePurchase = (props) => {
   }
 
   const buttonText =
-    release.remainingSupply > 0
+    release.remainingSupply > 0 || release.remainingSupply === -1
       ? `Buy $${ninaClient.nativeToUiString(
           release.price,
           release.paymentMint
@@ -269,7 +269,7 @@ const ReleasePurchase = (props) => {
         <BuyButton
           variant="contained"
           type="submit"
-          disabled={release.remainingSupply > 0 ? false : true}
+          disabled={release.remainingSupply > 0 || release.remainingSupply === -1 ? false : true}
         >
           <Typography variant="body2" align="left">
             {txPending && <Dots msg="Preparing transaction" />}

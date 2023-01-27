@@ -26,9 +26,8 @@ const ReleaseCreateForm = ({
   disabled,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [inputValue, setInputValue] = useState('10')
+  const [inputValue, setInputValue] = useState(undefined)
   const editionRef = useRef(isOpen)
-  const infinityUnicode = '\u221e'
 
   useEffect(() => {
     if (onChange) {
@@ -38,10 +37,10 @@ const ReleaseCreateForm = ({
 
   useEffect(() => {
     if (isOpen) {
-      const infin = '\u221e'
+      const infinity = '\u221e'
       setFieldValue('isOpen', true)
-      setInputValue(infin)
-      setFieldValue('amount', infin)
+
+      setFieldValue('amount', infinity)
     }
     if (!isOpen) {
       setFieldValue('isOpen', false)
@@ -59,6 +58,7 @@ const ReleaseCreateForm = ({
     }
     if (editionRef.current === 'limited') {
       setIsOpen(false)
+      setFieldValue('amount', inputValue)
     }
   }
 
@@ -199,8 +199,8 @@ const ReleaseCreateForm = ({
                 }}
                 sx={{
                   '.MuiInputBase-input': {
-                    fontSize:
-                      inputValue === infinityUnicode ? '22px !important' : '',
+                    fontSize: isOpen ? '19px !important' : '',
+                    padding: isOpen ? '0px 0px 0px 0px !important' : '',
                   },
                 }}
                 disabled={isOpen || disabled}
@@ -349,7 +349,7 @@ export default withFormik({
       title: '',
       description: '',
       catalogNumber: '',
-      editionSize: '10',
+      amount: '10',
       retailPrice: undefined,
       resalePercentage: 10,
       isOpen: false,

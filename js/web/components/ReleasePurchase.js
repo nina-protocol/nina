@@ -394,7 +394,7 @@ const ReleasePurchase = (props) => {
             variant="outlined"
             type="submit"
             fullWidth
-            disabled={release.remainingSupply > 0 ? false : true}
+            disabled={release.remainingSupply > 0 || release.remainingSupply === -1 ? false : true}
           >
             <Typography variant="body2">
               {txPending && <Dots msg="preparing transaction" />}
@@ -407,7 +407,7 @@ const ReleasePurchase = (props) => {
       {userIsRecipient && (
         <>
           <Royalty releasePubkey={releasePubkey} release={release} />
-          {release.remainingSupply > 0 && (
+          {release.remainingSupply > 0 || release.remainingSupply === -1 && (
             <Button
               variant="outlined"
               color="primary"

@@ -338,9 +338,10 @@ const releaseContextHelper = ({
       if (authorityTokenAccountIx) {
         instructions.push(authorityTokenAccountIx)
       }
+            console.log('isOpen', isOpen)
 
       const editionAmount = isOpen ? MAX_INT : amount
-
+      console.log('editionAmount', editionAmount)
       const config = {
         amountTotalSupply: new anchor.BN(editionAmount),
         amountToArtistTokenAccount: new anchor.BN(0),
@@ -600,7 +601,8 @@ const releaseContextHelper = ({
         instructions.push(authorityPublishingCreditTokenAccountIx)
       }
       let now = new Date()
-      const editionAmount = isOpen ? parseInt(MAX_INT) : amount
+      console.log('isOpen', isOpen)
+      const editionAmount = isOpen ? MAX_INT : amount
       const config = {
         amountTotalSupply: new anchor.BN(editionAmount),
         amountToArtistTokenAccount: new anchor.BN(0),

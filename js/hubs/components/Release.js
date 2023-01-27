@@ -232,7 +232,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                     release={releaseState.tokenData[releasePubkey]}
                     releasePubkey={releasePubkey}
                   />
-                  {release.remainingSupply > 0 && (
+                  {release.remainingSupply > 0 || release.remainingSupply === -1 && (
                     <Button
                       variant="outlined"
                       sx={{ padding: '12px !important', marginTop: 2 }}

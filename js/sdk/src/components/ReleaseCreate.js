@@ -45,7 +45,7 @@ const ReleaseCreateSchema = Yup.object().shape({
   title: Yup.string().required('Title is required'),
   description: Yup.string(),
   catalogNumber: Yup.string().required('Catalog Number is required'),
-  editionSize: Yup.string().required('Edition Size is required'),
+  amount: Yup.string().required('Edition Size is required'),
   retailPrice: Yup.number().required('Retail Price is required'),
   resalePercentage: Yup.number().required('Resale Percentage is required'),
 })
@@ -243,30 +243,30 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
         ...formValues,
         releaseForm: values,
       })
+      console.log('formValues.releaseForm', formValues.releaseForm)
+      console.log('formValues', formValues)
     },
     [formValues]
   )
 
   const handleSubmit = async () => {
     try {
-      if (releaseCreated) {
-        if (hubPubkey) {
-          router.push({
-            pathname: `/${
-              hubData.handle
-            }/releases/${releaseInfo.hubRelease.toBase58()}`,
-          })
-        } else {
-          router.push(
-            {
-              pathname: `/${releasePubkey.toBase58()}`,
-              query: {
-                metadata: JSON.stringify(metadata),
-              },
+      if (releaseCreated && hubPubkey) {
+        router.push({
+          pathname: `/${
+            hubData.handle
+          }/releases/${releaseInfo?.hubRelease?.toBase58()}`,
+        })
+      } else if (releaseCreated && !hubPubkey) {
+        router.push(
+          {
+            pathname: `/${releasePubkey?.toBase58()}`,
+            query: {
+              metadata: JSON.stringify(metadata),
             },
-            `/${releasePubkey.toBase58()}`
-          )
-        }
+          },
+          `/${releasePubkey.toBase58()}`
+        )
       } else if (track && artwork && md5Digest) {
         const error = await checkIfHasBalanceToCompleteAction(
           NinaProgramAction.RELEASE_INIT_WITH_CREDIT
@@ -325,7 +325,10 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
           if (uploadHasItemForType(upload, UploadType.track) || trackResult) {
             let metadataResult = metadataTx
             setIsPublishing(true)
-            const info = releaseInfo || (await initializeReleaseAndMint())
+            const info = (await initializeReleaseAndMint(hubPubkey ? hubPubkey : undefined))
+            // const info = await initializeReleaseAndMint()
+
+
             setReleaseInfo(info)
             setReleasePubkey(info.release)
             if (!uploadHasItemForType(upload, UploadType.metadataJson)) {
@@ -351,7 +354,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                   type: 'application/json',
                 })
               )
-
               setMetadata(metadataJson)
               setMetadataTx(metadataResult)
               updateUpload(
@@ -374,6 +376,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
               let result
 
               if (hubPubkey) {
+            console.log(formValues.releaseForm)
                 result = await releaseInitViaHub({
                   hubPubkey,
                   ...formValues.releaseForm,
@@ -383,7 +386,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                   metadataUri: `https://arweave.net/${metadataResult}`,
                 })
               } else if (selectedHub && selectedHub !== '') {
-                selectedHub && selectedHub !== ''
                 result = await releaseInitViaHub({
                   ...formValues.releaseForm,
                   hubPubkey: selectedHub,
@@ -541,10 +543,10 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                         (artworkTx && trackTx && metadataTx && !releaseCreated)
                       }
                       href={
-                        releaseCreated && hubPubkey
+                        releaseCreated && hubPubkey && releaseInfo?.hubRelease?.toBase58()
                           ? `/${
-                              hubData?.handle
-                            }/releases/${releaseInfo.hubRelease?.toBase58()}`
+                              hubData.handle
+                            }/releases/${releaseInfo?.hubRelease?.toBase58()}`
                           : `/${releasePubkey?.toBase58()}`
                       }
                       sx={{ height: '54px' }}
