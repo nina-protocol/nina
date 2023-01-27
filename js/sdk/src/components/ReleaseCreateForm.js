@@ -13,6 +13,7 @@ import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormControl from '@mui/material/FormControl'
 import FormLabel from '@mui/material/FormLabel'
+// import QuillEditor from './QuillEditor'
 const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
 
 const ReleaseCreateForm = (
@@ -36,6 +37,7 @@ const ReleaseCreateForm = (
     if (onChange) {
       onChange(values)
     }
+    console.log('values', values)
   }, [values])
 
   useEffect(() => {
@@ -351,10 +353,9 @@ export default withFormik({
       title: '',
       description: '',
       catalogNumber: '',
-      amount: '10',
+      editionSize: '10',
       retailPrice: undefined,
       resalePercentage: 10,
-      hubPubKey: undefined,
       isOpen: false,
     }
   },

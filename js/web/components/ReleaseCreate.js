@@ -46,9 +46,6 @@ const ReleaseCreateSchema = Yup.object().shape({
   resalePercentage: Yup.number().required('Resale Percent Amount is Required'),
 })
 
-import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
-
 const ReleaseCreate = () => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
@@ -258,15 +255,15 @@ const ReleaseCreate = () => {
   const handleSubmit = async () => {
     try {
       if (releaseCreated) {
-        router.push(
-          {
-            pathname: `/${releasePubkey.toBase58()}`,
-            query: {
-              metadata: JSON.stringify(metadata),
-            },
-          },
-          `/${releasePubkey.toBase58()}`
-        )
+        // router.push(
+        //   {
+        //     pathname: `/${releasePubkey.toBase58()}`,
+        //     query: {
+        //       metadata: JSON.stringify(metadata),
+        //     },
+        //   },
+        //   `/${releasePubkey.toBase58()}`
+        // )
       } else if (track && artwork && md5Digest) {
         const error = await checkIfHasBalanceToCompleteAction(
           NinaProgramAction.RELEASE_INIT_WITH_CREDIT
@@ -373,6 +370,7 @@ const ReleaseCreate = () => {
               )
               let result
               if (selectedHub && selectedHub !== '') {
+                console.log('selectedHub', selectedHub)
                 result = await releaseInitViaHub({
                   ...formValues.releaseForm,
                   hubPubkey: selectedHub,
@@ -426,10 +424,12 @@ const ReleaseCreate = () => {
     }
   }
   const handleHubSelect = (e) => {
+    
     const {
       target: { value },
     } = e
     setSelectedHub(value)
+    console.log('selectedHub', selectedHub)
   }
 
   return (

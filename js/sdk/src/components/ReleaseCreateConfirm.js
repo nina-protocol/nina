@@ -48,7 +48,7 @@ const ReleaseCreateConfirm = (props) => {
     profileHubs,
     selectedHub,
     handleChange,
-    isInHub
+    hubPubkey
   } = props
   const [open, setOpen] = useState(false)
   const [sortedHubs, setSortedHubs] = useState([])
@@ -157,11 +157,11 @@ const ReleaseCreateConfirm = (props) => {
                 {description}
               </span>
             </Value>
+              {!hubPubkey && (
             <FormControl sx={{ mt: 1, mb: 1, width: '100%' }}>
               <InputLabel id="demo-multiple-checkbox-label">
                 Select Hub
               </InputLabel>
-              {!isInHub && (
               <Select
                 value={selectedHub}
                 onChange={handleChange}
@@ -183,8 +183,8 @@ const ReleaseCreateConfirm = (props) => {
                   {'None (Not Recommended)'}
                 </MenuItem>
               </Select>
-              )}
             </FormControl>
+              )}
             <Typography variant="subtitle1" mt={1} sx={{ color: 'red' }}>
               ONCE PUBLISHED, YOUR RELEASE INFORMATION WILL BE PERMANENT AND YOU
               WILL NOT BE ABLE TO EDIT IT.

@@ -14,6 +14,7 @@ import BundlrModal from './BundlrModal'
 import HubPosts from './HubPosts'
 import HubCollaborators from './HubCollaborators'
 import HubReleases from './HubReleases'
+import ReleaseCreate  from '@nina-protocol/nina-internal-sdk/esm/ReleaseCreate'
 
 // const {toTitleCase} = nina.utils;
 
@@ -168,7 +169,7 @@ const Dashboard = ({ hubPubkey }) => {
         )
       case '5':
         return (
-          <ReleaseCreateViaHub
+          <ReleaseCreate
             canAddContent={canAddContent}
             hubPubkey={hubPubkey}
           />

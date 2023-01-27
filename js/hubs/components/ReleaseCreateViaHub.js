@@ -45,9 +45,6 @@ const ReleaseCreateSchema = Yup.object().shape({
   resalePercentage: Yup.number().required('Resale Percent Amount is Required'),
 })
 
-import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
-
 const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()

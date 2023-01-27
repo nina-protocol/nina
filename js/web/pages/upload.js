@@ -35,7 +35,7 @@ const ReleaseCreatePage = () => {
           href="https://ninaprotocol.com/images/nina-blue.png"
         />
       </Head>
-      <ReleaseCreate />
+      <ReleaseCreate canAddContent={true}/>
     </>
   )
 }

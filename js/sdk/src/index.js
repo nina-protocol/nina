@@ -1,4 +1,5 @@
 export * as utils from './utils'
+export * as styles from './styles'
 
 export { default as client } from './client'
 export { default as Audio } from './contexts/Audio'

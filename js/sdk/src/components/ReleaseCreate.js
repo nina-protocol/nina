@@ -33,6 +33,7 @@ import {
   UploadType,
   uploadHasItemForType,
 } from '../utils/uploadManager'
+
 const UploadInfoModal = dynamic(() => import('./UploadInfoModal'), {
   ssr: false,
 })
@@ -44,8 +45,8 @@ const ReleaseCreateSchema = Yup.object().shape({
   title: Yup.string().required('Title is required'),
   description: Yup.string(),
   catalogNumber: Yup.string().required('Catalog Number is required'),
-  editionSize: Yup.number().required('Edition Size is required'),
-  retauilPrice: Yup.number().required('Retail Price is required'),
+  editionSize: Yup.string().required('Edition Size is required'),
+  retailPrice: Yup.number().required('Retail Price is required'),
   resalePercentage: Yup.number().required('Resale Percentage is required'),
 })
 
@@ -84,7 +85,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   const [releasePubkey, setReleasePubkey] = useState(undefined)
   const [, setRelease] = useState(undefined)
   const [buttonText, setButtonText] = useState('Publish Release')
-  const [pending, ] = useState(false)
+  const [pending] = useState(false)
   const [formIsValid, setFormIsValid] = useState(false)
   const [formValues, setFormValues] = useState({
     releaseForm: {},
@@ -118,14 +119,15 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   )
 
   useEffect(() => {
-    console.log('THIS CAME FROM COMPONENT')
     refreshBundlr()
     getUserBalances()
   }, [])
 
   useEffect(async () => {
     // check if hub authority is set
-    getNpcAmountHeld()
+    if (canAddContent && hubPubkey && hubData && hubData.authority) {
+      getNpcAmountHeld()
+    }
   }, [wallet?.connected])
 
   useEffect(() => {
@@ -177,19 +179,19 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     }
   }, [wallet?.connected])
 
-    useEffect(() => {
-      if (wallet.connected) {
-        let publicKey = wallet?.publicKey?.toBase58()
-        if (fetchedHubsForUser.has(publicKey)) {
-          const hubs = filterHubsForUser(publicKey)
-          const sortedHubs = hubs?.sort((a, b) => {
-            return a?.data?.displayName?.localeCompare(b?.data?.displayName)
-          })
-          setProfileHubs(sortedHubs)
-          setSelectedHub(sortedHubs[0]?.publicKey)
-        }
+  useEffect(() => {
+    if (wallet.connected) {
+      let publicKey = wallet?.publicKey?.toBase58()
+      if (fetchedHubsForUser.has(publicKey)) {
+        const hubs = filterHubsForUser(publicKey)
+        const sortedHubs = hubs?.sort((a, b) => {
+          return a?.data?.displayName?.localeCompare(b?.data?.displayName)
+        })
+        setProfileHubs(sortedHubs)
+        setSelectedHub(sortedHubs[0]?.publicKey)
       }
-    }, [fetchedHubsForUser])
+    }
+  }, [fetchedHubsForUser])
 
   useEffect(() => {
     if (isPublishing) {
@@ -242,6 +244,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
         ...formValues,
         releaseForm: values,
       })
+      console.log('formValues', formValues)
     },
     [formValues]
   )
@@ -249,23 +252,23 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   const handleSubmit = async () => {
     try {
       if (releaseCreated) {
-        // if not in hub
-        router.push(
-          {
-            pathname: `/${releasePubkey.toBase58()}`,
-            query: {
-              metadata: JSON.stringify(metadata),
+        if (hubPubkey) {
+          router.push({
+            pathname: `/${
+              hubData.handle
+            }/releases/${releaseInfo.hubRelease.toBase58()}`,
+          })
+        } else {
+          router.push(
+            {
+              pathname: `/${releasePubkey.toBase58()}`,
+              query: {
+                metadata: JSON.stringify(metadata),
+              },
             },
-          },
-          `/${releasePubkey.toBase58()}`
-        )
-
-        // if in hub
-        // router.push({
-        //   pathname: `/${
-        //     hubData.handle
-        //   }/releases/${releaseInfo.hubRelease.toBase58()}`,
-        // })
+            `/${releasePubkey.toBase58()}`
+          )
+        }
       } else if (track && artwork && md5Digest) {
         const error = await checkIfHasBalanceToCompleteAction(
           NinaProgramAction.RELEASE_INIT_WITH_CREDIT
@@ -289,6 +292,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
         let upload = uploadId
         let artworkResult = artworkTx
         if (!uploadId) {
+          console.log('upload id in progress')
           setIsPublishing(true)
           enqueueSnackbar(
             'Uploading artwork to Arweave.  Please confirm in wallet.',
@@ -373,17 +377,17 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
               let result
 
               // if in hub
-              //    const result = await releaseInitViaHub({
-              //      hubPubkey,
-              //      ...formValues.releaseForm,
-              //      release: info.release,
-              //      releaseBump: info.releaseBump,
-              //      releaseMint: info.releaseMint,
-              //      metadataUri: `https://arweave.net/${metadataResult}`,
-              //    })
-
-              // if not in hub
-              if (selectedHub && selectedHub !== '') {
+              if (hubPubkey) {
+                result = await releaseInitViaHub({
+                  hubPubkey,
+                  ...formValues.releaseForm,
+                  release: info.release,
+                  releaseBump: info.releaseBump,
+                  releaseMint: info.releaseMint,
+                  metadataUri: `https://arweave.net/${metadataResult}`,
+                })
+              } else if (selectedHub && selectedHub !== '') {
+                selectedHub && selectedHub !== ''
                 result = await releaseInitViaHub({
                   ...formValues.releaseForm,
                   hubPubkey: selectedHub,
@@ -392,6 +396,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                   releaseMint: info.releaseMint,
                   metadataUri: `https://arweave.net/${metadataResult}`,
                 })
+                console.log('result', result)
               } else {
                 result = await releaseCreate({
                   ...formValues.releaseForm,
@@ -465,8 +470,8 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
           Please connect your wallet to start publishing
         </ConnectMessage>
       )}
-      {/* IS NOT IN HUB */}
       {wallet?.connected &&
+        !hubPubkey &&
         npcAmountHeld === 0 &&
         (!profileHubs || profileHubs?.length === 0) && (
           <Box style={{ display: 'flex' }}>
@@ -490,39 +495,73 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
           </Box>
         )}
       {/* || in hub */}
-      {wallet?.connected && (npcAmountHeld >= 1 || profileHubs?.length > 0) && (
-        <>
-          <UploadInfoModal
-            userHasSeenUpdateMessage={localStorage.getItem(
-              'nina-upload-update-message'
-            )}
-          />
-          <NinaBox columns="350px 400px" gridColumnGap="10px">
-            <Box sx={{ width: '100%' }}>
-              <MediaDropzones
-                setTrack={setTrack}
-                setArtwork={setArtwork}
-                values={formValues}
-                releasePubkey={releasePubkey}
-                track={track}
-                disabled={isPublishing || releaseCreated}
-                handleProgress={handleProgress}
-                processingProgress={processingProgress}
-              />
-            </Box>
-            <CreateFormWrapper>
-              <ReleaseCreateForm
-                onChange={handleFormChange}
-                values={formValues.releaseForm}
-                ReleaseCreateSchema={ReleaseCreateSchema}
-                disabled={isPublishing || releaseCreated}
-              />
-            </CreateFormWrapper>
-            <CreateCta>
-              {bundlrBalance === 0 ? (
-                <BundlrModal inCreate={true} />
-              ) : (
-                formValuesConfirmed && (
+      {wallet?.connected &&
+        (npcAmountHeld >= 1 || profileHubs?.length > 0 || hubPubkey) && (
+          <>
+            <UploadInfoModal
+              userHasSeenUpdateMessage={localStorage.getItem(
+                'nina-upload-update-message'
+              )}
+            />
+            <NinaBox columns="350px 400px" gridColumnGap="10px">
+              <Box sx={{ width: '100%' }}>
+                <MediaDropzones
+                  setTrack={setTrack}
+                  setArtwork={setArtwork}
+                  values={formValues}
+                  releasePubkey={releasePubkey}
+                  track={track}
+                  disabled={isPublishing || releaseCreated}
+                  handleProgress={handleProgress}
+                  processingProgress={processingProgress}
+                />
+              </Box>
+              <CreateFormWrapper>
+                <ReleaseCreateForm
+                  onChange={handleFormChange}
+                  values={formValues.releaseForm}
+                  ReleaseCreateSchema={ReleaseCreateSchema}
+                  disabled={isPublishing || releaseCreated}
+                />
+              </CreateFormWrapper>
+              <CreateCta>
+                {bundlrBalance === 0 ? (
+                  <BundlrModal inCreate={true} />
+                ) : (
+                  formValuesConfirmed &&
+                  bundlrBalance > 0 && (
+                    <Button
+                      fullWidth
+                      variant="outlined"
+                      color="primary"
+                      onClick={(e) => handleSubmit(e)}
+                      disabled={
+                        isPublishing ||
+                        !formIsValid ||
+                        bundlrBalance === 0 ||
+                        mbs < uploadSize ||
+                        artwork?.meta.status === 'uploading' ||
+                        (track?.meta.status === 'uploading' &&
+                          !releaseCreated) ||
+                        (artworkTx && trackTx && metadataTx && !releaseCreated)
+                      }
+                      href={
+                        releaseCreated && hubPubkey
+                          ? `/${
+                              hubData?.handle
+                            }/releases/${releaseInfo.hubRelease?.toBase58()}`
+                          : `/${releasePubkey?.toBase58()}`
+                      }
+                      sx={{ height: '54px' }}
+                    >
+                      {isPublishing && !releaseCreated && (
+                        <Dots msg={publishingStepText} />
+                      )}
+                      {!isPublishing && buttonText}
+                    </Button>
+                  )
+                )}
+                {!canAddContent && (
                   <Button
                     fullWidth
                     variant="outlined"
@@ -534,91 +573,61 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                       bundlrBalance === 0 ||
                       mbs < uploadSize ||
                       artwork?.meta.status === 'uploading' ||
-                      (track?.meta.status === 'uploading' && !releaseCreated) ||
-                      (artworkTx && trackTx && metadataTx && !releaseCreated)
+                      (track?.meta.status === 'uploading' && !releaseCreated)
                     }
-                    href={`${
-                      releaseCreated
-                        ? `/${
-                            hubData.handle
-                          }/releases/${releaseInfo.hubRelease.toBase58()}`
-                        : `/${releasePubkey.toBase58()}`
-                    }`}
                     sx={{ height: '54px' }}
                   >
-                    {isPublishing && !releaseCreated && (
-                      <Dots msg={publishingStepText} />
-                    )}
-                    {!isPublishing && buttonText}
+                    You do not have allowance or permission to create releases.
                   </Button>
-                )
-              )}
-              {!canAddContent && (
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  color="primary"
-                  onClick={(e) => handleSubmit(e)}
-                  disabled={
-                    isPublishing ||
-                    !formIsValid ||
-                    bundlrBalance === 0 ||
-                    mbs < uploadSize ||
-                    artwork?.meta.status === 'uploading' ||
-                    (track?.meta.status === 'uploading' && !releaseCreated)
-                  }
-                  sx={{ height: '54px' }}
-                >
-                  You do not have allowance or permission to create releases.
-                </Button>
-              )}
-              {bundlrBalance > 0 && !formValuesConfirmed && (
-                <ReleaseCreateConfirm
-                  formValues={formValues}
-                  formIsValid={formIsValid && processingProgress === 1}
-                  handleSubmit={(e) => handleSubmit(e)}
-                  setFormValuesConfirmed={setFormValuesConfirmed}
-                  artwork={artwork}
-                  track={track}
-                  profileHubs={profileHubs}
-                  setSelectedHub={setSelectedHub}
-                  selectedHub={selectedHub}
-                  handleChange={(e) => handleHubSelect(e)}
-                />
-              )}
-
-              {pending && (
-                <LinearProgress
-                  variant="determinate"
-                  value={audioProgress || imageProgress}
-                />
-              )}
-              <Box display="flex" justifyContent="space-between">
-                {bundlrBalance > 0 && (
-                  <BundlrBalanceInfo variant="subtitle1" align="left">
-                    Balance: {bundlrBalance?.toFixed(4)} SOL / $
-                    {bundlrUsdBalance.toFixed(2)} / {mbs?.toFixed(2)} MB ($
-                    {(bundlrUsdBalance / mbs)?.toFixed(4)}/MB)
-                  </BundlrBalanceInfo>
                 )}
-                {bundlrBalance === 0 && (
-                  <BundlrBalanceInfo variant="subtitle1" align="left">
-                    Please fund your Upload Account to enable publishing
-                  </BundlrBalanceInfo>
-                )}
-                {uploadSize > 0 && (
-                  <Typography variant="subtitle1" align="right">
-                    Upload Size: {uploadSize} MB | Cost: $
-                    {(uploadSize * (bundlrUsdBalance / mbs)).toFixed(2)}
-                  </Typography>
+                {bundlrBalance > 0 && !formValuesConfirmed && (
+                  <ReleaseCreateConfirm
+                    formValues={formValues}
+                    formIsValid={formIsValid && processingProgress === 1}
+                    handleSubmit={(e) => handleSubmit(e)}
+                    setFormValuesConfirmed={setFormValuesConfirmed}
+                    artwork={artwork}
+                    track={track}
+                    profileHubs={profileHubs}
+                    setSelectedHub={setSelectedHub}
+                    selectedHub={selectedHub}
+                    handleChange={(e) => handleHubSelect(e)}
+                    hubPubkey={hubPubkey}
+                  />
                 )}
 
-                <BundlrModal inCreate={false} displaySmall={true} />
-              </Box>
-            </CreateCta>
-          </NinaBox>
-        </>
-      )}
+                {pending && (
+                  <LinearProgress
+                    variant="determinate"
+                    value={audioProgress || imageProgress}
+                  />
+                )}
+                <Box display="flex" justifyContent="space-between">
+                  {bundlrBalance > 0 && (
+                    <BundlrBalanceInfo variant="subtitle1" align="left">
+                      Balance: {bundlrBalance?.toFixed(4)} SOL / $
+                      {bundlrUsdBalance.toFixed(2)} / {mbs?.toFixed(2)} MB ($
+                      {(bundlrUsdBalance / mbs)?.toFixed(4)}/MB)
+                    </BundlrBalanceInfo>
+                  )}
+                  {bundlrBalance === 0 && (
+                    <BundlrBalanceInfo variant="subtitle1" align="left">
+                      Please fund your Upload Account to enable publishing
+                    </BundlrBalanceInfo>
+                  )}
+                  {uploadSize > 0 && (
+                    <Typography variant="subtitle1" align="right">
+                      Upload Size: {uploadSize} MB | Cost: $
+                      {(uploadSize * (bundlrUsdBalance / mbs)).toFixed(2)}
+                    </Typography>
+                  )}
+
+                  <BundlrModal inCreate={false} displaySmall={true} />
+                </Box>
+              </CreateCta>
+            </NinaBox>
+          </>
+        )}
     </Grid>
   )
 }
