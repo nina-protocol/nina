@@ -1,39 +1,29 @@
-import React, {useState, useEffect, useContext, useMemo} from 'react'
-import {styled} from '@mui/material/styles'
+import React, { useState } from 'react'
+import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import {encodeBase64} from 'tweetnacl-util'
-import axios from 'axios'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
 import LockIcon from '@mui/icons-material/Lock'
 import CloseIcon from '@mui/icons-material/Close'
 
-import {useWallet} from '@solana/wallet-adapter-react'
-import {useSnackbar} from 'notistack'
 import Dots from './Dots'
-import Box from '@mui/material/Box';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import DeleteIcon from '@mui/icons-material/Delete';
-import DownloadIcon from '@mui/icons-material/Download';
-import IconButton from '@mui/material/IconButton';
+import Box from '@mui/material/Box'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemText from '@mui/material/ListItemText'
+import DownloadIcon from '@mui/icons-material/Download'
+import IconButton from '@mui/material/IconButton'
 
-
-const GateUnlockModal = ({gates, releasePubkey, amountHeld, unlockGate}) => {
+const GateUnlockModal = ({ gates, amountHeld, unlockGate }) => {
   const [open, setOpen] = useState(false)
-  const {enqueueSnackbar} = useSnackbar()
-  const wallet = useWallet()
 
   const [inProgress, setInProgress] = useState(false)
   const [activeIndex, setActiveIndex] = useState()
-  const [file, setFile] = useState(undefined)
 
   const handleClose = () => {
     setOpen(false)
@@ -59,7 +49,7 @@ const GateUnlockModal = ({gates, releasePubkey, amountHeld, unlockGate}) => {
         color="primary"
         type="submit"
         onClick={() => setOpen(true)}
-        sx={{height: '55px', width: '100%'}}
+        sx={{ height: '55px', width: '100%' }}
       >
         {' '}
         {amountHeld > 0 ? <LockOpenIcon /> : <LockIcon />}
@@ -80,55 +70,59 @@ const GateUnlockModal = ({gates, releasePubkey, amountHeld, unlockGate}) => {
           <StyledPaper>
             <StyledCloseIcon onClick={() => handleClose()} />
 
-
             {amountHeld > 0 && (
               <>
-              <Typography variant="h5" sx={{mb: 1}}>
-                Here are the files that owning this release will gives you access to:
-              </Typography>
+                <Typography variant="h5" sx={{ mb: 1 }}>
+                  Here are the files that owning this release will gives you
+                  access to:
+                </Typography>
                 <List>
                   {gates.map((gate, index) => {
-                    console.log('gate :>> ', gate);
                     const fileSize = (gate.fileSize / (1024 * 1024)).toFixed(2)
                     return (
                       <ListItem
                         disableGutters
+                        key={index}
                         secondaryAction={
                           <Box>
-                            <IconButton aria-label="delete"
+                            <IconButton
+                              aria-label="delete"
                               disabled={inProgress && activeIndex === index}
                               onClick={() => {
                                 handleUnlockGate(gate, index)
                               }}
                             >
-                              {inProgress && activeIndex === index ? <Dots /> : <DownloadIcon />}
+                              {inProgress && activeIndex === index ? (
+                                <Dots />
+                              ) : (
+                                <DownloadIcon />
+                              )}
                             </IconButton>
                           </Box>
                         }
                       >
                         <ListItemButton>
-                          <ListItemText primary={`${gate.fileName} (${fileSize} mb)`} />
+                          <ListItemText
+                            primary={`${gate.fileName} (${fileSize} mb)`}
+                          />
                         </ListItemButton>
                       </ListItem>
                     )
-                  }
-
-                  )}
+                  })}
                 </List>
               </>
             )}
 
             {amountHeld === 0 && (
               <>
-                <Typography variant="h5" sx={{mb: 2}}>
+                <Typography variant="h5" sx={{ mb: 2 }}>
                   There is additional content associated with this release that
                   is only available to owners.
                 </Typography>
-                <Typography variant="h5" sx={{mb: 2}}>
-                  {gates.length > 1 ? 
-                  `Purchase this release to access ${gates.length} files.` :
-                 ` Purchase this release to access additional content.`
-                  }
+                <Typography variant="h5" sx={{ mb: 2 }}>
+                  {gates.length > 1
+                    ? `Purchase this release to access ${gates.length} files.`
+                    : ` Purchase this release to access additional content.`}
                 </Typography>
               </>
             )}
@@ -139,7 +133,7 @@ const GateUnlockModal = ({gates, releasePubkey, amountHeld, unlockGate}) => {
   )
 }
 
-const Root = styled('div')(({theme}) => ({
+const Root = styled('div')(() => ({
   display: 'flex',
   alignItems: 'center',
   width: '100%',
@@ -151,7 +145,7 @@ const StyledModal = styled(Modal)(() => ({
   justifyContent: 'center',
 }))
 
-const StyledPaper = styled(Paper)(({theme}) => ({
+const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   border: '2px solid #000',
   boxShadow: theme.shadows[5],
@@ -170,7 +164,7 @@ const StyledPaper = styled(Paper)(({theme}) => ({
   },
 }))
 
-const StyledCloseIcon = styled(CloseIcon)(({theme}) => ({
+const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
   position: 'absolute',
   right: theme.spacing(1),
   top: theme.spacing(1),

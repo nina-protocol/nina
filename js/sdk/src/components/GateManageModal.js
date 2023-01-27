@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useContext, useMemo} from 'react'
-import {styled} from '@mui/material/styles'
+import React, { useState } from 'react'
+import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
@@ -7,35 +7,38 @@ import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import CloseIcon from '@mui/icons-material/Close'
-import {encodeBase64} from 'tweetnacl-util'
+import { encodeBase64 } from 'tweetnacl-util'
 import axios from 'axios'
-import Box from '@mui/material/Box';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import DeleteIcon from '@mui/icons-material/Delete';
-import DownloadIcon from '@mui/icons-material/Download';
-import IconButton from '@mui/material/IconButton';
+import Box from '@mui/material/Box'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemText from '@mui/material/ListItemText'
+import DeleteIcon from '@mui/icons-material/Delete'
+import DownloadIcon from '@mui/icons-material/Download'
+import IconButton from '@mui/material/IconButton'
 
 import GateCreateModal from './GateCreateModal'
-import Divider from '@mui/material/Divider';
 
-import {useWallet} from '@solana/wallet-adapter-react'
-import {useSnackbar} from 'notistack'
+import { useWallet } from '@solana/wallet-adapter-react'
+import { useSnackbar } from 'notistack'
 import Dots from './Dots'
-import {maxHeight} from '@material-ui/system'
 
-const GateManageModal = ({handleFetchGates, metadata, releasePubkey, gates, unlockGate}) => {
-  const {enqueueSnackbar} = useSnackbar()
+const GateManageModal = ({
+  handleFetchGates,
+  metadata,
+  releasePubkey,
+  gates,
+  unlockGate,
+}) => {
+  const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const [file, setFile] = useState(undefined)
+  const [, setFile] = useState(undefined)
   const [open, setOpen] = useState(false)
   const [inProgress, setInProgress] = useState(false)
   const [activeIndex, setActiveIndex] = useState()
   const [action, setAction] = useState(undefined)
-   
+
   const handleClose = () => {
     setOpen(false)
     setFile(undefined)
@@ -64,8 +67,9 @@ const GateManageModal = ({handleFetchGates, metadata, releasePubkey, gates, unlo
       const messageBase64 = encodeBase64(message)
       const signature = await wallet.signMessage(message)
       const signatureBase64 = encodeBase64(signature)
-      const result = await axios.delete(
-        `${process.env.NINA_GATE_URL}/gate/${gate.id
+      await axios.delete(
+        `${process.env.NINA_GATE_URL}/gate/${
+          gate.id
         }?message=${encodeURIComponent(
           messageBase64
         )}&publicKey=${encodeURIComponent(
@@ -77,8 +81,7 @@ const GateManageModal = ({handleFetchGates, metadata, releasePubkey, gates, unlo
       enqueueSnackbar('Gate Deleted', {
         variant: 'info',
       })
-    } 
-    catch (error) {
+    } catch (error) {
       enqueueSnackbar('Gate Not Deleted', {
         variant: 'failure',
       })
@@ -94,7 +97,7 @@ const GateManageModal = ({handleFetchGates, metadata, releasePubkey, gates, unlo
         color="primary"
         type="submit"
         onClick={() => setOpen(true)}
-        sx={{height: '55px', width: '100%', mt: 1}}
+        sx={{ height: '55px', width: '100%', mt: 1 }}
       >
         <Typography variant="body2">Manage Gates</Typography>
       </Button>
@@ -114,20 +117,20 @@ const GateManageModal = ({handleFetchGates, metadata, releasePubkey, gates, unlo
           <StyledPaper>
             <StyledCloseIcon onClick={() => handleClose()} />
 
-            <Typography variant="h5" sx={{mb: 1}}>
+            <Typography variant="h5" sx={{ mb: 1 }}>
               Gate Manager
             </Typography>
 
             <Box>
-                <GateCreateModal
-                  releasePubkey={releasePubkey}
-                  handleFetchGates={handleFetchGates}
-                  metadata={metadata}
-                  gates={gates}
-                />
+              <GateCreateModal
+                releasePubkey={releasePubkey}
+                handleFetchGates={handleFetchGates}
+                metadata={metadata}
+                gates={gates}
+              />
 
               {gates.length > 0 && (
-                <Typography variant="body1" sx={{my: 1}}>
+                <Typography variant="body1" sx={{ my: 1 }}>
                   Existing Gates:
                 </Typography>
               )}
@@ -136,54 +139,55 @@ const GateManageModal = ({handleFetchGates, metadata, releasePubkey, gates, unlo
                 <List>
                   {gates.map((gate, index) => {
                     const fileSize = (gate.fileSize / (1024 * 1024)).toFixed(2)
-                    return(
-                      <ListItem 
+                    return (
+                      <ListItem
+                        key={index}
                         disableGutters
-
                         secondaryAction={
                           <Box>
-                            <IconButton aria-label="delete"
+                            <IconButton
+                              aria-label="delete"
                               disabled={inProgress && activeIndex === index}
                               onClick={() => {
                                 handleUnlockGate(gate, index)
                               }}
                             >
-                              {
-                                inProgress && activeIndex === index && action === 'unlock' ? 
-                                  <Dots />
-                                  :
-                                  <DownloadIcon />
-                              }
+                              {inProgress &&
+                              activeIndex === index &&
+                              action === 'unlock' ? (
+                                <Dots />
+                              ) : (
+                                <DownloadIcon />
+                              )}
                             </IconButton>
 
-
-                            <IconButton aria-label="delete"
+                            <IconButton
+                              aria-label="delete"
                               disabled={inProgress && activeIndex === index}
                               onClick={() => {
                                 handleDeleteGate(gate, index)
                               }}
                             >
-                              {
-                              inProgress && activeIndex === index && action === 'delete'?
+                              {inProgress &&
+                              activeIndex === index &&
+                              action === 'delete' ? (
                                 <Dots />
-                              :
+                              ) : (
                                 <DeleteIcon />
-                              }
+                              )}
                             </IconButton>
-
                           </Box>
                         }
                       >
                         <ListItemButton>
-                          <ListItemText primary={`${gate.fileName} (${fileSize} mb)`} />
+                          <ListItemText
+                            primary={`${gate.fileName} (${fileSize} mb)`}
+                          />
                         </ListItemButton>
                       </ListItem>
                     )
-                  }
-                    
-                  )}
+                  })}
                 </List>
-
               </GateWrapper>
             </Box>
           </StyledPaper>
@@ -193,7 +197,7 @@ const GateManageModal = ({handleFetchGates, metadata, releasePubkey, gates, unlo
   )
 }
 
-const Root = styled('div')(({theme}) => ({
+const Root = styled('div')(() => ({
   display: 'flex',
   alignItems: 'center',
   width: '100%',
@@ -206,14 +210,11 @@ const StyledModal = styled(Modal)(() => ({
 }))
 
 const GateWrapper = styled(Box)(() => ({
-  // border: '2px solid red',
   maxHeight: '400px',
   overflowY: 'auto',
 }))
 
-
-
-const StyledPaper = styled(Paper)(({theme}) => ({
+const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   border: '2px solid #000',
   boxShadow: theme.shadows[5],
@@ -232,10 +233,10 @@ const StyledPaper = styled(Paper)(({theme}) => ({
   },
 }))
 
-const StyledCloseIcon = styled(CloseIcon)(({theme}) => ({
+const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
   position: 'absolute',
   right: theme.spacing(1),
   top: theme.spacing(2),
 }))
 
-export default GateManageModal 
+export default GateManageModal

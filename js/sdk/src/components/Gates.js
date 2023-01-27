@@ -1,35 +1,33 @@
-import React, { useState, useEffect, useContext, useMemo } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import { encodeBase64 } from 'tweetnacl-util'
 import axios from 'axios'
 import Release from '../contexts/Release'
-import {useSnackbar} from 'notistack'
+import { useSnackbar } from 'notistack'
 import GateCreateModal from './GateCreateModal'
 import GateUnlockModal from './GateUnlockModal'
 import GateManageModal from './GateManageModal'
 
 import { useWallet } from '@solana/wallet-adapter-react'
-import Dots from './Dots'
 
-const Gates = ({ release, gate, isAuthority, releasePubkey, amountHeld, metadata }) => {
+const Gates = ({ isAuthority, releasePubkey, amountHeld, metadata }) => {
   const wallet = useWallet()
-  const {enqueueSnackbar} = useSnackbar()
+  const { enqueueSnackbar } = useSnackbar()
 
-  const {fetchGatesForRelease} = useContext(Release.Context)
+  const { fetchGatesForRelease } = useContext(Release.Context)
   const [gates, setGates] = useState(undefined)
 
   useEffect(() => {
     handleFetchGates(releasePubkey)
   }, [releasePubkey])
 
-    const handleFetchGates = async () => {
+  const handleFetchGates = async () => {
     const gates = await fetchGatesForRelease(releasePubkey)
-    if (gates.length > 0){
+    if (gates.length > 0) {
       setGates(gates)
     } else {
       setGates(undefined)
     }
-    console.log('gates :>> ', gates);
   }
 
   const unlockGate = async (gate) => {
@@ -41,7 +39,8 @@ const Gates = ({ release, gate, isAuthority, releasePubkey, amountHeld, metadata
       const signature = await wallet.signMessage(message)
       const signatureBase64 = encodeBase64(signature)
       const result = await axios.get(
-        `${process.env.NINA_GATE_URL}/gate/${gate.id
+        `${process.env.NINA_GATE_URL}/gate/${
+          gate.id
         }?message=${encodeURIComponent(
           messageBase64
         )}&publicKey=${encodeURIComponent(
@@ -57,7 +56,7 @@ const Gates = ({ release, gate, isAuthority, releasePubkey, amountHeld, metadata
         },
         responseType: 'blob',
       })
-      
+
       if (response?.data) {
         const a = document.createElement('a')
         const url = window.URL.createObjectURL(response.data)
@@ -114,13 +113,11 @@ const Gates = ({ release, gate, isAuthority, releasePubkey, amountHeld, metadata
   )
 }
 
-const Root = styled('div')(({ theme }) => ({
+const Root = styled('div')(() => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   width: '100%',
-
 }))
-
 
 export default Gates
