@@ -59,7 +59,7 @@ const GateUnlockModal = ({gates, releasePubkey, amountHeld, unlockGate}) => {
         color="primary"
         type="submit"
         onClick={() => setOpen(true)}
-        sx={{height: '55px', width: '100%', mt: 1}}
+        sx={{height: '55px', width: '100%'}}
       >
         {' '}
         {amountHeld > 0 ? <LockOpenIcon /> : <LockIcon />}
@@ -88,6 +88,7 @@ const GateUnlockModal = ({gates, releasePubkey, amountHeld, unlockGate}) => {
               </Typography>
                 <List>
                   {gates.map((gate, index) => {
+                    console.log('gate :>> ', gate);
                     const fileSize = (gate.fileSize / (1024 * 1024)).toFixed(2)
                     return (
                       <ListItem

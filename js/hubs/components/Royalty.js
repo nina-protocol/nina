@@ -91,11 +91,15 @@ const Royalty = (props) => {
   return (
     <Root>
       <SettingsButton
-        variant="contained"
+        variant="outlined"
         color="primary"
         type="submit"
         onClick={() => setOpen(true)}
-        sx={{ mt: 1 }}
+        sx={{ 
+          mt: 1,
+          width: '155px',
+          height: '55px',
+         }}
       >
         <Typography variant="body2" align="left">
           Revenue Share
@@ -207,7 +211,6 @@ const ToggleButton = styled(Button)(({ theme }) => ({
 }))
 const SettingsButton = styled(Button)(({ theme }) => ({
   '& p': {
-    border: `1px solid ${theme.palette.text.primary}`,
     padding: '10px',
     '&:hover': {
       opacity: '50%',

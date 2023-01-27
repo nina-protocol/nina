@@ -37,7 +37,7 @@ const GateCreateModal = ({handleFetchGates, metadata, releasePubkey, gates}) => 
       const messageBase64 = encodeBase64(message)
       const signature = await wallet.signMessage(message)
       const signatureBase64 = encodeBase64(signature)
-      const sanitizedFileName = file.name.replace(' ', '_')
+      const sanitizedFileName = file.name.replaceAll(' ', '_')
 
       const response = await axios.post(`${process.env.NINA_GATE_URL}/gate`, {
         fileSize: file.size,

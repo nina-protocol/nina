@@ -20,6 +20,8 @@ const HubsModal = dynamic(() => import('./HubsModal'))
 
 import dynamic from 'next/dynamic'
 
+const BUTTON_WIDTH = '155px'
+
 const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, inPost, hubPubkey } = props
   const { enqueueSnackbar } = useSnackbar()
@@ -234,11 +236,12 @@ const ReleasePurchase = (props) => {
         onSubmit={handleSubmit}
         style={{
           textAlign: 'left',
-          marginBottom: '10px',
-          marginTop: { md: '0px', lg: '20px' },
+          marginBottom: '8px',
+          marginTop: { md: '0px', lg: '8px' },
         }}
+
       >
-        <BuyButton variant="contained" type="submit">
+        <BuyButton variant="outlined" type="submit">
           <Typography variant="body2" align="left">
             {txPending && <Dots msg="Preparing transaction" />}
             {!txPending && pending && <Dots msg="Awaiting wallet approval" />}
@@ -248,7 +251,7 @@ const ReleasePurchase = (props) => {
       </form>
 
       <Box sx={{
-        maxWidth: '135px',
+        maxWidth: BUTTON_WIDTH,
       }}>
         <Gates
           release={release}
@@ -261,8 +264,8 @@ const ReleasePurchase = (props) => {
 
       {amountHeld > 0 && (
         <BuyButton
-          variant="contained"
-          sx={{ marginBottom: '10px !important', mt: 1 }}
+          variant="outlined"
+          sx={{ mt: 1 }}
           onClick={(e) => {
             e.stopPropagation()
             downloadAs(
@@ -287,8 +290,9 @@ const ReleasePurchase = (props) => {
 }
 
 const BuyButton = styled(Button)(({ theme }) => ({
+  height: '55px',
+  width: BUTTON_WIDTH,
   '& p': {
-    border: `1px solid ${theme.palette.text.primary}`,
     padding: '10px',
     '&:hover': {
       opacity: '50%',
