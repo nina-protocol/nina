@@ -21,7 +21,6 @@ const HubCreateForm = ({
   hubData,
   handleBlur,
 }) => {
-
   useEffect(() => {
     if (onChange) {
       onChange(values)
@@ -229,7 +228,7 @@ const HubCreateForm = ({
           </>
         )}
 
-        <Field name="description" >
+        <Field name="description">
           {(props) => (
             <Box sx={{ mb: '8px', height: '175px' }}>
               <QuillEditor formikProps={props} update={update} type={'hub'} />

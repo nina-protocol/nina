@@ -95,11 +95,11 @@ const Royalty = (props) => {
         color="primary"
         type="submit"
         onClick={() => setOpen(true)}
-        sx={{ 
+        sx={{
           mt: 1,
           width: '155px',
           height: '55px',
-         }}
+        }}
       >
         <Typography variant="body2" align="left">
           Revenue Share

@@ -32,7 +32,7 @@ const ReleasePurchase = (props) => {
     releasePurchasePending,
     releasePurchaseTransactionPending,
     releaseState,
-    fetchGatesForRelease
+    fetchGatesForRelease,
   } = useContext(Release.Context)
   const { hubState } = useContext(Hub.Context)
   const {
@@ -59,14 +59,11 @@ const ReleasePurchase = (props) => {
     [releasePubkey, releasePurchasePending]
   )
 
-  const isAuthority = useMemo(
-    () => {
-      if (wallet.connected) {
-        return release?.authority === wallet?.publicKey.toBase58()
-      }
-    },
-    [release, wallet.connected]
-  )
+  const isAuthority = useMemo(() => {
+    if (wallet.connected) {
+      return release?.authority === wallet?.publicKey.toBase58()
+    }
+  }, [release, wallet.connected])
 
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
@@ -239,7 +236,6 @@ const ReleasePurchase = (props) => {
           marginBottom: '8px',
           marginTop: { md: '0px', lg: '8px' },
         }}
-
       >
         <BuyButton variant="outlined" type="submit">
           <Typography variant="body2" align="left">
@@ -250,9 +246,11 @@ const ReleasePurchase = (props) => {
         </BuyButton>
       </form>
 
-      <Box sx={{
-        maxWidth: BUTTON_WIDTH,
-      }}>
+      <Box
+        sx={{
+          maxWidth: BUTTON_WIDTH,
+        }}
+      >
         <Gates
           release={release}
           metadata={metadata}
