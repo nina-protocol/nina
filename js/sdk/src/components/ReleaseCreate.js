@@ -124,7 +124,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   }, [])
 
   useEffect(async () => {
-    // check if hub authority is set
     if (canAddContent && hubPubkey && hubData && hubData.authority) {
       getNpcAmountHeld()
     }
@@ -244,7 +243,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
         ...formValues,
         releaseForm: values,
       })
-      console.log('formValues', formValues)
     },
     [formValues]
   )
@@ -292,7 +290,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
         let upload = uploadId
         let artworkResult = artworkTx
         if (!uploadId) {
-          console.log('upload id in progress')
           setIsPublishing(true)
           enqueueSnackbar(
             'Uploading artwork to Arweave.  Please confirm in wallet.',
@@ -376,7 +373,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
               )
               let result
 
-              // if in hub
               if (hubPubkey) {
                 result = await releaseInitViaHub({
                   hubPubkey,
@@ -396,7 +392,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                   releaseMint: info.releaseMint,
                   metadataUri: `https://arweave.net/${metadataResult}`,
                 })
-                console.log('result', result)
               } else {
                 result = await releaseCreate({
                   ...formValues.releaseForm,
