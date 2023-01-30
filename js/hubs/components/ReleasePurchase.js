@@ -15,7 +15,6 @@ import Dots from './Dots'
 import Royalty from './Royalty'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 
-const CloseRelease = dynamic(() => import('./CloseRelease'))
 const HubsModal = dynamic(() => import('./HubsModal'))
 
 import dynamic from 'next/dynamic'
@@ -181,7 +180,7 @@ const ReleasePurchase = (props) => {
   }
 
   const buttonText =
-    release.remainingSupply > 0 || release.remainingSupply === -1
+    (release.remainingSupply > 0 || release.remainingSupply === -1)
       ? `Buy $${ninaClient.nativeToUiString(
           release.price,
           release.paymentMint

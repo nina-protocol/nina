@@ -148,7 +148,7 @@ const ReleaseCreateForm = ({
               aria-labelledby="amount"
               defaultValue={editionRef.current}
             >
-              <FormControlLabel
+              <StyledFormControlLabel
                 value="limited"
                 disableRipple
                 control={<FormRadio />}
@@ -158,7 +158,7 @@ const ReleaseCreateForm = ({
                 checked={!isOpen}
                 disabled={disabled}
               />
-              <FormControlLabel
+              <StyledFormControlLabel
                 value="unlimited"
                 disableRipple
                 control={<FormRadio />}
@@ -166,6 +166,7 @@ const ReleaseCreateForm = ({
                 onClick={(event) => handleEditionChange(event)}
                 checked={isOpen}
                 disabled={disabled}
+                sx={{ marginLeft: '1px', marginRight: '5px' }}
               />
             </RadioGroup>
           </FormControl>
@@ -336,6 +337,11 @@ const Warning = styled(Typography)(({ theme }) => ({
   top: '-5%',
   left: '122%',
   width: '220px',
+}))
+
+const StyledFormControlLabel = styled(FormControlLabel)(() => ({
+  marginLeft: '1px',
+  marginRight: '5px',
 }))
 
 export default withFormik({
