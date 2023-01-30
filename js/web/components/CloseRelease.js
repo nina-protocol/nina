@@ -32,7 +32,7 @@ const CloseRelease = (props) => {
                 variant="h5"
                 id="transition-modal-title"
               >
-                Are you sure you want to close this release?
+                Are you sure you want to close this Release?
               </Typography>
               <StyledModalTypography
                 align="center"
@@ -103,7 +103,7 @@ const StyledModalTypography = styled(Typography)(({ theme }) => ({
 
 const StyledModalWarningTypography = styled(Typography)(({ theme }) => ({
   marginTop: '15px !important',
-  color: 'red !important',
+  color: `${theme.palette.red} !important`,
 }))
 
 const StyledModalButton = styled(Button)(({ theme }) => ({

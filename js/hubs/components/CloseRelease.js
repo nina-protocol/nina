@@ -32,7 +32,7 @@ const CloseRelease = (props) => {
                 variant="h5"
                 id="transition-modal-title"
               >
-                Are you sure you want to close this release?
+                Are you sure you want to close this Release?
               </StyledModalTypography>
               <StyledModalTypography
                 align="center"
@@ -99,12 +99,12 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 
 const StyledModalTypography = styled(Typography)(({ theme }) => ({
   marginTop: '15px !important',
-  color: 'black !important',
+  color: theme.palette.black,
 }))
 
 const StyledModalWarningTypography = styled(Typography)(({ theme }) => ({
   marginTop: '15px !important',
-  color: 'red !important',
+  color: `${theme.palette.red} !important`,
 }))
 
 export default CloseRelease

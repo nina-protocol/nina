@@ -118,7 +118,7 @@ const ReleaseCreateConfirm = (props) => {
         <Box sx={style}>
           <Typography variant="h4">
             Please double check the following information before publishing your
-            release:
+            Release:
             {selectedHub?.publicKey}
           </Typography>
           <Box>
@@ -185,10 +185,10 @@ const ReleaseCreateConfirm = (props) => {
                 </Select>
               </FormControl>
             )}
-            <Typography variant="subtitle1" mt={1} sx={{ color: 'red' }}>
+            <StyledModalWarningTypography variant="subtitle1">
               ONCE PUBLISHED, YOUR RELEASE INFORMATION WILL BE PERMANENT AND YOU
               WILL NOT BE ABLE TO EDIT IT.
-            </Typography>
+            </StyledModalWarningTypography>
             <Value>
               <FormControlLabel
                 sx={{ mt: 1, mb: 1 }}
@@ -238,6 +238,11 @@ const Value = styled(Typography)(({ theme }) => ({
       overflowY: 'scroll',
     },
   },
+}))
+
+const StyledModalWarningTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.red,
+  marginTop: 1,
 }))
 
 export default ReleaseCreateConfirm

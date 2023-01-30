@@ -137,12 +137,7 @@ const ReleaseCreateForm = ({
           sx={{ display: 'flex', alignItems: 'left', textAlign: 'center' }}
         >
           <FormControl sx={{ flexDirection: 'row' }}>
-            <FormLabel
-              sx={{ marginTop: '10px', color: 'gray' }}
-              focused={false}
-            >
-              EDITION TYPE
-            </FormLabel>{' '}
+            <StyledFormLabel focused={false}>EDITION TYPE</StyledFormLabel>{' '}
             <RadioGroup
               row
               aria-labelledby="amount"
@@ -337,9 +332,21 @@ const Warning = styled(Typography)(({ theme }) => ({
   width: '220px',
 }))
 
-const StyledFormControlLabel = styled(FormControlLabel)(() => ({
-  marginLeft: '0 !important',
-  marginRight: '0 !important',
+const StyledFormLabel = styled(FormLabel)(({ theme }) => ({
+  marginTop: '10px',
+  color: theme.palette.grey,
+}))
+
+const StyledFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
+  marginLeft: '0',
+  marginRight: '0',
+  padding: '0px',
+  '& .MuiSvgIcon-root:not(.MuiSvgIcon-root ~ .MuiSvgIcon-root) path': {
+    color: theme.palette.black,
+  },
+  '& .MuiSvgIcon-root + .MuiSvgIcon-root': {
+    color: theme.palette.black,
+  },
 }))
 
 export default withFormik({
