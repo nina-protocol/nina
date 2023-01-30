@@ -31,6 +31,7 @@ export default [
       EmailCapture: 'src/components/EmailCapture.js',
       EmailCaptureForm: 'src/components/EmailCaptureForm.js',
       AudioPlayer: 'src/components/AudioPlayer.js',
+      HubCreate: 'src/components/HubCreate.js',
     },
     output: [
       {
