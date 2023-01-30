@@ -9,6 +9,7 @@ import makeStyles from '@mui/styles/makeStyles'
 import { styled } from '@mui/material/styles'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/esm/utils'
+import DevnetIndicator from '@nina-protocol/nina-internal-sdk/esm/DevnetIndicator'
 import IconButton from '@mui/material/IconButton'
 import Drawer from '@mui/material/Drawer'
 import MenuIcon from '@mui/icons-material/Menu'
@@ -189,6 +190,7 @@ const NavBar = ({ hubPubkey }) => {
                   </StyledWalletButton>
                 </StyledWalletDialogProvider>
               )}
+              <DevnetIndicator />
             </NavCtas>
           </WalletWrapper>
         </CtaWrapper>

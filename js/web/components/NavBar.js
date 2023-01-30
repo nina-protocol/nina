@@ -19,6 +19,7 @@ import Breadcrumbs from './Breadcrumbs'
 import NavSearch from './NavSearch'
 import SearchIcon from '@mui/icons-material/Search'
 import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
+import DevnetIndicator from '@nina-protocol/nina-internal-sdk/esm/DevnetIndicator'
 import FeedDrawer from './FeedDrawer'
 
 const NavBar = () => {
@@ -122,6 +123,7 @@ const NavBar = () => {
                     }`}
                   ></ConnectionDot>
                 </Tooltip>
+                <DevnetIndicator />
               </StyledWalletDialogProvider>
             )}
           </NavCtas>

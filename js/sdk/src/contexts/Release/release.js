@@ -405,6 +405,7 @@ const releaseContextHelper = ({
           instructions,
         }
       )
+
       await getConfirmTransaction(txid, provider.connection)
       await NinaSdk.Hub.fetchHubRelease(
         hubPubkey.toBase58(),
