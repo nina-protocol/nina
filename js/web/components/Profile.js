@@ -250,7 +250,7 @@ const Profile = ({ profilePubkey }) => {
       updatedView[viewIndex].playlist = collected
       setFetched(true)
     } catch (err) {
-      console.log(err)
+      console.warn(err)
     }
   }
 

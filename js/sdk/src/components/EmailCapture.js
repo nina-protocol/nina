@@ -7,10 +7,10 @@ import * as Yup from 'yup'
 import EmailCaptureForm from './EmailCaptureForm'
 import { Box } from '@mui/material'
 import { useWallet } from '@solana/wallet-adapter-react'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Nina from '../contexts/Nina'
 import { useSnackbar } from 'notistack'
 import CloseIcon from '@mui/icons-material/Close'
-import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
+import { logEvent } from '../utils/event'
 
 const style = {
   position: 'absolute',
@@ -22,15 +22,41 @@ const style = {
   boxShadow: 24,
   p: 4,
 }
+const requiredString =
+  'At least one of Soundcloud, Twitter, or Instagram is required'
 
-const EmailCaptureSchema = Yup.object().shape({
-  email: Yup.string().email().required('Email is Required'),
-  soundcloud: Yup.string(),
-  twitter: Yup.string(),
-  instagram: Yup.string(),
-  wallet: Yup.string(),
-  type: Yup.string(),
-})
+const EmailCaptureSchema = Yup.object().shape(
+  {
+    email: Yup.string().email().required('Email is Required'),
+    soundcloud: Yup.string().test(
+      'oneOfRequired',
+      requiredString,
+      (value, context) => {
+        const { twitter, instagram } = context.parent
+        return value || twitter || instagram
+      }
+    ),
+    twitter: Yup.string().test(
+      'oneOfRequired',
+      requiredString,
+      (value, context) => {
+        const { soundcloud, instagram } = context.parent
+        return value || soundcloud || instagram
+      }
+    ),
+    instagram: Yup.string().test(
+      'oneOfRequired',
+      requiredString,
+      (value, context) => {
+        const { soundcloud, twitter } = context.parent
+        return value || soundcloud || twitter
+      }
+    ),
+    wallet: Yup.string(),
+    type: Yup.string(),
+  },
+  [['soundcloud', 'twitter', 'instagram']]
+)
 
 const EmailCapture = ({ size }) => {
   const { enqueueSnackbar } = useSnackbar()
@@ -62,7 +88,7 @@ const EmailCapture = ({ size }) => {
   const handleSubmit = async () => {
     if (formIsValid) {
       try {
-        submitEmailRequest(formValues)
+        await submitEmailRequest(formValues)
         logEvent('email_request_success', 'engagement', {
           email: formValues.email,
         })
