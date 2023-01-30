@@ -136,7 +136,12 @@ const ReleaseCreateForm = ({
           className={classes.fieldInputWrapper}
           sx={{ display: 'flex', alignItems: 'left', textAlign: 'center' }}
         >
-          <FormControl sx={{ flexDirection: 'row' }}>
+          <FormControl
+            sx={{
+              flexDirection: 'row',
+              marginTop: '8px',
+            }}
+          >
             <StyledFormLabel focused={false}>EDITION TYPE</StyledFormLabel>{' '}
             <RadioGroup
               row
@@ -290,6 +295,7 @@ const FormRadio = (props) => {
         '&&:hover': {
           backgroundColor: 'transparent',
         },
+        padding: '6px',
       }}
       {...props}
     />
@@ -333,14 +339,14 @@ const Warning = styled(Typography)(({ theme }) => ({
 }))
 
 const StyledFormLabel = styled(FormLabel)(({ theme }) => ({
-  marginTop: '10px',
+  marginTop: '8px',
+  marginRight: '16px',
   color: theme.palette.grey,
 }))
 
 const StyledFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
   marginLeft: '0',
   marginRight: '0',
-  padding: '0px',
   '& .MuiSvgIcon-root:not(.MuiSvgIcon-root ~ .MuiSvgIcon-root) path': {
     color: theme.palette.black,
   },
