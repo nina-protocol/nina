@@ -238,7 +238,6 @@ const ReleasePurchase = (props) => {
     const result = await closeRelease(releasePubkey)
 
     if (result) {
-      console.log('success', result)
       showCompletedTransaction(result)
       setPendingTx(false)
       setShowCloseReleaseModal(false)
