@@ -36,6 +36,7 @@
     "@sentry/nextjs": "^7.8.0",
     "airtable": "^0.11.5",
     "ansi-regex": "^5.0.1",
+    "env-cmd": "^10.1.0",
     "ga-gtag": "^1.1.1",
     "glob-parent": "^5.1.2",
     "nanoid": "^3.1.31",

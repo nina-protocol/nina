@@ -66,6 +66,8 @@
   },
   "scripts": {
     "dev": "next",
+    "dev:devnet": "env-cmd -f .env.devnet next",
+    "dev:mainnet": "env-cmd -f .env.mainnet next",
     "build": "next build",
     "start": "next start",
     "lint": "eslint ./ --ignore-path ../../.gitignore",

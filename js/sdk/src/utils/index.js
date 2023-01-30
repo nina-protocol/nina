@@ -154,9 +154,8 @@ const parseChecker = (data) => {
 const getConfirmTransaction = async (txid, connection) => {
   const res = await promiseRetry(
     async (retry) => {
-      let txResult = await connection.getTransaction(txid, {
-        commitment: 'confirmed',
-      })
+      console.log('retrying', txid)
+      let txResult = undefined
 
       if (!txResult) {
         const error = new Error('Transaction was not confirmed')

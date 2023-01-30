@@ -22,6 +22,8 @@
     "clean": "shx rm -rf .next",
     "clean:dev": "shx rm -rf .next && rm -rf node_modules && rm -f yarn.lock",
     "dev": "next dev",
+    "dev:devnet": "env-cmd -f .env.devnet next",
+    "dev:mainnet": "env-cmd -f .env.mainnet next",
     "build": "yarn clean && next build",
     "start": "next start",
     "lint": "eslint ./ --ignore-path ../../.gitignore",
