@@ -33,8 +33,6 @@ export default [
       EmailCapture: 'src/components/EmailCapture.js',
       EmailCaptureForm: 'src/components/EmailCaptureForm.js',
       Gates: 'src/components/Gates.js',
-      // GateCreateModal: 'src/components/GateCreateModal.js',
-      // GateUnlockModal: 'src/components/GateUnlockModal.js',
     },
     output: [
       {

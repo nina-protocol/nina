@@ -103,18 +103,6 @@ const ReleasePurchase = (props) => {
     setAmountHeld(collection[releasePubkey] || 0)
   }, [collection[releasePubkey]])
 
-  // useEffect(() => {
-  //   const handleGetAmountHeld = async () => {
-  //     const amountHeld = await getAmountHeld(
-  //       releaseState.releaseMintMap[releasePubkey],
-  //       releasePubkey
-  //     )
-  //     console.log('amountHeld !!:>> ', amountHeld);
-  //     setAmountHeld(amountHeld)
-  //   }
-  // handleGetAmountHeld()
-  // }, [releasePubkey])
-
   useEffect(() => {
     getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
   }, [releasePubkey])
