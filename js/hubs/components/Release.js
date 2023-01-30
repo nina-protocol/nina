@@ -186,7 +186,6 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                   sx={{ height: '22px', width: '28px', m: 0, paddingLeft: 0 }}
                   onClickCapture={(e) => {
                     e.stopPropagation()
-                    setInitialized(true)
                     if (!audioPlayerRef.current.src) {
                       audioPlayerRef.current.load()
                     }

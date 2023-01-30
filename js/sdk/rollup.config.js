@@ -40,6 +40,7 @@ export default [
       UploadInfoModal: 'src/components/UploadInfoModal.js',
       Dots: 'src/components/Dots.js',
       BundlrModal: 'src/components/BundlrModal.js',
+      AudioPlayer: 'src/components/AudioPlayer.js',
     },
     output: [
       {

@@ -1,4 +1,10 @@
-import React, { createContext, useState, useContext, useRef } from 'react'
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useRef,
+  useEffect,
+} from 'react'
 import Nina from '../Nina'
 import Release from '../Release'
 import { logEvent } from '../../utils/event'
@@ -13,37 +19,27 @@ const AudioPlayerContextProvider = ({ children }) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [initialized, setInitialized] = useState(false)
   const audioPlayerRef = useRef()
+  const activeIndexRef = useRef()
 
   const playPrev = (shouldPlay = false) => {
-    if (playlist[currentIndex() - 1]) {
-      setTrack(playlist[currentIndex() - 1])
+    if (playlist[activeIndexRef.current - 1]) {
+      setTrack(playlist[activeIndexRef.current - 1])
       setIsPlaying(shouldPlay)
     }
   }
 
   const playNext = (shouldPlay = false) => {
-    if (playlist[currentIndex() + 1]) {
-      setTrack(playlist[currentIndex() + 1])
+    if (playlist[activeIndexRef.current + 1]) {
+      setTrack(playlist[activeIndexRef.current + 1])
       setIsPlaying(shouldPlay)
     } else {
       setIsPlaying(false)
     }
   }
 
-  const currentIndex = () => {
-    let index = undefined
-    if (playlist.length > 0) {
-      playlist.forEach((item, i) => {
-        if (item.releasePubkey === track?.releasePubkey) {
-          index = i
-          return
-        }
-      })
-    } else {
-      index = 0
-    }
-    return index
-  }
+  useEffect(() => {
+    activeIndexRef.current = playlist.indexOf(track) || 0
+  }, [track])
 
   const {
     reorderPlaylist,
@@ -62,8 +58,9 @@ const AudioPlayerContextProvider = ({ children }) => {
     shouldRemainInCollectionAfterSale,
     setIsPlaying,
     setTrack,
-    currentIndex,
+    activeIndexRef,
     track,
+    setInitialized,
   })
 
   const updateTrack = (
@@ -72,6 +69,7 @@ const AudioPlayerContextProvider = ({ children }) => {
     addToPlaylist = false,
     hubPublicKey = null
   ) => {
+    setInitialized(true)
     const existingTrack = playlist.filter(
       (item) => item.releasePubkey === releasePubkey
     )[0]
@@ -84,7 +82,7 @@ const AudioPlayerContextProvider = ({ children }) => {
       updatedPlaylist.push(item)
       setPlaylist(updatedPlaylist)
       setTrack(item)
-    } else if (existingTrack) {
+    } else {
       setTrack(existingTrack)
     }
     setIsPlaying(shouldPlay)
@@ -118,13 +116,13 @@ const AudioPlayerContextProvider = ({ children }) => {
         removeTrackFromQueue,
         isPlaying,
         setIsPlaying,
-        currentIndex,
         resetQueueWithPlaylist,
         createPlaylistFromTracks,
         createPlaylistFromTracksHubs,
         initialized,
         setInitialized,
         audioPlayerRef,
+        activeIndexRef,
       }}
     >
       {children}
@@ -143,6 +141,7 @@ const audioPlayerContextHelper = ({
   setTrack,
   track,
   ninaClient,
+  setInitialized,
 }) => {
   const reorderPlaylist = (updatedPlaylist) => {
     setPlaylist([...updatedPlaylist])
@@ -219,7 +218,7 @@ const audioPlayerContextHelper = ({
         }
       }
     })
-    setPlaylist([...playlist, ...playlistEntries])
+    setPlaylist((prevState) => [...prevState, ...playlistEntries])
   }
 
   const addTrackToQueue = (releasePubkey) => {
@@ -249,6 +248,7 @@ const audioPlayerContextHelper = ({
   }
 
   const resetQueueWithPlaylist = async (releasePubkeys) => {
+    setInitialized(true)
     setPlaylist([])
     const newPlaylist = []
     releasePubkeys.forEach((releasePubkey) => {
