@@ -269,7 +269,11 @@ const ReleasePurchase = (props) => {
         <BuyButton
           variant="contained"
           type="submit"
-          disabled={release.remainingSupply > 0 || release.remainingSupply === -1 ? false : true}
+          disabled={
+            release.remainingSupply > 0 || release.remainingSupply === -1
+              ? false
+              : true
+          }
         >
           <Typography variant="body2" align="left">
             {txPending && <Dots msg="Preparing transaction" />}

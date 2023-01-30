@@ -243,8 +243,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
         ...formValues,
         releaseForm: values,
       })
-      console.log('formValues.releaseForm', formValues.releaseForm)
-      console.log('formValues', formValues)
     },
     [formValues]
   )
@@ -325,9 +323,10 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
           if (uploadHasItemForType(upload, UploadType.track) || trackResult) {
             let metadataResult = metadataTx
             setIsPublishing(true)
-            const info = (await initializeReleaseAndMint(hubPubkey ? hubPubkey : undefined))
+            const info = await initializeReleaseAndMint(
+              hubPubkey ? hubPubkey : undefined
+            )
             // const info = await initializeReleaseAndMint()
-
 
             setReleaseInfo(info)
             setReleasePubkey(info.release)
@@ -376,7 +375,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
               let result
 
               if (hubPubkey) {
-            console.log(formValues.releaseForm)
                 result = await releaseInitViaHub({
                   hubPubkey,
                   ...formValues.releaseForm,
@@ -543,7 +541,9 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                         (artworkTx && trackTx && metadataTx && !releaseCreated)
                       }
                       href={
-                        releaseCreated && hubPubkey && releaseInfo?.hubRelease?.toBase58()
+                        releaseCreated &&
+                        hubPubkey &&
+                        releaseInfo?.hubRelease?.toBase58()
                           ? `/${
                               hubData.handle
                             }/releases/${releaseInfo?.hubRelease?.toBase58()}`
