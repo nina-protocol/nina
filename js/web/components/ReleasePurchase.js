@@ -410,24 +410,23 @@ const ReleasePurchase = (props) => {
       {userIsRecipient && (
         <>
           <Royalty releasePubkey={releasePubkey} release={release} />
-          {release.remainingSupply > 0 ||
-            (release.remainingSupply === -1 && (
-              <Button
-                variant="outlined"
-                color="primary"
-                fullWidth
-                sx={{ marginTop: '15px !important' }}
-                onClick={() => toggleCloseReleaseForm()}
-                disabled={release.remainingSupply === 0}
+          {(release.remainingSupply > 0 || release.remainingSupply === -1) && (
+            <Button
+              variant="outlined"
+              color="primary"
+              fullWidth
+              sx={{ marginTop: '15px !important' }}
+              onClick={() => toggleCloseReleaseForm()}
+              disabled={release.remainingSupply === 0}
+            >
+              <Typography
+                variant="body2"
+                sx={{ color: release.remainingSupply === 0 ? '' : 'red' }}
               >
-                <Typography
-                  variant="body2"
-                  sx={{ color: release.remainingSupply === 0 ? '' : 'red' }}
-                >
-                  Close Release
-                </Typography>
-              </Button>
-            ))}
+                Close Release
+              </Typography>
+            </Button>
+          )}
           {showCloseReleaseModal && (
             <CloseRelease
               handleCloseRelease={(e) => handleCloseRelease(e, releasePubkey)}

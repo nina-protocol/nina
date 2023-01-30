@@ -24,9 +24,6 @@ import Box from '@mui/material/Box'
 
 const { Quill } = ReactQuill
 
-// import 'quill/dist/quill.snow.css'
-// import 'quill/dist/quill.bubble.css'
-
 const QuillEditor = ({ formikProps, type, update }) => {
   const quillRef = useRef(null)
   const theme = type === 'release' ? 'bubble' : 'snow'

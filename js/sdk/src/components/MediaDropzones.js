@@ -5,7 +5,7 @@ import Box from '@mui/material/Box'
 
 const MediaDropzones = ({
   values,
-  relasePubkey,
+  releasePubkey,
   artwork,
   setArtwork,
   track,
@@ -31,7 +31,7 @@ const MediaDropzones = ({
       <label htmlFor="track"></label>
       <MediaDropzone
         type="track"
-        releasePubkey={relasePubkey}
+        releasePubkey={releasePubkey}
         track={track}
         setTrack={setTrack}
         handleProgress={handleProgress}
@@ -43,7 +43,7 @@ const MediaDropzones = ({
         type="artwork"
         artwork={artwork}
         setArtwork={setArtwork}
-        releasePubkey={relasePubkey}
+        releasePubkey={releasePubkey}
         metadata={metadata}
         handleProgress={handleProgress}
         disabled={disabled}

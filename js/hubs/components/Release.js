@@ -230,27 +230,26 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                     release={releaseState.tokenData[releasePubkey]}
                     releasePubkey={releasePubkey}
                   />
-                  {release.remainingSupply > 0 ||
-                    (release.remainingSupply === -1 && (
-                      <Button
-                        variant="outlined"
-                        sx={{ padding: '12px !important', marginTop: 2 }}
-                        onClick={() => toggleCloseReleaseForm()}
-                        disabled={release.remainingSupply === 0}
+                  {(release.remainingSupply > 0 ||
+                    release.remainingSupply === -1) && (
+                    <Button
+                      variant="outlined"
+                      sx={{ padding: '12px !important', marginTop: 2 }}
+                      onClick={() => toggleCloseReleaseForm()}
+                      disabled={release.remainingSupply === 0}
+                    >
+                      <Typography
+                        variant="body2"
+                        align="left"
+                        sx={{
+                          color: release.remainingSupply === 0 ? 'grey' : 'red',
+                          padding: 0,
+                        }}
                       >
-                        <Typography
-                          variant="body2"
-                          align="left"
-                          sx={{
-                            color:
-                              release.remainingSupply === 0 ? 'grey' : 'red',
-                            padding: 0,
-                          }}
-                        >
-                          Close Release
-                        </Typography>
-                      </Button>
-                    ))}
+                        Close Release
+                      </Typography>
+                    </Button>
+                  )}
                   {showCloseReleaseModal && (
                     <CloseRelease
                       handleCloseRelease={(e) =>

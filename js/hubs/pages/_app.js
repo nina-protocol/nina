@@ -17,7 +17,6 @@ import 'quill/dist/quill.bubble.css'
 import 'react-dropzone-uploader/dist/styles.css'
 import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 const NinaWrapper = dynamic(() => import('../components/NinaWrapper'))
-// const Dots = dynamic(() => import('../components/Dots'))
 const Layout = dynamic(() => import('../components/Layout'))
 // const lightTheme = createTheme(lightThemeOptions);
 

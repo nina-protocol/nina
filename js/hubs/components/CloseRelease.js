@@ -7,7 +7,7 @@ import Fade from '@mui/material/Fade'
 import Modal from '@mui/material/Modal'
 import Paper from '@mui/material/Paper'
 import Backdrop from '@mui/material/Backdrop'
-import Dots from './Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 
 const CloseRelease = (props) => {
   const { handleCloseRelease, open, setOpen, pendingTx, release } = props
@@ -27,30 +27,28 @@ const CloseRelease = (props) => {
         >
           <Fade in={open}>
             <StyledPaper>
-              <Typography
+              <StyledModalTypography
                 align="center"
                 variant="h5"
                 id="transition-modal-title"
-                sx={{ color: 'black !important' }}
               >
                 Are you sure you want to close this release?
-              </Typography>
-              <Typography
+              </StyledModalTypography>
+              <StyledModalTypography
                 align="center"
                 variant="body1"
                 id="transition-modal-description"
-                sx={{ marginTop: '15px !important', color: 'black !important' }}
               >
                 {`The release will no longer be available for primary sale and it will exist as an edition of ${release.saleCounter}.`}
-              </Typography>
-              <Typography
+              </StyledModalTypography>
+              <StyledModalWarningTypography
                 align="center"
                 variant="body1"
                 id="transition-modal-description"
                 sx={{ marginTop: '15px !important', color: 'red' }}
               >
                 This action is permanent and cannot be undone.
-              </Typography>
+              </StyledModalWarningTypography>
               <Box display="flex" justifyContent="flex-end" mt={2} />
               <Button
                 onClick={handleCloseRelease}
@@ -97,6 +95,16 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   maxHeight: '90vh',
   overflowY: 'auto',
   zIndex: '10',
+}))
+
+const StyledModalTypography = styled(Typography)(({ theme }) => ({
+  marginTop: '15px !important',
+  color: 'black !important',
+}))
+
+const StyledModalWarningTypography = styled(Typography)(({ theme }) => ({
+  marginTop: '15px !important',
+  color: 'red !important',
 }))
 
 export default CloseRelease
