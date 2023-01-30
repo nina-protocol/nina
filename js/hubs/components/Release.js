@@ -122,7 +122,6 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
     const result = await closeRelease(releasePubkey)
 
     if (result) {
-      console.log('success', result)
       showCompletedTransaction(result)
       setPendingTx(false)
       setShowCloseReleaseModal(false)
