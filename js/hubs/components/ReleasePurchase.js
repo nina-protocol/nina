@@ -152,10 +152,14 @@ const ReleasePurchase = (props) => {
 
   const buttonText =
     release.remainingSupply > 0
-      ? `Buy $${ninaClient.nativeToUiString(
-          release.price,
-          release.paymentMint
-        )}`
+      ? `${
+          release.price > 0
+            ? `Buy $${ninaClient.nativeToUiString(
+                release.price,
+                release.paymentMint
+              )}`
+            : 'Free'
+        }`
       : `Sold Out ($${ninaClient
           .nativeToUi(release.price, release.paymentMint)
           .toFixed(2)})`
