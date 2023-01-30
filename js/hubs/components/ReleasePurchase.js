@@ -158,7 +158,7 @@ const ReleasePurchase = (props) => {
                 release.price,
                 release.paymentMint
               )}`
-            : 'Free'
+            : 'Collect For Free'
         }`
       : `Sold Out ($${ninaClient
           .nativeToUi(release.price, release.paymentMint)
