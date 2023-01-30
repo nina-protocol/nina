@@ -180,7 +180,7 @@ const ReleasePurchase = (props) => {
   }
 
   const buttonText =
-    (release.remainingSupply > 0 || release.remainingSupply === -1)
+    release.remainingSupply > 0 || release.remainingSupply === -1
       ? `Buy $${ninaClient.nativeToUiString(
           release.price,
           release.paymentMint
