@@ -165,6 +165,7 @@ const hubContextHelper = ({
   setFetchedHubsForUser,
   verificationState,
   setVerificationState,
+  solBalance,
 }) => {
   const { ids, provider, endpoints } = ninaClient
 

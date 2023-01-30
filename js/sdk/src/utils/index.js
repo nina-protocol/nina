@@ -163,7 +163,7 @@ const getConfirmTransaction = async (txid, connection) => {
         const error = new Error('Transaction was not confirmed')
         logEvent('transaction_not_confirmed', 'engagement', {
           txid,
-        })  
+        })
         error.txid = txid
 
         retry(error)
@@ -180,7 +180,7 @@ const getConfirmTransaction = async (txid, connection) => {
   if (res.meta.err) {
     logEvent('transaction_failed', 'engagement', {
       txid,
-    })  
+    })
     throw new Error('Transaction failed')
   }
   return txid

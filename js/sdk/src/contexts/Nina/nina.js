@@ -670,16 +670,12 @@ const ninaContextHelper = ({
     try {
       if (bundlr && fundAmount) {
         await getUserBalances()
-        logEvent(
-          `bundlr_fund_init`,
-          'engagement',
-          {
-            fundAmount,
-            wallet: provider.wallet.publicKey.toBase58(),
-            solBalance,
-          }
-        )
-  
+        logEvent(`bundlr_fund_init`, 'engagement', {
+          fundAmount,
+          wallet: provider.wallet.publicKey.toBase58(),
+          solBalance,
+        })
+
         const value = uiToNative(fundAmount, ids.mints.wsol)
         if (
           value -
@@ -692,16 +688,12 @@ const ninaContextHelper = ({
         await bundlr.fund(value)
         await getBundlrBalance()
         await getUserBalances()
-        logEvent(
-          `bundlr_fund_success`,
-          'engagement',
-          {
-            fundAmount,
-            wallet: provider.wallet.publicKey.toBase58(),
-            solBalance,
-          }
-        )
-  
+        logEvent(`bundlr_fund_success`, 'engagement', {
+          fundAmount,
+          wallet: provider.wallet.publicKey.toBase58(),
+          solBalance,
+        })
+
         return {
           success: true,
           msg: `${fundAmount} Sol successfully deposited`,
@@ -709,15 +701,11 @@ const ninaContextHelper = ({
       }
     } catch (error) {
       console.warn('Bundlr fund error: ', error)
-      logEvent(
-        `bundlr_fund_failure`,
-        'engagement',
-        {
-          fundAmount,
-          wallet: provider.wallet.publicKey.toBase58(),
-          solBalance,
-        }
-      )
+      logEvent(`bundlr_fund_failure`, 'engagement', {
+        fundAmount,
+        wallet: provider.wallet.publicKey.toBase58(),
+        solBalance,
+      })
 
       return ninaErrorHandler(error)
     }
@@ -726,30 +714,22 @@ const ninaContextHelper = ({
   const bundlrWithdraw = async (withdrawAmount) => {
     try {
       if (bundlr && withdrawAmount) {
-        logEvent(
-          `bundlr_withdraw_init`,
-          'engagement',
-          {
-            withdrawAmount,
-            wallet: provider.wallet.publicKey.toBase58(),
-            solBalance,
-          }
-        )
+        logEvent(`bundlr_withdraw_init`, 'engagement', {
+          withdrawAmount,
+          wallet: provider.wallet.publicKey.toBase58(),
+          solBalance,
+        })
 
         const value = uiToNative(withdrawAmount, ids.mints.wsol)
         if (!value) return
         await bundlr.withdrawBalance(value)
         await getBundlrBalance()
         await getUserBalances()
-        logEvent(
-          `bundlr_withdraw_success`,
-          'engagement',
-          {
-            withdrawAmount,
-            wallet: provider.wallet.publicKey.toBase58(),
-            solBalance,
-          }
-        )
+        logEvent(`bundlr_withdraw_success`, 'engagement', {
+          withdrawAmount,
+          wallet: provider.wallet.publicKey.toBase58(),
+          solBalance,
+        })
 
         return {
           success: true,
@@ -758,15 +738,11 @@ const ninaContextHelper = ({
       }
     } catch (error) {
       console.warn('Bundlr withdraw error: ', error)
-      logEvent(
-        `bundlr_withdraw_failure`,
-        'engagement',
-        {
-          withdrawAmount,
-          wallet: provider.wallet.publicKey.toBase58(),
-          solBalance,
-        }
-      )
+      logEvent(`bundlr_withdraw_failure`, 'engagement', {
+        withdrawAmount,
+        wallet: provider.wallet.publicKey.toBase58(),
+        solBalance,
+      })
       return ninaErrorHandler(error)
     }
   }
@@ -811,13 +787,9 @@ const ninaContextHelper = ({
   const bundlrUpload = async (file) => {
     try {
       return new Promise((resolve, reject) => {
-        logEvent(
-          `bundlr_upload_init`,
-          'engagement',
-          {
-            wallet: provider.wallet.publicKey.toBase58(),
-          }
-        )
+        logEvent(`bundlr_upload_init`, 'engagement', {
+          wallet: provider.wallet.publicKey.toBase58(),
+        })
 
         const uploader = bundlr.uploader.chunkedUploader
         uploader.on('chunkUpload', (chunkInfo) => {
@@ -855,13 +827,9 @@ const ninaContextHelper = ({
         reader.readAsArrayBuffer(file)
       })
     } catch (error) {
-      logEvent(
-        `bundlr_upload_failure`,
-        'engagement',
-        {
-          wallet: provider.wallet.publicKey.toBase58(),
-        }
-      )
+      logEvent(`bundlr_upload_failure`, 'engagement', {
+        wallet: provider.wallet.publicKey.toBase58(),
+      })
 
       return ninaErrorHandler(error)
     }
@@ -900,13 +868,9 @@ const ninaContextHelper = ({
       const error = new Error(
         `You do not have enough SOL to send the transaction: ${action}.  You need at least ${NinaProgramActionCost[action]} SOL.`
       )
-      logEvent(
-        `bundlr_upload_init`,
-        'engagement',
-        {
-          wallet: provider.wallet.publicKey.toBase58(),
-        }
-      )
+      logEvent(`bundlr_upload_init`, 'engagement', {
+        wallet: provider.wallet.publicKey.toBase58(),
+      })
       return ninaErrorHandler(error)
     }
     return undefined

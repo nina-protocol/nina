@@ -1,5 +1,5 @@
 import gtag from 'ga-gtag'
-import * as Sentry from "@sentry/browser";
+import * as Sentry from '@sentry/browser'
 
 export const logEvent = (action, category, params = {}) => {
   gtag('event', action, {
@@ -10,6 +10,6 @@ export const logEvent = (action, category, params = {}) => {
     category,
     message: action,
     level: action.includes('failure') ? 'error' : 'info',
-    data: params
-  });  
+    data: params,
+  })
 }
