@@ -154,7 +154,6 @@ const ReleaseCreateForm = ({
                 control={<FormRadio />}
                 label="Limited"
                 onClick={(event) => handleEditionChange(event)}
-                sx={{ marginLeft: '1px', marginRight: '5px' }}
                 checked={!isOpen}
                 disabled={disabled}
               />
@@ -166,7 +165,6 @@ const ReleaseCreateForm = ({
                 onClick={(event) => handleEditionChange(event)}
                 checked={isOpen}
                 disabled={disabled}
-                sx={{ marginLeft: '1px', marginRight: '5px' }}
               />
             </RadioGroup>
           </FormControl>
@@ -340,8 +338,8 @@ const Warning = styled(Typography)(({ theme }) => ({
 }))
 
 const StyledFormControlLabel = styled(FormControlLabel)(() => ({
-  marginLeft: '1px',
-  marginRight: '5px',
+  marginLeft: '0 !important',
+  marginRight: '0 !important',
 }))
 
 export default withFormik({
