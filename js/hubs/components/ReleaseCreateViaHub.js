@@ -143,7 +143,7 @@ const ReleaseCreateViaHub = ({ canAddContent, hubPubkey }) => {
         setButtonText('Restart 3/4: Upload Metadata.')
       } else if (artworkTx && trackTx && metadataTx && !releaseCreated) {
         setButtonText(
-          'There may have been an error creating this release. Please check for the release in your profile and contact us before trying again.'
+          'There may have been an error creating this release. Please check for the release in your dashboard and email contact@ninaprotocol.com before trying again.'
         )
       } else if (mbs < uploadSize) {
         setButtonText(

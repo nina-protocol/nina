@@ -419,6 +419,7 @@ const releaseContextHelper = ({
 
       return { success: true }
     } catch (error) {
+      console.log('error', error.toString())
       logEvent('release_init_via_hub_failure', 'engagement', {
         publicKey: release.toBase58(),
         wallet: provider.wallet.publicKey.toBase58(),
