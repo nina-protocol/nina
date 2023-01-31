@@ -1,4 +1,5 @@
-import HubCreate from '../components/HubCreate'
+import React from 'react'
+import HubCreate from '@nina-protocol/nina-internal-sdk/esm/HubCreate'
 import Head from 'next/head'
 
 const CreateHubPage = () => {

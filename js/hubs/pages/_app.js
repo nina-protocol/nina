@@ -19,7 +19,7 @@ const NinaWrapper = dynamic(() => import('../components/NinaWrapper'))
 const Dots = dynamic(() => import('../components/Dots'))
 const Layout = dynamic(() => import('../components/Layout'))
 // const lightTheme = createTheme(lightThemeOptions);
-
+import 'react-dropzone-uploader/dist/styles.css'
 const App = ({ Component, pageProps }) => {
   const [loading, setLoading] = useState(false)
   const [sdkInitialized, setSdkInitialized] = useState(false)
