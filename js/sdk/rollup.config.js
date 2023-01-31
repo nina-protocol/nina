@@ -41,6 +41,7 @@ export default [
       Dots: 'src/components/Dots.js',
       BundlrModal: 'src/components/BundlrModal.js',
       AudioPlayer: 'src/components/AudioPlayer.js',
+      CloseRelease: 'src/components/CloseRelease.js',
     },
     output: [
       {

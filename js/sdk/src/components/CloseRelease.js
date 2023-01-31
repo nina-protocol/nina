@@ -57,12 +57,12 @@ const CloseRelease = (props) => {
                 fullWidth
                 sx={{ marginTop: '' }}
               >
-                <Typography variant="body2" sx={{ color: 'red' }}>
+                <StyledModalButtonTypography>
                   {pendingTx && (
                     <Dots msg={'Closing release, please confirm in wallet '} />
                   )}
                   {!pendingTx && 'Close Release'}
-                </Typography>
+                </StyledModalButtonTypography>
               </StyledModalButton>
             </StyledPaper>
           </Fade>
@@ -72,7 +72,7 @@ const CloseRelease = (props) => {
   )
 }
 
-const Root = styled(Box)(({ theme }) => ({
+const Root = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -97,17 +97,23 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 }))
 
 const StyledModalTypography = styled(Typography)(({ theme }) => ({
-  marginTop: '15px !important',
-  color: 'black !important',
+  marginTop: '15px',
+  color: `${theme.palette.black} !important`,
 }))
 
 const StyledModalWarningTypography = styled(Typography)(({ theme }) => ({
-  marginTop: '15px !important',
+  marginTop: '15px',
   color: `${theme.palette.red} !important`,
 }))
 
-const StyledModalButton = styled(Button)(({ theme }) => ({
-  marginTop: '15px !important',
+const StyledModalButton = styled(Button)(() => ({
+  marginTop: '15px',
+}))
+
+const StyledModalButtonTypography = styled(Typography)(({ theme }) => ({
+  color: `${theme.palette.red} !important`,
+  fontSize: '12px',
+  lineHeight: '13.8px',
 }))
 
 export default CloseRelease

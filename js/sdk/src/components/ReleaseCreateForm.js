@@ -267,7 +267,7 @@ const ReleaseCreateForm = ({
 
             <Field name="description">
               {(props) => (
-                <Box sx={{ borderBottom: '1px solid grey', height: '14vh' }}>
+                <Box sx={{ borderBottom: '1px solid grey', height: '13.5vh' }}>
                   <QuillEditor
                     formikProps={props}
                     type={'release'}
@@ -339,7 +339,8 @@ const FormControlBox = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'left',
   textAlign: 'center',
-  marginBottom: '6px',
+  marginBottom: '8px',
+  borderBottom: '1px solid black',
 }))
 
 const StyledFormLabel = styled(FormLabel)(({ theme }) => ({
@@ -370,7 +371,7 @@ export default withFormik({
       title: '',
       description: '',
       catalogNumber: '',
-      amount: '10',
+      amount: '',
       retailPrice: undefined,
       resalePercentage: 10,
       isOpen: false,
