@@ -122,7 +122,11 @@ const ReleaseCard = (props) => {
             height={350}
             width={350}
             layout="responsive"
-            src={getImageFromCDN(image, 400, new Date(release.releaseDatetime))}
+            src={getImageFromCDN(
+              image,
+              1200,
+              new Date(release.releaseDatetime)
+            )}
             alt={metadata?.name}
             priority={true}
             loader={loader}
