@@ -420,16 +420,16 @@ const ReleasePurchase = (props) => {
               variant="outlined"
               color="primary"
               fullWidth
-              sx={{ marginTop: '15px !important' }}
+              sx={{ marginTop: '15px' }}
               onClick={() => toggleCloseReleaseForm()}
               disabled={release.remainingSupply === 0}
             >
-              <Typography
+              <CloseReleaseTypography
                 variant="body2"
-                sx={{ color: release.remainingSupply === 0 ? '' : 'red' }}
+                closed={release.remainingSupply === 0}
               >
                 Close Release
-              </Typography>
+              </CloseReleaseTypography>
             </Button>
           )}
           {showCloseReleaseModal && (
@@ -504,6 +504,10 @@ const StyledDescription = styled(Typography)(({ theme }) => ({
     overflowY: 'scroll',
     height: '152px',
   },
+}))
+
+const CloseReleaseTypography = styled(Typography)(({ theme, closed }) => ({
+  color: closed ? '' : theme.palette.red,
 }))
 
 export default ReleasePurchase

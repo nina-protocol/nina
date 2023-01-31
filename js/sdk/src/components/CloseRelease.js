@@ -27,13 +27,13 @@ const CloseRelease = (props) => {
         >
           <Fade in={open}>
             <StyledPaper>
-              <Typography
+              <StyledModalTypography
                 align="center"
                 variant="h5"
                 id="transition-modal-title"
               >
                 Are you sure you want to close this Release?
-              </Typography>
+              </StyledModalTypography>
               <StyledModalTypography
                 align="center"
                 variant="body1"
