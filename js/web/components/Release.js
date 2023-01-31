@@ -87,8 +87,6 @@ const ReleaseComponent = ({ metadataSsr }) => {
     router.push(`/${releasePubkey}`)
   }
 
-  console.log('releasePubke !! :>> ', releasePubkey)
-
   return (
     <>
       <ReleaseWrapper>
