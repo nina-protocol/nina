@@ -32,6 +32,10 @@ export default [
       EmailCaptureForm: 'src/components/EmailCaptureForm.js',
       AudioPlayer: 'src/components/AudioPlayer.js',
       HubCreate: 'src/components/HubCreate.js',
+      HubCreateConfirm: 'src/components/HubCreateConfirm.js',
+      HubCreateForm: 'src/components/HubCreateForm.js',
+      HubImageDropzone: 'src/components/HubImageDropzone.js',
+      ColorModal: 'src/components/ColorModal.js',
     },
     output: [
       {
