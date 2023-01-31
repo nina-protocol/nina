@@ -73,5 +73,39 @@ export default function HubCreate({ update, hubData }) {
     NinaProgramAction,
   } = useContext(Nina.Context)
 
+
+  const [artwork, setArtwork] = useState()
+  const [uploadSize, setUploadSize] = useState()
+  const [hubPubkey, setHubPubkey] = useState(hubData?.publicKey || undefined)
+  const [buttonText, setButtonText] = useState(
+    update ? 'Update Hub' : 'Create Hub'
+  )
+  const [pending, setPending] = useState(false)
+  const [formIsValid, setFormIsValid] = useState(false)
+  const [formValues, setFormValues] = useState({
+    hubForm: {},
+  })
+  const [backgroundColor, setBackgroundColor] = useState()
+  const [textColor, setTextColor] = useState()
+  const [formValuesConfirmed, setFormValuesConfirmed] = useState(false)
+  const [isPublishing, setIsPublishing] = useState(false)
+  const [hubInfo, setHubInfo] = useState()
+  const [artworkTx, setArtworkTx] = useState()
+  const [metadataTx, setMetadataTx] = useState()
+  const [hubCreated, setHubCreated] = useState(false)
+  const [hubUpdated, setHubUpdated] = useState(false)
+  const [uploadId, setUploadId] = useState()
+  const [hubHandleValid, setHubHandleValid] = useState(false)
+  const [publishingStepText, setPublishingStepText] = useState()
+
+  const mbs = useMemo(
+    () => bundlrBalance / bundlrPricePerMb,
+    [bundlrBalance, bundlrPricePerMb]
+  )
+  const bundlrUsdBalance = useMemo(
+    () => bundlrBalance * solPrice,
+    [bundlrBalance, solPrice]
+  )
+
   return <Box>Hub Create</Box>
 }
