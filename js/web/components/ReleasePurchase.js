@@ -62,11 +62,9 @@ const ReleasePurchase = (props) => {
     getExchangesForRelease,
   } = useContext(Exchange.Context)
   const [release, setRelease] = useState(undefined)
-  // const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
   const [amountPendingBuys, setAmountPendingBuys] = useState(0)
   const [amountPendingSales, setAmountPendingSales] = useState(0)
   const [downloadButtonString, setDownloadButtonString] = useState('Download')
-  // const [userIsRecipient, setUserIsRecipient] = useState(false)
   const [exchangeTotalBuys, setExchangeTotalBuys] = useState(0)
   const [exchangeTotalSells, setExchangeTotalSells] = useState(0)
   const [publishedHub, setPublishedHub] = useState()
@@ -79,12 +77,6 @@ const ReleasePurchase = (props) => {
     () => releasePurchasePending[releasePubkey],
     [releasePubkey, releasePurchasePending]
   )
-
-  // const isAuthority = useMemo(() => {
-  //   if (wallet.connected) {
-  //     return release?.authority === wallet?.publicKey.toBase58()
-  //   }
-  // }, [release, wallet.connected])
 
   useEffect(() => {
     getRelease(releasePubkey)
@@ -122,19 +114,6 @@ const ReleasePurchase = (props) => {
       filterExchangesForReleaseBuySell(releasePubkey, false, false).length
     )
   }, [exchangeState])
-
-  // useEffect(() => {
-  //   if (release?.revenueShareRecipients) {
-  //     release.revenueShareRecipients.forEach((recipient) => {
-  //       if (
-  //         wallet?.connected &&
-  //         recipient.recipientAuthority === wallet?.publicKey.toBase58()
-  //       ) {
-  //         setUserIsRecipient(true)
-  //       }
-  //     })
-  //   }
-  // }, [release?.revenueShareRecipients, wallet?.connected])
 
   useEffect(() => {
     if (metadata?.descriptionHtml) {
@@ -330,10 +309,6 @@ const ReleasePurchase = (props) => {
           inSettings={false}
         />
       </Box>
-
-      {/* {userIsRecipient && (
-        <Royalty releasePubkey={releasePubkey} release={release} />
-      )} */}
     </Box>
   )
 }

@@ -170,33 +170,6 @@ const ReleasePurchase = (props) => {
           .nativeToUi(release.price, release.paymentMint)
           .toFixed(2)})`
 
-  // const downloadAs = async (url, name) => {
-  //   setDownloadButtonString('Downloading')
-
-  //   logEvent('track_download', 'engagement', {
-  //     publicKey: releasePubkey,
-  //     hub: hubPubkey,
-  //     wallet: wallet?.publicKey?.toBase58(),
-  //   })
-
-  //   const response = await axios.get(url, {
-  //     method: 'GET',
-  //     mode: 'cors',
-  //     headers: {
-  //       'Content-Type': 'application/octet-stream',
-  //     },
-  //     responseType: 'blob',
-  //   })
-  //   if (response?.data) {
-  //     const a = document.createElement('a')
-  //     const url = window.URL.createObjectURL(response.data)
-  //     a.href = url
-  //     a.download = name
-  //     a.click()
-  //   }
-  //   setDownloadButtonString('Download')
-  // }
-
   return (
     <ReleasePurchaseWrapper mt={1}>
       <AmountRemaining variant="body2" align="left">
