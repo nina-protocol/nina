@@ -132,10 +132,7 @@ const ReleaseCreateForm = ({
             </Box>
           )}
         </Field>
-        <Box
-          className={classes.fieldInputWrapper}
-          sx={{ display: 'flex', alignItems: 'left', textAlign: 'center' }}
-        >
+        <FormControlBox className={classes.fieldInputWrapper}>
           <FormControl
             sx={{
               flexDirection: 'row',
@@ -168,7 +165,7 @@ const ReleaseCreateForm = ({
               />
             </RadioGroup>
           </FormControl>
-        </Box>
+        </FormControlBox>
         <Field name="amount">
           {({ field }) => (
             <Box className={classes.fieldInputWrapper} align={'left'}>
@@ -336,6 +333,13 @@ const Warning = styled(Typography)(({ theme }) => ({
   top: '-5%',
   left: '122%',
   width: '220px',
+}))
+
+const FormControlBox = styled(Box)(() => ({
+  display: 'flex',
+  alignItems: 'left',
+  textAlign: 'center',
+  marginBottom: '6px',
 }))
 
 const StyledFormLabel = styled(FormLabel)(({ theme }) => ({
