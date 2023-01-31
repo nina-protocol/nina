@@ -7,13 +7,19 @@ import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { useSnackbar } from 'notistack'
-import SettingsIcon from '@mui/icons-material/Settings';
+import SettingsIcon from '@mui/icons-material/Settings'
 import Royalty from './Royalty'
 import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 import CloseIcon from '@mui/icons-material/Close'
 
-
-const ReleaseSettingsModal = ({ releasePubkey, metadata, userIsRecipient, isAuthority, release, amountHeld }) => {
+const ReleaseSettingsModal = ({
+  releasePubkey,
+  metadata,
+  userIsRecipient,
+  isAuthority,
+  release,
+  amountHeld,
+}) => {
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
 
@@ -23,16 +29,14 @@ const ReleaseSettingsModal = ({ releasePubkey, metadata, userIsRecipient, isAuth
 
   return (
     <Root>
-      {
-        (isAuthority || userIsRecipient) && (
-          <Button
-            onClick={() => setOpen(true)}
-            sx={{ height: '22px', width: '28px', m: 0 }}
-          >
-            <SettingsIcon sx={{ color: 'white' }} />
-          </Button>
-        )
-      }
+      {(isAuthority || userIsRecipient) && (
+        <Button
+          onClick={() => setOpen(true)}
+          sx={{ height: '22px', width: '28px', m: 0 }}
+        >
+          <SettingsIcon sx={{ color: 'white' }} />
+        </Button>
+      )}
 
       <StyledModal
         aria-labelledby="transition-modal-title"
@@ -47,12 +51,9 @@ const ReleaseSettingsModal = ({ releasePubkey, metadata, userIsRecipient, isAuth
       >
         <Fade in={open}>
           <StyledPaper>
-        
             <StyledCloseIcon onClick={() => handleClose()} />
 
-            <Typography variant='h4'>
-              Release Settings:
-            </Typography>
+            <Typography variant="h4">Release Settings:</Typography>
 
             {userIsRecipient && (
               <Royalty releasePubkey={releasePubkey} release={release} />
@@ -68,7 +69,6 @@ const ReleaseSettingsModal = ({ releasePubkey, metadata, userIsRecipient, isAuth
                 inSettings={true}
               />
             )}
-
           </StyledPaper>
         </Fade>
       </StyledModal>
@@ -107,7 +107,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   },
 }))
 
-const StyledCloseIcon = styled(CloseIcon)(({theme}) => ({
+const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
   position: 'absolute',
   right: theme.spacing(1),
   top: theme.spacing(1),

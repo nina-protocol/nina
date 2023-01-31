@@ -16,7 +16,6 @@ import Royalty from './Royalty'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 
-
 const HubsModal = dynamic(() => import('./HubsModal'))
 
 import dynamic from 'next/dynamic'
@@ -24,7 +23,14 @@ import dynamic from 'next/dynamic'
 const BUTTON_WIDTH = '155px'
 
 const ReleasePurchase = (props) => {
-  const { releasePubkey, metadata, inPost, hubPubkey, setAmountHeld, amountHeld } = props
+  const {
+    releasePubkey,
+    metadata,
+    inPost,
+    hubPubkey,
+    setAmountHeld,
+    amountHeld,
+  } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const router = useRouter()
@@ -44,7 +50,6 @@ const ReleasePurchase = (props) => {
     NinaProgramAction,
   } = useContext(Nina.Context)
   const [release, setRelease] = useState(undefined)
-  const [downloadButtonString, setDownloadButtonString] = useState('Download')
   const [userIsRecipient, setUserIsRecipient] = useState(false)
   const [publishedHub, setPublishedHub] = useState()
   const [gate, setGate] = useState(undefined)
@@ -253,7 +258,6 @@ const ReleasePurchase = (props) => {
           inSettings={false}
         />
       </Box>
-
     </ReleasePurchaseWrapper>
   )
 }

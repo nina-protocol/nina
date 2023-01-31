@@ -31,7 +31,14 @@ import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 
 const ReleasePurchase = (props) => {
-  const { releasePubkey, metadata, router, amountHeld, setAmountHeld, isAuthority } = props
+  const {
+    releasePubkey,
+    metadata,
+    router,
+    amountHeld,
+    setAmountHeld,
+    isAuthority,
+  } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const {
@@ -301,7 +308,7 @@ const ReleasePurchase = (props) => {
         </Typography>
       )}
       <StyledDescription align="left">{description}</StyledDescription>
-      <Box sx={{mb: 1}}>
+      <Box sx={{ mb: 1 }}>
         <form onSubmit={handleSubmit}>
           <Button variant="outlined" type="submit" fullWidth>
             <Typography variant="body2">

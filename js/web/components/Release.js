@@ -14,7 +14,7 @@ import ExchangeComponent from './Exchange'
 const ReleaseComponent = ({ metadataSsr }) => {
   const router = useRouter()
   const releasePubkey = router.query.releasePubkey
-    const [amountHeld, setAmountHeld] = useState()
+  const [amountHeld, setAmountHeld] = useState()
   const wallet = useWallet()
   const { releaseState, getRelease } = useContext(Release.Context)
   const { exchangeState } = useContext(Exchange.Context)
@@ -87,7 +87,7 @@ const ReleaseComponent = ({ metadataSsr }) => {
     router.push(`/${releasePubkey}`)
   }
 
-  console.log('releasePubke !! :>> ', releasePubkey);
+  console.log('releasePubke !! :>> ', releasePubkey)
 
   return (
     <>
@@ -112,7 +112,6 @@ const ReleaseComponent = ({ metadataSsr }) => {
                 amountHeld={amountHeld}
                 setAmountHeld={setAmountHeld}
                 isAuthority={isAuthority}
-
               />
             </ReleaseCtaWrapper>
           </NinaBox>

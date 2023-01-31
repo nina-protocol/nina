@@ -28,7 +28,7 @@ import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 const { getImageFromCDN, loader } = imageManager
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
-import {logEvent} from '@nina-protocol/nina-internal-sdk/src/utils/event'
+import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 
 const Royalty = dynamic(() => import('./Royalty'))
 const Button = dynamic(() => import('@mui/material/Button'))
@@ -45,9 +45,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const { getHub, hubState, getHubsForUser, filterHubsForUser } = useContext(
     Hub.Context
   )
-  const {
-    getAmountHeld,
-  } = useContext(Nina.Context)
+  const { getAmountHeld } = useContext(Nina.Context)
 
   const [metadata, setMetadata] = useState(metadataSsr || null)
   const [description, setDescription] = useState()
@@ -127,7 +125,6 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   }, [releaseState.tokenData[releasePubkey], wallet?.connected])
 
   const downloadAs = async (url, name) => {
-
     logEvent('track_download', 'engagement', {
       publicKey: releasePubkey,
       hub: hubPubkey,
@@ -226,7 +223,12 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
 
                 {amountHeld > 0 && (
                   <Button
-                    sx={{height: '22px', width: '28px', m: 0, marginLeft: '4px'}}
+                    sx={{
+                      height: '22px',
+                      width: '28px',
+                      m: 0,
+                      marginLeft: '4px',
+                    }}
                     onClick={(e) => {
                       e.stopPropagation()
                       downloadAs(
@@ -236,11 +238,10 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                           .toLowerCase()}___nina.mp3`
                       )
                     }}
-                    >
+                  >
                     <DownloadIcon />
                   </Button>
                 )}
-
               </Box>
             </CtaWrapper>
 

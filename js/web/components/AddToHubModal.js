@@ -93,7 +93,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
     <Root>
       <ModalToggleButton
         onClick={() => setOpen(true)}
-        sx={{ height: '22px', width: '22px', }}
+        sx={{ height: '22px', width: '22px' }}
       >
         <AutorenewIcon sx={{ color: 'white' }} />
       </ModalToggleButton>
@@ -215,9 +215,9 @@ const StyledModal = styled(Modal)(() => ({
 }))
 
 const ModalToggleButton = styled(Button)(() => ({
-  height: '22px', 
-  width: '28px', 
-  margin: '0px'
+  height: '22px',
+  width: '28px',
+  margin: '0px',
 }))
 
 const StyledPaper = styled(Paper)(({ theme }) => ({

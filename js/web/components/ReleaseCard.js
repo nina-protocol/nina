@@ -11,13 +11,12 @@ import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutli
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Image from 'next/image'
 import DownloadIcon from '@mui/icons-material/Download'
-import {logEvent} from '@nina-protocol/nina-internal-sdk/src/utils/event'
+import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import axios from 'axios'
 import AddToHubModal from './AddToHubModal.js'
 import ReleaseSettingsModal from './ReleaseSettingsModal.js'
 import Link from 'next/link'
-import {useSnackbar} from 'notistack'
-
+import { useSnackbar } from 'notistack'
 
 const { getImageFromCDN, loader } = imageManager
 
@@ -42,7 +41,7 @@ const ReleaseCard = (props) => {
     track,
     setInitialized,
   } = useContext(Audio.Context)
-  const {enqueueSnackbar} = useSnackbar()
+  const { enqueueSnackbar } = useSnackbar()
 
   const image = useMemo(() => metadata?.image)
   const title = useMemo(() => {
@@ -78,8 +77,8 @@ const ReleaseCard = (props) => {
       }
       enqueueSnackbar('Release Downloaded', { variant: 'success' })
     } catch (error) {
-      enqueueSnackbar('Release Downloaded', {variant: 'error'})
-    } 
+      enqueueSnackbar('Release Downloaded', { variant: 'error' })
+    }
   }
 
   return (
@@ -121,8 +120,7 @@ const ReleaseCard = (props) => {
               />
             </Box>
 
-
-            <Box display='flex'>
+            <Box display="flex">
               {amountHeld > 0 && (
                 <Box>
                   <Button
@@ -135,23 +133,21 @@ const ReleaseCard = (props) => {
                           .toLowerCase()}___nina.mp3`
                       )
                     }}
-                    sx={{height: '20px', width: '28px', marginRight: '0px'}}
+                    sx={{ height: '20px', width: '28px', marginRight: '0px' }}
                   >
-                    <DownloadIcon sx={{color: 'white'}}
-                    />
+                    <DownloadIcon sx={{ color: 'white' }} />
                   </Button>
                 </Box>
-              )}  
+              )}
 
-              <ReleaseSettingsModal 
-                userIsRecipient={userIsRecipient} 
-                isAuthority={isAuthority} 
+              <ReleaseSettingsModal
+                userIsRecipient={userIsRecipient}
+                isAuthority={isAuthority}
                 release={release}
                 releasePubkey={releasePubkey}
                 amountHeld={amountHeld}
                 metadata={metadata}
-                />
-
+              />
             </Box>
           </CtaWrapper>
         )}
