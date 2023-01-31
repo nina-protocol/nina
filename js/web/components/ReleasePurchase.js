@@ -31,7 +31,7 @@ import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 
 const ReleasePurchase = (props) => {
-  const { releasePubkey, metadata, router } = props
+  const { releasePubkey, metadata, router, amountHeld, setAmountHeld } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const {
@@ -55,7 +55,7 @@ const ReleasePurchase = (props) => {
     getExchangesForRelease,
   } = useContext(Exchange.Context)
   const [release, setRelease] = useState(undefined)
-  const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
+  // const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
   const [amountPendingBuys, setAmountPendingBuys] = useState(0)
   const [amountPendingSales, setAmountPendingSales] = useState(0)
   const [downloadButtonString, setDownloadButtonString] = useState('Download')
@@ -81,12 +81,6 @@ const ReleasePurchase = (props) => {
 
   useEffect(() => {
     getRelease(releasePubkey)
-    // handleFetchGates(releasePubkey)
-    // const hubForRelease = async (releasePubkey) => {
-    //   const result = await getPublishedHubForRelease(releasePubkey)
-    //   setPublishedHub(result?.hub)
-    // }
-    // hubForRelease(releasePubkey)
   }, [releasePubkey])
 
   useEffect(() => {
@@ -236,31 +230,6 @@ const ReleasePurchase = (props) => {
     pathString = '/collection'
   }
 
-  const downloadAs = async (url, name) => {
-    setDownloadButtonString('Downloading')
-
-    logEvent('track_download', 'engagement', {
-      publicKey: releasePubkey,
-    })
-
-    const response = await axios.get(url, {
-      method: 'GET',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/octet-stream',
-      },
-      responseType: 'blob',
-    })
-    if (response?.data) {
-      const a = document.createElement('a')
-      const url = window.URL.createObjectURL(response.data)
-      a.href = url
-      a.download = name
-      a.click()
-    }
-    setDownloadButtonString('Download')
-  }
-
   return (
     <Box>
       <AmountRemaining variant="body2" align="left">
@@ -332,7 +301,7 @@ const ReleasePurchase = (props) => {
         </Typography>
       )}
       <StyledDescription align="left">{description}</StyledDescription>
-      <Box mt={1}>
+      <Box sx={{mb: 1}}>
         <form onSubmit={handleSubmit}>
           <Button variant="outlined" type="submit" fullWidth>
             <Typography variant="body2">
@@ -344,11 +313,7 @@ const ReleasePurchase = (props) => {
         </form>
       </Box>
 
-      <Box
-        sx={{
-          mt: 1,
-        }}
-      >
+      <Box>
         <Gates
           release={release}
           metadata={metadata}
@@ -360,30 +325,6 @@ const ReleasePurchase = (props) => {
 
       {userIsRecipient && (
         <Royalty releasePubkey={releasePubkey} release={release} />
-      )}
-      {!isAuthority && amountHeld > 0 && (
-        <Button
-          variant="outlined"
-          fullWidth
-          sx={{ marginTop: '15px !important' }}
-          onClick={(e) => {
-            e.stopPropagation()
-            downloadAs(
-              metadata.properties.files[0].uri,
-              `${metadata.name
-                .replace(/[^a-z0-9]/gi, '_')
-                .toLowerCase()}___nina.mp3`
-            )
-          }}
-        >
-          <Typography variant="body2">
-            {downloadButtonString === 'Download' ? (
-              'Download'
-            ) : (
-              <Dots msg={downloadButtonString} />
-            )}
-          </Typography>
-        </Button>
       )}
     </Box>
   )
