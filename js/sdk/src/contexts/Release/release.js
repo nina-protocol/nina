@@ -1,6 +1,7 @@
-import React, { createContext, useState, useContext } from 'react'
+import React, { createContext, useEffect, useState, useContext } from 'react'
 import * as anchor from '@project-serum/anchor'
 import NinaSdk from '@nina-protocol/js-sdk'
+import promiseRetry from 'promise-retry'
 import Nina from '../Nina'
 import {
   createMintInstructions,
@@ -51,6 +52,8 @@ const ReleaseContextProvider = ({ children }) => {
   const [fetchedUserProfileReleases, setFetchedUserProfileReleases] = useState(
     {}
   )
+  const [pendingReleases, setPendingReleases] = useState({})
+
   const resetSearchResults = () => {
     setSearchResults(searchResultsInitialState)
   }
@@ -89,6 +92,7 @@ const ReleaseContextProvider = ({ children }) => {
     releaseInitViaHub,
     validateUniqueMd5Digest,
     getFeedForUser,
+    trackPendingRelease,
   } = releaseContextHelper({
     ninaClient,
     releaseState,
@@ -119,7 +123,32 @@ const ReleaseContextProvider = ({ children }) => {
     setFetchedUserProfileReleases,
     verficationState,
     setVerificationState,
+    pendingReleases,
+    setPendingReleases
   })
+
+  useEffect(() => {
+    initSdkIfNeeded()
+
+    let releaseCreationPending = localStorage.getItem(
+      'release_creation_pending'
+    )
+    
+    if (releaseCreationPending) {
+      releaseCreationPending = JSON.parse(releaseCreationPending)
+      console.log('releaseCreationPending', releaseCreationPending)
+      setPendingReleases(releaseCreationPending)
+      Object.keys(releaseCreationPending).forEach(releasePublicKey => {
+        const pendingRelease = releaseCreationPending[releasePublicKey]
+        trackPendingRelease({
+          releasePublicKey: new anchor.web3.PublicKey(releasePublicKey),
+          artist: pendingRelease.artist,
+          title: pendingRelease.title,
+        })
+      })
+    }
+  }, [])
+
 
   return (
     <ReleaseContext.Provider
@@ -166,6 +195,7 @@ const ReleaseContextProvider = ({ children }) => {
         validateUniqueMd5Digest,
         getFeedForUser,
         fetchedUserProfileReleases,
+        pendingReleases
       }}
     >
       {children}
@@ -196,6 +226,8 @@ const releaseContextHelper = ({
   setFetchedUserProfileReleases,
   verificationState,
   setVerificationState,
+  pendingReleases,
+  setPendingReleases
 }) => {
   const { provider, ids, nativeToUi, uiToNative, isSol, isUsdc, endpoints } =
     ninaClient
@@ -420,6 +452,13 @@ const releaseContextHelper = ({
       return { success: true }
     } catch (error) {
       console.log('error', error.toString())
+      if (error.toString().includes('unable_to_confirm_transaction')) {
+          trackPendingRelease({
+            releasePublicKey: release,
+            artist,
+            title
+          })
+      }
       logEvent('release_init_via_hub_failure', 'engagement', {
         publicKey: release.toBase58(),
         wallet: provider.wallet.publicKey.toBase58(),
@@ -1527,6 +1566,117 @@ const releaseContextHelper = ({
     }
   }
 
+  // Pending Release Helpers
+
+  const trackPendingRelease = async ({
+    releasePublicKey,
+    artist,
+    title,
+  }) => {
+    const releasePublicKeyString = releasePublicKey.toBase58()
+    await promiseRetry(
+      async (retry) => {
+        let { ninaReleaseExists, solanaReleaseExists } = await lookupPendingRelease({
+          releasePublicKey,
+          artist,
+          title,
+        })
+
+        if (!solanaReleaseExists) {
+          const error = new Error('release_does_not_exist_on_solana')
+          error.releasePublicKey = releasePublicKeyString
+  
+          retry(error)
+          return
+        }
+
+        if (!ninaReleaseExists) {
+          const error = new Error('release_does_not_exist_on_nina')
+          error.releasePublicKey = releasePublicKeyString
+          retry(error)
+          return
+        }
+
+        let releaseCreationPending = localStorage.getItem(
+          'release_creation_pending'
+        )
+
+        // if (releaseCreationPending) {
+        //   releaseCreationPending = JSON.parse(releaseCreationPending)
+        //   delete releaseCreationPending[releasePublicKeyString]
+        //   localStorage.setItem(
+        //     'release_creation_pending',
+        //     JSON.stringify(releaseCreationPending)
+        //   )
+        //   setPendingReleases(releaseCreationPending)
+        //   console.log('removed pending release: ', releasePublicKeyString)
+        // }
+
+        return releasePublicKeyString
+      },
+      {
+        retries: 60,
+        minTimeout: 500,
+        maxTimeout: 1000,
+      }
+    )
+  
+  }
+
+  const lookupPendingRelease = async ({
+    releasePublicKey,
+    artist,
+    title,
+  }) => {
+    const solanaAccount = await NinaSdk.client.program.account.release.fetch(releasePublicKey, 'confirmed')
+    const releasePublicKeyString = releasePublicKey.toBase58()
+    const ninaRelease = await NinaSdk.Release.fetch(releasePublicKeyString)
+    let releaseCreationPending = localStorage.getItem(
+      'release_creation_pending'
+    )
+    if (!releaseCreationPending) {
+      releaseCreationPending = {}
+    } else {
+      releaseCreationPending = JSON.parse(releaseCreationPending)
+    }
+    
+    let pendingRelease = releaseCreationPending[releasePublicKeyString]
+    if (pendingRelease) {
+      pendingRelease.ninaReleaseExists = ninaRelease.release ? true : false
+      pendingRelease.solanaReleaseExists = solanaAccount ? true : false
+    } else {
+      pendingRelease = {
+        artist,
+        title,
+        ninaReleaseExists: ninaRelease.release ? true : false,
+        solanaReleaseExists: solanaAccount ? true : false,
+        date: new Date()
+      }
+    }
+
+    const updatedReleaseCreationPending = {
+      ...releaseCreationPending,
+      [releasePublicKeyString]: pendingRelease,
+    }
+
+    setPendingReleases((prevState) => {
+      return {
+        ...prevState,
+        [releasePublicKeyString]: pendingRelease,
+      }
+    })
+
+    localStorage.setItem(
+      'release_creation_pending',
+      JSON.stringify(updatedReleaseCreationPending)
+    )
+    
+    return {
+      ninaReleaseExists: pendingRelease.ninaReleaseExists,
+      solanaReleaseExists: pendingRelease.solanaReleaseExists,
+    }
+  }
+
   return {
     releaseInitViaHub,
     releasePurchaseViaHub,
@@ -1554,6 +1704,7 @@ const releaseContextHelper = ({
     releaseCreateMetadataJson,
     validateUniqueMd5Digest,
     getFeedForUser,
+    trackPendingRelease
   }
 }
 

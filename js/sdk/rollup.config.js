@@ -32,6 +32,7 @@ export default [
       EmailCaptureForm: 'src/components/EmailCaptureForm.js',
       AudioPlayer: 'src/components/AudioPlayer.js',
       DevnetIndicator: 'src/components/DevnetIndicator.js',
+      PendingReleasesIndicator: 'src/components/PendingReleasesIndicator.js',
     },
     output: [
       {

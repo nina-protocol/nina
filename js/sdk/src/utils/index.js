@@ -155,9 +155,10 @@ const getConfirmTransaction = async (txid, connection) => {
   const res = await promiseRetry(
     async (retry) => {
       console.log('retrying', retry)
-      let txResult = await connection.getTransaction(txid, {
-        commitment: 'confirmed',
-      })
+      let txResult = undefined
+      // let txResult = await connection.getTransaction(txid, {
+      //   commitment: 'confirmed',
+      // })
 
       if (!txResult) {
         const error = new Error('unable_to_confirm_transaction')
@@ -169,7 +170,7 @@ const getConfirmTransaction = async (txid, connection) => {
       return txResult
     },
     {
-      retries: 40,
+      retries: 5,
       minTimeout: 500,
       maxTimeout: 1000,
     }
@@ -178,6 +179,36 @@ const getConfirmTransaction = async (txid, connection) => {
     throw new Error('Transaction failed')
   }
   return txid
+}
+
+const timeSince = (date) => {
+  const seconds = Math.floor((new Date() - date) / 1000)
+  let interval = seconds / 31536000
+  if (interval > 1) {
+    const roundedInterval = Math.floor(interval)
+    return roundedInterval + (roundedInterval === 1 ? ' year' : ' years')
+  }
+  interval = seconds / 2592000
+  if (interval > 1) {
+    const roundedInterval = Math.floor(interval)
+    return roundedInterval + (roundedInterval === 1 ? ' month' : ' months')
+  }
+  interval = seconds / 86400
+  if (interval > 1) {
+    const roundedInterval = Math.floor(interval)
+    return roundedInterval + (roundedInterval === 1 ? ' day' : ' days')
+  }
+  interval = seconds / 3600
+  if (interval > 1) {
+    const roundedInterval = Math.floor(interval)
+    return roundedInterval + (roundedInterval === 1 ? ' hour' : ' hours')
+  }
+  interval = seconds / 60
+  if (interval > 1) {
+    const roundedInterval = Math.floor(interval)
+    return roundedInterval + (roundedInterval === 1 ? ' minute' : ' minutes')
+  }
+  return Math.floor(seconds) + ' seconds'
 }
 
 export {
@@ -194,4 +225,5 @@ export {
   getMd5FileHash,
   stripQuotesIfNeeded,
   parseChecker,
+  timeSince
 }

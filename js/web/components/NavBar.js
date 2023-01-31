@@ -4,8 +4,9 @@ import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Tooltip from '@mui/material/Tooltip'
-import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import Button from '@mui/material/Button'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
 import Link from 'next/link'
@@ -20,15 +21,15 @@ import NavSearch from './NavSearch'
 import SearchIcon from '@mui/icons-material/Search'
 import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
 import DevnetIndicator from '@nina-protocol/nina-internal-sdk/esm/DevnetIndicator'
+import PendingReleasesIndicator from '@nina-protocol/nina-internal-sdk/esm/PendingReleasesIndicator'
 import FeedDrawer from './FeedDrawer'
 
 const NavBar = () => {
   const router = useRouter()
+  const { pendingReleases } = useContext(Release.Context)
   const {
     healthOk,
     getSubscriptionsForUser,
-    filterSubscriptionsForUser,
-    subscriptionState,
     getUserBalances,
   } = useContext(Nina.Context)
   const wallet = useWallet()
@@ -41,7 +42,6 @@ const NavBar = () => {
     return base58.slice(0, 4) + '..' + base58.slice(-4)
   }, [wallet, base58])
   const [connectedString, setConnectedString] = useState()
-
   useEffect(() => {
     setConnectedString(healthOk ? 'connected-healthy' : 'connected-unhealthy')
   }, [healthOk])
@@ -129,7 +129,8 @@ const NavBar = () => {
           </NavCtas>
         </DesktopWalletWrapper>
       </NavRight>
-      <FeedDrawer />
+      <PendingReleasesIndicator />
+      <FeedDrawer override={Object.keys(pendingReleases).length> 0}/>
     </Root>
   )
 }
@@ -142,6 +143,16 @@ const classes = {
   walletButtonWrapper: `${PREFIX}-walletButtonWrapper`,
   connectionDot: `${PREFIX}-connectionDot`,
 }
+
+const PendingReleases = styled(Box)(({ theme }) => ({
+  border: '1px solid red',
+  padding: '10px',
+  marginRight: '20px',
+  position: 'absolute',
+  background: 'white',
+  top: '40px',
+  right: '0',
+}))
 
 const Root = styled('nav')(({ theme }) => ({
   background: `${theme.palette.transparent}`,
