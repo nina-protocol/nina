@@ -55,7 +55,6 @@ const CloseRelease = (props) => {
                 color="primary"
                 type="submit"
                 fullWidth
-                sx={{ marginTop: '' }}
               >
                 <StyledModalButtonTypography>
                   {pendingTx && (

@@ -29,7 +29,9 @@ import rehypeExternalLinks from 'rehype-external-links'
 import Royalty from './Royalty'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import dynamic from 'next/dynamic'
-const CloseRelease = dynamic(() => import('@nina-protocol/nina-internal-sdk/esm/CloseRelease'))
+const CloseRelease = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/CloseRelease')
+)
 const ReleasePurchase = (props) => {
   const { releasePubkey, metadata, router } = props
   const { enqueueSnackbar } = useSnackbar()
