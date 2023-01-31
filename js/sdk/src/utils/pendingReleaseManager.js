@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import NinaSdk from '@nina-protocol/js-sdk'
 import { initSdkIfNeeded } from './sdkInit'
-import Nina from '../contexts/Nina'
 
 const PendingReleaseManager = () => {
   const [pendingReleases, setPendingReleases] = useState({})
