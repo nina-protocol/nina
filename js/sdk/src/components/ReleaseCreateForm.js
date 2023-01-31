@@ -267,9 +267,7 @@ const ReleaseCreateForm = ({
 
             <Field name="description">
               {(props) => (
-                <Box
-                  sx={{ borderBottom: '1px solid grey', maxHeight: '13.5vh' }}
-                >
+                <Box sx={{ borderBottom: '1px solid grey', height: '90px' }}>
                   <QuillEditor
                     formikProps={props}
                     type={'release'}
@@ -294,7 +292,7 @@ const FormRadio = (props) => {
         '&&:hover': {
           backgroundColor: 'transparent',
         },
-        padding: '6px',
+        padding: '4px 6px',
       }}
       {...props}
     />

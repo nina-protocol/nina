@@ -25,7 +25,7 @@ const QuillEditor = ({ formikProps, type }) => {
   switch (type) {
     case 'release':
       toolbarValues = false
-      height = '110px'
+      height = '65px'
       break
     case 'hub':
       toolbarValues = [

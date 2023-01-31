@@ -489,7 +489,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
             </NpcMessage>
           </Box>
         )}
-      {/* || in hub */}
       {wallet?.connected &&
         (npcAmountHeld >= 1 || profileHubs?.length > 0 || hubPubkey) && (
           <>

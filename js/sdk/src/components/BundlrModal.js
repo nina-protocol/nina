@@ -108,11 +108,7 @@ const BundlrModal = ({ inCreate, displaySmall }) => {
           type="submit"
           onClick={() => setOpen(true)}
         >
-          <Typography
-            align={'right'}
-            variant="subtitle1"
-            textTransform={'none'}
-          >
+          <Typography align={'right'} textTransform={'none'}>
             Manage Upload Account
           </Typography>
         </Button>
