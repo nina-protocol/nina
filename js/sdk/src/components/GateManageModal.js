@@ -236,7 +236,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
   position: 'absolute',
   right: theme.spacing(1),
-  top: theme.spacing(2),
+  top: theme.spacing(1),
 }))
 
 export default GateManageModal

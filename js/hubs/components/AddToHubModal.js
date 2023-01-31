@@ -208,7 +208,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
 const Root = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  width: '100%',
+  // width: '100%',
 }))
 
 const ModalToggle = styled(Button)(({ theme }) => ({

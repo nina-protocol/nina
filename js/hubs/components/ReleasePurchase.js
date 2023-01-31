@@ -16,6 +16,7 @@ import Royalty from './Royalty'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 
+
 const HubsModal = dynamic(() => import('./HubsModal'))
 
 import dynamic from 'next/dynamic'
@@ -23,7 +24,7 @@ import dynamic from 'next/dynamic'
 const BUTTON_WIDTH = '155px'
 
 const ReleasePurchase = (props) => {
-  const { releasePubkey, metadata, inPost, hubPubkey } = props
+  const { releasePubkey, metadata, inPost, hubPubkey, setAmountHeld, amountHeld } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const router = useRouter()
@@ -36,7 +37,6 @@ const ReleasePurchase = (props) => {
   } = useContext(Release.Context)
   const { hubState } = useContext(Hub.Context)
   const {
-    getAmountHeld,
     collection,
     usdcBalance,
     ninaClient,
@@ -44,7 +44,6 @@ const ReleasePurchase = (props) => {
     NinaProgramAction,
   } = useContext(Nina.Context)
   const [release, setRelease] = useState(undefined)
-  const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
   const [downloadButtonString, setDownloadButtonString] = useState('Download')
   const [userIsRecipient, setUserIsRecipient] = useState(false)
   const [publishedHub, setPublishedHub] = useState()
@@ -74,16 +73,6 @@ const ReleasePurchase = (props) => {
   useEffect(() => {
     setAmountHeld(collection[releasePubkey] || 0)
   }, [collection[releasePubkey]])
-
-  useEffect(() => {
-    getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
-
-    // const hubForRelease = async (releasePubkey) => {
-    //   const result = await getPublishedHubForRelease(releasePubkey);
-    //   setPublishedHub(result?.hub);
-    // };
-    // hubForRelease(releasePubkey);
-  }, [releasePubkey, releaseState.releaseMintMap])
 
   useEffect(() => {
     if (release?.royaltyRecipients) {
@@ -176,32 +165,32 @@ const ReleasePurchase = (props) => {
           .nativeToUi(release.price, release.paymentMint)
           .toFixed(2)})`
 
-  const downloadAs = async (url, name) => {
-    setDownloadButtonString('Downloading')
+  // const downloadAs = async (url, name) => {
+  //   setDownloadButtonString('Downloading')
 
-    logEvent('track_download', 'engagement', {
-      publicKey: releasePubkey,
-      hub: hubPubkey,
-      wallet: wallet?.publicKey?.toBase58(),
-    })
+  //   logEvent('track_download', 'engagement', {
+  //     publicKey: releasePubkey,
+  //     hub: hubPubkey,
+  //     wallet: wallet?.publicKey?.toBase58(),
+  //   })
 
-    const response = await axios.get(url, {
-      method: 'GET',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/octet-stream',
-      },
-      responseType: 'blob',
-    })
-    if (response?.data) {
-      const a = document.createElement('a')
-      const url = window.URL.createObjectURL(response.data)
-      a.href = url
-      a.download = name
-      a.click()
-    }
-    setDownloadButtonString('Download')
-  }
+  //   const response = await axios.get(url, {
+  //     method: 'GET',
+  //     mode: 'cors',
+  //     headers: {
+  //       'Content-Type': 'application/octet-stream',
+  //     },
+  //     responseType: 'blob',
+  //   })
+  //   if (response?.data) {
+  //     const a = document.createElement('a')
+  //     const url = window.URL.createObjectURL(response.data)
+  //     a.href = url
+  //     a.download = name
+  //     a.click()
+  //   }
+  //   setDownloadButtonString('Download')
+  // }
 
   return (
     <ReleasePurchaseWrapper mt={1}>
@@ -261,32 +250,10 @@ const ReleasePurchase = (props) => {
           releasePubkey={releasePubkey}
           isAuthority={isAuthority}
           amountHeld={amountHeld}
+          inSettings={false}
         />
       </Box>
 
-      {amountHeld > 0 && (
-        <BuyButton
-          variant="outlined"
-          sx={{ mt: 1 }}
-          onClick={(e) => {
-            e.stopPropagation()
-            downloadAs(
-              metadata.properties.files[0].uri,
-              `${metadata.name
-                .replace(/[^a-z0-9]/gi, '_')
-                .toLowerCase()}___nina.mp3`
-            )
-          }}
-        >
-          <Typography variant="body2" align="left">
-            {downloadButtonString === 'Download' ? (
-              'Download'
-            ) : (
-              <Dots msg={downloadButtonString} />
-            )}
-          </Typography>
-        </BuyButton>
-      )}
     </ReleasePurchaseWrapper>
   )
 }

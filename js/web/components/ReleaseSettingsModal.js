@@ -1,6 +1,4 @@
-import React, { useState, useEffect, useContext, useMemo } from 'react'
-import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import React, { useState } from 'react'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
@@ -8,39 +6,20 @@ import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-import AutorenewIcon from '@mui/icons-material/Autorenew'
-import FormControl from '@mui/material/FormControl'
-import InputLabel from '@mui/material/InputLabel'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { useSnackbar } from 'notistack'
-import Dots from './Dots'
-import HubPostCreate from './HubPostCreate'
 import SettingsIcon from '@mui/icons-material/Settings';
 import Royalty from './Royalty'
 import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
+import CloseIcon from '@mui/icons-material/Close'
 
 
-
-
-const ReleaseSettingsModal = ({ userHubs, releasePubkey, metadata, userIsRecipient, isAuthority, release, amountHeld }) => {
+const ReleaseSettingsModal = ({ releasePubkey, metadata, userIsRecipient, isAuthority, release, amountHeld }) => {
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
-  const wallet = useWallet()
-  const { checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(
-    Nina.Context
-  )
-  const [selectedHubId, setSelectedHubId] = useState()
-  const [inProgress, setInProgress] = useState(false)
-  const userHasHubs = useMemo(() => userHubs?.length > 0, [userHubs])
 
   const handleClose = () => {
     setOpen(false)
-    setSelectedHubId()
   }
-
-  console.log('release :>> ', release);
 
   return (
     <Root>
@@ -52,7 +31,6 @@ const ReleaseSettingsModal = ({ userHubs, releasePubkey, metadata, userIsRecipie
           >
             <SettingsIcon sx={{ color: 'white' }} />
           </Button>
-
         )
       }
 
@@ -69,7 +47,10 @@ const ReleaseSettingsModal = ({ userHubs, releasePubkey, metadata, userIsRecipie
       >
         <Fade in={open}>
           <StyledPaper>
-            <Typography>
+        
+            <StyledCloseIcon onClick={() => handleClose()} />
+
+            <Typography variant='h4'>
               Release Settings:
             </Typography>
 
@@ -118,11 +99,18 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   zIndex: '10',
   display: 'flex',
   flexDirection: 'column',
+  position: 'relative',
   [theme.breakpoints.down('md')]: {
     width: 'unset',
     margin: '15px',
     padding: theme.spacing(2),
   },
+}))
+
+const StyledCloseIcon = styled(CloseIcon)(({theme}) => ({
+  position: 'absolute',
+  right: theme.spacing(1),
+  top: theme.spacing(1),
 }))
 
 export default ReleaseSettingsModal

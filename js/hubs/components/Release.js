@@ -5,9 +5,11 @@ import React, {
   createElement,
   Fragment,
 } from 'react'
+import axios from 'axios'
 import dynamic from 'next/dynamic'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import Grid from '@mui/material/Grid'
@@ -17,6 +19,7 @@ import Image from 'next/image'
 import Typography from '@mui/material/Typography'
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
 import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline'
+import DownloadIcon from '@mui/icons-material/Download'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { unified } from 'unified'
 import rehypeParse from 'rehype-parse'
@@ -25,6 +28,7 @@ import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 const { getImageFromCDN, loader } = imageManager
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
+import {logEvent} from '@nina-protocol/nina-internal-sdk/src/utils/event'
 
 const Royalty = dynamic(() => import('./Royalty'))
 const Button = dynamic(() => import('@mui/material/Button'))
@@ -41,12 +45,17 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const { getHub, hubState, getHubsForUser, filterHubsForUser } = useContext(
     Hub.Context
   )
+  const {
+    getAmountHeld,
+  } = useContext(Nina.Context)
 
   const [metadata, setMetadata] = useState(metadataSsr || null)
   const [description, setDescription] = useState()
   const [userHubs, setUserHubs] = useState()
   const [userIsRecipient, setUserIsRecipient] = useState(false)
   const [release, setRelease] = useState()
+  const [amountHeld, setAmountHeld] = useState(0)
+
   useEffect(() => {
     if (hubPubkey && !hubState[hubPubkey]) {
       getHub(hubPubkey)
@@ -58,6 +67,10 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
       getRelease(releasePubkey)
     }
   }, [releasePubkey])
+
+  useEffect(() => {
+    getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
+  }, [releasePubkey, releaseState.releaseMintMap])
 
   useEffect(() => {
     if (releaseState.metadata[releasePubkey]) {
@@ -112,6 +125,31 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
       )
     }
   }, [releaseState.tokenData[releasePubkey], wallet?.connected])
+
+  const downloadAs = async (url, name) => {
+
+    logEvent('track_download', 'engagement', {
+      publicKey: releasePubkey,
+      hub: hubPubkey,
+      wallet: wallet?.publicKey?.toBase58(),
+    })
+
+    const response = await axios.get(url, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/octet-stream',
+      },
+      responseType: 'blob',
+    })
+    if (response?.data) {
+      const a = document.createElement('a')
+      const url = window.URL.createObjectURL(response.data)
+      a.href = url
+      a.download = name
+      a.click()
+    }
+  }
 
   return (
     <>
@@ -185,6 +223,24 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                     hubPubkey={hubPubkey}
                   />
                 )}
+
+                {amountHeld > 0 && (
+                  <Button
+                    sx={{height: '22px', width: '28px', m: 0, marginLeft: '4px'}}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      downloadAs(
+                        metadata.properties.files[0].uri,
+                        `${metadata.name
+                          .replace(/[^a-z0-9]/gi, '_')
+                          .toLowerCase()}___nina.mp3`
+                      )
+                    }}
+                    >
+                    <DownloadIcon />
+                  </Button>
+                )}
+
               </Box>
             </CtaWrapper>
 
@@ -198,6 +254,8 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                 releasePubkey={releasePubkey}
                 metadata={metadata}
                 hubPubkey={hubPubkey}
+                amountHeld={amountHeld}
+                setAmountHeld={setAmountHeld}
               />
               {userIsRecipient && (
                 <Royalty
