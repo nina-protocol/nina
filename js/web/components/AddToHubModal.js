@@ -91,15 +91,12 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
 
   return (
     <Root>
-      <Button
-        variant="contained"
-        color="primary"
-        type="submit"
+      <ModalToggleButton
         onClick={() => setOpen(true)}
-        sx={{ height: '22px', width: '28px', m: 0 }}
+        sx={{ height: '22px', width: '22px', }}
       >
         <AutorenewIcon sx={{ color: 'white' }} />
-      </Button>
+      </ModalToggleButton>
 
       <StyledModal
         aria-labelledby="transition-modal-title"
@@ -215,6 +212,12 @@ const StyledModal = styled(Modal)(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+}))
+
+const ModalToggleButton = styled(Button)(() => ({
+  height: '22px', 
+  width: '28px', 
+  margin: '0px'
 }))
 
 const StyledPaper = styled(Paper)(({ theme }) => ({

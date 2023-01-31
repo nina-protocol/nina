@@ -31,7 +31,7 @@ import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 
 const ReleasePurchase = (props) => {
-  const { releasePubkey, metadata, router, amountHeld, setAmountHeld } = props
+  const { releasePubkey, metadata, router, amountHeld, setAmountHeld, isAuthority } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const {
@@ -59,7 +59,7 @@ const ReleasePurchase = (props) => {
   const [amountPendingBuys, setAmountPendingBuys] = useState(0)
   const [amountPendingSales, setAmountPendingSales] = useState(0)
   const [downloadButtonString, setDownloadButtonString] = useState('Download')
-  const [userIsRecipient, setUserIsRecipient] = useState(false)
+  // const [userIsRecipient, setUserIsRecipient] = useState(false)
   const [exchangeTotalBuys, setExchangeTotalBuys] = useState(0)
   const [exchangeTotalSells, setExchangeTotalSells] = useState(0)
   const [publishedHub, setPublishedHub] = useState()
@@ -73,11 +73,11 @@ const ReleasePurchase = (props) => {
     [releasePubkey, releasePurchasePending]
   )
 
-  const isAuthority = useMemo(() => {
-    if (wallet.connected) {
-      return release?.authority === wallet?.publicKey.toBase58()
-    }
-  }, [release, wallet.connected])
+  // const isAuthority = useMemo(() => {
+  //   if (wallet.connected) {
+  //     return release?.authority === wallet?.publicKey.toBase58()
+  //   }
+  // }, [release, wallet.connected])
 
   useEffect(() => {
     getRelease(releasePubkey)
@@ -116,18 +116,18 @@ const ReleasePurchase = (props) => {
     )
   }, [exchangeState])
 
-  useEffect(() => {
-    if (release?.revenueShareRecipients) {
-      release.revenueShareRecipients.forEach((recipient) => {
-        if (
-          wallet?.connected &&
-          recipient.recipientAuthority === wallet?.publicKey.toBase58()
-        ) {
-          setUserIsRecipient(true)
-        }
-      })
-    }
-  }, [release?.revenueShareRecipients, wallet?.connected])
+  // useEffect(() => {
+  //   if (release?.revenueShareRecipients) {
+  //     release.revenueShareRecipients.forEach((recipient) => {
+  //       if (
+  //         wallet?.connected &&
+  //         recipient.recipientAuthority === wallet?.publicKey.toBase58()
+  //       ) {
+  //         setUserIsRecipient(true)
+  //       }
+  //     })
+  //   }
+  // }, [release?.revenueShareRecipients, wallet?.connected])
 
   useEffect(() => {
     if (metadata?.descriptionHtml) {
@@ -320,12 +320,13 @@ const ReleasePurchase = (props) => {
           releasePubkey={releasePubkey}
           isAuthority={isAuthority}
           amountHeld={amountHeld}
+          inSettings={false}
         />
       </Box>
 
-      {userIsRecipient && (
+      {/* {userIsRecipient && (
         <Royalty releasePubkey={releasePubkey} release={release} />
-      )}
+      )} */}
     </Box>
   )
 }

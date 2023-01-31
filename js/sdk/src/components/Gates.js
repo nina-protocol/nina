@@ -10,12 +10,14 @@ import GateManageModal from './GateManageModal'
 
 import { useWallet } from '@solana/wallet-adapter-react'
 
-const Gates = ({ isAuthority, releasePubkey, amountHeld, metadata }) => {
+const Gates = ({ isAuthority, releasePubkey, amountHeld, metadata, inSettings }) => {
   const wallet = useWallet()
   const { enqueueSnackbar } = useSnackbar()
 
   const { fetchGatesForRelease } = useContext(Release.Context)
   const [gates, setGates] = useState(undefined)
+
+
 
   useEffect(() => {
     handleFetchGates(releasePubkey)
@@ -77,7 +79,7 @@ const Gates = ({ isAuthority, releasePubkey, amountHeld, metadata }) => {
 
   return (
     <Root>
-      {gates && (
+      {gates && !inSettings && (
         <>
           <GateUnlockModal
             gates={gates}
@@ -87,7 +89,7 @@ const Gates = ({ isAuthority, releasePubkey, amountHeld, metadata }) => {
           />
         </>
       )}
-      {!gates && isAuthority && (
+      {!gates && isAuthority && inSettings && (
         <>
           <GateCreateModal
             releasePubkey={releasePubkey}
@@ -98,7 +100,7 @@ const Gates = ({ isAuthority, releasePubkey, amountHeld, metadata }) => {
         </>
       )}
 
-      {gates && isAuthority && (
+      {gates && isAuthority && inSettings && (
         <>
           <GateManageModal
             gates={gates}

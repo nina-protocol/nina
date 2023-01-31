@@ -14,6 +14,7 @@ import DownloadIcon from '@mui/icons-material/Download'
 import {logEvent} from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import axios from 'axios'
 import AddToHubModal from './AddToHubModal.js'
+import ReleaseSettingsModal from './ReleaseSettingsModal.js'
 import Link from 'next/link'
 import {useSnackbar} from 'notistack'
 
@@ -29,7 +30,9 @@ const ReleaseCard = (props) => {
     releasePubkey,
     userHubs,
     release,
-    amountHeld
+    amountHeld,
+    isAuthority,
+    userIsRecipient,
   } = props
   const {
     updateTrack,
@@ -118,25 +121,38 @@ const ReleaseCard = (props) => {
               />
             </Box>
 
-            {amountHeld > 0 && (
-              <Box>
-                <Button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    downloadAs(
-                      metadata.properties.files[0].uri,
-                      `${metadata.name
-                        .replace(/[^a-z0-9]/gi, '_')
-                        .toLowerCase()}___nina.mp3`
-                    )
-                  }}
-                  sx={{height: '20px', width: '28px', marginRight: '0px'}}
-                >
-                  <DownloadIcon sx={{color: 'white'}}
-                  />
-                </Button>
-              </Box>
-            )}
+
+            <Box display='flex'>
+              {amountHeld > 0 && (
+                <Box>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      downloadAs(
+                        metadata.properties.files[0].uri,
+                        `${metadata.name
+                          .replace(/[^a-z0-9]/gi, '_')
+                          .toLowerCase()}___nina.mp3`
+                      )
+                    }}
+                    sx={{height: '20px', width: '28px', marginRight: '0px'}}
+                  >
+                    <DownloadIcon sx={{color: 'white'}}
+                    />
+                  </Button>
+                </Box>
+              )}  
+
+              <ReleaseSettingsModal 
+                userIsRecipient={userIsRecipient} 
+                isAuthority={isAuthority} 
+                release={release}
+                releasePubkey={releasePubkey}
+                amountHeld={amountHeld}
+                metadata={metadata}
+                />
+
+            </Box>
           </CtaWrapper>
         )}
 

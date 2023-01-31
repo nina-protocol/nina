@@ -33,6 +33,8 @@ const GateCreateModal = ({
     setFile(undefined)
   }
 
+  console.log('metadata :>> ', metadata);
+
   const handleFileUpload = async () => {
     setInProgress(true)
     try {
@@ -133,7 +135,7 @@ const GateCreateModal = ({
             <Typography variant="h5" sx={{ mb: 1 }}>
               Select a file or zip to be gated behind:
             </Typography>
-            <Typography variant="h5">&apos;{metadata.name}&apos;</Typography>
+            <Typography variant="h5">&apos;{metadata?.name}&apos;</Typography>
 
             <TextField
               id="standard-multiline-static"

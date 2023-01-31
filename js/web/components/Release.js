@@ -22,6 +22,7 @@ const ReleaseComponent = ({ metadataSsr }) => {
     Hub.Context
   )
   const [userHubs, setUserHubs] = useState()
+  const [userIsRecipient, setUserIsRecipient] = useState(false)
 
   const [metadata, setMetadata] = useState(
     metadataSsr || releaseState?.metadata[releasePubkey] || null
@@ -30,6 +31,26 @@ const ReleaseComponent = ({ metadataSsr }) => {
     () => releaseState.tokenData[releasePubkey],
     [releaseState, releasePubkey]
   )
+
+  const isAuthority = useMemo(() => {
+    if (wallet.connected) {
+      return release?.authority === wallet?.publicKey.toBase58()
+    }
+  }, [release, wallet.connected])
+
+  useEffect(() => {
+    if (release?.revenueShareRecipients) {
+      release.revenueShareRecipients.forEach((recipient) => {
+        if (
+          wallet?.connected &&
+          recipient.recipientAuthority === wallet?.publicKey.toBase58()
+        ) {
+          setUserIsRecipient(true)
+        }
+      })
+    }
+  }, [release?.revenueShareRecipients, wallet?.connected])
+
   useEffect(() => {
     if (releaseState.metadata[releasePubkey] && !metadata) {
       setMetadata(releaseState.metadata[releasePubkey])
@@ -66,6 +87,8 @@ const ReleaseComponent = ({ metadataSsr }) => {
     router.push(`/${releasePubkey}`)
   }
 
+  console.log('releasePubke !! :>> ', releasePubkey);
+
   return (
     <>
       <ReleaseWrapper>
@@ -78,6 +101,8 @@ const ReleaseComponent = ({ metadataSsr }) => {
               userHubs={userHubs}
               release={release}
               amountHeld={amountHeld}
+              isAuthority={isAuthority}
+              userIsRecipient={userIsRecipient}
             />
             <ReleaseCtaWrapper>
               <ReleasePurchase
@@ -86,6 +111,8 @@ const ReleaseComponent = ({ metadataSsr }) => {
                 router={router}
                 amountHeld={amountHeld}
                 setAmountHeld={setAmountHeld}
+                isAuthority={isAuthority}
+
               />
             </ReleaseCtaWrapper>
           </NinaBox>
