@@ -251,10 +251,6 @@ const ReleasePurchase = (props) => {
     })
   }
 
-  const toggleCloseReleaseForm = () => {
-    setShowCloseReleaseModal(!showCloseReleaseModal)
-  }
-
   if (!release) {
     return (
       <>
@@ -264,7 +260,7 @@ const ReleasePurchase = (props) => {
   }
 
   const buttonText =
-    release.remainingSupply > 0
+    release.remainingSupply > 0 || release.remainingSupply === -1
       ? `${
           release.price > 0
             ? `Buy $${ninaClient.nativeToUiString(
@@ -398,11 +394,7 @@ const ReleasePurchase = (props) => {
             variant="outlined"
             type="submit"
             fullWidth
-            disabled={
-              release.remainingSupply > 0 || release.remainingSupply === -1
-                ? false
-                : true
-            }
+            disabled={release.remainingSupply === 0 ? true : false}
           >
             <Typography variant="body2">
               {txPending && <Dots msg="preparing transaction" />}

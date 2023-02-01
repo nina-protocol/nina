@@ -136,10 +136,6 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
     })
   }
 
-  const toggleCloseReleaseForm = () => {
-    setShowCloseReleaseModal(!showCloseReleaseModal)
-  }
-
   return (
     <>
       <StyledGrid

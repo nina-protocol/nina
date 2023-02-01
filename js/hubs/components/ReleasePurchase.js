@@ -180,7 +180,7 @@ const ReleasePurchase = (props) => {
   }
 
   const buttonText =
-    release.remainingSupply > 0
+    release.remainingSupply > 0 || release.remainingSupply === -1
       ? `${
           release.price > 0
             ? `Buy $${ninaClient.nativeToUiString(
@@ -272,17 +272,18 @@ const ReleasePurchase = (props) => {
         <BuyButton
           variant="contained"
           type="submit"
-          disabled={
-            release.remainingSupply > 0 || release.remainingSupply === -1
-              ? false
-              : true
-          }
+          soldOut={release.remainingSupply === 0}
+          disabled={release.remainingSupply === 0 ? true : false}
         >
-          <Typography variant="body2" align="left">
+          <BuyButtonTypography
+            soldOut={release.remainingSupply === 0}
+            variant="body2"
+            align="left"
+          >
             {txPending && <Dots msg="Preparing transaction" />}
             {!txPending && pending && <Dots msg="Awaiting wallet approval" />}
             {!txPending && !pending && buttonText}
-          </Typography>
+          </BuyButtonTypography>
         </BuyButton>
       </form>
 
@@ -313,14 +314,20 @@ const ReleasePurchase = (props) => {
   )
 }
 
-const BuyButton = styled(Button)(({ theme }) => ({
+const BuyButton = styled(Button)(({ theme, soldOut }) => ({
   '& p': {
-    border: `1px solid ${theme.palette.text.primary}`,
+    border: soldOut
+      ? `1px solid ${theme.palette.grey.primary}`
+      : `1px solid ${theme.palette.text.primary}`,
     padding: '10px',
     '&:hover': {
       opacity: '50%',
     },
   },
+}))
+
+const BuyButtonTypography = styled(Typography)(({ theme, soldOut }) => ({
+  color: soldOut ? theme.palette.grey.primary : '',
 }))
 const ReleasePurchaseWrapper = styled(Box)(({ theme }) => ({
   textAlign: 'left',
