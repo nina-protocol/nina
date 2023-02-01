@@ -89,6 +89,7 @@ const ReleaseContextProvider = ({ children }) => {
     releaseInitViaHub,
     validateUniqueMd5Digest,
     getFeedForUser,
+    fetchGatesForRelease,
   } = releaseContextHelper({
     ninaClient,
     releaseState,
@@ -166,6 +167,7 @@ const ReleaseContextProvider = ({ children }) => {
         validateUniqueMd5Digest,
         getFeedForUser,
         fetchedUserProfileReleases,
+        fetchGatesForRelease,
       }}
     >
       {children}
@@ -724,7 +726,8 @@ const releaseContextHelper = ({
         ...releasePurchasePending,
         [releasePubkey]: false,
       })
-      getUserBalances()
+      await getUserBalances()
+
       await axios.get(
         `${
           process.env.NINA_API_ENDPOINT
@@ -1453,6 +1456,15 @@ const releaseContextHelper = ({
     }
   }
 
+  const fetchGatesForRelease = async (releasePubkey) => {
+    const { gates } = (
+      await axios.get(
+        `${process.env.NINA_GATE_URL}/releases/${releasePubkey}/gates`
+      )
+    ).data
+    return gates
+  }
+
   /*
 
   UTILS
@@ -1552,6 +1564,7 @@ const releaseContextHelper = ({
     releaseCreateMetadataJson,
     validateUniqueMd5Digest,
     getFeedForUser,
+    fetchGatesForRelease,
   }
 }
 

@@ -10,9 +10,16 @@ import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutline
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Image from 'next/image'
-
+import DownloadIcon from '@mui/icons-material/Download'
+import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
+import axios from 'axios'
 import AddToHubModal from './AddToHubModal.js'
+// import ReleaseSettingsModal from './ReleaseSettingsModal.js'
+import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSettingsModal'
+
 import Link from 'next/link'
+import { useSnackbar } from 'notistack'
+
 const { getImageFromCDN, loader } = imageManager
 
 const ReleaseCard = (props) => {
@@ -24,6 +31,9 @@ const ReleaseCard = (props) => {
     releasePubkey,
     userHubs,
     release,
+    amountHeld,
+    isAuthority,
+    userIsRecipient,
   } = props
   const {
     updateTrack,
@@ -33,6 +43,8 @@ const ReleaseCard = (props) => {
     track,
     setInitialized,
   } = useContext(Audio.Context)
+  const { enqueueSnackbar } = useSnackbar()
+
   const image = useMemo(() => metadata?.image)
   const title = useMemo(() => {
     if (
@@ -44,12 +56,39 @@ const ReleaseCard = (props) => {
     return metadata.properties.title
   }, [metadata.properties.title])
 
+  const downloadAs = async (url, name) => {
+    logEvent('track_download', 'engagement', {
+      publicKey: releasePubkey,
+    })
+
+    try {
+      const response = await axios.get(url, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/octet-stream',
+        },
+        responseType: 'blob',
+      })
+      if (response?.data) {
+        const a = document.createElement('a')
+        const url = window.URL.createObjectURL(response.data)
+        a.href = url
+        a.download = name
+        a.click()
+      }
+      enqueueSnackbar('Release Downloaded', { variant: 'success' })
+    } catch (error) {
+      enqueueSnackbar('Release Downloaded', { variant: 'error' })
+    }
+  }
+
   return (
     <StyledReleaseCard>
       <StyledReleaseInfo>
         {metadata && (
-          <CtaWrapper>
-            <Box>
+          <CtaWrapper sx={{ color: 'white' }}>
+            <Box display="flex">
               <Button
                 onClickCapture={() => {
                   setInitialized(true)
@@ -75,17 +114,45 @@ const ReleaseCard = (props) => {
               >
                 <ControlPointIcon sx={{ color: 'white' }} />
               </Button>
+
+              <AddToHubModal
+                userHubs={userHubs}
+                releasePubkey={releasePubkey}
+                metadata={metadata}
+              />
             </Box>
 
-            {releasePubkey && (
-              <Box>
-                <AddToHubModal
-                  userHubs={userHubs}
+            <Box display="flex">
+              {amountHeld > 0 && (
+                <Box>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      downloadAs(
+                        metadata.properties.files[0].uri,
+                        `${metadata.name
+                          .replace(/[^a-z0-9]/gi, '_')
+                          .toLowerCase()}___nina.mp3`
+                      )
+                    }}
+                    sx={{ height: '20px', width: '28px', marginRight: '0px' }}
+                  >
+                    <DownloadIcon sx={{ color: 'white' }} />
+                  </Button>
+                </Box>
+              )}
+
+              <Box sx={{ color: 'white' }}>
+                <ReleaseSettingsModal
+                  userIsRecipient={userIsRecipient}
+                  isAuthority={isAuthority}
+                  release={release}
                   releasePubkey={releasePubkey}
+                  amountHeld={amountHeld}
                   metadata={metadata}
                 />
               </Box>
-            )}
+            </Box>
           </CtaWrapper>
         )}
 
@@ -122,7 +189,11 @@ const ReleaseCard = (props) => {
             height={350}
             width={350}
             layout="responsive"
-            src={getImageFromCDN(image, 400, new Date(release.releaseDatetime))}
+            src={getImageFromCDN(
+              image,
+              1200,
+              new Date(release.releaseDatetime)
+            )}
             alt={metadata?.name}
             priority={true}
             loader={loader}
@@ -145,9 +216,12 @@ const StyledReleaseCard = styled(Box)(() => ({
 const CtaWrapper = styled(Box)(() => ({
   display: 'flex',
   justifyContent: 'space-between',
-  '& .MuiButton-root': {
+  '& .MuiButton-root:not(:last-child)': {
     width: '21px',
     marginRight: '10px',
+  },
+  svg: {
+    color: 'white',
   },
 }))
 

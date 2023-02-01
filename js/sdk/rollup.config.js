@@ -28,9 +28,12 @@ export default [
       Release: 'src/contexts/Release/index.js',
       client: 'src/client.js',
       utils: 'src/utils/index.js',
+      AudioPlayer: 'src/components/AudioPlayer.js',
+      Dots: 'src/components/Dots.js',
       EmailCapture: 'src/components/EmailCapture.js',
       EmailCaptureForm: 'src/components/EmailCaptureForm.js',
-      AudioPlayer: 'src/components/AudioPlayer.js',
+      Gates: 'src/components/Gates.js',
+      ReleaseSettingsModal: 'src/components/ReleaseSettingsModal.js',
     },
     output: [
       {
