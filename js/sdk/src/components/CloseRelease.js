@@ -85,7 +85,6 @@ const CloseRelease = (props) => {
               >
                 This action is permanent and cannot be undone.
               </StyledModalWarningTypography>
-              <Box display="flex" justifyContent="flex-end" mt={2} />
               <StyledModalButton
                 onClick={(e) => handleCloseRelease(e, releasePubkey)}
                 variant="outlined"
