@@ -66,22 +66,16 @@ const ReleaseSettingsModal = ({
 
             {isAuthority && (
               <>
-                <>
-                  <Gates
-                    release={release}
-                    metadata={metadata}
-                    releasePubkey={releasePubkey}
-                    isAuthority={isAuthority}
-                    amountHeld={amountHeld}
-                    inSettings={true}
-                  />
-                </>
-                <>
-                  <CloseRelease
-                    releasePubkey={releasePubkey}
-                    release={release}
-                  />
-                </>
+                <Gates
+                  release={release}
+                  metadata={metadata}
+                  releasePubkey={releasePubkey}
+                  isAuthority={isAuthority}
+                  amountHeld={amountHeld}
+                  inSettings={true}
+                />
+
+                <CloseRelease releasePubkey={releasePubkey} release={release} />
               </>
             )}
           </StyledPaper>
