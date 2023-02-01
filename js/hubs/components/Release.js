@@ -4,7 +4,7 @@ import React, {
   useEffect,
   createElement,
   Fragment,
-  useMemo
+  useMemo,
 } from 'react'
 import axios from 'axios'
 import dynamic from 'next/dynamic'
@@ -31,7 +31,6 @@ const { getImageFromCDN, loader } = imageManager
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSettingsModal'
-
 
 const Button = dynamic(() => import('@mui/material/Button'))
 const ReleasePurchase = dynamic(() => import('./ReleasePurchase'))
@@ -140,7 +139,6 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
     }
   }, [wallet?.disconnecting])
 
-
   const downloadAs = async (url, name) => {
     logEvent('track_download', 'engagement', {
       publicKey: releasePubkey,
@@ -206,7 +204,11 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
 
               <Box
                 display="flex"
-                sx={{ mt: '15px', mb: { md: '15px', xs: '0px' }, color: 'black' }}
+                sx={{
+                  mt: '15px',
+                  mb: { md: '15px', xs: '0px' },
+                  color: 'black',
+                }}
               >
                 <PlayButton
                   sx={{ height: '22px', width: '28px', m: 0, paddingLeft: 0 }}
@@ -237,7 +239,6 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                     hubPubkey={hubPubkey}
                   />
                 )}
-
 
                 <ReleaseSettingsModal
                   userIsRecipient={userIsRecipient}
@@ -285,7 +286,6 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                 amountHeld={amountHeld}
                 setAmountHeld={setAmountHeld}
               />
-      
             </Box>
 
             <StyledDescription align="left">{description}</StyledDescription>

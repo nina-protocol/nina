@@ -53,8 +53,6 @@ const ReleaseComponent = ({ metadataSsr }) => {
     }
   }, [release?.revenueShareRecipients, wallet?.connected])
 
-  
-
   useEffect(() => {
     if (releaseState.metadata[releasePubkey] && !metadata) {
       setMetadata(releaseState.metadata[releasePubkey])

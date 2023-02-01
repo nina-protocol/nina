@@ -87,8 +87,8 @@ const ReleaseCard = (props) => {
     <StyledReleaseCard>
       <StyledReleaseInfo>
         {metadata && (
-          <CtaWrapper sx={{color: 'white'}}>
-            <Box display="flex" >
+          <CtaWrapper sx={{ color: 'white' }}>
+            <Box display="flex">
               <Button
                 onClickCapture={() => {
                   setInitialized(true)
@@ -142,7 +142,7 @@ const ReleaseCard = (props) => {
                 </Box>
               )}
 
-              <Box sx={{color: 'white'}}>
+              <Box sx={{ color: 'white' }}>
                 <ReleaseSettingsModal
                   userIsRecipient={userIsRecipient}
                   isAuthority={isAuthority}
@@ -220,9 +220,9 @@ const CtaWrapper = styled(Box)(() => ({
     width: '21px',
     marginRight: '10px',
   },
-  'svg': {
-    color: 'white'
-  }
+  svg: {
+    color: 'white',
+  },
 }))
 
 const StyledReleaseInfo = styled(Box)(({ theme }) => ({

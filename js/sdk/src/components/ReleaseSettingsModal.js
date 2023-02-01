@@ -6,7 +6,6 @@ import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import { useSnackbar } from 'notistack'
 import SettingsIcon from '@mui/icons-material/Settings'
 import Royalty from './Royalty'
 import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
@@ -21,7 +20,6 @@ const ReleaseSettingsModal = ({
   amountHeld,
 }) => {
   const [open, setOpen] = useState(false)
-  const { enqueueSnackbar } = useSnackbar()
 
   const handleClose = () => {
     setOpen(false)
@@ -32,7 +30,7 @@ const ReleaseSettingsModal = ({
       {(isAuthority || userIsRecipient) && (
         <Button
           onClick={() => setOpen(true)}
-          sx={{ height: '22px', width: '28px', m: 0}}
+          sx={{ height: '22px', width: '28px', m: 0 }}
         >
           <SettingsIcon sx={{ color: 'inherit' }} />
         </Button>
@@ -76,7 +74,7 @@ const ReleaseSettingsModal = ({
   )
 }
 
-const Root = styled('div')(({ theme }) => ({
+const Root = styled('div')(() => ({
   display: 'flex',
   alignItems: 'center',
   width: '100%',
