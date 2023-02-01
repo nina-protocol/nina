@@ -234,30 +234,14 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                   />
                   {(release.remainingSupply > 0 ||
                     release.remainingSupply === -1) && (
-                    <CloseReleaseButton
-                      variant="outlined"
-                
-                      onClick={() => toggleCloseReleaseForm()}
-                      disabled={release.remainingSupply === 0}
-                    >
-                      <CloseReleaseTypography
-                        variant="body2"
-                        align="left"
-                        closed={release.remainingSupply === 0}
-                      >
-                        Close Release
-                      </CloseReleaseTypography>
-                    </CloseReleaseButton>
-                  )}
-                  {showCloseReleaseModal && (
                     <CloseRelease
                       handleCloseRelease={(e) =>
                         handleCloseRelease(e, releasePubkey)
                       }
-                      open={showCloseReleaseModal}
-                      setOpen={setShowCloseReleaseModal}
                       pendingTx={pendingTx}
                       release={release}
+                      inHubs={true}
+                      fullWidth={false}
                     />
                   )}
                 </Box>
@@ -357,15 +341,4 @@ const CtaWrapper = styled(Box)(({ theme }) => ({
   },
 }))
 
-const CloseReleaseButton = styled(Button)(({ theme }) => ({
-  padding: '12px',
-  marginTop: '15px',
-  '&:hover': {
-    opacity: '50%',
-  },
-}))
-
-const CloseReleaseTypography = styled(Typography)(({ theme, closed }) => ({
-  color: closed ? theme.palette.grey.primary : theme.palette.red,
-}))
 export default ReleaseComponent

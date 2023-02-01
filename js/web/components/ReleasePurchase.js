@@ -416,29 +416,12 @@ const ReleasePurchase = (props) => {
         <>
           <Royalty releasePubkey={releasePubkey} release={release} />
           {(release.remainingSupply > 0 || release.remainingSupply === -1) && (
-            <Button
-              variant="outlined"
-              color="primary"
-              fullWidth
-              sx={{ marginTop: '15px' }}
-              onClick={() => toggleCloseReleaseForm()}
-              disabled={release.remainingSupply === 0}
-            >
-              <CloseReleaseTypography
-                variant="body2"
-                closed={release.remainingSupply === 0}
-              >
-                Close Release
-              </CloseReleaseTypography>
-            </Button>
-          )}
-          {showCloseReleaseModal && (
             <CloseRelease
               handleCloseRelease={(e) => handleCloseRelease(e, releasePubkey)}
-              open={showCloseReleaseModal}
-              setOpen={setShowCloseReleaseModal}
               pendingTx={pendingTx}
               release={release}
+              inHubs={false}
+              fullWidth={true}
             />
           )}
         </>
@@ -504,10 +487,6 @@ const StyledDescription = styled(Typography)(({ theme }) => ({
     overflowY: 'scroll',
     height: '152px',
   },
-}))
-
-const CloseReleaseTypography = styled(Typography)(({ theme, closed }) => ({
-  color: closed ? '' : theme.palette.red,
 }))
 
 export default ReleasePurchase

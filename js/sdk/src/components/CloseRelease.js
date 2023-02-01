@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -10,10 +10,25 @@ import Backdrop from '@mui/material/Backdrop'
 import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 
 const CloseRelease = (props) => {
-  const { handleCloseRelease, open, setOpen, pendingTx, release } = props
+  const { handleCloseRelease, pendingTx, release, inHubs, fullWidth } = props
+  const [open, setOpen] = useState(false)
   return (
     <>
-      <Root>
+      <Root inHubs={inHubs}>
+        <CloseReleaseButton
+          variant="outlined"
+          onClick={() => setOpen(true)}
+          disabled={release.remainingSupply === 0}
+          fullWidth={fullWidth}
+        >
+          <CloseReleaseTypography
+            variant="body2"
+            align="left"
+            closed={release.remainingSupply === 0}
+          >
+            Close Release
+          </CloseReleaseTypography>
+        </CloseReleaseButton>
         <StyledModal
           aria-labelledby="transition-modal-title"
           aria-describedby="transition-modal-description"
@@ -71,10 +86,10 @@ const CloseRelease = (props) => {
   )
 }
 
-const Root = styled(Box)(() => ({
+const Root = styled(Box)(({ inHubs }) => ({
   display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+  alignItems: inHubs ? '' : 'center',
+  justifyContent: inHubs ? '' : 'center',
   width: '100%',
 }))
 
@@ -97,12 +112,12 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 
 const StyledModalTypography = styled(Typography)(({ theme }) => ({
   marginTop: '15px',
-  color: `${theme.palette.black} !important`,
+  color: theme.palette.black,
 }))
 
 const StyledModalWarningTypography = styled(Typography)(({ theme }) => ({
   marginTop: '15px',
-  color: `${theme.palette.red} !important`,
+  color: theme.palette.red,
 }))
 
 const StyledModalButton = styled(Button)(() => ({
@@ -110,9 +125,21 @@ const StyledModalButton = styled(Button)(() => ({
 }))
 
 const StyledModalButtonTypography = styled(Typography)(({ theme }) => ({
-  color: `${theme.palette.red} !important`,
+  color: theme.palette.red,
   fontSize: '12px',
   lineHeight: '13.8px',
+}))
+
+const CloseReleaseButton = styled(Button)(() => ({
+  padding: '12px',
+  marginTop: '15px',
+  '&:hover': {
+    opacity: '50%',
+  },
+}))
+
+const CloseReleaseTypography = styled(Typography)(({ theme, closed }) => ({
+  color: closed ? theme.palette.grey.primary : theme.palette.red,
 }))
 
 export default CloseRelease
