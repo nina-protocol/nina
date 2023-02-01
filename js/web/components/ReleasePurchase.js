@@ -28,10 +28,7 @@ import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
-import dynamic from 'next/dynamic'
-const CloseRelease = dynamic(() =>
-  import('@nina-protocol/nina-internal-sdk/esm/CloseRelease')
-)
+
 const ReleasePurchase = (props) => {
   const {
     releasePubkey,

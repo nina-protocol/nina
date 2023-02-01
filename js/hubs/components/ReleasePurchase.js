@@ -242,7 +242,7 @@ const ReleasePurchase = (props) => {
         }}
       >
         <BuyButton
-          variant="contained"
+          variant="outlined"
           type="submit"
           soldOut={release.remainingSupply === 0}
           disabled={release.remainingSupply === 0 ? true : false}
@@ -278,19 +278,18 @@ const ReleasePurchase = (props) => {
 }
 
 const BuyButton = styled(Button)(({ theme, soldOut }) => ({
-  '& p': {
-    border: soldOut
-      ? `1px solid ${theme.palette.grey.primary}`
-      : `1px solid ${theme.palette.text.primary}`,
+  border: soldOut
+    ? `1px solid ${theme.palette.grey.primary}`
+    : `1px solid ${theme.palette.text.primary}`,
   height: '55px',
   width: BUTTON_WIDTH,
-  '& p': {   
+  '& p': {
     padding: '10px',
     '&:hover': {
       opacity: '50%',
     },
   },
-}}))
+}))
 
 const BuyButtonTypography = styled(Typography)(({ theme, soldOut }) => ({
   color: soldOut ? theme.palette.grey.primary : '',

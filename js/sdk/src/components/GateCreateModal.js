@@ -108,11 +108,11 @@ const GateCreateModal = ({
         onClick={() => setOpen(true)}
         sx={{ height: '55px', width: '100%', mt: 1 }}
       >
-        <Typography variant="body2">
+        <StyledTypography variant="body2">
           {`Create ${
             gates?.length > 0 ? 'another' : 'a'
           } Gate for this Release`}
-        </Typography>
+        </StyledTypography>
       </Button>
 
       <StyledModal
@@ -130,10 +130,10 @@ const GateCreateModal = ({
           <StyledPaper>
             <StyledCloseIcon onClick={() => handleClose()} />
 
-            <Typography variant="h5" sx={{ mb: 1 }}>
+            <StyledTypography variant="h5" sx={{ mb: 1 }}>
               Select a file or zip to be gated behind:
-            </Typography>
-            <Typography variant="h5">&apos;{metadata?.name}&apos;</Typography>
+            </StyledTypography>
+            <StyledTypography variant="h5">&apos;{metadata?.name}&apos;</StyledTypography>
 
             <TextField
               id="standard-multiline-static"
@@ -173,6 +173,10 @@ const Root = styled('div')(() => ({
   width: '100%',
 }))
 
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.black
+}))
+
 const StyledModal = styled(Modal)(() => ({
   display: 'flex',
   alignItems: 'center',
@@ -202,6 +206,8 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
   position: 'absolute',
   right: theme.spacing(1),
   top: theme.spacing(1),
+  color: theme.palette.black,
+  cursor: 'pointer',
 }))
 
 export default GateCreateModal

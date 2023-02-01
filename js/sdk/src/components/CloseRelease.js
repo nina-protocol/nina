@@ -10,8 +10,10 @@ import Backdrop from '@mui/material/Backdrop'
 import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import { useSnackbar } from 'notistack'
 import Release from '../contexts/Release'
+import CloseIcon from '@mui/icons-material/Close'
+
 const CloseRelease = (props) => {
-  const { release, inHubs, fullWidth, releasePubkey } = props
+  const { release, releasePubkey } = props
   const { enqueueSnackbar } = useSnackbar()
   const { closeRelease } = useContext(Release.Context)
   const [open, setOpen] = useState(false)
@@ -34,14 +36,20 @@ const CloseRelease = (props) => {
       variant: result.success ? 'success' : 'warn',
     })
   }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+
   return (
     <>
-      <Root inHubs={inHubs}>
+      <Root>
         <CloseReleaseButton
           variant="outlined"
           onClick={() => setOpen(true)}
           disabled={release.remainingSupply === 0}
-          fullWidth={fullWidth}
+          fullWidth
         >
           <CloseReleaseTypography
             variant="body2"
@@ -64,6 +72,8 @@ const CloseRelease = (props) => {
         >
           <Fade in={open}>
             <StyledPaper>
+              <StyledCloseIcon onClick={() => handleClose()} />
+
               <StyledModalTypography
                 align="center"
                 variant="h5"
@@ -99,6 +109,7 @@ const CloseRelease = (props) => {
                   {!pendingTx && 'Close Release'}
                 </StyledModalButtonTypography>
               </StyledModalButton>
+          
             </StyledPaper>
           </Fade>
         </StyledModal>
@@ -107,10 +118,10 @@ const CloseRelease = (props) => {
   )
 }
 
-const Root = styled(Box)(({ inHubs }) => ({
+const Root = styled(Box)(() => ({
   display: 'flex',
-  alignItems: inHubs ? '' : 'center',
-  justifyContent: inHubs ? '' : 'center',
+  alignItems: 'center',
+  justifyContent:  'center',
   width: '100%',
 }))
 
@@ -129,6 +140,14 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   maxHeight: '90vh',
   overflowY: 'auto',
   zIndex: '10',
+  display: 'flex',
+  flexDirection: 'column',
+  position: 'relative',
+  [theme.breakpoints.down('md')]: {
+    width: 'unset',
+    margin: '15px',
+    padding: theme.spacing(2),
+  },
 }))
 
 const StyledModalTypography = styled(Typography)(({ theme }) => ({
@@ -164,6 +183,14 @@ const CloseReleaseButton = styled(Button)(() => ({
 
 const CloseReleaseTypography = styled(Typography)(({ theme, closed }) => ({
   color: closed ? theme.palette.grey.primary : theme.palette.red,
+}))
+
+const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
+  position: 'absolute',
+  right: theme.spacing(1),
+  top: theme.spacing(1),
+  color: theme.palette.black,
+  cursor: 'pointer'
 }))
 
 export default CloseRelease

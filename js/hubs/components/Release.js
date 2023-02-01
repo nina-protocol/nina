@@ -30,10 +30,6 @@ import rehypeExternalLinks from 'rehype-external-links'
 const { getImageFromCDN, loader } = imageManager
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import { useSnackbar } from 'notistack'
-const CloseRelease = dynamic(() =>
-  import('@nina-protocol/nina-internal-sdk/esm/CloseRelease')
-)
-const Royalty = dynamic(() => import('./Royalty'))
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSettingsModal'
 

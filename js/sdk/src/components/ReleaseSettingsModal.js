@@ -10,7 +10,7 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import Royalty from './Royalty'
 import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 import CloseIcon from '@mui/icons-material/Close'
-
+import CloseRelease from './CloseRelease'
 const ReleaseSettingsModal = ({
   releasePubkey,
   metadata,
@@ -51,13 +51,14 @@ const ReleaseSettingsModal = ({
           <StyledPaper>
             <StyledCloseIcon onClick={() => handleClose()} />
 
-            <Typography variant="h4">Release Settings:</Typography>
+            <StyledTypography variant="h4">Release Settings:</StyledTypography>
 
             {userIsRecipient && (
               <Royalty releasePubkey={releasePubkey} release={release} />
             )}
 
             {isAuthority && (
+              <>
               <Gates
                 release={release}
                 metadata={metadata}
@@ -65,7 +66,9 @@ const ReleaseSettingsModal = ({
                 isAuthority={isAuthority}
                 amountHeld={amountHeld}
                 inSettings={true}
-              />
+                />
+              <CloseRelease releasePubkey={releasePubkey} release={release} />
+                </>
             )}
           </StyledPaper>
         </Fade>
@@ -77,6 +80,11 @@ const ReleaseSettingsModal = ({
 const Root = styled('div')(() => ({
   display: 'flex',
   alignItems: 'center',
+  
+}))
+
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.black,
 }))
 
 const StyledModal = styled(Modal)(() => ({
@@ -108,6 +116,7 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
   position: 'absolute',
   right: theme.spacing(1),
   top: theme.spacing(1),
+  color: theme.palette.black,
 }))
 
 export default ReleaseSettingsModal

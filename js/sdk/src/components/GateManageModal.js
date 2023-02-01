@@ -99,7 +99,7 @@ const GateManageModal = ({
         onClick={() => setOpen(true)}
         sx={{ height: '55px', width: '100%', mt: 1 }}
       >
-        <Typography variant="body2">Manage Gates</Typography>
+        <StyledTypography variant="body2">Manage Gates</StyledTypography>
       </Button>
 
       <StyledModal
@@ -117,9 +117,9 @@ const GateManageModal = ({
           <StyledPaper>
             <StyledCloseIcon onClick={() => handleClose()} />
 
-            <Typography variant="h5" sx={{ mb: 1 }}>
+            <StyledTypography variant="h5" sx={{ mb: 1 }}>
               Gate Manager
-            </Typography>
+            </StyledTypography>
 
             <Box>
               <GateCreateModal
@@ -130,9 +130,9 @@ const GateManageModal = ({
               />
 
               {gates.length > 0 && (
-                <Typography variant="body1" sx={{ my: 1 }}>
+                <StyledTypography variant="body1" sx={{ my: 1 }}>
                   Existing Gates:
-                </Typography>
+                </StyledTypography>
               )}
 
               <GateWrapper>
@@ -181,7 +181,11 @@ const GateManageModal = ({
                       >
                         <ListItemButton disableGutters>
                           <ListItemText
-                            primary={`${gate.fileName} (${fileSize} mb)`}
+                            primary={
+                              <StyledTypography>
+                                {gate.fileName} ({`${fileSize} mb`})
+                              </StyledTypography>
+                            }
                           />
                         </ListItemButton>
                       </ListItem>
@@ -201,6 +205,10 @@ const Root = styled('div')(() => ({
   display: 'flex',
   alignItems: 'center',
   width: '100%',
+}))
+
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.black,
 }))
 
 const StyledModal = styled(Modal)(() => ({
@@ -237,6 +245,8 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
   position: 'absolute',
   right: theme.spacing(1),
   top: theme.spacing(1),
+  cursor: 'pointer',
+  color: theme.palette.black,
 }))
 
 export default GateManageModal

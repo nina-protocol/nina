@@ -15,6 +15,8 @@ import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import RoyaltyRecipientForm from './RoyaltyRecipientForm'
 import Link from 'next/link'
+import CloseIcon from '@mui/icons-material/Close'
+
 const Royalty = (props) => {
   const { release, releasePubkey } = props
 
@@ -61,6 +63,10 @@ const Royalty = (props) => {
     collectRoyaltyForRelease(recipient, releasePubkey)
   }
 
+  const handleClose = () => {
+    setOpen(false)
+  }
+
   const userIsRecipientUI = () => {
     return (
       <>
@@ -100,7 +106,7 @@ const Royalty = (props) => {
         fullWidth
         sx={{ mt: 1 }}
       >
-        <Typography variant="body2">Revenue Share Info</Typography>
+        <StyledTypography variant="body2">Revenue Share Info</StyledTypography>
       </Button>
       <StyledModal
         aria-labelledby="transition-modal-title"
@@ -115,9 +121,15 @@ const Royalty = (props) => {
       >
         <Fade in={open}>
           <StyledPaper>
-            <Typography align="center" variant="h4" id="transition-modal-title">
+            <StyledCloseIcon onClick={() => handleClose()} />
+
+            <StyledTypography
+              align="center"
+              variant="h4"
+              id="transition-modal-title"
+            >
               Revenue Share Information:
-            </Typography>
+            </StyledTypography>
             <List>
               {release?.revenueShareRecipients &&
                 release.revenueShareRecipients.map((recipient, i) => {
@@ -135,7 +147,11 @@ const Royalty = (props) => {
                         href={`/profiles/${recipient.recipientAuthority}`}
                         passHref
                       >
-                        <a rel="noopener">{`Collaborator ${i}`}</a>
+                        <a rel="noopener">
+                          <StyledTypography>
+                            {`Collaborator ${i}`}
+                          </StyledTypography>
+                        </a>
                       </Link>
                     )
                     const percentShare = `percent share: ${
@@ -165,16 +181,18 @@ const Royalty = (props) => {
 
                     return (
                       <ListItem key={i} divider alignItems="center">
-                        <ListItemText
+                        <StyledListItemText
                           className={classes.recipientData}
                           disableTypography
                           primary={recipientHandle}
                           secondary={
                             <Box ml={0} className={classes.recipientDat}>
-                              <Typography variant="body2">
+                              <StyledTypography variant="body2">
                                 {percentShare}
-                              </Typography>
-                              <Typography variant="body2">{owed}</Typography>
+                              </StyledTypography>
+                              <StyledTypography variant="body2">
+                                {owed}
+                              </StyledTypography>
                             </Box>
                           }
                         />
@@ -216,10 +234,18 @@ const Root = styled('div')(({ theme }) => ({
   },
 }))
 
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.black,
+}))
+
 const StyledModal = styled(Modal)(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+}))
+
+const StyledCollaborator = styled(<a></a>)(({ theme }) => ({
+  color: theme.palette.black,
 }))
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
@@ -231,6 +257,26 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   maxHeight: '90vh',
   overflowY: 'auto',
   zIndex: '10',
+  display: 'flex',
+  flexDirection: 'column',
+  position: 'relative',
+  [theme.breakpoints.down('md')]: {
+    width: 'unset',
+    margin: '15px',
+    padding: theme.spacing(2),
+  },
+}))
+
+const StyledListItemText = styled(ListItemText)(({ theme }) => ({
+  color: theme.palette.black,
+}))
+
+const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
+  position: 'absolute',
+  right: theme.spacing(1),
+  top: theme.spacing(1),
+  color: theme.palette.black,
+  cursor: 'pointer',
 }))
 
 export default Royalty
