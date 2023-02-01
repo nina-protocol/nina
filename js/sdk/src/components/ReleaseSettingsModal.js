@@ -77,7 +77,6 @@ const ReleaseSettingsModal = ({
 const Root = styled('div')(() => ({
   display: 'flex',
   alignItems: 'center',
-  width: '100%',
 }))
 
 const StyledModal = styled(Modal)(() => ({
