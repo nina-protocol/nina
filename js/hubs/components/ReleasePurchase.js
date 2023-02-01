@@ -12,15 +12,24 @@ import { useSnackbar } from 'notistack'
 import Typography from '@mui/material/Typography'
 import { useRouter } from 'next/router'
 import Dots from './Dots'
-import Royalty from './Royalty'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
+import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 
 const HubsModal = dynamic(() => import('./HubsModal'))
 
 import dynamic from 'next/dynamic'
 
+const BUTTON_WIDTH = '155px'
+
 const ReleasePurchase = (props) => {
-  const { releasePubkey, metadata, hubPubkey } = props
+  const {
+    releasePubkey,
+    metadata,
+    inPost,
+    hubPubkey,
+    setAmountHeld,
+    amountHeld,
+  } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const {
@@ -29,10 +38,10 @@ const ReleasePurchase = (props) => {
     releasePurchaseTransactionPending,
     releaseState,
     getCollectorsForRelease,
+    fetchGatesForRelease,
   } = useContext(Release.Context)
   const { hubState } = useContext(Hub.Context)
   const {
-    getAmountHeld,
     collection,
     usdcBalance,
     ninaClient,
@@ -40,11 +49,11 @@ const ReleasePurchase = (props) => {
     NinaProgramAction,
   } = useContext(Nina.Context)
   const [release, setRelease] = useState(undefined)
-  const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
-  const [downloadButtonString, setDownloadButtonString] = useState('Download')
   const [userIsRecipient, setUserIsRecipient] = useState(false)
   const [publishedHub, setPublishedHub] = useState()
   const [collectors, setCollectors] = useState()
+  const [gate, setGate] = useState(undefined)
+
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
     [releasePubkey, releasePurchaseTransactionPending]
@@ -54,6 +63,12 @@ const ReleasePurchase = (props) => {
     [releasePubkey, releasePurchasePending]
   )
 
+  const isAuthority = useMemo(() => {
+    if (wallet.connected) {
+      return release?.authority === wallet?.publicKey.toBase58()
+    }
+  }, [release, wallet.connected])
+
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
       setRelease(releaseState.tokenData[releasePubkey])
@@ -61,18 +76,8 @@ const ReleasePurchase = (props) => {
   }, [releaseState])
 
   useEffect(() => {
-    setAmountHeld(collection[releasePubkey])
-  }, [collection, releasePubkey])
-
-  useEffect(() => {
-    getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
-
-    // const hubForRelease = async (releasePubkey) => {
-    //   const result = await getPublishedHubForRelease(releasePubkey);
-    //   setPublishedHub(result?.hub);
-    // };
-    // hubForRelease(releasePubkey);
-  }, [releasePubkey, releaseState.releaseMintMap])
+    setAmountHeld(collection[releasePubkey] || 0)
+  }, [collection[releasePubkey]])
 
   useEffect(() => {
     if (release?.royaltyRecipients) {
@@ -192,33 +197,6 @@ const ReleasePurchase = (props) => {
           .nativeToUi(release.price, release.paymentMint)
           .toFixed(2)})`
 
-  const downloadAs = async (url, name) => {
-    setDownloadButtonString('Downloading')
-
-    logEvent('track_download', 'engagement', {
-      publicKey: releasePubkey,
-      hub: hubPubkey,
-      wallet: wallet?.publicKey?.toBase58(),
-    })
-
-    const response = await axios.get(url, {
-      method: 'GET',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/octet-stream',
-      },
-      responseType: 'blob',
-    })
-    if (response?.data) {
-      const a = document.createElement('a')
-      const url = window.URL.createObjectURL(response.data)
-      a.href = url
-      a.download = name
-      a.click()
-    }
-    setDownloadButtonString('Download')
-  }
-
   return (
     <ReleasePurchaseWrapper mt={1}>
       <AmountRemaining variant="body2" align="left">
@@ -255,17 +233,12 @@ const ReleasePurchase = (props) => {
         </Typography>
       )}
       <HubsModal releasePubkey={releasePubkey} metadata={metadata} />
-      {userIsRecipient && (
-        <>
-          <Royalty releasePubkey={releasePubkey} release={release} />
-        </>
-      )}
       <form
         onSubmit={handleSubmit}
         style={{
           textAlign: 'left',
-          marginBottom: '10px',
-          marginTop: { md: '0px', lg: '20px' },
+          marginBottom: '8px',
+          marginTop: { md: '0px', lg: '8px' },
         }}
       >
         <BuyButton
@@ -286,29 +259,20 @@ const ReleasePurchase = (props) => {
         </BuyButton>
       </form>
 
-      {amountHeld > 0 && (
-        <BuyButton
-          variant="contained"
-          sx={{ marginBottom: '10px !important' }}
-          onClick={(e) => {
-            e.stopPropagation()
-            downloadAs(
-              metadata.properties.files[0].uri,
-              `${metadata.name
-                .replace(/[^a-z0-9]/gi, '_')
-                .toLowerCase()}___nina.mp3`
-            )
-          }}
-        >
-          <Typography variant="body2" align="left">
-            {downloadButtonString === 'Download' ? (
-              'Download'
-            ) : (
-              <Dots msg={downloadButtonString} />
-            )}
-          </Typography>
-        </BuyButton>
-      )}
+      <Box
+        sx={{
+          maxWidth: BUTTON_WIDTH,
+        }}
+      >
+        <Gates
+          release={release}
+          metadata={metadata}
+          releasePubkey={releasePubkey}
+          isAuthority={isAuthority}
+          amountHeld={amountHeld}
+          inSettings={false}
+        />
+      </Box>
     </ReleasePurchaseWrapper>
   )
 }
@@ -318,12 +282,15 @@ const BuyButton = styled(Button)(({ theme, soldOut }) => ({
     border: soldOut
       ? `1px solid ${theme.palette.grey.primary}`
       : `1px solid ${theme.palette.text.primary}`,
+  height: '55px',
+  width: BUTTON_WIDTH,
+  '& p': {   
     padding: '10px',
     '&:hover': {
       opacity: '50%',
     },
   },
-}))
+}}))
 
 const BuyButtonTypography = styled(Typography)(({ theme, soldOut }) => ({
   color: soldOut ? theme.palette.grey.primary : '',
