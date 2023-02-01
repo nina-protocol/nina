@@ -12,7 +12,6 @@ import { useSnackbar } from 'notistack'
 import Typography from '@mui/material/Typography'
 import { useRouter } from 'next/router'
 import Dots from './Dots'
-import Royalty from './Royalty'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 
@@ -197,9 +196,6 @@ const ReleasePurchase = (props) => {
         </Typography>
       )}
       <HubsModal releasePubkey={releasePubkey} metadata={metadata} />
-      {userIsRecipient && (
-        <Royalty releasePubkey={releasePubkey} release={release} />
-      )}
       <form
         onSubmit={handleSubmit}
         style={{

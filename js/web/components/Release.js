@@ -35,6 +35,8 @@ const ReleaseComponent = ({ metadataSsr }) => {
   const isAuthority = useMemo(() => {
     if (wallet.connected) {
       return release?.authority === wallet?.publicKey.toBase58()
+    } else {
+      return false
     }
   }, [release, wallet.connected])
 
@@ -50,6 +52,8 @@ const ReleaseComponent = ({ metadataSsr }) => {
       })
     }
   }, [release?.revenueShareRecipients, wallet?.connected])
+
+  
 
   useEffect(() => {
     if (releaseState.metadata[releasePubkey] && !metadata) {
@@ -72,6 +76,7 @@ const ReleaseComponent = ({ metadataSsr }) => {
 
   useEffect(() => {
     setUserHubs(null)
+    setUserIsRecipient(false)
   }, [wallet?.disconnecting])
 
   if (metadata && Object.keys(metadata).length === 0) {

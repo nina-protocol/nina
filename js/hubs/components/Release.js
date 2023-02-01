@@ -4,6 +4,7 @@ import React, {
   useEffect,
   createElement,
   Fragment,
+  useMemo
 } from 'react'
 import axios from 'axios'
 import dynamic from 'next/dynamic'
@@ -29,8 +30,9 @@ import rehypeExternalLinks from 'rehype-external-links'
 const { getImageFromCDN, loader } = imageManager
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
+import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSettingsModal'
 
-const Royalty = dynamic(() => import('./Royalty'))
+
 const Button = dynamic(() => import('@mui/material/Button'))
 const ReleasePurchase = dynamic(() => import('./ReleasePurchase'))
 const AddToHubModal = dynamic(() => import('./AddToHubModal'))
@@ -53,6 +55,14 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const [userIsRecipient, setUserIsRecipient] = useState(false)
   const [release, setRelease] = useState()
   const [amountHeld, setAmountHeld] = useState(0)
+
+  const isAuthority = useMemo(() => {
+    if (wallet.connected) {
+      return release?.authority === wallet?.publicKey.toBase58()
+    } else {
+      return false
+    }
+  }, [release, wallet.connected])
 
   useEffect(() => {
     if (hubPubkey && !hubState[hubPubkey]) {
@@ -124,6 +134,13 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
     }
   }, [releaseState.tokenData[releasePubkey], wallet?.connected])
 
+  useEffect(() => {
+    if (wallet.disconnecting) {
+      setUserIsRecipient(false)
+    }
+  }, [wallet?.disconnecting])
+
+
   const downloadAs = async (url, name) => {
     logEvent('track_download', 'engagement', {
       publicKey: releasePubkey,
@@ -189,7 +206,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
 
               <Box
                 display="flex"
-                sx={{ mt: '15px', mb: { md: '15px', xs: '0px' } }}
+                sx={{ mt: '15px', mb: { md: '15px', xs: '0px' }, color: 'black' }}
               >
                 <PlayButton
                   sx={{ height: '22px', width: '28px', m: 0, paddingLeft: 0 }}
@@ -220,6 +237,16 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                     hubPubkey={hubPubkey}
                   />
                 )}
+
+
+                <ReleaseSettingsModal
+                  userIsRecipient={userIsRecipient}
+                  isAuthority={isAuthority}
+                  release={release}
+                  releasePubkey={releasePubkey}
+                  amountHeld={amountHeld}
+                  metadata={metadata}
+                />
 
                 {amountHeld > 0 && (
                   <Button
@@ -258,12 +285,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                 amountHeld={amountHeld}
                 setAmountHeld={setAmountHeld}
               />
-              {userIsRecipient && (
-                <Royalty
-                  release={releaseState.tokenData[releasePubkey]}
-                  releasePubkey={releasePubkey}
-                />
-              )}
+      
             </Box>
 
             <StyledDescription align="left">{description}</StyledDescription>

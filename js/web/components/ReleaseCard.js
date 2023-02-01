@@ -14,7 +14,9 @@ import DownloadIcon from '@mui/icons-material/Download'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import axios from 'axios'
 import AddToHubModal from './AddToHubModal.js'
-import ReleaseSettingsModal from './ReleaseSettingsModal.js'
+// import ReleaseSettingsModal from './ReleaseSettingsModal.js'
+import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSettingsModal'
+
 import Link from 'next/link'
 import { useSnackbar } from 'notistack'
 
@@ -85,8 +87,8 @@ const ReleaseCard = (props) => {
     <StyledReleaseCard>
       <StyledReleaseInfo>
         {metadata && (
-          <CtaWrapper>
-            <Box display="flex">
+          <CtaWrapper sx={{color: 'white'}}>
+            <Box display="flex" >
               <Button
                 onClickCapture={() => {
                   setInitialized(true)
@@ -140,14 +142,16 @@ const ReleaseCard = (props) => {
                 </Box>
               )}
 
-              <ReleaseSettingsModal
-                userIsRecipient={userIsRecipient}
-                isAuthority={isAuthority}
-                release={release}
-                releasePubkey={releasePubkey}
-                amountHeld={amountHeld}
-                metadata={metadata}
-              />
+              <Box sx={{color: 'white'}}>
+                <ReleaseSettingsModal
+                  userIsRecipient={userIsRecipient}
+                  isAuthority={isAuthority}
+                  release={release}
+                  releasePubkey={releasePubkey}
+                  amountHeld={amountHeld}
+                  metadata={metadata}
+                />
+              </Box>
             </Box>
           </CtaWrapper>
         )}
@@ -216,6 +220,9 @@ const CtaWrapper = styled(Box)(() => ({
     width: '21px',
     marginRight: '10px',
   },
+  'svg': {
+    color: 'white'
+  }
 }))
 
 const StyledReleaseInfo = styled(Box)(({ theme }) => ({

@@ -32,9 +32,9 @@ const ReleaseSettingsModal = ({
       {(isAuthority || userIsRecipient) && (
         <Button
           onClick={() => setOpen(true)}
-          sx={{ height: '22px', width: '28px', m: 0 }}
+          sx={{ height: '22px', width: '28px', m: 0}}
         >
-          <SettingsIcon sx={{ color: 'white' }} />
+          <SettingsIcon sx={{ color: 'inherit' }} />
         </Button>
       )}
 
