@@ -130,7 +130,7 @@ const NavBar = () => {
         </DesktopWalletWrapper>
       </NavRight>
       <PendingReleasesIndicator />
-      <FeedDrawer override={Object.keys(pendingReleases).length> 0}/>
+      <FeedDrawer />
     </Root>
   )
 }

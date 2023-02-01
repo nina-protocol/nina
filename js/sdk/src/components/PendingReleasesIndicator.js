@@ -6,30 +6,42 @@ import Typography from '@mui/material/Typography'
 import { timeSince } from '../utils'
 
 const PendingReleasesIndicator = () => {
-  const { pendingReleases } = useContext(Release.Context)
+  const { pendingReleases, removePendingRelease } = useContext(Release.Context)
   const [pendingReleasesOpen, setPendingReleasesOpen] = useState(false)
 
   return (
     <StyledBox>
-      {Object.keys(pendingReleases).length > 0 && (
+      {Object.keys(pendingReleases || {}).length > 0 && (
         <>
-          {Object.keys(pendingReleases).map((key) => {
-            const { artist, title, solanaReleaseExists, ninaReleaseExists, date } = pendingReleases[key]
-            let status = 0
-            if (solanaReleaseExists && !ninaReleaseExists) {
-              status = 1
-            } else if (solanaReleaseExists && ninaReleaseExists) {
-              status = 2
+          {Object.keys(pendingReleases || {}).map((key) => {
+            const { artist, title, date, status } = pendingReleases[key]
+            let statusMessage
+            if (status === 'pending') {
+              statusMessage = `Your release ${artist} - "${title}" is pending.`
+            } else if (status === 'failed_solana') {
+              statusMessage = `Your release ${artist} - "${title}" failed to publish.`
+            } else if (status === 'success') {
+              statusMessage = `Your release ${artist} - "${title}" was successfully published.`
             }
             return (
-              <PendingRelease>
-                <Typography style={{ textDecoration: 'underline', color: 'red'}} onClick={() => setPendingReleasesOpen(!pendingReleasesOpen)}>{`Your release ${artist} - "${title}" is pending.  ${pendingReleasesOpen ? '(See Less Info)' : '(See More Info)'}`}</Typography>
+              <PendingRelease style={{ border: `${status === 'success' ? '1px solid green' : '1px solid red' }`}}>
+                <Typography style={{ textDecoration: 'underline', color: `${status === 'success' ? 'green' : 'red'}`}} onClick={() => setPendingReleasesOpen(!pendingReleasesOpen)}>{`${statusMessage}  ${pendingReleasesOpen ? '(See Less Info)' : '(See More Info)'}`}</Typography>
                 {pendingReleasesOpen && (
                   <Box style={{ paddingTop: '8px'}}>
-                    <Typography>{`Pending Release Status: ${status}`}</Typography>
-                    <Typography>{`Time Pending: ${timeSince(Date.parse(date))}`}</Typography>
-                    <Typography>You will not be able to publish another release until it is no longer pending.</Typography>
-                    <Typography style={{ paddingTop: '8px'}}>Please write <a style={{ textDecoration: 'underline'}} href="mailto:contact@ninaprotocol.com">contact@ninaprotocol.com</a> if your release is pending for more than 30 minutes.</Typography>
+                    <Typography>{`Release Status: ${status}`}</Typography>
+                    <Typography>{`Time Since Published: ${timeSince(Date.parse(date))}`}</Typography>
+                    {status === 'pending' && (
+                      <>
+                        <Typography>You will not be able to publish another release until it is no longer pending.</Typography>
+                        <Typography style={{ paddingTop: '8px'}}>Please write <a style={{ textDecoration: 'underline'}} href="mailto:contact@ninaprotocol.com">contact@ninaprotocol.com</a> if your release is pending for more than 30 minutes.</Typography>
+                      </>
+                    )}
+                    {status === 'failed_solana' && (
+                      <Typography>It is safe to attempt to publish again.</Typography>
+                    )}
+                    {(status === 'success' || status === 'failed_solana') && (
+                      <button onClick={() => removePendingRelease(key)}>Got it!</button>
+                    )}
                   </Box>
                 )}
               </PendingRelease>
@@ -65,7 +77,6 @@ const StyledBox = styled(Box, {
 }))
 
 const PendingRelease = styled(Box)(() => ({
-  border: '1px solid red',
   padding: '10px',
   position: 'inherit',
   background: 'white',
