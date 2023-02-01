@@ -26,14 +26,21 @@ import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
-import Royalty from './Royalty'
+import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import dynamic from 'next/dynamic'
 const CloseRelease = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/CloseRelease')
 )
 const ReleasePurchase = (props) => {
-  const { releasePubkey, metadata, router } = props
+  const {
+    releasePubkey,
+    metadata,
+    router,
+    amountHeld,
+    setAmountHeld,
+    isAuthority,
+  } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const {
@@ -58,11 +65,9 @@ const ReleasePurchase = (props) => {
     getExchangesForRelease,
   } = useContext(Exchange.Context)
   const [release, setRelease] = useState(undefined)
-  const [amountHeld, setAmountHeld] = useState(collection[releasePubkey])
   const [amountPendingBuys, setAmountPendingBuys] = useState(0)
   const [amountPendingSales, setAmountPendingSales] = useState(0)
   const [downloadButtonString, setDownloadButtonString] = useState('Download')
-  const [userIsRecipient, setUserIsRecipient] = useState(false)
   const [exchangeTotalBuys, setExchangeTotalBuys] = useState(0)
   const [exchangeTotalSells, setExchangeTotalSells] = useState(0)
   const [publishedHub, setPublishedHub] = useState()
@@ -79,11 +84,6 @@ const ReleasePurchase = (props) => {
 
   useEffect(() => {
     getRelease(releasePubkey)
-    // const hubForRelease = async (releasePubkey) => {
-    //   const result = await getPublishedHubForRelease(releasePubkey)
-    //   setPublishedHub(result?.hub)
-    // }
-    // hubForRelease(releasePubkey)
   }, [releasePubkey])
 
   useEffect(() => {
@@ -97,11 +97,7 @@ const ReleasePurchase = (props) => {
   }, [releaseState.tokenData[releasePubkey]])
 
   useEffect(() => {
-    getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
-  }, [])
-
-  useEffect(() => {
-    setAmountHeld(collection[releasePubkey])
+    setAmountHeld(collection[releasePubkey] || 0)
   }, [collection[releasePubkey]])
 
   useEffect(() => {
@@ -122,19 +118,6 @@ const ReleasePurchase = (props) => {
       filterExchangesForReleaseBuySell(releasePubkey, false, false).length
     )
   }, [exchangeState])
-
-  useEffect(() => {
-    if (release?.revenueShareRecipients) {
-      release.revenueShareRecipients.forEach((recipient) => {
-        if (
-          wallet?.connected &&
-          recipient.recipientAuthority === wallet?.publicKey.toBase58()
-        ) {
-          setUserIsRecipient(true)
-        }
-      })
-    }
-  }, [release?.revenueShareRecipients, wallet?.connected])
 
   useEffect(() => {
     if (metadata?.descriptionHtml) {
@@ -259,30 +242,6 @@ const ReleasePurchase = (props) => {
     pathString = '/collection'
   }
 
-  const downloadAs = async (url, name) => {
-    setDownloadButtonString('Downloading')
-
-    logEvent('track_download', 'engagement', {
-      publicKey: releasePubkey,
-    })
-
-    const response = await axios.get(url, {
-      method: 'GET',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/octet-stream',
-      },
-      responseType: 'blob',
-    })
-    if (response?.data) {
-      const a = document.createElement('a')
-      const url = window.URL.createObjectURL(response.data)
-      a.href = url
-      a.download = name
-      a.click()
-    }
-    setDownloadButtonString('Download')
-  }
   return (
     <Box>
       <AmountRemaining variant="body2" align="left">
@@ -371,7 +330,7 @@ const ReleasePurchase = (props) => {
         </Typography>
       )}
       <StyledDescription align="left">{description}</StyledDescription>
-      <Box mt={1}>
+      <Box sx={{ mb: 1 }}>
         <form onSubmit={handleSubmit}>
           <Button
             variant="outlined"
@@ -387,43 +346,17 @@ const ReleasePurchase = (props) => {
           </Button>
         </form>
       </Box>
-      {userIsRecipient && (
-        <>
-          <Royalty releasePubkey={releasePubkey} release={release} />
-          {(release.remainingSupply > 0 || release.remainingSupply === -1) && (
-            <CloseRelease
-              releasePubkey={releasePubkey}
-              release={release}
-              inHubs={false}
-              fullWidth={true}
-            />
-          )}
-        </>
-      )}
-      {amountHeld > 0 && (
-        <Button
-          variant="outlined"
-          fullWidth
-          sx={{ marginTop: '15px !important' }}
-          onClick={(e) => {
-            e.stopPropagation()
-            downloadAs(
-              metadata.properties.files[0].uri,
-              `${metadata.name
-                .replace(/[^a-z0-9]/gi, '_')
-                .toLowerCase()}___nina.mp3`
-            )
-          }}
-        >
-          <Typography variant="body2">
-            {downloadButtonString === 'Download' ? (
-              'Download'
-            ) : (
-              <Dots msg={downloadButtonString} />
-            )}
-          </Typography>
-        </Button>
-      )}
+
+      <Box>
+        <Gates
+          release={release}
+          metadata={metadata}
+          releasePubkey={releasePubkey}
+          isAuthority={isAuthority}
+          amountHeld={amountHeld}
+          inSettings={false}
+        />
+      </Box>
     </Box>
   )
 }

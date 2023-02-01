@@ -28,6 +28,8 @@ export default [
       Release: 'src/contexts/Release/index.js',
       client: 'src/client.js',
       utils: 'src/utils/index.js',
+      AudioPlayer: 'src/components/AudioPlayer.js',
+      Dots: 'src/components/Dots.js',
       EmailCapture: 'src/components/EmailCapture.js',
       EmailCaptureForm: 'src/components/EmailCaptureForm.js',
       ReleaseCreateForm: 'src/components/ReleaseCreateForm.js',
@@ -38,10 +40,10 @@ export default [
       MediaDropzone: 'src/components/MediaDropzone.js',
       MediaDropzones: 'src/components/MediaDropzones.js',
       UploadInfoModal: 'src/components/UploadInfoModal.js',
-      Dots: 'src/components/Dots.js',
       BundlrModal: 'src/components/BundlrModal.js',
-      AudioPlayer: 'src/components/AudioPlayer.js',
       CloseRelease: 'src/components/CloseRelease.js',
+      Gates: 'src/components/Gates.js',
+      ReleaseSettingsModal: 'src/components/ReleaseSettingsModal.js',
     },
     output: [
       {
