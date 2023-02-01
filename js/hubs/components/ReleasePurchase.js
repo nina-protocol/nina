@@ -20,10 +20,9 @@ const HubsModal = dynamic(() => import('./HubsModal'))
 import dynamic from 'next/dynamic'
 
 const ReleasePurchase = (props) => {
-  const { releasePubkey, metadata, inPost, hubPubkey } = props
+  const { releasePubkey, metadata, hubPubkey } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const router = useRouter()
   const {
     releasePurchaseViaHub,
     releasePurchasePending,

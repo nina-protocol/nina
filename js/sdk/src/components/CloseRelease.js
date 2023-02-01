@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -8,10 +8,32 @@ import Modal from '@mui/material/Modal'
 import Paper from '@mui/material/Paper'
 import Backdrop from '@mui/material/Backdrop'
 import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
-
+import { useSnackbar } from 'notistack'
+import Release from '../contexts/Release'
 const CloseRelease = (props) => {
-  const { handleCloseRelease, pendingTx, release, inHubs, fullWidth } = props
+  const { release, inHubs, fullWidth, releasePubkey } = props
+  const { enqueueSnackbar } = useSnackbar()
+  const { closeRelease } = useContext(Release.Context)
   const [open, setOpen] = useState(false)
+  const [pendingTx, setPendingTx] = useState(false)
+
+  const handleCloseRelease = async (e, releasePubkey) => {
+    e.preventDefault()
+    setPendingTx(true)
+    const result = await closeRelease(releasePubkey)
+
+    if (result) {
+      showCompletedTransaction(result)
+      setPendingTx(false)
+      setOpen(false)
+    }
+  }
+
+  const showCompletedTransaction = (result) => {
+    enqueueSnackbar(result.msg, {
+      variant: result.success ? 'success' : 'warn',
+    })
+  }
   return (
     <>
       <Root inHubs={inHubs}>
@@ -65,7 +87,7 @@ const CloseRelease = (props) => {
               </StyledModalWarningTypography>
               <Box display="flex" justifyContent="flex-end" mt={2} />
               <StyledModalButton
-                onClick={handleCloseRelease}
+                onClick={(e) => handleCloseRelease(e, releasePubkey)}
                 variant="outlined"
                 color="primary"
                 type="submit"
@@ -122,6 +144,9 @@ const StyledModalWarningTypography = styled(Typography)(({ theme }) => ({
 
 const StyledModalButton = styled(Button)(() => ({
   marginTop: '15px',
+  '&:hover': {
+    opacity: '50%',
+  },
 }))
 
 const StyledModalButtonTypography = styled(Typography)(({ theme }) => ({

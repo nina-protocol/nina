@@ -39,7 +39,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const { enqueueSnackbar } = useSnackbar()
   const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } =
     useContext(Audio.Context)
-  const { releaseState, getRelease, closeRelease } = useContext(Release.Context)
+  const { releaseState, getRelease } = useContext(Release.Context)
   const { getHub, hubState, getHubsForUser, filterHubsForUser } = useContext(
     Hub.Context
   )
@@ -49,8 +49,6 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const [userHubs, setUserHubs] = useState()
   const [userIsRecipient, setUserIsRecipient] = useState(false)
   const [release, setRelease] = useState()
-  const [showCloseReleaseModal, setShowCloseReleaseModal] = useState(false)
-  const [pendingTx, setPendingTx] = useState(false)
 
   useEffect(() => {
     if (hubPubkey && !hubState[hubPubkey]) {
@@ -117,24 +115,6 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
       )
     }
   }, [releaseState.tokenData[releasePubkey], wallet?.connected])
-
-  const handleCloseRelease = async (e, releasePubkey) => {
-    e.preventDefault()
-    setPendingTx(true)
-    const result = await closeRelease(releasePubkey)
-
-    if (result) {
-      showCompletedTransaction(result)
-      setPendingTx(false)
-      setShowCloseReleaseModal(false)
-    }
-  }
-
-  const showCompletedTransaction = (result) => {
-    enqueueSnackbar(result.msg, {
-      variant: result.success ? 'success' : 'warn',
-    })
-  }
 
   return (
     <>
@@ -231,13 +211,10 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                   {(release.remainingSupply > 0 ||
                     release.remainingSupply === -1) && (
                     <CloseRelease
-                      handleCloseRelease={(e) =>
-                        handleCloseRelease(e, releasePubkey)
-                      }
-                      pendingTx={pendingTx}
                       release={release}
                       inHubs={true}
                       fullWidth={false}
+                      releasePubkey={releasePubkey}
                     />
                   )}
                 </Box>

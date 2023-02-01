@@ -42,7 +42,6 @@ const ReleasePurchase = (props) => {
     releasePurchaseTransactionPending,
     releaseState,
     getRelease,
-    closeRelease,
     getCollectorsForRelease,
   } = useContext(Release.Context)
   const {
@@ -68,8 +67,6 @@ const ReleasePurchase = (props) => {
   const [exchangeTotalSells, setExchangeTotalSells] = useState(0)
   const [publishedHub, setPublishedHub] = useState()
   const [description, setDescription] = useState()
-  const [showCloseReleaseModal, setShowCloseReleaseModal] = useState(false)
-  const [pendingTx, setPendingTx] = useState(false)
   const [collectors, setCollectors] = useState()
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
@@ -233,24 +230,6 @@ const ReleasePurchase = (props) => {
     }
   }
 
-  const handleCloseRelease = async (e, releasePubkey) => {
-    e.preventDefault()
-    setPendingTx(true)
-    const result = await closeRelease(releasePubkey)
-
-    if (result) {
-      showCompletedTransaction(result)
-      setPendingTx(false)
-      setShowCloseReleaseModal(false)
-    }
-  }
-
-  const showCompletedTransaction = (result) => {
-    enqueueSnackbar(result.msg, {
-      variant: result.success ? 'success' : 'warn',
-    })
-  }
-
   if (!release) {
     return (
       <>
@@ -333,7 +312,11 @@ const ReleasePurchase = (props) => {
           {`View Secondary Market (${exchangeTotalBuys + exchangeTotalSells})`}
         </StyledLink>
       </Typography>
-      <CollectorModal releasePubkey={releasePubkey} metadata={metadata} />
+      <CollectorModal
+        releasePubkey={releasePubkey}
+        metadata={metadata}
+        collectors={collectors}
+      />
       <HubsModal releasePubkey={releasePubkey} metadata={metadata} />
       {wallet?.connected && (
         <StyledUserAmount>
@@ -409,8 +392,7 @@ const ReleasePurchase = (props) => {
           <Royalty releasePubkey={releasePubkey} release={release} />
           {(release.remainingSupply > 0 || release.remainingSupply === -1) && (
             <CloseRelease
-              handleCloseRelease={(e) => handleCloseRelease(e, releasePubkey)}
-              pendingTx={pendingTx}
+              releasePubkey={releasePubkey}
               release={release}
               inHubs={false}
               fullWidth={true}
