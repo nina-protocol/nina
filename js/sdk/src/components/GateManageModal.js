@@ -97,7 +97,14 @@ const GateManageModal = ({
         color="primary"
         type="submit"
         onClick={() => setOpen(true)}
-        sx={{ height: '55px', width: '100%', mt: 1 }}
+        sx={{
+          height: '55px',
+          width: '100%',
+          mt: 1,
+          '&:hover': {
+            opacity: '50%',
+          },
+        }}
       >
         <StyledTypography variant="body2">Manage Gates</StyledTypography>
       </Button>

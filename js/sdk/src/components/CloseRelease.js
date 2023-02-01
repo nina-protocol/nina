@@ -41,15 +41,20 @@ const CloseRelease = (props) => {
     setOpen(false)
   }
 
-
   return (
     <>
       <Root>
-        <CloseReleaseButton
+        <Button
           variant="outlined"
           onClick={() => setOpen(true)}
           disabled={release.remainingSupply === 0}
           fullWidth
+          sx={{
+            mt: 1,
+            '&:hover': {
+              opacity: '50%',
+            },
+          }}
         >
           <CloseReleaseTypography
             variant="body2"
@@ -58,7 +63,7 @@ const CloseRelease = (props) => {
           >
             Close Release
           </CloseReleaseTypography>
-        </CloseReleaseButton>
+        </Button>
         <StyledModal
           aria-labelledby="transition-modal-title"
           aria-describedby="transition-modal-description"
@@ -109,7 +114,6 @@ const CloseRelease = (props) => {
                   {!pendingTx && 'Close Release'}
                 </StyledModalButtonTypography>
               </StyledModalButton>
-          
             </StyledPaper>
           </Fade>
         </StyledModal>
@@ -121,7 +125,7 @@ const CloseRelease = (props) => {
 const Root = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
-  justifyContent:  'center',
+  justifyContent: 'center',
   width: '100%',
 }))
 
@@ -151,17 +155,16 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 }))
 
 const StyledModalTypography = styled(Typography)(({ theme }) => ({
-  marginTop: '15px',
+  marginTop: '16px',
   color: theme.palette.black,
 }))
 
 const StyledModalWarningTypography = styled(Typography)(({ theme }) => ({
-  marginTop: '15px',
+  marginTop: '16px',
   color: theme.palette.red,
 }))
 
 const StyledModalButton = styled(Button)(() => ({
-  marginTop: '15px',
   '&:hover': {
     opacity: '50%',
   },
@@ -173,14 +176,6 @@ const StyledModalButtonTypography = styled(Typography)(({ theme }) => ({
   lineHeight: '13.8px',
 }))
 
-const CloseReleaseButton = styled(Button)(() => ({
-  padding: '12px',
-  marginTop: '15px',
-  '&:hover': {
-    opacity: '50%',
-  },
-}))
-
 const CloseReleaseTypography = styled(Typography)(({ theme, closed }) => ({
   color: closed ? theme.palette.grey.primary : theme.palette.red,
 }))
@@ -190,7 +185,7 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
   right: theme.spacing(1),
   top: theme.spacing(1),
   color: theme.palette.black,
-  cursor: 'pointer'
+  cursor: 'pointer',
 }))
 
 export default CloseRelease

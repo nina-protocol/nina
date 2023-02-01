@@ -104,7 +104,12 @@ const Royalty = (props) => {
         type="submit"
         onClick={() => setOpen(true)}
         fullWidth
-        sx={{ mt: 1 }}
+        sx={{
+          mt: 1,
+          '&:hover': {
+            opacity: '50%',
+          },
+        }}
       >
         <StyledTypography variant="body2">Revenue Share Info</StyledTypography>
       </Button>
@@ -242,10 +247,6 @@ const StyledModal = styled(Modal)(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-}))
-
-const StyledCollaborator = styled(<a></a>)(({ theme }) => ({
-  color: theme.palette.black,
 }))
 
 const StyledPaper = styled(Paper)(({ theme }) => ({

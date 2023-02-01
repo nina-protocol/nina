@@ -49,7 +49,13 @@ const GateUnlockModal = ({ gates, amountHeld, unlockGate }) => {
         color="primary"
         type="submit"
         onClick={() => setOpen(true)}
-        sx={{ height: '55px', width: '100%' }}
+        sx={{
+          height: '55px',
+          width: '100%',
+          '&:hover': {
+            opacity: '50%',
+          },
+        }}
       >
         {' '}
         {amountHeld > 0 ? <LockOpenIcon /> : <LockIcon />}
@@ -71,9 +77,9 @@ const GateUnlockModal = ({ gates, amountHeld, unlockGate }) => {
             <StyledCloseIcon onClick={() => handleClose()} />
 
             <>
-              <Typography variant="h5" sx={{ mb: 1 }}>
+              <StyledTypography variant="h5" sx={{ mb: 1 }}>
                 Here are the files that owning this release gives you access to:
-              </Typography>
+              </StyledTypography>
               <List>
                 {gates.map((gate, index) => {
                   const fileSize = (gate.fileSize / (1024 * 1024)).toFixed(2)
@@ -104,7 +110,11 @@ const GateUnlockModal = ({ gates, amountHeld, unlockGate }) => {
                     >
                       <ListItemButton disableGutters>
                         <ListItemText
-                          primary={`${gate.fileName} (${fileSize} mb)`}
+                          primary={
+                            <StyledTypography>
+                              {gate.fileName} (`${fileSize} mb`)
+                            </StyledTypography>
+                          }
                           secondary={gate.description}
                         />
                       </ListItemButton>
@@ -116,11 +126,11 @@ const GateUnlockModal = ({ gates, amountHeld, unlockGate }) => {
 
             {amountHeld === 0 && (
               <>
-                <Typography variant="body1" sx={{ mb: 2 }}>
+                <StyledTypography variant="body1" sx={{ mb: 2 }}>
                   {gates.length > 1
                     ? `Purchase this release to access ${gates.length} files.`
                     : ` Purchase this release to access additional content.`}
-                </Typography>
+                </StyledTypography>
               </>
             )}
           </StyledPaper>
@@ -134,6 +144,10 @@ const Root = styled('div')(() => ({
   display: 'flex',
   alignItems: 'center',
   width: '100%',
+}))
+
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.black,
 }))
 
 const StyledModal = styled(Modal)(() => ({
@@ -165,7 +179,8 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
   position: 'absolute',
   right: theme.spacing(1),
   top: theme.spacing(1),
-  color: theme.palette.black
+  color: theme.palette.black,
+  cursor: 'pointer',
 }))
 
 export default GateUnlockModal

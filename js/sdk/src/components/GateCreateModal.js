@@ -106,7 +106,14 @@ const GateCreateModal = ({
         color="primary"
         type="submit"
         onClick={() => setOpen(true)}
-        sx={{ height: '55px', width: '100%', mt: 1 }}
+        sx={{
+          height: '55px',
+          width: '100%',
+          mt: 1,
+          '&:hover': {
+            opacity: '50%',
+          },
+        }}
       >
         <StyledTypography variant="body2">
           {`Create ${
@@ -133,7 +140,9 @@ const GateCreateModal = ({
             <StyledTypography variant="h5" sx={{ mb: 1 }}>
               Select a file or zip to be gated behind:
             </StyledTypography>
-            <StyledTypography variant="h5">&apos;{metadata?.name}&apos;</StyledTypography>
+            <StyledTypography variant="h5">
+              &apos;{metadata?.name}&apos;
+            </StyledTypography>
 
             <TextField
               id="standard-multiline-static"
@@ -143,7 +152,15 @@ const GateCreateModal = ({
               onChange={(e) => setDescription(e.target.value)}
             />
 
-            <Button component="label" variant="outlined">
+            <Button
+              component="label"
+              variant="outlined"
+              sx={{
+                '&:hover': {
+                  opacity: '50%',
+                },
+              }}
+            >
               {!file ? 'Choose File' : file.name}
               <input
                 type="file"
@@ -154,7 +171,12 @@ const GateCreateModal = ({
 
             <Button
               variant="outlined"
-              sx={{ mt: 1 }}
+              sx={{
+                mt: 1,
+                '&:hover': {
+                  opacity: '50%',
+                },
+              }}
               onClick={handleFileUpload}
               disabled={!file || !description}
             >
@@ -174,7 +196,7 @@ const Root = styled('div')(() => ({
 }))
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
-  color: theme.palette.black
+  color: theme.palette.black,
 }))
 
 const StyledModal = styled(Modal)(() => ({

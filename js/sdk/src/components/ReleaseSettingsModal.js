@@ -30,7 +30,14 @@ const ReleaseSettingsModal = ({
       {(isAuthority || userIsRecipient) && (
         <Button
           onClick={() => setOpen(true)}
-          sx={{ height: '22px', width: '28px', m: 0 }}
+          sx={{
+            height: '22px',
+            width: '28px',
+            m: 0,
+            '&:hover': {
+              opacity: '50%',
+            },
+          }}
         >
           <SettingsIcon sx={{ color: 'inherit' }} />
         </Button>
@@ -59,16 +66,23 @@ const ReleaseSettingsModal = ({
 
             {isAuthority && (
               <>
-              <Gates
-                release={release}
-                metadata={metadata}
-                releasePubkey={releasePubkey}
-                isAuthority={isAuthority}
-                amountHeld={amountHeld}
-                inSettings={true}
-                />
-              <CloseRelease releasePubkey={releasePubkey} release={release} />
+                <>
+                  <Gates
+                    release={release}
+                    metadata={metadata}
+                    releasePubkey={releasePubkey}
+                    isAuthority={isAuthority}
+                    amountHeld={amountHeld}
+                    inSettings={true}
+                  />
                 </>
+                <>
+                  <CloseRelease
+                    releasePubkey={releasePubkey}
+                    release={release}
+                  />
+                </>
+              </>
             )}
           </StyledPaper>
         </Fade>
@@ -80,7 +94,6 @@ const ReleaseSettingsModal = ({
 const Root = styled('div')(() => ({
   display: 'flex',
   alignItems: 'center',
-  
 }))
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
@@ -117,6 +130,7 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
   right: theme.spacing(1),
   top: theme.spacing(1),
   color: theme.palette.black,
+  cursor: 'pointer',
 }))
 
 export default ReleaseSettingsModal
