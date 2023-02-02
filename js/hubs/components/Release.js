@@ -256,6 +256,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                       width: '28px',
                       m: 0,
                       marginLeft: '4px',
+                      paddingTop: '12px',
                     }}
                     onClick={(e) => {
                       e.stopPropagation()

@@ -135,7 +135,7 @@ const ReleaseCard = (props) => {
                           .toLowerCase()}___nina.mp3`
                       )
                     }}
-                    sx={{ height: '20px', width: '28px', marginRight: '0px' }}
+                    sx={{ height: '20px', width: '28px', marginRight: '0px', marginTop: '2px' }}
                   >
                     <DownloadIcon sx={{ color: 'white' }} />
                   </Button>
