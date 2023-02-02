@@ -58,7 +58,7 @@ const StyledBox = styled(Box, {
 })(({ theme, columns, justifyItems, gridColumnGap }) => ({
   ...theme.helpers.grid,
   justifyItems: justifyItems ? justifyItems : 'center',
-  paddingTop: '8px',
+  marginTop: '8px',
   width: '765px',
   margin: 'auto',
   gridTemplateColumns: columns ? columns : 'repeat(2, 1fr)',
