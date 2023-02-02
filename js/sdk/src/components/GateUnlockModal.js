@@ -78,7 +78,7 @@ const GateUnlockModal = ({ gates, amountHeld, unlockGate }) => {
 
             <>
               <StyledTypography variant="h5" sx={{ mb: 1 }}>
-                Here are the files that owning this release gives you access to:
+                Purchase this release for access to:{' '}
               </StyledTypography>
               <List>
                 {gates.map((gate, index) => {

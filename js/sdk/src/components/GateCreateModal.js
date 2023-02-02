@@ -137,7 +137,7 @@ const GateCreateModal = ({
             <StyledCloseIcon onClick={() => handleClose()} />
 
             <StyledTypography variant="h5" sx={{ mb: 1 }}>
-              Select a file or zip to be gated behind:
+              Select a file to be available exclusively to collectors of
             </StyledTypography>
             <StyledTypography variant="h5">
               &apos;{metadata?.name}&apos;
