@@ -165,6 +165,7 @@ const StyledModalWarningTypography = styled(Typography)(({ theme }) => ({
 }))
 
 const StyledModalButton = styled(Button)(() => ({
+  marginTop: '16px',
   '&:hover': {
     opacity: '50%',
   },
