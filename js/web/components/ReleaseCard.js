@@ -27,7 +27,6 @@ const ReleaseCard = (props) => {
     artwork,
     metadata,
     preview,
-    publicKey,
     releasePubkey,
     userHubs,
     release,

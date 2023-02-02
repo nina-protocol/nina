@@ -25,7 +25,7 @@ import { useSnackbar } from 'notistack'
 import Dots from './Dots'
 
 const GateManageModal = ({
-  handleFetchGates,
+  fetchGatesForRelease,
   metadata,
   releasePubkey,
   gates,
@@ -76,8 +76,7 @@ const GateManageModal = ({
           wallet.publicKey.toBase58()
         )}&signature=${encodeURIComponent(signatureBase64)}`
       )
-      await handleFetchGates(releasePubkey)
-
+      // const test = await fetchGatesForRelease(releasePubkey)
       enqueueSnackbar('Gate Deleted', {
         variant: 'info',
       })
@@ -131,7 +130,7 @@ const GateManageModal = ({
             <Box>
               <GateCreateModal
                 releasePubkey={releasePubkey}
-                handleFetchGates={handleFetchGates}
+                fetchGatesForRelease={fetchGatesForRelease}
                 metadata={metadata}
                 gates={gates}
               />

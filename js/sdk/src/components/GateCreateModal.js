@@ -10,13 +10,12 @@ import CloseIcon from '@mui/icons-material/Close'
 import { encodeBase64 } from 'tweetnacl-util'
 import axios from 'axios'
 import TextField from '@mui/material/TextField'
-
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
 
 const GateCreateModal = ({
-  handleFetchGates,
+  fetchGatesForRelease,
   metadata,
   releasePubkey,
   gates,
@@ -86,7 +85,7 @@ const GateCreateModal = ({
         description,
       })
 
-      await handleFetchGates(releasePubkey)
+      await fetchGatesForRelease(releasePubkey)
       handleClose()
       enqueueSnackbar('Gate Created', {
         variant: 'info',

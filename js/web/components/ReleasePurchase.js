@@ -37,6 +37,7 @@ const ReleasePurchase = (props) => {
     amountHeld,
     setAmountHeld,
     isAuthority,
+    releaseGates,
   } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
@@ -95,7 +96,6 @@ const ReleasePurchase = (props) => {
   }, [collection[releasePubkey]])
 
   useEffect(() => {
-    console.log('release', release)
     getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
   }, [releasePubkey])
 
@@ -324,6 +324,7 @@ const ReleasePurchase = (props) => {
           isAuthority={isAuthority}
           amountHeld={amountHeld}
           inSettings={false}
+          releaseGates={releaseGates}
         />
       </Box>
     </Box>

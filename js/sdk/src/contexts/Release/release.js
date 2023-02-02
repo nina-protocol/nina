@@ -44,6 +44,7 @@ const ReleaseContextProvider = ({ children }) => {
     releaseMintMap: {},
     redemptionRecords: {},
   })
+  const [gatesState, setGatesState] = useState({})
   const [releasesRecentState, setReleasesRecentState] = useState({
     published: [],
     highlights: [],
@@ -123,6 +124,8 @@ const ReleaseContextProvider = ({ children }) => {
     setFetchedUserProfileReleases,
     verficationState,
     setVerificationState,
+    setGatesState,
+    gatesState,
   })
 
   return (
@@ -172,6 +175,7 @@ const ReleaseContextProvider = ({ children }) => {
         getFeedForUser,
         fetchedUserProfileReleases,
         fetchGatesForRelease,
+        gatesState,
       }}
     >
       {children}
@@ -202,6 +206,8 @@ const releaseContextHelper = ({
   setFetchedUserProfileReleases,
   verificationState,
   setVerificationState,
+  setGatesState,
+  gatesState,
 }) => {
   const { provider, ids, nativeToUi, uiToNative, isSol, isUsdc, endpoints } =
     ninaClient
@@ -1500,6 +1506,17 @@ const releaseContextHelper = ({
         `${process.env.NINA_GATE_URL}/releases/${releasePubkey}/gates`
       )
     ).data
+    if (gates.length > 0) {
+      setGatesState((prevState) => ({
+        ...prevState,
+        [releasePubkey]: gates,
+      }))
+    } else {
+      const prevState = { ...gatesState }
+      delete prevState[releasePubkey]
+      setGatesState(prevState)
+    }
+
     return gates
   }
 

@@ -16,13 +16,15 @@ const ReleaseComponent = ({ metadataSsr }) => {
   const releasePubkey = router.query.releasePubkey
   const [amountHeld, setAmountHeld] = useState()
   const wallet = useWallet()
-  const { releaseState, getRelease } = useContext(Release.Context)
+  const { releaseState, getRelease, fetchGatesForRelease, gatesState } =
+    useContext(Release.Context)
   const { exchangeState } = useContext(Exchange.Context)
   const { getHubsForUser, filterHubsForUser, hubState } = useContext(
     Hub.Context
   )
   const [userHubs, setUserHubs] = useState()
   const [userIsRecipient, setUserIsRecipient] = useState(false)
+  const [releaseGates, setReleaseGates] = useState()
 
   const [metadata, setMetadata] = useState(
     metadataSsr || releaseState?.metadata[releasePubkey] || null
@@ -39,6 +41,10 @@ const ReleaseComponent = ({ metadataSsr }) => {
       return false
     }
   }, [release, wallet.connected])
+
+  useEffect(() => {
+    handleFetchGates(releasePubkey)
+  }, [releasePubkey])
 
   useEffect(() => {
     if (release?.revenueShareRecipients) {
@@ -76,6 +82,15 @@ const ReleaseComponent = ({ metadataSsr }) => {
     setUserHubs(null)
     setUserIsRecipient(false)
   }, [wallet?.disconnecting])
+
+  const handleFetchGates = async () => {
+    const gates = await fetchGatesForRelease(releasePubkey)
+    if (gates.length > 0) {
+      setReleaseGates(gates)
+    } else {
+      setReleaseGates(undefined)
+    }
+  }
 
   if (metadata && Object.keys(metadata).length === 0) {
     return (

@@ -18,6 +18,7 @@ const ReleaseSettingsModal = ({
   isAuthority,
   release,
   amountHeld,
+  releaseGates,
 }) => {
   const [open, setOpen] = useState(false)
 
@@ -73,6 +74,7 @@ const ReleaseSettingsModal = ({
                   isAuthority={isAuthority}
                   amountHeld={amountHeld}
                   inSettings={true}
+                  releaseGates={releaseGates}
                 />
 
                 <CloseRelease releasePubkey={releasePubkey} release={release} />
