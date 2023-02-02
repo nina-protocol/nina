@@ -8,16 +8,16 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import SettingsIcon from '@mui/icons-material/Settings'
 import Royalty from './Royalty'
-import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
+// import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 import CloseIcon from '@mui/icons-material/Close'
 import CloseRelease from './CloseRelease'
 const ReleaseSettingsModal = ({
   releasePubkey,
-  metadata,
+  // metadata,
   userIsRecipient,
   isAuthority,
   release,
-  amountHeld,
+  // amountHeld,
 }) => {
   const [open, setOpen] = useState(false)
 
@@ -66,14 +66,14 @@ const ReleaseSettingsModal = ({
 
             {isAuthority && (
               <>
-                <Gates
+                {/* <Gates
                   release={release}
                   metadata={metadata}
                   releasePubkey={releasePubkey}
                   isAuthority={isAuthority}
                   amountHeld={amountHeld}
                   inSettings={true}
-                />
+                /> */}
 
                 <CloseRelease releasePubkey={releasePubkey} release={release} />
               </>
