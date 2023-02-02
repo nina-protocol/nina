@@ -137,7 +137,10 @@ const ReleaseCreateConfirm = (props) => {
               <span>{data.isOpen ? 'Unlimited' : data.amount}</span>
             </Value>
             <Value sx={{ mt: 1 }}>
-              Retail Price:<span>${data.retailPrice}</span>
+              Retail Price:
+              <span>
+                {data.retailPrice > 0 ? `$${data.retailPrice}` : 'Free'}
+              </span>
             </Value>
             <Value sx={{ mt: 1, mb: 1 }}>
               Resale Percentage: <span>{data.resalePercentage}%</span>

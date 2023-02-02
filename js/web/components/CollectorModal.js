@@ -1,17 +1,49 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
+import { useWallet } from '@solana/wallet-adapter-react'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Link from 'next/link'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 const CollectorModal = (props) => {
-  const { metadata, collectors } = props
-  const { displayNameForAccount } = useContext(Nina.Context)
-
+  const { metadata, releasePubkey } = props
+  const wallet = useWallet()
+  const { displayNameForAccount, collection } = useContext(Nina.Context)
+  const { getCollectorsForRelease } = useContext(Release.Context)
   const [open, setOpen] = useState(false)
+  const [collectors, setCollectors] = useState()
+
+  useEffect(() => {
+    handleGetCollectorsForRelease(releasePubkey)
+  }, [collection])
+  const handleGetCollectorsForRelease = async (releasePubkey) => {
+    const collectorsList = await getCollectorsForRelease(releasePubkey)
+
+    if (wallet?.publicKey) {
+      const walletPublicKey = wallet.publicKey.toBase58()
+      if (
+        collection[releasePubkey] > 0 &&
+        !collectorsList.includes(walletPublicKey)
+      ) {
+        collectorsList.push(walletPublicKey)
+      } else if (
+        collectorsList.includes(walletPublicKey) &&
+        collection[releasePubkey] <= 0
+      ) {
+        const index = collectorsList.indexOf(walletPublicKey)
+        if (index > -1) {
+          collectorsList.splice(index, 1)
+        }
+      }
+    }
+
+    setCollectors(collectorsList)
+  }
+
   return (
     <>
       {collectors?.length > 0 ? (

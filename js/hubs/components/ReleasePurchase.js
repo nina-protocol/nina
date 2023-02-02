@@ -37,7 +37,6 @@ const ReleasePurchase = (props) => {
     releasePurchasePending,
     releasePurchaseTransactionPending,
     releaseState,
-    getCollectorsForRelease,
     fetchGatesForRelease,
   } = useContext(Release.Context)
   const { hubState } = useContext(Hub.Context)
@@ -51,7 +50,6 @@ const ReleasePurchase = (props) => {
   const [release, setRelease] = useState(undefined)
   const [userIsRecipient, setUserIsRecipient] = useState(false)
   const [publishedHub, setPublishedHub] = useState()
-  const [collectors, setCollectors] = useState()
   const [gate, setGate] = useState(undefined)
 
   const txPending = useMemo(
@@ -92,33 +90,6 @@ const ReleasePurchase = (props) => {
       })
     }
   }, [release?.royaltyRecipients, wallet?.connected, wallet?.publicKey])
-
-  useEffect(() => {
-    handleGetCollectorsForRelease(releasePubkey)
-  }, [collection])
-
-  const handleGetCollectorsForRelease = async (releasePubkey) => {
-    const collectorsList = await getCollectorsForRelease(releasePubkey)
-
-    if (wallet?.publicKey) {
-      const walletPublicKey = wallet.publicKey.toBase58()
-      if (
-        collection[releasePubkey] > 0 &&
-        !collectorsList.includes(walletPublicKey)
-      ) {
-        collectorsList.push(walletPublicKey)
-      } else if (
-        collectorsList.includes(walletPublicKey) &&
-        collection[releasePubkey] <= 0
-      ) {
-        const index = collectorsList.indexOf(walletPublicKey)
-        if (index > -1) {
-          collectorsList.splice(index, 1)
-        }
-      }
-    }
-    setCollectors(collectorsList)
-  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -203,7 +174,7 @@ const ReleasePurchase = (props) => {
         {release.editionType === 'open' ? (
           <Typography variant="body2" align="left">
             Open Edition:{' '}
-            {`${collectors?.length ? collectors?.length : 0} Sold`}
+            {`${release?.saleCounter > 0 ? release?.saleCounter : 0} Sold`}
           </Typography>
         ) : (
           <>

@@ -46,7 +46,6 @@ const ReleasePurchase = (props) => {
     releasePurchaseTransactionPending,
     releaseState,
     getRelease,
-    getCollectorsForRelease,
   } = useContext(Release.Context)
   const {
     getAmountHeld,
@@ -64,12 +63,10 @@ const ReleasePurchase = (props) => {
   const [release, setRelease] = useState(undefined)
   const [amountPendingBuys, setAmountPendingBuys] = useState(0)
   const [amountPendingSales, setAmountPendingSales] = useState(0)
-  const [downloadButtonString, setDownloadButtonString] = useState('Download')
   const [exchangeTotalBuys, setExchangeTotalBuys] = useState(0)
   const [exchangeTotalSells, setExchangeTotalSells] = useState(0)
   const [publishedHub, setPublishedHub] = useState()
   const [description, setDescription] = useState()
-  const [collectors, setCollectors] = useState()
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
     [releasePubkey, releasePurchaseTransactionPending]
@@ -98,6 +95,7 @@ const ReleasePurchase = (props) => {
   }, [collection[releasePubkey]])
 
   useEffect(() => {
+    console.log('release', release)
     getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
   }, [releasePubkey])
 
@@ -137,34 +135,6 @@ const ReleasePurchase = (props) => {
       setDescription(metadata?.description)
     }
   }, [metadata?.description])
-
-  useEffect(() => {
-    handleGetCollectorsForRelease(releasePubkey)
-  }, [collection])
-
-  const handleGetCollectorsForRelease = async (releasePubkey) => {
-    const collectorsList = await getCollectorsForRelease(releasePubkey)
-
-    if (wallet?.publicKey) {
-      const walletPublicKey = wallet.publicKey.toBase58()
-      if (
-        collection[releasePubkey] > 0 &&
-        !collectorsList.includes(walletPublicKey)
-      ) {
-        collectorsList.push(walletPublicKey)
-      } else if (
-        collectorsList.includes(walletPublicKey) &&
-        collection[releasePubkey] <= 0
-      ) {
-        const index = collectorsList.indexOf(walletPublicKey)
-        if (index > -1) {
-          collectorsList.splice(index, 1)
-        }
-      }
-    }
-
-    setCollectors(collectorsList)
-  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -210,6 +180,12 @@ const ReleasePurchase = (props) => {
     }
   }
 
+  const showCompletedTransaction = (result) => {
+    enqueueSnackbar(result.msg, {
+      variant: result.success ? 'success' : 'warn',
+    })
+  }
+
   if (!release) {
     return (
       <>
@@ -249,7 +225,7 @@ const ReleasePurchase = (props) => {
             sx={{ color: '#black !important' }}
           >
             Open Edition:{' '}
-            {`${collectors?.length ? collectors?.length : 0} Sold`}
+            {`${release?.saleCounter > 0 ? release?.saleCounter : 0} Sold`}
           </Typography>
         ) : (
           <>
@@ -268,11 +244,7 @@ const ReleasePurchase = (props) => {
           {`View Secondary Market (${exchangeTotalBuys + exchangeTotalSells})`}
         </StyledLink>
       </Typography>
-      <CollectorModal
-        releasePubkey={releasePubkey}
-        metadata={metadata}
-        collectors={collectors}
-      />
+      <CollectorModal releasePubkey={releasePubkey} metadata={metadata} />
       <HubsModal releasePubkey={releasePubkey} metadata={metadata} />
       {wallet?.connected && (
         <StyledUserAmount>
