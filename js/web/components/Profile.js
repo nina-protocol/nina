@@ -32,6 +32,8 @@ const Profile = ({ profilePubkey }) => {
   const { getHubsForUser, fetchedHubsForUser, filterHubsForUser } = useContext(
     Hub.Context
   )
+  const {ninaClient} = useContext(Nina.Context)
+
   const {
     getSubscriptionsForUser,
     filterSubscriptionsForUser,
@@ -42,7 +44,12 @@ const Profile = ({ profilePubkey }) => {
     getVerificationsForUser,
     verificationState,
     displayImageForAccount,
+    usdcBalance,
+    solBalance,
+    lowSolBalance,
   } = useContext(Nina.Context)
+
+  console.log('ninaClient :>> ', ninaClient);
 
   const [profilePublishedReleases, setProfilePublishedReleases] =
     useState(undefined)
@@ -409,11 +416,27 @@ const Profile = ({ profilePubkey }) => {
                     {wallet.connected && (
                       <Subscribe accountAddress={profilePubkey} />
                     )}
+
+            
                     {profileVerifications && (
                       <IdentityVerification
                         verifications={profileVerifications}
                         profilePublicKey={profilePubkey}
                       />
+                    )}
+
+                    {inDashboard && (
+                      <Box>
+                        <Typography>
+                          Balances:
+                        </Typography>
+                        <Typography>
+                          Sol: {ninaClient.nativeToUi(solBalance, ninaClient.ids.mints.wsol).toFixed(2)} ◎
+                        </Typography>
+                        <Typography>
+                          USDC: ${usdcBalance}
+                        </Typography>
+                      </Box>
                     )}
                   </Box>
                 </>
@@ -424,6 +447,7 @@ const Profile = ({ profilePubkey }) => {
                 {`Publishes as ${artistNames?.map((name) => name).join(', ')}`}
               </ProfileOverflowContainer>
             )}
+            
           </ProfileHeaderContainer>
         </ProfileHeaderWrapper>
 
