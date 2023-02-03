@@ -79,7 +79,9 @@ const GateUnlockModal = ({ gates, amountHeld, unlockGate }) => {
 
               <>
                 <StyledTypography variant="h5" sx={{ mb: 1 }}>
-                  {amountHeld > 0 ? 'You have access to: ' : 'Purchase this release to download: '}
+                  {amountHeld > 0
+                    ? 'You have access to: '
+                    : 'Purchase this release to download: '}
                 </StyledTypography>
                 <List>
                   {gates.map((gate, index) => {
@@ -131,7 +133,9 @@ const GateUnlockModal = ({ gates, amountHeld, unlockGate }) => {
       {amountHeld === 0 && (
         <div>
           <StyledTypographyButtonSub>
-            {`There ${gates.length > 1 ? 'are' : 'is'} ${gates.length} ${gates.length > 1 ? 'files' : 'file'} available for download exclusively to owners of this release.`}
+            {`There ${gates.length > 1 ? 'are' : 'is'} ${gates.length} ${
+              gates.length > 1 ? 'files' : 'file'
+            } available for download exclusively to owners of this release.`}
           </StyledTypographyButtonSub>
         </div>
       )}
