@@ -7,7 +7,6 @@ import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import AutorenewIcon from '@mui/icons-material/Autorenew'
 
 const UploadInfoModal = ({ userHasSeenUpdateMessage }) => {
   const [open, setOpen] = useState(userHasSeenUpdateMessage ? false : true)
@@ -97,7 +96,7 @@ const UploadInfoModal = ({ userHasSeenUpdateMessage }) => {
   )
 }
 
-const Root = styled('div')(({ theme }) => ({
+const Root = styled('div')(() => ({
   display: 'flex',
   alignItems: 'center',
   width: '100%',
@@ -122,7 +121,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   flexDirection: 'column',
 }))
 
-const StyledTypography = styled(Typography)(({ theme }) => ({
+const StyledTypography = styled(Typography)(() => ({
   marginBottom: '20px',
 }))
 export default UploadInfoModal

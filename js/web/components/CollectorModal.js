@@ -7,24 +7,22 @@ import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Link from 'next/link'
-import { Button } from '@mui/material'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 const CollectorModal = (props) => {
-  const { releasePubkey, metadata } = props
+  const { metadata, releasePubkey } = props
   const wallet = useWallet()
-  const { collection, displayNameForAccount } = useContext(Nina.Context)
+  const { displayNameForAccount, collection } = useContext(Nina.Context)
   const { getCollectorsForRelease } = useContext(Release.Context)
   const [open, setOpen] = useState(false)
   const [collectors, setCollectors] = useState()
+
   useEffect(() => {
     handleGetCollectorsForRelease(releasePubkey)
   }, [collection])
-
   const handleGetCollectorsForRelease = async (releasePubkey) => {
     const collectorsList = await getCollectorsForRelease(releasePubkey)
-    // Manually check if in user collection since script only updates collectors every hour
-    // and websocket to update on each purchase can be inconsistent
+
     if (wallet?.publicKey) {
       const walletPublicKey = wallet.publicKey.toBase58()
       if (
@@ -42,8 +40,10 @@ const CollectorModal = (props) => {
         }
       }
     }
+
     setCollectors(collectorsList)
   }
+
   return (
     <>
       {collectors?.length > 0 ? (

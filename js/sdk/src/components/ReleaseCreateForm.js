@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+// import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import { withFormik, Form, Field } from 'formik'
 import Typography from '@mui/material/Typography'
@@ -8,7 +9,11 @@ import Box from '@mui/material/Box'
 import Fade from '@mui/material/Fade'
 import { formatPlaceholder } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import dynamic from 'next/dynamic'
-import InputLabel from '@mui/material/InputLabel'
+// import Radio from '@mui/material/Radio'
+// import RadioGroup from '@mui/material/RadioGroup'
+// import FormControlLabel from '@mui/material/FormControlLabel'
+// import FormControl from '@mui/material/FormControl'
+// import FormLabel from '@mui/material/FormLabel'
 const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
 
 const ReleaseCreateForm = ({
@@ -17,18 +22,48 @@ const ReleaseCreateForm = ({
   values,
   onChange,
   errors,
-  touched,
   setFieldValue,
+  touched,
+  disabled,
 }) => {
+  // const [isOpen, setIsOpen] = useState(false)
+  const [isOpen] = useState(false)
+  // const [inputValue, setInputValue] = useState(undefined)
+  const [, setInputValue] = useState(undefined)
+  // const editionRef = useRef(isOpen)
+
   useEffect(() => {
     if (onChange) {
       onChange(values)
     }
   }, [values])
 
+  useEffect(() => {
+    if (isOpen) {
+      const infinity = '\u221e'
+      setFieldValue('isOpen', true)
+
+      setFieldValue('amount', infinity)
+    }
+    if (!isOpen) {
+      setFieldValue('isOpen', false)
+    }
+  }, [isOpen])
+
   const valuetext = (value) => {
     return `${value}%`
   }
+
+  // const handleEditionChange = (event) => {
+  //   editionRef.current = event.target.value
+  //   if (editionRef.current === 'unlimited') {
+  //     setIsOpen(true)
+  //   }
+  //   if (editionRef.current === 'limited') {
+  //     setIsOpen(false)
+  //     setFieldValue('amount', inputValue)
+  //   }
+  // }
 
   return (
     <Root>
@@ -45,6 +80,7 @@ const ReleaseCreateForm = ({
                 placeholder={
                   errors.artist && touched.artist ? errors.artist : null
                 }
+                disabled={disabled}
                 {...props.field}
               />
             </Box>
@@ -63,6 +99,7 @@ const ReleaseCreateForm = ({
                 placeholder={
                   errors.title && touched.title ? errors.title : null
                 }
+                disabled={disabled}
                 {...props.field}
               />
             </Box>
@@ -92,31 +129,80 @@ const ReleaseCreateForm = ({
                     setFieldValue('catalogNumber', sanitized)
                   },
                 }}
+                disabled={disabled}
                 {...field}
               />
             </Box>
           )}
         </Field>
-
+        {/* <FormControlBox className={classes.fieldInputWrapper}>
+          <FormControl
+            sx={{
+              flexDirection: 'row',
+              marginTop: '8px',
+            }}
+          >
+            <StyledFormLabel focused={false}>EDITION TYPE</StyledFormLabel>{' '}
+            <RadioGroup
+              row
+              aria-labelledby="amount"
+              defaultValue={editionRef.current}
+            >
+              <StyledFormControlLabel
+                value="limited"
+                disableRipple
+                control={<FormRadio />}
+                label="Limited"
+                onClick={(event) => handleEditionChange(event)}
+                checked={!isOpen}
+                disabled={disabled}
+              />
+              <StyledFormControlLabel
+                value="unlimited"
+                disableRipple
+                control={<FormRadio />}
+                label="Unlimited"
+                onClick={(event) => handleEditionChange(event)}
+                checked={isOpen}
+                disabled={disabled}
+              />
+            </RadioGroup>
+          </FormControl>
+        </FormControlBox> */}
         <Field name="amount">
           {({ field }) => (
-            <Box className={classes.fieldInputWrapper}>
+            <Box className={classes.fieldInputWrapper} align={'left'}>
               <TextField
                 className={`${classes.formField}`}
                 variant="standard"
                 label={formatPlaceholder('Edition Size')}
                 size="small"
-                type="number"
+                type={isOpen ? 'text' : 'number'}
                 InputLabelProps={touched.amount ? { shrink: true } : ''}
                 placeholder={
                   errors.amount && touched.amount ? errors.amount : null
                 }
                 InputProps={{
                   onChange: (event) => {
-                    let whole = parseInt(event.target.value)
-                    setFieldValue('amount', whole)
+                    setInputValue(event.target.value)
+                    if (!isOpen) {
+                      let whole = parseInt(event.target.value)
+                      setFieldValue('amount', whole)
+                      setFieldValue('isOpen', false)
+                    }
+                    if (isOpen) {
+                      setFieldValue('isOpen', true)
+                      setFieldValue('amount', 'Open')
+                    }
                   },
                 }}
+                sx={{
+                  '.MuiInputBase-input': {
+                    fontSize: isOpen ? '19px !important' : '',
+                    padding: isOpen ? '0px 0px 0px 0px !important' : '',
+                  },
+                }}
+                disabled={isOpen || disabled}
                 {...field}
               />
             </Box>
@@ -138,6 +224,7 @@ const ReleaseCreateForm = ({
                     : null
                 }
                 type="number"
+                disabled={disabled}
                 {...field}
               />
             </Box>
@@ -170,6 +257,7 @@ const ReleaseCreateForm = ({
               onChange={(event, value) => {
                 setFieldValue('resalePercentage', value)
               }}
+              disabled={disabled}
               {...field}
               {...form}
             />
@@ -182,7 +270,7 @@ const ReleaseCreateForm = ({
 
             <Field name="description">
               {(props) => (
-                <Box sx={{ borderBottom: '1px solid grey' }}>
+                <Box sx={{ borderBottom: '1px solid grey', height: '90px' }}>
                   <QuillEditor
                     formikProps={props}
                     type={'release'}
@@ -197,6 +285,22 @@ const ReleaseCreateForm = ({
     </Root>
   )
 }
+
+// const FormRadio = (props) => {
+//   return (
+//     <Radio
+//       disableRipple
+//       color="default"
+//       sx={{
+//         '&&:hover': {
+//           backgroundColor: 'transparent',
+//         },
+//         padding: '4px 6px',
+//       }}
+//       {...props}
+//     />
+//   )
+// }
 const PREFIX = 'ReleaseCreateForm'
 
 const classes = {
@@ -234,6 +338,30 @@ const Warning = styled(Typography)(({ theme }) => ({
   width: '220px',
 }))
 
+// const FormControlBox = styled(Box)(() => ({
+//   display: 'flex',
+//   alignItems: 'left',
+//   textAlign: 'center',
+//   marginBottom: '8px',
+//   borderBottom: `1px solid`,
+// }))
+
+// const StyledFormLabel = styled(FormLabel)(() => ({
+//   marginTop: '8px',
+//   marginRight: '16px',
+// }))
+
+// const StyledFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
+//   marginLeft: '0',
+//   marginRight: '0',
+//   '& .MuiSvgIcon-root:not(.MuiSvgIcon-root ~ .MuiSvgIcon-root) path': {
+//     color: theme.palette.black,
+//   },
+//   '& .MuiSvgIcon-root + .MuiSvgIcon-root': {
+//     color: theme.palette.black,
+//   },
+// }))
+
 export default withFormik({
   enableReinitialize: true,
   validationSchema: (props) => {
@@ -245,10 +373,10 @@ export default withFormik({
       title: '',
       description: '',
       catalogNumber: '',
-      amount: 10,
+      amount: '',
       retailPrice: undefined,
       resalePercentage: 10,
-      hubPubKey: undefined,
+      isOpen: false,
     }
   },
 })(ReleaseCreateForm)

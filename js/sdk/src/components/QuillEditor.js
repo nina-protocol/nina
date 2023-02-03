@@ -1,11 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  createElement,
-  Fragment,
-  useRef,
-  useMemo,
-} from 'react'
+import React, { useEffect, useRef, useMemo } from 'react'
 import ReactQuill from 'react-quill'
 import { stripQuotesIfNeeded } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import dynamic from 'next/dynamic'
@@ -24,10 +17,7 @@ import Box from '@mui/material/Box'
 
 const { Quill } = ReactQuill
 
-import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
-
-const QuillEditor = ({ formikProps, type, update }) => {
+const QuillEditor = ({ formikProps, type }) => {
   const quillRef = useRef(null)
   const theme = type === 'release' ? 'bubble' : 'snow'
   let toolbarValues
@@ -35,7 +25,7 @@ const QuillEditor = ({ formikProps, type, update }) => {
   switch (type) {
     case 'release':
       toolbarValues = false
-      height = '110px'
+      height = '65px'
       break
     case 'hub':
       toolbarValues = [
@@ -88,7 +78,7 @@ const QuillEditor = ({ formikProps, type, update }) => {
     }
   }, [Quill])
 
-  const handleChange = (content, delta, source, editor) => {
+  const handleChange = (content) => {
     content = content.replaceAll('<p><br></p>', '<br>')
     formikProps.form.setFieldValue(formikProps.field.name, content)
   }
@@ -112,7 +102,7 @@ const QuillEditor = ({ formikProps, type, update }) => {
   )
 }
 
-const QuillWrapper = styled(Box)(({ theme, type, height }) => ({
+const QuillWrapper = styled(Box)(({ type, height }) => ({
   '& .ql-editor': {
     padding: type === 'release' ? '0px' : '',
     maxHeight: height,

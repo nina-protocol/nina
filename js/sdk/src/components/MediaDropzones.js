@@ -11,10 +11,10 @@ const MediaDropzones = ({
   track,
   setTrack,
   handleProgress,
+  disabled,
   processingProgress,
 }) => {
   const [metadata, setMetadata] = useState({})
-
   useEffect(() => {
     setMetadata({
       artist: values.releaseForm?.artist,
@@ -31,9 +31,11 @@ const MediaDropzones = ({
       <label htmlFor="track"></label>
       <MediaDropzone
         type="track"
+        releasePubkey={releasePubkey}
         track={track}
         setTrack={setTrack}
         handleProgress={handleProgress}
+        disabled={disabled}
         processingProgress={processingProgress}
       />
       <label htmlFor="artwork"></label>
@@ -41,12 +43,14 @@ const MediaDropzones = ({
         type="artwork"
         artwork={artwork}
         setArtwork={setArtwork}
+        releasePubkey={releasePubkey}
+        metadata={metadata}
         handleProgress={handleProgress}
+        disabled={disabled}
       />
     </StyledDropZones>
   )
 }
-
 const StyledDropZones = styled(Box)(() => ({
   height: '100%',
 }))
