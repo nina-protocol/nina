@@ -71,10 +71,10 @@ function ReleaseSettingsWelcome() {
                   Gates
                 </Typography>
                 <Typography variant="body1" gutterBottom>
-                  {`You have early access to Gates.  This feature allows you to upload files, like lossless files, stems, outtakes, etc that are exclusively available to collectors of your release.`}
+                  {`You have early access to Gates.  This feature allows you to upload files (lossless audio, stems, outtakes, PDFs, etc) that are exclusively available to collectors of your release.`}
                 </Typography>
                 <Typography variant="body1" gutterBottom>
-                  {`We will be launching this officially on February 8th - but you can get your files ready now.  Your collectors will not be able to access the files until this date.`}
+                  {`We will be launching this officially on February 8th - but you can get create your Gates now.  Your collectors will not be able to access the files until this date.`}
                 </Typography>
               </>
             )}
