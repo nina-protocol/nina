@@ -30,7 +30,7 @@ const ReleaseSettingsModal = ({
   const handleClose = () => {
     setOpen(false)
   }
-  console.log('gateWhitelist', gateWhitelist)
+
   return (
     <Root>
       {(isAuthority || userIsRecipient) && (
