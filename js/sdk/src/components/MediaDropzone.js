@@ -1,25 +1,24 @@
 import React, { useContext } from 'react'
-import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined'
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined'
 import Image from 'next/image'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Nina from '../contexts/Nina'
 
 const MediaDropzone = ({
   type,
   setArtwork,
   setTrack,
-  handleProgress,
+  disabled,
   processingProgress,
 }) => {
   const { MAX_AUDIO_FILE_UPLOAD_SIZE, MAX_IMAGE_FILE_UPLOAD_SIZE } = useContext(
     Nina.Context
   )
 
-  const handleChangeStatus = ({ file, meta, restart, remove }, status) => {
+  const handleChangeStatus = ({ meta, file, remove }, status) => {
     if (meta.status === 'error_validation') {
       const height = meta.height
       const width = meta.width
@@ -45,6 +44,7 @@ const MediaDropzone = ({
       }
       remove()
     }
+
     if (type === 'artwork') {
       if (status === 'removed') {
         setArtwork(undefined)
@@ -52,7 +52,6 @@ const MediaDropzone = ({
         setArtwork({
           file,
           meta,
-          restart,
         })
       }
     } else if (type === 'track') {
@@ -62,7 +61,6 @@ const MediaDropzone = ({
         setTrack({
           file,
           meta,
-          restart,
         })
       }
     }
@@ -74,7 +72,7 @@ const MediaDropzone = ({
         <>
           <AddOutlinedIcon />
           <Typography variant="h2">Upload Track</Typography>
-          <Typography variant="subtitle1">File Formats: MP3</Typography>
+          <Typography variant="subtitle1">File Format: MP3</Typography>
         </>
       )
     } else {
@@ -116,15 +114,13 @@ const MediaDropzone = ({
 
   const Preview = ({ meta, fileWithMeta }) => {
     if (meta.type.includes('image') && meta.previewUrl) {
-      handleProgress(meta.percent, meta.type.includes('image'))
       return (
         <Box style={previewBoxStyles}>
           {cancelIcon(fileWithMeta.remove)}
-          <Image src={meta.previewUrl} layout="fill" />
+          <Image src={meta.previewUrl} layout="fill" alt="preview" />
         </Box>
       )
     } else if (meta.type.includes('audio')) {
-      handleProgress(meta.percent, meta.type.includes('image'))
       var minutes = Math.floor(meta.duration / 60)
       var seconds = Math.ceil(meta.duration - minutes * 60)
 
@@ -181,6 +177,7 @@ const MediaDropzone = ({
         top: '15px',
         left: '10px',
         color: 'white',
+        zIndex: '100',
       }}
     />
   )
@@ -204,6 +201,7 @@ const MediaDropzone = ({
         preview: classes.dropZonePreviewWrapper,
         previewStatusContainer: classes.dropZonePreviewStatusContainer,
       }}
+      disabled={disabled}
       inputContent={inputLayout(type)}
       PreviewComponent={Preview}
       styles={{

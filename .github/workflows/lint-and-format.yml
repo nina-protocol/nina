@@ -18,13 +18,13 @@ jobs:
       - run: yarn
 
       # Run ESLint + Prettier on /hubs
-      - run: yarn hubs lint
+      - run: yarn hubs lint --quiet
       - run: yarn hubs format
 
       # Run ESLint + Prettier on /sdk
-      - run: yarn sdk lint
+      - run: yarn sdk lint --quiet
       - run: yarn sdk format
     
       # Run ESLint + Prettier on /web
-      - run: yarn web lint
+      - run: yarn web lint --quiet
       - run: yarn web format

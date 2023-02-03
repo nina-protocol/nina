@@ -2168,10 +2168,10 @@
     jsbi "^3.1.5"
     sha.js "^2.4.11"
 
-"@nina-protocol/js-sdk@^0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@nina-protocol/js-sdk/-/js-sdk-0.0.12.tgz#571e9b187b57677545d749e8d92db342e57acba8"
-  integrity sha512-KfcHgRcR4t+vyJf8x8aLEhc18zBUUeancOkJRqLGWg8Gk5k5WUM3Ka0PRiw/bDbZLgcN+qeqzosaX/GCzxUPGg==
+"@nina-protocol/js-sdk@^0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@nina-protocol/js-sdk/-/js-sdk-0.0.14.tgz#6ccf6997edc60d7f69a6346f2e0d4170a3818874"
+  integrity sha512-o/a5EjPDuXd31CPa2Angn+LIikTYhmEIpJl2FbIKH5II9rjxXYdRBJYH8PzoUs0fGO1ObT2galbrQ3WEfKDXzg==
   dependencies:
     "@project-serum/anchor" "^0.25.0"
     axios "^0.27.2"
@@ -11941,6 +11941,11 @@ tunnel-agent@^0.6.0:
   integrity sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w==
   dependencies:
     safe-buffer "^5.0.1"
+
+tweetnacl-util@^0.15.1:
+  version "0.15.1"
+  resolved "https://registry.yarnpkg.com/tweetnacl-util/-/tweetnacl-util-0.15.1.tgz#b80fcdb5c97bcc508be18c44a4be50f022eea00b"
+  integrity sha512-RKJBIj8lySrShN4w6i/BonWp2Z/uxwC3h4y7xsRrpP59ZboCd0GpEVsOnMDYLMmKBpYhb5TgHzZXy7wTfYFBRw==
 
 tweetnacl@1.0.3, tweetnacl@^1.0.1, tweetnacl@^1.0.2, tweetnacl@^1.0.3:
   version "1.0.3"
