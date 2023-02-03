@@ -13,7 +13,7 @@ import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 import CloseIcon from '@mui/icons-material/Close'
 // import CloseRelease from './CloseRelease'
 import gateWhitelist from '../utils/gateWhitelist'
-
+import ReleaseSettingsWelcome from './ReleaseSettingsWelcome'
 const ReleaseSettingsModal = ({
   releasePubkey,
   metadata,
@@ -33,6 +33,7 @@ const ReleaseSettingsModal = ({
 
   return (
     <Root>
+      {isAuthority && <ReleaseSettingsWelcome />}
       {(isAuthority || userIsRecipient) && (
         <Button
           onClick={() => setOpen(true)}
