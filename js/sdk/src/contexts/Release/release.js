@@ -15,6 +15,8 @@ import { logEvent } from '../../utils/event'
 import { initSdkIfNeeded } from '../../utils/sdkInit'
 import { getConfirmTransaction } from '../../utils'
 
+const MAX_INT = '18446744073709551615'
+
 const ReleaseContext = createContext()
 const ReleaseContextProvider = ({ children }) => {
   const {
@@ -42,6 +44,7 @@ const ReleaseContextProvider = ({ children }) => {
     releaseMintMap: {},
     redemptionRecords: {},
   })
+  const [gatesState, setGatesState] = useState({})
   const [releasesRecentState, setReleasesRecentState] = useState({
     published: [],
     highlights: [],
@@ -62,6 +65,7 @@ const ReleaseContextProvider = ({ children }) => {
   const {
     releaseCreate,
     releasePurchase,
+    closeRelease,
     collectRoyaltyForRelease,
     addRoyaltyRecipient,
     getRelease,
@@ -120,6 +124,8 @@ const ReleaseContextProvider = ({ children }) => {
     setFetchedUserProfileReleases,
     verficationState,
     setVerificationState,
+    setGatesState,
+    gatesState,
   })
 
   return (
@@ -128,6 +134,7 @@ const ReleaseContextProvider = ({ children }) => {
         pressingState,
         resetPressingState,
         releaseCreate,
+        closeRelease,
         releasePurchase,
         releasePurchasePending,
         releaseState,
@@ -168,6 +175,7 @@ const ReleaseContextProvider = ({ children }) => {
         getFeedForUser,
         fetchedUserProfileReleases,
         fetchGatesForRelease,
+        gatesState,
       }}
     >
       {children}
@@ -198,6 +206,8 @@ const releaseContextHelper = ({
   setFetchedUserProfileReleases,
   verificationState,
   setVerificationState,
+  setGatesState,
+  gatesState,
 }) => {
   const { provider, ids, nativeToUi, uiToNative, isSol, isUsdc, endpoints } =
     ninaClient
@@ -246,6 +256,7 @@ const releaseContextHelper = ({
     release,
     releaseBump,
     releaseMint,
+    isOpen,
   }) => {
     try {
       const program = await ninaClient.useProgram()
@@ -336,15 +347,15 @@ const releaseContextHelper = ({
         instructions.push(authorityTokenAccountIx)
       }
 
+      const editionAmount = isOpen ? MAX_INT : amount
       const config = {
-        amountTotalSupply: new anchor.BN(amount),
+        amountTotalSupply: new anchor.BN(editionAmount),
         amountToArtistTokenAccount: new anchor.BN(0),
         amountToVaultTokenAccount: new anchor.BN(0),
         resalePercentage: new anchor.BN(resalePercentage * 10000),
         price: new anchor.BN(uiToNative(retailPrice, paymentMint)),
         releaseDatetime: new anchor.BN(Date.now() / 1000),
       }
-
       const bumps = {
         release: releaseBump,
         signer: releaseSignerBump,
@@ -518,6 +529,7 @@ const releaseContextHelper = ({
     release,
     releaseBump,
     releaseMint,
+    isOpen,
   }) => {
     setPressingState({
       ...pressingState,
@@ -595,8 +607,9 @@ const releaseContextHelper = ({
         instructions.push(authorityPublishingCreditTokenAccountIx)
       }
       let now = new Date()
+      const editionAmount = isOpen ? MAX_INT : amount
       const config = {
-        amountTotalSupply: new anchor.BN(amount),
+        amountTotalSupply: new anchor.BN(editionAmount),
         amountToArtistTokenAccount: new anchor.BN(0),
         amountToVaultTokenAccount: new anchor.BN(0),
         resalePercentage: new anchor.BN(resalePercentage * 10000),
@@ -688,6 +701,32 @@ const releaseContextHelper = ({
         publicKey: release.toBase58(),
         wallet: provider.wallet.publicKey.toBase58(),
       })
+      return ninaErrorHandler(error)
+    }
+  }
+
+  const closeRelease = async (releasePubkey) => {
+    const program = await ninaClient.useProgram()
+    const release = await program.account.release.fetch(
+      new anchor.web3.PublicKey(releasePubkey)
+    )
+    try {
+      const txid = await program.rpc.releaseCloseEdition({
+        accounts: {
+          authority: provider.wallet.publicKey,
+          release: new anchor.web3.PublicKey(releasePubkey),
+          releaseSigner: release.releaseSigner,
+          releaseMint: release.releaseMint,
+        },
+      })
+      await getConfirmTransaction(txid, provider.connection)
+      await getRelease(releasePubkey)
+
+      return {
+        success: true,
+        msg: 'Release closed',
+      }
+    } catch (error) {
       return ninaErrorHandler(error)
     }
   }
@@ -1118,14 +1157,18 @@ const releaseContextHelper = ({
   const getReleasesAll = async () => {
     try {
       const all = [...allReleases]
+
       const releases = (
         await NinaSdk.Release.fetchAll(
           { limit: 25, offset: allReleases.length },
           true
         )
       ).releases
+
       all.push(...releases.map((release) => release.publicKey))
+
       const newState = updateStateForReleases(releases)
+
       setReleaseState((prevState) => ({
         ...prevState,
         tokenData: { ...prevState.tokenData, ...newState.tokenData },
@@ -1135,6 +1178,7 @@ const releaseContextHelper = ({
           ...newState.releaseMintMap,
         },
       }))
+
       setAllReleasesCount(releases.total)
       setAllReleases(all)
     } catch (error) {
@@ -1462,6 +1506,17 @@ const releaseContextHelper = ({
         `${process.env.NINA_GATE_URL}/releases/${releasePubkey}/gates`
       )
     ).data
+    if (gates.length > 0) {
+      setGatesState((prevState) => ({
+        ...prevState,
+        [releasePubkey]: gates,
+      }))
+    } else {
+      const prevState = { ...gatesState }
+      delete prevState[releasePubkey]
+      setGatesState(prevState)
+    }
+
     return gates
   }
 
@@ -1542,6 +1597,7 @@ const releaseContextHelper = ({
     releasePurchaseViaHub,
     addRoyaltyRecipient,
     releaseCreate,
+    closeRelease,
     releasePurchase,
     collectRoyaltyForRelease,
     getRelease,

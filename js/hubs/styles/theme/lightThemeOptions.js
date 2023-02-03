@@ -234,6 +234,9 @@ const lightThemeOptions = {
           '& .MuiInputLabel-root.Mui-focused': {
             color: 'rgba(0,0,0,0.6)',
           },
+          '& .MuiInput-underline:before': {
+            borderBottom: `2px solid rgba(0,0,0,0.6)`,
+          },
           '& .MuiInputBase-root-MuiInput-root:after': {
             borderBottom: `2px solid rgba(0,0,0,0.6)`,
           },
@@ -258,9 +261,6 @@ const lightThemeOptions = {
         '.ql-toolbar': {
           // QL classes are for overriding Quill components
           textAlign: 'left',
-        },
-        '.ql-editor': {
-          minHeight: '100px',
         },
         '.ql-bubble a::before, a::after': {
           display: 'none',

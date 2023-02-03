@@ -10,13 +10,12 @@ import CloseIcon from '@mui/icons-material/Close'
 import { encodeBase64 } from 'tweetnacl-util'
 import axios from 'axios'
 import TextField from '@mui/material/TextField'
-
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
 
 const GateCreateModal = ({
-  handleFetchGates,
+  fetchGatesForRelease,
   metadata,
   releasePubkey,
   gates,
@@ -86,13 +85,13 @@ const GateCreateModal = ({
         description,
       })
 
-      await handleFetchGates(releasePubkey)
+      await fetchGatesForRelease(releasePubkey)
       handleClose()
       enqueueSnackbar('Gate Created', {
         variant: 'info',
       })
     } catch (err) {
-      enqueueSnackbar('Gate Not Created', {
+      enqueueSnackbar(`Gate Not Created: ${err.response.data.error}`, {
         variant: 'failure',
       })
     }
@@ -106,13 +105,20 @@ const GateCreateModal = ({
         color="primary"
         type="submit"
         onClick={() => setOpen(true)}
-        sx={{ height: '55px', width: '100%', mt: 1 }}
+        sx={{
+          height: '55px',
+          width: '100%',
+          mt: 1,
+          '&:hover': {
+            opacity: '50%',
+          },
+        }}
       >
-        <Typography variant="body2">
+        <StyledTypography variant="body2">
           {`Create ${
             gates?.length > 0 ? 'another' : 'a'
           } Gate for this Release`}
-        </Typography>
+        </StyledTypography>
       </Button>
 
       <StyledModal
@@ -130,10 +136,12 @@ const GateCreateModal = ({
           <StyledPaper>
             <StyledCloseIcon onClick={() => handleClose()} />
 
-            <Typography variant="h5" sx={{ mb: 1 }}>
-              Select a file or zip to be gated behind:
-            </Typography>
-            <Typography variant="h5">&apos;{metadata?.name}&apos;</Typography>
+            <StyledTypography variant="h5" sx={{ mb: 1 }}>
+              Select a file to be available exclusively to collectors of
+            </StyledTypography>
+            <StyledTypography variant="h5">
+              &apos;{metadata?.name}&apos;
+            </StyledTypography>
 
             <TextField
               id="standard-multiline-static"
@@ -143,7 +151,15 @@ const GateCreateModal = ({
               onChange={(e) => setDescription(e.target.value)}
             />
 
-            <Button component="label" variant="outlined">
+            <Button
+              component="label"
+              variant="outlined"
+              sx={{
+                '&:hover': {
+                  opacity: '50%',
+                },
+              }}
+            >
               {!file ? 'Choose File' : file.name}
               <input
                 type="file"
@@ -154,7 +170,12 @@ const GateCreateModal = ({
 
             <Button
               variant="outlined"
-              sx={{ mt: 1 }}
+              sx={{
+                mt: 1,
+                '&:hover': {
+                  opacity: '50%',
+                },
+              }}
               onClick={handleFileUpload}
               disabled={!file || !description}
             >
@@ -171,6 +192,10 @@ const Root = styled('div')(() => ({
   display: 'flex',
   alignItems: 'center',
   width: '100%',
+}))
+
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.black,
 }))
 
 const StyledModal = styled(Modal)(() => ({
@@ -202,6 +227,8 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
   position: 'absolute',
   right: theme.spacing(1),
   top: theme.spacing(1),
+  color: theme.palette.black,
+  cursor: 'pointer',
 }))
 
 export default GateCreateModal

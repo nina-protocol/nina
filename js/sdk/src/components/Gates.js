@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
 import { encodeBase64 } from 'tweetnacl-util'
 import axios from 'axios'
@@ -19,23 +19,11 @@ const Gates = ({
 }) => {
   const wallet = useWallet()
   const { enqueueSnackbar } = useSnackbar()
-
-  const { fetchGatesForRelease } = useContext(Release.Context)
-  const [gates, setGates] = useState(undefined)
-
-  useEffect(() => {
-    handleFetchGates(releasePubkey)
-  }, [releasePubkey])
-
-  const handleFetchGates = async () => {
-    const gates = await fetchGatesForRelease(releasePubkey)
-    if (gates.length > 0) {
-      setGates(gates)
-    } else {
-      setGates(undefined)
-    }
-  }
-
+  const { fetchGatesForRelease, gatesState } = useContext(Release.Context)
+  const releaseGates = useMemo(
+    () => gatesState[releasePubkey],
+    [gatesState, releasePubkey]
+  )
   const unlockGate = async (gate) => {
     const releasePubkey = gate.releasePublicKey
 
@@ -75,7 +63,7 @@ const Gates = ({
       }
     } catch (error) {
       console.warn('error: ', error)
-      enqueueSnackbar(`Error Accessing File`, {
+      enqueueSnackbar(`Error Accessing File:: ${error.response.data.error}`, {
         variant: 'failure',
       })
     }
@@ -83,33 +71,34 @@ const Gates = ({
 
   return (
     <Root>
-      {gates && !inSettings && (
+      {releaseGates && !inSettings && (
         <>
           <GateUnlockModal
-            gates={gates}
+            gates={releaseGates}
             releasePubkey={releasePubkey}
             amountHeld={amountHeld}
             unlockGate={unlockGate}
+            isAuthority={isAuthority}
           />
         </>
       )}
-      {!gates && isAuthority && inSettings && (
+      {!releaseGates && isAuthority && inSettings && (
         <>
           <GateCreateModal
             releasePubkey={releasePubkey}
-            handleFetchGates={handleFetchGates}
+            fetchGatesForRelease={fetchGatesForRelease}
             metadata={metadata}
-            gates={gates}
+            gates={releaseGates}
           />
         </>
       )}
 
-      {gates && isAuthority && inSettings && (
+      {releaseGates && isAuthority && inSettings && (
         <>
           <GateManageModal
-            gates={gates}
+            gates={releaseGates}
             releasePubkey={releasePubkey}
-            handleFetchGates={handleFetchGates}
+            fetchGatesForRelease={fetchGatesForRelease}
             metadata={metadata}
             unlockGate={unlockGate}
           />

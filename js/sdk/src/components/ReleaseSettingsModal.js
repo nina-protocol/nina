@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useWallet } from '@solana/wallet-adapter-react'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
@@ -10,7 +11,9 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import Royalty from './Royalty'
 import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 import CloseIcon from '@mui/icons-material/Close'
-
+// import CloseRelease from './CloseRelease'
+import gateWhitelist from '../utils/gateWhitelist'
+import ReleaseSettingsWelcome from './ReleaseSettingsWelcome'
 const ReleaseSettingsModal = ({
   releasePubkey,
   metadata,
@@ -18,7 +21,10 @@ const ReleaseSettingsModal = ({
   isAuthority,
   release,
   amountHeld,
+  releaseGates,
 }) => {
+  const { publicKey } = useWallet()
+
   const [open, setOpen] = useState(false)
 
   const handleClose = () => {
@@ -27,10 +33,18 @@ const ReleaseSettingsModal = ({
 
   return (
     <Root>
+      {isAuthority && <ReleaseSettingsWelcome />}
       {(isAuthority || userIsRecipient) && (
         <Button
           onClick={() => setOpen(true)}
-          sx={{ height: '22px', width: '28px', m: 0 }}
+          sx={{
+            height: '22px',
+            width: '28px',
+            m: 0,
+            '&:hover': {
+              opacity: '50%',
+            },
+          }}
         >
           <SettingsIcon sx={{ color: 'inherit' }} />
         </Button>
@@ -51,21 +65,26 @@ const ReleaseSettingsModal = ({
           <StyledPaper>
             <StyledCloseIcon onClick={() => handleClose()} />
 
-            <Typography variant="h4">Release Settings:</Typography>
+            <StyledTypography variant="h4">Release Settings:</StyledTypography>
 
             {userIsRecipient && (
               <Royalty releasePubkey={releasePubkey} release={release} />
             )}
 
-            {isAuthority && (
-              <Gates
-                release={release}
-                metadata={metadata}
-                releasePubkey={releasePubkey}
-                isAuthority={isAuthority}
-                amountHeld={amountHeld}
-                inSettings={true}
-              />
+            {isAuthority && gateWhitelist.includes(publicKey.toBase58()) && (
+              <>
+                <Gates
+                  release={release}
+                  metadata={metadata}
+                  releasePubkey={releasePubkey}
+                  isAuthority={isAuthority}
+                  amountHeld={amountHeld}
+                  inSettings={true}
+                  releaseGates={releaseGates}
+                />
+
+                {/* <CloseRelease releasePubkey={releasePubkey} release={release} /> */}
+              </>
             )}
           </StyledPaper>
         </Fade>
@@ -77,6 +96,10 @@ const ReleaseSettingsModal = ({
 const Root = styled('div')(() => ({
   display: 'flex',
   alignItems: 'center',
+}))
+
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.black,
 }))
 
 const StyledModal = styled(Modal)(() => ({
@@ -108,6 +131,8 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
   position: 'absolute',
   right: theme.spacing(1),
   top: theme.spacing(1),
+  color: theme.palette.black,
+  cursor: 'pointer',
 }))
 
 export default ReleaseSettingsModal

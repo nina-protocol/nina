@@ -7,13 +7,13 @@ import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
 import { useRouter } from 'next/router'
 import Grid from '@mui/material/Grid'
-import ReleaseCreateViaHub from './ReleaseCreateViaHub'
 import HubOverview from './HubOverview'
 import HubCreate from './HubCreate'
-import BundlrModal from './BundlrModal'
+import BundlrModal from '@nina-protocol/nina-internal-sdk/esm/BundlrModal'
 import HubPosts from './HubPosts'
 import HubCollaborators from './HubCollaborators'
 import HubReleases from './HubReleases'
+import ReleaseCreate from '@nina-protocol/nina-internal-sdk/esm/ReleaseCreate'
 
 // const {toTitleCase} = nina.utils;
 
@@ -168,10 +168,7 @@ const Dashboard = ({ hubPubkey }) => {
         )
       case '5':
         return (
-          <ReleaseCreateViaHub
-            canAddContent={canAddContent}
-            hubPubkey={hubPubkey}
-          />
+          <ReleaseCreate canAddContent={canAddContent} hubPubkey={hubPubkey} />
         )
       default:
         break

@@ -29,6 +29,7 @@ import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 const { getImageFromCDN, loader } = imageManager
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
+import { useSnackbar } from 'notistack'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSettingsModal'
 
@@ -38,10 +39,9 @@ const AddToHubModal = dynamic(() => import('./AddToHubModal'))
 
 const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const wallet = useWallet()
-
-  const { updateTrack, track, isPlaying, audioPlayerRef } = useContext(
-    Audio.Context
-  )
+  const { enqueueSnackbar } = useSnackbar()
+  const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } =
+    useContext(Audio.Context)
   const { releaseState, getRelease } = useContext(Release.Context)
   const { getHub, hubState, getHubsForUser, filterHubsForUser } = useContext(
     Hub.Context
@@ -256,6 +256,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                       width: '28px',
                       m: 0,
                       marginLeft: '4px',
+                      paddingTop: '12px',
                     }}
                     onClick={(e) => {
                       e.stopPropagation()

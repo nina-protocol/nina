@@ -32,7 +32,6 @@ const ReleasePurchase = (props) => {
   } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const router = useRouter()
   const {
     releasePurchaseViaHub,
     releasePurchasePending,
@@ -156,7 +155,7 @@ const ReleasePurchase = (props) => {
   }
 
   const buttonText =
-    release.remainingSupply > 0
+    release.remainingSupply > 0 || release.remainingSupply === -1
       ? `${
           release.price > 0
             ? `Buy $${ninaClient.nativeToUiString(
@@ -172,8 +171,17 @@ const ReleasePurchase = (props) => {
   return (
     <ReleasePurchaseWrapper mt={1}>
       <AmountRemaining variant="body2" align="left">
-        Remaining: <span>{release.remainingSupply} </span> /{' '}
-        {release.totalSupply}
+        {release.editionType === 'open' ? (
+          <Typography variant="body2" align="left">
+            Open Edition:{' '}
+            {`${release?.saleCounter > 0 ? release?.saleCounter : 0} Sold`}
+          </Typography>
+        ) : (
+          <>
+            Remaining: <span>{release.remainingSupply} </span> /{' '}
+            {release.totalSupply}
+          </>
+        )}
       </AmountRemaining>
 
       <Typography variant="body2" align="left" paddingBottom="10px">
@@ -204,12 +212,21 @@ const ReleasePurchase = (props) => {
           marginTop: { md: '0px', lg: '8px' },
         }}
       >
-        <BuyButton variant="outlined" type="submit">
-          <Typography variant="body2" align="left">
+        <BuyButton
+          variant="outlined"
+          type="submit"
+          soldOut={release.remainingSupply === 0}
+          disabled={release.remainingSupply === 0 ? true : false}
+        >
+          <BuyButtonTypography
+            soldOut={release.remainingSupply === 0}
+            variant="body2"
+            align="left"
+          >
             {txPending && <Dots msg="Preparing transaction" />}
             {!txPending && pending && <Dots msg="Awaiting wallet approval" />}
             {!txPending && !pending && buttonText}
-          </Typography>
+          </BuyButtonTypography>
         </BuyButton>
       </form>
 
@@ -231,7 +248,10 @@ const ReleasePurchase = (props) => {
   )
 }
 
-const BuyButton = styled(Button)(({ theme }) => ({
+const BuyButton = styled(Button)(({ theme, soldOut }) => ({
+  border: soldOut
+    ? `1px solid ${theme.palette.grey.primary}`
+    : `1px solid ${theme.palette.text.primary}`,
   height: '55px',
   width: BUTTON_WIDTH,
   '& p': {
@@ -240,6 +260,10 @@ const BuyButton = styled(Button)(({ theme }) => ({
       opacity: '50%',
     },
   },
+}))
+
+const BuyButtonTypography = styled(Typography)(({ theme, soldOut }) => ({
+  color: soldOut ? theme.palette.grey.primary : '',
 }))
 const ReleasePurchaseWrapper = styled(Box)(({ theme }) => ({
   textAlign: 'left',

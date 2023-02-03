@@ -37,6 +37,7 @@ const ReleasePurchase = (props) => {
     amountHeld,
     setAmountHeld,
     isAuthority,
+    releaseGates,
   } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
@@ -63,7 +64,6 @@ const ReleasePurchase = (props) => {
   const [release, setRelease] = useState(undefined)
   const [amountPendingBuys, setAmountPendingBuys] = useState(0)
   const [amountPendingSales, setAmountPendingSales] = useState(0)
-  const [downloadButtonString, setDownloadButtonString] = useState('Download')
   const [exchangeTotalBuys, setExchangeTotalBuys] = useState(0)
   const [exchangeTotalSells, setExchangeTotalSells] = useState(0)
   const [publishedHub, setPublishedHub] = useState()
@@ -195,7 +195,7 @@ const ReleasePurchase = (props) => {
   }
 
   const buttonText =
-    release.remainingSupply > 0
+    release.remainingSupply > 0 || release.remainingSupply === -1
       ? `${
           release.price > 0
             ? `Buy $${ninaClient.nativeToUiString(
@@ -218,8 +218,21 @@ const ReleasePurchase = (props) => {
   return (
     <Box>
       <AmountRemaining variant="body2" align="left">
-        Remaining: <span>{release.remainingSupply} </span> /{' '}
-        {release.totalSupply}
+        {release.editionType === 'open' ? (
+          <Typography
+            variant="body2"
+            align="left"
+            sx={{ color: '#black !important' }}
+          >
+            Open Edition:{' '}
+            {`${release?.saleCounter > 0 ? release?.saleCounter : 0} Sold`}
+          </Typography>
+        ) : (
+          <>
+            Remaining: <span>{release.remainingSupply} </span> /{' '}
+            {release.totalSupply}
+          </>
+        )}
       </AmountRemaining>
 
       <Typography variant="body2" align="left" paddingBottom="10px">
@@ -288,7 +301,12 @@ const ReleasePurchase = (props) => {
       <StyledDescription align="left">{description}</StyledDescription>
       <Box sx={{ mb: 1 }}>
         <form onSubmit={handleSubmit}>
-          <Button variant="outlined" type="submit" fullWidth>
+          <Button
+            variant="outlined"
+            type="submit"
+            fullWidth
+            disabled={release.remainingSupply === 0 ? true : false}
+          >
             <Typography variant="body2">
               {txPending && <Dots msg="preparing transaction" />}
               {!txPending && pending && <Dots msg="awaiting wallet approval" />}
@@ -306,6 +324,7 @@ const ReleasePurchase = (props) => {
           isAuthority={isAuthority}
           amountHeld={amountHeld}
           inSettings={false}
+          releaseGates={releaseGates}
         />
       </Box>
     </Box>

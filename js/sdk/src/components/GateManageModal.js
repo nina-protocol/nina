@@ -25,7 +25,7 @@ import { useSnackbar } from 'notistack'
 import Dots from './Dots'
 
 const GateManageModal = ({
-  handleFetchGates,
+  fetchGatesForRelease,
   metadata,
   releasePubkey,
   gates,
@@ -76,13 +76,12 @@ const GateManageModal = ({
           wallet.publicKey.toBase58()
         )}&signature=${encodeURIComponent(signatureBase64)}`
       )
-      await handleFetchGates(releasePubkey)
-
+      // const test = await fetchGatesForRelease(releasePubkey)
       enqueueSnackbar('Gate Deleted', {
         variant: 'info',
       })
     } catch (error) {
-      enqueueSnackbar('Gate Not Deleted', {
+      enqueueSnackbar(`Gate Not Deleted: ${error.response.data.error}`, {
         variant: 'failure',
       })
     }
@@ -97,9 +96,16 @@ const GateManageModal = ({
         color="primary"
         type="submit"
         onClick={() => setOpen(true)}
-        sx={{ height: '55px', width: '100%', mt: 1 }}
+        sx={{
+          height: '55px',
+          width: '100%',
+          mt: 1,
+          '&:hover': {
+            opacity: '50%',
+          },
+        }}
       >
-        <Typography variant="body2">Manage Gates</Typography>
+        <StyledTypography variant="body2">Manage Gates</StyledTypography>
       </Button>
 
       <StyledModal
@@ -117,22 +123,22 @@ const GateManageModal = ({
           <StyledPaper>
             <StyledCloseIcon onClick={() => handleClose()} />
 
-            <Typography variant="h5" sx={{ mb: 1 }}>
+            <StyledTypography variant="h5" sx={{ mb: 1 }}>
               Gate Manager
-            </Typography>
+            </StyledTypography>
 
             <Box>
               <GateCreateModal
                 releasePubkey={releasePubkey}
-                handleFetchGates={handleFetchGates}
+                fetchGatesForRelease={fetchGatesForRelease}
                 metadata={metadata}
                 gates={gates}
               />
 
               {gates.length > 0 && (
-                <Typography variant="body1" sx={{ my: 1 }}>
+                <StyledTypography variant="body1" sx={{ my: 1 }}>
                   Existing Gates:
-                </Typography>
+                </StyledTypography>
               )}
 
               <GateWrapper>
@@ -181,7 +187,11 @@ const GateManageModal = ({
                       >
                         <ListItemButton disableGutters>
                           <ListItemText
-                            primary={`${gate.fileName} (${fileSize} mb)`}
+                            primary={
+                              <StyledTypography>
+                                {gate.fileName} ({`${fileSize} mb`})
+                              </StyledTypography>
+                            }
                           />
                         </ListItemButton>
                       </ListItem>
@@ -201,6 +211,10 @@ const Root = styled('div')(() => ({
   display: 'flex',
   alignItems: 'center',
   width: '100%',
+}))
+
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.black,
 }))
 
 const StyledModal = styled(Modal)(() => ({
@@ -237,6 +251,8 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
   position: 'absolute',
   right: theme.spacing(1),
   top: theme.spacing(1),
+  cursor: 'pointer',
+  color: theme.palette.black,
 }))
 
 export default GateManageModal
