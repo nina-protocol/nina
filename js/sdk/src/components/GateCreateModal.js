@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
+import Box from '@mui/material/Box'
 import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
@@ -137,10 +138,10 @@ const GateCreateModal = ({
             <StyledCloseIcon onClick={() => handleClose()} />
 
             <StyledTypography variant="h5" sx={{ mb: 1 }}>
-              Select a file to be available exclusively to collectors of
+              Select a file to be available exclusively to collectors of:
             </StyledTypography>
             <StyledTypography variant="h5">
-              &apos;{metadata?.name}&apos;
+              {metadata?.name}
             </StyledTypography>
 
             <TextField
@@ -148,6 +149,7 @@ const GateCreateModal = ({
               label="Description"
               variant="standard"
               sx={{ mt: 2, mb: 2 }}
+              inputProps={{ maxLength: 255 }}
               onChange={(e) => setDescription(e.target.value)}
             />
 
@@ -179,7 +181,14 @@ const GateCreateModal = ({
               onClick={handleFileUpload}
               disabled={!file || !description}
             >
-              {!inProgress ? 'Create Gate' : <Dots size="50px" />}
+              { inProgress ? 'Create Gate' : 
+              <Box display="flex" flexDirection={'column'} sx={{position: 'relative', width: '100%'}}>
+                <Dots size="50px" />
+                <Typography variant='subtitle1' style={{position: 'absolute', width: '100%', top: '95%'}}>
+                This could take a while for large files. Please do not refresh the page.
+                </Typography>
+              </Box>
+              }
             </Button>
           </StyledPaper>
         </Fade>
@@ -209,7 +218,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   border: '2px solid #000',
   boxShadow: theme.shadows[5],
   padding: theme.spacing(2, 4, 3),
-  width: '40vw',
+  width: '42vw',
   maxHeight: '90vh',
   overflowY: 'auto',
   zIndex: '10',
