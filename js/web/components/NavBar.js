@@ -130,7 +130,7 @@ const NavBar = () => {
         </DesktopWalletWrapper>
       </NavRight>
       <PendingReleasesIndicator />
-      <FeedDrawer />
+      <FeedDrawer override={true} />
     </Root>
   )
 }
@@ -144,15 +144,15 @@ const classes = {
   connectionDot: `${PREFIX}-connectionDot`,
 }
 
-const PendingReleases = styled(Box)(({ theme }) => ({
-  border: '1px solid red',
-  padding: '10px',
-  marginRight: '20px',
-  position: 'absolute',
-  background: 'white',
-  top: '40px',
-  right: '0',
-}))
+// const PendingReleases = styled(Box)(({ theme }) => ({
+//   border: '1px solid red',
+//   padding: '10px',
+//   marginRight: '20px',
+//   position: 'absolute',
+//   background: 'white',
+//   top: '40px',
+//   right: '0',
+// }))
 
 const Root = styled('nav')(({ theme }) => ({
   background: `${theme.palette.transparent}`,
