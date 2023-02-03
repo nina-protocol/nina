@@ -140,9 +140,7 @@ const GateCreateModal = ({
             <StyledTypography variant="h5" sx={{ mb: 1 }}>
               Select a file to be available exclusively to collectors of:
             </StyledTypography>
-            <StyledTypography variant="h5">
-              {metadata?.name}
-            </StyledTypography>
+            <StyledTypography variant="h5">{metadata?.name}</StyledTypography>
 
             <TextField
               id="standard-multiline-static"
@@ -181,14 +179,24 @@ const GateCreateModal = ({
               onClick={handleFileUpload}
               disabled={!file || !description}
             >
-              { inProgress ? 'Create Gate' : 
-              <Box display="flex" flexDirection={'column'} sx={{position: 'relative', width: '100%'}}>
-                <Dots size="50px" />
-                <Typography variant='subtitle1' style={{position: 'absolute', width: '100%', top: '95%'}}>
-                This could take a while for large files. Please do not refresh the page.
-                </Typography>
-              </Box>
-              }
+              {inProgress ? (
+                'Create Gate'
+              ) : (
+                <Box
+                  display="flex"
+                  flexDirection={'column'}
+                  sx={{ position: 'relative', width: '100%' }}
+                >
+                  <Dots size="50px" />
+                  <Typography
+                    variant="subtitle1"
+                    style={{ position: 'absolute', width: '100%', top: '95%' }}
+                  >
+                    This could take a while for large files. Please do not
+                    refresh the page.
+                  </Typography>
+                </Box>
+              )}
             </Button>
           </StyledPaper>
         </Fade>
