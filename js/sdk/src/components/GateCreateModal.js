@@ -90,8 +90,8 @@ const GateCreateModal = ({
       enqueueSnackbar('Gate Created', {
         variant: 'info',
       })
-    } catch (err) {
-      enqueueSnackbar('Gate Not Created', {
+    } catch (err) { 
+      enqueueSnackbar(`Gate Not Created: ${err.response.data.error}`, {
         variant: 'failure',
       })
     }

@@ -41,106 +41,106 @@ const GateUnlockModal = ({ gates, amountHeld, unlockGate }) => {
     setInProgress(false)
     setActiveIndex()
   }
+  return null
+  // return (
+  //   <>
+  //     <Root>
+  //       <Button
+  //         variant="outlined"
+  //         color="primary"
+  //         type="submit"
+  //         onClick={() => setOpen(true)}
+  //         sx={{
+  //           height: '55px',
+  //           width: '100%',
+  //           '&:hover': {
+  //             opacity: '50%',
+  //           },
+  //         }}
+  //       >
+  //         {' '}
+  //         {amountHeld > 0 ? <LockOpenIcon /> : <LockIcon />}
+  //       </Button>
 
-  return (
-    <>
-      <Root>
-        <Button
-          variant="outlined"
-          color="primary"
-          type="submit"
-          onClick={() => setOpen(true)}
-          sx={{
-            height: '55px',
-            width: '100%',
-            '&:hover': {
-              opacity: '50%',
-            },
-          }}
-        >
-          {' '}
-          {amountHeld > 0 ? <LockOpenIcon /> : <LockIcon />}
-        </Button>
+  //       <StyledModal
+  //         aria-labelledby="transition-modal-title"
+  //         aria-describedby="transition-modal-description"
+  //         open={open}
+  //         onClose={() => handleClose()}
+  //         closeAfterTransition
+  //         BackdropComponent={Backdrop}
+  //         BackdropProps={{
+  //           timeout: 500,
+  //         }}
+  //       >
+  //         <Fade in={open}>
+  //           <StyledPaper>
+  //             <StyledCloseIcon onClick={() => handleClose()} />
 
-        <StyledModal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          open={open}
-          onClose={() => handleClose()}
-          closeAfterTransition
-          BackdropComponent={Backdrop}
-          BackdropProps={{
-            timeout: 500,
-          }}
-        >
-          <Fade in={open}>
-            <StyledPaper>
-              <StyledCloseIcon onClick={() => handleClose()} />
-
-              <>
-                <StyledTypography variant="h5" sx={{ mb: 1 }}>
-                  {amountHeld > 0
-                    ? 'You have access to: '
-                    : 'Purchase this release to download: '}
-                </StyledTypography>
-                <List>
-                  {gates.map((gate, index) => {
-                    const fileSize = (gate.fileSize / (1024 * 1024)).toFixed(2)
-                    return (
-                      <ListItem
-                        disableGutters
-                        key={index}
-                        secondaryAction={
-                          <Box>
-                            <IconButton
-                              aria-label="delete"
-                              disabled={
-                                amountHeld === 0 ||
-                                (inProgress && activeIndex === index)
-                              }
-                              onClick={() => {
-                                handleUnlockGate(gate, index)
-                              }}
-                            >
-                              {inProgress && activeIndex === index ? (
-                                <Dots />
-                              ) : (
-                                <DownloadIcon />
-                              )}
-                            </IconButton>
-                          </Box>
-                        }
-                      >
-                        <ListItemButton disableGutters>
-                          <ListItemText
-                            primary={
-                              <StyledTypography>
-                                {gate.fileName} {`(${fileSize} mb)`}
-                              </StyledTypography>
-                            }
-                            secondary={gate.description}
-                          />
-                        </ListItemButton>
-                      </ListItem>
-                    )
-                  })}
-                </List>
-              </>
-            </StyledPaper>
-          </Fade>
-        </StyledModal>
-      </Root>
-      {amountHeld === 0 && (
-        <div>
-          <StyledTypographyButtonSub>
-            {`There ${gates.length > 1 ? 'are' : 'is'} ${gates.length} ${
-              gates.length > 1 ? 'files' : 'file'
-            } available for download exclusively to owners of this release.`}
-          </StyledTypographyButtonSub>
-        </div>
-      )}
-    </>
-  )
+  //             <>
+  //               <StyledTypography variant="h5" sx={{ mb: 1 }}>
+  //                 {amountHeld > 0
+  //                   ? 'You have access to: '
+  //                   : 'Purchase this release to download: '}
+  //               </StyledTypography>
+  //               <List>
+  //                 {gates.map((gate, index) => {
+  //                   const fileSize = (gate.fileSize / (1024 * 1024)).toFixed(2)
+  //                   return (
+  //                     <ListItem
+  //                       disableGutters
+  //                       key={index}
+  //                       secondaryAction={
+  //                         <Box>
+  //                           <IconButton
+  //                             aria-label="delete"
+  //                             disabled={
+  //                               amountHeld === 0 ||
+  //                               (inProgress && activeIndex === index)
+  //                             }
+  //                             onClick={() => {
+  //                               handleUnlockGate(gate, index)
+  //                             }}
+  //                           >
+  //                             {inProgress && activeIndex === index ? (
+  //                               <Dots />
+  //                             ) : (
+  //                               <DownloadIcon />
+  //                             )}
+  //                           </IconButton>
+  //                         </Box>
+  //                       }
+  //                     >
+  //                       <ListItemButton disableGutters>
+  //                         <ListItemText
+  //                           primary={
+  //                             <StyledTypography>
+  //                               {gate.fileName} {`(${fileSize} mb)`}
+  //                             </StyledTypography>
+  //                           }
+  //                           secondary={gate.description}
+  //                         />
+  //                       </ListItemButton>
+  //                     </ListItem>
+  //                   )
+  //                 })}
+  //               </List>
+  //             </>
+  //           </StyledPaper>
+  //         </Fade>
+  //       </StyledModal>
+  //     </Root>
+  //     {amountHeld === 0 && (
+  //       <div>
+  //         <StyledTypographyButtonSub>
+  //           {`There ${gates.length > 1 ? 'are' : 'is'} ${gates.length} ${
+  //             gates.length > 1 ? 'files' : 'file'
+  //           } available for download exclusively to owners of this release.`}
+  //         </StyledTypographyButtonSub>
+  //       </div>
+  //     )}
+  //   </>
+  // )
 }
 
 const Root = styled('div')(() => ({

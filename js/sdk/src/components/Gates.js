@@ -63,7 +63,7 @@ const Gates = ({
       }
     } catch (error) {
       console.warn('error: ', error)
-      enqueueSnackbar(`Error Accessing File`, {
+      enqueueSnackbar(`Error Accessing File:: ${error.response.data.error}`, {
         variant: 'failure',
       })
     }

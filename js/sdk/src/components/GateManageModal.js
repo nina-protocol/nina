@@ -81,7 +81,7 @@ const GateManageModal = ({
         variant: 'info',
       })
     } catch (error) {
-      enqueueSnackbar('Gate Not Deleted', {
+      enqueueSnackbar(`Gate Not Deleted: ${error.response.data.error}`, {
         variant: 'failure',
       })
     }
