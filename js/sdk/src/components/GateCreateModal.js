@@ -172,6 +172,7 @@ const GateCreateModal = ({
               variant="outlined"
               sx={{
                 mt: 1,
+                mb: 2,
                 '&:hover': {
                   opacity: '50%',
                 },
@@ -179,7 +180,7 @@ const GateCreateModal = ({
               onClick={handleFileUpload}
               disabled={!file || !description}
             >
-              {inProgress ? (
+              {!inProgress ? (
                 'Create Gate'
               ) : (
                 <Box
