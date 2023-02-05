@@ -122,7 +122,7 @@ const releasePurchaseHelper = async (
   const program = await ninaClient.useProgram()
   const release = await program.account.release.fetch(releasePubkey)
 
-  let [payerTokenAccount] = await findOrCreateAssociatedTokenAccount(
+  let [payerTokenAccount, payerTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
     provider.connection,
     provider.wallet.publicKey,
     provider.wallet.publicKey,
@@ -200,6 +200,14 @@ const releasePurchaseHelper = async (
   }
 
   const instructions = []
+  if (payerTokenAccountIx) {
+    instructions.push({
+      instructions: [payerTokenAccountIx],
+      cleanupInstructions: [],
+      signers: [],
+    })
+  }
+  
   if (receiverReleaseTokenAccountIx) {
     instructions.push({
       instructions: [receiverReleaseTokenAccountIx],
