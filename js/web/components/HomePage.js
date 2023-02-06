@@ -46,7 +46,7 @@ const HomePage = ({ loading }) => {
           align="left"
           sx={{ padding: { md: '0 165px 100px', xs: '30px 0px' } }}
         >
-          Welcome to Nina, <div>a digitally native music ecosystem.</div>
+          Welcome to Nina, <div>an independent music ecosystem.</div>
         </BlueTypography>
 
         <Box sx={{ padding: { md: '0 40px 80px 40px', xs: '30px 0px' } }}>
@@ -57,22 +57,24 @@ const HomePage = ({ loading }) => {
               className={classes.sectionHeader}
             >
               <Link href="/releases/highlights">Highlights</Link>
-              <Button
-                sx={{ padding: '6px 8px' }}
-                onClick={() =>
-                  resetQueueWithPlaylist(
-                    releasesRecent.highlights.map(
-                      (release) => release.releasePubkey
-                    )
-                  ).then(() => {
-                    enqueueSnackbar('Now Playing: Nina Highlights', {
-                      variant: 'info',
+              {releasesRecent.highlights?.length > 0 && (
+                <Button
+                  sx={{ padding: '6px 8px' }}
+                  onClick={() =>
+                    resetQueueWithPlaylist(
+                      releasesRecent.highlights.map(
+                        (release) => release.releasePubkey
+                      )
+                    ).then(() => {
+                      enqueueSnackbar('Now Playing: Nina Highlights', {
+                        variant: 'info',
+                      })
                     })
-                  })
-                }
-              >
-                <PlayCircleOutlineOutlinedIcon sx={{ color: 'black' }} />
-              </Button>
+                  }
+                >
+                  <PlayCircleOutlineOutlinedIcon sx={{ color: 'black' }} />
+                </Button>
+              )}
             </Typography>
           </Box>
           <RecentlyPublished
