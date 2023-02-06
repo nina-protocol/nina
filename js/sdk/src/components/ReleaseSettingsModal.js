@@ -11,9 +11,9 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import Royalty from './Royalty'
 import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 import CloseIcon from '@mui/icons-material/Close'
-// import CloseRelease from './CloseRelease'
+import CloseRelease from './CloseRelease'
 import gateWhitelist from '../utils/gateWhitelist'
-
+import ReleaseSettingsWelcome from './ReleaseSettingsWelcome'
 const ReleaseSettingsModal = ({
   releasePubkey,
   metadata,
@@ -30,9 +30,10 @@ const ReleaseSettingsModal = ({
   const handleClose = () => {
     setOpen(false)
   }
-  console.log('gateWhitelist', gateWhitelist)
+
   return (
     <Root>
+      {isAuthority && <ReleaseSettingsWelcome />}
       {(isAuthority || userIsRecipient) && (
         <Button
           onClick={() => setOpen(true)}
@@ -82,7 +83,7 @@ const ReleaseSettingsModal = ({
                   releaseGates={releaseGates}
                 />
 
-                {/* <CloseRelease releasePubkey={releasePubkey} release={release} /> */}
+                <CloseRelease releasePubkey={releasePubkey} release={release} />
               </>
             )}
           </StyledPaper>

@@ -7,7 +7,10 @@ import Box from '@mui/material/Box'
 import Tooltip from '@mui/material/Tooltip'
 import HelpIcon from '@mui/icons-material/Help'
 import dynamic from 'next/dynamic'
-const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
+const QuillEditor = dynamic(
+  () => import('@nina-protocol/nina-internal-sdk/esm/QuillEditor'),
+  { ssr: false }
+)
 
 const HubCreateForm = ({
   values,

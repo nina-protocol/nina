@@ -78,6 +78,7 @@ const Gates = ({
             releasePubkey={releasePubkey}
             amountHeld={amountHeld}
             unlockGate={unlockGate}
+            isAuthority={isAuthority}
           />
         </>
       )}
