@@ -19,13 +19,12 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 
 import CloseIcon from '@mui/icons-material/Close'
-import Image from 'next/image'
 
 const linksConnected = [
   'dashboard',
   'all Releases',
   'hubs',
-  'upload',
+
   'faq',
   'dev',
   'radio',
@@ -37,7 +36,7 @@ const linksNotConnected = [
   'home',
   'all Releases',
   'hubs',
-  'upload',
+
   'faq',
   'dev',
   'radio',
@@ -148,21 +147,40 @@ const NavDrawer = () => {
               )
             case 'all Releases':
               return (
-                <Link
-                  className={`${classes.drawerLink}`}
-                  href={`/releases`}
-                  activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active`}
-                  key={link}
-                  passHref
-                >
-                  <ListItem button key={link}>
-                    <StyledListItemText primary="All Releases" />
-                  </ListItem>
-                </Link>
+                <ListItem button key={link} alignItems="flex-start !important">
+                  <Link
+                    className={`${classes.drawerLink}`}
+                    href={`/releases`}
+                    activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active`}
+                    key={link}
+                    passHref
+                  >
+                    <a>
+                      <StyledListItemText
+                        disablePadding
+                        primary={'Releases'}
+                        sx={{ paddingRight: '6px' }}
+                      />
+                    </a>
+                  </Link>
+                  <Typography sx={{ paddingRight: '6px' }}>{' / '}</Typography>
+
+                  <Link
+                    className={`${classes.drawerLink}`}
+                    href={`/upload`}
+                    activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active`}
+                    key={link}
+                    passHref
+                  >
+                    <a>
+                      <StyledListItemText disablePadding primary={'Upload'} />
+                    </a>
+                  </Link>
+                </ListItem>
               )
             case 'hubs':
               return (
-                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                <ListItem button key={link} alignItems="flex-start !important">
                   <Link
                     className={`${classes.drawerLink}`}
                     href={`/hubs`}
@@ -170,11 +188,31 @@ const NavDrawer = () => {
                     key={link}
                     passHref
                   >
-                    <ListItem button key={link}>
-                      <StyledListItemText>Hubs</StyledListItemText>
-                    </ListItem>
+                    <a>
+                      <StyledListItemText
+                        disablePadding
+                        primary={'Hubs'}
+                        sx={{ paddingRight: '6px' }}
+                      />
+                    </a>
                   </Link>
-                </Box>
+                  <Typography sx={{ paddingRight: '6px' }}>{' / '}</Typography>
+
+                  <Link
+                    className={`${classes.drawerLink}`}
+                    href={`/hubs/create`}
+                    activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active`}
+                    key={link}
+                    passHref
+                  >
+                    <a>
+                      <StyledListItemText
+                        disablePadding
+                        primary={'Create Hub'}
+                      />
+                    </a>
+                  </Link>
+                </ListItem>
               )
             case 'nina night':
               return (
@@ -266,7 +304,7 @@ const NavDrawer = () => {
               </Box>
 
               <Typography variant="subtitle1">
-                © 2022 Nina Protocol Corp
+                {`© ${new Date().getFullYear()} Nina Protocol Corp`}
               </Typography>
             </DrawerFooter>
           </StyledDrawer>

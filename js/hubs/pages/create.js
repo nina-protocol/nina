@@ -35,7 +35,7 @@ const CreateHubPage = () => {
           href="https://ninaprotocol.com/images/nina-blue.png"
         />
       </Head>
-      <HubCreate update={false} inHubs={true}/>
+      <HubCreate update={false} inHubs={true} />
     </>
   )
 }
