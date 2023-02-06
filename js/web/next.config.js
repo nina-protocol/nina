@@ -85,6 +85,7 @@ const moduleExports = withTM({
     NINA_HUBS_URL: process.env.NINA_HUBS_URL,
     NINA_API_KEY: process.env.NINA_API_KEY,
     SOLANA_CLUSTER_URL_BUNDLR: process.env.SOLANA_CLUSTER_URL_BUNDLR,
+    NINA_GATE_URL: process.env.NINA_GATE_URL,
   },
   images: {
     loader: 'imgix',

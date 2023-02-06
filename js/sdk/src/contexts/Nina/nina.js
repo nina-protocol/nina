@@ -619,7 +619,6 @@ const ninaContextHelper = ({
             solPrice.data.data.SOL.price
           ).toFixed(2)
         )
-
         let [usdcTokenAccountPubkey] = await findOrCreateAssociatedTokenAccount(
           provider.connection,
           provider.wallet.publicKey,
