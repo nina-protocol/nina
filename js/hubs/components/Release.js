@@ -212,14 +212,15 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
               >
                 <PlayButton
                   sx={{ height: '22px', width: '28px', m: 0, paddingLeft: 0 }}
-                  onClickCapture={(e) => {
+                  onClick={(e) => {
                     e.stopPropagation()
-                    if (!audioPlayerRef.current.src) {
-                      audioPlayerRef.current.load()
-                    }
+                    e.preventDefault()
+                    audioPlayerRef.current.load()
+                    setInitialized(true)
                     updateTrack(
                       releasePubkey,
                       !(isPlaying && track.releasePubkey === releasePubkey),
+                      true,
                       hubPubkey
                     )
                   }}
