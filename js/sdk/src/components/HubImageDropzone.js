@@ -1,5 +1,4 @@
 import React from 'react'
-// import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
