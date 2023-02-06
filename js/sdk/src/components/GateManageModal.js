@@ -19,7 +19,7 @@ import DownloadIcon from '@mui/icons-material/Download'
 import IconButton from '@mui/material/IconButton'
 
 import GateCreateModal from './GateCreateModal'
-
+import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
@@ -49,9 +49,25 @@ const GateManageModal = ({
     setActiveIndex(index)
     setAction('unlock')
     try {
+      logEvent('unlock_gate_admin_init', 'engagement', {
+        gateId: gate.id,
+        publicKey: releasePubkey,
+        wallet: wallet?.publicKey?.toBase58() || 'unknown',
+      })
       await unlockGate(gate)
+      logEvent('unlock_gate_admin_success', 'engagement', {
+        gateId: gate.id,
+        publicKey: releasePubkey,
+        wallet: wallet?.publicKey?.toBase58() || 'unknown',
+      })
+
       setOpen(false)
     } catch (error) {
+      logEvent('unlock_gate_admin_failure', 'engagement', {
+        gateId: gate.id,
+        publicKey: releasePubkey,
+        wallet: wallet?.publicKey?.toBase58() || 'unknown',
+      })
       console.warn(error)
     }
     setInProgress(false)
@@ -63,6 +79,11 @@ const GateManageModal = ({
     setActiveIndex(index)
     setAction('delete')
     try {
+      logEvent('delete_gate_admin_init', 'engagement', {
+        gateId: gate.id,
+        publicKey: releasePubkey,
+        wallet: wallet?.publicKey?.toBase58() || 'unknown',
+      })
       const message = new TextEncoder().encode(releasePubkey)
       const messageBase64 = encodeBase64(message)
       const signature = await wallet.signMessage(message)
@@ -76,11 +97,23 @@ const GateManageModal = ({
           wallet.publicKey.toBase58()
         )}&signature=${encodeURIComponent(signatureBase64)}`
       )
-      // const test = await fetchGatesForRelease(releasePubkey)
+      logEvent('delete_gate_admin_success', 'engagement', {
+        gateId: gate.id,
+        publicKey: releasePubkey,
+        wallet: wallet?.publicKey?.toBase58() || 'unknown',
+      })
+
+      await fetchGatesForRelease(releasePubkey)
       enqueueSnackbar('Gate Deleted', {
         variant: 'info',
       })
     } catch (error) {
+      logEvent('delete_gate_admin_failure', 'engagement', {
+        gateId: gate.id,
+        publicKey: releasePubkey,
+        wallet: wallet?.publicKey?.toBase58() || 'unknown',
+      })
+
       enqueueSnackbar(`Gate Not Deleted: ${error.response.data.error}`, {
         variant: 'failure',
       })

@@ -3,6 +3,7 @@ import * as web3 from './web3'
 import * as imageManager from './imageManager'
 import CryptoJS from 'crypto-js'
 import promiseRetry from 'promise-retry'
+import { logEvent } from './event'
 
 const dateConverter = (date) => {
   var a = new Date(typeof date === 'object' ? date.toNumber() * 1000 : date)
@@ -160,6 +161,9 @@ const getConfirmTransaction = async (txid, connection) => {
 
       if (!txResult) {
         const error = new Error('Transaction was not confirmed')
+        logEvent('transaction_not_confirmed', 'engagement', {
+          txid,
+        })
         error.txid = txid
 
         retry(error)
@@ -174,6 +178,9 @@ const getConfirmTransaction = async (txid, connection) => {
     }
   )
   if (res.meta.err) {
+    logEvent('transaction_failed', 'engagement', {
+      txid,
+    })
     throw new Error('Transaction failed')
   }
   return txid
