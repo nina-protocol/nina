@@ -1,4 +1,3 @@
-// import React from "react"
 import React, {
   useState,
   useContext,
@@ -45,12 +44,12 @@ const HubCreateSchema = Yup.object().shape({
   description: Yup.string(),
 })
 
-const  HubCreate = ({ update, hubData }) => {
+const HubCreate = ({ update, hubData }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const {
     hubInitWithCredit,
-   // hubState,
+    // hubState,
     hubUpdateConfig,
     //getHubs,
     validateHubHandle,
@@ -66,13 +65,12 @@ const  HubCreate = ({ update, hubData }) => {
     // getBundlrPricePerMb,
     bundlrPricePerMb,
     solPrice,
-   // getSolPrice,
+    // getSolPrice,
     getNpcAmountHeld,
     npcAmountHeld,
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
   } = useContext(Nina.Context)
-
 
   const [artwork, setArtwork] = useState()
   const [uploadSize, setUploadSize] = useState()
@@ -80,7 +78,7 @@ const  HubCreate = ({ update, hubData }) => {
   const [buttonText, setButtonText] = useState(
     update ? 'Update Hub' : 'Create Hub'
   )
-  const [pending, ] = useState(false)
+  const [pending] = useState(false)
   const [formIsValid, setFormIsValid] = useState(false)
   const [formValues, setFormValues] = useState({
     hubForm: {},
@@ -106,7 +104,7 @@ const  HubCreate = ({ update, hubData }) => {
     () => bundlrBalance * solPrice,
     [bundlrBalance, solPrice]
   )
-    useEffect(() => {
+  useEffect(() => {
     getNpcAmountHeld()
   }, [wallet?.connected])
 
@@ -553,7 +551,7 @@ const  HubCreate = ({ update, hubData }) => {
             {pending && (
               <LinearProgress
                 variant="determinate"
-                // value={audioProgress || imageProgress}
+                // value={imageProgress}
               />
             )}
 
@@ -643,6 +641,5 @@ const BlueTypography = styled(Typography)(({ theme }) => ({
     textDecoration: 'none',
   },
 }))
-
 
 export default HubCreate

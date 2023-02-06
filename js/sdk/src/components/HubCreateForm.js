@@ -7,11 +7,9 @@ import Box from '@mui/material/Box'
 import Tooltip from '@mui/material/Tooltip'
 import HelpIcon from '@mui/icons-material/Help'
 import dynamic from 'next/dynamic'
-// const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
+const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
 
 const HubCreateForm = ({
-  field,
-  form,
   values,
   onChange,
   errors,
@@ -19,7 +17,6 @@ const HubCreateForm = ({
   setFieldValue,
   update,
   hubData,
-  handleBlur,
 }) => {
   useEffect(() => {
     if (onChange) {
@@ -158,7 +155,7 @@ const HubCreateForm = ({
                         min: 0,
                       },
                       onChange: (e) => {
-                        const value = e.target.value
+                        let value = e.target.value
                           ? parseInt(e.target.value)
                           : ''
                         if (value > 100) {
@@ -203,7 +200,7 @@ const HubCreateForm = ({
                         min: 0,
                       },
                       onChange: (e) => {
-                        const value = e.target.value
+                        let value = e.target.value
                           ? parseInt(e.target.value)
                           : ''
                         if (value > 100) {
@@ -229,11 +226,11 @@ const HubCreateForm = ({
         )}
 
         <Field name="description">
-          {/* {(props) => (
+          {(props) => (
             <Box sx={{ mb: '8px', height: '175px' }}>
               <QuillEditor formikProps={props} update={update} type={'hub'} />
             </Box>
-          )} */}
+          )}
         </Field>
       </Form>
     </Root>

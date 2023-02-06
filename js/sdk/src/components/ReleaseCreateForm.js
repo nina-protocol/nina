@@ -132,7 +132,7 @@ const ReleaseCreateForm = ({
             </Box>
           )}
         </Field>
-        {/* <FormControlBox className={classes.fieldInputWrapper}>
+        <FormControlBox className={classes.fieldInputWrapper}>
           <FormControl
             sx={{
               flexDirection: 'row',
@@ -165,7 +165,7 @@ const ReleaseCreateForm = ({
               />
             </RadioGroup>
           </FormControl>
-        </FormControlBox> */}
+        </FormControlBox>
         <Field name="amount">
           {({ field }) => (
             <Box className={classes.fieldInputWrapper} align={'left'}>
