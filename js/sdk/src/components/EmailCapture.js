@@ -62,8 +62,7 @@ const EmailCapture = ({ size }) => {
   const { enqueueSnackbar } = useSnackbar()
   const { publicKey, connected } = useWallet()
   const { submitEmailRequest } = useContext(Nina.Context)
-  const [open, setOpen] = useState(open)
-  // const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false)
   const [showSuccessInfo, setShowSuccessInfo] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
@@ -81,12 +80,6 @@ const EmailCapture = ({ size }) => {
       setFormValues({ ...formValues, wallet: publicKey.toString() })
     }
   }, [connected, publicKey])
-
-  const submitAndShowSuccess = () => {
-    handleSubmit()
-    // setShowSuccessInfo(true)
-    // handleClose()
-  }
 
   const handleSubmit = async () => {
     if (formIsValid) {
@@ -171,7 +164,7 @@ const EmailCapture = ({ size }) => {
                 variant="outlined"
                 color="primary"
                 fullWidth
-                onClick={submitAndShowSuccess}
+                onClick={handleSubmit}
                 sx={{ width: '100%', mt: 2 }}
                 disabled={!formIsValid}
               >
