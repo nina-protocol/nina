@@ -10,6 +10,8 @@ import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import IdentityVerification from './IdentityVerification'
+import CreateHub from './CreateHub'
+
 const { getImageFromCDN, loader } = imageManager
 
 const Dots = dynamic(() => import('./Dots'))
@@ -42,6 +44,8 @@ const Profile = ({ profilePubkey }) => {
     getVerificationsForUser,
     verificationState,
     displayImageForAccount,
+    getNpcAmountHeld,
+    npcAmountHeld,
   } = useContext(Nina.Context)
 
   const [profilePublishedReleases, setProfilePublishedReleases] =
@@ -134,6 +138,10 @@ const Profile = ({ profilePubkey }) => {
       setProfileSubscriptionsFrom(from)
     }
   }, [profileSubscriptions])
+
+  useEffect(() => {
+    getNpcAmountHeld()
+  }, [wallet?.connected])
 
   useEffect(() => {
     let viewIndex
@@ -415,6 +423,7 @@ const Profile = ({ profilePubkey }) => {
                         profilePublicKey={profilePubkey}
                       />
                     )}
+                    <CreateHub />
                   </Box>
                 </>
               )}

@@ -17,6 +17,7 @@ const HubCreateForm = ({
   setFieldValue,
   update,
   hubData,
+  inHubs,
 }) => {
   useEffect(() => {
     if (onChange) {
@@ -74,7 +75,7 @@ const HubCreateForm = ({
             {(props) => (
               <Box>
                 <TextField
-                  className="formField"
+                  className={inHubs ? 'formField' : classes.formField}
                   variant="standard"
                   label={
                     formatPlaceholder(props.field.name) +
@@ -112,7 +113,7 @@ const HubCreateForm = ({
           {(props) => (
             <Box>
               <TextField
-                className="formField"
+                className={inHubs ? 'formField' : classes.formField}
                 variant="standard"
                 label={
                   formatPlaceholder(props.field.name) +
@@ -138,7 +139,7 @@ const HubCreateForm = ({
               {(props) => (
                 <Box>
                   <TextField
-                    className="formField"
+                    className={inHubs ? 'formField' : classes.formField}
                     variant="standard"
                     size="small"
                     InputLabelProps={touched.publishFee ? { shrink: true } : ''}
@@ -181,7 +182,7 @@ const HubCreateForm = ({
               {(props) => (
                 <Box>
                   <TextField
-                    className="formField"
+                    className={inHubs ? 'formField' : classes.formField}
                     variant="standard"
                     label={
                       <Box display="flex" alignItems="center">
@@ -237,9 +238,31 @@ const HubCreateForm = ({
   )
 }
 
-const Root = styled('div')(() => ({
+const PREFIX = 'ReleaseCreateForm'
+
+const classes = {
+  fieldInputWrapper: `${PREFIX}-fieldInputWrapper`,
+  formField: `${PREFIX}-formField`,
+}
+
+const Root = styled('div')(({ theme }) => ({
   margin: 'auto',
   width: '100%',
+  [`& .${classes.fieldInputWrapper}`]: {
+    position: 'relative',
+  },
+  [`& .${classes.formField}`]: {
+    ...theme.helpers.baseFont,
+    marginBottom: '8px',
+    width: '100%',
+    position: 'relative',
+    '& input': {
+      textAlign: 'left',
+      '&::placeholder': {
+        color: theme.palette.red,
+      },
+    },
+  },
 }))
 
 export default withFormik({

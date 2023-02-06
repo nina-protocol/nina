@@ -162,17 +162,19 @@ const NavDrawer = () => {
               )
             case 'hubs':
               return (
-                <Link
-                  className={`${classes.drawerLink}`}
-                  href={`/hubs`}
-                  activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active`}
-                  key={link}
-                  passHref
-                >
-                  <ListItem button key={link}>
-                    <StyledListItemText primary="Hubs" />
-                  </ListItem>
-                </Link>
+                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                  <Link
+                    className={`${classes.drawerLink}`}
+                    href={`/hubs`}
+                    activeClassName={`${classes.drawerLink} ${classes.drawerLink}--active`}
+                    key={link}
+                    passHref
+                  >
+                    <ListItem button key={link}>
+                      <StyledListItemText>Hubs</StyledListItemText>
+                    </ListItem>
+                  </Link>
+                </Box>
               )
             case 'nina night':
               return (
