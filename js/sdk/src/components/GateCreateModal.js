@@ -13,6 +13,7 @@ import axios from 'axios'
 import TextField from '@mui/material/TextField'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useSnackbar } from 'notistack'
+import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import Dots from './Dots'
 
 const GateCreateModal = ({
@@ -36,6 +37,11 @@ const GateCreateModal = ({
   const handleFileUpload = async () => {
     setInProgress(true)
     try {
+      logEvent('create_gate_admin_init', 'engagement', {
+        publicKey: releasePubkey,
+        wallet: wallet?.publicKey?.toBase58() || 'unknown',
+      })
+
       const FILE_CHUNK_SIZE = 10_000_000
 
       const message = new TextEncoder().encode(releasePubkey)
@@ -88,10 +94,20 @@ const GateCreateModal = ({
 
       await fetchGatesForRelease(releasePubkey)
       handleClose()
+      logEvent('create_gate_admin_success', 'engagement', {
+        publicKey: releasePubkey,
+        wallet: wallet?.publicKey?.toBase58() || 'unknown',
+      })
+
       enqueueSnackbar('Gate Created', {
         variant: 'info',
       })
     } catch (err) {
+      logEvent('create_gate_admin_failure', 'engagement', {
+        publicKey: releasePubkey,
+        wallet: wallet?.publicKey?.toBase58() || 'unknown',
+      })
+
       enqueueSnackbar(`Gate Not Created: ${err.response.data.error}`, {
         variant: 'failure',
       })
