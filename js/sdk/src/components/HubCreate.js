@@ -23,8 +23,6 @@ import HubCreateConfirm from './HubCreateConfirm'
 import NinaBox from './NinaBox'
 import HubImageDropzone from './HubImageDropzone'
 import Dots from './Dots'
-import BundlrModal from '@nina-protocol/nina-internal-sdk/esm/BundlrModal'
-import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
 
 const EmailCapture = dynamic(() => import('./EmailCapture'), { ssr: false })
 const BundlrModal = dynamic(() => import('./BundlrModal'), { ssr: false })
