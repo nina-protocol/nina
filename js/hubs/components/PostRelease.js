@@ -21,6 +21,7 @@ const AddToHubModal = dynamic(() => import('./AddToHubModal'))
 const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
   const router = useRouter()
   const wallet = useWallet()
+  const [amountHeld, setAmountHeld] = useState()
 
   const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } =
     useContext(Audio.Context)
@@ -167,6 +168,8 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
           metadata={metadata}
           inPost={true}
           hubPubkey={hubPubkey}
+          amountHeld={amountHeld}
+          setAmountHeld={setAmountHeld}
         />
       </StyledGrid>
     </>
