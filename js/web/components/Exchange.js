@@ -41,8 +41,14 @@ const ExchangeComponent = (props) => {
     filterExchangeHistoryForRelease,
     filterExchangeMatch,
   } = useContext(Exchange.Context)
-  const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
-    useContext(Audio.Context)
+  const {
+    updateTrack,
+    addTrackToQueue,
+    isPlaying,
+    setIsPlaying,
+    track,
+    setInitialized,
+  } = useContext(Audio.Context)
 
   const [exchangeAwaitingConfirm, setExchangeAwaitingConfirm] =
     useState(undefined)
@@ -209,6 +215,7 @@ const ExchangeComponent = (props) => {
                     if (isPlaying && track.releasePubkey === releasePubkey) {
                       setIsPlaying(false)
                     } else {
+                      setInitialized(true)
                       updateTrack(releasePubkey, true, true)
                     }
                   }}

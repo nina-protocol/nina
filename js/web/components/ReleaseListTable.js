@@ -155,8 +155,14 @@ const EnhancedTableHead = (props) => {
 
 const ReleaseListTable = (props) => {
   const { releases, tableType, collectRoyaltyForRelease } = props
-  const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
-    useContext(Audio.Context)
+  const {
+    updateTrack,
+    addTrackToQueue,
+    isPlaying,
+    setIsPlaying,
+    track,
+    setInitialized,
+  } = useContext(Audio.Context)
   const { ninaClient } = useContext(Nina.Context)
   const router = useRouter()
 
@@ -180,6 +186,7 @@ const ReleaseListTable = (props) => {
     if (isPlaying && track.releasePubkey === releasePubkey) {
       setIsPlaying(false)
     } else {
+      setInitialized(true)
       updateTrack(releasePubkey, true, true)
     }
   }
