@@ -57,22 +57,24 @@ const HomePage = ({ loading }) => {
               className={classes.sectionHeader}
             >
               <Link href="/releases/highlights">Highlights</Link>
-              <Button
-                sx={{ padding: '6px 8px' }}
-                onClick={() =>
-                  resetQueueWithPlaylist(
-                    releasesRecent.highlights.map(
-                      (release) => release.releasePubkey
-                    )
-                  ).then(() => {
-                    enqueueSnackbar('Now Playing: Nina Highlights', {
-                      variant: 'info',
+              {releasesRecent.highlights?.length > 0 && (
+                <Button
+                  sx={{ padding: '6px 8px' }}
+                  onClick={() =>
+                    resetQueueWithPlaylist(
+                      releasesRecent.highlights.map(
+                        (release) => release.releasePubkey
+                      )
+                    ).then(() => {
+                      enqueueSnackbar('Now Playing: Nina Highlights', {
+                        variant: 'info',
+                      })
                     })
-                  })
-                }
-              >
-                <PlayCircleOutlineOutlinedIcon sx={{ color: 'black' }} />
-              </Button>
+                  }
+                >
+                  <PlayCircleOutlineOutlinedIcon sx={{ color: 'black' }} />
+                </Button>
+              )}
             </Typography>
           </Box>
           <RecentlyPublished
