@@ -1,4 +1,4 @@
-import { useState, useEffect, createElement, Fragment } from 'react'
+import React, { useState, useEffect, createElement, Fragment } from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
@@ -6,15 +6,15 @@ import Modal from '@mui/material/Modal'
 import { styled } from '@mui/material/styles'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
+import { InputLabel, MenuItem, OutlinedInput } from '@mui/material'
+import FormControl from '@mui/material/FormControl'
+import Select from '@mui/material/Select'
 import { unified } from 'unified'
 import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
-import { InputLabel, MenuItem, OutlinedInput } from '@mui/material'
-import FormControl from '@mui/material/FormControl'
-import Select from '@mui/material/Select'
-import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
+import { parseChecker } from '../utils'
 
 const style = {
   position: 'absolute',
@@ -38,6 +38,7 @@ const MenuProps = {
     },
   },
 }
+
 const ReleaseCreateConfirm = (props) => {
   const {
     formIsValid,
@@ -47,6 +48,7 @@ const ReleaseCreateConfirm = (props) => {
     profileHubs,
     selectedHub,
     handleChange,
+    hubPubkey,
   } = props
   const [open, setOpen] = useState(false)
   const [sortedHubs, setSortedHubs] = useState([])
@@ -56,9 +58,10 @@ const ReleaseCreateConfirm = (props) => {
   const [confirm, setConfirm] = useState()
   const data = formValues.releaseForm
 
-  const submitAndCloseModal = () => {
+  const submitAndCloseModal = (e) => {
+    e.preventDefault()
     setFormValuesConfirmed(true)
-    handleSubmit()
+    handleSubmit(e)
     handleClose()
   }
 
@@ -115,7 +118,7 @@ const ReleaseCreateConfirm = (props) => {
         <Box sx={style}>
           <Typography variant="h4">
             Please double check the following information before publishing your
-            release:
+            Release:
             {selectedHub?.publicKey}
           </Typography>
           <Box>
@@ -130,10 +133,14 @@ const ReleaseCreateConfirm = (props) => {
               Catalog Number:<span>{data.catalogNumber}</span>
             </Value>
             <Value sx={{ mt: 1 }}>
-              Amount: <span>{data.amount}</span>
+              Edition Size:{' '}
+              <span>{data.isOpen ? 'Unlimited' : data.amount}</span>
             </Value>
             <Value sx={{ mt: 1 }}>
-              Retail Price:<span>${data.retailPrice}</span>
+              Retail Price:
+              <span>
+                {data.retailPrice > 0 ? `$${data.retailPrice}` : 'Free'}
+              </span>
             </Value>
             <Value sx={{ mt: 1, mb: 1 }}>
               Resale Percentage: <span>{data.resalePercentage}%</span>
@@ -153,36 +160,38 @@ const ReleaseCreateConfirm = (props) => {
                 {description}
               </span>
             </Value>
-            <FormControl sx={{ mt: 1, mb: 1, width: '100%' }}>
-              <InputLabel id="demo-multiple-checkbox-label">
-                Select Hub
-              </InputLabel>
-              <Select
-                value={selectedHub}
-                onChange={handleChange}
-                input={<OutlinedInput label="Name" />}
-                MenuProps={MenuProps}
-                inputProps={{ 'aria-label': 'Without label' }}
-              >
-                {sortedHubs?.map((hub) => (
-                  <MenuItem
-                    key={hub?.handle}
-                    value={`${hub?.publicKey}`}
-                    id={hub?.publicKey}
-                    name={hub?.data.displayName}
-                  >
-                    {hub?.data?.displayName}
+            {!hubPubkey && (
+              <FormControl sx={{ mt: 1, mb: 1, width: '100%' }}>
+                <InputLabel id="demo-multiple-checkbox-label">
+                  Select Hub
+                </InputLabel>
+                <Select
+                  value={selectedHub}
+                  onChange={handleChange}
+                  input={<OutlinedInput label="Name" />}
+                  MenuProps={MenuProps}
+                  inputProps={{ 'aria-label': 'Without label' }}
+                >
+                  {sortedHubs?.map((hub) => (
+                    <MenuItem
+                      key={hub?.handle}
+                      value={`${hub?.publicKey}`}
+                      id={hub?.publicKey}
+                      name={hub?.data.displayName}
+                    >
+                      {hub?.data?.displayName}
+                    </MenuItem>
+                  ))}
+                  <MenuItem value={''} name={'None'}>
+                    {'None (Not Recommended)'}
                   </MenuItem>
-                ))}
-                <MenuItem value={''} name={'None'}>
-                  {'None (Not Recommended)'}
-                </MenuItem>
-              </Select>
-            </FormControl>
-            <Typography variant="subtitle1" mt={1} sx={{ color: 'red' }}>
+                </Select>
+              </FormControl>
+            )}
+            <StyledModalWarningTypography variant="subtitle1">
               ONCE PUBLISHED, YOUR RELEASE INFORMATION WILL BE PERMANENT AND YOU
               WILL NOT BE ABLE TO EDIT IT.
-            </Typography>
+            </StyledModalWarningTypography>
             <Value>
               <FormControlLabel
                 sx={{ mt: 1, mb: 1 }}
@@ -232,6 +241,11 @@ const Value = styled(Typography)(({ theme }) => ({
       overflowY: 'scroll',
     },
   },
+}))
+
+const StyledModalWarningTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.red,
+  marginTop: 1,
 }))
 
 export default ReleaseCreateConfirm
