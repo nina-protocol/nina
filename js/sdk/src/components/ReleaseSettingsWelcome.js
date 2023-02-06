@@ -11,7 +11,7 @@ import { Divider } from '@mui/material'
 import { useWallet } from '@solana/wallet-adapter-react'
 import SettingsIcon from '@mui/icons-material/Settings'
 import gateWhitelist from '../utils/gateWhitelist'
-const RELEASE_SETTINGS_WELCOME_PHASE_KEY = 'release-settings-welcome-phase-1'
+const RELEASE_SETTINGS_WELCOME_PHASE_KEY = 'release-settings-welcome-phase-2'
 
 function ReleaseSettingsWelcome() {
   const { publicKey } = useWallet()
@@ -78,6 +78,19 @@ function ReleaseSettingsWelcome() {
                 </Typography>
               </>
             )}
+            <>
+              <Divider sx={{ margin: '15px 0' }} />
+              <Typography
+                variant="h4"
+                gutterBottom
+                sx={{ textDecoration: 'underline' }}
+              >
+                Close Edition
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                {`You can now close your Releases.  When you close your Release it will become Sold Out with an edition size equal to the total amount purchased.`}
+              </Typography>
+            </>
             <Button
               variant="outlined"
               onClick={() => handleClose()}
