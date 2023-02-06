@@ -23,13 +23,13 @@ export default function Home() {
         <title>Nina Protocol</title>
         <meta
           name="description"
-          content={'Nina Protocol is a digitally native music ecosystem'}
+          content={'Listen, collect and discover with Nina, an independent music ecosystem.'}
         />
         <meta name="og:type" content="website" />
         <meta name="og:title" content="Nina Protocol" />
         <meta
           name="og:description"
-          content={'Nina Protocol is a digitally native music ecosystem'}
+          content={'Listen, collect and discover with Nina, an independent music ecosystem'}
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@ninaprotocol" />
@@ -38,7 +38,7 @@ export default function Home() {
         <meta name="twitter:title" content="Nina Protocol" />
         <meta
           name="twitter:description"
-          content={'Nina Protocol is a digitally native music ecosystem'}
+          content={'Listen, collect and discover with Nina, an independent music ecosystem'}
         />
 
         <meta
