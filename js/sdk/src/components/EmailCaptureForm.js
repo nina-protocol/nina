@@ -8,7 +8,7 @@ import RadioGroup from '@mui/material/RadioGroup'
 import Radio from '@mui/material/Radio'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { formatPlaceholder } from '../utils/index.js'
-import {display} from '@material-ui/system'
+import { display } from '@material-ui/system'
 
 const EmailCaptureForm = ({
   values,
@@ -102,8 +102,8 @@ const EmailCaptureForm = ({
         <Box sx={{ mt: 2 }}>
           <FormLabel>I want to use Nina as:</FormLabel>
           <RadioGroup
-            sx={{ 
-              mt: 1, 
+            sx={{
+              mt: 1,
               display: 'grid',
               gridTemplateColumns: 'repeat(3, 1fr)',
             }}

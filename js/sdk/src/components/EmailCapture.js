@@ -149,60 +149,57 @@ const EmailCapture = ({ size }) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-
           <CloseIconWrapper onClick={handleClose}>
             <CloseIcon />
           </CloseIconWrapper>
-          
+
           {!showSuccessInfo && (
             <>
-            <Typography variant="h4" gutterBottom>
-              Nina is currently in closed beta.
-            </Typography>
-            <Typography variant="h4" sx={{ mb: 2 }}>
-              Please sign up below.
-            </Typography>
+              <Typography variant="h4" gutterBottom>
+                Nina is currently in closed beta.
+              </Typography>
+              <Typography variant="h4" sx={{ mb: 2 }}>
+                Please sign up below.
+              </Typography>
 
-            <EmailCaptureForm
-              onChange={handleFormChange}
-              values={formValues}
-              EmailCaptureSchema={EmailCaptureSchema}
-            />
-            <Button
-              variant="outlined"
-              color="primary"
-              fullWidth
-              onClick={submitAndShowSuccess}
-              sx={{ width: '100%', mt: 2 }}
-              disabled={!formIsValid}
-            >
-              Submit
-            </Button>
+              <EmailCaptureForm
+                onChange={handleFormChange}
+                values={formValues}
+                EmailCaptureSchema={EmailCaptureSchema}
+              />
+              <Button
+                variant="outlined"
+                color="primary"
+                fullWidth
+                onClick={submitAndShowSuccess}
+                sx={{ width: '100%', mt: 2 }}
+                disabled={!formIsValid}
+              >
+                Submit
+              </Button>
             </>
           )}
 
           {showSuccessInfo && (
             <>
-              <Typography variant="h4" sx={{mb: 1}}>
+              <Typography variant="h4" sx={{ mb: 1 }}>
                 You have succesfully applied to Nina Beta.
               </Typography>
-              
+
               <Typography variant="h4" sx={{ mb: 1 }}>
-                Someoneone from our team will reach out via email in the next 2-3 days.
+                Someoneone from our team will reach out via email in the next
+                2-3 days.
               </Typography>
 
               <Button
                 variant="outlined"
-                style={{width: '100%'}}
+                style={{ width: '100%' }}
                 onClick={handleClose}
               >
-                <Typography variant='body1'>
-                  Okay!
-                </Typography>
+                <Typography variant="body1">Okay!</Typography>
               </Button>
             </>
           )}
-
         </Box>
       </Modal>
     </>
