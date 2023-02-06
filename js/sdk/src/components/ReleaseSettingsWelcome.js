@@ -88,7 +88,7 @@ function ReleaseSettingsWelcome() {
                 Close Edition
               </Typography>
               <Typography variant="body1" gutterBottom>
-                {`You can now close your Releases.  This will make it so that the edition size will be equal to the current amount purchased and the Release will be Sold Out.`}
+                {`You can now close your Releases.  When you close your Release it will become Sold Out with an edition size equal to the total amount purchased.`}
               </Typography>
             </>
             <Button
