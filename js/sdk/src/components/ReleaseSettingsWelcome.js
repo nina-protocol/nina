@@ -79,7 +79,7 @@ function ReleaseSettingsWelcome() {
               </>
             )}
             <>
-            <Divider sx={{ margin: '15px 0' }} />
+              <Divider sx={{ margin: '15px 0' }} />
               <Typography
                 variant="h4"
                 gutterBottom
