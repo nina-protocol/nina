@@ -96,7 +96,7 @@ const ReleaseContextProvider = ({ children }) => {
     validateUniqueMd5Digest,
     getFeedForUser,
     trackPendingRelease,
-    removePendingRelease
+    removePendingRelease,
   } = releaseContextHelper({
     ninaClient,
     releaseState,
@@ -128,7 +128,7 @@ const ReleaseContextProvider = ({ children }) => {
     verficationState,
     setVerificationState,
     pendingReleases,
-    setPendingReleases
+    setPendingReleases,
   })
 
   useEffect(() => {
@@ -137,12 +137,12 @@ const ReleaseContextProvider = ({ children }) => {
     if (wallet.connected) {
       let releaseCreationPending = localStorage.getItem(
         'release_creation_pending'
-        )
+      )
       if (releaseCreationPending) {
         releaseCreationPending = JSON.parse(releaseCreationPending)
         console.log('releaseCreationPending', releaseCreationPending)
         setPendingReleases(releaseCreationPending)
-        Object.keys(releaseCreationPending).forEach(releasePublicKey => {
+        Object.keys(releaseCreationPending).forEach((releasePublicKey) => {
           const pendingRelease = releaseCreationPending[releasePublicKey]
           console.log('pendingRelease', pendingRelease)
           if (pendingRelease.wallet === wallet.publicKey.toBase58()) {
@@ -152,7 +152,7 @@ const ReleaseContextProvider = ({ children }) => {
               title: pendingRelease.title,
               wallet: wallet.publicKey.toBase58(),
               date: pendingRelease.date,
-              status: 'pending'
+              status: 'pending',
             })
           }
         })
@@ -161,7 +161,6 @@ const ReleaseContextProvider = ({ children }) => {
       }
     }
   }, [wallet.connected])
-
 
   return (
     <ReleaseContext.Provider
@@ -209,7 +208,7 @@ const ReleaseContextProvider = ({ children }) => {
         getFeedForUser,
         fetchedUserProfileReleases,
         pendingReleases,
-        removePendingRelease
+        removePendingRelease,
       }}
     >
       {children}
@@ -241,7 +240,7 @@ const releaseContextHelper = ({
   verificationState,
   setVerificationState,
   pendingReleases,
-  setPendingReleases
+  setPendingReleases,
 }) => {
   const { provider, ids, nativeToUi, uiToNative, isSol, isUsdc, endpoints } =
     ninaClient
@@ -1598,7 +1597,7 @@ const releaseContextHelper = ({
     artist,
     title,
     wallet,
-    date
+    date,
   }) => {
     const releasePublicKeyString = releasePublicKey.toBase58()
     await promiseRetry(
@@ -1608,20 +1607,21 @@ const releaseContextHelper = ({
           artist,
           title,
           wallet,
-          date
+          date,
         })
         if (!pendingRelease.solanaReleaseExists) {
-          // If the release has been pending for more than 5 minutes, 
+          // If the release has been pending for more than 5 minutes,
           // remove it from pending releases as it is safe to assume
           // it will never be created on Solana
-          const pendingFor5Minutes = Date.now() - Date.parse(pendingRelease.date) > 50000
+          const pendingFor5Minutes =
+            Date.now() - Date.parse(pendingRelease.date) > 50000
           if (pendingFor5Minutes) {
             updatePendingRelease(releasePublicKeyString, 'failed_solana')
             return releasePublicKeyString
           }
           const error = new Error('release_does_not_exist_on_solana')
           error.releasePublicKey = releasePublicKeyString
-  
+
           retry(error)
           return
         }
@@ -1658,7 +1658,7 @@ const releaseContextHelper = ({
       )
       setPendingReleases(releaseCreationPending)
       console.log('removed pending release: ', releasePublicKey)
-    }  
+    }
   }
 
   const updatePendingRelease = async (releasePublicKey, status) => {
@@ -1683,10 +1683,13 @@ const releaseContextHelper = ({
     artist,
     title,
     wallet,
-    date
+    date,
   }) => {
     await initSdkIfNeeded()
-    const solanaAccount = await NinaSdk.client.program.account.release.fetch(releasePublicKey, 'confirmed')
+    const solanaAccount = await NinaSdk.client.program.account.release.fetch(
+      releasePublicKey,
+      'confirmed'
+    )
     const releasePublicKeyString = releasePublicKey.toBase58()
     const ninaRelease = await NinaSdk.Release.fetch(releasePublicKeyString)
     let releaseCreationPending = localStorage.getItem(
@@ -1697,7 +1700,7 @@ const releaseContextHelper = ({
     } else {
       releaseCreationPending = JSON.parse(releaseCreationPending)
     }
-    
+
     let pendingRelease = releaseCreationPending[releasePublicKeyString]
     if (pendingRelease) {
       pendingRelease.ninaReleaseExists = ninaRelease.release ? true : false
@@ -1730,7 +1733,7 @@ const releaseContextHelper = ({
       'release_creation_pending',
       JSON.stringify(updatedReleaseCreationPending)
     )
-    
+
     return pendingRelease
   }
 
@@ -1762,7 +1765,7 @@ const releaseContextHelper = ({
     validateUniqueMd5Digest,
     getFeedForUser,
     trackPendingRelease,
-    removePendingRelease
+    removePendingRelease,
   }
 }
 

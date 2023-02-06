@@ -225,5 +225,5 @@ export {
   getMd5FileHash,
   stripQuotesIfNeeded,
   parseChecker,
-  timeSince
+  timeSince,
 }
