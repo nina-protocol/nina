@@ -48,6 +48,7 @@ const ExchangeComponent = (props) => {
     setIsPlaying,
     track,
     setInitialized,
+    audioPlayerRef,
   } = useContext(Audio.Context)
 
   const [exchangeAwaitingConfirm, setExchangeAwaitingConfirm] =
@@ -215,6 +216,9 @@ const ExchangeComponent = (props) => {
                     if (isPlaying && track.releasePubkey === releasePubkey) {
                       setIsPlaying(false)
                     } else {
+                      if (!audioPlayerRef.current.src) {
+                        audioPlayerRef.current.load()
+                      }
                       setInitialized(true)
                       updateTrack(releasePubkey, true, true)
                     }

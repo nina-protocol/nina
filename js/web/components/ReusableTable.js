@@ -231,6 +231,8 @@ const ReusableTableBody = (props) => {
     setIsPlaying,
     track,
     playlist,
+    setInitialized,
+    audioPlayerRef,
   } = useContext(Audio.Context)
   const { ninaClient, displayNameForAccount, displayImageForAccount } =
     useContext(Nina.Context)
@@ -251,6 +253,10 @@ const ReusableTableBody = (props) => {
     if (isPlaying && track.releasePubkey === releasePubkey) {
       setIsPlaying(false)
     } else {
+      if (!audioPlayerRef.current.src) {
+        audioPlayerRef.current.load()
+      }
+      setInitialized(true)
       updateTrack(releasePubkey, true, true)
     }
   }

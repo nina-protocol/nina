@@ -162,6 +162,7 @@ const ReleaseListTable = (props) => {
     setIsPlaying,
     track,
     setInitialized,
+    audioPlayerRef
   } = useContext(Audio.Context)
   const { ninaClient } = useContext(Nina.Context)
   const router = useRouter()
@@ -189,6 +190,7 @@ const ReleaseListTable = (props) => {
       if (!audioPlayerRef.current.src) {
         audioPlayerRef.current.load()
       }
+      setInitialized(true)
       updateTrack(releasePubkey, true, true)
     }
   }
