@@ -17,7 +17,7 @@ const HubAudioPlayer = ({ hubPubkey }) => {
   const { hubContentState, filterHubContentForHub, hubState } = useContext(
     Hub.Context
   )
-  const { createPlaylistFromTracksHubs, updateTrack, isPlaying } = useContext(
+  const { createPlaylistFromTracksHubs, updateTrack, isPlaying, track } = useContext(
     Audio.Context
   )
   const [hubReleases, setHubReleases] = useState(undefined)
@@ -77,9 +77,11 @@ const HubAudioPlayer = ({ hubPubkey }) => {
         (a, b) => new Date(b.datetime) - new Date(a.datetime)
       )
       createPlaylistFromTracksHubs(trackValues)
-      updateTrack(trackValues[0].publicKey, isPlaying, true)
+      if (!track) {
+        updateTrack(trackValues[0].publicKey, false, true)
+      }
     }
-  }, [tracks])
+  }, [tracks, track])
 
   return (
     <AudioPlayer>
