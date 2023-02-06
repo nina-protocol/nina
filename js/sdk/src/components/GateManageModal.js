@@ -103,7 +103,7 @@ const GateManageModal = ({
         wallet: wallet?.publicKey?.toBase58() || 'unknown',
       })
 
-      // const test = await fetchGatesForRelease(releasePubkey)
+      await fetchGatesForRelease(releasePubkey)
       enqueueSnackbar('Gate Deleted', {
         variant: 'info',
       })
