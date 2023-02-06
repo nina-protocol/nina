@@ -186,7 +186,9 @@ const ReleaseListTable = (props) => {
     if (isPlaying && track.releasePubkey === releasePubkey) {
       setIsPlaying(false)
     } else {
-      setInitialized(true)
+      if (!audioPlayerRef.current.src) {
+        audioPlayerRef.current.load()
+      }
       updateTrack(releasePubkey, true, true)
     }
   }
