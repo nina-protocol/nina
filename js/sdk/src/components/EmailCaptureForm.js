@@ -8,7 +8,6 @@ import RadioGroup from '@mui/material/RadioGroup'
 import Radio from '@mui/material/Radio'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { formatPlaceholder } from '../utils/index.js'
-import { display } from '@material-ui/system'
 
 const EmailCaptureForm = ({
   values,
@@ -153,9 +152,6 @@ const classes = {
 
 const Root = styled('div')(({ theme }) => ({
   margin: 'auto',
-  [theme.breakpoints.down('md')]: {
-    width: '90%',
-  },
   [`& .${classes.fieldInputWrapper}`]: {
     position: 'relative',
   },

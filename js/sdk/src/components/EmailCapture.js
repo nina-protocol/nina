@@ -17,7 +17,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: { xs: '90vw', md: 400 },
+  width: { xs: '88vw', md: 400 },
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
@@ -176,20 +176,20 @@ const EmailCapture = ({ size }) => {
           {showSuccessInfo && (
             <>
               <Typography variant="h4" sx={{ mb: 1 }}>
-                You have succesfully applied to Nina Beta.
+                You have succesfully applied to Nina (Beta).
               </Typography>
 
               <Typography variant="h4" sx={{ mb: 1 }}>
-                Someoneone from our team will reach out via email in the next
-                2-3 days.
+                Someoneone from our team will reach out via email in the next 2
+                - 3 days.
               </Typography>
 
               <Button
                 variant="outlined"
-                style={{ width: '100%' }}
+                style={{ width: '100%', marginTop: '5px' }}
                 onClick={handleClose}
               >
-                <Typography variant="body1">Okay!</Typography>
+                <Typography variant="body1">Okay</Typography>
               </Button>
             </>
           )}
