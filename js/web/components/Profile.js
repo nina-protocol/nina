@@ -8,7 +8,10 @@ import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-import { imageManager, timeSince } from '@nina-protocol/nina-internal-sdk/src/utils'
+import {
+  imageManager,
+  timeSince,
+} from '@nina-protocol/nina-internal-sdk/src/utils'
 import IdentityVerification from './IdentityVerification'
 const { getImageFromCDN, loader } = imageManager
 

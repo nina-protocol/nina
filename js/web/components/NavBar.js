@@ -27,11 +27,9 @@ import FeedDrawer from './FeedDrawer'
 const NavBar = () => {
   const router = useRouter()
   const { pendingReleases } = useContext(Release.Context)
-  const {
-    healthOk,
-    getSubscriptionsForUser,
-    getUserBalances,
-  } = useContext(Nina.Context)
+  const { healthOk, getSubscriptionsForUser, getUserBalances } = useContext(
+    Nina.Context
+  )
   const wallet = useWallet()
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),

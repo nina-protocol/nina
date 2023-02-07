@@ -16,7 +16,7 @@ import Typography from '@mui/material/Typography'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import { isMobile } from 'react-device-detect'
 
-const FeedDrawer = ({override}) => {
+const FeedDrawer = ({ override }) => {
   const wallet = useWallet()
   const [drawerOpen, setDrawerOpen] = useState(!override)
   const [feedItems, setFeedItems] = useState(undefined)
