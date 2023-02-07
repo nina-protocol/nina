@@ -149,11 +149,9 @@ const ReleaseContextProvider = ({ children }) => {
       )
       if (releaseCreationPending) {
         releaseCreationPending = JSON.parse(releaseCreationPending)
-        console.log('releaseCreationPending', releaseCreationPending)
         setPendingReleases(releaseCreationPending)
         Object.keys(releaseCreationPending).forEach((releasePublicKey) => {
           const pendingRelease = releaseCreationPending[releasePublicKey]
-          console.log('pendingRelease', pendingRelease)
           if (pendingRelease.wallet === wallet.publicKey.toBase58()) {
             trackPendingRelease({
               releasePublicKey: new anchor.web3.PublicKey(releasePublicKey),
@@ -251,7 +249,6 @@ const releaseContextHelper = ({
   setFetchedUserProfileReleases,
   verificationState,
   setVerificationState,
-  pendingReleases,
   setPendingReleases,
   solBalance,
   setGatesState,
@@ -1731,7 +1728,6 @@ const releaseContextHelper = ({
         JSON.stringify(releaseCreationPending)
       )
       setPendingReleases(releaseCreationPending)
-      console.log('removed pending release: ', releasePublicKey)
     }
   }
 

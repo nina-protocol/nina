@@ -1,7 +1,7 @@
 import React from 'react'
 import { styled } from '@mui/material/styles'
 
-const DevnetIndicator = ({ devnet }) => {
+const DevnetIndicator = () => {
   if (process.env.SOLANA_CLUSTER === 'devnet') {
     return <DevnetIndicatorStyled>[DEVNET]</DevnetIndicatorStyled>
   } else {

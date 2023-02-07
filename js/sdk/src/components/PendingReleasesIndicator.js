@@ -19,7 +19,7 @@ const PendingReleasesIndicator = ({ inHubs }) => {
           {Object.keys(pendingReleases || {}).map((key) => {
             const { artist, title, date, status } = pendingReleases[key]
             let statusMessage
-            if (status === 'failed_solana') {
+            if (status === 'pending') {
               statusMessage = `Your Release ${artist} - "${title}" is pending.`
             } else if (status === 'failed_solana') {
               statusMessage = `Your Release ${artist} - "${title}" failed to publish.`
@@ -27,7 +27,7 @@ const PendingReleasesIndicator = ({ inHubs }) => {
               statusMessage = `Your Release ${artist} - "${title}" was successfully published.`
             }
             return (
-              <PendingRelease status={status}>
+              <PendingRelease status={status} key={key}>
                 <Box
                   onClick={() => setPendingReleasesOpen(!pendingReleasesOpen)}
                   style={{

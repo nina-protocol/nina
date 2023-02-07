@@ -106,7 +106,7 @@ const ReleaseCreateConfirm = (props) => {
         color="primary"
         fullWidth
         onClick={handleOpen}
-        disabled={!formIsValid || pendingReleases}
+        disabled={!formIsValid || awaitingPendingReleases}
       >
         {' '}
         {!awaitingPendingReleases
