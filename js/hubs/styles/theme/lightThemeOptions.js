@@ -79,6 +79,9 @@ const lightThemeOptions = {
         fontSize: '16px !important',
       },
     },
+    string: {
+      fontSize: '16px !important',
+    },
     body1: {
       fontSize: '14px !important',
       lineHeight: '16.1px !important',

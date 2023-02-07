@@ -17,7 +17,6 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import { useWallet } from '@solana/wallet-adapter-react'
 import dynamic from 'next/dynamic'
-import { useRouter } from 'next/router'
 import HubCreateForm from './HubCreateForm'
 import HubCreateConfirm from './HubCreateConfirm'
 import NinaBox from './NinaBox'
@@ -27,7 +26,9 @@ import Dots from './Dots'
 const EmailCapture = dynamic(() => import('./EmailCapture'), { ssr: false })
 const BundlrModal = dynamic(() => import('./BundlrModal'), { ssr: false })
 const ColorModal = dynamic(() => import('./ColorModal'), { ssr: false })
-
+const HubCreateSuccess = dynamic(() => import('./HubCreateSuccess'), {
+  ssr: false,
+})
 import {
   createUpload,
   updateUpload,
@@ -44,13 +45,12 @@ const HubCreateSchema = Yup.object().shape({
   description: Yup.string(),
 })
 
-const HubCreate = ({ update, hubData }) => {
+const HubCreate = ({ update, hubData, inHubs }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const { hubInitWithCredit, hubUpdateConfig, validateHubHandle } = useContext(
     Hub.Context
   )
-  const router = useRouter()
   const {
     bundlrUpload,
     bundlrBalance,
@@ -389,17 +389,11 @@ const HubCreate = ({ update, hubData }) => {
 
   if (hubCreated) {
     return (
-      <Box margin="auto">
-        <Button
-          fullWidth
-          variant="outlined"
-          color="primary"
-          onClick={() => router.push(`/${formValues.hubForm.handle}`)}
-          sx={{ height: '54px' }}
-        >
-          {`${formValues.hubForm.displayName}  has been created!  View Hub.`}
-        </Button>
-      </Box>
+      <HubCreateSuccess
+        hubName={formValues.hubForm.displayName}
+        hubHandle={formValues.hubForm.handle}
+        inHubs={inHubs}
+      />
     )
   }
   return (
