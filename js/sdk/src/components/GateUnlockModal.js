@@ -19,7 +19,7 @@ import ListItemText from '@mui/material/ListItemText'
 import DownloadIcon from '@mui/icons-material/Download'
 import IconButton from '@mui/material/IconButton'
 
-const GateUnlockModal = ({ gates, amountHeld, unlockGate, isAuthority }) => {
+const GateUnlockModal = ({ gates, amountHeld, unlockGate }) => {
   const [open, setOpen] = useState(false)
 
   const [inProgress, setInProgress] = useState(false)
