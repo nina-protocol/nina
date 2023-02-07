@@ -63,7 +63,7 @@ const EmailCapture = ({ size }) => {
   const { enqueueSnackbar } = useSnackbar()
   const { publicKey, connected } = useWallet()
   const { submitEmailRequest } = useContext(Nina.Context)
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
   const [showSuccessInfo, setShowSuccessInfo] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
@@ -177,7 +177,7 @@ const EmailCapture = ({ size }) => {
           {showSuccessInfo && (
             <>
               <Typography variant="h4" sx={{ mb: '' }}>
-                You have succesfully applied to Nina (Beta).
+                You have succesfully signed up to Nina (Beta).
               </Typography>
 
               <Typography variant="h4" sx={{ mb: 1 }}>
