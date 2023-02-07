@@ -7,7 +7,7 @@ import { timeSince } from '../utils'
 import { Button } from '@mui/material'
 import useTheme from '@mui/material/styles/useTheme'
 
-const PendingReleasesIndicator = ({inHubs}) => {
+const PendingReleasesIndicator = ({ inHubs }) => {
   const { pendingReleases, removePendingRelease } = useContext(Release.Context)
   const [pendingReleasesOpen, setPendingReleasesOpen] = useState(true)
   const theme = useTheme()
@@ -32,25 +32,27 @@ const PendingReleasesIndicator = ({inHubs}) => {
                   onClick={() => setPendingReleasesOpen(!pendingReleasesOpen)}
                   style={{
                     textDecoration: 'underline',
-                    color: `${status === 'success'
+                    color: `${
+                      status === 'success'
                         ? theme.palette.darkGreen
                         : theme.palette.red
-                      }`
+                    }`,
                   }}
-                > 
-                <Typography
-                  variant="body1"
-                  gutterBottom
-                  style={{color: 'inherit'}}
-                  onClick={() => setPendingReleasesOpen(!pendingReleasesOpen)}
                 >
-                  {`${statusMessage}`}                 
-                </Typography>
+                  <Typography
+                    variant="body1"
+                    gutterBottom
+                    style={{ color: 'inherit' }}
+                    onClick={() => setPendingReleasesOpen(!pendingReleasesOpen)}
+                  >
+                    {`${statusMessage}`}
+                  </Typography>
 
-                <Typography style={{color: 'inherit'}} gutterBottom>
-                  {pendingReleasesOpen ? '(See Less Info)' : '(See More Info)'}
-                </Typography>
-
+                  <Typography style={{ color: 'inherit' }} gutterBottom>
+                    {pendingReleasesOpen
+                      ? '(See Less Info)'
+                      : '(See More Info)'}
+                  </Typography>
                 </Box>
                 {pendingReleasesOpen && (
                   <Box style={{ paddingTop: '8px' }}>
@@ -105,13 +107,13 @@ const PendingReleasesIndicator = ({inHubs}) => {
   )
 }
 
-const PendingReleaseContainer = styled(Box)(({inHubs}) => ({
+const PendingReleaseContainer = styled(Box)(({ inHubs }) => ({
   width: '500px',
   position: 'absolute',
   left: '50%',
   transform: `translate(-50%, ${inHubs ? '50%' : '0'})`,
   background: 'white',
-  textAlign: 'left'
+  textAlign: 'left',
 }))
 
 const PendingRelease = styled(Box)(({ theme, status }) => ({

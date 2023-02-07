@@ -49,6 +49,7 @@ const ReleaseCreateConfirm = (props) => {
     selectedHub,
     handleChange,
     hubPubkey,
+    awaitingPendingReleases,
   } = props
   const [open, setOpen] = useState(false)
   const [sortedHubs, setSortedHubs] = useState([])
@@ -105,9 +106,12 @@ const ReleaseCreateConfirm = (props) => {
         color="primary"
         fullWidth
         onClick={handleOpen}
-        disabled={!formIsValid}
+        disabled={!formIsValid || pendingReleases}
       >
-        Publish Release
+        {' '}
+        {!awaitingPendingReleases
+          ? 'Publish Release'
+          : 'New Releases Cannot Be Uploaded Until Pending Releases Are Finalized'}
       </Button>
       <Modal
         open={open}

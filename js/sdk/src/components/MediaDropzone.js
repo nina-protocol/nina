@@ -211,7 +211,7 @@ const MediaDropzone = ({
           justifyContent: 'center',
           width: '100%',
           height: type === 'track' ? '113px' : '350px',
-          cursor: 'pointer',
+          cursor: disabled ? 'not-allowed' : 'pointer',
           marginBottom: type === 'track' ? '15px' : '',
           boxShadow: 'inset 0px 0px 30px 0px #0000001A',
           backgroundColor: '#EAEAEA',
@@ -226,7 +226,7 @@ const MediaDropzone = ({
           maxWidth: 'unset',
         },
         inputLabel: {
-          cursor: 'pointer',
+          cursor: disabled ? 'not-allowed' : 'pointer',
           width: '100%',
           textAlign: 'left',
           padding: '15px',
