@@ -1,5 +1,7 @@
-import ReleaseCreate from '../components/ReleaseCreate'
+import ReleaseCreate from '@nina-protocol/nina-internal-sdk/esm/ReleaseCreate'
 import Head from 'next/head'
+import { styled } from '@mui/material/styles'
+import Box from '@mui/material/Box'
 
 const ReleaseCreatePage = () => {
   return (
@@ -35,7 +37,7 @@ const ReleaseCreatePage = () => {
           href="https://ninaprotocol.com/images/nina-blue.png"
         />
       </Head>
-      <ReleaseCreate />
+      <ReleaseCreate canAddContent={true} />
     </>
   )
 }

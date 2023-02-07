@@ -1,13 +1,18 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { styled } from '@mui/material/styles'
-import { formatPlaceholder } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import { withFormik, Form, Field } from 'formik'
 import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import Slider from '@mui/material/Slider'
 import Box from '@mui/material/Box'
 import Fade from '@mui/material/Fade'
+import { formatPlaceholder } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import dynamic from 'next/dynamic'
+import Radio from '@mui/material/Radio'
+import RadioGroup from '@mui/material/RadioGroup'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import FormControl from '@mui/material/FormControl'
+import FormLabel from '@mui/material/FormLabel'
 const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
 
 const ReleaseCreateForm = ({
@@ -16,18 +21,45 @@ const ReleaseCreateForm = ({
   values,
   onChange,
   errors,
-  touched,
   setFieldValue,
+  touched,
   disabled,
 }) => {
+  const [isOpen, setIsOpen] = useState(false)
+  const [inputValue, setInputValue] = useState(undefined)
+  const editionRef = useRef(isOpen)
+
   useEffect(() => {
     if (onChange) {
       onChange(values)
     }
   }, [values])
 
+  useEffect(() => {
+    if (isOpen) {
+      const infinity = '\u221e'
+      setFieldValue('isOpen', true)
+
+      setFieldValue('amount', infinity)
+    }
+    if (!isOpen) {
+      setFieldValue('isOpen', false)
+    }
+  }, [isOpen])
+
   const valuetext = (value) => {
     return `${value}%`
+  }
+
+  const handleEditionChange = (event) => {
+    editionRef.current = event.target.value
+    if (editionRef.current === 'unlimited') {
+      setIsOpen(true)
+    }
+    if (editionRef.current === 'limited') {
+      setIsOpen(false)
+      setFieldValue('amount', inputValue)
+    }
   }
 
   return (
@@ -35,9 +67,9 @@ const ReleaseCreateForm = ({
       <Form>
         <Field name="artist">
           {(props) => (
-            <Box>
+            <Box className={classes.fieldInputWrapper}>
               <TextField
-                className="formField"
+                className={classes.formField}
                 variant="standard"
                 label={formatPlaceholder(props.field.name)}
                 size="small"
@@ -54,9 +86,9 @@ const ReleaseCreateForm = ({
 
         <Field name="title">
           {(props) => (
-            <Box>
+            <Box className={classes.fieldInputWrapper}>
               <TextField
-                className="formField"
+                className={classes.formField}
                 variant="standard"
                 label={formatPlaceholder(props.field.name)}
                 size="small"
@@ -73,9 +105,9 @@ const ReleaseCreateForm = ({
 
         <Field name="catalogNumber">
           {({ field }) => (
-            <Box>
+            <Box className={classes.fieldInputWrapper}>
               <TextField
-                className="formField"
+                className={`${classes.formField}`}
                 variant="standard"
                 label={formatPlaceholder(field.name)}
                 size="small"
@@ -100,22 +132,75 @@ const ReleaseCreateForm = ({
             </Box>
           )}
         </Field>
-
+        <FormControlBox className={classes.fieldInputWrapper}>
+          <FormControl
+            sx={{
+              flexDirection: 'row',
+              marginTop: '8px',
+            }}
+          >
+            <StyledFormLabel focused={false}>EDITION TYPE</StyledFormLabel>{' '}
+            <RadioGroup
+              row
+              aria-labelledby="amount"
+              defaultValue={editionRef.current}
+            >
+              <StyledFormControlLabel
+                value="limited"
+                disableRipple
+                control={<FormRadio />}
+                label="Limited"
+                onClick={(event) => handleEditionChange(event)}
+                checked={!isOpen}
+                disabled={disabled}
+              />
+              <StyledFormControlLabel
+                value="unlimited"
+                disableRipple
+                control={<FormRadio />}
+                label="Unlimited"
+                onClick={(event) => handleEditionChange(event)}
+                checked={isOpen}
+                disabled={disabled}
+              />
+            </RadioGroup>
+          </FormControl>
+        </FormControlBox>
         <Field name="amount">
           {({ field }) => (
-            <Box>
+            <Box className={classes.fieldInputWrapper} align={'left'}>
               <TextField
-                className="formField"
+                className={`${classes.formField}`}
                 variant="standard"
-                label={formatPlaceholder(field.name)}
+                label={formatPlaceholder('Edition Size')}
                 size="small"
+                type={isOpen ? 'text' : 'number'}
                 InputLabelProps={touched.amount ? { shrink: true } : ''}
                 placeholder={
                   errors.amount && touched.amount ? errors.amount : null
                 }
-                type="number"
+                InputProps={{
+                  onChange: (event) => {
+                    setInputValue(event.target.value)
+                    if (!isOpen) {
+                      let whole = parseInt(event.target.value)
+                      setFieldValue('amount', whole)
+                      setFieldValue('isOpen', false)
+                    }
+                    if (isOpen) {
+                      setFieldValue('isOpen', true)
+                      setFieldValue('amount', 'Open')
+                    }
+                  },
+                }}
+                sx={{
+                  '.MuiInputBase-input': {
+                    fontSize: isOpen ? '19px !important' : '',
+                    padding: isOpen ? '0px 0px 0px 0px !important' : '',
+                  },
+                }}
+                disabled={isOpen || disabled}
                 {...field}
-                disabled={disabled}
               />
             </Box>
           )}
@@ -123,11 +208,11 @@ const ReleaseCreateForm = ({
 
         <Field name="retailPrice">
           {({ field }) => (
-            <Box>
+            <Box className={classes.fieldInputWrapper}>
               <TextField
-                className="formField"
+                className={`${classes.formField}`}
                 variant="standard"
-                label={`${formatPlaceholder(field.name)} ($)`}
+                label={formatPlaceholder('Price')}
                 size="small"
                 InputLabelProps={touched.retailPrice ? { shrink: true } : ''}
                 placeholder={
@@ -147,23 +232,24 @@ const ReleaseCreateForm = ({
           <Typography
             id="discrete-slider-custom"
             align="left"
-            sx={{
-              color: 'rgba(0, 0, 0, 0.6) !important',
+            style={{
+              color: 'rgba(0, 0, 0, 0.54)',
               fontSize: '12px',
-              marginTop: '8px !important',
+              marginTop: '8px',
             }}
           >
             RESALE PERCENTAGE: {values.resalePercentage}%
           </Typography>
           <Box>
             <Slider
-              defaultValue={10}
+              defaultValue={0}
               getAriaValueText={valuetext}
               aria-labelledby="percent"
-              className="formField"
+              className={classes.formField}
               step={1}
               min={0}
               max={100}
+              value={values.resalePercentage}
               name="resalePercentage"
               onChange={(event, value) => {
                 setFieldValue('resalePercentage', value)
@@ -172,29 +258,44 @@ const ReleaseCreateForm = ({
               {...field}
               {...form}
             />
+            <Fade in={values.resalePercentage > 20}>
+              <Warning variant="subtitle1" align="left">
+                Are you certain about a {values.resalePercentage}% resale fee?
+                High resale may discourage potential collectors.
+              </Warning>
+            </Fade>
+
+            <Field name="description">
+              {(props) => (
+                <Box sx={{ borderBottom: '1px solid grey', height: '90px' }}>
+                  <QuillEditor
+                    formikProps={props}
+                    type={'release'}
+                    update={false}
+                  />
+                </Box>
+              )}
+            </Field>
           </Box>
-
-          <Field name="description">
-            {(props) => (
-              <Box sx={{ borderBottom: '1px solid grey' }}>
-                <QuillEditor
-                  formikProps={props}
-                  type={'release'}
-                  update={false}
-                />
-              </Box>
-            )}
-          </Field>
-
-          <Fade in={values.resalePercentage > 20}>
-            <Warning variant="subtitle1" align="left">
-              Are you certain about a {values.resalePercentage}% resale fee?
-              High resale may discourage potential collectors.
-            </Warning>
-          </Fade>
         </Box>
       </Form>
     </Root>
+  )
+}
+
+const FormRadio = (props) => {
+  return (
+    <Radio
+      disableRipple
+      color="default"
+      sx={{
+        '&&:hover': {
+          backgroundColor: 'transparent',
+        },
+        padding: '4px 6px',
+      }}
+      {...props}
+    />
   )
 }
 const PREFIX = 'ReleaseCreateForm'
@@ -214,7 +315,6 @@ const Root = styled('div')(({ theme }) => ({
     ...theme.helpers.baseFont,
     marginBottom: '8px',
     width: '100%',
-    // textTransform: "capitalize",
     position: 'relative',
     '& input': {
       textAlign: 'left',
@@ -235,6 +335,30 @@ const Warning = styled(Typography)(({ theme }) => ({
   width: '220px',
 }))
 
+const FormControlBox = styled(Box)(() => ({
+  display: 'flex',
+  alignItems: 'left',
+  textAlign: 'center',
+  marginBottom: '8px',
+  borderBottom: `1px solid`,
+}))
+
+const StyledFormLabel = styled(FormLabel)(() => ({
+  marginTop: '8px',
+  marginRight: '16px',
+}))
+
+const StyledFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
+  marginLeft: '0',
+  marginRight: '0',
+  '& .MuiSvgIcon-root:not(.MuiSvgIcon-root ~ .MuiSvgIcon-root) path': {
+    color: theme.palette.black,
+  },
+  '& .MuiSvgIcon-root + .MuiSvgIcon-root': {
+    color: theme.palette.black,
+  },
+}))
+
 export default withFormik({
   enableReinitialize: true,
   validationSchema: (props) => {
@@ -246,9 +370,10 @@ export default withFormik({
       title: '',
       description: '',
       catalogNumber: '',
-      amount: 10,
+      amount: '',
       retailPrice: undefined,
       resalePercentage: 10,
+      isOpen: false,
     }
   },
 })(ReleaseCreateForm)

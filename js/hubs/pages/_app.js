@@ -12,11 +12,11 @@ import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 import { SnackbarProvider } from 'notistack'
 import dynamic from 'next/dynamic'
 import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
-// Use require instead of import since order matters
-// require('@solana/wallet-adapter-react-ui/styles.css');
-// require('../styles/globals.css');
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+import 'react-dropzone-uploader/dist/styles.css'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 const NinaWrapper = dynamic(() => import('../components/NinaWrapper'))
-const Dots = dynamic(() => import('../components/Dots'))
 const Layout = dynamic(() => import('../components/Layout'))
 // const lightTheme = createTheme(lightThemeOptions);
 

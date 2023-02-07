@@ -23,7 +23,7 @@ import HubPostCreateForm from './HubPostCreateForm'
 
 import Dots from './Dots'
 import Grid from '@mui/material/Grid'
-import BundlrModal from './BundlrModal'
+import BundlrModal from '@nina-protocol/nina-internal-sdk/esm/BundlrModal'
 import {
   createUpload,
   updateUpload,

@@ -12,7 +12,6 @@ const PendingReleasesIndicator = ({inHubs}) => {
   const [pendingReleasesOpen, setPendingReleasesOpen] = useState(true)
   const theme = useTheme()
 
-  console.log('inHubs :>> ', inHubs);
   return (
     <PendingReleaseContainer inHubs={inHubs}>
       {Object.keys(pendingReleases || {}).length > 0 && (

@@ -10,8 +10,10 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import dynamic from 'next/dynamic'
-const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
-
+const QuillEditor = dynamic(
+  () => import('@nina-protocol/nina-internal-sdk/esm/QuillEditor'),
+  { ssr: false }
+)
 const HubPostCreateForm = ({
   field,
   form,
