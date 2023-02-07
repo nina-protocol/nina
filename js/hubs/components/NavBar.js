@@ -196,7 +196,7 @@ const NavBar = ({ hubPubkey }) => {
             </NavCtas>
           </WalletWrapper>
         </CtaWrapper>
-          <PendingReleasesIndicator inHubs={true} />
+        <PendingReleasesIndicator inHubs={true} />
       </Toolbar>
     )
   }

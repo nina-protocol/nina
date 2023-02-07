@@ -94,7 +94,6 @@ const Dashboard = ({ hubPubkey }) => {
 
   useEffect(() => {
     if (hubPubkey) {
-      console.log('getting hub')
       getHub(hubPubkey)
     }
   }, [hubPubkey])
