@@ -18,7 +18,6 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: { xs: '88vw', md: 400 },
-  // minWidth: '400px',
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: '60px',
