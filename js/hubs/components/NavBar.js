@@ -13,6 +13,7 @@ import DevnetIndicator from '@nina-protocol/nina-internal-sdk/esm/DevnetIndicato
 import IconButton from '@mui/material/IconButton'
 import Drawer from '@mui/material/Drawer'
 import MenuIcon from '@mui/icons-material/Menu'
+import PendingReleasesIndicator from '@nina-protocol/nina-internal-sdk/esm/PendingReleasesIndicator'
 
 import {
   WalletDialogProvider,
@@ -145,6 +146,7 @@ const NavBar = ({ hubPubkey }) => {
           backgroundColor: '#66000000 !important',
           justifyContent: 'space-between',
           flexDirection: 'row',
+          position: 'relative',
         }}
       >
         {mobileView && canAddContent && displayMobile()}
@@ -194,6 +196,7 @@ const NavBar = ({ hubPubkey }) => {
             </NavCtas>
           </WalletWrapper>
         </CtaWrapper>
+          <PendingReleasesIndicator inHubs={true} />
       </Toolbar>
     )
   }

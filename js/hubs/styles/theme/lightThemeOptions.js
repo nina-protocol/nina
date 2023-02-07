@@ -11,6 +11,7 @@ const colors = {
   red: '#FF2828',
   orange: 'rgba(244, 73, 73, 0.94)',
   green: '#66F523',
+  darkGreen: '#4CAF50',
   white: '#ffffff',
   greyLight: '#E3E3E3',
   grey: 'rgba(0, 0, 0, 0.2)',
@@ -39,6 +40,7 @@ const lightThemeOptions = {
     white: colors.white,
     red: colors.red,
     green: colors.green,
+    darkGreen: colors.darkGreen,
     grey: {
       primary: colors.grey,
     },
