@@ -18,9 +18,11 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: { xs: '88vw', md: 400 },
+  // minWidth: '400px',
   bgcolor: 'background.paper',
   boxShadow: 24,
-  p: 4,
+  p: '60px',
+  boxSizing: 'content-box',
 }
 const requiredString =
   'At least one of Soundcloud, Twitter, or Instagram is required'
@@ -62,7 +64,7 @@ const EmailCapture = ({ size }) => {
   const { enqueueSnackbar } = useSnackbar()
   const { publicKey, connected } = useWallet()
   const { submitEmailRequest } = useContext(Nina.Context)
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(true)
   const [showSuccessInfo, setShowSuccessInfo] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
@@ -151,7 +153,7 @@ const EmailCapture = ({ size }) => {
               <Typography variant="h4" gutterBottom>
                 Nina is currently in closed beta.
               </Typography>
-              <Typography variant="h4" sx={{ mb: 2 }}>
+              <Typography variant="h4" sx={{ mb: '16px' }}>
                 Please sign up below.
               </Typography>
 
@@ -165,7 +167,7 @@ const EmailCapture = ({ size }) => {
                 color="primary"
                 fullWidth
                 onClick={handleSubmit}
-                sx={{ width: '100%', mt: 2 }}
+                sx={{ width: '100%', mt: '30px' }}
                 disabled={!formIsValid}
               >
                 Submit
@@ -175,7 +177,7 @@ const EmailCapture = ({ size }) => {
 
           {showSuccessInfo && (
             <>
-              <Typography variant="h4" sx={{ mb: 1 }}>
+              <Typography variant="h4" sx={{ mb: '' }}>
                 You have succesfully applied to Nina (Beta).
               </Typography>
 
