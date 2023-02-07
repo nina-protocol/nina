@@ -44,8 +44,6 @@ const Profile = ({ profilePubkey }) => {
     getVerificationsForUser,
     verificationState,
     displayImageForAccount,
-    getNpcAmountHeld,
-    npcAmountHeld,
   } = useContext(Nina.Context)
 
   const [profilePublishedReleases, setProfilePublishedReleases] =
@@ -138,10 +136,6 @@ const Profile = ({ profilePubkey }) => {
       setProfileSubscriptionsFrom(from)
     }
   }, [profileSubscriptions])
-
-  useEffect(() => {
-    getNpcAmountHeld()
-  }, [wallet?.connected])
 
   useEffect(() => {
     let viewIndex
