@@ -181,8 +181,8 @@ const EmailCapture = ({ size }) => {
               </Typography>
 
               <Typography variant="h4" sx={{ mb: 1 }}>
-                Someoneone from our team will reach out via email in the next 2
-                - 3 days.
+                Someone from our team will reach out to you via email in the
+                next 2 - 3 days.
               </Typography>
 
               <Button
