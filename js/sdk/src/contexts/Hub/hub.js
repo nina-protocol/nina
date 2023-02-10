@@ -269,7 +269,7 @@ const hubContextHelper = ({
         hubPubkey: hub,
       }
     } catch (error) {
-      logEvent('hub_init_with_credit_success_failure', 'engagement', {
+      logEvent('hub_init_with_credit_failure', 'engagement', {
         wallet: provider.wallet.publicKey.toBase58(),
         solBalance,
       })
