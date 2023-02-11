@@ -93,7 +93,7 @@ const PendingReleasesIndicator = ({ inHubs }) => {
                         style={{ marginTop: 1, width: '100%' }}
                         onClick={() => removePendingRelease(key)}
                       >
-                        Got it
+                        Okay
                       </Button>
                     )}
                   </Box>
