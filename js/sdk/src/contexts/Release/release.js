@@ -1727,6 +1727,10 @@ const releaseContextHelper = ({
         'release_creation_pending',
         JSON.stringify(releaseCreationPending)
       )
+      logEvent('pending_release_removed', 'engagement', {
+        releaseCreationPending,
+      })
+
       setPendingReleases(releaseCreationPending)
     }
   }
