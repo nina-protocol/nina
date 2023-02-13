@@ -8,7 +8,10 @@ import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
+import {
+  imageManager,
+  timeSince,
+} from '@nina-protocol/nina-internal-sdk/src/utils'
 import IdentityVerification from './IdentityVerification'
 const { getImageFromCDN, loader } = imageManager
 
@@ -28,6 +31,7 @@ const Profile = ({ profilePubkey }) => {
     fetchedUserProfileReleases,
     filterReleasesUserCollection,
     filterReleasesPublishedByUser,
+    pendingReleases,
   } = useContext(Release.Context)
   const { getHubsForUser, fetchedHubsForUser, filterHubsForUser } = useContext(
     Hub.Context
@@ -426,7 +430,6 @@ const Profile = ({ profilePubkey }) => {
             )}
           </ProfileHeaderContainer>
         </ProfileHeaderWrapper>
-
         {hasData && (
           <Box>
             <TabHeader
@@ -436,7 +439,6 @@ const Profile = ({ profilePubkey }) => {
             />
           </Box>
         )}
-
         {fetched.info && (
           <Box>
             <TabHeader
@@ -454,7 +456,6 @@ const Profile = ({ profilePubkey }) => {
               </Box>
             </ProfileDotWrapper>
           )}
-
           <ProfileTableContainer ref={tableContainerRef}>
             {hasData && renderTables(activeView, inDashboard)}
           </ProfileTableContainer>

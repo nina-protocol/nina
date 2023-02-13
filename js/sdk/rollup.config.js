@@ -32,6 +32,8 @@ export default [
       Dots: 'src/components/Dots.js',
       EmailCapture: 'src/components/EmailCapture.js',
       EmailCaptureForm: 'src/components/EmailCaptureForm.js',
+      DevnetIndicator: 'src/components/DevnetIndicator.js',
+      PendingReleasesIndicator: 'src/components/PendingReleasesIndicator.js',
       ReleaseCreateForm: 'src/components/ReleaseCreateForm.js',
       ReleaseCreateConfirm: 'src/components/ReleaseCreateConfirm.js',
       ReleaseCreate: 'src/components/ReleaseCreate.js',

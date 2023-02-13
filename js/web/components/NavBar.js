@@ -4,8 +4,9 @@ import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Tooltip from '@mui/material/Tooltip'
-import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import Button from '@mui/material/Button'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
 import Link from 'next/link'
@@ -19,17 +20,16 @@ import Breadcrumbs from './Breadcrumbs'
 import NavSearch from './NavSearch'
 import SearchIcon from '@mui/icons-material/Search'
 import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
+import DevnetIndicator from '@nina-protocol/nina-internal-sdk/esm/DevnetIndicator'
+import PendingReleasesIndicator from '@nina-protocol/nina-internal-sdk/esm/PendingReleasesIndicator'
 import FeedDrawer from './FeedDrawer'
 
 const NavBar = () => {
   const router = useRouter()
-  const {
-    healthOk,
-    getSubscriptionsForUser,
-    filterSubscriptionsForUser,
-    subscriptionState,
-    getUserBalances,
-  } = useContext(Nina.Context)
+  const { pendingReleases } = useContext(Release.Context)
+  const { healthOk, getSubscriptionsForUser, getUserBalances } = useContext(
+    Nina.Context
+  )
   const wallet = useWallet()
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),
@@ -40,7 +40,6 @@ const NavBar = () => {
     return base58.slice(0, 4) + '..' + base58.slice(-4)
   }, [wallet, base58])
   const [connectedString, setConnectedString] = useState()
-
   useEffect(() => {
     setConnectedString(healthOk ? 'connected-healthy' : 'connected-unhealthy')
   }, [healthOk])
@@ -122,12 +121,14 @@ const NavBar = () => {
                     }`}
                   ></ConnectionDot>
                 </Tooltip>
+                <DevnetIndicator />
               </StyledWalletDialogProvider>
             )}
           </NavCtas>
         </DesktopWalletWrapper>
       </NavRight>
-      <FeedDrawer />
+      <PendingReleasesIndicator />
+      <FeedDrawer override={true} />
     </Root>
   )
 }

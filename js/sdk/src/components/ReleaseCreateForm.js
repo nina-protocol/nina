@@ -63,7 +63,7 @@ const ReleaseCreateForm = ({
   }
 
   return (
-    <Root>
+    <Root disabled={disabled}>
       <Form>
         <Field name="artist">
           {(props) => (
@@ -132,7 +132,10 @@ const ReleaseCreateForm = ({
             </Box>
           )}
         </Field>
-        <FormControlBox className={classes.fieldInputWrapper}>
+        <FormControlBox
+          disabled={disabled}
+          className={classes.fieldInputWrapper}
+        >
           <FormControl
             sx={{
               flexDirection: 'row',
@@ -305,9 +308,11 @@ const classes = {
   formField: `${PREFIX}-formField`,
 }
 
-const Root = styled('div')(({ theme }) => ({
+const Root = styled('div')(({ theme, disabled }) => ({
   margin: 'auto',
   width: '300px',
+  cursor: disabled ? 'not-allowed' : 'auto',
+  border: disabled ? '1px solid #red' : '1px solid #red',
   [`& .${classes.fieldInputWrapper}`]: {
     position: 'relative',
   },
@@ -317,6 +322,8 @@ const Root = styled('div')(({ theme }) => ({
     width: '100%',
     position: 'relative',
     '& input': {
+      cursor: disabled ? 'not-allowed' : 'auto',
+
       textAlign: 'left',
       '&::placeholder': {
         color: theme.palette.red,
@@ -335,12 +342,13 @@ const Warning = styled(Typography)(({ theme }) => ({
   width: '220px',
 }))
 
-const FormControlBox = styled(Box)(() => ({
+const FormControlBox = styled(Box)(({ disabled }) => ({
   display: 'flex',
   alignItems: 'left',
   textAlign: 'center',
   marginBottom: '8px',
   borderBottom: `1px solid`,
+  cursor: disabled ? 'not-allowed' : 'auto',
 }))
 
 const StyledFormLabel = styled(FormLabel)(() => ({
