@@ -11,7 +11,6 @@ import Nina from '../contexts/Nina'
 import { useSnackbar } from 'notistack'
 import { styled } from '@mui/material/styles'
 import Button from '@mui/material/Button'
-import LinearProgress from '@mui/material/LinearProgress'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
@@ -68,7 +67,6 @@ const HubCreate = ({ update, hubData, inHubs }) => {
   const [buttonText, setButtonText] = useState(
     update ? 'Update Hub' : 'Create Hub'
   )
-  const [pending] = useState(false)
   const [formIsValid, setFormIsValid] = useState(false)
   const [formValues, setFormValues] = useState({
     hubForm: {},
@@ -526,13 +524,6 @@ const HubCreate = ({ update, hubData, inHubs }) => {
                 update={update}
                 backgroundColor={backgroundColor}
                 textColor={textColor}
-              />
-            )}
-
-            {pending && (
-              <LinearProgress
-                variant="determinate"
-                // value={imageProgress}
               />
             )}
 

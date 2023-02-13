@@ -20,7 +20,6 @@ const HubCreateForm = ({
   setFieldValue,
   update,
   hubData,
-  inHubs,
 }) => {
   useEffect(() => {
     if (onChange) {
@@ -78,7 +77,7 @@ const HubCreateForm = ({
             {(props) => (
               <Box>
                 <TextField
-                  className={inHubs ? 'formField' : classes.formField}
+                  className={classes.formField}
                   variant="standard"
                   label={
                     formatPlaceholder(props.field.name) +
@@ -116,7 +115,7 @@ const HubCreateForm = ({
           {(props) => (
             <Box>
               <TextField
-                className={inHubs ? 'formField' : classes.formField}
+                className={classes.formField}
                 variant="standard"
                 label={
                   formatPlaceholder(props.field.name) +
@@ -142,7 +141,7 @@ const HubCreateForm = ({
               {(props) => (
                 <Box>
                   <TextField
-                    className={inHubs ? 'formField' : classes.formField}
+                    className={classes.formField}
                     variant="standard"
                     size="small"
                     InputLabelProps={touched.publishFee ? { shrink: true } : ''}
@@ -185,7 +184,7 @@ const HubCreateForm = ({
               {(props) => (
                 <Box>
                   <TextField
-                    className={inHubs ? 'formField' : classes.formField}
+                    className={classes.formField}
                     variant="standard"
                     label={
                       <Box display="flex" alignItems="center">
@@ -231,7 +230,7 @@ const HubCreateForm = ({
 
         <Field name="description">
           {(props) => (
-            <Box sx={{ mb: '8px', height: '175px' }}>
+            <Box sx={{ mt: '8px', mb: '8px', height: '175px' }}>
               <QuillEditor formikProps={props} update={update} type={'hub'} />
             </Box>
           )}

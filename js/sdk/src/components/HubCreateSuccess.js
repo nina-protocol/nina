@@ -17,7 +17,7 @@ const HubCreateSuccess = (props) => {
         secondary: `https://ninaprotocol.com/hubs/${hubHandle}`,
         primaryString: `hubs.ninaprotocol.com/${hubHandle}`,
         secondaryString: `ninaprotocol.com/hubs/${hubHandle}`,
-        primaryDescription: `  A customizable endpoint that exclusively surfaces your
+        primaryDescription: `  A customizable page that exclusively surfaces your
                     content.`,
         secondaryDescription: `This is where your Hub can be found on `,
         primaryHyperlink: undefined,
@@ -29,7 +29,7 @@ const HubCreateSuccess = (props) => {
         primaryString: `ninaprotocol.com/hubs/${hubHandle}`,
         secondaryString: `hubs.ninaprotocol.com/${hubHandle}`,
         primaryDescription: `This is where your Hub can be found on `,
-        secondaryDescription: `  A customizable endpoint that exclusively surfaces your
+        secondaryDescription: `  A customizable page that exclusively surfaces your
                     content.`,
         primaryHyperlink: `ninaprotocol.com`,
         secondaryHyperlink: undefined,
