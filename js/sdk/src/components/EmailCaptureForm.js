@@ -152,9 +152,6 @@ const classes = {
 
 const Root = styled('div')(({ theme }) => ({
   margin: 'auto',
-  // [theme.breakpoints.down('md')]: {
-  //   width: '90%',
-  // },
   [`& .${classes.fieldInputWrapper}`]: {
     position: 'relative',
   },

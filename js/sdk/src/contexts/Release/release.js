@@ -261,6 +261,7 @@ const releaseContextHelper = ({
     releaseMint,
     isOpen,
   }) => {
+    console.log('releaseInitViahub');
     try {
       const program = await ninaClient.useProgram()
       hubPubkey = new anchor.web3.PublicKey(hubPubkey)
@@ -376,6 +377,10 @@ const releaseContextHelper = ({
 
       const nameBuf = Buffer.from(`${artist} - ${title}`.substring(0, 32))
       const nameBufString = nameBuf.slice(0, 32).toString()
+      
+      console.log('nameBuf :>> ', nameBuf);
+      console.log('typeof nameBuf :>> ', typeof nameBuf);
+      console.log('nameBufString :>> ', nameBufString);
 
       const symbolBuf = Buffer.from(catalogNumber.substring(0, 10))
       const symbolBufString = symbolBuf.slice(0, 10).toString()
