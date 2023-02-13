@@ -17,38 +17,9 @@ import Button from '@mui/material/Button'
 import Dots from './Dots'
 import { useRouter } from 'next/router'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
+import { timeSince } from '@nina-protocol/nina-internal-sdk/src/utils'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { isMobile } from 'react-device-detect'
-
-const timeSince = (date) => {
-  const seconds = Math.floor((new Date() - date) / 1000)
-  let interval = seconds / 31536000
-  if (interval > 1) {
-    const roundedInterval = Math.floor(interval)
-    return roundedInterval + (roundedInterval === 1 ? ' year' : ' years')
-  }
-  interval = seconds / 2592000
-  if (interval > 1) {
-    const roundedInterval = Math.floor(interval)
-    return roundedInterval + (roundedInterval === 1 ? ' month' : ' months')
-  }
-  interval = seconds / 86400
-  if (interval > 1) {
-    const roundedInterval = Math.floor(interval)
-    return roundedInterval + (roundedInterval === 1 ? ' day' : ' days')
-  }
-  interval = seconds / 3600
-  if (interval > 1) {
-    const roundedInterval = Math.floor(interval)
-    return roundedInterval + (roundedInterval === 1 ? ' hour' : ' hours')
-  }
-  interval = seconds / 60
-  if (interval > 1) {
-    const roundedInterval = Math.floor(interval)
-    return roundedInterval + (roundedInterval === 1 ? ' minute' : ' minutes')
-  }
-  return Math.floor(seconds) + ' seconds'
-}
 
 const Feed = ({
   items,

@@ -134,9 +134,7 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
                   onClickCapture={(e) => {
                     e.stopPropagation()
                     setInitialized(true)
-                    if (!audioPlayerRef.current.src) {
-                      audioPlayerRef.current.load()
-                    }
+                    audioPlayerRef.current.load()
                     updateTrack(
                       releasePubkey,
                       !(isPlaying && track.releasePubkey === releasePubkey),

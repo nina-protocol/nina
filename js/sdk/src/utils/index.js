@@ -3,7 +3,6 @@ import * as web3 from './web3'
 import * as imageManager from './imageManager'
 import CryptoJS from 'crypto-js'
 import promiseRetry from 'promise-retry'
-import { logEvent } from './event'
 
 const dateConverter = (date) => {
   var a = new Date(typeof date === 'object' ? date.toNumber() * 1000 : date)
@@ -160,10 +159,7 @@ const getConfirmTransaction = async (txid, connection) => {
       })
 
       if (!txResult) {
-        const error = new Error('Transaction was not confirmed')
-        logEvent('transaction_not_confirmed', 'engagement', {
-          txid,
-        })
+        const error = new Error('unable_to_confirm_transaction')
         error.txid = txid
 
         retry(error)
@@ -172,18 +168,45 @@ const getConfirmTransaction = async (txid, connection) => {
       return txResult
     },
     {
-      retries: 40,
+      retries: 5,
       minTimeout: 500,
       maxTimeout: 1000,
     }
   )
   if (res.meta.err) {
-    logEvent('transaction_failed', 'engagement', {
-      txid,
-    })
     throw new Error('Transaction failed')
   }
   return txid
+}
+
+const timeSince = (date) => {
+  const seconds = Math.floor((new Date() - date) / 1000)
+  let interval = seconds / 31536000
+  if (interval > 1) {
+    const roundedInterval = Math.floor(interval)
+    return roundedInterval + (roundedInterval === 1 ? ' year' : ' years')
+  }
+  interval = seconds / 2592000
+  if (interval > 1) {
+    const roundedInterval = Math.floor(interval)
+    return roundedInterval + (roundedInterval === 1 ? ' month' : ' months')
+  }
+  interval = seconds / 86400
+  if (interval > 1) {
+    const roundedInterval = Math.floor(interval)
+    return roundedInterval + (roundedInterval === 1 ? ' day' : ' days')
+  }
+  interval = seconds / 3600
+  if (interval > 1) {
+    const roundedInterval = Math.floor(interval)
+    return roundedInterval + (roundedInterval === 1 ? ' hour' : ' hours')
+  }
+  interval = seconds / 60
+  if (interval > 1) {
+    const roundedInterval = Math.floor(interval)
+    return roundedInterval + (roundedInterval === 1 ? ' minute' : ' minutes')
+  }
+  return Math.floor(seconds) + ' seconds'
 }
 
 export {
@@ -200,4 +223,5 @@ export {
   getMd5FileHash,
   stripQuotesIfNeeded,
   parseChecker,
+  timeSince,
 }
