@@ -101,7 +101,11 @@ const EmailCaptureForm = ({
         <Box sx={{ mt: 2 }}>
           <FormLabel>I want to use Nina as:</FormLabel>
           <RadioGroup
-            sx={{ mt: 1 }}
+            sx={{
+              mt: 1,
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+            }}
             defaultValue="artist"
             name="type"
             onChange={(e) => setFieldValue('type', e.target.value)}
@@ -127,6 +131,11 @@ const EmailCaptureForm = ({
               control={<Radio />}
               label="A Curator"
             />
+            <FormControlLabel
+              value="listener"
+              control={<Radio />}
+              label="A Listener"
+            />
             <FormControlLabel value="other" control={<Radio />} label="Other" />
           </RadioGroup>
         </Box>
@@ -143,10 +152,6 @@ const classes = {
 
 const Root = styled('div')(({ theme }) => ({
   margin: 'auto',
-  width: '300px',
-  [theme.breakpoints.down('md')]: {
-    width: '90%',
-  },
   [`& .${classes.fieldInputWrapper}`]: {
     position: 'relative',
   },

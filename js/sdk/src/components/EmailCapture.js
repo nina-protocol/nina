@@ -17,10 +17,11 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: { xs: '90vw', md: 400 },
+  width: { xs: '88vw', md: 400 },
   bgcolor: 'background.paper',
   boxShadow: 24,
-  p: 4,
+  p: '60px',
+  boxSizing: 'content-box',
 }
 const requiredString =
   'At least one of Soundcloud, Twitter, or Instagram is required'
@@ -63,6 +64,7 @@ const EmailCapture = ({ size }) => {
   const { publicKey, connected } = useWallet()
   const { submitEmailRequest } = useContext(Nina.Context)
   const [open, setOpen] = useState(false)
+  const [showSuccessInfo, setShowSuccessInfo] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
   const [formValues, setFormValues] = useState({})
@@ -80,11 +82,6 @@ const EmailCapture = ({ size }) => {
     }
   }, [connected, publicKey])
 
-  const submitAndCloseModal = () => {
-    handleSubmit()
-    handleClose()
-  }
-
   const handleSubmit = async () => {
     if (formIsValid) {
       try {
@@ -92,6 +89,7 @@ const EmailCapture = ({ size }) => {
         logEvent('email_request_success', 'engagement', {
           email: formValues.email,
         })
+        setShowSuccessInfo(true)
         enqueueSnackbar('Application Submitted!', { variant: 'success' })
       } catch (error) {
         console.warn('email form error', error)
@@ -149,27 +147,53 @@ const EmailCapture = ({ size }) => {
             <CloseIcon />
           </CloseIconWrapper>
 
-          <Typography variant="h4">
-            Nina is currently in closed beta.
-          </Typography>
-          <Typography variant="h4" sx={{ mb: 2 }}>
-            Please sign up below.
-          </Typography>
-          <EmailCaptureForm
-            onChange={handleFormChange}
-            values={formValues}
-            EmailCaptureSchema={EmailCaptureSchema}
-          />
-          <Button
-            variant="outlined"
-            color="primary"
-            fullWidth
-            onClick={submitAndCloseModal}
-            sx={{ width: '100%', mt: 2 }}
-            disabled={!formIsValid}
-          >
-            Submit
-          </Button>
+          {!showSuccessInfo && (
+            <>
+              <Typography variant="h4" gutterBottom>
+                Nina is currently in closed beta.
+              </Typography>
+              <Typography variant="h4" sx={{ mb: '16px' }}>
+                Please sign up below.
+              </Typography>
+
+              <EmailCaptureForm
+                onChange={handleFormChange}
+                values={formValues}
+                EmailCaptureSchema={EmailCaptureSchema}
+              />
+              <Button
+                variant="outlined"
+                color="primary"
+                fullWidth
+                onClick={handleSubmit}
+                sx={{ width: '100%', mt: '30px' }}
+                disabled={!formIsValid}
+              >
+                Submit
+              </Button>
+            </>
+          )}
+
+          {showSuccessInfo && (
+            <>
+              <Typography variant="h4" sx={{ mb: '' }}>
+                You have succesfully signed up to Nina (Beta).
+              </Typography>
+
+              <Typography variant="h4" sx={{ mb: 1 }}>
+                Someone from our team will reach out to you via email in the
+                next 2 - 3 days.
+              </Typography>
+
+              <Button
+                variant="outlined"
+                style={{ width: '100%', marginTop: '5px' }}
+                onClick={handleClose}
+              >
+                <Typography variant="body1">Okay</Typography>
+              </Button>
+            </>
+          )}
         </Box>
       </Modal>
     </>
