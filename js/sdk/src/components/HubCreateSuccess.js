@@ -46,7 +46,7 @@ const HubCreateSuccess = (props) => {
     <StyledGrid item md={12}>
       <NinaBox>
         <HubSuccessWrapper>
-          <Typography variant="h1" sx={{ paddingTop: '16px' }}>
+          <Typography variant="h1" sx={{ paddingBottom: '16px' }}>
             Your Hub has been created.
           </Typography>
           <Box sx={{ paddingTop: 1 }}>
@@ -59,14 +59,13 @@ const HubCreateSuccess = (props) => {
                 <a>
                   <StyledLinkTypography
                     variant="string"
-                    sx={{ paddingTop: '8px' }}
-                    gutterBottom
+                    sx={{ padding: '16px 0px' }}
                   >
                     {successCopy.primaryString}
                   </StyledLinkTypography>
                 </a>
               </Link>
-              <Box sx={{ marginBottom: '16px' }}>
+              <Box sx={{ paddingTop: '8px', paddingBottom: '16px' }}>
                 <Typography variant="string">
                   {successCopy.primaryDescription}
                   {successCopy.primaryHyperlink && (
@@ -86,7 +85,7 @@ const HubCreateSuccess = (props) => {
               <Link href={successCopy.secondary}>
                 <a target="_blank" rel="noopener noreferrer">
                   <StyledLinkTypography
-                    sx={{ paddingTop: '8px' }}
+                    sx={{ paddingTop: '16px', paddingBottom: '8px' }}
                     variant="string"
                     gutterBottom
                   >
@@ -95,9 +94,12 @@ const HubCreateSuccess = (props) => {
                 </a>
               </Link>
               <Typography
-                sx={{ display: 'flex', flexDirection: 'row' }}
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  paddingTop: '8px',
+                }}
                 variant="string"
-                gutterBottom
               >
                 {successCopy.secondaryDescription}
                 {successCopy.secondaryHyperlink && (
@@ -115,7 +117,7 @@ const HubCreateSuccess = (props) => {
               </Typography>
             </Box>
           </Box>
-          <Box sx={{ paddingTop: 2, paddingBottom: 2 }}>
+          <Box sx={{ paddingTop: '32px' }}>
             <Button
               fullWidth
               variant="outlined"
