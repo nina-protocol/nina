@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import Dropzone from 'react-dropzone-uploader'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
@@ -6,17 +6,21 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined'
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined'
 import Image from 'next/image'
 import Nina from '../contexts/Nina'
+import ImageCropperModal from './ImageCropperModal'
 
-const MediaDropzone = ({
-  type,
-  setArtwork,
-  setTrack,
-  disabled,
-  processingProgress,
-}) => {
+const MediaDropzone = (props) => {
+  const {
+    type,
+    setArtwork,
+    setTrack,
+    disabled,
+    processingProgress,
+  } = props
   const { MAX_AUDIO_FILE_UPLOAD_SIZE, MAX_IMAGE_FILE_UPLOAD_SIZE } = useContext(
     Nina.Context
   )
+  const [cropperModalOpen, setCropperModalOpen] = useState(false)
+  const [imageCropConfirmed, setImageCropConfirmed] = useState(false)
 
   const handleChangeStatus = ({ meta, file, remove }, status) => {
     if (meta.status === 'error_validation') {
@@ -32,15 +36,9 @@ const MediaDropzone = ({
           )
         }
       } else {
-        if (height !== width) {
-          alert(
-            `your image's dimensions are ${height} x ${width}... \nPlease upload a square image`
-          )
-        } else {
           alert(
             `your image is ${size} mb... \nPlease upload an image smaller than ${MAX_IMAGE_FILE_UPLOAD_SIZE} MBs`
           )
-        }
       }
       remove()
     }
@@ -48,12 +46,14 @@ const MediaDropzone = ({
     if (type === 'artwork') {
       if (status === 'removed') {
         setArtwork(undefined)
-      } else {
-        setArtwork({
-          file,
-          meta,
-        })
-      }
+      } else if (!imageCropConfirmed) {
+        setCropperModalOpen(true)
+      } else if (imageCropConfirmed) {
+      
+      setArtwork({
+        file,
+        meta,
+      })
     } else if (type === 'track') {
       if (status === 'removed') {
         setTrack(undefined)
