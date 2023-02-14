@@ -6,7 +6,9 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined'
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined'
 import Image from 'next/image'
 import Nina from '../contexts/Nina'
-import ImageCropperModal from './ImageCropperModal'
+import dynamic from 'next/dynamic'
+const ImageCropperModal = dynamic(() => import('./ImageCropperModal'))
+// import ImageCropperModal from './ImageCropperModal'
 
 const MediaDropzone = ({
   type,
