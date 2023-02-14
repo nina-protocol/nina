@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useState, useContext } from 'react'
 import Dropzone from 'react-dropzone-uploader'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
@@ -8,19 +8,21 @@ import Image from 'next/image'
 import Nina from '../contexts/Nina'
 import ImageCropperModal from './ImageCropperModal'
 
-const MediaDropzone = (props) => {
-  const {
-    type,
-    setArtwork,
-    setTrack,
-    disabled,
-    processingProgress,
-  } = props
+const MediaDropzone = ({
+  type,
+  setArtwork,
+  setTrack,
+  disabled,
+  processingProgress,
+  setImageCropperOpen,
+  artwork
+}) => {
   const { MAX_AUDIO_FILE_UPLOAD_SIZE, MAX_IMAGE_FILE_UPLOAD_SIZE } = useContext(
     Nina.Context
   )
+
+  const [imageConfirmed, setImageConfirmed] = useState(false)
   const [cropperModalOpen, setCropperModalOpen] = useState(false)
-  const [imageCropConfirmed, setImageCropConfirmed] = useState(false)
 
   const handleChangeStatus = ({ meta, file, remove }, status) => {
     if (meta.status === 'error_validation') {
@@ -36,24 +38,24 @@ const MediaDropzone = (props) => {
           )
         }
       } else {
-          alert(
-            `your image is ${size} mb... \nPlease upload an image smaller than ${MAX_IMAGE_FILE_UPLOAD_SIZE} MBs`
-          )
+        alert(
+          `your image is ${size} mb... \nPlease upload an image smaller than ${MAX_IMAGE_FILE_UPLOAD_SIZE} MBs`
+        )
       }
       remove()
     }
 
     if (type === 'artwork') {
+      console.log('status :>> ', status);
       if (status === 'removed') {
         setArtwork(undefined)
-      } else if (!imageCropConfirmed) {
+      } else if (status === 'done' && !imageConfirmed) {
+        setArtwork({
+          file,
+          meta,
+        })
         setCropperModalOpen(true)
-      } else if (imageCropConfirmed) {
-      
-      setArtwork({
-        file,
-        meta,
-      })
+      } 
     } else if (type === 'track') {
       if (status === 'removed') {
         setTrack(undefined)
@@ -183,56 +185,67 @@ const MediaDropzone = (props) => {
   )
 
   return (
-    <Dropzone
-      onChangeStatus={handleChangeStatus}
-      accept={type === 'track' ? 'audio/*' : 'image/*'}
-      maxFiles={1}
-      validate={
-        type === 'track'
-          ? (fileWithMeta) => validateTrack(fileWithMeta)
-          : (fileWithMeta) => validateImage(fileWithMeta)
-      }
-      SubmitButtonComponent={null}
-      autoUpload={false}
-      canRestart={false}
-      classNames={{
-        dropzone: classes.dropZone,
-        inputLabel: classes.dropZoneInputLabel,
-        preview: classes.dropZonePreviewWrapper,
-        previewStatusContainer: classes.dropZonePreviewStatusContainer,
-      }}
-      disabled={disabled}
-      inputContent={inputLayout(type)}
-      PreviewComponent={Preview}
-      styles={{
-        dropzone: {
-          minHeight: 60,
-          display: 'flex',
-          justifyContent: 'center',
-          width: '100%',
-          height: type === 'track' ? '113px' : '350px',
-          cursor: disabled ? 'not-allowed' : 'pointer',
-          marginBottom: type === 'track' ? '15px' : '',
-          boxShadow: 'inset 0px 0px 30px 0px #0000001A',
-          backgroundColor: '#EAEAEA',
-        },
-        preview: {
-          margin: 'auto',
-          alignItems: 'center',
-        },
-        previewImage: {
-          width: '100%',
-          maxHeight: '100%',
-          maxWidth: 'unset',
-        },
-        inputLabel: {
-          cursor: disabled ? 'not-allowed' : 'pointer',
-          width: '100%',
-          textAlign: 'left',
-          padding: '15px',
-        },
-      }}
-    />
+    <>
+      <Dropzone
+        onChangeStatus={handleChangeStatus}
+        accept={type === 'track' ? 'audio/*' : 'image/*'}
+        maxFiles={1}
+        validate={
+          type === 'track'
+            ? (fileWithMeta) => validateTrack(fileWithMeta)
+            : (fileWithMeta) => validateImage(fileWithMeta)
+        }
+        SubmitButtonComponent={null}
+        autoUpload={false}
+        canRestart={false}
+        classNames={{
+          dropzone: classes.dropZone,
+          inputLabel: classes.dropZoneInputLabel,
+          preview: classes.dropZonePreviewWrapper,
+          previewStatusContainer: classes.dropZonePreviewStatusContainer,
+        }}
+        disabled={disabled}
+        inputContent={inputLayout(type)}
+        PreviewComponent={Preview}
+        styles={{
+          dropzone: {
+            minHeight: 60,
+            display: 'flex',
+            justifyContent: 'center',
+            width: '100%',
+            height: type === 'track' ? '113px' : '350px',
+            cursor: disabled ? 'not-allowed' : 'pointer',
+            marginBottom: type === 'track' ? '15px' : '',
+            boxShadow: 'inset 0px 0px 30px 0px #0000001A',
+            backgroundColor: '#EAEAEA',
+          },
+          preview: {
+            margin: 'auto',
+            alignItems: 'center',
+          },
+          previewImage: {
+            width: '100%',
+            maxHeight: '100%',
+            maxWidth: 'unset',
+          },
+          inputLabel: {
+            cursor: disabled ? 'not-allowed' : 'pointer',
+            width: '100%',
+            textAlign: 'left',
+            padding: '15px',
+          },
+        }}
+      />
+      {type === 'artwork' && (
+        <ImageCropperModal
+          cropperModalOpen={cropperModalOpen} 
+          artwork={artwork} 
+          setArtwork={setArtwork} 
+          setImageConfirmed={setImageConfirmed}
+          imageConfirmed={imageConfirmed}
+          />
+      )}
+    </>
   )
 }
 

@@ -15,8 +15,14 @@ import Nina from '../contexts/Nina'
 import {useSnackbar} from 'notistack'
 import Dots from './Dots'
 
-const ImageCropperModal = ({artwork, setArtwork}) => {
+const ImageCropperModal = ({artwork, setArtwork, cropperModalOpen}) => {
   const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    setOpen(cropperModalOpen)
+  }, [cropperModalOpen])
+
+  console.log('artwork :>> ', artwork);
 
   const {enqueueSnackbar} = useSnackbar()
   return (
