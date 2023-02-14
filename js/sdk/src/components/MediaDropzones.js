@@ -15,6 +15,7 @@ const MediaDropzones = ({
   processingProgress,
 }) => {
   const [metadata, setMetadata] = useState({})
+  console.log('artwork in DZs :>> ', artwork);
   useEffect(() => {
     setMetadata({
       artist: values.releaseForm?.artist,

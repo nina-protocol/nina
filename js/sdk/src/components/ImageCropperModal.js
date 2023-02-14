@@ -21,8 +21,9 @@ const ImageCropperModal = ({artwork, setArtwork, cropperModalOpen}) => {
   useEffect(() => {
     setOpen(cropperModalOpen)
   }, [cropperModalOpen])
+  
 
-  console.log('artwork :>> ', artwork);
+  console.log('artwork!!!! :>> ', artwork);
 
   const {enqueueSnackbar} = useSnackbar()
   return (
@@ -54,6 +55,9 @@ const ImageCropperModal = ({artwork, setArtwork, cropperModalOpen}) => {
           <StyledPaper>
             <Typography>
               I AM THE IMAGE MODAL
+            </Typography>
+            <Typography>
+              {artwork?.meta?.previewUrl}
             </Typography>
 
           </StyledPaper>

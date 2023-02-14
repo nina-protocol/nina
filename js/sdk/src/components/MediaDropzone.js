@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import Dropzone from 'react-dropzone-uploader'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
@@ -23,6 +23,13 @@ const MediaDropzone = ({
 
   const [imageConfirmed, setImageConfirmed] = useState(false)
   const [cropperModalOpen, setCropperModalOpen] = useState(false)
+
+  useEffect(() => {
+    if (artwork && !imageConfirmed) {
+      setCropperModalOpen(true)
+    }
+    console.log('artwork :>> ', artwork);
+  }, [artwork])
 
   const handleChangeStatus = ({ meta, file, remove }, status) => {
     if (meta.status === 'error_validation') {
@@ -50,11 +57,18 @@ const MediaDropzone = ({
       if (status === 'removed') {
         setArtwork(undefined)
       } else if (status === 'done' && !imageConfirmed) {
-        setArtwork({
-          file,
-          meta,
-        })
-        setCropperModalOpen(true)
+        console.log('file :>> ', file);
+        console.log('meta :>> ', meta);
+        try {
+          setArtwork({
+            file,
+            meta,
+          })
+          setCropperModalOpen(true)
+          
+        } catch (error) {
+          console.log('error :>> ', error);
+        }
       } 
     } else if (type === 'track') {
       if (status === 'removed') {
@@ -236,7 +250,7 @@ const MediaDropzone = ({
           },
         }}
       />
-      {type === 'artwork' && (
+      {type === 'artwork' &&  (
         <ImageCropperModal
           cropperModalOpen={cropperModalOpen} 
           artwork={artwork} 
