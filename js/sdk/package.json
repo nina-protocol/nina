@@ -31,11 +31,7 @@
     "promise-retry": "^2.0.1",
     "querystring": "^0.2.1",
     "quill-magic-url": "^4.2.0",
-<<<<<<< Updated upstream
-    "react-dropzone-uploader": "^2.11.0",
-=======
     "react-easy-crop": "^4.7.0",
->>>>>>> Stashed changes
     "react-quill": "^2.0.0",
     "yup": "^0.32.11"
   },
