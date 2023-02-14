@@ -30,15 +30,7 @@ const requiresSwap = (release, price, usdcBalance, ninaClient) => {
   )
 }
 
-const releasePurchaseWithOrcaSwap = async (
-  release,
-  price,
-  provider,
-  ninaClient,
-  instructions,
-  request,
-  hub
-) => {
+const getSolUsdcWhirlpool = async (provider) => {
   const context = WhirlpoolContext.from(
     provider.connection,
     provider.wallet,
@@ -49,6 +41,39 @@ const releasePurchaseWithOrcaSwap = async (
   const whirlpoolClient = buildWhirlpoolClient(context)
   const whirlpool = await whirlpoolClient.getPool(SOL_USDC_WHIRLPOOL, true)
   const whirlpoolData = await whirlpool.getData()
+
+  return { context, fetcher, whirlpool, whirlpoolData }
+}
+
+export const getSolPriceFromOrca = async (provider) => {
+  const { context, fetcher, whirlpool, whirlpoolData } = await getSolUsdcWhirlpool(provider)
+  const inputTokenQuote = await swapQuoteByInputToken(
+    whirlpool,
+    whirlpoolData.tokenMintA,
+    new anchor.BN(1000000000),
+    Percentage.fromFraction(1, 1000),
+    context.program.programId,
+    fetcher,
+    true
+  )
+  console.log('outputTokenQuote', inputTokenQuote)
+  console.log('outputTokenQuote.estimatedAmountIn.toNumber()', inputTokenQuote.estimatedAmountIn.toNumber())
+  console.log('outputTokenQuote.estimatedAmountOut.toNumber()', inputTokenQuote.estimatedAmountOut.toNumber())
+  console.log('whirlpoolData', whirlpoolData)
+  console.log('whirlpool', whirlpool)
+  return inputTokenQuote.estimatedAmountOut.toNumber()
+}
+
+const releasePurchaseWithOrcaSwap = async (
+  release,
+  price,
+  provider,
+  ninaClient,
+  instructions,
+  request,
+  hub
+) => {
+  const {context, fetcher, whirlpool, whirlpoolData} = await getSolUsdcWhirlpool(provider)
 
   const outputTokenQuote = await swapQuoteByOutputToken(
     whirlpool,
