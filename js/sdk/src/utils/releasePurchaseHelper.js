@@ -46,7 +46,8 @@ const getSolUsdcWhirlpool = async (provider) => {
 }
 
 export const getSolPriceFromOrca = async (provider) => {
-  const { context, fetcher, whirlpool, whirlpoolData } = await getSolUsdcWhirlpool(provider)
+  const { context, fetcher, whirlpool, whirlpoolData } =
+    await getSolUsdcWhirlpool(provider)
   const inputTokenQuote = await swapQuoteByInputToken(
     whirlpool,
     whirlpoolData.tokenMintA,
@@ -56,11 +57,6 @@ export const getSolPriceFromOrca = async (provider) => {
     fetcher,
     true
   )
-  console.log('outputTokenQuote', inputTokenQuote)
-  console.log('outputTokenQuote.estimatedAmountIn.toNumber()', inputTokenQuote.estimatedAmountIn.toNumber())
-  console.log('outputTokenQuote.estimatedAmountOut.toNumber()', inputTokenQuote.estimatedAmountOut.toNumber())
-  console.log('whirlpoolData', whirlpoolData)
-  console.log('whirlpool', whirlpool)
   return inputTokenQuote.estimatedAmountOut.toNumber()
 }
 
@@ -73,7 +69,8 @@ const releasePurchaseWithOrcaSwap = async (
   request,
   hub
 ) => {
-  const {context, fetcher, whirlpool, whirlpoolData} = await getSolUsdcWhirlpool(provider)
+  const { context, fetcher, whirlpool, whirlpoolData } =
+    await getSolUsdcWhirlpool(provider)
 
   const outputTokenQuote = await swapQuoteByOutputToken(
     whirlpool,

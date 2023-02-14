@@ -1,7 +1,6 @@
 import React, { createContext, useState, useEffect, useMemo } from 'react'
 import * as anchor from '@project-serum/anchor'
 import NinaSdk from '@nina-protocol/js-sdk'
-import axios from 'axios'
 import {
   findOrCreateAssociatedTokenAccount,
   TOKEN_PROGRAM_ID,
@@ -609,7 +608,7 @@ const ninaContextHelper = ({
   const getUserBalances = async () => {
     if (provider.wallet?.connected && provider.wallet?.publicKey) {
       try {
-        const solPrice = await getSolPriceFromOrca(provider)        
+        const solPrice = await getSolPriceFromOrca(provider)
         const solUsdcBalanceResult = await getSolBalance()
         setSolUsdcBalance(
           (
@@ -771,10 +770,10 @@ const ninaContextHelper = ({
 
   const getSolPrice = async () => {
     try {
-      const solPrice = await getSolPriceFromOrca(provider)        
-      const formattedSolPrice = (
-        ninaClient.nativeToUi(solPrice, ids.mints.usdc)
-      ).toFixed(2)
+      const solPrice = await getSolPriceFromOrca(provider)
+      const formattedSolPrice = ninaClient
+        .nativeToUi(solPrice, ids.mints.usdc)
+        .toFixed(2)
       setSolPrice(formattedSolPrice)
       return formattedSolPrice
     } catch (error) {
