@@ -421,7 +421,7 @@ const Profile = ({ profilePubkey }) => {
                         profilePublicKey={profilePubkey}
                       />
                     )}
-                    <CreateHub />
+                    {inDashboard && <CreateHub />}
                   </Box>
                 </>
               )}
