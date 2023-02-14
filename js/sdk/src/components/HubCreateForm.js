@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { styled } from '@mui/material/styles'
-import { formatPlaceholder } from '@nina-protocol/nina-internal-sdk/esm/utils'
+import { formatPlaceholder } from '../utils'
 import { withFormik, Form, Field } from 'formik'
 import TextField from '@mui/material/TextField'
 import Box from '@mui/material/Box'
@@ -13,8 +13,6 @@ const QuillEditor = dynamic(
 )
 
 const HubCreateForm = ({
-  field,
-  form,
   values,
   onChange,
   errors,
@@ -22,7 +20,6 @@ const HubCreateForm = ({
   setFieldValue,
   update,
   hubData,
-  handleBlur,
 }) => {
   useEffect(() => {
     if (onChange) {
@@ -80,7 +77,7 @@ const HubCreateForm = ({
             {(props) => (
               <Box>
                 <TextField
-                  className="formField"
+                  className={classes.formField}
                   variant="standard"
                   label={
                     formatPlaceholder(props.field.name) +
@@ -118,7 +115,7 @@ const HubCreateForm = ({
           {(props) => (
             <Box>
               <TextField
-                className="formField"
+                className={classes.formField}
                 variant="standard"
                 label={
                   formatPlaceholder(props.field.name) +
@@ -144,7 +141,7 @@ const HubCreateForm = ({
               {(props) => (
                 <Box>
                   <TextField
-                    className="formField"
+                    className={classes.formField}
                     variant="standard"
                     size="small"
                     InputLabelProps={touched.publishFee ? { shrink: true } : ''}
@@ -161,7 +158,7 @@ const HubCreateForm = ({
                         min: 0,
                       },
                       onChange: (e) => {
-                        const value = e.target.value
+                        let value = e.target.value
                           ? parseInt(e.target.value)
                           : ''
                         if (value > 100) {
@@ -187,7 +184,7 @@ const HubCreateForm = ({
               {(props) => (
                 <Box>
                   <TextField
-                    className="formField"
+                    className={classes.formField}
                     variant="standard"
                     label={
                       <Box display="flex" alignItems="center">
@@ -206,7 +203,7 @@ const HubCreateForm = ({
                         min: 0,
                       },
                       onChange: (e) => {
-                        const value = e.target.value
+                        let value = e.target.value
                           ? parseInt(e.target.value)
                           : ''
                         if (value > 100) {
@@ -233,7 +230,7 @@ const HubCreateForm = ({
 
         <Field name="description">
           {(props) => (
-            <Box sx={{ mb: '8px', height: '175px' }}>
+            <Box sx={{ mt: '8px', mb: '8px', height: '175px' }}>
               <QuillEditor formikProps={props} update={update} type={'hub'} />
             </Box>
           )}
@@ -243,9 +240,31 @@ const HubCreateForm = ({
   )
 }
 
-const Root = styled('div')(() => ({
+const PREFIX = 'ReleaseCreateForm'
+
+const classes = {
+  fieldInputWrapper: `${PREFIX}-fieldInputWrapper`,
+  formField: `${PREFIX}-formField`,
+}
+
+const Root = styled('div')(({ theme }) => ({
   margin: 'auto',
   width: '100%',
+  [`& .${classes.fieldInputWrapper}`]: {
+    position: 'relative',
+  },
+  [`& .${classes.formField}`]: {
+    ...theme.helpers.baseFont,
+    marginBottom: '8px',
+    width: '100%',
+    position: 'relative',
+    '& input': {
+      textAlign: 'left',
+      '&::placeholder': {
+        color: theme.palette.red,
+      },
+    },
+  },
 }))
 
 export default withFormik({

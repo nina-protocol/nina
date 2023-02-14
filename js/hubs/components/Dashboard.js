@@ -8,13 +8,13 @@ import { useSnackbar } from 'notistack'
 import { useRouter } from 'next/router'
 import Grid from '@mui/material/Grid'
 import HubOverview from './HubOverview'
-import HubCreate from './HubCreate'
+import HubCreate from '@nina-protocol/nina-internal-sdk/esm/HubCreate'
 import BundlrModal from '@nina-protocol/nina-internal-sdk/esm/BundlrModal'
 import HubPosts from './HubPosts'
 import HubCollaborators from './HubCollaborators'
 import HubReleases from './HubReleases'
 import ReleaseCreate from '@nina-protocol/nina-internal-sdk/esm/ReleaseCreate'
-
+import Link from 'next/link'
 // const {toTitleCase} = nina.utils;
 
 const toTitleCase = (text) => {
@@ -37,6 +37,7 @@ const Dashboard = ({ hubPubkey }) => {
     'collaborators',
     'updateHubInfo',
     'publishRelease',
+    'createHub',
   ]
 
   const { enqueueSnackbar } = useSnackbar()
@@ -199,7 +200,18 @@ const Dashboard = ({ hubPubkey }) => {
                     ) : (
                       ''
                     )
-
+                  case 'createHub':
+                    return (
+                      <li key={i} data-index={i}>
+                        <Typography data-index={i}>
+                          <Link href="/create">
+                            <a style={{ textDecoration: 'none' }}>
+                              {toTitleCase(action)}
+                            </a>
+                          </Link>
+                        </Typography>
+                      </li>
+                    )
                   default:
                     return (
                       <li key={i} data-index={i}>

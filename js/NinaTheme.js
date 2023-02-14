@@ -9,6 +9,7 @@ const colors = {
   red: '#FF2828',
   orange: 'rgba(244, 73, 73, 0.94)',
   green: '#66F523',
+  darkGreen: '#4CAF50',
   white: '#ffffff',
   greyLight: '#E3E3E3',
   grey: 'rgba(0, 0, 0, 0.2)',
@@ -26,7 +27,7 @@ const colors = {
 export const NinaTheme = createTheme({
   palette: {
     secondary: {
-      main: '#9999cc',
+      main: "#9999cc",
     },
     background: {
       default: colors.white,
@@ -43,6 +44,7 @@ export const NinaTheme = createTheme({
     white: colors.white,
     red: colors.red,
     green: colors.green,
+    darkGreen: colors.darkGreen,
     yellow: colors.yellow,
     grey: {
       primary: colors.grey,
@@ -55,51 +57,55 @@ export const NinaTheme = createTheme({
     color: colors.white,
   },
   typography: {
-    fontFamily: ['Helvetica', 'Arial', 'sans-serif'].join(','),
+    fontFamily: ["Helvetica", "Arial", "sans-serif"].join(","),
     berthold: {
-      fontFamily: ['BlockBE-Heavy'].join(','),
+      fontFamily: ["BlockBE-Heavy"].join(","),
     },
     gutterBottom: {
-      marginBottom: '15px !important',
+      marginBottom: "15px !important",
     },
     h1: {
-      fontSize: '36px !important',
-      fontWeight: '400 !important',
-      [breakpoints.down('md')]: {
-        fontSize: '24px !important',
+      fontSize: "36px !important",
+      fontWeight: "400 !important",
+      [breakpoints.down("md")]: {
+        fontSize: "24px !important",
       },
     },
     h2: {
-      fontSize: '25px !important',
-      fontWeight: '400 !important',
+      fontSize: "25px !important",
+      fontWeight: "400 !important",
     },
     h3: {
-      fontSize: '20px !important',
-      lineHeight: '23px !important',
-      [breakpoints.down('md')]: {
-        lineHeight: '23px !important',
-        fontSize: '16px !important',
+      fontSize: "20px !important",
+      lineHeight: "23px !important",
+      [breakpoints.down("md")]: {
+        lineHeight: "23px !important",
+        fontSize: "16px !important",
       },
     },
     h4: {
-      fontSize: '18px !important',
-      lineHeight: '20.7px !important',
-      [breakpoints.down('md')]: {
-        lineHeight: '23px !important',
-        fontSize: '16px !important',
+      fontSize: "18px !important",
+      lineHeight: "20.7px !important",
+      [breakpoints.down("md")]: {
+        lineHeight: "23px !important",
+        fontSize: "16px !important",
       },
     },
+    string: {
+      fontSize: '16px !important'
+    },
     body1: {
-      fontSize: '14px !important',
-      lineHeight: '16.1px !important',
+      fontSize: "14px !important",
+      lineHeight: "16.1px !important",
     },
     body2: {
-      fontSize: '12px !important',
-      lineHeight: '13.8px !important',
+      fontSize: "12px !important",
+      lineHeight: "13.8px !important",
     },
     subtitle1: {
-      fontSize: '10px !important',
+      fontSize: "10px !important",
     },
+ 
   },
   // transitions: {
   //   easing: {
@@ -108,33 +114,33 @@ export const NinaTheme = createTheme({
   //   },
   // },
   spacing: 15,
-  maxWidth:'960px',
+  maxWidth: "960px",
   helpers: {
     grid: {
-      display: 'grid',
-      gridAutoRows: '1fr',
-      justifyContent: 'center',
-      alignContent: 'center',
-      justifyItems: 'center',
+      display: "grid",
+      gridAutoRows: "1fr",
+      justifyContent: "center",
+      alignContent: "center",
+      justifyItems: "center",
       gridColumnGap: `10px`,
       gridRowGap: `10px`,
     },
     flexColumn: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
     },
     gradient: {
       background: `radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(143,175,223,1) 0%, rgb(35,99,196) 100%)`,
       color: colors.white,
     },
     inputShadow: {
-      boxShadow: '0px 0px 30px 0px #0000001A',
+      boxShadow: "0px 0px 30px 0px #0000001A",
     },
     baseFont: {
-      fontSize: '12px !important',
-      lineHeight: '13.8px !important',
+      fontSize: "12px !important",
+      lineHeight: "13.8px !important",
     },
   },
   components: {
@@ -144,38 +150,38 @@ export const NinaTheme = createTheme({
       },
       styleOverrides: {
         root: {
-          padding: '10px',
-          fontSize: '10px',
-          boxShadow: 'none',
-          minWidth: 'unset !important',
-          '&:hover': {
+          padding: "10px",
+          fontSize: "10px",
+          boxShadow: "none",
+          minWidth: "unset !important",
+          "&:hover": {
             backgroundColor: `${colors.transparent} !important`,
             opacity: 0.5,
           },
-          '&.MuiButton-outlined': {
-            borderRadius: '0px',
-            padding: '20px',
+          "&.MuiButton-outlined": {
+            borderRadius: "0px",
+            padding: "20px",
             borderColor: colors.black,
             color: colors.black,
             maxHeight: "55px",
-            '&.Mui-disabled': {
+            "&.Mui-disabled": {
               border: `1px solid ${colors.grey}`,
               color: colors.grey,
             },
-            '&:hover': {
+            "&:hover": {
               borderColor: colors.black,
               color: colors.black,
             },
           },
-          '&.MuiButton-contained': {
-            padding: '10px',
-            borderRadius: '0px',
+          "&.MuiButton-contained": {
+            padding: "10px",
+            borderRadius: "0px",
             backgroundColor: `${colors.transparent}`,
             color: `${colors.black}`,
-            boxShadow: 'none',
-            '&:hover': {
+            boxShadow: "none",
+            "&:hover": {
               backgroundColor: `${colors.white}`,
-              boxShadow: 'none',
+              boxShadow: "none",
             },
           },
         },
@@ -184,14 +190,14 @@ export const NinaTheme = createTheme({
     MuiIconButton: {
       styleOverrides: {
         root: {
-          padding: '0px !important',
-          boxShadow: 'none',
-          minWidth: 'unset !important',
+          padding: "0px !important",
+          boxShadow: "none",
+          minWidth: "unset !important",
           opacity: 100,
           color: `${colors.black}`,
-          '&:hover': {
+          "&:hover": {
             backgroundColor: `${colors.white} !important`,
-            boxShadow: 'none',
+            boxShadow: "none",
           },
         },
       },
@@ -206,21 +212,21 @@ export const NinaTheme = createTheme({
     MuiSvgIcon: {
       styleOverrides: {
         root: {
-          cursor: 'pointer',
+          cursor: "pointer",
         },
       },
     },
     MuiPaper: {
       styleOverrides: {
         root: {
-          outline: '0'
+          outline: "0",
         },
       },
     },
     MuiTypography: {
       styleOverrides: {
         root: {
-          letterSpacing: '0.02em !important',
+          letterSpacing: "0.02em !important",
         },
       },
     },
@@ -232,28 +238,28 @@ export const NinaTheme = createTheme({
     MuiTextField: {
       styleOverrides: {
         root: {
-          '& .MuiInput-underline:before': {
+          "& .MuiInput-underline:before": {
             borderBottom: `1px solid ${colors.black}`,
           },
-          '& .MuiInput-underline:after': {
+          "& .MuiInput-underline:after": {
             borderBottom: `1px solid ${colors.black}`,
           },
-          '& .MuiFormControl-root': {
-            height: '35px',
+          "& .MuiFormControl-root": {
+            height: "35px",
           },
-          '& .MuiFormLabel-root.Mui-focused': {
-            color: 'rgba(0, 0, 0, 0.54)',
+          "& .MuiFormLabel-root.Mui-focused": {
+            color: "rgba(0, 0, 0, 0.54)",
           },
-          '& .MuiInputLabel-formControl': {
-            transform: 'translate(0, 15px) scale(1)',
-            fontSize: '12px',
+          "& .MuiInputLabel-formControl": {
+            transform: "translate(0, 15px) scale(1)",
+            fontSize: "12px",
           },
-          '& .MuiInputLabel-shrink': {
-            transform: 'translate(0, 1.5px) scale(.75)',
+          "& .MuiInputLabel-shrink": {
+            transform: "translate(0, 1.5px) scale(.75)",
           },
-          '& input[type=number]::-webkit-inner-spin-button': {
-            '-webkit-appearance': 'none',
-            margin: '0',
+          "& input[type=number]::-webkit-inner-spin-button": {
+            "-webkit-appearance": "none",
+            margin: "0",
           },
         },
       },
@@ -261,100 +267,101 @@ export const NinaTheme = createTheme({
     MuiSlider: {
       styleOverrides: {
         root: {
-          '& .MuiSlider-thumb': {
+          "& .MuiSlider-thumb": {
             color: colors.black,
-            width: '14px',
-            height: '11px',
-            boxShadow: 'none !important',
+            width: "14px",
+            height: "11px",
+            boxShadow: "none !important",
 
-            '&:hover': {
-              boxShadow: 'none',
+            "&:hover": {
+              boxShadow: "none",
             },
-            '& .Mui-focusVisible': {
-              boxShadow: 'none',
+            "& .Mui-focusVisible": {
+              boxShadow: "none",
             },
           },
-          '& .MuiSlider-track': {
+          "& .MuiSlider-track": {
             color: colors.black,
-            height: '1px',
-            border: 'none',
+            height: "1px",
+            border: "none",
           },
-          '& .MuiSlider-rail': {
+          "& .MuiSlider-rail": {
             color: colors.black,
-            height: '1px',
+            height: "1px",
           },
         },
       },
     },
     MuiCssBaseline: {
       styleOverrides: {
-        '*, *::before, *::after': {
-          boxSizing: 'content-box',
+        "*, *::before, *::after": {
+          boxSizing: "content-box",
         },
-        'a, p, h1, h2, h3, h4, h5, h6. figure, blockquote, dl, dd': {
-          margin: '8px 0'
+        "a, p, h1, h2, h3, h4, h5, h6. figure, blockquote, dl, dd": {
+          margin: "8px 0",
         },
-        '.ql-toolbar': { // QL classes are for overriding Quill components
-          textAlign: 'left'
+        ".ql-toolbar": {
+          // QL classes are for overriding Quill components
+          textAlign: "left",
         },
-        '.ql-bubble a::before, a::after': {
-          display: 'none'
+        ".ql-bubble a::before, a::after": {
+          display: "none",
         },
         body: {
-          overflow: 'hidden',
+          overflow: "hidden",
         },
         a: {
           color: colors.black,
-          textDecoration: 'none',
-          cursor: 'pointer !important',
-          '&:hover': {
+          textDecoration: "none",
+          cursor: "pointer !important",
+          "&:hover": {
             opacity: 0.5,
           },
         },
-        '#wallet-menu': {
-          '&.MuiPopover-root': {
+        "#wallet-menu": {
+          "&.MuiPopover-root": {
             backgroundColor: `${colors.transparent}`,
           },
-          '& .MuiPopover-paper': {
-            overflowX: ' visible',
+          "& .MuiPopover-paper": {
+            overflowX: " visible",
           },
-          '& .MuiPaper-root': {
+          "& .MuiPaper-root": {
             backgroundColor: `${colors.transparent}`,
-            top: '40px !important',
-            right: '24px !important',
-            boxShadow: 'none',
-            overflowX: 'visible',
-            left: 'unset !important',
+            top: "40px !important",
+            right: "24px !important",
+            boxShadow: "none",
+            overflowX: "visible",
+            left: "unset !important",
           },
-          '& li button': {
-            display: 'none',
+          "& li button": {
+            display: "none",
           },
-          '& li': {
-            justifyContent: 'flex-end',
-            fontSize: '10px',
-            padding: '0 16px',
-            fontSize: '10px !important',
+          "& li": {
+            justifyContent: "flex-end",
+            fontSize: "10px",
+            padding: "0 16px",
+            fontSize: "10px !important",
             backgroundColor: `${colors.white}`,
-            '&:hover': {
+            "&:hover": {
               backgroundColor: `${colors.white}`,
               color: `${colors.blue}`,
             },
           },
-          '& .MuiListItemIcon-root': {
-            display: 'none',
+          "& .MuiListItemIcon-root": {
+            display: "none",
           },
         },
       },
     },
     MuiTabs: {
       flexContainer: {
-        justifyContent: 'center',
+        justifyContent: "center",
       },
     },
     MuiTooltip: {
       tooltip: {
-        fontSize: '0.75rem',
+        fontSize: "0.75rem",
       },
     },
   },
-})
+});

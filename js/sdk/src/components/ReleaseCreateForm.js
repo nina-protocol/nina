@@ -1,5 +1,4 @@
-// import React, { useEffect, useState, useRef } from 'react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { styled } from '@mui/material/styles'
 import { withFormik, Form, Field } from 'formik'
 import Typography from '@mui/material/Typography'
@@ -9,11 +8,11 @@ import Box from '@mui/material/Box'
 import Fade from '@mui/material/Fade'
 import { formatPlaceholder } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import dynamic from 'next/dynamic'
-// import Radio from '@mui/material/Radio'
-// import RadioGroup from '@mui/material/RadioGroup'
-// import FormControlLabel from '@mui/material/FormControlLabel'
-// import FormControl from '@mui/material/FormControl'
-// import FormLabel from '@mui/material/FormLabel'
+import Radio from '@mui/material/Radio'
+import RadioGroup from '@mui/material/RadioGroup'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import FormControl from '@mui/material/FormControl'
+import FormLabel from '@mui/material/FormLabel'
 const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
 
 const ReleaseCreateForm = ({
@@ -26,11 +25,9 @@ const ReleaseCreateForm = ({
   touched,
   disabled,
 }) => {
-  // const [isOpen, setIsOpen] = useState(false)
-  const [isOpen] = useState(false)
-  // const [inputValue, setInputValue] = useState(undefined)
-  const [, setInputValue] = useState(undefined)
-  // const editionRef = useRef(isOpen)
+  const [isOpen, setIsOpen] = useState(false)
+  const [inputValue, setInputValue] = useState(undefined)
+  const editionRef = useRef(isOpen)
 
   useEffect(() => {
     if (onChange) {
@@ -54,19 +51,19 @@ const ReleaseCreateForm = ({
     return `${value}%`
   }
 
-  // const handleEditionChange = (event) => {
-  //   editionRef.current = event.target.value
-  //   if (editionRef.current === 'unlimited') {
-  //     setIsOpen(true)
-  //   }
-  //   if (editionRef.current === 'limited') {
-  //     setIsOpen(false)
-  //     setFieldValue('amount', inputValue)
-  //   }
-  // }
+  const handleEditionChange = (event) => {
+    editionRef.current = event.target.value
+    if (editionRef.current === 'unlimited') {
+      setIsOpen(true)
+    }
+    if (editionRef.current === 'limited') {
+      setIsOpen(false)
+      setFieldValue('amount', inputValue)
+    }
+  }
 
   return (
-    <Root>
+    <Root disabled={disabled}>
       <Form>
         <Field name="artist">
           {(props) => (
@@ -135,7 +132,10 @@ const ReleaseCreateForm = ({
             </Box>
           )}
         </Field>
-        {/* <FormControlBox className={classes.fieldInputWrapper}>
+        <FormControlBox
+          disabled={disabled}
+          className={classes.fieldInputWrapper}
+        >
           <FormControl
             sx={{
               flexDirection: 'row',
@@ -168,7 +168,7 @@ const ReleaseCreateForm = ({
               />
             </RadioGroup>
           </FormControl>
-        </FormControlBox> */}
+        </FormControlBox>
         <Field name="amount">
           {({ field }) => (
             <Box className={classes.fieldInputWrapper} align={'left'}>
@@ -286,21 +286,21 @@ const ReleaseCreateForm = ({
   )
 }
 
-// const FormRadio = (props) => {
-//   return (
-//     <Radio
-//       disableRipple
-//       color="default"
-//       sx={{
-//         '&&:hover': {
-//           backgroundColor: 'transparent',
-//         },
-//         padding: '4px 6px',
-//       }}
-//       {...props}
-//     />
-//   )
-// }
+const FormRadio = (props) => {
+  return (
+    <Radio
+      disableRipple
+      color="default"
+      sx={{
+        '&&:hover': {
+          backgroundColor: 'transparent',
+        },
+        padding: '4px 6px',
+      }}
+      {...props}
+    />
+  )
+}
 const PREFIX = 'ReleaseCreateForm'
 
 const classes = {
@@ -308,9 +308,11 @@ const classes = {
   formField: `${PREFIX}-formField`,
 }
 
-const Root = styled('div')(({ theme }) => ({
+const Root = styled('div')(({ theme, disabled }) => ({
   margin: 'auto',
   width: '300px',
+  cursor: disabled ? 'not-allowed' : 'auto',
+  border: disabled ? '1px solid #red' : '1px solid #red',
   [`& .${classes.fieldInputWrapper}`]: {
     position: 'relative',
   },
@@ -320,6 +322,8 @@ const Root = styled('div')(({ theme }) => ({
     width: '100%',
     position: 'relative',
     '& input': {
+      cursor: disabled ? 'not-allowed' : 'auto',
+
       textAlign: 'left',
       '&::placeholder': {
         color: theme.palette.red,
@@ -338,29 +342,30 @@ const Warning = styled(Typography)(({ theme }) => ({
   width: '220px',
 }))
 
-// const FormControlBox = styled(Box)(() => ({
-//   display: 'flex',
-//   alignItems: 'left',
-//   textAlign: 'center',
-//   marginBottom: '8px',
-//   borderBottom: `1px solid`,
-// }))
+const FormControlBox = styled(Box)(({ disabled }) => ({
+  display: 'flex',
+  alignItems: 'left',
+  textAlign: 'center',
+  marginBottom: '8px',
+  borderBottom: `1px solid`,
+  cursor: disabled ? 'not-allowed' : 'auto',
+}))
 
-// const StyledFormLabel = styled(FormLabel)(() => ({
-//   marginTop: '8px',
-//   marginRight: '16px',
-// }))
+const StyledFormLabel = styled(FormLabel)(() => ({
+  marginTop: '8px',
+  marginRight: '16px',
+}))
 
-// const StyledFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
-//   marginLeft: '0',
-//   marginRight: '0',
-//   '& .MuiSvgIcon-root:not(.MuiSvgIcon-root ~ .MuiSvgIcon-root) path': {
-//     color: theme.palette.black,
-//   },
-//   '& .MuiSvgIcon-root + .MuiSvgIcon-root': {
-//     color: theme.palette.black,
-//   },
-// }))
+const StyledFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
+  marginLeft: '0',
+  marginRight: '0',
+  '& .MuiSvgIcon-root:not(.MuiSvgIcon-root ~ .MuiSvgIcon-root) path': {
+    color: theme.palette.black,
+  },
+  '& .MuiSvgIcon-root + .MuiSvgIcon-root': {
+    color: theme.palette.black,
+  },
+}))
 
 export default withFormik({
   enableReinitialize: true,

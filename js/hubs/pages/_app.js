@@ -19,7 +19,6 @@ import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 const NinaWrapper = dynamic(() => import('../components/NinaWrapper'))
 const Layout = dynamic(() => import('../components/Layout'))
 // const lightTheme = createTheme(lightThemeOptions);
-
 const App = ({ Component, pageProps }) => {
   const [loading, setLoading] = useState(false)
   const [sdkInitialized, setSdkInitialized] = useState(false)

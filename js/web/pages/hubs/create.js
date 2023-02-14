@@ -6,13 +6,13 @@ const CreateHubPage = () => {
   return (
     <>
       <Head>
-        <title>Nina Hubs - Create</title>
+        <title>Nina Hubs - Create Hub</title>
         <meta
           name="description"
           content={'Nina Protocol is a digitally native music ecosystem'}
         />
         <meta name="og:type" content="website" />
-        <meta name="og:title" content="Nina Hubs - Create" />
+        <meta name="og:title" content="Nina - Create Hub" />
         <meta
           name="og:description"
           content={'Nina Protocol is a digitally native music ecosystem'}
@@ -35,7 +35,8 @@ const CreateHubPage = () => {
           href="https://ninaprotocol.com/images/nina-blue.png"
         />
       </Head>
-      <HubCreate update={false} inHubs={true} />
+
+      <HubCreate update={false} inHubs={false} />
     </>
   )
 }

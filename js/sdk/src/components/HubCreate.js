@@ -6,28 +6,28 @@ import React, {
   useCallback,
 } from 'react'
 import * as Yup from 'yup'
-import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Hub from '../contexts/Hub'
+import Nina from '../contexts/Nina'
 import { useSnackbar } from 'notistack'
 import { styled } from '@mui/material/styles'
 import Button from '@mui/material/Button'
-import LinearProgress from '@mui/material/LinearProgress'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import { useWallet } from '@solana/wallet-adapter-react'
 import dynamic from 'next/dynamic'
-import { useRouter } from 'next/router'
 import HubCreateForm from './HubCreateForm'
 import HubCreateConfirm from './HubCreateConfirm'
 import NinaBox from './NinaBox'
 import HubImageDropzone from './HubImageDropzone'
 import Dots from './Dots'
-import BundlrModal from '@nina-protocol/nina-internal-sdk/esm/BundlrModal'
-import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
 
-const ColorModal = dynamic(() => import('./ColorModal'))
-
+const EmailCapture = dynamic(() => import('./EmailCapture'), { ssr: false })
+const BundlrModal = dynamic(() => import('./BundlrModal'), { ssr: false })
+const ColorModal = dynamic(() => import('./ColorModal'), { ssr: false })
+const HubCreateSuccess = dynamic(() => import('./HubCreateSuccess'), {
+  ssr: false,
+})
 import {
   createUpload,
   updateUpload,
@@ -44,28 +44,17 @@ const HubCreateSchema = Yup.object().shape({
   description: Yup.string(),
 })
 
-const HubCreate = ({ update, hubData }) => {
+const HubCreate = ({ update, hubData, inHubs }) => {
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
+  const { hubInitWithCredit, hubUpdateConfig, validateHubHandle } = useContext(
+    Hub.Context
+  )
   const {
-    hubInitWithCredit,
-    hubState,
-    hubUpdateConfig,
-    getHubs,
-    validateHubHandle,
-  } = useContext(Hub.Context)
-  const router = useRouter()
-  const {
-    healthOk,
     bundlrUpload,
     bundlrBalance,
-    getBundlrBalance,
-    bundlrFund,
-    bundlrWithdraw,
-    getBundlrPricePerMb,
     bundlrPricePerMb,
     solPrice,
-    getSolPrice,
     getNpcAmountHeld,
     npcAmountHeld,
     checkIfHasBalanceToCompleteAction,
@@ -78,7 +67,6 @@ const HubCreate = ({ update, hubData }) => {
   const [buttonText, setButtonText] = useState(
     update ? 'Update Hub' : 'Create Hub'
   )
-  const [pending, setPending] = useState(false)
   const [formIsValid, setFormIsValid] = useState(false)
   const [formValues, setFormValues] = useState({
     hubForm: {},
@@ -87,13 +75,10 @@ const HubCreate = ({ update, hubData }) => {
   const [textColor, setTextColor] = useState()
   const [formValuesConfirmed, setFormValuesConfirmed] = useState(false)
   const [isPublishing, setIsPublishing] = useState(false)
-  const [hubInfo, setHubInfo] = useState()
   const [artworkTx, setArtworkTx] = useState()
   const [metadataTx, setMetadataTx] = useState()
   const [hubCreated, setHubCreated] = useState(false)
-  const [hubUpdated, setHubUpdated] = useState(false)
   const [uploadId, setUploadId] = useState()
-  const [hubHandleValid, setHubHandleValid] = useState(false)
   const [publishingStepText, setPublishingStepText] = useState()
 
   const mbs = useMemo(
@@ -104,17 +89,6 @@ const HubCreate = ({ update, hubData }) => {
     () => bundlrBalance * solPrice,
     [bundlrBalance, solPrice]
   )
-
-  useEffect(() => {
-    refreshBundlr()
-  }, [])
-
-  const refreshBundlr = () => {
-    getBundlrPricePerMb()
-    getBundlrBalance()
-    getSolPrice()
-  }
-
   useEffect(() => {
     getNpcAmountHeld()
   }, [wallet?.connected])
@@ -205,7 +179,7 @@ const HubCreate = ({ update, hubData }) => {
           return
         }
         let upload = uploadId
-        const metadataJson = {}
+        let metadataJson = {}
         let metadataResult = metadataTx
         if (artwork) {
           let artworkResult = artworkTx
@@ -413,17 +387,11 @@ const HubCreate = ({ update, hubData }) => {
 
   if (hubCreated) {
     return (
-      <Box margin="auto">
-        <Button
-          fullWidth
-          variant="outlined"
-          color="primary"
-          onClick={() => router.push(`/${formValues.hubForm.handle}`)}
-          sx={{ height: '54px' }}
-        >
-          {`${formValues.hubForm.displayName}  has been created!  View Hub.`}
-        </Button>
-      </Box>
+      <HubCreateSuccess
+        hubName={formValues.hubForm.displayName}
+        hubHandle={formValues.hubForm.handle}
+        inHubs={inHubs}
+      />
     )
   }
   return (
@@ -559,13 +527,6 @@ const HubCreate = ({ update, hubData }) => {
               />
             )}
 
-            {pending && (
-              <LinearProgress
-                variant="determinate"
-                value={audioProgress || imageProgress}
-              />
-            )}
-
             <Box display="flex" justifyContent="space-between">
               {bundlrBalance > 0 && (
                 <BundlrBalanceInfo variant="subtitle1" align="left">
@@ -625,17 +586,17 @@ const CreateCta = styled(Box)(({ theme }) => ({
   },
 }))
 
-const DropzoneWrapper = styled(Box)(({ theme }) => ({
+const DropzoneWrapper = styled(Box)(() => ({
   width: '100%',
   padding: '0 15px',
 }))
 
-const BundlrBalanceInfo = styled(Typography)(({ theme }) => ({
+const BundlrBalanceInfo = styled(Typography)(() => ({
   whiteSpace: 'nowrap',
   margin: '5px 0',
 }))
 
-const ColorWrapper = styled(Box)(({ theme }) => ({
+const ColorWrapper = styled(Box)(() => ({
   textAlign: 'left',
   padding: '5px 15px 15px',
 }))

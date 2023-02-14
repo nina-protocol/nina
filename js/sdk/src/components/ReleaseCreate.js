@@ -60,6 +60,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     releaseCreate,
     validateUniqueMd5Digest,
     releaseInitViaHub,
+    pendingReleases,
   } = useContext(Release.Context)
   const router = useRouter()
   const {
@@ -106,6 +107,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   const [profileHubs, setProfileHubs] = useState()
   const [selectedHub, setSelectedHub] = useState()
   const [processingProgress, setProcessingProgress] = useState()
+  const [awaitingPendingReleases, setAwaitingPendingReleases] = useState(false)
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
 
@@ -220,7 +222,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
         setButtonText('Restart 3/4: Upload Metadata.')
       } else if (artworkTx && trackTx && metadataTx && !releaseCreated) {
         setButtonText(
-          'There may have been an error creating this release. Please wait 30 seconds and check for the release in your profile before retrying'
+          'There may have been an error creating this release. Please check for the release in your profile and contact us before trying again.'
         )
       } else if (mbs < uploadSize) {
         setButtonText(
@@ -236,6 +238,14 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     releaseCreated,
     bundlrBalance,
   ])
+
+  useEffect(() => {
+    if (Object.keys(pendingReleases).length > 0) {
+      setAwaitingPendingReleases(true)
+    } else {
+      setAwaitingPendingReleases(false)
+    }
+  }, [pendingReleases])
 
   const handleFormChange = useCallback(
     async (values) => {
@@ -505,17 +515,21 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                   values={formValues}
                   releasePubkey={releasePubkey}
                   track={track}
-                  disabled={isPublishing || releaseCreated}
+                  disabled={
+                    isPublishing || releaseCreated || awaitingPendingReleases
+                  }
                   handleProgress={handleProgress}
                   processingProgress={processingProgress}
                 />
               </Box>
-              <CreateFormWrapper>
+              <CreateFormWrapper disabled={awaitingPendingReleases}>
                 <ReleaseCreateForm
                   onChange={handleFormChange}
                   values={formValues.releaseForm}
                   ReleaseCreateSchema={ReleaseCreateSchema}
-                  disabled={isPublishing || releaseCreated}
+                  disabled={
+                    isPublishing || releaseCreated || awaitingPendingReleases
+                  }
                 />
               </CreateFormWrapper>
               <CreateCta>
@@ -589,6 +603,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                     selectedHub={selectedHub}
                     handleChange={(e) => handleHubSelect(e)}
                     hubPubkey={hubPubkey}
+                    awaitingPendingReleases={awaitingPendingReleases}
                   />
                 )}
 
@@ -612,7 +627,11 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                     </BundlrBalanceInfo>
                   )}
                   {uploadSize > 0 && (
-                    <Typography variant="subtitle1" align="right">
+                    <Typography
+                      variant="subtitle1"
+                      align="right"
+                      sx={{ margin: '5px 0' }}
+                    >
                       Upload Size: {uploadSize} MB | Cost: $
                       {(uploadSize * (bundlrUsdBalance / mbs)).toFixed(2)}
                     </Typography>
@@ -633,13 +652,14 @@ const ConnectMessage = styled(Typography)(() => ({
   paddingTop: '30px',
 }))
 
-const CreateFormWrapper = styled(Box)(({ theme }) => ({
+const CreateFormWrapper = styled(Box)(({ theme, disabled }) => ({
   width: '100%',
   height: '476px',
   margin: 'auto',
   display: 'flex',
   flexDirection: 'column',
   border: `1px solid ${theme.palette.grey.primary}`,
+  cursor: disabled ? 'not-allowed' : 'auto',
 }))
 
 const CreateCta = styled(Box)(({ theme }) => ({

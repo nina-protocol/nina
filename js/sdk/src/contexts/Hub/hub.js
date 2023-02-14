@@ -27,6 +27,7 @@ const HubContextProvider = ({ children }) => {
     setPostState,
     verificationState,
     setVerificationState,
+    solBalance,
   } = useContext(Nina.Context)
   const [hubState, setHubState] = useState({})
   const [hubCollaboratorsState, setHubCollaboratorsState] = useState({})
@@ -93,6 +94,7 @@ const HubContextProvider = ({ children }) => {
     setFetchedHubsForUser,
     verificationState,
     setVerificationState,
+    solBalance,
   })
 
   return (
@@ -163,6 +165,7 @@ const hubContextHelper = ({
   setFetchedHubsForUser,
   verificationState,
   setVerificationState,
+  solBalance,
 }) => {
   const { ids, provider, endpoints } = ninaClient
 
@@ -266,8 +269,9 @@ const hubContextHelper = ({
         hubPubkey: hub,
       }
     } catch (error) {
-      logEvent('hub_init_with_credit_success_failure', 'engagement', {
+      logEvent('hub_init_with_credit_failure', 'engagement', {
         wallet: provider.wallet.publicKey.toBase58(),
+        solBalance,
       })
 
       return ninaErrorHandler(error)
@@ -523,6 +527,12 @@ const hubContextHelper = ({
       const queue = new Set(addToHubQueue)
       addToHubQueue.delete(releasePubkey.toBase58())
       setAddToHubQueue(queue)
+      logEvent('hub_add_release_initiated', 'engagement', {
+        release: releasePubkey.toBase58(),
+        hub: hubPubkey.toBase58(),
+        wallet: provider.wallet.publicKey.toBase58(),
+        solBalance,
+      })
       return ninaErrorHandler(error)
     }
   }

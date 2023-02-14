@@ -7,7 +7,6 @@ import { Typography } from '@mui/material'
 import { styled } from '@mui/system'
 import { Box } from '@mui/system'
 import Subscribe from './Subscribe'
-
 const { getImageFromCDN, loader } = imageManager
 
 const HubHeader = ({ hubData }) => {
