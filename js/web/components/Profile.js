@@ -13,6 +13,8 @@ import {
   timeSince,
 } from '@nina-protocol/nina-internal-sdk/src/utils'
 import IdentityVerification from './IdentityVerification'
+import CreateHub from './CreateHub'
+
 const { getImageFromCDN, loader } = imageManager
 
 const Dots = dynamic(() => import('./Dots'))
@@ -419,6 +421,7 @@ const Profile = ({ profilePubkey }) => {
                         profilePublicKey={profilePubkey}
                       />
                     )}
+                    <CreateHub />
                   </Box>
                 </>
               )}

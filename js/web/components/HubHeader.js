@@ -7,7 +7,7 @@ import { Typography } from '@mui/material'
 import { styled } from '@mui/system'
 import { Box } from '@mui/system'
 import Subscribe from './Subscribe'
-
+import CreateHub from './CreateHub'
 const { getImageFromCDN, loader } = imageManager
 
 const HubHeader = ({ hubData }) => {
@@ -60,6 +60,7 @@ const HubHeader = ({ hubData }) => {
                 inFeed={false}
               />
             )}
+            <CreateHub />
           </DisplayName>
           {hubData?.data?.description && (
             <DescriptionOverflowContainer>

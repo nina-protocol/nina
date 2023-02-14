@@ -1,5 +1,4 @@
 import React from 'react'
-import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
@@ -9,7 +8,7 @@ import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined'
 import Image from 'next/image'
 
 const HubImageDropzone = ({ type, setArtwork, currentImageUrl, update }) => {
-  const handleChangeStatus = ({ meta, file, restart, remove }, status) => {
+  const handleChangeStatus = ({ meta, file, remove }, status) => {
     if (meta.status === 'error_validation') {
       const height = meta.height
       const width = meta.width
@@ -53,7 +52,7 @@ const HubImageDropzone = ({ type, setArtwork, currentImageUrl, update }) => {
     return false
   }
 
-  const inputLayout = (type) => {
+  const inputLayout = () => {
     return (
       <>
         <AddOutlinedIcon />
@@ -169,12 +168,12 @@ const classes = {
   dropZonePreviewStatusContainer: `${PREFIX}-dropZonePreviewStatusContainer`,
 }
 
-const Root = styled(Box)(({ theme }) => ({
+const Root = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
 }))
 
-const Copy = styled(Box)(({ theme }) => ({
+const Copy = styled(Box)(() => ({
   display: 'flex',
   flexDirection: 'column',
   // alignItems: 'center',

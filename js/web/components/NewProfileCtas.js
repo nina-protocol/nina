@@ -41,13 +41,9 @@ const NewProfileCtas = ({ activeViewIndex, profilePubkey }) => {
             <Typography my={1}>You have not created a Hub yet.</Typography>
             <Typography my={1}>
               Click{' '}
-              <a
-                href={process.env.NINA_HUBS_URL + '/create'}
-                target="_blank"
-                rel="noreferrer"
-              >
-                here
-              </a>{' '}
+              <Link href="/hubs/create">
+                <a>here</a>
+              </Link>{' '}
               to set up your Hub.
             </Typography>
           </>
