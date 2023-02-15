@@ -15,13 +15,13 @@ import Button from '@mui/material/Button'
 
 // import {styles} from './styles'
 
-const ImageCropperModal = ({artwork, setArtwork, cropperModalOpen}) => {
+const ImageCropperModal = ({artwork, uncroppedImage, setCroppedImage, setUncroppedImage, cropperModalOpen}) => {
   const [open, setOpen] = useState(false)
   const [crop, setCrop] = useState({x: 0, y: 0})
   const [rotation, setRotation] = useState(0)
   const [zoom, setZoom] = useState(1)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
-  const [croppedImage, setCroppedImage] = useState(null)
+  // const [croppedImageResult, setCroppedImageResult] = useState(null)
   const [originalImage, setOriginalImage] = useState(null)
 
     useEffect(() => {
@@ -29,10 +29,11 @@ const ImageCropperModal = ({artwork, setArtwork, cropperModalOpen}) => {
     }, [cropperModalOpen])
 
     useEffect(() => {
-      if (artwork) {
-        setOriginalImage(artwork.meta.previewUrl)
+      if (uncroppedImage) {
+        console.log('uncroppedImage :>> ', uncroppedImage)
+        setOriginalImage(uncroppedImage.meta.previewUrl)
       }
-    }, [artwork])
+    }, [uncroppedImage])
     
 
   const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
@@ -40,24 +41,28 @@ const ImageCropperModal = ({artwork, setArtwork, cropperModalOpen}) => {
   }, [])
 
   const showCroppedImage = useCallback(async () => {
+    console.log('show crop function');
     try {
-      const croppedImage = await getCroppedImg(
+      const croppedImageResult = await getCroppedImg(
         originalImage,
         croppedAreaPixels,
         rotation
       )
-      console.log('donee', {croppedImage})
-      setCroppedImage(croppedImage)
+
+
+      console.log('donee', {croppedImageResult})
+      console.log('doneeeeeeee', croppedImageResult)
+      setCroppedImage(croppedImageResult)
+      setUncroppedImage(undefined)
     } catch (e) {
       console.error(e)
     }
   }, [croppedAreaPixels, rotation])
 
-  const onClose = useCallback(() => {
-    setCroppedImage(null)
-  }, [])
+  // const onClose = useCallback(() => {
+  //   setCroppedImage(null)
+  // }, [])
 
-console.log('croppedImage :>> ', croppedImage);
 
   return (
     <Root >
@@ -93,7 +98,7 @@ console.log('croppedImage :>> ', croppedImage);
                   crop={crop}
                   rotation={rotation}
                   zoom={zoom}
-                  aspect={4 / 3}
+                  aspect={1}
                   onCropChange={setCrop}
                   onRotationChange={setRotation}
                   onCropComplete={onCropComplete}

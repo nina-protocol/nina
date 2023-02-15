@@ -12,26 +12,27 @@ const ImageCropperModal = dynamic(() => import('./ImageCropperModal'))
 
 const MediaDropzone = ({
   type,
+  artwork,
   setArtwork,
   setTrack,
   disabled,
   processingProgress,
-  setImageCropperOpen,
-  artwork
+  setUncroppedImage,
+  uncroppedImage,
+  croppedImage
+  // setImageCropperOpen,
 }) => {
   const { MAX_AUDIO_FILE_UPLOAD_SIZE, MAX_IMAGE_FILE_UPLOAD_SIZE } = useContext(
     Nina.Context
   )
+  // const [cropperModalOpen, setCropperModalOpen] = useState(false)
 
-  const [imageConfirmed, setImageConfirmed] = useState(false)
-  const [cropperModalOpen, setCropperModalOpen] = useState(false)
-
-  useEffect(() => {
-    if (artwork && !imageConfirmed) {
-      setCropperModalOpen(true)
-    }
-    console.log('artwork :>> ', artwork);
-  }, [artwork])
+  // useEffect(() => {
+  //   if (artwork && !imageConfirmed) {
+  //     setCropperModalOpen(true)
+  //   }
+  //   console.log('artwork :>> ', artwork);
+  // }, [artwork])
 
   const handleChangeStatus = ({ meta, file, remove }, status) => {
     if (meta.status === 'error_validation') {
@@ -58,20 +59,27 @@ const MediaDropzone = ({
       console.log('status :>> ', status);
       if (status === 'removed') {
         setArtwork(undefined)
-      } else if (status === 'done' && !imageConfirmed) {
-        console.log('file :>> ', file);
-        console.log('meta :>> ', meta);
+      } else if (status === 'done') {
+
         try {
-          setArtwork({
-            file,
-            meta,
-          })
-          setCropperModalOpen(true)
+          // setArtwork({
+          //   file,
+          //   meta,
+          // })
           
         } catch (error) {
           console.log('error :>> ', error);
         }
       } 
+    } else if (type === 'cropper') {
+      if (status === 'removed') {
+        setUncroppedImage(undefined)
+      } else {
+        setUncroppedImage({
+          file,
+          meta,
+        })
+      }
     } else if (type === 'track') {
       if (status === 'removed') {
         setTrack(undefined)
@@ -223,6 +231,7 @@ const MediaDropzone = ({
         disabled={disabled}
         inputContent={inputLayout(type)}
         PreviewComponent={Preview}
+        initialFiles={croppedImage ? [croppedImage] : []}
         styles={{
           dropzone: {
             minHeight: 60,
@@ -236,7 +245,7 @@ const MediaDropzone = ({
             backgroundColor: '#EAEAEA',
           },
           preview: {
-            margin: 'auto',
+            margin: 'auto', 
             alignItems: 'center',
           },
           previewImage: {
@@ -252,15 +261,6 @@ const MediaDropzone = ({
           },
         }}
       />
-      {type === 'artwork' &&  (
-        <ImageCropperModal
-          cropperModalOpen={cropperModalOpen} 
-          artwork={artwork} 
-          setArtwork={setArtwork} 
-          setImageConfirmed={setImageConfirmed}
-          imageConfirmed={imageConfirmed}
-          />
-      )}
     </>
   )
 }
