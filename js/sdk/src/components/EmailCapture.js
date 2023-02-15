@@ -8,7 +8,6 @@ import EmailCaptureForm from './EmailCaptureForm'
 import { Box } from '@mui/material'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Nina from '../contexts/Nina'
-import { useSnackbar } from 'notistack'
 import CloseIcon from '@mui/icons-material/Close'
 import { logEvent } from '../utils/event'
 
@@ -23,8 +22,7 @@ const style = {
   p: '60px',
   boxSizing: 'content-box',
 }
-const requiredString =
-  'At least one of Soundcloud, Twitter, or Instagram is required'
+const requiredString = 'A Soundcloud, Twitter, or Instagram is required'
 
 const EmailCaptureSchema = Yup.object().shape(
   {
@@ -60,7 +58,6 @@ const EmailCaptureSchema = Yup.object().shape(
 )
 
 const EmailCapture = ({ size }) => {
-  const { enqueueSnackbar } = useSnackbar()
   const { publicKey, connected } = useWallet()
   const { submitEmailRequest } = useContext(Nina.Context)
   const [open, setOpen] = useState(false)
@@ -69,6 +66,7 @@ const EmailCapture = ({ size }) => {
   const handleClose = () => setOpen(false)
   const [formValues, setFormValues] = useState({})
   const [formIsValid, setFormIsValid] = useState(false)
+  const [submitButtonText, setSubmitButtonText] = useState('Submit')
 
   useEffect(() => {
     if (open) {
@@ -82,20 +80,52 @@ const EmailCapture = ({ size }) => {
     }
   }, [connected, publicKey])
 
+  useEffect(() => {
+    if (formIsValid) {
+      setSubmitButtonText('Submit')
+    }
+  }, [formValues])
+
   const handleSubmit = async () => {
     if (formIsValid) {
+      setSubmitButtonText('Submitting...')
       try {
         await submitEmailRequest(formValues)
         logEvent('email_request_success', 'engagement', {
           email: formValues.email,
         })
         setShowSuccessInfo(true)
-        enqueueSnackbar('Application Submitted!', { variant: 'success' })
       } catch (error) {
         console.warn('email form error', error)
         logEvent('email_request_success', 'engagement', {
           email: formValues.email,
         })
+      }
+    }
+    if (!formIsValid) {
+      if (
+        formValues.email === '' &&
+        !formValues.soundcloud &&
+        !formValues.twitter &&
+        !formValues.instagram
+      ) {
+        setSubmitButtonText(
+          'An email address and at least one social is required'
+        )
+      }
+      if (
+        formValues.email !== '' &&
+        !formValues.soundcloud &&
+        !formValues.twitter &&
+        !formValues.instagram
+      ) {
+        setSubmitButtonText('At least one social is required')
+      }
+      if (
+        formValues.email === '' &&
+        (formValues.soundcloud || formValues.twitter || formValues.instagram)
+      ) {
+        setSubmitButtonText('An email address is required')
       }
     }
   }
@@ -167,9 +197,8 @@ const EmailCapture = ({ size }) => {
                 fullWidth
                 onClick={handleSubmit}
                 sx={{ width: '100%', mt: '30px' }}
-                disabled={!formIsValid}
               >
-                Submit
+                {submitButtonText}
               </Button>
             </>
           )}
