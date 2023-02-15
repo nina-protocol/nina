@@ -62,10 +62,10 @@ const MediaDropzone = ({
       } else if (status === 'done') {
 
         try {
-          // setArtwork({
-          //   file,
-          //   meta,
-          // })
+          setArtwork({
+            file,
+            meta,
+          })
           
         } catch (error) {
           console.log('error :>> ', error);
