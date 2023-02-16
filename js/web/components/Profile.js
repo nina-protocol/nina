@@ -14,7 +14,7 @@ import {
 } from '@nina-protocol/nina-internal-sdk/src/utils'
 import IdentityVerification from './IdentityVerification'
 import CreateHub from './CreateHub'
-
+import Balance from './Balance'
 const { getImageFromCDN, loader } = imageManager
 
 const Dots = dynamic(() => import('./Dots'))
@@ -48,6 +48,9 @@ const Profile = ({ profilePubkey }) => {
     getVerificationsForUser,
     verificationState,
     displayImageForAccount,
+    solUsdcBalance,
+    solBalance,
+    usdcBalance,
   } = useContext(Nina.Context)
 
   const [profilePublishedReleases, setProfilePublishedReleases] =
@@ -108,6 +111,7 @@ const Profile = ({ profilePubkey }) => {
     if (wallet.connected && profilePubkey === wallet.publicKey?.toBase58()) {
       setInDashboard(true)
     }
+    console.log()
   }, [wallet, profilePubkey])
 
   useEffect(() => {
@@ -198,6 +202,9 @@ const Profile = ({ profilePubkey }) => {
     } else {
       setProfileCollectionReleases([])
     }
+    console.log('    solUsdcBalance', solUsdcBalance)
+    console.log('solBalance', solBalance)
+    console.log('usdcBalance', usdcBalance)
   }, [fetchedUserProfileReleases, profilePubkey])
 
   useEffect(() => {
@@ -423,6 +430,7 @@ const Profile = ({ profilePubkey }) => {
                     )}
                     {inDashboard && <CreateHub />}
                   </Box>
+                  <Balance />
                 </>
               )}
             </Box>

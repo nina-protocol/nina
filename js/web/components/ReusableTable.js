@@ -468,6 +468,7 @@ const ReusableTableBody = (props) => {
         searchResultHub: data?.data.displayName,
       }
     }
+    console.log('data', data)
     return formattedData
   })
   return (
