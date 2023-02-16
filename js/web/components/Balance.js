@@ -1,11 +1,10 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext,  } from 'react'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { Box, Typography } from '@mui/material'
 import { styled } from '@mui/system'
-import Button from '@mui/material/Button'
 
 const Balance = () => {
-  const { ninaClient, solUsdcBalance, solBalance, usdcBalance } = useContext(
+  const { ninaClient, solBalance, usdcBalance } = useContext(
     Nina.Context
   )
 

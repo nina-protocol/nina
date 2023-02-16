@@ -48,9 +48,6 @@ const Profile = ({ profilePubkey }) => {
     getVerificationsForUser,
     verificationState,
     displayImageForAccount,
-    solUsdcBalance,
-    solBalance,
-    usdcBalance,
   } = useContext(Nina.Context)
 
   const [profilePublishedReleases, setProfilePublishedReleases] =
@@ -202,9 +199,6 @@ const Profile = ({ profilePubkey }) => {
     } else {
       setProfileCollectionReleases([])
     }
-    console.log('    solUsdcBalance', solUsdcBalance)
-    console.log('solBalance', solBalance)
-    console.log('usdcBalance', usdcBalance)
   }, [fetchedUserProfileReleases, profilePubkey])
 
   useEffect(() => {
@@ -430,7 +424,7 @@ const Profile = ({ profilePubkey }) => {
                     )}
                     {inDashboard && <CreateHub />}
                   </Box>
-                  <Balance />
+                  {inDashboard && <Balance />}
                 </>
               )}
             </Box>
