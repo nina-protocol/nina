@@ -98,50 +98,6 @@ const MediaDropzones = ({
       />
       <label htmlFor="artwork"></label>
       {renderImageDropZones}
-      {/* {!uncroppedImage && !croppedImage && (
-        <>
-        <Typography>this one</Typography>
-        <MediaDropzone
-          type="cropper"
-          artwork={artwork}
-          setArtwork={setArtwork}
-          setUncroppedImage={setUncroppedImage}
-          releasePubkey={releasePubkey}
-          metadata={metadata}
-          handleProgress={handleProgress}
-          disabled={disabled}
-        />
-        </>
-      )}
-
-      {croppedImage && (
-        <>
-        <Typography variant="h6">thatone </Typography>
-         <MediaDropzone
-          type="artwork"
-          artwork={artwork}
-          setArtwork={setArtwork}
-          setUncroppedImage={setUncroppedImage}
-          releasePubkey={releasePubkey}
-          metadata={metadata}
-          handleProgress={handleProgress}
-          disabled={disabled}
-          croppedImage={croppedImage}
-        /> 
-        </>
-
-      )}
-
-      {uncroppedImage && !croppedImage && (
-        <ImageCropperModal
-          cropperModalOpen={uncroppedImage && !croppedImage} 
-          uncroppedImage={uncroppedImage}
-          // artwork={artwork} 
-          setArtwork={setArtwork} 
-          setCroppedImage={setCroppedImage}
-          setUncroppedImage={setUncroppedImage}
-          />
-      )} */}
     </StyledDropZones>
   )
 }
