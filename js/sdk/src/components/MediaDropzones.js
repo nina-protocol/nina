@@ -25,7 +25,6 @@ const MediaDropzones = ({
     if (!uncroppedImage && !croppedImage) {
       return (  
         <>
-          <Typography>this one</Typography>
           <MediaDropzone
             type="cropper"
             artwork={artwork}
@@ -56,7 +55,6 @@ const MediaDropzones = ({
     if (croppedImage) {
       return (
         <>
-          <Typography variant="h6">thatone </Typography>
           <MediaDropzone
             type="artwork"
             artwork={artwork}

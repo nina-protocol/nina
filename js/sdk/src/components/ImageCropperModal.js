@@ -54,13 +54,25 @@ const ImageCropperModal = ({artwork, uncroppedImage, setCroppedImage, setUncropp
     }
   }, [croppedAreaPixels, rotation])
 
+  const handleClose = (
+    event,
+    reason
+  ) => {
+    if (reason === "backdropClick") {
+      console.log(reason);
+    } else {
+      setOpen(false);
+    }
+  };
+
+
   // const onClose = useCallback(() => {
   //   setCroppedImage(null)
   // }, [])
 
   return (
     <Root >
-        <Button
+        {/* <Button
           variant="contained"
           color="primary"
           type="submit"
@@ -69,14 +81,14 @@ const ImageCropperModal = ({artwork, uncroppedImage, setCroppedImage, setUncropp
           <Typography align={'right'} textTransform={'none'}>
             Edit Image
           </Typography>
-        </Button>
+        </Button> */}
 
 
       <StyledModal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={handleClose}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
@@ -137,7 +149,7 @@ const ImageCropperModal = ({artwork, uncroppedImage, setCroppedImage, setUncropp
                   variant="outlined"
                   color="primary"
                   width="100%"
-                  style={{marginTop: '16px'}}
+                  style={{marginTop: '16px', width: '100%'}}
                 >
                   Confirm Image
                 </Button>
