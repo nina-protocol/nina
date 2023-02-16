@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect, } from 'react'
 import Dropzone from 'react-dropzone-uploader'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
@@ -7,8 +7,6 @@ import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined'
 import Image from 'next/image'
 import Nina from '../contexts/Nina'
 import dynamic from 'next/dynamic'
-const ImageCropperModal = dynamic(() => import('./ImageCropperModal'))
-// import ImageCropperModal from './ImageCropperModal'
 
 const MediaDropzone = ({
   type,
@@ -18,14 +16,13 @@ const MediaDropzone = ({
   disabled,
   processingProgress,
   setUncroppedImage,
+  setCroppedImage,
   uncroppedImage,
   croppedImage
-  // setImageCropperOpen,
 }) => {
   const { MAX_AUDIO_FILE_UPLOAD_SIZE, MAX_IMAGE_FILE_UPLOAD_SIZE } = useContext(
     Nina.Context
   )
-  // const [cropperModalOpen, setCropperModalOpen] = useState(false)
 
   // useEffect(() => {
   //   if (artwork && !imageConfirmed) {
@@ -59,16 +56,25 @@ const MediaDropzone = ({
       console.log('status :>> ', status);
       if (status === 'removed') {
         setArtwork(undefined)
+        console.log('removing');
+        console.log('removing');
+        console.log('removing');
+        console.log('removing');
+        console.log('setUncroppedImage :>> ', setUncroppedImage);
+        setUncroppedImage(undefined)
+        setCroppedImage(undefined)
       } else if (status === 'done') {
-
-        try {
-          setArtwork({
-            file,
-            meta,
-          })
-          
-        } catch (error) {
-          console.log('error :>> ', error);
+        console.log('artwork function');
+        if (!artwork) {
+          try {
+            setArtwork({
+              file,
+              meta,
+            })
+  
+          } catch (error) {
+            console.log('error :>> ', error);
+        }
         }
       } 
     } else if (type === 'cropper') {
