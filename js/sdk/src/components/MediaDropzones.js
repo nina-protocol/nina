@@ -21,23 +21,11 @@ const MediaDropzones = ({
   const [uncroppedImage, setUncroppedImage] = useState(undefined)
   const [croppedImage, setCroppedImage] = useState(undefined)
 
+  const type = useMemo(() => {
+    return !uncroppedImage && !croppedImage ? 'cropper' : 'artwork'
+  }, [uncroppedImage, croppedImage])
+
   const renderImageDropZones = useMemo(() => {
-    if (!uncroppedImage && !croppedImage) {
-      return (  
-        <>
-          <MediaDropzone
-            type="cropper"
-            artwork={artwork}
-            setArtwork={setArtwork}
-            setUncroppedImage={setUncroppedImage}
-            releasePubkey={releasePubkey}
-            metadata={metadata}
-            handleProgress={handleProgress}
-            disabled={disabled}
-          />
-        </>
-        )
-    } 
     if (uncroppedImage && !croppedImage) {
       return (
         <>
@@ -51,12 +39,11 @@ const MediaDropzones = ({
           />
         </>
       )
-    }
-    if (croppedImage) {
+    } else {
       return (
         <>
           <MediaDropzone
-            type="artwork"
+            type={type}
             artwork={artwork}
             setArtwork={setArtwork}
             setUncroppedImage={setUncroppedImage}
