@@ -39,6 +39,9 @@ const UploadInfoModal = dynamic(() => import('./UploadInfoModal'), {
 })
 const EmailCapture = dynamic(() => import('./EmailCapture'), { ssr: false })
 const BundlrModal = dynamic(() => import('./BundlrModal'), { ssr: false })
+const BundlrModalBody = dynamic(() => import('./BundlrModalBody'), {
+  ssr: false,
+})
 
 const ReleaseCreateSchema = Yup.object().shape({
   artist: Yup.string().required('Artist is required'),
@@ -108,7 +111,8 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   const [selectedHub, setSelectedHub] = useState()
   const [processingProgress, setProcessingProgress] = useState()
   const [awaitingPendingReleases, setAwaitingPendingReleases] = useState(false)
-
+  const [showLowBalanceModal, setShowLowBalanceModal] = useState(false)
+  const [open, setOpen] = useState(false)
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
 
   const mbs = useMemo(
@@ -246,6 +250,14 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
       setAwaitingPendingReleases(false)
     }
   }, [pendingReleases])
+
+  useEffect(() => {
+    if (mbs < uploadSize) {
+      console.log('mbs', mbs)
+      setShowLowBalanceModal(true)
+    }
+    console.log('hwhwhwh', showLowBalanceModal)
+  }, [mbs, uploadSize])
 
   const handleFormChange = useCallback(
     async (values) => {
@@ -506,6 +518,12 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
               userHasSeenUpdateMessage={localStorage.getItem(
                 'nina-upload-update-message'
               )}
+            />
+            <BundlrModalBody
+              open={showLowBalanceModal}
+              setOpen={setShowLowBalanceModal}
+              notEnoughSol={true}
+              uploadSize={uploadSize}
             />
             <NinaBox columns="350px 400px" gridColumnGap="10px">
               <Box sx={{ width: '100%' }}>
