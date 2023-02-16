@@ -1,12 +1,10 @@
-import React, { useContext,  } from 'react'
+import React, { useContext } from 'react'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { Box, Typography } from '@mui/material'
 import { styled } from '@mui/system'
 
 const Balance = () => {
-  const { ninaClient, solBalance, usdcBalance } = useContext(
-    Nina.Context
-  )
+  const { ninaClient, solBalance, usdcBalance } = useContext(Nina.Context)
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
