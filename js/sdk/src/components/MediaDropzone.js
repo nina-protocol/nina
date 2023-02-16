@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, } from 'react'
+import React, { useState, useContext, useEffect, useMemo } from 'react'
 import Dropzone from 'react-dropzone-uploader'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
@@ -31,72 +31,70 @@ const MediaDropzone = ({
   //   console.log('artwork :>> ', artwork);
   // }, [artwork])
 
-  const handleChangeStatus = ({ meta, file, remove }, status) => {
-    if (meta.status === 'error_validation') {
-      const height = meta.height
-      const width = meta.width
-      const size = meta.size / 1000000
-      if (file.type.includes('audio')) {
-        if (file.type !== 'audio/mpeg') {
-          alert(`Your track is not an MP3. \nPlease upload an MP3.`)
-        } else {
-          alert(
-            `Your track is ${size} mb... \nPlease upload a file smaller than ${MAX_AUDIO_FILE_UPLOAD_SIZE} MBs`
-          )
-        }
-      } else {
-        alert(
-          `your image is ${size} mb... \nPlease upload an image smaller than ${MAX_IMAGE_FILE_UPLOAD_SIZE} MBs`
-        )
-      }
-      remove()
-    }
 
-    if (type === 'artwork') {
-      console.log('status :>> ', status);
-      if (status === 'removed') {
-        setArtwork(undefined)
-        console.log('removing');
-        console.log('removing');
-        console.log('removing');
-        console.log('removing');
-        console.log('setUncroppedImage :>> ', setUncroppedImage);
-        setUncroppedImage(undefined)
-        setCroppedImage(undefined)
-      } else if (status === 'done') {
-        console.log('artwork function');
-        if (!artwork) {
-          try {
-            setArtwork({
-              file,
-              meta,
-            })
-  
-          } catch (error) {
-            console.log('error :>> ', error);
-        }
-        }
-      } 
-    } else if (type === 'cropper') {
-      if (status === 'removed') {
-        setUncroppedImage(undefined)
-      } else {
-        setUncroppedImage({
-          file,
-          meta,
-        })
-      }
-    } else if (type === 'track') {
-      if (status === 'removed') {
-        setTrack(undefined)
-      } else {
-        setTrack({
-          file,
-          meta,
-        })
-      }
-    }
-  }
+ const handleChangeStatus = useMemo(() => {
+   return ({meta, file, remove}, status) => {
+     if (meta.status === 'error_validation') {
+      console.log('failedvalidation :>> ');
+       const height = meta.height
+       const width = meta.width
+       const size = meta.size / 1000000
+       if (file.type.includes('audio')) {
+         if (file.type !== 'audio/mpeg') {
+           alert(`Your track is not an MP3. \nPlease upload an MP3.`)
+         } else {
+           alert(
+             `Your track is ${size} mb... \nPlease upload a file smaller than ${MAX_AUDIO_FILE_UPLOAD_SIZE} MBs`
+           )
+         }
+       } else {
+         alert(
+           `your image is ${size} mb... \nPlease upload an image smaller than ${MAX_IMAGE_FILE_UPLOAD_SIZE} MBs`
+         )
+       }
+       remove()
+     }
+
+     if (type === 'artwork') {
+       if (status === 'removed') {
+         setArtwork(undefined)
+         setUncroppedImage(undefined)
+         setCroppedImage(undefined)
+       } else if (status === 'done') {
+         if (!artwork) {
+           try {
+             setArtwork({
+               file,
+               meta,
+             })
+
+           } catch (error) {
+             console.log('error :>> ', error);
+           }
+         }
+       }
+     } else if (type === 'cropper') {
+       if (status === 'removed') {
+         setUncroppedImage(undefined)
+       } else {
+         setUncroppedImage({
+           file,
+           meta,
+         })
+       }
+     } else if (type === 'track') {
+       if (status === 'removed') {
+         setTrack(undefined)
+       } else {
+         setTrack({
+           file,
+           meta,
+         })
+       }
+     }
+   }
+
+ }, [artwork, uncroppedImage, croppedImage])
 
   const inputLayout = (type) => {
     if (type === 'track') {
@@ -119,13 +117,7 @@ const MediaDropzone = ({
   }
 
   const validateImage = (fileWithMeta) => {
-    const height = fileWithMeta.meta.height
-    const width = fileWithMeta.meta.width
     const size = fileWithMeta.file.size / 1000000
-
-    if (height !== width) {
-      return true
-    }
 
     if (size > MAX_IMAGE_FILE_UPLOAD_SIZE) {
       return true

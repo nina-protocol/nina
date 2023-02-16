@@ -11,7 +11,7 @@ import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
-
+import Box from '@mui/material/Box'
 
 // import {styles} from './styles'
 
@@ -30,7 +30,6 @@ const ImageCropperModal = ({artwork, uncroppedImage, setCroppedImage, setUncropp
 
     useEffect(() => {
       if (uncroppedImage) {
-        console.log('uncroppedImage :>> ', uncroppedImage)
         setOriginalImage(uncroppedImage.meta.previewUrl)
       }
     }, [uncroppedImage])
@@ -41,7 +40,6 @@ const ImageCropperModal = ({artwork, uncroppedImage, setCroppedImage, setUncropp
   }, [])
 
   const showCroppedImage = useCallback(async () => {
-    console.log('show crop function');
     try {
       const croppedImageResult = await getCroppedImg(
         originalImage,
@@ -49,9 +47,6 @@ const ImageCropperModal = ({artwork, uncroppedImage, setCroppedImage, setUncropp
         rotation
       )
 
-
-      console.log('donee', {croppedImageResult})
-      console.log('doneeeeeeee', croppedImageResult)
       setCroppedImage(croppedImageResult)
       setUncroppedImage(undefined)
     } catch (e) {
@@ -62,7 +57,6 @@ const ImageCropperModal = ({artwork, uncroppedImage, setCroppedImage, setUncropp
   // const onClose = useCallback(() => {
   //   setCroppedImage(null)
   // }, [])
-
 
   return (
     <Root >
@@ -106,42 +100,46 @@ const ImageCropperModal = ({artwork, uncroppedImage, setCroppedImage, setUncropp
                 />
               </CropContainer>
               <Controls>
-                <SliderContainer>
-                  <Typography
-                    variant="overline"
-                  >
-                    Zoom
-                  </Typography>
-                  <StyledSlider
-                    value={zoom}
-                    min={1}
-                    max={3}
-                    step={0.1}
-                    aria-labelledby="Zoom"
-                    onChange={(e, zoom) => setZoom(zoom)}
-                  />
-                </SliderContainer>
-                <SliderContainer >
-                  <Typography
-                    variant="overline"
-                  >
-                    Rotation
-                  </Typography>
-                  <StyledSlider
-                    value={rotation}
-                    min={0}
-                    max={360}
-                    step={1}
-                    aria-labelledby="Rotation"
-                    onChange={(e, rotation) => setRotation(rotation)}
-                  />
-                </SliderContainer>
+                <Box sx={{width: '100%', display: 'flex'}}>
+                  <SliderContainer>
+                    <Typography
+                      variant="overline"
+                    >
+                      Zoom
+                    </Typography>
+                    <StyledSlider
+                      value={zoom}
+                      min={1}
+                      max={3}
+                      step={0.1}
+                      aria-labelledby="Zoom"
+                      onChange={(e, zoom) => setZoom(zoom)}
+                    />
+                  </SliderContainer>
+                  <SliderContainer >
+                    <Typography
+                      variant="overline"
+                    >
+                      Rotation
+                    </Typography>
+                    <StyledSlider
+                      value={rotation}
+                      min={0}
+                      max={360}
+                      step={1}
+                      aria-labelledby="Rotation"
+                      onChange={(e, rotation) => setRotation(rotation)}
+                    />
+                  </SliderContainer>
+                </Box>
                 <Button
                   onClick={showCroppedImage}
-                  variant="contained"
+                  variant="outlined"
                   color="primary"
+                  width="100%"
+                  style={{marginTop: '16px'}}
                 >
-                  Show Result
+                  Confirm Image
                 </Button>
               </Controls>
               {/* <ImgDialog img={croppedImage} onClose={onClose} /> */}
@@ -181,7 +179,7 @@ const StyledPaper = styled(Paper)(({theme}) => ({
 const CropContainer = styled('div')(() => ({
   position: 'relative',
   width: '100%',
-  height: 200,
+  height: 300,
   background: '#333',
 }))
 
@@ -191,7 +189,7 @@ const Controls = styled('div')(({theme}) => ({
   flexDirection: 'column',
   alignItems: 'stretch',
   [theme.breakpoints.up('sm')]: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
   },
 }))
