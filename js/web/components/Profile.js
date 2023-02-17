@@ -108,7 +108,6 @@ const Profile = ({ profilePubkey }) => {
     if (wallet.connected && profilePubkey === wallet.publicKey?.toBase58()) {
       setInDashboard(true)
     }
-    console.log()
   }, [wallet, profilePubkey])
 
   useEffect(() => {
