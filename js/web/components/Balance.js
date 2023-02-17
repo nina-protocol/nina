@@ -27,8 +27,13 @@ const Balance = ({ profilePublishedReleases }) => {
             {`sol: ${ninaClient.nativeToUi(
               solBalance,
               ninaClient.ids.mints.wsol
-            )} / usdc: $${usdcBalance}`}
+            )}`}
           </Typography>
+        </Box>
+      </BalanceWrapper>
+      <BalanceWrapper>
+        <Box display="flex" alignItems="center">
+          <Typography variant="body2">{`usdc: $${usdcBalance}`}</Typography>
         </Box>
       </BalanceWrapper>
       {royaltySumForArtist > 0 && (
