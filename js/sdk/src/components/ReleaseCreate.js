@@ -112,7 +112,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   const [processingProgress, setProcessingProgress] = useState()
   const [awaitingPendingReleases, setAwaitingPendingReleases] = useState(false)
   const [showLowBalanceModal, setShowLowBalanceModal] = useState(false)
-  const [open, setOpen] = useState(false)
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
 
   const mbs = useMemo(
@@ -253,10 +252,8 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
 
   useEffect(() => {
     if (mbs < uploadSize) {
-      console.log('mbs', mbs)
       setShowLowBalanceModal(true)
     }
-    console.log('hwhwhwh', showLowBalanceModal)
   }, [mbs, uploadSize])
 
   const handleFormChange = useCallback(
