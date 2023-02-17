@@ -21,8 +21,7 @@ const Balance = () => {
             {`sol: ${ninaClient.nativeToUi(
               solBalance,
               ninaClient.ids.mints.wsol
-            )}`}
-            {` / usdc: $${usdcBalance}`}
+            )} / usdc: $${usdcBalance}`}
           </Typography>
         </Box>
       </CtaWrapper>
