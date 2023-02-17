@@ -49,12 +49,6 @@ const CtaWrapper = styled(Box)(({ theme }) => ({
         display: 'none',
       },
     },
-    '& svg': {
-      fontSize: '16px',
-      [theme.breakpoints.down('md')]: {
-        fontSize: '20px',
-      },
-    },
   },
 }))
 export default Balance
