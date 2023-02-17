@@ -1,17 +1,24 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { Box, Typography } from '@mui/material'
 import { styled } from '@mui/system'
 
 const Balance = ({ profilePublishedReleases }) => {
   const { ninaClient, solBalance, usdcBalance } = useContext(Nina.Context)
-  const royaltySumForArtist = useMemo(() => {
+  const [royaltySumForArtist, setRoyaltySumForArtist] = useState(0)
+
+  useEffect(() => {
+    fetchRoyaltySumForArtist()
+  }, [profilePublishedReleases, royaltySumForArtist])
+
+  const fetchRoyaltySumForArtist = () => {
     let royaltySum = 0
     profilePublishedReleases?.forEach((release) => {
       royaltySum += release.recipient.owed
     })
-    return royaltySum
-  }, [profilePublishedReleases])
+    setRoyaltySumForArtist(royaltySum)
+  }
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
       <BalanceWrapper>
