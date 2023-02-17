@@ -1,9 +1,7 @@
-import React, { useState, useEffect, useContext, useMemo } from 'react'
+import React, { useState } from 'react'
 import { styled } from '@mui/material/styles'
-
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-
 import dynamic from 'next/dynamic'
 const BundlrModalBody = dynamic(() => import('./BundlrModalBody'), {})
 
