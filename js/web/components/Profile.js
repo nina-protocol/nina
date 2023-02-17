@@ -423,7 +423,11 @@ const Profile = ({ profilePubkey }) => {
                     )}
                     {inDashboard && <CreateHub />}
                   </Box>
-                  {inDashboard && <Balance />}
+                  {inDashboard && (
+                    <Balance
+                      profilePublishedReleases={profilePublishedReleases}
+                    />
+                  )}
                 </>
               )}
             </Box>
