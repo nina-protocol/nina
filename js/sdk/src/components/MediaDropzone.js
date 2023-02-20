@@ -7,6 +7,8 @@ import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined'
 import Image from 'next/image'
 import Nina from '../contexts/Nina'
 import dynamic from 'next/dynamic'
+import {styled} from '@mui/material/styles'
+
 
 const MediaDropzone = ({
   type,
@@ -18,26 +20,79 @@ const MediaDropzone = ({
   setUncroppedImage,
   setCroppedImage,
   uncroppedImage,
-  croppedImage
+  croppedImage,
+  inHubCreate,
+  update,
+  currentImageUrl
 }) => {
   const { MAX_AUDIO_FILE_UPLOAD_SIZE, MAX_IMAGE_FILE_UPLOAD_SIZE } = useContext(
     Nina.Context
   )
-
-  // useEffect(() => {
-  //   if (artwork && !imageConfirmed) {
-  //     setCropperModalOpen(true)
-  //   }
-  //   console.log('artwork :>> ', artwork);
-  // }, [artwork])
-
+  
+  const styles = inHubCreate ? {
+    dropzone: {
+      minHeight: 60,
+      display: 'flex',
+      justifyContent: 'center',
+      minWidth: '100px',
+      width: 'auto',
+      height: '100px',
+      cursor: 'pointer',
+      marginBottom: '15px',
+      boxShadow: 'inset 0px 0px 30px 0px #0000001A',
+      backgroundColor: '#EAEAEA',
+      backgroundImage: update ? `url("${currentImageUrl}")` : '',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'contain',
+    },
+    preview: {
+      margin: 'auto',
+      alignItems: 'center',
+    },
+    previewImage: {
+      width: '100%',
+      maxHeight: '100%',
+      maxWidth: 'unset',
+    },
+    inputLabel: {
+      cursor: 'pointer',
+      textAlign: 'left',
+      padding: '15px',
+      margin: 'auto',
+    },
+  } : {
+    dropzone: {
+      minHeight: 60,
+      display: 'flex',
+      justifyContent: 'center',
+      width: '100%',
+      height: type === 'track' ? '113px' : '350px',
+      cursor: disabled ? 'not-allowed' : 'pointer',
+      marginBottom: type === 'track' ? '15px' : '',
+      boxShadow: 'inset 0px 0px 30px 0px #0000001A',
+      backgroundColor: '#EAEAEA',
+    },
+    preview: {
+      margin: 'auto',
+      alignItems: 'center',
+    },
+    previewImage: {
+      width: '100%',
+      maxHeight: '100%',
+      maxWidth: 'unset',
+    },
+    inputLabel: {
+      cursor: disabled ? 'not-allowed' : 'pointer',
+      width: '100%',
+      textAlign: 'left',
+      padding: '15px',
+    },
+  }
 
  const handleChangeStatus = useMemo(() => {
    return ({meta, file, remove}, status) => {
      if (meta.status === 'error_validation') {
       console.log('failedvalidation :>> ');
-       const height = meta.height
-       const width = meta.width
        const size = meta.size / 1000000
        if (file.type.includes('audio')) {
          if (file.type !== 'audio/mpeg') {
@@ -109,8 +164,12 @@ const MediaDropzone = ({
       return (
         <>
           <AddOutlinedIcon />
-          <Typography variant="h2">Upload Artwork</Typography>
-          <Typography variant="subtitle1">File Formats: JPG, PNG</Typography>
+          {!inHubCreate && (
+            <>
+              <Typography variant="h2">Upload Artwork</Typography>
+              <Typography variant="subtitle1">File Formats: JPG, PNG</Typography>
+            </>
+          )}
         </>
       )
     }
@@ -230,35 +289,21 @@ const MediaDropzone = ({
         inputContent={inputLayout(type)}
         PreviewComponent={Preview}
         initialFiles={croppedImage ? [croppedImage] : []}
-        styles={{
-          dropzone: {
-            minHeight: 60,
-            display: 'flex',
-            justifyContent: 'center',
-            width: '100%',
-            height: type === 'track' ? '113px' : '350px',
-            cursor: disabled ? 'not-allowed' : 'pointer',
-            marginBottom: type === 'track' ? '15px' : '',
-            boxShadow: 'inset 0px 0px 30px 0px #0000001A',
-            backgroundColor: '#EAEAEA',
-          },
-          preview: {
-            margin: 'auto', 
-            alignItems: 'center',
-          },
-          previewImage: {
-            width: '100%',
-            maxHeight: '100%',
-            maxWidth: 'unset',
-          },
-          inputLabel: {
-            cursor: disabled ? 'not-allowed' : 'pointer',
-            width: '100%',
-            textAlign: 'left',
-            padding: '15px',
-          },
-        }}
+        styles={styles}
       />
+
+      {inHubCreate && (
+        <Copy>
+          <Typography variant="body1">Upload Hub Logo Image</Typography>
+          <Typography variant="subtitle1">File Formats: JPG, PNG</Typography>
+
+          {update && (
+            <Typography variant="subtitle1">
+              Click current image to replace hub image
+            </Typography>
+          )}
+        </Copy>
+      )}
     </>
   )
 }
@@ -271,5 +316,19 @@ const classes = {
   dropZonePreviewWrapper: `${PREFIX}-dropZonePreviewWrapper`,
   dropZonePreviewStatusContainer: `${PREFIX}-dropZonePreviewStatusContainer`,
 }
+
+const Copy = styled(Box)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  // alignItems: 'center',
+  textAlign: 'left',
+  paddingLeft: '15px',
+  '& p': {
+    color: 'rgba(0,0,0, 0.6) !important',
+    fontSize: '14px !important',
+    textTransform: 'uppercase',
+  },
+}))
+
 
 export default MediaDropzone

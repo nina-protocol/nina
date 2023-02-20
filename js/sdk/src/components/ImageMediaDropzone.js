@@ -8,15 +8,14 @@ const ImageCropperModal = dynamic(() => import('./ImageCropperModal'))
 
 
 const ImageMediaDropzone = ({
-  values,
   releasePubkey,
   artwork,
   setArtwork,
-  track,
-  setTrack,
   handleProgress,
   disabled,
-  processingProgress,
+  inHubCreate,
+  update,
+  currentImageUrl
 }) => {
   const [metadata, setMetadata] = useState({})
   const [uncroppedImage, setUncroppedImage] = useState(undefined)
@@ -54,6 +53,9 @@ const ImageMediaDropzone = ({
             handleProgress={handleProgress}
             disabled={disabled}
             croppedImage={croppedImage}
+            inHubCreate={inHubCreate}
+            update={update}
+            currentImageUrl={currentImageUrl}
           />
         </>
       )
