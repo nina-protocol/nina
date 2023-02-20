@@ -29,7 +29,7 @@ const MediaDropzones = ({
     if (uncroppedImage && !croppedImage) {
       return (
         <>
-          <Typography variant="h6">this one </Typography>
+          <Typography variant="h6">this one</Typography>
           <ImageCropperModal
             cropperModalOpen={uncroppedImage && !croppedImage}
             uncroppedImage={uncroppedImage}
