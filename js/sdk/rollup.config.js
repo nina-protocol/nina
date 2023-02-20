@@ -35,7 +35,6 @@ export default [
       HubCreate: 'src/components/HubCreate.js',
       HubCreateConfirm: 'src/components/HubCreateConfirm.js',
       HubCreateForm: 'src/components/HubCreateForm.js',
-      // HubImageDropzone: 'src/components/HubImageDropzone.js',
       ColorModal: 'src/components/ColorModal.js',
       DevnetIndicator: 'src/components/DevnetIndicator.js',
       PendingReleasesIndicator: 'src/components/PendingReleasesIndicator.js',

@@ -1,9 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react'
-// import ReactDOM from 'react-dom'
 import Cropper from 'react-easy-crop'
 import Slider from '@mui/material/Slider'
 import Typography from '@mui/material/Typography'
-// import ImgDialog from './ImgDialog'
 import getCroppedImg from '../utils/cropImage'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
@@ -12,8 +10,6 @@ import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
-
-// import {styles} from './styles'
 
 const ImageCropperModal = ({
   uncroppedImage,
@@ -129,7 +125,6 @@ const ImageCropperModal = ({
                   Confirm Image
                 </Button>
               </Controls>
-              {/* <ImgDialog img={croppedImage} onClose={onClose} /> */}
             </div>
           </StyledPaper>
         </Fade>
