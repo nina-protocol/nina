@@ -1,11 +1,11 @@
-import React, {useState, useCallback, useEffect} from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 // import ReactDOM from 'react-dom'
 import Cropper from 'react-easy-crop'
 import Slider from '@mui/material/Slider'
 import Typography from '@mui/material/Typography'
 // import ImgDialog from './ImgDialog'
 import getCroppedImg from '../utils/cropImage'
-import {styled} from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
@@ -15,25 +15,28 @@ import Box from '@mui/material/Box'
 
 // import {styles} from './styles'
 
-const ImageCropperModal = ({artwork, uncroppedImage, setCroppedImage, setUncroppedImage, cropperModalOpen}) => {
+const ImageCropperModal = ({
+  uncroppedImage,
+  setCroppedImage,
+  setUncroppedImage,
+  cropperModalOpen,
+}) => {
   const [open, setOpen] = useState(false)
-  const [crop, setCrop] = useState({x: 0, y: 0})
+  const [crop, setCrop] = useState({ x: 0, y: 0 })
   const [rotation, setRotation] = useState(0)
   const [zoom, setZoom] = useState(1)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
-  // const [croppedImageResult, setCroppedImageResult] = useState(null)
   const [originalImage, setOriginalImage] = useState(null)
 
-    useEffect(() => {
-      setOpen(cropperModalOpen)
-    }, [cropperModalOpen])
+  useEffect(() => {
+    setOpen(cropperModalOpen)
+  }, [cropperModalOpen])
 
-    useEffect(() => {
-      if (uncroppedImage) {
-        setOriginalImage(uncroppedImage.meta.previewUrl)
-      }
-    }, [uncroppedImage])
-    
+  useEffect(() => {
+    if (uncroppedImage) {
+      setOriginalImage(uncroppedImage.meta.previewUrl)
+    }
+  }, [uncroppedImage])
 
   const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels)
@@ -54,36 +57,16 @@ const ImageCropperModal = ({artwork, uncroppedImage, setCroppedImage, setUncropp
     }
   }, [croppedAreaPixels, rotation])
 
-  const handleClose = (
-    event,
-    reason
-  ) => {
-    if (reason === "backdropClick") {
-      console.log(reason);
+  const handleClose = (event, reason) => {
+    if (reason === 'backdropClick') {
+      console.warn(reason)
     } else {
-      setOpen(false);
+      setOpen(false)
     }
-  };
-
-
-  // const onClose = useCallback(() => {
-  //   setCroppedImage(null)
-  // }, [])
+  }
 
   return (
-    <Root >
-        {/* <Button
-          variant="contained"
-          color="primary"
-          type="submit"
-          onClick={() => setOpen(true)}
-        >
-          <Typography align={'right'} textTransform={'none'}>
-            Edit Image
-          </Typography>
-        </Button> */}
-
-
+    <Root>
       <StyledModal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -112,13 +95,9 @@ const ImageCropperModal = ({artwork, uncroppedImage, setCroppedImage, setUncropp
                 />
               </CropContainer>
               <Controls>
-                <Box sx={{width: '100%', display: 'flex'}}>
+                <Box sx={{ width: '100%', display: 'flex' }}>
                   <SliderContainer>
-                    <Typography
-                      variant="overline"
-                    >
-                      Zoom
-                    </Typography>
+                    <Typography variant="overline">Zoom</Typography>
                     <StyledSlider
                       value={zoom}
                       min={1}
@@ -128,12 +107,8 @@ const ImageCropperModal = ({artwork, uncroppedImage, setCroppedImage, setUncropp
                       onChange={(e, zoom) => setZoom(zoom)}
                     />
                   </SliderContainer>
-                  <SliderContainer >
-                    <Typography
-                      variant="overline"
-                    >
-                      Rotation
-                    </Typography>
+                  <SliderContainer>
+                    <Typography variant="overline">Rotation</Typography>
                     <StyledSlider
                       value={rotation}
                       min={0}
@@ -149,7 +124,7 @@ const ImageCropperModal = ({artwork, uncroppedImage, setCroppedImage, setUncropp
                   variant="outlined"
                   color="primary"
                   width="100%"
-                  style={{marginTop: '16px', width: '100%'}}
+                  style={{ marginTop: '16px', width: '100%' }}
                 >
                   Confirm Image
                 </Button>
@@ -175,12 +150,10 @@ const StyledModal = styled(Modal)(() => ({
   justifyContent: 'center',
 }))
 
-
-const StyledPaper = styled(Paper)(({theme}) => ({
+const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   border: '2px solid #000',
   boxShadow: theme.shadows[5],
-  padding: theme.spacing(2, 4, 3),
   padding: '16px 32px 16px 32px',
   width: '40vw',
   maxHeight: '90vh',
@@ -195,7 +168,7 @@ const CropContainer = styled('div')(() => ({
   background: '#333',
 }))
 
-const Controls = styled('div')(({theme}) => ({
+const Controls = styled('div')(({ theme }) => ({
   padding: 16,
   display: 'flex',
   flexDirection: 'column',
@@ -212,7 +185,7 @@ const SliderContainer = styled('div')(() => ({
   alignItems: 'center',
 }))
 
-const StyledSlider = styled(Slider)(({theme}) => ({
+const StyledSlider = styled(Slider)(({ theme }) => ({
   padding: '22px 0px',
   marginLeft: 32,
   [theme.breakpoints.up('sm')]: {
