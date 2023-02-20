@@ -108,7 +108,7 @@ const BundlrModalBody = ({ open, setOpen, notEnoughSol, uploadSize }) => {
             gutterBottom
           >
             {notEnoughSol
-              ? `You do not have space in your Upload Account to upload this release`
+              ? `You do not have space in your Upload Account to publish this release`
               : `Fund your Upload Account`}
           </Typography>
 
@@ -121,7 +121,7 @@ const BundlrModalBody = ({ open, setOpen, notEnoughSol, uploadSize }) => {
                 You have {mbs?.toFixed(2)} MBs available in your Upload Account.
               </Typography>
               <Typography sx={{ paddingBottom: '8px' }}>
-                Tip up your Upload Account to upload this release.
+                Tip up your Upload Account to publish this release.
               </Typography>
               <Typography sx={{ paddingBottom: '16px' }}>
                 Upload Account Balance: {bundlrBalance?.toFixed(4)} SOL ($
