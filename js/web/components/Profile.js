@@ -423,18 +423,16 @@ const Profile = ({ profilePubkey }) => {
                     )}
                     {inDashboard && <CreateHub />}
                   </Box>
-                  {inDashboard && (
-                    <Balance
-                      profilePublishedReleases={profilePublishedReleases}
-                    />
-                  )}
                 </>
               )}
             </Box>
-            {hasData && artistNames?.length > 0 && (
+            {/* {hasData && artistNames?.length > 0 && (
               <ProfileOverflowContainer>
                 {`Publishes as ${artistNames?.map((name) => name).join(', ')}`}
               </ProfileOverflowContainer>
+            )} */}
+            {inDashboard && (
+              <Balance profilePublishedReleases={profilePublishedReleases} />
             )}
           </ProfileHeaderContainer>
         </ProfileHeaderWrapper>

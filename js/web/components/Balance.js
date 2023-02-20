@@ -20,47 +20,41 @@ const Balance = ({ profilePublishedReleases }) => {
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-      <BalanceWrapper>
-        <Box display="flex" alignItems="center">
-          <Typography variant="body2" sx={{ textDecoration: 'underline' }}>
-            Balances
-          </Typography>
-        </Box>
+    <Box sx={{ display: 'flex',}}>
+      <BalanceWrapper balance={true}>
+        <Typography variant="body2" sx={{ textDecoration: 'underline' }}>
+          Balances
+        </Typography>
       </BalanceWrapper>
       <BalanceWrapper>
-        <Box display="flex" alignItems="center">
-          <Typography variant="body2">
-            {`sol: ${ninaClient
-              .nativeToUi(solBalance, ninaClient.ids.mints.wsol)
-              .toFixed(2)}`}
-          </Typography>
-        </Box>
+        <Typography variant="body2">
+          {`sol: ${ninaClient
+            .nativeToUi(solBalance, ninaClient.ids.mints.wsol)
+            .toFixed(2)}`}
+        </Typography>
       </BalanceWrapper>
       <BalanceWrapper>
-        <Box display="flex" alignItems="center">
-          <Typography variant="body2">{`usdc: $${usdcBalance}`}</Typography>
-        </Box>
+        <Typography variant="body2">{`usdc: $${usdcBalance}`}</Typography>
       </BalanceWrapper>
       {revenueSumForArtist > 0 && (
         <BalanceWrapper>
-          <Box display="flex" alignItems="center">
-            <Typography variant="body2">{`revenue owed: $${ninaClient
-              .nativeToUi(revenueSumForArtist, ninaClient.ids.mints.usdc)
-              .toFixed(2)}`}</Typography>
-          </Box>
+          <Typography variant="body2">{`revenue owed: $${ninaClient
+            .nativeToUi(revenueSumForArtist, ninaClient.ids.mints.usdc)
+            .toFixed(2)}`}</Typography>
         </BalanceWrapper>
       )}
     </Box>
   )
 }
-const BalanceWrapper = styled(Box)(({ theme }) => ({
+const BalanceWrapper = styled(Box)(({ theme, balance }) => ({
   '& p': {
     color: 'black',
     textTransform: 'uppercase',
     borderRadius: '0px',
-    margin: '0 8px',
+    margin: balance ? '0px 8px 0px 204px' : '0 8px',
     padding: '0px 0px 8px 0px',
+    display: 'flex',
+    alignItems: 'center',
     [theme.breakpoints.down('md')]: {
       border: 'none',
       margin: '0px',
