@@ -26,7 +26,6 @@ import ReleaseCreateConfirm from './ReleaseCreateConfirm'
 import NinaBox from './NinaBox'
 import Dots from './Dots'
 import MediaDropzones from './MediaDropzones'
-import BalanceWarningModal from './BalanceWarningModal'
 import {
   createUpload,
   updateUpload,
@@ -43,7 +42,9 @@ const BundlrModal = dynamic(() => import('./BundlrModal'), { ssr: false })
 const BundlrModalBody = dynamic(() => import('./BundlrModalBody'), {
   ssr: false,
 })
-
+const BalanceWarningModal = dynamic(() => import('./BalanceWarningModal'), {
+  ssr: false,
+})
 const ReleaseCreateSchema = Yup.object().shape({
   artist: Yup.string().required('Artist is required'),
   title: Yup.string().required('Title is required'),
