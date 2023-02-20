@@ -4,7 +4,9 @@ import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import {Typography} from '@mui/material'
 import dynamic from 'next/dynamic'
+import ImageMediaDropzone from './ImageMediaDropzone.js'
 const ImageCropperModal = dynamic(() => import('./ImageCropperModal'))
+
 
 const MediaDropzones = ({
   values,
@@ -18,47 +20,6 @@ const MediaDropzones = ({
   processingProgress,
 }) => {
   const [metadata, setMetadata] = useState({})
-  const [uncroppedImage, setUncroppedImage] = useState(undefined)
-  const [croppedImage, setCroppedImage] = useState(undefined)
-
-  const type = useMemo(() => {
-    return !uncroppedImage && !croppedImage ? 'cropper' : 'artwork'
-  }, [uncroppedImage, croppedImage])
-
-  const renderImageDropZones = useMemo(() => {
-    if (uncroppedImage && !croppedImage) {
-      return (
-        <>
-          <Typography variant="h6">this one</Typography>
-          <ImageCropperModal
-            cropperModalOpen={uncroppedImage && !croppedImage}
-            uncroppedImage={uncroppedImage}
-            setArtwork={setArtwork}
-            setCroppedImage={setCroppedImage}
-            setUncroppedImage={setUncroppedImage}
-          />
-        </>
-      )
-    } else {
-      return (
-        <>
-          <MediaDropzone
-            type={type}
-            artwork={artwork}
-            setArtwork={setArtwork}
-            setUncroppedImage={setUncroppedImage}
-            setCroppedImage={setCroppedImage}
-            releasePubkey={releasePubkey}
-            metadata={metadata}
-            handleProgress={handleProgress}
-            disabled={disabled}
-            croppedImage={croppedImage}
-          />
-        </>
-      )
-    }
-  }, [uncroppedImage, croppedImage])
-
 
   useEffect(() => {
     setMetadata({
@@ -83,8 +44,12 @@ const MediaDropzones = ({
         disabled={disabled}
         processingProgress={processingProgress}
       />
-      <label htmlFor="artwork"></label>
-      {renderImageDropZones}
+      <ImageMediaDropzone 
+        artwork={artwork}
+        setArtwork={setArtwork}
+        handleProgress={handleProgress}
+        disabled={disabled}
+      />
     </StyledDropZones>
   )
 }
