@@ -26,6 +26,7 @@ import ReleaseCreateConfirm from './ReleaseCreateConfirm'
 import NinaBox from './NinaBox'
 import Dots from './Dots'
 import MediaDropzones from './MediaDropzones'
+import BalanceWarningModal from './BalanceWarningModal'
 import {
   createUpload,
   updateUpload,
@@ -78,6 +79,9 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     npcAmountHeld,
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
+    NinaProgramActionCost,
+    solBalance,
+    ninaClient,
     getUserBalances,
   } = useContext(Nina.Context)
 
@@ -112,6 +116,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   const [processingProgress, setProcessingProgress] = useState()
   const [awaitingPendingReleases, setAwaitingPendingReleases] = useState(false)
   const [showLowBalanceModal, setShowLowBalanceModal] = useState(false)
+  const [lowSolWarningModal, setLowSolWarningModal] = useState(false)
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
 
   const mbs = useMemo(
@@ -483,6 +488,18 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
         <ConnectMessage variant="body" gutterBottom>
           Please connect your wallet to start publishing
         </ConnectMessage>
+      )}
+      {NinaProgramActionCost?.RELEASE_INIT_WITH_CREDIT > solBalance && (
+        <BalanceWarningModal
+          open={!lowSolWarningModal}
+          setOpen={setLowSolWarningModal}
+          requiredSol={NinaProgramActionCost?.RELEASE_INIT_WITH_CREDIT.toFixed(
+            3
+          )}
+          solBalance={ninaClient
+            .nativeToUi(solBalance, ninaClient.ids.mints.wsol)
+            .toFixed(3)}
+        />
       )}
       {wallet?.connected &&
         !hubPubkey &&
