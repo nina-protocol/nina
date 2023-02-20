@@ -5,18 +5,18 @@ import { styled } from '@mui/system'
 
 const Balance = ({ profilePublishedReleases }) => {
   const { ninaClient, solBalance, usdcBalance } = useContext(Nina.Context)
-  const [royaltySumForArtist, setRoyaltySumForArtist] = useState(0)
+  const [revenueSumForArtist, setRevenueSumForArtist] = useState(0)
 
   useEffect(() => {
-    fetchRoyaltySumForArtist()
-  }, [profilePublishedReleases, royaltySumForArtist])
+    fetchRevenueSumForArtist()
+  }, [profilePublishedReleases, revenueSumForArtist])
 
-  const fetchRoyaltySumForArtist = () => {
-    let royaltySum = 0
+  const fetchRevenueSumForArtist = () => {
+    let revenueSum = 0
     profilePublishedReleases?.forEach((release) => {
-      royaltySum += release.recipient.owed
+      revenueSum += release.recipient.owed
     })
-    setRoyaltySumForArtist(royaltySum)
+    setRevenueSumForArtist(revenueSum)
   }
 
   return (
@@ -31,10 +31,9 @@ const Balance = ({ profilePublishedReleases }) => {
       <BalanceWrapper>
         <Box display="flex" alignItems="center">
           <Typography variant="body2">
-            {`sol: ${ninaClient.nativeToUi(
-              solBalance,
-              ninaClient.ids.mints.wsol
-            )}`}
+            {`sol: ${ninaClient
+              .nativeToUi(solBalance, ninaClient.ids.mints.wsol)
+              .toFixed(2)}`}
           </Typography>
         </Box>
       </BalanceWrapper>
@@ -43,11 +42,11 @@ const Balance = ({ profilePublishedReleases }) => {
           <Typography variant="body2">{`usdc: $${usdcBalance}`}</Typography>
         </Box>
       </BalanceWrapper>
-      {royaltySumForArtist > 0 && (
+      {revenueSumForArtist > 0 && (
         <BalanceWrapper>
           <Box display="flex" alignItems="center">
             <Typography variant="body2">{`revenue owed: $${ninaClient
-              .nativeToUi(royaltySumForArtist, ninaClient.ids.mints.usdc)
+              .nativeToUi(revenueSumForArtist, ninaClient.ids.mints.usdc)
               .toFixed(2)}`}</Typography>
           </Box>
         </BalanceWrapper>
