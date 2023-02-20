@@ -127,7 +127,7 @@ const MediaDropzone = ({
       return (
         <Box style={{ ...previewBoxStyles, ...audioPreviewStyles }}>
           {cancelIcon(fileWithMeta.remove)}
-          <Box sx={{ padding: '35px 15px' }} disabled={true}>
+          <Box sx={{ padding: '35px 15px' }}>
             <Typography
               align="left"
               variant="h5"
