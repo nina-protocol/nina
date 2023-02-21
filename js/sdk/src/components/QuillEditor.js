@@ -20,6 +20,39 @@ const { Quill } = ReactQuill
 const QuillEditor = ({ formikProps, type }) => {
   const quillRef = useRef(null)
   const theme = type === 'release' ? 'bubble' : 'snow'
+
+  const imageHandler = async () => {
+    const input = document.createElement('input')
+    input.setAttribute('type', 'file')
+    input.setAttribute('accept', 'image/*')
+    input.click()
+
+    input.onchange = async() => {
+      const file = input.files ? input.files[0] : null
+      
+      const quillObj = quillRef.current.getEditor()
+      const range = quillObj.getSelection(true)
+
+      if (file){
+        console.log('yoyo', file)
+        const formData = new FormData()
+        // append file to form data and declare type
+        formData.append('image', file)
+        formData.append('resource_type', 'raw')
+        console.log(formData)
+        // handlers go here
+
+        // inset image into quill, pass in endpoint instead of file in this instance
+        quillObj.insertEmbed(
+          range.index,
+          'image',
+          'https://res.cloudinary.com/nina-protocol/image/upload/v1634040000/nina-protocol/og-image.png'
+        )
+      }
+
+    }
+  }
+
   let toolbarValues
   let height
   switch (type) {
@@ -41,7 +74,7 @@ const QuillEditor = ({ formikProps, type }) => {
         [{ header: [1, 2, 3, 4, 5, false] }],
         ['bold', 'italic', 'underline', 'strike'],
         [{ script: 'sub' }, { script: 'super' }],
-        ['link'],
+        ['link', 'image'],
       ]
       height = '300px'
       break
@@ -51,7 +84,12 @@ const QuillEditor = ({ formikProps, type }) => {
   }
   const modules = useMemo(
     () => ({
-      toolbar: toolbarValues,
+      toolbar: {
+        container: toolbarValues,
+        handlers: {
+          image: imageHandler,
+        },
+      },
       clipboard: {
         matchVisual: false,
       },
