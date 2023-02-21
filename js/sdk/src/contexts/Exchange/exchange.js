@@ -537,7 +537,8 @@ const exchangeContextHelper = ({
     const exchangeItem = {
       ...exchange,
       isCurrentUser:
-        exchange.initializer === provider.wallet?.publicKey?.toBase58(),
+        exchange.initializer.publicKey ===
+        provider.wallet?.publicKey?.toBase58(),
     }
     exchangeItem.amount = exchange.isSale
       ? exchange.expectedAmount * 1000000
