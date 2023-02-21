@@ -17,6 +17,13 @@ const HubHeader = ({ hubData }) => {
   useEffect(() => {
     setHubDescription(hubData?.data.description)
   }, [hubData?.data])
+  
+  const imageUrl = getImageFromCDN(
+    hubData?.data?.image,
+    400,
+    hubData.datetime
+  )
+  console.log('imageUrl :>> ', imageUrl);
 
   return (
     <Wrapper>
@@ -28,11 +35,7 @@ const HubHeader = ({ hubData }) => {
                 height={100}
                 width={100}
                 layout="responsive"
-                src={getImageFromCDN(
-                  hubData?.data?.image,
-                  400,
-                  Date.parse(hubData?.createdAt)
-                )}
+                src={imageUrl}
                 alt={hubData?.data?.displayName}
                 priority={true}
                 loader={loader}
