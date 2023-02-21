@@ -148,6 +148,8 @@ const gateWhitelist = [
   '3Pw9kcNxi6S5R354TNNwjvEWjY8KPSdhdh5PR6Qy48vV',
   'AyxxsMcoSuJfREv9fEN3pxJZ5zTmh9bAVBEjBsdiYUtq',
   '58YNpbDAA1eHrY7t4yEZ8vvY9wYwbPVaeaAxHH1aaSvJ',
+  '5ucLkCEb2adY3VxMSCcgWNcTSCJ2GGCFUPYK2kryBpmf',
+  'BS6S7Pk2RBGCvdta7irfLN1zxbVrZbFia66EWRib2bLk',
 ]
 
 export default gateWhitelist
