@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react'
 import MediaDropzone from './MediaDropzone.js'
-import { Typography } from '@mui/material'
 import dynamic from 'next/dynamic'
 const ImageCropperModal = dynamic(() => import('./ImageCropperModal'))
 
