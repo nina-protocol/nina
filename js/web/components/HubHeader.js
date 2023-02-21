@@ -22,7 +22,6 @@ const HubHeader = ({ hubData }) => {
     400,
     hubData.datetime
   )
-  console.log('imageUrl :>> ', imageUrl);
 
   return (
     <Wrapper>
