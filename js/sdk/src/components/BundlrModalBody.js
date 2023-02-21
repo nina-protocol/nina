@@ -15,7 +15,14 @@ import Nina from '../contexts/Nina'
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
 
-const BundlrModalBody = ({ open, setOpen, notEnoughSol, uploadSize }) => {
+const BundlrModalBody = ({
+  open,
+  setOpen,
+  lowUploadBalance,
+  uploadSize,
+  solBalance,
+  releaseCreateFee,
+}) => {
   const { enqueueSnackbar } = useSnackbar()
   const {
     bundlrBalance,
@@ -28,7 +35,8 @@ const BundlrModalBody = ({ open, setOpen, notEnoughSol, uploadSize }) => {
     getSolPrice,
     initBundlr,
   } = useContext(Nina.Context)
-  const [amount, setAmount] = useState(0.05)
+  const lowSolBalance = releaseCreateFee > solBalance
+  const [amount, setAmount] = useState(lowSolBalance ? 0 : 0.05)
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
     [bundlrBalance, bundlrPricePerMb]
@@ -102,17 +110,17 @@ const BundlrModalBody = ({ open, setOpen, notEnoughSol, uploadSize }) => {
       <Fade in={open}>
         <StyledPaper>
           <Typography
-            align="center"
+            align="left"
             variant="h4"
             id="transition-modal-title"
             gutterBottom
           >
-            {notEnoughSol
+            {lowUploadBalance
               ? `You do not have space in your Upload Account to publish this release`
               : `Fund your Upload Account`}
           </Typography>
 
-          {notEnoughSol ? (
+          {lowUploadBalance ? (
             <>
               <Typography sx={{ paddingBottom: '8px', paddingTop: '16px' }}>
                 This release is {uploadSize} MBs.
@@ -151,7 +159,7 @@ const BundlrModalBody = ({ open, setOpen, notEnoughSol, uploadSize }) => {
             </>
           )}
 
-          {bundlrBalance > 0 && !notEnoughSol && (
+          {bundlrBalance > 0 && !lowUploadBalance && (
             <ToggleButtonGroup
               value={mode}
               exclusive

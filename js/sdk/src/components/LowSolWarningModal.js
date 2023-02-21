@@ -5,8 +5,8 @@ import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import Typography from '@mui/material/Typography'
-
-const BalanceWarningModal = ({ open, setOpen, requiredSol, solBalance }) => {
+import Button from '@mui/material/Button'
+const LowSolWarningModal = ({ open, setOpen, requiredSol, solBalance }) => {
   return (
     <StyledModal
       aria-labelledby="transition-modal-title"
@@ -26,7 +26,7 @@ const BalanceWarningModal = ({ open, setOpen, requiredSol, solBalance }) => {
             component="h2"
             sx={{ paddingBottom: '16px' }}
           >
-            You do not have enough SOL to publish a release.
+            You do not have enough SOL to publish a release
           </Typography>
           <ModalTypography variant="body1" component="p" gutterBottom>
             {`${requiredSol} SOL is required to publish a release.`}
@@ -45,6 +45,18 @@ const BalanceWarningModal = ({ open, setOpen, requiredSol, solBalance }) => {
             </a>
             .
           </ModalTypography>
+          <ModalButton
+            color="primary"
+            fullWidth
+            variant="outlined"
+            onClick={() => {
+              setOpen(false)
+            }}
+          >
+            <Typography variant="body1" sx={{ textDecoration: 'uppercase' }}>
+              Got it
+            </Typography>
+          </ModalButton>
         </StyledPaper>
       </Fade>
     </StyledModal>
@@ -71,4 +83,11 @@ const ModalTypography = styled(Typography)(() => ({
   marginBottom: '8px',
 }))
 
-export default BalanceWarningModal
+const ModalButton = styled(Button)(() => ({
+  marginTop: '16px',
+  '&:hover': {
+    opacity: 0.5,
+  },
+}))
+
+export default LowSolWarningModal

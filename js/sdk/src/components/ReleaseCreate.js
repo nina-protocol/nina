@@ -42,7 +42,7 @@ const BundlrModal = dynamic(() => import('./BundlrModal'), { ssr: false })
 const BundlrModalBody = dynamic(() => import('./BundlrModalBody'), {
   ssr: false,
 })
-const BalanceWarningModal = dynamic(() => import('./BalanceWarningModal'), {
+const LowSolWarningModal = dynamic(() => import('./LowSolWarningModal'), {
   ssr: false,
 })
 const ReleaseCreateSchema = Yup.object().shape({
@@ -88,6 +88,8 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
 
   const { getHubsForUser, fetchedHubsForUser, filterHubsForUser, hubState } =
     useContext(Hub.Context)
+
+  const releaseCreateFee = NinaProgramActionCost?.RELEASE_INIT_WITH_CREDIT
   const [track, setTrack] = useState(undefined)
   const [artwork, setArtwork] = useState()
   const [uploadSize, setUploadSize] = useState()
@@ -116,8 +118,11 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   const [selectedHub, setSelectedHub] = useState()
   const [processingProgress, setProcessingProgress] = useState()
   const [awaitingPendingReleases, setAwaitingPendingReleases] = useState(false)
-  const [showLowBalanceModal, setShowLowBalanceModal] = useState(false)
-  const [lowSolWarningModal, setLowSolWarningModal] = useState(false)
+  const [
+    showLowUploadAccountBalanceModal,
+    setShowLowUploadAccountBalanceModal,
+  ] = useState(false)
+  const [showLowSolWarningModal, setShowLowSolWarningModal] = useState(false)
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
 
   const mbs = useMemo(
@@ -258,9 +263,19 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
 
   useEffect(() => {
     if (mbs < uploadSize) {
-      setShowLowBalanceModal(true)
+      setShowLowUploadAccountBalanceModal(true)
     }
   }, [mbs, uploadSize])
+
+  useEffect(() => {
+    if (
+      solBalance !== 0 &&
+      releaseCreateFee >
+        ninaClient.nativeToUi(solBalance, ninaClient.ids.mints.wsol)
+    ) {
+      setShowLowSolWarningModal(true)
+    }
+  }, [solBalance, releaseCreateFee])
 
   const handleFormChange = useCallback(
     async (values) => {
@@ -490,18 +505,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
           Please connect your wallet to start publishing
         </ConnectMessage>
       )}
-      {NinaProgramActionCost?.RELEASE_INIT_WITH_CREDIT > solBalance && (
-        <BalanceWarningModal
-          open={!lowSolWarningModal}
-          setOpen={setLowSolWarningModal}
-          requiredSol={NinaProgramActionCost?.RELEASE_INIT_WITH_CREDIT.toFixed(
-            3
-          )}
-          solBalance={ninaClient
-            .nativeToUi(solBalance, ninaClient.ids.mints.wsol)
-            .toFixed(3)}
-        />
-      )}
+
       {wallet?.connected &&
         !hubPubkey &&
         npcAmountHeld === 0 &&
@@ -526,19 +530,30 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
             </NpcMessage>
           </Box>
         )}
+
       {wallet?.connected &&
         (npcAmountHeld >= 1 || profileHubs?.length > 0 || hubPubkey) && (
           <>
+            <LowSolWarningModal
+              open={showLowSolWarningModal}
+              setOpen={setShowLowSolWarningModal}
+              requiredSol={releaseCreateFee.toFixed(3)}
+              solBalance={ninaClient
+                .nativeToUi(solBalance, ninaClient.ids.mints.wsol)
+                .toFixed(3)}
+            />
             <UploadInfoModal
               userHasSeenUpdateMessage={localStorage.getItem(
                 'nina-upload-update-message'
               )}
             />
             <BundlrModalBody
-              open={showLowBalanceModal}
-              setOpen={setShowLowBalanceModal}
-              notEnoughSol={true}
+              open={showLowUploadAccountBalanceModal}
+              setOpen={setShowLowUploadAccountBalanceModal}
+              lowUploadBalance={true}
               uploadSize={uploadSize}
+              solBalance={solBalance}
+              releaseCreateFee={releaseCreateFee}
             />
             <NinaBox columns="350px 400px" gridColumnGap="10px">
               <Box sx={{ width: '100%' }}>
