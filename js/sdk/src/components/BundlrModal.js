@@ -49,7 +49,7 @@ const BundlrModal = ({ inCreate, displaySmall }) => {
           </Typography>
         </Button>
       )}
-      <BundlrModalBody open={open} setOpen={setOpen} notEnoughSol={false} />
+      <BundlrModalBody open={open} setOpen={setOpen} lowUploadBalance={false} />
     </Root>
   )
 }

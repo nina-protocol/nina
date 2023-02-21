@@ -90,6 +90,10 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     useContext(Hub.Context)
 
   const releaseCreateFee = NinaProgramActionCost?.RELEASE_INIT_WITH_CREDIT
+  const availableSol = ninaClient.nativeToUi(
+    solBalance,
+    ninaClient.ids.mints.wsol
+  )
   const [track, setTrack] = useState(undefined)
   const [artwork, setArtwork] = useState()
   const [uploadSize, setUploadSize] = useState()
@@ -534,29 +538,12 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
       {wallet?.connected &&
         (npcAmountHeld >= 1 || profileHubs?.length > 0 || hubPubkey) && (
           <>
-            <LowSolWarningModal
-              open={showLowSolWarningModal}
-              setOpen={setShowLowSolWarningModal}
-              requiredSol={releaseCreateFee.toFixed(3)}
-              solBalance={ninaClient
-                .nativeToUi(solBalance, ninaClient.ids.mints.wsol)
-                .toFixed(3)}
-            />
             <UploadInfoModal
               userHasSeenUpdateMessage={localStorage.getItem(
                 'nina-upload-update-message'
               )}
             />
-            <BundlrModalBody
-              open={showLowUploadAccountBalanceModal}
-              setOpen={setShowLowUploadAccountBalanceModal}
-              lowUploadBalance={true}
-              uploadSize={uploadSize}
-              solBalance={ninaClient
-                .nativeToUi(solBalance, ninaClient.ids.mints.wsol)
-                .toFixed(3)}
-              releaseCreateFee={releaseCreateFee}
-            />
+
             <NinaBox columns="350px 400px" gridColumnGap="10px">
               <Box sx={{ width: '100%' }}>
                 <MediaDropzones
@@ -687,7 +674,20 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                       {(uploadSize * (bundlrUsdBalance / mbs)).toFixed(2)}
                     </Typography>
                   )}
-
+                  <BundlrModalBody
+                    open={showLowUploadAccountBalanceModal}
+                    setOpen={setShowLowUploadAccountBalanceModal}
+                    lowUploadBalance={true}
+                    uploadSize={uploadSize}
+                    solBalance={availableSol}
+                    releaseCreateFee={releaseCreateFee}
+                  />
+                  <LowSolWarningModal
+                    open={showLowSolWarningModal}
+                    setOpen={setShowLowSolWarningModal}
+                    requiredSol={releaseCreateFee.toFixed(3)}
+                    solBalance={availableSol.toFixed(3)}
+                  />
                   <BundlrModal inCreate={false} displaySmall={true} />
                 </Box>
               </CreateCta>

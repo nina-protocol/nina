@@ -7,7 +7,6 @@ import Fade from '@mui/material/Fade'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Link from 'next/link'
-import Box from '@mui/material/Box'
 const LowSolWarningModal = ({ open, setOpen, requiredSol, solBalance }) => {
   return (
     <StyledModal
@@ -71,7 +70,7 @@ const LowSolWarningModal = ({ open, setOpen, requiredSol, solBalance }) => {
             }}
           >
             <Typography variant="body1" sx={{ textDecoration: 'uppercase' }}>
-              Got it
+              Okay
             </Typography>
           </ModalButton>
         </StyledPaper>
