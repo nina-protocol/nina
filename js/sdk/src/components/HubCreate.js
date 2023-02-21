@@ -19,8 +19,8 @@ import dynamic from 'next/dynamic'
 import HubCreateForm from './HubCreateForm'
 import HubCreateConfirm from './HubCreateConfirm'
 import NinaBox from './NinaBox'
-import HubImageDropzone from './HubImageDropzone'
 import Dots from './Dots'
+import ImageMediaDropzone from './ImageMediaDropzone'
 
 const EmailCapture = dynamic(() => import('./EmailCapture'), { ssr: false })
 const BundlrModal = dynamic(() => import('./BundlrModal'), { ssr: false })
@@ -437,12 +437,12 @@ const HubCreate = ({ update, hubData, inHubs }) => {
             />
 
             <DropzoneWrapper>
-              <HubImageDropzone
+              <ImageMediaDropzone
                 setArtwork={setArtwork}
-                values={formValues}
                 type="artwork"
                 currentImageUrl={update ? hubData.data.image : null}
                 update={update}
+                inHubCreate={true}
               />
             </DropzoneWrapper>
 
@@ -589,6 +589,7 @@ const CreateCta = styled(Box)(({ theme }) => ({
 const DropzoneWrapper = styled(Box)(() => ({
   width: '100%',
   padding: '0 15px',
+  display: 'flex',
 }))
 
 const BundlrBalanceInfo = styled(Typography)(() => ({
