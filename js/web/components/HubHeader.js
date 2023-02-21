@@ -16,12 +16,8 @@ const HubHeader = ({ hubData }) => {
   useEffect(() => {
     setHubDescription(hubData?.data.description)
   }, [hubData?.data])
-  
-  const imageUrl = getImageFromCDN(
-    hubData?.data?.image,
-    400,
-    hubData.datetime
-  )
+
+  const imageUrl = getImageFromCDN(hubData?.data?.image, 400, hubData.datetime)
 
   return (
     <Wrapper>
