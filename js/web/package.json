@@ -69,6 +69,7 @@
   "scripts": {
     "dev": "next",
     "dev:devnet": "env-cmd -f .env.devnet next",
+    "dev:devnet:local": "env-cmd -f .env.devnet.local next",
     "dev:mainnet": "env-cmd -f .env.mainnet next",
     "build": "next build",
     "start": "next start",
