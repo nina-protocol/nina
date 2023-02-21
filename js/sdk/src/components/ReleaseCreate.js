@@ -552,7 +552,9 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
               setOpen={setShowLowUploadAccountBalanceModal}
               lowUploadBalance={true}
               uploadSize={uploadSize}
-              solBalance={solBalance}
+              solBalance={ninaClient
+                .nativeToUi(solBalance, ninaClient.ids.mints.wsol)
+                .toFixed(3)}
               releaseCreateFee={releaseCreateFee}
             />
             <NinaBox columns="350px 400px" gridColumnGap="10px">

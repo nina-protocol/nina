@@ -6,6 +6,8 @@ import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
+import Link from 'next/link'
+import Box from '@mui/material/Box'
 const LowSolWarningModal = ({ open, setOpen, requiredSol, solBalance }) => {
   return (
     <StyledModal
@@ -38,13 +40,28 @@ const LowSolWarningModal = ({ open, setOpen, requiredSol, solBalance }) => {
           <ModalTypography variant="body1" component="p" gutterBottom>
             {`If you attempt to publish a release without enough SOL, the transaction will fail.`}
           </ModalTypography>
-          <ModalTypography variant="body1" component="p" gutterBottom>
+
+          <ModalTypography
+            variant="body1"
+            component="p"
+            gutterBottom
+            sx={{ display: 'flex', flexDirection: 'row' }}
+          >
             {`For any questions, please reach out to us at `}
-            <a href="mailto:contact@ninaprotocol.com">
-              contact@ninaprotocol.com
-            </a>
+            <Link href="mailto:contact@ninaprotocol.com">
+              <a target="_blank" rel="noreferrer">
+                <ContactTypography
+                  variant="body1"
+                  component="p"
+                  sx={{ marginLeft: '4px' }}
+                >
+                  {`contact@ninaprotocol.com`}
+                </ContactTypography>
+              </a>
+            </Link>
             .
           </ModalTypography>
+
           <ModalButton
             color="primary"
             fullWidth
@@ -88,6 +105,10 @@ const ModalButton = styled(Button)(() => ({
   '&:hover': {
     opacity: 0.5,
   },
+}))
+
+const ContactTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.blue,
 }))
 
 export default LowSolWarningModal
