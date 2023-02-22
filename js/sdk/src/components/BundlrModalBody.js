@@ -15,14 +15,7 @@ import Nina from '../contexts/Nina'
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
 
-const BundlrModalBody = ({
-  open,
-  setOpen,
-  lowUploadBalance,
-  uploadSize,
-  currentSolBalance,
-  currentReleaseCreateFee,
-}) => {
+const BundlrModalBody = ({ open, setOpen, lowUploadBalance, uploadSize }) => {
   const { enqueueSnackbar } = useSnackbar()
   const {
     bundlrBalance,
@@ -34,9 +27,17 @@ const BundlrModalBody = ({
     solPrice,
     getSolPrice,
     initBundlr,
+    NinaProgramActionCost,
+    ninaClient,
+    solBalance,
   } = useContext(Nina.Context)
-  const lowSolBalance = currentReleaseCreateFee > currentSolBalance
-  const [amount, setAmount] = useState(lowSolBalance ? 0 : 0.05)
+  const releaseCreateFee = NinaProgramActionCost?.RELEASE_INIT_WITH_CREDIT
+  const formattedSolBalance = ninaClient.nativeToUi(
+    solBalance,
+    ninaClient.ids.mints.wsol
+  )
+
+  const [amount, setAmount] = useState(0)
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
     [bundlrBalance, bundlrPricePerMb]
@@ -57,6 +58,14 @@ const BundlrModalBody = ({
     getBundlrBalance()
     getSolPrice()
   }, [getBundlrBalance, getBundlrPricePerMb, getSolPrice])
+
+  useEffect(() => {
+    const lowSolBalance = releaseCreateFee > formattedSolBalance
+
+    if (!lowSolBalance) {
+      setAmount(0.05)
+    }
+  }, [releaseCreateFee, formattedSolBalance])
 
   const handleFund = async (fundAmount) => {
     setInProgress(true)
@@ -84,7 +93,7 @@ const BundlrModalBody = ({
       })
       setOpen(false)
     } else {
-      enqueueSnackbar('Withdrawl not completed', {
+      enqueueSnackbar('Withdrawal not completed', {
         variant: 'failure',
       })
     }
@@ -116,24 +125,24 @@ const BundlrModalBody = ({
             gutterBottom
           >
             {lowUploadBalance
-              ? `You do not have space in your Upload Account to publish this release`
+              ? `You do not have space in your Upload Account to publish this Release.`
               : `Fund your Upload Account`}
           </Typography>
 
           {lowUploadBalance ? (
             <>
               <Typography sx={{ paddingBottom: '8px', paddingTop: '16px' }}>
-                This release is {uploadSize} MBs.
+                This Release is {uploadSize} MBs.
               </Typography>
               <Typography sx={{ paddingBottom: '8px' }}>
                 You have {mbs?.toFixed(2)} MBs available in your Upload Account.
               </Typography>
               <Typography sx={{ paddingBottom: '8px' }}>
-                Top up your Upload Account to publish this release.
+                Top up your Upload Account to publish this Release.
               </Typography>
               <Typography sx={{ paddingBottom: '16px' }}>
-                Upload Account Balance: {bundlrBalance?.toFixed(4)} SOL ($
-                {bundlrUsdBalance.toFixed(2)})
+                Your Current Wallet Balance: {formattedSolBalance.toFixed(3)}{' '}
+                SOL
               </Typography>
             </>
           ) : (

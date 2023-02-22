@@ -39,9 +39,7 @@ const UploadInfoModal = dynamic(() => import('./UploadInfoModal'), {
 })
 const EmailCapture = dynamic(() => import('./EmailCapture'), { ssr: false })
 const BundlrModal = dynamic(() => import('./BundlrModal'), { ssr: false })
-const BundlrModalBody = dynamic(() => import('./BundlrModalBody'), {
-  ssr: false,
-})
+
 const LowSolWarningModal = dynamic(() => import('./LowSolWarningModal'), {
   ssr: false,
 })
@@ -89,11 +87,11 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   const { getHubsForUser, fetchedHubsForUser, filterHubsForUser, hubState } =
     useContext(Hub.Context)
 
-  const releaseCreateFee = NinaProgramActionCost?.RELEASE_INIT_WITH_CREDIT
-  const availableSol = ninaClient.nativeToUi(
-    solBalance,
-    ninaClient.ids.mints.wsol
-  )
+  const releaseCreateFee =
+    NinaProgramActionCost?.RELEASE_INIT_WITH_CREDIT.toFixed(3)
+  const formattedSolBalance = ninaClient
+    .nativeToUi(solBalance, ninaClient.ids.mints.wsol)
+    .toFixed(3)
   const [track, setTrack] = useState(undefined)
   const [artwork, setArtwork] = useState()
   const [uploadSize, setUploadSize] = useState()
@@ -122,10 +120,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   const [selectedHub, setSelectedHub] = useState()
   const [processingProgress, setProcessingProgress] = useState()
   const [awaitingPendingReleases, setAwaitingPendingReleases] = useState(false)
-  const [
-    showLowUploadAccountBalanceModal,
-    setShowLowUploadAccountBalanceModal,
-  ] = useState(false)
+  const [lowUploadBalance, setLowUploadBalance] = useState(false)
   const [showLowSolWarningModal, setShowLowSolWarningModal] = useState(false)
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
 
@@ -267,7 +262,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
 
   useEffect(() => {
     if (mbs < uploadSize) {
-      setShowLowUploadAccountBalanceModal(true)
+      setLowUploadBalance(true)
     }
   }, [mbs, uploadSize])
 
@@ -674,21 +669,19 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                       {(uploadSize * (bundlrUsdBalance / mbs)).toFixed(2)}
                     </Typography>
                   )}
-                  <BundlrModalBody
-                    open={showLowUploadAccountBalanceModal}
-                    setOpen={setShowLowUploadAccountBalanceModal}
-                    lowUploadBalance={true}
-                    uploadSize={uploadSize}
-                    currentSolBalance={availableSol}
-                    currentReleaseCreateFee={releaseCreateFee}
-                  />
                   <LowSolWarningModal
                     open={showLowSolWarningModal}
                     setOpen={setShowLowSolWarningModal}
-                    requiredSol={releaseCreateFee.toFixed(3)}
-                    availableSol={availableSol.toFixed(3)}
+                    requiredSol={releaseCreateFee}
+                    formattedSolBalance={formattedSolBalance}
                   />
-                  <BundlrModal inCreate={false} displaySmall={true} />
+                  <BundlrModal
+                    defaultOpen={lowUploadBalance}
+                    lowUploadBalance={lowUploadBalance}
+                    uploadSize={uploadSize}
+                    inCreate={false}
+                    displaySmall={true}
+                  />
                 </Box>
               </CreateCta>
             </NinaBox>

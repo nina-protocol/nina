@@ -7,7 +7,12 @@ import Fade from '@mui/material/Fade'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Link from 'next/link'
-const LowSolWarningModal = ({ open, setOpen, requiredSol, availableSol }) => {
+const LowSolWarningModal = ({
+  open,
+  setOpen,
+  requiredSol,
+  formattedSolBalance,
+}) => {
   return (
     <StyledModal
       aria-labelledby="transition-modal-title"
@@ -27,17 +32,17 @@ const LowSolWarningModal = ({ open, setOpen, requiredSol, availableSol }) => {
             component="h2"
             sx={{ paddingBottom: '16px' }}
           >
-            You do not have enough SOL to publish a release
+            You do not have enough SOL to publish a Release
           </Typography>
           <ModalTypography variant="body1" component="p" gutterBottom>
-            {`${requiredSol} SOL is required to publish a release.`}
+            {`${requiredSol} SOL is required to publish a Release.`}
           </ModalTypography>
           <ModalTypography variant="body1" component="p" gutterBottom>
-            {`You currently have ${availableSol}
+            {`You currently have ${formattedSolBalance}
             SOL in your wallet.`}
           </ModalTypography>
           <ModalTypography variant="body1" component="p" gutterBottom>
-            {`If you attempt to publish a release without enough SOL, the transaction will fail.`}
+            {`If you attempt to publish a Release without enough SOL, the transaction will fail.`}
           </ModalTypography>
 
           <ModalTypography
@@ -108,6 +113,8 @@ const ModalButton = styled(Button)(() => ({
 
 const ContactTypography = styled(Typography)(({ theme }) => ({
   color: theme.palette.blue,
+  marginTop: '0px',
+  marginBottom: '0px',
 }))
 
 export default LowSolWarningModal
