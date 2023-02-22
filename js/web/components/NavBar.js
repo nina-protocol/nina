@@ -69,7 +69,7 @@ const NavBar = () => {
 
       <Logo>
         <Link href="/" passHref>
-          <Typography variant="h4">NINA</Typography>
+          <Typography variant="h4">NINA (56 Build)</Typography>
         </Link>
       </Logo>
 
