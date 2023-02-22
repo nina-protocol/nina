@@ -1,7 +1,6 @@
 import React, { createContext, useState, useEffect, useMemo } from 'react'
 import * as anchor from '@project-serum/anchor'
 import NinaSdk from '@nina-protocol/js-sdk'
-import axios from 'axios'
 import {
   findOrCreateAssociatedTokenAccount,
   TOKEN_PROGRAM_ID,
@@ -11,6 +10,7 @@ import { logEvent } from '../../utils/event'
 import { truncateAddress } from '../../utils/truncateAddress'
 import Airtable from 'airtable'
 import { getConfirmTransaction } from '../../utils'
+import { getSolPriceFromOrca } from '../../utils/releasePurchaseHelper'
 
 const NinaProgramAction = {
   HUB_ADD_COLLABORATOR: 'HUB_ADD_COLLABORATOR',
@@ -128,7 +128,6 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     getVerificationsForUser,
     filterSubscriptionsForHub,
     submitEmailRequest,
-    getUsdcToSolSwapData,
   } = ninaContextHelper({
     ninaClient,
     postState,
@@ -153,6 +152,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     verificationState,
     setVerificationState,
     setLowSolBalance,
+    getSolPriceFromOrca,
   })
 
   const userSubscriptions = useMemo(() => {
@@ -217,7 +217,6 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         filterSubscriptionsForHub,
         submitEmailRequest,
         lowSolBalance,
-        getUsdcToSolSwapData,
         MAX_AUDIO_FILE_UPLOAD_SIZE,
         MAX_IMAGE_FILE_UPLOAD_SIZE,
       }}
@@ -609,14 +608,12 @@ const ninaContextHelper = ({
   const getUserBalances = async () => {
     if (provider.wallet?.connected && provider.wallet?.publicKey) {
       try {
-        const solPrice = await axios.get(
-          `https://price.jup.ag/v4/price?ids=SOL`
-        )
+        const solPrice = await getSolPriceFromOrca(provider)
         const solUsdcBalanceResult = await getSolBalance()
         setSolUsdcBalance(
           (
             ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) *
-            solPrice.data.data.SOL.price
+            ninaClient.nativeToUi(solPrice, ids.mints.usdc)
           ).toFixed(2)
         )
         let [usdcTokenAccountPubkey] = await findOrCreateAssociatedTokenAccount(
@@ -773,11 +770,12 @@ const ninaContextHelper = ({
 
   const getSolPrice = async () => {
     try {
-      const priceResult = await axios.get(
-        `https://price.jup.ag/v4/price?ids=SOL`
-      )
-      setSolPrice(priceResult.data.data.SOL.price)
-      return priceResult.data.data.SOL.price
+      const solPrice = await getSolPriceFromOrca(provider)
+      const formattedSolPrice = ninaClient
+        .nativeToUi(solPrice, ids.mints.usdc)
+        .toFixed(2)
+      setSolPrice(formattedSolPrice)
+      return formattedSolPrice
     } catch (error) {
       return ninaErrorHandler(error)
     }
@@ -873,15 +871,6 @@ const ninaContextHelper = ({
       return ninaErrorHandler(error)
     }
     return undefined
-  }
-
-  const getUsdcToSolSwapData = async (amount) => {
-    const { data } = await axios.get(
-      `https://quote-api.jup.ag/v3/quote?inputMint=${
-        ids.mints.usdc
-      }&outputMint=${ids.mints.wsol}&amount=${amount * 1000000}&slippageBps=50`
-    )
-    return data
   }
 
   /*
@@ -1108,7 +1097,6 @@ const ninaContextHelper = ({
     getVerificationsForUser,
     filterSubscriptionsForHub,
     submitEmailRequest,
-    getUsdcToSolSwapData,
   }
 }
 
