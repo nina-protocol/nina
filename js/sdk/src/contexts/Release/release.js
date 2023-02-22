@@ -48,7 +48,7 @@ const ReleaseContextProvider = ({ children }) => {
     tokenData: {},
     releaseMintMap: {},
     redemptionRecords: {},
-    collectedDates: {}
+    collectedDates: {},
   })
   const [gatesState, setGatesState] = useState({})
   const [releasesRecentState, setReleasesRecentState] = useState({
@@ -1113,7 +1113,7 @@ const releaseContextHelper = ({
         collectedDates: {
           ...prevState.collectedDates,
           ...newState.collectedDates,
-        }
+        },
       }))
 
       const publishedAndRevenueShares = [...published, ...revenueShares].filter(
@@ -1163,12 +1163,11 @@ const releaseContextHelper = ({
   }
 
   const updateStateForReleases = (releases) => {
-    console.log('releases', releases)
     const updatedReleaseState = {
       tokenData: {},
       metadata: {},
       releaseMintMap: {},
-      collectedDates: {}
+      collectedDates: {},
     }
     releases.forEach((release) => {
       if (release.accountData) {
@@ -1182,7 +1181,8 @@ const releaseContextHelper = ({
       }
       updatedReleaseState.releaseMintMap[release.publicKey] = release.mint
       if (release.collectedDate) {
-        updatedReleaseState.collectedDates[release.publicKey] = release.collectedDate
+        updatedReleaseState.collectedDates[release.publicKey] =
+          release.collectedDate
       }
     })
     return updatedReleaseState

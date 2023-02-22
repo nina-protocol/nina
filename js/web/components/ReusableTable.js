@@ -332,7 +332,7 @@ const ReusableTableBody = (props) => {
       if (tableType === 'profileCollectionReleases') {
         formattedData.dateAdded = new Date(
           data.metadata?.collectedDate
-        ).toLocaleDateString()        
+        ).toLocaleDateString()
       } else {
         formattedData.releaseDate = new Date(
           data.metadata?.properties?.date
@@ -399,9 +399,7 @@ const ReusableTableBody = (props) => {
         title: data?.properties.title,
         link: `/${data?.releasePubkey}`,
         date: data?.properties?.date,
-        releaseDate: new Date(
-          data?.properties?.date
-        ).toLocaleDateString(),
+        releaseDate: new Date(data?.properties?.date).toLocaleDateString(),
         authorityPublicKey: data?.authority,
       }
     } else if (tableType === 'hubCollaborators') {
@@ -708,7 +706,10 @@ const ReusableTableBody = (props) => {
                       </CollectContainer>
                     </HubTableCell>
                   )
-                } else if (cellName === 'releaseDate' || cellName === 'dateAdded') {
+                } else if (
+                  cellName === 'releaseDate' ||
+                  cellName === 'dateAdded'
+                ) {
                   return (
                     <HubTableCell key={cellName}>
                       <CollectContainer>
