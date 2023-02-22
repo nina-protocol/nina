@@ -93,11 +93,12 @@ const AudioPlayer = ({ hubPubkey = undefined, children }) => {
     if (
       playlist.length > 0 &&
       !activeIndexRef.current &&
-      track?.releasePubkey != playlist[0].releasePubkey
+      track?.releasePubkey != playlist[0].releasePubkey &&
+      !isPlaying
     ) {
       updateTrack(playlist[0].releasePubkey, false)
     }
-  }, [playlist, activeIndexRef.current])
+  }, [playlist, activeIndexRef.current, isPlaying])
 
   const startTimer = () => {
     // Clear any timers already running
